@@ -234,6 +234,12 @@ namespace amaroK
         EngineController::instance()->mute();
     }
 
+    void DcopHandler::setEqualizerEnabled( bool active )
+    {
+    EngineController::engine()->setEqualizerEnabled( active );
+    AmarokConfig::setEqualizerEnabled( active );
+    }
+     
     void DcopHandler::enableOSD(bool enable)
     {
         amaroK::OSD::instance()->setEnabled(enable);
