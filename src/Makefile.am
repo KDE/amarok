@@ -23,7 +23,6 @@ INCLUDES = \
     -I$(top_srcdir)/amarok/src/analyzers \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/plugin \
-    -I$(top_srcdir)/amarok/src/titleproxy \
     -I$(kde_includes)/arts \
     $(taglib_includes) \
     $(sqlite_includes) \
@@ -83,7 +82,6 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/analyzers/libanalyzers.la \
     $(top_builddir)/amarok/src/engine/libengine.la \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
-    $(top_builddir)/amarok/src/titleproxy/libtitleproxy.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) $(LIB_KJSEMBED) \
     $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(MUSICBRAINZ_LIBS)
 
