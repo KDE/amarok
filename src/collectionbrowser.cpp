@@ -75,13 +75,16 @@ CollectionBrowser::CollectionBrowser( const char* name )
         QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter collection" ) );
     } //</Search LineEdit>
 
-    m_view = new CollectionView( this );
-
     KActionCollection* ac = new KActionCollection( this );
     m_scanAction = new KAction( i18n( "Start Scan" ), "reload", 0, this, SLOT( scan() ), ac, "Start Scan" );
+    
+    // we need m_scanAction to be initialized before CollectionView's CTOR
+    m_view = new CollectionView( this );
+
     m_configureAction = new KAction( i18n( "Configure Folders" ), "configure", 0, this, SLOT( setupDirs() ), ac, "Configure" );
     m_treeViewAction = new KAction( i18n( "Tree View" ), "view_tree", 0, m_view, SLOT( setTreeMode() ), ac, "Tree View" );
     m_flatViewAction = new KAction( i18n( "Flat View" ), "view_detailed", 0, m_view, SLOT( setFlatMode() ), ac, "Flat View" );
+
 
     KActionMenu* tagfilterMenuButton = new KActionMenu( i18n( "Tag Filter" ), "filter", ac );
     tagfilterMenuButton->setDelayed( false );
@@ -195,7 +198,6 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 
     setSelectionMode( QListView::Extended );
     setItemsMovable( false );
-    setRootIsDecorated( true );
     setShowSortIndicator( true );
     setFullWidth( true );
     setAcceptDrops( false );
@@ -212,8 +214,6 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         m_cat3 = config->readNumEntry( "Category3", CollectionBrowser::IdNone );
         m_sortMode = config->readNumEntry( "SortCriteria", sortTracktag );
         m_viewMode = config->readNumEntry( "ViewMode", modeTreeView );
-
-        addColumn( captionForCategory( m_cat1 ) );
     //</READ CONFIG>
 
     //<OPEN DATABASE>
@@ -849,15 +849,28 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 void
 CollectionView::setViewMode( int mode, bool rerender )
 {
+    // remove all columns
+    for ( int i = columns() - 1; i >= 0 ; --i )
+        removeColumn( i );
+
     if ( mode == modeTreeView )
     {
         m_parent->m_treeViewAction->setEnabled( false );
         m_parent->m_flatViewAction->setEnabled( true );
+
+        setRootIsDecorated( true );
+        addColumn( captionForCategory( m_cat1 ) );
     }
     else
     {
         m_parent->m_treeViewAction->setEnabled( true );
         m_parent->m_flatViewAction->setEnabled( false );
+
+        setRootIsDecorated( false );
+        addColumn( i18n( "Title" ) );
+        addColumn( captionForCategory( m_cat1 ) );
+        if ( m_cat2 != CollectionBrowser::IdNone )addColumn( captionForCategory( m_cat2 ) );
+        if ( m_cat3 != CollectionBrowser::IdNone )addColumn( captionForCategory( m_cat3 ) );
     }
 
     m_viewMode = mode;
