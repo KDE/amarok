@@ -3,13 +3,14 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #76 being the highest available (take this one for your next bug and increase here)
+           #78 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
-
+    * fix: #77 <larson> OSD is broken. Enable it together with moving the tray and dcophandler to playerapp --> larson
 
 MID-TERM:
+    * fix: #76 <larson> Make playlist toolbar buttons toggle like the playerwidget buttons.
 
     * add: #75 Toolbar button in FileBrowser for switching recursive directory reading
 
@@ -17,19 +18,9 @@ MID-TERM:
 
     * fix: #72 <markey> get amaroK to play nice with valgrind
 
-    * fix: #71 <mxcl> OSD configure is great but, the hand cursor is wrong for this situation as hand means "activate"
-               move icon would be better (or normal cursor), also I didn't realise you could drag the OSD preview! What
-               a great feature! There needs to be some text that says "drag the frigging thing you fools!", the whatsthis
-               tip is not enough IMHO as nobody ever uses them.
-               <larson> I wondered about what cursor to use myself. KWin uses the square arrow thing,
-               but kruler uses the hand. KRuler is borderless, so I chose the hand. Label in front of
-               the preview button with info about dragging?
-               <larson>OSD preview now reads: OSD Preview - Drag to reposition.
-               <mxcl> hand still means "activate" I think KRuler is wrong to use the hand. Throughout KDE
-               applications use the hand to mean "if you click I will do something" and not to mean
-               "click to drag"
-
     * fix: #61 <markey> allow removing of playlist items by dragging back into browser.
+	       <larson> I think this is really weird. When I drag something I expect that someting to be
+			added or opened in the target. Not removed from the sender.
                (RFC: is this still appropriate or would it be misleading?)
 
     * fix: #44 <markey> use kdWarning() instead of kdDebug() where appropriate
