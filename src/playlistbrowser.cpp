@@ -78,6 +78,12 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     m_listview = new PlaylistBrowserView( browserBox );
 
+    // Create item representing the current playlist
+    KURL url;
+    url.setPath( i18n( "Current Playlist" ) );
+    url.setProtocol( "cur" );
+    lastPlaylist = new PlaylistBrowserItem( m_listview, 0, url );
+
     m_smartlistview = new SmartPlaylistView( m_splitter );
 
     KConfig *config = kapp->config();
@@ -299,6 +305,15 @@ void PlaylistBrowser::renamePlaylist( QListViewItem* item, const QString& newNam
 {
     #define item static_cast<PlaylistBrowserItem*>(item)
 
+    // Current playlist saving
+    if ( item->url().protocol() == "cur" ) {
+        QString path = KGlobal::dirs()->saveLocation( "data", "amarok/playlists/", true ) + newName + ".m3u";
+        Playlist::instance()->saveM3U( path );
+        item->setText( 0, i18n( "Current Playlist" ) );
+        addPlaylist( path );
+        return;
+    }
+
     QString oldPath = item->url().path();
     QString newPath = fileDirPath( oldPath ) + newName + fileExtension( oldPath );
 
@@ -459,50 +474,69 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     KPopupMenu menu( this );
 
     if( isPlaylist( item ) ) {
-    //************* Playlist menu ***********
         #define item static_cast<PlaylistBrowserItem*>(item)
+        if ( item->url().protocol() == "cur" ) {
+        //************* Current Playlist menu ***********
+            enum Id { SAVE, CLEAR };
 
-        enum Id { LOAD, ADD, SAVE, RESTORE, RENAME, REMOVE, DELETE };
+            menu.insertItem( i18n( "&Save" ), SAVE );
+            menu.insertItem( i18n( "&Clear" ), CLEAR );
+            menu.setAccel( Key_Space, SAVE );
 
-        menu.insertItem( i18n( "&Load" ), LOAD );
-        menu.insertItem( i18n( "&Add to playlist" ), ADD );
-        menu.insertSeparator();
-        if( item->isModified() ) {
-            menu.insertItem( SmallIcon("filesave"), i18n( "&Save" ), SAVE );
-            menu.insertItem( i18n( "Res&tore" ), RESTORE );
-            menu.insertSeparator();
+            switch( menu.exec( p ) )
+            {
+                case SAVE:
+                    renameSelectedPlaylist();
+                    break;
+                case CLEAR:
+                    Playlist::instance()->clear();
+                    break;
+            }
         }
-        menu.insertItem( SmallIcon("editclear"), i18n( "&Rename" ), RENAME );
-        menu.insertItem( SmallIcon("edittrash"), i18n( "R&emove" ), REMOVE );
-        menu.insertItem( SmallIcon("editdelete"), i18n( "&Delete" ), DELETE );
-        menu.setAccel( Key_Space, LOAD );
-        menu.setAccel( Key_F2, RENAME );
-        menu.setAccel( Key_Delete, REMOVE );
-        menu.setAccel( SHIFT+Key_Delete, DELETE );
+        //************* Playlist menu ***********
+        else {
+            enum Id { LOAD, ADD, SAVE, RESTORE, RENAME, REMOVE, DELETE };
 
-        switch( menu.exec( p ) )
-        {
-            case LOAD:
-                loadPlaylist( item );
-                break;
-            case ADD:
-                Playlist::instance()->appendMedia( item->tracksURL() );
-                break;
-            case SAVE:
-                savePlaylist( item );
-                break;
-            case RESTORE:
-                item->restore();
-                break;
-            case RENAME:
-                renameSelectedPlaylist();
-                break;
-            case REMOVE:
-                removeSelectedItems();
-                break;
-            case DELETE:
-                deleteSelectedPlaylists();
-                break;
+            menu.insertItem( i18n( "&Load" ), LOAD );
+            menu.insertItem( i18n( "&Add to playlist" ), ADD );
+            menu.insertSeparator();
+            if( item->isModified() ) {
+                menu.insertItem( SmallIcon("filesave"), i18n( "&Save" ), SAVE );
+                menu.insertItem( i18n( "Res&tore" ), RESTORE );
+                menu.insertSeparator();
+            }
+            menu.insertItem( SmallIcon("editclear"), i18n( "&Rename" ), RENAME );
+            menu.insertItem( SmallIcon("edittrash"), i18n( "R&emove" ), REMOVE );
+            menu.insertItem( SmallIcon("editdelete"), i18n( "&Delete" ), DELETE );
+            menu.setAccel( Key_Space, LOAD );
+            menu.setAccel( Key_F2, RENAME );
+            menu.setAccel( Key_Delete, REMOVE );
+            menu.setAccel( SHIFT+Key_Delete, DELETE );
+
+            switch( menu.exec( p ) )
+            {
+                case LOAD:
+                    loadPlaylist( item );
+                    break;
+                case ADD:
+                    Playlist::instance()->appendMedia( item->tracksURL() );
+                    break;
+                case SAVE:
+                    savePlaylist( item );
+                    break;
+                case RESTORE:
+                    item->restore();
+                    break;
+                case RENAME:
+                    renameSelectedPlaylist();
+                    break;
+                case REMOVE:
+                    removeSelectedItems();
+                    break;
+                case DELETE:
+                    deleteSelectedPlaylists();
+                    break;
+            }
         }
         #undef item
     }
@@ -1145,8 +1179,11 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
 
     QPainter pBuf( &buffer, true );
 
-    // use alternate background
-    pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor() );
+    if ( m_url.protocol() == "cur" )
+        pBuf.fillRect( buffer.rect(), cg.mid() );
+    else
+        // use alternate background
+        pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor() );
 
     // draw a line at the top
     pBuf.setPen( cg.text() );
@@ -1214,17 +1251,20 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
     font.setBold( false );
     pBuf.setFont( font );
 
-    if( m_loading )
-        info = i18n( "Loading..." );
-    else
-    {     //playlist loaded
-        // draw the number of tracks and the total length of the playlist
-        info += i18n("1 Track", "%n Tracks", m_trackCount);
-        if( m_length )
-            info += QString(" - [%2]").arg( MetaBundle::prettyTime( m_length ) );
-    }
+    if ( m_url.protocol() != "cur" )
+    {
+        if( m_loading )
+            info = i18n( "Loading..." );
+        else
+        {     //playlist loaded
+            // draw the number of tracks and the total length of the playlist
+            info += i18n("1 Track", "%n Tracks", m_trackCount);
+            if( m_length )
+                info += QString(" - [%2]").arg( MetaBundle::prettyTime( m_length ) );
+        }
 
-    pBuf.drawText( text_x, text_y, info);
+        pBuf.drawText( text_x, text_y, info);
+    }
 
     pBuf.end();
     p->drawPixmap( 0, 0, buffer );
