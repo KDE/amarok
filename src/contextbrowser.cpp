@@ -628,7 +628,7 @@ void ContextBrowser::showHome() //SLOT
             "<div id='least_box' class='box'>"
                 "<div id='least_box-header' class='box-header'>"
                     "<span id='least_box-header-title' class='box-header-title'>"
-                    + i18n( "Least listened songs" ) +
+                    + i18n( "Least Listened songs" ) +
                     "</span>"
                 "</div>"
                 "<div id='least_box-body' class='box-body'>" );
