@@ -13,24 +13,11 @@ SHORT-TERM (URGENT):
   
   FIX 139 <markey> Find out why collection scan won't work with samba shares. Currently the scan just gets
                    stuck, hogging CPU and doing nothing useful.
-  
+
   FIX 134 <markey> Ctrl-C as shortcut for copying title just doesn't work. We need to choose another
                    shortcut. How about a global shortcut?
-  
-  ADD 144 <mxcl>   Trying to play radio1's real audio stream with aRts engine caused amaroK to show an
-                   error dialog that I could never read because X was completely frozen. Happened twice
-                   and I had to reboot both times so I don't want to try it again unless I am the only
-                   one it ever happens to! http://www.bbc.co.uk/radio1/realaudio/media/r1live.ram
-                   
-                   Ok, it happened again, seemingly for any stream, the error dialog was the cannot connect
-                   to localhost title proxy one. I have no firewall on this machine at all so I am confused.
-                   The URL I was trying was:
-                   http://stream1.hia.no/ogg/dump/room1/ogg-theora-vorbis-high.2004-06-29-13:54:22.ogg
-                   
-                   X responds to no input, mouse nor keyboard. Haven't tried ssh yet as laptop is crap.
-                   Will try..
 
-                   
+
 MID-TERM:
 
   ADD 148 <markey> AudioCD support for gst engine (cdparanoia ! *sink). -->markey
@@ -188,7 +175,7 @@ DISCUSSING:
           <mxcl>   I added a 110 char marker to my editor (since ages ago). However I don't always keep to it.
                    Breaking lines is most often ugly :( Mostly I do though. You can praise me now ;)
 
-                   
+
 DO-NOT-IMPLEMENT:
 
   FIX  61 <markey> Allow removing of playlist items by dragging back into browser.
