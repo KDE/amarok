@@ -337,6 +337,7 @@ BrowserBar::showHidePage( int index )
         #endif
 
         m_currentPage->show();
+        m_currentPage->setFocus();
         m_currentTab->setState( true );
         m_pageHolder->show();
     }

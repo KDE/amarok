@@ -142,10 +142,11 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 
     { //<StreamBrowser>
         QVBox   *vb = new QVBox( 0, "StreamBrowser" );
+        QWidget *b  = new QPushButton( "&Fetch Stream Information", vb );
+        QWidget *sb = new StreamBrowser( vb );
         vb->setSpacing( 2 );
         vb->setMargin( 2 );
-        QWidget *b  = new QPushButton( "&Fetch Stream Information", vb );
-        QObject *sb = new StreamBrowser( vb );
+        vb->setFocusProxy( sb );
         connect( b, SIGNAL( clicked() ), sb, SLOT( slotUpdateStations() ) );
         connect( b, SIGNAL( clicked() ),  b, SLOT( deleteLater() ) );
         m_browsers->addPage( vb, i18n( "Streams" ), "network" );

@@ -55,16 +55,19 @@ SearchBrowser::SearchBrowser( QWidget *parent, const char *name )
     resultView->setDragEnabled( TRUE );
     resultView->addColumn( i18n( "Filename" ) );
     resultView->addColumn( i18n( "Directory" ) );
+    resultView->setResizeMode( QListView::AllColumns );
+    //resultView->setColumnWidthMode( 1, QListView::Manual ); //NOTE is default
 
     historyView->addColumn( i18n( "Search Token" ) );
     historyView->addColumn( i18n( "Results" ) );
     historyView->addColumn( i18n( "Progress" ) );
     historyView->addColumn( i18n( "Base Folder" ) );
-
-    resultView->setColumnWidthMode( 1, QListView::Manual );
+    historyView->setResizeMode( QListView::AllColumns );
 
     connect( searchEdit,   SIGNAL( returnPressed() ), this, SLOT( slotStartSearch() ) );
     connect( searchButton, SIGNAL( clicked() ),       this, SLOT( slotStartSearch() ) );
+
+    setFocusProxy( searchEdit ); //so focus is given to a sensible widget when the tab is opened
 }
 
 
