@@ -45,8 +45,9 @@ class OSDWidget : public QWidget
         void setOffset(int x, int y);
         void setPosition(Position pos);
         void setScreen(uint screen);
+        void setText(const QString &text) { m_currentText = text; refresh(); }
 
-        void resetColors();
+        void unsetColors();
 
       public slots:
         void showOSD(const QString&, bool preemptive=false );

@@ -318,7 +318,7 @@ void App::applySettings()
         m_pOSD->setTextColor( AmarokConfig::osdTextColor() );
         m_pOSD->setBackgroundColor( AmarokConfig::osdBackgroundColor() );
     }
-    else m_pOSD->resetColors();
+    else m_pOSD->unsetColors();
     m_pOSD->setDuration( AmarokConfig::osdDuration() );
     m_pOSD->setPosition( (OSDWidget::Position)AmarokConfig::osdAlignment() );
     m_pOSD->setScreen( AmarokConfig::osdScreen() );

@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>Options5</class>
 <widget class="QWidget">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>557</width>
-            <height>598</height>
+            <height>503</height>
         </rect>
     </property>
     <property name="caption">
@@ -464,67 +464,6 @@
                         </widget>
                     </grid>
                 </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Vertical</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>20</width>
-                            <height>190</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout1</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <spacer>
-                            <property name="name">
-                                <cstring>spacer1</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>40</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                        </spacer>
-                        <widget class="KPushButton">
-                            <property name="name">
-                                <cstring>PreviewButton</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&amp;Toggle Preview</string>
-                            </property>
-                            <property name="accel">
-                                <string>Alt+T</string>
-                            </property>
-                            <property name="toggleButton">
-                                <bool>true</bool>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Preview the On-Screen Display. You may drag the OSD around and position it where you would like it to be displayed.</string>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
             </vbox>
         </widget>
     </vbox>
@@ -539,12 +478,6 @@
         <slot>setEnabled(bool)</slot>
     </connection>
     <connection>
-        <sender>PreviewButton</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>Options5</receiver>
-        <slot>preview(bool)</slot>
-    </connection>
-    <connection>
         <sender>kcfg_OsdEnabled</sender>
         <signal>toggled(bool)</signal>
         <receiver>Options5</receiver>
@@ -555,6 +488,54 @@
         <signal>toggled(bool)</signal>
         <receiver>colorsBox</receiver>
         <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_OsdUseCustomColors</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>Options5</receiver>
+        <slot>useCustomColorsToggled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_OsdFont</sender>
+        <signal>fontSelected(const QFont&amp;)</signal>
+        <receiver>Options5</receiver>
+        <slot>fontChanged(const QFont&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_OsdTextColor</sender>
+        <signal>changed(const QColor&amp;)</signal>
+        <receiver>Options5</receiver>
+        <slot>textColorChanged(const QColor&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_OsdBackgroundColor</sender>
+        <signal>changed(const QColor&amp;)</signal>
+        <receiver>Options5</receiver>
+        <slot>backgroundColorChanged(const QColor&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_OsdAlignment</sender>
+        <signal>activated(int)</signal>
+        <receiver>Options5</receiver>
+        <slot>alignmentChanged(int)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_OsdScreen</sender>
+        <signal>activated(int)</signal>
+        <receiver>Options5</receiver>
+        <slot>screenChanged(int)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_OsdXOffset</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>Options5</receiver>
+        <slot>xOffsetChanged(int)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_OsdYOffset</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>Options5</receiver>
+        <slot>yOffsetChanged(int)</slot>
     </connection>
 </connections>
 <includes>
@@ -574,14 +555,15 @@
     <slot access="protected">screenChanged( int screen )</slot>
     <slot access="protected">xOffsetChanged( int offset )</slot>
     <slot access="protected">yOffsetChanged( int offset )</slot>
-    <slot access="protected">preview( bool on )</slot>
     <slot access="protected">osdPositionChanged( int screen, OSDWidget::Position alignment, int xOffset, int yOffset )</slot>
     <slot access="protected">osdEnabledChange( bool on )</slot>
+    <slot access="protected">useCustomColorsToggled( bool on )</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
     <function access="private" specifier="non virtual">destroy()</function>
     <function access="protected">hideEvent( QHideEvent * )</function>
+    <function access="protected">showEvent( QShowEvent * )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
@@ -592,6 +574,5 @@
     <includehint>knuminput.h</includehint>
     <includehint>knuminput.h</includehint>
     <includehint>kcombobox.h</includehint>
-    <includehint>kpushbutton.h</includehint>
 </includehints>
 </UI>

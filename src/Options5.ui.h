@@ -25,10 +25,14 @@ email                : fh@ez.no
 
 void Options5::init()
 {
-  m_pOSDPreview = 0;
-  int numScreens = QApplication::desktop()->numScreens();
-  for( int i = 0; i < numScreens; i++ )
-      kcfg_OsdScreen->insertItem( QString::number( i ) );
+    m_pOSDPreview = new OSDPreviewWidget( "amaroK" );
+    m_pOSDPreview->setText( i18n("OSD preview - drag to reposition" ) );
+    connect( m_pOSDPreview, SIGNAL( positionChanged( int, OSDWidget::Position, int, int ) ) ,
+             SLOT( osdPositionChanged( int, OSDWidget::Position, int, int ) ) );
+
+    int numScreens = QApplication::desktop()->numScreens();
+    for( int i = 0; i < numScreens; i++ )
+        kcfg_OsdScreen->insertItem( QString::number( i ) );
 }
 
 void Options5::destroy()
@@ -38,82 +42,45 @@ void Options5::destroy()
 
 void Options5::fontChanged(const QFont &font )
 {
-    if( m_pOSDPreview )
-        m_pOSDPreview->setFont( font );
+    m_pOSDPreview->setFont( font );
 }
 
 
 void Options5::textColorChanged( const QColor &color )
 {
-    if( m_pOSDPreview )
-        m_pOSDPreview->setTextColor( color );
+    m_pOSDPreview->setTextColor( color );
 }
 
 
 void Options5::backgroundColorChanged( const QColor &color )
 {
-    if( m_pOSDPreview )
-        m_pOSDPreview->setBackgroundColor( color );
+    m_pOSDPreview->setBackgroundColor( color );
 }
 
 
 void Options5::alignmentChanged( int alignment )
 {
-    if( m_pOSDPreview )
-        m_pOSDPreview->setPosition( (OSDWidget::Position)alignment );
+    m_pOSDPreview->setPosition( (OSDWidget::Position)alignment );
 }
 
 
 void Options5::screenChanged( int screen )
 {
-    if( m_pOSDPreview )
-        m_pOSDPreview->setScreen( screen );
+    m_pOSDPreview->setScreen( screen );
 }
 
 
 void Options5::xOffsetChanged( int offset )
 {
-    if( m_pOSDPreview )
-    {
-        m_pOSDPreview->setOffset( offset, kcfg_OsdYOffset->value() );
-    }
+    m_pOSDPreview->setOffset( offset, kcfg_OsdYOffset->value() );
 }
 
 
 void Options5::yOffsetChanged( int offset )
 {
-    if( m_pOSDPreview )
-    {
-        m_pOSDPreview->setOffset( kcfg_OsdXOffset->value(), offset );
-    }
+    m_pOSDPreview->setOffset( kcfg_OsdXOffset->value(), offset );
 }
 
-
-void Options5::preview( bool on )
-{
-    if( on )
-    {
-        if( !m_pOSDPreview )
-        {
-            m_pOSDPreview = new OSDPreviewWidget( i18n( "amaroK" ) );
-            connect( m_pOSDPreview, SIGNAL( positionChanged( int, OSDWidget::Position, int, int ) ) ,
-                     this, SLOT( osdPositionChanged( int, OSDWidget::Position, int, int ) ) );
-        }
-
-        m_pOSDPreview->setFont( kcfg_OsdFont->font() );
-        m_pOSDPreview->setTextColor( kcfg_OsdTextColor->color() );
-        m_pOSDPreview->setBackgroundColor( kcfg_OsdBackgroundColor->color() );
-        m_pOSDPreview->setPosition( (OSDWidget::Position)kcfg_OsdAlignment->currentItem() );
-        m_pOSDPreview->setScreen( kcfg_OsdScreen->currentItem() );
-        m_pOSDPreview->setOffset( kcfg_OsdXOffset->value(), kcfg_OsdYOffset->value() );
-        m_pOSDPreview->showOSD( i18n("OSD preview - Drag to reposition" ) );
-    }
-    else
-    {
-        if( m_pOSDPreview )
-            m_pOSDPreview->hide();
-    }
-}
 
 void Options5::osdPositionChanged( int screen, OSDWidget::Position alignment, int xOffset, int yOffset )
 {
@@ -137,21 +104,36 @@ void Options5::osdPositionChanged( int screen, OSDWidget::Position alignment, in
 
 void Options5::hideEvent( QHideEvent * )
 {
-    if( m_pOSDPreview )
-    {
-        delete m_pOSDPreview;
-        m_pOSDPreview = 0;
-        PreviewButton->setOn( false );
-    }
+    m_pOSDPreview->hide();
+}
+
+
+void Options5::showEvent( QShowEvent * )
+{
+    useCustomColorsToggled( kcfg_OsdUseCustomColors->isChecked() );
+
+    m_pOSDPreview->setFont( kcfg_OsdFont->font() );
+    m_pOSDPreview->setPosition( (OSDWidget::Position)kcfg_OsdAlignment->currentItem() );
+    m_pOSDPreview->setScreen( kcfg_OsdScreen->currentItem() );
+    m_pOSDPreview->setOffset( kcfg_OsdXOffset->value(), kcfg_OsdYOffset->value() );
+    m_pOSDPreview->setShown( kcfg_OsdEnabled->isChecked() );
 }
 
 
 void Options5::osdEnabledChange( bool on )
 {
-    if( on == false && m_pOSDPreview )
-    {
-        delete m_pOSDPreview;
-        m_pOSDPreview = 0;
-        PreviewButton->setOn( false );
-    }
+    m_pOSDPreview->setShown( on );
 }
+
+
+void Options5::useCustomColorsToggled( bool on )
+{
+    if( on )
+    {
+        m_pOSDPreview->setTextColor( kcfg_OsdTextColor->color() );
+        m_pOSDPreview->setBackgroundColor( kcfg_OsdBackgroundColor->color() );
+    }
+    else m_pOSDPreview->unsetColors();
+}
+
+

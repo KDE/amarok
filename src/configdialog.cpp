@@ -70,7 +70,8 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     addPage( m_opt4, i18n( "Playback" ), "kmix", i18n( "Configure Playback" ) );
     addPage( new Options5( 0, "OSD" ), i18n( "OSD" ), "tv", i18n( "Configure On-Screen-Display" ) );
 
-    setInitialSize( sizeHint() );
+    setInitialSize( minimumSizeHint() );
+    //adjustSize();
 }
 
 

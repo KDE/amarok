@@ -40,7 +40,7 @@ OSDWidget::OSDWidget( const QString &appName, QWidget *parent, const char *name 
 {
     setFocusPolicy( NoFocus );
     setBackgroundMode( NoBackground );
-    resetColors();
+    unsetColors();
 
     connect( timer,    SIGNAL(timeout()), SLOT(removeOSD()) );
     connect( timerMin, SIGNAL(timeout()), SLOT(minReached()) );
@@ -171,6 +171,14 @@ void OSDWidget::setBackgroundColor(QColor newColor)
     refresh();
 }
 
+void OSDWidget::unsetColors()
+{
+    setPaletteForegroundColor( KGlobalSettings::activeTextColor() );
+    setPaletteBackgroundColor( KGlobalSettings::activeTitleColor() );
+
+    refresh();
+}
+
 void OSDWidget::setOffset(int x, int y)
 {
     m_offset = QPoint( x, y );
@@ -202,12 +210,6 @@ void OSDWidget::refresh()
         update();
     }
     else m_dirty = true; //ensure we are re-rendered before we are shown
-}
-
-void OSDWidget::resetColors()
-{
-    setPaletteForegroundColor( KGlobalSettings::activeTextColor() );
-    setPaletteBackgroundColor( KGlobalSettings::activeTitleColor() );
 }
 
 
