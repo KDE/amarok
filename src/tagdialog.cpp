@@ -149,7 +149,19 @@ TagDialog::init()
     kLineEdit_bitrate->setText( m_metaBundle.prettyBitrate() );
     kLineEdit_samplerate->setText( m_metaBundle.prettySampleRate() );
     kLineEdit_location->setText( m_metaBundle.url().isLocalFile() ? m_metaBundle.url().path() : m_metaBundle.url().url() );
-
+    
+    // Disable the tag editor for streams
+    if ( !m_metaBundle.url().isLocalFile() )
+    {
+          kLineEdit_title->setReadOnly( true );
+          kComboBox_artist->setEnabled( false );
+          kComboBox_album->setEnabled( false );
+          kComboBox_genre->setEnabled( false );
+          kIntSpinBox_track->setEnabled( false );
+          kIntSpinBox_year->setEnabled( false );
+          kLineEdit_comment->setEnabled( false );
+    }
+    
     // Connects for modification check
     connect( kLineEdit_title, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
     connect( kComboBox_artist, SIGNAL( activated( int ) ), this, SLOT( checkModified() ) );
@@ -165,7 +177,7 @@ TagDialog::init()
     // Remember original button text
     m_buttonMbText = pushButton_musicbrainz->text();
     
-        // Remember the path
+    // If it's a local file, write the directory to m_path, else disable the "open in konqui" button 
     if ( m_metaBundle.url().isLocalFile() )
     {
         m_path = m_metaBundle.url().directory();
