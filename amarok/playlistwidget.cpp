@@ -47,7 +47,7 @@
 #include <krandomsequence.h>
 #include <kurldrag.h>
 #include <kcursor.h>
-
+#include <klineedit.h>
 
 
 PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ const char *name )
@@ -549,7 +549,6 @@ void PlaylistWidget::setCurrentTrack( const KURL &u ) //SLOT
     m_cachedTrack = 0;
 }
 
-
 void PlaylistWidget::setCurrentTrack( PlaylistItem *item )
 {
     //item has been verified to be the currently playing track
@@ -569,6 +568,32 @@ void PlaylistWidget::setCurrentTrack( PlaylistItem *item )
 
     //FIXME this sucks
     if( m_currentTrack == NULL && item ) item->setSelected( false ); //looks bad paint selected and paint red
+
+    if( AmarokConfig::playlistFollowActive() && m_currentTrack && item &&
+        selectedItems().count() < 2 &&  // do not scroll if more than one item is selected
+        renameLineEdit()->isVisible() == false ) // do not scroll if user is doing tag editing
+    {
+        // if old item in view and the new one isn't do scrolling
+        int currentY = itemPos( m_currentTrack );
+        if( currentY + m_currentTrack->height() <= contentsY() + visibleHeight()
+            && currentY >= contentsY() )
+        {
+            // Scroll towards the middle but no more than two lines extra
+            int scrollAdd = viewport()->height() / 2 - item->height();
+            if( scrollAdd > 2 * item->height() ) scrollAdd = 2 * item->height();
+
+            int itemY = itemPos( item );
+            int itemH = item->height();
+            if( itemY + itemH > contentsY() + visibleHeight() ) // scroll down
+            {
+                setContentsPos( contentsX(), itemY - visibleHeight() + itemH + scrollAdd );
+            }
+            else if( itemY < contentsY() ) // scroll up
+            {
+                setContentsPos( contentsX(), itemY - scrollAdd );
+            }
+        }
+    }
 
     m_currentTrack = item;
 

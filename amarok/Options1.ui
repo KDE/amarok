@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>Options1</class>
 <widget class="QWidget">
     <property name="name">
@@ -101,7 +101,21 @@
                         <cstring>kcfg_DirectoriesRecursively</cstring>
                     </property>
                     <property name="text">
-                        <string>Add directories recursively</string>
+                        <string>Add &amp;directories recursively</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+D</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>kcfg_PlaylistFollowActive</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Playlist &amp;follows active song</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+F</string>
                     </property>
                 </widget>
             </vbox>

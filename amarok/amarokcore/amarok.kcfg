@@ -115,6 +115,11 @@
         <default>70,140</default>
         <whatsthis></whatsthis>
      </entry>
+     <entry key="Playlist Follow Active" type="Bool">
+        <label>Whether the playlist should scroll with the active playlist item</label>
+        <default>false</default>
+        <whatsthis>Blahblahblah</whatsthis>
+     </entry>
   </group>
 
   <group name="Playback">
