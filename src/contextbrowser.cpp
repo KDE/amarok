@@ -741,7 +741,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
              "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
 
         // place current album first
-        int vectorPlace = 0;
+        uint vectorPlace = 0;
         while ( vectorPlace < values.count() && values[ vectorPlace+1 ] != QString::number( album_id ) )
             vectorPlace += 2;
         // if album found, swap that entry with the first one
