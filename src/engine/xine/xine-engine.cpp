@@ -63,7 +63,7 @@ XineEngine::XineEngine()
     addPluginProperty( "StreamingMode", "NoStreaming" );
     addPluginProperty( "HasConfigure", "true" );
     addPluginProperty( "HasEqualizer", "true" );
-    addPluginProperty( "HasCrossfade", "true" );
+    //addPluginProperty( "HasCrossfade", "true" );
 }
 
 XineEngine::~XineEngine()
