@@ -184,43 +184,32 @@ DO-NOT-IMPLEMENT:
 
 BACKTRACE/DEBUG
 
-
-09/07/2004
-Gst-Engine unreffing input bin:
+From Markus:
 
 Program received signal SIGSEGV, Segmentation fault.
-[Switching to Thread 1024 (LWP 28881)]
-0x42257bf3 in g_type_check_instance_is_a (type_instance=0x610070, iface_type=138578880) at gtype.c:2739
-2739    gtype.c: No such file or directory.
-        in gtype.c
+balance_nonroot (pPage=0x8594ea0) at btree.c:2905
+2905      int nCell = 0;               /* Number of cells in aCell[] */
 Current language:  auto; currently c
 (gdb) bt
-#0  0x42257bf3 in g_type_check_instance_is_a (type_instance=0x610070, iface_type=138578880) at gtype.c:2739
-#1  0x421434d8 in gst_element_enable_threadsafe_properties (element=0x8320df8) at gstelement.c:322
-#2  0x421716ab in gst_thread_change_state (element=0x84c7740) at gstthread.c:458
-#3  0x4214a339 in gst_element_set_state_func (element=0x84c7740, state=GST_STATE_PLAYING) at gstelement.c:2786
-#4  0x4213c292 in gst_bin_set_state (element=0x84c7740, state=GST_STATE_PLAYING) at gstbin.c:878
-#5  0x4214a025 in gst_element_set_state (element=0x84c7740, state=GST_STATE_PLAYING) at gstelement.c:2734
-#6  0x421185a1 in ~InputPipeline (this=0x82e50d8) at src/engine/gst/gstengine.cpp:974
-#7  0x42119535 in QPtrList<InputPipeline>::deleteItem(void*) (this=0x8429d3c, d=0x82e50d8)
-    at /usr/lib/qt3/include/qptrlist.h:150
-#8  0x412c15fb in QGList::remove(void*) () from /usr/lib/./libqt-mt.so.3
-#9  0x42118f41 in QPtrList<InputPipeline>::remove(InputPipeline const*) (this=0x8429d3c, d=0x82e50d8)
-    at /usr/lib/qt3/include/qptrlist.h:85
-#10 0x42117bb2 in GstEngine::destroyInput(InputPipeline*) (this=0x8429c90, input=0x82e50d8)
-    at src/engine/gst/gstengine.cpp:897
-#11 0x42116407 in GstEngine::timerEvent(QTimerEvent*) (this=0x8429c90) at src/engine/gst/gstengine.cpp:602
-#12 0x410162af in QObject::event(QEvent*) () from /usr/lib/./libqt-mt.so.3
-#13 0x40fbe205 in QApplication::internalNotify(QObject*, QEvent*) () from /usr/lib/./libqt-mt.so.3
-#14 0x40fbd5f5 in QApplication::notify(QObject*, QEvent*) () from /usr/lib/./libqt-mt.so.3
-#15 0x40bb143c in KApplication::notify(QObject*, QEvent*) () from /opt/kde3/lib/libkdecore.so.4
-#16 0x40fab85b in QEventLoop::activateTimers() () from /usr/lib/./libqt-mt.so.3
-#17 0x40f669da in QEventLoop::processEvents(unsigned) () from /usr/lib/./libqt-mt.so.3
-#18 0x40fd0096 in QEventLoop::enterLoop() () from /usr/lib/./libqt-mt.so.3
-#19 0x40fcff38 in QEventLoop::exec() () from /usr/lib/./libqt-mt.so.3
-#20 0x40fbe451 in QApplication::exec() () from /usr/lib/./libqt-mt.so.3
-#21 0x08112dbe in main (argc=1, argv=0xbffff294) at src/amarokcore/main.cpp:64
-#22 0x41b864f2 in __libc_start_main () from /lib/libc.so.6
+#0  balance_nonroot (pPage=0x8594ea0) at btree.c:2905
+#1  0x081549a6 in balance_deeper (pPage=0x85838e0) at btree.c:3422
+#2  0x08154a7d in balance (pPage=0x85838e0) at btree.c:3435
+#3  0x08154dab in sqlite3BtreeInsert (pCur=0x8548200, pKey=0x0, nKey=17, pData=0x8590c70, nData=76) at btree.c:3545
+#4  0x08175508 in sqlite3VdbeExec (p=0x858fd58) at vdbe.c:3026
+#5  0x081477e9 in sqlite3_step (pStmt=0x858fd58) at vdbeapi.c:159
+#6  0x08092232 in CollectionDB::execSql(QString const&, QStringList*, QStringList*, bool) (this=0x84eb548, statement=@0xbfadca10, values=0x0, names=0x0, debug=false) at collectiondb.cpp:596
+#7  0x08090e1c in CollectionDB::updateDirStats(QString, long) (this=0x84eb548, path=
+      {static null = {static null = <same as static member of an already seen type>, d = 0x8210e28, static shared_null = 0x8210e28}, d = 0x8582ec8, static shared_null = 0x8210e28}, datetime=1061836186)
+    at collectiondb.cpp:477
+#8  0x0810fb4b in CollectionReader::readDir(QString const&, QStringList&) (this=0x84eabf8, dir=@0xbfadcc40, entries=@0xbfadcf00) at threadweaver.cpp:242
+#9  0x08110011 in CollectionReader::readDir(QString const&, QStringList&) (this=0x84eabf8, dir=@0xbfadcdc0, entries=@0xbfadcf00) at threadweaver.cpp:284
+#10 0x08110011 in CollectionReader::readDir(QString const&, QStringList&) (this=0x84eabf8, dir=@0x8452fa0, entries=@0xbfadcf00) at threadweaver.cpp:284
+#11 0x0810f8d9 in CollectionReader::doJob() (this=0x84eabf8) at /usr/X11R6/include/qvaluelist.h:535
+#12 0x0810ed9d in ThreadWeaver::run() (this=0x84ed718) at threadweaver.cpp:105
+#13 0x2919848b in QThreadInstance::start(void*) () from /usr/X11R6/lib/libqt-mt.so.3
+#14 0xbfacd000 in ?? ()
+#15 0x0813a0a1 in BoomAnalyzer::init() (this=0x84eb6fc) at boomanalyzer.cpp:69
+Error accessing memory address 0x36: Bad address.
 
 
 
