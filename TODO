@@ -76,15 +76,10 @@ MID-TERM:
 
     * add: column "length" in playlist
 
-<<<<<<< TODO
     * add: option to automatically adjust column widths
 
     * add: option to implicitly sort playlist by { track, album } (on drop only) -->mxcl
 
-    * fix: honor KDE single/double-click setting in BrowserWin
-    
-=======
->>>>>>> 1.95
     * add: <muesli> reading metadata on the fly (read for displayed playlist-items or onClick)
 
     * add: "add item"-dialog should support multiple selections
