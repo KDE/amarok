@@ -10,61 +10,112 @@
 #include <unistd.h>
 #include "base.hpp"
 
-
-using amaroK::Vis::Scope;
-
-//TODO get path using "kde-config --type data"
-std::string path;
+using namespace amaroK;
+using Vis::Scope;
+using std::string;
 
 
-template<class T>
-amaroK::Vis::Base<T>::Base( DataType dt, bool receiveNotification, uint fps )
+Vis::Base::Base( const string &name, DataType dt, bool notify, uint fps )
   : m_dataType( dt )
-  , m_sleepTime( (fps == 0) ? 0 : ((1000*1000)/fps) ) //TODO adjust depending on how long vis takes to do it's stuff
-  , m_socketFD( -1 )
+  , m_sleepTime( (fps == 0) ? 0 : (1000*1000)/fps ) //TODO adjust depending on how long vis takes to do it's stuff
+  , m_sockFD( -1 )
   , m_left( 512, 0 )
   , m_right( 512, 0 )
 {
-    std::cout << "Sleeping every " << m_sleepTime / 1000 << "ms\n";
+    //TODO get path using "kde-config --type data"
 
+    std::string
     path  = getenv( "HOME" );
     path += "/.kde/share/apps/amarok/visualization_socket";
+
+    if( openConnection( path ) ) //do exception on failure
+    {
+        //register ourselves
+        std::string msg = "REG"; msg += name;
+        send( msg.c_str(), msg.length() );
+    }
 }
 
-template<class T> bool
-amaroK::Vis::Base<T>::openConnection()
+bool
+Vis::Base::openConnection( const std::string &path )
 {
     //try to connect to the VisServer
-    int fd = socket( AF_UNIX, SOCK_STREAM, 0 );
+    m_sockFD = socket( AF_UNIX, SOCK_STREAM, 0 );
 
-    if( fd != -1 )
+    if( m_sockFD != -1 )
     {
         struct sockaddr_un local;
 
         strcpy( &local.sun_path[0], path.c_str() );
         local.sun_family = AF_UNIX;
 
-        if( ::connect( fd, (struct sockaddr*) &local, sizeof( local ) ) == -1 )
+        if( ::connect( m_sockFD, (struct sockaddr*) &local, sizeof( local ) ) == -1 )
         {
-            fd = -1;
+            m_sockFD  = -1;
         }
     }
 
-    m_socketFD = fd; //FIXME
-
-    return fd >= 0;
+    return m_sockFD >= 0;
 }
 
-template<class T> void
-amaroK::Vis::Base<T>::closeConnection()
+void
+Vis::Base::closeConnection()
 {
-    ::close( m_socketFD );
+    ::close( m_sockFD );
 }
 
-template<class T> int
-amaroK::Vis::Base<T>::exec()
+Scope*
+Vis::Base::fetchPCM()
 {
-    while( openConnection() ) //FIXME sustain connection, and connect in an connect() function, make sure you exit on failure so there is consistent error messages
+    const int nch = 1; //no of channels?
+    int nbytes;
+
+    //TODO can we dump the data straight into the vector?
+    //TODO test for connection failures and stop testing for no sockfd
+
+    float sink[512];
+
+    if( m_sockFD != -1 )
+    {
+        send( "PCM", 4 );
+        nbytes = ::recv( m_sockFD, sink, 512*sizeof(float), 0 );
+    }
+
+    for( uint x = 0; x < 512; ++x ) m_left[x] = sink[x];
+
+    return &m_left;
+}
+
+bool
+Vis::Base::send( const void *data, int nbytes )
+{
+    if( m_sockFD != -1 ) //FIXME is this test redundant?
+    {
+        ::send( m_sockFD, data, nbytes, 0 );
+        return true;
+    }
+
+    return false;
+}
+
+Scope*
+Vis::Base::fetchFFT()
+{
+    return &m_left;
+}
+
+
+template<class S>
+Vis::Implementation<S>::Implementation( DataType dt, bool notify, uint fps )
+  : Vis::Base( dt, notify, fps )
+{}
+
+template<class S> int
+Vis::Implementation<S>::exec()
+{
+    bool go = (m_sockFD >= 0);
+
+    while( go )
     {
         switch( m_dataType )
         {
@@ -75,41 +126,10 @@ amaroK::Vis::Base<T>::exec()
         //TODO time render and use that to adjust sleep time to achieve fps requested
         //TODO perhaps rather than making exec() virtual you should have a pre_render() function?
 
-        render( m_t );
+        render( m_surface );
 
         ::usleep( m_sleepTime );
-
-        closeConnection(); //TODO keep connection open!
     }
 
-    return m_socketFD == -1 ? -1 : 0;
-}
-
-
-template<class T> Scope*
-amaroK::Vis::Base<T>::fetchPCM()
-{
-    const int nch = 1; //no of channels?
-    int nbytes;
-
-    float sink[512];
-
-    if( m_socketFD != -1 )
-    {
-        ::send( m_socketFD, "PCM", 4, 0 );
-        nbytes = ::recv( m_socketFD, sink, 512*sizeof(float), 0 );
-        //::close( m_socketFD );
-    }
-
-    //m_data[0].resize( nbytes );
-
-    for( uint x = 0; x < 512; ++x ) m_left[x] = sink[x];
-
-    return &m_left;
-}
-
-template<class T> Scope*
-amaroK::Vis::Base<T>::fetchFFT()
-{
-    return &m_left;
+    return go; //return something meaningful!
 }

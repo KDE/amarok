@@ -30,15 +30,24 @@ enum DataType { PCM = 0, FFT = 1 };
 
 //TODO users will want mutable versions of left() and right()
 
+//TODO name classes well, name functions well
+
 //because you want to handle features like fps at this level, _not_ beyond if poss as otherwise you'll get
 //shoddy implementations later on down the road
 
 //templated to allow you to use any kind of surface to pass with the render function
 
-template <class T> class Base
+//TODO instead make it so the template derives this and the derived class impliments a templated exec()
+//not actually in base.. (is this wise? <-- less code bloat and a solid abstract base class asre the advantages)
+
+template<class S> class Implementation;
+
+class Base
 {
+    template<class S> friend class Implementation;
+
 public:
-    //virtual ~Base() {}
+    virtual ~Base() { closeConnection(); }
 
     const Scope &left()  const { return m_left; }
     const Scope &right() const { return m_right; }
@@ -46,40 +55,52 @@ public:
     float left( uint x )  const { return m_left[x]; }
     float right( uint x ) const { return m_right[x]; }
 
-    virtual int exec();
+    bool send( const void *data, int nbytes ); //FIXME make protected
 
 protected:
-
-    virtual void render( T * ) = 0;
 
     Scope *fetchPCM(); //assigns m_data and returns pointer
     Scope *fetchFFT(); //assigns m_data and returns pointer
 
-    Base( DataType = FFT, bool receiveNotification = FALSE, uint fps = 0 );
+    Base( DataType = FFT, bool receiveNotification = false, uint fps = 0 );
     Base( const Base& );
     Base &operator=( const Base& );
 
 private:
-    bool openConnection();
+    bool openConnection( const std::string &path );
     void closeConnection();
 
     //TODO listenerThread
 
     const DataType m_dataType;
     const uint     m_sleepTime;
-    int            m_socketFD;
+    int            m_sockFD;
     //notification is dealt with in ctor
 
-protected:
-    T       *m_t;
-
-private:
     Scope m_left; //2 channels in stereo mode //put at the end, packs better in memory
     Scope m_right;
 };
 
+
+template <class S>
+class Implementation : public Base
+{
+public:
+    virtual int exec();
+
+protected:
+
+    Implementation( DataType = FFT, bool notify = false, uint fps = 0 );
+
+    virtual void render( S *surface ) = 0;
+
+    S *m_surface;
+};
+
 }
 }
+
+
 
 using amaroK::Vis::int16;
 

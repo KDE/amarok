@@ -2,10 +2,13 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#include "fht.h"
+#include "base.cpp"
+#include "sdl.cpp"
+#include "fht.cpp"
+
 #include <iostream>
 #include <math.h>
-#include "./sdl.h"
+
 
 
 using namespace amaroK::Vis;
@@ -70,7 +73,7 @@ static void HSVtoRGB( int &_r, int &_g, int &_b, float h, float s, float v ) //v
 class Sonogram : public SDL::Basic
 {
 public:
-    Sonogram() : Basic( 0/*SDL_HWSURFACE*/, PCM, false, 100 ), m_fht( 9 ), m_data( 512, 0 ) {}
+    Sonogram() : Basic( PCM, false, 100 ), m_fht( 9 ), m_data( 512, 0 ) {}
 
     virtual void render( SDL_Surface* );
 
@@ -129,5 +132,6 @@ int main()
 {
     Sonogram vis;
 
+    vis.init( 500, 256 );
     return vis.exec();
 }

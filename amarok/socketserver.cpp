@@ -11,6 +11,8 @@
 #include "socketserver.h"
 
 #include <kdebug.h>
+#include <qlistview.h>
+#include <qsocketnotifier.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/un.h>
@@ -21,6 +23,7 @@
 #ifdef AMK_NEW_VIS_SYSTEM
 
 
+static QListView *lv;
 
 //TODO allow stop/start and pause signals to be sent to registered visualisations
 //TODO build xmms wrapper
@@ -33,6 +36,9 @@
 //TODO allow visualisations to determine their own data sizes
 
 
+//#include <qwidget.h> //FIXME tmp
+//#include <qpixmap.h> //FIXME tmp
+//#include <qimage.h> //FIXME tmp
 
 Vis::SocketServer::SocketServer( QObject *parent )
   : QServerSocket( parent )
@@ -68,14 +74,31 @@ Vis::SocketServer::SocketServer( QObject *parent )
     }
 
     this->setSocket( m_sockfd );
+
+    lv = new QListView( 0 );
+    lv->setCaption( "Visualizations - amaroK" );
+    lv->show();
+
+    lv->addColumn( "Name" );
+    lv->addColumn( "Description" );
 }
 
 void
 Vis::SocketServer::newConnection( int sockfd )
 {
-    static bool b = true;
+    kdDebug() << "[Vis::Server] Connection requested: " << sockfd << endl;
 
-    char buf[16];
+    QSocketNotifier *sn = new QSocketNotifier( sockfd, QSocketNotifier::Read, this );
+
+    connect( sn, SIGNAL(activated( int )), SLOT(request( int )) );
+}
+
+void
+Vis::SocketServer::request( int sockfd )
+{
+    std::vector<float> *scope = EngineController::instance()->engine()->scope(); //FIXME hacked to give 512 values
+
+    char buf[32]; //docs should state requests can only be 32bytes at most
     int nbytes = recv( sockfd, buf, sizeof(buf) - 1, 0 );
 
     if( nbytes > 0 )
@@ -85,11 +108,6 @@ Vis::SocketServer::newConnection( int sockfd )
 
         if( result == "PCM" )
         {
-            static int max = 0;
-
-            std::vector<float> *scope = EngineController::instance()->engine()->scope(); //FIXME hacked to give 512 values
-
-            if( b ) { kdDebug() << "scope size: " << scope->size() << endl; b = false; }
             if( scope->empty() ) kdDebug() << "empty scope!\n";
             if( scope->size() < 512 ) kdDebug() << "scope too small!\n";
 
@@ -101,14 +119,7 @@ Vis::SocketServer::newConnection( int sockfd )
         }
         else if( result == "FFT" )
         {
-            static int max = 0;
-            static float fmax = 0;
-
             FHT fht( 9 ); //data set size 512
-
-            std::vector<float> *scope = EngineController::instance()->engine()->scope(); //FIXME hacked to give 512 values
-
-            if( b ) { kdDebug() << "scope size: " << scope->size() << endl; b = false; }
 
             {
                 static float max = -100;
@@ -129,8 +140,8 @@ Vis::SocketServer::newConnection( int sockfd )
 
             float *front = static_cast<float*>( &scope->front() );
 
-        fht.spectrum( front );
-        fht.scale( front, 1.0 / 64 );
+            fht.spectrum( front );
+            fht.scale( front, 1.0 / 64 );
 
             //only half the samples from the fft are useful
 
@@ -138,10 +149,14 @@ Vis::SocketServer::newConnection( int sockfd )
 
             delete scope;
         }
-    }
-    else kdDebug() << k_funcinfo << " recv error" << endl;
+        else if( result.startsWith( "REG", false ) )
+        {
 
-    ::close( sockfd );
+        }
+    }
+    else kdDebug() << "[Vis::Server] recv() error" << endl;
 }
+
+#include "socketserver.moc"
 
 #endif

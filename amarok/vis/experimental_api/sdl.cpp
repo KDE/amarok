@@ -5,37 +5,35 @@
 #include <iostream>
 #include "./sdl.h"
 
-amaroK::Vis::SDL::Basic::Basic( Uint32 sFlags, DataType dt, bool notification, uint fps )
-  : amaroK::Vis::Base<SDL_Surface>( dt, notification, fps )
-{
-    //TODO register with amaroK and open connection in ctor
+using namespace amaroK;
 
-    init( sFlags );
-}
+
+Vis::SDL::Basic::Basic( DataType dt, bool notify, uint fps )
+  : Vis::Implementation<SDL_Surface>( dt, notify, fps )
+{}
 
 void
-amaroK::Vis::SDL::Basic::init( Uint32 flags ) //virtual
+Vis::SDL::Basic::init( uint w, uint h, Uint32 flags ) //virtual
 {
     //TODO use exceptions, don't return values
     //TODO should we make the user call init() as well as exec()?
 
     if( SDL_Init( SDL_INIT_VIDEO ) == 0 )
     {
-        std::atexit( SDL_Quit );
+        std::atexit( SDL_Quit ); //will cleanup before we exit
 
-        //FIXME rename m_t to m_screen or something
-        m_t = SDL_SetVideoMode( 640, 480, 0, flags );
+        m_surface = SDL_SetVideoMode( w, h, 0, flags );
 
-        if( m_t == NULL )
+        if( m_surface == NULL )
         {
-            std::cerr << "Unable to set 640x480 video: " << SDL_GetError() << '\n';
+            std::cerr << "Unable to set video mode (" << SDL_GetError() << ")\n";
         }
     }
-    else std::cerr << "Unable to initialise SDL: " << SDL_GetError() << '\n';
+    else std::cerr << "Unable to initialise SDL (" << SDL_GetError() << ")\n";
 }
 
 void
-amaroK::Vis::SDL::Basic::drawPixel( SDL_Surface *screen, int x, int y, Uint8 R, Uint8 G, Uint8 B )
+Vis::SDL::Basic::drawPixel( SDL_Surface *screen, int x, int y, Uint8 R, Uint8 G, Uint8 B )
 {
     //TODO if you call this 640x480 times you are wasting a lot of cycles on the if blocks!
     //TODO calculate this when the screen changes in this class, then drawPixel can be much quicker
@@ -95,12 +93,12 @@ amaroK::Vis::SDL::Basic::drawPixel( SDL_Surface *screen, int x, int y, Uint8 R, 
 }
 
 
-amaroK::Vis::SDL::Convenience::Convenience( DataType dt, bool notification, uint fps )
-  : SDL::Basic( SDL_HWSURFACE|SDL_DOUBLEBUF, dt, notification, fps )
+Vis::SDL::Convenience::Convenience( DataType dt, bool notification, uint fps )
+  : SDL::Basic( dt, notification, fps )
 {}
 
 void
-amaroK::Vis::SDL::Convenience::render( SDL_Surface *screen )
+Vis::SDL::Convenience::render( SDL_Surface *screen )
 {
     if ( SDL_MUSTLOCK(screen) )
     {

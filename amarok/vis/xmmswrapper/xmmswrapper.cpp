@@ -48,6 +48,8 @@ main( int argc, char** argv )
 {
     //Hi! You can tell I haven't done any c programming in a while can't you! ;-)
 
+    //TODO fork after connection?
+
     std::string plugin;
 
     if( argc == 1 )
@@ -113,7 +115,9 @@ main( int argc, char** argv )
     int    nbytes = 0;
     const int nch = 1; //no of channels?
 
-    while( (sockfd = tryConnect()) != -1 )
+    sockfd = tryConnect();
+
+    while( (sockfd) != -1 )
     {
         gtk_main_iteration_do( FALSE );
         usleep( 20 * 1000 );
@@ -126,7 +130,7 @@ main( int argc, char** argv )
 
             send( sockfd, "PCM", 4, 0 );
             nbytes = recv( sockfd, float_data, 512*sizeof(float), 0 );
-            close( sockfd );
+
 
             //NOTE we times by 1<<14 rather than 1<<15 (maximum value of signed 16bit)
             //     this is because values of pcm data tend to range 0-2 (although there
@@ -166,7 +170,6 @@ main( int argc, char** argv )
 
             send( sockfd, "PCM", 4, 0 );
             nbytes = recv( sockfd, float_data, 512*sizeof(float), 0 );
-            close( sockfd );
 
             for( uint x = 0; x < 512; ++x )
             {
@@ -203,6 +206,8 @@ main( int argc, char** argv )
 */
         }
     }
+
+    close( sockfd );
 }
 
 int

@@ -18,10 +18,14 @@ namespace Vis {
 
 class SocketServer : public QServerSocket
 {
+Q_OBJECT
 public:
     SocketServer( QObject* );
 
     void newConnection( int );
+
+private slots:
+    void request( int );
 
 private:
     int m_sockfd;

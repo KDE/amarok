@@ -13,21 +13,21 @@ namespace Vis {
 namespace SDL {
 
 
-class Basic : public amaroK::Vis::Base<SDL_Surface>
+class Basic : public Vis::Implementation<SDL_Surface>
 {
 public:
-    Basic( Uint32 sFlags = SDL_HWSURFACE|SDL_DOUBLEBUF, DataType = FFT, bool notification = false, uint fps = 0 ); //TODO SDL init Flags
+    Basic( DataType = FFT, bool notify = false, uint fps = 0 );
 
-    virtual void init( Uint32 flags );
+    virtual void init( uint w = 640, uint h = 480, Uint32 flags = SDL_HWSURFACE|SDL_DOUBLEBUF );
 
     void drawPixel( SDL_Surface *, int x, int y, Uint8 R, Uint8 G, Uint8 B );
 
-    int width()  const { return m_t->w; } //warning do not call before exec()
-    int height() const { return m_t->h; } //warning do not call before exec()
+    int width()  const { return m_surface->w; } //warning do not call before exec()
+    int height() const { return m_surface->h; } //warning do not call before exec()
 };
 
 
-class Convenience : public SDL::Basic
+class Convenience : public Vis::SDL::Basic
 {
 public:
     Convenience( DataType = FFT, bool notification = false, uint fps = 0 );
