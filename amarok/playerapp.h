@@ -83,6 +83,7 @@ class PlayerApp : public KUniqueApplication
         bool m_optRandomMode;
         bool m_optShowTrayIcon;
         bool m_optHidePlaylistWindow;
+        bool m_optSoftwareMixerOnly;
         QString m_optDropMode;
         bool m_optXFade;
         long m_optXFadeLength;
