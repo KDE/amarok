@@ -8,6 +8,10 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+    * fix: #49 <mxcl> we force arial on users, but arial only supports latin characters! we must detect the
+               need for another font, or make it configurable (preferably we should detect this, it may be that
+	       we should just use the default system font, there is a reason users can choose a default font!)
+
     * fix: #48 <markey> why disable turbine? we likes it!
 
     * fix: #47 <markey> sorting playlist by bitrate broken
