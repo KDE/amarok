@@ -1318,10 +1318,13 @@ CollectionDB::isFileInCollection( const QString &url  )
 
 
 void
-CollectionDB::removeSong( const QString &url )
+CollectionDB::removeSongs( const KURL::List& urls )
 {
-    query( QString( "DELETE FROM tags WHERE url = '%1';" )
-        .arg( escapeString( url ) ) );
+    for( KURL::List::ConstIterator it = urls.begin(), end = urls.end(), last = urls.fromLast(); it != end; ++it )
+    {
+        query( QString( "DELETE FROM tags WHERE url = '%1';" )
+            .arg( escapeString( (*it).path() ) ) );
+    }
 }
 
 

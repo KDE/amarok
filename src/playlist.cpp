@@ -1616,10 +1616,6 @@ Playlist::removeSelectedItems() //SLOT
     //remove the items
     for( QListViewItem *item = list.first(); item; item = list.next() )
     {
-      /* FIXME  URGENT 
-        PlaylistItem* plitem = (PlaylistItem*)item;
-        CollectionDB::instance()->removeSong( plitem->url().path() );
-      */
         removeItem( (PlaylistItem*)item );
         delete item;
     }
@@ -1659,6 +1655,9 @@ Playlist::deleteSelectedFiles() //SLOT
         connect( job, SIGNAL(result( KIO::Job* )), SLOT(removeSelectedItems()) );
 
         job->setAutoErrorHandlingEnabled( false );
+
+        // we must handle delete errors somehow
+        CollectionDB::instance()->removeSongs( urls );
 
         amaroK::StatusBar::instance()->newProgressOperation( job )
                 .setDescription( i18n("Deleting files") );

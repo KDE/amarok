@@ -11,7 +11,7 @@ SHORT-TERM (URGENT):
 
   <mxcl>   On first-ever-run, if amaroK crashes building the sqlite collection, it is impossible to _ever_
            build a collection unless the user's amarokrc file is deleted! This MUST be fixed before 1.2!
-	   ::muesli:: We could just _always_ try to create the sql tables on startup. This would fail on
+           ::muesli:: We could just _always_ try to create the sql tables on startup. This would fail on
            ::muesli:: systems which already got the tables, but would fix the situation where tables are
            ::muesli:: missing, as in this situation. Just pump the debug of these calls to /dev/null.
 
