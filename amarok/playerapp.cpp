@@ -425,7 +425,7 @@ void PlayerApp::setupColors()
         QColor bg = AmarokConfig::browserBgColor();
 
         //TODO this isn't what we want yet
-        if( AmarokConfig::schemeAmarok )
+        if( AmarokConfig::schemeAmarok() )
         {
             //TODO this is fancy colouring that fits with the window better (providing base is a neutral colour, eg black)
             //FIXME make fancy/custom/kde-default options in colour select dialog
