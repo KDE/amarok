@@ -96,6 +96,7 @@ namespace Vis
 
     public slots:
         void processExited( KProcess* );
+        void receivedStdout( KProcess*, char*, int );
     };
 } //namespace VIS
 

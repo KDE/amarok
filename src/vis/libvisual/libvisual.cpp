@@ -166,12 +166,13 @@ namespace SDL
     static inline void
     set_pal()
     {
-        for( int i = 0; i < 256; i ++ )
-        {
-            SDL::pal[i].r = Vis::pal->colors[i].r;
-            SDL::pal[i].g = Vis::pal->colors[i].g;
-            SDL::pal[i].b = Vis::pal->colors[i].b;
-        }
+        if (Vis::pal)
+            for( int i = 0; i < 256; i ++ )
+            {
+                SDL::pal[i].r = Vis::pal->colors[i].r;
+                SDL::pal[i].g = Vis::pal->colors[i].g;
+                SDL::pal[i].b = Vis::pal->colors[i].b;
+            }
 
         SDL_SetColors( screen, SDL::pal, 0, 256 );
     }

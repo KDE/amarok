@@ -205,6 +205,12 @@ Vis::Selector::processExited( KProcess *proc )
 }
 
 void
+Vis::Selector::receivedStdout( KProcess *proc, char* buffer, int length )
+{
+     debug() << buffer;
+}
+
+void
 Vis::Selector::mapPID( int pid, int sockfd )
 {
     //TODO if we don't find the PID, request process plugin so we can assign the correct checkitem
@@ -294,9 +300,10 @@ Vis::Selector::Item::stateChange( bool ) //SLOT
                << text( 0 );
 
         connect( m_proc, SIGNAL(processExited( KProcess* )), listView(), SLOT(processExited( KProcess* )) );
-
+        // Shouldn't be necessary, but make visualizations work again when running with amarok binary
+        connect( m_proc, SIGNAL(receivedStdout (KProcess*, char*, int ) ), listView(), SLOT(receivedStdout (KProcess*, char*, int ) ) );
         debug() << "Starting visualization..\n";
-        if( m_proc->start() )
+        if( m_proc->start( KProcess::NotifyOnExit, KProcess::AllOutput ) )
             break;
 
         //ELSE FALL_THROUGH
