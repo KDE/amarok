@@ -24,9 +24,12 @@ email                : markey@web.de
 #include <vector>
 
 #include <qdir.h>
+#include <qdom.h>
+#include <qfile.h>
 #include <qlayout.h>
 #include <qtimer.h>
 #include <qstring.h>
+#include <qtextstream.h>
 
 #include <kapplication.h>
 #include <kartswidget.h>
@@ -195,14 +198,13 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
     Arts::connect( m_xfade, "outvalue_l", m_globalEffectStack, "inleft" );
     Arts::connect( m_xfade, "outvalue_r", m_globalEffectStack, "inright" );
             
+    loadEffects();
     startTimer( ARTS_TIMER );
 }
 
 
 ArtsEngine::~ ArtsEngine()
 {
-    kdDebug() << "ArtsEngine dtor" << endl;
-        
     delete m_pPlayObject;
     delete m_pPlayObjectXfade;
 
@@ -592,40 +594,126 @@ void ArtsEngine::timerEvent( QTimerEvent* )
 
 void ArtsEngine::loadEffects()
 {
+    kdDebug() << "[ArtsEngine::loadEffects()]" << endl;
+    
+    QDomDocument doc;
+    QFile file( kapp->dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "arts-effects.xml" );
+    
+    if ( !file.open( IO_ReadOnly ) )
+    {
+        kdDebug() << "[ArtsEngine::loadEffects()] error: !file.open()" << endl;
+        return;
+    }
+     
+    QString errorMsg;
+    int     errorLine;
+    int     errorColumn;       
+    if ( !doc.setContent( &file, &errorMsg, &errorLine, &errorColumn ) )
+    {
+        kdDebug() << "[ArtsEngine::loadEffects()] error: !doc.setContent()" << endl;
+        kdDebug() << "[ArtsEngine::loadEffects()] errorMsg   : " << errorMsg    << endl;
+        kdDebug() << "[ArtsEngine::loadEffects()] errorLine  : " << errorLine   << endl;
+        kdDebug() << "[ArtsEngine::loadEffects()] errorColumn: " << errorColumn << endl;
+        file.close();
+        return;
+    }
+            
+    QDomElement docElem = doc.documentElement();
+    
+    for ( QDomNode n = docElem.firstChild(); !n.isNull(); n = n.nextSibling() )
+    {
+        kdDebug() << "outerloop: " << n.nodeName() << endl;
+        kdDebug() << "effectname: " << n.namedItem( "effectname" ).nodeValue() << endl;
+        
+        for ( QDomNode nAttr = n.firstChild(); !nAttr.isNull(); nAttr = nAttr.nextSibling() )
+        {
+            if ( nAttr.nodeName() == "attribute" )
+            {            
+                QString name  = nAttr.namedItem( "name"  ).nodeValue();
+                QString type  = nAttr.namedItem( "type"  ).nodeValue();
+                QString value = nAttr.namedItem( "value" ).nodeValue();
+                
+                kdDebug() << "name : " << name  << endl;
+                kdDebug() << "type : " << type  << endl;
+                kdDebug() << "value: " << value << endl;
+                
+    /*            createEffect();    
+                Arts::DynamicRequest req( *it.data().effect );
+                req.method( "_get_" + def.attributes[i].name );
+                Arts::Any result;
+                result.type = def.attributes[i].type;*/
+            }
+        }
+    }    
 }
 
 
 void ArtsEngine::saveEffects()
 {
+    QDomDocument doc;
+    QDomElement root = doc.createElement( "aRts-Effects" );
+    doc.appendChild( root );
+
     for ( QMap<long, EffectContainer>::Iterator it = m_effectMap.begin(); it != m_effectMap.end(); ++it )
     {
-        Arts::InterfaceDef def = (*it.data().effect)._queryInterface( (*it.data().effect)._interfaceName() );
-        kdDebug() << "----------------------------------------" << endl;
-        kdDebug() << "Querying interface: " << (*it.data().effect)._interfaceName().c_str() << endl;
+        QDomElement tagEffect = doc.createElement( "effect" );
+        root.appendChild( tagEffect );
 
-        for ( int i = 0; i < def.attributes.size(); i++ )
+            { //effectname
+                QDomElement tag = doc.createElement( "effectname" );
+                tagEffect.appendChild( tag );
+                QDomText txt = doc.createTextNode( (*it.data().effect)._interfaceName().c_str() );
+                tag.appendChild( txt );
+            }
+                
+        Arts::InterfaceDef def = (*it.data().effect)._queryInterface( (*it.data().effect)._interfaceName() );
+
+        for ( uint i = 0; i < def.attributes.size(); i++ )
         {
-            kdDebug() << "attribute: " << def.attributes[i].name.c_str() << endl;
+            QDomElement tagAttribute = doc.createElement( "attribute" );
+            tagEffect.appendChild( tagAttribute );
             
+            { //name
+                QDomElement tag = doc.createElement( "name" );
+                tagAttribute.appendChild( tag );
+                QDomText txt = doc.createTextNode( def.attributes[i].name.c_str() );
+                tag.appendChild( txt );
+            }
+                                       
             Arts::DynamicRequest req( *it.data().effect );
             req.method( "_get_" + def.attributes[i].name );
             Arts::Any result;
             result.type = def.attributes[i].type;
-            
-            if ( req.invoke( result ) )
-            {            
-                Arts::Buffer buf;
-                result.writeType( buf );
-//                std::string str;
-//                 buf.toString( str );
-                kdDebug() <<  buf.toString("value:").c_str() << endl;
+    
+            { //type
+                QDomElement tag = doc.createElement( "type" );
+                tagAttribute.appendChild( tag );
+                QDomText txt = doc.createTextNode( def.attributes[i].type.c_str() );
+                tag.appendChild( txt );
             }
-            else 
-                kdDebug() << "request failed :(" << endl;
+                                    
+            if ( !req.invoke( result ) )
+                kdDebug() << "request failed." << endl;
+            
+            Arts::Buffer buf;
+            result.writeType( buf );
+
+            { //value
+                QDomElement tag = doc.createElement( "value" );
+                tagAttribute.appendChild( tag );
+                QDomText txt = doc.createTextNode( buf.toString( "" ).c_str() );
+                tag.appendChild( txt );
+            }
         }
-                        
         removeEffect( it.key() );
     }
+
+    QString path = kapp->dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "arts-effects.xml";
+    QFile::remove( path );
+    QFile file( path );
+    file.open( IO_ReadWrite );
+    QTextStream stream( &file );   
+    stream << doc;
 }
 
 
