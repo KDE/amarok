@@ -98,7 +98,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
 
     #ifdef AMAZON_SUPPORT
     //fetch missing covers button
-    m_fetchButton = new KPushButton( SmallIconSet("cdrom_unmount"), i18n( "Fetch missing covers" ), coverWidget );
+    m_fetchButton = new KPushButton( KGuiItem( i18n("Fetch missing covers"), "cdrom_unmount" ), coverWidget );
     connect( m_fetchButton, SIGNAL(clicked()), SLOT(fetchMissingCovers()) );
     #endif
     hbox->addWidget( m_searchEdit );
@@ -154,7 +154,6 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
 CoverManager::~CoverManager()
 {
     delete m_db;
-    delete m_timer;
 
     //save window size
     KConfig *config = kapp->config();
@@ -187,6 +186,7 @@ void CoverManager::fetchMissingCoversLoop() //SLOT
     if( m_fetchCounter < m_missingCovers.count() ) {
         //get artist and album from keyword
         QStringList values = QStringList::split( " - ", m_missingCovers[m_fetchCounter] );
+        m_counterLabel->setText( i18n( "Fetching cover for: %1" ).arg( m_missingCovers[m_fetchCounter] ) );
         m_db->fetchCover( this, values[0], values[1], true );
         m_fetchCounter++;
 
