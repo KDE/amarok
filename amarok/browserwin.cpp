@@ -142,6 +142,8 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 
     { //<StreamBrowser>
         QVBox   *vb = new QVBox( 0, "StreamBrowser" );
+        vb->setSpacing( 2 );
+        vb->setMargin( 2 );
         QWidget *b  = new QPushButton( "&Fetch Stream Information", vb );
         QObject *sb = new StreamBrowser( vb );
         connect( b, SIGNAL( clicked() ), sb, SLOT( slotUpdateStations() ) );
