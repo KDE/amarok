@@ -3,11 +3,14 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #149 being the highest available (take this one for your next bug and increase here)
+           #150 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
 
+  FIX 149<chimaera>If you select a different sink and then check/uncheck custom audio device, the sink jumps back
+                   to the last selected.
+  
   FIX 139 <markey> Find out why collection scan won't work with samba shares. Currently the scan just gets
                    stuck, hogging CPU and doing nothing useful.
   
