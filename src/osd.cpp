@@ -568,7 +568,6 @@ amaroK::OSD::applySettings()
     setScreen( AmarokConfig::osdScreen() );
     setShadow( AmarokConfig::osdDrawShadow() );
     setFont( AmarokConfig::osdFont() );
-    setText( AmarokConfig::osdText() );
     setCover( AmarokConfig::osdCover() );
 
     if( AmarokConfig::osdUseCustomColors() )
