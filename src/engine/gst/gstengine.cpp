@@ -513,6 +513,7 @@ GstEngine::play( uint offset )  //SLOT
 {
     DEBUG_BLOCK
 
+    m_eosReached = false;
     if ( !m_currentInput ) return false;
 
     gst_element_set_state( m_gst_queue, GST_STATE_PAUSED );
