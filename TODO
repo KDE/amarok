@@ -42,6 +42,9 @@ SHORT-TERM (URGENT):
 
 MID-TERM:
 
+  CHG     <markey> When building collection, use a 2-phase progressbar: count to 100 for tagreading, and
+                   then count to 100 again for database inserts.
+
   CHG     <markey> Consider following the system tray spec on http://www.freedesktop.org/Standards/systemtray-spec.
                    Apparently this makes it possible to make the tray KDE and GNOME compatible.
 
