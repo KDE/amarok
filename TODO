@@ -6,6 +6,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+          <mxcl> CollectionBrowser Toolbar is too wide for some users' usage patterns.
+
           <mxcl> playlist with files that exist that gst can't play + repeat-playlist =
                  infinite loop - presumably load() and play() return true so the controller
                  doesn't stop the playback
