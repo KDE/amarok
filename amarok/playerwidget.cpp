@@ -102,7 +102,7 @@ void AmarokSlider::mousePressEvent( QMouseEvent *e )
 // FIXME Move implementation to separate sourcefile
 AmarokSystray::AmarokSystray( PlayerWidget *child, KActionCollection *ac ) : KSystemTray( child )
 {
-    setPixmap( kapp->miniIcon() );
+    setPixmap( KSystemTray::loadIcon("amarok") );
 
     // berkus: Since it doesn't come to you well, i'll explain it here:
     // We put playlist actions last because: 1) you don't want to accidentally
