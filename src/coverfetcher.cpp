@@ -45,9 +45,13 @@ CoverFetcher::~CoverFetcher()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
-CoverFetcher::getCover( const QString &keyword, QueryMode mode, bool noedit, int size, bool albumonly )
+CoverFetcher::getCover( const QString& artist, const QString& album, QueryMode mode, bool noedit, int size, bool albumonly )
 {
-    m_keyword = keyword;
+    kdDebug() << k_funcinfo << endl;
+    m_artist = artist;
+    m_album = album;
+    if ( artist == album ) m_keyword = album;
+    else m_keyword = artist + " - " + album;
     m_noedit = noedit;
     m_size = size;
     m_albumonly = albumonly;
@@ -70,16 +74,6 @@ CoverFetcher::getCover( const QString &keyword, QueryMode mode, bool noedit, int
              this,  SLOT( xmlResult( KIO::Job* ) ) );
     connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
              this,  SLOT( xmlData( KIO::Job*, const QByteArray& ) ) );
-}
-
-
-void
-CoverFetcher::getCover( const QString& artist, const QString& album, QueryMode mode, bool noedit, int size, bool albumonly )
-{
-    kdDebug() << k_funcinfo << endl;
-    m_artist = artist;
-    m_album = album;
-    getCover( artist + " - " + album, mode, noedit, size, albumonly );
 }
 
 
@@ -181,7 +175,7 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
         kdDebug() << "[CoverFetcher] KIO Job error.\n";
 
         if ( !m_albumonly )
-            getCover( m_album, CoverFetcher::heavy, m_noedit, 1, true );
+            getCover( m_album, m_album, CoverFetcher::heavy, m_noedit, 1, true );
 
         else if ( !m_noedit ) {
             m_text = i18n( "<h3>No cover image found.</h3>"
@@ -204,7 +198,7 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
         {
             if ( m_size )
             {
-                if ( m_albumonly ) getCover( m_album, CoverFetcher::heavy, m_noedit, m_size-1, m_albumonly );
+                if ( m_albumonly ) getCover( m_album, m_album, CoverFetcher::heavy, m_noedit, m_size-1, m_albumonly );
                 else getCover( m_artist, m_album, CoverFetcher::heavy, m_noedit, m_size-1, m_albumonly );
             }
             else if ( !m_noedit )
@@ -270,7 +264,7 @@ CoverFetcher::editSearch() //SLOT
     if ( sdlg->exec() == QDialog::Accepted )
     {
         m_album = sdlg->m_searchString->text();
-        getCover( m_album, CoverFetcher::heavy );
+        getCover( m_album, m_album, CoverFetcher::heavy );
 
         return;
     }
