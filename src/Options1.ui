@@ -57,7 +57,7 @@
                         <cstring>kcfg_ShowTrayIcon</cstring>
                     </property>
                     <property name="text">
-                        <string>Show &amp;tray icon</string>
+                        <string>Show tra&amp;y icon</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Check to enable the amaroK system tray icon.</string>
@@ -115,7 +115,7 @@
                         <cstring>kcfg_ShowPlayerWindow</cstring>
                     </property>
                     <property name="text">
-                        <string>Show player window (like XMMS)</string>
+                        <string>Show player window (like &amp;XMMS)</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Check to enable a extra player window.</string>
@@ -313,7 +313,10 @@
                                         <cstring>kcfg_RecodeID3v1Tags</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>&amp;ID3v1 &amp;tags</string>
+                                        <string>ID&amp;3v1 tags</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string>Alt+3</string>
                                     </property>
                                     <property name="toolTip" stdset="0">
                                         <string>XXX</string>
