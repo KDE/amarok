@@ -211,6 +211,7 @@ class Playlist : private KListView, public EngineObserver
 
         KURL::List   m_queueList;
         bool         m_stopAfterCurrent;
+        bool         m_showHelp;
 
         //text before inline editing ( the new tag is written only if it's changed )
         QString m_editOldTag;

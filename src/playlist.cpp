@@ -166,6 +166,7 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     , m_undoDir( amaroK::saveLocation( "undo/" ) )
     , m_undoCounter( 0 )
     , m_stopAfterCurrent( false )
+    , m_showHelp( true )
     , m_editOldTag( 0 )
     , m_ac( ac ) //REMOVE
     , m_columnFraction( 13, 0 )
@@ -1054,7 +1055,7 @@ Playlist::viewportPaintEvent( QPaintEvent *e )
                 drawDropVisualizer( 0, 0, m_marker ),
                 QBrush( colorGroup().highlight().dark(), QBrush::Dense4Pattern ) );
     }
-    else if( isEmpty() ) {
+    else if( m_showHelp && isEmpty() ) {
         QPainter p( viewport() );
         QSimpleRichText t( i18n(
                 "<div align=center>"
@@ -1310,6 +1311,10 @@ Playlist::customEvent( QCustomEvent *e )
         m_redoButton->setEnabled( !m_redoList.isEmpty() );
 
         refreshNextTracks( 0 );
+
+        // Disable help if playlist is populated
+        if ( !isEmpty() )
+            m_showHelp = false;
 
         //necessary usually
         m_totalLength = 0;
