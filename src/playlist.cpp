@@ -153,6 +153,8 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     , m_marker( 0 )
     , m_firstColumn( 0 )
     , m_totalLength( 0 )
+    , m_selectCounter( 0 )
+    , m_selectLength( 0 )
     , m_undoDir( KGlobal::dirs()->saveLocation( "data", "amarok/undo/", true ) )
     , m_undoCounter( 0 )
     , m_stopAfterCurrent( false )
@@ -2084,8 +2086,7 @@ Playlist::slotSelectionChanged() //SLOT
             m_selectLength += length;
     }
 
-    if ( m_selectCounter > 1 )
-        emit itemCountChanged( childCount(), m_totalLength, m_selectCounter, m_selectLength );
+    emit itemCountChanged( childCount(), m_totalLength, m_selectCounter, m_selectLength );
 }
 
 void
