@@ -696,7 +696,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             browser->write( QStringx ( "<tr>"
                                         "<td class='rbalbum' onClick='window.location.href=\"album:%1 @@@ %2\"' height='42' valign='top'>"
                                          "<a href='fetchcover:%3 @@@ %4'><img align='left' hspace='2' src='%5'></a>"
-                                         "<a href=\"album:%6 @@@ %7\"><b>%8</b><br>%9</a>"
+                                         "<a href='album:%6 @@@ %7'><b>%8</b><br>%9</a>"
                                         "</td>"
                                        "</tr>" )
                             .args( QStringList()
@@ -742,36 +742,36 @@ void ContextBrowser::setStyleSheet()
 {
     int pxSize = fontMetrics().height() - 4;
 
-    m_styleSheet =  QString( "div { color: %1; font-size: %2px; text-decoration: none; }" )
-                    .arg( colorGroup().text().name() ).arg( pxSize );
-    m_styleSheet += QString( "td { color: %1; font-size: %2px; text-decoration: none; }" )
-                    .arg( colorGroup().text().name() ).arg( pxSize );
-    m_styleSheet += QString( ".menu { color: %1; font-weight: bold; }" )
-                    .arg( colorGroup().text().name() );
-    m_styleSheet += QString( ".song { color: %1; font-size: %2px; text-decoration: none; }" )
-                    .arg( colorGroup().text().name() ).arg( pxSize );
-    m_styleSheet += QString( ".song:hover { color: %1; background-color: %2; }" )
-                    .arg( colorGroup().highlightedText().name() ).arg( colorGroup().highlight().name() );
-    m_styleSheet += QString( ".song A { color: %1; font-size: %2px; text-decoration: none; display: block; padding: 1px 2px; }" )
-                    .arg( colorGroup().text().name() ).arg( pxSize );
-    m_styleSheet += QString( ".song A:hover { color: %1; font-size: %2px; text-decoration: none; display: block; }" )
-                    .arg( colorGroup().highlightedText().name() ).arg( pxSize );
-    m_styleSheet += QString( ".album { font-weight: bold; font-size: %1px; text-decoration: none; }" )
-                    .arg( pxSize );
-    m_styleSheet += QString( ".title { color: %1; font-size: %2px; font-weight: bold; }" )
-                    .arg( colorGroup().text().name() ).arg( pxSize + 3 );
+    const QString text = colorGroup().text().name();
+    const QString fg   = colorGroup().highlightedText().name();
+    const QString bg   = colorGroup().highlight().name();
+
+    m_styleSheet  = QString( "body { font-size: %1px; }" ).arg( pxSize );
+    m_styleSheet += QString( "body a { color: %1; }" ).arg( text );
+
+    m_styleSheet += QString( ".menu a { font-weight: bold; }" );
+
+    //used in the currentlyPlaying block
+    //m_styleSheet += QString( ".album { font-weight: bold; }" );
+
+    //header for all sections
     m_styleSheet += QString( ".head { color: %1; font-size: %2px; font-weight: bold; background-color: %3; padding: 1px 0; }" )
-                    .arg( colorGroup().highlightedText().name() ).arg( pxSize + 2 ).arg( colorGroup().highlight().name() );
-    m_styleSheet += QString( ".rbcurrent { color: %1; border: solid %2 1px; }" )
-                    .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
-    m_styleSheet += QString( ".rbalbum A { color: %1; border: solid %2 1px; text-decoration: none; }" )
-                    .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
-    m_styleSheet += QString( ".rbalbum:hover { color: %1; cursor: pointer; background-color: %2; border: solid %3 1px; }" )
-                    .arg( colorGroup().highlightedText().name() ).arg( colorGroup().highlight().name() ).arg( colorGroup().text().name() );
-    m_styleSheet += QString( ".rbcontent { border: solid %1 1px; }" )
-                    .arg( colorGroup().highlight().name() );
-    m_styleSheet += QString( ".rbcontent:hover { border: solid %1 1px; }" )
-                    .arg( colorGroup().text().name() );
+                    .arg( fg ).arg( pxSize + 2 ).arg( bg );
+
+    //rb? dunno, but this is the style for the currentlyPlaying block
+    m_styleSheet += QString( ".rbcurrent { border: solid %1 1px; }" ).arg( colorGroup().base().name() );
+
+    //this is the style for the other blocks
+    m_styleSheet += QString( ".rbcontent { border: solid %1 1px; }" ).arg( bg );
+    m_styleSheet += QString( ".rbcontent:hover { border: solid %1 1px; }" ).arg( text );
+
+    //these anchor rules are a little complex
+    m_styleSheet += QString( ".rbcontent a { text-decoration: none; }" );
+    m_styleSheet += QString( ".rbcontent .song a { display: block; padding: 1px 2px; }" );
+    m_styleSheet += QString( ".rbcontent .song a:hover { color: %1; background-color: %1; }" ).arg( fg ).arg( bg );
+
+    m_styleSheet += QString( ".rbcontent .rbalbum:hover { background-color: %1; cursor: pointer; }" ).arg( bg );
+    m_styleSheet += QString( ".rbcontent .rbalbum:hover a { color: %1; }" ).arg( fg );
 }
 
 
