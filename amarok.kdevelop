@@ -11,8 +11,8 @@
     </keywords>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <version/>
-    <description/>
+    <version></version>
+    <description></description>
     <ignoreparts/>
     <secondaryLanguages/>
   </general>
@@ -20,7 +20,7 @@
     <general>
       <mainprogram>amarok</mainprogram>
       <useconfiguration>default</useconfiguration>
-      <activetarget>amarok/amarok</activetarget>
+      <activetarget>src/konquisidebar/konqsidebar_universalamarok.la</activetarget>
       <useactivetarget>true</useactivetarget>
     </general>
     <configure>
@@ -43,7 +43,7 @@
     </compiler>
     <run>
       <mainprogram>/opt/kde3/bin/amarok</mainprogram>
-      <programargs/>
+      <programargs></programargs>
       <terminal>false</terminal>
       <autocompile>false</autocompile>
       <envvars/>
@@ -69,6 +69,7 @@
         <cflags/>
         <cxxflags/>
         <f77flags/>
+        <envvars/>
       </default>
     </configurations>
   </kdevautoproject>
@@ -109,15 +110,15 @@
   <kdevdebugger>
     <general>
       <dbgshell>/usr/bin/libtool</dbgshell>
-      <programargs/>
-      <gdbpath/>
+      <programargs></programargs>
+      <gdbpath></gdbpath>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
       <runappinappdirectory>true</runappinappdirectory>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
     </general>
     <display>
       <staticmembers>false</staticmembers>
@@ -176,4 +177,11 @@
     <recursivewhencommitremove>true</recursivewhencommitremove>
     <revertoptions>-C</revertoptions>
   </kdevcvsservice>
+  <kdevdocumentation>
+    <projectdoc>
+      <docsystem></docsystem>
+      <docurl></docurl>
+      <usermanualurl></usermanualurl>
+    </projectdoc>
+  </kdevdocumentation>
 </kdevelop>
