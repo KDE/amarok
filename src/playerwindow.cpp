@@ -722,15 +722,15 @@ NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
     m_pixmapDisabled = ie.apply( pixmap, KIconEffect::ToGray, 0.7, QColor(), true );
 
     int r = 0x20, g = 0x10, b = 0xff;
-    float value = 0.3;
+    QPixmap temp;
     // Precalculate pixmaps for "on" icon state
     for ( int i = 0; i < NUMPIXMAPS; i++ ) {
-        m_glowPixmaps.append( new QPixmap( ie.apply( pixmap, KIconEffect::Colorize, value,
+        temp = ie.apply( pixmap, KIconEffect::Colorize, 1.0, QColor( r, 0x10, 0x30 ), false );
+        m_glowPixmaps.append( new QPixmap( ie.apply( temp, KIconEffect::Colorize, 1.0,
                                                      QColor( r, g, b ), false ) ) );
         r += 14;
-        g += 7;
+        g += 2;
         b -= 0;
-        value += 0.05;
     }
     // And the the same reversed
     for ( int i = NUMPIXMAPS - 1; i > 0; i-- )
