@@ -17,9 +17,6 @@ SHORT-TERM (URGENT):
 
   ADD 180 <muesli> Show "Artist - Song" for Various Artist folder.
 
-  FIX 176 <muesli> Context sometimes still shows "Build a collection", just after the scan
-                   finished.
-
   FIX 175 <muesli> Some old versions still suffer the "fucked-up collection folder setup".
                    This causes directories to be scanned multiple times.
 
