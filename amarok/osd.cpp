@@ -142,7 +142,7 @@ void OSDWidget::showSplash( const QString& imagePath )
     {
         QImage image( imagePath );
         osdBuffer = image;
-        
+
         QBitmap bm( image.size() );
         QPainter p( &bm );
         p.drawImage( 0, 0, image.createAlphaMask() );
@@ -151,12 +151,13 @@ void OSDWidget::showSplash( const QString& imagePath )
         move( d->width()  / 2 - image.width () / 2,
               d->height() / 2 - image.height() / 2 );
         resize( osdBuffer.size() );
-    
+
         setMask( bm );
-        
+
         show();
-        raise();
-        
+        //raise();
+        repaint();
+
         // let it disappear via a QTimer
         timer->start( SPLASH_DURATION, true );
     }
