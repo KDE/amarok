@@ -64,6 +64,7 @@ class BrowserWin : public QWidget
         ExpandButton *m_pButtonSave;
 
         ExpandButton *m_pButtonUndo;
+
         ExpandButton *m_pButtonRedo;
 
         ExpandButton *m_pButtonPlay;
@@ -85,14 +86,15 @@ class BrowserWin : public QWidget
         void slotPlaylistRightButton( QListViewItem *pItem, const QPoint &rPoint );
         void slotShowInfo();
         void slotMenuPlay();
+        void slotUpdateFonts();
+
+    private slots:
         void slotKeyUp();
         void slotKeyDown();
         void slotKeyPageUp();
         void slotKeyPageDown();
         void slotKeyEnter();
         void slotKeyDelete();
-
-        void slotUpdateFonts();
 
     signals:
         void signalHide();

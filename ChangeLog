@@ -3,6 +3,7 @@ amaroK Changelog
 (c) 2002, 2003 by Mark Kretschmann and the amaroK team. GPL License.
 
 
+  * add: undo and redo playlist actions
   * fix: rewritten config dialog and moved into separate file
   * add: started configurable colors
   * change: spectrum analyser bars now have dynamics, ie. they move smoothly between values

@@ -1,9 +1,9 @@
 /***************************************************************************
-                        playlistwidget.cpp  -  description
-                           -------------------
-  begin                : Don Dez 5 2002
-  copyright            : (C) 2002 by Mark Kretschmann
-  email                :
+                       playlistwidget.cpp  -  description
+                          -------------------
+ begin                : Don Dez 5 2002
+ copyright            : (C) 2002 by Mark Kretschmann
+ email                :
 ***************************************************************************/
 
 /***************************************************************************
@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "playlistwidget.h"
-
 #include "playerapp.h"
 #include "browserwin.h"
 #include "browserwidget.h"
@@ -27,7 +26,9 @@
 #include <qbrush.h>
 #include <qcolor.h>
 #include <qcursor.h>
+#include <qdir.h>
 #include <qevent.h>
+#include <qfile.h>
 #include <qheader.h>
 #include <qmessagebox.h>
 #include <qpainter.h>
@@ -48,8 +49,11 @@
 #include <klistview.h>
 #include <klocale.h>
 #include <krootpixmap.h>
+#include <kstandarddirs.h>
 #include <kurl.h>
 #include <kurldrag.h>
+
+#include <kio/netaccess.h>
 
 // CLASS PlaylistWidget --------------------------------------------------------
 
@@ -57,19 +61,19 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) :
         KListView( parent, name ),
         m_rootPixmap( viewport() ),
         m_GlowCount( 100 ),
-        m_GlowAdd( 5 )
+        m_GlowAdd( 5 ),
+        m_undoCounter( 0 )
 {
-    kdDebug(DA_PLAYLIST) << "PlaylistWidget::PlaylistWidget()" << endl;
+    kdDebug( DA_PLAYLIST ) << "PlaylistWidget::PlaylistWidget()" << endl;
 
     setName( "PlaylistWidget" );
     setFocusPolicy( QWidget::ClickFocus );
     setShowSortIndicator( true );
     setDropVisualizer( false );      // we handle the drawing for ourselves
     setDropVisualizerWidth( 3 );
-//    setStaticBackground( true );
-
-//     m_rootPixmap.setFadeEffect( 0.5, Qt::black );
-//     m_rootPixmap.start();
+    //    setStaticBackground( true );
+    //     m_rootPixmap.setFadeEffect( 0.5, Qt::black );
+    //     m_rootPixmap.start();
 
     addColumn( i18n( "Trackname" ), 280 );
     addColumn( i18n( "Title" ), 200 );
@@ -82,7 +86,6 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) :
 
     setSorting( -1 );
     connect( header(), SIGNAL( clicked( int ) ), this, SLOT( slotHeaderClicked( int ) ) );
-
     connect( this, SIGNAL( contentsMoving( int, int ) ), this, SLOT( slotEraseMarker() ) );
 
     setCurrentTrack( NULL );
@@ -94,6 +97,8 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) :
 
     m_pDirLister = new KDirLister();
     m_pDirLister->setAutoUpdate( false );
+
+    initUndo();
 }
 
 
@@ -117,7 +122,7 @@ void PlaylistWidget::contentsDragMoveEvent( QDragMoveEvent* e )
     {
         slotEraseMarker();
         m_marker = tmpRect;
-        viewport()->repaint( tmpRect );
+        viewport() ->repaint( tmpRect );
     }
 }
 
@@ -150,14 +155,14 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
 
         KURL::List urlList;
 
-        if ( e->source() == NULL )                      // dragging from outside amarok
+        if ( e->source() == NULL )                       // dragging from outside amarok
         {
-            kdDebug(DA_PLAYLIST) << "dropped item from outside amaroK" << endl;
+            kdDebug( DA_PLAYLIST ) << "dropped item from outside amaroK" << endl;
 
             if ( !KURLDrag::decode( e, urlList ) || urlList.isEmpty() )
                 return ;
 
-            kdDebug(DA_PLAYLIST) << "dropped item KURL parsed ok" << endl;
+            kdDebug( DA_PLAYLIST ) << "dropped item KURL parsed ok" << endl;
 
             m_pDropCurrentItem = static_cast<PlaylistItem*>( after );
             playlistDrop( urlList );
@@ -193,6 +198,7 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
             playlistDrop( urlList );
         }
     }
+    writeUndo();
 }
 
 
@@ -202,7 +208,7 @@ void PlaylistWidget::playlistDrop( KURL::List urlList )
 
     for ( KURL::List::Iterator it = urlList.begin(); it != urlList.end(); it++ )
     {
-//         kdDebug(DA_PLAYLIST) << "dropping item " << (*it).prettyURL() << " to playlist" << endl;
+        //         kdDebug(DA_PLAYLIST) << "dropping item " << (*it).prettyURL() << " to playlist" << endl;
 
         m_pDirLister->openURL( ( *it ).upURL(), false, false );   // URL; keep = true, reload = true
         while ( !m_pDirLister->isFinished() )
@@ -211,14 +217,14 @@ void PlaylistWidget::playlistDrop( KURL::List urlList )
         KFileItem *fileItem = m_pDirLister->findByURL( *it );
 
         if ( !fileItem )
-            kdDebug(DA_PLAYLIST) << "fileItem is 0!" << endl;
+            kdDebug( DA_PLAYLIST ) << "fileItem is 0!" << endl;
 
         if ( fileItem && fileItem->isDir() )
         {
             if ( fileItem->isLink() && !pApp->m_optFollowSymlinks && m_dropRecursionCounter >= 2 )
                 continue;
 
-            if ( m_dropRecursionCounter >= 50 )       //no infinite loops, please
+            if ( m_dropRecursionCounter >= 50 )        //no infinite loops, please
                 continue;
 
             if ( !m_dropRecursively && m_dropRecursionCounter >= 2 )
@@ -235,7 +241,7 @@ void PlaylistWidget::playlistDrop( KURL::List urlList )
             while ( *it )
             {
                 if ( ( ( *it ) ->url().path() != "." ) && ( ( *it ) ->url().path() != ".." ) )
-                    dirList.append( ( *it )->url() );
+                    dirList.append( ( *it ) ->url() );
                 ++it;
             }
 
@@ -243,7 +249,7 @@ void PlaylistWidget::playlistDrop( KURL::List urlList )
         }
         else
         {
-//            kdDebug(DA_PLAYLIST) << "dropping item " << (*it).prettyURL() << " to playlist [2]" << endl;
+            //            kdDebug(DA_PLAYLIST) << "dropping item " << (*it).prettyURL() << " to playlist [2]" << endl;
             if ( pApp->m_pBrowserWin->isFileValid( *it ) )
             {
                 m_pDropCurrentItem = addItem( m_pDropCurrentItem, *it );
@@ -251,7 +257,7 @@ void PlaylistWidget::playlistDrop( KURL::List urlList )
             else
             {
                 if ( m_dropRecursionCounter <= 1 )
-                    pApp->loadPlaylist( *it, m_pDropCurrentItem );
+                    loadPlaylist( *it, m_pDropCurrentItem );
             }
         }
     }
@@ -343,6 +349,104 @@ PlaylistItem* PlaylistWidget::addItem( PlaylistItem *after, KURL url )
 }
 
 
+bool PlaylistWidget::loadPlaylist( KURL url, QListViewItem *destination )
+{
+    bool success = loadPlaylist_( url, destination );
+    writeUndo();
+
+    return success;
+}
+
+
+bool PlaylistWidget::loadPlaylist_( KURL url, QListViewItem *destination )
+{
+    bool success = false;
+    QString tmpFile;
+    PlaylistItem *pCurr = static_cast<PlaylistItem*>( destination );
+
+    if ( url.path().lower().endsWith( ".m3u" ) )
+    {
+        if ( url.isLocalFile() )
+            tmpFile = url.path();
+        else
+            KIO::NetAccess::download( url, tmpFile );
+
+        QFile file( tmpFile );
+        if ( file.open( IO_ReadOnly ) )
+        {
+            QString str;
+            QTextStream stream( &file );
+
+            while ( ( str = stream.readLine() ) != QString::null )
+            {
+                if ( !str.startsWith( "#" ) )
+                {
+                    pCurr = addItem( pCurr, str );
+                }
+            }
+            file.close();
+            success = true;
+        }
+    }
+    if ( url.path().lower().endsWith( ".pls" ) )
+    {
+        if ( url.isLocalFile() )
+            tmpFile = url.path();
+        else
+            KIO::NetAccess::download( url, tmpFile );
+
+        QFile file( tmpFile );
+        if ( file.open( IO_ReadOnly ) )
+        {
+            QString str;
+            QTextStream stream( &file );
+
+            while ( ( str = stream.readLine() ) != QString::null )
+            {
+                if ( str.startsWith( "File" ) )
+                {
+                    pCurr = addItem( pCurr, str.section( "=", -1 ) );
+                    str = stream.readLine();
+
+                    if ( str.startsWith( "Title" ) )
+                        pCurr->setText( 0, str.section( "=", -1 ) );
+                }
+            }
+            file.close();
+            success = true;
+        }
+    }
+    KIO::NetAccess::removeTempFile( tmpFile );
+    return success;
+}
+
+
+void PlaylistWidget::saveM3u( QString fileName )
+{
+    QFile file( fileName );
+
+    if ( !file.open( IO_WriteOnly ) )
+        return ;
+
+    PlaylistItem* item = static_cast<PlaylistItem*>( firstChild() );
+    QTextStream stream( &file );
+    stream << "#EXTM3U\n";
+
+    while ( item != NULL )
+    {
+        if ( item->url().protocol() == "file" )
+            stream << item->url().path();
+        else
+            stream << item->url().url();
+
+        stream << "\n";
+        item = static_cast<PlaylistItem*>( item->nextSibling() );
+    }
+
+    file.close();
+}
+
+
 // SLOTS ----------------------------------------------
 
 void PlaylistWidget::slotGlowTimer()
@@ -374,7 +478,7 @@ void PlaylistWidget::slotGlowTimer()
 void PlaylistWidget::slotSetRecursive()
 {
     m_dropRecursively = true;
-    kdDebug(DA_PLAYLIST) << "slotSetRecursive()" << endl;
+    kdDebug( DA_PLAYLIST ) << "slotSetRecursive()" << endl;
 }
 
 
@@ -441,6 +545,99 @@ void PlaylistWidget::slotEraseMarker()
         m_marker = QRect();
         viewport() ->repaint( rect, true );
     }
+}
+
+
+// UNDO ==========================================================
+
+void PlaylistWidget::initUndo()
+{
+    // create undo buffer directory
+    m_undoDir.setPath( kapp->dirs()->saveLocation( "data", kapp->instanceName() + "/" ) );
+
+    if ( !m_undoDir.exists( "undo", false ) )
+        m_undoDir.mkdir( "undo", false );
+
+    m_undoDir.cd( "undo" );
+
+    // clean directory
+    QStringList dirList = m_undoDir.entryList();
+    for ( QStringList::Iterator it = dirList.begin(); it != dirList.end(); ++it )
+        m_undoDir.remove( *it );
+}
+
+
+void PlaylistWidget::writeUndo()
+{
+    QString fileName;
+    m_undoCounter %= pApp->m_optUndoLevels;
+    fileName.setNum( m_undoCounter++ );
+    fileName.prepend( m_undoDir.absPath() + "/" );
+    fileName += ".m3u";
+
+    if ( m_undoList.count() >= pApp->m_optUndoLevels )
+    {
+        m_undoDir.remove( m_undoList.first() );
+        m_undoList.pop_front();
+    }
+
+    saveM3u( fileName );
+    m_undoList.append( fileName );
+    m_redoList.clear();
+
+    emit sigUndoState( true );
+    emit sigRedoState( false );
+}
+
+
+
+bool PlaylistWidget::canUndo()
+{
+    if ( m_undoList.isEmpty() )
+        return false;
+    else
+        return true;
+}
+
+
+bool PlaylistWidget::canRedo()
+{
+    if ( m_redoList.isEmpty() )
+        return false;
+    else
+        return true;
+}
+
+
+void PlaylistWidget::doUndo()
+{
+    if ( canUndo() )
+    {
+        m_redoList.append( m_undoList.last() );
+        m_undoList.pop_back();
+
+        clear();
+        loadPlaylist_( m_undoList.last(), 0 );
+    }
+
+    emit sigUndoState( canUndo() );
+    emit sigRedoState( canRedo() );
+}
+
+
+void PlaylistWidget::doRedo()
+{
+    if ( canRedo() )
+    {
+        m_undoList.append( m_redoList.last() );
+        m_redoList.pop_back();
+
+        clear();
+        loadPlaylist_( m_undoList.last(), 0 );
+    }
+
+    emit sigUndoState( canUndo() );
+    emit sigRedoState( canRedo() );
 }
 
 

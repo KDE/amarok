@@ -32,7 +32,6 @@
 #include <qpoint.h>
 #include <qpointarray.h>
 #include <qptrlist.h>
-#include <qptrlist.h>
 #include <qstring.h>
 #include <qtimer.h>
 #include <qwidget.h>
@@ -235,7 +234,7 @@ void ExpandButton::drawButtonLabel( QPainter *p )
 
    if ( !m_ButtonList.isEmpty() )
    {
-      QCOORD size = KMIN( width(), height() ) / 3;
+      QCOORD size = KMIN( width(), height() ) / 4;
       QCOORD minadj = KMAX( size/3, 5 );
 
       QPointArray pa( 3 );

@@ -11,14 +11,14 @@ EXTRA_DIST = browserwidget.h browserwin.h \
 
 bin_PROGRAMS = amarok
 
-amarok_SOURCES = main.cpp viswidget.cpp playlistwidget.cpp 	playlistitem.cpp playerwidget.cpp playerapp.cpp 	Options1.ui Options2.ui Options3.ui expandbutton.cpp effectwidget.cpp 	browserwin.cpp browserwidget.cpp amarokdcopiface.skel configdlg.cpp
+amarok_SOURCES = main.cpp viswidget.cpp playlistwidget.cpp playlistitem.cpp playerwidget.cpp playerapp.cpp Options1.ui Options2.ui Options3.ui expandbutton.cpp effectwidget.cpp browserwin.cpp browserwidget.cpp amarokdcopiface.skel configdlg.cpp
 amarok_LDADD = ./amarokarts/libamarokarts.la -lqtmcop -lkmedia2_idl \
 	-lartsflow -lsoundserver_idl -lartskde -lartsgui -lartsgui_kde \
 	-lartsmodules -ltag $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE)
 # $(LIBSOCKET)
 amarok_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
-noinst_HEADERS = Options1.h Options2.h Options3.h browserwidget.h browserwin.h 	effectwidget.h expandbutton.h playerapp.h 	playerwidget.h playlistitem.h playlistwidget.h	viswidget.h configdlg.h
+noinst_HEADERS = Options1.h Options2.h Options3.h browserwidget.h browserwin.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h viswidget.h configdlg.h
 
 install-data-local:
 	$(mkinstalldirs) $(kde_icondir)/locolor/32x32/apps/

@@ -58,8 +58,6 @@ class PlayerApp : public KUniqueApplication
         virtual ~PlayerApp();
 
         virtual int newInstance();
-        bool loadPlaylist( KURL url, QListViewItem *destination );
-        void saveM3u( QString fileName );
         bool queryClose();
 
         void restore();
@@ -94,6 +92,7 @@ class PlayerApp : public KUniqueApplication
         long m_optXFadeLength;
         QColor m_optBrowserFgColor;
         QColor m_optBrowserBgColor;
+        unsigned int m_optUndoLevels;
         // </option attributes>
 
         int m_Volume;

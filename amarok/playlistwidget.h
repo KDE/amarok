@@ -18,6 +18,9 @@
 #ifndef PLAYLISTWIDGET_H
 #define PLAYLISTWIDGET_H
 
+#include <qdir.h>
+#include <qstringlist.h>
+
 #include <klistview.h>
 #include <krootpixmap.h>
 #include <kurl.h>
@@ -29,14 +32,15 @@ class QDragLeaveEvent;
 class QDragMoveEvent;
 class QDropEvent;
 class QFocusEvent;
+class QListViewItem;
 class QPaintEvent;
 class QPoint;
 class QRect;
 class QString;
-class QStringList;
 class QTimer;
 
 class KDirLister;
+class KURL;
 
 class PlayerApp;
 extern PlayerApp *pApp;
@@ -56,6 +60,15 @@ class PlaylistWidget : public KListView
         void triggerSignalPlay();
         PlaylistItem* addItem( PlaylistItem *after, KURL url );
         void contentsDropEvent( QDropEvent* e);
+        bool loadPlaylist( KURL url, QListViewItem *destination );
+        void saveM3u( QString fileName );
+
+        void initUndo();
+        void writeUndo();
+        bool canUndo();
+        bool canRedo();
+        void doUndo();
+        void doRedo();
 
 // ATTRIBUTES ------
         KRootPixmap m_rootPixmap;
@@ -70,6 +83,8 @@ class PlaylistWidget : public KListView
     signals:
         void signalJump();
         void signalPlay();
+        void sigUndoState( bool );
+        void sigRedoState( bool );
 
     private:
         void contentsDragMoveEvent( QDragMoveEvent* e );
@@ -80,6 +95,7 @@ class PlaylistWidget : public KListView
         void playlistDrop( KURL::List urlList );
         PlaylistItem* playlistInsertItem( KURL srcUrl, PlaylistItem* dstItem );
         PlaylistItem* playlistInsertDir( KURL srcUrl, PlaylistItem* dstItem );
+        bool loadPlaylist_( KURL url, QListViewItem *destination );
 
 // ATTRIBUTES ------
         KDirLister *m_pDirLister;
@@ -94,5 +110,10 @@ class PlaylistWidget : public KListView
         QColor m_GlowColor;
         QListViewItem *m_pCurrentTrack;
         QRect m_marker;
+
+        QDir m_undoDir;
+        QStringList m_undoList;
+        QStringList m_redoList;
+        unsigned int m_undoCounter;
 };
 #endif

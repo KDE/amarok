@@ -86,6 +86,12 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
     connect( m_pPlaylistWidget, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this, SLOT( slotPlaylistRightButton( QListViewItem*, const QPoint& ) ) );
 
+    connect( m_pPlaylistWidget, SIGNAL( sigUndoState( bool ) ),
+             m_pButtonUndo, SLOT( setEnabled( bool ) ) );
+
+    connect( m_pPlaylistWidget, SIGNAL( sigRedoState( bool ) ),
+             m_pButtonRedo, SLOT( setEnabled( bool ) ) );
+
     connect( m_pButtonShuffle, SIGNAL( clicked() ),
              this, SLOT( slotShufflePlaylist() ) );
 
@@ -111,7 +117,9 @@ void BrowserWin::initChildren()
 
     m_pButtonUndo = new ExpandButton( i18n("Undo"), this );
     QToolTip::add( m_pButtonUndo, i18n("Keep button pressed for sub-menu") );
-    m_pButtonRedo = new ExpandButton( i18n("Redo"), m_pButtonUndo );
+
+    m_pButtonRedo = new ExpandButton( i18n("Redo"), this );
+    QToolTip::add( m_pButtonRedo, i18n("Keep button pressed for sub-menu") );
 
     m_pButtonPlay = new ExpandButton( i18n("Play"), this );
     QToolTip::add( m_pButtonPlay, i18n("Keep button pressed for sub-menu") );
@@ -169,6 +177,7 @@ void BrowserWin::initChildren()
     layH->addWidget( m_pButtonAdd );
     layH->addWidget( m_pButtonClear );
     layH->addWidget( m_pButtonUndo );
+    layH->addWidget( m_pButtonRedo );
     layH->addWidget( m_pButtonPlay );
 }
 
@@ -258,6 +267,8 @@ void BrowserWin::slotBrowserDrop()
         if ( item1->isSelected() )
             delete item1;
     }
+
+    m_pPlaylistWidget->writeUndo();
 }
 
 
@@ -291,8 +302,8 @@ void BrowserWin::slotPlaylistRightButton( QListViewItem * /*pItem*/, const QPoin
     if ( !m_pPlaylistWidget->currentItem() )
         popup.setItemEnabled( item1, false );
 
-    /*int item2 = */popup.insertItem(  i18n("Play Track"),  this,  SLOT(  slotMenuPlay()  )  );
-    /*int item3 = */popup.insertItem(  i18n("Remove Selected"),  this,  SLOT(  slotBrowserDrop()  )  );
+    popup.insertItem(  i18n("Play Track"),  this,  SLOT(  slotMenuPlay()  )  );
+    popup.insertItem(  i18n("Remove Selected"),  this,  SLOT(  slotBrowserDrop()  )  );
 
     popup.exec( rPoint );
 }

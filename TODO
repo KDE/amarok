@@ -29,13 +29,13 @@ SHORT-TERM:
 
 MID-TERM:
 
+    * add: "add item"-dialog should support multiple selections
+
     * add: option for forcing software mixing
 
     * add: option to add dirs sorted automatically
 
     * add: playmode indication button in main widget (repeat track/pl/shuffle), clickable
-
-    * add: "undo" button to undo changes in playlist
 
     * fix: honor KDE single/double-click setting in BrowserWin
 

@@ -54,8 +54,6 @@ email                :
 #include <kurlrequester.h>
 #include <kurlrequesterdlg.h>
 
-#include <kio/netaccess.h>
-
 #include <arts/artsflow.h>
 #include <arts/artskde.h>
 #include <arts/artsmodules.h>
@@ -177,7 +175,7 @@ int PlayerApp::newInstance()
     if ( !playlistUrl.isEmpty() )             //playlist
     {
         slotClearPlaylist();
-        loadPlaylist( KCmdLineArgs::makeURL( playlistUrl ).path(), 0 );
+        m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( KCmdLineArgs::makeURL( playlistUrl ).path(), 0 );
     }
 
     if ( args->count() > 0 )
@@ -186,7 +184,8 @@ int PlayerApp::newInstance()
         {
             for ( int i = 0; i < args->count(); i++ )
             {
-                if ( !loadPlaylist( args->url( i ), m_pBrowserWin->m_pPlaylistWidget->lastItem() ) )
+                if ( !m_pBrowserWin->m_pPlaylistWidget->
+                     loadPlaylist( args->url( i ), m_pBrowserWin->m_pPlaylistWidget->lastItem() ) )
                 {
                     if ( m_pBrowserWin->isFileValid( args->url( i ) ) )
                         m_pBrowserWin->m_pPlaylistWidget->addItem( ( PlaylistItem* ) 1, args->url( i ) );
@@ -199,7 +198,7 @@ int PlayerApp::newInstance()
 
             for ( int i = 0; i < args->count(); i++ )
             {
-                if ( !loadPlaylist( args->url( i ), 0 ) )
+                if ( !m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( args->url( i ), 0 ) )
                 {
                     if ( m_pBrowserWin->isFileValid( args->url( i ) ) )
                         m_pBrowserWin->m_pPlaylistWidget->addItem( 0, args->url( i ) );
@@ -565,95 +564,6 @@ void PlayerApp::initBrowserWin()
 
 // METHODS --------------------------------------------------------------------------
 
-bool PlayerApp::loadPlaylist( KURL url, QListViewItem *destination )
-{
-    bool success = false;
-    QString tmpFile;
-    PlaylistItem *pCurr = static_cast<PlaylistItem*>( destination );
-
-    if ( url.path().lower().endsWith( ".m3u" ) )
-    {
-        if ( url.isLocalFile() )
-            tmpFile = url.path();
-        else
-            KIO::NetAccess::download( url, tmpFile );
-
-        QFile file( tmpFile );
-        if ( file.open( IO_ReadOnly ) )
-        {
-            QString str;
-            QTextStream stream( &file );
-
-            while ( ( str = stream.readLine() ) != QString::null )
-            {
-                if ( !str.startsWith( "#" ) )
-                {
-                    pCurr = m_pBrowserWin->m_pPlaylistWidget->addItem( pCurr, str );
-                }
-            }
-            file.close();
-            success = true;
-        }
-    }
-    if ( url.path().lower().endsWith( ".pls" ) )
-    {
-        if ( url.isLocalFile() )
-            tmpFile = url.path();
-        else
-            KIO::NetAccess::download( url, tmpFile );
-
-        QFile file( tmpFile );
-        if ( file.open( IO_ReadOnly ) )
-        {
-            QString str;
-            QTextStream stream( &file );
-
-            while ( ( str = stream.readLine() ) != QString::null )
-            {
-                if ( str.startsWith( "File" ) )
-                {
-                    pCurr = m_pBrowserWin->m_pPlaylistWidget->addItem( pCurr, str.section( "=", -1 ) );
-                    str = stream.readLine();
-
-                    if ( str.startsWith( "Title" ) )
-                        pCurr->setText( 0, str.section( "=", -1 ) );
-                }
-            }
-            file.close();
-            success = true;
-        }
-    }
-    KIO::NetAccess::removeTempFile( tmpFile );
-    return success;
-}
-
-
-void PlayerApp::saveM3u( QString fileName )
-{
-    QFile file( fileName );
-
-    if ( !file.open( IO_WriteOnly ) )
-        return ;
-
-    PlaylistItem* item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->firstChild() );
-    QTextStream stream( &file );
-    stream << "#EXTM3U\n";
-
-    while ( item != NULL )
-    {
-        if ( item->url().protocol() == "file" )
-            stream << item->url().path();
-        else
-            stream << item->url().url();
-
-        stream << "\n";
-        item = static_cast<PlaylistItem*>( item->nextSibling() );
-    }
-
-    file.close();
-}
-
-
 QString PlayerApp::convertDigit( const long &digit )
 {
     QString str, str1;
@@ -699,6 +609,7 @@ void PlayerApp::saveConfig()
     m_pConfig->writeEntry( "Hide Playlist Window", m_optHidePlaylistWindow );
     m_pConfig->writeEntry( "BrowserFgColor", m_optBrowserFgColor );
     m_pConfig->writeEntry( "BrowserBgColor", m_optBrowserBgColor );
+    m_pConfig->writeEntry( "Undo Levels", m_optUndoLevels );
 
     //store current item
     PlaylistItem *item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
@@ -710,7 +621,8 @@ void PlayerApp::saveConfig()
             m_pConfig->writeEntry( "CurrentSelection", item->url().url() );
     }
 
-    saveM3u( kapp->dirs() ->saveLocation( "data", kapp->instanceName() + "/" ) + "current.m3u" );
+    m_pBrowserWin->m_pPlaylistWidget->saveM3u( kapp->dirs() ->saveLocation(
+        "data", kapp->instanceName() + "/" ) + "current.m3u" );
 }
 
 
@@ -751,6 +663,7 @@ void PlayerApp::readConfig()
     m_pBrowserWin->m_pBrowserWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
     m_pBrowserWin->m_pPlaylistWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
     m_pBrowserWin->update();
+    m_optUndoLevels = m_pConfig->readUnsignedNumEntry( "Undo Levels", 30 );
 
     m_Volume = m_pConfig->readNumEntry( "Master Volume", 50 );
     slotVolumeChanged( m_Volume );
@@ -773,7 +686,8 @@ void PlayerApp::readConfig()
     }
 
     slotClearPlaylist();
-    loadPlaylist( kapp->dirs() ->saveLocation( "data", kapp->instanceName() + "/" ) + "current.m3u", 0 );
+    m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( kapp->dirs()->saveLocation(
+            "data", kapp->instanceName() + "/" ) + "current.m3u", 0 );
 
     KURL currentlyPlaying = m_pConfig->readEntry( "CurrentSelection" );
 
@@ -1188,7 +1102,7 @@ void PlayerApp::slotSavePlaylist()
         if ( path.right( 4 ) != ".m3u" )
             path += ".m3u";
 
-        saveM3u( path );
+        m_pBrowserWin->m_pPlaylistWidget->saveM3u( path );
     }
 }
 
@@ -1215,15 +1129,15 @@ void PlayerApp::slotClearPlaylistAsk()
 
 void PlayerApp::slotUndoPlaylist()
 {
-    kdDebug(DA_COMMON) << "PlayerApp::slotUndoPlaylist()" << endl;
-    KMessageBox::sorry( 0, "Not yet implemented. /me gives user a chocolate cookie." );
+//    kdDebug(DA_COMMON) << "PlayerApp::slotUndoPlaylist()" << endl;
+    m_pBrowserWin->m_pPlaylistWidget->doUndo();
 }
 
 
 void PlayerApp::slotRedoPlaylist()
 {
-    kdDebug(DA_COMMON) << "PlayerApp::slotRedoPlaylist()" << endl;
-    KMessageBox::sorry( 0, "Not yet implemented. /me gives user a chocolate cookie." );
+//    kdDebug(DA_COMMON) << "PlayerApp::slotRedoPlaylist()" << endl;
+    m_pBrowserWin->m_pPlaylistWidget->doRedo();
 }
 
 
@@ -1238,7 +1152,7 @@ void PlayerApp::slotAddLocation()
 
     if ( !url.isEmpty() && url.isValid() )
     {
-        if ( !loadPlaylist( url, 0 ) )
+        if ( !m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( url, 0 ) )
         {
             if ( m_pBrowserWin->isFileValid( url ) )
                 new PlaylistItem( m_pBrowserWin->m_pPlaylistWidget, url );
