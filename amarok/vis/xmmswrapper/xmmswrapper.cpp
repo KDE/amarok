@@ -125,7 +125,6 @@ main( int argc, char** argv ) {
             send( sockfd, "PCM", 4, 0 );
             nbytes = recv( sockfd, float_data, 512 * sizeof( float ), 0 );
 
-
             //NOTE we times by 1<<14 rather than 1<<15 (maximum value of signed 16bit)
             //     this is because values of pcm data tend to range 0-2 (although there
             //     is no theoretical maximum.
@@ -223,12 +222,12 @@ tryConnect() {
 }
 
 
-
 XmmsWrapper::XmmsWrapper( const std::string &plugin ) {
     std::cout << "[amK] loading xmms plugin: " << plugin << '\n';
 
     std::string
     path = XMMS_PLUGIN_PATH;
+    path += "/";
     path += plugin;
 
     { //<load plugin>
@@ -264,8 +263,6 @@ XmmsWrapper::~XmmsWrapper() {
 
     std::cout << "[amK] ~\n";
 }
-
-
 
 
 
@@ -312,6 +309,7 @@ static void calc_freq( gint16 *dest, gint16 *src ) {
     */
 }
 
+
 static void calc_mono_freq( gint16 dest[ 2 ][ 256 ], gint16 src[ 2 ][ 512 ], gint nch ) {
     /* FIXME
             gint i;
@@ -332,6 +330,7 @@ static void calc_mono_freq( gint16 dest[ 2 ][ 256 ], gint16 src[ 2 ][ 512 ], gin
             }
     */
 }
+
 
 static void calc_stereo_freq( gint16 dest[ 2 ][ 256 ], gint16 src[ 2 ][ 512 ], gint nch ) {
     /*
