@@ -37,10 +37,12 @@
     #include "xmasdrug.h"
 #endif
 
-//separate from analyzerbase.cpp to save compile time
-//sorry if this isn't to your liking..
+#include <qlabel.h>
+#include <klocale.h>
 
-//const
+//separate from analyzerbase.cpp to save compile time
+
+
 QWidget *Analyzer::Factory::createAnalyzer( QWidget *parent )
 {
     QWidget *analyzer = 0;
@@ -56,22 +58,26 @@ QWidget *Analyzer::Factory::createAnalyzer( QWidget *parent )
     case 3:
         analyzer = new TurbineAnalyzer( parent );
         break;
-#ifdef HAVE_QGLWIDGET
     case 4:
+        analyzer = new QLabel( i18n( "Click for Analyzers" ), parent ); //blank analzyer to satisfy Grue
+        static_cast<QLabel *>(analyzer)->setAlignment( Qt::AlignCenter );
+        break;
+#ifdef HAVE_QGLWIDGET
+    case 5:
         analyzer = new GLAnalyzer( parent );
         break;
-    case 5:
+    case 6:
         analyzer = new GLAnalyzer2( parent );
         break;
 #endif
 #ifndef AMAROK_RELEASE
-    case 6:
+    case 7:
         analyzer = new XmasAnalyzer( parent );
         break;
-    case 7:
+    case 8:
         analyzer = new BlockAnalyzer( parent );
         break;
-    case 8:
+    case 9:
         analyzer = new BarAnalyzer2( parent );
         break;
 //    case 10:
