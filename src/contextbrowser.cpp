@@ -995,6 +995,9 @@ ContextBrowser::lyricsData( KIO::Job*, const QByteArray& data ) //SLOT
 void
 ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
 {
+    if ( !( m_tabBar->keyboardFocusTab() == m_tabLyrics ) )
+        return;
+
     if ( !job->error() == 0 ) {
         kdWarning() << "[LyricsFetcher] KIO error! errno: " << job->error() << endl;
         return;
