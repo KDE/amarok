@@ -258,7 +258,7 @@ void ContextBrowser::paletteChange( const QPalette& pal )
 void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& point )
 {
     KURL url( urlString );
-
+    
     if ( url.protocol() == "fetchcover" )
     {
         QStringList info = QStringList::split( " @@@ ", url.path() );
@@ -316,22 +316,21 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         enum menuIds { APPEND, ASNEXT, MAKE, BURN_DATACD, BURN_AUDIOCD };
 
         KPopupMenu menu( this );
-        menu.insertTitle( i18n( "Track / Album" ) );
+        menu.insertTitle( i18n( "Track" ) );
         menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "Append to Playlist" ), APPEND );
         //menu.setItemEnabled( APPEND );
         menu.insertItem( SmallIcon( "next" ), i18n( "Queue after Current Track" ), ASNEXT );
         menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "Make playlist" ), MAKE );
         if( K3bExporter::isAvailable() ) {
             menu.insertSeparator();
-            menu.insertItem( i18n( "Burn to CD as data" ), BURN_DATACD );
-            menu.insertItem( i18n( "Burn to CD as audio" ), BURN_AUDIOCD );
+            menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n( "Burn to CD as data" ), BURN_DATACD );
+            menu.insertItem( SmallIcon( "cdaudio_unmount" ), i18n( "Burn to CD as audio" ), BURN_AUDIOCD );
         }
         int id = menu.exec( point );
 
         switch ( id )
         {
             case APPEND:
-
                 Playlist::instance()->appendMedia( url, false, true );
                 break;
 
@@ -350,6 +349,77 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
             case BURN_AUDIOCD:
                 K3bExporter::instance()->exportTracks( url, K3bExporter::AudioCD );
+                break;
+        }
+    }
+    if ( url.protocol() == "album" )
+    {
+        enum menuIds { APPEND, ASNEXT, MAKE, BURN_DATACD, BURN_AUDIOCD };    
+    
+        KPopupMenu menu( this );
+        menu.insertTitle( i18n( "Album" ) );
+        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "Append to Playlist" ), APPEND );
+        menu.insertItem( SmallIcon( "next" ), i18n( "Queue after Current Track" ), ASNEXT );
+        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "Make playlist" ), MAKE );
+        if( K3bExporter::isAvailable() ) 
+        {
+            menu.insertSeparator();
+            menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n( "Burn to CD as data" ), BURN_DATACD );
+            menu.insertItem( SmallIcon( "cdaudio_unmount" ), i18n( "Burn to CD as audio" ), BURN_AUDIOCD );
+        }
+        int id = menu.exec( point );    
+                
+        QStringList list = QStringList::split( " @@@ ", url.path() );
+        QStringList values;
+        QStringList names;
+        
+        m_db->execSql( QString( "select distinct url from tags where artist = '%1' and album = '%2' order by track;" )
+                       .arg( list[0] )
+                       .arg( list[1] ), &values, &names );
+             
+        switch ( id )
+        {
+            case APPEND:
+                for ( uint i = 0; i < values.count(); i++ )
+                {
+                    if ( values[i].isEmpty() ) continue;
+
+                    KURL tmp;
+                    tmp.setPath( values[i] );
+                    if( EngineController::canDecode( tmp ) ) Playlist::instance()->appendMedia( tmp, false, true );
+                }
+            break;
+
+            case ASNEXT:
+                for ( uint i = 0; i < values.count(); i++ )
+                {
+                    if ( values[i].isEmpty() ) continue;
+
+                    KURL tmp;
+                    tmp.setPath( values[i] );
+                    if( EngineController::canDecode( tmp ) ) Playlist::instance()->queueMedia( tmp );
+                } 
+            break;
+
+            case MAKE:
+                Playlist::instance()->clear();
+                
+                for ( uint i = 0; i < values.count(); i++ )
+                {
+                    if ( values[i].isEmpty() ) continue;
+
+                    KURL tmp;
+                    tmp.setPath( values[i] );
+                    if( EngineController::canDecode( tmp ) ) Playlist::instance()->appendMedia( tmp, false, true );
+                }
+            break;
+
+            case BURN_DATACD:
+                K3bExporter::instance()->exportTracks( url, K3bExporter::DataCD );
+                break;
+
+            case BURN_AUDIOCD:
+                if( EngineController::canDecode( url ) ) K3bExporter::instance()->exportTracks( url, K3bExporter::AudioCD );
                 break;
         }
      }
@@ -625,15 +695,17 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
         for ( uint i = 0; i < values.count(); i += 4 )
         {
-             browser->write( QStringx ( "<tr><td onClick='window.location.href=\"album:%1 @@@ %2\"' height='42' valign='top' class='rbalbum'>"
-                                        "<a class='menu' href='fetchcover:%3 @@@ %4'><img align='left' hspace='2' src='%5'></a><span class='album'>%6</span><br>%7 %8</td>"
-                                        "</tr>" )
-                             .args( QStringList()
+            browser->write( QStringx ( "<tr><td onClick='window.location.href=\"album:%1 @@@ %2\"' height='42' valign='top' class='rbalbum'>"
+                                       "<a class='menu' href='fetchcover:%3 @@@ %4'><img align='left' hspace='2' src='%5'></a><a href=\"album:%6 @@@ %7\"><span class='album'>%8</span><br>%9 %10</a></td>"
+                                       "</tr>" )
+                            .args( QStringList()
                                     << values[i + 3].replace( "\"", "%22" ) // artist.id
                                     << values[i + 2].replace( "\"", "%22" ) // album.id
                                     << escapeHTMLAttr( values[i + 1] ) // artist.name
                                     << escapeHTMLAttr( values[i + 0] ) // album.name
                                     << escapeHTMLAttr( m_db->getImageForAlbum( values[i + 1], values[i + 0], 50 ) )
+                                    << values[i + 3].replace( "\"", "%22" ) // artist.id
+                                    << values[i + 2].replace( "\"", "%22" ) // album.id
                                     << escapeHTML( values[i + 0] ) // album.name
                                     << m_db->albumSongCount( values[i + 3], values[i + 2] )
                                     << (m_db->albumSongCount( values[i + 3], values[i + 2] ).toInt() == 1 ? i18n( "Track" ) : i18n( "Tracks" ))
@@ -692,7 +764,7 @@ void ContextBrowser::setStyleSheet()
                     .arg( colorGroup().highlightedText().name() ).arg( pxSize + 2 ).arg( colorGroup().highlight().name() );
     m_styleSheet += QString( ".rbcurrent { color: %1; border: solid %2 1px; }" )
                     .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
-    m_styleSheet += QString( ".rbalbum { color: %1; border: solid %2 1px; }" )
+    m_styleSheet += QString( ".rbalbum { color: %1; border: solid %2 1px; }; " )
                     .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
     m_styleSheet += QString( ".rbalbum:hover { color: %1; cursor: default; background-color: %2; border: solid %3 1px; }" )
                     .arg( colorGroup().highlightedText().name() ).arg( colorGroup().highlight().name() ).arg( colorGroup().text().name() );
