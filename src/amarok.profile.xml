@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<!DOCTYPE profile SYSTEM "profile.dtd">
+<profile id="amarok" servicename="amarok">
+	<name>amaroK</name>
+	<author>Dirk Ziegelmeier</author>
+	<instances unique="1"/>
+
+    <!-- Volume actions -->
+	<action objid="player" prototype="void volumeUp()" class="volumeup" repeat="1">
+	    <name>Increase volume</name>
+	    <comment></comment>
+	</action>
+	<action objid="player" prototype="void volumeDown()" class="volumedown" repeat="1">
+	    <name>Decrease volume</name>
+	    <comment></comment>
+	</action>
+	<action objid="player" prototype="void mute()" class="mute">
+	    <name>Toggle sound muting</name>
+	    <comment></comment>
+	</action>
+
+    <!-- Playback actions -->
+	<action objid="player" prototype="void play()" class="play">
+	    <name>Start playing</name>
+	    <comment></comment>
+	</action>
+	<action objid="player" prototype="void stop()" class="stop">
+	    <name>Stop playing</name>
+	    <comment></comment>
+	</action>
+	<action objid="player" prototype="void pause()" class="pause">
+	    <name>Pause playing</name>
+	    <comment></comment>
+	</action>
+	<action objid="player" prototype="void next()" class="next">
+	    <name>Advance to next track</name>
+	    <comment></comment>
+	</action>
+	<action objid="player" prototype="void prev()" class="previous">
+	    <name>Go to previous track</name>
+	    <comment></comment>
+	</action>
+
+    <!-- Misc actions -->
+	<action objid="player" prototype="void showOSD()">
+	    <name>Show OSD display</name>
+	    <comment>Works only if OSD is enabled</comment>
+	</action>
+</profile>

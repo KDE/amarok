@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta3:
+  ADD: Profile for KDELIRC (Remote Controls). Patch by Dirk Ziegelmeier
+       <dziegel@gmx.de>.
   ADD: Remove Duplicates now also removes dead entries from playlist.
   FIX: Accept album-dragging from the ContextBrowser. (BR 86020)
   FIX: Configure check was missing for the Konqueror Sidebar

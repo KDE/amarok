@@ -112,6 +112,7 @@ METASOURCES = \
 KDE_ICON = \
     AUTO
 
+
 rcdir = \
     $(kde_datadir)/amarok
 
@@ -119,11 +120,13 @@ rc_DATA = \
     amarokui.rc \
     amarokui_xmms.rc
 
+
 configdir = \
     $(kde_confdir)
 
 config_DATA = \
     amarokrc
+
 
 xdg_apps_DATA = \
     amarok.desktop
@@ -131,11 +134,20 @@ xdg_apps_DATA = \
 kde_servicetypes_DATA = \
     amarok_plugin.desktop
 
+
 servicemenudir = \
     $(kde_datadir)/konqueror/servicemenus
 
 servicemenu_DATA = \
     amarok_append.desktop
+
+
+profiledatadir = \
+    $(kde_datadir)/profiles
+
+profiledata_DATA = \
+    amarok.profile.xml
+
 
 messages: rc.cpp
 	$(EXTRACTRC) `find . -name "*.rc" -o -name "*.ui" -o -name "*.kcfg"` > rc.cpp
