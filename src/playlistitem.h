@@ -58,6 +58,8 @@ class PlaylistItem : public KListViewItem
         static QColor glowText;
         static QColor glowBase;
 
+	bool pixmapChanged;
+
         static const QString columnName(int n);
 
         enum Column  { TrackName = 0,
@@ -96,6 +98,9 @@ class PlaylistItem : public KListViewItem
 
         int     compare( QListViewItem*, int, bool ) const;
         void    paintCell( QPainter*, const QColorGroup&, int, int, int );
+
+
+
 
         static QString trackName( const KURL &u ) { return u.protocol() == "http" ? u.prettyURL() : u.fileName(); }
 
