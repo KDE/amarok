@@ -56,12 +56,16 @@ class ScriptManager : public KDialogBase, public EngineObserver
         static ScriptManager* instance() { return s_instance ? s_instance : new ScriptManager( PlaylistWindow::self() ); }
 
     private slots:
+        void slotCurrentChanged( QListViewItem* );
+
         void slotAddScript();
         void slotRemoveScript();
         void slotEditScript();
         void slotRunScript();
         void slotStopScript();
         void slotConfigureScript();
+        void slotAboutScript();
+
         void scriptFinished( KProcess* process );
 
     private:

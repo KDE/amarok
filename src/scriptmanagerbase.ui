@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>383</width>
+            <width>406</width>
             <height>282</height>
         </rect>
     </property>
@@ -32,7 +32,7 @@
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout5</cstring>
+                <cstring>layout12</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -56,7 +56,7 @@
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout4</cstring>
+                        <cstring>layout11</cstring>
                     </property>
                     <vbox>
                         <property name="name">
@@ -67,7 +67,7 @@
                                 <cstring>addDirectoryButton</cstring>
                             </property>
                             <property name="text">
-                                <string>Add...</string>
+                                <string>Add Script</string>
                             </property>
                         </widget>
                         <spacer>
@@ -83,24 +83,16 @@
                             <property name="sizeHint">
                                 <size>
                                     <width>134</width>
-                                    <height>40</height>
+                                    <height>20</height>
                                 </size>
                             </property>
                         </spacer>
                         <widget class="KPushButton">
                             <property name="name">
-                                <cstring>removeDirectoryButton</cstring>
+                                <cstring>aboutButton</cstring>
                             </property>
                             <property name="text">
-                                <string>Remove</string>
-                            </property>
-                        </widget>
-                        <widget class="KPushButton">
-                            <property name="name">
-                                <cstring>editButton</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Edit...</string>
+                                <string>About</string>
                             </property>
                         </widget>
                         <widget class="KPushButton">
@@ -121,10 +113,26 @@
                         </widget>
                         <widget class="KPushButton">
                             <property name="name">
+                                <cstring>editButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Edit</string>
+                            </property>
+                        </widget>
+                        <widget class="KPushButton">
+                            <property name="name">
                                 <cstring>configureScriptButton</cstring>
                             </property>
                             <property name="text">
-                                <string>Configure...</string>
+                                <string>Configure</string>
+                            </property>
+                        </widget>
+                        <widget class="KPushButton">
+                            <property name="name">
+                                <cstring>removeDirectoryButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Remove</string>
                             </property>
                         </widget>
                     </vbox>
@@ -138,13 +146,4 @@
 </includes>
 <layoutdefaults spacing="6" margin="0"/>
 <layoutfunctions spacing="KDialog::spacingHint"/>
-<includehints>
-    <includehint>klistview.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-</includehints>
 </UI>

@@ -59,12 +59,15 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     setMainWidget( m_base );
     m_base->directoryListView->setFullWidth( true );
 
+    connect( m_base->directoryListView, SIGNAL( currentChanged( QListViewItem* ) ), SLOT( slotCurrentChanged( QListViewItem* ) ) );
+
     connect( m_base->addDirectoryButton, SIGNAL( clicked() ), SLOT( slotAddScript() ) );
     connect( m_base->removeDirectoryButton, SIGNAL( clicked() ), SLOT( slotRemoveScript() ) );
     connect( m_base->editButton, SIGNAL( clicked() ), SLOT( slotEditScript() ) );
     connect( m_base->runButton, SIGNAL( clicked() ), SLOT( slotRunScript() ) );
     connect( m_base->stopButton, SIGNAL( clicked() ), SLOT( slotStopScript() ) );
     connect( m_base->configureScriptButton, SIGNAL( clicked() ), SLOT( slotConfigureScript() ) );
+    connect( m_base->aboutButton, SIGNAL( clicked() ), SLOT( slotAboutScript() ) );
 
     QSize sz = sizeHint();
     setMinimumSize( kMax( 350, sz.width() ), kMax( 250, sz.height() ) );
@@ -94,6 +97,20 @@ ScriptManager::~ScriptManager()
 ////////////////////////////////////////////////////////////////////////////////
 
 void
+ScriptManager::slotCurrentChanged( QListViewItem* item )
+{
+    const bool enable = item != 0;
+
+    m_base->removeDirectoryButton->setEnabled( enable );
+    m_base->editButton->setEnabled( enable );
+    m_base->runButton->setEnabled( enable );
+    m_base->stopButton->setEnabled( enable );
+    m_base->configureScriptButton->setEnabled( enable );
+    m_base->aboutButton->setEnabled( enable );
+}
+
+
+void
 ScriptManager::slotAddScript()
 {
     Debug::Block b( __PRETTY_FUNCTION__ );
@@ -116,12 +133,10 @@ ScriptManager::slotAddScript()
 void
 ScriptManager::slotRemoveScript()
 {
-    if ( !m_base->directoryListView->selectedItem() ) return ;
-
-    QString name = m_base->directoryListView->selectedItem()->text( 0 );
+    QString name = m_base->directoryListView->currentItem()->text( 0 );
     m_scripts.erase( name );
 
-    delete m_base->directoryListView->selectedItem();
+    delete m_base->directoryListView->currentItem();
 }
 
 
@@ -130,9 +145,7 @@ ScriptManager::slotEditScript()
 {
     Debug::Block b( __PRETTY_FUNCTION__ );
 
-    if ( !m_base->directoryListView->selectedItem() ) return ;
-
-    QString name = m_base->directoryListView->selectedItem()->text( 0 );
+    QString name = m_base->directoryListView->currentItem()->text( 0 );
     QFile file( m_scripts[name].url.path() );
 
     if ( file.isWritable() )
@@ -159,9 +172,7 @@ ScriptManager::slotRunScript()
 {
     Debug::Block b( __PRETTY_FUNCTION__ );
 
-    if ( !m_base->directoryListView->selectedItem() ) return ;
-
-    QListViewItem* li = m_base->directoryListView->selectedItem();
+    QListViewItem* li = m_base->directoryListView->currentItem();
     QString name = li->text( 0 );
 
     // Return when this script is already running
@@ -192,9 +203,7 @@ ScriptManager::slotStopScript()
 {
     Debug::Block b( __PRETTY_FUNCTION__ );
 
-    if ( !m_base->directoryListView->selectedItem() ) return ;
-
-    QListViewItem* li = m_base->directoryListView->selectedItem();
+    QListViewItem* li = m_base->directoryListView->currentItem();
     QString name = li->text( 0 );
 
     // Kill script process
@@ -212,9 +221,7 @@ ScriptManager::slotConfigureScript()
 {
     Debug::Block b( __PRETTY_FUNCTION__ );
 
-    if ( !m_base->directoryListView->selectedItem() ) return;
-
-    QString name = m_base->directoryListView->selectedItem()->text( 0 );
+    QString name = m_base->directoryListView->currentItem()->text( 0 );
     if ( !m_scripts[name].process ) return;
 
     KURL url = m_scripts[name].url;
@@ -224,6 +231,32 @@ ScriptManager::slotConfigureScript()
     m_scripts[name].process->writeStdin( command.latin1(), command.length() );
 
     debug() << "Starting script configuration." << endl;
+}
+
+
+void
+ScriptManager::slotAboutScript()
+{
+    Debug::Block b( __PRETTY_FUNCTION__ );
+
+    QString name = m_base->directoryListView->currentItem()->text( 0 );
+    QFile file( m_scripts[name].url.directory( false ) + "README" );
+    debug() << "Path: " << file.name() << endl;
+
+    if ( !file.open( IO_ReadOnly ) ) {
+        KMessageBox::sorry( 0, i18n( "There is no help text for this script." ) );
+        return;
+    }
+
+    KTextEdit* editor = new KTextEdit();
+    kapp->setTopWidget( editor );
+    editor->setCaption( kapp->makeStdCaption( i18n( "About %1" ).arg( name ) ) );
+
+    QTextStream stream( &file );
+    editor->setText( stream.read() );
+    editor->setTextFormat( QTextEdit::PlainText );
+    editor->resize( 640, 480 );
+    editor->show();
 }
 
 
@@ -281,6 +314,8 @@ ScriptManager::loadScript( const QString& path )
         item.li = li;
 
         m_scripts[url.fileName()] = item;
+
+        slotCurrentChanged( m_base->directoryListView->currentItem() );
     }
 }
 
@@ -324,19 +359,19 @@ ScriptManager::engineStateChanged( Engine::State state )
     switch ( state )
     {
         case Engine::Empty:
-            notifyScripts( "EngineStateChange: empty" );
+            notifyScripts( "engineStateChange: empty" );
             break;
 
         case Engine::Idle:
-            notifyScripts( "EngineStateChange: idle" );
+            notifyScripts( "engineStateChange: idle" );
             break;
 
         case Engine::Paused:
-            notifyScripts( "EngineStateChange: paused" );
+            notifyScripts( "engineStateChange: paused" );
             break;
 
         case Engine::Playing:
-            notifyScripts( "EngineStateChange: playing" );
+            notifyScripts( "engineStateChange: playing" );
             break;
     }
 }
