@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>FirstRunWizard</class>
 <widget class="QWizard">
     <property name="name">
@@ -13,7 +13,7 @@
         </rect>
     </property>
     <property name="caption">
-        <string>amaroK - First-run Wizard</string>
+        <string>First-run Wizard - amaroK</string>
     </property>
     <widget class="QWidget">
         <property name="name">
@@ -32,7 +32,7 @@
                 </property>
                 <property name="text">
                     <string>&lt;h1&gt;Welcome!&lt;/h1&gt;
-&lt;p&gt;There are many media players around these days, this is true. But what's missing from most players is an interface that doesn't get in your way. How many buttons do you have to press when simply adding media to the playlist? amaroK tries to be a little different, providing a simple drag-and-drop interface that makes playlist handling really easy.&lt;/p&gt;
+&lt;p&gt;There are many media-players around these days, this is true. But what's missing from most players is an interface that doesn't get in your way. How many buttons do you have to press when simply adding media to the playlist? amaroK tries to be a little different, providing a simple drag-and-drop interface that makes playlist handling really easy.&lt;/p&gt;
 &lt;p align="right"&gt;&lt;i&gt;"amaroK is seriously super!"&lt;/i&gt; - Uncle Rodney&lt;/p&gt;
 &lt;h2&gt;First-run Wizard&lt;/h2&gt;
 &lt;p&gt;This wizard will help you setup amaroK in three easy steps. Click &lt;i&gt;Next&lt;/i&gt; to begin, or if you don't like wizards, click &lt;i&gt;Skip&lt;/i&gt;.&lt;/p&gt;</string>
@@ -103,7 +103,7 @@
                     <enum>Manual</enum>
                 </property>
                 <property name="text">
-                    <string>&lt;p&gt;With amaroK you can use the interface with which you are most comfortable. The choices are listed below. You can change this at a later time using the amaroK configuration dialog.&lt;/p&gt;</string>
+                    <string>&lt;p&gt;With amaroK you can use the interface that you find most comfortable. The choices are listed below. You can change these settings at a later time using the amaroK configuration dialog.&lt;/p&gt;</string>
                 </property>
                 <property name="wrapPolicy">
                     <enum>AtWordBoundary</enum>
@@ -207,8 +207,8 @@
                 </property>
                 <property name="text">
                     <string>&lt;p&gt;Your &lt;b&gt;Collection&lt;/b&gt; is a database of media, with which you can quickly and easily find your music using queries based on the media's tags.&lt;/p&gt;
-&lt;p&gt;Select which folders to search for media on the right. If you choose to &lt;i&gt;Monitor Changes&lt;/i&gt;, amaroK will be notified when changes are made to the contents of these folders and will update the Collection accordingly.&lt;/p&gt;
-&lt;p&gt;You can change the configuration of the Collection at a future time from the &lt;i&gt;Actions&lt;/i&gt; menu in the Collection-browser.&lt;/p&gt;</string>
+&lt;p&gt;Here you should select which folders to search for media, amaroK will begin the search when this wizard is complete. If you choose to &lt;i&gt;Monitor Changes&lt;/i&gt;, amaroK will be notified when changes are made to the contents of these folders and will update the Collection accordingly.&lt;/p&gt;
+&lt;p&gt;You can change the configuration of the Collection at a future time from the &lt;i&gt;Actions&lt;/i&gt; menu in the &lt;b&gt;Collection-browser&lt;/b&gt;.&lt;/p&gt;</string>
                 </property>
             </widget>
         </hbox>
@@ -280,7 +280,7 @@
                 </property>
                 <property name="text">
                     <string>&lt;h1&gt;Congratulations!&lt;/h1&gt;
-&lt;p&gt;amaroK is ready for use! When you click finish amaroK will appear and begin scanning your the folders in your collection.&lt;/p&gt;
+&lt;p&gt;amaroK is ready for use! When you click finish amaroK will appear and begin scanning the folders in your collection.&lt;/p&gt;
 &lt;p&gt;amaroK's Playlist-window will show your &lt;b&gt;Collection&lt;/b&gt; on the left and the &lt;b&gt;Playlist&lt;/b&gt; on the right. Drag and drop music from the Collection to the Playlist and press &lt;b&gt;Play&lt;/b&gt;.&lt;/p&gt;
 &lt;p&gt;If you want more help or a tutorial, please check out the &lt;a href="help:/amarok"&gt;amaroK handbook&lt;/a&gt;. We hope you enjoly using amaroK.&lt;/p&gt;
 &lt;p align="right"&gt;The amaroK developers&lt;/p&gt;</string>
