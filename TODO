@@ -3,13 +3,17 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #74 being the highest available (take this one for your next bug and increase here)
+           #76 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
 
+    * fix: #74  PLUGIN_H issue -->markey
+
 
 MID-TERM:
+
+    * add: #75 Toolbar button in FileBrowser for switching recursive directory reading
 
     * fix: #73 <mxcl> can't resize newly displayed columns if they are hidden at beginning of session -->mxcl
 
@@ -29,11 +33,6 @@ MID-TERM:
 
     * fix: #61 <markey> allow removing of playlist items by dragging back into browser.
                (RFC: is this still appropriate or would it be misleading?)
-
-    * fix: #64 <markey> when loading a playlist for the first time after startup, amaroK starts playing
-               the first track automagically
-               <mxcl> fixed, but the cause is not fixed. Somewhere it seems a KURL::List with 1 empty KURL is
-               being submitted.
 
     * fix: #44 <markey> use kdWarning() instead of kdDebug() where appropriate
 
