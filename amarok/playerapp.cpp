@@ -28,6 +28,7 @@ email                :
 #include "playlistitem.h"
 #include "playlistwidget.h"
 #include "titleproxy/titleproxy.h"
+#include "streambrowser.h"
 
 #include <vector>
 #include <string>
@@ -75,6 +76,7 @@ email                :
 #include <qstring.h>
 #include <qtimer.h>
 #include <qvaluelist.h>
+#include <qdir.h>
 
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -143,75 +145,13 @@ PlayerApp::PlayerApp() :
                                                   ( "data", kapp->instanceName() + "/" ) + "current.m3u", 0 );
     m_pBrowserWin->m_pPlaylistWidget->writeUndo();
 
-    //restore previous track selection and playback time
-    m_pConfig->setGroup( "Session" );
-    KURL url = m_pConfig->readEntry( "Track" );
+    //FIXME slow to load, make playerWidget own this
+    QWidget *w = new StreamBrowser( m_pBrowserWin, "StreamBrowser" );
+    w->show();
 
-    kdDebug() << "Trying to restore pl item for " << url << endl;
-    if( !restorePlaylistSelection(url) )
-    {
-        kdDebug() << "Couldn't restore pl item" << endl;
-        //if we didn't find the item, add it to the playlist
-        PlaylistItem *item = new PlaylistItem( m_pBrowserWin->m_pPlaylistWidget, url );
-        //set current and play (if enabled)
-        m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( item );
-        kdDebug() << "Added playlist item for " << url << endl;
-    }
-
-    if ( m_optResumePlayback )
-    {
-        slotPlay();
-
-        //see if we also saved the time
-        int seconds = m_pConfig->readNumEntry( "Time", 0 );
-        if ( seconds > 0 && m_pPlayObject && !m_pPlayObject->isNull() )
-        {
-            //FIXME I just copied this code, do I need all these properties?
-            Arts::poTime time;
-            time.ms = 0;
-            time.seconds = seconds;
-            time.custom = 0;
-            time.customUnit = std::string();
-
-            m_pPlayObject->seek( time );
-        }
-    }
+    restoreSession();
 
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
-}
-
-
-/**
- @short   Find and select item in playlist given its URL.
- @return  true if item was found in playlist and selected, false otherwise.
-*/
-bool PlayerApp::restorePlaylistSelection(const KURL& url)
-{
-    kdDebug() << "[restorePlaylistSelection] For URL " << url << endl;
-    if ( !url.isEmpty() ) /* && url.isValid() amaroK should decide the validity of the url */
-    {
-        //FIXME I have no idea if this will work with streaming, check before you commit!
-
-        //if ( !url.path().startsWith("file:") || isFileValid( url ) ) FIXME do we _really_ need this check?
-        {
-            kdDebug() << "[restorePlaylistSelection] file is valid, going on" << endl;
-            PlaylistItem * item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->firstChild() );
-            while ( item && item->url() != url )
-            {
-               kdDebug() << "[restorePlaylistSelection] searching in " << item->url() << endl;
-               item = static_cast<PlaylistItem*>( item->nextSibling() );
-            }
-            if ( item == NULL )
-            {
-               return false;
-            }
-
-            //set current
-            m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( item );
-            return true;
-        }
-    }
-    return false;
 }
 
 
@@ -231,6 +171,7 @@ PlayerApp::~PlayerApp()
           Arts::poTime timeC( m_pPlayObject->currentTime() );
           m_pConfig->writeEntry( "Time", timeC.seconds );
        }
+       else m_pConfig->deleteEntry( "Time" );
     }
 
     slotStop();
@@ -595,7 +536,89 @@ void PlayerApp::initBrowserWin()
 }
 
 
+void PlayerApp::restoreSession()
+{
+    //here we restore the session
+    //however, do note, this is always done, KDE session management is not involved
+
+    m_pConfig->setGroup( "Session" );
+    KURL url = m_pConfig->readEntry( "Track" );
+
+    if ( !url.isEmpty() ) /* && url.isValid() amaroK should decide the validity of the url */
+    {
+        //FIXME I have no idea if this will work with streaming, check before you commit!
+
+        if ( isFileValid( url ) ) //FIXME may not be required
+        {
+            //first check if this item is already in the playlist
+            if( !restorePlaylistSelection( url ) )
+            {
+               //if we didn't find the item, add it to the playlist
+               m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( new PlaylistItem( m_pBrowserWin->m_pPlaylistWidget, url ) );
+            }
+
+            if ( m_optResumePlayback )
+            {
+               //see if we also saved the time
+               int seconds = m_pConfig->readNumEntry( "Time", -1 );
+
+               if ( seconds >= 0 )
+               {
+                   slotPlay();
+
+                   if ( seconds > 0 && m_pPlayObject && !m_pPlayObject->isNull() )
+                   {
+                      //FIXME I just copied this code, do I need all these properties?
+                      Arts::poTime time;
+                      time.ms = 0;
+                      time.seconds = seconds;
+                      time.custom = 0;
+                      time.customUnit = std::string();
+
+                      m_pPlayObject->seek( time );
+                   }
+               }
+            }
+        }
+    }
+}
+
+
+
 // METHODS --------------------------------------------------------------------------
+
+
+/**
+ @short   Find and select item in playlist given its URL.
+ @return  true if item was found in playlist and selected, false otherwise.
+*/
+bool PlayerApp::restorePlaylistSelection(const KURL& url)
+{
+    kdDebug() << "[restorePlaylistSelection] For URL " << url.url() << endl;
+
+    if ( !url.isEmpty() ) /* && url.isValid() amaroK should decide the validity of the url */
+    {
+        //if ( !url.path().startsWith("file:") || isFileValid( url ) ) FIXME do we _really_ need this check?
+        {
+            kdDebug() << "[restorePlaylistSelection] file is valid, going on" << endl;
+            PlaylistItem * item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->firstChild() );
+            while ( item && item->url() != url )
+            {
+               kdDebug() << "[restorePlaylistSelection] searching in " << item->url().url() << endl;
+               item = static_cast<PlaylistItem*>( item->nextSibling() );
+            }
+            if ( item == NULL )
+            {
+               return false;
+            }
+
+            //set current
+            m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( item );
+            return true;
+        }
+    }
+    return false;
+}
 
 
 bool PlayerApp::isFileValid( const KURL &url )
@@ -686,7 +709,7 @@ void PlayerApp::readConfig()
 
     m_pConfig->setGroup( "General Options" );
 
-    m_pBrowserWin->m_pBrowserWidget->readDir( m_pConfig->readPathEntry( "CurrentDirectory", "/" ) );
+    m_pBrowserWin->m_pBrowserWidget->readDir( m_pConfig->readPathEntry( "CurrentDirectory", QDir::home().path() ) );
     m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( m_pConfig->readPathListEntry( "PathHistory" ) );
     m_pPlayerWidget->move( m_pConfig->readPointEntry( "PlayerPos", &pointZero ) );
     m_pBrowserWin->move( m_pConfig->readPointEntry( "BrowserWinPos", &pointZero ) );
@@ -1066,7 +1089,7 @@ void PlayerApp::slotPlay()
         m_pPlayerWidget->setScroll( i18n( "Stream from: " ) + item->text( 0 ), "--", "--" );
     }
 
-    kdDebug() << "[slotPlay] Playing item " << item->text(0) << " for " << item->url() << endl;
+    kdDebug() << "[slotPlay] Playing item " << item->text(0) << " for " << item->url().url() << endl;
     m_playingURL = item->url();
 
     m_pPlayerWidget->m_pSlider->setValue( 0 );
@@ -1446,8 +1469,12 @@ void PlayerApp::slotAnimTimer()
 }
 
 
+#include <math.h>
+
 void PlayerApp::slotVisTimer()
 {
+    static int t = 1;
+
     if ( m_pPlayerWidget->isVisible() && !m_pPlayerWidget->m_pButtonPause->isDown() )
     {
         if ( m_scopeActive )
@@ -1457,7 +1484,21 @@ void PlayerApp::slotVisTimer()
             delete pScopeVector;
         }
         else
-            m_pPlayerWidget->m_pVis->drawAnalyzer( NULL );
+        {
+            if ( t > 999 ) t = 1; //0 is pointless
+            if ( t < 201 )
+            {
+                double dt = double(t) / 200 ;
+                std::vector<float> v( 31 );
+                for( int i = 0; i < v.size(); ++i )
+                    v[i] = dt * (sin( M_PI + (i * M_PI) / v.size() ) + 1.0);
+                m_pPlayerWidget->m_pVis->drawAnalyzer( &v );
+            }
+            else
+                m_pPlayerWidget->m_pVis->drawAnalyzer( NULL );
+
+            ++t;
+        }
     }
 }
 
