@@ -67,6 +67,7 @@ class ArtsEngine : public EngineBase
         void                                     stopCurrent();
         void                                     startXfade();
         void                                     stopXfade();
+        void                                     switchXfade();
         void                                     timerEvent( QTimerEvent* );
     
         /////////////////////////////////////////////////////////////////////////////////////
@@ -81,16 +82,16 @@ class ArtsEngine : public EngineBase
         Arts::StereoVolumeControl                m_volumeControl;
         Arts::Synth_AMAN_PLAY                    m_amanPlay;
         Amarok::RawScope                         m_scope;
-        Amarok::Synth_STEREO_XFADE               m_Xfade;
+        Amarok::Synth_STEREO_XFADE               m_xfade;
                
         long                                     m_scopeId;
         int                                      m_scopeSize;
         long                                     m_volumeId;
         bool                                     m_proxyError;
 
-        bool                                     m_XfadeRunning;
-        float                                    m_XfadeValue;
-        QString                                  m_XfadeCurrent;
+        bool                                     m_xfadeRunning;
+        float                                    m_xfadeValue;
+        QString                                  m_xfadeCurrent;
             
     private slots:
         void                                     connectPlayObject();
