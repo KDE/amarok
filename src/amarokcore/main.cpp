@@ -48,6 +48,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Dan Leinir Turthra Jensen", I18N_NOOP( "First-run wizard, usability" ), "admin@REMOVEleinir.dk" );
     aboutData.addCredit( "Enrico Ros", I18N_NOOP( "Analyzers, Context Browser and systray eye-candy" ), "eros.kde@email.it" );
     aboutData.addCredit( "Florian 'da-flow' Egerer", I18N_NOOP( "amaroK application icon 'Blue Wolf'" ), "flo_for_never@gmx.at" );
+    aboutData.addCredit( "Gérard 'tightcode' Dürrmeyer", I18N_NOOP( "icons and image work" ), "gerard@randomtree.com" );
     aboutData.addCredit( "Greg Meyer", I18N_NOOP( "Fabulous help with our pre 1.2 bug-avalanche" ), "greg@gkmweb.com" );
     aboutData.addCredit( "Ian Monroe", I18N_NOOP( "Patches, Ruby script template" ), "ian@monroe.nu" );
     aboutData.addCredit( "Jarkko Lehti", I18N_NOOP( "Tester, IRC channel operator, whipping" ), "grue@iki.fi" );
@@ -55,12 +56,12 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Kenny Lemieux", I18N_NOOP( "amaroK webmaster" ), "swaft@pwsp.net" );
     aboutData.addCredit( "Melchior Franz", I18N_NOOP( "FHT routine, bugfixes" ), "mfranz@kde.org" );
     aboutData.addCredit( "Michael Pyne", I18N_NOOP( "K3B export code" ), "michael.pyne@kdemail.net" );
-    aboutData.addCredit( "Nenad Grujicic", I18N_NOOP( "Splash screen for 1.1" ), "mchitman@neobee.net" );
+    aboutData.addCredit( "Nenad Grujicic", I18N_NOOP( "Splash screen" ), "mchitman@neobee.net" );
     aboutData.addCredit( "Olivier Bédard", I18N_NOOP( "Website hosting" ), "paleo@pwsp.net" );
     aboutData.addCredit( "Roland Gigler", I18N_NOOP( "MAS engine" ), "rolandg@web.de" );
     aboutData.addCredit( "Sami Nieminen", I18N_NOOP( "Audioscrobbler support" ), "sami.nieminen@iki.fi" );
     aboutData.addCredit( "Scott Wheeler", I18N_NOOP( "TagLib & ktrm code" ), "wheeler@kde.org" );
-    aboutData.addCredit( "Seb Ruiz", I18N_NOOP( "OSD improvements, patches, testing" ), "seb100@optusnet.com.au" );
+    aboutData.addCredit( "Seb Ruiz", I18N_NOOP( "amaroK improvements, bug fixes, aussie" ), "seb100@optusnet.com.au" );
     aboutData.addCredit( "Stefan 'MacroMolecularMooModeler' Bogner", I18N_NOOP( "Loadsa stuff" ), "bochi@online.ms" );
     aboutData.addCredit( "Stefan Siegel", I18N_NOOP( "Patches, Bugfixes" ), "kde@sdas.de" );
     aboutData.addCredit( "Whitehawk Stormchaser", I18N_NOOP( "Tester, patches" ), "zerokode@gmx.net" );
