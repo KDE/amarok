@@ -84,8 +84,11 @@ void
 ScriptManager::Selector::slotAddDirectory()
 {
     KFileDialog dia( QString::null, "*.*|" + i18n("amaroK Scripts" ), 0, 0, true );
+    kapp->setTopWidget( &dia );
+    dia.setCaption( kapp->makeStdCaption( i18n( "Select Script" ) ) );
     dia.setMode( KFile::File | KFile::ExistingOnly );
     dia.exec();
+
     QString dir = dia.selectedURL().path();
 
     if ( !dir.isEmpty() && m_dirList.find( dir ) == m_dirList.end() ) {
