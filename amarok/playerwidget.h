@@ -3,7 +3,7 @@
                             -------------------
    begin                : Mit Nov 20 2002
    copyright            : (C) 2002 by Mark Kretschmann
-   email                :
+   email                : markey@web.de
 ***************************************************************************/
 
 /***************************************************************************
@@ -52,29 +52,9 @@ class ArtsConfigWidget;
 class PlayerApp;
 extern PlayerApp *pApp;
 
-class PlayerWidget;
-
 class AmarokDcopHandler;
-
-/**
- *@author mark
- */
-
-// CLASS AmarokSystray ------------------------------------------------------------
-
-class AmarokSystray : public KSystemTray
-{
-   public:
-      AmarokSystray( PlayerWidget *, KActionCollection * );
-
-   private:
-      void mousePressEvent( QMouseEvent * );
-      void wheelEvent( QWheelEvent * );
-      void showEvent( QShowEvent * ) {} //Don't add me a Quit button automagically
-};
-
-
-// CLASS PlayerWidget ------------------------------------------------------------
+class AmarokSystray;
+class PlayerWidget;
 
 class PlayerWidget : public QWidget
 {

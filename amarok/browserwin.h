@@ -3,7 +3,7 @@
                             -------------------
    begin                : Fre Nov 15 2002
    copyright            : (C) 2002 by Mark Kretschmann
-   email                :
+   email                : markey@web.de
 ***************************************************************************/
 
 /***************************************************************************
@@ -21,6 +21,8 @@
 #include <qpixmap.h>
 #include <qwidget.h>
 
+#include <kactioncollection.h>
+
 class BrowserWidget;
 class ExpandButton;
 class PlaylistItem;
@@ -36,7 +38,6 @@ class QPoint;
 class QMoveEvent;
 class QSplitter;
 
-class KActionCollection;
 class KJanusWidget;
 class KLineEdit;
 class KHistoryCombo;
