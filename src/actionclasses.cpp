@@ -98,8 +98,6 @@ Menu::Menu()
     insertItem( i18n( "First-run &Wizard..." ), ID_SHOW_WIZARD );
     insertItem( i18n( "&Visualizations..." ), ID_SHOW_VIS_SELECTOR );
 
-    insertSeparator();
-
 //     insertItem( i18n( "&Scripts..." ), ID_SHOW_SCRIPT_SELECTOR );
 //     insertItem( i18n( "&JavaScript Console" ), ID_SHOW_SCRIPT_CONSOLE );
 //     insertSeparator();

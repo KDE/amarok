@@ -9,7 +9,7 @@ the Free Software Foundation; either version 2 of the License, or
   osd.cpp  -  Provides an interface to a plain QWidget, which is independent of KDE (bypassed to X11)
   begin:     Fre Sep 26 2003
   copyright: (C) 2003 by Christian Muehlhaeuser
-  email:     muesli@chareit.net
+  email:     chris@chris.de
 */
 
 #include "amarokconfig.h" //previewWidget
@@ -83,20 +83,23 @@ void OSDWidget::renderOSDText( const QString &text )
     int textPosition = 0;
     //shadow offset.
     int shadowOffset = 0;
-    
+
     //set text position according to direction.
-    if(text.isRightToLeft()){
+    if ( text.isRightToLeft() )
+    {
         textPosition = -10;
         shadowOffset = -3;
-    }else{
+    } else
+    {
         textPosition = 10;
-        shadowOffset = 3;       
-    }//text position set.
-        
+        shadowOffset = 3;
+    } //text position set
+
     // Draw the text shadow
-    if ( m_shadow ) {
+    if ( m_shadow )
+    {
         bufferPainter.setPen( backgroundColor().dark( 175 ) );
-        bufferPainter.drawText( textPosition+shadowOffset, titleFm.height() + 1, w, h, AlignAuto | WordBreak, text );        
+        bufferPainter.drawText( textPosition+shadowOffset, titleFm.height() + 1, w, h, AlignAuto | WordBreak, text );
     }
 
     // Draw the text
@@ -113,7 +116,7 @@ void OSDWidget::renderOSDText( const QString &text )
     maskPainter.drawRoundRect( textRect, 1500 / textRect.width(), 1500 / textRect.height() );
     setMask( mask );
 
-    //do last to reduce noticeable change when showing multiple OSDs in succession
+    // Do last to reduce noticeable change when showing multiple OSDs in succession
     reposition( textRect.size() );
 
     m_currentText = text;
@@ -125,29 +128,32 @@ void OSDWidget::renderOSDText( const QString &text )
 
 void OSDWidget::showOSD( const QString &text, bool preemptive )
 {
-    if ( isEnabled() && !text.isEmpty() ) {
-        if ( preemptive || !timerMin.isActive() ) {
+    if ( isEnabled() && !text.isEmpty() )
+    {
+        if ( preemptive || !timerMin.isActive() )
+        {
             m_currentText = text;
             m_dirty = true;
 
             show();
-        }
-        else textBuffer.append( text ); //queue
+        } else
+            textBuffer.append( text ); //queue
     }
 }
 
 
 void OSDWidget::minReached() //SLOT
 {
-    if ( !textBuffer.isEmpty() ) {
+    if ( !textBuffer.isEmpty() )
+    {
         renderOSDText( textBuffer.front() );
         textBuffer.pop_front();
 
         if( m_duration )
             //timerMin is still running
             timer.start( m_duration, TRUE );
-    }
-    else timerMin.stop();
+    } else
+        timerMin.stop();
 }
 
 
@@ -155,8 +161,10 @@ void OSDWidget::setDuration( int ms )
 {
     m_duration = ms;
 
-    if( !m_duration ) timer.stop();
+    if( !m_duration )
+        timer.stop();
 }
+
 
 void OSDWidget::setFont(const QFont &newFont )
 {
@@ -164,11 +172,13 @@ void OSDWidget::setFont(const QFont &newFont )
     refresh();
 }
 
+
 void OSDWidget::setShadow( bool shadow )
 {
     m_shadow = shadow;
     refresh();
 }
+
 
 void OSDWidget::setTextColor( const QColor &newColor )
 {
@@ -176,11 +186,13 @@ void OSDWidget::setTextColor( const QColor &newColor )
     refresh();
 }
 
+
 void OSDWidget::setBackgroundColor( const QColor &newColor )
 {
     setPaletteBackgroundColor( newColor );
     refresh();
 }
+
 
 void OSDWidget::unsetColors()
 {
@@ -190,6 +202,7 @@ void OSDWidget::unsetColors()
     refresh();
 }
 
+
 void OSDWidget::setOffset( int /*x*/, int y )
 {
     //m_offset = QPoint( x, y );
@@ -197,11 +210,13 @@ void OSDWidget::setOffset( int /*x*/, int y )
     reposition();
 }
 
+
 void OSDWidget::setAlignment( Alignment a )
 {
     m_alignment = a;
     reposition();
 }
+
 
 void OSDWidget::setScreen( int screen )
 {
@@ -215,28 +230,31 @@ bool OSDWidget::event( QEvent *e )
 {
     switch( e->type() )
     {
-    case QEvent::Paint:
-        bitBlt( this, 0, 0, &osdBuffer );
-        return TRUE;
+        case QEvent::Paint:
+            bitBlt( this, 0, 0, &osdBuffer );
+            return TRUE;
 
-    case QEvent::ApplicationPaletteChange:
-        if ( !AmarokConfig::osdUseCustomColors() ) //FIXME not portable!
-            unsetColors(); //updates colors for new palette
-        return TRUE;
+        case QEvent::ApplicationPaletteChange:
+            if ( !AmarokConfig::osdUseCustomColors() ) //FIXME not portable!
+                unsetColors(); //updates colors for new palette
+            return TRUE;
 
-    default:
-        return QWidget::event( e );
+        default:
+            return QWidget::event( e );
     }
 }
+
 
 void OSDWidget::mousePressEvent( QMouseEvent* )
 {
     hide();
 }
 
+
 void OSDWidget::show()
 {
-    if ( m_dirty ) renderOSDText( m_currentText );
+    if ( m_dirty )
+        renderOSDText( m_currentText );
 
     QWidget::show();
 
@@ -247,15 +265,17 @@ void OSDWidget::show()
     }
 }
 
+
 void OSDWidget::refresh()
 {
     if ( isVisible() )
     {
         //we need to update the buffer
         renderOSDText( m_currentText );
-    }
-    else m_dirty = true; //ensure we are re-rendered before we are shown
+    } else
+        m_dirty = true; //ensure we are re-rendered before we are shown
 }
+
 
 void OSDWidget::reposition( QSize newSize )
 {
@@ -266,26 +286,28 @@ void OSDWidget::reposition( QSize newSize )
 
     //TODO m_y is the middle of the OSD, and don't exceed screen margins
 
-    switch ( m_alignment ) {
-    case Left:
-        break;
+    switch ( m_alignment )
+    {
+        case Left:
+            break;
 
-    case Right:
-        newPos.rx() = screen.width() - MARGIN - newSize.width();
-        break;
+        case Right:
+            newPos.rx() = screen.width() - MARGIN - newSize.width();
+            break;
 
-    case Center:
-        newPos.ry() = (screen.height() - newSize.height()) / 2;
+        case Center:
+            newPos.ry() = (screen.height() - newSize.height()) / 2;
 
-        //FALL THROUGH
+            //FALL THROUGH
 
-    case Middle:
-        newPos.rx() = (screen.width() - newSize.width()) / 2;
-        break;
+        case Middle:
+            newPos.rx() = (screen.width() - newSize.width()) / 2;
+            break;
     }
 
     //ensure we don't dip below the screen
-    if( newPos.y()+newSize.height() > screen.height()-MARGIN ) newPos.ry() = screen.height()-MARGIN-newSize.height();
+    if ( newPos.y() + newSize.height() > screen.height() - MARGIN )
+        newPos.ry() = screen.height() - MARGIN - newSize.height();
 
     // correct for screen position
     newPos += screen.topLeft();
@@ -317,15 +339,18 @@ void OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
 {
     m_dragOffset = event->pos();
 
-    if ( event->button() == LeftButton && !m_dragging ) {
+    if ( event->button() == LeftButton && !m_dragging )
+    {
         grabMouse( KCursor::sizeAllCursor() );
         m_dragging = true;
     }
 }
 
+
 void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent * /*event*/ )
 {
-    if ( m_dragging ) {
+    if ( m_dragging )
+    {
         m_dragging = false;
         releaseMouse();
 
@@ -333,7 +358,8 @@ void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent * /*event*/ )
         QDesktopWidget *desktop = QApplication::desktop();
         int currentScreen = desktop->screenNumber( pos() );
 
-        if ( currentScreen != -1 ) {
+        if ( currentScreen != -1 )
+        {
             // set new data
             m_screen = currentScreen;
             m_y      = QWidget::y();
@@ -342,6 +368,7 @@ void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent * /*event*/ )
         }
     }
 }
+
 
 void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 {
@@ -402,13 +429,15 @@ amaroK::OSD::instance()
     return &osd;
 }
 
+
 void
 amaroK::OSD::showTrack( const MetaBundle &bundle ) //slot
 {
     // Strip HTML tags, expand basic HTML entities
     QString text = bundle.prettyTitle();
 
-    if ( bundle.length() ) {
+    if ( bundle.length() )
+    {
         text += " - ";
         text += bundle.prettyLength();
     }
@@ -422,6 +451,7 @@ amaroK::OSD::showTrack( const MetaBundle &bundle ) //slot
 
     showTrack();
 }
+
 
 void
 amaroK::OSD::applySettings()

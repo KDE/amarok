@@ -21,11 +21,12 @@
 #include "engineobserver.h"  //baseclass
 #include "playlistwindow.h"  //friend
 
-#include <qstringlist.h>     //stack allocated
-#include <qptrlist.h>        //stack allocated
 #include <klistview.h>       //baseclass
 #include <kurl.h>            //KURL::List
 #include <qdir.h>            //stack allocated
+#include <qstringlist.h>     //stack allocated
+#include <qptrlist.h>        //stack allocated
+#include <vector>            //stack allocated
 
 class KAction;
 class KActionCollection;
@@ -130,6 +131,7 @@ class Playlist : private KListView, public EngineObserver
         void columnOrderChanged();
         void updateNextPrev();
         void activate( QListViewItem* );
+        void columnResizeEvent( int, int, int );
 
     private:
         Playlist( QWidget*, KActionCollection*, const char* = 0 );
@@ -159,10 +161,11 @@ class Playlist : private KListView, public EngineObserver
         void contentsDragLeaveEvent( QDragLeaveEvent* );
         #ifdef PURIST
         //KListView imposes hand cursor so override it
-        void contentsMouseMoveEvent( QMouseEvent *e ); { QListView::contentsMouseMoveEvent( e ); }
+        void contentsMouseMoveEvent( QMouseEvent *e ) { QListView::contentsMouseMoveEvent( e ); }
         #endif
         void paletteChange( const QPalette& );
         void viewportPaintEvent( QPaintEvent* );
+        void viewportResizeEvent( QResizeEvent* );
         void customEvent( QCustomEvent* );
         bool eventFilter( QObject*, QEvent* );
         void setSorting( int, bool=true );
@@ -196,6 +199,8 @@ class Playlist : private KListView, public EngineObserver
         QString m_editText;
 
         KActionCollection* const m_ac;
+
+        std::vector<double> m_columnFraction;
 };
 
 inline void

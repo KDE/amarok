@@ -21,6 +21,7 @@ email                : markey@web.de
 #include "app.h"
 #include "config.h"
 #include "configdialog.h"
+#include "collectiondb.h"
 #include "effectwidget.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
@@ -83,6 +84,7 @@ App::App()
         amaroK::config()->sync();
     }
 
+    new CollectionDB();
     m_pGlobalAccel    = new KGlobalAccel( this );
     m_pPlaylistWindow = new PlaylistWindow();
     m_pTray           = new amaroK::TrayIcon( m_pPlaylistWindow );

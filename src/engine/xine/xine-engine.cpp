@@ -413,7 +413,7 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
 
         QString
         msg = "%1 %2%";
-        msg = msg.arg( QString::fromUtf8( pd->description ) )
+        msg = msg.arg( QString( pd->description ) )
                  .arg( KGlobal::locale()->formatNumber( pd->percent, 0 ) );
 
         QApplication::postEvent( xe, new QCustomEvent(QEvent::Type(3002), new QString(msg)) );

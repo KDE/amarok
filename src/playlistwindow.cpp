@@ -162,6 +162,8 @@ PlaylistWindow::PlaylistWindow()
 
 PlaylistWindow::~PlaylistWindow()
 {
+    amaroK::config( "PlaylistWindow" )->writeEntry( "showMenuBar", m_menubar->isShown() );
+
     AmarokConfig::setPlaylistWindowPos( pos() );  //TODO de XT?
     AmarokConfig::setPlaylistWindowSize( size() ); //TODO de XT?
 }
@@ -712,6 +714,7 @@ void PlaylistWindow::setSearchField( int field )
     m_searchField = field;
 }
 
+
 void PlaylistWindow::slotMenuActivated( int index )
 {
     switch( index )
@@ -737,6 +740,7 @@ void PlaylistWindow::slotMenuActivated( int index )
         break;
     }
 }
+
 
 #include <kwin.h>
 void PlaylistWindow::showHide() //SLOT

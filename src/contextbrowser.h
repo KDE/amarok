@@ -15,6 +15,7 @@ class CollectionDB;
 class MetaBundle;
 class QPalette;
 class KHTMLPart;
+class Scrobbler;
 
 class ContextBrowser : public QVBox, public EngineObserver
 {
@@ -41,6 +42,12 @@ class ContextBrowser : public QVBox, public EngineObserver
         void slotContextMenu( const QString& urlString, const QPoint& point );
         void showHome();
         void showCurrentTrack();
+        void showLyrics();
+
+        void lyricsData( KIO::Job* job, const QByteArray& data );
+        void lyricsResult( KIO::Job* job );
+
+        void relatedArtistsFetched( QStringList& artists );
 
     private:
         void setStyleSheet();
@@ -51,11 +58,17 @@ class ContextBrowser : public QVBox, public EngineObserver
         KHTMLPart *browser;
         MetaBundle *m_currentTrack;
         CollectionDB *m_db;
+        Scrobbler *m_scrobbler;
+
         QString m_styleSheet;
         KURL m_url;
         QString m_artist;
         QString m_album;
         bool m_emptyDB;
+        QString m_lyrics;
+        QStringList m_relatedArtists;
+
+        QString m_HTMLSource;
 };
 
 #endif /* AMAROK_CONTEXTBROWSER_H */

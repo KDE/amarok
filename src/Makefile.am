@@ -67,6 +67,7 @@ amarokapp_SOURCES = \
     scriptmanager.cpp \
     scriptmanager_selector.cpp \
     scriptmanagerbase.ui \
+    scrobbler.cpp \
     searchbrowser.cpp \
     sliderwidget.cpp \
     smartplaylist.cpp \

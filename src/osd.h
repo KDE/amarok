@@ -9,7 +9,7 @@
   osd.h   -  Provides an interface to a plain QWidget, which is independent of KDE (bypassed to X11)
   begin:     Fre Sep 26 2003
   copyright: (C) 2003 by Christian Muehlhaeuser
-  email:     muesli@chareit.net
+  email:     chris@chris.de
 */
 
 #ifndef AMAROK_OSD_H
@@ -29,7 +29,7 @@ class OSDWidget : public QWidget
       public:
         enum Alignment { Left, Middle, Center, Right };
 
-        OSDWidget(const QString &appName, QWidget *parent = 0, const char *name = "osd");
+        OSDWidget( const QString &appName, QWidget *parent = 0, const char *name = "osd" );
 
         void unsetColors();
 
@@ -39,28 +39,28 @@ class OSDWidget : public QWidget
 
       public slots:
         //TODO rename show, scrap removeOSD, just use hide() <- easier to learn
-        void showOSD(const QString&, bool preemptive=false );
+        void showOSD( const QString&, bool preemptive = false );
         void removeOSD() { hide(); } //inlined as is convenience function
         void show();
 
-        void setDuration(int ms);
-        void setFont(const QFont &newfont);
-        void setShadow(bool shadow);
-        void setTextColor(const QColor &newcolor);
-        void setBackgroundColor(const QColor &newColor);
+        void setDuration( int ms );
+        void setFont( const QFont &newfont );
+        void setShadow( bool shadow );
+        void setTextColor( const QColor &newcolor );
+        void setBackgroundColor(const QColor &newColor );
         void setOffset( int x, int y );
-        void setAlignment(Alignment);
-        void setScreen(int screen);
-        void setText(const QString &text) { m_currentText = text; refresh(); }
+        void setAlignment( Alignment );
+        void setScreen( int screen );
+        void setText( const QString &text ) { m_currentText = text; refresh(); }
 
       protected slots:
         void minReached();
 
       protected:
         /* render text into osdBuffer */
-        void renderOSDText(const QString &text);
+        void renderOSDText( const QString &text );
         void mousePressEvent( QMouseEvent* );
-        bool event(QEvent*);
+        bool event( QEvent* );
 
         /* call to reposition a new OSD text or when position attributes change */
         void reposition( QSize newSize = QSize() );
@@ -116,23 +116,23 @@ namespace amaroK
 {
     class OSD : public OSDWidget
     {
-    Q_OBJECT
-    public:
-        static OSD *instance();
+      Q_OBJECT
+        public:
+            static OSD *instance();
 
-        void applySettings();
+            void applySettings();
 
-    public slots:
-        void showTrack( const MetaBundle &bundle );
-        void showTrack() { showOSD( m_text ); }
+        public slots:
+            void showTrack( const MetaBundle &bundle );
+            void showTrack() { showOSD( m_text ); }
 
-        //this function is for the showOSD global shortcut, it should always work //FIXME sucks
-        void forceShowTrack() { bool b = isEnabled(); setEnabled( true ); showTrack(); setEnabled( b ); }
+            //this function is for the showOSD global shortcut, it should always work //FIXME sucks
+            void forceShowTrack() { bool b = isEnabled(); setEnabled( true ); showTrack(); setEnabled( b ); }
 
-    private:
-        OSD() : OSDWidget( "amaroK" ) {}
+        private:
+            OSD() : OSDWidget( "amaroK" ) {}
 
-        QString m_text;
+            QString m_text;
     };
 }
 

@@ -21,6 +21,8 @@
 #include "playlistitem.h"
 #include "playlist.h"
 
+#include <math.h>
+
 #include <qlistview.h>
 #include <qpainter.h>
 #include <qpen.h>
@@ -324,15 +326,42 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         QPainter paint( &buffer, true );
         paint.setFont( p->font() );
 
-        QColorGroup glowCg = cg; //shallow copy
+/*        QColorGroup glowCg = cg; //shallow copy
 
         glowCg.setColor( QColorGroup::Base, glowBase );
         glowCg.setColor( QColorGroup::Text, glowText );
 
         //KListViewItem enforces alternate color, so we use QListViewItem
-        QListViewItem::paintCell( &paint, glowCg, column, width, align );
-        paint.end();
+        QListViewItem::paintCell( &paint, glowCg, column, width, align );*/
 
+        // Here we draw the shaded background
+
+        int h, s, v;
+        glowBase.getHsv( &h, &s, &v );
+        QColor col;
+
+        for ( int i = 0; i < height(); i++ )
+        {
+            col.setHsv( h, s, static_cast<int>( sin( (float)i / ( (float)height() / 4 ) ) * 32.0 + 196 ) );
+            paint.setPen( col );
+            paint.drawLine( 0, i, width, i );
+        }
+
+        // Draw the pixmap, if present
+
+        int margin = 0;
+        if ( pixmap( column ) ) {
+            paint.drawPixmap( 0, height() / 2 - pixmap( column )->height() / 2, *pixmap( column ) );
+            margin = pixmap( column )->width();
+        }
+
+        // Draw the text
+
+        int textHeight = p->fontMetrics().boundingRect( text( 0 ) ).height();
+        paint.setPen( glowText );
+        paint.drawText( margin, height() / 2 - textHeight / 2 - 1, width, height(), align, text( column ) );
+
+        paint.end();
         p->drawPixmap( 0, 0, buffer );
     }
     else KListViewItem::paintCell( p, cg, column, width, align );

@@ -115,6 +115,7 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     , m_undoCounter( 0 )
     , m_editText( 0 )
     , m_ac( ac ) //REMOVE
+    , m_columnFraction( 13, 0 )
 {
     s_instance = this;
 
@@ -158,6 +159,7 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     setRenameable( 5 );
     setRenameable( 6 );
     setRenameable( 7 );
+    setRenameable( 11 );
     setColumnAlignment(  7, Qt::AlignCenter ); //track
     setColumnAlignment(  9, Qt::AlignRight );  //length
     setColumnAlignment( 10, Qt::AlignCenter ); //bitrate
@@ -176,7 +178,6 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
              this,       SLOT( saveUndoState() ) );
 
     connect( &Glow::timer, SIGNAL(timeout()), SLOT(slotGlowTimer()) );
-
 
     KStdAction::copy( this, SLOT( copyToClipboard() ), ac, "playlist_copy" );
     KStdAction::selectAll( this, SLOT( selectAll() ), ac, "playlist_select_all" );
@@ -200,7 +201,11 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     paletteChange( palette() ); //sets up glowColors
     restoreLayout( KGlobal::config(), "PlaylistColumnsLayout" );
     columnOrderChanged();
+    //cause the column fractions to be updated, but in a safe way, ie no specific column
+    columnResizeEvent( header()->count(), 0, 0 );
 
+    //do after you resize all the columns
+    connect( header(), SIGNAL(sizeChange( int, int, int )), SLOT(columnResizeEvent( int, int, int )) );
 
     header()->installEventFilter( this );
 }
@@ -879,6 +884,166 @@ Playlist::viewportPaintEvent( QPaintEvent *e )
         QPainter painter( viewport() );
         painter.fillRect( drawDropVisualizer( 0, 0, m_marker ), QBrush( colorGroup().highlight(), QBrush::Dense4Pattern ) );
     }
+}
+
+static uint negativeWidth = 0;
+
+void
+Playlist::viewportResizeEvent( QResizeEvent *e )
+{
+    kdDebug() << k_funcinfo << endl;
+
+    //only be clever with the sizing if there is not many items
+    //TODO don't allow an item to be made too small (ie less than 50% of ideal width)
+
+//     int idealWidth[12];
+     int newWidth[13];
+//     QFontMetrics fm = fontMetrics();
+//
+//     for( int w, iw, c = 0; c < 12 ; ++c ) {
+//         w = /*header()->sectionSizeHint( c, fm ).width()*/0;
+//
+//         for( QListViewItem* item = firstChild(); item; item = item->itemBelow() ) {
+//             iw = item->width( fm, this, c );
+//             if ( 0 == c )
+//                 iw += itemMargin() - 1;
+//             w = QMAX( w, iw );
+//         }
+//
+//         idealWidth[c] = QMAX( w, QApplication::globalStrut().width() );
+//         idealWidth[c] = QMIN( idealWidth[c], 200 );
+//     }
+
+    //makes this much quicker
+    header()->blockSignals( true );
+
+    if( e->size().width() != e->oldSize().width() )
+    {
+        const double W = (double)e->size().width() - negativeWidth;
+
+        for( uint c = 0; c < m_columnFraction.size(); ++c ) {
+            switch( c ) {
+            case PlaylistItem::Track:
+            case PlaylistItem::Bitrate:
+            case PlaylistItem::Score:
+            case PlaylistItem::Length:
+            case PlaylistItem::Year:
+                break;
+            default:
+                if( m_columnFraction[c] > 0 )
+
+                   setColumnWidth( c, int(W * m_columnFraction[c]) );
+            }
+        }
+    }
+
+//     for( int excess = 0, c = 0; c < 11; ++c ) {
+//
+//         if( newWidth[c] == 0 ) continue;
+//
+//         if ( newWidth[c] < idealWidth[c] ) {
+//             excess = idealWidth[c] - newWidth[c];
+//             newWidth[c] = idealWidth[c];
+//             continue;
+//         }
+//
+//         if ( excess ) {
+//             int diff = newWidth[c] - idealWidth[c];
+//
+//             if( diff > excess ) diff = excess;
+//
+//             newWidth[c] -= diff;
+//             excess -= diff;
+//         }
+//     }
+
+//     for( uint c = 0; c < 11; ++c )
+//         setColumnWidth( c, newWidth[c] );
+
+    header()->blockSignals( false );
+
+    //header()->resize( visibleWidth(), header()->height() );
+
+    //QScrollView::viewportResizeEvent( e );
+
+    //ensure that the listview scrollbars are updated etc.
+    triggerUpdate();
+
+    //updateScrollBars();
+}
+
+void
+Playlist::columnResizeEvent( int col, int oldw, int neww )
+{
+    kdDebug() << k_funcinfo << endl;
+
+    if( neww == 0 ) {
+        const double W = (double)width() - negativeWidth;
+
+        for( uint c = 0; c < m_columnFraction.size(); ++c ) {
+            if( c == col )
+               continue;
+            switch( c ) {
+            case PlaylistItem::Track:
+            case PlaylistItem::Bitrate:
+            case PlaylistItem::Score:
+            case PlaylistItem::Length:
+            case PlaylistItem::Year:
+                break;
+            default:
+                if( m_columnFraction[c] > 0 )
+                   setColumnWidth( c, int(W * m_columnFraction[c]) );
+            }
+        }
+
+    }
+
+    else if( oldw != 0 ) {
+        //alter the size of the column on the right
+        for( int section = col, index = header()->mapToIndex( section ); index < header()->count(); ) {
+            section = header()->mapToSection( ++index );
+
+            if ( header()->sectionSize( section ) ) {
+                header()->blockSignals( true );
+                //TODO don't do this for last column
+                    setColumnWidth( section, header()->sectionSize( section ) + oldw - neww );
+                header()->blockSignals( false );
+
+                break;
+            }
+        }
+    }
+
+    negativeWidth = 0;
+
+    //TODO check for W == 0
+    uint w = 0;
+    for( uint x = 0; x < m_columnFraction.size(); ++x ) {
+        switch( x ) {
+        case PlaylistItem::Track:
+        case PlaylistItem::Bitrate:
+        case PlaylistItem::Score:
+        case PlaylistItem::Length:
+        case PlaylistItem::Year:
+            break;
+        default:
+            w += columnWidth( x );
+        }
+
+        negativeWidth += columnWidth( x );
+    }
+
+    for( uint x = 0; x < m_columnFraction.size(); ++x )
+        m_columnFraction[x] = (double)columnWidth( x ) / double(w);
+
+    double one = 0;
+    for( uint x = 0; x < m_columnFraction.size(); ++x )
+        one += m_columnFraction[x];
+
+    negativeWidth -= w;
+
+    kdDebug() << "One? " << one << endl;
+    kdDebug() << "-w: " << negativeWidth << endl;
 }
 
 bool
@@ -1770,27 +1935,44 @@ Playlist::startEditTag( QListViewItem *item, int column )
 }
 
 void
-Playlist::writeTag( QListViewItem *lvi, const QString &tag, int col ) //SLOT
+Playlist::writeTag( QListViewItem *lvi, const QString &tag, int column ) //SLOT
 {
-    if( m_editText != tag && !(m_editText.isEmpty() && tag.isEmpty()) )    //write the new tag only if it's changed
-        m_weaver->append( new TagWriter( this, (PlaylistItem *)lvi, tag, col ), true );
+    if ( m_editText != tag && !(m_editText.isEmpty() && tag.isEmpty()) )    //write the new tag only if it's changed
+    {
+        if ( column == PlaylistItem::Score )
+        {
+            #define lvi static_cast<PlaylistItem*>(lvi)
+
+            // update score in database, only
+            CollectionDB db;
+            db.setSongPercentage( lvi->url().path(), tag.toInt() );
+
+            #undef lvi
+        }
+        else
+            m_weaver->append( new TagWriter( this, (PlaylistItem *)lvi, tag, column ), true );
+    }
 
     QListViewItem *below = lvi->itemBelow();
     //FIXME will result in nesting of this function?
-    if( below && below->isSelected() ) { rename( below, col ); }
+    if ( below && below->isSelected() )
+        rename( below, column );
 }
 
 void Playlist::showTagDialog( QPtrList<QListViewItem> items )
 {
-    if( items.count() == 1 ) {
+    if( items.count() == 1 )
+    {
         PlaylistItem *item = static_cast<PlaylistItem*>( items.first() );
-        if( QFile::exists( item->url().path() ) ) {
+        if( QFile::exists( item->url().path() ) )
+        {
             TagDialog *dialog = new TagDialog( item->metaBundle(), item, instance() );
             dialog->show();
         }
         else KMessageBox::sorry( this, i18n("This file does not exist") );
     }
-    else {
+    else
+    {
         //edit multiple tracks in tag dialog
         KURL::List urls;
         for( QListViewItem *item = items.first(); item; item = items.next() )

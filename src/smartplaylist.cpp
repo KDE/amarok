@@ -139,8 +139,8 @@ void SmartPlaylistView::removeSelectedPlaylists()
 
 void SmartPlaylistView::loadDefaultPlaylists()
 {
-    CollectionDB *db = new CollectionDB();
-    QStringList artistList = db->artistList();
+    CollectionDB db;
+    QStringList artistList = db.artistList();
 
     /********** All Collection **************/
     QString query = "SELECT tags.url "
@@ -164,7 +164,7 @@ void SmartPlaylistView::loadDefaultPlaylists()
                          "FROM tags, artist, statistics "
                          "WHERE statistics.url = tags.url AND tags.artist = artist.id AND artist.name = '%1' "
                          "ORDER BY statistics.percentage DESC "
-                         "LIMIT 0,15;" ).arg( db->escapeString( artistList[i] ) );
+                         "LIMIT 0,15;" ).arg( db.escapeString( artistList[i] ) );
         childItem = new SmartPlaylist( item, childItem, i18n("By ") + artistList[i], query );
     }
 
@@ -182,7 +182,7 @@ void SmartPlaylistView::loadDefaultPlaylists()
                          "FROM tags, artist, statistics "
                          "WHERE statistics.url = tags.url AND tags.artist = artist.id AND artist.name = '%1' "
                          "ORDER BY statistics.playcounter DESC "
-                         "LIMIT 0,15;" ).arg( db->escapeString( artistList[i] ) );
+                         "LIMIT 0,15;" ).arg( db.escapeString( artistList[i] ) );
         childItem = new SmartPlaylist( item, childItem, i18n("By ") + artistList[i], query );
     }
 
@@ -199,7 +199,7 @@ void SmartPlaylistView::loadDefaultPlaylists()
                          "FROM tags, artist "
                          "WHERE tags.artist = artist.id AND artist.name = '%1' "
                          "ORDER BY tags.createdate DESC "
-                         "LIMIT 0,15;" ).arg( db->escapeString( artistList[i] ) );
+                         "LIMIT 0,15;" ).arg( db.escapeString( artistList[i] ) );
         childItem = new SmartPlaylist( item, childItem, i18n("By ") + artistList[i], query );
     }
 
@@ -227,21 +227,19 @@ void SmartPlaylistView::loadDefaultPlaylists()
     QStringList values;
     QStringList names;
 
-    db->execSql( "SELECT DISTINCT name "
-                          "FROM genre;", &values, &names );
+    db.execSql( "SELECT DISTINCT name "
+                "FROM genre;", &values, &names );
 
     childItem = 0;
     for( uint i=0; i < values.count(); i++ ) {
         query = QString("SELECT tags.url "
                         "FROM tags, artist "
                         "WHERE tags.genre = %1 AND tags.artist = artist.id "
-                        "ORDER BY artist.name, tags.title;" ).arg( db->getValueID( "genre", values[i], false ) );
+                        "ORDER BY artist.name, tags.title;" ).arg( db.genreID( values[i], false ) );
         childItem = new SmartPlaylist( item, childItem, values[i], query );
     }
     values.clear();
     names.clear();
-
-    delete db;
 }
 
 
@@ -278,8 +276,8 @@ KURL::List SmartPlaylistView::loadSmartPlaylist( QListViewItem *item )
     QStringList names;
     KURL::List list;
 
-    CollectionDB *db = new CollectionDB();
-    db->execSql( item->query(), &values, &names );
+    CollectionDB db;
+    db.execSql( item->query(), &values, &names );
 
     if ( !values.isEmpty() )
     {
@@ -289,7 +287,6 @@ KURL::List SmartPlaylistView::loadSmartPlaylist( QListViewItem *item )
 
     values.clear();
     names.clear();
-    delete db;
 
     #undef item
 

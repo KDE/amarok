@@ -15,6 +15,7 @@
 #include "playlist.h"     //appendMedia()
 #include "playlistitem.h"     //appendMedia()
 #include "qstringx.h"
+#include "scrobbler.h"
 #include "sqlite/sqlite3.h"
 
 #include <kactioncollection.h>
@@ -26,6 +27,8 @@
 #include <khtml_part.h>
 #include <khtmlview.h>
 #include <kiconloader.h>
+#include <kio/job.h>
+#include <kio/jobclasses.h>
 #include <klineedit.h>
 #include <klocale.h>
 #include <kmessagebox.h>
@@ -48,10 +51,11 @@ using amaroK::QStringx;
 ContextBrowser::ContextBrowser( const char *name )
         : QVBox( 0, name )
         , m_currentTrack( 0 )
-        , m_db( new CollectionDB() )
 {
     kdDebug() << k_funcinfo << endl;
     EngineController::instance()->attach( this );
+    m_db = new CollectionDB();
+    m_scrobbler = new Scrobbler();
 
     setSpacing( 4 );
     setMargin( 5 );
@@ -65,10 +69,12 @@ ContextBrowser::ContextBrowser( const char *name )
     KActionCollection* ac = new KActionCollection( this );
     KAction* homeAction = new KAction( i18n( "Home" ), "gohome", 0, this, SLOT( showHome() ), ac, "Home" );
     KAction* trackAction = new KAction( i18n( "Current Track" ), "today", 0, this, SLOT( showCurrentTrack() ), ac, "Current Track" );
+    KAction* lyricsAction = new KAction( i18n( "Lyrics" ), "document", 0, this, SLOT( showLyrics() ), ac, "Lyrics" );
 
     toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the open button to have text on right
     homeAction->plug( toolbar );
     trackAction->plug( toolbar );
+    lyricsAction->plug( toolbar );
 
     QWidget::setFont( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );
 
@@ -85,11 +91,15 @@ ContextBrowser::ContextBrowser( const char *name )
              this,                          SLOT( openURLRequest( const KURL & ) ) );
     connect( browser,                     SIGNAL( popupMenu( const QString&, const QPoint& ) ),
              this,                          SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
+    connect( m_scrobbler, SIGNAL( relatedArtistsFetched( QStringList& ) ),
+             this,        SLOT( relatedArtistsFetched( QStringList& ) ) );
 
-    if ( m_db->isEmpty() || !m_db->isDbValid() ) {
+    if ( m_db->isEmpty() || !m_db->isDbValid() )
+    {
         showIntroduction();
         m_emptyDB = true;
-    } else {
+    } else
+    {
         showHome();
         m_emptyDB = false;
     }
@@ -100,7 +110,6 @@ ContextBrowser::ContextBrowser( const char *name )
 
 ContextBrowser::~ContextBrowser()
 {
-    delete m_db;
     delete m_currentTrack;
 
     EngineController::instance()->detach( this );
@@ -158,6 +167,8 @@ void ContextBrowser::openURLRequest( const KURL &url )
             showCurrentTrack();
         else if ( m_url.path() == "stream" )
             showCurrentStream();
+        else if ( m_url.path() == "lyrics" )
+            showLyrics();
         else if ( m_url.path() == "collectionSetup" )
         {
             //TODO if we do move the configuration to the main configdialog change this,
@@ -248,6 +259,7 @@ void ContextBrowser::engineTrackEnded( int finalPosition, int trackLength )
 
 void ContextBrowser::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
+    m_relatedArtists.clear();
     delete m_currentTrack;
     m_currentTrack = new MetaBundle( bundle );
 
@@ -456,9 +468,6 @@ void ContextBrowser::showHome() //SLOT
     QStringList values;
     QStringList names;
 
-    // take care of sql updates (schema changed errors)
-    delete m_db;
-    m_db = new CollectionDB();
     // Triggers redisplay when new cover image is downloaded
     #ifdef AMAZON_SUPPORT
     connect( m_db, SIGNAL( coverFetched(const QString&) ), this, SLOT( showCurrentTrack() ) );
@@ -474,7 +483,7 @@ void ContextBrowser::showHome() //SLOT
     browser->write(  "</table>" );
     browser->write(  "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-    m_db->execSql( QString( "SELECT tags.title, tags.url, round( statistics.percentage + 0.5 ), artist.name, album.name "
+    m_db->execSql( QString( "SELECT tags.title, tags.url, round( statistics.percentage + 0.4 ), artist.name, album.name "
                             "FROM tags, artist, album, statistics "
                             "WHERE artist.id = tags.artist AND album.id = tags.album AND statistics.url = tags.url "
                             "ORDER BY statistics.percentage DESC "
@@ -544,8 +553,8 @@ void ContextBrowser::showCurrentTrack() //SLOT
     delete m_db;
     m_db = new CollectionDB();
 
-    uint artist_id = m_db->getValueID( "artist", m_currentTrack->artist(), false );
-    uint album_id = m_db->getValueID( "album", m_currentTrack->album(), false );
+    uint artist_id = m_db->artistID( m_currentTrack->artist() );
+    uint album_id  = m_db->albumID ( m_currentTrack->album() );
 
     // Triggers redisplay when new cover image is downloaded
     connect( m_db, SIGNAL( coverFetched() ), this, SLOT( showCurrentTrack() ) );
@@ -563,7 +572,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                      "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
     m_db->execSql( QString( "SELECT datetime( datetime( statistics.createdate, 'unixepoch' ), 'localtime' ), "
-                            "datetime( datetime( statistics.accessdate, 'unixepoch' ), 'localtime' ), statistics.playcounter, round( statistics.percentage + 0.5 ) "
+                            "datetime( datetime( statistics.accessdate, 'unixepoch' ), 'localtime' ), statistics.playcounter, round( statistics.percentage + 0.4 ) "
                             "FROM  statistics "
                             "WHERE url = '%1';" )
                    .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names );
@@ -584,7 +593,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                     "<tr>"
                                      "<td width='20%'>"
                                       "<a class='menu' href='fetchcover:%8 @@@ %9'>"
-                                       "<img align='left' valign='center' hspace='2' title='Click for information from amazon.com, right-click for menu.' src='%10'>"
+                                       "<img align='left' hspace='2' title='Click for information from amazon.com, right-click for menu.' src='%10'>"
                                       "</a>"
                                      "</td>"
                                      "<td valign='bottom' align='right' width='80%'>"
@@ -617,7 +626,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                         "<span class='album'><b>%1 - %2</b></span><br>%3</td>"
                                         "<td valign='top' align='right' width='10%'><a href='musicbrainz:%4 @@@ %5'>"
                                         "<img src='%6'></a></td></tr></table> <table width='100%'><tr><td width='20%'>"
-                                        "<a class='menu' href='fetchcover:%6 @@@ %7'><img align='left' valign='center' hspace='2' title='Click for information from amazon.com, right-click for menu.' src='%8'></a>"
+                                        "<a class='menu' href='fetchcover:%6 @@@ %7'><img align='left' hspace='2' title='Click for information from amazon.com, right-click for menu.' src='%8'></a>"
                                         "</td><td width='80%' valign='bottom' align='right'>"
                                         "<i>" + i18n( "Never played before" )  + "</i></td>"
                                         "</tr>" )
@@ -652,8 +661,46 @@ void ContextBrowser::showCurrentTrack() //SLOT
                         "</div>" );
     }
 
+    // scrobblaaaaaar
+    if ( m_relatedArtists.isEmpty() )
+        m_scrobbler->relatedArtists( m_currentTrack->artist() );
+    else
+    {
+        QString token;
+
+        for ( uint i = 0; i < m_relatedArtists.count(); i++ )
+        {
+            if ( i > 0 ) token += " OR ";
+            token += " artist.name = '" + m_db->escapeString( m_relatedArtists[i] ) + "' ";
+        }
+
+        m_db->execSql( QString( "SELECT tags.title, tags.url, round( statistics.percentage + 0.4 ), artist.name "
+                                "FROM tags, artist, statistics "
+                                "WHERE tags.artist = artist.id AND ( %1 ) AND statistics.url = tags.url "
+                                "ORDER BY statistics.percentage DESC "
+                                "LIMIT 0,5;" )
+                          .arg( token ), &values );
+
+        if ( !values.isEmpty() )
+        {
+            browser->write( "<br><div class='rbcontent'>" );
+            browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
+            browser->write( "<tr><th>" + i18n( "Suggested Songs" ) + "</th></tr>" );
+            browser->write( "</table>" );
+            browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+
+            for ( uint i = 0; i < values.count(); i += 4 )
+                browser->write( QString ( "<tr><td class='song'><a href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">"
+                                          + values[i + 3] + " - " + values[i] + " <i>(" + i18n( "Score:" ) + " " + values[i + 2] + ")</i></a></td></tr>" ) );
+
+            browser->write( "</table></div>" );
+        }
+
+        values.clear();
+    }
+
     // <Favourite Tracks Information>
-    m_db->execSql( QString( "SELECT tags.title, tags.url, round( statistics.percentage + 0.5 ) "
+    m_db->execSql( QString( "SELECT tags.title, tags.url, round( statistics.percentage + 0.4 ) "
                             "FROM tags, statistics "
                             "WHERE tags.artist = %1 AND statistics.url = tags.url "
                             "ORDER BY statistics.percentage DESC "
@@ -758,10 +805,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
     browser->end();
 }
 
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// PRIVATE
-//////////////////////////////////////////////////////////////////////////////////////////
 
 namespace amaroK {
 class Color : public QColor {
@@ -933,9 +976,79 @@ void ContextBrowser::showCurrentStream()
     browser->write( "</table></div>" );
     // </Stream Information>
 
-    browser->write( "</div></html>");
+    browser->write( "</div></html>" );
 
     browser->end();
+}
+
+
+// THE FOLLOWING CODE IS COPYRIGHT BY
+// Christian Muehlhaeuser
+// <chris at chris.de>
+// If I'm violating any copyright or such
+// please contact / sue me. Thanks.
+
+void ContextBrowser::showLyrics()
+{
+    if ( !m_currentTrack )
+        return;
+
+    QString url = QString( "http://lyrc.com.ar/en/tema1en.php?artist=%1&songname=%2" )
+                     .arg( m_currentTrack->artist() )
+                     .arg( m_currentTrack->title() );
+
+    kdDebug() << "Using this url: " << url << endl;
+    m_lyrics = "";
+
+    KIO::TransferJob* job = KIO::get( url, false, false );
+    connect( job, SIGNAL( result( KIO::Job* ) ),
+             this,  SLOT( lyricsResult( KIO::Job* ) ) );
+    connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
+             this,  SLOT( lyricsData( KIO::Job*, const QByteArray& ) ) );
+}
+
+
+void
+ContextBrowser::lyricsData( KIO::Job*, const QByteArray& data ) //SLOT
+{
+    // Append new chunk of string
+    m_lyrics += QString( data );
+}
+
+
+void
+ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
+{
+    if ( !job->error() == 0 )
+    {
+        kdWarning() << "[LyricsFetcher] KIO error! errno: " << job->error() << endl;
+        return;
+    }
+
+    m_lyrics = m_lyrics.mid( m_lyrics.find( "<font size='2'>" ) );
+    if ( m_lyrics.find( "<p><hr" ) )
+        m_lyrics = m_lyrics.mid( 0, m_lyrics.find( "<p><hr" ) );
+    else
+        m_lyrics = m_lyrics.mid( 0, m_lyrics.find( "<br><br>" ) );
+
+    browser->begin();
+    browser->setUserStyleSheet( m_styleSheet );
+
+    browser->write( "<div>" );
+    browser->write( m_lyrics );
+    browser->write( "</div></html>" );
+    browser->end();
+}
+
+
+void
+ContextBrowser::relatedArtistsFetched( QStringList& artists )
+{
+    kdDebug() << "artists retrieved" << endl;
+    m_relatedArtists = artists;
+
+    // trigger update
+    showCurrentTrack();
 }
 
 

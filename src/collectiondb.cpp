@@ -468,13 +468,45 @@ CollectionDB::getSongPercentage( const QString url )
 {
     QStringList values;
 
-    execSql( QString( "SELECT round( percentage + 0.5 ) FROM statistics WHERE url = '%1';" )
+    execSql( QString( "SELECT round( percentage + 0.4 ) FROM statistics WHERE url = '%1';" )
                 .arg( escapeString( url ) ), &values );
 
     if( values.count() )
         return values[0].toInt();
 
     return 0;
+}
+
+
+void
+CollectionDB::setSongPercentage( const QString url, int percentage )
+{
+    QStringList values, names;
+
+    execSql( QString( "SELECT playcounter, createdate, accessdate FROM statistics WHERE url = '%1';" )
+                .arg( escapeString( url ) ), &values, &names );
+
+    // check boundaries
+    if ( percentage > 100 ) percentage = 100;
+    if ( percentage < 1 )   percentage = 1;
+
+    if ( values.count() )
+    {
+        // entry exists
+        execSql( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
+                          "VALUES ( '%1', '%2', '%3', %4, %5 );" )
+                    .arg( escapeString( url ) )
+                    .arg( values[1] )
+                    .arg( values[2] )
+                    .arg( percentage )
+                    .arg( values[0] ) );
+    } else
+    {
+        execSql( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
+                          "VALUES ( '%1', strftime('%s', 'now'), strftime('%s', 'now'), %2, 0 );" )
+                    .arg( escapeString( url ) )
+                    .arg( percentage ) );
+    }
 }
 
 
@@ -539,7 +571,7 @@ CollectionDB::isSamplerAlbum( const QString album )
     if ( album == "Unknown" || album == "" )
         return false;
 
-    const uint album_id = getValueID( "album", album, FALSE, FALSE );
+    const uint album_id = albumID( album, FALSE, FALSE );
     execSql( QString( "SELECT DISTINCT artist.name FROM artist, tags WHERE tags.artist = artist.id AND tags.album = '%1';" )
                 .arg( album_id ), &values_artist, &names_artist );
     execSql( QString( "SELECT DISTINCT dir FROM tags WHERE album = '%1';" )
@@ -568,6 +600,13 @@ CollectionDB::removeDirFromCollection( QString path )
 }
 
 #include <time.h>
+/**
+ * Executes an SQL statement on the already opened database
+ * @param statement SQL program to execute. Only one SQL statement is allowed.
+ * @retval values   will contain the queried data, set to NULL if not used
+ * @retval names    will contain all column names, set to NULL if not used
+ * @return          true if successful
+ */
 bool
 CollectionDB::execSql( const QString& statement, QStringList* const values, QStringList* const names, const bool debug )
 {
@@ -649,6 +688,10 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
 }
 
 
+/**
+ * Returns the rowid of the most recently inserted row
+ * @return          int rowid
+ */
 int
 CollectionDB::sqlInsertID()
 {
@@ -823,18 +866,18 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, bool upd
 {
     QString command = "UPDATE tags SET ";
     command += "title = '" + escapeString( bundle.title() ) + "', ";
-    command += "artist = " + escapeString( QString::number( getValueID( "artist", bundle.artist(), true ) ) ) + ", ";
-    command += "album = " + escapeString( QString::number( getValueID( "album", bundle.album(), true ) ) ) + ", ";
-    command += "genre = " + escapeString( QString::number( getValueID( "genre", bundle.genre(), true ) ) ) + ", ";
-    command += "year = " + QString::number( getValueID( "year", bundle.year(), true ) ) + ", ";
-    if( !bundle.track().isEmpty() )
+    command += "artist = " + QString::number( artistID( bundle.artist(), true ) ) + ", ";
+    command += "album = "  + QString::number(  albumID( bundle.album(), true ) ) + ", ";
+    command += "genre = "  + QString::number(  genreID( bundle.genre(), true ) ) + ", ";
+    command += "year = "   + QString::number(   yearID( bundle.year(), true ) ) + ", ";
+    if ( !bundle.track().isEmpty() )
         command += "track = " + bundle.track() + ", ";
     command += "comment = '" + escapeString( bundle.comment() ) + "' ";
     command += "WHERE url = '" + escapeString( url ) + "';";
 
     execSql( command );
 
-    if( updateCB )    //update the collection browser
+    if ( updateCB )    //update the collection browser
         CollectionView::instance()->renderView();
 }
 
@@ -846,10 +889,10 @@ CollectionDB::updateTag( const QString &url, const QString &field, const QString
     idFields << "artist" << "album" << "genre" << "year";
 
     QString command = "UPDATE tags "
-                                   "SET " + field + " = ";
+                      "SET " + field + " = ";
 
     if( idFields.contains( field ) )
-        command += escapeString( QString::number( getValueID( field, newTag, true ) ) ) + " ";
+        command += escapeString( QString::number( IDFromValue( field, newTag, true ) ) ) + " ";
     else
         command += "'" + escapeString( newTag ) + "' ";
 
@@ -899,14 +942,105 @@ CollectionDB::scanModifiedDirs( bool recursively, bool importPlaylists )
 
 
 uint
-CollectionDB::getValueID( QString name, QString value, bool autocreate, bool useTempTables )
+CollectionDB::artistID( QString value, bool autocreate, bool useTempTables )
 {
     // lookup cache
-    if ( name.lower() == "artist" && m_cacheArtist == value )
+    if ( m_cacheArtist == value )
         return m_cacheArtistID;
-    if ( name.lower() == "album" && m_cacheAlbum == value )
+
+    uint id = IDFromValue( "artist", value, autocreate, useTempTables );
+
+    // cache values
+    m_cacheArtist = value;
+    m_cacheArtistID = id;
+
+    return id;
+}
+
+
+QString
+CollectionDB::artistValue( uint id )
+{
+    // lookup cache
+    if ( m_cacheArtistID == id )
+        return m_cacheArtist;
+
+    QString value = valueFromID( "artist", id );
+
+    // cache values
+    m_cacheArtist = value;
+    m_cacheArtistID = id;
+
+    return value;
+}
+
+
+
+uint
+CollectionDB::albumID( QString value, bool autocreate, bool useTempTables )
+{
+    // lookup cache
+    if ( m_cacheAlbum == value )
         return m_cacheAlbumID;
 
+    uint id = IDFromValue( "album", value, autocreate, useTempTables );
+
+    // cache values
+    m_cacheAlbum = value;
+    m_cacheAlbum = id;
+
+    return id;
+}
+
+
+QString
+CollectionDB::albumValue( uint id )
+{
+    // lookup cache
+    if ( m_cacheAlbumID == id )
+        return m_cacheAlbum;
+
+    QString value = valueFromID( "album", id );
+
+    // cache values
+    m_cacheAlbum = value;
+    m_cacheAlbumID = id;
+
+    return value;
+}
+
+
+uint
+CollectionDB::genreID( QString value, bool autocreate, bool useTempTables )
+{
+    return IDFromValue( "genre", value, autocreate, useTempTables );
+}
+
+
+QString
+CollectionDB::genreValue( uint id )
+{
+    return valueFromID( "genre", id );
+}
+
+
+uint
+CollectionDB::yearID( QString value, bool autocreate, bool useTempTables )
+{
+    return IDFromValue( "year", value, autocreate, useTempTables );
+}
+
+
+QString
+CollectionDB::yearValue( uint id )
+{
+    return valueFromID( "year", id );
+}
+
+
+uint
+CollectionDB::IDFromValue( QString name, QString value, bool autocreate, bool useTempTables )
+{
     QStringList values;
     QStringList names;
 
@@ -914,8 +1048,8 @@ CollectionDB::getValueID( QString name, QString value, bool autocreate, bool use
         name.append( "_temp" );
 
     QString command = QString( "SELECT id FROM '%1' WHERE name LIKE '%2';" )
-                      .arg( name )
-                      .arg( escapeString( value ) );
+                         .arg( name )
+                         .arg( escapeString( value ) );
     execSql( command, &values, &names );
 
     uint id;
@@ -923,8 +1057,8 @@ CollectionDB::getValueID( QString name, QString value, bool autocreate, bool use
     if ( values.isEmpty() && autocreate )
     {
         command = QString( "INSERT INTO '%1' ( name ) VALUES ( '%2' );" )
-                  .arg( name )
-                  .arg( escapeString( value ) );
+                     .arg( name )
+                     .arg( escapeString( value ) );
 
         execSql( command );
         id = sqlInsertID();
@@ -934,55 +1068,22 @@ CollectionDB::getValueID( QString name, QString value, bool autocreate, bool use
 
     if ( values.isEmpty() )
         return 0;
-
     id = values[0].toUInt();
-
-    // cache values
-    if ( name.lower() == "artist" )
-    {
-        m_cacheArtist = value;
-        m_cacheArtistID = id;
-    }
-    if ( name.lower() == "album" )
-    {
-        m_cacheAlbum = value;
-        m_cacheAlbumID = id;
-    }
-
     return id;
 }
 
 
 QString
-CollectionDB::getValueFromID( QString table, uint id )
+CollectionDB::valueFromID( QString table, uint id )
 {
-    // lookup cache
-    if ( table.lower() == "artist" && m_cacheArtistID == id )
-        return m_cacheArtist;
-    if ( table.lower() == "album" && m_cacheAlbumID == id )
-        return m_cacheAlbum;
-
     QStringList values;
 
     execSql( QString( "SELECT name FROM %1 WHERE id=%2;" )
-                                   .arg( table )
-                                   .arg( id ), &values );
+                .arg( table )
+                .arg( id ), &values );
 
     if ( values.isEmpty() )
         return 0;
-
-    // cache values
-    if ( table.lower() == "artist" )
-    {
-        m_cacheArtist = values[0];
-        m_cacheArtistID = id;
-    }
-    if ( table.lower() == "album" )
-    {
-        m_cacheAlbum = values[0];
-        m_cacheAlbumID = id;
-    }
-
     return values[0];
 }
 
@@ -1063,7 +1164,7 @@ CollectionDB::retrieveSecondLevel( QString itemText, QString category1, QString 
         if ( itemText == i18n( "Various Artists" ) )
             command += "sampler = 1";
         else {
-            QString id = QString::number( getValueID( category1.lower(), itemText, false ) );
+            QString id = QString::number( IDFromValue( category1.lower(), itemText, false ) );
             command += category1.lower() + "=" + id;
         }
         command += " " + filterToken + " ORDER BY tags." + sorting + " DESC;";
@@ -1082,7 +1183,7 @@ CollectionDB::retrieveSecondLevel( QString itemText, QString category1, QString 
         if ( itemText == i18n( "Various Artists" ) )
             command += "sampler = 1";
         else {
-            QString id = QString::number( getValueID( category1.lower(), itemText, false ) );
+            QString id = QString::number( IDFromValue( category1.lower(), itemText, false ) );
             command += category1.lower() + "=" + id;
         }
         command += " " + filterToken + " ORDER BY lower(" + category2.lower() + ".name) DESC;";
@@ -1114,7 +1215,7 @@ CollectionDB::retrieveThirdLevel( QString itemText1, QString itemText2, QString 
     if( category3 == 0 ) {
         QString sorting = category2.lower() == "album" ? "track" : "title";
 
-        QString id_sub = QString::number( getValueID( category2.lower(), itemText2, false ) );
+        QString id_sub = QString::number( IDFromValue( category2.lower(), itemText2, false ) );
         command = "SELECT DISTINCT tags.title, tags.url FROM tags";
         if( filter != "" )
             command += ", " + category1.lower() + ", " + category2.lower();
@@ -1125,7 +1226,7 @@ CollectionDB::retrieveThirdLevel( QString itemText1, QString itemText2, QString 
         if ( itemText1 == i18n( "Various Artists" ) )
             command += "sampler = 1 ";
         else {
-            QString id = QString::number( getValueID( category1.lower(), itemText1, false ) );
+            QString id = QString::number( IDFromValue( category1.lower(), itemText1, false ) );
             command += category1.lower() + "=" + id;
         }
 
@@ -1133,7 +1234,7 @@ CollectionDB::retrieveThirdLevel( QString itemText1, QString itemText2, QString 
     }
     else {
 
-        QString sub_id = QString::number( getValueID( category2.lower(), itemText2, false ) );
+        QString sub_id = QString::number( IDFromValue( category2.lower(), itemText2, false ) );
         command = "SELECT DISTINCT " + category3.lower() + ".name, '0' FROM tags, " + category3.lower();
         if( filter != "" )
             command += ", " + category1.lower() + ", " + category2.lower();
@@ -1143,7 +1244,7 @@ CollectionDB::retrieveThirdLevel( QString itemText1, QString itemText2, QString 
         if ( itemText1 == i18n( "Various Artists" ) )
             command += "sampler = 1";
         else {
-            QString id = QString::number( getValueID( category1.lower(), itemText1, false ) );
+            QString id = QString::number( IDFromValue( category1.lower(), itemText1, false ) );
             command += category1.lower() + "=" + id;
         }
 
@@ -1174,8 +1275,8 @@ CollectionDB::retrieveFourthLevel( QString itemText1, QString itemText2, QString
 
     QString sorting = category3.lower() == "album" ? "track" : "title";
 
-    QString id_sub = QString::number( getValueID( category2.lower(), itemText2, false ) );
-    QString id_sub2 = QString::number( getValueID( category3.lower(), itemText3, false ) );
+    QString id_sub = QString::number( IDFromValue( category2.lower(), itemText2, false ) );
+    QString id_sub2 = QString::number( IDFromValue( category3.lower(), itemText3, false ) );
 
     QString command = "SELECT DISTINCT tags.title, tags.url FROM tags";
     if( filter != "" )
@@ -1188,7 +1289,7 @@ CollectionDB::retrieveFourthLevel( QString itemText1, QString itemText2, QString
     if ( itemText1 == i18n( "Various Artists" ) )
         command += "sampler = 1 ";
     else {
-        QString id = QString::number( getValueID( category1.lower(), itemText1, false ) );
+        QString id = QString::number( IDFromValue( category1.lower(), itemText1, false ) );
         command += category1.lower() + "=" + id;
     }
 
@@ -1234,7 +1335,7 @@ CollectionDB::retrieveFirstLevelURLs( QString itemText, QString category1, QStri
     if ( itemText == i18n( "Various Artists" ) )
         command += "sampler = 1 ";
     else {
-        QString id = QString::number( getValueID( category1.lower(), itemText, false ) );
+        QString id = QString::number( IDFromValue( category1.lower(), itemText, false ) );
         command += category1.lower() + "=" + id;
     }
 
@@ -1265,7 +1366,7 @@ CollectionDB::retrieveSecondLevelURLs( QString itemText1, QString itemText2, QSt
     }
 
 
-    QString id_sub = QString::number( getValueID( category2.lower(), itemText2, false ) );
+    QString id_sub = QString::number( IDFromValue( category2.lower(), itemText2, false ) );
 
     QString command = "SELECT DISTINCT tags.url FROM tags";
     if( filter != "" ) {
@@ -1279,7 +1380,7 @@ CollectionDB::retrieveSecondLevelURLs( QString itemText1, QString itemText2, QSt
     if ( itemText1 == i18n( "Various Artists" ) )
         command += "sampler = 1 ";
     else {
-        QString id = QString::number( getValueID( category1.lower(), itemText1, false ) );
+        QString id = QString::number( IDFromValue( category1.lower(), itemText1, false ) );
         command += category1.lower() + "=" + id;
     }
 
@@ -1308,8 +1409,8 @@ CollectionDB::retrieveThirdLevelURLs( QString itemText1, QString itemText2, QStr
     }
 
 
-    QString id_sub = QString::number( getValueID( category2.lower(), itemText2, false ) );
-    QString id_sub2 = QString::number( getValueID( category3.lower(), itemText3, false ) );
+    QString id_sub = QString::number( IDFromValue( category2.lower(), itemText2, false ) );
+    QString id_sub2 = QString::number( IDFromValue( category3.lower(), itemText3, false ) );
 
     QString command = "SELECT DISTINCT tags.url FROM tags";
     if( filter != "" )
@@ -1321,7 +1422,7 @@ CollectionDB::retrieveThirdLevelURLs( QString itemText1, QString itemText2, QStr
     if ( itemText1 == i18n( "Various Artists" ) )
         command += "sampler = 1 ";
     else {
-        QString id = QString::number( getValueID( category1.lower(), itemText1, false ) );
+        QString id = QString::number( IDFromValue( category1.lower(), itemText1, false ) );
         command += category1.lower() + "=" + id;
     }
 

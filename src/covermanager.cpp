@@ -47,13 +47,13 @@ QPixmap *nocover = 0;
 
 CoverManager::CoverManager( QWidget *parent, const char *name )
     : QWidget( parent, name, WDestructiveClose )
-    , m_db( new CollectionDB() )
     , m_filter( 0 )
     , m_fetchCounter( 0 )
     , m_fetchingCovers( 0 )
     , m_coversFetched( 0 )
     , m_coverErrors( 0 )
 {
+    m_db = new CollectionDB();
     setCaption( kapp->makeStdCaption( i18n("Cover Manager") ) );
 
     QVBoxLayout *vbox = new QVBoxLayout( this );
@@ -202,7 +202,6 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
 
 CoverManager::~CoverManager()
 {
-    delete m_db;
     delete nocover;
 
     //save window size

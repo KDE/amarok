@@ -48,10 +48,15 @@ void
 CoverFetcher::getCover( const QString& artist, const QString& album, const QString& saveas, QueryMode mode, bool noedit, int size, bool albumonly )
 {
     kdDebug() << k_funcinfo << endl;
+
     m_artist = artist;
     m_album = album;
-    if ( artist == album ) m_keyword = album;
-    else m_keyword = artist + " - " + album;
+
+    if ( artist == album )
+        m_keyword = album;
+    else
+        m_keyword = artist + " - " + album;
+
     m_saveas = saveas;
     m_noedit = noedit;
     m_size = size;
@@ -99,7 +104,6 @@ CoverFetcher::xmlResult( KIO::Job* job ) //SLOT
         deleteLater();
         return;
     }
-    kdDebug() << m_xmlDocument << endl;
 
     QDomDocument doc;
     doc.setContent( m_xmlDocument );

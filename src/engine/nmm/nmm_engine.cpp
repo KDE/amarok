@@ -1,286 +1,391 @@
-// Copyright (c) Max Howell 2004
-// Licensed under GPL v2
-// "lack of pussy makes you brave!"
+/* NMM - Network-Integrated Multimedia Middleware
+ *
+ * Copyright (C) 2002-2004
+ *                    NMM work group,
+ *                    Computer Graphics Lab,
+ *                    Saarland University, Germany
+ *                    http://www.networkmultimedia.org
+ *
+ * Maintainer:        Wolfram von Funck <wolfram@graphics.cs.uni-sb.de>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+ * USA
+ */
 
 #include "nmm_engine.h"
+
 #ifdef HAVE_NMM
 
-//#include "playerapp.h" //FIXME bah!
 #include "plugin/plugin.h"
-
-#include <nmm/base/connect.hpp>
-#include <nmm/base/EDObject.hpp> //for the badass TEDObject template
-#include <nmm/plugins/file/GenericReadNode.hpp>
-#include <nmm/plugins/file/mpeg/MP3ReadNode.hpp>
-#include <nmm/plugins/audio/mpegdec/MPEGAudioDecodeNode.hpp>
-#include <nmm/plugins/audio/oggvorbis/OggVorbisDecodeNode.hpp>
-#include <nmm/plugins/audio/PlaybackNode.hpp>
-
+#include <nmm/base/graph/GraphBuilder2.hpp>
+#include <nmm/base/registry/NodeDescription.hpp>
+#include <nmm/base/ProxyApplication.hpp>
+#include <nmm/interfaces/base/sync/ISynchronizedSink.hpp>
+#include <nmm/interfaces/file/ISeekable.hpp>
+#include <nmm/interfaces/file/ITrack.hpp>
+#include <nmm/interfaces/file/IBufferSize.hpp>
 #include <nmm/interfaces/general/progress/IProgressListener.hpp>
-#include <nmm/interfaces/audio/oggvorbis/IOggVorbis.hpp> //dunno why we need this
-
+#include <nmm/interfaces/general/progress/IProgress.hpp>
+#include <nmm/interfaces/general/ITrackDuration.hpp>
+#include <nmm/interfaces/device/audio/IAudioDevice.hpp>
+#include <nmm/base/ProxyObject.hpp>
+#include <kfileitem.h>
+#include <kmimetype.h>
 #include <iostream>
 #include <kurl.h>
 
-
-
-//TODO make members
-NMM::GenericSourceNode    *readfile = 0; //mp3readnode and genericreadnode derive from this
-NMM::GenericProcessorNode *decode   = 0;
-NMM::PlaybackNode         *playback = 0;
-
-
-
 AMAROK_EXPORT_PLUGIN( NmmEngine )
 
-
 NmmEngine::NmmEngine()
-  : Engine::Base()
-  , m_firstTime( TRUE )
-  , m_state( Engine::Empty )
-  , m_lastKnownPosition( 0 )
+  : EngineBase(),
+    __track_length(0),
+    __position(0),
+    __state(Engine::Empty),
+    __composite(0),
+    __app(0),
+    __endTrack_listener(this, &NmmEngine::endTrack),
+    __syncReset_listener(this, &NmmEngine::syncReset),
+    __setProgress_listener(this, &NmmEngine::setProgress),
+    __trackDuration_listener(this, &NmmEngine::trackDuration),
+    __playback(0),
+    __seeking(false),
+    __running(true),
+    __track_ended(false),
+    __cond(__mutex)
 {
-    //NamedObject::getGlobalInstance().setErrorStream(NULL, NamedObject::ALL_LEVELS);
-    NMM::NamedObject::getGlobalInstance().setDebugStream(NULL, NMM::NamedObject::ALL_LEVELS);
-    NMM::NamedObject::getGlobalInstance().setWarningStream(NULL, NMM::NamedObject::ALL_LEVELS);
-    //NamedObject::getGlobalInstance().setMessageStream(NULL, NamedObject::ALL_LEVELS);
+  // start the secondary thread
+  activateThread();
+}
 
-//TODO dynamically load nmm libraries, makes life simpler (well simpler afterwards)
-//    pm.loadLibrary("libnmmoggvorbis.so");
+bool NmmEngine::init()
+{
+  // disable debug and warning streams
+  NamedObject::getGlobalInstance().setDebugStream(NULL, NamedObject::ALL_LEVELS);
+  NamedObject::getGlobalInstance().setWarningStream(NULL, NamedObject::ALL_LEVELS);
+
+  // create new NMM application object
+  __app = ProxyApplication::getApplication(0, 0);
+
+  return true;
 }
 
 NmmEngine::~NmmEngine()
 {
-    stop();
+  // stop the secondary thread
+  __mutex.lock();
+  __running = false;
+  __cond.notify();
+  __mutex.unlock();
 
-    delete readfile;
-    delete decode;
-    delete playback;
+  // stop all nodes
+  stop();
+
+  // delete application object
+  if (__app) {
+    delete __app;
+  }
 }
 
-
-
-Engine::State
-NmmEngine::state() const
+Engine::State NmmEngine::state() const
 {
-    //return readfile->isStarted() ? EngineBase::Playing : EngineBase::Paused;
-    //return !playback->isStarted() ? EngineBase::Idle : EngineBase::Playing;
-    return m_state;
+  return __state;
 }
 
-
-
-bool
-NmmEngine::load( const KURL& url, bool stream )
+bool NmmEngine::load(const KURL& url, bool stream)
 {
-    m_isStream = stream;
-    if( !url.isLocalFile() ) return 0; //FIXME
+  // play only local files
+  if (!url.isLocalFile()) return false;
 
-    stop(); //NOTE essential!!
+  Engine::Base::load(url, stream);
 
-    delete playback;
-    delete decode;
-    delete readfile;
+  stop();
 
-    /* Some detail:
-     * There are three nodes, a file reader, a decoder and a playback node
-     * There are several states, init, initOutput, activate and start
-     * You have to do everything in the right order or it crashes
-     * You can only really manipulate the nodes by getting interfaces from them
-     * Use exceptions! They are quite handy
-     */
+  // make the GraphBuilder construct an appropriate graph for the given URL
+  try {
+    // these nodes will be used for audio and video playback
+    NodeDescription playback_nd("PlaybackNode");
+    NodeDescription display_nd("XDisplayNode");
 
-    try
+    GraphBuilder2 gb;
+
+    // convert the URL to a valid NMM url
+    if(!gb.setURL("file://" + string(url.path().ascii()))) {
+      throw Exception("Invalid URL given");
+    }
+
+    // get a playback node interface from the registry
+    ClientRegistry& registry = __app->getRegistry();
     {
-        //FIXME it should _not_ be necessary to do all this everytime! but I can't stop the crashes when I try :(
+      RegistryLock lock(registry);
+      list<Response> playback_response = registry.initRequest(playback_nd);
 
-        QString filename = url.path();
-
-        if( filename.endsWith( "mp3" ) )
-        {
-            readfile = new NMM::MP3ReadNode(); //what advantages do we get with this node over generic?
-            decode   = new NMM::MPEGAudioDecodeNode("MP3DECODE", NMM::StreamQueue::MODE_SUSPEND, 1);
-        }
-        else if( filename.endsWith( "ogg" ) )
-        {
-            readfile = new NMM::GenericReadNode();
-            decode   = new NMM::OggVorbisDecodeNode();
-        }
-        else
-        {
-            readfile = 0; decode = 0;
-            return 0;
-        }
-
-        //TODO you don't have to create a new plyaback object but you tried to do it with deinitOutput() etc.
-        //     but it just crashed, and crashed and crashed and crashed and you gave up.
-        playback = new NMM::PlaybackNode("PLAYBACK", NMM::StreamQueue::MODE_SUSPEND, 1); //FIXME what do these parameters mean?!
-
-        readfile->init();
-        decode->init();
-        playback->init();
-
-        //grab the progress information interface from the readfile node
-        NMM::IProgress *progress = readfile->getInterface<NMM::IProgress>();
-        //get it to send us progress events periodically
-        if( progress ) progress->sendProgressInformation( true );
-        //register an event listener on the readfile interface, the listener is setProgress //FIXME rename
-        playback->getEventDispatcher().
-                registerEventListener( NMM::IProgressListener::setProgress_event,
-                                        new NMM::TEDObject2<NmmEngine, u_int64_t, u_int64_t>( this, &NmmEngine::setProgress ) );
-        playback->getEventDispatcher().
-                registerEventListener( NMM::ITrack::endTrack_event,
-                                        new NMM::TEDObject0<NmmEngine>( this, &NmmEngine::endTrack ) );
-
-        NMM::IFileHandler_var ifile( readfile->getCheckedInterface<NMM::IFileHandler>() );
-        ifile->setFilename( filename.ascii() );
-
-        //get the INode interfaces, we need to connect these together
-        NMM::INode_var iread( readfile->getInterface<NMM::INode>() );
-        NMM::INode_var idecode( decode->getCheckedInterface<NMM::INode>() );
-        NMM::INode_var iplay( playback->getInterface<NMM::INode>() );
-
-        //init output parts of nodes and connect nodes into output chain
-        readfile->initOutput();
-        NMM::connect(iread, idecode);
-        readfile->activate();
-
-        decode->initOutput();
-        NMM::connect(idecode, iplay);
-        decode->activate();
-
-        playback->initOutput();
-        playback->activate();
-
-    }
-    catch( NMM::Exception e ) { std::cerr << e << endl; return false; }
-
-    return true;
-}
-
-bool
-NmmEngine::play( uint offset )
-{
-    if (offset != 0) seek(offset);
-    try {
-        readfile->start();
-        decode->start();
-        playback->start();
-    }
-    catch( NMM::Exception e ) { std::cerr << e << endl; return false; }
-
-    //FIXME test for playback first
-    m_state = Engine::Playing;
-    return true;
-}
-
-void
-NmmEngine::stop()
-{
-    try
-    {
-        if( readfile && readfile->isStarted() )
-        {
-            readfile->stop();
-            readfile->flush();
-        }
-        if( decode   && decode->isStarted() )
-        {
-            decode->stop();
-            decode->flush();
-        }
-        if( playback && playback->isStarted() )
-        {
-            playback->stop();
-            playback->flush();
-        }
-
-        m_state = Engine::Idle;
-    }
-    catch( NMM::Exception e )
-    {
-        std::cerr << e << endl;
-
-        m_state = Engine::Empty;
+      if (playback_response.empty()) {
+	throw Exception("PlaybackNode is not available");
+      }
+      
+      __playback = registry.requestNode(playback_response.front());
     }
 
-    m_lastKnownPosition = 0;
+    // initialize the GraphBuilder
+    gb.setAudioSink(__playback);
+    gb.setVideoSink(display_nd);
+    gb.setDemuxAudioJackTag("audio");
+    gb.setDemuxVideoJackTag("video");
+
+    // create the graph represented by a composite node
+    __composite = gb.createGraph(*__app);
+
+    // register the needed event listeners at the playback node
+   
+    __playback->getParentObject()->registerEventListener(IProgressListener::setProgress_event, 
+							 &__setProgress_listener);
+
+    __playback->getParentObject()->registerEventListener(ITrack::endTrack_event, 
+							 &__endTrack_listener);
+
+    __playback->getParentObject()->registerEventListener(ISyncReset::syncReset_event, 
+							 &__syncReset_listener);
+
+    __playback->getParentObject()->registerEventListener(ITrackDuration::trackDuration_event, &__trackDuration_listener);
+
+    // Tell the node that implements the IProgress interface to send progress events frequently.
+    IProgress_var progress(__composite->getInterface<IProgress>());
+    if (progress.get()) {
+      progress->sendProgressInformation(true);
+      progress->setProgressInterval(1);
+    }
+
+    // minimize the buffer size to increase the frequency of progress events
+    IBufferSize_var buffer_size(__composite->getInterface<IBufferSize>());
+    if (buffer_size.get()) {
+      buffer_size->setBufferSize(1000);
+    }
+
+    // we don't know the track length yet - we have to wait for the trackDuration event
+    __track_length = 0;
+
+    // finally start the graph
+    if(__playback->isActivated()) {
+      __playback->reachStarted();
+    }
+      
+    __composite->reachStarted();
+      
+    __seeking = false;
+    __track_ended = false;
+    __state = Engine::Playing;
+  }
+  catch (const Exception& e) {
+    cerr << e << endl;
+  }
+  catch(...) {
+    cerr << "something went wrong..." << endl;
+  }
+
+  return true;
 }
 
-void
-NmmEngine::pause()
+bool NmmEngine::play(uint)
 {
-    stop();
+  if (!__composite) {
+    return false;
+  }
 
-    m_state = Engine::Paused;
+  // wake up if paused
+  ISynchronizedSink_var sync_sink(__playback->getParentObject()->getCheckedInterface<ISynchronizedSink>());
+  if (sync_sink.get()) {
+    sync_sink->getController()->wakeup();
+  }
+
+  __state = Engine::Playing;
+  emit stateChanged(Engine::Playing);
+
+  return true;
 }
 
-void
-NmmEngine::seek( uint ms )
+void NmmEngine::stop()
 {
-    NMM::ISeekable *iseek = readfile->getCheckedInterface<NMM::ISeekable>();
+  if (!__composite) {
+    return;
+  }
 
-    //if( iseek ) iseek->seekPercentTo( NMM::Rational(ms, pApp->trackLength()) );
+  // remove all event listeners
+  __playback->getParentObject()->removeEventListener(&__setProgress_listener);
+  __playback->getParentObject()->removeEventListener(&__endTrack_listener);
+  __playback->getParentObject()->removeEventListener(&__syncReset_listener);
+  __playback->getParentObject()->removeEventListener(&__trackDuration_listener);
 
+  // stop the graph
+  __composite->reachActivated();
+
+  if(__playback->isStarted()) {
+    __playback->reachActivated();
+  }
+
+  __composite->flush();
+  __composite->reachConstructed();
+
+  __playback->flush();
+  __playback->reachConstructed();
+
+  // release the playback node
+  ClientRegistry& registry = __app->getRegistry();
+  {
+    RegistryLock lock(registry);
+    registry.releaseNode(*__playback);
+  }
+
+  delete __composite;
+  __composite = 0;
+  __playback = 0;
+
+  __position = 0;
+  __state = Engine::Empty;
+
+  // don't emit a stateChanged signal, if the track has ended
+  if (!__track_ended) {
+    emit stateChanged(Engine::Empty);
+  }
+
+  __track_ended = false;
+}
+
+void NmmEngine::pause()
+{
+  if (!__composite) {
+    return;
+  }
+
+  // pause or play...
+  if (__state == Engine::Playing) {
+    ISynchronizedSink_var sync_sink(__playback->getParentObject()->getCheckedInterface<ISynchronizedSink>());
+    if (sync_sink.get()) {
+      sync_sink->getController()->pause();
+    }
+    __state = Engine::Paused;
+    emit stateChanged(Engine::Paused);
+  }
+  else {
+    play();
+  }
+}
+
+void NmmEngine::seek(uint ms)
+{
+  if (!__track_length) {
+    return;
+  }
+
+  __seeking = true;
+  __position = ms;
+
+  ISeekable_var seek(__composite->getCheckedInterface<ISeekable>());
+  if (seek.get()) {
+    seek->seekPercentTo(Rational(ms, __track_length));
+  }
+}
+
+uint NmmEngine::position() const
+{
+  return __position;
+}
+
+bool NmmEngine::canDecode(const KURL& url) const
+{
+    static QStringList types;
+
+    if (url.protocol() == "http" ) return false; 
+
+    // the following MIME types can be decoded
+    types += QString("audio/x-mp3");
+    types += QString("audio/x-wav");
+    types += QString("audio/ac3");
+    types += QString("audio/vorbis");
+    types += QString("video/mpeg");
+    types += QString("video/x-msvideo");
+    types += QString("video/x-ogm");
+
+    KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, url, false ); //false = determineMimeType straight away
+    KMimeType::Ptr mimetype = fileItem.determineMimeType();
+
+    return types.contains(mimetype->name());
+}
+
+
+void NmmEngine::setVolumeSW(uint percent)
+{
+  strstream str;
+  str << "/usr/bin/aumix -v " << percent;
+  char s[50];
+  str.getline(s, 50);
+  system(s);
 }
 
 
 
-uint
-NmmEngine::position() const
+Result NmmEngine::setProgress(u_int64_t& numerator, u_int64_t& denominator)
 {
-    return m_lastKnownPosition;
+  // compute the track position in milliseconds
+  u_int64_t position = numerator * __track_length / denominator;
+
+  if (__seeking) {
+    return SUCCESS;
+  }
+  
+  __position = position;
+
+  return SUCCESS;
 }
 
-
-bool
-NmmEngine::initMixer( bool hardware )
-{ return true; }
-
-bool
-NmmEngine::canDecode( const KURL &url ) const
+void NmmEngine::run()
 {
-    QString filename = url.path();
-
-    if( filename.endsWith( "mp3" ) )
-        return true;
-    else if( filename.endsWith( "ogg" ) )
-        return true;
-    else
-        return false;
+  // this is the secondary thread that is used to emit the trackEnded signal
+  MutexGuard mg(__mutex);
+  while (__running) {
+    __cond.wait();
+    if (__running) {
+      emit trackEnded();
+    }
+  }
 }
 
-
-void
-NmmEngine::setVolumeSW( uint percent )
+Result NmmEngine::endTrack()
 {
-    m_volume = percent;
-    if( playback ) playback->setLineInVolume( 0x5050 * percent / 100 );
+  __state = Engine::Idle;
+  __position = 0;
+  __track_ended = true;
+
+  // make the secondary thread emit the trackEnded signal
+  __mutex.lock();
+  __cond.notify();
+  __mutex.unlock();
+
+  return SUCCESS;
 }
 
-
-
-NMM::Result
-NmmEngine::setProgress( u_int64_t& numerator, u_int64_t& denominator )
+Result NmmEngine::syncReset()
 {
-    std::cout << numerator << ", " << denominator << endl;
-
-    //m_lastKnownPosition = pApp->trackLength() * (double)numerator / denominator;
-
-    return NMM::SUCCESS;
+  __seeking = false;
+  return SUCCESS;
 }
 
-NMM::Result
-NmmEngine::endTrack()
+Result NmmEngine::trackDuration(Interval& duration)
 {
-    std::cout << "Track ended!\n";
-
-    //NOTE calling stop() here cause amaroK to crash. Why? Who knows..
-    //NMM docs certainly wouldn't be able to tell you!
-
-    m_state = Engine::Idle;
-
-    return NMM::SUCCESS;
+  // we got the duration of the track, so let's convert it to milliseconds
+  __track_length = duration.sec * 1000 + duration.nsec / 1000;
+  return SUCCESS;
 }
 
 #include "nmm_engine.moc"

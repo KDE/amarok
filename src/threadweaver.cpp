@@ -365,11 +365,11 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
             command += m_parent->escapeString( bundle.url().path() ) + "','";
             command += m_parent->escapeString( bundle.url().directory() ) + "',";
             command += "strftime('%s', 'now'),";
-            command += m_parent->escapeString( QString::number( m_parent->getValueID( "album", bundle.album().isEmpty() ? i18n( "Unknown" ) : bundle.album(), true, !m_incremental ) ) ) + ",";
-            command += m_parent->escapeString( QString::number( m_parent->getValueID( "artist", artist.isEmpty() ? i18n( "Unknown" ) : artist, true, !m_incremental ) ) ) + ",";
-            command += m_parent->escapeString( QString::number( m_parent->getValueID( "genre", bundle.genre().isEmpty() ? i18n( "Unknown" ) : bundle.genre(), true, !m_incremental ) ) ) + ",'";
+            command += m_parent->escapeString( QString::number( m_parent->albumID( bundle.album().isEmpty() ? i18n( "Unknown" ) : bundle.album(), true, !m_incremental ) ) ) + ",";
+            command += m_parent->escapeString( QString::number( m_parent->artistID( artist.isEmpty() ? i18n( "Unknown" ) : artist, true, !m_incremental ) ) ) + ",";
+            command += m_parent->escapeString( QString::number( m_parent->genreID( bundle.genre().isEmpty() ? i18n( "Unknown" ) : bundle.genre(), true, !m_incremental ) ) ) + ",'";
             command += m_parent->escapeString( title.isEmpty() ? url.fileName() : title ) + "','";
-            command += m_parent->escapeString( QString::number( m_parent->getValueID( "year", bundle.year().isEmpty() ? i18n( "Unknown" ) : bundle.year(), true, !m_incremental ) ) ) + "','";
+            command += m_parent->escapeString( QString::number( m_parent->yearID( bundle.year().isEmpty() ? i18n( "Unknown" ) : bundle.year(), true, !m_incremental ) ) ) + "','";
             command += m_parent->escapeString( bundle.comment() ) + "','";
             command += m_parent->escapeString( bundle.track() ) + "', 0);";
 
@@ -391,11 +391,11 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
             command += m_parent->escapeString( url.path() ) + "','";
             command += m_parent->escapeString( url.directory() ) + "',";
             command += "strftime('%s', 'now'),";
-            command += m_parent->escapeString( QString::number( m_parent->getValueID( "album", i18n( "Unknown" ), true, !m_incremental ) ) ) + ",";
-            command += m_parent->escapeString( QString::number( m_parent->getValueID( "artist", artist.isEmpty() ? "Unknown" : artist, true, !m_incremental ) ) ) + ",";
-            command += m_parent->escapeString( QString::number( m_parent->getValueID( "genre", i18n( "Unknown" ), true, !m_incremental ) ) ) + ",'";
+            command += m_parent->escapeString( QString::number( m_parent->albumID( i18n( "Unknown" ), true, !m_incremental ) ) ) + ",";
+            command += m_parent->escapeString( QString::number( m_parent->artistID( artist.isEmpty() ? "Unknown" : artist, true, !m_incremental ) ) ) + ",";
+            command += m_parent->escapeString( QString::number( m_parent->genreID( i18n( "Unknown" ), true, !m_incremental ) ) ) + ",'";
             command += m_parent->escapeString( title.isEmpty() ? url.fileName() : title ) + "','";
-            command += m_parent->escapeString( QString::number( m_parent->getValueID( "year", i18n( "Unknown" ), true, !m_incremental ) ) ) + "','";
+            command += m_parent->escapeString( QString::number( m_parent->yearID( i18n( "Unknown" ), true, !m_incremental ) ) ) + "','";
             command += m_parent->escapeString( i18n( "Unknown" ) ) + "','";
             command += m_parent->escapeString( i18n( "Unknown" ) ) + "', 0);";
 
@@ -406,7 +406,7 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
             m_parent->addImageToPath( url.directory(), url.filename(), true );
     }
     // let's lock the database (will block other threads)
-    m_parent->execSql( "BEGIN TRANSACTION;" );
+//    m_parent->execSql( "BEGIN TRANSACTION;" );
 
     // remove tables and recreate them (quicker than DELETE FROM)
     if ( !m_incremental )
@@ -425,7 +425,7 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
 
     // remove temp tables and unlock database
     m_parent->dropTables( true );
-    m_parent->execSql( "END TRANSACTION;" );
+//    m_parent->execSql( "END TRANSACTION;" );
 
     QStringList albums;
     albums = m_parent->albumList();

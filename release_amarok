@@ -53,7 +53,7 @@ pushd $folder
 cvs -d $cvsroot co -l kdeextragear-1
 pushd kdeextragear-1
 
-cvs -z3 co -r KDE_3_2_BRANCH admin
+cvs -z3 co admin
 cvs -z3 up amarok
 cvs -z3 up -l doc
 pushd doc

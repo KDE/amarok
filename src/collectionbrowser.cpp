@@ -305,8 +305,6 @@ CollectionView::~CollectionView() {
     config->writeEntry( "Category3", m_category3 );
     config->writeEntry( "Database Version", DATABASE_VERSION );
     config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
-
-    delete m_db;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -417,11 +415,6 @@ CollectionView::renderView( )  //SLOT
 void
 CollectionView::scanDone( bool changed ) //SLOT
 {
-    // we need to reconnect to the db after every scan, since sqlite is not able to keep
-    // the tables synced for multiple threads.
-    delete m_db;
-    m_db = new CollectionDB();
-
     if ( changed )
     {
         renderView();
