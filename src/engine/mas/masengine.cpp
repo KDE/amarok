@@ -217,7 +217,28 @@ bool MasEngine::play( unsigned int offset)
 
     return true;
 }   // play
+uint
+MasEngine::length() const
+{
+    DEBUG_BLOCK
+    char pbuf[128];
+    struct mas_package pkg;
+    struct mas_package nugget;
+    float trklen;
 
+    masc_setup_package( &pkg, pbuf, sizeof pbuf, MASC_PACKAGE_STATIC );
+    masc_pushk_int16( &pkg, (char *)"pos", 1 );
+    masc_finalize_package( &pkg );
+
+    mas_get( m_mp1a_source_device, (char *)"trklen", &pkg, &nugget );
+    masc_strike_package( &pkg );
+
+    masc_pullk_float( &nugget, (char *)"trklen", &trklen );
+    masc_strike_package( &nugget );
+
+    debug() << "trklen: " <<  trklen << endl;
+    return uint(trklen*1000);
+}   // position
 
 /*
  * return current position in milli seconds

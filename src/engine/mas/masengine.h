@@ -49,6 +49,7 @@ class MasEngine : public Engine::Base
         bool initMixer( bool hardware );
         bool canDecode( const KURL& ) const;
         uint position() const;
+        uint length() const;
         Engine::State state() const {return m_state;}
 /*
         const Engine::Scope& scope();
