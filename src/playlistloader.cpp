@@ -339,8 +339,12 @@ PlaylistFile::loadM3u( QTextStream &stream )
             b.setLength( length <= 0 ? /*MetaBundle::Undetermined HACK*/ -2 : length );
         }
 
-        else if( !line.startsWith( "#" ) ) {
-            if( KURL::isRelativeURL( line ) )
+        else if( !line.startsWith( "#" ) )
+        {
+            // FIXME: isRelativeURL fails here - what does it do exactly?
+            // if( KURL::isRelativeURL( line ) )
+
+            if ( !line.startsWith( "/" ) )
                 b.setPath( directory + line );
             else
                 b.setUrl( KURL::fromPathOrURL( line ) );
@@ -471,7 +475,7 @@ SqlLoader::doJob()
         }
 
         if ( ++x % 30 == 0 ) {
-//            QApplication::postEvent( this, new TagsEvent( bundles ) );
+            QApplication::postEvent( this, new TagsEvent( bundles ) );
             bundles.clear();
         }
     }

@@ -2318,7 +2318,8 @@ QueryBuilder::sortBy( int table, int value, bool descending )
 {
     //shall we sort case-sensitively? (not for integer columns!)
     bool b = true;
-    if ( value & valID || value & valTrack || value & valScore || value & valLength || value & valBitrate || value & valSamplerate )
+    if ( value & valID || value & valTrack || value & valScore || value & valLength || value & valBitrate ||
+         value & valSamplerate || value & valPlayCounter || value & valAccessDate || value & valCreateDate )
         b = false;
 
     if ( !m_sort.isEmpty() ) m_sort += ",";
@@ -2341,37 +2342,51 @@ QueryBuilder::sortBy( int table, int value, bool descending )
     if ( value & valBitrate ) m_sort += "bitrate";
     if ( value & valLength ) m_sort += "length";
     if ( value & valSamplerate ) m_sort += "samplerate";
+    if ( value & valPlayCounter ) m_sort += "playcounter";
+    if ( value & valAccessDate ) m_sort += "accessdate";
+    if ( value & valCreateDate ) m_sort += "createdate";
 
     if ( b ) m_sort += " ) ";
     if ( descending ) m_sort += " DESC ";
+
+    m_linkTables |= table;
 }
 
 
 void
 QueryBuilder::setLimit( int startPos, int length )
 {
-    m_limit = QString( "LIMIT %1, %2 " ).arg( startPos ).arg( length );
+    m_limit = QString( " LIMIT %1, %2 " ).arg( startPos ).arg( length );
+}
+
+
+void
+QueryBuilder::buildQuery()
+{
+    if ( m_query.isEmpty() )
+    {
+        linkTables( m_linkTables );
+
+        m_query = "SELECT " + m_values + " FROM " + m_tables + " WHERE 1 " + m_where;
+        if ( !m_sort.isEmpty() ) m_query += " ORDER BY " + m_sort;
+        m_query += m_limit;
+    }
 }
 
 
 QStringList
 QueryBuilder::run()
 {
-    linkTables( m_linkTables );
-
-    QString cmd = "SELECT " + m_values + " FROM " + m_tables + " WHERE 1 " + m_where;
-    if ( !m_sort.isEmpty() ) cmd += " ORDER BY " + m_sort;
-    cmd += m_limit;
-
-    debug() << cmd << endl;
-
-    return CollectionDB::instance()->query( cmd );
+    buildQuery();
+    // debug() << m_query << endl;
+    return CollectionDB::instance()->query( m_query );
 }
 
 
 void
 QueryBuilder::clear()
 {
+    m_query = "";
     m_values = "";
     m_tables = "";
     m_where = "";

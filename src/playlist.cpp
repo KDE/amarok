@@ -1014,16 +1014,16 @@ Playlist::contentsDropEvent( QDropEvent *e )
 
         debug() << "QTextDrag::canDecode" << endl;
 
-        QString text;
+        QString data;
         QCString subtype;
-        QTextDrag::decode( e, text, subtype );
-
-        Debug::list() << text << subtype;
+        QTextDrag::decode( e, data, subtype );
 
         if ( subtype == "amarok-sql" )
-            debug() << "YAY some amarok-sql! But we're not implemented yet.. bug muesli!\n";
+        {
+            ThreadWeaver::instance()->queueJob( new SqlLoader( data, after ) );
+        }
 
-        goto url;
+        // goto url;
     }
     else if( KURLDrag::canDecode( e ) ) {
     url:

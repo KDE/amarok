@@ -135,15 +135,30 @@ void SmartPlaylistView::removeSelectedPlaylists()
 void SmartPlaylistView::loadDefaultPlaylists()
 {
     const QStringList artists = CollectionDB::instance()->artistList();
+    QueryBuilder qb;
     QString sql;
     SmartPlaylist *item;
 
+    // album / artist / genre / title / year / comment / track / bitrate / length / samplerate / path
+
     /********** All Collection **************/
-    sql = "SELECT tags.url "
-          "FROM tags, artist "
-          "WHERE tags.artist = artist.id "
-          "ORDER BY artist.name, tags.title;";
-    item = new SmartPlaylist( this, 0, i18n("All Collection"), sql, "kfm" );
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+    qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComment );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBitrate );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valSamplerate );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+
+    qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
+
+    item = new SmartPlaylist( this, 0, i18n( "All Collection" ), qb.query(), "kfm" );
     item->setKey( 1 );
 
     /********** Favorite Tracks **************/
@@ -168,12 +183,24 @@ void SmartPlaylistView::loadDefaultPlaylists()
     }
 
     /********** Most Played **************/
-    sql = "SELECT tags.url "
-          "FROM tags, statistics "
-          "WHERE statistics.url = tags.url "
-          "ORDER BY statistics.playcounter DESC "
-          "LIMIT 0,15;";
-    item = new SmartPlaylist( this, 0, i18n("Most Played"), sql );
+    qb.clear();
+
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+    qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComment );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBitrate );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valSamplerate );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+
+    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
+    qb.setLimit( 0, 15 );
+
+    item = new SmartPlaylist( this, 0, i18n("Most Played"), qb.query() );
     item->setKey( 3 );
     childItem = 0;
     foreach( artists ) {
@@ -287,17 +314,19 @@ QDragObject *SmartPlaylistView::dragObject()
     KURL::List urls;
     QPtrList<QListViewItem> items = selectedItems();
 
+    KMultipleDrag *drag = new KMultipleDrag( this );
+
     for( SmartPlaylist *item = (SmartPlaylist*)items.first(); item; item = (SmartPlaylist*)items.next() )
+    {
         urls += item->urls();
 
-     QTextDrag *textdrag = new QTextDrag( "SomeText", 0 );
-     textdrag->setSubtype( "amarok-sql" );
+        QTextDrag *textdrag = new QTextDrag( item->query(), 0 );
+        textdrag->setSubtype( "amarok-sql" );
+        drag->addDragObject( textdrag );
+    }
 
-     KMultipleDrag *drag = new KMultipleDrag( this );
-     drag->addDragObject( textdrag );
-     drag->addDragObject( new KURLDrag( urls, 0 ) );
-
-     return drag;
+    drag->addDragObject( new KURLDrag( urls, 0 ) );
+    return drag;
 }
 
 
