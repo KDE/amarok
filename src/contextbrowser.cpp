@@ -125,6 +125,9 @@ void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
 
 void ContextBrowser::showContextForItem( const KURL &url )
 {
+    //prevents segfault when playing streams
+    if ( !url.isLocalFile() ) return;
+    
     m_currentTrack = TagReader::readTags( url, true );
     showCurrentTrack();
 
