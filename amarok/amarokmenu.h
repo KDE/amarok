@@ -22,10 +22,8 @@ class Menu : public KPopupMenu
 Q_OBJECT
 
 public:
-    static const int ID_REPEAT_TRACK    = 100;
-    static const int ID_REPEAT_PLAYLIST = 101;
-    static const int ID_RANDOM_MODE     = 102;
-    static const int ID_CONF_DECODER    = 103;
+    static const int ID_CONF_DECODER      = 103;
+    static const int ID_SHOW_VIS_SELECTOR = 104;
 
     Menu( QWidget *parent );
 
@@ -34,7 +32,7 @@ public:
 private slots:
     void slotAboutToShow();
     void slotActivated( int index );
-    
+
 private:
     static KHelpMenu *HelpMenu;
 };

@@ -48,7 +48,7 @@ Menu::Menu( QWidget *parent )
 
     insertSeparator();
 
-    insertItem( i18n( "&Visualizations" ), Vis::Selector::instance(), SLOT( show() ) ); //sucks using a slot to call a function
+    insertItem( i18n( "&Visualizations..." ), ID_SHOW_VIS_SELECTOR );
 
     insertSeparator();
 
@@ -86,15 +86,20 @@ Menu::helpMenu( QWidget *parent ) //STATIC
 void
 Menu::slotAboutToShow()
 {
-    setItemEnabled( ID_CONF_DECODER,    EngineController::instance()->engine()->decoderConfigurable() );
+    setItemEnabled( ID_CONF_DECODER, EngineController::engine()->decoderConfigurable() );
 }
 
 void
 Menu::slotActivated( int index )
 {
-    if( index == ID_CONF_DECODER )
+    switch( index )
     {
+    case ID_CONF_DECODER:
         EngineController::engine()->configureDecoder();
+        break;
+    case ID_SHOW_VIS_SELECTOR:
+        Vis::Selector::instance()->show(); //doing it here means we delay creation of the widget
+        break;
     }
 }
 
@@ -129,7 +134,7 @@ MenuAction::plug( QWidget *w, int index )
 
         KToolBarButton* button = bar->getButton( id );
         button->setPopup( new amaroK::Menu( 0 ) ); //do not parent to the toolbar! Causes the about dialog to
-                                                   //cause the toolbar to increase it's height when opened. Odd. 
+                                                   //cause the toolbar to increase it's height when opened. Odd.
         button->setName( "toolbutton_amarok_menu" );
 
         return containerCount() - 1;

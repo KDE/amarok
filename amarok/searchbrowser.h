@@ -6,13 +6,12 @@
 #define AMAROK_SEARCHBROWSER_H
 
 #include <qvbox.h>
-#include <qthread.h>
 #include <klistview.h>
-#include <klineedit.h>
-#include <kurlcombobox.h>
 
 class ThreadWeaver;
 class QCustomEvent;
+class KURLComboBox;
+class KLineEdit;
 
 class SearchBrowser : public QVBox
 {
@@ -22,11 +21,11 @@ class SearchBrowser : public QVBox
     {
         public:
             SearchListView( QWidget *parent=0, const char *name=0 );
-            
+
         protected:
             virtual void startDrag();
     };
-    
+
     public:
         SearchBrowser( QWidget *parent=0, const char *name=0 );
         ~SearchBrowser();
@@ -36,7 +35,7 @@ class SearchBrowser : public QVBox
 
     private:
         void customEvent( QCustomEvent* );
-        
+
         ThreadWeaver* m_weaver;
         SearchListView *resultView;
         KListView *historyView;
