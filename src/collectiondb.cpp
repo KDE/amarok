@@ -129,14 +129,15 @@ CollectionDB::incSongCounter( const QString url )
 {
     QStringList values, names;
     
-    execSql( QString( "SELECT playcounter FROM statistics WHERE url = '%1';" )
+    execSql( QString( "SELECT playcounter, createdate FROM statistics WHERE url = '%1';" )
                   .arg( escapeString( url ) ), &values, &names );
 
     if ( values.count() )
     {
         // entry exists, increment playcounter and update accesstime
-        execSql( QString( "REPLACE INTO statistics ( url, accessdate, playcounter ) VALUES ( '%1', strftime('%s', 'now'), %2 );" )
+        execSql( QString( "REPLACE INTO statistics ( url, createdate, accessdate, playcounter ) VALUES ( '%1', %2, strftime('%s', 'now'), %3 );" )
                 .arg( escapeString( url ) )
+                .arg( values[1] )
                 .arg( values[0] + " + 1" ) );
     } else
     {
