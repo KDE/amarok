@@ -39,7 +39,7 @@ amarokapp_SOURCES = \
     configdialog.cpp \
     amarokfilelist.cpp \
     actionclasses.cpp \
-    slider.cpp \
+    sliderwidget.cpp \
     systray.cpp \
     browserbar.cpp \
     playlistwindow.cpp \
