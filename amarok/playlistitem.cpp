@@ -71,8 +71,9 @@ PlaylistItem::~PlaylistItem()
     }
 }
 
-
-// METHODS -------------------------------------------------------
+/////////////////////////////////////////////////////////////////////////////////////
+// PUBLIC METHODS
+/////////////////////////////////////////////////////////////////////////////////////
 
 #include <taglib/fileref.h>
 #include <taglib/audioproperties.h>
@@ -166,24 +167,6 @@ void PlaylistItem::writeTag( const QString &newtag, int col )
 }
 
 
-void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
-{
-    static const QColor GlowColor( 0xff, 0x40, 0x40 );
-
-    QColorGroup newCg = cg; //shallow copy
-
-    if ( this == PlaylistItem::GlowItem ) //static member
-        newCg.setColor( QColorGroup::Text, GlowColor );
-
-    KListViewItem::paintCell( p, newCg, column, width, align );
-
-    {   //draw column separator line
-        p->setPen( QPen( Qt::darkGray, 0, Qt::DotLine ) );
-        p->drawLine( width - 1, 0, width - 1, height() - 1 );
-    }
-}
-
-
 const QString PlaylistItem::length( uint se ) const
 {
    //FIXME, we rely on arts. This function is silly currently
@@ -207,4 +190,62 @@ static const QString zeroPad( const long digit )
     str.setNum( digit );
 
     return ( digit > 9 ) ? str : str.prepend( '0' );
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+// PRIVATE METHODS
+/////////////////////////////////////////////////////////////////////////////////////
+
+int PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
+{
+    float a, b;
+    
+    switch( col )  //we cannot sort numbers lexically, so we must special case those columns
+    {
+        case 4:    //year
+            a =    text( 4 ).toFloat();
+            b = i->text( 4 ).toFloat();   
+            break;
+
+        case 7:    //track
+            a =    text( 7 ).toFloat();
+            b = i->text( 7 ).toFloat();   
+            break;
+                    
+        case 9:    //length
+            a =    text( 9 ).replace( ":", "." ).toFloat();
+            b = i->text( 9 ).replace( ":", "." ).toFloat();   
+            break;
+        
+        case 10:   //bitrate
+            a =    text( 10 ).section( "kbps", 0, 0 ).toFloat();
+            b = i->text( 10 ).section( "kbps", 0, 0 ).toFloat();
+            break;                
+        
+        default:   //ordinary string -> sort lexically
+            return KListViewItem::compare( i, col, ascending );
+    }
+    
+    if ( a > b ) return +1;
+    if ( a < b ) return -1;
+    
+    return 0;    //a == b
+}
+
+
+void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
+{
+    static const QColor GlowColor( 0xff, 0x40, 0x40 );
+
+    QColorGroup newCg = cg; //shallow copy
+
+    if ( this == PlaylistItem::GlowItem ) //static member
+        newCg.setColor( QColorGroup::Text, GlowColor );
+
+    KListViewItem::paintCell( p, newCg, column, width, align );
+
+    {   //draw column separator line
+        p->setPen( QPen( Qt::darkGray, 0, Qt::DotLine ) );
+        p->drawLine( width - 1, 0, width - 1, height() - 1 );
+    }
 }

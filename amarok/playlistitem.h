@@ -3,7 +3,7 @@
                              -------------------
     begin                : Die Dez 3 2002
     copyright            : (C) 2002 by Mark Kretschmann
-    email                :
+    email                : markey@web.de
  ***************************************************************************/
 
 /***************************************************************************
@@ -50,6 +50,9 @@ class PlaylistItem : public KListViewItem
         static PlaylistItem *GlowItem;
 
     private:
+        int compare( QListViewItem *i, int col, bool ascending ) const;
+        
+        //FIXME <markey> there is no reason for making this virtual, since noone derives from PlaylistItem!
         virtual void paintCell( QPainter*, const QColorGroup&, int, int, int );
 
         const KURL m_url;
