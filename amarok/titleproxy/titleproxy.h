@@ -63,6 +63,7 @@ class TitleProxy : public QObject
         uint m_metaLen;
         QString m_metaData;
         bool m_headerFinished;
+        QString m_headerStr;
         
         char *m_pBufIn;
         char *m_pBufOut;

@@ -27,7 +27,7 @@ email                :
 #include <qsocketnotifier.h>
 #include <qstring.h>
 
-#define PROXYPORT 6666     //FIXME port should not be hardcoded. what to do if it's in use?
+#define PROXYPORT 6666     //FIXME maybe port should not be hardcoded?
 #define BUFSIZE 8192
 
 // Some info on the shoutcast metadata protocol can be found at:
@@ -72,7 +72,8 @@ TitleProxy::TitleProxy( KURL url ) :
     if ( connectResult != 0 )
         return;
 
-    m_sockLocal.setSocketFlags( KExtendedSocket::inetSocket | KExtendedSocket::passiveSocket );
+    m_sockLocal.setSocketFlags( KExtendedSocket::inetSocket |
+                                KExtendedSocket::passiveSocket );
     m_sockLocal.setAddress( "localhost", PROXYPORT );
     int listenResult = m_sockLocal.listen();
 
@@ -85,7 +86,6 @@ TitleProxy::TitleProxy( KURL url ) :
     m_pBufOut = new char[ BUFSIZE ];
 
     connect( &m_sockLocal, SIGNAL( readyAccept() ), this, SLOT( accept() ) );
-
     m_initSuccess = true;
 }
 
@@ -115,8 +115,6 @@ KURL TitleProxy::proxyUrl()
 
 void TitleProxy::accept()
 {
-    kdDebug() << "TitleProxy::accept()" << endl;
-
     int acceptResult = m_sockLocal.accept( m_pSockServer );
     m_pSockServer->setSocketFlags( KExtendedSocket::inetSocket | KExtendedSocket::bufferedSocket );
     kdDebug() << "acceptResult: " << acceptResult << endl;
@@ -130,8 +128,7 @@ void TitleProxy::accept()
     int index = str.find( "GET / HTTP/1.1" );
     index = str.find( "\n", index );
     index++;
-
-    m_sockRemote.setBlockingMode( false );
+    
     m_sockRemote.setBufferSize( 128 * 1024 );
     m_sockRemote.enableRead( true );
     connect( &m_sockRemote, SIGNAL( readyRead() ), this, SLOT( readRemote() ) );
@@ -139,53 +136,44 @@ void TitleProxy::accept()
 
     QCString icyStr( "Icy-MetaData:1\r\n" );
     m_sockRemote.writeBlock( icyStr.data(), icyStr.length() );
-
     m_sockRemote.writeBlock( m_pBufIn + index, bytesRead - index );
 }
 
 
 void TitleProxy::readRemote()
 {
-    int indexMp3 = 0;
+    int index = 0;
+    char *pOut = m_pBufOut;
+    
+    Q_LONG bytesWrite = 0;
     Q_LONG bytesRead = m_sockRemote.readBlock( m_pBufIn, BUFSIZE );
     //    kdDebug() << "TitleProxy::readRemote(): bytesRead = " << bytesRead << endl;
 
     if ( bytesRead <= 0 )
         return;
-        
-    //<Read Header Information>
-    if ( !m_headerFinished )
-    {
-        m_pSockServer->writeBlock( m_pBufIn, bytesRead );
-        
-        QString str = QString::fromAscii( m_pBufIn, bytesRead );
-                    
-        if ( !m_metaInt )
-            m_metaInt = str.section( "icy-metaint:", 1, 1, QString::SectionCaseInsensitiveSeps )
-                           .section( "\r", 0, 0 )
-                           .toInt();
-  
-        if ( m_bitRate.isEmpty() )
-            m_bitRate = str.section( "icy-br:", 1, 1, QString::SectionCaseInsensitiveSeps )
-                           .section( "\r", 0, 0 );
-                                               
-        indexMp3 = str.find( "\r\n\r\n" );
-        if ( indexMp3 == -1 )    
-            return;
-        
-        m_headerFinished = true;
-        indexMp3 += 4;
-    }
-    //</Read Header Information>
 
-    char *pOut = m_pBufOut;
-    int bytesWrite = 0;
-
-    while ( indexMp3 < bytesRead )
+    while ( index < bytesRead )
     {
-        if ( m_byteCount == m_metaInt )
+        if ( !m_headerFinished )
         {
-            m_metaLen = (unsigned char) m_pBufIn[ indexMp3++ ];
+            m_headerStr.append( m_pBufIn[ index ] );
+            --m_byteCount;
+                                    
+            if ( m_headerStr.endsWith( "\r\n\r\n" ) )
+            {
+                m_headerFinished = true;
+                
+                m_metaInt = m_headerStr.section( "icy-metaint:", 1, 1,
+                            QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0)
+                            .toInt();
+                m_bitRate = m_headerStr.section( "icy-br:", 1, 1,
+                            QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 );
+            }                                                      
+        }
+        
+        else if ( m_byteCount == m_metaInt )
+        {
+            m_metaLen = (unsigned char) m_pBufIn[ index++ ];
             m_metaLen *= 16;
 
             if ( m_metaLen ) kdDebug() << "m_metaLen: " << m_metaLen << "\n" << endl;
@@ -195,7 +183,7 @@ void TitleProxy::readRemote()
 
         if ( m_metaLen )
         {
-            m_metaData.append( m_pBufIn[ indexMp3++ ] );
+            m_metaData.append( m_pBufIn[ index++ ] );
             --m_metaLen;
 
             if ( !m_metaLen )
@@ -205,10 +193,8 @@ void TitleProxy::readRemote()
             }
             continue;
         }
-
-        *pOut = m_pBufIn[ indexMp3++ ];
-        ++pOut;
-
+        
+        *(pOut++) = m_pBufIn[ index++ ];
         ++m_byteCount;
         ++bytesWrite;
     }
@@ -245,4 +231,3 @@ QString TitleProxy::extractStr( QString str, QString key )
         return str.mid( index, indexEnd - index );
     }
 }
-
