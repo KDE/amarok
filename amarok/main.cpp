@@ -57,6 +57,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Roman Becker", "Graphics", "roman@formmorf.de", "http://www.formmorf.de" );
     aboutData.addCredit( "Jarkko Lehti", "Tester, Irc channel operator", "grue@iki.fi" );
     aboutData.addCredit( "Whitehawk Stormchaser", "Tester, Patches", "zerokode@gmx.net" );
+    aboutData.addCredit( "Adam Pigg", "Analyzer, Patches", "adam@piggz.fsnet.co.uk" );
     aboutData.addCredit( "The Noatun Authors", "Code Inspiration", 0, "http://noatun.kde.org" );
 
     KCmdLineArgs::init( argc, argv, &aboutData );
