@@ -1490,7 +1490,12 @@ void Playlist::customEvent( QCustomEvent *e )
         #define e static_cast<PlaylistLoader::MakeItemEvent*>(e)
         if( PlaylistItem *item = e->makePlaylistItem( this ) )
         {
-            if( e->playMe() ) activate( item );
+            if( e->playMe() )
+            {
+                //follows is temporary hack to ensure this member has tags!
+                item->setText( item->metaBundle().readTags() );
+                activate( item );
+            }
 
             if( AmarokConfig::showMetaInfo() ) m_weaver->append( new TagReader( this, item ) );
 

@@ -381,7 +381,7 @@ amaroK::OSD::showTrack( const MetaBundle &bundle )
         text += bundle.prettyLength();
     }
 
-    text.replace( QRegExp( "</?(?:font|a|b|i)\\b[^>]*>" ), "" );
+    text.replace( QRegExp( "</?(?:font|a|b|i)\\b[^>]*>" ), QString::null );
     text.replace( "&lt;",  "<" );
     text.replace( "&gt;",  ">" );
     text.replace( "&amp;", "&" );

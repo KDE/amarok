@@ -75,6 +75,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
     EngineController* const ec = EngineController::instance();
+    EngineBase* const engine   = EngineController::engine();
 
     ec->attach( this );
     parent->installEventFilter( this ); //for hidePLaylistWithMainWindow mode
@@ -125,7 +126,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
         m_pVolSlider->setGeometry( 294,18, 12,79 );
 
         m_pVolSlider->setMaxValue( amaroK::VOLUME_MAX );
-        m_pVolSlider->setValue( AmarokConfig::masterVolume() );
+        m_pVolSlider->setValue( engine->volume() );
 
         connect( m_pSlider, SIGNAL(sliderReleased()), SLOT(slotSliderReleased()) );
         connect( m_pSlider, SIGNAL(valueChanged( int )), SLOT(slotSliderChanged( int )) );
@@ -174,7 +175,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
 
 
     //set interface to correct state
-    const EngineBase::EngineState state = EngineController::engine()->state();
+    const EngineBase::EngineState state = engine->state();
     engineStateChanged( state );
     if( state == EngineBase::Playing ) engineNewMetaData( ec->bundle(), true );
     createAnalyzer( 0 );

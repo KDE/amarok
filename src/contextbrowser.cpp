@@ -9,7 +9,6 @@
 #include "metabundle.h"
 #include "playlist.h"     //insertMedia()
 #include "sqlite/sqlite.h"
-#include "threadweaver.h"
 
 #include <kapplication.h> //kapp->config(), QApplication::setOverrideCursor()
 #include <kconfig.h>      //config object
@@ -56,7 +55,7 @@ ContextBrowser::ContextBrowser( const char *name )
         showIntroduction();
     else
         showHome();
-    
+
     setFocusProxy( hb1 ); //so focus is given to a sensible widget when the tab is opened
 }
 
@@ -77,7 +76,7 @@ ContextBrowser::~ContextBrowser()
 void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
 {
     m_url = url;
-    
+
     if ( url.protocol() == "album" )
     {
         QStringList info = QStringList::split( "/", url.path() );
@@ -115,7 +114,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle &bundle, bool /*trackCh
     if ( !bundle.url().isLocalFile() ) return;
 
     delete m_currentTrack;
-    m_currentTrack = TagReader::readTags( bundle.url(), true ); //we have to delete this
+    m_currentTrack = new MetaBundle( bundle );
     showCurrentTrack();
 
     // increase song counter
@@ -126,9 +125,9 @@ void ContextBrowser::engineNewMetaData( const MetaBundle &bundle, bool /*trackCh
 void ContextBrowser::paletteChange( const QPalette& pal )
 {
     kdDebug() << k_funcinfo << endl;
-    
-    QVBox::paletteChange( pal );    
-    
+
+    QVBox::paletteChange( pal );
+
     setStyleSheet();
     render();
 }
@@ -139,7 +138,7 @@ void ContextBrowser::paletteChange( const QPalette& pal )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void ContextBrowser::render()
-{    
+{
     if ( m_url.protocol() == "show" )
     {
         if ( m_url.path() == "home" )
@@ -151,7 +150,7 @@ void ContextBrowser::render()
     }
 }
 
-    
+
 void ContextBrowser::setStyleSheet()
 {
     m_styleSheet =  QString( "div { color: %1; font-size: 8px; text-decoration: none; }" )

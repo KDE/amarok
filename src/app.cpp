@@ -31,7 +31,6 @@ email                : markey@web.de
 #include "pluginmanager.h"
 #include "socketserver.h"
 #include "systray.h"
-#include "threadweaver.h"        //restoreSession()
 #include "tracktooltip.h"        //engineNewMetaData()
 
 #include <kcmdlineargs.h>        //initCliArgs()
@@ -101,11 +100,16 @@ App::App()
     }
 
     handleCliArgs();
+
+    kdDebug() << "volume: " << EngineController::engine()->volume() << endl;
+    kdDebug() << "volume: " << AmarokConfig::masterVolume() << endl;
 }
 
 App::~App()
 {
     kdDebug() << k_funcinfo << endl;
+    kdDebug() << "volume: " << EngineController::engine()->volume() << endl;
+    kdDebug() << "volume: " << AmarokConfig::masterVolume() << endl;
 
     EngineBase* const engine = EngineController::engine();
 
@@ -127,6 +131,7 @@ App::~App()
     delete m_pDcopHandler;
 
     AmarokConfig::setVersion( APP_VERSION );
+    AmarokConfig::setMasterVolume( engine->volume() );
     AmarokConfig::writeConfig();
 
     //TODO move engine load and unload to controller so that it can handle this properly
@@ -304,18 +309,18 @@ void App::restoreSession()
     //here we restore the session
     //however, do note, this is always done, KDE session management is not involved
 
-    MetaBundle *bundle = TagReader::readTags( KURL(AmarokConfig::resumeTrack()), true );
-
-    if( bundle )
+    if( !AmarokConfig::resumeTrack().isEmpty() )
     {
-        EngineController::instance()->play( *bundle );
+        MetaBundle bundle( KURL(AmarokConfig::resumeTrack()) );
+
+        bundle.readTags();
+
+        EngineController::instance()->play( bundle );
 
         //did we  save the time?
         const int seconds = AmarokConfig::resumeTime();
         if( seconds > 0 ) EngineController::engine()->seek( seconds * 1000 );
     }
-
-    delete bundle;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -403,21 +408,31 @@ void App::applySettings()
 
         if( b || AmarokConfig::soundSystem() != PluginManager::getService( engine )->name() )
         {
-            if( !b ) PluginManager::unload( engine );
+            if( !b )
+            {
+                AmarokConfig::setMasterVolume( engine->volume() );
+                PluginManager::unload( engine );
+            }
+
             initEngine();
 
             engine = EngineController::engine();
-        }
 
-        AmarokConfig::setHardwareMixer( engine->initMixer( AmarokConfig::hardwareMixer() ) );
+            AmarokConfig::setHardwareMixer( engine->initMixer( AmarokConfig::hardwareMixer() ) );
+        }
+        else if( AmarokConfig::hardwareMixer() != engine->isMixerHardware() )
+            AmarokConfig::setHardwareMixer( engine->initMixer( AmarokConfig::hardwareMixer() ) );
 
         engine->setSoundOutput( AmarokConfig::soundOutput() );
         engine->setSoundDevice( AmarokConfig::soundDevice() );
         engine->setDefaultSoundDevice( !AmarokConfig::customSoundDevice() );
-
         engine->setRestoreEffects( AmarokConfig::rememberEffects() );
+        engine->setVolume( AmarokConfig::masterVolume() );
         //TODO deprecate/improve
         engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
+
+    kdDebug() << "volume: " << engine->volume() << endl;
+    kdDebug() << "volume: " << AmarokConfig::masterVolume() << endl;
     } //</Engine>
 
     kdDebug() << "END " << k_funcinfo << endl;

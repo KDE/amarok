@@ -6,6 +6,7 @@
 #include "metabundle.h"
 #include "playlistitem.h"
 #include <taglib/tag.h>
+#include <taglib/fileref.h>
 #include <taglib/tstring.h>
 #include <taglib/audioproperties.h>
 
@@ -82,6 +83,31 @@ MetaBundle::init( TagLib::AudioProperties *ap )
         m_sampleRate = ap->sampleRate();
     }
     else m_bitrate = m_length = m_sampleRate = Undetermined;
+}
+
+MetaBundle&
+MetaBundle::readTags( bool audioProperties )
+{
+    //TODO detect mimetype and use specfic reader like Scott recommends
+
+   TagLib::FileRef f( m_url.path().local8Bit(), audioProperties, TagLib::AudioProperties::Fast );
+
+   if( f.tag() )
+   {
+       TagLib::Tag *tag = f.tag();
+
+       m_title   = TStringToQString( tag->title() ).stripWhiteSpace();
+       m_artist  = TStringToQString( tag->artist() ).stripWhiteSpace();
+       m_album   = TStringToQString( tag->album() ).stripWhiteSpace();
+       m_comment = TStringToQString( tag->comment() ).stripWhiteSpace();
+       m_genre   = TStringToQString( tag->genre() ).stripWhiteSpace();
+       m_year    = tag->year() ? QString::number( tag->year() ) : QString::null;
+       m_track   = tag->track() ? QString::number( tag->track() ) : QString::null;
+   }
+
+    init( f.audioProperties() ); //safe if f.isNull()
+
+    return *this;
 }
 
 QString

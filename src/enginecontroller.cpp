@@ -26,6 +26,9 @@ email                : fh@ez.no
 
 class DummyEngine : public EngineBase
 {
+    //Does nothing, just here to prevent crashes on startup
+    //and in case no engines are found
+
     virtual void init( bool&, int, bool ) {}
     virtual bool initMixer( bool ) { return false; }
     virtual bool canDecode( const KURL&, mode_t, mode_t ) { return false; }
@@ -39,7 +42,7 @@ class DummyEngine : public EngineBase
     virtual void pause() {}
 
     virtual void seek( long ) {}
-    virtual void setVolume( int ) {}
+    virtual void setVolume( int v ) { m_volume = v; }
 
 public: DummyEngine() : EngineBase() { setName( "Dummy" ); }
 
@@ -59,11 +62,13 @@ EngineController::EngineController()
     //we use the dummy Engine to ensure we always have an engine and don't have to test for
     //m_pEngine == 0 and amaroK is in a safe state before an engine is loaded on startup
 
-    : m_pEngine( &dummyEngine )
+    : m_pEngine( &dummyEngine ) //FIXME better would be a static member or something
     , m_proxyError( false )
     , m_pMainTimer( new QTimer( this ) )
     , m_delayTime( 0 )
 {
+    m_pEngine->setVolume( AmarokConfig::masterVolume() );
+
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
     m_pMainTimer->start( MAIN_TIMER );
 }
@@ -179,18 +184,17 @@ void EngineController::setEngine( EngineBase *engine )
 {
     instance()->m_pEngine = engine;
 
-    engine->setVolume( AmarokConfig::masterVolume() );
+    //NOTE many engine properties are only set in applySettings
 }
 
 int EngineController::setVolume( int percent )
 {
-    if( percent < 0 ) percent = 0;
+    if( percent < 0 ) percent = 0; //can't make uint as all signals use int and slot has to match
     if( percent > 100 ) percent = 100;
 
     if( percent != m_pEngine->volume() )
     {
         m_pEngine->setVolume( percent );
-        AmarokConfig::setMasterVolume( percent );
 
         volumeChangedNotify( percent );
     }
@@ -200,7 +204,9 @@ int EngineController::setVolume( int percent )
 
 inline void EngineController::newMetaData( const MetaBundle &bundle )
 {
-    newMetaDataNotify( bundle, false /* not a new track */ );
+    m_bundle = bundle;
+
+    newMetaDataNotify( m_bundle, false /* not a new track */ );
 }
 
 inline void EngineController::slotMainTimer()

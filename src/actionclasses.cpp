@@ -229,6 +229,8 @@ VolumeAction::plug( QWidget *w, int index )
 
     if( bar && kapp->authorizeKAction( name() ) )
     {
+        //FIXME not ideal, but plugging twice in one session can happen
+        EngineController::instance()->detach( this );
         EngineController::instance()->attach( this );
 
         const int id = KAction::getToolButtonID();
@@ -239,6 +241,7 @@ VolumeAction::plug( QWidget *w, int index )
         //FIXME is there a way to get some sensible height?
         m_slider->setFixedHeight( 35 );
         m_slider->setMaxValue( amaroK::VOLUME_MAX );
+        m_slider->setValue( amaroK::VOLUME_MAX - EngineController::engine()->volume() );
         connect( m_slider, SIGNAL( valueChanged( int ) ),
                  this,       SLOT( sliderMoved( int ) ) );
         connect( bar,      SIGNAL( wheelMoved( int ) ),

@@ -148,11 +148,12 @@ MetaBundle PlaylistItem::metaBundle()
     //This function isn't called often (on play request), but playlists can contain
     //thousands of items. So favor saving memory over CPU.
 
-    if ( m_url.isLocalFile() ) {
+    if ( m_url.isLocalFile() )
+    {
         TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Accurate );
         //FIXME hold a small cache of metabundles?
         //then return by reference
-        MetaBundle bundle( this, f.isNull() ? 0 : f.audioProperties() );
+        MetaBundle bundle( this, /*f.isNull() ? 0 :*/ f.audioProperties() ); //I believe the isNull() check is unecessary
         //just set it as we just did an accurate pass
         setText( Length,  bundle.prettyLength()  );
         setText( Bitrate, bundle.prettyBitrate() );
@@ -349,6 +350,13 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     //flicker-free drawing
     static QPixmap buffer;
     buffer.resize( width, height() );
+
+    if( buffer.isNull() )
+    {
+        KListViewItem::paintCell( p, cg, column, width, align );
+        return;
+    }
+
     QPainter painterBuf( &buffer, true );
     painterBuf.setFont( p->font() );
 

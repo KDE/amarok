@@ -47,6 +47,9 @@ public:
     MetaBundle( const KURL &url, TagLib::Tag *tag, TagLib::AudioProperties *ap = 0 );
 
 
+    MetaBundle &readTags( bool audioProperties = true );
+
+
     int length()     const { return m_length > 0 ? m_length : 0; }
     int bitrate()    const { return m_bitrate; }
     int sampleRate() const { return m_sampleRate; }
