@@ -17,11 +17,13 @@ email                : markey@web.de
 
 #define DEBUG_PREFIX "StreamProvider"
 
+#include "amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
 #include "metabundle.h"
 #include "streamprovider.h"
 
+#include <qregexp.h>
 #include <qtextcodec.h>
 #include <qtimer.h>
 
@@ -152,15 +154,21 @@ StreamProvider::sendRequest() //SLOT
     const QString authString = KCodecs::base64Encode( username + ":" + password );
     const bool auth = !( username.isEmpty() && password.isEmpty() );
 
+    // Extract major+minor version number from APP_VERSION
+    QRegExp reg( "[0-9]*\.[0-9]*" );
+    reg.search( APP_VERSION );
+    const QString version = reg.cap();
+
     const QString request = QString( "GET %1 HTTP/1.0\r\n"
                                      "Host: %2\r\n"
-                                     "User-Agent: amaroK/1.2\r\n"
+                                     "User-Agent: amaroK/%3\r\n"
                                      "Accept: */*\r\n"
-                                     "%3"
                                      "%4"
+                                     "%5"
                                      "\r\n" )
                                      .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) + m_url.query() )
                                      .arg( m_url.host() )
+                                     .arg( version )
                                      .arg( m_icyMode ? "Icy-MetaData:1\r\n" : "" )
                                      .arg( auth ? "Authorization: Basic " + authString + "\r\n" : "" );
 
