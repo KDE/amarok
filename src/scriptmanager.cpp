@@ -291,7 +291,7 @@ ScriptManager::slotStopScript()
     m_scripts[name].process = 0;
     slotCurrentChanged( m_base->directoryListView->currentItem() );
 
-    li->setPixmap( 0, SmallIcon( "player_stop" ) );
+    li->setPixmap( 0, SmallIcon( "stop" ) );
 }
 
 
@@ -355,7 +355,7 @@ ScriptManager::scriptFinished( KProcess* process ) //SLOT
         if ( it.data().process == process ) {
             delete it.data().process;
             it.data().process = 0;
-            it.data().li->setPixmap( 0, SmallIcon( "player_stop" ) );
+            it.data().li->setPixmap( 0, SmallIcon( "stop" ) );
             slotCurrentChanged( m_base->directoryListView->currentItem() );
         }
     }
@@ -397,7 +397,7 @@ ScriptManager::loadScript( const QString& path )
         url.setPath( path );
 
         KListViewItem* li = new KListViewItem( m_base->directoryListView, url.fileName() );
-        li->setPixmap( 0, SmallIcon( "player_stop" ) );
+        li->setPixmap( 0, SmallIcon( "stop" ) );
 
         ScriptItem item;
         item.url = url;
