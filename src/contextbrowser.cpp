@@ -50,19 +50,6 @@
 
 using amaroK::QStringx;
 
-
-/**
- * Shifts HTML text to the right
- */
-static inline
-QString shiftText( QString s, uint x )
-{
-    while ( s.length() < x )
-        s = "0" + s;
-
-    return s;
-}
-
 /**
  * Function that must be used when separating contextBrowser escaped urls
  */
@@ -602,7 +589,7 @@ void ContextBrowser::showHome() //SLOT
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
-    qb.setLimit( 0, 30 );
+    qb.setLimit( 0, 40 );
     QStringList fave = qb.run();
 
     qb.clear();
@@ -611,7 +598,7 @@ void ContextBrowser::showHome() //SLOT
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
-    qb.setLimit( 0, 10 );
+    qb.setLimit( 0, 25 );
     QStringList recent = qb.run();
 
     qb.clear();
@@ -621,10 +608,11 @@ void ContextBrowser::showHome() //SLOT
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
-    qb.setLimit( 0, 20 );
+    qb.setLimit( 0, 25 );
     QStringList least = qb.run();
 
     QString ftBox;
+    QString ntBox;
     QString ltBox;
     const QString pctWidth = QString::number( fontMetrics().width( "999" ) );
 
@@ -664,15 +652,15 @@ void ContextBrowser::showHome() //SLOT
                         "<table border='0' cellspacing='0' cellpadding='0' width='100%'><tr>"
                             "<td width='30' align='center' class='song-place'>" + QString::number( ( i / 5 ) + 1 ) + "</td>"
                             "<td>"
-                                "<a href=\"file:" + fave[i+1].replace( '"', QCString( "%22" ) ) + "\">"
+                                "<a href=\"file:" + fave[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
                                 "<span class='song-title'>" + fave[i] + "</span><br /> "
-                                "<span class='song-artist'>" + fave[i+3] + "</span>"
+                                "<span class='song-artist'>" + fave[i + 3] + "</span>"
                         );
 
-            if ( !fave[i+4].isEmpty() )
+            if ( !fave[i + 4].isEmpty() )
                 ftBox.append(
                                 "<span class='song-separator'> - </span>"
-                                "<span class='song-album'>"+ fave[i+4] +"</span>"
+                                "<span class='song-album'>"+ fave[i + 4] +"</span>"
                             );
 
             ftBox.append(
@@ -706,31 +694,35 @@ void ContextBrowser::showHome() //SLOT
                     + i18n( "Your Newest Tracks" ) +
                     "</span>"
                 "</div>"
-                "<div id='newest_box-body' class='box-body'>" );
+                "<iframe name='ntframe' height='200' width='100%'></iframe>"
+                       );
+
+    ntBox.append( "<html><style type='text/css'>body { margin-left: 0px; margin-right: 0px; margin-top: 0px; margin-bottom: 0px }</style><div id='newest_box-body' class='box-body'>" );
 
     for( uint i = 0; i < recent.count(); i = i + 4 )
     {
-        m_HTMLSource.append(
-                    "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
-                        "<div class='song'>"
-                            "<a href=\"file:" + recent[i+1].replace( '"', QCString( "%22" ) ) + "\">"
-                            "<span class='song-title'>" + recent[i] + "</span><br />"
-                            "<span class='song-artist'>" + recent[i+2] + "</span>"
-                           );
+        ntBox.append(
+                 "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
+                    "<div class='song'>"
+                        "<a href=\"file:" + recent[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
+                        "<span class='song-title'>" + recent[i] + "</span><br />"
+                        "<span class='song-artist'>" + recent[i + 2] + "</span>"
+                    );
 
-        if ( !recent[i+3].isEmpty() )
-            m_HTMLSource.append(
-                                "<span class='song-separator'> - </span>"
-                                "<span class='song-album'>" + recent[i+3] + "</span>"
-                               );
+        if ( !recent[i + 3].isEmpty() )
+            ntBox.append(
+                        "<span class='song-separator'> - </span>"
+                        "<span class='song-album'>" + recent[i + 3] + "</span>"
+                        );
 
-        m_HTMLSource.append(
-                            "</a>"
-                        "</div>"
+        ntBox.append(
+                        "</a>"
                     "</div>"
-                           );
+                "</div>"
+                    );
     }
 
+    ntBox.append( "</div></html>" );
     m_HTMLSource.append(
                 "</div>"
             "</div>"
@@ -763,19 +755,19 @@ void ContextBrowser::showHome() //SLOT
         QDateTime lastPlay = QDateTime();
         for( uint i = 0; i < least.count(); i = i + 5 )
         {
-            lastPlay.setTime_t( least[i+4].toUInt() );
+            lastPlay.setTime_t( least[i + 4].toUInt() );
             ltBox.append(
                     "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
                         "<div class='song'>"
-                            "<a href=\"file:" + least[i+1].replace( '"', QCString( "%22" ) ) + "\">"
+                            "<a href=\"file:" + least[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
                             "<span class='song-title'>" + least[i] + "</span><br />"
-                            "<span class='song-artist'>" + least[i+2] + "</span>"
+                            "<span class='song-artist'>" + least[i + 2] + "</span>"
                         );
 
-            if ( !least[i+3].isEmpty() )
+            if ( !least[i + 3].isEmpty() )
                 ltBox.append(
                             "<span class='song-separator'> - </span>"
-                            "<span class='song-album'>" + least[i+3] + "</span>"
+                            "<span class='song-album'>" + least[i + 3] + "</span>"
                             );
 
             ltBox.append(
@@ -814,6 +806,18 @@ void ContextBrowser::showHome() //SLOT
         m_homePage->findFrame( "ftframe" )->write( ftBox );
         m_homePage->findFrame( "ftframe" )->end();
 
+    }
+    if ( !ntBox.isEmpty() )
+    {
+        connect( m_homePage->findFrame( "ntframe" )->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
+                 this,                                                     SLOT( openURLRequest( const KURL & ) ) );
+        connect( m_homePage->findFrame( "ntframe" ), SIGNAL( popupMenu( const QString&, const QPoint& ) ),
+                 this,                                 SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
+
+        m_homePage->findFrame( "ntframe" )->begin();
+        m_homePage->findFrame( "ntframe" )->setUserStyleSheet( m_styleSheet );
+        m_homePage->findFrame( "ntframe" )->write( ntBox );
+        m_homePage->findFrame( "ntframe" )->end();
     }
     if ( !ltBox.isEmpty() )
     {
@@ -1227,7 +1231,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
             qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
-            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, values[ i+1 ] );
+            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, values[ i + 1 ] );
             qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
             qb.setOptions( QueryBuilder::optNoCompilations );
@@ -1267,18 +1271,18 @@ void ContextBrowser::showCurrentTrack() //SLOT
                     "</div>"
                     "<div class='album-body' style='display:%11;' id='IDA%12'>" )
                 .args( QStringList()
-                    << values[ i+1 ]
+                    << values[ i + 1 ]
                     << escapeHTMLAttr( currentTrack.artist() ) // artist name
                     << escapeHTMLAttr( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] ) // album.name
                     << i18n( "Click for information from amazon.com, right-click for menu." )
                     << escapeHTMLAttr( CollectionDB::instance()->albumImage( currentTrack.artist(), values[ i ], 50 ) )
                     << i18n( "Single", "%n Tracks",  albumValues.count() / 5 )
                     << QString::number( artist_id )
-                    << values[ i+1 ] //album.id
+                    << values[ i + 1 ] //album.id
                     << escapeHTML( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] )
                     << albumYear
                     << ( i!=vectorPlace ? "none" : "block" ) /* shows it if it's the current track album */
-                    << values[ i+1 ] ) );
+                    << values[ i + 1 ] ) );
 
             if ( !albumValues.isEmpty() )
                 for ( uint j = 0; j < albumValues.count(); j += 5 )
@@ -1345,7 +1349,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
             qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
-            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, values[ i+1 ] );
+            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, values[ i + 1 ] );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
             qb.setOptions( QueryBuilder::optOnlyCompilations );
             QStringList albumValues = qb.run();
@@ -1384,17 +1388,17 @@ void ContextBrowser::showCurrentTrack() //SLOT
                     "</div>"
                     "<div class='album-body' style='display:%11;' id='IDA%12'>" )
                 .args( QStringList()
-                    << values[ i+1 ]
+                    << values[ i + 1 ]
                     << escapeHTMLAttr( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] ) // album.name
                     << i18n( "Click for information from amazon.com, right-click for menu." )
                     << escapeHTMLAttr( CollectionDB::instance()->albumImage( currentTrack.artist(), values[ i ], 50 ) )
                     << i18n( "Single", "%n Tracks",  albumValues.count() / 5 )
                     << QString::number( artist_id )
-                    << values[ i+1 ] //album.id
+                    << values[ i + 1 ] //album.id
                     << escapeHTML( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] )
                     << albumYear
                     << ( i!=vectorPlace ? "none" : "block" ) /* shows it if it's the current track album */
-                    << values[ i+1 ] ) );
+                    << values[ i + 1 ] ) );
 
             if ( !albumValues.isEmpty() )
                 for ( uint j = 0; j < albumValues.count(); j += 5 )
