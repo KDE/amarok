@@ -1376,8 +1376,8 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy Meta-string" ), 0, 0, CTRL+Key_C, COPY );
     popup.insertSeparator();
     if( K3bExporter::isAvailable() ) {
-        popup.insertItem( i18n("Burn to disk as data"), BURN_DATACD );
-        popup.insertItem( i18n("Burn to disk as CD Audio"), BURN_AUDIOCD );
+        popup.insertItem( i18n("Burn to CD as data"), BURN_DATACD );
+        popup.insertItem( i18n("Burn to CD as audio"), BURN_AUDIOCD );
         popup.insertSeparator();
     }
     popup.insertItem( SmallIcon( "edittrash" ), i18n( "&Remove From Playlist" ), this, SLOT(removeSelectedItems()), Key_Delete );
