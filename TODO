@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #137 being the highest available (take this one for your next bug and increase here)
+           #138 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
@@ -20,6 +20,8 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+
+  ADD 137 <markey> Ability to abort playlist reading. Can take very long when you drop a folder by accident.
 
   FIX 121 <markey> We should cut down on unnecessary/redundant debug output/warnings (noise).
 
