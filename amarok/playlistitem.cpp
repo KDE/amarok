@@ -78,19 +78,22 @@ PlaylistItem::~PlaylistItem()
 #include <taglib/fileref.h>
 #include <taglib/audioproperties.h>
 
-const MetaBundle *PlaylistItem::metaBundle() const
+MetaBundle PlaylistItem::metaBundle() const
 {
     //FIXME only do once!
+    //FIXME these column now exist, check them first?
     TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Fast );
 
-    return new MetaBundle( text( 1 ),
-                           text( 2 ),
-                           text( 3 ),
-                           text( 4 ),
-                           text( 5 ),
-                           text( 6 ),
-                           text( 7 ),
-                           ( f.isNull() ) ? 0 : f.audioProperties() );
+    //FIXME hold a small cache of metabundles?
+    //then return by reference
+    return MetaBundle( text( 1 ),
+                       text( 2 ),
+                       text( 3 ),
+                       text( 4 ),
+                       text( 5 ),
+                       text( 6 ),
+                       text( 7 ),
+                       ( f.isNull() ) ? 0 : f.audioProperties() );
 }
 
 
@@ -199,53 +202,66 @@ static const QString zeroPad( const long digit )
 int PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
 {
     float a, b;
-    
+
     switch( col )  //we cannot sort numbers lexically, so we must special case those columns
     {
         case 4:    //year
             a =    text( 4 ).toFloat();
-            b = i->text( 4 ).toFloat();   
+            b = i->text( 4 ).toFloat();
             break;
 
         case 7:    //track
             a =    text( 7 ).toFloat();
-            b = i->text( 7 ).toFloat();   
+            b = i->text( 7 ).toFloat();
             break;
-                    
+
         case 9:    //length
             a =    text( 9 ).replace( ":", "." ).toFloat();
-            b = i->text( 9 ).replace( ":", "." ).toFloat();   
+            b = i->text( 9 ).replace( ":", "." ).toFloat();
             break;
-        
+
         case 10:   //bitrate
             a =    text( 10 ).section( "kbps", 0, 0 ).toFloat();
             b = i->text( 10 ).section( "kbps", 0, 0 ).toFloat();
-            break;                
-        
+            break;
+
         default:   //ordinary string -> sort lexically
             return KListViewItem::compare( i, col, ascending );
     }
-    
+
     if ( a > b ) return +1;
     if ( a < b ) return -1;
-    
+
     return 0;    //a == b
 }
 
 
 void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
 {
-    static const QColor GlowColor( 0xff, 0x40, 0x40 );
+    if ( this == PlaylistItem::GlowItem )
+    {
+        const QColor GlowText( 0xff, 0x40, 0x40 ); //FIXME extend QColorGroup and add this member
+        QColorGroup glowCg = cg; //shallow copy
+        int h, s, v;
 
-    QColorGroup newCg = cg; //shallow copy
+        GlowText.getHsv( &h, &s, &v );
+        QColor glowBase( h, ( s > 50 ) ? s - 50 : s + 50, v, QColor::Hsv );
+        QColor normBase( cg.base() );
+        glowBase.setRgb( (normBase.red()*3   + glowBase.red()*2)   /5,
+                         (normBase.green()*3 + glowBase.green()*2) /5,
+                         (normBase.blue()*3  + glowBase.blue()*2)  /5 );
 
-    if ( this == PlaylistItem::GlowItem ) //static member
-        newCg.setColor( QColorGroup::Text, GlowColor );
+        glowCg.setColor( QColorGroup::Text, GlowText );
+        glowCg.setColor( QColorGroup::Base, glowBase );
 
-    KListViewItem::paintCell( p, newCg, column, width, align );
+        //KListViewItem enforces alternate color, so we use QListViewItem
+        QListViewItem::paintCell( p, glowCg, column, width, align );
 
-    {   //draw column separator line
-        p->setPen( QPen( Qt::darkGray, 0, Qt::DotLine ) );
-        p->drawLine( width - 1, 0, width - 1, height() - 1 );
+    } else {
+
+        KListViewItem::paintCell( p, cg, column, width, align );
     }
+
+    p->setPen( QPen( cg.dark(), 0, Qt::DotLine ) );
+    p->drawLine( width - 1, 0, width - 1, height() - 1 );
 }

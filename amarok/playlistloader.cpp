@@ -4,7 +4,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#include "amarokfilelist.h"            
+#include "amarokfilelist.h"
 #include "engine/enginebase.h"
 #include "metabundle.h"
 #include "playerapp.h"
@@ -88,7 +88,7 @@ PlaylistLoader::PlaylistLoader( const KURL::List &ul, QWidget *w, PlaylistItem *
 PlaylistLoader::~PlaylistLoader()
 {
     //call from GUI thread only
-    
+
     if( NULL != m_first )
     {
         kdDebug() << "Removing: " << m_list.first().path() << endl;
@@ -115,7 +115,7 @@ void PlaylistLoader::process( const KURL::List &list, bool validate )
 {
    struct STATSTRUCT statbuf;
    ++m_recursionCount;
-   
+
    for( KURL::List::ConstIterator it = list.begin(); it != list.end(); ++it )
    {
       QString path = (*it).path();
@@ -128,13 +128,13 @@ void PlaylistLoader::process( const KURL::List &list, bool validate )
          {
             //some options prevent recursion
             //FIXME depth check too
-            if( list.count() > 1 && ( !options.recurse || ( !options.symlink && S_ISLNK( statbuf.st_mode ) ) ) ) continue; 
+            if( list.count() > 1 && ( !options.recurse || ( !options.symlink && S_ISLNK( statbuf.st_mode ) ) ) ) continue;
 
             AmarokFileList files( options.sortSpec );
             files.setAutoDelete( true );
             translate( path, files );
             files.sort();
-            
+
             KURL::List urls;
             for( KFileItemListIterator it( files ); *it; ++it )
             {
@@ -189,7 +189,7 @@ int PlaylistLoader::isPlaylist( const QString &path )
 void PlaylistLoader::loadLocalPlaylist( const QString &path, int type )
 {
    kdDebug() << "[loader] playlist: " << path << endl;
-   
+
    QFile file( path );
 
       if ( file.open( IO_ReadOnly ) )
@@ -218,9 +218,9 @@ bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissi
    //FIXME determine if the thing at the end of this is a stream! Can arts do this?
    //      currently we always return true as we can't check
    //FIXME I don't actually understand what checks can be done, etc.
-   if( url.protocol() == "http" ) return true;   
-   
-   QString ext = url.path().right( 4 ).lower();   
+   if( url.protocol() == "http" ) return true;
+
+   QString ext = url.path().right( 4 ).lower();
    //listed in order of liklihood of encounter to avoid logic checks
    bool b = ( ext == ".mp3" || ext == ".ogg" || ext == ".m3u" || ext == ".pls" || ext == ".mod" ||  ext == ".wav" );
 
@@ -322,20 +322,20 @@ void PlaylistLoader::loadPls( QTextStream &stream )
             QString title;
             int length = 0;
             MetaBundle *tags = 0;
-                        
+
             line = stream.readLine();
-            
+
             if( line.startsWith( "Title" ) )
             {
                 title = line.section( "=", -1 );
                 line = stream.readLine();
             }
-    
+
             if( line.startsWith( "Length" ) )
             {
                 length = line.section( "=", -1 ).toInt();
             }
-    
+
             if( title != "" || length > 0 )
             {
                 tags = new MetaBundle( title, length );
@@ -347,6 +347,7 @@ void PlaylistLoader::loadPls( QTextStream &stream )
 }
 
 
+PlaylistLoader::LoaderEvent::~LoaderEvent() { delete m_tags; }
 
 PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
 {
@@ -354,11 +355,11 @@ PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
 
    //Construct a PlaylistItem and update the after pointer
    //If only called by the GUI thread, access to m_after is serialised
-   
+
    //NOTE only return a playlistitem if you want it to be registered in the playlist
    // ie. don't return placeholders, only items that can be played!
    // so, currently, if kio is required return 0!
-   
+
    PlaylistItem *newItem = new PlaylistItem( lv, m_thread->m_after, m_url, m_tags );
 
    if( m_kio )
@@ -367,7 +368,7 @@ PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
        //and we are blocking the event loop right now!
        //however KIO::NetAccess processes the event loop, so we need to dereference now in case the thread is deleted
        QWidget *playlistWidget = m_thread->m_parent;
-   
+
       //KIO::NetAccess will make it's own tempfile
       //but we need to add .pls/.m3u extension or the Loader will fail
       QString path = m_url.filename();
@@ -376,21 +377,21 @@ PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
       //      if you so desire. Bad design needs you to fix it!
       KTempFile tmpfile( QString::null, path.right( i ) ); //default prefix
       path = tmpfile.name();
-    
+
       kdDebug() << "[loader] KIO::download - " << path << endl;
 
       QApplication::setOverrideCursor( KCursor::waitCursor() );
          //FIXME this will block user input to the interface
          bool succeeded = KIO::NetAccess::download( m_url, path, m_thread->m_parent );
       QApplication::restoreOverrideCursor();
-      
+
       if( succeeded )
       {
          //the playlist was successfully downloaded
          //KIO::NetAccess created a tempfile, it will be deleted in the new thread's dtor
          KURL url; url.setPath( path ); //required way to set unix paths
          const KURL::List list( url );
-         
+
          PlaylistLoader *loader = new PlaylistLoader( list, lv, newItem, true ); //true = delete newItem in dtor
          loader->start();
 
@@ -403,7 +404,7 @@ PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
          delete newItem; //we created this in this function, it's safe to delete!
          tmpfile.unlink();
       }
-      
+
       return 0; //we don't want this item to be registered with the playlistWidget
    }
 
@@ -508,7 +509,7 @@ void TagReader::cancel()
    mutex.lock();
    m_Q.clear();
    mutex.unlock();
-   
+
    //this is because currently, tagreader 98% of the time has sent events for playlistitems to be deleted
    //by processing events you process these playlistItem events and then after this function theory are deleted
    //FIXME delay deletion of the items instead (use an event to do it instead)
@@ -527,10 +528,7 @@ void TagReader::remove( PlaylistItem *pi )
 
 
 
-TagReader::TagReaderEvent::~TagReaderEvent()
-{
-    delete m_tags;
-}
+TagReader::TagReaderEvent::~TagReaderEvent() { delete m_tags; }
 
 void TagReader::TagReaderEvent::bindTags()
 {

@@ -30,7 +30,7 @@
 
 #include <kuniqueapplication.h>
 #include <kurl.h>
-    
+
 #include <vector>
 
 class QColor;
@@ -64,7 +64,6 @@ class PlayerApp : public KUniqueApplication
 
         virtual int newInstance();
 
-        bool queryClose();
         bool playObjectConfigurable();
         bool isPlaying() const;
         int  trackLength() const { return m_length; }
@@ -74,7 +73,7 @@ class PlayerApp : public KUniqueApplication
 
         // ATTRIBUTES ------
         EngineBase *m_pEngine;
-        
+
         KGlobalAccel *m_pGlobalAccel;
 
         PlayerWidget *m_pPlayerWidget;
@@ -92,7 +91,7 @@ class PlayerApp : public KUniqueApplication
         void slotPrev() const;
         void slotNext() const;
         void slotPlay() const;
-        void play( const KURL&, const MetaBundle * = 0 );
+        void play( const KURL&, const MetaBundle& );
         void slotPause();
         void slotStop();
         void slotSliderPressed();
@@ -110,7 +109,7 @@ class PlayerApp : public KUniqueApplication
         void slotConfigEffects();
         void slotHide();
         void slotShow();
-        
+
     private slots:
         void applySettings();
         void receiveStreamMeta( QString title, QString url, QString kbps );
@@ -119,7 +118,7 @@ class PlayerApp : public KUniqueApplication
         void sigScope( std::vector<float> *s );
         void sigPlay();
         /*         void sigUpdateFonts(); */
-    
+
     private:
         void initBrowserWin();
         void initColors();

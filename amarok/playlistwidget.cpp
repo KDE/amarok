@@ -398,7 +398,7 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
 
          if( AmarokConfig::showMetaInfo() ) m_tagReader->append( item );
 
-         //nonlocal downloads can fail <-- <mxcl> what did I mean?!
+         //only add these if above doesn't return 0, as 0 means "don't register this item"
          searchTokens.append( item->text( 0 ) );
          searchPtrs.append( item );
       }
@@ -536,7 +536,6 @@ void PlaylistWidget::setCurrentTrack( PlaylistItem *item )
 {
     PlaylistItem *tmp = PlaylistItem::GlowItem;
     PlaylistItem::GlowItem = item;
-    repaintItem( tmp ); //new glowItem will be repainted by glowTime::timeout()
 
     //the following 2 statements may seem strange, they are important however:
     //1. if nothing is current and then playback starts, the user needs to be shown the currentTrack
@@ -545,8 +544,13 @@ void PlaylistWidget::setCurrentTrack( PlaylistItem *item )
     //   because that is a feature of amaroK
     if( m_pCurrentTrack == NULL ) ensureItemVisible( item ); //handles NULL gracefully
     else if( item == NULL ) m_pCurrentTrack->setSelected( false );
+    else item->setSelected( false ); //looks bad paint selected and paint red
 
     m_pCurrentTrack = item;
+
+    //repaint items
+    repaintItem( tmp );
+    repaintItem( item );
 }
 
 
@@ -612,18 +616,18 @@ void PlaylistWidget::activate( QListViewItem *item )
    //FIXME handle when reaches end of playlist and track, should reset to beginning of list
    //FIXME get audiodata on demand for tracks
 
-   PlaylistItem *_item = static_cast<PlaylistItem *>(item);
+   #define item static_cast<PlaylistItem *>(item)
 
-   setCurrentTrack( _item );
+   setCurrentTrack( item );
 
-   if( _item != NULL )
+   if( item != NULL )
    {
-      const MetaBundle *meta = _item->metaBundle();
+      const MetaBundle meta = item->metaBundle();
 
-      emit activated( _item->url(), meta );
-
-      delete meta;
+      emit activated( item->url(), meta );
    }
+
+   #undef item
 }
 
 
@@ -647,8 +651,6 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
     }
     popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy trackname" ), 0, 0, CTRL+Key_C, 4 ); //FIXME use KAction
     popup.insertSeparator();
-    //NOTE we did use "editdelete" but it that makes it seem like you will delete the file!
-    //NOTE at least one item will always be selected ( item )
     popup.insertItem( SmallIcon( "edittrash" ), i18n( "&Remove selected" ), this, SLOT( removeSelectedItems() ), Key_Delete );
 
     //only enable for columns that have editable tags
@@ -704,19 +706,17 @@ void PlaylistWidget::showTrackInfo( const PlaylistItem *pItem )
 
     if ( AmarokConfig::showMetaInfo() )
     {
-         const MetaBundle *mb = pItem->metaBundle();
+         MetaBundle mb = pItem->metaBundle();
 
-         str += "<tr><td>" + i18n( "Title"   ) + "</td><td>" + mb->m_title   + "</td></tr>";
-         str += "<tr><td>" + i18n( "Artist"  ) + "</td><td>" + mb->m_artist  + "</td></tr>";
-         str += "<tr><td>" + i18n( "Album"   ) + "</td><td>" + mb->m_album   + "</td></tr>";
-         str += "<tr><td>" + i18n( "Genre"   ) + "</td><td>" + mb->m_genre   + "</td></tr>";
-         str += "<tr><td>" + i18n( "Year"    ) + "</td><td>" + mb->m_year    + "</td></tr>";
-         str += "<tr><td>" + i18n( "Comment" ) + "</td><td>" + mb->m_comment + "</td></tr>";
-         str += "<tr><td>" + i18n( "Length"  ) + "</td><td>" + QString::number( mb->m_length ) + "</td></tr>";
-         str += "<tr><td>" + i18n( "Bitrate" ) + "</td><td>" + QString::number( mb->m_bitrate ) + " kbps</td></tr>";
-         str += "<tr><td>" + i18n( "Samplerate" ) + "</td><td>" + QString::number( mb->m_sampleRate ) + " Hz</td></tr>";
-
-         delete mb;
+         str += "<tr><td>" + i18n( "Title"   ) + "</td><td>" + mb.m_title   + "</td></tr>";
+         str += "<tr><td>" + i18n( "Artist"  ) + "</td><td>" + mb.m_artist  + "</td></tr>";
+         str += "<tr><td>" + i18n( "Album"   ) + "</td><td>" + mb.m_album   + "</td></tr>";
+         str += "<tr><td>" + i18n( "Genre"   ) + "</td><td>" + mb.m_genre   + "</td></tr>";
+         str += "<tr><td>" + i18n( "Year"    ) + "</td><td>" + mb.m_year    + "</td></tr>";
+         str += "<tr><td>" + i18n( "Comment" ) + "</td><td>" + mb.m_comment + "</td></tr>";
+         str += "<tr><td>" + i18n( "Length"  ) + "</td><td>" + QString::number( mb.m_length ) + "</td></tr>";
+         str += "<tr><td>" + i18n( "Bitrate" ) + "</td><td>" + QString::number( mb.m_bitrate ) + " kbps</td></tr>";
+         str += "<tr><td>" + i18n( "Samplerate" ) + "</td><td>" + QString::number( mb.m_sampleRate ) + " Hz</td></tr>";
     }
     else
     {

@@ -116,7 +116,7 @@ class PlaylistWidget : public KListView //: private KListView
         void writeTag( QListViewItem *, const QString &, int );
 
     signals:
-        void activated( const KURL&, const MetaBundle* = 0 );
+        void activated( const KURL&, const MetaBundle& );
         void cleared();
         void sigUndoState( bool );
         void sigRedoState( bool );

@@ -24,7 +24,6 @@ class QTextStream;
 class QMutex;
 class PlaylistItem;
 class MetaBundle;
-//class KFileItemList;
 
 
 class PlaylistLoader : public QThread
@@ -42,7 +41,7 @@ public:
     void setOptions( bool b1, bool b2, int i ) { options.recurse = b1; options.symlink = b2; options.sortSpec = i; }
 
     ////////CUSTOMEVENTS
-    
+
     class LoaderEvent : public QCustomEvent
     {
     public:
@@ -53,13 +52,15 @@ public:
          , m_tags( mb )
          , m_kio( false ) {}
 
-       //TODO attempt to more clearly define the downloading version of this event                
+       //TODO attempt to more clearly define the downloading version of this event
        LoaderEvent( PlaylistLoader *pl, const KURL &u )
          : QCustomEvent( 65432 )
          , m_thread( pl )
          , m_url( u )
          , m_tags( 0 )
          , m_kio( true ) {}
+
+       ~LoaderEvent();
 
        const KURL &url() const { return m_url; }
        PlaylistItem *makePlaylistItem( QListView *lv );
@@ -77,7 +78,7 @@ public:
        LoaderDoneEvent( PlaylistLoader *t )
          : QCustomEvent( 65433 )
          , m_thread( t ) {}
-         
+
        void dispose() { if( m_thread->running() ) m_thread->wait(); delete m_thread; } //FIXME will stall UI
 
     private:
@@ -133,7 +134,7 @@ public:
       PlaylistItem* const m_item;
       MetaBundle* const m_tags;
    };
-   
+
    //does nothing this one, just used by playlistWidget to find out when tagReader has finished
    class TagReaderDoneEvent : public QCustomEvent
    {

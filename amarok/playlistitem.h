@@ -36,9 +36,9 @@ class PlaylistItem : public KListViewItem
 {
     public:
         PlaylistItem( QListView *, QListViewItem *, const KURL &, const MetaBundle * = 0 );
-        virtual ~PlaylistItem();
+        ~PlaylistItem();
 
-        const MetaBundle *metaBundle() const;
+        MetaBundle metaBundle() const;
         void setMeta( const MetaBundle& );
         void writeTag( const QString&, int );
 
@@ -50,10 +50,8 @@ class PlaylistItem : public KListViewItem
         static PlaylistItem *GlowItem;
 
     private:
-        int compare( QListViewItem *i, int col, bool ascending ) const;
-        
-        //FIXME <markey> there is no reason for making this virtual, since noone derives from PlaylistItem!
-        virtual void paintCell( QPainter*, const QColorGroup&, int, int, int );
+        int  compare( QListViewItem*, int, bool ) const;
+        void paintCell( QPainter*, const QColorGroup&, int, int, int );
 
         const KURL m_url;
 };

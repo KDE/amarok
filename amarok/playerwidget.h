@@ -23,7 +23,6 @@
 #include <qwidget.h>
 #include <qpixmap.h>
 
-#include <ksystemtray.h>
 #include <khelpmenu.h> //inlined helpmenu()
 
 class QBitmap;
@@ -120,7 +119,7 @@ class PlayerWidget : public QWidget
         void mousePressEvent( QMouseEvent *e );
         void queryClose();
         void closeEvent( QCloseEvent *e );
-        void moveEvent( QMoveEvent *e );
+        //void moveEvent( QMoveEvent *e );
 
         // ATTRIBUTES ------
         QString m_bitrate, m_samplerate, m_length;

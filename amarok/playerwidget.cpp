@@ -79,7 +79,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
                              "options_configure_global_keybinding"
                            )->setText( i18n( "Configure Global Shortcuts..." ) );
     KStdAction::preferences( pApp, SLOT( slotShowOptions() ), m_pActionCollection );
-    KStdAction::quit( pApp, SLOT( quit() ), m_pActionCollection );
+    KStdAction::quit( kapp, SLOT( quit() ), m_pActionCollection );
 
 
     // amaroK background pixmap
@@ -539,28 +539,32 @@ void PlayerWidget::closeEvent( QCloseEvent *e )
     //pushed for the main widget -mxcl
     //of course since we haven't got an obvious quit button, this is not yet a perfect solution..
 
-    if( AmarokConfig::showTrayIcon() )
+    //NOTE we must accept() here or the info box below appears on quit()
+    //Don't ask me why.. *shrug*
+    e->accept();
+
+    if( AmarokConfig::showTrayIcon() && !e->spontaneous() && !kapp->sessionSaving() )
     {
+
+
         KMessageBox::information( this,
                                   i18n( "<qt>Closing the main window will keep amaroK running in the system tray. "
                                         "Use Quit from the popup-menu to quit the application.</qt>" ),
                                   i18n( "Docking in System Tray" ), "hideOnCloseInfo" );
-        e->accept();
     }
-    else if ( pApp->queryClose() )
-        pApp->quit();
+    else kapp->quit();
 }
 
-
+/*
 void PlayerWidget::moveEvent( QMoveEvent * )
 {
     //     You can get the frame sizes like so (found in Qt sources while looking for something else):
-    /*    int framew = geometry().x() - x();
-        int frameh = geometry().y() - y();*/
+        int framew = geometry().x() - x();
+        int frameh = geometry().y() - y();
 
     // Makes the the playlistwindow stick magnetically to the playerwindow
 
-    /*    if ( pApp->m_pBrowserWin->isVisible() )
+        if ( pApp->m_pBrowserWin->isVisible() )
         {
             if ( ( frameGeometry().x() == pApp->m_pBrowserWin->frameGeometry().right() + 1 ) )
                     ( e->oldPos().y() == pApp->m_pBrowserWin->frameGeometry().bottom() ) ||
@@ -570,9 +574,9 @@ void PlayerWidget::moveEvent( QMoveEvent * )
                 pApp->m_pBrowserWin->move( e->pos() + ( pApp->m_pBrowserWin->pos() -  e->oldPos() ) );
                 pApp->m_pBrowserWin->move( e->pos() + ( pApp->m_pBrowserWin->pos() -  e->oldPos() ) );
             }
-        }*/
+        }
 }
-
+*/
 
 // SLOTS ---------------------------------------------------------------------
 

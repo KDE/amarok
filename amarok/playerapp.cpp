@@ -197,13 +197,13 @@ void PlayerApp::initConfigDialog()
     KConfigDialog *dialog = new KConfigDialog( m_pPlayerWidget, "settings", AmarokConfig::self() );
 
     Options4* pOpt4 = new Options4( 0,"Playback" );
-    
+
     //we must handle the "Sound Setting" QComboBox manually, since KConfigDialog can't manage dynamic itemLists
     //(at least I don't know how to do it)
-    m_pSoundSystem = pOpt4->sound_system; 
+    m_pSoundSystem = pOpt4->sound_system;
     m_pSoundSystem->insertStringList( m_pEngine->listEngines() );
     m_pSoundSystem->setCurrentText  ( AmarokConfig::soundSystem() );
-            
+
     dialog->addPage( new Options1( 0,"General" ),  i18n("General"),  "misc",   i18n("Configure general options") );
     dialog->addPage( new Options2( 0,"Fonts" ),    i18n("Fonts"),    "fonts",  i18n("Configure fonts") );
     dialog->addPage( new Options3( 0,"Colors" ),   i18n("Colors"),   "colors", i18n("Configure Colors") );
@@ -211,7 +211,7 @@ void PlayerApp::initConfigDialog()
     dialog->addPage( new Options5( 0,"OSD" ),      i18n("OSD" ),     "tv",     i18n("Configure OSD") );
 
     connect( dialog, SIGNAL( settingsChanged() ), this, SLOT( applySettings() ) );
-     
+
     dialog->setInitialSize( QSize( 460, 390 ) );
 }
 
@@ -275,8 +275,8 @@ void PlayerApp::initBrowserWin()
     connect( m_pBrowserWin,                                 SIGNAL( signalHide() ),
              this,                                          SLOT  ( slotPlaylistIsHidden() ) );
     //make sure playlist is linked to playback
-    connect( m_pBrowserWin->m_pPlaylistWidget,              SIGNAL( activated( const KURL&, const MetaBundle* ) ),
-             this,                                          SLOT  ( play( const KURL&, const MetaBundle* ) ) );
+    connect( m_pBrowserWin->m_pPlaylistWidget,              SIGNAL( activated( const KURL&, const MetaBundle& ) ),
+             this,                                          SLOT  ( play( const KURL&, const MetaBundle& ) ) );
 
     kdDebug() << "end PlayerApp::initBrowserWin()" << endl;
 }
@@ -294,7 +294,7 @@ void PlayerApp::restoreSession()
 
         if ( seconds >= 0 )
         {
-            play( AmarokConfig::resumeTrack() );
+            play( AmarokConfig::resumeTrack(), MetaBundle() );
 
             if ( seconds > 0 )
                 m_pEngine->seek( seconds * 1000 );
@@ -308,13 +308,13 @@ void PlayerApp::restoreSession()
 
 void PlayerApp::applySettings()
 {
-    if ( m_pSoundSystem->currentText() != AmarokConfig::soundSystem() )    
+    if ( m_pSoundSystem->currentText() != AmarokConfig::soundSystem() )
     {
         delete m_pEngine;
         AmarokConfig::setSoundSystem( m_pSoundSystem->currentText() );
         m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(), m_artsNeedsRestart, SCOPE_SIZE );
         kdDebug() << "[PlayerApp::applySettings()] AmarokConfig::soundSystem() == " << AmarokConfig::soundSystem() << endl;
-    }   
+    }
 
     m_pEngine->initMixer     ( AmarokConfig::softwareMixerOnly() );
     m_pEngine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
@@ -322,9 +322,9 @@ void PlayerApp::applySettings()
     m_pOSD->setEnabled( !AmarokConfig::osdEnabled() );      //workaround for reversed config entry
     m_pOSD->setFont   ( AmarokConfig::osdFont() );
     m_pOSD->setColor  ( AmarokConfig::osdColor() );
-    
+
     m_pBrowserWin  ->slotUpdateFonts();
-    m_pPlayerWidget->createVis();    
+    m_pPlayerWidget->createVis();
 
     setupColors();
 }
@@ -363,7 +363,7 @@ void PlayerApp::readConfig()
     //we must restart artsd after each version change, so that it picks up any plugin changes
     m_artsNeedsRestart = AmarokConfig::version() != APP_VERSION;
     m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(), m_artsNeedsRestart, SCOPE_SIZE );
-        
+
     /*    m_pBrowserWin->m_pBrowserWidget->readDir( AmarokConfig::currentDirectory() );
         m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( AmarokConfig::pathHistory() );*/
 
@@ -403,6 +403,7 @@ void PlayerApp::readConfig()
                             this, SLOT( slotPrev() ), true, true );
 
     // FIXME <berkus> this needs some other way of handling with KConfig XT?!?
+    //<mxcl> doesn't need to be XT'd as it's not for configDialogs
     m_pGlobalAccel->setConfigGroup( "Shortcuts" );
     m_pGlobalAccel->readSettings( kapp->config() );
     m_pGlobalAccel->updateConnections();
@@ -410,18 +411,8 @@ void PlayerApp::readConfig()
     //FIXME use a global actionCollection (perhaps even at global scope)
     m_pPlayerWidget->m_pActionCollection->readShortcutSettings( QString::null, kapp->config() );
     m_pBrowserWin->m_pActionCollection->readShortcutSettings( QString::null, kapp->config() );
-    
+
     kdDebug() << "end PlayerApp::readConfig()" << endl;
-}
-
-
-bool PlayerApp::queryClose()
-{
-    if ( AmarokConfig::confirmExit() )
-        if ( KMessageBox::questionYesNo( 0, i18n( "Really exit the program?" ) ) == KMessageBox::No )
-            return false;
-
-    return true;
 }
 
 
@@ -446,31 +437,49 @@ void PlayerApp::receiveStreamMeta( QString title, QString url, QString kbps )
 
 void PlayerApp::setupColors()
 {
+    //FIXME you have to fix the XT stuff for this, we need an enum (and preferably, hard-coded amarok-defaults.. or maybe not)
+
     if( AmarokConfig::schemeKDE() )
     {
         //TODO this sucks a bit, perhaps just iterate over all children calling "unsetPalette"?
         m_pBrowserWin->setPalettes( QApplication::palette(), KGlobalSettings::alternateBackgroundColor() );
-    }
-    else
-    {
-        // we try to be smart: this code figures out contrasting colors for selection and alternate background rows
-        int h, s, v;
-        QColorGroup group = QApplication::palette().active();
-        QColor fg, bgAlt, highlight;
-        QColor bg = AmarokConfig::browserBgColor();
 
-        //TODO this isn't what we want yet
-        if( AmarokConfig::schemeAmarok() )
-        {
-            //TODO this is fancy colouring that fits with the window better (providing base is a neutral colour, eg black)
-            //FIXME make fancy/custom/kde-default options in colour select dialog
-            KGlobalSettings::activeTitleColor().hsv( &h, &s, &v );
-            fg = QColor( h, s, 255, QColor::Hsv );
-        }
-        else
-        {
-            fg = AmarokConfig::browserFgColor();
-        }
+    } else if( AmarokConfig::schemeAmarok() ) {
+
+        QColorGroup group = QApplication::palette().active();
+        const QColor bg( 32, 32, 80 );
+        //const QColor bgAlt( 77, 80, 107 );
+        const QColor bgAlt( 57, 64, 98 );
+        //bgAlt.setRgb( 69, 68, 102 );
+        //bgAlt.setRgb( 85, 84, 117 );
+        //bgAlt.setRgb( 74, 81, 107 );
+        //bgAlt.setRgb( 83, 86, 112 );
+
+        QColor highlight( (bg.red() + bgAlt.red())/2, (bg.green() + bgAlt.green())/2, (bg.blue() + bgAlt.blue())/2 );
+
+        group.setColor( QColorGroup::Text, Qt::white );
+        group.setColor( QColorGroup::Base, bg );
+        group.setColor( QColorGroup::Background, bg.dark( 115 ) );
+        //group.setColor( QColorGroup::Button, QColor( 0, 112, 255 ) );
+
+        group.setColor( QColorGroup::Highlight, Qt::white );
+        group.setColor( QColorGroup::HighlightedText, bg );
+
+        group.setColor( QColorGroup::Light,    Qt::white );
+        group.setColor( QColorGroup::Midlight, group.background() );
+        group.setColor( QColorGroup::Dark,     Qt::darkGray );
+        group.setColor( QColorGroup::Mid,      Qt::blue );
+
+        //FIXME QColorGroup member "disabled" looks very bad (eg for buttons)
+        m_pBrowserWin->setPalettes( QPalette( group, group, group ), bgAlt );
+
+    } else {
+        // we try to be smart: this code figures out contrasting colors for selection and alternate background rows
+        QColorGroup group = QApplication::palette().active();
+        const QColor fg( AmarokConfig::browserFgColor() );
+        const QColor bg( AmarokConfig::browserBgColor() );
+        QColor bgAlt, highlight;
+        int h, s, v;
 
         bg.hsv( &h, &s, &v );
         if ( v < 128 )
@@ -491,9 +500,8 @@ void PlayerApp::setupColors()
         highlight.setHsv( h, s, v );
 
         group.setColor( QColorGroup::Base, bg );
-        group.setColor( QColorGroup::Background, bg.light( 120 ) );
-        group.setColor( QColorGroup::Background, bgAlt );
-        group.setColor( QColorGroup::Text, fg );//fg );
+        group.setColor( QColorGroup::Background, bg.dark( 115 ) );
+        group.setColor( QColorGroup::Text, fg );
         group.setColor( QColorGroup::Highlight, highlight );
         group.setColor( QColorGroup::HighlightedText, Qt::white );
         group.setColor( QColorGroup::Dark, Qt::darkGray );
@@ -520,44 +528,41 @@ void PlayerApp::slotPlay() const { m_pBrowserWin->m_pPlaylistWidget->request( Pl
 
 #include <math.h> //FIXME: I put it here so we remember it's only used by this function and the one somewhere below
 
-void PlayerApp::play( const KURL &url, const MetaBundle *tags )
+void PlayerApp::play( const KURL &url, const MetaBundle &tags )
 {
     m_pEngine->open( url );
 
     connect( m_pEngine, SIGNAL( metaData         ( QString, QString, QString ) ),
              this,      SLOT  ( receiveStreamMeta( QString, QString, QString ) ) );
 
-    if ( tags )
+    if( !(tags.m_length == 0 && tags.m_bitrate == 0 && tags.m_sampleRate == 0) )
     {
-        m_length = tags->m_length * 1000;      // sec -> ms
+        m_length = tags.m_length * 1000;      // sec -> ms
         QString text, bps, Hz, length;
 
-        if( tags->m_title.isEmpty() )
+        if( tags.m_title.isEmpty() )
         {
             text = url.fileName();
         }
         else
         {
             //TODO <berkus> user tunable title format!
-            text = tags->m_artist;
+            text = tags.m_artist;
             if( text != "" ) text += " - ";
-            text += tags->m_title;
+            text += tags.m_title;
         }
 
-        //FIXME add this back
-        //text.append( " (" + tags->length() + ")" );
-
-        bps  = QString::number( tags->m_bitrate );
+        bps  = QString::number( tags.m_bitrate );
         bps += "kbps";
-        Hz   = QString::number( tags->m_sampleRate );
+        Hz   = QString::number( tags.m_sampleRate );
         Hz  += "Hz";
 
         // length to string
-        if ( floor( tags->m_length / 60 ) < 10 ) length += "0";
-        length += QString::number( floor( tags->m_length / 60 ) );
+        if ( floor( tags.m_length / 60 ) < 10 ) length += "0";
+        length += QString::number( floor( tags.m_length / 60 ) );
         length += ":";
-        if ( tags->m_length % 60 < 10 ) length += "0";
-        length += QString::number( tags->m_length % 60 );
+        if ( tags.m_length % 60 < 10 ) length += "0";
+        length += QString::number( tags.m_length % 60 );
 
         m_pPlayerWidget->setScroll( text, bps, Hz, length ); //FIXME get end function to add units!
 
@@ -871,7 +876,7 @@ void PlayerApp::slotShow()
 
 
 void PlayerApp::slotShowOptions()
-{    
+{
     KConfigDialog::showDialog( "settings" );
 }
 
