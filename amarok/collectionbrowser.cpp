@@ -78,10 +78,12 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     if ( !m_db )
         kdWarning() << k_funcinfo << "Could not open SQLite database\n";
 
-    //optimization for speeding up SQLite
-    execSql( "PRAGMA synchronous=OFF;" );        
+    //optimizations for speeding up SQLite
+    execSql( "PRAGMA default_synchronous = OFF;" );        
+//     execSql( "PRAGMA default_temp_store = MEMORY;" );        
         
-    QCString command = "create table tags ( url varchar(100),"
+    QCString command = "CREATE TABLE tags ("
+                       "url varchar(100),"
                        "album varchar(100),"
                        "artist varchar(100),"
                        "genre varchar(100),"
@@ -141,7 +143,7 @@ void
 CollectionView::scan()  //SLOT
 {
     //remove all records
-    QCString command = "delete from tags;";
+    QCString command = "DELETE FROM tags;";
     execSql( command );
 
     m_weaver->append( new CollectionReader( this, m_dirs, m_recursively ) );
@@ -156,9 +158,9 @@ CollectionView::renderView()  //SLOT
     clear();
 
     //query database for all records with the specified category
-    QCString command = "select distinct ";
+    QCString command = "SELECT DISTINCT ";
     command += m_category.lower().latin1();
-    command += " from tags;";
+    command += " FROM tags;";
 
     QStringList values;
     QStringList names;
@@ -184,7 +186,7 @@ CollectionView::slotExpanded( QListViewItem* item )  //SLOT
     if ( !item ) return ;
 
     //query database for all tracks in our sub-category
-    QCString command = "select title, url from tags where ";
+    QCString command = "SELECT title, url FROM tags WHERE ";
     command += m_category.lower().latin1();
     command += " = '";
     command += item->text( 0 ).latin1();
@@ -270,7 +272,7 @@ CollectionView::customEvent( QCustomEvent *e ) {
         execSql( "BEGIN TRANSACTION;" );
         for ( uint i = 0; i < c->list().count(); i++ ) {
             bundle = c->list().at( i );
-            QCString command = "insert into tags( url, album, artist, genre, title, year ) values ('";
+            QCString command = "INSERT INTO tags ( url, album, artist, genre, title, year ) VALUES('";
             
             command += bundle->url().path().latin1();
             command += "','";
@@ -301,7 +303,7 @@ void
 CollectionView::dumpDb() {
     kdDebug() << k_funcinfo << endl;
 
-    QCString command = "select artist from tags;";
+    QCString command = "SELECT artist FROM tags;";
 
     QStringList values;
     QStringList names;
