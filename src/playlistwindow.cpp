@@ -221,8 +221,8 @@ PlaylistWindow::init()
     //</Browsers>
 
 
-    connect( m_playlist, SIGNAL(itemCountChanged( int )),
-             m_statusbar,  SLOT(slotItemCountChanged( int )) );
+    connect( m_playlist, SIGNAL(itemCountChanged( int, int )),
+             m_statusbar,  SLOT(slotItemCountChanged( int, int )) );
     connect( m_playlist, SIGNAL(aboutToClear()),
              m_lineEdit,   SLOT(clear()) );
     connect( m_lineEdit, SIGNAL(textChanged( const QString& )),

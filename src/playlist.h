@@ -95,7 +95,7 @@ class Playlist : private KListView, public EngineObserver
 
     signals:
         void aboutToClear();
-        void itemCountChanged(int newCount);
+        void itemCountChanged( int newCount, int newLength );
 
     public slots:
         void appendMedia( const QString &path ) { appendMedia( KURL::fromPathOrURL( path ) ); }
@@ -177,6 +177,7 @@ class Playlist : private KListView, public EngineObserver
 
         ThreadWeaver* const m_weaver;
         int           m_firstColumn;
+        int           m_totalLength;
 
         KAction *m_undoButton;
         KAction *m_redoButton;

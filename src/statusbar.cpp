@@ -38,6 +38,7 @@
 #include <kprogress.h>
 #include <ksqueezedtextlabel.h> //main label
 
+
 using namespace amaroK;
 
 
@@ -216,9 +217,11 @@ void StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged
     m_pSlider->setEnabled( bundle.length() > 0 );
 }
 
-void StatusBar::slotItemCountChanged(int newCount)
+void StatusBar::slotItemCountChanged(int newCount, int newLength)
 {
-    m_pTotal->setText( i18n( "1 Track", "%n Tracks", newCount ) );
+    QString text = i18n( "1 Track", "%n Tracks", newCount );
+    text += QString(" - [%1]").arg( MetaBundle::prettyTime( newLength ) );
+    m_pTotal->setText( text );
 }
 
 void StatusBar::engineTrackPositionChanged( long position )

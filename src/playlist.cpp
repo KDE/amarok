@@ -109,6 +109,7 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     , m_marker( 0 )
     , m_weaver( new ThreadWeaver( this ) )
     , m_firstColumn( 0 )
+    , m_totalLength( 0 )
     , m_undoDir( KGlobal::dirs()->saveLocation( "data", "amarok/undo/", true ) )
     , m_undoCounter( 0 )
     , m_editText( 0 )
@@ -295,9 +296,12 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
         {
             setSorting( NO_SORT );
             PlaylistItem *item = new PlaylistItem( url, this, after );
-            item->setText( MetaBundle( url ) );
+            MetaBundle mb( url );
+            item->setText( mb );
+            m_totalLength += mb.length();
             if ( directPlay )
                 activate( item );
+            emit itemCountChanged( childCount(), m_totalLength );
             return;
         }
         //else go via the loader as that will present an error dialog
@@ -679,6 +683,7 @@ Playlist::clear() //SLOT
     setCurrentTrack( 0 );
     m_prevTracks.clear();
     m_nextTracks.clear();
+    m_totalLength = 0;
 
     //TODO make it possible to tell when it is safe to not delay deletion
     //TODO you'll have to do the same as below for removeSelected() too.
@@ -695,7 +700,7 @@ Playlist::clear() //SLOT
     }
     QApplication::postEvent( this, new QCustomEvent( QCustomEvent::Type(4000), list ) );
 
-    emit itemCountChanged( childCount() );
+    emit itemCountChanged( childCount(), m_totalLength );
 }
 
 void
@@ -963,7 +968,7 @@ Playlist::customEvent( QCustomEvent *e )
         m_redoButton->setEnabled( false );
         break;
 
-    case PlaylistLoader::Done:
+    case PlaylistLoader::Done: {
         m_clearButton->setEnabled( true );
         m_undoButton->setEnabled( !m_undoList.isEmpty() );
         m_redoButton->setEnabled( !m_redoList.isEmpty() );
@@ -971,7 +976,16 @@ Playlist::customEvent( QCustomEvent *e )
         //just in case the track that is playing is not set current
         restoreCurrentTrack();
         //necessary usually
-        emit itemCountChanged( childCount() );
+        m_totalLength = 0;
+        int itemCount = 0;
+        QListViewItemIterator it( this );
+        for( ; it.current(); ++it, itemCount++ ) {
+            int length = static_cast<PlaylistItem *>(*it)->seconds().toInt();
+            if( length > 0 )
+                m_totalLength += length;
+        }
+        emit itemCountChanged( itemCount, m_totalLength );
+
         //force redraw of currentTrack marker, play icon, etc.
         //setCurrentTrack( currentTrack() );
 
@@ -988,7 +1002,7 @@ Playlist::customEvent( QCustomEvent *e )
             }
         }
         break;
-
+    }
     case PlaylistLoader::Play:
         activate( (PlaylistItem*)e->data() );
         break;
@@ -1431,7 +1445,10 @@ Playlist::removeItem( PlaylistItem *item )
     //keep recent buffer synchronised
     m_prevTracks.removeRef( item ); //removes all pointers to item
 
-    emit itemCountChanged( childCount() );
+    int length = item->seconds().toInt();
+    if( length > 0 ) m_totalLength -= length;
+
+    emit itemCountChanged( childCount()-1, m_totalLength );
 }
 
 void
