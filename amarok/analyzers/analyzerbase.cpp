@@ -176,7 +176,7 @@ Analyzer::Base2D::polish()
 
 #ifdef HAVE_QGLWIDGET
 Analyzer::Base3D::Base3D( QWidget *parent, uint timeout, uint scopeSize )
-   : Base<QGLWidget>( parent, timeout, scopeSize )
+   : Base<DUMMY>( parent, timeout, scopeSize )
 {
     connect( &m_timer, SIGNAL( timeout() ), SLOT( draw() ) );
 }

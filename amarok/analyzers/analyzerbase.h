@@ -24,15 +24,18 @@
 
 #include <config.h>  //HAVE_QGLWIDGET
 #include "fht.h"     //stack allocated and convenience
-#include <qgl.h>     //baseclass
 #include <qpixmap.h> //stack allocated and convenience
 #include <qtimer.h>  //stack allocated
 #include <qwidget.h> //baseclass
 #include <vector>    //included for convenience
 
 #ifdef HAVE_QGLWIDGET
+#include <qgl.h>     //baseclass
 #include <GL/gl.h>  //included for convenience
 #include <GL/glu.h> //included for convenience
+typedef QGLWidget DUMMY;
+#else
+typedef QWidget DUMMY;
 #endif
 
 class QEvent;
@@ -98,14 +101,26 @@ private:
 };
 
 
-class Base3D : public Base<QGLWidget>
+
+//this mess is because moc generates an entry for this class despite the #if block
+//1. the Q_OBJECT macro must be exposed
+//2. we have to define the class
+//3. we have to declare a ctor (to satisfy the inheritance)
+//4. the slot must also by visible (!)
+//5. the DUMMY may not be necessary provided you include <qgl.h>, but I wasn't certain if this would cause
+//   link failure, so it's there to be sure.
+//TODO find out how to stop moc generating a metaobject for this class
+class Base3D : public Base<DUMMY>
 {
-#ifdef HAVE_QGLWIDGET
 Q_OBJECT
-protected:
-    Base3D( QWidget*, uint, uint = 7 );
 private slots:
     void draw() { drawFrame(); }
+#ifdef HAVE_QGLWIDGET
+protected:
+    Base3D( QWidget*, uint, uint = 7 );
+#else
+protected:
+    Base3D( QWidget *w, uint i1, uint i2 ) : Base<DUMMY>( w, i1, i2 ) {}
 #endif
 };
 
