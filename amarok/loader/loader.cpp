@@ -143,10 +143,11 @@ void Loader::showSplash()
     processEvents();
 }
 
-// getpwuid/getuid
+// getpwuid/getuid/gethostname/lstat/readlink
 #include <sys/types.h>
 #include <pwd.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 int Loader::tryConnect()
 {
@@ -158,20 +159,89 @@ int Loader::tryConnect()
     }
     sockaddr_un local;
     local.sun_family = AF_UNIX;
-    
-    // find out current user name
-    struct passwd *p = getpwuid( getuid() );
-    if (!p) {
-        qDebug( "[Loader::tryConnect()] Current user has no /etc/passwd entry?!?" );
+
+    // find out current user's kde sockets location
+    // this is usually $KDEHOME/socket-$HOST/
+    // or $HOME/.kde/socket-$HOST/
+    // NOTE: /tmp/ksocket-$USER/ doesn't work because it may be located on a separate
+    // filesystem from user's home (think NFS).
+
+    // find out current user home dir
+    // (code bits from kdelibs/kinit/lnusertemp.c)
+    int uid = getuid();
+    const char *home_dir = getenv("HOME");
+    const char *kde_home = uid ? getenv("KDEHOME") : getenv("KDEROOTHOME");
+    char kde_tmp_dir[PATH_MAX];
+    struct stat stat_buf;
+    char tmp_buf[PATH_MAX+1];
+    int result;
+
+    struct passwd *pw_ent = getpwuid( uid );
+    if (!pw_ent) {
+        qFatal( "[Loader::tryConnect()] Current user does not exist?!?" );
         return -1;
     }
-    
-    QCString path("/tmp/ksocket-");
-    path += p->pw_name;
+
+    if (!kde_home || !kde_home[0])
+    {
+        kde_home = "~/.kde/";
+    }
+
+    if (kde_home[0] == '~')
+    {
+        if (uid == 0)
+        {
+            home_dir = pw_ent->pw_dir ? pw_ent->pw_dir : "/root";
+        }
+        if (!home_dir || !home_dir[0])
+        {
+            qFatal( "Aborting. $HOME not set!" );
+            return -1;
+        }
+        if (strlen(home_dir) > (PATH_MAX-100))
+        {
+            qFatal( "Aborting. Home directory path too long!" );
+            return -1;
+        }
+        kde_home++;
+        strncpy(kde_tmp_dir, home_dir, PATH_MAX);
+        kde_tmp_dir[PATH_MAX] = '\0';
+    }
+    strncat(kde_tmp_dir, kde_home, PATH_MAX - strlen(kde_tmp_dir));
+
+    /** Strip trailing '/' **/
+    if ( kde_tmp_dir[strlen(kde_tmp_dir)-1] == '/')
+        kde_tmp_dir[strlen(kde_tmp_dir)-1] = 0;
+
+    strncat(kde_tmp_dir, "/socket-", PATH_MAX - strlen(kde_tmp_dir));
+
+    if (gethostname(kde_tmp_dir+strlen(kde_tmp_dir), PATH_MAX - strlen(kde_tmp_dir) - 1) != 0)
+    {
+        qFatal( "Aborting. Could not determine hostname." );
+        return -1;
+    }
+    kde_tmp_dir[PATH_MAX] = '\0';
+
+    // checks
+    result = lstat(kde_tmp_dir, &stat_buf);
+    if ((result == -1) || (!S_ISLNK(stat_buf.st_mode)))
+    {
+        qFatal("Error: \"%s\" is not a link or a directory.\nThis SHOULD NOT happen, please report!\n", kde_tmp_dir);
+        return -1;
+    }
+    /* kde_tmp_dir is a link. Check whether it points to a valid directory. */
+    result = readlink(kde_tmp_dir, tmp_buf, PATH_MAX);
+    if (result == -1)
+    {
+        qFatal("Error: \"%s\" could not be read.\nThis SHOULD NOT happen, please report!\n", kde_tmp_dir);
+        return -1;
+    }
+
+    QCString path(kde_tmp_dir);
     path += "/amarok.loader_socket";
     ::strcpy( &local.sun_path[0], path );
 
-    std::cerr << "[Loader::tryConnect()] connecting to" << local.sun_path << '\n';
+    std::cerr << "[Loader::tryConnect()] connecting to " << local.sun_path << '\n';
 
     int len = sizeof( local );
 
