@@ -272,6 +272,7 @@ void EngineController::play() //SLOT
 void EngineController::play( const MetaBundle &bundle )
 {
     const KURL &url = bundle.url();
+    kdDebug() << "[controller] Loading URL: " << url.url() << endl;
     // Destroy stale StreamProvider
     delete m_stream;
 
@@ -410,7 +411,9 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
     kdDebug() << "[controller] Detected mimetype: " << mimetype << endl;
 
     const KURL &url = m_bundle.url();
-    const bool isStream = mimetype.isEmpty() || mimetype == "text/html";
+
+    const bool isStream = mimetype.isEmpty() || mimetype == "text/html" ||
+                          url.host().endsWith( "last.fm" ); // HACK last.fm uses the mimetype audio/x-mp3
 
     StatusBar::instance()->clear();
 

@@ -154,18 +154,18 @@ StreamProvider::sendRequest() //SLOT
     QString authString = KCodecs::base64Encode( username + ":" + password );
     bool auth = !( username.isEmpty() && password.isEmpty() );
 
-    QString request = QString( "GET %1 HTTP/1.0\r\n"
+    QString request = QString( "GET %1\r\n"
                                "Host: %2\r\n"
-                               "User-Agent: amaroK/1.1\r\n"
+                               "User-Agent: amaroK/1.2\r\n"
                                "%3"
                                "%4"
                                "\r\n" )
-                               .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) )
+                               .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) + m_url.query() )
                                .arg( m_url.host() )
                                .arg( m_icyMode ? "Icy-MetaData:1\r\n" : "" )
                                .arg( auth ? "Authorization: Basic " + authString + "\r\n" : "" );
 
-//     kdDebug() << "StreamProvider sending request:\n" << request << endl;
+    kdDebug() << "StreamProvider sending request:\n" << request << endl;
     m_sockRemote.writeBlock( request.latin1(), request.length() );
 
     kdDebug() << "END " << k_funcinfo << endl;
