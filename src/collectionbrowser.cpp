@@ -2,9 +2,8 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // See COPYING file for licensing information.
 
-#include "amazonsetup.h"
 #include "collectionbrowser.h"
-#include "coverfetcher.h"
+#include "collectiondb.h"
 #include "directorylist.h"
 #include "metabundle.h"
 #include "playlist.h"       //insertMedia(), showTrackInfo()
@@ -15,7 +14,6 @@
 #include <qapplication.h>
 #include <qcstring.h>
 #include <qdragobject.h>
-#include <qmessagebox.h>
 #include <qptrlist.h>
 #include <qtimer.h>
 #include <qtooltip.h>       //QToolTip::add()
@@ -24,7 +22,6 @@
 #include <kconfig.h>
 #include <kdebug.h>
 #include <kiconloader.h>    //renderView()
-#include <kinputdialog.h>   //setupCoverFetcher()
 #include <klocale.h>
 #include <kmenubar.h>
 #include <kpopupmenu.h>
@@ -74,7 +71,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     //m_view->setMargin( 2 );
 
     m_actionsMenu->insertItem( i18n( "Configure Folders..." ), m_view, SLOT( setupDirs() ) );
-    m_actionsMenu->insertItem( i18n( "Configure Cover Download" ), m_view, SLOT( setupCoverFetcher() ) );
+    m_actionsMenu->insertItem( i18n( "Configure Cover Download" ), m_view->m_db, SLOT( setupCoverFetcher() ) );
 
     m_actionsMenu->insertSeparator();
     m_actionsMenu->insertItem( i18n( "Start Scan" ), m_view, SLOT( scan() ), 0, IdScan );
@@ -147,6 +144,10 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     setAcceptDrops( false );
     setSorting( -1 );
 
+    m_db = new CollectionDB();
+    if ( !m_db )
+        kdWarning() << k_funcinfo << "Could not open SQLite database\n";
+    
     //<read config>
         KConfig* config = amaroK::config( "Collection Browser" );
 
@@ -156,15 +157,9 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         addColumn( m_category1 );
         m_recursively = config->readBoolEntry( "Scan Recursively", true );
         m_monitor = config->readBoolEntry( "Monitor Changes", false );
-
-        m_amazonLicense = config->readEntry( "Amazon License Key" );
     //</read config>
 
     //<open database>
-        m_db = new CollectionDB();
-        if ( !m_db )
-            kdWarning() << k_funcinfo << "Could not open SQLite database\n";
-
         //optimization for speeding up SQLite
         m_db->execSql( "PRAGMA default_synchronous = OFF;" );
         // m_db->execSql( "PRAGMA default_cache_size = 4000;" ); default is 2000, that should be enough.
@@ -216,7 +211,6 @@ CollectionView::~CollectionView() {
     config->writeEntry( "Monitor Changes", m_monitor );
     config->writeEntry( "Database Version", DATABASE_VERSION );
     config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
-    config->writeEntry( "Amazon License Key", m_amazonLicense );
 
     delete m_db;
 }
@@ -240,19 +234,6 @@ CollectionView::setupDirs()  //SLOT
     m_monitor = result.monitorChanges;
 
     scan();
-}
-
-
-void
-CollectionView::setupCoverFetcher()  //SLOT
-{
-    AmazonDialog* dia = new AmazonDialog( parentWidget() );
-    dia->kLineEdit1->setText( m_amazonLicense );
-    dia->setModal( true );
-
-    if ( dia->exec() == QDialog::Accepted ) {
-        m_amazonLicense = dia->kLineEdit1->text();
-    }
 }
 
 
@@ -462,9 +443,6 @@ CollectionView::fetchCover() //SLOT
     Item* item = static_cast<Item*>( currentItem() );
     if ( !item ) return;
     if ( m_category2 != i18n( "None" ) && item->depth() != 2 ) return;
-    //make sure we've got a license key
-    if ( m_amazonLicense.isEmpty() )
-        setupCoverFetcher();
 
     KURL::List urls( listSelected() );
     
@@ -478,13 +456,8 @@ CollectionView::fetchCover() //SLOT
         m_db->execSql( command, &values, &names );
         if ( values.isEmpty() ) continue;
         QString key = values[0] + " - " + values[1];
-        kdDebug() << "keyword: " << key << endl;
         
-        CoverFetcher* fetcher = new CoverFetcher( m_amazonLicense, this );
-        connect( fetcher, SIGNAL( imageReady( const QString&, const QPixmap& ) ),
-                 m_db,      SLOT( saveCover( const QString&, const QPixmap& ) ) );
-        
-        fetcher->getCover( key, CoverFetcher::heavy );
+        m_db->fetchCover( this, key );
     }
 }
 

@@ -2,11 +2,12 @@
 // See COPYING file for licensing information
 
 
-#include "app.h" //openUrlRequest() FIXME remove this if possible
+#include "app.h"          //openUrlRequest() FIXME remove this if possible
 #include "amarokconfig.h"
 #include "collectionbrowser.h"
 #include "collectiondb.h"
 #include "contextbrowser.h"
+#include "coverfetcher.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
 #include "playlist.h"     //appendMedia()
@@ -130,6 +131,9 @@ void ContextBrowser::openURLRequest( const KURL &url )
             if( o ) static_cast<CollectionBrowser*>(o)->setupDirs();
         }
     }
+
+    if ( m_url.protocol() == "fetchcover" )
+        m_db->fetchCover( this, m_url.path() );
 }
 
 
@@ -341,11 +345,13 @@ void ContextBrowser::showCurrentTrack()
 
     if ( values.count() )
         browser->write( QString ( "<tr><td height='42' valign='top' class='rbcurrent'>"
-                                  "<span class='album'>%1 - %2</span><br>%3<br><br><img align='left' valign='center' hspace='2' width='70' height='70' src='%4'>"
-                                  "<i>First play: %5<br>Last play: %6<br>Total plays: %7</i></td>"
+                                  "<span class='album'>%1 - %2</span><br>%3<br><br><a class='menu' href='fetchcover:%4 - %5'><img align='left' valign='center' hspace='2' width='70' height='70' src='%6'></a>"
+                                  "<i>First play: %7<br>Last play: %8<br>Total plays: %9</i></td>"
                                   "</tr>" )
                         .arg( m_currentTrack->artist() )
                         .arg( m_currentTrack->title() )
+                        .arg( m_currentTrack->album() )
+                        .arg( m_currentTrack->artist() )
                         .arg( m_currentTrack->album() )
                         .arg( m_db->getImageForAlbum( values[1], values[0], locate( "data", "amarok/images/sound.png" ) ) )
                         .arg( values[2].left( values[2].length() - 3 ) )
@@ -360,11 +366,13 @@ void ContextBrowser::showCurrentTrack()
 
         if ( values.count() )
             browser->write( QString ( "<tr><td height='42' valign='top' class='rbcurrent'>"
-                                      "<span class='album'>%1 - %2</span><br>%3<br><br><img align='left' valign='center' hspace='2' width='40' height='40' src='%4'>"
+                                      "<span class='album'>%1 - %2</span><br>%3<br><br><a class='menu' href='fetchcover:%4 - %5'><img align='left' valign='center' hspace='2' width='70' height='70' src='%6'></a>"
                                       "<i>Never played before</i></td>"
                                       "</tr>" )
                             .arg( m_currentTrack->artist() )
                             .arg( m_currentTrack->title() )
+                            .arg( m_currentTrack->album() )
+                            .arg( m_currentTrack->artist() )
                             .arg( m_currentTrack->album() )
                             .arg( m_db->getImageForPath( m_currentTrack->url().directory(), locate( "data", "amarok/images/sound.png" ) ) ) );
     }
@@ -455,10 +463,12 @@ void ContextBrowser::showCurrentTrack()
         for ( uint i = 0; i < ( values.count() / 3 ); i++ )
         {
             browser->write( QString ( "<tr><td onClick='window.location.href=\"album:%1/%2\"' height='42' valign='top' class='rbalbum'>"
-                                      "<img align='left' hspace='2' width='70' height='70' src='%3'><span class='album'>%4</span><br>%5 Tracks</td>"
+                                      "<a class='menu' href='fetchcover:%3 - %4'><img align='left' hspace='2' width='70' height='70' src='%5'></a><span class='album'>%6</span><br>%7 Tracks</td>"
                                       "</tr>" )
                             .arg( values[i*3 + 2] )
                             .arg( values[i*3 + 1] )
+                            .arg( m_currentTrack->album() )
+                            .arg( m_currentTrack->artist() )
                             .arg( m_db->getImageForAlbum( values[i*3 + 2], values[i*3 + 1], locate( "data", "amarok/images/sound.png" ) ) )
                             .arg( values[i*3] )
                             .arg( m_db->albumSongCount( values[i*3 + 2], values[i*3 + 1] ) ) );

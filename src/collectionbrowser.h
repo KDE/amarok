@@ -5,8 +5,6 @@
 #ifndef AMAROK_COLLECTIONBROWSER_H
 #define AMAROK_COLLECTIONBROWSER_H
 
-#include "collectiondb.h"
-
 #include "qvbox.h"           //baseclass
 
 #include <klistview.h>       //baseclass
@@ -14,7 +12,7 @@
 #include <qstringlist.h>     //stack allocated
 #include <kurl.h>            //stack allocated
 
-class CoverFetcher;
+class CollectionDB;
 class sqlite;
 
 class QCString;
@@ -81,7 +79,6 @@ class CollectionView : public KListView
 
     private slots:
         void setupDirs();
-        void setupCoverFetcher();
         void scan();
         void scanMonitor();
 
@@ -128,7 +125,6 @@ class CollectionView : public KListView
         bool m_recursively;
         bool m_monitor;
         bool m_isScanning;
-        QString m_amazonLicense;
 };
 
 

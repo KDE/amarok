@@ -11,6 +11,7 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 #include <klocale.h>
+#include <kmessagebox.h>
 #include <kpushbutton.h>   
 
 
@@ -110,8 +111,9 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
-    if ( !job->error() == 0 ) {
-        kdWarning() << "KIO error! errno: " << job->error() << endl;
+    if ( job->error() != 0 ) {
+        KMessageBox::sorry( 0, i18n( "<h3>No cover images available for album</h3><p><i>%1</i></p>" )
+                               .arg( m_keyword ) );
         deleteLater();
         return;
     }

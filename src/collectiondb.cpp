@@ -2,14 +2,19 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // See COPYING file for licensing information.
 
+#include "amazonsetup.h"
 #include "collectiondb.h"
+#include "coverfetcher.h"
 #include "sqlite/sqlite.h"
 #include "statusbar.h"
 #include "threadweaver.h"
 
 #include <kapplication.h>
+#include <kconfig.h>
 #include <kdebug.h>
 #include <kglobal.h>
+#include <kinputdialog.h>   //setupCoverFetcher()
+#include <klineedit.h>       //setupCoverFetcher()
 #include <klocale.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
@@ -537,26 +542,6 @@ CollectionDB::getValueID( QString name, QString value, bool autocreate, bool use
 
 
 void
-CollectionDB::dirDirty( const QString& path )
-{
-    kdDebug() << k_funcinfo << "Dirty: " << path << endl;
-
-    m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), path, false, true ) );
-}
-
-
-void
-CollectionDB::customEvent( QCustomEvent *e )
-{
-    if ( e->type() == (QEvent::Type) ThreadWeaver::Job::CollectionReader )
-    {
-        kdDebug() << k_funcinfo << endl;
-        emit scanDone( true );
-    }
-}
-
-
-void
 CollectionDB::retrieveFirstLevel( QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names )
 {
     QString filterToken;
@@ -697,6 +682,54 @@ CollectionDB::retrieveSecondLevelURLs( QString itemText1, QString itemText2, QSt
 }
 
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// PUBLIC SLOTS
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void
+CollectionDB::setupCoverFetcher()  //SLOT
+{
+    AmazonDialog* dia = new AmazonDialog();
+    dia->kLineEdit1->setText( KGlobal::config()->readEntry( "Amazon License Key" ) );
+    dia->setModal( true );
+
+    if ( dia->exec() == QDialog::Accepted )
+        KGlobal::config()->writeEntry( "Amazon License Key", dia->kLineEdit1->text() );
+}
+
+
+void
+CollectionDB::fetchCover( QObject* parent, const QString& key ) //SLOT
+{
+    QString amazonLicense = KGlobal::config()->readEntry( "Amazon License Key" );
+    
+    //make sure we've got a license key
+    if ( amazonLicense.isEmpty() )
+        setupCoverFetcher();
+
+    kdDebug() << "Querying amazon with keyword: " << key << endl;
+    
+    CoverFetcher* fetcher = new CoverFetcher( amazonLicense, parent );
+    connect( fetcher, SIGNAL( imageReady( const QString&, const QPixmap& ) ),
+             this,      SLOT( saveCover( const QString&, const QPixmap& ) ) );
+    
+    fetcher->getCover( key, CoverFetcher::heavy );
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// PRIVATE SLOTS
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void
+CollectionDB::dirDirty( const QString& path )
+{
+    kdDebug() << k_funcinfo << "Dirty: " << path << endl;
+
+    m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), path, false, true ) );
+}
+
+
 void
 CollectionDB::saveCover( const QString& keyword, const QPixmap& pix )
 {
@@ -706,6 +739,21 @@ CollectionDB::saveCover( const QString& keyword, const QPixmap& pix )
     
     img.smoothScale( COVER_SIZE, COVER_SIZE );
     img.save( m_coverDir.filePath( keyword + ".png" ), "PNG" );
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// PRIVATE
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void
+CollectionDB::customEvent( QCustomEvent *e )
+{
+    if ( e->type() == (QEvent::Type) ThreadWeaver::Job::CollectionReader )
+    {
+        kdDebug() << k_funcinfo << endl;
+        emit scanDone( true );
+    }
 }
 
 

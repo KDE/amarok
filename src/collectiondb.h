@@ -70,14 +70,18 @@ class CollectionDB : public QObject
         void retrieveFirstLevelURLs( QString itemText, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
         void retrieveSecondLevelURLs( QString itemText1, QString itemText2, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
 
+        QString m_amazonLicense;
+    
     signals:
         void scanDone( bool changed );
 
     public slots:
-        void saveCover( const QString& keyword, const QPixmap& image );
-    
+        void setupCoverFetcher();
+        void fetchCover( QObject* parent, const QString& key );
+        
     private slots:
         void dirDirty( const QString& path );
+        void saveCover( const QString& keyword, const QPixmap& image );
 
     private:
         void customEvent( QCustomEvent* );
