@@ -481,31 +481,4 @@ TagWriter::completeJob()
 }
 
 
-//////////////////////////////////////////////////////////////////////////////////////////
-// CLASS PLStats
-//////////////////////////////////////////////////////////////////////////////////////////
-#if 0
-PLStats::PLStats( QObject *o, const KURL &u, const KURL::List &ul )
-        : Job( o, Job::PLStats )
-        , m_url( u )
-        , m_contents( ul )
-        , m_length( 0 )
-{}
-
-bool
-PLStats::doJob()
-{
-    //TODO update playlistItems too
-    //TODO find out if tags are read on creation of the file ref and if so, update them too
-    //TODO currently this is horrendously inefficient, tags are read so many times!
-
-    for ( KURL::List::const_iterator it = m_contents.begin(); it != m_contents.end(); ++it ) {
-        TagLib::FileRef f( QFile::encodeName( ( *it ).path() ), true, TagLib::AudioProperties::Accurate );
-
-        if ( !f.isNull() ) m_length += f.audioProperties() ->length();
-    }
-
-    return true;
-}
-#endif
 //yes! no moc! There are no Q_OBJECTS

@@ -268,19 +268,4 @@ private:
 };
 
 
-//@Determines statistics on a playlist for the PlaylistBrowser
-class PLStats : public ThreadWeaver::Job
-{
-public:
-    PLStats( QObject*, const KURL&, const KURL::List& );
-    bool doJob();
-    const KURL &url() const { return m_url; }
-    const KURL::List &contents() const { return m_contents; }
-    uint length() const { return m_length; }
-private:
-    const KURL m_url;
-    const KURL::List m_contents;
-    uint  m_length;
-};
-
 #endif
