@@ -53,6 +53,8 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     connect( m_pSoundSystem, SIGNAL( activated( int ) ), this, SLOT( settingsChangedSlot() ) );
     connect( m_pSoundOutput, SIGNAL( activated( int ) ), this, SLOT( settingsChangedSlot() ) );
 
+    connect( m_pSoundSystem, SIGNAL( activated( int ) ), this, SLOT( soundSystemChanged() ) );
+
     // add pages
     addPage( new Options1( 0,"General" ),  i18n("General"),  "misc",   i18n("Configure General Options") );
     addPage( new Options2( 0,"Fonts" ),    i18n("Fonts"),    "fonts",  i18n("Configure Fonts") );
@@ -61,32 +63,6 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     addPage( new Options5( 0,"OSD" ),      i18n("OSD" ),     "tv",     i18n("Configure On-Screen-Display") );
 
     setInitialSize( QSize( 440, 390 ) );
-}
-
-
-void AmarokConfigDialog::show()
-{
-    // Sound Output    
-    m_pSoundOutput->clear();
-    QStringList outputs = EngineController::engine()->getOutputsList();
-    
-    if ( outputs.isEmpty() ) {
-        m_pSoundOutput->setEnabled( false );
-        m_opt4->outputLabel->setEnabled( false );
-    } else {
-        m_pSoundOutput->setEnabled( true );
-        m_opt4->outputLabel->setEnabled( true );
-        m_pSoundOutput->insertStringList( outputs );
-        
-        //find index of current item
-        for ( uint i = 0; i < outputs.count(); i++ )
-            if ( outputs[i] == AmarokConfig::soundOutput() ) {
-                m_pSoundOutput->setCurrentItem( i );
-                break;
-            }
-    }
-    
-    KConfigDialog::show();
 }
 
 
@@ -106,7 +82,7 @@ bool AmarokConfigDialog::isDefault()
 void AmarokConfigDialog::updateWidgetsDefault()
 {
     m_pSoundSystem->setCurrentText( "aRts Engine" );
-    // this->soundSystemChanged(); // Will exist later
+    this->soundSystemChanged();
 }
 
 
@@ -121,6 +97,48 @@ void AmarokConfigDialog::updateSettings()
 void AmarokConfigDialog::updateWidgets()
 {
     m_pSoundSystem->setCurrentText( AmarokConfig::soundSystem() );
+    this->soundSystemChanged();
+}
+
+
+void AmarokConfigDialog::soundSystemChanged()
+{
+    // Get new plugin
+    QString newSystemText = m_pSoundSystem->currentText();
+
+    EngineBase* newSystem = static_cast<EngineBase*>( PluginManager::createFromQuery
+                             ( "[X-KDE-amaroK-plugintype] == 'engine' "
+                               " and Name == '" + newSystemText + "'" ) );
+
+    // Update Sound Output Combo
+    m_pSoundOutput->clear();
+    QStringList outputs = newSystem->getOutputsList();
+    
+    if ( outputs.isEmpty() )
+    {
+        m_pSoundOutput->setEnabled( false );
+        m_opt4->outputLabel->setEnabled( false );
+    }
+    else
+    {
+        m_pSoundOutput->setEnabled( true );
+        m_opt4->outputLabel->setEnabled( true );
+        m_pSoundOutput->insertStringList( outputs );
+
+        /**
+         * Find index of current item, but only if the selected system
+         * is the current one (otherwise it doesn't make much sense).
+         */
+        if ( newSystemText == AmarokConfig::soundSystem() )
+            for ( uint i = 0; i < outputs.count(); i++ )
+                if ( outputs[i] == AmarokConfig::soundOutput() )
+                {
+                    m_pSoundOutput->setCurrentItem( i );
+                    break;
+                }
+    }
+
+    updateButtons();
 }
 
 #include "configdialog.moc"

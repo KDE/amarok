@@ -8,10 +8,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  FIX 115 <dato>   Sound system and Output to combos should be synchronized (Output to should be
-                   enabled/disabled immediatly after changing sound system, not next time the prefs
-                   page is opened). --> dato
-
   FIX 114 <muesli> ContextBrowser needs to be repainted on Color-Scheme changes.
 
   FIX 111 <dato>   Clearing list while playing ==> infinite calls to EC::slotMainTimer().
