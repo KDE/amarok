@@ -176,7 +176,7 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
             getCover( m_album, m_album, m_saveas, CoverFetcher::heavy, m_noedit, 1, true );
 
         else if ( !m_noedit )
-            editSearch( i18n("The cover wasn't found in the Amazon database. You may have better luck if you refine the search:") );
+            editSearch( i18n("The cover was not found in the Amazon database. You may have better luck if you refine the search:") );
 
         else {
             kdDebug() << "[CoverFetcher] Image not found in amazon.com database.\n";
