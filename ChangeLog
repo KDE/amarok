@@ -3,6 +3,8 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
   
+  FIX: In CollectionBrowser's folder setup dialog pressing cancel did not abort
+       (BR 80451). Thanks to Michael Pyne <pynm0001@comcast.net> for patch.
   ADD: Option for selecting sound output system (OSS/Alsa). Currently only
        used with GStreamer engine.
   CHG: Extended and updated handbook, thanks to Mike Diehl <madpenguin8@yahoo.com>.

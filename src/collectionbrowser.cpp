@@ -372,6 +372,10 @@ CollectionView::setupDirs()  //SLOT
     DirectoryList list( m_dirs, m_recursively, m_monitor );
     DirectoryList::Result result = list.exec();
 
+    // Check to see if Cancel was pressed
+    if ( result.status == QDialog::Rejected )
+        return;
+
     m_dirs = result.dirs;
     m_recursively = result.scanRecursively;
     m_monitor = result.monitorChanges;
