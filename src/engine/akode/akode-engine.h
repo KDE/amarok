@@ -26,7 +26,7 @@ class AkodeEngine : public Engine::Base
 
     virtual Engine::State state() const;
 
-    virtual void customEvent( QCustomEvent* );
+    virtual bool event( QEvent* );
 
    ~AkodeEngine();
 

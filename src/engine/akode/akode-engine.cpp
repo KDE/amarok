@@ -57,6 +57,8 @@ AkodeEngine::~AkodeEngine()
 bool
 AkodeEngine::init()
 {
+    startTimer( 20 );
+
     m_player = new aKode::Player();
     m_player->setManager( new amaroK::Manager( this ) );
 
@@ -85,7 +87,7 @@ AkodeEngine::canDecode( const KURL &url ) const
 {
     const QString ext = url.path().right( 4 ).lower();
 
-    return ext == ".mp3" || ext == ".ogg";
+    return ext == ".mp3"/* || ext == ".ogg"*/;
 }
 
 uint
@@ -145,11 +147,16 @@ AkodeEngine::state() const
     }
 }
 
-void
-AkodeEngine::customEvent( QCustomEvent *e )
+bool
+AkodeEngine::event( QEvent *e )
 {
     switch( e->type() )
     {
+    case QEvent::Timer:
+        if( m_player->decoder() && m_player->decoder()->eof() )
+            emit trackEnded();
+        break;
+
     case 3000:
         emit stateChanged( state() );
         break;
@@ -159,6 +166,8 @@ AkodeEngine::customEvent( QCustomEvent *e )
         break;
 
     default:
-        ;
+        return false;
     }
+
+    return true;
 }
