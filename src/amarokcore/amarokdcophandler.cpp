@@ -198,6 +198,11 @@ namespace amaroK
         EngineController::instance()->setVolume(volume);
     }
 
+    int DcopHandler::getVolume()
+    {
+        return EngineController::engine() ->volume();
+    }
+    
     void DcopHandler::volumeUp()
     {
         EngineController::instance()->increaseVolume();
