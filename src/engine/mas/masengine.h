@@ -42,13 +42,8 @@ extern "C" {
 #endif
 
 
-
-class QStringList;
 class QTimer;
-class QTimerEvent;
-
 class KURL;
-
 
 namespace KDE { class PlayObject; }
 
@@ -65,8 +60,6 @@ class MasEngine : public Engine::Base
 
         bool initMixer( bool hardware );
         bool canDecode( const KURL& ) const;
-        //StreamingMode streamingMode() { return MasEngine::NoStreaming; }
-
         uint position() const;
         Engine::State state() const {return m_state;}
 //        std::vector<float>* scope();
@@ -89,25 +82,23 @@ class MasEngine : public Engine::Base
         void playingTimeout();
 
     private:
-        void startXfade();
+        //void startXfade();
         //void timerEvent( QTimerEvent* );
         bool masinit();
-
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
         /////////////////////////////////////////////////////////////////////////////////////
         static const int MAS_TIMER  = 250;   //ms
-//        static const int TIMEOUT    = 4000;  //ms FIXME make option?
-
-        long m_scopeId;
-        int  m_scopeSize;
-        long m_volumeId;
+        //static const int TIMEOUT    = 4000;  //ms FIXME make option?
+        bool m_inited;
         uint m_lastKnownPosition;
 
         Engine::State m_state;
-  //      bool m_xfadeFadeout;
-   //     float m_xfadeValue;
-   //     QString m_xfadeCurrent;
+        //long m_scopeId;
+        //int  m_scopeSize;
+        //bool m_xfadeFadeout;
+        //float m_xfadeValue;
+        //QString m_xfadeCurrent;
         QTimer* m_pPlayingTimer;
 
         KURL m_url;
@@ -125,9 +116,8 @@ class MasEngine : public Engine::Base
         mas_device_t m_sink_mc;
         mas_device_t m_source_mc;
         int32 m_sink_clkid;
-        int32 m_source_clkid;
-        double m_measured_sample_freq;
-
+        //int32 m_source_clkid;
+        //double m_measured_sample_freq;
 };
 
 #endif
