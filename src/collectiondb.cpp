@@ -322,13 +322,14 @@ CollectionDB::artistList( bool withUnknown, bool withCompilations )
     QStringList values;
 
     if ( withUnknown && withCompilations )
-        execSql( "SELECT DISTINCT name FROM artist;", &values );
+        execSql( "SELECT DISTINCT name FROM artist "
+                 "ORDER BY lower( artist.name );", &values, 0, true );
     else
         execSql( "SELECT DISTINCT artist.name FROM artist, tags WHERE 1 " +
                 ( withUnknown ? QString() : "AND artist.name <> 'Unknown' " ) +
                 ( withCompilations ? QString() : "AND tags.artist = artist.id AND tags.sampler = 0 " ) +
-                "ORDER BY lower( artist.name );", &values );
-    
+                "ORDER BY lower( artist.name );", &values, 0, true );
+
     return values;
 }
 
@@ -339,12 +340,13 @@ CollectionDB::albumList( bool withUnknown, bool withCompilations )
     QStringList values;
 
     if ( withUnknown && withCompilations )
-        execSql( "SELECT DISTINCT name FROM album;", &values );
+        execSql( "SELECT DISTINCT name FROM album "
+                 "ORDER BY lower( album.name );", &values, 0, true );
     else
         execSql( "SELECT DISTINCT album.name FROM album, tags WHERE 1 " +
                 ( withUnknown ? QString() : "AND album.name <> 'Unknown' " ) +
                 ( withCompilations ? QString() : "AND tags.album = album.id AND tags.sampler = 0 " ) +
-                "ORDER BY lower( album.name );", &values );
+                "ORDER BY lower( album.name );", &values, 0, true );
 
     return values;
 }
@@ -560,7 +562,7 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
     int error;
     const char* tail;
     sqlite3_stmt* stmt;
-    
+
     //compile SQL program to virtual machine
     error = sqlite3_prepare( m_db, statement.local8Bit(), statement.length(), &stmt, &tail );
 
