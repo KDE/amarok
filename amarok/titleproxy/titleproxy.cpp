@@ -122,7 +122,7 @@ void TitleProxy::accept()
     index = str.find( "\n", index );
     index++;
     
-    m_sockRemote.setBufferSize( 32 * 1024 );
+    m_sockRemote.setBufferSize( 128 * 1024 );
     m_sockRemote.enableRead( true );
     connect( &m_sockRemote, SIGNAL( readyRead() ), this, SLOT( readRemote() ) );
     m_sockRemote.writeBlock( m_pBuf, index );
