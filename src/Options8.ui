@@ -92,25 +92,6 @@
             </property>
         </widget>
     </widget>
-    <widget class="QCheckBox">
-        <property name="name">
-            <cstring>kcfg_SubmitPlayedSongs</cstring>
-        </property>
-        <property name="enabled">
-            <bool>true</bool>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>10</y>
-                <width>140</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Submit played tracks</string>
-        </property>
-    </widget>
     <spacer>
         <property name="name">
             <cstring>spacer4</cstring>
@@ -186,6 +167,33 @@
                 <set>WordBreak|AlignVCenter</set>
             </property>
         </widget>
+    </widget>
+    <widget class="QCheckBox">
+        <property name="name">
+            <cstring>kcfg_SubmitPlayedSongs</cstring>
+        </property>
+        <property name="enabled">
+            <bool>true</bool>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>10</y>
+                <width>160</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizepolicy>
+                <hsizetype>0</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+            </sizepolicy>
+        </property>
+        <property name="text">
+            <string>Submit played tracks</string>
+        </property>
     </widget>
 </widget>
 <connections>
