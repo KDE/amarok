@@ -59,9 +59,9 @@
 
 // CLASS BrowserWin =====================================================================
 
-BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
-        QWidget( parent, name, Qt::WType_TopLevel | Qt::WType_Dialog | Qt::WPaintUnclipped ),
-        m_pActionCollection( new KActionCollection( this ) )
+BrowserWin::BrowserWin( QWidget *parent, const char *name )
+    : QWidget( parent, name, Qt::WType_TopLevel | Qt::WType_Dialog | Qt::WPaintUnclipped )
+    , m_pActionCollection( new KActionCollection( this ) )
 {
     setCaption( kapp->makeStdCaption( i18n( "Playlist" ) ) );
     setAcceptDrops( true );
@@ -119,26 +119,28 @@ BrowserWin::~BrowserWin()
 
 void BrowserWin::initChildren()
 {
-    m_pButtonAdd = new ExpandButton( i18n( "Add Item" ), this );
+    m_pButtonAdd     = new ExpandButton( i18n( "Add Item" ), this );
 
     m_pButtonClear   = new ExpandButton( i18n( "Clear" ), this );
     m_pButtonShuffle = new ExpandButton( i18n( "Shuffle" ), m_pButtonClear );
     m_pButtonSave    = new ExpandButton( i18n( "Save Playlist" ), m_pButtonClear );
 
-    m_pButtonUndo = new ExpandButton( i18n( "Undo" ), this );
+    m_pButtonUndo    = new ExpandButton( i18n( "Undo" ), this );
 
-    m_pButtonRedo = new ExpandButton( i18n( "Redo" ), this );
+    m_pButtonRedo    = new ExpandButton( i18n( "Redo" ), this );
 
-    m_pButtonPlay  = new ExpandButton( i18n( "Play" ), this );
-    m_pButtonPause = new ExpandButton( i18n( "Pause" ), m_pButtonPlay );
-    m_pButtonStop  = new ExpandButton( i18n( "Stop" ), m_pButtonPlay );
-    m_pButtonNext  = new ExpandButton( i18n( "Next" ), m_pButtonPlay );
-    m_pButtonPrev  = new ExpandButton( i18n( "Previous" ), m_pButtonPlay );
+    m_pButtonPlay    = new ExpandButton( i18n( "Play" ), this );
+    m_pButtonPause   = new ExpandButton( i18n( "Pause" ), m_pButtonPlay );
+    m_pButtonStop    = new ExpandButton( i18n( "Stop" ), m_pButtonPlay );
+    m_pButtonNext    = new ExpandButton( i18n( "Next" ), m_pButtonPlay );
+    m_pButtonPrev    = new ExpandButton( i18n( "Previous" ), m_pButtonPlay );
 
-    m_pSplitter = new QSplitter( this );
-    m_pJanusWidget = new KJanusWidget( m_pSplitter, 0, KJanusWidget::IconList );
+    m_pSplitter      = new QSplitter( this );
+    m_pJanusWidget   = new KJanusWidget( m_pSplitter, 0, KJanusWidget::IconList );
     
     //HACK Traverse childrenlist of KJanusWidget in order to find members which are not exposed in API
+    QObject *pIconBox = m_pJanusWidget->child( 0, "KListBox" );
+    if ( pIconBox )    static_cast<QWidget*>( pIconBox )->setFocusPolicy( QWidget::NoFocus );
     QObject *pHeader = m_pJanusWidget->child( "KJanusWidgetTitleLabel" );
     if ( pHeader )     static_cast<QWidget*>( pHeader )->hide();
     QObject *pSeparator = m_pJanusWidget->child( 0, "KSeparator" );
