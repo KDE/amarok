@@ -80,6 +80,18 @@ class CollectionView : public KListView
         QString filter() { return m_filter; }
         Item* currentItem() { return static_cast<Item*>( KListView::currentItem() ); }
         
+        /**
+         * Executes an SQL statement on the already opened database
+         * @param statement SQL program to execute. Only one SQL statement is allowed.
+         * @retval values   will contain the queried data, set to NULL if not used
+         * @retval names    will contain all column names, set to NULL if not used
+         * @return          true if successful
+         */
+        static bool execSql( const QString& statement, QStringList* const values = 0, QStringList* const names = 0 );
+        
+        static QString escapeString( QString string );
+        static uint getValueID( QString name, QString value, bool autocreate = true );
+        
     signals:
         void tagsReady();    
         
@@ -107,37 +119,25 @@ class CollectionView : public KListView
     private:
         void customEvent( QCustomEvent* );
         void startDrag();
-        
-        uint getValueID( QString name, QString value, bool autocreate = true );
-        
+       
         QString catForId( int id ) const;
         int idForCat( const QString& cat ) const;
         QPixmap iconForCat( const QString& cat ) const;
-        QString escapeString( QString string );
-        
-        /**
-         * Executes an SQL statement on the already opened database
-         * @param statement SQL program to execute. Only one SQL statement is allowed.
-         * @retval values   will contain the queried data, set to NULL if not used
-         * @retval names    will contain all column names, set to NULL if not used
-         * @return          true if successful
-         */
-        bool execSql( const QString& statement, QStringList* const values = 0, QStringList* const names = 0 );
         
         /**
          * Returns the rowid of the most recently inserted row
          * @return          int rowid
          */
-        int sqlInsertID();
+        static int sqlInsertID();
             
     //attributes:
         //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.
         static const int DATABASE_VERSION = 4;
+        static sqlite* m_db;                
         
         CollectionBrowser* m_parent;
         ThreadWeaver* m_weaver;
         KDirWatch* m_dirWatch;
-        sqlite* m_db;                
         QString m_filter;
         QStringList m_dirs;
         QString m_category1;

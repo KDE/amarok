@@ -92,6 +92,8 @@ CollectionBrowser::slotSetFilter() //slot
 // CLASS CollectionView
 //////////////////////////////////////////////////////////////////////////////////////////
 
+sqlite* CollectionView::m_db;
+
 CollectionView::CollectionView( CollectionBrowser* parent )
         : KListView( parent )
         , m_parent( parent )
@@ -518,77 +520,28 @@ CollectionView::idForCat( const QString& cat ) const
 
 
 void
-CollectionView::customEvent( QCustomEvent *e ) {
-    kdDebug() << k_funcinfo << endl;
-
+CollectionView::customEvent( QCustomEvent *e )
+{
     if ( e->type() == (QEvent::Type) ThreadWeaver::Job::CollectionReader ) {
+        kdDebug() << k_funcinfo << endl;
+        
         CollectionReader * c = static_cast<CollectionReader*>( e );
-
-        kdDebug() << "********************************\n";
-        kdDebug() << "CollectionEvent arrived.\n";
-        kdDebug() << "********************************\n";
-
         //CollectionReader provides a list of all subdirs, which we feed into KDirWatch
         if ( m_monitor )
             for ( uint i = 0; i < c->dirList().count(); i++ )
                 if ( !m_dirWatch->contains( c->dirList()[i] ) ) {
                     m_dirWatch->addDir( c->dirList()[i], true );
-//                     kdDebug() << "Adding to dirWatch: " << c->dirList()[i] << endl;
+                        //kdDebug() << "Adding to dirWatch: " << c->dirList()[i] << endl;
                 }
-
-        QString tag;
-        MetaBundle* bundle;
-        kdDebug() << "Number of records to store in db: " << c->bundleList().count() << endl;
-        execSql( "BEGIN TRANSACTION;" );
-
-        for ( uint i = 0; i < c->bundleList().count(); i++ ) {
-            bundle = c->bundleList().at( i );
-
-            QString command = "INSERT INTO tags "
-                              "( url, dir, album, artist, genre, title, year, comment, track ) "
-                              "VALUES('";
-
-            command += escapeString( bundle->url().path() );
-            command += "','";
-            command += escapeString( bundle->url().directory() );
-            command += "',";
-            command += escapeString( QString::number( getValueID( "album", bundle->album() ) ) );
-            command += ",";
-            command += escapeString( QString::number( getValueID( "artist", bundle->artist() ) ) );
-            command += ",";
-            command += escapeString( QString::number( getValueID( "genre", bundle->genre() ) ) );
-            command += ",'";
-            command += escapeString( bundle->title() );
-            command += "','";
-            command += escapeString( QString::number( getValueID( "year", bundle->year() ) ) );
-            command += "','";
-            command += escapeString( bundle->comment() );
-            command += "','";
-            command += escapeString( bundle->track() );
-            command += "');";
-
-            execSql( command );
-            delete bundle;
-            //grant event loop some time for breathing
-            if ( !(i % 10) ) kapp->processEvents();
-        }
-        execSql( "END TRANSACTION;" );
-        
-        //create indexes, now
-        execSql( "CREATE INDEX album ON tags( album );" );
-        execSql( "CREATE INDEX artist ON tags( artist );" );
-        execSql( "CREATE INDEX genre ON tags( genre );" );
-        execSql( "CREATE INDEX year ON tags( year );" );
 
         emit tagsReady();
     }
 }
 
 
-bool
-CollectionView::execSql( const QString& statement,
-                         QStringList* const values,
-                         QStringList* const names ) {
+bool   
+CollectionView::execSql( const QString& statement, QStringList* const values, QStringList* const names ) //static
+{
     //     kdDebug() << k_funcinfo << endl;
 
     if ( !m_db ) {
@@ -788,7 +741,7 @@ CollectionView::showTrackInfo() //slot
 
 
 QString
-CollectionView::escapeString( QString string )
+CollectionView::escapeString( QString string ) //static
 {
     string.replace( "'", "''" );
     return string;

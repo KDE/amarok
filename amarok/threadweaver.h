@@ -206,14 +206,12 @@ public:
     ~CollectionReader();
 
     bool doJob();
-    QPtrList<MetaBundle> bundleList() { return m_metaList; }
     QStringList dirList() { return m_dirList; }
 
 private:
     void readDir( const QString& dir, QStringList& entries );
     void readTags( const QStringList& entries );
 
-    QPtrList<MetaBundle> m_metaList;
     QObject* m_statusBar;
     QStringList m_folders;
     QStringList m_dirList;

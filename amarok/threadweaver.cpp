@@ -4,6 +4,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
+#include "collectionbrowser.h"    //needed for execSql()
 #include "metabundle.h"
 #include "playlistitem.h"
 #include "threadweaver.h"
@@ -264,10 +265,6 @@ CollectionReader::doJob() {
     QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Total, entries.count() ) );
     readTags( entries );
     QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Stop ) );
-    
-    //don't post event if no tags have been read
-    if ( m_metaList.isEmpty() )
-        return false;
 
     return true;
 }
@@ -304,6 +301,7 @@ CollectionReader::readDir( const QString& dir, QStringList& entries ) {
 void
 CollectionReader::readTags( const QStringList& entries ) {
     KURL url;
+    CollectionView::execSql( "BEGIN TRANSACTION;" );
         
     for ( uint i = 0; i < entries.count(); i++ ) {   
         if ( !( i % 20 ) ) //don't post events too often since this blocks amaroK
@@ -313,10 +311,42 @@ CollectionReader::readTags( const QStringList& entries ) {
 
         TagLib::FileRef f( url.path().local8Bit(), false /*== read AudioProps */ );
         MetaBundle* bundle = f.isNull() ? 0 : new MetaBundle( url, f.tag(), 0 );
-
-        if ( bundle )
-            m_metaList.append( bundle );
+        
+        if ( bundle ) {
+            QString command = "INSERT INTO tags "
+                                "( url, dir, album, artist, genre, title, year, comment, track ) "
+                                "VALUES('";
+   
+            command += CollectionView::escapeString( bundle->url().path() );
+            command += "','";
+            command += CollectionView::escapeString( bundle->url().directory() );
+            command += "',";
+            command += CollectionView::escapeString( QString::number( CollectionView::getValueID( "album", bundle->album() ) ) );
+            command += ",";
+            command += CollectionView::escapeString( QString::number( CollectionView::getValueID( "artist", bundle->artist() ) ) );
+            command += ",";
+            command += CollectionView::escapeString( QString::number( CollectionView::getValueID( "genre", bundle->genre() ) ) );
+            command += ",'";
+            command += CollectionView::escapeString( bundle->title() );
+            command += "','";
+            command += CollectionView::escapeString( QString::number( CollectionView::getValueID( "year", bundle->year() ) ) );
+            command += "','";
+            command += CollectionView::escapeString( bundle->comment() );
+            command += "','";
+            command += CollectionView::escapeString( bundle->track() );
+            command += "');";
+    
+            CollectionView::execSql( command );
+            delete bundle;
+        }
     }
+    
+    CollectionView::execSql( "END TRANSACTION;" );
+    //create indexes, now
+    CollectionView::execSql( "CREATE INDEX album ON tags( album );" );
+    CollectionView::execSql( "CREATE INDEX artist ON tags( artist );" );
+    CollectionView::execSql( "CREATE INDEX genre ON tags( genre );" );
+    CollectionView::execSql( "CREATE INDEX year ON tags( year );" );
 }
 
 
