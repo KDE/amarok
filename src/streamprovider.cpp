@@ -162,7 +162,7 @@ StreamProvider::sendRequest() //SLOT
                                .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) )
                                .arg( m_url.host() )
                                .arg( m_icyMode ? "Icy-MetaData:1\r\n" : "" )
-                               .arg( auth ? "Authorization: Basic " + authString : "" ); 
+                               .arg( auth ? "Authorization: Basic " + authString + "\r\n" : "" ); 
 
 //     kdDebug() << "StreamProvider sending request:\n" << request << endl; 
     m_sockRemote.writeBlock( request.latin1(), request.length() );

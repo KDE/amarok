@@ -1288,7 +1288,7 @@ Playlist::saveXML( const QString &path ) const
     for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
     {
         QDomElement i = newdoc.createElement("item");
-        i.setAttribute("url", item->url().prettyURL());
+        i.setAttribute("url", item->url().url());
 
         for( int x = 1; x < columns(); ++x )
         {
