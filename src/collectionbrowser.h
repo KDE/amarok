@@ -63,6 +63,7 @@ class CollectionView : public KListView
     friend class CollectionBrowser;
 
     signals:
+        void sigScanStarted();
         void sigScanDone();
 
     public:

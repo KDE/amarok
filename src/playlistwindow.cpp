@@ -246,8 +246,10 @@ PlaylistWindow::init()
         addBrowser<SearchBrowser>( "SearchBrowser", i18n( "Search" ), "find" );
         addBrowser<FileBrowser>( "FileBrowser", i18n( "Files" ), "hdd_unmount" );
 
-        connect( CollectionView::instance(), SIGNAL( sigScanDone() ),
-                        m_browsers->browser("ContextBrowser"), SLOT( collectionScanDone() ) );
+        //update the context-browser when the collection begin or finish a scan
+        QWidget *cb = m_browsers->browser("ContextBrowser");
+        connect( CollectionView::instance(), SIGNAL( sigScanStarted() ), cb, SLOT( collectionScanStarted() ) );
+        connect( CollectionView::instance(), SIGNAL( sigScanDone() ), cb, SLOT( collectionScanDone() ) );
     //</Browsers>
 
 

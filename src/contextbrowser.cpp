@@ -10,6 +10,7 @@
 #include "contextbrowser.h"
 #include "coverfetcher.h"
 #include "enginecontroller.h"
+#include "k3bexporter.h"
 #include "metabundle.h"
 #include "playlist.h"     //appendMedia()
 #include "qstringx.h"
@@ -141,11 +142,6 @@ void ContextBrowser::openURLRequest( const KURL &url )
             //     otherwise we need a better solution
             QObject *o = parent()->child( "CollectionBrowser" );
             if ( o ) static_cast<CollectionBrowser*>( o )->setupDirs();
-
-            if ( CollectionView::instance() )
-                showScanning();
-            else
-                showHome();
         }
     }
 
@@ -160,6 +156,13 @@ void ContextBrowser::openURLRequest( const KURL &url )
         KRun::runCommand( command.arg( info[0] ).arg( info[1] ), "kfmclient", "konqueror" );
     }
 
+}
+
+
+void ContextBrowser::collectionScanStarted()
+{
+    if( m_emptyDB )
+        showScanning();
 }
 
 
@@ -307,30 +310,44 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
     if ( url.protocol() == "file" )
     {
-        enum menuIds { APPEND, ASNEXT, MAKE };
+        enum menuIds { APPEND, ASNEXT, MAKE, BURN_DATACD, BURN_AUDIOCD };
 
         KPopupMenu menu( this );
         menu.insertTitle( i18n( "Track / Album" ) );
         menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "Append to Playlist" ), APPEND );
         //menu.setItemEnabled( APPEND );
         menu.insertItem( SmallIcon( "next" ), i18n( "Queue after Current Track" ), ASNEXT );
-        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "Make Playlist" ), MAKE );
+        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "Make playlist" ), MAKE );
+        if( K3bExporter::isAvailable() ) {
+            menu.insertSeparator();
+            menu.insertItem( i18n( "Burn to CD as data" ), BURN_DATACD );
+            menu.insertItem( i18n( "Burn to CD as audio" ), BURN_AUDIOCD );
+        }
         int id = menu.exec( point );
 
         switch ( id )
         {
             case APPEND:
+
                 Playlist::instance()->appendMedia( url, false, true );
-            break;
+                break;
 
             case ASNEXT:
                 Playlist::instance()->queueMedia( url );
-            break;
+                break;
 
             case MAKE:
                 Playlist::instance()->clear();
                 Playlist::instance()->appendMedia( url, true, true );
-            break;
+                break;
+
+            case BURN_DATACD:
+                K3bExporter::instance()->exportTracks( url, K3bExporter::DataCD );
+                break;
+
+            case BURN_AUDIOCD:
+                K3bExporter::instance()->exportTracks( url, K3bExporter::AudioCD );
+                break;
         }
      }
 }

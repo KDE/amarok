@@ -297,7 +297,8 @@ CollectionView::scan()  //SLOT
         m_insertdb->scan( AmarokConfig::collectionFolders(), AmarokConfig::scanRecursively(),
                                       AmarokConfig::importPlaylists() );
 
-        amaroK::StatusBar::instance()->message( i18n("Building Collection") );
+        emit sigScanStarted();
+        amaroK::StatusBar::instance()->message( i18n("Building Collection...") );
     }
 }
 
@@ -331,7 +332,7 @@ CollectionView::renderView( )  //SLOT
     {
         if ( values[i].isEmpty() ) continue;
 
-        if ( m_category1.lower() == "artist" && values[i + 1] == "1" )
+        if ( m_category1 == i18n("Artist") && values[i + 1] == "1" )
         {
             if ( addedVA ) continue;
 

@@ -28,6 +28,7 @@ class ContextBrowser : public QVBox, public EngineObserver
 
     public slots:
         void openURLRequest(const KURL &url );
+        void collectionScanStarted();
         void collectionScanDone();
 
     protected:
