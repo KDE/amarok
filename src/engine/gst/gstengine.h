@@ -75,7 +75,8 @@ class GstEngine : public Engine::Base
         void timerEvent( QTimerEvent* );
 
     private slots:
-        void handleGstError();
+        void handleOutputError();
+        void handleInputError();
         void endOfStreamReached();
         void kioFinished();
         void newKioData( KIO::Job*, const QByteArray& array );
@@ -100,9 +101,9 @@ class GstEngine : public Engine::Base
         static void eos_cb( GstElement*, GstElement* );
         /** Duplicates audio data for application side processing */
         static void handoff_cb( GstElement*, GstBuffer*, gpointer );
-
         static void candecode_handoff_cb( GstElement*, GstBuffer*, gpointer );
-        static void error_cb( GstElement*, GstElement*, GError*, gchar*, gpointer );
+        static void outputError_cb( GstElement*, GstElement*, GError*, gchar*, gpointer );
+        static void inputError_cb( GstElement*, GstElement*, GError*, gchar*, gpointer );
         static void kio_resume_cb();
         static void shutdown_cb();
 
@@ -175,8 +176,6 @@ class InputPipeline
 
         void prepareToDie();
 
-        void setReady() { m_ready = true; }
-
         State state() const { return m_state; }
         void setState( State newState );
 
@@ -186,7 +185,6 @@ class InputPipeline
         State m_state;
         float m_fade;
 
-        bool m_ready;
         bool m_error;
         bool m_eos;
 

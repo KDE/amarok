@@ -114,7 +114,7 @@ GstEngine::candecode_handoff_cb( GstElement*, GstBuffer*, gpointer ) //static
 
 
 void
-GstEngine::error_cb( GstElement* /*element*/, GstElement* /*source*/, GError* error, gchar* debug, gpointer /*data*/ ) //static
+GstEngine::outputError_cb( GstElement* /*element*/, GstElement* /*domain*/, GError* error, gchar* debug, gpointer /*data*/ ) //static
 {
     kdDebug() << k_funcinfo << endl;
 
@@ -122,7 +122,30 @@ GstEngine::error_cb( GstElement* /*element*/, GstElement* /*source*/, GError* er
     instance()->m_gst_debug = QString::fromAscii( debug );
 
     // Process error message in application thread
-    QTimer::singleShot( 0, instance(), SLOT( handleGstError() ) );
+    QTimer::singleShot( 0, instance(), SLOT( handleOutputError() ) );
+}
+
+
+void
+GstEngine::inputError_cb( GstElement* element, GstElement* /*domain*/, GError* error, gchar* debug, gpointer /*data*/ ) //static
+{
+    kdDebug() << k_funcinfo << endl;
+
+    instance()->m_gst_error = QString::fromAscii( error->message );
+    instance()->m_gst_debug = QString::fromAscii( debug );
+
+    InputPipeline* input;
+
+    // Determine which input pipeline emitted the eos
+    for ( uint i = 0; i < instance()->m_inputs.count(); i++ ) {
+        input = instance()->m_inputs.at( i );
+
+        if ( input->bin == element )
+            input->m_error = true;
+    }
+
+    // Process error message in application thread
+    QTimer::singleShot( 0, instance(), SLOT( handleInputError() ) );
 }
 
 
@@ -442,10 +465,15 @@ GstEngine::play( uint )  //SLOT
     // Link elements
     gst_element_link( m_currentInput->volume, m_gst_adder );
 
-    if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PLAYING ) )
+    // Try to play input pipeline; if fails, destroy input bin
+    if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PLAYING ) ) {
         kdWarning() << "[Gst-Engine] Could not set input thread to PLAYING.\n";
+        destroyInput( m_currentInput );
+        return false;
+    }
 
-    m_currentInput->setReady();
+    g_signal_connect( G_OBJECT( m_currentInput->bin ), "error", G_CALLBACK ( inputError_cb ), 0 );
+
     emit stateChanged( Engine::Playing );
     return true;
 }
@@ -645,7 +673,7 @@ void GstEngine::timerEvent( QTimerEvent* )
 /////////////////////////////////////////////////////////////////////////////////////
 
 void
-GstEngine::handleGstError()  //SLOT
+GstEngine::handleOutputError()  //SLOT
 {
     QString text = "[GStreamer Error] ";
     text += m_gst_error;
@@ -663,6 +691,37 @@ GstEngine::handleGstError()  //SLOT
     kdError() << text << endl;
     emit statusText( text );
     emit trackEnded();
+}
+
+
+void
+GstEngine::handleInputError()  //SLOT
+{
+    kdDebug() << k_funcinfo << endl;
+
+    QString text = "[GStreamer Error] ";
+    text += m_gst_error;
+
+    if ( !m_gst_debug.isEmpty() ) {
+        text += " ** ";
+        text += m_gst_debug;
+    }
+    m_gst_error = QString();
+
+    InputPipeline* input;
+    // Find bin which emitted the signal
+    for ( uint i = 0; i < m_inputs.count(); i++ ) {
+        input = m_inputs.at( i );
+        if ( input->m_error ) {
+            kdError() << "An input bin has signaled an error condition, destroying.\n";
+            destroyInput( input );
+            m_eos = true;
+            emit trackEnded();
+        }
+    }
+
+    kdError() << text << endl;
+    emit statusText( text );
 }
 
 
@@ -868,8 +927,8 @@ GstEngine::createPipeline()
     // More buffers means less dropouts and higher latency
     gst_element_set( m_gst_queue, "max-size-buffers", 100, NULL );
 
-    g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), m_gst_outputThread );
-    g_signal_connect ( G_OBJECT( m_gst_outputThread ), "error", G_CALLBACK ( error_cb ), m_gst_outputThread );
+    g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), 0 );
+    g_signal_connect ( G_OBJECT( m_gst_outputThread ), "error", G_CALLBACK ( outputError_cb ), 0 );
 
     /* link elements */
     gst_element_link_many( m_gst_adder, m_gst_queue, m_gst_identity, m_gst_volume, m_gst_audioscale, m_gst_audioconvert, m_gst_audiosink, 0 );
@@ -971,7 +1030,6 @@ GstEngine::sendBufferStatus()
 InputPipeline::InputPipeline()
     : m_state( NO_FADE )
     , m_fade( 0.0 )
-    , m_ready( false )
     , m_error( false )
     , m_eos( false )
 {
@@ -1003,9 +1061,10 @@ InputPipeline::~InputPipeline()
     if ( GstEngine::instance()->m_currentInput == this )
         GstEngine::instance()->m_currentInput = 0;
 
-    kdDebug() << "Unreffing input bin.\n";
+    kdDebug() << "Destroying input bin.\n";
 
-    if ( m_ready ) {
+    if ( gst_element_get_managing_bin( bin ) == GST_BIN( GstEngine::instance()->m_gst_inputThread ) )
+    {
         gst_element_set_state( GstEngine::instance()->m_gst_queue, GST_STATE_PAUSED );
 
         if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PAUSED ) )
@@ -1022,7 +1081,9 @@ InputPipeline::~InputPipeline()
         if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PLAYING ) )
             kdWarning() << "[Gst-Engine] Could not set input thread to PLAYING.\n";
     }
-    else {
+    else
+    {
+        kdDebug() << "Bin is not in thread.\n";
         gst_element_set_state( bin, GST_STATE_NULL );
         gst_object_unref( GST_OBJECT( bin ) );
     }
