@@ -529,23 +529,25 @@ CollectionView::timerEvent( QTimerEvent* )
 void
 CollectionView::customEvent( QCustomEvent *e )
 {
-    CollectionReader::ProgressEvent* p = (CollectionReader::ProgressEvent*)e;
-
-    switch ( p->state() ) {
-    case CollectionReader::ProgressEvent::Start:
-        m_progress->setProgress( 0 );
-        m_progress->show();
-        break;
-
-    case CollectionReader::ProgressEvent::Stop:
-        break;
-
-    case CollectionReader::ProgressEvent::Total:
-        m_progress->setTotalSteps( p->value() );
-        break;
-
-    case CollectionReader::ProgressEvent::Progress:
-        m_progress->setProgress( p->value() );
+    CollectionReader::ProgressEvent* p = dynamic_cast<CollectionReader::ProgressEvent*>( e );
+    
+    if ( p ) {
+        switch ( p->state() ) {
+        case CollectionReader::ProgressEvent::Start:
+            m_progress->setProgress( 0 );
+            m_progress->show();
+            break;
+    
+        case CollectionReader::ProgressEvent::Stop:
+            break;
+    
+        case CollectionReader::ProgressEvent::Total:
+            m_progress->setTotalSteps( p->value() );
+            break;
+    
+        case CollectionReader::ProgressEvent::Progress:
+            m_progress->setProgress( p->value() );
+        }
     }
 }
 
