@@ -46,10 +46,10 @@ AMAROK_EXPORT_PLUGIN( GstEngine )
 /////////////////////////////////////////////////////////////////////////////////////
 
 static const uint
-SCOPEBUF_SIZE = 30000;
+SCOPEBUF_SIZE = 500000; // 500 kb
 
 static const int
-STREAMBUF_SIZE = 1000000; // == 1MB
+STREAMBUF_SIZE = 1000000; // 1 MB
 
 static const int
 STREAMBUF_MAX = STREAMBUF_SIZE - 50000;
@@ -137,6 +137,7 @@ GstEngine::~GstEngine()
     stop();
     cleanPipeline();
     delete[] m_streamBuf;
+    g_object_unref( G_OBJECT( m_gst_adapter ) );
 
     // Save configuration
     GstConfig::writeConfig();
@@ -674,6 +675,7 @@ GstEngine::cleanPipeline()
     if ( m_pipelineFilled ) {
         gst_element_set_state ( m_gst_thread, GST_STATE_NULL );
         gst_object_unref( GST_OBJECT( m_gst_thread ) );
+        gst_adapter_clear( m_gst_adapter );
         m_pipelineFilled = false;
     }
 }
