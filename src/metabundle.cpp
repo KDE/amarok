@@ -93,14 +93,14 @@ MetaBundle::readTags( bool audioProperties )
    TagLib::FileRef f( m_url.path().local8Bit(), audioProperties, TagLib::AudioProperties::Fast );
 
    if ( f.isNull() ) {
-       init( 0 ); 
-   
+       init( 0 );
+
    } else {
-        
+
         if( f.tag() )
         {
             TagLib::Tag *tag = f.tag();
-        
+
             m_title   = TStringToQString( tag->title() ).stripWhiteSpace();
             m_artist  = TStringToQString( tag->artist() ).stripWhiteSpace();
             m_album   = TStringToQString( tag->album() ).stripWhiteSpace();
@@ -111,7 +111,7 @@ MetaBundle::readTags( bool audioProperties )
         }
         init( f.audioProperties() );
     }
-    
+
     return *this;
 }
 
@@ -119,31 +119,13 @@ QString
 MetaBundle::prettyTitle() const
 {
     //NOTE this gets regressed often, please be careful!
+    //NOTE whatever you do, handle the stream case, streams have no artist but have an excellent title
 
-    #ifdef PRETTY_TITLE_CACHE
-    if( m_prettyTitleCache.isEmpty() )
-    {
-        QString &s = m_prettyTitleCache = m_artist;
-    #else
-        QString s = m_artist;
-    #endif
-
-        if( s.isEmpty() )
-
-            s = m_title;
-//             s = prettyTitle( m_url.fileName() );
-
-        else if( !m_title.isEmpty() ) {
-
-            s += " - ";
-            s += m_title;
-        }
-    #ifdef PRETTY_TITLE_CACHE
-    }
-    return m_prettyTitleCache;
-    #else
+    QString s = m_artist;
+    if( !s.isEmpty() ) s += " - ";
+    s += m_title;
+    if( s.isEmpty() ) s = prettyTitle( m_url.fileName() );
     return s;
-    #endif
 }
 
 QString

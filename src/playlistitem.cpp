@@ -153,7 +153,7 @@ MetaBundle PlaylistItem::metaBundle()
         TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Accurate );
         //FIXME hold a small cache of metabundles?
         //then return by reference
-        MetaBundle bundle( this, /*f.isNull() ? 0 :*/ f.audioProperties() ); //I believe the isNull() check is unecessary
+        MetaBundle bundle( this, f.isNull() ? 0 : f.audioProperties() );
         //just set it as we just did an accurate pass
         setText( Length,  bundle.prettyLength()  );
         setText( Bitrate, bundle.prettyBitrate() );
