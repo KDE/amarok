@@ -489,11 +489,17 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     browser->write( "<html>"
                     "<script type='text/javascript'>"
-                      "function toggleBlock(album) {"
-                        "if (document.getElementById(album).style.display != 'none') {"
-                          "document.getElementById(album).style.display = 'none';"
+                      //Toggle visibility of a block. NOTE: if the block ID starts with the T
+                      //letter, 'Table' display will be used instead of the 'Block' one.
+                      "function toggleBlock(ID) {"
+                        "if ( document.getElementById(ID).style.display != 'none' ) {"
+                          "document.getElementById(ID).style.display = 'none';"
                         "} else {"
-                          "document.getElementById(album).style.display = 'block';"
+                          "if ( ID[0] != 'T' ) {"
+                            "document.getElementById(ID).style.display = 'block';"
+                          "} else {"
+                            "document.getElementById(ID).style.display = 'table';"
+                          "}"
                         "}"
                       "}"
                     "</script>" );
@@ -684,8 +690,10 @@ void ContextBrowser::showCurrentTrack() //SLOT
             browser->write(
                 "<br>"
                 "<div class='box'>"
-                 "<div class='box-header'>" + i18n( "Suggested Songs" ) + "</div>"
-                 "<table class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+                 "<div class='box-header' onClick=\"toggleBlock('T_SS')\" style='cursor: pointer;'>"
+                  + i18n( "Suggested Songs" ) +
+                 "</div>"
+                 "<table class='box-body' id='T_SS' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
             for ( uint i = 0; i < values.count(); i += 4 )
                 browser->write(
@@ -722,8 +730,10 @@ void ContextBrowser::showCurrentTrack() //SLOT
         browser->write(
             "<br>"
             "<div class='box'>"
-             "<div class='box-header'>" + i18n( "Favorite Tracks By %1" ).arg( artistName ) + "</div>"
-             "<table class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+             "<div class='box-header' onClick=\"toggleBlock('T_FT')\" style='cursor: pointer;'>"
+              + i18n( "Favorite Tracks By %1" ).arg( artistName ) +
+             "</div>"
+             "<table class='box-body' id='T_FT' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
         for ( uint i = 0; i < values.count(); i += 3 )
             browser->write(
