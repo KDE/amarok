@@ -1141,6 +1141,7 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
 
         //NOTE "item" is repainted due to the setSelected() call
 
+        updateNextPrev();
         break;
 
     case VIEW:
@@ -1498,6 +1499,8 @@ bool Playlist::eventFilter( QObject *o, QEvent *e )
             else m_nextTracks.append( item );
 
             item->repaint(); //we need to repaint item in both cases
+
+            updateNextPrev();
         }
 
         return TRUE; //yum!
