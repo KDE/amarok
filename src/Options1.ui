@@ -272,7 +272,7 @@
                         <cstring>textLabel2</cstring>
                     </property>
                     <property name="text">
-                        <string>Recode the following 8bit data:</string>
+                        <string>Don't decode the following as latin1:</string>
                     </property>
                 </widget>
                 <widget class="QLayoutWidget">
@@ -350,7 +350,7 @@
                                 <cstring>textLabel1_3</cstring>
                             </property>
                             <property name="text">
-                                <string>Use this character set when recoding:</string>
+                                <string>Instead decode using this character set:</string>
                             </property>
                             <property name="alignment">
                                 <set>AlignVCenter</set>
