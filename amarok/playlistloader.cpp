@@ -27,7 +27,7 @@
 //FIXME this is also very bad as you access data the GUI thread may access simultaneously (:o)
 //      what we need is an options struct/class and then I can pass a COPY in the thread ctor
 #include <playerapp.h>
-extern PlayerApp pApp;
+extern PlayerApp *pApp;
 
 
 ///// ctor, dtor and run() are basic and in header
