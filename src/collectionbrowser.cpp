@@ -74,8 +74,8 @@ CollectionBrowser::CollectionBrowser( const char* name )
     } //</Search LineEdit>
 
     KActionCollection* ac = new KActionCollection( this );
-    m_configureAction = new KAction( i18n("Configure Folders"), "configure", 0, this, SLOT( setupDirs() ), ac, "Configure" );
     m_scanAction = new KAction( i18n("Start Scan"), "reload", 0, this, SLOT( scan() ), ac, "Start Scan" );
+    m_configureAction = new KAction( i18n("Configure Folders"), "configure", 0, this, SLOT( setupDirs() ), ac, "Configure" );
 
     KActionMenu* tagfilterMenuButton = new KActionMenu( i18n("Tag Filter"), "filter", ac );
     tagfilterMenuButton->setDelayed( false );
@@ -161,6 +161,12 @@ CollectionBrowser::clearFilter()
         QEvent e( QEvent::FocusOut );
         eventFilter( m_searchEdit, &e);
     }
+}
+
+void
+CollectionBrowser::scan()  //SLOT
+{
+    m_view->scan();
 }
 
 void

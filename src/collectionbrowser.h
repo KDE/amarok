@@ -35,6 +35,7 @@ class CollectionBrowser: public QVBox
         CollectionBrowser( const char* name );
 
     public slots:
+        void scan();
         void setupDirs();
 
     private slots:
