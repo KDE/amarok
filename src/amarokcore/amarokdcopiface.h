@@ -43,9 +43,6 @@ k_dcop:
    virtual void enableRandomMode(bool enable) = 0;          ///< Switch Random Mode on or off.
    virtual void enableRepeatPlaylist(bool enable) = 0;      ///< Switch Repeat Playlist on or off.
 
-   //TODO Move to Collection interface for 1.3
-   virtual void scanCollection() = 0;                       ///< Scan the collection.
-
    /* These two methods return raw time in seconds, this is useful for apps like mediacontrol, which calculate
       track lengths and positions in seconds. DO NOT TOUCH! */
    virtual int  trackTotalTime() = 0;                       ///< Return track length in seconds.
@@ -122,6 +119,7 @@ class AmarokCollectionInterface : virtual public DCOPObject
 
 k_dcop:
    virtual QStringList query(const QString& sql) = 0;       ///< Queries the database via SQL.
+   virtual void scanCollection() = 0;                       ///< Scan the collection.
 };
 
 

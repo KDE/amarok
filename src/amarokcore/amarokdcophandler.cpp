@@ -241,12 +241,6 @@ namespace amaroK
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "repeat_playlist" ))->setChecked( enable );
     }
 
-
-    void DcopPlayerHandler::scanCollection()
-    {
-        CollectionDB::instance()->startScan();
-    }
-
     void DcopPlayerHandler::setVolume(int volume)
     {
         EngineController::instance()->setVolume(volume);
@@ -448,6 +442,11 @@ namespace amaroK
     QStringList DcopCollectionHandler::query( const QString& sql )
     {
         return CollectionDB::instance()->query( sql );
+    }
+
+    void DcopCollectionHandler::scanCollection()
+    {
+        CollectionDB::instance()->startScan();
     }
 
 

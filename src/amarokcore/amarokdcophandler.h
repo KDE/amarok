@@ -45,7 +45,6 @@ class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
       virtual int  trackTotalTime();
       virtual int  trackCurrentTime();
       virtual int  trackPlayCounter();
-      virtual void scanCollection();
       virtual QString nowPlaying();
       virtual QString artist();
       virtual QString title();
@@ -115,6 +114,7 @@ class DcopCollectionHandler : public QObject, virtual public AmarokCollectionInt
 
    public /* DCOP */ slots:
       virtual QStringList query(const QString& sql);
+      virtual void scanCollection();
 };
 
 
