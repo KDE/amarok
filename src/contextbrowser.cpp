@@ -309,7 +309,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         menu.setItemEnabled( FETCH, false );
     #endif
         menu.insertSeparator();
-        menu.insertItem( /*SmallIcon( "www" ),*/ i18n( "Open Cover-Manager" ), MANAGER );
+        menu.insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n( "Open Cover-Manager" ), MANAGER );
         menu.insertItem( SmallIcon( "editdelete" ), i18n("Delete Image File"), DELETE );
         int id = menu.exec( point );
 

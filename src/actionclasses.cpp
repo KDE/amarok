@@ -14,6 +14,7 @@
 #include "scriptmanager.h"
 #include "socketserver.h"       //Vis::Selector::showInstance()
 
+#include <qpixmap.h>
 #include <qtooltip.h>
 
 #include <kaction.h>
@@ -21,6 +22,7 @@
 #include <khelpmenu.h>
 #include <kiconloader.h>
 #include <klocale.h>
+#include <kstandarddirs.h>
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h>
 #include <kurl.h>
@@ -92,11 +94,8 @@ Menu::Menu()
 
     insertSeparator();
 
+    insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n( "C&over Manager..." ), ID_SHOW_COVER_MANAGER );
     insertItem( i18n( "&Visualizations..." ), ID_SHOW_VIS_SELECTOR );
-
-    insertSeparator();
-
-    insertItem( i18n( "C&over Manager..." ), ID_SHOW_COVER_MANAGER );
 
     insertSeparator();
 
