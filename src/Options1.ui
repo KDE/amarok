@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>Options1</class>
 <widget class="QWidget">
     <property name="name">
@@ -19,9 +19,6 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
-    </property>
-    <property name="caption">
-        <string>Options1</string>
     </property>
     <property name="whatsThis" stdset="0">
         <string>Check to enable splashscreen during amaroK startup.</string>
@@ -179,9 +176,6 @@
                     <property name="text">
                         <string>Show &amp;tray icon</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+T</string>
-                    </property>
                     <property name="whatsThis" stdset="0">
                         <string>Check to enable the amaroK tray icon.</string>
                     </property>
@@ -193,9 +187,6 @@
                     <property name="text">
                         <string>&amp;Animate tray icon</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+A</string>
-                    </property>
                     <property name="whatsThis" stdset="0">
                         <string>Check to enable the amaroK tray icon.</string>
                     </property>
@@ -206,9 +197,6 @@
                     </property>
                     <property name="text">
                         <string>Show splash-screen on start&amp;up</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+U</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>Enable/Disable splashscreen during amaroK startup.</string>
