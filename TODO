@@ -19,9 +19,6 @@ SHORT-TERM (URGENT):
   FIX 161 <markey> Configure prints "Good - your configure finished. Start make now" even when amaroK
                    will _not_ be built. Confusing..
 
-  FIX 160 <markey> When feeding tracks to a running instance via cli (or mouseclick in konq), playback
-                   doesn't start automatically.
-
   FIX 134 <markey> Ctrl-C in Playlist (and other Ctrl shortcuts) for copying title doesn't work, because the
                    event gets eaten by another widget.
 

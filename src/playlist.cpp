@@ -287,7 +287,7 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
         {
             if( !url.isLocalFile() )
             {
-                PlaylistLoader::downloadPlaylist( url, this, after );
+                PlaylistLoader::downloadPlaylist( url, this, after, directPlay );
                 return;
             }
             //else use the normal loader route

@@ -286,7 +286,7 @@ PlaylistLoader::loadPlaylist( const QString &path, Format type )
 #include <kmessagebox.h>
 #include <klocale.h>
 void
-PlaylistLoader::downloadPlaylist( const KURL &url, QListView *listView, QListViewItem *item )
+PlaylistLoader::downloadPlaylist( const KURL &url, QListView *listView, QListViewItem *item, bool directPlay )
 {
     //KIO::NetAccess can make it's own tempfile
     //but we need to add .pls/.m3u extension or the Loader will fail
@@ -306,7 +306,7 @@ PlaylistLoader::downloadPlaylist( const KURL &url, QListView *listView, QListVie
         KURL url;
         url.setPath( path );
 
-        (new PlaylistLoader( KURL::List( url ), listView, item ))->start();
+        (new PlaylistLoader( KURL::List( url ), listView, item, directPlay ))->start();
 
     } else {
 

@@ -23,7 +23,7 @@ public:
     enum EventType { Started = 1010, Done, Play, Tags, Item };
 
     static void stop() { s_stop = true; }
-    static void downloadPlaylist( const KURL&, QListView*, QListViewItem* );
+    static void downloadPlaylist( const KURL&, QListView*, QListViewItem*, bool directPlay = false );
     static bool isPlaylist( const KURL& );        //inlined
     static Format playlistType( const QString& ); //inlined
 
