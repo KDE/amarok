@@ -37,7 +37,7 @@
 #include <qdatetime.h> 
 #include <qfileinfo.h> 
 #include <ktoolbar.h> 
-#include <stdlib.h>
+#include <kapplication.h>
 
 
 #define HTML_FILE KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "contextbrowser.html"
@@ -164,5 +164,7 @@ void UniversalAmarok::openURLRequest( const KURL &url )
 void UniversalAmarok::checkForAmarok()
 {
     if(amarokDCOP->isApplicationRegistered("amarok")) return;
-    system("amarok");
+    QString amarokSVC;
+    int pid;
+    KApplication::kdeinitExecWait("amarok");
 }
