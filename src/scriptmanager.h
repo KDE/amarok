@@ -85,6 +85,7 @@ class ScriptManager : public KDialogBase, public EngineObserver
 
         static ScriptManager* s_instance;
         ScriptManagerBase*    m_base;
+        bool                  m_installSuccess;
 
         struct ScriptItem {
             KURL           url;

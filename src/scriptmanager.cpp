@@ -158,7 +158,7 @@ ScriptManager::slotInstallScript()
     KTar archive( dia.selectedURL().path() );
 
     if ( !archive.open( IO_ReadOnly ) ) {
-        KMessageBox::sorry( 0, i18n( "Could not read this package." ) );
+        KMessageBox::sorry( this, i18n( "Could not read this package." ) );
         return;
     }
 
@@ -167,9 +167,15 @@ ScriptManager::slotInstallScript()
     archiveDir->copyTo( destination );
     destination += archiveDir->name() + "/";
 
+    m_installSuccess = false;
     recurseInstall( archiveDir, destination );
 
-    KMessageBox::information( 0, i18n( "Script successfully installed." ) );
+    if ( m_installSuccess )
+        KMessageBox::information( this, i18n( "Script successfully installed." ) );
+    else
+        KMessageBox::sorry( this, i18n( "<p>Script installation failed.</p>"
+                                        "<p>The package did not contain an executable file. "
+                                        "Please inform the package maintainer about this error.</p>" ) );
 }
 
 
@@ -184,15 +190,18 @@ ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QStrin
         const QString entry = *it;
         const KArchiveEntry* archEntry = archiveDir->entry( entry );
 
-        ::chmod( QFile::encodeName( destination + entry ), archEntry->permissions() );
-
         if ( archEntry->isDirectory() ) {
             KArchiveDirectory* dir = (KArchiveDirectory*) archEntry;
             recurseInstall( dir, destination + entry + "/" );
         }
-        else
-            if ( QFileInfo( destination + entry ).isExecutable() )
+        else {
+            ::chmod( QFile::encodeName( destination + entry ), archEntry->permissions() );
+
+            if ( QFileInfo( destination + entry ).isExecutable() ) {
                 loadScript( destination + entry );
+                m_installSuccess = true;
+            }
+        }
     }
 }
 
@@ -204,7 +213,7 @@ ScriptManager::slotUninstallScript()
 
     const QString name = m_base->directoryListView->currentItem()->text( 0 );
 
-    if ( KMessageBox::warningYesNo( 0, i18n( "Are you sure you want to uninstall the script '%1'?" ).arg( name ) ) == KMessageBox::No )
+    if ( KMessageBox::warningYesNo( this, i18n( "Are you sure you want to uninstall the script '%1'?" ).arg( name ) ) == KMessageBox::No )
         return;
 
     const QString directory = m_scripts[name].url.directory();
@@ -218,7 +227,7 @@ ScriptManager::slotUninstallScript()
         rmSuccess |= dir.remove( *it );
 
     if ( !rmSuccess ) {
-        KMessageBox::sorry( 0, i18n( "Could not uninstall this script. The ScriptManager can only uninstall scripts that were installed as packages." ) );
+        KMessageBox::sorry( this, i18n( "Could not uninstall this script. The ScriptManager can only uninstall scripts that were installed as packages." ) );
         return;
     }
 
@@ -263,7 +272,7 @@ ScriptManager::slotRunScript()
     script->setWorkingDirectory( amaroK::saveLocation( "scripts-data/" ) );
 
     if ( !script->start( KProcess::NotifyOnExit, KProcess::Stdin ) ) {
-        KMessageBox::sorry( 0, i18n( "<p>Could not start the script <i>%1</i>.</p>"
+        KMessageBox::sorry( this, i18n( "<p>Could not start the script <i>%1</i>.</p>"
                                      "<p>Please make sure that the file has execute (+x) permissions.</p>" ).arg( name ) );
         delete script;
         return;
@@ -323,7 +332,7 @@ ScriptManager::slotAboutScript()
     debug() << "Path: " << file.name() << endl;
 
     if ( !file.open( IO_ReadOnly ) ) {
-        KMessageBox::sorry( 0, i18n( "There is no help text for this script." ) );
+        KMessageBox::sorry( this, i18n( "There is no help text for this script." ) );
         return;
     }
 
