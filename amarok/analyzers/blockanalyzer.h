@@ -23,7 +23,7 @@ public:
     static const uint MIN_ROWS    = 7;   //arbituary
     static const uint MAX_ROWS    = 14;  //arbituary, at some point maybe remove this
     static const uint MIN_COLUMNS = 32;  //arbituary
-    static const uint MAX_COLUMNS = 128; //must be 2**n
+    static const uint MAX_COLUMNS = 64; //must be 2**n
 
     void transform( Scope& );
     void analyze( const Scope& );

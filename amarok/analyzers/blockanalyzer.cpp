@@ -21,17 +21,17 @@ static float lvlMapper[BlockAnalyzer::MAX_ROWS+1];// = { 0.080, 0.140, 0.200, 0.
 
 
 BlockAnalyzer::BlockAnalyzer( QWidget *parent )
- : Analyzer::Base2D( parent, 20, 8 )
+ : Analyzer::Base2D( parent, 20, 7 )
  , m_dark( WIDTH, HEIGHT )   //QPixmap
  , m_store( MAX_COLUMNS, 0 ) //vector<uint>
  , m_scope( MIN_COLUMNS )    //Scope
  , m_columns( MIN_COLUMNS )  //uint
 {
-    QColor darkColor( backgroundColor().dark( 150 ) );
+    QColor darkColor( backgroundColor().dark( 125 ) );
 
     m_dark.fill( darkColor );
 
-    setMinimumSize( MIN_COLUMNS*(WIDTH+1) -1, MIN_ROWS*(HEIGHT+1) -1 ); //-1 is padding that isn't drawn to
+    setMinimumSize( MIN_COLUMNS*(WIDTH+1) -1, MIN_ROWS*(HEIGHT+1) -1 ); //-1 is padding, no drawing takes place there
     setMaximumSize( MAX_COLUMNS*(WIDTH+1) -1, MAX_ROWS*(HEIGHT+1) -1 );
 }
 
@@ -60,7 +60,7 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
     //for( uint x = 0; x <= m_rows; ++x ) kdDebug() << x << ": " << lvlMapper[x] << "\n";
 
 
-    QColor darkColor( backgroundColor().dark( 150 ) );
+    QColor darkColor( backgroundColor().dark( 125 ) );
 
      double dr = 7.5*double(darkColor.red()   - 32) / (m_rows*8);
      double dg = 7.5*double(darkColor.green() - 32) / (m_rows*8);
