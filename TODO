@@ -28,8 +28,6 @@ SHORT-TERM (URGENT):
   <mxcl>   Inline editing of tags frequently crashes, muesli is this due to that bug from before?
            <muesli> "Only" for the current song. No other crashes experienced here, anyways.
 
-  <mxcl>   CollectionBrowser Toolbar is too wide for some users' usage patterns.
-
   <mxcl>   Playlist with files that exist that gst can't play + repeat-playlist = infinite loop - presumably
            load() and play() return true so the controller doesn't stop the playback
 
