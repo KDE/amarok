@@ -223,7 +223,7 @@ CollectionView::renderView()  //SLOT
 
         KListViewItem* item = new KListViewItem( this );
         item->setExpandable( true );
-        item->setDragEnabled( false );
+        item->setDragEnabled( true );
         item->setDropEnabled( false );
         item->setText( 0, values[ i ] );
     }
@@ -437,9 +437,31 @@ CollectionView::execSql( const QCString& statement,
 
 void
 CollectionView::startDrag() {
+    //Here we determine the URLs of all selected items. We use two passes, one for the parent items,
+    //and another one for the children.
+    
     KURL::List list;
+    QListViewItem* item;
+    
+    //first pass: parents
+    for ( item = firstChild(); item; item = item->nextSibling() )
+        if ( item->isSelected() ) {
+            //query database for all tracks in our sub-category
+            QCString command = "SELECT url FROM tags WHERE ";
+            command += m_category.lower().local8Bit();
+            command += " = '";
+            command += item->text( 0 ).local8Bit();
+            command += "';";
+            QStringList values;
+            QStringList names;
+            execSql( command, &values, &names );
 
-    for ( QListViewItem * item = firstChild(); item; item = item->nextSibling() )
+            for ( uint i = 0; i < values.count(); i++ )
+                list << values[i];
+        }
+        
+    //second pass: children    
+    for ( item = firstChild(); item; item = item->nextSibling() )
         for ( QListViewItem * child = item->firstChild(); child; child = child->nextSibling() )
             if ( child->isSelected() )
                 list << static_cast<Item*>( child ) ->url();
