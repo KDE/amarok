@@ -331,6 +331,11 @@ void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent */*event*/ )
                 yoffset = screenRect.y() + screenRect.height() - y() - height();
                 pos = left ? BottomLeft : BottomRight;
             }
+            // set new data
+            m_offset.setX( xoffset );
+            m_offset.setY( yoffset );
+            m_position = pos;
+            m_screen = currentScreen;
             emit positionChanged( currentScreen, pos, xoffset, yoffset );
         }
     }
