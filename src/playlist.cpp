@@ -58,12 +58,10 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     , m_marker( 0 )
     , m_glowTimer( new QTimer( this ) )
     , m_weaver( new ThreadWeaver( this ) )
-    , m_undoButton( KStdAction::undo( this, SLOT( undo() ), ac, "playlist_undo" ) )
-    , m_redoButton( KStdAction::redo( this, SLOT( redo() ), ac, "playlist_redo" ) )
     , m_clearButton( 0 )
-    , m_undoDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) )
+    , m_undoDir( KGlobal::dirs()->saveLocation( "data", "amarok/undo/", true ) )
     , m_undoCounter( 0 )
-    , m_ac( ac ) //we use this so we don't have to include playerapp.h
+    , m_ac( ac ) //we use this so we don't have to include app.h
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
@@ -113,9 +111,6 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     setColumnAlignment( 10, Qt::AlignCenter ); //bitrate
 
 
-    //FIXME what is this connection for?
-    //connect( this, SIGNAL( contentsMoving( int, int ) ),
-    //         this,   SLOT( slotEraseMarker() ) );
     connect( this,     SIGNAL( doubleClicked( QListViewItem* ) ),
              this,       SLOT( activate( QListViewItem* ) ) );
     connect( this,     SIGNAL( returnPressed( QListViewItem* ) ),
@@ -128,37 +123,24 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
              this,       SLOT( saveUndoState() ) );
     connect( header(), SIGNAL( indexChange( int, int, int ) ),
              this,       SLOT( columnOrderChanged() ) );
+    connect( m_glowTimer, SIGNAL( timeout() ),
+             this,       SLOT( slotGlowTimer() ) );
 
 
-    //FIXME causes problems with saving playlists
-    //connect( header(), SIGNAL(sizeChange( int, int, int )), SLOT(slotHeaderResized( int, int, int )) );
-
-    connect( m_glowTimer, SIGNAL( timeout() ), this, SLOT( slotGlowTimer() ) );
-
-
-    //<init undo/redo>
-        //create undo buffer directory
-        if( !m_undoDir.exists( "undo", false ) )
-             m_undoDir.mkdir( "undo", false );
-        m_undoDir.cd( "undo" );
-
-        //clean directory
-        QStringList dirList = m_undoDir.entryList();
-        for( QStringList::Iterator it = dirList.begin(); it != dirList.end(); ++it )
-            m_undoDir.remove( *it );
-
-        m_undoButton->setEnabled( false );
-        m_redoButton->setEnabled( false );
-    //</init undo/redo>
-
-
-    KStdAction::copy( this, SLOT( copyToClipboard() ), ac, "playlist_copy" );
-    new KAction( i18n( "Shu&ffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
+                    KStdAction::copy( this, SLOT( copyToClipboard() ), ac, "playlist_copy" );
+                    KStdAction::selectAll( this, SLOT( selectAll() ), ac, "playlist_select_all" );
+    m_clearButton = KStdAction::clear( this, SLOT( clear() ), ac, "playlist_clear" );
+    m_undoButton  = KStdAction::undo( this, SLOT( undo() ), ac, "playlist_undo" );
+    m_redoButton  = KStdAction::redo( this, SLOT( redo() ), ac, "playlist_redo" );
+    new KAction( i18n( "S&huffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
     new KAction( i18n( "&Goto Current" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
-    m_clearButton = new KAction( i18n( "&Clear" ), "view_remove", 0, this, SLOT( clear() ), ac, "playlist_clear" );
+
+    m_clearButton->setIcon( "view_remove" );
+    m_undoButton->setEnabled( false );
+    m_redoButton->setEnabled( false );
 
 
-    engineStateChanged( EngineBase::Empty ); //initialise state of UI
+    engineStateChanged( EngineController::engine()->state() ); //initialise state of UI
     paletteChange( palette() ); //sets up glowColors
     restoreLayout( KGlobal::config(), "PlaylistColumnsLayout" );
     columnOrderChanged();
@@ -187,24 +169,29 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
 
 Playlist::~Playlist()
 {
-   saveLayout( KGlobal::config(), "PlaylistColumnsLayout" );
+    saveLayout( KGlobal::config(), "PlaylistColumnsLayout" );
 
-   if( m_weaver->running() )
-   {
-       kdDebug() << "[weaver] Halting jobs..\n";
-       m_weaver->halt();
-       m_weaver->wait();
-   }
+    if( m_weaver->running() )
+    {
+        kdDebug() << "[weaver] Halting jobs..\n";
+        m_weaver->halt();
+        m_weaver->wait();
+    }
 
-   delete m_weaver;
+    delete m_weaver;
 
-   if( AmarokConfig::savePlaylist() ) saveXML( defaultPlaylistPath() );
+    if( AmarokConfig::savePlaylist() ) saveXML( defaultPlaylistPath() );
 
-   EngineController::instance()->detach( this );
+    EngineController::instance()->detach( this );
 
-   //speed up quit a little
-   KListView::clear();   //our implementation is slow
-   blockSignals( true ); //might help
+    //clean undo directory
+    QStringList list = m_undoDir.entryList();
+    for( QStringList::ConstIterator it = list.constBegin(), end = list.constEnd(); it != end; ++it )
+        m_undoDir.remove( *it );
+
+    //speed up quit a little
+    KListView::clear();   //our implementation is slow
+    blockSignals( true ); //might help
 }
 
 
@@ -1297,29 +1284,27 @@ void Playlist::slotTextChanged( const QString &query ) //SLOT
     //TODO if we provided the lineEdit m_lastSearch would be unecessary
 
     const QString loweredQuery = query.lower();
-    const QStringList v = QStringList::split( ' ', loweredQuery );
-    QListViewItem *item = 0;
+    const QStringList terms = QStringList::split( ' ', loweredQuery );
+    PlaylistItem *item = 0;
     QListViewItemIterator it( this, loweredQuery.startsWith( m_lastSearch ) ? QListViewItemIterator::Visible : 0 );
-    bool b;
-    bool listed;
 
-    while( (item = it.current()) )
+    while( (item = (PlaylistItem*)it.current()) )
     {
-        listed = true;
+        bool listed = true;
 
         //if query is empty skip the loops and show all items
-        if ( !query.isEmpty() )
+        if( !query.isEmpty() )
         {
-            for( uint x = 0; listed && x < v.count(); ++x ) //v.count() is constant time
+            for( uint x = 0; listed && x < terms.count(); ++x ) //v.count() is constant time
             {
-                b = false;
+                bool b = false;
 
-                for( uint y = 0; !b && y < 4; ++y ) // search in Trackname, Artist, Songtitle, Album
-                    b = static_cast<PlaylistItem*>(item)->exactText( y ).lower().contains( v[x] );
+                //search in Trackname, Artist, Songtitle, Album
+                for( uint y = 0; !b && y < 4; ++y )
+                    b = item->exactText( y ).lower().contains( terms[x] );
 
-                // exist loop, when one of the search tokens doesn't match
-                if ( !b )
-                    listed = false;
+                // exit loop, when one of the search tokens doesn't match
+                if( !b ) listed = false;
             }
         }
 
@@ -1333,7 +1318,6 @@ void Playlist::slotTextChanged( const QString &query ) //SLOT
     showCurrentTrack();
     clearSelection(); //we do this because QListView selects inbetween visible items, this is a non ideal solution
     triggerUpdate();
-
 }
 
 

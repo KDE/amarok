@@ -117,6 +117,7 @@ class Playlist : private KListView, public EngineObserver
         void showCurrentTrack();
         void undo();
         void redo();
+        void selectAll() { QListView::selectAll( true ); }
 
     private slots:
         void slotGlowTimer();
