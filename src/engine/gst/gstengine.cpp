@@ -46,10 +46,10 @@ AMAROK_EXPORT_PLUGIN( GstEngine )
 /////////////////////////////////////////////////////////////////////////////////////
 
 static const uint
-SCOPEBUF_SIZE = 500000; // 500 kb
+SCOPEBUF_SIZE = 500000; // 500kb
 
 static const int
-STREAMBUF_SIZE = 1000000; // 1 MB
+STREAMBUF_SIZE = 1000000; // 1MB
 
 static const int
 STREAMBUF_MAX = STREAMBUF_SIZE - 50000;
@@ -75,16 +75,19 @@ GstEngine::eos_cb( GstElement*, GstElement* )
 void
 GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
 {
-    int channels = 2;  //2 == default, if we cannot determine the value from gst
-    GstCaps* caps = gst_pad_get_caps( gst_element_get_pad( instance()->m_gst_spider, "src_0" ) );
+    // 2 channels is default, if we cannot determine the value from gst
+    int channels = 2;
 
-    for ( int i = 0; i < gst_caps_get_size( caps ); i++ ) {
-        GstStructure* structure = gst_caps_get_structure( caps, i );
-
-        if ( gst_structure_has_field( structure, "channels" ) )
-            gst_structure_get_int( structure, "channels", &channels );
-    }
-    gst_caps_free( caps );
+    // TODO deactivated due to leaking mem
+//     GstCaps* caps = gst_pad_get_caps( gst_element_get_pad( instance()->m_gst_spider, "src_0" ) );
+// 
+//     for ( int i = 0; i < gst_caps_get_size( caps ); i++ ) {
+//         GstStructure* structure = gst_caps_get_structure( caps, i );
+// 
+//         if ( gst_structure_has_field( structure, "channels" ) )
+//             gst_structure_get_int( structure, "channels", &channels );
+//     }
+//     gst_caps_free( caps );
 
     if ( GST_IS_BUFFER( buf ) ) {
         gst_buffer_ref( buf );
