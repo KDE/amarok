@@ -21,19 +21,20 @@
 
 KAboutData aboutData( "amarok",
     I18N_NOOP( "amaroK" ), APP_VERSION,
-    I18N_NOOP( "An audio player for KDE" ), KAboutData::License_GPL,
-    I18N_NOOP( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2004, the amaroK developers" ),
+    I18N_NOOP( "The audio player for KDE" ), KAboutData::License_GPL,
+    I18N_NOOP( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2004, The amaroK Development Squad" ),
     I18N_NOOP( "IRC:\nserver: irc.freenode.net / channel: #amarok\n\nFeedback:\namarok-devel@lists.sourceforge.net" ),
     I18N_NOOP( "http://amarok.kde.org" ) );
 
 
 int main( int argc, char *argv[] )
 {
-    aboutData.addAuthor( "Christian \"babe-magnet\" Muehlhaeuser", "developer, stud", "chris@chris.de", "http://www.chris.de" );
-    aboutData.addAuthor( "Frederik \"ich bin kein Deustcher!\" Holljen", "developer, 733t code, OSD improvement, patches", "fh@ez.no" );
-    aboutData.addAuthor( "Mark \"it's good, but it's not irssi\" Kretschmann", "project founder, developer, maintainer", "markey@web.de" );
-    aboutData.addAuthor( "Max \"no sleep\" Howell", "developer, knight of the regression round-table", "max.howell@methylblue.com", "http://www.methyblue.com" );
-    aboutData.addAuthor( "Stanislav \"did someone say DCOP?\" Karchebny", "developer, DCOP, improvements, cleanups, i18n", "berk@upnet.ru" );
+    aboutData.addAuthor( "Christian 'Babe-Magnet' Muehlhaeuser", I18N_NOOP( "developer, stud" ), "chris@chris.de", "http://www.chris.de" );
+    aboutData.addAuthor( "Frederik 'Ich bin kein Deustcher!' Holljen", I18N_NOOP( "developer, 733t code, OSD improvement, patches" ), "fh@ez.no" );
+    aboutData.addAuthor( "Mike 'Purple is not girly!' Diehl", I18N_NOOP( "Preci-i-o-u-u-s handbook maintainer" ), "madpenguin8@yahoo.com" );
+    aboutData.addAuthor( "Mark 'It's good, but it's not Irssi' Kretschmann", I18N_NOOP( "project founder, developer, maintainer" ), "markey@web.de" );
+    aboutData.addAuthor( "Max 'Turtle-Power' Howell", I18N_NOOP( "developer, knight of the regression round-table" ), "max.howell@methylblue.com", "http://www.methyblue.com" );
+    aboutData.addAuthor( "Stanislav 'All you need is DCOP' Karchebny", I18N_NOOP( "developer, DCOP, improvements, cleanups, i18n" ), "berk@upnet.ru" );
 
     aboutData.addCredit( "Adam Pigg", I18N_NOOP( "analyzers, patches" ), "adam@piggz.fsnet.co.uk" );
     aboutData.addCredit( "Adeodato Simó", I18N_NOOP( "patches" ), "asp16@alu.ua.es" );
