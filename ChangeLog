@@ -11,7 +11,7 @@ VERSION 1.1-beta2:
        album. (BR 77766)
   ADD: IMMS-like rating system for songs.
   FIX: aRts-engine has been ported to the new engine interface and is
-       available again.
+       available again (but not recommended).
   FIX: Try to autodetect Sampler-Discs and show them properly in the
        Contextbrowser. (BR 87182)
   FIX: Multiple items can now be selected in the CoverManager.
