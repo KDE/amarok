@@ -114,7 +114,7 @@ class ArtsEngine : public EngineBase
         // ATTRIBUTES
         /////////////////////////////////////////////////////////////////////////////////////
         static const int                         ARTS_TIMER = 100;   //ms
-        static const int                         TIMEOUT    = 3000;  //ms FIXME make option?
+        static const int                         TIMEOUT    = 4000;  //ms FIXME make option?
 
         KArtsDispatcher*                         m_pArtsDispatcher;
         KDE::PlayObject*                         m_pPlayObject;
