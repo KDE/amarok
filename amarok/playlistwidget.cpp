@@ -166,7 +166,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
     restoreLayout( KGlobal::config(), "PlaylistColumnsLayout" );
 
     //TODO remove this in a few versions
-    if( columnWidth( 0 ) == 0 ) setColumnWidth( 100 );
+    if( columnWidth( 0 ) == 0 ) setColumnWidth( 0, 100 );
 }
 
 
