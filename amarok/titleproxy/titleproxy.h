@@ -42,7 +42,7 @@ class TitleProxy : public QObject
         // ATTRIBUTES ------
 
     signals:
-        void metaData( QString, QString );
+        void metaData( QString, QString, QString );
 
     public slots:
 
@@ -58,10 +58,12 @@ class TitleProxy : public QObject
         KURL m_urlRemote;
         bool m_initSuccess;
         int m_metaInt;
+        QString m_bitRate;
         int m_byteCount;
         uint m_metaLen;
         QString m_metaData;
-
+        bool m_headerFinished;
+        
         char *m_pBufIn;
         char *m_pBufOut;
 

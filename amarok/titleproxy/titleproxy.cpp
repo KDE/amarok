@@ -50,8 +50,10 @@ email                :
 TitleProxy::TitleProxy( KURL url ) :
         QObject(),
         m_initSuccess( 0 ),
-        m_metaInt( -1 ),
+        m_metaInt( 0 ),
+        m_byteCount( 0 ),
         m_metaLen( 0 ),
+        m_headerFinished( false ),
         m_pBufIn( NULL ),
         m_pBufOut( NULL ),
         m_pSockServer( NULL )
@@ -148,68 +150,70 @@ void TitleProxy::readRemote()
     Q_LONG bytesRead = m_sockRemote.readBlock( m_pBufIn, BUFSIZE );
     //    kdDebug() << "TitleProxy::readRemote(): bytesRead = " << bytesRead << endl;
 
-    if ( bytesRead > 0 )
+    if ( bytesRead <= 0 )
+        return;
+        
+    //<Read Header Information>
+    if ( !m_headerFinished )
     {
-        //<Detect MetaInt>
-        if ( m_metaInt == -1 )
-        {
-            QString str = QString::fromAscii( m_pBufIn, bytesRead );
-            QString icyStr( "icy-metaint:" );
-            int index = str.find( icyStr, 0, false );
-
-            if ( index != -1 )
-            {
-                int indexEnd = str.find( "\r", index );
-                index += icyStr.length();
-                m_metaInt = str.mid( index,  indexEnd - index ).toInt();
-                kdDebug() << "m_metaInt: " << m_metaInt << "\n" << endl;
-
-                indexMp3 = str.find( "\r\n\r\n", index );
-                indexMp3 += 4;
-
-                m_byteCount = 0;
-                m_pSockServer->writeBlock( m_pBufIn, indexMp3 );
-            }
-        }
-        //</Detect MetaInt>
-
-        char *pOut = m_pBufOut;
-        int bytesWrite = 0;
-
-        while ( indexMp3 < bytesRead )
-        {
-            if ( m_byteCount == m_metaInt )
-            {
-                m_metaLen = (unsigned char) m_pBufIn[ indexMp3++ ];
-                m_metaLen *= 16;
-
-                if ( m_metaLen ) kdDebug() << "m_metaLen: " << m_metaLen << "\n" << endl;
-                m_byteCount = 0;
-                continue;
-            }
-
-            if ( m_metaLen )
-            {
-                m_metaData.append( m_pBufIn[ indexMp3++ ] );
-                --m_metaLen;
-
-                if ( !m_metaLen )
-                {
-                    transmitData( m_metaData );
-                    m_metaData = "";
-                }
-                continue;
-            }
-
-            *pOut = m_pBufIn[ indexMp3++ ];
-            ++pOut;
-
-            ++m_byteCount;
-            ++bytesWrite;
-        }
-
-        m_pSockServer->writeBlock( m_pBufOut, bytesWrite );
+        m_pSockServer->writeBlock( m_pBufIn, bytesRead );
+        
+        QString str = QString::fromAscii( m_pBufIn, bytesRead );
+                    
+        if ( !m_metaInt )
+            m_metaInt = str.section( "icy-metaint:", 1, 1, QString::SectionCaseInsensitiveSeps )
+                           .section( "\r", 0, 0 )
+                           .toInt();
+  
+        if ( m_bitRate.isEmpty() )
+            m_bitRate = str.section( "icy-br:", 1, 1, QString::SectionCaseInsensitiveSeps )
+                           .section( "\r", 0, 0 );
+                                               
+        indexMp3 = str.find( "\r\n\r\n" );
+        if ( indexMp3 == -1 )    
+            return;
+        
+        m_headerFinished = true;
+        indexMp3 += 4;
     }
+    //</Read Header Information>
+
+    char *pOut = m_pBufOut;
+    int bytesWrite = 0;
+
+    while ( indexMp3 < bytesRead )
+    {
+        if ( m_byteCount == m_metaInt )
+        {
+            m_metaLen = (unsigned char) m_pBufIn[ indexMp3++ ];
+            m_metaLen *= 16;
+
+            if ( m_metaLen ) kdDebug() << "m_metaLen: " << m_metaLen << "\n" << endl;
+            m_byteCount = 0;
+            continue;
+        }
+
+        if ( m_metaLen )
+        {
+            m_metaData.append( m_pBufIn[ indexMp3++ ] );
+            --m_metaLen;
+
+            if ( !m_metaLen )
+            {
+                transmitData( m_metaData );
+                m_metaData = "";
+            }
+            continue;
+        }
+
+        *pOut = m_pBufIn[ indexMp3++ ];
+        ++pOut;
+
+        ++m_byteCount;
+        ++bytesWrite;
+    }
+
+    m_pSockServer->writeBlock( m_pBufOut, bytesWrite );
 }
 
 
@@ -221,7 +225,7 @@ void TitleProxy::transmitData( QString data )
     kdDebug() << "title: " << title << "\n" << endl;
     kdDebug() << "url: " << url << "\n" << endl;
 
-    emit metaData( title, url );
+    emit metaData( title, url, m_bitRate );
 }
 
 

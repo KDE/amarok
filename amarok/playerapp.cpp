@@ -875,7 +875,7 @@ void PlayerApp::setupScrolltext()
 }
 
 
-void PlayerApp::receiveStreamMeta( QString title, QString url )
+void PlayerApp::receiveStreamMeta( QString title, QString url, QString kbps )
 {
     PlaylistItem* item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
     
@@ -884,7 +884,7 @@ void PlayerApp::receiveStreamMeta( QString title, QString url )
         if ( item == NULL )
             m_pPlayerWidget->setScroll( title + " (stream)", "--", "--" );
         else 
-            m_pPlayerWidget->setScroll( title + " (" + item->text( 0 ) + ")", "--", "--" );
+            m_pPlayerWidget->setScroll( title + " (" + item->text( 0 ) + ")", kbps + "kbps", "--" );
     }
     else
         m_pPlayerWidget->setScroll( title + " (" + url + ")", "--", "--" );
@@ -1062,8 +1062,8 @@ void PlayerApp::slotPlay()
         
         connect( m_pPlayObject, SIGNAL( destroyed() ),
                  pProxy, SLOT( deleteLater() ) );
-        connect( pProxy, SIGNAL( metaData( QString, QString ) ),
-                 this, SLOT( receiveStreamMeta( QString, QString ) ) );
+        connect( pProxy, SIGNAL( metaData( QString, QString, QString ) ),
+                 this, SLOT( receiveStreamMeta( QString, QString, QString ) ) );
     }
     else
     { 

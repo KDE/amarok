@@ -158,7 +158,7 @@ class PlayerApp : public KUniqueApplication
         void slotShow();
 
     private slots:
-        void receiveStreamMeta( QString title, QString url );
+        void receiveStreamMeta( QString title, QString url, QString kbps );
 
     signals:
         void sigScope( std::vector<float> *s );
