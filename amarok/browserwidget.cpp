@@ -176,6 +176,7 @@ void BrowserWidget::slotHeaderClicked( int )
 
     QPoint menuPos = QCursor::pos();
     menuPos.setX( menuPos.x() - 20 );
+    menuPos.setY( menuPos.y() + 10 );
 
     int result = popup.exec( menuPos );
 
