@@ -24,6 +24,7 @@
 #define AMAROK_TOGGLELABEL_H
 
 #include <kactionclasses.h>
+#include <kglobalsettings.h>
 #include <qiconset.h>
 #include <qlabel.h>
 
@@ -51,6 +52,12 @@ public:
     inline bool isChecked() const { return m_action->isChecked(); }
 
 protected:
+    void mousePressEvent( QMouseEvent* )
+    {
+        if( KGlobalSettings::singleClick() )
+            mouseDoubleClickEvent( 0 );
+    }
+
     void mouseDoubleClickEvent( QMouseEvent* )
     {
         const bool b = !isChecked();
