@@ -9,18 +9,22 @@
 #include "collectiondb.h"
 #include "collectionreader.h"
 #include "debug.h"
-#include <dirent.h>    //stat
-#include <errno.h>
-#include <iostream>
+#include "metabundle.h"
+#include "playlistbrowser.h"
+#include "statusbar.h"
+
+#include <taglib/fileref.h>
+#include <taglib/tag.h>
+
 #include <kapplication.h>
 #include <kglobal.h>
 #include <klocale.h>
-#include "metabundle.h"
-#include "playlistbrowser.h"
+
+#include <dirent.h>    //stat
+#include <errno.h>
+#include <iostream>
 #include <sys/types.h> //stat
 #include <sys/stat.h>  //stat
-#include <taglib/fileref.h>
-#include <taglib/tag.h>
 #include <unistd.h>    //stat
 
 
@@ -80,6 +84,9 @@ IncrementalCollectionReader::doJob()
             debug() << "Collection dir removed: " << folder << endl;
         }
     }
+
+    if ( !m_folders.isEmpty() )
+        amaroK::StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
 
     return CollectionReader::doJob();
 }
