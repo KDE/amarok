@@ -358,12 +358,20 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     layV->addWidget( m_splitter );
 
     QVBox *box = new QVBox( m_splitter );
-    m_lineEdit = new KLineEdit( box );
+    
+    QHBox *boxH = new QHBox( box );
+    m_lineEdit = new KLineEdit( boxH );
+    
     m_playlist = new PlaylistWidget( box );
     m_splitter->setResizeMode( m_sideBar, QSplitter::FollowSizeHint );
     m_splitter->setResizeMode( box,       QSplitter::Auto );
     m_sideBar->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
 
+    /* Here because we need m_playlist initialized. */
+    QPushButton *showCurrentTrack = new QPushButton( boxH );
+    showCurrentTrack->setPixmap( locate( "data", "amarok/images/ensure_visible.png" ) );
+//    showCurrentTrack->resize(24,24);
+    connect( showCurrentTrack, SIGNAL( clicked() ), m_playlist, SLOT(showCurrentTrack()) );
 
     {
         ExpandButton *add =
