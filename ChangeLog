@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2:
+  ADD: Shaded current-track marker in playlist.
   CHG: Internal SQLite upgraded to 3.0.8.
 
 VERSION 1.1.1:
