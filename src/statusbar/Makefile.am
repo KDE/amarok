@@ -1,16 +1,14 @@
 noinst_LTLIBRARIES = libstatusbar.la
 
-libstatusbar_la_METASOURCES = \
-    popupMessage.moc \
-    statusbar.moc \
-    statusBarBase.moc \
-    toggleLabel.moc
+METASOURCES = AUTO
 
 INCLUDES = \
     -I$(top_srcdir)/amarok/src/ \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_builddir)/amarok/src/ \
     $(all_includes)
+    
+libstatusbar_la_LIBADD = $(LIB_QT)
 
 libstatusbar_la_SOURCES = \
     statusBarBase.cpp \
