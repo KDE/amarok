@@ -13,7 +13,7 @@ VERSION 1.3-beta1:
   CHANGES:
 
   BUGFIXES:
-
+    * playlist playMedia now works with streams.
 
 ==BEGIN KDE 3.3 DEPENDENCY==
 

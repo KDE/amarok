@@ -427,7 +427,7 @@ namespace amaroK
 
     void DcopPlaylistHandler::playMedia( const KURL &url )
     {
-        ContextBrowser::instance()->openURLRequest( url );
+        Playlist::instance()->insertMedia( url, Playlist::Append | Playlist::DirectPlay );
     }
 
     void DcopPlaylistHandler::shortStatusMessage(const QString& msg)
