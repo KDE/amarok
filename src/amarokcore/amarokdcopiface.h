@@ -104,6 +104,7 @@ k_dcop:
    virtual void shufflePlaylist() = 0;                      ///< Shuffles the playlist.
    virtual void saveCurrentPlaylist() = 0;                  ///< Saves the current playlist to current.xml
    virtual void playByIndex(int) = 0;                       ///< Starts playing the track at the specified index. 
+   virtual int  getActiveIndex() = 0;                       ///< Return the index of the currently active track. -1 if none.
 
    virtual void togglePlaylist() = 0;                       ///< Toggle the Playlist-window
    virtual void playMedia(const KURL &) = 0;                ///< Add audio media specified by the url.

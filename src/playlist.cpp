@@ -676,6 +676,19 @@ Playlist::setCurrentTrack( PlaylistItem *item )
     slotGlowTimer();
 }
 
+int 
+Playlist::currentTrackIndex()
+{
+    int index = 0;
+    for( MyIt it( this, MyIt::Visible ); *it; ++it )
+    {
+      if ( *it == m_currentTrack ) 
+	return index;
+      ++index;
+    }
+    return -1;
+}
+
 PlaylistItem*
 Playlist::restoreCurrentTrack()
 {

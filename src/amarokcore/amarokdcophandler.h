@@ -94,6 +94,7 @@ class DcopPlaylistHandler : public QObject, virtual public AmarokPlaylistInterfa
       virtual void shufflePlaylist();
       virtual void saveCurrentPlaylist();
       virtual void playByIndex(int);
+      virtual int  getActiveIndex();
       virtual void togglePlaylist();
       virtual void playMedia(const KURL &);
       virtual void shortStatusMessage(const QString&);

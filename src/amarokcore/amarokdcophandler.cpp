@@ -365,6 +365,11 @@ namespace amaroK
         Playlist::instance()->activate( index );
     }
 
+    int  DcopPlaylistHandler::getActiveIndex()
+    {
+        return Playlist::instance()->currentTrackIndex();
+    }
+
     void DcopPlaylistHandler::togglePlaylist()
     {
         PlaylistWindow::self()->showHide();
