@@ -20,6 +20,7 @@ Engine::Base::Base( StreamingMode mode, bool hasConfigure, bool hasXFade, Effect
     , m_mixer( -1 )
     , m_volume( 50 )
     , m_scope( 512 )
+    , m_isStream( false )
 {}
 
 Engine::Base::~Base()

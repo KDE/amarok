@@ -23,8 +23,9 @@ AMAROK_EXPORT_PLUGIN( VoidEngine )
 
 
 bool
-VoidEngine::load( const KURL&, bool )
+VoidEngine::load( const KURL& url, bool stream )
 {
+    Engine::Base::load( url, stream );
     emit statusText( i18n( "Error: No engine loaded, cannot start playback." ) );
 
     return false;
