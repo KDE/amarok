@@ -1,6 +1,6 @@
 /***************************************************************************
-                      enginebase.h  -  audio engine base class
-                         -------------------
+                     enginebase.h  -  audio engine base class
+                        -------------------
 begin                : Dec 31 2003
 copyright            : (C) 2003 by Mark Kretschmann
 email                : markey@web.de
@@ -26,115 +26,111 @@ email                : markey@web.de
 #include <qstringlist.h>
 
 #ifdef __FreeBSD__
-    #include <sys/types.h>
+ #include <sys/types.h>
 #endif
 
 class QObject;
 
 class KURL;
 
-class EngineBase : public QObject, public amaroK::Plugin
-{
-    Q_OBJECT
+class EngineBase : public QObject, public amaroK::Plugin {
+        Q_OBJECT
 
     signals:
-        void                         endOfTrack();
+        void endOfTrack();
 
     public:
-        enum                         EngineState { Empty, Idle, Playing, Paused };
+        enum EngineState { Empty, Idle, Playing, Paused };
 
-                                     EngineBase();
-        virtual                      ~EngineBase();
-        
-        virtual void                 init( bool& restart,
-                                           int   scopeSize,
-                                           bool  restoreEffects )                      = 0;
-        
-        /**
-         * Initialize mixer
-         * @param hardware    true for soundcard hardware mixing
-         * @return            true if using hardware mixing
-         */
-        virtual bool                 initMixer( bool hardware )                        = 0;
+        EngineBase();
+        virtual ~EngineBase();
 
-        virtual bool                 canDecode( const KURL &url,
-                                                mode_t mode, mode_t permissions )      = 0;
+        virtual void init( bool& restart, int scopeSize, bool restoreEffects ) = 0;
 
         /**
-         * Determines track length
-         * @return            time length in ms
+         * Initialize mixer.
+         * @param hardware True for soundcard hardware mixing
+         * @return True if using hardware mixing
          */
-        virtual long                 length() const                                    = 0;
+        virtual bool initMixer( bool hardware ) = 0;
+
+        virtual bool canDecode( const KURL &url, mode_t mode, mode_t permissions ) = 0;
 
         /**
-         * @return            time position in ms
+         * Determines track length.
+         * @return Time length in ms
          */
-        virtual long                 position() const                                  = 0;
-
-        virtual EngineState          state() const                                     = 0;
+        virtual long length() const = 0;
 
         /**
-         * @return            true if media is loaded, system is ready to play
+         * @return Time position in ms
          */
-                bool                 loaded() { return state() != Empty; }
+        virtual long position() const = 0;
+
+        virtual EngineState state() const = 0;
 
         /**
-         * Sets the master volume
-         * @return            volume in range 0 to 100
+         * @return True if media is loaded, system is ready to play.
          */
-        inline  int                  volume() const { return m_volume; }
+        bool loaded() { return state() != Empty; }
 
         /**
-         * Sets the master volume
-         * @return            true if using hardware mixer
+         * Sets the master volume.
+         * @return Volume in range 0 to 100.
          */
-                bool                 isMixerHardware() const { return m_mixerHW != -1; }
-
-        virtual bool                 isStream() const                                  = 0;
+        inline int volume() const { return m_volume; }
 
         /**
-         * Fetches the current audio sample buffer
-         * @return            pointer to result of FFT calculation. must be deleted after use
+         * Sets the master volume.
+         * @return True if using hardware mixer.
          */
-        virtual std::vector<float>*  scope() { return new std::vector<float>(); }
+        bool isMixerHardware() const { return m_mixerHW != -1; }
 
-                void                 setRestoreEffects( bool yes )    { m_restoreEffects = yes; }
-        virtual QStringList          availableEffects() const         { return QStringList(); }
-        virtual std::vector<long>    activeEffects() const            { return std::vector<long>(); }
-        virtual QString              effectNameForId( long ) const    { return QString::null; }
-        virtual bool                 effectConfigurable( long ) const { return false; }
-        virtual long                 createEffect( const QString& )   { return -1; }
-        virtual void                 removeEffect( long )             { }
-        virtual void                 configureEffect( long )          { }
-        virtual bool                 decoderConfigurable() const      { return false; }
-
-        virtual const QObject*       play( const KURL& )                               = 0;
-        virtual void                 play()                                            = 0;
-        virtual void                 stop()                                            = 0;
-        virtual void                 pause()                                           = 0;
-
-        virtual void                 seek( long ms )                                   = 0;
+        virtual bool isStream() const = 0;
 
         /**
-         * @param percent     set volume in range 0 to 100
+         * Fetches the current audio sample buffer.
+         * @return Pointer to result of FFT calculation. Must be deleted after use.
          */
-        virtual void                 setVolume( int percent )                          = 0;
-        virtual void                 setXfadeLength( int ms );
+        virtual std::vector<float>* scope() { return new std::vector<float>(); }
+
+        void setRestoreEffects( bool yes ) { m_restoreEffects = yes; }
+        virtual QStringList availableEffects() const { return QStringList(); }
+        virtual std::vector<long> activeEffects() const { return std::vector<long>(); }
+        virtual QString effectNameForId( long ) const { return QString::null; }
+        virtual bool effectConfigurable( long ) const { return false; }
+        virtual long createEffect( const QString& ) { return -1; }
+        virtual void removeEffect( long ) { }
+        virtual void configureEffect( long ) { }
+        virtual bool decoderConfigurable() const { return false; }
+
+        virtual const QObject* play( const KURL& ) = 0;
+        virtual void play() = 0;
+        virtual void stop() = 0;
+        virtual void pause() = 0;
+
+        virtual void seek( long ms ) = 0;
+
+        /**
+         * @param percent Set volume in range 0 to 100.
+         */
+        virtual void setVolume( int percent ) = 0;
+        virtual void setXfadeLength( int ms );
 
     public slots:
-        virtual void                 configureDecoder() {}
+        virtual void configureDecoder() {}
 
     protected:
-        void                         closeMixerHW();
-        bool                         initMixerHW();
-        void                         setVolumeHW( int percent );
+        void closeMixerHW();
+        bool initMixerHW();
+        void setVolumeHW( int percent );
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
         /////////////////////////////////////////////////////////////////////////////////////
-        int                          m_mixerHW;
-        int                          m_volume;
-        int                          m_xfadeLength;
-        bool                         m_restoreEffects;
+        int m_mixerHW;
+        int m_volume;
+        int m_xfadeLength;
+        bool m_restoreEffects;
 
         EngineBase( const EngineBase& ); //disable
         const EngineBase &operator=( const EngineBase& ); //disable
