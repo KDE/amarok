@@ -566,11 +566,11 @@ bool ScrobblerSubmitter::canSubmit() const
     {
         return false;
     }
-    else if ( m_username == NULL || m_username == "" )
+    else if ( m_username.isEmpty() )
     {
         return false;
     }
-    else if ( m_password == NULL || m_password == "" )
+    else if ( m_password.isEmpty() )
     {
         return false;
     }
