@@ -1,4 +1,4 @@
-vi// (c) Pierpaolo Di Panfilo 2004
+// (c) Pierpaolo Di Panfilo 2004
 // See COPYING file for licensing information
 
 #include "config.h"
