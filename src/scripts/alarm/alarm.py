@@ -133,6 +133,7 @@ class Alarm( QApplication ):
     def timerEvent( self, event ):
         if not self.queue.empty():
             string = QString( self.queue.get_nowait() )
+            print "[Alarm Script] Received notification: " + str( string )
 
             if string.contains( "configure" ):
                 self.configure()

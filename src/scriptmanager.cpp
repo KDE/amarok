@@ -21,6 +21,7 @@
 
 #include "amarok.h"
 #include "debug.h"
+#include "enginecontroller.h"
 #include "scriptmanager.h"
 #include "scriptmanagerbase.h"
 
@@ -44,6 +45,7 @@ ScriptManager* ScriptManager::s_instance = 0;
 
 ScriptManager::ScriptManager( QWidget *parent, const char *name )
         : KDialogBase( parent, name, false, 0, 0, Ok, false )
+        , EngineObserver( EngineController::instance() )
         , m_base( new ScriptManagerBase( this ) )
 {
     DEBUG_FUNC_INFO
@@ -234,9 +236,9 @@ ScriptManager::scriptFinished( KProcess* process ) //SLOT
     ScriptMap::Iterator it;
     for ( it = m_scripts.begin(); it != m_scripts.end(); ++it ) {
         if ( it.data().process == process ) {
-                delete it.data().process;
-                it.data().process = 0;
-                it.data().li->setPixmap( 0, SmallIcon( "stop" ) );
+            delete it.data().process;
+            it.data().process = 0;
+            it.data().li->setPixmap( 0, SmallIcon( "stop" ) );
         }
     }
 }
@@ -245,6 +247,20 @@ ScriptManager::scriptFinished( KProcess* process ) //SLOT
 ////////////////////////////////////////////////////////////////////////////////
 // private
 ////////////////////////////////////////////////////////////////////////////////
+
+void
+ScriptManager::notifyScripts( const QString& message )
+{
+    // Append EOL
+    QString msg = message;
+    msg.append( "\n" );
+
+    ScriptMap::Iterator it;
+    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
+        if ( it.data().process )
+            it.data().process->writeStdin( msg.latin1(), msg.length() );
+}
+
 
 void
 ScriptManager::loadScript( const QString& path )
@@ -266,26 +282,24 @@ ScriptManager::loadScript( const QString& path )
 }
 
 
-/** Saves all script pathes to amarokrc */
 void
 ScriptManager::saveScripts()
 {
     DEBUG_BEGIN
 
-    QStringList pathes;
+    QStringList paths;
     ScriptMap::Iterator it;
     for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
-        pathes << it.data().url.path();
+        paths << it.data().url.path();
 
     KConfig* config = kapp->config();
     config->setGroup( "ScriptManager" );
-    config->writePathEntry( "Scripts", pathes );
+    config->writePathEntry( "Scripts", paths );
 
     DEBUG_END
 }
 
 
-/** Restores all scripts from amarokrc */
 void
 ScriptManager::restoreScripts()
 {
@@ -293,13 +307,39 @@ ScriptManager::restoreScripts()
 
     KConfig* config = kapp->config();
     config->setGroup( "ScriptManager" );
-    QStringList pathes = config->readPathListEntry( "Scripts" );
+    QStringList paths = config->readPathListEntry( "Scripts" );
 
     QStringList::Iterator it;
-    for ( it = pathes.begin(); it != pathes.end(); ++it )
+    for ( it = paths.begin(); it != paths.end(); ++it )
         loadScript( *it );
 
     DEBUG_END
+}
+
+
+void
+ScriptManager::engineStateChanged( Engine::State state )
+{
+    DEBUG_FUNC_INFO
+
+    switch ( state )
+    {
+        case Engine::Empty:
+            notifyScripts( "EngineStateChange: empty" );
+            break;
+
+        case Engine::Idle:
+            notifyScripts( "EngineStateChange: idle" );
+            break;
+
+        case Engine::Paused:
+            notifyScripts( "EngineStateChange: paused" );
+            break;
+
+        case Engine::Playing:
+            notifyScripts( "EngineStateChange: playing" );
+            break;
+    }
 }
 
 

@@ -20,11 +20,12 @@
 #ifndef AMAROK_SCRIPTMANAGER_H
 #define AMAROK_SCRIPTMANAGER_H
 
+#include "engineobserver.h"   //baseclass
 #include "playlistwindow.h"
 
 #include <qmap.h>
 
-#include <kdialogbase.h>    //baseclass
+#include <kdialogbase.h>      //baseclass
 #include <kurl.h>
 
 class ScriptManagerBase;
@@ -34,11 +35,15 @@ class KProcess;
 
 /**
  * @class ScriptManager
- * @short Script managment widget and backend
+ * @short Script management widget and backend
  * @author Mark Kretschmann <markey@web.de>
+ *
+ * Script notifications, sent to stdin:
+ *   configure
+ *   EngineStateChange: {empty|idle|paused|playing}
+ *
  */
-
-class ScriptManager : public KDialogBase
+class ScriptManager : public KDialogBase, public EngineObserver
 {
         Q_OBJECT
 
@@ -47,8 +52,6 @@ class ScriptManager : public KDialogBase
         virtual ~ScriptManager();
 
         static ScriptManager* instance() { return s_instance ? s_instance : new ScriptManager( PlaylistWindow::self() ); }
-
-    public slots:
 
     private slots:
         void slotAddScript();
@@ -60,9 +63,19 @@ class ScriptManager : public KDialogBase
         void scriptFinished( KProcess* process );
 
     private:
+        /** Sends a string message to all running scripts */
+        void notifyScripts( const QString& message );
+
         void loadScript( const QString& path );
+
+        /** Saves all script paths to amarokrc */
         void saveScripts();
+
+        /** Restores all scripts from amarokrc */
         void restoreScripts();
+
+        /** Observer reimplementations **/
+        void engineStateChanged( Engine::State state );
 
         static ScriptManager* s_instance;
         ScriptManagerBase*    m_base;
