@@ -270,13 +270,12 @@ KDE_PKG_CHECK_MODULES(SQLITE, sqlite >= 2.8, have_sqlite=yes,have_sqlite=no)
 
 if test x$have_sqlite = xyes; then
     AC_DEFINE(HAVE_SQLITE, 1, [have SQLite database library])
-    
     LIB_SQLITE=$SQLITE_LIBS
-    CFLAGS_SQLITE=$SQLITE_CFLAGS
-    
-    AC_SUBST(LIB_SQLITE)
-    AC_SUBST(CFLAGS_SQLITE)
+else
+    LIB_SQLITE=""   
 fi
+
+AC_SUBST(LIB_SQLITE)
    
 ###############################################################################
 # END SQLITE CHECK
