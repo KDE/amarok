@@ -31,7 +31,10 @@ http://protonradio.com/proton.m3u
 http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=833&file=filename.pls
 
 #EXTINF:-1,Radio Paradise [Rock/Pop/Alternative]
-http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=2671&file=filename.pls
+http://www.radioparadise.com/musiclinks/rp_128.m3u
+
+#EXTINF:-1,TranceAirWaves [Trance]
+http://www.tranceairwaves.com/stream/bbhigh.pls
 
 #EXTINF:-1,X T C Radio [Techno/Trance]
 http://stream.xtcradio.com:8069/listen.pls
