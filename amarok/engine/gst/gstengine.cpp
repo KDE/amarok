@@ -60,7 +60,7 @@ GstEngine::eos_cb( GstElement*, GstElement* )
 
 
 void
-GstEngine::handoff_cb( GstElement*, GstBuffer* buf, GstElement* )
+GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
 {
     int channels = 2;  //2 == default, if we cannot determine the value from gst
     GstCaps* caps = gst_pad_get_caps( gst_element_get_pad( pObject->m_pSpider, "src_0" ) );
@@ -73,6 +73,7 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, GstElement* )
             gst_structure_get_int( structure, "channels", &channels ); 
         }
     }
+    gst_caps_free( caps );
 //     kdDebug() << k_funcinfo << "Channels: " << channels << endl;
 
     if ( GST_IS_BUFFER( buf ) )
@@ -98,16 +99,6 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, GstElement* )
             pObject->m_scopeBuf[pObject->m_scopeBufIndex++] = temp;                
         }
     }
-}
-
-
-void
-GstEngine::typefindError_cb( GstElement*, GstElement *pipeline )
-{
-    kdDebug() << "GstEngine::typefindError" << endl;
-
-    gst_element_set_state( GST_ELEMENT( pipeline ), GST_STATE_NULL );
-    gst_object_unref( GST_OBJECT( pipeline ) );
 }
 
 
@@ -209,9 +200,6 @@ GstEngine::canDecode( const KURL &url, mode_t, mode_t )
 
     g_signal_connect ( G_OBJECT( typefind ), "have-type",
                        G_CALLBACK( typefindFound_cb ), pipeline );
-
-//     g_signal_connect ( G_OBJECT( typefind ), "error",
-//                        G_CALLBACK( typefindError_cb ), pipeline );
 
     gst_element_set_state( GST_ELEMENT( pipeline ), GST_STATE_PLAYING );
 

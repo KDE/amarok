@@ -70,10 +70,9 @@ class GstEngine : public EngineBase
         void                                     configureDecoder() {};                                                   
 
     private:
-        static void                              eos_cb( GstElement *typefind, GstElement *pipeline );
-        static void                              handoff_cb( GstElement *identity, GstBuffer *buf, GstElement *pipeline );
-        static void                              typefindError_cb( GstElement *typefind, GstElement *pipeline );
-        static void                              typefindFound_cb( GstElement *typefind, GstCaps *caps, GstElement *pipeline );
+        static void                              eos_cb( GstElement*, GstElement* );
+        static void                              handoff_cb( GstElement*, GstBuffer*, gpointer );
+        static void                              typefindFound_cb( GstElement*, GstCaps*, GstElement* );
 
         void                                     fillPipeline();
         void                                     cleanPipeline();
