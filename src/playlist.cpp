@@ -420,7 +420,15 @@ Playlist::playNextTrack()
 
                 if ( m_prevTracks.count() <= 40 ) {
                     m_prevTracks.clear();
-                    m_prevTracks.append( m_currentTrack );
+
+                    // don't add it to previous tracks if we only have one file in the playlist
+                    // would loop infinitely otherwise
+                    int count = 0;
+                    for( MyIterator it( this, MyIterator::Visible ); *it; ++it )
+                        ++count;
+
+                    if ( count > 1 )
+                        m_prevTracks.append( m_currentTrack );
                 }
                 else {
                     m_prevTracks.first(); //set's current item to first item
