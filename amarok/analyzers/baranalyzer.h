@@ -15,11 +15,10 @@
 #define BARANALYZER_H
 
 #include "analyzerbase.h"
-#include <qpixmap.h>
 
 
 /**
-@author Mark Kretschmann
+@author Mark Kretschmann && Max Howell
 */
 
 class BarAnalyzer : public AnalyzerBase

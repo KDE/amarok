@@ -99,7 +99,7 @@ void BarAnalyzer::drawAnalyzer( std::vector<float> *s )
     for ( uint i = 0, x = 10, y2; i < bands.size(); ++i, ++it, x+=5 )
     {
         //assign pre[log10]'d value
-        y2 = uint((*it) * 255);
+        y2 = uint((*it) * 256); //256 is optimised to bitshift
         y2 = m_lvlMapper[ (y2 > 255) ? 255 : y2 ]; //lvlMapper is array of ints with values 0 to height()
 
         int change = y2 - barVector[i];

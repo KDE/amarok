@@ -24,6 +24,7 @@ email                : markey@web.de
 #include "playerapp.h"
 #include "playerwidget.h"
 #include "playlistwidget.h"
+#include "analyzers/blockanalyzer.h"
 #include "analyzers/baranalyzer.h"
 //#include "analyzers/baranalyzer2.h"
 #include "analyzers/distortanalyzer.h"
@@ -683,6 +684,9 @@ void PlayerWidget::createVis()
         break;*/
     case 3:
         m_pVis = new XmasAnalyzer( this );
+        break;
+    case 4:
+        m_pVis = new BlockAnalyzer( this );
         break;
     default:
         //oh wise ones! Please forgive my use of the goto command!

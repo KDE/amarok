@@ -19,18 +19,18 @@
 #define VISWIDGET_H
 
 #include <qframe.h>
+#include <qpixmap.h>
 #include <vector>
 
 class QMouseEvent;
-//class QPixmap;
-#include <qpixmap.h>
 class QWidget;
+
 
 #define SINVEC_SIZE 6000
 #undef DRAW_GRID  //disable the grid
 
 /**
- *@author mark
+ *@author Max
  */
 
 class AnalyzerBase : public QFrame
