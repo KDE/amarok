@@ -28,6 +28,7 @@ class KDevFileSelector;
 class PlaylistItem;
 class PlaylistWidget;
 class StreamBrowser;
+class PlaylistSideBar;
 
 class QHideEvent;
 class QCloseEvent;
@@ -101,6 +102,7 @@ class BrowserWin : public QWidget
         void slotAddLocation();
         void buttonBrowserClicked();
         void buttonStreamClicked();
+        void closeAllTabs();
                 
     signals:
         void signalHide();
@@ -113,10 +115,9 @@ class BrowserWin : public QWidget
         void keyPressEvent( QKeyEvent * );
 
         // ATTRIBUTES ------
-        QVBox  *m_pBrowserBox;
+        PlaylistSideBar *m_sideBar;
+        KDevFileSelector *m_pBrowserBox;
         QVBox  *m_pStreamBox;
-        QVBox  *m_pFileBox;
-        int    m_boxSize;
         
         //QColor m_TextColor;
         //QPixmap m_bgPixmap;
