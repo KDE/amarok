@@ -19,6 +19,7 @@ class sqlite;
 class ThreadWeaver;
 
 class QCString;
+class QDragObject;
 class QStringList;
 class QCustomEvent;
 class KDirLister;
@@ -47,8 +48,23 @@ class CollectionView : public KListView
     friend class CollectionBrowser;
     
     public:
+        class Item : public KListViewItem {
+            public:
+                Item( QListView* parent )
+                    : KListViewItem( parent ) {};
+                Item( QListViewItem* parent )
+                    : KListViewItem( parent ) {};
+                void setUrl( const KURL& url ) { m_url = url; }
+                const KURL& url() const { return m_url; }
+            private:
+            //attributes:
+                KURL m_url;
+        };
+    
         CollectionView( CollectionBrowser* parent );
         ~CollectionView();
+        
+        Item* currentItem() { return static_cast<Item*>( currentItem() ); }
         
     signals:
         void tagsReady();    
@@ -65,6 +81,7 @@ class CollectionView : public KListView
         void readDir( const KURL& url );
         void dumpDb();
         void customEvent( QCustomEvent* );
+        void startDrag();
         
         /**
         * Executes an SQL statement on the already opened database
@@ -82,20 +99,6 @@ class CollectionView : public KListView
         sqlite* m_db;                
         QStringList m_dirs;
         QString m_category;
-        
-/*    class Item : public KIconViewItem
-    {
-        public:
-            Item( QIconView*, const KURL&, const KURL::List&, const uint );
-            const KURL& url() const { return m_url; }
-        private:
-            QString metaString() const;
-    
-            const KURL m_url;
-            int m_numberTracks;
-            QString m_length;
-            QRect m_bounds;
-    };*/
 };
 
 

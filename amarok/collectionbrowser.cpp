@@ -14,6 +14,7 @@
 #include <sqlite.h>
 
 #include <qcstring.h>
+#include <qdragobject.h>
 #include <qptrlist.h>
 
 #include <kapplication.h>
@@ -169,7 +170,8 @@ CollectionView::renderView() //SLOT
         
         KListViewItem* item = new KListViewItem( this );    
         item->setExpandable( true );
-        item->setDragEnabled( true );
+        item->setDragEnabled( false );
+        item->setDropEnabled( false );
         item->setText( 0, values[i] );
     }    
         
@@ -184,7 +186,7 @@ CollectionView::slotExpanded( QListViewItem* item ) //SLOT
     if ( !item ) return;
     
     //query database for all tracks in our sub-category
-    QCString command = "select title from tags where ";
+    QCString command = "select title, url from tags where ";
     command += m_category.lower().latin1();
     command += " = '";
     command += item->text( 0 ).latin1();
@@ -195,12 +197,15 @@ CollectionView::slotExpanded( QListViewItem* item ) //SLOT
     
     execSql( command, &values, &names );
     
-    for ( uint i = 0; i < values.count(); i++ ) {
+    for ( uint i = 0; i < values.count(); i += 2 ) {
         if ( values[i].isEmpty() ) continue;
         
-        KListViewItem* child = new KListViewItem( item );    
+        Item* child = new Item( item );    
         child->setDragEnabled( true );
-        child->setText( 0, values[i] );
+        child->setDropEnabled( false );
+        child->setText( 0, values[i+0] );
+        kdDebug() << "url: " << values[i+1] << endl;
+        child->setUrl( values[i+1] );
     }    
         
     kdDebug() << values << endl;
@@ -345,19 +350,20 @@ CollectionView::execSql( const QCString& statement,
         return false;
     }
     
-    int n;
+    int number;
     const char** value;
     const char** colName;
     //execute virtual machine by iterating over rows
-        while( true ) {
-        error = sqlite_step( vm, &n, &value, &colName );
+    while( true ) {
+        error = sqlite_step( vm, &number, &value, &colName );
         
         if ( error == SQLITE_DONE || error == SQLITE_ERROR )
             break; 
-        if ( values && value )
-            *values << *value;
-        if ( names && colName )
-            *names << *colName;
+        //iterate over columns
+        for ( int i = 0; values && names && i < number; i++ ) {
+            *values << value  [i];
+            *names  << colName[i];
+        }
     }
     //deallocate vm ressources
     sqlite_finalize( vm, 0 );
@@ -371,11 +377,15 @@ CollectionView::execSql( const QCString& statement,
 }
 
 
-// QDragObject*
-// CollectionBrowser::dragObject()
-// {
-//     return new KURLDrag( currentItem()->url(), this );
-// }
+void
+CollectionView::startDrag()
+{
+    if ( currentItem() ) {
+        KURLDrag* d = new KURLDrag( currentItem()->url(), this, "DragObject" );
+            d->dragCopy();
+    }
+        
+}
 
 
 #include "collectionbrowser.moc"
