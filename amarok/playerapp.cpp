@@ -106,6 +106,7 @@ PlayerApp::PlayerApp()
     pApp = this; //global
 
     initArts();
+    initOSD();
     initPlayerWidget();
     initBrowserWin();
 
@@ -342,6 +343,25 @@ void PlayerApp::initArts()
     Arts::connect( m_XFade, "outvalue_r", m_globalEffectStack, "inright" );
 
     Arts::connect( m_globalEffectStack, m_amanPlay );
+}
+
+
+void PlayerApp::initOSD()
+{
+    kdDebug() << "begin PlayerApp::initOSD()" << endl;
+
+    // set font    
+    QFont font( "Tahoma" );
+    font.setBold( TRUE );
+    font.setPixelSize( 30 );
+
+    // create osd widget    
+    m_pOSD = new OSDWidget();
+    m_pOSD->setEnabled( TRUE );
+    m_pOSD->setFont( font );
+    m_pOSD->setColor( QColor( "green" )  );
+    
+    kdDebug() << "end PlayerApp::initOSD()" << endl;
 }
 
 
@@ -888,6 +908,9 @@ void PlayerApp::play( const KURL &url, const MetaBundle *tags )
        length += QString::number( tags->m_length % 60 );
 
        m_pPlayerWidget->setScroll( text, bps, Hz, length ); //FIXME get end function to add units!
+       
+       // OSD message
+       m_pOSD->showOSD( text + " - " + length );
     }
     else
     {
@@ -896,6 +919,7 @@ void PlayerApp::play( const KURL &url, const MetaBundle *tags )
 
 
     kdDebug() << "[play()] Playing " << url.prettyURL() << endl;
+    
     m_pPlayObject->play();
     m_bIsPlaying = true;
 

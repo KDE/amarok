@@ -104,6 +104,8 @@ void PlaylistItem::setMeta( const MetaBundle &bundle )
     setText( 5, bundle.m_comment );
     setText( 6, bundle.m_genre );
     setText( 7, bundle.m_directory );
+    setText( 8, QString::number( bundle.m_length ) );
+    setText( 9, QString::number( bundle.m_bitrate ) + "kbps" );
 }
 
 

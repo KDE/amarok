@@ -35,6 +35,8 @@
 #include <arts/kartsdispatcher.h>
 #include <arts/kplayobjectfactory.h>
 
+#include "osd.h"
+
 class QColor;
 class QListView;
 class QListViewItem;
@@ -75,7 +77,8 @@ class PlayerApp : public KUniqueApplication
         KGlobalAccel *m_pGlobalAccel;
 
         PlayerWidget *m_pPlayerWidget;
-        BrowserWin *m_pBrowserWin;
+        BrowserWin   *m_pBrowserWin;
+        OSDWidget    *m_pOSD;
 
         QColor m_bgColor;
         QColor m_fgColor;
@@ -167,6 +170,7 @@ class PlayerApp : public KUniqueApplication
 
     private:
         void initArts();
+        void initOSD();
         void initPlayerWidget();
         void initMixer();
         bool initMixerHW();

@@ -82,6 +82,8 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
     addColumn( i18n( "Comment"   ),  80 );
     addColumn( i18n( "Genre"     ),  80 );
     addColumn( i18n( "Directory" ),  80 );
+    addColumn( i18n( "Length"    ),  80 );
+    addColumn( i18n( "Bitrate"   ),  80 );
 
     connect( this, SIGNAL( contentsMoving( int, int ) ),  this, SLOT( slotEraseMarker() ) );
     connect( this, SIGNAL( doubleClicked( QListViewItem* ) ), this, SLOT( activate( QListViewItem* ) ) );

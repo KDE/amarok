@@ -589,7 +589,7 @@ MetaBundle *TagReader::readTags( const KURL &url )
    MetaBundle *tags = 0;
 
    //audioproperties are read on demand
-   TagLib::FileRef f( url.path().local8Bit(), false );
+   TagLib::FileRef f( url.path().local8Bit(), true );
 
    if ( !f.isNull() && f.tag() ) //FIXME I'm thinking that calling f.tag() here is possibly not nice, must check!
    {
