@@ -55,7 +55,7 @@ Loader::Loader( int& argc, char** argv )
 
         QProcess proc( args );
         connect( &proc, SIGNAL( processExited() ), SLOT( doExit() ) );
-        proc.setCommunication( QProcess::Stdout );
+        proc.setCommunication( 0 ); //ouputs everything straight to stdout/err
         proc.start();
 
         //show splash after starting process so we don't cause a delay
@@ -67,33 +67,60 @@ Loader::Loader( int& argc, char** argv )
     } else {
 
         //yes, amaroK is running -> transmit new command line args to the LoaderServer and exit
-        std::cout << "[amaroK loader] amaroK is already running. Transmitting command line arguments..\n";
 
         //put all arguments into one string
         //we transmit the startup_id, so amarokapp can stop the startup animation
         QCString str( ::getenv( "DESKTOP_STARTUP_ID" ) );
 
-        for ( int i = 0; i < argc; i++ ) {
-            QString( tmp ) = argv[ i ];
-            QFileInfo fi = tmp;
-            QUrl url = tmp;
+        //TODO support compacted short options eg "-ne"
 
-            //put cwd in front of files/relative directories
-            if ( fi.exists() && url.isLocalFile() && str[ 0 ] != '/' ) {
-                size_t size = ::pathconf( ".", _PC_PATH_MAX );
-                char* buf = new char[size];
-                QCString cwd = ::getcwd( buf, size );
-                delete buf;
-                    
-                str += '|';
-                str += cwd;
-                str += '/';
-                str += argv[ i ];
+        QStringList sockArgs;
+        sockArgs << "--next" << "--previous" << "--stop" << "--pause" << "--play" << "--enqueue";
+        sockArgs << "-f" << "-r" << "-s" << "-p" << "-e";
+
+        for ( int i = 0; i < argc; i++ )
+        {
+            QString arg = argv[ i ];
+
+            str += '|';
+
+            if( sockArgs.contains( arg ) )
+            {
+                //pass this argument to amaroK
+                str += argv[i];
+
+            } else if( arg[0] != '-' ) {
+
+                //pass this URL to amaroK
+                QFileInfo info( arg );
+
+                if( info.exists() && info.isRelative() )
+                {
+                    str += info.absFilePath().local8Bit();
+                }
+                else str += argv[i];
+
             } else {
-                str += '|';
-                str += argv[ i ];
+
+                //we don't need to pass any of these arguments to amaroK
+                //and if we did it KCmdLineArgs would make us exit!
+                //TODO add all arguments or something
+
+                QProcess proc( QString("amarokapp") );
+                proc.setCommunication( 0 );
+                proc.addArgument( arg );
+                proc.start();
+
+                while ( proc.isRunning() ) ::usleep( 100 );
+
+                //now exit as help only prints usage info
+                //no need to doExit, nothing started
+                ::exit( 0 );
             }
         }
+
+        std::cout << "[amaroK loader] amaroK is already running. Transmitting command line arguments..\n";
+
         ::send( m_sockfd, str, str.length() + 1, 0 ); //+1 = /0 termination
 
         doExit();
