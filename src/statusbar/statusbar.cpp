@@ -129,7 +129,7 @@ StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 
     if ( bundle.artist() == "Mike Oldfield" && bundle.title() == "Amarok" ) {
         longMessage( i18n(
-                "<p>One of Mike Oldfield's best pieces of work, Amarok inspired the name behind"
+                "<p>One of Mike Oldfield's best pieces of work, Amarok, inspired the name behind"
                 "the audio-player you are currently using. Thanks for choosing amaroK!</p>"
                 "<p align=right>Mark Kretschmann<br>Max Howell<br>Chris Muehlhaeuser<br>"
                 "The many other people who have helped make amaroK what it is</p>" ) );

@@ -13,13 +13,13 @@
             <default>osssink</default>
         </entry>
         <entry key="Use Custom Sound Device" type="Bool">
-            <label>Don't use the autodetected audiosink sound device</label>
+            <label>Do not use the autodetected audiosink sound device</label>
             <whatsthis>When enabled, uses user-specified sound device for audiosink.</whatsthis>
             <default>false</default>
         </entry>
         <entry key="Sound Device" type="String">
             <label>Sound output device to use</label>
-            <whatsthis>Select the sound output device. this is useful for gstreamer engine sinks</whatsthis>
+            <whatsthis>Select the sound output device; this is useful for gstreamer engine sinks.</whatsthis>
         </entry>
         <entry key="Use Custom Output Params" type="Bool">
             <label>Use custom parameters for output sink.</label>

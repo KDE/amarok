@@ -2177,7 +2177,7 @@ Playlist::addCustomColumn()
                 "The shell command is run as the user <b>nobody</b>, this is for security reasons.\n"
                 "<p>You can only run the command against local files for the time being. "
                 "The fullpath is inserted at the position <b>%f</b> in the string. "
-                "If you don't specify <b>%f</b> it is appended." ), this );
+                "If you do not specify <b>%f</b> it is appended." ), this );
             textLabel2 = new QLabel( i18n( "Column &Name:" ), this );
             textLabel3 = new QLabel( i18n( "&Command:" ), this );
 

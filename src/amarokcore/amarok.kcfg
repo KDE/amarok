@@ -184,7 +184,7 @@
     </entry>
     <entry key="Sound System" type="String">
         <label>Sound system to use</label>
-        <whatsthis>Select the sound system used to play media. amaroK currently support aRts, GStreamer, xine and NMM, however their availability depends on the configuration used at compile time.</whatsthis>
+        <whatsthis>Select the sound system used to play media. amaroK currently support aRts, GStreamer, xine, and NMM; however, their availability depends on the configuration used at compile time.</whatsthis>
     </entry>
     <entry key="Equalizer Enabled" type="Bool">
         <label>Enables the equalizer plugin</label>
@@ -238,12 +238,12 @@
     </entry>
     <entry key="Osd Text Color" type="Color">
         <label>Font Color for On-Screen Display</label>
-        <whatsthis>The color of the OSD text. The color is specified in RGB, a comma separated list containing three integers between 0 and 255.</whatsthis>
+        <whatsthis>The color of the OSD text. The color is specified in RGB, a comma-separated list containing three integers between 0 and 255.</whatsthis>
         <default>#ffff00</default>
     </entry>
     <entry key="Osd Background Color" type="Color">
         <label>Background Color for On-Screen Display</label>
-        <whatsthis>The color of the OSD background. The color is specified in RGB, a comma separated list containing three integers between 0 and 255.</whatsthis>
+        <whatsthis>The color of the OSD background. The color is specified in RGB, a comma-separated list containing three integers between 0 and 255.</whatsthis>
         <default>#1500a0</default>
     </entry>
     <entry key="Osd Duration" type="Int">
@@ -279,7 +279,7 @@
     </entry>
     <entry key="Osd Alignment" type="Enum">
         <label>Align OSD to</label>
-        <whatsthis>The relative position of the OSD. Possible choiced are TopCenter, TopLeft, TopRight, BottomCenter, BottomLeft, BottomRight, and Center.</whatsthis>
+        <whatsthis>The relative position of the OSD. Possible choices are TopCenter, TopLeft, TopRight, BottomCenter, BottomLeft, BottomRight, and Center.</whatsthis>
         <choices>
             <choice name="Left"/>
             <choice name="Middle"/>
@@ -342,12 +342,12 @@
     </entry>
     <entry key="Playlist Window Fg Color" type="Color">
         <label>Playlist window foreground color</label>
-        <whatsthis>The color to use as foreground color in the playlist. The color is specified in RGB, a comma separated list containing three integers between 0 and 255.</whatsthis>
+        <whatsthis>The color to use as foreground color in the playlist. The color is specified in RGB, a comma-separated list containing three integers between 0 and 255.</whatsthis>
         <default>#80a0ff</default>
     </entry>
     <entry key="Playlist Window Bg Color" type="Color">
         <label>Playlist window background color</label>
-        <whatsthis>The color to use as background color in the playlist. The color is specified in RGB, a comma separated list containing three integers between 0 and 255.</whatsthis>
+        <whatsthis>The color to use as background color in the playlist. The color is specified in RGB, a comma-separated list containing three integers between 0 and 255.</whatsthis>
         <default>#000000</default>
     </entry>
 </group>
