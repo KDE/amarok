@@ -443,11 +443,11 @@ void ContextBrowser::showHome() //SLOT
 
     // <Favorite Tracks Information>
     browser->write(
-        "<div class='rbcontent'>"
+        "<div  class='rbcontent'>"
          "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
           "<tr><th>" + i18n( "Your Favorite Tracks" ) + "</th></tr>"
          "</table>"
-         "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+         "<table class='table-body' width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
     for( uint i = 0; i < fave.count(); i = i + 5 )
         browser->write(
@@ -480,7 +480,7 @@ void ContextBrowser::showHome() //SLOT
          "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
           "<tr><th>" + i18n( "Your Newest Tracks" ) + "</th></tr>"
          "</table>"
-         "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+         "<table class='table-body' width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
     for( uint i = 0; i < recent.count(); i = i + 4 )
         browser->write(
