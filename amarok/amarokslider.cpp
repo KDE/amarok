@@ -134,8 +134,8 @@ void AmarokSlider::paintEvent( QPaintEvent * )
                        
     //<Triangle Marker>
     QPointArray pa( 3 );
-    pa.setPoint( 0, pos - 3, 0 );
-    pa.setPoint( 1, pos + 3, 0 );
+    pa.setPoint( 0, pos - 3, 1 );
+    pa.setPoint( 1, pos + 3, 1 );
     pa.setPoint( 2, pos,     6 );
     p.setBrush( QBrush( paletteForegroundColor(), QBrush::SolidPattern ) );
     p.drawConvexPolygon( pa );
