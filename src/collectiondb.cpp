@@ -319,11 +319,14 @@ CollectionDB::artistList( bool withUnknown, bool withCompilations )
 {
     QStringList values;
 
-    execSql( "SELECT DISTINCT artist.name FROM artist, tags WHERE 1 " +
-             ( withUnknown ? QString() : "AND artist.name <> 'Unknown' " ) +
-             ( withCompilations ? QString() : "AND tags.artist = artist.id AND tags.sampler = 0 " ) +
-             "ORDER BY lower( artist.name );", &values );
-
+    if ( withUnknown && withCompilations )
+        execSql( "SELECT DISTINCT name FROM artist;", &values );
+    else
+        execSql( "SELECT DISTINCT artist.name FROM artist, tags WHERE 1 " +
+                ( withUnknown ? QString() : "AND artist.name <> 'Unknown' " ) +
+                ( withCompilations ? QString() : "AND tags.artist = artist.id AND tags.sampler = 0 " ) +
+                "ORDER BY lower( artist.name );", &values );
+    
     return values;
 }
 
@@ -333,10 +336,13 @@ CollectionDB::albumList( bool withUnknown, bool withCompilations )
 {
     QStringList values;
 
-    execSql( "SELECT DISTINCT album.name FROM album, tags WHERE 1 " +
-             ( withUnknown ? QString() : "AND album.name <> 'Unknown' " ) +
-             ( withCompilations ? QString() : "AND tags.album = album.id AND tags.sampler = 0 " ) +
-             "ORDER BY lower( album.name );", &values );
+    if ( withUnknown && withCompilations )
+        execSql( "SELECT DISTINCT name FROM album;", &values );
+    else
+        execSql( "SELECT DISTINCT album.name FROM album, tags WHERE 1 " +
+                ( withUnknown ? QString() : "AND album.name <> 'Unknown' " ) +
+                ( withCompilations ? QString() : "AND tags.album = album.id AND tags.sampler = 0 " ) +
+                "ORDER BY lower( album.name );", &values );
 
     return values;
 }
@@ -537,14 +543,11 @@ CollectionDB::removeDirFromCollection( QString path )
                 .arg( escapeString( path ) ) );
 }
 
-
+#include <time.h>
 bool
 CollectionDB::execSql( const QString& statement, QStringList* const values, QStringList* const names, const bool debug )
 {
-//     kdDebug() << "BEGIN " << k_funcinfo << endl;
-
-    if ( debug )
-        kdDebug() << "[CollectionDB] SQL-query: " << statement << endl;
+    clock_t start = clock();
 
     if ( !m_db )
     {
@@ -555,6 +558,7 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
     int error;
     const char* tail;
     sqlite3_stmt* stmt;
+    
     //compile SQL program to virtual machine
     error = sqlite3_prepare( m_db, statement.local8Bit(), statement.length(), &stmt, &tail );
 
@@ -597,7 +601,13 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
         return false;
     }
 
-//     kdDebug() << "END " << k_funcinfo << endl;
+    if ( debug )
+    {
+        clock_t finish = clock();
+        const double duration = (double) (finish - start) / CLOCKS_PER_SEC;
+        kdDebug() << "[CollectionDB] SQL-query (" << duration << "s): " << statement << endl;
+    }
+
     return true;
 }
 
@@ -687,6 +697,7 @@ CollectionDB::createTables( bool temporary )
         execSql( "CREATE INDEX artist_tag ON tags( artist );" );
         execSql( "CREATE INDEX genre_tag ON tags( genre );" );
         execSql( "CREATE INDEX year_tag ON tags( year );" );
+        execSql( "CREATE INDEX sampler_tag ON tags( sampler );" );
 
         // create directory statistics database
         execSql( QString( "CREATE TABLE directories ("
