@@ -33,7 +33,7 @@ class AmarokConfigDialog : public KConfigDialog
 
     public:
         AmarokConfigDialog( QWidget *parent, const char* name, KConfigSkeleton *config );
-        void triggerChanged();
+        ~AmarokConfigDialog();
 
     protected slots:
         void updateSettings();
@@ -53,7 +53,6 @@ class AmarokConfigDialog : public KConfigDialog
         QComboBox* m_soundSystem;
         amaroK::PluginConfig *m_engineConfig;
         QGroupBox            *m_engineConfigFrame;
-        bool m_changedExternal;
 
         QMap<QString, QString> m_pluginName;
         QMap<QString, QString> m_pluginAmarokName;

@@ -47,7 +47,6 @@ email                : markey@web.de
 AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConfigSkeleton *config )
         : KConfigDialog( parent, name, config )
         , m_engineConfig( 0 )
-        , m_changedExternal( false )
 {
     setWFlags( WDestructiveClose );
 
@@ -97,14 +96,10 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     connect( opt5, SIGNAL( settingsChanged() ), SLOT( updateButtons() ) ); //see options5.ui.h
 }
 
-
-void AmarokConfigDialog::triggerChanged()
+AmarokConfigDialog::~AmarokConfigDialog()
 {
-    // Activate the "apply" button
-    m_changedExternal = true;
-    settingsChangedSlot();
+    delete m_engineConfig;
 }
-
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PROTECTED SLOTS
@@ -117,8 +112,6 @@ void AmarokConfigDialog::triggerChanged()
  */
 void AmarokConfigDialog::updateSettings()
 {
-    m_changedExternal = false;
-
     OSDWidget *osd = (OSDWidget*)child( "osdpreview" );
     AmarokConfig::setOsdAlignment( osd->alignment() );
     AmarokConfig::setOsdYOffset( osd->y() );
@@ -130,8 +123,6 @@ void AmarokConfigDialog::updateSettings()
         emit settingsChanged();
         soundSystemChanged();
     }
-    else
-        emit settingsChanged();
 }
 
 
@@ -173,8 +164,7 @@ bool AmarokConfigDialog::hasChanged()
     return  m_soundSystem->currentText() != m_pluginAmarokName[AmarokConfig::soundSystem()] ||
             osd->alignment()             != AmarokConfig::osdAlignment() ||
             osd->y()                     != AmarokConfig::osdYOffset() ||
-            engineChanged ||
-            m_changedExternal;
+            engineChanged;
 }
 
 
@@ -215,6 +205,7 @@ void AmarokConfigDialog::soundSystemChanged()
     {
         m_engineConfig = EngineController::engine()->configure();
         m_engineConfig->view()->reparent( m_engineConfigFrame, QPoint() );
+        m_engineConfig->view()->show();
         m_engineConfigFrame->setTitle( i18n( "Configure %1" ).arg( m_soundSystem->currentText() ) );
         m_engineConfigFrame->show();
 

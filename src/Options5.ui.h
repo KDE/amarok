@@ -38,53 +38,33 @@ void Options5::init()
     const int numScreens = QApplication::desktop()->numScreens();
     for( int i = 0; i < numScreens; i++ )
         kcfg_OsdScreen->insertItem( QString::number( i ) );
+
+    connect( kcfg_OsdDrawShadow, SIGNAL(toggled(bool)), m_pOSDPreview, SLOT(setShadow(bool)) );
+    connect( kcfg_OsdTextColor, SIGNAL(changed(const QColor&)), m_pOSDPreview, SLOT(setTextColor(const QColor&)) );
+    connect( kcfg_OsdBackgroundColor, SIGNAL(changed(const QColor&)), m_pOSDPreview, SLOT(setBackgroundColor(const QColor&)) );
+    connect( kcfg_OsdFont, SIGNAL(fontSelected(const QFont&)), m_pOSDPreview, SLOT(setFont(const QFont&)) );
+    connect( kcfg_OsdScreen, SIGNAL(activated(int)), m_pOSDPreview, SLOT(setScreen(int)) );
+    connect( kcfg_OsdEnabled, SIGNAL(toggled(bool)), m_pOSDPreview, SLOT(setShown(bool)) );
 }
 
-
-void Options5::fontChanged(const QFont &font )
-{
-    m_pOSDPreview->setFont( font );
-}
-
-void Options5::textColorChanged( const QColor &color )
-{
-    m_pOSDPreview->setTextColor( color );
-}
-
-void Options5::backgroundColorChanged( const QColor &color )
-{
-    m_pOSDPreview->setBackgroundColor( color );
-}
-
-void Options5::screenChanged( int screen )
-{
-    m_pOSDPreview->setScreen( screen );
-}
-
-void Options5::drawShadowToggled( bool on )
-{
-    m_pOSDPreview->setShadow( on );
-}
-
-
-void Options5::slotPositionChanged()
+void
+Options5::slotPositionChanged()
 {
     kcfg_OsdScreen->blockSignals( true );
     kcfg_OsdScreen->setCurrentItem( m_pOSDPreview->screen() );
     kcfg_OsdScreen->blockSignals( false );
 
-    AmarokConfigDialog* conf = (AmarokConfigDialog*) KConfigDialog::exists( "settings" );
-    if ( conf ) conf->triggerChanged();
+//    emit settingsChanged();
 }
 
-
-void Options5::hideEvent( QHideEvent * )
+void
+Options5::hideEvent( QHideEvent * )
 {
     m_pOSDPreview->hide();
 }
 
-
-void Options5::showEvent( QShowEvent * )
+void
+Options5::showEvent( QShowEvent * )
 {
     useCustomColorsToggled( kcfg_OsdUseCustomColors->isChecked() );
 
@@ -93,14 +73,8 @@ void Options5::showEvent( QShowEvent * )
     m_pOSDPreview->setShown( kcfg_OsdEnabled->isChecked() );
 }
 
-
-void Options5::osdEnabledChange( bool on )
-{
-    m_pOSDPreview->setShown( on );
-}
-
-
-void Options5::useCustomColorsToggled( bool on )
+void
+Options5::useCustomColorsToggled( bool on )
 {
     if( on )
     {
