@@ -66,6 +66,7 @@ void Options2::updateStyleComboBox()
         {
             sortedList.append(QFileInfo( *it ).dir().dirName());
         }
+    sortedList.append( "Default" );
     sortedList.sort();
     foreach(sortedList)
       styleComboBox->insertItem(*it);

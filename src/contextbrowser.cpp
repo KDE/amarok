@@ -268,9 +268,9 @@ void ContextBrowser::openURLRequest( const KURL &url )
     if ( url.protocol() == "musicbrainz" )
     {
         const QString url = "http://www.musicbrainz.org/taglookup.html?artist=%1&album=%2&track=%3";
-        kapp->invokeBrowser( url.arg( KURL::encode_string_no_slash( artist, 106 /*utf-8*/ ), 
-	    KURL::encode_string_no_slash( album, 106 /*utf-8*/ ),
-	    KURL::encode_string_no_slash( track, 106 /*utf-8*/ ) ) );
+        kapp->invokeBrowser( url.arg( KURL::encode_string_no_slash( artist, 106 /*utf-8*/ ),
+        KURL::encode_string_no_slash( album, 106 /*utf-8*/ ),
+        KURL::encode_string_no_slash( track, 106 /*utf-8*/ ) ) );
     }
 
     if ( url.protocol() == "externalurl" )
@@ -669,7 +669,7 @@ void ContextBrowser::showHome() //SLOT
     if ( fave.count() == 0 )
     {
         m_HTMLSource.append(
-                "<div class='info'><p>" +
+                "<div id='favorites_box-body' class='box-body'><p>" +
                 i18n( "A list of your favorite tracks will appear here, once you have played a few of your songs." ) +
                 "</p></div>" );
     }
@@ -1002,7 +1002,7 @@ bool CurrentTrackJob::doJob()
             << i18n( "Look up this track at musicbrainz.org" )
             << escapeHTMLAttr( currentTrack.artist() )
             << escapeHTMLAttr( currentTrack.album() )
-	    << escapeHTML( currentTrack.title() )
+        << escapeHTML( currentTrack.title() )
             << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) ) ) );
 
     if ( !values.isEmpty() )
@@ -1461,7 +1461,7 @@ void ContextBrowser::setStyleSheet()
     QString themeName = AmarokConfig::contextBrowserStyleSheet().latin1();
     const QString file = kapp->dirs()->findResource( "data","amarok/themes/" + themeName + "/stylesheet.css" );
 
-    if ( themeName != "default" && QFile::exists( file ) )
+    if ( themeName != "Default" && QFile::exists( file ) )
         setStyleSheet_ExternalStyle( m_styleSheet, themeName );
     else
         setStyleSheet_Default( m_styleSheet );

@@ -77,10 +77,10 @@
         <default>false</default>
     </entry>
     <entry key="Show Toolbar" type="Bool">
-		<label>Whether to show the toolbar in the playlist window.</label>
-		<whatthis>At the bottom of the playlist window, the toolbar can be used for buttons such as play and stop.</whatthis>
-		<default>true</default>	
-	</entry>
+        <label>Whether to show the toolbar in the playlist window.</label>
+        <whatthis>At the bottom of the playlist window, the toolbar can be used for buttons such as play and stop.</whatthis>
+        <default>true</default>
+    </entry>
     <entry key="Cover Preview Size" type="Int">
         <label>Size of the cover previews in Contextbrowser and Covermanager</label>
         <whatsthis>Size of the cover previews in Contextbrowser and Covermanager</whatsthis>
@@ -144,7 +144,7 @@
     <entry key="ContextBrowser StyleSheet" type="String">
         <label>Set CSS stylesheet used to customize ContextBrowser's rendering</label>
         <whatsthis>Set this to the style dir you want to use.</whatsthis>
-        <default>flat</default>
+        <default>Default</default>
     </entry>
     <entry key="Show Menu Bar" type="Bool">
         <label>Whether Menubar is shown</label>
