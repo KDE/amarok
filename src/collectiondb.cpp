@@ -1708,6 +1708,7 @@ SqliteConnection::SqliteConnection( SqliteConfig* config )
         else
             m_initialized = true;
     }
+
     if ( !m_initialized )
     {
         // Remove old db file; create new
@@ -1724,6 +1725,7 @@ SqliteConnection::SqliteConnection( SqliteConfig* config )
         if( sqlite3_create_function(m_db, "power", 2, SQLITE_UTF8, NULL, sqlite_power, NULL, NULL) != SQLITE_OK )
             m_initialized = false;
     }
+
     //optimization for speeding up SQLite
     query( "PRAGMA default_synchronous = OFF;" );
 }
@@ -2046,10 +2048,20 @@ DbConnectionPool::~DbConnectionPool()
 {
     m_semaphore += POOL_SIZE;
     DbConnection *conn;
+    bool vacuum = true;
+
     while ( ( conn = dequeue() ) != 0 )
     {
+        if ( m_dbConnType == DbConnection::sqlite && vacuum )
+        {
+            vacuum = false;
+            debug() << "Running VACUUM" << endl;
+            conn->query( "VACUUM; ");
+        }
+
         delete conn;
     }
+
     delete m_dbConfig;
 }
 

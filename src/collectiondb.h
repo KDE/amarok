@@ -40,6 +40,7 @@ class SqliteConfig : public DbConfig
         SqliteConfig( const QString& /* dbfile */ );
 
         const QString dbFile() const { return m_dbfile; }
+
     private:
         QString m_dbfile;
 };
@@ -60,6 +61,7 @@ class MySqlConfig : public DbConfig
         const QString database() const { return m_database; }
         const QString username() const { return m_username; }
         const QString password() const { return m_password; }
+
     private:
         QString m_host;
         int m_port;
