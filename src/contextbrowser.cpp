@@ -102,7 +102,7 @@ ContextBrowser::ContextBrowser( const char *name )
 //     m_lyricsPage->view()->setFrameStyle( QFrame::NoFrame );
 
     addTab( m_homePage->view(),         SmallIconSet( "gohome" ),   i18n( "Home" ) );
-    addTab( m_currentTrackPage->view(), SmallIconSet( "today" ),    i18n( "Current Track" ) );
+    addTab( m_currentTrackPage->view(), SmallIconSet( "today" ),    i18n( "Current" ) );
     addTab( m_lyricsPage->view(),       SmallIconSet( "document" ), i18n( "Lyrics" ) );
 
     setTabEnabled( m_currentTrackPage->view(), false );
