@@ -103,6 +103,8 @@ void OSDWidget::renderOSDText( const QString &text )
     brush.setPixmap( m_gradient->name() );
     bufferPainter.setBrush( brush );
     bufferPainter.drawRoundRect( textRect, 1500 / textRect.width(), 1500 / textRect.height() );
+    m_gradient->close();
+    m_gradient->unlink();
     bufferPainter.setFont( font() );
 
     const uint w = textRect.width()  - 1;
