@@ -61,6 +61,11 @@ interface needed to communicate with amaroK.
 
 We should take care to keep the design as simple as possible.
 
+<mxcl> Why make visualisations plugins as well as binaries? It seems sensible to have
+visualisations as separate processes and then communicate with amK through the socket.
+Why have the extra layer of plugins if you're going to force each process to only load
+one plugin anyway?
+
 
 Merging Analyzer and Vis
 ========================
@@ -76,8 +81,8 @@ bitmap graphic back into amaroK's playerwidget. It seems we have the following o
   There might be technical problems doing so, and it will be difficult when the user
   moves the window.
 
- 
-  
+
+
 [Comment from muesli, to be integrated into the paragraphs above]
 
 imho, it would be cool to offer this service via sockets. udp would fit per-
@@ -113,20 +118,20 @@ has many visuals running, the beat-detection is only done once for all visualisa
                     // shift old elements
                     for ( uint x = 0; x < 18; ++x )
                         for ( uint y = 42; y > 0; --y ) m_beatEnergy[x][y] = m_beatEnergy[x][y - 1];
-         
+
                     // get current energy values
                     for ( uint x = 0; x < pScopeVector->size(); ++x ) m_beatEnergy[x][0] = pScopeVector->at(x);
-         
+
                     // compare to old elements and get averages
                     double beatAvg[18];
         //            double beatVariance[18];
         //            double beatMood[18];
-                    
+
                     for ( uint x = 0; x < 18; ++x )
                     {
                         beatAvg[x] = 0;
                         for ( uint y = 1; y < 44; ++y )  beatAvg[x] += m_beatEnergy[x][y];
-                        
+
                         beatAvg[x] = beatAvg[x] / 43;
                     }
         */
@@ -135,7 +140,7 @@ has many visuals running, the beat-detection is only done once for all visualisa
                         beatVariance[x] = 0;
                         for ( uint y = 0; y < 42; ++y )  beatVariance[x] += (pow((m_beatEnergy[x][y] - beatAvg[x]), 2) / 43);
                     }
-                        
+
                     for ( uint x = 0; x < 18; ++x )
                         beatMood[x] = (-0.0025714 * beatVariance[x]) + 1.5142857;
         */
@@ -146,13 +151,13 @@ has many visuals running, the beat-detection is only done once for all visualisa
                     {
                         double factor = cos( x * 4 ) * 18;
                         factor = beatAvg[x] * factor;
-                        
+
                         if ( m_beatEnergy[x][0] > factor )
                         {
                             total_hits++;
                             kdDebug() << "*CLAP* factor: " << factor << " - x: " << x << " - average energy: " << beatAvg[x] << " - current peak: " << m_beatEnergy[x][0] << endl;
                         }
                     }
-         
+
                     if ( total_hits > 3 ) kdDebug() << "***CLAPCLAPCLAP***" << endl;
         */

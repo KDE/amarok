@@ -16,7 +16,7 @@
 #include <kpopupmenu.h>
 
 
-amaroK::Systray::Systray( QWidget *playerWidget, KActionCollection *ac ) : KSystemTray( playerWidget )
+amaroK::TrayIcon::TrayIcon( QWidget *playerWidget, KActionCollection *ac ) : KSystemTray( playerWidget )
 {
     setPixmap( KSystemTray::loadIcon("amarok") ); // @since 3.2
     setAcceptDrops( true );
@@ -65,7 +65,7 @@ amaroK::Systray::Systray( QWidget *playerWidget, KActionCollection *ac ) : KSyst
 }
 
 bool
-amaroK::Systray::event( QEvent *e )
+amaroK::TrayIcon::event( QEvent *e )
 {
     switch( e->type() ) {
     case QEvent::Wheel:

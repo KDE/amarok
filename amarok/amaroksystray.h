@@ -16,12 +16,12 @@ class QEvent;
 
 namespace amaroK {
 
-class Systray : public KSystemTray
+class TrayIcon : public KSystemTray
 {
 Q_OBJECT
 
 public:
-    Systray( QWidget *, KActionCollection * );
+    TrayIcon( QWidget *, KActionCollection * );
 
 private:
     bool event( QEvent* );

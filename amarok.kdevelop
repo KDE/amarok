@@ -20,7 +20,7 @@
     <general>
       <mainprogram>amarok</mainprogram>
       <useconfiguration>default</useconfiguration>
-      <activetarget>amarok/amarok</activetarget>
+      <activetarget>amarok/vis/libamK_vis.la</activetarget>
       <useactivetarget>true</useactivetarget>
     </general>
     <configure>
@@ -41,13 +41,13 @@
       <cxxflags>\s-O0 -g3 -Wall</cxxflags>
     </compiler>
     <run>
-      <mainprogram>/opt/kde3/bin/amarok</mainprogram>
+      <mainprogram>amarok/amarokapp</mainprogram>
       <programargs/>
       <terminal>false</terminal>
-      <autocompile>false</autocompile>
+      <autocompile>true</autocompile>
       <envvars/>
-      <directoryradio>custom</directoryradio>
-      <customdirectory>/opt/kde3/bin/</customdirectory>
+      <directoryradio>build</directoryradio>
+      <customdirectory>/</customdirectory>
       <runarguments>
         <amarok/>
       </runarguments>

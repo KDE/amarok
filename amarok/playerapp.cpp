@@ -53,11 +53,8 @@ email                : markey@web.de
 #include <qcstring.h>            //initIpc()
 #include <qfile.h>               //initEngine()
 #include <qpixmap.h>             //QPixmap::setDefaultOptimization()
-#include <qregexp.h>
-#include <qsize.h>
 #include <qserversocket.h>       //initIpc()
 #include <qsocketnotifier.h>     //initIpc()
-#include <qstring.h>
 #include <qtooltip.h>            //adding tooltip to systray
 
 #include <unistd.h>              //initIpc()
@@ -72,9 +69,9 @@ PlayerApp::PlayerApp()
         , m_pDcopHandler( new AmarokDcopHandler )
         , m_pTray( 0 )
         , m_pOSD( new amaroK::OSD() )
+        , m_pActionCollection( new KActionCollection( 0, this ) )
         , m_sockfd( -1 )
         , m_showBrowserWin( false )
-        , m_pActionCollection( new KActionCollection( 0, this ) )
 {
     //TODO readConfig and applySettings first
     //     reason-> create Engine earlier, so we can restore session asap to get playlist loaded by
@@ -118,7 +115,7 @@ PlayerApp::PlayerApp()
 
     EngineController::instance()->attach( m_pPlayerWidget );
     EngineController::instance()->attach( this );
-    m_pTray = new amaroK::Systray( m_pPlayerWidget, actionCollection() ); //shown/hidden in applySettings()
+    m_pTray = new amaroK::TrayIcon( m_pPlayerWidget, actionCollection() ); //shown/hidden in applySettings()
 
 
     applySettings();  //will load the engine

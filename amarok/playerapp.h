@@ -33,7 +33,7 @@
 namespace amaroK
 {
     class OSD;
-    class Systray;
+    class TrayIcon;
 }
 class AmarokDcopHandler;
 
@@ -107,7 +107,7 @@ class PlayerApp : public KApplication, public EngineObserver
         PlayerWidget      *m_pPlayerWidget;
         BrowserWin        *m_pBrowserWin;
         AmarokDcopHandler *m_pDcopHandler;
-        amaroK::Systray   *m_pTray;
+        amaroK::TrayIcon  *m_pTray;
         amaroK::OSD       *m_pOSD;
         KActionCollection *m_pActionCollection;
 
