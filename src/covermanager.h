@@ -123,7 +123,7 @@ class CoverViewItem : public KIconViewItem
         bool hasCover() const;
         QString artist() const { return m_artist; }
         QString album() const { return m_album; }
-        QPixmap coverPixmap() const { return m_coverPix; }
+        QPixmap coverPixmap() const { return m_coverPixmap; }
 
     protected:
         void paintItem(QPainter* painter, const QColorGroup& colorGroup);
@@ -137,8 +137,7 @@ class CoverViewItem : public KIconViewItem
         QString m_artist;
         QString m_album;
         QString m_coverImagePath;
-        bool m_hasCover;
-        QPixmap m_coverPix;
+        QPixmap m_coverPixmap;
 };
 
 

@@ -400,7 +400,7 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     }
     QApplication::restoreOverrideCursor();
 
-    progress.setTotalSteps( albums.count() );
+    progress.setTotalSteps( (albums.count()/2) + (albums.count()/10) );
 
     //insert the covers first because the list view is soooo paint-happy
     //doing it in the second loop looks really bad, unfortunately
@@ -412,8 +412,8 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
         m_coverItems.append( new CoverViewItem( m_coverView, m_coverView->lastItem(), artist, album ) );
 
         if ( ++x % 50 == 0 ) {
-            progress.setProgress( x ); // we do it less often due to bug in Qt, ask Max
-            kapp->processEvents();     // QProgressDialog also calls this, but not always due to Qt bug!
+            progress.setProgress( x / 5 ); // we do it less often due to bug in Qt, ask Max
+            kapp->processEvents(); // QProgressDialog also calls this, but not always due to Qt bug!
 
             //only worth testing for after processEvents() is called
             if( progress.wasCancelled() )
@@ -836,7 +836,7 @@ CoverViewItem::CoverViewItem( QIconView *parent, QIconViewItem *after, QString a
     , m_artist( artist )
     , m_album( album )
     , m_coverImagePath( CollectionDB().albumImage( m_artist, m_album, 0 ) )
-    , m_coverPix( 0 )
+    , m_coverPixmap( 0 )
 {
     setDragEnabled( true );
     setDropEnabled( true );
@@ -851,7 +851,7 @@ bool CoverViewItem::hasCover() const
 void CoverViewItem::loadCover()
 {
     m_coverImagePath = CollectionDB().albumImage( m_artist, m_album );
-    m_coverPix = QPixmap( m_coverImagePath );  //create the scaled cover
+    m_coverPixmap = QPixmap( m_coverImagePath );  //create the scaled cover
 
     repaint();
 }
@@ -886,9 +886,9 @@ void CoverViewItem::paintItem(QPainter* p, const QColorGroup& cg)
     p->drawRect( 0, 0, itemRect.width(), pixmapRect().height()+2 );
 
     // draw the cover image
-    if( !m_coverPix.isNull() )
-        p->drawPixmap( pixmapRect().x() + (pixmapRect().width() - m_coverPix.width())/2,
-            pixmapRect().y() + (pixmapRect().height() - m_coverPix.height())/2, m_coverPix );
+    if( !m_coverPixmap.isNull() )
+        p->drawPixmap( pixmapRect().x() + (pixmapRect().width() - m_coverPixmap.width())/2,
+            pixmapRect().y() + (pixmapRect().height() - m_coverPixmap.height())/2, m_coverPixmap );
 
     //justify the album name
     QString str = text();
