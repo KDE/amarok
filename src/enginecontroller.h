@@ -13,7 +13,7 @@
 #ifndef AMAROK_ENGINECONTROLLER_H
 #define AMAROK_ENGINECONTROLLER_H
 
-#include "engineobserver.h" // move me // where to sir?
+#include "engineobserver.h"
 #include "metabundle.h"
 
 #include <qguardedptr.h>
@@ -41,13 +41,14 @@ public:
     // plugins have their own static space, so calling instance
     // from a plugin won't do any good. you'll only get a new
     // instance with a voidEngine
-    static EngineController *instance();
-    static EngineBase       *engine() { return instance()->m_engine; }
-    static EngineBase       *loadEngine();
+    static EngineController* instance();
+    static EngineBase*       engine() { return instance()->m_engine; }
     static bool              canDecode( const KURL& );
-    static ExtensionCache   &extensionCache() { return s_extensionCache; }
+    static ExtensionCache&   extensionCache() { return s_extensionCache; }
     static QString           engineProperty( const QString& key ) { return engine()->pluginProperty( key ); }
     static bool              hasEngineProperty( const QString& key ) { return engine()->hasPluginProperty( key ); }
+
+    EngineBase* loadEngine();
 
     uint trackLength() const { return m_bundle.length() * 1000; }
     const MetaBundle &bundle() const;
@@ -97,13 +98,17 @@ protected:
     EngineController();
    ~EngineController();
 
+    // undefined
+    EngineController( const EngineController& );
+    EngineController &operator=( const EngineController& );
+
 private:
     static ExtensionCache s_extensionCache;
-    static amaroK::Plugin *loadEngine( const QString &engineName );
 
-    typedef QValueList<MetaBundle> BundleList;
+    EngineBase* loadEngine( const QString &engineName );
 
     EngineBase*     m_engine;
+    EngineBase*     m_voidEngine;
     MetaBundle      m_bundle;
     BundleList      m_lastMetadata;
     long            m_delayTime;

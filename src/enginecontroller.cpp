@@ -29,6 +29,8 @@
 #include <kmessagebox.h>
 #include <krun.h>
 
+#include <cstdlib>
+
 
 ExtensionCache EngineController::s_extensionCache;
 
@@ -45,14 +47,15 @@ EngineController::instance()
 
 
 EngineController::EngineController()
-    : m_engine( 0 )
-    , m_delayTime( 0 )
-    , m_muteVolume( 0 )
-    , m_xFadeThisTrack( false )
-    , m_timer( new QTimer( this ) )
-    , m_stream( 0 )
+        : m_engine( 0 )
+        , m_voidEngine( 0 )
+        , m_delayTime( 0 )
+        , m_muteVolume( 0 )
+        , m_xFadeThisTrack( false )
+        , m_timer( new QTimer( this ) )
+        , m_stream( 0 )
 {
-    m_engine = (EngineBase*)loadEngine( "void-engine" );
+    m_voidEngine = m_engine = (EngineBase*)loadEngine( "void-engine" );
 
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotMainTimer() ) );
 }
@@ -67,128 +70,120 @@ EngineController::~EngineController()
 // PUBLIC
 //////////////////////////////////////////////////////////////////////////////////////////
 
-EngineBase *EngineController::loadEngine() //static
+EngineBase*
+EngineController::loadEngine() //static
 {
+    /// always returns a valid pointer to EngineBase
+
     DEBUG_BLOCK
+    //TODO remember song position, and resume playback
 
-    Engine::Base   *engine = instance()->m_engine;
-    amaroK::Plugin *plugin = loadEngine( AmarokConfig::soundSystem() );
+    if( m_engine != m_voidEngine ) {
+        EngineBase *oldEngine = m_engine;
 
-    {
-        QObject *bar = amaroK::StatusBar::instance();
-        QObject *eng = (EngineBase*)plugin;
-        QObject *ins = instance();
+        // we assign this first for thread-safety,
+        // EngineController::engine() must always return an engine!
+        m_engine = m_voidEngine;
 
-        connect( eng, SIGNAL(stateChanged( Engine::State )),
-                        ins, SLOT(slotStateChanged( Engine::State )) );
-        connect( eng, SIGNAL(trackEnded()),
-                        ins, SLOT(slotTrackEnded()) );
-        connect( eng, SIGNAL(statusText( const QString& )),
-                        bar, SLOT(shortMessage( const QString& )) );
-        connect( eng, SIGNAL(infoMessage( const QString& )),
-                        bar, SLOT(longMessage( const QString& )) );
-        connect( eng, SIGNAL(metaData( const Engine::SimpleMetaBundle& )),
-                        ins, SLOT(slotEngineMetaData( const Engine::SimpleMetaBundle& )) );
-        connect( eng, SIGNAL(showConfigDialog( const QCString& )),
-                        kapp, SLOT(slotConfigAmarok( const QCString& )) );
+        // we unload the old engine first because there are a number of
+        // bugs associated with keeping one engine loaded while loading
+        // another, eg xine-engine can't init(), and aRts-engine crashes
+        PluginManager::unload( oldEngine );
+
+        // the engine is not required to do this when we unload it but
+        // we need to do it to ensure amaroK looks correct and to delete
+        // m_stream. We don't do this for the void-engine because that
+        // means amaroK sets all components to empty on startup, which is
+        // their responsibility.
+        slotStateChanged( Engine::Empty );
+
+        // new engine, new ext cache required
+        extensionCache().clear();
     }
 
-    if( static_cast<EngineBase*>(plugin)->init() )
+    m_engine = loadEngine( AmarokConfig::soundSystem() );
+
+    const QString engineName = PluginManager::getService( m_engine )->property( "X-KDE-amaroK-name" ).toString();
+    if( engineName != AmarokConfig::soundSystem() )
     {
-        //only change things if the init was successful,
-        //otherwise leave amaroK with the old engine loaded
+        amaroK::StatusBar::instance()->longMessage( i18n(
+                "Sorry, the '%1' could not be loaded, instead we have loaded the '%2'." )
+                        .arg( AmarokConfig::soundSystem() )
+                        .arg( engineName ),
+                KDE::StatusBar::Sorry );
 
-        //set amaroK to stopped state
-        instance()->stop();
+        AmarokConfig::setSoundSystem( engineName );
+    }
 
-        //new engine, new ext cache required
-        extensionCache().clear();
-
-        //assign new engine, unload old one. Order is thread-safe!
-        instance()->m_engine = static_cast<EngineBase*>(plugin);
-        PluginManager::unload( engine );
-
-        engine = static_cast<EngineBase*>(plugin);
-
-        //the engine is not required to do this when we unload it
-        //but we need to do it to ensure amaroK looks correctly
-        //and to delete m_stream
-        instance()->slotStateChanged( Engine::Empty );
-
-        //NOTE engine settings are set in App::applySettings()
-
-    } else {
-
-        //init failed - fall back to currently loaded engine
-        //TODO avoid two levels of message dialogs, eg
-        //       gst-engine says "argh you haven't run gst-register"
-        //       then the following message is shown
-
-        QString oldEngine = PluginManager::getService( engine )->property( "X-KDE-amaroK-name" ).toString();
-
-        amaroK::StatusBar::instance()->longMessage(
-            i18n( "amaroK could not initialize the '%1', instead we will revert to the '%2'" )
-                .arg( AmarokConfig::soundSystem(), oldEngine ),
-            KDE::StatusBar::Error );
-
-        AmarokConfig::setSoundSystem( PluginManager::getService( engine )->property( "X-KDE-amaroK-name" ).toString() );
-
-        delete plugin;
-     }
-
-     return engine;
+    return m_engine;
 }
 
-
-amaroK::Plugin *EngineController::loadEngine( const QString &engineName )
+#include <qvaluevector.h>
+EngineBase*
+EngineController::loadEngine( const QString &engineName )
 {
-    QString query = "[X-KDE-amaroK-plugintype] == 'engine' and [X-KDE-amaroK-name] == '%1'";
-    amaroK::Plugin* plugin = PluginManager::createFromQuery( query.arg( engineName ) );
+    /// always returns a valid plugin (exits if it can't get one)
 
-    if( !plugin ) {
-        query = "[X-KDE-amaroK-plugintype] == 'engine' and [X-KDE-amaroK-name] != '%1'";
-        KTrader::OfferList offers = PluginManager::query( query.arg( engineName ) );
+    DEBUG_BLOCK
 
-        while( !plugin && !offers.isEmpty() ) {
-            // prioritise highest rank for left engines
-            uint current = 0;
-            for( uint i = 0, rank = 0; i < offers.count(); i++ )
-                if ( offers[i]->property( "X-KDE-amaroK-rank" ).toInt() > (int)rank ) {
-                    current = i;
-                    rank = offers[i]->property( "X-KDE-amaroK-rank" ).toInt();
-                }
+    QString query = "[X-KDE-amaroK-plugintype] == 'engine' and [X-KDE-amaroK-name] != '%1'";
+    KTrader::OfferList offers = PluginManager::query( query.arg( engineName ) );
 
-            plugin = PluginManager::createFromService( offers[current] );
-            offers.remove( offers[current] );
+    // sort by rank, QValueList::operator[] is O(n), so this is quite inefficient
+    #define rank( x ) (x)->property( "X-KDE-amaroK-rank" ).toInt()
+    for( int n = offers.count()-1, i = 0; i < n; i++ )
+        for( int j = n; j > i; j-- )
+            if( rank( offers[j] ) > rank( offers[j-1] ) )
+                qSwap( offers[j], offers[j-1] );
+    #undef rank
+
+    // this is the actual engine we want
+    query = "[X-KDE-amaroK-plugintype] == 'engine' and [X-KDE-amaroK-name] == '%1'";
+    offers = PluginManager::query( query.arg( engineName ) ) + offers;
+
+    foreachType( KTrader::OfferList, offers ) {
+        amaroK::Plugin *plugin = PluginManager::createFromService( *it );
+
+        if( plugin ) {
+            QObject *bar = amaroK::StatusBar::instance();
+            EngineBase *engine = (EngineBase*)plugin;
+
+            connect( engine, SIGNAL(stateChanged( Engine::State )),
+                       this, SLOT(slotStateChanged( Engine::State )) );
+            connect( engine, SIGNAL(trackEnded()),
+                       this, SLOT(slotTrackEnded()) );
+            connect( engine, SIGNAL(statusText( const QString& )),
+                        bar, SLOT(shortMessage( const QString& )) );
+            connect( engine, SIGNAL(infoMessage( const QString& )),
+                        bar, SLOT(longMessage( const QString& )) );
+            connect( engine, SIGNAL(metaData( const Engine::SimpleMetaBundle& )),
+                       this, SLOT(slotEngineMetaData( const Engine::SimpleMetaBundle& )) );
+            connect( engine, SIGNAL(showConfigDialog( const QCString& )),
+                       kapp, SLOT(slotConfigAmarok( const QCString& )) );
+
+            if( engine->init() )
+                return engine;
+            else
+                warning() << "Could not init() an engine\n";
         }
-
-        if ( !plugin ) {
-            KRun::runCommand( "kbuildsycoca" );
-
-            KMessageBox::error( 0, i18n(
-                "<p>amaroK could not find any sound-engine plugins. "
-                "amaroK is now updating the KDE configuration database. Please wait a couple of minutes, then restart amaroK.</p>"
-                "<p>If this does not help, "
-                "it is likely that amaroK is installed under the wrong prefix, please fix your installation using:<pre>"
-                "$ cd /path/to/amarok/source-code/<br>"
-                "$ su -c \"make uninstall\"<br>"
-                "$ ./configure --prefix=`kde-config --prefix` && su -c \"make install\"<br>"
-                "$ kbuildsycoca<br>"
-                "$ amarok</pre>"
-                "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net.</p>" ) );
-
-            ::exit( EXIT_SUCCESS );
-        }
-
-        AmarokConfig::setSoundSystem( PluginManager::getService( plugin )->property( "X-KDE-amaroK-name" ).toString() );
-
-        if( !engineName.isEmpty() )
-            // the first ever run has an empty engine string
-            amaroK::StatusBar::instance()->longMessage(
-                    i18n( "Sorry, the %1 could not be found." ).arg( engineName ), KDE::StatusBar::Sorry );
     }
 
-    return plugin;
+    KRun::runCommand( "kbuildsycoca" );
+
+    KMessageBox::error( 0, i18n(
+            "<p>amaroK could not find any sound-engine plugins. "
+            "amaroK is now updating the KDE configuration database. Please wait a couple of minutes, then restart amaroK.</p>"
+            "<p>If this does not help, "
+            "it is likely that amaroK is installed under the wrong prefix, please fix your installation using:<pre>"
+            "$ cd /path/to/amarok/source-code/<br>"
+            "$ su -c \"make uninstall\"<br>"
+            "$ ./configure --prefix=`kde-config --prefix` && su -c \"make install\"<br>"
+            "$ kbuildsycoca<br>"
+            "$ amarok</pre>"
+            "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net.</p>" ) );
+
+    // don't use QApplication::exit, as the eventloop may not have started yet
+    std::exit( EXIT_SUCCESS );
 }
 
 
@@ -256,6 +251,8 @@ void EngineController::endSession()
     //only update song stats, when we're not going to resume it
     if ( m_bundle.length() > 0 && !AmarokConfig::resumePlayback() )
         trackEnded( m_engine->position(), m_bundle.length() * 1000 );
+
+    PluginManager::unload( m_voidEngine );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

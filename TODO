@@ -36,9 +36,6 @@ SHORT-TERM (URGENT):
 
   <mxcl>   If you inline set the title tag to "", prettyTitle gets inserted as the title tag.
 
-  <mxcl>   loadEngine can call statusbar::message() at the void-engine stage and crash because the statusbar
-           is not yet created.
-
   <markey> When the KDE color scheme is changed while amaroK is running, all toolbar buttons (those with text)
            lose their texts.
 

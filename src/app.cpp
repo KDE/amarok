@@ -454,7 +454,7 @@ void App::applySettings( bool firstTime )
                          PluginManager::getService( engine )->property( "X-KDE-amaroK-name" ).toString() )
         {
             //will unload engine for us first if necessary
-            engine = EngineController::loadEngine();
+            engine = EngineController::instance()->loadEngine();
         }
 
         AmarokConfig::setHardwareMixer( engine->setHardwareMixer( AmarokConfig::hardwareMixer() ) );
