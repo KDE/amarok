@@ -67,11 +67,10 @@ class EngineBase : public QObject
         virtual void                 seek( long ms )                                   = 0;
         //@param percent set volume in range 0 to 99
         virtual void                 setVolume( int percent )                          = 0;
-                void                 setXFadeLength( int ms );
-        virtual void                 startXFade()                                      = 0;
-                
+                void                 setXfadeLength( int ms );
+        
         QStringList                  listEngines();
-        //
+        
         //@param system name of multimedia framework
         //@param restart signals sound deamon must be restarted due to plugin installation. applies only to arts
         //@param scopeSize size of vector the scope delivers, exponent to base 2
@@ -85,7 +84,7 @@ class EngineBase : public QObject
         /////////////////////////////////////////////////////////////////////////////////////
         int                          m_mixerHW;
         int                          m_volume;
-        int                          m_xFadeLength;
+        int                          m_xfadeLength;
 };
 
 #endif

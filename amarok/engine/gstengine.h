@@ -45,9 +45,7 @@ class GstEngine : public EngineBase
         long                                     position() const;
         EngineBase::EngineState                  state() const;
         bool                                     isStream() const;
-
         std::vector<float>*                      scope();
-        void                                     startXFade();
         
         QStringList                              availableEffects() const;
         bool                                     effectConfigurable( const QString& name ) const;

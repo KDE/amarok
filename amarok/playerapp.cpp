@@ -313,7 +313,7 @@ void PlayerApp::readConfig()
     kdDebug() << "begin PlayerApp::readConfig()" << endl;
 
     m_pEngine->initMixer     ( AmarokConfig::softwareMixerOnly() );
-    m_pEngine->setXFadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
+    m_pEngine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
     
     /*    m_pBrowserWin->m_pBrowserWidget->readDir( AmarokConfig::currentDirectory() );
         m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( AmarokConfig::pathHistory() );*/

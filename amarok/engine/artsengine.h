@@ -44,20 +44,16 @@ class ArtsEngine : public EngineBase
 
         bool                                     initMixer( bool software );
         bool                                     canDecode( const KURL &url );
-
         long                                     position() const;
         EngineBase::EngineState                  state() const;
         bool                                     isStream() const;
 
         std::vector<float>*                      scope();
-        void                                     startXFade();
-        
         QStringList                              availableEffects() const;        
         bool                                     effectConfigurable( const QString& name ) const;        
         
     public slots:
         void                                     open( KURL );
-
         void                                     play();
         void                                     stop();
         void                                     pause();
@@ -69,7 +65,8 @@ class ArtsEngine : public EngineBase
         void                                     enableScope();
         void                                     disableScope();
         void                                     stopCurrent();
-        void                                     stopXFade();
+        void                                     startXfade();
+        void                                     stopXfade();
         void                                     timerEvent( QTimerEvent* );
     
         /////////////////////////////////////////////////////////////////////////////////////
@@ -77,23 +74,23 @@ class ArtsEngine : public EngineBase
         /////////////////////////////////////////////////////////////////////////////////////
         KArtsDispatcher*                         m_pArtsDispatcher;
         KDE::PlayObject*                         m_pPlayObject;
-        KDE::PlayObject*                         m_pPlayObjectXFade;
+        KDE::PlayObject*                         m_pPlayObjectXfade;
         Arts::SoundServerV2                      m_server;
         Arts::StereoEffectStack                  m_globalEffectStack;
         Arts::StereoEffectStack                  m_effectStack;
         Arts::StereoVolumeControl                m_volumeControl;
         Arts::Synth_AMAN_PLAY                    m_amanPlay;
         Amarok::RawScope                         m_scope;
-        Amarok::Synth_STEREO_XFADE               m_XFade;
+        Amarok::Synth_STEREO_XFADE               m_Xfade;
                
         long                                     m_scopeId;
         int                                      m_scopeSize;
         long                                     m_volumeId;
         bool                                     m_proxyError;
 
-        bool                                     m_XFadeRunning;
-        float                                    m_XFadeValue;
-        QString                                  m_XFadeCurrent;
+        bool                                     m_XfadeRunning;
+        float                                    m_XfadeValue;
+        QString                                  m_XfadeCurrent;
             
     private slots:
         void                                     connectPlayObject();

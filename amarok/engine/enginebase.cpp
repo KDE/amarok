@@ -55,9 +55,9 @@ void EngineBase::setVolumeHW( int percent )
 }
 
 
-void EngineBase::setXFadeLength( int ms )
+void EngineBase::setXfadeLength( int ms )
 {
-    m_xFadeLength = ms;
+    m_xfadeLength = ms;
 }
 
 

@@ -52,14 +52,14 @@ email                : markey@web.de
 ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
         : EngineBase()
         , m_pPlayObject( NULL )
-        , m_pPlayObjectXFade( NULL )
+        , m_pPlayObjectXfade( NULL )
         , m_scopeId( 0 )
         , m_scopeSize( 1 << scopeSize )
         , m_volumeId( 0 )
         , m_proxyError( false )
-        , m_XFadeRunning( false )
-        , m_XFadeValue( 1.0 )
-        , m_XFadeCurrent( "invalue1" )
+        , m_XfadeRunning( false )
+        , m_XfadeValue( 1.0 )
+        , m_XfadeCurrent( "invalue1" )
 {
     setName( "ArtsEngine" );
 
@@ -152,10 +152,10 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
         m_amanPlay.start();
     }
         
-    { //XFade
-        m_XFade = Arts::DynamicCast( m_server.createObject( "Amarok::Synth_STEREO_XFADE" ) );
+    { //Xfade
+        m_Xfade = Arts::DynamicCast( m_server.createObject( "Amarok::Synth_STEREO_XFADE" ) );
     
-        if ( m_XFade.isNull() ) {
+        if ( m_Xfade.isNull() ) {
             KMessageBox::error( 0,
                                 i18n( "Cannot find libamarokarts! Probably amaroK was installed with the \
                                     wrong prefix. Please install again using: ./configure \
@@ -164,8 +164,8 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
             ::exit( 1 );
         }
         
-        m_XFade.percentage( m_XFadeValue );
-        m_XFade.start();
+        m_Xfade.percentage( m_XfadeValue );
+        m_Xfade.start();
     }
     
     { //globalEffectStack
@@ -185,8 +185,8 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
     }
 
     Arts::connect( m_globalEffectStack  , m_amanPlay );
-    Arts::connect( m_XFade, "outvalue_l", m_globalEffectStack, "inleft" );
-    Arts::connect( m_XFade, "outvalue_r", m_globalEffectStack, "inright" );
+    Arts::connect( m_Xfade, "outvalue_l", m_globalEffectStack, "inleft" );
+    Arts::connect( m_Xfade, "outvalue_r", m_globalEffectStack, "inright" );
             
     startTimer( ARTS_TIMER );
 }
@@ -197,7 +197,7 @@ ArtsEngine::~ ArtsEngine()
     stop();
     
     m_scope             = Amarok::RawScope::null();
-    m_XFade             = Amarok::Synth_STEREO_XFADE::null();
+    m_Xfade             = Amarok::Synth_STEREO_XFADE::null();
     m_volumeControl     = Arts::StereoVolumeControl::null();
     m_effectStack       = Arts::StereoEffectStack::null();
     m_globalEffectStack = Arts::StereoEffectStack::null();
@@ -229,8 +229,9 @@ bool ArtsEngine::initMixer( bool software )
     return true;
 }
 
-
-//////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC METHODS
+////////////////////////////////////////////////////////////////////////////////
 
 bool ArtsEngine::canDecode( const KURL &url )
 {
@@ -329,13 +330,12 @@ bool ArtsEngine::effectConfigurable( const QString& name ) const
     return yes;
 }
 
-
 //////////////////////////////////////////////////////////////////////
 
 void ArtsEngine::open( KURL url )
 {
-    if ( m_xFadeLength )
-        startXFade();
+    if ( m_xfadeLength )
+        startXfade();
 
     else if ( m_pPlayObject )
         stopCurrent();
@@ -385,21 +385,21 @@ void ArtsEngine::connectPlayObject()
     {
         m_pPlayObject->object()._node()->start();
 
-        if ( m_XFadeCurrent == "invalue1" )
-            m_XFadeCurrent = "invalue2";
+        if ( m_XfadeCurrent == "invalue1" )
+            m_XfadeCurrent = "invalue2";
         else
-            m_XFadeCurrent = "invalue1";
+            m_XfadeCurrent = "invalue1";
 
-        if ( !m_XFadeRunning )
+        if ( !m_XfadeRunning )
         {
-            if ( m_XFadeCurrent == "invalue2" )
-                m_XFade.percentage( m_XFadeValue = 0.0 );
+            if ( m_XfadeCurrent == "invalue2" )
+                m_Xfade.percentage( m_XfadeValue = 0.0 );
             else
-                m_XFade.percentage( m_XFadeValue = 1.0 );
+                m_Xfade.percentage( m_XfadeValue = 1.0 );
         }
         
-        Arts::connect( m_pPlayObject->object(), "left", m_XFade, ( m_XFadeCurrent + "_l" ).latin1() );
-        Arts::connect( m_pPlayObject->object(), "right", m_XFade, ( m_XFadeCurrent + "_r" ).latin1() );
+        Arts::connect( m_pPlayObject->object(), "left", m_Xfade, ( m_XfadeCurrent + "_l" ).latin1() );
+        Arts::connect( m_pPlayObject->object(), "right", m_Xfade, ( m_XfadeCurrent + "_r" ).latin1() );
     }
 }
 
@@ -415,7 +415,7 @@ void ArtsEngine::play()
 
 void ArtsEngine::stop()
 {
-   stopXFade();
+   stopXfade();
    stopCurrent();
 }
 
@@ -450,20 +450,6 @@ void ArtsEngine::setVolume( int percent )
         m_volumeControl.scaleFactor( percent * 0.01 );
     else
         EngineBase::setVolumeHW( percent );
-}
-
-
-void ArtsEngine::startXFade()
-{
-    kdDebug() << "void ArtsEngine::startXFade()" << endl;
-
-    if ( m_XFadeRunning )
-        stopXFade();
-
-    m_XFadeRunning = true;
-
-    m_pPlayObjectXFade = m_pPlayObject;
-    m_pPlayObject = NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -517,50 +503,64 @@ void ArtsEngine::stopCurrent()
 }
     
 
-void ArtsEngine::stopXFade()
+void ArtsEngine::startXfade()
 {
-    kdDebug() << "void PlayerApp::stopXFade()" << endl;
+    kdDebug() << "void ArtsEngine::startXfade()" << endl;
 
-    m_XFadeRunning = false;
+    if ( m_XfadeRunning )
+        stopXfade();
 
-    if ( m_XFadeCurrent == "invalue2" )
-        m_XFadeValue = 0.0;
+    m_XfadeRunning = true;
+
+    m_pPlayObjectXfade = m_pPlayObject;
+    m_pPlayObject = NULL;
+}
+
+
+void ArtsEngine::stopXfade()
+{
+    kdDebug() << "void PlayerApp::stopXfade()" << endl;
+
+    m_XfadeRunning = false;
+
+    if ( m_XfadeCurrent == "invalue2" )
+        m_XfadeValue = 0.0;
     else
-        m_XFadeValue = 1.0;
+        m_XfadeValue = 1.0;
 
-    m_XFade.percentage( m_XFadeValue );
+    m_Xfade.percentage( m_XfadeValue );
 
-    if ( m_pPlayObjectXFade != NULL )
+    if ( m_pPlayObjectXfade != NULL )
     {
-        m_pPlayObjectXFade->halt();
+        m_pPlayObjectXfade->halt();
 
-        delete m_pPlayObjectXFade;
-        m_pPlayObjectXFade = NULL;
+        delete m_pPlayObjectXfade;
+        m_pPlayObjectXfade = NULL;
     }
 }
 
 
 void ArtsEngine::timerEvent( QTimerEvent* )
 {
-    if ( m_XFadeRunning )
+    if ( m_XfadeRunning )
     {
-        float xfadeStep = 1.0 / m_xFadeLength * ARTS_TIMER;
+        float xfadeStep = 1.0 / m_xfadeLength * ARTS_TIMER;
 
-        if ( m_XFadeCurrent == "invalue2" )
-            m_XFadeValue -= xfadeStep;
+        if ( m_XfadeCurrent == "invalue2" )
+            m_XfadeValue -= xfadeStep;
         else
-            m_XFadeValue += xfadeStep;
+            m_XfadeValue += xfadeStep;
 
-        if ( m_XFadeValue < 0.0 )
-            m_XFadeValue = 0.0;
-        else if ( m_XFadeValue > 1.0 )
-            m_XFadeValue = 1.0;
+        if ( m_XfadeValue < 0.0 )
+            m_XfadeValue = 0.0;
+        else if ( m_XfadeValue > 1.0 )
+            m_XfadeValue = 1.0;
 
-        kdDebug() << "[timerEvent] m_XFadeValue: " << m_XFadeValue << endl;
-        m_XFade.percentage( m_XFadeValue );
+        kdDebug() << "[timerEvent] m_XfadeValue: " << m_XfadeValue << endl;
+        m_Xfade.percentage( m_XfadeValue );
 
-        if( m_XFadeValue == 0.0 || m_XFadeValue == 1.0 )
-            stopXFade();
+        if( m_XfadeValue == 0.0 || m_XfadeValue == 1.0 )
+            stopXfade();
     }
 }
 
