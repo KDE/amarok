@@ -684,7 +684,7 @@ void PlayerApp::readConfig()
     m_pPlayerWidget->move( m_pConfig->readPointEntry( "PlayerPos", &pointZero ) );
     m_pBrowserWin->move( m_pConfig->readPointEntry( "BrowserWinPos", &pointZero ) );
     m_pBrowserWin->resize( m_pConfig->readSizeEntry( "BrowserWinSize", &arbitrarySize ) );
-    m_optSavePlaylist = m_pConfig->readBoolEntry( "Save Playlist", false );
+    m_optSavePlaylist = m_pConfig->readBoolEntry( "Save Playlist", true );
     m_optConfirmClear = m_pConfig->readBoolEntry( "Confirm Clear", false );
     m_optConfirmExit = m_pConfig->readBoolEntry( "Confirm Exit", false );
     m_optFollowSymlinks = m_pConfig->readBoolEntry( "Follow Symlinks", false );
@@ -693,7 +693,7 @@ void PlayerApp::readConfig()
     m_optRepeatTrack = m_pConfig->readBoolEntry( "Repeat Track", false );
     m_optRepeatPlaylist = m_pConfig->readBoolEntry( "Repeat Playlist", false );
     m_optRandomMode = m_pConfig->readBoolEntry( "Random Mode", false );
-    m_optReadMetaInfo = m_pConfig->readBoolEntry( "Show MetaInfo", false );
+    m_optReadMetaInfo = m_pConfig->readBoolEntry( "Show MetaInfo", true );
     m_optShowTrayIcon = m_pConfig->readBoolEntry( "Show Tray Icon", true );
     m_optXFade = m_pConfig->readBoolEntry( "Crossfading", true );
     m_optXFadeLength = m_pConfig->readNumEntry( "Crossfade Length", 3000 );
