@@ -26,7 +26,7 @@ AMAROK_EXPORT_PLUGIN( XineEngine )
 
 
 //define this to use xine in a more standard way
-#define XINE_SAFE_MODE
+//#define XINE_SAFE_MODE
 
 
 ///some logging static globals

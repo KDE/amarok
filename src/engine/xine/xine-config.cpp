@@ -72,14 +72,18 @@ XineConfigEntry::XineConfigEntry( QWidget *parent, amaroK::PluginConfig *pluginC
     }
     case XINE_CONFIG_TYPE_BOOL:
     {
-        QCheckBox *box = new QCheckBox( parent );
+        QCheckBox *box = new QCheckBox( QString( entry->description ), parent );
         w = box;
         box->setChecked( m_numValue );
         connect( w, SIGNAL(toggled( bool )), this, SLOT(slotBoolChanged( bool )) );
         connect( w, SIGNAL(toggled( bool )), pluginConfig, SIGNAL(viewChanged()) );
-        break;
+
+        QToolTip::add( w, QString( entry->help ) );
+        grid->addMultiCellWidget( w, row, row, 0, 1 );
+
+        return; //we don't do the other stuff
     }
-    case XINE_CONFIG_TYPE_UNKNOWN:
+    default:
         ;
     }
 
