@@ -557,7 +557,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         for ( uint i = 0; i < values.count(); i += 4 )
         {
              browser->write( QStringx ( "<tr><td onClick='window.location.href=\"album:%1 @@@ %2\"' height='42' valign='top' class='rbalbum'>"
-                                        "<a class='menu' href='fetchcover:%3 @@@ %4'><img align='left' hspace='2' src='%5'></a><span class='album'>%6</span><br>%7 Tracks</td>"
+                                        "<a class='menu' href='fetchcover:%3 @@@ %4'><img align='left' hspace='2' src='%5'></a><span class='album'>%6</span><br>%7 %8</td>"
                                         "</tr>" )
                              .args( QStringList()
                                     << values[i + 3].replace( "\"", "%22" ) // artist.id
@@ -567,6 +567,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                     << escapeHTMLAttr( m_db->getImageForAlbum( values[i + 1], values[i + 0], 50 ) )
                                     << escapeHTML( values[i + 0] ) // album.name
                                     << m_db->albumSongCount( values[i + 3], values[i + 2] )
+                                    << (m_db->albumSongCount( values[i + 3], values[i + 2] ).toInt() == 1 ? i18n( "Track" ) : i18n( "Tracks" ))
                                     )
                              );
         }
