@@ -481,8 +481,8 @@ void ContextBrowser::showIntroduction()
     browser->write( "<html><div>");
     browser->write( i18n( "Hello amaroK user!" ) );
     browser->write( "<br><br>" );
-    browser->write( i18n( "This is the ContextBrowser, it shows you contextual information about the currently playing track."
-                          "However, in order to use this feature of amaroK, you need to build a collection." )
+    browser->write( i18n( "This is the Context Browser: it shows you contextual information about the currently playing track."
+                          "In order to use this feature of amaroK, you need to build a collection." )
                     + "&nbsp;<a href='show:collectionSetup'>" + i18n( "Click here to build one." ) + "</a>" );
     browser->write( "</div></html>");
 
