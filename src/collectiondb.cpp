@@ -26,6 +26,7 @@
 #include <kio/job.h>
 
 #include <unistd.h>
+#include <math.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionDB
@@ -432,6 +433,7 @@ uint
 CollectionDB::addSongPercentage( const QString url, const int percentage )
 {
     QStringList values, names;
+    float score;
 
     execSql( QString( "SELECT playcounter, createdate, percentage FROM statistics WHERE url = '%1';" )
                 .arg( escapeString( url ) ), &values, &names );
@@ -439,7 +441,7 @@ CollectionDB::addSongPercentage( const QString url, const int percentage )
     if ( values.count() )
     {
         // entry exists, increment playcounter and update accesstime
-        float score = ( ( values[2].toDouble() * values[0].toInt() ) + percentage ) / ( values[0].toInt() + 1 );
+        score = ( ( values[2].toDouble() * values[0].toInt() ) + percentage ) / ( values[0].toInt() + 1 );
 
         execSql( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
                           "VALUES ( '%1', '%2', strftime('%s', 'now'), %3, %4 );" )
@@ -447,18 +449,18 @@ CollectionDB::addSongPercentage( const QString url, const int percentage )
                     .arg( values[1] )
                     .arg( score )
                     .arg( values[0] + " + 1" ) );
-        return (uint)score;
     } else
     {
         // entry didnt exist yet, create a new one
-        float score = ( ( 50 + percentage ) / 2 );
+        score = ( ( 50 + percentage ) / 2 );
 
         execSql( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
                           "VALUES ( '%1', strftime('%s', 'now'), strftime('%s', 'now'), %2, 1 );" )
                     .arg( escapeString( url ) )
                     .arg( score ) );
-        return (uint)score;
     }
+
+    return getSongPercentage( url );
 }
 
 
