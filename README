@@ -28,7 +28,7 @@ DEPENDENCIES
 ============
 
 required
-    * kdelibs 3.2
+    * KDElibs 3.2
       http://www.kde.org
 
     * TagLib 1.0
@@ -41,17 +41,24 @@ recommended
     * OpenGL accelerated X-Server
 
 optional
+    * aRts 1.2 + KDEMultimedia 3.2
+      http://www.kde.org
+
+    * Libvisual 0.1.6 + SDL 1.2
+      http://libvisual.sf.net
+      http://www.libsdl.org
+      
+    * MusicBrainz 2.1
+      http://www.musicbrainz.org/
+      
     * NMM 0.4.4
       http://www.networkmultimedia.org
+      
+    * xine 1.0.0
+      http://xine.sourceforge.net     
 
     * XMMS 1.2 + XMMS visualization plugins
       http://xmms.org
-
-    * Xine 1.0.0
-      http://xine.sourceforge.net
-
-    * aRts 1.2 + kdemultimedia 3.2
-      http://www.kde.org
 
 
 Please note, if you obtain these dependencies via a packaging system, you must
@@ -136,10 +143,10 @@ benefit from optimisation, so the smallest binary is probably the best route.
 In order to limit the dependencies the amaroK package demands we suggest
 splitting amaroK into the following packages:
 
-   1. amaroK + aRts-engine
-   2. GStreamer-engine
-   3. Xine-engine
-   4. amarok_xmmswrapper
+   1. amaroK + GStreamer-engine
+   2. aRts-engine
+   3. xine-engine
+   4. amarok_xmmswrapper + amarok_libvisual
 
 amaroK is modular and wil be fully functional without 2, 3 and 4.
 
@@ -162,4 +169,3 @@ get instant notification of commits to the CVS.
 WWW : http://amarok.kde.org
 MAIL: amarok-devel@lists.sourceforge.net
 IRC : irc.freenode.net, #amarok
-
