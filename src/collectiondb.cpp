@@ -585,15 +585,11 @@ CollectionDB::albumSongCount( const QString &artist_id, const QString &album_id 
 QStringList
 CollectionDB::albumTracks( const QString &artist_id, const QString &album_id )
 {
-  return query( QString(
-      "SELECT tags.url "
-      "FROM tags, year "
-      "WHERE tags.album = %1 AND "
-      "( tags.sampler = 1 OR tags.artist = %2 ) "
-      "AND year.id = tags.year "
-      "ORDER BY tags.track;" )
-      .arg( album_id )
-      .arg( artist_id ) );
+    return query( QString( "SELECT tags.url FROM tags, year WHERE tags.album = %1 AND "
+                           "( tags.sampler = 1 OR tags.artist = %2 ) AND year.id = tags.year "
+                           "ORDER BY tags.track;" )
+                     .arg( album_id )
+                     .arg( artist_id ) );
 }
 
 

@@ -926,7 +926,7 @@ Playlist::rename( QListViewItem *item, int column ) //SLOT
             break;
 
         case PlaylistItem::Genre:
-            renameLineEdit()->completionObject()->setItems( MetaBundle::genreList() );
+            renameLineEdit()->completionObject()->setItems( CollectionDB::instance()->genreList() );
             break;
 
         default:

@@ -225,7 +225,8 @@ void TagDialog::init()
     kComboBox_album->completionObject()->setIgnoreCase( true );
     kComboBox_album->setCompletionMode( KGlobalSettings::CompletionPopup );
 
-    const QStringList genres = MetaBundle::genreList();
+//    const QStringList genres = MetaBundle::genreList();
+    const QStringList genres = CollectionDB::instance()->genreList();
     kComboBox_genre->insertStringList( genres );
     kComboBox_genre->completionObject()->insertItems( genres );
     kComboBox_genre->completionObject()->setIgnoreCase( true );
