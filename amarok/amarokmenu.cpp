@@ -83,3 +83,5 @@ void amaroK::Menu::slotActivated( int index )
         break;
     }
 }
+
+#include "amarokmenu.moc"
