@@ -1,6 +1,8 @@
 // (c) Pierpaolo Di Panfilo 2004
 // See COPYING file for licensing information
 
+#include "config.h"
+
 #include "collectiondb.h"
 #include "covermanager.h"
 

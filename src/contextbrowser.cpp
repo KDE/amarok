@@ -2,6 +2,8 @@
 // See COPYING file for licensing information
 
 
+#include "config.h"
+
 #include "amarokconfig.h"
 #include "collectionbrowser.h"
 #include "collectiondb.h"
