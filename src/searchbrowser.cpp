@@ -4,27 +4,28 @@
 #include "k3bexporter.h"
 #include "playlist.h"
 #include "searchbrowser.h"
+#include "threadweaver.h"
+
+#include <qlabel.h>
+#include <qpushbutton.h>
+#include <qsplitter.h>
+#include <qtextstream.h>
+#include <qtooltip.h>
 
 #include <kapplication.h> //kapp->config(), QApplication::setOverrideCursor()
 #include <kconfig.h>      //config object
-#include <klocale.h>
 #include <kcursor.h>      //waitCursor()
 #include <kdebug.h>
 #include <klineedit.h>
+#include <klocale.h>
 #include <kpopupmenu.h>
-#include <kurl.h>
 #include <kurlcombobox.h>
-#include <stdlib.h>
-#include <dirent.h>
-#include <sys/stat.h>
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qsplitter.h>
-#include <qtextstream.h>
 #include <kurlcompletion.h>
 #include <kurldrag.h>
 
-#include "threadweaver.h"
+#include <dirent.h>
+#include <stdlib.h>
+#include <sys/stat.h>
 
 
 SearchBrowser::SearchListView::SearchListView( QWidget *parent, const char *name )
@@ -84,12 +85,14 @@ SearchBrowser::SearchBrowser( const char *name )
     hb1->setSpacing( 4 );
     QLabel *label1 = new QLabel( i18n( "Search &for:" ), hb1 );
     searchEdit = new KLineEdit( hb1 );
+    QToolTip::add( searchEdit, i18n( "Enter filename pattern to find." ) );
     label1->setBuddy( searchEdit );
 
     QHBox *hb2 = new QHBox( this );
     hb2->setSpacing( 4 );
     QLabel *label2 = new QLabel( i18n( "where", "&In:" ), hb2 );
     urlEdit = new KURLComboBox( KURLComboBox::Directories, TRUE, hb2 );
+    QToolTip::add( urlEdit, i18n( "Enter folder." ) );
     label2->setBuddy( urlEdit );
     m_searchButton = new QPushButton( i18n( "&Search" ), hb2 );
     urlEdit->setDuplicatesEnabled( false );
