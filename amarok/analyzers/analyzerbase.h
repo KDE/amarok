@@ -22,7 +22,8 @@
 #include <vector>
 
 class QMouseEvent;
-class QPixmap;
+//class QPixmap;
+#include <qpixmap.h>
 class QWidget;
 
 #define SINVEC_SIZE 6000
@@ -40,7 +41,15 @@ class AnalyzerBase : public QFrame
         virtual ~AnalyzerBase();
 
         virtual void drawAnalyzer( std::vector<float> * ) = 0;
+
         uint timeout() const { return m_timeout; }
+        const QPixmap *grid() const { return &m_grid; }
+
+        //this is called often in drawAnalyser implementations
+        //so you felt you had to shorten the workload by re-implementing it
+        //but! don't forget to set it to the new value for height when
+        //we start allowing the main Widget to be resized
+        uint height() const { return m_iVisHeight; }
 
     signals:
         void clicked();
@@ -48,18 +57,16 @@ class AnalyzerBase : public QFrame
     protected:
         void interpolate( std::vector<float> *, std::vector<float> & ) const;
         void initSin( std::vector<float> & ) const;
+
         virtual void init();
         virtual void mouseReleaseEvent( QMouseEvent* );
-
-        uint height() const { return m_iVisHeight; } //QRect::height() involves a little arithmitic, this is (ever so slightly) quicker but wastes 32bits..
-
-        QPixmap *m_pGridPixmap;
 
     private:
         void initGrid();
         virtual void polish();
 
         uint m_timeout, m_iVisHeight;
+        QPixmap m_grid;
 };
 
 #endif

@@ -35,6 +35,8 @@ class DistortAnalyzer : public AnalyzerBase
         DistortAnalyzer(QWidget *parent=0, const char *name=0);
         virtual ~DistortAnalyzer();
 
+        void paintEvent( QPaintEvent * );
+
     private:
         virtual void init();
         virtual void drawAnalyzer( std::vector<float> * );

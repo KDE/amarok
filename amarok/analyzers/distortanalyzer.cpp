@@ -60,15 +60,15 @@ void DistortAnalyzer::init()
 
 void DistortAnalyzer::drawAnalyzer( std::vector<float> *s )
 {
-    bitBlt( m_pComposePixmap, 0, 0, m_pGridPixmap );
-    bitBlt( m_pComposePixmap1, 0, 0, m_pGridPixmap );
+    bitBlt( m_pComposePixmap, 0, 0, grid() );
+    bitBlt( m_pComposePixmap1, 0, 0, grid() );
 
-    if ( s )                                          // don't bother if vector is empty
+    if ( s ) // don't bother if vector is empty
     {
         std::vector<float>::const_iterator it;
         std::vector<float> sNew( width() );
         interpolate( s, sNew );
-        
+
         // HORIZONTAL:
                 
         it = sNew.begin();
@@ -101,9 +101,16 @@ void DistortAnalyzer::drawAnalyzer( std::vector<float> *s )
 
            ++it;
         }
+
+        bitBlt( this, 0, 0, m_pComposePixmap );
+
     }
-    bitBlt( this, 0, 0, m_pComposePixmap );
 }
 
+
+void DistortAnalyzer::paintEvent( QPaintEvent * )
+{
+   bitBlt( this, 0, 0, m_pSrcPixmap );
+}
 
 #include "distortanalyzer.moc"

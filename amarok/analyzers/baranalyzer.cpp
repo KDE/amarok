@@ -24,7 +24,7 @@
 
 
 
-BarAnalyser::BarAnalyser( QWidget *parent, const char *name ) :
+BarAnalyzer::BarAnalyzer( QWidget *parent, const char *name ) :
    AnalyzerBase( TIMEOUT, parent, name ),
    m_pBgPixmap( 0 ),
    m_pSrcPixmap( 0 ),
@@ -33,7 +33,7 @@ BarAnalyser::BarAnalyser( QWidget *parent, const char *name ) :
 {}
 
 
-BarAnalyser::~BarAnalyser()
+BarAnalyzer::~BarAnalyzer()
 {
     delete m_pBgPixmap;
     delete m_pSrcPixmap;
@@ -44,7 +44,7 @@ BarAnalyser::~BarAnalyser()
 
 // METHODS =====================================================
 
-void BarAnalyser::init()
+void BarAnalyzer::init()
 {
     double F = double(height() - 2) / (log10( 255 ) * MAX_AMPLITUDE);
 
@@ -75,13 +75,13 @@ void BarAnalyser::init()
 }
 
 
-void BarAnalyser::drawAnalyzer( std::vector<float> *s )
+void BarAnalyzer::drawAnalyzer( std::vector<float> *s )
 {
     static std::vector<uint> barVector( BAND_COUNT, 0 );
-    static std::vector<int>  roofVector( BAND_COUNT, 0 );
+    static std::vector<int>  roofVector( BAND_COUNT, 0 ); //use ints as it would be dangerous to allow the sign bit to be set for this vector
     static std::vector<uint> roofVelocityVector( BAND_COUNT, 0 );
 
-    bitBlt( m_pComposePixmap, 0, 0, m_pGridPixmap ); //start with a blank canvas
+    bitBlt( m_pComposePixmap, 0, 0, grid() ); //start with a blank canvas
 
 
     std::vector<float> bands( BAND_COUNT, 0 );
@@ -94,7 +94,7 @@ void BarAnalyser::drawAnalyzer( std::vector<float> *s )
     {
         //assign pre[log10]'d value
         y2 = uint((*it) * 255);
-        y2 = m_lvlMapper[ (y2 > 255) ? 255 : y2 ]; //lvlMapper is array of ints from 0 to height()
+        y2 = m_lvlMapper[ (y2 > 255) ? 255 : y2 ]; //lvlMapper is array of ints with values 0 to height()
 
         int change = y2 - barVector[i];
 
@@ -107,7 +107,7 @@ void BarAnalyser::drawAnalyzer( std::vector<float> *s )
         if ( change > 4 )
            //add some dynamics - makes the value slightly closer to what it was last time
            y2 = ( barVector[i] * 2 + y2 ) / 3;
-        else if( change < 0 )
+        else if( change < -1 )
            y2 = barVector[i] - 1;
 
 

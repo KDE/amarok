@@ -23,13 +23,13 @@ class QPixmap;
 @author Mark Kretschmann
 */
 
-class BarAnalyser : public AnalyzerBase
+class BarAnalyzer : public AnalyzerBase
 {
     Q_OBJECT
 
     public:
-        BarAnalyser( QWidget *parent=0, const char *name=0 );
-        virtual ~BarAnalyser();
+        BarAnalyzer( QWidget *parent=0, const char *name=0 );
+        virtual ~BarAnalyzer();
 
         virtual void init();
         virtual void drawAnalyzer( std::vector<float> * );

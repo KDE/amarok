@@ -20,36 +20,26 @@
 #include <math.h>
 #include <vector>
 
-#include <qevent.h>
-#include <qframe.h>
 #include <qimage.h>
 #include <qpainter.h>
 #include <qpen.h>
 #include <qpixmap.h>
-#include <qwidget.h>
-
-#include <kdebug.h>
-#include <kstandarddirs.h>
 
 
 // INSTRUCTIONS
-// 1. inherit AnalyzerBase, first parameter to AnalyzerBase is the frequency (in seconds) that drawAnalyser will be called
+// 1. inherit AnalyzerBase( first parameter to AnalyzerBase is the frequency (in milliseconds) that drawAnalyser will be called)
 // 2. do anything that depends on height() in init()
 // 3. otherwise you can use the constructor
-// 4. blt to this in drawAnalyser()
+// 4. blt to this at the end of your implementation of drawAnalyser()
 
 
 AnalyzerBase::AnalyzerBase( uint timeout, QWidget *parent, const char *name ) :
    QFrame( parent, name ),
-   m_pGridPixmap( 0 ),
    m_timeout( timeout )
 {}
 
-
 AnalyzerBase::~AnalyzerBase()
-{
-    delete m_pGridPixmap;
-}
+{}
 
 
 // METHODS =====================================================
@@ -72,20 +62,24 @@ void AnalyzerBase::init()
 
 void AnalyzerBase::initGrid()
 {
-    m_pGridPixmap = new QPixmap( parentWidget()->paletteBackgroundPixmap()->convertToImage()
-        .copy( this->x(), this->y(), width(), height() ) );
+    m_grid.resize( width(), height() );
+    bitBlt( &m_grid, 0, 0, parentWidget()->paletteBackgroundPixmap(), x(), y(), width(), height() );
 
-    QPainter painterGrid( m_pGridPixmap );
+    QPainter painterGrid( &m_grid );
     painterGrid.setPen( QPen( QColor( 0x20, 0x20, 0x50 ) ) );
 
-    for ( int x = 0; x < m_pGridPixmap->width(); x += 3 )
+    for( int x = 0, w = m_grid.width(), h = m_grid.height()-1;
+         x < w;
+         x += 3 )
     {
-        painterGrid.drawLine( x, 0, x, m_pGridPixmap->height()-1 );
+        painterGrid.drawLine( x, 0, x, h );
     }
 
-    for (int y = 0; y < m_pGridPixmap->height(); y += 3 )
+    for( int y = 0, w = m_grid.width()-1 , h = m_grid.height();
+         y < h;
+         y += 3 )
     {
-        painterGrid.drawLine( 0, y, m_pGridPixmap->width()-1, y );
+        painterGrid.drawLine( 0, y, w, y );
     }
 }
 
@@ -112,6 +106,9 @@ void AnalyzerBase::mouseReleaseEvent( QMouseEvent * )
 void AnalyzerBase::interpolate( std::vector<float> *oldVec, std::vector<float> &newVec ) const
 {
     uint newSize = newVec.size(); //vector::size() is O(1)
+
+    //necessary? code bloat if not
+    if( newSize == oldVec->size() ) { newVec = *oldVec; return; }
 
     double pos = 0.0;
     double step = static_cast<double>( oldVec->size() ) / newSize;

@@ -67,8 +67,8 @@ static uint logLevelMap[50] = {0,3,9,12,15,18,20,22,24,26,
 			      43,44,44,44,45,45,45,46,46,46,
 			      47,47,47,48,48,48,49,49,49,49
 			      };
-			      			      
-BarAnalyser2::BarAnalyser2( QWidget *parent, const char *name ) :
+
+BarAnalyzer2::BarAnalyzer2( QWidget *parent, const char *name ) :
     AnalyzerBase( 30, parent, name ),
     m_pBgPixmap( 0 ),
     m_pSrcPixmap( 0 ),
@@ -77,7 +77,7 @@ BarAnalyser2::BarAnalyser2( QWidget *parent, const char *name ) :
 {}
 
 
-BarAnalyser2::~BarAnalyser2()
+BarAnalyzer2::~BarAnalyzer2()
 {
   delete m_pBgPixmap;
   delete m_pSrcPixmap;
@@ -88,7 +88,7 @@ BarAnalyser2::~BarAnalyser2()
 
 // METHODS =====================================================
 
-void BarAnalyser2::init()
+void BarAnalyzer2::init()
 {
   m_pSrcPixmap = new QPixmap( height()*4, height() );
   m_pComposePixmap = new QPixmap( size() );
@@ -120,7 +120,7 @@ void BarAnalyser2::init()
 
 // --------------------------------------------------------------------------------
 
-void BarAnalyser2::drawAnalyzer( std::vector<float> *s )
+void BarAnalyzer2::drawAnalyzer( std::vector<float> *s )
 {
   uint newval;
   int change;
@@ -139,7 +139,7 @@ void BarAnalyser2::drawAnalyzer( std::vector<float> *s )
     bands = demoData();
   }
   
-  bitBlt( m_pComposePixmap, 0, 0, m_pGridPixmap ); //start with a blank canvas
+  bitBlt( m_pComposePixmap, 0, 0, grid() ); //start with a blank canvas
 
   for ( uint i = 0, x = 10; i < BAND_COUNT; ++i, x+=5 )
   {
@@ -211,7 +211,7 @@ void BarAnalyser2::drawAnalyzer( std::vector<float> *s )
 
 //A cool little demo mode when no music is playing
 //Maybe make configurable/make a way to switch it off
-std::vector<float> BarAnalyser2::demoData()
+std::vector<float> BarAnalyzer2::demoData()
 {
 static std::vector<float> dd;
 static bool init;

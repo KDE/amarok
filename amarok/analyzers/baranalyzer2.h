@@ -39,13 +39,13 @@ typedef struct
 }
 peak_t;
 
-class BarAnalyser2 : public AnalyzerBase
+class BarAnalyzer2 : public AnalyzerBase
 {
   Q_OBJECT
 
 public:
-  BarAnalyser2(QWidget *parent=0, const char *name=0);
-  virtual ~BarAnalyser2();
+  BarAnalyzer2(QWidget *parent=0, const char *name=0);
+  virtual ~BarAnalyzer2();
 
   virtual void drawAnalyzer( std::vector<float> * );
 
