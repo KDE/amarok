@@ -53,16 +53,19 @@ void WelcomeBrowser::setStyleSheet()
     QFontMetrics fm( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );
     int pxSize = fm.height() - 3;
 
+    const QString fg = colorGroup().highlight().name();
+    const QString bg = colorGroup().highlightedText().name();
+
     m_styleSheet =  QString( "div { color: %1; font-size: %2px; text-decoration: none; }" )
                     .arg( colorGroup().text().name() ).arg( pxSize );
 
-    m_styleSheet +=  QString( "a { color: %1; font-size: %2px; }" )
-                    .arg( colorGroup().highlight().name() ).arg( pxSize );
+    m_styleSheet +=  QString( "a { color: %1; background-color: %2; font-size: %2px; }" )
+                    .arg( fg ).arg( bg ).arg( pxSize );
 
-    m_styleSheet += QString( ".title { color: %1; font-size: %2px; font-weight: bold; text-decoration: none; }" )
-                    .arg( colorGroup().highlight().name() ).arg( pxSize + 2 );
+    m_styleSheet += QString( ".title { color: %1; background-color: %2; font-size: %3px; font-weight: bold; text-decoration: none; }" )
+                    .arg( fg ).arg( bg ).arg( pxSize + 2 );
 
-    m_styleSheet += QString( ".subtitle { color: %1; font-size: %2px; font-weight: bold; text-decoration: none; }" )
+    m_styleSheet += QString( ".subtitle { color: %1; background-color: %2; font-size: %3px; font-weight: bold; text-decoration: none; }" )
                     .arg( colorGroup().text().name() ).arg( pxSize + 1 );
 }
 
