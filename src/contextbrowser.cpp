@@ -1078,6 +1078,7 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
 {
     //colorscheme/font dependant parameters
     int pxSize = fontMetrics().height() - 4;
+    const QString fontFamily = AmarokConfig::useCustomFonts() ? AmarokConfig::contextBrowserFont().family() : QApplication::font().family();
     const QString text = colorGroup().text().name();
     const QString fg   = colorGroup().highlightedText().name();
     const QString bg   = colorGroup().highlight().name();
@@ -1117,11 +1118,12 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
 
     //we have to set the color for body due to a KHTML bug
     //KHTML sets the base color but not the text color
-    styleSheet = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); background-repeat: repeat; }" )
+    styleSheet = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); background-repeat: repeat; font-family: %5; }" )
             .arg( pxSize )
             .arg( text )
             .arg( AmarokConfig::schemeAmarok() ? fg : gradientColor.name() )
-            .arg( m_bgGradientImage->name() );
+            .arg( m_bgGradientImage->name() )
+            .arg( fontFamily );
 
     //text attributes
     styleSheet += QString( "a { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
@@ -1189,20 +1191,22 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
 void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& themeName )
 {
     //colorscheme/font dependant parameters
-    QString pxSize = QString::number( fontMetrics().height() - 4 );
-    QString text = colorGroup().text().name();
-    QString fg   = colorGroup().highlightedText().name();
-    QString bg   = colorGroup().highlight().name();
-    QString base   = colorGroup().base().name();
+    const QString pxSize = QString::number( fontMetrics().height() - 4 );
+    const QString fontFamily = AmarokConfig::useCustomFonts() ? AmarokConfig::contextBrowserFont().family() : QApplication::font().family();
+    const QString text = colorGroup().text().name();
+    const QString fg   = colorGroup().highlightedText().name();
+    const QString bg   = colorGroup().highlight().name();
+    const QString base   = colorGroup().base().name();
     const QColor bgColor = colorGroup().highlight();
     amaroK::Color gradientColor = bgColor;
 
     //we have to set the color for body due to a KHTML bug
     //KHTML sets the base color but not the text color
-    styleSheet = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; }" )
+    styleSheet = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; font-family: %4; }" )
             .arg( pxSize )
             .arg( text )
-            .arg( AmarokConfig::schemeAmarok() ? fg : gradientColor.name() );
+            .arg( AmarokConfig::schemeAmarok() ? fg : gradientColor.name() )
+            .arg( fontFamily );
 
     QString CSSLocation = KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "themes/" + themeName + "/";
 
@@ -1218,6 +1222,7 @@ void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& 
     tmpCSS.replace( "AMAROK_FONTSIZE-2", pxSize );
     tmpCSS.replace( "AMAROK_FONTSIZE", pxSize );
     tmpCSS.replace( "AMAROK_FONTSIZE+2", pxSize );
+    tmpCSS.replace( "AMAROK_FONTFAMILY", fontFamily );
     tmpCSS.replace( "AMAROK_TEXTCOLOR", text );
     tmpCSS.replace( "AMAROK_BGCOLOR", bg );
     tmpCSS.replace( "AMAROK_FGCOLOR", fg );
