@@ -110,6 +110,9 @@
                     <property name="name">
                         <cstring>kcfg_MySqlPassword</cstring>
                     </property>
+                    <property name="echoMode">
+                        <enum>Password</enum>
+                    </property>
                 </widget>
             </grid>
         </widget>
