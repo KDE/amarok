@@ -52,6 +52,7 @@ TitleProxy::TitleProxy( KURL url ) :
         m_byteCount( 0 ),
         m_metaLen( 0 ),
         m_headerFinished( false ),
+        m_pBuf( NULL ),
         m_pSockServer( NULL )
 {
     m_urlRemote = url;
