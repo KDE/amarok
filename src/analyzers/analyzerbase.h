@@ -46,6 +46,8 @@ protected:
     ~Base() { delete m_fht; }
 
     void drawFrame();
+    int  resizeExponent( int );
+    int  resizeForBands( int );
     virtual void transform( Scope& );
     virtual void analyze( const Scope& ) = 0;
     virtual void paused();

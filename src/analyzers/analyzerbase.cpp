@@ -39,6 +39,9 @@
 
 //TODO for 2D use setErasePixmap Qt function insetead of m_background
 
+// make the linker happy
+template Analyzer::Base<QWidget>;
+
 
 template<class W>
 Analyzer::Base<W>::Base( QWidget *parent, uint timeout, uint scopeSize )
@@ -119,6 +122,43 @@ Analyzer::Base<W>::drawFrame()
     default:
         demo();
     }
+}
+
+template<class W> int
+Analyzer::Base<W>::resizeExponent( int exp )
+{
+    if ( exp < 3 )
+        exp = 3;
+    else if ( exp > 9 )
+        exp = 9;
+
+    if ( exp != m_fht->sizeExp() ) {
+        delete m_fht;
+        m_fht = new FHT( exp );
+    }
+    return exp;
+}
+
+template<class W> int
+Analyzer::Base<W>::resizeForBands( int bands )
+{
+    int exp;
+    if ( bands <= 8 )
+        exp = 4;
+    else if ( bands <= 16 )
+        exp = 5;
+    else if ( bands <= 32 )
+        exp = 6;
+    else if ( bands <= 64 )
+        exp = 7;
+    else if ( bands <= 128 )
+        exp = 8;
+    else
+        exp = 9;
+
+    if ( exp != m_fht->sizeExp() )
+        resizeExponent( exp );
+    return m_fht->size();
 }
 
 template<class W> void
