@@ -14,8 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-#include <config.h>        //for HAVE_SQLITE check
+ 
+#include "config.h"
 
 #include "amarokconfig.h"
 #include "amarokmenu.h"    //see toolbar construction

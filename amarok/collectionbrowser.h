@@ -2,7 +2,8 @@
 // See COPYING file for licensing information
 
 
-#include <config.h>
+#include "config.h"
+
 #ifdef HAVE_SQLITE
 
 #ifndef AMAROK_COLLECTIONBROWSER_H
@@ -14,6 +15,7 @@
 class sqlite;
 class ThreadWeaver;
 
+class QCString;
 class QCustomEvent;
 class KDirLister;
 
@@ -28,7 +30,8 @@ class CollectionBrowser : public KIconView
     private:
         void readDir( const KURL& url );
         void customEvent( QCustomEvent* );
-    
+        int execSql( const QCString& statement, void* callback );
+            
     //attributes:
         KURL::List m_dirs;
         ThreadWeaver* m_weaver;

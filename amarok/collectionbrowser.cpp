@@ -1,8 +1,9 @@
 // (c) Mark Kretschmann 2004
 // See COPYING file for licensing information
 
+    
+#include "config.h"
 
-#include <config.h>
 #ifdef HAVE_SQLITE
 
 #include "collectionbrowser.h"
@@ -12,12 +13,14 @@
 #include <sqlite.h>
 #include <vector>
 
+#include <qcstring.h>
 #include <qptrlist.h>
 
 #include <kapplication.h>
 #include <kdebug.h>
 #include <kdirlister.h>
 #include <kglobal.h>
+#include <kstandarddirs.h>
 #include <kurldrag.h>    //dragObject()
 
 
@@ -35,11 +38,16 @@ CollectionBrowser::CollectionBrowser( const char* name )
     setSelectionMode( QIconView::Extended );
     setItemsMovable( false );
 
-    m_db = sqlite_open( "collection.db", 0, 0 );
+    m_db = sqlite_open( ( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" )
+                          + "collection.db" ).latin1(),
+                        0, 0 );
     
     if ( !m_db )
         kdWarning() << k_funcinfo << "Could not open SQLite database\n";
     
+    QCString command = "create table tags ( title varchar(100), artist varchar(100) );";
+    execSql( command, 0 );
+                
     KURL url;
     url.setPath( "/home/mark/mp3" );
 
@@ -89,9 +97,35 @@ void CollectionBrowser::customEvent( QCustomEvent *e )
         for ( int i = 0; i < c->list().count(); i++ ) {
             bundle = c->list().at( i );
             kdDebug() << bundle->artist() << endl;
+            
+            QCString command = "insert into tags( artist ) values ('";
+            command += bundle->artist().latin1();
+            command +=         "');";
+            
+            execSql( command, 0 );
             delete bundle;
         }
     }
+}
+
+
+int CollectionBrowser::execSql( const QCString& statement, void* callback )
+{
+    if ( !m_db ) {
+        kdWarning() << k_funcinfo << "SQLite pointer == NULL.\n";
+        return SQLITE_ERROR;
+    }
+    
+    char* errorStr;
+    int error = sqlite_exec( m_db, statement, ( int (*)(void*,int,char**,char**) ) callback, 0, &errorStr );
+    
+    if ( error != SQLITE_OK ) {
+        kdWarning() << k_funcinfo << "SQLite error while executing statement:\n";
+        kdWarning() << errorStr << endl;
+    }
+    free( errorStr );
+    
+    return error;
 }
 
 
