@@ -189,8 +189,7 @@ EngineBase *EngineController::loadEngine() //static
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
-    EngineController* const self = instance();
-    EngineBase *engine = self->m_pEngine;
+    EngineBase *engine = instance()->m_pEngine;
 
     //now load new engine
     const QString query    = "[X-KDE-amaroK-plugintype] == 'engine' and [X-KDE-amaroK-name] == '%1'";
@@ -233,20 +232,20 @@ EngineBase *EngineController::loadEngine() //static
         //otherwise leave amaroK with the old engine loaded
 
         //set amaroK to stopped state
-        self->stop();
+        instance()->stop();
 
         //new engine, new ext cache required
         extensionCache().clear();
 
         //assign new engine, unload old one. Order is thread-safe!
-        self->m_pEngine = static_cast<EngineBase*>(plugin);
+        instance()->m_pEngine = static_cast<EngineBase*>(plugin);
         if( engine != &dummyEngine ) PluginManager::unload( engine );
 
         engine = static_cast<EngineBase*>(plugin);
 
-        connect( engine, SIGNAL(stateChanged( Engine::State )), self, SLOT(slotStateChanged( Engine::State )) );
-        connect( engine, SIGNAL(trackEnded()), self, SLOT(slotTrackEnded()) );
-        connect( engine, SIGNAL(statusText( const QString& )), self, SIGNAL(statusText( const QString& )) );
+        connect( engine, SIGNAL(stateChanged( Engine::State )), instance(), SLOT(slotStateChanged( Engine::State )) );
+        connect( engine, SIGNAL(trackEnded()), instance(), SLOT(slotTrackEnded()) );
+        connect( engine, SIGNAL(statusText( const QString& )), instance(), SIGNAL(statusText( const QString& )) );
 
         //NOTE engine settings are set in App::applySettings()
 

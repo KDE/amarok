@@ -85,6 +85,10 @@ App::App()
     //create engine, show PlayerWindow, show TrayIcon etc.
     applySettings( true );
 
+    // Create KConfigDialog
+    KConfigDialog* dialog = new AmarokConfigDialog( m_pPlaylistWindow, "settings", AmarokConfig::self() );
+    connect( dialog, SIGNAL(settingsChanged()), SLOT(applySettings()) );
+    
     //initializes Unix domain socket for loader communication, and hides the splash
     //do here so splash is hidden just after amaroK's windows appear
     (void) new LoaderServer( this );
@@ -648,15 +652,7 @@ void App::slotConfigEffects( bool show )
 
 void App::slotConfigAmarok()
 {
-    if( !KConfigDialog::showDialog( "settings" ) )
-    {
-        //KConfigDialog didn't find an instance of this dialog, so lets create it :
-        KConfigDialog* dialog = new AmarokConfigDialog( m_pPlaylistWindow, "settings", AmarokConfig::self() );
-
-        connect( dialog, SIGNAL(settingsChanged()), SLOT(applySettings()) );
-
-        dialog->show();
-    }
+    KConfigDialog::showDialog( "settings" );
 }
 
 void App::slotConfigShortcuts()

@@ -2,7 +2,7 @@
 <class>GstConfigDialogBase</class>
 <widget class="QWidget">
     <property name="name">
-        <cstring>Form1</cstring>
+        <cstring>amaroK_EngineDialog</cstring>
     </property>
     <property name="geometry">
         <rect>

@@ -27,6 +27,7 @@ email                : markey@web.de
 #include <qtimer.h>
 
 #include <kapplication.h>
+#include <kconfigdialog.h>
 #include <kdebug.h>
 #include <kio/job.h>
 #include <klocale.h>
@@ -88,7 +89,7 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
     gst_caps_free( caps );
 
     if ( GST_IS_BUFFER( buf ) ) {
-        kdDebug() << "HANDOFF BUFFER SIZE: " << GST_BUFFER_SIZE( buf ) << endl;
+//         kdDebug() << "HANDOFF BUFFER SIZE: " << GST_BUFFER_SIZE( buf ) << endl;
         
         float* data = (float*) GST_BUFFER_DATA( buf );
 
@@ -201,7 +202,8 @@ bool
 GstEngine::canDecode( const KURL &url )
 {
     if ( GstConfig::soundOutput().isEmpty() ) {
-        errorNoOutput();
+        kdDebug() << k_funcinfo << "Error: No output." << endl;
+        QTimer::singleShot( 0, instance(), SLOT( errorNoOutput() ) );
         return false;
     }    
     
@@ -314,8 +316,19 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     kdDebug() << "Output Params: " << GstConfig::outputParams() << endl;
     
     QCString output;
-//     GstCaps* filtercaps = gst_caps_new_simple( "audio/x-raw-float", "rate=48000", "buffer-frames=3000", 0 ); 
-    GstCaps* filtercaps = gst_caps_new_simple( "audio/x-raw-float", "rate", G_TYPE_INT, 48000, "buffer-frames", G_TYPE_INT, 1920, 0 );
+    bool caps_ok;
+    
+    GstCaps* filtercaps_src  = gst_caps_new_simple( "audio/x-raw-float",
+                                                    "buffer-frames", G_TYPE_INT, 1470,
+                                                    0 );
+    
+    GstCaps* filtercaps_sink = gst_caps_new_simple( "audio/x-raw-float",
+                                                    "buffer-frames", G_TYPE_INT, 1470,
+                                                    "rate", G_TYPE_INT, 44100,
+                                                    "channels", G_TYPE_INT, 2,
+                                                    "endianness", G_TYPE_INT, 1234,
+                                                    "width", G_TYPE_INT, 32,
+                                                    0 );
     
     /* create a new pipeline (thread) to hold the elements */
     if ( !( m_gst_thread = createElement( "thread" ) ) ) { goto error; }
@@ -335,7 +348,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     if ( GstConfig::useCustomSoundDevice() && !GstConfig::soundDevice().isEmpty() )
         g_object_set( G_OBJECT ( m_gst_audiosink ), "device", GstConfig::soundDevice().latin1(), NULL );
     
-    if ( !( m_gst_identity = createElement( "identity", m_gst_thread, "identity" ) ) ) { goto error; }
+    if ( !( m_gst_identity = createElement( "identity", m_gst_thread ) ) ) { goto error; }
     if ( !( m_gst_tee = createElement( "tee", m_gst_thread ) ) ) { goto error; }
     if ( !( m_gst_volume = createElement( "volume", m_gst_thread ) ) ) { goto error; }
     if ( !( m_gst_volumeFade = createElement( "volume", m_gst_thread ) ) ) { goto error; }
@@ -364,14 +377,18 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     }
     
     if ( !( m_gst_spider = createElement( "spider", m_gst_thread ) ) ) { goto error; }
-    /* link all elements */
     
+    /* link elements */
     gst_element_link_many( m_gst_src, m_gst_spider, m_gst_volumeFade, m_gst_tee, 0 );
     gst_element_link_pads( m_gst_tee, "src0", m_gst_volume, "sink" ); 
     gst_element_link_pads( m_gst_tee, "src1", m_gst_audioconvert2, "sink" ); 
     gst_element_link_many( m_gst_volume, m_gst_audioscale, m_gst_audioconvert1, m_gst_audiosink, 0 );
+    
     gst_element_link_many( m_gst_audioconvert2, m_gst_bufferconvert, m_gst_identity, 0 );
-//     gst_element_link_filtered( m_gst_bufferconvert, m_gst_identity, filtercaps );
+//     gst_caps_set_simple( gst_element_get_pad( m_gst_bufferconvert, "sink" ), "buffer-frames", G_TYPE_INT, 1470, 0 );
+//     if ( !caps_ok ) kdDebug() << "gst_pad_try_set_caps() FAILED.\n";
+
+//     gst_element_link( m_gst_bufferconvert, m_gst_identity );
     
     gst_element_set_state( m_gst_thread, GST_STATE_READY );
     m_pipelineFilled = true;
@@ -583,6 +600,19 @@ GstEngine::kioFinished()  //SLOT
 }
 
 
+void
+GstEngine::errorNoOutput() const //SLOT
+{
+    KMessageBox::error( 0, 
+                        i18n( "<p>Please select an <u>output plugin</u> in the engine settings dialog.</p>" ) );
+    
+    // Show engine settings dialog
+    KConfigDialog* dialog = KConfigDialog::exists( "settings" );
+    dialog->showPage( 5 );
+    dialog->show();
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE METHODS
 /////////////////////////////////////////////////////////////////////////////////////
@@ -689,15 +719,6 @@ GstEngine::interpolate( const Engine::Scope& inVec, Engine::Scope& outVec )
     }
 }
 
-
-void
-GstEngine::errorNoOutput() const
-{
-    KMessageBox::error( 0,
-        i18n( "<h3>No sound output selected!</h3>"
-              "<p>Please select an <i>output plugin</i> in the engine settings dialog.</p>" ) );
-}
-                  
                   
 #include "gstengine.moc"
 

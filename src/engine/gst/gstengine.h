@@ -69,6 +69,7 @@ class GstEngine : public Engine::Base
         void                                     stopAtEnd();
         void                                     kioFinished();
         void                                     newKioData( KIO::Job*, const QByteArray& array );
+        void                                     errorNoOutput() const;
         
     private:
         static GstEngine*                        instance() { return s_instance; }
@@ -90,7 +91,6 @@ class GstEngine : public Engine::Base
         void                                     stopNow();
         void                                     cleanPipeline();
         void                                     interpolate( const Engine::Scope& inVec, Engine::Scope& outVec );
-        void                                     errorNoOutput() const;
         
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
