@@ -546,10 +546,12 @@ void CoverViewItem::updateCover( const QPixmap &cover )
 
 QString CoverViewItem::albumPath()
 {
-    QString fileName( QFile::encodeName( m_artist + " - " + m_album ) );
-    fileName.replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ).append( ".png" );
-
-    return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) + "albumcovers/"+fileName.lower();
+    CollectionDB *db = new CollectionDB();
+    uint artistid = db->getValueID( "artist", m_artist, false );
+    uint albumid = db->getValueID( "album", m_album, false );
+    QString fileName( QString::number( artistid ) + "-" + QString::number( albumid ) + ".png" );
+        
+    return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) + "albumcovers/" + fileName;
 }
 
 
