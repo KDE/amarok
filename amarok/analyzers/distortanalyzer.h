@@ -3,7 +3,7 @@
                              -------------------
     begin                : Oct 27 2003
     copyright            : (C) 2003 by Mark Kretschmann
-    email                :
+    email                : markey@web.de
  ***************************************************************************/
 
 /***************************************************************************
@@ -23,10 +23,6 @@
 
 class QPixmap;
 
-/**
- *@author mark
- */
-
 class DistortAnalyzer : public AnalyzerBase
 {
     Q_OBJECT
@@ -42,10 +38,10 @@ class DistortAnalyzer : public AnalyzerBase
         virtual void drawAnalyzer( std::vector<float> * );
 
     // ATTRIBUTES:
-        QPixmap *m_pSrcPixmap;
         QPixmap *m_pComposePixmap;
         QPixmap *m_pComposePixmap1;
         std::vector<float> m_sinVector;
+        std::vector<QPixmap*> m_srcPixmaps;
 };
 
 #endif

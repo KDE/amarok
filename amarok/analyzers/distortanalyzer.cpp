@@ -3,7 +3,7 @@
                              -------------------
     begin                : Oct 27 2003
     copyright            : (C) 2003 by Mark Kretschmann
-    email                :
+    email                : markey@web.de
  ***************************************************************************/
 
 /***************************************************************************
@@ -20,6 +20,9 @@
 #include <math.h>
 #include <vector>
 
+#include <qbitmap.h>
+#include <qcolor.h>
+#include <qimage.h>
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qwidget.h>
@@ -27,10 +30,11 @@
 #include <kdebug.h>
 #include <kstandarddirs.h>
 
+#define NUM_PIXMAPS 32
+
 
 DistortAnalyzer::DistortAnalyzer( QWidget *parent, const char *name ) :
    AnalyzerBase( 30, parent, name ),
-   m_pSrcPixmap( 0 ),
    m_pComposePixmap( 0 ),
    m_pComposePixmap1( 0 )
 {}
@@ -38,9 +42,11 @@ DistortAnalyzer::DistortAnalyzer( QWidget *parent, const char *name ) :
 
 DistortAnalyzer::~DistortAnalyzer()
 {
-    delete m_pSrcPixmap;
     delete m_pComposePixmap;
     delete m_pComposePixmap1;
+
+    for ( int i = 0; i < NUM_PIXMAPS; i++ )
+        delete m_srcPixmaps[i];
 }
 
 
@@ -48,11 +54,21 @@ DistortAnalyzer::~DistortAnalyzer()
 
 void DistortAnalyzer::init()
 {
-    m_pSrcPixmap = new QPixmap( locate( "data", "amarok/images/logo_web.png" ) );
     m_pComposePixmap  = new QPixmap( size() );
     m_pComposePixmap1 = new QPixmap( size() );
 
     initSin( m_sinVector );
+
+    //init colored source pixmaps:
+        
+    m_srcPixmaps.resize( NUM_PIXMAPS );
+    QPixmap srcPixmap( locate( "data", "amarok/images/logo_web.png" ) );    
+            
+    for ( int i = 0; i < NUM_PIXMAPS; i++ )
+    {
+        m_srcPixmaps[i] = new QPixmap( srcPixmap );
+        m_srcPixmaps[i]->fill( QColor( i*8, i*2, 0xc0 - i*3 ) );
+    }
 }
 
 
@@ -65,23 +81,27 @@ void DistortAnalyzer::drawAnalyzer( std::vector<float> *s )
 
     if ( s ) // don't bother if vector is empty
     {
-        std::vector<float>::const_iterator it;
+        std::vector<float>::const_iterator it, it1;
         std::vector<float> sNew( width() );
         interpolate( s, sNew );
 
         // HORIZONTAL:
                 
         it = sNew.begin();
-        int sinIndex;
+        it1 = sNew.end();
+        int sinIndex, pixIndex;
         
         for ( int x = 0; x < width(); x++ )
         {
-            sinIndex = static_cast<int>( (*it) * SINVEC_SIZE ) % SINVEC_SIZE;
+            sinIndex = static_cast<int>( ((*it)+(*it1)) * SINVEC_SIZE ) % SINVEC_SIZE;
+            pixIndex = static_cast<int>( m_sinVector[sinIndex] * (NUM_PIXMAPS/2-1) + NUM_PIXMAPS/2-1 );
             
-            bitBlt( m_pComposePixmap1, x, 0, m_pSrcPixmap, x,
+            sinIndex = static_cast<int>( (*it) * SINVEC_SIZE ) % SINVEC_SIZE;
+            bitBlt( m_pComposePixmap1, x, 0, m_srcPixmaps[ pixIndex ], x,
                     static_cast<int>( m_sinVector[sinIndex] * 20 ), 1, height(), Qt::CopyROP );
 
             ++it;
+           --it1;
         }
 
         // VERTICAL:
@@ -110,7 +130,8 @@ void DistortAnalyzer::drawAnalyzer( std::vector<float> *s )
 
 void DistortAnalyzer::paintEvent( QPaintEvent * )
 {
-   bitBlt( this, 0, 0, m_pSrcPixmap );
+//   bitBlt( this, 0, 0, m_pSrcPixmap );
 }
+
 
 #include "distortanalyzer.moc"
