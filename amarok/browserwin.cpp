@@ -190,7 +190,7 @@ void BrowserWin::closeEvent( QCloseEvent *e )
 }
 
 
-void BrowserWin::moveEvent( QMoveEvent *e )
+void BrowserWin::moveEvent( QMoveEvent * )
 {
     // FIXME: needed for PlaylistWidget transparency
 /*    m_pPlaylistWidget->repaint();
@@ -198,7 +198,7 @@ void BrowserWin::moveEvent( QMoveEvent *e )
 }
 
 
-void BrowserWin::paintEvent( QPaintEvent *e )
+void BrowserWin::paintEvent( QPaintEvent * )
 {
 /*    m_pPlaylistWidget->repaint();
     m_pPlaylistWidget->viewport()->repaint();*/
