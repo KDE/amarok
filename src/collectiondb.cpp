@@ -4,6 +4,7 @@
 
 #include "config.h"
 
+#include "amarokconfig.h"
 #include "collectionbrowser.h"    //updateTags()
 #include "collectiondb.h"
 #include "coverfetcher.h"
@@ -282,24 +283,27 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, const 
 
 
 bool
-CollectionDB::setAlbumImage( const QString& artist, const QString& album, const QImage img )
+CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage img, const QString& amazonUrl )
 {
     // remove existing album covers
-  removeAlbumImage( artist, album );
+    removeAlbumImage( artist, album );
 
-//  img.setText( "amazon-url", 0, url.path() );
+    QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
+    QString key( QFile::encodeName( artist.lower() + " - " + album.lower() ) );
+    key.replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ).append( ".png" );
 
-  QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
-  QString key( QFile::encodeName( artist.lower() + " - " + album.lower() ) );
-  key.replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ).append( ".png" );
+    // Save Amazon product page URL as embedded string, for later retreival
+    if ( !amazonUrl.isEmpty() )
+        img.setText( "amazon-url", 0, amazonUrl );
 
-  return img.save( largeCoverDir.filePath( key ), "PNG");
+    return img.save( largeCoverDir.filePath( key ), "PNG");
 }
 
 
 QString
-CollectionDB::albumImage( const QString artist, const QString album, const uint width )
+CollectionDB::albumImage( const QString artist, const QString album, uint width )
 {
+    if ( !width ) width = AmarokConfig::coverPreviewSize();
     QString widthKey = QString::number( width ) + "@";
 
     if ( artist.isEmpty() && album.isEmpty() )
@@ -353,8 +357,9 @@ CollectionDB::albumImage( const uint artist_id, const uint album_id, const uint 
 
 
 QString
-CollectionDB::getImageForPath( const QString path, const uint width )
+CollectionDB::getImageForPath( const QString path, uint width )
 {
+    if ( !width ) width = AmarokConfig::coverPreviewSize();
     QString widthKey = QString::number( width ) + "@";
 
     if ( path.isEmpty() )
@@ -1467,12 +1472,12 @@ CollectionDB::dirDirty( const QString& path )
 
 
 void
-CollectionDB::saveCover( const QString& keyword, const QString& url, const QImage& img )
+CollectionDB::saveCover( const QString& keyword, const QString& amazonUrl, const QImage& img )
 {
     kdDebug() << k_funcinfo << endl;
 
     QStringList values = QStringList::split( " - ", keyword );
-    setAlbumImage( values[ 0 ], values[ 1 ], img );
+    setAlbumImage( values[ 0 ], values[ 1 ], img, amazonUrl );
 
     emit s_emitter->coverFetched( keyword );
     emit s_emitter->coverFetched();

@@ -5,7 +5,6 @@
 #ifndef AMAROK_COLLECTIONDB_H
 #define AMAROK_COLLECTIONDB_H
 
-#include "amarokconfig.h"
 #include "engineobserver.h"
 #include "sqlite/sqlite3.h"
 
@@ -74,17 +73,19 @@ class CollectionDB : public QObject
         QStringList artistAlbumList( bool withUnknown = true, bool withCompilations = true );
 
         //cover management methods
+        /** Saves images located on the user's filesystem */
         bool setAlbumImage( const QString& artist, const QString& album, const KURL& url );
-        bool setAlbumImage( const QString& artist, const QString& album, const QImage img );
+        /** Saves images obtained from CoverFetcher */
+        bool setAlbumImage( const QString& artist, const QString& album, QImage img, const QString& amazonUrl = QString::null );
 
-        QString albumImage( const uint artist_id, const uint album_id, const uint width = AmarokConfig::coverPreviewSize() );
-        QString albumImage( const QString artist, const QString album, const uint width = AmarokConfig::coverPreviewSize() );
+        QString albumImage( const uint artist_id, const uint album_id, const uint width = 0 );
+        QString albumImage( const QString artist, const QString album, const uint width = 0 );
 
         bool removeAlbumImage( const uint artist_id, const uint album_id );
         bool removeAlbumImage( const QString artist, const QString album );
 
         void addImageToPath( const QString path, const QString image, bool temporary );
-        QString getImageForPath( const QString path, uint width = AmarokConfig::coverPreviewSize() );
+        QString getImageForPath( const QString path, uint width = 0 );
 
         uint artistID( QString value, bool autocreate = true, bool useTempTables = false );
         QString artistValue( uint id );

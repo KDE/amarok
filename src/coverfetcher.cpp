@@ -109,7 +109,7 @@ CoverFetcher::xmlResult( KIO::Job* job ) //SLOT
     doc.setContent( m_xmlDocument );
 
     // Fetch url for product info page
-    m_url = doc.documentElement()
+    m_amazonUrl = doc.documentElement()
                .namedItem( "Details" )
                .attributes()
                .namedItem( "url" ).toAttr().value();
@@ -283,7 +283,7 @@ CoverFetcher::saveCover() //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
-    emit imageReady( m_saveas, m_url, m_image );
+    emit imageReady( m_saveas, m_amazonUrl, m_image );
     deleteLater();
 }
 
@@ -292,7 +292,7 @@ CoverFetcher::saveCover( const QImage& image ) //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
-    emit imageReady( m_saveas, m_url, image );
+    emit imageReady( m_saveas, m_amazonUrl, image );
     deleteLater();
 }
 

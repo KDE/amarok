@@ -4,6 +4,7 @@
 
 #include "config.h"
 
+#include "amarokconfig.h"
 #include "collectionbrowser.h"
 #include "collectiondb.h"
 #include "directorylist.h"

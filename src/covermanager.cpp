@@ -3,6 +3,7 @@
 
 #include "config.h"
 
+#include "amarokconfig.h"
 #include "collectiondb.h"
 #include "covermanager.h"
 
@@ -897,8 +898,8 @@ void CoverViewItem::dropped( QDropEvent *e, const QValueList<QIconDragItem> & )
 
        QImage img;
        QImageDrag::decode( e, img );
-       CollectionDB().setAlbumImage( artist(), album(), img ); 
-       m_coverImagePath = CollectionDB().albumImage( m_artist, m_album, 0 ); 
+       CollectionDB().setAlbumImage( artist(), album(), img );
+       m_coverImagePath = CollectionDB().albumImage( m_artist, m_album, 0 );
        m_hasCover = QFile::exists( m_coverImagePath );
        loadCover();
     }
@@ -915,5 +916,5 @@ void CoverViewItem::dragLeft()
 {
     setSelected( false );
 }
- 
+
 #include "covermanager.moc"

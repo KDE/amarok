@@ -143,7 +143,8 @@
                         </property>
                         <property name="text">
                             <string>Single window with player and playlist
-functionality combined (like JuK)</string>
+functionality combined
+(like JuK)</string>
                         </property>
                     </widget>
                 </vbox>

@@ -49,7 +49,7 @@ class CoverFetcher : public QObject
         QString m_album;
         QString m_saveas;
         QString m_text;
-        QString m_url;
+        QString m_amazonUrl;
         QString m_imageUrl;
 
         uchar* m_buffer;

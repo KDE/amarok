@@ -155,7 +155,7 @@ void ContextBrowser::openURLRequest( const KURL &url ) {
         kdDebug() << "[ContextBrowser] Embedded amazon url in cover image: " << amazonUrl << endl;
 
         if ( amazonUrl.isEmpty() )
-            KMessageBox::information( this, i18n( "Right-click on image for download menu." ) );
+            KMessageBox::information( this, i18n( "<p>There is no product information available for this image.</p><p>Right-click on image for menu.</p>" ) );
         else
             kapp->invokeBrowser( amazonUrl );
     }
@@ -880,10 +880,10 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
 
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
-    
+
     if ( m_lyrics.isEmpty() )
         m_lyrics = i18n( "Lyrics not found" );
-    
+
     browser->write( "<html><div>" );
     browser->write( m_lyrics );
     browser->write( "</div></html>" );
