@@ -34,13 +34,14 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_alignment( Middle )
         , m_screen( 0 )
         , m_y( MARGIN )
-        , m_drawShadow( true )
+        , m_drawShadow( false )
+        , m_translucency( false )
 {
     setFocusPolicy( NoFocus );
     setBackgroundMode( NoBackground );
     unsetColors();
 
-    connect( m_timer, SIGNAL( timeout() ), SLOT( hide() ) );
+    connect( m_timer, SIGNAL(timeout()), SLOT(hide()) );
 
     //or crashes, KWin bug I think, crashes in QWidget::icon()
     kapp->setTopWidget( this );
@@ -57,34 +58,31 @@ OSDWidget::show() //virtual
     const QRect oldGeometry = QRect( pos(), size() );
     const QRect newGeometry = determineMetrics( M );
 
-    if( m_translucency && !isShown() || !newGeometry.intersects( oldGeometry ) ) {
-        m_screenshot = QPixmap::grabWindow( qt_xrootwin(), newGeometry.x(), newGeometry.y(), newGeometry.width(), newGeometry.height() );
-        setGeometry( newGeometry );
-        render( M );
-        QWidget::show();
-    }
+    if( m_translucency && !isShown() || !newGeometry.intersects( oldGeometry ) )
+        m_screenshot = QPixmap::grabWindow( qt_xrootwin(),
+                newGeometry.x(), newGeometry.y(),
+                newGeometry.width(), newGeometry.height() );
+
 
     else if( m_translucency ) {
         const QRect unite = oldGeometry.unite( newGeometry );
         KPixmap pix = QPixmap::grabWindow( qt_xrootwin(), unite.x(), unite.y(), unite.width(), unite.height() );
-        QPoint p = oldGeometry.topLeft() - unite.topLeft();
 
+        QPoint p = oldGeometry.topLeft() - unite.topLeft();
         bitBlt( &pix, p, &m_screenshot );
 
         m_screenshot.resize( newGeometry.size() );
 
         p = newGeometry.topLeft() - unite.topLeft();
         bitBlt( &m_screenshot, 0, 0, &pix, p.x(), p.y() );
-
-        setGeometry( newGeometry );
-        render( M );
     }
 
     if( newGeometry.width() > 0 && newGeometry.height() > 0 )
     {
+        render( M, newGeometry.size() );
         setGeometry( newGeometry );
-        render( M );
         QWidget::show();
+        bitBlt( this, 0, 0, &m_buffer );
 
         if( m_duration ) //duration 0 -> stay forever
             m_timer->start( m_duration, true ); //calls hide()
@@ -96,45 +94,41 @@ OSDWidget::show() //virtual
 QRect
 OSDWidget::determineMetrics( const uint M )
 {
+    // sometimes we only have a tiddly cover
+    const QSize minImageSize = m_cover.size().boundedTo( QSize(100,100) );
+
     // determine a sensible maximum size, don't cover the whole desktop or cross the screen
     const QSize margin( (M + MARGIN) * 2, (M + MARGIN) * 2 ); //margins
-    const QSize image = m_cover.isNull() ? QSize( 0, 0 ) : QSize( 80, 80 ); //80x80 is minimum image size
+    const QSize image = m_cover.isNull() ? QSize( 0, 0 ) : minImageSize;
     const QSize max = QApplication::desktop()->screen( m_screen )->size() - margin;
 
     // The osd cannot be larger than the screen
     QSize text = max - image;
-    QRect rect = fontMetrics().boundingRect( 0, 0, text.width(), text.height(), AlignLeft | WordBreak, m_text );
+    QRect rect = fontMetrics().boundingRect( 0, 0, text.width(), text.height(), AlignCenter | WordBreak, m_text );
 
     if( !m_cover.isNull() ) {
-        const int availableWidth = max.width() - rect.width(); //WILL be >= 80
-        const int imageMetric = QMIN( availableWidth, rect.height() );
+        const int availableWidth = max.width() - rect.width() - M; //WILL be >= (minImageSize.width() - M)
 
-        m_scaledCover = m_cover.smoothScale( imageMetric, imageMetric, QImage::ScaleMin );
+        m_scaledCover = m_cover.smoothScale(
+                QMIN( rect.height(), m_cover.height() ),
+                QMIN( availableWidth, m_cover.width() ),
+                QImage::ScaleMin ); //this will force us to be with our bounds
 
         const int widthIncludingImage = rect.width()
                 + m_scaledCover.width()
                 + M; //margin between text + image
 
-        rect.setWidth( QMIN( widthIncludingImage, max.width() ) );
+        rect.setWidth( widthIncludingImage );
     }
 
-    // size and move us
+    // expand in all directions by M
     rect.addCoords( -M, -M, M, M );
 
-    return QRect( reposition( rect.size() ), rect.size() );
-}
-
-QPoint
-OSDWidget::reposition( QSize newSize )
-{
-    if( !newSize.isValid() ) newSize = size();
-
-    QPoint newPos( MARGIN, m_y );
+    const QSize newSize = rect.size();
     const QRect screen = QApplication::desktop()->screenGeometry( m_screen );
+    QPoint newPos( MARGIN, m_y );
 
-    //TODO m_y is the middle of the OSD, and don't exceed screen margins
-
-    switch ( m_alignment )
+    switch( m_alignment )
     {
         case Left:
             break;
@@ -160,24 +154,29 @@ OSDWidget::reposition( QSize newSize )
     // correct for screen position
     newPos += screen.topLeft();
 
-    return newPos;
+    return QRect( newPos, rect.size() );
 }
 
 void
-OSDWidget::render( const uint M )
+OSDWidget::render( const uint M, const QSize &size )
 {
-    const uint xround = (M * 200) / width();
-    const uint yround = (M * 200) / height();
+    /// render with margin/spacing @param M and @param size
+
+    QRect rect( QPoint(), size );
+
+    // roundedness, I looked in Qt sources to figure this out ;-)
+    const uint xround = (M * 200) / size.width();
+    const uint yround = (M * 200) / size.height();
 
     {   /// apply the mask
         static QBitmap mask;
 
-        mask.resize( size() );
+        mask.resize( size );
         mask.fill( Qt::black );
 
         QPainter p( &mask );
         p.setBrush( Qt::white );
-        p.drawRoundRect( rect(), xround, yround );
+        p.drawRoundRect( rect, xround, yround );
         setMask( mask );
     }
 
@@ -188,15 +187,15 @@ OSDWidget::render( const uint M )
         shadowColor = v > 128 ? Qt::black : Qt::white;
     }
 
-    Qt::AlignmentFlags align;
+    int align = Qt::AlignVCenter | WordBreak;
     switch( m_alignment ) {
-        case Left:  align = Qt::AlignLeft; break;
-        case Right: align = Qt::AlignRight; break;
-        default:    align = Qt::AlignHCenter; break;
+        case Left:  align |= Qt::AlignLeft; break;
+        case Right: align |= Qt::AlignRight; break;
+        default:    align |= Qt::AlignHCenter; break;
     }
 
-    QPixmap buffer( size() );
-    QPainter p( &buffer );
+    m_buffer.resize( rect.size() );
+    QPainter p( &m_buffer );
 
     if( m_translucency ) {
         KPixmap background( m_screenshot );
@@ -204,19 +203,32 @@ OSDWidget::render( const uint M )
         p.drawPixmap( 0, 0, background );
     }
     else
-        p.eraseRect( rect() );
+        p.fillRect( rect, backgroundColor() );
 
     p.setPen( backgroundColor().dark() );
-    p.drawRoundRect( rect(), xround, yround );
+    p.drawRoundRect( rect, xround, yround );
 
-    QRect rect = this->rect();
     rect.addCoords( M, M, -M, -M );
 
-    if( false && m_drawShadow )
-    {
-        QRect r = rect;
-        QPixmap pixmap( size() );
+    if( !m_scaledCover.isNull() ) {
+        QRect r( rect );
+        r.setTop( (size.height() - m_scaledCover.height()) / 2 );
+        r.setSize( m_scaledCover.size() );
+        p.drawPixmap( r.topLeft(), m_scaledCover );
 
+        if( !m_scaledCover.hasAlpha() ) {
+            // don't draw a border for eg, the amaroK icon
+            r.addCoords( -1, -1, 1, 1 );
+            p.setPen( shadowColor );
+            p.drawRect( r );
+        }
+
+        rect.rLeft() += m_scaledCover.width() + M;
+    }
+
+    if( m_drawShadow )
+    {
+        QPixmap pixmap( rect.size() + QSize(10,10) );
         pixmap.fill( Qt::black );
         pixmap.setMask( pixmap.createHeuristicMask( true ) );
 
@@ -224,34 +236,16 @@ OSDWidget::render( const uint M )
         p2.setFont( font() );
         p2.setPen( Qt::white );
         p2.setBrush( Qt::white );
-
-        if( !m_cover.isNull() )
-            r.rLeft() += m_cover.width() + M;
-
-        p2.drawText( r, align | WordBreak, m_text );
+        p2.drawText( QRect(QPoint(5,5), rect.size()), align , m_text );
         p2.end();
 
-        p.drawImage( 0, 0, ShadowEngine::makeShadow( pixmap, shadowColor ) );
-    }
-
-    if( !m_cover.isNull() ) {
-        const uint y = (height() - m_scaledCover.height()) / 2;
-        p.drawPixmap( M, y, m_scaledCover );
-
-        if( !m_scaledCover.hasAlpha() ) {
-            // don't draw a border for eg, the amaroK icon
-            p.setPen( shadowColor );
-            p.drawRect( QRect(QPoint(M-1,M-1), m_scaledCover.size() + QSize(2,2)) );
-        }
-        rect.rLeft() += m_scaledCover.width() + M;
+        p.drawImage( rect.topLeft() - QPoint(5,5), ShadowEngine::makeShadow( pixmap, shadowColor ) );
     }
 
     p.setPen( foregroundColor() );
     p.setFont( font() );
-    p.drawText( rect, align | WordBreak, m_text );
+    p.drawText( rect, align, m_text );
     p.end();
-
-    bitBlt( this, 0, 0, &buffer );
 }
 
 bool
@@ -259,12 +253,15 @@ OSDWidget::event( QEvent *e )
 {
     switch( e->type() )
     {
-        case QEvent::ApplicationPaletteChange:
-            if ( !AmarokConfig::osdUseCustomColors() )
-                unsetColors(); //use new palette's colours
-            return true;
-        default:
-            return QWidget::event( e );
+    case QEvent::ApplicationPaletteChange:
+        if( !AmarokConfig::osdUseCustomColors() )
+            unsetColors(); //use new palette's colours
+        return true;
+    case QEvent::Paint:
+        //bitBlt( this, 0, 0, &m_buffer );
+        return true;
+    default:
+        return QWidget::event( e );
     }
 }
 
@@ -288,7 +285,6 @@ OSDWidget::setScreen( int screen )
 {
     const int n = QApplication::desktop()->numScreens();
     m_screen = (screen >= n) ? n-1 : screen;
-    move( reposition() );
 }
 
 
@@ -312,15 +308,13 @@ OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
     m_text = i18n( "OSD Preview - drag to reposition" );
     m_duration = 0;
     m_cover = amaroK::icon();
-    m_translucency = false; //doesn't work well when you move it about etc.
 }
 
 void OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
 {
     m_dragOffset = event->pos();
 
-    if ( event->button() == LeftButton && !m_dragging )
-    {
+    if( event->button() == LeftButton && !m_dragging ) {
         grabMouse( KCursor::sizeAllCursor() );
         m_dragging = true;
     }
@@ -329,7 +323,7 @@ void OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
 
 void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent * /*event*/ )
 {
-    if ( m_dragging )
+    if( m_dragging )
     {
         m_dragging = false;
         releaseMouse();
@@ -338,8 +332,7 @@ void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent * /*event*/ )
         QDesktopWidget *desktop = QApplication::desktop();
         int currentScreen = desktop->screenNumber( pos() );
 
-        if ( currentScreen != -1 )
-        {
+        if( currentScreen != -1 ) {
             // set new data
             m_screen = currentScreen;
             m_y      = QWidget::y();
@@ -352,30 +345,27 @@ void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent * /*event*/ )
 
 void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 {
-    if ( m_dragging && this == mouseGrabber() )
+    if( m_dragging && this == mouseGrabber() )
     {
         const QRect screen      = QApplication::desktop()->screenGeometry( m_screen );
         const uint  hcenter     = screen.width() / 2;
         const uint  eGlobalPosX = e->globalPos().x() - screen.left();
-        const uint  snapZone    = screen.width() / 8;
+        const uint  snapZone    = screen.width() / 12;
 
         QPoint destination = e->globalPos() - m_dragOffset - screen.topLeft();
         int maxY = screen.height() - height() - MARGIN;
         if( destination.y() < MARGIN ) destination.ry() = MARGIN;
         if( destination.y() > maxY ) destination.ry() = maxY;
 
-        if( eGlobalPosX < (hcenter-snapZone) )
-        {
+        if( eGlobalPosX < (hcenter-snapZone) ) {
             m_alignment = Left;
             destination.rx() = MARGIN;
         }
-        else if( eGlobalPosX > (hcenter+snapZone) )
-        {
+        else if( eGlobalPosX > (hcenter+snapZone) ) {
             m_alignment = Right;
             destination.rx() = screen.width() - MARGIN - width();
         }
-        else
-        {
+        else {
             const uint eGlobalPosY = e->globalPos().y() - screen.top();
             const uint vcenter     = screen.height()/2;
 
@@ -399,6 +389,7 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 
 //////  amaroK::OSD below /////////////////////
 
+#include "enginecontroller.h"
 #include "metabundle.h"
 #include <qregexp.h>
 
@@ -453,9 +444,12 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
             setImage( location );
     }
 
-    m_text = text.stripWhiteSpace();
+    text = text.stripWhiteSpace();
 
-    OSDWidget::show( m_text );
+//    if( text.isEmpty() )
+//        text = i1_8n( "No track playing" );
+
+    OSDWidget::show( text );
 }
 
 void
@@ -484,7 +478,7 @@ amaroK::OSD::forceToggleOSD()
     if ( !isShown() ) {
         const bool b = isEnabled();
         setEnabled( true );
-        OSDWidget::show( m_text );
+        show( EngineController::instance()->bundle() );
         setEnabled( b );
     }
     else

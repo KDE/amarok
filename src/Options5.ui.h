@@ -59,13 +59,13 @@ Options5::slotPositionChanged()
 }
 
 void
-Options5::hideEvent( QHideEvent * )
+Options5::hideEvent( QHideEvent* )
 {
     m_pOSDPreview->hide();
 }
 
 void
-Options5::showEvent( QShowEvent * )
+Options5::showEvent( QShowEvent* )
 {
     useCustomColorsToggled( kcfg_OsdUseCustomColors->isChecked() );
 
@@ -77,15 +77,11 @@ Options5::showEvent( QShowEvent * )
 void
 Options5::useCustomColorsToggled( bool on )
 {
-    if ( on ) {
+    if( on ) {
         //use base functions so we don't call show() 3 times
         m_pOSDPreview->OSDWidget::setTextColor( kcfg_OsdTextColor->color() );
         m_pOSDPreview->OSDWidget::setBackgroundColor( kcfg_OsdBackgroundColor->color() );
     }
-    else m_pOSDPreview->unsetColors();
-
-    if ( m_pOSDPreview->isShown() ) {
-        m_pOSDPreview->hide();
-        m_pOSDPreview->show();
-    }
+    else
+        m_pOSDPreview->unsetColors();
 }

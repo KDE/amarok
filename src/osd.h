@@ -63,10 +63,7 @@ class OSDWidget : public QWidget
         QRect determineMetrics( const uint marginMetric );
 
         /** render OSD */
-        void render( const uint marginMetric );
-
-        /** call to reposition a new OSD text or when position attributes change */
-        QPoint reposition( QSize newSize = QSize() );
+        void render( const uint marginMetric, const QSize &size );
 
         /** reimplemented */
         virtual void mousePressEvent( QMouseEvent* );
@@ -74,10 +71,6 @@ class OSDWidget : public QWidget
 
         /** distance from screen edge */
         static const int MARGIN = 15;
-
-        /** padding inside the OSD frame */
-        static const int HPADDING = 20;
-        static const int VPADDING = 10;
 
         int         m_duration;
         QTimer     *m_timer;
@@ -90,6 +83,7 @@ class OSDWidget : public QWidget
         QImage      m_cover;
         QPixmap     m_scaledCover;
         KPixmap     m_screenshot;
+        QPixmap     m_buffer;
 };
 
 
@@ -110,6 +104,7 @@ public slots:
     void setBackgroundColor(const QColor &color ) { OSDWidget::setBackgroundColor( color ); doUpdate(); }
     void setDrawShadow( bool b ) { OSDWidget::setDrawShadow( b ); doUpdate(); }
     void setFont( const QFont &font ) { OSDWidget::setFont( font ); doUpdate(); }
+    void setScreen( int screen ) { OSDWidget::setScreen( screen ); doUpdate(); }
 
 private:
     inline void doUpdate() { if( isShown() ) show(); }
@@ -156,8 +151,6 @@ namespace amaroK
 
     private:
         OSD() : OSDWidget( 0 ) {}
-
-        QString m_text;
     };
 }
 
