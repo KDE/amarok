@@ -250,21 +250,20 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
     if( isPlaylist( item ) ) {
         // open the playlist
         #define  item static_cast<PlaylistBrowserItem *>(item)
-        Playlist *pls = Playlist::instance();
-        pls->clear();
-        pls->appendMedia( item->tracksURL() );
+        //don't replace, it generally makes people think amaroK behaves like JuK
+        //and we don't so they then get really confused about things
+        Playlist::instance()->insertMedia( item->tracksURL() );
         #undef item
     } else {
-        KURL::List list;
-        list << static_cast<PlaylistTrackItem *>(item)->url();
-        Playlist::instance()->appendMedia( list, true );
+        KURL::List list( static_cast<PlaylistTrackItem *>(item)->url() );
+        Playlist::instance()->insertMedia( list, Playlist::DirectPlay );
     }
 }
 
 
 void PlaylistBrowser::addPlaylist( QString path, bool force )
 {
-    // this function add a playlist to the playlist browser
+    // this function adds a playlist to the playlist browser
 
     QFile file( path );
     if( !file.exists() ) return;
@@ -678,10 +677,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             case MAKE:
                 Playlist::instance()->clear(); //FALL THROUGH
             case APPEND:
-                Playlist::instance()->appendMedia( item->url() );
+                Playlist::instance()->insertMedia( item->url() );
                 break;
             case QUEUE:
-                Playlist::instance()->queueMedia( item->url() );
+                Playlist::instance()->insertMedia( item->url(), Playlist::Queue );
                 break;
             case BURN_DATACD:
                  K3bExporter::instance()->exportTracks( item->url(), K3bExporter::DataCD );
