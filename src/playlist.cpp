@@ -66,11 +66,11 @@ class MyIterator : public QListViewItemIterator
 {
 public:
     MyIterator( QListViewItem *item, int flags = 0 )
-        : QListViewItemIterator( item, flags | MyIterator::Visible )
+        : QListViewItemIterator( item, flags | flags == All ? 0 : Visible )
     {}
 
     MyIterator( QListView *view, int flags = 0 )
-        : QListViewItemIterator( view, flags | MyIterator::Visible )
+        : QListViewItemIterator( view, flags | flags == All ? 0 : Visible )
     {}
 
     //this gets OR'd with Visible, and thus everything is returned
@@ -1629,16 +1629,9 @@ void Playlist::redo() { switchState( m_redoList, m_undoList ); } //SLOT
 void
 Playlist::updateMetaData( const MetaBundle &mb ) //SLOT
 {
-    PlaylistItem* item = static_cast<PlaylistItem*>( firstChild() );
-    if( !item ) return;
-
-    do {
-        if ( item->url() == mb.url() )
-            item->setText( mb );    // update metadata in playlist item
-
-        item = item->nextSibling();
-    }
-    while( item );
+    for( MyIt it( this, MyIt::All ); *it; ++it )
+        if ( mb.url() == (*it)->url() )
+            (*it)->setText( mb );
 }
 
 void
@@ -1651,17 +1644,16 @@ Playlist::setFilter( const QString &query ) //SLOT
     MyIt it( this, loweredQuery.startsWith( m_lastSearch ) ? MyIt::Visible : MyIt::All );
 
     for( ;*it; ++it ) {
-        bool b = false;
+        bool visible = true;
 
-        //if query is empty skip the loops and show all items
-        for( uint x = 0; x < terms.count(); ++x ) //v.count() is constant time
-            for( int y = 0; y < columns(); ++y )
-                if ( columnWidth( y ) ) {
-                    b = (*it)->exactText( y ).lower().contains( terms[x] );
-                    goto done;
-                }
-    done:
-        (*it)->setVisible( b );
+        for( uint x = 0; x < terms.count(); ++x ) {
+            visible = false;
+            for( int y = 0; !visible && y < columns(); ++y )
+                if ( columnWidth( y ) )
+                    visible = (*it)->exactText( y ).lower().contains( terms[x] );
+        }
+
+        (*it)->setVisible( visible );
     }
 
     m_lastSearch = loweredQuery;
