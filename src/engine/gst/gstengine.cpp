@@ -479,7 +479,7 @@ GstEngine::pause()  //SLOT
 void
 GstEngine::seek( uint ms )  //SLOT
 {
-    if ( !m_pipelineFilled || !m_currentInput ) return;
+    if ( !m_pipelineFilled ) return;
 
     if ( ms > 0 )
     {

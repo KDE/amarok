@@ -536,7 +536,7 @@ CollectionDB::removeDirFromCollection( QString path )
 bool
 CollectionDB::execSql( const QString& statement, QStringList* const values, QStringList* const names, const bool debug )
 {
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
+//     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
     if ( debug )
         kdDebug() << "[CollectionDB] SQL-query: " << statement << endl;
@@ -592,7 +592,7 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
         return false;
     }
 
-    kdDebug() << "END " << k_funcinfo << endl;
+//     kdDebug() << "END " << k_funcinfo << endl;
     return true;
 }
 
