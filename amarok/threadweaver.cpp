@@ -170,9 +170,9 @@ TagReader::addSearchTokens( QStringList &tokens, QPtrList<QListViewItem> &ptrs )
     if( m_tags )
     {
         s += ' ';
-        s += m_tags->m_artist;
+        s += m_tags->artist();
         s += ' ';
-        s += m_tags->m_title;
+        s += m_tags->title();
     }
 
     tokens.append( s );

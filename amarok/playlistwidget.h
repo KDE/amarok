@@ -39,7 +39,6 @@ class QPaintEvent;
 class QPoint;
 class QRect;
 class QString;
-class QTimer;
 
 class KAction;
 class KActionCollection;
@@ -86,15 +85,20 @@ class PlaylistWidget : private KListView
 
         void insertMedia( const KURL::List&, bool directPlay = false );
         bool isEmpty() const { return childCount() == 0; }
-        bool isAnotherTrack() const;
+        bool isTrackBefore() const;
+        bool isTrackAfter() const;
+
+        void saveM3U( const QString& ) const;
+        void saveXML( const QString& ) const;
+
         QWidget *browser() const;
-        QString defaultPlaylistPath() const;
 
         //made public for convenience
         void setFont( const QFont &f ) { KListView::setFont( f ); }
         void setColors( const QPalette &p, const QColor &c ) { setPalette( p ); setAlternateBackground( c ); }
 
         static const int NO_SORT = 200;
+        static QString defaultPlaylistPath();
 
         enum RequestType { Prev = -1, Current = 0, Next = 1 };
         enum ColumnType  { Trackname = 0,
@@ -130,7 +134,6 @@ class PlaylistWidget : private KListView
         void setCurrentTrack( const KURL& );
         void undo();
         void redo();
-        void saveM3u(const QString& = QString::null ) const;
 
     private slots:
         void slotGlowTimer();
@@ -140,7 +143,6 @@ class PlaylistWidget : private KListView
         void showContextMenu( QListViewItem*, const QPoint&, int );
         void activate( QListViewItem* );
         void writeTag( QListViewItem*, const QString&, int );
-        void handleStreamMeta( const MetaBundle& );
 
         void saveUndoState();
 
@@ -165,17 +167,16 @@ class PlaylistWidget : private KListView
         bool eventFilter( QObject*, QEvent* );
         void setSorting( int, bool=true );
         void setColumnWidth( int, int );
+        PlaylistItem *firstChild() const { return (PlaylistItem*)KListView::firstChild(); }
 
 // ATTRIBUTES ------
         PlaylistBrowser *m_browser;
 
-        QTimer* const m_GlowTimer; //FIXME allocate on stack
         int m_GlowCount;
         int m_GlowAdd;
 
         PlaylistItem  *m_currentTrack; //this track is playing
-        //mutable //TODO not supported by gcc 2.9.5
-        PlaylistItem  *m_cachedTrack;  //we expect this to be activated next
+        PlaylistItem  *m_cachedTrack;  //we expect this to be activated next //FIXME mutable
         PlaylistItem  *m_nextTrack;    //the track to be played after the current track
         QListViewItem *m_marker;
 

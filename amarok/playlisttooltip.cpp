@@ -29,12 +29,12 @@ PlaylistToolTip::PlaylistToolTip( QWidget * parent )
 
 void PlaylistToolTip::add( QWidget * widget, const MetaBundle & tags )
 {
-    const KURL &url = tags.m_url;
+    const KURL &url = tags.url();
 
     QString tipBuf = "<center><table style='font-face: Arial; font-size: 8px;'>";
     QString s = "<tr><td width='70'>%1:</td><td align='left'>%2</td></tr>";
-    tipBuf += s.arg( i18n( "Title" ),  tags.m_title );
-    tipBuf += s.arg( i18n( "Artist" ), tags.m_artist );
+    tipBuf += s.arg( i18n( "Title" ),  tags.title() );
+    tipBuf += s.arg( i18n( "Artist" ), tags.artist() );
     tipBuf += s.arg( i18n( "Length" ), tags.prettyLength() );
     tipBuf += s.arg( i18n( "Bitrate" ), tags.prettyBitrate() );
     tipBuf += s.arg( i18n( "Samplerate" ), tags.prettySampleRate() ) + "<br>";

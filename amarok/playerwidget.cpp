@@ -25,13 +25,10 @@ email                : markey@web.de
 #include "playerwidget.h"
 #include "playlisttooltip.h" //setScroll()
 
-#include <math.h> //updateAnalzyer()
-
 #include <qfont.h>
-#include <qfontdatabase.h> //ctor
 #include <qhbox.h>
-#include <qiconset.h>
 #include <qpainter.h>
+#include <qpixmap.h>
 #include <qpopupmenu.h>
 #include <qrect.h>
 #include <qstringlist.h>
@@ -48,24 +45,44 @@ email                : markey@web.de
 #include <kurldrag.h>
 //#include <kwin.h> Yagami mode, most cool, try it!
 
-inline QPixmap getPNG( const QString &filename ) { return QPixmap( locate( "data", QString( "amarok/images/" ) + filename ), "PNG" ); }
+
+
+//simple function for fetching amarok images
+static inline QPixmap getPNG( const QString &filename )
+{
+    return QPixmap( locate( "data", QString( "amarok/images/%1.png" ).arg( filename ) ), "PNG" );
+}
+
+//these two template functions are designed to reduce LOC
+//and hopefully will be compiled such that the final binary is smaller too
+template<class W> static inline W*
+wrapper( const QRect &r, QWidget *parent, const char *name = 0, QWidget::WFlags f = 0 )
+{
+    W *w = new W( parent, name, f );
+    return placeWidget( w, r );
+}
+template<class W> static inline W*
+placeWidget( W *w, const QRect &r )
+{
+    w->setGeometry( r );
+    return w;
+}
+
 
 
 PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     : QWidget( parent, name )
-    , m_pActionCollection( new KActionCollection( this ) )
-    , m_pDcopHandler( new AmarokDcopHandler )
+    , m_pDcopHandler( new AmarokDcopHandler ) //FIXME move to playerapp!
     , m_pTray( 0 )
     , m_pAnalyzer( 0 )
-    , m_pHelpMenu( new KHelpMenu( this, KGlobal::instance()->aboutData(), m_pActionCollection ) )
-    , m_scrollBuffer( 291, 16 ) //FIXME check ctor params //FIXME use staic const members for params
-    , m_plusPixmap( getPNG( "time_plus.png" ) )
-    , m_minusPixmap( getPNG( "time_minus.png" ) )
+    , m_pHelpMenu( new KHelpMenu( this, KGlobal::instance()->aboutData(), pApp->actionCollection() ) )
+    , m_scrollBuffer( 291, 16 )
+    , m_plusPixmap( getPNG( "time_plus" ) )
+    , m_minusPixmap( getPNG( "time_minus" ) )
 {
-    setCaption( "amaroK" );
+    setCaption( kapp->makeStdCaption( i18n("Player") ) );
     setFixedSize( 311, 140 );
     setAcceptDrops( true );
-    //TODO set using derived QColorGroup..
     setPaletteForegroundColor( Qt::white ); //0x80a0ff
     setPaletteBackgroundColor( QColor( 32, 32, 80 ) );
 
@@ -73,15 +90,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     font.setBold( TRUE );
     font.setPixelSize( 10 );
     setFont( font );
-
-    //actions
-    //FIXME declare these in PlayerApp.cpp and have global action collection
-    KStdAction::keyBindings( pApp, SLOT( slotConfigShortcuts() ), m_pActionCollection );
-    KStdAction::preferences( pApp, SLOT( slotShowOptions() ), m_pActionCollection );
-    KStdAction::quit( kapp, SLOT( quit() ), m_pActionCollection );
-    KAction *action = KStdAction::keyBindings( pApp, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection,
-                                               "options_configure_global_keybinding" );
-    action->setText( i18n( "Configure Global Shortcuts..." ) );
 
     { //<NavButtons>
         //NOTE we use a layout for the buttons so resizing will be possible
@@ -144,10 +152,10 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_pTimeSign    = wrapper<QLabel>( QRect(6,40, 10,10), this, 0, Qt::WRepaintNoErase );
     m_pVolSign     = wrapper<QLabel>( QRect(295,7, 9,8),  this );
 
-    m_pDescription->setPixmap( getPNG( "description.png" ) );
-    m_pVolSign    ->setPixmap( getPNG( "vol_speaker.png" ) );
+    m_pDescription->setPixmap( getPNG( "description" ) );
+    m_pVolSign    ->setPixmap( getPNG( "vol_speaker" ) );
 
-    m_pTray = new AmarokSystray( this, m_pActionCollection ); //show/hide is handled by KConfig XT
+    m_pTray = new AmarokSystray( this, pApp->actionCollection() ); //show/hide is handled by KConfig XT
 
     defaultScroll();
 
@@ -181,7 +189,7 @@ void PlayerWidget::setScroll( const MetaBundle &bundle )
     QStringList text;
 
     text += bundle.prettyTitle();
-    text += bundle.m_album;
+    text += bundle.album();
     text += bundle.prettyLength();
 
     m_rateString = bundle.prettyBitrate();
@@ -388,6 +396,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
     {
         QPopupMenu popup;
         popup.setCheckable( true );
+        KActionCollection *ac = pApp->actionCollection();
 
         popup.insertItem( i18n( "Repeat &Track" ),    ID_REPEAT_TRACK );
         popup.insertItem( i18n( "Repeat Play&list" ), ID_REPEAT_PLAYLIST );
@@ -396,13 +405,13 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
         popup.insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( showEffectWidget() ) );
         popup.insertItem( i18n( "Configure &Decoder..." ), this, SIGNAL( configureDecoder() ), 0, ID_CONF_DECODER );
       popup.insertSeparator();
-        m_pActionCollection->action( "options_configure_keybinding" )->plug( &popup );
-        m_pActionCollection->action( "options_configure_global_keybinding" )->plug( &popup );
-        m_pActionCollection->action( "options_configure" )->plug( &popup );
+        ac->action( "options_configure_keybinding" )->plug( &popup );
+        ac->action( "options_configure_global_keybinding" )->plug( &popup );
+        ac->action( "options_configure" )->plug( &popup );
       popup.insertSeparator();
         popup.insertItem( i18n( "&Help" ), (QPopupMenu*)m_pHelpMenu->menu() );
       popup.insertSeparator();
-        m_pActionCollection->action( "file_quit" )->plug( &popup );
+        ac->action( "file_quit" )->plug( &popup );
 
         popup.setItemChecked( ID_REPEAT_TRACK,    AmarokConfig::repeatTrack() );
         popup.setItemChecked( ID_REPEAT_PLAYLIST, AmarokConfig::repeatPlaylist() );
@@ -509,8 +518,8 @@ void PlayerWidget::startDrag()
 NavButton::NavButton( QWidget *parent, const QString &icon, QObject *receiver, const char *slot )
   : QPushButton( parent )
 {
-    QString up = QString( "b_%1.png" ).arg( icon );
-    QString down = QString( "b_%1_down.png" ).arg( icon );
+    QString up = QString( "b_%1" ).arg( icon );
+    QString down = QString( "b_%1_down" ).arg( icon );
 
     QIconSet iconSet;
     iconSet.setPixmap( getPNG( up   ), QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
@@ -528,8 +537,8 @@ NavButton::NavButton( QWidget *parent, const QString &icon, QObject *receiver, c
 
 IconButton::IconButton( QWidget *parent, const QString &icon/*, QObject *receiver, const char *slot, bool isToggleButton*/ )
     : QButton( parent )
-    , m_up(   getPNG( icon + "_active2.png" ) ) //TODO rename files better (like the right way round for one!)
-    , m_down( getPNG( icon + "_inactive2.png" ) )
+    , m_up(   getPNG( icon + "_active2" ) ) //TODO rename files better (like the right way round for one!)
+    , m_down( getPNG( icon + "_inactive2" ) )
 {
     //const char *signal = isToggleButton ? SIGNAL( toggled( bool ) ) : SIGNAL( clicked() );
     //connect( this, signal, receiver, slot );

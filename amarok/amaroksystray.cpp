@@ -9,19 +9,16 @@
 #include "amaroksystray.h"
 #include "playerapp.h"
 
+#include <qevent.h>
 #include <kaction.h>
-#include <kapplication.h>
 #include <klocale.h>
 #include <kpopupmenu.h>
-#include <kstandarddirs.h>
-#include <ksystemtray.h>
-
-#include <kurldrag.h>
 
 
 AmarokSystray::AmarokSystray( QWidget *playerWidget, KActionCollection *ac ) : KSystemTray( playerWidget )
 {
     setPixmap( KSystemTray::loadIcon("amarok") ); // @since 3.2
+    setAcceptDrops( true );
 
     // Usability note:
     // Popping up menu item has some implications..
@@ -41,64 +38,55 @@ AmarokSystray::AmarokSystray( QWidget *playerWidget, KActionCollection *ac ) : K
     // 3. exactly why we should stick to the KDE guidelines unless you want to implement something
     //    that changes the menu order depending on systray position
 
-    //FIXME it's high time these were KActions
-    contextMenu()->insertItem( QIconSet( locate( "data", "amarok/images/b_prev.png" ) ),
-                               i18n( "[&Z] Prev" ), kapp, SLOT( slotPrev() ) );
-    contextMenu()->insertItem( QIconSet( locate( "data", "amarok/images/b_play.png" ) ),
-                               i18n( "[&X] Play" ), kapp, SLOT( slotPlay() ) );
-    contextMenu()->insertItem( QIconSet( locate( "data", "amarok/images/b_pause.png" ) ),
-                               i18n( "[&C] Pause" ), kapp, SLOT( slotPause() ) );
-    contextMenu()->insertItem( QIconSet( locate( "data", "amarok/images/b_stop.png" ) ),
-                               i18n( "[&V] Stop" ), kapp, SLOT( slotStop() ) );
-    contextMenu()->insertItem( QIconSet( locate( "data", "amarok/images/b_next.png" ) ),
-                               i18n( "[&B] Next" ), kapp, SLOT( slotNext() ) );
+    ac->action( "prev"  )->plug( contextMenu() );
+    ac->action( "play"  )->plug( contextMenu() );
+    ac->action( "pause" )->plug( contextMenu() );
+    ac->action( "stop"  )->plug( contextMenu() );
+    ac->action( "next"  )->plug( contextMenu() );
+
+    QPopupMenu &p = *contextMenu();
+    QStringList shortcuts; shortcuts << "" << "Z" << "X" << "C" << "V" << "B";
+    QString body = "[&%1] %2";
+
+    for( uint index = 1; index < 6; ++index )
+    {
+        int id = p.idAt( index );
+        p.changeItem( id, body.arg( *shortcuts.at( index ), p.text( id ) ) );
+    }
 
     contextMenu()->insertSeparator();
 
     ac->action( "options_configure" )->plug( contextMenu() );
-
-    setAcceptDrops( true );
 
     actionCollection()->action( "file_quit" )->disconnect();
     connect( actionCollection()->action( "file_quit" ), SIGNAL( activated() ), kapp, SLOT( quit() ) );
 }
 
 
-void AmarokSystray::wheelEvent( QWheelEvent *e )
+bool AmarokSystray::event( QEvent *e )
 {
-    //NOTE for some reason ignore() doesn't pass the event to parent unless
-    //the parent isVisible() and the active window!
+    switch( e->type() ) {
+    case QEvent::Wheel:
+    case QEvent::DragEnter:
+    case QEvent::Drop:
 
-    //send the event to the parent PlayerWidget, it'll handle it with much wisdom
-    QApplication::sendEvent( parentWidget(), e );
-}
+        //ignore() doesn't pass the event to parent unless
+        //the parent isVisible() and the active window!
 
+        //send the event to the parent PlayerWidget, it'll handle it with much wisdom
+        QApplication::sendEvent( parentWidget(), e );
+        return TRUE;
 
-
-void AmarokSystray::mousePressEvent( QMouseEvent *e )
-{
-    if( e->button() == MidButton )
-    {
-        if( static_cast<PlayerApp *>(kapp)->isPlaying() )
-            static_cast<PlayerApp *>(kapp)->slotPause();
-        else
-            static_cast<PlayerApp *>(kapp)->slotPlay();
+    case QEvent::MouseButtonPress:
+        if( static_cast<QMouseEvent*>(e)->button() == Qt::MidButton )
+        {
+            if( pApp->isPlaying() ) pApp->slotPause();
+            else pApp->slotPlay();
+            return TRUE;
+        }
+    default:
+        return KSystemTray::event( e );
     }
-    else
-        KSystemTray::mousePressEvent( e );
 }
-
-
-void AmarokSystray::dragEnterEvent( QDragEnterEvent *e )
-{
-   e->accept( KURLDrag::canDecode(e) );
-}
-
-void AmarokSystray::dropEvent( QDropEvent *e )
-{
-    //send the event to the parent PlayerWidget, it'll handle it with much wisdom
-    QApplication::sendEvent( parentWidget(), e );
-}
-
 
 #include "amaroksystray.moc"

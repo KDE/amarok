@@ -104,13 +104,13 @@ QString PlaylistItem::text( int column ) const
 
 void PlaylistItem::setText( const MetaBundle &bundle )
 {
-    setText( 1,  bundle.m_title );
-    setText( 2,  bundle.m_artist );
-    setText( 3,  bundle.m_album );
-    setText( 4,  bundle.m_year );
-    setText( 5,  bundle.m_comment );
-    setText( 6,  bundle.m_genre );
-    setText( 7,  bundle.m_track );
+    setText( 1,  bundle.title() );
+    setText( 2,  bundle.artist() );
+    setText( 3,  bundle.album() );
+    setText( 4,  bundle.year() );
+    setText( 5,  bundle.comment() );
+    setText( 6,  bundle.genre() );
+    setText( 7,  bundle.track() );
     setText( 9,  bundle.prettyLength() );
     setText( 10, bundle.prettyBitrate() );
 }

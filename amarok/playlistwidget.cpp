@@ -50,10 +50,11 @@
 
 #include <X11/Xlib.h>  // for XQueryPointer
 
+
+
 PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const char *name )
     : KListView( parent, name )
     , m_browser( /*new PlaylistBrowser( "PlaylistBrowser" )*/ 0 )
-    , m_GlowTimer( new QTimer( this ) )
     , m_GlowCount( 100 )
     , m_GlowAdd( 5 )
     , m_currentTrack( 0 )
@@ -100,8 +101,10 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const ch
     setRenameable( 5 );
     setRenameable( 6 );
     setRenameable( 7 );
-    setColumnAlignment( 7, Qt::AlignRight );
-    setColumnAlignment( 9, Qt::AlignRight );
+    setColumnAlignment(  7, Qt::AlignRight ); //track
+    setColumnAlignment(  9, Qt::AlignRight ); //length
+    setColumnAlignment( 10, Qt::AlignRight ); //bitrate
+
 
     connect( this, SIGNAL( contentsMoving( int, int ) ),
              this,   SLOT( slotEraseMarker() ) );
@@ -160,20 +163,19 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const ch
         m_redoButton->setEnabled( false );
     //</init undo/redo>
 
+    KAction *action;
     KStdAction::copy( this, SLOT( copyToClipboard() ), ac );
-    new KAction( i18n( "Save Playlist" ), "filesaveas", CTRL+Key_S, this, SLOT( saveM3u() ), ac, "save_playlist" );
-    new KAction( i18n( "Shuffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "shuffle_playlist" );
-    new KAction( i18n( "Show Current Track" ), "2uparrow", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "show_current_track" );
-    //QToolTip::add( ac->action( "show_current_track" ), i18n( "Scroll to currently playing track" ) );
+//    new KStdAction::save( i18n( "&Save Playlist" ), "filesaveas", CTRL+Key_S, this, SLOT( saveM3U() ), ac, "save_playlist" );
+    new KAction( i18n( "Shu&ffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "shuffle_playlist" );
+    action = new KAction( i18n( "&Show Playing" ), "2uparrow", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "show_current_track" );
+    action->setToolTip( i18n( "Ensure the currently playing track is visible" ) ); //FIXME doesn't show in toolbar!
 
-    //install header eventFilter
     header()->installEventFilter( this );
 
-    //TODO use timerEvent as is neater
-    connect( m_GlowTimer, SIGNAL( timeout() ), this, SLOT( slotGlowTimer() ) );
-    m_GlowTimer->start( 70 );
+    QTimer *timer = new QTimer( this );
+    connect( timer, SIGNAL( timeout() ), this, SLOT( slotGlowTimer() ) );
+    timer->start( 90 );
 
-    //read playlist columns layout
     restoreLayout( KGlobal::config(), "PlaylistColumnsLayout" );
 }
 
@@ -198,7 +200,7 @@ QWidget *PlaylistWidget::browser() const { return m_browser; }
 void PlaylistWidget::showCurrentTrack() { ensureItemVisible( currentTrack() ); } //SLOT
 
 
-QString PlaylistWidget::defaultPlaylistPath() const
+QString PlaylistWidget::defaultPlaylistPath() //static
 {
     return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "current.m3u";
 }
@@ -231,10 +233,10 @@ void PlaylistWidget::handleOrder( RequestType rt ) //SLOT
          //no point advancing/receding track since there was no currentTrack!
          rt = Current;
 
-         PlaylistItem *firstItem = (PlaylistItem*)firstChild();
+         PlaylistItem *firstItem = firstChild();
 
          //if still NULL, then play first selected track
-         for( item = firstItem; item; item = (PlaylistItem*)item->nextSibling() )
+         for( item = firstItem; item; item = item->nextSibling() )
             if( item->isSelected() ) break;
 
          //if still NULL, then play first track
@@ -295,7 +297,7 @@ void PlaylistWidget::handleOrder( RequestType rt ) //SLOT
               item = (PlaylistItem*)item->itemBelow();
 
               if( item == NULL && AmarokConfig::repeatPlaylist() )
-                  item = (PlaylistItem*)firstChild();
+                  item = firstChild();
           }
       break;
 
@@ -308,9 +310,9 @@ void PlaylistWidget::handleOrder( RequestType rt ) //SLOT
 }
 
 
-void PlaylistWidget::saveM3u( const QString &fileName ) const
+void PlaylistWidget::saveM3U( const QString &path ) const
 {
-    QFile file( fileName.isEmpty() ? defaultPlaylistPath() : fileName );
+    QFile file( path );
 
     if( file.open( IO_WriteOnly ) )
     {
@@ -318,9 +320,9 @@ void PlaylistWidget::saveM3u( const QString &fileName ) const
         QTextStream stream( &file );
         stream << "#EXTM3U\n";
 
-        for( const QListViewItem *item = this->firstChild(); item; item = item->nextSibling() )
+        for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
         {
-            url = static_cast<const PlaylistItem *>(item)->url();
+            url = item->url();
 
             if ( url.protocol() == "file" )
             {
@@ -342,13 +344,13 @@ void PlaylistWidget::saveM3u( const QString &fileName ) const
                     stream << length;
                 }
                 stream << ',';
-                stream << static_cast<const PlaylistItem*>(item)->title();
+                stream << item->title();
                 stream << '\n';
                 stream << url.path();
             }
             else
             {
-                stream << QString( "#EXTINF:-1,%1\n" ).arg( item->text( 1 ) );
+                stream << QString( "#EXTINF:-1,%1\n" ).arg( item->title() );
                 stream << url.url();
             }
 
@@ -356,6 +358,33 @@ void PlaylistWidget::saveM3u( const QString &fileName ) const
         }
         file.close();
     }
+}
+
+
+void PlaylistWidget::saveXML( const QString &path ) const
+{
+    QFile file( path );
+
+    if( !file.open( IO_WriteOnly ) ) return;
+
+    QTextStream stream( &file );
+    QString body  = "  <tag name=\"%1\">%2</tag>\n";
+    QString open1 = " <item url=\"", open2 = "\">\n";
+    QString close = " </item>\n";
+
+    stream << "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
+//    << name=\"amaroK playlist\" version=\"0.1\">\n";
+
+    for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
+    {
+        stream << open1 << item->url().url() << open2;
+        for( uint x = 0; x < columns(); ++x )
+            stream << body.arg( columnText( x ), item->exactText( x ).replace( '&', "&quot;" ).replace( '<', "&lt;" ) );
+        stream << close;
+    }
+
+    stream << "</xml>\n";
+    file.close();
 }
 
 
@@ -410,13 +439,19 @@ void PlaylistWidget::clear() //SLOT
 }
 
 
-bool PlaylistWidget::isAnotherTrack() const
+bool PlaylistWidget::isTrackAfter() const
 {
-    if( m_nextTrack != NULL ) return TRUE;
-    if( m_currentTrack && m_currentTrack->itemBelow() ) return TRUE;
-
-    return FALSE;
+    return AmarokConfig::repeatPlaylist() ||
+           m_nextTrack ||
+           m_currentTrack && m_currentTrack->itemBelow();
 }
+
+bool PlaylistWidget::isTrackBefore() const
+{
+    return AmarokConfig::repeatPlaylist() ||
+           currentTrack() && currentTrack()->itemAbove();
+}
+
 
 
 void PlaylistWidget::removeSelectedItems() //SLOT
@@ -548,13 +583,12 @@ void PlaylistWidget::setCurrentTrack( const KURL &u ) //SLOT
     if( m_cachedTrack == NULL || (m_cachedTrack && m_cachedTrack->url() != u) )
     {
         //FIXME most likely best to start at currentTrack() and be clever
-        for( m_cachedTrack = (PlaylistItem *)firstChild();
+        for( m_cachedTrack = firstChild();
              m_cachedTrack && m_cachedTrack->url() != u;
-             m_cachedTrack = (PlaylistItem *)m_cachedTrack->nextSibling() );
+             m_cachedTrack = m_cachedTrack->nextSibling() );
     }
 
     setCurrentTrack( m_cachedTrack );
-    m_cachedTrack = m_nextTrack = 0; //invalidate cached pointers
 }
 
 
@@ -604,9 +638,13 @@ void PlaylistWidget::setCurrentTrack( PlaylistItem *item )
     }
 
     m_currentTrack = item;
+    m_cachedTrack = m_nextTrack = 0; //invalidate cached pointers
 
     repaintItem( prev );
     repaintItem( item );
+
+    pApp->actionCollection()->action( "prev" )->setEnabled( isTrackBefore() );
+    pApp->actionCollection()->action( "next" )->setEnabled( isTrackAfter() );
 }
 
 
@@ -620,9 +658,9 @@ PlaylistItem *PlaylistWidget::restoreCurrentTrack()
    {
       PlaylistItem* item;
 
-      for( item = static_cast<PlaylistItem*>( firstChild() );
+      for( item = firstChild();
            item && item->url() != url;
-           item = static_cast<PlaylistItem*>( item->nextSibling() ) )
+           item = item->nextSibling() )
       {}
 
       setCurrentTrack( item ); //set even if NULL
@@ -683,7 +721,7 @@ bool PlaylistWidget::saveState( QStringList &list )
          list.pop_front();
       }
 
-      saveM3u( fileName );
+      saveM3U( fileName );
       list.append( fileName );
 
       kdDebug() << "Saved state: " << fileName << endl;
@@ -859,12 +897,12 @@ void PlaylistWidget::showTrackInfo( PlaylistItem *pItem ) const //SLOT
     {
          MetaBundle mb = pItem->metaBundle();
 
-         str += body.arg( i18n( "Title" ),  mb.m_title );
-         str += body.arg( i18n( "Artist" ), mb.m_artist );
-         str += body.arg( i18n( "Album" ),  mb.m_album );
-         str += body.arg( i18n( "Genre" ),  mb.m_genre );
-         str += body.arg( i18n( "Year" ),   mb.m_year );
-         str += body.arg( i18n( "Comment" ),mb.m_comment );
+         str += body.arg( i18n( "Title" ),  mb.title() );
+         str += body.arg( i18n( "Artist" ), mb.artist() );
+         str += body.arg( i18n( "Album" ),  mb.album() );
+         str += body.arg( i18n( "Genre" ),  mb.genre() );
+         str += body.arg( i18n( "Year" ),   mb.year() );
+         str += body.arg( i18n( "Comment" ),mb.comment() );
          str += body.arg( i18n( "Length" ), mb.prettyLength() );
          str += body.arg( i18n( "Bitrate" ),mb.prettyBitrate() );
          str += body.arg( i18n( "Samplerate" ), mb.prettySampleRate() );
@@ -1082,7 +1120,9 @@ bool PlaylistWidget::eventFilter( QObject *o, QEvent *e )
         }
 
         return TRUE; // eat event
+
     } else {
+
         //allow the header to process this
         return KListView::eventFilter( o, e );
     }
@@ -1179,18 +1219,5 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
         break;
     }
 }
-
-
-void PlaylistWidget::handleStreamMeta( const MetaBundle& bundle )
-{
-    if ( QListViewItem* pItem = m_currentTrack ) {
-        pItem->setText(  0, bundle.prettyURL()     );
-        pItem->setText(  1, bundle.prettyTitle()   );
-        pItem->setText(  2, bundle.m_artist        );    //this should not get saved with the playlist
-        pItem->setText(  6, bundle.m_genre         );
-        pItem->setText( 10, bundle.prettyBitrate() );
-    }
-}
-
 
 #include "playlistwidget.moc"

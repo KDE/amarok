@@ -63,8 +63,10 @@ email                : markey@web.de
 #include <sys/un.h>              //initIpc()
 
 
-//statics
+//start with a dummy engine that has no capabilities but ensures that amaroK always starts with
+//something even if configuration is corrupt or engine is not compiled into new amaroK etc.
 EngineBase* PlayerApp::m_pEngine = 0;
+
 
 PlayerApp::PlayerApp()
         : KApplication()
@@ -78,6 +80,7 @@ PlayerApp::PlayerApp()
         , m_pOSD( new OSDWidget( "amaroK" ) )
         , m_proxyError( false )
         , m_sockfd( -1 )
+        , m_pActionCollection( new KActionCollection( this ) )
 {
     //TODO readConfig and applySettings first
     //     reason-> create Engine earlier, so we can restore session asap to get playlist loaded by
@@ -85,6 +88,18 @@ PlayerApp::PlayerApp()
 
     setName( "amarok" );
     pApp = this; //global
+
+    KStdAction::keyBindings( this, SLOT( slotConfigShortcuts() ), actionCollection() );
+    KStdAction::preferences( this, SLOT( slotShowOptions() ), actionCollection() );
+    KStdAction::quit( this, SLOT( quit() ), actionCollection() );
+    KStdAction::keyBindings( this, SLOT( slotConfigGlobalShortcuts() ), actionCollection(), "options_configure_global_keybinding" );
+    actionCollection()->action( "options_configure_global_keybinding" )->setText( i18n( "Configure Global Shortcuts..." ) );
+
+    new KAction( i18n( "Previous Track" ), "player_start", 0, this, SLOT( slotPrev() ), actionCollection(), "prev" );
+    new KAction( i18n( "Play" ), "player_play", 0, this, SLOT( slotPlay() ), actionCollection(), "play" );
+    new KAction( i18n( "Stop" ), "player_stop", 0, this, SLOT( slotStop() ), actionCollection(), "stop" );
+    new KAction( i18n( "Pause" ), "player_pause", 0, this, SLOT( slotPause() ), actionCollection(), "pause" );
+    new KAction( i18n( "Next Track" ), "player_end", 0, this, SLOT( slotNext() ), actionCollection(), "next" );
 
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
@@ -138,6 +153,9 @@ PlayerApp::~PlayerApp()
     //and we may in the future start to use read and saveConfig() in other situations
     //    kapp->config()->setGroup( "Session" );
 
+    //TODO why is this configXT'd? hardly need to accesss these globally.
+    //     and it means they're a pain to extend
+
     if( AmarokConfig::resumePlayback() && !m_playingURL.isEmpty() )
     {
         AmarokConfig::setResumeTrack( m_playingURL.url() );
@@ -155,7 +173,8 @@ PlayerApp::~PlayerApp()
 
     saveConfig();
 
-    delete m_pPlayerWidget; //is parent of browserWin (and thus deletes it)
+    delete m_pPlayerWidget;
+    delete m_pBrowserWin;
     delete m_pOSD;
     PluginManager::unload( m_pEngine );
 }
@@ -354,7 +373,7 @@ void PlayerApp::initBrowserWin()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
-    m_pBrowserWin = new BrowserWin( m_pPlayerWidget, "BrowserWin" );
+    m_pBrowserWin = new BrowserWin( 0, "BrowserWin" );
 
     connect( m_pPlayerWidget->m_pButtonPl, SIGNAL( toggled( bool ) ),
              //m_pBrowserWin,                SLOT  ( setShown( bool ) ) );
@@ -450,6 +469,7 @@ void PlayerApp::applySettings()
     m_pPlayerWidget->setFont( font );
     m_pPlayerWidget->update(); //FIXME doesn't update the scroller, we require the metaBundle to do that, wait for my metaBundle modifications..
 
+    //TODO delete when not in use
     reinterpret_cast<QWidget*>(m_pPlayerWidget->m_pTray)->setShown( AmarokConfig::showTrayIcon() );
 
     setupColors();
@@ -533,8 +553,8 @@ void PlayerApp::readConfig()
     m_pGlobalAccel->updateConnections();
 
     //FIXME use a global actionCollection (perhaps even at global scope)
-    m_pPlayerWidget->m_pActionCollection->readShortcutSettings( QString::null, kapp->config() );
-    m_pBrowserWin->m_pActionCollection->readShortcutSettings( QString::null, kapp->config() );
+    actionCollection()->readShortcutSettings( QString::null, kapp->config() );
+    m_pBrowserWin->actionCollection()->readShortcutSettings( QString::null, kapp->config() );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
@@ -740,8 +760,7 @@ void PlayerApp::slotNext() { emit orderNextTrack(); }
 
 void PlayerApp::play( const MetaBundle &bundle )
 {
-    const KURL &url = bundle.m_url;
-    m_playingURL = url;
+    const KURL &url = m_playingURL = bundle.url();
     emit currentTrack( url );
 
     if ( AmarokConfig::titleStreaming() &&
@@ -1043,8 +1062,8 @@ void PlayerApp::slotConfigShortcuts()
 {
     KKeyDialog keyDialog( true );
 
-    keyDialog.insert( m_pPlayerWidget->m_pActionCollection, i18n( "Player Window" ) );
-    keyDialog.insert( m_pBrowserWin->m_pActionCollection, i18n( "Playlist Window" ) );
+    keyDialog.insert( actionCollection(), i18n( "General" ) );
+    keyDialog.insert( m_pBrowserWin->actionCollection(), i18n( "Playlist Window" ) );
 
     keyDialog.configure();
 }

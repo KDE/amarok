@@ -44,6 +44,7 @@ class QListViewItem;
 class QString;
 class QTimer;
 
+class KActionCollection;
 class KGlobalAccel;
 
 
@@ -62,6 +63,8 @@ class PlayerApp : public KApplication
         void insertMedia( const KURL::List& );
         bool decoderConfigurable();
         static void initCliArgs( int argc, char *argv[] );
+
+        KActionCollection *actionCollection() { return m_pActionCollection; }
 
         // STATICS
         static const int     ANIM_TIMER  = 30;
@@ -149,6 +152,8 @@ class PlayerApp : public KApplication
         int       m_sockfd;
         QString   m_textForOSD;
         bool      m_determineLength;
+
+        KActionCollection *m_pActionCollection;
 };
 
 

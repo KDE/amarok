@@ -33,10 +33,12 @@ class PlaylistItem : public KListViewItem
         PlaylistItem( PlaylistWidget*, QListViewItem*, const KURL&, const QString& = "", const int length = 0 );
 
         QString text( int column ) const;
+        QString exactText( int col ) const { return KListViewItem::text( col ); }
         void setText( const MetaBundle& );
         void setText( int, const QString& );
 
-        PlaylistWidget *listView() const { return (PlaylistWidget *)KListViewItem::listView(); }
+        PlaylistWidget *listView() const { return (PlaylistWidget*)KListViewItem::listView(); }
+        PlaylistItem *nextSibling() const { return (PlaylistItem*)KListViewItem::nextSibling(); }
 
         MetaBundle metaBundle();
         const QString trackName() const { return KListViewItem::text( 0 ); }

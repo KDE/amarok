@@ -28,9 +28,7 @@ class AmarokDcopHandler;
 class AmarokSlider;
 class AmarokSystray;
 class ArtsConfigWidget;
-class KActionCollection;
 class KHelpMenu;
-class KSystemTray;
 class MetaBundle;
 class PlayerApp;
 class PlayerWidget;
@@ -78,9 +76,6 @@ class PlayerWidget : public QWidget
         void timeDisplay( int );
         void wheelEvent( QWheelEvent* ); //systray requires access
         void startDrag();
-
-        // ATTRIBUTES ------
-        KActionCollection *m_pActionCollection;
 
         static QString zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1" ).arg( i ) : QString::number( i ); }
 
@@ -132,22 +127,5 @@ class PlayerWidget : public QWidget
         QPushButton  *m_pButtonPlay;
         QPushButton  *m_pButtonPause;
 };
-
-
-//these two template functions are designed to reduce the amount of code in the PlayerWidget ctor
-//and hopefully will be compiled such that the final binary is smaller too
-template<class W> inline W*
-wrapper( const QRect &r, QWidget *parent, const char *name = 0, QWidget::WFlags f = 0 )
-{
-    W *w = new W( parent, name, f );
-    return placeWidget( w, r );
-}
-
-template<class W> inline W*
-placeWidget( W *w, const QRect &r )
-{
-    w->setGeometry( r );
-    return w;
-}
 
 #endif

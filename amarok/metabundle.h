@@ -102,6 +102,15 @@ public:
     int bitrate()    const { return m_bitrate; }
     int sampleRate() const { return m_sampleRate; }
 
+    const KURL    &url()     const { return m_url; }
+    const QString &title()   const { return m_title; }
+    const QString &artist()  const { return m_artist; }
+    const QString &album()   const { return m_album; }
+    const QString &year()    const { return m_year; }
+    const QString &comment() const { return m_comment; }
+    const QString &genre()   const { return m_genre; }
+    const QString &track()   const { return m_track; }
+
     QString prettyTitle() const;
     QString prettyURL()     const { return m_url.prettyURL(); }
     QString prettyBitrate() const { return prettyBitrate( m_bitrate ); }
@@ -111,6 +120,7 @@ public:
     static QString prettyBitrate( int i ) { return prettyGeneric( i18n( "Bitrate", "%1 kbps" ), i ); }
     static QString prettyLength( int );
 
+private:
     const KURL    m_url;
     const QString m_title;
     const QString m_artist;
@@ -120,7 +130,6 @@ public:
     const QString m_genre;
     const QString m_track;
 
-private:
     int m_bitrate;
     int m_length;
     int m_sampleRate;
@@ -149,11 +158,8 @@ MetaBundle::prettyTitle() const
 
     if( s.isEmpty() )
     {
-    //    s = m_url.fileName();
-    //    int thedot = s.findRev( '.' );
-    //    s = s.left( thedot ).replace( '_', ' ' );
         //remove file extension and tidy
-        s = m_url.fileName().section( '.', 0, -2 ).replace( '_', ' ' );
+        s = m_url.fileName().left( s.findRev( '.' ) ).replace( '_', ' ' );
     }
 
     return s;

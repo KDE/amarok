@@ -59,22 +59,19 @@ class BrowserWin : public QWidget
 
         KActionCollection *actionCollection() const { return m_pActionCollection; }
 
-        KActionCollection *m_pActionCollection;
-
     private slots:
         void savePlaylist() const;
         void slotAddLocation();
 
     private:
-        enum ButtonIds { id_addItem, id_playlistActions, id_undo, id_redo, id_play,
-                         id_next, id_stop, id_pause, id_prev };
-
-        bool    eventFilter( QObject*, QEvent* );
+        bool eventFilter( QObject*, QEvent* );
 
         QSplitter       *m_splitter;
         PlaylistSideBar *m_sideBar;
         PlaylistWidget  *m_playlist;
         KLineEdit       *m_lineEdit;
+
+        KActionCollection *m_pActionCollection;
 };
 
 

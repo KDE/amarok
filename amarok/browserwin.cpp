@@ -49,6 +49,10 @@
 #include <kurlrequesterdlg.h> //slotAddLocation()
 
 
+#include <ktoolbarbutton.h>
+#include <qiconset.h> //FIXME
+
+
 //Routine for setting palette recursively in a widget and all its childen
 //NOTE I didn't make this a member as there was no need and we may like to move it at some point
 static void setPaletteRecursively( QWidget* widget, const QPalette &pal, const QColor& bgAlt )
@@ -71,58 +75,50 @@ static void setPaletteRecursively( QWidget* widget, const QPalette &pal, const Q
 
 BrowserWin::BrowserWin( QWidget *parent, const char *name )
    : QWidget( parent, name, Qt::WType_TopLevel | Qt::WNoAutoErase )
-   , m_pActionCollection( new KActionCollection( this ) )
    , m_splitter( new QSplitter( this ) )
    , m_sideBar( new PlaylistSideBar( m_splitter ) )
    , m_playlist( 0 )
    , m_lineEdit( 0 )
+   , m_pActionCollection( new KActionCollection( this ) )
 {
-    setCaption( kapp->makeStdCaption( i18n( "Playlist" ) ) );
+    setCaption( "amaroK" );
 
-    //TODO pass it an engine pointer and it'll connect up various signals
-    //this is cool because Qt is cool and not compile check is neccessary!
-
-    /*
-    QToolButton *clearButton = new QToolButton( this );
-    //KApplication::reverseLayout() ? "clear_left" : "locationbar_erase"
-    clearButton->setIconSet( SmallIconSet( "locationbar_erase" ) );
-    connect( clearButton, SIGNAL( clicked() ), m_lineEdit, SLOT( clear() ) );
-    */
     KToolBar* toolbar = new KToolBar( this );
-    toolbar->setIconText( KToolBar::IconTextBottom );
 
     QBoxLayout *layV = new QVBoxLayout( this );
     layV->addWidget( m_splitter );
     layV->addWidget( toolbar );
 
     QVBox *box  = new QVBox( m_splitter );
-
-    QHBox *boxH = new QHBox( box );
-    m_lineEdit  = new KLineEdit( boxH );
+  //QHBox *boxH = new QHBox( box );
+    m_lineEdit  = new KLineEdit( box );
 
     m_playlist = new PlaylistWidget( box, m_pActionCollection );
     m_splitter->setResizeMode( m_sideBar, QSplitter::FollowSizeHint );
     m_splitter->setResizeMode( box,       QSplitter::Auto );
     m_sideBar->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
 
-    /* Here because we need m_playlist initialized. */
+    /*
+    //Here because we need m_playlist initialized.
     QPushButton *showCurrentTrack = new QPushButton( boxH );
     showCurrentTrack->setPixmap( KGlobal::iconLoader()->loadIcon( "2uparrow", KIcon::NoGroup, KIcon::SizeSmall ) );
     QToolTip::add( showCurrentTrack, i18n( "Scroll to currently playing item" ) );
     connect( showCurrentTrack, SIGNAL( clicked() ), m_playlist, SLOT(showCurrentTrack()) );
+    */
 
     {//<ToolBar>
-        QPopupMenu* actions_popup = new QPopupMenu( this );
-        m_playlist->m_clearButton->plug( actions_popup );
-        actionCollection()->action( "shuffle_playlist" )->plug( actions_popup  );
-        actionCollection()->action( "save_playlist" )->plug( actions_popup  );
 
-        toolbar->insertButton( "fileopen",    id_addItem,         true, i18n( "Add Item" ) );
-        connect( toolbar->getButton( id_addItem ), SIGNAL( clicked() ), this, SLOT( slotAddLocation() ) );
+        toolbar->insertButton( "fileopen", 100, true, i18n( "Add Item" ) );
+        KToolBarButton *addItem = toolbar->getButton( 100 );
+        connect( addItem, SIGNAL( clicked() ), this, SLOT( slotAddLocation() ) );
 
-        toolbar->insertButton( "midi",        id_playlistActions, true, i18n( "Playlist Actions" ) );
-        toolbar->getButton( id_playlistActions )->setDelayedPopup( actions_popup );
-        actionCollection()->action( "show_current_track" )->plug( toolbar );
+        KActionCollection *ac = actionCollection();
+        KAction *savePlaylist = KStdAction::save( this, SLOT( savePlaylist() ), ac, "save_playlist" );
+        savePlaylist->setText( i18n("&Save Playlist") );
+        savePlaylist->plug( toolbar );
+        ac->action( "shuffle_playlist" )->plug( toolbar );
+        m_playlist->m_clearButton->plug( toolbar );
+        ac->action( "show_current_track" )->plug( toolbar );
 
         toolbar->insertLineSeparator();
 
@@ -131,21 +127,24 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 
         toolbar->insertLineSeparator();
 
-        //FIXME replace with actions provided by engine
-        toolbar->insertButton( "player_rew", id_prev,            true, "Previous" );
-        connect( toolbar->getButton( id_prev ), SIGNAL( clicked() ), pApp, SLOT( slotPrev() ) );
+        ac = pApp->actionCollection();
+        ac->action( "prev"  )->plug( toolbar );
+        ac->action( "play"  )->plug( toolbar );
+        ac->action( "pause" )->plug( toolbar );
+        ac->action( "stop"  )->plug( toolbar );
+        ac->action( "next"  )->plug( toolbar );
 
-        toolbar->insertButton( "player_play", id_play,            true, "Play" );
-        connect( toolbar->getButton( id_play ), SIGNAL( clicked() ), pApp, SLOT( slotPlay() ) );
+        //TEXT ON RIGHT HACK
+        //KToolBarButtons have independent settings for their appearance.
+        //However these properties are set in modeChange() to follow the parent KToolBar settings
+        //passing false to setIconText prevents modeChange() being called for all buttons
+        toolbar->setIconText( KToolBar::IconTextRight, false );
+        addItem->modeChange();
+        toolbar->getButton( toolbar->idAt( 2 ) )->modeChange();
+        toolbar->getButton( toolbar->idAt( 3 ) )->modeChange();
+        toolbar->getButton( toolbar->idAt( 4 ) )->modeChange();
+        toolbar->setIconText( KToolBar::IconOnly, false );
 
-        toolbar->insertButton( "player_pause", id_pause,          true, "Pause" );
-        connect( toolbar->getButton( id_pause ), SIGNAL( clicked() ), pApp, SLOT( slotPause() ) );
-
-        toolbar->insertButton( "player_stop", id_stop,            true, "Stop" );
-        connect( toolbar->getButton( id_stop ), SIGNAL( clicked() ), pApp, SLOT( slotStop() ) );
-
-        toolbar->insertButton( "player_fwd", id_next,             true, "Next" );
-        connect( toolbar->getButton( id_next ), SIGNAL( clicked() ), pApp, SLOT( slotNext() ) );
     }//</ToolBar>
 
 
@@ -190,7 +189,7 @@ BrowserWin::~BrowserWin()
     //TODO save at regular intervals, (use the QWidget built in timer as they have less overhead)
 
     if( AmarokConfig::savePlaylist() )
-        m_playlist->saveM3u( m_playlist->defaultPlaylistPath() );
+        m_playlist->saveM3U( m_playlist->defaultPlaylistPath() );
 }
 
 
@@ -212,7 +211,7 @@ void BrowserWin::restoreSessionPlaylist()
 
 bool BrowserWin::isAnotherTrack() const
 {
-    return m_playlist->isAnotherTrack() || AmarokConfig::repeatPlaylist();
+    return m_playlist->isTrackAfter();
 }
 
 
@@ -329,9 +328,9 @@ void BrowserWin::savePlaylist() const //SLOT
 
     path = KFileDialog::getSaveFileName( path, "*.m3u" );
 
-    if( !path.isEmpty() )
+    if( !path.isEmpty() ) //FIXME unecessary check
     {
-        m_playlist->saveM3u( path );
+        m_playlist->saveM3U( path );
     }
 }
 
@@ -348,4 +347,3 @@ void BrowserWin::slotAddLocation() //SLOT
 
 
 #include "browserwin.moc"
-

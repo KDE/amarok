@@ -11,25 +11,20 @@
 
 #include <ksystemtray.h>
 
-class QMouseEvent;
-class QWheelEvent;
-class QDragEnterEvent;
-class QDropEvent;
-
 class KActionCollection;
+class QEvent;
+
+//TODO use Amarok namespace
 
 class AmarokSystray : public KSystemTray
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
     AmarokSystray( QWidget *, KActionCollection * );
 
 private:
-    void mousePressEvent( QMouseEvent * );
-    void wheelEvent( QWheelEvent * );
-    void dragEnterEvent( QDragEnterEvent * );
-    void dropEvent( QDropEvent *e );
+    bool event( QEvent* );
 };
 
 #endif
