@@ -305,8 +305,6 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             paintCache[column].font == p->font() &&
             !s_pixmapChanged;
 
-        debug() << cacheValid << endl;
-
         // If any parameter changed, we must regenerate all pixmaps
         if ( !cacheValid )
         {
@@ -318,9 +316,6 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         // Determine if we need to repaint the pixmap, or paint from cache
         if ( paintCache[column].map.find( colorKey ) == paintCache[column].map.end() )
         {
-            debug() << "HELLO\n";
-
-
             // Update painting cache
             paintCache[column].width = width;
             paintCache[column].height = height();
