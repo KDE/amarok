@@ -462,7 +462,7 @@ void ContextBrowser::showHome() //SLOT
     if ( values.count() )
     {
         for ( uint i = 0; i < values.count(); i = i + 5 )
-            browser->write( QString ( "<tr><td class='song'><a class='song' href=\"file:"
+            browser->write( QString ( "<tr><td class='song'><a href=\"file:"
                                     + values[i+1].replace( "\"", QCString( "%22" ) ) + "\"><b>" + values[i]
                                     + "</b> <i>(" + i18n( "Score:" ) + " " + values[i+2] + ")</i><br>" + values[i+3] + " - " + values[i+4] + "</a></td></tr>" ) );
     }
@@ -490,7 +490,7 @@ void ContextBrowser::showHome() //SLOT
     if ( values.count() )
     {
         for ( uint i = 0; i < values.count(); i = i + 4 )
-            browser->write( QString ( "<tr><td class='song'><a class='song' href=\"file:"
+            browser->write( QString ( "<tr><td class='song'><a href=\"file:"
                                     + values[i+1].replace( "\"", QCString( "%22" ) ) + "\"'><b>" + values[i]
                                     + "</b><br>" + values[i+2] + " - " + values[i+3] + "</a></td></tr>" ) );
     }
@@ -630,7 +630,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
         for ( uint i = 0; i < values.count(); i += 3 )
-            browser->write( QString ( "<tr><td class='song'><a class='song' href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">"
+            browser->write( QString ( "<tr><td class='song'><a href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">"
                                       + values[i] + " <i>(" + i18n( "Score:" ) + " " + values[i + 2] + ")</i></a></td></tr>" ) );
 
         values.clear();
@@ -654,17 +654,17 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
         if ( !values.isEmpty() )
         {
-            browser->write( "<br><div class='rbcontent'>" );
-            browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-            browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Tracks on this album:" ) + "</td></tr>" );
-            browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
-            browser->write( "</table>" );
-            browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+            browser->write( "<br><div class='rbcontent'>"
+                            "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+                            "<tr><td class='head'>&nbsp;" + i18n( "Tracks on this album:" ) + "</td></tr>"
+                            "<tr><td height='1' bgcolor='black'></td></tr>"
+                            "</table>"
+                            "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
             for ( uint i = 0; i < values.count(); i += 3 )
             {
                 QString tmp = values[i + 2].stripWhiteSpace() == "" ? "" : values[i + 2] + ". ";
-                browser->write( QString ( "<tr><td><a class='song' href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">" + tmp + values[i] + "</a></td></tr>" ) );
+                browser->write( QString ( "<tr><td class='song'><a href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">" + tmp + values[i] + "</a></td></tr>" ) );
             }
 
             values.clear();
@@ -693,8 +693,11 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
         for ( uint i = 0; i < values.count(); i += 4 )
         {
-            browser->write( QStringx ( "<tr><td onClick='window.location.href=\"album:%1 @@@ %2\"' height='42' valign='top' class='rbalbum'>"
-                                       "<a class='menu' href='fetchcover:%3 @@@ %4'><img align='left' hspace='2' src='%5'></a><a class='album' href=\"album:%6 @@@ %7\">%8</class><br>%9 %10</a></td>"
+            browser->write( QStringx ( "<tr>"
+                                        "<td class='rbalbum' onClick='window.location.href=\"album:%1 @@@ %2\"' height='42' valign='top'>"
+                                         "<a href='fetchcover:%3 @@@ %4'><img align='left' hspace='2' src='%5'></a>"
+                                         "<a href=\"album:%6 @@@ %7\"><b>%8</b><br>%9</a>"
+                                        "</td>"
                                        "</tr>" )
                             .args( QStringList()
                                     << values[i + 3].replace( "\"", "%22" ) // artist.id
@@ -705,8 +708,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                     << values[i + 3].replace( "\"", "%22" ) // artist.id
                                     << values[i + 2].replace( "\"", "%22" ) // album.id
                                     << escapeHTML( values[i + 0] ) // album.name
-                                    << m_db->albumSongCount( values[i + 3], values[i + 2] )
-                                    << (m_db->albumSongCount( values[i + 3], values[i + 2] ).toInt() == 1 ? i18n( "Track" ) : i18n( "Tracks" ))
+                                    << i18n( "1 Track", "%n Tracks", m_db->albumSongCount( values[i + 3], values[i + 2] ).toInt() )
                                     )
                              );
         }
@@ -748,23 +750,23 @@ void ContextBrowser::setStyleSheet()
                     .arg( colorGroup().text().name() );
     m_styleSheet += QString( ".song { color: %1; font-size: %2px; text-decoration: none; }" )
                     .arg( colorGroup().text().name() ).arg( pxSize );
-    m_styleSheet += QString( ".song:hover { color: %1; cursor: default; background-color: %2; }" )
+    m_styleSheet += QString( ".song:hover { color: %1; background-color: %2; }" )
                     .arg( colorGroup().highlightedText().name() ).arg( colorGroup().highlight().name() );
-    m_styleSheet += QString( "A.song { color: %1; font-size: %2px; text-decoration: none; display: block; }" )
+    m_styleSheet += QString( ".song A { color: %1; font-size: %2px; text-decoration: none; display: block; padding: 1px 2px; }" )
                     .arg( colorGroup().text().name() ).arg( pxSize );
-    m_styleSheet += QString( "A.song:hover { color: %1; font-size: %2px; text-decoration: none; display: block; }" )
+    m_styleSheet += QString( ".song A:hover { color: %1; font-size: %2px; text-decoration: none; display: block; }" )
                     .arg( colorGroup().highlightedText().name() ).arg( pxSize );
     m_styleSheet += QString( ".album { font-weight: bold; font-size: %1px; text-decoration: none; }" )
                     .arg( pxSize );
     m_styleSheet += QString( ".title { color: %1; font-size: %2px; font-weight: bold; }" )
                     .arg( colorGroup().text().name() ).arg( pxSize + 3 );
-    m_styleSheet += QString( ".head { color: %1; font-size: %2px; font-weight: bold; background-color: %3; }" )
+    m_styleSheet += QString( ".head { color: %1; font-size: %2px; font-weight: bold; background-color: %3; padding: 1px 0; }" )
                     .arg( colorGroup().highlightedText().name() ).arg( pxSize + 2 ).arg( colorGroup().highlight().name() );
     m_styleSheet += QString( ".rbcurrent { color: %1; border: solid %2 1px; }" )
                     .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
-    m_styleSheet += QString( ".rbalbum A { color: %1; border: solid %2 1px; }; " )
+    m_styleSheet += QString( ".rbalbum A { color: %1; border: solid %2 1px; text-decoration: none; }" )
                     .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
-    m_styleSheet += QString( ".rbalbum:hover { color: %1; cursor: default; background-color: %2; border: solid %3 1px; }" )
+    m_styleSheet += QString( ".rbalbum:hover { color: %1; cursor: pointer; background-color: %2; border: solid %3 1px; }" )
                     .arg( colorGroup().highlightedText().name() ).arg( colorGroup().highlight().name() ).arg( colorGroup().text().name() );
     m_styleSheet += QString( ".rbcontent { border: solid %1 1px; }" )
                     .arg( colorGroup().highlight().name() );
@@ -778,13 +780,14 @@ void ContextBrowser::showIntroduction()
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
 
-    browser->write( "<html><div>");
+    browser->write( "<html><div><h2>");
     browser->write( i18n( "Hello amaroK user!" ) );
-    browser->write( "<br><br>" );
+    browser->write( "</h2><br><br>" );
     browser->write( i18n( "This is the Context Browser: it shows you contextual information about the currently playing track."
-                          "In order to use this feature of amaroK, you need to build a collection." )
-                    + "&nbsp;<a href='show:collectionSetup'>" + i18n( "Click here to build one." ) + "</a>" );
-    browser->write( "</div></html>");
+                          "In order to use this feature of amaroK, you need to build a collection." ) );
+    browser->write( "&nbsp;<a href='show:collectionSetup'>" );
+    browser->write( i18n( "Click here to build one..." ) );
+    browser->write( "</a></div></html>");
 
     browser->end();
 }
