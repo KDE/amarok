@@ -61,8 +61,12 @@ CoverFetcher::CoverFetcher( QWidget *parent, QString artist, QString album )
      */
 
     //search on our modified term, then the original
+    if ( !m_artist.isEmpty() )
+        m_userQuery = m_artist + " - ";
+    m_userQuery += m_album;
+
     m_queries += m_artist + " - " + album;
-    m_queries += m_userQuery = m_artist + " - " + m_album;
+    m_queries += m_userQuery;
     m_queries += album;
     m_queries += m_album;
 

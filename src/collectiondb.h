@@ -328,11 +328,11 @@ class QueryBuilder
 {
     public:
         //attributes:
-        enum qBuilderTables  { tabAlbum = 1, tabArtist = 2, tabGenre = 4, tabYear = 8, tabSong = 32, tabStats = 64 };
+        enum qBuilderTables  { tabAlbum = 1, tabArtist = 2, tabGenre = 4, tabYear = 8, tabSong = 32, tabStats = 64, tabDummy = 0 };
         enum qBuilderOptions { optNoCompilations = 1, optOnlyCompilations = 2, optRemoveDuplicates = 4, optRandomize = 8 };
         enum qBuilderValues  { valID = 1, valName = 2, valURL = 4, valTitle = 8, valTrack = 16, valScore = 32, valComment = 64,
                                valBitrate = 128, valLength = 256, valSamplerate = 512, valPlayCounter = 1024,
-                               valCreateDate = 2048, valAccessDate = 4096, valPercentage = 8192 };
+                               valCreateDate = 2048, valAccessDate = 4096, valPercentage = 8192, valDummy = 0 };
 
         enum qBuilderFilter  { modeNormal = 0, modeFuzzy = 1 };
 

@@ -757,9 +757,15 @@ CollectionDB::albumImage( const uint artist_id, const uint album_id, const uint 
 QString
 CollectionDB::albumImage( const QString &artist, const QString &album, uint width )
 {
+    QString s;
     // we aren't going to need a 1x1 size image. this is just a quick hack to be able to show full size images.
     if ( width == 1 ) width = AmarokConfig::coverPreviewSize();
-    return findImageByArtistAlbum( artist, album, width );
+
+    s = findImageByArtistAlbum( artist, album, width );
+    if ( s == notAvailCover( width ) )
+        return findImageByArtistAlbum( "", album, width );
+
+    return s;
 }
 
 
@@ -771,7 +777,7 @@ CollectionDB::albumImage( MetaBundle trackInformation, uint width )
 
     QString path = findImageByMetabundle( trackInformation, width );
     if ( path.isNull() )
-        path = findImageByArtistAlbum( trackInformation.artist(), trackInformation.album(), width );
+        path = albumImage( trackInformation.artist(), trackInformation.album(), width );
 
     return path;
 }
@@ -882,7 +888,7 @@ CollectionDB::artistList( bool withUnknowns, bool withCompilations )
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
 
     if ( !withUnknowns )
-        qb.excludeMatch( QueryBuilder::tabArtist, "" );
+        qb.excludeMatch( QueryBuilder::tabArtist, i18n( "Unknown" ) );
     if ( !withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
@@ -899,7 +905,7 @@ CollectionDB::albumList( bool withUnknowns, bool withCompilations )
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
 
     if ( !withUnknowns )
-        qb.excludeMatch( QueryBuilder::tabAlbum, "" );
+        qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
     if ( !withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
@@ -916,7 +922,7 @@ CollectionDB::genreList( bool withUnknowns, bool withCompilations )
     qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
 
     if ( !withUnknowns )
-        qb.excludeMatch( QueryBuilder::tabGenre, "" );
+        qb.excludeMatch( QueryBuilder::tabGenre, i18n( "Unknown" ) );
     if ( !withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
@@ -933,7 +939,7 @@ CollectionDB::yearList( bool withUnknowns, bool withCompilations )
     qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
 
     if ( !withUnknowns )
-        qb.excludeMatch( QueryBuilder::tabYear, "" );
+        qb.excludeMatch( QueryBuilder::tabYear, i18n( "Unknown" ) );
     if ( !withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
@@ -2105,8 +2111,13 @@ QueryBuilder::addReturnValue( int table, int value )
     if ( !m_values.isEmpty() && m_values != "DISTINCT " ) m_values += ",";
     if ( table & tabStats && value & valScore ) m_values += "round(";
 
-    m_values += tableName( table ) + ".";
-    m_values += valueName( value );
+    if ( value == tabDummy )
+        m_values += "''";
+    else
+    {
+        m_values += tableName( table ) + ".";
+        m_values += valueName( value );
+    }
 
     if ( table & tabStats && value & valScore ) m_values += " + 0.4 )";
 

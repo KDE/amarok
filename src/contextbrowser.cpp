@@ -1575,9 +1575,10 @@ void
 ContextBrowser::coverFetched( const QString &artist, const QString &album )
 {
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
+    if ( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() )
+        return;
 
-    if ( currentTrack.artist() == artist ||
-         currentTrack.album() == album ) // this is for compilations or artist == ""
+    if ( currentTrack.artist() == artist || currentTrack.album() == album ) // this is for compilations or artist == ""
     {
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
@@ -1589,9 +1590,10 @@ void
 ContextBrowser::coverRemoved( const QString &artist, const QString &album )
 {
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
+    if ( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() )
+        return;
 
-    if ( currentTrack.artist() == artist ||
-         currentTrack.album() == album ) // this is for compilations or artist == ""
+    if ( currentTrack.artist() == artist || currentTrack.album() == album ) // this is for compilations or artist == ""
     {
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();

@@ -83,7 +83,7 @@ CoverManager::CoverManager()
     m_artistView->setMinimumWidth( 180 );
     //add 'All Albums' at the top
     KListViewItem *item = new KListViewItem( m_artistView, i18n( "All Albums" ) );
-    item->setExpandable( true );
+    //item->setExpandable( true );
     item->setPixmap( 0, SmallIcon("cdrom_unmount") );
 
     //load artists from the collection db
@@ -91,7 +91,7 @@ CoverManager::CoverManager()
     if( !artists.isEmpty() ) {
         for( uint i=0; i < artists.count(); i++ )  {
             item = new KListViewItem( m_artistView, item, artists[i] );
-            item->setExpandable( true );
+            //item->setExpandable( true );
             item->setPixmap( 0, SmallIcon("personal") );
         }
     }
@@ -408,15 +408,35 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabAlbum,  QueryBuilder::valName );
 
-    if ( item != m_artistView->firstChild() )
-        qb.addMatches( QueryBuilder::tabArtist, item->text( 0 ) );
-
     qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
     qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     qb.setOptions( QueryBuilder::optNoCompilations );
 
+    if ( item != m_artistView->firstChild() )
+        qb.addMatches( QueryBuilder::tabArtist, item->text( 0 ) );
+
     albums = qb.run();
+
+    //also retrieve compilations when we're showing all items (first treenode)
+    if ( item == m_artistView->firstChild() )
+    {
+        QStringList cl;
+
+        qb.clear();
+        qb.addReturnValue( QueryBuilder::tabDummy, QueryBuilder::valDummy );
+        qb.addReturnValue( QueryBuilder::tabAlbum,  QueryBuilder::valName );
+
+        qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
+        qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+        qb.setOptions( QueryBuilder::optRemoveDuplicates );
+        qb.setOptions( QueryBuilder::optOnlyCompilations );
+        cl = qb.run();
+
+        for ( uint i = 0; i < cl.count(); i++ )
+            albums.append( cl[ i ] );
+    }
+
     QApplication::restoreOverrideCursor();
 
     progress.setTotalSteps( (albums.count()/2) + (albums.count()/10) );
@@ -694,11 +714,11 @@ void CoverManager::stopFetching()
 
 void CoverManager::loadCover( const QString &artist, const QString &album )
 {
-    for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) {
+    for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() )
+    {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
-//        debug() << coverItem->artist() << endl;
-//        debug() << coverItem->album() << endl;
-        if ( artist == coverItem->artist() && album == coverItem->album() ) {
+        if ( album == coverItem->album() && ( artist == coverItem->artist() || ( artist.isEmpty() && coverItem->artist().isEmpty() ) ) )
+        {
             coverItem->loadCover();
             return;
         }
@@ -781,7 +801,11 @@ void CoverManager::updateStatusBar()
         if( m_fetchingCovers == 1 ) {
             QStringList values = QStringList::split( " @@@ ", m_fetchCovers[0], true );    //get artist and album name
             if ( values.count() >= 2 )
-                text = i18n("Fetching cover for ") + values[0] + " - " + values[1] + "...";
+            {
+                text = i18n( "Fetching cover for " );
+                if ( !values[0].isEmpty() ) text += values[0] + " - ";
+                text += values[1] + "...";
+            }
         }
         else if( m_fetchingCovers ) {
             text = i18n( "Fetching 1 cover: ", "Fetching <b>%n</b> covers... : ", m_fetchingCovers );
