@@ -3,7 +3,6 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // License: GPL V2
 
-#include "config.h"
 
 #include "gstequalizer.h"
 #include "iir_cf.h"         // IIR filter coefficients
@@ -246,7 +245,7 @@ set_filters( GstEqualizer* obj )
 }
 
 
-#ifdef ARCH_X86
+#ifdef __i386__
 /* Round function provided by Frank Klemm which saves around 100K
  * CPU cycles in my PIII for each call to the IIR function with 4K samples
  */
@@ -344,7 +343,7 @@ gst_equalizer_chain ( GstPad* pad, GstData* data_in )
             out[channel] += pcm[channel]*0.25;
 
             /* Round and convert to integer */
-#ifdef ARCH_X86
+#ifdef __i386__
             tempgint = round_trick(out[channel]);
 #else
             tempgint = (int)out[channel];
