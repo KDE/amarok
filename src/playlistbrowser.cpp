@@ -1133,7 +1133,7 @@ void PlaylistBrowserItem::insertTracks( QListViewItem *after, KURL::List list, Q
         QString title = str.section(';',0,0);
         int length = str.section(';',1,1).toUInt();
 
-        TrackItemInfo *newInfo = new TrackItemInfo( *it, title, length );
+        TrackItemInfo *newInfo = new TrackItemInfo( *it, title.isEmpty() ? key : title, length );
         m_length += newInfo->length();
         m_trackCount++;
 
