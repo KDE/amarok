@@ -476,6 +476,9 @@ CollectionView::listSelected() {
     for ( item = firstChild(); item; item = item->nextSibling() )
         if ( item->isSelected() )
         {
+            values.clear();
+            names.clear();
+
             m_db->retrieveFirstLevelURLs( item->text( 0 ), m_category1, m_filter, &values, &names );
             for ( uint i = 0; i < values.count(); i++ )
             {
@@ -498,6 +501,9 @@ CollectionView::listSelected() {
             for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
                 if ( child->isSelected() )
                 {
+                    values.clear();
+                    names.clear();
+
                     m_db->retrieveSecondLevelURLs( item->text( 0 ), child->text( 0 ), m_category1, m_category2, m_filter, &values, &names );
                     for ( uint i = 0; i < values.count(); i++ )
                     {
