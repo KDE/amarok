@@ -6,6 +6,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+          <markey> Implement "Play Media". -->markey
+
           <muesli> Sort albums by date, name in ContextBrowser.
 
           <muesli> Don't show '0' as a date for an album in ContextBrowser.
