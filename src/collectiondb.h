@@ -191,13 +191,13 @@ class CollectionDB : public QObject, public EngineObserver
         void clearTables( DbConnection *conn = NULL );
         void moveTempTables( DbConnection *conn );
 
-        uint artistID( QString value, bool autocreate = true, const bool temporary = false, DbConnection *conn = NULL );
-        uint albumID( QString value, bool autocreate = true, const bool temporary = false, DbConnection *conn = NULL );
-        uint genreID( QString value, bool autocreate = true, const bool temporary = false, DbConnection *conn = NULL );
-        uint yearID( QString value, bool autocreate = true, const bool temporary = false, DbConnection *conn = NULL );
+        uint artistID( QString value, bool autocreate = true, const bool temporary = false, const bool updateSpelling = false, DbConnection *conn = NULL );
+        uint albumID( QString value, bool autocreate = true, const bool temporary = false, const bool updateSpelling = false, DbConnection *conn = NULL );
+        uint genreID( QString value, bool autocreate = true, const bool temporary = false, const bool updateSpelling = false, DbConnection *conn = NULL );
+        uint yearID( QString value, bool autocreate = true, const bool temporary = false, const bool updateSpelling = false, DbConnection *conn = NULL );
 
         bool isDirInCollection( QString path );
-        bool isFileInCollection( const QString &url  );
+        bool isFileInCollection( const QString &url );
         void removeDirFromCollection( QString path );
         void removeSongsInDir( QString path );
         void updateDirStats( QString path, const long datetime, DbConnection *conn = NULL );
@@ -291,6 +291,8 @@ class CollectionDB : public QObject, public EngineObserver
 
         void initialize();
         void destroy();
+        void customEvent( QCustomEvent* );
+
         //general management methods
         void createStatsTable();
         void dropStatsTable();
@@ -301,9 +303,11 @@ class CollectionDB : public QObject, public EngineObserver
         QString albumValue( uint id );
         QString genreValue( uint id );
         QString yearValue( uint id );
-        uint IDFromValue( QString name, QString value, bool autocreate = true, const bool temporary = false, DbConnection *conn = NULL );
+
+        uint IDFromValue( QString name, QString value, bool autocreate = true, const bool temporary = false,
+                          const bool updateSpelling = false, DbConnection *conn = NULL );
+
         QString valueFromID( QString table, uint id );
-        void customEvent( QCustomEvent* );
 
         //member variables
         QString m_amazonLicense;

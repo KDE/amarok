@@ -420,13 +420,13 @@ CollectionDB::dropStatsTable()
 
 
 uint
-CollectionDB::artistID( QString value, bool autocreate, const bool temporary, DbConnection *conn )
+CollectionDB::artistID( QString value, bool autocreate, const bool temporary, const bool updateSpelling, DbConnection *conn )
 {
     // lookup cache
     if ( m_cacheArtist == value )
         return m_cacheArtistID;
 
-    uint id = IDFromValue( "artist", value, autocreate, temporary, conn );
+    uint id = IDFromValue( "artist", value, autocreate, temporary, updateSpelling, conn );
 
     // cache values
     m_cacheArtist = value;
@@ -455,13 +455,13 @@ CollectionDB::artistValue( uint id )
 
 
 uint
-CollectionDB::albumID( QString value, bool autocreate, const bool temporary, DbConnection *conn )
+CollectionDB::albumID( QString value, bool autocreate, const bool temporary, const bool updateSpelling, DbConnection *conn )
 {
     // lookup cache
     if ( m_cacheAlbum == value )
         return m_cacheAlbumID;
 
-    uint id = IDFromValue( "album", value, autocreate, temporary, conn );
+    uint id = IDFromValue( "album", value, autocreate, temporary, updateSpelling, conn );
 
     // cache values
     m_cacheAlbum = value;
@@ -489,9 +489,9 @@ CollectionDB::albumValue( uint id )
 
 
 uint
-CollectionDB::genreID( QString value, bool autocreate, const bool temporary, DbConnection *conn )
+CollectionDB::genreID( QString value, bool autocreate, const bool temporary, const bool updateSpelling, DbConnection *conn )
 {
-    return IDFromValue( "genre", value, autocreate, temporary, conn );
+    return IDFromValue( "genre", value, autocreate, temporary, updateSpelling, conn );
 }
 
 
@@ -503,9 +503,9 @@ CollectionDB::genreValue( uint id )
 
 
 uint
-CollectionDB::yearID( QString value, bool autocreate, const bool temporary, DbConnection *conn )
+CollectionDB::yearID( QString value, bool autocreate, const bool temporary, const bool updateSpelling, DbConnection *conn )
 {
-    return IDFromValue( "year", value, autocreate, temporary, conn );
+    return IDFromValue( "year", value, autocreate, temporary, updateSpelling, conn );
 }
 
 
@@ -517,7 +517,7 @@ CollectionDB::yearValue( uint id )
 
 
 uint
-CollectionDB::IDFromValue( QString name, QString value, bool autocreate, const bool temporary, DbConnection *conn )
+CollectionDB::IDFromValue( QString name, QString value, bool autocreate, const bool temporary, const bool updateSpelling, DbConnection *conn )
 {
     if ( temporary )
         name.append( "_temp" );
@@ -526,12 +526,21 @@ CollectionDB::IDFromValue( QString name, QString value, bool autocreate, const b
 
     QStringList values =
         query( QString(
-            "SELECT id FROM %1 WHERE name LIKE '%2';" )
+            "SELECT id, name FROM %1 WHERE name LIKE '%2';" )
             .arg( name )
             .arg( CollectionDB::instance()->escapeString( value ) ), conn );
 
-    uint id;
+    if ( updateSpelling && !values.isEmpty() && ( values[1] != value ) )
+    {
+        query( QString( "UPDATE %1 SET id = %2, name = '%3' WHERE id = %4;" )
+                  .arg( name )
+                  .arg( values.first() )
+                  .arg( CollectionDB::instance()->escapeString( value ) )
+                  .arg( values.first() ), conn );
+    }
+
     //check if item exists. if not, should we autocreate it?
+    uint id;
     if ( values.isEmpty() && autocreate )
     {
         id = insert( QString( "INSERT INTO %1 ( name ) VALUES ( '%2' );" )
@@ -1349,10 +1358,10 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
 {
     QString command = "UPDATE tags SET ";
     command += "title = '" + escapeString( bundle.title() ) + "', ";
-    command += "artist = " + QString::number( artistID( bundle.artist(), true ) ) + ", ";
-    command += "album = "  + QString::number( albumID( bundle.album(), true ) ) + ", ";
-    command += "genre = "  + QString::number( genreID( bundle.genre(), true ) ) + ", ";
-    command += "year = "   + QString::number( yearID( bundle.year(), true ) ) + ", ";
+    command += "artist = " + QString::number( artistID( bundle.artist(), true, false, true ) ) + ", ";
+    command += "album = "  + QString::number( albumID( bundle.album(), true, false, true ) ) + ", ";
+    command += "genre = "  + QString::number( genreID( bundle.genre(), true, false, true ) ) + ", ";
+    command += "year = "   + QString::number( yearID( bundle.year(), true, false, true ) ) + ", ";
     if ( !bundle.track().isEmpty() )
         command += "track = " + bundle.track() + ", ";
     command += "comment = '" + escapeString( bundle.comment() ) + "' ";
