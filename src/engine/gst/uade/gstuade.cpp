@@ -69,8 +69,14 @@ uade_msgstruct* uade_mmap_file(const char *filename, int length) {
     fprintf(stderr,"uade: can not open sharedmem file!\n");
     return 0;
   }
+  
+  // Make file big enough to hold our struc
+  char buf[length];
+  memset( buf, 0, length );
+  write(fd, buf, length);
+  
   kdDebug() << "mmapfile length: " << length << endl;
-  mmapptr = mmap(0, length, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+  mmapptr = mmap(0, length * 2, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
   if(mmapptr == MAP_FAILED) {
     fprintf(stderr,"uade: can not mmap sharedmem file!\n");
     return 0;
@@ -155,7 +161,7 @@ gst_uade_init ( GstUade* gstuade )
     kdDebug() << "CHECKPOINT after fork()\n";
     
     if ( !uadepid ) {
-        execl( "uade", "--xmms-slave", mapPath.data(), 0 );
+        execl( "/usr/local/bin/uade", "--xmms-slave", mapPath.data(), 0 );
         kdWarning() << "uade: shit fuck. couldn't exec uade exe. not found probably\n";
         abort();
     }
