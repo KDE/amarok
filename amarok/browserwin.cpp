@@ -366,22 +366,23 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 
         ExpandButton *play =
         new ExpandButton( i18n( "&Play" ),    this, pApp, SLOT( slotPlay() ) );
-        new ExpandButton( i18n( "Pause" ),    play, pApp, SLOT( slotPause() ) );
-        new ExpandButton( i18n( "Stop" ),     play, pApp, SLOT( slotStop() ) );
         new ExpandButton( i18n( "Next" ),     play, pApp, SLOT( slotNext() ) );
+        new ExpandButton( i18n( "Stop" ),     play, pApp, SLOT( slotStop() ) );
+        new ExpandButton( i18n( "Pause" ),    play, pApp, SLOT( slotPause() ) );
         new ExpandButton( i18n( "Previous" ), play, pApp, SLOT( slotPrev() ) );
 
-        ExpandButton *clear =
-        new ExpandButton( i18n( "&Clear" ), this, m_playlist, SLOT( clear() ) );
-        new ExpandButton( i18n( "Shuffle" ), clear, m_playlist, SLOT( shuffle() ) );
-        new ExpandButton( i18n( "Save Playlist..." ), clear, this, SLOT( savePlaylist() ) );
+        ExpandButton *playlist =
+        new ExpandButton( i18n( "Play&list Actions" ), this ); //FIXME what to do when the user clicks this?
+        new ExpandButton( i18n( "Shuffle" ), playlist, m_playlist, SLOT( shuffle() ) );
+        new ExpandButton( i18n( "Save Playlist..." ), playlist, this, SLOT( savePlaylist() ) );
+        new ExpandButton( i18n( "Clear" ), playlist, m_playlist, SLOT( clear() ) );
 
         m_playlist->m_undoButton->reparent( this, QPoint(), false );
         m_playlist->m_redoButton->reparent( this, QPoint(), false );
 
         QBoxLayout *layH = new QHBoxLayout( layV );
         layH->addWidget( add );
-        layH->addWidget( clear );
+        layH->addWidget( playlist );
         layH->addWidget( m_playlist->m_undoButton );
         layH->addWidget( m_playlist->m_redoButton );
         layH->addWidget( play );

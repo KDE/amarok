@@ -100,7 +100,6 @@ private:
 #include <qwidget.h>     //baseclass
 #include <kurl.h>        //KUL::List
 
-class ExpandButton;
 class PlaylistLoader;
 class PlaylistSideBar;
 class PlaylistWidget;
