@@ -81,6 +81,11 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsPage = new KHTMLPart( this, "lyrics_page" );
     m_lyricsPage->setDNDEnabled( true );
 
+    //aesthetics - no double frame
+    m_homePage->view()->setFrameStyle( QFrame::NoFrame );
+    m_currentTrackPage->view()->setFrameStyle( QFrame::NoFrame );
+    m_lyricsPage->view()->setFrameStyle( QFrame::NoFrame );
+
     addTab( m_homePage->view(),  SmallIconSet( "gohome" ), i18n( "Home" ) );
     addTab( m_currentTrackPage->view(), SmallIconSet( "today" ), i18n( "Current Track" ) );
     addTab( m_lyricsPage->view(), SmallIconSet( "document" ), i18n( "Lyrics" ) );
@@ -460,12 +465,20 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
     case CUSTOM:
     {
+        QString artist_id; artist_id.setNum( CollectionDB::instance()->artistID( artist ) );
+        QString album_id; album_id.setNum( CollectionDB::instance()->albumID( album ) );
+        QStringList values = CollectionDB::instance()->albumTracks( artist_id, album_id );
+        QString startPath = ":homedir";
+
+        if ( !values.isEmpty() ) {
+            KURL url;
+            url.setPath( values.first() );
+            startPath = url.directory();
+        }
+
         /* This opens a file-open-dialog and copies the selected image to albumcovers, scaled and unscaled. */
-        KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select Cover Image File" ) );
-        if ( !file.isEmpty() )
-        {
-            //TODO processEvents is dangerous in this context
-            qApp->processEvents();    //it may takes a while so process pending events
+        KURL file = KFileDialog::getImageOpenURL( startPath, this, i18n( "Select Cover Image File" ) );
+        if ( !file.isEmpty() ) {
             CollectionDB::instance()->setAlbumImage( artist, album, file );
             showCurrentTrack();
         }
@@ -646,7 +659,7 @@ void ContextBrowser::showHome() //SLOT
             "<div id='least_box' class='box'>"
                 "<div id='least_box-header' class='box-header'>"
                     "<span id='least_box-header-title' class='box-header-title'>"
-                    + i18n( "Least Listened songs" ) +
+                    + i18n( "Least Played Tracks" ) +
                     "</span>"
                 "</div>"
                 "<div id='least_box-body' class='box-body'>" );
@@ -1183,7 +1196,7 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     const QString bg   = colorGroup().highlight().name();
     const QColor baseColor = colorGroup().base();
     const QColor bgColor = colorGroup().highlight();
-    amaroK::Color gradientColor = bgColor;
+    const amaroK::Color gradientColor = bgColor;
 
     //writing temp background gradient image
     if ( m_bgGradientImage ) {
@@ -1191,7 +1204,7 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
         delete m_bgGradientImage;
     }
     m_bgGradientImage = new KTempFile( locateLocal( "tmp", "gradient" ), ".png", 0600 );
-    QImage image = KImageEffect::gradient( QSize( 600, 1 ), gradientColor, gradientColor.light(), KImageEffect::PipeCrossGradient );
+    QImage image = KImageEffect::gradient( QSize( 600, 1 ), gradientColor, gradientColor.light( 130 ), KImageEffect::PipeCrossGradient );
     image.save( m_bgGradientImage->file(), "PNG" );
     m_bgGradientImage->close();
 
@@ -1201,7 +1214,7 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
         delete m_headerGradientImage;
     }
     m_headerGradientImage = new KTempFile( locateLocal( "tmp", "gradient_header" ), ".png", 0600 );
-    QImage imageH = KImageEffect::unbalancedGradient( QSize( 1, 10 ), bgColor, gradientColor.light(), KImageEffect::VerticalGradient, 100, -100 );
+    QImage imageH = KImageEffect::unbalancedGradient( QSize( 1, 10 ), bgColor, gradientColor.light( 130 ), KImageEffect::VerticalGradient, 100, -100 );
     imageH.copy( 0, 1, 1, 9 ).save( m_headerGradientImage->file(), "PNG" );
     m_headerGradientImage->close();
 
