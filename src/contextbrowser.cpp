@@ -171,8 +171,13 @@ void ContextBrowser::openURLRequest( const KURL &url )
 
     if ( url.protocol() == "album" )
     {
-        QString sql = "SELECT DISTINCT url FROM tags WHERE artist = %1 AND album = %2 ORDER BY track;";
-        QStringList values = CollectionDB::instance()->query( sql.arg( artist, album ) );
+        QueryBuilder qb;
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, artist );
+        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, album );
+        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+        QStringList values = qb.run();
+
         KURL::List urls;
         KURL url;
 
@@ -430,8 +435,12 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
         if ( url.protocol() == "album" )
         {
-            QString sql = "select distinct url from tags where artist = '%1' and album = '%2' order by track;";
-            QStringList values = CollectionDB::instance()->query( sql.arg( artist, album ) );
+            QueryBuilder qb;
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, artist );
+            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, album );
+            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+            QStringList values = qb.run();
 
             urls.clear(); //remove urlString
             KURL url;
@@ -584,26 +593,36 @@ void ContextBrowser::showHome() //SLOT
     // Do we have to rebuild the page?
     if ( !m_dirtyHomePage ) return;
 
-    QStringList fave = CollectionDB::instance()->query(
-        "SELECT tags.title, tags.url, round( statistics.percentage + 0.4 ), artist.name, album.name "
-        "FROM tags, artist, album, statistics "
-        "WHERE artist.id = tags.artist AND album.id = tags.album AND statistics.url = tags.url "
-        "ORDER BY statistics.percentage DESC "
-        "LIMIT 0,10;" );
+    QueryBuilder qb;
 
-    QStringList recent = CollectionDB::instance()->query(
-        "SELECT tags.title, tags.url, artist.name, album.name "
-        "FROM tags, artist, album "
-        "WHERE artist.id = tags.artist AND album.id = tags.album "
-        "ORDER BY tags.createdate DESC "
-        "LIMIT 0,5;" );
+    qb.clear();
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
+    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+    qb.setLimit( 0, 10 );
+    QStringList fave = qb.run();
 
-    QStringList least = CollectionDB::instance()->query(
-        "SELECT tags.title, tags.url, artist.name, album.name, statistics.accessdate "
-        "FROM tags, artist, album, statistics "
-        "WHERE artist.id = tags.artist AND album.id = tags.album AND tags.url = statistics.url "
-        "ORDER BY statistics.accessdate "
-        "LIMIT 0,5;" );
+    qb.clear();
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
+    qb.setLimit( 0, 5 );
+    QStringList recent = qb.run();
+
+    qb.clear();
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
+    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
+    qb.setLimit( 0, 5 );
+    QStringList least = qb.run();
 
     m_homePage->begin();
     m_HTMLSource="";
@@ -841,13 +860,15 @@ void ContextBrowser::showCurrentTrack() //SLOT
     const uint artist_id = CollectionDB::instance()->artistID( currentTrack.artist() );
     const uint album_id  = CollectionDB::instance()->albumID ( currentTrack.album() );
 
+    QueryBuilder qb;
     // <Current Track Information>
-    QStringList values = CollectionDB::instance()->query( QString(
-        "SELECT statistics.createdate, statistics.accessdate, "
-        "statistics.playcounter, round( statistics.percentage + 0.4 ) "
-        "FROM  statistics "
-        "WHERE url = '%1';" )
-            .arg( CollectionDB::instance()->escapeString( currentTrack.url().path() ) ) );
+    qb.clear();
+    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valCreateDate );
+    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
+    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
+    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
+    qb.addMatch( QueryBuilder::tabStats, QueryBuilder::valURL, currentTrack.url().path() );
+    QStringList values = qb.run();
 
     //making 2 tables is most probably not the cleanest way to do it, but it works.
     QString albumImageTitleAttr;
@@ -961,13 +982,13 @@ void ContextBrowser::showCurrentTrack() //SLOT
     }
 
     // <Suggested Songs>
-    QueryBuilder qb;
     QStringList relArtists;
     relArtists = CollectionDB::instance()->similarArtists( currentTrack.artist(), 10 );
     if ( !relArtists.isEmpty() )
     {
         QString token;
 
+        qb.clear();
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
@@ -1043,12 +1064,14 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     // <Favourite Tracks Information>
     QString artistName = currentTrack.artist().isEmpty() ? i18n( "This Artist" ) : escapeHTML( currentTrack.artist() );
-    values = CollectionDB::instance()->query( QString( "SELECT tags.title, tags.url, round( statistics.percentage + 0.4 ) "
-                                   "FROM tags, statistics "
-                                   "WHERE tags.artist = %1 AND statistics.url = tags.url "
-                                   "ORDER BY statistics.percentage DESC "
-                                   "LIMIT 0,5;" )
-                          .arg( artist_id ) );
+    qb.clear();
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
+    qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
+    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+    qb.setLimit( 0, 5 );
+    values = qb.run();
 
     if ( !values.isEmpty() )
     {
@@ -1231,7 +1254,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
 
         uint vectorPlace = 0;
-    // find album of the current track (if it exists)
+        // find album of the current track (if it exists)
         while ( vectorPlace < values.count() && values[ vectorPlace+1 ] != QString::number( album_id ) )
             vectorPlace += 2;
         for ( uint i = 0; i < values.count(); i += 2 )

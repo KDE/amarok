@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2.1:
+  CHG: Show an additional "Compilations with Artist" box in ContextBrowser.
   ADD: Remember collapse-state of boxes in ContextBrowser. (BR 98664)
   ADD: Display an error when unable to connect to MySQL.
   ADD: amaroK now makes Big Kahuna burgers and fries.
