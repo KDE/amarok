@@ -876,7 +876,7 @@ void PlayerApp::slotShowOptions()
 
     connect( dialog, SIGNAL( settingsChanged() ), this, SLOT( readConfig() ) );
 
-    dialog->setInitialSize( QSize( 480, 430 ) );
+    dialog->setInitialSize( QSize( 460, 390 ) );
     dialog->show();
 }
 
