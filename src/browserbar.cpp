@@ -49,7 +49,7 @@ public:
     virtual void paintEvent( QPaintEvent* )
     {
         QPainter p( this );
-        parentWidget()->style().drawPrimitive( QStyle::PE_Splitter, &p, rect(), colorGroup(), 0 );
+        parentWidget()->style().drawPrimitive( QStyle::PE_Splitter, &p, rect(), colorGroup(), QStyle::Style_Horizontal );
     }
 
     virtual void styleChange( QStyle& )
