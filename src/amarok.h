@@ -9,6 +9,7 @@ class KActionCollection;
 class KConfig;
 class QColor;
 class QEvent;
+class QPixmap;
 class QWidget;
 
 namespace amaroK
