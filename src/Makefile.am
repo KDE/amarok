@@ -104,8 +104,7 @@ rcdir = \
 
 rc_DATA = \
     amarokui.rc \
-    amarokui_xmms.rc \
-    amarokui_first.rc
+    amarokui_xmms.rc
 
 configdir = \
     $(kde_confdir)
