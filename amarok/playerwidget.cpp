@@ -302,8 +302,7 @@ void PlayerWidget::initScroll()
 //    int frameHeight = fontMetrics().height() + 5;
     int frameHeight = 19;
 
-    m_pFrame->setFixedSize( 100, frameHeight );
-//    m_pFrame->setFixedSize( width(), frameHeight );
+    m_pFrame->setFixedSize( width(), frameHeight );
     //m_pFrame->setFont( font );
 
     m_pixmapWidth  = 2000;
