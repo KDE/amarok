@@ -30,7 +30,7 @@ public:
     {
     public:
         TagsEvent( const KURL &url, PlaylistItem *item )
-            : QCustomEvent( PlaylistLoader::Tags )
+            : QCustomEvent( Tags )
             , item( item )
             , bundle( url )
         {}
@@ -42,14 +42,20 @@ public:
     class DoneEvent : public QCustomEvent
     {
         PlaylistLoader *m_loader;
+        KURL::List      m_badURLs;
     public:
         DoneEvent( PlaylistLoader *loader )
             : QCustomEvent( Done )
             , m_loader( loader )
+            , m_badURLs( loader->m_badURLs )
         {}
+
+        KURL::List &badURLs() { return m_badURLs; }
 
         ~DoneEvent() { delete m_loader; }
     };
+
+    friend class DoneEvent;
 
 protected:
     virtual void createPlaylistItem( const KURL&, const QString&, const uint );
@@ -61,12 +67,13 @@ protected:
 private:
     void recurse( QString );
     void createPlaylistItem( const KURL& );
+    void addBadURL( const KURL &url ) { m_badURLs += url; }
 
 private:
     PlaylistItem *m_markey;
 
     const KURL::List m_URLs;
-          KURL::List m_brokenURLs;
+          KURL::List m_badURLs;
 
     typedef QPair<KURL,PlaylistItem*> Pair;
     typedef QValueList<Pair> List;

@@ -510,10 +510,8 @@ CollectionView::showTrackInfo() //SLOT
     Item* item = static_cast<Item*>( currentItem() );
     if ( !item ) return;
 
-    if ( m_category2 == i18n( "None" ) || item->depth() == 2 ) {
-        TagDialog* dialog = new TagDialog( item->url() );
-        dialog->show();
-    }
+    if ( m_category2 == i18n( "None" ) || item->depth() == 2 )
+        TagDialog( item->url(), this ).exec();
 }
 
 

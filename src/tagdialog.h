@@ -7,47 +7,42 @@
 #include "config.h"
 
 #ifdef HAVE_MUSICBRAINZ
-#include "musicbrainzquery.h"
-#endif
-
-#ifndef HAVE_MUSICBRAINZ
-// Dummy MusicbrainzQuery::TrackList class for queryDone argument.
-namespace MusicBrainzQuery {
-    class TrackList {};
-}
+    #include "musicbrainzquery.h"
+#else
+    // Dummy MusicbrainzQuery::TrackList class for queryDone argument.
+    namespace MusicBrainzQuery { class TrackList {}; }
 #endif
 
 #include <kurl.h>             //stack alloc
+#include "metabundle.h"       //stack alloc
 #include "tagdialogbase.h"    //baseclass
 
 class PlaylistItem;
-class MetaBundle;
 
 
 class TagDialog : public TagDialogBase
 {
     Q_OBJECT
 
-    public:    
-        TagDialog( const KURL& url, QWidget* parent = 0 );
-        TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent = 0 );
-        
+    public:
+        TagDialog( const MetaBundle& mb, QWidget* parent );
+
+        int exec() { return TagDialogBase::exec(); }
+        void exec( PlaylistItem* );
+
     private slots:
-        void okPressed();
+        void accept();
         void openPressed();
         void checkModified();
-        
+
         void musicbrainzQuery();
         void queryDone( const MusicBrainzQuery::TrackList& tracklist );
-    
+
     private:
-        void init();
         bool hasChanged();
         bool writeTag();
-        void syncItemText();        
-        
-        MetaBundle m_metaBundle;
-        QListViewItem* m_playlistItem;
+
+        MetaBundle m_bundle;
         QString m_buttonMbText;
         QString m_path;
 };

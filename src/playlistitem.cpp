@@ -292,8 +292,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     {
         //flicker-free drawing
 
-        QPixmap buffer;
-        buffer.resize( width, height() );
+        QPixmap buffer( width, height() );
 
         if( buffer.isNull() )
         {
@@ -301,8 +300,8 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             return;
         }
 
-        QPainter painterBuf( &buffer, true );
-        painterBuf.setFont( p->font() );
+        QPainter paint( &buffer, true );
+        paint.setFont( p->font() );
 
         QColorGroup glowCg = cg; //shallow copy
 
@@ -310,9 +309,8 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         glowCg.setColor( QColorGroup::Text, glowText );
 
         //KListViewItem enforces alternate color, so we use QListViewItem
-        QListViewItem::paintCell( &painterBuf, glowCg, column, width, align );
-
-        painterBuf.end();
+        QListViewItem::paintCell( &paint, glowCg, column, width, align );
+        paint.end();
 
         p->drawPixmap( 0, 0, buffer );
     }
@@ -361,7 +359,7 @@ void PlaylistItem::setup()
 {
     KListViewItem::setup();
 
-    if( this == listView()->currentTrack() )
+    if ( this == listView()->currentTrack() )
         setHeight( listView()->fontMetrics().height() * 2 );
 }
 

@@ -532,8 +532,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 removeSelectedItems();
                 break;
             case INFO:
-                TagDialog* dialog = new TagDialog( item->url() );
-                dialog->show();
+                TagDialog( item->url(), this ).exec();
         }
         #undef item
    }

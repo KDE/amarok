@@ -32,6 +32,7 @@ class PlaylistItem : public KListViewItem
 
         Playlist *listView() const { return (Playlist*)KListViewItem::listView(); }
         PlaylistItem *nextSibling() const { return (PlaylistItem*)KListViewItem::nextSibling(); }
+        void setup();
 
         MetaBundle metaBundle();
         QString trackName() const { return KListViewItem::text( TrackName ); }
@@ -60,7 +61,6 @@ class PlaylistItem : public KListViewItem
         QString text( int column ) const;
         int     compare( QListViewItem*, int, bool ) const;
         void    paintCell( QPainter*, const QColorGroup&, int, int, int );
-        void    setup();
 
         static QString trackName( const KURL &u ) { return u.protocol() == "file" ? u.fileName() : u.prettyURL(); }
 

@@ -65,10 +65,11 @@ class Playlist : private KListView, public EngineObserver
         void appendMedia( KURL::List, bool play = false, bool preventDoubles = false );
         void queueMedia( const KURL::List&/*, bool preventDoubles = false*/ );
         bool isEmpty() const { return childCount() == 0; }
+
         bool isTrackBefore() const;
         bool isTrackAfter() const;
 
-        void restoreSession() { appendMedia( defaultPlaylistPath() ); }
+        void restoreSession();
 
         void saveM3U( const QString& ) const;
         void saveXML( const QString& ) const;
@@ -101,18 +102,18 @@ class Playlist : private KListView, public EngineObserver
     public slots:
         void appendMedia( const QString &path ) { appendMedia( KURL::fromPathOrURL( path ) ); }
         void appendMedia( const KURL& );
-        void handleOrderPrev(); //DEPRECATE
-        void handleOrderCurrent(); //DEPRECATE
-        void handleOrder( Playlist::RequestType = Next ); //DEPRECATE
         void clear();
         void shuffle();
         void removeSelectedItems();
         void deleteSelectedFiles();
         void copyToClipboard( const QListViewItem* = 0 ) const;
-        void showCurrentTrack();
+        void showCurrentTrack() { ensureItemVisible( reinterpret_cast<QListViewItem*>(m_currentTrack) ); }
         void undo();
         void redo();
         void selectAll() { QListView::selectAll( true ); }
+        void playPrevTrack();
+        void playCurrentTrack();
+        void playNextTrack();
 
     private slots:
         void slotGlowTimer();
@@ -120,12 +121,11 @@ class Playlist : private KListView, public EngineObserver
         void slotEraseMarker();
         void slotMouseButtonPressed( int, QListViewItem*, const QPoint&, int );
         void showContextMenu( QListViewItem*, const QPoint&, int );
-        void activate( QListViewItem*, bool rememberTrack = true );
         void writeTag( QListViewItem*, const QString&, int );
-        void slotHeaderResized( int, int, int );
         void saveUndoState();
         void columnOrderChanged();
         void updateNextPrev();
+        void activate( QListViewItem*, bool = true );
 
     private:
         Playlist( QWidget*, KActionCollection*, const char* = 0 );
@@ -142,7 +142,6 @@ class Playlist : private KListView, public EngineObserver
         void removeItem( PlaylistItem* );
         void refreshNextTracks( int=-1 );
         void startEditTag( QListViewItem *, int );    //start inline tag editing with auto-completion
-        void showTrackInfo( PlaylistItem* item );
 
         //engine observer functions
         void engineNewMetaData( const MetaBundle&, bool );
@@ -169,7 +168,6 @@ class Playlist : private KListView, public EngineObserver
 
 // ATTRIBUTES ------
         PlaylistItem  *m_currentTrack; //the track that is playing
-        PlaylistItem  *m_cachedTrack;  //we expect this to be activated next //FIXME mutable
         QListViewItem *m_marker;       //track that has the drag/drop marker under it
 
         //NOTE these container types were carefully chosen
@@ -177,7 +175,6 @@ class Playlist : private KListView, public EngineObserver
         QPtrList<PlaylistItem>     m_prevTracks; //the previous history
         QPtrList<PlaylistItem>     m_nextTracks; //the tracks to be played after the current track
 
-        QTimer*       const m_glowTimer;
         ThreadWeaver* const m_weaver;
         int           m_firstColumn;
 

@@ -50,12 +50,15 @@ PlaylistLoader::run()
             if( loadPlaylist( path ) ) continue;
 
             if( EngineController::canDecode( url ) ) createPlaylistItem( url );
+
+            else addBadURL( url );
         }
         else if( isPlaylist( url ) )
         {
             //TODO
         }
         else if( EngineController::canDecode( url ) ) createPlaylistItem( url );
+        else addBadURL( url );
     }
 
     delete m_markey;
@@ -76,7 +79,7 @@ PlaylistLoader::run()
     }
 
     amaroK::StatusBar::stopProgress();
-    QApplication::postEvent( Playlist::instance(), new QCustomEvent( QEvent::Type(Done), this ) );
+    QApplication::postEvent( Playlist::instance(), new DoneEvent( this ) );
 }
 
 inline void
@@ -99,6 +102,7 @@ PlaylistLoader::createPlaylistItem( const KURL &url, const QString &title, const
 void
 PlaylistLoader::recurse( QString path )
 {
+    KURL url;
     DIR *d = opendir( QFile::encodeName( path ) );
 
     if( d )
@@ -106,7 +110,6 @@ PlaylistLoader::recurse( QString path )
         QStringList dirs;
         QStringList files;
         struct stat statbuf;
-        KURL url;
 
         if( !path.endsWith( "/" ) ) path += '/';
 
@@ -140,6 +143,8 @@ PlaylistLoader::recurse( QString path )
 
                     if ( EngineController::canDecode( url ) )
                         files += newPath;
+                    else
+                        addBadURL( url );
                 }
             } //if( LSTAT )
         } //for
@@ -158,14 +163,19 @@ PlaylistLoader::recurse( QString path )
         for ( QStringList::Iterator it = dirs.begin(); it != end2; ++it )
             recurse( *it );
     } //if( d )
+    else { url.setPath( path ); addBadURL( url ); }
 }
 
+#include <kdebug.h>
 bool
 PlaylistLoader::loadPlaylist( const QString &path, Format type )
 {
     QFile file( path );
     if ( !file.open( IO_ReadOnly ) )
+    {
+        kdDebug() << "[PLSLoader] Couldn't open file: " << path << endl;
         return false;
+    }
     QTextStream stream( &file );
 
     switch( type )
