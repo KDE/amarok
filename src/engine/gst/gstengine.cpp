@@ -359,12 +359,14 @@ GstEngine::play( const KURL& url )             //SLOT
     gst_element_link_many( m_pFilesrc, m_pSpider, m_pIdentity,
                            m_pVolume, m_pAudioconvert, m_pAudioscale, m_pAudiosink, NULL );
 
-    setVolume( volume() );
-    m_pipelineFilled = true;
-
     gst_element_set_state( GST_ELEMENT( m_pThread ), GST_STATE_READY );
-    /*if ( url.isLocalFile() )*/ play();
+    
+    m_pipelineFilled = true;
+    setVolume( volume() );
+    
+    play();
     m_playFlag = true;
+    
     return this;
 }
 
