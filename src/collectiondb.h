@@ -46,10 +46,17 @@ class CollectionDB : public QObject
         void createTables( const bool temporary = false );
         void dropTables( const bool temporary = false );
         void moveTempTables();
+
+        void purgeDirCache();
         void scanModifiedDirs();
         void scan( const QStringList& folders, bool recursively );
       
+    signals:
+        void scanDone();
+
     private:
+        void customEvent( QCustomEvent* );
+
         sqlite* m_db;
         ThreadWeaver* m_weaver;
 };

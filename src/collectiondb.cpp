@@ -317,8 +317,16 @@ CollectionDB::moveTempTables()
 
 
 void
+CollectionDB::purgeDirCache()
+{
+    execSql( "DELETE FROM directories;" );
+}
+
+
+void
 CollectionDB::scan( const QStringList& folders, bool recursively )
 {
+    purgeDirCache();
     m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), folders, recursively, false ) );
 }
 
@@ -377,6 +385,13 @@ CollectionDB::getValueID( QString name, QString value, bool autocreate, bool use
     }
 
     return values[0].toUInt();
+}
+
+
+void
+CollectionDB::customEvent( QCustomEvent *e )
+{
+    emit scanDone();
 }
 
 

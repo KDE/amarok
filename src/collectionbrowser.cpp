@@ -145,26 +145,30 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 
     //<open database>
         m_db = new CollectionDB();
-        m_insertdb = new CollectionDB();
-        //remove database file if version is incompatible
-        if ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION )
-        {
-            m_db->dropTables();
-            m_db->createTables();
-        }
-
         if ( !m_db )
             kdWarning() << k_funcinfo << "Could not open SQLite database\n";
 
         //optimization for speeding up SQLite
         m_db->execSql( "PRAGMA default_synchronous = OFF;" );
         m_db->execSql( "PRAGMA default_cache_size = 4000;" );
-        
-        m_insertdb->scanModifiedDirs();
+
+        //remove database file if version is incompatible
+        if ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION )
+        {
+            m_db->dropTables();
+            m_db->createTables();
+            m_insertdb = new CollectionDB();
+            m_insertdb->scan( m_dirs, m_recursively );
+        } else
+        {
+            m_insertdb = new CollectionDB();
+            m_insertdb->scanModifiedDirs();
+        }
+
     //</open database>
 
-    connect( this,       SIGNAL( tagsReady() ),
-             this,         SLOT( renderView() ) );
+    connect( m_insertdb, SIGNAL( scanDone() ),
+             this,         SLOT( scanDone() ) );
     connect( this,       SIGNAL( expanded( QListViewItem* ) ),
              this,         SLOT( slotExpand( QListViewItem* ) ) );
     connect( this,       SIGNAL( collapsed( QListViewItem* ) ),
@@ -467,14 +471,13 @@ CollectionView::idForCat( const QString& cat ) const
 
 
 void
-CollectionView::customEvent( QCustomEvent *e )
+CollectionView::scanDone()
 {
     // we need to reconnect to the db after every scan, since sqlite is not able to keep
     // the tables synced for multiple threads.
     delete m_db;
     m_db = new CollectionDB();
-
-    emit tagsReady();
+    renderView();
 }
 
 

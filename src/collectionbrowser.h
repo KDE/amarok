@@ -79,9 +79,6 @@ class CollectionView : public KListView
         QString filter() { return m_filter; }
         Item* currentItem() { return static_cast<Item*>( KListView::currentItem() ); }
         
-    signals:
-        void tagsReady();    
-        
     private slots:
         /** Shows the folder selection widget. */
         void setupDirs();    
@@ -90,6 +87,7 @@ class CollectionView : public KListView
         
         /** Rebuilds and displays the treeview by querying the database. */
         void renderView();
+        void scanDone();
         
         void slotExpand( QListViewItem* );
         void slotCollapse( QListViewItem* );    
@@ -105,7 +103,6 @@ class CollectionView : public KListView
         void showTrackInfo();
                 
     private:
-        void customEvent( QCustomEvent* );
         void startDrag();
         KURL::List listSelected();
                
@@ -115,7 +112,7 @@ class CollectionView : public KListView
         
     //attributes:
         //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.
-        static const int DATABASE_VERSION = 7;
+        static const int DATABASE_VERSION = 8;
         static CollectionDB* m_db;
         static CollectionDB* m_insertdb;
         
