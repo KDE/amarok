@@ -11,7 +11,6 @@
 #include <kapplication.h> //invokeMailer()
 #include <kdeversion.h>
 #include <klocale.h>
-#include <kstartupinfo.h>
 #include <ktempfile.h>
 #include <qfile.h>
 #include <qtextstream.h>
@@ -74,7 +73,7 @@ namespace amaroK
 
             const int handle = temp.handle();
 
-            ::write( handle, "bt\n", 3 );
+            ::write( handle, "bt\n\n", 4 );
             ::fsync( handle );
 
             QCString
@@ -109,7 +108,7 @@ namespace amaroK
                     /*body*/        body.arg( AmarokConfig::soundSystem() ),
                     /*messageFile*/ QString(),
                     /*attachURLs*/  QStringList( path ),
-                    /*startup_id*/  KStartupInfo::createNewStartupId() );
+                    /*startup_id*/  "" );
 
             //_exit() exits immediately, otherwise this
             //function is called repeatedly ad finitum
