@@ -588,16 +588,23 @@ Playlist::updateNextPrev()
 void
 Playlist::engineTrackEnded( int finalPosition, int trackLength )
 {
-    CollectionDB *db = new CollectionDB();
-    // sanity check
-    if ( finalPosition > trackLength ) finalPosition = trackLength;
+    //This is where percentages are calculated
+    //TODO statistics are not calculated when currentTrack doesn't exist
 
-    int pct = ( (double)finalPosition / (double)trackLength ) * 100;
-    kdDebug() << "percentage played: " << pct << endl;
+    if( m_currentTrack )
+    {
+        CollectionDB db;
+        // sanity check
+        if ( finalPosition > trackLength )
+            finalPosition = trackLength;
 
-    // increase song counter & calculate new statistics
-    float score = db->addSongPercentage( m_currentTrack->url().path(), pct );
-    if( score ) m_currentTrack->setText( PlaylistItem::Score, QString::number( score ) );
+        int pct = ( (double)finalPosition / (double)trackLength ) * 100;
+
+        // increase song counter & calculate new statistics
+        float score = db.addSongPercentage( m_currentTrack->url().path(), pct );
+        if ( score )
+            m_currentTrack->setText( PlaylistItem::Score, QString::number( score ) );
+    }
 }
 
 void

@@ -197,9 +197,9 @@ void PlaylistItem::setText( const MetaBundle &bundle )
     setText( Track,   bundle.track() );
     setText( Length,  bundle.prettyLength() );
     setText( Bitrate, bundle.prettyBitrate() );
-    CollectionDB *db = new CollectionDB();
-    float score = db->getSongPercentage( bundle.url().path() );
-    if( score )
+
+    const float score = CollectionDB().getSongPercentage( bundle.url().path() );
+    if ( score )
         setText( Score, QString::number( score ) );
 }
 
