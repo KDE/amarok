@@ -156,15 +156,7 @@ ScriptManager::findScripts() //SLOT
 void
 ScriptManager::slotCurrentChanged( QListViewItem* item )
 {
-    if ( !item ) {
-        m_base->uninstallButton->setEnabled( false );
-        m_base->editButton->setEnabled( false );
-        m_base->runButton->setEnabled( false );
-        m_base->stopButton->setEnabled( false );
-        m_base->configureButton->setEnabled( false );
-        m_base->aboutButton->setEnabled( false );
-    }
-    else {
+    if ( item ) {
         const QString name = item->text( 0 );
         m_base->uninstallButton->setEnabled( true );
         m_base->editButton->setEnabled( true );
@@ -172,6 +164,14 @@ ScriptManager::slotCurrentChanged( QListViewItem* item )
         m_base->stopButton->setEnabled( m_scripts[name].process );
         m_base->configureButton->setEnabled( m_scripts[name].process );
         m_base->aboutButton->setEnabled( true );
+    }
+    else {
+        m_base->uninstallButton->setEnabled( false );
+        m_base->editButton->setEnabled( false );
+        m_base->runButton->setEnabled( false );
+        m_base->stopButton->setEnabled( false );
+        m_base->configureButton->setEnabled( false );
+        m_base->aboutButton->setEnabled( false );
     }
 }
 

@@ -63,6 +63,7 @@ class ScriptManager : public KDialogBase, public EngineObserver
         /** Finds all installed scripts and adds them to the listview */
         void findScripts();
 
+        /** Enables/disables the buttons */
         void slotCurrentChanged( QListViewItem* );
 
         void slotInstallScript();
