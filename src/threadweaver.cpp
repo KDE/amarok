@@ -9,6 +9,7 @@
 #include "playlistitem.h"
 #include "threadweaver.h"
 
+#include <errno.h>
 #include <dirent.h>
 #include <sys/stat.h>
 
@@ -278,6 +279,13 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
 
     DIR * d = opendir( QFile::encodeName( dir ) );
     dirent *ent;
+
+    if (d == NULL)
+    {
+        if (errno == EACCES)
+            kdWarning() << "Skipping non-readable dir " << dir << endl;
+        return;
+    }
 
     while ( ( ent = readdir( d ) ) ) {
         QCString entry = ent->d_name;
