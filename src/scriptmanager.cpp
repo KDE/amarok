@@ -82,7 +82,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     setMinimumSize( kMax( 350, sz.width() ), kMax( 250, sz.height() ) );
     resize( sizeHint() );
 
-
+    // Delay this call via eventloop, because it's a bit slow and would block
     QTimer::singleShot( 0, this, SLOT( findScripts() ) );
 }
 
@@ -352,7 +352,7 @@ ScriptManager::slotStopScript()
     QListViewItem* const li = m_base->listView->currentItem();
     const QString name = li->text( 0 );
 
-    // Kill script process
+    // Kill script process (with SIGTERM)
     m_scripts[name].process->kill();
     m_scripts[name].process->detach();
 
