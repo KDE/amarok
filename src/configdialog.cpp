@@ -36,6 +36,7 @@ email                : markey@web.de
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qlineedit.h>
+#include <qmessagebox.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
 #include <qspinbox.h>
@@ -68,6 +69,9 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     Options7 *opt7 = new Options7( 0, "MySql" );
 #endif
     Options8 *opt8 = new Options8( 0, "Scrobbler" );
+
+    // Show information labels
+    static_cast<QLabel*>(opt8->child( "infoPixmap" ))->setPixmap( QMessageBox::standardIcon( QMessageBox::Information ) );
 
     // Sound System
     opt6->setSpacing( 12 );
@@ -110,7 +114,6 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     connect( m_soundSystem, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
     connect( aboutEngineButton, SIGNAL( clicked() ), this, SLOT( aboutEngine() ) );
     connect( opt5, SIGNAL( settingsChanged() ), SLOT( updateButtons() ) ); //see options5.ui.h
-    connect( opt8->createProfileButton, SIGNAL( clicked() ), SLOT( createProfileClicked() ) );
 }
 
 AmarokConfigDialog::~AmarokConfigDialog()

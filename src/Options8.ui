@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>Options8</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,211 +8,229 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>355</width>
-            <height>391</height>
+            <width>441</width>
+            <height>582</height>
         </rect>
     </property>
-    <property name="caption">
-        <string>Options8</string>
-    </property>
-    <widget class="QGroupBox">
+    <vbox>
         <property name="name">
-            <cstring>profileSettingsGroupBox</cstring>
+            <cstring>unnamed</cstring>
         </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>40</y>
-                <width>330</width>
-                <height>90</height>
-            </rect>
+        <property name="spacing">
+            <number>16</number>
         </property>
-        <property name="title">
-            <string>Profile Settings</string>
-        </property>
-        <widget class="QLabel">
+        <widget class="KActiveLabel">
             <property name="name">
-                <cstring>labelUsername</cstring>
+                <cstring>kActiveLabel3</cstring>
             </property>
-            <property name="geometry">
-                <rect>
-                    <x>10</x>
-                    <y>20</y>
-                    <width>70</width>
-                    <height>20</height>
-                </rect>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>5</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="frameShape">
+                <enum>Box</enum>
+            </property>
+            <property name="margin">
+                <number>8</number>
             </property>
             <property name="text">
-                <string>Username:</string>
+                <string>&lt;P&gt;amaroK can send the name of every song you play to Audioscrobbler. The system automatically matches you to people with similar musical tastes, and generates personalised recommendations.
+&lt;P&gt;To learn more &lt;A href='http://www.audioscrobbler.com'&gt;visit the Audioscrobbler homepage&lt;/A&gt;.</string>
             </property>
         </widget>
-        <widget class="QLabel">
+        <widget class="KActiveLabel">
             <property name="name">
-                <cstring>labelPassword</cstring>
+                <cstring>kActiveLabel1</cstring>
             </property>
-            <property name="geometry">
-                <rect>
-                    <x>10</x>
-                    <y>50</y>
-                    <width>70</width>
-                    <height>20</height>
-                </rect>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>5</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
             </property>
             <property name="text">
-                <string>Password:</string>
+                <string>&lt;P&gt;To use Audioscrobbler with amaroK, you need an Audioscrobbler profile. &lt;A href='http://www.audioscrobbler.com:80/signup.php'&gt;Register here!&lt;/A&gt;</string>
             </property>
         </widget>
-        <widget class="KLineEdit">
+        <widget class="QGroupBox">
             <property name="name">
-                <cstring>kcfg_ScrobblerUsername</cstring>
+                <cstring>groupBox3</cstring>
             </property>
-            <property name="geometry">
-                <rect>
-                    <x>80</x>
-                    <y>20</y>
-                    <width>230</width>
-                    <height>25</height>
-                </rect>
+            <property name="title">
+                <string>Audioscrobbler Profile</string>
             </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>labelPassword</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Password:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>labelUsername</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Username:</string>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="0" column="1">
+                    <property name="name">
+                        <cstring>kcfg_ScrobblerUsername</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="1" column="1">
+                    <property name="name">
+                        <cstring>kcfg_ScrobblerPassword</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="echoMode">
+                        <enum>Password</enum>
+                    </property>
+                </widget>
+            </grid>
         </widget>
-        <widget class="KLineEdit">
+        <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>kcfg_ScrobblerPassword</cstring>
+                <cstring>layout13</cstring>
             </property>
-            <property name="geometry">
-                <rect>
-                    <x>80</x>
-                    <y>50</y>
-                    <width>230</width>
-                    <height>25</height>
-                </rect>
-            </property>
-            <property name="echoMode">
-                <enum>Password</enum>
-            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="0" column="0" rowspan="2" colspan="1">
+                    <property name="name">
+                        <cstring>infoPixmap</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>4</hsizetype>
+                            <vsizetype>1</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="1" rowspan="1" colspan="3">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&lt;qt&gt;If you submit your tracks to audioscrobbler.com, the Context Browser can suggest new music that you might be interested in.</string>
+                    </property>
+                    <property name="textFormat">
+                        <enum>RichText</enum>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="1" column="2">
+                    <property name="name">
+                        <cstring>kcfg_SubmitPlayedSongs</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Submit played tracks</string>
+                    </property>
+                </widget>
+            </grid>
         </widget>
-    </widget>
-    <spacer>
-        <property name="name">
-            <cstring>spacer4</cstring>
-        </property>
-        <property name="orientation">
-            <enum>Vertical</enum>
-        </property>
-        <property name="sizeType">
-            <enum>Expanding</enum>
-        </property>
-        <property name="sizeHint">
-            <size>
-                <width>20</width>
-                <height>90</height>
-            </size>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>180</x>
-                <y>290</y>
-                <width>20</width>
-                <height>90</height>
-            </rect>
-        </property>
-    </spacer>
-    <widget class="QGroupBox">
-        <property name="name">
-            <cstring>profileCreationGroupBox</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>140</y>
-                <width>330</width>
-                <height>140</height>
-            </rect>
-        </property>
-        <property name="title">
-            <string>Profile Creation</string>
-        </property>
-        <widget class="QPushButton">
+        <widget class="KActiveLabel">
             <property name="name">
-                <cstring>createProfileButton</cstring>
+                <cstring>kActiveLabel2</cstring>
             </property>
-            <property name="geometry">
-                <rect>
-                    <x>10</x>
-                    <y>100</y>
-                    <width>106</width>
-                    <height>26</height>
-                </rect>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>5</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
             </property>
             <property name="text">
-                <string>Create Profile</string>
+                <string>&lt;p&gt;&lt;br&gt;Why not join the &lt;A href='http://www.audioscrobbler.com:80/group/amaroK+users'&gt;amaroK Audioscrobbler group&lt;/A&gt; and share your musical tastes with other amaroK users?</string>
             </property>
         </widget>
-        <widget class="QLabel">
+        <spacer>
             <property name="name">
-                <cstring>createProfileLabel</cstring>
+                <cstring>spacer4</cstring>
             </property>
-            <property name="geometry">
-                <rect>
-                    <x>10</x>
-                    <y>20</y>
-                    <width>310</width>
-                    <height>70</height>
-                </rect>
+            <property name="orientation">
+                <enum>Vertical</enum>
             </property>
-            <property name="text">
-                <string>To submit played tracks to Audioscrobbler, you will need a personal Audioscrobbler profile. If you don't yet have a profile, please click the button below to create one.</string>
+            <property name="sizeType">
+                <enum>Expanding</enum>
             </property>
-            <property name="alignment">
-                <set>WordBreak|AlignVCenter</set>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>140</height>
+                </size>
             </property>
-        </widget>
-    </widget>
-    <widget class="QCheckBox">
-        <property name="name">
-            <cstring>kcfg_SubmitPlayedSongs</cstring>
-        </property>
-        <property name="enabled">
-            <bool>true</bool>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>10</y>
-                <width>160</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property name="sizePolicy">
-            <sizepolicy>
-                <hsizetype>0</hsizetype>
-                <vsizetype>0</vsizetype>
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-            </sizepolicy>
-        </property>
-        <property name="text">
-            <string>Submit played tracks</string>
-        </property>
-    </widget>
+        </spacer>
+    </vbox>
 </widget>
-<connections>
-    <connection>
-        <sender>kcfg_SubmitPlayedSongs</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>profileSettingsGroupBox</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
-    <connection>
-        <sender>createProfileButton</sender>
-        <signal>clicked()</signal>
-        <receiver>Options8</receiver>
-        <slot>exec()</slot>
-    </connection>
-</connections>
+<customwidgets>
+</customwidgets>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>kactivelabel.h</includehint>
+    <includehint>kactivelabel.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
+    <includehint>kactivelabel.h</includehint>
 </includehints>
 </UI>
