@@ -97,12 +97,13 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     addWidget( m_pTimeLabel = new TimeLabel( this ), 0, true );
 
     // make all widgets as high as the time display
-    m_pTitle->setFixedHeight( m_pTimeLabel->height() );
-    m_pProgress->setFixedHeight( m_pTimeLabel->height() );
-    m_pTotal->setFixedHeight( m_pTimeLabel->height() );
-    w1->setFixedHeight( m_pTimeLabel->height() );
-    w2->setFixedHeight( m_pTimeLabel->height() );
-    m_pSlider->setFixedHeight( m_pTimeLabel->height() );
+    const int h = m_pTimeLabel->height();
+    m_pTitle->setFixedHeight( h );
+    m_pProgress->setFixedHeight( h );
+    m_pTotal->setFixedHeight( h );
+    w1->setFixedHeight( h );
+    w2->setFixedHeight( h );
+    m_pSlider->setFixedHeight( h );
 
     connect( m_pPauseTimer, SIGNAL(timeout()), SLOT(slotPauseTimer()) );
 
@@ -132,15 +133,13 @@ void StatusBar::engineStateChanged( EngineBase::EngineState state )
             break;
 
         case EngineBase::Paused:
-            // display TEMPORARY message
-            message( i18n( "amaroK is paused" ) );
+            //message( i18n( "amaroK is paused" ) ); // display TEMPORARY message
             m_pPauseTimer->start( 300 );
             break;
 
         case EngineBase::Playing:
             m_pPauseTimer->stop();
-            // clear TEMPORARY message
-            clear();
+            //clear(); // clear TEMPORARY message
             enable = true;
             break;
     }

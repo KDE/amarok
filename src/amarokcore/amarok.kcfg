@@ -165,11 +165,11 @@
         <default></default>
         <whatsthis>Select the sound output device. this is useful for gstreamer engine sinks</whatsthis>
      </entry>
-     <entry key="Default Sound Device" type="Bool">
-        <label>Uses autodetected audiosink sound device</label>
-        <default>true</default>
-        <whatsthis>When enabled, uses default sound device for audiosink.</whatsthis>
-     </entry>     
+     <entry key="Custom Sound Device" type="Bool">
+        <label>Don't use the autodetected audiosink sound device</label>
+        <default>false</default>
+        <whatsthis>When enabled, uses user-specified sound device for audiosink.</whatsthis>
+     </entry>
      <entry key="Title Streaming" type="Bool">
         <label>Read titles of shoutcast streams</label>
         <default>true</default>
@@ -187,6 +187,11 @@
         <label>Font for On-Screen Display</label>
         <default code="true">QFont("Arial",20)</default>
 	<whatsthis>The font to use for the On-Screen Display.</whatsthis>
+     </entry>
+     <entry key="Osd Use Custom Colors" type="Bool">
+        <label>Whether to use custom colors for the OSD</label>
+        <default>false</default>
+	<whatsthis>You can use custom colors for the OSD if you set this true.</whatsthis>
      </entry>
      <entry key="Osd Text Color" type="Color">
         <label>Font Color for On-Screen Display</label>

@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>378</width>
-            <height>354</height>
+            <width>516</width>
+            <height>733</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -30,6 +30,9 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
+        <property name="spacing">
+            <number>16</number>
+        </property>
         <widget class="QButtonGroup">
             <property name="name">
                 <cstring>opt_crossfade</cstring>
@@ -47,200 +50,178 @@
                 <string>&lt;b&gt;Transition Behavior&lt;/b&gt;
 &lt;p&gt;During playback, when amaroK transitions between tracks, it can either proceed to the next track instantly (with configurable gap), or crossfade (with configurable fade period).&lt;/p&gt;</string>
             </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QSpinBox" row="1" column="1">
-                    <property name="name">
-                        <cstring>kcfg_TrackDelayLength</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>5</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>120</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="suffix">
-                        <string> ms</string>
-                    </property>
-                    <property name="maxValue">
-                        <number>10000</number>
-                    </property>
-                    <property name="lineStep">
-                        <number>100</number>
-                    </property>
-                    <property name="value">
-                        <number>0</number>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Silence between tracks, in milliseconds.</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="1" column="0">
-                    <property name="name">
-                        <cstring>trackDelayLengthLabel</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>4</hsizetype>
-                            <vsizetype>5</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="text">
-                        <string>Insert &amp;gap:</string>
-                    </property>
-                    <property name="indent">
-                        <number>23</number>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>kcfg_TrackDelayLength</cstring>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Silence between tracks, in milliseconds.</string>
-                    </property>
-                </widget>
-                <widget class="QRadioButton" row="0" column="0">
-                    <property name="name">
-                        <cstring>radioButtonNormalPlayback</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Normal</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+N</string>
-                    </property>
-                    <property name="checked">
-                        <bool>true</bool>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Enable normal track transition. You may insert a gap of silence between tracks.</string>
-                    </property>
-                </widget>
-                <widget class="QRadioButton" row="2" column="0">
-                    <property name="name">
-                        <cstring>kcfg_Crossfade</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Crossfade</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+C</string>
-                    </property>
-                    <property name="checked">
-                        <bool>false</bool>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Enable crossfading between tracks. This setting also enables fading to or from silence e.g when pressing stop.</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="3" column="0">
-                    <property name="name">
-                        <cstring>crossfadeLengthLabel</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>4</hsizetype>
-                            <vsizetype>5</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="text">
-                        <string>Crossover &amp;period:</string>
-                    </property>
-                    <property name="indent">
-                        <number>23</number>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>kcfg_CrossfadeLength</cstring>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>The length of the crossfade between tracks in milliseconds.</string>
-                    </property>
-                </widget>
-                <widget class="QSpinBox" row="3" column="1">
-                    <property name="name">
-                        <cstring>kcfg_CrossfadeLength</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>2</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>120</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="suffix">
-                        <string> ms</string>
-                    </property>
-                    <property name="maxValue">
-                        <number>99999999</number>
-                    </property>
-                    <property name="lineStep">
-                        <number>100</number>
-                    </property>
-                    <property name="value">
-                        <number>0</number>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>The length of the crossfade between tracks in milliseconds.</string>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout18</cstring>
-            </property>
             <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel">
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>textLabel1</cstring>
+                        <cstring>layout4</cstring>
                     </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>4</hsizetype>
-                            <vsizetype>5</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>0</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Sound system:</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Select the sound system to use for playback.</string>
-                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QRadioButton" row="2" column="0">
+                            <property name="name">
+                                <cstring>kcfg_Crossfade</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Crossfade</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+C</string>
+                            </property>
+                            <property name="checked">
+                                <bool>false</bool>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Enable crossfading between tracks. This setting also enables fading to or from silence e.g when pressing stop.</string>
+                            </property>
+                        </widget>
+                        <widget class="QSpinBox" row="3" column="1">
+                            <property name="name">
+                                <cstring>kcfg_CrossfadeLength</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>5</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>120</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="suffix">
+                                <string> ms</string>
+                            </property>
+                            <property name="maxValue">
+                                <number>99999999</number>
+                            </property>
+                            <property name="lineStep">
+                                <number>100</number>
+                            </property>
+                            <property name="value">
+                                <number>0</number>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The length of the crossfade between tracks in milliseconds.</string>
+                            </property>
+                        </widget>
+                        <widget class="QSpinBox" row="1" column="1">
+                            <property name="name">
+                                <cstring>kcfg_TrackDelayLength</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>5</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>120</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="suffix">
+                                <string> ms</string>
+                            </property>
+                            <property name="maxValue">
+                                <number>10000</number>
+                            </property>
+                            <property name="lineStep">
+                                <number>100</number>
+                            </property>
+                            <property name="value">
+                                <number>0</number>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Silence between tracks, in milliseconds.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>trackDelayLengthLabel</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>Insert &amp;gap:</string>
+                            </property>
+                            <property name="indent">
+                                <number>32</number>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>kcfg_TrackDelayLength</cstring>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Silence between tracks, in milliseconds.</string>
+                            </property>
+                        </widget>
+                        <widget class="QRadioButton" row="0" column="0">
+                            <property name="name">
+                                <cstring>radioButtonNormalPlayback</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Normal</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+N</string>
+                            </property>
+                            <property name="checked">
+                                <bool>true</bool>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Enable normal track transition. You may insert a gap of silence between tracks.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="3" column="0">
+                            <property name="name">
+                                <cstring>crossfadeLengthLabel</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>Crossover &amp;period:</string>
+                            </property>
+                            <property name="indent">
+                                <number>32</number>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>kcfg_CrossfadeLength</cstring>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The length of the crossfade between tracks in milliseconds.</string>
+                            </property>
+                        </widget>
+                    </grid>
                 </widget>
                 <spacer>
                     <property name="name">
-                        <cstring>spacer7</cstring>
+                        <cstring>spacer3</cstring>
                     </property>
                     <property name="orientation">
                         <enum>Horizontal</enum>
@@ -250,71 +231,187 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>21</width>
+                            <width>71</width>
                             <height>20</height>
                         </size>
                     </property>
                 </spacer>
-                <widget class="QComboBox">
-                    <property name="name">
-                        <cstring>sound_system</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>5</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>240</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Select the sound system to use for playback.</string>
-                    </property>
-                </widget>
             </hbox>
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout19</cstring>
+                <cstring>layout3</cstring>
             </property>
             <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel">
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>outputLabel</cstring>
+                        <cstring>layout8</cstring>
                     </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>4</hsizetype>
-                            <vsizetype>5</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>0</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Output to:</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Select the sound system to use for playback.</string>
-                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QComboBox" row="0" column="1">
+                            <property name="name">
+                                <cstring>sound_system</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>4</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>128</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>32767</width>
+                                    <height>32767</height>
+                                </size>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Select the sound system to use for playback.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>0</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>Sound system:</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Select the sound system to use for playback.</string>
+                            </property>
+                        </widget>
+                        <widget class="QComboBox" row="1" column="1">
+                            <property name="name">
+                                <cstring>sound_output</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>4</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>128</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>32767</width>
+                                    <height>32767</height>
+                                </size>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Select the sound system to use for playback.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLineEdit" row="2" column="1">
+                            <property name="name">
+                                <cstring>sound_device</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>4</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>128</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>32767</width>
+                                    <height>32767</height>
+                                </size>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="2" column="0">
+                            <property name="name">
+                                <cstring>kcfg_CustomSoundDevice</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Use custom device:</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+U</string>
+                            </property>
+                            <property name="checked">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>outputLabel</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>0</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>Output to:</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Select the sound system to use for playback.</string>
+                            </property>
+                        </widget>
+                    </grid>
                 </widget>
                 <spacer>
                     <property name="name">
-                        <cstring>spacer8</cstring>
+                        <cstring>spacer2</cstring>
                     </property>
                     <property name="orientation">
                         <enum>Horizontal</enum>
@@ -324,156 +421,96 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>21</width>
+                            <width>121</width>
                             <height>20</height>
                         </size>
                     </property>
                 </spacer>
-                <widget class="QComboBox">
-                    <property name="name">
-                        <cstring>sound_output</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>5</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>240</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Select the sound system to use for playback.</string>
-                    </property>
-                </widget>
             </hbox>
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout11</cstring>
+                <cstring>layout9</cstring>
             </property>
-            <hbox>
+            <vbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel">
+                <widget class="QCheckBox">
                     <property name="name">
-                        <cstring>deviceLabel</cstring>
+                        <cstring>kcfg_ResumePlayback</cstring>
                     </property>
                     <property name="text">
-                        <string>Device:</string>
+                        <string>&amp;Resume playback on start</string>
                     </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer6</cstring>
+                    <property name="accel">
+                        <string>Alt+R</string>
                     </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>50</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QLineEdit">
-                    <property name="name">
-                        <cstring>sound_device</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>5</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>170</width>
-                            <height>0</height>
-                        </size>
+                    <property name="whatsThis" stdset="0">
+                        <string>If checked, amaroK will resume playback from where you left it the previous session -- just like a tape-player.</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox">
                     <property name="name">
-                        <cstring>kcfg_DefaultSoundDevice</cstring>
+                        <cstring>kcfg_HardwareMixer</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Default</string>
+                        <string>Use &amp;hardware volume mixer</string>
                     </property>
                     <property name="accel">
-                        <string>Alt+D</string>
+                        <string>Alt+H</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>If checked, the volume slider sets the master volume on the soundcard which affects the whole system. If not checked, the volume slider only affects the amaroK output.</string>
                     </property>
                 </widget>
-            </hbox>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>kcfg_TitleStreaming</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Display Shoutcast &amp;metadata (title streaming)</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+M</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>If checked, amaroK displays metadata also for shoutcast streams.</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>kcfg_RememberEffects</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Remember &amp;effects</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+E</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>If checked, amaroK remembers the audio effects set through the effects window between sessions.</string>
+                    </property>
+                </widget>
+            </vbox>
         </widget>
-        <widget class="QCheckBox">
+        <spacer>
             <property name="name">
-                <cstring>kcfg_ResumePlayback</cstring>
+                <cstring>spacer6</cstring>
             </property>
-            <property name="text">
-                <string>&amp;Resume playback on start</string>
+            <property name="orientation">
+                <enum>Vertical</enum>
             </property>
-            <property name="accel">
-                <string>Alt+R</string>
+            <property name="sizeType">
+                <enum>Expanding</enum>
             </property>
-            <property name="whatsThis" stdset="0">
-                <string>If checked, amaroK will resume playback from where you left it the previous session -- just like a tape-player.</string>
+            <property name="sizeHint">
+                <size>
+                    <width>31</width>
+                    <height>181</height>
+                </size>
             </property>
-        </widget>
-        <widget class="QCheckBox">
-            <property name="name">
-                <cstring>kcfg_HardwareMixer</cstring>
-            </property>
-            <property name="text">
-                <string>Use &amp;hardware volume mixer</string>
-            </property>
-            <property name="accel">
-                <string>Alt+H</string>
-            </property>
-            <property name="whatsThis" stdset="0">
-                <string>If checked, the volume slider sets the master volume on the soundcard which affects the whole system. If not checked, the volume slider only affects the amaroK output.</string>
-            </property>
-        </widget>
-        <widget class="QCheckBox">
-            <property name="name">
-                <cstring>kcfg_TitleStreaming</cstring>
-            </property>
-            <property name="text">
-                <string>Display Shoutcast &amp;metadata (title streaming)</string>
-            </property>
-            <property name="accel">
-                <string>Alt+M</string>
-            </property>
-            <property name="whatsThis" stdset="0">
-                <string>If checked, amaroK displays metadata also for shoutcast streams.</string>
-            </property>
-        </widget>
-        <widget class="QCheckBox">
-            <property name="name">
-                <cstring>kcfg_RememberEffects</cstring>
-            </property>
-            <property name="text">
-                <string>Remember &amp;effects</string>
-            </property>
-            <property name="accel">
-                <string>Alt+E</string>
-            </property>
-            <property name="whatsThis" stdset="0">
-                <string>If checked, amaroK remembers the audio effects set through the effects window between sessions.</string>
-            </property>
-        </widget>
+        </spacer>
     </vbox>
 </widget>
 <connections>
@@ -487,6 +524,12 @@
         <sender>kcfg_Crossfade</sender>
         <signal>toggled(bool)</signal>
         <receiver>kcfg_CrossfadeLength</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_CustomSoundDevice</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>sound_device</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
 </connections>

@@ -119,12 +119,12 @@ void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
 
             KURL tmp;
             tmp.setPath( values[i] );
-            pApp->playlist()->insertMedia( tmp, false, true );
+            pApp->playlist()->appendMedia( tmp, false, true );
         }
     }
 
     if ( url.protocol() == "file" )
-        pApp->playlist()->insertMedia( url, true, true );
+        pApp->playlist()->appendMedia( url, true, true );
 
     if ( url.protocol() == "show" )
     {

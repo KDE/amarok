@@ -39,11 +39,13 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 {
     //we must handle the "Sound Setting" QComboBox manually, because KConfigDialogManager can't
     //manage dynamic itemLists (at least I don't know how to do it)
+
     m_opt4 = new Options4( 0, "Playback" );
     m_pSoundSystem = m_opt4->sound_system;
     m_pSoundOutput = m_opt4->sound_output;
     m_pSoundDevice = m_opt4->sound_device;
-    m_pDefaultSoundDevice = m_opt4->kcfg_DefaultSoundDevice;
+    m_pCustomSoundDevice = m_opt4->kcfg_CustomSoundDevice;
+
     // Sound System
     QStringList systems;
     KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'engine'" );
@@ -56,10 +58,10 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     connect( m_pSoundSystem, SIGNAL( activated( int ) ), this, SLOT( settingsChangedSlot() ) );
     connect( m_pSoundOutput, SIGNAL( activated( int ) ), this, SLOT( settingsChangedSlot() ) );
     connect( m_pSoundDevice, SIGNAL( textChanged( const QString& ) ), this, SLOT( settingsChangedSlot() ) );
-    connect( m_pDefaultSoundDevice, SIGNAL( toggled( bool ) ), this, SLOT( settingsChangedSlot() ) );
+    connect( m_pCustomSoundDevice, SIGNAL( toggled( bool ) ), this, SLOT( settingsChangedSlot() ) );
 
     connect( m_pSoundSystem, SIGNAL( activated( int ) ), this, SLOT( soundSystemChanged() ) );
-    connect( m_pDefaultSoundDevice, SIGNAL( toggled( bool ) ), this, SLOT( soundSystemChanged() ) );
+    connect( m_pCustomSoundDevice, SIGNAL( toggled( bool ) ), this, SLOT( soundSystemChanged() ) );
 
     // add pages
     addPage( new Options1( 0, "General" ), i18n( "General" ), "misc", i18n( "Configure General Options" ) );
@@ -68,16 +70,15 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     addPage( m_opt4, i18n( "Playback" ), "kmix", i18n( "Configure Playback" ) );
     addPage( new Options5( 0, "OSD" ), i18n( "OSD" ), "tv", i18n( "Configure On-Screen-Display" ) );
 
-    setInitialSize( QSize( 440, 390 ) );
+    setInitialSize( sizeHint() );
 }
 
 
 bool AmarokConfigDialog::hasChanged()
 {
-    return ( m_pSoundSystem->currentText()      != AmarokConfig::soundSystem() ) ||
-           ( m_pSoundOutput->currentText()      != AmarokConfig::soundOutput() ) ||
-           ( m_pSoundDevice->text()             != AmarokConfig::soundDevice() ) ||
-           ( m_pDefaultSoundDevice->isChecked() != AmarokConfig::defaultSoundDevice() );
+    return ( m_pSoundSystem->currentText() != AmarokConfig::soundSystem() ||
+             m_pSoundOutput->currentText() != AmarokConfig::soundOutput() ||
+             m_pSoundDevice->text()        != AmarokConfig::soundDevice() );
 }
 
 
@@ -100,7 +101,6 @@ void AmarokConfigDialog::updateSettings()
     if ( !m_pSoundOutput->currentText().isEmpty() )
         AmarokConfig::setSoundOutput( m_pSoundOutput->currentText() );
     AmarokConfig::setSoundDevice( m_pSoundDevice->text() );
-    AmarokConfig::setDefaultSoundDevice( m_pDefaultSoundDevice->isChecked() );
 
     emit settingsChanged();
 }
@@ -110,7 +110,6 @@ void AmarokConfigDialog::updateWidgets()
 {
     m_pSoundSystem->setCurrentText( AmarokConfig::soundSystem() );
     m_pSoundDevice->setText( AmarokConfig::soundDevice() );
-    m_pDefaultSoundDevice->setChecked( AmarokConfig::defaultSoundDevice() );
 }
 
 
@@ -123,21 +122,15 @@ void AmarokConfigDialog::soundSystemChanged()
     if ( outputs.isEmpty() ) {
         m_pSoundOutput->setEnabled( false );
         m_opt4->outputLabel->setEnabled( false );
-
+        m_pCustomSoundDevice->setEnabled( false ); //will toggle the device lineEdit
         m_pSoundDevice->setEnabled( false );
-        m_opt4->deviceLabel->setEnabled( false );
-        m_pDefaultSoundDevice->setEnabled( false );
+
     } else {
+
         m_pSoundOutput->setEnabled( true );
         m_opt4->outputLabel->setEnabled( true );
-
-
-        m_opt4->deviceLabel->setEnabled( true );
-        m_pDefaultSoundDevice->setEnabled( true );
-
-        if ( m_pDefaultSoundDevice->isChecked() )
-            m_pSoundDevice->setEnabled( false );
-        else m_pSoundDevice->setEnabled( true );
+        m_pCustomSoundDevice->setEnabled( true );
+        m_pSoundDevice->setEnabled( m_pCustomSoundDevice->isChecked() );
 
         m_pSoundOutput->insertStringList( outputs );
 

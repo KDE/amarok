@@ -111,11 +111,11 @@ void EngineController::play( const MetaBundle &bundle )
     kdDebug() << "[engine] Playing: " << url.filename() << endl;
 
     if ( AmarokConfig::titleStreaming() &&
-         engine()->streamingMode() != EngineBase::NoStreaming &&
+         m_pEngine->streamingMode() != EngineBase::NoStreaming &&
          url.protocol() == "http" &&
          !url.path().endsWith( ".ogg" ) )
     {
-        TitleProxy::Proxy* proxy = new TitleProxy::Proxy( url, engine()->streamingMode() );
+        TitleProxy::Proxy* proxy = new TitleProxy::Proxy( url, m_pEngine->streamingMode() );
         if ( !proxy->initSuccess() ) {
             delete proxy;
             emit orderNext();
@@ -128,7 +128,7 @@ void EngineController::play( const MetaBundle &bundle )
         connect( proxy,    SIGNAL( metaData( const MetaBundle& ) ),
                  this,       SLOT( newMetaData( const MetaBundle& ) ) );
         connect( proxy,    SIGNAL( streamData( char*, int ) ),
-                 engine(),   SLOT( newStreamData( char*, int ) ) );
+                 m_pEngine,  SLOT( newStreamData( char*, int ) ) );
 
         if ( object )
             connect( object, SIGNAL( destroyed () ),

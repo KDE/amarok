@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>336</width>
-            <height>370</height>
+            <width>557</width>
+            <height>598</height>
         </rect>
     </property>
     <property name="caption">
@@ -19,15 +19,21 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
+        <property name="spacing">
+            <number>0</number>
+        </property>
         <widget class="QCheckBox">
             <property name="name">
                 <cstring>kcfg_OsdEnabled</cstring>
             </property>
             <property name="text">
-                <string>&amp;Use On-Screen-Display</string>
+                <string>&amp;Use On-screen-display</string>
             </property>
             <property name="accel">
                 <string>Alt+U</string>
+            </property>
+            <property name="checked">
+                <bool>true</bool>
             </property>
             <property name="whatsThis" stdset="0">
                 <string>Check to enable the On-Screen-Display. The OSD briefly displays track data when a new track is played.</string>
@@ -38,10 +44,13 @@
                 <cstring>buttonGroup</cstring>
             </property>
             <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
             </property>
             <property name="title">
-                <string>On-Screen-Display</string>
+                <string></string>
+            </property>
+            <property name="flat">
+                <bool>false</bool>
             </property>
             <property name="checkable">
                 <bool>false</bool>
@@ -50,60 +59,97 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel">
+                <property name="spacing">
+                    <number>32</number>
+                </property>
+                <widget class="QGroupBox">
                     <property name="name">
-                        <cstring>textLabel1</cstring>
+                        <cstring>fontBox</cstring>
                     </property>
-                    <property name="text">
-                        <string>Font:</string>
+                    <property name="frameShape">
+                        <enum>NoFrame</enum>
                     </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>The font to use for the On-Screen Display.</string>
+                    <property name="lineWidth">
+                        <number>1</number>
                     </property>
-                </widget>
-                <widget class="KFontRequester">
-                    <property name="name">
-                        <cstring>kcfg_OsdFont</cstring>
+                    <property name="title">
+                        <string>&amp;Font</string>
                     </property>
-                    <property name="font">
-                        <font>
-                            <pointsize>20</pointsize>
-                        </font>
+                    <property name="flat">
+                        <bool>true</bool>
                     </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>The font to use for the On-Screen Display.</string>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout9</cstring>
-                    </property>
-                    <hbox>
+                    <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QLayoutWidget">
+                        <widget class="KFontRequester" row="0" column="0">
                             <property name="name">
-                                <cstring>layout7</cstring>
+                                <cstring>kcfg_OsdFont</cstring>
                             </property>
-                            <vbox>
+                            <property name="font">
+                                <font>
+                                    <pointsize>20</pointsize>
+                                </font>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The font to use for the On-Screen Display.</string>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout14</cstring>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="spacing">
+                            <number>0</number>
+                        </property>
+                        <widget class="QCheckBox">
+                            <property name="name">
+                                <cstring>kcfg_OsdUseCustomColors</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Use &amp;custom colors</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+C</string>
+                            </property>
+                        </widget>
+                        <widget class="QGroupBox">
+                            <property name="name">
+                                <cstring>colorsBox</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
+                            <property name="frameShape">
+                                <enum>NoFrame</enum>
+                            </property>
+                            <property name="title">
+                                <string></string>
+                            </property>
+                            <property name="flat">
+                                <bool>true</bool>
+                            </property>
+                            <grid>
                                 <property name="name">
                                     <cstring>unnamed</cstring>
                                 </property>
-                                <widget class="QLabel">
-                                    <property name="name">
-                                        <cstring>textLabel2</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>Text color:</string>
-                                    </property>
-                                    <property name="whatsThis" stdset="0">
-                                        <string>The color of the OSD text.</string>
-                                    </property>
-                                </widget>
-                                <widget class="KColorButton">
+                                <widget class="KColorButton" row="0" column="1">
                                     <property name="name">
                                         <cstring>kcfg_OsdTextColor</cstring>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>1</hsizetype>
+                                            <vsizetype>0</vsizetype>
+                                            <horstretch>2</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
                                     </property>
                                     <property name="text">
                                         <string></string>
@@ -119,19 +165,17 @@
                                         <string>The color of the OSD text.</string>
                                     </property>
                                 </widget>
-                            </vbox>
-                        </widget>
-                        <widget class="QLayoutWidget">
-                            <property name="name">
-                                <cstring>layout8</cstring>
-                            </property>
-                            <vbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="QLabel">
+                                <widget class="QLabel" row="1" column="0">
                                     <property name="name">
                                         <cstring>textLabel2_2</cstring>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>5</hsizetype>
+                                            <vsizetype>5</vsizetype>
+                                            <horstretch>1</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
                                     </property>
                                     <property name="text">
                                         <string>Background color:</string>
@@ -140,9 +184,17 @@
                                         <string>The color of the OSD background.</string>
                                     </property>
                                 </widget>
-                                <widget class="KColorButton">
+                                <widget class="KColorButton" row="1" column="1">
                                     <property name="name">
                                         <cstring>kcfg_OsdBackgroundColor</cstring>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>1</hsizetype>
+                                            <vsizetype>0</vsizetype>
+                                            <horstretch>2</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
                                     </property>
                                     <property name="text">
                                         <string></string>
@@ -158,46 +210,95 @@
                                         <string>The color of the OSD background.</string>
                                     </property>
                                 </widget>
-                            </vbox>
+                                <widget class="QLabel" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>textLabel2</cstring>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>5</hsizetype>
+                                            <vsizetype>5</vsizetype>
+                                            <horstretch>1</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                    <property name="text">
+                                        <string>Text color:</string>
+                                    </property>
+                                    <property name="whatsThis" stdset="0">
+                                        <string>The color of the OSD text.</string>
+                                    </property>
+                                </widget>
+                            </grid>
                         </widget>
-                    </hbox>
+                    </vbox>
                 </widget>
-                <widget class="QLabel">
+                <widget class="QGroupBox">
                     <property name="name">
-                        <cstring>textLabel1_2</cstring>
+                        <cstring>durationBox</cstring>
                     </property>
-                    <property name="text">
-                        <string>Duration:</string>
+                    <property name="frameShape">
+                        <enum>NoFrame</enum>
                     </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>The time in milliseconds to show the OSD. The value must be between 500 ms and 10000 ms.</string>
+                    <property name="title">
+                        <string>&amp;Duration</string>
                     </property>
-                </widget>
-                <widget class="KIntSpinBox">
-                    <property name="name">
-                        <cstring>kcfg_OsdDuration</cstring>
-                    </property>
-                    <property name="suffix">
-                        <string> ms</string>
-                    </property>
-                    <property name="lineStep">
-                        <number>100</number>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>The time in milliseconds to show the OSD. The value must be between 500 ms and 10000 ms.</string>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout11</cstring>
+                    <property name="flat">
+                        <bool>true</bool>
                     </property>
                     <hbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QLabel">
+                        <widget class="KIntSpinBox">
+                            <property name="name">
+                                <cstring>kcfg_OsdDuration</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>2</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="suffix">
+                                <string> ms</string>
+                            </property>
+                            <property name="lineStep">
+                                <number>100</number>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The time in milliseconds to show the OSD. The value must be between 500 ms and 10000 ms.</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QGroupBox">
+                    <property name="name">
+                        <cstring>positionBox</cstring>
+                    </property>
+                    <property name="title">
+                        <string>&amp;Position</string>
+                    </property>
+                    <property name="flat">
+                        <bool>true</bool>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel" row="0" column="0">
                             <property name="name">
                                 <cstring>textLabel1_2_2</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>1</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
                             </property>
                             <property name="text">
                                 <string>Alignment:</string>
@@ -206,28 +307,124 @@
                                 <string>The alignment of the OSD relative to the screen corners.</string>
                             </property>
                         </widget>
-                        <widget class="QLabel">
+                        <widget class="QLabel" row="1" column="2">
                             <property name="name">
-                                <cstring>textLabel1_2_2_2</cstring>
+                                <cstring>textLabel1_2_2_4</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>1</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
                             </property>
                             <property name="text">
-                                <string>Screen:</string>
+                                <string>y-offset:</string>
+                            </property>
+                            <property name="indent">
+                                <number>10</number>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The Y position of the OSD relative to the chosen screen and  OSD alignment. If Top alignment is chosen the Y offset is the space between the upper part of the OSD and the top  of the screen. If Bottom alignment is chosen the Y offset is the space between the bottom part of the OSD and the bottom of the screen.</string>
+                            </property>
+                        </widget>
+                        <widget class="KIntNumInput" row="1" column="1">
+                            <property name="name">
+                                <cstring>kcfg_OsdYOffset</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="minValue">
+                                <number>0</number>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The Y position of the OSD relative to the chosen screen and  OSD alignment. If Top alignment is chosen the Y offset is the space between the upper part of the OSD and the top  of the screen. If Bottom alignment is chosen the Y offset is the space between the bottom part of the OSD and the bottom of the screen.</string>
+                            </property>
+                        </widget>
+                        <widget class="KComboBox" row="0" column="3">
+                            <property name="name">
+                                <cstring>kcfg_OsdScreen</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>2</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
                             </property>
                             <property name="whatsThis" stdset="0">
                                 <string>The screen that should display the OSD.</string>
                             </property>
                         </widget>
-                    </hbox>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout7</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="KComboBox">
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>textLabel1_2_2_3</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>1</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>x-offset:</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The X position of the OSD relative to the chosen screen and OSD alignment. If Left alignment is chosen the X offset is the space between the leftmost part of the OSD and the left border of the screen. If Right alignment is chosen the X offset is the space between the rightmost part of the OSD and the right border of the screen.</string>
+                            </property>
+                        </widget>
+                        <widget class="KIntNumInput" row="1" column="3">
+                            <property name="name">
+                                <cstring>kcfg_OsdXOffset</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="minValue">
+                                <number>0</number>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The X position of the OSD relative to the chosen screen and OSD alignment. If Left alignment is chosen the X offset is the space between the leftmost part of the OSD and the left border of the screen. If Right alignment is chosen the X offset is the space between the rightmost part of the OSD and the right border of the screen.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="0" column="2">
+                            <property name="name">
+                                <cstring>textLabel1_2_2_2</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>1</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>Screen:</string>
+                            </property>
+                            <property name="indent">
+                                <number>10</number>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The screen that should display the OSD.</string>
+                            </property>
+                        </widget>
+                        <widget class="KComboBox" row="0" column="1">
                             <item>
                                 <property name="text">
                                     <string>Top Left</string>
@@ -256,80 +453,16 @@
                             <property name="name">
                                 <cstring>kcfg_OsdAlignment</cstring>
                             </property>
-                        </widget>
-                        <widget class="KComboBox">
-                            <property name="name">
-                                <cstring>kcfg_OsdScreen</cstring>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>The screen that should display the OSD.</string>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout13</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>textLabel1_2_2_3</cstring>
-                            </property>
-                            <property name="text">
-                                <string>x-offset:</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>The X position of the OSD relative to the chosen screen and OSD alignment. If Left alignment is chosen the X offset is the space between the leftmost part of the OSD and the left border of the screen. If Right alignment is chosen the X offset is the space between the rightmost part of the OSD and the right border of the screen.</string>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>2</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
                             </property>
                         </widget>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>textLabel1_2_2_4</cstring>
-                            </property>
-                            <property name="text">
-                                <string>y-offset:</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>The Y position of the OSD relative to the chosen screen and  OSD alignment. If Top alignment is chosen the Y offset is the space between the upper part of the OSD and the top  of the screen. If Bottom alignment is chosen the Y offset is the space between the bottom part of the OSD and the bottom of the screen.</string>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout14</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="KIntNumInput">
-                            <property name="name">
-                                <cstring>kcfg_OsdXOffset</cstring>
-                            </property>
-                            <property name="minValue">
-                                <number>0</number>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>The X position of the OSD relative to the chosen screen and OSD alignment. If Left alignment is chosen the X offset is the space between the leftmost part of the OSD and the left border of the screen. If Right alignment is chosen the X offset is the space between the rightmost part of the OSD and the right border of the screen.</string>
-                            </property>
-                        </widget>
-                        <widget class="KIntNumInput">
-                            <property name="name">
-                                <cstring>kcfg_OsdYOffset</cstring>
-                            </property>
-                            <property name="minValue">
-                                <number>0</number>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>The Y position of the OSD relative to the chosen screen and  OSD alignment. If Top alignment is chosen the Y offset is the space between the upper part of the OSD and the top  of the screen. If Bottom alignment is chosen the Y offset is the space between the bottom part of the OSD and the bottom of the screen.</string>
-                            </property>
-                        </widget>
-                    </hbox>
+                    </grid>
                 </widget>
                 <spacer>
                     <property name="name">
@@ -344,7 +477,7 @@
                     <property name="sizeHint">
                         <size>
                             <width>20</width>
-                            <height>10</height>
+                            <height>190</height>
                         </size>
                     </property>
                 </spacer>
@@ -378,10 +511,10 @@
                                 <cstring>PreviewButton</cstring>
                             </property>
                             <property name="text">
-                                <string>&amp;Preview</string>
+                                <string>&amp;Toggle Preview</string>
                             </property>
                             <property name="accel">
-                                <string>Alt+P</string>
+                                <string>Alt+T</string>
                             </property>
                             <property name="toggleButton">
                                 <bool>true</bool>
@@ -396,54 +529,14 @@
         </widget>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>kcfg_OsdEnabled</sender>
         <signal>toggled(bool)</signal>
         <receiver>buttonGroup</receiver>
         <slot>setEnabled(bool)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg_OsdFont</sender>
-        <signal>fontSelected(const QFont&amp;)</signal>
-        <receiver>Options5</receiver>
-        <slot>fontChanged(const QFont&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg_OsdTextColor</sender>
-        <signal>changed(const QColor&amp;)</signal>
-        <receiver>Options5</receiver>
-        <slot>textColorChanged(const QColor&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg_OsdBackgroundColor</sender>
-        <signal>changed(const QColor&amp;)</signal>
-        <receiver>Options5</receiver>
-        <slot>backgroundColorChanged(const QColor&amp;)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg_OsdAlignment</sender>
-        <signal>activated(int)</signal>
-        <receiver>Options5</receiver>
-        <slot>alignmentChanged(int)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg_OsdScreen</sender>
-        <signal>activated(int)</signal>
-        <receiver>Options5</receiver>
-        <slot>screenChanged(int)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg_OsdXOffset</sender>
-        <signal>valueChanged(int)</signal>
-        <receiver>Options5</receiver>
-        <slot>xOffsetChanged(int)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg_OsdYOffset</sender>
-        <signal>valueChanged(int)</signal>
-        <receiver>Options5</receiver>
-        <slot>yOffsetChanged(int)</slot>
     </connection>
     <connection>
         <sender>PreviewButton</sender>
@@ -457,11 +550,17 @@
         <receiver>Options5</receiver>
         <slot>osdEnabledChange(bool)</slot>
     </connection>
+    <connection>
+        <sender>kcfg_OsdUseCustomColors</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>colorsBox</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
 </connections>
 <includes>
-    <include location="local" impldecl="in declaration">osd.h</include>
     <include location="global" impldecl="in implementation">qapplication.h</include>
     <include location="global" impldecl="in implementation">qdesktopwidget.h</include>
+    <include location="local" impldecl="in declaration">osd.h</include>
     <include location="local" impldecl="in implementation">Options5.ui.h</include>
 </includes>
 <variables>
@@ -485,4 +584,14 @@
     <function access="protected">hideEvent( QHideEvent * )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>knuminput.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+</includehints>
 </UI>

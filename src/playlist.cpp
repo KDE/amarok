@@ -30,6 +30,7 @@
 #include <klineedit.h>    //setCurrentTrack()
 #include <klocale.h>
 #include <kpopupmenu.h>
+#include <kmessagebox.h>
 #include <krandomsequence.h> //random Mode
 #include <kstandarddirs.h>   //KGlobal::dirs()
 #include <kstdaction.h>
@@ -39,7 +40,6 @@
 #include <qevent.h>
 #include <qfile.h>   //undo system
 #include <qheader.h> //eventFilter()
-#include <qmessagebox.h>
 #include <qpainter.h>
 #include <qpen.h>    //slotGlowTimer()
 #include <qtimer.h>
@@ -233,25 +233,47 @@ QString Playlist::defaultPlaylistPath() //static
 }
 
 
-void Playlist::insertMedia( KURL::List list, bool directPlay, bool preventDoubles )
+void Playlist::appendMedia( KURL::List list, bool directPlay, bool preventDoubles )
 {
-    if ( preventDoubles )
-        for ( QListViewItemIterator it( this ); it.current(); ++it )
-        {
-            PlaylistItem *tItem = (PlaylistItem *)it.current();
-            if ( list.contains( tItem->url() ) )
-            {
-                if ( directPlay && tItem->url() == list.last() )
-                    activate ( tItem );
+    //NOTE passing by value is quick for QValueLists, although it is slow if we change the list
+    //but we only do that ocassionally
 
-                list.remove( tItem->url() );
+    if( preventDoubles )
+    {
+        KURL::List::Iterator jt;
+        PlaylistItem *item;
+
+        for( QListViewItemIterator it( this ); it.current(); ++it )
+        {
+            item = (PlaylistItem *)it.current();
+            jt   = list.find( item->url() );
+
+            if( jt != list.end() )
+            {
+                if( jt == list.begin() && directPlay )
+                {
+                    directPlay = false;
+                    activate( item );
+                }
+
+                list.remove( *jt );
             }
         }
+    }
 
     if( !list.isEmpty() )
     {
         //FIXME lastItem() scales badly!
         insertMediaInternal( list, lastItem(), directPlay );
+    }
+}
+
+
+void Playlist::queueMedia( const KURL::List &list )
+{
+    if( !list.isEmpty() )
+    {
+        insertMediaInternal( list, currentTrack() );
     }
 }
 
@@ -779,10 +801,12 @@ void Playlist::engineStateChanged( EngineBase::EngineState state )
         m_ac->action( "pause" )->setEnabled( true );
         m_ac->action( "stop" )->setEnabled( true );
         m_ac->action( "playlist_show" )->setEnabled( true );
+        //m_ac->action( "play" )->setText( i18n( "Restart" ) );
         break;
 
     case EngineBase::Empty:
         //TODO do this with setState() in PlaylistWindow?
+        //m_ac->action( "play" )->setText( i18n( "Play" ) );
         m_ac->action( "pause" )->setEnabled( false );
         m_ac->action( "stop" )->setEnabled( false );
         m_ac->action( "prev" )->setEnabled( false );
@@ -852,12 +876,8 @@ void Playlist::setCurrentTrack( PlaylistItem *item )
     if( item ) item->setHeight( fontMetrics().height() * 2 );
     if( prev && item != prev ) prev->invalidateHeight();
 
-    //FIXME we need to paint the pix ourselves so we are sure it is the first column
-    if( item ) { item->setPixmap( 1, SmallIcon("artsbuilderexecute") ); item->setHeight( fontMetrics().height()*2 ); }
-    if( prev ) { prev->setPixmap( 1, QPixmap() ); prev->invalidateHeight(); }
-
-    //repaintItem( prev );
-    //repaintItem( item );
+//    repaintItem( prev );
+//    repaintItem( item );
 
     m_ac->action( "prev" )->setEnabled( isTrackBefore() );
     m_ac->action( "next" )->setEnabled( isTrackAfter() );
@@ -964,7 +984,7 @@ void Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
         clear();
     blockSignals( false );
 
-    insertMedia( playlist ); //because the listview is empty, undoState won't be forced
+    appendMedia( playlist ); //because the listview is empty, undoState won't be forced
 
     m_undoButton->setEnabled( !m_undoList.isEmpty() );
     m_redoButton->setEnabled( !m_redoList.isEmpty() );
@@ -1159,11 +1179,7 @@ void Playlist::showTrackInfo( PlaylistItem *pItem ) const //SLOT
 
     str.append( "</table></body></html>" );
 
-    QMessageBox box( kapp->makeStdCaption( i18n("Meta Information") ), str, QMessageBox::Information,
-                     QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton,
-                     0, 0, true, Qt::WStyle_DialogBorder );
-    box.setTextFormat( Qt::RichText );
-    box.exec();
+    KMessageBox::information( parentWidget(), str, i18n( "Meta Information" )  );
 }
 
 

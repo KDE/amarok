@@ -36,7 +36,7 @@ class AmarokConfigDialog : public KConfigDialog
         QComboBox* m_pSoundSystem;
         QComboBox* m_pSoundOutput;
         QLineEdit* m_pSoundDevice;
-        QCheckBox* m_pDefaultSoundDevice;
+        QCheckBox* m_pCustomSoundDevice;
         
     private slots:
         void updateSettings();

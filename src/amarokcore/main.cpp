@@ -54,7 +54,7 @@ int main( int argc, char *argv[] )
     KApplication::disableAutoDcopRegistration();
 
     QCString arg0 = argv[0];
-    arg0.replace( "amarokapp", "amarok" );
+    arg0.replace( "amarokapp", "amarok" ); //FIXME might alter path
     qstrcpy( argv[0], arg0 ); //should be safe since the new string is shorter than the old
 
     App::initCliArgs( argc, argv );

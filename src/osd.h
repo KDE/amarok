@@ -46,6 +46,8 @@ class OSDWidget : public QWidget
         void setPosition(Position pos);
         void setScreen(uint screen);
 
+        void resetColors();
+
       public slots:
         void showOSD(const QString&, bool preemptive=false );
         void removeOSD() { hide(); } //inlined as is convenience function

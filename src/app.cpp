@@ -130,7 +130,8 @@ App::~App()
     AmarokConfig::setVersion( APP_VERSION );
     AmarokConfig::writeConfig();
 
-    PluginManager::unload( engine );
+    //TODO move engine load and unload to controller so that it can handle this properly
+    if( QCString( engine->name() ) != "Dummy" ) PluginManager::unload( engine );
 }
 
 
@@ -147,7 +148,7 @@ void App::handleCliArgs()
             list << args->url( i );
 
         if( notEnqueue ) playlist()->clear();
-        playlist()->insertMedia( list, notEnqueue || args->isSet( "play" ) );
+        playlist()->appendMedia( list, notEnqueue || args->isSet( "play" ) );
     }
     //we shouldn't let the user specify two of these since it is pointless!
     //so we prioritise, pause > stop > play > next > prev
@@ -312,8 +313,12 @@ void App::applySettings()
 
     m_pOSD->setEnabled( AmarokConfig::osdEnabled() );
     m_pOSD->setFont( AmarokConfig::osdFont() );
-    m_pOSD->setTextColor( AmarokConfig::osdTextColor() );
-    m_pOSD->setBackgroundColor( AmarokConfig::osdBackgroundColor() );
+    if( AmarokConfig::osdUseCustomColors() )
+    {
+        m_pOSD->setTextColor( AmarokConfig::osdTextColor() );
+        m_pOSD->setBackgroundColor( AmarokConfig::osdBackgroundColor() );
+    }
+    else m_pOSD->resetColors();
     m_pOSD->setDuration( AmarokConfig::osdDuration() );
     m_pOSD->setPosition( (OSDWidget::Position)AmarokConfig::osdAlignment() );
     m_pOSD->setScreen( AmarokConfig::osdScreen() );
@@ -354,7 +359,7 @@ void App::applySettings()
 
         engine->setSoundOutput( AmarokConfig::soundOutput() );
         engine->setSoundDevice( AmarokConfig::soundDevice() );
-        engine->setDefaultSoundDevice( AmarokConfig::defaultSoundDevice() );
+        engine->setDefaultSoundDevice( !AmarokConfig::customSoundDevice() );
 
         engine->setRestoreEffects( AmarokConfig::rememberEffects() );
         engine->setXfadeLength( AmarokConfig::crossfadeLength() ); //TODO historic engine property -> REMOVE
@@ -532,20 +537,27 @@ void App::genericEventHandler( QWidget *source, QEvent *e )
         if( KURLDrag::canDecode( e ) )
         {
             QPopupMenu popup;
+            //FIXME this isn't a good way to determine if there is a currentTrack, need playlist() function
+            const bool b = EngineController::engine()->loaded();
 
-            popup.insertItem( i18n( "&Append" ), 101 );
-            popup.insertItem( i18n( "Append and &Play" ), 102 );
+            popup.insertItem( i18n( "&Append to playlist" ), 101 );
+            popup.insertItem( i18n( "Append and &play" ), 102 );
+            if( b ) popup.insertItem( i18n( "&Queue after current track" ), 103 );
             popup.insertSeparator();
             popup.insertItem( i18n( "&Cancel" ), 0 );
 
             const int id = popup.exec( source->mapToGlobal( e->pos() ) );
+            KURL::List list;
+            KURLDrag::decode( e, list );
 
-            if( id > 100 )
+            switch( id )
             {
-                KURL::List list;
-                KURLDrag::decode( e, list );
+            case 101:
+            case 102:
+                playlist()->appendMedia( list, id == 102 );
 
-                playlist()->insertMedia( list, id == 102 );
+            case 103:
+                playlist()->queueMedia( list );
             }
         }
         #undef e

@@ -92,7 +92,6 @@ LoaderServer::LoaderServer( QObject* parent )
   : amaroK::SocketServer( "amarok.loader_socket", parent )
 {}
 
-
 void
 LoaderServer::newConnection( int sockfd )
 {
@@ -115,12 +114,12 @@ LoaderServer::newConnection( int sockfd )
             {
                 //stop startup cursor animation - do not mess with this, it's carefully crafted
                 kdDebug() << "DESKTOP_STARTUP_ID: " << args.first() << endl;
-                pApp->setStartupId( args.first().local8Bit() );
+                kapp->setStartupId( args.first().local8Bit() );
                 KStartupInfo::appStarted();
                 args.pop_front();
 
                 //divide argument line into single strings
-                int argc = args.count();
+                const int argc = args.count();
                 char **argv = new char*[argc];
 
                 QStringList::ConstIterator it = args.constBegin(); //use an iterator for QValueLists

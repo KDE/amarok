@@ -79,12 +79,16 @@ class Playlist : private KListView, public EngineObserver
         Playlist( QWidget*, KActionCollection*, const char* = 0 );
         ~Playlist();
 
-        void insertMedia( KURL::List list, bool directPlay = false, bool preventDoubles = false );
+        void insertMedia( const KURL &url ) { appendMedia( url ); } //DEPRECATED
+        void insertMedia( const KURL::List &list ) { appendMedia( list ); } //DEPRECATED
+
+        void appendMedia( KURL::List, bool play = false, bool preventDoubles = false );
+        void queueMedia( const KURL::List&/*, bool preventDoubles = false*/ );
         bool isEmpty() const { return childCount() == 0; }
         bool isTrackBefore() const;
         bool isTrackAfter() const;
 
-        void restoreSession() { insertMedia( defaultPlaylistPath() ); }
+        void restoreSession() { appendMedia( defaultPlaylistPath() ); }
 
         void saveM3U( const QString& ) const;
         void saveXML( const QString& ) const;
@@ -118,8 +122,8 @@ class Playlist : private KListView, public EngineObserver
         void itemCountChanged(int newCount);
 
     public slots:
-        void insertMedia( const QString &path ) { insertMedia( KURL::fromPathOrURL( path ) ); }
-        void insertMedia( const KURL& );
+        void appendMedia( const QString &path ) { appendMedia( KURL::fromPathOrURL( path ) ); }
+        void appendMedia( const KURL& );
         void handleOrderPrev(); //DEPRECATE
         void handleOrderCurrent(); //DEPRECATE
         void handleOrder( Playlist::RequestType = Next ); //DEPRECATE
@@ -206,11 +210,11 @@ class Playlist : private KListView, public EngineObserver
 };
 
 inline void
-Playlist::insertMedia( const KURL &url )
+Playlist::appendMedia( const KURL &url )
 {
     if( !url.isEmpty() )
     {
-        insertMedia( KURL::List( url ) );
+        appendMedia( KURL::List( url ) );
     }
 }
 
