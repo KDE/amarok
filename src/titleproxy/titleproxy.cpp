@@ -172,7 +172,7 @@ void Proxy::readRemote() //SLOT
     Q_LONG index = 0;
     Q_LONG bytesWrite = 0;
     Q_LONG bytesRead = m_sockRemote.readBlock( m_pBuf, BUFSIZE );
-    if ( bytesRead == -1 ) { emit error(); return; }
+    if ( bytesRead == -1 ) { emit proxyError(); return; }
 
     if ( !m_headerFinished )
         if ( !processHeader( index, bytesRead ) ) return;
