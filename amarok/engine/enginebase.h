@@ -18,7 +18,7 @@ email                : markey@web.de
 #ifndef AMAROK_ENGINEBASE_H
 #define AMAROK_ENGINEBASE_H
 
-#include "plugin.h"
+#include "plugin/plugin.h"
 
 #include <vector>
 

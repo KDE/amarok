@@ -64,7 +64,6 @@ amarokapp_LDADD = \
 
 amarokapp_LDFLAGS = \
     $(all_libraries) \
-    -lsqlite \
     $(KDE_RPATH)
 
 METASOURCES = \

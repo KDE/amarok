@@ -25,11 +25,11 @@ SearchBrowser::SearchListView::SearchListView( QWidget *parent, const char *name
 SearchBrowser::SearchBrowser( QWidget *parent, const char *name )
         : QVBox( parent, name )
 {
-    QHBox     *hb    = new QHBox( this );
-    searchEdit       = new KLineEdit( hb );
-    QWidget   *b     = new QPushButton( "&Search", hb );
+    QHBox *hb = new QHBox( this );
+    searchEdit = new KLineEdit( hb );
+    QWidget *searchButton = new QPushButton( "&Search", hb );
 
-    urlEdit     = new KURLComboBox( KURLComboBox::Directories, TRUE, this );
+    urlEdit = new KURLComboBox( KURLComboBox::Directories, TRUE, this );
     KURLCompletion *cmpl = new KURLCompletion();
     urlEdit->setCompletionObject( cmpl );
     urlEdit->setURL( "/" );
@@ -40,14 +40,14 @@ SearchBrowser::SearchBrowser( QWidget *parent, const char *name )
     resultView->setDragEnabled( TRUE );
     resultView->addColumn( i18n( "Filename" ) );
     resultView->addColumn( i18n( "Directory" ) );
-//    resultView->addColumn( i18n( "Title" ) );
-//    resultView->addColumn( i18n( "Artist" ) );
 
     historyView->addColumn( i18n( "Search Token" ) );
     historyView->addColumn( i18n( "Counter" ) );
+    historyView->addColumn( i18n( "Progress" ) );
     historyView->addColumn( i18n( "Base Folder" ) );
 
-    connect( searchEdit, SIGNAL( returnPressed() ), this, SLOT( slotStartSearch() ) );
+    connect( searchEdit,   SIGNAL( returnPressed() ), this, SLOT( slotStartSearch() ) );
+    connect( searchButton, SIGNAL( clicked() ),       this, SLOT( slotStartSearch() ) );
 }
 
 
@@ -104,7 +104,7 @@ void SearchBrowser::SearchThread::searchDir( QString path )
 {
     QString token = parent->searchEdit->text();
 
-    kdDebug() << "Reading DIRECTORY: " << path << endl;
+//    kdDebug() << "Reading DIRECTORY: " << path << endl;
 
     DIR *d = opendir( path.local8Bit() );
     if ( d )
@@ -126,6 +126,7 @@ void SearchBrowser::SearchThread::searchDir( QString path )
                     if ( file.contains( token, FALSE ) )
                     {
                         item->setText( 1, QString::number( ++resultCount ) );
+                        item->setText( 2, path );
                         
                         KListViewItem *resItem = new KListViewItem( parent->resultView, file );
                         resItem->setText( 1, path );
