@@ -41,6 +41,9 @@ email                : markey@web.de
 #include <kurldrag.h>
 #include <kwin.h>            //eventFilter()
 
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+
 
 //simple function for fetching amarok images
 namespace amaroK
@@ -91,13 +94,12 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     parent->installEventFilter( this ); //for hidePLaylistWithMainWindow mode
 
     //if this is the first time we have ever been run we let KWin place us
-    if( AmarokConfig::playerPos() != QPoint(-1,-1) ) move( AmarokConfig::playerPos() );
+    if ( AmarokConfig::playerPos() != QPoint(-1,-1) )
+        move( AmarokConfig::playerPos() );
 
     setFixedSize( 311, 140 );
     setCaption( "amaroK" );
     setAcceptDrops( true );
-    setPaletteBackgroundColor( amaroK::ColorScheme::Base );
-    setPaletteForegroundColor( amaroK::ColorScheme::Text );
 
     //another quit shortcut because the other window has all the accels
     QAccel *accel = new QAccel( this );
@@ -183,7 +185,8 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
 
     //set interface to correct state
     engineStateChanged( engine->state() );
-    if( engine->state() == Engine::Playing ) engineNewMetaData( ec->bundle(), true );
+    if ( engine->state() == Engine::Playing )
+        engineNewMetaData( ec->bundle(), true );
     createAnalyzer( 0 );
 
 
@@ -384,7 +387,7 @@ void PlayerWidget::timeDisplay( int ms )
 
 static QColor comodulate( QColor deviant )
 {
-    ///this function is only used by paletteChange()
+    ///this function is only used by determineAmarokColors()
 
     int h,h2,s,v;
     KGlobalSettings::highlightColor().getHsv( h, s, v );
@@ -392,7 +395,7 @@ static QColor comodulate( QColor deviant )
     return QColor( h, s, v, QColor::Hsv );
 }
 
-void PlayerWidget::determineAmarokColors()
+void PlayerWidget::determineAmarokColors() //static
 {
     using namespace amaroK::ColorScheme;
 
@@ -402,12 +405,20 @@ void PlayerWidget::determineAmarokColors()
     Foreground = comodulate( 0x80A0FF );
 }
 
+void PlayerWidget::setModifiedPalette()
+{
+    QColorGroup cg = palette().active();
+    cg.setColor( QColorGroup::Background, amaroK::ColorScheme::Base );
+    cg.setColor( QColorGroup::Foreground, amaroK::ColorScheme::Text );
+    setPalette( QPalette(cg, palette().disabled(), cg) );
+
+    engineNewMetaData( EngineController::instance()->bundle(), false );
+}
+
 
 // EVENTS -----------------------------------------------------------------
 
 static bool dontChangeButtonState = false; //FIXME I hate this hack
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
 
 bool PlayerWidget::event( QEvent *e )
 {
@@ -426,16 +437,9 @@ bool PlayerWidget::event( QEvent *e )
         if( AmarokConfig::schemeKDE() )
         {
             determineAmarokColors();
-
-            setPaletteBackgroundColor( amaroK::ColorScheme::Base );
-            setPaletteForegroundColor( amaroK::ColorScheme::Text );
-
-            //ensure the timeDisplay is updated etc.
-            engineNewMetaData( EngineController::instance()->bundle(), false );
-
-            return TRUE; //we handled it
+            setModifiedPalette();
         }
-        return FALSE;
+        return TRUE;
 
     case 6/*QEvent::KeyPress*/:
         if (static_cast<QKeyEvent*>(e)->key() == Qt::Key_D/* && (m_pAnalyzer->inherits("QGLWidget")*/)
@@ -762,7 +766,7 @@ NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
     setIconSet( iconSet );
 
     // Use standard palette, since the modified palette from parent widget makes buttons look weird
-    setPalette( KApplication::palette() );
+    //setPalette( KApplication::palette() );
 
     setFocusPolicy( QWidget::NoFocus );
     setFlat( true );

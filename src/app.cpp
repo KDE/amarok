@@ -366,15 +366,15 @@ void App::applySettings( bool firstTime )
 
             delete m_pTray; m_pTray = new amaroK::TrayIcon( m_pPlayerWindow );
 
-        } else {
-
-            QFont font = m_pPlayerWindow->font();
-            font.setFamily( AmarokConfig::useCustomFonts()
-                             ? AmarokConfig::playerWidgetFont().family()
-                             : QApplication::font().family() );
-            m_pPlayerWindow->setFont( font ); //NOTE dont use unsetFont(), we use custom font sizes (for now)
-            m_pPlayerWindow->update(); //FIXME doesn't update the scroller
         }
+
+        QFont font = m_pPlayerWindow->font();
+        font.setFamily( AmarokConfig::useCustomFonts()
+                         ? AmarokConfig::playerWidgetFont().family()
+                         : QApplication::font().family() );
+        m_pPlayerWindow->setFont( font ); //NOTE dont use unsetFont(), we use custom font sizes (for now)
+        m_pPlayerWindow->setModifiedPalette(); //do last for efficiency, forces scroller update
+        m_pPlayerWindow->update();
 
     } else if( m_pPlayerWindow ) {
 
@@ -803,16 +803,12 @@ void App::pruneCoverImages()
     for ( uint i = 0; i < listCache.count(); i++ )
         list.append( listCache.at( i ) );
 
-    int count = 0;
-    QDate currentDate = QDate::currentDate();
-
     // Prune files
-    for ( uint i = 0; i < list.count(); i++ ) {
-        if ( list.at( i )->created().date().daysTo( currentDate ) > MAX_DAYS ) {
+    int count = 0;
+    const QDate currentDate = QDate::currentDate();
+    for ( uint i = 0; i < list.count(); ++i, ++count )
+        if ( list.at( i )->created().date().daysTo( currentDate ) > MAX_DAYS )
             QFile::remove( list.at( i )->absFilePath() );
-            count++;
-        }
-    }
 
     kdDebug() << "[App] Pruned " << count << " amazon cover images.\n";
 }

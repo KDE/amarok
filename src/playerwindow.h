@@ -88,6 +88,9 @@ class PlayerWidget : public QWidget, public EngineObserver
         PlayerWidget( QWidget* = 0, const char* = 0, bool enablePlaylist = false );
         ~PlayerWidget();
 
+        /** Set modified amaroK palette **/
+        void setModifiedPalette();
+
         virtual void startDrag();
 
         static void determineAmarokColors();
