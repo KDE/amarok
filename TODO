@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #142 being the highest available (take this one for your next bug and increase here)
+           #143 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
@@ -27,6 +27,9 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+
+  ADD 142 <markey> Add "custom" field for gst output sink properties in settings gui. See gstreamer-gconf
+                   code in gst-plugins/gst-libs/gst/gconf.
 
   CHG 141 <markey> For critical errors, use warning dialogs instead of stderr output. (many distros build
                    with NDEBUG, and users are prone to missing debug messages).
