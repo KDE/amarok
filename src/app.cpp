@@ -453,7 +453,7 @@ void App::applySettings( bool firstTime )
         engine->setVolume( AmarokConfig::masterVolume() );
 
         // Broadcast current engine state; needed for SysTray
-        EngineController::instance()->reInit();
+        if ( !firstTime ) EngineController::instance()->reInit();
     } //</Engine>
 
     m_pPlaylistWindow->recreateGUI();
