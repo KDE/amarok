@@ -1344,7 +1344,7 @@ CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString&
     /* Static license Key. Thanks muesli ;-) */
     QString amazonLicense = "D1URM11J3F2CEH";
     kdDebug() << "Querying amazon with artist: " << artist << " and album " << album << endl;
-    QString keyword = album + " - " + artist;
+    QString keyword = artist + " - " + album;
 
     CoverFetcher* fetcher = new CoverFetcher( amazonLicense, parent );
     connect( fetcher, SIGNAL( imageReady( const QString&, const QString&, const QImage& ) ),
