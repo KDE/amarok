@@ -196,13 +196,14 @@ class QueryBuilder : public QObject
         enum qBuilderTables  { tabAlbum = 1, tabArtist = 2, tabGenre = 4, tabYear = 8, tabSong = 32, tabStats = 64 };
         enum qBuilderOptions { optNoCompilations = 1, optOnlyCompilations = 2, optRemoveDuplicates = 4, optRandomize = 8 };
         enum qBuilderValues  { valID = 1, valName = 2, valURL = 4, valTitle = 8, valTrack = 16, valScore = 32 };
+        enum qBuilderFilter  { modeNormal = 0, modeFuzzy = 1 };
 
         QueryBuilder();
 
         void addReturnValue( int table, int value );
         uint countReturnValues();
 
-        void addFilter( int tables, const QString& filter );
+        void addFilter( int tables, const QString& filter, int mode = modeNormal );
         void excludeFilter( int tables, const QString& filter );
 
         void addMatch( int tables, const QString& match );

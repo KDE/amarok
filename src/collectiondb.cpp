@@ -912,7 +912,11 @@ CollectionDB::createTables( bool temporary )
                     "bitrate INTEGER,"
                     "length INTEGER,"
                     "samplerate INTEGER,"
-                    "sampler BOOL );" )
+                    "sampler BOOL" 
+#ifdef USE_MYSQL
+                    ", FULLTEXT ( title )"
+#endif
+                    " );" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
@@ -1466,16 +1470,35 @@ QueryBuilder::countReturnValues()
 
 
 void
-QueryBuilder::addFilter( int tables, const QString& filter )
+QueryBuilder::addFilter( int tables, const QString& filter, int mode )
 {
     if ( !filter.isEmpty() )
     {
         m_where += "AND ( 0 ";
+
+#ifdef USE_MYSQL
+        if ( mode == modeFuzzy )
+        {
+            if ( tables & tabAlbum ) m_where += "OR album.name LIKE '%" + m_db.escapeString( filter ) + "%' ";
+            if ( tables & tabArtist ) m_where += "OR artist.name LIKE '%" + m_db.escapeString( filter ) + "%' ";
+            if ( tables & tabGenre ) m_where += "OR genre.name LIKE '%" + m_db.escapeString( filter ) + "%' ";
+            if ( tables & tabYear ) m_where += "OR year.name LIKE '%" + m_db.escapeString( filter ) + "%' ";
+            if ( tables & tabSong ) m_where += "OR MATCH ( tags.title ) AGAINST ( '" + m_db.escapeString( filter ) + "' ) ";
+        }
+        else
+        {
+#endif
+
         if ( tables & tabAlbum ) m_where += "OR album.name LIKE '%" + m_db.escapeString( filter ) + "%' ";
         if ( tables & tabArtist ) m_where += "OR artist.name LIKE '%" + m_db.escapeString( filter ) + "%' ";
         if ( tables & tabGenre ) m_where += "OR genre.name LIKE '%" + m_db.escapeString( filter ) + "%' ";
         if ( tables & tabYear ) m_where += "OR year.name LIKE '%" + m_db.escapeString( filter ) + "%' ";
         if ( tables & tabSong ) m_where += "OR tags.title LIKE '%" + m_db.escapeString( filter ) + "%' ";
+
+#ifdef USE_MYSQL
+        }
+#endif
+        
         m_where += " ) ";
     }
 
