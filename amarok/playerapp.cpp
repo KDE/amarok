@@ -663,6 +663,8 @@ void PlayerApp::readConfig()
 
     m_pGlobalAccel->insert( "add", i18n( "Add Location" ), 0, CTRL + ALT + Key_A, 0,
                             this, SLOT( slotAddLocation() ), true, true );
+    m_pGlobalAccel->insert( "show", i18n( "Show/Hide the Playlist" ), 0, CTRL + ALT + Key_H, 0,
+                            this, SLOT( slotPlaylistShowHide() ), true, true );
     m_pGlobalAccel->insert( "play", i18n( "Play" ), 0, CTRL + ALT + Key_P, 0,
                             this, SLOT( slotPlay() ), true, true );
     m_pGlobalAccel->insert( "pause", i18n( "Pause" ), 0, CTRL + ALT + Key_C, 0,
@@ -1287,6 +1289,17 @@ void PlayerApp::slotVisTimer()
     }
 }
 
+void PlayerApp::slotPlaylistShowHide()
+{
+   if ( m_pBrowserWin->isHidden() )
+   {
+      m_pBrowserWin->show();
+   }
+   else
+   {
+      m_pBrowserWin->hide();
+   }
+}
 
 void PlayerApp::slotPlaylistToggle( bool b )
 {

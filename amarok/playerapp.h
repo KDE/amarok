@@ -147,6 +147,7 @@ class PlayerApp : public KUniqueApplication
         void slotMainTimer();
         void slotAnimTimer();
         void slotVisTimer();
+        void slotPlaylistShowHide();
         void slotPlaylistToggle( bool b );
         void slotPlaylistIsHidden();
         void slotEq( bool b );
