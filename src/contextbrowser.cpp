@@ -1280,10 +1280,11 @@ void ContextBrowser::showLyrics( const QString &hash )
     kdDebug() << "Using this url: " << url << endl;
 
     m_lyrics = QString::null;
-    m_lyricUrl = url;
-    m_lyricUrl.replace( QString("http://lyrc.com.ar/en/tema1en.php?"), QString::null );
-    m_lyricUrl.replace( QString("artist"), QString("grupo") );
-    m_lyricUrl.replace( QString("songname"), QString("tema") );
+    m_lyricUrl = QString( "grupo=%1&tema=%2&disco=%3&ano=%4" )
+            .arg( EngineController::instance()->bundle().artist() )
+            .arg( title )
+            .arg( EngineController::instance()->bundle().album() )
+            .arg( EngineController::instance()->bundle().year() );
 
     KIO::TransferJob* job = KIO::get( url, false, false );
 
