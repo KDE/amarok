@@ -3,6 +3,8 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  ADD: sorting by artist subsorts by album and track, sorting by album subsorts
+       by track, enjoy!
   ADD: browserTabs float over the playlist when in set to not overlap
   FIX: communication loader<-->amarok failing on FreeBSD
   FIX: loader forgetting to close socket descriptors
