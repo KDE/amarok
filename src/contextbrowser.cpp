@@ -18,18 +18,13 @@
 #include "scrobbler.h"
 #include "sqlite/sqlite3.h"
 
-#include <kactioncollection.h>
-#include <kapplication.h> //kapp->config(), QApplication::setOverrideCursor()
-#include <kconfig.h>      //config object
+#include <kapplication.h> //kapp
 #include <kdebug.h>
 #include <kfiledialog.h>
 #include <kglobal.h>
 #include <khtml_part.h>
 #include <khtmlview.h>
 #include <kiconloader.h>
-#include <kio/job.h>
-#include <kio/jobclasses.h>
-#include <klineedit.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
@@ -38,43 +33,32 @@
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h> //ctor
 #include <kurl.h>
-#include <kurlcombobox.h>
 #include <kimageeffect.h> // gradient backgroud image
-
-#include <qfile.h>
 #include <qimage.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
+
 
 using amaroK::QStringx;
 
 
 ContextBrowser::ContextBrowser( const char *name )
-: QVBox( 0, name )
-, m_currentTrack( 0 ) {
-    kdDebug() << k_funcinfo << endl;
+   : QVBox( 0, name )
+   , m_currentTrack( 0 )
+   , m_db( new CollectionDB )
+   , m_scrobbler( new Scrobbler )
+{
     EngineController::instance()->attach( this );
-    m_db = new CollectionDB();
-    m_scrobbler = new Scrobbler();
 
     setSpacing( 4 );
     setMargin( 5 );
 
     KToolBar* toolbar = new KToolBar( this );
-    toolbar->setMovingEnabled( false );
     toolbar->setFlat( true );
     toolbar->setIconSize( 16 );
-    toolbar->setEnableContextMenu( false );
-
-    KActionCollection* ac = new KActionCollection( this );
-    KAction* homeAction = new KAction( i18n( "Home" ), "gohome", 0, this, SLOT( showHome() ), ac, "Home" );
-    KAction* trackAction = new KAction( i18n( "Current Track" ), "today", 0, this, SLOT( showCurrentTrack() ), ac, "Current Track" );
-    KAction* lyricsAction = new KAction( i18n( "Lyrics" ), "document", 0, this, SLOT( showLyrics() ), ac, "Lyrics" );
-
     toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the open button to have text on right
-    homeAction->plug( toolbar );
-    trackAction->plug( toolbar );
-    lyricsAction->plug( toolbar );
+
+    toolbar->insertButton( "today", -1, SIGNAL(clicked()), this, SLOT(showHome()), true, i18n("Current Track") );
+    toolbar->insertButton( "gohome", -1, SIGNAL(clicked()), this, SLOT(showCurrentTrack()), true, i18n("Statistics") );
+    toolbar->insertButton( "document", -1, SIGNAL(clicked()), this, SLOT(showLyrics()), true, i18n("Lyrics") );
 
     QWidget::setFont( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );
 
