@@ -68,37 +68,50 @@ void albumArtistFromUrl( QString url, QString &artist, QString &album )
 
 
 ContextBrowser::ContextBrowser( const char *name )
-   : QVBox( 0, name )
+   : QTabWidget( 0, name )
    , m_bgGradientImage( 0 )
    , m_headerGradientImage( 0 )
    , m_shadowGradientImage( 0 )
 {
     EngineController::instance()->attach( this );
 
-    m_tabBar = new KTabBar( this );
-    connect( m_tabBar, SIGNAL( selected( int ) ), SLOT( tabChanged( int ) ) );
+    
+    m_homePage = new KHTMLPart( this, "home_page" );
+    m_homePage->setDNDEnabled( true );
+    m_currentTrackPage = new KHTMLPart( this, "current_track_page" );
+    m_currentTrackPage->setDNDEnabled( true );
+    m_lyricsPage = new KHTMLPart( this, "lyrics_page" );
+    m_lyricsPage->setDNDEnabled( true );
 
-    m_tabHome    = m_tabBar->addTab( new QTab( SmallIconSet( "gohome" ), i18n( "Home" ) ) );
-    m_tabCurrent = m_tabBar->addTab( new QTab( SmallIconSet( "today" ), i18n( "Current Track" ) ) );
-    m_tabLyrics  = m_tabBar->addTab( new QTab( SmallIconSet( "document" ), i18n( "Lyrics" ) ) );
+    addTab( m_homePage->view(),  SmallIconSet( "gohome" ), i18n( "Home" ) );
+    addTab( m_currentTrackPage->view(), SmallIconSet( "today" ), i18n( "Current Track" ) );
+    addTab( m_lyricsPage->view(), SmallIconSet( "document" ), i18n( "Lyrics" ) );
+    
+    m_dirtyHomePage = true;
+    m_dirtyCurrentTrackPage = true;
+    m_dirtyLyricsPage = true;
+    
+    connect( this, SIGNAL( currentChanged( QWidget* ) ), SLOT( tabChanged( QWidget* ) ) );
 
-    browser = new KHTMLPart( this );
-    browser->setDNDEnabled( true );
-
-    setMargin( 5 );
-    setFocusProxy( browser->view() ); //so focus is given to a sensible widget when the tab is opened
-
-    connect( browser->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
-             this,                          SLOT( openURLRequest( const KURL & ) ) );
-    connect( browser,                     SIGNAL( popupMenu( const QString&, const QPoint& ) ),
-             this,                          SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
+    connect( m_homePage->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
+             this,                             SLOT( openURLRequest( const KURL & ) ) );
+    connect( m_homePage,                     SIGNAL( popupMenu( const QString&, const QPoint& ) ),
+             this,                             SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
+    connect( m_currentTrackPage->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
+             this,                                     SLOT( openURLRequest( const KURL & ) ) );
+    connect( m_currentTrackPage,                     SIGNAL( popupMenu( const QString&, const QPoint& ) ),
+             this,                                     SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
+    connect( m_lyricsPage->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
+             this,                               SLOT( openURLRequest( const KURL & ) ) );
+    connect( m_lyricsPage,                     SIGNAL( popupMenu( const QString&, const QPoint& ) ),
+             this,                               SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
 
     connect( CollectionDB::instance(), SIGNAL( scanStarted() ), SLOT( collectionScanStarted() ) );
     connect( CollectionDB::instance(), SIGNAL( scanDone( bool ) ), SLOT( collectionScanDone() ) );
     connect( CollectionDB::instance(), SIGNAL( coverFetched( const QString&, const QString& ) ),
              this,                       SLOT( coverFetched( const QString&, const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( coverRemoved( const QString&, const QString& ) ),
-             this,                       SLOT( showCurrentTrack() ) );
+             this,                       SLOT( coverRemoved( const QString&, const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( similarArtistsFetched( const QString& ) ),
              this,                       SLOT( similarArtistsFetched( const QString& ) ) );
 
@@ -166,11 +179,16 @@ void ContextBrowser::openURLRequest( const KURL &url )
         if ( url.path() == "home" )
             showHome();
         else if ( url.path() == "context" || url.path() == "stream" )
+        {
+            // NOTE: not sure if rebuild is needed, just to be safe
+            m_dirtyCurrentTrackPage = true;
             showCurrentTrack();
+        }
         else if ( url.path().contains( "suggestLyric-" ) )
         {
             m_lyrics = QString::null;
             QString hash = url.path().mid( url.path().find( QString( "-" ) ) +1 );
+            m_dirtyLyricsPage = true;
             showLyrics( hash );
         }
         else if ( url.path() == "lyrics" )
@@ -240,6 +258,8 @@ void ContextBrowser::collectionScanDone()
 void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool /*trackChanged*/ )
 {
     bool newMetaData = false;
+    m_dirtyHomePage = true;
+    m_dirtyCurrentTrackPage = true;
 
     // Add stream metadata history item to list
     if ( !m_metadataHistory.last().contains( bundle.prettyTitle() ) )
@@ -248,35 +268,36 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool /*trackCh
         const QString timeString = QTime::currentTime().toString( "hh:mm" );
         m_metadataHistory << QString( "<td valign='top'>" + timeString + "&nbsp;</td><td align='left'>" + escapeHTML( bundle.prettyTitle() ) + "</td>" );
     }
-
-    switch( CollectionDB::instance()->isEmpty() || !CollectionDB::instance()->isValid() )
-    {
-        case true:  showIntroduction();
-
-        case false: if ( m_tabBar->currentTab() != m_tabCurrent || bundle.url() != m_currentURL || newMetaData )
-                        showCurrentTrack();
-    }
+    
+    if ( currentPage() != m_currentTrackPage->view() || bundle.url() != m_currentURL || newMetaData )
+        showCurrentTrack();
+    else if ( CollectionDB::instance()->isEmpty() || !CollectionDB::instance()->isValid() )
+        showIntroduction();
 }
 
 
 void ContextBrowser::engineStateChanged( Engine::State state )
 {
+    m_dirtyHomePage = true;
+    m_dirtyCurrentTrackPage = true;
+    m_dirtyLyricsPage = true;
+    
     switch( state )
     {
         case Engine::Empty:
             m_metadataHistory.clear();
-            m_tabBar->blockSignals( true );
-            m_tabBar->setTabEnabled( m_tabCurrent, false );
-            m_tabBar->setTabEnabled( m_tabLyrics, false );
-            m_tabBar->blockSignals( false );
             showHome();
+            blockSignals( true );
+            setTabEnabled( m_currentTrackPage->view(), false );
+            setTabEnabled( m_lyricsPage->view(), false );
+            blockSignals( false );
             break;
         case Engine::Playing:
             m_metadataHistory.clear();
-            m_tabBar->blockSignals( true );
-            m_tabBar->setTabEnabled( m_tabCurrent, true );
-            m_tabBar->setTabEnabled( m_tabLyrics, true );
-            m_tabBar->blockSignals( false );
+            blockSignals( true );
+            setTabEnabled( m_currentTrackPage->view(), true );
+            setTabEnabled( m_lyricsPage->view(), true );
+            blockSignals( false );
             break;
         default:
             ;
@@ -295,7 +316,7 @@ void ContextBrowser::saveHtmlData()
 
 void ContextBrowser::paletteChange( const QPalette& pal )
 {
-    QVBox::paletteChange( pal );
+    QTabWidget::paletteChange( pal );
     setStyleSheet();
 }
 
@@ -304,16 +325,15 @@ void ContextBrowser::paletteChange( const QPalette& pal )
 // PRIVATE SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void ContextBrowser::tabChanged( int id )
-{
-    if ( id == m_tabHome )
+void ContextBrowser::tabChanged( QWidget *page )
+{ 
+    setFocusProxy( page ); //so focus is given to a sensible widget when the tab is opened
+    if ( m_dirtyHomePage && ( page == m_homePage->view() ) )
         showHome();
-
-    if ( id == m_tabCurrent )
+    else if ( m_dirtyHomePage && ( page == m_currentTrackPage->view() ) )
         showCurrentTrack();
-
-    if ( id == m_tabLyrics )
-        showLyrics();
+    else if ( m_dirtyLyricsPage && ( page == m_lyricsPage->view() ) )
+        showLyrics();    
 }
 
 
@@ -486,9 +506,15 @@ verboseTimeSince( const QDateTime &datetime )
 
 void ContextBrowser::showHome() //SLOT
 {
-    m_tabBar->blockSignals( true );
-    m_tabBar->setCurrentTab( m_tabHome );
-    m_tabBar->blockSignals( false );
+    if ( currentPage() != m_homePage->view() )
+    {
+        blockSignals( true );
+        showPage( m_homePage->view() );
+        blockSignals( false );
+    }
+    
+    // Do we have to rebuild the page?
+    if ( !m_dirtyHomePage ) return;
 
     QStringList fave = CollectionDB::instance()->query(
         "SELECT tags.title, tags.url, round( statistics.percentage + 0.4 ), artist.name, album.name "
@@ -511,9 +537,9 @@ void ContextBrowser::showHome() //SLOT
         "ORDER BY statistics.accessdate "
         "LIMIT 0,5;" );
 
-    browser->begin();
+    m_homePage->begin();
     m_HTMLSource="";
-    browser->setUserStyleSheet( m_styleSheet );
+    m_homePage->setUserStyleSheet( m_styleSheet );
 
     // <Favorite Tracks Information>
     m_HTMLSource.append(
@@ -639,24 +665,31 @@ void ContextBrowser::showHome() //SLOT
 
     // </Songs least listened Information>
 
-    browser->write( m_HTMLSource );
-    browser->end();
+    m_homePage->write( m_HTMLSource );
+    m_homePage->end();
+    m_dirtyHomePage = false;
     saveHtmlData(); // Send html code to file
 }
 
 
 void ContextBrowser::showCurrentTrack() //SLOT
 {
-    m_tabBar->blockSignals( true );
-    m_tabBar->setCurrentTab( m_tabCurrent );
-    m_tabBar->blockSignals( false );
-
+    if ( currentPage() != m_currentTrackPage->view() )
+    {
+        blockSignals( true );
+        showPage( m_currentTrackPage->view() );
+        blockSignals( false );
+    }
+    
+    // Do we have to rebuild the page?
+    if ( !m_dirtyCurrentTrackPage ) return;
+    
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
     m_currentURL = EngineController::instance()->bundle().url();
 
-    browser->begin();
+    m_currentTrackPage->begin();
     m_HTMLSource="";
-    browser->setUserStyleSheet( m_styleSheet );
+    m_currentTrackPage->setUserStyleSheet( m_styleSheet );
 
     m_HTMLSource.append( "<html>"
                     "<script type='text/javascript'>"
@@ -731,8 +764,8 @@ void ContextBrowser::showCurrentTrack() //SLOT
         }
 
         m_HTMLSource.append("</html>" );
-        browser->write( m_HTMLSource );
-        browser->end();
+        m_currentTrackPage->write( m_HTMLSource );
+        m_currentTrackPage->end();
         saveHtmlData(); // Send html code to file
         return;
     }
@@ -1085,8 +1118,9 @@ void ContextBrowser::showCurrentTrack() //SLOT
     // </Albums by this artist>
 
     m_HTMLSource.append( "</html>" );
-    browser->write( m_HTMLSource );
-    browser->end();
+    m_currentTrackPage->write( m_HTMLSource );
+    m_currentTrackPage->end();
+    m_dirtyCurrentTrackPage = false;
     saveHtmlData(); // Send html code to file
 }
 
@@ -1100,7 +1134,9 @@ void ContextBrowser::setStyleSheet()
         setStyleSheet_ExternalStyle( m_styleSheet, themeName );
     else
         setStyleSheet_Default( m_styleSheet );
-    browser->setUserStyleSheet( m_styleSheet );
+    m_homePage->setUserStyleSheet( m_styleSheet );
+    m_currentTrackPage->setUserStyleSheet( m_styleSheet );
+    m_lyricsPage->setUserStyleSheet( m_styleSheet );
 }
 
 void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
@@ -1264,9 +1300,18 @@ void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& 
 
 void ContextBrowser::showIntroduction()
 {
-    browser->begin();
+    if ( currentPage() != m_homePage->view() )
+    {
+        blockSignals( true );
+        showPage( m_homePage->view() );
+        blockSignals( false );
+    }
+    
+    // Do we have to rebuild the page? I don't care
+
+    m_homePage->begin();
     m_HTMLSource="";
-    browser->setUserStyleSheet( m_styleSheet );
+    m_homePage->setUserStyleSheet( m_styleSheet );
 
     m_HTMLSource.append(
             "<html>"
@@ -1289,17 +1334,26 @@ void ContextBrowser::showIntroduction()
             "</html>"
                        );
 
-    browser->write( m_HTMLSource );
-    browser->end();
+    m_homePage->write( m_HTMLSource );
+    m_homePage->end();
     saveHtmlData(); // Send html code to file
 }
 
 
 void ContextBrowser::showScanning()
 {
-    browser->begin();
+    if ( currentPage() != m_homePage->view() )
+    {
+        blockSignals( true );
+        showPage( m_homePage->view() );
+        blockSignals( false );
+    }
+    
+    // Do we have to rebuild the page? I don't care
+
+    m_homePage->begin();
     m_HTMLSource="";
-    browser->setUserStyleSheet( m_styleSheet );
+    m_homePage->setUserStyleSheet( m_styleSheet );
 
     m_HTMLSource.append(
             "<html>"
@@ -1316,8 +1370,8 @@ void ContextBrowser::showScanning()
             "</html>"
                        );
 
-    browser->write( m_HTMLSource );
-    browser->end();
+    m_homePage->write( m_HTMLSource );
+    m_homePage->end();
     saveHtmlData(); // Send html code to file
 }
 
@@ -1330,6 +1384,15 @@ void ContextBrowser::showScanning()
 
 void ContextBrowser::showLyrics( const QString &hash )
 {
+    if ( currentPage() != m_lyricsPage->view() )
+    {
+        blockSignals( true );
+        showPage( m_homePage->view() );
+        blockSignals( false );
+    }
+    
+    if ( !m_dirtyLyricsPage ) return;
+    
     //remove all matches to the regExp and the song production type.
     //NOTE: use i18n'd and english equivalents since they are very common int'lly.
     QString replaceMe = " \\([^}]*%1[^}]*\\)";
@@ -1388,9 +1451,6 @@ ContextBrowser::lyricsData( KIO::Job*, const QByteArray& data ) //SLOT
 void
 ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
 {
-    if ( m_tabBar->keyboardFocusTab() == m_tabLyrics )
-        return;
-
     if ( !job->error() == 0 )
     {
         kdWarning() << "[LyricsFetcher] KIO error! errno: " << job->error() << endl;
@@ -1417,9 +1477,9 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
     }
 
 
-    browser->begin();
+    m_lyricsPage->begin();
     m_HTMLSource="";
-    browser->setUserStyleSheet( m_styleSheet );
+    m_lyricsPage->setUserStyleSheet( m_styleSheet );
 
     m_HTMLSource.append(
             "<html>"
@@ -1435,8 +1495,9 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
             "</div>"
             "</html>"
                        );
-    browser->write( m_HTMLSource );
-    browser->end();
+    m_lyricsPage->write( m_HTMLSource );
+    m_lyricsPage->end();
+    m_dirtyLyricsPage = false;
     saveHtmlData(); // Send html code to file
 }
 
@@ -1479,10 +1540,23 @@ ContextBrowser::coverFetched( const QString &artist, const QString &album )
     if ( currentTrack.artist() == artist ||
          currentTrack.album() == album ) // this is for compilations or artist == ""
     {
+        m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
     }
 }
 
+void
+ContextBrowser::coverRemoved( const QString &artist, const QString &album )
+{
+    const MetaBundle &currentTrack = EngineController::instance()->bundle();
+
+    if ( currentTrack.artist() == artist ||
+         currentTrack.album() == album ) // this is for compilations or artist == ""
+    {
+        m_dirtyCurrentTrackPage = true;
+        showCurrentTrack();
+    }
+}
 
 void
 ContextBrowser::similarArtistsFetched( const QString &artist )
@@ -1491,9 +1565,8 @@ ContextBrowser::similarArtistsFetched( const QString &artist )
 
     if ( currentTrack.artist() == artist )
     {
+        m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
     }
 }
-
-
 #include "contextbrowser.moc"

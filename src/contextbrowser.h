@@ -5,7 +5,7 @@
 #define AMAROK_CONTEXTBROWSER_H
 
 #include "engineobserver.h"
-#include <qvbox.h>
+#include <qtabwidget.h>
 
 class CollectionDB;
 class Color;
@@ -19,7 +19,7 @@ class KTempFile;
 
 namespace KIO { class Job; }
 
-class ContextBrowser : public QVBox, public EngineObserver
+class ContextBrowser : public QTabWidget, public EngineObserver
 {
     Q_OBJECT
 
@@ -40,7 +40,7 @@ class ContextBrowser : public QVBox, public EngineObserver
         void paletteChange( const QPalette& );
 
     private slots:
-        void tabChanged( int );
+        void tabChanged( QWidget *page );
         void slotContextMenu( const QString& urlString, const QPoint& point );
         void showHome();
         void showCurrentTrack();
@@ -50,6 +50,7 @@ class ContextBrowser : public QVBox, public EngineObserver
         void lyricsData( KIO::Job* job, const QByteArray& data );
         void lyricsResult( KIO::Job* job );
         void coverFetched( const QString &artist, const QString &album );
+        void coverRemoved( const QString &artist, const QString &album );
         void similarArtistsFetched( const QString &artist );
 
     private:
@@ -60,13 +61,15 @@ class ContextBrowser : public QVBox, public EngineObserver
         void saveHtmlData();
         void showScanning();
         
-        KHTMLPart    *browser;
-        KTabBar      *m_tabBar;
-
-        int           m_tabHome;
-        int           m_tabCurrent;
-        int           m_tabLyrics;
-
+        KHTMLPart    *m_homePage;
+        KHTMLPart    *m_currentTrackPage;
+        KHTMLPart    *m_lyricsPage;
+        // These control if is needed to rewrite the html for the pages
+        // true -> need rebuild
+        bool          m_dirtyHomePage;
+        bool          m_dirtyCurrentTrackPage;
+        bool          m_dirtyLyricsPage;
+        
         QString       m_styleSheet;
         bool          m_emptyDB;
         QString       m_lyrics;
