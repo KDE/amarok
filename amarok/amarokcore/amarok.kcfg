@@ -75,16 +75,6 @@
         <default>true</default>
         <whatsthis></whatsthis>
      </entry>
-     <entry key="Crossfade" type="Bool">
-        <label>Whether to crossfade between tracks</label>
-        <default>true</default>
-        <whatsthis></whatsthis>
-     </entry>
-     <entry key="Crossfade Length" type="Int">
-        <label>Length of crossfade, in milliseconds</label>
-        <default>2200</default>
-        <whatsthis></whatsthis>
-     </entry>
      <entry key="Track Delay Length" type="Int">
         <label>Delay between tracks, in milliseconds</label>
         <default>0</default>
@@ -105,11 +95,6 @@
         <default>30</default>
         <whatsthis></whatsthis>
      </entry>
-     <entry key="Hardware Mixer" type="Bool">
-        <label>Use soundcard hardware mixer for volume</label>
-        <default>false</default>
-        <whatsthis></whatsthis>
-     </entry>
      <entry key="Current Analyzer" type="Int">
         <label>Index of current visual analyzer</label>
         <default>-1</default>
@@ -120,24 +105,9 @@
         <default code="true">QDir::Name | QDir::DirsFirst</default>
         <whatsthis></whatsthis>
      </entry>
-     <entry key="Title Streaming" type="Bool">
-        <label>Read titles of shoutcast streams</label>
-        <default>true</default>
-        <whatsthis></whatsthis>
-     </entry>
-     <entry key="Sound System" type="String">
-        <label>Sound system to use</label>
-        <default>arts</default>
-        <whatsthis></whatsthis>
-     </entry>
      <entry key="Remember Effects" type="Bool">
         <label>Persistant audio effects</label>
         <default>true</default>
-        <whatsthis></whatsthis>
-     </entry>
-     <entry key="Master Volume" type="Int">
-        <label>Master volume (range 0-100)</label>
-        <default>50</default>
         <whatsthis></whatsthis>
      </entry>
      <entry key="BrowserWin Splitter" type="IntList">
@@ -145,6 +115,44 @@
         <default>70,140</default>
         <whatsthis></whatsthis>
      </entry>
+  </group>
+
+  <group name="Playback">
+     <entry key="Master Volume" type="Int">
+        <label>Master volume</label>
+        <default>50</default>
+        <min>0</min>
+        <max>100</max>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Hardware Mixer" type="Bool">
+        <label>Use soundcard hardware mixer for volume</label>
+        <default>false</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Crossfade" type="Bool">
+        <label>Whether to crossfade between tracks</label>
+        <default>true</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Crossfade Length" type="Int">
+        <label>Length of crossfade, in milliseconds</label>
+        <default>2200</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Sound System" type="String">
+        <label>Sound system to use</label>
+        <default>arts</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Title Streaming" type="Bool">
+        <label>Read titles of shoutcast streams</label>
+        <default>true</default>
+        <whatsthis></whatsthis>
+     </entry>
+  </group>
+       
+  <group name="OSD">
      <entry key="Osd Enabled" type="Bool">
         <label>Use On-Screen Display</label>
         <default>true</default>
