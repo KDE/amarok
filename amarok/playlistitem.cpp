@@ -232,6 +232,20 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &, int column, int 
 void PlaylistItem::paintFocus( QPainter*, const QColorGroup&, const QRect& )
 {}
 
+QString PlaylistItem::zeroPad( const long digit )
+{
+    QString str;
+    str.setNum( digit );
+
+    if ( digit > 9 )
+    {
+        return str;
+    }
+
+    str.prepend("0");
+    return str;
+}
+
 QString PlaylistItem::length()
 {
    int s = seconds();
@@ -239,7 +253,7 @@ QString PlaylistItem::length()
    int h = m / 60;
 
    if (h)
-      return QString("%1:%2:%3").arg(h).arg(m % 60,2).arg(s % 60,2);
+      return QString("%1:%2:%3").arg(h).arg(zeroPad(m % 60)).arg(zeroPad(s % 60));
    else
-      return QString("%1:%2").arg(m,2).arg(s % 60,2);
+      return QString("%1:%2").arg(zeroPad(m)).arg(zeroPad(s % 60));
 }

@@ -77,6 +77,7 @@ class PlaylistItem : public KListViewItem
         void setGlowCol( QColor col ) { m_glowCol = col; }
 
     private:
+        QString zeroPad( const long digit );
         QString nameForUrl( const KURL &url ) const;
         void init();
         void paintCell( QPainter* p, const QColorGroup& cg, int column, int width, int align );

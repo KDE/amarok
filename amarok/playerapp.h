@@ -114,7 +114,7 @@ class PlayerApp : public KUniqueApplication
         bool m_bSliderIsPressed;
 
         KURL m_playingURL; ///< The URL of the currently playing item
-        
+
         // <aRts>
         KDE::PlayObject *m_pPlayObject;
         KDE::PlayObject *m_pPlayObjectXFade;
@@ -126,7 +126,7 @@ class PlayerApp : public KUniqueApplication
         Arts::Synth_AMAN_PLAY m_amanPlay;
         Amarok::Synth_STEREO_XFADE m_XFade;
         // </aRts>
-        
+
     public slots:
         void slotPrev();
         void slotPlay();
@@ -185,7 +185,7 @@ class PlayerApp : public KUniqueApplication
         void startXFade();
         void stopXFade();
 
-        QString convertDigit( const long &digit );
+        QString convertDigit( const long digit );
 
         // ATTRIBUTES ------
         KArtsDispatcher *m_pArtsDispatcher;

@@ -89,8 +89,7 @@ EffectListItem::~EffectListItem()
 
 ArtsConfigWidget::ArtsConfigWidget( Arts::Object object, QWidget *parent ) : QWidget( parent, 0, Qt::WType_TopLevel | Qt::WDestructiveClose )
 {
-    QString str = "amaroK - " + QString( object._interfaceName().c_str() );
-    setCaption( str  );
+    setCaption( kapp->makeStdCaption( QString( object._interfaceName().c_str() ) ) );
 
     Arts::GenericGuiFactory factory;
     m_gui = factory.createGui( object );
@@ -133,7 +132,7 @@ void EffectListItem::configure()
 bool EffectListItem::configurable() const
 {
     Arts::TraderQuery query;
-    query.supports( "Interface","Arts::GuiFactory" );
+    query.supports( "Interface", "Arts::GuiFactory" );
     query.supports( "CanCreate", m_pFX->_interfaceName() );
 
     std::vector<Arts::TraderOffer> *queryResults = query.query();

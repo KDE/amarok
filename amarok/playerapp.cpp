@@ -163,7 +163,7 @@ PlayerApp::PlayerApp() :
     if ( m_optResumePlayback )
     {
         slotPlay();
-   
+
         //see if we also saved the time
         int seconds = m_pConfig->readNumEntry( "Time", 0 );
         if ( seconds > 0 && m_pPlayObject && !m_pPlayObject->isNull() )
@@ -174,11 +174,11 @@ PlayerApp::PlayerApp() :
             time.seconds = seconds;
             time.custom = 0;
             time.customUnit = std::string();
-   
+
             m_pPlayObject->seek( time );
         }
     }
-    
+
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
 }
 
@@ -331,7 +331,7 @@ void PlayerApp::initArts()
         int kill_status = ::system( kill_cmdline );
         if ( kill_status != -1 && WIFEXITED( kill_status ) )
         {
-            kdDebug(DA_COMMON) << "killall artsd succeeded." << endl;
+            kdDebug() << "killall artsd succeeded." << endl;
         }
     }
     m_pArtsDispatcher = new KArtsDispatcher();
@@ -340,7 +340,7 @@ void PlayerApp::initArts()
     m_Server = Arts::Reference( "global:Arts_SoundServerV2" );
     if ( m_Server.isNull() || m_Server.error() )
     {
-        qDebug( "aRtsd not running.. trying to start" );
+        kdDebug() << "aRtsd not running.. trying to start" << endl;
         // aRts seems not to be running, let's try to run it
         // First, let's read the configuration as in kcmarts
         KConfig config( "kcmartsrc" );
@@ -429,8 +429,7 @@ void PlayerApp::initArts()
 
 void PlayerApp::initPlayerWidget()
 {
-    //TEST
-    kdDebug(DA_COMMON) << "begin PlayerApp::initPlayerWidget()" << endl;
+    kdDebug() << "begin PlayerApp::initPlayerWidget()" << endl;
 
     m_pPlayerWidget = new PlayerWidget( 0, "PlayerWidget" );
     //    setCentralWidget(m_pPlayerWidget);
@@ -482,15 +481,13 @@ void PlayerApp::initPlayerWidget()
     connect( m_pPlayerWidget->m_pButtonLogo, SIGNAL( clicked() ),
              this, SLOT( slotShowAbout() ) );
 
-    //TEST
-    kdDebug(DA_COMMON) << "end PlayerApp::initPlayerWidget()" << endl;
+    kdDebug() << "end PlayerApp::initPlayerWidget()" << endl;
 }
 
 
 void PlayerApp::initMixer()
 {
-    //TEST
-    kdDebug(DA_COMMON) << "begin PlayerApp::initMixer()" << endl;
+    kdDebug() << "begin PlayerApp::initMixer()" << endl;
 
     if ( !m_optSoftwareMixerOnly && initMixerHW() )
     {
@@ -499,13 +496,13 @@ void PlayerApp::initMixer()
     else
     {
         // Hardware mixer doesn't work --> use arts software-mixing
-        kdDebug(DA_COMMON) << "Cannot initialise Hardware mixer. Switching to software mixing." << endl;
+        kdDebug() << "Cannot initialise Hardware mixer. Switching to software mixing." << endl;
 
         m_volumeControl = Arts::DynamicCast( m_Server.createObject( "Arts::StereoVolumeControl" ) );
 
         if ( m_volumeControl.isNull() )
         {
-            kdDebug(DA_COMMON) << "Initialising arts softwaremixing failed!" << endl;
+            kdDebug() << "Initialising arts softwaremixing failed!" << endl;
             return ;
         }
 
@@ -513,8 +510,7 @@ void PlayerApp::initMixer()
         m_volumeControl.start();
         m_globalEffectStack.insertBottom( m_volumeControl, "Volume Control" );
 
-        //TEST
-        kdDebug(DA_COMMON) << "end PlayerApp::initMixer()" << endl;
+        kdDebug() << "end PlayerApp::initMixer()" << endl;
     }
 }
 
@@ -537,29 +533,27 @@ bool PlayerApp::initMixerHW()
 
 bool PlayerApp::initScope()
 {
-    //TEST
-    kdDebug(DA_COMMON) << "begin PlayerApp::initScope()" << endl;
+    kdDebug() << "begin PlayerApp::initScope()" << endl;
 
     m_Scope = Arts::DynamicCast( m_Server.createObject( "Arts::StereoFFTScope" ) );
 
     if ( m_Scope.isNull() )
     {
-        kdDebug(DA_COMMON) << "m_Scope.isNull()!" << endl;
+        kdDebug() << "m_Scope.isNull()!" << endl;
         return false;
     }
 
     m_scopeActive = false;
     m_globalEffectStack.insertBottom( m_Scope, "Analyzer" );
 
-    //TEST
-    kdDebug(DA_COMMON) << "end PlayerApp::initScope()" << endl;
+    kdDebug() << "end PlayerApp::initScope()" << endl;
     return true;
 }
 
 
 void PlayerApp::initBrowserWin()
 {
-    kdDebug(DA_COMMON) << "begin PlayerApp::initBrowserWin()" << endl;
+    kdDebug() << "begin PlayerApp::initBrowserWin()" << endl;
 
     m_pBrowserWin = new BrowserWin( m_pPlayerWidget, "BrowserWin" );
 
@@ -599,16 +593,15 @@ void PlayerApp::initBrowserWin()
     connect( m_pBrowserWin, SIGNAL( signalHide() ),
              this, SLOT( slotPlaylistIsHidden() ) );
 
-    //TEST
-    kdDebug(DA_COMMON) << "end PlayerApp::initBrowserWin()" << endl;
+    kdDebug() << "end PlayerApp::initBrowserWin()" << endl;
 }
 
 
 // METHODS --------------------------------------------------------------------------
 
-QString PlayerApp::convertDigit( const long &digit )
+QString PlayerApp::convertDigit( const long digit )
 {
-    QString str, str1;
+    QString str;
     str.setNum( digit );
 
     if ( digit > 9 )
@@ -616,8 +609,8 @@ QString PlayerApp::convertDigit( const long &digit )
         return str;
     }
 
-    str1 = "0" + str;
-    return str1;
+    str.prepend("0");
+    return str;
 }
 
 
@@ -755,7 +748,7 @@ void PlayerApp::readConfig()
 
     m_optBrowserSortSpec = m_pConfig->readNumEntry( "Browser Sorting Spec", QDir::Name | QDir::DirsFirst );
     m_optTitleStream = m_pConfig->readBoolEntry( "Title Streaming", false );
-    
+
     m_Volume = m_pConfig->readNumEntry( "Master Volume", 50 );
     slotVolumeChanged( m_Volume );
     m_pPlayerWidget->m_pSliderVol->setValue( m_Volume );
@@ -796,7 +789,7 @@ void PlayerApp::readConfig()
 
     m_pPlayerWidget->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
     m_pBrowserWin->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
-    
+
     //TEST
     kdDebug(DA_COMMON) << "end PlayerApp::readConfig()" << endl;
 }
@@ -844,7 +837,7 @@ void PlayerApp::setupScrolltext()
                 str.append( item->title() + " (" );
             }
 
-	    int length = item->seconds() ? item->seconds() : m_length;
+       int length = item->seconds() ? item->seconds() : m_length;
             int totSeconds, totMinutes, totHours;
             totSeconds = ( length % 60 );
             totMinutes = ( length / 60 % 60 );
@@ -878,12 +871,12 @@ void PlayerApp::setupScrolltext()
 void PlayerApp::receiveStreamMeta( QString title, QString url, QString kbps )
 {
     PlaylistItem* item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
-    
+
     if ( url.isEmpty() )
-    {    
+    {
         if ( item == NULL )
             m_pPlayerWidget->setScroll( title + " (stream)", "--", "--" );
-        else 
+        else
             m_pPlayerWidget->setScroll( title + " (" + item->text( 0 ) + ")", kbps + "kbps", "--" );
     }
     else
@@ -898,12 +891,12 @@ void PlayerApp::startXFade()
     if ( !m_XFadeRunning )
     {
         m_XFadeRunning = true;
-    
+
         if ( m_XFadeCurrent == "invalue1" )
             m_XFadeCurrent = "invalue2";
         else
             m_XFadeCurrent = "invalue1";
-    
+
         m_pPlayObjectXFade = m_pPlayObject;
         m_pPlayObject = NULL;
     }
@@ -1054,22 +1047,22 @@ void PlayerApp::slotPlay()
 
     m_pPlayerWidget->m_pButtonPlay->setOn( true ); //interface consistency
     KDE::PlayObjectFactory factory( m_Server );
-    
+
     if ( m_optTitleStream )
-    {    
+    {
         TitleProxy *pProxy = new TitleProxy( item->url() );
         m_pPlayObject = factory.createPlayObject( pProxy->proxyUrl(), false );
-        
+
         connect( m_pPlayObject, SIGNAL( destroyed() ),
                  pProxy, SLOT( deleteLater() ) );
         connect( pProxy, SIGNAL( metaData( QString, QString, QString ) ),
                  this, SLOT( receiveStreamMeta( QString, QString, QString ) ) );
     }
     else
-    { 
+    {
         m_pPlayObject = factory.createPlayObject( item->url(), false ); //second parameter: create BUS(true/false)
     }
-                    
+
     m_bIsPlaying = true;
 
     if ( m_pPlayObject == NULL )
@@ -1103,7 +1096,7 @@ void PlayerApp::slotPlay()
         m_pPlayerWidget->m_pSlider->setMaxValue( 0 );
         m_pPlayerWidget->setScroll( i18n( "Stream from: " ) + item->text( 0 ), "--", "--" );
     }
-    
+
     kdDebug() << "[slotPlay] Playing item " << item->text(0) << " for " << item->url() << endl;
     m_playingURL = item->url();
 
