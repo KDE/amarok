@@ -47,6 +47,7 @@ email                : markey@web.de
 #include <kdebug.h>
 #include <klocale.h>
 #include <kiconloader.h>
+#include <kstandarddirs.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC
@@ -104,7 +105,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 #ifdef USE_MYSQL
     addPage( opt7, i18n( "MySql" ), "connect_creating", i18n( "Configure MySql" ) );
 #endif
-    addPage( opt8, i18n( "Scrobbler" ), "scrobbler", i18n( "Configure Audioscrobbler" ) );
+    addPage( opt8, i18n( "Scrobbler" ), locate( "data", "amarok/images/audioscrobbler.png" ), i18n( "Configure Audioscrobbler" ) );
 
     connect( m_soundSystem, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
     connect( aboutEngineButton, SIGNAL( clicked() ), this, SLOT( aboutEngine() ) );
