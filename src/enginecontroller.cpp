@@ -182,8 +182,10 @@ amaroK::Plugin *EngineController::loadEngine( const QString &engineName )
 
         AmarokConfig::setSoundSystem( PluginManager::getService( plugin )->property( "X-KDE-amaroK-name" ).toString() );
 
-        amaroK::StatusBar::instance()->longMessage(
-                i18n( "Sorry, the requested engine could not be loaded" ), KDE::StatusBar::Sorry );
+        if( !engineName.isEmpty() )
+            // the first ever run has an empty engine string
+            amaroK::StatusBar::instance()->longMessage(
+                    i18n( "Sorry, the requested engine could not be loaded" ), KDE::StatusBar::Sorry );
     }
 
     return plugin;
@@ -205,6 +207,7 @@ bool EngineController::canDecode( const KURL &url ) //static
     if ( url.protocol() == "fetchcover" || url.protocol() == "musicbrainz" ) return false;
 
     // Accept non-local files, since we can't test them for validity at this point
+    // TODO actually, only accept unconditionally http stuff
     if ( !url.isLocalFile() ) return true;
 
     // If extension is already in the cache, return cache result
