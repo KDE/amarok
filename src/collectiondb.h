@@ -17,7 +17,7 @@ class CollectionDB : public QObject
     Q_OBJECT
     
     public:
-        static const int COVER_SIZE = 80;
+        static const int COVER_SIZE = 40;
         
         CollectionDB();
         ~CollectionDB();
