@@ -268,7 +268,7 @@ CollectionView::setupDirs()  //SLOT
     CollectionSetup *setup = new CollectionSetup( &dialog );
     dialog.setMainWidget( setup );
     dialog.showButtonApply( false );
-    dialog.resize( 320, 400 );
+    dialog.adjustSize();
 
     if ( dialog.exec() != QDialog::Rejected )
     {
