@@ -1524,7 +1524,7 @@ Playlist::slotMouseButtonPressed( int button, QListViewItem *after, const QPoint
 
         const KURL url = KURL::fromPathOrURL( path );
 
-        if ( EngineController::engine()->canDecode( url ) )
+        if ( EngineController::canDecode( url ) )
             insertMediaInternal( url, (PlaylistItem*)(after ? after : lastItem()) );
 
         break;

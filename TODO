@@ -12,8 +12,6 @@ SHORT-TERM (URGENT):
                   file /usr/lib/kde3/share/icons/crystalsvg/16x16/actions/player_playlist.png from install of
                   amarok-3.3.1-1cl conflicts with file from package kde-base-icons-3.3.1-1cl
 
-  FIX 170 <markey> Pasting URLs into playlist with mid-click is broken.
-
   FIX 167 <markey> Adapt Player-Window colors from "Custom color scheme" mode too.
 
   FIX 162 <markey> Try to achieve Qt 3.2 compatibility for amaroK 1.1.
