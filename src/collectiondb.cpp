@@ -45,36 +45,36 @@ CollectionDB::CollectionDB()
 {
 #ifdef USE_MYSQL
     m_db = mysql::mysql_init(NULL);
-		if (m_db)
-		{
+
+    if (m_db)
+    {
         if (mysql::mysql_real_connect(m_db, AmarokConfig::mySqlHost().latin1(),
-				                                    AmarokConfig::mySqlUser().latin1(),
-																						AmarokConfig::mySqlPassword().latin1(),
-																						AmarokConfig::mySqlDbName().latin1(),
-																						AmarokConfig::mySqlPort(),
-																						NULL, CLIENT_COMPRESS))
-        {
+                                            AmarokConfig::mySqlUser().latin1(),
+                                            AmarokConfig::mySqlPassword().latin1(),
+                                            AmarokConfig::mySqlDbName().latin1(),
+                                            AmarokConfig::mySqlPort(),
+                                            NULL, CLIENT_COMPRESS))
             if (!isValid())
-        	      createTables();
-        }
+                createTables();
+
         else
         {
             if (mysql::mysql_real_connect(m_db, AmarokConfig::mySqlHost().latin1(),
-						                                    AmarokConfig::mySqlUser().latin1(),
-																								AmarokConfig::mySqlPassword().latin1(),
-																								NULL,
-																								AmarokConfig::mySqlPort(),
-																								NULL, CLIENT_COMPRESS))
+                                                AmarokConfig::mySqlUser().latin1(),
+                                                AmarokConfig::mySqlPassword().latin1(),
+                                                NULL,
+                                                AmarokConfig::mySqlPort(),
+                                                NULL, CLIENT_COMPRESS))
             {
                 if (mysql::mysql_query(m_db, QString("CREATE DATABASE " + AmarokConfig::mySqlDbName()).latin1()))
                     createTables();
-								else
-								    kdDebug() << "Failed to create database " << AmarokConfig::mySqlDbName() << "\n";
+                else
+                    kdDebug() << "Failed to create database " << AmarokConfig::mySqlDbName() << "\n";
             }
         }
-		}
-		else
-		    kdDebug() << "Failed to allocate/initialize MySql struct\n";
+    }
+    else
+        kdDebug() << "Failed to allocate/initialize MySql struct\n";
 #else
     QCString path = ( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" )
                   + "collection.db" ).local8Bit();
@@ -1256,8 +1256,8 @@ void
 
 
 void
-CollectionDB::retrieveSecondLevel( const QString& itemText, const QString& category1, const QString& category2, 
-                                   const QString& category3, QString filter, QStringList& values, 
+CollectionDB::retrieveSecondLevel( const QString& itemText, const QString& category1, const QString& category2,
+                                   const QString& category3, QString filter, QStringList& values,
                                    QStringList& names )
 {
     QString filterToken;
@@ -1322,8 +1322,8 @@ CollectionDB::retrieveSecondLevel( const QString& itemText, const QString& categ
 
 
 void
-CollectionDB::retrieveThirdLevel( const QString& itemText1, const QString& itemText2, const QString& category1, 
-                                  const QString& category2, const QString& category3, QString filter, 
+CollectionDB::retrieveThirdLevel( const QString& itemText1, const QString& itemText2, const QString& category1,
+                                  const QString& category2, const QString& category3, QString filter,
                                   QStringList& values, QStringList& names )
 {
     QString filterToken;
@@ -1386,9 +1386,9 @@ CollectionDB::retrieveThirdLevel( const QString& itemText1, const QString& itemT
 
 
 void
-CollectionDB::retrieveFourthLevel( const QString& itemText1, const QString& itemText2, const QString& itemText3, 
-                                   const QString& category1, const QString& category2, 
-                                   const QString& category3, QString filter, 
+CollectionDB::retrieveFourthLevel( const QString& itemText1, const QString& itemText2, const QString& itemText3,
+                                   const QString& category1, const QString& category2,
+                                   const QString& category3, QString filter,
                                    QStringList& values, QStringList& names )
 {
     QString filterToken;
@@ -1432,8 +1432,8 @@ CollectionDB::retrieveFourthLevel( const QString& itemText1, const QString& item
 
 
 void
-CollectionDB::retrieveFirstLevelURLs( const QString& itemText, const QString& category1, QString category2, 
-                                      const QString& category3, QString filter, 
+CollectionDB::retrieveFirstLevelURLs( const QString& itemText, const QString& category1, QString category2,
+                                      const QString& category3, QString filter,
                                       QStringList& values, QStringList& names )
 {
     QString filterToken;
@@ -1483,7 +1483,7 @@ CollectionDB::retrieveFirstLevelURLs( const QString& itemText, const QString& ca
 
 
 void
-CollectionDB::retrieveSecondLevelURLs( const QString& itemText1, const QString& itemText2, const QString& category1, 
+CollectionDB::retrieveSecondLevelURLs( const QString& itemText1, const QString& itemText2, const QString& category1,
                                        const QString& category2, const QString& category3, QString filter,
                                        QStringList& values, QStringList& names )
 {
@@ -1530,10 +1530,10 @@ CollectionDB::retrieveSecondLevelURLs( const QString& itemText1, const QString& 
 
 
 void
-CollectionDB::retrieveThirdLevelURLs( const QString& itemText1, const QString& itemText2, const QString& itemText3, 
-                                      const QString& category1, const QString& category2, const QString& category3, 
+CollectionDB::retrieveThirdLevelURLs( const QString& itemText1, const QString& itemText2, const QString& itemText3,
+                                      const QString& category1, const QString& category2, const QString& category3,
                                       QString filter, QStringList& values, QStringList& names )
-{ 
+{
     QString filterToken;
     if ( !filter.isEmpty() )
     {
@@ -1575,7 +1575,7 @@ CollectionDB::retrieveThirdLevelURLs( const QString& itemText1, const QString& i
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
-// PROTECTED 
+// PROTECTED
 //////////////////////////////////////////////////////////////////////////////////////////
 
 QCString
