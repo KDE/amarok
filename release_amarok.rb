@@ -7,13 +7,14 @@
 # License: GPL V2
 
 
-version = `kdialog --inputbox "amaroK version: "`
+version  = `kdialog --inputbox "amaroK version: "`
 username = `kdialog --inputbox "CVS username: "`
 
-cvsroot = ":pserver:$username@cvs.kde.org:/home/kde"
-folder = "amarok-$version"
-doi18n = "yes"
-log = "/dev/null"
+cvsroot  = ":pserver:$username@cvs.kde.org:/home/kde"
+folder   = "amarok-$version"
+doi18n   = "yes"
+log      = "/dev/null"
+
 
 # Prevent using unsermake
 oldmake = $UNSERMAKE
