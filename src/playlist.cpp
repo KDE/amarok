@@ -793,7 +793,7 @@ Playlist::appendMedia( const QString &path )
 void
 Playlist::appendMedia( const KURL &url )
 {
-    appendMedia( KURL::List( url ) );
+    insertMedia( KURL::List( url ) );
     m_ac->action( "prev" )->setEnabled( true );
     m_ac->action( "next" )->setEnabled( true );
     m_ac->action( "play" )->setEnabled( true );

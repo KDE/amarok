@@ -71,7 +71,6 @@ class Playlist : private KListView, public EngineObserver
          *  @param options you can OR these together, see the enum,
          */
         void insertMedia( KURL::List, int options = Append );
-        void appendMedia( KURL::List list ) { insertMedia( list ); } ///DEPRECATED
 
         bool isEmpty() const { return childCount() == 0; }
         bool isTrackBefore() const;
@@ -209,7 +208,7 @@ class Playlist : private KListView, public EngineObserver
 
         KURL::List   m_queueList;
         bool         m_stopAfterCurrent;
-        
+
         //text before inline editing ( the new tag is written only if it's changed )
         QString m_editOldTag;
 

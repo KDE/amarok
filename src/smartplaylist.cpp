@@ -319,7 +319,7 @@ void SmartPlaylistView::loadPlaylistSlot( QListViewItem *item ) //SLOT
     if( !((SmartPlaylist*)item)->query().isEmpty() ) {
         // open the smart playlist
         Playlist::instance()->clear();
-        Playlist::instance()->appendMedia( loadSmartPlaylist( item ) );
+        Playlist::instance()->insertMedia( loadSmartPlaylist( item ) );
     }
 }
 

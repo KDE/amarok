@@ -206,7 +206,7 @@ namespace amaroK
 
     void DcopHandler::addMediaList(const KURL::List &urls)
     {
-        Playlist::instance()->appendMedia(urls);
+        Playlist::instance()->insertMedia(urls);
     }
 
     void DcopHandler::setVolume(int volume)
@@ -239,7 +239,7 @@ namespace amaroK
         amaroK::OSD::instance()->setEnabled(enable);
         AmarokConfig::setOsdEnabled(enable);
     }
-    
+
     void DcopHandler::showOSD()
     {
         amaroK::OSD::instance()->showTrack();

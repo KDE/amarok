@@ -630,7 +630,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                     slotDoubleClicked( item );
                     break;
                 case ADD:
-                    Playlist::instance()->appendMedia( item->tracksURL() );
+                    Playlist::instance()->insertMedia( item->tracksURL() );
                     break;
                 case SAVE:
                     savePlaylist( item );

@@ -295,7 +295,7 @@ void SearchBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int )
             Playlist::instance()->clear(); //FALL THROUGH
 
         case APPEND:
-            Playlist::instance()->appendMedia( urls );
+            Playlist::instance()->insertMedia( urls );
             break;
 
         case QUEUE:
