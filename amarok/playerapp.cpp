@@ -234,7 +234,7 @@ void PlayerApp::handleLoaderArgs( QCString args ) //SLOT
     QStringList strlist = QStringList::split( "|", args );
 
     int argc = strlist.count();
-    char* argv[argc];
+    char **argv = new char*[argc]; // char *argv[argc] is not ISO c++
 
     for ( int i = 0; i < argc; i++ )
     {
@@ -246,6 +246,7 @@ void PlayerApp::handleLoaderArgs( QCString args ) //SLOT
     KCmdLineArgs::reset();
     initCliArgs( argc, argv );
     handleCliArgs();
+    delete[] argv;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -599,7 +600,7 @@ void PlayerApp::setupColors()
 */
         int h,s,v;
         bgAlt.getHsv( &h, &s, &v );
-        group.setColor( QColorGroup::Midlight, QColor( h, s/3, v * 1.2, QColor::Hsv ) );
+        group.setColor( QColorGroup::Midlight, QColor( h, s/3, (int)(v * 1.2), QColor::Hsv ) );
 
         //FIXME QColorGroup member "disabled" looks very bad (eg for buttons)
         m_pBrowserWin->setColors( QPalette( group, group, group ), bgAlt );
@@ -732,18 +733,18 @@ void PlayerApp::engineStateChanged( EngineBase::EngineState state )
             //QToolTip::remove( m_pTray );
             QToolTip::add( m_pTray, i18n( "amaroK - Audio Player" ) );
             break;
+        case EngineBase::Paused: // shut up GCC
+        case EngineBase::Playing:
+            break;
     }
 }
 
 
-void PlayerApp::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
+void PlayerApp::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     QString prettyTitle = bundle.prettyTitle();
 
-    if( trackChanged )
-    {
-        m_pOSD->showTrack( bundle );
-    }
+    m_pOSD->showTrack( bundle );
     m_pDcopHandler->setNowPlaying( prettyTitle );
     //QToolTip::remove( m_pTray );
     //QToolTip::add( m_pTray, prettyTitle );
