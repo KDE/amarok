@@ -54,8 +54,9 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
 
     foreachType( KURL::List, urls ) {
         const KURL &url = *it;
+        const QString protocol = url.protocol();
 
-        if( url.protocol() == "file" ) {
+        if( protocol == "file" ) {
             if( QFileInfo( url.path() ).isDir() )
                 m_URLs += recurse( url );
             else
@@ -65,10 +66,10 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
         else if( PlaylistFile::isPlaylistFile( url ) )
             new RemotePlaylistFetcher( url, after, dependent() );
 
-        else if( url.protocol() == "fetchcover" )
+        else if( protocol == "fetchcover" )
             continue;
 
-        else if( url.protocol() == "album" ) {
+        else if( protocol == "album" ) {
            // url looks like:   album:<artist_id> @@@ <album_id>
            QString myUrl = url.path();
            if ( myUrl.endsWith( " @@@" ) )
@@ -86,14 +87,17 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
            }
         }
 
-        else
+        else {
+            // this is the best way I found for recursing if required
+            // and not recusring if not required
+            KURL::List urls = recurse( url );
+
             // recurse only works on directories, else it swallows the URL
-            // this check is very slow if the file is not obviously a directory,
-            //  so only do it on non-local stuff
-            if( KFileItem( KFileItem::Unknown, KFileItem::Unknown, url ).isDir() )
-                m_URLs += recurse( url );
-            else
+            if( urls.isEmpty() )
                 m_URLs += url;
+            else
+                m_URLs += urls;
+        }
     }
 }
 
@@ -218,15 +222,10 @@ UrlLoader::customEvent( QCustomEvent *e )
 void
 UrlLoader::completeJob()
 {
-    KURL::List &list = m_badURLs;
-
-    if ( !list.isEmpty() ) {
+    if ( !m_badURLs.isEmpty() ) {
         amaroK::StatusBar::instance()->shortLongMessage(
                 i18n("Some URLs were not suitable for the playlist."),
                 i18n("These URLs could not be loaded into the playlist: " ) );
-
-//        for( KURL::List::ConstIterator it = list.begin(); it != list.end(); ++it )
-//            debug() << *it << endl;
     }
 
     //syncronous, ie not using eventLoop
@@ -443,9 +442,13 @@ RemotePlaylistFetcher::result( KIO::Job *job )
     debug() << "Playlist was downloaded successfully\n";
 
     const KURL url = static_cast<KIO::FileCopyJob*>(job)->destURL();
-    ThreadWeaver::instance()->queueJob( new UrlLoader( url, m_after ) );
+    UrlLoader *loader = new UrlLoader( url, m_after );
+    ThreadWeaver::instance()->queueJob( loader );
 
-    deleteLater();
+    // we mustn't get deletd until the loader is finished
+    // or the temporary file we downloaded the playlist to
+    // will be deleted before it can be parsed!
+    loader->insertChild( this );
 }
 
 
