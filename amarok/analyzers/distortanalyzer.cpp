@@ -118,7 +118,7 @@ void DistortAnalyzer::drawAnalyzer( std::vector<float> *s )
             sinIndex = static_cast<int>( (*it) * SINVEC_SIZE ) % SINVEC_SIZE;
             
             bitBlt( m_pComposePixmap, 0, y, m_pComposePixmap1,
-                    static_cast<int>( m_sinVector[sinIndex] * 16 - 17 ),  y, width(), 1, Qt::CopyROP );
+                    static_cast<int>( m_sinVector[sinIndex] * 14 - 15 ),  y, width(), 1, Qt::CopyROP );
 
            ++it;
         }
