@@ -214,7 +214,7 @@ void ContextBrowser::showHome() //SLOT
     delete m_db;
     m_db = new CollectionDB();
     // Triggers redisplay when new cover image is downloaded
-    connect( m_db, SIGNAL( coverFetched() ), this, SLOT( showCurrentTrack() ) );
+    connect( m_db, SIGNAL( coverFetched(const QString&) ), this, SLOT( showCurrentTrack() ) );
 
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
