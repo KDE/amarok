@@ -1,0 +1,105 @@
+body {
+	font-size:10pt;
+	background-color: #9cb2cd;
+	color: white;
+}
+
+.topnavi {
+	position: fixed;
+	top: 0;
+	left: 0;
+	background-color: #9cb2cd;
+}
+
+.topspace {
+	height: 1.6em;
+}
+
+table { 
+	border: 1px white; 
+}   
+
+.tracks { 
+	background-color:#596082;
+	border: 1px solid black 
+}
+
+tr#trackheader {
+	position: fixed;
+	top: 1.6em;
+	left: 10px;
+	right: 10px;
+	background-color:#596082;
+#	background-color: red;
+}
+
+div.trackshmove {
+	height: 0.6em;	
+}
+
+.tr_one { 
+	background-color: #394062;
+}
+
+.tr_two { 	
+	background-color: #202050;
+}
+
+.nowplaying { 
+	border: 1pt solid red; 
+}
+
+th { 
+	color: dark-grey; 
+}
+
+.window {
+	background-color: #d9d9d9; 
+	border: 1px solid black;
+	padding:15px;
+}
+
+a.track:link { color: white }
+a.track:visited { color: white }
+a.track:active { color: white }
+a.track:hover { color: white }                    
+
+a:link { 
+	color: #074876; 
+	border: 0px; 
+	text-decoration: none; 
+}
+a:visited { 
+	color: #074876; 
+	text-decoration: none; 
+}
+a:active { 
+	color: #074876; 	
+	text-decoration: none; 
+} 
+
+a#amaroklink:hover { 
+	text-decoration: none; 
+	text-decoration: none; 
+	background-color: #074876;
+        color: white; 
+}	
+
+table.volume {
+	border: 0px solid black;
+	font-size: 16px; 
+	font-family: fixed;
+}
+
+td.volumeset {
+	border: 1pt solid black; 
+	background-color: #596082;
+}
+
+td.volumeunset {
+	border: 1pt solid black; 
+}
+
+img {
+	border: 0;
+}
