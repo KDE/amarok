@@ -27,9 +27,6 @@ SHORT-TERM (URGENT):
 
   <mxcl>   If you drag and drop the cool-streams playlist without expanding it first, it doesn't work properly
 
-  <mxcl>   Inline editing of tags frequently crashes, muesli is this due to that bug from before?
-           <muesli> "Only" for the current song. No other crashes experienced here, anyways.
-
   <mxcl>   Playlist with files that exist that gst can't play + repeat-playlist = infinite loop - presumably
            load() and play() return true so the controller doesn't stop the playback
 
