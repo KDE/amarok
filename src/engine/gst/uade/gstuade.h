@@ -13,7 +13,7 @@
 G_BEGIN_DECLS
 
 #define GST_TYPE_GSTUADE \
-  (gst_streamsrc_get_type())
+  (gst_uade_get_type())
 #define GST_GSTUADE(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_GSTUADE,GstUade))
 #define GST_GSTUADE_CLASS(klass) \
@@ -39,7 +39,7 @@ struct _GstUade
     glong blocksize; /* bytes per read */
     guint64 timeout;  /* read timeout, in nanoseconds */
 
-    struct uade_msgstruct *uade_struct;
+    uade_msgstruct* uade_struct;
 };
 
 struct _GstUadeClass
@@ -50,8 +50,8 @@ struct _GstUadeClass
     void ( *timeout ) ( GstElement *element );
 };
 
-GType gst_streamsrc_get_type( void );
-GstUade* gst_uade_new ( char* buf, int* index );
+GType gst_uade_get_type( void );
+GstUade* gst_uade_new ();
 
 G_END_DECLS
 

@@ -195,6 +195,9 @@ GstEngine::initMixer( bool hardware )
 bool
 GstEngine::canDecode( const KURL &url, mode_t, mode_t )
 {
+    //TODO HACK
+    return true;
+    
     GstElement* pipeline;
     GstElement* filesrc;
     GstElement* typefind;
@@ -327,8 +330,15 @@ GstEngine::play( const KURL& url )  //SLOT
         m_filesrc = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex ) );
         gst_bin_add ( GST_BIN ( m_thread ), m_filesrc );
     }
-        
-    if ( !( m_spider = createElement( "spider", "spider" ) ) ) return;
+    
+    //TODO HACK
+    if ( url.path().contains( "_uade" ) ) {
+        m_spider = GST_ELEMENT( gst_uade_new() );
+        g_object_set( G_OBJECT( m_spider ), "location", (const char*) ( QFile::encodeName( url.path() ) ), NULL );
+    }
+    else    
+        if ( !( m_spider = createElement( "spider", "spider" ) ) ) return;
+    
     if ( !( m_identity = createElement( "identity", "rawscope" ) ) ) return;
     if ( !( m_volumeElement = createElement( "volume", "volume" ) ) ) return;
     if ( !( m_audioconvert = createElement( "audioconvert", "audioconvert" ) ) ) return;
