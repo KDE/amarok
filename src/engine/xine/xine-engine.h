@@ -16,22 +16,18 @@ public:
     ~XineEngine();
 
     bool init();
-
     bool canDecode( const KURL& ) const;
-
-    const Engine::Scope &scope();
-
-    Engine::State state() const;
-
     bool load( const KURL &url, bool stream );
     bool play( uint = 0 );
     void stop();
     void pause();
-
     uint position() const;
     void seek( uint );
 
-protected:    
+    Engine::State state() const;
+    const Engine::Scope &scope();
+
+protected:
     void setVolumeSW( uint );
 
 private:

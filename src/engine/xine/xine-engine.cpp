@@ -15,40 +15,17 @@
 
 AMAROK_EXPORT_PLUGIN( XineEngine )
 
-#include <kapplication.h>
 #include <kdebug.h>
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <qapplication.h>
 #include <qdir.h>
-#include <qtimer.h>
 
-//xine headers have this as function parameter!
-#define this this_
-//need access to port_ticket
-#define XINE_ENGINE_INTERNAL
-    #include <xine/xine_internal.h>
-    #include <xine/post.h>
-#undef this
-
-
-extern "C"
-{
-    post_class_t*
-    scope_init_plugin( xine_t* );
-}
 
 #ifdef NDEBUG
-static inline kndbgstream
-debug()
-{
-    return kndbgstream();
-}
+static inline kndbgstream debug() { return kndbgstream(); }
 #else
-static inline kdbgstream
-debug()
-{
-    return kdbgstream( "[xine-engine] ", 0, 0 );
-}
+static inline kdbgstream  debug() { return kdbgstream( "[xine-engine] ", 0, 0 ); }
 #endif
 
 
@@ -122,49 +99,24 @@ XineEngine::init()
         return false;
     }
 
-    m_stream  = xine_stream_new( m_xine, m_audioPort, 0 );
+    m_stream = xine_stream_new( m_xine, m_audioPort, 0 );
     if( !m_stream )
     {
         KMessageBox::error( 0, i18n("amaroK could not create a new xine-stream.") );
         return false;
     }
 
+    //implemented in xine-scope.h
+    m_post = scope_plugin_new( m_xine, m_audioPort );
+
+
     //less buffering, faster seeking.. TODO test
     xine_set_param( m_stream, XINE_PARAM_METRONOM_PREBUFFER, 6000 );
     //xine_trick_mode( m_stream, XINE_TRICK_MODE_SEEK_TO_TIME, 1 );
 
-
     xine_event_create_listener_thread( m_eventQueue = xine_event_new_queue( m_stream ),
                                        &XineEngine::XineEventListener,
                                        (void*)this );
-
-    {
-        //create scope post plugin
-        //it syphons off audio buffers into our scope data structure
-
-        post_class_t  *post_class  = scope_init_plugin( m_xine );
-        post_plugin_t *post_plugin = post_class->open_plugin( post_class, 1, &m_audioPort, NULL );
-
-        post_class->dispose( post_class );
-
-        //code is straight from xine_init_post()
-        //can't use that function as it only dlopens the plugins and our plugin is statically linked in
-
-        post_plugin->running_ticket = m_xine->port_ticket;
-        post_plugin->xine = m_xine;
-        post_plugin->node = NULL;
-
-        xine_post_in_t *input = (xine_post_in_t *)xine_list_first_content( post_plugin->input );
-
-        post_plugin->input_ids = (const char**)malloc(sizeof(char *)*2);
-        post_plugin->input_ids[0] = input->name; //"audio in";
-        post_plugin->input_ids[1] = NULL;
-
-        post_plugin->output_ids = (const char**)malloc(sizeof(char *));
-        post_plugin->output_ids[0] = NULL;
-
-        m_post = &post_plugin->xine_post;
-    }
 
     startTimer( 200 ); //prunes the scope
 
@@ -212,6 +164,8 @@ XineEngine::stop()
 {
     m_url = KURL(); //to ensure we return Empty from state()
 
+    std::fill( m_scope.begin(), m_scope.end(), 0 );
+
     xine_stop( m_stream );
     emit stateChanged( Engine::Empty );
 }
@@ -241,106 +195,6 @@ XineEngine::state() const
     case XINE_STATUS_STOP:
     default:               return m_url.isEmpty() ? Engine::Empty : Engine::Idle;
     }
-}
-
-const Engine::Scope&
-XineEngine::scope()
-{
-    if( xine_get_status( m_stream ) != XINE_STATUS_PLAY ) return m_scope;
-
-    ++Log::scopeCallCount;
-
-    //we operate on a subset of the list for thread-safety
-    MyNode * const first_node = myList->next;
-    MyNode const * const last_node  = myList;
-
-    //this is the timestamp we want to display
-    int64_t current_vpts = xine_get_current_vpts( m_stream );
-
-    for( MyNode *prev = first_node, *node = first_node->next; node != last_node; node = node->next )
-    {
-        if( node != first_node /*<-- thread-safety*/ && node->vpts_end < current_vpts )
-        {
-           prev->next = node->next;
-
-           free( node->mem );
-           free( node );
-
-           node = prev;
-        }
-
-        prev = node;
-
-        ++Log::bufferCount;
-    }
-
-    for( int frame = 0; frame < 512; )
-    {
-        MyNode *best_node = 0;
-
-        for( MyNode *node = first_node; node != last_node; node = node->next )
-            if ( node->vpts <= current_vpts && (!best_node || node->vpts > best_node->vpts) )
-                best_node = node;
-
-        if( !best_node || best_node->vpts_end < current_vpts ) {
-//            debug() << "Buffer failure :-( now: " << current_vpts << endl;
-//
-//            kdbgstream d( "  ", 0, 0 );
-//
-//            for( MyNode *node = first_node; node != last_node; node = node->next )
-//                d << (int64_t)node->vpts_end << "-" << (int64_t)node->vpts << ", ";
-//
-//            d << endl;
-
-           ++Log::noSuitableBuffer;
-           break;
-        }
-
-        int64_t
-        diff  = current_vpts;
-        diff -= best_node->vpts;
-        diff *= 1<<16;
-        diff /= myMetronom->pts_per_smpls;
-
-        const int16_t*
-        data16  = best_node->mem;
-        data16 += diff;
-
-        diff /= myChannels;
-
-        int
-        n  = best_node->num_frames;
-        n -= diff;
-        n += frame; //clipping for # of frames we need
-        if( n > 512 ) n = 512; //bounds limiting
-        if( n < 0 ) break; //FIXME
-
-        for( int a, c; frame < n; ++frame, data16 += myChannels ) {
-            for( a = c = 0; c < myChannels; ++c )
-                a += data16[c];
-
-            a /= myChannels;
-            m_scope[frame] = a;
-        }
-
-        //debug()<< "now: " << current_vpts << " vpts: " << best_buf.vpts << " diff: " << diff << " frame: " << frame << " num_frames: " << best_buf.num_frames << endl;
-
-        current_vpts = best_node->vpts_end;
-        current_vpts++; //FIXME needs to be done for some reason, or you get situations where it uses same buffer again and again
-    }
-
-    return m_scope;
-}
-
-void
-XineEngine::timerEvent( QTimerEvent* )
-{
-    //if scope() isn't called regularly the audio buffer list
-    //is never emptied. This is a hacky solution, the better solution
-    //is to prune the list inside the post_plugin put_buffer() function
-    //which I will do eventually
-
-    scope();
 }
 
 uint
@@ -377,6 +231,93 @@ XineEngine::canDecode( const KURL &url ) const
     const QString path = url.path();
     const QString ext  = path.mid( path.findRev( '.' ) + 1 );
     return ext != "txt" && list.contains( ext );
+}
+
+static int64_t current_vpts;
+
+const Engine::Scope&
+XineEngine::scope()
+{
+    if( xine_get_status( m_stream ) != XINE_STATUS_PLAY )
+       return m_scope;
+
+    //prune the buffer list and update the current_vpts timestamp
+    timerEvent( 0 );
+
+    for( int frame = 0; frame < 512; )
+    {
+        MyNode *best_node = 0;
+
+        for( MyNode *node = myList->next; node != myList; node = node->next, ++Log::bufferCount )
+            if ( node->vpts <= current_vpts && (!best_node || node->vpts > best_node->vpts) )
+                best_node = node;
+
+        if( !best_node || best_node->vpts_end < current_vpts ) {
+           ++Log::noSuitableBuffer; break; }
+
+        int64_t
+        diff  = current_vpts;
+        diff -= best_node->vpts;
+        diff *= 1<<16;
+        diff /= myMetronom->pts_per_smpls;
+
+        const int16_t*
+        data16  = best_node->mem;
+        data16 += diff;
+
+        diff /= myChannels;
+
+        int
+        n  = best_node->num_frames;
+        n -= diff;
+        n += frame; //clipping for # of frames we need
+        if( n > 512 ) n = 512; //bounds limiting
+
+        for( int a, c; frame < n; ++frame, data16 += myChannels ) {
+            for( a = c = 0; c < myChannels; ++c )
+                a += data16[c];
+
+            a /= myChannels;
+            m_scope[frame] = a;
+        }
+
+        current_vpts = best_node->vpts_end;
+        current_vpts++; //FIXME needs to be done for some reason, or you get situations where it uses same buffer again and again
+    }
+
+    ++Log::scopeCallCount;
+
+    return m_scope;
+}
+
+void
+XineEngine::timerEvent( QTimerEvent* )
+{
+    //here we prune the buffer list regularly
+
+    //we operate on a subset of the list for thread-safety
+    MyNode * const first_node = myList->next;
+    MyNode const * const list_end = myList;
+
+    current_vpts = xine_get_current_vpts( m_stream );
+
+    for( MyNode *prev = first_node, *node = first_node->next; node != list_end; node = node->next )
+    {
+        //we never delete first_node
+        //this maintains thread-safety
+
+        if( node->vpts_end < current_vpts )
+        {
+           prev->next = node->next;
+
+           free( node->mem );
+           free( node );
+
+           node = prev;
+        }
+
+        prev = node;
+    }
 }
 
 void

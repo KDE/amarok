@@ -24,9 +24,16 @@ struct my_node_s
     int64_t  vpts_end;
 };
 
-
 extern metronom_t *myMetronom;
 extern int myChannels;
 extern MyNode *myList;
+
+#ifdef __cplusplus
+extern "C"
+{
+    xine_post_t*
+    scope_plugin_new( xine_t*, xine_audio_port_t* );
+}
+#endif
 
 #endif
