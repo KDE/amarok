@@ -209,6 +209,16 @@ void SmartPlaylistView::loadDefaultPlaylists()
     item = new SmartPlaylist( i18n( "Never Played" ), qb.query(), this );
     item->setKey( ++c );
 
+    /********** Ever Played **************/
+    qb.initSQLDrag();
+    qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valScore );
+
+    item = new SmartPlaylist( i18n( "Ever Played" ), qb.query(), this );
+    item->setKey( ++c );
+
     /********** Genres **************/
     item = new SmartPlaylist( i18n( "Genres" ), QString(), this );
     item->setKey( ++c );
