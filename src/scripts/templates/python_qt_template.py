@@ -16,7 +16,6 @@
 
 import ConfigParser
 import os
-import Queue
 import sys
 import threading
 
@@ -39,6 +38,14 @@ class ConfigDialog( QDialog ):
         self.setWFlags( Qt.WDestructiveClose )
         self.setCaption( "Test Script - amaroK" )
 
+        foo = None
+        try:
+            config = ConfigParser.ConfigParser()
+            config.read( "testrc" )
+            foo = config.get( "General", "foo" )
+        except:
+            pass
+
         self.adjustSize()
 
     def save( self ):
@@ -55,15 +62,18 @@ class ConfigDialog( QDialog ):
         self.accept()
 
 
+class Notification( QCustomEvent ):
+    __super_init = QCustomEvent.__init__
+    def __init__( self, str ):
+        self.__super_init(QCustomEvent.User + 1)
+        self.string = str
+    
 class Test( QApplication ):
     """ The main application, also sets up the Qt event loop """
 
     def __init__( self, args ):
         QApplication.__init__( self, args )
         debug( "Started." )
-
-        self.queue = Queue.Queue()
-        self.startTimer( 100 )
 
         # Start separate thread for reading data from stdin
         self.stdinReader = threading.Thread( target = self.readStdin )
@@ -93,7 +103,7 @@ class Test( QApplication ):
             line = sys.stdin.readline()
 
             if line:
-                self.queue.put_nowait( line )
+                qApp.postEvent( self, Notification(line) )
             else:
                 break
 
@@ -102,30 +112,29 @@ class Test( QApplication ):
 # Notification Handling
 ############################################################################
 
-    def timerEvent( self, event ):
-        """ Polls the notification queue at regular interval """
+    def customEvent( self, notification ):
+        """ Handles notifications """
 
-        if not self.queue.empty():
-            string = QString( self.queue.get_nowait() )
-            debug( "Received notification: " + str( string ) )
+        string = QString(notification.string)
+        debug( "Received notification: " + str( string ) )
 
-            if string.contains( "configure" ):
-                self.configure()
+        if string.contains( "configure" ):
+            self.configure()
 
-            if string.contains( "engineStateChange: play" ):
-                self.engineStatePlay()
+        if string.contains( "engineStateChange: play" ):
+            self.engineStatePlay()
 
-            if string.contains( "engineStateChange: idle" ):
-                self.engineStateIdle()
+        if string.contains( "engineStateChange: idle" ):
+            self.engineStateIdle()
 
-            if string.contains( "engineStateChange: pause" ):
-                self.engineStatePause()
+        if string.contains( "engineStateChange: pause" ):
+            self.engineStatePause()
 
-            if string.contains( "engineStateChange: empty" ):
-                self.engineStatePause()
+        if string.contains( "engineStateChange: empty" ):
+            self.engineStatePause()
 
-            if string.contains( "trackChange" ):
-                self.trackChange()
+        if string.contains( "trackChange" ):
+            self.trackChange()
 
 # Notification callbacks. Implement these functions to react to specific notification
 # events from amaroK:
