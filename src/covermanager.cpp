@@ -89,20 +89,22 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     QHBoxLayout *hbox = new QHBoxLayout( viewBox->layout() );
 
     { //<Search LineEdit>
-        QHBox *searchBox; KToolBarButton *button;
-
-        searchBox         = new QHBox( coverWidget );
-        button       = new KToolBarButton( "locationbar_erase", 0, searchBox );
-        m_searchEdit = new KLineEdit( searchBox, "filter_edit" );
+        m_searchBox = new QHBox( coverWidget );
+        KToolBarButton *button = new KToolBarButton( "locationbar_erase", 0, m_searchBox );
+        m_searchEdit = new KLineEdit( m_searchBox, "filter_edit" );
         m_searchEdit->installEventFilter( this );
 
-        searchBox->setMargin( 1 );
+        m_searchBox->setMargin( 1 );
         m_searchEdit->setFrame( QFrame::Sunken );
+        //make the clear filter button use background color
+        QColorGroup cg = QApplication::palette().active();
+        cg.setColor( QColorGroup::Button, cg.background() );
+        button->setPalette( QPalette(cg, cg, cg) );
         connect( button, SIGNAL(clicked()), this, SLOT(clearFilter()) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
         QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter collection" ) );
-        hbox->addWidget( searchBox );
+        hbox->addWidget( m_searchBox );
     } //</Search LineEdit>
 
     m_timer = new QTimer( this );    //search filter timer
@@ -330,7 +332,7 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
             }
         }
 
-        m_searchEdit->setEnabled( false );
+        m_searchBox->setEnabled( false );
         m_viewButton->setEnabled( false );
 
         QTimer::singleShot( 0, this, SLOT( loadThumbnails() ) );
@@ -359,7 +361,7 @@ void CoverManager::loadThumbnails() //SLOT
         loadCover( values[0], values[1] );
     }
 
-    m_searchEdit->setEnabled( true );
+    m_searchBox->setEnabled( true );
     m_viewButton->setEnabled( true );
 }
 

@@ -68,6 +68,7 @@ Q_OBJECT
 
         KListView *m_artistView;
         KIconView *m_coverView;
+        QHBox *m_searchBox;
         KLineEdit *m_searchEdit;
         QToolButton *m_viewButton;
         KPopupMenu *m_viewMenu;
