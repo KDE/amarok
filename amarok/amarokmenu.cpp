@@ -14,11 +14,26 @@
 KHelpMenu *amaroK::Menu::HelpMenu = 0;
 
 
-amaroK::Menu::Menu( QWidget *parent )
+static bool plug( KActionCollection *ac, const char *name, QWidget *w )
+{
+    if( ac )
+    {
+        KAction *a = ac->action( name );
+
+        if( a )
+        {
+            a->plug( w );
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+amaroK::Menu::Menu( QWidget *parent, KActionCollection *ac )
   : QPopupMenu( parent )
 {
-    KActionCollection *ac = pApp->actionCollection();
-
     setCheckable( true );
 
     insertItem( i18n( "Repeat &Track" ),    ID_REPEAT_TRACK );
@@ -32,10 +47,10 @@ amaroK::Menu::Menu( QWidget *parent )
 
     insertSeparator();
 
-    ac->action( "options_configure_toolbars" )->plug( this );
-    ac->action( "options_configure_keybinding" )->plug( this );
-    ac->action( "options_configure_globals" )->plug( this );
-    ac->action( "options_configure" )->plug( this );
+    plug( ac, "options_configure_toolbars", this );
+    plug( ac, "options_configure_keybinding", this );
+    plug( ac, "options_configure_globals", this );
+    plug( ac, "options_configure", this );
 
     insertSeparator();
 
@@ -43,7 +58,7 @@ amaroK::Menu::Menu( QWidget *parent )
 
     insertSeparator();
 
-    ac->action( "file_quit" )->plug( this );
+    plug( ac, "file_quit", this );
 
     connect( this, SIGNAL( aboutToShow() ), SLOT( slotAboutToShow() ) );
     connect( this, SIGNAL( activated(int) ), SLOT( slotActivated(int) ) );
@@ -99,18 +114,18 @@ amaroK::MenuAction::plug( QWidget *w, int index )
 {
     KToolBar *bar = dynamic_cast<KToolBar*>(w);
 
-    if( !w || kapp && !kapp->authorizeKAction( name() ) ) return -1;
+    if( !bar || !kapp->authorizeKAction(name()) ) return -1;
 
     const int id = KAction::getToolButtonID();
 
     //TODO create menu on demand
     //TODO create menu above and aligned within window
     //TODO make the arrow point upwards!
-    bar->insertButton( QString::null, id, true, i18n( "Menu" ) );
+    bar->insertButton( QString::null, id, true, i18n( "Menu" ), index );
     bar->alignItemRight( id );
 
     KToolBarButton *button = bar->getButton( id );
-    button->setPopup( new amaroK::Menu( bar ) );
+    button->setPopup( new amaroK::Menu( bar, parentCollection() ) );
     button->setName( "toolbutton_amarok_menu" );
 
     addContainer( bar, id );

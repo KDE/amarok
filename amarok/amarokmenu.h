@@ -27,7 +27,7 @@ public:
     static const int ID_RANDOM_MODE     = 102;
     static const int ID_CONF_DECODER    = 103;
 
-    Menu( QWidget *parent );
+    Menu( QWidget *parent, KActionCollection* );
 
     static KPopupMenu *helpMenu( QWidget *parent = 0 );
 
