@@ -330,15 +330,16 @@ CollectionDB::albumSongCount( const QString &artist_id, const QString &album_id 
 
 
 void
-CollectionDB::addImageToAlbum( const QString& image, const QStringList& albums, bool temporary )
+CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, QString> > info, bool temporary )
 {
-    for ( uint i = 0; i < albums.count(); i++ )
+    for ( QValueList< QPair<QString, QString> >::ConstIterator it = info.begin(); it != info.end(); ++it )
     {
-        kdDebug() << "Added image for album: " << albums[i] << " - " << image << endl;
-        query( QString( "INSERT INTO images%1 ( path, album ) VALUES ( '%1', '%2' );" )
+        kdDebug() << "Added image for album: " << (*it).first << " - " << (*it).second << ": " << image << endl;
+        query( QString( "INSERT INTO images%1 ( path, artist, album ) VALUES ( '%1', '%2', '%3' );" )
          .arg( temporary ? "_temp" : "" )
          .arg( escapeString( image ) )
-         .arg( escapeString( albums[ i ] ) ) );
+         .arg( escapeString( (*it).first ) )
+         .arg( escapeString( (*it).second ) ) );
     }
 }
 
@@ -402,7 +403,7 @@ CollectionDB::albumImage( const QString &artist, const QString &album, uint widt
         }
 
         // no amazon cover found, let's try to find a cover in the song's directory
-        return getImageForAlbum( album, width );
+        return getImageForAlbum( artist, album, width );
     }
 }
 
@@ -414,7 +415,7 @@ CollectionDB::albumImage( const uint artist_id, const uint album_id, const uint 
 
 
 QString
-CollectionDB::getImageForAlbum( const QString& album, uint width )
+CollectionDB::getImageForAlbum( const QString& artist, const QString& album, uint width )
 {
     if ( !width ) width = AmarokConfig::coverPreviewSize();
     QString widthKey = QString::number( width ) + "@";
@@ -422,7 +423,8 @@ CollectionDB::getImageForAlbum( const QString& album, uint width )
     if ( album.isEmpty() )
         return notAvailCover( width );
 
-    query( QString( "SELECT path FROM images WHERE album LIKE '%1' ORDER BY path;" )
+    query( QString( "SELECT path FROM images WHERE artist LIKE '%1' AND album LIKE '%2' ORDER BY path;" )
+              .arg( escapeString( artist ) )
               .arg( escapeString( album ) ) );
 
     if ( !m_values.isEmpty() )
@@ -902,6 +904,7 @@ CollectionDB::createTables( bool temporary )
     //create images table
     query( QString( "CREATE %1 TABLE images%2 ("
                     "path VARCHAR(255),"
+                    "artist VARCHAR(255),"
                     "album VARCHAR(255) );" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
@@ -926,6 +929,7 @@ CollectionDB::createTables( bool temporary )
         query( "CREATE INDEX sampler_tag ON tags( sampler );" );
 
         query( "CREATE INDEX images_album ON images( album );" );
+        query( "CREATE INDEX images_artist ON images( artist );" );
 
         // create directory statistics database
         query( QString( "CREATE TABLE directories ("

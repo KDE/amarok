@@ -99,8 +99,8 @@ class CollectionDB : public QObject
         bool removeAlbumImage( const QString &artist, const QString &album );
 
         //local cover methods
-        void addImageToAlbum( const QString& image, const QStringList& albums, bool temporary );
-        QString getImageForAlbum( const QString& album, uint width = 0 );
+        void addImageToAlbum( const QString& image, QValueList< QPair<QString, QString> > info, bool temporary );
+        QString getImageForAlbum( const QString& artist, const QString& album, uint width = 0 );
         QString notAvailCover( int width = 0 );
 
         uint artistID( QString value, bool autocreate = true, bool useTempTables = false );

@@ -77,7 +77,7 @@ class CollectionView : public KListView
             //attributes:
                 KURL m_url;
         };
-        friend class Item; // for access to m_category2
+        friend class Item; // for access to m_cat2
 
         CollectionView( CollectionBrowser* parent );
         ~CollectionView();
@@ -125,7 +125,7 @@ class CollectionView : public KListView
 
     //attributes:
         //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.
-        static const int DATABASE_VERSION = 15;
+        static const int DATABASE_VERSION = 16;
         static const int DATABASE_STATS_VERSION = 3;
         static CollectionDB* m_db;
         static CollectionDB* m_insertdb;

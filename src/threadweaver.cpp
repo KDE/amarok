@@ -320,9 +320,9 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
-    QStringList albums;
+    typedef QPair<QString, QString> CoverBundle;
+    QValueList<CoverBundle> cbl;
     QStringList images;
-    QString lastdir;
     KURL url;
 
     m_parent->createTables( true );
@@ -351,8 +351,8 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
             MetaBundle bundle( url, f.tag(), 0 );
             m_parent->addSong( bundle, m_incremental );
 
-            if ( !albums.contains( bundle.album() ) )
-                albums << bundle.album();
+            if ( !cbl.contains( CoverBundle( bundle.artist(), bundle.album() ) ) )
+                cbl.append( CoverBundle( bundle.artist(), bundle.album() ) );
         }
         // Add tag-less tracks to database
         else if ( validMusic.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ).lower() ) )
@@ -365,18 +365,16 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
         else if ( validImages.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ).lower() ) )
             images << url.path();
 
-        // Update Compilation-flag
-        if ( url.path().section( '/', 0, -2 ) != lastdir || ( i + 1 ) == entries.count() )
+        // Update Compilation-flag, when this is the last loop-run or we're going to switch to another dir in the next run
+        if ( ( i + 1 ) == entries.count() || url.path().section( '/', 0, -2 ) != entries[ i + 1 ].section( '/', 0, -2 ) )
         {
             // we entered the next directory
             for ( uint j = 0; j < images.count(); j++ )
-                m_parent->addImageToAlbum( images[ j ], albums, true );
+                m_parent->addImageToAlbum( images[ j ], cbl, true );
 
-            albums.clear();
+            cbl.clear();
             images.clear();
-
-            if ( !lastdir.isEmpty() ) m_parent->checkCompilations( lastdir );
-            lastdir = url.path().section( '/', 0, -2 );
+            m_parent->checkCompilations( url.path().section( '/', 0, -2 ) );
         }
     }
 
