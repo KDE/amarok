@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>411</width>
-            <height>384</height>
+            <width>331</width>
+            <height>412</height>
         </rect>
     </property>
     <property name="caption">
@@ -88,7 +88,7 @@
                             </property>
                             <property name="font">
                                 <font>
-                                    <pointsize>20</pointsize>
+                                    <pointsize>8</pointsize>
                                 </font>
                             </property>
                             <property name="sampleText">
@@ -336,6 +336,8 @@
         </widget>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>kcfg_OsdEnabled</sender>
@@ -417,4 +419,11 @@
     <function access="protected">showEvent( QShowEvent * )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kfontrequester.h</includehint>
+    <includehint>kcolorbutton.h</includehint>
+    <includehint>kcolorbutton.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>kcombobox.h</includehint>
+</includehints>
 </UI>

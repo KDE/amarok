@@ -72,8 +72,6 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     addPage( new Options3( 0, "Colors" ), i18n( "Colors" ), "colors", i18n( "Configure Colors" ) );
     addPage( m_opt4, i18n( "Playback" ), "kmix", i18n( "Configure Playback" ) );
     addPage( new Options5( 0, "OSD" ), i18n( "OSD" ), "tv", i18n( "Configure On-Screen-Display" ) );
-
-    setInitialSize( minimumSizeHint() );
 }
 
 
