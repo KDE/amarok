@@ -41,9 +41,14 @@ SHORT-TERM (URGENT):
 
 MID-TERM:
 
+    * add: tabbed playlists.
+           For: it's convenient to have several playlists
+	   Against: the playlist is getting cluttered enough as it is!
+
     * add: #32<markey> icecast metadata support (uses UDP channel) -->markey
 
     * add: #28<muesli> add an option "clean playlist on startup"
+              <mxcl> do you mean remove duplicates or dead entries etc. ? Cool.
 
     * add: #27<markey> playlist column for tracknumber (requested by several users)
 
