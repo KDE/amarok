@@ -366,6 +366,8 @@ ScriptManager::notifyScripts( const QString& message )
     QString msg = message;
     msg.append( "\n" );
 
+    debug() << "Sending notification: " << msg;
+
     ScriptMap::Iterator it;
     for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
         if ( it.data().process )
