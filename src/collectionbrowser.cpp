@@ -554,13 +554,13 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         if( K3bExporter::isAvailable() ) {
             if( category == i18n("Artist") )
-                menu.insertItem( SmallIcon( "cdwriter_unmount" ), i18n("Burn All Tracks by This Artist"), BURN_ARTIST );
+                menu.insertItem( i18n("Burn All Tracks by This Artist"), BURN_ARTIST );
             else if( category == i18n("Album") )
-                menu.insertItem( SmallIcon( "cdwriter_unmount" ), i18n("Burn This Album"), BURN_ALBUM );
+                menu.insertItem( i18n("Burn This Album"), BURN_ALBUM );
             else if( !item->isExpandable() ) {
                 menu.insertSeparator();
-                menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n("Burn to CD as data"), BURN_DATACD );
-                menu.insertItem( SmallIcon( "cdaudio_unmount" ), i18n("Burn to CD as audio"), BURN_AUDIOCD );
+                menu.insertItem( i18n("Burn to CD as data"), BURN_DATACD );
+                menu.insertItem( i18n("Burn to CD as audio"), BURN_AUDIOCD );
             }
         }
 
