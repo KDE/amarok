@@ -131,7 +131,7 @@ void Loader::showSplash()
 int Loader::tryConnect()
 {
     //try to connect to the LoaderServer
-    uint sockfd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
+    int sockfd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
     if ( sockfd == -1 ) {
         qDebug( "[Loader::tryConnect()] socket() error" );
         return -1;

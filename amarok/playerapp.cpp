@@ -222,7 +222,7 @@ void PlayerApp::initEngine()
 
 void PlayerApp::initIpc()
 {
-    uint m_sockfd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
+    int m_sockfd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
     if ( m_sockfd == -1 ) {
         kdDebug() << "[PlayerApp::initIpc()] socket() error\n";
         return;
