@@ -1,7 +1,7 @@
 # -*-shell-script-*-
 
 [Meta]
-RootName: @amarok.kde.org/amarok:$SOFTWAREVERSION
+RootName: @kde.org/amarok:$SOFTWAREVERSION
 DisplayName: amaroK
 ShortName: amarok
 Maintainer: The amaroK Developers - http://amarok.kde.org
@@ -30,7 +30,7 @@ echo '*' | import
 [Prepare]
 # Dependency checking
 requireAtLeastVersion @kde.org/kdelibs 3.2
-requireAtLeastVersion @kde.org/taglib 1.0
+#requireAtLeastVersion @kde.org/taglib 1.0
 
 [Install]
 # Put your installation script here
