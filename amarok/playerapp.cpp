@@ -14,7 +14,6 @@ email                : markey@web.de
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-// $Id$
  
 #include "amarokarts/amarokarts.h"
 #include "amarokbutton.h"
