@@ -1076,9 +1076,9 @@ Playlist::viewportPaintEvent( QPaintEvent *e )
 
         const int y = (viewport()->height() - t.height()) / 2;
 
-        p.setBrush( alternateBackground() );
-        p.drawRoundRect( wd3-15, y-15, t.width()+30, t.height()+30 );
-        t.draw( &p, wd3, y, QRect(), colorGroup()  );
+        p.setBrush( colorGroup().background() );
+        p.drawRoundRect( wd3-15, y-15, t.width()+30, t.height()+30, 5, 5 );
+        t.draw( &p, wd3, y, QRect(), colorGroup() );
     }
 }
 
