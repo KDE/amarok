@@ -31,7 +31,7 @@
 #include <kfiledialog.h>
 #include <kglobal.h>
 #include <khtml_part.h>
-#include <khtmlview.h>,
+#include <khtmlview.h>
 #include <kiconloader.h>
 #include <kimageeffect.h> // gradient background image
 #include <kio/job.h>
