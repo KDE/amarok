@@ -357,13 +357,26 @@ void PlaylistWindow::setColors( const QPalette &pal, const QColor &bgAlt )
         {
             static_cast<KListView*>(obj)->setAlternateBackground( bgAlt );
         }
-        else if( obj->inherits("QLabel") || obj->inherits("QToolBar") )
+        else if( obj->inherits("QLabel") ) {
+            QColorGroup cg = pal.active();
+            cg.setColor( QColorGroup::Foreground, cg.text() );
+            widget->setPalette( QPalette(cg, cg, cg) );
+        }
+        else if( obj->inherits("KToolBarButton") || obj->inherits("QToolBar") )
         {
-            widget->setPaletteForegroundColor( Qt::white );
+            QColorGroup cg = pal.active();
+            cg.setColor( QColorGroup::Button, cg.background() );
+            widget->setPalette( QPalette(cg, cg, cg) );
         }
         else if( obj->inherits("QMenuBar") || obj->isA("QSplitterHandle") )
         {
             widget->setPalette( QApplication::palette() );
+        }
+        else if ( qstrcmp( obj->name(), "filter_edit" ) == 0 )
+        {
+            //FIXME this is hack for our greyed out text search box thingies (eg FileBrowser)
+            QEvent e( QEvent::FocusOut );
+            kapp->sendEvent( obj, &e );
         }
 
         #undef widget
