@@ -55,7 +55,7 @@ k_dcop:
    virtual int  trackTotalTime() = 0;                       ///< Return track length in seconds.
    virtual int  trackCurrentTime() = 0;                     ///< Return current play position in seconds.
 
-   virtual bool isPlaying() = 0;                            ///< DEPRECATED Return true if something is playing now.
+   virtual bool isPlaying() = 0;                            ///< Return true if something is playing now.
    virtual int  status() = 0;                               ///< Return playback status: 0 - stopped, 1 - paused, 2 - playing. < 0 - error
    virtual bool repeatTrackStatus() = 0;                    ///< Return repeat track status.
    virtual bool repeatPlaylistStatus() = 0;                 ///< Return repeat playlist status.
