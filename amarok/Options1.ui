@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>Options1</class>
 <widget class="QWidget">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>341</width>
-            <height>324</height>
+            <width>353</width>
+            <height>343</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -136,7 +136,7 @@
                         <string>&amp;Add directories:</string>
                     </property>
                     <property name="buddy" stdset="0">
-                        <cstring>comboBox1</cstring>
+                        <cstring>kcfg_DropMode</cstring>
                     </property>
                 </widget>
                 <widget class="QComboBox" row="2" column="1">

@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>Options4</class>
 <widget class="QWidget">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>330</width>
-            <height>293</height>
+            <width>386</width>
+            <height>338</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -98,7 +98,7 @@
                         <number>23</number>
                     </property>
                     <property name="buddy" stdset="0">
-                        <cstring>trackDelayLength</cstring>
+                        <cstring>kcfg_TrackDelayLength</cstring>
                     </property>
                 </widget>
                 <widget class="QRadioButton" row="0" column="0">
@@ -133,9 +133,6 @@
                     <property name="name">
                         <cstring>crossfadeLengthLabel</cstring>
                     </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
                     <property name="sizePolicy">
                         <sizepolicy>
                             <hsizetype>4</hsizetype>
@@ -151,15 +148,12 @@
                         <number>23</number>
                     </property>
                     <property name="buddy" stdset="0">
-                        <cstring>crossfadeLength</cstring>
+                        <cstring>kcfg_CrossfadeLength</cstring>
                     </property>
                 </widget>
                 <widget class="QSpinBox" row="3" column="1">
                     <property name="name">
                         <cstring>kcfg_CrossfadeLength</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
@@ -277,5 +271,19 @@
         </widget>
     </vbox>
 </widget>
+<connections>
+    <connection>
+        <sender>radioButtonNormalPlayback</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>kcfg_TrackDelayLength</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_Crossfade</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>kcfg_CrossfadeLength</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+</connections>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
