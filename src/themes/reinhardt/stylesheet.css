@@ -1,4 +1,4 @@
-body { margin: 8px; font-size: AMAROK_FONTSIZEpx; color: WindowText; background-color: Window; background-image: url( ./images/background.png ); background-repeat: no-repeat; background-position: fixed;}
+body { margin: 8px; font-size: AMAROK_FONTSIZEpx; color: WindowText; background-color: Window; background-image: url( ./images/background.png ); background-repeat: no-repeat; background-attachment: fixed;}
 a { font-size: 10px; color: WindowText; }
 .button { margin: 2px; padding: 2px; display: block; border: 1px solid ButtonShadow; background-color: Window; color: WindowText; }
 .button:hover { color: ButtonText; background-color: ButtonFace; }
