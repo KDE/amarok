@@ -81,7 +81,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
     private:
         template <class B> void addBrowser( const char*, const QString&, const QString& );
 
-        enum MenuId { ID_SHOW_MENUBAR = 2000, ID_SHOW_TOOLBAR };
+        enum MenuId { ID_SHOW_MENUBAR = 2000, ID_SHOW_TOOLBAR, ID_SHOW_PLAYERWINDOW };
 
         KMenuBar *m_menubar;
         KPopupMenu *m_settingsMenu;

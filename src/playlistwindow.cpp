@@ -19,32 +19,32 @@
 #include "browserbar.h"
 #include "collectionbrowser.h"
 #include "contextbrowser.h"
-#include "playlistbrowser.h"
 #include "enginecontroller.h" //for actions in ctor
 #include "filebrowser.h"
 #include "k3bexporter.h"
 #include "playlist.h"
+#include "playlistbrowser.h"
 #include "playlistwindow.h"
 #include "searchbrowser.h"
 #include "statusbar.h"
 
-#include <qcolor.h>        //setPalettes()
-#include <qevent.h>        //eventFilter()
+#include <qcolor.h>           //setPalettes()
+#include <qevent.h>           //eventFilter()
 #include <qlayout.h>
-#include <qobjectlist.h>   //setPaletteRecursively()
-#include <qpalette.h>      //setPalettes()
-#include <qtimer.h>    //search filter timer
-#include <qtooltip.h>      //QToolTip::add()
-#include <qvbox.h>         //contains the playlist
+#include <qobjectlist.h>      //setPaletteRecursively()
+#include <qpalette.h>         //setPalettes()
+#include <qtimer.h>           //search filter timer
+#include <qtooltip.h>         //QToolTip::add()
+#include <qvbox.h>            //contains the playlist
 
-#include <kaction.h>       //m_actionCollection
-#include <kapplication.h>  //kapp
+#include <kaction.h>          //m_actionCollection
+#include <kapplication.h>     //kapp
 #include <kdebug.h>
+#include <kfiledialog.h>      //savePlaylist()
 #include <kglobal.h>
-#include <kfiledialog.h>    //savePlaylist()
-#include <khtml_part.h>     //Welcome Tab
-#include <kiconloader.h>    //ClearFilter button
-#include <klineedit.h>      //m_lineEdit
+#include <khtml_part.h>       //Welcome Tab
+#include <kiconloader.h>      //ClearFilter button
+#include <klineedit.h>        //m_lineEdit
 #include <klocale.h>
 #include <kmenubar.h>
 #include <kpopupmenu.h>
@@ -53,8 +53,8 @@
 #include <ktoolbarbutton.h>   //createGUI()
 #include <kurlrequester.h>    //slotAddLocation()
 #include <kurlrequesterdlg.h> //slotAddLocation()
-#include <kxmlguifactory.h>   //XMLGUI
 #include <kxmlguibuilder.h>   //XMLGUI
+#include <kxmlguifactory.h>   //XMLGUI
 
 
 
@@ -267,7 +267,7 @@ PlaylistWindow::init()
     //TODO use KStdAction or KMainWindow
     m_settingsMenu->insertItem( i18n( "Hide Menubar" ), ID_SHOW_MENUBAR );
     m_settingsMenu->insertItem( i18n( "Hide Toolbar" ), ID_SHOW_TOOLBAR );
-    m_settingsMenu->insertItem( i18n( "Show &Player Window" ) );
+    m_settingsMenu->insertItem( AmarokConfig::showPlayerWindow() ? i18n("Hide Player Window") : i18n("Show Player Window"), ID_SHOW_PLAYERWINDOW );
     m_settingsMenu->insertSeparator();
     //this should be only a context menu option and use next-queue graphics with an infinity symbol or something
     actionCollection()->action("repeat_track")->plug( m_settingsMenu );
@@ -671,6 +671,11 @@ void PlaylistWindow::slotMenuActivated( int index )
     case ID_SHOW_TOOLBAR:
         m_toolbar->setShown( !m_toolbar->isShown() );
         m_settingsMenu->changeItem( index, m_toolbar->isShown() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
+        break;
+    case ID_SHOW_PLAYERWINDOW:
+        AmarokConfig::setShowPlayerWindow( !AmarokConfig::showPlayerWindow() );
+        m_settingsMenu->changeItem( index, AmarokConfig::showPlayerWindow() ? i18n("Hide Player Window") : i18n("Show Player Window") );
+        QTimer::singleShot( 0, kapp, SLOT( applySettings() ) );
         break;
     }
 }
