@@ -183,8 +183,9 @@ OSDWidget::render( const uint M, const QSize &size )
     QPoint point;
     QRect rect( point, size );
 
-    const uint xround = (M * 300) / size.width();
-    const uint yround = (M * 300) / size.height();
+    // From qt sources
+    const uint xround = (M * 200) / size.width();
+    const uint yround = (M * 200) / size.height();
 
     debug() << size << endl;
     debug() << xround << endl;
