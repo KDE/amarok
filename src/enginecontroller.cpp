@@ -130,10 +130,23 @@ amaroK::Plugin *EngineController::loadEngine( const QString &engineName )
        query = "[X-KDE-amaroK-plugintype] == 'engine' and [X-KDE-amaroK-name] != '%1'";
        KTrader::OfferList offers = PluginManager::query( query.arg( engineName ) );
 
-       //TODO prioritise high rank engines
+       /*
+         for ( uint i = 0; i < offers.count(); i++ )
+             kdDebug() << "  - offers[" << i << "].name: " << offers[i]->name() 
+             << "; rank:" << offers[i]->property( "X-KDE-amaroK-rank" ).toInt() << endl;
+       */
        while( !plugin && !offers.isEmpty() ) {
-          plugin = PluginManager::createFromService( offers.front() );
-          offers.pop_front();
+          // prioritise highest rank for left engines
+          int rank = 0;
+          uint current = 0;
+          for ( uint i = 0; i < offers.count(); i++ ) {
+            if ( offers[i]->property( "X-KDE-amaroK-rank" ).toInt() > rank ) {
+             current = i;
+             rank = offers[i]->property( "X-KDE-amaroK-rank" ).toInt();
+            }
+          }
+          plugin = PluginManager::createFromService( offers[current] );
+          offers.remove(offers[current]);
        }
 
        if( !plugin ) {
