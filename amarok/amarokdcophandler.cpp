@@ -1,3 +1,4 @@
+#include "amarokslider.h"
 #include "playerapp.h"
 #include "browserwin.h"
 #include "playerwidget.h"

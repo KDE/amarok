@@ -3,10 +3,15 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number, 
-           #12 being the highest available (take this one for your next bug and increase here)
+           #13 being the highest available (take this one for your next bug and increase here)
 
                       
 SHORT-TERM (URGENT):
+
+    * fix: #12<markey> prevent zombie processes after amarok has exited (proper exit or crashing). 
+              such zombies can lead to very weird behaviour on next amarok start and eat ressources,
+              and the user has no chance of noticing what's wrong.
+              is it possible to catch crash signals and do some cleanup? 
 
     * fix: #11<markey> bitrate display often shows bogus values (especially with VBR, it seems)
     
@@ -109,8 +114,6 @@ MID-TERM:
 
     * add: save/load arts effects on close/startup automatically
 
-    * chg: #10 replace QSlider with custom slider class, modelled after muesli's design proposal -->markey
-    
     * chg: can we make all buttons into actions? if we can, we could use setState(), a global
            actionCollection and save plenty of LOC. I see problems with the play/stop/etc
            buttons though.

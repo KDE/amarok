@@ -18,10 +18,11 @@
 #ifndef PLAYERWIDGET_H
 #define PLAYERWIDGET_H
 
+#include "amarokslider.h"
+
 #include <qlabel.h>
 #include <qwidget.h>
 #include <qpixmap.h>
-#include <qslider.h>
 
 #include <ksystemtray.h>
 #include <khelpmenu.h> //inlined helpmenu()
@@ -44,8 +45,8 @@ class KActionCollection;
 class KSystemTray;
 
 class AmarokButton;
-class ArtsConfigWidget;
 class AnalyzerBase;
+class ArtsConfigWidget;
 
 class PlayerApp;
 extern PlayerApp *pApp;
@@ -57,30 +58,6 @@ class AmarokDcopHandler;
 /**
  *@author mark
  */
-
-// CLASS AmarokSlider ------------------------------------------------------------
-
-class AmarokSlider : public QSlider
-{
-        Q_OBJECT
-
-    public:
-        AmarokSlider( QWidget *parent );
-        ~AmarokSlider();
-
-
-        // ATTRIBUTES ------
-
-    public slots:
-
-    signals:
-
-    private:
-        void mousePressEvent( QMouseEvent *e );
-
-        // ATTRIBUTES ------
-};
-
 
 // CLASS AmarokSystray ------------------------------------------------------------
 

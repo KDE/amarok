@@ -17,6 +17,7 @@ email                :
 
 #include "amarokarts/amarokarts.h"
 #include "amarokbutton.h"
+#include "amarokslider.h"
 #include "analyzers/analyzerbase.h"
 #include "browserwin.h"
 #include "configdlg.h"

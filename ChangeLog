@@ -3,6 +3,7 @@ amaroK Changelog
 (c) 2002, 2003 by Mark Kretschmann and the amaroK team. GPL License.
 
 
+  * chg: replaced sliders with custom slider class, which fits better in our design
   * fix: exchanged c32-app-amarok.png with the correct (active) version
   * fix: amarok.desktop file. now we show up in the k-menu again.
   * fix: crossfading aRts module. the fading is now much smoother than before

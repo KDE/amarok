@@ -20,7 +20,7 @@
     <general>
       <mainprogram>amarok</mainprogram>
       <useconfiguration>default</useconfiguration>
-      <activetarget>amarok/viswidgets/libviswidgets.a</activetarget>
+      <activetarget>amarok/amarok</activetarget>
       <useactivetarget>true</useactivetarget>
     </general>
     <configure>

@@ -16,6 +16,7 @@ email                :
  ***************************************************************************/
 
 #include "amarokbutton.h"
+#include "amarokslider.h"
 #include "browserwin.h"
 #include "effectwidget.h"
 #include "playerapp.h"
@@ -44,7 +45,6 @@ email                :
 #include <qpopupmenu.h>
 #include <qpushbutton.h>
 #include <qrect.h>
-#include <qslider.h>
 #include <qstring.h>
 #include <qtoolbutton.h>
 #include <qtooltip.h>
@@ -63,37 +63,6 @@ email                :
 #include <kstandarddirs.h>
 #include <ksystemtray.h>
 #include <kmessagebox.h>
-
-// CLASS AmarokSlider ------------------------------------------------------------
-
-AmarokSlider::AmarokSlider( QWidget *parent ) : QSlider( parent )
-{}
-
-
-AmarokSlider::~AmarokSlider()
-{}
-
-
-void AmarokSlider::mousePressEvent( QMouseEvent *e )
-{
-    float newVal;
-
-    if ( orientation() == QSlider::Horizontal )
-        newVal = static_cast<float>( e->x() ) / static_cast<float>( width() ) * maxValue();
-    else
-        newVal = static_cast<float>( e->y() ) / static_cast<float>( height() ) * maxValue();
-
-    int intVal = static_cast<int>( newVal );
-
-    if ( ( intVal < value() - 10 ) || ( intVal > value() + 10 ) )
-    {
-        pApp->m_bSliderIsPressed = true;
-        setValue( intVal );
-        emit sliderReleased();
-    }
-
-    QSlider::mousePressEvent( e );
-}
 
 
 // CLASS AmarokSystray ------------------------------------------------------------
@@ -227,18 +196,10 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_pFrameButtons = new QFrame( this );
     m_pFrameButtons->setPaletteBackgroundPixmap( m_oldBgPixmap );
 
-    m_pSlider = new AmarokSlider( this );
-    m_pSlider->setOrientation( QSlider::Horizontal );
-    m_pSlider->setPageStep( 1 );
-    m_pSlider->setValue( 0 );
-    m_pSlider->setTracking( true );
+    m_pSlider = new AmarokSlider( this, Qt::Horizontal );
     m_pSlider->setFocusPolicy( QWidget::NoFocus );
 
-    m_pSliderVol = new AmarokSlider( this );
-    m_pSliderVol->setOrientation( QSlider::Vertical );
-    m_pSliderVol->setPageStep( 1 );
-    m_pSliderVol->setValue( 0 );
-    m_pSliderVol->setTracking( true );
+    m_pSliderVol = new AmarokSlider( this, Qt::Vertical );
     m_pSliderVol->setFocusPolicy( QWidget::NoFocus );
 
     QString pathStr( locate( "data", "amarok/images/b_prev.png" ) );
@@ -327,9 +288,10 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
 
     lay->addItem( new QSpacerItem( 0, 5 ) );
     QBoxLayout* lay2 = new QHBoxLayout( lay );
-    lay2->addItem( new QSpacerItem( 1, 0 ) );
+    lay->addItem( new QSpacerItem( 0, 5 ) );
+    lay2->addItem( new QSpacerItem( 6, 0 ) );
     lay2->addWidget( m_pSlider );
-    lay2->addItem( new QSpacerItem( 1, 0 ) );
+    lay2->addItem( new QSpacerItem( 6, 0 ) );
 
     lay3->addItem( new QSpacerItem( 1, 0 ) );
     lay3->addWidget( m_pSliderVol );
