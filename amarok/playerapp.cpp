@@ -244,7 +244,6 @@ void PlayerApp::restoreSession()
         {
             MetaBundle *bundle = TagReader::readTags( AmarokConfig::resumeTrack(), true );
 
-            //TODO make a static syncronous readTags function
             play( *bundle );
 
             if ( seconds > 0 )

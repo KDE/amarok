@@ -279,6 +279,11 @@ void PlaylistLoader::translate( QString &path )
 void PlaylistLoader::translate( QString &path, KFileItemList &list )
 #endif
 {
+   #ifdef FAST_TRANSLATE
+   QStringList directories;
+   QStringList files;
+   #endif
+
    DIR *d = opendir( path.local8Bit() );
    if( !path.endsWith( "/" ) ) path += '/';
 
@@ -293,7 +298,7 @@ void PlaylistLoader::translate( QString &path, KFileItemList &list )
 
          if( file == "." || file == ".." ) continue;
 
-         QString newPath = path + ent->d_name;
+         QString newPath = path + file;
 
          //get file information
          if( LSTAT( newPath.local8Bit(), &statbuf ) == 0 )
@@ -308,7 +313,7 @@ void PlaylistLoader::translate( QString &path, KFileItemList &list )
             {
                if( !options.symlink && S_ISLNK( statbuf.st_mode ) ) continue;
             #ifdef FAST_TRANSLATE
-               translate( newPath );
+               directories += newPath;
             #else
                translate( newPath, list );
             #endif
@@ -317,13 +322,12 @@ void PlaylistLoader::translate( QString &path, KFileItemList &list )
             else if( S_ISREG( statbuf.st_mode ) )  //file
             {
                if( isPlaylist( newPath ) ) continue; //Markey says don't process playlists in subdirs
-
-               KURL url; url.setPath( newPath ); //safe way to do it for unix paths
+               KURL url; url.setPath( newPath );     //safe way to do it for unix paths
                //we save some time and pass the stat'd information
                if( isValidMedia( url, statbuf.st_mode & S_IFMT, statbuf.st_mode & 07777 ) )
                {
                #ifdef FAST_TRANSLATE
-                  postBundle( url );
+                  files += file;
                #else
                   //true means don't determine mimetype (waste of cycles for sure!)
                   list.append( new KFileItem( statbuf.st_mode & S_IFMT, statbuf.st_mode & 07777, url, true ) );
@@ -334,6 +338,20 @@ void PlaylistLoader::translate( QString &path, KFileItemList &list )
       } //while
 
       closedir( d );
+
+      //alpha-sort the files we found, and then post them to the playlist
+      files.sort();
+      for( QStringList::Iterator it = files.begin(); it != files.end(); ++it )
+      {
+         (*it).prepend( path );
+         KURL url;
+         url.setPath( *it );
+         postBundle( url );
+      }
+
+      //translate all sub-directories
+      for( QStringList::Iterator it = directories.begin(); it != directories.end(); ++it ) translate( *it );
+
    } //if( d )
 }
 

@@ -82,8 +82,8 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
     //    m_rootPixmap.start();
 
     //NOTE order is critical because we can't set indexes or ids
-    addColumn( i18n( "Trackname" ), 280 );
-    addColumn( i18n( "Title"     ), 200 );
+    addColumn( i18n( "Trackname" ),   0 );
+    addColumn( i18n( "Title"     ), 200 ); //displays trackname if no title tag
     addColumn( i18n( "Artist"    ), 100 );
     addColumn( i18n( "Album"     ), 100 );
     addColumn( i18n( "Year"      ),   0 ); //0 means hidden
@@ -167,9 +167,6 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
 
     // Read playlist columns layout
     restoreLayout( KGlobal::config(), "PlaylistColumnsLayout" );
-
-    //TODO remove this in a few versions
-    if( columnWidth( 0 ) == 0 ) setColumnWidth( 0, 100 );
 
     kdDebug() << "KListViewItem: " << sizeof( KListViewItem ) << endl;
     kdDebug() << "QListViewItem: " << sizeof( QListViewItem ) << endl;
