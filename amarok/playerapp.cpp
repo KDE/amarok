@@ -533,7 +533,7 @@ void PlayerApp::saveConfig()
 #if KDE_IS_VERSION(3,1,3)
     m_pConfig->writePathEntry( "PathHistory", m_pBrowserWin->m_pBrowserLineEdit->historyItems() );
 #else
-     m_pConfig->writeEntry( "PathHistory", m_pBrowserWin->m_pBrowserLineEdit->historyItems() );
+    m_pConfig->writeEntry( "PathHistory", m_pBrowserWin->m_pBrowserLineEdit->historyItems() );
 #endif
     m_pConfig->writeEntry( "PlayerPos", m_pPlayerWidget->pos() );
     m_pConfig->writeEntry( "BrowserWinPos", m_pBrowserWin->pos() );
@@ -592,9 +592,9 @@ void PlayerApp::readConfig()
 
     m_pBrowserWin->m_pBrowserWidget->readDir( m_pConfig->readPathEntry( "CurrentDirectory", QDir::home().path() ) );
 #if KDE_IS_VERSION(3,1,3)
-     m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( m_pConfig->readPathListEntry( "PathHistory" ) );
+    m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( m_pConfig->readPathListEntry( "PathHistory" ) );
 #else
-     m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( m_pConfig->readListEntry( "PathHistory" ) );
+    m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( m_pConfig->readListEntry( "PathHistory" ) );
 #endif
     m_pPlayerWidget->move( m_pConfig->readPointEntry( "PlayerPos", &pointZero ) );
     m_pBrowserWin->move( m_pConfig->readPointEntry( "BrowserWinPos", &pointZero ) );
