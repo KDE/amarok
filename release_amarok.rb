@@ -7,8 +7,8 @@
 # License: GPL V2
 
 
-version  = `kdialog --inputbox "amaroK version: "`
-username = `kdialog --inputbox "CVS username: "`
+version  = `kdialog --inputbox "amaroK version: "`.chomp
+username = `kdialog --inputbox "CVS username: "`.chomp
 
 cvsroot  = ":pserver:#{username}@cvs.kde.org:/home/kde"
 folder   = "amarok-#{version}"
@@ -18,28 +18,31 @@ log      = "/dev/null"
 
 # Prevent using unsermake
 oldmake = ENV["UNSERMAKE"]
-`export UNSERMAKE=no`
+ENV["UNSERMAKE"] = "no"
 
 # Remove old folder, if exists
 `rm -rf #{folder} 2> /dev/null`
 `rm -rf folder.tar.bz2 2> /dev/null`
 
-`mkdir #{folder}`
-`pushd #{folder}`
+Dir.mkdir( folder )
+Dir.chdir( folder )
+
 `cvs -d #{cvsroot} co -l kdeextragear-1`
 `cvs -z3 -d #{cvsroot} co kdeextragear-1/amarok`
 `cvs -z3 -d #{cvsroot} co -l kdeextragear-1/doc`
 `cvs -z3 -d #{cvsroot} co kdeextragear-1/doc/amarok`
-`pushd kdeextragear-1`
-
+Dir.chdir( "kdeextragear-1" )
 'cvs -z3 -d #{cvsroot} co admin'
 
 print
 print "**** i18n ****"
 print
 
+exit
+
+
 # we check out kde-i18n/subdirs in kde-i18n..
-if doi18n = "yes"
+if doi18n == "yes"
     `echo "cvs co kde-i18n/subdirs" >> #{log}`
     `cvs -z3 -d #{cvsroot} -q co -P kde-i18n/subdirs > /dev/null 2>&1`
     i18nlangs = `cat kde-i18n/subdirs`
@@ -137,7 +140,7 @@ print
 `rm -rf #{folder}`
 
 
-`export UNSERMAKE=#{oldmake}`
+ENV["UNSERMAKE"] = oldmake
 
 
 print
