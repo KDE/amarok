@@ -452,7 +452,7 @@ void ContextBrowser::showCurrentTrack()
         browser->write( "</table>" );
         browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-        QString albumString = m_currentTrack->artist() + " - " + m_currentTrack->album();
+//         QString albumString = m_currentTrack->artist() + " - " + m_currentTrack->album();
                     
         for ( uint i = 0; i < ( values.count() / 3 ); i++ )
         {
@@ -461,7 +461,7 @@ void ContextBrowser::showCurrentTrack()
                                       "</tr>" )
                             .arg( values[i*3 + 2] )
                             .arg( values[i*3 + 1] )
-                            .arg( m_db->getImageForAlbum( values[i*3 + 2], values[i*3 + 1], albumString, locate( "data", "amarok/images/sound.png" ) ) )
+                            .arg( m_db->getImageForAlbum( values[i*3 + 2], values[i*3 + 1], locate( "data", "amarok/images/sound.png" ) ) )
                             .arg( values[i*3] )
                             .arg( m_db->albumSongCount( values[i*3 + 2], values[i*3 + 1] ) ) );
         }

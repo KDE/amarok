@@ -14,100 +14,10 @@
 #include <kstandarddirs.h>
 #include <kurl.h>
 
-#include <qbuffer.h>
 #include <qimage.h>
 
 #include <sys/stat.h>
 
-/*
-** Encode a binary buffer "in" of size n bytes so that it contains
-** no instances of characters '\'' or '\000'.  The output is 
-** null-terminated and can be used as a string value in an INSERT
-** or UPDATE statement.  Use sqlite_decode_binary() to convert the
-** string back into its original binary.
-**
-** The result is written into a preallocated output buffer "out".
-** "out" must be able to hold at least 2 +(257*n)/254 bytes.
-** In other words, the output will be expanded by as much as 3
-** bytes for every 254 bytes of input plus 2 bytes of fixed overhead.
-** (This is approximately 2 + 1.0118*n or about a 1.2% size increase.)
-**
-** The return value is the number of characters in the encoded
-** string, excluding the "\000" terminator.
-*/
-int sqlite_encode_binary(const unsigned char *in, int n, unsigned char *out){
-  int i, j, e, m;
-  int cnt[256];
-  if( n<=0 ){
-    out[0] = 'x';
-    out[1] = 0;
-    return 1;
-  }
-  memset(cnt, 0, sizeof(cnt));
-  for(i=n-1; i>=0; i--){ cnt[in[i]]++; }
-  m = n;
-  for(i=1; i<256; i++){
-    int sum;
-    if( i=='\'' ) continue;
-    sum = cnt[i] + cnt[(i+1)&0xff] + cnt[(i+'\'')&0xff];
-    if( sum<m ){
-      m = sum;
-      e = i;
-      if( m==0 ) break;
-    }
-  }
-  out[0] = e;
-  j = 1;
-  for(i=0; i<n; i++){
-    int c = (in[i] - e)&0xff;
-    if( c==0 ){
-      out[j++] = 1;
-      out[j++] = 1;
-    }else if( c==1 ){
-      out[j++] = 1;
-      out[j++] = 2;
-    }else if( c=='\'' ){
-      out[j++] = 1;
-      out[j++] = 3;
-    }else{
-      out[j++] = c;
-    }
-  }
-  out[j] = 0;
-  return j;
-}
-
-/*
-** Decode the string "in" into binary data and write it into "out".
-** This routine reverses the encoding created by sqlite_encode_binary().
-** The output will always be a few bytes less than the input.  The number
-** of bytes of output is returned.  If the input is not a well-formed
-** encoding, -1 is returned.
-**
-** The "in" and "out" parameters may point to the same buffer in order
-** to decode a string in place.
-*/
-int sqlite_decode_binary(const unsigned char *in, unsigned char *out){
-  int i, c, e;
-  e = *(in++);
-  i = 0;
-  while( (c = *(in++))!=0 ){
-    if( c==1 ){
-      c = *(in++);
-      if( c==1 ){
-        c = 0;
-      }else if( c==2 ){
-        c = 1;
-      }else if( c==3 ){
-        c = '\'';
-      }else{
-        return -1;
-      }
-    }
-    out[i++] = (c + e)&0xff;
-  }
-  return i;
-}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionDB
@@ -116,8 +26,9 @@ int sqlite_decode_binary(const unsigned char *in, unsigned char *out){
 CollectionDB::CollectionDB()
         : m_weaver( new ThreadWeaver( this ) )
         , m_cacheDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) )
+        , m_coverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) )
 {
-    QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
+    QCString path = ( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" )
                   + "collection.db" ).local8Bit();
 
     m_db = sqlite_open( path, 0, 0 );
@@ -126,6 +37,11 @@ CollectionDB::CollectionDB()
     if( !m_cacheDir.exists( "cache", false ) )
         m_cacheDir.mkdir( "cache", false );
     m_cacheDir.cd( "cache" );
+
+    // create cover cache dir, if it doesn't exist.
+    if( !m_coverDir.exists( "albumcovers", false ) )
+        m_coverDir.mkdir( "albumcovers", false );
+    m_coverDir.cd( "albumcovers" );
 }
 
 
@@ -205,58 +121,23 @@ CollectionDB::getPathForAlbum( const QString artist_id, const QString album_id )
 
 
 QString
-CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id, const QString album, const QString defaultImage )
+CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id, const QString defaultImage )
 {
     KURL url;
     url.setPath( getPathForAlbum( artist_id, album_id ) );
 
-    return getCoverForAlbum( url.directory(), album, defaultImage );
-
-//     return getImageForPath( url.directory(), defaultImage );
-}
-
-
-QString
-CollectionDB::getCoverForAlbum( const QString& path, const QString& album, const QString& defaultImage, const uint width )
-{
-    kdDebug() << "Fetching album from DB: " << album << endl;
-    
-    if ( album.isEmpty() )
-        return defaultImage;
-
     QStringList values;
-    QStringList names;
-
-    QString escapedPath( QString::number( width ) + "@" + path );
-    escapedPath.replace( "/", "_" );
-    escapedPath.replace( "'", "_" );
-
-    if ( m_cacheDir.exists( escapedPath ) )
-        return m_cacheDir.absPath() + "/" + escapedPath;
-
-    execSql( QString( "SELECT image FROM covers WHERE album = '%1';" )
-             .arg( escapeString( album ) ), &values, &names );
-
-    if ( values.count() )
-    {
-        unsigned char* decodeBuf = new unsigned char[qstrlen( values[0].ascii() )];
-        sqlite_decode_binary( (const unsigned char*) values[0].ascii(), decodeBuf );
-        QImage img;
-        QCString str( (const char*) decodeBuf );
-        img.loadFromData( str, "JPEG" );
-        delete[] decodeBuf;
-        
-        QPixmap pix;
-        if( pix.convertFromImage( img.smoothScale( width, width ) ) )
-        {
-            pix.save( m_cacheDir.absPath() + "/" + escapedPath, "PNG" );
-            return m_cacheDir.absPath() + "/" + escapedPath;
-        }
-    }
-    else 
-        kdDebug() << "DB does not contain cover image for album: " << album << endl;
+    execSql( QString( "SELECT DISTINCT artist.name, album.name FROM artist, album "
+                      "WHERE artist.id = %1 AND album.id = %2;" )
+                      .arg( artist_id ).arg( album_id ), &values );
+                 
+    QString coverName = values[0] + " - " + values[1] + ".png";
+    kdDebug() << "Looking for cover image: " << m_coverDir.filePath( coverName ) << endl;
     
-    return defaultImage;
+    if ( m_coverDir.exists( coverName ) )
+        return m_coverDir.filePath( coverName );
+             
+    return getImageForPath( url.directory(), defaultImage );
 }
 
 
@@ -411,9 +292,9 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
         if ( error == SQLITE_DONE || error == SQLITE_ERROR )
             break;
         //iterate over columns
-        for ( int i = 0; values && names && i < number; i++ ) {
-            *values << QString::fromLocal8Bit( value [i] );
-            *names << QString::fromLocal8Bit( colName[i] );
+        for ( int i = 0; i < number; i++ ) {
+            if ( values ) *values << QString::fromLocal8Bit( value [i] );
+            if ( names ) *names << QString::fromLocal8Bit( colName[i] );
         }
     }
     //deallocate vm ressources
@@ -493,13 +374,6 @@ CollectionDB::createTables( bool temporary )
     execSql( QString( "CREATE %1 TABLE images%2 ("
                         "path VARCHAR(100),"
                         "name VARCHAR(100) );" )
-                        .arg( temporary ? "TEMPORARY" : "" )
-                        .arg( temporary ? "_temp" : "" ) );
-
-    //create covers table
-    execSql( QString( "CREATE %1 TABLE covers%2 ("
-                        "image BLOB,"
-                        "album VARCHAR(100) );" )
                         .arg( temporary ? "TEMPORARY" : "" )
                         .arg( temporary ? "_temp" : "" ) );
     
@@ -824,30 +698,14 @@ CollectionDB::retrieveSecondLevelURLs( QString itemText1, QString itemText2, QSt
 
 
 void
-CollectionDB::saveCover( const QString& keyword, const QPixmap& image )
+CollectionDB::saveCover( const QString& keyword, const QPixmap& pix )
 {
     kdDebug() << k_funcinfo << endl;
     
-    QByteArray ba;
-    QBuffer buffer( ba );
-    buffer.open( IO_WriteOnly );
-     // write pixmap into ba in JPG format
-    image.save( &buffer, "JPEG" ); 
-
-    // SQLite 2.x can't handle binary data, so we must encode the image
-    unsigned char* encodeBuf = new unsigned char[ba.size()*2];
-    sqlite_encode_binary( (const unsigned char*) ba.data(), ba.size(), encodeBuf );
+    QImage img( pix.convertToImage() );
     
-    // Delete old image, if present
-    execSql( QString( "DELETE FROM covers WHERE album = '%1';" )
-             .arg( escapeString( keyword ) ) );
-    
-    execSql( QString( "INSERT INTO covers ( album, image ) VALUES ( '%1', '%2' );" )
-             .arg( escapeString( keyword ) )
-             .arg( QString::fromAscii( (const char*) encodeBuf ) ) );
-
-    kdDebug() << "Cover image saved to DB. Used keyword: " << keyword << endl;
-    delete[] encodeBuf;
+    img.smoothScale( 40, 40 );
+    img.save( m_coverDir.filePath( keyword + ".png" ), "PNG" );
 }
 
 
