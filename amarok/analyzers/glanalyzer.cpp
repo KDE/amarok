@@ -21,12 +21,10 @@
 #include "glanalyzer.h"
 
 #include <math.h>
-#include <vector>
-
 #include <kdebug.h>
 
-GLAnalyzer::GLAnalyzer( QWidget *parent, const char *name ):
-AnalyzerBase3d(15, parent, name)
+GLAnalyzer::GLAnalyzer( QWidget *parent ):
+Analyzer::Base3D(parent, 15)
 {
 }
 
@@ -49,13 +47,13 @@ void GLAnalyzer::drawAnalyzer( std::vector<float> *s )
 {
   if (s)
   {
-    interpolate(s, m_bands); //if no s then we are paused/stopped
+    Analyzer::interpolate(s, m_bands); //if no s then we are paused/stopped
     updateGL();
   }
 }
 
 void GLAnalyzer::initializeGL()
-{	
+{
 	init();
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);// Set clear color to black
 	// Set the shading model
@@ -65,7 +63,7 @@ void GLAnalyzer::initializeGL()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	// Enable depth testing for hidden line removal
-	glEnable(GL_DEPTH_TEST);		
+	glEnable(GL_DEPTH_TEST);
 
 	// Set blend parameters for 'composting alpha'
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -86,13 +84,13 @@ void GLAnalyzer::drawScope()
 	drawFloor();
 	glRotatef(0.25f, 0.1f, 1.0f, 0.5f); //Rotate the scene
 	for ( uint i = 0; i < m_bands.size(); i++ )
-	{	
+	{
 		// Calculate new horizontal position (x) depending on number of samples
-		x = -20.0f + ((40.0f) / float(m_bands.size()) * i);	
+		x = -20.0f + ((40.0f) / float(m_bands.size()) * i);
 
 		// Calculating new vertical position (y) depending on the data passed by amarok
 		y = float(m_bands[i] * 30.0f); //Should multiply by 20 but it looks crappy
-		
+
 		if((y - m_oldy[i]) < -0.5f) // Going Down Too Much
 		{
 			y = m_oldy[i] - 0.5f;
@@ -101,21 +99,21 @@ void GLAnalyzer::drawScope()
 		{
 			y = 0.0f;
 		}
-		
+
 		m_oldy[i] = y; //Save value as last value
-		
+
 		//Peak Code
 		if (m_oldy[i] > m_peaks[i].level)
 		{
 			m_peaks[i].level = m_oldy[i];
 			m_peaks[i].delay = 30;
 		}
-		
+
 		if (m_peaks[i].delay > 0)
 		{
 			m_peaks[i].delay--;
 		}
-		
+
 		if (m_peaks[i].level > 1.0f)
 		{
 			if (m_peaks[i].delay <= 0)
@@ -123,7 +121,7 @@ void GLAnalyzer::drawScope()
 				m_peaks[i].level-=0.3f;
 			}
 		}
-    	
+
 		// Draw the bar
 		drawBar(x,y);
 		drawPeak(x, m_peaks[i].level);
@@ -166,10 +164,10 @@ void GLAnalyzer::drawBar(float xPos, float height)
 	//Set the colour depending on the height of the bar
 	glColor3f((height/40) + 0.5f, (height/40) + 0.625f, 1.0f);
         glTranslatef(xPos, -10.0f, 0.0f);
-                
+
         glScalef(1.0f, height, 3.0f);
         drawCube();
-	
+
 	//Set colour to full blue
 	glColor3f(0.0f, 0.0f, 1.0f);
 	drawFrame();
@@ -183,10 +181,10 @@ void GLAnalyzer::drawFloor()
         //Sets color to amarok blue
 	glColor3f( 0.5f, 0.625f, 1.0f);
         glTranslatef(-20.0f,-11.0f, -4.0f);
-                
+
         glScalef(40.0f, 1.0f, 10.0f);
         drawCube();
-	
+
 	//Set colour to full blue
 	glColor3f(0.0f, 0.0f, 1.0f);
         drawFrame();
@@ -200,7 +198,7 @@ void GLAnalyzer::drawPeak(float xPos, float ypos)
         //Set the colour to red
 	glColor3f(1.0f, 0.0f, 0.0f);
         glTranslatef(xPos, ypos - 10.0f, 0.0f);
-                
+
         glScalef(1.0f, 1.0f, 3.0f);
         drawCube();
 
@@ -211,14 +209,14 @@ void GLAnalyzer::drawCube()
 {
         glPushMatrix();
         glBegin(GL_POLYGON);
-		
+
 	//This is the top face
 	glVertex3f(0.0f, 1.0f, 0.0f);
 	glVertex3f(1.0f, 1.0f, 0.0f);
 	glVertex3f(1.0f, 1.0f, 1.0f);
 	glVertex3f(0.0f, 1.0f, 1.0f);
 	glVertex3f(0.0f, 1.0f, 0.0f);
-	
+
 	//This is the front face
 	glVertex3f(0.0f, 0.0f, 0.0f);
 	glVertex3f(1.0f, 0.0f, 0.0f);
@@ -253,7 +251,7 @@ void GLAnalyzer::drawCube()
 	glVertex3f(1.0f, 1.0f, 1.0f);
 	glVertex3f(0.0f, 1.0f, 1.0f);
 	glVertex3f(0.0f, 0.0f, 1.0f);
-		
+
         glEnd();
         glPopMatrix();
 }
@@ -261,7 +259,7 @@ void GLAnalyzer::drawFrame()
 {
         glPushMatrix();
         glBegin(GL_LINES);
-        
+
 
 	//This is the top face
 	glVertex3f(0.0f, 1.0f, 0.0f);
@@ -269,7 +267,7 @@ void GLAnalyzer::drawFrame()
 	glVertex3f(1.0f, 1.0f, 1.0f);
 	glVertex3f(0.0f, 1.0f, 1.0f);
 	glVertex3f(0.0f, 1.0f, 0.0f);
-	
+
 	//This is the front face
 	glVertex3f(0.0f, 0.0f, 0.0f);
 	glVertex3f(1.0f, 0.0f, 0.0f);
@@ -308,7 +306,5 @@ void GLAnalyzer::drawFrame()
         glEnd();
         glPopMatrix();
 }
-
-#include "glanalyzer.moc"
 
 #endif

@@ -70,7 +70,9 @@ AmarokSystray::AmarokSystray( QWidget *playerWidget, KActionCollection *ac ) : K
 
 void AmarokSystray::wheelEvent( QWheelEvent *e )
 {
+    #if (QT_VERSION >= 0x030300)
     parentWidget()->setWindowState( Qt::WindowActive );
+    #endif
     e->ignore(); //will pass event to PlayerWidget
 }
 

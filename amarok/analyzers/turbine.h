@@ -13,12 +13,13 @@
 
 class TurbineAnalyzer : public BarAnalyzer
 {
-    Q_OBJECT
-
     public:
-        TurbineAnalyzer( QWidget *parent=0, const char *name=0 ) : BarAnalyzer( parent, name ) {};
-        
-        virtual void drawAnalyzer( std::vector<float> * );
+        TurbineAnalyzer( QWidget *parent ) : BarAnalyzer( parent ), m_roofPixmap( 4, 1 ) { m_roofPixmap.fill( 0xff5070 ); };
+
+        void drawAnalyzer( std::vector<float> * );
+
+    private:
+        QPixmap m_roofPixmap;
 };
 
 #endif

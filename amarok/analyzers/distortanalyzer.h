@@ -23,27 +23,21 @@
 
 class QPixmap;
 
-class DistortAnalyzer : public AnalyzerBase2d
+class DistortAnalyzer : public Analyzer::Base2D
 {
-    Q_OBJECT
-
     public:
-        DistortAnalyzer(QWidget *parent=0, const char *name=0);
-        virtual ~DistortAnalyzer();
-
-        void paintEvent( QPaintEvent * );
+        DistortAnalyzer( QWidget * );
+        ~DistortAnalyzer();
 
     private:
-        virtual void init();
-        virtual void drawAnalyzer( std::vector<float> * );
+        void init();
+        void drawAnalyzer( std::vector<float> * );
         inline int checkIndex( int, int );
 
     // ATTRIBUTES:
-        QPixmap *m_pComposePixmap;
         QPixmap *m_pComposePixmap1;
         std::vector<float> m_sinVector;
         std::vector<QPixmap*> m_srcPixmaps;
-        std::vector<float> m_backupVector;
 };
 
 #endif

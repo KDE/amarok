@@ -21,27 +21,24 @@
 #include "analyzerbase.h"
 
 
-class QPixmap;
-
 /**
 @author Stanislav Karchebny
 */
 
-class SpectralShineAnalyzer : public AnalyzerBase2d
+class SpectralShineAnalyzer : public Analyzer::Base2D
 {
    Q_OBJECT
 
    public:
       typedef QValueList<QPixmap *> PixmapList;
 
-      SpectralShineAnalyzer( QWidget *parent=0, const char *name=0 );
-      virtual ~SpectralShineAnalyzer();
+      SpectralShineAnalyzer( QWidget * );
+      ~SpectralShineAnalyzer();
 
-      virtual void init();
-      virtual void drawAnalyzer( std::vector<float> * );
+      void init();
+      void drawAnalyzer( std::vector<float> * );
 
    protected:
-      QPixmap     *m_pComposePixmap;
       QPixmap     *m_pSrcPixmap;
       QPixmap     *m_pGradient;
 

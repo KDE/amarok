@@ -1,9 +1,9 @@
 /***************************************************************************
-                        glanalyzer2.h  -  description 
-                             ------------------- 
-    begin                : Feb 16 2004 
-    copyright            : (C) 2004 by Enrico Ros 
-    email                : eros.kde@email.it 
+                        glanalyzer2.h  -  description
+                             -------------------
+    begin                : Feb 16 2004
+    copyright            : (C) 2004 by Enrico Ros
+    email                : eros.kde@email.it
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,39 +15,36 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <config.h>
-#ifdef HAVE_QGLWIDGET
-
 #ifndef GLSTARVIEW_H
 #define GLSTARVIEW_H
+
+#include <config.h>
+#ifdef HAVE_QGLWIDGET
 
 #include "analyzerbase.h"
 #include <qstring.h>
 #include <qptrlist.h>
 
-class QWidget;
 
-class GLAnalyzer2 : public AnalyzerBase3d
+class GLAnalyzer2 : public Analyzer::Base3D
 {
-  Q_OBJECT
-
 public:
-    GLAnalyzer2(QWidget *parent=0, const char *name=0);
-    virtual ~GLAnalyzer2();
-    virtual void drawAnalyzer( std::vector<float> * );
+    GLAnalyzer2(QWidget *);
+    ~GLAnalyzer2();
+    void drawAnalyzer( std::vector<float> * );
 
 protected:
-    virtual void init();
+    void init();
     void initializeGL();
     void resizeGL( int w, int h );
     void paintGL();
 
 private:
     struct ShowProperties {
-	bool paused;		
-	double timeStamp;	
-	double dT;		
-	double pauseTimer;	
+	bool paused;
+	double timeStamp;
+	double dT;
+	double pauseTimer;
 	float rotDegrees;
     } show;
 

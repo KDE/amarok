@@ -16,10 +16,8 @@
  ***************************************************************************/
 
 #include "xmasdrug.h"
-#include <vector>
 #include <math.h>
 #include <qpainter.h>
-#include <qpixmap.h>
 #include <qbitmap.h>
 
 #include <kapplication.h>
@@ -27,27 +25,19 @@
 
 // FIXME: WIP
 
-#undef BAND_COUNT
-#undef TIMEOUT
-#undef MAX_AMPLITUDE
 
-#define BAND_COUNT 7
-#define TIMEOUT 60
-#define MAX_AMPLITUDE 1.1
-
-
-XmasAnalyzer::XmasAnalyzer( QWidget *parent, const char *name )
-   : AnalyzerBase2d( TIMEOUT, parent, name )
-   , m_pComposePixmap( 0 )
+XmasAnalyzer::XmasAnalyzer( QWidget *parent )
+   : Analyzer::Base2D( parent, 60 )
    , m_pBuckPixmap( 0 )
+   , m_pSantaPixmap( 0 )
 {
 }
 
 
 XmasAnalyzer::~XmasAnalyzer()
 {
-   delete m_pComposePixmap;
    delete m_pBuckPixmap;
+   delete m_pSantaPixmap;
 }
 
 
@@ -56,14 +46,13 @@ XmasAnalyzer::~XmasAnalyzer()
 void XmasAnalyzer::init()
 {
    // Fill level-to-X mapping table
-   double Fx = double(width() - 2) / 2;
+   const double Fx = double(width() - 2) / 2;
 
    for( uint x = 0; x < 256; ++x )
    {
       m_levelToX[x] = uint( Fx * sin ( double(x - 128) / 128.0 ) + Fx );
    }
 
-   m_pComposePixmap = new QPixmap( size() );
    m_pBuckPixmap = new QBitmap( locate( "data", "amarok/images/bucky.png" ) );
 //   m_pBuckPixmap->setOptimization( QPixmap::BestOptim );
 //   m_pSantaPixmap = new QPixmap( locate( "data", "amarok/images/santa.png" ) );
@@ -116,44 +105,44 @@ void XmasAnalyzer::drawAnalyzer( std::vector<float> *s )
    static bool waving = false;
    static QSaturatedColor wave1col, wave2col;
 
-   bitBlt( m_pComposePixmap, 0, 0, grid() ); //start with a blank canvas
+   eraseCanvas();
 
    QPainter p( m_pSantaPixmap );
-   QPainter q( m_pComposePixmap );
+   QPainter q( canvas() );
 
    std::vector<float> bands( BAND_COUNT, 0 );
    std::vector<float>::const_iterator it( bands.begin() );
 
    if ( s )
-      interpolate( s, bands );
+      Analyzer::interpolate( s, bands );
 
    // splash some waves
    if ((++wavecounter > 300) && !waving)
    {
-      wave1pos = m_pComposePixmap->width() - 1;
+      wave1pos = canvas()->width() - 1;
       wave2pos = wave1pos + 45;
       wave1col = QSaturatedColor(0xff - KRAND(0x80), 0xff - KRAND(0x80), 0xff - KRAND(0x80));
       wave2col = QSaturatedColor(0xff - KRAND(0x80), 0xff - KRAND(0x80), 0xff - KRAND(0x80));
       waving = true;
    }
 
-   if ((wave1pos < m_pComposePixmap->width()) && (wave1pos > -WAVESIZE))
+   if ((wave1pos < canvas()->width()) && (wave1pos > -WAVESIZE))
    {
-      for ( int i = 0; (i < WAVESIZE) && (i < m_pComposePixmap->width() - wave1pos); i++ )
+      for ( int i = 0; (i < WAVESIZE) && (i < canvas()->width() - wave1pos); i++ )
       {
          QSaturatedColor c = QSaturatedColor( wave1col.red() - i * 2, wave1col.green() - i * 3, wave1col.blue() - i * 2 );
          q.setPen( c );
-         q.drawLine( wave1pos + i, 0, wave1pos + i, m_pComposePixmap->height() );
+         q.drawLine( wave1pos + i, 0, wave1pos + i, canvas()->height() );
       }
    }
 
-   if ((wave2pos < m_pComposePixmap->width()) && (wave2pos > -WAVESIZE))
+   if ((wave2pos < canvas()->width()) && (wave2pos > -WAVESIZE))
    {
-      for ( int i = 0; (i < WAVESIZE) && (i < m_pComposePixmap->width() - wave2pos); i++ )
+      for ( int i = 0; (i < WAVESIZE) && (i < canvas()->width() - wave2pos); i++ )
       {
          QSaturatedColor c = QSaturatedColor( wave2col.red() - i * 3, wave2col.green() - i * 2, wave2col.blue() - i * 2 );
          q.setPen( c );
-         q.drawLine( wave2pos + i, 0, wave2pos + i, m_pComposePixmap->height() );
+         q.drawLine( wave2pos + i, 0, wave2pos + i, canvas()->height() );
       }
    }
 
@@ -173,7 +162,7 @@ void XmasAnalyzer::drawAnalyzer( std::vector<float> *s )
    if (waving)
       for ( uint i = 0; i < NDOTS; i++)
       {
-         drawStar( q, KRAND(m_pComposePixmap->width() - 5), KRAND(m_pComposePixmap->height() -5), QSaturatedColor(0xff - KRAND(0x80), 0xff - KRAND(0x80), 0xff - KRAND(0x80)) );
+         drawStar( q, KRAND(canvas()->width() - 5), KRAND(canvas()->height() -5), QSaturatedColor(0xff - KRAND(0x80), 0xff - KRAND(0x80), 0xff - KRAND(0x80)) );
       }
 
    // and let deers run...
@@ -184,13 +173,7 @@ void XmasAnalyzer::drawAnalyzer( std::vector<float> *s )
 
       p.fillRect( p.window(), QSaturatedColor(0x40 + (+x2*4), 0x30 + x2, 0xff + (-x2*3)) );
 
-      bitBlt( m_pComposePixmap, x2, 0,
+      bitBlt( canvas(), x2, 0,
               m_pSantaPixmap );
    }
-
-   // let santa jump
-
-   bitBlt( this, 0, 0, m_pComposePixmap );
 }
-
-#include "xmasdrug.moc"

@@ -1,10 +1,4 @@
 //
-//
-// C++ Interface: $MODULE$
-//
-// Description:
-//
-//
 // Author: Mark Kretschmann <markey@web.de>, (C) 2003
 //
 // Copyright: See COPYING file that comes with this distribution
@@ -15,47 +9,38 @@
 #define BARANALYZER_H
 
 #include "analyzerbase.h"
-
-#include <qvaluevector.h>
-
-//we undef so --enable-final works
-#undef BAND_COUNT
-#undef ROOF_HOLD_TIME
-#undef ROOF_VELOCITY_REDUCTION_FACTOR
-#undef MAX_AMPLITUDE
-#undef NUM_ROOFS
-
-#define BAND_COUNT 32
-#define ROOF_HOLD_TIME 48
-#define ROOF_VELOCITY_REDUCTION_FACTOR 32
-#define MAX_AMPLITUDE 1.0
-#define NUM_ROOFS 16
+#include <qvaluevector.h> //stack allocated
 
 /**
 @author Mark Kretschmann && Max Howell
 */
 
-class BarAnalyzer : public AnalyzerBase2d
+class BarAnalyzer : public Analyzer::Base2D
 {
-    Q_OBJECT
-
     public:
-        BarAnalyzer( QWidget *parent=0, const char *name=0 );
-        virtual ~BarAnalyzer();
+        BarAnalyzer( QWidget* );
 
         virtual void init();
         virtual void drawAnalyzer( std::vector<float> * );
 
+        static const uint BAND_COUNT=32;
+        static const uint ROOF_HOLD_TIME=48;
+        static const int  ROOF_VELOCITY_REDUCTION_FACTOR = 32;
+        static const uint NUM_ROOFS=16;
+
     protected:
-        QPixmap *m_pSrcPixmap;
-        QPixmap *m_pComposePixmap;
-        QPixmap  m_roofPixmaps[ NUM_ROOFS ];
+        QPixmap m_roofPixmaps[ NUM_ROOFS ];
         QValueVector<int> m_roofMem[ BAND_COUNT ];
 
-        //FIXME
-        QPixmap m_roofPixmap;
+        std::vector<float> m_bands;
 
         uint m_lvlMapper[256];
+
+        const QPixmap *gradient() const { return &m_gradientPixmap; }
+
+    private:
+        QPixmap  m_gradientPixmap;
+        QPixmap  m_composePixmap;
 };
 
 #endif

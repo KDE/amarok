@@ -12,60 +12,42 @@
 //
 
 #include "baranalyzer.h"
-#include <vector>
-#include <math.h>
+
+#include <math.h>     //log10(), etc.
 #include <qpainter.h>
-#include <qpixmap.h>
 
 
-BarAnalyzer::BarAnalyzer( QWidget *parent, const char *name )
-    : AnalyzerBase2d( 10, parent, name )
-    , m_pSrcPixmap( 0 )
-    , m_pComposePixmap( 0 )
-    , m_roofPixmap( 4, 1 )
+BarAnalyzer::BarAnalyzer( QWidget *parent )
+    : Analyzer::Base2D( parent, 10 )
+    , m_bands( BAND_COUNT )
 {}
 
-
-BarAnalyzer::~BarAnalyzer()
-{
-    delete m_pSrcPixmap;
-    delete m_pComposePixmap;
-}
-
-
 // METHODS =====================================================
-#include <kdebug.h>
+
 void BarAnalyzer::init()
 {
-    double F = double(height() - 2) / (log10( 255 ) * MAX_AMPLITUDE);
+    const double F = double(height() - 2) / (log10( 255 ) * 1.0 );
 
     //generate a list of values that express amplitudes in range 0-MAX_AMP as ints from 0-height() on log scale
-    for( uint x = 0; x < 256; ++x )
+    for ( uint x = 0; x < 256; ++x )
     {
         m_lvlMapper[x] = uint( F * log10( x+1 ) );
     }
 
-    m_pSrcPixmap = new QPixmap( height()*4, height() );
-    m_pComposePixmap = new QPixmap( width(), height() );
-
-    //FIXME obsolete
-    m_roofPixmap.fill( QColor( 0xff, 0x50, 0x70 ) );
+    m_gradientPixmap.resize( height()*4, height() );
+    m_composePixmap.resize( size() );
 
     QColor col( 0xff, 0x50, 0x70 );
 
-    for ( int i = 0; i < NUM_ROOFS; ++i )
+    for ( uint i = 0; i < NUM_ROOFS; ++i )
     {
         m_roofPixmaps[i].resize( 4, 1 );
         m_roofPixmaps[i].fill( col.dark( i + 100 + i * 5  ) );
     }
 
-    QPainter p( m_pSrcPixmap );
-    p.setBackgroundColor( Qt::black );
-    p.eraseRect( 0, 0, m_pSrcPixmap->width(), m_pSrcPixmap->height() );
-
+    QPainter p( &m_gradientPixmap );
     for ( uint x=0, r=0x40, g=0x30, b=0xff, r2=255-r;
-          x < height();
-          ++x )
+          x < height(); ++x )
     {
         for ( int y = x; y > 0; --y )
         {
@@ -85,15 +67,15 @@ void BarAnalyzer::drawAnalyzer( std::vector<float> *s )
     static std::vector<int>  roofVector( BAND_COUNT, 50 ); //can't risk uint //FIXME 50 is arbituary!
     static std::vector<uint> roofVelocityVector( BAND_COUNT, ROOF_VELOCITY_REDUCTION_FACTOR );
 
-    bitBlt( m_pComposePixmap, 0, 0, grid() ); //start with a blank canvas
+    //start with a blank canvas
+    eraseCanvas();
 
-    std::vector<float> bands( BAND_COUNT, 0 );
-    std::vector<float>::const_iterator it( bands.begin() );
+    //interpolate if necessary, otherwise let the bars fall back to base
+    if( s ) Analyzer::interpolate( s, m_bands );
+    else    std::fill( m_bands.begin(), m_bands.end(), 0 );
 
-    if ( s )
-       interpolate( s, bands ); //if no s then there is no playback, let the bars fall to base
-
-    for ( uint i = 0, x = 10, y2; i < bands.size(); ++i, ++it, x+=5 )
+    std::vector<float>::const_iterator it( m_bands.begin() );
+    for ( uint i = 0, x = 10, y2; i < m_bands.size(); ++i, ++it, x+=5 )
     {
         //assign pre[log10]'d value
         y2 = uint((*it) * 256); //256 is optimised to bitshift
@@ -129,11 +111,11 @@ void BarAnalyzer::drawAnalyzer( std::vector<float> *s )
         //blt last n roofs, a.k.a motion blur
         for ( uint c = 0; c < m_roofMem[i].size(); ++c )
             //bitBlt( m_pComposePixmap, x, m_roofMem[i]->at( c ), m_roofPixmaps[ c ] );
-            bitBlt( m_pComposePixmap, x, m_roofMem[i].at( c ), &m_roofPixmaps[ NUM_ROOFS - 1 - c ] );
+            bitBlt( canvas(), x, m_roofMem[i].at( c ), &m_roofPixmaps[ NUM_ROOFS - 1 - c ] );
 
-        //blt the coloured bar
-        bitBlt( m_pComposePixmap, x, height() - y2,
-                m_pSrcPixmap, y2 * 4, height() - y2, 4, y2, Qt::CopyROP );
+        //blt the bar
+        bitBlt( canvas(), x, height() - y2,
+                gradient(), y2 * 4, height() - y2, 4, y2, Qt::CopyROP );
 
         m_roofMem[i].push_back( height() - roofVector[i] - 2 );
 
@@ -151,8 +133,4 @@ void BarAnalyzer::drawAnalyzer( std::vector<float> *s )
             else ++roofVelocityVector[i];
         }
     }
-
-    bitBlt( this, 0, 0, m_pComposePixmap );
 }
-
-#include "baranalyzer.moc"

@@ -22,100 +22,116 @@
     #include <sys/types.h>
 #endif
 
-#define SINVEC_SIZE 6000
 #undef  DRAW_GRID  //disable the grid
 
-class QWidget;
-//namespace std { template<class T> class vector; }
-#include <vector> //couldn't get the predeclaration right :(
+#include <config.h>  //HAVE_QGLWIDGET
+#include "../fht.h"  //FIXME
+#include <qgl.h>     //baseclass
+#include <qpixmap.h> //stack allocated
+#include <qtimer.h>  //stack allocated
+#include <qwidget.h> //baseclass
+#include <vector>    //included for convenience
 
-class AnalyzerBase
+#ifdef HAVE_QGLWIDGET
+#include <GL/gl.h>  //included for convenience
+#include <GL/glu.h> //included for convenience
+#endif
+
+class QEvent;
+class QPaintEvent;
+
+
+namespace Analyzer {
+
+typedef std::vector<float> Scope;
+
+//TODO consider making an m_scope
+//TODO consider manipulating Scopes by reference
+//TODO init() doesn't get called for GLWidgets, move init() to Base2D or be clever
+//TODO offer a vector full of zero instead of 0 as Scope * (? worth it considering interpolation etc.)
+//perhaps you should try to enforce modification of the scope in modifyScope by passing a const reference to the scope to drawAnalyzer?
+
+template<class W> class Base : public W
 {
 public:
-    virtual ~AnalyzerBase();
-
-    virtual void drawAnalyzer( std::vector<float>* ) = 0;
     uint timeout() const { return m_timeout; }
+    uint height()  const { return m_height; }
 
 protected:
-    AnalyzerBase( uint );
+    Base( QWidget*, uint, uint = 7 );
 
-    void interpolate( std::vector<float> *inVec, std::vector<float> &outVec ) const;
-    void initSin( std::vector<float> & ) const;
+    void drawFrame();
 
-    virtual void init() = 0;
+    virtual void drawAnalyzer( Scope* ) = 0;
+    virtual void modifyScope( float* );
 
 private:
-    uint m_timeout;
+    bool event( QEvent* );
 
+protected:
+    QTimer m_timer;
+    uint   m_timeout;
+    uint   m_height;
+    FHT    m_fht;
+};
+
+
+class Base2D : public Base<QWidget>
+{
+Q_OBJECT
 public:
+    const QPixmap *background() const { return &m_background; }
+    const QPixmap *canvas()     const { return &m_canvas; }
 
-    class AnalyzerFactory
-    {
-        //Currently this is a rather small class, its only purpose
-        //to ensure that making changes to analyzers will not require
-        //rebuilding the world!
+private slots:
+    void draw() { drawFrame(); bitBlt( this, 0, 0, canvas() ); }
 
-        //eventually it would be better to make analyzers pluggable
-        //but I can't be arsed, nor can I see much reason to do so
-        //yet!
-    public:
-        static AnalyzerBase *createAnalyzer( QWidget* );
-    };
+protected:
+    Base2D( QWidget*, uint, uint = 7 );
+
+    virtual void init() {}
+
+    QPixmap  *canvas() { return &m_canvas; }
+    void eraseCanvas() { bitBlt( canvas(), 0, 0, background() ); }
+
+private:
+    void polish();
+    void paintEvent( QPaintEvent* ) { if( !m_canvas.isNull() ) bitBlt( this, 0, 0, canvas() ); }
+
+    QPixmap m_background;
+    QPixmap m_canvas;
 };
 
 
-
-#include <qwidget.h>  //baseclass
-#include <qpixmap.h>  //stack allocated
-
-/**
- *@author PiggZ
- */
-
-class AnalyzerBase2d : public QWidget, public AnalyzerBase
+class Base3D : public Base<QGLWidget>
 {
-    Q_OBJECT
-
-    public:
-        //this is called often in drawAnalyser implementations
-        //so you felt you had to shorten the workload by re-implementing it
-        //but! don't forget to set it to the new value for height when
-        //we start allowing the main Widget to be resized
-        uint height() const { return m_height; }
-        const QPixmap *grid() const { return &m_background; } //DEPRECATE
-        const QPixmap *background() const { return &m_background; }
-
-    protected:
-        AnalyzerBase2d( uint, QWidget* =0, const char* =0 );
-
-    private:
-        void polish();
-
-        uint m_height;
-        QPixmap m_background;
-};
-
-
-
-#include <config.h>
 #ifdef HAVE_QGLWIDGET
-
-#include <qgl.h>    //basclass
-#include <GL/gl.h>  //include for convenience
-#include <GL/glu.h> //include for convenience
-
-/**
- *@author PiggZ
- */
-
-class AnalyzerBase3d : public QGLWidget, public AnalyzerBase
-{
-    Q_OBJECT
-
-    protected:
-        AnalyzerBase3d( uint, QWidget* =0, const char* =0 );
+Q_OBJECT
+protected:
+    Base3D( QWidget*, uint, uint = 7 );
+private slots:
+    void draw() { drawFrame(); }
+#endif
 };
 
-#endif
+
+class Factory
+{
+    //Currently this is a rather small class, its only purpose
+    //to ensure that making changes to analyzers will not require
+    //rebuilding the world!
+
+    //eventually it would be better to make analyzers pluggable
+    //but I can't be arsed, nor can I see much reason to do so
+    //yet!
+public:
+    static QWidget* createAnalyzer( QWidget* );
+};
+
+
+void interpolate( const Scope*, Scope& );
+void initSin( Scope&, const uint = 6000 );
+
+} //END namespace Analyzer
+
 #endif

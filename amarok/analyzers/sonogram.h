@@ -21,19 +21,19 @@
 @author Melchior FRANZ
 */
 
-class Sonogram : public AnalyzerBase2d
+namespace Analyzer {
+
+class Sonogram : public Analyzer::Base2D
 {
-    Q_OBJECT
-
     public:
-        Sonogram( QWidget *parent=0, const char *name=0 );
-        virtual ~Sonogram();
+        Sonogram( QWidget* );
+        ~Sonogram();
 
-        virtual void init();
-        virtual void drawAnalyzer( std::vector<float> * );
-
-    protected:
-        QPixmap *m_pPixmap;
+        void init();
+        void drawAnalyzer( std::vector<float> * );
+        void modifyScope( float* );
 };
+
+}
 
 #endif

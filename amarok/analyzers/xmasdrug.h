@@ -20,28 +20,26 @@
 
 #include "analyzerbase.h"
 
-
-class QPixmap;
+class QBitmap;
 
 /**
 @author Stanislav Karchebny
 */
 
-class XmasAnalyzer : public AnalyzerBase2d
+class XmasAnalyzer : public Analyzer::Base2D
 {
-   Q_OBJECT
-
    public:
-      XmasAnalyzer( QWidget *parent=0, const char *name=0 );
-      virtual ~XmasAnalyzer();
+      XmasAnalyzer( QWidget * );
+      ~XmasAnalyzer();
 
-      virtual void init();
-      virtual void drawAnalyzer( std::vector<float> * );
+      void init();
+      void drawAnalyzer( std::vector<float> * );
 
    protected:
       void drawStar( QPainter &p, int x, int y, QColor startColor );
 
-      QPixmap     *m_pComposePixmap;
+      static const uint BAND_COUNT=7;
+
       QBitmap     *m_pBuckPixmap;
       QPixmap     *m_pSantaPixmap;
 

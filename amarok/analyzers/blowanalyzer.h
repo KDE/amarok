@@ -36,10 +36,8 @@ typedef struct
 }
 peak_tx;
 
-class BlowAnalyzer : public AnalyzerBase3d
+class BlowAnalyzer : public Analyzer::Base3d
 {
-  Q_OBJECT
-
 private:
   std::vector<float> m_bands;
   std::vector<float> m_oldy;
@@ -54,7 +52,7 @@ private:
 
   GLfloat x, y;
 public:
-  BlowAnalyzer(QWidget *parent=0, const char *name=0);
+  BlowAnalyzer(QWidget *);
   virtual ~BlowAnalyzer();
   virtual void drawAnalyzer( std::vector<float> * );
 

@@ -18,18 +18,16 @@
 @author Max Howell
 */
 
-class BlockAnalyzer : public AnalyzerBase2d
+class BlockAnalyzer : public Analyzer::Base2D
 {
-Q_OBJECT
-
 public:
-    BlockAnalyzer( QWidget * = 0, const char * = 0 );
-    ~BlockAnalyzer();
+    BlockAnalyzer( QWidget* );
 
-    virtual void init();
-    virtual void drawAnalyzer( std::vector<float> * );
+    void drawAnalyzer( std::vector<float> * );
 
 private:
+    static const int BAND_COUNT=32;
+
     QPixmap m_block1;
     QPixmap m_block2;
 };

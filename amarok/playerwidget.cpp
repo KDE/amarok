@@ -20,8 +20,6 @@ email                : markey@web.de
 #include "amarokslider.h"
 #include "amaroksystray.h"
 #include "analyzerbase.h"
-#include "effectwidget.h"    //in the popupmenu
-#include "enginebase.h"
 #include "metabundle.h"      //setScroll()
 #include "playerapp.h"
 #include "playerwidget.h"
@@ -57,9 +55,8 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     , m_pActionCollection( new KActionCollection( this ) )
     , m_pDcopHandler( new AmarokDcopHandler )
     , m_pTray( 0 )
-    , m_analyzer( 0 )
-    , m_fht( PlayerApp::SCOPE_SIZE ) //FIXME
-    , m_helpMenu( new KHelpMenu( this, KGlobal::instance()->aboutData(), m_pActionCollection ) )
+    , m_pAnalyzer( 0 )
+    , m_pHelpMenu( new KHelpMenu( this, KGlobal::instance()->aboutData(), m_pActionCollection ) )
     , m_scrollBuffer( 291, 16 ) //FIXME check ctor params //FIXME use staic const members for params
     , m_plusPixmap( getPNG( "time_plus.png" ) )
     , m_minusPixmap( getPNG( "time_minus.png" ) )
@@ -86,6 +83,9 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
 
     { //<NavButtons>
         //NOTE we use a layout for the buttons so resizing will be possible
+        //TODO Plastik paints the small spaces inbetween buttons with ButtonColor and
+        //     not backgroundColor. Report as bug.
+
         m_pFrameButtons = wrapper<QHBox>( QRect(0, 118, 311, 22), this );
 
         //FIXME change the names of the icons to reflect kde names so we can fall back to them if necessary
@@ -122,9 +122,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
         m_scrollFrame = wrapper<QFrame>( QRect(6,18, 285,fontHeight), this );
         m_scrollFrame->setFont( font );
 
-        #ifdef USE_SCROLLMASK
-        m_pScrollMask = new QBitmap( m_scrollFrame->size() );
-        #endif
         m_scrollBuffer.fill( backgroundColor() );
       //</Scroller>
 
@@ -151,15 +148,11 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_pTray = new AmarokSystray( this, m_pActionCollection ); //show/hide is handled by KConfig XT
 
     defaultScroll();
-
-    connect( &m_analyzerTimer, SIGNAL( timeout() ), SLOT( updateAnalyzer() ) );
 }
 
 
 PlayerWidget::~PlayerWidget()
-{
-    m_analyzerTimer.stop();
-}
+{}
 
 
 // METHODS ----------------------------------------------------------------
@@ -198,7 +191,7 @@ void PlayerWidget::setScroll( const MetaBundle &bundle )
 
 void PlayerWidget::setScroll( const QStringList &list )
 {
-static const char* const not_close_xpm[]={
+/*static const char* const not_close_xpm[]={
 "5 5 2 1",
 "# c white",//#ffeacd",
 ". c #80a0ff",
@@ -206,7 +199,14 @@ static const char* const not_close_xpm[]={
 "#...#",
 "#...#",
 "#...#",
-"#####"};
+"#####"};*/
+static const char* const not_close_xpm[]={
+"4 4 1 1",
+"# c #80a0ff",
+"####",
+"####",
+"####",
+"####"};
 
     QPixmap square( const_cast< const char** >(not_close_xpm) );
 
@@ -235,9 +235,10 @@ static const char* const not_close_xpm[]={
     }
 
     //FIXME WORKAROUND prevents crash
+    //<mxcl> I neglected fixing it so far as if we are sending a blank string then we're stupid anyway!
     if ( text.isEmpty() )
-        text = "FIXME: EMPTY STRING MAKES ME CRASH";
-    
+        text = "FIXME: EMPTY STRING MAKES ME CRASH!";
+
     QFont font( m_scrollFrame->font() );
     QFontMetrics fm( font );
     const uint height = font.pixelSize(); //the font actually extends below its pixelHeight
@@ -277,10 +278,10 @@ void PlayerWidget::drawScroll()
     QPixmap* const buffer = &m_scrollBuffer;
     QPixmap* const scroll = &m_scrollTextPixmap;
 
-    const int topMargin  = 0; //moved margins into widget placement
-    const int leftMargin = 0; //as this makes it easier to fiddle
-    const int w = m_scrollTextPixmap.width();
-    const int h = m_scrollTextPixmap.height();
+    const uint topMargin  = 0; //moved margins into widget placement
+    const uint leftMargin = 0; //as this makes it easier to fiddle
+    const uint w = m_scrollTextPixmap.width();
+    const uint h = m_scrollTextPixmap.height();
 
     phase += SCROLL_RATE;
     if( phase >= w ) phase = 0;
@@ -311,7 +312,7 @@ void PlayerWidget::drawScroll()
 void PlayerWidget::timeDisplay( int seconds )
 {
     int songLength = pApp->trackLength() / 1000;
-    bool remaining = AmarokConfig::timeDisplayRemaining() && !pApp->m_pEngine->isStream() && songLength > 0;
+    bool remaining = AmarokConfig::timeDisplayRemaining() && songLength > 0;
 
     if( remaining ) seconds = songLength - seconds;
 
@@ -399,7 +400,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
         m_pActionCollection->action( "options_configure_global_keybinding" )->plug( &popup );
         m_pActionCollection->action( "options_configure" )->plug( &popup );
       popup.insertSeparator();
-        popup.insertItem( i18n( "&Help" ), (QPopupMenu*)m_helpMenu->menu() );
+        popup.insertItem( i18n( "&Help" ), (QPopupMenu*)m_pHelpMenu->menu() );
       popup.insertSeparator();
         m_pActionCollection->action( "file_quit" )->plug( &popup );
 
@@ -432,7 +433,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
             repaint( true );
         }
-        else if( dynamic_cast<QWidget*>(m_analyzer)->geometry().contains( e->pos() ) ) { createAnalyzer( true ); return; }
+        else if( m_pAnalyzer->geometry().contains( e->pos() ) ) { createAnalyzer( true ); return; }
         else startDrag();
     }
 }
@@ -466,24 +467,21 @@ void PlayerWidget::createAnalyzer( bool increment )
 {
     if( increment ) AmarokConfig::setCurrentAnalyzer( AmarokConfig::currentAnalyzer() + 1 );
 
-    delete m_analyzer;
+    delete m_pAnalyzer;
 
-    m_analyzer = AnalyzerBase::AnalyzerFactory::createAnalyzer( this );
+    m_pAnalyzer = Analyzer::Factory::createAnalyzer( this );
 
-    QWidget *visWidget = dynamic_cast<QWidget*>(m_analyzer); //we don't test for 0 as we know it'll work! :)
     if ( AmarokConfig::currentAnalyzer() == 1 ) //FIXME
     {
-        visWidget->move( QPoint( 119, 30 ) );
-        visWidget->resize( QSize( 168, 70 ) );
+        m_pAnalyzer->move( QPoint( 119, 30 ) );
+        m_pAnalyzer->resize( QSize( 168, 70 ) );
     }
     else
     {
-        visWidget->move( QPoint( 119, 40 ) );
-        visWidget->resize( QSize( 168, 56 ) );
+        m_pAnalyzer->move( QPoint( 119, 40 ) );
+        m_pAnalyzer->resize( QSize( 168, 56 ) );
     }
-    visWidget->show();
-
-    m_analyzerTimer.start( m_analyzer->timeout() );
+    m_pAnalyzer->show();
 }
 
 #include "browserwin.h" //FIXME bah!
@@ -523,61 +521,6 @@ void PlayerWidget::startDrag()
     QDragObject *d = new QTextDrag( m_pDcopHandler->nowPlaying(), this );
     d->dragCopy();
     // do NOT delete d.
-}
-
-
-void PlayerWidget::updateAnalyzer()
-{
-    EngineBase *m_pEngine = pApp->m_pEngine;
-
-    if ( !isVisible() )
-        return; //FIXME pause all timers when hidden
-
-    static int t = 201;
-
-    if ( m_pEngine->state() == EngineBase::Playing )
-    {
-        std::vector<float> *pScopeVector = m_pEngine->scope();
-        float *front = static_cast<float*>( &pScopeVector->front() );
-        if (!front)
-            return;
-
-        if ( AmarokConfig::currentAnalyzer() == 2)
-        { // sonogram
-            m_fht.power( front );
-            m_fht.scale( front, 1.0 / 64 );
-        }
-        else
-        {
-            float *f = new float[ m_fht.size() ];
-            m_fht.copy( f, front );
-            m_fht.logSpectrum( front, f );
-            m_fht.scale( front, 1.0 / 20 );
-            delete[] f;
-        }
-        pScopeVector->resize( pScopeVector->size() / 2 );
-
-        m_analyzer->drawAnalyzer( pScopeVector );
-
-        delete pScopeVector;
-        //FIXME <markey> beat detection code temporarily moved to VIS_PLAN, since it was disabled anyway
-    }
-    else
-    {
-        if ( t > 999 ) t = 1; //0 = wasted calculations
-        if ( t < 201 )
-        {
-            double dt = double(t) / 200 ;
-            std::vector<float> v( 31 );
-            for( uint i = 0; i < v.size(); ++i )
-                v[i] = dt * (sin( M_PI + (i * M_PI) / v.size() ) + 1.0);
-            m_analyzer->drawAnalyzer( &v );
-        }
-        else
-            m_analyzer->drawAnalyzer( NULL );
-
-        ++t;
-    }
 }
 
 

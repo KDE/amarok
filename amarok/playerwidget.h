@@ -22,14 +22,12 @@
 #include <qlabel.h>      //stack allocated
 #include <qpixmap.h>     //stack allocated
 #include <qpushbutton.h> //baseclass
-#include <qtimer.h>      //stack allocated
 #include <qwidget.h>     //baseclass
 #include "fht.h"         //stack allocated
 
 class AmarokDcopHandler;
 class AmarokSlider;
 class AmarokSystray;
-class AnalyzerBase;
 class ArtsConfigWidget;
 class KActionCollection;
 class KHelpMenu;
@@ -97,9 +95,6 @@ class PlayerWidget : public QWidget
         void setScroll( const MetaBundle& );
         void drawScroll();
 
-    private slots:
-        void updateAnalyzer();
-
     private:
         void setScroll( const QStringList& );
         void paintEvent( QPaintEvent *e );
@@ -112,13 +107,11 @@ class PlayerWidget : public QWidget
         // ATTRIBUTES ------
 
         QString m_rateString;
-        QTimer  m_analyzerTimer;
 
         AmarokDcopHandler *m_pDcopHandler; //TODO move to playerapp
         AmarokSystray     *m_pTray;
-        AnalyzerBase      *m_analyzer;
-        FHT m_fht;
-        KHelpMenu *m_helpMenu;
+        QWidget           *m_pAnalyzer;
+        KHelpMenu         *m_pHelpMenu;
 
         QPixmap m_scrollTextPixmap;
         QPixmap m_scrollBuffer;

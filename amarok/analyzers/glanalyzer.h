@@ -15,15 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <config.h>
-#ifdef HAVE_QGLWIDGET
-
 #ifndef GLOSCOPE_H
 #define GLOSCOPE_H
 
-#include "analyzerbase.h"
+#include <config.h>
+#ifdef HAVE_QGLWIDGET
 
-class QWidget;
+#include "analyzerbase.h"
 
 /**
  *@author piggz
@@ -36,10 +34,8 @@ typedef struct
 }
 peak_tx;
 
-class GLAnalyzer : public AnalyzerBase3d
+class GLAnalyzer : public Analyzer::Base3D
 {
-  Q_OBJECT
-
 private:
   std::vector<float> m_bands;
   std::vector<float> m_oldy;
@@ -54,7 +50,7 @@ private:
 
   GLfloat x, y;
 public:
-  GLAnalyzer(QWidget *parent=0, const char *name=0);
+  GLAnalyzer(QWidget *);
   virtual ~GLAnalyzer();
   virtual void drawAnalyzer( std::vector<float> * );
 

@@ -21,7 +21,6 @@
 #include "glanalyzer2.h"
 
 #include <math.h>
-#include <vector>
 #include <sys/time.h>
 #include <stdlib.h>
 
@@ -29,11 +28,9 @@
 #include <kstandarddirs.h>
 #include <kdebug.h>
 
-GLAnalyzer2::GLAnalyzer2( QWidget *parent, const char *name ):
-AnalyzerBase3d(15, parent, name)
+GLAnalyzer2::GLAnalyzer2( QWidget *parent ):
+Analyzer::Base3D(parent, 15)
 {
-    init();
-    
     //initialize openGL context before managing GL calls
     makeCurrent();
     loadTexture( locate("data","amarok/data/dot.png"), dotTexture );
@@ -65,10 +62,10 @@ void GLAnalyzer2::initializeGL()
     glDisable(GL_DEPTH_TEST);
 
     // Set blend parameters for 'composting alpha'
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE );			//superpose
-    //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );	//fade
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE );                        //superpose
+    //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );        //fade
     glEnable( GL_BLEND );
-    
+
     // Clear frame with a black background
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear( GL_COLOR_BUFFER_BIT );
@@ -81,17 +78,17 @@ void GLAnalyzer2::resizeGL( int w, int h )
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
     glOrtho( -10.0f, 10.0f, -10.0f, 10.0f, -5.0f, 5.0f );
-    
+
     // Get the aspect ratio of the screen to draw 'cicular' particles
     float ratio = (float)w / (float)h,
-	  eqPixH = 60,
-	  eqPixW = 80;
+          eqPixH = 60,
+          eqPixW = 80;
     if ( ratio >= (4.0/3.0) ) {
-	unitX = 10.0 / (eqPixH * ratio);
-	unitY = 10.0 / eqPixH;
+        unitX = 10.0 / (eqPixH * ratio);
+        unitY = 10.0 / eqPixH;
     } else {
-	unitX = 10.0 / eqPixW;
-	unitY = 10.0 / (eqPixW / ratio);
+        unitX = 10.0 / eqPixW;
+        unitY = 10.0 / (eqPixW / ratio);
     }
 
     // Get current timestamp.
@@ -106,35 +103,35 @@ void GLAnalyzer2::drawAnalyzer( std::vector<float> *s )
 
     // if we're going into pause mode, clear timers.
     if ( !show.paused && haveNoData )
-	show.pauseTimer = 0.0;
-    
+        show.pauseTimer = 0.0;
+
     // if we have got data, interpolate it (asking myself why I'm doing it here..)
     if ( !(show.paused = haveNoData) )
     {
-	int bands = s->size(),
-	    lowbands = bands / 4,
-	    hibands = bands / 3,
-	    midbands = bands - lowbands - hibands;
-	float currentEnergy = 0,
-	      currentMeanBand = 0,
-	      maxValue = 0;
-	for ( int i = 0; i < bands; i++ )
-	{
-	    float value = (*s)[i];
-	    currentEnergy += value;
-	    currentMeanBand += (float)i * value;
-	    if ( value > maxValue )
-		maxValue = value;
-	}
-	frame.silence = currentEnergy < 0.001;
-	if ( !frame.silence )
-	{
-	    frame.meanBand = 100.0 * currentMeanBand / (currentEnergy * bands);
-	    currentEnergy = 100.0 * currentEnergy / (float)bands;
-	    frame.dEnergy = currentEnergy - frame.energy;
-	    frame.energy = currentEnergy;
-//	    printf( "%d  [%f :: %f ]\t%f \n", bands, frame.energy, frame.meanBand, maxValue	 );
-	}
+        int bands = s->size(),
+            lowbands = bands / 4,
+            hibands = bands / 3,
+            midbands = bands - lowbands - hibands;
+        float currentEnergy = 0,
+              currentMeanBand = 0,
+              maxValue = 0;
+        for ( int i = 0; i < bands; i++ )
+        {
+            float value = (*s)[i];
+            currentEnergy += value;
+            currentMeanBand += (float)i * value;
+            if ( value > maxValue )
+                maxValue = value;
+        }
+        frame.silence = currentEnergy < 0.001;
+        if ( !frame.silence )
+        {
+            frame.meanBand = 100.0 * currentMeanBand / (currentEnergy * bands);
+            currentEnergy = 100.0 * currentEnergy / (float)bands;
+            frame.dEnergy = currentEnergy - frame.energy;
+            frame.energy = currentEnergy;
+//            printf( "%d  [%f :: %f ]\t%f \n", bands, frame.energy, frame.meanBand, maxValue         );
+        }
     }
 
     // update the frame
@@ -146,7 +143,7 @@ void GLAnalyzer2::paintGL()
     // Compute the dT since the last call to paintGL and update timings
     timeval tv;
     gettimeofday( &tv, NULL );
-    double currentTime = (float)tv.tv_sec + (float)tv.tv_usec/1000000.0; 
+    double currentTime = (float)tv.tv_sec + (float)tv.tv_usec/1000000.0;
     show.dT = currentTime - show.timeStamp;
     show.timeStamp = currentTime;
 
@@ -166,7 +163,7 @@ void GLAnalyzer2::paintGL()
       glVertex2f( 10.0f, -10.0f );
       glVertex2f( -10.0f, -10.0f );
     glEnd();*/
-    
+
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glEnable( GL_TEXTURE_2D );
     glBindTexture( GL_TEXTURE_2D, w2Texture );
@@ -205,24 +202,24 @@ void GLAnalyzer2::paintGL()
     // some updates to the show
     show.rotDegrees += 40.0 * show.dT;
     frame.rotDegrees += 80.0 * show.dT;
-    
-    // handle the 'pause' status 
+
+    // handle the 'pause' status
     if ( show.paused )
     {
-	if ( show.pauseTimer > 0.5 )
-	{
-	     show.pauseTimer -= 0.5;
-	     drawFullDot( 0.0f, 0.4f, 0.8f, 1.0f );
-	}
+        if ( show.pauseTimer > 0.5 )
+        {
+             show.pauseTimer -= 0.5;
+             drawFullDot( 0.0f, 0.4f, 0.8f, 1.0f );
+        }
         show.pauseTimer += show.dT;
-	return;
+        return;
     }
 
     if ( dotTexture ) {
-	glEnable( GL_TEXTURE_2D );
-	glBindTexture( GL_TEXTURE_2D, dotTexture );
+        glEnable( GL_TEXTURE_2D );
+        glBindTexture( GL_TEXTURE_2D, dotTexture );
     } else
-	glDisable( GL_TEXTURE_2D );
+        glDisable( GL_TEXTURE_2D );
 
     glLoadIdentity();
     glRotatef( -frame.rotDegrees, 0,0,1 );
@@ -244,18 +241,18 @@ void GLAnalyzer2::paintGL()
 void GLAnalyzer2::drawDot( float x, float y, float size )
 {
     float sizeX = size * unitX,
-	  sizeY = size * unitY,
-	  pLeft = x - sizeX,
-	  pTop = y + sizeY,
-	  pRight = x + sizeX,
-	  pBottom = y - sizeY;
-    glTexCoord2f( 0, 0 );	// Bottom Left
+          sizeY = size * unitY,
+          pLeft = x - sizeX,
+          pTop = y + sizeY,
+          pRight = x + sizeX,
+          pBottom = y - sizeY;
+    glTexCoord2f( 0, 0 );        // Bottom Left
     glVertex2f( pLeft, pBottom );
-    glTexCoord2f( 0, 1 );	// Top Left
+    glTexCoord2f( 0, 1 );        // Top Left
     glVertex2f( pLeft, pTop );
-    glTexCoord2f( 1, 1 );	// Top Right
+    glTexCoord2f( 1, 1 );        // Top Right
     glVertex2f( pRight, pTop );
-    glTexCoord2f( 1, 0 );	// Bottom Right
+    glTexCoord2f( 1, 0 );        // Bottom Right
     glVertex2f( pRight, pBottom );
 }
 
@@ -287,7 +284,7 @@ void GLAnalyzer2::setTextureMatrix( float rot, float scale )
 	glTranslatef( 0.5f, 0.5f, 0.0f );
 	glRotatef( rot, 0.0f, 0.0f, 1.0f );
 	glScalef( scale, scale, 1.0f );
-	glTranslatef( -0.5f, -0.5f, 0.0f ); 
+	glTranslatef( -0.5f, -0.5f, 0.0f );
     }
     glMatrixMode( GL_MODELVIEW );
 }
@@ -300,12 +297,12 @@ bool GLAnalyzer2::loadTexture( QString fileName, unsigned int & textureID )
     //load image
     QImage tmp;
     if ( !tmp.load( fileName ) )
-	return false;
+        return false;
 
     //convert it to suitable format (flipped RGBA)
     QImage texture = QGLWidget::convertToGLFormat( tmp );
     if ( texture.isNull() )
-	return false;
+        return false;
 
     //get texture number and bind loaded image to that texture
     glGenTextures( 1, &textureID );
@@ -313,7 +310,7 @@ bool GLAnalyzer2::loadTexture( QString fileName, unsigned int & textureID )
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexImage2D( GL_TEXTURE_2D, 0, 4, texture.width(), texture.height(),
-	0, GL_RGBA, GL_UNSIGNED_BYTE, texture.bits() );
+        0, GL_RGBA, GL_UNSIGNED_BYTE, texture.bits() );
     return true;
 }
 
@@ -321,10 +318,8 @@ bool GLAnalyzer2::loadTexture( QString fileName, unsigned int & textureID )
 void GLAnalyzer2::freeTexture( unsigned int & textureID )
 {
     if ( textureID > 0 )
-	glDeleteTextures( 1, &textureID );
+        glDeleteTextures( 1, &textureID );
     textureID = 0;
 }
-
-#include "glanalyzer2.moc"
 
 #endif

@@ -33,16 +33,14 @@
 #define NUM_PIXMAPS 32
 
 
-DistortAnalyzer::DistortAnalyzer( QWidget *parent, const char *name )
-        : AnalyzerBase2d( 30, parent, name )
-        , m_pComposePixmap( 0 )
+DistortAnalyzer::DistortAnalyzer( QWidget *parent )
+        : Analyzer::Base2D( parent, 30 )
         , m_pComposePixmap1( 0 )
 {}
 
 
 DistortAnalyzer::~DistortAnalyzer()
 {
-    delete m_pComposePixmap;
     delete m_pComposePixmap1;
 
     for ( int i = 0; i < NUM_PIXMAPS; i++ )
@@ -54,24 +52,21 @@ DistortAnalyzer::~DistortAnalyzer()
 
 void DistortAnalyzer::init()
 {
-    m_pComposePixmap  = new QPixmap( size() );
     m_pComposePixmap1 = new QPixmap( size() );
 
-    initSin( m_sinVector );
+    Analyzer::initSin( m_sinVector );
 
     //init colored source pixmaps:
-        
+
     m_srcPixmaps.resize( NUM_PIXMAPS );
-    QPixmap srcPixmap( locate( "data", "amarok/images/logo_web.png" ) );    
-            
+    QPixmap srcPixmap( locate( "data", "amarok/images/logo_web.png" ), "PNG" );
+
     for ( int i = 0; i < NUM_PIXMAPS; i++ )
     {
         m_srcPixmaps[i] = new QPixmap( srcPixmap );
         m_srcPixmaps[i]->setOptimization( QPixmap::BestOptim );
         m_srcPixmaps[i]->fill( QColor( i*8, i*2, 0xc0 - i*3 ) );
     }
-
-    m_backupVector.push_back( 10 );
 }
 
 
@@ -79,29 +74,29 @@ void DistortAnalyzer::init()
 
 void DistortAnalyzer::drawAnalyzer( std::vector<float> *s )
 {
-    bitBlt( m_pComposePixmap, 0, 0, grid() );
-    bitBlt( m_pComposePixmap1, 0, 0, grid() );
+    //start with a blank canvas
+    eraseCanvas();
+    bitBlt( m_pComposePixmap1, 0, 0, background() );
 
     if ( s ) // don't bother if vector is empty
     {
-        m_backupVector = *s;
         std::vector<float>::const_iterator it, it1;
         std::vector<float> sNew( width() );
-        interpolate( s, sNew );
+        Analyzer::interpolate( s, sNew );
 
         // VERTICAL:
-                
+
         it =  sNew.begin();
         it1 = sNew.end();
         int sinIndex, pixIndex;
-        
+
         for ( int x = 0; x < width(); x++ )
         {
-            sinIndex = static_cast<int>( ((*it)+(*it1)) * SINVEC_SIZE );
+            sinIndex = static_cast<int>( ((*it)+(*it1)) * m_sinVector.size() );
             pixIndex = static_cast<int>( ( m_sinVector[ checkIndex( sinIndex, m_sinVector.size() ) ] + 1.0 )
                                          / 2  * (NUM_PIXMAPS-1) );
-            
-            sinIndex = static_cast<int>( (*it) * SINVEC_SIZE );
+
+            sinIndex = static_cast<int>( (*it) * m_sinVector.size() );
             bitBlt( m_pComposePixmap1, x, 0,
                     m_srcPixmaps[ checkIndex( pixIndex, m_srcPixmaps.size() ) ],
                     x, static_cast<int>( m_sinVector[ checkIndex( sinIndex, m_sinVector.size() ) ] * 21 - 21 ),
@@ -112,7 +107,7 @@ void DistortAnalyzer::drawAnalyzer( std::vector<float> *s )
         }
 
         // HORIZONTAL:
-        
+
         it = sNew.begin();
 
 //         // jump to middle of vector -> more interesting values
@@ -121,26 +116,16 @@ void DistortAnalyzer::drawAnalyzer( std::vector<float> *s )
 
         for ( uint y = 0; y < height(); ++y )
         {
-            sinIndex = static_cast<int>( ( (*it)/3.0 ) * SINVEC_SIZE );
-            
-            bitBlt( m_pComposePixmap, 0, y, m_pComposePixmap1,
+            sinIndex = static_cast<int>( ( (*it)/3.0 ) * m_sinVector.size() );
+
+            bitBlt( canvas(), 0, y, m_pComposePixmap1,
                     static_cast<int>( m_sinVector[ checkIndex( sinIndex, m_sinVector.size() ) ] * 11 - 12 ), y,
                     width(), 1 );
 
            ++it;
         }
-
-        bitBlt( this, 0, 0, m_pComposePixmap );
-
     }
 }
-
-
-void DistortAnalyzer::paintEvent( QPaintEvent * )
-{
-    drawAnalyzer( &m_backupVector );
-}
-
 
 int DistortAnalyzer::checkIndex( int index, int size )
 {
@@ -148,9 +133,6 @@ int DistortAnalyzer::checkIndex( int index, int size )
         return 0;
     if ( index > size - 1 )
         return size - 1;
-    
+
     return index;
 }
-
-
-#include "distortanalyzer.moc"

@@ -30,9 +30,8 @@
 #define MAX_AMPLITUDE 1.1
 
 
-SpectralShineAnalyzer::SpectralShineAnalyzer( QWidget *parent, const char *name )
-   : AnalyzerBase2d( 8, parent, name )
-   , m_pComposePixmap( 0 )
+SpectralShineAnalyzer::SpectralShineAnalyzer( QWidget *parent )
+   : Analyzer::Base2d( parent, 8 )
    , m_pSrcPixmap( 0 )
 {
 }
@@ -40,7 +39,6 @@ SpectralShineAnalyzer::SpectralShineAnalyzer( QWidget *parent, const char *name 
 
 SpectralShineAnalyzer::~SpectralShineAnalyzer()
 {
-   delete m_pComposePixmap;
    delete m_pSrcPixmap;
 }
 
@@ -50,7 +48,7 @@ SpectralShineAnalyzer::~SpectralShineAnalyzer()
 void SpectralShineAnalyzer::init()
 {
    // Fill level-to-X mapping table
-   double Fx = double(width() - 2) / 2;
+   const double Fx = double(width() - 2) / 2;
 
    for( uint x = 0; x < 256; ++x )
    {
@@ -58,7 +56,7 @@ void SpectralShineAnalyzer::init()
    }
 
    // Fill level-to-Y mapping table
-   double Fy = double(height() - 2) / (log10( 255 ) * MAX_AMPLITUDE);
+   const double Fy = double(height() - 2) / (log10( 255 ) * MAX_AMPLITUDE);
 
    for( uint y = 0; y < 256; ++y )
    {
@@ -66,7 +64,6 @@ void SpectralShineAnalyzer::init()
    }
 
    m_pSrcPixmap = new QPixmap( width(), height() );
-   m_pComposePixmap = new QPixmap( size() );
 
    QPainter p( m_pSrcPixmap );
    p.setBackgroundColor( Qt::black );
@@ -82,7 +79,7 @@ void SpectralShineAnalyzer::init()
 
 void SpectralShineAnalyzer::drawAnalyzer( std::vector<float> *s )
 {
-   bitBlt( m_pComposePixmap, 0, 0, grid() ); //start with a blank canvas
+   eraseBackground();
 
    std::vector<float> bands( BAND_COUNT, 0 );
    std::vector<float>::const_iterator it( bands.begin() );
@@ -97,17 +94,15 @@ void SpectralShineAnalyzer::drawAnalyzer( std::vector<float> *s )
       y2 = uint((*it) * 255);
       y2 = m_levelToY[ (y2 > 255) ? 255 : y2 ];
 
-      bitBlt( m_pComposePixmap, x2, y2,
+      bitBlt( canvas(), x2, y2,
                m_pSrcPixmap, x2, y2, 2, 2, Qt::CopyROP );
-      bitBlt( m_pComposePixmap, width() - x2, y2,
+      bitBlt( canvas(), width() - x2, y2,
                m_pSrcPixmap, width() - x2, y2, 2, 2, Qt::CopyROP );
-      bitBlt( m_pComposePixmap, x2, height() - y2,
+      bitBlt( canvas(), x2, height() - y2,
                m_pSrcPixmap, x2, height() - y2, 2, 2, Qt::CopyROP );
-      bitBlt( m_pComposePixmap, width() - x2, height() - y2,
+      bitBlt( canvas(), width() - x2, height() - y2,
                m_pSrcPixmap, width() - x2, height() - y2, 2, 2, Qt::CopyROP );
    }
-
-   bitBlt( this, 0, 0, m_pComposePixmap );
 }
 
 #include "spectralshine.moc"

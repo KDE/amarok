@@ -7,20 +7,6 @@
 //
 
 #include "turbine.h"
-#include <vector>
-#include <math.h>
-#include <qpainter.h>
-#include <qpixmap.h>
-
-#undef BAND_COUNT
-#undef ROOF_HOLD_TIME
-#undef ROOF_VELOCITY_REDUCTION_FACTOR
-#undef MAX_AMPLITUDE
-
-#define BAND_COUNT 31
-#define ROOF_HOLD_TIME 32
-#define ROOF_VELOCITY_REDUCTION_FACTOR 26
-#define MAX_AMPLITUDE 1.1
 
 // METHODS =====================================================
 
@@ -30,15 +16,14 @@ void TurbineAnalyzer::drawAnalyzer( std::vector<float> *s )
     static std::vector<int>  roofVector( BAND_COUNT, 0 );
     static std::vector<uint> roofVelocityVector( BAND_COUNT, 0 );
 
-    bitBlt( m_pComposePixmap, 0, 0, grid() ); //start with a blank canvas
+    eraseCanvas();
 
-    std::vector<float> bands( BAND_COUNT, 0 );
-    std::vector<float>::const_iterator it( bands.begin() );
+    //interpolate if necessary, otherwise let the bars fall back to base
+    if( s ) Analyzer::interpolate( s, m_bands );
+    else    std::fill( m_bands.begin(), m_bands.end(), 0 );
 
-    if ( s )
-       interpolate( s, bands ); //if no s then there is no playback, let the bars fall to base
-
-    for ( uint i = 0, x = 10, y2; i < bands.size(); ++i, ++it, x+=5 )
+    std::vector<float>::const_iterator it( m_bands.begin() );
+    for ( uint i = 0, x = 10, y2; i < m_bands.size(); ++i, ++it, x+=5 )
     {
         //assign pre[log10]'d value
         y2 = uint((*it) * 255);
@@ -69,13 +54,13 @@ void TurbineAnalyzer::drawAnalyzer( std::vector<float> *s )
         barVector[i] = y2;
 
         //blt the coloured bar
-        bitBlt( m_pComposePixmap, x, height()/2 - y2,
-                m_pSrcPixmap, y2 * 4, height() - y2, 4, y2, Qt::CopyROP );
-        bitBlt( m_pComposePixmap, x, height()/2,
-                m_pSrcPixmap, y2 * 4, height() - y2, 4, y2, Qt::CopyROP );
+        bitBlt( canvas(), x, height()/2 - y2,
+                gradient(), y2 * 4, height() - y2, 4, y2, Qt::CopyROP );
+        bitBlt( canvas(), x, height()/2,
+                gradient(), y2 * 4, height() - y2, 4, y2, Qt::CopyROP );
         //blt the roof bar
-        bitBlt( m_pComposePixmap, x, height()/2 - roofVector[i] - 2, &m_roofPixmap );
-        bitBlt( m_pComposePixmap, x, height()/2 + roofVector[i] + 2, &m_roofPixmap );
+        bitBlt( canvas(), x, height()/2 - roofVector[i] - 2, &m_roofPixmap );
+        bitBlt( canvas(), x, height()/2 + roofVector[i] + 2, &m_roofPixmap );
 
         //set roof parameters for the NEXT draw
         if ( roofVelocityVector[i] != 0 )
@@ -93,8 +78,4 @@ void TurbineAnalyzer::drawAnalyzer( std::vector<float> *s )
             else ++roofVelocityVector[i];
         }
     }
-           
-    bitBlt( this, 0, 0, m_pComposePixmap );
 }
-
-#include "turbine.moc"

@@ -29,12 +29,11 @@
 #include "turbine.h"
 
 //FIXME is there a better define?
-#define AMAROK_RELEASE
-
+//#define AMAROK_RELEASE
 #ifndef AMAROK_RELEASE
     #include "blockanalyzer.h"
     #include "baranalyzer2.h"
-    #include "spectralshine.h"
+//    #include "spectralshine.h"
     #include "xmasdrug.h"
 #endif
 
@@ -42,9 +41,9 @@
 //sorry if this isn't to your liking..
 
 //const
-AnalyzerBase *AnalyzerBase::AnalyzerFactory::createAnalyzer( QWidget *parent )
+QWidget *Analyzer::Factory::createAnalyzer( QWidget *parent )
 {
-    AnalyzerBase *analyzer = 0;
+    QWidget *analyzer = 0;
 
     switch( AmarokConfig::currentAnalyzer() )
     {
@@ -64,23 +63,20 @@ AnalyzerBase *AnalyzerBase::AnalyzerFactory::createAnalyzer( QWidget *parent )
     case 5:
         analyzer = new GLAnalyzer2( parent );
         break;
-/*    case 6:
-        analyzer = new BlowAnalyzer( parent );
-        break;*/
 #endif
 #ifndef AMAROK_RELEASE
-    case 7:
+    case 6:
         analyzer = new XmasAnalyzer( parent );
         break;
-    case 8:
+    case 7:
         analyzer = new BlockAnalyzer( parent );
         break;
-    case 9:
+    case 8:
         analyzer = new BarAnalyzer2( parent );
         break;
-    case 10:
-        analyzer = new SpectralShineAnalyzer( this );
-        break;
+//    case 10:
+//        analyzer = new SpectralShineAnalyzer( parent );
+//        break;
 #endif
     default:
         AmarokConfig::setCurrentAnalyzer( 0 );
