@@ -11,9 +11,9 @@
 #include "playlistitem.h"
 #include "playlistloader.h"
 
-#include <qapplication.h>
-#include <qtextstream.h>
-#include <qfile.h>
+#include <qapplication.h>  //postEvent()
+#include <qtextstream.h>   //loadM3U() loadPLS()
+#include <qfile.h>         //~PlaylistLoader()
 
 #include <kapplication.h>
 #include <kurl.h>
@@ -91,7 +91,8 @@ PlaylistLoader::~PlaylistLoader()
     
     if( NULL != m_first )
     {
-        KIO::NetAccess::removeTempFile( m_first->url().path() );
+        kdDebug() << "Removing: " << m_list.first().path() << endl;
+        QFile::remove( m_list.first().path() );
         delete m_first; //FIXME deleting m_first is dangerous as user may have done it for us!
     }
 
@@ -400,6 +401,7 @@ PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
       {
          KMessageBox::sorry( playlistWidget, i18n( "The playlist could not be downloaded." ) );
          delete newItem; //we created this in this function, it's safe to delete!
+         tmpfile.unlink();
       }
       
       return 0; //we don't want this item to be registered with the playlistWidget
