@@ -1,4 +1,4 @@
-SUBDIRS = $(AUTODIRS)
+SUBDIRS = images amarokarts analyzers titleproxy data engine
 
 INCLUDES = \
 	-I$(kde_includes)/arts \
