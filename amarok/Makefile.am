@@ -4,7 +4,8 @@ INCLUDES = \
 	-I$(kde_includes)/arts \
 	$(taglib_includes) \
 	$(all_includes) \
-	-I$(top_builddir)/amarok/amarok/amarokcore
+	-Iamarokcore \
+	-I$(srcdir)/amarokcore
 
 bin_PROGRAMS = amarok
 
