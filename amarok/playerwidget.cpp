@@ -1,9 +1,9 @@
 /***************************************************************************
-                        playerwidget.cpp  -  description
-                           -------------------
-  begin                : Mit Nov 20 2002
-  copyright            : (C) 2002 by Mark Kretschmann
-  email                :
+                     playerwidget.cpp  -  description
+                        -------------------
+begin                : Mit Nov 20 2002
+copyright            : (C) 2002 by Mark Kretschmann
+email                :
 ***************************************************************************/
 
 /***************************************************************************
@@ -51,13 +51,13 @@
 #include <kaction.h>
 #include <kdebug.h>
 #include <kglobalaccel.h>
+#include <khelpmenu.h>
 #include <kkeydialog.h>
 #include <klistview.h>
 #include <klocale.h>
+#include <kpopupmenu.h>
 #include <kstandarddirs.h>
 #include <ksystemtray.h>
-#include <kpopupmenu.h>
-#include <khelpmenu.h>
 
 #include <dcopclient.h>
 
@@ -202,61 +202,63 @@ void AmarokSlider::mousePressEvent( QMouseEvent *e )
 // FIXME Move implementation to separate sourcefile
 AmarokSystray::AmarokSystray( PlayerWidget *child ) : KSystemTray( child )
 {
-    setPixmap(kapp->miniIcon());
+    setPixmap( kapp->miniIcon() );
 
     // Re-construct menu
-    KAction* quitAction = KStdAction::quit(this, SIGNAL(quitSelected()), actionCollection());
+    KAction* quitAction = KStdAction::quit( this, SIGNAL( quitSelected() ), actionCollection() );
 
     // berkus: Since it doesn't come to you well, i'll explain it here:
     // We put playlist actions last because: 1) you don't want to accidentally
     // switch amaroK off by pushing rmb on tray icon and then suddenly lmb on the
-    // bottom item. 2) if you do like in case 1) the most frequent operation is to 
+    // bottom item. 2) if you do like in case 1) the most frequent operation is to
     // change to next track, so it must be at bottom. [usability]
-    contextMenu()->clear();
-    contextMenu()->insertTitle(kapp->miniIcon(), kapp->caption());
+    contextMenu() ->clear();
+    contextMenu() ->insertTitle( kapp->miniIcon(), kapp->caption() );
 
-    contextMenu()->insertItem(i18n("&Configure..."), kapp, SLOT(slotShowOptions()));
-    contextMenu()->insertItem(i18n("&Help"), (new KHelpMenu(this, KGlobal::instance()->aboutData()))->menu());
-    quitAction->plug(contextMenu());
-    connect(this, SIGNAL(quitSelected()), child, SLOT(close()));
+    contextMenu() ->insertItem( i18n( "&Configure..." ), kapp, SLOT( slotShowOptions() ) );
+    contextMenu() ->insertItem( i18n( "&Help" ), ( new KHelpMenu( this, KGlobal::instance() ->aboutData() ) ) ->menu() );
+    quitAction->plug( contextMenu() );
+    connect( this, SIGNAL( quitSelected() ), child, SLOT( close() ) );
 
-    contextMenu()->insertSeparator();
+    contextMenu() ->insertSeparator();
 
-    contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunback.png" )), i18n("[&Z] Prev"), kapp, SLOT( slotPrev() ) );
-    contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunplay.png" )), i18n("[&X] Play"), kapp, SLOT( slotPlay() ) );
-    contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunpause.png" )), i18n("[&C] Pause"), kapp, SLOT( slotPause() ) );
-    contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunstop.png" )), i18n("[&V] Stop"), kapp, SLOT( slotStop() ) );
-    contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunforward.png" )), i18n("[&B] Next"), kapp, SLOT( slotNext() ) );
+    contextMenu() ->insertItem( QIconSet( locate( "data", "amarok/images/hi16-action-noatunback.png" ) ), i18n( "[&Z] Prev" ), kapp, SLOT( slotPrev() ) );
+    contextMenu() ->insertItem( QIconSet( locate( "data", "amarok/images/hi16-action-noatunplay.png" ) ), i18n( "[&X] Play" ), kapp, SLOT( slotPlay() ) );
+    contextMenu() ->insertItem( QIconSet( locate( "data", "amarok/images/hi16-action-noatunpause.png" ) ), i18n( "[&C] Pause" ), kapp, SLOT( slotPause() ) );
+    contextMenu() ->insertItem( QIconSet( locate( "data", "amarok/images/hi16-action-noatunstop.png" ) ), i18n( "[&V] Stop" ), kapp, SLOT( slotStop() ) );
+    contextMenu() ->insertItem( QIconSet( locate( "data", "amarok/images/hi16-action-noatunforward.png" ) ), i18n( "[&B] Next" ), kapp, SLOT( slotNext() ) );
 
     // don't love them just yet
-    setAcceptDrops(false);
+    setAcceptDrops( false );
 }
+
 
 void AmarokSystray::wheelEvent( QWheelEvent *e )
 {
-   if(e->orientation() == Horizontal)
-      return;
-   
-   switch( e->state() ) {
-      case ShiftButton:
-         static_cast<PlayerApp *>(kapp)->m_pPlayerWidget->wheelEvent( e );
-         break;
-      default:
-         if(e->delta() > 0)
-            static_cast<PlayerApp *>(kapp)->slotNext();
-         else
-            static_cast<PlayerApp *>(kapp)->slotPrev();
-         break;
-   }
-   
-   e->accept();
+    if ( e->orientation() == Horizontal )
+        return ;
+
+    switch ( e->state() )
+    {
+        case ShiftButton:
+            static_cast<PlayerApp *>( kapp ) ->m_pPlayerWidget->wheelEvent( e );
+            break;
+        default:
+            if ( e->delta() > 0 )
+                static_cast<PlayerApp *>( kapp ) ->slotNext();
+            else
+                static_cast<PlayerApp *>( kapp ) ->slotPrev();
+            break;
+    }
+
+    e->accept();
 }
 
 // CLASS PlayerWidget ------------------------------------------------------------
 
 PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
-   : QWidget( parent, name )
-   , DCOPObject("amarok")
+        : QWidget( parent, name )
+        , DCOPObject( "amarok" )
 {
     setName( "PlayerWidget " );
     setCaption( "amaroK" );
@@ -297,8 +299,10 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_pSliderVol->setFocusPolicy( QWidget::NoFocus );
 
     QString pathStr( locate( "data", "amarok/images/hi16-action-noatunback.png" ) );
+
     if ( pathStr == QString::null )
-        QMessageBox::warning( this, i18n("amaroK Error"), i18n("Error: Could not find icons. Did you forget make install?"),
+        QMessageBox::warning( this, i18n( "amaroK Error" ),
+                              i18n( "Error: Could not find icons. Did you forget make install?" ),
                               QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton );
 
     m_pButtonPrev = new QPushButton( m_pFrameButtons );
@@ -395,9 +399,10 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     timeDisplay( false, 0, 0, 0 );
 
     // Register with DCOP
-    if ( !kapp->dcopClient()->isRegistered() ) {
-        kapp->dcopClient()->registerAs( "amarok" );
-        kapp->dcopClient()->setDefaultObject( objId() );
+    if ( !kapp->dcopClient() ->isRegistered() )
+    {
+        kapp->dcopClient() ->registerAs( "amarok" );
+        kapp->dcopClient() ->setDefaultObject( objId() );
     }
 }
 
@@ -413,12 +418,13 @@ void PlayerWidget::initScroll()
     m_pixmapWidth = 800;
     m_pixmapHeight = 20;
 
-    m_pBgPixmap = new QPixmap( paletteBackgroundPixmap() ->convertToImage().copy( m_pFrame->x(), m_pFrame->y(), m_pFrame->width(), m_pFrame->height() ) );
+    m_pBgPixmap = new QPixmap( paletteBackgroundPixmap() ->convertToImage().copy( m_pFrame->x(),
+                               m_pFrame->y(), m_pFrame->width(), m_pFrame->height() ) );
 
     m_pComposePixmap = new QPixmap( m_pFrame->width(), m_pixmapHeight );
     m_pScrollPixmap = new QPixmap( m_pixmapWidth, m_pixmapHeight );
     m_pScrollMask = new QBitmap( m_pixmapWidth, m_pixmapHeight );
-    setScroll( i18n("   welcome to amaroK   "), " ", " " );
+    setScroll( i18n( "   welcome to amaroK   " ), " ", " " );
 
     m_sx = m_sy = 0;
     m_sxAdd = 1;
@@ -522,40 +528,51 @@ void PlayerWidget::drawScroll()
 
 void PlayerWidget::timeDisplay( bool remaining, int hours, int minutes, int seconds )
 {
+    m_timeRemaining = remaining;
+    m_timeHours = hours;
+    m_timeMinutes = minutes;
+    m_timeSeconds = seconds;
+
+    update();
+}
+
+
+void PlayerWidget::drawTimeDisplay()
+{
     bitBlt( m_pTimeComposePixmap, 0, 0, m_pTimeBgPixmap );
 
     int x = 0;
     int y = 0;
 
-    if ( hours > 60 || hours < 0 )
-        hours = 0;
-    if ( minutes > 60 || minutes < 0 )
-        minutes = 0;
-    if ( seconds > 60 || seconds < 0 )
-        seconds = 0;
+    if ( m_timeHours > 60 || m_timeHours < 0 )
+        m_timeHours = 0;
+    if ( m_timeMinutes > 60 || m_timeMinutes < 0 )
+        m_timeMinutes = 0;
+    if ( m_timeSeconds > 60 || m_timeSeconds < 0 )
+        m_timeSeconds = 0;
 
-    if ( remaining )
+    if ( m_timeRemaining )
         bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, 11 * m_timeDisplayW, 0, m_timeDisplayW );
     else
         bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, 12 * m_timeDisplayW, 0, m_timeDisplayW );
 
     x += m_timeDisplayW;
 
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, hours / 10 * m_timeDisplayW, 0, m_timeDisplayW );
+    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, m_timeHours / 10 * m_timeDisplayW, 0, m_timeDisplayW );
     x += m_timeDisplayW;
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, hours % 10 * m_timeDisplayW, 0, m_timeDisplayW );
-    x += m_timeDisplayW;
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, 10 * m_timeDisplayW, 0, m_timeDisplayW );
-    x += m_timeDisplayW;
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, minutes / 10 * m_timeDisplayW, 0, m_timeDisplayW );
-    x += m_timeDisplayW;
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, minutes % 10 * m_timeDisplayW, 0, m_timeDisplayW );
+    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, m_timeHours % 10 * m_timeDisplayW, 0, m_timeDisplayW );
     x += m_timeDisplayW;
     bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, 10 * m_timeDisplayW, 0, m_timeDisplayW );
     x += m_timeDisplayW;
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, seconds / 10 * m_timeDisplayW, 0, m_timeDisplayW );
+    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, m_timeMinutes / 10 * m_timeDisplayW, 0, m_timeDisplayW );
     x += m_timeDisplayW;
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, seconds % 10 * m_timeDisplayW, 0, m_timeDisplayW );
+    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, m_timeMinutes % 10 * m_timeDisplayW, 0, m_timeDisplayW );
+    x += m_timeDisplayW;
+    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, 10 * m_timeDisplayW, 0, m_timeDisplayW );
+    x += m_timeDisplayW;
+    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, m_timeSeconds / 10 * m_timeDisplayW, 0, m_timeDisplayW );
+    x += m_timeDisplayW;
+    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, m_timeSeconds % 10 * m_timeDisplayW, 0, m_timeDisplayW );
 
     //offset 1 pixel because of bounding box
     bitBlt( m_pTimeDisplayLabel, 1, 1, m_pTimeComposePixmap );
@@ -567,7 +584,6 @@ void PlayerWidget::timeDisplay( bool remaining, int hours, int minutes, int seco
 void PlayerWidget::paintEvent( QPaintEvent * )
 {
     erase( 20, 40, 120, 50 );
-
     QPainter pF( this );
 
     QFont font;
@@ -579,6 +595,8 @@ void PlayerWidget::paintEvent( QPaintEvent * )
     pF.setPen( pApp->m_fgColor );
     pF.drawText( 20, 40, m_bitrate );
     pF.drawText( 70, 40, m_samplerate );
+
+    drawTimeDisplay();
 }
 
 
@@ -618,30 +636,34 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             m_pPopupMenu = new QPopupMenu( this );
             m_pPopupMenu->setCheckable( true );
 
-            m_pPopupMenu->insertItem( i18n("About"), pApp, SLOT( slotShowAbout() ) );
-            m_pPopupMenu->insertItem( i18n("amaroK Handbook"), pApp, SLOT( slotShowHelp() ) );
-            m_pPopupMenu->insertItem( i18n("Tip of the Day"), pApp, SLOT( slotShowTip() ) );
+            m_pPopupMenu->insertItem( i18n( "About" ), pApp, SLOT( slotShowAbout() ) );
+            m_pPopupMenu->insertItem( i18n( "amaroK Handbook" ), pApp, SLOT( slotShowHelp() ) );
+            m_pPopupMenu->insertItem( i18n( "Tip of the Day" ), pApp, SLOT( slotShowTip() ) );
 
             m_pPopupMenu->insertSeparator();
 
-            m_pPopupMenu->insertItem( i18n("Configure amaroK"), pApp, SLOT( slotShowOptions() ) );
-            m_pPopupMenu->insertItem( i18n("Configure Shortcuts"), this, SLOT( slotConfigShortcuts() ) );
-            m_pPopupMenu->insertItem( i18n("Configure Global Shortcuts"), this, SLOT( slotConfigGlobalShortcuts() ) );
+            m_pPopupMenu->insertItem( i18n( "Configure amaroK" ), pApp, SLOT( slotShowOptions() ) );
+            m_pPopupMenu->insertItem( i18n( "Configure Shortcuts" ), this, SLOT( slotConfigShortcuts() ) );
+            m_pPopupMenu->insertItem( i18n( "Configure Global Shortcuts" ),
+                                      this, SLOT( slotConfigGlobalShortcuts() ) );
 
             m_pPopupMenu->insertSeparator();
 
-            m_pPopupMenu->insertItem( i18n("Effects"), pApp, SLOT( slotConfigEffects() ) );
-            m_IdConfPlayObject = m_pPopupMenu->insertItem( i18n("Configure PlayObject"), this, SLOT( slotConfigPlayObject() ) );
+            m_pPopupMenu->insertItem( i18n( "Effects" ), pApp, SLOT( slotConfigEffects() ) );
+            m_IdConfPlayObject = m_pPopupMenu->insertItem( i18n( "Configure PlayObject" ),
+                                 this, SLOT( slotConfigPlayObject() ) );
 
             m_pPopupMenu->insertSeparator();
 
-            m_IdRepeatTrack = m_pPopupMenu->insertItem( i18n("Repeat Track"), pApp, SLOT( slotSetRepeatTrack() ) );
-            m_IdRepeatPlaylist = m_pPopupMenu->insertItem( i18n("Repeat Playlist"), pApp, SLOT( slotSetRepeatPlaylist() ) );
-            m_IdRandomMode = m_pPopupMenu->insertItem( i18n("Random Mode"), pApp, SLOT( slotSetRandomMode() ) );
+            m_IdRepeatTrack = m_pPopupMenu->insertItem( i18n( "Repeat Track" ),
+                              pApp, SLOT( slotSetRepeatTrack() ) );
+            m_IdRepeatPlaylist = m_pPopupMenu->insertItem( i18n( "Repeat Playlist" ),
+                                 pApp, SLOT( slotSetRepeatPlaylist() ) );
+            m_IdRandomMode = m_pPopupMenu->insertItem( i18n( "Random Mode" ), pApp, SLOT( slotSetRandomMode() ) );
 
             m_pPopupMenu->insertSeparator();
 
-            m_pPopupMenu->insertItem( i18n("Quit"), pApp, SLOT( quit() ) );
+            m_pPopupMenu->insertItem( i18n( "Quit" ), pApp, SLOT( quit() ) );
         }
 
         if ( playObjectConfigurable() )
@@ -777,36 +799,43 @@ void PlayerWidget::hide()
     QWidget::hide();
 }
 
+
 /* DCOP signals - first try at it */
 
 void PlayerWidget::play()
 {
-   pApp->slotPlay();
+    pApp->slotPlay();
 }
+
 
 void PlayerWidget::stop()
 {
-   pApp->slotStop();
+    pApp->slotStop();
 }
+
 
 void PlayerWidget::next()
 {
-   pApp->slotNext();
+    pApp->slotNext();
 }
+
 
 void PlayerWidget::prev()
 {
-   pApp->slotPrev();
+    pApp->slotPrev();
 }
+
 
 void PlayerWidget::pause()
 {
-   pApp->slotPause();
+    pApp->slotPause();
 }
+
 
 QString PlayerWidget::nowPlaying()
 {
-   return m_nowPlaying;
+    return m_nowPlaying;
 }
+
 
 #include "playerwidget.moc"

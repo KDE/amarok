@@ -970,8 +970,6 @@ void PlayerApp::slotPlay()
     {
         m_length = 0;
         m_pPlayerWidget->m_pSlider->setMaxValue( 0 );
-        m_pPlayerWidget->timeDisplay( false, 0, 0, 0 );
-
         m_pPlayerWidget->setScroll( i18n( "Stream from: " ) + item->text( 0 ), "--", "--" );
     }
 
@@ -1195,7 +1193,6 @@ void PlayerApp::slotVolumeChanged( int value )
         value = value + ( value << 8 );
         ioctl( m_Mixer, MIXER_WRITE( 4 ), &value );
     }
-
     else
     {
         //convert percent to factor
@@ -1206,20 +1203,6 @@ void PlayerApp::slotVolumeChanged( int value )
 
 void PlayerApp::slotMainTimer()
 {
-    if ( m_pPlayerWidget->isVisible() )
-    {
-        if ( m_optTimeDisplayRemaining )
-        {
-            int sliderSeconds = m_length - m_pPlayerWidget->m_pSlider->value();
-            m_pPlayerWidget->timeDisplay( true, sliderSeconds / 60 / 60 % 60, sliderSeconds / 60 % 60, sliderSeconds % 60 );
-        }
-        else
-        {
-            int sliderSeconds = m_pPlayerWidget->m_pSlider->value();
-            m_pPlayerWidget->timeDisplay( false, sliderSeconds / 60 / 60 % 60, sliderSeconds / 60 % 60, sliderSeconds % 60 );
-        }
-    }
-
     if ( m_pPlayObject == NULL || m_pPlayObject->isNull() )
     {
         if ( m_scopeActive )
@@ -1227,8 +1210,7 @@ void PlayerApp::slotMainTimer()
             m_Scope.stop();
             m_scopeActive = false;
         }
-
-        return ;
+        return;
     }
 
     if ( ( m_length == 0 ) && ( !m_pPlayObject->stream() ) )
@@ -1238,12 +1220,26 @@ void PlayerApp::slotMainTimer()
     }
 
     if ( m_bSliderIsPressed )
-        return ;
+        return;
     if ( !m_bIsPlaying )
-        return ;
+        return;
 
     Arts::poTime timeC( m_pPlayObject->currentTime() );
     m_pPlayerWidget->m_pSlider->setValue( static_cast<int>( timeC.seconds ) );
+
+    // <Draw TimeDisplay>
+    if ( m_pPlayerWidget->isVisible() )
+    {
+        int seconds;
+        if ( m_optTimeDisplayRemaining )
+            seconds = m_length - timeC.seconds;
+        else
+            seconds = timeC.seconds;
+
+        m_pPlayerWidget->timeDisplay( m_optTimeDisplayRemaining, seconds / 60 / 60 % 60,
+                                      seconds / 60 % 60, seconds % 60 );
+    }
+    // </Draw TimeDisplay>
 
     // <Crossfading>
     if ( ( m_optXFade ) &&
@@ -1252,7 +1248,7 @@ void PlayerApp::slotMainTimer()
          ( m_length * 1000 - ( timeC.seconds * 1000 + timeC.ms ) < m_optXFadeLength )  )
     {
         startXFade();
-        return ;
+        return;
     }
     if ( m_XFadeRunning )
     {
@@ -1279,7 +1275,7 @@ void PlayerApp::slotMainTimer()
     if ( m_pPlayObject->state() == Arts::posIdle )
     {
         slotNext();
-        return ;
+        return;
     }
 
     if ( m_pPlayObject->state() == Arts::posPlaying )
@@ -1310,11 +1306,7 @@ void PlayerApp::slotAnimTimer()
         if ( m_scopeActive )
         {
             std::vector<float> *pScopeVector = m_Scope.scope();
-
-            if ( pScopeVector->size() != 0 )
-                m_pPlayerWidget->m_pVis->drawAnalyzer( pScopeVector );
-            else
-                m_pPlayerWidget->m_pVis->drawAnalyzer( NULL );
+            m_pPlayerWidget->m_pVis->drawAnalyzer( pScopeVector );
         }
         else
             m_pPlayerWidget->m_pVis->drawAnalyzer( NULL );
