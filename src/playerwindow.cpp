@@ -186,7 +186,7 @@ PlayerWidget::~PlayerWidget()
 {
     EngineController::instance()->detach( this );
 
-    AmarokConfig::setPlayerPos( pos() ); //TODO unecessary XT IMO
+    AmarokConfig::setPlayerPos( pos() );
 }
 
 // METHODS ----------------------------------------------------------------
