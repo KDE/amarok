@@ -36,31 +36,41 @@ email                : fh@ez.no
 ExtensionCache EngineController::s_extensionCache;
 
 
-static
-class DummyEngine : public EngineBase
+static EngineBase*
+dummyEngine()
 {
-    //Does nothing, just here to prevent crashes on startup
-    //and in case no engines are found
+    //use a function so it isn't created when --help is called
+    //for instance (and thus help output isn't clouded by
+    //Plugin::Plugin debug ouput)
 
-    virtual bool init() { return true; }
-    virtual bool canDecode( const KURL& ) const { return false; }
-    virtual uint position() const { return 0; }
-    virtual bool load( const KURL&, bool ) { return false; }
-    virtual bool play( uint ) { return false; }
-    virtual void stop() {}
-    virtual void pause() {}
-    virtual void setVolumeSW( uint ) {}
-    virtual void seek( uint ) {}
+    static
+    class DummyEngine : public EngineBase
+    {
+        //Does nothing, just here to prevent crashes on startup
+        //and in case no engines are found
 
-    virtual Engine::State state() const { return Engine::Empty; }
+        virtual bool init() { return true; }
+        virtual bool canDecode( const KURL& ) const { return false; }
+        virtual uint position() const { return 0; }
+        virtual bool load( const KURL&, bool ) { return false; }
+        virtual bool play( uint ) { return false; }
+        virtual void stop() {}
+        virtual void pause() {}
+        virtual void setVolumeSW( uint ) {}
+        virtual void seek( uint ) {}
 
-public: DummyEngine() : EngineBase() {}
+        virtual Engine::State state() const { return Engine::Empty; }
 
-} dummyEngine;
+    public: DummyEngine() : EngineBase() {}
+
+    } dummyEngine;
+
+    return &dummyEngine;
+}
 
 
 EngineController::EngineController()
-    : m_engine( &dummyEngine )
+    : m_engine( dummyEngine() )
     , m_delayTime( 0 )
     , m_muteVolume( 0 )
     , m_xFadeThisTrack( false )
@@ -130,7 +140,7 @@ EngineBase *EngineController::loadEngine() //static
 
         //assign new engine, unload old one. Order is thread-safe!
         instance()->m_engine = static_cast<EngineBase*>(plugin);
-        if( engine != &dummyEngine ) PluginManager::unload( engine );
+        if( engine != dummyEngine() ) PluginManager::unload( engine );
 
         engine = static_cast<EngineBase*>(plugin);
 
@@ -224,31 +234,32 @@ void EngineController::play( const MetaBundle &bundle )
 
     if ( m_engine->streamingMode() != Engine::NoStreaming && url.protocol() == "http" ) {
         m_bundle = bundle;
+        m_xFadeThisTrack = false;
         // Detect mimetype of remote file
         KIO::MimetypeJob* job = KIO::mimetype( url, false );
         connect( job, SIGNAL(result( KIO::Job* )), SLOT(playRemote( KIO::Job* )) );
         StatusBar::instance()->message( i18n("Connecting to stream source...") );
         return; //don't do notify
     }
-    else if( !m_engine->play( url ) )
-    {
-        //NOTE it is up to the engine to present a graphical error message
-        next();
-        return; //don't do notify
-    }
-    else
-    {
-        //non stream is now playing
-        m_xFadeThisTrack = AmarokConfig::crossfade() &&
-                           m_engine->hasXFade() &&
-                           !m_engine->isStream() &&
-                           m_bundle.length()*1000 - AmarokConfig::crossfadeLength()*2 > 0;
-    }
 
-    //don't assign until we are sure it is playing
-    m_bundle = bundle;
 
-    newMetaDataNotify( bundle, true /* track change */ );
+    if( m_engine->load( url ) )
+    {
+        //assign bundle now so that it is available when the engine
+        //emits stateChanged( Playing )
+        m_bundle = bundle;
+
+        if( m_engine->play() )
+        {
+            m_xFadeThisTrack = AmarokConfig::crossfade() &&
+                m_engine->hasXFade() &&
+                !m_engine->isStream() &&
+                m_bundle.length()*1000 - AmarokConfig::crossfadeLength()*2 > 0;
+
+            newMetaDataNotify( bundle, true /* track change */ );
+        }
+    }
+    else m_bundle = MetaBundle::null;
 }
 
 
