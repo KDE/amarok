@@ -87,7 +87,7 @@ namespace amaroK {
         private:
             bool processHeader( Q_LONG &index, Q_LONG bytesRead );
             void transmitData( const QString &data );
-            void error();
+            void restartNoIcy();
 
             /**
              * Find key/value pair in string and return value.

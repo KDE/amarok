@@ -55,8 +55,8 @@ StreamProvider::StreamProvider( KURL url, const QString& streamingMode )
     if ( !m_url.port() ) m_url.setPort( 80 );
 
     connect( &m_sockRemote, SIGNAL( error( int ) ), this, SLOT( connectError() ) );
-    connect( &m_sockRemote, SIGNAL( connected() ), this, SLOT( sendRequest() ) );
-    connect( &m_sockRemote, SIGNAL( readyRead() ), this, SLOT( readRemote() ) );
+    connect( &m_sockRemote, SIGNAL( connected() ),  this, SLOT( sendRequest() ) );
+    connect( &m_sockRemote, SIGNAL( readyRead() ),  this, SLOT( readRemote() ) );
 
     if ( streamingMode == "Socket" ) {
         uint i;
@@ -147,22 +147,22 @@ StreamProvider::sendRequest() //SLOT
 {
     DEBUG_BLOCK
 
-    QCString username = m_url.user().utf8();
-    QCString password = m_url.pass().utf8();
-    QString authString = KCodecs::base64Encode( username + ":" + password );
-    bool auth = !( username.isEmpty() && password.isEmpty() );
+    const QCString username = m_url.user().utf8();
+    const QCString password = m_url.pass().utf8();
+    const QString authString = KCodecs::base64Encode( username + ":" + password );
+    const bool auth = !( username.isEmpty() && password.isEmpty() );
 
-    QString request = QString( "GET %1 HTTP/1.0\r\n"
-                               "Host: %2\r\n"
-                               "User-Agent: amaroK/1.2\r\n"
-                               "Accept: */*\r\n"
-                               "%3"
-                               "%4"
-                               "\r\n" )
-                               .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) + m_url.query() )
-                               .arg( m_url.host() )
-                               .arg( m_icyMode ? "Icy-MetaData:1\r\n" : "" )
-                               .arg( auth ? "Authorization: Basic " + authString + "\r\n" : "" );
+    const QString request = QString( "GET %1 HTTP/1.0\r\n"
+                                     "Host: %2\r\n"
+                                     "User-Agent: amaroK/1.2\r\n"
+                                     "Accept: */*\r\n"
+                                     "%3"
+                                     "%4"
+                                     "\r\n" )
+                                     .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) + m_url.query() )
+                                     .arg( m_url.host() )
+                                     .arg( m_icyMode ? "Icy-MetaData:1\r\n" : "" )
+                                     .arg( auth ? "Authorization: Basic " + authString + "\r\n" : "" );
 
     debug() << "Sending request:\n" << request << endl;
     m_sockRemote.writeBlock( request.latin1(), request.length() );
@@ -175,7 +175,7 @@ StreamProvider::readRemote() //SLOT
     m_connectSuccess = true;
     Q_LONG index = 0;
     Q_LONG bytesWrite = 0;
-    Q_LONG bytesRead = m_sockRemote.readBlock( m_pBuf, BUFSIZE );
+    const Q_LONG bytesRead = m_sockRemote.readBlock( m_pBuf, BUFSIZE );
     if ( bytesRead == -1 ) { emit sigError(); return; }
 
     if ( !m_headerFinished )
@@ -211,7 +211,7 @@ StreamProvider::readRemote() //SLOT
             else
                 emit streamData( m_pBuf + index, bytesWrite );
 
-            if ( bytesWrite == -1 ) { error(); return; }
+            if ( bytesWrite == -1 ) { restartNoIcy(); return; }
 
             index += bytesWrite;
             m_byteCount += bytesWrite;
@@ -270,7 +270,7 @@ StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
             m_headerFinished = true;
 
             if ( m_icyMode && !m_metaInt ) {
-                error();
+                restartNoIcy();
                 return false;
             }
 
@@ -286,31 +286,35 @@ StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
 void
 StreamProvider::transmitData( const QString &data )
 {
+    DEBUG_BLOCK
+
     debug() << "Received MetaData: " << data << endl;
 
     // because we assumed latin1 earlier this codec conversion works
-    QTextCodec *codec = AmarokConfig::recodeShoutcastMetadata()
+    QTextCodec *codec = ( AmarokConfig::recodeShoutcastMetadata() && AmarokConfig::recodeEncoding() )
             ? QTextCodec::codecForIndex( AmarokConfig::recodeEncoding() )
             : QTextCodec::codecForName( "ISO8859-1" ); //Latin1 returns 0
 
-    Q_ASSERT( codec );
+    if ( !codec ) {
+        error() << "QTextCodec* codec == NULL!" << endl;
+        return;
+    }
 
-    MetaBundle bundle( codec->toUnicode( extractStr( data, "StreamTitle" ).latin1() ),
-                       m_streamUrl,
-                       m_bitRate,
-                       codec->toUnicode( m_streamGenre.latin1() ),
-                       codec->toUnicode( m_streamName.latin1() ),
-                       m_url );
+    const MetaBundle bundle( codec->toUnicode( extractStr( data, "StreamTitle" ).latin1() ),
+                             m_streamUrl,
+                             m_bitRate,
+                             codec->toUnicode( m_streamGenre.latin1() ),
+                             codec->toUnicode( m_streamName.latin1() ),
+                             m_url );
 
     emit metaData( bundle );
 }
 
 
 void
-StreamProvider::error()
+StreamProvider::restartNoIcy()
 {
-    debug() <<  "StreamProvider error: Stream does not support shoutcast metadata. "
-                "Restarting in non-metadata mode.\n";
+    debug() <<  "Stream does not support Shoutcast Icy-MetaData. Restarting in non-Metadata mode.\n";
 
     m_sockRemote.close();
     m_icyMode = false;
