@@ -1,6 +1,6 @@
 /***************************************************************************
-                      titleproxy.h  -  description
-                         -------------------
+                     titleproxy.h  -  description
+                        -------------------
 begin                : Nov 20 14:35:18 CEST 2003
 copyright            : (C) 2003 by Mark Kretschmann
 email                :
@@ -27,26 +27,39 @@ email                :
 class QString;
 class MetaBundle;
 
-/**
- * @brief Proxy for decoding Shoutcast metadata.
- */
-
 namespace TitleProxy
 {
+    /**
+     * Proxy Concept:
+     * 1. Connect to streamserver
+     * 2. Listen on localhost, let aRts connect to proxyserver
+     * 3. Write GET request to streamserver, containing Icy-MetaData:1 token
+     * 4. Read MetaInt token from streamserver (==metadata offset)
+     *
+     * 5. Read stream data (mp3 + metadata) from streamserver
+     * 6. Filter out metadata, send to app
+     * 7. Write mp3 data to proxyserver
+     * 8. Goto 5
+     *
+     * Some info on the shoutcast metadata protocol can be found at:
+     * @see http://www.smackfu.com/stuff/programming/shoutcast.html
+     *
+     * @short A proxy server for extracting metadata from Shoutcast streams.
+     */
+
     class Proxy : public QObject
     {
-        Q_OBJECT
+            Q_OBJECT
         public:
             Proxy( KURL url, int streamingMode );
             ~Proxy();
 
+            bool initSuccess() { return m_initSuccess; }
             KURL proxyUrl();
 
         signals:
             void metaData( const MetaBundle& );
             void streamData( char*, int size );
-            
-        public slots:
 
         private slots:
             void readRemote();
@@ -59,25 +72,25 @@ namespace TitleProxy
             void transmitData( const QString &data );
             QString extractStr( const QString &str, const QString &key );
 
-// ATTRIBUTES ------
-            KURL            m_url;
-            int             m_streamingMode;
-            bool            m_initSuccess;
-            int             m_metaInt;
-            int             m_bitRate;
-            int             m_byteCount;
-            uint            m_metaLen;
-            QString         m_metaData;
-            bool            m_headerFinished;
-            QString         m_headerStr;
-            int             m_usedPort;
-            QString         m_lastMetadata;
+            // ATTRIBUTES ------
+            KURL m_url;
+            int m_streamingMode;
+            bool m_initSuccess;
+            int m_metaInt;
+            int m_bitRate;
+            int m_byteCount;
+            uint m_metaLen;
+            QString m_metaData;
+            bool m_headerFinished;
+            QString m_headerStr;
+            int m_usedPort;
+            QString m_lastMetadata;
 
-            QString         m_streamName;
-            QString         m_streamGenre;
-            QString         m_streamUrl;
-            
-            char            *m_pBuf;
+            QString m_streamName;
+            QString m_streamGenre;
+            QString m_streamUrl;
+
+            char *m_pBuf;
 
             QSocket m_sockRemote;
             QSocket m_sockProxy;
@@ -86,19 +99,18 @@ namespace TitleProxy
 
     class Server : public QServerSocket
     {
-        Q_OBJECT
-        
-        public:   
+            Q_OBJECT
+
+        public:
             Server( Q_UINT16 port, QObject* parent )
-            : QServerSocket( port, 1, parent ) {};
-        
+                    : QServerSocket( port, 1, parent ) {};
+
         signals:
             void connected( int socket );
-            
-        private:
-            void newConnection( int socket ) { emit connected( socket ); } 
-    };
 
+        private:
+            void newConnection( int socket ) { emit connected( socket ); }
+    };
 
 } //namespace TitleProxy
 

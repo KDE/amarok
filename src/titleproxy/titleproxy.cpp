@@ -15,6 +15,7 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
+#include "enginebase.h"
 #include "metabundle.h"
 #include "titleproxy.h"
 
@@ -25,21 +26,6 @@ email                : markey@web.de
 #include <qobject.h>
 #include <qstring.h>
 
-// Some info on the shoutcast metadata protocol can be found at:
-// http://www.smackfu.com/stuff/programming/shoutcast.html
-
-// Proxy Concept:
-// 1. Connect to streamserver
-// 2. Listen on localhost, let aRts connect to proxyserver
-// 3. Read HTTP GET request from proxyserver (sent by aRts)
-// 4. Modify GET request by adding Icy-MetaData:1 token
-// 5. Write request to streamserver
-// 6. Read MetaInt token from streamserver (==metadata offset)
-//
-// 7. Read stream data (mp3 + metadata) from streamserver
-// 8. Filter out metadata, send to app
-// 9. Write mp3 data to proxyserver
-//10. Goto 7
 
 using namespace TitleProxy;
 
@@ -52,7 +38,7 @@ Proxy::Proxy( KURL url, int streamingMode )
         : QObject()
         , m_url( url )
         , m_streamingMode( streamingMode )
-        , m_initSuccess( false )
+        , m_initSuccess( true )
         , m_metaInt( 0 )
         , m_byteCount( 0 )
         , m_metaLen( 0 )
@@ -70,13 +56,14 @@ Proxy::Proxy( KURL url, int streamingMode )
     kdDebug() << k_funcinfo << "sock.connectToHost() state: " << m_sockRemote.state() << endl;
     
     if ( m_sockRemote.state() != QSocket::Connected ) {
-        error();
-        return ;
+        kdWarning() << k_funcinfo << "Unable to connect to remote server. Aborting.\n";
+        m_initSuccess = false;
+        return;
     }
 
     m_pBuf = new char[ BUFSIZE ];
     
-    if ( streamingMode ) {
+    if ( streamingMode == EngineBase::Socket ) {
         uint i;
         Server* server;
         for ( i = MIN_PROXYPORT; i <= MAX_PROXYPORT; i++ ) {
@@ -88,17 +75,15 @@ Proxy::Proxy( KURL url, int streamingMode )
             delete server;
         }
         if ( i > MAX_PROXYPORT ) {
-            emit error();
-            return ;
+            kdWarning() << k_funcinfo << "Unable to find a free local port. Aborting.\n";
+            m_initSuccess = false;
+            return;
         }
         m_usedPort = i;
-        m_initSuccess = true;
         connect( server, SIGNAL( connected( int ) ), this, SLOT( accept( int ) ) );
     }
-    else {    
-        m_initSuccess = true;
+    else
         sendRequest( true );
-    }
 }
 
 
@@ -144,6 +129,7 @@ void Proxy::sendRequest( bool meta )
     QString request = QString( "GET %1 HTTP/1.1\r\n" )
                              .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) );
     
+    //request metadata
     if ( meta ) request += "Icy-MetaData:1\r\n";
  
     request += "Connection: Keep-Alive\r\n"
@@ -191,7 +177,7 @@ void Proxy::readRemote()
             if ( bytesWrite > m_metaInt - m_byteCount )
                 bytesWrite = m_metaInt - m_byteCount;
 
-            if ( m_streamingMode )
+            if ( m_streamingMode == EngineBase::Socket )
                 bytesWrite = m_sockProxy.writeBlock( m_pBuf + index, bytesWrite );
             else 
                 emit streamData( m_pBuf + index, bytesWrite );
@@ -232,7 +218,7 @@ bool Proxy::processHeader( Q_LONG &index, Q_LONG bytesRead )
                                                QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 );
             if ( m_streamUrl.startsWith( "www.", true ) )
                 m_streamUrl.prepend( "http://" );
-            if ( m_streamingMode )
+            if ( m_streamingMode == EngineBase::Socket )
                 m_sockProxy.writeBlock( m_headerStr.latin1(), m_headerStr.length() );
             m_headerFinished = true;
 
@@ -249,6 +235,8 @@ bool Proxy::processHeader( Q_LONG &index, Q_LONG bytesRead )
 
 void Proxy::error()
 {
+    kdDebug() <<  "TitleProxy error. Restarting stream in non-metadata mode.\n";
+    
     //open stream again,  but this time without metadata, please
     sendRequest( false );
 }

@@ -43,12 +43,12 @@ class GstEngine : public EngineBase
                                                                                                   
         bool                                     initMixer( bool hardware );
         bool                                     canDecode( const KURL &url, mode_t mode, mode_t permissions );
-        int                                      streamingMode() { return 0; }
+        StreamingMode                            streamingMode() { return Signal; }
         QStringList                              getOutputsList() { return getPluginList( "Sink/Audio" ); }
 
         long                                     length() const { return 0; }
         long                                     position() const;
-        EngineBase::EngineState                  state() const;
+        EngineState                              state() const;
         bool                                     isStream() const;
         std::vector<float>*                      scope();
 

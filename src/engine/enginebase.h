@@ -41,7 +41,8 @@ class EngineBase : public QObject, public amaroK::Plugin {
 
     public:
         enum EngineState { Empty, Idle, Playing, Paused };
-
+        enum StreamingMode { Socket, Signal, NoStreaming };
+        
         EngineBase();
         virtual ~EngineBase();
 
@@ -55,7 +56,7 @@ class EngineBase : public QObject, public amaroK::Plugin {
         virtual bool initMixer( bool hardware ) = 0;
 
         virtual bool canDecode( const KURL &url, mode_t mode, mode_t permissions ) = 0;
-        virtual int streamingMode() { return 1; }       
+        virtual StreamingMode streamingMode() { return NoStreaming; }       
         /** Get list of available output plugins */
         virtual QStringList getOutputsList() { return QStringList(); }
 

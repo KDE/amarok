@@ -1,12 +1,17 @@
+noinst_LTLIBRARIES = \
+    libtitleproxy.la
+
+libtitleproxy_la_SOURCES = \
+    titleproxy.cpp
+
+noinst_HEADERS = \
+    titleproxy.h
+
 INCLUDES = \
-	-I$(top_srcdir)/amarok/src \
-	$(taglib_includes) \
-	$(all_includes)
+    -I$(top_srcdir)/amarok/src \
+    -I$(top_srcdir)/amarok/src/engine \
+    $(all_includes)
 
-METASOURCES = AUTO
+METASOURCES = \
+    AUTO
 
-noinst_LTLIBRARIES =  libtitleproxy.la
-
-libtitleproxy_la_SOURCES =  titleproxy.cpp
-
-noinst_HEADERS =  titleproxy.h
