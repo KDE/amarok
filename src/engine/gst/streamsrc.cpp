@@ -5,17 +5,10 @@
 #include "streamsrc.h"
 
 #include "config.h"
-
-#include <errno.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
+#include <kdebug.h>
 
 
-#define DEFAULT_BLOCKSIZE 2048
+#define DEFAULT_BLOCKSIZE 4096
 
 GST_DEBUG_CATEGORY_STATIC ( gst_streamsrc_debug );
 #define GST_CAT_DEFAULT gst_streamsrc_debug
@@ -37,7 +30,7 @@ enum {
 GstElementDetails gst_streamsrc_details =
     GST_ELEMENT_DETAILS ( "Stream Source",
                           "Source",
-                          "Read streaming audio from TitleProxy",
+                          "Reads streaming audio from TitleProxy",
                           "Mark Kretschmann <markey@web.de>" );
 
 static guint gst_streamsrc_signals[ LAST_SIGNAL ] = { 0 };
@@ -170,19 +163,27 @@ gst_streamsrc_get_property ( GObject * object, guint prop_id, GValue * value, GP
 static GstData *
 gst_streamsrc_get ( GstPad * pad )
 {
+    kdDebug() << k_funcinfo << endl;
+    
     GstStreamSrc* src = GST_STREAMSRC ( GST_OBJECT_PARENT ( pad ) );
-    GstBuffer* buf = gst_buffer_new_and_alloc( *src->streamBufIndex );
+    GstBuffer* buf = gst_buffer_new_and_alloc( DEFAULT_BLOCKSIZE );
     guint8* data = GST_BUFFER_DATA( buf );
+    int readBytes = *src->streamBufIndex;
+    
+    if ( *src->streamBufIndex > DEFAULT_BLOCKSIZE )
+        readBytes = DEFAULT_BLOCKSIZE;
     
     // Copy stream buffer content into gst buffer
-    memcpy( data, src->streamBuf, *src->streamBufIndex );
+    memcpy( data, src->streamBuf, readBytes );
+    // Move stream buffer content to beginning
+    memmove( src->streamBuf, src->streamBuf + readBytes, *src->streamBufIndex );
     
-//     GST_BUFFER_SIZE ( buf ) = *src->streamBufIndex;
+    // Adjust buffer index
+    *src->streamBufIndex -= readBytes;
+        
+    GST_BUFFER_SIZE ( buf ) = readBytes;
     GST_BUFFER_TIMESTAMP ( buf ) = GST_CLOCK_TIME_NONE;
     
-    // Reset index
-    *src->streamBufIndex = 0;
-        
     return GST_DATA ( buf );
 }
 

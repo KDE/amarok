@@ -45,7 +45,7 @@ static const int
 SCOPEBUF_SIZE = 40000;
 
 static const int
-STREAMBUF_SIZE = 60000;
+STREAMBUF_SIZE = 200000;
 
 GError*
 GstEngine::error_msg;
@@ -141,7 +141,6 @@ GstEngine::GstEngine()
         , m_thread( NULL )
         , m_scopeBufIndex( 0 )
         , m_streamBuf( new char[STREAMBUF_SIZE] )
-        , m_streamBufIndex( 0 )
         , m_pipelineFilled( false )
 {
     kdDebug() << k_funcinfo << endl;
@@ -174,10 +173,6 @@ GstEngine::init( bool&, int scopeSize, bool )
 
     m_scopeBuf.resize( SCOPEBUF_SIZE );
     m_scopeSize = 1 << scopeSize;
-
-//     m_streamBuf.resize( STREAMBUF_SIZE );
-    for ( uint i = 0; i < STREAMBUF_SIZE; i++ )
-        m_streamBuf[ i ] = 0;
 
     gst_init( NULL, NULL );
 
@@ -320,8 +315,6 @@ GstEngine::play( const KURL& url )             //SLOT
                       static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
     } else {
         m_filesrc = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex ) );
-//         g_object_set( G_OBJECT( m_filesrc ), "sizetype", 2, NULL );
-        //         g_object_set( G_OBJECT( m_filesrc ), "sizemax", 2048, NULL );
     }
 
     m_spider = gst_element_factory_make( "spider", "spider" );
@@ -349,6 +342,7 @@ GstEngine::play( const KURL& url )             //SLOT
     gst_element_set_state( GST_ELEMENT( m_thread ), GST_STATE_READY );
     
     m_pipelineFilled = true;
+    m_streamBufIndex = 0;
     setVolume( volume() );
     
     if ( url.protocol() == "http" ) {
@@ -442,7 +436,8 @@ GstEngine::newStreamData( char* buf, int size )            //SLOT
     // Adjust index
     m_streamBufIndex += size;
     
-    if ( m_playFlag ) {
+    // Wait until buffer is half filled, then start playback
+    if ( m_playFlag && m_streamBufIndex > STREAMBUF_SIZE / 2 ) {
         play();
         m_playFlag = false;
     }
