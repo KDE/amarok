@@ -208,6 +208,9 @@ bool EngineController::canDecode( const KURL &url ) //static
 
     // Accept non-local files, since we can't test them for validity at this point
     // TODO actually, only accept unconditionally http stuff
+    // TODO this actually makes things like "Blarrghgjhjh:!!!" automatically get inserted
+    // into the playlist
+    // TODO remove for amaroK 1.3 and above silly checks, instead check for http type servers
     if ( !url.isLocalFile() ) return true;
 
     // If extension is already in the cache, return cache result

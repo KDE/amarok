@@ -1706,7 +1706,7 @@ Playlist::setFilter( const QString &query ) //SLOT
 
     m_lastSearch = loweredQuery;
 
-    //to me it seems sensible to do this, BUT if it seems annoying to you, remove it
+    // to me it seems sensible to do this, BUT if it seems annoying to you, remove it
     showCurrentTrack();
     triggerUpdate();
 }
@@ -2090,12 +2090,11 @@ Playlist::slotMouseButtonPressed( int button, QListViewItem *after, const QPoint
     case Qt::MidButton:
     {
         const QString path = QApplication::clipboard()->text( QClipboard::Selection );
-
-        kdDebug() << "[playlist] X11 Paste: " << path << endl;
-
         const KURL url = KURL::fromPathOrURL( path );
 
-        if ( EngineController::canDecode( url ) )
+        debug() << "X11 Paste: " << url << endl;
+
+        if( url.isValid() )
             insertMediaInternal( url, (PlaylistItem*)(after ? after : lastItem()) );
 
         break;
@@ -2325,7 +2324,7 @@ Playlist::addCustomColumn()
             --pcf;
         }
 
-        kdDebug() << args << endl;
+        debug() << args << endl;
 
         //TODO need to do it with a %u for url and %f for file
         //FIXME gets stuck it seems if you submit broken commands
@@ -2338,7 +2337,7 @@ Playlist::addCustomColumn()
 
             *pcf = (*it)->url().path();
 
-            kdDebug() << args << endl;
+            debug() << args << endl;
 
             QProcess p( args );
             for( p.start(); p.isRunning(); /*kapp->processEvents()*/ )
