@@ -108,7 +108,7 @@ void PlaylistWidget::contentsDragMoveEvent( QDragMoveEvent* e )
     {
         slotEraseMarker();
         m_marker = tmpRect;
-        viewport() ->repaint( tmpRect );
+        viewport()->repaint( tmpRect );
     }
 }
 
@@ -220,7 +220,7 @@ void PlaylistWidget::playlistDrop( KURL::List urlList )
             while ( *it )
             {
                 if ( ( ( *it ) ->url().path() != "." ) && ( ( *it ) ->url().path() != ".." ) )
-                    dirList.append( ( *it ) ->url() );
+                    dirList.append( ( *it )->url() );
                 ++it;
             }
 
@@ -290,6 +290,7 @@ void PlaylistWidget::unglowItems()
 
 void PlaylistWidget::triggerSignalPlay()
 {
+    // FIXME reset play position to start
     pApp->slotPlay();
 }
 
