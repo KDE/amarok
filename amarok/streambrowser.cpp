@@ -30,6 +30,7 @@
 #include <kstandarddirs.h>
 #include <kconfig.h>
 #include <kapplication.h>
+#include <kpushbutton.h> //ctor
 
 #include <qlayout.h>
 #include <qdom.h>
@@ -77,11 +78,111 @@ StreamBrowser::StreamBrowser( QWidget *parent, const char *name )
     //        sync = config->readEntry("synchronization", "startup");
 
     setDragEnabled( true );
+
+    KPushButton *share = new KPushButton( KGuiItem( i18n( "Share..." ), "2uparrow" ), parent );
+    connect( share, SIGNAL( clicked() ), SLOT( slotShare() ) );
 }
+
 
 StreamBrowser::~StreamBrowser()
 {}
 
+
+void StreamBrowser::slotShare()
+{
+        int ret;
+        QString stream, uri, location, speed, style, type;
+        QString alias;
+        QStringList serverList = metaservers(true);
+
+        if( serverList.isEmpty() )
+        {
+                KMessageBox::sorry(this,
+                        i18n("No serverList currently accept contributions. "
+                                "Try to update your server list."),
+                        i18n("Share"));
+                return;
+        }
+
+        Share s(this);
+        s.setUris(serverList);
+        ret = s.exec();
+
+        if(ret == QDialog::Accepted)
+        {
+                uri = s.value("uri");
+                location = s.value("location");
+                stream = s.value("stream");
+                style = s.value("style");
+                speed = s.value("speed");
+                type = s.value("type");
+
+                alias = s.uri();
+
+                addStation(alias, stream, uri, location, speed, style, type);
+        }
+}
+
+
+QStringList StreamBrowser::metaservers(bool writeable)
+{
+        QStringList tmp;
+        QStringList::iterator it;
+        KConfig *config;
+        bool w;
+
+        if(writeable)
+        {
+                config = kapp->config();
+                config->setGroup("contributions");
+                for(it = m_metaservers.begin(); it != m_metaservers.end(); it++)
+                {
+                        w = config->readBoolEntry((*it));
+                        if(w) tmp << (*it);
+                }
+                return tmp;
+        }
+        else return m_metaservers;
+}
+
+void StreamBrowser::addStation(QString metaserver, QString stream, QString uri, QString location,
+        QString speed, QString style, QString type)
+{
+        QString username, password;
+        QString metauri;
+        QString update;
+        QStringList::iterator it;
+        KConfig *config;
+        QString cleanurl;
+
+        username = "";
+        password = "";
+
+        update = m_update.arg(username
+                ).arg(password
+                ).arg(stream
+                ).arg(uri
+                ).arg(location
+                ).arg(speed
+                ).arg(style
+                ).arg(type);
+        update.replace("&", "&amp;");
+        kdDebug() << "UPDATE: " << update << endl;
+
+        config = kapp->config();
+        config->setGroup("identifiers");
+
+        metauri = metaserver;
+        for(it = m_metaservers.begin(); it != m_metaservers.end(); it++)
+        {
+                cleanurl = (*it);
+                if(config->readEntry(cleanurl.replace("=", "%3d")) == metaserver) metauri = (*it);
+        }
+
+        doupdate(update, metauri);
+}
+
+//NEW STUFF ABOVE ME
 
 #include <kurldrag.h>
 
@@ -106,9 +207,9 @@ void StreamBrowser::slotUpdateMetaservers()
 
 void StreamBrowser::slotUpdateStations()
 {
-    QApplication::setOverrideCursor( KCursor::waitCursor() );    
+    QApplication::setOverrideCursor( KCursor::waitCursor() );
     doconnection(m_query);
-    QApplication::restoreOverrideCursor(); 
+    QApplication::restoreOverrideCursor();
 }
 
 
@@ -141,8 +242,8 @@ void StreamBrowser::doconnection(QString query)
                 if(config->readNumEntry(alias) != 1) tmpservers += (*it);
         }
 
-//	if(query != m_metaquery)
-//		clear(); // FIXME: add/remove protocol
+//        if(query != m_metaquery)
+//                clear(); // FIXME: add/remove protocol
 
         for(it = tmpservers.begin(); it != tmpservers.end(); it++)
         {
@@ -234,7 +335,7 @@ void StreamBrowser::doupdate(QString update, QString uri)
     sock = new QSocket();
     connect(sock, SIGNAL(connected()), SLOT(slotConnected()));
     connect(sock, SIGNAL(readyRead()), SLOT(slotRead()));
-    //	connect(sock, SIGNAL(error(int)), SLOT(slotError(int)));
+    //        connect(sock, SIGNAL(error(int)), SLOT(slotError(int)));
     sock->connectToHost(url.host(), url.port());
 }
 
@@ -566,7 +667,7 @@ void StreamBrowser::slotRead()
     while(sock->bytesAvailable())
     {
         kdDebug() << sock->bytesAvailable() << endl;
-        /*		rtmp += sock->readLine();*/
+        /*                rtmp += sock->readLine();*/
         cs.resize(sock->bytesAvailable());
         sock->readBlock(cs.data(), sock->bytesAvailable());
         rtmp += cs;
@@ -738,6 +839,94 @@ void StreamBrowser::loadcache()
     }
 
     f.close();
+}
+
+
+
+#include <qlabel.h>
+#include <qlineedit.h>
+#include <qcombobox.h>
+
+Share::Share(QWidget *parent, const char *name)
+: KDialogBase(Plain, i18n("Share"), Ok | Cancel, Ok, parent, name, true, true)
+{
+        QWidget *page = plainPage();
+        QVBoxLayout *vbox;
+        QLabel *lstream, *luri, *lspeed, *llocation, *ltype, *lstyle, *lcategory;
+
+        lstream = new QLabel(i18n("Stream title"), this);
+        lstyle = new QLabel(i18n("Style"), this);
+        llocation = new QLabel(i18n("Location"), this);
+        lspeed = new QLabel(i18n("Bandwidth in kB"), this);
+        ltype = new QLabel(i18n("Type"), this);
+        luri = new QLabel(i18n("URI"), this);
+        lcategory = new QLabel(i18n("Category"), this);
+
+        estream = new QLineEdit(this);
+        estyle = new QLineEdit(this);
+        elocation = new QLineEdit(this);
+        espeed = new QLineEdit(this);
+        typebox = new QComboBox(this);
+        euri = new QLineEdit(this);
+        uribox = new QComboBox(this);
+
+        typebox->insertItem(i18n("Playlist"));
+        typebox->insertItem(i18n("Direct stream"));
+
+        vbox = new QVBoxLayout(page, marginHint(), spacingHint());
+        vbox->add(lstream);
+        vbox->add(estream);
+        vbox->add(lstyle);
+        vbox->add(estyle);
+        vbox->add(llocation);
+        vbox->add(elocation);
+        vbox->add(lspeed);
+        vbox->add(espeed);
+        vbox->add(ltype);
+        vbox->add(typebox);
+        vbox->add(luri);
+        vbox->add(euri);
+        vbox->add(lcategory);
+        vbox->add(uribox);
+
+        estream->setFocus();
+}
+
+QString Share::value(QString param)
+{
+        if(param == "stream") return estream->text();
+        else if(param == "uri") return euri->text();
+        else if(param == "speed") return espeed->text();
+        else if(param == "location") return elocation->text();
+        else if(param == "type") return typebox->currentText();
+        else if(param == "style") return estyle->text();
+        return QString::null;
+}
+
+void Share::setUris(QStringList uris)
+{
+        QStringList::iterator it;
+        KConfig *config;
+        QString alias;
+        QString cleanurl;
+
+        config = kapp->config();
+        config->setGroup("identifiers");
+
+        for (it = uris.begin(); it != uris.end(); it++)
+        {
+                if((*it).startsWith("ggzmeta://"))
+                {
+                        cleanurl = (*it);
+                        alias = config->readEntry(cleanurl.replace("=", "%3d"), (*it));
+                        uribox->insertItem(alias);
+                }
+        }
+}
+
+QString Share::uri()
+{
+        return uribox->currentText();
 }
 
 #include "streambrowser.moc"

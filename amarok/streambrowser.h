@@ -36,6 +36,10 @@ class StreamBrowser : public KListView
         StreamBrowser( QWidget *parent=0, const char *name=0 );
         ~StreamBrowser();
 
+        QStringList metaservers(bool writeable);
+        void addStation(QString metaserver, QString stream, QString uri,
+            QString location, QString speed, QString style, QString type);
+
     signals:
         void signalNewMetaserver(QString uri);
         void signalStations();
@@ -47,6 +51,7 @@ class StreamBrowser : public KListView
         void slotError(int error);
         void slotTimeout();
 
+        void slotShare();
         void slotUpdateMetaservers();
         void slotUpdateStations();
 
@@ -70,6 +75,26 @@ class StreamBrowser : public KListView
         QString m_update;
         QStringList m_metaservers;
         int m_synchronized;
+};
+
+
+#include <kdialogbase.h>
+
+class QLineEdit;
+class QComboBox;
+
+class Share : public KDialogBase
+{
+        Q_OBJECT
+        public:
+                Share(QWidget *parent = NULL, const char *name = NULL);
+                QString value(QString param);
+                void setUris(QStringList uris);
+                QString uri();
+
+        private:
+                QLineEdit *estream, *euri, *espeed, *elocation, *estyle;
+                QComboBox *uribox, *typebox;
 };
 
 #endif
