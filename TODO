@@ -6,6 +6,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  <markey> Apparently for some users Cool-Streams disappeared after upgrading amaroK to HEAD.
+
   <markey> In the settings dialog the "Apply" button is broken (always enabled).
 
   <mxcl>   Apparently if no .kde exists prior to running amaroK, amaroK borks
