@@ -12,6 +12,12 @@
  <Separator lineSeparator="true"/>
  <Separator lineSeparator="true"/>
  <Action name="amarok_menu"/>
+ <Action name="toolbar_analyzer" />
+ <Action name="prev" />
+ <Action name="play" />
+ <Action name="pause" />
+ <Action name="stop" />
+ <Action name="next" />
 </ToolBar>
 
 <State name="loading_media">
