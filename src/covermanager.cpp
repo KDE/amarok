@@ -183,7 +183,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     #ifdef AMAZON_SUPPORT
-    connect( m_db, SIGNAL( coverFetched(const QString &, const QString &) ),
+    connect( m_db, SIGNAL( coverFetched(const QString &) ),
                 SLOT( coverFetched(const QString &, const QString &) ) );
     connect( m_db, SIGNAL( coverFetcherError() ), SLOT( coverFetcherError() ) );
     #endif

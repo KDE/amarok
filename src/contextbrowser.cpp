@@ -461,7 +461,7 @@ void ContextBrowser::showHome() //SLOT
     m_db = new CollectionDB();
     // Triggers redisplay when new cover image is downloaded
     #ifdef AMAZON_SUPPORT
-    connect( m_db, SIGNAL( coverFetched(const QString&, const QString &) ), this, SLOT( showCurrentTrack() ) );
+    connect( m_db, SIGNAL( coverFetched(const QString&) ), this, SLOT( showCurrentTrack() ) );
     #endif
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
