@@ -821,7 +821,7 @@ void App::pruneCoverImages()
 
     const int MAX_DAYS = 90;
 
-    QDir covers( amaroK::saveLocation( "albumcovers/" ) );
+    QDir covers( amaroK::saveLocation( "albumcovers/large/" ) );
     QDir coverCache( amaroK::saveLocation( "albumcovers/cache/" ) );
 
     QFileInfoList list( *covers.entryInfoList( QDir::Files ) );
