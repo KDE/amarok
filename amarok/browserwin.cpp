@@ -299,8 +299,8 @@ void BrowserWin::slotUpdateFonts()
 {
     QFont font;
 
-    if ( pApp->config()->useCustomFonts() )
-        font = pApp->config()->browserWindowFont();
+    if ( AmarokConfig::useCustomFonts() )
+        font = AmarokConfig::browserWindowFont();
 
     m_pSideBar->setPageFont( font );
     m_pPlaylistWidget->setFont( font );

@@ -40,8 +40,6 @@ class QListViewItem;
 class QString;
 class QTimer;
 
-class KConfig;
-
 class BrowserWin;
 class EffectWidget;
 class EngineBase;
@@ -53,8 +51,6 @@ class PlaylistItem;
 
 class PlayerApp;
 extern PlayerApp *pApp;
-
-class AmarokConfig;
 
 class PlayerApp : public KUniqueApplication
 {
@@ -74,8 +70,6 @@ class PlayerApp : public KUniqueApplication
         bool restorePlaylistSelection(const KURL& url);
         void insertMedia( const KURL::List& );
 
-        AmarokConfig *config();
-
         // ATTRIBUTES ------
         EngineBase *m_pEngine;
         
@@ -85,14 +79,9 @@ class PlayerApp : public KUniqueApplication
         BrowserWin *m_pBrowserWin;
         OSDWidget *m_pOSD;
 
-        QColor m_bgColor;
-        QColor m_fgColor;
-
         QColor m_optBrowserBgAltColor;
         QColor m_optBrowserSelColor;
 
-        int m_DelayTime;
-        int m_Volume;
         bool m_bSliderIsPressed;
         bool m_artsNeedsRestart;
 
@@ -143,17 +132,13 @@ class PlayerApp : public KUniqueApplication
         void setupScrolltext();
 
         // ATTRIBUTES ------
-        bool m_usingMixerHW;
-        KConfig *m_pConfig;
         QTimer *m_pMainTimer;
         QTimer *m_pAnimTimer;
         long m_length;
-        int m_Mixer;
         int m_playRetryCounter;
         EffectWidget *m_pEffectWidget;
         bool m_bIsPlaying;
         bool m_bChangingSlider;
-        const int m_scopeSize;
         FHT *m_pFht;
                 
         bool m_XFadeRunning;

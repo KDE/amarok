@@ -79,7 +79,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
         , m_pDcopHandler( new AmarokDcopHandler )
 {
     setCaption( "amaroK" );
-    setPaletteForegroundColor( pApp->m_fgColor );
 
     //actions
     KStdAction::keyBindings( this, SLOT( slotConfigShortcuts() ), m_pActionCollection );
@@ -105,7 +104,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
 
     m_pSliderVol = new AmarokSlider( this, Qt::Vertical );
     m_pSliderVol->setFocusPolicy( QWidget::NoFocus );
-    m_pSliderVol->setValue( pApp->config()->masterVolume() ); // cheat-cheat!
+    m_pSliderVol->setValue( AmarokConfig::masterVolume() ); // cheat-cheat!
 
     QString pathStr( locate( "data", "amarok/images/b_prev.png" ) );
 
@@ -430,7 +429,6 @@ void PlayerWidget::paintEvent( QPaintEvent * )
     font.setBold( TRUE );
     font.setPixelSize( 10 );
     pF.setFont( font );
-    //    pF.setPen( pApp->m_fgColor );
     pF.setPen( QColor( 255, 255, 255 ) );
 
     //this method avoids creation/destruction of temporaries (use +=)
@@ -455,15 +453,15 @@ void PlayerWidget::paintEvent( QPaintEvent * )
 void PlayerWidget::wheelEvent( QWheelEvent *e )
 {
     e->accept();
-    pApp->m_Volume += ( e->delta() * -1 ) / 18;
+    AmarokConfig::setMasterVolume( AmarokConfig::masterVolume() + ( e->delta() * -1 ) / 18 );
 
-    if ( pApp->m_Volume < 0 )
-        pApp->m_Volume = 0;
-    if ( pApp->m_Volume > VOLUME_MAX )
-        pApp->m_Volume = VOLUME_MAX;
+    if ( AmarokConfig::masterVolume() < 0 )
+        AmarokConfig::setMasterVolume( 0 );
+    if ( AmarokConfig::masterVolume() > VOLUME_MAX )
+        AmarokConfig::setMasterVolume( VOLUME_MAX );
 
-    pApp->slotVolumeChanged( pApp->m_Volume );
-    m_pSliderVol->setValue( pApp->m_Volume );
+    pApp->slotVolumeChanged( AmarokConfig::masterVolume() );
+    m_pSliderVol->setValue( AmarokConfig::masterVolume() );
 }
 
 
@@ -506,9 +504,9 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             m_pActionCollection->action( "file_quit" )->plug( m_pPopupMenu );
         }
 
-        m_pPopupMenu->setItemChecked( ID_REPEAT_TRACK, pApp->config()->repeatTrack() );
-        m_pPopupMenu->setItemChecked( ID_REPEAT_PLAYLIST, pApp->config()->repeatPlaylist() );
-        m_pPopupMenu->setItemChecked( ID_RANDOM_MODE, pApp->config()->randomMode() );
+        m_pPopupMenu->setItemChecked( ID_REPEAT_TRACK, AmarokConfig::repeatTrack() );
+        m_pPopupMenu->setItemChecked( ID_REPEAT_PLAYLIST, AmarokConfig::repeatPlaylist() );
+        m_pPopupMenu->setItemChecked( ID_RANDOM_MODE, AmarokConfig::randomMode() );
 
         m_pPopupMenu->setItemEnabled( ID_CONF_PLAYOBJECT, pApp->playObjectConfigurable() );
 
@@ -519,13 +517,13 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             switch( id )
             {
             case ID_REPEAT_TRACK:
-                pApp->config()->setRepeatTrack( !m_pPopupMenu->isItemChecked(id) );
+                AmarokConfig::setRepeatTrack( !m_pPopupMenu->isItemChecked(id) );
                 break;
             case ID_REPEAT_PLAYLIST:
-                pApp->config()->setRepeatPlaylist( !m_pPopupMenu->isItemChecked(id) );
+                AmarokConfig::setRepeatPlaylist( !m_pPopupMenu->isItemChecked(id) );
                 break;
             case ID_RANDOM_MODE:
-                pApp->config()->setRandomMode( !m_pPopupMenu->isItemChecked(id) );
+                AmarokConfig::setRandomMode( !m_pPopupMenu->isItemChecked(id) );
                 break;
             }
         }
@@ -536,7 +534,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
 
         if ( rect.contains( e->pos() ) )
         {
-            pApp->config()->setTimeDisplayRemaining( !pApp->config()->timeDisplayRemaining() );
+            AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
             timeDisplay();
         }
     }
@@ -549,7 +547,7 @@ void PlayerWidget::closeEvent( QCloseEvent *e )
     //pushed for the main widget -mxcl
     //of course since we haven't got an obvious quit button, this is not yet a perfect solution..
 
-    if( pApp->config()->showTrayIcon() )
+    if( AmarokConfig::showTrayIcon() )
     {
         KMessageBox::information( this,
                                   i18n( "<qt>Closing the main window will keep amaroK running in the system tray. "
@@ -588,7 +586,7 @@ void PlayerWidget::moveEvent( QMoveEvent * )
 
 void PlayerWidget::nextVis()
 {
-    pApp->config()->setCurrentAnalyzer( pApp->config()->currentAnalyzer() + 1 );
+    AmarokConfig::setCurrentAnalyzer( AmarokConfig::currentAnalyzer() + 1 );
     createVis();
 }
 
@@ -597,7 +595,7 @@ void PlayerWidget::createVis()
     delete m_pVis;
 
     //bit wierd this switch, but it fits our substandard methods ;-)
-    switch( pApp->config()->currentAnalyzer() )
+    switch( AmarokConfig::currentAnalyzer() )
     {
     case 1:
         m_pVis = new DistortAnalyzer( this );
@@ -624,11 +622,11 @@ void PlayerWidget::createVis()
     case 0:
     default: //so we don't have to remember how many vis's there are
         m_pVis = new BarAnalyzer( this );
-        pApp->config()->setCurrentAnalyzer( 0 );
+        AmarokConfig::setCurrentAnalyzer( 0 );
     }
 
     // we special-case the DistortAnalyzer, since it needs more height. yes, this ugly.. I need whipping
-    if ( pApp->config()->currentAnalyzer() == 1 )
+    if ( AmarokConfig::currentAnalyzer() == 1 )
     {
         m_pVis->setFixedSize( 168, 70 );
         m_pVis->move( 119, 30 );

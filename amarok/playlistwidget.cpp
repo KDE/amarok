@@ -215,7 +215,7 @@ bool PlaylistWidget::request( RequestType rt, bool b )
       
       item = (PlaylistItem*)item->itemAbove();
 
-      if ( item == NULL && pApp->config()->repeatPlaylist() )
+      if ( item == NULL && AmarokConfig::repeatPlaylist() )
       {
          //if repeat then previous track = last track
          item = (PlaylistItem*)lastItem();
@@ -226,7 +226,7 @@ bool PlaylistWidget::request( RequestType rt, bool b )
    case Next:
 
        // random mode
-      if( pApp->config()->randomMode() && childCount() > 3 ) //FIXME is childCount O(1)?
+      if( AmarokConfig::randomMode() && childCount() > 3 ) //FIXME is childCount O(1)?
       {
          do
          {
@@ -234,11 +234,11 @@ bool PlaylistWidget::request( RequestType rt, bool b )
          }
          while ( item == currentTrack() );    // try not to play same track twice in a row
       }
-      else if( !pApp->config()->repeatTrack() ) //repeatTrack means keep item the same!
+      else if( !AmarokConfig::repeatTrack() ) //repeatTrack means keep item the same!
       {
          item = (PlaylistItem*)item->itemBelow();
 
-         if ( item == NULL && pApp->config()->repeatPlaylist() )
+         if ( item == NULL && AmarokConfig::repeatPlaylist() )
          {
             //if repeat then previous track = last track
             item = (PlaylistItem*)firstChild();
@@ -349,7 +349,7 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
        if ( KURLDrag::decode( e, urlList ) )
        {
 /*
-          if ( pApp->config()->dropMode() == "Ask" )
+          if ( AmarokConfig::dropMode() == "Ask" )
           {
              for ( KURL::List::Iterator url = media.begin(); url != media.end(); ++url )
              {
@@ -385,7 +385,7 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
       {
          //if returns true we need to load tags and register this item
          
-         if( pApp->config()->showMetaInfo() ) m_tagReader->append( item );
+         if( AmarokConfig::showMetaInfo() ) m_tagReader->append( item );
 
          //nonlocal downloads can fail <-- <mxcl> what did I mean?!
          searchTokens.append( item->text( 0 ) );
@@ -505,7 +505,7 @@ void PlaylistWidget::startLoader( const KURL::List &list, PlaylistItem *after )
     if( loader )
     {
         setCursor( KCursor::workingCursor() );
-        loader->setOptions( ( pApp->config()->dropMode() == AmarokConfig::EnumDropMode::Recursively ), pApp->config()->followSymlinks(), pApp->config()->browserSortingSpec() );
+        loader->setOptions( ( AmarokConfig::dropMode() == AmarokConfig::EnumDropMode::Recursively ), AmarokConfig::followSymlinks(), AmarokConfig::browserSortingSpec() );
         loader->start();
     }
     else kdDebug() << "[loader] Unable to create loader-thread!\n";
@@ -652,7 +652,7 @@ void PlaylistWidget::showTrackInfo( const PlaylistItem *pItem )
 
     QString str( "<html><body><table border=\"1\">" );
 
-    if ( pApp->config()->showMetaInfo() )
+    if ( AmarokConfig::showMetaInfo() )
     {
          const MetaBundle *mb = pItem->metaBundle();
     
@@ -935,12 +935,12 @@ bool PlaylistWidget::saveState( QStringList &list )
    if ( childCount() > 0 )
    {
       QString fileName;
-      m_undoCounter %= pApp->config()->undoLevels();
+      m_undoCounter %= AmarokConfig::undoLevels();
       fileName.setNum( m_undoCounter++ );
       fileName.prepend( m_undoDir.absPath() + "/" );
       fileName += ".m3u";
 
-      if ( list.count() >= pApp->config()->undoLevels() )
+      if ( list.count() >= AmarokConfig::undoLevels() )
       {
          m_undoDir.remove( list.first() );
          list.pop_front();

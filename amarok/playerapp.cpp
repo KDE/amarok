@@ -67,11 +67,7 @@ email                : markey@web.de
 PlayerApp::PlayerApp()
         : KUniqueApplication( true, true, false )
         , m_pGlobalAccel( new KGlobalAccel( this ) )
-        , m_bgColor( Qt::black )
-        , m_fgColor( QColor( 0x80, 0xa0, 0xff ) )
-        , m_DelayTime( 0 )
         , m_playingURL( KURL() )
-        , m_pConfig( kapp->config() )
         , m_pMainTimer( new QTimer( this ) )
         , m_pAnimTimer( new QTimer( this ) )
         , m_length( 0 )
@@ -89,8 +85,8 @@ PlayerApp::PlayerApp()
 
     readConfig();
 
-    m_pEngine = EngineBase::createEngine( config()->soundSystem(), m_artsNeedsRestart, SCOPE_SIZE );
-    m_pEngine ->initMixer( config()->softwareMixerOnly() );
+    m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(), m_artsNeedsRestart, SCOPE_SIZE );
+    m_pEngine ->initMixer( AmarokConfig::softwareMixerOnly() );
 
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
     connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
@@ -121,17 +117,17 @@ PlayerApp::~PlayerApp()
 
     //Save current item info in dtor rather than saveConfig() as it is only relevant on exit
     //and we may in the future start to use read and saveConfig() in other situations
-    //    m_pConfig->setGroup( "Session" );
+    //    kapp->config()->setGroup( "Session" );
     KURL url( m_pEngine->loaded() ?  m_playingURL : m_pBrowserWin->m_pPlaylistWidget->currentTrackURL() );
 
     if ( !url.isEmpty() )
     {
-        config()->setResumeTrack( url.url() );
+        AmarokConfig::setResumeTrack( url.url() );
 
         if ( m_pEngine->state() != EngineBase::Empty )
-            config()->setResumeTime( m_pEngine->position() / 1000 );
+            AmarokConfig::setResumeTime( m_pEngine->position() / 1000 );
         else
-            config()->setResumeTime( -1 );
+            AmarokConfig::setResumeTime( -1 );
     }
 
     slotStop();
@@ -223,48 +219,40 @@ void PlayerApp::initPlayerWidget()
 
     m_bSliderIsPressed = false;
 
-    m_pPlayerWidget->m_pSlider->setMinValue( 0 );
-    m_pPlayerWidget->m_pSlider->setMaxValue( 0 );
-    m_pPlayerWidget->m_pSlider->setValue( 0 );
+    m_pPlayerWidget->m_pSlider->setMinValue   ( 0 );
+    m_pPlayerWidget->m_pSlider->setMaxValue   ( 0 );
+    m_pPlayerWidget->m_pSlider->setValue      ( 0 );
 
     m_pPlayerWidget->m_pSliderVol->setMinValue( 0 );
     m_pPlayerWidget->m_pSliderVol->setMaxValue( VOLUME_MAX );
 
-    connect( m_pPlayerWidget->m_pSlider, SIGNAL( sliderPressed() ),
-             this, SLOT( slotSliderPressed() ) );
-
-    connect( m_pPlayerWidget->m_pSlider, SIGNAL( sliderReleased() ),
-             this, SLOT( slotSliderReleased() ) );
-
-    connect( m_pPlayerWidget->m_pSlider, SIGNAL( valueChanged( int ) ),
-             this, SLOT( slotSliderChanged( int ) ) );
-
-    connect( m_pPlayerWidget->m_pSliderVol, SIGNAL( valueChanged( int ) ),
-             this, SLOT( slotVolumeChanged( int ) ) );
-
-    connect( m_pPlayerWidget->m_pButtonPrev, SIGNAL( clicked() ),
-             this, SLOT( slotPrev() ) );
-
-    connect( m_pPlayerWidget->m_pButtonPlay, SIGNAL( clicked() ),
-             this, SLOT( slotPlay() ) );
-
-    connect( m_pPlayerWidget->m_pButtonPause, SIGNAL( clicked() ),
-             this, SLOT( slotPause() ) );
-
-    connect( m_pPlayerWidget->m_pButtonStop, SIGNAL( clicked() ),
-             this, SLOT( slotStop() ) );
-
-    connect( m_pPlayerWidget->m_pButtonNext, SIGNAL( clicked() ),
-             this, SLOT( slotNext() ) );
-
-    connect( m_pPlayerWidget->m_pButtonPl, SIGNAL( toggled( bool ) ),
-             this, SLOT( slotPlaylistToggle( bool ) ) );
-
-    connect( m_pPlayerWidget->m_pButtonEq, SIGNAL( clicked() ),
-             this, SLOT( slotConfigEffects() ) );
-
-    connect( m_pPlayerWidget, SIGNAL( sigAboutToHide() ), this, SLOT( slotHide() ) );
-    connect( m_pPlayerWidget, SIGNAL( sigAboutToShow() ), this, SLOT( slotShow() ) );
+    //could fancy formatting be the true purpose of life?
+    connect( m_pPlayerWidget->m_pSlider,         SIGNAL( sliderPressed() ),
+             this,                               SLOT  ( slotSliderPressed() ) );
+    connect( m_pPlayerWidget->m_pSlider,         SIGNAL( sliderReleased() ),
+             this,                               SLOT  ( slotSliderReleased() ) );
+    connect( m_pPlayerWidget->m_pSlider,         SIGNAL( valueChanged( int ) ),
+             this,                               SLOT  ( slotSliderChanged( int ) ) );
+    connect( m_pPlayerWidget->m_pSliderVol,      SIGNAL( valueChanged( int ) ),
+             this,                               SLOT  ( slotVolumeChanged( int ) ) );
+    connect( m_pPlayerWidget->m_pButtonPrev,     SIGNAL( clicked() ),
+             this,                               SLOT  ( slotPrev() ) );
+    connect( m_pPlayerWidget->m_pButtonPlay,     SIGNAL( clicked() ),
+             this,                               SLOT  ( slotPlay() ) );
+    connect( m_pPlayerWidget->m_pButtonPause,    SIGNAL( clicked() ),
+             this,                               SLOT  ( slotPause() ) );
+    connect( m_pPlayerWidget->m_pButtonStop,     SIGNAL( clicked() ),
+             this,                               SLOT  ( slotStop() ) );
+    connect( m_pPlayerWidget->m_pButtonNext,     SIGNAL( clicked() ),
+             this,                               SLOT  ( slotNext() ) );
+    connect( m_pPlayerWidget->m_pButtonPl,       SIGNAL( toggled( bool ) ),
+             this,                               SLOT  ( slotPlaylistToggle( bool ) ) );
+    connect( m_pPlayerWidget->m_pButtonEq,       SIGNAL( clicked() ),
+             this,                               SLOT  ( slotConfigEffects() ) );
+    connect( m_pPlayerWidget,                    SIGNAL( sigAboutToHide() ),
+             this,                               SLOT  ( slotHide() ) );
+    connect( m_pPlayerWidget,                    SIGNAL( sigAboutToShow() ),
+             this,                               SLOT  ( slotShow() ) );
 
     kdDebug() << "end PlayerApp::initPlayerWidget()" << endl;
 }
@@ -276,28 +264,21 @@ void PlayerApp::initBrowserWin()
 
     m_pBrowserWin = new BrowserWin( m_pPlayerWidget, "BrowserWin" );
 
-
-    connect( (QPushButton *)m_pBrowserWin->m_pButtonPlay, SIGNAL( clicked() ),
-             this, SLOT( slotPlay() ) );
-
-    connect( (QPushButton *)m_pBrowserWin->m_pButtonPause, SIGNAL( clicked() ),
-             this, SLOT( slotPause() ) );
-
-    connect( (QPushButton *)m_pBrowserWin->m_pButtonStop, SIGNAL( clicked() ),
-             this, SLOT( slotStop() ) );
-
-    connect( (QPushButton *)m_pBrowserWin->m_pButtonNext, SIGNAL( clicked() ),
-             this, SLOT( slotNext() ) );
-
-    connect( (QPushButton *)m_pBrowserWin->m_pButtonPrev, SIGNAL( clicked() ),
-             this, SLOT( slotPrev() ) );
-
-    connect( m_pBrowserWin, SIGNAL( signalHide() ),
-             this, SLOT( slotPlaylistIsHidden() ) );
-
+    connect( (QPushButton *)m_pBrowserWin->m_pButtonPlay,   SIGNAL( clicked() ),
+             this,                                          SLOT  ( slotPlay() ) );
+    connect( (QPushButton *)m_pBrowserWin->m_pButtonPause,  SIGNAL( clicked() ),
+             this,                                          SLOT  ( slotPause() ) );
+    connect( (QPushButton *)m_pBrowserWin->m_pButtonStop,   SIGNAL( clicked() ),
+             this,                                          SLOT  ( slotStop() ) );
+    connect( (QPushButton *)m_pBrowserWin->m_pButtonNext,   SIGNAL( clicked() ),
+             this,                                          SLOT  ( slotNext() ) );
+    connect( (QPushButton *)m_pBrowserWin->m_pButtonPrev,   SIGNAL( clicked() ),
+             this,                                          SLOT  ( slotPrev() ) );
+    connect( m_pBrowserWin,                                 SIGNAL( signalHide() ),
+             this,                                          SLOT  ( slotPlaylistIsHidden() ) );
     //make sure playlist is linked to playback
-    connect( m_pBrowserWin->m_pPlaylistWidget, SIGNAL( activated( const KURL&, const MetaBundle* ) ),
-             this, SLOT( play( const KURL&, const MetaBundle* ) ) );
+    connect( m_pBrowserWin->m_pPlaylistWidget,              SIGNAL( activated( const KURL&, const MetaBundle* ) ),
+             this,                                          SLOT  ( play( const KURL&, const MetaBundle* ) ) );
 
     kdDebug() << "end PlayerApp::initBrowserWin()" << endl;
 }
@@ -308,14 +289,14 @@ void PlayerApp::restoreSession()
     //here we restore the session
     //however, do note, this is always done, KDE session management is not involved
 
-    if ( config()->resumePlayback() )
+    if ( AmarokConfig::resumePlayback() )
     {
         //see if we also saved the time
-        int seconds = config()->resumeTime();
+        int seconds = AmarokConfig::resumeTime();
 
         if ( seconds >= 0 )
         {
-            play( config()->resumeTrack() );
+            play( AmarokConfig::resumeTrack() );
 
             if ( seconds > 0 )
                 m_pEngine->seek( seconds * 1000 );
@@ -327,26 +308,19 @@ void PlayerApp::restoreSession()
 // METHODS
 /////////////////////////////////////////////////////////////////////////////////////
 
-AmarokConfig *PlayerApp::config()
-{
-    return AmarokConfig::self();
-}
-
-
 void PlayerApp::saveConfig()
 {
-    config()->setMasterVolume( m_Volume );
-    //     config()->setCurrentDirectory( m_pBrowserWin->m_pBrowserWidget->m_pDirLister->url().path() );
-    //     config()->setPathHistory( m_pBrowserWin->m_pBrowserLineEdit->historyItems() );
-    config()->setPlayerPos( m_pPlayerWidget->pos() );
-    config()->setBrowserWinPos( m_pBrowserWin->pos() );
-    config()->setBrowserWinSize( m_pBrowserWin->size() );
-    config()->setBrowserWinSplitter( m_pBrowserWin->m_pSplitter->sizes() );
-    config()->setBrowserWinEnabled( m_pPlayerWidget->m_pButtonPl->isOn() );
+    //     AmarokConfig::setCurrentDirectory( m_pBrowserWin->m_pBrowserWidget->m_pDirLister->url().path() );
+    //     AmarokConfig::setPathHistory( m_pBrowserWin->m_pBrowserLineEdit->historyItems() );
+    AmarokConfig::setPlayerPos( m_pPlayerWidget->pos() );
+    AmarokConfig::setBrowserWinPos( m_pBrowserWin->pos() );
+    AmarokConfig::setBrowserWinSize( m_pBrowserWin->size() );
+    AmarokConfig::setBrowserWinSplitter( m_pBrowserWin->m_pSplitter->sizes() );
+    AmarokConfig::setBrowserWinEnabled( m_pPlayerWidget->m_pButtonPl->isOn() );
 
-    config()->writeConfig();
+    AmarokConfig::writeConfig();
 
-    if (config()->savePlaylist())
+    if (AmarokConfig::savePlaylist())
         m_pBrowserWin->m_pPlaylistWidget->saveM3u( kapp->dirs()->saveLocation(
                     "data", kapp->instanceName() + "/" ) + "current.m3u" );
 }
@@ -357,20 +331,18 @@ void PlayerApp::readConfig()
     kdDebug() << "begin PlayerApp::readConfig()" << endl;
 
     //we restart artsd after each version change, so that it picks up any plugin changes
-    m_artsNeedsRestart = config()->version() != APP_VERSION;
+    m_artsNeedsRestart = AmarokConfig::version() != APP_VERSION;
 
-    /*    m_pBrowserWin->m_pBrowserWidget->readDir( config()->currentDirectory() );
-        m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( config()->pathHistory() );*/
+    /*    m_pBrowserWin->m_pBrowserWidget->readDir( AmarokConfig::currentDirectory() );
+        m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( AmarokConfig::pathHistory() );*/
 
-    m_pPlayerWidget->move( config()->playerPos() );
-    m_pBrowserWin->move( config()->browserWinPos() );
-    m_pBrowserWin->resize( config()->browserWinSize() );
+    m_pPlayerWidget->move( AmarokConfig::playerPos() );
+    m_pBrowserWin->move( AmarokConfig::browserWinPos() );
+    m_pBrowserWin->resize( AmarokConfig::browserWinSize() );
 
-    m_pPlayerWidget->m_pButtonPl->setOn( config()->browserWinEnabled() );
+    m_pPlayerWidget->m_pButtonPl->setOn( AmarokConfig::browserWinEnabled() );
 
     m_pBrowserWin->slotUpdateFonts();
-
-    m_Volume = config()->masterVolume();
 
     setupColors();
 
@@ -380,7 +352,7 @@ void PlayerApp::readConfig()
     
     //FIXME this is no longer particular relevant, instead record playlistSideBar's savedSize
     //      implement a setConfig() function
-    splitterList = config()->browserWinSplitter();
+    splitterList = AmarokConfig::browserWinSplitter();
     if ( splitterList.count() != 2 )
     {
         splitterList.clear();
@@ -389,7 +361,7 @@ void PlayerApp::readConfig()
     }
     m_pBrowserWin->m_pSplitter->setSizes( splitterList );
 
-    m_pPlayerWidget->slotUpdateTrayIcon( config()->showTrayIcon() );
+    m_pPlayerWidget->slotUpdateTrayIcon( AmarokConfig::showTrayIcon() );
 
     // Actions ==========
 
@@ -410,12 +382,12 @@ void PlayerApp::readConfig()
 
     // FIXME <berkus> this needs some other way of handling with KConfig XT?!?
     m_pGlobalAccel->setConfigGroup( "Shortcuts" );
-    m_pGlobalAccel->readSettings( m_pConfig );
+    m_pGlobalAccel->readSettings( kapp->config() );
     m_pGlobalAccel->updateConnections();
 
     //FIXME use a global actionCollection (perhaps even at global scope)
-    m_pPlayerWidget->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
-    m_pBrowserWin->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
+    m_pPlayerWidget->m_pActionCollection->readShortcutSettings( QString::null, kapp->config() );
+    m_pBrowserWin->m_pActionCollection->readShortcutSettings( QString::null, kapp->config() );
 
     kdDebug() << "end PlayerApp::readConfig()" << endl;
 }
@@ -423,7 +395,7 @@ void PlayerApp::readConfig()
 
 bool PlayerApp::queryClose()
 {
-    if ( config()->confirmExit() )
+    if ( AmarokConfig::confirmExit() )
         if ( KMessageBox::questionYesNo( 0, i18n( "Really exit the program?" ) ) == KMessageBox::No )
             return false;
 
@@ -458,8 +430,8 @@ void PlayerApp::setupColors()
     QColor bgAlt, highlight;
     
     //TODO below is amaroK default
-    //const QColor fg = config()->browserFgColor();    
-    const QColor bg = config()->browserBgColor();
+    //const QColor fg = AmarokConfig::browserFgColor();    
+    const QColor bg = AmarokConfig::browserBgColor();
     
     //TODO this is fancy colouring that fits with the window better (providing base is a neutral colour, eg black)
     //FIXME make fancy/custom/kde-default options in colour select dialog
@@ -571,9 +543,9 @@ void PlayerApp::play( const KURL &url, const MetaBundle *tags )
 
     m_playingURL = url;
 
-    m_pPlayerWidget->m_pSlider->setValue   ( 0 );
-    m_pPlayerWidget->m_pSlider->setMinValue( 0 );
-    m_pPlayerWidget->m_pSlider->setMaxValue( m_length );
+    m_pPlayerWidget->m_pSlider->setValue    ( 0 );
+    m_pPlayerWidget->m_pSlider->setMinValue ( 0 );
+    m_pPlayerWidget->m_pSlider->setMaxValue ( m_length );
 
     //interface consistency
     m_pPlayerWidget->m_pButtonPlay ->setOn  ( true );
@@ -651,7 +623,7 @@ void PlayerApp::slotSliderChanged( int value )
     {
         value /= 1000;    // ms -> sec
 
-        if ( config()->timeDisplayRemaining() )
+        if ( AmarokConfig::timeDisplayRemaining() )
         {
             value = m_length / 1000 - value;
             m_pPlayerWidget->timeDisplay( true, value / 60 / 60 % 60, value / 60 % 60, value % 60 );
@@ -666,7 +638,7 @@ void PlayerApp::slotSliderChanged( int value )
 
 void PlayerApp::slotVolumeChanged( int value )
 {
-    m_Volume = value;
+    AmarokConfig::setMasterVolume( value );
     value = VOLUME_MAX - value;
 
     m_pEngine->setVolume( value );
@@ -685,7 +657,7 @@ void PlayerApp::slotMainTimer()
     if ( m_pPlayerWidget->isVisible() )
     {
         int seconds;
-        if ( config()->timeDisplayRemaining() && !m_pEngine->isStream() )
+        if ( AmarokConfig::timeDisplayRemaining() && !m_pEngine->isStream() )
         {
             seconds = ( m_length - m_pEngine->position() ) / 1000;
             m_pPlayerWidget->timeDisplay( true, seconds / 60 / 60 % 60, seconds / 60 % 60, seconds % 60 );
@@ -729,7 +701,7 @@ void PlayerApp::slotVisTimer()
         if (!front)
             return;
 
-        if ( config()->currentAnalyzer() == 6)
+        if ( AmarokConfig::currentAnalyzer() == 6)
         { // sonogram
             m_pFht->power( front );
             m_pFht->scale( front, 1.0 / 64 );
@@ -903,7 +875,7 @@ void PlayerApp::slotHide()
     // <berkus> imo the reason it doesn't hide is that we pass some wrong flags upong creation of browserwin
     // (maybe toplevel is redundant or something)
 
-    if ( config()->hidePlaylistWindow() )
+    if ( AmarokConfig::hidePlaylistWindow() )
         m_pBrowserWin->hide();
 }
 
