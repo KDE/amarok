@@ -128,7 +128,8 @@ App::~App()
 
     engine->stop(); //don't call EngineController::stop() - it's slow
 
-    amaroK::config()->writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
+    if ( AmarokConfig::showTrayIcon() )
+        amaroK::config()->writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
 
     delete m_pPlayerWindow;   //sets some XT keys
     delete m_pPlaylistWindow; //sets some XT keys

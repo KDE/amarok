@@ -13,10 +13,6 @@ print( "\n" );
 // Load the demo gui
 var gui = Factory.loadui( "setup.ui" );
 
-timer = new QTimer();
-ScriptManager.connect( timer, "timeout()", this, "slotTimer" );
-timer.start( 2000 );
-
 // ScriptManager.connect( gui.child( "pushButton2" ), "clicked()", this, "slotPlay" );
 
 
@@ -26,13 +22,18 @@ timer.start( 2000 );
 
 function slotTimer()
 {
-    print( "timer()\n" );
+    print( "slotTimer()\n" );
+
+/*    if ( date.getMinutes() == alarmTime.minute() )
+        print( "ALARM!\n" ); */
 }
 
 
 function slotStop( name )
 {
     print( "slotStop()\n" );
+
+    timer.deleteLater();
 }
 
 
@@ -50,6 +51,9 @@ function slotConfigure( name )
         print( alarmTime.toString() );
         print( "\n" );
         
+        timer = new QTimer();
+        ScriptManager.connect( timer, "timeout()", this, "slotTimer" );
+        timer.start( 2000 );
     }
 }
 
