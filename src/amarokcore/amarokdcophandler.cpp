@@ -315,7 +315,12 @@ namespace amaroK
         delete[] argv;
     }
 
-
+    void DcopPlayerHandler::setContextStyle(const QString& msg)
+    {
+        AmarokConfig::setContextBrowserStyleSheet(msg);
+        ContextBrowser* m_contextBrowser=(ContextBrowser*) (PlaylistWindow::self()->browserBar()->browser( "ContextBrowser" ) );
+        m_contextBrowser->setStyleSheet();
+    }
 
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopPlaylistHandler
@@ -365,7 +370,9 @@ namespace amaroK
     {
         StatusBar::instance()->shortMessage( msg );
     }
+	
 
+    
 } //namespace amaroK
 
 #include "amarokdcophandler.moc"

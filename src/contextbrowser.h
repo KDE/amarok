@@ -28,7 +28,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
        ~ContextBrowser();
 
         virtual void setFont( const QFont& );
-
+	void setStyleSheet();
     public slots:
         void openURLRequest(const KURL &url );
         void collectionScanStarted();
@@ -55,7 +55,6 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         void similarArtistsFetched( const QString &artist );
 
     private:
-        void setStyleSheet();
         void setStyleSheet_Default( QString& styleSheet );
         void setStyleSheet_ExternalStyle( QString& styleSheet, QString& themeName );
         void showIntroduction();

@@ -73,6 +73,7 @@ class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
       virtual void configEqualizer();
       virtual void enableOSD( bool enable );
       virtual void showOSD();
+      virtual void setContextStyle(const QString&);
 
       virtual void transferCliArgs( QStringList args );
 };

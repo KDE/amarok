@@ -84,7 +84,7 @@ k_dcop:
    virtual void configEqualizer() = 0;                      ///< Toggle equalizer config dialog.
    virtual void enableOSD(bool enable) = 0;                 ///< Switch OSD display on or off.
    virtual void showOSD() = 0;                              ///< Show the OSD display on the screen.
-
+   virtual void setContextStyle(const QString& ) =0;        ///< Set the CSS style for the context browser
 
    virtual void transferCliArgs( QStringList args ) = 0;
 };
