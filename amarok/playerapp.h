@@ -124,6 +124,7 @@ class PlayerApp : public KApplication
         void orderNextTrack();
         void currentTrack( const KURL& );
         void deleteProxy();
+        void configureDecoder();
 
     private:
         void handleCliArgs();

@@ -85,7 +85,6 @@ class PlayerWidget : public QWidget
         void setEffectsWindowShown( bool on );
 
     signals:
-        void configureDecoder();
         void playlistToggled( bool on );
         void effectsWindowActivated();
 
@@ -108,7 +107,6 @@ class PlayerWidget : public QWidget
         AmarokDcopHandler *m_pDcopHandler; //TODO move to playerapp
         AmarokSystray     *m_pTray;
         QWidget           *m_pAnalyzer;
-        KHelpMenu         *m_pHelpMenu;
 
         QPixmap m_scrollTextPixmap;
         QPixmap m_scrollBuffer;

@@ -17,6 +17,7 @@ email                : markey@web.de
 
 #include "amarokconfig.h"
 #include "amarokdcophandler.h" //FIXME
+#include "amarokmenu.h"
 #include "amarokslider.h"
 #include "amaroksystray.h"
 #include "analyzerbase.h"
@@ -37,7 +38,6 @@ email                : markey@web.de
 #include <kaction.h>
 #include <kdebug.h>
 #include <qevent.h> //various events
-#include <khelpmenu.h>
 #include <klocale.h>
 #include <kstandarddirs.h>
 #include <ksystemtray.h>
@@ -59,7 +59,8 @@ template<class W> static inline W*
 wrapper( const QRect &r, QWidget *parent, const char *name = 0, QWidget::WFlags f = 0 )
 {
     W *w = new W( parent, name, f );
-    return placeWidget( w, r );
+    w->setGeometry( r );
+    return w;
 }
 template<class W> static inline W*
 placeWidget( W *w, const QRect &r )
@@ -75,7 +76,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     , m_pDcopHandler( new AmarokDcopHandler ) //FIXME move to playerapp!
     , m_pTray( 0 )
     , m_pAnalyzer( 0 )
-    , m_pHelpMenu( new KHelpMenu( this, KGlobal::instance()->aboutData(), pApp->actionCollection() ) )
     , m_scrollBuffer( 291, 16 )
     , m_plusPixmap( getPNG( "time_plus" ) )
     , m_minusPixmap( getPNG( "time_minus" ) )
@@ -380,7 +380,7 @@ void PlayerWidget::paintEvent( QPaintEvent * )
     pF.drawText( 6, 68, m_rateString );
 
     bitBlt( m_pScrollFrame, 0, 0, &m_scrollBuffer );
-    bitBlt( m_pTimeLabel, 0, 0, &m_timeBuffer ); //FIXME have functions that replace these blts that are inlined things like "bltTimeDisplay" etc.
+    bitBlt( m_pTimeLabel, 0, 0, &m_timeBuffer );
 }
 
 
@@ -409,49 +409,10 @@ void PlayerWidget::wheelEvent( QWheelEvent *e )
 
 void PlayerWidget::mousePressEvent( QMouseEvent *e )
 {
-    #define ID_REPEAT_TRACK 100
-    #define ID_REPEAT_PLAYLIST 101
-    #define ID_RANDOM_MODE 102
-    #define ID_CONF_DECODER 103
-
     if ( e->button() == QMouseEvent::RightButton )
     {
-        QPopupMenu popup;
-        popup.setCheckable( true );
-        KActionCollection *ac = pApp->actionCollection();
-
-        popup.insertItem( i18n( "Repeat &Track" ),    ID_REPEAT_TRACK );
-        popup.insertItem( i18n( "Repeat Play&list" ), ID_REPEAT_PLAYLIST );
-        popup.insertItem( i18n( "Random &Mode" ),     ID_RANDOM_MODE );
-      popup.insertSeparator();
-        popup.insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( showEffectWidget() ) );
-        popup.insertItem( i18n( "Configure &Decoder..." ), this, SIGNAL( configureDecoder() ), 0, ID_CONF_DECODER );
-      popup.insertSeparator();
-        ac->action( "options_configure_keybinding" )->plug( &popup );
-        ac->action( "options_configure_global_keybinding" )->plug( &popup );
-        ac->action( "options_configure" )->plug( &popup );
-      popup.insertSeparator();
-        popup.insertItem( i18n( "&Help" ), (QPopupMenu*)m_pHelpMenu->menu() );
-      popup.insertSeparator();
-        ac->action( "file_quit" )->plug( &popup );
-
-        popup.setItemChecked( ID_REPEAT_TRACK,    AmarokConfig::repeatTrack() );
-        popup.setItemChecked( ID_REPEAT_PLAYLIST, AmarokConfig::repeatPlaylist() );
-        popup.setItemChecked( ID_RANDOM_MODE,     AmarokConfig::randomMode() );
-        popup.setItemEnabled( ID_CONF_DECODER, pApp->decoderConfigurable() );
-
-        switch( popup.exec( e->globalPos() ) )
-        {
-        case ID_REPEAT_TRACK:
-            AmarokConfig::setRepeatTrack( !popup.isItemChecked(ID_REPEAT_TRACK) );
-            break;
-        case ID_REPEAT_PLAYLIST:
-            AmarokConfig::setRepeatPlaylist( !popup.isItemChecked(ID_REPEAT_PLAYLIST) );
-            break;
-        case ID_RANDOM_MODE:
-            AmarokConfig::setRandomMode( !popup.isItemChecked(ID_RANDOM_MODE) );
-            break;
-        }
+        AmarokMenu popup( this );
+        popup.exec( e->globalPos() );
     }
     else //other buttons
     {
@@ -468,7 +429,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
         {
             createAnalyzer( e->state() & Qt::ControlButton ? -1 : +1 );
         }
-        else startDrag();
+        else startDrag(); //FIXME needs dragDelay
     }
 }
 

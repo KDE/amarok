@@ -310,27 +310,27 @@ void PlayerApp::initCliArgs( int argc, char *argv[] ) //static
 void PlayerApp::initEngine()
 {
     m_pEngine = static_cast<EngineBase*>( PluginManager::load( AmarokConfig::soundSystem() ) );
-    
+
     //when the engine that was specified in our config does not exist/work, try to invoke _any_ engine plugin
     if ( !m_pEngine ) {
         QStringList list = PluginManager::available( "engine" );
-        
+
         if ( list.isEmpty() )
             kdFatal() << k_funcinfo << "No engine plugin found. Aborting.\n";
-                   
+
         AmarokConfig::setSoundSystem( list[0] );
-        
+
         kdDebug() << k_funcinfo << "setting soundSystem to: " << AmarokConfig::soundSystem() << endl;
         m_pEngine = static_cast<EngineBase*>( PluginManager::load( AmarokConfig::soundSystem() ) );
-    
+
         if ( !m_pEngine )
             kdFatal() << k_funcinfo << "m_pEngine == NULL\n";
     }
-    
+
     m_pEngine->init( m_artsNeedsRestart, SCOPE_SIZE, AmarokConfig::rememberEffects() );
 
-    //called from PlayerWidget's popup-menu
-    connect( m_pPlayerWidget, SIGNAL( configureDecoder() ), m_pEngine, SLOT( configureDecoder() ) );
+    //called from AmarokPopup
+    connect( this, SIGNAL( configureDecoder() ), m_pEngine, SLOT( configureDecoder() ) );
 }
 
 
@@ -744,7 +744,7 @@ void PlayerApp::slotPlay()
     if ( m_pEngine->state() == EngineBase::Paused )
     {
         slotPause();
-//        m_pPlayerWidget->m_pButtonPlay->setDown( TRUE );
+        m_pPlayerWidget->m_pButtonPlay->setDown( TRUE );
         m_pPlayerWidget->m_pButtonPlay->setOn( TRUE );
     }
     else
@@ -982,8 +982,8 @@ void PlayerApp::showEffectWidget()
     {
         EffectWidget::self = new EffectWidget();
 
-        connect( EffectWidget::self,           SIGNAL( destroyed() ),
-                  this,        SLOT( slotEffectWidgetDestroyed() ) );
+        connect( m_pPlayerWidget,              SIGNAL( destroyed() ),
+                 EffectWidget::self,           SLOT  ( deleteLater() ) );
 
         EffectWidget::self->show();
 
@@ -997,10 +997,6 @@ void PlayerApp::showEffectWidget()
     }
 }
 
-void PlayerApp::slotEffectWidgetDestroyed()
-{
-    m_pPlayerWidget->setEffectsWindowShown( false );
-}
 
 void PlayerApp::slotShowOptions()
 {

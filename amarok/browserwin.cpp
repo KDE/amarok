@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "amarokconfig.h"
+#include "amarokmenu.h" //see toolbar construction
 #include "browserwin.h"
 #include "filebrowser.h"
 #include "playerapp.h"
@@ -84,18 +85,24 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     setCaption( "amaroK" );
 
     KToolBar* toolbar = new KToolBar( this );
+    toolbar->setEnableContextMenu( true );
 
     QBoxLayout *layV = new QVBoxLayout( this );
     layV->addWidget( m_splitter );
     layV->addWidget( toolbar );
 
-    QVBox *box  = new QVBox( m_splitter );
-  //QHBox *boxH = new QHBox( box );
-    m_lineEdit  = new KLineEdit( box );
+    QVBox *vbox = new QVBox( m_splitter );
+    QHBox *hbox = new QHBox( vbox );
+    m_lineEdit  = new KLineEdit( hbox );
+    QToolButton *menuButton = new QToolButton( hbox ); //would use KToolBarButton but you have to use a KToolBar! Baa!
+    menuButton->setPopup( new AmarokMenu( this ) );
+    menuButton->setPopupDelay( 1 ); //setting it to 0 makes Qt draw ugly stuff
+    menuButton->setTextLabel( i18n( "&Menu" ) );
+    menuButton->setUsesTextLabel( true );
 
-    m_playlist = new PlaylistWidget( box, m_pActionCollection );
+    m_playlist = new PlaylistWidget( vbox, m_pActionCollection );
     m_splitter->setResizeMode( m_sideBar, QSplitter::FollowSizeHint );
-    m_splitter->setResizeMode( box,       QSplitter::Auto );
+    m_splitter->setResizeMode( vbox,      QSplitter::Auto );
     m_sideBar->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
 
     /*
@@ -108,11 +115,13 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 
     {//<ToolBar>
 
+        KToolBarButton *addItem, *menuItem;
+        KActionCollection *ac = actionCollection();
+
         toolbar->insertButton( "fileopen", 100, true, i18n( "Add Item" ) );
-        KToolBarButton *addItem = toolbar->getButton( 100 );
+        addItem = toolbar->getButton( 100 );
         connect( addItem, SIGNAL( clicked() ), this, SLOT( slotAddLocation() ) );
 
-        KActionCollection *ac = actionCollection();
         KAction *savePlaylist = KStdAction::save( this, SLOT( savePlaylist() ), ac, "save_playlist" );
         savePlaylist->setText( i18n("&Save Playlist") );
         savePlaylist->plug( toolbar );
@@ -134,15 +143,22 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
         ac->action( "stop"  )->plug( toolbar );
         ac->action( "next"  )->plug( toolbar );
 
+        toolbar->insertButton( QString::null, 101, true, i18n( "Menu" ) );
+        menuItem = toolbar->getButton( 101 );
+        menuItem->setPopup( new AmarokMenu( this ) );
+        toolbar->alignItemRight( 101 );
+
         //TEXT ON RIGHT HACK
         //KToolBarButtons have independent settings for their appearance.
         //However these properties are set in modeChange() to follow the parent KToolBar settings
         //passing false to setIconText prevents modeChange() being called for all buttons
         toolbar->setIconText( KToolBar::IconTextRight, false );
-        addItem->modeChange();
-        toolbar->getButton( toolbar->idAt( 2 ) )->modeChange();
-        toolbar->getButton( toolbar->idAt( 3 ) )->modeChange();
-        toolbar->getButton( toolbar->idAt( 4 ) )->modeChange();
+            addItem->modeChange();
+            toolbar->getButton( toolbar->idAt( 2 ) )->modeChange();
+            toolbar->getButton( toolbar->idAt( 3 ) )->modeChange();
+            toolbar->getButton( toolbar->idAt( 4 ) )->modeChange();
+        toolbar->setIconText( KToolBar::TextOnly, false );
+            menuItem->modeChange();
         toolbar->setIconText( KToolBar::IconOnly, false );
 
     }//</ToolBar>
