@@ -269,52 +269,34 @@ PlaylistItem::operator< ( const PlaylistItem & item ) const
 int
 PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
 {
-    float a, b;
+    QString a =    text( col ).lower();
+    QString b = i->text( col ).lower();
 
-    switch( col )  //we cannot sort numbers lexically, so we must special case those columns
+    switch( col )  //we must pad numbers to sort them lexically, so we must special case those columns
     {
         case Track:
         case Year:
         case Score:
-            a =    text( col ).toFloat();
-            b = i->text( col ).toFloat();
-            break;
-
         case Length:
-            a =    text( Length ).replace( ':', '.' ).toFloat();
-            b = i->text( Length ).replace( ':', '.' ).toFloat();
-            break;
-
         case Bitrate:
-            a =    text( Bitrate ).left( 3 ).toFloat(); //should work for 10 through 999 kbps
-            b = i->text( Bitrate ).left( 3 ).toFloat(); //made this change due to setText space paddings
+            a = a.rightJustify( b.length(), '0' ); //all these columns shouldn't become negative
+            b = b.rightJustify( a.length(), '0' ); //so simply left-padding is sufficient
             break;
 
         case Artist:
-            if( text( Artist ) == i->text( Artist ) ) //if same artist, try to sort by album
-            {
+            if( a == b ) //if same artist, try to sort by album
                 return this->compare( i, Album, ascending );
-            }
-            else goto lexical;
+            break;
 
         case Album:
-            if( text( Album ) == i->text( Album ) ) //if same album, try to sort by track
-            {
-                return this->compare( i, Track, true ); //only sort in ascending order //FIXME don't work
-            }
+            if( a == b ) //if same album, try to sort by track
+                return this->compare( i, Track, true ) * (ascending ? 1 : -1); //only sort in ascending order
+            break;
 
-            //else FALL_THROUGH..
-
-        lexical:
-        default:
-            //is an ordinary string -> sort lexically
-            return KListViewItem::compare( i, col, ascending );
+        default:;
     }
 
-    if ( a > b ) return +1;
-    if ( a < b ) return -1;
-
-    return 0;    //a == b
+    return QString::localeAwareCompare( a, b );
 }
 
 void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
