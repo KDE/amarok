@@ -1003,7 +1003,7 @@ GstEngine::createPipeline()
     gst_bin_add_many( GST_BIN( m_gst_rootBin ), m_gst_inputThread, m_gst_outputThread, NULL );
 
     // More buffers means less dropouts and higher latency
-    gst_element_set( m_gst_queue, "max-size-buffers", 100, NULL );
+    gst_element_set( m_gst_queue, "max-size-buffers", 50, NULL );
 
     g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), 0 );
     g_signal_connect ( G_OBJECT( m_gst_outputThread ), "error", G_CALLBACK ( outputError_cb ), 0 );
