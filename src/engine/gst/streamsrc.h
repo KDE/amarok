@@ -49,9 +49,10 @@ struct _GstStreamSrcClass
 };
 
 GType gst_streamsrc_get_type( void );
-
+GstStreamSrc* gst_streamsrc_new ( char* buf, int* index );
 
 G_END_DECLS
+
 
 #endif /* AMAROK_GST_STREAMSRC_H */
 

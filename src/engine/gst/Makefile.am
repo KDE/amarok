@@ -15,8 +15,9 @@ libamarok_gstengine_plugin_la_LIBADD = \
     $(LIB_GST)
 
 libamarok_gstengine_plugin_la_SOURCES = \
-    gstengine.cpp
-
+    gstengine.cpp \
+    streamsrc.cpp
+    
 libamarok_gstengine_plugin_la_LDFLAGS = \
     -module \
     -no-undefined \
