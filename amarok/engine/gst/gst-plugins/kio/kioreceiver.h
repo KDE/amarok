@@ -27,6 +27,8 @@
 #ifndef GST_KIORECEIVER_H
 #define GST_KIORECEIVER_H
 
+#define QT_THREAD_SUPPORT
+
 #include <kio/jobclasses.h>
 #include <kapplication.h>
 #include <kurl.h>
@@ -155,7 +157,7 @@ class KioReceiver : public QObject
         long long currentPosition();
         long long fileSize();
 
-        bool read( void *&ptr, int &size );
+        bool read( void *ptr, int &size );
 };
 
 

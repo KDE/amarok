@@ -61,9 +61,9 @@ void KioReceiver::customEvent( QCustomEvent *e )
         connect( m_job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
                  SLOT( slotData( KIO::Job *, const QByteArray & ) ) );
         connect( m_job, SIGNAL( result( KIO::Job* ) ),
-                 SLOT( KIO::Job * ) );
+                 SLOT( slotResult( KIO::Job * ) ) );
         connect( m_job, SIGNAL( canceled( KIO::Job * ) ),
-                 SLOT( result( KIO::Job * ) ) );
+                 SLOT( slotResult( KIO::Job * ) ) );
         connect( m_job,
                  SIGNAL( totalSize( KIO::Job *, KIO::filesize_t ) ),
                  SLOT( slotTotalSize( KIO::Job *, KIO::filesize_t ) ) );
@@ -161,7 +161,8 @@ KioReceiver::KioReceiver() :
         m_minRead( DEFAULT_MINREAD ),
         m_maxRead( DEFAULT_MAXREAD ),
         m_bufferOffset( 0 ),
-        m_bufferLen( 0 )
+        m_bufferLen( 0 ),
+        m_extraBuffer( 0 )
 {}
 
 KioReceiver::~KioReceiver()
@@ -214,7 +215,7 @@ bool KioReceiver::isKioFinished()
 }
 
 // return true if ok, false when aborted or finished
-bool KioReceiver::read( void *&ptr, int &size )
+bool KioReceiver::read( void *ptr, int &size )
 {
     m_lock.lock();
     if ( ( !m_job ) ||
@@ -223,22 +224,15 @@ bool KioReceiver::read( void *&ptr, int &size )
         m_lock.unlock();
         return false;
     }
-    int jobNumAtBeginning = m_jobNum;
-
     cleanBuffers();
 
     // if size not sufficient, wait...
     while ( ( ( m_bufferLen - m_bufferOffset ) < minRead() ) &&
             !isKioFinished() )
     {
-        m_wait.wait( &m_lock );
-        m_lock.lock();
-        if ( ( m_jobNum != jobNumAtBeginning )
-                || !m_job )
-        { // file got closed or changed while wait()
-            m_lock.unlock();
-            return false;
-        }
+	size = 0;
+        m_lock.unlock();
+	return true;
     }
 
     // enough in the first buffer?
@@ -246,7 +240,7 @@ bool KioReceiver::read( void *&ptr, int &size )
     if ( ( ( m_buffer[ 0 ].size() - m_bufferOffset ) >= minRead() ) ||
             ( isKioFinished() && ( m_buffer.size() == 1 ) ) )
     {
-        ptr = m_buffer[ 0 ].data() + m_bufferOffset;
+        memcpy (ptr, m_buffer[ 0 ].data() + m_bufferOffset, size);
         size = m_buffer[ 0 ].size() - m_bufferOffset;
         if ( size > maxRead() )
             size = maxRead();
@@ -268,12 +262,11 @@ bool KioReceiver::read( void *&ptr, int &size )
     if ( s > maxRead() )
         s = maxRead();
 
-    m_extraBuffer = new QByteArray( s );
     int off = 0;
     for ( int j = 0; j < i; j++ )
     {
         void *src = m_buffer[ j ].data();
-        void *dst = m_extraBuffer->data() + off;
+        char *dst = (char *) ptr + off;
         int len = m_buffer[ j ].size();
         if ( j == 0 )
         {
@@ -287,7 +280,6 @@ bool KioReceiver::read( void *&ptr, int &size )
         m_bufferOffset += len;
     }
 
-    ptr = m_extraBuffer->data();
     size = s;
     m_curPosition += size;
     m_lock.unlock();
@@ -306,6 +298,7 @@ bool KioReceiver::cleanBuffers()
     }
     if ( m_extraBuffer )
         delete m_extraBuffer;
+    return true;
 }
 
 long long KioReceiver::currentPosition()
@@ -329,7 +322,5 @@ void KioReceiver::slotTotalSize( KIO::Job *, KIO::filesize_t size )
     m_fileSize = size;
 }
 
-
 #include "kioreceiver.moc"
-
 
