@@ -51,8 +51,8 @@ EqualizerSetup::EqualizerSetup()
     //END
 
     // BEGIN Equalizer Graph Widget
-    EqualizerGraph* equalizerGraph = new EqualizerGraph( topHBox );
-    equalizerGraph->setFixedSize( 113, 19 );
+    m_equalizerGraph = new EqualizerGraph( topHBox );
+    m_equalizerGraph->setFixedSize( 113, 19 );
     //END
 
     QGroupBox* groupBox_sliders = new QGroupBox( 11, Qt::Horizontal, this );
@@ -123,6 +123,8 @@ EqualizerSetup::bandChanged() //SLOT
 
     EngineController::engine()->setEqualizerGains( gains );
     AmarokConfig::setEqualizerGains( gains );
+
+    m_equalizerGraph->update();
 }
 
 

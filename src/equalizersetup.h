@@ -22,6 +22,7 @@
 
 using namespace amaroK;
 
+class EqualizerGraph;
 class QCheckBox;
 
 class EqualizerSetup : public QWidget
@@ -44,6 +45,7 @@ class EqualizerSetup : public QWidget
 
         QCheckBox* m_checkBox_enableEqualizer;
         Slider* m_slider_preamp;
+        EqualizerGraph* m_equalizerGraph;
 
         QPtrList<Slider> m_bandSliders;
 };

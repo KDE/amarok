@@ -32,19 +32,19 @@ EqualizerGraph::EqualizerGraph( QWidget * parent )
 /////////////////////////////////////////////////////////////////////////////////////
 
 void
-EqualizerGraph::paintEvent( QPaintEvent* e )
+EqualizerGraph::paintEvent( QPaintEvent* )
 {
     QPainter p( this );
     p.setPen( Qt::black );
 
-    int cols[ 19 ];
+//     int cols[ 19 ];
     int i, y, ymin, ymax, py = 0;
     float x[] = {0, 11, 23, 35, 47, 59, 71, 83, 97, 109}, yf[ 10 ];
 
     float gains[NUM_BANDS];
 
     for ( int count = 0; count < NUM_BANDS; count++ )
-        gains[count] = (float) *AmarokConfig::equalizerGains().at( count ) * 0.01;
+        gains[count] = (float) *AmarokConfig::equalizerGains().at( count ) * 0.1;
 
     init_spline( x, gains, NUM_BANDS, yf );
 
