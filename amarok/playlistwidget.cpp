@@ -1183,7 +1183,40 @@ bool PlaylistWidget::eventFilter( QObject *o, QEvent *e )
 
         return TRUE; // eat event
 
-    } else {
+    }
+    // not in slotMouseButtonPressed because we need to disable normal usage.
+    else if( o == viewport() && e->type() == QEvent::MouseButtonPress
+             && static_cast<QMouseEvent*>(e)->button() == RightButton )
+    {
+        // if ctrl pressed, queue/dequeue
+        Window root;
+        Window child;
+        int root_x, root_y, win_x, win_y;
+        uint keybstate;
+        XQueryPointer( qt_xdisplay(), qt_xrootwin(), &root, &child,
+                       &root_x, &root_y, &win_x, &win_y, &keybstate );
+        bool ctrlPressed = keybstate & ControlMask;
+        if( ctrlPressed )
+        {
+            QPoint p = static_cast<QMouseEvent*>(e)->pos();
+            PlaylistItem *item = static_cast<PlaylistItem*>(itemAt(p) );
+            const int queueIndex = m_nextTracks.findRef( item );
+            item->setSelected( false ); //for prettiness
+            if( queueIndex!= -1 )
+            {
+                //if is Queued, remove the item
+                m_nextTracks.at( queueIndex ); //set current item
+                m_nextTracks.remove();
+            }
+            else m_nextTracks.append( item );
+            repaintItem( item );
+            refreshNextTracks();
+            return TRUE;
+        }
+        else
+            return KListView::eventFilter( o, e );
+    }
+    else {
 
         //allow the header to process this
         return KListView::eventFilter( o, e );
