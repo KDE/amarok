@@ -29,7 +29,7 @@ class PlaylistWidget;
 class PlaylistLoader : public QThread
 {
 public:
-    PlaylistLoader( const KURL::List&, PlaylistWidget*, QListViewItem* );
+    PlaylistLoader( const KURL::List&, PlaylistWidget*, PlaylistItem* );
     ~PlaylistLoader();
 
     void setOptions( bool b1, bool b2, int i ) { options.recurse = b1; options.playFirstItem = b2; options.sortSpec = i; }
@@ -58,8 +58,8 @@ private:
     void loadXML( QTextStream & );
 
     KURL::List      m_list;
-    QListViewItem  *m_after;  //accessed by GUI thread _only_
-    QListViewItem  *m_first;
+    PlaylistItem   *m_after;  //accessed by GUI thread _only_
+    PlaylistItem   *m_first;
     PlaylistWidget *m_listView;
     int             m_recursionCount;
 

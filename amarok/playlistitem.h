@@ -42,7 +42,7 @@ class PlaylistItem : public KListViewItem
         bool corruptFile;
 #endif
 
-        enum Column  { Trackname = 0,
+        enum Column  { TrackName = 0,
                        Title = 1,
                        Artist = 2,
                        Album = 3,
@@ -58,6 +58,7 @@ class PlaylistItem : public KListViewItem
         QString text( int column ) const;
         int     compare( QListViewItem*, int, bool ) const;
         void    paintCell( QPainter*, const QColorGroup&, int, int, int );
+        void    setTokens();
 
         static QString trackName( const KURL &u ) { return u.protocol() == "file" ? u.fileName() : u.prettyURL(); }
 

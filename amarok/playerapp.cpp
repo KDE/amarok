@@ -811,12 +811,7 @@ void PlayerApp::slotDecreaseVolume()
 
 void PlayerApp::slotConfigShortcuts()
 {
-    KKeyDialog keyDialog( true );
-
-    keyDialog.insert( actionCollection(), i18n( "General" ) );
-    keyDialog.insert( m_pBrowserWin->actionCollection(), i18n( "Playlist Window" ) );
-
-    keyDialog.configure();
+    KKeyDialog::configure( actionCollection(), m_pBrowserWin );
 }
 
 void PlayerApp::slotConfigGlobalShortcuts()

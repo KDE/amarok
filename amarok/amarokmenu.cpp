@@ -136,14 +136,10 @@ PlayPauseAction::PlayPauseAction( KActionCollection *ac )
 {
     EngineController* const ec = EngineController::instance();
 
-    //TODO we need for controller to have a slot that pauses when playing
-    //     and unpauses when paused and starts playback when stopped
-    //     Would also be useful to the systray
-
     engineStateChanged( ec->engine() ? ec->engine()->state() : EngineBase::Empty );
 
     ec->attach( this );
-    connect( this, SIGNAL( activated() ), ec, SLOT( pause() ) );
+    connect( this, SIGNAL( activated() ), ec, SLOT( playPause() ) );
 }
 
 PlayPauseAction::~PlayPauseAction()

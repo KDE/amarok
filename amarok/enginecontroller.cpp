@@ -67,6 +67,18 @@ void EngineController::next()
     emit orderNext();
 }
 
+void EngineController::playPause()
+{
+    //this is used by the TrayIcon and PlayPauseAction
+
+    if( m_pEngine && m_pEngine->state() == EngineBase::Playing )
+    {
+        pause();
+    }
+    else play();
+}
+
+
 void EngineController::play()
 {
     if( !m_pEngine ) return;
@@ -85,6 +97,8 @@ void EngineController::play( const MetaBundle &bundle )
     const KURL &url = m_playingURL = bundle.url();
 //    emit currentTrack( url );
 
+    kdDebug() << "[engine] Playing: " << url.filename() << endl;
+
     if ( AmarokConfig::titleStreaming() &&
          url.protocol() == "http" &&
          !m_proxyError &&
@@ -100,9 +114,9 @@ void EngineController::play( const MetaBundle &bundle )
             connect( this,      SIGNAL( deleteProxy () ),
                      pProxy,      SLOT( deleteLater () ) );
             connect( pProxy,    SIGNAL( error       () ),
-                     this,         SLOT( proxyError  () ) );
+                     this,        SLOT( proxyError  () ) );
             connect( pProxy,    SIGNAL( metaData( const MetaBundle& ) ),
-                     this,       SLOT( newMetaData( const MetaBundle& ) ) );
+                     this,        SLOT( newMetaData( const MetaBundle& ) ) );
         }
         else
         {
@@ -202,7 +216,7 @@ void EngineController::slotMainTimer()
 
     // check if track has ended or is broken
     if ( m_pEngine->state() == EngineBase::Empty ||
-            m_pEngine->state() == EngineBase::Idle )
+         m_pEngine->state() == EngineBase::Idle )
     {
         kdDebug() << k_funcinfo " Idle detected. Skipping track.\n";
 

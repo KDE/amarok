@@ -44,7 +44,7 @@ public:
     static EngineBase *engine() { return instance()->m_pEngine; }
     static void setEngine( EngineBase *engine ) { instance()->m_pEngine = engine; }
     long trackLength() const { return m_length; }  // how about : const MetaBundle &currentTrack() const;
-    const KURL &playingURL() { return m_playingURL; } // see over.
+    const KURL &playingURL() const { return m_playingURL; } // see over.
 
 public slots:
     void previous();
@@ -53,6 +53,7 @@ public slots:
     void play( const MetaBundle& );
     void pause();
     void stop();
+    void playPause(); //pauses if playing, plays if paused, plays if stopped
 
     int setVolume( int percent );
 

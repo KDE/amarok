@@ -168,28 +168,7 @@ TagReader::bindTags()
 {
    //for GUI access only
    //we're a friend of PlaylistItem
-   if( m_tags )
-       m_item->setText( *m_tags );
-}
-
-void
-TagReader::addSearchTokens( QStringList &tokens, QPtrList<QListViewItem> &ptrs )
-{
-    //for GUI access only
-    //we need to add this item to the search-index
-
-    QString s = m_item->trackName();
-
-    if( m_tags )
-    {
-        s += ' ';
-        s += m_tags->artist();
-        s += ' ';
-        s += m_tags->title();
-    }
-
-    tokens.append( s );
-    ptrs.append( m_item );
+   if( m_tags ) m_item->setText( *m_tags );
 }
 
 
@@ -227,7 +206,7 @@ CollectionReader::doJob() {
     //don't post event if no tags have been read
     if ( m_metaList.isEmpty() )
         return false;
-        
+
     return true;
 }
 
@@ -240,7 +219,7 @@ CollectionReader::readDir( const QString& dir, QStringList& entries ) {
 
     while ( ent = readdir( d ) ) {
         QString entry = ent->d_name;
-        
+
         if ( entry == "." || entry == ".." )
             continue;
         entry.prepend( dir.endsWith( "/" ) ? dir : dir + "/" );
@@ -268,11 +247,11 @@ CollectionReader::readTags( const QStringList& entries ) {
             QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Progress, i ) );
         
         url.setPath( entries[i] );
-        
-        if ( url.isValid() && url.isLocalFile() ) {        
+
+        if ( url.isValid() && url.isLocalFile() ) {
             TagLib::FileRef f( url.path().local8Bit(), false /*== read AudioProps */ );
             MetaBundle* bundle = f.isNull() ? 0 : new MetaBundle( url, f.tag(), f.audioProperties() );
-            
+
             if ( bundle )
                 m_metaList.append( bundle );
         }

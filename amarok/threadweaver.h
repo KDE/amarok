@@ -30,6 +30,11 @@ class QWidget;
 //  all the jobs append()ed to its queue in order. Jobs are processed in FIFO order unless you set the
 //  priority to immediate (see append()).
 //
+//  The class is designed to handle frequently requested tasks, or situations where you have lots of
+//  different tasks that must all be handled by a thread. For example, the playlist dispatches a Job for
+//  every file that requires tag reading. It also has a Job for writing tags, and reading audio properties.
+//  If you plan to batch process something you probably should just derive a class from QThread.
+//
 //  When a job has completed and returned true from doJob(), it is dispatched to the specified target object
 //  which can recieve the Job itself as an event in its QCustomEvent().
 //
@@ -114,7 +119,6 @@ public:
     static MetaBundle* readTags( const KURL&, bool = false );
 
     void bindTags();
-    void addSearchTokens( QStringList&, QPtrList<QListViewItem>& );
 
 private:
     PlaylistItem* const m_item;
@@ -132,8 +136,8 @@ public:
    {
        public:
            enum State { Start = -1, Stop = -2, Total = -3, Progress = -4 };
-           
-           ProgressEvent( int state, int value = -1 ) 
+
+           ProgressEvent( int state, int value = -1 )
            : QCustomEvent( ProgressEventType )
            , m_state( state )
            , m_value( value ) {}
@@ -143,18 +147,18 @@ public:
            int m_state;
            int m_value;
    };
-    
+
     CollectionReader( QObject* parent, QObject* statusBar, const QStringList& folders, bool recursively );
     ~CollectionReader();
 
     bool doJob();
     QPtrList<MetaBundle> bundleList() { return m_metaList; }
     QStringList dirList() { return m_dirList; }
-    
+
 private:
     void readDir( const QString& path, QStringList& entries );
     void readTags( const QStringList& entries );
-    
+
     QPtrList<MetaBundle> m_metaList;
     QObject* m_statusBar;
     QStringList m_folders;

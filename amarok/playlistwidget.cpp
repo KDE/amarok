@@ -15,8 +15,7 @@
 
 #include "amarokconfig.h"
 #include "metabundle.h"
-#include "playerapp.h" //restoreCurrentTrack(), removeSelectedItems() //FIXME remove!
-#include "playlistbrowser.h"
+//#include "playlistbrowser.h"
 #include "playlistitem.h"
 #include "playlistloader.h"
 #include "playlistwidget.h"
@@ -27,28 +26,25 @@
 #include <qcolor.h>
 #include <qevent.h>
 #include <qfile.h>
-#include <qheader.h> //installEventFilter()
+#include <qheader.h> //eventFilter()
 #include <qmessagebox.h>
 #include <qpainter.h>
-#include <qpen.h>    //glowTimer()
+#include <qpen.h>    //slotGlowTimer()
 #include <qpoint.h>
-#include <qpushbutton.h>
 #include <qrect.h>
-#include <qstringlist.h>
 #include <qtimer.h>
 
+#include <kapplication.h> //use of kapp
 #include <kaction.h>
 #include <kcursor.h>
 #include <kdebug.h>
-#include <kiconloader.h>
-#include <klineedit.h>  //setCurrentTrack()
-#include <klistview.h>
+#include <kiconloader.h> //slotShowContextMenu()
+#include <klineedit.h>   //setCurrentTrack()
 #include <klocale.h>
 #include <kpopupmenu.h>
-#include <krandomsequence.h>
-#include <kstandarddirs.h> //KGlobal::dirs()
+#include <krandomsequence.h> //random Mode
+#include <kstandarddirs.h>   //KGlobal::dirs()
 #include <kstdaction.h>
-#include <kurl.h>
 #include <kurldrag.h>
 
 #include <X11/Xlib.h>  // for XQueryPointer
@@ -57,9 +53,10 @@
 
 PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const char *name )
     : KListView( parent, name )
-    , m_browser( /*new PlaylistBrowser( "PlaylistBrowser" )*/ 0 )
-    , m_GlowCount( 100 )
-    , m_GlowAdd( 5 )
+//    , m_browser( /*new PlaylistBrowser( "PlaylistBrowser" )*/ 0 )
+//    , m_glowCount( 100 )
+    , m_glowAdd( 5 )
+    , m_glowTimer( new QTimer( this ) )
     , m_currentTrack( 0 )
     , m_cachedTrack( 0 )
     , m_marker( 0 )
@@ -69,11 +66,15 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const ch
     , m_clearButton( 0 )
     , m_undoDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) )
     , m_undoCounter( 0 )
+    , m_ac( ac ) //we use this so we don't have to include playerapp.h
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
+    EngineController* const ec = EngineController::instance();
+
     // we want to receive engine updates
-    EngineController::instance()->attach( this );
+    ec->attach( this );
+
 
     setShowSortIndicator( true );
     setDropVisualizer( false );   //we handle the drawing for ourselves
@@ -124,31 +125,14 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const ch
              this,   SLOT( writeTag( QListViewItem*, const QString&, int ) ) );
     connect( this, SIGNAL( aboutToClear() ), SLOT( saveUndoState() ) );
 
-
-    //IMPORTANT CONNECTS!
-    connect( this, SIGNAL( playRequest( const MetaBundle& ) ),
-             EngineController::instance(),   SLOT( play( const MetaBundle& ) ) );
-
-    //TODO in order to allow streams to update playlistitems I plan to allow a connection between a
-    //metaBundle and the playlistItem is represents. Thus restoring the ability to modify stuff in the
-    //playlist but without having problems with threading or the potential that items have been deleted
-    //since the item started playback
-
-    //TODO eventually the playlist should be globally accessible and have a nice public interface
-    //that allows you to request a metaBundle by KURL etc. I don't think there is need to allow iteration
-    //over elements
-
-    //FIXME restore this functionality
-    //connect( pApp, SIGNAL( metaData( const MetaBundle& ) ),
-    //         this,   SLOT( handleStreamMeta( const MetaBundle& ) ) );
+    connect( m_glowTimer, SIGNAL( timeout() ), this, SLOT( slotGlowTimer() ) );
 
 
-    connect( EngineController::instance(), SIGNAL( orderPrevious() ),
-             this,   SLOT( handleOrderPrev() ) );
-    connect( EngineController::instance(), SIGNAL( orderCurrent() ),
-             this,   SLOT( handleOrderCurrent() ) );
-    connect( EngineController::instance(), SIGNAL( orderNext() ),
-             this,   SLOT( handleOrder() ) );
+    //TODO deprecate these, use a better system
+    connect( ec, SIGNAL( orderPrevious() ), SLOT( handleOrderPrev() ) );
+    connect( ec, SIGNAL( orderCurrent() ), SLOT( handleOrderCurrent() ) );
+    connect( ec, SIGNAL( orderNext() ), SLOT( handleOrder() ) );
+
 
     //<init undo/redo>
         //create undo buffer directory
@@ -165,22 +149,17 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const ch
         m_redoButton->setEnabled( false );
     //</init undo/redo>
 
-    //TODO move declarations to BrowserWin ctor? perhaps easier
 
-    KAction *action;
     KStdAction::copy( this, SLOT( copyToClipboard() ), ac, "playlist_copy" );
     new KAction( i18n( "Shu&ffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
+    new KAction( i18n( "&Show Playing" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
     m_clearButton = new KAction( i18n( "&Clear" ), "view_remove", 0, this, SLOT( clear() ), ac, "playlist_clear" );
-    action = new KAction( i18n( "&Show Playing" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
-    action->setToolTip( i18n( "Ensure the currently playing track is visible in the playlist" ) ); //FIXME doesn't show in toolbar!
+
 
     header()->installEventFilter( this );
 
-    QTimer *timer = new QTimer( this );
-    connect( timer, SIGNAL( timeout() ), this, SLOT( slotGlowTimer() ) );
-    timer->start( 150 );
-
     restoreLayout( KGlobal::config(), "PlaylistColumnsLayout" );
+
 
     /*
         TODO the following actually works!
@@ -213,6 +192,8 @@ PlaylistWidget::~PlaylistWidget()
 
    if( AmarokConfig::savePlaylist() ) saveXML( defaultPlaylistPath() );
 
+   EngineController::instance()->detach( this );
+
    //speed up quit a little
    KListView::clear();
    blockSignals( true );
@@ -222,7 +203,7 @@ PlaylistWidget::~PlaylistWidget()
 
 //PUBLIC INTERFACE ===================================================
 
-QWidget *PlaylistWidget::browser() const { return m_browser; }
+//QWidget *PlaylistWidget::browser() const { return m_browser; }
 void PlaylistWidget::showCurrentTrack() { ensureItemVisible( currentTrack() ); } //SLOT
 
 
@@ -246,95 +227,67 @@ void PlaylistWidget::handleOrderPrev()    { handleOrder( Prev ); }    //SLOT
 void PlaylistWidget::handleOrderCurrent() { handleOrder( Current ); } //SLOT
 
 
-void PlaylistWidget::handleOrder( RequestType rt ) //SLOT
+void PlaylistWidget::handleOrder( RequestType request ) //SLOT
 {
-   PlaylistItem* item = (rt == Next) ? m_nextTracks.getFirst() : NULL;
+    if( isEmpty() ) return;
 
-   if( item == NULL )
-   {
-      item = currentTrack();
+    PlaylistItem *item = currentTrack();
+    if( !item ) request = Next;
 
-      if( item == NULL )
-      {
-         //no point advancing/receding track since there was no currentTrack!
-         rt = Current;
+    switch( request )
+    {
+    case Prev:
 
-         PlaylistItem *firstItem = firstChild();
+        if( m_prevTracks.isEmpty() )
+        {
+            item = (PlaylistItem *)item->itemAbove();
 
-         //if still NULL, then play first selected track
-         for( item = firstItem; item; item = item->nextSibling() )
-            if( item->isSelected() ) break;
+            if( !item && AmarokConfig::repeatPlaylist() ) item = lastItem();
+        }
+        else item = m_prevTracks.pop();
 
-         //if still NULL, then play first track
-         if( item == NULL )
-             item = firstItem;
+        activate( item, false ); //don't append this to the prevTrack stack, that _would_ be daft!
+        return;
 
-         //if still null then playlist is empty
-         //NOTE an initial ( childCount == 0 ) is possible, but this is safer
-      }
-   }
-   else rt = Current; //play m_nextTrack
+    case Current:
 
-   switch( rt )
-   {
-   case Prev:
-      //I've talked on a few channels, people hate it when media players restart the current track
-      //first before going to the previous one (most players do this), so let's not do it!
+        if( item ) break; //then restart this track
 
-      // choose right order in random-mode
-      if( recentPtrs.count() > 1 )
-      {
-          item = (PlaylistItem *)recentPtrs.at( recentPtrs.count() - 2 );
-          recentPtrs.remove( recentPtrs.at( recentPtrs.count() - 1 ) );
-      }
-      else
-      {
-          item = (PlaylistItem *)item->itemAbove();
+        //else FALL THROUGH
 
-          if( item == NULL && AmarokConfig::repeatPlaylist() )
-             item = (PlaylistItem *)lastItem();
-      }
+    case Next:
 
-      break;
+        //FIXME make me pretty!
 
-   case Next:
-      if ( AmarokConfig::repeatTrack() )
-          break;
-      else
-          if ( AmarokConfig::randomMode() && childCount() > 3 ) //FIXME is childCount O(1)?
-          {
-              int x;
-              do
-              {
-                  item = (PlaylistItem *)itemAtIndex( KApplication::random() % childCount() );
-                  x = recentPtrs.find( item );
-              }
-              while( x >= 0 ); // try not to play the same tracks two often
+        if( !(AmarokConfig::repeatTrack() && item ) )
+        {
+            if( !m_nextTracks.isEmpty() )
+            {
+                item = m_nextTracks.first();
+                m_nextTracks.remove();
+            }
+            else if( AmarokConfig::randomMode() )
+            {
+                //TODO this isn't terribly efficient AT ALL!
 
-              // add current item to the recently played list, and make sure this list doesn't get too large
-              //FIXME: max. size of recent-buffer is set "manually" to 50 in the next lines.
-              //       should be configurable or at least #define'd...
-              recentPtrs.append( item );
-              while ( ( recentPtrs.count() > (uint)( childCount() / 2 ) ) || ( recentPtrs.count() > 50 ) )
-                  recentPtrs.remove( recentPtrs.at( 0 ) );
-          }
-          else
-          {
-              item = (PlaylistItem*)item->itemBelow();
+                item = m_prevTracks.top();
 
-              if( item == NULL && AmarokConfig::repeatPlaylist() )
-                  item = firstChild();
-          }
-      break;
+                for( const uint count = childCount();
+                     m_prevTracks.contains( item );
+                     item = (PlaylistItem *)itemAtIndex( KApplication::random() % count ) )
+                {}
+            }
+            else if( item )
+            {
+                item = (PlaylistItem*)item->itemBelow();
 
-   case Current:
-      if ( AmarokConfig::randomMode() )
-          item = (PlaylistItem *)itemAtIndex( KApplication::random() % childCount() );
+                if( !item && AmarokConfig::repeatPlaylist() ) item = firstChild();
+            }
+            else item = firstChild();
+        }
+    }
 
-      break;
-   }
-
-   activate( item );
+    activate( item );
 }
 
 
@@ -367,15 +320,16 @@ void PlaylistWidget::saveM3U( const QString &path ) const
 void PlaylistWidget::saveXML( const QString &path ) const
 {
     //TODO save nextTrack queue
+    //TODO do the write in one go rather than gradually?
 
     QFile file( path );
 
     if( !file.open( IO_WriteOnly ) ) return;
 
     QTextStream stream( &file );
-    QString body  = "<%1>%2</%1>\n";
-    QString open1 = "<item url=\"", open2 = "\">\n";
-    QString close = "</item>\n";
+    const QString body  = "<%1>%2</%1>\n";
+    const QString open1 = "<item url=\"", open2 = "\">\n";
+    const QString close = "</item>\n";
 
     stream << "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
     stream << "<playlist product=\"amaroK\" version=\"1\">\n";
@@ -390,7 +344,7 @@ void PlaylistWidget::saveXML( const QString &path ) const
         for( int x = 1; x < columns(); ++x )
         {
             if( !item->exactText(x).isEmpty() )
-                stream << body.arg( columnText(x), item->exactText(x).replace( '&', "&quot;" ).replace( '<', "&lt;" ) );
+                stream << body.arg( columnText(x), item->exactText(x).replace( '&', "&amp;" ).replace( '<', "&lt;" ) );
         }
         stream << close;
     }
@@ -424,9 +378,9 @@ void PlaylistWidget::shuffle() //SLOT
     seq.randomize( &list );
 
     //reinsert rest
-    for( uint i = 0; i < list.count(); ++i )
+    for( QListViewItem *item = list.first(); item; item = list.next() )
     {
-        insertItem( list.at( i ) );
+        insertItem( item );
     }
 
     //now put nextTracks into playlist so they are first and from first to last
@@ -437,8 +391,8 @@ void PlaylistWidget::shuffle() //SLOT
 
     m_nextTracks.clear();
 
-    pApp->actionCollection()->action( "prev" )->setEnabled( isTrackBefore() );
-    pApp->actionCollection()->action( "next" )->setEnabled( isTrackAfter() );
+    m_ac->action( "prev" )->setEnabled( isTrackBefore() );
+    m_ac->action( "next" )->setEnabled( isTrackAfter() );
 }
 
 
@@ -447,9 +401,8 @@ void PlaylistWidget::clear() //SLOT
     emit aboutToClear(); //will saveUndoState()
 
     setCurrentTrack( NULL );
-    recentPtrs.clear();
-    searchTokens.clear();
-    searchPtrs.clear();
+    m_tokens.clear();
+    m_prevTracks.clear();
     m_nextTracks.clear();
 
     //TODO make it possible to tell when it is safe to not delay deletion
@@ -471,15 +424,18 @@ void PlaylistWidget::clear() //SLOT
 
 bool PlaylistWidget::isTrackAfter() const
 {
-    return AmarokConfig::repeatPlaylist() ||
+    return !isEmpty() && (
+           AmarokConfig::repeatPlaylist() ||
            !m_nextTracks.isEmpty() ||
-           m_currentTrack && m_currentTrack->itemBelow();
+           m_currentTrack && m_currentTrack->itemBelow() );
 }
 
 bool PlaylistWidget::isTrackBefore() const
 {
-    return AmarokConfig::repeatPlaylist() ||
-           currentTrack() && currentTrack()->itemAbove();
+    return !isEmpty() && (
+           AmarokConfig::repeatPlaylist() ||
+           !m_prevTracks.isEmpty() ||
+           currentTrack() && currentTrack()->itemAbove() );
 }
 
 
@@ -533,7 +489,7 @@ void PlaylistWidget::summary( QPopupMenu &popup ) const
 
 // PRIVATE METHODS ===============================================
 
-void PlaylistWidget::insertMediaInternal( const KURL::List &list, QListViewItem *after, bool directPlay )
+void PlaylistWidget::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool directPlay )
 {
    //we don't check list.isEmpty(), this is a private function so we shouldn't have to
     PlaylistLoader *loader = new PlaylistLoader( list, this, after );
@@ -590,19 +546,10 @@ void PlaylistWidget::removeItem( PlaylistItem *item )
     }
 
     //keep search system synchronised
-    int x = searchPtrs.findRef( item );
-    if( x >= 0 )
-    {
-        searchTokens.remove( searchTokens.at( x ) );
-        searchPtrs.remove(/* x */); //TODO check this is safe!
-    }
+    m_tokens.remove( item );
 
     //keep recent buffer synchronised
-    for( x = -2; x != -1; )
-    {
-        x = recentPtrs.findRef( item ); //returns -1 if not found
-        recentPtrs.remove( /*x*/ ); //removes current item, findRef sets current item
-    }
+    m_prevTracks.remove( item ); //removes all items
 }
 
 
@@ -624,40 +571,61 @@ void PlaylistWidget::refreshNextTracks( int from )
 }
 
 
-void PlaylistWidget::activate( QListViewItem *item ) //SLOT
+void PlaylistWidget::activate( QListViewItem *lvi, bool rememberTrack ) //SLOT
 {
-    //lets ask the engine to play something
-    if( PlaylistItem* const playItem = (PlaylistItem*)item )
-    {
-        kdDebug() << "[playlist] Requesting playback for: " << item->text( 0 ) << endl;
+    //ATTENTION!
+    //_All_ requests for playing items should come through here, thanks!
 
-        int index = m_nextTracks.findRef( playItem );
+
+    if( rememberTrack && currentTrack() )
+    {
+        m_prevTracks.push( currentTrack() ); //is push_back, see QValueStack docs
+        //keep prevList within reasonable limits, remove most distant members
+        while( m_prevTracks.count() > 40 ) m_prevTracks.pop_front();
+    }
+
+
+    if( PlaylistItem* const item = (PlaylistItem*)lvi )
+    {
+        //if we are playing something from the next tracks list, remove it from the list
+        //do it here rather than in setCurrentTrack(), because if playback fails we don't
+        //want to try playing it repeatedly!
+
+        int index = m_nextTracks.findRef( item ); //set's m_nextTracks.current()
         if( index != -1 )
         {
-            //if we're playing a queued item, take it off the queue and refresh
-            m_nextTracks.remove(); //will remove list's current member, which is set by findRef()
+            m_nextTracks.remove(); //will remove m_nextTracks.current()
             refreshNextTracks( index );
         }
 
-        //cache the track so when the engine tells us a KURL is playing we don't have to search
-        m_cachedTrack = playItem;
-        EngineController::instance()->play( playItem->metaBundle() );
+        //when the engine calls newMetaDataNotify we are expecting it
+        m_cachedTrack = item;
+
+        //tell the engine to play the new track
+        EngineController::instance()->play( item->metaBundle() );
+
+    } else {
+
+        //FIXME this may cause premature stopping with crossfading..
+        EngineController::instance()->stop();
+        setCurrentTrack( 0 );
     }
-    else // NULL, stop the player
-        EngineController::instance()->stop(); //FIXME this may cause premature stopping with crossfading..
 }
 
 
-void PlaylistWidget::setCurrentTrack( const KURL &u ) //SLOT
+void PlaylistWidget::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
 {
-    //the engine confirms a new track is playing, lets try and highlight it
-
-    if( m_currentTrack && m_currentTrack->url() == u ) return;
-    if( m_cachedTrack == NULL || (m_cachedTrack && m_cachedTrack->url() != u) )
+    if( m_currentTrack && m_currentTrack->url() == bundle.url() )
     {
+        //if the track hasn't changed then we should update the meta data for the item
+        if( !trackChanged ) m_currentTrack->setText( bundle );
+        return;
+
+    } else if( !m_cachedTrack || m_cachedTrack->url() != bundle.url() ) {
+
         //FIXME most likely best to start at currentTrack() and be clever
         for( m_cachedTrack = firstChild();
-             m_cachedTrack && m_cachedTrack->url() != u;
+             m_cachedTrack && m_cachedTrack->url() != bundle.url();
              m_cachedTrack = m_cachedTrack->nextSibling() );
     }
 
@@ -665,40 +633,69 @@ void PlaylistWidget::setCurrentTrack( const KURL &u ) //SLOT
 }
 
 
+void PlaylistWidget::engineStateChanged( EngineBase::EngineState state )
+{
+    switch( state )
+    {
+    case EngineBase::Playing:
+        //TODO make it fade in and out of the backgroundColor()
+        m_glowCount = 100;
+        m_glowTimer->start( 150 );
+        m_ac->action( "pause" )->setEnabled( true );
+        m_ac->action( "stop" )->setEnabled( true );
+        m_ac->action( "prev" )->setEnabled( isTrackBefore() ); //FIXME you also do this in setCurrenTrack
+        m_ac->action( "next" )->setEnabled( isTrackAfter() );  //FIXME you also do this in setCurrenTrack
+        break;
+
+    case EngineBase::Empty:
+        //TODO do this with setState() in BrowserWin?
+        m_ac->action( "pause" )->setEnabled( false );
+        m_ac->action( "stop" )->setEnabled( false );
+        m_ac->action( "prev" )->setEnabled( false );
+        m_ac->action( "next" )->setEnabled( false );
+
+        repaintItem( m_currentTrack );
+
+        //FALL THROUGH
+
+    case EngineBase::Paused:
+        m_glowTimer->stop();
+        break;
+
+    default:
+        break;
+    }
+}
+
+
 void PlaylistWidget::setCurrentTrack( PlaylistItem *item )
 {
-    //item has been verified to be the currently playing track
+    //item has been verified to be the currently playing track, let's paint it red!
 
     PlaylistItem *prev = currentTrack();
+    const bool canScroll = !renameLineEdit()->isVisible() && selectedItems().count() < 2; //FIXME O(n)
 
-    //the following 2 statements may seem strange, they are important however:
-    //1. if nothing is current and then playback starts, the user needs to be shown the currentTrack
-    //2. if we are setting to NULL (eg reached end of playlist) we need to unselect the item as well as unglow it
-    //   as otherwise we will play that track next time the user presses play (rather than say the first track)
-    //   because that is a feature of amaroK //FIXME this is sillyness
+    //if nothing is current and then playback starts, we must show the currentTrack
+    if( !m_currentTrack && canScroll ) ensureItemVisible( item ); //handles 0 gracefully
+    if( item ) item->setSelected( false ); //looks bad painting selected and glowing
 
-    if( m_currentTrack == NULL ) ensureItemVisible( item ); //handles NULL gracefully
-    else if( item == NULL ) m_currentTrack->setSelected( false );
-    else item->setSelected( false ); //looks bad paint selected and paint red
 
-    //FIXME this sucks
-    if( m_currentTrack == NULL && item ) item->setSelected( false ); //looks bad paint selected and paint red
-
-    if( item && AmarokConfig::playlistFollowActive() && m_currentTrack &&
-        selectedItems().count() < 2 &&  // do not scroll if more than one item is selected //FIXME O(n)
-        renameLineEdit()->isVisible() == false ) // do not scroll if user is doing tag editing
+    if( AmarokConfig::playlistFollowActive() && m_currentTrack && item && canScroll )
     {
         // if old item in view and the new one isn't do scrolling
         int currentY = itemPos( m_currentTrack );
+
         if( currentY + m_currentTrack->height() <= contentsY() + visibleHeight()
             && currentY >= contentsY() )
         {
+            const uint scrollMax = 2 * item->height();
             // Scroll towards the middle but no more than two lines extra
-            int scrollAdd = viewport()->height() / 2 - item->height();
-            if( scrollAdd > 2 * item->height() ) scrollAdd = 2 * item->height();
+            uint scrollAdd = viewport()->height() / 2 - item->height();
+            if( scrollAdd > scrollMax ) scrollAdd = scrollMax;
 
             int itemY = itemPos( item );
             int itemH = item->height();
+
             if( itemY + itemH > contentsY() + visibleHeight() ) // scroll down
             {
                 setContentsPos( contentsX(), itemY - visibleHeight() + itemH + scrollAdd );
@@ -711,36 +708,33 @@ void PlaylistWidget::setCurrentTrack( PlaylistItem *item )
     }
 
     m_currentTrack = item;
-    m_cachedTrack = 0; //invalidate cached pointers
+    m_cachedTrack  = 0; //invalidate cached pointer
 
     repaintItem( prev );
     repaintItem( item );
 
-    pApp->actionCollection()->action( "prev" )->setEnabled( isTrackBefore() );
-    pApp->actionCollection()->action( "next" )->setEnabled( isTrackAfter() );
+    m_ac->action( "prev" )->setEnabled( isTrackBefore() );
+    m_ac->action( "next" )->setEnabled( isTrackAfter() );
 }
 
 
 PlaylistItem *PlaylistWidget::restoreCurrentTrack()
 {
-    bool loaded = EngineController::instance()->engine() ? EngineController::instance()->engine()->loaded() : false;
-   if( !loaded ) return 0;
+    const KURL &url = EngineController::instance()->playingURL();
 
-   KURL url( EngineController::instance()->playingURL() );
+    if( !(m_currentTrack && m_currentTrack->url() == url) )
+    {
+        PlaylistItem* item;
 
-   if( !(m_currentTrack && m_currentTrack->url() == url) )
-   {
-      PlaylistItem* item;
+        for( item = firstChild();
+             item && item->url() != url;
+             item = item->nextSibling() )
+        {}
 
-      for( item = firstChild();
-           item && item->url() != url;
-           item = item->nextSibling() )
-      {}
+        setCurrentTrack( item ); //set even if NULL
+    }
 
-      setCurrentTrack( item ); //set even if NULL
-   }
-
-   return m_currentTrack;
+    return m_currentTrack;
 }
 
 
@@ -798,7 +792,7 @@ bool PlaylistWidget::saveState( QStringList &list )
       saveXML( fileName );
       list.append( fileName );
 
-      kdDebug() << "Saved state: " << fileName << endl;
+      //kdDebug() << "Saved state: " << fileName << endl;
 
       return true;
    }
@@ -809,7 +803,6 @@ bool PlaylistWidget::saveState( QStringList &list )
 
 void PlaylistWidget::undo() { switchState( m_undoList, m_redoList ); } //SLOT
 void PlaylistWidget::redo() { switchState( m_redoList, m_undoList ); } //SLOT
-
 
 void PlaylistWidget::switchState( QStringList &loadFromMe, QStringList &saveToMe )
 {
@@ -836,9 +829,9 @@ void PlaylistWidget::switchState( QStringList &loadFromMe, QStringList &saveToMe
 
 void PlaylistWidget::copyToClipboard( const QListViewItem *item ) const //SLOT
 {
-    if( item == NULL ) item = currentTrack();
+    if( !item ) item = currentTrack();
 
-    if( item != NULL )
+    if( item )
     {
         #define item static_cast<const PlaylistItem*>(item)
         QApplication::clipboard()->setText( item->trackName(), QClipboard::Clipboard );
@@ -853,15 +846,15 @@ void PlaylistWidget::slotMouseButtonPressed( int button, QListViewItem *after, c
     switch( button )
     {
     case Qt::MidButton:
-        {
-            //FIXME shouldn't the X11 paste get to Qt via some kind of drop?
-            //TODO handle multiple urls?
-            QString path = QApplication::clipboard()->text( QClipboard::Selection );
-            kdDebug() << "[playlist] X11 Paste: " << path << endl;
+    {
+        //FIXME shouldn't the X11 paste get to Qt via some kind of drop?
+        //TODO handle multiple urls?
+        QString path = QApplication::clipboard()->text( QClipboard::Selection );
+        kdDebug() << "[playlist] X11 Paste: " << path << endl;
 
-            insertMediaInternal( KURL::fromPathOrURL( path ), after );
-        }
+        insertMediaInternal( KURL::fromPathOrURL( path ), (PlaylistItem*)after );
         break;
+    }
 
     case Qt::RightButton:
         showContextMenu( after, p, col );
@@ -889,7 +882,7 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
 
     const bool canRename = isRenameable( col );
     const bool isCurrent = (item == m_currentTrack);
-    const bool isPlaying = EngineController::instance()->engine() ? EngineController::instance()->engine()->loaded() : false;
+    const bool isPlaying = EngineController::engine()->state() == EngineBase::Playing;
     const int queueIndex = m_nextTracks.findRef( item );
     const bool isQueued  = queueIndex != -1;
 
@@ -1025,73 +1018,52 @@ void PlaylistWidget::showTrackInfo( PlaylistItem *pItem ) const //SLOT
     box.exec();
 }
 
-void PlaylistWidget::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
-{
-    if( trackChanged )
-    {
-        KURL u = bundle.url();
-        //the engine confirms a new track is playing, lets try and highlight it
-        if( m_currentTrack && m_currentTrack->url() == u ) return;
-        if( m_cachedTrack == NULL || (m_cachedTrack && m_cachedTrack->url() != u) )
-        {
-            //FIXME most likely best to start at currentTrack() and be clever
-            for( m_cachedTrack = firstChild();
-                 m_cachedTrack && m_cachedTrack->url() != u;
-                 m_cachedTrack = m_cachedTrack->nextSibling() );
-        }
-
-        setCurrentTrack( m_cachedTrack );
-    }
-}
 
 void PlaylistWidget::slotGlowTimer() //SLOT
 {
-    if ( PlaylistItem *item = currentTrack() )
+    if( m_glowCount > 120 || m_glowCount < 90 ) m_glowAdd = -m_glowAdd;
+
+    //draw glowing rectangle around current track, to indicate activity
+    QRect rect = itemRect( currentTrack() ); //FIXME slow function!
+
+    if( rect.isValid() )
     {
-        if ( m_GlowCount > 120 )
-            m_GlowAdd = -m_GlowAdd;
+        QPainter p( viewport() );
+        p.setPen( colorGroup().brightText().light( m_glowCount ) );
 
-        if ( m_GlowCount < 90 )
-            m_GlowAdd = -m_GlowAdd;
+        rect.setTop   ( rect.top()      );
+        rect.setBottom( rect.bottom()   );
+        rect.setWidth ( contentsWidth() );    //neccessary to draw on the complete width
 
-        m_GlowCount += m_GlowAdd;
-
-        //draw glowing rectangle around current track, to indicate activity
-        QRect rect = itemRect( item ); //FIXME slow function!
-
-        if ( rect.isValid() ) {
-            QPainter p( viewport() );
-            p.setPen( colorGroup().brightText().light( m_GlowCount ) );
-
-            rect.setTop   ( rect.top()      );
-            rect.setBottom( rect.bottom()   );
-            rect.setWidth ( contentsWidth() );    //neccessary to draw on the complete width
-
-            p.drawRect( rect );
-        }
+        p.drawRect( rect );
     }
+
+    m_glowCount += m_glowAdd;
 }
 
 
-void PlaylistWidget::slotTextChanged( const QString &str ) //SLOT
+void PlaylistWidget::slotTextChanged( const QString &query ) //SLOT
 {
-    QListViewItem *pVisibleItem = NULL;
-    unsigned int x = 0;
+    const QStringList v = QStringList::split( ' ', query.lower() );
+    const SearchTokens::Iterator end = m_tokens.end();
 
-    QStringList tokens = QStringList::split( " ", str.lower() );
+    //we could just do this with the QStringList, as operator[] is linear,
+    //but we are rarely going to lists larger than 3 in size...
+    //QValueVector<QString> v( queries.size() );
+    //qCopy( queries.begin(), queries.end(), v.begin() );
 
-    for ( QStringList::Iterator it = searchTokens.begin(); it != searchTokens.end(); ++it )
+    uint y;
+    bool b;
+
+    for( SearchTokens::Iterator it = m_tokens.begin(); it != end; ++it )
     {
-        pVisibleItem = searchPtrs.at( x );
+        b = query.isEmpty();
 
-        pVisibleItem->setVisible( true );
-        for ( uint y = 0; y < tokens.count(); ++y )
-        {
-            if ( !(*it).lower().contains( tokens[y] ) )
-                pVisibleItem->setVisible( false );
-        }
+        for( y = 0; !b && y < v.count(); ++y )
+            if( it.data().find( v[y] ) != -1 ) //find() is quicker than contains()
+                b = true;
 
-        x++;
+        it.key()->setVisible( b );
     }
 
     //to me it seems sensible to do this, BUT if it seems annoying to you, remove it
@@ -1195,7 +1167,7 @@ void PlaylistWidget::contentsDropEvent( QDropEvent *e )
         KURL::List urlList;
         if( KURLDrag::decode( e, urlList ) )
         {
-            insertMediaInternal( urlList, after );
+            insertMediaInternal( urlList, (PlaylistItem*)after );
         }
         else e->ignore();
     }
@@ -1304,13 +1276,7 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
         {
             if( e->playMe() ) activate( item );
 
-            if( AmarokConfig::showMetaInfo() )
-                m_weaver->append( new TagReader( this, item ) );
-            else
-            {
-                searchTokens.append( item->trackName() );
-                searchPtrs.append( item );
-            }
+            if( AmarokConfig::showMetaInfo() ) m_weaver->append( new TagReader( this, item ) );
         }
         #undef e
         break;
@@ -1328,6 +1294,7 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
         m_clearButton->setEnabled( true );
         m_undoButton->setEnabled( !m_undoList.isEmpty() );
         m_redoButton->setEnabled( !m_redoList.isEmpty() );
+
         QApplication::restoreOverrideCursor();
         restoreCurrentTrack(); //just in case the track that is playing is not set current
         break;
@@ -1353,7 +1320,6 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
 
         #define e static_cast<TagReader*>(e)
         e->bindTags();
-        e->addSearchTokens( searchTokens, searchPtrs );
         #undef e
         break;
 

@@ -68,18 +68,21 @@ changeContrast( const QColor &c, int contrast )
 QString PlaylistItem::stringStore[STRING_STORE_SIZE];
 
 
+
 PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KURL &u, const QString &title, const int length )
-      : KListViewItem( parent, lvi, trackName( u ) )
+  : KListViewItem( parent, lvi, trackName( u ) )
 #ifdef CORRUPT_FILE
-      , corruptFile( FALSE ) //our friend threadweaver will take care of this flag
+  , corruptFile( FALSE ) //our friend threadweaver will take care of this flag
 #endif
-      , m_url( u )
+  , m_url( u )
 {
     setDragEnabled( true );
 
     KListViewItem::setText( 1, title );
     KListViewItem::setText( 8, u.directory().section( '/', -1 ) );
     setText( 9, MetaBundle::prettyLength( length ) );
+
+    setTokens();
 }
 
 
@@ -93,10 +96,15 @@ PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KU
     //     to have a small hash table that can be created when loading xml and sestroyed after (if cheap in terms of code to do)
     //     and then iterate over the nodes via nextSibling()
 
+    //NOTE we use base versions to speed this up
+
     for( int x = 1; x < parent->columns(); ++x )
     {
-        KListViewItem::setText( x, n.namedItem( parent->columnText( x ) ).toElement().text() );
+        const QString text = n.namedItem( parent->columnText( x ) ).toElement().text();
+        KListViewItem::setText( x, attemptStore( text ) );
     }
+
+    setTokens();
 }
 
 
@@ -185,12 +193,13 @@ void PlaylistItem::setText( int column, const QString &newText )
     case 2: //artist
     case 3: //album
     case 6: //genre
-    case 7: //track #
+    case 7: //track # //TODO replace with year?
     case 8: //directory
         //these are good candidates for the stringStore
         //NOTE title is not a good candidate, it probably will never repeat in the playlist
 
         KListViewItem::setText( column, attemptStore( newText ) );
+        break;
 
     case 1:
     case 9:
@@ -213,10 +222,21 @@ void PlaylistItem::setText( int column, const QString &newText )
 
             break;
         }
-        //else do default -->
+
+        //else FALL THROUGH
 
     default:
         KListViewItem::setText( column, (column > 8) ? newText + ' ' : newText );
+    }
+
+    switch( column ) {
+    case 0:
+    case 1:
+    case 2:
+        setTokens();
+        break;
+    default:
+        break;
     }
 }
 
@@ -224,7 +244,21 @@ void PlaylistItem::setText( int column, const QString &newText )
 // PRIVATE METHODS
 /////////////////////////////////////////////////////////////////////////////////////
 
-int PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
+void
+PlaylistItem::setTokens()
+{
+    QString
+    token  = exactText( TrackName );
+    token += ' ';
+    token += exactText( Title );
+    token += ' ';
+    token += exactText( Artist );
+
+    listView()->m_tokens.insert( this, token.lower() );
+}
+
+int
+PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
 {
     float a, b;
 

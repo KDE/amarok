@@ -70,9 +70,9 @@
 //TODO reimplement ask recursive in PlaylistWidget::insertMedia()
 
 
-PlaylistLoader::PlaylistLoader( const KURL::List &ul, PlaylistWidget *lv, QListViewItem *lvi )
+PlaylistLoader::PlaylistLoader( const KURL::List &ul, PlaylistWidget *lv, PlaylistItem *pi )
    : m_list( ul )
-   , m_after( lvi )
+   , m_after( pi )
    , m_first( 0 )
    , m_listView( lv )
 {}
@@ -424,7 +424,7 @@ void PlaylistLoader::loadPLS( QTextStream &stream )
 void PlaylistLoader::loadXML( QTextStream &stream )
 {
     QDomDocument d;
-    if( !d.setContent(stream.device()) ) kdDebug() << "Could not load XML\n";
+    if( !d.setContent(stream.device()) ) { kdDebug() << "Could not load XML\n"; return; }
 
     QDomNode
     n = d.namedItem( "playlist" );
@@ -432,6 +432,7 @@ void PlaylistLoader::loadXML( QTextStream &stream )
 
     const QString ITEM( "item" ); //so we don't construct the QStrings all the time
     const QString URL( "url" );
+    const QString s = "%1 %2 %3";
 
     while( !n.isNull() && n.nodeName() == ITEM )
     {

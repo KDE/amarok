@@ -87,21 +87,23 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
         new amaroK::MenuAction( ac );
         new amaroK::PlayPauseAction( ac );
         new amaroK::AnalyzerAction( ac );
-
         new amaroK::RepeatTrackAction( ac );
         new amaroK::RepeatPlaylistAction( ac );
         new amaroK::RandomAction( ac );
 
+        ac->action( "stop" )->setEnabled( false );
+        ac->action( "pause" )->setEnabled( false );
+        ac->action( "prev" )->setEnabled( false );
+        ac->action( "next" )->setEnabled( false );
     //</actions>
 
 
     m_browsers = new BrowserBar( this );
     m_toolbar  = new KToolBar( this, "playlist_toolbar" );
     m_lineEdit = new KLineEdit( m_browsers->container() );
-    m_playlist = new PlaylistWidget( m_browsers->container(), ac ); //FIXME some actions are created in here
+    m_playlist = new PlaylistWidget( m_browsers->container(), ac );
 
-    m_playlist->installEventFilter( this ); //we intercept keyEvents
-    m_lineEdit->installEventFilter( this ); //we intercept keyEvents
+    QToolTip::add( m_lineEdit, i18n( "Enter filter string" ) );
 
     QBoxLayout *layV = new QVBoxLayout( this );
     layV->addWidget( m_browsers, 10 );
@@ -109,18 +111,23 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     layV->addWidget( new amaroK::StatusBar( this, "statusbar" ) );
 
 
+    m_playlist->installEventFilter( this ); //we intercept keyEvents
+    m_lineEdit->installEventFilter( this ); //we intercept keyEvents
+
+
     //<XMLGUI>
         setXMLFile( "amarokui.rc" );
         createGUI(); //NOTE we implement this
     //</XMLGUI>
 
+
     //<FileBrowser>
         m_browsers->addPage( new KDevFileSelector( 0, "FileBrowser" ), i18n( "File Browser" ), "hdd_unmount" );
     //</FileBrowser>
 
-    { //<SearchBrowser>
+    //<SearchBrowser>
         m_browsers->addPage( new SearchBrowser( 0, "SearchBrowser" ), i18n( "Search Browser" ), "find" );
-    } //</SearchBrowser>
+    //</SearchBrowser>
 
     //<PlaylistBrowser>
         //m_browsers->addPage( m_playlist->browser(), i18n( "Playlist Browser" ), "midi" );
@@ -149,8 +156,6 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
              m_browsers,   SLOT( autoClosePages() ) );
     connect( m_lineEdit, SIGNAL( textChanged( const QString& ) ),
              m_playlist,   SLOT( slotTextChanged( const QString& ) ) );
-
-    QToolTip::add( m_lineEdit, i18n( "Enter filter string" ) );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
@@ -183,13 +188,15 @@ void BrowserWin::createGUI()
 
     m_toolbar->setIconText( KToolBar::IconTextRight, false );
 
-    KToolBarButton *button;
-    const QCStringList::ConstIterator end = list.constEnd();
+    const QCStringList::ConstIterator last = list.fromLast();
+    const QCStringList::ConstIterator end  = list.constEnd();
 
-    for( QCStringList::ConstIterator it = list.constBegin(); it != end; ++it )
+    for( QCStringList::ConstIterator it = list.constBegin(); it != end; )
     {
-        button = (KToolBarButton*)m_toolbar->child( *it );
+        KToolBarButton *button = (KToolBarButton*)m_toolbar->child( *it );
         if( button ) button->modeChange();
+
+        if( ++it == last ) m_toolbar->setIconText( KToolBar::TextOnly, false );
     }
 
     m_toolbar->setIconText( KToolBar::IconOnly, false );
@@ -289,6 +296,11 @@ bool BrowserWin::eventFilter( QObject *o, QEvent *e )
                 m_playlist->setFocus();
                 m_playlist->setCurrentItem( it.current() );
                 it.current()->setSelected( true ); //FIXME why doesn't it do this for us?
+                return TRUE;
+
+            case Key_PageDown:
+            case Key_PageUp:
+                QApplication::sendEvent( m_playlist, e );
                 return TRUE;
 
             case Key_Return:

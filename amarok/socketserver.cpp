@@ -113,7 +113,7 @@ Vis::SocketServer::request( int sockfd )
 
             float data[512]; for( uint x = 0; x < 512; ++x ) data[x] = (*scope)[x];
 
-            ::send( sockfd, data, 512*sizeof(float), 0 ); //FIXME we should give concrete numbers of values
+            ::send( sockfd, data, 512*sizeof(float), 0 );
 
             delete scope;
         }
@@ -153,8 +153,12 @@ Vis::SocketServer::request( int sockfd )
         {
 
         }
+
+    } else {
+
+        kdDebug() << "[Vis::Server] recv() error, closing socket" << endl;
+        ::close( sockfd );
     }
-    else kdDebug() << "[Vis::Server] recv() error" << endl;
 }
 
 #include "socketserver.moc"
