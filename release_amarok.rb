@@ -85,9 +85,7 @@ if doi18n == "yes"
         pofilename = "kde-i18n/#{lang}/messages/kdeextragear-1/amarok.po"
         `echo "cvs co #{pofilename}" >> #{$log}`
         `cvs -z3 -d #{cvsroot} -q co -P "#{pofilename}" > /dev/null 2>&1`
-        if not FileTest.exists? pofilename
-            `echo "#{lang}'s #{name}.po does not exist." >> #{$log}`
-        end
+        if not FileTest.exists? pofilename then next end
 
         dest = po/#{lang}
         `mkdir #{dest}`
