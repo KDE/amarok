@@ -188,7 +188,7 @@ XineEngine::scope()
 
     std::vector<float> &v = *(new std::vector<float>( 512 ));
 
-    for( uint x = 0; x < 513; ++x )
+    for( uint x = 0; x < 512; ++x )
     {
         v[x] = double( (myIndex < myEnd) ? myBuffer[myIndex++] : 0 )/double(2<<15);
     }
