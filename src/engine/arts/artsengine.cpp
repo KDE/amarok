@@ -15,6 +15,8 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
+#define DEBUG_PREFIX "aRts-Engine"
+
 #include "amarokarts.h"
 // #include "artseffects.h"
 #include "artsengine.h"
@@ -28,14 +30,12 @@ email                : markey@web.de
 #include <qdom.h>
 #include <qfile.h>
 #include <qlayout.h>
-#include <qstring.h>
 #include <qtextstream.h>
 #include <qtimer.h>
 
 #include <kapplication.h>
 #include <kartswidget.h>
 #include <kconfig.h>
-#include <kdebug.h>
 #include <kfileitem.h>
 #include <kgenericfactory.h>
 #include <klocale.h>
@@ -58,6 +58,10 @@ email                : markey@web.de
 
 #include <sys/wait.h>
 
+//HACK
+#define indent arts_indent
+#include "debug.h"
+
 
 AMAROK_EXPORT_PLUGIN( ArtsEngine )
 
@@ -74,7 +78,7 @@ ArtsEngine::ArtsEngine()
         , m_xfadeCurrent( "invalue2" )
         , m_pConnectTimer( new QTimer( this ) )
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_BLOCK
 
     addPluginProperty( "StreamingMode", "Socket" );
     addPluginProperty( "HasCrossfade",  "true" );
@@ -83,7 +87,7 @@ ArtsEngine::ArtsEngine()
 
 ArtsEngine::~ ArtsEngine()
 {
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    DEBUG_BLOCK
 
     m_pConnectTimer->stop();
     killTimers();
@@ -98,14 +102,12 @@ ArtsEngine::~ ArtsEngine()
     m_effectStack       = Arts::StereoEffectStack::null();
     m_globalEffectStack = Arts::StereoEffectStack::null();
     m_amanPlay          = Arts::Synth_AMAN_PLAY::null();
-
-    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 
 bool ArtsEngine::init()
 {
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    DEBUG_BLOCK
 
     m_scopeSize = 512;
 //     m_scopeSize = 1 << scopeSize;
@@ -128,7 +130,7 @@ bool ArtsEngine::init()
     KConfig config( "kcmartsrc" );
     config.setGroup( "Arts" );
 
-    bool realtime = config.readBoolEntry( "StartRealtime", true );
+    const bool realtime = config.readBoolEntry( "StartRealtime", true );
 
     if ( !realtime )
         KMessageBox::information( 0, i18n(
@@ -142,7 +144,7 @@ bool ArtsEngine::init()
 
     if ( m_server.isNull() || m_server.error() )
     {
-        kdWarning() << "aRtsd not running.. trying to start" << endl;
+        warning() << "aRtsd not running.. trying to start" << endl;
         // aRts seems not to be running, let's try to run it
         // First, let's read the configuration as in kcmarts
         QCString cmdline;
@@ -258,7 +260,6 @@ bool ArtsEngine::init()
     startTimer( ARTS_TIMER );
     connect( m_pConnectTimer, SIGNAL( timeout() ), this, SLOT( connectTimeout() ) );
 
-    kdDebug() << "END " << k_funcinfo << endl;
     return true;
 }
 
@@ -337,13 +338,15 @@ const Engine::Scope& ArtsEngine::scope()
 
 bool ArtsEngine::load( const KURL& url, bool stream )
 {
-    Engine::Base::load( url, stream );
-    kdDebug() << "[aRts-Engine] Loading url: " << url.url() << endl;
+    DEBUG_BLOCK
 
-    kdDebug() << "aRts-Engine: url.path()     == " << url.path()     << endl;
-    kdDebug() << "aRts-Engine: url.protocol() == " << url.protocol() << endl;
-    kdDebug() << "aRts-Engine: url.host()     == " << url.host()     << endl;
-    kdDebug() << "aRts-Engine: url.port()     == " << url.port()     << endl;
+    Engine::Base::load( url, stream );
+    debug() << "Loading url: " << url.url() << endl;
+
+    debug() << "url.path()     == " << url.path()     << endl;
+    debug() << "url.protocol() == " << url.protocol() << endl;
+    debug() << "url.host()     == " << url.host()     << endl;
+    debug() << "url.port()     == " << url.port()     << endl;
 
     m_xfadeFadeout = false;
     startXfade();
@@ -359,7 +362,7 @@ bool ArtsEngine::load( const KURL& url, bool stream )
 //         connect( m_pPlayObject, SIGNAL( destroyed() ), this, SIGNAL( stopped() ) );
 
         if ( m_pPlayObject->object().isNull() ) {
-            kdDebug() << k_funcinfo << " m_pPlayObject->object().isNull()" << endl;
+            debug() << "m_pPlayObject->object().isNull()" << endl;
 
             connect( m_pPlayObject, SIGNAL( playObjectCreated() ), this, SLOT( connectPlayObject() ) );
             m_pConnectTimer->start( TIMEOUT, true );
@@ -397,7 +400,7 @@ void ArtsEngine::connectPlayObject() //SLOT
 //SLOT
 void ArtsEngine::connectTimeout()
 {
-    kdError() << "[ArtsEngine::connectTimeout()] Cannot initialize PlayObject! Skipping this track." << endl;
+    error() << "Cannot initialize PlayObject! Skipping this track." << endl;
     m_pConnectTimer->stop();
 
     delete m_pPlayObject;
@@ -411,7 +414,9 @@ bool ArtsEngine::play( uint offset )
 
     m_pPlayObject->play();
 
-    seek( offset );
+    // Seek to right position when using "Resume playback at startup"
+    if ( offset )
+        seek( offset );
 
     emit stateChanged( Engine::Playing );
 
@@ -421,7 +426,7 @@ bool ArtsEngine::play( uint offset )
 
 void ArtsEngine::stop()
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_BLOCK
 
     //switch xfade channels
     m_xfadeCurrent = ( m_xfadeCurrent == "invalue1" ) ? "invalue2" : "invalue1";
@@ -551,9 +556,13 @@ void ArtsEngine::timerEvent( QTimerEvent* )
             value = log10( m_xfadeValue * 9.0 + 1.0 );
 
         m_xfade.percentage( ( m_xfadeCurrent == "invalue2" ) ? value : 1.0 - value );
-//         kdDebug() << k_funcinfo << "percentage: " << m_xfade.percentage() << endl;
+//         debug() << k_funcinfo << "percentage: " << m_xfade.percentage() << endl;
     }
 }
+
+
+#undef arts_indent
+namespace Debug { QCString arts_indent; }
 
 
 #include "artsengine.moc"
