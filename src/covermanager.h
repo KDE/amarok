@@ -50,7 +50,7 @@ Q_OBJECT
         //cover fetching
         void fetchMissingCovers();
         void fetchCoversLoop();
-        void coverFetched( const QString &, const QString & );
+        void coverFetched( const QString & );
         void coverFetcherError();
         void stopFetching();
         void updateStatusBar();

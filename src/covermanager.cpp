@@ -184,7 +184,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     #ifdef AMAZON_SUPPORT
     connect( m_db, SIGNAL( coverFetched(const QString &) ),
-                SLOT( coverFetched(const QString &, const QString &) ) );
+                SLOT( coverFetched(const QString &) ) );
     connect( m_db, SIGNAL( coverFetcherError() ), SLOT( coverFetcherError() ) );
     #endif
 
@@ -534,9 +534,10 @@ void CoverManager::changeView( int id  ) //SLOT
 }
 
 
-void CoverManager::coverFetched( const QString &artist, const QString &album )
+void CoverManager::coverFetched( const QString &keyword )
 {
-    loadCover( artist, album );
+    QStringList values = QStringList::split( " - ", keyword );
+    loadCover( values[0], values[1] );
     m_coversFetched++;
     updateStatusBar();
 }
