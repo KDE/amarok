@@ -10,14 +10,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#define DEBUG_PREFIX "xine-engine"
+#define indent xine_indent
+
 #include "xine-config.h"
 #include "xine-engine.h"
 #include "xine-scope.h"
 
 AMAROK_EXPORT_PLUGIN( XineEngine )
-
-#define DEBUG_PREFIX "xine-engine"
-#define indent xine_indent
 
 #include "debug.h"
 #include <klocale.h>
