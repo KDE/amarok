@@ -212,6 +212,8 @@ bool ArtsEngine::initMixer( bool )
 
         kdDebug() << "end ArtsEngine::initMixer()" << endl;
     }*/
+    
+    return true;
 }
 
 
