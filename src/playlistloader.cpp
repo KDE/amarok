@@ -253,18 +253,24 @@ bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissi
    //FIXME I don't actually understand what checks can be done, etc.
    if( url.protocol() == "http" ) return true;
 
-   //FIXME test all filetypes, but preferably cache the really common ones
-   //      ie mp3 and ogg, as engine->canDecode() is slow. Don't cache them all
-   //      as the file extension may not reflect the actual mimetype of the file
-   //      and we want to be clever
    //TODO  if the playback fails, do some tests and tell the user why - we want to be the best!
-   QString ext = url.path().right( 4 ).lower();
-   bool b = ( ext == ".mp3" || ext == ".ogg" || ext == ".m3u" || ext == ".pls" );
-
-   if( /*!b &&*/ !( b = EngineController::engine()->canDecode( url, mode, permissions ) ) )
-       kdDebug() << "Rejected URL: " << url.prettyURL() << endl;
-
-    return b;
+   
+   QString ext;
+   int index = url.fileName().findRev( "." );
+   
+   if ( index > 0 ) {
+       ext = url.fileName().mid( index + 1 ).lower();
+       if ( Playlist::s_extensionCache.contains( ext ) ) {
+          // Look up extension in cache. Not perfect, but it's currently the best compromise.
+          return Playlist::s_extensionCache[ext];
+       }
+   }    
+   bool valid = EngineController::engine()->canDecode( url, mode, permissions );
+   // Cache this result for the next lookup
+   if ( !ext.isEmpty() )
+      Playlist::s_extensionCache.insert( ext, valid ); 
+   
+   return valid;
 }
 
 

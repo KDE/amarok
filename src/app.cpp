@@ -244,7 +244,9 @@ void App::initEngine()
     // feed engine to controller
     EngineBase* const engine = (EngineBase*)plugin;
     bool restartArts = AmarokConfig::version() != APP_VERSION;
-
+    // Invalidate extension cache
+    Playlist::s_extensionCache.clear();
+    
     engine->init( restartArts, amaroK::SCOPE_SIZE, AmarokConfig::rememberEffects() );
     EngineController::setEngine( engine ); //will set engine's volume
 

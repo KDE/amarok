@@ -51,6 +51,7 @@
 
 
 Playlist *Playlist::s_instance = 0;
+QMap<QString, bool> Playlist::s_extensionCache;
 
 
 Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )

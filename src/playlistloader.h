@@ -62,7 +62,7 @@ private:
     PlaylistItem   *m_first;
     Playlist       *m_listView;
     int             m_recursionCount;
-
+    
 public:
     struct Options {
         Options() : recurse( true ), playFirstItem( false ), symlink( true ), sortSpec( 0 ) {} //options suitable for m3u files
