@@ -711,7 +711,6 @@ MediaDevice::fileTransferred()  //SLOT
 {
     m_wait = false;
     m_parent->m_progress->setProgress( m_parent->m_progress->progress() + 1 );
-//    m_parent->m_deviceList->renderView( 0 );
 }
 
 
@@ -720,11 +719,8 @@ MediaDevice::fileTransferFinished()  //SLOT
 {
     m_parent->m_transferList->clear();
     m_transferURLs.clear();
+
     m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_transferList->childCount() ) );
-
-    // sync ipod, now
-//    syncIPod();
-
     m_parent->m_progress->hide();
 }
 
