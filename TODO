@@ -8,11 +8,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-    * chk: #23<muesli> check which images are still needed and move the rest out of the repository
-    
-    * chk: #18<muesli> check how different color-sets behave with our layout
-              (esp. buttons on the bottom)
-
     * fix: #12<markey> prevent zombie processes after amarok has exited (proper exit or crashing).
               such zombies can lead to very weird behaviour on next amarok start and eat ressources,
               and the user has no chance of noticing what's wrong.
