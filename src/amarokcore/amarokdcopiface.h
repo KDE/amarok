@@ -55,7 +55,7 @@ k_dcop:
    virtual QString Title() = 0;                             ///< Return the title of the currently playing track
    virtual QString Album() = 0;                             ///< Return the album of the currently playing track
    virtual QString TotalTime() = 0;                         ///< Return the total length of the currently playing track ([h:]mm:ss format)
-   virtual QString Position() = 0;                          ///< Return the position of the currently playing track ([h:]mm:ss format)
+   virtual QString CurrentTime() = 0;                          ///< Return the position of the currently playing track ([h:]mm:ss format)
    virtual QString Genre() = 0;                             ///< Return the genre of the currently playing track
    virtual QString Year() = 0;                              ///< Return the year of the currently playing track
    virtual QString Comment() = 0;                           ///< Return the comment of the currently playing track

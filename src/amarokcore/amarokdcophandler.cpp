@@ -107,7 +107,7 @@ namespace amaroK
         return MetaBundle::prettyLength( EngineController::instance()->bundle().length() );
     }
 
-    QString DcopHandler::Position()
+    QString DcopHandler::CurrentTime()
     {
         return MetaBundle::prettyLength( EngineController::engine() ->position() / 1000 );
     }
