@@ -626,6 +626,7 @@ void ContextBrowser::showHome() //SLOT
 
     QString ftBox;
     QString ltBox;
+    const QString pctWidth = QString::number( fontMetrics().width( "999" ) );
 
     m_homePage->begin();
     m_HTMLSource="";
@@ -677,7 +678,7 @@ void ContextBrowser::showHome() //SLOT
             ftBox.append(
                                 "</a>"
                             "</td>"
-                            "<td class='sbtext' width='1'>" + shiftText( fave[i + 2], 3 ) + "</td>"
+                            "<td class='sbtext' width='" + pctWidth + "'>" + fave[i + 2] + "</td>"
                             "<td width='1' title='" + i18n( "Score" ) + "'>"
                                 "<div class='sbouter'>"
                                     "<div class='sbinner' style='width: " + QString::number( fave[i + 2].toInt() / 2 ) + "px;'></div>"
@@ -934,6 +935,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     const uint artist_id = CollectionDB::instance()->artistID( currentTrack.artist() );
     const uint album_id  = CollectionDB::instance()->albumID ( currentTrack.album() );
+    const QString pctWidth = QString::number( fontMetrics().width( "999" ) );
 
     QueryBuilder qb;
     // <Current Track Information>
@@ -1119,7 +1121,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                             "<span class='album-song-title'>" + values[i + 1] + "</span>"
                             "</a>"
                         "</td>"
-                        "<td class='sbtext' width='1'>" + shiftText( values[i + 3], 3 ) + "</td>"
+                        "<td class='sbtext' width='" + pctWidth + "'>" + values[i + 3] + "</td>"
                         "<td width='1' title='" + i18n( "Score" ) + "'>"
                             "<div class='sbouter'>"
                                 "<div class='sbinner' style='width: " + QString::number( values[i + 3].toInt() / 2 ) + "px;'></div>"
@@ -1169,7 +1171,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                         "<span class='album-song-title'>" + values[i] + "</span>"
                         "</a>"
                     "</td>"
-                    "<td class='sbtext' width='1'>" + shiftText( values[i + 2], 3 ) + "</td>"
+                    "<td class='sbtext' width='" + pctWidth + "'>" + values[i + 2] + "</td>"
                     "<td width='1' title='" + i18n( "Score" ) + "'>"
                         "<div class='sbouter'>"
                             "<div class='sbinner' style='width: " + QString::number( values[i + 2].toInt() / 2 ) + "px;'></div>"
