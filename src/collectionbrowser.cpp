@@ -73,10 +73,10 @@ CollectionBrowser::CollectionBrowser( const char* name )
     //m_view->setMargin( 2 );
 
     m_actionsMenu->insertItem( i18n( "Configure Folders" ), m_view, SLOT( setupDirs() ) );
-    
+
 //     //FIXME Deactivated for 1.0 release.
 //     m_actionsMenu->insertItem( i18n( "Configure Cover Download" ), m_view, SLOT( setupCoverFetcher() ) );
-    
+
     m_actionsMenu->insertSeparator();
     m_actionsMenu->insertItem( i18n( "Start Scan" ), m_view, SLOT( scan() ), 0, IdScan );
 
@@ -435,8 +435,11 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
     if ( item ) {
         KPopupMenu menu( this );
 
-        menu.insertItem( i18n( "Make Playlist" ), this, SLOT( makePlaylist() ) );
-        menu.insertItem( i18n( "Add to Playlist" ), this, SLOT( addToPlaylist() ) );
+        enum Actions { MAKE, APPEND, QUEUE };
+
+        menu.insertItem( i18n( "&Make Playlist" ), MAKE );
+        menu.insertItem( i18n( "&Add to Playlist" ), APPEND ); //TODO say Append to Playlist
+        menu.insertItem( i18n( "&Queue After Current Track" ), QUEUE );
 
         if ( ( item->depth() && m_category2 == i18n( "None" ) ) || item->depth() == 2 ) {
             menu.insertItem( i18n( "Track Information" ), this, SLOT( showTrackInfo() ) );
@@ -444,23 +447,18 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 //             menu.insertItem( i18n( "Fetch Cover Image" ), this, SLOT( fetchCover() ) );
         }
 
-        menu.exec( point );
+        switch( menu.exec( point ) ) {
+        case MAKE:
+            Playlist::instance()->clear(); //FALL THROUGH
+        case APPEND:
+            Playlist::instance()->appendMedia( listSelected() );
+            break;
+
+        case QUEUE:
+            Playlist::instance()->queueMedia( listSelected() );
+            break;
+        }
     }
-}
-
-
-void
-CollectionView::makePlaylist() //SLOT
-{
-    Playlist::instance()->clear();
-    Playlist::instance()->appendMedia( listSelected() );
-}
-
-
-void
-CollectionView::addToPlaylist() //SLOT
-{
-    Playlist::instance()->appendMedia( listSelected() );
 }
 
 

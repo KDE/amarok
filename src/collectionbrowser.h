@@ -26,11 +26,11 @@ class QStringList;
 
 class KPopupMenu;
 
-class CollectionBrowser: public QVBox 
+class CollectionBrowser: public QVBox
 {
     Q_OBJECT
     friend class CollectionView;
-    
+
     public:
         CollectionBrowser( const char* name );
         void setupDirs();
@@ -42,7 +42,7 @@ class CollectionBrowser: public QVBox
     private:
     //attributes:
         enum CatMenuId { IdScan, IdAlbum, IdArtist, IdGenre, IdYear, IdNone };
-        
+
         KPopupMenu* m_actionsMenu;
         KPopupMenu* m_cat1Menu;
         KPopupMenu* m_cat2Menu;
@@ -71,60 +71,56 @@ class CollectionView : public KListView
                 KURL m_url;
         };
         friend class Item; // for access to m_category2
-    
+
         CollectionView( CollectionBrowser* parent );
         ~CollectionView();
-        
+
         void setFilter( QString filter ) { m_filter = filter; }
         QString filter() { return m_filter; }
         Item* currentItem() { return static_cast<Item*>( KListView::currentItem() ); }
-        
+
     private slots:
-        void setupDirs();    
+        void setupDirs();
         void setupCoverFetcher();
         void scan();
         void scanMonitor();
-        
+
         /** Rebuilds and displays the treeview by querying the database. */
         void renderView();
         void scanDone( bool changed = true );
-        
+
         void slotExpand( QListViewItem* );
-        void slotCollapse( QListViewItem* );    
+        void slotCollapse( QListViewItem* );
         void cat1Menu( int id, bool rerender = true );
         void cat2Menu( int id, bool rerender = true );
         void doubleClicked( QListViewItem*, const QPoint&, int );
         void rmbPressed( QListViewItem*, const QPoint&, int );
-        
-        /** Creates a new playlist containing all selected tracks on-the-fly */
-        void makePlaylist();
-        /** Adds all selected tracks to current playlist */
-        void addToPlaylist();
+
         /** Tries to download the cover image from Amazon.com */
         void fetchCover();
         void gotCover( const QPixmap& image );
         /** Shows dialog with information on selected track */
         void showTrackInfo();
-                
+
     private:
         /** Manages regular folder monitoring scan */
         void timerEvent( QTimerEvent* e );
-        
+
         void startDrag();
         KURL::List listSelected();
-               
+
         QString catForId( int id ) const;
         int idForCat( const QString& cat ) const;
         QPixmap iconForCat( const QString& cat ) const;
         QString tableForCat( const QString& cat ) const;
-        
+
     //attributes:
         //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.
         static const int DATABASE_VERSION = 9;
         static const int DATABASE_STATS_VERSION = 1;
         static CollectionDB* m_db;
         static CollectionDB* m_insertdb;
-        
+
         CollectionBrowser* m_parent;
         QString m_filter;
         QStringList m_dirs;
