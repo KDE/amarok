@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>Options5</class>
 <widget class="QWidget">
     <property name="name">
@@ -8,9 +8,12 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>331</width>
-            <height>412</height>
+            <width>329</width>
+            <height>537</height>
         </rect>
+    </property>
+    <property name="caption">
+        <string>Options5</string>
     </property>
     <vbox>
         <property name="name">
@@ -25,6 +28,9 @@
             </property>
             <property name="text">
                 <string>&amp;Use On-screen-display</string>
+            </property>
+            <property name="accel">
+                <string>Alt+U</string>
             </property>
             <property name="checked">
                 <bool>true</bool>
@@ -49,286 +55,352 @@
             <property name="checkable">
                 <bool>false</bool>
             </property>
-            <vbox>
+            <widget class="QGroupBox">
                 <property name="name">
-                    <cstring>unnamed</cstring>
+                    <cstring>fontBox</cstring>
                 </property>
-                <property name="spacing">
-                    <number>12</number>
+                <property name="geometry">
+                    <rect>
+                        <x>11</x>
+                        <y>11</y>
+                        <width>285</width>
+                        <height>91</height>
+                    </rect>
                 </property>
-                <widget class="QGroupBox">
+                <property name="frameShape">
+                    <enum>NoFrame</enum>
+                </property>
+                <property name="lineWidth">
+                    <number>1</number>
+                </property>
+                <property name="title">
+                    <string>&amp;Font</string>
+                </property>
+                <property name="flat">
+                    <bool>true</bool>
+                </property>
+                <vbox>
                     <property name="name">
-                        <cstring>fontBox</cstring>
+                        <cstring>unnamed</cstring>
                     </property>
-                    <property name="frameShape">
-                        <enum>NoFrame</enum>
-                    </property>
-                    <property name="lineWidth">
-                        <number>1</number>
-                    </property>
-                    <property name="title">
-                        <string>&amp;Font</string>
-                    </property>
-                    <property name="flat">
-                        <bool>true</bool>
-                    </property>
-                    <vbox>
+                    <widget class="KFontRequester">
                         <property name="name">
-                            <cstring>unnamed</cstring>
+                            <cstring>kcfg_OsdFont</cstring>
                         </property>
-                        <widget class="KFontRequester">
-                            <property name="name">
-                                <cstring>kcfg_OsdFont</cstring>
-                            </property>
-                            <property name="font">
-                                <font>
-                                    <pointsize>8</pointsize>
-                                </font>
-                            </property>
-                            <property name="sampleText">
-                                <string></string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>The font to use for the On-Screen Display.</string>
-                            </property>
-                        </widget>
-                        <widget class="QCheckBox">
-                            <property name="name">
-                                <cstring>kcfg_OsdDrawShadow</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Draw shadow</string>
-                            </property>
-                        </widget>
-                    </vbox>
-                </widget>
-                <widget class="QLayoutWidget">
+                        <property name="font">
+                            <font>
+                                <pointsize>8</pointsize>
+                            </font>
+                        </property>
+                        <property name="sampleText">
+                            <string></string>
+                        </property>
+                        <property name="whatsThis" stdset="0">
+                            <string>The font to use for the On-Screen Display.</string>
+                        </property>
+                    </widget>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>kcfg_OsdDrawShadow</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Draw shadow</string>
+                        </property>
+                    </widget>
+                </vbox>
+            </widget>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>layout14</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>11</x>
+                        <y>114</y>
+                        <width>285</width>
+                        <height>101</height>
+                    </rect>
+                </property>
+                <vbox>
                     <property name="name">
-                        <cstring>layout14</cstring>
+                        <cstring>unnamed</cstring>
                     </property>
-                    <vbox>
+                    <property name="spacing">
+                        <number>0</number>
+                    </property>
+                    <widget class="QCheckBox">
                         <property name="name">
-                            <cstring>unnamed</cstring>
+                            <cstring>kcfg_OsdUseCustomColors</cstring>
                         </property>
-                        <property name="spacing">
-                            <number>0</number>
+                        <property name="text">
+                            <string>Use &amp;custom colors</string>
                         </property>
-                        <widget class="QCheckBox">
+                        <property name="accel">
+                            <string>Alt+C</string>
+                        </property>
+                    </widget>
+                    <widget class="QGroupBox">
+                        <property name="name">
+                            <cstring>colorsBox</cstring>
+                        </property>
+                        <property name="enabled">
+                            <bool>false</bool>
+                        </property>
+                        <property name="frameShape">
+                            <enum>NoFrame</enum>
+                        </property>
+                        <property name="title">
+                            <string></string>
+                        </property>
+                        <property name="flat">
+                            <bool>true</bool>
+                        </property>
+                        <grid>
                             <property name="name">
-                                <cstring>kcfg_OsdUseCustomColors</cstring>
+                                <cstring>unnamed</cstring>
                             </property>
-                            <property name="text">
-                                <string>Use &amp;custom colors</string>
-                            </property>
-                        </widget>
-                        <widget class="QGroupBox">
-                            <property name="name">
-                                <cstring>colorsBox</cstring>
-                            </property>
-                            <property name="enabled">
-                                <bool>false</bool>
-                            </property>
-                            <property name="frameShape">
-                                <enum>NoFrame</enum>
-                            </property>
-                            <property name="title">
-                                <string></string>
-                            </property>
-                            <property name="flat">
-                                <bool>true</bool>
-                            </property>
-                            <grid>
+                            <widget class="KColorButton" row="0" column="1">
                                 <property name="name">
-                                    <cstring>unnamed</cstring>
+                                    <cstring>kcfg_OsdTextColor</cstring>
                                 </property>
-                                <widget class="KColorButton" row="0" column="1">
-                                    <property name="name">
-                                        <cstring>kcfg_OsdTextColor</cstring>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>1</hsizetype>
-                                            <vsizetype>0</vsizetype>
-                                            <horstretch>2</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="text">
-                                        <string></string>
-                                    </property>
-                                    <property name="color">
-                                        <color>
-                                            <red>255</red>
-                                            <green>0</green>
-                                            <blue>0</blue>
-                                        </color>
-                                    </property>
-                                    <property name="whatsThis" stdset="0">
-                                        <string>The color of the OSD text.</string>
-                                    </property>
-                                </widget>
-                                <widget class="QLabel" row="1" column="0">
-                                    <property name="name">
-                                        <cstring>textLabel2_2</cstring>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>5</hsizetype>
-                                            <vsizetype>5</vsizetype>
-                                            <horstretch>1</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="frameShape">
-                                        <enum>NoFrame</enum>
-                                    </property>
-                                    <property name="text">
-                                        <string>Background color:</string>
-                                    </property>
-                                    <property name="whatsThis" stdset="0">
-                                        <string>The color of the OSD background.</string>
-                                    </property>
-                                </widget>
-                                <widget class="KColorButton" row="1" column="1">
-                                    <property name="name">
-                                        <cstring>kcfg_OsdBackgroundColor</cstring>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>1</hsizetype>
-                                            <vsizetype>0</vsizetype>
-                                            <horstretch>2</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="text">
-                                        <string></string>
-                                    </property>
-                                    <property name="color">
-                                        <color>
-                                            <red>255</red>
-                                            <green>0</green>
-                                            <blue>0</blue>
-                                        </color>
-                                    </property>
-                                    <property name="whatsThis" stdset="0">
-                                        <string>The color of the OSD background.</string>
-                                    </property>
-                                </widget>
-                                <widget class="QLabel" row="0" column="0">
-                                    <property name="name">
-                                        <cstring>textLabel2</cstring>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>5</hsizetype>
-                                            <vsizetype>5</vsizetype>
-                                            <horstretch>1</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="text">
-                                        <string>Text color:</string>
-                                    </property>
-                                    <property name="whatsThis" stdset="0">
-                                        <string>The color of the OSD text.</string>
-                                    </property>
-                                </widget>
-                            </grid>
-                        </widget>
-                    </vbox>
-                </widget>
-                <widget class="QGroupBox">
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>1</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                        <horstretch>2</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="text">
+                                    <string></string>
+                                </property>
+                                <property name="color">
+                                    <color>
+                                        <red>255</red>
+                                        <green>0</green>
+                                        <blue>0</blue>
+                                    </color>
+                                </property>
+                                <property name="whatsThis" stdset="0">
+                                    <string>The color of the OSD text.</string>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="1" column="0">
+                                <property name="name">
+                                    <cstring>textLabel2_2</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>5</hsizetype>
+                                        <vsizetype>5</vsizetype>
+                                        <horstretch>1</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="frameShape">
+                                    <enum>NoFrame</enum>
+                                </property>
+                                <property name="text">
+                                    <string>Background color:</string>
+                                </property>
+                                <property name="whatsThis" stdset="0">
+                                    <string>The color of the OSD background.</string>
+                                </property>
+                            </widget>
+                            <widget class="KColorButton" row="1" column="1">
+                                <property name="name">
+                                    <cstring>kcfg_OsdBackgroundColor</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>1</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                        <horstretch>2</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="text">
+                                    <string></string>
+                                </property>
+                                <property name="color">
+                                    <color>
+                                        <red>255</red>
+                                        <green>0</green>
+                                        <blue>0</blue>
+                                    </color>
+                                </property>
+                                <property name="whatsThis" stdset="0">
+                                    <string>The color of the OSD background.</string>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="0" column="0">
+                                <property name="name">
+                                    <cstring>textLabel2</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>5</hsizetype>
+                                        <vsizetype>5</vsizetype>
+                                        <horstretch>1</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="text">
+                                    <string>Text color:</string>
+                                </property>
+                                <property name="whatsThis" stdset="0">
+                                    <string>The color of the OSD text.</string>
+                                </property>
+                            </widget>
+                        </grid>
+                    </widget>
+                </vbox>
+            </widget>
+            <widget class="QGroupBox">
+                <property name="name">
+                    <cstring>durationBox</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>340</y>
+                        <width>285</width>
+                        <height>60</height>
+                    </rect>
+                </property>
+                <property name="frameShape">
+                    <enum>NoFrame</enum>
+                </property>
+                <property name="title">
+                    <string>&amp;Duration</string>
+                </property>
+                <property name="flat">
+                    <bool>true</bool>
+                </property>
+                <hbox>
                     <property name="name">
-                        <cstring>durationBox</cstring>
+                        <cstring>unnamed</cstring>
                     </property>
-                    <property name="frameShape">
-                        <enum>NoFrame</enum>
-                    </property>
-                    <property name="title">
-                        <string>&amp;Duration</string>
-                    </property>
-                    <property name="flat">
-                        <bool>true</bool>
-                    </property>
-                    <hbox>
+                    <widget class="KIntSpinBox">
                         <property name="name">
-                            <cstring>unnamed</cstring>
+                            <cstring>kcfg_OsdDuration</cstring>
                         </property>
-                        <widget class="KIntSpinBox">
-                            <property name="name">
-                                <cstring>kcfg_OsdDuration</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>1</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>2</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="suffix">
-                                <string> ms</string>
-                            </property>
-                            <property name="buttonSymbols">
-                                <enum>UpDownArrows</enum>
-                            </property>
-                            <property name="maxValue">
-                                <number>10000</number>
-                            </property>
-                            <property name="minValue">
-                                <number>500</number>
-                            </property>
-                            <property name="lineStep">
-                                <number>1000</number>
-                            </property>
-                            <property name="value">
-                                <number>5000</number>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>The time in milliseconds to show the OSD. The value must be between 500 ms and 10000 ms.</string>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget class="QGroupBox">
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>1</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>2</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="suffix">
+                            <string> ms</string>
+                        </property>
+                        <property name="buttonSymbols">
+                            <enum>UpDownArrows</enum>
+                        </property>
+                        <property name="maxValue">
+                            <number>10000</number>
+                        </property>
+                        <property name="minValue">
+                            <number>500</number>
+                        </property>
+                        <property name="lineStep">
+                            <number>1000</number>
+                        </property>
+                        <property name="value">
+                            <number>5000</number>
+                        </property>
+                        <property name="whatsThis" stdset="0">
+                            <string>The time in milliseconds to show the OSD. The value must be between 500 ms and 10000 ms.</string>
+                        </property>
+                    </widget>
+                </hbox>
+            </widget>
+            <widget class="QGroupBox">
+                <property name="name">
+                    <cstring>positionBox</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>410</y>
+                        <width>285</width>
+                        <height>73</height>
+                    </rect>
+                </property>
+                <property name="title">
+                    <string>&amp;Screen</string>
+                </property>
+                <property name="flat">
+                    <bool>true</bool>
+                </property>
+                <widget class="KComboBox">
                     <property name="name">
-                        <cstring>positionBox</cstring>
+                        <cstring>kcfg_OsdScreen</cstring>
                     </property>
-                    <property name="title">
-                        <string>&amp;Screen</string>
+                    <property name="geometry">
+                        <rect>
+                            <x>11</x>
+                            <y>24</y>
+                            <width>263</width>
+                            <height>25</height>
+                        </rect>
                     </property>
-                    <property name="flat">
-                        <bool>true</bool>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>2</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
                     </property>
-                    <vbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="KComboBox">
-                            <property name="name">
-                                <cstring>kcfg_OsdScreen</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>1</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>2</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>The screen that should display the OSD.</string>
-                            </property>
-                        </widget>
-                    </vbox>
+                    <property name="whatsThis" stdset="0">
+                        <string>The screen that should display the OSD.</string>
+                    </property>
                 </widget>
-            </vbox>
+            </widget>
+            <widget class="QGroupBox">
+                <property name="name">
+                    <cstring>osdText</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>220</y>
+                        <width>285</width>
+                        <height>120</height>
+                    </rect>
+                </property>
+                <property name="frameShape">
+                    <enum>NoFrame</enum>
+                </property>
+                <property name="title">
+                    <string>OSD &amp;Text</string>
+                </property>
+                <property name="flat">
+                    <bool>true</bool>
+                </property>
+                <widget class="KTextEdit">
+                    <property name="name">
+                        <cstring>kcfg_OsdText</cstring>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>10</x>
+                            <y>20</y>
+                            <width>271</width>
+                            <height>81</height>
+                        </rect>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The text which should be shown in the OSD</string>
+                    </property>
+                </widget>
+            </widget>
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <connections>
     <connection>
         <sender>kcfg_OsdEnabled</sender>
@@ -377,5 +449,6 @@
     <includehint>kcolorbutton.h</includehint>
     <includehint>knuminput.h</includehint>
     <includehint>kcombobox.h</includehint>
+    <includehint>ktextedit.h</includehint>
 </includehints>
 </UI>

@@ -32,6 +32,7 @@ void Options5::init()
     m_pOSDPreview = new OSDPreviewWidget( "amaroK", this ); //must be child!!!
     m_pOSDPreview->setAlignment( (OSDWidget::Alignment)AmarokConfig::osdAlignment() );
     m_pOSDPreview->setOffset( AmarokConfig::osdXOffset(), AmarokConfig::osdYOffset() );
+    m_pOSDPreview->setText( AmarokConfig::osdText() );
 
     connect( m_pOSDPreview, SIGNAL(positionChanged()), SLOT(slotPositionChanged()) );
 
@@ -45,6 +46,7 @@ void Options5::init()
     connect( kcfg_OsdFont, SIGNAL(fontSelected(const QFont&)), m_pOSDPreview, SLOT(setFont(const QFont&)) );
     connect( kcfg_OsdScreen, SIGNAL(activated(int)), m_pOSDPreview, SLOT(setScreen(int)) );
     connect( kcfg_OsdEnabled, SIGNAL(toggled(bool)), m_pOSDPreview, SLOT(setShown(bool)) );
+    connect( kcfg_OsdText, SIGNAL(changed(const QString& )), m_pOSDPreview, SLOT(setText(const QString& )) );
 }
 
 void

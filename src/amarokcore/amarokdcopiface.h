@@ -74,6 +74,7 @@ k_dcop:
    virtual void volumeDown() = 0;                           ///< Decrease volume by a reasonable step.
    virtual void mute() = 0;                                 ///< Toggle mute.
    virtual void enableOSD(bool enable) = 0;                 ///< Switch OSD display on or off.
+   virtual void showOSD() = 0;                              ///< Show the OSD display on the screen.
 
    virtual void togglePlaylist() = 0;                       ///< Toggle the Playlist-window
 };

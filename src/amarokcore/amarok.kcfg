@@ -203,6 +203,11 @@
         <whatsthis>Enable/Disable the On-Screen Display.</whatsthis>
         <default>true</default>
     </entry>
+    <entry key="Osd Text" type="String">
+        <label>The OSD text to show</label>
+        <default>%artist - %track{ (%length)}\n{%album}</default>
+        <whatsthis>Customise the OSD display text.</whatsthis>
+    </entry>
     <entry key="Osd Font" type="Font">
         <label>Font for On-Screen Display</label>
         <whatsthis>The font to use for the On-Screen Display.</whatsthis>

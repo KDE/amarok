@@ -433,14 +433,75 @@ amaroK::OSD::instance()
 void
 amaroK::OSD::showTrack( const MetaBundle &bundle ) //slot
 {
-    // Strip HTML tags, expand basic HTML entities
-    QString text = bundle.prettyTitle();
+    // set text to the value in the config file.
+    QString text = AmarokConfig::osdText();
+
+    // Use reg exps to remove anything within braces if the tag is empty.
+    // eg: text.replace( QRegExp( "\\{[^}]*%album[^}]*\\}" ), QString::null );
+    // OSD: {Album: %album }
+    // will not display if bundle.album() is empty.
+
+    if ( bundle.artist().isEmpty() ) {
+        text.replace( "%artist", bundle.prettyTitle( bundle.url().fileName() ), FALSE );
+        text.replace( "%track", QString::null , FALSE);
+    } else {
+        text.replace( "%artist", bundle.artist() , FALSE );
+        text.replace( "%track", bundle.title() , FALSE );
+    }
+
+    if ( !bundle.album().isEmpty() ) {
+        text.replace( "%album", bundle.album() , FALSE );
+    } else {
+        //text.replace( "(%album)", QString::null , FALSE );
+        text.replace( QRegExp( "\\{[^}]*%album[^}]*\\}" ), QString::null );
+        text.replace( "%album", QString::null , FALSE );
+    }
+
+    if ( !bundle.track().isEmpty() ) {
+        text.replace( "%number", bundle.track() , FALSE );
+    } else {
+        text.replace( QRegExp( "\\{[^}]*%number[^}]*\\}" ), QString::null );
+        text.replace( "%number", QString::null , FALSE );
+    }
 
     if ( bundle.length() )
     {
-        text += " - ";
-        text += bundle.prettyLength();
+        text.replace( "%length", bundle.prettyLength() , FALSE );
+    } else {
+        text.replace( QRegExp( "\\{[^}]*%length[^}]*\\}" ), QString::null );
+        text.replace( "%length", QString::null , FALSE );
     }
+
+    if ( bundle.bitrate() )
+    {
+        text.replace( "%bitrate", bundle.prettyBitrate() , FALSE );
+    } else {
+        text.replace( "\\{[^}]*%bitrate[^}]*\\}", QString::null , FALSE );
+        text.replace( "%bitrate", QString::null , FALSE );
+    }
+
+    if ( !bundle.genre().isEmpty() )
+    {
+        text.replace( "%genre", bundle.genre() , FALSE );
+    } else {
+        text.replace( "\\{[^}]*%genre[^}]*\\}", QString::null , FALSE );
+        text.replace( "%genre", QString::null , FALSE );
+    }
+
+    if ( !bundle.year().isEmpty() )
+    {
+        text.replace( "%year", bundle.year() , FALSE );
+    } else {
+        text.replace( QRegExp( "\\{[^}]*%year[^}]*\\}" ), QString::null );
+        text.replace( "%year", QString::null , FALSE );
+    }
+
+    // If we end up replacing many lines with QString::null, we could get blank lines.  lets remove them.
+    text.replace( QRegExp( "\n+" ) , "\n" );
+
+    // remove the braces.
+    text.replace( "{", QString::null );
+    text.replace( "}", QString::null );
 
     text.replace( QRegExp( "</?(?:font|a|b|i)\\b[^>]*>" ), QString::null );
     text.replace( "&lt;",  "<" );
@@ -463,6 +524,7 @@ amaroK::OSD::applySettings()
     setScreen( AmarokConfig::osdScreen() );
     setShadow( AmarokConfig::osdDrawShadow() );
     setFont( AmarokConfig::osdFont() );
+    setText( AmarokConfig::osdText() );
 
     if( AmarokConfig::osdUseCustomColors() )
     {

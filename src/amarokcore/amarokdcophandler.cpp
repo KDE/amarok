@@ -240,6 +240,11 @@ namespace amaroK
         amaroK::OSD::instance()->setEnabled(enable);
         AmarokConfig::setOsdEnabled(enable);
     }
+    
+    void DcopHandler::showOSD()
+    {
+        amaroK::OSD::instance()->showTrack();
+    }
 
     void DcopHandler::togglePlaylist()
     {
