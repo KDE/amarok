@@ -171,6 +171,7 @@ namespace KDE
     private slots:
         /** For internal use against KIO::Jobs */
         void setProgress( KIO::Job*, unsigned long percent );
+        void showMainProgressBar();
         void hideMainProgressBar();
         void updateProgressAppearance();
 

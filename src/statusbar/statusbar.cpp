@@ -185,10 +185,9 @@ StatusBar::drawTimeDisplay( int ms )  //SLOT
     int seconds = ms / 1000;
     const uint trackLength = EngineController::instance()->bundle().length();
 
-    QString s;
-    s = ' ';
+    QString s( " " );
 
-    if ( AmarokConfig::timeDisplayRemaining() && trackLength > 0 ) {
+    if( AmarokConfig::timeDisplayRemaining() && trackLength > 0 ) {
         seconds = trackLength - seconds;
         s += '-';
     }

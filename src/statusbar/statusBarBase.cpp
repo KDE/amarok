@@ -111,7 +111,7 @@ StatusBar::polish()
     }
 
     for ( QObject * o = list->first(); o; o = list->next() )
-        static_cast<QWidget*>( o ) ->setFixedHeight( h );
+        static_cast<QWidget*>(o)->setFixedHeight( h );
 
     delete list;
 }
@@ -175,6 +175,10 @@ StatusBar::shortMessage( const QString &text )
 void
 StatusBar::resetMainText()
 {
+    // don't reset if we are supposed to be showing stuff
+    if( m_tempMessageTimer->isActive() )
+        return;
+
     m_mainTextLabel->unsetPalette();
 
     if( allDone() )
@@ -264,6 +268,7 @@ StatusBar::newProgressOperation( QObject *owner )
     // after the ProgressBar is setup
     QTimer::singleShot( 0, this, SLOT(updateProgressAppearance()) );
 
+    //QTimer::singleShot( 2000, this, SLOT(showMainProgressBar()) );
     progressBox()->show();
     cancelButton()->setEnabled( true );
 
@@ -312,7 +317,6 @@ StatusBar::endProgressOperation( QObject *owner )
     m_progressMap[owner]->setDone();
 
     if ( allDone() && !m_popupProgress->isShown() ) {
-        resetMainText();
         cancelButton()->setEnabled( false );
         QTimer::singleShot( 2000, this, SLOT(hideMainProgressBar()) );
     }
@@ -357,10 +361,20 @@ StatusBar::toggleProgressWindow( bool show ) //slot
 }
 
 void
+StatusBar::showMainProgressBar()
+{
+    if( !allDone() )
+        progressBox()->show();
+}
+
+void
 StatusBar::hideMainProgressBar()
 {
-    if( !m_popupProgress->isShown() ) {
+    if( allDone() && !m_popupProgress->isShown() )
+    {
+        resetMainText();
 
+        //TODO the follow check is prolly redundant, remove after 1.2
         //we need to update the contents of the progressMap so we can test if it is empty
         toggleProgressWindow( false );
 
