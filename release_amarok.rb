@@ -7,15 +7,10 @@
 # License: GPL V2
 
 
-# version  = `kdialog --inputbox "amaroK version: "`.chomp
-# username = `kdialog --inputbox "CVS username: "`.chomp
+# Ask user for app version and CVS username
+version  = `kdialog --inputbox "amaroK version: "`.chomp
+username = `kdialog --inputbox "CVS username: "`.chomp
 
-puts( "\n " )
-puts( "Enter amaroK version: " )
-version = gets.chomp
-puts( "Enter CVS username: " )
-username = gets.chomp
-puts( "\n " )
 
 name     = "amarok"
 $cvsroot = ":pserver:#{username}@cvs.kde.org:/home/kde"
@@ -145,28 +140,29 @@ Dir.chdir( ".." ) # amarok
 `rm -rf debian`
 
 
-# TESTING
-exit
-
-
-
 Dir.chdir( ".." ) # kdeextragear-1
 puts( "\n" )
 
-`find -name "*" -exec touch {} \;`
+`find | xargs touch`
 
+
+puts "**** Generating Makefiles..  "
 `make -f Makefile.cvs`
+puts "done.\n"
 
 `rm -rf autom4te.cache`
 `rm stamp-h.in`
 
+
+puts "**** Compressing..  "
 `mv * ..`
-`popd # amaroK-foo`
+Dir.chdir( ".." ) # amaroK-foo`
 `rm -rf kdeextragear-1`
-`popd # root`
+Dir.chdir( ".." ) # root`
 `tar -cf #{folder}.tar #{folder}`
 `bzip2 #{folder}.tar`
 `rm -rf #{folder}`
+puts "done.\n"
 
 
 ENV["UNSERMAKE"] = oldmake
