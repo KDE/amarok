@@ -447,6 +447,8 @@ CollectionDB::getImageForAlbum( const QString& artist, const QString& album, uin
 
     if ( !m_values.isEmpty() )
     {
+        kdDebug() << "Local image found: " << m_values.first() << endl;
+
         QString image( m_values.first() );
         for ( uint i = 0; i < m_values.count(); i++ )
             if ( m_values[i].contains( "front", false ) || m_values[i].contains( "cover", false ) || m_values[i].contains( "folder", false ) )
@@ -459,6 +461,7 @@ CollectionDB::getImageForAlbum( const QString& artist, const QString& album, uin
             img.smoothScale( width, width ).save( m_cacheDir.absPath() + "/" + u.fileName().lower(), "PNG" );
         }
 
+        kdDebug() << "Local cache: " << m_cacheDir.absPath() + "/" + u.fileName().lower() << endl;
         return m_cacheDir.absPath() + "/" + u.fileName().lower();
     }
 
