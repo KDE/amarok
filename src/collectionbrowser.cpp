@@ -240,14 +240,9 @@ CollectionView::renderView( )  //SLOT
     if ( m_filter != "" )
         filterToken = "AND ( " + m_category1.lower() + ".name LIKE '%" + m_db->escapeString( m_filter ) + "%' OR tags.title LIKE '%" + m_db->escapeString( m_filter ) + "%' )";
 
-    QString command = QString
-                      ( "SELECT DISTINCT %1.name FROM tags, %2 WHERE tags.%3=%4.id %5 ORDER BY %6.name DESC;" )
-                      .arg( m_category1.lower() )
-                      .arg( m_category1.lower() )
-                      .arg( m_category1.lower() )
-                      .arg( m_category1.lower() )
-                      .arg( filterToken )
-                      .arg( m_category1.lower() );
+    QString command = "SELECT DISTINCT " + m_category1.lower() + ".name FROM tags, " + m_category1.lower()
+                    + " WHERE tags." + m_category1.lower() + "=" + m_category1.lower() + ".id " + filterToken
+                    + " ORDER BY " + m_category1.lower() + ".name DESC;";
 
     QStringList values;
     QStringList names;
@@ -300,28 +295,17 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         if ( m_category2 == i18n( "None" ) ) {
             QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
 
-            command = QString
-                      ( "SELECT DISTINCT tags.title, tags.url FROM tags, %1 WHERE tags.%2=%3 %4 ORDER BY tags.track DESC, tags.url DESC;" )
-                      .arg( m_category1.lower() )
-                      .arg( m_category1.lower() )
-                      .arg( id )
-                      .arg( filterToken );
+            command = "SELECT DISTINCT tags.title, tags.url FROM tags, " + m_category1.lower() + " WHERE tags."
+                    + m_category1.lower() + "=" + id + " " + filterToken + " ORDER BY tags.track DESC, tags.url DESC;";
         }
         else {
             filterToken = "AND ( " + m_category1.lower() + ".id = tags." + m_category1.lower() + " AND " + m_category1.lower() + ".name LIKE '%" + m_db->escapeString( m_filter ) + "%' OR tags.title LIKE '%" + m_db->escapeString( m_filter ) + "%' )";
             QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
 
-            command = QString
-                      ( "SELECT DISTINCT %1.name, '0' FROM tags, %2, %3 WHERE tags.%4=%5.id AND tags.%6=%7 %8 ORDER BY %9.name DESC;" )
-                      .arg( m_category2.lower() )
-                      .arg( m_category2.lower() )
-                      .arg( m_category1.lower() )
-                      .arg( m_category2.lower() )
-                      .arg( m_category2.lower() )
-                      .arg( m_category1.lower() )
-                      .arg( id )
-                      .arg( filterToken )
-                      .arg( m_category2.lower() );
+            command = "SELECT DISTINCT " + m_category2.lower() + ".name, '0' FROM tags, " + m_category2.lower()
+                    + ", " + m_category1.lower() + " WHERE tags." + m_category2.lower() + "=" + m_category2.lower()
+                    + ".id AND tags." + m_category1.lower() + "=" + id + " " + filterToken + " ORDER BY "
+                    + m_category2.lower() + ".name DESC;";
         }
 
         QStringList values;
@@ -345,16 +329,10 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         QString id = QString::number( m_db->getValueID( m_category1.lower(), item->parent()->text( 0 ), false ) );
         QString id_sub = QString::number( m_db->getValueID( m_category2.lower(), item->text( 0 ), false ) );
 
-        QString command = QString
-                          ( "SELECT tags.title, tags.url FROM tags, %1 WHERE tags.%2 = %3 AND tags.%4 = %5 AND tags.%6 = %7.id %8 ORDER BY tags.track DESC, tags.url DESC;" )
-                          .arg( m_category1.lower() )
-                          .arg( m_category1.lower() )
-                          .arg( id )
-                          .arg( m_category2.lower() )
-                          .arg( id_sub )
-                          .arg( m_category1.lower() )
-                          .arg( m_category1.lower() )
-                          .arg( filterToken );
+        QString command = "SELECT tags.title, tags.url FROM tags, " + m_category1.lower() + " WHERE tags."
+                        + m_category1.lower() + " = " + id + " AND tags." + m_category2.lower() + " = " + id_sub
+                        + " AND tags." + m_category1.lower() + " = " + m_category1.lower() + ".id " + filterToken
+                        + " ORDER BY tags.track DESC, tags.url DESC;";
 
         QStringList values;
         QStringList names;
@@ -529,12 +507,8 @@ CollectionView::listSelected() {
 
             //query database for all tracks in our sub-category
             QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
-            QString command = QString
-                              ( "SELECT DISTINCT tags.url FROM tags, %1 WHERE tags.%2=%3 %4 ORDER BY tags.dir, tags.track, tags.url;" )
-                              .arg( m_category1.lower() )
-                              .arg( m_category1.lower() )
-                              .arg( id )
-                              .arg( filterToken );
+            QString command = "SELECT DISTINCT tags.url FROM tags, " + m_category1.lower() + " WHERE tags."
+                            + m_category1.lower() + "=" + id + " " + filterToken + " ORDER BY tags.dir, tags.track, tags.url;";
 
             QStringList values;
             QStringList names;
@@ -563,14 +537,9 @@ CollectionView::listSelected() {
                     QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
                     QString id_sub = QString::number( m_db->getValueID( m_category2.lower(), child->text( 0 ), false ) );
 
-                    QString command = QString
-                              ( "SELECT DISTINCT tags.url FROM tags, %1 WHERE tags.%2=%3 AND tags.%4=%5 %6 ORDER BY tags.track, tags.url;" )
-                              .arg( m_category1.lower() )
-                              .arg( m_category2.lower() )
-                              .arg( id_sub )
-                              .arg( m_category1.lower() )
-                              .arg( id )
-                              .arg( filterToken );
+                    QString command = "SELECT DISTINCT tags.url FROM tags, " + m_category1.lower() + " WHERE tags."
+                                    + m_category2.lower() + "=" + id_sub + " AND tags." + m_category1.lower() + "="
+                                    + id + " " + filterToken + " ORDER BY tags.track, tags.url;";
 
                     QStringList values;
                     QStringList names;
