@@ -245,14 +245,12 @@ CollectionReader::doJob()
     if ( !m_folders.empty() )
         QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Start ) );
   
-    QStringList entries;
     //iterate over all folders
+    QStringList entries;
     for ( uint i = 0; i < m_folders.count(); i++ )
     {
         QString dir = m_folders[ i ];
-
-        if ( !dir.endsWith( "/" ) )
-            dir += '/';
+        if ( !dir.endsWith( "/" ) ) dir += '/';
 
         readDir( dir, entries );
     }
@@ -264,8 +262,9 @@ CollectionReader::doJob()
     }
 
     QApplication::postEvent( m_parent, new ProgressEvent( ProgressEvent::Stop, entries.count() ) );
-
+    m_parent->dropTables( true );
     log.close();
+
     return !entries.empty();
 }
 
@@ -419,9 +418,8 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
             m_parent->removeSongsInDir( m_folders[ i ] );
     }
 
-    // rename tables and remove temp tables
+    // rename tables
     m_parent->moveTempTables();
-    m_parent->dropTables( true );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
