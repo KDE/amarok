@@ -4,7 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.2.1:
-  ADD: Can now pick from multiple Musicbrainz results
+  ADD: Can now pick from multiple Musicbrainz results. Patch from
+       Jonathan Halcrow <gte899j@prism.gatech.edu>. (BR 89701)
   ADD: May now set a custom cover on multiple albums in the Cover-Manager.
   ADD: Support relative path of tracks in writing playlists. (BR 91053)
   FIX: Don't inline-edit tags for the whole playlist's selection.
