@@ -415,7 +415,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         g_signal_connect( G_OBJECT( input->src ), "kio_resume", G_CALLBACK( kio_resume_cb ), input->bin );
     }
 
-    gst_element_link_many( input->src, input->spider, input->volume, 0 );
+    gst_element_link_many( input->src, input->spider, input->audioconvert, input->audioscale, input->volume, 0 );
     // Prepare bin for playing
     gst_element_set_state( input->bin, GST_STATE_READY );
 
@@ -922,17 +922,15 @@ GstEngine::createPipeline()
     if ( !( m_gst_queue = createElement( "queue", m_gst_outputThread ) ) ) { return false; }
     if ( !( m_gst_identity = createElement( "identity", m_gst_outputThread ) ) ) { return false; }
     if ( !( m_gst_volume = createElement( "volume", m_gst_outputThread ) ) ) { return false; }
-    if ( !( m_gst_audioscale = createElement( "audioscale", m_gst_outputThread ) ) ) { return false; }
-    if ( !( m_gst_audioconvert = createElement( "audioconvert", m_gst_outputThread, "audioconvert" ) ) ) { return false; }
 
     // More buffers means less dropouts and higher latency
-    gst_element_set( m_gst_queue, "max-size-buffers", 150, NULL );
+    gst_element_set( m_gst_queue, "max-size-buffers", 100, NULL );
 
     g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), 0 );
     g_signal_connect ( G_OBJECT( m_gst_outputThread ), "error", G_CALLBACK ( outputError_cb ), 0 );
 
     /* link elements */
-    gst_element_link_many( m_gst_adder, m_gst_queue, m_gst_identity, m_gst_volume, m_gst_audioscale, m_gst_audioconvert, m_gst_audiosink, 0 );
+    gst_element_link_many( m_gst_adder, m_gst_queue, m_gst_identity, m_gst_volume, m_gst_audiosink, 0 );
 
     setVolume( m_volume );
 
@@ -1040,6 +1038,8 @@ InputPipeline::InputPipeline()
     /* create a new pipeline (thread) to hold the elements */
     if ( !( bin = GstEngine::createElement( "bin" ) ) ) { goto error; }
     if ( !( spider = GstEngine::createElement( "spider", bin ) ) ) { goto error; }
+    if ( !( audioconvert = GstEngine::createElement( "audioconvert", bin ) ) ) { goto error; }
+    if ( !( audioscale = GstEngine::createElement( "audioscale", bin ) ) ) { goto error; }
     if ( !( volume = GstEngine::createElement( "volume", bin ) ) ) { goto error; }
 
     g_signal_connect( G_OBJECT( spider ), "eos", G_CALLBACK( GstEngine::eos_cb ), bin );
