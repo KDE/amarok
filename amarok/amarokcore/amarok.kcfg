@@ -201,7 +201,7 @@
         <label>OSD screen</label>
         <default>0</default>
      </entry>
-     <entry name="Osd Alignment" type="Enum">
+     <entry key="Osd Alignment" type="Enum">
         <label>Align OSD to</label>
 	<choices>
           <choice name="TopLeft">
