@@ -312,14 +312,27 @@ CollectionReader::readTags( const QStringList& entries )
         if ( !f.isNull() ) {
             MetaBundle bundle( url, f.tag(), 0 );
 
+	    QString artist = bundle.artist();
+	    QString title = bundle.title();
+	    if ( bundle.title().isEmpty() )
+	    {
+		title = url.fileName();
+                if ( url.fileName().find( '-' ) > 0 )
+                {
+                    if ( artist.isEmpty() ) artist = url.fileName().left( url.fileName().find( '-' ) - 1 ).stripWhiteSpace();
+                    title = url.fileName().mid( url.fileName().find( '-' ) + 1 );
+		    title = title.left( title.findRev( '.' ) ).stripWhiteSpace();
+                }
+	    }
+
             command += m_parent->escapeString( bundle.url().path() ) + "','";
             command += m_parent->escapeString( bundle.url().directory() ) + "',";
             command += "strftime('%s', 'now'),";
-            command += m_parent->escapeString( QString::number( m_parent->getValueID( "album", bundle.album(), true, !m_incremental ) ) ) + ",";
-            command += m_parent->escapeString( QString::number( m_parent->getValueID( "artist", bundle.artist(), true, !m_incremental ) ) ) + ",";
-            command += m_parent->escapeString( QString::number( m_parent->getValueID( "genre", bundle.genre(), true, !m_incremental ) ) ) + ",'";
-            command += m_parent->escapeString( bundle.title() ) + "','";
-            command += m_parent->escapeString( QString::number( m_parent->getValueID( "year", bundle.year(), true, !m_incremental ) ) ) + "','";
+            command += m_parent->escapeString( QString::number( m_parent->getValueID( "album", bundle.album().isEmpty() ? i18n( "Unknown" ) : bundle.album(), true, !m_incremental ) ) ) + ",";
+            command += m_parent->escapeString( QString::number( m_parent->getValueID( "artist", artist.isEmpty() ? i18n( "Unknown" ) : artist, true, !m_incremental ) ) ) + ",";
+            command += m_parent->escapeString( QString::number( m_parent->getValueID( "genre", bundle.genre().isEmpty() ? i18n( "Unknown" ) : bundle.genre(), true, !m_incremental ) ) ) + ",'";
+            command += m_parent->escapeString( title.isEmpty() ? url.fileName() : title ) + "','";
+            command += m_parent->escapeString( QString::number( m_parent->getValueID( "year", bundle.year().isEmpty() ? i18n( "Unknown" ) : bundle.year(), true, !m_incremental ) ) ) + "','";
             command += m_parent->escapeString( bundle.comment() ) + "','";
             command += m_parent->escapeString( bundle.track() ) + "');";
 
@@ -327,16 +340,26 @@ CollectionReader::readTags( const QStringList& entries )
         }
         // Add tag-less tracks to database
         else if ( validMusic.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ) ) ) {
+            // extract tag information from filename
+	    QString artist;
+	    QString title = url.fileName();
+            if ( url.fileName().find( '-' ) > 0 )
+            {
+                artist = url.fileName().left( url.fileName().find( '-' ) - 1 ).stripWhiteSpace();
+                title = url.fileName().mid( url.fileName().find( '-' ) + 1 );
+                title = title.left( title.findRev( '.' ) ).stripWhiteSpace();
+            }
+
             command += m_parent->escapeString( url.path() ) + "','";
             command += m_parent->escapeString( url.directory() ) + "',";
             command += "strftime('%s', 'now'),";
-            command += m_parent->escapeString( QString::number( m_parent->getValueID( "album", i18n( "unknown" ), true, !m_incremental ) ) ) + ",";
-            command += m_parent->escapeString( QString::number( m_parent->getValueID( "artist", i18n( "unknown" ), true, !m_incremental ) ) ) + ",";
-            command += m_parent->escapeString( QString::number( m_parent->getValueID( "genre", i18n( "unknown" ), true, !m_incremental ) ) ) + ",'";
-            command += m_parent->escapeString( url.fileName() ) + "','";
-            command += m_parent->escapeString( QString::number( m_parent->getValueID( "year", i18n( "unknown" ), true, !m_incremental ) ) ) + "','";
-            command += m_parent->escapeString( i18n( "unknown" ) ) + "','";
-            command += m_parent->escapeString( i18n( "unknown" ) ) + "');";
+            command += m_parent->escapeString( QString::number( m_parent->getValueID( "album", i18n( "Unknown" ), true, !m_incremental ) ) ) + ",";
+            command += m_parent->escapeString( QString::number( m_parent->getValueID( "artist", artist.isEmpty() ? "Unknown" : artist, true, !m_incremental ) ) ) + ",";
+            command += m_parent->escapeString( QString::number( m_parent->getValueID( "genre", i18n( "Unknown" ), true, !m_incremental ) ) ) + ",'";
+            command += m_parent->escapeString( title.isEmpty() ? url.fileName() : title ) + "','";
+            command += m_parent->escapeString( QString::number( m_parent->getValueID( "year", i18n( "Unknown" ), true, !m_incremental ) ) ) + "','";
+            command += m_parent->escapeString( i18n( "Unknown" ) ) + "','";
+            command += m_parent->escapeString( i18n( "Unknown" ) ) + "');";
 
             m_parent->execSql( command );
         }

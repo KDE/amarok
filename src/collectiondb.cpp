@@ -211,18 +211,20 @@ CollectionDB::getImageForPath( const QString path, const QString defaultImage, c
     {
         QString image( values[0] );
         for ( uint i = 0; i < values.count(); i++ )
-        {
             if ( values[i].contains( "front", false ) )
                 image = values[i];
-        }
 
-        QImage img( path + "/" + image );
-        QPixmap pix;
-        if( pix.convertFromImage( img.smoothScale( width, width ) ) )
+        if ( width > 0 )
         {
-            pix.save( m_cacheDir.absPath() + "/" + escapedPath, "PNG" );
-            return m_cacheDir.absPath() + "/" + escapedPath;
-        }
+            QImage img( path + "/" + image );
+            QPixmap pix;
+            if( pix.convertFromImage( img.smoothScale( width, width ) ) )
+            {
+                pix.save( m_cacheDir.absPath() + "/" + escapedPath, "PNG" );
+                return m_cacheDir.absPath() + "/" + escapedPath;
+            }
+        } else
+            return path + "/" + image;
     }
 
     return defaultImage;
