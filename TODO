@@ -3,10 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #130 being the highest available (take this one for your next bug and increase here)
+           #131 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  FIX 130 <markey> Regression: transferring CLI commands from loader somehow broken. Can't start my streams
+                   by clicking on link.
 
   FIX 129 <markey> Copy trackname to clipboard (ctrl-c) appears broken.
 
