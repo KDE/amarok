@@ -62,7 +62,7 @@ PlaylistItem::~PlaylistItem()
 {
     if ( listView() )
     {
-        if ( QString( listView() ->name() ) == "PlaylistWidget" )
+        if ( QString( listView()->name() ) == "PlaylistWidget" )
         {
             PlaylistWidget * parentView = static_cast<PlaylistWidget*>( listView() );
 
