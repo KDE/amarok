@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.1:
+  CHG: Stream timeout value is now determined from KDE user settings.
   ADD: Support for password-protected streams, by wef <javapojken@yahoo.se>. 
   FIX: GStreamer engine must not allow non-audio filetypes in playlist.
   ADD: Icon for "Menu" button in toolbar. Improves Usability.

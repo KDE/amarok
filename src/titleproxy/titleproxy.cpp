@@ -21,6 +21,7 @@ email                : markey@web.de
 
 #include <kdebug.h>
 #include <kmdcodec.h>
+#include <kprotocolmanager.h>
 
 #include <qstring.h>
 #include <qtimer.h>
@@ -30,7 +31,6 @@ using namespace TitleProxy;
 
 static const uint MIN_PROXYPORT = 6700;
 static const uint MAX_PROXYPORT = 7777;
-static const int TIMEOUT = 12000; //msec
 static const int BUFSIZE = 16384;
 
 
@@ -108,7 +108,7 @@ KURL Proxy::proxyUrl()
 void Proxy::accept( int socket ) //SLOT
 {
     m_sockProxy.setSocket( socket );
-    m_sockProxy.waitForMore( TIMEOUT );
+    m_sockProxy.waitForMore( KProtocolManager::proxyConnectTimeout() * 1000 );
 
     connectToHost();
 }
@@ -128,7 +128,7 @@ void Proxy::connectToHost() //SLOT
         connect( &m_sockRemote, SIGNAL( connected() ), this, SLOT( sendRequest() ) );
         connect( &m_sockRemote, SIGNAL( error( int ) ), this, SLOT( connectError() ) );
         connect( &m_sockRemote, SIGNAL( connectionClosed() ), this, SLOT( connectError() ) );
-        QTimer::singleShot( TIMEOUT, this, SLOT( connectError() ) );
+        QTimer::singleShot( KProtocolManager::connectTimeout() * 1000, this, SLOT( connectError() ) );
 
         m_sockRemote.connectToHost( m_url.host(), m_url.port() );
     }
