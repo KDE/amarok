@@ -18,7 +18,6 @@
 #include <loader.h>
 #include <splash.h>
 
-#include <stdlib.h>
 #include <qprocess.h>
 #include <qstring.h>
 
