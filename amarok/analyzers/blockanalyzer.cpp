@@ -42,6 +42,8 @@ uint /*ox,*/ oy;
 void
 BlockAnalyzer::resizeEvent( QResizeEvent *e )
 {
+    Analyzer::Base2D::resizeEvent( e );
+
     //all is explained in analyze()..
 
     m_columns = limit( uint(double(width()+1) / (WIDTH+1)), MAX_COLUMNS, MIN_COLUMNS ); //+1 to counter -1 in maxSizes, trust me we need this!
@@ -49,34 +51,37 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
 
     m_scope.resize( m_columns );
 
-
-    const uint PRE = 1, PRO = 1; //PRE and PRO allow us to restrict the range somewhat
-    for( uint z = 0; z < m_rows; ++z )
+    if( e->oldSize().height() != height() )
     {
-        lvlMapper[z] = 1-(log10(PRE+z) / log10(PRE+m_rows+PRO));
+        //NOTE height should only be set once! but it tends to get set many times when Qt is setting up
+        //     the layout of the toolBar, what a waste of cycles!
+
+        const uint PRE = 1, PRO = 1; //PRE and PRO allow us to restrict the range somewhat
+        for( uint z = 0; z < m_rows; ++z )
+        {
+            lvlMapper[z] = 1-(log10(PRE+z) / log10(PRE+m_rows+PRO));
+        }
+        lvlMapper[m_rows] = 0;
+
+        //for( uint x = 0; x <= m_rows; ++x ) kdDebug() << x << ": " << lvlMapper[x] << "\n";
+
+
+        QColor darkColor( backgroundColor().dark( 125 ) );
+
+        double dr = 7.5*double(darkColor.red()   - 32) / (m_rows*8);
+        double dg = 7.5*double(darkColor.green() - 32) / (m_rows*8);
+        double db = 7.5*double(darkColor.blue()  - 82) / (m_rows*8);
+
+        for( uint x = 0; x < m_rows; ++x )
+        {
+            m_glow[x].resize( WIDTH, HEIGHT );
+            m_glow[x].fill( QColor( 32+int(dr*x), 32+int(dg*x), 82+int(db*x) ) ); //amaroK blue, graduated
+        }
+
+
+        //ox = uint(((width()%(WIDTH+1))-1)/2); //TODO make member // -1 due to margin on right in draw routine
+        oy = height()%(HEIGHT+1);             //TODO make member
     }
-    lvlMapper[m_rows] = 0;
-
-    //for( uint x = 0; x <= m_rows; ++x ) kdDebug() << x << ": " << lvlMapper[x] << "\n";
-
-
-    QColor darkColor( backgroundColor().dark( 125 ) );
-
-     double dr = 7.5*double(darkColor.red()   - 32) / (m_rows*8);
-     double dg = 7.5*double(darkColor.green() - 32) / (m_rows*8);
-     double db = 7.5*double(darkColor.blue()  - 82) / (m_rows*8);
-
-    for( uint x = 0; x < m_rows; ++x )
-    {
-        m_glow[x].resize( WIDTH, HEIGHT );
-        m_glow[x].fill( QColor( 32+int(dr*x), 32+int(dg*x), 82+int(db*x) ) ); //amaroK blue, graduated
-    }
-
-
-    //ox = uint(((width()%(WIDTH+1))-1)/2); //TODO make member // -1 due to margin on right in draw routine
-    oy = height()%(HEIGHT+1);             //TODO make member
-
-    Analyzer::Base2D::resizeEvent( e );
 }
 
 void

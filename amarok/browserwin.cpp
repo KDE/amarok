@@ -164,6 +164,8 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 
 void BrowserWin::createGUI()
 {
+    setUpdatesEnabled( false );
+
     m_toolbar->clear(); //is necessary
 
     KXMLGUIBuilder builder( this );
@@ -174,8 +176,8 @@ void BrowserWin::createGUI()
 
     //TEXT ON RIGHT HACK
     //KToolBarButtons have independent settings for their appearance.
-    //However these properties are set in modeChange() to follow the parent KToolBar settings
-    //passing false to setIconText prevents modeChange() being called for all buttons
+    //KToolBarButton::modeChange() causes that button to set its mode to that of its parent KToolBar
+    //KToolBar::setIconText() calls modeChange() for children, unless 2nd param is false
 
     typedef QValueList<QCString> QCStringList;
 
@@ -186,22 +188,24 @@ void BrowserWin::createGUI()
          << "toolbutton_playlist_show"
          << "toolbutton_amarok_menu";
 
-    m_toolbar->setIconText( KToolBar::IconTextRight, false );
+    m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want some buttons to have text on right
 
     const QCStringList::ConstIterator last = list.fromLast();
     const QCStringList::ConstIterator end  = list.constEnd();
 
     for( QCStringList::ConstIterator it = list.constBegin(); it != end; )
     {
-        KToolBarButton *button = (KToolBarButton*)m_toolbar->child( *it );
+        KToolBarButton* const button = (KToolBarButton*)m_toolbar->child( *it );
         if( button ) button->modeChange();
 
         if( ++it == last ) m_toolbar->setIconText( KToolBar::TextOnly, false );
     }
 
-    m_toolbar->setIconText( KToolBar::IconOnly, false );
+    m_toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
 
     conserveMemory();
+
+    setUpdatesEnabled( true );
 }
 
 
