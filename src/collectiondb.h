@@ -131,6 +131,9 @@ class CollectionDB : public QObject
         QStringList m_values;
         QStringList m_names;
 
+    protected:
+        QCString md5sum( const QString& artist, const QString& album );
+
     public slots:
         void fetchCover( QObject* parent, const QString& artist, const QString& album, bool noedit );
         void stopScan();

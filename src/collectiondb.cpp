@@ -365,8 +365,7 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage
     removeAlbumImage( artist, album );
 
     QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
-    KMD5 context( artist.lower().local8Bit() + album.lower().local8Bit() );
-    QCString key = context.hexDigest();
+    QCString key = md5sum( artist, album );
 
     // Save Amazon product page URL as embedded string, for later retreival
     if ( !amazonUrl.isEmpty() )
@@ -397,8 +396,7 @@ CollectionDB::albumImage( const QString &artist, const QString &album, uint widt
     }
     else
     {
-        KMD5 context( artist.lower().local8Bit() + album.lower().local8Bit() );
-        QCString key = context.hexDigest();
+        QCString key = md5sum( artist, album );
 
         // check cache for existing cover
         if ( m_cacheDir.exists( widthKey + key ) )
@@ -503,8 +501,7 @@ bool
 CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
 {
     QCString widthKey = "*@";
-    KMD5 context( artist.lower().local8Bit() + album.lower().local8Bit() );
-    QCString key = context.hexDigest();
+    QCString key = md5sum( artist, album );
 
     // remove scaled versions of images
     QStringList scaledList = m_cacheDir.entryList( widthKey + key );
@@ -1554,6 +1551,21 @@ CollectionDB::retrieveThirdLevelURLs( QString itemText1, QString itemText2, QStr
 }
 
 
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// PROTECTED 
+//////////////////////////////////////////////////////////////////////////////////////////
+
+QCString
+CollectionDB::md5sum( const QString& artist, const QString& album )
+{
+    KMD5 context( artist.lower().local8Bit() + album.lower().local8Bit() );
+    kdDebug() << "MD5 SUM for " << artist << ", " << album << ": " << context.hexDigest() << endl;
+    return context.hexDigest();
+}
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -1632,7 +1644,6 @@ CollectionDB::customEvent( QCustomEvent *e )
         emit s_emitter->scanDone( true );
     }
 }
-
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionEmitter
