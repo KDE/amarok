@@ -1,8 +1,8 @@
 noinst_LTLIBRARIES = libengine.la
 
 INCLUDES = \
-    -I$(top_srcdir)/amarok/amarok/plugin \
-    -I$(top_srcdir)/amarok/amarok \
+    -I$(top_srcdir)/amarok/src/plugin \
+    -I$(top_srcdir)/amarok/src \
     $(all_includes)
 
 if with_arts
