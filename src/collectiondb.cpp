@@ -780,7 +780,7 @@ CollectionDB::retrieveSecondLevelURLs( QString itemText1, QString itemText2, QSt
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
-CollectionDB::fetchCover( QObject* parent, const QString& key ) //SLOT
+CollectionDB::fetchCover( QObject* parent, const QString& key, bool edit ) //SLOT
 {
     /* Static license Key. Thanks muesli ;-) */
     QString amazonLicense = "D1URM11J3F2CEH";
@@ -791,7 +791,7 @@ CollectionDB::fetchCover( QObject* parent, const QString& key ) //SLOT
     connect( fetcher, SIGNAL( imageReady( const QString&, const QPixmap& ) ),
              this,      SLOT( saveCover( const QString&, const QPixmap& ) ) );
     
-    fetcher->getCover( key, key, CoverFetcher::heavy );
+    fetcher->getCover( key, key, CoverFetcher::heavy, edit );
 }
 
 

@@ -163,7 +163,7 @@ void CoverManager::fetchMissingCovers()
     for( QIconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
         if( !coverItem->hasCover() )
-            m_db->fetchCover( this, coverItem->artist() + " - " + coverItem->album() );
+            m_db->fetchCover( this, coverItem->artist() + " - " + coverItem->album(), true );
     }
 }
 
@@ -285,7 +285,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
         
     switch( menu.exec(p) ) {
         case FETCH:
-            m_db->fetchCover( this, item->artist() + " - " + item->album() );
+            m_db->fetchCover( this, item->artist() + " - " + item->album(), false );
             break;
             
         case DELETE: {
@@ -327,7 +327,7 @@ void CoverManager::coverItemDoubleClicked( QIconViewItem *item ) //SLOT
         
     }
     else
-        m_db->fetchCover( this, item->artist() + " - " + item->album() );
+        m_db->fetchCover( this, item->artist() + " - " + item->album(), false );
     
     #undef item
 }

@@ -82,7 +82,7 @@ class CollectionDB : public QObject
         void coverFetched( const QString &key );
         
     public slots:
-        void fetchCover( QObject* parent, const QString& key );
+        void fetchCover( QObject* parent, const QString& key, bool noedit );
         void stopScan();
                 
     private slots:

@@ -498,7 +498,7 @@ CollectionView::fetchCover() //SLOT
         if ( values.isEmpty() ) continue;
         QString key = values[0] + " - " + values[1];
 
-        m_db->fetchCover( this, key );
+        m_db->fetchCover( this, key, false );
     }
 }
 

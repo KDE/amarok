@@ -25,7 +25,7 @@ class CoverFetcher : public QObject
         ~CoverFetcher();
         
         void setLicense( const QString& license ) { m_license = license; }
-        void getCover( const QString& keyword, const QString& album, QueryMode mode = lite );
+        void getCover( const QString& keyword, const QString& album, QueryMode mode = lite, bool noedit = false );
         
     signals:
         void imageReady( const QString& keyword, const QPixmap& image );        
@@ -51,6 +51,7 @@ class CoverFetcher : public QObject
         uchar* m_buffer;
         uint m_bufferIndex;
         QPixmap m_pixmap;
+        bool m_noedit;
 };    
     
 

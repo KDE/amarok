@@ -44,7 +44,7 @@ CoverFetcher::~CoverFetcher()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
-CoverFetcher::getCover( const QString& keyword, const QString& album, QueryMode mode )
+CoverFetcher::getCover( const QString& keyword, const QString& album, QueryMode mode, bool noedit )
 {
     /* reset all values (if search isn't started as new CoverFetcher) */
     delete m_buffer;
@@ -54,6 +54,7 @@ CoverFetcher::getCover( const QString& keyword, const QString& album, QueryMode 
     kdDebug() << k_funcinfo << endl;
     m_keyword = keyword;
     m_album = album;
+    m_noedit = noedit;
         
     QString url = QString( "http://xml.amazon.com/onca/xml3?t=webservices-20&dev-t=%1"
                            "&KeywordSearch=%2&mode=music&type=%3&page=1&f=xml" )
@@ -65,7 +66,7 @@ CoverFetcher::getCover( const QString& keyword, const QString& album, QueryMode 
                            
     KIO::TransferJob* job = KIO::get( url, false, false );
     connect( job, SIGNAL( result( KIO::Job* ) ),
-             this,  SLOT( xmlResult( KIO::Job* ) ) ); 
+             this,  SLOT( xmlResult( KIO::Job*  ) ) ); 
     connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
              this,  SLOT( xmlData( KIO::Job*, const QByteArray& ) ) ); 
 }
@@ -153,38 +154,47 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
-    /* if no cover is found, open the amazon search dialogue, else show the cover viewer. */
-    if ( job->error() != 0 ) 
+/* This is for the cover manager. When fetching all remaining covers, only save the cover */
+    if ( !m_noedit )
     {
-        m_text = "<h3>No cover image found!</h3>"
-                 "If you would like to search again, you can edit the search string below and press <b>OK</b>.";
-        editSearch();
+        /* if no cover is found, open the amazon search dialogue, else show the cover viewer. */
+        if ( job->error() != 0 ) 
+        {
+
+            m_text = "<h3>No cover image found!</h3>"
+            "If you would like to search again, you can edit the search string below and press <b>OK</b>.";
+            editSearch();
+        }
+        else
+        {
+            m_text = "<h3>New Search</h3>Please edit the search string below and press <b>OK</b>.";
+            m_pixmap.loadFromData( m_buffer, m_bufferIndex );
+    
+            QVBox* container = new QVBox( 0, 0, WDestructiveClose );
+            /* we show m_album here, since it's always the filename on save */
+            container->setCaption( m_album + " - amaroK" );
+            connect( this, SIGNAL( destroyed() ), container, SLOT( deleteLater() ) );
+    
+            QWidget* widget = new QWidget( container );
+            widget->setPaletteBackgroundPixmap( m_pixmap );
+            widget->setFixedSize( m_pixmap.size() );
+    
+            QHBox* buttons = new QHBox( container );
+            KPushButton* save = new KPushButton( i18n( "Save" ), buttons );
+            KPushButton* newsearch = new KPushButton( i18n( "New search" ), buttons );
+            KPushButton* cancel = new KPushButton( i18n( "Cancel" ), buttons );
+            connect( cancel, SIGNAL( clicked() ), this, SLOT( deleteLater() ) );
+            connect( newsearch, SIGNAL( clicked() ), this, SLOT( editSearch() ) );
+            connect( save, SIGNAL( clicked() ), this, SLOT( saveCover() ) );
+            
+            container->adjustSize();
+            container->setFixedSize( container->size() );
+            container->show();
+        }
     }
     else
     {
-        m_text = "<h3>New Search</h3>Please edit the search string below and press <b>OK</b>.";
-        m_pixmap.loadFromData( m_buffer, m_bufferIndex );
-    
-        QVBox* container = new QVBox( 0, 0, WDestructiveClose );
-        /* we show m_album here, since it's always the filename on save */
-        container->setCaption( m_album + " - amaroK" );
-        connect( this, SIGNAL( destroyed() ), container, SLOT( deleteLater() ) );
-    
-        QWidget* widget = new QWidget( container );
-        widget->setPaletteBackgroundPixmap( m_pixmap );
-        widget->setFixedSize( m_pixmap.size() );
-    
-        QHBox* buttons = new QHBox( container );
-        KPushButton* save = new KPushButton( i18n( "Save" ), buttons );
-        KPushButton* newsearch = new KPushButton( i18n( "New search" ), buttons );
-        KPushButton* cancel = new KPushButton( i18n( "Cancel" ), buttons );
-        connect( cancel, SIGNAL( clicked() ), this, SLOT( deleteLater() ) );
-        connect( newsearch, SIGNAL( clicked() ), this, SLOT( editSearch() ) );
-        connect( save, SIGNAL( clicked() ), this, SLOT( saveCover() ) );
-            
-        container->adjustSize();
-        container->setFixedSize( container->size() );
-        container->show();
+        saveCover();
     }
 }
 

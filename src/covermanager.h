@@ -91,6 +91,7 @@ class CoverViewItem : public KIconViewItem
         QString m_artist;
         QString m_album;
         bool m_hasCover;
+        bool noedit;
 };
 
 

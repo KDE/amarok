@@ -150,7 +150,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
     }
 
     if ( m_url.protocol() == "fetchcover" )
-        m_db->fetchCover( this, m_url.path() );
+        m_db->fetchCover( this, m_url.path(), false );
 }
 
 
