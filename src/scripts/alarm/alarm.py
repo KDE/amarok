@@ -16,6 +16,7 @@
 
 from ConfigParser import *
 import sys
+import threading
 from os import *
 from qt import *
 
@@ -24,6 +25,10 @@ class Alarm( QApplication ):
 
     def __init__( self, args ):
         QApplication.__init__( self, args )
+
+        t = threading.Thread( target = self.readStdin )
+        t.start()
+
         config = ConfigParser()
         config.read( "alarmrc" )
 
@@ -39,6 +44,34 @@ class Alarm( QApplication ):
     def wakeup( self ):
         popen( "dcop amarok player play" )
         self.quit()
+
+
+    def readStdin( self ):
+        while True:
+            line = sys.stdin.readline()
+
+            if line:
+                self.gotCommand( line )
+            else:
+                break
+
+
+    def gotCommand( self, line ):
+        print "Received command: " + line
+
+        string = QString( line )
+
+        if string.contains( "configure" ):
+            self.configure()
+
+
+############################################################################
+# Command Handling
+############################################################################
+
+    def configure( self ):
+        print "Alarm Script: configuration"
+
 
 
 ############################################################################

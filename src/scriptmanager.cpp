@@ -154,7 +154,7 @@ ScriptManager::slotRunScript()
 
     KProcess* script = new KProcess( this );
     *script << url.path();
-    script->start();
+    script->start( KProcess::NotifyOnExit, KProcess::Stdin );
     m_scripts[name].process = script;
     connect( script, SIGNAL( processExited( KProcess* ) ), SLOT( scriptFinished( KProcess* ) ) );
 }
@@ -185,18 +185,18 @@ ScriptManager::slotConfigureScript()
 {
     DEBUG_FUNC_INFO
 
-    if ( !m_base->directoryListView->selectedItem() ) return ;
+    if ( !m_base->directoryListView->selectedItem() ) return;
 
     QString name = m_base->directoryListView->selectedItem()->text( 0 );
-    KURL url = m_scripts[name].url;
+    if ( !m_scripts[name].process ) return;
 
-    QString configPath = url.path();
-    configPath.insert( configPath.findRev( "." ), "-config" );
-    url.setPath( configPath );
+    KURL url = m_scripts[name].url;
     QDir::setCurrent( url.directory() );
 
-    kdDebug() << "Running config script: " << configPath << endl;
-    KRun* script = new KRun( url );
+    QString command( "configure\n" );
+    m_scripts[name].process->writeStdin( command.latin1(), command.length() );
+
+    kdDebug() << "Starting script configuration." << endl;
 }
 
 
