@@ -24,7 +24,7 @@
 class QMouseEvent;
 class QPixmap;
 class QString;
-class QTimer;
+class QTimerEvent;
 class QWidget;
 
 class ExpandButton : public QPushButton
@@ -35,29 +35,27 @@ class ExpandButton : public QPushButton
         ExpandButton( const QString&, QWidget * = 0, QObject* = 0, const char* = 0 );
         ExpandButton( const QString&, ExpandButton * = 0, QObject* = 0, const char* = 0 );
 
-        ~ExpandButton();
-
-        void mouseReleaseEvent( QMouseEvent *e );
-        void mouseMoveEvent( QMouseEvent *e );
-
-// ATTRIBUTES ------
-        QPtrList<ExpandButton> m_ButtonList;
-
-    public slots:
+    private slots:
         void slotDelayExpand();
         void slotStartExpand();
-        void slotAnimTimer();
-
-    protected:
-        void drawButtonLabel( QPainter * );
 
     private:
-        enum AnimPhase { ANIM_IDLE, ANIM_EXPAND, ANIM_SHOW, ANIM_SHRINK };
-        AnimPhase m_animFlag;
-        bool m_expanded;
+        void drawButtonLabel( QPainter * );
+        void mouseMoveEvent( QMouseEvent* );
+        void mouseReleaseEvent( QMouseEvent* );
+        void timerEvent( QTimerEvent* );
 
-        int m_animHeight;
-        float m_animAdd, m_animSpeed;
+// ATTRIBUTES ------
+        enum AnimPhase { ANIM_IDLE, ANIM_EXPAND, ANIM_SHOW, ANIM_SHRINK };
+        static const float ANIM_SPEED = 0.5;
+        static const int   TIMER_MS   = 20;
+        
+        AnimPhase m_animFlag;
+        bool      m_expanded;
+        QPtrList<ExpandButton> m_ButtonList;
+
+        int     m_animHeight;
+        float   m_animAdd;
 
         QWidget *m_pPaintWidget;
         QTimer  *m_pTimer;

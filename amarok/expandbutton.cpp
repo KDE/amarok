@@ -65,11 +65,23 @@ ExpandButton::ExpandButton( const QString &text, ExpandButton *parent, QObject *
 }
 
 
-ExpandButton::~ExpandButton()
-{}
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE METHODS
+////////////////////////////////////////////////////////////////////////////////
 
+void ExpandButton::mouseMoveEvent( QMouseEvent *e )
+{
+    for ( unsigned int i = 0; i < m_ButtonList.count(); i++ )
+    {
+        ExpandButton *child = m_ButtonList.at( i );
+        
+        if ( child->hitButton( child->mapFromGlobal( e->globalPos() ) ) )
+            child->setDown( true );
+        else
+            child->setDown( false );
+    }
+}
 
-// METHODS ----------------------------------------------------
 
 void ExpandButton::mouseReleaseEvent( QMouseEvent *e )
 {
@@ -91,83 +103,12 @@ void ExpandButton::mouseReleaseEvent( QMouseEvent *e )
 }
 
 
-void ExpandButton::mouseMoveEvent( QMouseEvent *e )
-{
-    for ( unsigned int i = 0; i < m_ButtonList.count(); i++ )
-    {
-        ExpandButton *child = m_ButtonList.at( i );
-        
-        if ( child->hitButton( child->mapFromGlobal( e->globalPos() ) ) )
-            child->setDown( true );
-        else
-            child->setDown( false );
-    }
-}
-
-
-// SLOTS ------------------------------------------------------
-
-void ExpandButton::slotDelayExpand()
-{
-    if ( m_animFlag == ANIM_IDLE )
-    {
-        QTimer::singleShot( 300, this, SLOT( slotStartExpand() ) );
-        m_animFlag = ANIM_EXPAND;
-    }
-}
-
-
-void ExpandButton::slotStartExpand()
-{
-    m_expanded = true;
-    m_animSpeed = 0.5;
-    
-    m_pPaintWidget = new QWidget( 0, 0, Qt::WNoAutoErase );
-    m_pPaintWidget->resize( width(), m_ButtonList.count() * height() );
-    
-    m_pSavePixmap = new QPixmap( QPixmap::grabWindow( parentWidget()->winId(),
-                                 x(), y() - m_ButtonList.count() * height(),
-                                 width(), m_ButtonList.count() * height() ) );
-    
-    bitBlt( m_pPaintWidget, 0, 0, m_pSavePixmap );
-    m_pPaintWidget->reparent( parentWidget(), QPoint( x(), y() - m_ButtonList.count() * height() ) );             
-    
-    m_pComposePixmap = new QPixmap( m_pPaintWidget->size() );
-                                                  
-    m_pBlitMap1 = new QPixmap( m_pComposePixmap->size() ); // contains all buttons in "up" position
-    m_pBlitMap2 = new QPixmap( m_pComposePixmap->size() ); // contains all buttons in "down" position
-    bitBlt( m_pBlitMap1, 0, 0, m_pBlitMap1, 0, 0, -1, -1, Qt::ClearROP );
-    bitBlt( m_pBlitMap2, 0, 0, m_pBlitMap2, 0, 0, -1, -1, Qt::ClearROP );
-
-    int yPos = y();
-    for ( unsigned int i = 0; i < m_ButtonList.count(); i++ )
-    {
-        ExpandButton *child = m_ButtonList.at( i );
-        child->resize( size() );
-        yPos -= child->height();
-        child->move( x(), yPos );
-        child->setDown( true );
-        QPixmap tmp = QPixmap::grabWidget( child );
-        bitBlt( m_pBlitMap2, 0, height() * i, &tmp );
-        child->setDown( false );
-        tmp = QPixmap::grabWidget( child );
-        bitBlt( m_pBlitMap1, 0, height() * i, &tmp );
-    }
-
-    m_animHeight = 0; m_animAdd = 0;
-    m_pPaintWidget->show();
-    m_pTimer = new QTimer( this );
-    connect( m_pTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
-    m_pTimer->start( 20, false );
-}
-
-
-void ExpandButton::slotAnimTimer()
+void ExpandButton::timerEvent( QTimerEvent* )
 {
     if ( m_animFlag == ANIM_EXPAND )
     {
         m_animHeight += (int) m_animAdd;
-        m_animAdd += m_animSpeed;
+        m_animAdd += ANIM_SPEED;
 
         if ( m_animHeight >= m_pComposePixmap->height() )
         {
@@ -179,20 +120,19 @@ void ExpandButton::slotAnimTimer()
     if ( m_animFlag == ANIM_SHRINK )
     {
         m_animHeight -= (int) m_animAdd;
-        m_animAdd += m_animSpeed;
+        m_animAdd += ANIM_SPEED;
 
-        if ( m_animHeight < 0 )
+        if ( m_animHeight < 1 )
         {
+            killTimers();
             m_expanded = false;
             setDown( false );
-            delete m_pTimer;
             delete m_pPaintWidget;
             delete m_pSavePixmap;
             delete m_pComposePixmap;
             delete m_pBlitMap1;
             delete m_pBlitMap2;
             m_animFlag = ANIM_IDLE;
-            
             return;
         }
     }
@@ -237,6 +177,60 @@ void ExpandButton::drawButtonLabel( QPainter *p )
       p->setBrush( Qt::black );
       p->drawConvexPolygon( pa );
    }
+}
+
+
+void ExpandButton::slotDelayExpand()
+{
+    if ( m_animFlag == ANIM_IDLE )
+    {
+        QTimer::singleShot( 300, this, SLOT( slotStartExpand() ) );
+        m_animFlag = ANIM_EXPAND;
+    }
+}
+
+
+void ExpandButton::slotStartExpand()
+{
+    m_expanded = true;
+    
+    m_pPaintWidget = new QWidget( parentWidget(), 0, Qt::WNoAutoErase );
+    m_pPaintWidget->resize( width(), m_ButtonList.count() * height() );
+    m_pPaintWidget->move( x(), y() - m_ButtonList.count() * height() );
+        
+    m_pSavePixmap = new QPixmap( QPixmap::grabWindow( parentWidget()->winId(),
+                                 x(), y() - m_ButtonList.count() * height(),
+                                 width(), m_ButtonList.count() * height() ) );
+    
+    //fill with the contents from the parentWidget, so we don't get flicker
+    m_pPaintWidget->setPaletteBackgroundPixmap( *m_pSavePixmap );
+    m_pPaintWidget->show();
+    
+    m_pComposePixmap = new QPixmap( m_pPaintWidget->size() );
+                                                  
+    m_pBlitMap1 = new QPixmap( m_pComposePixmap->size() ); // contains all buttons in "up" position
+    m_pBlitMap2 = new QPixmap( m_pComposePixmap->size() ); // contains all buttons in "down" position
+    bitBlt( m_pBlitMap1, 0, 0, m_pBlitMap1, 0, 0, -1, -1, Qt::ClearROP );
+    bitBlt( m_pBlitMap2, 0, 0, m_pBlitMap2, 0, 0, -1, -1, Qt::ClearROP );
+
+    int yPos = y();
+    for ( unsigned int i = 0; i < m_ButtonList.count(); i++ )
+    {
+        ExpandButton *child = m_ButtonList.at( i );
+        child->resize( size() );
+        yPos -= child->height();
+        child->move( x(), yPos );
+        child->setDown( true );
+        QPixmap tmp = QPixmap::grabWidget( child );
+        bitBlt( m_pBlitMap2, 0, height() * i, &tmp );
+        child->setDown( false );
+        tmp = QPixmap::grabWidget( child );
+        bitBlt( m_pBlitMap1, 0, height() * i, &tmp );
+    }
+
+    m_animHeight = 0;
+    m_animAdd    = 0;
+    startTimer( TIMER_MS );
 }
 
 
