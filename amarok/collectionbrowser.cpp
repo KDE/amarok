@@ -442,47 +442,47 @@ CollectionView::customEvent( QCustomEvent *e ) {
                               "VALUES('";
                                                        
             tag = bundle->url().path();
-            tag.remove( "'" );
+            tag.replace( "'", "''" );
             command += tag;
             command += "','";
             
             tag = bundle->url().directory();
-            tag.remove( "'" );
+            tag.replace( "'", "''" );
             command += tag;
             command += "','";
             
             tag = bundle->album();
-            tag.remove( "'" );
+            tag.replace( "'", "''" );
             command += tag;
             command += "','";
             
             tag = bundle->artist();
-            tag.remove( "'" );
+            tag.replace( "'", "''" );
             command += tag;
             command += "','";
             
             tag = bundle->genre();
-            tag.remove( "'" );
+            tag.replace( "'", "''" );
             command += tag;
             command += "','";
             
             tag = bundle->title();
-            tag.remove( "'" );
+            tag.replace( "'", "''" );
             command += tag;
             command += "','";
             
             tag = bundle->year();
-            tag.remove( "'" );
+            tag.replace( "'", "''" );
             command += tag;
             command += "','";
 
             tag = bundle->comment();
-            tag.remove( "'" );
+            tag.replace( "'", "''" );
             command += tag;
             command += "','";
 
             tag = bundle->track();
-            tag.remove( "'" );
+            tag.replace( "'", "''" );
             command += tag;
             command += "');";
             
