@@ -1413,7 +1413,7 @@ void PlayerApp::slotAnimTimer()
         {
             std::vector<float> *pScopeVector = m_Scope.scope();
             m_pPlayerWidget->m_pVis->drawAnalyzer( pScopeVector );
-            delete pScopeVector;
+//            delete pScopeVector;
         }
         else
             m_pPlayerWidget->m_pVis->drawAnalyzer( NULL );
