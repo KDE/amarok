@@ -428,7 +428,7 @@ void ContextBrowser::showHome() //SLOT
         browser->write(
             "<tr>"
              "<td class='song'>"
-              "<a href='file:" + fave[i+1].replace( '"', QCString( "%22" ) ) + "'>"
+              "<a href=\"file:" + fave[i+1].replace( '"', QCString( "%22" ) ) + "\">"
                "<b>" + fave[i] + "</b> "
                "(" + i18n("Score: %1").arg( fave[i+2] ) + ")<br>" +
                fave[i+3] + " - " + fave[i+4] +
@@ -461,7 +461,7 @@ void ContextBrowser::showHome() //SLOT
         browser->write(
             "<tr>"
              "<td class='song'>"
-              "<a href='file:" + recent[i+1].replace( '"', QCString( "%22" ) ) + "'>"
+              "<a href=\"file:" + recent[i+1].replace( '"', QCString( "%22" ) ) + "\">"
                "<b>" + recent[i] + "</b><br>" +
                recent[i+2] + " - " + recent[i+3] +
               "</a>"
@@ -693,7 +693,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 browser->write(
                   "<tr>"
                   "<td class='song'>"
-                    "<a href='file:" + values[i].replace( '"', QCString( "%22" ) ) + "'>" + values[i + 2] + " - " + values[i + 1] +
+                    "<a href=\"file:" + values[i].replace( '"', QCString( "%22" ) ) + "\">" + values[i + 2] + " - " + values[i + 1] +
                     "</a>"
                   "</td>"
                   "<td class='sbtext' width='1'>" + values[i + 3] + "</td>"
@@ -711,7 +711,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     }
 
     // <Favourite Tracks Information>
-    QString artistName = currentTrack.artist().isEmpty() ? i18n("This Artist") : escapeHTML( currentTrack.artist() );
+    QString artistName = currentTrack.artist().isEmpty() ? i18n( "This Artist" ) : escapeHTML( currentTrack.artist() );
     values = m_db->query( QString( "SELECT tags.title, tags.url, round( statistics.percentage + 0.4 ) "
                                    "FROM tags, statistics "
                                    "WHERE tags.artist = %1 AND statistics.url = tags.url "
@@ -732,7 +732,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             browser->write(
               "<tr>"
                "<td class='song'>"
-                "<a href='file:" + values[i + 1].replace( '"', QCString( "%22" ) ) + "'>" + values[i] +
+                "<a href=\"file:" + values[i + 1].replace( '"', QCString( "%22" ) ) + "\">" + values[i] +
                 "</a>"
                "</td>"
                "<td class='sbtext' width='1'>" + values[i + 2] + "</td>"
