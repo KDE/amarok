@@ -87,7 +87,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_flatViewAction = new KAction( i18n( "Flat View" ), "view_detailed", 0, m_view, SLOT( setFlatMode() ), ac, "Flat View" );
 
 
-    KActionMenu* tagfilterMenuButton = new KActionMenu( i18n( "Group by" ), "filter", ac );
+    KActionMenu* tagfilterMenuButton = new KActionMenu( i18n( "Group By" ), "filter", ac );
     tagfilterMenuButton->setDelayed( false );
     m_categoryMenu = tagfilterMenuButton->popupMenu();
 
