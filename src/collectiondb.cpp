@@ -56,7 +56,6 @@ CollectionDB::CollectionDB()
     }
     if ( failOpen ) {
         // Remove old db file; create new
-        sqlite3_close( m_db );
         QFile::remove( path );
         sqlite3_open( path, &m_db );
     }
