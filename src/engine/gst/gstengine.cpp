@@ -267,7 +267,7 @@ GstEngine::position() const
 Engine::State
 GstEngine::state() const
 {
-    if ( !m_currentInput ) return Engine::Empty;
+    if ( !m_currentInput ) return Engine::Idle;
 
     switch ( gst_element_get_state( m_currentInput->thread ) )
     {
@@ -612,7 +612,7 @@ GstEngine::endOfStreamReached()  //SLOT
     kdDebug() << k_funcinfo << endl;
 
     if ( m_currentInput )
-        gst_element_set_state( m_currentInput->thread, GST_STATE_READY );
+        destroyInput( m_currentInput );
 
     // Stop fading
     m_fadeValue = 0.0;
@@ -788,7 +788,6 @@ GstEngine::createPipeline()
     if ( !( m_gst_audioconvert = createElement( "audioconvert", m_gst_thread, "audioconvert" ) ) ) { return false; }
 
     g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), m_gst_thread );
-    g_signal_connect( G_OBJECT( m_gst_audiosink ), "eos", G_CALLBACK( eos_cb ), m_gst_thread );
     g_signal_connect ( G_OBJECT( m_gst_thread ), "error", G_CALLBACK ( error_cb ), m_gst_thread );
 
     /* link elements */
@@ -893,6 +892,8 @@ InputPipeline::InputPipeline()
     if ( !( spider = GstEngine::createElement( "spider", thread ) ) ) { goto error; }
     if ( !( volume = GstEngine::createElement( "volume", thread ) ) ) { goto error; }
     if ( !( queue = GstEngine::createElement( "queue", thread ) ) ) { goto error; }
+
+    g_signal_connect( G_OBJECT( spider ), "eos", G_CALLBACK( GstEngine::eos_cb ), thread );
 
     // More buffers means less dropouts and higher latency
     g_object_set( G_OBJECT( queue ), "max-size-buffers", 500, NULL );
