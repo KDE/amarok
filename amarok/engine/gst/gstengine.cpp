@@ -287,6 +287,7 @@ GstEngine::play() //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     
+    gst_element_set_state( GST_ELEMENT( m_pThread ), GST_STATE_READY );
     /* start playing */
     gst_element_set_state( GST_ELEMENT( m_pThread ), GST_STATE_PLAYING );
 }

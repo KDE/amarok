@@ -204,21 +204,11 @@ void EngineController::slotMainTimer()
     //try to get track length from engine when TagLib fails
     trackPositionChangedNotify( m_pEngine->position() );
 
-    // <Crossfading>
-    if ( ( AmarokConfig::crossfade() ) &&
-            ( !m_pEngine->isStream() ) &&
-            ( m_length ) &&
-            ( m_length - m_pEngine->position() < AmarokConfig::crossfadeLength() )  )
-    {
-        next();
-        return;
-    }
-
     // check if track has ended or is broken
     if ( m_pEngine->state() == EngineBase::Empty ||
          m_pEngine->state() == EngineBase::Idle )
     {
-        kdDebug() << k_funcinfo " Idle detected. Skipping track.\n";
+        kdDebug() << k_funcinfo << "Idle detected. Skipping track.\n";
 
         if ( AmarokConfig::trackDelayLength() > 0 ) //this can occur syncronously to XFade and not be fatal
         {
@@ -232,6 +222,17 @@ void EngineController::slotMainTimer()
         }
         else
             next();
+    }
+    // Crossfading
+    else if ( ( AmarokConfig::crossfade() ) &&
+              ( !m_pEngine->isStream() ) &&
+              ( m_length ) &&
+              ( m_length > m_pEngine->position() ) &&
+              ( m_length - m_pEngine->position() < AmarokConfig::crossfadeLength() )  )
+    {
+        kdDebug() << k_funcinfo << "Crossfading to next track.\n";
+        next();
+        return;
     }
 }
 
