@@ -8,6 +8,14 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+          <mxcl>   Statistics should be in a separate table or something so they don't get lost every
+                   version upgrade due to changes to the database etc.
+
+          <mxcl>   Can we have a compile option not to prune images when you clear the collection?
+                   I hate redownloading all my covers
+
+          <mxcl>   You can't add or drag albums from the context browser anymore
+
           <markey> Help and handbook menu entries are greyed out for some people.
 
           <markey> Saving covers from context-browser produces filenames starting with "fetchcover:".
@@ -26,6 +34,7 @@ SHORT-TERM (URGENT):
 
   FIX 161 <markey> Configure prints "Good - your configure finished. Start make now" even when amaroK
                    will _not_ be built. Confusing..
+                   I don't think we can fix this.
 
   FIX 134 <markey> Ctrl-C in Playlist (and other Ctrl shortcuts) for copying title doesn't work, because the
                    event gets eaten by another widget.
