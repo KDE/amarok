@@ -902,9 +902,9 @@ void ContextBrowser::showCurrentTrack() //SLOT
                    "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
                     "<tr>"
                      "<td width='1'><a href='fetchcover:%2 @@@ %3'><img width='50' align='left' vspace='2' hspace='2' title='%4' src='%5'/></a></td>"
-                     "<td valign='middle' align='left'><div style='float:right; padding-right:4px;'>%6</div>"
+                     "<td valign='middle' align='left'><div class='albuminfo'>%6</div>"
                      "<a href='album:%7 @@@ %8'><b>%9</b></a>"
-                     "<br><i>%10</i></td>"
+                     "<br><i><font class='default'>%10</font></i></td>"
                     "</tr>"
                    "</table>"
                   "</div>"
@@ -1052,9 +1052,10 @@ void ContextBrowser::setStyleSheet_default( QString& styleSheet )
             .arg( m_headerGradientImage->name() );
     styleSheet += QString( ".box-header:hover {}" );
 
-    styleSheet += QString( ".box-body { padding: 2px; background-color: %1; background-image: url( %2 ); background-repeat: repeat-x; }" )
+    styleSheet += QString( ".box-body { padding: 2px; background-color: %1; background-image: url( %2 ); background-repeat: repeat-x; font-size:%3}" )
             .arg( colorGroup().base().name() )
-            .arg( m_shadowGradientImage->name() );
+            .arg( m_shadowGradientImage->name() )
+            .arg( pxSize );
     styleSheet += QString( ".box-body:hover {}" );
 
     styleSheet += QString( ".box-row {}" );
@@ -1071,6 +1072,8 @@ void ContextBrowser::setStyleSheet_default( QString& styleSheet )
     styleSheet += QString( ".sbtext { padding: 0px 4px; border-left: solid %1 1px; }" ).arg( colorGroup().base().dark( 120 ).name() );
     styleSheet += QString( ".sbouter { width: 52px; height: 10px; background-color: #E0E0E0; border: solid #808080 1px; }" );
     styleSheet += QString( ".sbinner { height: 8px; background-color: %1; border: solid %2 1px; }" ).arg( bg ).arg( fg );
+    styleSheet += QString( ".albuminfo { float:right; padding-right:4px; font-size: %1px }" ).arg( pxSize );
+    styleSheet += QString( ".default { font-size: %1px }" ).arg( pxSize );
 }
 
 void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& themeName )
