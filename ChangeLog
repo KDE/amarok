@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta3:
+  FIX: Playlist-Browser was appending to playlist when clicking "Load".
+       Now it replaces the current playlist again, as intended.
   ADD: Profile for KDELIRC (Remote Controls). Patch by Dirk Ziegelmeier
        <dziegel@gmx.de>.
   ADD: Remove Duplicates now also removes dead entries from playlist.

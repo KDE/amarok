@@ -254,7 +254,7 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
         #define  item static_cast<PlaylistBrowserItem *>(item)
         //don't replace, it generally makes people think amaroK behaves like JuK
         //and we don't so they then get really confused about things
-        Playlist::instance()->insertMedia( item->tracksURL() );
+        Playlist::instance()->insertMedia( item->tracksURL(), Playlist::Replace );
         #undef item
     } else {
         KURL::List list( static_cast<PlaylistTrackItem *>(item)->url() );
