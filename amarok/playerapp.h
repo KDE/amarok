@@ -19,8 +19,10 @@
 #define AMAROK_PLAYERAPP_H
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+    #include <config.h>
 #endif
+
+#include <qserversocket.h>         //baseclass
 
 #include <kuniqueapplication.h>    //baseclass
 #include <kurl.h>                  //needed for KURL::List (nested)
@@ -87,7 +89,7 @@ class PlayerApp : public KUniqueApplication
         void play( const MetaBundle& );
         void slotPause();
         void slotStop();
-		void slotPlaylistShowHide();
+        void slotPlaylistShowHide();
         void slotSliderPressed();
         void slotSliderReleased();
         void slotSliderChanged( int );
@@ -97,6 +99,7 @@ class PlayerApp : public KUniqueApplication
 
     private slots:
         void applySettings();
+        void loaderMessage();
         void proxyError();
         void showEffectWidget();
         
@@ -113,6 +116,7 @@ class PlayerApp : public KUniqueApplication
         void initColors();
         void initConfigDialog();
         void initEngine();
+        void initIpc();
         void initMixer();
         bool initMixerHW();
         void initPlayerWidget();
@@ -129,10 +133,21 @@ class PlayerApp : public KUniqueApplication
         long      m_length;
         int       m_playRetryCounter;
         int       m_delayTime;
-
         OSDWidget *m_pOSD;
         bool      m_proxyError;
+        int       m_sockfd;
 };
+
+
+class LoaderServer : public QServerSocket
+{
+    public:
+        LoaderServer( QObject* parent );
+        
+    private :   
+        void newConnection( int socket );
+};
+
 
 #endif                                            // AMAROK_PLAYERAPP_H
 

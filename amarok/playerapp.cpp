@@ -45,10 +45,18 @@ email                : markey@web.de
 #include <kconfigdialog.h>
 #include <kwin.h>    //eventFilter()
 
+#include <qcstring.h>     //initIpc()
 #include <qpixmap.h> //QPixmap::setDefaultOptimization()
 #include <qsize.h>
+#include <qserversocket.h>   //initIpc()
+#include <qsocketnotifier.h> //initIpc()
 #include <qstring.h>
 #include <qtimer.h>
+
+#include <unistd.h>       //initIpc()
+#include <sys/socket.h>   //initIpc()
+#include <sys/un.h>       //initIpc()
+
 
 //statics
 EngineBase* PlayerApp::m_pEngine = 0;
@@ -64,6 +72,7 @@ PlayerApp::PlayerApp()
         , m_delayTime( 0 )
         , m_pOSD( new OSDWidget() )
         , m_proxyError( false )
+        , m_sockfd( -1 )
 {
     //TODO readConfig and applySettings first
     //     reason-> create Engine earlier, so we can restore session asap to get playlist loaded by
@@ -81,6 +90,7 @@ PlayerApp::PlayerApp()
 
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
+    initIpc();   //initializes Unix domain socket for loader communication
     initPlayerWidget();
     initBrowserWin();
 
@@ -124,6 +134,10 @@ PlayerApp::~PlayerApp()
 
     m_pMainTimer->stop();
 
+    //close loader IPC server socket
+    if ( m_sockfd != -1 )
+        ::close( m_sockfd );
+        
     //hiding these widgets stops visual oddness
     //I know they won't dissapear because the event Loop isn't updated, but it stops
     //some syncronous updates etc.
@@ -202,6 +216,37 @@ void PlayerApp::initEngine()
 }
 
 
+void PlayerApp::initIpc()
+{
+    uint m_sockfd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
+    if ( m_sockfd == -1 ) {
+        kdDebug() << "[PlayerApp::initIpc()] socket() error\n";
+        return;
+    }
+        
+    sockaddr_un local;
+    local.sun_family = AF_UNIX;
+    QCString path( ::getenv( "HOME" ) );
+    path += "/.kde/share/apps/amarok/.loader_socket";
+    ::strcpy( &local.sun_path[0], path );
+    ::unlink( path );
+    
+    int len = ::strlen( local.sun_path ) + sizeof( local.sun_family );
+    
+    if ( ::bind( m_sockfd, (struct sockaddr*) &local, len ) == -1 ) {
+        kdDebug() << "[PlayerApp::initIpc()] bind() error\n";
+        return;
+    }
+    if ( ::listen( m_sockfd, 1 ) == -1 ) {
+        kdDebug() << "[PlayerApp::initIpc()] listen() error\n";
+        return;
+    }
+
+    LoaderServer* server = new LoaderServer( this );
+    server->setSocket( m_sockfd );                    
+}
+
+
 void PlayerApp::initBrowserWin()
 {
     kdDebug() << "begin PlayerApp::initBrowserWin()" << endl;
@@ -256,6 +301,7 @@ void PlayerApp::restoreSession()
 // METHODS
 /////////////////////////////////////////////////////////////////////////////////////
 
+//SLOT
 void PlayerApp::applySettings()
 {
     if ( AmarokConfig::soundSystem() != m_pEngine->name() )
@@ -289,6 +335,12 @@ void PlayerApp::applySettings()
     reinterpret_cast<QWidget*>(m_pPlayerWidget->m_pTray)->setShown( AmarokConfig::showTrayIcon() );
 
     setupColors();
+}
+
+//SLOT
+void PlayerApp::loaderMessage()
+{
+    kdDebug() << "[PlayerApp::loaderMessage()]\n";
 }
 
 
@@ -573,10 +625,12 @@ void PlayerApp::slotStop()
     m_pPlayerWidget->m_pButtonPause->setDown( false );
 }
 
+
 void PlayerApp::slotPlaylistShowHide()
 {
     m_pBrowserWin->setShown( m_pBrowserWin->isHidden() );
 }
+
 
 bool PlayerApp::playObjectConfigurable()
 {
@@ -710,5 +764,33 @@ void PlayerApp::slotShowOptions()
         dialog->show();
     }
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+// CLASS LoaderServer
+////////////////////////////////////////////////////////////////////////////////
+
+LoaderServer::LoaderServer( QObject* parent )
+    : QServerSocket( parent )
+{}
+
+
+void LoaderServer::newConnection( int sockfd )
+{
+    kdDebug() << "[LoaderServer::newConnection()]\n";
+    
+    char buf[1024];
+    int nbytes = recv( sockfd, buf, sizeof(buf) - 1, 0 );
+    
+    if ( nbytes < 0 )
+        qDebug( "[LoaderServer::newConnection()] recv error" );
+    else
+    {    
+        buf[nbytes] = '\000';    
+        QCString result = buf;
+        qDebug( result );
+    }
+}
+
 
 #include "playerapp.moc"

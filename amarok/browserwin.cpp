@@ -57,6 +57,10 @@
 #include <kurlrequesterdlg.h> //slotAddLocation()
 
 
+//<markey> maybe it's a good idea to split this file up? would improve readability!
+//         why not put PlaylistSideBar in a separate file
+
+
 //Routine for setting palette recursively in a widget and all its childen
 //NOTE I didn't make this a member as there was no need and we may like to move it at some point
 static void setPaletteRecursively( QWidget* widget, const QPalette &pal, const QColor& bgAlt )

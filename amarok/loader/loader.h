@@ -36,10 +36,14 @@ class Loader : public QApplication
         void loaded();
         
     private:
-        QProcess*  m_pPrefixProc;
-        OSDWidget* m_pOsd;
-        
+        int tryConnect();
+
 // ATTRIBUTES ------
+        int        m_argc;        
+        char**     m_argv;
+        
+        OSDWidget* m_pOsd;
+        QProcess*  m_pPrefixProc;
 };
 
 

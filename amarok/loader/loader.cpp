@@ -18,12 +18,20 @@
 #include <loader.h>
 #include <splash.h>
 
+#include <qcstring.h>
 #include <qprocess.h>
 #include <qstring.h>
+
+#include <stdlib.h>
+#include <unistd.h>  
+#include <sys/socket.h>
+#include <sys/un.h>    
 
 
 Loader::Loader( int& argc, char** argv )
     : QApplication( argc, argv )
+    , m_argc( argc )
+    , m_argv( argv )
     , m_pOsd( new OSDWidget )
 {
     qDebug( "[Loader::Loader()]" );
@@ -56,13 +64,55 @@ void Loader::gotPrefix()
     qDebug( path.latin1() );
     m_pOsd->showSplash( path );
     
-    QProcess* proc = new QProcess( this );
-    proc->addArgument( "amarok" );
-    proc->start();
+    int sockfd = tryConnect();
     
-    connect( proc, SIGNAL( processExited() ), this, SLOT( loaded() ) );    
+    if ( sockfd == -1 ) {
+        QProcess* proc = new QProcess( this );
+        proc->addArgument( "amarok" );
+        
+        //hand arguments through to amaroK
+        for ( int i = 1; i < m_argc; i++ )
+            proc->addArgument( m_argv[i] );
+        
+        proc->start();
+        connect( proc, SIGNAL( processExited() ), this, SLOT( loaded() ) );    
+    }
+    else
+    {
+        qDebug( "[Loader::gotPrefix()] connected!" );
+        
+        QCString text = "Captain to ship: battle station all decks!";
+        ::send( sockfd, text, text.length(), 0 );
+        ::close(sockfd );
+        
+        loaded();    
+    }
 }
     
+int Loader::tryConnect()
+{
+    //try to connect to the LoaderServer
+    uint sockfd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
+    if ( sockfd == -1 ) {
+        qDebug( "[Loader::tryConnect()] socket() error" );
+        return -1;
+    }
+    sockaddr_un local;
+    local.sun_family = AF_UNIX;
+    QCString path( ::getenv( "HOME" ) );
+    path += "/.kde/share/apps/amarok/.loader_socket";
+    ::strcpy( &local.sun_path[0], path );
+    
+    int len = ::strlen( local.sun_path ) + sizeof( local.sun_family );
+    
+    if ( ::connect( sockfd, (struct sockaddr*) &local, len ) == -1 ) {
+        qDebug( "[Loader::tryConnect()] connect() error" );
+        return -1;
+    }
+
+    return sockfd;
+}
+
 //SLOT
 void Loader::loaded()
 {
