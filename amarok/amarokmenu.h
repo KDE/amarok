@@ -17,7 +17,7 @@ class KHelpMenu;
 
 namespace amaroK {
 
-class Menu : public QPopupMenu
+class Menu : public KPopupMenu
 {
 Q_OBJECT
 

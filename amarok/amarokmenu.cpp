@@ -7,6 +7,7 @@
 #include "enginecontroller.h"
 
 #include <kaction.h>
+#include <kapplication.h>
 #include <khelpmenu.h>
 #include <klocale.h>
 
@@ -33,15 +34,21 @@ safePlug( KActionCollection *ac, const char *name, QWidget *w )
 
 
 Menu::Menu( QWidget *parent )
-  : QPopupMenu( parent )
+  : KPopupMenu( parent )
 {
     KActionCollection *ac = pApp->actionCollection();
 
     setCheckable( true );
 
+    insertTitle( kapp->miniIcon(), "--==A M A R O K==--" );
+    
     safePlug( ac, "repeat_track", this );
     safePlug( ac, "repeat_playlist", this );
     safePlug( ac, "random_mode", this );
+
+    insertSeparator();
+    
+    insertItem( i18n( "&Visualizations" ), pApp, SIGNAL( showVisSelector() ) );
 
     insertSeparator();
 
@@ -56,11 +63,7 @@ Menu::Menu( QWidget *parent )
     safePlug( ac, KStdAction::name(KStdAction::Preferences), this );
 
     insertSeparator();
-
-    insertItem( i18n( "&Visualizations" ), pApp, SIGNAL( showVisSelector() ) );
-
-    insertSeparator();
-        
+       
     insertItem( i18n( "&Help" ), helpMenu( parent ) );
 
     insertSeparator();
