@@ -78,6 +78,8 @@ class EngineBase : public QObject
         virtual void                 removeEffect( long id )                           = 0;
         virtual void                 configureEffect( long id )                        = 0;
                
+        virtual bool                 decoderConfigurable()                             = 0;
+        
         virtual void                 play( const KURL& )                               = 0;
         virtual void                 play()                                            = 0;
         virtual void                 stop()                                            = 0;
@@ -96,6 +98,9 @@ class EngineBase : public QObject
         static EngineBase*           createEngine( QString system, bool& restart,
                                                    int scopeSize, bool restoreEffects );
 
+    public slots:
+        virtual void                 configureDecoder()                                = 0;                                                   
+                                                   
     protected:
         void                         closeMixerHW();
         bool                         initMixerHW();

@@ -90,11 +90,13 @@ class PlayerWidget : public QWidget
         void createAnalyzer( bool = true );
         void slotConfigShortcuts();       //TODO move to playerapp
         void slotConfigGlobalShortcuts(); //TODO move all generic stuff to playerapp
-        void slotConfigPlayObject();      //TODO move to playerapp
 
         void setScroll( const MetaBundle& );
         void drawScroll();
 
+    signals:
+        void configureDecoder();
+        
     private:
         void setScroll( const QStringList& );
         void paintEvent( QPaintEvent *e );

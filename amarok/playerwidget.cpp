@@ -377,7 +377,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
     #define ID_REPEAT_TRACK 100
     #define ID_REPEAT_PLAYLIST 101
     #define ID_RANDOM_MODE 102
-    #define ID_CONF_PLAYOBJECT 103
+    #define ID_CONF_DECODER 103
 
     if ( e->button() == QMouseEvent::RightButton )
     {
@@ -389,7 +389,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
         popup.insertItem( i18n( "Random &Mode" ),     ID_RANDOM_MODE );
       popup.insertSeparator();
         popup.insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( showEffectWidget() ) );
-        popup.insertItem( i18n( "Configure &PlayObject..." ), this, SLOT( slotConfigPlayObject() ), 0, ID_CONF_PLAYOBJECT );
+        popup.insertItem( i18n( "Configure &Decoder..." ), this, SIGNAL( configureDecoder() ), 0, ID_CONF_DECODER );
       popup.insertSeparator();
         m_pActionCollection->action( "options_configure_keybinding" )->plug( &popup );
         m_pActionCollection->action( "options_configure_global_keybinding" )->plug( &popup );
@@ -402,7 +402,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
         popup.setItemChecked( ID_REPEAT_TRACK,    AmarokConfig::repeatTrack() );
         popup.setItemChecked( ID_REPEAT_PLAYLIST, AmarokConfig::repeatPlaylist() );
         popup.setItemChecked( ID_RANDOM_MODE,     AmarokConfig::randomMode() );
-        popup.setItemEnabled( ID_CONF_PLAYOBJECT, pApp->playObjectConfigurable() );
+        popup.setItemEnabled( ID_CONF_DECODER, pApp->decoderConfigurable() );
 
         switch( popup.exec( e->globalPos() ) )
         {
@@ -498,18 +498,6 @@ void PlayerWidget::slotConfigGlobalShortcuts() //FIXME move to pApp
 }
 
 
-void PlayerWidget::slotConfigPlayObject() //FIXME move to pApp
-{
-/*    if ( pApp->m_pPlayObject && !m_pPlayObjConfigWidget )
-    {
-        m_pPlayObjConfigWidget = new ArtsConfigWidget( pApp->m_pPlayObject->object(), this );
-        connect( pApp->m_pPlayObject, SIGNAL( destroyed() ), m_pPlayObjConfigWidget, SLOT( deleteLater() ) );
-
-        m_pPlayObjConfigWidget->show();
-    }*/
-}
-
-
 void PlayerWidget::startDrag()
 {
     //TODO allow minimum drag distance
@@ -518,7 +506,6 @@ void PlayerWidget::startDrag()
     d->dragCopy();
     // do NOT delete d.
 }
-
 
 
 NavButton::NavButton( QWidget *parent, const QString &icon, QObject *receiver, const char *slot )

@@ -558,9 +558,40 @@ void ArtsEngine::configureEffect( long id )
 {
     m_effectMap[id].widget = new ArtsConfigWidget( *m_effectMap[id].effect );
     m_effectMap[id].widget->show();
-
-    m_effectMap[id].widget->m_pPointer = &m_effectMap[id].widget;
 }
+
+
+bool ArtsEngine::decoderConfigurable()
+{
+    if ( m_pPlayObject && !m_pPlayObject->object().isNull() && !m_pDecoderConfigWidget )
+    {
+        Arts::TraderQuery query;
+        query.supports( "Interface", "Arts::GuiFactory" );
+        query.supports( "CanCreate", m_pPlayObject->object()._interfaceName() );
+    
+        std::vector<Arts::TraderOffer> *queryResults = query.query();
+        bool yes = queryResults->size();
+        delete queryResults;
+    
+        return yes;
+    }
+    return false;
+}
+
+
+void ArtsEngine::configureDecoder() //slot
+{
+    //this method shows a GUI for an aRts CODEC. currently only working with markey's modplug_artsplugin
+    
+    if ( m_pPlayObject && !m_pDecoderConfigWidget )
+    {
+        m_pDecoderConfigWidget = new ArtsConfigWidget( m_pPlayObject->object() );
+        connect( m_pPlayObject, SIGNAL( destroyed() ), m_pDecoderConfigWidget, SLOT( deleteLater() ) );
+
+        m_pDecoderConfigWidget->show();
+    }
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE METHODS
@@ -777,7 +808,6 @@ ArtsEngine::ArtsConfigWidget::~ArtsConfigWidget()
 {
     delete m_pArtsWidget;
     m_gui = Arts::Widget::null();
-    *m_pPointer = 0;
 }
 
 

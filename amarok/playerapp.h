@@ -61,7 +61,8 @@ class PlayerApp : public KApplication
         int  trackLength() const { return m_length; }
         void setupColors();
         void insertMedia( const KURL::List& );
-
+        bool decoderConfigurable();
+        
         // STATICS
         static const int     ANIM_TIMER  = 30;
         static const int     MAIN_TIMER  = 150;

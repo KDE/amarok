@@ -206,7 +206,7 @@ void PlayerApp::handleLoaderArgs( const QCString& args )
     QStringList strlist = QStringList::split( " ", args );
     KURL::List list;
     
-    kdDebug() << "[PlayerApp::handleLoaderArgs] feeding BrowserWin::insertMedia() with this list: \n";
+    kdDebug() << "[PlayerApp::handleLoaderArgs] feeding insertMedia() with this list: \n";
     kdDebug() << strlist << endl;
     
     for ( QStringList::Iterator it = strlist.begin(); it != strlist.end(); ++it )
@@ -236,6 +236,9 @@ void PlayerApp::initEngine()
                                           m_artsNeedsRestart,
                                           SCOPE_SIZE,
                                           AmarokConfig::rememberEffects() );
+
+    //called from PlayerWidget's popup-menu
+    connect( m_pPlayerWidget, SIGNAL( configureDecoder() ), m_pEngine, SLOT( configureDecoder() ) );
 }
 
 
@@ -534,6 +537,12 @@ void PlayerApp::insertMedia( const KURL::List &list )
 }
 
 
+bool PlayerApp::decoderConfigurable()
+{
+    return m_pEngine->decoderConfigurable();
+}
+
+
 bool PlayerApp::eventFilter( QObject *o, QEvent *e )
 {
     //Hi! Welcome to one of amaroK's less clear functions!
@@ -729,25 +738,6 @@ void PlayerApp::slotPlaylistShowHide()
         w->setOn( m_pBrowserWin->isShown() );
         w->blockSignals( false );
     }
-}
-
-//FIXME move to ArtsEngine
-bool PlayerApp::playObjectConfigurable()
-{
-    //     if ( m_pPlayObject && !m_pPlayObject->object().isNull() && !m_pPlayerWidget->m_pPlayObjConfigWidget )
-    //     {
-    //         Arts::TraderQuery query;
-    //         query.supports( "Interface", "Arts::GuiFactory" );
-    //         query.supports( "CanCreate", m_pPlayObject->object()._interfaceName() );
-    //
-    //         std::vector<Arts::TraderOffer> *queryResults = query.query();
-    //         bool yes = queryResults->size();
-    //         delete queryResults;
-    //
-    //         return yes;
-    //     }
-
-    return false;
 }
 
 

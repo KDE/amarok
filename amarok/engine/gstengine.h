@@ -56,6 +56,8 @@ class GstEngine : public EngineBase
         long                                     createEffect( const QString& name ) { return 0; }
         void                                     removeEffect( long id ) {}
         void                                     configureEffect( long id ) {}
+        
+        bool                                     decoderConfigurable()               { return false; }
 
     public slots:
         void                                     play( const KURL& );
@@ -64,6 +66,7 @@ class GstEngine : public EngineBase
         void                                     pause();
         void                                     seek( long ms );
         void                                     setVolume( int percent );
+        void                                     configureDecoder() {};                                                   
 
     private:
         static void                              eos_cb( GstElement *typefind, GstElement *pipeline );

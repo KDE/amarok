@@ -23,8 +23,8 @@ email                : markey@web.de
 
 #include <vector>
 
+#include <qguardedptr.h>
 #include <qmap.h>
-#include <qobject.h>
 #include <qwidget.h>
 
 #include <arts/artsgui.h>
@@ -64,7 +64,9 @@ class ArtsEngine : public EngineBase
         long                                     createEffect( const QString& name );
         void                                     removeEffect( long id );
         void                                     configureEffect( long id );
-
+       
+        bool                                     decoderConfigurable();
+ 
     public slots:
         void                                     play( const KURL& );
         void                                     play();
@@ -73,6 +75,7 @@ class ArtsEngine : public EngineBase
 
         void                                     seek( long ms );
         void                                     setVolume( int percent );
+        void                                     configureDecoder();                                                   
 
     private slots:
         void                                     connectPlayObject();
@@ -90,9 +93,6 @@ class ArtsEngine : public EngineBase
             public:
                                                  ArtsConfigWidget( Arts::Object object );
                                                  ~ArtsConfigWidget();
-
-                ArtsConfigWidget*                *m_pPointer;
-
             private:
                 Arts::Widget                     m_gui;
                 KArtsWidget                      *m_pArtsWidget;
@@ -101,7 +101,7 @@ class ArtsEngine : public EngineBase
         struct EffectContainer
         {
             Arts::StereoEffect*                  effect;
-            ArtsConfigWidget*                    widget;
+            QGuardedPtr<ArtsConfigWidget>        widget;
         };
 
         /////////////////////////////////////////////////////////////////////////////////////
@@ -129,6 +129,7 @@ class ArtsEngine : public EngineBase
         bool                                     m_xfadeFadeout;
         float                                    m_xfadeValue;
         QString                                  m_xfadeCurrent;
+        QGuardedPtr<ArtsConfigWidget>            m_pDecoderConfigWidget;
 };
 
 
