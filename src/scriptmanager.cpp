@@ -11,7 +11,7 @@
 #include <kdebug.h>
 #include <kjsembed/jsconsolewidget.h>
 #include <kjsembed/kjsembedpart.h>
-#include <klibloader.h>
+#include <ktextedit.h>
 #include <kurl.h>
 
 using namespace KJSEmbed;
@@ -76,8 +76,16 @@ ScriptManager::Manager::slotEdit( const QString& path )
 {
     kdDebug() << k_funcinfo << endl;  
 
-    Editor* editor = new Editor( path );
-    editor->show();
+    QFile file( path );
+    
+    if ( file.open( IO_ReadWrite ) ) {
+        KTextEdit* editor = new KTextEdit();
+        QTextStream stream( &file );
+        editor->setText( stream.read() );
+        editor->setTextFormat( QTextEdit::PlainText );
+        editor->resize( 640, 480 );
+        editor->show();
+    }
 }  
 
 
@@ -118,26 +126,6 @@ ScriptManager::Manager::slotConfigure( const QString& path )
 // private 
 ////////////////////////////////////////////////////////////////////////////////
 
-
-////////////////////////////////////////////////////////////////////////////////
-// CLASS Editor 
-////////////////////////////////////////////////////////////////////////////////
-ScriptManager::Editor::Editor( const QString& file )
-    : KParts::MainWindow()
-{    
-    KLibFactory *factory = KLibLoader::self()->factory( "libkatepart" );
-
-    if( !factory ) {
-        kdWarning() << "Could not load kate part.\n";
-        return;
-    }
-    
-    KParts::Part* part = (KParts::Part*) factory->create( this, "part", "KParts::ReadWritePart" );
-       
-    setCentralWidget( part->widget() );
-    createGUI( part );
-}
- 
   
 #include "scriptmanager.moc"
 

@@ -12,9 +12,6 @@
 #include <qobject.h>            //baseclass
 #include <qstringlist.h>        //stack allocated
 
-#include <kparts/mainwindow.h>  //baseclass
-
-
 namespace KJSEmbed
 {
     class KJSEmbedPart;
@@ -54,12 +51,6 @@ namespace ScriptManager
             QStringList m_list;
     };
 
-    class Editor : public KParts::MainWindow
-    {
-        public:
-            Editor( const QString& file );
-    };
-    
 } //namespace ScriptManager
 
 #endif /* AMAROK_SCRIPTMANAGER_H */
