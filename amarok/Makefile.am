@@ -48,6 +48,7 @@ amarokapp_SOURCES = \
         pluginmanager.cpp \
         streambrowser.cpp \
         threadweaver.cpp \
+        searchbrowser.cpp \
         vis/socketserver.cpp
 
 

@@ -24,6 +24,7 @@
 #include "playerapp.h"
 #include "playlistwidget.h"
 #include "streambrowser.h"
+#include "searchbrowser.h"
 
 #include <qcolor.h>        //setPalettes()
 #include <qevent.h>        //eventFilter()
@@ -151,11 +152,15 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     }//</ToolBar>
 
 
-    //</FileBrowser>
+    //<FileBrowser>
         m_browsers->addPage( new KDevFileSelector( 0, "FileBrowser" ), i18n( "File Browser" ), "hdd_unmount" );
     //</FileBrowser>
 
-    //</PlaylistBrowser>
+    { //<SearchBrowser>
+        m_browsers->addPage( new SearchBrowser( 0, "SearchBrowser" ), i18n( "Search Browser" ), "SearchBrowser" );
+    } //</SearchBrowser>
+
+    //<PlaylistBrowser>
         //m_browsers->addPage( m_playlist->browser(), i18n( "Playlist Browser" ), "midi" );
     //</PlaylistBrowser>
 
@@ -198,7 +203,6 @@ BrowserWin::~BrowserWin()
     if( AmarokConfig::savePlaylist() )
         m_playlist->saveM3U( m_playlist->defaultPlaylistPath() );
 }
-
 
 
 ///////// public interface
