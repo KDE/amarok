@@ -92,6 +92,8 @@ private:
     class QToolButton *btnFilter;
     QString            lastFilter;
 
+    KURL::List selectedItems();
+
     class KBookmarkHandler *bookmarkHandler;
 
     class ToolBar: public KToolBar

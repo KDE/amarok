@@ -80,12 +80,16 @@ FileBrowser::FileBrowser( const char * name )
     cmbPath->setURLs( config->readListEntry( "Dir History" ) );
     cmbPath->lineEdit()->setText( currentLocation );
     setFocusProxy( cmbPath ); //so the dirOperator is focussed when we get focus events
-  
+
     dir = new KDirOperator( KURL( currentLocation ), this );
     connect( dir, SIGNAL(urlEntered( const KURL& )), SLOT(dirUrlEntered( const KURL& )) );
-    ((KActionMenu *)dir->actionCollection()->action("popupMenu"))->popupMenu ()->insertItem(i18n("Make Playlist"),this,SLOT(makePlaylist()));
-    ((KActionMenu *)dir->actionCollection()->action("popupMenu"))->popupMenu ()->insertItem(i18n("Add to Playlist"),this,SLOT(addToPlaylist()));
- 
+
+    //insert our own actions at front of context menu
+    QPopupMenu* const menu = ((KActionMenu *)dir->actionCollection()->action("popupMenu"))->popupMenu();
+    menu->insertSeparator( 0 );
+    menu->insertItem( i18n( "&Make Playlist" ), this, SLOT(makePlaylist()), 0, -1, /*index*/0 );
+    menu->insertItem( i18n( "&Append to Playlist" ), this, SLOT(addToPlaylist()), 0, -1, /*index*/0 );
+
     dir->setEnableDirHighlighting( true );
     dir->setMode( KFile::Mode((int)KFile::Files | (int)KFile::Directory) ); //allow selection of multiple files + dirs
     dir->setOnlyDoubleClickSelectsFiles( true ); //amaroK type settings
@@ -182,6 +186,21 @@ void FileBrowser::setupToolbar()
 //END Public Methods
 
 
+//BEGIN Private Methods
+
+KURL::List FileBrowser::selectedItems()
+{
+    KURL::List list;
+    for( KFileItemListIterator it( *dir->selectedItems() ); *it; ++it )
+    {
+        list.append( (*it)->url() );
+    }
+    return list;
+}
+
+//END Private Methods
+
+
 //BEGIN Public Slots
 
 void FileBrowser::slotFilterChange( const QString & nf )
@@ -260,26 +279,19 @@ inline void FileBrowser::slotViewChanged( KFileView *view )
     }
 }
 
+
 inline void FileBrowser::makePlaylist()
 {
-       
-      pApp->actionCollection()->action( "playlist_clear" )->activate();
-      KFileItemListIterator selected( * dir->selectedItems() );
-      KURL::List list;
-      for ( ; selected.current(); ++selected ) {
-       list.append( (*selected)->url());
-      }
-     pApp->playlist()->appendMedia( list, true, true );
+    pApp->playlist()->clear();
+    pApp->playlist()->appendMedia( selectedItems() );
 }
+
+
 inline void FileBrowser::addToPlaylist()
 {
-    KFileItemListIterator selected( * dir->selectedItems() );
-      KURL::List list;
-      for ( ; selected.current(); ++selected ) {
-       list.append( (*selected)->url());
-      }
-     pApp->playlist()->appendMedia( list, false, true );
+    pApp->playlist()->appendMedia( selectedItems() );
 }
+
 
 inline void FileBrowser::activateThis( const KFileItem *item )
 {
