@@ -212,7 +212,6 @@ CollectionReader::doJob()
     //iterate over all folders
     for ( uint i = 0; i < m_folders.count(); i++ )
     {
-        //m_processedDirs.clear();
         QString dir = m_folders[ i ];
 
         if ( !dir.endsWith( "/" ) )
@@ -233,8 +232,6 @@ CollectionReader::doJob()
 void
 CollectionReader::readDir( const QString& dir, QStringList& entries )
 {
-    //TODO use a KDirLister, this will prevent infinite recursive directory trees being a problem
-
     if ( m_processedDirs.contains( dir ) )
         return;
 
