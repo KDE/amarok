@@ -727,6 +727,7 @@ void PlaylistWindow::slotMenuActivated( int index )
         break;
     case ID_SHOW_TOOLBAR:
         m_toolbar->setShown( !m_toolbar->isShown() );
+        m_menubar->setItemEnabled( ID_SHOW_MENUBAR, m_toolbar->isShown() );
         m_settingsMenu->changeItem( index, m_toolbar->isShown() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
         break;
     case ID_SHOW_PLAYERWINDOW:
