@@ -26,7 +26,7 @@ class CollectionDB : public QObject
         void addImageToPath( const QString path, const QString image, bool temporary );
         QString getPathForAlbum( const QString artist_id, const QString album_id );
         QString getCoverForAlbum( const QString& path, const QString& album, const QString& defaultImage, const uint width = 40 );
-        QString getImageForAlbum( const QString artist_id, const QString album_id, const QString defaultImage );
+        QString getImageForAlbum( const QString artist_id, const QString album_id, const QString album, const QString defaultImage );
         QString getImageForPath( const QString path, const QString defaultImage, const uint width = 40 );
         
         void incSongCounter( const QString url );

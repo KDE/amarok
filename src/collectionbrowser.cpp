@@ -136,7 +136,6 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         : KListView( parent )
         , m_parent( parent )
         , m_isScanning( false )
-        , m_coverFetcher( new CoverFetcher( this ) )
 {
     kdDebug() << k_funcinfo << endl;
 
@@ -159,7 +158,6 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         m_monitor = config->readBoolEntry( "Monitor Changes", false );
 
         m_amazonLicense = config->readEntry( "Amazon License Key" );
-        m_coverFetcher->setLicense( m_amazonLicense );
     //</read config>
 
     //<open database>
@@ -202,8 +200,6 @@ CollectionView::CollectionView( CollectionBrowser* parent )
              this,             SLOT( doubleClicked( QListViewItem*, const QPoint&, int ) ) );
     connect( this,           SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,             SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
-    connect( m_coverFetcher, SIGNAL( imageReady( const QString&, const QPixmap& ) ),
-             m_db,             SLOT( saveCover( const QString&, const QPixmap& ) ) );
 
     startTimer( MONITOR_INTERVAL );
 }
@@ -256,7 +252,6 @@ CollectionView::setupCoverFetcher()  //SLOT
 
     if ( dia->exec() == QDialog::Accepted ) {
         m_amazonLicense = dia->kLineEdit1->text();
-        m_coverFetcher->setLicense( m_amazonLicense );
     }
 }
 
@@ -484,7 +479,12 @@ CollectionView::fetchCover() //SLOT
         if ( values.isEmpty() ) continue;
         QString key = values[0] + " - " + values[1];
         kdDebug() << "keyword: " << key << endl;
-        m_coverFetcher->getCover( key, CoverFetcher::heavy );
+        
+        CoverFetcher* fetcher = new CoverFetcher( m_amazonLicense, this );
+        connect( fetcher, SIGNAL( imageReady( const QString&, const QPixmap& ) ),
+                 m_db,      SLOT( saveCover( const QString&, const QPixmap& ) ) );
+        
+        fetcher->getCover( key, CoverFetcher::heavy );
     }
 }
 

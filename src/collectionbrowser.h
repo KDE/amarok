@@ -128,7 +128,6 @@ class CollectionView : public KListView
         bool m_recursively;
         bool m_monitor;
         bool m_isScanning;
-        CoverFetcher* m_coverFetcher;
         QString m_amazonLicense;
 };
 

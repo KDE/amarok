@@ -117,12 +117,12 @@ CollectionDB::getPathForAlbum( const QString artist_id, const QString album_id )
 
 
 QString
-CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id, const QString defaultImage )
+CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id, const QString album, const QString defaultImage )
 {
     KURL url;
     url.setPath( getPathForAlbum( artist_id, album_id ) );
 
-    return getCoverForAlbum( url.directory(), album_id, defaultImage );
+    return getCoverForAlbum( url.directory(), album, defaultImage );
 
 //     return getImageForPath( url.directory(), defaultImage );
 }
@@ -741,9 +741,9 @@ CollectionDB::saveCover( const QString& keyword, const QPixmap& image )
      // write pixmap into ba in JPG format
     image.save( &buffer, "PNG" ); 
     
-    execSql( QString( "REPLACE INTO covers ( image, album ) VALUES ( '%1', '%2' );" )
+    execSql( QString( "REPLACE INTO covers ( album, image ) VALUES ( '%1', '%2' );" )
              .arg( escapeString( keyword ) )
-             .arg( KCodecs::quotedPrintableEncode( ba ) ) );
+             .arg( escapeString( KCodecs::quotedPrintableEncode( ba ) ) ) );
 }
 
 

@@ -459,7 +459,7 @@ void ContextBrowser::showCurrentTrack()
                                       "</tr>" )
                             .arg( values[i*3 + 2] )
                             .arg( values[i*3 + 1] )
-                            .arg( m_db->getImageForAlbum( values[i*3 + 2], values[i*3 + 1], locate( "data", "amarok/images/sound.png" ) ) )
+                            .arg( m_db->getImageForAlbum( values[i*3 + 2], values[i*3 + 1], values[i*3 + 0], locate( "data", "amarok/images/sound.png" ) ) )
                             .arg( values[i*3] )
                             .arg( m_db->albumSongCount( values[i*3 + 2], values[i*3 + 1] ) ) );
         }

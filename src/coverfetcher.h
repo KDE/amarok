@@ -18,9 +18,9 @@ class CoverFetcher : public QObject
     public:
         enum QueryMode { lite, heavy };
         
-        CoverFetcher( QObject* parent = 0 );
+        CoverFetcher( const QString& license, QObject* parent = 0 );
     
-        void setLicense( const QString license ) { m_license = license; }
+        void setLicense( const QString& license ) { m_license = license; }
         void getCover( const QString& keyword, QueryMode mode = lite );
         
     signals:

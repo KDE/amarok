@@ -14,8 +14,9 @@
 #include <kpushbutton.h>   
 
 
-CoverFetcher::CoverFetcher( QObject* parent )
+CoverFetcher::CoverFetcher( const QString& license, QObject* parent)
     : QObject( parent, "CoverFetcher" )
+    , m_license( license )
 {
     kdDebug() << k_funcinfo << endl;
 }
@@ -69,6 +70,7 @@ CoverFetcher::xmlResult( KIO::Job* job ) //SLOT
 
     if ( !job->error() == 0 ) {
         kdWarning() << "KIO error! errno: " << job->error() << endl;
+        deleteLater();
         return;
     }
     kdDebug() << m_xmlDocument << endl;
@@ -110,6 +112,7 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
 
     if ( !job->error() == 0 ) {
         kdWarning() << "KIO error! errno: " << job->error() << endl;
+        deleteLater();
         return;
     }
     QVBox* container = new QVBox( 0, 0, WDestructiveClose );
@@ -122,8 +125,10 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
     QHBox* buttons = new QHBox( container );
     KPushButton* save = new KPushButton( i18n( "Save" ), buttons );
     KPushButton* cancel = new KPushButton( i18n( "Cancel" ), buttons );
-    connect( cancel, SIGNAL( clicked() ), container, SLOT( deleteLater() ) );
+    connect( cancel, SIGNAL( clicked() ), this, SLOT( deleteLater() ) );
+    connect( save, SIGNAL( clicked() ), this, SLOT( deleteLater() ) );
     connect( save, SIGNAL( clicked() ), this, SLOT( saveCover() ) );
+    connect( this, SIGNAL( destroyed() ), container, SLOT( deleteLater() ) );
             
     container->adjustSize();
     container->setFixedSize( container->size() );
