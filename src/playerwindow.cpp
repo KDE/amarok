@@ -723,8 +723,10 @@ NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
     // Precalculate pixmaps for "on" icon state
     for ( int i = 0; i < NUMPIXMAPS; i++ ) {
         temp = ie.apply( pixmap, KIconEffect::Colorize, 1.0, QColor( r, 0x10, 0x30 ), false );
-        m_glowPixmaps.append( new QPixmap( ie.apply( temp, KIconEffect::Colorize, 1.0,
-                                                     QColor( r, g, b ), false ) ) );
+        temp = ie.apply( temp, KIconEffect::Colorize, 1.0, QColor( r, g, b ), false );
+        // Create new pixmap on the heap and add pointer to list
+        m_glowPixmaps.append( new QPixmap( temp ) );
+        
         r += 14;
         g += 2;
         b -= 0;
@@ -758,7 +760,8 @@ void NavButton::timerEvent( QTimerEvent* )
     if ( isOn() ) {
         m_glowIndex++;
         m_glowIndex %= NUMPIXMAPS * 2 - 1;
-
+    
+        // Repaint widget with new pixmap
         update();
     }
 }
