@@ -95,7 +95,7 @@ public:
 
         KProcess *m_proc;
         int       m_sockfd;
-        QCString  m_command;
+        const char *m_command;
     };
 
 private slots:
