@@ -15,6 +15,7 @@
 #include <qtextstream.h>    //loadCustomPlaylists()
 
 #include <kapplication.h>    //customPlaylistsFile()
+#include <kguiitem.h>
 #include <kiconloader.h>
 #include <klocale.h>
 #include <kpopupmenu.h>
@@ -26,9 +27,8 @@
 SmartPlaylistBox::SmartPlaylistBox( QWidget *parent, const char *name )
     : QVBox( parent, name )
 {
-    KPushButton *newButton = new KPushButton( SmallIconSet("filenew"), i18n("New Smart Playlist"), this );
-
     SmartPlaylistView *smartListView = new SmartPlaylistView( this );
+    KPushButton *newButton = new KPushButton( KGuiItem( i18n("Make New Smart-playlist..."), "filenew" ), this );
 
     connect( newButton, SIGNAL( clicked() ), smartListView, SLOT( createCustomPlaylist() ) );
 }
@@ -43,12 +43,12 @@ SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
    : KListView( parent, name )
    , m_loaded( 0 )
 {
-    addColumn( i18n("Smart Playlists") );
+    addColumn( i18n("Smart-playlists") );
     setSelectionMode(QListView::Single);
     setSorting( 0 ); //enable sorting (used for custom smart playlists)
     setFullWidth( true );
     setRootIsDecorated( true );
-    header()->hide();
+    setShowSortIndicator( true );
 
     if( !CollectionDB().isEmpty() ) {
         loadDefaultPlaylists();
