@@ -10,8 +10,8 @@ VERSION 1.1:
 VERSION 1.0.1:
   FIX: Short dropouts after starting a stream with GStreamer.
   FIX: amaroK starting invisible when systray icon is disabled.
-  FIX: Playlist analyzer looks freaky on some systems (BR 83671).
-  FIX: Display filename in title column for wav files (BR 83650).
+  FIX: Playlist analyzer looks freaky on some systems. (BR 83671)
+  FIX: Display filename in title column for wav files. (BR 83650)
   FIX: Don't show crash dialog when no engine plugins are found.
   FIX: Compile issue for KDE < 3.2.1 users. Sorry :(
 
