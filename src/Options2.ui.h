@@ -10,6 +10,8 @@
 ** destructor.
 *****************************************************************************/
 #include "amarok.h"
+#include "amarokconfig.h"
+
 
 #include <kapplication.h>
 #include <kstandarddirs.h>
@@ -28,4 +30,5 @@ void Options2::init()
     sortedList.sort();
     foreach(sortedList)
       styleComboBox->insertItem(*it);    
+    styleComboBox->setCurrentItem(AmarokConfig::contextBrowserStyleSheet());
 }
