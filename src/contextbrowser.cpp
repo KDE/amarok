@@ -391,7 +391,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         menu.insertTitle( i18n( "Cover Image" ) );
 
         menu.insertItem( SmallIconSet( "viewmag" ), i18n( "&Show Fullsize" ), SHOW );
-        menu.insertItem( SmallIconSet( "www" ), i18n( "&Fetch From amazon.%1" ).arg(AmarokConfig::amazonLocale()), FETCH );
+        menu.insertItem( SmallIconSet( "www" ), i18n( "&Fetch From amazon.%1" ).arg(CoverManager::amazonTld()), FETCH );
         menu.insertItem( SmallIconSet( "folder_image" ), i18n( "Set &Custom Cover" ), CUSTOM );
         menu.insertSeparator();
 
@@ -865,7 +865,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             << escapeHTMLAttr( currentTrack.artist() )
             << escapeHTMLAttr( currentTrack.album() )
             << escapeHTMLAttr( CollectionDB::instance()->albumImage( currentTrack ) )
-            << i18n( "Click for information from amazon.%1, right-click for menu." ).arg( AmarokConfig::amazonLocale() )
+            << i18n( "Click for information from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() )
             << i18n( "Look up this track at musicbrainz.com" )
             << escapeHTMLAttr( currentTrack.artist() )
             << escapeHTMLAttr( currentTrack.album() )

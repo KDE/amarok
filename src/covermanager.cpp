@@ -124,6 +124,7 @@ CoverManager::CoverManager()
     m_amazonLocaleMenu->insertItem( i18n("International"), International );
     m_amazonLocaleMenu->insertItem( i18n("France"), France );
     m_amazonLocaleMenu->insertItem( i18n("Germany"), Germany );
+    m_amazonLocaleMenu->insertItem( i18n("Japan"), Japan);
     m_amazonLocaleMenu->insertItem( i18n("United Kingdom"), UK );
     connect( m_amazonLocaleMenu, SIGNAL( activated(int) ), SLOT( changeLocale(int) ) );
     #endif
@@ -140,6 +141,7 @@ CoverManager::CoverManager()
 
          if( locale == "fr" ) m_currentLocale = France;
     else if( locale == "de" ) m_currentLocale = Germany;
+    else if( locale == "jp" ) m_currentLocale = Japan;
     else if( locale == "uk" ) m_currentLocale = UK;
     else {
         // make sure we handle old config files correctly
@@ -241,7 +243,17 @@ void CoverManager::viewCover( const QString& artist, const QString& album, QWidg
 
     dialog->show();
 }
-
+QString CoverManager::amazonTld() //static
+{
+    if (AmarokConfig::amazonLocale() == "us")
+        return "com";
+            else if (AmarokConfig::amazonLocale()== "jp")
+        return "co.jp";
+            else if (AmarokConfig::amazonLocale() == "uk")
+        return "co.uk";
+            else
+        return AmarokConfig::amazonLocale(); 
+}
 
 void CoverManager::fetchMissingCovers() //SLOT
 {
@@ -422,7 +434,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
         menu.insertItem( SmallIconSet("viewmag"), i18n("&Show Fullsize"), SHOW );
 
         #ifdef AMAZON_SUPPORT
-        menu.insertItem( SmallIconSet("www"), i18n("&Fetch From amazon.%1").arg( AmarokConfig::amazonLocale() ), FETCH );
+        menu.insertItem( SmallIconSet("www"), i18n("&Fetch From amazon.%1").arg( CoverManager::amazonTld() ), FETCH );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet("folder_image"), i18n("Set &Custom Image"), CUSTOM );
         #else
@@ -563,6 +575,9 @@ void CoverManager::changeLocale( int id ) //SLOT
             break;
         case Germany:
             AmarokConfig::setAmazonLocale( "de" );
+            break;
+        case Japan:
+            AmarokConfig::setAmazonLocale( "jp" );
             break;
         case UK:
             AmarokConfig::setAmazonLocale( "uk" );

@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2.1:
+  ADD: Support for amazon.co.jp
   CHG: Toolbar items reordered for optimal usability, as suggested by
        Aaron "Tom Green" Seigo.
   FIX: Show covers for albums containing chars '#' or '?'. (BR 96971 99780)

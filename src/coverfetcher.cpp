@@ -115,11 +115,19 @@ CoverFetcher::startFetch()
     // Bug 97901: Import cover from amazon france doesn't work properly
     // (we have to set "mode=music-fr" instead of "mode=music")
     QString musicMode = AmarokConfig::amazonLocale() == "fr" ? "music-fr" : "music";
-
+    //Amazon Japan isn't on xml.amazon.com
+    QString tld = "com";
+    if (AmarokConfig::amazonLocale() == "jp") {
+        musicMode = "music-jp";
+        tld = "co.jp";
+    }
     QString url;
-    url = "http://xml.amazon.com/onca/xml3?t=webservices-20&dev-t=%1&KeywordSearch=%2&mode=%3&type=heavy&locale=%4&page=1&f=xml";
-    url = url.arg( LICENSE, KURL::encode_string_no_slash( query ), musicMode, AmarokConfig::amazonLocale() );
-
+    url = "http://xml.amazon." + tld 
+        + "/onca/xml3?t=webservices-20&dev-t=" + LICENSE 
+        + "&KeywordSearch=" + KURL::encode_string_no_slash( query ) 
+        + "&mode=" + musicMode 
+        + "&type=heavy&locale=" + AmarokConfig::amazonLocale() 
+        + "&page=1&f=xml";
     debug() << url << endl;
 
     KIO::TransferJob* job = KIO::get( url, false, false );

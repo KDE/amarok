@@ -33,7 +33,10 @@ class CoverManager : public QSplitter
 
         static void showOnce( const QString &artist = QString::null );
         static void viewCover( const QString& artist, const QString& album, QWidget *parent=0 );
-
+         /**
+         * Return the top level domain for the current locale
+         **/
+        static QString amazonTld();
     private slots:
         void slotArtistSelected( QListViewItem* );
         void coverItemExecuted( QIconViewItem *item );
@@ -54,7 +57,7 @@ class CoverManager : public QSplitter
 
     private:
         enum View { AllAlbums=0, AlbumsWithCover, AlbumsWithoutCover };
-        enum Locale { International=0, France, Germany, UK };
+        enum Locale { International=0, France, Germany, Japan, UK };
 
         void loadCover( const QString &, const QString & );
         void setCustomSelectedCovers();
