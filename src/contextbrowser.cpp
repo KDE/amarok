@@ -18,6 +18,7 @@
 #include "playlist.h"      //appendMedia()
 #include "qstringx.h"
 #include "statusbar.h"
+#include "threadweaver.h"
 
 #include <qdatetime.h>
 #include <qfile.h> // External CSS opening
@@ -30,7 +31,7 @@
 #include <kfiledialog.h>
 #include <kglobal.h>
 #include <khtml_part.h>
-#include <khtmlview.h>
+#include <khtmlview.h>,
 #include <kiconloader.h>
 #include <kimageeffect.h> // gradient background image
 #include <kio/job.h>
@@ -39,9 +40,7 @@
 #include <kmdcodec.h> // for dataUrlFromImage()
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
-#include <krun.h>
 #include <kstandarddirs.h> //locate file
-#include <ktabbar.h>
 #include <kurl.h>
 
 #define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
@@ -140,8 +139,7 @@ ContextBrowser::ContextBrowser( const char *name )
 
 
 ContextBrowser::~ContextBrowser()
-{
-}
+{}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -534,6 +532,8 @@ verboseTimeSince( const QDateTime &datetime )
         return i18n( "monthname year", "%1 %2" ).arg( cal->monthName(date), cal->yearString(date, false) );
     }
 
+    //TODO "last week" = maybe within 7 days, but prolly before last sunday
+
     if( datediff >= 7 )  // return difference in weeks
         return i18n( "One week ago", "%n weeks ago", (datediff+3)/7 );
 
@@ -546,6 +546,8 @@ verboseTimeSince( const QDateTime &datetime )
 
     if( timediff >= 90*60 /*90 minutes*/ )  // return difference in hours
         return i18n( "One hour ago", "%n hours ago", (timediff+30*60)/(60*60) );
+
+    //TODO are we too specific here? Be more fuzzy? ie, use units of 5 minutes, or "Recently"
 
     if( timediff >= 0 )  // return difference in minutes
         return timediff/60 ?
@@ -769,26 +771,61 @@ void ContextBrowser::showHome() //SLOT
 }
 
 
+/** This is the slowest part of track change, so we thread it */
+class CurrentTrackJob : public ThreadWeaver::DependentJob
+{
+public:
+    CurrentTrackJob( ContextBrowser *parent )
+            : ThreadWeaver::DependentJob( parent, "CurrentTrackJob" )
+            , b( parent ) {}
+
+private:
+    virtual bool doJob();
+    virtual void completeJob()
+    {
+        // are we still showing the currentTrack page?
+        if( b->currentPage() != b->m_currentTrackPage->view() )
+            return;
+
+        b->m_currentTrackPage->begin();
+        b->m_HTMLSource = m_HTMLSource;
+        b->m_currentTrackPage->setUserStyleSheet( b->m_styleSheet );
+        b->m_currentTrackPage->write( m_HTMLSource );
+        b->m_currentTrackPage->end();
+
+        b->m_dirtyCurrentTrackPage = false;
+        b->saveHtmlData(); // Send html code to file
+    }
+
+    QString m_HTMLSource;
+
+    ContextBrowser *b;
+};
+
+
 void ContextBrowser::showCurrentTrack() //SLOT
 {
-    DEBUG_BLOCK
-
-    if ( currentPage() != m_currentTrackPage->view() )
-    {
+    if ( currentPage() != m_currentTrackPage->view() ) {
         blockSignals( true );
         showPage( m_currentTrackPage->view() );
         blockSignals( false );
     }
 
-    // Do we have to rebuild the page?
-    if ( !m_dirtyCurrentTrackPage ) return;
+    if( !m_dirtyCurrentTrackPage )
+        return;
+
+    m_currentURL = EngineController::instance()->bundle().url();
+    m_currentTrackPage->write( QString::null );
+
+    ThreadWeaver::instance()->onlyOneJob( new CurrentTrackJob( this ) );
+}
+
+
+bool CurrentTrackJob::doJob()
+{
+    DEBUG_BLOCK
 
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
-    m_currentURL = EngineController::instance()->bundle().url();
-
-    m_currentTrackPage->begin();
-    m_HTMLSource="";
-    m_currentTrackPage->setUserStyleSheet( m_styleSheet );
 
     m_HTMLSource.append( "<html>"
                     "<script type='text/javascript'>"
@@ -843,7 +880,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 << escapeHTML( currentTrack.streamUrl() )
                 << escapeHTML( currentTrack.prettyURL() ) ) );
 
-        if ( m_metadataHistory.count() > 2 )
+        if ( b->m_metadataHistory.count() > 2 )
         {
             m_HTMLSource.append(
                 "<div class='box'>"
@@ -851,9 +888,9 @@ void ContextBrowser::showCurrentTrack() //SLOT
                  "<table class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
             // Ignore last two items, as they don't belong in the history
-            for ( uint i = 0; i < m_metadataHistory.count() - 2; ++i )
+            for ( uint i = 0; i < b->m_metadataHistory.count() - 2; ++i )
             {
-                const QString str = m_metadataHistory[i];
+                const QString str = b->m_metadataHistory[i];
                 m_HTMLSource.append( QStringx( "<tr class='box-row'><td>%1</td></tr>" ).arg( str ) );
             }
 
@@ -863,10 +900,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         }
 
         m_HTMLSource.append("</html>" );
-        m_currentTrackPage->write( m_HTMLSource );
-        m_currentTrackPage->end();
-        saveHtmlData(); // Send html code to file
-        return;
+        return true;
     }
 
     const uint artist_id = CollectionDB::instance()->artistID( currentTrack.artist() );
@@ -997,8 +1031,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     // <Suggested Songs>
     QStringList relArtists;
     relArtists = CollectionDB::instance()->similarArtists( currentTrack.artist(), 10 );
-    if ( !relArtists.isEmpty() )
-    {
+    if ( !relArtists.isEmpty() ) {
         QString token;
 
         qb.clear();
@@ -1068,7 +1101,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                  "</table>"
              "</div>" );
 
-            if ( !m_suggestionsOpen )
+            if ( !b->m_suggestionsOpen )
                 m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_SS');</script>" );
         }
     }
@@ -1118,7 +1151,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 "</table>"
             "</div>" );
 
-        if ( !m_favouritesOpen )
+        if ( !b->m_favouritesOpen )
             m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_FT');</script>" );
 
     }
@@ -1215,18 +1248,25 @@ void ContextBrowser::showCurrentTrack() //SLOT
             if ( !albumValues.isEmpty() )
                 for ( uint j = 0; j < albumValues.count(); j += 5 )
                 {
-                    QString tmp = albumValues[j + 2].stripWhiteSpace().isEmpty() ? "" : albumValues[j + 2];
-                    if (tmp.length() > 0)
-                    {
-                        tmp = tmp.length() == 1 ? "<span class='album-song-trackno'>0"+ tmp + ".&nbsp;</span>" : "<span class='album-song-trackno'>"+ tmp + ".&nbsp;</span>";
+                    //FIXME this seems redundant, why not just use the result of stripWhitespace?
+                    QString track = albumValues[j + 2].stripWhiteSpace().isEmpty() ? "" : albumValues[j + 2];
+                    if( track.length() > 0 ) {
+                        if( track.length() == 1 )
+                            track.prepend( "0" );
+
+                        track = "<span class='album-song-trackno'><b>" + track + "</b>&nbsp;</span>";
                     }
-                    QString tmp_time = (albumValues[j + 4] == QString("0")) ? "" :" <span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), false ) + ")</span>";
+
+                    QString length;
+                    if( albumValues[j + 4] != "0" )
+                        length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), false ) + ")</span>";
+
                     m_HTMLSource.append(
                         "<div class='album-song'>"
                             "<a href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">"
-                            + tmp +
-                            "<span class='album-song-title'>" + albumValues[j] + "</span>"
-                            + tmp_time +
+                            + track +
+                            "<span class='album-song-title'>" + albumValues[j] + "</span>&nbsp;"
+                            + length +
                             "</a>"
                         "</div>" );
                 }
@@ -1331,18 +1371,23 @@ void ContextBrowser::showCurrentTrack() //SLOT
             if ( !albumValues.isEmpty() )
                 for ( uint j = 0; j < albumValues.count(); j += 5 )
                 {
-                    QString tmp = albumValues[j + 2].stripWhiteSpace().isEmpty() ? "" : albumValues[j + 2];
-                    if (tmp.length() > 0)
-                    {
-                        tmp = tmp.length() == 1 ? "<span class='album-song-trackno'>0"+ tmp + ".&nbsp;</span>" : "<span class='album-song-trackno'>"+ tmp + ".&nbsp;</span>";
+                    QString track = albumValues[j + 2].stripWhiteSpace().isEmpty() ? "" : albumValues[j + 2];
+                    if( track.length() > 0 ) {
+                        if( track.length() == 1 )
+                            track.prepend( "0" );
+
+                        track = "<span class='album-song-trackno'><b>" + track + "</b>&nbsp;</span>";
                     }
-                    QString tmp_time = (albumValues[j + 4] == QString("0")) ? "" :" <span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), false ) + ")</span>";
+
+                    QString length;
+                    if( albumValues[j + 4] != "0" )
+                        length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), false ) + ")</span>";
                     m_HTMLSource.append(
                         "<div class='album-song'>"
                             "<a href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">"
-                            + tmp +
-                            "<span class='album-song-title'>" + albumValues[j] + "</span>"
-                            + tmp_time +
+                            + track +
+                            "<span class='album-song-title'>" + albumValues[j] + "</span>&nbsp;"
+                            + length +
                             "</a>"
                         "</div>" );
                 }
@@ -1359,11 +1404,8 @@ void ContextBrowser::showCurrentTrack() //SLOT
     // </Compilations by this artist>
 
     m_HTMLSource.append( "</html>" );
-    m_currentTrackPage->write( m_HTMLSource );
-    m_currentTrackPage->end();
 
-    m_dirtyCurrentTrackPage = false;
-    saveHtmlData(); // Send html code to file
+    return true;
 }
 
 
@@ -1533,7 +1575,7 @@ void ContextBrowser::showIntroduction()
 
     // Do we have to rebuild the page? I don't care
     m_homePage->begin();
-    m_HTMLSource="";
+    m_HTMLSource = QString::null;
     m_homePage->setUserStyleSheet( m_styleSheet );
 
     m_HTMLSource.append(
@@ -1802,10 +1844,7 @@ ContextBrowser::coverRemoved( const QString &artist, const QString &album )
 void
 ContextBrowser::similarArtistsFetched( const QString &artist )
 {
-    const MetaBundle &currentTrack = EngineController::instance()->bundle();
-
-    if ( currentTrack.artist() == artist )
-    {
+    if ( EngineController::instance()->bundle().artist() == artist ) {
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
     }

@@ -22,6 +22,8 @@ class ContextBrowser : public QTabWidget, public EngineObserver
 {
     Q_OBJECT
 
+        friend class CurrentTrackJob;
+
         static ContextBrowser *s_instance;
 
     public:

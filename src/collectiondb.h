@@ -164,6 +164,8 @@ class CollectionDB : public QObject, public EngineObserver
 {
     Q_OBJECT
 
+    friend class SimilarArtistsInsertionJob;
+
     signals:
         void scanStarted();
         void scanDone( bool changed );

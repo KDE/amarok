@@ -1599,19 +1599,46 @@ CollectionDB::coverFetcherResult( CoverFetcher *fetcher )
     }
 }
 
+/**
+ * This query is fairly slow with sqlite, and often happens just
+ * after the OSD is shown. Threading it restores responsivity.
+ */
+class SimilarArtistsInsertionJob : public ThreadWeaver::DependentJob
+{
+    virtual bool doJob()
+    {
+        CollectionDB::instance()->query( QString( "DELETE FROM related_artists WHERE artist = '%1';" ).arg( escapedArtist ) );
+
+        const QString sql = "INSERT INTO related_artists ( artist, suggestion, changedate ) VALUES ( '%1', '%2', 0 );";
+        foreach( suggestions )
+            CollectionDB::instance()->insert( sql
+                    .arg( escapedArtist )
+                    .arg( CollectionDB::instance()->escapeString( *it ) ) );
+
+        return true;
+    }
+
+    virtual void completeJob() { emit CollectionDB::instance()->similarArtistsFetched( artist ); }
+
+    const QString artist;
+    const QString escapedArtist;
+    const QStringList suggestions;
+
+public:
+    SimilarArtistsInsertionJob( CollectionDB *parent, const QString &s, const QStringList &list )
+            : ThreadWeaver::DependentJob( parent, "SimilarArtistsInsertionJob" )
+            , artist( s )
+            , escapedArtist( parent->escapeString( s ) )
+            , suggestions( list )
+    {}
+};
 
 void
 CollectionDB::similarArtistsFetched( const QString& artist, const QStringList& suggestions )
 {
-    debug() << "Similar artists received" << endl;
-    query( QString( "DELETE FROM related_artists WHERE artist = '%1';" ).arg( escapeString( artist ) ) );
+    debug() << "Received similar artists\n";
 
-    for ( uint i = 0; i < suggestions.count(); i++ )
-        insert( QString( "INSERT INTO related_artists ( artist, suggestion, changedate ) VALUES ( '%1', '%2', 0 );" )
-                  .arg( escapeString( artist ) )
-                  .arg( escapeString( suggestions[ i ] ) ) );
-
-    emit similarArtistsFetched( artist );
+    ThreadWeaver::instance()->queueJob( new SimilarArtistsInsertionJob( this, artist, suggestions ) );
 }
 
 
