@@ -442,6 +442,26 @@ fi
 
 
 ###############################################################################
+# BEGIN AMAZON CHECK
+###############################################################################
+
+AC_ARG_ENABLE(amazon,
+    AC_HELP_STRING([--disable-amazon],[disable Amazon cover download support [default=enable]]),
+    [enable_amazon=no],
+    [enable_amazon=yes]
+)
+
+if test "$enable_amazon" != "no"; then
+    AC_DEFINE(AMAZON_SUPPORT, 1, [Amazon cover download support enabled])
+fi
+
+###############################################################################
+# END AMAZON CHECK
+###############################################################################
+
+
+
+###############################################################################
 # BEGIN DO_NOT_COMPILE CHECK
 ###############################################################################
 

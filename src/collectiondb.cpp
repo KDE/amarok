@@ -39,7 +39,7 @@ CollectionDB::CollectionDB()
 
     m_db = sqlite_open( path, 0, 0 );
 
-#ifdef AMAZON
+#ifdef AMAZON_SUPPORT
     // create image cache dir, if it doesn't exist.
     if( !m_cacheDir.exists( "cache", false ) )
         m_cacheDir.mkdir( "cache", false );
@@ -202,7 +202,7 @@ CollectionDB::getImageForPath( const QString path, const QString defaultImage, c
     escapedPath.replace( "/", "_" );
     escapedPath.replace( "'", "_" );
 
-#ifdef AMAZON
+#ifdef AMAZON_SUPPORT
     if ( m_cacheDir.exists( escapedPath ) )
         return m_cacheDir.absPath() + "/" + escapedPath;
 #endif
@@ -866,7 +866,7 @@ CollectionDB::retrieveSecondLevelURLs( QString itemText1, QString itemText2, QSt
 void
 CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString& album, bool edit ) //SLOT
 {
-    #ifdef AMAZON
+    #ifdef AMAZON_SUPPORT
     /* Static license Key. Thanks muesli ;-) */
     QString amazonLicense = "D1URM11J3F2CEH";
     QString keyword = artist + " - " + album;

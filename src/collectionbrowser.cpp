@@ -454,7 +454,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
     if ( item ) {
         KPopupMenu menu( this );
 
-        #ifdef AMAZON
+        #ifdef AMAZON_SUPPORT
         enum Actions { MAKE, APPEND, QUEUE, COVER, INFO };
         #else
         enum Actions { MAKE, APPEND, QUEUE, INFO };
@@ -466,7 +466,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         menu.insertSeparator();
 
-        #ifdef AMAZON
+        #ifdef AMAZON_SUPPORT
         menu.insertItem( i18n( "&Fetch Cover Images" ), this, SLOT( fetchCover() ), 0, COVER );
         #endif
         menu.insertItem( i18n( "Edit Meta Information..." ), this, SLOT( showTrackInfo() ), 0, INFO );
@@ -490,7 +490,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 void
 CollectionView::fetchCover() //SLOT
 {
-    #ifdef AMAZON
+    #ifdef AMAZON_SUPPORT
     Item* item = static_cast<Item*>( currentItem() );
     if ( !item ) return;
     if ( m_category2 != i18n( "None" ) && item->depth() != 2 ) return;

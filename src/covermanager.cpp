@@ -98,7 +98,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     viewButton->setPopup(m_viewMenu);
     viewButton->setPopupDelay(0);
     
-    #ifdef AMAZON
+    #ifdef AMAZON_SUPPORT
     //fetch missing covers button
     m_fetchButton = new KPushButton( SmallIconSet("cdrom_unmount"), "Fetch missing covers", coverWidget );
     connect( m_fetchButton, SIGNAL(clicked()), SLOT(fetchMissingCovers()) );
@@ -106,7 +106,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     hbox->addWidget( m_searchEdit );
     hbox->addWidget(viewButton);
     hbox->addStretch();
-    #ifdef AMAZON
+    #ifdef AMAZON_SUPPORT
     hbox->addWidget(m_fetchButton);
     #endif
     //cover view
@@ -139,7 +139,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
                 SLOT( coverItemDoubleClicked( QIconViewItem * ) ) );                  
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
-    #ifdef AMAZON
+    #ifdef AMAZON_SUPPORT
     connect( m_db, SIGNAL( coverFetched(const QString &) ), SLOT( coverFetched(const QString &) ) );
     #endif
     m_currentView = AllAlbums;
@@ -164,7 +164,7 @@ CoverManager::~CoverManager()
 
 void CoverManager::fetchMissingCovers() //SLOT
 {
-    #ifdef AMAZON
+    #ifdef AMAZON_SUPPORT
     m_currentItem = static_cast<CoverViewItem*>( m_coverView->firstItem() );
     fetchMissingCoversLoop();
     #endif
@@ -173,7 +173,7 @@ void CoverManager::fetchMissingCovers() //SLOT
 
 void CoverManager::fetchMissingCoversLoop() //SLOT
 {
-    #ifdef AMAZON
+    #ifdef AMAZON_SUPPORT
     if ( m_currentItem ) 
     {
         if( !m_currentItem->hasCover() )
@@ -293,7 +293,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
     #define item static_cast<CoverViewItem*>(item)
     if( !item ) return;
 
-    #ifdef AMAZON    
+    #ifdef AMAZON_SUPPORT    
     enum Id { SHOW, FETCH, CUSTOM, DELETE };
     #else
     enum Id { SHOW, CUSTOM, DELETE };
@@ -301,7 +301,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
     KPopupMenu menu( this );
     menu.insertItem( SmallIcon("viewmag"), i18n("Show fullsize"), SHOW );
     menu.setItemEnabled( SHOW, item->hasCover() );
-    #ifdef AMAZON
+    #ifdef AMAZON_SUPPORT
     menu.insertItem( SmallIcon("www"), i18n("Fetch cover"), FETCH );
     menu.insertSeparator();
     menu.insertItem( SmallIcon("folder_image"), i18n("Add custom cover"), CUSTOM );
@@ -317,7 +317,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
             coverItemDoubleClicked( item );
             break;
         
-        #ifdef AMAZON            
+        #ifdef AMAZON_SUPPORT            
         case FETCH:
             m_db->fetchCover( this, item->artist(), item->album(), false );
             break;
@@ -471,7 +471,7 @@ void CoverManager::previewJobFinished()
 
 void CoverManager::coverFetched( const QString &key )
 {
-    #ifdef AMAZON
+    #ifdef AMAZON_SUPPORT
     for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
         if( key == coverItem->artist() + " - " + coverItem->album() ) {
@@ -517,7 +517,7 @@ void CoverManager::updateCounter()
         text += i18n(" - ( <b>%3</b> without cover )" ).arg( missingCounter );
                 
     m_counterLabel->setText( text );
-    #ifdef AMAZON
+    #ifdef AMAZON_SUPPORT
     m_fetchButton->setEnabled( missingCounter != 0 );
     #endif
 }
