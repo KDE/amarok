@@ -794,6 +794,9 @@ void ScrobblerSubmitter::enqueueItem( SubmitItem* item )
     }
 
     m_submitQueue.inSort( item );
+    
+    // Save submit queue to disk so it is more uptodate in case of crash.
+    saveSubmitQueue();
 }
 
 
@@ -922,9 +925,9 @@ void ScrobblerSubmitter::saveSubmitQueue()
     newdoc.appendChild( submitQueue );
 
     m_submitQueue.first();
-    SubmitItem *item;
-    while ( ( item = dequeueItem() ) != 0 )
+    for ( uint idx = 0; idx < m_submitQueue.count(); idx++ )
     {
+        SubmitItem *item = m_submitQueue.at( idx );
         QDomElement i = item->toDomElement( newdoc );
         submitQueue.appendChild( i );
     }
