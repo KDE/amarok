@@ -23,6 +23,10 @@ AMAROK_EXPORT_PLUGIN( XineEngine )
 #include <qdir.h>
 
 
+//define this to use xine in a more standard way
+//#define XINE_SAFE_MODE
+
+
 #ifdef NDEBUG
 static inline kndbgstream debug() { return kndbgstream(); }
 #else
@@ -69,9 +73,13 @@ XineEngine::~XineEngine()
 bool
 XineEngine::init()
 {
-    debug() << "Welcome! 9 out of 10 cats prefer xine!\n"
-               "Please report bugs http://bugs.kde.org\n"
-               "Build stamp: " << __DATE__ << ' ' << __TIME__ << endl;
+    debug() <<
+        "Welcome! 9 out of 10 cats prefer xine!\n"
+        "Please report bugs to http://bugs.kde.org\n"
+        #ifdef XINE_SAFE_MODE
+        "Running in safe-mode\n"
+        #endif
+        "Build stamp: " << __DATE__ << ' ' << __TIME__ << endl;
 
     m_xine = xine_new();
 
@@ -81,8 +89,9 @@ XineEngine::init()
         return false;
     }
 
-    //xine_engine_set_param( m_xine, XINE_ENGINE_PARAM_VERBOSITY, 99 );
-
+    #ifdef XINE_SAFE_MODE
+    xine_engine_set_param( m_xine, XINE_ENGINE_PARAM_VERBOSITY, 99 );
+    #endif
 
     QString
     path  = QDir::homeDirPath();
@@ -108,14 +117,15 @@ XineEngine::init()
         return false;
     }
 
+    #ifndef XINE_SAFE_MODE
     //implemented in xine-scope.h
     m_post = scope_plugin_new( m_xine, m_audioPort );
-
 
     //less buffering, faster seeking.. TODO test
     xine_set_param( m_stream, XINE_PARAM_METRONOM_PREBUFFER, 6000 );
     xine_set_param( m_stream, XINE_PARAM_IGNORE_VIDEO, 1 );
     //xine_trick_mode( m_stream, XINE_TRICK_MODE_SEEK_TO_TIME, 1 );
+    #endif
 
     xine_event_create_listener_thread( m_eventQueue = xine_event_new_queue( m_stream ),
                                        &XineEngine::XineEventListener,
@@ -134,9 +144,11 @@ XineEngine::load( const KURL &url, bool stream )
 
     if( xine_open( m_stream, url.url().local8Bit() ) )
     {
+       #ifndef XINE_SAFE_MODE
        xine_post_out_t *source = xine_get_audio_source( m_stream );
        xine_post_in_t  *target = (xine_post_in_t*)xine_post_input( m_post, const_cast<char*>("audio in") );
        xine_post_wire( source, target );
+       #endif
 
        return true;
     }
@@ -147,7 +159,7 @@ XineEngine::load( const KURL &url, bool stream )
 bool
 XineEngine::play( uint offset )
 {
-    if( xine_play( m_stream, 0, offset / 1000 ) )
+    if( xine_play( m_stream, 0, offset ) )
     {
         emit stateChanged( Engine::Playing );
 
@@ -277,8 +289,8 @@ XineEngine::scope()
         MyNode *best_node = 0;
 
         for( MyNode *node = myList->next; node != myList; node = node->next, ++Log::bufferCount )
-            if ( node->vpts <= current_vpts && (!best_node || node->vpts > best_node->vpts) )
-                best_node = node;
+            if( node->vpts <= current_vpts && (!best_node || node->vpts > best_node->vpts) )
+               best_node = node;
 
         if( !best_node || best_node->vpts_end < current_vpts ) {
            ++Log::noSuitableBuffer; break; }
