@@ -4,7 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta1:
-  ADD: Ability to choose from four different Amazon locales.
+  ADD: Ability to choose from four different Amazon locales. (BR 90664)
   ADD: OSD now draws gradient instead of solid colour.
   ADD: 'Stop after current song' functionality. (BR 88652)
   FIX: Queue function from context/collection browsers actually properly
