@@ -1,10 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=GStreamer Engine
-Name[et]=Gst mootor
-Name[pt]=Motor GST
-Name[pt_BR]=Motor GST
-Name[sv]=Gst-gränssnitt
+Name[sv]=Gstreamer-gränssnitt
 X-KDE-Library=libamarok_gstengine_plugin
 Comment=Plugin for amaroK
 Comment[de]=Plugin für amaroK
