@@ -3,6 +3,8 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  FIX: TitleProxy partly rewritten. Should be more compatible with many streams
+       and not be able to freeze the app any longer.
   FIX: When playing a stream with title streaming activated, the track is not
        marked as playing (BR 79999).
   FIX: Invoking "Track Information" in Collection Browser sometimes crashed

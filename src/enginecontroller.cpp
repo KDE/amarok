@@ -94,11 +94,8 @@ void EngineController::play()
 
 void EngineController::play( const MetaBundle &bundle )
 {
-    const KURL &url = m_playingURL = bundle.url();
-//    emit currentTrack( url );
-
-    kdDebug() << "[engine] Playing: " << url.filename() << endl;
-
+    const KURL &url = bundle.url();
+    
     if ( AmarokConfig::titleStreaming() &&
          url.protocol() == "http" &&
          !m_proxyError &&
@@ -123,6 +120,9 @@ void EngineController::play( const MetaBundle &bundle )
     else
         m_pEngine->play( url );
 
+    m_playingURL = url;
+    kdDebug() << "[engine] Playing: " << url.filename() << endl;
+    
     stateChangedNotify( EngineBase::Playing );
     newMetaDataNotify( bundle, true /* track change */ );
     m_proxyError = false;
