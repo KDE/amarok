@@ -35,6 +35,7 @@
 
 QColor PlaylistItem::glowText = Qt::white;
 QColor PlaylistItem::glowBase = Qt::white;
+bool   PlaylistItem::s_pixmapChanged = false;
 
 
 // These are untranslated and used for storing/retrieving XML playlist
@@ -90,7 +91,6 @@ QString PlaylistItem::stringStore[STRING_STORE_SIZE];
 PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi )
       : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( u ) )
       , m_url( u )
-      , pixmapChanged(false)
 {
     setDragEnabled( true );
 
@@ -101,7 +101,6 @@ PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi )
 PlaylistItem::PlaylistItem( const KURL &u, QListView *lv, QListViewItem *lvi )
       : KListViewItem( lv, lvi, trackName( u ) )
       , m_url( u )
-      , pixmapChanged(false)
 {
     setDragEnabled( true );
 
@@ -112,7 +111,6 @@ PlaylistItem::PlaylistItem( const KURL &u, QListView *lv, QListViewItem *lvi )
 PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi, const MetaBundle& bundle )
       : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( u ) )
       , m_url( u )
-      , pixmapChanged(false)
 {
     setDragEnabled( true );
 
@@ -123,7 +121,6 @@ PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi, const MetaBundle&
 PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi, const QDomNode &n )
       : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( u ) )
       , m_url( u )
-      , pixmapChanged(false)
 {
     setDragEnabled( true );
 
@@ -341,15 +338,15 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             paintCache[column].height == height() &&
             paintCache[column].text == text( column ) &&
             paintCache[column].font == p->font() &&
-	    !pixmapChanged;
+            !PlaylistItem::s_pixmapChanged;
 
         // If any parameter changed, we must regenerate all pixmaps
         if ( !cacheValid )
-	{
+        {
             paintCache[column].map.clear();
-	    /* So we don't regenerate all pixmap without really having to do it. */
-	    pixmapChanged = false;
-	}
+            /* So we don't regenerate all pixmap without really having to do it. */
+            PlaylistItem::s_pixmapChanged = false;
+        }
 
         // Determine if we need to repaint the pixmap, or paint from cache
         if ( paintCache[column].map.find( colorKey ) == paintCache[column].map.end() )
