@@ -2324,9 +2324,9 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qprocess.h>
-void
-Playlist::addCustomColumn()
-{
+
+// Moved outside the only function that uses it because
+// gcc 2.95 doesn't like class declarations there.
     class CustomColumnDialog : public KDialog
     {
     public:
@@ -2394,6 +2394,9 @@ Playlist::addCustomColumn()
         QString name()    { return static_cast<KLineEdit*>(child("ColumnName"))->text(); }
     };
 
+void
+Playlist::addCustomColumn()
+{
     CustomColumnDialog dialog( this );
 
     if ( dialog.exec() == QDialog::Accepted ) {

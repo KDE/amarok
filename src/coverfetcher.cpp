@@ -305,9 +305,8 @@ CoverFetcher::finishedImageFetch( KIO::Job *job ) //SLOT
         finish();
 }
 
-void
-CoverFetcher::getUserQuery( QString explanation )
-{
+// Moved outside the only function that uses it because
+// gcc 2.95 doesn't like class declarations there.
     class EditSearchDialog : public KDialog
     {
     public:
@@ -342,6 +341,9 @@ CoverFetcher::getUserQuery( QString explanation )
         QString query() { return static_cast<KLineEdit*>(child( "Query" ))->text(); }
     };
 
+void
+CoverFetcher::getUserQuery( QString explanation )
+{
     if( explanation.isEmpty() )
         explanation = i18n("Ask Amazon for covers using this query:");
 
@@ -363,9 +365,6 @@ CoverFetcher::getUserQuery( QString explanation )
     }
 }
 
-void
-CoverFetcher::showCover()
-{
     class CoverFoundDialog : public KDialog
     {
     public:
@@ -408,6 +407,9 @@ CoverFetcher::showCover()
         }
     };
 
+void
+CoverFetcher::showCover()
+{
     CoverFoundDialog dialog( (QWidget*)parent(), m_image, m_currentCoverName );
 
     switch( dialog.exec() )
