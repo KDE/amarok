@@ -203,19 +203,27 @@ void ContextBrowser::openURLRequest( const KURL &url )
 // PROTECTED
 //////////////////////////////////////////////////////////////////////////////////////////
 
+void ContextBrowser::engineTrackEnded( int finalPosition, int trackLength )
+{
+    int pct = ( (double)finalPosition / (double)trackLength ) * 100;
+    kdDebug() << "percentage played: " << pct << endl;
+
+    // increase song counter & calculate new statistics
+    m_db->addSongPercentage( m_currentTrack->url().path(), pct );
+}
+
+
 void ContextBrowser::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     //prevents segfault when playing streams
-    if ( !bundle.url().isLocalFile() ) return;
+    if ( !bundle.url().isLocalFile() )
+        return;
 
     delete m_currentTrack;
     m_currentTrack = new MetaBundle( bundle );
 
     if ( !m_db->isEmpty() )
         showCurrentTrack();
-
-    // increase song counter
-    m_db->incSongCounter( m_currentTrack->url().path() );
 }
 
 
@@ -274,10 +282,10 @@ void ContextBrowser::showHome() //SLOT
     browser->write( "</table>" );
     browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-    m_db->execSql( QString( "SELECT tags.title, tags.url, statistics.playcounter, artist.name, album.name "
+    m_db->execSql( QString( "SELECT tags.title, tags.url, statistics.percentage, artist.name, album.name "
                             "FROM tags, artist, album, statistics "
                             "WHERE artist.id = tags.artist AND album.id = tags.album AND statistics.url = tags.url "
-                            "ORDER BY statistics.playcounter DESC "
+                            "ORDER BY statistics.percentage DESC "
                             "LIMIT 0,10;" ), &values, &names );
 
     if ( values.count() )
@@ -285,7 +293,7 @@ void ContextBrowser::showHome() //SLOT
         for ( uint i = 0; i < values.count(); i = i + 5 )
             browser->write( QString ( "<tr><td class='song'><a class='song' href=\"file:"
                                     + values[i+1].replace( "\"", QCString( "%22" ) ) + "\"><b>" + values[i]
-                                    + "</b> <i>(" + values[i+2] + ")</i><br>" + values[i+3] + " - " + values[i+4] + "</a></td></tr>" ) );
+                                    + "</b> <i>(" + i18n( "Score:" ) + " " + values[i+2] + ")</i><br>" + values[i+3] + " - " + values[i+4] + "</a></td></tr>" ) );
     }
 
     values.clear();
@@ -366,7 +374,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     browser->write( "</table>" );
     browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-    m_db->execSql( QString( "SELECT album.name, artist.name, datetime( datetime( statistics.createdate, 'unixepoch' ), 'localtime' ), datetime( datetime( statistics.accessdate, 'unixepoch' ), 'localtime' ), statistics.playcounter "
+    m_db->execSql( QString( "SELECT album.name, artist.name, datetime( datetime( statistics.createdate, 'unixepoch' ), 'localtime' ), datetime( datetime( statistics.accessdate, 'unixepoch' ), 'localtime' ), statistics.playcounter, statistics.percentage "
                             "FROM album, tags, artist, statistics "
                             "WHERE album.id = tags.album AND artist.id = tags.artist AND statistics.url = tags.url AND tags.url = '%1';" )
                    .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names );
@@ -378,10 +386,11 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                     "<a href='musicbrainz:%4 @@@ %5'><img src='%6'></a></td></tr></table>"
                                     "<table width='100%'><tr><td width='20%'><a class='menu' href='fetchcover:%7 @@@ %8'>"
                                     "<img hspace='2' src='%9'></a></td>"
-                                    "<td valign='bottom' align='right' width='80%'>"
-                                    "<i>" + i18n( "Track played %10 times" ) + "<br>" +
-                                    i18n( "Last play: %11" ) + "<br>" +
-                                    i18n( "First play: %12") + "</i></td></tr>" )
+                                    "<td valign='bottom' align='right' width='80%'>" +
+                                    i18n( "Track played %10 times" ) + "<br>" +
+                                    "amaroKiness: %11" + "<br>" +
+                                    i18n( "Last play: %12" ) + "<br>" +
+                                    i18n( "First play: %13") + "</i></td></tr>" )
                          .args( QStringList()
                                 << escapeHTML( m_currentTrack->artist() )
                                 << escapeHTML( m_currentTrack->title() )
@@ -393,6 +402,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                 << escapeHTMLAttr( m_currentTrack->album() )
                                 << escapeHTMLAttr( m_db->getImageForAlbum( values[1], values[0], locate( "data", "amarok/images/sound80.png" ) ) )
                                 << values[4]
+                                << values[5]
                                 << values[2].left( values[2].length() - 3 )
                                 << values[3].left( values[3].length() - 3 )
                                 )
@@ -438,10 +448,10 @@ void ContextBrowser::showCurrentTrack() //SLOT
     // </Current Track Information>
 
     // <Favourite Tracks Information>
-    m_db->execSql( QString( "SELECT tags.title, tags.url, statistics.playcounter "
+    m_db->execSql( QString( "SELECT tags.title, tags.url, statistics.percentage "
                             "FROM tags, artist, statistics "
                             "WHERE tags.artist = artist.id AND artist.name LIKE '%1' AND statistics.url = tags.url "
-                            "ORDER BY statistics.playcounter DESC "
+                            "ORDER BY statistics.percentage DESC "
                             "LIMIT 0,5;" )
                    .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names );
 
@@ -456,7 +466,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
         for ( uint i = 0; i < values.count(); i += 3 )
             browser->write( QString ( "<tr><td class='song'><a class='song' href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">"
-                                      + values[i] + " <i>" + i18n( "(played once)", "(played %n times)", values[i + 2].toULong() ) + "</i></a></td></tr>" ) );
+                                      + values[i] + " <i>(" + i18n( "Score:" ) + " " + values[i + 2] + ")</i></a></td></tr>" ) );
 
         values.clear();
         names.clear();

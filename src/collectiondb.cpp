@@ -341,25 +341,29 @@ CollectionDB::getMetaBundleForUrl( const QString url, MetaBundle *bundle )
 
 
 void
-CollectionDB::incSongCounter( const QString url )
+CollectionDB::addSongPercentage( const QString url, const int percentage )
 {
     QStringList values, names;
 
-    execSql( QString( "SELECT playcounter, createdate FROM statistics WHERE url = '%1';" )
-                  .arg( escapeString( url ) ), &values, &names );
+    execSql( QString( "SELECT playcounter, createdate, percentage FROM statistics WHERE url = '%1';" )
+                .arg( escapeString( url ) ), &values, &names );
 
     if ( values.count() )
     {
         // entry exists, increment playcounter and update accesstime
-        execSql( QString( "REPLACE INTO statistics ( url, createdate, accessdate, playcounter ) VALUES ( '%1', '%2', strftime('%s', 'now'), %3 );" )
-                .arg( escapeString( url ) )
-                .arg( values[1] )
-                .arg( values[0] + " + 1" ) );
+        execSql( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
+                          "VALUES ( '%1', '%2', strftime('%s', 'now'), %3, %4 );" )
+                    .arg( escapeString( url ) )
+                    .arg( values[1] )
+                    .arg( ( percentage + values[2].toDouble() ) / ( values[0].toInt() + 1 ) )
+                    .arg( values[0] + " + 1" ) );
     } else
     {
         // entry didnt exist yet, create a new one
-        execSql( QString( "INSERT INTO statistics ( url, createdate, accessdate, playcounter ) VALUES ( '%1', strftime('%s', 'now'), strftime('%s', 'now'), 1 );" )
-                .arg( escapeString( url ) ) );
+        execSql( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
+                          "VALUES ( '%1', strftime('%s', 'now'), strftime('%s', 'now'), %2, 1 );" )
+                    .arg( escapeString( url ) )
+                    .arg( percentage ) );
     }
 }
 
@@ -609,6 +613,7 @@ CollectionDB::createStatsTable()
                       "url VARCHAR(100) UNIQUE,"
                       "createdate INTEGER,"
                       "accessdate INTEGER,"
+                      "percentage FLOAT,"
                       "playcounter INTEGER );" ) );
 }
 
