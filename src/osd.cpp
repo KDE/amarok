@@ -550,7 +550,7 @@ amaroK::OSD::setImage( const MetaBundle &bundle )
 {
     //avoid showing the generic cover.  we can overwrite this by passing an arg.
     //get large cover for scaling if big cover needed
-    QString imageLocation = CollectionDB::instance()->albumImage( bundle.artist(), bundle.album(), 0 );
+    QString imageLocation = CollectionDB::instance()->albumImage( bundle, 0 );
     if ( imageLocation.find( QString("nocover") ) != -1 )
         imageLocation = QString::null;
 

@@ -256,7 +256,7 @@ void CoverManager::viewCover( const QString& artist, const QString& album, QWidg
     //QDialog means "escape" works as expected
     QDialog *dialog = new QDialog( parent, 0, false, WDestructiveClose | WType_TopLevel );
     dialog->setCaption( kapp->makeStdCaption( artist + " - " + album ) );
-    QPixmap pixmap( CollectionDB::instance()->findImageByArtistAlbum( artist, album, 0) );
+    QPixmap pixmap( CollectionDB::instance()->albumImage( artist, album, 0 ) );
     dialog->setPaletteBackgroundPixmap( pixmap );
     dialog->setFixedSize( pixmap.size() );
     dialog->show();
@@ -825,7 +825,7 @@ QDragObject *CoverView::dragObject()
     for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it )
         urls += *it;
 
-    QString imagePath = CollectionDB::instance()->findImageByArtistAlbum( item->artist(), item->album(), 0 );
+    QString imagePath = CollectionDB::instance()->albumImage( item->artist(), item->album(), 1 );
     KMultipleDrag *drag = new KMultipleDrag( this );
     drag->setPixmap( item->coverPixmap() );
     drag->addDragObject( new QIconDrag( this ) );
@@ -843,7 +843,7 @@ CoverViewItem::CoverViewItem( QIconView *parent, QIconViewItem *after, QString a
     : KIconViewItem( parent, after, album )
     , m_artist( artist )
     , m_album( album )
-    , m_coverImagePath( CollectionDB::instance()->findImageByArtistAlbum( m_artist, m_album, 0 ) )
+    , m_coverImagePath( CollectionDB::instance()->albumImage( m_artist, m_album, 0 ) )
     , m_coverPixmap( 0 )
 {
     setDragEnabled( true );
@@ -858,7 +858,7 @@ bool CoverViewItem::hasCover() const
 
 void CoverViewItem::loadCover()
 {
-    m_coverImagePath = CollectionDB::instance()->findImageByArtistAlbum( m_artist, m_album, 0 );
+    m_coverImagePath = CollectionDB::instance()->albumImage( m_artist, m_album );
     m_coverPixmap = QPixmap( m_coverImagePath );  //create the scaled cover
 
     repaint();
@@ -943,7 +943,7 @@ void CoverViewItem::dropped( QDropEvent *e, const QValueList<QIconDragItem> & )
        QImage img;
        QImageDrag::decode( e, img );
        CollectionDB::instance()->setAlbumImage( artist(), album(), img );
-       m_coverImagePath = CollectionDB::instance()->findImageByArtistAlbum( m_artist, m_album, 0 );
+       m_coverImagePath = CollectionDB::instance()->albumImage( m_artist, m_album, 0 );
        loadCover();
     }
 }

@@ -753,7 +753,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             << escapeHTML( currentTrack.album() )
             << escapeHTMLAttr( currentTrack.artist() )
             << escapeHTMLAttr( currentTrack.album() )
-            << escapeHTMLAttr( CollectionDB::instance()->albumImage( currentTrack.artist(), currentTrack.album() ) )
+            << escapeHTMLAttr( CollectionDB::instance()->albumImage( currentTrack ) )
             << i18n( "Click for information from amazon.%1, right-click for menu." ).arg( AmarokConfig::amazonLocale() )
             << i18n( "Look up this track at musicbrainz.com" )
             << escapeHTMLAttr( currentTrack.artist() )

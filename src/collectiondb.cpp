@@ -746,7 +746,7 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage
 QString
 CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width ) 
 {
-    QCString widthKey = makeWidthKey ( width );
+    QCString widthKey = makeWidthKey( width );
     QCString tagKey = md5sum( trackInformation.url().path(), trackInformation.artist() ); //what's more unique than the file name?
     QDir tagCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/tagcover/" ) );
 
@@ -846,21 +846,11 @@ CollectionDB::albumImage( const uint artist_id, const uint album_id, const uint 
 
 
 QString
-CollectionDB::albumImage(const QString &artist, const QString &album, uint width ) 
+CollectionDB::albumImage( const QString &artist, const QString &album, uint width ) 
 {
     // we aren't going to need a 1x1 size image. this is just a quick hack to be able to show full size images.
     if ( width == 1) width = AmarokConfig::coverPreviewSize();
-  
-    // I hate accessing big static globals directly... any chance that bundle is undefined?
-    const MetaBundle &currentTrack = EngineController::instance()->bundle();
-  
-    // ok, let't first have a look into the file if it has it's own image:
-    QString path = findImageByMetabundle(currentTrack, width);
-  
-    if ( !path.isNull() )
-        return path;
-    else
-        return findImageByArtistAlbum( artist, album, width );
+    return findImageByArtistAlbum( artist, album, width );
 }
 
 
@@ -876,6 +866,7 @@ CollectionDB::albumImage( MetaBundle trackInformation, uint width )
 
     return path;
 }
+
 
 QCString 
 CollectionDB::makeWidthKey( uint width ) 
