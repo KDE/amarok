@@ -106,11 +106,18 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
 
         // In case you are wondering, the PLAY and PAUSE buttons are created here!
 
-                         new NavButton( m_pFrameButtons, "player_start", ec, SLOT( previous()  ) );
-        m_pButtonPlay  = new NavButton( m_pFrameButtons, "player_play", ec, SLOT(play()) );
-        m_pButtonPause = new NavButton( m_pFrameButtons, "player_pause", ec, SLOT(pause()) );
-                         new NavButton( m_pFrameButtons, "player_stop", ec, SLOT( stop()  ) );
-                         new NavButton( m_pFrameButtons, "player_end", ec, SLOT( next()  ) );
+        //FIXME change the names of the icons to reflect kde names so we can fall back to them if necessary
+                         new NavButton( m_pFrameButtons, "prev", ec, SLOT( previous() ) );
+        m_pButtonPlay  = new NavButton( m_pFrameButtons, "play", ec, SLOT( play()) );
+        m_pButtonPause = new NavButton( m_pFrameButtons, "pause", ec, SLOT( pause()) );
+                         new NavButton( m_pFrameButtons, "stop", ec, SLOT( stop() ) );
+                         new NavButton( m_pFrameButtons, "next", ec, SLOT( next() ) );
+                         
+//                          new NavButton( m_pFrameButtons, "player_start", ec, SLOT( previous()  ) );
+//         m_pButtonPlay  = new NavButton( m_pFrameButtons, "player_play", ec, SLOT(play()) );
+//         m_pButtonPause = new NavButton( m_pFrameButtons, "player_pause", ec, SLOT(pause()) );
+//                          new NavButton( m_pFrameButtons, "player_stop", ec, SLOT( stop()  ) );
+//                          new NavButton( m_pFrameButtons, "player_end", ec, SLOT( next()  ) );
 
         m_pButtonPlay->setToggleButton( true );
         m_pButtonPause->setToggleButton( true );
@@ -698,21 +705,26 @@ void PlayerWidget::setEffectsWindowShown( bool on )
 }
 
 
-
-#include <kiconloader.h>
+// #include <kiconloader.h>
 NavButton::NavButton( QWidget *parent, const QString &icon, QObject *receiver, const char *slot )
   : QPushButton( parent )
 {
-    KIconLoader &iconLoader = *KGlobal::iconLoader();
-    setIconSet( iconLoader.loadIconSet( icon, KIcon::Toolbar, KIcon::SizeSmall ) );
+    QString up = QString( "b_%1" ).arg( icon );
+//     QString down = QString( "b_%1_down" ).arg( icon );
+    QIconSet iconSet;
+    iconSet.setPixmap( getPNG( up   ), QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
+//     iconSet.setPixmap( getPNG( down ), QIconSet::Automatic, QIconSet::Normal, QIconSet::On  );
+    setIconSet( iconSet );
 
+    // System icons        
+//    KIconLoader &iconLoader = *KGlobal::iconLoader();
+//    setIconSet( iconLoader.loadIconSet( icon, KIcon::Toolbar, KIcon::SizeSmall ) );
+    
+    setFocusPolicy( QWidget::NoFocus );
     setFlat( true );
-    setFocusPolicy( NoFocus ); //commanded by Markey and his kin
 
     connect( this, SIGNAL( clicked() ), receiver, slot );
 }
-
-
 
 
 IconButton::IconButton( QWidget *parent, const QString &icon, const char *signal )
@@ -726,9 +738,11 @@ IconButton::IconButton( QWidget *parent, const QString &icon, const char *signal
     setFocusPolicy( NoFocus ); //we have no way to show focus on these widgets currently
 }
 
+
 void IconButton::drawButton( QPainter *p )
 {
     p->drawPixmap( 0, 0, (isOn()||isDown()) ? m_down : m_up );
 }
+
 
 #include "playerwindow.moc"

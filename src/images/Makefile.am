@@ -2,15 +2,10 @@ imagesdir = $(kde_datadir)/amarok/images
 
 images_DATA = \
     b_next.png \
-    b_next_down.png \
     b_pause.png \
-    b_pause_down.png \
     b_play.png \
-    b_play_down.png \
     b_prev.png \
-    b_prev_down.png \
     b_stop.png \
-    b_stop_down.png \
     bucky.png \
     description.png \
     eq_active2.png \
