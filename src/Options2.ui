@@ -20,9 +20,6 @@
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
-    <property name="caption">
-        <string>Options2</string>
-    </property>
     <grid>
         <property name="name">
             <cstring>unnamed</cstring>
@@ -206,7 +203,7 @@
                                                 </size>
                                             </property>
                                             <property name="text">
-                                                <string>Contextbrowser font:</string>
+                                                <string>Context-browser font:</string>
                                             </property>
                                             <property name="whatsThis" stdset="0">
                                                 <string>The font to use in the playlist window.</string>
@@ -257,9 +254,6 @@
                     </property>
                     <property name="text">
                         <string>&amp;Use custom fonts</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+U</string>
                     </property>
                     <property name="checked">
                         <bool>false</bool>
