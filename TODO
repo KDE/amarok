@@ -6,6 +6,9 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  <markey> Try to make amarokapp _not_ link to libengine. It's nonsense really, but currently needed
+           cause the linker complains about unresolved symbols.
+
   <mxcl>   If you drag and drop the cool-streams playlist without expanding it first, it doesn't work properly
 
   <mxcl>   Inline editing of tags frequently crashes, muesli is this due to that bug from before?
