@@ -52,7 +52,6 @@ GstEngine::eos_cb( GstElement*, GstElement* )
 {
     kdDebug() << k_funcinfo << endl;
 
-    gst_element_set_state( GST_ELEMENT( pObject->m_pThread ), GST_STATE_READY );
     //     pObject->emit endOfTrack();
 }
 
@@ -243,7 +242,7 @@ GstEngine::position() const
     GstFormat fmt = GST_FORMAT_TIME;
     //value will hold the current time position in nanoseconds
     gint64 value;
-    gst_element_query( m_pAudiosink, GST_QUERY_POSITION, &fmt, &value );
+    gst_element_query( m_pSpider, GST_QUERY_POSITION, &fmt, &value );
     
     return (long) ( value / GST_MSECOND ); // ns -> ms
 }
