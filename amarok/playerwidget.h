@@ -24,6 +24,7 @@
 #include <qslider.h>
 
 #include <ksystemtray.h>
+#include <khelpmenu.h> //inlined helpmenu()
 
 class QBitmap;
 class QBoxLayout;
@@ -108,6 +109,7 @@ class PlayerWidget : public QWidget
         void setScroll( QString text, QString bitrate, QString samplerate );
         void drawScroll();
         void timeDisplay( bool remaining, int hours, int minutes, int seconds );
+        const KPopupMenu *helpMenu() const { return m_helpMenu->menu(); }
 
         void show();
         void hide();
@@ -139,8 +141,6 @@ class PlayerWidget : public QWidget
         int m_IdRandomMode;
         ArtsConfigWidget *m_pPlayObjConfigWidget;
 
-        //originally AmarokSystray::wheelEvent was a friend of this class,
-        //but it's seem silly when it's safe to just make this function public
         void wheelEvent( QWheelEvent *e );
 
     public slots:
@@ -183,6 +183,8 @@ class PlayerWidget : public QWidget
         QPixmap *m_pTimePixmap;
         QPixmap *m_pTimeBgPixmap;
         QPixmap *m_pTimeComposePixmap;
+
+        KHelpMenu *m_helpMenu;
 
         int m_timeDisplayX;
         int m_timeDisplayY;

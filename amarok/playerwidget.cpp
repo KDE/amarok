@@ -99,22 +99,31 @@ void AmarokSlider::mousePressEvent( QMouseEvent *e )
 
 // AmarokSystray
 // FIXME Move implementation to separate sourcefile
-AmarokSystray::AmarokSystray( PlayerWidget *child, KActionCollection *ac ) : KSystemTray( child )
+AmarokSystray::AmarokSystray( PlayerWidget *playerWidget, KActionCollection *ac ) : KSystemTray( playerWidget )
 {
     //    setPixmap( KSystemTray::loadIcon("amarok") ); // @since 3.2
     setPixmap( kapp->miniIcon() ); // 3.1 compatibility for 0.7
 
-    // berkus: Since it doesn't come to you well, i'll explain it here:
+    // <berkus> Since it doesn't come to you well, i'll explain it here:
     // We put playlist actions last because: 1) you don't want to accidentally
     // switch amaroK off by pushing rmb on tray icon and then suddenly lmb on the
     // bottom item. 2) if you do like in case 1) the most frequent operation is to
     // change to next track, so it must be at bottom. [usability]
+
+    //<mxcl> usability is much more than just making it so you don't have to move the mouse
+    //far, in fact that's a tiny segment of the overly broad term, "usability" and is called ergonomics.
+    //Another element of usability, and far more important here than ergonomics, is consistency.
+    //Every KDE app has the quit button at the bottom. We should do the same.
+    //Also having the actions at the bottom for the reasons described only works when the panel is
+    //at the bottom of the screen. This can not be guarenteed.
+    //Finally the reasons berkus gave are less relevant now since all the actions can be controlled by
+    //various mouse actions over the tray icon.
+
     contextMenu()->clear();
     contextMenu()->insertTitle( kapp->miniIcon(), kapp->caption() );
 
     ac->action( "options_configure" )->plug( contextMenu() );
-    contextMenu()->insertItem( i18n( "&Help" ), ( new KHelpMenu(
-                   this, KGlobal::instance()->aboutData() ) )->menu() );
+    contextMenu()->insertItem( i18n( "&Help" ), (QPopupMenu *)playerWidget->helpMenu() );
     ac->action( "file_quit" )->plug( contextMenu() );
 
     contextMenu()->insertSeparator();
@@ -175,13 +184,14 @@ void AmarokSystray::mousePressEvent( QMouseEvent *e )
 // CLASS PlayerWidget ------------------------------------------------------------
 
 PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
-        : QWidget( parent, name ),
-        m_pActionCollection( new KActionCollection( this ) ),
-        m_pPopupMenu( NULL ),
-        m_pVis( NULL ),
-        m_pPlayObjConfigWidget( NULL ),
-        m_visTimer( new QTimer( this ) ),
-        m_pDcopHandler( new AmarokDcopHandler )
+        : QWidget( parent, name )
+        , m_pActionCollection( new KActionCollection( this ) )
+        , m_pPopupMenu( NULL )
+        , m_pVis( NULL )
+        , m_pPlayObjConfigWidget( NULL )
+        , m_visTimer( new QTimer( this ) )
+        , m_helpMenu( new KHelpMenu( this, KGlobal::instance()->aboutData(), m_pActionCollection ) )
+        , m_pDcopHandler( new AmarokDcopHandler )
 {
     setCaption( "amaroK" );
     setPaletteForegroundColor( pApp->m_fgColor );
@@ -194,7 +204,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     KStdAction::keyBindings( this, SLOT( slotConfigShortcuts() ), m_pActionCollection );
     KStdAction::keyBindings( this, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection,
                              "options_configure_global_keybinding" )->
-    setText( i18n( "Configure Global Shortcuts" ) );
+    setText( i18n( "Configure Global Shortcuts..." ) );
     KStdAction::preferences( pApp, SLOT( slotShowOptions() ), m_pActionCollection );
     KStdAction::quit( pApp, SLOT( quit() ), m_pActionCollection );
     KStdAction::copy( this, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection,
@@ -585,34 +595,24 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             m_pPopupMenu = new QPopupMenu( this );
             m_pPopupMenu->setCheckable( true );
 
-            m_pActionCollection->action( "help_about_app"  )->plug( m_pPopupMenu );
-            m_pActionCollection->action( "help_contents"   )->plug( m_pPopupMenu );
-            m_pActionCollection->action( "help_show_tip"   )->plug( m_pPopupMenu );
-            m_pActionCollection->action( "help_report_bug" )->plug( m_pPopupMenu );
+            m_IdRepeatTrack = m_pPopupMenu->insertItem( i18n( "Repeat &Track" ), pApp, SLOT( slotSetRepeatTrack() ) );
+            m_IdRepeatPlaylist = m_pPopupMenu->insertItem( i18n( "Repeat Play&list" ), pApp, SLOT( slotSetRepeatPlaylist() ) );
+            m_IdRandomMode = m_pPopupMenu->insertItem( i18n( "Random &Mode" ), pApp, SLOT( slotSetRandomMode() ) );
 
             m_pPopupMenu->insertSeparator();
 
-            m_pActionCollection->action( "options_configure" )->plug( m_pPopupMenu );
+            m_pPopupMenu->insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( slotConfigEffects() ) );
+            m_IdConfPlayObject = m_pPopupMenu->insertItem( i18n( "Configure &PlayObject..." ), this, SLOT( slotConfigPlayObject() ) );
+
+            m_pPopupMenu->insertSeparator();
+
             m_pActionCollection->action( "options_configure_keybinding" )->plug( m_pPopupMenu );
             m_pActionCollection->action( "options_configure_global_keybinding" )->plug( m_pPopupMenu );
+            m_pActionCollection->action( "options_configure" )->plug( m_pPopupMenu );
 
             m_pPopupMenu->insertSeparator();
 
-            m_pPopupMenu->insertItem( i18n( "Effects" ), pApp, SLOT( slotConfigEffects() ) );
-
-            m_IdConfPlayObject = m_pPopupMenu->insertItem( i18n( "Configure PlayObject" ),
-                                 this, SLOT( slotConfigPlayObject() ) );
-
-            m_pPopupMenu->insertSeparator();
-
-            m_IdRepeatTrack = m_pPopupMenu->insertItem( i18n( "Repeat Track" ),
-                              pApp, SLOT( slotSetRepeatTrack() ) );
-
-            m_IdRepeatPlaylist = m_pPopupMenu->insertItem( i18n( "Repeat Playlist" ),
-                                 pApp, SLOT( slotSetRepeatPlaylist() ) );
-
-            m_IdRandomMode = m_pPopupMenu->insertItem( i18n( "Random Mode" ),
-                             pApp, SLOT( slotSetRandomMode() ) );
+            m_pPopupMenu->insertItem( i18n( "&Help" ), (QPopupMenu*)helpMenu() );
 
             m_pPopupMenu->insertSeparator();
 
