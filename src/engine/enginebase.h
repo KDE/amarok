@@ -17,7 +17,6 @@
 // You must handle your own media, do not rely on amaroK to call stop() before play() etc.
 
 
-
 namespace Engine
 {
     typedef std::vector<int16_t> Scope;
@@ -32,67 +31,118 @@ namespace Engine
     {
     Q_OBJECT
 
+    signals:
+        /** Emitted when end of current track is reached. */
+        void trackEnded();
+        
+        /** Transmits status message. */
+        void statusText( const QString& );
+        
+        /** Signals a change in the engine's state. */
+        void stateChanged( Engine::State );
+
     public:
         virtual ~Base();
 
-        //return false and the engine will not be used
+        /**
+         * Initializes the engine. Must be called after the engine was loaded.
+         * @return True if initialization was successful.
+         */
         virtual bool init() = 0;
 
-        //can you decode this media? make this function fast!
+        /**
+         * Determines if the engine is able to play a given URL.
+         * @param url The URL of the file/stream.
+         * @return True if we can play the URL.
+         */
         virtual bool canDecode( const KURL &url ) = 0;
 
-        //are you streaming the currently playing media?
-        //TODO instead make a method that can say, no, most of this stuff is not available.
-        // <markey> The engine does not determine this. EngineController does.
+        /**
+         * Determines if current track is a stream.
+         * @return True if track is a stream.
+         */
         inline bool isStream() { return m_isStream; }
 
-        //prepare the engine to play url, note that play(KURL) calls load(KURL) then play()
-        //the very minimum thing you must do here is call the base implementation
-        //ensure you return false if you fail to prepare the engine for url
+        /** 
+         * Load new track for playing.
+         * @param url URL to be played.
+         * @param stream True if URL is a stream.
+         * @return True for success.
+         */
         virtual bool load( const KURL &url, bool stream = false );
 
-        //convenience function for amaroK to use
+        /** 
+         * Load new track and start Playback. Convenience function for amaroK to use.
+         * @param url URL to be played.
+         * @param stream True if URL is a stream.
+         * @return True for success.
+         */
         bool play( const KURL &u, bool stream = false ) { return load( u, stream ) && play(); }
 
-        //return success as a bool, emit stateChanged
-        //do not unpause in this function, _always_ restart the media at m_url
-        //start the playback at offset milliseconds
-        //you should play m_url
+        /** 
+         * Start playback.
+         * @param offset Start playing at @p msec position.
+         * @return True for success.
+         */
         virtual bool play( uint offset = 0 ) = 0;
 
-        //you must emit stateChanged()
-        // <markey> stop() also unloads the current track.
+        /** Stops playback */
         virtual void stop() = 0;
 
-        //this must toggle the pause state
-        //emit stateChanged
+        /** Pauses playback */
         virtual void pause() = 0;
 
-        //Some important points
-        // If you are Playing, Paused or Idle (ie loaded), you will handle play/pause/stop gracefully
-        // You will not be expected to handle these functions if Empty
+        /** Get current engine status. */
         virtual State state() const = 0;
 
+        /** Get Time position (msec). */
         virtual uint position() const = 0;
+        
+        /**
+         * Jump to new time position.
+         * @param ms New position.
+         */
         virtual void seek( uint ms ) = 0;
 
-        inline bool   isMixerHW()      const { return m_mixer != -1; }
-        inline bool   loaded()         const { return state() != Empty; }
-        inline uint   volume()         const { return m_volume; }
-        inline bool   hasEffects()     const { return m_effects; }
-        inline bool   hasXFade()       const { return m_hasXFade; }
-        StreamingMode streamingMode()  const { return m_streamingMode; }
-        Effects&      effects()        const { return *m_effects; } //WARNING! calling when there are none will crash amaroK!
+        /** Returns whether we are using the hardware volume mixer */
+        inline bool isMixerHW() const { return m_mixer != -1; }
+        
+        /**
+         * Determines whether media is currently loaded.
+         * @return True if media is loaded, system is ready to play.
+         */
+        inline bool loaded() const { return state() != Empty; }
+        
+        inline uint volume() const { return m_volume; }
+        inline bool hasEffects() const { return m_effects; }
+        
+        /**
+         * Determines whether the engine supports crossfading.
+         * @return True if crossfading is supported.
+         */
+        inline bool hasXFade() const { return m_hasXFade; }
+        
+        /**
+         * Determines how streaming is handled with this engine.
+         * @return The supported streaming mode.
+         */
+        StreamingMode streamingMode() const { return m_streamingMode; }
+        
+        Effects& effects() const { return *m_effects; } //WARNING! calling when there are none will crash amaroK!
 
+        /**
+         * Fetch the current audio sample buffer.
+         * @return Audio sample buffer. 
+         */
         virtual const Scope &scope() { return m_scope; };
 
         bool setHardwareMixer( bool );
-        void setVolume( uint pc ) { m_volume = pc; if( isMixerHW() ) setVolumeHW( pc ); else setVolumeSW( pc ); }
-
-    signals:
-        void trackEnded();
-        void statusText( const QString& );
-        void stateChanged( Engine::State );
+        
+        /**
+         * Set new volume value.
+         * @param value Volume in range 0 to 100.
+         */
+        void setVolume( uint value ) { m_volume = value; if( isMixerHW() ) setVolumeHW( value ); else setVolumeSW( value ); }
 
     protected:
         Base( StreamingMode = NoStreaming, bool hasConfigure = false, bool hasXFade = false, Effects* = 0 );
@@ -103,8 +153,8 @@ namespace Engine
         void setEffects( Effects *e ) { m_effects = e; }
         void setStreamingMode( StreamingMode m ) { m_streamingMode = m; }
 
-        Base( const Base& ); //disable
-        const Base &operator=( const Base& ); //disable
+        Base( const Base& ); //disable copy constructor
+        const Base &operator=( const Base& ); //disable copy constructor
 
         int           m_xfadeLength;
 
