@@ -292,6 +292,7 @@ Playlist::insertMedia( KURL::List list, int options )
         insertMediaInternal( addMe, after, directPlay );
 
         // find the songs and queue them.
+        // FIXME: for some reason, the iteration on the entire playlist does not find the newly inserted items...
         for (MyIt it( this, 0 ); *it; ++it ) {
             jt = list.find( (*it)->url() );
 
@@ -301,7 +302,6 @@ Playlist::insertMedia( KURL::List list, int options )
                 list.remove( jt );
             }
         }
-        refreshNextTracks();
         return;
 
     }
@@ -499,14 +499,16 @@ Playlist::queue( QListViewItem *item )
     item->setSelected( false ); //for prettiness
 
     if( isQueued )
-    {
         //remove the item, this is better way than remove( item )
         m_nextTracks.remove( queueIndex ); //sets current() to next item
-        refreshNextTracks(); //from current()
-    }
-    else m_nextTracks.append( item );
-
+    
+    else 
+        m_nextTracks.append( item );
+        
+    refreshNextTracks(); // from current()
+    
     //NOTE "item" is repainted due to the setSelected() call
+    // ^__ not if called in bulk by context/collection browsers
 
     updateNextPrev();
     #undef item
