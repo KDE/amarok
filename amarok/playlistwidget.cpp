@@ -180,6 +180,20 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const ch
     timer->start( 150 );
 
     restoreLayout( KGlobal::config(), "PlaylistColumnsLayout" );
+
+    /*
+        TODO the following actually works!
+             so we should be able to take a qlistviewitem from the view and hand that
+             to loader threads, then they can actually make playlistitems in the thread
+             rather than post just data here for manufacture
+        NOTE is it worth it?
+
+    QListViewItem *fred = new PlaylistItem( this, 0, KURL(), "moo", 9 );
+    takeItem( fred );
+    new PlaylistItem( this, fred, KURL(), "moo2", 9 );
+
+    insertItem( fred );
+    */
 }
 
 
@@ -193,6 +207,12 @@ PlaylistWidget::~PlaylistWidget()
        m_weaver->halt();
        m_weaver->wait();
    }
+
+   if( AmarokConfig::savePlaylist() ) saveXML( defaultPlaylistPath() );
+
+   //speed up quit a little
+   KListView::clear();
+   blockSignals( true );
 }
 
 
@@ -205,7 +225,7 @@ void PlaylistWidget::showCurrentTrack() { ensureItemVisible( currentTrack() ); }
 
 QString PlaylistWidget::defaultPlaylistPath() //static
 {
-    return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "current.m3u";
+    return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "current.xml";
 }
 
 
@@ -350,22 +370,29 @@ void PlaylistWidget::saveXML( const QString &path ) const
     if( !file.open( IO_WriteOnly ) ) return;
 
     QTextStream stream( &file );
-    QString body  = "  <tag name=\"%1\">%2</tag>\n";
-    QString open1 = " <item url=\"", open2 = "\">\n";
-    QString close = " </item>\n";
+    QString body  = "<%1>%2</%1>\n";
+    QString open1 = "<item url=\"", open2 = "\">\n";
+    QString close = "</item>\n";
 
     stream << "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
-//    << name=\"amaroK playlist\" version=\"0.1\">\n";
+    stream << "<playlist product=\"amaroK\" version=\"1\">\n";
 
     for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
     {
         stream << open1 << item->url().url() << open2;
-        for( int x = 0; x < columns(); ++x )
-            stream << body.arg( columnText( x ), item->exactText( x ).replace( '&', "&quot;" ).replace( '<', "&lt;" ) );
+
+        //TODO speed up, cache columnNames (if would help), etc.
+        //NOTE we don't bother storing TrackName as this is based on the URL anyway
+
+        for( int x = 1; x < columns(); ++x )
+        {
+            if( !item->exactText(x).isEmpty() )
+                stream << body.arg( columnText(x), item->exactText(x).replace( '&', "&quot;" ).replace( '<', "&lt;" ) );
+        }
         stream << close;
     }
 
-    stream << "</xml>\n";
+    stream << "</playlist>\n";
     file.close();
 }
 
@@ -754,7 +781,7 @@ bool PlaylistWidget::saveState( QStringList &list )
       m_undoCounter %= AmarokConfig::undoLevels();
       fileName.setNum( m_undoCounter++ );
       fileName.prepend( m_undoDir.absPath() + "/" );
-      fileName.append( ".m3u" );
+      fileName.append( ".xml" );
 
       if ( list.count() >= (uint)AmarokConfig::undoLevels() )
       {
@@ -762,7 +789,7 @@ bool PlaylistWidget::saveState( QStringList &list )
          list.pop_front();
       }
 
-      saveM3U( fileName );
+      saveXML( fileName );
       list.append( fileName );
 
       kdDebug() << "Saved state: " << fileName << endl;

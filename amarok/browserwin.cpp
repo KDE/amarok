@@ -170,8 +170,8 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     //<CollectionBrowser>
         m_browsers->addPage( new CollectionBrowser( "CollectionBrowser" ), i18n( "Collection Browser" ), "contents" );
     //</CollectionBrowser>
-#endif 
-    
+#endif
+
     { //<StreamBrowser>
         QVBox   *vb = new QVBox( 0, "StreamBrowser" );
         QWidget *b  = new QPushButton( "&Fetch Stream Information", vb );
@@ -198,16 +198,6 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 
     QToolTip::add( m_lineEdit, i18n( "Enter filter string" ) );
 }
-
-
-BrowserWin::~BrowserWin()
-{
-    //TODO save at regular intervals, (use the QWidget built in timer as they have less overhead)
-
-    if( AmarokConfig::savePlaylist() )
-        m_playlist->saveM3U( m_playlist->defaultPlaylistPath() );
-}
-
 
 ///////// public interface
 

@@ -69,7 +69,7 @@ QString PlaylistItem::stringStore[STRING_STORE_SIZE];
 
 
 PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KURL &u, const QString &title, const int length )
-      : KListViewItem( parent, lvi, ( u.protocol() == "file" ) ? u.fileName() : u.prettyURL() )
+      : KListViewItem( parent, lvi, trackName( u ) )
 #ifdef CORRUPT_FILE
       , corruptFile( FALSE ) //our friend threadweaver will take care of this flag
 #endif
@@ -81,6 +81,24 @@ PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KU
     KListViewItem::setText( 8, u.directory().section( '/', -1 ) );
     setText( 9, MetaBundle::prettyLength( length ) );
 }
+
+
+PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KURL &u, const QDomNode &n )
+      : KListViewItem( parent, lvi, trackName( u ) )
+      , m_url( u )
+{
+    setDragEnabled( true );
+
+    //TODO try to speed this up, searching for the text this way isn't best, would be nice
+    //     to have a small hash table that can be created when loading xml and sestroyed after (if cheap in terms of code to do)
+    //     and then iterate over the nodes via nextSibling()
+
+    for( int x = 1; x < parent->columns(); ++x )
+    {
+        KListViewItem::setText( x, n.namedItem( parent->columnText( x ) ).toElement().text() );
+    }
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC METHODS

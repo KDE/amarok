@@ -45,7 +45,6 @@ class BrowserWin : public QWidget//, public KXMLGuiClient
 
     public:
         BrowserWin( QWidget* = 0, const char* = 0 );
-        ~BrowserWin();
 
         //convenience functions
         void insertMedia( const QString& );

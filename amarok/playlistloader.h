@@ -53,8 +53,9 @@ private:
     void translate( QString &, KFileItemList & ); //turns a directory into a KURL::List
 #endif
     void loadLocalPlaylist( const QString &, int );
-    KURL::List loadM3u( QTextStream &, const QString & );
-    void loadPls( QTextStream & );
+    void loadM3U( QTextStream &, const QString & );
+    void loadPLS( QTextStream & );
+    void loadXML( QTextStream & );
 
     KURL::List      m_list;
     QListViewItem  *m_after;  //accessed by GUI thread _only_

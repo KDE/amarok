@@ -12,6 +12,7 @@
 #include <kurl.h>      //stack allocated
 
 class QColorGroup;
+class QDomNode;
 class QListViewItem;
 class QPainter;
 class MetaBundle;
@@ -21,6 +22,7 @@ class PlaylistItem : public KListViewItem
 {
     public:
         PlaylistItem( PlaylistWidget*, QListViewItem*, const KURL&, const QString& = "", const int length = 0 );
+        PlaylistItem( PlaylistWidget*, QListViewItem*, const KURL&, const QDomNode& );
 
         QString exactText( int col ) const { return KListViewItem::text( col ); }
         void setText( const MetaBundle& );
@@ -56,6 +58,8 @@ class PlaylistItem : public KListViewItem
         QString text( int column ) const;
         int     compare( QListViewItem*, int, bool ) const;
         void    paintCell( QPainter*, const QColorGroup&, int, int, int );
+
+        static QString trackName( const KURL &u ) { return u.protocol() == "file" ? u.fileName() : u.prettyURL(); }
 
         const KURL m_url;
 

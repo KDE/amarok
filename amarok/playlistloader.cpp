@@ -49,6 +49,7 @@
  #define LSTAT stat64
 #endif
 
+
 /*
  * For pls and m3u specifications see: http://forums.winamp.com/showthread.php?s=dbec47f3a05d10a3a77959f17926d39c&threadid=65772
  */
@@ -200,40 +201,42 @@ void PlaylistLoader::postBundle( const KURL &u, const QString &s, const int i )
 
 int PlaylistLoader::isPlaylist( const QString &path ) //static
 {
-   //TODO investigate faster methods
-   //TODO try to achieve retVal optimisation
+   const QString ext = path.right( 4 ).lower();
 
-        if( path.endsWith( ".m3u", false ) ) return 1;
-   else if( path.endsWith( ".pls", false ) ) return 2;
+        if( ext == ".m3u" ) return 1;
+   else if( ext == ".pls" ) return 2;
+   else if( ext == ".xml" ) return 3;
    else return 0;
 }
 
 
 void PlaylistLoader::loadLocalPlaylist( const QString &path, int type )
 {
-   QFile file( path );
+    QFile file( path );
 
-      if ( file.open( IO_ReadOnly ) )
-      {
+    if( file.open( IO_ReadOnly ) )
+    {
         QTextStream stream( &file );
 
         switch( type )
         {
         case 1:
         {
-           KURL::List urls = loadM3u( stream, path.left( path.findRev( '/' ) + 1 ) ); //TODO verify that relative playlists work!!
-           QApplication::postEvent( m_listView, new PlaylistFoundEvent( path, urls ) );
-           break;
+            loadM3U( stream, path.left( path.findRev( '/' ) + 1 ) ); //TODO verify that relative playlists work!!
+            break;
         }
         case 2:
-           loadPls( stream );
-           break;
+            loadPLS( stream );
+            break;
+        case 3:
+            loadXML( stream );
+            break;
         default:
-           break;
+            break;
         }
-      }
+    }
 
-   file.close();
+    file.close();
 }
 
 
@@ -356,10 +359,8 @@ void PlaylistLoader::translate( QString &path, KFileItemList &list )
 }
 
 
-KURL::List PlaylistLoader::loadM3u( QTextStream &stream, const QString &dir )
+void PlaylistLoader::loadM3U( QTextStream &stream, const QString &dir )
 {
-    KURL::List urls;
-
     QString str, title;
     int length = MetaBundle::Undetermined; // = -2
 
@@ -380,20 +381,16 @@ KURL::List PlaylistLoader::loadM3u( QTextStream &stream, const QString &dir )
                 str.prepend( dir );
 
             KURL url = KURL::fromPathOrURL( str );
-            urls.append( url );
-
             postBundle( url, title, length );
 
             length = MetaBundle::Undetermined;
             title = QString();
         }
     }
-
-    return urls;
 }
 
 
-void PlaylistLoader::loadPls( QTextStream &stream )
+void PlaylistLoader::loadPLS( QTextStream &stream )
 {
     //FIXME algorithm works, but is rather pants!
 
@@ -423,6 +420,31 @@ void PlaylistLoader::loadPls( QTextStream &stream )
     }
 }
 
+#include <qdom.h>
+void PlaylistLoader::loadXML( QTextStream &stream )
+{
+    QDomDocument d;
+    if( !d.setContent(stream.device()) ) kdDebug() << "Could not load XML\n";
+
+    QDomNode
+    n = d.namedItem( "playlist" );
+    n = n.firstChild();
+
+    const QString ITEM( "item" ); //so we don't construct the QStrings all the time
+    const QString URL( "url" );
+
+    while( !n.isNull() && n.nodeName() == ITEM )
+    {
+        const QDomElement e = n.toElement(); if( e.isNull() ) continue;
+
+        //TODO  check this is safe, is it ok to cause paint Events from this thread?
+        //TODO  if this is safe you may want to do it all like this
+        //FIXME may be non-crash bugs due to non serialised access to m_after
+        m_after = new PlaylistItem( m_listView, m_after, e.attribute( URL ), n );
+
+        n = n.nextSibling();
+    }
+}
 
 
 PlaylistItem*
