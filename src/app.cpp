@@ -34,7 +34,6 @@ email                : markey@web.de
 #include "tracktooltip.h"        //engineNewMetaData()
 
 #include <kcmdlineargs.h>        //initCliArgs()
-#include <kconfigdialog.h>       //slotConfigAmarok()
 #include <kdebug.h>
 #include <kedittoolbar.h>        //slotConfigToolbars()
 #include <kglobalaccel.h>        //initGlobalShortcuts()

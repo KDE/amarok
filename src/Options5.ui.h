@@ -23,6 +23,9 @@ email                : fh@ez.no
 ** place of a destructor.
 *****************************************************************************/
 
+#include "configdialog.h"
+
+
 void Options5::init()
 {
     m_pOSDPreview = new OSDPreviewWidget( "amaroK" );
@@ -35,10 +38,12 @@ void Options5::init()
         kcfg_OsdScreen->insertItem( QString::number( i ) );
 }
 
+
 void Options5::destroy()
 {
     delete m_pOSDPreview;
 }
+
 
 void Options5::fontChanged(const QFont &font )
 {
@@ -81,6 +86,9 @@ void Options5::osdPositionChanged( int screen, OSDWidget::Position alignment, in
 
     kcfg_OsdScreen->blockSignals( false );
     kcfg_OsdAlignment->blockSignals( false );
+
+    AmarokConfigDialog* conf = static_cast<AmarokConfigDialog*>( KConfigDialog::exists( "settings" ) );
+    if ( conf ) conf->triggerChanged();
 }
 
 

@@ -75,7 +75,8 @@ class App : public KApplication, public EngineObserver
         friend class PlaylistWindow; //requires access to applySettings()
 
         // ATTRIBUTES ------
-        KActionCollection *m_pActionCollection;
+        KActionCollection   *m_pActionCollection;
+        amaroK::OSD         *m_pOSD;
 
         // STATICS ------
         static const int SCOPE_SIZE = 9; //= 2**9 = 512
@@ -107,7 +108,6 @@ class App : public KApplication, public EngineObserver
         PlaylistWindow      *m_pPlaylistWindow;
         amaroK::DcopHandler *m_pDcopHandler;
         amaroK::TrayIcon    *m_pTray;
-        amaroK::OSD         *m_pOSD;
 };
 
 

@@ -22,6 +22,7 @@ email                : markey@web.de
 #include "app.h"
 #include "configdialog.h"
 #include "enginecontroller.h"
+#include "osd.h"
 #include "pluginmanager.h"
 
 #include <qlineedit.h>
@@ -29,13 +30,16 @@ email                : markey@web.de
 #include <qlabel.h>
 #include <qcheckbox.h>
 
-#include <kconfigdialog.h>
 #include <kdebug.h>
 #include <klocale.h>
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// PUBLIC
+//////////////////////////////////////////////////////////////////////////////////////////
 
 AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConfigSkeleton *config )
         : KConfigDialog( parent, name, config )
+        , m_changed( false )
 {
     //we must manage some widgets manually, since KConfigDialogManager can't
     //handle dynamic parameters (at least I don't know how to do it)
@@ -74,6 +78,14 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 }
 
 
+void AmarokConfigDialog::triggerChanged()
+{
+    // Activate the "apply" button
+    m_changed = true;
+    settingsChangedSlot();
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // PROTECTED SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -92,8 +104,11 @@ void AmarokConfigDialog::updateSettings()
         AmarokConfig::setSoundOutput( m_pSoundOutput->currentText() );
     AmarokConfig::setSoundDevice( m_pSoundDevice->text() );
 
+    pApp->m_pOSD->setOffset( OSDPreviewWidget::m_previewOffset.x(), OSDPreviewWidget::m_previewOffset.y() );
+    
     emit settingsChanged();
     updateWidgets();
+    m_changed = false;
 }
 
 
@@ -186,8 +201,8 @@ bool AmarokConfigDialog::hasChanged()
     
     if ( m_pSoundDevice->isEnabled() )  
         changed |= m_pSoundDevice->text()        != AmarokConfig::soundDevice();
-
-    return changed;
+       
+    return m_changed || changed;
 }
 
 

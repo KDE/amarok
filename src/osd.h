@@ -12,9 +12,8 @@
   email:     muesli@chareit.net
 */
 
-
-#ifndef OSD_H
-#define OSD_H
+#ifndef AMAROK_OSD_H
+#define AMAROK_OSD_H
 
 #include <qpixmap.h>
 #include <qwidget.h> //baseclass
@@ -39,14 +38,14 @@ class OSDWidget : public QWidget
           BottomLeft,
           BottomRight,
         };
-
+ 
         OSDWidget(const QString &appName, QWidget *parent = 0, const char *name = "osd");
         void setDuration(int ms);
         void setFont(QFont newfont);
         void setShadow(bool shadow);
         void setTextColor(QColor newcolor);
         void setBackgroundColor(QColor newColor);
-        void setOffset(int x, int y);
+        void setOffset( int x, int y );
         void setPosition(Position pos);
         void setScreen(uint screen);
         void setHorizontalAutoCenter(bool center);
@@ -54,7 +53,7 @@ class OSDWidget : public QWidget
 
         void unsetColors();
      
-      public slots:
+public slots:    
         void showOSD(const QString&, bool preemptive=false );
         void removeOSD() { hide(); } //inlined as is convenience function
 
@@ -84,9 +83,9 @@ class OSDWidget : public QWidget
         QString     m_currentText;
         bool        m_shadow;
 
-        QPoint m_offset;
-        Position m_position;
-        int m_screen;
+        Position    m_position;
+        int         m_screen;
+        QPoint      m_offset;
         
         bool m_dirty; //if dirty we will be re-rendered before we are shown
 };
@@ -99,6 +98,8 @@ class OSDPreviewWidget : public OSDWidget
     Q_OBJECT
 public:
     OSDPreviewWidget( const QString &appName );
+
+    static QPoint m_previewOffset;
 
 signals:
     void positionChanged( int screen, OSDWidget::Position alignment, int XOffset, int YOffset );
@@ -122,7 +123,7 @@ class OSD : public OSDWidget
 Q_OBJECT
 public:
     OSD() : OSDWidget( "amaroK" ) {}
-
+    
     static bool m_horizontalAutoCenter;
 
 public slots:
@@ -138,4 +139,4 @@ private:
 
 }
 
-#endif
+#endif /*AMAROK_OSD_H*/

@@ -25,9 +25,6 @@
 #include <kdebug.h>
 #include <kglobalsettings.h> //activeTitleColor()
 
-//STATIC
-bool amaroK::OSD::m_horizontalAutoCenter;
-
 
 OSDWidget::OSDWidget( const QString &appName, QWidget *parent, const char *name )
     : QWidget( parent, name,
@@ -38,9 +35,9 @@ OSDWidget::OSDWidget( const QString &appName, QWidget *parent, const char *name 
       , m_duration( 5000 )
       , timer( new QTimer( this ) )
       , timerMin( new QTimer( this ) )
-      , m_offset( 10, 40 )
       , m_position( TopLeft )
       , m_screen( 0 )
+      , m_offset( 10, 40 )
       , m_dirty( false )
 {
     setFocusPolicy( NoFocus );
@@ -189,11 +186,13 @@ void OSDWidget::unsetColors()
     refresh();
 }
 
+
 void OSDWidget::setOffset(int x, int y)
 {
     m_offset = QPoint( x, y );
     rePosition();
 }
+
 
 void OSDWidget::setPosition(Position pos)
 {
@@ -324,11 +323,15 @@ void OSDWidget::rePosition()
 
 //////  OSDPreviewWidget below /////////////////////
 
+QPoint OSDPreviewWidget::m_previewOffset;
+
+
 OSDPreviewWidget::OSDPreviewWidget( const QString &appName ) : OSDWidget( appName )
 {
     m_dragging = false;
     setDuration( 0 );
 }
+
 
 void OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
 {
@@ -352,7 +355,7 @@ void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent */*event*/ )
         
         if( currentScreen != -1 ) {
             // set new data
-            m_offset = QPoint( x(), y() );
+            m_previewOffset = QPoint( x(), y() );
             m_position = Free;
             m_screen = currentScreen;
             
@@ -382,8 +385,9 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 #include "metabundle.h"
 #include <qregexp.h>
 
-void
-amaroK::OSD::showTrack( const MetaBundle &bundle )
+bool amaroK::OSD::m_horizontalAutoCenter;
+
+void amaroK::OSD::showTrack( const MetaBundle &bundle )
 {
     // Strip HTML tags, expand basic HTML entities
     QString text = bundle.prettyTitle();

@@ -31,7 +31,8 @@ class AmarokConfigDialog : public KConfigDialog
 
     public:
         AmarokConfigDialog( QWidget *parent, const char* name, KConfigSkeleton *config );
-    
+        void triggerChanged();
+        
     private:
         QComboBox* m_pSoundSystem;
         QComboBox* m_pSoundOutput;
@@ -52,6 +53,7 @@ class AmarokConfigDialog : public KConfigDialog
 
     private:
         Options4* m_opt4;
+        bool m_changed;
 };
 
 
