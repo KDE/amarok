@@ -78,6 +78,8 @@ private slots:
     void btnFilterClick();
     void slotViewChanged( KFileView* );
     void activateThis( const KFileItem* );
+    void makePlaylist();
+    void addToPlaylist();
 
 private:
     class ToolBar;
