@@ -92,6 +92,14 @@ class GstEngine : public Engine::Base
     private:
         static GstEngine* instance() { return s_instance; }
 
+        #define KB 1000
+        static const uint SCOPEBUF_SIZE  = 1000*KB;
+        static const int  SCOPE_VALUES   = 512;
+        static const int  STREAMBUF_SIZE = 600*KB;
+        static const uint STREAMBUF_MIN  = 50*KB;
+        static const int  STREAMBUF_MAX  = STREAMBUF_SIZE - 50*KB;
+        #undef KB
+
         /**
          * Creates a GStreamer element and puts it into pipeline.
          * @param factoryName Name of the element class to create.

@@ -43,26 +43,10 @@ email                : markey@web.de
 
 using std::vector;
 
+GstEngine* GstEngine::s_instance;
+
+
 AMAROK_EXPORT_PLUGIN( GstEngine )
-
-
-static const uint
-SCOPEBUF_SIZE = 1000000; // 1000kb
-
-static const int
-SCOPE_VALUES = 512;
-
-static const int
-STREAMBUF_SIZE = 100000; // 1MB
-
-static const uint
-STREAMBUF_MIN = 50000; // 50kb
-
-static const int
-STREAMBUF_MAX = STREAMBUF_SIZE - 50000;
-
-GstEngine*
-GstEngine::s_instance;
 
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -401,7 +385,7 @@ GstEngine::scope()
     int offset = available - static_cast<int>( factor * (double) available );
     offset /= channels;
     offset *= channels;
-    if ( offset < 0 ) offset *= -1;
+    if ( offset < 0 ) offset *= -1; //FIXME Offset should never become < 0. Find out why this happens.
     offset = QMIN( offset, available - SCOPE_VALUES*channels*sizeof( gint16 ) );
 
     for ( long i = 0; i < SCOPE_VALUES; i++, data += channels ) {
