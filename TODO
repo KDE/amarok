@@ -18,9 +18,6 @@ SHORT-TERM (URGENT):
   FIX 109 <dato>   Directories with non-ascii chars don't get added to the Collection Browser
                    at scan time. I'll investigate this. --> dato
 
-  FIX 108 <dato>   Scrolling with wheel in toolbar's volume marker changes position but does not
-                   change volume.
-
   ADD 105 <markey> Make ArtsEngine depend not only on kdemultimedia-devel, but also on kdemultimedia,
                    since arts itself contains these crappy decoders and ppl come complain about bad sound.
                    Update: Would be even better to detect the mpeglib arts-plugins directly, since some
