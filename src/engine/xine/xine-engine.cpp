@@ -237,7 +237,7 @@ XineEngine::scope()
         //debug() << "chosen: " << best_buf->vpts << "| diff: " << best_buf->vpts - current_vpts << " buffer_offset: " << diff << "| list size: " << x << endl;
 
 
-        if( diff+512 > best_buf->num_frames ) { debug() << "Not enough frames in this buffer!\n"; return &v; }
+        if( diff+512 > best_buf->num_frames ) { /*debug() << "Not enough frames in this buffer!\n";*/ return &v; }
 
 
         const int16_t *data16 = best_buf->mem;
@@ -252,7 +252,7 @@ XineEngine::scope()
             v[i] = (double)a / (1<<15);
         }
     }
-    else debug() << "No best_buf found!\n";
+    //else debug() << "No best_buf found!\n";
 
     return &v;
 }
@@ -279,7 +279,7 @@ bool
 XineEngine::initMixer( bool hardware )
 {
     //ensure that software mixer volume is back to normal
-    xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, 100 );
+    if( hardware ) xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, 100 );
 
     m_mixerHW = hardware ? 0 : -1;
     return hardware;
