@@ -8,6 +8,9 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  FIX 126 <mxcl>   GST engine seems to use 100% in separate thread if it can't start a stream (reason
+                   unknown) and then won't let you quit amaroK (UI freezes when quit is pressed).
+
   FIX 124 <muesli> Make CollectionBrowser independent of i18n.
 
   FIX 123 <muesli> Pick the proper fonts and colors for both, Welcome- and ContextBrowser.
