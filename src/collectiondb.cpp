@@ -62,6 +62,9 @@ CollectionDB::CollectionDB()
         sqlite3_open( path, &m_db );
     }
 
+    // Set busy timeout to 100 msec
+    sqlite3_busy_timeout( m_db, 100 );
+
     // create cover dir, if it doesn't exist.
     if( !m_coverDir.exists( "albumcovers", false ) )
         m_coverDir.mkdir( "albumcovers", false );
