@@ -47,7 +47,7 @@ ContextBrowser::ContextBrowser( const char *name )
     setStyleSheet();
 
     connect( browser->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
-             this,                          SLOT( openURLRequest( const KURL &, const KParts::URLArgs & ) ) );
+             this,                          SLOT( openURLRequest( const KURL & ) ) );
 
     if ( m_db->isEmpty() )
         showIntroduction();
@@ -71,7 +71,7 @@ ContextBrowser::~ContextBrowser()
 // PUBLIC SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
+void ContextBrowser::openURLRequest( const KURL &url )
 {
     m_url = url;
 

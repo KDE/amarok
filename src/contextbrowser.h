@@ -25,7 +25,7 @@ class ContextBrowser : public QVBox, public EngineObserver
         ~ContextBrowser();
 
     public slots:
-        void openURLRequest(const KURL &url, const KParts::URLArgs & );
+        void openURLRequest(const KURL &url );
         
     protected:
         void engineNewMetaData( const MetaBundle&, bool );
