@@ -360,7 +360,11 @@ bool PlaylistWidget::loadPlaylist( KURL url, QListViewItem *destination )
         if ( url.isLocalFile() )
             tmpFile = url.path();
         else
+#if KDE_IS_VERSION(3,1,92)
+            KIO::NetAccess::download( url, tmpFile, this );
+#else
             KIO::NetAccess::download( url, tmpFile );
+#endif
 
         QFile file( tmpFile );
         if ( file.open( IO_ReadOnly ) )
@@ -384,7 +388,11 @@ bool PlaylistWidget::loadPlaylist( KURL url, QListViewItem *destination )
         if ( url.isLocalFile() )
             tmpFile = url.path();
         else
+#if KDE_IS_VERSION(3,1,92)
+            KIO::NetAccess::download( url, tmpFile, this );
+#else
             KIO::NetAccess::download( url, tmpFile );
+#endif
 
         QFile file( tmpFile );
         if ( file.open( IO_ReadOnly ) )
