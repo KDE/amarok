@@ -154,6 +154,11 @@ extern "C"
  */
 void UniversalAmarok::updateBrowser(const QString& file)
 {
+    if (! (QFile::exists(file) ) )
+    {
+        showIntroduction();
+        return;
+    }
     browser->openURL(file);
 }
 
@@ -218,4 +223,33 @@ void UniversalAmarok::volChanged(int vol)
     QDataStream arg(data, IO_WriteOnly);
     arg << 100-vol;
     amarokDCOP->send("amarok", "player", "setVolume(int)", data );
+}
+
+void UniversalAmarok::showIntroduction()
+{
+    QString  m_HTMLSource="";
+    m_HTMLSource.append(
+            "<html>"
+            "<div id='introduction_box' class='box'>"
+                "<div id='introduction_box-header' class='box-header'>"
+                    "<span id='introduction_box-header-title' class='box-header-title'>"
+                    + i18n( "Hello amaroK user!" ) +
+                    "</span>"
+                "</div>"
+                "<div id='introduction_box-body' class='box-body'>"
+                    "<p>" +
+                    i18n( "This is the Context Browser: "
+                          "it shows you contextual information about the currently playing track."
+                          "In order to use this feature of amaroK, you need to build a Collection."
+                        ) +
+                    "</p>"
+                    "<a href='show:collectionSetup' class='button'>" + i18n( "Build Collection..." ) + "</a>"
+                "</div>"
+            "</div>"
+            "</html>"
+                       );
+kdDebug() << m_HTMLSource << endl; 
+    browser->begin();
+    browser->write( m_HTMLSource );
+    browser->end();
 }

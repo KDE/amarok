@@ -63,7 +63,8 @@ public:
    virtual QWidget *getWidget(){return (QWidget*)widget;}
    virtual void *provides(const QString &) {return 0;}
    virtual void handleURL(const KURL& /*url*/) {}
-    QString getCurrentPlaying();
+   QString getCurrentPlaying();
+   void showIntroduction();
 
 private:
    amarokWidget* widget;
