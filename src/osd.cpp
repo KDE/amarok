@@ -60,29 +60,35 @@ void OSDWidget::renderOSDText( const QString &text )
     // The osd cannot be larger than the screen
     QRect textRect = fontMetrics().boundingRect( 0, 0, max.width(), max.height(), AlignLeft | WordBreak, text );
     // determine appropriate image size based on size of screen
-    int imageSize = QApplication::desktop()->screen( m_screen )->width() / 16;
+//     int minImageSize = QApplication::desktop()->screen( m_screen )->width() / 16;
 
     if ( textRect.width() < titleRect.width() )
         textRect.setWidth( titleRect.width() );
 
     //dimensions
-    if ( !m_image.isNull() && m_useImage )
-    {
-        if ( textRect.height() + titleRect.height() < (imageSize + 20) )
-            textRect.setHeight( imageSize + 20 );
-        else
-            textRect.setBottom( titleRect.height() + textRect.height() );
-
-        // we add pixels to the width because of the image size, and 40 for padding;
-        // 10px before image, 10px after image, 20px after text
-        textRect.addCoords( 0, 0, imageSize + 40, 0 );
-    }
-    else
-    {
+//     if ( !m_image.isNull() && m_useImage )
+//     {
+//         if ( textRect.height() + titleRect.height() < (minImageSize + 20) )
+//             textRect.setHeight( minImageSize + 20 );
+//         else
+//             textRect.setBottom( titleRect.height() + textRect.height() );
+//
+//         // we add pixels to the width because of the image size, and 40 for padding;
+//         // 10px before image, 10px after image, 20px after text
+//         textRect.addCoords( 0, 0, minImageSize + 40, 0 );
+//     }
+//     else
+//     {
         // add 20 pixels to the width (so the text isn't on the border), and add the height of the titleRect
         // so we can see the last line!
-        textRect.addCoords( 0, 0, 20, titleRect.height() );
-    }
+//     }
+    int imageSize = textRect.height() + titleRect.height() - 10;
+
+    if ( !m_image.isNull() && m_useImage )
+        textRect.addCoords( 0, 0, imageSize + 20, 0 );
+
+    textRect.addCoords( 0, 0, 20, titleRect.height() + 10 );
+
     osdBuffer.resize( textRect.size() );
     mask.resize( textRect.size() );
 
@@ -129,12 +135,12 @@ void OSDWidget::renderOSDText( const QString &text )
     if ( text.isRightToLeft() )
     {
         textPosition = imagePosition - 10;
-        shadowOffset = -3;
+        shadowOffset = -2;
     }
     else
     {
         textPosition = imagePosition + 10;
-        shadowOffset = 3;
+        shadowOffset = 2;
     }
 
     // Draw the text shadow
@@ -562,7 +568,8 @@ void
 amaroK::OSD::setImage( const MetaBundle &bundle )
 {
     //avoid showing the generic cover.  we can overwrite this by passing an arg.
-    QString imageLocation = CollectionDB().albumImage( bundle.artist(), bundle.album() );
+    //get large cover for scaling if big cover needed
+    QString imageLocation = CollectionDB().albumImage( bundle.artist(), bundle.album(), 0 );
     if ( imageLocation.find( QString("nocover") ) != -1 )
         imageLocation = QString::null;
 
