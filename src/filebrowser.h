@@ -24,9 +24,10 @@
 #ifndef FILESELECTOR_WIDGET_H
 #define FILESELECTOR_WIDGET_H
 
-#include <qvbox.h>    //baseclass
-#include <ktoolbar.h> //baseclass
-#include <kurl.h>     //stack allocated
+#include <qvbox.h>        //baseclass
+#include <kdiroperator.h> //some inline functions
+#include <ktoolbar.h>     //baseclass
+#include <kurl.h>         //stack allocated
 
 class ClickLineEdit;
 class QTimer;
@@ -52,52 +53,31 @@ class FileBrowser : public QVBox
 {
     Q_OBJECT
 
+    enum MenuId { MakePlaylist, AppendToPlaylist, SelectAllFiles, BurnAudioCd, BurnDataCd };
+
 public:
     FileBrowser( const char * name = 0 );
    ~FileBrowser();
 
-    KDirOperator *dirOperator() { return m_dir; }
-//    KActionCollection *actionCollection() { return m_dir->actionCollection(); };
-    KURL url() const;
+    KURL url() const { return m_dir->url(); }
 
 public slots:
-    void slotSetFilter();
-    void setDir( const KURL& );
-    void setDir( const QString& url ) { setDir( KURL( url ) ); }
+    void setUrl( const KURL &url ) { m_dir->setFocus(); m_dir->setURL( url, true ); }
+    void setUrl( const QString &url ) { setUrl( KURL(url) ); }
+    void setFilter( const QString& );
 
 private slots:
-    void cmbPathActivated( const KURL& u ) { cmbPathReturnPressed( u.url() ); }
-    void cmbPathReturnPressed( const QString& u );
-    void dirUrlEntered( const KURL& u );
-    void slotSetFilterTimeout();
+    void urlChanged( const KURL& );
+    void activate( const KFileItem* );
+    void contextMenuActivated( int );
     void slotViewChanged( KFileView* );
-    void activateThis( const KFileItem* );
-    void makePlaylist();
-    void addToPlaylist();
-    void selectAllFiles();
-    void burnDataCd();
-    void burnAudioCd();
 
 private:
-    void setupToolbar();
     KURL::List selectedItems();
 
-    class ToolBar: public KToolBar
-    {
-    public:
-        ToolBar( QWidget *parent ) : KToolBar( parent, 0, true ) {}
-
-        virtual void setMovingEnabled( bool )
-        {
-            KToolBar::setMovingEnabled( false ); //TODO find out why we need this!
-        }
-    };
-
-    ToolBar           *m_toolbar;
-    KURLComboBox      *m_cmbPath;
-    KDirOperator      *m_dir;
-    ClickLineEdit     *m_filterEdit;
-    QTimer            *m_timer;
+    KURLComboBox  *m_combo;
+    KDirOperator  *m_dir;
+    ClickLineEdit *m_filter;
 };
 
 
@@ -122,6 +102,7 @@ public:
 
 private slots:
     void toggle( bool );
+    void urlChanged( const KURL& );
     void searchTextChanged( const QString &text );
     void searchMatches( const KFileItemList& );
     void searchComplete();

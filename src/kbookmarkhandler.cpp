@@ -19,36 +19,24 @@
 
 // $Id$
 
-#include <stdio.h>
-#include <stdlib.h>
-
-#include <qtextstream.h>
-
+#include <kaction.h>
+#include "kbookmarkhandler.h"
 #include <kbookmarkimporter.h>
+#include <kmimetype.h>
 #include <kpopupmenu.h>
 #include <ksavefile.h>
 #include <kstandarddirs.h>
-#include <kdiroperator.h>
-#include <kaction.h>
-
-#include "filebrowser.h"
-#include "kbookmarkhandler.h"
-#include "kbookmarkhandler.moc"
+#include <qtextstream.h>
 
 
-KBookmarkHandler::KBookmarkHandler( KDevFileSelector *parent, KPopupMenu* kpopupmenu )
-    : QObject( parent, "KBookmarkHandler" ),
-      KBookmarkOwner(),
-      mParent( parent ),
-      m_menu( kpopupmenu ),
-      m_importStream( 0L )
+KBookmarkHandler::KBookmarkHandler( QObject *parent, KPopupMenu* kpopupmenu )
+        : QObject( parent, "KBookmarkHandler" )
+        , KBookmarkOwner()
+        , m_menu( kpopupmenu )
+        , m_importStream( 0 )
 {
-    if (!m_menu)
-      m_menu = new KPopupMenu( parent, "bookmark menu" );
-
+    //FIXME amaroK 2.0, use our own directory!
     QString file = locate( "data", "kdevfileselector/fsbookmarks.xml" );
-    if ( file.isEmpty() )
-        file = locateLocal( "data", "kdevfileselector/fsbookmarks.xml" );
 
     KBookmarkManager *manager = KBookmarkManager::managerForFile( file, false);
     manager->setUpdate( true );
@@ -57,20 +45,8 @@ KBookmarkHandler::KBookmarkHandler( KDevFileSelector *parent, KPopupMenu* kpopup
     m_bookmarkMenu = new KBookmarkMenu( manager, this, m_menu, 0, true );
 }
 
-KBookmarkHandler::~KBookmarkHandler()
-{
-    //     delete m_bookmarkMenu; ###
-}
-
-QString KBookmarkHandler::currentURL() const
-{
-    return mParent->dirOperator()->url().url();
-}
-
-
-void KBookmarkHandler::slotNewBookmark( const QString& text,
-                                            const QCString& url,
-                                            const QString& additionalInfo )
+void
+KBookmarkHandler::slotNewBookmark( const QString &text, const QCString &url, const QString &additionalInfo )
 {
     Q_UNUSED( text );
     *m_importStream << "<bookmark icon=\"" << KMimeType::iconForURL( KURL(url) );
@@ -78,8 +54,7 @@ void KBookmarkHandler::slotNewBookmark( const QString& text,
     *m_importStream << "<title>" << (additionalInfo.isEmpty() ? QString::fromUtf8(url) : additionalInfo) << "</title>\n</bookmark>\n";
 }
 
-void KBookmarkHandler::slotNewFolder( const QString& text, bool /*open*/,
-                                          const QString& /*additionalInfo*/ )
+void KBookmarkHandler::slotNewFolder( const QString &text, bool /*open*/, const QString& /*additionalInfo*/ )
 {
     *m_importStream << "<folder icon=\"bookmark_folder\">\n<title=\"";
     *m_importStream << text << "\">\n";
@@ -95,6 +70,4 @@ void KBookmarkHandler::endFolder()
     *m_importStream << "</folder>\n";
 }
 
-void KBookmarkHandler::virtual_hook( int id, void* data )
-{ KBookmarkOwner::virtual_hook( id, data ); }
-
+#include "kbookmarkhandler.moc"

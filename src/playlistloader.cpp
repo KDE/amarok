@@ -221,17 +221,31 @@ PlaylistLoader::customEvent( QCustomEvent *e )
     {
     case 1000:
         e->item->setText( e->bundle );
+
+        if( m_playFirstUrl )
+        {
+            Playlist::instance()->activate( e->item );
+            m_playFirstUrl = false;
+        }
+
         break;
 
     case 1002:
     {
+        if( m_playFirstUrl )
+        {
+            Playlist::instance()->activate( e->items.first() );
+            m_playFirstUrl = false;
+        }
+
         BundleList::ConstIterator bundle = e->bundles.begin();
         for( ItemList::ConstIterator it = e->items.begin(), end = e->items.end(); it != end; ++it, ++bundle )
             (*it)->setText( *bundle );
 
     }   break;
 
-    case 1001: {
+    case 1001:
+    {
         PlaylistItem *item = new PlaylistItem( e->url, m_markerListViewItem, e->node );
         QString attribute  = e->node.toElement().attribute( "queue_index" );
 
@@ -257,17 +271,11 @@ PlaylistLoader::customEvent( QCustomEvent *e )
             }
         }
 
-        break; }
+    }   break;
 
     default:
         DependentJob::customEvent( e );
         return;
-    }
-
-    if( m_playFirstUrl )
-    {
-        Playlist::instance()->activate( e->item );
-        m_playFirstUrl = false;
     }
 
     #undef e

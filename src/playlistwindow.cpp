@@ -308,6 +308,7 @@ PlaylistWindow::init()
 
     //The volume slider later becomes our FocusProxy, so all wheelEvents get redirected to it
     m_toolbar->setFocusPolicy( QWidget::WheelFocus );
+    m_toolbar->setMovingEnabled( false ); //removes the ugly frame
     m_playlist->setMargin( 2 );
     m_playlist->installEventFilter( this ); //we intercept keyEvents
 
@@ -624,7 +625,7 @@ void PlaylistWindow::playAudioCD() //SLOT
 {
     m_browsers->showBrowser( "FileBrowser" );
     FileBrowser *fb = static_cast<FileBrowser *>( m_browsers->browser("FileBrowser") );
-    fb->setDir( KURL("audiocd:/") );
+    fb->setUrl( KURL("audiocd:/") );
 }
 
 

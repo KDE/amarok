@@ -25,49 +25,30 @@
 
 class QTextStream;
 class KPopupMenu;
-class KActionMenu;
-class KDevFileSelector;
-
-//we do this in case we need to substitute in code at some point from the original sources
-#define KDevFileSelector FileBrowser
 
 class KBookmarkHandler : public QObject, public KBookmarkOwner
 {
     Q_OBJECT
 
 public:
-    KBookmarkHandler( KDevFileSelector *parent, KPopupMenu *kpopupmenu=0 );
-    ~KBookmarkHandler();
+    KBookmarkHandler( QObject *parent, KPopupMenu* );
 
     // KBookmarkOwner interface:
-    virtual void openBookmarkURL( const QString& url ) { emit openURL( url ); }
-    virtual QString currentURL() const;
-
-    KPopupMenu *menu() const { return m_menu; }
+    virtual void openBookmarkURL( const QString &url ) { emit openUrl( KURL(url) ); }
 
 signals:
-    void openURL( const QString& url );
+    void openUrl( const KURL &url );
 
 private slots:
-    void slotNewBookmark( const QString& text, const QCString& url,
-                          const QString& additionalInfo );
-    void slotNewFolder( const QString& text, bool open,
-                        const QString& additionalInfo );
+    void slotNewBookmark( const QString& text, const QCString& url, const QString& additionalInfo );
+    void slotNewFolder( const QString& text, bool open, const QString& additionalInfo );
     void newSeparator();
     void endFolder();
 
-protected:
-    virtual void virtual_hook( int id, void* data );
-
 private:
-    KDevFileSelector *mParent;
-    KPopupMenu *m_menu;
+    KPopupMenu    *m_menu;
     KBookmarkMenu *m_bookmarkMenu;
-
-    QTextStream *m_importStream;
-
-    //class KBookmarkHandlerPrivate *d;
+    QTextStream   *m_importStream;
 };
-
 
 #endif // _KBOOKMARKHANDLER_H_

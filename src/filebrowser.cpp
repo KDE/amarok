@@ -77,47 +77,40 @@ public:
 
 FileBrowser::FileBrowser( const char * name )
         : QVBox( 0, name )
-        , m_timer( new QTimer( this ) )
 {
-    setSpacing( 4 );
-    setMargin( 5 );
-
+    KActionCollection *actionCollection;
     KConfig* const config = amaroK::config( "Filebrowser" );
+    KToolBar *toolbar;
+    SearchPane *searchPane;
 
-    m_toolbar = new FileBrowser::ToolBar( this );
-    m_toolbar->setMovingEnabled(false);
-    m_toolbar->setFlat(true);
-    m_toolbar->setIconText( KToolBar::IconOnly );
-    m_toolbar->setIconSize( 16 );
-    m_toolbar->setEnableContextMenu( false );
+    const QString currentLocation = config->readEntry( "Location", QDir::homeDirPath() );
 
-    QString currentLocation = config->readEntry( "Location" );
-    if ( !QDir( currentLocation ).exists() )
-        currentLocation = QDir::homeDirPath();
-
-    { //Filter LineEdit
-        KToolBarButton *button;
-        KToolBar* searchToolBar = new KToolBar( this );
-        searchToolBar->setMovingEnabled(false);
-        searchToolBar->setFlat(true);
-        searchToolBar->setIconSize( 16 );
-        searchToolBar->setEnableContextMenu( false );
-
-        button       = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
-        m_filterEdit = new ClickLineEdit( i18n( "Filter here..." ), searchToolBar );
-        searchToolBar->setStretchableWidget( m_filterEdit );
-
-        connect( button, SIGNAL( clicked() ), m_filterEdit, SLOT( clear() ) );
-
-        QToolTip::add( button, i18n( "Clear filter" ) );
-        QToolTip::add( m_filterEdit, i18n( "Space-separated terms will be used to filter the directory-listing" ) );
+    { //mainToolbar
+        toolbar = new KToolBar( this );
+        toolbar->setIconSize( 16 );
+        toolbar->setMovingEnabled( false ); //removes the frame
     }
 
-    {
+    { //Filter LineEdit
+        KToolBar* searchToolBar = new KToolBar( this );
+        KToolBarButton *button = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
+        m_filter = new ClickLineEdit( i18n( "Filter here..." ), searchToolBar );
+
+        searchToolBar->setIconSize( 16 );
+        searchToolBar->setStretchableWidget( m_filter );
+        searchToolBar->setMovingEnabled( false );
+
+        connect( button, SIGNAL(clicked()), m_filter, SLOT(clear()) );
+
+        QToolTip::add( button, i18n( "Clear filter" ) );
+        QToolTip::add( m_filter, i18n( "Enter space-separated terms to filter the directory-listing" ) );
+    }
+
+    { //Directory Listing
         QVBox *container; QHBox *box;
 
         container = new QVBox( this );
-        container->setFrameStyle( m_filterEdit->frameStyle() );
+        container->setFrameStyle( m_filter->frameStyle() );
         container->setMargin( 3 );
         container->setSpacing( 2 );
         container->setBackgroundMode( Qt::PaletteBase );
@@ -127,12 +120,11 @@ FileBrowser::FileBrowser( const char * name )
         box->setBackgroundMode( Qt::PaletteBase );
 
         //folder selection combo box
-        m_cmbPath = new KURLComboBox( KURLComboBox::Directories, true, box, "path combo" );
-        m_cmbPath->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ));
-        m_cmbPath->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
-        m_cmbPath->setMaxItems( 9 );
-        m_cmbPath->setURLs( config->readListEntry( "Dir History" ) );
-        m_cmbPath->lineEdit()->setText( currentLocation );
+        m_combo = new KURLComboBox( KURLComboBox::Directories, true, box, "path combo" );
+        m_combo->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
+        m_combo->setMaxItems( 9 );
+        m_combo->setURLs( config->readListEntry( "Dir History" ) );
+        m_combo->lineEdit()->setText( currentLocation );
 
         //The main widget with file listings and that
         m_dir = new MyDirOperator( KURL(currentLocation), container );
@@ -145,34 +137,35 @@ FileBrowser::FileBrowser( const char * name )
 
         static_cast<QFrame*>(m_dir->viewWidget())->setFrameStyle( QFrame::NoFrame );
 
-        connect( m_dir, SIGNAL(urlEntered( const KURL& )), SLOT(dirUrlEntered( const KURL& )) );
+        actionCollection = m_dir->actionCollection();
+
+        searchPane = new SearchPane( this );
 
         setStretchFactor( container, 2 );
     }
 
-    KActionCollection *actionCollection = m_dir->actionCollection();
+    {
+        QPopupMenu* const menu = ((KActionMenu*)actionCollection->action("popupMenu"))->popupMenu();
 
-    new SearchPane( this );
+        menu->clear();
 
-    //insert our own actions at front of context menu
-    QPopupMenu* const menu = ((KActionMenu*)actionCollection->action("popupMenu"))->popupMenu();
-    menu->clear();
-    menu->insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), this, SLOT(addToPlaylist()), 1 );
-    menu->insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), this, SLOT(makePlaylist()), 0 );
-    menu->insertSeparator();
+        menu->insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), AppendToPlaylist );
+        menu->insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MakePlaylist );
+        menu->insertSeparator();
+        menu->insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD as Data"), BurnDataCd );
+        menu->insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BurnAudioCd );
+        menu->insertSeparator();
+        menu->insertItem( i18n( "&Select All Files" ), SelectAllFiles );
+        menu->insertSeparator();
+        actionCollection->action( "delete" )->plug( menu );
+        menu->insertSeparator();
+        actionCollection->action( "properties" )->plug( menu );
 
-    enum { BURN_DATACD = 100, BURN_AUDIOCD };
-    menu->insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD as Data"), this, SLOT( burnDataCd() ), 0, BURN_DATACD );
-    menu->setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
-    menu->insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), this, SLOT( burnAudioCd() ), 0, BURN_AUDIOCD );
-    menu->setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
+        menu->setItemEnabled( BurnDataCd, K3bExporter::isAvailable() );
+        menu->setItemEnabled( BurnAudioCd, K3bExporter::isAvailable() );
 
-    menu->insertSeparator();
-    menu->insertItem( i18n( "&Select All Files" ), this, SLOT(selectAllFiles()) );
-    menu->insertSeparator();
-    actionCollection->action( "delete" )->plug( menu );
-    menu->insertSeparator();
-    actionCollection->action( "properties" )->plug( menu );
+        connect( menu, SIGNAL(activated( int )), SLOT(contextMenuActivated( int )) );
+    }
 
     {
         KActionMenu *a;
@@ -185,21 +178,33 @@ FileBrowser::FileBrowser( const char * name )
 
         a = new KActionMenu( i18n("Bookmarks"), "bookmark", actionCollection, "bookmarks" );
         a->setDelayed( false );
+
         KBookmarkHandler *bookmarkHandler = new KBookmarkHandler( this, a->popupMenu() );
-        connect( bookmarkHandler, SIGNAL(openURL( const QString& )), SLOT(setDir( const QString& )) );
+        connect( bookmarkHandler, SIGNAL(openUrl( const KURL& )), SLOT(setUrl( const KURL& )) );
     }
 
-    connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
-    connect( m_filterEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
-    connect( m_cmbPath, SIGNAL( urlActivated( const KURL&  )), SLOT(cmbPathActivated( const KURL& )) );
-    connect( m_cmbPath, SIGNAL( returnPressed( const QString&  )), SLOT(cmbPathReturnPressed( const QString& )) );
+    {
+        QStringList actions;
+        actions << "up" << "back" << "forward" << "home" << "reload" << "short view"
+                << "detailed view" << "sorting menu" << "bookmarks";
+
+        foreach( actions )
+            if ( KAction *a = actionCollection->action( (*it).latin1() ) )
+                a->plug( toolbar );
+    }
+
+    connect( m_filter, SIGNAL(textChanged( const QString& )), SLOT(setFilter( const QString& )) );
+    connect( m_combo, SIGNAL(urlActivated( const KURL& )), SLOT(setUrl( const KURL& )) );
+    connect( m_combo, SIGNAL(returnPressed( const QString& )), SLOT(setUrl( const QString& )) );
     connect( m_dir, SIGNAL(viewChanged( KFileView* )), SLOT(slotViewChanged( KFileView* )) );
-    connect( m_dir, SIGNAL(fileSelected( const KFileItem* )), SLOT(activateThis( const KFileItem* )) );
+    connect( m_dir, SIGNAL(fileSelected( const KFileItem* )), SLOT(activate( const KFileItem* )) );
+    connect( m_dir, SIGNAL(urlEntered( const KURL& )), SLOT(urlChanged( const KURL& )) );
+    connect( m_dir, SIGNAL(urlEntered( const KURL& )), searchPane, SLOT(urlChanged( const KURL& )) );
 
-    setupToolbar();
-
+    setSpacing( 4 );
+    setMargin( 5 );
     setFocusProxy( m_dir ); //so the dirOperator is focussed when we get focus events
-    setMinimumWidth( m_toolbar->sizeHint().width() ); //the m_toolbar minWidth is 0!
+    setMinimumWidth( toolbar->sizeHint().width() );
 }
 
 
@@ -210,32 +215,10 @@ FileBrowser::~FileBrowser()
     m_dir->writeConfig( c ); //uses currently set group
 
     c->writeEntry( "Location", m_dir->url().directory( false, false ) );
-    c->writeEntry( "Dir History", m_cmbPath->urls() );
+    c->writeEntry( "Dir History", m_combo->urls() );
 }
 
 //END Constructor/Destructor
-
-
-//BEGIN Public Methods
-
-KURL FileBrowser::url() const
-{
-    return m_dir->url();
-}
-
-inline void
-FileBrowser::setupToolbar()
-{
-    QStringList actions;
-    actions << "up" << "back" << "forward" << "home" << "reload" << "short view"
-            << "detailed view" << "sorting menu" << "bookmarks";
-
-    for( QStringList::ConstIterator it = actions.constBegin(); it != actions.constEnd(); ++it )
-        if ( KAction *a = m_dir->actionCollection()->action( (*it).latin1() ) )
-            a->plug( m_toolbar );
-}
-
-//END Public Methods
 
 
 //BEGIN Private Methods
@@ -255,33 +238,25 @@ KURL::List FileBrowser::selectedItems()
 //BEGIN Public Slots
 
 void
-FileBrowser::slotSetFilter( )
+FileBrowser::setFilter( const QString &text )
 {
-    const QString text = m_filterEdit->text();
-
     if ( text.isEmpty() )
         m_dir->clearFilter();
 
     else {
         QString filter;
-        QStringList terms = QStringList::split( ' ', text );
 
-        for ( QStringList::Iterator it = terms.begin(); it != terms.end(); ++it ) {
+        const QStringList terms = QStringList::split( ' ', text );
+        foreach( terms ) {
             filter += '*';
-            filter += *it; }
-
+            filter += *it;
+        }
         filter += '*';
+
         m_dir->setNameFilter( filter );
     }
 
     m_dir->updateDir();
-}
-
-
-void
-FileBrowser::setDir( const KURL &u )
-{
-    m_dir->setURL( u, true );
 }
 
 //END Public Slots
@@ -289,33 +264,23 @@ FileBrowser::setDir( const KURL &u )
 
 //BEGIN Private Slots
 
-//NOTE I inline all these as they are private slots and only called from within the moc segment
-
-inline void FileBrowser::cmbPathReturnPressed( const QString& u )
+inline void
+FileBrowser::urlChanged( const KURL &u )
 {
-    QStringList urls = m_cmbPath->urls();
-    urls.remove( u );
-    urls.prepend( u );
-    m_cmbPath->setURLs( urls, KURLComboBox::RemoveBottom );
-    m_dir->setFocus();
-    m_dir->setURL( KURL(u), true );
+    //the DirOperator's URL has changed
+
+    const QString url = u.url();
+
+    QStringList urls = m_combo->urls();
+    urls.remove( url );
+    urls.prepend( url );
+    m_combo->setURLs( urls, KURLComboBox::RemoveBottom );
+
+    //m_combo->setURL( url );
 }
 
-
-inline void FileBrowser::dirUrlEntered( const KURL& u )
-{
-    m_cmbPath->setURL( u );
-}
-
-
-inline void FileBrowser::slotSetFilterTimeout()
-{
-    if ( m_timer->isActive() ) m_timer->stop();
-    m_timer->start( 180, true );
-}
-
-
-inline void FileBrowser::slotViewChanged( KFileView *view )
+inline void
+FileBrowser::slotViewChanged( KFileView *view )
 {
     if( view->widget()->inherits( "KListView" ) )
     {
@@ -325,44 +290,44 @@ inline void FileBrowser::slotViewChanged( KFileView *view )
     }
 }
 
-
-inline void FileBrowser::activateThis( const KFileItem *item )
+inline void
+FileBrowser::activate( const KFileItem *item )
 {
     Playlist::instance()->insertMedia( item->url(), Playlist::DirectPlay );
 }
 
-
-inline void FileBrowser::makePlaylist()
+inline void
+FileBrowser::contextMenuActivated( int id )
 {
-    Playlist::instance()->insertMedia( selectedItems(), Playlist::Replace );
-}
+    switch( id )
+    {
+    case MakePlaylist:
+        Playlist::instance()->insertMedia( selectedItems(), Playlist::Replace );
+        break;
 
+    case AppendToPlaylist:
+        Playlist::instance()->insertMedia( selectedItems() );
+        break;
 
-inline void FileBrowser::addToPlaylist()
-{
-    Playlist::instance()->insertMedia( selectedItems() );
-}
+    case SelectAllFiles:
+    {
+        KFileItemList list( *m_dir->view()->items() );
 
+        // Select all items which represent files
+        for( KFileItem* item = list.first(); item; item = list.next() )
+            m_dir->view()->setSelected( item, item->isFile() );
 
-inline void FileBrowser::selectAllFiles()
-{
-    KFileItemList list( *m_dir->view()->items() );
+        break;
+    }
 
-    // Select all items which represent files
-    for ( KFileItem* item = list.first(); item; item = list.next() )
-        m_dir->view()->setSelected( item, item->isFile() );
-}
+    case BurnDataCd:
+        K3bExporter::instance()->exportTracks( selectedItems(), K3bExporter::DataCD );
+        break;
 
-
-inline void FileBrowser::burnDataCd() // SLOT
-{
-    K3bExporter::instance()->exportTracks( selectedItems(), K3bExporter::DataCD );
-}
-
-
-inline void FileBrowser::burnAudioCd() // SLOT
-{
-    K3bExporter::instance()->exportTracks( selectedItems(), K3bExporter::AudioCD );
+    case BurnAudioCd:
+        K3bExporter::instance()->exportTracks( selectedItems(), K3bExporter::AudioCD );
+        break;
+    }
 }
 
 //END Private Slots
@@ -437,7 +402,7 @@ SearchPane::SearchPane( FileBrowser *parent )
     m_lister = new MyDirLister( true /*delay mimetypes*/ );
     insertChild( m_lister );
     connect( m_lister, SIGNAL(newItems( const KFileItemList& )), SLOT(searchMatches( const KFileItemList& )) );
-    connect( m_lister, SIGNAL(completed()), SLOT(listingComplete()) );
+    connect( m_lister, SIGNAL(completed()), SLOT(searchComplete()) );
 }
 
 void
@@ -447,6 +412,12 @@ SearchPane::toggle( bool toggled )
         m_lineEdit->setFocus();
 
     static_cast<QWidget*>(child("container"))->setShown( toggled );
+}
+
+void
+SearchPane::urlChanged( const KURL& )
+{
+    searchTextChanged( m_lineEdit->text() );
 }
 
 void
