@@ -81,8 +81,9 @@ protected:
 
     virtual void init() {}
 
-    QPixmap  *canvas() { return &m_canvas; }
-    void eraseCanvas() { bitBlt( canvas(), 0, 0, background() ); }
+    QPixmap *background() { return &m_background; }
+    QPixmap     *canvas() { return &m_canvas; }
+    void    eraseCanvas() { bitBlt( canvas(), 0, 0, background() ); }
 
     void paintEvent( QPaintEvent* ) { if( !m_canvas.isNull() ) bitBlt( this, 0, 0, canvas() ); }
     void resizeEvent( QResizeEvent* );

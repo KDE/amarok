@@ -23,10 +23,9 @@ public:
 
     static const uint HEIGHT      = 2;
     static const uint WIDTH       = 4;
-    static const uint MIN_ROWS    = 7;   //arbituary
-    static const uint MAX_ROWS    = 14;  //arbituary, at some point maybe remove this
+    static const uint MIN_ROWS    = 3;   //arbituary
     static const uint MIN_COLUMNS = 32;  //arbituary
-    static const uint MAX_COLUMNS = 128; //must be 2**n
+    static const uint MAX_COLUMNS = 256; //must be 2**n
 
 protected:
     void transform( Scope& );
@@ -36,19 +35,13 @@ protected:
     void paletteChange( const QPalette& );
 
 private:
-    QPixmap m_glow;
-    QPixmap m_dark;
-
     QPixmap* const glow() { return &m_glow; }
-    QPixmap* const dark() { return &m_dark; }
 
+    QPixmap m_glow;
     std::vector<uint> m_store; //store previous values
     Scope m_scope;             //so we don't create a vector every frame
     uint m_columns, m_rows;    //current size values
-
-    float yscale[MAX_ROWS+1];
-
-    uint oy;
+    std::vector<float> m_yscale;
 };
 
 #endif
