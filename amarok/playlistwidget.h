@@ -35,9 +35,11 @@ class QDropEvent;
 class QFocusEvent;
 class QListViewItem;
 class QPaintEvent;
+class PlaylistItem;
 class QPoint;
 class QRect;
 class QString;
+class QTextStream;
 class QTimer;
 
 class KDirLister;
@@ -99,6 +101,9 @@ class PlaylistWidget : public KListView
         void playlistDrop( KURL::List urlList );
         PlaylistItem* playlistInsertItem( KURL srcUrl, PlaylistItem* dstItem );
         PlaylistItem* playlistInsertDir( KURL srcUrl, PlaylistItem* dstItem );
+        
+        void loadM3u( QTextStream &stream, PlaylistItem *destItem, QString dir );
+        void loadPls( QTextStream &stream, PlaylistItem *destItem, QString dir );
         bool loadPlaylist_( KURL url, QListViewItem *destination );
 
 // ATTRIBUTES ------

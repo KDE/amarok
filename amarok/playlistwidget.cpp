@@ -359,80 +359,83 @@ bool PlaylistWidget::loadPlaylist( KURL url, QListViewItem *destination )
     QString tmpFile;
     PlaylistItem *pCurr = static_cast<PlaylistItem*>( destination );
 
-    if ( url.path().lower().endsWith( ".m3u" ) )
-    {
-        if ( url.isLocalFile() )
-            tmpFile = url.path();
-        else
+    if ( url.isLocalFile() )
+        tmpFile = url.path();
+    else
 #if KDE_IS_VERSION(3,1,92)
-            KIO::NetAccess::download( url, tmpFile, this );
+        KIO::NetAccess::download( url, tmpFile, this );
 #else
-            KIO::NetAccess::download( url, tmpFile );
+        KIO::NetAccess::download( url, tmpFile );
 #endif
 
-        QFile file( tmpFile );
-        if ( file.open( IO_ReadOnly ) )
-        {
-            uint n = 0;
-            QString str, dir = ( url.protocol() == "file" ) ? url.directory( false ) : url.url( 1 );
-            QTextStream stream( &file );
-
-            while ( ( str = stream.readLine() ) != QString::null )
-            {
-                if ( !str.startsWith( "#" ) )
-                {
-                    //you can have http:// references, absolute references (eg /home/moo.ogg),
-                    //or relative references. We need to amend relative references.
-
-                    if ( !( str[0] == '/' || str.startsWith( "http://" ) ) )
-                        str.prepend( dir );
-
-                    pCurr = addItem( pCurr, str );
-                }
-                //give UI time to breathe :)
-                if ( !( n++ % 100 ) )  kapp->processEvents();
-            }
-            file.close();
-            success = true;
-        }
-    }
-    if ( url.path().lower().endsWith( ".pls" ) )
-    {
-        if ( url.isLocalFile() )
-            tmpFile = url.path();
+    QFile file( tmpFile );
+    
+    if ( success = file.open( IO_ReadOnly ) )
+    {    
+        QTextStream stream( &file );
+        QString dir = ( url.protocol() == "file" ) ? url.directory( false ) : url.url( 1 );
+                
+        if ( url.path().lower().endsWith( ".m3u" ) )
+            loadM3u( stream, pCurr, dir );
         else
-#if KDE_IS_VERSION(3,1,92)
-            KIO::NetAccess::download( url, tmpFile, this );
-#else
-            KIO::NetAccess::download( url, tmpFile );
-#endif
-
-        QFile file( tmpFile );
-        if ( file.open( IO_ReadOnly ) )
-        {
-            uint n = 0;
-            QString str;
-            QTextStream stream( &file );
-
-            while ( ( str = stream.readLine() ) != QString::null )
-            {
-                if ( str.startsWith( "File" ) )
-                {
-                    pCurr = addItem( pCurr, str.section( "=", -1 ) );
-                    str = stream.readLine();
-
-                    if ( str.startsWith( "Title" ) )
-                        pCurr->setText( 0, str.section( "=", -1 ) );
-                }
-                //give UI time to breathe :)
-                if ( !( n++ % 100 ) )  kapp->processEvents();
-            }
-            file.close();
-            success = true;
-        }
+            loadPls( stream, pCurr, dir );        
     }
+    file.close();
+            
     KIO::NetAccess::removeTempFile( tmpFile );
     return success;
+}
+
+
+void PlaylistWidget::loadM3u( QTextStream &stream, PlaylistItem *destItem, QString dir )
+{
+    uint n = 0;
+    QString str, extStr;
+
+    while ( !( str = stream.readLine() ).isNull() )
+    {
+        if ( str.startsWith( "#EXTINF" ) )
+        {
+            extStr = str.section( ",", 1 );
+        }
+            
+        if ( !str.startsWith( "#" ) )
+        {
+            if ( !( str[0] == '/' || str.startsWith( "http://" ) ) )
+                str.prepend( dir );
+            
+            destItem = addItem( destItem, str );
+            
+            if ( !extStr.isEmpty() )
+            {
+                destItem->setText( 0, extStr );
+                extStr = "";
+            }
+        }
+        //give UI time to breathe :)
+        if ( !( n++ % 60 ) )  kapp->processEvents();
+    }
+}
+
+
+void PlaylistWidget::loadPls( QTextStream &stream, PlaylistItem *destItem, QString )
+{
+    uint n = 0;
+    QString str;
+
+    while ( !( str = stream.readLine() ).isNull() )
+    {
+        if ( str.startsWith( "File" ) )
+        {
+            destItem = addItem( destItem, str.section( "=", -1 ) );
+            str = stream.readLine();
+
+            if ( str.startsWith( "Title" ) )
+                destItem->setText( 0, str.section( "=", -1 ) );
+        }
+        //give UI time to breathe :)
+        if ( !( n++ % 60 ) )  kapp->processEvents();
+    }
 }
 
 
@@ -452,8 +455,11 @@ void PlaylistWidget::saveM3u( QString fileName )
         if ( item->url().protocol() == "file" )
             stream << item->url().path();
         else
+        {
+            stream << "#EXTINF:-1," + item->text( 0 ) + "\n";
             stream << item->url().url();
-
+        }
+            
         stream << "\n";
         item = static_cast<PlaylistItem*>( item->nextSibling() );
     }

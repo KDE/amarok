@@ -4,8 +4,6 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
-    * fix: save stream names in playlist, not just IP address (using #EXTINF)
-
     * fix: show bitrate/frequency also for streams
     
     * fix: <muesli> clean up the GUI
