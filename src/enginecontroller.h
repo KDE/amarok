@@ -1,13 +1,7 @@
 /***************************************************************************
-  enginecontroller.h : Wraps engine and adds some functionality
-
-  begin              : Mar 15 2004
-  copyright          : (C) 2004 by Frederik Holljen <fh@ez.no>
-                       (C) 2004 by Max Howell
-                       (C) 2004 by Mark Kretschmann
- ***************************************************************************/
-
-/***************************************************************************
+ *   Copyright (C) 2004 Frederik Holljen <fh@ez.no>                        *
+ *             (C) 2004,5 Max Howell <max.howell@methylblue.com>           *
+ *             (C) 2004,5 Mark Kretschmann                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
