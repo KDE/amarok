@@ -11,7 +11,7 @@
 #include <qstringlist.h>     //stack allocated
 #include <kurl.h>            //stack allocated
 
-#include "collectiondb.h" 
+#include "collectiondb.h"
 
 class ClickLineEdit;
 class CollectionDB;
@@ -49,7 +49,6 @@ class CollectionBrowser: public QVBox
         enum CatMenuId { IdAlbum = 1, IdArtist = 2, IdGenre = 4, IdYear = 8 , IdScan = 16, IdNone = 32 };
 
         KAction* m_configureAction;
-        KAction* m_scanAction;
         KAction* m_treeViewAction;
         KAction* m_flatViewAction;
 
@@ -99,11 +98,11 @@ class CollectionView : public KListView
     public slots:
         void setTreeMode() { setViewMode( modeTreeView ); };
         void setFlatMode() { setViewMode( modeFlatView ); };
-        
+
         void cat1Menu( int id, bool rerender = true );
         void cat2Menu( int id, bool rerender = true );
         void cat3Menu( int id, bool rerender = true );
-    
+
     private slots:
         void setupDirs();
         void scan();

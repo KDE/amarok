@@ -76,31 +76,24 @@ CollectionBrowser::CollectionBrowser( const char* name )
     } //</Search LineEdit>
 
     KActionCollection* ac = new KActionCollection( this );
-    m_scanAction = new KAction( i18n( "Start Scan" ), "reload", 0, this, SLOT( scan() ), ac, "Start Scan" );
 
-    // we need m_scanAction to be initialized before CollectionView's CTOR
     m_view = new CollectionView( this );
-
-    m_configureAction = new KAction( i18n( "Configure Folders" ), "configure", 0, this, SLOT( setupDirs() ), ac, "Configure" );
-    m_treeViewAction = new KAction( i18n( "Tree View" ), "view_tree", 0, m_view, SLOT( setTreeMode() ), ac, "Tree View" );
-    m_flatViewAction = new KAction( i18n( "Flat View" ), "view_detailed", 0, m_view, SLOT( setFlatMode() ), ac, "Flat View" );
-
 
     KActionMenu* tagfilterMenuButton = new KActionMenu( i18n( "Tag Filter" ), "filter", ac );
     tagfilterMenuButton->setDelayed( false );
     m_categoryMenu = tagfilterMenuButton->popupMenu();
 
+    m_configureAction = new KAction( i18n( "Configure Folders" ), "configure", 0, this, SLOT( setupDirs() ), ac, "Configure" );
+    m_treeViewAction = new KAction( i18n( "Tree View" ), "view_tree", 0, m_view, SLOT( setTreeMode() ), ac, "Tree View" );
+    m_flatViewAction = new KAction( i18n( "Flat View" ), "view_detailed", 0, m_view, SLOT( setFlatMode() ), ac, "Flat View" );
+
     toolbar->setIconText( KToolBar::IconTextRight, false );
-    m_scanAction->plug( toolbar );
+    tagfilterMenuButton->plug( toolbar );
     toolbar->insertLineSeparator();
 
     toolbar->setIconText( KToolBar::IconOnly, false );
     m_treeViewAction->plug( toolbar );
     m_flatViewAction->plug( toolbar );
-    toolbar->insertLineSeparator();
-
-    toolbar->setIconText( KToolBar::IconTextRight, false );
-    tagfilterMenuButton->plug( toolbar );
     toolbar->insertLineSeparator();
 
     toolbar->setIconText( KToolBar::IconOnly, false );
@@ -470,7 +463,6 @@ CollectionView::renderView( )  //SLOT
 void
 CollectionView::scanStarted() // SLOT
 {
-    m_parent->m_scanAction->setEnabled( false );
     m_isScanning = true;
 }
 
@@ -515,7 +507,6 @@ CollectionView::scanDone( bool changed ) //SLOT
             }
         }
     }
-    m_parent->m_scanAction->setEnabled( true );
     m_isScanning = false;
 
     amaroK::StatusBar::instance()->clear();
@@ -921,11 +912,11 @@ CollectionView::customEvent( QCustomEvent *e )
                 m_progress->setProgress( 0 );
                 m_progressBox->show();
                 break;
-            
+
             case CollectionReader::ProgressEvent::Total:
                 m_progress->setTotalSteps( p->value() );
                 break;
-    
+
             case CollectionReader::ProgressEvent::Progress:
                 m_progress->setProgress( p->value() );
         }
