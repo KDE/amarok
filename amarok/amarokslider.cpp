@@ -32,12 +32,12 @@
 #define MARGIN 3
 
 //---<init>---
-AmarokSlider::AmarokSlider( QWidget *parent, Qt::Orientation orient )
+AmarokSlider::AmarokSlider( QWidget *parent, Qt::Orientation orient, VDirection dir )
         : QWidget( parent, "AmarokSlider", Qt::WRepaintNoErase )
         , QRangeControl()
         , m_isPressed( false )
         , m_orientation( orient )
-
+        , m_dir( dir )
 {
     if ( orient == Horizontal )
         setSizePolicy( QSizePolicy( QSizePolicy::Expanding,
@@ -112,7 +112,10 @@ void AmarokSlider::mouseReleaseEvent( QMouseEvent * )
 void AmarokSlider::paintEvent( QPaintEvent * )
 {
     int length = ( m_orientation == Qt::Horizontal ) ? width() : height();
-    int pos = positionFromValue( value(), length-2-1 );
+    int val = value();
+    if (m_orientation == Vertical && m_dir == BottomUp)
+	val = maxValue() - val;
+    int pos = positionFromValue( val, length-2-1 );
 
     QPixmap pBufPixmap( width(), height() );
     //bitBlt( &pBufPixmap, 0, 0, parentWidget(), x(), y(), width(), height() );

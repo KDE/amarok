@@ -31,7 +31,9 @@
             Q_OBJECT
     
         public:
-            AmarokSlider( QWidget *, Qt::Orientation );
+	    enum VDirection { TopDown = 1, BottomUp = 1 };
+	    
+            AmarokSlider( QWidget *, Qt::Orientation, VDirection = BottomUp );
 
             void setValue( int );
                 
@@ -52,6 +54,7 @@
             // ATTRIBUTES ------
             bool m_isPressed;
             Qt::Orientation m_orientation;
+	    VDirection m_dir;
     };
    
 #endif

@@ -102,7 +102,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
 
     m_pSliderVol = new AmarokSlider( this, Qt::Vertical );
     m_pSliderVol->setFocusPolicy( QWidget::NoFocus );
-    m_pSliderVol->setValue( AmarokConfig::masterVolume() ); // cheat-cheat!
 
     QString pathStr( locate( "data", "amarok/images/b_prev.png" ) );
 
@@ -489,7 +488,7 @@ void PlayerWidget::paintEvent( QPaintEvent * )
 void PlayerWidget::wheelEvent( QWheelEvent *e )
 {
     e->accept();
-    AmarokConfig::setMasterVolume( AmarokConfig::masterVolume() + ( e->delta() * -1 ) / 18 );
+    AmarokConfig::setMasterVolume( AmarokConfig::masterVolume() + e->delta() / 18 );
 
     if ( AmarokConfig::masterVolume() < 0 )
         AmarokConfig::setMasterVolume( 0 );

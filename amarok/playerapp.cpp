@@ -332,7 +332,8 @@ void PlayerApp::readConfig()
                                           AmarokConfig::rememberEffects() );
 
     AmarokConfig::setHardwareMixer( m_pEngine->initMixer( AmarokConfig::hardwareMixer() ) );
-    m_pPlayerWidget->m_pSliderVol->setValue( VOLUME_MAX - AmarokConfig::masterVolume() );
+    m_pEngine->setVolume( AmarokConfig::masterVolume() );
+    m_pPlayerWidget->m_pSliderVol->setValue( m_pEngine->volume() );
 
     m_pPlayerWidget->move  ( AmarokConfig::playerPos() );
     m_pBrowserWin  ->move  ( AmarokConfig::browserWinPos() );
@@ -358,8 +359,6 @@ void PlayerApp::readConfig()
     m_pGlobalAccel->insert( "prev", i18n( "Previous Track" ), 0, CTRL + ALT + Key_Z, 0,
                             this, SLOT( slotPrev() ), true, true );
 
-    // FIXME <berkus> this needs some other way of handling with KConfig XT?!?
-    //<mxcl> doesn't need to be XT'd as it's not for configDialogs and doesn't need global access
     m_pGlobalAccel->setConfigGroup( "Shortcuts" );
     m_pGlobalAccel->readSettings( kapp->config() );
     m_pGlobalAccel->updateConnections();
@@ -629,10 +628,7 @@ void PlayerApp::slotSliderChanged( int value )
 void PlayerApp::slotVolumeChanged( int value )
 {
     AmarokConfig::setMasterVolume( value );
-    value = VOLUME_MAX - value;
-
     m_pEngine->setVolume( value );
-
 }
 
 
