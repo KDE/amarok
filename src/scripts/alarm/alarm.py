@@ -16,6 +16,7 @@
 
 from ConfigParser import *
 import Queue
+import os.path
 import sys
 import threading
 from os import *
@@ -26,28 +27,29 @@ class ConfigDialog( QDialog ):
 
     def __init__( self ):
         QDialog.__init__( self )
+        self.setWFlags( Qt.WDestructiveClose )
         self.setCaption( "Alarm Script - amaroK" )
 
-        lay = QHBoxLayout( self )
+        self.lay = QHBoxLayout( self )
 
-        vbox = QVBox( self )
-        lay.addWidget( vbox )
+        self.vbox = QVBox( self )
+        self.lay.addWidget( self.vbox )
 
-        htopbox = QHBox( vbox )
-        QLabel( "Alarm time: ", htopbox )
-        self.timeEdit = QTimeEdit( htopbox )
+        self.htopbox = QHBox( self.vbox )
+        QLabel( "Alarm time: ", self.htopbox )
+        self.timeEdit = QTimeEdit( self.htopbox )
 
-        hbox = QHBox( vbox )
+        self.hbox = QHBox( self.vbox )
 
-        ok = QPushButton( hbox )
-        ok.setText( "Ok" )
+        self.ok = QPushButton( self.hbox )
+        self.ok.setText( "Ok" )
 
-        cancel = QPushButton( hbox )
-        cancel.setText( "Cancel" )
-        cancel.setDefault( True )
+        self.cancel = QPushButton( self.hbox )
+        self.cancel.setText( "Cancel" )
+        self.cancel.setDefault( True )
 
-        self.connect( ok,     SIGNAL( "clicked()" ), self.save )
-        self.connect( cancel, SIGNAL( "clicked()" ), self, SLOT( "reject()" ) )
+        self.connect( self.ok,     SIGNAL( "clicked()" ), self.save )
+        self.connect( self.cancel, SIGNAL( "clicked()" ), self, SLOT( "reject()" ) )
 
         self.adjustSize()
 
@@ -55,14 +57,13 @@ class ConfigDialog( QDialog ):
         wakeTime = str( self.timeEdit.time().toString() )
         print wakeTime
 
-        file = open( "alarmrc", "w" )
+        self.file = file( "alarmrc", 'w' )
 
-        config = ConfigParser()
-        config.add_section( "General" )
-        config.set( "General", "alarmtime", wakeTime)
-        config.write( file )
-
-        file.close()
+        self.config = ConfigParser()
+        self.config.add_section( "General" )
+        self.config.set( "General", "alarmtime", wakeTime)
+        self.config.write( self.file )
+        self.file.close()
 
         self.accept()
 
@@ -81,20 +82,28 @@ class Alarm( QApplication ):
         self.t = threading.Thread( target = self.readStdin )
         self.t.start()
 
-        config = ConfigParser()
-        config.read( "alarmrc" )
-
-        timestr = config.get( "General", "alarmtime" )
-        print "Alarm Time: " + timestr
-
-        time = QTime.fromString( timestr )
-        secondsleft = QTime.currentTime().secsTo( time )
-
-        QTimer.singleShot( secondsleft * 1000, self.wakeup )
+        self.readSettings()
 
     def wakeup( self ):
         popen( "dcop amarok player play" )
         self.quit()
+
+
+    def readSettings( self ):
+        config = ConfigParser()
+        config.read( "alarmrc" )
+
+        try:
+            timestr = config.get( "General", "alarmtime" )
+            print "Alarm Time: " + timestr
+
+            time = QTime.fromString( timestr )
+            secondsleft = QTime.currentTime().secsTo( time )
+
+            if secondsleft > 0:
+                QTimer.singleShot( secondsleft * 1000, self.wakeup )
+        except:
+            pass
 
 
 ############################################################################
@@ -127,7 +136,7 @@ class Alarm( QApplication ):
 
         self.dia = ConfigDialog()
         self.dia.show()
-
+        self.connect( self.dia, SIGNAL( "destroyed()" ), self.readSettings )
 
 
 ############################################################################
