@@ -2,9 +2,9 @@
 // Copyright:  See COPYING file that comes with this distribution
 
 #include "amarokconfig.h"
-#include "amarokmenu.h"
+#include "actionclasses.h"
 #include "enginecontroller.h"
-#include "playerapp.h"    //actionCollection() and a SLOT
+#include "app.h"    //actionCollection() and a SLOT
 #include "socketserver.h" //Vis::Selector::showInstance()
 
 #include <kaction.h>
@@ -220,4 +220,4 @@ RepeatPlaylistAction::RepeatPlaylistAction( KActionCollection *ac ) :
     KToggleAction::setChecked( AmarokConfig::repeatPlaylist() );
 }
 
-#include "amarokmenu.moc"
+#include "actionclasses.moc"
