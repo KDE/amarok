@@ -372,7 +372,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
         new ExpandButton( i18n( "Previous" ), play, pApp, SLOT( slotPrev() ) );
 
         ExpandButton *playlist =
-        new ExpandButton( i18n( "Play&list Actions" ), this ); //FIXME what to do when the user clicks this?
+        new ExpandButton( i18n( "Play&list Actions" ), this, m_playlist, SLOT( showCurrentTrack() ) );
         new ExpandButton( i18n( "Shuffle" ), playlist, m_playlist, SLOT( shuffle() ) );
         new ExpandButton( i18n( "Save Playlist..." ), playlist, this, SLOT( savePlaylist() ) );
         new ExpandButton( i18n( "Clear" ), playlist, m_playlist, SLOT( clear() ) );

@@ -123,6 +123,7 @@ class PlaylistWidget : private KListView
         void shuffle();
         void removeSelectedItems();
         void copyToClipboard( const QListViewItem* = 0 ) const;
+        void showCurrentTrack();
 
     private slots:
         void slotGlowTimer();
@@ -134,7 +135,7 @@ class PlaylistWidget : private KListView
         void setCurrentTrack( const KURL& );
         void writeTag( QListViewItem*, const QString&, int );
         void handleStreamMeta( const TitleProxy::metaPacket& );
-        
+
         void undo();
         void redo();
         void saveUndoState();

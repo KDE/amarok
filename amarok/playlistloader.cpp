@@ -321,17 +321,23 @@ void PlaylistLoader::translate( QString &path, KFileItemList &list )
 
             else if( S_ISREG( statbuf.st_mode ) )  //file
             {
-               if( isPlaylist( newPath ) ) continue; //Markey says don't process playlists in subdirs
                KURL url; url.setPath( newPath );     //safe way to do it for unix paths
-               //we save some time and pass the stat'd information
-               if( isValidMedia( url, statbuf.st_mode & S_IFMT, statbuf.st_mode & 07777 ) )
+
+               if( isPlaylist( newPath ) )
+                  QApplication::postEvent( m_listView, new PlaylistFoundEvent( url ) );
+               else
                {
-               #ifdef FAST_TRANSLATE
-                  files += file;
-               #else
-                  //true means don't determine mimetype (waste of cycles for sure!)
-                  list.append( new KFileItem( statbuf.st_mode & S_IFMT, statbuf.st_mode & 07777, url, true ) );
-               #endif
+
+                  //we save some time and pass the stat'd information
+                  if( isValidMedia( url, statbuf.st_mode & S_IFMT, statbuf.st_mode & 07777 ) )
+                  {
+                  #ifdef FAST_TRANSLATE
+                      files += file;
+                  #else
+                      //true means don't determine mimetype (waste of cycles for sure!)
+                      list.append( new KFileItem( statbuf.st_mode & S_IFMT, statbuf.st_mode & 07777, url, true ) );
+                  #endif
+                  }
                }
             }
          } //if( LSTAT )

@@ -118,6 +118,7 @@ public:
     {
     public:
        PlaylistFoundEvent( KURL::List &l ) : QCustomEvent( PlaylistFound ), m_list( l ) {}
+       PlaylistFoundEvent( KURL &u ) : QCustomEvent( PlaylistFound ), m_list( u ) {}
        const KURL::List &playlist() const { return m_list; }
     private:
        KURL::List m_list;

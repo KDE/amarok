@@ -190,6 +190,8 @@ PlaylistWidget::~PlaylistWidget()
 //PUBLIC INTERFACE ===================================================
 
 QWidget *PlaylistWidget::browser() { return m_browser; }
+void PlaylistWidget::showCurrentTrack() { ensureItemVisible( currentTrack() ); } //SLOT
+
 
 void PlaylistWidget::insertMedia( const KURL::List &list )
 {
