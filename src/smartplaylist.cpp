@@ -237,6 +237,14 @@ void SmartPlaylistView::loadDefaultPlaylists()
 
         childItem = new SmartPlaylist( item, childItem, values[i], sql );
     }
+
+    /********** 100 Random Tracks **************/
+    sql = "SELECT tags.url "
+          "FROM tags "
+          "ORDER BY RAND() "
+          "LIMIT 0,100;";
+    item = new SmartPlaylist(this, 0, i18n("100 Random Tracks"), sql );
+    item->setKey( 8 );
 }
 
 
