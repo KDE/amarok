@@ -59,7 +59,7 @@ CollectionDB::addImageToPath( const QString path, const QString image, bool temp
 
 
 QString
-CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id )
+CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id, const QString defaultImage )
 {
     QStringList values;
     QStringList names;
@@ -77,7 +77,7 @@ CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id 
              .arg( url.directory() ), &values, &names );
 
     if ( values.isEmpty() )
-        return "";
+        return defaultImage;
 
     QString image( values[0] );
     for ( uint i = 0; i < values.count(); i++ )

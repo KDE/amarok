@@ -20,7 +20,7 @@ class CollectionDB : public QObject
 
         QString albumSongCount( const QString artist_id, const QString album_id );
         void addImageToPath( const QString path, const QString image, bool temporary );
-        QString getImageForAlbum( const QString artist_id, const QString album_id );
+        QString getImageForAlbum( const QString artist_id, const QString album_id, const QString defaultImage );
 
         /**
          * Executes an SQL statement on the already opened database

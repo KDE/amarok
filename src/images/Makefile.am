@@ -21,6 +21,5 @@ images_DATA = \
     pl_inactive2.png \
     time_minus.png \
     time_plus.png \
-    vol_speaker.png
-    
-
+    vol_speaker.png \
+    sound.png

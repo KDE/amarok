@@ -87,12 +87,22 @@ void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
 void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 {
     browser->begin();
+    
     QString styleSheet( "a { color:black; font-size:8px; text-decoration:none; }"
+                        "div { color:black; font-size:8px; text-decoration:none; }"
                         "td { color:black; font-size:8px; text-decoration:none; }"
-                        "a:hover { color:black; text-decoration:underline; background-color:#cccccc; }"
+
+                        ".song { color:black; font-size:8px; text-decoration:none; }"
+                        ".song:hover { color:black; text-decoration:underline; background-color:#cccccc; }"
                         ".album { color:black; font-weight: bold; font-size:8px; text-decoration:none; }"
                         ".title { font-size: 11px; font-weight: bold; }"
-                        ".head { font-size: 10px; font-weight: bold; }" );
+                        ".head { font-size: 10px; font-weight: bold; }"
+
+                        ".rbalbum        { border: solid #ffffff 1px; }"
+                        ".rbalbum:hover  { cursor: default; border: solid #000000 1px; }"
+
+                        ".rbcontent        { border: solid #cccccc 1px; }"
+                        ".rbcontent:hover  { border: solid #000000 1px; }" );
 
     browser->setUserStyleSheet( styleSheet );
 
@@ -103,16 +113,22 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     QStringList names;
 
     browser->write( "<div class='head'><br>Other titles:</div>" );
-    browser->write( "<table border='0' cellspacing='1' cellpadding='1'>" );
+    browser->write( "<div class='rbcontent'>" );
+    browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'><tr><td></td><td width='%100'>" );
 
-    m_db->execSql( QString( "SELECT tags.title, tags.url FROM tags, artist WHERE tags.artist = artist.id AND artist.name LIKE '%1' ORDER BY random();" )
-                   .arg( bundle.artist() ), &values, &names );
+    m_db->execSql( QString( "SELECT tags.title, tags.url "
+                            "FROM tags, artist, album "
+                            "WHERE tags.album = album.id AND album.name LIKE '%1' AND "
+                                  "tags.artist = artist.id AND artist.name LIKE '%2' "
+                            "ORDER BY random();" )
+                   .arg( m_db->escapeString( bundle.album() ) )
+                   .arg( m_db->escapeString( bundle.artist() ) ), &values, &names );
 
     for ( uint i = 0; i < ( values.count() / 2 ) && i < 10; i++ )
     {
         if ( values[i].isEmpty() ) continue;
         
-        browser->write( QString ( "<tr><td><a href=\"file:%1\">%2</a></td></tr>" )
+        browser->write( QString ( "<a class='song' href=\"file:%1\">%2</a><br>" )
                         .arg( values[i*2 + 1] )
                         .arg( values[i*2] ) );
     }
@@ -120,20 +136,27 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     values.clear();
     names.clear();
 
-    browser->write( "</table><div class='head'><br>Other albums:</div>" );
-    browser->write( "<table border='0' cellspacing='1' cellpadding='1'>" );
-
-    m_db->execSql( QString( "SELECT DISTINCT album.name, album.id, artist.id FROM album, tags, artist WHERE album.id = tags.album AND tags.artist = artist.id AND artist.name LIKE '%1';" )
-                   .arg( bundle.artist() ), &values, &names );
+    browser->write( "</td><td></td></tr></table>" );
+    browser->write( "</div>" );
+    browser->write( "<div class='head'><br>Other albums:</div>" );
+    browser->write( "<table width='100%' border='0' cellspacing='2' cellpadding='1'>" );
+    
+    m_db->execSql( QString( "SELECT DISTINCT album.name, album.id, artist.id "
+                            "FROM album, tags, artist "
+                            "WHERE album.id = tags.album AND tags.artist = artist.id AND artist.name "
+                            "LIKE '%1' ORDER BY album.name;" )
+                   .arg( m_db->escapeString( bundle.artist() ) ), &values, &names );
 
     for ( uint i = 0; i < ( values.count() / 3 ); i++ )
     {
         if ( values[i].isEmpty() ) continue;
 
-        browser->write( QString ( "<tr><td><img src='%1' width='40' height='40'></td><td valign='top'><a class='album' href=\"album:%2/%3\">%4</a><br>%5 Tracks</td></tr>" )
-                        .arg( m_db->getImageForAlbum( values[i*3 + 2], values[i*3 + 1] ) )
+        browser->write( QString ( "<tr><td onClick='window.location.href=\"album:%1/%2\"' height='42' valign='top' class='rbalbum'>"
+                                  "<img align='left' hspace='2' width='40' height='40' src='%3'><span class='album'>%4</span><br>%5 Tracks</td>"
+                                  "<td></td></tr>" )
                         .arg( values[i*3 + 2] )
                         .arg( values[i*3 + 1] )
+                        .arg( m_db->getImageForAlbum( values[i*3 + 2], values[i*3 + 1], locate( "data", "amarok/images/sound.png" ) ) )
                         .arg( values[i*3] )
                         .arg( m_db->albumSongCount( values[i*3 + 2], values[i*3 + 1] ) ) );
     }
