@@ -1,3 +1,3 @@
-SUBDIRS = alarm templates playlist2html webcontrol
+SUBDIRS = alarm graphequalizer templates playlist2html webcontrol
 
 

@@ -4,8 +4,9 @@ amaroK ChangeLog
 
 
 VERSION 1.2.2:
+  ADD: A line graph equalizer added as a script "graphequalizer."
   ADD: Initial support for dynamic playlist which removes-once-played, whilst
-       appending a similar song to the end of the playlist (BR 99305)
+       appending a similar song to the end of the playlist. (BR 99305)
   FIX: Images shown on OSD where incorrect for action notifications.
   FIX: The handbook translations were not built when amaroK was installed from
        the tarball. I've written a new release script in Ruby, which can
