@@ -125,6 +125,8 @@ void EngineController::play( const MetaBundle &bundle )
             emit orderNext();
             return;
         }
+        m_pEngine->play( proxy->proxyUrl() );
+        
         connect( proxy,     SIGNAL( metaData( const MetaBundle& ) ),
                  this,        SLOT( newMetaData( const MetaBundle& ) ) );
         connect( proxy,     SIGNAL( streamData( char*, int ) ),
@@ -133,8 +135,6 @@ void EngineController::play( const MetaBundle &bundle )
                  this,      SIGNAL( orderNext() ) );
         connect( m_pEngine, SIGNAL( stopped() ),
                  proxy,       SLOT( deleteLater() ) );
-        
-        m_pEngine->play( proxy->proxyUrl() );
     }
     else
         m_pEngine->play( url );
