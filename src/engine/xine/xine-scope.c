@@ -14,14 +14,25 @@
 #define MAXCHANNELS  6
 
 
+/* yes my own list structure! how typical */
+typedef struct myNode_s myNode;
+struct myNode_s
+{
+    myNode *next;
+    audio_buffer_t buf;
+};
+
+
+
 typedef struct post_plugin_scope_s post_plugin_scope_t;
 typedef struct post_class_scope_s post_class_scope_t;
 
 
-xine_list_t *myList;
-int          myChannels;
-metronom_t  *myMetronom;
-
+myNode      myList;
+int         myChannels;
+metronom_t *myMetronom;
+int64_t     current_vpts;
+int         myMutex;
 
 
 struct post_class_scope_s
@@ -66,8 +77,9 @@ scope_port_open(xine_audio_port_t *port_gen, xine_stream_t *stream, uint32_t bit
   memcpy( this->metronom, stream->metronom, sizeof( metronom_t ) );
 
 
-  myChannels = this->channels;
-
+  myChannels  = this->channels;
+  myList.next = &myList; /* ths list is empty, I promise! */
+  myMutex     = 0;
 
   return port->original_port->open(port->original_port, stream, bits, rate, mode );
 }
@@ -77,7 +89,7 @@ scope_port_close(xine_audio_port_t *port_gen, xine_stream_t *stream )
 {
     post_audio_port_t   *port = (post_audio_port_t *)port_gen;
     post_plugin_scope_t *this = (post_plugin_scope_t *)port->post;
-    audio_buffer_t *buf;
+    myNode *node, *next;
 
 
     printf( "[xine-engine] post-plugin port_close()\n" );
@@ -86,38 +98,61 @@ scope_port_close(xine_audio_port_t *port_gen, xine_stream_t *stream )
     port->original_port->close(port->original_port, stream );
     this->metronom->set_master(this->metronom, NULL);
 
-    for( ; !xine_list_is_empty( myList ); xine_list_delete_current( myList ) )
+    for( node = myList.next; node->next != &myList; node = next )
     {
-        buf = xine_list_first_content( myList );
-        free( buf->mem );
-        free( buf );
+        next = node->next;
+
+        free( node->buf.mem );
+        free( node );
     }
 
     _x_post_dec_usage(port);
 }
 
 static void
-scope_port_put_buffer (xine_audio_port_t *port_gen, audio_buffer_t *buf, xine_stream_t *stream)
+scope_port_put_buffer( xine_audio_port_t *port_gen, audio_buffer_t *buf, xine_stream_t *stream )
 {
     post_audio_port_t   *port = (post_audio_port_t *)port_gen;
     post_plugin_scope_t *this = (post_plugin_scope_t *)port->post;
+    myNode *node, *prev;
 
 
-    if( buf->num_frames < 512 || (port->bits == 8) ) { printf( "doh" ); return; }
+    /*FIXME*/
+    if( port->bits == 8 ) { printf( "You dare tempt me with 8 bits?!\n" ); return; }
 
-    audio_buffer_t *new_buf = malloc( sizeof(audio_buffer_t) );
+    /*first we need to copy this buffer*/
+    myNode *new_node = malloc( sizeof(myNode) );
+    memcpy( &new_node->buf, buf, sizeof(audio_buffer_t) );
 
-    memcpy( new_buf, buf, sizeof(audio_buffer_t) );
+    new_node->buf.mem = malloc( buf->num_frames * this->channels * 2 );
+    memcpy( new_node->buf.mem, buf->mem, buf->num_frames * this->channels * 2 );
 
-    new_buf->mem  = malloc( buf->num_frames * this->channels * 2 );
-
-    memcpy( new_buf->mem, buf->mem, buf->num_frames * this->channels * 2 );
-
-    xine_list_append_content( myList, new_buf );
-
-
-    /* pass data to original port TODO is this necessary? */
+    /* pass data to original port - TODO is this necessary? */
     port->original_port->put_buffer( port->original_port, buf, stream );
+
+    /*now we need to prune the list of old buffers*/
+    #if 0
+    for( prev = &myList, node = myList.next; !myMutex && node->next != &myList; node = node->next )
+    {
+        buf = &node->buf;
+
+        if( buf->stream == 0 && buf->vpts < current_vpts )
+        {
+            prev->next = node->next;
+
+            free( buf->mem );
+            free( node );
+
+            node = prev;
+        }
+
+        prev = node;
+    }
+    #endif
+
+    /*finally we should prepend the current buffer to the list*/
+    new_node->next = myList.next;
+    myList.next    = new_node;
 }
 
 static void
@@ -128,9 +163,6 @@ scope_dispose(post_plugin_t *this_gen)
     if( _x_post_dispose( this_gen ) )
     {
         this->metronom->exit( this->metronom );
-
-        /*list items were free'd in close_port*/
-        xine_list_free( myList );
 
         free( this );
     }
@@ -162,10 +194,6 @@ scope_open_plugin( post_class_t *class_gen, int inputs, xine_audio_port_t **audi
   this->post.xine_post.audio_input[0] = &port->new_port;
 
   this->post.dispose = scope_dispose;
-
-
-  myList = xine_list_new();
-
 
   return &this->post;
 }

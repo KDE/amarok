@@ -20,7 +20,7 @@ AMAROK_EXPORT_PLUGIN( XineEngine )
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <qdir.h>
-#include <xine/xineutils.h>
+//#include <xine/xineutils.h>
 
 #define this this_
 #define XINE_ENGINE_INTERNAL
@@ -35,6 +35,19 @@ debug()
 {
     return kdbgstream( "[xine-engine] ", 0, 0 );
 }
+
+
+//some logging static globals
+namespace Log
+{
+    static uint buffNotFound = 0;
+    static uint buffTooSmall = 0;
+    static uint buffSize = 0;
+    static uint listSize = 0;
+    static uint scopeRequests = 0;
+    static uint diffSize = 0;
+    static uint buffCount = 0;
+};
 
 
 XineEngine::XineEngine()
@@ -56,6 +69,13 @@ XineEngine::~XineEngine()
     if (m_xine)       xine_exit(m_xine);
 
     debug() << "xine closed\n";
+
+    debug() << "Scope statistics:\n"
+            << "  Average buffer size: " << double(Log::buffSize) / Log::buffCount << endl
+            << "  Average diff: " << double(Log::diffSize) / Log::scopeRequests << endl
+            << "  Average list size: " << double(Log::listSize) / Log::scopeRequests << endl
+            << "  Scope misses: " << Log::buffNotFound << endl
+            << "  Times buffer too small: " << Log::buffTooSmall << endl;
 }
 
 bool
@@ -188,45 +208,54 @@ XineEngine::state() const
     }
 }
 
+    struct myNode
+    {
+        myNode *next;
+        audio_buffer_t buf;
+    };
+
 std::vector<float>*
 XineEngine::scope()
 {
-    extern xine_list_t *myList;
+    extern myNode myList;
     extern int myChannels;
     extern metronom_t *myMetronom;
+    extern int64_t current_vpts;
+    extern bool myMutex;
 
     std::vector<float> &v = *(new std::vector<float>( 512 ));
-    int64_t current_vpts = m_xine->clock->get_current_time( m_xine->clock );//m_stream->metronom->audio_vpts;
+    current_vpts = m_xine->clock->get_current_time( m_xine->clock );
+    audio_buffer_t *best_buf = 0;
     uint x = 0;
 
-    audio_buffer_t *best_buf = 0;
-    audio_buffer_t *buf      = (audio_buffer_t*)xine_list_first_content( myList );
-
-
-    while( buf )
+    for( myNode *prev = &myList, *node = myList.next; node != &myList; node = node->next )
     {
+        audio_buffer_t *buf = &node->buf;
+
         if( buf->stream != 0 )
         {
             buf->vpts = myMetronom->got_audio_samples( myMetronom, buf->vpts, buf->num_frames );
             buf->stream = 0;
+
+            Log::buffSize += buf->num_frames;
+            Log::buffCount++;
         }
 
         if( buf->vpts < current_vpts )
         {
+            prev->next = node->next;
+
             free( buf->mem );
-            free( buf );
-            xine_list_delete_current( myList );
+            free( node );
 
-            if( xine_list_is_empty( myList ) ) break;
-
-            //xinelibs are gay, provide no get current list item function
-            buf = (audio_buffer_t*)xine_list_prev_content( myList );
+            node = prev;
         }
         else if( !best_buf || buf->vpts < best_buf->vpts ) best_buf = buf;
 
+        ++Log::listSize;
         ++x;
 
-        buf = (audio_buffer_t*)xine_list_next_content( myList );
+        prev = node;
     }
 
     if( best_buf )
@@ -236,25 +265,26 @@ XineEngine::scope()
         diff *= myMetronom->audio_samples;
         diff /= myMetronom->pts_per_smpls;
 
-        //debug() << "chosen: " << best_buf->vpts << "| diff: " << best_buf->vpts - current_vpts << " buffer_offset: " << diff << "| list size: " << x << endl;
+        Log::diffSize += diff;
+        Log::scopeRequests++;
 
-
-        if( diff+512 > best_buf->num_frames ) { /*debug() << "Not enough frames in this buffer!\n";*/ return &v; }
-
-
-        const int16_t *data16 = best_buf->mem;
-        data16 += diff*2;
-
-        //TODO we assume there are enough buffers. There may not be...
-
-        for( int a, c, i = 0; i < 512; ++i, data16 += myChannels )
+        if( diff+512 <= (uint)best_buf->num_frames )
         {
-            for( a = 0, c = 0; c < myChannels; ++c ) a += data16[c];
+            //debug() << "time: " << current_vpts << " vpts: " << best_buf->vpts << " buff_size: " << best_buf->num_frames << " diff: " << diff << " list_size: " << x << endl;
 
-            v[i] = (double)a / (1<<15);
+            const int16_t *data16 = best_buf->mem;
+            data16 += diff*2;
+
+            for( int a, c, i = 0; i < 512; ++i, data16 += myChannels )
+            {
+                for( a = 0, c = 0; c < myChannels; ++c ) a += data16[c];
+
+                v[i] = (double)a / (1<<15);
+            }
         }
+        else { Log::buffTooSmall++; debug() << "Buffer too small\n"; }
     }
-    //else debug() << "No best_buf found!\n";
+    else { Log::buffNotFound++; debug() << "Buffer not found\n"; }
 
     return &v;
 }
