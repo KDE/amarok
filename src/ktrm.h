@@ -27,9 +27,6 @@
 #ifndef KTRM_H
 #define KTRM_H
 
-#include <config.h>
-#ifdef HAVE_MUSICBRAINZ
-
 #include <qobject.h>
 #include <qmap.h>
 #include <qstring.h>
@@ -199,5 +196,3 @@ private:
 };
 
 #endif /*KTRM_H*/
-#endif /*HAVE_MUSICBRAINZ*/
-

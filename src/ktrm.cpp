@@ -20,19 +20,20 @@
  ***************************************************************************/
 
 #include "config.h"
-#ifdef HAVE_MUSICBRAINZ
 
 #include "ktrm.h"
 
 #include <kapplication.h>
-#include <kdebug.h>
 #include <kprotocolmanager.h>
 #include <kurl.h>
+#include <kdebug.h>
 
-#include <qevent.h>
-#include <qfile.h>
 #include <qmutex.h>
+#include <qevent.h>
 #include <qobject.h>
+#include <qfile.h>
+
+#ifdef HAVE_MUSICBRAINZ
 
 #include <tunepimp/tp_c.h>
 
@@ -287,61 +288,85 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 // KTRMResult public methods
 ////////////////////////////////////////////////////////////////////////////////
+#endif
 KTRMResult::KTRMResult()
 {
+#ifdef HAVE_MUSICBRAINZ
     d = new KTRMResultPrivate;
+#endif
 }
 
 KTRMResult::KTRMResult(const KTRMResult &result)
 {
+#ifdef HAVE_MUSICBRAINZ
     d = new KTRMResultPrivate(*result.d);
+#endif
 }
 
 KTRMResult::~KTRMResult()
 {
+#ifdef HAVE_MUSICBRAINZ
     delete d;
+#endif
 }
 
 QString KTRMResult::title() const
 {
+#ifdef HAVE_MUSICBRAINZ
     return d->title;
+#endif
 }
 
 QString KTRMResult::artist() const
 {
+#ifdef HAVE_MUSICBRAINZ
     return d->artist;
+#endif
 }
 
 QString KTRMResult::album() const
 {
+#ifdef HAVE_MUSICBRAINZ
     return d->album;
+#endif
 }
 
 int KTRMResult::track() const
 {
+#ifdef HAVE_MUSICBRAINZ
     return d->track;
+#endif
 }
 
 int KTRMResult::year() const
 {
+#ifdef HAVE_MUSICBRAINZ
     return d->year;
+#endif
 }
 
 bool KTRMResult::operator<(const KTRMResult &r) const
 {
+#ifdef HAVE_MUSICBRAINZ
     return r.d->relevance < d->relevance;
+#endif
 }
 
 bool KTRMResult::operator>(const KTRMResult &r) const
 {
+#ifdef HAVE_MUSICBRAINZ
     return r.d->relevance > d->relevance;
+#endif
 }
 
 bool KTRMResult::isEmpty() const
 {
+#ifdef HAVE_MUSICBRAINZ
     return d->title.isEmpty() && d->artist.isEmpty() && d->album.isEmpty() &&
         d->track == 0 && d->year == 0;
+#endif
 }
+#ifdef HAVE_MUSICBRAINZ
 ////////////////////////////////////////////////////////////////////////////////
 // KTRMLookup implementation
 ////////////////////////////////////////////////////////////////////////////////
@@ -356,6 +381,7 @@ public:
     int fileId;
     bool autoDelete;
 };
+#endif
 ////////////////////////////////////////////////////////////////////////////////
 // KTRMLookup public methods
 ////////////////////////////////////////////////////////////////////////////////
@@ -363,30 +389,39 @@ public:
 KTRMLookup::KTRMLookup(const QString &file, bool autoDelete)
     : QObject()
 {
+#ifdef HAVE_MUSICBRAINZ
     d = new KTRMLookupPrivate;
     d->file = file;
     d->autoDelete = autoDelete;
     d->fileId = KTRMRequestHandler::instance()->startLookup(this);
+#endif
 }
 
 KTRMLookup::~KTRMLookup()
 {
+#ifdef HAVE_MUSICBRAINZ
     KTRMRequestHandler::instance()->endLookup(this);
     delete d;
+#endif
 }
 
 QString KTRMLookup::file() const
 {
+#ifdef HAVE_MUSICBRAINZ
     return d->file;
+#endif
 }
 
 int KTRMLookup::fileId() const
 {
+#ifdef HAVE_MUSICBRAINZ
     return d->fileId;
+#endif
 }
 
 void KTRMLookup::recognized()
 {
+#ifdef HAVE_MUSICBRAINZ
     kdDebug() << k_funcinfo << d->file << endl;
 
     d->results.clear();
@@ -408,17 +443,21 @@ void KTRMLookup::recognized()
     md_Delete(metaData);
 
     finished();
+#endif
 }
 
 void KTRMLookup::unrecognized()
 {
+#ifdef HAVE_MUSICBRAINZ
     kdDebug() << k_funcinfo << d->file << endl;
     d->results.clear();
     finished();
+#endif
 }
 
 void KTRMLookup::collision()
 {
+#ifdef HAVE_MUSICBRAINZ
     kdDebug() << k_funcinfo << d->file << endl;
 
     track_t track = tp_GetTrack(KTRMRequestHandler::instance()->tunePimp(), d->fileId);
@@ -477,19 +516,24 @@ void KTRMLookup::collision()
     tr_Unlock(track);
 
     finished();
+#endif
 }
 
 void KTRMLookup::error()
 {
+#ifdef HAVE_MUSICBRAINZ
     kdDebug() << k_funcinfo << d->file << endl;
 
     d->results.clear();
     finished();
+#endif
 }
 
 KTRMResultList KTRMLookup::results() const
 {
+#ifdef HAVE_MUSICBRAINZ
     return d->results;
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -499,13 +543,14 @@ KTRMResultList KTRMLookup::results() const
 void KTRMLookup::finished()
 
 {
+#ifdef HAVE_MUSICBRAINZ
     emit sigResult( results() );
     
     if(d->autoDelete)
         delete this;
+#endif
 }
 
-#include "ktrm.moc"
 
-#endif /*HAVE_MUSICBRAINZ*/
+#include "ktrm.moc"
 
