@@ -310,7 +310,7 @@ void Loader::timerEvent( QTimerEvent* )
         doExit();
     } else if ( delay >= TIMEOUT * 1000 ) {
         killTimers();
-        std::cout << "[amaroK] Timed out trying to contact amaroK\n";
+        std::cout << "[amaroK] Timed out trying to contact amarokapp\n";
 
         //NOTE these are untranslated.. nasty.
 
