@@ -3,10 +3,12 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #180 being the highest available (take this one for your next bug and increase here)
+           #181 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  ADD 180 <muesli> Show "Artist - Song" for Various Artist folder.
 
   ADD 179 <muesli> CoverManager startup takes too long.
 
