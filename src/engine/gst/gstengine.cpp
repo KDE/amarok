@@ -1,6 +1,6 @@
 /***************************************************************************
-                     gstengine.cpp  -  GStreamer audio interface
-                        -------------------
+            gstengine.cpp  -  GStreamer audio interface
+               -------------------
 begin                : Jan 02 2003
 copyright            : (C) 2003 by Mark Kretschmann
 email                : markey@web.de
@@ -36,9 +36,9 @@ using std::vector;
 
 AMAROK_EXPORT_PLUGIN( GstEngine )
 
-//////////////////////////////////////////////////////////////////////
-// STATIC
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+// static
+/////////////////////////////////////////////////////////////////////////////////////
 
 static const int
 SCOPEBUF_SIZE = 40000;
@@ -48,6 +48,15 @@ STREAMBUF_SIZE = 40000;
 
 GstEngine*
 GstEngine::self;
+
+static GstStaticCaps
+src_caps = GST_STATIC_CAPS( "audio/x-raw-int, "
+                            "endianness = (int) " G_STRINGIFY ( G_BYTE_ORDER ) ", "
+                            "signed = (boolean) true, "
+                            "width = (int) 16, "
+                            "depth = (int) 16, "
+                            "rate = (int) [ 11025, 48000 ], "
+                            "channels = (int) [ 1, 2 ]" );
 
 
 void
@@ -101,19 +110,26 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
 }
 
 
+GstCaps*
+GstEngine::fixate_cb( GstPad *pad, const GstCaps *ccaps, gpointer data )
+{
+    return gst_caps_copy( gst_static_caps_get( &src_caps ) );
+}
+
+
 void
 GstEngine::handoff_fakesrc_cb( GstElement*, GstBuffer* buf, GstPad, gpointer )
 {
     kdDebug() << k_funcinfo << endl;
-//     if ( !GST_IS_BUFFER( buf ) ) return;
-            
+    //     if ( !GST_IS_BUFFER( buf ) ) return;
+
     kdDebug() << "buf->size: " << buf->size << endl;
     guint8* data = buf->data;
-    
+
     for ( int i = 0; i < buf->size; ) {
         if ( self->m_streamBufOut == STREAMBUF_SIZE )
             self->m_streamBufOut = 0;
-        data[i] = self->m_streamBuf[self->m_streamBufOut++]; 
+        data[ i ] = self->m_streamBuf[ self->m_streamBufOut++ ];
     }
 }
 
@@ -180,8 +196,8 @@ GstEngine::init( bool&, int scopeSize, bool )
 
     m_streamBuf.resize( STREAMBUF_SIZE );
     for ( uint i = 0; i < STREAMBUF_SIZE; i++ )
-        m_streamBuf[i] = 0;
-       
+        m_streamBuf[ i ] = 0;
+
     gst_init( NULL, NULL );
 
     kdDebug() << "END " << k_funcinfo << endl;
@@ -254,7 +270,7 @@ EngineBase::EngineState
 GstEngine::state() const
 {
     if ( !m_pipelineFilled ) return Empty;
-        
+
     //HACK
     return Playing;
 
@@ -298,17 +314,17 @@ GstEngine::scope()
 /////////////////////////////////////////////////////////////////////////////////////
 
 const QObject*
-GstEngine::play( const KURL& url )  //SLOT
+GstEngine::play( const KURL& url )           //SLOT
 {
     stop();
     if ( m_pipelineFilled ) cleanPipeline();
 
     kdDebug() << "Sound output method: " << m_soundOutput << endl;
-    
+
     /* create a new thread to hold the elements */
     m_pThread = gst_thread_new ( "thread" );
     m_pAudiosink = gst_element_factory_make( m_soundOutput.latin1(), "play_audio" );
-    
+
     /* create source */
     if ( url.isLocalFile() ) {
         m_pFilesrc = gst_element_factory_make( "filesrc", "disk_source" );
@@ -320,12 +336,12 @@ GstEngine::play( const KURL& url )  //SLOT
         g_object_set( G_OBJECT( m_pFilesrc ), "signal-handoffs", true, NULL );
         g_object_set( G_OBJECT( m_pFilesrc ), "sizetype", 2, NULL );
         g_object_set( G_OBJECT( m_pFilesrc ), "sizemax", 2048, NULL );
-        g_object_set( G_OBJECT( m_pFilesrc ), "fill-type", 1, NULL );
-        g_object_set( G_OBJECT( m_pFilesrc ), "data", 1, NULL );
         g_signal_connect ( G_OBJECT( m_pFilesrc ), "handoff",
                            G_CALLBACK( handoff_fakesrc_cb ), m_pThread );
+        g_signal_connect ( gst_element_get_pad ( m_pFilesrc, "src" ),
+                           "fixate", G_CALLBACK ( fixate_cb ), NULL );
     }
-                            
+
     m_pSpider = gst_element_factory_make( "spider", "spider" );
     /* and an audio sink */
     m_pIdentity = gst_element_factory_make( "identity", "rawscope" );
@@ -341,10 +357,10 @@ GstEngine::play( const KURL& url )  //SLOT
                       m_pVolume, m_pAudiosink, NULL );
     /* link src to sink */
     gst_element_link_many( m_pFilesrc, m_pSpider, m_pIdentity, m_pVolume, m_pAudiosink, NULL );
-    
+
     setVolume( volume() );
     m_pipelineFilled = true;
-                
+
     if ( url.isLocalFile() ) play();
     m_playFlag = true;
     return this;
@@ -352,11 +368,11 @@ GstEngine::play( const KURL& url )  //SLOT
 
 
 void
-GstEngine::play()  //SLOT
+GstEngine::play()           //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     if ( !m_pipelineFilled ) return ;
-  
+
     gst_element_set_state( GST_ELEMENT( m_pThread ), GST_STATE_READY );
     /* start playing */
     gst_element_set_state( GST_ELEMENT( m_pThread ), GST_STATE_PLAYING );
@@ -364,7 +380,7 @@ GstEngine::play()  //SLOT
 
 
 void
-GstEngine::stop()  //SLOT
+GstEngine::stop()           //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     if ( !m_pipelineFilled ) return ;
@@ -375,7 +391,7 @@ GstEngine::stop()  //SLOT
 
 
 void
-GstEngine::pause()  //SLOT
+GstEngine::pause()           //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     if ( !m_pipelineFilled ) return ;
@@ -385,7 +401,7 @@ GstEngine::pause()  //SLOT
 
 
 void
-GstEngine::seek( long ms )  //SLOT
+GstEngine::seek( long ms )           //SLOT
 {
     if ( !m_pipelineFilled ) return ;
 
@@ -402,7 +418,7 @@ GstEngine::seek( long ms )  //SLOT
 
 
 void
-GstEngine::setVolume( int percent )  //SLOT
+GstEngine::setVolume( int percent )           //SLOT
 {
     m_volume = percent;
 
@@ -418,17 +434,17 @@ GstEngine::setVolume( int percent )  //SLOT
 }
 
 void
-GstEngine::newStreamData( char* buf, int size ) //SLOT
+GstEngine::newStreamData( char* buf, int size )          //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
     for ( uint i = 0; i < size; ) {
         if ( m_streamBufIn == STREAMBUF_SIZE )
             m_streamBufIn = 0;
-        m_streamBuf[m_streamBufIn++] = buf[i++]; 
+        m_streamBuf[ m_streamBufIn++ ] = buf[ i++ ];
     }
 
-    if ( m_playFlag && m_streamBufIn > STREAMBUF_SIZE/2 ) {
+    if ( m_playFlag && m_streamBufIn > STREAMBUF_SIZE / 2 ) {
         play();
         m_playFlag = false;
     }
@@ -442,7 +458,7 @@ GstEngine::newStreamData( char* buf, int size ) //SLOT
 QStringList
 GstEngine::getPluginList( const QCString& classname )
 {
-    GList* pool_registries = NULL;
+    GList * pool_registries = NULL;
     GList* registries = NULL;
     GList* plugins = NULL;
     GList* features = NULL;

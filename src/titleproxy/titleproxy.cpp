@@ -48,19 +48,6 @@ Proxy::Proxy( KURL url, int streamingMode )
 {
     kdDebug() << k_funcinfo << endl;
 
-    //FIXME this needs a timeout check    
-    m_sockRemote.connectToHost( url.host(), url.port() );
-    while ( m_sockRemote.state() != QSocket::Connected )
-        kapp->processEvents();
-    
-    kdDebug() << k_funcinfo << "sock.connectToHost() state: " << m_sockRemote.state() << endl;
-    
-    if ( m_sockRemote.state() != QSocket::Connected ) {
-        kdWarning() << k_funcinfo << "Unable to connect to remote server. Aborting.\n";
-        m_initSuccess = false;
-        return;
-    }
-
     m_pBuf = new char[ BUFSIZE ];
     
     if ( streamingMode == EngineBase::Socket ) {
@@ -111,14 +98,10 @@ KURL Proxy::proxyUrl()
 
 void Proxy::accept( int socket )
 {
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
-    
     m_sockProxy.setSocket( socket );
     m_sockProxy.waitForMore( 5000 );
 
     sendRequest( true );    
-    
-    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 
@@ -126,22 +109,35 @@ void Proxy::sendRequest( bool meta )
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
   
-    QString request = QString( "GET %1 HTTP/1.1\r\n" )
-                             .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) );
+    { //connect to server
+        //FIXME this needs a timeout check    
+        m_sockRemote.connectToHost( m_url.host(), m_url.port() );
+        while ( m_sockRemote.state() != QSocket::Connected )
+            kapp->processEvents();
+        
+        if ( m_sockRemote.state() != QSocket::Connected ) {
+            kdWarning() << k_funcinfo << "Unable to connect to remote server. Aborting.\n";
+            return;
+        }
+    }
     
-    //request metadata
-    if ( meta ) request += "Icy-MetaData:1\r\n";
- 
-    request += "Connection: Keep-Alive\r\n"
-               "User-Agent: aRts/1.2.2\r\n"
-               "Accept: audio/x-mp3, video/mpeg, application/ogg\r\n"
-               "Accept-Encoding: x-gzip, x-deflate, gzip, deflate\r\n"
-               "Accept-Charset: iso-8859-15, utf-8;q=0.5, *;q=0.5\r\n"
-               "Accept-Language: de, en\r\n\r\n";
-                              
-    connect( &m_sockRemote, SIGNAL( readyRead() ), this, SLOT( readRemote() ) );
-    m_sockRemote.writeBlock( request.latin1(), request.length() );
+    { //send request                                 
+        QString request = QString( "GET %1 HTTP/1.1\r\n" )
+                                .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) );
+        //request metadata
+        if ( meta ) request += "GNAAIcy-MetaData:1\r\n";
     
+        request += "Connection: Keep-Alive\r\n"
+                "User-Agent: aRts/1.2.2\r\n"
+                "Accept: audio/x-mp3, video/mpeg, application/ogg\r\n"
+                "Accept-Encoding: x-gzip, x-deflate, gzip, deflate\r\n"
+                "Accept-Charset: iso-8859-15, utf-8;q=0.5, *;q=0.5\r\n"
+                "Accept-Language: de, en\r\n\r\n";
+                                
+        connect( &m_sockRemote, SIGNAL( readyRead() ), this, SLOT( readRemote() ) );
+        m_sockRemote.writeBlock( request.latin1(), request.length() );
+    }
+        
     kdDebug() << "END " << k_funcinfo << endl;
 }
 
@@ -237,6 +233,7 @@ void Proxy::error()
 {
     kdDebug() <<  "TitleProxy error. Restarting stream in non-metadata mode.\n";
     
+    m_sockRemote.close();
     //open stream again,  but this time without metadata, please
     sendRequest( false );
 }

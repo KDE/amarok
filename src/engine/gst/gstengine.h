@@ -64,6 +64,7 @@ class GstEngine : public EngineBase
     private:
         static void                              eos_cb( GstElement*, GstElement* );
         static void                              handoff_cb( GstElement*, GstBuffer*, gpointer );
+        static GstCaps*                          fixate_cb( GstPad* pad, const GstCaps* ccaps, gpointer data );
         static void                              handoff_fakesrc_cb( GstElement*, GstBuffer*, GstPad, gpointer );
         static void                              typefindFound_cb( GstElement*, GstCaps*, GstElement* );
 
