@@ -26,7 +26,6 @@ amarokapp_SOURCES = \
         Options5.ui \
         amarokconfigdialog.cpp \
         amarokfilelist.cpp \
-        amarokfileview.cpp \
         amarokmenu.cpp \
         amarokslider.cpp \
         amaroksystray.cpp \
