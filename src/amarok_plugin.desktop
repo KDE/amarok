@@ -14,10 +14,13 @@ Comment[pt]='Plugin' para o amaroK
 Comment[pt_BR]=Plug-in para o amaroK
 Comment[ru]=Модуль amaroK
 Comment[sl]=Vstavek za amaroK
+Comment[sr]=Прикључак за amaroK
+Comment[sr@Latn]=Прикључак за amaroK
 Comment[sv]=Insticksprogram för amaroK
 Comment[ta]=amaroKகான சொருகி
 Comment[uz]=amaroK учун плагин
 Comment[xx]=xxPlugin for amaroKxx
+Comment[zh_CN]=amaroK 插件
 
 # Type of plugin, e.g. "engine".
 [PropertyDef::X-KDE-amaroK-plugintype]

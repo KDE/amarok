@@ -4,12 +4,21 @@ Actions=addToPlaylist
 
 [Desktop Action addToPlaylist]
 Name=Add to amaroK Playlist
+Name[cs]=Přidat do seznamu skladeb amaroK
+Name[da]=Tilføj til amaroKs spilleliste
+Name[es]=Añadir a la lista de reproducción de amaroK
 Name[et]=Lisa amaroKi lugude nimekirja
+Name[fr]=Ajouter à la liste de lecture d'amaroK
+Name[it]=Aggiungi alla playlista di amaroK
 Name[nl]=Toevoegen aan amaroK' afspeellijst
 Name[pt]=Adicionar à Lista do amaroK
 Name[pt_BR]=Adicionar à Lista de Músicas do Amarok
 Name[ru]=Добавить в amaroK
+Name[sr]=Додај на amaroK-ову листу
+Name[sr@Latn]=Додај на amaroK-ову листу
 Name[sv]=Lägg till i amaroK-spellistan
+Name[xx]=xxAdd to amaroK Playlistxx
+Name[zh_CN]=添加到 amaroK 播放列表
 Icon=amarok
 Exec=amarok -e %U
 
