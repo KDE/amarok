@@ -18,6 +18,7 @@ folder   = "amarok-#{version}"
 doi18n   = "yes"
 
 
+# Some helper methods
 def cvs( command )
     `cvs -z3 -d #{$cvsroot} #{command}`
 end
@@ -158,7 +159,7 @@ puts "**** Compressing..  "
 `mv * ..`
 Dir.chdir( ".." ) # amaroK-foo
 `rm -rf kdeextragear-1`
-Dir.chdir( ".." ) # root`
+Dir.chdir( ".." ) # root folder
 `tar -cf #{folder}.tar #{folder}`
 `bzip2 #{folder}.tar`
 `rm -rf #{folder}`
