@@ -186,9 +186,15 @@ PlaylistWindow::init()
         KToolBarButton *searchButton;
 
         box          = new QHBox( m_browsers->container() );
-        button       = new KToolBarButton( "locationbar_erase", 1, box );
+        button       = new KToolBarButton( SmallIcon("locationbar_erase"), 1, box );
         m_lineEdit   = new ClickLineEdit( box, i18n( "Filter here..." ) );
         searchButton = new KToolBarButton( SmallIcon("find"), 0, box);
+
+        //those 3 lines are for "scaling down" buttons' height for people
+        //using toolbar icons size greater than default one (22px).
+        int lineHeight = m_lineEdit->sizeHint().height();
+        button->setMinimumSize( QSize( lineHeight, lineHeight ) );
+        searchButton->setMinimumSize( QSize( lineHeight, lineHeight ) );
 
         box->setMargin( 4 );
 
