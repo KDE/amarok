@@ -35,6 +35,7 @@ AmarokSystray::AmarokSystray( PlayerWidget *playerWidget, KActionCollection *ac 
 
     //<mxcl> despite the usability concerns, we have to be consistent with the KDE style guide
     //       hence quit is now placed at the bottom
+    //<berkus> fuck you, i'm forking
 
     contextMenu()->insertItem( QIconSet( locate( "data", "amarok/images/b_prev.png" ) ),
                                i18n( "[&Z] Prev" ), kapp, SLOT( slotPrev() ) );
