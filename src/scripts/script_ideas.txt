@@ -1,0 +1,12 @@
+SCRIPT IDEAS
+============
+This is a list of possible dcop scripts for amaroK
+
+
+* Alarm, starts music at given time
+
+* Publish info about the song im now listening ( title, cover...)
+
+* Playlist to HTML converter
+
+

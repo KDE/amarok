@@ -19,7 +19,7 @@ import os.path
 from qt import *
 
 
-class config( QDialog ):
+class Config( QDialog ):
 
     def __init__( self ):
         QDialog.__init__( self )
@@ -32,7 +32,7 @@ class config( QDialog ):
 
         htopbox = QHBox( vbox )
         QLabel( "Alarm time: ", htopbox )
-        timeEdit = QTimeEdit( htopbox )
+        self.timeEdit = QTimeEdit( htopbox )
 
         hbox = QHBox( vbox )
 
@@ -43,10 +43,15 @@ class config( QDialog ):
         cancel.setText( "Cancel" )
         cancel.setDefault( True )
 
-        self.connect( ok,     SIGNAL( "clicked()" ), self, SLOT( "accept()" ) )
+        self.connect( ok,     SIGNAL( "clicked()" ), self.save )
         self.connect( cancel, SIGNAL( "clicked()" ), self, SLOT( "reject()" ) )
 
         self.adjustSize()
+
+
+    def save( self ):
+        print self.timeEdit.time().toString()
+        self.accept()
 
 
 ############################################################################
@@ -54,7 +59,7 @@ class config( QDialog ):
 def main( args ):
     app = QApplication( args )
 
-    widget = config()
+    widget = Config()
     widget.show()
 
     app.connect( app, SIGNAL( "lastWindowClosed()" ), app, SLOT( "quit()" ) )
