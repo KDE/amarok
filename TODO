@@ -35,6 +35,8 @@ SHORT-TERM (URGENT):
   FIX 134 <markey> Ctrl-C in Playlist (and other Ctrl shortcuts) for copying title doesn't work, because the
                    event gets eaten by another widget.
 
+          <mxcl>   Only show Various Artists when sorting by artist then album, it doesn't make sense in any
+                   other situation! Also can we file it under V please?
 
 MID-TERM:
 
