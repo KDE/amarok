@@ -31,7 +31,7 @@ namespace amaroK
 
             virtual void setValue( int );
 
-            //WARNING non-virtual - ant thus only really intended for internal use
+            //WARNING non-virtual - and thus only really intended for internal use
             //this is a major flaw in the class presently, however it suits our
             //current needs fine
             int value() const { return adjustValue( QSlider::value() ); }
@@ -47,6 +47,7 @@ namespace amaroK
             virtual void mouseMoveEvent( QMouseEvent* );
             virtual void mouseReleaseEvent( QMouseEvent* );
             virtual void mousePressEvent( QMouseEvent* );
+            virtual void slideEvent( QMouseEvent* );
 
             bool m_sliding;
 
@@ -68,13 +69,7 @@ namespace amaroK
 
         protected:
             virtual void paintEvent( QPaintEvent* );
-            virtual void mouseMoveEvent( QMouseEvent* );
-            virtual void mousePressEvent( QMouseEvent* );
-
-        #if 0
-            virtual QSize minimumSizeHint() const;
-            virtual QSize sizeHint() const;
-        #endif
+            virtual void slideEvent( QMouseEvent* );
 
         private:
             PrettySlider( const PrettySlider& ); //undefined
