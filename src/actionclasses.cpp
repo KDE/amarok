@@ -97,14 +97,16 @@ Menu::Menu()
     insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n( "C&over Manager..." ), ID_SHOW_COVER_MANAGER );
     insertItem( i18n( "&Visualizations..." ), ID_SHOW_VIS_SELECTOR );
 
-    insertSeparator();
-
 //     insertItem( i18n( "&Scripts..." ), ID_SHOW_SCRIPT_SELECTOR );
 //     insertItem( i18n( "&JavaScript Console" ), ID_SHOW_SCRIPT_CONSOLE );
 //
 //     insertSeparator();
 
-    insertItem( i18n( "First-run Wizard..." ), ID_SHOW_WIZARD );
+    insertItem( i18n( "First-run &Wizard..." ), ID_SHOW_WIZARD );
+
+    insertSeparator();
+
+    insertItem( i18n( "&Show Menubar" ), ID_SHOW_MENUBAR );
 
     insertSeparator();
 
@@ -184,6 +186,9 @@ Menu::slotActivated( int index )
         ScriptManager::Manager::instance()->showConsole();
         break;
     #endif
+    case ID_SHOW_MENUBAR:
+        PlaylistWindow::self()->showMenuBar( true );
+        break;
     }
 }
 

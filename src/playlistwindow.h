@@ -64,6 +64,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
 
     public slots:
         void showHide();
+        void showMenuBar( bool enabled = true );
 
     private slots:
         void savePlaylist() const;

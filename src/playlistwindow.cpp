@@ -675,7 +675,6 @@ void PlaylistWindow::slotMenuActivated( int index )
     }
 }
 
-
 #include <kwin.h>
 void PlaylistWindow::showHide() //SLOT
 {
@@ -716,6 +715,11 @@ void PlaylistWindow::showHide() //SLOT
     else if( !info.isMinimized() && !isShaded ) setShown( !isShown() );
 
     if( isShown() ) KWin::deIconifyWindow( winId() );
+}
+
+void PlaylistWindow::showMenuBar( bool enabled ) //SLOT
+{
+    m_menubar->setShown( enabled );
 }
 
 #include "playlistwindow.moc"

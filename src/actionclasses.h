@@ -35,7 +35,8 @@ namespace amaroK
                 ID_SHOW_SCRIPT_SELECTOR,
                 ID_SHOW_SCRIPT_CONSOLE,
                 ID_SHOW_EFFECTS,
-                ID_SHOW_WIZARD
+                ID_SHOW_WIZARD,
+                ID_SHOW_MENUBAR
             };
 
         public slots:
