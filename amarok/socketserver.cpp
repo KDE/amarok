@@ -81,6 +81,7 @@ Vis::SocketServer::SocketServer( QObject *parent )
 
     lv->addColumn( "Name" );
     lv->addColumn( "Description" );
+    lv->show();
 }
 
 void

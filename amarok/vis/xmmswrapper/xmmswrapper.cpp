@@ -54,12 +54,13 @@ main( int argc, char** argv ) {
         std::list<std::string> list;
 
         //scan plugins
-        const char *dirname = XMMS_PLUGIN_PATH;
+        std::string dirname = XMMS_PLUGIN_PATH;
+        dirname.append( "/" );
         DIR *dir;
         struct dirent *ent;
         struct stat statbuf;
 
-        dir = opendir( dirname );
+        dir = opendir( dirname.c_str() );
         if ( !dir ) { std::cerr << "Please edit the PLUGIN_PATH in xmmswrapper.cpp\n"; exit( 1 ); }
         std::cout << "checkpoint 1\n";
 
