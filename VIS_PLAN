@@ -1,8 +1,8 @@
 amaroK VIS_PLAN  - Created: 22-11-2003
 
+
 Abstract
 ========
-
 In order to create a visualisation framework that is superior to anything
 popular available for Linux today we should plan amaroK's thoroughly
 before implementation. This document exists to map out our ideas and is
@@ -12,21 +12,14 @@ experience with this kind of work, add some comments! Thanks, Max Howell
 
 Formatting
 ==========
-
 The document has no regimented formatting, but do try to keep the wordwrap set
 the same! Feel free to recommend formatting if the document becomes
 unmanageable.
 
-Editing
-=======
-
-Whatever goes. Please correct my spelling!
-
 
 Plan
 ====
-
-My inital thoughts were to make visualisations a separate process rather than
+My initial thoughts were to make visualisations a separate process rather than
 separate thread. The reasoning being, a crash in the vis won't crash amaroK,
 threads can be unmanageable, *nix is good for new processes, we can use DCOP to
 control the vis and presumable we just need to pass a handle to the relevant
@@ -40,6 +33,7 @@ do rendering. There are probably better libraries for high speed graphics and if
 there isn't a way to make DCOP not depend on a QApplication, then maybe we could
 write something. It would be sorted if we could make something that can react to
 arts sound output in general.
+<markey> we could use SDL for 2d and OpenGL for 3d rendering.
 
 I was also thinking it would be neat to embed the visuals somehow into amaroK,
 so as the background in the playlist perhaps (I know, this would probably not
@@ -50,17 +44,40 @@ it.
 If we make the visualisations not amaroK specific it may be possible to embed
 visualisations into the Kicker, onto the desktop, etc.
 
-MCOP seems to be the best way to get the audio data to the visuals. Problem with
-current FFT arts implementation is it seems to be stuck at 17 bands, can we
-improve this? Do we want more than an FFT of the audio data? Would other data
+Do we want more than an FFT of the audio data? Would other data
 be useful to visuals at all? Beat detection certainly would be a useful thing to
 offer the visualisations, and it would certainly stop every visual implementing
 its own detection.
 
-[muesli: FFT is all you need. 17 bands although is a bit few. 32 would be
-         desirable, after everything I read and know. Right now I'm expere-
-         menting with the vector our analyzer uses. Quite promising up to now. ]
 
+Vis Process Architecture
+========================
+I suggest having a separate process for each visualization. Each vis process would
+only load one visualization plugin. This way we have good crash safety and it's also
+possible to develop and ship plugins separately from amaroK. So we have one "vis loader
+skeleton" in amaroK, which will be instanciated whenever we need a vis. This loader could
+get started with the vis plugin as cli argument. It would also contain all the socket and
+interface needed to communicate with amaroK.
+
+We should take care to keep the design as simple as possible.
+
+
+Merging Analyzer and Vis
+========================
+If we decide on unifying vis and analyzer, the question arises how to get the rendered
+bitmap graphic back into amaroK's playerwidget. It seems we have the following options:
+
+* Writing it into a shared memory buffer. amaroK must then read the buffer and bitBlt()
+  the pixmap into the framebuffer
+* Transferring the pixmap over a Unix socket (or UDP network socket). This can amount to
+  several megabytes per second. After the transfer amaroK must bitBlt() it to the
+  framebuffer.
+* Writing it directly into the framebuffer at the desired position, like a video overlay.
+  There might be technical problems doing so, and it will be difficult when the user
+  moves the window.
+
+ 
+  
 [Comment from muesli, to be integrated into the paragraphs above]
 
 imho, it would be cool to offer this service via sockets. udp would fit per-
@@ -85,6 +102,8 @@ as we will over time offer a really good implementation, and it means that if th
 has many visuals running, the beat-detection is only done once for all visualisations.
 
 [/Comment by muesli]
+
+
 
 
 //FIXME <markey> beat detection code temporarily moved here

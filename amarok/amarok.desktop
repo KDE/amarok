@@ -14,7 +14,7 @@ GenericName[nl]=Audiospeler
 GenericName[pt]=Leitor de Áudio
 GenericName[pt_BR]=Tocador de Mídia
 GenericName[sv]=Ljudspelare
-Exec=amarok -caption "%c" %i %U
+Exec=amarok -caption "%c" %U
 Comment=Uncle Rodney says, "10/10, amaroK is seriously super!"
 Comment[da]=Onkel Rodney siger, "10/10, amaroK er virkelig super!"
 Comment[es]=El tio Rodney dice, "'10/10, amaroK es seriamente super!"
@@ -29,9 +29,10 @@ DocPath=amarok/index.html
 Terminal=false
 Categories=Qt;KDE;AudioVideo
 Actions=Enqueue;
+X-KDE-StartupNotify=false
 
 [Desktop Action Enqueue]
-Exec=amarok -caption "%c" %i -e %U
+Exec=amarok -caption "%c" -e %U
 Name=Enqueue in amaroK
 Name[da]=Enqueue i amaroK
 Name[es]=Encolar en amaroK
