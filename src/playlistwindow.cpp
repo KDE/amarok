@@ -16,12 +16,10 @@
 #include "actionclasses.h"    //see toolbar construction
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "app.h"
 #include "browserbar.h"
 #include "collectionbrowser.h"
 #include "contextbrowser.h"
 #include "playlistbrowser.h"
-#include "welcomebrowser.h"
 #include "enginecontroller.h" //for actions in ctor
 #include "filebrowser.h"
 #include "playlist.h"
@@ -90,6 +88,22 @@ namespace amaroK
 /// CLASS PlaylistWindow
 //////////////////////////////////////////////////////////////////////////////////////////
 
+#include <time.h>
+template <class B> void
+PlaylistWindow::addBrowser( const char *name, const QString &title, const QString &icon )
+{
+    kdDebug() << "  Init: " << name << endl;
+
+    clock_t start  = clock();
+        m_browsers->addBrowser( new B( name ), title, icon );
+    clock_t finish = clock();
+
+    const double duration = (double) (finish - start) / CLOCKS_PER_SEC;
+
+    kdDebug() << "  Time: " << duration << "s\n";
+}
+
+
 PlaylistWindow::PlaylistWindow()
    : QWidget( 0, "PlaylistWindow", Qt::WGroupLeader )
    , KXMLGUIClient()
@@ -100,11 +114,11 @@ PlaylistWindow::PlaylistWindow()
     const EngineController* const ec = EngineController::instance();
     EngineController::instance()->attach( this );
 
-    KStdAction::configureToolbars( pApp, SLOT( slotConfigToolBars() ), ac );
-    KStdAction::keyBindings( pApp, SLOT( slotConfigShortcuts() ), ac );
-    KStdAction::keyBindings( pApp, SLOT( slotConfigGlobalShortcuts() ), ac, "options_configure_globals" );
-    KStdAction::preferences( pApp, SLOT( slotConfigAmarok() ), ac );
-    KStdAction::quit( pApp, SLOT( quit() ), ac );
+    KStdAction::configureToolbars( kapp, SLOT( slotConfigToolBars() ), ac );
+    KStdAction::keyBindings( kapp, SLOT( slotConfigShortcuts() ), ac );
+    KStdAction::keyBindings( kapp, SLOT( slotConfigGlobalShortcuts() ), ac, "options_configure_globals" );
+    KStdAction::preferences( kapp, SLOT( slotConfigAmarok() ), ac );
+    KStdAction::quit( kapp, SLOT( quit() ), ac );
     KStdAction::open( this, SLOT(slotAddLocation()), ac, "playlist_add" )->setText( i18n("&Add Media") );
     KStdAction::save( this, SLOT(savePlaylist()), ac, "playlist_save" )->setText( i18n("&Save Playlist") );
 
@@ -145,7 +159,7 @@ void
 PlaylistWindow::init()
 {
     //this function is necessary because amaroK::actionCollection() returns our actionCollection
-    //via the pApp->m_pPlaylistWindow pointer since pApp->m_pPlaylistWindow is not defined until
+    //via the App::m_pPlaylistWindow pointer since App::m_pPlaylistWindow is not defined until
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
 
     m_browsers = new BrowserBar( this );
@@ -194,16 +208,12 @@ PlaylistWindow::init()
 
 
     //<Browsers>
-        m_browsers->addBrowser( new FileBrowser( "FileBrowser" ), i18n( "Files" ), "hdd_unmount" );
-        m_browsers->addBrowser( new CollectionBrowser( "CollectionBrowser" ), i18n( "Collection" ), "kfm" );
-        m_browsers->addBrowser( new ContextBrowser( "ContextBrowser" ), i18n( "Context" ), "info" );
-        m_browsers->addBrowser( new SearchBrowser( "SearchBrowser" ), i18n( "Search" ), "find" );
-        m_browsers->addBrowser( new PlaylistBrowser( "Playlists" ), i18n( "Playlists" ), "midi" );
-
-        if( AmarokConfig::showWelcomeTab() )
-        {
-            m_browsers->addBrowser( new WelcomeBrowser( this, "WelcomePage" ), i18n( "Welcome" ), "help" );
-        }
+    kdDebug() << "[browserBar] What's this they say? I'm the sexiest man in Milton Keynes.\n";
+        addBrowser<FileBrowser>( "FileBrowser", i18n( "Files" ), "hdd_unmount" );
+        addBrowser<CollectionBrowser>( "CollectionBrowser", i18n( "Collection" ), "kfm" );
+        addBrowser<ContextBrowser>( "ContextBrowser", i18n( "Context" ), "info" );
+        addBrowser<SearchBrowser>( "SearchBrowser", i18n( "Search" ), "find" );
+        addBrowser<PlaylistBrowser>( "PlaylistBrowser", i18n( "Playlists" ), "midi" );
     //</Browsers>
 
 
@@ -531,42 +541,6 @@ void PlaylistWindow::showHide() //SLOT
     else if( !info.isMinimized() && !isShaded ) setShown( !isShown() );
 
     if( isShown() ) KWin::deIconifyWindow( winId() );
-}
-
-
-void PlaylistWindow::welcomeURL( const KURL &url )
-{
-    if( url == QString("amarok://remove_tab") )
-    {
-        m_browsers->removeBrowser( "WelcomePage" );
-        AmarokConfig::setShowWelcomeTab( false );
-        return; //to avoid code below
-    }
-
-    bool b;
-    QString xml;
-
-    if( url == QString( "amarok://compact_mode" ) )
-    {
-        //this is the same as amarokui.rc, but we name it separately to ensure it
-        //loads the original and not the user-modified scheme
-        xml = "amarokui.rc";
-        b = false;
-    }
-    else if( url == QString("amarok://xmms_mode") )
-    {
-        xml = "amarokui_xmms.rc";
-        b = true;
-    }
-    else return;
-
-    setXMLFile( xml );
-    createGUI();
-    AmarokConfig::setShowPlayerWindow( b );
-    AmarokConfig::setShowStatusBar( !b );
-    pApp->applySettings();
-
-    amaroK::config()->writeEntry( "XMLFile", xml );
 }
 
 #include "playlistwindow.moc"

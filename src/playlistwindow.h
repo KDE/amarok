@@ -63,13 +63,14 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
     private slots:
         void savePlaylist() const;
         void slotAddLocation();
-        void welcomeURL( const KURL& );
 
     protected:
         virtual void closeEvent( QCloseEvent* );
         void engineStateChanged( Engine::State );
 
     private:
+        template <class B> void addBrowser( const char*, const QString&, const QString& );
+
         BrowserBar *m_browsers;
         Playlist   *m_playlist;
         KLineEdit  *m_lineEdit;
