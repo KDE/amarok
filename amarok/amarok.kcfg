@@ -164,6 +164,19 @@
         <default>70,140</default>
         <whatsthis></whatsthis>
      </entry>
+     <entry key="Osd Enabled" type="Bool">
+        <label>Use On-Screen Display</label>
+        <default>true</default>
+        <whatsthis></whatsthis>
+     </entry>
+      <entry key="Osd Font" type="Font">
+        <label>Font for On-Screen Display</label>
+        <default code="true">QFont("Arial",20)</default>
+     </entry>
+     <entry key="Osd Color" type="Color">
+        <label>Color for On-Screen Display</label>
+        <default>#ffff00</default>
+     </entry>
   </group>
   <group name="Fonts">
      <entry key="Use Custom Fonts" type="Bool">

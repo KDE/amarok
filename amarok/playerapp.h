@@ -78,7 +78,6 @@ class PlayerApp : public KUniqueApplication
 
         PlayerWidget *m_pPlayerWidget;
         BrowserWin *m_pBrowserWin;
-        OSDWidget *m_pOSD;
 
         QColor m_optBrowserBgAltColor;
         QColor m_optBrowserSelColor;
@@ -122,7 +121,6 @@ class PlayerApp : public KUniqueApplication
         /*         void sigUpdateFonts(); */
     
     private:
-        void initOSD();
         void initPlayerWidget();
         void initMixer();
         bool initMixerHW();
@@ -141,6 +139,7 @@ class PlayerApp : public KUniqueApplication
         bool m_bIsPlaying;
         bool m_bChangingSlider;
         FHT *m_pFht;
+        OSDWidget *m_pOSD;
                 
         bool m_XFadeRunning;
         float m_XFadeValue;

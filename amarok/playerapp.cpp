@@ -29,10 +29,11 @@ email                : markey@web.de
 #include "playerwidget.h"
 
 #include "amarokconfig.h"
-#include "Options1.h"
+#include "Options1.h"    //FIXME can't we compress these includes somehow
 #include "Options2.h"
 #include "Options3.h"
 #include "Options4.h"
+#include "Options5.h"
 
 #include <vector>
 #include <string>
@@ -75,11 +76,11 @@ PlayerApp::PlayerApp()
         , m_pEffectWidget( NULL )
         , m_bChangingSlider( false )
         , m_pFht( new FHT( SCOPE_SIZE ) )
+        , m_pOSD( new OSDWidget() )
 {
     setName( "amaroK" );
     pApp = this; //global
 
-    initOSD();
     initPlayerWidget();
     initBrowserWin();
 
@@ -190,25 +191,6 @@ int PlayerApp::newInstance()
 /////////////////////////////////////////////////////////////////////////////////////
 // INIT
 /////////////////////////////////////////////////////////////////////////////////////
-
-void PlayerApp::initOSD()
-{
-    kdDebug() << "begin PlayerApp::initOSD()" << endl;
-
-    // set font
-    QFont font( "Impact" );
-    font.setBold( FALSE );
-    font.setPixelSize( 28 );
-
-    // create osd widget
-    m_pOSD = new OSDWidget();
-    m_pOSD->setEnabled( TRUE );
-    m_pOSD->setFont( font );
-    m_pOSD->setColor( QColor( "yellow" )  );
-
-    kdDebug() << "end PlayerApp::initOSD()" << endl;
-}
-
 
 void PlayerApp::initPlayerWidget()
 {
@@ -336,9 +318,9 @@ void PlayerApp::readConfig()
     /*    m_pBrowserWin->m_pBrowserWidget->readDir( AmarokConfig::currentDirectory() );
         m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( AmarokConfig::pathHistory() );*/
 
-    m_pPlayerWidget->move( AmarokConfig::playerPos() );
-    m_pBrowserWin->move( AmarokConfig::browserWinPos() );
-    m_pBrowserWin->resize( AmarokConfig::browserWinSize() );
+    m_pPlayerWidget->move  ( AmarokConfig::playerPos() );
+    m_pBrowserWin  ->move  ( AmarokConfig::browserWinPos() );
+    m_pBrowserWin  ->resize( AmarokConfig::browserWinSize() );
 
     m_pPlayerWidget->m_pButtonPl->setOn( AmarokConfig::browserWinEnabled() );
 
@@ -348,6 +330,10 @@ void PlayerApp::readConfig()
 
     m_pPlayerWidget->createVis();
 
+    m_pOSD->setEnabled( AmarokConfig::osdEnabled() );
+    m_pOSD->setFont   ( AmarokConfig::osdFont() );
+    m_pOSD->setColor  ( AmarokConfig::osdColor() );
+    
     QValueList<int> splitterList;
     
     //FIXME this is no longer particular relevant, instead record playlistSideBar's savedSize
@@ -845,6 +831,7 @@ void PlayerApp::slotShowOptions()
     dialog->addPage( new Options2(0,"Fonts"),    i18n("Fonts"),    "fonts",  i18n("Configure fonts") );
     dialog->addPage( new Options3(0,"Colors"),   i18n("Colors"),   "colors", i18n("Configure Colors") );
     dialog->addPage( new Options4(0,"Playback"), i18n("Playback"), "kmix",   i18n("Configure playback") );
+    dialog->addPage( new Options5(0,"OSD"),      i18n("OSD" ),     "tv",     i18n("Configure OSD") );
 
     connect( dialog, SIGNAL( settingsChanged() ), this, SLOT( readConfig() ) );
 

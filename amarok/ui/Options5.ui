@@ -1,0 +1,88 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>Options5</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>Options5</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>407</width>
+            <height>256</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Form1</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QButtonGroup">
+            <property name="name">
+                <cstring>kcfg_OsdEnabled</cstring>
+            </property>
+            <property name="title">
+                <string>&amp;Use On-Screen Display</string>
+            </property>
+            <property name="checkable">
+                <bool>true</bool>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>font:</string>
+                    </property>
+                </widget>
+                <widget class="KFontRequester">
+                    <property name="name">
+                        <cstring>kcfg_OsdFont</cstring>
+                    </property>
+                    <property name="font">
+                        <font>
+                            <family>Arial</family>
+                            <pointsize>20</pointsize>
+                        </font>
+                    </property>
+                </widget>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>color:</string>
+                    </property>
+                </widget>
+                <widget class="KColorButton">
+                    <property name="name">
+                        <cstring>kcfg_OsdColor</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="color">
+                        <color>
+                            <red>255</red>
+                            <green>0</green>
+                            <blue>0</blue>
+                        </color>
+                    </property>
+                </widget>
+            </vbox>
+        </widget>
+    </vbox>
+</widget>
+<customwidgets>
+</customwidgets>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kfontrequester.h</includehint>
+</includehints>
+</UI>
