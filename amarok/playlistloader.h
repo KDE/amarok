@@ -69,6 +69,7 @@ public:
     };
 
     friend class PlaylistEvent;
+    friend class LoaderEvent;
 
 private:
     void run();
