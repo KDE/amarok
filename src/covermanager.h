@@ -34,7 +34,7 @@ Q_OBJECT
         virtual bool eventFilter( QObject*, QEvent* );
      
     private slots:
-        void expandeItem( QListViewItem * );
+        void expandItem( QListViewItem * );
         void collapseItem( QListViewItem * );
         void slotArtistSelected( QListViewItem * );
         void coverItemDoubleClicked( QIconViewItem *item );

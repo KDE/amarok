@@ -134,7 +134,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     vbox->addWidget( splitter );
 
     // signals and slots connections
-    connect( m_artistView, SIGNAL( expanded(QListViewItem *) ), SLOT( expandeItem(QListViewItem *) ) );
+    connect( m_artistView, SIGNAL( expanded(QListViewItem *) ), SLOT( expandItem(QListViewItem *) ) );
     connect( m_artistView, SIGNAL( collapsed(QListViewItem *) ), SLOT( collapseItem(QListViewItem *) ) );
     connect( m_artistView, SIGNAL( selectionChanged( QListViewItem * ) ), SLOT( slotArtistSelected( QListViewItem * ) ) );
     connect( m_coverView, SIGNAL( rightButtonPressed( QIconViewItem *, const QPoint & ) ),
