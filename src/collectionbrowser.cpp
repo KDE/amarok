@@ -266,7 +266,11 @@ CollectionView::scan()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
-    if ( !m_isScanning )
+    if ( m_dirs.isEmpty() ) {
+        m_insertdb->dropTables();
+        this->clear();
+    }
+    else if ( !m_isScanning )
     {
         m_isScanning = true;
         m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
