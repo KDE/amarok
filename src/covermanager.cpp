@@ -609,7 +609,7 @@ void CoverManager::updateStatusBar()
 
         //update the status text
         QString text;
-        if( m_coversFetched >= m_progress->totalSteps() ) {
+        if( m_coversFetched + m_coverErrors >= m_progress->totalSteps() ) {
             //fetching finished
             text = i18n( "Finished." );
             if( m_coverErrors )
