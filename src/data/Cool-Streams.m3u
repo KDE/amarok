@@ -25,7 +25,7 @@ http://radio.electronic-culture.org/listen.pls
 http://streams.frequence3.net/hd-mp3.m3u
 
 #EXTINF:-1,Gaming FM [Computer-Music]
-http://complete.gamingfm.com/listen128.pls
+http://www.gamingfm.com:7500/listen.pls
 
 #EXTINF:-1,Groove Salad [Chill-Out]
 http://www.somafm.com/groovesalad.pls
