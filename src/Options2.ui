@@ -273,7 +273,7 @@
                         <string>&amp;Charset:</string>
                     </property>
                     <property name="buddy" stdset="0">
-                        <cstring>recoding_charset</cstring>
+                        <cstring>kcfg_TagEncoding</cstring>
                     </property>
                 </widget>
                 <widget class="QComboBox">
