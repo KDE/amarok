@@ -731,7 +731,7 @@ void PlayerApp::readConfig()
     }
     m_pBrowserWin->m_pSplitter->setSizes( splitterList );
 
-    if ( m_pConfig->readBoolEntry( "BrowserWin Enabled" ) == true )
+    if ( m_pConfig->readBoolEntry( "BrowserWin Enabled", true ) == true )
     {
         m_pPlayerWidget->m_pButtonPl->setOn( true );
         m_pBrowserWin->show();
