@@ -3,6 +3,7 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  FIX: Switching engines at runtime breaking volume control.
   FIX: GstEngine skipping tracks directly after starting, when crossfading enabled.
   CHG: Database system now works with linked tables. Saves hdd-space and cpu-time.
   CHG: If you remove the current song from the playlist, we don't define the next 

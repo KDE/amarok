@@ -33,7 +33,7 @@ email                : markey@web.de
 #include "plugin.h"
 #include "pluginmanager.h"
 #include "threadweaver.h"        //restoreSession()
-#include "socketserver.h"    //please leave directory prefix
+#include "socketserver.h" 
 
 #include <kaboutdata.h>          //initCliArgs()
 #include <kaction.h>
@@ -414,6 +414,7 @@ void PlayerApp::applySettings()
     if ( AmarokConfig::soundSystem() != PluginManager::getService( EngineController::engine() )->name() ) {
         PluginManager::unload( EngineController::engine() );
         initEngine();
+        AmarokConfig::setHardwareMixer( EngineController::engine()->initMixer( AmarokConfig::hardwareMixer() ) );
 
         kdDebug() << k_funcinfo << " AmarokConfig::soundSystem() == " << AmarokConfig::soundSystem() << endl;
     }
