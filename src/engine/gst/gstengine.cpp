@@ -910,7 +910,10 @@ GstEngine::createPipeline()
         output += GstConfig::outputParams().latin1();
     }
     GError* err;
-    if ( !( m_gst_audiosink = gst_parse_launch( output, &err ) ) ) { return false; }
+    if ( !( m_gst_audiosink = gst_parse_launch( output, &err ) ) ) {
+        QTimer::singleShot( 0, this, SLOT( errorNoOutput() ) );
+        return false;
+    }
     gst_bin_add( GST_BIN( m_gst_outputThread ), m_gst_audiosink );
 
     /* setting device property for AudioSink*/
