@@ -43,7 +43,6 @@ public:
     // plugins have their own static space, so calling instance from a plugin won't do any good.
     // you'll only get a new (empty) instance.
     static EngineController *instance();
-    static EngineController *self() { return instance(); }
     static EngineBase       *engine() { return instance()->m_pEngine; }
     static EngineBase       *loadEngine();
     static bool              canDecode( const KURL& );
