@@ -67,6 +67,9 @@ void GLAnalyzer::initializeGL()
 
 	// Enable depth testing for hidden line removal
 	glEnable(GL_DEPTH_TEST);		
+
+	// Set blend parameters for 'composting alpha'
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 }
 
 void GLAnalyzer::resizeGL( int w, int h )
@@ -132,7 +135,25 @@ void GLAnalyzer::drawScope()
 void GLAnalyzer::paintGL()
 {
         glMatrixMode( GL_MODELVIEW );
+#if 1
         glClear( GL_COLOR_BUFFER_BIT |  GL_DEPTH_BUFFER_BIT );
+#else
+        glDisable( GL_DEPTH_TEST );
+        glEnable( GL_BLEND );
+        glPushMatrix();
+        glLoadIdentity();
+        glBegin( GL_TRIANGLE_STRIP );
+          glColor4f( 0.0f, 0.0f, 0.1f, 0.08f );
+          glVertex2f( 20.0f, 10.0f );
+          glVertex2f( -20.0f, 10.0f );
+          glVertex2f( 20.0f, -10.0f );
+          glVertex2f( -20.0f, -10.0f );
+        glEnd();
+        glPopMatrix();
+        glDisable( GL_BLEND );
+        glEnable( GL_DEPTH_TEST );
+        glClear( GL_DEPTH_BUFFER_BIT );
+#endif
         drawScope();
         glFlush();
 
