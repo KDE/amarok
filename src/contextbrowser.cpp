@@ -996,7 +996,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             if ( !albumValues.isEmpty() )
                 for ( uint j = 0; j < albumValues.count(); j += 4 )
                 {
-                    QString tmp = albumValues[j + 2].stripWhiteSpace().isEmpty() ? "" : "" + albumValues[j + 2] + ". ";
+                    QString tmp = albumValues[j + 2].stripWhiteSpace().isEmpty() ? "" : "<span class='song-trackno'>" + albumValues[j + 2] + ".&nbsp;</span>";
                     m_HTMLSource.append(
                         "<div class='song'>"
                          "<a class='song' href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">" + tmp + albumValues[j] + "</a>"
@@ -1086,6 +1086,7 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     styleSheet += QString( "a { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
     styleSheet += QString( ".song a { display: block; padding: 1px 2px; font-weight: normal; text-decoration: none; }" );
     styleSheet += QString( ".song a:hover { color: %1; background-color: %2; }" ).arg( fg ).arg( bg );
+    styleSheet += QString( ".song-trackno { text-align: right; width: 2em; display: block; float: left;}" );
     styleSheet += QString( ".song-title { font-weight: bold; }" );
     styleSheet += QString( ".song-score { }" );
     styleSheet += QString( ".song-artist { }" );
