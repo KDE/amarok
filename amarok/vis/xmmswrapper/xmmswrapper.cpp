@@ -17,7 +17,7 @@
 #include "xmmswrapper.h"
 
 #include <iostream>
-#include <list> 
+#include <list>
 #include <vector>
 
 #include <qstring.h>
@@ -112,7 +112,8 @@ main( int argc, char** argv )
 
     while ( sockfd != -1 ) {
         gtk_main_iteration_do( FALSE );
-        usleep( 20 * 1000 );
+
+        usleep( 16 * 1000 );
 
         if ( wrap.renderPCM() ) {
             float float_data[ 512 ];
@@ -121,14 +122,14 @@ main( int argc, char** argv )
 
             send( sockfd, "PCM", 4, 0 );
             nbytes = recv( sockfd, float_data, 512 * sizeof( float ), 0 );
-            
+
             char strbuf[10];
             qstrncpy( strbuf, (char*) float_data, 10 );
             if ( QString( strbuf ).startsWith( "CONFIG" ) ) {
                 kdDebug() << k_funcinfo << "Received Configure signal.\n";
-                wrap.configure();            
+                wrap.configure();
             }
-                            
+
             //NOTE we times by 1<<14 rather than 1<<15 (maximum value of signed 16bit)
             //     this is because values of pcm data tend to range 0-2 (although there
             //     is no theoretical maximum.
@@ -167,12 +168,12 @@ main( int argc, char** argv )
 
             send( sockfd, "PCM", 4, 0 );
             nbytes = recv( sockfd, float_data, 512 * sizeof( float ), 0 );
-            
+
             char strbuf[10];
             qstrncpy( strbuf, (char*) float_data, 10 );
             if ( QString( strbuf ).startsWith( "CONFIG" ) ) {
                 kdDebug() << k_funcinfo << "Received Configure signal.\n";
-                wrap.configure();            
+                wrap.configure();
             }
 
             for ( uint x = 0; x < 512; ++x ) {
@@ -210,7 +211,7 @@ main( int argc, char** argv )
 
     close( sockfd );
 }
-    
+
 int
 tryConnect()
 {
