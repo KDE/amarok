@@ -84,6 +84,7 @@ class CollectionDB : public QObject
     signals:
         void scanDone( bool changed );
         void coverFetched( const QString &key );
+        void coverFetched();
         
     public slots:
         void fetchCover( QObject* parent, const QString& artist, const QString& album, bool noedit );

@@ -884,7 +884,9 @@ CollectionDB::saveCover( const QString& keyword, const QPixmap& pix )
     
     img.save( m_coverDir.filePath( "large/"+fileName ), "PNG");
     
+    
     emit coverFetched( keyword );
+    emit coverFetched();
 }
 
 
