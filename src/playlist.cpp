@@ -1310,16 +1310,29 @@ void Playlist::slotTextChanged( const QString &query ) //SLOT
     QListViewItem *item = 0;
     QListViewItemIterator it( this, loweredQuery.startsWith( m_lastSearch ) ? QListViewItemIterator::Visible : 0 );
     bool b;
+    bool listed;
 
     while( (item = it.current()) )
     {
         b = query.isEmpty(); //if query is empty skip the loops and show all items
+        listed = true;
 
-        for( uint x = 0; !b && x < v.count(); ++x ) //v.count() is constant time
-            for( uint y = 0; !b && y < 4; ++y ) // search in Trackname, Artist, Songtitle, Album
-                b = static_cast<PlaylistItem*>(item)->exactText( y ).lower().contains( v[x] );
+        if ( !b )
+        {
+            for( uint x = 0; listed && x < v.count(); ++x ) //v.count() is constant time
+            {
+                b = false;
 
-        item->setVisible( b );
+                for( uint y = 0; !b && y < 4; ++y ) // search in Trackname, Artist, Songtitle, Album
+                    b = static_cast<PlaylistItem*>(item)->exactText( y ).lower().contains( v[x] );
+
+                // exist loop, when one of the search tokens doesn't match
+                if ( !b )
+                    listed = false;
+            }
+        }
+
+        item->setVisible( listed );
         ++it;
     }
 
