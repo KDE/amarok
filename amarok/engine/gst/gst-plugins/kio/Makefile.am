@@ -3,8 +3,8 @@ plugin_LTLIBRARIES = \
 
 #location where plug-in will be installed
 plugindir = \
-    /usr/local/lib/gstreamer-@GST_MAJORMINOR@
-#    $(libdir)/gstreamer-@GST_MAJORMINOR@
+    $(libdir)/gstreamer-@GST_MAJORMINOR@
+#    /usr/local/lib/gstreamer-@GST_MAJORMINOR@
     
 INCLUDES = \
     $(CFLAGS_GST) \

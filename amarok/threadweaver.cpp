@@ -196,7 +196,6 @@ TagReader::addSearchTokens( QStringList &tokens, QPtrList<QListViewItem> &ptrs )
 
 CollectionReader::CollectionReader( QObject* o, const KFileItemList& list )
    : Job( o, Job::CollectionReader )
-//    , m_url( pi->url() )
    , m_itemList( list )
 {}
 
@@ -210,11 +209,13 @@ CollectionReader::doJob()
         
     for ( item = m_itemList.first(); item; item = m_itemList.next() )
     {   
-        TagLib::FileRef f( item->url().path().local8Bit(), false /*== read AudioProps */ );
-        MetaBundle* bundle = f.isNull() ? 0 : new MetaBundle( item->url(), f.tag(), f.audioProperties() );
-        
-        if ( bundle )
-            m_metaList.append( bundle );
+        if ( item->url().isValid() && item->isLocalFile() ) {        
+            TagLib::FileRef f( item->url().path().local8Bit(), false /*== read AudioProps */ );
+            MetaBundle* bundle = f.isNull() ? 0 : new MetaBundle( item->url(), f.tag(), f.audioProperties() );
+            
+            if ( bundle )
+                m_metaList.append( bundle );
+        }
     }
     
     return true;

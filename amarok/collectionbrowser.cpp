@@ -64,6 +64,9 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 {
     kdDebug() << k_funcinfo << endl;
  
+    m_dirLister->setAutoUpdate( false );
+    m_dirLister->setAutoErrorHandlingEnabled( false, 0 );
+    
     setSelectionMode( QListView::Extended );
     setItemsMovable( false );
     setRootIsDecorated( true );
@@ -94,6 +97,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     m_dirs = config->readListEntry( "Folders" );
     m_category = config->readEntry( "Category", "Album" );
     addColumn( m_category );
+    m_recursively = config->readBoolEntry( "Scan Recursively", true );
     
     connect( this, SIGNAL( tagsReady() ),
              this,   SLOT( renderView() ) );
@@ -114,6 +118,7 @@ CollectionView::~CollectionView()
     config->setGroup( "Collection Browser" );
     config->writeEntry( "Folders", m_dirs );
     config->writeEntry( "Category", m_category );
+    config->writeEntry( "Scan Recursively", m_recursively );
     
     delete m_dirLister;
     sqlite_close( m_db );
@@ -127,10 +132,11 @@ CollectionView::~CollectionView()
 void
 CollectionView::setupDirs() //SLOT
 {
-    DirectoryList list( m_dirs, false );
+    DirectoryList list( m_dirs, m_recursively );
     DirectoryList::Result result = list.exec();
 
     m_dirs = result.dirs;
+    m_recursively = result.scanRecursively;
 }
 
 
@@ -263,7 +269,16 @@ CollectionView::readDir( const KURL& url )
     while ( !m_dirLister->isFinished() )
         kapp->processEvents(); 
        
-    m_weaver->append( new CollectionReader( this, m_dirLister->items() ) );
+    KFileItemList list = m_dirLister->items();    
+    m_weaver->append( new CollectionReader( this, list ) );
+
+    if ( m_recursively ) {
+        for ( int i = 0; i < list.count(); i++ ) {
+//             kdDebug() << list.at( i )->url().path() << endl;
+            if ( list.at( i )->url().isValid() && list.at( i )->isDir() )
+                readDir( list.at( i )->url() );
+        }
+    }
 }
 
 

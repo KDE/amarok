@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>DirectoryListBase</class>
 <widget class="QWidget">
     <property name="name">
@@ -11,6 +11,9 @@
             <width>458</width>
             <height>229</height>
         </rect>
+    </property>
+    <property name="caption">
+        <string>DirectoryListBase</string>
     </property>
     <hbox>
         <property name="name">
@@ -61,7 +64,7 @@
                         <cstring>informationLabel</cstring>
                     </property>
                     <property name="text">
-                        <string>These folders will be scanned on startup for new files.</string>
+                        <string>These folders will be scanned for new files.</string>
                     </property>
                     <property name="alignment">
                         <set>WordBreak|AlignVCenter</set>
@@ -86,10 +89,10 @@
                 </spacer>
                 <widget class="QCheckBox">
                     <property name="name">
-                        <cstring>importPlaylistsCheckBox</cstring>
+                        <cstring>scanRecursivelyCheckBox</cstring>
                     </property>
                     <property name="text">
-                        <string>Import Playlists</string>
+                        <string>Scan Recursively</string>
                     </property>
                     <property name="checked">
                         <bool>true</bool>
@@ -104,9 +107,4 @@
 </includes>
 <layoutdefaults spacing="6" margin="0"/>
 <layoutfunctions spacing="KDialog::spacingHint"/>
-<includehints>
-    <includehint>klistview.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-</includehints>
 </UI>

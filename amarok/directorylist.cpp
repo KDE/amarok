@@ -29,11 +29,11 @@
 // public methods
 ////////////////////////////////////////////////////////////////////////////////
 
-DirectoryList::DirectoryList( const QStringList &directories, bool importPlaylists,
+DirectoryList::DirectoryList( const QStringList &directories, bool scanRecursively,
                               QWidget *parent, const char *name )
     : KDialogBase( parent, name, true, i18n( "Folder List" ), Ok | Cancel, Ok, true )
     , m_dirList( directories )
-    , m_importPlaylists( importPlaylists )
+    , m_scanRecursively( scanRecursively )
 {
     m_base = new DirectoryListBase( this );
 
@@ -50,7 +50,7 @@ DirectoryList::DirectoryList( const QStringList &directories, bool importPlaylis
     for ( ; it != directories.end(); ++it )
         new KListViewItem( m_base->directoryListView, *it );
 
-    m_base->importPlaylistsCheckBox->setChecked( importPlaylists );
+    m_base->scanRecursivelyCheckBox->setChecked( scanRecursively );
 
     QSize sz = sizeHint();
     setMinimumSize( kMax( 350, sz.width() ), kMax( 250, sz.height() ) );
@@ -68,7 +68,7 @@ DirectoryList::~DirectoryList() {
 
 DirectoryList::Result DirectoryList::exec() {
     m_result.status = static_cast<DialogCode>( KDialogBase::exec() );
-    m_result.addPlaylists = m_base->importPlaylistsCheckBox->isChecked();
+    m_result.scanRecursively = m_base->scanRecursivelyCheckBox->isChecked();
     m_result.dirs = m_dirList;
     return m_result;
 }

@@ -68,7 +68,7 @@ class PluginManager
          * @param service     Pointer to KService  
          * @return            Pointer to Plugin, or NULL if error
          */
-        static Plugin* createFromService( const KService::Ptr service );
+        static Plugin* createFromService( const KService::Ptr service, const QString& constraint );
         
         /**
          * Remove library and delete plugin 
@@ -91,9 +91,9 @@ class PluginManager
                     
     private:
         struct StoreItem {
-            Plugin*       plugin;
-            KLibrary*     library;
-            KService::Ptr service;
+            Plugin*   plugin;
+            KLibrary* library;
+            QString   constraint;
         };
        
         static vector<StoreItem>::iterator lookupPlugin( const Plugin* plugin );

@@ -99,6 +99,7 @@ class CollectionView : public KListView
         sqlite* m_db;                
         QStringList m_dirs;
         QString m_category;
+        bool m_recursively;
 };
 
 

@@ -54,12 +54,12 @@ PluginManager::createFromQuery( const QString& constraint )
         return 0;
     }
                 
-    return createFromService( *offers.begin() );    
+    return createFromService( *offers.begin(), constraint );    
 }
 
     
 Plugin*
-PluginManager::createFromService( const KService::Ptr service )
+PluginManager::createFromService( const KService::Ptr service, const QString& constraint )
 {
     kdDebug() << k_funcinfo << "Trying to load: " << service->library() << endl;
     
@@ -87,7 +87,7 @@ PluginManager::createFromService( const KService::Ptr service )
     StoreItem item;
     item.plugin = plugin;
     item.library = lib;
-    item.service = service;
+    item.constraint = constraint;
     m_store.push_back( item );
     
     dump( service );
@@ -104,8 +104,8 @@ PluginManager::unload( Plugin* plugin )
             
     if ( iter != m_store.end() ) {
         delete plugin;
-        assert( (*iter).service.data() );
-        kdDebug() << "Unloading library: "<< (*iter).service->library() << endl;
+/*        assert( (*iter).service.data() );
+        kdDebug() << "Unloading library: "<< (*iter).service->library() << endl;*/
         (*iter).library->unload();
         
         m_store.erase( iter );
@@ -120,11 +120,9 @@ PluginManager::getService( const Plugin* plugin )
 {
     kdDebug() << k_funcinfo << endl;
     
-    KService::Ptr service;
-    
     if ( !plugin ) {
         kdWarning() << k_funcinfo << "pointer == NULL\n";   
-        return service;
+        return 0;
     }
        
     //search plugin in store
@@ -133,7 +131,8 @@ PluginManager::getService( const Plugin* plugin )
     if ( iter == m_store.end() ) 
         kdWarning() << k_funcinfo << "Plugin not found in store.\n";
     
-    service = (*iter).service;
+    KTrader::OfferList offers = KTrader::self()->query( "amaroK/Plugin", (*iter).constraint );
+    KService::Ptr service = *offers.begin();;
     assert( service.data() );
     
     return service;
