@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>337</width>
-            <height>527</height>
+            <height>566</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -615,6 +615,23 @@
                 </widget>
             </grid>
         </widget>
+        <spacer row="3" column="0">
+            <property name="name">
+                <cstring>spacer1</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
     </grid>
 </widget>
 <customwidgets>
