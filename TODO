@@ -3,11 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #119 being the highest available (take this one for your next bug and increase here)
+           #120 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
  
+  FIX 119 <markey> Use KFMI for trackinfo dialog, and use the same dialog in CollectionBrowser -->markey
+
   FIX 118 <markey> Option for auto-centering the OSD horizontally (or even do it by default).
 
   FIX 110 <dato>   [Don't sure if it's a bug or a "still not implemented". Written here as a reminder.]
@@ -22,10 +24,7 @@ SHORT-TERM (URGENT):
          
   ADD  97 <mxcl>   If you hold CTRL when dropping to pl it has a plus sign but drops at cursor, but shift drops
                    at bottom of pl, but has no icon on drag cursor.
-
-  CHG  90 <markey> We need some fresh artwork, at least some new player buttons before 1.0.
-                   Update: Roman will probably contribute some new player icons for 1.0.
-  
+ 
   FIX     <mxcl>   Xmmswrapper requires gtk headers and gdk headers unfortunately, without build  fails :(
 
   ADD  88 <muesli> In CollectionBrowser's search, let the user decide, which fields are
@@ -80,9 +79,6 @@ MID-TERM:
   ADD  39 <markey> Add playlist column for media-type (mp3, ogg, mod, etc).
                    Display type of media next to bitrate (<berkus> i moved it here, seems its the same as above, no?)
 
-  CHG              Instead of show file info why not use standard KDE properties? This has much more power
-                   than anything we could whip up and with taglib installed shows meta info and allows editing of it.
-
   ADD  28 <muesli> Add an option "clean up playlist on startup".
           <mxcl>   Do you mean remove duplicates or dead entries etc. ? Cool.
 
@@ -132,8 +128,6 @@ LONG-TERM:
   ADD              Seeking with mousewheel
           <muesli> What's seeking with mousewheel? <markey> dunno, but several users requested it
           <berkus> Seeking the track via mousewheel, wheelUp to seek back, wheelDown to seek further
-
-  FIX  44 <markey> Use kdWarning() instead of kdDebug() where appropriate.
 
   ADD              Make windows magnetic / sticking together (difficult).
 
