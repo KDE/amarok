@@ -125,7 +125,6 @@ class GstEngine : public Engine::Base
         // ATTRIBUTES
         /////////////////////////////////////////////////////////////////////////////////////
         static const int TIMER_INTERVAL = 70; //msec
-        static GError* error_msg;
         static GstEngine* s_instance;
 
         // Input thread
@@ -157,7 +156,6 @@ class GstEngine : public Engine::Base
 
         bool m_pipelineFilled;
         float m_fadeValue;
-        int m_binCount;
 
         bool m_shutdown;
         mutable bool m_canDecodeSuccess;
