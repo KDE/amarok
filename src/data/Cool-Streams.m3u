@@ -54,6 +54,9 @@ http://www.puredj.com/etc/pls/128K.pls
 #EXTINF:-1,Radio Paradise [Rock/Pop/Alternative]
 http://www.radioparadise.com/musiclinks/rp_128.m3u
 
+#EXTINF:-1,Secret Agent [Downtempo/Lounge]
+http://somafm.com/secretagent.pls
+
 #EXTINF:-1,TranceAirWaves [Trance]
 http://www.tranceairwaves.com/stream/bbhigh.pls
 
