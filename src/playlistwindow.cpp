@@ -212,7 +212,7 @@ PlaylistWindow::init()
         KToolBar *bar = new KToolBar( m_browsers->container() );
         bar->setIconSize( 22, false ); //looks more sensible
         QWidget *button = new KToolBarButton( "locationbar_erase", 1, bar );
-        m_lineEdit = new ClickLineEdit( i18n( "Filter here..." ), bar );
+        m_lineEdit = new ClickLineEdit( bar, i18n( "Filter here..." ) );
 
         bar->setStretchableWidget( m_lineEdit );
 
