@@ -1,0 +1,12 @@
+At the moment, the debian/ subdir for amaroK is being maintained under
+SVN in svn.debian.org. If you're interested in fetchting the most recent
+copy:
+
+    $ svn co svn://svn.debian.org/pkg-kde/people/dato/packages/trunk/amarok
+
+Also accessible via HTTP:
+
+    http://svn.debian.org/wsvn.php/pkg-kde/people/dato/packages/trunk/amarok/
+
+
+ -- Adeodato Simó <asp16@alu.ua.es>  Fri, 18 Feb 2005 20:32:04 +0100
