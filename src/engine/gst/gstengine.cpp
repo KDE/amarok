@@ -222,7 +222,8 @@ GstEngine::init()
     m_gst_adapter = gst_adapter_new();
     startTimer( TIMER_INTERVAL );
 
-    createPipeline();
+    if ( !createPipeline() )
+        kdError() << "[Gst-Engine] createPipeline() failed.\n";
 
     kdDebug() << "END " << k_funcinfo << endl;
     return true;
@@ -852,20 +853,20 @@ GstEngine::destroyPipeline()
 {
     kdDebug() << k_funcinfo << endl;
 
-    m_pipelineFilled = false;
     m_fadeValue = 0.0;
 
     // Destroy all input pipelines
     m_inputs.clear();
 
     // Clear the scope adapter
+    m_mutexScope.lock();
     gst_adapter_clear( m_gst_adapter );
+    m_mutexScope.unlock();
 
     if ( m_pipelineFilled ) {
-        // Destroy the pipeline
         if ( GST_STATE( m_gst_inputThread ) != GST_STATE_NULL )
             gst_element_set_state( m_gst_inputThread, GST_STATE_NULL );
-        // Destroy the pipeline
+
         if ( GST_STATE( m_gst_outputThread ) != GST_STATE_NULL )
             gst_element_set_state( m_gst_outputThread, GST_STATE_NULL );
 
@@ -874,6 +875,8 @@ GstEngine::destroyPipeline()
 
         kdDebug() << "[Gst-Engine] Destroying output thread.\n";
         gst_object_unref( GST_OBJECT( m_gst_outputThread ) );
+
+        m_pipelineFilled = false;
     }
 
     // Destroy KIO transmission job
