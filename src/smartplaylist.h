@@ -32,7 +32,7 @@ Q_OBJECT
 
     protected:
         virtual class QDragObject *dragObject();
-        virtual void paintEmptyArea( QPainter *p, const QRect &r );
+        virtual void viewportPaintEvent( QPaintEvent* );
 
     private slots:
         void makePlaylist( QListViewItem* );
