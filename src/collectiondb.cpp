@@ -475,4 +475,116 @@ CollectionDB::addCollectionToWatcher()
 }
 
 
+void
+CollectionDB::retrieveFirstLevel( QString category, QString filter, QStringList* const values, QStringList* const names )
+{
+    QString filterToken;
+    if ( filter != "" )
+    {
+        filter = escapeString( filter );
+        filterToken = "AND ( " + category.lower() + ".name LIKE '%" + filter + "%' OR tags.title LIKE '%" + filter + "%' )";
+    }
+
+    QString command = "SELECT DISTINCT " + category.lower() + ".name FROM tags, " + category.lower()
+                    + " WHERE tags." + category.lower() + "=" + category.lower() + ".id " + filterToken
+                    + " ORDER BY " + category.lower() + ".name DESC;";
+    execSql( command, values, names );
+}
+
+
+void
+CollectionDB::retrieveSecondLevel( QString itemText, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names )
+{
+    QString filterToken;
+    if ( filter != "" )
+        filter = escapeString( filter );
+
+    QString command;
+    if ( category2 == "None" )
+    {
+        if ( filter != "" )
+            filterToken = "AND ( " + category1.lower() + ".name LIKE '%" + filter + "%' OR tags.title LIKE '%" + filter + "%' )";
+
+        QString id = QString::number( getValueID( category1.lower(), itemText, false ) );
+        command = "SELECT DISTINCT tags.title, tags.url FROM tags, " + category1.lower() + " WHERE tags."
+                + category1.lower() + "=" + id + " " + filterToken + " ORDER BY tags.track DESC, tags.url DESC;";
+    }
+    else
+    {
+        if ( filter != "" )
+            filterToken = "AND ( " + category1.lower() + ".id = tags." + category1.lower() + " AND " + category1.lower() + ".name LIKE '%" + filter + "%' OR tags.title LIKE '%" + filter + "%' )";
+
+        QString id = QString::number( getValueID( category1.lower(), itemText, false ) );
+        command = "SELECT DISTINCT " + category2.lower() + ".name, '0' FROM tags, " + category2.lower()
+                + ", " + category1.lower() + " WHERE tags." + category2.lower() + "=" + category2.lower()
+                + ".id AND tags." + category1.lower() + "=" + id + " " + filterToken + " ORDER BY "
+                + category2.lower() + ".name DESC;";
+    }
+
+    execSql( command, values, names );
+}
+
+
+void
+CollectionDB::retrieveThirdLevel( QString itemText1, QString itemText2, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names )
+{
+    QString filterToken;
+    if ( filter != "" )
+    {
+        filter = escapeString( filter );
+        filterToken = "AND ( " + category1.lower() + ".name LIKE '%" + filter + "%' OR tags.title LIKE '%" + filter + "%' )";
+    }
+
+    QString id = QString::number( getValueID( category1.lower(), itemText1, false ) );
+    QString id_sub = QString::number( getValueID( category2.lower(), itemText2, false ) );
+
+    QString command = "SELECT tags.title, tags.url FROM tags, " + category1.lower() + " WHERE tags."
+                    + category1.lower() + " = " + id + " AND tags." + category2.lower() + " = " + id_sub
+                    + " AND tags." + category1.lower() + " = " + category1.lower() + ".id " + filterToken
+                    + " ORDER BY tags.track DESC, tags.url DESC;";
+
+    execSql( command, values, names );
+}
+
+
+void
+CollectionDB::retrieveFirstLevelURLs( QString itemText, QString category, QString filter, QStringList* const values, QStringList* const names )
+{
+    QString filterToken;
+    if ( filter != "" )
+    {
+        filter = escapeString( filter );
+        filterToken = "AND ( " + category.lower() + ".name LIKE '%" + filter + "%' OR tags.title LIKE '%" + filter + "%' )";
+    }
+
+    //query database for all tracks in our sub-category
+    QString id = QString::number( getValueID( category.lower(), itemText, false ) );
+    QString command = "SELECT DISTINCT tags.url FROM tags, " + category.lower() + " WHERE tags."
+                    + category.lower() + "=" + id + " " + filterToken + " ORDER BY tags.dir, tags.track, tags.url;";
+
+    execSql( command, values, names );
+}
+
+
+void
+CollectionDB::retrieveSecondLevelURLs( QString itemText1, QString itemText2, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names )
+{
+    QString filterToken;
+    if ( filter != "" )
+    {
+        filter = escapeString( filter );
+        filterToken = "AND ( " + category1.lower() + ".id = tags." + category1.lower() + " AND " + category1.lower() + ".name LIKE '%" + filter + "%' OR tags.title LIKE '%" + filter + "%' )";
+    }
+
+    QString id = QString::number( getValueID( category1.lower(), itemText1, false ) );
+    QString id_sub = QString::number( getValueID( category2.lower(), itemText2, false ) );
+
+    QString command = "SELECT DISTINCT tags.url FROM tags, " + category1.lower() + " WHERE tags."
+                    + category2.lower() + "=" + id_sub + " AND tags." + category1.lower() + "="
+                    + id + " " + filterToken + " ORDER BY tags.track, tags.url;";
+
+    execSql( command, values, names );
+}
+
+
 #include "collectiondb.moc"

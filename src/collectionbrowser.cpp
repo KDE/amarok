@@ -243,21 +243,12 @@ CollectionView::renderView( )  //SLOT
     kdDebug() << k_funcinfo << endl;
 
     clear();
+    QPixmap pixmap = iconForCat( m_category1 );
 
     //query database for all records with the specified category
-    QString filterToken;
-    if ( m_filter != "" )
-        filterToken = "AND ( " + m_category1.lower() + ".name LIKE '%" + m_db->escapeString( m_filter ) + "%' OR tags.title LIKE '%" + m_db->escapeString( m_filter ) + "%' )";
-
-    QString command = "SELECT DISTINCT " + m_category1.lower() + ".name FROM tags, " + m_category1.lower()
-                    + " WHERE tags." + m_category1.lower() + "=" + m_category1.lower() + ".id " + filterToken
-                    + " ORDER BY " + m_category1.lower() + ".name DESC;";
-
     QStringList values;
     QStringList names;
-    m_db->execSql( command, &values, &names );
-
-    QPixmap pixmap = iconForCat( m_category1 );
+    m_db->retrieveFirstLevel( m_category1, m_filter, &values, &names );
 
     for ( uint i = 0; i < values.count(); i++ ) {
         if ( values[i].isEmpty() ) continue;
@@ -297,31 +288,10 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     kdDebug() << k_funcinfo << endl;
     if ( !item ) return ;
 
-    QString filterToken = QString( "" );
-    if ( m_filter != "" )
-        filterToken = "AND ( " + m_category1.lower() + ".name LIKE '%" + m_db->escapeString( m_filter ) + "%' OR tags.title LIKE '%" + m_db->escapeString( m_filter ) + "%' )";
-
     if  ( item->depth() == 0 ) {
-        QString command;
-        if ( m_category2 == i18n( "None" ) ) {
-            QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
-
-            command = "SELECT DISTINCT tags.title, tags.url FROM tags, " + m_category1.lower() + " WHERE tags."
-                    + m_category1.lower() + "=" + id + " " + filterToken + " ORDER BY tags.track DESC, tags.url DESC;";
-        }
-        else {
-            filterToken = "AND ( " + m_category1.lower() + ".id = tags." + m_category1.lower() + " AND " + m_category1.lower() + ".name LIKE '%" + m_db->escapeString( m_filter ) + "%' OR tags.title LIKE '%" + m_db->escapeString( m_filter ) + "%' )";
-            QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
-
-            command = "SELECT DISTINCT " + m_category2.lower() + ".name, '0' FROM tags, " + m_category2.lower()
-                    + ", " + m_category1.lower() + " WHERE tags." + m_category2.lower() + "=" + m_category2.lower()
-                    + ".id AND tags." + m_category1.lower() + "=" + id + " " + filterToken + " ORDER BY "
-                    + m_category2.lower() + ".name DESC;";
-        }
-
         QStringList values;
         QStringList names;
-        m_db->execSql( command, &values, &names );
+        m_db->retrieveSecondLevel( item->text( 0 ), m_category1, m_category2, m_filter, &values, &names );
 
         QPixmap pixmap = iconForCat( m_category2 );
 
@@ -337,17 +307,9 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         }
     }
     else {
-        QString id = QString::number( m_db->getValueID( m_category1.lower(), item->parent()->text( 0 ), false ) );
-        QString id_sub = QString::number( m_db->getValueID( m_category2.lower(), item->text( 0 ), false ) );
-
-        QString command = "SELECT tags.title, tags.url FROM tags, " + m_category1.lower() + " WHERE tags."
-                        + m_category1.lower() + " = " + id + " AND tags." + m_category2.lower() + " = " + id_sub
-                        + " AND tags." + m_category1.lower() + " = " + m_category1.lower() + ".id " + filterToken
-                        + " ORDER BY tags.track DESC, tags.url DESC;";
-
         QStringList values;
         QStringList names;
-        m_db->execSql( command, &values, &names );
+        m_db->retrieveThirdLevel( item->parent()->text( 0 ), item->text( 0 ), m_category1, m_category2, m_filter, &values, &names );
 
         for ( uint i = 0; i < values.count(); i += 2 ) {
             Item* child = new Item( item );
@@ -425,7 +387,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         menu.insertItem( i18n( "Make Playlist" ), this, SLOT( makePlaylist() ) );
         menu.insertItem( i18n( "Add to Playlist" ), this, SLOT( addToPlaylist() ) );
-
+        
         if ( ( item->depth() && m_category2 == i18n( "None" ) ) || item->depth() == 2 )
             menu.insertItem( i18n( "Track Information" ), this, SLOT( showTrackInfo() ) );
 
@@ -508,24 +470,16 @@ CollectionView::listSelected() {
 
     KURL::List list;
     QListViewItem* item;
+    QStringList values;
+    QStringList names;
 
     //first pass: parents
     for ( item = firstChild(); item; item = item->nextSibling() )
-        if ( item->isSelected() ) {
-            QString filterToken;
-            if ( m_filter != "" )
-                filterToken = "AND ( " + m_category1.lower() + ".name LIKE '%" + m_db->escapeString( m_filter ) + "%' OR tags.title LIKE '%" + m_db->escapeString( m_filter ) + "%' )";
-
-            //query database for all tracks in our sub-category
-            QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
-            QString command = "SELECT DISTINCT tags.url FROM tags, " + m_category1.lower() + " WHERE tags."
-                            + m_category1.lower() + "=" + id + " " + filterToken + " ORDER BY tags.dir, tags.track, tags.url;";
-
-            QStringList values;
-            QStringList names;
-            m_db->execSql( command, &values, &names );
-
-            for ( uint i = 0; i < values.count(); i++ ) {
+        if ( item->isSelected() )
+        {
+            m_db->retrieveFirstLevelURLs( item->text( 0 ), m_category1, m_filter, &values, &names );
+            for ( uint i = 0; i < values.count(); i++ )
+            {
                 KURL tmp;
                 tmp.setPath( values[i] );
                 list << tmp;
@@ -533,7 +487,8 @@ CollectionView::listSelected() {
         }
 
     //second pass: category 1
-    if ( m_category2 == i18n( "None" ) ) {
+    if ( m_category2 == i18n( "None" ) )
+    {
         for ( item = firstChild(); item; item = item->nextSibling() )
             for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
                 if ( child->isSelected() )
@@ -542,21 +497,11 @@ CollectionView::listSelected() {
     else {
         for ( item = firstChild(); item; item = item->nextSibling() )
             for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
-                if ( child->isSelected() ) {
-                    QString filterToken;
-                    filterToken = "AND ( " + m_category1.lower() + ".id = tags." + m_category1.lower() + " AND " + m_category1.lower() + ".name LIKE '%" + m_db->escapeString( m_filter ) + "%' OR tags.title LIKE '%" + m_db->escapeString( m_filter ) + "%' )";
-                    QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
-                    QString id_sub = QString::number( m_db->getValueID( m_category2.lower(), child->text( 0 ), false ) );
-
-                    QString command = "SELECT DISTINCT tags.url FROM tags, " + m_category1.lower() + " WHERE tags."
-                                    + m_category2.lower() + "=" + id_sub + " AND tags." + m_category1.lower() + "="
-                                    + id + " " + filterToken + " ORDER BY tags.track, tags.url;";
-
-                    QStringList values;
-                    QStringList names;
-                    m_db->execSql( command, &values, &names );
-
-                    for ( uint i = 0; i < values.count(); i++ ) {
+                if ( child->isSelected() )
+                {
+                    m_db->retrieveSecondLevelURLs( item->text( 0 ), child->text( 0 ), m_category1, m_category2, m_filter, &values, &names );
+                    for ( uint i = 0; i < values.count(); i++ )
+                    {
                         KURL tmp;
                         tmp.setPath( values[i] );
                         list << tmp;

@@ -55,6 +55,13 @@ class CollectionDB : public QObject
         void scan( const QStringList& folders, bool recursively );
         void addCollectionToWatcher();
       
+        void retrieveFirstLevel( QString category, QString filter, QStringList* const values, QStringList* const names );
+        void retrieveSecondLevel( QString itemText, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
+        void retrieveThirdLevel( QString itemText1, QString itemText2, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
+
+        void retrieveFirstLevelURLs( QString itemText, QString category, QString filter, QStringList* const values, QStringList* const names );
+        void retrieveSecondLevelURLs( QString itemText1, QString itemText2, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
+
     signals:
         void scanDone();
 
