@@ -505,5 +505,7 @@ void KTRMLookup::finished()
         delete this;
 }
 
+#include "ktrm.moc"
+
 #endif /*HAVE_MUSICBRAINZ*/
 
