@@ -3,384 +3,386 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
-  * fix: FileBrowser remembers that state of its view between sessions
-  * chg: made amaroK aRts-independent. with the --without-arts configure switch
-         it's possible to build the app without aRts support, using only NMM or GST
-  * add: Shift drag appends items to the end of the playlist.
-  * fix: startup notification icon staying on screen when amaroK started by loader
-  * fix: amaroK showing the "X" icon instead of the correct one
+  FIX: FileBrowser remembers that state of its view between sessions
+  CHG: converted engines to plugins. they are now dynamically loaded at runtime
+  ADD: plugin framework
+  CHG: made amaroK aRts-independent. with the --without-arts configure switch
+       it's possible to build the app without aRts support, using only NMM or GST
+  ADD: Shift drag appends items to the end of the playlist.
+  FIX: startup notification icon staying on screen when amaroK started by loader
+  FIX: amaroK showing the "X" icon instead of the correct one
 
 VERSION 0.9:
-  * chg: playlistBrowser removed until next release
-  * fix: playerWidget font is now configurable, you need to start new track for the
-         scrolling marquee to get updated. Default font is used by default.
-  * fix: fixed several stability issues concerning stream-playback
-  * add: whatsthis for all configurable options.
-  * fix: amaroK registering with dcop as "amarok-PID". it's back to just "amarok" now.
-  * fix: OSD not updating correctly when changing volume
+  CHG: playlistBrowser removed until next release
+  FIX: playerWidget font is now configurable, you need to start new track for the
+       scrolling marquee to get updated. Default font is used by default.
+  FIX: fixed several stability issues concerning stream-playback
+  ADD: whatsthis for all configurable options.
+  FIX: amaroK registering with dcop as "amarok-PID". it's back to just "amarok" now.
+  FIX: OSD not updating correctly when changing volume
 
 VERSION 0.9-beta3:
-  * add: "Show Current Track" button in playlist.
-  * add: Volume OSD when changing with mousewheel over trayicon.
-  * chg: software volume mixer uses a logarithmic function to make the scale more natural
-  * add: Global shortcuts to display OSD and increase/decrease volume.
-         (Win+o and Win+KP_Add/KP_Subtract by default, respectively)
-  * add: DCOP calls to control OSD and playback volume
-  * add: ported config-GUI for audio decoders to new engine (works currently with
-         modplug_artsplugin)
-  * fix: show correct track-length when playing .mod or .sid with aRts-engine
-  * add: loader application, starts and controls amaroK. it reduces the lag when handing
-         command line arguments to amaroK and makes the splash load faster
-  * add: playlist items, which couldn't be opened / read (for some reason) will be marked 
-         with a grey background color
-  * add: pasting clipboard selection into playlist with MidButton, X11-style  
-  * chg: refined on-screen-display with more polished look
-  * fix: skipping broken/non-existant tracks
-  * chg: If the current song is paused, the Play Button will resume, not restart it.
-  * fix: respect "hide playlist with main window" and playlist minimize/hide behaviour.
-  * add: new OSD configuration options: bgcolor, screen position
+  ADD: "Show Current Track" button in playlist.
+  ADD: Volume OSD when changing with mousewheel over trayicon.
+  CHG: software volume mixer uses a logarithmic function to make the scale more natural
+  ADD: Global shortcuts to display OSD and increase/decrease volume.
+       (Win+o and Win+KP_Add/KP_Subtract by default, respectively)
+  ADD: DCOP calls to control OSD and playback volume
+  ADD: ported config-GUI for audio decoders to new engine (works currently with
+       modplug_artsplugin)
+  FIX: show correct track-length when playing .mod or .sid with aRts-engine
+  ADD: loader application, starts and controls amaroK. it reduces the lag when handing
+       command line arguments to amaroK and makes the splash load faster
+  ADD: playlist items, which couldn't be opened / read (for some reason) will be marked 
+       with a grey background color
+  ADD: pasting clipboard selection into playlist with MidButton, X11-style  
+  CHG: refined on-screen-display with more polished look
+  FIX: skipping broken/non-existant tracks
+  CHG: If the current song is paused, the Play Button will resume, not restart it.
+  FIX: respect "hide playlist with main window" and playlist minimize/hide behaviour.
+  ADD: new OSD configuration options: bgcolor, screen position
 
 VERSION 0.9-beta2:
-  * chg: some look-and-feel polishing in the main player window
-  * add: option to turn off analyzers
-  * add: splash-screen shown during program startup (optional)
-  * fix: made stream playback with TitleProxy more stable (by using an unbuffered socket)
-  * add: show stream metadata in on-screen-display
-  * chg: transformed "EQ" button into a togglebutton, which can also hide the effect browser
-  * add: new OpenGL analyzer, contributed by Enrico Ros <eros.kde@email.it>
-  * fix: FreeBSD compile fixes, contributed by Markus Brueffer <brueffer@phoenix-systems.de>
-  * fix: rewritten configure: checks properly for kdemultimedia presence,
-         and adds --without-opengl and --without-gstreamer arguments
+  CHG: some look-and-feel polishing in the main player window
+  ADD: option to turn off analyzers
+  ADD: splash-screen shown during program startup (optional)
+  FIX: made stream playback with TitleProxy more stable (by using an unbuffered socket)
+  ADD: show stream metadata in on-screen-display
+  CHG: transformed "EQ" button into a togglebutton, which can also hide the effect browser
+  ADD: new OpenGL analyzer, contributed by Enrico Ros <eros.kde@email.it>
+  FIX: FreeBSD compile fixes, contributed by Markus Brueffer <brueffer@phoenix-systems.de>
+  FIX: rewritten configure: checks properly for kdemultimedia presence,
+       and adds --without-opengl and --without-gstreamer arguments
 
 VERSION 0.9-beta1:
-  * add: display warning when artsd is not running with realtime priority
-  * add: Audioproperties are loaded as you scroll the playlist and get saved to playlist files
-  * add: If trackname column is hidden, the title column will show the trackname until a title
-         tag can replace it. If no title tag is found the trackname stays.
-  * chg: Pressing "back" in Random Mode now works as expected and walks backwards
-         through the list of recently played songs.
-  * add: TitleProxy searches for a free local port (contributed by Stefan Gehn)
-  * chg: Random Mode now stores the recently played songs in a buffer, which prevents
-         playing the same songs too often.
-  * add: "Play Next" context menu option
-  * add: selected aRts-effects will be remembered on next program start, including settings
-  * fix: sort numerical playlist columns in correct order
-  * add: logarithmic fading algorithm makes crossfading smoother
-  * add: Select a series of tracks, start inline tag-editing a tag and amaroK will prompt you to
-         edit that tag for all tracks one-by-one. Also available: fill-down.
-  * add: improved crossfading: will fade out smoothly when the stop button is pressed
-  * fix: O(n) behavior for playlist scrolling fixed
-  * add: setting to make playlist colours the KDE defaults
-  * add: support for tag-editing directly in playlist
-  * chg: replaced old FileBrowser with the comfortable fileselector from KDevelop
-  * chg: analyzers now powered by a new, more flexible FFT routine
-  * add: hide/show selected playlist columns
-  * chg: upgrade streambrowser to kderadiostation 0.5
-  * fix: many streams not loading from browser and AddItem dialog
-  * chg: amaroK moved out of kdenonbeta. we are now member of KDE Extra Gear 1
-  * add: on-screen-display (OSD), shows an overlay with information on the currently playing track
-  * chg: use KMultiTabBar for browser selection
-  * chg: migrated settings system to KConfig XT
-  * add: playlist columns for length and bitrate
-  * add: merged new audio engine in. this provides a generic interface class, with multiple
-         backends. right now there is a backend for aRts and one for GStreamer (still rudimentary)
+  ADD: display warning when artsd is not running with realtime priority
+  ADD: Audioproperties are loaded as you scroll the playlist and get saved to playlist files
+  ADD: If trackname column is hidden, the title column will show the trackname until a title
+       tag can replace it. If no title tag is found the trackname stays.
+  CHG: Pressing "back" in Random Mode now works as expected and walks backwards
+       through the list of recently played songs.
+  ADD: TitleProxy searches for a free local port (contributed by Stefan Gehn)
+  CHG: Random Mode now stores the recently played songs in a buffer, which prevents
+       playing the same songs too often.
+  ADD: "Play Next" context menu option
+  ADD: selected aRts-effects will be remembered on next program start, including settings
+  FIX: sort numerical playlist columns in correct order
+  ADD: logarithmic fading algorithm makes crossfading smoother
+  ADD: Select a series of tracks, start inline tag-editing a tag and amaroK will prompt you to
+       edit that tag for all tracks one-by-one. Also available: fill-down.
+  ADD: improved crossfading: will fade out smoothly when the stop button is pressed
+  FIX: O(n) behavior for playlist scrolling fixed
+  ADD: setting to make playlist colours the KDE defaults
+  ADD: support for tag-editing directly in playlist
+  CHG: replaced old FileBrowser with the comfortable fileselector from KDevelop
+  CHG: analyzers now powered by a new, more flexible FFT routine
+  ADD: hide/show selected playlist columns
+  CHG: upgrade streambrowser to kderadiostation 0.5
+  FIX: many streams not loading from browser and AddItem dialog
+  CHG: amaroK moved out of kdenonbeta. we are now member of KDE Extra Gear 1
+  ADD: on-screen-display (OSD), shows an overlay with information on the currently playing track
+  CHG: use KMultiTabBar for browser selection
+  CHG: migrated settings system to KConfig XT
+  ADD: playlist columns for length and bitrate
+  ADD: merged new audio engine in. this provides a generic interface class, with multiple
+       backends. right now there is a backend for aRts and one for GStreamer (still rudimentary)
 
 ==BEGIN KDE 3.2 DEPENDENCY==
 
 VERSION 0.8.3:
-  * fix: build issue
+  FIX: build issue
 
 VERSION 0.8.2:
-  * add: added Hide/Show Playlist global shortcut (thanks gogo)
-  * chg: mousewheel over trayicon behaviour changed
-  * chg: search tokens can now be entered in random order
-         ("Presley Elvis" will find "Elvis Presley")
-  * fix: qt 3.1 compile issues
+  ADD: added Hide/Show Playlist global shortcut (thanks gogo)
+  CHG: mousewheel over trayicon behaviour changed
+  CHG: search tokens can now be entered in random order
+       ("Presley Elvis" will find "Elvis Presley")
+  FIX: qt 3.1 compile issues
 
 VERSION 0.8.1:
-  * fix: compilation problem with KDE < 3.1.3
+  FIX: compilation problem with KDE < 3.1.3
 
 VERSION 0.8.0:
-  * fix: KDE 3.1 compatibility re-gained
-  * add: hitting return in the search field of the playlist starts playback of the
-         first visible playlist entry (Qt >=3.2 only)
-  * fix: fixed crash bug in playlist searching
-  * fix: fixed crash bug when removing playlist-items
-  * chg: new layout has been adopted
-  * add: added accepting files dropped onto systray icon
-  * fix: significant reduction in memory consumption for PlaylistItems
-  * fix: hardware mixer works again
-  * chg: replaced sliders with custom slider class, which fits better in our design
-  * fix: exchanged c32-app-amarok.png with the correct (active) version
-  * fix: amarok.desktop file. now we show up in the k-menu again.
-  * fix: crossfading aRts module. the fading is now much smoother than before
-  * fix: crossfading bug. before the fix amaroK sometimes mixed up the two xfade sources,
-         so it sort of faded in reverse (==crap)
-  * add: tag reading in separate thread
-  * add: re-added m_optCrossFade, so we don't lose the crossfade length on switching it on/off.
-         set default crossfade length to 2500.
-  * chg: "Title Streaming" on by default
-  * chg: integrated streambrowser into playlist window
-  * add: added dcop implementation for url adding. Relevant diffs for mediacontrol are
-         available.
-  * fix: libamarokarts detection code
-  * add: added long-awaited DCOP methods for manipulating the playback. This also adds
-         integration with kdeaddons/kicker-applets/mediacontrol.
-  * chg: moved DCOP handler to a separate class/file
-  * add: threaded playlist insertion
-  * fix: removed bugs and waste code keyhandling in browser*, it mostly works as expected
-         now with various keypresses going to the correct places
-  * fix: cleaned the playlist class's public interface, also fixed some unreported bugs in
-         process (inconsistent recursive behavior), please keep the encapsulation, it's a
-         good thing (tm)
-  * fix: tweaked undo/redo behavior
-  * chg: exchanged old player icons with new ones made by
-         Alper Ayazoglu a.k.a. cubon <cubon@cubon.de>
-  * add: clicking on EQ button activates effect selection widget
-  * add: KJanusWidget as a sidebar for filebrowser mode selection
-  * fix: pushing enter in lineedit goes up a level
-  * add: a stream browser, can only DnD, separate window, not great yet
-  * fix: finally fixed the ancient "annoying-noise-when-pressing-pause" bug
-  * fix: should keep track of currently played item no matter what you do to the playlist,
-         has a nice side effect of remembering the last played song, too. <berkus>
-  * fix: write undo for Shuffle <berkus>
-  * fix: the expandbutton doesn't fire events when it has had its stack expanded
-         (behaviour a-la Winamp Classic) <berkus>
-  * fix: crash when pressing right mouse button while stream is connecting
-  * add: show bitrate for streams with icecast support
-  * fix: save stream names as #EXTINF in m3u files
-  * add: bug report dialog
-  * add: proxy for decoding shoutcast/icecast metadata (experimental!)
-  * add: amaroK now in bugs.kde.org
-  * add: configurable delay after each track.  currently 0-10 seconds in 1 sec increments
-         but could easily be made to use finder increments if ppl want - piggz (www.piggz.co.uk)
-  * add: viswidgetv2.  it seems a lot smoother on my machine.
-         its quite easy to tweak the dynamics is needed.  is accessible the same as the other
-         widgets, just click until it appears (though it looks the same as the original widget
-         it just acts differently) - piggz (www.piggz.co.uk)
-  * add: combo with history and completion for dir/file chooser
-  * add: in configure.in.in for checking the version of TagLib, if compiled from CVS, if not,
-         then show, that it uses bundled version of TagLib - Stormy
-  * fix: font dialog sizing issues
-  * add: resume playback option. Using this means your track starts up again where you left it
-         last time you quit amaroK. Excellent feature for us developers :-)
+  FIX: KDE 3.1 compatibility re-gained
+  ADD: hitting return in the search field of the playlist starts playback of the
+       first visible playlist entry (Qt >=3.2 only)
+  FIX: fixed crash bug in playlist searching
+  FIX: fixed crash bug when removing playlist-items
+  CHG: new layout has been adopted
+  ADD: added accepting files dropped onto systray icon
+  FIX: significant reduction in memory consumption for PlaylistItems
+  FIX: hardware mixer works again
+  CHG: replaced sliders with custom slider class, which fits better in our design
+  FIX: exchanged c32-app-amarok.png with the correct (active) version
+  FIX: amarok.desktop file. now we show up in the k-menu again.
+  FIX: crossfading aRts module. the fading is now much smoother than before
+  FIX: crossfading bug. before the fix amaroK sometimes mixed up the two xfade sources,
+       so it sort of faded in reverse (==crap)
+  ADD: tag reading in separate thread
+  ADD: re-added m_optCrossFade, so we don't lose the crossfade length on switching it on/off.
+       set default crossfade length to 2500.
+  CHG: "Title Streaming" on by default
+  CHG: integrated streambrowser into playlist window
+  ADD: added dcop implementation for url adding. Relevant diffs for mediacontrol are
+       available.
+  FIX: libamarokarts detection code
+  ADD: added long-awaited DCOP methods for manipulating the playback. This also adds
+       integration with kdeaddons/kicker-applets/mediacontrol.
+  CHG: moved DCOP handler to a separate class/file
+  ADD: threaded playlist insertion
+  FIX: removed bugs and waste code keyhandling in browser*, it mostly works as expected
+       now with various keypresses going to the correct places
+  FIX: cleaned the playlist class's public interface, also fixed some unreported bugs in
+       process (inconsistent recursive behavior), please keep the encapsulation, it's a
+       good thing (tm)
+  FIX: tweaked undo/redo behavior
+  CHG: exchanged old player icons with new ones made by
+       Alper Ayazoglu a.k.a. cubon <cubon@cubon.de>
+  ADD: clicking on EQ button activates effect selection widget
+  ADD: KJanusWidget as a sidebar for filebrowser mode selection
+  FIX: pushing enter in lineedit goes up a level
+  ADD: a stream browser, can only DnD, separate window, not great yet
+  FIX: finally fixed the ancient "annoying-noise-when-pressing-pause" bug
+  FIX: should keep track of currently played item no matter what you do to the playlist,
+       has a nice side effect of remembering the last played song, too. <berkus>
+  FIX: write undo for Shuffle <berkus>
+  FIX: the expandbutton doesn't fire events when it has had its stack expanded
+       (behaviour a-la Winamp Classic) <berkus>
+  FIX: crash when pressing right mouse button while stream is connecting
+  ADD: show bitrate for streams with icecast support
+  FIX: save stream names as #EXTINF in m3u files
+  ADD: bug report dialog
+  ADD: proxy for decoding shoutcast/icecast metadata (experimental!)
+  ADD: amaroK now in bugs.kde.org
+  ADD: configurable delay after each track.  currently 0-10 seconds in 1 sec increments
+       but could easily be made to use finder increments if ppl want - piggz (www.piggz.co.uk)
+  ADD: viswidgetv2.  it seems a lot smoother on my machine.
+       its quite easy to tweak the dynamics is needed.  is accessible the same as the other
+       widgets, just click until it appears (though it looks the same as the original widget
+       it just acts differently) - piggz (www.piggz.co.uk)
+  ADD: combo with history and completion for dir/file chooser
+  ADD: in configure.in.in for checking the version of TagLib, if compiled from CVS, if not,
+       then show, that it uses bundled version of TagLib - Stormy
+  FIX: font dialog sizing issues
+  ADD: resume playback option. Using this means your track starts up again where you left it
+       last time you quit amaroK. Excellent feature for us developers :-)
 
 VERSION 0.7.0:
-  * fix: collection of fixes related to showing/raising/hiding the playlist
-    when showing/raising/hiding the mainWidget
-  * fix: by muesli: make playlist searches a bit faster at the expense of memory
-  * fix: (partial fix) bitrate/samplerate font overlap at large font sizes
-  * change: less staccato loading of widgets
-  * change: pause makes the analyser bars fall to zero rather than just vanish
-  * add: xfade when starting tracks by doubleclick
-  * fix: global shortcuts can now be changed
-  * fix: tracks skipping randomly
-  * change: "BrowserWin Enabled" on by default
-  * change: "Save Playlist" on by default
-  * change: "Show Metainfo" on by default
-  * fix: make loading playlist not block UI
-  * fix: on startup load playlist after UI is shown
-  * change: "Software Mixer Only" on by default
-  * fix: make timedisplay also work for streams
-  * fix: volume slider adjusting
-  * fix: when dropping tracks to PL, order will stay the same as in FileBrowser
-  * add: FileBrowser sortable by clicking on header
-  * add: analyzer that distorts a bitmap
-  * add: multiple analyzers now possible
-  * add: "Software Mixer Only" option
-  * Removed stale sigplay()
-  * Cleaned a couple "deprecated" warnings
-  * add: undo and redo playlist actions
-  * fix: rewritten config dialog and moved into separate file
-  * add: started configurable colors
-  * change: spectrum analyser bars now have dynamics, ie. they move smoothly between values
-  * add: mouse wheel over systray icon changes the track, hold shift to change the volume
-  * change: rearranged menu order for systray (quit = last)
-  * change: moved volume slider to the right, lets see if this is better
-  * add: started a font selection page in settings
-  * fix: Stream urls are now properly demangled/unescaped (%20 => space etc)
+  FIX: collection of fixes related to showing/raising/hiding the playlist
+  when showing/raising/hiding the mainWidget
+  FIX: by muesli: make playlist searches a bit faster at the expense of memory
+  FIX: (partial fix) bitrate/samplerate font overlap at large font sizes
+  change: less staccato loading of widgets
+  change: pause makes the analyser bars fall to zero rather than just vanish
+  ADD: xfade when starting tracks by doubleclick
+  FIX: global shortcuts can now be changed
+  FIX: tracks skipping randomly
+  change: "BrowserWin Enabled" on by default
+  change: "Save Playlist" on by default
+  change: "Show Metainfo" on by default
+  FIX: make loading playlist not block UI
+  FIX: on startup load playlist after UI is shown
+  change: "Software Mixer Only" on by default
+  FIX: make timedisplay also work for streams
+  FIX: volume slider adjusting
+  FIX: when dropping tracks to PL, order will stay the same as in FileBrowser
+  ADD: FileBrowser sortable by clicking on header
+  ADD: analyzer that distorts a bitmap
+  ADD: multiple analyzers now possible
+  ADD: "Software Mixer Only" option
+  Removed stale sigplay()
+  Cleaned a couple "deprecated" warnings
+  ADD: undo and redo playlist actions
+  FIX: rewritten config dialog and moved into separate file
+  ADD: started configurable colors
+  change: spectrum analyser bars now have dynamics, ie. they move smoothly between values
+  ADD: mouse wheel over systray icon changes the track, hold shift to change the volume
+  change: rearranged menu order for systray (quit = last)
+  change: moved volume slider to the right, lets see if this is better
+  ADD: started a font selection page in settings
+  FIX: Stream urls are now properly demangled/unescaped (%20 => space etc)
 
 VERSION 0.6.91:
-  * fix: ExpandButton submenu now slightly delayed
-  * fix: dropping items into playlist
-  * add: drop-target indicator line in PlaylistWidget, providing visual feedback
-  * add: tray menu
-  * add: random mode
-  * add: crossfading between tracks
-  * add: vertical lines between columns in Playlist
-  * add: alternating item colors in Playlist
-  * add: column "directory" in PlaylistWidget (for Grue:)
-  * add: sorting by clicking on column headers in PlaylistWidget
-  * fix: rewrote directory reading code in BrowserWidget.cpp.
-      code is now much more readable, and it also fixes a bug.
-  * add: additional columns in playlist for tags
-  * fix: made metainfo reading algorithm faster
-  * change: switched to TagLib for metainfo reading
-  * add: button "play" in PlayerWidget.cpp is now a toggleButton
-  * add: tray icon
-  * fix: playlist window is optionally hideable with main widget when iconified to tray
+  FIX: ExpandButton submenu now slightly delayed
+  FIX: dropping items into playlist
+  ADD: drop-target indicator line in PlaylistWidget, providing visual feedback
+  ADD: tray menu
+  ADD: random mode
+  ADD: crossfading between tracks
+  ADD: vertical lines between columns in Playlist
+  ADD: alternating item colors in Playlist
+  ADD: column "directory" in PlaylistWidget (for Grue:)
+  ADD: sorting by clicking on column headers in PlaylistWidget
+  FIX: rewrote directory reading code in BrowserWidget.cpp.
+       code is now much more readable, and it also fixes a bug.
+  ADD: additional columns in playlist for tags
+  FIX: made metainfo reading algorithm faster
+  change: switched to TagLib for metainfo reading
+  ADD: button "play" in PlayerWidget.cpp is now a toggleButton
+  ADD: tray icon
+  FIX: playlist window is optionally hideable with main widget when iconified to tray
 
 VERSION 0.6.0:
-  * Release :)
+  Release :)
 
 VERSION 0.6.0-PRE5:
-  * fixed: animated buttons don't get stuck anymore
-  * fixed: invoking help
-  * changed: MetaInfo reading now off by default. the slowdown was potentially
-    confusing to new users
-  * added: documentation
-  * fixed: cleaned up Makefile.am a bit
-  * fixed: defined new APP_VERSION macro, since the old approach did not work
-    with CVS
-  * changed: put amarok into KDE CVS (KDENONBETA)
-  * added: applied Stormchaser's button patch. the AmarokButtons now work
-    in a more standard conform way. Thanks Stormchaser, blessed be :)
+  fixed: animated buttons don't get stuck anymore
+  fixed: invoking help
+  changed: MetaInfo reading now off by default. the slowdown was potentially
+           confusing to new users
+  added: documentation
+  fixed: cleaned up Makefile.am a bit
+  fixed: defined new APP_VERSION macro, since the old approach did not work
+         with CVS
+  changed: put amarok into KDE CVS (KDENONBETA)
+  added: applied Stormchaser's button patch. the AmarokButtons now work
+         in a more standard conform way. Thanks Stormchaser, blessed be :)
 
 VERSION 0.6.0-PRE4:
-  * added: buttons in playlist window for play, pause, stop, next, prev.
+  added: buttons in playlist window for play, pause, stop, next, prev.
     a.k.a. stakker mode :)
-  * removed: "load" button. this functionality is now provided by "Add item"
-  * added: more sanity checks on pointers
-  * fixed: when track in playlist does not exist, we now skip to the next track
-  * fixed: all aRts references are freed correctly at program exit
-  * fixed: effects will not be forgotten any more when EffectWidget is closed
+  removed: "load" button. this functionality is now provided by "Add item"
+  added: more sanity checks on pointers
+  fixed: when track in playlist does not exist, we now skip to the next track
+  fixed: all aRts references are freed correctly at program exit
+  fixed: effects will not be forgotten any more when EffectWidget is closed
 
 VERSION 0.6.0-PRE3:
-  * fixed: crash when URLs were dropped onto filebrowser from other apps
-  * fixed: URL dialog now accepts remote files
-  * added: correct caption for ArtsConfigWidget
-  * added: "amaroK Handbook" menu entry, calling KHelpCenter
-  * changed: amarok gets installed into multimedia now
-  * fixed: PlayObject configuration
+  fixed: crash when URLs were dropped onto filebrowser from other apps
+  fixed: URL dialog now accepts remote files
+  added: correct caption for ArtsConfigWidget
+  added: "amaroK Handbook" menu entry, calling KHelpCenter
+  changed: amarok gets installed into multimedia now
+  fixed: PlayObject configuration
 
 VERSION 0.6.0-PRE2:
-  * changed: safety question at program exit now off by default
-  * removed: button "sub" - it was useless
-  * changed: clearing playlist does not stop playing anymore - for Grue ;)
-  * fixed: potential crash at startup
-  * added: menu option to configure PlayObject
-  * fixed: crash when removing currently playing track
+  changed: safety question at program exit now off by default
+  removed: button "sub" - it was useless
+  changed: clearing playlist does not stop playing anymore - for Grue ;)
+  fixed: potential crash at startup
+  added: menu option to configure PlayObject
+  fixed: crash when removing currently playing track
 
 VERSION 0.6.0-PRE1:
-  * fixed: flicker in glowing item
-  * fixed: another memory leak in analyzer (hopefully the last one!)
-  * added: playlist widget can display metainfo instead of filenames
-  * added: repeat track / repeat playlist
+  fixed: flicker in glowing item
+  fixed: another memory leak in analyzer (hopefully the last one!)
+  added: playlist widget can display metainfo instead of filenames
+  added: repeat track / repeat playlist
 
 VERSION 0.5.2 - 0.5.2-DEV6:
-  * fixed: memory leak in analyzer code.
-  * added: shortcut for copying current title to the clipboard
-  * added: slider position can be changed by just clicking somewhere on the slider
-  * added: icon
-  * added: url can be entered directly above the filebrowser widget
-  * changed: removed the "jump" widget. you can now enter a filter string
+  fixed: memory leak in analyzer code.
+  added: shortcut for copying current title to the clipboard
+  added: slider position can be changed by just clicking somewhere on the slider
+  added: icon
+  added: url can be entered directly above the filebrowser widget
+  changed: removed the "jump" widget. you can now enter a filter string
     directly above the playlist widget
-  * added: playlists (.m3u and .pls) can now directly be dragged into the playlist
-  * added: support for .pls (audio/x-scpls)
-  * added: amarok is now completely network-transparent. any kind of folder,
+  added: playlists (.m3u and .pls) can now directly be dragged into the playlist
+  added: support for .pls (audio/x-scpls)
+  added: amarok is now completely network-transparent. any kind of folder,
     local as well as remote, can be browsed and played.
-  * added: check for libamarokarts. amarok won't crash anymore if it's not found
-  * added: the time display now has a mode for showing the remaining time, too
-  * fixed: crash when clearing playlist, after playlist has played till the end.
+  added: check for libamarokarts. amarok won't crash anymore if it's not found
+  added: the time display now has a mode for showing the remaining time, too
+  fixed: crash when clearing playlist, after playlist has played till the end.
     clearing the playlist stops the playing now.
-  * added: new gfx in playerwidget
-  * fixed: progressbar sometimes not working, zero tracklength
-  * fixed: font of bitrate/frequency display too big on some systems
-  * added: command line options
-  * added: timedisplay is now updated during seeks
-  * added: saving window positions and size on exit
-  * added: due to popular request, I finally changed the behaviour of the "play"
+  added: new gfx in playerwidget
+  fixed: progressbar sometimes not working, zero tracklength
+  fixed: font of bitrate/frequency display too big on some systems
+  added: command line options
+  added: timedisplay is now updated during seeks
+  added: saving window positions and size on exit
+  added: due to popular request, I finally changed the behaviour of the "play"
     button. it's now possible to start a track on a fresh playlist without
     double-clicking an item.
-  * fixed: compile error on GCC 3.3.1 in visQueue.cpp. bugfix by thiago
-  * added: completely rewrote drag-and-drop code. works recursively now (optionally).
+  fixed: compile error on GCC 3.3.1 in visQueue.cpp. bugfix by thiago
+  added: completely rewrote drag-and-drop code. works recursively now (optionally).
     plus dragging stuff from other applications into amaroK also works now.
 
 VERSION 0.5.1:
-  * added a Tip of the Day at startup to explain the user interface a bit
-  * added restarting of artsd on first program start to make sure it registers
+  added a Tip of the Day at startup to explain the user interface a bit
+  added restarting of artsd on first program start to make sure it registers
     the new mcopclasses
-  * fixed possible compile error in viswidget.cpp
-  * amaroK uses much less CPU now than it used to. This was mainly achieved by
+  fixed possible compile error in viswidget.cpp
+  amaroK uses much less CPU now than it used to. This was mainly achieved by
     using a new FFT-analyzer module, which I took from Noatuns "Winskin"-plugin,
     and modified slightly to my needs. Also some other optimizations were made,
     which        improved the standby performance, when no song is playing. I'm still
     not satisfied with overall performance, tho, but it seems that most of the
     load is produced by the aRts code itself, so this will rather be difficult
     to improve.
-  * fixed crash when "next" or "previous" was pressed without a track
+  fixed crash when "next" or "previous" was pressed without a track
     loaded
-  * thanks to valgrind I was able to find and squish some serious bugs,
+  thanks to valgrind I was able to find and squish some serious bugs,
     most of which were related to pointers. to sum it up: pointers are evil.
     valgrind is great.
-  * lots of UI-changes in the main widget. uses a background pixmap now, a
+  lots of UI-changes in the main widget. uses a background pixmap now, a
     custom font and widget for the time-display, and generally looks better
-  * fixed issues with the liquid skin. unfortunately, there seems to be no way
+  fixed issues with the liquid skin. unfortunately, there seems to be no way
     to display pushbuttons correctly with a black background under liquid. so,
     until I find a solution for that, the expandbutton widget doesn't look quite
     as cool as it used to. maybe I should ask mosfet about this..
 
 VERSION 0.50:
-  * renamed 0.15 to 0.50
+  renamed 0.15 to 0.50
 
 VERSION 0.15:
-  * playing streams now works! *yipeeee*
-  * fixed tons of bugs in aRts playing code. i think i got it right now.
-  * fixed loading and saving of playlists. can cope with all protocols now.
-  * fixed a bug in EffectWidget.cpp, that gave a compile error on some systems.
-  * Converting QString into std::string was not donecorrectly. Thanks to
+  playing streams now works! *yipeeee*
+  fixed tons of bugs in aRts playing code. i think i got it right now.
+  fixed loading and saving of playlists. can cope with all protocols now.
+  fixed a bug in EffectWidget.cpp, that gave a compile error on some systems.
+  Converting QString into std::string was not donecorrectly. Thanks to
     Whitehawk Stormchaser for that one :)
-  * changed project name to "amaroK" and built new project-file
+  changed project name to "amaroK" and built new project-file
 
 VERSION 0.14 (internal):
-  * implemented use of arts-software-mixing, in case hardware-mixing
-    (/dev/mixer) doesn't work
-  * fixed crash when play was pressed without selecting a file
-  * changed the direction of the volume-slider. maximum is now at the top
-  * added automatic saving of current playlist on exit
-  * added previous/next track
-  * added two radiobuttons in the playerwidget for toggling the
+  implemented use of arts-software-mixing, in case hardware-mixing
+  (/dev/mixer) doesn't work
+  fixed crash when play was pressed without selecting a file
+  changed the direction of the volume-slider. maximum is now at the top
+  added automatic saving of current playlist on exit
+  added previous/next track
+  added two radiobuttons in the playerwidget for toggling the
     playlist/equalizer on and off. admitted, the equalizer doesn't yet exist, so
     it's just a dummy button :P
-  * added popup-menu for the playerwidget. opens on
+  added popup-menu for the playerwidget. opens on
     right mouse button. this menu finally replaces the ugly menubar.
-  * added some icons (from noatun) for the player-buttons instead of text
-  * added pause function
-  * changed most names in the source to comply with the
+  added some icons (from noatun) for the player-buttons instead of text
+  added pause function
+  changed most names in the source to comply with the
     (unofficial?) KDE c++ coding standard (using the prefix "m_" for member
     attributes and so on). This was real slave-work :/
-  * cleaned up code in several classes
-  * fixed problem where subwidgets got keyboard focus and were drawn dark with
+  cleaned up code in several classes
+  fixed problem where subwidgets got keyboard focus and were drawn dark with
     the liquid style. switched off focus completely, since it's not needed for
     this type of application
 
 VERSION 0.13 (internal):
-  * added cute animated pushbuttons with sub-menus
-  * added saving playlists
-  * added dragging items inside of playlist widget
-  * added forward declarations in header files to reduce compile time
-  * added saving of browserwin/splitter size
-  * rewrote track information widget. used a html table for the text. looks much
-    nicer now :)
-  * fixed sorting function
-  * fixed jump widget. removed huge memory leaks in the widget
-  * fixed flicker in analyzer widget
-  * tons of bugfixes in playing code. partly rewritten. seems to be much more
-    stable now
+  added cute animated pushbuttons with sub-menus
+  added saving playlists
+  added dragging items inside of playlist widget
+  added forward declarations in header files to reduce compile time
+  added saving of browserwin/splitter size
+  rewrote track information widget. used a html table for the text. looks much
+  nicer now :)
+  fixed sorting function
+  fixed jump widget. removed huge memory leaks in the widget
+  fixed flicker in analyzer widget
+  tons of bugfixes in playing code. partly rewritten. seems to be much more
+  stable now
 
 VERSION 0.12 (internal):
-  * added ChangeLog and TODO
-  * added grid under scope display
-  * added saving of options, like current directory and playlist
-  * added detection of mimetypes
-  * added adjusting volume by mousewheel
-  * added skipping to next track after playing
-  * added loads of sanity/safety checks
-  * bugfixes (tons of) in playlist code, partly rewritten
-  * bugfixes in scope code
+  added ChangeLog and TODO
+  added grid under scope display
+  added saving of options, like current directory and playlist
+  added detection of mimetypes
+  added adjusting volume by mousewheel
+  added skipping to next track after playing
+  added loads of sanity/safety checks
+  bugfixes (tons of) in playlist code, partly rewritten
+  bugfixes in scope code
 
 
 VERSION 0.1 - 0.11:
-  * internal versions, no changelog
-  * tried no less then 4 different sound interfaces:
+  internal versions, no changelog
+  tried no less then 4 different sound interfaces:
     mpg123, smpeg, alsaplayer, and finally aRts
