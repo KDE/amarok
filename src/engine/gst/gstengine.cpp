@@ -369,11 +369,13 @@ GstEngine::state() const
 const Engine::Scope&
 GstEngine::scope()
 {
-    if ( !gst_adapter_available( m_gst_adapter ) ) return m_scope;
+    const int channels = 2;
+
+    if ( gst_adapter_available( m_gst_adapter ) < SCOPE_VALUES*channels*sizeof( gint16 ) )
+        return m_scope;
 
     m_mutexScope.lock();
 
-    const int channels = 2;
     guint64 firstStamp, lastStamp;
     GstBuffer* buf;
     GSList* list = m_gst_adapter->buflist;
@@ -402,16 +404,15 @@ GstEngine::scope()
     if ( offset < 0 ) offset *= -1;
     offset = QMIN( offset, available - SCOPE_VALUES*channels*sizeof( gint16 ) );
 
-    if ( offset >= 0 )
-        for ( long i = 0; i < SCOPE_VALUES; i++, data += channels ) {
-            long temp = 0;
+    for ( long i = 0; i < SCOPE_VALUES; i++, data += channels ) {
+        long temp = 0;
 
-            for ( int chan = 0; chan < channels; chan++ ) {
-                // Add all channels together so we effectively get a mono scope
-                temp += data[offset / sizeof( gint16 ) + chan];
-            }
-            m_scope[i] = temp / channels;
+        for ( int chan = 0; chan < channels; chan++ ) {
+            // Add all channels together so we effectively get a mono scope
+            temp += data[offset / sizeof( gint16 ) + chan];
         }
+        m_scope[i] = temp / channels;
+    }
 
 //     debug() << "Timestamp first: " << firstStamp << endl;
 //     debug() << "Timestamp last:  " << lastStamp << endl;
@@ -1144,11 +1145,11 @@ InputPipeline::~InputPipeline()
 {
     DEBUG_BLOCK
 
-    if ( GstEngine::instance()->m_inputError )
-        return;
-
     if ( GstEngine::instance()->m_currentInput == this )
         GstEngine::instance()->m_currentInput = 0;
+
+    if ( GstEngine::instance()->m_inputError )
+        return;
 
     debug() << "Destroying input bin.\n";
 
