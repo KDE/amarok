@@ -4,8 +4,9 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta4:
-  CHG: The search-browser has been integrated into the file-browser
-  CHG: OSD can have fake transparency and new fancy shadow
+  FIX: The loader is now more robust and should always find amarokapp.
+  CHG: The search-browser has been integrated into the file-browser.
+  CHG: OSD can have fake transparency and new fancy shadow.
   ADD: DCOP function "shortStatusMessage", shows a temporary message
        on the application's statusbar.
   FIX: Frequent crashes when writing tags. (BR 95344)
