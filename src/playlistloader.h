@@ -60,7 +60,7 @@ private:
     KURL::List      m_list;
     PlaylistItem   *m_after;  //accessed by GUI thread _only_
     PlaylistItem   *m_first;
-    Playlist *m_listView;
+    Playlist       *m_listView;
     int             m_recursionCount;
 
 public:

@@ -19,7 +19,7 @@
 #include <qapplication.h>  //postEvent()
 #include <qtextstream.h>   //loadM3U(),loadPLS()
 #include <qfile.h>         //~PlaylistLoader()
-#include <qtextcodec.h>    //loadXML() 
+#include <qtextcodec.h>    //loadXML()
 
 #include <kapplication.h>
 #include <kurl.h>
@@ -191,12 +191,16 @@ inline
 void PlaylistLoader::postBundle( const KURL &u )
 {
     QApplication::postEvent( m_listView, new PlaylistLoader::MakeItemEvent( this, u, QString::null, MetaBundle::Undetermined ) );
+
+//    PlaylistItem *item = new PlaylistItem( m_listView, m_after, u, QString::null, MetaBundle::Undetermined ); m_after = item;
 }
 
 inline
 void PlaylistLoader::postBundle( const KURL &u, const QString &s, const int i )
 {
     QApplication::postEvent( m_listView, new PlaylistLoader::MakeItemEvent( this, u, s ,i ) );
+
+//    PlaylistItem *item = new PlaylistItem( m_listView, m_after, u, s, i ); m_after = item;
 }
 
 
@@ -250,11 +254,13 @@ bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissi
    //FIXME I don't actually understand what checks can be done, etc.
    if( url.protocol() == "http" ) return true;
 
-   //FIXME KMimetype doesn't seem to like http files, so here we are assuming if
-   //      it's extension is not common, it can't be read. Not perfect
-   //      listed in order of liklihood of encounter to avoid logic checks
+   //FIXME test all filetypes, but preferably cache the really common ones
+   //      ie mp3 and ogg, as engine->canDecode() is slow. Don't cache them all
+   //      as the file extension may not reflect the actual mimetype of the file
+   //      and we want to be clever
+   //TODO  if the playback fails, do some tests and tell the user why - we want to be the best!
    QString ext = url.path().right( 4 ).lower();
-   bool b = ( ext == ".mp3" || ext == ".ogg" || ext == ".m3u" || ext == ".pls" || ext == ".mod" ||  ext == ".wav" );
+   bool b = ( ext == ".mp3" || ext == ".ogg" || ext == ".m3u" || ext == ".pls" );
 
    if( !b && !(b = EngineController::engine()->canDecode( url, mode, permissions )) )
        kdDebug() << "Rejected URL: " << url.prettyURL() << endl;
@@ -426,7 +432,7 @@ void PlaylistLoader::loadPLS( QTextStream &stream )
 #include <qdom.h>
 void PlaylistLoader::loadXML( QTextStream &stream )
 {
-    stream.setCodec( QTextCodec::codecForName("utf8") ); 
+    stream.setCodec( QTextCodec::codecForName("utf8") );
     QDomDocument d;
     if( !d.setContent(stream.read()) ) { kdDebug() << "Could not load XML\n"; return; }
 
