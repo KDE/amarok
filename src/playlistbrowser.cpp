@@ -28,6 +28,7 @@
 #include <kactioncollection.h>
 #include <kapplication.h>
 #include <kio/job.h>           //deleteSelectedPlaylists()
+#include <kio/netaccess.h>
 #include <kdebug.h>
 #include <kfiledialog.h>       //openPlaylist()
 #include <kiconloader.h>       //smallIcon
@@ -182,30 +183,6 @@ QString PlaylistBrowser::playlistCacheFile()
     return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "playlistbrowser_save";
 }
 
-// FIXME: Remove this function and use Qt4's QFile::copy() instead
-// Is there really no simpler way today to copy local files?
-static bool copy_file(QString srcpath, QString dstpath)
-{
-    if( srcpath == dstpath )
-        return true;
-
-    QFile src(srcpath);
-    QFile dst(dstpath);
-
-    if(!src.open(IO_ReadOnly) || !dst.open(IO_WriteOnly) )
-        return false;
-
-    char buffer[1024];
-    while(!src.atEnd()) {
-        Q_LONG len = src.readBlock( buffer, sizeof(buffer) );
-        if( len<0 || len!=dst.writeBlock( buffer, len ) ) {
-            dst.remove();
-            return false;
-        }
-    }
-
-    return true;
-}
 
 void PlaylistBrowser::loadPlaylists()
 {
@@ -249,17 +226,19 @@ void PlaylistBrowser::loadPlaylists()
         }
     }
     else {  // couldn't open playlist cache, so assume first run: make user-copy of Cool-Streams.m3u and load it
-        QString src = locate( "data","amarok/data/Cool-Streams.m3u" );
+        KURL src;
+        src.setPath( locate( "data","amarok/data/Cool-Streams.m3u" ) );
 
         QString folder = KGlobal::dirs()->saveLocation( "data", "amarok/playlists", false );
         QFileInfo info( folder );
         if ( !info.isDir() ) QFile::remove( folder );
 
-        QString dst = KGlobal::dirs()->saveLocation( "data", "amarok/playlists/", true ) + "Cool-Streams.m3u";
+        KURL dst;
+        dst.setPath( KGlobal::dirs()->saveLocation( "data", "amarok/playlists/", true ) + "Cool-Streams.m3u" );
 
-        if( !src.isNull() && !dst.isNull() )
-            if( copy_file(src, dst) )
-                addPlaylist( dst );
+        if( src.hasPath() && dst.hasPath() )
+            if ( KIO::NetAccess::file_copy( src, dst ) )
+                addPlaylist( dst.path() );
     }
 }
 
