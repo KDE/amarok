@@ -7,6 +7,7 @@
 #include "crashhandler.h"
 #include "debug.h"
 #include <kapplication.h>
+#include <kdeversion.h>
 #include <kdialog.h>
 #include <klocale.h>
 #include <kpushbutton.h>
@@ -52,7 +53,7 @@ namespace amaroK
             body += "Engine       %1\n"
                     "Build date:  " __DATE__ "\n"
                     "GCC version: " __VERSION__ "\n" //assuming we're using GCC
-                    "Description: \n\n";
+                    "KDElibs:     " KDE_VERSION_STRING "\n";
 
             {   /// obtain backtrace
                 void *array[ LINES ];
