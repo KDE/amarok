@@ -617,6 +617,9 @@ void PlayerApp::saveConfig()
     m_pConfig->writeEntry( "Undo Levels", m_optUndoLevels );
     m_pConfig->writeEntry( "Software Mixer Only", m_optSoftwareMixerOnly );
 
+    // Write playlist columns layout
+    m_pBrowserWin->m_pPlaylistWidget->saveLayout(m_pConfig, "PlaylistColumnsLayout");
+    
     //store current item
     PlaylistItem *item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
     if ( item != NULL )
@@ -709,6 +712,9 @@ void PlayerApp::readConfig()
             "data", kapp->instanceName() + "/" ) + "current.m3u", 0 );
     m_pBrowserWin->m_pPlaylistWidget->writeUndo();
 
+    // Read playlist columns layout
+    m_pBrowserWin->m_pPlaylistWidget->restoreLayout(m_pConfig, "PlaylistColumnsLayout");
+    
     KURL currentlyPlaying = m_pConfig->readEntry( "CurrentSelection" );
 
     kdDebug(DA_COMMON) << "Attempting to select: " << currentlyPlaying.path() << endl;
