@@ -326,7 +326,7 @@ GstEngine::canDecode( const KURL &url ) const
 
     gst_element_set_state( pipeline, GST_STATE_PLAYING );
 
-    // Try to iterate over the bin until handoff gets triggered
+    // Try to iterate over the bin until signal "handoff" gets triggered
     while ( gst_bin_iterate( GST_BIN( pipeline ) ) && !m_canDecodeSuccess && count < 1000 )
         count++;
 
@@ -508,15 +508,14 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         m_streamBuffering = true;
 
         if ( !stream ) {
-            // Use KIO for non-local files, except http, which is handled by TitleProxy
+            // Use KIO for non-local files, except http, which is handled by StreamProvider
             m_transferJob = KIO::get( url, false, false );
-            connect( m_transferJob, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
-                              this,   SLOT( newKioData( KIO::Job*, const QByteArray& ) ) );
-            connect( m_transferJob, SIGNAL( result( KIO::Job* ) ),
-                              this,   SLOT( kioFinished() ) );
+            connect( m_transferJob, SIGNAL( data( KIO::Job*, const QByteArray& ) ), SLOT( newKioData( KIO::Job*, const QByteArray& ) ) );
+            connect( m_transferJob, SIGNAL( result( KIO::Job* ) ), SLOT( kioFinished() ) );
         }
     }
 
+    // Link all elements. The link from decodebin to audioconvert will be done in the newPad-callback
     gst_element_link( input->src, input->decodebin );
     gst_element_link_many( input->audioconvert, input->audioscale, input->volume, NULL );
 
@@ -710,12 +709,11 @@ void GstEngine::timerEvent( QTimerEvent* )
                 }
                 else {
                     // Set new value for fadeout volume element
-                    double value = 1.0 - log10( input->m_fade * 9.0 + 1.0 );
+                    const double value = 1.0 - log10( input->m_fade * 9.0 + 1.0 );
 //                     kdDebug() << "XFADE_IN: " << value << endl;
                     gst_element_set( input->volume, "volume", value, NULL );
                 }
                 break;
-
 
             case InputPipeline::FADE_OUT:
                 input->m_fade -= ( GstConfig::fadeoutDuration() ) ?  1.0 / GstConfig::fadeoutDuration() * TIMER_INTERVAL : 1.0;
@@ -725,12 +723,11 @@ void GstEngine::timerEvent( QTimerEvent* )
                     destroyList.append( input );
                 else {
                     // Set new value for fadeout volume element
-                    double value = 1.0 - log10( ( 1.0 - input->m_fade ) * 9.0 + 1.0 );
+                    const double value = 1.0 - log10( ( 1.0 - input->m_fade ) * 9.0 + 1.0 );
 //                     kdDebug() << "FADE_OUT: " << value << endl;
                     gst_element_set( input->volume, "volume", value, NULL );
                 }
                 break;
-
 
             case InputPipeline::XFADE_IN:
                 input->m_fade -= ( m_xfadeLength ) ?  1.0 / m_xfadeLength * TIMER_INTERVAL : 1.0;
@@ -743,12 +740,11 @@ void GstEngine::timerEvent( QTimerEvent* )
                 }
                 else {
                     // Set new value for fadeout volume element
-                    double value = 1.0 - input->m_fade;
+                    const double value = 1.0 - input->m_fade;
 //                     kdDebug() << "XFADE_IN: " << value << endl;
                     gst_element_set( input->volume, "volume", value, NULL );
                 }
                 break;
-
 
             case InputPipeline::XFADE_OUT:
                 input->m_fade -= ( m_xfadeLength ) ?  1.0 / m_xfadeLength * TIMER_INTERVAL : 1.0;
@@ -758,7 +754,7 @@ void GstEngine::timerEvent( QTimerEvent* )
                     destroyList.append( input );
                 else {
                     // Set new value for fadeout volume element
-                    double value = 1.0 - log10( ( 1.0 - input->m_fade ) * 9.0 + 1.0 );
+                    const double value = 1.0 - log10( ( 1.0 - input->m_fade ) * 9.0 + 1.0 );
 //                     kdDebug() << "XFADE_OUT: " << value << endl;
                     gst_element_set( input->volume, "volume", value, NULL );
                 }
@@ -852,7 +848,7 @@ GstEngine::endOfStreamReached()  //SLOT
 void
 GstEngine::newKioData( KIO::Job*, const QByteArray& array )  //SLOT
 {
-    int size = array.size();
+    const int size = array.size();
 
     if ( m_streamBufIndex >= STREAMBUF_MAX ) {
         debug() << "SUSPENDING kio transfer.\n";
@@ -876,7 +872,7 @@ GstEngine::newKioData( KIO::Job*, const QByteArray& array )  //SLOT
 void
 GstEngine::newMetaData()  //SLOT
 {
-    emit instance()->metaData( m_metaBundle );
+    emit metaData( m_metaBundle );
 }
 
 

@@ -113,7 +113,10 @@ class GstEngine : public Engine::Base
         /** Copies incoming data from KIO into StreamSrc's buffer */
         void newKioData( KIO::Job*, const QByteArray& array );
 
+        /** Called when no output sink was selected. Shows the GStreamer engine settings dialog. */
         void errorNoOutput();
+
+        /** Rebuilds the pipeline after configuration changes */
         void configChanged();
 
         /** Transmits new decoded metadata to the application */
@@ -139,6 +142,10 @@ class GstEngine : public Engine::Base
          */
         static GstElement* createElement( const QCString& factoryName, GstElement* bin = 0, const QCString& name = 0 );
 
+        /**
+         * Fetches a list of available output sink plugins
+         * @return List of output sinks
+         */
         QStringList getOutputsList() { return getPluginList( "Sink/Audio" ); }
 
         // CALLBACKS:
@@ -148,11 +155,17 @@ class GstEngine : public Engine::Base
         static void newPad_cb( GstElement*, GstPad*, gboolean, InputPipeline* );
         /** Duplicates audio data for application side processing */
         static void handoff_cb( GstElement*, GstBuffer*, gpointer );
+        /** Used by canDecode(). When called, the format can be decoded */
         static void candecode_handoff_cb( GstElement*, GstBuffer*, gpointer );
+        /** Called when new metadata tags have been found */
         static void found_tag_cb( GstElement*, GstElement*, GstTagList*, gpointer );
+        /** Called when the output pipeline signals an error */
         static void outputError_cb( GstElement*, GstElement*, GError*, gchar*, gpointer );
+        /** Called when the input pipeline signals an error */
         static void inputError_cb( GstElement*, GstElement*, GError*, gchar*, gpointer );
+        /** Called when the KIO buffer is empty */
         static void kio_resume_cb();
+        /** Called after the pipeline is shut down */
         static void shutdown_cb();
 
 
@@ -195,8 +208,9 @@ class GstEngine : public Engine::Base
         QString m_gst_error;
         QString m_gst_debug;
 
-        QPtrList<InputPipeline> m_inputs;
-        InputPipeline*          m_currentInput;
+        typedef QPtrList<InputPipeline> InputList;
+        InputList       m_inputs;
+        InputPipeline*  m_currentInput;
 
         GstAdapter* m_gst_adapter;
 
@@ -207,7 +221,7 @@ class GstEngine : public Engine::Base
         bool     m_streamBuffering;
 
         KIO::TransferJob* m_transferJob;
-        QMutex   m_mutexScope;
+        QMutex            m_mutexScope;
 
         bool        m_pipelineFilled;
         float       m_fadeValue;
@@ -233,8 +247,6 @@ class InputPipeline
 
         InputPipeline();
         ~InputPipeline();
-
-        void prepareToDie();
 
         State state() const { return m_state; }
         void setState( State newState );
