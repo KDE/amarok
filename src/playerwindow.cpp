@@ -126,7 +126,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
         m_pVolSlider->setGeometry( 294,18, 12,79 );
 
         m_pVolSlider->setMaxValue( amaroK::VOLUME_MAX );
-        m_pVolSlider->setValue( engine->volume() );
+        m_pVolSlider->setValue( AmarokConfig::masterVolume() );
 
         connect( m_pSlider, SIGNAL(sliderReleased()), SLOT(slotSliderReleased()) );
         connect( m_pSlider, SIGNAL(valueChanged( int )), SLOT(slotSliderChanged( int )) );

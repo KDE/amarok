@@ -194,6 +194,8 @@ int EngineController::setVolume( int percent )
 
     if( percent != m_pEngine->volume() )
     {
+        AmarokConfig::setMasterVolume( percent );
+
         m_pEngine->setVolume( percent );
 
         volumeChangedNotify( percent );

@@ -241,7 +241,7 @@ VolumeAction::plug( QWidget *w, int index )
         //FIXME is there a way to get some sensible height?
         m_slider->setFixedHeight( 35 );
         m_slider->setMaxValue( amaroK::VOLUME_MAX );
-        m_slider->setValue( amaroK::VOLUME_MAX - EngineController::engine()->volume() );
+        m_slider->setValue( amaroK::VOLUME_MAX - AmarokConfig::masterVolume() );
         connect( m_slider, SIGNAL( valueChanged( int ) ),
                  this,       SLOT( sliderMoved( int ) ) );
         connect( bar,      SIGNAL( wheelMoved( int ) ),

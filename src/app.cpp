@@ -131,7 +131,6 @@ App::~App()
     delete m_pDcopHandler;
 
     AmarokConfig::setVersion( APP_VERSION );
-    AmarokConfig::setMasterVolume( engine->volume() );
     AmarokConfig::writeConfig();
 
     //TODO move engine load and unload to controller so that it can handle this properly
@@ -316,10 +315,7 @@ void App::restoreSession()
         bundle.readTags();
 
         EngineController::instance()->play( bundle );
-
-        //did we  save the time?
-        const int seconds = AmarokConfig::resumeTime();
-        if( seconds > 0 ) EngineController::engine()->seek( seconds * 1000 );
+        EngineController::engine()->seek( AmarokConfig::resumeTime() * 1000 );
     }
 }
 
@@ -366,7 +362,7 @@ void App::applySettings()
         delete m_pPlayerWindow; m_pPlayerWindow = 0;
 
         m_pPlaylistWindow->setCaption( "amaroK" );
-        m_pPlaylistWindow->show(); //must be shown
+        //m_pPlaylistWindow->show(); //must be shown
     }
 
 
@@ -408,14 +404,9 @@ void App::applySettings()
 
         if( b || AmarokConfig::soundSystem() != PluginManager::getService( engine )->name() )
         {
-            if( !b )
-            {
-                AmarokConfig::setMasterVolume( engine->volume() );
-                PluginManager::unload( engine );
-            }
+            if( !b ) PluginManager::unload( engine );
 
             initEngine();
-
             engine = EngineController::engine();
 
             AmarokConfig::setHardwareMixer( engine->initMixer( AmarokConfig::hardwareMixer() ) );
