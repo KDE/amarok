@@ -117,7 +117,23 @@ extern "C"
     gboolean   xmms_check_realtime_priority(void) { return false; }
     void       xmms_usleep(gint usec) { usleep( usec ); }
 
-
+    ConfigFile *xmms_cfg_new( void ) { return 0; }
+    ConfigFile *xmms_cfg_open_file( gchar * ) { return 0; }
+    gboolean xmms_cfg_write_file( ConfigFile *, gchar * ) { return 0;}
+    void xmms_cfg_free( ConfigFile * ) {}
+    ConfigFile *xmms_cfg_open_default_file( void ) { return 0;}
+    gboolean xmms_cfg_write_default_file( ConfigFile * ) { return 0;}
+    gboolean xmms_cfg_read_string( ConfigFile *, gchar *, gchar *, gchar ** ) { return 0;}
+    gboolean xmms_cfg_read_int( ConfigFile *, gchar *, gchar *, gint * ) { return 0;}
+    gboolean xmms_cfg_read_boolean( ConfigFile *, gchar *, gchar * , gboolean * ) { return 0;}
+    gboolean xmms_cfg_read_float( ConfigFile *, gchar *, gchar *, gfloat * ) { return 0;}
+    gboolean xmms_cfg_read_double( ConfigFile *, gchar *, gchar *, gdouble * ) { return 0; }
+    void xmms_cfg_write_string( ConfigFile *, gchar *, gchar *, gchar * ) {}
+    void xmms_cfg_write_int( ConfigFile *, gchar *, gchar *, gint ) {}
+    void xmms_cfg_write_boolean( ConfigFile *, gchar *, gchar *, gboolean ) {}
+    void xmms_cfg_write_float( ConfigFile *, gchar *, gchar *, gfloat ) {}
+    void xmms_cfg_write_double( ConfigFile *, gchar *, gchar *, gdouble ) {}
+    void xmms_cfg_remove_key( ConfigFile *, gchar *, gchar * ) {}
 }
 
 #include <gdk/gdkx.h> //Display Struct
