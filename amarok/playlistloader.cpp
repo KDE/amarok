@@ -747,5 +747,6 @@ TagWriter::doJob()
 void
 TagWriter::updatePlaylistItem()
 {
-    m_item->setText( m_tagType, m_tagString );
+    //FIXME see PlaylistItem::setText() for an explanation for this hack
+    m_item->setText( m_tagType, m_tagString.isEmpty() ? " " : m_tagString );
 }

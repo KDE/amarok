@@ -118,6 +118,7 @@ void PlaylistItem::setText( int column, const QString &newText )
     case 10:
         if( newText.isEmpty() )
         {
+            //FIXME unfortunately when you delete a tag it doesn't get updated here due to this!
             //if you don't setText() it crashes amaroK!
             KListViewItem::setText( column, text( column ) );
             break;

@@ -467,9 +467,13 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
     {
         m_pBrowserWin->hide();
     }
-    else if( e->type() == QEvent::Show && o == m_pPlayerWidget && !e->spontaneous() )
+    else if( (e->type() == QEvent::Show || e->type() == QEvent::ShowNormal) && o == m_pPlayerWidget && !e->spontaneous() )
     {
         m_pBrowserWin->show();
+    }
+    else if( e->type() == QEvent::ShowMinimized && o == m_pPlayerWidget )
+    {
+        m_pBrowserWin->hide();
     }
 
     return FALSE;
