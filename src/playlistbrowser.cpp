@@ -1342,19 +1342,19 @@ SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
 
     //insert items after last item
     lastItem = new KListViewItem(this, lastItem, i18n("Most Played") );
-    lastItem->setPixmap( 0, SmallIcon("player_playlist") );
+    lastItem->setPixmap( 0, SmallIcon("playlist") );
     lastItem->setDragEnabled(true);
 
     lastItem =  new KListViewItem(this, lastItem, i18n("Newest Tracks") );
-    lastItem->setPixmap( 0, SmallIcon("player_playlist") );
+    lastItem->setPixmap( 0, SmallIcon("playlist") );
     lastItem->setDragEnabled(true);
 
     lastItem =  new KListViewItem(this, lastItem, i18n("Recently Played") );
-    lastItem->setPixmap( 0, SmallIcon("player_playlist") );
+    lastItem->setPixmap( 0, SmallIcon("playlist") );
     lastItem->setDragEnabled(true);
 
     lastItem =  new KListViewItem(this, lastItem, i18n("Never Played") );
-    lastItem->setPixmap( 0, SmallIcon("player_playlist") );
+    lastItem->setPixmap( 0, SmallIcon("playlist") );
     lastItem->setDragEnabled(true);
 
     connect( this, SIGNAL( doubleClicked( QListViewItem *) ), SLOT( loadPlaylistSlot( QListViewItem * ) ) );
