@@ -2,6 +2,7 @@
 Type=Service
 Name=<no engine>
 Name[it]=<nessun motore>
+Name[nl]=<geen engine>
 Name[pt]=<sem motor>
 Name[pt_BR]=<sem motor>
 Name[sv]=<inget gränssnitt>
