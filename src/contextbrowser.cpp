@@ -157,8 +157,8 @@ void ContextBrowser::openURLRequest( const KURL &url )
         const QString amazonUrl = img.text( "amazon-url" );
         kdDebug() << "[ContextBrowser] Embedded amazon url in cover image: " << amazonUrl << endl;
 
-        if ( url.isEmpty() )
-            kapp->invokeBrowser( "http://www.amazon.com" );
+        if ( amazonUrl.isEmpty() )
+            KMessageBox::information( this, i18n( "Right-click on image for download menu." ) );
         else
             kapp->invokeBrowser( amazonUrl );
     }
