@@ -751,7 +751,7 @@ void ScrobblerSubmitter::audioScrobblerSubmitData(
     KIO::Job*, const QByteArray& data ) //SLOT
 {
     // Append new chunk of string
-    m_submitResultBuffer += QString::fromUtf8( data );
+    m_submitResultBuffer += QString::fromUtf8( data, data.size() );
 }
 
 
