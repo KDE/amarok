@@ -8,6 +8,7 @@ SHORT-TERM (URGENT):
 
   <mxcl>   Handle the case where user drops a directory and there is a playlist file that duplicates what is
            in the directories above it and you end up with duplicate URLs all over the place.
+           <markey> Many users have an m3u in the _same_ directory as the files are.
 
   <markey> Gst-Engine: Some users report trouble with the first track they play after startup.
 
