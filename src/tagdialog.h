@@ -7,10 +7,9 @@
 
 #include "config.h"
 
+#include "ktrm.h"
 #include "metabundle.h"       //stack alloc
 #include "tagdialogbase.h"    //baseclass
-
-#include "ktrm.h"
 
 #include <kurl.h>             //stack alloc
 #include <qmap.h>
@@ -19,26 +18,25 @@
 
 class PlaylistItem;
 
+
 class TagSelect : public TagSelectDialog
 {
     Q_OBJECT
-    
+
     signals:
         void sigSelectionMade( KTRMResult );
-        
+
     public:
         TagSelect( KTRMResultList results, QWidget* parent = 0);
-     
+
     private:
-        KTRMResultList results;
-        
+        KTRMResultList m_results;
+
     private slots:
         void accept();
         void reject();
-
-    
-                   
 };
+
 
 class TagDialog : public TagDialogBase
 {
@@ -49,7 +47,7 @@ class TagDialog : public TagDialogBase
         TagDialog( const KURL::List list, QWidget* parent = 0 );
         TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent = 0 );
         friend class TagSelect;
-        
+
     private slots:
         void accept();
         void cancelPressed();
@@ -61,7 +59,7 @@ class TagDialog : public TagDialogBase
         void musicbrainzQuery();
         void queryDone( KTRMResultList results );
         void fillSelected( KTRMResult selected );
-        
+
     private:
         void init();
         void readTags();
@@ -81,7 +79,6 @@ class TagDialog : public TagDialogBase
         QString m_currentCover;
         QString m_mbTrack;
 };
-
 
 
 #endif /*AMAROK_TAGDIALOG_H*/

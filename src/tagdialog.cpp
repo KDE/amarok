@@ -154,21 +154,21 @@ TagDialog::musicbrainzQuery() //SLOT
 void
 TagDialog::queryDone( KTRMResultList results ) //SLOT
 {
-#ifdef HAVE_MUSICBRAINZ    
-    
+#ifdef HAVE_MUSICBRAINZ
+
     if ( !results.isEmpty() )
     {
-        TagSelect* t = new TagSelect(results, this);        
+        TagSelect* t = new TagSelect(results, this);
 //        t->adjustSize();
         t->show();
     }
-    else  
+    else
         KMessageBox::sorry( this, i18n( "The track was not found in the MusicBrainz database." ) );
-    
-    QApplication::restoreOverrideCursor();        
+
+    QApplication::restoreOverrideCursor();
     pushButton_musicbrainz->setEnabled( true );
     pushButton_musicbrainz->setText( m_buttonMbText );
-    
+
 #endif
 }
 
@@ -178,7 +178,7 @@ TagDialog::fillSelected( KTRMResult selected ) //SLOT
 #ifdef HAVE_MUSICBRAINZ
     kdDebug() << k_funcinfo << endl;
 
-    
+
     if ( m_bundle.url().path() == m_mbTrack ) {
         if ( !selected.title().isEmpty() )    kLineEdit_title->setText( selected.title() );
         if ( !selected.artist().isEmpty() )   kComboBox_artist->setCurrentText( selected.artist() );
@@ -197,8 +197,8 @@ TagDialog::fillSelected( KTRMResult selected ) //SLOT
         storedTags.insert( m_mbTrack, mb );
     }
 
-    
-    
+
+
 #endif
 }
 
@@ -500,42 +500,43 @@ TagDialog::writeTag( MetaBundle mb, bool updateCB )
 #include <qtable.h>
 #include <qstringx.h>
 
-
 TagSelect::TagSelect( KTRMResultList results, QWidget* parent )
     : TagSelectDialog( parent )
+    , m_results( results )
 {
     DEBUG_BLOCK
-//     KTRMResultList results = *resAd; 
+
+    kapp->setTopWidget( this );
+    setCaption( kapp->makeStdCaption( i18n("MusicBrainz Results") ) );
+
+//     KTRMResultList results = *resAd;
     int cellheight = 0;
     int headerheight = 0;
-    setCaption( i18n("MusicBrainz results:") );
-    this->results = results;
-    resultTable->insertRows(0,results.size());
-    
+    resultTable->insertRows( 0,results.size() );
+
     //Get rid of the row headers and margin
     resultTable->verticalHeader()->hide();
     resultTable->setLeftMargin( 0 );
-    
-    for(uint i = 0; i < results.size(); i++) {
 
-        if ( !results[i].title().isEmpty() )    resultTable->setText( i,0,results[i].title() );     
-        if ( !results[i].artist().isEmpty() )   resultTable->setText( i,1,results[i].artist() );
-        if ( !results[i].album().isEmpty() )    resultTable->setText( i,2,results[i].album() );
-        if ( results[i].track() != 0 )  resultTable->setText(i,3, QString::number(results[i].track(),10));
-        if ( results[i].year() != 0 )   resultTable->setText( i, 4, QString::number(results[i].year(),10) );
-        resultTable->setRowStretchable(i,true);
+    for( uint i = 0; i < results.size(); i++ ) {
+
+        if ( !results[i].title().isEmpty() )   resultTable->setText( i,0,results[i].title() );
+        if ( !results[i].artist().isEmpty() )  resultTable->setText( i,1,results[i].artist() );
+        if ( !results[i].album().isEmpty() )   resultTable->setText( i,2,results[i].album() );
+        if ( results[i].track() != 0 )         resultTable->setText( i,3, QString::number(results[i].track(),10) );
+        if ( results[i].year() != 0 )          resultTable->setText( i, 4, QString::number(results[i].year(),10) );
+        resultTable->setRowStretchable( i,true );
     }
-    for(int j = 0; j < 5; j++) {
-        resultTable->adjustColumn(j);
+    for( int j = 0; j < 5; j++ ) {
+        resultTable->adjustColumn( j );
         //resultTable->setColumnStretchable(j,true);
-        
     }
-    resultTable->setColumnStretchable(4,true);
-  
-    
-    if(results.size() > 0)  cellheight = resultTable->item(0,0)->sizeHint().height();
-    headerheight = resultTable->horizontalHeader()->height();    
-    resultTable->setMaximumHeight( cellheight * (results.size()+1) + headerheight);
+    resultTable->setColumnStretchable( 4,true );
+
+
+    if( results.size() > 0 ) cellheight = resultTable->item(0,0)->sizeHint().height();
+    headerheight = resultTable->horizontalHeader()->height();
+    resultTable->setMaximumHeight( cellheight * (results.size()+1) + headerheight );
     adjustSize();
     connect(buttonOk, SIGNAL ( clicked() ), SLOT( accept() ) );
     connect(buttonCancel, SIGNAL ( clicked() ), SLOT( reject() ) );
@@ -547,18 +548,18 @@ void
 TagSelect::accept()
 {
     DEBUG_BLOCK
-    
-    KTRMResult selection = results[resultTable->currentRow()];
+
+    KTRMResult selection = m_results[resultTable->currentRow()];
     emit sigSelectionMade( selection );
-    
+
     QDialog::accept();
 }
+
 void
 TagSelect::reject()
 {
-    
     QDialog::reject();
-
 }
+
 
 #include "tagdialog.moc"
