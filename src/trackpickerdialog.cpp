@@ -19,6 +19,7 @@
 
 #include <qlabel.h>
 
+#include <kapplication.h>
 #include <klistview.h>
 #include <klocale.h>
 
@@ -32,13 +33,13 @@ class TrackPickerItem : public KListViewItem
 public:
     TrackPickerItem(KListView *parent, const KTRMResult &result) :
         KListViewItem(parent, parent->lastChild(),
-                          result.title(), result.artist(), result.album(),
-                          NUMBER(result.track()), NUMBER(result.year())),
-        m_result(result) {
- //       QString year;
+                      result.title(), result.artist(), result.album(),
+                      NUMBER(result.track()), NUMBER(result.year())),
+                      m_result(result) {
+//QString year;
 //if(result.year() == QString::empty()) year = "xx";
 //else year = result.year();
-   //     setText(5,"xx");
+//setText(5,"xx");
 }
     KTRMResult result() const { return m_result; }
 
@@ -50,11 +51,12 @@ private:
 // public methods
 ////////////////////////////////////////////////////////////////////////////////
 
-TrackPickerDialog::TrackPickerDialog(const QString &name,
-                                     const KTRMResultList &results,
-                                     QWidget *parent) :
-                KDialogBase(parent, name.latin1(), true, i18n("MusicBrainz Results"), Ok | Cancel, Ok, true)
+TrackPickerDialog::TrackPickerDialog(const QString &name, const KTRMResultList &results, QWidget *parent)
+        : KDialogBase(parent, name.latin1(), true, QString::null, Ok | Cancel, Ok, true)
 {
+    kapp->setTopWidget( this );
+    setCaption( kapp->makeStdCaption( i18n("MusicBrainz Results") ) );
+
     m_base = new TrackPickerDialogBase(this);
     setMainWidget(m_base);
 
@@ -74,10 +76,6 @@ TrackPickerDialog::TrackPickerDialog(const QString &name,
 
 }
 
-TrackPickerDialog::~TrackPickerDialog()
-{
-
-}
 
 KTRMResult
 TrackPickerDialog::result() const
@@ -87,6 +85,8 @@ TrackPickerDialog::result() const
     else
         return KTRMResult();
 }
+
+
 void
 TrackPickerDialog::accept()
 {

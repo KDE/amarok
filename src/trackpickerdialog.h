@@ -26,21 +26,22 @@
 
 class TrackPickerDialogBase;
 
+
 class TrackPickerDialog : public KDialogBase
 {
     Q_OBJECT
-signals:
-        void sigSelectionMade( KTRMResult );
-public:
-    TrackPickerDialog(const QString &name,
-		      const KTRMResultList &results,
-                      QWidget *parent = 0);
 
-    virtual ~TrackPickerDialog();
+signals:
+    void sigSelectionMade( KTRMResult );
+
+public:
+    TrackPickerDialog(const QString &name, const KTRMResultList &results, QWidget *parent = 0);
 
     KTRMResult result() const;
+
 private slots:
     void accept();
+
 private:
     TrackPickerDialogBase *m_base;
 };
