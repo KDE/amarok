@@ -51,7 +51,6 @@
 #include <kstringhandler.h>  //::showContextMenu()
 #include <kglobalsettings.h> //rename()
 #include <kurldrag.h>
-#include <X11/Xlib.h>        //ControlMask in contentsDragMoveEvent()
 #include <qsortedlist.h>
 
 
@@ -839,8 +838,7 @@ Playlist::contentsDragMoveEvent( QDragMoveEvent* e )
 {
     if( !e->isAccepted() ) return;
 
-    //TODO decide, use this or what was here before? still have to include the Xlib header..
-    const bool ctrlPressed= KApplication::keyboardModifiers() & ControlMask;
+    const bool ctrlPressed= KApplication::keyboardMouseState() == Qt::ControlButton;
 
     //Get the closest item _before_ the cursor
     const QPoint p = contentsToViewport( e->pos() );
@@ -1016,7 +1014,7 @@ Playlist::viewportResizeEvent( QResizeEvent *e )
 }
 
 void
-Playlist::columnResizeEvent( int col, int oldw, int neww )
+Playlist::columnResizeEvent( uint col, int oldw, int neww )
 {
     kdDebug() << k_funcinfo << endl;
 
