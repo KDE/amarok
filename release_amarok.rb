@@ -7,14 +7,26 @@
 # License: GPL V2
 
 
-version  = `kdialog --inputbox "amaroK version: "`.chomp
-username = `kdialog --inputbox "CVS username: "`.chomp
+def log( text )
+    puts( "#{text}\n" )
+end
+
+
+# version  = `kdialog --inputbox "amaroK version: "`.chomp
+# username = `kdialog --inputbox "CVS username: "`.chomp
+
+puts( "\n " )
+puts( "Enter amaroK version: " )
+version = gets.chomp
+puts( "Enter CVS username: " )
+username = gets.chomp
+puts( "\n " )
 
 name     = "amaroK"
 cvsroot  = ":pserver:#{username}@cvs.kde.org:/home/kde"
 folder   = "amarok-#{version}"
 doi18n   = "yes"
-log      = "/dev/null"
+$log      = "/dev/null"
 
 
 # Prevent using unsermake
@@ -42,48 +54,45 @@ print "\n"
 
 # we check out kde-i18n/subdirs in kde-i18n..
 if doi18n == "yes"
-    `echo "cvs co kde-i18n/subdirs" >> #{log}`
+    log( "cvs co kde-i18n/subdirs" )
     `cvs -z3 -d #{cvsroot} -q co -P kde-i18n/subdirs > /dev/null 2>&1`
     i18nlangs = `cat kde-i18n/subdirs`
-    `echo "available languages: #{i18nlangs}" >> #{log}`
+    log( "Available languages: #{i18nlangs}" )
 
     # docs
     for lang in i18nlangs
+        lang = lang.chomp
         if FileTest.exists? "doc/#{lang}"
             `rm -Rf doc/#{lang}`
         end
         docdirname = "kde-i18n/#{lang}/docs/kdeextragear-1/amarok"
-        `echo "cvs co #{docdirname}" >> #{log}`
+        log( "cvs co #{docdirname}" )
         `cvs -z3 -q -d "#{cvsroot}" co -P "#{docdirname}" > /dev/null 2>&1`
-        if not FileTest.exists? docdirname
-            `echo "#{lang}'s #{name} documentation does not exist." >> #{log}`
-        end
-        print "Copying #{lang}'s #{name} documentation over... "
+        if not FileTest.exists? ( docdirname ) then next end
+        print "Copying #{lang}'s #{name} documentation over...\n"
         `cp -R #{docdirname} doc/#{lang}`
-        `cat doc/#{lang}/Makefile.am | sed -e "s/AUTO/amarok/" > doc/#{lang}/Makefile.am.nw`
-        `mv doc/#{lang}/Makefile.am.nw doc/#{lang}/Makefile.am`
-        `echo "#{lang} documentation included." >> #{log}`
+        log( "#{lang} documentation included." )
     end
 
 
     print "\n"
-
     exit
 
 
-    `mkdir po`
+    Dir.mkdir( "po" )
     for lang in i18nlangs
+        lang = lang.chomp
         pofilename = "kde-i18n/#{lang}/messages/kdeextragear-1/amarok.po"
-        `echo "cvs co #{pofilename}" >> #{log}`
+        `echo "cvs co #{pofilename}" >> #{$log}`
         `cvs -z3 -d #{cvsroot} -q co -P "#{pofilename}" > /dev/null 2>&1`
         if not FileTest.exists? pofilename
-            `echo "#{lang}'s #{name}.po does not exist." >> #{log}`
+            `echo "#{lang}'s #{name}.po does not exist." >> #{$log}`
         end
 
         dest = po/#{lang}
         `mkdir #{dest}`
         print "Copying #{lang}'s #{name}.po over... "
-        `echo "#{lang}'s #{name}.po file included." >> #{log}`
+        `echo "#{lang}'s #{name}.po file included." >> #{$log}`
         `cp #{pofilename} #{dest}`
         print "done."
 
@@ -148,14 +157,17 @@ print
 ENV["UNSERMAKE"] = oldmake
 
 
-print
+print "\n"
 print "====================================================="
 print "Congratulations :) amaroK #{version} tarball generated."
 print "Now follow the steps in the RELEASE_HOWTO, from"
 print "SECTION 3 onwards."
-print
+print "\n"
 print "Then drink a few pints and have some fun on #amarok"
-print
+print "\n"
 print "MD5 checksum: " + `md5sum #{folder}.tar.bz2`
-print
-print
+print "\n"
+print "\n"
+
+
+
