@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.1.1:
+  FIX: GStreamer-engine now resumes playback at correct position.
   ADD: iCandy for Context-Browser: Background gradient and toolbar.
   CHG: Collection-Browser now has a toolbar instead of menubar.
   FIX: With "Title Streaming" disabled GStreamer could not play streams.

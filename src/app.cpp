@@ -152,7 +152,7 @@ App::~App()
         if( engine->state() != Engine::Empty )
         {
             AmarokConfig::setResumeTrack( EngineController::instance()->playingURL().prettyURL() );
-            AmarokConfig::setResumeTime( engine->position() / 1000 );
+            AmarokConfig::setResumeTime( engine->position() );
         }
         else AmarokConfig::setResumeTrack( QString::null ); //otherwise it'll play previous resume next time!
     }

@@ -447,7 +447,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
 
 
 bool
-GstEngine::play( uint )  //SLOT
+GstEngine::play( uint offset )  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     if ( !m_currentInput ) return false;
@@ -472,6 +472,9 @@ GstEngine::play( uint )  //SLOT
     }
 
     g_signal_connect( G_OBJECT( m_currentInput->bin ), "error", G_CALLBACK ( inputError_cb ), 0 );
+
+    // If "Resume playback on start" is enabled, we must seek to the last position
+    seek( offset );
 
     emit stateChanged( Engine::Playing );
     return true;

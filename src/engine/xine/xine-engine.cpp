@@ -147,7 +147,7 @@ XineEngine::load( const KURL &url, bool stream )
 bool
 XineEngine::play( uint offset )
 {
-    if( xine_play( m_stream, 0, offset ) )
+    if( xine_play( m_stream, 0, offset / 1000 ) )
     {
         emit stateChanged( Engine::Playing );
 

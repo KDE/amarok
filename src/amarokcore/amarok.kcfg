@@ -325,7 +325,7 @@
         <whatsthis>Internal: URL of the track to resume on startup.</whatsthis>
     </entry>
     <entry key="Resume Time" type="Int">
-        <label>Time to resume at, in seconds</label>
+        <label>Time to resume at, in milliseconds</label>
         <default>-1</default>
         <whatsthis>Internal: Playback position in the track to resume on startup.</whatsthis>
     </entry>

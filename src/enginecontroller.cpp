@@ -199,7 +199,7 @@ void EngineController::restoreSession()
     {
         const KURL url = AmarokConfig::resumeTrack();
 
-        if ( m_engine->load( url ) && m_engine->play( AmarokConfig::resumeTime()*1000 ) )
+        if ( m_engine->load( url ) && m_engine->play( AmarokConfig::resumeTime() ) )
             newMetaDataNotify( m_bundle = MetaBundle( url ), true );
     }
 }
