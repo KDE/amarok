@@ -1,12 +1,11 @@
 SECTION 1: Preparation
 
  * Check the README file is still relevant
+ * Run the "fixuifiles" script from the source-root
 --------------------------------------------------------------------------------
 
 SECTION 2: Creating and Testing the Tarball
 
- * Before starting, run the "fixuifiles" script on the source,
-   to be sure the .ui file versions are correct.
  * Run the release_amarok script; OR
    Follow the guide lines in appendix A
  * Test the following:
@@ -19,7 +18,7 @@ SECTION 2: Creating and Testing the Tarball
 
 SECTION 3: Once Happy with the Tarball
 
- * Ftp the tarball to sf.net/incoming
+ * Ftp the tarball to upload.sf.net/incoming
  * Use the admin system at sourceforge to register the release
  * Update the amarok.kde.org front-page before anything else!
  * Update kde-apps.org and freshmeat.net
