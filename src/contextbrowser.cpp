@@ -939,7 +939,7 @@ void ContextBrowser::showLyrics( const QString &hash )
     {
         QRegExp re = replaceMe.arg( production[x] );
         re.setCaseSensitive( false );
-        title.replace( re, QString::null );
+        title.remove( re );
     }
 
     QString url;
