@@ -231,7 +231,7 @@ void SmartPlaylistView::loadDefaultPlaylists()
     qb.initSQLDrag();
     qb.setOptions( QueryBuilder::optRandomize );
     qb.setLimit( 0, 50 );
-    item = new SmartPlaylist( i18n( "50 Random Tracks" ), QString(), this );
+    item = new SmartPlaylist( i18n( "50 Random Tracks" ), qb.query(), this );
     item->setKey( ++c );
 }
 
