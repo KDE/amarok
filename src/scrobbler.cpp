@@ -83,8 +83,8 @@ Scrobbler::audioScrobblerRelatedArtistResult( KIO::Job* job ) //SLOT
         artist = m_buffer.mid( m_buffer.find( "/similar/" ) + 9 );
         artist = KURL::decode_string( artist.mid( 0, artist.find( "\" title" ) ) );
 
-        kdDebug() << artist << endl;
-        artists << artist;
+        //kdDebug() << artist << endl;
+        if ( !artist.isEmpty() ) artists << artist;
 
         m_buffer = m_buffer.mid( m_buffer.find( "</td>" ) );
 
