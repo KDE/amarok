@@ -1,0 +1,212 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>Options8</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>Options8</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>355</width>
+            <height>391</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Options8</string>
+    </property>
+    <spacer>
+        <property name="name">
+            <cstring>spacer4</cstring>
+        </property>
+        <property name="orientation">
+            <enum>Vertical</enum>
+        </property>
+        <property name="sizeType">
+            <enum>Expanding</enum>
+        </property>
+        <property name="sizeHint">
+            <size>
+                <width>20</width>
+                <height>120</height>
+            </size>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>180</x>
+                <y>260</y>
+                <width>20</width>
+                <height>120</height>
+            </rect>
+        </property>
+    </spacer>
+    <widget class="QGroupBox">
+        <property name="name">
+            <cstring>profileSettingsGroupBox</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>40</y>
+                <width>330</width>
+                <height>90</height>
+            </rect>
+        </property>
+        <property name="title">
+            <string>Profile Settings</string>
+        </property>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>labelUsername</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>20</y>
+                    <width>70</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Username:</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>labelPassword</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>50</y>
+                    <width>70</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Password:</string>
+            </property>
+        </widget>
+        <widget class="KLineEdit">
+            <property name="name">
+                <cstring>kcfg_ScrobblerUsername</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>80</x>
+                    <y>20</y>
+                    <width>230</width>
+                    <height>25</height>
+                </rect>
+            </property>
+        </widget>
+        <widget class="KLineEdit">
+            <property name="name">
+                <cstring>kcfg_ScrobblerPassword</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>80</x>
+                    <y>50</y>
+                    <width>230</width>
+                    <height>25</height>
+                </rect>
+            </property>
+            <property name="echoMode">
+                <enum>Password</enum>
+            </property>
+        </widget>
+    </widget>
+    <widget class="QGroupBox">
+        <property name="name">
+            <cstring>profileCreationGroupBox</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>140</y>
+                <width>330</width>
+                <height>110</height>
+            </rect>
+        </property>
+        <property name="title">
+            <string>Profile Creation</string>
+        </property>
+        <widget class="QPushButton">
+            <property name="name">
+                <cstring>createProfileButton</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>70</y>
+                    <width>106</width>
+                    <height>26</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Create Profile</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>createProfileLabel</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>20</y>
+                    <width>310</width>
+                    <height>50</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>To submit played tracks to Audioscrobbler, you will need a personal Audioscrobbler profile. If you don't yet have a profile, please click the button below to create one.</string>
+            </property>
+            <property name="alignment">
+                <set>WordBreak|AlignVCenter</set>
+            </property>
+        </widget>
+    </widget>
+    <widget class="QCheckBox">
+        <property name="name">
+            <cstring>kcfg_SubmitPlayedSongs</cstring>
+        </property>
+        <property name="enabled">
+            <bool>true</bool>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>10</y>
+                <width>140</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Submit played tracks</string>
+        </property>
+    </widget>
+</widget>
+<customwidgets>
+</customwidgets>
+<connections>
+    <connection>
+        <sender>kcfg_SubmitPlayedSongs</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>profileSettingsGroupBox</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>createProfileButton</sender>
+        <signal>clicked()</signal>
+        <receiver>Options8</receiver>
+        <slot>exec()</slot>
+    </connection>
+</connections>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
+</includehints>
+</UI>

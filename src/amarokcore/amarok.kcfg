@@ -409,4 +409,23 @@
             <default/>
         </entry>
 </group>
+
+<group name="Scrobbler">
+        <entry key="SubmitPlayedSongs" type="Bool">
+            <label>SubmitPlayedSongs</label>
+            <whatsthis>Whether played songs are submitted to Audioscrobbler</whatsthis>
+            <default/>
+        </entry>
+        <entry key="ScrobblerUsername" type="String">
+            <label>Username</label>
+            <whatsthis>The username to use for connecting to Audioscrobbler</whatsthis>
+            <default/>
+        </entry>
+        <entry key="ScrobblerPassword" type="String">
+            <label>Password</label>
+            <whatsthis>The password to use for connecting to Audioscrobbler</whatsthis>
+            <default/>
+        </entry>
+</group>
+
 </kcfg>

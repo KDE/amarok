@@ -42,6 +42,7 @@ class AmarokConfigDialog : public KConfigDialog
 
     private slots:
         void aboutEngine();
+        void createProfileClicked();
 
     protected:
         bool hasChanged();

@@ -23,6 +23,7 @@ email                : markey@web.de
 #ifdef USE_MYSQL
 #include "Options7.h"
 #endif
+#include "Options8.h"
 #include "amarokconfig.h"
 #include "configdialog.h"
 #include "enginecontroller.h"
@@ -42,6 +43,7 @@ email                : markey@web.de
 #include <qvbox.h>
 #include <qtooltip.h>
 
+#include <kapplication.h> //kapp
 #include <kdebug.h>
 #include <klocale.h>
 #include <kiconloader.h>
@@ -64,6 +66,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 #ifdef USE_MYSQL
     Options7 *opt7 = new Options7( 0, "MySql" );
 #endif
+    Options8 *opt8 = new Options8( 0, "Scrobbler" );
 
     // Sound System
     opt6->setSpacing( 12 );
@@ -90,7 +93,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     QTextCodec *codec;
     for ( int i = 0; ( codec = QTextCodec::codecForIndex( i ) ); i++ )
         opt2->kcfg_TagEncoding->insertItem( codec->name() );
-
+    
     // add pages
     addPage( new Options1( 0, "General" ), i18n( "General" ), "misc", i18n( "Configure General Options" ) );
     addPage( opt2, i18n( "Fonts" ), "fonts", i18n( "Configure Fonts" ) );
@@ -101,6 +104,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 #ifdef USE_MYSQL
     addPage( opt7, i18n( "MySql" ), "connect_creating", i18n( "Configure MySql" ) );
 #endif
+    addPage( opt8, i18n( "Scrobbler" ), "scrobbler", i18n( "Configure Audioscrobbler" ) );
 
     connect( m_soundSystem, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
     connect( aboutEngineButton, SIGNAL( clicked() ), this, SLOT( aboutEngine() ) );
@@ -198,6 +202,12 @@ void AmarokConfigDialog::aboutEngine() //SLOT
 }
 
 
+void AmarokConfigDialog::createProfileClicked() //SLOT
+{
+    kapp->invokeBrowser( "http://www.audioscrobbler.com/signup.php" );
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -236,5 +246,6 @@ void AmarokConfigDialog::soundSystemChanged()
     m_opt4->crossfadeLengthLabel->setEnabled( hasCrossfade );
 
 }
+
 
 #include "configdialog.moc"

@@ -818,7 +818,7 @@ CollectionDB::isFileInCollection( const QString &url  )
 QStringList
 CollectionDB::relatedArtists( const QString &artist, uint count )
 {
-    Scrobbler *sc = new Scrobbler();
+    Scrobbler *sc = Scrobbler::instance();
     
     query( QString( "SELECT suggestion FROM related_artists WHERE artist = '%1';" ).arg( escapeString( artist ) ) );
     if ( m_values.isEmpty() )
@@ -826,7 +826,7 @@ CollectionDB::relatedArtists( const QString &artist, uint count )
         connect( sc,   SIGNAL( relatedArtistsFetched( const QString&, const QStringList& ) ),
                  this,   SLOT( relatedArtistsFetched( const QString&, const QStringList& ) ) );
     
-        sc->relatedArtists( artist );
+        sc->similarArtists( artist );
     }
     
     return m_values;

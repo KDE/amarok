@@ -63,6 +63,9 @@ public:
     void endSession();
 
     void currentTrackMetaDataChanged( const MetaBundle& bundle ) { m_bundle = bundle; newMetaDataNotify( bundle, false /* no track change */ ); }
+    
+    //xx000, xx100, xx200, so at most will be 200ms delay before time displays are updated
+    static const int MAIN_TIMER = 300;
 
 public slots:
     void previous();
@@ -102,9 +105,6 @@ private:
 private:
     static ExtensionCache s_extensionCache;
     static amaroK::Plugin *loadEngine( const QString &engineName );
-
-    //xx000, xx100, xx200, so at most will be 200ms delay before time displays are updated
-    static const int MAIN_TIMER = 300;
 
     EngineBase*     m_engine;
     MetaBundle      m_bundle;

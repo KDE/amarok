@@ -35,6 +35,7 @@ amarokapp_SOURCES = \
     Options4.ui \
     Options5.ui \
     Options7.ui \
+    Options8.ui \
     actionclasses.cpp \
     amarokfilelist.cpp \
     app.cpp \

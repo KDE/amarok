@@ -32,6 +32,7 @@ email                : markey@web.de
 #include "playlist.h"
 #include "playlistwindow.h"
 #include "pluginmanager.h"
+#include "scrobbler.h"
 #include "socketserver.h"
 #include "statusbar.h"
 #include "systray.h"
@@ -394,6 +395,8 @@ void App::applySettings( bool firstTime )
 
 
     amaroK::OSD::instance()->applySettings();
+    
+    Scrobbler::instance()->applySettings();
 
     playlistWindow()->setFont(
         AmarokConfig::useCustomFonts()
