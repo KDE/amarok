@@ -8,6 +8,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+    * fix: OSD settings dialog duration option missing "ms"
+
     * fix: #61 <markey> allow removing of playlist items by dragging back into browser. 
                (RFC: is this still appropriate or would it be misleading?)
 

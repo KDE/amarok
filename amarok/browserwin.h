@@ -111,6 +111,7 @@ class QCustomEvent;
 class QFont;
 class QListViewItem;
 class QPalette;
+class QPoint;
 class QPushButton;
 class QSplitter;
 class QString;
@@ -139,7 +140,8 @@ class BrowserWin : public QWidget
     private slots:
         void savePlaylist() const;
         void slotAddLocation();
-
+        void playlistPaste( int button, QListViewItem*, const QPoint&, int );
+        
     private:
         bool    eventFilter( QObject*, QEvent* );
 

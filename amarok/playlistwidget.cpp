@@ -1009,7 +1009,8 @@ void PlaylistWidget::viewportPaintEvent( QPaintEvent *e )
 
 bool PlaylistWidget::eventFilter( QObject *o, QEvent *e )
 {
-    if( o == header() && e->type() == QEvent::MouseButtonPress && static_cast<QMouseEvent *>(e)->button() == Qt::RightButton )
+    if( o == header() && e->type() == QEvent::MouseButtonPress &&
+        static_cast<QMouseEvent *>(e)->button() == Qt::RightButton )
     {
         //currently the only use for this filter is to get mouse clicks on the header()
         KPopupMenu popup;
