@@ -682,11 +682,9 @@ void PlayerWidget::createAnalyzer( int increment )
 
     m_pAnalyzer = Analyzer::Factory::createAnalyzer( this );
     m_pAnalyzer->setGeometry( 120,40, 168,56 );
+    QToolTip::add( m_pAnalyzer, i18n( "Click for more analyzers, press 'd' to detach." ) );
     m_pAnalyzer->show();
 
-    QString tooltip = i18n( "Click for more analyzers." );
-    if( m_pAnalyzer->inherits( "QGLWidget" ) ) tooltip += i18n( " Press 'd' to detach." );
-    QToolTip::add( m_pAnalyzer, tooltip );
 }
 
 
