@@ -3,13 +3,12 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #169 being the highest available (take this one for your next bug and increase here)
+           #170 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
 
-  FIX 168 <markey> Configuring collection folders only works from Collection-Browser menu, but not from wizard
-                   or Context-Browser.
+  FIX 169 <markey> Context-Browser ignores streams.
 
   FIX 167 <markey> Adapt Player-Window colors from "Custom color scheme" mode too.
 
