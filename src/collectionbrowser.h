@@ -22,6 +22,7 @@ class QPixmap;
 class QPoint;
 class QStringList;
 
+class KAction;
 class KPopupMenu;
 class KProgress;
 
@@ -32,16 +33,14 @@ class CollectionBrowser: public QVBox
 
     public:
         CollectionBrowser( const char* name );
-        void setupDirs();
 
     public slots:
-        void openCoverManager();
+        void setupDirs();
 
     private slots:
         void slotSetFilterTimeout();
         void slotSetFilter();
         void clearFilter();
-        void slotCheckFolders();
 
     private:
         bool eventFilter( QObject*, QEvent* );
@@ -49,7 +48,9 @@ class CollectionBrowser: public QVBox
     //attributes:
         enum CatMenuId { IdScan, IdAlbum, IdArtist, IdGenre, IdYear, IdNone };
 
-        KPopupMenu* m_actionsMenu;
+        KAction* m_configureAction;
+        KAction* m_scanAction;
+
         KPopupMenu* m_categoryMenu;
         KPopupMenu* m_cat1Menu;
         KPopupMenu* m_cat2Menu;

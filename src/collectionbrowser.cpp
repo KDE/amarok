@@ -6,7 +6,6 @@
 
 #include "collectionbrowser.h"
 #include "collectiondb.h"
-#include "covermanager.h"   //openCoverManager()
 #include "directorylist.h"
 #include "k3bexporter.h"
 #include "metabundle.h"
@@ -31,9 +30,9 @@
 #include <kdebug.h>
 #include <kiconloader.h>    //renderView()
 #include <klocale.h>
-#include <kmenubar.h>
 #include <kpopupmenu.h>
 #include <kprogress.h>
+#include <ktoolbar.h>
 #include <ktoolbarbutton.h> //ctor
 #include <kurldrag.h>       //dragObject()
 
@@ -44,8 +43,6 @@ static const int MONITOR_INTERVAL = 1000 * 30; //ms
 
 CollectionBrowser::CollectionBrowser( const char* name )
     : QVBox( 0, name )
-    , m_actionsMenu( new KPopupMenu( this ) )
-    , m_categoryMenu( new KPopupMenu( this ) )
     , m_cat1Menu( new KPopupMenu( this ) )
     , m_cat2Menu( new KPopupMenu( this ) )
     , m_cat3Menu( new KPopupMenu( this ) )
@@ -54,9 +51,11 @@ CollectionBrowser::CollectionBrowser( const char* name )
     setSpacing( 4 );
     setMargin( 5 );
 
-    KMenuBar* menu = new KMenuBar( this );
-    menu->insertItem( i18n( "&Actions" ), m_actionsMenu );
-    menu->insertItem( i18n( "&Tag Filter" ), m_categoryMenu );
+    KToolBar* toolbar = new KToolBar( this );
+    toolbar->setMovingEnabled(false);
+    toolbar->setFlat(true);
+    toolbar->setIconSize( 16 );
+    toolbar->setEnableContextMenu( false );
 
     { //<Search LineEdit>
         QHBox *hbox; KToolBarButton *button;
@@ -74,6 +73,14 @@ CollectionBrowser::CollectionBrowser( const char* name )
         QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter collection" ) );
     } //</Search LineEdit>
 
+    KActionCollection* ac = new KActionCollection( this );
+    m_configureAction = new KAction( i18n("Configure Folders"), "configure", 0, this, SLOT( setupDirs() ), ac, "Configure" );
+    m_scanAction = new KAction( i18n("Start Scan"), "reload", 0, this, SLOT( scan() ), ac, "Start Scan" );
+
+    KActionMenu* tagfilterMenuButton = new KActionMenu( i18n("Tag Filter"), "filter", ac );
+    tagfilterMenuButton->setDelayed( false );
+    m_categoryMenu = tagfilterMenuButton->popupMenu();
+
     m_view = new CollectionView( this );
 
     {
@@ -84,12 +91,14 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
 
-    m_actionsMenu->insertItem( i18n( "&Configure Collection Folders..." ), m_view, SLOT( setupDirs() ) );
-    m_actionsMenu->insertItem( i18n( "Cover &Manager" ), this, SLOT(openCoverManager()) );
-    m_actionsMenu->insertSeparator();
-    m_actionsMenu->insertItem( i18n( "&Start Scan" ), m_view, SLOT( scan() ), 0, IdScan );
+    toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the open button to have text on right
+    m_scanAction->plug( toolbar );
+    toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
 
-    connect( m_actionsMenu, SIGNAL( aboutToShow() ), SLOT( slotCheckFolders() ) );
+    toolbar->insertLineSeparator();
+
+    tagfilterMenuButton->plug( toolbar );
+    m_configureAction->plug( toolbar );
 
     m_categoryMenu->insertItem( i18n( "&First Level" ), m_cat1Menu );
     m_categoryMenu->insertItem( i18n( "&Second Level"), m_cat2Menu );
@@ -124,7 +133,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     connect( kapp, SIGNAL( sigScanCollection() ), m_view, SLOT( scan() ) );
 
     setFocusProxy( m_view ); //default object to get focus
-    setMinimumWidth( menu->sizeHint().width() + 2 ); //set a reasonable minWidth
+    setMinimumWidth( toolbar->sizeHint().width() + 2 ); //set a reasonable minWidth
 }
 
 void
@@ -155,22 +164,9 @@ CollectionBrowser::clearFilter()
 }
 
 void
-CollectionBrowser::slotCheckFolders() // SLOT
-{
-    m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, !AmarokConfig::collectionFolders().isEmpty() );
-}
-
-void
 CollectionBrowser::setupDirs()  //SLOT
 {
     m_view->setupDirs();
-}
-
-void
-CollectionBrowser::openCoverManager()    //SLOT
-{
-    CoverManager *coverManager = new CoverManager();
-    coverManager->show();
 }
 
 bool CollectionBrowser::eventFilter( QObject *o, QEvent *e )
@@ -344,10 +340,10 @@ CollectionView::scan()  //SLOT
     else if ( !m_isScanning )
     {
         m_isScanning = true;
+        m_parent->m_scanAction->setEnabled( false );
 
-        m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
         m_insertdb->scan( AmarokConfig::collectionFolders(), AmarokConfig::scanRecursively(),
-                                      AmarokConfig::importPlaylists() );
+                          AmarokConfig::importPlaylists() );
 
         emit sigScanStarted();
         amaroK::StatusBar::instance()->message( i18n("Building Collection...") );
@@ -360,7 +356,7 @@ CollectionView::scanMonitor()  //SLOT
 {
     if ( !m_isScanning && AmarokConfig::monitorChanges() )
     {
-        m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
+        m_parent->m_scanAction->setEnabled( false );
         m_insertdb->scanModifiedDirs( AmarokConfig::scanRecursively(), AmarokConfig::importPlaylists() );
     }
 }
@@ -443,7 +439,7 @@ CollectionView::scanDone( bool changed ) //SLOT
             }
         }
     }
-    m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, true );
+    m_parent->m_scanAction->setEnabled( true );
     m_isScanning = false;
 
     amaroK::StatusBar::instance()->clear();
