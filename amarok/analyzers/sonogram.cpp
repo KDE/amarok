@@ -47,7 +47,7 @@ void Sonogram::drawAnalyzer(std::vector<float> *s)
 	bitBlt(m_pPixmap, 0, 0, m_pPixmap, 1, 0, x, height());
 	if (s) {
 		std::vector<float>::iterator it = s->begin();
-		for (uint y = height() - 1; y && it < s->end(); it++) {
+		for (int y = height() - 1; y && it < s->end(); it++) {
 			if (*it < .005)
 				c = Qt::black;
 			else if (*it < .05)
@@ -60,6 +60,9 @@ void Sonogram::drawAnalyzer(std::vector<float> *s)
 			p.setPen(c);
 			p.drawPoint(x, y--);
 		}
+	} else {
+		p.setPen(QColor(0x1F, 0x20, 0x50));
+		p.drawLine(width() - 1, 0, width() - 1, height() - 1);
 	}
 	bitBlt(this, 0, 0, m_pPixmap);
 }
