@@ -315,7 +315,7 @@ GstEngine::state() const
         return Engine::Empty;
 
 
-    switch ( gst_element_get_state( m_gst_inputThread ) )
+    switch ( gst_element_get_state( m_currentInput->bin ) )
     {
         case GST_STATE_NULL:
             return Engine::Empty;
@@ -388,10 +388,6 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     if ( !m_pipelineFilled )
         if ( !createPipeline() )
             return false;
-
-    // If paused, unpause
-    if ( GST_STATE( m_gst_rootBin ) == GST_STATE_PAUSED )
-        gst_element_set_state( m_gst_rootBin, GST_STATE_PLAYING );
 
     InputPipeline* input = new InputPipeline();
     if ( input->m_error ) {
@@ -491,11 +487,8 @@ GstEngine::stop()  //SLOT
     if ( !m_currentInput ) return;
 
     // When engine is in pause mode, don't fade but destroy right away
-    if ( GST_STATE( m_gst_outputThread ) == GST_STATE_PAUSED ) {
+    if ( state() == Engine::Paused )
         destroyInput( m_currentInput );
-        gst_element_set_state( m_gst_inputThread, GST_STATE_PLAYING );
-        gst_element_set_state( m_gst_outputThread, GST_STATE_PLAYING );
-    }
     else
         m_currentInput->setState( InputPipeline::FADE_OUT );
 }
@@ -507,12 +500,12 @@ GstEngine::pause()  //SLOT
     kdDebug() << k_funcinfo << endl;
     if ( !m_currentInput ) return;
 
-    if ( GST_STATE( m_gst_rootBin ) == GST_STATE_PAUSED ) {
-        gst_element_set_state( m_gst_rootBin, GST_STATE_PLAYING );
+    if ( GST_STATE( m_currentInput->bin ) == GST_STATE_PAUSED ) {
+        gst_element_set_state( m_currentInput->bin, GST_STATE_PLAYING );
         emit stateChanged( Engine::Playing );
     }
     else {
-        gst_element_set_state( m_gst_rootBin, GST_STATE_PAUSED );
+        gst_element_set_state( m_currentInput->bin, GST_STATE_PAUSED );
         emit stateChanged( Engine::Paused );
     }
 }
