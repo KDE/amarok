@@ -215,7 +215,7 @@ TagDialog::syncItemText()
         m_playlistItem->setText( PlaylistItem::Artist, kLineEdit_artist->text() );
         m_playlistItem->setText( PlaylistItem::Album, kLineEdit_album->text() );
         m_playlistItem->setText( PlaylistItem::Genre, kComboBox_genre->currentText() );
-        m_playlistItem->setText( PlaylistItem::Album, kIntSpinBox_track->text() );
+        m_playlistItem->setText( PlaylistItem::Track, kIntSpinBox_track->text() );
         m_playlistItem->setText( PlaylistItem::Year, kIntSpinBox_year->text() );
         m_playlistItem->setText( PlaylistItem::Comment, kLineEdit_comment->text() );
     }
