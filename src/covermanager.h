@@ -63,6 +63,7 @@ Q_OBJECT
         void deleteSelectedCovers();
         QPtrList<CoverViewItem> selectedItems();
         bool eventFilter( QObject*, QEvent* );
+        void closeEvent( QCloseEvent* );
 
         CollectionDB *m_db;
 

@@ -348,21 +348,36 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     #endif
 }
 
-
+static bool m_loadingThumbnails = false; //MOVE me to header, or make this implementation better
 void CoverManager::loadThumbnails() //SLOT
 {
     m_stopLoading = false;
+    m_loadingThumbnails = true;
 
-    for( uint i=0; i < m_loadAlbums.count(); i++ ) {
+    for( QStringList::ConstIterator it = m_loadAlbums.begin(), end = m_loadAlbums.end(); it != end; ++it ) {
         if( m_stopLoading ) break;
 
-        QStringList values = QStringList::split( " @@@ ", m_loadAlbums[i] );
-        qApp->processEvents();    //it may takes a while so process pending events
+        const QStringList values = QStringList::split( " @@@ ", *it );
+
+        //closeEvent is halted while this goes on to prevent crash!
+        kapp->processEvents();
+
         loadCover( values[0], values[1] );
     }
 
     m_searchBox->setEnabled( true );
     m_viewButton->setEnabled( true );
+
+    m_loadingThumbnails = false;
+}
+
+void CoverManager::closeEvent( QCloseEvent *e )
+{
+    //prevent crash by not closing during thumbnail loading
+    if( m_loadingThumbnails )
+       e->ignore();
+    else
+       e->accept();
 }
 
 
