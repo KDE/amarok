@@ -258,6 +258,19 @@ int EngineController::setVolume( int percent )
     return m_pEngine->volume();
 }
 
+void EngineController::mute()
+{
+    if( m_muteVolume == 0 )
+    {
+        m_muteVolume = m_pEngine->volume();
+        setVolume( 0 );
+    }
+    else
+    {
+        setVolume( m_muteVolume );
+        m_muteVolume = 0;
+    }
+}
 
 void EngineController::newMetaData( const MetaBundle &bundle )
 {

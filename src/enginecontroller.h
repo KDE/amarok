@@ -59,19 +59,7 @@ public slots:
     int decreaseVolume( int ticks = 100/25 );
     int setVolume( int percent );
 
-    void mute()
-    {
-        if( m_muteVolume == 0 )
-        {
-            m_muteVolume = m_pEngine->volume();
-            m_pEngine->setVolume( 0 );
-        }
-        else
-        {
-            m_pEngine->setVolume( m_muteVolume );
-            m_muteVolume = 0;
-        }
-    }
+    void mute();
 
 signals:
     void orderNext();
