@@ -1,5 +1,5 @@
 amaroK README
-=============
+-------------
 
 RELEASE NOTES
 =============
@@ -12,6 +12,9 @@ cause compatibility issues with an older database file.
 
 
 --------------------------------------------------------------------------------
+INTRODUCTION
+============
+
 amaroK - the audio player for KDE
 
 There are many media players around these days, true. What's missing from most
@@ -183,7 +186,7 @@ homepage (as long as you don't object).
 
 --------------------------------------------------------------------------------
 CONTRIBUTING
-------------
+============
 
 If you wish to contribute to amaroK, you should build it from CVS and subscribe
 to the amarok-devel mailing list. The IRC channel is  also  a  place  where
