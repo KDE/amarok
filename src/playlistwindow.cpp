@@ -216,8 +216,8 @@ PlaylistWindow::init()
         addBrowser<FileBrowser>( "FileBrowser", i18n( "Files" ), "hdd_unmount" );
         addBrowser<CollectionBrowser>( "CollectionBrowser", i18n( "Collection" ), "kfm" );
         addBrowser<ContextBrowser>( "ContextBrowser", i18n( "Context" ), "info" );
-        addBrowser<SearchBrowser>( "SearchBrowser", i18n( "Search" ), "find" );
         addBrowser<PlaylistBrowser>( "PlaylistBrowser", i18n( "Playlists" ), "player_playlist" );
+        addBrowser<SearchBrowser>( "SearchBrowser", i18n( "Search" ), "find" );
     //</Browsers>
 
 
