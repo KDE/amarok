@@ -52,7 +52,11 @@ namespace amaroK
             bool m_sliding;
 
             /// we flip the value for vertical sliders
-            int adjustValue( int v ) const { return orientation() == Vertical ? ((maxValue() - minValue()) - v) - (maxValue() - minValue()) : v; }
+            int adjustValue( int v ) const
+            {
+               int mp = (minValue() + maxValue()) / 2;
+               return orientation() == Vertical ? mp - (v - mp) : v;
+            }
 
         private:
             bool m_outside;
