@@ -206,7 +206,7 @@
     <entry key="Amazon Locale" type="String">
         <label>Amazon locale for cover retrieval</label>
         <whatsthis>Determines which Amazon server cover images should be retrieved from.</whatsthis>
-        <default>com</default>
+        <default>us</default>
     </entry>
 </group>
 
