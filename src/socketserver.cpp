@@ -204,6 +204,7 @@ Vis::Selector::processExited( KProcess *proc )
             item->setOn( false ); //will delete m_proc via stateChange( bool )
 }
 
+// Shouldn't be necessary, but it's part of a fix to make libvisual work again when running with amarok binary
 void
 Vis::Selector::receivedStdout( KProcess *proc, char* buffer, int length )
 {
