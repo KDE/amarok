@@ -5,20 +5,11 @@ TODO-list for amaroK
 #x      == sequential bug number,
            #90 being the highest available (take this one for your next bug and increase here)
 
-           
-BEFORE-1.0 (uhm, REALLY URGENT)
-
-    * add: #89 <muesli> mostly / recently played song statistics tab. this will enhance the
-                        collection database. we'll be ready to compete with winamp's media
-                        library, then ;-)
-                        
-
-    * add: #88 <muesli> In CollectionBrowser's search, let the user decide, which fields are 
-                        to be searched (like: songtitle, artist, songtitle or artist, album)
-                        -->muesli
-
                         
 SHORT-TERM (URGENT):
+
+    
+MID-TERM:
 
     * fix: #87 <muesli> don't rely on KDE timeouts to see whether a file is accessible or not,
                         since this really sucks for disconnected network shares. XMMS handles
@@ -29,9 +20,15 @@ SHORT-TERM (URGENT):
                         another file from that folder for the next few minutes. what about hdd
                         sleep-timeouts? opinions?
 
-    
-MID-TERM:
+    * add: #89 <muesli> mostly / recently played song statistics tab. this will enhance the
+                        collection database. we'll be ready to compete with winamp's media
+                        library, then ;-)
+                        
 
+    * add: #88 <muesli> In CollectionBrowser's search, let the user decide, which fields are 
+                        to be searched (like: songtitle, artist, songtitle or artist, album)
+                        -->muesli
+    
     * chg: #78 determine some behavior for the clear/shuffle/etc. buttons when a search is in action
                clear   -> only clear the stuff that was searched for?
                shuffle -> stop the search and do normal shuffle?
@@ -44,8 +41,6 @@ MID-TERM:
     * add: #75 Toolbar button in FileBrowser for switching recursive directory reading
 
     * fix: #73 <mxcl> can't resize newly displayed columns if they are hidden at beginning of session -->mxcl
-
-    * fix: #72 <markey> get amaroK to play nice with valgrind. update: user reporting success with valgrind 2.1.1.
 
     * add: #39 <markey> add playlist column for media-type (mp3, ogg, mod, etc)
     * add: display type of media next to bitrate (<berkus> i moved it here, seems its the
