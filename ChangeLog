@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta4:
+  ADD: DCOP function "saveCurrentPlaylist". Writes the playlist to
+       current.xml, for scripts that need to access the playlist contents.
   ADD: Playlist2html, a script for playlist exporting. (BR 96199)
   ADD: Improved statusbar, with animated error notification widget.
   ADD: New progress display system, can show multiple expandable

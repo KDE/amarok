@@ -18,16 +18,16 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "amarokdcophandler.h"
+#include "browserbar.h"
+#include "collectiondb.h"
+#include "contextbrowser.h"
 #include "debug.h"
 #include "engine/enginebase.h"
 #include "enginecontroller.h"
+#include "equalizersetup.h"
+#include "osd.h"
 #include "playlist.h"
 #include "playlistwindow.h"
-#include "osd.h"
-#include "collectiondb.h"
-#include "equalizersetup.h"
-#include "browserbar.h"
-#include "contextbrowser.h"
 
 #include <dcopclient.h>
 
@@ -253,6 +253,11 @@ namespace amaroK
     void DcopHandler::shufflePlaylist()
     {
         Playlist::instance()->shuffle();
+    }
+
+    void DcopHandler::saveCurrentPlaylist()
+    {
+        Playlist::instance()->saveXML( Playlist::defaultPlaylistPath() );
     }
 
     void DcopHandler::setVolume(int volume)

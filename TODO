@@ -6,9 +6,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  <markey> Add DCOP function for saving the playlist to current.xml, e.g. "saveCurrentPlaylist".
-           Needed for html exporter.
-
   <markey> Try to make amarokapp _not_ link to libengine. It's nonsense really, but currently needed
            cause the linker complains about unresolved symbols.
 
