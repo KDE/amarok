@@ -1182,7 +1182,7 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
     else 
     {     //playlist loaded
         // draw the number of tracks and the total length of the playlist
-        info += i18n("%1 Tracks").arg( m_trackCount );
+        info += i18n("1 Track", "%n Tracks", m_trackCount);
         if( m_length )
             info += QString(" - [%2]").arg( MetaBundle::prettyTime( m_length ) );   
     }
