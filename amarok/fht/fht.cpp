@@ -21,8 +21,9 @@
 /**
   * @file fht.cpp
   * Implementation of the Hartley Transform after Bracewell's discrete
-  * algorithm. The algorithm is subject to US patent No. 4,646,256 and
-  * put into public domain by Stanford University in 1995[1].
+  * algorithm. The algorithm is subject to US patent No. 4,646,256 (1987)
+  * but was put into public domain by Stanford University in 1995[1] and
+  * is now freely available.
   *
   * [1] http://en2.wikipedia.org/wiki/Ronald_N._Bracewell
   */
