@@ -73,8 +73,8 @@ private:
     BrowserList    m_browsers;
     QWidget       *m_browserBox;  ///parent widget to the browsers
     int            m_currentIndex;
+    int            m_lastIndex;
     QSignalMapper *m_mapper;      ///maps tab clicks to browsers
 };
 
 #endif
-

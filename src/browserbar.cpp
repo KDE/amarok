@@ -62,6 +62,7 @@ BrowserBar::BrowserBar( QWidget *parent )
         , m_tabBar( new KMultiTabBar( KMultiTabBar::Vertical, this ) )
         , m_browserBox( new QWidget( this ) )
         , m_currentIndex( -1 )
+        , m_lastIndex( -1 )
         , m_mapper( new QSignalMapper( this ) )
 {
     m_pos = m_tabBar->sizeHint().width() + 5; //5 = aesthetic spacing
@@ -70,10 +71,10 @@ BrowserBar::BrowserBar( QWidget *parent )
     m_tabBar->setPosition( KMultiTabBar::Left );
     m_tabBar->showActiveTabTexts( true );
     m_tabBar->setFixedWidth( m_pos );
-    m_tabBar->move( 0, 5 );
+    m_tabBar->move( 0, 3 );
 
     QVBoxLayout *layout = new QVBoxLayout( m_browserBox );
-    layout->addSpacing( 2 ); // aesthetics
+    layout->addSpacing( 3 ); // aesthetics
     layout->setAutoAdd( true );
 
     m_browserBox->move( m_pos, 0 );
@@ -283,8 +284,10 @@ BrowserBar::engineStateChanged( Engine::State state )
     switch( state ) {
     case Engine::Playing:
 
-        if( m_currentIndex != -1 )
+        if( m_currentIndex != -1 ) {
+            m_lastIndex = m_currentIndex;
             showBrowser( "ContextBrowser" );
+        }
 
         // we watch for any event, if there's some event we reset the timer
 //         currentBrowser()->installEventFilter( this );
@@ -292,6 +295,11 @@ BrowserBar::engineStateChanged( Engine::State state )
 //         killTimers();
 //         startTimer( 5000 );
         break;
+
+    case Engine::Empty:
+
+        if( m_lastIndex >= 0 )
+            showBrowser( m_lastIndex );
 
     default:
         ;
