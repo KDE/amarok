@@ -61,8 +61,15 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     m_timeLabel = new TimeLabel( positionBox );
     m_slider->setMinimumWidth( m_timeLabel->width() );
 
+    QHBox *hbox = new QHBox( this );
+    QFont font; font.setPointSize( font.pointSize() - 1 );
+    hbox->setFont( font );
+    new QLabel( " RND", hbox );
+    new QLabel( "REP ", hbox );
+
     //TODO reimplement insertChild() instead
     addWidget( m_itemCountLabel );
+    addWidget( hbox );
     addWidget( positionBox );
 
     box->addSpacing( 3 );

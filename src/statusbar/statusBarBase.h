@@ -21,7 +21,7 @@
 #define KDE_STATUSBAR_H
 
 #include "progressBar.h" //convenience
-#include <qframe.h>      //baseclass
+#include <qwidget.h>     //baseclass
 #include <qmap.h>        //stack allocated
 #include <qvaluelist.h>  //stack allocated
 
@@ -75,7 +75,7 @@ namespace KDE
      * @see KDE::ProgressBar
      */
 
-    class StatusBar : public QFrame
+    class StatusBar : public QWidget
     {
         Q_OBJECT
 

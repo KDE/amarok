@@ -79,7 +79,7 @@ namespace SingleShotPool
 
 
 StatusBar::StatusBar( QWidget *parent, const char *name )
-        : QFrame( parent, name )
+        : QWidget( parent, name )
 {
     QBoxLayout *mainlayout = new QHBoxLayout( this, 2, /*spacing*/5 );
 
@@ -133,7 +133,7 @@ StatusBar::addWidget( QWidget *widget )
 void
 StatusBar::polish()
 {
-    QFrame::polish();
+    QWidget::polish();
 
     int h = 0;
     QObjectList *list = queryList( "QWidget", 0, false, false );
@@ -149,7 +149,7 @@ StatusBar::polish()
             static_cast<QLabel*>(o)->setIndent( 4 );
     }
 
-    h -= 2; // it's too big usually
+    h -= 4; // it's too big usually
 
     for ( QObject * o = list->first(); o; o = list->next() )
         static_cast<QWidget*>(o)->setFixedHeight( h );
