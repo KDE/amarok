@@ -1,3 +1,4 @@
+//(c) 2005 Ian Monroe see COPYING
 /****************************************************************************
 ** ui.h extension file, included from the uic-generated form implementation.
 **
@@ -15,5 +16,13 @@ void DbSetup::init()
 {
     #ifdef USE_MYSQL
        kcfg_DatabaseEngine->insertItem( "MySQL", 1 );
-    #endif   
+    #endif
+       connect(kcfg_DatabaseEngine, SIGNAL(activated( int )), SLOT(databaseEngineChanged()) );
+}
+
+
+void DbSetup::databaseEngineChanged()
+{
+    mysqlConfig->setEnabled(kcfg_DatabaseEngine->currentItem() != 0);
+    
 }

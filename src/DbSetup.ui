@@ -176,6 +176,9 @@
 <includes>
     <include location="local" impldecl="in implementation">DbSetup.ui.h</include>
 </includes>
+<slots>
+    <slot access="private" specifier="non virtual">databaseEngineChanged()</slot>
+</slots>
 <functions>
     <function access="private">init()</function>
 </functions>

@@ -51,7 +51,6 @@ class AmarokConfigDialog : public KConfigDialog
 
     private slots:
         void aboutEngine();
-        void databaseEngineChanged();
 
     protected:
         bool hasChanged();

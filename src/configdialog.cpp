@@ -138,7 +138,6 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     connect( m_soundSystem, SIGNAL(activated( int )), SLOT(updateButtons()) );
     connect( aboutEngineButton, SIGNAL(clicked()), this, SLOT(aboutEngine()) );
     connect( opt5, SIGNAL(settingsChanged()), SLOT(updateButtons()) ); //see options5.ui.h
-    connect( m_opt7->dbSetupFrame->kcfg_DatabaseEngine, SIGNAL(activated( int )), SLOT(databaseEngineChanged()) );
 }
 
 AmarokConfigDialog::~AmarokConfigDialog()
@@ -269,13 +268,6 @@ void AmarokConfigDialog::aboutEngine() //SLOT
 {
     PluginManager::showAbout( QString( "Name == '%1'" ).arg( m_soundSystem->currentText() ) );
 }
-
-
-void AmarokConfigDialog::databaseEngineChanged() // SLOT
-{
-        m_opt7->dbSetupFrame->mysqlConfig->setEnabled( m_opt7->dbSetupFrame->kcfg_DatabaseEngine->currentItem() != 0 );
-}
-
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
