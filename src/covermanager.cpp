@@ -227,6 +227,7 @@ void CoverManager::fetchMissingCovers() //SLOT
         fetchCoversLoop();
 
     updateStatusBar();
+    m_fetchButton->setEnabled( false );
 
     #endif
 }
@@ -306,6 +307,7 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     m_coverView->clear();
 
     QStringList albums;
+    uint missingCovers=0;
 
     bool allAlbums = (item == m_artistView->firstChild());
     if( allAlbums )
@@ -314,7 +316,6 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
         albums = m_db->albumListOfArtist( item->text( 0 ), false, false );
 
     if( !albums.isEmpty() ) {
-
         for( uint i=0; i < albums.count();  allAlbums ? i+=2 : i++)  {
             QString artist = allAlbums ? albums[i] : item->text(0);
             QString album = albums[ allAlbums ? i+1 : i ];
@@ -324,6 +325,8 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
                 m_coverItems.append( coverItem );
                 if( coverItem->hasCover() )
                     m_loadAlbums += artist + " @@@ " + album; //used for thumbnail loading
+                else
+                    missingCovers++;
             }
         }
 
@@ -338,6 +341,7 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     m_currentView = AllAlbums;
 
     updateStatusBar();
+    m_fetchButton->setEnabled( missingCovers );
 }
 
 
@@ -631,7 +635,7 @@ QPtrList<CoverViewItem> CoverManager::selectedItems()
 
 void CoverManager::updateStatusBar()
 {
-    int totalCounter = 0, missingCounter = 0;
+    QString text;
 
     //cover fetching info
     if( m_fetchingCovers ) {
@@ -642,12 +646,11 @@ void CoverManager::updateStatusBar()
             m_progressBox->show();
 
         //update the status text
-        QString text;
         if( m_coversFetched + m_coverErrors >= m_progress->totalSteps() ) {
             //fetching finished
             text = i18n( "Finished." );
             if( m_coverErrors )
-                text += i18n( " 1 error", " %n errors", m_coverErrors );
+                text += i18n( " <b>1</b> cover not found", " <b>%n</b> covers not found", m_coverErrors );
             //reset counters
             m_fetchingCovers = 0;
             m_coversFetched = 0;
@@ -670,37 +673,37 @@ void CoverManager::updateStatusBar()
             if( m_coversFetched + m_coverErrors == 0 )
                 text += i18n( "Connecting..." );
         }
-        m_statusLabel->setText( text );
-
-        return;
     }
+    else {
+        uint totalCounter = 0, missingCounter = 0;
 
-    if( m_progressBox->isShown() )
-        m_progressBox->hide();
+        if( m_progressBox->isShown() )
+            m_progressBox->hide();
 
-    //album info
-    for( QIconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
-        totalCounter++;
-        if( !((CoverViewItem*)item)->hasCover() )
-            missingCounter++;    //counter for albums without cover
+        //album info
+        for( QIconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
+            totalCounter++;
+            if( !((CoverViewItem*)item)->hasCover() )
+                missingCounter++;    //counter for albums without cover
+        }
+
+        if( !m_filter.isEmpty() )
+            text = i18n( "1 result for \"%1\"", "%n results for \"%1\"", totalCounter ).arg( m_filter );
+        else if( m_artistView->selectedItem() ) {
+            text = i18n( "1 album", "%n albums", totalCounter );
+            if( m_artistView->selectedItem() != m_artistView->firstChild() ) //showing albums by an artist
+                text += i18n( " by " ) + m_artistView->selectedItem()->text(0);
+        }
+
+        if( missingCounter )
+            text += i18n(" - ( <b>%1</b> without cover )" ).arg( missingCounter );
+
+        #ifdef AMAZON_SUPPORT
+        m_fetchButton->setEnabled( missingCounter );
+        #endif
     }
-
-    QString text;
-    if( !m_filter.isEmpty() )
-        text = i18n( "1 result for %1", "%n results for %1", totalCounter ).arg( m_filter );
-    else if( m_artistView->selectedItem() ) {
-        text = i18n( "1 album", "%n albums", totalCounter );
-        if( m_artistView->selectedItem() != m_artistView->firstChild() ) //showing albums by an artist
-            text += i18n( " by " ) + m_artistView->selectedItem()->text(0);
-    }
-
-    if( missingCounter )
-        text += i18n(" - ( <b>%1</b> without cover )" ).arg( missingCounter );
 
     m_statusLabel->setText( text );
-    #ifdef AMAZON_SUPPORT
-    m_fetchButton->setEnabled( missingCounter != 0 );
-    #endif
 }
 
 
