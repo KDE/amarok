@@ -105,6 +105,7 @@ class PlayerApp : public KUniqueApplication
         void orderPreviousTrack();
         void orderCurrentTrack();
         void orderNextTrack();
+        void orderRecentTrack();
         void currentTrack( const KURL& );
 
     private:

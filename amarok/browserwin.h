@@ -126,7 +126,7 @@ class BrowserWin : public QWidget
         //convenience functions
         void insertMedia( const QString& );
         void insertMedia( const KURL& );
-        void insertMedia( const KURL::List&, bool = false );
+        void insertMedia( const KURL::List&, bool clearList = false, bool directPlay = false );
         bool isAnotherTrack() const;
         QString defaultPlaylistPath() const;
 

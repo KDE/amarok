@@ -170,21 +170,21 @@ int PlayerApp::newInstance()
             list << args->url( i );
         }
 
-        m_pBrowserWin->insertMedia( list, !args->isSet( "enqueue" ) );
+        m_pBrowserWin->insertMedia( list, !args->isSet( "enqueue" ), args->isSet( "play" ) );
     }
-
 
     if ( args->isSet( "previous" ) )
         pApp->slotPrev();
     if ( args->isSet( "next" ) )
         pApp->slotNext();
-    if ( args->isSet( "play" ) )
-        pApp->slotPlay();
     if ( args->isSet( "stop" ) )
         pApp->slotStop();
     if ( args->isSet( "pause" ) )
         pApp->slotPause();
 
+    // insertMedia already cares about directly playing when enqueue _and_ play is set
+    if ( !args->isSet( "enqueue" ) && args->isSet( "play" ) )
+        pApp->slotPlay();
 
     return KUniqueApplication::newInstance();
 }

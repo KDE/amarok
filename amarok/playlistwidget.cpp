@@ -133,6 +133,8 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
              this,   SLOT( handleOrderCurrent() ) );
     connect( pApp, SIGNAL( orderNextTrack() ),
              this,   SLOT( handleOrder() ) );
+    connect( pApp, SIGNAL( orderRecentTrack() ),
+             this,   SLOT( handleOrderRecent() ) );
 
     connect( pApp, SIGNAL( currentTrack( const KURL& ) ),
              this,   SLOT( setCurrentTrack( const KURL& ) ) );
@@ -202,8 +204,10 @@ QWidget *PlaylistWidget::browser() { return m_browser; }
 void PlaylistWidget::showCurrentTrack() { ensureItemVisible( currentTrack() ); } //SLOT
 
 
-void PlaylistWidget::insertMedia( const KURL::List &list )
+void PlaylistWidget::insertMedia( const KURL::List &list, bool directPlay )
 {
+    this->directPlay = directPlay;
+
     if( !list.isEmpty() )
     {
         //FIXME lastItem() scales badly!
@@ -214,6 +218,7 @@ void PlaylistWidget::insertMedia( const KURL::List &list )
 
 void PlaylistWidget::handleOrderPrev()    { handleOrder( Prev ); }    //SLOT
 void PlaylistWidget::handleOrderCurrent() { handleOrder( Current ); } //SLOT
+void PlaylistWidget::handleOrderRecent()  { handleOrder( Recent ); }  //SLOT
 
 void PlaylistWidget::handleOrder( RequestType rt ) //SLOT
 {
@@ -253,15 +258,15 @@ void PlaylistWidget::handleOrder( RequestType rt ) //SLOT
       // choose right order in random-mode
       if( recentPtrs.count() > 1 )
       {
-          item = (PlaylistItem*)recentPtrs.at( recentPtrs.count() - 2 );
+          item = (PlaylistItem *)recentPtrs.at( recentPtrs.count() - 2 );
           recentPtrs.remove( recentPtrs.at( recentPtrs.count() - 1 ) );
       }
       else
       {
-          item = (PlaylistItem*)item->itemAbove();
+          item = (PlaylistItem *)item->itemAbove();
 
           if( item == NULL && AmarokConfig::repeatPlaylist() )
-             item = (PlaylistItem*)lastItem();
+             item = (PlaylistItem *)lastItem();
       }
 
       break;
@@ -294,6 +299,12 @@ void PlaylistWidget::handleOrder( RequestType rt ) //SLOT
               if( item == NULL && AmarokConfig::repeatPlaylist() )
                   item = (PlaylistItem*)firstChild();
           }
+      break;
+
+   case Recent:
+      if ( searchPtrs.count() > 0 )
+          item = (PlaylistItem *)searchPtrs.at( searchPtrs.count() -1 );
+
       break;
 
    case Current:
@@ -1055,6 +1066,7 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
             {
                 searchTokens.append( item->text( 0 ) );
                 searchPtrs.append( item );
+                if ( directPlay ) handleOrderRecent();
             }
         }
         break;
@@ -1069,7 +1081,9 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
         //FIXME this doesn't work 100% yet as you can spawn multiple loaders..
         m_clearButton->setEnabled( true );
         QApplication::restoreOverrideCursor();
-        restoreCurrentTrack();
+
+        if ( !directPlay )
+            restoreCurrentTrack();
         break;
 
 
@@ -1089,6 +1103,8 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
         e->bindTags();
         e->addSearchTokens( searchTokens, searchPtrs );
         #undef e
+
+        if ( directPlay ) handleOrderRecent();
         break;
 
     case ThreadWeaver::Job::AudioPropertiesReader:

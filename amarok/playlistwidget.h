@@ -82,7 +82,7 @@ class PlaylistWidget : private KListView
         PlaylistWidget( QWidget* = 0, const char* = 0 );
         ~PlaylistWidget();
 
-        void insertMedia( const KURL::List& );
+        void insertMedia( const KURL::List&, bool directPlay = false );
         void saveM3u( const QString& ) const;
         bool isEmpty() const { return childCount() == 0; }
         bool isAnotherTrack() const;
@@ -95,7 +95,7 @@ class PlaylistWidget : private KListView
 
         static const int NO_SORT = 200;
 
-        enum RequestType { Prev = -1, Current = 0, Next = 1 };
+        enum RequestType { Prev = -1, Current = 0, Next = 1, Recent = 2 };
         enum ColumnType  { Trackname = 0,
                            Title = 1,
                            Artist = 2,
@@ -120,6 +120,7 @@ class PlaylistWidget : private KListView
     public slots:
         void handleOrderPrev();
         void handleOrderCurrent();
+        void handleOrderRecent();
         void handleOrder( PlaylistWidget::RequestType = Next );
         void clear();
         void shuffle();
@@ -190,5 +191,7 @@ class PlaylistWidget : private KListView
         QStringList  m_undoList;
         QStringList  m_redoList;
         uint         m_undoCounter;
+	
+	bool directPlay;
 };
 #endif

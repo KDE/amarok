@@ -439,11 +439,11 @@ BrowserWin::~BrowserWin()
 
 ///////// public interface
 
-void BrowserWin::insertMedia( const KURL::List &list, bool b )
+void BrowserWin::insertMedia( const KURL::List &list, bool clearList, bool directPlay )
 {
-    if( b ) m_playlist->clear(); //FIXME clear currently is not 100% bug free, it might not work as expected
+    if( clearList ) m_playlist->clear(); //FIXME clear currently is not 100% bug free, it might not work as expected
 
-    m_playlist->insertMedia( list );
+    m_playlist->insertMedia( list, directPlay );
 }
 
 
