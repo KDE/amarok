@@ -60,14 +60,16 @@ class OSDWidget : public QWidget
 
     protected:
         /** determine new size and position */
-        QRect determineMetrics();
+        QRect determineMetrics( const uint marginMetric );
+
+        /** render OSD */
+        void render( const uint marginMetric );
 
         /** call to reposition a new OSD text or when position attributes change */
         QPoint reposition( QSize newSize = QSize() );
 
         /** reimplemented */
         virtual void mousePressEvent( QMouseEvent* );
-        virtual void paintEvent( QPaintEvent* );
         virtual bool event( QEvent* );
 
         /** distance from screen edge */

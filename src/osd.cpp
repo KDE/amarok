@@ -52,32 +52,23 @@ OSDWidget::show() //virtual
     if ( !isEnabled() || m_text.isEmpty() )
         return;
 
+    const uint M = fontMetrics().width( 'x' );
+
     const QRect oldGeometry = QRect( pos(), size() );
-    const QRect newGeometry = determineMetrics();
+    const QRect newGeometry = determineMetrics( M );
 
-    if( !m_translucency ) {
-        setGeometry( newGeometry );
-        if( !isShown() )
-            QWidget::show();
-        else
-            paintEvent( 0 );
-    }
-
-    if( !isShown() || !newGeometry.intersects( oldGeometry ) ) {
+    if( m_translucency && !isShown() || !newGeometry.intersects( oldGeometry ) ) {
         m_screenshot = QPixmap::grabWindow( qt_xrootwin(), newGeometry.x(), newGeometry.y(), newGeometry.width(), newGeometry.height() );
-
         setGeometry( newGeometry );
-
+        render( M );
         QWidget::show();
     }
 
-    else {
+    else if( m_translucency ) {
         const QRect unite = oldGeometry.unite( newGeometry );
-        QPoint p;
-
         KPixmap pix = QPixmap::grabWindow( qt_xrootwin(), unite.x(), unite.y(), unite.width(), unite.height() );
+        QPoint p = oldGeometry.topLeft() - unite.topLeft();
 
-        p = oldGeometry.topLeft() - unite.topLeft();
         bitBlt( &pix, p, &m_screenshot );
 
         m_screenshot.resize( newGeometry.size() );
@@ -86,22 +77,27 @@ OSDWidget::show() //virtual
         bitBlt( &m_screenshot, 0, 0, &pix, p.x(), p.y() );
 
         setGeometry( newGeometry );
-
-        paintEvent( 0 );
+        render( M );
     }
 
-    if( m_duration ) //duration 0 -> stay forever
-       m_timer->start( m_duration, true ); //calls hide()
+    if( newGeometry.width() > 0 && newGeometry.height() > 0 )
+    {
+        setGeometry( newGeometry );
+        render( M );
+        QWidget::show();
+
+        if( m_duration ) //duration 0 -> stay forever
+            m_timer->start( m_duration, true ); //calls hide()
+    }
+    else
+        warning() << "Attempted to make an invalid sized OSD\n";
 }
 
 QRect
-OSDWidget::determineMetrics()
+OSDWidget::determineMetrics( const uint M )
 {
-    static const uint HMARGIN = 20;
-    static const uint VMARGIN = 10;
-
     // determine a sensible maximum size, don't cover the whole desktop or cross the screen
-    const QSize margin( (HMARGIN + MARGIN) * 2, (VMARGIN + MARGIN) * 2 ); //margins
+    const QSize margin( (M + MARGIN) * 2, (M + MARGIN) * 2 ); //margins
     const QSize image = m_cover.isNull() ? QSize( 0, 0 ) : QSize( 80, 80 ); //80x80 is minimum image size
     const QSize max = QApplication::desktop()->screen( m_screen )->size() - margin;
 
@@ -117,13 +113,13 @@ OSDWidget::determineMetrics()
 
         const int widthIncludingImage = rect.width()
                 + m_scaledCover.width()
-                + VMARGIN; //margin between text + image
+                + M; //margin between text + image
 
         rect.setWidth( QMIN( widthIncludingImage, max.width() ) );
     }
 
     // size and move us
-    rect.addCoords( -HMARGIN, -VMARGIN, HMARGIN, VMARGIN );
+    rect.addCoords( -M, -M, M, M );
 
     return QRect( reposition( rect.size() ), rect.size() );
 }
@@ -167,19 +163,11 @@ OSDWidget::reposition( QSize newSize )
     return newPos;
 }
 
-#include <qfontmetrics.h>
 void
-OSDWidget::paintEvent( QPaintEvent* )
+OSDWidget::render( const uint M )
 {
-    //TODO double buffer? but is slow...
-
-    const uint M = fontMetrics().width( 'x' ) / 2; // round the corners based on the font size
-
     const uint xround = (M * 200) / width();
     const uint yround = (M * 200) / height();
-
-    debug() << xround << endl;
-    debug() << yround << endl;
 
     {   /// apply the mask
         static QBitmap mask;
@@ -193,26 +181,36 @@ OSDWidget::paintEvent( QPaintEvent* )
         setMask( mask );
     }
 
-    QPainter p;
-    QRect rect = this->rect();
-    QImage shadow;
-    QFontMetrics metrics = fontMetrics();
-    Qt::AlignmentFlags align;
     QColor shadowColor;
-
     {
         int h,s,v;
         foregroundColor().getHsv( &h, &s, &v );
         shadowColor = v > 128 ? Qt::black : Qt::white;
     }
 
+    Qt::AlignmentFlags align;
     switch( m_alignment ) {
         case Left:  align = Qt::AlignLeft; break;
         case Right: align = Qt::AlignRight; break;
         default:    align = Qt::AlignHCenter; break;
     }
 
-    rect.addCoords( 20, 10, -20, -10 );
+    QPixmap buffer( size() );
+    QPainter p( &buffer );
+
+    if( m_translucency ) {
+        KPixmap background( m_screenshot );
+        KPixmapEffect::fade( background, 0.80, backgroundColor() );
+        p.drawPixmap( 0, 0, background );
+    }
+    else
+        p.eraseRect( rect() );
+
+    p.setPen( backgroundColor().dark() );
+    p.drawRoundRect( rect(), xround, yround );
+
+    QRect rect = this->rect();
+    rect.addCoords( M, M, -M, -M );
 
     if( false && m_drawShadow )
     {
@@ -222,52 +220,38 @@ OSDWidget::paintEvent( QPaintEvent* )
         pixmap.fill( Qt::black );
         pixmap.setMask( pixmap.createHeuristicMask( true ) );
 
-        p.begin( &pixmap );
-        p.setFont( font() );
-        p.setPen( Qt::white );
-        p.setBrush( Qt::white );
+        QPainter p2( &pixmap );
+        p2.setFont( font() );
+        p2.setPen( Qt::white );
+        p2.setBrush( Qt::white );
 
         if( !m_cover.isNull() )
-            r.rLeft() += m_cover.width() + 10;
+            r.rLeft() += m_cover.width() + M;
 
-        p.drawText( r, align | WordBreak, m_text );
-        p.end();
+        p2.drawText( r, align | WordBreak, m_text );
+        p2.end();
 
-        shadow = ShadowEngine::makeShadow( pixmap, shadowColor );
+        p.drawImage( 0, 0, ShadowEngine::makeShadow( pixmap, shadowColor ) );
     }
-
-
-    KPixmap background;
-
-    if( m_translucency ) {
-        background = m_screenshot;
-        KPixmapEffect::fade( background, 0.80, backgroundColor() );
-    }
-    else
-        background.fill( backgroundColor() );
-
-
-
-    p.begin( this );
-    p.drawPixmap( 0, 0, background );
-    p.setPen( backgroundColor().dark() );
-    p.drawRoundRect( this->rect(), xround, yround );
-
-    //    p.drawImage( 0, 0, shadow );
 
     if( !m_cover.isNull() ) {
-        p.drawPixmap( 20, 10, m_scaledCover );
+        const uint y = (height() - m_scaledCover.height()) / 2;
+        p.drawPixmap( M, y, m_scaledCover );
+
         if( !m_scaledCover.hasAlpha() ) {
             // don't draw a border for eg, the amaroK icon
             p.setPen( shadowColor );
-            p.drawRect( QRect(QPoint(19,9), m_scaledCover.size() + QSize(2,2)) );
+            p.drawRect( QRect(QPoint(M-1,M-1), m_scaledCover.size() + QSize(2,2)) );
         }
-        rect.rLeft() += m_scaledCover.width() + 10;
+        rect.rLeft() += m_scaledCover.width() + M;
     }
 
     p.setPen( foregroundColor() );
+    p.setFont( font() );
     p.drawText( rect, align | WordBreak, m_text );
     p.end();
+
+    bitBlt( this, 0, 0, &buffer );
 }
 
 bool
