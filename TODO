@@ -3,32 +3,30 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #31 being the highest available (take this one for your next bug and increase here)
+           #32 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
 
+    * fix: #31<markey> when you add a pls/m3u with stream addresses, why do many server entries just
+              vanish from playlist instantly
+    
+    * add: #30<markey> kdemultimedia configure check
+
     * add: #29<muesli> configure script should fail, if taglib check failed
-
-    * add: #28<muesli> add an option "clean playlist on startup"
-
+              <markey> would be comfy to have a special flag for release which deactivates the check
+    
     * chg: #24<muesli> random mode needs to remember (at least) the last 10 songs, so you could
               go back in history, if you want to repeat a song. -->muesli
 
     * fix: #13<mxcl> when starting amarok for the first time, the playlist is really small (the
               listview not the browsers), so small one user couldn't see it (!) and couldn't figure
-              out how to use amaroK..
-
-    * fix: #12<markey> prevent zombie processes after amarok has exited (proper exit or crashing).
-              such zombies can lead to very weird behaviour on next amarok start and eat ressources,
-              and the user has no chance of noticing what's wrong.
-              is it possible to catch crash signals and do some cleanup?
-              <mxcl> I just read that KApplication tries to prevent zombies, so something is amiss
+              out how to use amaroK.. <markey> I can't reproduce that
 
     * fix: #11<markey> bitrate display often shows bogus values (especially with VBR, it seems)
               <mxcl> currently taglib is scanning files in Fast mode and on demand, the code is in
               PlaylistItem::metaBundle(). If it's still doing it wrong we should consider setting it
-              to Accurate.
+              to Accurate. <markey> wheels is already working on the problem
 
     * fix: #7<mxcl> originally reported all this, <berkus> summarized
              * The playwidget and playlistwidget should display as single entry on taskbar.
@@ -41,7 +39,7 @@ SHORT-TERM (URGENT):
 
 MID-TERM:
 
-    * add: #30<markey> kdemultimedia configure check
+    * add: #28<muesli> add an option "clean playlist on startup"
 
     * add: #27<markey> playlist column for tracknumber (requested by several users)
 
@@ -110,7 +108,7 @@ MID-TERM:
 
     * add: display type of media next to bitrate
 
-    * add: save/load arts effects on close/startup automatically
+    * add: restore effects on startup (not possible with aRts currently. gst can do it)
 
     * chg: #21<markey> use more accurate interpolation for analyzers (cubic or spline)
 
@@ -141,7 +139,7 @@ LONG-TERM:
 
     * add: make windows magnetic / sticking together (difficult)
 
-    * add: generate text or html document from playlist entries
+    * add: playlist export (generate text or html document from playlist entries)
 
     * add: <berkus> add smooth fade outs on stop
 
@@ -157,7 +155,7 @@ LONG-TERM:
 
     * add: pitch-slider (?) [<berkus> should be in separate "Effects Control" panel]
 
-    * add: audio system info widget, showing all available codecs and maybe more
+    * add: audio system info widget, showing all available codecs and similar info
 
     * chg: use namespaces 
     
@@ -166,6 +164,12 @@ LONG-TERM:
 
 IDEAS:
 
+    * #12<markey> prevent zombie processes after amarok has exited (proper exit or crashing).
+         such zombies can lead to very weird behaviour on next amarok start and eat ressources,
+         and the user has no chance of noticing what's wrong.
+         is it possible to catch crash signals and do some cleanup?
+         <mxcl> I just read that KApplication tries to prevent zombies, so something is amiss
+    
     * #26<markey> in BarAnalyzer, add a bit motion blur to the red peak ("roof") markers
 
     * bookmarks inside of tracks (good for very long tracks), and nifty bookmark browser
