@@ -649,11 +649,13 @@ GstEngine::endOfStreamReached()  //SLOT
         if ( input->m_eos ) {
             kdDebug() << "An input pipeline has reached EOS, destroying.\n";
 
+            const bool fading = input->state() == InputPipeline::FADE_OUT ||
+                                input->state() == InputPipeline::XFADE_OUT;
+
             destroyInput( input );
             m_eos = true;
 
-            if ( input->state() != InputPipeline::FADE_OUT && input->state() != InputPipeline::XFADE_OUT )
-                emit trackEnded();
+            if ( !fading ) emit trackEnded();
         }
     }
 }
