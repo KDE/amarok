@@ -47,17 +47,24 @@
 
 using amaroK::QStringx;
 
-
+/**
+ * Function that must be used when separating contextBrowser escaped urls
+ */
 static inline
-void albumArtistFromUrl( const QString &url, QString &artist, QString &album )
+void albumArtistFromUrl( QString url, QString &artist, QString &album )
 {
-    ///this is because we forgot the true, which is vital to ensure
+    //KHTML removes the trailing space!
+    if ( url.endsWith( " @@@" ) )
+        url += ' ';
+
     const QStringList list = QStringList::split( " @@@ ", url, true );
 
-    Q_ASSERT( list.count() == 2 );
+    Q_ASSERT( !list.isEmpty() );
 
     artist = list.front();
     album  = list.back();
+
+    kdDebug() << "MOO: '" << url << "' -> " << artist << ", " << album << endl;
 }
 
 
@@ -498,7 +505,7 @@ verboseTimeSince( const QDateTime &datetime )
     const QDate date = datetime.date();
     const QDate now  = QDate::currentDate();
     if( date > now )
-        return /*i18n*/( "The future" );
+        return i18n( "The future" );
 
     if( date.year() == now.year() ) {
         if( date.month() == now.month() ) {
@@ -507,7 +514,7 @@ verboseTimeSince( const QDateTime &datetime )
                 const QTime time = datetime.time();
                 const QTime now  = QTime::currentTime();
                 if( time > now )
-                    return /*i18n*/( "The future" );
+                    return i18n( "The future" );
 
                 int
                 minutes  = now.hour() - time.hour();
@@ -519,18 +526,18 @@ verboseTimeSince( const QDateTime &datetime )
                 else
                     return i18n( "Within the last hour", "%n hours ago", now.hour() - time.hour() );
             }
-            else if( date.day() < now.day() ) {
-                //the month is the same but not the day
-                const int days = now.day() - date.day();
-
-                if( days < 7 )
-                    return i18n( "Yesterday", "%n days ago", days );
-                else
-                    return i18n( "Last week", "%n weeks ago", days );
-            }
+            else
+                /*continue to days calculation section*/;
         }
-        else
+
+        const int days = date.daysTo( now );
+
+        if ( days > 28 )
             return i18n( "Last month", "%n months ago", now.month() - date.month() );
+        else if( days < 7 )
+            return i18n( "Yesterday", "%n days ago", days );
+        else
+            return i18n( "Last week", "%n weeks ago", days );
     }
 
     return i18n( "Last year", "%n years ago", now.year() - date.year() );
@@ -640,31 +647,31 @@ void ContextBrowser::showCurrentTrack() //SLOT
     browser->write( QStringx(
         "<div class='box'>"
          "<div class='box-header' style='font-weight: normal;'>"
-          "<a title='%1' href='musicbrainz:%2 @@@ %3'>"
-           "<img src='%4' style='float: right; width: 38px; height: 22px;'/>"
-          "</a>"
-          "<b>%5</b> - <b>%6</b><br>%7&nbsp;"
+          "<b>%1</b> - <b>%2</b><br>%3&nbsp;"
          "</div>"
          "<table class='box-body' width='100%'>"
           "<tr class='box-row'>"
            "<td width='1' style='margin: 0.4em 0.0em;'>"
-            "<a href='fetchcover:%8 @@@ %9'>"
-             "<img align='left' hspace='2' src='%11' title='%10'>"
+            "<a href='fetchcover:%4 @@@ %5'>"
+             "<img align='left' hspace='2' src='%6' title='%7'>"
             "</a>"
            "</td>"
-           "<td valign='bottom' align='right'>" )
+           "<td valign='bottom' align='right'>"
+            "<a title='%8' href='musicbrainz:%9 @@@ %10'>"
+             "<img src='%11' style='float: right; width: 38px; height: 22px;'/>"
+            "</a>")
         .args( QStringList()
-            << i18n( "Look up this track at musicbrainz.com" )
-            << escapeHTMLAttr( m_db->escapeString( currentTrack.artist() ) )
-            << escapeHTMLAttr( m_db->escapeString( currentTrack.album() ) )
-            << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) )
             << escapeHTML( currentTrack.title() )
             << escapeHTML( currentTrack.artist() )
             << escapeHTML( currentTrack.album() )
             << escapeHTMLAttr( currentTrack.artist() )
             << escapeHTMLAttr( currentTrack.album() )
             << escapeHTMLAttr( m_db->albumImage( currentTrack.artist(), currentTrack.album() ) )
-            << i18n( "Click for information from amazon.%1, right-click for menu." ).arg( AmarokConfig::amazonLocale() ) ) );
+            << i18n( "Click for information from amazon.%1, right-click for menu." ).arg( AmarokConfig::amazonLocale() )
+            << i18n( "Look up this track at musicbrainz.com" )
+            << escapeHTMLAttr( currentTrack.artist() )
+            << escapeHTMLAttr( currentTrack.album() )
+            << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) ) ) );
 
     if ( !values.isEmpty() )
     {
@@ -676,13 +683,13 @@ void ContextBrowser::showCurrentTrack() //SLOT
         const uint playtimes = values[2].toInt();
         const uint score = values[3].toInt();
 
-        QString scoreBox =
+        const QString scoreBox =
             "<table border='0' cellspacing='0' cellpadding='0'>"
              "<tr>"
-              "<td nowrap>" + QString::number( score ) + "&nbsp;</td>"
+              "<td nowrap>%1&nbsp;</td>"
               "<td title='Score'>"
                "<div class='sbouter'>"
-                "<div class='sbinner' style='width: "+ QString::number( score / 2 ) + "px;'></div>"
+                "<div class='sbinner' style='width: %2px;'></div>"
                "</div>"
               "</td>"
              "</tr>"
@@ -690,14 +697,14 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
         //SAFE   = .arg( x, y )
         //UNSAFE = .arg( x ).arg( y )
-        browser->write( QString("%1<br>%2%3<br>%4<br>")
+        browser->write( QString("<br>%1<br>%2%3<br>%4<br>")
             .arg( i18n( "Track played once", "Track played %n times", playtimes ),
-                  scoreBox,
+                  scoreBox.arg( score ).arg( score / 2 ),
                   i18n( "Last Played: %1" ).arg( verboseTimeSince( lastPlay ) ),
                   i18n( "First Played: %1" ).arg( verboseTimeSince( firstPlay ) ) ) );
    }
    else
-        browser->write( "" + i18n( "Never played before" )  + "" );
+        browser->write( i18n( "Never played before" ) );
 
     browser->write(
            "</td>"
