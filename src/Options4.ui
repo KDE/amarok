@@ -20,9 +20,6 @@
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
-    <property name="caption">
-        <string>Options4</string>
-    </property>
     <property name="whatsThis" stdset="0">
         <string>Select the sound system to use for playback.</string>
     </property>
@@ -298,9 +295,6 @@
                     <property name="text">
                         <string>&amp;Resume playback on start</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+R</string>
-                    </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, amaroK will resume playback from where you left it the previous session -- just like a tape-player.</string>
                     </property>
@@ -333,9 +327,6 @@
                     </property>
                     <property name="text">
                         <string>Remember &amp;effects</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+E</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, amaroK remembers the audio effects set through the effects window between sessions.</string>
