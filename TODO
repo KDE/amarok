@@ -6,50 +6,45 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-          <mxcl> CollectionBrowser Toolbar is too wide for some users' usage patterns.
+  <mxcl>   Inline editing of tags frequently crashes, muesli is this due to that bug from before?
 
-          <mxcl> playlist with files that exist that gst can't play + repeat-playlist =
-                 infinite loop - presumably load() and play() return true so the controller
-                 doesn't stop the playback
+  <mxcl>   CollectionBrowser Toolbar is too wide for some users' usage patterns.
 
-          <markey> CoverManager shows wrong count in StatusBar when fetching a couple of images.
+  <mxcl>   Playlist with files that exist that gst can't play + repeat-playlist = infinite loop - presumably
+           load() and play() return true so the controller doesn't stop the playback
 
-          <muesli> Sort albums by date, name in ContextBrowser.
+  <markey> CoverManager shows wrong count in StatusBar when fetching a couple of images.
 
-          <tronical> amarok/src/playlist.cpp:1675: warning: enumeral mismatch in conditional expression:
-                     `QListViewItemIterator::IteratorFlag' vs `MyIterator::IteratorFlag'
+  <muesli> Sort albums by date, name in ContextBrowser.
 
-          <mxcl>   Should be able to open collection browser by right clicking on stuff in contextB,
-                   so show the artist or album that is right clicked.
+  <mxcl>   Should be able to open collection browser by right clicking on stuff in contextB,
+           so show the artist or album that is right clicked.
 
-          <mxcl>   We should make regular backups of the user's statistics tables, we'll get so many angry
-                   users if they start to lose stats.
+  <mxcl>   We should make regular backups of the user's statistics tables, we'll get so many angry users if
+           they start to lose stats.
 
-          <muesli> Enabling "stop playing after current track" and enqueueing a song at the same time confuses amarok.
+  <muesli> Enabling "stop playing after current track" and enqueueing a song at the same time confuses amarok.
 
-          <mxcl>   If you inline set the title tag to "", prettyTitle gets inserted as the title tag.
+  <mxcl>   If you inline set the title tag to "", prettyTitle gets inserted as the title tag.
 
-          <muesli> Same for storing / looking for a compilation-cover on the local hdd.
+  <muesli> Same for storing / looking for a compilation-cover on the local hdd.
 
-          <muesli> When we're searching a cover for a compilation, cut off the artist's name, it doesn't help.
+  <muesli> When we're searching a cover for a compilation, cut off the artist's name, it doesn't help.
 
-          <mxcl>   loadEngine can call statusbar::message() at the void-engine stage and crash because
-                   the statusbar is not yet created.
+  <mxcl>   loadEngine can call statusbar::message() at the void-engine stage and crash because the statusbar
+           is not yet created.
 
-          <markey> When the KDE color scheme is changed while amaroK is running, all toolbar buttons
-                   (those with text) lose their texts.
+  <markey> When the KDE color scheme is changed while amaroK is running, all toolbar buttons (those with text)
+           lose their texts.
 
-          <muesli> Take care of KToolbars in Context/Collection for palette changes.
+  <muesli> Take care of KToolbars in Context/Collection for palette changes.
 
-          <mxcl>   With one track in pls and repeat and random mode on, amaroK crashes at track end.
+  <mxcl>   With one track in pls and repeat and random mode on, amaroK crashes at track end.
 
-          <markey> "Handbook" and "About" menu entries are disabled (greyed out) for some people.
-                   For the life of me I can't reproduce this, even with KDE 3.3.
-          <madp8>  After merge of Head into make_it_cool the About amaroK entry works again, but now Report Bug is disabled.
+  <muesli> Show "Artist - Song" for Various Artist folder.
 
-  ADD 180 <muesli> Show "Artist - Song" for Various Artist folder.
-
-  FIX 134 <markey> Ctrl-C in Playlist for copying title doesn't work, because the event gets eaten by another widget.
+  <markey> Ctrl-C in Playlist for copying title doesn't work, because the event gets eaten by another
+           widget.
 
 
 MID-TERM:
