@@ -3,6 +3,7 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  ADD: Option for auto centering the OSD horizontally.
   CHG: Collection-Monitor now processes removed dirs in a thread.
   ADD: Added a switch to toggle OSD's text-shadow. (BR 82011).
   ADD: More detailed track information dialog for Collection Browser.
