@@ -16,6 +16,7 @@ email                : markey@web.de
 #include "amarokconfig.h"
 #include "config.h" // Has USE_MYSQL
 #include "configdialog.h"
+#include "contextbrowser.h"
 #include "DbSetup.h"
 #include "debug.h"
 #include "directorylist.h"
@@ -45,6 +46,7 @@ email                : markey@web.de
 #include <qvbox.h>
 
 #include <kapplication.h> //kapp
+#include <kcombobox.h>
 #include <kiconloader.h>
 #include <klineedit.h>
 #include <klocale.h>
@@ -63,7 +65,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 
     // IMPORTANT Don't simply change the page names, they are used as identifiers in other parts of the app.
             m_opt1 = new Options1( 0, "General" );
-    Options2 *opt2 = new Options2( 0, "Appearance" );
+            m_opt2 = new Options2( 0, "Appearance" );
             m_opt4 = new Options4( 0, "Playback" );
     Options5 *opt5 = new Options5( 0, "OSD" );
     QVBox    *opt6 = new QVBox;
@@ -116,7 +118,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 
     // add pages
     addPage( m_opt1, i18n( "General" ), "misc", i18n( "Configure General Options" ) );
-    addPage( opt2,   i18n( "Appearance" ), "colors", i18n( "Configure amaroK's Appearance" ) );
+    addPage( m_opt2,   i18n( "Appearance" ), "colors", i18n( "Configure amaroK's Appearance" ) );
     addPage( m_opt4, i18n( "Playback" ), "kmix", i18n( "Configure Playback" ) );
     addPage( opt5,   i18n( "OSD" ), "tv", i18n( "Configure On-Screen-Display" ) );
     addPage( opt6,   i18n( "Engine" ), "amarok", i18n( "Configure Engine" ) );
@@ -138,6 +140,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     connect( m_soundSystem, SIGNAL(activated( int )), SLOT(updateButtons()) );
     connect( aboutEngineButton, SIGNAL(clicked()), this, SLOT(aboutEngine()) );
     connect( opt5, SIGNAL(settingsChanged()), SLOT(updateButtons()) ); //see options5.ui.h
+    connect( m_opt2->styleComboBox, SIGNAL(activated(int)), this, SLOT(enableApply()));
 }
 
 AmarokConfigDialog::~AmarokConfigDialog()
@@ -194,6 +197,9 @@ void AmarokConfigDialog::updateSettings()
         emit settingsChanged();
         soundSystemChanged();
     }
+    //can't use kconfigxt for the style comboxbox's since we need the string, not the index
+    AmarokConfig::setContextBrowserStyleSheet( m_opt2->styleComboBox->currentText() ); 
+    ContextBrowser::instance()->setStyleSheet();
 }
 
 
@@ -268,7 +274,10 @@ void AmarokConfigDialog::aboutEngine() //SLOT
 {
     PluginManager::showAbout( QString( "Name == '%1'" ).arg( m_soundSystem->currentText() ) );
 }
-
+void AmarokConfigDialog::enableApply()  //SLOT
+{
+    KDialogBase::enableButtonApply(true); //a KDialogBase slot
+}
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -304,6 +313,5 @@ void AmarokConfigDialog::soundSystemChanged()
     m_opt4->crossfadeLengthLabel->setEnabled( hasCrossfade );
 
 }
-
 
 #include "configdialog.moc"

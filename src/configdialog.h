@@ -43,15 +43,15 @@ class AmarokConfigDialog : public KConfigDialog
                       const QString &header=QString::null, bool manage=true);
 
         void showPage( const QCString& page );
-
+    public slots:
+        void enableApply();
     protected slots:
         void updateSettings();
         void updateWidgets();
         void updateWidgetsDefault();
 
     private slots:
-        void aboutEngine();
-
+        void aboutEngine();        
     protected:
         bool hasChanged();
         bool isDefault();
@@ -63,11 +63,11 @@ class AmarokConfigDialog : public KConfigDialog
         amaroK::PluginConfig *m_engineConfig;
         QGroupBox            *m_engineConfigFrame;
         class Options1       *m_opt1;
+        class Options2       *m_opt2;
         class Options4       *m_opt4;
         class Options7       *m_opt7;
 
         QValueList<QWidget*> m_pageList;
-
         QMap<QString, QString> m_pluginName;
         QMap<QString, QString> m_pluginAmarokName;
 };
