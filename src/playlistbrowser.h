@@ -32,7 +32,7 @@ Q_OBJECT
        PlaylistBrowser( const char* );
        ~PlaylistBrowser();
        void loadPlaylists( QStringList files );
-       void addPlaylist( QString path );
+       void addPlaylist( QString path, bool force=false );
        void savePlaylist( PlaylistBrowserItem * );
        
        static PlaylistBrowser *instance() { return s_instance; }
@@ -80,13 +80,13 @@ Q_OBJECT
         
     protected:
         virtual void keyPressEvent( QKeyEvent * );
-        virtual class QDragObject *dragObject();
     
     private slots:
         void mousePressed( int, QListViewItem *, const QPoint &, int );
         void slotEraseMarker();
         
     private:
+        void startDrag();
         void contentsDropEvent( QDropEvent* );
         void contentsDragEnterEvent( QDragEnterEvent* );
         void contentsDragMoveEvent( QDragMoveEvent* );

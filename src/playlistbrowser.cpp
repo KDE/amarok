@@ -160,7 +160,7 @@ void PlaylistBrowser::loadPlaylist( QListViewItem *item ) //SLOT
 }
 
 
-void PlaylistBrowser::addPlaylist( QString path )
+void PlaylistBrowser::addPlaylist( QString path, bool force )
 {
     // this function add a playlist to the playlist browser
     
@@ -170,9 +170,11 @@ void PlaylistBrowser::addPlaylist( QString path )
     bool exists = false;
     QListViewItemIterator it( m_listview );
     while( it.current() ) {
-        PlaylistBrowserItem *item = (PlaylistBrowserItem *)it.current();
-        if( isPlaylist( item ) && path == item->url().path() )
+        if( isPlaylist( *it ) && path == ((PlaylistBrowserItem *)*it)->url().path() ) {
             exists = true; //the playlist is already in the playlist browser
+            if( force )
+                ((PlaylistBrowserItem *)*it)->load( true );    //reload the playlist
+        }
         ++it;
     }
    
@@ -714,7 +716,7 @@ void PlaylistBrowserView::keyPressEvent( QKeyEvent *e )
 }
 
 
-QDragObject *PlaylistBrowserView::dragObject()
+void PlaylistBrowserView::startDrag()
 {
     KURL::List urls;
     
@@ -726,7 +728,9 @@ QDragObject *PlaylistBrowserView::dragObject()
             urls += ((PlaylistTrackItem*)*it)->url();
     }
 
-    return new KURLDrag( urls, viewport() );
+    KURLDrag *d = new KURLDrag( urls, viewport() );
+    d->dragCopy();
+    
 }
 
 
@@ -1013,21 +1017,23 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
     
     pBuf.drawText( text_x, text_y, name );
     
+    QString info;
+    text_y += m_savePix ? QMAX( fm.lineSpacing(), m_savePix->height() ) : fm.lineSpacing();
+    if( m_modified )
+            text_x = lv->treeStepSize() + 3;   
+    font.setBold( false );
+    pBuf.setFont( font );
+    
     if( m_done ) { //playlist loaded
         // draw the number of tracks and the total length of the playlist
-        text_y += m_savePix ? QMAX( fm.lineSpacing(), m_savePix->height() ) : fm.lineSpacing();
-        font.setBold( false );
-        pBuf.setFont( font );
-    
-        QString info;
         info += QString("%1 Tracks").arg( m_trackList.count() );
         if( m_length )
-            info += QString(" - [%2]").arg( MetaBundle::prettyTime( m_length ) );
-    
-        if( m_modified )
-            text_x = lv->treeStepSize() + 3;
-        pBuf.drawText( text_x, text_y, info);
-    }
+            info += QString(" - [%2]").arg( MetaBundle::prettyTime( m_length ) );   
+    } 
+    else 
+        info = "Loading...";
+        
+    pBuf.drawText( text_x, text_y, info);
     
     pBuf.end();
     p->drawPixmap( 0, 0, buffer );
