@@ -121,6 +121,8 @@ class MediaDevice : public QObject
 
         void addURL( const KURL& url );
         QStringList items( QListViewItem* item );
+        KURL::List songsByArtist( const QString& artist );
+        KURL::List songsByArtistAlbum( const QString& artist, const QString& album );
 
         static MediaDevice *instance() { return s_instance; }
 

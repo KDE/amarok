@@ -225,7 +225,6 @@ void
 MediaDeviceList::nodeBuildDragList( MediaItem* item )
 {
     MediaItem* fi;
-
     m_dragList.clear();
 
     if ( !item )
@@ -237,8 +236,18 @@ MediaDeviceList::nodeBuildDragList( MediaItem* item )
     {
         if ( fi->isSelected() )
         {
-            kdDebug() << fi->url().path() << endl;
-            m_dragList << fi->url().path();
+            switch ( fi->depth() )
+            {
+                case 0:
+                    m_dragList += m_parent->m_device->songsByArtist( fi->text( 0 ) );
+                    break;
+                case 1:
+                    m_dragList += m_parent->m_device->songsByArtistAlbum( fi->parent()->text( 0 ), fi->text( 0 ) );
+                    break;
+                case 2:
+                    m_dragList << fi->url().path();
+                    break;
+            }
         } else
         {
             if ( fi->childCount() )
@@ -284,7 +293,9 @@ MediaDeviceList::contentsDragMoveEvent( QDragMoveEvent* e )
 void
 MediaDeviceList::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SLOT
 {
-    if ( item ) {
+    if ( item )
+    {
+        nodeBuildDragList( 0 );
         KPopupMenu menu( this );
 
         enum Actions { APPEND, MAKE, QUEUE, BURN_ARTIST, BURN_ALBUM,
@@ -299,25 +310,25 @@ MediaDeviceList::rmbPressed( QListViewItem* item, const QPoint& point, int ) //S
         switch ( item->depth() )
         {
             case 0: 
-                menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn All Tracks by This Artist"), BURN_ARTIST );
+                menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn All Tracks by This Artist" ), BURN_ARTIST );
                 menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
                 break;
 
             case 1:
-                menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn This Album"), BURN_ALBUM );
+                menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn This Album" ), BURN_ALBUM );
                 menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() );
                 break;
 
             case 2:
-                menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD as Data"), BURN_DATACD );
+                menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn to CD as Data" ), BURN_DATACD );
                 menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
-                menu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BURN_AUDIOCD );
+                menu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n( "Burn to CD as Audio" ), BURN_AUDIOCD );
                 menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
                 break;
         }
 
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( "editdelete" ), i18n("Delete File"), DELETE );
+        menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete File" ), DELETE );
 
         switch( menu.exec( point ) )
         {
@@ -438,6 +449,7 @@ MediaDevice::items( QListViewItem* item )
         {
             Artist* artist;
             artist = m_ipod->getArtistByName( item->text( 0 ) );
+
             if ( artist )
                 for ( ArtistIterator it( *artist ); it.current(); ++it )
                     items << it.currentKey();
@@ -457,6 +469,57 @@ MediaDevice::items( QListViewItem* item )
                     items << m_ipod->getRealPath( track->getPath() );
                 }
             }
+        }
+    }
+
+    return items;
+}
+
+
+KURL::List
+MediaDevice::songsByArtist( const QString& artist )
+{
+    KURL::List items;
+
+    Artist* ar;
+    ar = m_ipod->getArtistByName( artist );
+
+    if ( ar )
+        for ( ArtistIterator it( *ar ); it.current(); ++it )
+        {
+            TrackList* album;
+            album = m_ipod->getAlbum( artist, it.currentKey() );
+    
+            if ( album )
+            {
+                TrackList::Iterator it = album->getTrackIDs();
+                while ( it.hasNext() )
+                {
+                    TrackMetadata* track = m_ipod->getTrackByID( it.next() );
+                    items << m_ipod->getRealPath( track->getPath() );
+                }
+            }
+        }
+
+    return items;
+}
+
+
+KURL::List
+MediaDevice::songsByArtistAlbum( const QString& artist, const QString& album )
+{
+    KURL::List items;
+
+    TrackList* al;
+    al = m_ipod->getAlbum( artist, album );
+    
+    if ( al )
+    {
+        TrackList::Iterator it = al->getTrackIDs();
+        while ( it.hasNext() )
+        {
+            TrackMetadata* track = m_ipod->getTrackByID( it.next() );
+            items << m_ipod->getRealPath( track->getPath() );
         }
     }
 
