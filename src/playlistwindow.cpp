@@ -465,7 +465,11 @@ void PlaylistWindow::showHide() //SLOT
     const KWin::WindowInfo info = KWin::windowInfo( winId() );
     const uint desktop = KWin::currentDesktop();
     const bool isOnThisDesktop = info.isOnDesktop( desktop );
+    #if KDE_IS_VERSION(3,2,1)
     const bool isShaded = info.hasState( NET::Shaded );
+    #else
+    const bool isShaded = false;
+    #endif
 
 
     if( isShaded )
