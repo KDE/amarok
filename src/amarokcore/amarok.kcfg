@@ -85,11 +85,6 @@
         <default>true</default>
         <whatsthis>View some status information on the playlist.</whatsthis>
     </entry>
-    <entry key="Show Welcome Tab" type="Bool">
-        <label>Toggle the Welcome-page in the browser bar</label>
-        <default>true</default>
-        <whatsthis>The Welcome-page lists is useful to new users.</whatsthis>
-    </entry>
     <entry key="Directories Recursively" type="Bool">
         <label>Whether to add directories to playlist recursively</label>
         <default>true</default>
