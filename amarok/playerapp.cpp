@@ -15,7 +15,6 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
-#include "amarokarts.h"
 #include "amarokconfig.h"
 #include "amarokconfigdialog.h"
 #include "amarokslider.h" //FIXME
@@ -32,7 +31,6 @@ email                : markey@web.de
 
 #include <vector>
 #include <string>
-#include <math.h> //play(), visTimer()
 
 #include <kaction.h>
 #include <kapp.h>
@@ -51,12 +49,9 @@ email                : markey@web.de
 #include <kwin.h>    //eventFilter()
 
 #include <qpixmap.h> //QPixmap::setDefaultOptimization()
-#include <qpoint.h>
-#include <qpushbutton.h> //initPlayerWidget()
 #include <qsize.h>
 #include <qstring.h>
 #include <qtimer.h>
-#include <qvaluelist.h>
 
 //statics
 EngineBase* PlayerApp::m_pEngine = 0;
@@ -76,8 +71,7 @@ PlayerApp::PlayerApp()
     setName( "amarok" );
     pApp = this; //global
 
-    if ( AmarokConfig::showSplashscreen() )
-    {
+    if ( AmarokConfig::showSplashscreen() ) {
         m_pOSD->showSplash( locate( "data", "amarok/images/logo_splash.png" ) );
         kapp->processEvents();
     }
@@ -396,7 +390,7 @@ void PlayerApp::setupColors()
         //bgAlt.setRgb( 74, 81, 107 );
         //bgAlt.setRgb( 83, 86, 112 );
 
-        QColor highlight( (bg.red() + bgAlt.red())/2, (bg.green() + bgAlt.green())/2, (bg.blue() + bgAlt.blue())/2 );
+//         QColor highlight( (bg.red() + bgAlt.red())/2, (bg.green() + bgAlt.green())/2, (bg.blue() + bgAlt.blue())/2 );
 
         group.setColor( QColorGroup::Text, Qt::white );
         group.setColor( QColorGroup::Base, bg );
