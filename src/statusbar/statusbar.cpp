@@ -22,6 +22,7 @@
 #include "amarokcore/amarokconfig.h"
 #include "debug.h"
 #include "enginecontroller.h"
+#include <kiconloader.h>
 #include <klocale.h>
 #include "metabundle.h"
 #include <qhbox.h>
@@ -62,10 +63,15 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     m_slider->setMinimumWidth( m_timeLabel->width() );
 
     QHBox *hbox = new QHBox( this );
+    hbox->setSpacing( 2 );
     QFont font; font.setPointSize( font.pointSize() - 1 );
     hbox->setFont( font );
-    new QLabel( " RND", hbox );
-    new QLabel( "REP ", hbox );
+
+    // TODO Both labels need tooltips (string freeze?)
+    QLabel* rndLabel = new QLabel( hbox );
+    rndLabel->setPixmap( SmallIcon( "roll", KGlobal::instance() ) );
+    QLabel* repLabel = new QLabel( hbox );
+    repLabel->setPixmap( SmallIcon( "rotate", KGlobal::instance() ) ); // Are these icons in KDElibs?
 
     //TODO reimplement insertChild() instead
     addWidget( m_itemCountLabel );
