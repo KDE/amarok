@@ -49,7 +49,7 @@ bool ITunesDB::open(const QString& ipod_base) {
     } else {
         return false;
     }
-    
+
     return true;
 }
 
@@ -61,10 +61,10 @@ bool ITunesDB::writeDatabase(const QString& filename) const {
     QFile outfile(filename);
     if(filename.isEmpty())
         outfile.setName(itunesdbfile.name());
-        
+
     ItunesDBWriter writer((ItunesDBDataSource&)*this);
     writer.write(outfile);
-    
+
     return true;
 }
 
@@ -87,7 +87,7 @@ ITunesDB::~ITunesDB()
 
 void ITunesDB::writeInit() {
     error= QString::null;
-    
+
     // remove deleted tracklist items
     for( PlaylistMapIterator iterator(playlistmap); iterator.current(); ++iterator) {
         iterator.current()->removeAll(LISTITEM_DELETED);
@@ -136,7 +136,7 @@ Track * ITunesDB::firstTrack()
     trackiterator= trackmap.begin();
     if (trackiterator == trackmap.end())
         return NULL;
-    
+
     TrackMetadata * track = *trackiterator;
     TrackList * album = getAlbum(track->getArtist(), track->getAlbum());
     if (album != NULL)
@@ -176,11 +176,11 @@ void ITunesDB::parseStarted() {
 void ITunesDB::parseFinished()
 {
     changed= false;
-    
+
     if (mainlist.getTitle().isEmpty()) {
         mainlist.setTitle("kpod");
     }
-    
+
     if( maxtrackid == 0) {
         maxtrackid = 2000;
     }
@@ -212,7 +212,7 @@ void ITunesDB::parseFinished()
         }
     }
     */
-    
+
     for( IPodPlaylist * playlist= firstPlaylist(); playlist != NULL; playlist= nextPlaylist()) {
         IPodPlaylist::Iterator track_iter= playlist->getTrackIDs();
         while( track_iter.hasNext()) {
@@ -236,13 +236,13 @@ void ITunesDB::handleTrack(const Track& track)
         return;
     }
     TrackMetadata * trackmetadata = new TrackMetadata( track);
-    
+
     if (maxtrackid < track.getID())
         maxtrackid = track.getID();
-    
+
     insertTrackToDataBase( *trackmetadata);
     mainlist.addPlaylistItem(track);
-    
+
     changed = true;
 }
 
@@ -253,9 +253,9 @@ void ITunesDB::handlePlaylist(const IPodPlaylist& playlist) {
         mainlist.setTitle(playlist.getTitle());
         return;    // that's all we wanna know for now
     }
-    
+
     TrackList * pTracklist = new TrackList( playlist);
-    
+
     // consistency checks
     if( playlistmap.find( pTracklist->getTitle()) == NULL) {   // dont overwrite existing playlists
         TrackList::Iterator trackid_iter = pTracklist->getTrackIDs();
@@ -281,12 +281,16 @@ void ITunesDB::handleError(const QString &message)
 void ITunesDB::setNumPlaylists( Q_UINT32 numplaylists)
 {
     // oh really? !nteresting!
+
+    Q_UNUSED( numplaylists );
 }
 
 
 void ITunesDB::setNumTracks(Q_UINT32 tracknum)
 {
     // oh really? !nteresting!
+
+    Q_UNUSED( tracknum );
 }
 
 
@@ -367,19 +371,19 @@ TrackList * ITunesDB::getAlbum(const QString &artistname, const QString &albumna
 {
     Artist * artist = artistmap.find( artistname);
     TrackList * album;
-    
+
     // check if artist exists
     if (artist == NULL) {
         // artist not in the map
         return NULL;
     }
-    
+
     // find the album
     if( ( album = artist->find( albumname)) == NULL) {
         // album not in the map
         return NULL;
     }
-    
+
     return album;
 }
 
@@ -391,20 +395,20 @@ void ITunesDB::clear()
 {
     // if( trackmap.empty())
     //     return;
-    
+
     // delete all tracks
     TrackMap::iterator track_it= trackmap.begin();
     for( ; track_it!= trackmap.end(); ++track_it) {
         delete *track_it;
     }
     trackmap.clear();
-    
+
     // delete all albums
     artistmap.clear();
-    
+
     // clear playlists
     playlistmap.clear();
-    
+
     itunesdbfile.setName(QString());
     timestamp = QDateTime();
     maxtrackid = 0;
@@ -416,7 +420,7 @@ bool ITunesDB::removeArtist(const QString& artistname) {
     Artist * artist = artistmap.find(artistname);
     if (!artist || !artist->isEmpty())
         return false;
-    
+
     return artistmap.remove(artistname);
 }
 
@@ -426,16 +430,16 @@ bool ITunesDB::removeArtist(const QString& artistname) {
  */
 bool ITunesDB::removePlaylist( const QString& title, bool delete_instance) {
     bool existed = false;
-    
+
     if( delete_instance) {
         existed = playlistmap.remove( title);
     } else {
         existed = playlistmap.take( title) != NULL;
     }
-    
+
     if( existed)
         changed= true;
-    
+
     return existed;
 }
 
@@ -448,32 +452,32 @@ Q_UINT32 ITunesDB::removeTrack(Q_UINT32 trackid, bool delete_instance)
     TrackMetadata * track = getTrackByID(trackid);
     if(track == NULL)
         return 0;
-    
+
     // remove track from track table
     trackmap.remove(trackid);
-    
+
     // remove track from album
     TrackList * album = getAlbum(track->getArtist(), track->getAlbum());
     if(album != NULL)
         album->removeAll(trackid);
-    
+
     // remove track from playlists
     for( PlaylistMapIterator iterator(playlistmap); iterator.current(); ++iterator) {
         iterator.current()->removeAll(trackid);
     }
-    
+
     // remove track from main playlists
     mainlist.removeAll(trackid);
-    
+
     if(delete_instance)
         delete track;
-    
+
     return trackid;
 }
 
 TrackList * ITunesDB::renameAlbum(TrackList& album, const QString& newartistname, const QString& newtitle) {
     QString artistname;
-    
+
     // update track info
     TrackList::Iterator trackiter = album.getTrackIDs();
     while (trackiter.hasNext()) {
@@ -483,24 +487,24 @@ TrackList * ITunesDB::renameAlbum(TrackList& album, const QString& newartistname
         }
         if (artistname.isEmpty())
             artistname = track->getArtist();
-        
+
         track->setArtist(newartistname);
         track->setAlbum(newtitle);
     }
-    
+
     Artist * artist = getArtistByName(artistname);
     if (artist != NULL)
         artist->take(album.getTitle());
     else
         kdDebug() << "ITunesDB::renameAlbum() Artist " << artistname << " not found" << endl;
-    
+
     artist = getArtistByName(newartistname, true);
     if (artist == NULL)
         return NULL;
-    
+
     album.setTitle(newtitle);
     artist->insert(newtitle, &album);
-    
+
     return getAlbum(newartistname, newtitle);
 }
 
@@ -508,14 +512,14 @@ bool ITunesDB::moveTrack(TrackMetadata& track, const QString& newartist, const Q
     TrackList * album = getAlbum(track.getArtist(), track.getAlbum());
     if (album == NULL)
         return false;
-    
+
     album->removeAll(track.getID());
     trackmap.remove(track.getID());
     track.setArtist(newartist);
     track.setAlbum(newalbum);
-    
+
     insertTrackToDataBase(track);
-    
+
     return true;
 }
 
@@ -549,7 +553,7 @@ void ITunesDB::unlock() {
     itunesdbfile.close();
 }
 
- 
+
 /*!
     \fn ITunesDB::insertTrackToDataBase()
  */
@@ -560,19 +564,19 @@ void ITunesDB::insertTrackToDataBase(TrackMetadata& track)
     QString albumstr= track.getAlbum();
 
     trackmap.insert(track.getID(), &track);
-        
+
     if (resolveslashes) {
         albumstr= albumstr.replace( "/", "%2f");
         artiststr= artiststr.replace( "/", "%2f");
     }
-    
+
     // find the artist
     Artist * artist = getArtistByName(artiststr, true);
     if (artist == NULL) {
         // shouldn't happen
         return;
     }
-    
+
     // find the album
     if((album = artist->find( albumstr)) == NULL) {
         // album not in the map yet: create default entry
@@ -580,14 +584,14 @@ void ITunesDB::insertTrackToDataBase(TrackMetadata& track)
         album->setTitle(albumstr);
         artist->insert(albumstr, album);
     }
-    
+
     int trackpos = album->addPlaylistItem(track);
-    
+
     // if tracknum is not set yet - set it to the position in the album
     if(track.getTrackNumber() == 0) {
         track.setTrackNumber(trackpos);
     }
-    
+
     // kdDebug() << "ITunesDB::insertTrackToDataBase() done" << endl;
 }
 
