@@ -715,9 +715,9 @@ NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
     KIconEffect ie;
     
     // Tint icon blueish for "off" state
-    QPixmap off = ie.apply( pixmap, KIconEffect::Colorize, 0.3, QColor( 0x30, 0x10, 0xff ), false );
+    QPixmap off = ie.apply( pixmap, KIconEffect::Colorize, 0.5, QColor( 0x30, 0x10, 0xff ), false );
     // Tint more intense for "on" state
-    QPixmap on = ie.apply( pixmap, KIconEffect::Colorize, 1.0, QColor( 0x30, 0x10, 0xff ), false );
+    QPixmap on = ie.apply( pixmap, KIconEffect::Colorize, 1.0, QColor( 0x80, 0x30, 0xff ), false );
     // Tint gray and make pseudo-transparent for "disabled" state
     QPixmap disabled = ie.apply( pixmap, KIconEffect::ToGray, 0.7, QColor(), true );
     
