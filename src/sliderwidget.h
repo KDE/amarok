@@ -18,58 +18,65 @@
 #ifndef AMAROKSLIDER_H
 #define AMAROKSLIDER_H
 
-#include <qrangecontrol.h>
-#include <qwidget.h>
 #include <qslider.h>
-
-class QMouseEvent;
-class QPaintEvent;
-class QSize;
 
 namespace amaroK
 {
-
-    class Slider : public QWidget, public QRangeControl
+    class Slider : public QSlider
     {
-            Q_OBJECT
+        Q_OBJECT
 
         public:
-            enum VDirection { TopDown = 1, BottomUp = 1 };
+            Slider( Qt::Orientation, QWidget*, uint max = 0 );
 
-            Slider( QWidget *, Qt::Orientation, VDirection = BottomUp );
+            virtual void setValue( int );
 
-            void setValue( int );
-            bool sliding() { return m_isPressed; }
+            //WARNING non-virtual - ant thus only really intended for internal use
+            //this is a major flaw in the class presently, however it suits our
+            //current needs fine
+            int value() const { return adjustValue( QSlider::value() ); }
 
         signals:
-            void sliderPressed();
-            void sliderReleased();
-            void valueChanged( int );
+            //we emit this when the user has specifically changed the slider
+            //so connect to it if valueChanged() is too generic
+            //Qt also emits valueChanged( int )
+            void sliderReleased( int );
+
+        protected:
+            virtual void wheelEvent( QWheelEvent* );
+            virtual void mouseMoveEvent( QMouseEvent* );
+            virtual void mouseReleaseEvent( QMouseEvent* );
+            virtual void mousePressEvent( QMouseEvent* );
+
+            bool m_sliding;
+
+            int adjustValue( int v ) const { return orientation() == Vertical ? maxValue() - v : v; }
 
         private:
-            QSize minimumSizeHint() const;
-            QSize sizeHint() const;
+            bool m_revert;
 
-            void mouseMoveEvent( QMouseEvent * );
-            void mousePressEvent( QMouseEvent * );
-            void mouseReleaseEvent( QMouseEvent * );
-            void paintEvent( QPaintEvent * );
-
-            // ATTRIBUTES ------
-            bool m_isPressed;
-            Qt::Orientation m_orientation;
-            VDirection m_dir;
+            Slider( const Slider& ); //undefined
+            Slider &operator=( const Slider& ); //undefined
     };
 
 
-    class PlaylistSlider : public QSlider
+    class PrettySlider : public Slider
     {
         public:
-            PlaylistSlider( QSlider::Orientation orientation, QWidget * parent, const char * name = 0 );
+            PrettySlider( Qt::Orientation orientation, QWidget *parent, uint max = 0 );
 
         protected:
-            void mousePressEvent( QMouseEvent* e );
-            void wheelEvent( QWheelEvent* e );
+            virtual void paintEvent( QPaintEvent* );
+            virtual void mouseMoveEvent( QMouseEvent* );
+
+        #if 0
+            virtual QSize minimumSizeHint() const;
+            virtual QSize sizeHint() const;
+        #endif
+
+        private:
+            PrettySlider( const PrettySlider& ); //undefined
+            PrettySlider &operator=( const PrettySlider& ); //undefined
     };
 }
 

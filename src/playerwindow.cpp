@@ -112,18 +112,17 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     } //</NavButtons>
 
     { //<Sliders>
-        m_pSlider    = new amaroK::Slider( this, Qt::Horizontal );
-        m_pVolSlider = new amaroK::Slider( this, Qt::Vertical );
+        m_pSlider    = new amaroK::PrettySlider( Qt::Horizontal, this );
+        m_pVolSlider = new amaroK::PrettySlider( Qt::Vertical, this, amaroK::VOLUME_MAX );
 
         m_pSlider->setGeometry( 4,103, 303,12 );
         m_pVolSlider->setGeometry( 294,18, 12,79 );
-
-        m_pVolSlider->setMaxValue( amaroK::VOLUME_MAX );
         m_pVolSlider->setValue( AmarokConfig::masterVolume() );
 
-        connect( m_pSlider, SIGNAL(sliderReleased()), SLOT(slotSliderReleased()) );
-        connect( m_pSlider, SIGNAL(valueChanged( int )), SLOT(slotSliderChanged( int )) );
-        connect( m_pVolSlider, SIGNAL(valueChanged( int )), ec, SLOT(setVolume( int )) );
+        connect( m_pSlider, SIGNAL(sliderReleased( int )), ec, SLOT(seek( int )) );
+        connect( m_pSlider, SIGNAL(valueChanged( int )), SLOT(timeDisplay( int )) );
+        connect( m_pVolSlider, SIGNAL(sliderMoved( int )), ec, SLOT(setVolume( int )) );
+        connect( m_pVolSlider, SIGNAL(sliderReleased( int )), ec, SLOT(setVolume( int )) );
     } //<Sliders>
 
     { //<Scroller>
@@ -139,7 +138,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     } //<TimeLabel>
         font.setPixelSize( 18 );
 
-        m_pTimeLabel = createWidget<QLabel>( QRect(16,36, 9*12+2,18), this, 0, Qt::WRepaintNoErase );
+        m_pTimeLabel = createWidget<QLabel>( QRect(16,36, 9*12+2,18), this, 0, Qt::WNoAutoErase );
         m_pTimeLabel->setFont( font );
 
         m_timeBuffer.resize( m_pTimeLabel->size() );
@@ -303,7 +302,6 @@ void PlayerWidget::engineStateChanged( EngineBase::EngineState state )
     switch( state )
     {
         case EngineBase::Empty:
-        case EngineBase::Idle:
             m_pButtonPlay->setOn( false );
             m_pButtonPause->setOn( false );
             m_pSlider->setValue( 0 );
@@ -311,6 +309,7 @@ void PlayerWidget::engineStateChanged( EngineBase::EngineState state )
             m_pTimeLabel->hide();
             m_pTimeSign->hide();
             m_rateString = QString::null;
+            m_pSlider->setEnabled( false );
             setScroll( i18n( "Welcome to amaroK" ) );
             update();
             break;
@@ -320,10 +319,14 @@ void PlayerWidget::engineStateChanged( EngineBase::EngineState state )
             m_pTimeSign->show();
             m_pButtonPlay->setOn( true );
             m_pButtonPause->setOn( false );
+             m_pSlider->setEnabled( true );
             break;
 
         case EngineBase::Paused:
             m_pButtonPause->setOn( true );
+            break;
+
+        case EngineBase::Idle: //don't really want to do anything when idle
             break;
     }
 }
@@ -331,18 +334,13 @@ void PlayerWidget::engineStateChanged( EngineBase::EngineState state )
 
 void PlayerWidget::engineVolumeChanged( int percent )
 {
-    if( !m_pVolSlider->sliding() )
-    {
-        m_pVolSlider->blockSignals( true );
-        m_pVolSlider->setValue( percent );
-        m_pVolSlider->blockSignals( false );
-    }
+    m_pVolSlider->setValue( percent );
 }
 
 
 void PlayerWidget::engineNewMetaData( const MetaBundle &bundle, bool )
 {
-    m_pSlider->setMaxValue( bundle.length() * 1000 );
+    m_pSlider->setMaxValue( bundle.length() );
 
     m_rateString     = bundle.prettyBitrate();
     const QString Hz = bundle.prettySampleRate();
@@ -365,32 +363,7 @@ void PlayerWidget::engineNewMetaData( const MetaBundle &bundle, bool )
 
 void PlayerWidget::engineTrackPositionChanged( long position )
 {
-    if( isVisible() && !m_pSlider->sliding() )
-    {
-        m_pSlider->setValue( position );
-        timeDisplay( position / 1000 );
-    }
-}
-
-
-void PlayerWidget::slotSliderReleased()
-{
-    EngineBase *engine = EngineController::engine();
-    if ( engine->state() == EngineBase::Playing )
-    {
-        engine->seek( m_pSlider->value() );
-    }
-}
-
-
-void PlayerWidget::slotSliderChanged( int value )
-{
-    if( m_pSlider->sliding() )
-    {
-        value /= 1000;    // ms -> sec
-
-        timeDisplay( value );
-    }
+    m_pSlider->setValue( position / 1000 );
 }
 
 
@@ -423,32 +396,6 @@ bool PlayerWidget::event( QEvent *e )
     switch( e->type() )
     {
     case QEvent::Wheel:
-    {
-        #define e static_cast<QWheelEvent*>(e)
-        const bool up = e->delta() > 0;
-
-        switch( e->state() )
-        {
-        case ControlButton:
-            if( up ) EngineController::instance()->previous();
-            else     EngineController::instance()->next();
-            break;
-
-        default:
-            if( !m_pSlider->frameGeometry().contains( e->pos(), true ) )
-                EngineController::instance()->increaseVolume( e->delta() / 18 );
-            else
-            {
-                EngineBase *engine = EngineController::engine();
-                int seek = engine->position() + ( e->delta() / 120 ) * 10000; // 10 seconds
-                engine->seek( seek < 0 ? 0 : seek );
-            }
-        }
-
-        #undef e
-
-        return TRUE;
-    }
     case QEvent::DragEnter:
     case QEvent::Drop:
     case QEvent::Close:

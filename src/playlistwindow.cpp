@@ -57,6 +57,40 @@
 
 
 
+//////////////////////////////////////////////////////////////////////////////////////////
+/// CLASS amaroK::ToolBar
+//////////////////////////////////////////////////////////////////////////////////////////
+
+namespace amaroK
+{
+    class ToolBar : public KToolBar
+    {
+    public:
+        ToolBar( QWidget *parent, const char *name )
+            : KToolBar( parent, name )
+        {}
+
+    protected:
+        virtual void
+        mousePressEvent( QMouseEvent *e )
+        {
+            if( e->button() == RightButton ) amaroK::Menu::instance()->popup( e->globalPos() );
+        }
+
+        virtual void
+        wheelEvent( QWheelEvent *e )
+        {
+            EngineController::instance()->increaseVolume( e->delta() / 18 );
+        }
+    };
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// CLASS PlaylistWindow
+//////////////////////////////////////////////////////////////////////////////////////////
+
 PlaylistWindow::PlaylistWindow()
    : QWidget( 0, "PlaylistWindow", Qt::WGroupLeader )
    , KXMLGUIClient()
@@ -66,7 +100,7 @@ PlaylistWindow::PlaylistWindow()
     KActionCollection* const ac = actionCollection();
     const EngineController* const ec = EngineController::instance();
     EngineController::instance()->attach( this );
-    
+
     KStdAction::configureToolbars( pApp, SLOT( slotConfigToolBars() ), ac );
     KStdAction::keyBindings( pApp, SLOT( slotConfigShortcuts() ), ac );
     KStdAction::keyBindings( pApp, SLOT( slotConfigGlobalShortcuts() ), ac, "options_configure_globals" );
@@ -408,23 +442,23 @@ void PlaylistWindow::closeEvent( QCloseEvent *e )
 void PlaylistWindow::engineStateChanged( EngineBase::EngineState state )
 {
     if ( !AmarokConfig::autoShowContextBrowser() ) return;
-    
+
     const int context = 2;
-    
+
     switch ( state )
     {
         case EngineBase::Playing:
             m_lastBrowser = m_browsers->currentIndex();
             m_browsers->showBrowser( context );
             break;
-        
+
         case EngineBase::Empty:
             m_browsers->showBrowser( m_lastBrowser );
             break;
-        
+
         case EngineBase::Idle:
             break;
-        
+
         case EngineBase::Paused:
             break;
     }
@@ -535,12 +569,6 @@ void PlaylistWindow::welcomeURL( const KURL &url )
     pApp->applySettings();
 
     amaroK::config()->writeEntry( "XMLFile", xml );
-}
-
-
-void amaroK::ToolBar::mousePressEvent( QMouseEvent *e )
-{
-    if( e->button() == RightButton ) amaroK::Menu::instance()->popup( e->globalPos() );
 }
 
 #include "playlistwindow.moc"

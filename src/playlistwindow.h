@@ -27,25 +27,10 @@
 
 namespace amaroK
 {
-    class ToolBar : public KToolBar
-    {
-            Q_OBJECT
-
-        public:
-            ToolBar( QWidget* parent, const char* name = 0 )
-                : KToolBar( parent, name ) {};
-
-        signals:
-            void wheelMoved( int delta );
-
-        protected:
-            virtual void mousePressEvent( QMouseEvent* );
-
-        private:
-            virtual void wheelEvent( QWheelEvent *e ) { emit wheelMoved( e->delta() ); }
-    };
+    class ToolBar;
 }
 
+using amaroK::ToolBar;
 
 class BrowserBar;
 class ContextBrowser;
@@ -91,7 +76,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
         Playlist   *m_playlist;
         KLineEdit  *m_lineEdit;
         KStatusBar *m_statusbar;
-        amaroK::ToolBar *m_toolbar;
+        ToolBar    *m_toolbar;
         int m_lastBrowser;
 };
 

@@ -86,11 +86,9 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     QToolTip::add( w2, i18n("Double-click to toggle Repeat Playlist Mode") );
 
     // position slider (stretches at 1/4 the rate of the squeezedTextKLabel)
-    addWidget( m_pSlider = new PlaylistSlider( Qt::Horizontal, this ), 1, true );
-    m_pSlider->setTracking( false );
-    connect( m_pSlider, SIGNAL( sliderPressed() ),     SLOT( sliderPressed() ) );
-    connect( m_pSlider, SIGNAL( sliderReleased() ),    SLOT( sliderReleased() ) );
-    connect( m_pSlider, SIGNAL( sliderMoved( int ) ),  SLOT( sliderMoved( int ) ) );
+    addWidget( m_pSlider = new amaroK::Slider( Qt::Horizontal, this ), 1, true );
+    connect( m_pSlider, SIGNAL(sliderReleased( int )), EngineController::instance(), SLOT(seek( int )) );
+    connect( m_pSlider, SIGNAL(valueChanged( int )), SLOT(drawTimeDisplay( int )) );
 
     // time display
     addWidget( m_pTimeLabel = new TimeLabel( this ), 0, true );
@@ -121,15 +119,12 @@ StatusBar::~StatusBar()
 
 void StatusBar::engineStateChanged( EngineBase::EngineState state )
 {
-    bool enable = false; //for most states we want the slider disabled
-
     switch( state )
     {
-        case EngineBase::Idle:
         case EngineBase::Empty:
             m_pTimeLabel->clear();
             m_pTitle->clear();
-            m_pSlider->setMaxValue( 0 );
+            m_pSlider->setEnabled( false );
             break;
 
         case EngineBase::Paused:
@@ -138,13 +133,14 @@ void StatusBar::engineStateChanged( EngineBase::EngineState state )
             break;
 
         case EngineBase::Playing:
+            m_pSlider->setEnabled( true );
             m_pPauseTimer->stop();
             //clear(); // clear TEMPORARY message
-            enable = true;
             break;
-    }
 
-    m_pSlider->setEnabled( enable );
+        case EngineBase::Idle:
+            ; //just do nothing, idle is temporary and a limbo state
+    }
 }
 
 
@@ -161,15 +157,11 @@ void StatusBar::slotItemCountChanged(int newCount)
 
 void StatusBar::engineTrackPositionChanged( long position )
 {
-    if ( !m_sliderPressed )
-    {
-        position /= 1000; //we deal in seconds
-        drawTimeDisplay( position );
-        m_pSlider->setValue( position );
-    }
+    position /= 1000; //we deal in seconds
+    m_pSlider->setValue( position );
 }
 
-void StatusBar::drawTimeDisplay( long seconds )
+void StatusBar::drawTimeDisplay( int seconds )
 {
     const uint trackLength = EngineController::instance()->bundle().length();
     if( AmarokConfig::timeDisplayRemaining() && trackLength > 0 ) seconds = trackLength - seconds;
@@ -207,45 +199,20 @@ void StatusBar::customEvent( QCustomEvent *e )
     }
 }
 
-inline void StatusBar::sliderPressed()
-{
-    m_sliderPressed = true;
-}
-
-inline void StatusBar::sliderReleased()
-{
-    m_sliderPressed = false;
-
-    //we have a maximum resolution of 1 second, since we can only display that accuracy in the statusbar anyway
-    EngineController::engine()->seek( m_pSlider->value() * 1000 );
-}
-
-inline void StatusBar::sliderMoved( int value )
-{
-    if ( m_sliderPressed )
-        drawTimeDisplay( static_cast<long>( value ) );
-    else
-    //that's the case of scrolling with the mouse wheel
-    EngineController::engine()->seek( value * 1000 );
-}
-
-
 inline void StatusBar::slotPauseTimer() //slot
 {
-    static bool quick = true;
+    static uint counter = 0;
 
-    if( quick )
+    if( counter == 0 )
     {
-        m_pPauseTimer->changeInterval( 300 );
         m_pTimeLabel->erase();
 
     } else {
 
-        m_pPauseTimer->changeInterval( 1000 );
         m_pTimeLabel->update();
     }
 
-    quick = !quick;
+    ++counter &= 3;
 }
 
 /********** ToggleLabel ****************/

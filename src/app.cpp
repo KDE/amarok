@@ -382,7 +382,7 @@ void App::applySettings( bool firstTime )
         //firstTime the engine is the DummyEngine, which isn't a plugin so it can't
         //be queried by the Manager
 
-        if( firstTime || AmarokConfig::soundSystem() != 
+        if( firstTime || AmarokConfig::soundSystem() !=
                          PluginManager::getService( engine )->property( "X-KDE-amaroK-name" ).toString() )
         {
             engine = EngineController::loadEngine();
@@ -548,6 +548,38 @@ void App::genericEventHandler( QWidget *source, QEvent *e )
         #undef e
 
         break;
+
+    //this like every entry in the generic event handler is used by more than one widget
+    //please don't remove!
+    case QEvent::Wheel:
+    {
+        #define e static_cast<QWheelEvent*>(e)
+        const bool up = e->delta() > 0;
+
+        switch( e->state() )
+        {
+        case ControlButton:
+            //if this seems strange to you, please bring it up on #amarok
+            //for discussion as we can't decide which way is best!
+            if( up ) EngineController::instance()->previous();
+            else     EngineController::instance()->next();
+            break;
+
+        case ShiftButton:
+            EngineController::instance()->increaseVolume( e->delta() / 18 );
+            break;
+
+        default:
+            EngineBase *engine = EngineController::engine();
+            int seek = engine->position() + ( e->delta() / 120 ) * 10000; // 10 seconds
+            engine->seek( seek < 0 ? 0 : seek );
+        }
+
+        e->accept();
+        #undef e
+
+        break;
+    }
 
     case QEvent::Close:
 

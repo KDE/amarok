@@ -49,13 +49,13 @@ public:
 protected:
     void timerEvent( QTimerEvent* );
     void drawButtonLabel( QPainter* );
-    
+
     static const int GLOW_INTERVAL = 35;
     static const int NUMPIXMAPS = 16;
 
     QPixmap m_pixmapOff;
     QPixmap m_pixmapDisabled;
-        
+
     QPtrList<QPixmap> m_glowPixmaps;
     int m_glowIndex;
 };
@@ -74,7 +74,7 @@ public slots:
 
 private:
     void drawButton( QPainter* );
-    
+
     const QPixmap m_up;
     const QPixmap m_down;
 };
@@ -88,7 +88,6 @@ class PlayerWidget : public QWidget, public EngineObserver
         PlayerWidget( QWidget* = 0, const char* = 0, bool enablePlaylist = false );
         ~PlayerWidget();
 
-        void timeDisplay( int );
         void startDrag();
 
     public slots:
@@ -107,9 +106,8 @@ class PlayerWidget : public QWidget, public EngineObserver
         void effectsWindowToggled( bool );
 
     private slots:
-        void slotSliderReleased();
-        void slotSliderChanged( int value );
         void drawScroll();
+        void timeDisplay( int );
 
     private:
         void setScroll( const QStringList& );

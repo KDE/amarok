@@ -24,12 +24,12 @@
 class KAction;
 class KProgress;
 class KToggleAction;
-class PlaylistSlider;
 class QCustomEvent;
 class QTimer;
 
 namespace amaroK {
 
+class Slider;
 class ToggleLabel;
 
 class StatusBar : public KStatusBar, public EngineObserver
@@ -37,7 +37,7 @@ class StatusBar : public KStatusBar, public EngineObserver
     Q_OBJECT
 public:
     StatusBar( QWidget *parent = 0, const char *name = 0 );
-    virtual ~StatusBar();
+    ~StatusBar();
 
     static StatusBar* self() { return m_self; }
 
@@ -51,14 +51,11 @@ protected: /* reimpl from engineobserver */
     virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
 
 private slots:
-    void sliderPressed();
-    void sliderReleased();
-    void sliderMoved( int value );
     void slotPauseTimer();
+    void drawTimeDisplay( int position );
 
 private:
-    void customEvent( QCustomEvent* e );
-    void drawTimeDisplay( long position );
+    virtual void customEvent( QCustomEvent* e );
 
     static StatusBar* m_self;
 
@@ -66,7 +63,7 @@ private:
     QLabel         *m_pTitle;
     QLabel         *m_pTotal;
     KProgress      *m_pProgress;
-    PlaylistSlider *m_pSlider;
+    amaroK::Slider *m_pSlider;
     bool            m_sliderPressed;
     QTimer         *m_pPauseTimer;
 };

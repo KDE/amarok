@@ -88,17 +88,17 @@ Menu::Menu()
     insertItem( i18n( "&Visualizations..." ), ID_SHOW_VIS_SELECTOR );
 
     insertSeparator();
-   
+
     insertItem( i18n( "&Scripts..." ), ID_SHOW_SCRIPT_SELECTOR );
     insertItem( i18n( "&JavaScript Console" ), ID_SHOW_SCRIPT_CONSOLE );
-    
+
     #ifndef HAVE_KJSEMBED
     setItemEnabled( ID_SHOW_SCRIPT_SELECTOR, false );
     setItemEnabled( ID_SHOW_SCRIPT_CONSOLE, false );
     #endif
-    
+
     insertSeparator();
-    
+
     insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( slotConfigEffects() ) );
     insertItem( i18n( "Configure &Decoder..." ), ID_CONF_DECODER );
 
@@ -253,7 +253,6 @@ VolumeAction::VolumeAction( KActionCollection *ac )
   : KAction( i18n( "Volume" ), 0, ac, "toolbar_volume" )
   , m_slider( 0 ) //is QGuardedPtr
 {
-    //NOTE we only support one plugging currently
     EngineController::instance()->attach( this );
 }
 
@@ -265,49 +264,32 @@ VolumeAction::~VolumeAction()
 int
 VolumeAction::plug( QWidget *w, int index )
 {
-    amaroK::ToolBar *bar = dynamic_cast<amaroK::ToolBar*>( w );
+    //NOTE we only support one plugging currently
 
-    if( bar && kapp->authorizeKAction( name() ) )
-    {
-        const int id = KAction::getToolButtonID();
-        addContainer( w, id );
-        connect( w, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
+    delete (amaroK::Slider*) m_slider; //just in case, remember, we only support one plugging!
 
-        delete (PlaylistSlider*) m_slider; //just in case, remember, we only support one plugging!
+    m_slider = new amaroK::Slider( Qt::Vertical, w, amaroK::VOLUME_MAX );
+    m_slider->setName( "ToolBarVolume" );
+    m_slider->setFixedHeight( 35 ); //FIXME how to determine a sensible height?
+    m_slider->setValue( AmarokConfig::masterVolume() );
 
-        m_slider = new PlaylistSlider( Qt::Vertical, w, "ToolBarVolume" );
-        //FIXME is there a way to get some sensible height?
-        m_slider->setFixedHeight( 35 );
-        m_slider->setMaxValue( amaroK::VOLUME_MAX );
-        m_slider->setValue( amaroK::VOLUME_MAX - AmarokConfig::masterVolume() );
-        QToolTip::add( m_slider, i18n( "Volume control" ) );
-        connect( m_slider, SIGNAL(valueChanged( int )), SLOT(sliderMoved( int )) );
-        connect( bar, SIGNAL(wheelMoved( int )), SLOT(wheelMoved( int )) );
+    QToolTip::add( m_slider, i18n( "Volume Control" ) );
 
-        bar->insertWidget( id, 0, m_slider, index );
+    EngineController* const ec = EngineController::instance();
+    connect( m_slider, SIGNAL(sliderMoved( int )), ec, SLOT(setVolume( int )) );
+    connect( m_slider, SIGNAL(sliderReleased( int )), ec, SLOT(setVolume( int )) );
 
-        return containerCount() - 1;
-    }
-    else return -1;
+    static_cast<KToolBar*>(w)->insertWidget( KAction::getToolButtonID(), 0, m_slider, index );
+
+    return 0;
 }
 
 void
 VolumeAction::engineVolumeChanged( int value )
 {
-    if( m_slider ) m_slider->setValue( amaroK::VOLUME_MAX - value );
+    if( m_slider ) m_slider->setValue( value );
 }
 
-void
-VolumeAction::sliderMoved( int value ) //SLOT
-{
-    EngineController::instance()->setVolume( amaroK::VOLUME_MAX - value );
-}
-
-void
-VolumeAction::wheelMoved( int delta ) //SLOT
-{
-    if( m_slider ) m_slider->setValue( m_slider->value() - delta / 18 );
-}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////

@@ -17,122 +17,120 @@
 
 #include "sliderwidget.h"
 
-#include <qapplication.h> //globalStut() function
+#include <qapplication.h>
 #include <qbrush.h>
 #include <qpainter.h>
 #include <qpixmap.h>
-#include <qpointarray.h>
-#include <qrangecontrol.h>
 #include <qsize.h>
 
-#include <kglobal.h>
+
+amaroK::Slider::Slider( Qt::Orientation orientation, QWidget *parent, uint max )
+        : QSlider( orientation, parent )
+        , m_sliding( false )
+{
+    setRange( 0, max );
+}
+
+void
+amaroK::Slider::wheelEvent( QWheelEvent *e )
+{
+    uint step = e->delta() / 18;
+    if( orientation() == Vertical ) step = -step;
+    QSlider::setValue( QSlider::value() + step );
+
+    emit sliderReleased( value() );
+}
+
+void
+amaroK::Slider::mouseMoveEvent( QMouseEvent *e )
+{
+    if ( m_sliding )
+    {
+        QSlider::setValue( orientation() == Horizontal
+          ? QRangeControl::valueFromPosition( e->pos().x() - sliderRect().width()/2, width() - sliderRect().width() )
+          : QRangeControl::valueFromPosition( e->pos().y() - sliderRect().height()/2, height() - sliderRect().height() ) );
+
+        emit sliderMoved( value() );
+    }
+    else QSlider::mouseMoveEvent( e );
+}
+
+void
+amaroK::Slider::mousePressEvent( QMouseEvent *e )
+{
+    m_sliding = true;
+
+    if ( !sliderRect().contains( e->pos() ) )
+        mouseMoveEvent( e );
+}
+
+void
+amaroK::Slider::mouseReleaseEvent( QMouseEvent* )
+{
+    m_sliding = false;
+
+    emit sliderReleased( value() );
+}
+
+void
+amaroK::Slider::setValue( int newValue )
+{
+    if ( !m_sliding )
+         QSlider::setValue( adjustValue( newValue ) );
+
+    //don't adjust the slider while the user is dragging it!
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// CLASS PrettySlider
+//////////////////////////////////////////////////////////////////////////////////////////
 
 #define THICKNESS 7
 #define MARGIN 3
 
-//---<init>---
-amaroK::Slider::Slider( QWidget *parent, Qt::Orientation orient, VDirection dir )
-        : QWidget( parent, "amaroK::Slider", Qt::WRepaintNoErase )
-        , QRangeControl()
-        , m_isPressed( false )
-        , m_orientation( orient )
-        , m_dir( dir )
+amaroK::PrettySlider::PrettySlider( Qt::Orientation orientation, QWidget *parent, uint max )
+    : amaroK::Slider( orientation, parent, max )
 {
+    setWFlags( Qt::WNoAutoErase );
     setFocusPolicy( QWidget::NoFocus );
-    setSizePolicy( (orient == Horizontal)
-                   ? QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed )
-                   : QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding ) );
-}
-//---</init>---
-
-
-QSize amaroK::Slider::minimumSizeHint() const
-{
-    return sizeHint();
 }
 
-
-void amaroK::Slider::setValue( int val )
+void
+amaroK::PrettySlider::mouseMoveEvent( QMouseEvent *e )
 {
-    if ( val != value() )
+    if ( m_sliding )
     {
-        QRangeControl::setValue( val );
-        update();
-        emit valueChanged( val );
+        QSlider::setValue( orientation() == Horizontal
+          ? QRangeControl::valueFromPosition( e->pos().x(), width()-2 )
+          : QRangeControl::valueFromPosition( e->pos().y(), height()-2 ) );
+
+        emit sliderMoved( value() );
     }
 }
 
-
-QSize amaroK::Slider::sizeHint() const
+void
+amaroK::PrettySlider::paintEvent( QPaintEvent* )
 {
-    constPolish();
+    const int w   = orientation() == Qt::Horizontal ? width() : height();
+    const int pos = double((w-2) * Slider::value()) / maxValue();
+    const int h   = THICKNESS;
 
-    if ( m_orientation == Horizontal )
-        return QSize( 1, THICKNESS + MARGIN ).expandedTo( QApplication::globalStrut() );
-    else
-        return QSize( THICKNESS + MARGIN, 1 ).expandedTo( QApplication::globalStrut() );
-}
+    QPixmap  buf( size() );
+    QPainter p( &buf, this );
 
+    buf.fill( parentWidget()->backgroundColor() );
 
-//---<events>---
-void amaroK::Slider::mouseMoveEvent( QMouseEvent *e )
-{
-    if ( m_isPressed )
-    {
-        if ( m_orientation == Qt::Horizontal )
-            setValue( valueFromPosition( e->pos().x(), width() ) );
-        else
-            setValue( valueFromPosition( height() - 3 - e->pos().y(), height() - 3 ) );
-    }
-}
-
-
-void amaroK::Slider::mousePressEvent( QMouseEvent *e )
-{
-    if( e->button() == Qt::LeftButton )
-    {
-        m_isPressed = true;
-
-        mouseMoveEvent( e );
-
-        emit sliderPressed();
-    }
-}
-
-
-void amaroK::Slider::mouseReleaseEvent( QMouseEvent * )
-{
-    m_isPressed = false;
-    emit sliderReleased();
-}
-
-
-void amaroK::Slider::paintEvent( QPaintEvent * )
-{
-    int length = ( m_orientation == Qt::Horizontal ) ? width() : height();
-    int val = value();
-    if (m_orientation == Vertical && m_dir == BottomUp)
-        val = maxValue() - val;
-    int pos = positionFromValue( val, length-2-1 );
-
-    QPixmap pBufPixmap( width(), height() );
-    //bitBlt( &pBufPixmap, 0, 0, parentWidget(), x(), y(), width(), height() );
-    pBufPixmap.fill( parentWidget()->backgroundColor() );
-
-    QPainter p( &pBufPixmap, this );
-
-    if ( m_orientation == Qt::Vertical )
+    if ( orientation() == Qt::Vertical )
     {
         p.translate( 0, height()-1 );
-        p.rotate( -90 );
-        pos = length-2-1 - pos;
+        p.rotate( -90 ); //90 degrees clockwise
     }
 
     p.translate( 0, MARGIN );
-    p.setPen( QColor( 0x80a0ff ) );
-    p.drawRect( 0, 0, length-1, THICKNESS-1 );
-    p.fillRect( 1, 1, pos,      THICKNESS-2-1,
-                QBrush( QColor( 0x00, 0x20, 0x90 ), QBrush::SolidPattern ) );
+      p.setPen( 0x80a0ff );
+      p.fillRect( 0, 0, pos, h, QColor( 0x002090 ) );
+      p.drawRect( 0, 0, w, h );
     p.translate( 0, -MARGIN );
 
     //<Triangle Marker>
@@ -140,55 +138,34 @@ void amaroK::Slider::paintEvent( QPaintEvent * )
     pa.setPoint( 0, pos - 3, 1 );
     pa.setPoint( 1, pos + 3, 1 );
     pa.setPoint( 2, pos,     5 );
-    p.setBrush( QBrush( paletteForegroundColor(), QBrush::SolidPattern ) );
+    p.setBrush( paletteForegroundColor() );
     p.drawConvexPolygon( pa );
     //</Triangle Marker>
 
     p.end();
-    bitBlt( this, 0, 0, &pBufPixmap );
+
+    bitBlt( this, 0, 0, &buf );
 }
 
+#if 0
+/** these functions aren't required in our fixed size world,
+    but they may become useful one day **/
 
-//////////////////////////////////////////////////////////////////////////////////////////
-// CLASS PlaylistSlider
-//////////////////////////////////////////////////////////////////////////////////////////
-
-amaroK::PlaylistSlider::PlaylistSlider( QSlider::Orientation orientation, QWidget* parent, const char* name )
-    : QSlider( orientation, parent, name )
-{}
-
-
-void amaroK::PlaylistSlider::mousePressEvent( QMouseEvent* e )
+QSize
+amaroK::PrettySlider::minimumSizeHint() const
 {
-    if ( sliderRect().contains( e->pos() ) )
-        // Clicks on the handle will be processed by QSlider
-        QSlider::mousePressEvent( e );
-    else {
-        // We catch clicks outside of the handle, and reposition directly
-        int newVal;
-        
-        if ( orientation() == Horizontal )
-            newVal = static_cast<int>( (float) e->x() / (float) width() * (float) maxValue() );
-        else
-            newVal = static_cast<int>( (float) e->y() / (float) height() * (float) maxValue() );
-        
-        setValue( newVal );
-        emit sliderMoved( newVal );
-    }
+    return sizeHint();
 }
 
-
-void amaroK::PlaylistSlider::wheelEvent( QWheelEvent* e )
+QSize
+amaroK::PrettySlider::sizeHint() const
 {
-    // PlaylistSlider generates a sliderMoved event when using wheel. The statusbar handles
-    // the 'scroll' by seeking in the track.
-    
-    // Invert delta --> Moving wheel forwards seeks forward.
-    QWheelEvent event( e->pos(), ( -1 ) * e->delta(), e->state(), e->orientation() );
-    
-    QSlider::wheelEvent( &event );
-    emit sliderMoved( value() );
-}
+    constPolish();
 
+    return (orientation() == Horizontal
+             ? QSize( maxValue(), THICKNESS + MARGIN )
+             : QSize( THICKNESS + MARGIN, maxValue() )).expandedTo( QApplit ication::globalStrut() );
+}
+#endif
 
 #include "sliderwidget.moc"

@@ -74,21 +74,16 @@ namespace amaroK
 
     class VolumeAction : public KAction, public EngineObserver
     {
-            Q_OBJECT
-
         public:
             VolumeAction( KActionCollection* );
             ~VolumeAction();
-            virtual int plug( QWidget *, int index = -1 );
 
-        private slots:
-            void sliderMoved( int value );
-            void wheelMoved( int delta );
+            virtual int plug( QWidget *, int index = -1 );
 
         private:
             void engineVolumeChanged( int value );
 
-            QGuardedPtr<PlaylistSlider> m_slider;
+            QGuardedPtr<amaroK::Slider> m_slider;
     };
 
 
