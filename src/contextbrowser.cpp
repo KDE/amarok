@@ -157,18 +157,10 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     values.clear();
     names.clear();
 
-    browser->write( "</table>" );
-    browser->write( "</div>" );
+    browser->write( "</table></div>" );
     // </Current Track Information>
 
     // <Favourite Tracks Information>
-    browser->write( "<br><div class='rbcontent'>" );
-    browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-    browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Favorite tracks by this artist:" ) + "</td></tr>" );
-    browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
-    browser->write( "</table>" );
-    browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
-
     m_db->execSql( QString( "SELECT tags.title, tags.url, statistics.playcounter "
                             "FROM tags, artist, statistics "
                             "WHERE tags.artist = artist.id AND artist.name LIKE '%1' AND statistics.url = tags.url "
@@ -176,29 +168,31 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
                             "LIMIT 0,5;" )
                    .arg( m_db->escapeString( bundle.artist() ) ), &values, &names );
 
-    for ( uint i = 0; i < ( values.count() / 3 ); i++ )
+    if ( values.count() )
     {
-        browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:%1\"'>%2 <i>(%3)</i></a></td></tr>" )
-                        .arg( values[i*3 + 1] )
-                        .arg( values[i*3] )
-                        .arg( values[i*3 + 2] ) );
+        browser->write( "<br><div class='rbcontent'>" );
+        browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
+        browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Favorite tracks by this artist:" ) + "</td></tr>" );
+        browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
+        browser->write( "</table>" );
+        browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+    
+        for ( uint i = 0; i < ( values.count() / 3 ); i++ )
+        {
+            browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:%1\"'>%2 <i>(%3)</i></a></td></tr>" )
+                            .arg( values[i*3 + 1] )
+                            .arg( values[i*3] )
+                            .arg( values[i*3 + 2] ) );
+        }
+    
+        values.clear();
+        names.clear();
+    
+        browser->write( "</table></div>" );
     }
-
-    values.clear();
-    names.clear();
-
-    browser->write( "</table>" );
-    browser->write( "</div>" );
     // </Favourite Tracks Information>
 
-    // <Other Tracks on this album>
-    browser->write( "<br><div class='rbcontent'>" );
-    browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-    browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Other tracks on this album:" ) + "</td></tr>" );
-    browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
-    browser->write( "</table>" );
-    browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
-
+    // <Tracks on this album>
     m_db->execSql( QString( "SELECT tags.title, tags.url, tags.track "
                             "FROM tags, artist, album "
                             "WHERE tags.album = album.id AND album.name LIKE '%1' AND "
@@ -207,53 +201,66 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
                    .arg( m_db->escapeString( bundle.album() ) )
                    .arg( m_db->escapeString( bundle.artist() ) ), &values, &names );
 
-    for ( uint i = 0; i < ( values.count() / 3 ); i++ )
+    if ( values.count() )
     {
-        browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:%1\"'>%2%3</a></td></tr>" )
-                        .arg( values[i*3 + 1] )
-                        .arg( ( values[i*3 + 2] == "" ) ? "" : values[i*3 + 2] + ". " )
-                        .arg( values[i*3] ) );
+        browser->write( "<br><div class='rbcontent'>" );
+        browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
+        browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Tracks on this album:" ) + "</td></tr>" );
+        browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
+        browser->write( "</table>" );
+        browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+    
+        for ( uint i = 0; i < ( values.count() / 3 ); i++ )
+        {
+            browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:%1\"'>%2%3</a></td></tr>" )
+                            .arg( values[i*3 + 1] )
+                            .arg( ( values[i*3 + 2] == "" ) ? "" : values[i*3 + 2] + ". " )
+                            .arg( values[i*3] ) );
+        }
+    
+        values.clear();
+        names.clear();
+    
+        browser->write( "</table></div>" );
     }
+    // </Tracks on this album>
 
-    values.clear();
-    names.clear();
-
-    browser->write( "</table>" );
-    browser->write( "</div>" );
-    // </Other titles on this album>
-
-    // <Other albums of this artist>
-    browser->write( "<br><div class='rbcontent'>" );
-    browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-    browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Other albums:" ) + "</td></tr>" );
-    browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
-    browser->write( "</table>" );
-    browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
-
+    // <Albums by this artist>
     m_db->execSql( QString( "SELECT DISTINCT album.name, album.id, artist.id "
                             "FROM album, tags, artist "
-                            "WHERE album.id = tags.album AND album.name <> '%1' AND tags.artist = artist.id AND artist.name LIKE '%2' "
+                            "WHERE album.id = tags.album AND tags.artist = artist.id AND artist.name LIKE '%1' "
                             "ORDER BY album.name;" )
-                   .arg( m_db->escapeString( bundle.album() ) )
                    .arg( m_db->escapeString( bundle.artist() ) ), &values, &names );
 
-    for ( uint i = 0; i < ( values.count() / 3 ); i++ )
+    if ( values.count() )
     {
-        if ( values[i].isEmpty() ) continue;
+        browser->write( "<br><div class='rbcontent'>" );
+        browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
+        browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Albums by this artist:" ) + "</td></tr>" );
+        browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
+        browser->write( "</table>" );
+        browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+    
+        for ( uint i = 0; i < ( values.count() / 3 ); i++ )
+        {
+            if ( values[i].isEmpty() ) continue;
+    
+            browser->write( QString ( "<tr><td onClick='window.location.href=\"album:%1/%2\"' height='42' valign='top' class='rbalbum'>"
+                                      "<img align='left' hspace='2' width='40' height='40' src='%3'><span class='album'>%4</span><br>%5 Tracks</td>"
+                                      "</tr>" )
+                            .arg( values[i*3 + 2] )
+                            .arg( values[i*3 + 1] )
+                            .arg( m_db->getImageForAlbum( values[i*3 + 2], values[i*3 + 1], locate( "data", "amarok/images/sound.png" ) ) )
+                            .arg( values[i*3] )
+                            .arg( m_db->albumSongCount( values[i*3 + 2], values[i*3 + 1] ) ) );
+        }
 
-        browser->write( QString ( "<tr><td onClick='window.location.href=\"album:%1/%2\"' height='42' valign='top' class='rbalbum'>"
-                                  "<img align='left' hspace='2' width='40' height='40' src='%3'><span class='album'>%4</span><br>%5 Tracks</td>"
-                                  "</tr>" )
-                        .arg( values[i*3 + 2] )
-                        .arg( values[i*3 + 1] )
-                        .arg( m_db->getImageForAlbum( values[i*3 + 2], values[i*3 + 1], locate( "data", "amarok/images/sound.png" ) ) )
-                        .arg( values[i*3] )
-                        .arg( m_db->albumSongCount( values[i*3 + 2], values[i*3 + 1] ) ) );
+        browser->write( "</table></div>" );
     }
-
-    browser->write( "</table></div><br></html>" );
+    // </Albums by this artist>
+    
+    browser->write( "<br></html>" );
     browser->end();
-    // </Other albums of this artist>
 
     m_db->incSongCounter( bundle.url().path() );
 }
