@@ -28,7 +28,6 @@
 #define SCOPE_SIZE 7
 #define VOLUME_MAX 100
 
-#include <kglobalaccel.h>
 #include <kuniqueapplication.h>
 #include <kurl.h>
     
@@ -39,6 +38,8 @@ class QListView;
 class QListViewItem;
 class QString;
 class QTimer;
+
+class KGlobalAccel;
 
 class BrowserWin;
 class EffectWidget;
