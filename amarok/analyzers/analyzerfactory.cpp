@@ -21,21 +21,13 @@
 #include "analyzerbase.h" //declaration here
 
 #include "baranalyzer.h"
-#include "glanalyzer.h"
-#include "glanalyzer2.h"
-#include "glanalyzer3.h"
-// #include "blowanalyzer.h"
 #include "sonogram.h"
 #include "turbine.h"
 
-//FIXME is there a better define?
-//#define AMAROK_RELEASE
-#ifndef AMAROK_RELEASE
-    #include "distortanalyzer.h"
-//    #include "blockanalyzer.h"
-    #include "baranalyzer2.h"
-//    #include "spectralshine.h"
-    #include "xmasdrug.h"
+#ifdef HAVE_QGLWIDGET
+#include "glanalyzer.h"
+#include "glanalyzer2.h"
+#include "glanalyzer3.h"
 #endif
 
 #include <qlabel.h>
@@ -70,24 +62,6 @@ QWidget *Analyzer::Factory::createAnalyzer( QWidget *parent )
     case 6:
         analyzer = new GLAnalyzer3( parent );
         break;
-#endif
-#ifndef AMAROK_RELEASE
-    case 7:
-        analyzer = new XmasAnalyzer( parent );
-        break;
-    case 8:
-        //analyzer = new BlockAnalyzer( parent );
-        //break;
-        AmarokConfig::setCurrentAnalyzer( 9 );
-    case 9:
-        analyzer = new DistortAnalyzer( parent );
-        break;
-    case 10:
-        analyzer = new BarAnalyzer2( parent );
-        break;
-//    case 11:
-//        analyzer = new SpectralShineAnalyzer( parent );
-//        break;
 #endif
     default:
         AmarokConfig::setCurrentAnalyzer( 0 );
