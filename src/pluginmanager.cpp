@@ -162,6 +162,10 @@ void
 PluginManager::showAbout( const QString &constraint )
 {
     KTrader::OfferList offers = query( constraint );
+
+    if ( offers.isEmpty() )
+        return;
+
     KService::Ptr s = offers.front();
 
     const QString body = "<tr><td>%1</td><td>%2</td></tr>";
