@@ -108,7 +108,7 @@
     at qvaluelist.h:629kdDebug() << "Shutting down TagReader Thread..\n";
 #10 0x080886da in QValueList<KURL>::begin() (this=0x81c9c9c)
     at qvaluelist.h:473
-#11 0x08086af1 in PlaylistLoader::process(KURL::List&, bool) (this=0x81c9c90, 
+#11 0x08086af1 in PlaylistLoader::process(KURL::List&, bool) (this=0x81c9c90,
     list=@0x81c9c9c, validate=true) at playlistloader.cpp:150
 #12 0x08086a90 in PlaylistLoader::run() (this=0x81c9c90)
     at playlistloader.cpp:122
@@ -154,7 +154,7 @@ PlaylistLoader::~PlaylistLoader()
         KIO::NetAccess::removeTempFile( m_first->url().path() );
         delete m_first; //FIXME deleting m_first is dangerous as user may have done it for us!
     }
-    
+
     kdDebug() << "[loader] Done!\n";
 }
 
@@ -448,7 +448,7 @@ PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
       //FIXME this seems to block the ui
       //      <markey> err, I was wrong. it _does_ really block the UI when it gets stuck.
       //      <mxcl> to fix this we need to do more work with signals and slots on KIO::NetAccess
-      
+
       //FIXME <markey> NetAccess::download will create tempfile automagically, if given an empty string
       //      <mxcl> true, but "amarok4857895.tmp" looked bad in the playlist, so I used KTempFile
       #if KDE_IS_VERSION(3,1,92)
@@ -510,10 +510,10 @@ void TagReader::append( PlaylistItem *item )
 void TagReader::run()
 {
     MetaBundle *tags;
-    
+
     msleep( 200 ); //this is an attempt to encourage the queue to be filled with more than 1 item before we
                    //start processing, and thus prevent unecessary stopping and starting of the thread
-    kdDebug() << "[reader] Started..\n";    
+    kdDebug() << "[reader] Started..\n";
 
     while( m_bool )
     {
@@ -542,7 +542,7 @@ void TagReader::run()
 MetaBundle *TagReader::readTags( const KURL &url, MetaBundle *tags )
 {
    //audioproperties are read on demand
-   TagLib::FileRef f( url.path().local8Bit(), false ); 
+   TagLib::FileRef f( url.path().local8Bit(), false );
 
    if ( !f.isNull() && f.tag() ) //FIXME I'm thinking that calling f.tag() here is possibly not nice, must check!
    {
@@ -551,11 +551,11 @@ MetaBundle *TagReader::readTags( const KURL &url, MetaBundle *tags )
       tags = new MetaBundle( TStringToQString( tag->title() ).stripWhiteSpace(),
                        TStringToQString( tag->artist() ).stripWhiteSpace(),
                        TStringToQString( tag->album() ).stripWhiteSpace(),
-                       QString::number( tag->year() ),                       
+                       QString::number( tag->year() ),
                        TStringToQString( tag->comment() ).stripWhiteSpace(),
-                       TStringToQString( tag->genre() ).stripWhiteSpace(),                       
+                       TStringToQString( tag->genre() ).stripWhiteSpace(),
                        QString( url.directory().section( '/', -1 ) ),
-                       QString::number( tag->track() ),                       
+                       QString::number( tag->track() ),
                        f.audioProperties() );
    }
    else tags = 0;
@@ -568,7 +568,7 @@ void TagReader::cancel()
 {
    //FIXME if an event was just sent for any of these items then amaroK will crash (when they are deleted)
    //      you've "solved" this by processing events after calling this in PlaylistWidget
-   
+
    mutex.lock();
    m_Q.clear();
    mutex.unlock();
@@ -578,12 +578,12 @@ void TagReader::cancel()
 void TagReader::remove( PlaylistItem *pi )
 {
    //thread safe removal of above item, called when above item no longer needs tags, ie is about to be deleted
-   
+
    //FIXME if an event was just sent for any of these items then amaroK will crash (when they are deleted)
    //      you've "solved" this by processing events after calling this in PlaylistWidget
-   
+
    mutex.lock();
-   m_Q.erase( std::remove( m_Q.begin(), m_Q.end(), pi ), m_Q.end() );
+   m_Q.remove( Bundle(pi, "", 0) );
    mutex.unlock();
 
 }
@@ -594,13 +594,13 @@ TagReader::TagReaderEvent::~TagReaderEvent()
 {
     delete m_tags;
 }
-      
+
 void TagReader::TagReaderEvent::bindTags()
 {
    //for GUI access only
    //we're a friend of PlaylistItem
    if( m_tags )
-   {   
+   {
        m_item->setMeta( *m_tags );
    }
 }

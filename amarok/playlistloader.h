@@ -10,6 +10,7 @@
 #include <qthread.h>   //baseclass
 #include <qmutex.h>    //stack allocated
 #include <qevent.h>    //baseclass
+#include <qvaluelist.h>
 #include <kurl.h>      //need KURL::List
 #include <kfileitem.h> //need the enum
 
@@ -45,7 +46,7 @@ public:
        LoaderEvent( PlaylistLoader *pl, const KURL &u, MetaBundle* const mb ) : QCustomEvent( 65432 ), m_thread( pl ), m_url( u ), m_tags( mb ), m_kio( false ) {}
        LoaderEvent( PlaylistLoader *pl, const KURL &u ) : QCustomEvent( 65432 ), m_thread( pl ), m_url( u ), m_tags( 0 ), m_kio( true ) {}
 
-       //TODO attempt to more clearly define the downloading version of this event 
+       //TODO attempt to more clearly define the downloading version of this event
 
        const KURL &url() const { return m_url; }
        PlaylistItem *makePlaylistItem( QListView *lv );
@@ -87,8 +88,6 @@ private:
 };
 
 
-#include <deque> //stack allocated
-
 class TagReader : public QThread
 {
 public:
@@ -109,7 +108,7 @@ public:
         , m_tags( t )
       {}
       ~TagReaderEvent();
-      
+
       void bindTags();
 
    private:
@@ -121,12 +120,24 @@ private:
    void run();
    MetaBundle *readTags( const KURL &url, MetaBundle *tags );
 
+   // should qualify for a QValueList value (i.e. have a. copy ctor, b. default ctor, c. assignment operator)
    struct Bundle
    {
+      Bundle() : item(0), url(), tags(0) {}
       //FIXME you want const data members, but then you can't do assignment, and std::remove() needs assignment!
       //      try copy constructor
       Bundle( PlaylistItem *pi, const KURL &u, MetaBundle* mb ) : item( pi ), url( u ), tags( mb ) {}
 
+      Bundle& operator=( const Bundle &b )
+      {
+         if (&b != this)
+         {
+            this->item = b.item;
+            this->url = b.url;
+            this->tags = b.tags;
+         }
+         return *this;
+      }
       bool operator==( const Bundle &b ) const { return ( item == b.item ); }
       bool operator==( const PlaylistItem* const pi ) const { return ( item == pi ); }
 
@@ -136,7 +147,7 @@ private:
    };
 
    QWidget *m_parent;
-   std::deque<Bundle> m_Q;
+   QValueList<Bundle> m_Q;
    QMutex mutex;
    bool m_bool;
 };
