@@ -143,7 +143,8 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
         m_pixmap.loadFromData( m_buffer, m_bufferIndex );
     
         QVBox* container = new QVBox( 0, 0, WDestructiveClose );
-        container->setCaption( "Cover for:" + m_album + " - amaroK" );
+        /* we show m_album here, since it's always the filename on save */
+        container->setCaption( m_album + " - amaroK" );
         connect( this, SIGNAL( destroyed() ), container, SLOT( deleteLater() ) );
     
         QWidget* widget = new QWidget( container );
@@ -176,7 +177,6 @@ CoverFetcher::editSearch() //SLOT
     {    
         m_keyword = sdlg->searchString->text();
         getCover( m_keyword, m_album, CoverFetcher::heavy );
-        deleteLater();
         return;
     }
     else
