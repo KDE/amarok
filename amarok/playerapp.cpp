@@ -14,7 +14,7 @@ email                : markey@web.de
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
+
 #include "amarokarts/amarokarts.h"
 #include "amarokbutton.h"
 #include "amarokslider.h"
@@ -82,13 +82,13 @@ PlayerApp::PlayerApp()
 {
     setName( "amaroK" );
     pApp = this; //global
-    
+
     initOSD();
     initPlayerWidget();
     initBrowserWin();
 
     readConfig();
-    
+
     m_pEngine = EngineBase::createEngine( config()->soundSystem(), m_artsNeedsRestart, SCOPE_SIZE );
     m_pEngine ->initMixer( config()->softwareMixerOnly() );
 
@@ -105,7 +105,7 @@ PlayerApp::PlayerApp()
     //       the playlist seems to be loaded when the browserWindow appears
     //TODO   now it's threaded, it's more feasable to load it early
     m_pBrowserWin->m_pPlaylistWidget->insertMedia( kapp->dirs()->saveLocation
-                                                 ( "data", kapp->instanceName() + "/" ) + "current.m3u" );
+            ( "data", kapp->instanceName() + "/" ) + "current.m3u" );
 
     restoreSession();
 
@@ -121,17 +121,17 @@ PlayerApp::~PlayerApp()
 
     //Save current item info in dtor rather than saveConfig() as it is only relevant on exit
     //and we may in the future start to use read and saveConfig() in other situations
-//    m_pConfig->setGroup( "Session" );
+    //    m_pConfig->setGroup( "Session" );
     KURL url( m_pEngine->loaded() ?  m_playingURL : m_pBrowserWin->m_pPlaylistWidget->currentTrackURL() );
 
     if ( !url.isEmpty() )
     {
-       config()->setResumeTrack( url.url() );
-       
-       if ( m_pEngine->state() != EngineBase::Empty )
-           config()->setResumeTime( m_pEngine->position() / 1000 );
-       else
-           config()->setResumeTime( -1 );
+        config()->setResumeTrack( url.url() );
+
+        if ( m_pEngine->state() != EngineBase::Empty )
+            config()->setResumeTime( m_pEngine->position() / 1000 );
+        else
+            config()->setResumeTime( -1 );
     }
 
     slotStop();
@@ -161,22 +161,22 @@ int PlayerApp::newInstance()
 
     if ( args->count() > 0 )
     {
-       KURL::List list;
+        KURL::List list;
 
-       for ( int i = 0; i < args->count(); i++ )
-       {
-          list << args->url( i );
-       }
+        for ( int i = 0; i < args->count(); i++ )
+        {
+            list << args->url( i );
+        }
 
-       bool b = !args->isSet( "e" ); //b = (not enqueue?)
+        bool b = !args->isSet( "e" ); //b = (not enqueue?)
 
-       m_pBrowserWin->m_pPlaylistWidget->insertMedia( list, b );
+        m_pBrowserWin->m_pPlaylistWidget->insertMedia( list, b );
 
-       if ( b )
-       {
-          //FIXME why specify the play flag if we aren't going to be strict?
-          slotPlay();
-       }
+        if ( b )
+        {
+            //FIXME why specify the play flag if we aren't going to be strict?
+            slotPlay();
+        }
     }
 
     if ( args->isSet( "r" ) )                 //rewind
@@ -191,24 +191,25 @@ int PlayerApp::newInstance()
     return KUniqueApplication::newInstance();
 }
 
-
-// INIT -------------------------------------------------------------------------
+/////////////////////////////////////////////////////////////////////////////////////
+// INIT
+/////////////////////////////////////////////////////////////////////////////////////
 
 void PlayerApp::initOSD()
 {
     kdDebug() << "begin PlayerApp::initOSD()" << endl;
 
-    // set font    
+    // set font
     QFont font( "Impact" );
     font.setBold( FALSE );
     font.setPixelSize( 28 );
 
-    // create osd widget    
+    // create osd widget
     m_pOSD = new OSDWidget();
     m_pOSD->setEnabled( TRUE );
     m_pOSD->setFont( font );
     m_pOSD->setColor( QColor( "yellow" )  );
-    
+
     kdDebug() << "end PlayerApp::initOSD()" << endl;
 }
 
@@ -304,26 +305,27 @@ void PlayerApp::initBrowserWin()
 
 void PlayerApp::restoreSession()
 {
-   //here we restore the session
-   //however, do note, this is always done, KDE session management is not involved
+    //here we restore the session
+    //however, do note, this is always done, KDE session management is not involved
 
-   if ( config()->resumePlayback() )
-   {
-      //see if we also saved the time
-      int seconds = config()->resumeTime();
+    if ( config()->resumePlayback() )
+    {
+        //see if we also saved the time
+        int seconds = config()->resumeTime();
 
-      if ( seconds >= 0 )
-      {
-         play( config()->resumeTrack() );
+        if ( seconds >= 0 )
+        {
+            play( config()->resumeTrack() );
 
-         if ( seconds > 0 )
-            m_pEngine->seek( seconds * 1000 );
-      }
-   }
+            if ( seconds > 0 )
+                m_pEngine->seek( seconds * 1000 );
+        }
+    }
 }
 
-
-// METHODS --------------------------------------------------------------------------
+/////////////////////////////////////////////////////////////////////////////////////
+// METHODS
+/////////////////////////////////////////////////////////////////////////////////////
 
 #include <klineedit.h>     //browserWin
 #include <kcombobox.h>     //browserWin::KComboHistory (file chooser lineEdit)
@@ -340,19 +342,19 @@ AmarokConfig *PlayerApp::config()
 void PlayerApp::saveConfig()
 {
     config()->setMasterVolume( m_Volume );
-//     config()->setCurrentDirectory( m_pBrowserWin->m_pBrowserWidget->m_pDirLister->url().path() );
-//     config()->setPathHistory( m_pBrowserWin->m_pBrowserLineEdit->historyItems() );
+    //     config()->setCurrentDirectory( m_pBrowserWin->m_pBrowserWidget->m_pDirLister->url().path() );
+    //     config()->setPathHistory( m_pBrowserWin->m_pBrowserLineEdit->historyItems() );
     config()->setPlayerPos( m_pPlayerWidget->pos() );
     config()->setBrowserWinPos( m_pBrowserWin->pos() );
     config()->setBrowserWinSize( m_pBrowserWin->size() );
     config()->setBrowserWinSplitter( m_pBrowserWin->m_pSplitter->sizes() );
     config()->setBrowserWinEnabled( m_pPlayerWidget->m_pButtonPl->isOn() );
-    
+
     config()->writeConfig();
-    
+
     if (config()->savePlaylist())
-       m_pBrowserWin->m_pPlaylistWidget->saveM3u( kapp->dirs()->saveLocation(
-          "data", kapp->instanceName() + "/" ) + "current.m3u" );
+        m_pBrowserWin->m_pPlaylistWidget->saveM3u( kapp->dirs()->saveLocation(
+                    "data", kapp->instanceName() + "/" ) + "current.m3u" );
 }
 
 
@@ -362,10 +364,10 @@ void PlayerApp::readConfig()
 
     //we restart artsd after each version change, so that it picks up any plugin changes
     m_artsNeedsRestart = config()->version() != APP_VERSION;
-    
-/*    m_pBrowserWin->m_pBrowserWidget->readDir( config()->currentDirectory() );
-    m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( config()->pathHistory() );*/
-    
+
+    /*    m_pBrowserWin->m_pBrowserWidget->readDir( config()->currentDirectory() );
+        m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( config()->pathHistory() );*/
+
     m_pPlayerWidget->move( config()->playerPos() );
     m_pBrowserWin->move( config()->browserWinPos() );
     m_pBrowserWin->resize( config()->browserWinSize() );
@@ -373,7 +375,7 @@ void PlayerApp::readConfig()
     m_pPlayerWidget->m_pButtonPl->setOn( config()->browserWinEnabled() );
 
     m_pBrowserWin->slotUpdateFonts();
-    
+
     m_Volume = config()->masterVolume();
 
     setupColors();
@@ -382,7 +384,7 @@ void PlayerApp::readConfig()
 
     QValueList<int> splitterList;
     splitterList = config()->browserWinSplitter();
-     if ( splitterList.count() != 4 )
+    if ( splitterList.count() != 4 )
     {
         splitterList.clear();
         splitterList.append( 70 );
@@ -394,7 +396,7 @@ void PlayerApp::readConfig()
 
     m_pPlayerWidget->slotUpdateTrayIcon( config()->showTrayIcon() );
 
-// Actions ==========
+    // Actions ==========
 
     m_pGlobalAccel->insert( "add", i18n( "Add Location" ), 0, CTRL + ALT + Key_A, 0,
                             this, SLOT( slotAddLocation() ), true, true );
@@ -489,15 +491,15 @@ void PlayerApp::slotPlay() const { m_pBrowserWin->m_pPlaylistWidget->request( Pl
 void PlayerApp::play( const KURL &url, const MetaBundle *tags )
 {
     m_pEngine->open( url );
-    
+
     connect( m_pEngine, SIGNAL( metaData         ( QString, QString, QString ) ),
              this,      SLOT  ( receiveStreamMeta( QString, QString, QString ) ) );
-    
+
     if ( tags )
     {
         m_length = tags->m_length * 1000;      // sec -> ms
         QString text, bps, Hz, length;
-        
+
         if( tags->m_title.isEmpty() )
         {
             text = url.fileName();
@@ -509,40 +511,40 @@ void PlayerApp::play( const KURL &url, const MetaBundle *tags )
             if( text != "" ) text += " - ";
             text += tags->m_title;
         }
-        
+
         //FIXME add this back
         //text.append( " (" + tags->length() + ")" );
-        
+
         bps  = QString::number( tags->m_bitrate );
         bps += "kbps";
         Hz   = QString::number( tags->m_sampleRate );
         Hz  += "Hz";
-        
+
         // length to string
         if ( floor( tags->m_length / 60 ) < 10 ) length += "0";
         length += QString::number( floor( tags->m_length / 60 ) );
         length += ":";
         if ( tags->m_length % 60 < 10 ) length += "0";
         length += QString::number( tags->m_length % 60 );
-        
+
         m_pPlayerWidget->setScroll( text, bps, Hz, length ); //FIXME get end function to add units!
-        
+
         // OSD message
         m_pOSD->showOSD( text + " - " + length );
     }
     else
     {
         m_length = 0;
-    
+
         if ( m_pEngine->isStream() )
             m_pPlayerWidget->setScroll( i18n( "Stream from: %1" ).arg( url.prettyURL() ), "?", "--" );
-        else   
+        else
             m_pPlayerWidget->setScroll( url.fileName() );
     }
 
     kdDebug() << "[play()] Playing " << url.prettyURL() << endl;
     m_pEngine->play();
-    
+
     m_playingURL = url;
 
     m_pPlayerWidget->m_pSlider->setValue   ( 0 );
@@ -575,7 +577,7 @@ void PlayerApp::slotPause()
 
 void PlayerApp::slotStop()
 {
-    m_pEngine->stop();     
+    m_pEngine->stop();
 
     m_pPlayerWidget->m_pButtonPlay->setOn( false );
     m_pPlayerWidget->m_pButtonPause->setDown( false );
@@ -585,18 +587,18 @@ void PlayerApp::slotStop()
 
 bool PlayerApp::playObjectConfigurable()
 {
-//     if ( m_pPlayObject && !m_pPlayObject->object().isNull() && !m_pPlayerWidget->m_pPlayObjConfigWidget )
-//     {
-//         Arts::TraderQuery query;
-//         query.supports( "Interface", "Arts::GuiFactory" );
-//         query.supports( "CanCreate", m_pPlayObject->object()._interfaceName() );
-// 
-//         std::vector<Arts::TraderOffer> *queryResults = query.query();
-//         bool yes = queryResults->size();
-//         delete queryResults;
-// 
-//         return yes;
-//     }
+    //     if ( m_pPlayObject && !m_pPlayObject->object().isNull() && !m_pPlayerWidget->m_pPlayObjConfigWidget )
+    //     {
+    //         Arts::TraderQuery query;
+    //         query.supports( "Interface", "Arts::GuiFactory" );
+    //         query.supports( "CanCreate", m_pPlayObject->object()._interfaceName() );
+    //
+    //         std::vector<Arts::TraderOffer> *queryResults = query.query();
+    //         bool yes = queryResults->size();
+    //         delete queryResults;
+    //
+    //         return yes;
+    //     }
 
     return false;
 }
@@ -614,7 +616,7 @@ void PlayerApp::slotSliderReleased()
     {
         m_pEngine->seek( m_pPlayerWidget->m_pSlider->value() );
     }
-        
+
     m_bSliderIsPressed = false;
 }
 
@@ -624,7 +626,7 @@ void PlayerApp::slotSliderChanged( int value )
     if ( m_bSliderIsPressed )
     {
         value /= 1000;    // ms -> sec
-        
+
         if ( config()->timeDisplayRemaining() )
         {
             value = m_length / 1000 - value;
@@ -644,7 +646,7 @@ void PlayerApp::slotVolumeChanged( int value )
     value = VOLUME_MAX - value;
 
     m_pEngine->setVolume( value );
-   
+
 }
 
 
@@ -654,7 +656,7 @@ void PlayerApp::slotMainTimer()
         return;
 
     m_pPlayerWidget->m_pSlider->setValue( m_pEngine->position() );
-    
+
     // <Draw TimeDisplay>
     if ( m_pPlayerWidget->isVisible() )
     {
@@ -698,96 +700,96 @@ void PlayerApp::slotVisTimer()
 
     if ( m_pPlayerWidget->isVisible() && !m_pPlayerWidget->m_pButtonPause->isDown() )
     {
-        if ( true )    // FIXME
-//         if ( m_scopeId )
-        {
-            std::vector<float> *pScopeVector = m_pEngine->scope();
-            float *front = static_cast<float*>( &pScopeVector->front() );
-            if (!front)
-                return;
+        std::vector<float> *pScopeVector = m_pEngine->scope();
+        float *front = static_cast<float*>( &pScopeVector->front() );
+        if (!front)
+            return;
 
-            if ( config()->currentAnalyzer() == 6) { // sonogram
-                m_pFht->power( front );
-                m_pFht->scale( front, 1.0 / 64 );
-            } else {
-                float *f = new float[ m_pFht->size() ];
-                m_pFht->copy( f, front );
-                m_pFht->logSpectrum( front, f );
-                m_pFht->scale( front, 1.0 / 20 );
-                delete[] f;
-            }
-            pScopeVector->resize( pScopeVector->size() / 2 );
-                        
-            m_pPlayerWidget->m_pVis->drawAnalyzer( pScopeVector );
-
-/*
-            // Muesli's Beat Detection - A Night's Oddysee
-            // shift old elements
-            for ( uint x = 0; x < 18; ++x )
-                for ( uint y = 42; y > 0; --y ) m_beatEnergy[x][y] = m_beatEnergy[x][y - 1];
-
-            // get current energy values
-            for ( uint x = 0; x < pScopeVector->size(); ++x ) m_beatEnergy[x][0] = pScopeVector->at(x);
-
-            // compare to old elements and get averages
-            double beatAvg[18];
-//            double beatVariance[18];
-//            double beatMood[18];
-            
-            for ( uint x = 0; x < 18; ++x )
-            {
-                beatAvg[x] = 0;
-                for ( uint y = 1; y < 44; ++y )  beatAvg[x] += m_beatEnergy[x][y];
-                
-                beatAvg[x] = beatAvg[x] / 43;
-            }
-*/                
-/*            for ( uint x = 0; x < 18; ++x )
-            {
-                beatVariance[x] = 0;
-                for ( uint y = 0; y < 42; ++y )  beatVariance[x] += (pow((m_beatEnergy[x][y] - beatAvg[x]), 2) / 43);
-            }
-                
-            for ( uint x = 0; x < 18; ++x )
-                beatMood[x] = (-0.0025714 * beatVariance[x]) + 1.5142857;
-*/
-
-            // do we have a beat? let's dance!
-/*            int total_hits = 0;
-            for ( uint x = 0; x < 18; ++x )
-            {
-                double factor = cos( x * 4 ) * 18;
-                factor = beatAvg[x] * factor;
-                
-                if ( m_beatEnergy[x][0] > factor )
-                {
-                    total_hits++;
-                    kdDebug() << "*CLAP* factor: " << factor << " - x: " << x << " - average energy: " << beatAvg[x] << " - current peak: " << m_beatEnergy[x][0] << endl;
-                }
-            }
-
-            if ( total_hits > 3 ) kdDebug() << "***CLAPCLAPCLAP***" << endl;
-*/
-            delete pScopeVector;
+        if ( config()->currentAnalyzer() == 6)
+        { // sonogram
+            m_pFht->power( front );
+            m_pFht->scale( front, 1.0 / 64 );
         }
         else
         {
-            if ( t > 999 ) t = 1; //0 = wasted calculations
-            if ( t < 201 )
-            {
-                double dt = double(t) / 200 ;
-                std::vector<float> v( 31 );
-                for( uint i = 0; i < v.size(); ++i )
-                    v[i] = dt * (sin( M_PI + (i * M_PI) / v.size() ) + 1.0);
-                m_pPlayerWidget->m_pVis->drawAnalyzer( &v );
-            }
-            else
-                m_pPlayerWidget->m_pVis->drawAnalyzer( NULL );
-
-            ++t;
+            float *f = new float[ m_pFht->size() ];
+            m_pFht->copy( f, front );
+            m_pFht->logSpectrum( front, f );
+            m_pFht->scale( front, 1.0 / 20 );
+            delete[] f;
         }
+        pScopeVector->resize( pScopeVector->size() / 2 );
+
+        m_pPlayerWidget->m_pVis->drawAnalyzer( pScopeVector );
+
+        /*
+                    // Muesli's Beat Detection - A Night's Oddysee
+                    // shift old elements
+                    for ( uint x = 0; x < 18; ++x )
+                        for ( uint y = 42; y > 0; --y ) m_beatEnergy[x][y] = m_beatEnergy[x][y - 1];
+         
+                    // get current energy values
+                    for ( uint x = 0; x < pScopeVector->size(); ++x ) m_beatEnergy[x][0] = pScopeVector->at(x);
+         
+                    // compare to old elements and get averages
+                    double beatAvg[18];
+        //            double beatVariance[18];
+        //            double beatMood[18];
+                    
+                    for ( uint x = 0; x < 18; ++x )
+                    {
+                        beatAvg[x] = 0;
+                        for ( uint y = 1; y < 44; ++y )  beatAvg[x] += m_beatEnergy[x][y];
+                        
+                        beatAvg[x] = beatAvg[x] / 43;
+                    }
+        */
+        /*            for ( uint x = 0; x < 18; ++x )
+                    {
+                        beatVariance[x] = 0;
+                        for ( uint y = 0; y < 42; ++y )  beatVariance[x] += (pow((m_beatEnergy[x][y] - beatAvg[x]), 2) / 43);
+                    }
+                        
+                    for ( uint x = 0; x < 18; ++x )
+                        beatMood[x] = (-0.0025714 * beatVariance[x]) + 1.5142857;
+        */
+
+        // do we have a beat? let's dance!
+        /*            int total_hits = 0;
+                    for ( uint x = 0; x < 18; ++x )
+                    {
+                        double factor = cos( x * 4 ) * 18;
+                        factor = beatAvg[x] * factor;
+                        
+                        if ( m_beatEnergy[x][0] > factor )
+                        {
+                            total_hits++;
+                            kdDebug() << "*CLAP* factor: " << factor << " - x: " << x << " - average energy: " << beatAvg[x] << " - current peak: " << m_beatEnergy[x][0] << endl;
+                        }
+                    }
+         
+                    if ( total_hits > 3 ) kdDebug() << "***CLAPCLAPCLAP***" << endl;
+        */
+        delete pScopeVector;
+    }
+    else
+    {
+        if ( t > 999 ) t = 1; //0 = wasted calculations
+        if ( t < 201 )
+        {
+            double dt = double(t) / 200 ;
+            std::vector<float> v( 31 );
+            for( uint i = 0; i < v.size(); ++i )
+                v[i] = dt * (sin( M_PI + (i * M_PI) / v.size() ) + 1.0);
+            m_pPlayerWidget->m_pVis->drawAnalyzer( &v );
+        }
+        else
+            m_pPlayerWidget->m_pVis->drawAnalyzer( NULL );
+
+        ++t;
     }
 }
+
 
 // FIXME <berkus> unify this and the one below
 void PlayerApp::slotPlaylistShowHide()
@@ -840,17 +842,17 @@ void PlayerApp::slotShowOptions()
 {
     if( KConfigDialog::showDialog("settings") )
         return;
-    
+
     KConfigDialog *dialog = new KConfigDialog( m_pPlayerWidget, "settings", AmarokConfig::self() );
-    
+
     dialog->addPage( new Options1(0,"General"),  i18n("General"),  "misc",   i18n("Configure general options") );
     dialog->addPage( new Options2(0,"Fonts"),    i18n("Fonts"),    "fonts",  i18n("Configure fonts") );
     dialog->addPage( new Options3(0,"Colors"),   i18n("Colors"),   "colors", i18n("Configure Colors") );
     dialog->addPage( new Options4(0,"Playback"), i18n("Playback"), "kmix",   i18n("Configure playback") );
-    
+
     connect( dialog, SIGNAL( settingsChanged() ), this, SLOT( readConfig() ) );
-    
-    dialog->setInitialSize( QSize( 480, 430 ) );        
+
+    dialog->setInitialSize( QSize( 480, 430 ) );
     dialog->show();
 }
 
@@ -867,18 +869,18 @@ void PlayerApp::slotConfigEffects()
 
 void PlayerApp::slotHide()
 {
-//FIXME: as browserWin is now a child widget of playerWidget, it should, technically hide browserWin
-//       for us when we hide playerWidget, find out why it doesn't! We shouldn't have to map out this
-//       functionality!
+    //FIXME: as browserWin is now a child widget of playerWidget, it should, technically hide browserWin
+    //       for us when we hide playerWidget, find out why it doesn't! We shouldn't have to map out this
+    //       functionality!
 
-//But conveniently this allows us to keep the hidePlaylistWindowWithMainWidget option
-//But I think this option should be removed and amaroK's behavior should be to hide everything
+    //But conveniently this allows us to keep the hidePlaylistWindowWithMainWidget option
+    //But I think this option should be removed and amaroK's behavior should be to hide everything
 
-// <berkus> imo the reason it doesn't hide is that we pass some wrong flags upong creation of browserwin
-// (maybe toplevel is redundant or something)
+    // <berkus> imo the reason it doesn't hide is that we pass some wrong flags upong creation of browserwin
+    // (maybe toplevel is redundant or something)
 
     if ( config()->hidePlaylistWindow() )
-       m_pBrowserWin->hide();
+        m_pBrowserWin->hide();
 }
 
 

@@ -56,7 +56,10 @@ class AnalyzerBase : public QFrame
         void clicked();
 
     protected:
-        void interpolate( std::vector<float> *, std::vector<float> & ) const;
+        //linear interpolation routine 
+        //@param inVec Vector to be interpolated
+        //@param outVec destination
+        void interpolate( std::vector<float> *inVec, std::vector<float> &outVec ) const;
         void initSin( std::vector<float> & ) const;
 
         virtual void init() = 0;

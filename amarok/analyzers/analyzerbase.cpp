@@ -107,37 +107,30 @@ void AnalyzerBase::mousePressEvent( QMouseEvent *e )
 }
 
 
-void AnalyzerBase::interpolate( std::vector<float> *oldVec, std::vector<float> &newVec ) const
+void AnalyzerBase::interpolate( std::vector<float> *inVec, std::vector<float> &outVec ) const
 {
-    if ( oldVec->size() )
-    {    
-        uint newSize = newVec.size(); //vector::size() is O(1)
-    
-        //necessary? code bloat if not
-        if( newSize == oldVec->size() ) { newVec = *oldVec; return; }
-    
-        double pos = 0.0;
-        double step = static_cast<double>( oldVec->size() ) / newSize;
-    
-        for ( uint i = 0; i < newSize; ++i, pos += step )
-        {
-            double error = pos - floor( pos );
-            ulong offset = static_cast<unsigned long>( pos );
-    
-            ulong indexLeft = offset + 0;
-    
-            if ( indexLeft >= oldVec->size() )
-                indexLeft = oldVec->size() - 1;
-    
-            ulong indexRight = offset + 1;
-    
-            if ( indexRight >= oldVec->size() )
-                indexRight = oldVec->size() - 1;
-    
-            newVec[i] = (*oldVec)[indexLeft] * ( 1.0 - error ) +
-                        (*oldVec)[indexRight] * error;
-        }
+    double pos = 0.0;
+    double step = static_cast<double>( inVec->size() ) / outVec.size();
+
+    for ( uint i = 0; i < outVec.size(); ++i, pos += step )
+    {
+        double error = pos - floor( pos );
+        ulong offset = static_cast<ulong>( pos );
+
+        ulong indexLeft = offset + 0;
+
+        if ( indexLeft >= inVec->size() )
+            indexLeft = inVec->size() - 1;
+
+        ulong indexRight = offset + 1;
+
+        if ( indexRight >= inVec->size() )
+            indexRight = inVec->size() - 1;
+
+        outVec[i] = (*inVec)[indexLeft ] * ( 1.0 - error ) +
+                    (*inVec)[indexRight] * error;
     }
 }
+
 
 #include "analyzerbase.moc"
