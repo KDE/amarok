@@ -94,7 +94,7 @@ BrowserBar::BrowserBar( QWidget *parent )
     m_tabBar->setFixedWidth( m_pos );
 
 #ifdef BROWSER_BAR_LEFT
-    m_tabBar->move( 0, 20 );
+    m_tabBar->move( 0, 5 );
     m_browserHolder->move( m_pos, 0 );
 #else
     m_playlist->move( 0, 0 );
