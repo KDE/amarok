@@ -3,10 +3,12 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #164 being the highest available (take this one for your next bug and increase here)
+           #165 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  FIX 164 <markey> It's not possible to switch crossfading off. Togglebutton always jumps back.
 
   FIX 163 <markey> Application crashes on every exit. gdb yielded this:
                      #0  0x03a00e90 in ?? ()
