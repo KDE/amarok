@@ -82,24 +82,18 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
     for ( int i = 0; i < gst_caps_get_size( caps ); i++ ) {
         GstStructure* structure = gst_caps_get_structure( caps, i );
 
-        if ( gst_structure_has_field( structure, "channels" ) ) {
-            //             kdDebug() << k_funcinfo << "Field 'channels' found." << endl;
+        if ( gst_structure_has_field( structure, "channels" ) )
             gst_structure_get_int( structure, "channels", &channels );
-        }
     }
     gst_caps_free( caps );
-    //     kdDebug() << k_funcinfo << "Channels: " << channels << endl;
 
     if ( GST_IS_BUFFER( buf ) ) {
-        //         kdDebug() << k_funcinfo << "BUFFER_SIZE: " << GST_BUFFER_SIZE( buf ) << endl;
         gint16 * data = ( gint16* ) GST_BUFFER_DATA( buf );
 
         //divide length by 2 for casting from 8bit to 16bit, and divide by number of channels
         for ( ulong i = 0; i < GST_BUFFER_SIZE( buf ) / 2 / channels; i += channels ) {
-            if ( instance()->m_scopeBufIndex == instance()->m_scopeBuf.size() ) {
+            if ( instance()->m_scopeBufIndex == instance()->m_scopeBuf.size() )
                 instance()->m_scopeBufIndex = 0;
-                //                 kdDebug() << k_funcinfo << "m_scopeBuf overflow!\n";
-            }
 
             float temp = 0.0;
             //add all channels together so we effectively get a mono scope
@@ -343,12 +337,12 @@ GstEngine::play( const KURL& url, bool stream )  //SLOT
         m_gst_uadesrc = GST_ELEMENT( gst_uade_new() );
         gst_bin_add ( GST_BIN ( m_gst_thread ), m_gst_uadesrc );
         g_object_set( G_OBJECT( m_gst_uadesrc ), "location", (const char*) ( QFile::encodeName( url.path() ) ), NULL );
-        gst_element_link_many( m_gst_uadesrc, m_gst_identity, m_gst_volumeFade, m_gst_volume, m_gst_audioconvert, m_gst_audioscale, m_gst_audiosink, 0 );
+        gst_element_link_many( m_gst_uadesrc, m_gst_volumeFade, m_gst_identity, m_gst_volume, m_gst_audioconvert, m_gst_audioscale, m_gst_audiosink, 0 );
     }
     else {
         if ( !( m_gst_spider = createElement( m_gst_thread, "spider", "spider" ) ) ) { goto error; }
         /* link all elements */
-        gst_element_link_many( m_gst_src, m_gst_spider, m_gst_identity, m_gst_volumeFade, m_gst_volume, m_gst_audioconvert, m_gst_audioscale, m_gst_audiosink, 0 );
+        gst_element_link_many( m_gst_src, m_gst_spider, m_gst_volumeFade, m_gst_identity, m_gst_volume, m_gst_audioconvert, m_gst_audioscale, m_gst_audiosink, 0 );
     }
     
     gst_element_set_state( m_gst_thread, GST_STATE_READY );

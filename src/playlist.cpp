@@ -1066,9 +1066,8 @@ void Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
         const PlaylistItem* playlistItem = static_cast<const PlaylistItem*>( item );
 
         QString text = MetaBundle( playlistItem ).prettyTitle();
-        // For streams add the streamtitle too
-        //TODO make prettyTitle do this
-        if ( playlistItem->url().protocol() == "http" ) text.prepend( playlistItem->title() + " :: " );
+        // For streams add the location too. TODO make prettyTitle do this
+        if ( playlistItem->url().protocol() == "http" ) text.append( " :: " + playlistItem->trackName() );
 
         // Copy both to clipboard and X11-selection
         QApplication::clipboard()->setText( text, QClipboard::Clipboard );
