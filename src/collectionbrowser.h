@@ -37,6 +37,7 @@ class CollectionBrowser: public QVBox
     private slots:
         void slotSetFilterTimeout();
         void slotSetFilter();
+	void slotCheckFolders();
 
     private:
     //attributes:

@@ -80,6 +80,9 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_actionsMenu->insertSeparator();
     m_actionsMenu->insertItem( i18n( "Start Scan" ), m_view, SLOT( scan() ), 0, IdScan );
 
+    connect( m_actionsMenu, SIGNAL( aboutToShow() ),
+             this, SLOT( slotCheckFolders() ) );
+
     m_cat1Menu ->insertItem( i18n( "Album" ), m_view, SLOT( cat1Menu( int ) ), 0, IdAlbum );
     m_cat1Menu ->insertItem( i18n( "Artist"), m_view, SLOT( cat1Menu( int ) ), 0, IdArtist );
     m_cat1Menu ->insertItem( i18n( "Genre" ), m_view, SLOT( cat1Menu( int ) ), 0, IdGenre );
@@ -118,6 +121,15 @@ CollectionBrowser::slotSetFilter() //SLOT
     m_view->renderView();
 }
 
+void
+CollectionBrowser::slotCheckFolders() // SLOT
+{
+    KConfig* config = amaroK::config( "Collection Browser" );
+    QStringList m_dirs = config->readListEntry( "Folders" );
+
+    if ( m_dirs.isEmpty() )
+        m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
+}
 
 void
 CollectionBrowser::setupDirs()  //SLOT
@@ -143,7 +155,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 {
     kdDebug() << k_funcinfo << endl;
     m_instance = this;
-    
+
     setSelectionMode( QListView::Extended );
     setItemsMovable( false );
     setRootIsDecorated( true );
@@ -155,7 +167,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     m_db = new CollectionDB();
     if ( !m_db )
         kdWarning() << k_funcinfo << "Could not open SQLite database\n";
-    
+
     //<read config>
         KConfig* config = amaroK::config( "Collection Browser" );
 
@@ -212,7 +224,6 @@ CollectionView::~CollectionView() {
     kdDebug() << k_funcinfo << endl;
 
     KConfig* const config = amaroK::config( "Collection Browser" );
-    config->writeEntry( "Folders", m_dirs );
     config->writeEntry( "Category1", m_category1 );
     config->writeEntry( "Category2", m_category2 );
     config->writeEntry( "Scan Recursively", m_recursively );
@@ -241,6 +252,11 @@ CollectionView::setupDirs()  //SLOT
     m_recursively = result.scanRecursively;
     m_monitor = result.monitorChanges;
 
+    /* Write this here so we can check it in slotCheckFolders() -- cartman */
+    KConfig* const config = amaroK::config( "Collection Browser" );
+    config->writeEntry( "Folders", m_dirs );
+    config->sync();
+
     scan();
 }
 
@@ -255,7 +271,7 @@ CollectionView::scan()  //SLOT
         m_isScanning = true;
         m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
         m_insertdb->scan( m_dirs, m_recursively );
-    
+
         m_progressBox = new QHBox( m_parent  );
         QPushButton* button = new QPushButton( SmallIcon( "button_cancel" ),
                                   i18n( "Abort" ), m_progressBox );
@@ -318,7 +334,7 @@ CollectionView::scanDone( bool changed ) //SLOT
 
     m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, true );
     m_isScanning = false;
-    
+
     delete m_progressBox;
     m_progressBox = 0;
 }
@@ -434,12 +450,12 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         menu.insertItem( i18n( "&Make Playlist" ), MAKE );
         menu.insertItem( i18n( "&Add to Playlist" ), APPEND ); //TODO say Append to Playlist
         menu.insertItem( i18n( "&Queue After Current Track" ), QUEUE );
-        
+
         menu.insertSeparator();
-        
+
         menu.insertItem( i18n( "&Fetch Cover Images" ), this, SLOT( fetchCover() ), 0, COVER );
         menu.insertItem( i18n( "Track Information" ), this, SLOT( showTrackInfo() ), 0, INFO );
-        
+
         menu.setItemEnabled( INFO, ( item->depth() && m_category2 == i18n( "None" ) ) || item->depth() == 2 );
 
         switch( menu.exec( point ) ) {
@@ -464,7 +480,7 @@ CollectionView::fetchCover() //SLOT
     if ( m_category2 != i18n( "None" ) && item->depth() != 2 ) return;
 
     KURL::List urls( listSelected() );
-    
+
     for ( uint i = 0; i < urls.count(); i++ ) {
         QString command = QString
                             ( "SELECT DISTINCT artist.name, album.name FROM artist, tags, album "
@@ -475,12 +491,12 @@ CollectionView::fetchCover() //SLOT
         m_db->execSql( command, &values, &names );
         if ( values.isEmpty() ) continue;
         QString key = values[0] + " - " + values[1];
-        
+
         m_db->fetchCover( this, key );
     }
 }
 
-                        
+
 void
 CollectionView::showTrackInfo() //SLOT
 {
@@ -662,7 +678,7 @@ CollectionView::tableForCat( const QString& cat ) const
     //falltrough:
     return 0;
 }
-  
+
 
 #include "collectionbrowser.moc"
 
