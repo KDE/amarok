@@ -103,7 +103,6 @@ Analyzer::Base<W>::drawFrame()
     switch( engine->state() )
     {
     case Engine::Playing:
-    case Engine::Idle:
     {
         const Engine::Scope &thescope = engine->scope();
         static Analyzer::Scope scope( 512 );
