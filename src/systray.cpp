@@ -48,16 +48,6 @@ amaroK::TrayIcon::TrayIcon( QWidget *playerWidget )
     ac->action( "stop"  )->plug( contextMenu() );
     ac->action( "next"  )->plug( contextMenu() );
 
-    QPopupMenu &p = *contextMenu();
-    QStringList shortcuts; shortcuts << "" << "Z" << "X" << "C" << "V" << "B";
-    const QString body = "|&%1| %2";
-
-    for( uint index = 1; index < 6; ++index )
-    {
-        int id = p.idAt( index );
-        p.changeItem( id, body.arg( *shortcuts.at( index ), p.text( id ) ) );
-    }
-
     //seems to be necessary
     KAction *quit = actionCollection()->action( "file_quit" );
     quit->disconnect();
