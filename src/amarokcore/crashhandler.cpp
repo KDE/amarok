@@ -8,16 +8,9 @@
 #include "debug.h"
 #include <kapplication.h>
 #include <kdeversion.h>
-#include <kdialog.h>
 #include <klocale.h>
-#include <kpushbutton.h>
-#include <kstdguiitem.h>
-#include <kstandarddirs.h>
 #include <qfile.h>
-#include <qlabel.h>
-#include <qlayout.h>
 #include <qtextstream.h>
-#include <qvbox.h>
 
 namespace std
 {
@@ -38,10 +31,12 @@ namespace amaroK
     void
     Crash::crashHandler( int /*signal*/ )
     {
-        {
-            #define LINES 40
+        debug() << "amaroK is crashing...\n";
 
-            QString backtrace;
+        {
+            #define LINES 256
+
+            QString backtrace = "Due to b0rkage, the crash-function gets shown like: [0xffffe420]\n\n";
             QString path = amaroK::saveLocation() + "backtrace";
             QString body = i18n(
                     "amaroK has crashed! We're terribly sorry about this :(\n\n"
@@ -52,23 +47,25 @@ namespace amaroK
 
             body += "Engine       %1\n"
                     "Build date:  " __DATE__ "\n"
-                    "GCC version: " __VERSION__ "\n" //assuming we're using GCC
+                    "CC version: " __VERSION__ "\n" //assuming we're using GCC
                     "KDElibs:     " KDE_VERSION_STRING "\n";
 
             {   /// obtain backtrace
                 void *array[ LINES ];
-                size_t size;
-                char **strings;
-                size_t i;
+                size_t size = std::backtrace( array, LINES );
 
-                size = std::backtrace( array, LINES );
-                strings = std::backtrace_symbols( array, size );
+                if ( size ) {
+                    char **strings = std::backtrace_symbols( array, size );
 
-                for (i = 0; i < size; i++) {
-                    backtrace += QString::fromLatin1( strings[i] );
-                    backtrace += '\n'; }
+                    for( size_t i = 0; i < size; i++ ) {
+                        backtrace += QString::number( i ) + ": ";
+                        backtrace += QString::fromLatin1( strings[i] );
+                        backtrace += '\n'; }
 
-                std::free( strings );
+                    std::free( strings );
+                }
+                else
+                    backtrace = "No backtrace available :(";
             }
 
             {   /// write a file to contain the backtrace
@@ -96,6 +93,15 @@ namespace amaroK
 }
 
 #if 0
+
+#include <qlabel.h>
+#include <qlayout.h>
+#include <qvbox.h>
+#include <kdialog.h>
+#include <kpushbutton.h>
+#include <kstdguiitem.h>
+#include <kstandarddirs.h>
+
 amaroK::CrashHandlerWidget::CrashHandlerWidget()
 {
     QBoxLayout *layout = new QHBoxLayout( this, 18, 12 );
