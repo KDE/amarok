@@ -48,21 +48,22 @@ int main( int argc, char *argv[] )
                                      "Feedback:\namarok-devel@lists.sourceforge.net" ),
                           I18N_NOOP( "http://amarok.sourceforge.net" ) );
 
-    aboutData.addAuthor( "Christian Muehlhaeuser", "Developer", "chris@chris.de", "http://www.chris.de" );
-    aboutData.addAuthor( "Mark Kretschmann", "Project founder, developer, maintainer", "markey@web.de" );
-    aboutData.addAuthor( "Max Howell", "Developer", "max.howell@methylblue.com" );
-    aboutData.addAuthor( "Stanislav Karchebny", "Patches, improvements, visualizations, cleanups, i18n",
+    aboutData.addAuthor( "Christian Muehlhaeuser", "developer", "chris@chris.de", "http://www.chris.de" );
+    aboutData.addAuthor( "Mark Kretschmann", "project founder, developer, maintainer", "markey@web.de" );
+    aboutData.addAuthor( "Max Howell", "developer", "max.howell@methylblue.com" );
+    aboutData.addAuthor( "Stanislav Karchebny", "patches, improvements, visualizations, cleanups, i18n",
                          "berk@upnet.ru" );
 
-    aboutData.addCredit( "Adam Pigg", "Analyzer, Patches", "adam@piggz.fsnet.co.uk" );
-    aboutData.addCredit( "Alper Ayazoglu", "Graphics: Buttons", "cubon@cubon.de", "http://cubon.de" );
-    aboutData.addCredit( "Jarkko Lehti", "Tester, Irc channel operator, Whipping", "grue@iki.fi" );
-    aboutData.addCredit( "Josef Spillner", "KDE RadioStation Code", "spillner@kde.org" );
-    aboutData.addCredit( "Markus A. Rykalski", "Graphics", "exxult@exxult.de" );
-    aboutData.addCredit( "Roman Becker", "Graphics", "roman@formmorf.de", "http://www.formmorf.de" );
+    aboutData.addCredit( "Adam Pigg", "analyzer, patches", "adam@piggz.fsnet.co.uk" );
+    aboutData.addCredit( "Alper Ayazoglu", "graphics: buttons", "cubon@cubon.de", "http://cubon.de" );
+    aboutData.addCredit( "Jarkko Lehti", "tester, IRC channel operator, whipping", "grue@iki.fi" );
+    aboutData.addCredit( "Josef Spillner", "KDE RadioStation code", "spillner@kde.org" );
+    aboutData.addCredit( "Markus A. Rykalski", "graphics", "exxult@exxult.de" );
+    aboutData.addCredit( "Melchior Franz", "new FFT routine, bugfixes", "mfranz@kde.org" );
+    aboutData.addCredit( "Roman Becker", "graphics: amaroK logo", "roman@formmorf.de", "http://www.formmorf.de" );
     aboutData.addCredit( "Scott Wheeler", "Taglib", "wheeler@kde.org" );
-    aboutData.addCredit( "The Noatun Authors", "Code Inspiration", 0, "http://noatun.kde.org" );
-    aboutData.addCredit( "Whitehawk Stormchaser", "Tester, Patches", "zerokode@gmx.net" );
+    aboutData.addCredit( "The Noatun Authors", "code inspiration", 0, "http://noatun.kde.org" );
+    aboutData.addCredit( "Whitehawk Stormchaser", "tester, patches", "zerokode@gmx.net" );
 
     KCmdLineArgs::init( argc, argv, &aboutData );
     KCmdLineArgs::addCmdLineOptions( options );   // Add our own options.
