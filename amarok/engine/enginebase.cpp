@@ -24,6 +24,7 @@ email                : markey@web.de
 #include <sys/ioctl.h>
 #include <sys/soundcard.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 #include "qstringlist.h"
 
