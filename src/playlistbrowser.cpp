@@ -150,7 +150,7 @@ PlaylistBrowser::~PlaylistBrowser()
 QString PlaylistBrowser::playlistCacheFile()
 {
     //returns the playlists stats cache file
-    return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "playlists";
+    return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "playlistbrowser_save";
 }
 
 
