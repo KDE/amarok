@@ -611,7 +611,7 @@ CollectionView::cat1Menu( int id, bool rerender )  //SLOT
     m_parent->m_cat1Menu->setItemChecked( m_cat1, false ); //uncheck old item
     m_parent->m_cat2Menu->setItemEnabled( m_cat1, true );  //enable old item
     m_cat1 = id;
-    setColumnText( 0, captionForCategory( m_cat1 ) );
+    updateColumnHeader();
     m_parent->m_cat1Menu->setItemChecked( m_cat1, true );
 
     //prevent choosing the same category in both menus
@@ -644,8 +644,7 @@ CollectionView::cat2Menu( int id, bool rerender )  //SLOT
     m_parent->m_cat3Menu->setItemEnabled( m_cat3, true );  //enable old item
     m_cat2 = id;
     m_parent->m_cat2Menu->setItemChecked( m_cat2, true );
-    if( id != CollectionBrowser::IdNone )
-        setColumnText( 0, columnText(0) + " / " + captionForCategory( m_cat2 ) );
+    updateColumnHeader();
 
     enableCat3Menu( id != CollectionBrowser::IdNone );
 
@@ -671,8 +670,7 @@ CollectionView::cat3Menu( int id, bool rerender )  //SLOT
     m_parent->m_cat3Menu->setItemChecked( m_cat3, false ); //uncheck old item
     m_cat3 = id;
     m_parent->m_cat3Menu->setItemChecked( m_cat3, true );
-    if( id != CollectionBrowser::IdNone )
-        setColumnText( 0, columnText(0) + " / " + captionForCategory( m_cat3 ) );
+    updateColumnHeader();
 
     if ( rerender )
         renderView();
@@ -886,6 +884,17 @@ CollectionView::showTrackInfo() //SLOT
 // private
 //////////////////////////////////////////////////////////////////////////////////////////
 
+void
+CollectionView::updateColumnHeader()
+{
+    setColumnText( 0, captionForCategory( m_cat1 ) );
+        int catArr[2] = {m_cat2, m_cat3};
+    for(int i = 0; i < 2; i++) {
+        if (catArr[i] != CollectionBrowser::IdNone ) {
+            setColumnText( 0, columnText(0) + " / " + captionForCategory( catArr[i] ) ); 
+        }
+    }
+}
 void
 CollectionView::startDrag()
 {

@@ -163,7 +163,7 @@
                                 <enum>LastColumn</enum>
                             </property>
                             <property name="fullWidth">
-                                <bool>true</bool>
+                                <bool>false</bool>
                             </property>
                         </widget>
                     </vbox>

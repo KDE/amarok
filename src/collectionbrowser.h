@@ -129,7 +129,8 @@ class CollectionView : public KListView
 
         QPixmap iconForCategory( const int cat ) const;
         QString captionForCategory( const int cat ) const;
-
+        /**Call when a category has changed **/
+        void updateColumnHeader();
         // Reimplemented from KListView
         void viewportPaintEvent( QPaintEvent* );
         void viewportResizeEvent( QResizeEvent* );
