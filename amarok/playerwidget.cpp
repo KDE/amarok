@@ -272,7 +272,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
                                       locate( "data", "amarok/images/logo_new_inactive.png" ), false );
     lay5->addItem( new QSpacerItem( 4, 0 ) );
     lay5->addWidget( m_pButtonLogo );
-    m_pTimeDisplayLabel = new QLabel( this );
+    m_pTimeDisplayLabel = new QLabel( this, 0, Qt::WRepaintNoErase );
     lay7->addItem( new QSpacerItem( 0, 3 ) );
     lay7->addWidget( m_pTimeDisplayLabel );
 
@@ -318,7 +318,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
 
     // some sizing details
     initScroll(); //requires m_pFrame to be created
-    setFixedSize( 310, 115 + m_pFrame->height() ); //y was 130
+    setFixedSize( 310, 120 + m_pFrame->height() ); //y was 130
     initTimeDisplay();
     m_pTimeDisplayLabel->setFixedSize( 9 * 12 + 2, 12 + 2 );
     timeDisplay( false, 0, 0, 0 );
