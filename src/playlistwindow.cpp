@@ -166,7 +166,7 @@ PlaylistWindow::PlaylistWindow( QWidget *parent, const char *name )
 
     //<InfoBrowser>
         m_contextBrowser = new ContextBrowser( "ContextBrowser" );
-        m_browsers->addBrowser( m_contextBrowser, i18n( "Context" ), "context" );
+        m_browsers->addBrowser( m_contextBrowser, i18n( "Context" ), "document" );
     //</InfoBrowser>
     
     { //<StreamBrowser>
