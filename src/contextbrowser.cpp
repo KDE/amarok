@@ -44,7 +44,7 @@
 #include <kurl.h>
 
 #define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
-#define escapeHTMLAttr(s) QString(s).replace( "%", "%25" ).replace( "'", "%27" )
+#define escapeHTMLAttr(s) QString(s).replace( "%", "%25" ).replace( "'", "%27" ).replace( "#", "%23" ).replace( "?", "%3F" )
 
 
 using amaroK::QStringx;
