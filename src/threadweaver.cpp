@@ -239,11 +239,13 @@ CollectionReader::doJob()
     log << "=======================\n";
     log << i18n( "Last processed file is at the bottom. Report this file in case of crashes while building the Collection.\n\n\n" ).local8Bit();
 
-    // we need to create the temp tables before readDir gets called ( for the dir stats )
-    m_parent->createTables( true );
     
     if ( !m_folders.empty() )
+    {
+        // we need to create the temp tables before readDir gets called ( for the dir stats )
+        m_parent->createTables( true );
         QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Start ) );
+    }
   
     //iterate over all folders
     QStringList entries;
@@ -262,7 +264,6 @@ CollectionReader::doJob()
     }
 
     QApplication::postEvent( m_parent, new ProgressEvent( ProgressEvent::Stop, entries.count() ) );
-    m_parent->dropTables( true );
     log.close();
 
     return !entries.empty();
@@ -420,6 +421,7 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
 
     // rename tables
     m_parent->moveTempTables();
+    m_parent->dropTables( true );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
