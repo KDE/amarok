@@ -171,9 +171,13 @@
         <label>Font for On-Screen Display</label>
         <default code="true">QFont("Arial",20)</default>
      </entry>
-     <entry key="Osd Color" type="Color">
-        <label>Color for On-Screen Display</label>
+     <entry key="Osd Text Color" type="Color">
+        <label>Font Color for On-Screen Display</label>
         <default>#ffff00</default>
+     </entry>
+     <entry key="Osd Background Color" type="Color">
+        <label>Background Color for On-Screen Display</label>
+        <default>#2200ff</default>
      </entry>
      <entry key="Osd Duration" type="Int">
         <label>How many milliseconds the text should be displayed</label>
@@ -181,6 +185,36 @@
         <max>10000</max>
         <default>5000</default>
      </entry>
+     <entry key="Osd X Offset" type="Int">
+        <label>X position offset</label>
+        <min>0</min>
+        <max>10000</max>
+        <default>30</default>
+     </entry>
+     <entry key="Osd Y Offset" type="Int">
+        <label>Y position offset</label>
+        <min>0</min>
+        <max>10000</max>
+        <default>30</default>
+     </entry>
+     <entry key="Osd Screen" type="Int">
+        <label>OSD screen</label>
+        <default>0</default>
+     </entry>
+     <entry name="Osd Alignment" type="Enum">
+        <label>Align OSD to</label>
+	<choices>
+          <choice name="TopLeft">
+	    <label>Top left</label>
+	  </choice>
+          <choice name="TopRight"/>
+          <choice name="BottomLeft"/>
+          <choice name="BottomRight"/>
+          <choice name="Center"/>
+        </choices>
+        <default>TopLeft</default>
+    </entry>
+
   </group>
   
   <group name="Fonts">

@@ -354,8 +354,12 @@ void PlayerApp::applySettings()
 
     m_pOSD->setEnabled ( AmarokConfig::osdEnabled() );
     m_pOSD->setFont    ( AmarokConfig::osdFont() );
-    m_pOSD->setTextColor   ( AmarokConfig::osdColor() );
+    m_pOSD->setTextColor   ( AmarokConfig::osdTextColor() );
+    m_pOSD->setBackgroundColor( AmarokConfig::osdBackgroundColor() );
     m_pOSD->setDuration( AmarokConfig::osdDuration() );
+    m_pOSD->setPosition( (OSDWidget::Position)AmarokConfig::osdAlignment() );
+    m_pOSD->setScreen( AmarokConfig::osdScreen() );
+    m_pOSD->setOffset( AmarokConfig::osdXOffset(), AmarokConfig::osdYOffset() );
 
     m_pPlayerWidget->createAnalyzer( false );
     m_pBrowserWin->setFont( AmarokConfig::useCustomFonts() ?

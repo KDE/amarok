@@ -19,7 +19,9 @@ email                : markey@web.de
 #include <kconfigdialog.h>
 
 class QComboBox;
-     
+class OSDWidget;
+class Options5;
+
 class AmarokConfigDialog : public KConfigDialog
 {
     Q_OBJECT
@@ -28,14 +30,18 @@ class AmarokConfigDialog : public KConfigDialog
         AmarokConfigDialog( QWidget *parent, const char* name, KConfigSkeleton *config );
 
         // ATTRIBUTES ------
+    private:
         QComboBox* m_pSoundSystem;
+        Options5* m_pOpt5;
+        OSDWidget *m_pOsdPreview;
 
     private:
-        bool hasChanged();       
+        bool hasChanged();
         bool isDefault();
-                    
+
     private slots:
         void updateSettings();
+        void previewOsd();
 };
 
 
