@@ -1150,7 +1150,7 @@ CollectionView::captionForCategory( const int cat ) const
 void
 CollectionView::showFlatViewMessage()
 {
-    m_flatViewMessage = new QLabel( i18n( "Enter filter items to activate." ), viewport() );
+    m_flatViewMessage = new QLabel( i18n( "Enter filter terms to activate." ), viewport() );
     m_flatViewMessage->setAlignment( Qt::AlignCenter );
     m_flatViewMessage->setLineWidth( 2 );
     m_flatViewMessage->setMinimumHeight( 40 );
