@@ -278,7 +278,6 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     kdDebug() << k_funcinfo << endl;
     if ( !item ) return ;
 
-    kdDebug() << "item depth: " << item->depth() << endl;
     QString filterToken = QString( "" );
     if ( m_filter != "" )
         filterToken = QString
@@ -336,7 +335,6 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                 child->setPixmap( 0, pixmap );
             child->setUrl( values[ i + 1 ] );
             child->setExpandable( m_category2 != i18n( "None" ) );
-    //         kdDebug() << "url: " << values[ i + 1 ] << endl;
         }
     }
     else {
