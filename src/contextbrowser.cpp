@@ -1195,7 +1195,7 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
     if ( m_lyrics.find( "<font size='2'>" ) != -1 )
     {
         m_lyrics = m_lyrics.mid( m_lyrics.find( "<font size='2'>" ) );
-        if ( m_lyrics.find( "<p><hr" ) )
+        if ( m_lyrics.find( "<p><hr" ) != -1 )
             m_lyrics = m_lyrics.mid( 0, m_lyrics.find( "<p><hr" ) );
         else
             m_lyrics = m_lyrics.mid( 0, m_lyrics.find( "<br><br>" ) );
