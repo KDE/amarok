@@ -4,6 +4,8 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
+    * fix <stormy>: graphical butons are still somewhat buggy;
+
     * fix: inserting items into playlist is buggy. items sometimes misplaced
 
     * fix: app freezing when renaming the file that's currently playing
