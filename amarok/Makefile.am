@@ -7,18 +7,19 @@ EXTRA_DIST = browserwidget.h browserwin.h \
 	effectwidget.h expandbutton.h \
 	Options1.ui Options2.ui Options3.ui Options4.ui playerapp.h \
 	playerwidget.h playlistitem.h \
-	playlistwidget.h amarokdcophandler.h metabundle.h
+	playlistwidget.h amarokdcophandler.h metabundle.h \
+	amaroknavbutton.h
 
 bin_PROGRAMS = amarok
 
-amarok_SOURCES = main.cpp playerapp.cpp playerwidget.cpp browserwin.cpp browserwidget.cpp streambrowser.cpp playlistwidget.cpp playlistitem.cpp playlistloader.cpp expandbutton.cpp effectwidget.cpp amarokdcopiface.skel amarokdcophandler.cpp amarokbutton.cpp amarokfilelist.cpp configdlg.cpp Options1.ui Options2.ui Options3.ui Options4.ui amarokslider.cpp
+amarok_SOURCES = main.cpp playerapp.cpp playerwidget.cpp browserwin.cpp browserwidget.cpp streambrowser.cpp playlistwidget.cpp playlistitem.cpp playlistloader.cpp expandbutton.cpp effectwidget.cpp amarokdcopiface.skel amarokdcophandler.cpp amarokbutton.cpp amarokfilelist.cpp configdlg.cpp Options1.ui Options2.ui Options3.ui Options4.ui amarokslider.cpp amaroknavbutton.cpp
 
 amarok_LDADD = ./titleproxy/libtitleproxy.a ./analyzers/libanalyzers.a ./amarokarts/libamarokarts.la -lqtmcop -lkmedia2_idl -lartsflow -lsoundserver_idl -lartskde -lartsgui -lartsgui_kde -lartsmodules $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(taglib_libs)
 
 # $(LIBSOCKET)
 amarok_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
-noinst_HEADERS = Options1.h Options2.h Options3.h Options4.h browserwidget.h browserwin.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h configdlg.h amarokbutton.h amarokfilelist.h amarokbutton.h amarokdcopiface.h amarokfilelist.h browserwidget.h browserwin.h configdlg.h debugareas.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h amarokbutton.h amarokdcopiface.h amarokfilelist.h browserwidget.h browserwin.h configdlg.h debugareas.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h amarokdcophandler.h playlistloader.h amarokslider.h metabundle.h
+noinst_HEADERS = Options1.h Options2.h Options3.h Options4.h browserwidget.h browserwin.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h configdlg.h amarokbutton.h amarokfilelist.h amarokbutton.h amarokdcopiface.h amarokfilelist.h browserwidget.h browserwin.h configdlg.h debugareas.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h amarokbutton.h amarokdcopiface.h amarokfilelist.h browserwidget.h browserwin.h configdlg.h debugareas.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h amarokdcophandler.h playlistloader.h amarokslider.h metabundle.h amaroknavbutton.h
 
 KDE_ICON = AUTO
 
