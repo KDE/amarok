@@ -88,9 +88,10 @@ private slots:
     void slotTrackEnded();
     void slotStateChanged( Engine::State );
     void streamError();
-    
+
 private:
     EngineController();
+    ~EngineController();
 
 private:
     static ExtensionCache s_extensionCache;
