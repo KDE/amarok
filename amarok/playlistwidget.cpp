@@ -37,17 +37,18 @@
 #include <qstringlist.h>
 #include <qtimer.h>
 
+#include <kcursor.h>
 #include <kdebug.h>
 #include <kiconloader.h>
+#include <klineedit.h>  //setCurrentTrack()
 #include <klistview.h>
 #include <klocale.h>
 #include <kpopupmenu.h>
+#include <krandomsequence.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
-#include <krandomsequence.h>
 #include <kurldrag.h>
-#include <kcursor.h>
-#include <klineedit.h>
+
 
 
 PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ const char *name )
@@ -396,15 +397,12 @@ void PlaylistWidget::clear() //SLOT
     //now we have to ensure we don't delete the items before any events the weaver sent
     //have been processed, so we stick them in a QPtrList and delete it later
     QPtrList<QListViewItem> *list = new QPtrList<QListViewItem>;
-    list->setAutoDelete( true );
-    for( QListViewItemIterator it( this ); it.current(); ++it )
+    while( QListViewItem *item = firstChild() ) //FIXME check firstChild() is an efficient function here
     {
-        //takeItem( it.current() );
-        it.current()->setVisible( false );
-        list->append( it.current() );
+        takeItem( item );
+        list->append( item );
     }
     QApplication::postEvent( this, new QCustomEvent( QCustomEvent::Type(4000), list ) );
-    //KListView::clear(); dont do this any more we post the ptrs to our own function
 }
 
 
@@ -597,7 +595,6 @@ void PlaylistWidget::setCurrentTrack( PlaylistItem *item )
 
     m_currentTrack = item;
 
-    //repaint items
     repaintItem( tmp );
     repaintItem( item );
 }
@@ -649,9 +646,10 @@ bool PlaylistWidget::saveState( QStringList &list )
 {
     //used by undo system, save state of playlist to undo/redo list
 
-   //don't store blank intermediates in the undo/redo sets, perhaps a little inconsistent, but
-   //probably desired by the user, if you disagree comment this out as it's debatable <mxcl>
-   if( !isEmpty() )
+   //do not change this! It's required by the undo/redo system to work!
+   //if you must change this, fix undo/redo first. Ask me what needs fixing <mxcl>
+
+   if( childCount()  )
    {
       QString fileName;
       m_undoCounter %= AmarokConfig::undoLevels();
@@ -683,8 +681,11 @@ void PlaylistWidget::redo() { switchState( m_redoList, m_undoList ); } //SLOT
 
 void PlaylistWidget::switchState( QStringList &loadFromMe, QStringList &saveToMe )
 {
-    //switch to a previously saved state, remember current state
+    //FIXME this is because loaders can't be cancelled, so you disable clear to indicate
+    //it's not safe to clear
+    if( !m_clearButton->isEnabled() ) return;
 
+    //switch to a previously saved state, remember current state
     KURL url; url.setPath( loadFromMe.last() );
     KURL::List playlist( url );
     loadFromMe.pop_back();
@@ -698,7 +699,7 @@ void PlaylistWidget::switchState( QStringList &loadFromMe, QStringList &saveToMe
         clear();
     blockSignals( false );
 
-    insertMedia( playlist );
+    insertMedia( playlist ); //because the listview is empty, undoState won't be forced
 
     m_undoButton->setEnabled( !m_undoList.isEmpty() );
     m_redoButton->setEnabled( !m_redoList.isEmpty() );
@@ -830,7 +831,7 @@ void PlaylistWidget::showTrackInfo( PlaylistItem *pItem ) const //SLOT
 
     str.append( "</table></body></html>" );
 
-    QMessageBox box( i18n( "Track Information" ), str, QMessageBox::Information,
+    QMessageBox box( i18n( "Meta Information" ), str, QMessageBox::Information,
                      QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton,
                      0, 0, true, Qt::WStyle_DialogBorder );
     box.setTextFormat( Qt::RichText );
@@ -1109,6 +1110,8 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
         //this is a list of all the listItems from a clear operation
         kdDebug() << "Deleting " << static_cast<QPtrList<QListViewItem>*>(e->data())->count() << " items\n";
         delete (QPtrList<QListViewItem>*)e->data();
+        //kdDebug() << "Deleting items..\n";
+        //delete (QListView*)e->data();
         break;
 
     default: ;
@@ -1118,6 +1121,8 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
 
 void PlaylistWidget::handleStreamMeta( const MetaBundle& bundle )
 {
+/*
+    FIXME this did work when it was done for streams only, but now it buggers the title column
     if ( QListViewItem* pItem = m_currentTrack )
     {
         pItem->setText(  0, bundle.prettyURL()     );
@@ -1126,6 +1131,7 @@ void PlaylistWidget::handleStreamMeta( const MetaBundle& bundle )
         pItem->setText(  6, bundle.m_genre         );
         pItem->setText( 10, bundle.prettyBitrate() );
     }
+*/
 }
 
 
