@@ -50,6 +50,19 @@ AC_DEFUN([KDE_PKG_CHECK_MODULES], [
 
 
 ###############################################################################
+# BEGIN PKG-CONFIG CHECK
+###############################################################################
+    
+AC_ARG_VAR(PKGCONFIGFOUND, [Path to pkg-config])
+AC_CHECK_PROG(PKGCONFIGFOUND, pkg-config,[yes])
+
+###############################################################################
+# END PKG-CONFIG CHECK
+###############################################################################
+
+
+
+###############################################################################
 # BEGIN KDEMULTIMEDIA CHECK
 ###############################################################################
 
@@ -117,44 +130,34 @@ AC_ARG_WITH(gstreamer,
 )
 
 if test "$build_gstreamer" != "no"; then
-    # check for pkg-config
-    AC_ARG_VAR(PKGCONFIGFOUND, [Path to pkg-config])
-    AC_CHECK_PROG(PKGCONFIGFOUND, pkg-config,[yes])
-
     if test "$PKGCONFIGFOUND" = "yes" ; then
-    # check for GStreamer
-    dnl Now we're ready to ask for gstreamer libs and cflags
-    dnl And we can also ask for the right version of gstreamer
-    have_gst=no
-
-    GST_MAJORMINOR=0.8
-    GST_REQ=0.8.0
+        # check for GStreamer
+        dnl Now we're ready to ask for gstreamer libs and cflags
+        dnl And we can also ask for the right version of gstreamer
+        have_gst=no
     
-    KDE_PKG_CHECK_MODULES(GST, \
-        gstreamer-$GST_MAJORMINOR >= $GST_REQ \
-        gstreamer-control-$GST_MAJORMINOR >= $GST_REQ \
-        gstreamer-libs-$GST_MAJORMINOR >= $GST_REQ,
-        have_gst=yes,have_gst=no)
-   
-    dnl Give error if we don't have gstreamer
-    if test "x$have_gst" = "xno"; then
-        LIB_GST=""
-        CFLAGS_GST=""
-    #    DO_NOT_COMPILE="$DO_NOT_COMPILE gst"
-        AC_MSG_WARN([GStreamer version >= $GST_REQ required to build the optional amaroK GStreamer engine])
-    else
-        LIB_GST=$GST_LIBS
-        CFLAGS_GST=$GST_CFLAGS
-        AC_SUBST(LIB_GST)
-        AC_SUBST(CFLAGS_GST)
-        AC_SUBST(GST_MAJORMINOR)
-        AC_DEFINE(HAVE_GSTREAMER, 1, [have GStreamer])
+        GST_MAJORMINOR=0.8
+        GST_REQ=0.8.0
+        
+        KDE_PKG_CHECK_MODULES(GST, \
+            gstreamer-$GST_MAJORMINOR >= $GST_REQ \
+            gstreamer-plugins-$GST_MAJORMINOR >= $GST_REQ,
+            have_gst=yes,have_gst=no)
+    
+        dnl Give error if we don't have gstreamer
+        if test "x$have_gst" = "xno"; then
+            LIB_GST=""
+            CFLAGS_GST=""
+        else
+            LIB_GST=$GST_LIBS
+            CFLAGS_GST=$GST_CFLAGS
+            AC_SUBST(LIB_GST)
+            AC_SUBST(CFLAGS_GST)
+            AC_SUBST(GST_MAJORMINOR)
+            AC_DEFINE(HAVE_GSTREAMER, 1, [have GStreamer])
+        fi
     fi
-    else
-    AC_MSG_WARN([No pkg-config found, required to build optional amaroK GStreamer engine])
-    #  DO_NOT_COMPILE="$DO_NOT_COMPILE gst"
-    fi
-
+        
     AM_CONDITIONAL(with_gst, [test x$have_gst = xyes])
 fi
 
@@ -263,16 +266,18 @@ fi
 # BEGIN SQLITE CHECK
 ###############################################################################
 
-AC_CHECK_HEADER(sqlite.h, have_sqlite=yes, have_sqlite=no)
-   
-if test x$have_sqlite = xyes; then
-    sqlite_libs="-lsqlite"
-    AC_DEFINE(HAVE_SQLITE, 1, [have SQLite database library])
-else
-    sqlite_libs=""
-fi
+KDE_PKG_CHECK_MODULES(SQLITE, sqlite >= 2.8, have_sqlite=yes,have_sqlite=no)
 
-AC_SUBST(sqlite_libs)
+##AC_CHECK_HEADER(sqlite.h, have_sqlite=yes, have_sqlite=no)
+##   
+##if test x$have_sqlite = xyes; then
+##    sqlite_libs="-lsqlite"
+##    AC_DEFINE(HAVE_SQLITE, 1, [have SQLite database library])
+##else
+##    sqlite_libs=""
+##fi
+##
+##AC_SUBST(sqlite_libs)
    
 ###############################################################################
 # END SQLITE CHECK

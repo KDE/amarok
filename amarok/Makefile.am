@@ -61,7 +61,7 @@ amarokapp_LDADD = \
         $(top_builddir)/amarok/amarok/titleproxy/libtitleproxy.a \
         $(top_builddir)/amarok/amarok/analyzers/libanalyzers.a \
         $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) \
-        $(taglib_libs) $(gl_libs) $(sqlite_libs)
+        $(taglib_libs) $(gl_libs) $(SQLITE_LIBS)
 
 amarokapp_LDFLAGS = \
     $(all_libraries) \

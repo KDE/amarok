@@ -4,40 +4,34 @@
 
 if test x$amarok_error_notaglib = xyes ; then
     echo ""
+    echo "AMAROK ERROR:"
     echo "You are missing TagLib, which is required by amaroK.  You can find TagLib at"
     echo $TAGLIB_URL
 fi
-    
 
 if test x$amarok_error_taglibold = xyes; then
     echo ""    
+    echo "AMAROK ERROR:"
     echo "Your TagLib is too old to use with amaroK.  You can find a more recent TagLib at"
     echo $TAGLIB_URL
 fi
 
-
-if test "$PKG_CONFIG" = "no" ; then
-    #echo "*** The pkg-config script could not be found. Make sure it is"
-    #echo "*** in your path, or set the PKG_CONFIG environment variable"
-    #echo "*** to the full path to pkg-config."
-    #echo "*** Or see http://www.freedesktop.org/software/pkgconfig to get pkg-config."
-
-    echo "************************************************************************"
-    echo "amaroK can build an optional GStreamer audio-engine, however you do not"
-    echo "have pkg-config installed which is required to detect your GStreamer"
-    echo "installation. If you want to build the GStreamer audio-engine you should"
-    echo "download pkg-config from http://www.freedesktop.org/software/pkgconfig"
-    echo "************************************************************************"
+if test "$PKGCONFIGFOUND" != "yes" ; then
+    echo ""    
+    echo "AMAROK WARNING:"
+    echo "*** The pkg-config script could not be found. Make sure it is"
+    echo "*** in your path, or set the PKG_CONFIG environment variable"
+    echo "*** to the full path to pkg-config."
+    echo "*** Or see http://www.freedesktop.org/software/pkgconfig to get pkg-config."
 fi
-
 
 if test $have_sqlite = xno; then
     echo ""
-    echo "You are missing the SQLite database library!"
-    echo "The Collection Browser will be deactivated."
+    echo "AMAROK WARNING:"
+    echo "You do not have the SQLite (version >= 2.8) database library!"
+    echo "The Collection Browser (music database) will be deactivated."
     echo "You can download SQLite from: http://www.sqlite.org"
 fi
-
 
 if test x$no_amarok = xyes; then
     echo ""
@@ -47,29 +41,10 @@ if test x$no_amarok = xyes; then
     echo "PLEASE INSTALL THE MISSING PACKAGES FIRST!"
 fi
 
-
-if test x$build_arts = xyes -a x$have_kdemm = xyes; then
-    echo "*****************************************************"
-    echo "*** amaroK will be built with the aRts-engine"
-    echo "*****************************************************"
+if test "x$have_gst" = "xno"; then
+    echo ""
+    echo "GStreamer version >= $GST_REQ required to build the optional amaroK GStreamer engine."
 fi
-
-
-if test x$have_gst = xyes; then
-    echo "*****************************************************"
-    echo "*** amaroK will be built with the GStreamer-engine"
-    echo "*****************************************************"
-fi
-
-
-if test $build_nmm = xyes; then
-    echo "*****************************************************"
-    echo "*** amaroK will be built with the NMM-engine."
-    echo "*** Please ensure that the NMM libraries are in your"
-    echo "*** LD_PATH, or run: ./configure --with-nmm=no"
-    echo "*****************************************************"
-fi
-  
 
 if test x$no_engine = xyes; then
     echo ""
@@ -78,5 +53,26 @@ if test x$no_engine = xyes; then
     echo "NO SUITABLE MULTIMEDIA FRAMEWORK WAS DETECTED."
     echo "CANNOT COMPILE AMAROK WITHOUT AN AUDIO ENGINE."
 fi
+
+if test x$build_arts = xyes -a x$have_kdemm = xyes; then
+    echo "*****************************************************"
+    echo "*** amaroK will be built with the aRts-engine"
+    echo "*****************************************************"
+fi
+
+if test x$have_gst = xyes; then
+    echo "*****************************************************"
+    echo "*** amaroK will be built with the GStreamer-engine"
+    echo "*****************************************************"
+fi
+
+if test $build_nmm = xyes; then
+    echo "*****************************************************"
+    echo "*** amaroK will be built with the NMM-engine."
+    echo "*** Please ensure that the NMM libraries are in your"
+    echo "*** LD_PATH, or run: ./configure --with-nmm=no"
+    echo "*****************************************************"
+fi
+
     
   
