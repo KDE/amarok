@@ -264,7 +264,9 @@ void PlayerApp::saveSessionState()
     {
       Arts::poTime timeC( m_pPlayObject->currentTime() );
 
-      config->writeEntry( "track", static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() ) ->url().url() );
+      config->writeEntry( "track", static_cast<PlaylistItem*>
+                        ( m_pBrowserWin->m_pPlaylistWidget->currentTrack() ) ->url().url() );
+      
       config->writeEntry( "position", timeC.seconds );
     }
 }
@@ -291,7 +293,7 @@ void PlayerApp::initArts()
     }
     m_pArtsDispatcher = new KArtsDispatcher();
 
-    // *** most of the following code was taken from noatun's engine.cpp
+    // <most of this code was taken from noatun's engine.cpp>
     m_Server = Arts::Reference( "global:Arts_SoundServerV2" );
     if ( m_Server.isNull() || m_Server.error() )
     {
@@ -357,7 +359,7 @@ void PlayerApp::initArts()
         KMessageBox::error( 0, i18n( "Cannot start aRts! Exiting." ), i18n( "Fatal Error" ) );
         exit( 1 );
     }
-    // *** until here
+    // </most of this code was taken from noatun's engine.cpp>
 
     m_amanPlay = Arts::DynamicCast( m_Server.createObject( "Arts::Synth_AMAN_PLAY" ) );
     m_amanPlay.title( "amarok" );
@@ -1332,13 +1334,16 @@ void PlayerApp::slotMainTimer()
     if ( m_pPlayerWidget->isVisible() )
     {
         int seconds;
-        if ( m_optTimeDisplayRemaining )
+        if ( m_optTimeDisplayRemaining && !m_pPlayObject->stream() )
+        {
             seconds = m_length - timeC.seconds;
+            m_pPlayerWidget->timeDisplay( true, seconds / 60 / 60 % 60, seconds / 60 % 60, seconds % 60 );
+        }
         else
+        {
             seconds = timeC.seconds;
-
-        m_pPlayerWidget->timeDisplay( m_optTimeDisplayRemaining, seconds / 60 / 60 % 60,
-                                      seconds / 60 % 60, seconds % 60 );
+            m_pPlayerWidget->timeDisplay( false, seconds / 60 / 60 % 60, seconds / 60 % 60, seconds % 60 );
+        }
     }
     // </Draw TimeDisplay>
 

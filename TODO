@@ -45,8 +45,6 @@ MID-TERM:
     * extend: ability to get currently playing title to clipboard, or writing
       info in some file or some other easy way to get this info..
 
-    * change: let timedisplay also count with streams
-
     * add: function for adding all files in current dir to playlist
 
     * add: seeking with mousewheel
