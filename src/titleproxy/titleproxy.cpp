@@ -42,8 +42,8 @@ Proxy::Proxy( KURL url, int streamingMode )
         , m_metaInt( 0 )
         , m_byteCount( 0 )
         , m_metaLen( 0 )
-        , m_headerFinished( false )
         , m_usedPort( 0 )
+        , m_icyMode( true )
         , m_pBuf( 0 )
 {
     kdDebug() << k_funcinfo << endl;
@@ -70,7 +70,7 @@ Proxy::Proxy( KURL url, int streamingMode )
         connect( server, SIGNAL( connected( int ) ), this, SLOT( accept( int ) ) );
     }
     else
-        sendRequest( true );
+        sendRequest();
 }
 
 
@@ -101,14 +101,19 @@ void Proxy::accept( int socket )
     m_sockProxy.setSocket( socket );
     m_sockProxy.waitForMore( 5000 );
 
-    sendRequest( true );    
+    sendRequest();    
 }
 
 
-void Proxy::sendRequest( bool meta )
+void Proxy::sendRequest()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
   
+    { //initialisations
+        m_headerFinished = false;
+        m_headerStr = QString();
+    }
+            
     { //connect to server
         //FIXME this needs a timeout check    
         m_sockRemote.connectToHost( m_url.host(), m_url.port() );
@@ -125,7 +130,7 @@ void Proxy::sendRequest( bool meta )
         QString request = QString( "GET %1 HTTP/1.1\r\n" )
                                 .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) );
         //request metadata
-        if ( meta ) request += "Icy-MetaData:1\r\n";
+        if ( m_icyMode ) request += "Icy-MetaData:1\r\n";
     
         request += "Connection: Keep-Alive\r\n"
                 "User-Agent: aRts/1.2.2\r\n"
@@ -154,11 +159,11 @@ void Proxy::readRemote()
 
     //This is the main loop which processes the stream data
     while ( index < bytesRead ) {
-        if ( m_metaInt && ( m_byteCount == m_metaInt ) ) {
+        if ( m_icyMode && m_metaInt && ( m_byteCount == m_metaInt ) ) {
             m_byteCount = 0;
             m_metaLen = m_pBuf[ index++ ] << 4;
         }
-        else if ( m_metaLen ) {
+        else if ( m_icyMode && m_metaLen ) {
             m_metaData.append( m_pBuf[ index++ ] );
             --m_metaLen;
 
@@ -170,7 +175,7 @@ void Proxy::readRemote()
         else {
             bytesWrite = bytesRead - index;
 
-            if ( bytesWrite > m_metaInt - m_byteCount )
+            if ( m_icyMode && bytesWrite > m_metaInt - m_byteCount )
                 bytesWrite = m_metaInt - m_byteCount;
 
             if ( m_streamingMode == EngineBase::Socket )
@@ -218,7 +223,7 @@ bool Proxy::processHeader( Q_LONG &index, Q_LONG bytesRead )
                 m_sockProxy.writeBlock( m_headerStr.latin1(), m_headerStr.length() );
             m_headerFinished = true;
 
-            if ( !m_metaInt ) {
+            if ( m_icyMode && !m_metaInt ) {
                 error();
                 return false;
             }
@@ -234,8 +239,11 @@ void Proxy::error()
     kdDebug() <<  "TitleProxy error. Restarting stream in non-metadata mode.\n";
     
     m_sockRemote.close();
+    m_sockRemote.disconnect( SIGNAL( readyRead() ) );
+    m_icyMode = false;
+    
     //open stream again,  but this time without metadata, please
-    sendRequest( false );
+    sendRequest();
 }
 
 

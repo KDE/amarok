@@ -65,27 +65,30 @@ namespace TitleProxy
             void readRemote();
             bool processHeader( Q_LONG &index, Q_LONG bytesRead );
             void accept( int socket );
-            void sendRequest( bool meta );
+            void sendRequest();
 
         private:
             void error();
             void transmitData( const QString &data );
             QString extractStr( const QString &str, const QString &key );
 
-            // ATTRIBUTES ------
+        //ATTRIBUTES:
             KURL m_url;
             int m_streamingMode;
             bool m_initSuccess;
+            
             int m_metaInt;
             int m_bitRate;
             int m_byteCount;
             uint m_metaLen;
+            
             QString m_metaData;
             bool m_headerFinished;
             QString m_headerStr;
             int m_usedPort;
             QString m_lastMetadata;
-
+            bool m_icyMode;
+            
             QString m_streamName;
             QString m_streamGenre;
             QString m_streamUrl;
