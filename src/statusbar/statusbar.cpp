@@ -156,6 +156,7 @@ StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 
     setMainText( i18n( "Playing: %1" ).arg( title ) );
 
+    m_slider->setMinValue( 0 );
     m_slider->setMaxValue( bundle.length() * 1000 );
     m_slider->setEnabled( bundle.length() > 0 );
 }
