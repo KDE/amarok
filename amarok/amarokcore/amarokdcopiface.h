@@ -39,6 +39,9 @@ k_dcop:
    virtual void addMediaList(const KURL::List &) = 0;       ///< Add some audio media specified by the url.
    virtual QString nowPlaying() = 0;                        ///< The title of now playing media.
    virtual bool isPlaying() = 0;                            ///< Return true if something is playing now.
+   virtual void setVolume(int volume) = 0;                  ///< Set volume in range 0-100%.
+   virtual void volumeUp() = 0;                             ///< Increase volume by a reasonable step.
+   virtual void volumeDown() = 0;                           ///< Decrease volume by a reasonable step.
    virtual void enableOSD(bool enable) = 0;                 ///< Switch OSD display on or off
 };
 

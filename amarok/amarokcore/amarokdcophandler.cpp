@@ -114,6 +114,21 @@ void AmarokDcopHandler::addMediaList(const KURL::List &urls)
    pApp->insertMedia(urls);
 }
 
+void AmarokDcopHandler::setVolume(int volume)
+{
+    pApp->slotVolumeChanged(volume);
+}
+
+void AmarokDcopHandler::volumeUp()
+{
+    pApp->slotVolumeChanged( pApp->m_pEngine->volume() + 100 / 25 );
+}
+
+void AmarokDcopHandler::volumeDown()
+{
+    pApp->slotVolumeChanged( pApp->m_pEngine->volume() - 100 / 25 );
+}
+
 void AmarokDcopHandler::enableOSD(bool enable)
 {
    pApp->setOsdEnabled(enable);
