@@ -253,7 +253,7 @@ void App::initCliArgs( int argc, char *argv[] ) //static
                                  I18N_NOOP( "(c) 2002-2003, Mark Kretschmann\n(c) 2003-2004, the amaroK developers" ),
                                  I18N_NOOP( "IRC:\nserver: irc.freenode.net / channel: #amarok\n\n"
                                             "Feedback:\namarok-devel@lists.sourceforge.net" ),
-                                 I18N_NOOP( "http://amarok.sourceforge.net" ) );
+                                 I18N_NOOP( "http://amarok.kde.org" ) );
 
     //TODO should we i18n this stuff?
 
