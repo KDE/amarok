@@ -437,8 +437,8 @@ CollectionDB::isSamplerAlbum( const QString album )
     if ( values_artist.count() > values_dir.count() )
     {
 
-        execSql( QString( "UPDATE tags_temp SET sampler = 1 WHERE album = '%1';" )
-                    .arg( album_id ) );
+//        execSql( QString( "UPDATE tags_temp SET sampler = 1 WHERE album = '%1';" )
+//                    .arg( album_id ) );
         return true;
     }
     
