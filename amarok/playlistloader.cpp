@@ -5,7 +5,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#ifdef FAST_TRANSLATE
+#ifndef FAST_TRANSLATE
 #include "amarokfilelist.h"    //for sorting directories
 #endif
 #include "engine/enginebase.h" //isValidMedia()

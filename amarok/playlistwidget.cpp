@@ -175,7 +175,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const ch
 
     QTimer *timer = new QTimer( this );
     connect( timer, SIGNAL( timeout() ), this, SLOT( slotGlowTimer() ) );
-    timer->start( 90 );
+    timer->start( 150 );
 
     restoreLayout( KGlobal::config(), "PlaylistColumnsLayout" );
 }
