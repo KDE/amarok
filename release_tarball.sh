@@ -37,9 +37,9 @@ rm -rf debian
 popd # kdeextragear-1
 
 # Prevent using unsermake
-oldmake=$unsermake
-export unsermake="" && make -f Makefile.cvs
-export unsermake=$oldmake
+oldmake=$UNSERMAKE
+export UNSERMAKE="" && make -f Makefile.cvs
+export UNSERMAKE=$oldmake
 
 find -name "*" -exec touch {} \;
 rm -rf autom4te.cache
