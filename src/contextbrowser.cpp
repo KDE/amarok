@@ -651,8 +651,8 @@ void ContextBrowser::showCurrentTrack() //SLOT
             for ( uint i = 0; i < values.count(); i += 3 )
                 browser->write(
                    "<tr>"
-                    "<td class='song'>"
-                     "<a href='file:" + values[i + 1].replace( '"', QCString("%22") ) + "'>" +
+                    "<td class=\"song\">"
+                     "<a href=\"file:" + values[i + 1].replace( '"', QCString("%22") ) + "\">" +
                       values[i + 2] + " - " + values[i] +
                      "</a>"
                     "</td>"
