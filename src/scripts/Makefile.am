@@ -1,3 +1,3 @@
-SUBDIRS = alarm templates
+SUBDIRS = alarm templates playlist2html
 
 

@@ -4,7 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta4:
-  ADD: Playlist2html, a script for playlist exporting.
+  ADD: Playlist2html, a script for playlist exporting. (BR 96199)
   ADD: Improved statusbar, with animated error notification widget.
   ADD: New progress display system, can show multiple expandable
        progress widgets in the statusbar.
