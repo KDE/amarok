@@ -320,7 +320,7 @@ void App::applySettings( bool firstTime )
         {
             //the player Window becomes the main Window
             //it is the focus for hideWithMainWindow behaviour etc.
-            //it gets the hailed "amaroK" caption
+            //it gets the majestic "amaroK" caption
             m_pPlaylistWindow->setCaption( kapp->makeStdCaption( i18n("Playlist") ) );
 
             m_pPlayerWindow = new PlayerWidget( m_pPlaylistWindow, "PlayerWindow", firstTime && AmarokConfig::playlistWindowEnabled() );
@@ -354,10 +354,7 @@ void App::applySettings( bool firstTime )
 
         //ensure that at least one Menu is plugged into an accessible UI element
         if( !actionCollection()->action( "amarok_menu" )->isPlugged() )
-        {
-            playlistWindow()->reloadXML();
-            playlistWindow()->createGUI();
-        }
+           playlistWindow()->createGUI();
 
         //forgive user-stupidity
         if( !AmarokConfig::showTrayIcon() )

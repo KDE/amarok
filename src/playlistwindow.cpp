@@ -226,6 +226,15 @@ PlaylistWindow::init()
 }
 
 
+void PlaylistWindow::recreateGUI()
+{
+    //mainly just used by amaroK::Menu
+    setXMLFile( amaroK::config()->readEntry( "XMLFile", "amarokui.rc" ) );
+    reloadXML();
+    createGUI();
+}
+
+
 void PlaylistWindow::createGUI()
 {
     setUpdatesEnabled( false );

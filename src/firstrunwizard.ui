@@ -152,7 +152,7 @@
                     </widget>
                     <widget class="QRadioButton">
                         <property name="name">
-                            <cstring>radioInterface3</cstring>
+                            <cstring>option_compact</cstring>
                         </property>
                         <property name="sizePolicy">
                             <sizepolicy>

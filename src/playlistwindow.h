@@ -52,6 +52,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
         void setColors( const QPalette&, const QColor& );
 
         void createGUI(); //should be private but App::slowConfigToolbars requires it
+        void recreateGUI();
 
         KStatusBar *statusBar() const { return m_statusbar; }
 

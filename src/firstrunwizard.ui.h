@@ -21,7 +21,7 @@ namespace amaroK
     extern QPixmap getPNG( const QString& );
     extern QPixmap getJPG( const QString& );
 
-    extern KConfig *config( const QString& );
+    extern KConfig *config( const QString& = "General" );
 }
 using namespace amaroK;
 
@@ -30,7 +30,14 @@ FirstRunWizard::init()
 {
     CollectionSetup::s_dirs = config( "Collection Browser" )->readListEntry( "Folders" );
 
+    //aesthetics
     cancelButton()->setFixedWidth( cancelButton()->width() );
+
+    //would be better as a KConfigXT key now
+    if ( amaroK::config()->readEntry( "XMLFile", QString::null ) == "amarokui.rc" )
+        option_xmms->setChecked( true );
+    else
+        option_compact->setChecked( true );
 
     //option_xmms->setPixmap( getPNG( "wizard_xmms" ) );
     //option_compact->setPixmap( getPNG( "wizard_compact" ) );
