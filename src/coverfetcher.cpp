@@ -101,7 +101,7 @@ CoverFetcher::startFetch()
     DEBUG_FUNC_INFO
 
     // Static license Key. Thanks muesli ;-)
-    const char *LICENSE = "D1URM11J3F2CEH";
+    const QString LICENSE( "D1URM11J3F2CEH" );
 
     // reset all values
     m_coverUrls.clear();
