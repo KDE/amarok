@@ -130,7 +130,8 @@ MetaBundle::prettyTitle() const
 
         if( s.isEmpty() )
 
-            s = prettyTitle( m_url.fileName() );
+            s = m_title;
+//             s = prettyTitle( m_url.fileName() );
 
         else if( !m_title.isEmpty() ) {
 
