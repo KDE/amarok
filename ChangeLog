@@ -2,6 +2,8 @@ amaroK Changelog
 ==================
 (c) 2002, 2003 by Mark Kretschmann and the amaroK team. GPL License.
 
+
+  * chg: integrated streambrowser into playlist window
   * add: added dcop implementation for url adding. Relevant diffs for mediacontrol are
          available.
   * fix: libamarokarts detection code

@@ -2,7 +2,7 @@
 //
 // C++ Interface: $MODULE$
 //
-// Description: 
+// Description:
 //
 //
 // Author: Max Howell <max.howell@methylblue.com>, (C) 2003
@@ -25,31 +25,22 @@ class QListViewItem;
 
 /**
 @author Max Howell
-
 All code was ripped from KDERadioStation by Josef Spillner <spillner@kde.org>
-
 */
 
-class StreamBrowserListView : public KListView {
-public:
-        StreamBrowserListView( QWidget *parent ) : KListView( parent ) {}
+class StreamBrowser : public KListView
+{
+        Q_OBJECT
 
-        void startDrag();
-};
-
-class StreamBrowser : public QWidget {
-
-Q_OBJECT
-
-public:
+    public:
         StreamBrowser( QWidget *parent=0, const char *name=0 );
         ~StreamBrowser();
 
-signals:
+    signals:
         void signalNewMetaserver(QString uri);
         void signalStations();
 
-public slots:
+    public slots:
         void slotActivate(QListViewItem *item);
         void slotConnected();
         void slotRead();
@@ -59,7 +50,7 @@ public slots:
         void slotUpdateMetaservers();
         void slotUpdateStations();
 
-private:
+    private:
         void doconnection(QString query);
         void doupdate(QString query, QString uri);
         void process(QString content);
@@ -68,7 +59,6 @@ private:
 
         QString m_host;
         int m_port;
-        StreamBrowserListView *view;
         QSocket *sock;
         QString m_query;
         QString m_metaquery;

@@ -141,10 +141,6 @@ PlayerApp::PlayerApp()
 
     restoreSession();
 
-    //FIXME slow to load, make playerWidget own this
-    QWidget *w = new StreamBrowser( m_pBrowserWin, "StreamBrowser" );
-    w->show();
-
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
 }
 
@@ -853,7 +849,14 @@ void PlayerApp::setupColors()
     m_optBrowserSelColor.setHsv( h, s, v );
 
     m_pBrowserWin->m_pBrowserWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
+    m_pBrowserWin->m_pBrowserWidget->setPaletteForegroundColor( m_optBrowserFgColor );
+    
     m_pBrowserWin->m_pPlaylistWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
+    m_pBrowserWin->m_pPlaylistWidget->setPaletteForegroundColor( m_optBrowserFgColor );
+    
+    m_pBrowserWin->m_pStreamBrowser->setPaletteBackgroundColor( m_optBrowserBgColor );
+    m_pBrowserWin->m_pStreamBrowser->setPaletteForegroundColor( m_optBrowserFgColor );
+    m_pBrowserWin->m_pStreamBrowser->setAlternateBackground( m_optBrowserBgAltColor );
 
     //HACK Traverse childrenlist of KJanusWidget in order to find members which are not exposed in API
     QObject *pIconBox = m_pBrowserWin->m_pJanusWidget->child( 0, "KListBox" );

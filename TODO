@@ -11,8 +11,6 @@ SHORT-TERM:
     * fix: clicking tray icon to hide does not work (KDE 3.2 Nov 29 HEAD). Either KDE or amaroK
            fault (see #1 also, might be related) #2
 
-    * fix: app freezing when trying to play remote file -->markey
-    
     * fix: <mxcl> select something in playlist, go to drag from the browser, move mouse over
            playlist, move mouse back to browser and drop, selected item from playlist disappears!
            I know what to do about this.

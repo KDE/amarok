@@ -25,6 +25,7 @@ class BrowserWidget;
 class ExpandButton;
 class PlaylistItem;
 class PlaylistWidget;
+class StreamBrowser;
 
 class QHideEvent;
 class QCloseEvent;
@@ -78,8 +79,10 @@ class BrowserWin : public QWidget
         ExpandButton *m_pButtonNext;
         ExpandButton *m_pButtonPrev;
 
-        BrowserWidget* m_pBrowserWidget;
-        PlaylistWidget* m_pPlaylistWidget;
+        BrowserWidget *m_pBrowserWidget;
+        PlaylistWidget *m_pPlaylistWidget;
+        StreamBrowser *m_pStreamBrowser;
+        
         QSplitter *m_pSplitter;
         KHistoryCombo *m_pBrowserLineEdit;
         KLineEdit *m_pPlaylistLineEdit;
