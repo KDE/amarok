@@ -56,7 +56,6 @@ main( int argc, char** argv ) {
     //TODO fork after connection?
     
     inst = new KInstance("xmmswrapper");
-
     std::string plugin;
 
     if ( argc == 1 ) {
@@ -84,7 +83,6 @@ main( int argc, char** argv ) {
                     && extension == SHARED_LIB_EXT )
                 list.push_back( filename );
         }
-
         closedir( dir );
 
         std::cout << "Please select a plugin: \n";
@@ -95,15 +93,15 @@ main( int argc, char** argv ) {
         for ( uint n = 0; n < v.size(); ++n ) {
             std::cout << n + 1 << ": " << v[ n ] << '\n';
         }
-
         char c[ 10 ];
         std::cin >> c;
         uint selection = atoi( c );
         if ( selection > v.size() ) return 1;
 
         plugin = v[ selection - 1 ];
-    } else plugin = argv[ 0 ];
-
+    }
+    else
+        plugin = argv[ 1 ];
 
     socketpath = ::locateLocal( "socket", "amarok.visualization_socket", inst );
 

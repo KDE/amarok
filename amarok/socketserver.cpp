@@ -15,6 +15,7 @@
 
 #include <kdebug.h>
 #include <klocale.h>
+#include <kprocess.h>         //visClicked()
 
 #include <dirent.h>
 #include <sys/socket.h>
@@ -38,10 +39,6 @@ static QGuardedPtr<QListView> lv;
 //TODO consider moving fht.* here
 //TODO allow visualisations to determine their own data sizes
 
-
-//#include <qwidget.h> //FIXME tmp
-//#include <qpixmap.h> //FIXME tmp
-//#include <qimage.h> //FIXME tmp
 
 Vis::SocketServer::SocketServer( QObject *parent )
   : QServerSocket( parent )
@@ -93,7 +90,9 @@ Vis::SocketServer::showSelector() //SLOT
         lv->addColumn( i18n( "Name" ) );
         lv->addColumn( i18n( "Description" ) );
         lv->show();
-    
+        connect( lv, SIGNAL( doubleClicked( QListViewItem*, const QPoint&, int ) ),
+                 this, SLOT( visClicked( QListViewItem*, const QPoint&, int ) ) );
+            
         QString dirname = XMMS_PLUGIN_PATH;
         dirname.append( "/" );
         QString filepath;
@@ -118,6 +117,22 @@ Vis::SocketServer::showSelector() //SLOT
 /////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE interface
 /////////////////////////////////////////////////////////////////////////////////////////
+
+void
+Vis::SocketServer::visClicked( QListViewItem* item, const QPoint&, int ) //SLOT
+{
+    kdDebug() << k_funcinfo << endl;
+    
+    if ( !item ) return;
+    
+    KProcess* proc = new KProcess( this );
+    connect( proc, SIGNAL( processExited( KProcess* ) ), proc, SLOT( deleteLater() ) );
+    *proc << KStandardDirs::findExe( "amarok_xmmswrapper" ) << item->text( 0 );
+    
+    if ( !proc->start() )
+        kdWarning() << "Could not run xmmswrapper!\n";
+}
+
 
 void
 Vis::SocketServer::newConnection( int sockfd )

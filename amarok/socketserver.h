@@ -5,12 +5,14 @@
 #ifndef VIS_SOCKETSERVER_H
 #define VIS_SOCKETSERVER_H
 
-
 //TODO move loader server into here too so this file isn't named so badly
 //TODO use only one socket?
 
-
 #include <qserversocket.h>
+
+class QListViewItem;
+class QPoint;
+
 
 namespace Vis {
 
@@ -25,6 +27,7 @@ public slots:
     void showSelector();    
     
 private slots:
+    void visClicked( QListViewItem*, const QPoint&, int );
     void request( int );
 
 private:

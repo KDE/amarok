@@ -162,8 +162,8 @@ int Loader::tryConnect()
     // find out current user name
     struct passwd *p = getpwuid( getuid() );
     if (!p) {
-	qDebug( "[Loader::tryConnect()] Current user has no /etc/passwd entry?!?" );
-	return -1;
+        qDebug( "[Loader::tryConnect()] Current user has no /etc/passwd entry?!?" );
+        return -1;
     }
     
     QCString path("/tmp/ksocket-");
