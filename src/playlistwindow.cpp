@@ -16,14 +16,14 @@
  ***************************************************************************/
 
 #include "amarokconfig.h"
-#include "amarokmenu.h"    //see toolbar construction
-#include "browserwin.h"
+#include "actionclasses.h"    //see toolbar construction
+#include "playlistwindow.h"
 #include "browserbar.h"
 #include "collectionbrowser.h"
 #include "enginecontroller.h" //for actions in ctor
 #include "filebrowser.h"
-#include "playerapp.h"
-#include "playlistwidget.h"
+#include "app.h"
+#include "playlist.h"
 #include "streambrowser.h"
 #include "searchbrowser.h"
 #include "statusbar.h"
@@ -388,4 +388,4 @@ void BrowserWin::slotAddLocation() //SLOT
 }
 
 
-#include "browserwin.moc"
+#include "playlistwindow.moc"

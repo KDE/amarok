@@ -18,18 +18,18 @@ email                : markey@web.de
 #include <assert.h>
 
 #include "amarokconfig.h"
-#include "amarokconfigdialog.h"
+#include "configdialog.h"
 #include "amarokdcophandler.h"
-#include "amaroksystray.h"
-#include "browserwin.h"
+#include "systray.h"
+#include "playlistwindow.h"
 #include "effectwidget.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
 #include "osd.h"
-#include "playerapp.h"
-#include "playerwidget.h"
-#include "playlisttooltip.h"     //engineNewMetaData()
+#include "app.h"
+#include "playerwindow.h"
+#include "tracktooltip.h"     //engineNewMetaData()
 #include "plugin.h"
 #include "pluginmanager.h"
 #include "threadweaver.h"        //restoreSession()
@@ -867,4 +867,4 @@ void LoaderServer::newConnection( int sockfd )
 }
 
 
-#include "playerapp.moc"
+#include "app.moc"

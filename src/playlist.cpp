@@ -18,7 +18,7 @@
 //#include "playlistbrowser.h"
 #include "playlistitem.h"
 #include "playlistloader.h"
-#include "playlistwidget.h"
+#include "playlist.h"
 #include "threadweaver.h"
 #include "enginecontroller.h"
 
@@ -1410,4 +1410,4 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
     }
 }
 
-#include "playlistwidget.moc"
+#include "playlist.moc"

@@ -10,10 +10,10 @@
 #endif
 #include "engine/enginebase.h" //isValidMedia()
 #include "metabundle.h"
-#include "playerapp.h"
+#include "app.h"
 #include "playlistitem.h"
 #include "playlistloader.h"
-#include "playlistwidget.h"    //we're tied to this class
+#include "playlist.h"    //we're tied to this class
 #include "enginecontroller.h"
 
 #include <qapplication.h>  //postEvent()

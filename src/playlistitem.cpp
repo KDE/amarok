@@ -16,9 +16,9 @@
  ***************************************************************************/
 
 #include "metabundle.h"
-#include "playerapp.h"
+#include "app.h"
 #include "playlistitem.h"
-#include "playlistwidget.h" //this class is tied to PlaylistWidget
+#include "playlist.h" //this class is tied to PlaylistWidget
 
 #include "amarokconfig.h"
 

@@ -17,13 +17,13 @@ email                : markey@web.de
 
 #include "amarokconfig.h"
 #include "amarokdcophandler.h" //FIXME
-#include "amarokmenu.h"
-#include "amarokslider.h"
+#include "actionclasses.h"
+#include "sliderwidget.h"
 #include "analyzerbase.h"
 #include "metabundle.h"      //setScroll()
-#include "playerapp.h"
-#include "playerwidget.h"
-#include "playlisttooltip.h" //setScroll()
+#include "app.h"
+#include "playerwindow.h"
+#include "tracktooltip.h" //setScroll()
 #include "enginecontroller.h"
 
 #include <qdragobject.h>
@@ -625,4 +625,4 @@ void IconButton::drawButton( QPainter *p )
     p->drawPixmap( 0, 0, (isOn()||isDown()) ? m_down : m_up );
 }
 
-#include "playerwidget.moc"
+#include "playerwindow.moc"

@@ -5,7 +5,7 @@
 #include "collectionbrowser.h"
 #include "directorylist.h"
 #include "metabundle.h"
-#include "playerapp.h"      //makePlaylist()
+#include "app.h"      //makePlaylist()
 #include "sqlite/sqlite.h"
 #include "statusbar.h"
 #include "threadweaver.h"

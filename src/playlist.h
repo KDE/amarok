@@ -18,7 +18,7 @@
 #ifndef PLAYLISTWIDGET_H
 #define PLAYLISTWIDGET_H
 
-#include "browserwin.h"  //friend
+#include "playlistwindow.h"  //friend
 #include "engineobserver.h" //baseclass
 
 #include <qstringlist.h> //stack allocated

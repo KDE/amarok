@@ -17,7 +17,7 @@
 
 #include "effectwidget.h"
 #include "engine/enginebase.h"
-#include "playerapp.h"
+#include "app.h"
 #include "enginecontroller.h"
 
 #include <string>

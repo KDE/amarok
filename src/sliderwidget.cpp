@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "amarokslider.h"
+#include "sliderwidget.h"
 
 #include <qapplication.h> //globalStut() function
 #include <qbrush.h>
@@ -149,4 +149,4 @@ void amaroK::Slider::paintEvent( QPaintEvent * )
     bitBlt( this, 0, 0, &pBufPixmap );
 }
 
-#include "amarokslider.moc"
+#include "sliderwidget.moc"

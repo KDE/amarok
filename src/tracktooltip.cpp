@@ -12,7 +12,7 @@
   email:     chris@chris.de
 */
 
-#include "playlisttooltip.h"
+#include "tracktooltip.h"
 #include "metabundle.h"
 #include <dirent.h>
 #include <sys/stat.h>

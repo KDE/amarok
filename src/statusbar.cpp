@@ -16,7 +16,7 @@
 #include "statusbar.h"
 #include "amarokconfig.h"
 #include "metabundle.h"
-#include "playerapp.h"
+#include "app.h"
 #include "threadweaver.h"
 
 #include <qapplication.h>

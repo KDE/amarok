@@ -6,8 +6,8 @@
 // Copyright: like rest of amaroK
 //
 
-#include "amaroksystray.h"
-#include "playerapp.h"
+#include "systray.h"
+#include "app.h"
 #include "enginecontroller.h"
 
 #include <qevent.h>
@@ -20,24 +20,6 @@ amaroK::TrayIcon::TrayIcon( QWidget *playerWidget, KActionCollection *ac ) : KSy
 {
     setPixmap( KSystemTray::loadIcon("amarok") ); // @since 3.2
     setAcceptDrops( true );
-
-    // Usability note:
-    // Popping up menu item has some implications..
-    //  1. you most probably would want to do track-related operations from
-    //     popup menu
-    //  2. you probably don't want to hit "quit" by accident.
-    //  3. you may have your menu popping up from bottom, top or side of
-    //     the screen - so the relative placement of items may differ.
-
-    //<mxcl> despite the usability concerns, we have to be consistent with the KDE style guide
-    //       hence quit is now placed at the bottom
-    //<berkus> fuck you, i'm forking
-
-    //<mxcl> Ok here is my reasoning (again):
-    // 1. true
-    // 2. I can't believe it is possible to hit quit by accident unless you need to replace your mouse
-    // 3. exactly why we should stick to the KDE guidelines unless you want to implement something
-    //    that changes the menu order depending on systray position
 
     ac->action( "prev"  )->plug( contextMenu() );
     ac->action( "play"  )->plug( contextMenu() );
@@ -92,4 +74,4 @@ amaroK::TrayIcon::event( QEvent *e )
     }
 }
 
-#include "amaroksystray.moc"
+#include "systray.moc"
