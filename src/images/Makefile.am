@@ -30,6 +30,7 @@ images_DATA = \
     nocover.png \
     pl_active2.png \
     pl_inactive2.png \
+    sbinner_stars.png \
     time_minus.png \
     time_plus.png \
     vol_speaker.png \

@@ -1557,8 +1557,14 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
 
     //boxes used to display score (sb: score box)
     styleSheet += QString( ".sbtext { text-align: center; padding: 0px 4px; border-left: solid %1 1px; }" ).arg( colorGroup().base().dark( 120 ).name() );
-    styleSheet += QString( ".sbouter { width: 52px; height: 10px; background-color: %1; border: solid %2 1px; }" ).arg( colorGroup().base().dark( 120 ).name() ).arg( bg );
-    styleSheet += QString( ".sbinner { height: 8px; background-color: %1; border: solid %2 1px; }" ).arg( bg ).arg( fg );
+    // New score-bar style from Tightcode
+    styleSheet += QString( ".sbouter { border: 1px solid black; background: silver; width: 54px; height: 10px; text-align: right; }" );
+    styleSheet += QString( ".sbinner { height: 10px; border: 0px;  border-right: 1px solid black; background: white url(%1) no-repeat top left; }" )
+                           .arg( locate( "data", "amarok/images/sbinner_stars.png" ) );
+
+//     styleSheet += QString( ".sbouter { width: 52px; height: 10px; background-color: %1; border: solid %2 1px; }" ).arg( colorGroup().base().dark( 120 ).name() ).arg( bg );
+//     styleSheet += QString( ".sbinner { height: 8px; background-color: %1; border: solid %2 1px; }" ).arg( bg ).arg( fg );
+
 
     styleSheet += QString( "#current_box-header-album { font-weight: normal; }" );
     styleSheet += QString( "#current_box-information-td { text-align: right; vertical-align: bottom; padding: 3px; }" );
