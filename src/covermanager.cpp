@@ -84,9 +84,10 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     m_timer = new QTimer( this );    //search filter timer
 
     //view tool button
-    QToolButton *viewButton = new QToolButton(coverWidget);
+    QToolButton *viewButton = new QToolButton( coverWidget );
     viewButton->setText( i18n("View") );
     viewButton->setAutoRaise( true );
+    viewButton->setPaletteBackgroundColor( colorGroup().background() );
     // view menu
     m_viewMenu = new KPopupMenu( viewButton);
     m_viewMenu->insertItem( i18n("All albums"), AllAlbums );
@@ -233,6 +234,9 @@ void CoverManager::collapseItem( QListViewItem *item ) //SLOT
 
 void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
 {
+    if( item->depth() ) //album item
+        return;
+
     m_coverView->clear();
     m_coverItems.clear();
 
@@ -258,7 +262,6 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
                                                               values[ allAlbums ? i+1 : i ] );
                     coverItem->updateCover( QPixmap( imgPath ) );
                 }
-                else coverItem->updateCover( QPixmap() );
             }
         }
 
@@ -309,10 +312,10 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
             KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select cover image file - amaroK" ) );
             if ( !file.isEmpty() )
             {
-                QImage img( file.directory() + "/" + file.fileName() );
-                img.save( item->albumPath(), "PNG" );
-                uint thumb( AmarokConfig::coverPreviewSize() );
-                item->updateCover( img.smoothScale( thumb, thumb ) );
+                QPixmap pix( file.path() );
+                m_db->setImageForAlbum( item->artist(), item->album(), pix );
+                QString imgPath = m_db->getImageForAlbum( item->artist(), item->album() );
+                item->updateCover( QPixmap( imgPath ) );
             }
             break;
         }
@@ -528,18 +531,12 @@ CoverViewItem::CoverViewItem( QIconView *parent, QIconViewItem *after, QString a
     : KIconViewItem( parent, after, album )
     , m_artist( artist )
     , m_album( album )
-    , m_hasCover( false )
+    , coverPix( SmallIcon("image") )
 {
     calcRect();
 
-    CollectionDB db;
-
-    QFile file( albumPath() );
     kdDebug() << albumPath() << endl;
-    if( file.exists() )
-        m_hasCover = true;
-
-    setPixmap( SmallIcon("image") );
+    m_hasCover = QFile::exists( albumPath() );
 }
 
 
@@ -551,7 +548,7 @@ CoverViewItem::~CoverViewItem()
 void CoverViewItem::updateCover( const QPixmap &cover )
 {
     m_hasCover = !cover.isNull();
-    setPixmap( cover.isNull() ? SmallIcon("image") : cover );
+    coverPix = ( cover.isNull() ? SmallIcon("image") : cover );
 }
 
 
@@ -600,9 +597,8 @@ void CoverViewItem::paintItem(QPainter* p, const QColorGroup& cg)
     pBuf.setPen( cg.mid() );
     pBuf.drawRect( 0, 0, itemRect.width(), pixmapRect().height()+2 );
     // draw the cover image
-    QPixmap *cover = pixmap();
-    pBuf.drawPixmap( pixmapRect().x() + (pixmapRect().width() - cover->width())/2,
-                                       pixmapRect().y() + (pixmapRect().height() - cover->height())/2, *cover );
+    pBuf.drawPixmap( pixmapRect().x() + (pixmapRect().width() - coverPix.width())/2,
+                                       pixmapRect().y() + (pixmapRect().height() - coverPix.height())/2, coverPix );
 
     //justify the album name
     QString str = text();

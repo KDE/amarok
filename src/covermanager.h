@@ -30,9 +30,9 @@ Q_OBJECT
     public:
         CoverManager( QWidget *parent=0, const char *name=0 );
         ~CoverManager();
-        
+
         virtual bool eventFilter( QObject*, QEvent* );
-     
+
     private slots:
         void expandItem( QListViewItem * );
         void collapseItem( QListViewItem * );
@@ -45,12 +45,12 @@ Q_OBJECT
         void coverFetched( const QString & );
         void fetchMissingCovers();
         void fetchMissingCoversLoop();
-                
+
     private:
         enum { AllAlbums=0, AlbumsWithCover, AlbumsWithoutCover };
-        
+
         void updateCounter();
-        
+
         CollectionDB *m_db;
         KListView *m_artistView;
         KIconView *m_coverView;
@@ -62,7 +62,7 @@ Q_OBJECT
         QPtrList<KIconViewItem> m_coverItems;
         QString m_filter;
         int m_currentView;
-        
+
         // Used by fetchMissingCovers() for temporary storage
         CoverViewItem* m_currentItem;
 };
@@ -78,17 +78,17 @@ class CoverViewItem : public KIconViewItem
         QString album() { return m_album; }
         bool hasCover() { return m_hasCover; }
         QString albumPath();
-        
+
     protected:
         void paintItem(QPainter* painter, const QColorGroup& colorGroup);
         void paintFocus(QPainter *, const QColorGroup &) { }
         void calcRect( const QString& text_=QString::null );
-        
+
     private:
         QString m_artist;
         QString m_album;
         bool m_hasCover;
-        bool noedit;
+        QPixmap coverPix;
 };
 
 

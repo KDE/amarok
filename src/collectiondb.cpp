@@ -160,6 +160,25 @@ CollectionDB::getPathForAlbum( const uint artist_id, const uint album_id )
 }
 
 
+bool
+CollectionDB::setImageForAlbum( const QString& artist, const QString& album, const QPixmap &pix )
+{
+    QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
+    QString fileName( artist + " - " + album );
+    fileName = fileName.lower().replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ) + ".png";
+
+    if( largeCoverDir.exists( fileName ) ) {
+        //remove cache images
+        QStringList scaledList = m_cacheDir.entryList( "*@" + fileName );
+        for ( uint i = 0; i < scaledList.count(); i++ )
+                m_cacheDir.remove( scaledList[i] );
+    }
+
+    QImage img( pix.convertToImage() );
+    return img.save( largeCoverDir.filePath( fileName ), "PNG");
+}
+
+
 QString
 CollectionDB::getImageForAlbum( const QString artist, const QString album, const uint width )
 {
@@ -1320,11 +1339,9 @@ CollectionDB::saveCover( const QString& keyword, const QPixmap& pix )
 {
     kdDebug() << k_funcinfo << endl;
 
-    QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
-    QImage img( pix.convertToImage() );
-
-    QString fileName( keyword.lower().replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ) + ".png" );
-    img.save( largeCoverDir.filePath( fileName ), "PNG");
+    //get artist and album
+    QStringList values = QStringList::split( " - ", keyword );
+    setImageForAlbum( values[0], values[1], pix );
 
     emit coverFetched( keyword );
     emit coverFetched();
