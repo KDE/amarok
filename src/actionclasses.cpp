@@ -228,7 +228,10 @@ PlayPauseAction::engineStateChanged( Engine::State state )
     for( int x = 0; x < containerCount(); ++x ) {
         QWidget *w = container( x );
         if( w->inherits( "QPopupMenu" ) )
-           static_cast<QPopupMenu*>(w)->changeItem( itemId( x ), text );
+            static_cast<QPopupMenu*>(w)->changeItem( itemId( x ), text );
+        //TODO KToolBar sucks so much
+//         else if( w->inherits( "KToolBar" ) )
+//             static_cast<KToolBar*>(w)->getButton( itemId( x ) )->setText( text );
     }
 }
 
@@ -276,9 +279,9 @@ AnalyzerAction::plug( QWidget *w, int index )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 VolumeAction::VolumeAction( KActionCollection *ac )
-  : KAction( i18n( "Volume" ), 0, ac, "toolbar_volume" )
-  , EngineObserver( EngineController::instance() )
-  , m_slider( 0 ) //is QGuardedPtr
+        : KAction( i18n( "Volume" ), 0, ac, "toolbar_volume" )
+        , EngineObserver( EngineController::instance() )
+        , m_slider( 0 ) //is QGuardedPtr
 {}
 
 int
@@ -290,8 +293,9 @@ VolumeAction::plug( QWidget *w, int index )
 
     m_slider = new amaroK::Slider( Qt::Vertical, w, amaroK::VOLUME_MAX );
     m_slider->setName( "ToolBarVolume" );
-    m_slider->setFixedHeight( 35 ); //FIXME how to determine a sensible height?
     m_slider->setValue( AmarokConfig::masterVolume() );
+    m_slider->setMinimumSize( 35 );
+    m_slider->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Ignored );
 
     QToolTip::add( m_slider, i18n( "Volume Control" ) );
 

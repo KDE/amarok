@@ -193,7 +193,7 @@ PlaylistWindow::init()
     } //</Search LineEdit>
 
     QFrame *playlist = new Playlist( m_browsers->container() );
-    m_toolbar = new amaroK::ToolBar( m_browsers->container(), "playlist_toolbar" );
+    m_toolbar = new amaroK::ToolBar( m_browsers->container(), "mainToolBar" );
     QWidget *statusbar = new amaroK::StatusBar( this );
 
     KAction* repeatTrackAction = amaroK::actionCollection()->action( "repeat_track" );
