@@ -284,7 +284,7 @@ class CollectionDB : public QObject, public EngineObserver
 
     private:
         //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.
-        static const int DATABASE_VERSION = 17;
+        static const int DATABASE_VERSION = 18;
         static const int DATABASE_STATS_VERSION = 3;
         static const int MONITOR_INTERVAL = 60; //sec
         static const bool DEBUG = false;
