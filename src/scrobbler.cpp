@@ -2,10 +2,13 @@
 // (c) 2004 Sami Nieminen <sami.nieminen@iki.fi>
 // See COPYING file for licensing information.
 
+#include "amarok.h"
 #include "amarokconfig.h"
 #include "collectiondb.h"
 #include "config.h"
 #include "enginecontroller.h"
+#include "scrobbler.h"
+
 #include <kapplication.h>
 #include <kdebug.h>
 #include <kmdcodec.h>
@@ -14,7 +17,6 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 #include <qdatetime.h>
-#include "scrobbler.h"
 #include <unistd.h>
 
 //some setups require this
@@ -233,6 +235,115 @@ void Scrobbler::applySettings()
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// CLASS SubmitItem
+////////////////////////////////////////////////////////////////////////////////
+
+
+SubmitItem::SubmitItem(
+    const QString& artist,
+    const QString& album,
+    const QString& title,
+    int length)
+{
+    m_artist = artist;
+    m_album = album;
+    m_title = title;
+    m_length = length;
+    m_playStartTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
+}
+
+
+SubmitItem::SubmitItem( const QDomElement& element )
+{
+    m_artist = element.namedItem( "artist" ).toElement().text();
+    m_album = element.namedItem( "album" ).toElement().text();
+    m_title = element.namedItem( "title" ).toElement().text();
+    m_length = element.namedItem( "length" ).toElement().text().toInt();
+    m_playStartTime = element.namedItem( "playtime" ).toElement().text().toUInt();
+}
+
+
+bool SubmitItem::operator==( const SubmitItem& item )
+{
+    bool result = true;
+    
+    if ( m_artist != item.artist() ||
+         m_album != item.album() ||
+         m_title != item.title() ||
+         m_length != item.length() ||
+         m_playStartTime != item.playStartTime() )
+    {
+        result = false;
+    }
+    
+    return result;
+}
+
+
+QDomElement SubmitItem::toDomElement( QDomDocument& document ) const
+{
+    QDomElement item = document.createElement( "item" );
+    // TODO: In the future, it might be good to store url too
+    //item.setAttribute("url", item->url().url());
+    
+    QDomElement artist = document.createElement( "artist" );
+    QDomText artistText = document.createTextNode( m_artist );
+    artist.appendChild( artistText );
+    item.appendChild( artist );
+    
+    QDomElement album = document.createElement( "album" );
+    QDomText albumText = document.createTextNode( m_album );
+    album.appendChild( albumText );
+    item.appendChild( album );
+    
+    QDomElement title = document.createElement( "title" );
+    QDomText titleText = document.createTextNode( m_title );
+    title.appendChild( titleText );
+    item.appendChild( title );
+    
+    QDomElement length = document.createElement( "length" );
+    QDomText lengthText = document.createTextNode( QString::number( m_length ) );
+    length.appendChild( lengthText );
+    item.appendChild( length );
+    
+    QDomElement playtime = document.createElement( "playtime" );
+    QDomText playtimeText = document.createTextNode( QString::number( m_playStartTime ) );
+    playtime.appendChild( playtimeText );
+    item.appendChild( playtime );
+    
+    return item;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// CLASS SubmitQueue
+////////////////////////////////////////////////////////////////////////////////
+
+
+int SubmitQueue::compareItems( QPtrCollection::Item item1, QPtrCollection::Item item2 )
+{
+    SubmitItem *sItem1 = (SubmitItem*) item1;
+    SubmitItem *sItem2 = (SubmitItem*) item2;
+    int result;
+    
+    if ( sItem1 == sItem2 )
+    {
+        result = 0;
+    }
+    else if ( sItem1->playStartTime() > sItem2->playStartTime() )
+    {
+        result = 1;
+    }
+    else
+    {
+        result = -1;
+    }
+    
+    return result;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // CLASS ScrobblerSubmitter
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -252,11 +363,16 @@ ScrobblerSubmitter::ScrobblerSubmitter() :
     m_scrobblerEnabled( false ),
     m_prevSubmitTime( 0 ),
     m_interval( 0 )
-{}
+{
+    readSubmitQueue();
+}
 
 
 ScrobblerSubmitter::~ScrobblerSubmitter()
 {
+    // TODO: store ongoing submits too (finishJob)
+    saveSubmitQueue();
+    
     m_ongoingSubmits.setAutoDelete( TRUE );
     m_ongoingSubmits.clear();
     m_submitQueue.setAutoDelete( TRUE );
@@ -354,16 +470,25 @@ void ScrobblerSubmitter::handshake()
  */
 void ScrobblerSubmitter::submitItem( SubmitItem* item )
 {
-    enqueueItem( item );
-    
     if ( !canSubmit() )
     {
+        if ( m_scrobblerEnabled )
+        {
+            // If scrobbling is enabled but can't submit for some reason,
+            // enqueue item.
+            enqueueItem( item );
+        }
         return;
     }
     else if ( m_challenge.isEmpty() )
     {
+        enqueueItem( item );
         handshake();
         return;
+    }
+    else
+    {
+        enqueueItem( item );
     }
 
     QString data = QString::null;
@@ -396,6 +521,7 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
                 KURL::encode_string( KMD5( KMD5( m_password.utf8() ).hexDigest() +
                     m_challenge.utf8() ).hexDigest() );
         
+        m_submitQueue.first();
         for ( int submitCounter = 0; submitCounter < 10; submitCounter++ )
         {
             SubmitItem* itemFromQueue = dequeueItem();
@@ -483,6 +609,17 @@ void ScrobblerSubmitter::setPassword( const QString& password )
 void ScrobblerSubmitter::setEnabled( bool enabled )
 {
     m_scrobblerEnabled = enabled;
+    
+    if ( !enabled )
+    {
+        // If submit is disabled, clear submitqueue.
+        m_ongoingSubmits.setAutoDelete( TRUE );
+        m_ongoingSubmits.clear();
+        m_ongoingSubmits.setAutoDelete( FALSE );
+        m_submitQueue.setAutoDelete( TRUE );
+        m_submitQueue.clear();
+        m_submitQueue.setAutoDelete( FALSE );
+    }
 }
 
 
@@ -698,16 +835,18 @@ void ScrobblerSubmitter::enqueueItem( SubmitItem* item )
 {
     // Maintain max size of the queue, Audioscrobbler won't accept too old
     // submissions anyway.
-    for ( uint size = m_submitQueue.count(); size >= 50; size-- )
+    m_submitQueue.first();
+    for ( uint size = m_submitQueue.count(); size >= 500; size-- )
     {
-        SubmitItem* itemFromQueue = dequeueItem();
+        SubmitItem* itemFromQueue = m_submitQueue.getFirst();
+        m_submitQueue.removeFirst();
         kdDebug()
-            << "[Audioscrobbler] Dropping " << itemFromQueue->artist()
+            << "[AudioScrobbler] Dropping " << itemFromQueue->artist()
             << " - " << itemFromQueue->title() << " from submit queue" << endl;
         delete itemFromQueue;
     }
     
-    m_submitQueue.enqueue( item );
+    m_submitQueue.inSort( item );
 }
 
 
@@ -716,7 +855,7 @@ void ScrobblerSubmitter::enqueueItem( SubmitItem* item )
  */
 SubmitItem* ScrobblerSubmitter::dequeueItem()
 {
-    SubmitItem* item = m_submitQueue.dequeue();
+    SubmitItem* item = m_submitQueue.take();
     
     return item;
 }
@@ -728,11 +867,8 @@ SubmitItem* ScrobblerSubmitter::dequeueItem()
  */
 void ScrobblerSubmitter::enqueueJob( KIO::Job* job )
 {
-    SubmitItem* item;
-    while ( ( item = m_ongoingSubmits.take( job ) ) != 0 )
-    {
-        enqueueItem( item );
-    }
+    while ( m_ongoingSubmits.take( job ) != 0 );
+    m_submitQueue.first();
 }
 
 
@@ -745,27 +881,75 @@ void ScrobblerSubmitter::finishJob( KIO::Job* job )
     SubmitItem* item;
     while ( ( item = m_ongoingSubmits.take( job ) ) != 0 )
     {
+        m_submitQueue.remove( item );
         delete item;
     }
+    m_submitQueue.first();
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-// CLASS SubmitItem
-////////////////////////////////////////////////////////////////////////////////
-
-
-SubmitItem::SubmitItem(
-    const QString& artist,
-    const QString& album,
-    const QString& title,
-    int length)
+void ScrobblerSubmitter::saveSubmitQueue()
 {
-    m_artist = artist;
-    m_album = album;
-    m_title = title;
-    m_length = length;
-    m_playStartTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
+    QFile file( m_savePath );
+    
+    if( !file.open( IO_WriteOnly ) )
+    {
+        kdDebug() << "[AudioScrobbler] Couldn't write file: " << m_savePath << endl;
+        return;
+    }
+    
+    QDomDocument newdoc;
+    QDomElement submitQueue = newdoc.createElement( "submit" );
+    submitQueue.setAttribute( "product", "amaroK" );
+    submitQueue.setAttribute( "version", APP_VERSION );
+    newdoc.appendChild( submitQueue );
+    
+    m_submitQueue.first();
+    SubmitItem *item;
+    while ( ( item = dequeueItem() ) != 0 )
+    {
+        QDomElement i = item->toDomElement( newdoc );
+        submitQueue.appendChild( i );
+    }
+    
+    QTextStream stream( &file );
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+    stream << newdoc.toString();
+    file.close();
+}
+
+
+void ScrobblerSubmitter::readSubmitQueue()
+{
+    m_savePath = KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "submit.xml";
+    QFile file( m_savePath );
+    
+    if ( !file.open( IO_ReadOnly ) )
+    {
+        kdDebug() << "[AudioScrobbler] Couldn't open file: " << m_savePath << endl;
+        return;
+    }
+    
+    QTextStream stream( &file );
+    
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
+
+    QDomDocument d;
+    if( !d.setContent( stream.read() ) )
+    {
+        kdDebug() << "[AudioScrobbler] Couldn't read file: " << m_savePath << endl;
+        return;
+    }
+
+    const QString ITEM( "item" ); //so we don't construct these QStrings all the time
+    
+    for( QDomNode n = d.namedItem( "submit" ).firstChild();
+            !n.isNull() && n.nodeName() == ITEM;
+            n = n.nextSibling() )
+    {
+        enqueueItem( new SubmitItem( n.toElement() ) );
+    }
 }
 
 
