@@ -80,10 +80,9 @@ PlaylistLoader::PlaylistLoader( const KURL::List &urls, QListViewItem *after, bo
                 m_URLs += url;
            }
         }
-        else if( KFileItem( KFileItem::Unknown, KFileItem::Unknown, url ).isDir() )
+        else if( !url.isLocalFile() || QFileInfo( url.path() ).isDir() )
             // we must check if it's a directory before we call recurse() on it
             m_URLs += recurse( url );
-
         else
             m_URLs += url;
     }
@@ -328,9 +327,9 @@ PlaylistFile::loadM3u( QTextStream &stream )
     const QString directory = m_path.left( m_path.findRev( '/' ) + 1 );
     MetaBundle b;
 
-    for( QString line; !stream.atEnd(); line = stream.readLine() )
+    for( QString line; !stream.atEnd(); )
     {
-        if( line.isEmpty() ) continue;
+        line = stream.readLine();
 
         if( line.startsWith( "#EXTINF" ) ) {
             const QString extinf = line.section( ':', 1 );
@@ -339,7 +338,7 @@ PlaylistFile::loadM3u( QTextStream &stream )
             b.setLength( length <= 0 ? /*MetaBundle::Undetermined HACK*/ -2 : length );
         }
 
-        else if( !line.startsWith( "#" ) )
+        else if( !line.startsWith( "#" ) && !line.isEmpty() )
         {
             // KURL::isRelativeURL() expects a protocol, so prepend it if missing
             QString url = line;
@@ -362,8 +361,10 @@ PlaylistFile::loadM3u( QTextStream &stream )
 bool
 PlaylistFile::loadPls( QTextStream &stream )
 {
-    for( QString line; !stream.atEnd(); line = stream.readLine() )
+    for( QString line; !stream.atEnd(); )
     {
+        line = stream.readLine();
+
         if( line.startsWith( "File" ) ) {
             MetaBundle b;
 
