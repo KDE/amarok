@@ -27,15 +27,15 @@
 
 
 XineConfigEntry::XineConfigEntry( QWidget *parent, amaroK::PluginConfig *pluginConfig, int row, xine_cfg_entry_t *entry )
-    : m_valueChanged( false )
-    , m_numValue( entry->num_value )
-    , m_key( entry->key )
-    , m_stringValue( entry->str_value )
+        : m_valueChanged( false )
+        , m_numValue( entry->num_value )
+        , m_key( entry->key )
+        , m_stringValue( entry->str_value )
 {
     QGridLayout *grid = (QGridLayout*)parent->layout();
     QWidget *w = 0;
 
-    switch (entry->type)
+    switch( entry->type )
     {
     case XINE_CONFIG_TYPE_STRING:
     {
@@ -87,7 +87,7 @@ XineConfigEntry::XineConfigEntry( QWidget *parent, amaroK::PluginConfig *pluginC
         ;
     }
 
-    QToolTip::add( w, QString( entry->help ) );
+    QToolTip::add( w, "<qt>" + QString( entry->help ) );
 
     QLabel* description = new QLabel( QString::fromLocal8Bit( entry->description ) + ':', parent );
     description->setAlignment( QLabel::WordBreak | QLabel::AlignVCenter );
@@ -123,9 +123,9 @@ XineConfigEntry::slotStringChanged( const QString& val )
 ///////////////////////
 
 XineConfigDialog::XineConfigDialog( const xine_t* const xine, QWidget *p )
-    : amaroK::PluginConfig()
-    , QTabWidget( p )
-    , m_xine( (xine_t*)xine )
+        : amaroK::PluginConfig()
+        , QTabWidget( p )
+        , m_xine( (xine_t*)xine )
 {
     int row = 0;
     QString currentPage;
@@ -137,23 +137,20 @@ XineConfigDialog::XineConfigDialog( const xine_t* const xine, QWidget *p )
 
     xine_config_get_first_entry( m_xine, ent );
 
-    do
-    {
-        if ( ent->exp_level <= 10 )
+    do {
+        if( ent->exp_level <= 10 )
         {
             QString pageName( ent->key );
             pageName = pageName.left( pageName.find( '.' ) );
 
-            if ( pageName == "vcd" )
+            if( pageName == "vcd" || pageName == "video" || pageName == "subtitles" || pageName == "effects" )
                 continue;
 
-            if ( pageName == currentPage )
-            {
+            if( pageName == currentPage )
                 ++row;
-            }
-            else
-            {
-                if ( sv )
+
+            else {
+                if( sv )
                     //TODO is the viewport() not better?
                     sv->setMinimumWidth( grid->sizeHint().width() + 20 );
 
