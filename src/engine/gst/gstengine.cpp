@@ -240,7 +240,7 @@ GstEngine::GstEngine()
 
 GstEngine::~GstEngine()
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_FUNC_INFO
     debug() << "bytes left in gst_adapter: " << gst_adapter_available( m_gst_adapter ) << endl;
 
     if ( m_pipelineFilled ) {
@@ -455,6 +455,8 @@ GstEngine::configure() const
 bool
 GstEngine::load( const KURL& url, bool stream )  //SLOT
 {
+    Debug::Block block( __PRETTY_FUNCTION__ );
+
     Engine::Base::load( url, stream );
     m_eos = false;
     debug() << "Loading url: " << url.url() << endl;
@@ -520,7 +522,8 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
 bool
 GstEngine::play( uint offset )  //SLOT
 {
-    DEBUG_FUNC_INFO
+    Debug::Block block( __PRETTY_FUNCTION__ );
+
     if ( !m_currentInput ) return false;
 
     gst_element_set_state( m_gst_queue, GST_STATE_PAUSED );
@@ -555,7 +558,8 @@ GstEngine::play( uint offset )  //SLOT
 void
 GstEngine::stop()  //SLOT
 {
-    DEBUG_FUNC_INFO
+    Debug::Block block( __PRETTY_FUNCTION__ );
+
     m_eos = false;
     emit stateChanged( Engine::Empty );
 
@@ -572,7 +576,8 @@ GstEngine::stop()  //SLOT
 void
 GstEngine::pause()  //SLOT
 {
-    DEBUG_FUNC_INFO
+    Debug::Block block( __PRETTY_FUNCTION__ );
+
     if ( !m_currentInput ) return;
 
     if ( GST_STATE( m_currentInput->bin ) == GST_STATE_PAUSED ) {
