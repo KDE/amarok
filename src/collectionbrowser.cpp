@@ -56,14 +56,13 @@ CollectionBrowser::CollectionBrowser( const char* name )
     menu->insertItem( i18n( "Secondary" ), m_cat2Menu );
 
     { //<Search LineEdit>
-        QHBox *hbox; QToolButton *button;
+        QHBox *hbox; KToolBarButton *button;
 
         hbox         = new QHBox( this );
-        button       = new QToolButton( hbox );
+        button       = new KToolBarButton( "locationbar_erase", 0, hbox );
         m_searchEdit = new KLineEdit( hbox );
 
-        hbox->setMargin( 4 );
-        button->setIconSet( SmallIconSet( QApplication::reverseLayout() ? "clear_left" : "locationbar_erase" ) );
+        hbox->setMargin( 1 );
         m_searchEdit->setFrame( QFrame::Sunken );
         connect( button, SIGNAL(clicked()), m_searchEdit, SLOT(clear()) );
 

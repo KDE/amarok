@@ -64,7 +64,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     QStringList values;
     QStringList names;
     m_db->execSql( "SELECT DISTINCT artist.name FROM tags, artist, album "
-                   "WHERE artist.name <> 'Unknown' AND album.name <> 'Unknown' AND artist.id=tags.artist AND album.id=tags.album "
+                   "WHERE tags.sampler = 0 AND tags.album = album.id AND artist.name <> 'Unknown' AND album.name <> 'Unknown' AND artist.id=tags.artist "
                    "ORDER BY artist.name;", &values, &names );
 
     if( !values.isEmpty() ) {
@@ -212,7 +212,7 @@ void CoverManager::expandItem( QListViewItem *item ) //SLOT
         id = QString::number( m_db->getValueID( "artist", item->text(0) ) );
 
     m_db->execSql("SELECT DISTINCT album.name FROM album, artist, tags "
-                  "WHERE album.name <> 'Unknown' AND tags.album = album.id AND tags.artist = " + id + " "
+                  "WHERE tags.sampler = 0 AND album.name <> 'Unknown' AND tags.album = album.id AND tags.artist = " + id + " "
                   "ORDER BY album.name;", &values, &names );
 
     if ( !values.isEmpty() )
@@ -228,6 +228,23 @@ void CoverManager::expandItem( QListViewItem *item ) //SLOT
         }
     }
 
+    m_db->execSql("SELECT DISTINCT album.name FROM album, artist, tags "
+                  "WHERE album.name <> 'Unknown' AND tags.album = album.id AND tags.artist = " + id + " "
+                  "ORDER BY album.name;", &values, &names );
+
+    if ( !values.isEmpty() )
+    {
+        KListViewItem *after = 0;
+        for ( uint i=0; i < values.count(); i++ )
+        {
+            if ( !values[i].isEmpty() )
+            {
+                after = new KListViewItem( item, after, values[i] );
+                after->setPixmap( 0, SmallIcon("cdrom_unmount") );
+            }
+        }
+    }
+    
 }
 
 

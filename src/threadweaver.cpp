@@ -201,6 +201,7 @@ CollectionReader::CollectionReader( CollectionDB* parent, QObject *playlistBrows
         , m_incremental( incremental )
 {}
 
+
 bool
 CollectionReader::doJob()
 {
@@ -262,7 +263,8 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
         return;
     }
 
-    while ( ( ent = readdir( d ) ) ) {
+    while ( ( ent = readdir( d ) ) )
+    {
         QCString entry = ent->d_name;
 
         if ( entry == "." || entry == ".." )
@@ -271,12 +273,14 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
 
         if ( stat( entry, &statBuf ) == 0 )
         {
-            if ( S_ISDIR( statBuf.st_mode ) ) {
+            if ( S_ISDIR( statBuf.st_mode ) )
+            {
                 if ( m_recursively )
                     //call ourself recursively for each subdir
                     if ( !m_incremental || !m_parent->isDirInCollection( entry ) )
-                        readDir( QFile::decodeName( entry ), entries );
-            } else if ( S_ISREG( statBuf.st_mode ) ) {
+                        readDir( QFile::decodeName( entry ), entries );                        
+            } else if ( S_ISREG( statBuf.st_mode ) )
+            {
                  //if a playlist is found it will send a PlaylistFoundEvent to PlaylistBrowser
                     QString file = QString::fromLocal8Bit( entry );
                     QString ext = file.right( 4 ).lower();
@@ -289,6 +293,7 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
     }
     closedir( d );
 }
+
 
 void
 CollectionReader::readTags( const QStringList& entries )
@@ -303,13 +308,13 @@ CollectionReader::readTags( const QStringList& entries )
     QStringList validMusic;
     validMusic << "mp3" << "ogg" << "flac" << "wav";
 
-    for ( uint i = 0; i < entries.count(); i++ ) {
+    for ( uint i = 0; i < entries.count(); i++ )
+    {
         // Check if we shall abort the scan
         if ( m_stop ) return;
 
-        if ( !( i % 20 ) ) { //don't post events too often since this blocks amaroK
+        if ( !( i % 20 ) ) //don't post events too often since this blocks amaroK
             QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Progress, i ) );
-        }
 
         url.setPath( entries[ i ] );
         TagLib::FileRef f( QFile::encodeName( url.path() ), false );  //false == don't read audioprops
@@ -318,7 +323,8 @@ CollectionReader::readTags( const QStringList& entries )
                             "( url, dir, createdate, album, artist, genre, title, year, comment, track, sampler ) "
                             "VALUES ('";
 
-        if ( !f.isNull() ) {
+        if ( !f.isNull() )
+        {
             MetaBundle bundle( url, f.tag(), 0 );
 
             QString artist = bundle.artist();
@@ -348,10 +354,11 @@ CollectionReader::readTags( const QStringList& entries )
             m_parent->execSql( command );
         }
         // Add tag-less tracks to database
-        else if ( validMusic.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ) ) ) {
+        else if ( validMusic.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ).lower() ) )
+        {
             // extract tag information from filename
-	    QString artist;
-	    QString title = url.fileName();
+            QString artist;
+            QString title = url.fileName();
             if ( url.fileName().find( '-' ) > 0 )
             {
                 artist = url.fileName().left( url.fileName().find( '-' ) - 1 ).stripWhiteSpace();
@@ -368,7 +375,7 @@ CollectionReader::readTags( const QStringList& entries )
             command += m_parent->escapeString( title.isEmpty() ? url.fileName() : title ) + "','";
             command += m_parent->escapeString( QString::number( m_parent->getValueID( "year", i18n( "Unknown" ), true, !m_incremental ) ) ) + "','";
             command += m_parent->escapeString( i18n( "Unknown" ) ) + "','";
-            command += m_parent->escapeString( i18n( "Unknown" ) ) + "');";
+            command += m_parent->escapeString( i18n( "Unknown" ) ) + "', 0);";
 
             m_parent->execSql( command );
         }
@@ -380,10 +387,12 @@ CollectionReader::readTags( const QStringList& entries )
     m_parent->execSql( "BEGIN TRANSACTION;" );
 
     // remove tables and recreate them (quicker than DELETE FROM)
-    if ( !m_incremental ) {
+    if ( !m_incremental )
+    {
         m_parent->dropTables();
         m_parent->createTables();
-    } else {
+    } else
+    {
         // remove old entries from database, only
         for ( uint i = 0; i < m_folders.count(); i++ )
             m_parent->removeSongsInDir( m_folders[ i ] );
