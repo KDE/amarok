@@ -615,11 +615,17 @@ void GstEngine::timerEvent( QTimerEvent* )
 
             case InputPipeline::NEAR_DEATH:
                 input->m_killCounter--;
-                kdDebug() << "m_killCounter == " << input->m_killCounter << endl;
 
-                if ( !input->m_killCounter )
+                int filled;
+                gst_element_get( input->queue, "current-level-buffers", &filled, NULL );
+                kdDebug() << "[Gst-Engine] Queue buffer-level: " << filled << endl;
+
+                if ( !filled || !input->m_killCounter ) {
+                    if ( !input->m_killCounter )
+                        kdWarning() << "[Gst-Engine] killCounter has reached 0.\n";
                     // Fade transition has finished, stop playback
                     destroyList.append( input );
+                }
         }
     }
 
@@ -981,11 +987,12 @@ InputPipeline::~InputPipeline()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
-    if ( state() != NEAR_DEATH )
-        prepareToDie();
-
     if ( thread ) {
         kdDebug() << "Unreffing input thread.\n";
+
+        gst_element_set_state( thread, GST_STATE_READY );
+
+        gst_element_unlink( queue, GstEngine::instance()->m_gst_adder );
 
         gst_element_set_state( thread, GST_STATE_NULL );
         gst_object_unref( GST_OBJECT( thread ) );
@@ -1004,33 +1011,17 @@ void InputPipeline::prepareToDie()
         kdDebug() << "m_currentInput == this; setting to 0.\n";
     }
 
+    m_killCounter = 100;
+    setState( NEAR_DEATH );
+
     if ( thread )
     {
         if ( GST_STATE( thread ) == GST_STATE_PLAYING )
-        {
             gst_element_set_state( thread, GST_STATE_PAUSED );
-
-            kdDebug() << k_funcinfo << "BEGIN Waiting for queue to become empty.\n";
-
-            int filled = 1;
-            int count = 100;
-            while( filled && count ) {
-                gst_element_get( queue, "current-level-buffers", &filled, NULL );
-                ::usleep( 50000 ); // 50 msec
-                count--;
-            }
-            if ( !count )
-                kdDebug() << k_funcinfo << "Count reached 0\n";
-
-            kdDebug() << k_funcinfo << "END Waiting for queue to become empty.\n";
-        }
-
-        if ( GstEngine::instance()->m_gst_thread )
-            gst_element_unlink_many( src, spider, volume, queue, GstEngine::instance()->m_gst_adder, 0 );
+        else
+            // If not playing, destroy right away
+            m_killCounter = 1;
     }
-
-    m_killCounter = 20;
-    setState( NEAR_DEATH );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
