@@ -176,6 +176,7 @@ CoverFetcher::editSearch() //SLOT
     {    
         m_keyword = sdlg->searchString->text();
         getCover( m_keyword, m_album, CoverFetcher::heavy );
+        deleteLater();
         return;
     }
     else
