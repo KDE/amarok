@@ -125,7 +125,8 @@ class BrowserWin : public QWidget
         ~BrowserWin();
 
         void setPalettes( const QPalette&, const QColor& );
-
+        void saveConfig();
+        
 // ATTRIBUTES ------
         KActionCollection *m_pActionCollection;
 

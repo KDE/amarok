@@ -15,16 +15,6 @@
         <default></default>
         <whatsthis>Amarok version string, used to restart aRts in new installations</whatsthis>
      </entry>
-     <entry key="Current Directory" type="Path">
-        <label>Current BrowserWin directory</label>
-        <default code="true">QDir::home().path()</default>
-        <whatsthis></whatsthis>
-     </entry>
-     <entry key="Path History" type="StringList">
-        <label>History of items in browser path list</label>
-        <default></default>
-        <whatsthis></whatsthis>
-     </entry>
      <entry key="Player Pos" type="Point">
         <label>Position of player window</label>
         <default code="true">QPoint(0,0)</default>
@@ -243,4 +233,53 @@
         <whatsthis></whatsthis>
      </entry>
   </group>
+  
+  <group name="Filebrowser">
+     <entry key="Pathcombo History Len" type="Int">
+        <label></label>
+        <default>9</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Dir History" type="StringList">
+        <label></label>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Restore Location" type="Bool">
+        <label></label>
+        <default>true</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Location" type="Path">
+        <label></label>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Filter History Len" type="Int">
+        <label></label>
+        <default>9</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Filter History" type="StringList">
+        <label></label>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Last Filter" type="String">
+        <label></label>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Restore Last Filter" type="Bool">
+        <label></label>
+        <default>true</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Current Filter" type="String">
+        <label></label>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Auto Sync Events" type="Int">
+        <label></label>
+        <default>0</default>
+        <whatsthis></whatsthis>
+     </entry>
+  </group>
+
 </kcfg>

@@ -5,16 +5,16 @@
    Copyright (C) 2001 Christoph Cullmann <cullmann@kde.org>
    Copyright (C) 2001 Joseph Wenninger <jowenn@kde.org>
    Copyright (C) 2001 Anders Lund <anders.lund@lund.tdcadsl.dk>
-
+ 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
    License version 2 as published by the Free Software Foundation.
-
+ 
    This library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Library General Public License for more details.
-
+ 
    You should have received a copy of the GNU Library General Public License
    along with this library; see the file COPYING.LIB.  If not, write to
    the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
@@ -26,7 +26,6 @@
 #include "filebrowser.h"
 #include "kactionselector.h"
 #include "kbookmarkhandler.h"
-#include "playerapp.h"
 
 #include <qapplication.h>
 #include <qcheckbox.h>
@@ -46,12 +45,9 @@
 #include <qvbox.h>
 #include <qwhatsthis.h>
 
-#include <ktexteditor/document.h>
-
 #include <kaction.h>
 #include <kapplication.h>
 #include <kcombobox.h>
-#include <kconfig.h>
 #include <kdebug.h>
 #include <kdialog.h>
 #include <kiconloader.h>
@@ -90,8 +86,10 @@ void KDevFileSelectorToolBar::setMovingEnabled( bool)
 KDevFileSelectorToolBarParent::KDevFileSelectorToolBarParent(QWidget *parent)
         :QFrame(parent),m_tb(0)
 {}
+
 KDevFileSelectorToolBarParent::~KDevFileSelectorToolBarParent()
 {}
+
 void KDevFileSelectorToolBarParent::setToolBar(KDevFileSelectorToolBar *tb)
 {
     m_tb=tb;
@@ -212,33 +210,27 @@ KDevFileSelector::KDevFileSelector( QWidget * parent, const char * name )
                 i18n("<p>This button clears the name filter when toggled off, or "
                      "reapplies the last filter used when toggled on.") );
 
-    readConfig( kapp->sessionConfig(), "filebrowser" );
+    readConfig();
 }
 
 KDevFileSelector::~KDevFileSelector()
-{
-    writeConfig( kapp->sessionConfig(), "fileselector" );
-}
+{}
 //END Constructor/Destructor
 
 //BEGIN Public Methods
 
-void KDevFileSelector::readConfig(KConfig *config, const QString & name)
+void KDevFileSelector::readConfig()
 {
-    dir->readConfig(config, name + ":dir");
-    setView( KFile::Default );
-
-    config->setGroup( name );
-
     // set up the toolbar
-    setupToolbar( config );
+    setupToolbar();
 
-    cmbPath->setMaxItems( config->readNumEntry( "pathcombo history len", 9 ) );
-    cmbPath->setURLs( config->readListEntry("dir history") );
+    cmbPath->setMaxItems( AmarokConfig::pathcomboHistoryLen() );
+    cmbPath->setURLs( AmarokConfig::dirHistory() );
+
     // if we restore history
-    if ( config->readBoolEntry( "restore location", true ) || kapp->isRestored() )
+    if ( AmarokConfig::restoreLocation() || kapp->isRestored() )
     {
-        QString loc( config->readPathEntry( "location" ) );
+        QString loc( AmarokConfig::location() );
         if ( ! loc.isEmpty() )
         {
             waitingDir = loc;
@@ -248,16 +240,17 @@ void KDevFileSelector::readConfig(KConfig *config, const QString & name)
 
     // else is automatic, as cmpPath->setURL is called when a location is entered.
 
-    filter->setMaxCount( config->readNumEntry( "filter history len", 9 ) );
-    filter->setHistoryItems( config->readListEntry("filter history"), true );
-    lastFilter = config->readEntry( "last filter" );
+    filter->setMaxCount( AmarokConfig::filterHistoryLen() );
+    filter->setHistoryItems( AmarokConfig::filterHistory(), true );
+    lastFilter = AmarokConfig::lastFilter();
+
     QString flt("");
-    if ( config->readBoolEntry( "restore last filter", true ) || kapp->isRestored() )
-        flt = config->readEntry("current filter");
+    if ( AmarokConfig::restoreLastFilter() || kapp->isRestored() )
+        flt = AmarokConfig::currentFilter();
     filter->lineEdit()->setText( flt );
     slotFilterChange( flt );
 
-    autoSyncEvents = config->readNumEntry( "AutoSyncEvents", 0 );
+    autoSyncEvents = ( AmarokConfig::autoSyncEvents() );
 }
 
 void KDevFileSelector::initialDirChangeHack()
@@ -265,17 +258,16 @@ void KDevFileSelector::initialDirChangeHack()
     setDir( waitingDir );
 }
 
-void KDevFileSelector::setupToolbar( KConfig *config )
+void KDevFileSelector::setupToolbar()
 {
     toolbar->clear();
-    QStringList tbactions = config->readListEntry( "toolbar actions", ',' );
-    if ( tbactions.isEmpty() )
-    {
-        // resonable collection for default toolbar
-        tbactions << "up" << "back" << "forward" << "home" <<
-        "short view" << "detailed view" <<
-        "bookmarks" << "sync_dir";
-    }
+
+    QStringList tbactions;
+    // resonable collection for default toolbar
+    tbactions << "up" << "back" << "forward" << "home" <<
+    "short view" << "detailed view" <<
+    "bookmarks" << "sync_dir";
+
     KAction *ac;
     for ( QStringList::Iterator it=tbactions.begin(); it != tbactions.end(); ++it )
     {
@@ -288,36 +280,21 @@ void KDevFileSelector::setupToolbar( KConfig *config )
     }
 }
 
-void KDevFileSelector::writeConfig(KConfig *config, const QString & name)
+void KDevFileSelector::writeConfig()
 {
-    dir->writeConfig(config,name + ":dir");
+    AmarokConfig::setPathcomboHistoryLen( cmbPath->maxItems() );
 
-    config->setGroup( name );
-    config->writeEntry( "pathcombo history len", cmbPath->maxItems() );
     QStringList l;
     for (int i = 0; i < cmbPath->count(); i++)
-    {
         l.append( cmbPath->text( i ) );
-    }
-    config->writeEntry("dir history", l );
-#if defined(KDE_IS_VERSION)
-# if KDE_IS_VERSION(3,1,3)
-#  ifndef _KDE_3_1_3_
-#   define _KDE_3_1_3_
-#  endif
-# endif
-#endif
-#if defined(_KDE_3_1_3_)
-    config->writePathEntry( "location", cmbPath->currentText() );
-#else
-    config->writeEntry( "location", cmbPath->currentText() );
-#endif
+    AmarokConfig::setDirHistory( l );
 
-    config->writeEntry( "filter history len", filter->maxCount() );
-    config->writeEntry( "filter history", filter->historyItems() );
-    config->writeEntry( "current filter", filter->currentText() );
-    config->writeEntry( "last filter", lastFilter );
-    config->writeEntry( "AutoSyncEvents", autoSyncEvents );
+    AmarokConfig::setLocation( cmbPath->currentText() );
+    AmarokConfig::setFilterHistoryLen( filter->maxCount() );
+    AmarokConfig::setFilterHistory( filter->historyItems() );
+    AmarokConfig::setCurrentFilter( filter->currentText() );
+    AmarokConfig::setLastFilter( lastFilter );
+    AmarokConfig::setAutoSyncEvents( autoSyncEvents );
 }
 
 void KDevFileSelector::setView(KFile::FileView view)
@@ -442,6 +419,8 @@ void KDevFileSelector::viewChanged()
     /// @todo make sure the button is disabled if the directory is unreadable, eg
     ///       the document URL has protocol http
     acSyncDir->setEnabled( ! activeDocumentUrl().directory().isEmpty() );
+
+    kdDebug() << "[KDevFileSelector::viewChanged()]" << endl;
 }
 
 //END Private Slots
@@ -484,9 +463,9 @@ bool KDevFileSelector::eventFilter( QObject* o, QEvent *e )
     {
         int add
             = lb->height() < lb->contentsHeight() ? lb->verticalScrollBar()->width() : 0;
-        //FIXME 
+        //FIXME
         int w = QMIN( 200, lb->contentsWidth() + add );
-//         int w = QMIN( mainwin->main()->width(), lb->contentsWidth() + add );
+        //         int w = QMIN( mainwin->main()->width(), lb->contentsWidth() + add );
         lb->resize( w, lb->height() );
         /// @todo - move the listbox to a suitable place if nessecary
         /// @todo - decide if it is worth caching the size while untill the contents
@@ -505,236 +484,32 @@ bool KDevFileSelector::eventFilter( QObject* o, QEvent *e )
 */
 class ActionLBItem : public QListBoxPixmap
 {
-public:
-    ActionLBItem( QListBox *lb=0,
-                  const QPixmap &pm = QPixmap(),
-                  const QString &text=QString::null,
-                  const QString &str=QString::null ) :
-            QListBoxPixmap( lb, pm, text ),
-            _str(str)
-    {}
-    ;
-    QString idstring()
-    {
-        return _str;
-    };
-private:
-    QString _str;
+    public:
+        ActionLBItem( QListBox *lb=0,
+                      const QPixmap &pm = QPixmap(),
+                      const QString &text=QString::null,
+                      const QString &str=QString::null ) :
+                QListBoxPixmap( lb, pm, text ),
+                _str(str)
+        {}
+        ;
+        QString idstring()
+        {
+            return _str;
+        };
+    private:
+        QString _str;
 };
 
 KURL KDevFileSelector::activeDocumentUrl( )
 {
-/*    KTextEditor::Document* doc = dynamic_cast<KTextEditor::Document*>( partController->activePart() );
-    if( doc )
-	return doc->url();*/
-    
+    /*    KTextEditor::Document* doc = dynamic_cast<KTextEditor::Document*>( partController->activePart() );
+        if( doc )
+    	return doc->url();*/
+
     return KURL();
 }
 //END ActionLBItem
-
-//BEGIN KFSConfigPage
-////////////////////////////////////////////////////////////////////////////////
-// KFSConfigPage implementation
-////////////////////////////////////////////////////////////////////////////////
-KFSConfigPage::KFSConfigPage( QWidget *parent, const char *name, KDevFileSelector *kfs )
-        : QWidget( parent, name ),
-        fileSelector( kfs ),
-        bDirty( false )
-{
-    QVBoxLayout *lo = new QVBoxLayout( this );
-    int spacing = KDialog::spacingHint();
-    lo->setSpacing( spacing );
-
-    // Toolbar - a lot for a little...
-    QGroupBox *gbToolbar = new QGroupBox( 1, Qt::Vertical, i18n("Toolbar"), this );
-    acSel = new KActionSelector( gbToolbar );
-    acSel->setAvailableLabel( i18n("A&vailable actions:") );
-    acSel->setSelectedLabel( i18n("S&elected actions:") );
-    lo->addWidget( gbToolbar );
-    connect( acSel, SIGNAL( added( QListBoxItem * ) ), this, SLOT( slotChanged() ) );
-    connect( acSel, SIGNAL( removed( QListBoxItem * ) ), this, SLOT( slotChanged() ) );
-    connect( acSel, SIGNAL( movedUp( QListBoxItem * ) ), this, SLOT( slotChanged() ) );
-    connect( acSel, SIGNAL( movedDown( QListBoxItem * ) ), this, SLOT( slotChanged() ) );
-
-    // Sync
-    QGroupBox *gbSync = new QGroupBox( 1, Qt::Horizontal, i18n("Auto Synchronization"), this );
-    cbSyncActive = new QCheckBox( i18n("When a docu&ment becomes active"), gbSync );
-    cbSyncOpen = new QCheckBox( i18n("When a document is o&pened"), gbSync );
-    cbSyncShow = new QCheckBox( i18n("When the file selector becomes visible"), gbSync );
-    lo->addWidget( gbSync );
-    connect( cbSyncActive, SIGNAL( toggled( bool ) ), this, SLOT( slotChanged() ) );
-    connect( cbSyncOpen, SIGNAL( toggled( bool ) ), this, SLOT( slotChanged() ) );
-    connect( cbSyncShow, SIGNAL( toggled( bool ) ), this, SLOT( slotChanged() ) );
-
-    // Histories
-    QHBox *hbPathHist = new QHBox ( this );
-    QLabel *lbPathHist = new QLabel( i18n("Remember &locations:"), hbPathHist );
-    sbPathHistLength = new QSpinBox( hbPathHist );
-    lbPathHist->setBuddy( sbPathHistLength );
-    lo->addWidget( hbPathHist );
-    connect( sbPathHistLength, SIGNAL( valueChanged ( int ) ), this, SLOT( slotChanged() ) );
-
-    QHBox *hbFilterHist = new QHBox ( this );
-    QLabel *lbFilterHist = new QLabel( i18n("Remember &filters:"), hbFilterHist );
-    sbFilterHistLength = new QSpinBox( hbFilterHist );
-    lbFilterHist->setBuddy( sbFilterHistLength );
-    lo->addWidget( hbFilterHist );
-    connect( sbFilterHistLength, SIGNAL( valueChanged ( int ) ), this, SLOT( slotChanged() ) );
-
-    // Session
-    QGroupBox *gbSession = new QGroupBox( 1, Qt::Horizontal, i18n("Session"), this );
-    cbSesLocation = new QCheckBox( i18n("Restore loca&tion"), gbSession );
-    cbSesFilter = new QCheckBox( i18n("Restore last f&ilter"), gbSession );
-    lo->addWidget( gbSession );
-    connect( cbSesLocation, SIGNAL( toggled( bool ) ), this, SLOT( slotChanged() ) );
-    connect( cbSesFilter, SIGNAL( toggled( bool ) ), this, SLOT( slotChanged() ) );
-
-    // make it look nice
-    lo->addStretch( 1 );
-
-    // be helpfull
-    /*
-    QWhatsThis::add( lbAvailableActions, i18n(
-          "<p>Available actions for the toolbar. To add an action, select it here "
-          "and press the add (<strong>-&gt;</strong>) button" ) );
-    QWhatsThis::add( lbUsedActions, i18n(
-          "<p>Actions used in the toolbar. To remove an action, select it and "
-          "press the remove (<strong>&lt;-</strong>) button."
-          "<p>To change the order of the actions, use the Up and Down buttons to "
-          "move the selected action.") );
-    */
-    QString lhwt( i18n(
-                      "<p>Decides how many locations to keep in the history of the location "
-                      "combo box") );
-    QWhatsThis::add
-        ( lbPathHist, lhwt );
-    QWhatsThis::add
-        ( sbPathHistLength, lhwt );
-    QString fhwt( i18n(
-                      "<p>Decides how many filters to keep in the history of the filter "
-                      "combo box") );
-    QWhatsThis::add
-        ( lbFilterHist, fhwt );
-    QWhatsThis::add
-        ( sbFilterHistLength, fhwt );
-    QString synwt( i18n(
-                       "<p>These options allow you to have the File Selector automatically "
-                       "change location to the directory of the active document on certain "
-                       "events."
-                       "<p>Auto synchronization is <em>lazy</em>, meaning it will not take "
-                       "effect until the file selector is visible."
-                       "<p>None of these are enabled by default, but you can always sync the "
-                       "location by pressing the sync button in the toolbar.") );
-    QWhatsThis::add
-        ( gbSync, synwt );
-    QWhatsThis::add
-        ( cbSesLocation, i18n(
-                    "<p>If this option is enabled (default), the location will be restored "
-                    "when you start KDev.<p><strong>Note</strong> that if the session is "
-                    "handled by the KDE session manager, the location is always restored.") );
-    QWhatsThis::add
-        ( cbSesFilter, i18n(
-                    "<p>If this option is enabled (default), the current filter will be "
-                    "restored when you start KDev.<p><strong>Note</strong> that if the "
-                    "session is handled by the KDE session manager, the filter is always "
-                    "restored."
-                    "<p><strong>Note</strong> that some of the autosync settings may "
-                    "override the restored location if on.") );
-
-    init();
-
-}
-
-void KFSConfigPage::apply()
-{
-    KConfig *config = kapp->sessionConfig();
-    config->setGroup( "fileselector" );
-    // toolbar
-    QStringList l;
-    QListBoxItem *item = acSel->selectedListBox()->firstItem();
-    ActionLBItem *aItem;
-    while ( item )
-    {
-        aItem = (ActionLBItem*)item;
-        if ( aItem )
-        {
-            l << aItem->idstring();
-        }
-        item = item->next();
-    }
-    config->writeEntry( "toolbar actions", l );
-    fileSelector->setupToolbar( config );
-    // sync
-    int s = 0;
-    if ( cbSyncActive->isChecked() )
-        s |= KDevFileSelector::DocumentChanged;
-    if ( cbSyncOpen->isChecked() )
-        s |= KDevFileSelector::DocumentOpened;
-    if ( cbSyncShow->isChecked() )
-        s |= KDevFileSelector::GotVisible;
-    fileSelector->autoSyncEvents = s;
-
-    // histories
-    fileSelector->cmbPath->setMaxItems( sbPathHistLength->value() );
-    fileSelector->filter->setMaxCount( sbFilterHistLength->value() );
-    // session - theese are read/written directly to the app config,
-    //           as they are not needed during operation.
-    config->writeEntry( "restore location", cbSesLocation->isChecked() );
-    config->writeEntry( "restore last filter", cbSesFilter->isChecked() );
-}
-
-void KFSConfigPage::reload()
-{
-    // hmm, what is this supposed to do, actually??
-    init();
-}
-
-void KFSConfigPage::init()
-{
-    QStringList l;
-    if ( l.isEmpty() ) // default toolbar
-        l << "up" << "back" << "forward" << "home" <<
-        "short view" << "detailed view" <<
-        "bookmarks" << "sync_dir";
-
-    // actions from diroperator + two of our own
-    QStringList allActions;
-    allActions << "up" << "back" << "forward" << "home" <<
-    "reload" << "mkdir" << "delete" <<
-    "short view" << "detailed view" <<
-    "bookmarks" << "sync_dir";
-    QRegExp re("&(?=[^&])");
-    KAction *ac;
-    QListBox *lb;
-    for ( QStringList::Iterator it=allActions.begin(); it != allActions.end(); ++it )
-    {
-        lb = l.contains( *it ) ? acSel->selectedListBox() : acSel->availableListBox();
-        if ( *it == "bookmarks" || *it == "sync_dir" )
-            ac = fileSelector->actionCollection()->action( (*it).latin1() );
-        else
-            ac = fileSelector->dirOperator()->actionCollection()->action( (*it).latin1() );
-        if ( ac )
-            new ActionLBItem( lb, SmallIcon( ac->icon() ), ac->text().replace( re, "" ), *it );
-    }
-
-    // sync
-    int s = fileSelector->autoSyncEvents;
-    cbSyncActive->setChecked( s & KDevFileSelector::DocumentChanged );
-    cbSyncOpen->setChecked( s & KDevFileSelector::DocumentOpened );
-    cbSyncShow->setChecked( s & KDevFileSelector::GotVisible );
-    // histories
-    sbPathHistLength->setValue( fileSelector->cmbPath->maxItems() );
-    sbFilterHistLength->setValue( fileSelector->filter->maxCount() );
-    // session
-    cbSesLocation->setChecked( true );
-    cbSesFilter->setChecked( true );
-}
-
-void KFSConfigPage::slotChanged()
-{
-}
-
-//END KFSConfigPage
 
 
 //BEGIN KDevDirOperator
@@ -751,9 +526,9 @@ void KDevDirOperator::activatedMenu( const KFileItem *fi, const QPoint & pos )
 
     if (fi)
     {
-/*        FileContext context( KURL::List(fi->url()));
-        if ( (m_part) && (m_part->core()))
-            m_part->core()->fillContextMenu(popup, &context);*/
+        /*        FileContext context( KURL::List(fi->url()));
+                if ( (m_part) && (m_part->core()))
+                    m_part->core()->fillContextMenu(popup, &context);*/
     }
 
     popup->popup(pos);

@@ -488,14 +488,15 @@ void ArtsEngine::receiveStreamMeta( QString title, QString url, QString kbps )
 
 void ArtsEngine::startXfade()
 {
-    m_xfadeValue = 1.0;
-    
     //switch xfade channels
     m_xfadeCurrent = ( m_xfadeCurrent == "invalue1" ) ? "invalue2" : "invalue1";
 
+    if ( m_xfadeValue == 0.0 )
+        m_xfadeValue = 1.0;
+    
     if ( m_pPlayObjectXfade )
         delete m_pPlayObjectXfade;
-             
+    
     m_pPlayObjectXfade = m_pPlayObject;
     m_pPlayObject = 0;
 }

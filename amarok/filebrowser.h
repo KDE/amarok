@@ -27,7 +27,6 @@
 #include <kfile.h>
 #include <kurl.h>
 #include <ktoolbar.h>
-#include <qframe.h>
 #include <kdiroperator.h>
 
 class KActionCollection;
@@ -101,9 +100,9 @@ public:
     KDevFileSelector( QWidget * parent = 0, const char * name = 0 );
     ~KDevFileSelector();
 
-    void readConfig( KConfig *, const QString & );
-    void writeConfig( KConfig *, const QString & );
-    void setupToolbar( KConfig * );
+    void readConfig();
+    void writeConfig();
+    void setupToolbar();
     void setView( KFile::FileView );
     KDevDirOperator *dirOperator(){ return dir; }
     KActionCollection *actionCollection() { return mActionCollection; };
@@ -152,36 +151,5 @@ private:
     representing the mime types available in the current directory, and
     providing a name filter based on those.
 */
-
-/*
-    Config page for file selector.
-    Allows for configuring the toolbar, the history length
-    of the path and file filter combos, and how to handle
-    user closed session.
-*/
-class KFSConfigPage : public QWidget
-{
-    Q_OBJECT
-public:
-    KFSConfigPage( QWidget* parent=0, const char *name=0, KDevFileSelector *kfs=0);
-    virtual ~KFSConfigPage() {};
-
-public slots:
-    virtual void apply();
-    virtual void reload();
-    virtual void slotChanged();
-
-private:
-    void init();
-
-    KDevFileSelector *fileSelector;
-    bool bDirty;
-    //class QListBox *lbAvailableActions, *lbUsedActions;
-    KActionSelector *acSel;
-    class QSpinBox *sbPathHistLength, *sbFilterHistLength;
-    class QCheckBox *cbSyncOpen, *cbSyncActive, *cbSyncShow;
-    class QCheckBox *cbSesLocation, *cbSesFilter;
-};
-
 
 #endif

@@ -356,13 +356,6 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 
 BrowserWin::~BrowserWin()
 {
-    //FIXME sucks a little to get ptr this way
-    //FIXME instead force the widgets to derive from SideBarWidget or something
-    // this method is good as it saves duplicate pointer to the fileBrowser
-    KDevFileSelector *fileBrowser = (KDevFileSelector *)m_pSideBar->page( "FileBrowser" );
-
-    //NOTE this doesn't seem to save anything yet..
-    if( fileBrowser != NULL ) fileBrowser->writeConfig( kapp->sessionConfig(), "filebrowser" );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -392,7 +385,6 @@ void BrowserWin::initChildren()
 
     { //</FileBrowser>
         KDevFileSelector *w = new KDevFileSelector( m_pSideBar, "FileBrowser" );
-        w->readConfig( kapp->sessionConfig(), "filebrowser" );
         m_pSideBar->addPage( w, "hdd_unmount", true );
     } //</FileBrowser>
 
@@ -452,15 +444,19 @@ void BrowserWin::slotUpdateFonts()
 
 void BrowserWin::savePlaylist()
 {
-/*    QString path = KFileDialog::getSaveFileName( m_pBrowserWidget->m_pDirLister->url().path(), "*.m3u" );
+    //we call this so the Filebrowser writes the current path into AmarokConfig
+    saveConfig();
+
+    QString path = KFileDialog::getSaveFileName( AmarokConfig::location(), "*.m3u" );
 
     if ( !path.isEmpty() )
     {
-        if ( path.right( 4 ) != ".m3u" ) // <berkus> FIXME: 3.2 KFileDialog has a [x] Append file extension automagically, so we should obey the user choice
+        // <berkus> FIXME: 3.2 KFileDialog has a [x] Append file extension automagically, so we should obey the user choice
+        if ( path.right( 4 ) != ".m3u" )
             path += ".m3u";
 
         m_pPlaylistWidget->saveM3u( path );
-    }*/
+    }
 }
 
 
@@ -507,6 +503,16 @@ static void setPaletteRecursively( QWidget* widget, const QPalette &pal, const Q
             if( lv ) lv->setAlternateBackground( bgAlt );
         }
     }
+}
+
+
+void BrowserWin::saveConfig()
+{
+    //FIXME sucks a little to get ptr this way
+    //FIXME instead force the widgets to derive from SideBarWidget or something
+    // this method is good as it saves duplicate pointer to the fileBrowser
+    KDevFileSelector *fileBrowser = (KDevFileSelector *)m_pSideBar->page( "FileBrowser" );
+    fileBrowser->writeConfig();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

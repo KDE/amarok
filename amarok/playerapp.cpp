@@ -340,15 +340,15 @@ bool PlayerApp::isPlaying() const
 
 void PlayerApp::saveConfig()
 {
-    //     AmarokConfig::setCurrentDirectory( m_pBrowserWin->m_pBrowserWidget->m_pDirLister->url().path() );
-    //     AmarokConfig::setPathHistory( m_pBrowserWin->m_pBrowserLineEdit->historyItems() );
     AmarokConfig::setBrowserWinPos     ( m_pBrowserWin->pos() );
     AmarokConfig::setBrowserWinSize    ( m_pBrowserWin->size() );
     AmarokConfig::setBrowserWinEnabled ( m_pPlayerWidget->m_pButtonPl->isOn() );
     AmarokConfig::setBrowserWinSplitter( m_pBrowserWin->m_pSplitter->sizes() );
     AmarokConfig::setPlayerPos         ( m_pPlayerWidget->pos() );
     AmarokConfig::setVersion           ( APP_VERSION );
-
+    
+    m_pBrowserWin->saveConfig();
+    
     AmarokConfig::writeConfig();
 
     if ( AmarokConfig::savePlaylist() )
@@ -367,9 +367,6 @@ void PlayerApp::readConfig()
         
     AmarokConfig::setHardwareMixer( m_pEngine->initMixer( AmarokConfig::hardwareMixer() ) );
     m_pPlayerWidget->m_pSliderVol->setValue( VOLUME_MAX - AmarokConfig::masterVolume() );
-        
-    /*    m_pBrowserWin->m_pBrowserWidget->readDir( AmarokConfig::currentDirectory() );
-        m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( AmarokConfig::pathHistory() );*/
 
     m_pPlayerWidget->move  ( AmarokConfig::playerPos() );
     m_pBrowserWin  ->move  ( AmarokConfig::browserWinPos() );
