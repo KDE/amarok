@@ -593,6 +593,7 @@ GstEngine::stop()  //SLOT
     m_eosReached = false;
 
     RETURN_IF_PIPELINE_EMPTY
+    if ( !m_currentInput ) return;
 
     // When engine is in pause mode, don't fade but destroy right away
     if ( state() == Engine::Paused )
