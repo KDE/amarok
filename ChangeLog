@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.1-beta1:
+  ADD: Wizard for configuring amaroK on first startup.
   CHG: Made it possible to use the next/previous buttons when amaroK is
        not playing.
   ADD: DCOP call to switch Random Mode on or off. (BR 84460)
