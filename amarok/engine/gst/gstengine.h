@@ -79,18 +79,20 @@ class GstEngine : public EngineBase
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
         /////////////////////////////////////////////////////////////////////////////////////
+        static GstEngine*                        pObject;
+        
         GstElement*                              m_pThread;
         GstElement*                              m_pAudiosink;
+        GstElement*                              m_pSpider;
         GstElement*                              m_pFilesrc;
 
-        static vector<float>                     m_scopeBuf;
-        static int                               m_scopeBufIndex;
-        static int                               m_scopeSize;
+        vector<float>                            m_scopeBuf;
+        int                                      m_scopeBufIndex;
+        int                                      m_scopeSize;
        
         bool                                     m_typefindResult;
 };
 
-static GstEngine* pGstEngine;
 
 #endif /*AMAROK_GSTENGINE_H*/
 

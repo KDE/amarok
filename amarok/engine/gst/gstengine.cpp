@@ -40,11 +40,11 @@ AMAROK_EXPORT_PLUGIN( GstEngine )
 // STATIC
 //////////////////////////////////////////////////////////////////////
 
-static const int SCOPEBUF_SIZE = 40000;
+static const int
+SCOPEBUF_SIZE = 40000;
 
-vector<float> GstEngine::m_scopeBuf;
-int           GstEngine::m_scopeBufIndex;
-int           GstEngine::m_scopeSize;
+GstEngine*
+GstEngine::pObject;
 
 
 void
@@ -52,16 +52,27 @@ GstEngine::eos_cb( GstElement*, GstElement* )
 {
     kdDebug() << "GstEngine::eos_cb" << endl;
 
-    gst_element_set_state( GST_ELEMENT( pGstEngine->m_pThread ), GST_STATE_READY );
-    //     pGstEngine->emit endOfTrack();
+    gst_element_set_state( GST_ELEMENT( pObject->m_pThread ), GST_STATE_READY );
+    //     pObject->emit endOfTrack();
 }
 
 
 void
 GstEngine::handoff_cb( GstElement*, GstBuffer* buf, GstElement* )
 {
-    const int channels = 2;    //FIXME read number of channels from GST    
+    int channels = 2;  //2 == default, if we cannot determine the value from gst
+    GstCaps* caps = gst_pad_get_caps( gst_element_get_pad( pObject->m_pSpider, "src_0" ) );
 
+    for ( int i = 0; i < gst_caps_get_size( caps ); i++ ) {
+        GstStructure* structure = gst_caps_get_structure( caps, i );
+        
+        if ( gst_structure_has_field( structure, "channels" ) ) {
+//             kdDebug() << k_funcinfo << "Field 'channels' found." << endl;
+            gst_structure_get_int( structure, "channels", &channels ); 
+        }
+    }
+//     kdDebug() << k_funcinfo << "Channels: " << channels << endl;
+    
     if ( GST_IS_BUFFER( buf ) )
     {
 //         kdDebug() << k_funcinfo << "BUFFER_SIZE: " << GST_BUFFER_SIZE( buf ) << endl;
@@ -70,9 +81,11 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, GstElement* )
         //divide length by 2 for casting from 8bit to 16bit, and divide by number of channels
         for ( ulong i = 0; i < GST_BUFFER_SIZE( buf ) / 2 / channels; i += channels )
         {
-            if ( m_scopeBufIndex == m_scopeBuf.size() )
-                m_scopeBufIndex = 0;
-                
+            if ( pObject->m_scopeBufIndex == pObject->m_scopeBuf.size() ) {
+                pObject->m_scopeBufIndex = 0;
+                kdDebug() << k_funcinfo << "m_scopeBuf overflow!\n";
+            }
+                                
             float temp = 0.0;
             //add all channels together so we effectively get a mono scope
             for ( int j = 0; j < channels; j++ ) {             
@@ -80,7 +93,7 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, GstElement* )
                 temp += (float)( data[i+j] - 32768 ) / 32768.0 / channels;
             }
             
-            m_scopeBuf[m_scopeBufIndex++] = temp;                
+            pObject->m_scopeBuf[pObject->m_scopeBufIndex++] = temp;                
         }
     }
 }
@@ -97,11 +110,11 @@ GstEngine::typefindError_cb( GstElement*, GstElement *pipeline )
 
 
 void 
-GstEngine::typefindFound_cb( GstElement *typefind, GstCaps *caps, GstElement *pipeline )
+GstEngine::typefindFound_cb( GstElement* /*typefind*/, GstCaps* /*caps*/, GstElement* /*pipeline*/ )
 {
     kdDebug() << "GstEngine::typefindFound" << endl;
 
-    pGstEngine->m_typefindResult = true;
+    pObject->m_typefindResult = true;
 }
 
 //     const GList *elements = gst_registry_pool_feature_list( GST_TYPE_ELEMENT_FACTORY );
@@ -134,7 +147,7 @@ GstEngine::~GstEngine()
 void
 GstEngine::init( bool&, int scopeSize, bool )
 {
-    pGstEngine = this;
+    pObject = this;
     m_mixerHW = -1;            //initialize 
     
     m_scopeBufIndex = 0;
@@ -150,8 +163,8 @@ GstEngine::init( bool&, int scopeSize, bool )
    
     /* create a disk reader */
     kdDebug() << k_funcinfo << "BEFORE gst_element_factory_make( filesrc, disk_source );\n";
-    m_pFilesrc             = gst_element_factory_make( "filesrc", "disk_source" );
-    GstElement *spider     = gst_element_factory_make( "spider", "spider" );
+    m_pFilesrc = gst_element_factory_make( "filesrc", "disk_source" );
+    m_pSpider  = gst_element_factory_make( "spider", "spider" );
     /* and an audio sink */
     
     kdDebug() << k_funcinfo << "BEFORE gst_element_factory_make( osssink, play_audio );\n";
@@ -165,10 +178,10 @@ GstEngine::init( bool&, int scopeSize, bool )
                        G_CALLBACK( eos_cb ), m_pThread );
 
     /* add objects to the main pipeline */
-    gst_bin_add_many( GST_BIN( m_pThread ), m_pFilesrc, spider, pIdentity, m_pAudiosink, NULL );
+    gst_bin_add_many( GST_BIN( m_pThread ), m_pFilesrc, m_pSpider, pIdentity, m_pAudiosink, NULL );
     /* link src to sink */
     
-    gst_element_link_many( m_pFilesrc, spider, pIdentity, m_pAudiosink, NULL );
+    gst_element_link_many( m_pFilesrc, m_pSpider, pIdentity, m_pAudiosink, NULL );
 }
 
 
