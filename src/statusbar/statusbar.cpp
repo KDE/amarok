@@ -107,6 +107,7 @@ StatusBar::engineStateChanged( Engine::State state )
     switch ( state ) {
     case Engine::Empty:
         m_slider->setEnabled( false );
+        m_slider->setMinValue( 0 ); //needed because setMaxValue() calls with bogus values can change minValue
         m_slider->setMaxValue( 0 );
         m_timeLabel->setEnabled( false ); //must be done after the setValue() above, due to a signal connection
         setMainText( QString::null );
@@ -228,7 +229,7 @@ MessageQueue::MessageQueue()
     : m_queueMessages(true)
 {}
 MessageQueue*
-MessageQueue::instance() 
+MessageQueue::instance()
 {
     static MessageQueue mq;
     return &mq;
@@ -240,7 +241,7 @@ MessageQueue::addMessage(const QString& message)
     if(m_queueMessages)
         m_messages.prepend(message);
     else
-        StatusBar::instance()->longMessage(message); 
+        StatusBar::instance()->longMessage(message);
 }
 
 void

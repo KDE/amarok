@@ -6,9 +6,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  <markey> Sometimes the seeking slider gets stuck at the end, and won't work properly until you restart
-           the app! Extremely nasty (and bizarre).
-
   <mxcl>   Changing the title track to "" does such things as I cannot figure out, it appears to work, but
            perhaps the collection isn't updated, or maybe the tag, or both. Can't tell.
 
