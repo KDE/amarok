@@ -133,8 +133,9 @@ CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id,
     execSql( QString( "SELECT DISTINCT artist.name, album.name FROM artist, album "
                       "WHERE artist.id = %1 AND album.id = %2;" )
                       .arg( artist_id ).arg( album_id ), &values );
-                 
+    
     QString key = values[0] + " - " + values[1] + ".png";
+    key.replace( "/", "_" );
     kdDebug() << "Looking for cover image: " << m_coverDir.filePath( key ) << endl;
     
     if ( m_coverDir.exists( key ) )
@@ -617,6 +618,20 @@ CollectionDB::getValueID( QString name, QString value, bool autocreate, bool use
 }
 
 
+QString
+CollectionDB::getValueFromID( QString table, uint id )
+{
+   QStringList values;
+   QStringList names;
+   
+   execSql( QString( "SELECT name FROM %1 WHERE id=%2;" )
+                                   .arg( table )
+                                   .arg( id ), &values, &names );
+    
+    return values[0];
+}
+
+
 void
 CollectionDB::retrieveFirstLevel( QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names )
 {
@@ -804,8 +819,11 @@ CollectionDB::saveCover( const QString& keyword, const QPixmap& pix )
     
     QImage img( pix.convertToImage() );
     
+    QString fileName( keyword );
+    fileName.replace( "/", "_" ).append( ".png" );
+    
     img.smoothScale( COVER_SIZE, COVER_SIZE )
-       .save( m_coverDir.filePath( keyword + ".png" ), "PNG" );
+       .save( m_coverDir.filePath( fileName ), "PNG" );
 
     emit coverFetched();
 }
