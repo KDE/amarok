@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 0.9-beta3:
+  * add: loader application, starts and controls amaroK. it reduces the lag when handing
+         command line arguments to amaroK and makes the splash load faster
   * add: playlist items, which couldn't be opened / read (for some reason) will be marked 
          with a grey background color
   * add: pasting clipboard selection into playlist with MidButton, X11-style  
