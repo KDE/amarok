@@ -71,6 +71,9 @@ class App : public KApplication, public EngineObserver
         void initGlobalShortcuts();
         void setupColors();
 
+        /** Removes all covers images older than 90 days, to comply with amazon.com license */
+        void pruneCoverImages();
+
         // ATTRIBUTES ------
         KGlobalAccel        *m_pGlobalAccel;
         PlayerWidget        *m_pPlayerWindow;

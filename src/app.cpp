@@ -120,6 +120,9 @@ App::App()
         EngineController::instance()->restoreSession();
     }
 
+    // Remove amazon cover images older than 90 days, to comply with licensing terms
+    pruneCoverImages();
+
     handleCliArgs();
 }
 
@@ -740,6 +743,37 @@ void App::firstRunWizard()
         //     suggestion = write a key to its config and then recognise that in browser init and
         //     then delete the key afterwards
     }
+}
+
+
+void App::pruneCoverImages()
+{
+    // TODO Offer the option to refresh the images, instead of deleting
+
+    const int MAX_DAYS = 90;
+
+    QDir covers( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/" ) );
+    QDir coversLarge( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
+
+    QFileInfoList list( *covers.entryInfoList( QDir::Files ) );
+    QFileInfoList listLarge( *coversLarge.entryInfoList( QDir::Files ) );
+
+    // Merge both lists
+    for ( uint i = 0; i < listLarge.count(); i++ )
+        list.append( listLarge.at( i ) );
+
+    int count = 0;
+    QDate currentDate = QDate::currentDate();
+
+    // Prune files
+    for ( uint i = 0; i < list.count(); i++ ) {
+        if ( list.at( i )->created().date().daysTo( currentDate ) > MAX_DAYS ) {
+            QFile::remove( list.at( i )->absFilePath() );
+            count++;
+        }
+    }
+
+    kdDebug() << "[App] Pruned " << count << " amazon cover images.\n";
 }
 
 
