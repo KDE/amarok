@@ -8,9 +8,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-          <muesli> When PlaylistLoader adds a bunch of items to the playlist, it deletes the item _above_ the first
-                   added item, afterwards.
-
           <markey> Make CoverManager thumbnail generation threaded.
 
           <mxcl>   When an engine fails to load, the next best engine should be chosen, not the first in the list.

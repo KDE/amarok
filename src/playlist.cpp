@@ -1242,7 +1242,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 void
 Playlist::customEvent( QCustomEvent *e )
 {
-    static QListViewItem* afterItem;
+    static PlaylistItem* afterItem;
     static bool directPlay;
 
     PlaylistItem* item;
@@ -1252,7 +1252,7 @@ Playlist::customEvent( QCustomEvent *e )
     {
     case PlaylistLoader::Started:
         #define e static_cast<PlaylistLoader::StartedEvent*>(e)
-        afterItem = new QListViewItem( this, e->afterItem );
+        afterItem = new PlaylistItem( KURL(), this, e->afterItem );
         afterItem->setVisible( false );
         directPlay = e->directPlay;
         #undef e

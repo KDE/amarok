@@ -130,7 +130,6 @@ PlaylistLoader::run()
    }
    // END
 
-    delete m_afterItem;
     amaroK::StatusBar::stopProgress();
     QApplication::postEvent( Playlist::instance(), new DoneEvent( this ) );
 }
