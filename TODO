@@ -3,23 +3,23 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #72 being the highest available (take this one for your next bug and increase here)
+           #73 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
 
-    * fix: #70 <markey> when sending stream URL to amaroK, it does not always start to play it (seems random)
-
 
 MID-TERM:
+
+    * fix: #72 <markey> get amaroK to play nice with valgrind
 
     * fix: #71 <mxcl> OSD configure is great but, the hand cursor is wrong for this situation as hand means "activate"
                move icon would be better (or normal cursor), also I didn't realise you could drag the OSD preview! What
                a great feature! There needs to be some text that says "drag the frigging thing you fools!", the whatsthis
                tip is not enough IMHO as nobody ever uses them.
-		<larson> I wondered about what cursor to use myself. KWin uses the square arrow thing, 
-		but kruler uses the hand. KRuler is borderless, so I chose the hand. Label in front of
-		the preview button with info about dragging?
+               <larson> I wondered about what cursor to use myself. KWin uses the square arrow thing, 
+               but kruler uses the hand. KRuler is borderless, so I chose the hand. Label in front of
+               the preview button with info about dragging?
 
     * fix: #44 <markey> ExpandButtons do not work well with keyboard shortcuts: the button expands, and then
                nothing happens. you must close it using the mouse
