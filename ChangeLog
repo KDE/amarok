@@ -4,6 +4,10 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta4:
+  CHG: It is possible to select the Database Engine (SQLite, MySQL) runtime,
+       without amaroK restart. New Database Engines can be added, they need
+       to inherit DbConnection and implement its' virtual methods (see
+       SqliteConnection and MySqlConnection).
   CHG: New amaroK icon "Blue Wolf", made by Da-Flow.
   FIX: Possible crash when enabling Player-Window. (BR 94668)
 

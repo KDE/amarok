@@ -109,6 +109,7 @@ ContextBrowser::ContextBrowser( const char *name )
 
     connect( CollectionDB::instance(), SIGNAL( scanStarted() ), SLOT( collectionScanStarted() ) );
     connect( CollectionDB::instance(), SIGNAL( scanDone( bool ) ), SLOT( collectionScanDone() ) );
+    connect( CollectionDB::instance(), SIGNAL( databaseEngineChanged() ), SLOT( renderView() ) );
     connect( CollectionDB::instance(), SIGNAL( coverFetched( const QString&, const QString& ) ),
              this,                       SLOT( coverFetched( const QString&, const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( coverRemoved( const QString&, const QString& ) ),
@@ -253,6 +254,24 @@ void ContextBrowser::collectionScanDone()
 }
 
 
+void ContextBrowser::renderView()
+{
+    m_dirtyHomePage = true;
+    m_dirtyCurrentTrackPage = true;
+    m_dirtyLyricsPage = true;
+    
+    // TODO: Show CurrentTrack or Lyric tab if they were selected
+    if ( CollectionDB::instance()->isEmpty() )
+    {
+        showIntroduction();
+    }
+    else
+    {
+        showHome();
+    }
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // PROTECTED
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -334,7 +353,7 @@ void ContextBrowser::tabChanged( QWidget *page )
     setFocusProxy( page ); //so focus is given to a sensible widget when the tab is opened
     if ( m_dirtyHomePage && ( page == m_homePage->view() ) )
         showHome();
-    else if ( m_dirtyHomePage && ( page == m_currentTrackPage->view() ) )
+    else if ( m_dirtyCurrentTrackPage && ( page == m_currentTrackPage->view() ) )
         showCurrentTrack();
     else if ( m_dirtyLyricsPage && ( page == m_lyricsPage->view() ) )
         showLyrics();

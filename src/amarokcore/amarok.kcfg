@@ -371,6 +371,11 @@
 </group>
 
 <group name="Collection">
+    <entry key="DatabaseEngine" type="String">
+        <label>Database Engine</label>
+        <whatsthis>The database engine used to store collection</whatsthis>
+        <default>SQLite</default>
+    </entry>
     <entry key="Scan Recursively" type="Bool">
         <label>Whether Collections folders are scanned recursively</label>
         <default>true</default>

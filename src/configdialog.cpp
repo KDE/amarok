@@ -19,9 +19,7 @@ email                : markey@web.de
 #include "Options2.h"
 #include "Options4.h"
 #include "Options5.h"
-#ifdef USE_MYSQL
 #include "Options7.h"
-#endif
 #include "Options8.h"
 #include "amarokconfig.h"
 #include "configdialog.h"
@@ -65,9 +63,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
             m_opt4 = new Options4( 0, "Playback" );
     Options5 *opt5 = new Options5( 0, "OSD" );
     QVBox    *opt6 = new QVBox;
-#ifdef USE_MYSQL
-    Options7 *opt7 = new Options7( 0, "MySql" );
-#endif
+            m_opt7 = new Options7( 0, "Collection" );
     Options8 *opt8 = new Options8( 0, "Scrobbler" );
 
     // Sound System
@@ -96,16 +92,22 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     QTextCodec *codec;
     for ( int i = 0; ( codec = QTextCodec::codecForIndex( i ) ); i++ )
         opt2->kcfg_TagEncoding->insertItem( codec->name() );
-
+    
+    // Collection
+#ifdef USE_MYSQL
+    m_opt7->kcfg_DatabaseEngine->insertItem( "MySQL", 1 );
+#else
+    m_opt7->groupBox1->hide();
+    m_opt7->groupBox2->hide();
+#endif
+    
     // add pages
     addPage( new Options1( 0, "General" ), i18n( "General" ), "misc", i18n( "Configure General Options" ) );
     addPage( opt2,   i18n( "Appearance" ), "colors", i18n( "Configure amaroK's Appearance" ) );
     addPage( m_opt4, i18n( "Playback" ), "kmix", i18n( "Configure Playback" ) );
     addPage( opt5,   i18n( "OSD" ), "tv", i18n( "Configure On-Screen-Display" ) );
     addPage( opt6,   i18n( "Engine" ), "amarok", i18n( "Configure Engine" ) );
-#ifdef USE_MYSQL
-    addPage( opt7,   i18n( "MySql" ), "connect_creating", i18n( "Configure MySql" ) );
-#endif
+    addPage( m_opt7, i18n( "Collection" ), "connect_creating", i18n( "Configure Collection" ) );
     addPage( opt8,   i18n( "Scrobbler" ), locate( "data", "amarok/images/audioscrobbler.png" ), i18n( "Configure Audioscrobbler" ) );
 
     // Show information labels (must be done after insertions)
@@ -123,6 +125,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     connect( m_soundSystem, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
     connect( aboutEngineButton, SIGNAL( clicked() ), this, SLOT( aboutEngine() ) );
     connect( opt5, SIGNAL( settingsChanged() ), SLOT( updateButtons() ) ); //see options5.ui.h
+    connect( m_opt7->kcfg_DatabaseEngine, SIGNAL( activated( int ) ), SLOT( databaseEngineChanged() ) );
 }
 
 AmarokConfigDialog::~AmarokConfigDialog()
@@ -191,6 +194,14 @@ void AmarokConfigDialog::updateWidgets()
 {
     m_soundSystem->setCurrentText( m_pluginAmarokName[AmarokConfig::soundSystem()] );
     soundSystemChanged();
+    
+    bool dbConfigEnabled = false;
+    if ( AmarokConfig::databaseEngine() != "0" )
+    {
+        dbConfigEnabled = true;
+    }
+    m_opt7->groupBox1->setEnabled( dbConfigEnabled );
+    m_opt7->groupBox2->setEnabled( dbConfigEnabled );
 }
 
 
@@ -237,6 +248,18 @@ bool AmarokConfigDialog::isDefault()
 void AmarokConfigDialog::aboutEngine() //SLOT
 {
     PluginManager::showAbout( QString( "Name == '%1'" ).arg( m_soundSystem->currentText() ) );
+}
+
+
+void AmarokConfigDialog::databaseEngineChanged() // SLOT
+{
+    bool dbConfigEnabled = false;
+    if ( m_opt7->kcfg_DatabaseEngine->currentItem() != 0 )
+    {
+        dbConfigEnabled = true;
+    }
+    m_opt7->groupBox1->setEnabled( dbConfigEnabled );
+    m_opt7->groupBox2->setEnabled( dbConfigEnabled );
 }
 
 

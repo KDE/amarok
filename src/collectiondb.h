@@ -20,9 +20,8 @@ namespace mysql
 {
 #include <mysql.h>
 }
-#else
-#include "sqlite/sqlite3.h"
 #endif
+#include "sqlite/sqlite3.h"
 
 class DbConnection;
 class DbConnectionPool;
@@ -31,34 +30,95 @@ class MetaBundle;
 class Scrobbler;
 
 
+class DbConfig
+{
+};
+
+
+class SqliteConfig : public DbConfig
+{
+    public:
+        SqliteConfig( const QString& /* dbfile */ );
+        
+        const QString dbFile() const { return m_dbfile; }
+    private:
+        QString m_dbfile;
+};
+
+
+class MySqlConfig : public DbConfig
+{
+    public:
+        MySqlConfig(
+            const QString& /* host */,
+            const int /* port */,
+            const QString& /* database */,
+            const QString& /* username */,
+            const QString& /* password */);
+        
+        const QString host() const { return m_host; }
+        const int port() const { return m_port; }
+        const QString database() const { return m_database; }
+        const QString username() const { return m_username; }
+        const QString password() const { return m_password; }
+    private:
+        QString m_host;
+        int m_port;
+        QString m_database;
+        QString m_username;
+        QString m_password;
+};
+
+
 class DbConnection
 {
     public:
-        DbConnection();
-        ~DbConnection();
+        enum DbConnectionType { sqlite = 0, mysql = 1 };
+        
+        DbConnection( DbConfig* /* config */ );
+        virtual ~DbConnection() = 0;
 
-#ifdef USE_MYSQL
-        mysql::MYSQL* db();
-#else
-        sqlite3* db();
-#endif
+        virtual QStringList query( const QString& /* statement */ ) = 0;
+        virtual int insert( const QString& /* statement */ ) = 0;
         const bool isInitialized() const { return m_initialized; }
 
+    protected:
+        bool m_initialized;
+        DbConfig *m_config;
+};
+
+
+class SqliteConnection : public DbConnection
+{
+    public:
+        SqliteConnection( SqliteConfig* /* config */ );
+        ~SqliteConnection();
+        
+        QStringList query( const QString& /* statement */ );
+        int insert( const QString& /* statement */ );
+    
     private:
-#ifndef USE_MYSQL
         static void sqlite_rand(sqlite3_context *context, int /*argc*/, sqlite3_value ** /*argv*/);
         static void sqlite_power(sqlite3_context *context, int argc, sqlite3_value **argv);
-#endif
-
-    private:
-#ifdef USE_MYSQL
-        mysql::MYSQL* m_db;
-#else
+        
         sqlite3* m_db;
-#endif
-        bool m_initialized;
-
 };
+
+
+#ifdef USE_MYSQL
+class MySqlConnection : public DbConnection
+{
+    public:
+        MySqlConnection( MySqlConfig* /* config */ );
+        ~MySqlConnection();
+        
+        QStringList query( const QString& /* statement */ );
+        int insert( const QString& /* statement */ );
+    
+    private:
+        mysql::MYSQL* m_db;
+};
+#endif
 
 
 class DbConnectionPool : QPtrQueue<DbConnection>
@@ -66,7 +126,9 @@ class DbConnectionPool : QPtrQueue<DbConnection>
     public:
         DbConnectionPool();
         ~DbConnectionPool();
-
+        
+        const DbConnection::DbConnectionType getDbConnectionType() const { return m_dbConnType; }
+        const DbConfig *getDbConfig() const { return m_dbConfig; }
         void createDbConnections();
 
         DbConnection *getDbConnection();
@@ -75,6 +137,8 @@ class DbConnectionPool : QPtrQueue<DbConnection>
     private:
         static const int POOL_SIZE = 5;
         QSemaphore m_semaphore;
+        DbConnection::DbConnectionType m_dbConnType;
+        DbConfig *m_dbConfig;
 };
 
 
@@ -85,6 +149,7 @@ class CollectionDB : public QObject, public EngineObserver
     signals:
         void scanStarted();
         void scanDone( bool changed );
+        void databaseEngineChanged();
 
         void scoreChanged( const QString &url, int score );
 
@@ -188,6 +253,8 @@ class CollectionDB : public QObject, public EngineObserver
         void addImageToAlbum( const QString& image, QValueList< QPair<QString, QString> > info, DbConnection *conn = NULL );
         QString getImageForAlbum( const QString& artist, const QString& album, uint width = 0 );
         QString notAvailCover( int width = 0 );
+        
+        void applySettings();
 
     protected:
         QCString md5sum( const QString& artist, const QString& album, const QString& file = QString::null );
@@ -215,6 +282,8 @@ class CollectionDB : public QObject, public EngineObserver
 
         CollectionDB();
         ~CollectionDB();
+        void initialize();
+        void destroy();
         //general management methods
         void createStatsTable();
         void dropStatsTable();
@@ -237,7 +306,7 @@ class CollectionDB : public QObject, public EngineObserver
         QString m_cacheAlbum;
         uint m_cacheAlbumID;
 
-        DbConnectionPool m_dbConnPool;
+        DbConnectionPool *m_dbConnPool;
 
         bool m_isScanning;
         bool m_monitor;

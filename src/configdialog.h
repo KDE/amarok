@@ -49,6 +49,7 @@ class AmarokConfigDialog : public KConfigDialog
 
     private slots:
         void aboutEngine();
+        void databaseEngineChanged();
         void createProfileClicked();
 
     protected:
@@ -62,6 +63,7 @@ class AmarokConfigDialog : public KConfigDialog
         amaroK::PluginConfig *m_engineConfig;
         QGroupBox            *m_engineConfigFrame;
         class Options4       *m_opt4;
+        class Options7       *m_opt7;
 
         QValueList<QWidget*> m_pageList;
 

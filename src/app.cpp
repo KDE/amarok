@@ -400,6 +400,8 @@ void App::applySettings( bool firstTime )
 
     amaroK::OSD::instance()->applySettings();
 
+    CollectionDB::instance()->applySettings();
+    
     Scrobbler::instance()->applySettings();
 
     playlistWindow()->setFont(
@@ -450,9 +452,9 @@ void App::applySettings( bool firstTime )
             engine->setEqualizerParameters( AmarokConfig::equalizerPreamp(), AmarokConfig::equalizerGains() );
     } //</Engine>
 
-    { //<MySql>
+    { //<Collection>
         CollectionView::instance()->renderView();
-    } //</MySql>
+    } //</Collection>
 
     /* delete unneeded cover images from cache */
     QString size = QString::number( AmarokConfig::coverPreviewSize() ) + '@';

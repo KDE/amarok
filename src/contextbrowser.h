@@ -33,6 +33,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         void openURLRequest(const KURL &url );
         void collectionScanStarted();
         void collectionScanDone();
+        void renderView();
 
     protected:
         void engineNewMetaData( const MetaBundle&, bool );

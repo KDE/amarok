@@ -5,11 +5,8 @@
 
 #include "config.h"
 
-#ifdef USE_MYSQL
 #include "app.h"
-#else
 #include <math.h>                 //DbConnection::sqlite_power()
-#endif
 
 #include "amarok.h"
 #include "amarokconfig.h"
@@ -80,45 +77,11 @@ CollectionDB::CollectionDB()
     m_cacheDir.cd( "albumcovers/cache" );
 
     //<OPEN DATABASE>
-
-    DbConnection *dbConn = m_dbConnPool.getDbConnection();
-    bool initialized = dbConn->isInitialized();
-    m_dbConnPool.putDbConnection( dbConn );
-
-    KConfig* config = amaroK::config( "Collection Browser" );
-    if ( !initialized || !isValid() )
-    {
-        createTables();
-        createStatsTable();
-    }
-    else
-    {
-        //remove database file if version is incompatible
-        if ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
-        {
-            kdDebug() << "Rebuilding database!" << endl;
-            dropTables();
-            createTables();
-        }
-        if ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
-        {
-            kdDebug() << "Rebuilding stats-database!" << endl;
-            dropStatsTable();
-            createStatsTable();
-        }
-    }
-
-    m_dbConnPool.createDbConnections();
-
-#ifdef USE_MYSQL
-
-#else
-    //optimization for speeding up SQLite
-    query( "PRAGMA default_synchronous = OFF;" );
-#endif
+    initialize();
     //</OPEN DATABASE>
 
     // TODO: Should write to config in dtor, but it crashes...
+    KConfig* config = amaroK::config( "Collection Browser" );
     config->writeEntry( "Database Version", DATABASE_VERSION );
     config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
 
@@ -132,6 +95,8 @@ CollectionDB::CollectionDB()
 CollectionDB::~CollectionDB()
 {
     kdDebug() << k_funcinfo << endl;
+    
+    destroy();
 
 //     This crashes so it's done at the end of ctor.
 //     KConfig* const config = amaroK::config( "Collection Browser" );
@@ -148,14 +113,14 @@ CollectionDB::~CollectionDB()
 DbConnection
 *CollectionDB::getStaticDbConnection()
 {
-    return m_dbConnPool.getDbConnection();
+    return m_dbConnPool->getDbConnection();
 }
 
 
 void
 CollectionDB::returnStaticDbConnection( DbConnection *conn )
 {
-    m_dbConnPool.putDbConnection( conn );
+    m_dbConnPool->putDbConnection( conn );
 }
 
 
@@ -170,8 +135,6 @@ CollectionDB::query( const QString& statement, DbConnection *conn )
     if ( DEBUG )
         kdDebug() << "query-start: " << statement << endl;
 
-    QStringList values;
-
     clock_t start = clock();
 
     DbConnection *dbConn;
@@ -181,100 +144,14 @@ CollectionDB::query( const QString& statement, DbConnection *conn )
     }
     else
     {
-        dbConn = m_dbConnPool.getDbConnection();
+        dbConn = m_dbConnPool->getDbConnection();
     }
-
-#ifdef USE_MYSQL
-    if (!mysql::mysql_query(dbConn->db(), statement.utf8()))
-    {
-        mysql::MYSQL_RES* result;
-        if ((result = mysql::mysql_use_result(dbConn->db())))
-        {
-            int number = mysql::mysql_field_count(dbConn->db());
-            mysql::MYSQL_ROW row;
-            while ((row = mysql::mysql_fetch_row(result)))
-            {
-                for ( int i = 0; i < number; i++ )
-                {
-                  values << QString::fromUtf8( (const char*)row[i] );
-                }
-            }
-            mysql::mysql_free_result(result);
-        }
-        else
-        {
-            if (mysql::mysql_field_count(dbConn->db()) != 0)
-            {
-                kdDebug() << "MYSQL QUERY FAILED: " << mysql::mysql_error(dbConn->db()) << "\n" << "FAILED QUERY: " << statement << "\n";
-                values = QStringList();
-            }
-        }
-    }
-    else
-    {
-        kdDebug() << "MYSQL QUERY FAILED: " << mysql::mysql_error(dbConn->db()) << "\n" << "FAILED QUERY: " << statement << "\n";
-        values = QStringList();
-    }
-#else
-    int error;
-    const char* tail;
-    sqlite3_stmt* stmt;
-
-    //compile SQL program to virtual machine
-    error = sqlite3_prepare( dbConn->db(), statement.utf8(), statement.length(), &stmt, &tail );
-
-    if ( error != SQLITE_OK )
-    {
-        kdError() << k_funcinfo << "[CollectionDB] sqlite3_compile error:" << endl;
-        kdError() << sqlite3_errmsg( dbConn->db() ) << endl;
-        kdError() << "on query: " << statement << endl;
-        values = QStringList();
-    }
-    else
-    {
-        int busyCnt = 0;
-        int number = sqlite3_column_count( stmt );
-        //execute virtual machine by iterating over rows
-        while ( true )
-        {
-            error = sqlite3_step( stmt );
-
-            if ( error == SQLITE_BUSY )
-            {
-                if ( busyCnt++ > 20 ) {
-                    kdError() << "[CollectionDB] Busy-counter has reached maximum. Aborting this sql statement!\n";
-                    break;
-                }
-                ::usleep( 100000 ); // Sleep 100 msec
-                kdDebug() << "[CollectionDB] sqlite3_step: BUSY counter: " << busyCnt << endl;
-            }
-            if ( error == SQLITE_MISUSE )
-                kdDebug() << "[CollectionDB] sqlite3_step: MISUSE" << endl;
-            if ( error == SQLITE_DONE || error == SQLITE_ERROR )
-                break;
-
-            //iterate over columns
-            for ( int i = 0; i < number; i++ )
-            {
-                values << QString::fromUtf8( (const char*) sqlite3_column_text( stmt, i ) );
-            }
-        }
-        //deallocate vm ressources
-        sqlite3_finalize( stmt );
-
-        if ( error != SQLITE_DONE )
-        {
-            kdError() << k_funcinfo << "sqlite_step error.\n";
-            kdError() << sqlite3_errmsg( dbConn->db() ) << endl;
-            kdError() << "on query: " << statement << endl;
-            values = QStringList();
-        }
-    }
-#endif
+    
+    QStringList values = dbConn->query( statement );
 
     if ( conn == NULL )
     {
-        m_dbConnPool.putDbConnection( dbConn );
+        m_dbConnPool->putDbConnection( dbConn );
     }
 
     if ( DEBUG )
@@ -298,8 +175,6 @@ CollectionDB::insert( const QString& statement, DbConnection *conn )
     if ( DEBUG )
         kdDebug() << "insert-start: " << statement << endl;
 
-    int id;
-
     clock_t start = clock();
 
     DbConnection *dbConn;
@@ -309,65 +184,14 @@ CollectionDB::insert( const QString& statement, DbConnection *conn )
     }
     else
     {
-        dbConn = m_dbConnPool.getDbConnection();
+        dbConn = m_dbConnPool->getDbConnection();
     }
-
-#ifdef USE_MYSQL
-    mysql::mysql_query(dbConn->db(), statement.utf8());
-    id = mysql::mysql_insert_id( dbConn->db() );
-#else
-    int error;
-    const char* tail;
-    sqlite3_stmt* stmt;
-
-    //compile SQL program to virtual machine
-    error = sqlite3_prepare( dbConn->db(), statement.utf8(), statement.length(), &stmt, &tail );
-
-    if ( error != SQLITE_OK )
-    {
-        kdError() << k_funcinfo << "[CollectionDB] sqlite3_compile error:" << endl;
-        kdError() << sqlite3_errmsg( dbConn->db() ) << endl;
-        kdError() << "on insert: " << statement << endl;
-    }
-    else
-    {
-        int busyCnt = 0;
-        int number = sqlite3_column_count( stmt );
-        //execute virtual machine by iterating over rows
-        while ( true )
-        {
-            error = sqlite3_step( stmt );
-
-            if ( error == SQLITE_BUSY )
-            {
-                if ( busyCnt++ > 20 ) {
-                    kdError() << "[CollectionDB] Busy-counter has reached maximum. Aborting this sql statement!\n";
-                    break;
-                }
-                ::usleep( 100000 ); // Sleep 100 msec
-                kdDebug() << "[CollectionDB] sqlite3_step: BUSY counter: " << busyCnt << endl;
-            }
-            if ( error == SQLITE_MISUSE )
-                kdDebug() << "[CollectionDB] sqlite3_step: MISUSE" << endl;
-            if ( error == SQLITE_DONE || error == SQLITE_ERROR )
-                break;
-        }
-        //deallocate vm ressources
-        sqlite3_finalize( stmt );
-
-        if ( error != SQLITE_DONE )
-        {
-            kdError() << k_funcinfo << "sqlite_step error.\n";
-            kdError() << sqlite3_errmsg( dbConn->db() ) << endl;
-            kdError() << "on insert: " << statement << endl;
-        }
-    }
-    id = sqlite3_last_insert_rowid( dbConn->db() );
-#endif
+    
+    int id = dbConn->insert( statement );
 
     if ( conn == NULL )
     {
-        m_dbConnPool.putDbConnection( dbConn );
+        m_dbConnPool->putDbConnection( dbConn );
     }
 
     if ( DEBUG )
@@ -400,12 +224,6 @@ CollectionDB::isValid()
 }
 
 
-#ifdef USE_MYSQL
-#define AUTO_INCREMENT "AUTO_INCREMENT"
-#else
-#define AUTO_INCREMENT ""
-#endif
-
 void
 CollectionDB::createTables( DbConnection *conn )
 {
@@ -430,33 +248,42 @@ CollectionDB::createTables( DbConnection *conn )
                     .arg( conn ? "TEMPORARY" : "" )
                     .arg( conn ? "_temp" : "" ), conn );
 
+    QString autoIncrement = "";
+    if ( m_dbConnPool->getDbConnectionType() == DbConnection::mysql )
+    {
+        autoIncrement = "AUTO_INCREMENT";
+    }
     //create album table
     query( QString( "CREATE %1 TABLE album%2 ("
-                    "id INTEGER PRIMARY KEY " AUTO_INCREMENT ","
+                    "id INTEGER PRIMARY KEY %3,"
                     "name VARCHAR(255) );" )
                     .arg( conn ? "TEMPORARY" : "" )
-                    .arg( conn ? "_temp" : "" ), conn );
+                    .arg( conn ? "_temp" : "" )
+                    .arg( autoIncrement ), conn );
 
     //create artist table
     query( QString( "CREATE %1 TABLE artist%2 ("
-                    "id INTEGER PRIMARY KEY " AUTO_INCREMENT ","
+                    "id INTEGER PRIMARY KEY %3,"
                     "name VARCHAR(255) );" )
                     .arg( conn ? "TEMPORARY" : "" )
-                    .arg( conn ? "_temp" : "" ), conn );
+                    .arg( conn ? "_temp" : "" )
+                    .arg( autoIncrement ), conn );
 
     //create genre table
     query( QString( "CREATE %1 TABLE genre%2 ("
-                    "id INTEGER PRIMARY KEY " AUTO_INCREMENT ","
+                    "id INTEGER PRIMARY KEY %3,"
                     "name VARCHAR(255) );" )
                     .arg( conn ? "TEMPORARY" : "" )
-                    .arg( conn ? "_temp" : "" ), conn );
+                    .arg( conn ? "_temp" : "" )
+                    .arg( autoIncrement ), conn );
 
     //create year table
     query( QString( "CREATE %1 TABLE year%2 ("
-                    "id INTEGER PRIMARY KEY " AUTO_INCREMENT ","
+                    "id INTEGER PRIMARY KEY %3,"
                     "name VARCHAR(4) );" )
                     .arg( conn ? "TEMPORARY" : "" )
-                    .arg( conn ? "_temp" : "" ), conn );
+                    .arg( conn ? "_temp" : "" )
+                    .arg( autoIncrement ), conn );
 
     //create images table
     query( QString( "CREATE %1 TABLE images%2 ("
@@ -532,12 +359,12 @@ CollectionDB::clearTables( DbConnection *conn )
 {
     kdDebug() << k_funcinfo << endl;
 
-#ifdef USE_MYSQL
-    // TRUNCATE TABLE is faster than DELETE FROM TABLE, so use it when supported.
-    QString clearCommand = "TRUNCATE TABLE";
-#else
     QString clearCommand = "DELETE FROM";
-#endif
+    if ( m_dbConnPool->getDbConnectionType() == DbConnection::mysql )
+    {
+        // TRUNCATE TABLE is faster than DELETE FROM TABLE, so use it when supported.
+        clearCommand = "TRUNCATE TABLE";
+    }
 
     query( QString( "%1 tags%2;" ).arg( clearCommand ).arg( conn ? "_temp" : "" ), conn );
     query( QString( "%1 album%2;" ).arg( clearCommand ).arg( conn ? "_temp" : "" ), conn );
@@ -1462,6 +1289,54 @@ CollectionDB::updateURL( const QString &url, const bool updateView )
 }
 
 
+void
+CollectionDB::applySettings()
+{
+    bool recreateConnections = false;
+    if ( AmarokConfig::databaseEngine().toInt() != m_dbConnPool->getDbConnectionType() )
+    {
+        recreateConnections = true;
+    }
+    else if ( AmarokConfig::databaseEngine().toInt() != 0 )
+    {
+        // Using MySQL, so check if MySQL settings were changed
+        const MySqlConfig *config =
+            static_cast<const MySqlConfig*> ( m_dbConnPool->getDbConfig() );
+        if ( AmarokConfig::mySqlHost() != config->host() )
+        {
+            recreateConnections = true;
+        }
+        else if ( AmarokConfig::mySqlPort() != config->port() )
+        {
+            recreateConnections = true;
+        }
+        else if ( AmarokConfig::mySqlDbName() != config->database() )
+        {
+            recreateConnections = true;
+        }
+        else if ( AmarokConfig::mySqlUser() != config->username() )
+        {
+            recreateConnections = true;
+        }
+        else if ( AmarokConfig::mySqlPassword() != config->password() )
+        {
+            recreateConnections = true;
+        }
+    }
+    if ( recreateConnections )
+    {
+        kdDebug()
+            << "[CollectionDB] Database engine settings changed: "
+            << "recreating DbConnections" << endl;
+        // If Database engine was changed, recreate DbConnections.
+        destroy();
+        initialize();
+        CollectionView::instance()->renderView();
+        emit databaseEngineChanged();
+    }
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // PROTECTED
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -1610,6 +1485,48 @@ CollectionDB::similarArtistsFetched( const QString& artist, const QStringList& s
 
 
 void
+CollectionDB::initialize()
+{
+    m_dbConnPool = new DbConnectionPool();
+    DbConnection *dbConn = m_dbConnPool->getDbConnection();
+    bool initialized = dbConn->isInitialized();
+    m_dbConnPool->putDbConnection( dbConn );
+
+    KConfig* config = amaroK::config( "Collection Browser" );
+    if ( !initialized || !isValid() )
+    {
+        createTables();
+        createStatsTable();
+    }
+    else
+    {
+        //remove database file if version is incompatible
+        if ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
+        {
+            kdDebug() << "Rebuilding database!" << endl;
+            dropTables();
+            createTables();
+        }
+        if ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
+        {
+            kdDebug() << "Rebuilding stats-database!" << endl;
+            dropStatsTable();
+            createStatsTable();
+        }
+    }
+
+    m_dbConnPool->createDbConnections();
+}
+
+
+void
+CollectionDB::destroy()
+{
+    delete m_dbConnPool;
+}
+
+
+void
 CollectionDB::scan( const QStringList& folders, bool recursively, bool importPlaylists )
 {
     kdDebug() << k_funcinfo << endl;
@@ -1658,46 +1575,24 @@ CollectionDB::customEvent( QCustomEvent *e )
 // CLASS DbConnection
 //////////////////////////////////////////////////////////////////////////////////////////
 
-DbConnection::DbConnection()
+DbConnection::DbConnection( DbConfig* config )
+    : m_config( config )
 {
-#ifdef USE_MYSQL
-    m_db = mysql::mysql_init(NULL);
+}
 
-    if ( m_db )
-    {
-        if (AmarokConfig::mySqlUser().isEmpty())
-            pApp->slotConfigAmarok("MySql");
 
-        if (mysql::mysql_real_connect(m_db, AmarokConfig::mySqlHost().latin1(),
-                                            AmarokConfig::mySqlUser().latin1(),
-                                            AmarokConfig::mySqlPassword().latin1(),
-                                            AmarokConfig::mySqlDbName().latin1(),
-                                            AmarokConfig::mySqlPort(),
-                                            NULL, CLIENT_COMPRESS))
-        {
-            m_initialized = true;
-        }
-        else
-        {
-            m_initialized = false;
-            if (mysql::mysql_real_connect(
-                m_db, AmarokConfig::mySqlHost().latin1(),
-                AmarokConfig::mySqlUser().latin1(),
-                AmarokConfig::mySqlPassword().latin1(),
-                NULL,
-                AmarokConfig::mySqlPort(),
-                NULL, CLIENT_COMPRESS))
-            {
-                if ( !mysql::mysql_query(
-                        m_db,
-                        QString("CREATE DATABASE " + AmarokConfig::mySqlDbName()).latin1()) )
-                    kdError() << "Failed to create database " << AmarokConfig::mySqlDbName() << "\n";
-            }
-        }
-    }
-    else
-        kdError() << "Failed to allocate/initialize MySql struct\n";
-#else
+DbConnection::~DbConnection()
+{
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// CLASS SqliteConnection
+//////////////////////////////////////////////////////////////////////////////////////////
+
+SqliteConnection::SqliteConnection( SqliteConfig* config )
+    : DbConnection( config )
+{
     QCString path = ( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" )
                   + "collection.db" ).local8Bit();
 
@@ -1736,41 +1631,138 @@ DbConnection::DbConnection()
         if( sqlite3_create_function(m_db, "power", 2, SQLITE_UTF8, NULL, sqlite_power, NULL, NULL) != SQLITE_OK )
             m_initialized = false;
     }
-#endif
+    //optimization for speeding up SQLite
+    query( "PRAGMA default_synchronous = OFF;" );
 }
 
 
-DbConnection::~DbConnection()
+SqliteConnection::~SqliteConnection()
 {
-#ifdef USE_MYSQL
-    if (m_db) mysql::mysql_close( m_db );
-#else
-    sqlite3_close( m_db );
-#endif
+    if ( m_db ) sqlite3_close( m_db );
 }
 
 
-#ifdef USE_MYSQL
-mysql::MYSQL* DbConnection::db()
+QStringList SqliteConnection::query( const QString& statement )
 {
-    return m_db;
-}
-#else
-sqlite3* DbConnection::db()
-{
-    return m_db;
-}
-#endif
+    QStringList values;
+    int error;
+    const char* tail;
+    sqlite3_stmt* stmt;
 
-#ifndef USE_MYSQL
+    //compile SQL program to virtual machine
+    error = sqlite3_prepare( m_db, statement.utf8(), statement.length(), &stmt, &tail );
+
+    if ( error != SQLITE_OK )
+    {
+        kdError() << k_funcinfo << "[CollectionDB] sqlite3_compile error:" << endl;
+        kdError() << sqlite3_errmsg( m_db ) << endl;
+        kdError() << "on query: " << statement << endl;
+        values = QStringList();
+    }
+    else
+    {
+        int busyCnt = 0;
+        int number = sqlite3_column_count( stmt );
+        //execute virtual machine by iterating over rows
+        while ( true )
+        {
+            error = sqlite3_step( stmt );
+
+            if ( error == SQLITE_BUSY )
+            {
+                if ( busyCnt++ > 20 ) {
+                    kdError() << "[CollectionDB] Busy-counter has reached maximum. Aborting this sql statement!\n";
+                    break;
+                }
+                ::usleep( 100000 ); // Sleep 100 msec
+                kdDebug() << "[CollectionDB] sqlite3_step: BUSY counter: " << busyCnt << endl;
+            }
+            if ( error == SQLITE_MISUSE )
+                kdDebug() << "[CollectionDB] sqlite3_step: MISUSE" << endl;
+            if ( error == SQLITE_DONE || error == SQLITE_ERROR )
+                break;
+
+            //iterate over columns
+            for ( int i = 0; i < number; i++ )
+            {
+                values << QString::fromUtf8( (const char*) sqlite3_column_text( stmt, i ) );
+            }
+        }
+        //deallocate vm ressources
+        sqlite3_finalize( stmt );
+
+        if ( error != SQLITE_DONE )
+        {
+            kdError() << k_funcinfo << "sqlite_step error.\n";
+            kdError() << sqlite3_errmsg( m_db ) << endl;
+            kdError() << "on query: " << statement << endl;
+            values = QStringList();
+        }
+    }
+    
+    return values;
+}
+
+
+int SqliteConnection::insert( const QString& statement )
+{
+    int error;
+    const char* tail;
+    sqlite3_stmt* stmt;
+
+    //compile SQL program to virtual machine
+    error = sqlite3_prepare( m_db, statement.utf8(), statement.length(), &stmt, &tail );
+
+    if ( error != SQLITE_OK )
+    {
+        kdError() << k_funcinfo << "[CollectionDB] sqlite3_compile error:" << endl;
+        kdError() << sqlite3_errmsg( m_db ) << endl;
+        kdError() << "on insert: " << statement << endl;
+    }
+    else
+    {
+        int busyCnt = 0;
+        //execute virtual machine by iterating over rows
+        while ( true )
+        {
+            error = sqlite3_step( stmt );
+
+            if ( error == SQLITE_BUSY )
+            {
+                if ( busyCnt++ > 20 ) {
+                    kdError() << "[CollectionDB] Busy-counter has reached maximum. Aborting this sql statement!\n";
+                    break;
+                }
+                ::usleep( 100000 ); // Sleep 100 msec
+                kdDebug() << "[CollectionDB] sqlite3_step: BUSY counter: " << busyCnt << endl;
+            }
+            if ( error == SQLITE_MISUSE )
+                kdDebug() << "[CollectionDB] sqlite3_step: MISUSE" << endl;
+            if ( error == SQLITE_DONE || error == SQLITE_ERROR )
+                break;
+        }
+        //deallocate vm ressources
+        sqlite3_finalize( stmt );
+
+        if ( error != SQLITE_DONE )
+        {
+            kdError() << k_funcinfo << "sqlite_step error.\n";
+            kdError() << sqlite3_errmsg( m_db ) << endl;
+            kdError() << "on insert: " << statement << endl;
+        }
+    }
+    return sqlite3_last_insert_rowid( m_db );
+}
+
+
 // this implements a RAND() function compatible with the MySQL RAND() (0-param-form without seed)
-void DbConnection::sqlite_rand(sqlite3_context *context, int /*argc*/, sqlite3_value ** /*argv*/)
+void SqliteConnection::sqlite_rand(sqlite3_context *context, int /*argc*/, sqlite3_value ** /*argv*/)
 {
     sqlite3_result_double( context, static_cast<double>(KApplication::random()) / (RAND_MAX+1.0) );
 }
 
 // this implements a POWER() function compatible with the MySQL POWER()
-void DbConnection::sqlite_power(sqlite3_context *context, int argc, sqlite3_value **argv)
+void SqliteConnection::sqlite_power(sqlite3_context *context, int argc, sqlite3_value **argv)
 {
     Q_ASSERT( argc==2 );
     if( sqlite3_value_type(argv[0])==SQLITE_NULL || sqlite3_value_type(argv[1])==SQLITE_NULL ) {
@@ -1781,7 +1773,137 @@ void DbConnection::sqlite_power(sqlite3_context *context, int argc, sqlite3_valu
     double b = sqlite3_value_double(argv[1]);
     sqlite3_result_double( context, pow(a,b) );
 }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// CLASS MySqlConnection
+//////////////////////////////////////////////////////////////////////////////////////////
+
+#ifdef USE_MYSQL
+MySqlConnection::MySqlConnection( MySqlConfig* config )
+    : DbConnection( config )
+{
+    m_db = mysql::mysql_init(NULL);
+
+    if (m_db)
+    {
+        if ( config->username().isEmpty() )
+            pApp->slotConfigAmarok("MySql");
+
+        if ( mysql::mysql_real_connect( m_db, config->host().latin1(),
+                                              config->username().latin1(),
+                                              config->password().latin1(),
+                                              config->database().latin1(),
+                                              config->port(),
+                                              NULL, CLIENT_COMPRESS ) )
+        {
+            m_initialized = true;
+        }
+        else
+        {
+            m_initialized = false;
+            if ( mysql::mysql_real_connect(
+                    m_db,
+                    config->host().latin1(),
+                    config->username().latin1(),
+                    config->password().latin1(),
+                    NULL,
+                    config->port(),
+                    NULL, CLIENT_COMPRESS))
+            {
+                if ( !mysql::mysql_query(
+                        m_db,
+                        QString( "CREATE DATABASE " + config->database() ).latin1() ) )
+                    kdError() << "Failed to create database " << config->database() << "\n";
+            }
+        }
+    }
+    else
+        kdError() << "Failed to allocate/initialize MySql struct\n";
+}
+
+
+MySqlConnection::~MySqlConnection()
+{
+    if ( m_db ) mysql::mysql_close( m_db );
+}
+
+
+QStringList MySqlConnection::query( const QString& statement )
+{
+    QStringList values;
+    
+    if ( !mysql::mysql_query( m_db, statement.utf8() ) )
+    {
+        mysql::MYSQL_RES* result;
+        if ( result = mysql::mysql_use_result( m_db ) )
+        {
+            int number = mysql::mysql_field_count( m_db );
+            mysql::MYSQL_ROW row;
+            while ( row = mysql::mysql_fetch_row( result ) )
+            {
+                for ( int i = 0; i < number; i++ )
+                {
+                  values << QString::fromUtf8( (const char*)row[i] );
+                }
+            }
+            mysql::mysql_free_result( result );
+        }
+        else
+        {
+            if ( mysql::mysql_field_count( m_db ) != 0 )
+            {
+                kdDebug() << "MYSQL QUERY FAILED: " << mysql::mysql_error( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
+                values = QStringList();
+            }
+        }
+    }
+    else
+    {
+        kdDebug() << "MYSQL QUERY FAILED: " << mysql::mysql_error( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
+        values = QStringList();
+    }
+    
+    return values;
+}
+
+
+int MySqlConnection::insert( const QString& statement )
+{
+    mysql::mysql_query( m_db, statement.utf8() );
+    return mysql::mysql_insert_id( m_db );
+}
 #endif
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// CLASS SqliteConfig
+//////////////////////////////////////////////////////////////////////////////////////////
+
+SqliteConfig::SqliteConfig( const QString& dbfile )
+    : m_dbfile( dbfile )
+{
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// CLASS MySqlConfig
+//////////////////////////////////////////////////////////////////////////////////////////
+
+MySqlConfig::MySqlConfig(
+    const QString& host,
+    const int port,
+    const QString& database,
+    const QString& username,
+    const QString& password )
+    : m_host( host ),
+      m_port( port ),
+      m_database( database ),
+      m_username( username ),
+      m_password( password )
+{
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS DbConnectionPool
@@ -1789,8 +1911,38 @@ void DbConnection::sqlite_power(sqlite3_context *context, int argc, sqlite3_valu
 
 DbConnectionPool::DbConnectionPool() : m_semaphore( POOL_SIZE )
 {
+#ifdef USE_MYSQL
+    if ( AmarokConfig::databaseEngine() == "1" )
+        m_dbConnType = DbConnection::mysql;
+    else
+#endif
+        m_dbConnType = DbConnection::sqlite;
+        
     m_semaphore += POOL_SIZE;
-    enqueue( new DbConnection() );
+    DbConnection *dbConn;
+
+#ifdef USE_MYSQL
+    if ( m_dbConnType == DbConnection::mysql )
+    {
+        m_dbConfig =
+            new MySqlConfig(
+                AmarokConfig::mySqlHost(),
+                AmarokConfig::mySqlPort(),
+                AmarokConfig::mySqlUser(),
+                AmarokConfig::mySqlPassword(),
+                AmarokConfig::mySqlDbName());
+        dbConn = new MySqlConnection( static_cast<MySqlConfig*> ( m_dbConfig ) );
+    }
+    else
+    {
+#endif
+        m_dbConfig = new SqliteConfig( "collection.db" );
+        dbConn = new SqliteConnection( static_cast<SqliteConfig*> ( m_dbConfig ) );
+#ifdef USE_MYSQL
+    }
+#endif
+    
+    enqueue( dbConn );
     m_semaphore--;
     kdDebug() << "available db connections: " << m_semaphore.available() << endl;
 }
@@ -1804,6 +1956,7 @@ DbConnectionPool::~DbConnectionPool()
     {
         delete conn;
     }
+    delete m_dbConfig;
 }
 
 
@@ -1811,7 +1964,16 @@ void DbConnectionPool::createDbConnections()
 {
     for ( int i = 0; i < POOL_SIZE - 1; i++ )
     {
-        enqueue( new DbConnection() );
+        DbConnection *dbConn;
+        
+#ifdef USE_MYSQL
+        if ( m_dbConnType == DbConnection::mysql )
+            dbConn = new MySqlConnection( static_cast<MySqlConfig*> ( m_dbConfig ) );
+        else
+#endif
+            dbConn = new SqliteConnection( static_cast<SqliteConfig*> ( m_dbConfig ) );
+        
+        enqueue( dbConn );
         m_semaphore--;
     }
     kdDebug() << "available db connections: " << m_semaphore.available() << endl;
@@ -2060,13 +2222,13 @@ QueryBuilder::setOptions( int options )
     if ( options & optRandomize )
     {
         if ( !m_sort.isEmpty() ) m_sort += ",";
-        m_sort +=
+        m_sort += "RAND() ";
 
-#ifdef USE_MYSQL
+/*#ifdef USE_MYSQL
             "RAND() ";
 #else
             "random() ";
-#endif
+#endif*/
     }
 }
 
