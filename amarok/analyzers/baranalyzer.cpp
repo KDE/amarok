@@ -92,7 +92,7 @@ void BarAnalyzer::drawAnalyzer( std::vector<float> *s )
 {
     static std::vector<uint> barVector( BAND_COUNT, 0 );
     static std::vector<int>  roofVector( BAND_COUNT, 50 ); //can't risk uint //FIXME 50 is arbituary!
-    static std::vector<uint> roofVelocityVector( BAND_COUNT, 1 );
+    static std::vector<uint> roofVelocityVector( BAND_COUNT, ROOF_VELOCITY_REDUCTION_FACTOR );
 
     bitBlt( m_pComposePixmap, 0, 0, grid() ); //start with a blank canvas
 
