@@ -191,6 +191,7 @@ void PlayerWidget::setScroll( const MetaBundle &bundle )
 
 void PlayerWidget::setScroll( const QStringList &list )
 {
+/*
 static const char* const not_close_xpm[]={
 "5 5 2 1",
 "# c #80a0ff",
@@ -200,6 +201,14 @@ static const char* const not_close_xpm[]={
 "#...#",
 "#...#",
 "#####"};
+*/
+static const char* const not_close_xpm[]={
+"4 4 1 1",
+"# c #80a0ff",
+"####",
+"####",
+"####",
+"####"};
 
     //TODO make me pretty!
 
@@ -234,7 +243,7 @@ static const char* const not_close_xpm[]={
     QFontMetrics fm( font );
     const uint separatorWidth = 21;
     const uint baseline = font.pixelSize(); //the font actually extends below its pixelHeight
-    const uint separatorYPos = baseline - fm.boundingRect( "x" ).height();
+    const uint separatorYPos = baseline - fm.boundingRect( "x" ).height() + 1;
     m_scrollTextPixmap.resize( fm.width( text ) + list2.count() * separatorWidth, m_pScrollFrame->height() );
     m_scrollTextPixmap.fill( backgroundColor() );
     QPainter p( &m_scrollTextPixmap );
