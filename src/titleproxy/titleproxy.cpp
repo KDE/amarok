@@ -50,7 +50,9 @@ Proxy::Proxy( KURL url, int streamingMode )
     m_pBuf = new char[ BUFSIZE ];
     // Don't try to get metdata for ogg streams (different protocol)
     m_icyMode = url.path().endsWith( ".ogg" ) ? false : true;
-
+    // If no port is specified, use default shoutcast port
+    if ( !m_url.port() ) m_url.setPort( 8000 );
+    
     if ( streamingMode == EngineBase::Socket ) {
         uint i;
         Server* server;
@@ -231,33 +233,36 @@ void Proxy::connectError() //SLOT
 
 bool Proxy::processHeader( Q_LONG &index, Q_LONG bytesRead )
 {
+    kdDebug() << k_funcinfo << endl;
+    
     while ( index < bytesRead ) {
         m_headerStr.append( m_pBuf[ index++ ] );
         if ( m_headerStr.endsWith( "\r\n\r\n" ) ) {
-
             kdDebug() << k_funcinfo << "Got shoutcast header: '" << m_headerStr << "'" << endl;
-            /*
-            TODO: emit error including helpful error message on headers like this:
-
-            ICY 401 Service Unavailable
-            icy-notice1:<BR>SHOUTcast Distributed Network Audio Server/Linux v1.9.2<BR>
-            icy-notice2:The resource requested is currently unavailable<BR>
-            */
-            m_metaInt = m_headerStr.section( "icy-metaint:", 1, 1,
-                                             QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 )
-                        .toInt();
-            m_bitRate = m_headerStr.section( "icy-br:", 1, 1,
-                                             QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 ).toInt();
-            m_streamName = m_headerStr.section( "icy-name:", 1, 1,
-                                                QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 );
-            m_streamGenre = m_headerStr.section( "icy-genre:", 1, 1,
-                                                 QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 );
-            m_streamUrl = m_headerStr.section( "icy-url:", 1, 1,
-                                               QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 );
+            // Handle redirection
+            int index = m_headerStr.find( "Location" );
+            if ( index >= 0 ) {
+                int start = m_headerStr.find( "h", index );
+                int end = m_headerStr.find( "\n", index );
+                m_url = m_headerStr.mid( start, end - start );
+                kdDebug() << "Stream redirected to: " << m_url << endl;
+                
+                m_sockRemote.close();
+                m_sockRemote.disconnect( SIGNAL( readyRead() ) );
+                connectToHost();
+                return false;
+            }        
+            m_metaInt = m_headerStr.section( "icy-metaint:", 1, 1, QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 ).toInt();
+            m_bitRate = m_headerStr.section( "icy-br:", 1, 1, QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 ).toInt();
+            m_streamName = m_headerStr.section( "icy-name:", 1, 1, QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 );
+            m_streamGenre = m_headerStr.section( "icy-genre:", 1, 1, QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 );
+            m_streamUrl = m_headerStr.section( "icy-url:", 1, 1, QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 );
+            
             if ( m_streamUrl.startsWith( "www.", true ) )
                 m_streamUrl.prepend( "http://" );
             if ( m_streamingMode == EngineBase::Socket )
                 m_sockProxy.writeBlock( m_headerStr.latin1(), m_headerStr.length() );
+            
             m_headerFinished = true;
 
             if ( m_icyMode && !m_metaInt ) {
