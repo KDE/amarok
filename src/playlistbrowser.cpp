@@ -352,6 +352,11 @@ void PlaylistBrowser::renamePlaylist( QListViewItem* item, const QString& newNam
 
     // Current playlist saving
     if ( isCurrentPlaylist( item ) ) {
+        // TODO Remove this hack for 1.2. It's needed because playlists was a file once.
+        QString folder = KGlobal::dirs()->saveLocation( "data", "amarok/playlists/", false );
+        QFileInfo info( folder );
+        if ( !info.isDir() ) QFile::remove( folder );
+
         QString path = KGlobal::dirs()->saveLocation( "data", "amarok/playlists/", true ) + newName + ".m3u";
         kdDebug() << "[PlaylistBrowser] Saving Current-Playlist to: " << path << endl;
         Playlist::instance()->saveM3U( path );
