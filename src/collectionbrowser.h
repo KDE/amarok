@@ -84,17 +84,13 @@ class CollectionView : public KListView
         void tagsReady();    
         
     private slots:
-        /**
-         * Shows the folder selection widget
-         */
+        /** Shows the folder selection widget. */
         void setupDirs();    
         
         void scan();
         void dirDirty( const QString& path );
         
-        /**
-         * Rebuilds and displays the treeview by querying the database
-         */
+        /** Rebuilds and displays the treeview by querying the database. */
         void renderView();
         
         void slotExpand( QListViewItem* );
@@ -113,6 +109,9 @@ class CollectionView : public KListView
         QString catForId( int id ) const;
         int idForCat( const QString& cat ) const;
         QPixmap iconForCat( const QString& cat ) const;
+        
+        /**  Enables all items in a menu. */
+        void enableAllItems( KPopupMenu* const menu );
         
     //attributes:
         //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.

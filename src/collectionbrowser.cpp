@@ -411,7 +411,11 @@ CollectionView::cat1Menu( int id )  //SLOT
     m_category1 = catForId( id );
     setColumnText( 0, m_category1 );
     m_parent->m_cat1Menu->setItemChecked( idForCat( m_category1 ), true );
-
+    
+    enableAllItems( m_parent->m_cat2Menu );
+    //prevent choosing the same category in both menus
+    m_parent->m_cat2Menu->setItemEnabled( id , false );
+    
     renderView();
 }
 
@@ -422,8 +426,20 @@ CollectionView::cat2Menu( int id )  //SLOT
     m_parent->m_cat2Menu->setItemChecked( idForCat( m_category2 ), false ); //uncheck old item
     m_category2 = catForId( id );
     m_parent->m_cat2Menu->setItemChecked( idForCat( m_category2 ), true );
+    
+    enableAllItems( m_parent->m_cat1Menu );
+    //prevent choosing the same category in both menus
+    m_parent->m_cat1Menu->setItemEnabled( id , false );
 
     renderView();
+}
+
+
+void
+CollectionView::enableAllItems( KPopupMenu* const menu )
+{
+    for ( uint index = 0; index < menu->count(); index++ )
+        menu->setItemEnabled( menu->idAt( index ), true );
 }
 
 
