@@ -849,7 +849,7 @@ CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString&
     connect( fetcher, SIGNAL( imageReady( const QString&, const QPixmap& ) ),
              this,      SLOT( saveCover( const QString&, const QPixmap& ) ) );
     
-    fetcher->getCover( artist, album, keyword, CoverFetcher::heavy, edit );
+    fetcher->getCover( artist, album, keyword, CoverFetcher::heavy, edit, 2, false );
 }
 
 

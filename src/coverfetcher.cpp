@@ -156,88 +156,75 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
-/* This is for the cover manager. When fetching all remaining covers, only save the cover */
-    if ( !m_noedit )
+    /* Okay, this next thing may appear a bit weird ;) Short explanation:
+       If there's no result for the search string (artist - album), search for the album tag only. 
+       If there's no (large) cover is found, try the next smaller image (medium) etc. If no covers, open editSearch.
+       If we fetch all covers (covermanager), do not show any errors/previews, just save (m_noedit).  */
+    
+    if ( job->error() != 0 ) 
     {
-        /* if no cover is found, open the amazon search dialogue, else show the cover viewer. */
-        if ( job->error() != 0 ) 
+        if ( !m_albumonly ) getCover( m_album, m_album, m_saveas, CoverFetcher::heavy, m_noedit, 1, true );
+        else if ( !m_noedit )
         {
-            if ( !m_albumonly )
+            m_text = "<h3>No cover image found!</h3>"
+            "If you would like to search again, you can edit the search string below and press <b>OK</b>.";
+            editSearch();
+        }
+        else return;
+    }
+    else
+    {
+        m_text = "<h3>New Search</h3>Please edit the search string below and press <b>OK</b>.";
+        m_pixmap.loadFromData( m_buffer, m_bufferIndex );
+        
+        if ( m_pixmap.width() == 1 )
+        {
+            if ( m_size == 2 ) 
             {
-                getCover( m_album, m_album, m_saveas, CoverFetcher::heavy, false, 1, true );
+                if ( m_albumonly ) getCover( m_album, m_album, m_saveas, CoverFetcher::heavy, m_noedit, 1, m_albumonly );
+                else getCover( m_artist, m_album, m_saveas, CoverFetcher::heavy, m_noedit, 1, m_albumonly );
             }
-            else
+            else if ( m_size == 1 )
             {
-                m_text = "<h3>No cover image found!</h3>"
+                if ( m_albumonly ) getCover( m_album, m_album, m_saveas, CoverFetcher::heavy, m_noedit, 0, m_albumonly );
+                else getCover( m_artist, m_album, m_saveas, CoverFetcher::heavy, m_noedit, 0, m_albumonly );
+                 
+            }
+            else if ( !m_noedit )
+            {
+                m_text = "<h3>Cover found, but without images!</h3>"
                 "If you would like to search again, you can edit the search string below and press <b>OK</b>.";
                 editSearch();
             }
         }
-        else
-        {
-            m_text = "<h3>New Search</h3>Please edit the search string below and press <b>OK</b>.";
-            m_pixmap.loadFromData( m_buffer, m_bufferIndex );
-            
-            if ( m_pixmap.width() == 1 )
-            {
-                if ( m_size == 2 ) 
-                {
-                    if ( m_albumonly )
-                    {
-                        getCover( m_album, m_album, m_saveas, CoverFetcher::heavy, false, 1 );
-                    }
-                    else
-                    {
-                        getCover( m_artist, m_album, m_saveas, CoverFetcher::heavy, false, 1 );
-                    }
-                }
-                else if ( m_size == 1 )
-                {
-                    if ( m_albumonly )
-                    {
-                        getCover( m_album, m_album, m_saveas, CoverFetcher::heavy, false, 0 );
-                    }
-                    else
-                    {
-                        getCover( m_artist, m_album, m_saveas, CoverFetcher::heavy, false, 0 );
-                    }
-                }
-                else
-                {
-                    m_text = "<h3>Cover found, but without images!</h3>"
-                    "If you would like to search again, you can edit the search string below and press <b>OK</b>.";
-                    editSearch();
-                }
-            }
-            else
-            {   
-                QVBox* container = new QVBox( 0, 0, WDestructiveClose );
-                /* we show m_album here, since it's always the filename on save */
-                container->setCaption( kapp->makeStdCaption( m_album ) );
-                connect( this, SIGNAL( destroyed() ), container, SLOT( deleteLater() ) );
+        else if ( !m_noedit )
+        {   
+            QVBox* container = new QVBox( 0, 0, WDestructiveClose );
+            /* we show m_album here, since it's always the filename on save */
+            container->setCaption( kapp->makeStdCaption( m_album ) );
+            connect( this, SIGNAL( destroyed() ), container, SLOT( deleteLater() ) );
+                    
+            QWidget* widget = new QWidget( container );
+            widget->setPaletteBackgroundPixmap( m_pixmap );
+            widget->setFixedSize( m_pixmap.size() );
     
-                QWidget* widget = new QWidget( container );
-                widget->setPaletteBackgroundPixmap( m_pixmap );
-                widget->setFixedSize( m_pixmap.size() );
-    
-                QHBox* buttons = new QHBox( container );
-                KPushButton* save = new KPushButton( i18n( "Save" ), buttons );
-                KPushButton* newsearch = new KPushButton( i18n( "New search" ), buttons );
-                KPushButton* cancel = new KPushButton( i18n( "Cancel" ), buttons );
-                connect( cancel, SIGNAL( clicked() ), this, SLOT( deleteLater() ) );
-                connect( newsearch, SIGNAL( clicked() ), this, SLOT( editSearch() ) );
-                connect( save, SIGNAL( clicked() ), this, SLOT( saveCover() ) );
-            
-                container->adjustSize();
-                container->setFixedSize( container->size() );
-                container->show();
-            }
+            QHBox* buttons = new QHBox( container );
+            KPushButton* save = new KPushButton( i18n( "Save" ), buttons );
+            KPushButton* newsearch = new KPushButton( i18n( "New search" ), buttons );
+            KPushButton* cancel = new KPushButton( i18n( "Cancel" ), buttons );
+            connect( cancel, SIGNAL( clicked() ), this, SLOT( deleteLater() ) );
+            connect( newsearch, SIGNAL( clicked() ), this, SLOT( editSearch() ) );
+            connect( save, SIGNAL( clicked() ), this, SLOT( saveCover() ) );
+                         
+            container->adjustSize();
+            container->setFixedSize( container->size() );
+            container->show();
         }
-    }
-    else
-    {
-        m_pixmap.loadFromData( m_buffer, m_bufferIndex );
-        saveCover();
+        else
+        { 
+            m_pixmap.loadFromData( m_buffer, m_bufferIndex );
+            saveCover();
+        }
     }
 }
 
