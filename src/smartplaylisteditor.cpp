@@ -176,12 +176,10 @@ QString SmartPlaylistEditor::getQuery()
 
     //order by expression
     if( m_orderCheck->isChecked() ) {
-        if( whereStr.isEmpty() ) whereStr += " WHERE ";
-
         QString field = m_dbFields[ m_orderCombo->currentItem() ];
         QString table = field.left( field.find('.') );
         if( !tables.contains( table ) ) {
-            if( whereStr.isEmpty() ) whereStr += " AND ";
+            whereStr += whereStr.isEmpty() ? " WHERE " : " AND ";
             if( table == "statistics" )
                 whereStr += "tags.url = statistics.url";
             else if( table != "tags" )
@@ -275,7 +273,7 @@ QString CriteriaEditor::getSearchCriteria()
     QString table = field.left( field.find('.') );
     if( table == "statistics" )
         searchCriteria += "statistics.url = tags.url AND ";
-    else
+    else if( table != "tags" )
         searchCriteria += table + ".id = tags." + table + " AND ";
 
     searchCriteria += field;
