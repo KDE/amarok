@@ -7,182 +7,175 @@ TODO-list for amaroK
 
                         
 SHORT-TERM (URGENT):
-
-    * fix: <mxcl> xmmswrapper requires gtk headers and gdk headers unfortunately, without build
-                  fails :(
+  
+  FIX <mxcl> xmmswrapper requires gtk headers and gdk headers unfortunately, without build  fails :(
+  
+  ADD <markey> Extend documentation - we cannot honestly go 1.0 with such lackluster docs.
     
+  ADD #88 <muesli> In CollectionBrowser's search, let the user decide, which fields are 
+      to be searched (like: songtitle, artist, songtitle or artist, album) -->muesli
+
+      
 MID-TERM:
+  
+  FIX #87 <muesli> don't rely on KDE timeouts to see whether a file is accessible or not,
+      since this really sucks for disconnected network shares. XMMS handles
+      this way better and it really is a problem in userland. maybe a thread
+      helps, which simply tries to fopen() the file. if this task hasn't been
+      finished in (let's say) 3 seconds, jump to the next song. XMMS even
+      remembers such files and their folders, so that it's not going to open 
+      another file from that folder for the next few minutes. what about hdd
+      sleep-timeouts? opinions?
 
-    * fix: #87 <muesli> don't rely on KDE timeouts to see whether a file is accessible or not,
-                        since this really sucks for disconnected network shares. XMMS handles
-                        this way better and it really is a problem in userland. maybe a thread
-                        helps, which simply tries to fopen() the file. if this task hasn't been
-                        finished in (let's say) 3 seconds, jump to the next song. XMMS even
-                        remembers such files and their folders, so that it's not going to open 
-                        another file from that folder for the next few minutes. what about hdd
-                        sleep-timeouts? opinions?
-
-    * add: #89 <muesli> mostly / recently played song statistics tab. this will enhance the
-                        collection database. we'll be ready to compete with winamp's media
-                        library, then ;-)
-                        
-
-    * add: #88 <muesli> In CollectionBrowser's search, let the user decide, which fields are 
-                        to be searched (like: songtitle, artist, songtitle or artist, album)
-                        -->muesli
+  ADD #89 <muesli> Mostly / recently played song statistics tab. this will enhance the
+      collection database. we'll be ready to compete with winamp's media library, then ;-)
     
-    * chg: #78 determine some behavior for the clear/shuffle/etc. buttons when a search is in action
-               clear   -> only clear the stuff that was searched for?
-               shuffle -> stop the search and do normal shuffle?
-               additionally what to do when user rearranges a set of items that are the search result?
-               <larson>No big deal to me as long as the behaviour is consistent. I.e. if shuffle shuffles
-               the search, then clear should clear the search only, and visa versa.
+  CHG #78 Determine some behavior for the clear/shuffle/etc. buttons when a search is in action
+      clear   -> only clear the stuff that was searched for?
+      shuffle -> stop the search and do normal shuffle?
+      ADDitionally what to do when user rearranges a set of items that are the search result?
+      <larson> No big deal to me as long as the behaviour is consistent. I.e. if shuffle shuffles
+      the search, then clear should clear the search only, and visa versa.
 
-    * fix: #76 <larson> Make playlist toolbar buttons toggle like the playerwidget buttons.
+  FIX #76 <larson> Make playlist toolbar buttons toggle like the playerwidget buttons.
 
-    * add: #75 Toolbar button in FileBrowser for switching recursive directory reading
+  ADD #75 Toolbar button in FileBrowser for switching recursive directory reading
 
-    * fix: #73 <mxcl> can't resize newly displayed columns if they are hidden at beginning of session -->mxcl
+  FIX #73 <mxcl> Can't resize newly displayed columns if they are hidden at beginning of session -->mxcl
 
-    * add: #39 <markey> add playlist column for media-type (mp3, ogg, mod, etc)
-    * add: display type of media next to bitrate (<berkus> i moved it here, seems its the
-           same as above, no?)
+  ADD #39 <markey> Add playlist column for media-type (mp3, ogg, mod, etc)
+      Display type of media next to bitrate (<berkus> i moved it here, seems its the same as above, no?)
 
-    * chg: instead of show file info why not use standard KDE properties? This has much more power
-           than anything we could whip up and with taglib installed shows meta info and allows
-           editing of it. <markey> this is already available in the FileBrowser: right-click -> "Properties"
+  CHG Instead of show file info why not use standard KDE properties? This has much more power
+      than anything we could whip up and with taglib installed shows meta info and allows editing of it. 
 
-    * add: tabbed playlists.
-           Pro: it's convenient to have several playlists
-           Contra: the playlist is getting cluttered enough as it is!
+  ADD #28<muesli> add an option "clean up playlist on startup"
+      <mxcl> do you mean remove duplicates or dead entries etc. ? Cool.
 
-    * add: #32<markey> icecast metadata support (uses UDP channel) -->markey
+  ADD <mxcl> option: don't crossfade for sequential tracks on same album. Comments? -->mxcl
+      Of course, there would still be the up to 150ms gap, but we can fix that some other
+      time.. <markey> please clarify: is this the same as BR #75388 ?
 
-    * add: #28<muesli> add an option "clean up playlist on startup"
-              <mxcl> do you mean remove duplicates or dead entries etc. ? Cool.
+  FIX Add dirs to combo history when user adds a track from that dir to the playlist
 
-    * add: <mxcl> option: don't crossfade for sequential tracks on same album. Comments? -->mxcl
-           Of course, there would still be the up to 150ms gap, but we can fix that some other
-           time.. <markey> please clarify: is this the same as BR #75388 ?
+  FIX <mxcl>KListView sets the hand cursor on column(0) of the playlist. This is not
+      relevant to amaroK since we are naughty and don't obey KDE's single click mode
+      we should disable the hand cursor since that means "single-click to activate me"
+      maybe override KListView::mouseMoveEvent, or is there a better way?
+      <markey> I think the hand cursor looks appropriate here. FWIW, the hand is not only in column(0)
 
-    * fix: add dirs to combo history when user adds a track from that dir to the playlist
+  ADD "Show playlist" to the right click menu, redundant but necessary
 
-    * fix: <mxcl>KListView sets the hand cursor on column(0) of the playlist. This is not
-           relevant to amaroK since we are naughty and don't obey KDE's single click mode
-           we should disable the hand cursor since that means "single-click to activate me"
-           maybe override KListView::mouseMoveEvent, or is there a better way?
-           <markey> I think the hand cursor looks appropriate here. FWIW, the hand is not only in
-           column(0)
+  ADD More KTips, better KTips, somehow use the "Did you know" tip dialog (eg kmail, gideon, etc.) -->mxcl
+           
+  ADD Reduce arts buffer to ~20ms for much better analyzers etc.
 
-    * add: "show playlist" to the right click menu, redundant but necessary
+  ADD History to add dialog, or implement better system for adding urls etc.
 
-    * add: more KTips, better KTips, somehow use the "Did you know" tip dialog (eg kmail, gideon, etc.) -->mxcl
-           reduce arts buffer to ~20ms for much better analyzers etc.
+  ADD Option to automatically adjust column widths
 
-    * add: extend documentation
+  ADD Option to implicitly sort playlist by { track, album } (on drop only) -->mxcl
 
-    * add: history to add dialog, or implement better system for adding urls etc.
+  ADD <muesli> reading metadata on the fly (read for displayed playlist-items or onClick)
+      <berkus> this means that metadata is read only for visible now items or the items
+      you click. (see winamp)
 
-    * add: option to automatically adjust column widths
+  ADD "Add item"-dialog should support multiple selections
 
-    * add: option to implicitly sort playlist by { track, album } (on drop only) -->mxcl
+  ADD <berkus> playmode indication button in main widget (repeat track/pl/shuffle), clickable
 
-    * add: <muesli> reading metadata on the fly (read for displayed playlist-items or onClick)
-           <berkus> this means that metadata is read only for visible now items or the items
-           you click. (see winamp)
+  ADD Function for adding all files in current dir to playlist.
+      basically just a shortcut for going up to the parent directory, and then dragging
+      the directory. imagine you're in the root directory of some filesystem, and want to add all
+      files in it.. currently you'd have to select all files manually
 
-    * add: "add item"-dialog should support multiple selections
+  CHG Can we make all buttons into actions? if we can, we could use setState(), a global
+      actionCollection and save plenty of LOC. I see problems with the play/stop/etc
+      buttons though.
 
-    * add: <berkus> playmode indication button in main widget (repeat track/pl/shuffle), clickable
+  CHG Pre 1.0, big cleanup to reduce mem consumption (I dunno if we use a lot or not, but
+      this is a good goal anyway!)
 
-    * add: function for adding all files in current dir to playlist.
-           basically just a shortcut for going up to the parent directory, and then dragging
-           the directory. imagine you're in the root directory of some filesystem, and want to add all
-           files in it.. currently you'd have to select all files manually
-
-    * add: seeking with mousewheel
-           <muesli> what's seeking with mousewheel? <markey> dunno, but several users requested it
-           <berkus> seeking the track via mousewheel, wheelUp to seek back, wheelDown to seek further
-
-    * chg: #21<markey> use more accurate interpolation for analyzers (cubic or spline)
-
-    * chg: can we make all buttons into actions? if we can, we could use setState(), a global
-           actionCollection and save plenty of LOC. I see problems with the play/stop/etc
-           buttons though.
-
-    * chg: pre 1.0, big cleanup to reduce mem consumption (I dunno if we use a lot or not, but
-           this is a good goal anyway!)
-
-    * chg: pre 1.0, plan, cleanup and future-proof settings file keys. Will almost certainly
-           mean that people will lose their settings, oh well, best to do it for the 1.0 release.
+  CHG Pre 1.0, plan, cleanup and future-proof settings file keys. Will almost certainly
+      mean that people will lose their settings, oh well, best to do it for the 1.0 release.
 
 
 LONG-TERM:
+  
+  ADD #32<markey> icecast metadata support (uses UDP channel) -->markey
 
-    * fix: #44 <markey> use kdWarning() instead of kdDebug() where appropriate
+  CHG #21<markey> Use more accurate interpolation for analyzers (cubic or spline)
 
-    * add: make windows magnetic / sticking together (difficult)
+  ADD Tabbed playlists.
+      Pro: it's convenient to have several playlists
+      Contra: the playlist is getting cluttered enough as it is!
+    
+  ADD Seeking with mousewheel
+      <muesli> what's seeking with mousewheel? <markey> dunno, but several users requested it
+      <berkus> seeking the track via mousewheel, wheelUp to seek back, wheelDown to seek further
 
-    * add: playlist export (generate text or html document from playlist entries)
+  FIX #44 <markey> use kdWarning() instead of kdDebug() where appropriate
 
-    * add: make PlayerWidget shadeable (like XMMS)
-           <mxcl> doesn't the systray provide this functionality already?
-           <berkus> no it doesn't, double click the winamp/xmms window and see for yourself
-           <larson> How do you propose this should work? Since we are handled by kwin and have
-           normal window borders, double clicking the titlebar is handled by kwin. Also, should
-           the playlist be shadable?
+  ADD Make windows magnetic / sticking together (difficult)
 
-    * add: display some information about current track in playlist window
+  ADD Playlist export (generate text or html document from playlist entries)
 
-    * add: support for compressed archives / tarballs
+  ADD Make PlayerWidget shadeable (like XMMS)
+      <mxcl> doesn't the systray provide this functionality already?
+      <berkus> no it doesn't, double click the winamp/xmms window and see for yourself
+      <larson> How do you propose this should work? Since we are handled by kwin and have
+      normal window borders, double clicking the titlebar is handled by kwin. Also, should
+      the playlist be shadable?
 
-    * add: <mxcl> implement beat detection (thread?), interface should glow/move to
-           the beat, visualisations have access to beat/bpm info
+  ADD Display some information about current track in playlist window
 
-    * add: audio system info widget, showing all available codecs and similar info
+  ADD Support for compressed archives / tarballs
 
-    * chg: resizable playerwidget, like in Winamp3.
+  ADD <mxcl> Implement beat detection (thread?), interface should glow/move to
+      the beat, visualisations have access to beat/bpm info
+
+  ADD Audio system info widget, showing all available codecs and similar info
+
+  CHG Resizable playerwidget, like in Winamp3.
 
 
 IDEAS:
+  * #12<markey> prevent zombie processes after amarok has exited (proper exit or crashing).
+    such zombies can lead to very weird behaviour on next amarok start and eat ressources,
+    and the user has no chance of noticing what's wrong.
+    is it possible to catch crash signals and do some cleanup?
+    <mxcl> I just read that KApplication tries to prevent zombies, so something is amiss
+    <mxcl> perhaps KCrash can help us
 
-    * #12<markey> prevent zombie processes after amarok has exited (proper exit or crashing).
-         such zombies can lead to very weird behaviour on next amarok start and eat ressources,
-         and the user has no chance of noticing what's wrong.
-         is it possible to catch crash signals and do some cleanup?
-         <mxcl> I just read that KApplication tries to prevent zombies, so something is amiss
-         <mxcl> perhaps KCrash can help us
+  * bookmarks inside of tracks (good for very long tracks), and nifty bookmark browser
 
-    * bookmarks inside of tracks (good for very long tracks), and nifty bookmark browser
-
-    * using filelight (as a kpart maybe) for a graphical representation of the playlist. so you could
-      see at first glance how the altogether playing time is divided into different albums, tunes and
-      so on.
+  * using filelight (as a kpart maybe) for a graphical representation of the playlist. so you could
+    see at first glance how the altogether playing time is divided into different albums, tunes and
+    so on.
 
 
 DISCUSSING:
-
-    * inf: <markey> I'd very much appreciate people keeping line length in all amaroK sources/textfiles
-           at 110 characters max. Longer lines cause horrible dynamic line breaks or scrolling when you only
-           have limited screen width, like in console or kdevelop. pretty please with icing =)
-           <mxcl> I added a 110 char marker to my editor (since ages ago). However I don't always keep to it.
-           Breaking lines is most often ugly :( Mostly I do though. You can praise me now ;)
+    
+  * <markey> I'd very much appreciate people keeping line length in all amaroK sources/textfiles
+    at 110 characters max. Longer lines cause horrible dynamic line breaks or scrolling when you only
+    have limited screen width, like in console or kdevelop. pretty please with icing =)
+    <mxcl> I added a 110 char marker to my editor (since ages ago). However I don't always keep to it.
+    Breaking lines is most often ugly :( Mostly I do though. You can praise me now ;)
 
 DO-NOT-IMPLEMENT:
 
-    * fix: #61 <markey> allow removing of playlist items by dragging back into browser.
-               <larson> I think this is really weird. When I drag something I expect that someting to be
-                added or opened in the target. Not removed from the sender.
-                (RFC: is this still appropriate or would it be misleading?)
-               <muesli> imho, it's misleading and not hid-compatible. i would rather
-                expect that file to be copied to the browser's current
-                directory.
+  FIX #61 <markey> allow removing of playlist items by dragging back into browser.
+      <larson> I think this is really weird. When I drag something I expect that someting to be
+      ADDed or opened in the target. Not removed from the sender.
+      (RFC: is this still appropriate or would it be misleading?)
+      <muesli> imho, it's misleading and not hid-compatible. i would rather
+      expect that file to be copied to the browser's current directory.
 
-    * add: a "hide playlist when main widget is not active" option (?? comments please: )
-           <berkus> noo, we have it hiding into tray, thats enough (imagine how much flashing will be
-           if i drag mouse around with "focus follows mouse" on - this is the one i use all the time)
-           <mxcl> hence it's an option, you'd not use it with focus follows mouse. But it was just an idea
-                  anyway.. dunno if I like the sound of it anymore either.
+  ADD "Hide playlist when main widget is not active" option (?? comments please: )
+      <berkus> noo, we have it hiding into tray, thats enough (imagine how much flashing will be
+      if i drag mouse around with "focus follows mouse" on - this is the one i use all the time)
+      <mxcl> hence it's an option, you'd not use it with focus follows mouse. But it was just an idea
+      anyway.. dunno if I like the sound of it anymore either.
 
 
 
@@ -245,22 +238,6 @@ BACKTRACE
 ////////////////
 
 
-21:03 < jeroenvrp_the_re> #0  0x412d2348 in open () from /lib/i686/libpthread.so.0
-21:03 < jeroenvrp_the_re> #1  0x408b7ed8 in __JCR_LIST__ () from /opt/kde3/lib/libkdecore.so.4
-21:03 < jeroenvrp_the_re> #2  0x408870d5 in mkstemps () from /opt/kde3/lib/libkdecore.so.4
-21:03 < jeroenvrp_the_re> #3  0x407f4809 in KTempFile::create(QString const&, QString const&, int) () from
-                          /opt/kde3/lib/libkdecore.so.4
-21:03 < jeroenvrp_the_re> #4  0x407fa24f in KSaveFile::KSaveFile(QString const&, int) () from /opt/kde3/lib/libkdecore.so.4
-21:03 < jeroenvrp_the_re> #5  0x40786eba in KConfigINIBackEnd::writeConfigFile(QString, bool, bool) () from
-                          /opt/kde3/lib/libkdecore.so.4
-21:03 < jeroenvrp_the_re> #6  0x407861ff in KConfigINIBackEnd::sync(bool) () from /opt/kde3/lib/libkdecore.so.4
-21:03 < jeroenvrp_the_re> #7  0x40780730 in KConfigBase::sync() () from /opt/kde3/lib/libkdecore.so.4
-21:03 < jeroenvrp_the_re> #8  0x418fddb9 in ArtsEngine::init(bool&, int, bool) () from
-                          /opt/kde3/lib/kde3/libamarok_artsengine_plugin.so
-21:03 < jeroenvrp_the_re> #9  0x08087569 in PlayerApp::initEngine() ()
-21:03 < jeroenvrp_the_re> #10 0x0808a5bc in PlayerApp::readConfig() ()
-21:03 < jeroenvrp_the_re> #11 0x0808545a in PlayerApp::PlayerApp() ()
-21:03 < jeroenvrp_the_re> #12 0x080c0ceb in main ()
 
 
 
