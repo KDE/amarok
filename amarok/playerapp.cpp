@@ -697,6 +697,7 @@ void PlayerApp::saveConfig()
     m_pConfig->writeEntry( "Crossfading", m_optXFade );
     m_pConfig->writeEntry( "Crossfade Length", m_optXFadeLength );
     m_pConfig->writeEntry( "Hide Playlist Window", m_optHidePlaylistWindow );
+    m_pConfig->writeEntry( "BrowserFgColor", m_optBrowserFgColor );
     m_pConfig->writeEntry( "BrowserBgColor", m_optBrowserBgColor );
 
     //store current item
@@ -1435,7 +1436,8 @@ void PlayerApp::slotItemDoubleClicked( QListViewItem *item )
 void PlayerApp::slotShowAbout()
 {
     KAboutApplication dia;
-    dia.setLogo( locate( "data", "amarok/images/logo_new_active.png" ) );
+//    FIXME: would be nice to get the amarok logo from the site in here.
+//    dia.setLogo( locate( "data", "amarok/images/logo_new_active.png" ) );
 
     dia.exec();
 }

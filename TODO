@@ -4,6 +4,8 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
+    * fix: opening hidden directories is impossible in filebrowser
+
     * fix: shortcuts not saved (?)
 
     * fix: playmode checks in popup menu set incorrectly upon loading (?)
