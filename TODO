@@ -6,6 +6,9 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  <mxcl>   On first-ever-run, if amaroK crashes building the sqlite collection, it is impossible to _ever_
+           build a collection unless the user's amarokrc file is deleted! This MUST be fixed before 1.2!
+
   <mxcl>   Just before we load any engine plugin, write to a file, and it we don't succeed the next time
            amaroK starts show a big warning saying "Gah!" and load a different one.
 
