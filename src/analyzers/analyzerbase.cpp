@@ -156,8 +156,7 @@ Analyzer::Base<W>::resizeForBands( int bands )
     else
         exp = 9;
 
-    if ( exp != m_fht->sizeExp() )
-        resizeExponent( exp );
+    resizeExponent( exp );
     return m_fht->size();
 }
 
