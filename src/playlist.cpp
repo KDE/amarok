@@ -106,6 +106,7 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     , m_currentTrack( 0 )
     , m_marker( 0 )
     , m_weaver( new ThreadWeaver( this ) )
+    , m_firstColumn( 0 )
     , m_undoDir( KGlobal::dirs()->saveLocation( "data", "amarok/undo/", true ) )
     , m_undoCounter( 0 )
     , m_editText( 0 )
@@ -384,10 +385,10 @@ Playlist::playNextTrack()
         {
             item = *(MyIt&)++MyIt( item );
         }
-        else item = *MyIt( this );
+        else item = *MyIt( this ); //ie. first visible item
 
         if ( !item && AmarokConfig::repeatPlaylist() )
-            item = *MyIt( this );
+            item = *MyIt( this ); //ie. first visible item
     }
 
     if ( EngineController::engine()->loaded() )
@@ -532,6 +533,10 @@ Playlist::restoreCurrentTrack()
         {}
 
         setCurrentTrack( item ); //set even if NULL
+
+        if( item )
+           //display "Play" icon
+           item->setPixmap( m_firstColumn, SmallIcon( "artsbuilderexecute" ) );
     }
 
     return m_currentTrack;
