@@ -47,7 +47,9 @@ amarokapp_SOURCES = \
         pluginmanager.cpp \
         streambrowser.cpp \
         threadweaver.cpp \
+        vis/socketserver.cpp \
         enginecontroller.cpp
+
 
 amarokapp_LDADD = \
         $(top_builddir)/amarok/amarok/amarokcore/libamarokcore.a \
