@@ -157,7 +157,10 @@ StatusBar::setMainText( const QString &text )
 {
     m_mainText = text;
 
-    m_mainTextLabel->setText( text );
+    if ( !m_tempMessageTimer->isActive() )
+        // if we're showing a shortMessage, resetMainText() will be
+        // called within 5 seconds
+        m_mainTextLabel->setText( text );
 }
 
 void
@@ -172,8 +175,8 @@ StatusBar::shortMessage( const QString &text )
 void
 StatusBar::resetMainText()
 {
-    m_mainTextLabel->setText( m_mainText );
     m_mainTextLabel->unsetPalette();
+    m_mainTextLabel->setText( m_mainText );
 }
 
 void
@@ -268,8 +271,6 @@ StatusBar::endProgressOperation()
 
     if ( job && job->error() )
         longMessage( job->errorString(), Error );
-    else if ( job )
-        kdDebug() << "NO JOB ERROR" << endl;
 
     endProgressOperation( owner );
 }
