@@ -27,8 +27,6 @@ SHORT-TERM (URGENT):
     * fix: <mxcl> GroupBoxes can't have check boxes with Qt 3.1, so before next release do
            some #ifdefs to surround that code and hope nobody gets too pissed about it -->mxcl
 
-    * fix: <muesli> clean up the GUI
-
 
 MID-TERM:
 
@@ -40,7 +38,7 @@ MID-TERM:
            the directory. imagine you're in the root directory of some filesystem, and want to add all
            files in it.. currently you'd have to select all files manually 
            
-    * fix: opening hidden directories is impossible in filebrowser
+    * fix: filebrowser does not display hidden directories; so they cannot be accessed, either
 
     * fix: <mxcl>KListView sets the hand cursor on column(0) of the playlist. This is not
            relevant to amaroK since we are naughty and don't obey KDE's single click mode
@@ -112,6 +110,10 @@ MID-TERM:
 
 LONG-TERM:
 
+    * add: support for multiple audio frameworks (will require switching to an abstract audio engine class.
+           hopefully this will also improve our architecture, and reduce the playerapp dependency hell).
+           alternative frameworks might include gstreamer, and NMM  -->markey
+
     * add: make windows magnetic / sticking together (difficult)
 
     * add: generate text or html document from playlist entries
@@ -121,7 +123,7 @@ LONG-TERM:
     * add: make PlayerWidget shadeable (like XMMS) [<mxcl> doesn't the systray provide this functionality
            already?] [<berkus> no it doesn't, double click the winamp/xmms window and see for yourself]
 
-    * add: display some information about current track in browserwin
+    * add: display some information about current track in playlist window
 
     * add: support for compressed archives / tarballs
 
@@ -130,16 +132,14 @@ LONG-TERM:
 
     * add: pitch-slider (?) [<berkus> should be in separate "Effects Control" panel]
 
-    * add: aRts info widget, showing all available codecs and maybe more
+    * add: audio system info widget, showing all available codecs and maybe more
+
+    * chg: resizable playerwidget, like in Winamp3.
 
 
 IDEAS:
 
     * bookmarks inside of tracks (good for very long tracks), and nifty bookmark browser
-
-    * resizable playerwidget, like in Winamp3. Maybe using SVG graphics, or
-      scaled down bitmaps. Would look most cool when it could resize smoothly
-      in realtime *drool*
 
     * think about moving amarok to kdeextragear
 
