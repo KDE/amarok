@@ -405,11 +405,14 @@ void ArtsEngine::connectTimeout()
 }
 
 
-bool ArtsEngine::play( uint )
+bool ArtsEngine::play( uint offset )
 {
     if ( !m_pPlayObject ) return false;
 
     m_pPlayObject->play();
+
+    seek( offset );
+
     emit stateChanged( Engine::Playing );
 
     return true;

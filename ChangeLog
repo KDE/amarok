@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta1:
+  FIX: Arts engine resumes from position when session is restored.
   ADD: Vorbis stream metadata support (GStreamer-engine). (BR 82378)
   ADD: Cover image and lyric fetchers include filters for common
        extensions, such as (Disc 1). (BR 90630)
@@ -21,7 +22,7 @@ VERSION 1.2-beta1:
   FIX: Audiocd protocol in filebrowser had empty folders.
   ADD: Cache system for current-track animation in playlist. Reduces
        CPU load when the playlist is visible.
-  ADD: 10-band IIR equalizer for GStreamer-engine.
+  ADD: 10-band IIR equalizer for GStreamer and xine engines.
   FIX: The background gradient effect in Context-Browser is now much
        faster. The gradient also looks nicer. (BR 91276)
   FIX: Password-protected streams did not work correctly. (BR 91184).
