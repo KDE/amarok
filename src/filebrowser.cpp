@@ -21,6 +21,8 @@
    Boston, MA 02111-1307, USA.
 */
 #include "amarokconfig.h"
+#include "enginebase.h"
+#include "enginecontroller.h"
 #include "filebrowser.h"
 #include "kbookmarkhandler.h"
 #include "playlist.h"
@@ -45,6 +47,30 @@
 
 
 namespace amaroK { extern KConfig *config( const QString& ); }
+
+
+class MyDirLister : public KDirLister
+{
+    public:
+        MyDirLister( bool delayedMimeTypes ) : KDirLister( delayedMimeTypes ) { }
+    protected:
+        bool MyDirLister::matchesMimeFilter( const KFileItem *item ) const {
+            EngineBase* const engine = EngineController::engine();
+            if( item->isDir() ) return true;
+            return engine->canDecode( item->url().path() );
+        }
+
+};
+
+
+class MyDirOperator : public KDirOperator
+{
+    public:
+        MyDirOperator( const KURL &url, QWidget *parent ) : KDirOperator( url, parent ) {
+            setDirLister( new MyDirLister( true ) );
+        }
+};
+
 
 
 QColor FileBrowser::altBgColor; //FIXME should be redundant eventually!
@@ -80,7 +106,7 @@ FileBrowser::FileBrowser( const char * name )
     m_cmbPath->lineEdit()->setText( currentLocation );
     setFocusProxy( m_cmbPath ); //so the dirOperator is focussed when we get focus events
 
-    m_dir = new KDirOperator( KURL( currentLocation ), this );
+    m_dir = new MyDirOperator( KURL( currentLocation ), this );
     connect( m_dir, SIGNAL(urlEntered( const KURL& )), SLOT(dirUrlEntered( const KURL& )) );
 
     //insert our own actions at front of context menu
