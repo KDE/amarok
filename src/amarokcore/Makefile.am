@@ -1,7 +1,7 @@
 INCLUDES = \
-    -I$(top_srcdir)/amarok/amarok \
-    -I$(top_srcdir)/amarok/amarok/engine \
-    -I$(top_srcdir)/amarok/amarok/plugin \
+    -I$(top_srcdir)/amarok/src \
+    -I$(top_srcdir)/amarok/src/engine \
+    -I$(top_srcdir)/amarok/src/plugin \
     $(all_includes)
 
 noinst_LTLIBRARIES = \
