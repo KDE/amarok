@@ -14,7 +14,7 @@
 #include <taglib/tstring.h>
 #include <taglib/audioproperties.h>
 
-#include <id3v1genres.h>    //used to load genre list
+#include <taglib/id3v1genres.h>    //used to load genre list
 
 /*
  * This class is not very complete, it fits our needs as they stand currently
@@ -248,12 +248,12 @@ QStringList
 MetaBundle::genreList()    //static
 {
     QStringList list;
-    
+
     TagLib::StringList genres = TagLib::ID3v1::genreList();
     for( TagLib::StringList::ConstIterator it = genres.begin(); it != genres.end(); ++it)
         list.append( TStringToQString((*it)) );
-    
+
     list.sort();
-    
+
     return list;
 }

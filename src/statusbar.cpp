@@ -130,20 +130,21 @@ void StatusBar::engineStateChanged( Engine::State state )
     switch( state )
     {
         case Engine::Empty:
-            m_pTimeLabel->clear();
             m_pTitle->clear();
             m_pSlider->setEnabled( false );
+            m_pSlider->setMaxValue( 0 );
+            m_pTimeLabel->clear(); //must be done after the setValue() above, due to a signal connection
             break;
 
         case Engine::Paused:
-            //message( i18n( "amaroK is paused" ) ); // display TEMPORARY message
+            message( i18n( "amaroK is paused" ) ); // display TEMPORARY message
             m_pPauseTimer->start( 300 );
             break;
 
         case Engine::Playing:
             m_pSlider->setEnabled( true );
             m_pPauseTimer->stop();
-            //clear(); // clear TEMPORARY message
+            clear(); // clear TEMPORARY pause message
             break;
 
         case Engine::Idle:
@@ -155,7 +156,7 @@ void StatusBar::engineStateChanged( Engine::State state )
 void StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     m_pTitle->setText( QString( "%1  (%2)" ).arg( bundle.prettyTitle(), bundle.prettyLength() ) );
-    m_pSlider->setMaxValue( bundle.length() );
+    m_pSlider->setMaxValue( bundle.length() * 1000 );
 }
 
 void StatusBar::slotItemCountChanged(int newCount)
@@ -165,12 +166,12 @@ void StatusBar::slotItemCountChanged(int newCount)
 
 void StatusBar::engineTrackPositionChanged( long position )
 {
-    position /= 1000; //we deal in seconds
     m_pSlider->setValue( position );
 }
 
-void StatusBar::drawTimeDisplay( int seconds ) //SLOT
+void StatusBar::drawTimeDisplay( int ms ) //SLOT
 {
+    int seconds = ms / 1000;
     const uint trackLength = EngineController::instance()->bundle().length();
     if( AmarokConfig::timeDisplayRemaining() && trackLength > 0 ) seconds = trackLength - seconds;
 

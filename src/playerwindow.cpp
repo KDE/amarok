@@ -337,7 +337,7 @@ void PlayerWidget::engineVolumeChanged( int percent )
 
 void PlayerWidget::engineNewMetaData( const MetaBundle &bundle, bool )
 {
-    m_pSlider->setMaxValue( bundle.length() );
+    m_pSlider->setMaxValue( bundle.length() * 1000 );
 
     m_rateString     = bundle.prettyBitrate();
     const QString Hz = bundle.prettySampleRate();
@@ -358,14 +358,16 @@ void PlayerWidget::engineNewMetaData( const MetaBundle &bundle, bool )
     update(); //we need to update rateString
 }
 
+
 void PlayerWidget::engineTrackPositionChanged( long position )
 {
-    m_pSlider->setValue( position / 1000 );
+    m_pSlider->setValue( position );
 }
 
 
-void PlayerWidget::timeDisplay( int seconds )
+void PlayerWidget::timeDisplay( int ms )
 {
+    int seconds = ms / 1000;
     const int songLength = EngineController::instance()->bundle().length();
     const bool showRemaining = AmarokConfig::timeDisplayRemaining() && songLength > 0;
 

@@ -54,8 +54,7 @@ amaroK::TrayIcon::event( QEvent *e )
     case QEvent::Drop:
     case QEvent::Wheel:
     case QEvent::DragEnter:
-        amaroK::genericEventHandler( this, e );
-        return true;
+        return amaroK::genericEventHandler( this, e );
 
     case QEvent::MouseButtonPress:
         if( static_cast<QMouseEvent*>(e)->button() == Qt::MidButton )
