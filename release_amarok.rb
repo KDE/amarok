@@ -29,7 +29,11 @@ def log( text )
 end
 
 def cvs( command )
-    `cvs -z3 -d #{$cvsroot} #{command} > /dev/null 2>&1`
+    `cvs -z3 -d #{$cvsroot} #{command}`
+end
+
+def cvsQuiet( command )
+    `cvs -z3 -q -d #{$cvsroot} #{command} > /dev/null 2>&1`
 end
 
 
@@ -51,17 +55,15 @@ cvs( "co kdeextragear-1/doc/amarok" )
 Dir.chdir( "kdeextragear-1" )
 cvs( "co admin" )
 
-print "\n"
-print "**** i18n ****"
-print "\n"
+puts "\n"
+puts "**** i18n ****"
+puts "\n"
 
 
 # we check out kde-i18n/subdirs in kde-i18n..
 if doi18n == "yes"
-    log( "cvs co kde-i18n/subdirs" )
     cvs( "co -P kde-i18n/subdirs" )
     i18nlangs = `cat kde-i18n/subdirs`
-    log( "Available languages:\n #{i18nlangs}" )
 
     # docs
     for lang in i18nlangs
@@ -70,55 +72,57 @@ if doi18n == "yes"
             `rm -Rf doc/#{lang}`
         end
         docdirname = "kde-i18n/#{lang}/docs/kdeextragear-1/amarok"
-        cvs( "co -P #{docdirname}" )
+        cvsQuiet( "co -P #{docdirname}" )
         if not FileTest.exists? ( docdirname ) then next end
-        print "Copying #{lang}'s #{name} documentation over...\n"
+        print "Copying #{lang}'s #{name} documentation over..  "
         `cp -R #{docdirname} doc/#{lang}`
-        log( "#{lang} documentation included." )
+        puts( "done.\n" )
     end
 
+    puts "\n"
 
-    print "\n"
-    exit
-
-
+    $subdirs = false
     Dir.mkdir( "po" )
+
     for lang in i18nlangs
         lang = lang.chomp
         pofilename = "kde-i18n/#{lang}/messages/kdeextragear-1/amarok.po"
-        cvs( "co -P #{pofilename}" )
+        cvsQuiet( "co -P #{pofilename}" )
         if not FileTest.exists? pofilename then next end
 
-        dest = po/#{lang}
-        `mkdir #{dest}`
-        print "Copying #{lang}'s #{name}.po over... "
-        `echo "#{lang}'s #{name}.po file included." >> #{$log}`
+        dest = "po/#{lang}"
+        Dir.mkdir( dest )
+        print "Copying #{lang}'s #{name}.po over..  "
         `cp #{pofilename} #{dest}`
-        print "done."
+        puts( "done.\n" )
 
-        echo "KDE_LANG = $lang
-SUBDIRS = \$(AUTODIRS)
-POFILES = AUTO" > $dest/Makefile.am
+#         echo "KDE_LANG = $lang
+# SUBDIRS = \$(AUTODIRS)
+# POFILES = AUTO" > $dest/Makefile.am
 
-        subdirs="non_empty"
+        $subdirs = true
     end
 
-    if FileTest.exists? subdirs
-        `rm -Rf po`
-    else
+    if $subdirs
         `echo "SUBDIRS = \$(AUTODIRS)" > po/Makefile.am`
+    else
+        `rm -Rf po`
     end
 
     `rm -rf kde-i18n`
 end
 
-print
+puts
+
+# TESTING
+exit
+
 
 # Remove CVS relevant files
 `find -name "CVS" -exec rm -rf {} \; 2> /dev/null`
 `find -name ".cvsignore" -exec rm {} \;`
 
-`pushd amarok`
+Dir.chdir( "amarok" )
 
 # Move some important files to the root folder
 `mv amarok.lsm ..`
@@ -129,14 +133,14 @@ print
 `mv README ..`
 `mv TODO ..`
 
-`pushd src`
+Dir.chdir( "src" )
 `cat amarok.h | sed -e "s/APP_VERSION \".*\"/APP_VERSION \"#{version}"\"/ | tee amarok.h > /dev/null`
-`popd`
+Dir.chdir( ".." ) # amarok
 
 `rm -rf debian`
 
-`popd` # kdeextragear-1
-`print`
+Dir.chdir( ".." ) # kdeextragear-1
+puts( "\n" )
 
 `find -name "*" -exec touch {} \;`
 
@@ -157,17 +161,16 @@ print
 ENV["UNSERMAKE"] = oldmake
 
 
-print "\n"
-print "====================================================="
-print "Congratulations :) amaroK #{version} tarball generated."
-print "Now follow the steps in the RELEASE_HOWTO, from"
-print "SECTION 3 onwards."
-print "\n"
-print "Then drink a few pints and have some fun on #amarok"
-print "\n"
-print "MD5 checksum: " + `md5sum #{folder}.tar.bz2`
-print "\n"
-print "\n"
-
+puts "\n"
+puts "====================================================="
+puts "Congratulations :) amaroK #{version} tarball generated.\n"
+puts "Now follow the steps in the RELEASE_HOWTO, from\n"
+puts "SECTION 3 onwards.\n"
+puts "\n"
+puts "Then drink a few pints and have some fun on #amarok\n"
+puts "\n"
+puts "MD5 checksum: " + `md5sum #{folder}.tar.bz2`
+puts "\n"
+puts "\n"
 
 
