@@ -157,7 +157,7 @@ QStringList ArtsEngine::availableEffects() const
     query.supports( "Interface", "Arts::SynthModule" );
     std::vector<Arts::TraderOffer> *offers = query.query();
 
-    for ( std::vector<Arts::TraderOffer>::iterator i = offers->begin(); i != offers->end(); i++ )
+    for ( std::vector<Arts::TraderOffer>::iterator i = offers->begin(); i != offers->end(); ++i )
     {
         Arts::TraderOffer &offer = *i;
         QCString name = offer.interfaceName().c_str();

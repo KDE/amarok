@@ -214,7 +214,7 @@ PluginManager::lookupPlugin( const Plugin* plugin )
     vector<StoreItem>::iterator iter;
 
     //search plugin pointer in store
-    for ( iter = m_store.begin(); iter != m_store.end(); iter++ ) {
+    for ( iter = m_store.begin(); iter != m_store.end(); ++iter ) {
         if ( (*iter).plugin == plugin )
             break;
     }

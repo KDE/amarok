@@ -721,7 +721,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                             "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
             for ( uint i = 0; i < values.count(); i += 3 ) {
-                QString tmp = values[i + 2].stripWhiteSpace() == "" ? "" : values[i + 2] + ". ";
+                QString tmp = values[i + 2].stripWhiteSpace().isEmpty() ? "" : values[i + 2] + ". ";
                 browser->write( QString ( "<tr><td class='song'><a href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">" + tmp + values[i] + "</a></td></tr>" ) );
             }
 

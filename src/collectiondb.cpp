@@ -660,7 +660,7 @@ CollectionDB::isSamplerAlbum( const QString album )
     QStringList values_artist;
     QStringList values_dir;
 
-    if ( album == "Unknown" || album == "" )
+    if ( album == "Unknown" || album.isEmpty() )
         return false;
 
     const uint album_id = albumID( album, FALSE, FALSE );
