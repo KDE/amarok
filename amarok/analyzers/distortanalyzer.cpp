@@ -69,6 +69,8 @@ void DistortAnalyzer::init()
         m_srcPixmaps[i] = new QPixmap( srcPixmap );
         m_srcPixmaps[i]->fill( QColor( i*8, i*2, 0xc0 - i*3 ) );
     }
+
+    m_backupVector.push_back( 10 );
 }
 
 
@@ -81,6 +83,7 @@ void DistortAnalyzer::drawAnalyzer( std::vector<float> *s )
 
     if ( s ) // don't bother if vector is empty
     {
+        m_backupVector = *s;
         std::vector<float>::const_iterator it, it1;
         std::vector<float> sNew( width() );
         interpolate( s, sNew );
@@ -131,7 +134,7 @@ void DistortAnalyzer::drawAnalyzer( std::vector<float> *s )
 
 void DistortAnalyzer::paintEvent( QPaintEvent * )
 {
-//   bitBlt( this, 0, 0, m_pSrcPixmap );
+    drawAnalyzer( &m_backupVector );
 }
 
 

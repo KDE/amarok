@@ -42,6 +42,7 @@ class DistortAnalyzer : public AnalyzerBase
         QPixmap *m_pComposePixmap1;
         std::vector<float> m_sinVector;
         std::vector<QPixmap*> m_srcPixmaps;
+        std::vector<float> m_backupVector;
 };
 
 #endif
