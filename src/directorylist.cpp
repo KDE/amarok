@@ -38,17 +38,17 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     m_view = new QListView( this );
 
-    m_view->addColumn( QString::null );
-    m_view->setRootIsDecorated( true );
-    reinterpret_cast<QWidget*>(m_view->header())->hide();
-    m_view->setResizeMode( QListView::LastColumn );
-    new Item( m_view );
-
     s_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
     s_monitor   = new QCheckBox( i18n("&Monitor changes"), this );
 
     s_recursive->setChecked( true );
     s_monitor->setChecked( true );
+
+    m_view->addColumn( QString::null );
+    m_view->setRootIsDecorated( true );
+    reinterpret_cast<QWidget*>(m_view->header())->hide();
+    m_view->setResizeMode( QListView::LastColumn );
+    new Item( m_view );
 
     setSpacing( 6 );
 }
