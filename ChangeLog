@@ -3,6 +3,8 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  CHG: Random Mode now respects the playlist filter and only picks items, which are
+       currently visible in the playlist. Also removed a crash situation.
   CHG: Removed the search-token index. Searching now iterates through the playlist,
        offering direct and specific access to the metadata.
   FIX: Bug where fill-down would cause lots of extra tags to be written when a search is
@@ -14,7 +16,7 @@ amaroK ChangeLog
   FIX: BrowserWin's QLabels are painted white in amaroK's own color scheme.
 
 VERSION 1.0-beta1:
-  ADD: Search Browser - search stuff on your hdd / in your collection
+  ADD: Search Browser - search stuff on your hdd
   ADD: song count on playlist statusbar
   ADD: support for XMMS visualization plugins
   ADD: Collection Browser - a database powered music collection manager

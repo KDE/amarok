@@ -24,7 +24,6 @@
 #include <qstringlist.h> //stack allocated
 #include <qptrlist.h>    //stack allocated
 #include <qmap.h>        //stack allocated
-#include <qvaluestack.h> //stack allocated
 #include <klistview.h>   //baseclass
 #include <kurl.h>        //KURL::List
 #include <qdir.h>        //stack allocated
@@ -175,7 +174,7 @@ class PlaylistWidget : private KListView, public EngineObserver
 
         //NOTE these container types were carefully chosen
         QString                    m_lastSearch; //contains the last search token
-        QValueStack<PlaylistItem*> m_prevTracks; //the previous history
+        QPtrList<PlaylistItem>     m_prevTracks; //the previous history
         QPtrList<PlaylistItem>     m_nextTracks; //the tracks to be played after the current track
 
         ThreadWeaver* const m_weaver;

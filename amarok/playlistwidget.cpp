@@ -244,7 +244,18 @@ void PlaylistWidget::handleOrder( RequestType request ) //SLOT
 
             if( !item && AmarokConfig::repeatPlaylist() ) item = lastItem();
         }
-        else item = m_prevTracks.pop();
+        else 
+        {
+            // if enough songs in buffer, jump to the previous one,
+            // otherwise restart the current song
+            if ( m_prevTracks.count() > 1 )
+            {
+                item = m_prevTracks.at( 1 );
+                m_prevTracks.remove( m_prevTracks.at( 0 ) );
+            }
+            else
+                item = m_prevTracks.at( 0 );
+        }
 
         activate( item, false ); //don't append this to the prevTrack stack, that _would_ be daft!
         return;
@@ -268,14 +279,45 @@ void PlaylistWidget::handleOrder( RequestType request ) //SLOT
             }
             else if( AmarokConfig::randomMode() )
             {
-                //TODO this isn't terribly efficient AT ALL!
-
-                const uint count = childCount();
-                item = (PlaylistItem *)itemAtIndex( KApplication::random() % count );
-
-                while( m_prevTracks.contains( item ) )
+                // FIXME: anyone knows a more decent way to count visible items?
+                uint visCount = 0;
+                for ( QListViewItemIterator it( this, QListViewItemIterator::Visible ); it.current(); ++it )
+                    ++visCount;
+                
+                uint x = 0;
+                uint rnd = KApplication::random() % visCount;
+                kdDebug() << rnd << endl;
+                for ( QListViewItemIterator it( this, QListViewItemIterator::Visible ); it.current() && x <= rnd; ++it )
                 {
-                     item = (PlaylistItem *)itemAtIndex( KApplication::random() % count );
+                    if ( rnd == x )
+                    {
+                        item = (PlaylistItem*)it.current();
+
+                        // check if this file was played lately
+                        PlaylistItem *tItem = item;
+                        while ( m_prevTracks.contains( item ) )
+                        {
+                            // song was already played, let's cycle through the list to find an unplayed one
+                            item = (PlaylistItem*)item->itemBelow();
+                            
+                            if ( !item )  // end of list, jump to the beginning
+                                item = firstChild();
+
+                            // did we cycle around completely? if so, every song was already played once.
+                            // fallback to random output, then
+                            if ( item == tItem )
+                            {
+                                // be sure that no song gets played twice in a row
+                                if ( item == currentTrack() )
+                                    item = (PlaylistItem*)item->itemBelow();
+                                if ( !item )
+                                  item = firstChild();
+
+                                break;
+                            }
+                        }
+                    }
+                    x++;
                 }
             }
             else if( item )
@@ -581,16 +623,19 @@ void PlaylistWidget::activate( QListViewItem *lvi, bool rememberTrack ) //SLOT
     //ATTENTION!
     //_All_ requests for playing items should come through here, thanks!
 
+    PlaylistItem* const item = (PlaylistItem*)lvi;
 
-    if( rememberTrack && currentTrack() )
+    if( rememberTrack && item )
     {
-        m_prevTracks.push( currentTrack() ); //is push_back, see QValueStack docs
+        m_prevTracks.insert( 0, item ); //is push_back, see QPtrStack docs
+
         //keep prevList within reasonable limits, remove most distant members
-        while( m_prevTracks.count() > 40 ) m_prevTracks.pop_front();
+        while( m_prevTracks.count() > 40 )
+            m_prevTracks.remove( m_prevTracks.at( m_prevTracks.count() - 1 ) );
     }
 
 
-    if( PlaylistItem* const item = (PlaylistItem*)lvi )
+    if( item )
     {
         //if we are playing something from the next tracks list, remove it from the list
         //do it here rather than in setCurrentTrack(), because if playback fails we don't
