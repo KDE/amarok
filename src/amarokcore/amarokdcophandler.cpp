@@ -370,6 +370,16 @@ namespace amaroK
         return ScriptManager::instance()->runScript(name);
     }
 
+    bool DcopPlayerHandler::stopScript(const QString& name)
+    {
+        return ScriptManager::instance()->stopScript(name);
+    }
+
+    QStringList DcopPlayerHandler::listRunningScripts()
+    {
+        return ScriptManager::instance()->listRunningScripts();
+    }
+
 
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopPlaylistHandler

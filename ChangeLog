@@ -5,6 +5,10 @@ amaroK ChangeLog
 
 VERSION 1.3-beta1:
   FEATURES:
+    * New DCOP call "player: listRunningScripts()". Returns a list of all
+      currently running scripts. (BR 102649)
+    * New DCOP call "player: stopScript(const QString& name)". Stops a script
+      with the given name. (BR 102649)
     * New DCOP call "player: runScript(const QString& name)". Runs a script
       with the given name. (BR 102649)
     * New form of playlist manipulation - PartyMode.

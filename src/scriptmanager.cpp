@@ -126,6 +126,33 @@ ScriptManager::runScript( const QString& name )
 }
 
 
+bool
+ScriptManager::stopScript( const QString& name )
+{
+    if ( !m_scripts.contains( name ) )
+        return false;
+
+    m_base->listView->setCurrentItem( m_scripts[name].li );
+    slotStopScript();
+
+    return true;
+}
+
+
+QStringList
+ScriptManager::listRunningScripts()
+{
+    QStringList runningScripts;
+    ScriptMap::ConstIterator it;
+
+    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
+        if ( it.data().process )
+            runningScripts << it.key();
+
+    return runningScripts;
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // private slots
 ////////////////////////////////////////////////////////////////////////////////
