@@ -320,63 +320,71 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     //TODO add spacing on either side of items
     //p->translate( 2, 0 ); width -= 3;
 
-    //TODO this function is called extremely regularly as QListView sucks a little, optimise it immensely!!!!
-
     const int playNext = listView()->m_nextTracks.findRef( this ) + 1;
+
+    static cacheItem cacheTable[12];
 
     if( this == listView()->currentTrack() )
     {
-        //flicker-free drawing
+        const QString colString =
+            QString::number( glowBase.red() ) +
+            QString::number( glowBase.green() ) +
+            QString::number( glowBase.blue() );
 
-        QPixmap buffer( width, height() );
+        const bool cacheDirty =
+            width == cacheTable[column].width &&
+            height() == cacheTable[column].height &&
+            text( column ) == cacheTable[column].text;
 
-        if( buffer.isNull() )
+        if ( !cacheDirty && cacheTable[column].map.find( colString ) != cacheTable[column].map.end() )
+            p->drawPixmap( 0, 0, cacheTable[column].map[colString] );
+
+        else
         {
-            KListViewItem::paintCell( p, cg, column, width, align );
-            return;
+            //flicker-free drawing
+            QPixmap buffer( width, height() );
+
+            if( buffer.isNull() ) {
+                KListViewItem::paintCell( p, cg, column, width, align );
+                return;
+            }
+
+            QPainter paint( &buffer, true );
+            paint.setFont( p->font() );
+
+            // Here we draw the shaded background
+            int h, s, v;
+            glowBase.getHsv( &h, &s, &v );
+            QColor col;
+
+            for ( int i = 0; i < height(); i++ ) {
+                col.setHsv( h, s, static_cast<int>( sin( (float)i / ( (float)height() / 4 ) ) * 32.0 + 196 ) );
+                paint.setPen( col );
+                paint.drawLine( 0, i, width, i );
+            }
+
+            // Draw the pixmap, if present
+            int leftMargin = 1;
+            if ( pixmap( column ) ) {
+                paint.drawPixmap( 0, height() / 2 - pixmap( column )->height() / 2, *pixmap( column ) );
+                leftMargin = pixmap( column )->width();
+            }
+
+            // Draw the text
+            int textHeight = p->fontMetrics().boundingRect( text( 0 ) ).height();
+            paint.setPen( glowText );
+            const QString _text = KStringHandler::rPixelSqueeze( text( column ), p->fontMetrics(), width - 5 );
+            paint.drawText( leftMargin, height() / 2 - textHeight / 2 - 1, width, height(), align, _text );
+
+            paint.end();
+            p->drawPixmap( 0, 0, buffer );
+
+            if ( cacheDirty ) cacheTable[column].map.clear();
+            cacheTable[column].width = width;
+            cacheTable[column].height = height();
+            cacheTable[column].text = text( column );
+            cacheTable[column].map[colString] = buffer;
         }
-
-        QPainter paint( &buffer, true );
-        paint.setFont( p->font() );
-
-/*        QColorGroup glowCg = cg; //shallow copy
-
-        glowCg.setColor( QColorGroup::Base, glowBase );
-        glowCg.setColor( QColorGroup::Text, glowText );
-
-        //KListViewItem enforces alternate color, so we use QListViewItem
-        QListViewItem::paintCell( &paint, glowCg, column, width, align );*/
-
-        // Here we draw the shaded background
-
-        int h, s, v;
-        glowBase.getHsv( &h, &s, &v );
-        QColor col;
-
-        for ( int i = 0; i < height(); i++ )
-        {
-            col.setHsv( h, s, static_cast<int>( sin( (float)i / ( (float)height() / 4 ) ) * 32.0 + 196 ) );
-            paint.setPen( col );
-            paint.drawLine( 0, i, width, i );
-        }
-
-        // Draw the pixmap, if present
-
-        int leftMargin = 1;
-        if ( pixmap( column ) ) {
-            paint.drawPixmap( 0, height() / 2 - pixmap( column )->height() / 2, *pixmap( column ) );
-            leftMargin = pixmap( column )->width();
-        }
-
-        // Draw the text
-
-        int textHeight = p->fontMetrics().boundingRect( text( 0 ) ).height();
-        paint.setPen( glowText );
-        const QString _text = KStringHandler::rPixelSqueeze( text( column ), p->fontMetrics(), width - 5 );
-        paint.drawText( leftMargin, height() / 2 - textHeight / 2 - 1, width, height(), align, _text );
-
-        paint.end();
-        p->drawPixmap( 0, 0, buffer );
     }
     else KListViewItem::paintCell( p, cg, column, width, align );
 

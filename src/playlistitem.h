@@ -10,7 +10,10 @@
 
 #include <klistview.h> //baseclass
 #include <kurl.h>      //stack allocated
+
 #include <qcolor.h>    //stack allocated
+#include <qmap.h>
+#include <qpixmap.h>
 
 class QColorGroup;
 class QDomNode;
@@ -68,6 +71,13 @@ class PlaylistItem : public KListViewItem
         bool operator< ( const PlaylistItem & item ) const;
 
     private:
+        struct cacheItem {
+            int width;
+            int height;
+            QString text;
+            QMap<QString, QPixmap> map;
+        };
+
         QString text( int column ) const;
         int     compare( QListViewItem*, int, bool ) const;
         void    paintCell( QPainter*, const QColorGroup&, int, int, int );
