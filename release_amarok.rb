@@ -124,8 +124,8 @@ end
 puts "\n"
 
 # Remove CVS relevant files
-`find -name "CVS" -exec rm -rf {} \; 2> /dev/null`
-`find -name ".cvsignore" -exec rm {} \;`
+`find -name "CVS" | xargs rm -rf`
+`find -name ".cvsignore" | xargs rm`
 
 Dir.chdir( "amarok" )
 
