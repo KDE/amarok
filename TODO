@@ -68,16 +68,12 @@ MID-TERM:
            the directory. imagine you're in the root directory of some filesystem, and want to add all
            files in it.. currently you'd have to select all files manually
 
-    * fix: filebrowser does not display hidden directories; so they cannot be accessed, either
-
     * fix: <mxcl>KListView sets the hand cursor on column(0) of the playlist. This is not
            relevant to amaroK since we are naughty and don't obey KDE's single click mode
            we should disable the hand cursor since that means "single-click to activate me"
            maybe override KListView::mouseMoveEvent, or is there a better way?
 
     * fix: pause vis/anim timers when hide/show main widget as a courtesy to our users -->mxcl
-
-    * fix: honor KDE single/double-click setting in BrowserWin
 
     * add: extend keyboard shortcuts [<mxcl> show playlist, also I'd say do this with actions as it's easiest]
 
@@ -141,8 +137,6 @@ MID-TERM:
 
 LONG-TERM:
 
-    * add: #25 support for tag editing
-
     * add: make windows magnetic / sticking together (difficult)
 
     * add: playlist export (generate text or html document from playlist entries)
@@ -176,11 +170,7 @@ IDEAS:
          is it possible to catch crash signals and do some cleanup?
          <mxcl> I just read that KApplication tries to prevent zombies, so something is amiss
     
-    * #26<markey> in BarAnalyzer, add a bit motion blur to the red peak ("roof") markers
-
     * bookmarks inside of tracks (good for very long tracks), and nifty bookmark browser
-
-    * think about moving amarok to kdeextragear
 
     * using filelight (as a kpart maybe) for a graphical representation of the playlist. so you could
       see at first glance how the altogether playing time is divided into different albums, tunes and
