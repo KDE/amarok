@@ -8,19 +8,6 @@
 
 #include "turbine.h"
 
-void TurbineAnalyzer::transform( Scope &scope ) //virtual
-{
-    float *front = (float*)&scope.front();
-
-    float* f = new float[ m_fht.size() ];
-    m_fht.copy( &f[0], front );
-    m_fht.logSpectrum( front, &f[0] );
-    m_fht.scale( front, 1.0 / 20 );
-
-    //scope.resize( m_fht.size()/2 ); //second half of values are rubbish
-    delete [] f;
-}
-
 void TurbineAnalyzer::analyze( const Scope &s )
 {
     eraseCanvas();

@@ -55,7 +55,7 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
     m_columns = limit( uint(double(width()+1) / (WIDTH+1)), MAX_COLUMNS, MIN_COLUMNS );
     m_scope.resize( m_columns );
 
-    if( (uint)e->oldSize().height() != height() ) //this block speeds up window resizes vastly
+    if( e->oldSize().height() != height() ) //this block speeds up window resizes vastly
     {
         //NOTE height should only be set once! but it tends to get set many times when Qt is setting up
         //     the layout of the toolBar, what a waste of cycles!

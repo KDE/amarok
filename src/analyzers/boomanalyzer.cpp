@@ -82,7 +82,7 @@ BoomAnalyzer::transform( Scope &s )
     float *front = static_cast<float*>( &s.front() );
 
     m_fht.spectrum( front );
-    m_fht.scale( front, 1.0 / 120 );
+    m_fht.scale( front, 1.0 / 60 );
 
     Scope scope( 32, 0 );
 
@@ -99,10 +99,10 @@ BoomAnalyzer::transform( Scope &s )
 void
 BoomAnalyzer::analyze( const Scope &scope )
 {
+    eraseCanvas();
+
     QPainter p( canvas() );
     float h;
-
-    eraseCanvas();
 
     for( uint i = 0, x = 0, y; i < BAND_COUNT; ++i, x += COLUMN_WIDTH+1 )
     {
