@@ -462,7 +462,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         browser->write( QStringx(
                "<tr>"
                 "<td height='42' valign='top' class='rbcurrent' width='90%'>"
-                 "<span class='stream'><b>%1</b><br/><br/>%2<br/>%3<br/>%4<br/>%5<br/>%6</span>"
+                 "<span class='stream'><b>%1</b><br/><br/><i>%2</i><br/>%3<br/>%4<br/>%5<br/>%6</span>"
                 "</td>"
                 "<td valign='top' align='right' width='10%'></td>"
                "</tr>" )
