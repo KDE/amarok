@@ -113,11 +113,10 @@ void ContextBrowser::openURLRequest( const KURL &url )
     if ( url.protocol() == "album" )
     {
         QStringList values;
-        QStringList names;
 
         m_db->execSql( QString( "SELECT DISTINCT url FROM tags WHERE artist = %1 AND album = %2 ORDER BY track;" )
                        .arg( info[0] )
-                       .arg( info[1] ), &values, &names );
+                       .arg( info[1] ), &values );
 
         for ( uint i = 0; i < values.count(); i++ )
         {
@@ -745,7 +744,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         {
             browser->write( QStringx ( "<tr>"
                                         "<td class='rbalbum' onClick='window.location.href=\"album:%1 @@@ %2\"' height='42' valign='top'>"
-                                         "<a href='fetchcover:%3 @@@ %4'><img align='left' hspace='2' src='%5'></a>"
+                                         "<a href='javascript:window.location.href=\"fetchcover:%1 @@@ %2\"'><img align='left' hspace='2' src='%5'></a>"
                                          /* *** UGLY HACK ALERT ***
                                             Without the 2 <br> after %9, hover borks on mouseover.
                                             TODO: find out why + make it nice ;) */
