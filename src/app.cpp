@@ -42,6 +42,7 @@ email                : markey@web.de
 
 #include <iostream>
 
+#include <kconfigdialogmanager.h>
 #include <kcmdlineargs.h>        //initCliArgs()
 #include <kcursor.h>             //amaroK::OverrideCursor
 #include <kedittoolbar.h>        //slotConfigToolbars()
@@ -813,8 +814,11 @@ void App::firstRunWizard()
 
     FirstRunWizard wizard;
     setTopWidget( &wizard );
+    KConfigDialogManager* config = new KConfigDialogManager(&wizard, AmarokConfig::self(), "wizardconfig");
+    config->updateWidgets();
+   // connect(config, SIGNAL(settingsChanged()), SLOT(updateSettings()));
     wizard.setCaption( makeStdCaption( i18n( "First-Run Wizard" ) ) );
-
+    
     if( wizard.exec() != QDialog::Rejected )
     {
         switch( wizard.interface() )
@@ -836,11 +840,13 @@ void App::firstRunWizard()
 
         const QStringList oldCollectionFolders = AmarokConfig::collectionFolders();
         wizard.writeCollectionConfig();
-
+        
         // If wizard is invoked at runtime, rescan collection if folder setup has changed
         if ( !amaroK::config()->readBoolEntry( "First Run", true ) &&
              oldCollectionFolders != AmarokConfig::collectionFolders() )
             CollectionDB::instance()->startScan();
+    
+        config->updateSettings();
     }
 }
 

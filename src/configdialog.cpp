@@ -16,6 +16,7 @@ email                : markey@web.de
 #include "amarokconfig.h"
 #include "config.h" // Has USE_MYSQL
 #include "configdialog.h"
+#include "DbSetup.h"
 #include "debug.h"
 #include "directorylist.h"
 #include "enginecontroller.h"
@@ -100,9 +101,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
         m_opt1->kcfg_RecodeEncoding->insertItem( codec->name() );
 
     // Collection
-#ifdef USE_MYSQL
-    m_opt7->kcfg_DatabaseEngine->insertItem( "MySQL", 1 );
-#else
+#ifndef USE_MYSQL
     m_opt7->databaseBox->hide();
 
     //FIXME we do this because this widget breaks the Apply button (always enabled).
@@ -110,7 +109,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     //type="string" also fixes this bug, but means the password is stored in plain
     //text. This is a temporary fix so that the majority of users get a fixed Apply
     //button.
-    delete m_opt7->kcfg_MySqlPassword;
+    delete m_opt7->dbSetupFrame->kcfg_MySqlPassword;
 #endif
     m_opt7->collectionFoldersBox->setColumns( 1 );
     new CollectionSetup( m_opt7->collectionFoldersBox ); //TODO this widget doesn't update the apply/ok buttons
@@ -139,7 +138,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     connect( m_soundSystem, SIGNAL(activated( int )), SLOT(updateButtons()) );
     connect( aboutEngineButton, SIGNAL(clicked()), this, SLOT(aboutEngine()) );
     connect( opt5, SIGNAL(settingsChanged()), SLOT(updateButtons()) ); //see options5.ui.h
-    connect( m_opt7->kcfg_DatabaseEngine, SIGNAL(activated( int )), SLOT(databaseEngineChanged()) );
+    connect( m_opt7->dbSetupFrame->kcfg_DatabaseEngine, SIGNAL(activated( int )), SLOT(databaseEngineChanged()) );
 }
 
 AmarokConfigDialog::~AmarokConfigDialog()
@@ -216,7 +215,7 @@ void AmarokConfigDialog::updateWidgets()
     {
         dbConfigEnabled = true;
     }
-    m_opt7->mysqlConfig->setEnabled( dbConfigEnabled );
+    m_opt7->dbSetupFrame->mysqlConfig->setEnabled( dbConfigEnabled );
 }
 
 
@@ -274,7 +273,7 @@ void AmarokConfigDialog::aboutEngine() //SLOT
 
 void AmarokConfigDialog::databaseEngineChanged() // SLOT
 {
-    m_opt7->mysqlConfig->setEnabled( m_opt7->kcfg_DatabaseEngine->currentItem() != 0 );
+        m_opt7->dbSetupFrame->mysqlConfig->setEnabled( m_opt7->dbSetupFrame->kcfg_DatabaseEngine->currentItem() != 0 );
 }
 
 

@@ -9,7 +9,7 @@
 ** These will automatically be called by the form's constructor and
 ** destructor.
 *****************************************************************************/
-
+#include "config.h"
 #include "directorylist.h"
 #include <kapplication.h>
 #include <kconfig.h>
@@ -47,12 +47,17 @@ FirstRunWizard::init()
     picture1->setPixmap( getJPG( "amarok_rocks" ) );
     picture4->setPixmap( *picture1->pixmap() );
 
-    WizardPageLayout_3->addWidget( m_folderSetup = new CollectionSetup( WizardPage_3 ) );
+    WizardPageLayout_2->addWidget( m_folderSetup = new CollectionSetup( WizardPage_2 ) );
 
     text4->disconnect( SIGNAL(linkClicked( const QString& )) );
     connect( text4, SIGNAL(linkClicked( const QString& )), SLOT(invokeHandbook()) );
-
+    dbActiveLabel->disconnect( SIGNAL(linkClicked( const QString& )) );
+    connect( dbActiveLabel, SIGNAL(linkClicked( const QString& )), SLOT(openLink( const QString &)) );
     setFinishEnabled ( WizardPage_4, true );
+    #ifndef USE_MYSQL
+        removePage(WizardPage_3);
+    #endif
+
 }
 
 void
@@ -91,4 +96,11 @@ void
 FirstRunWizard::writeCollectionConfig()
 {
     m_folderSetup->writeConfig();
+}
+
+
+void 
+FirstRunWizard::openLink(const QString& s)
+{
+    kapp->invokeBrowser(s);
 }

@@ -1,0 +1,190 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>DbSetup</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>DbSetup</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>428</width>
+            <height>187</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Database Setup</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout2</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Engine:</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox">
+                    <item>
+                        <property name="text">
+                            <string>SQLite</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>kcfg_DatabaseEngine</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>mysqlConfig</cstring>
+            </property>
+            <property name="title">
+                <string>MySQL Configuration</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Hostname:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>textLabel5</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Name:</string>
+                    </property>
+                </widget>
+                <widget class="KIntSpinBox" row="0" column="3">
+                    <property name="name">
+                        <cstring>kcfg_MySqlPort</cstring>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>100</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                    <property name="maxValue">
+                        <number>65535</number>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="2">
+                    <property name="name">
+                        <cstring>textLabel2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Port:</string>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="0" column="1">
+                    <property name="name">
+                        <cstring>kcfg_MySqlHost</cstring>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="1" column="1">
+                    <property name="name">
+                        <cstring>kcfg_MySqlDbName</cstring>
+                    </property>
+                </widget>
+                <widget class="Line" row="2" column="0" rowspan="1" colspan="4">
+                    <property name="name">
+                        <cstring>line1</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>HLine</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget" row="3" column="0" rowspan="1" colspan="4">
+                    <property name="name">
+                        <cstring>layout4</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel3</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Username:</string>
+                            </property>
+                        </widget>
+                        <widget class="KLineEdit">
+                            <property name="name">
+                                <cstring>kcfg_MySqlUser</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel4</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Password:</string>
+                            </property>
+                        </widget>
+                        <widget class="KLineEdit">
+                            <property name="name">
+                                <cstring>kcfg_MySqlPassword</cstring>
+                            </property>
+                            <property name="echoMode">
+                                <enum>Password</enum>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </grid>
+        </widget>
+    </vbox>
+</widget>
+<customwidgets>
+</customwidgets>
+<includes>
+    <include location="local" impldecl="in implementation">DbSetup.ui.h</include>
+</includes>
+<functions>
+    <function access="private">init()</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>knuminput.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
+</includehints>
+</UI>

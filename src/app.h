@@ -86,8 +86,6 @@ class App : public KApplication, public EngineObserver
         amaroK::DcopPlayerHandler   *m_pDcopPlayerHandler;
         amaroK::DcopPlaylistHandler *m_pDcopPlaylistHandler;
 };
-
-
 #define pApp static_cast<App*>(kapp)
 
 

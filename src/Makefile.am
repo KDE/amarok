@@ -42,6 +42,8 @@ INCLUDES = \
     $(all_includes)
 
 amarokapp_SOURCES = \
+    DbSetup.ui  \
+    DbSetup.ui.h \
     Options1.ui \
     Options2.ui \
     Options4.ui \
