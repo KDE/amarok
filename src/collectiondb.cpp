@@ -150,8 +150,6 @@ CollectionDB::getImageForAlbum( const QString artist, const QString album, const
     QString key( QFile::encodeName( artist + " - " + album ) );
     key.replace( " ", "_" ).replace( "?", "" ).append( ".png" );
     
-    kdDebug() << "KEEEEEEEEEEEEEEY: " << key.lower() << endl;
-    
     if ( m_cacheDir.exists( widthKey + key.lower() ) )
         return m_cacheDir.filePath( widthKey + key.lower() );
     else
