@@ -8,6 +8,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+          <mxcl> you can't stream with gstreamer unless title-streaming is enabled
+
   ADD     <markey> We must add a FAQ about dmix software mixing and its setup. "amaroK blocks the sound
                    device" is one of the top user complaints. This FAQ should be put into a promiment
                    place, perhaps also in README.
