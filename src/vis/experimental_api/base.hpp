@@ -17,6 +17,9 @@ typedef std::vector<float> Scope;
 
 enum DataType { PCM = 0, FFT = 1 };
 
+/// THIS CLASS IS DEPRECATED!
+/// WE USE LIBVISUAL NOW!
+
 //TODO make it a template class that accepts a pointer type for the render function
 //     then subclasses have to provide this surface pointer to render to
 //FIRST check that ogl has similar system, and also think, is this a good idea?

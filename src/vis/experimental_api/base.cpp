@@ -14,6 +14,9 @@
 #include <sys/types.h>
 #include <pwd.h>
 
+/// THIS CLASS IS DEPRECATED!
+/// WE USE LIBVISUAL NOW!
+
 using namespace amaroK;
 using Vis::Scope;
 using std::string;
