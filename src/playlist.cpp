@@ -1281,7 +1281,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
 
     popup.setItemEnabled( EDIT, canRename ); //only enable for columns that have editable tags
-    popup.setItemEnabled( FILL_DOWN, canRename && itemCount );
+    popup.setItemEnabled( FILL_DOWN, canRename && itemCount > 1 );
 
 
     switch( popup.exec( p ) )
@@ -1341,8 +1341,8 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
                     continue;
 
                 //FIXME fix this hack!
-                if ( static_cast<PlaylistItem*>(*it)->exactText( col ) != i18n("Writing tag...") )
-                    m_weaver->append( new TagWriter( this, (PlaylistItem*)*it, newTag, col ), true );
+                if ( (*it)->exactText( col ) != i18n("Writing tag...") )
+                    m_weaver->append( new TagWriter( this, *it, newTag, col ), true );
             }
         }
         break;
