@@ -350,7 +350,8 @@ RepeatPlaylistAction::RepeatPlaylistAction( KActionCollection *ac ) :
 // DynamicAction
 //////////////////////////////////////////////////////////////////////////////////////////
 DynamicAction::DynamicAction( KActionCollection *ac ) :
-    ToggleAction( i18n( "&Dynamic Playlist" ), &AmarokConfig::setDynamicMode, ac, "dynamic_mode" )
+        // we call it append suggestions for the 1.2 series
+        ToggleAction( i18n( "&Append Suggestions" ), &AmarokConfig::setDynamicMode, ac, "dynamic_mode" )
 {
     KToggleAction::setChecked( AmarokConfig::dynamicMode() );
     setIcon( "dynamic" );
