@@ -286,6 +286,8 @@ GstEngine::state() const
         return Engine::Idle;
     if ( !m_currentInput )
         return Engine::Empty;
+    if ( !GST_IS_THREAD( m_currentInput->thread ) )
+        return Engine::Empty;
 
     switch ( gst_element_get_state( m_currentInput->thread ) )
     {
@@ -433,6 +435,11 @@ GstEngine::play( uint )  //SLOT
     kdDebug() << k_funcinfo << endl;
     if ( !m_currentInput ) return false;
 
+    if ( !GST_IS_THREAD( m_currentInput->thread ) ) {
+        destroyInput( m_currentInput );
+        return false;
+    }
+
     /* start playing */
     if ( !gst_element_set_state( m_currentInput->thread, GST_STATE_PLAYING ) ) {
         destroyInput( m_currentInput );
@@ -467,6 +474,7 @@ GstEngine::pause()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     if ( !m_currentInput ) return;
+    if ( !GST_IS_THREAD( m_currentInput->thread ) ) return;
 
     if ( state() == Engine::Paused )
         gst_element_set_state( m_currentInput->thread, GST_STATE_PLAYING );
@@ -484,8 +492,9 @@ GstEngine::seek( uint ms )  //SLOT
 
     if ( ms > 0 )
     {
-        GstEvent* event = gst_event_new_seek( ( GstSeekType ) ( GST_FORMAT_TIME | GST_SEEK_METHOD_SET | GST_SEEK_FLAG_FLUSH ),
-                                              ms * GST_MSECOND );
+        GstEvent* event = gst_event_new_seek( ( GstSeekType ) ( GST_FORMAT_TIME |
+                                                                GST_SEEK_METHOD_SET |
+                                                                GST_SEEK_FLAG_FLUSH ), ms * GST_MSECOND );
 
         gst_element_send_event( m_gst_audiosink, event );
     }
