@@ -286,7 +286,7 @@ GstEngine::play( const KURL& url )  //SLOT
     /* create a new pipeline (thread) to hold the elements */
     m_thread = gst_thread_new ( "thread" );
     g_object_set( G_OBJECT( m_thread ), "priority", m_threadPriority, NULL );
-    if ( !( m_audiosink = createElement( m_thread, m_soundOutput.latin1(), "play_audio" ) ) ) { emit endOfTrack(); return; }
+    if ( !( m_audiosink = createElement( m_thread, m_soundOutput.latin1(), "play_audio" ) ) ) { goto error; }
     
     /* setting device property for AudioSink*/
     if ( !m_defaultSoundDevice && !m_soundDevice.isEmpty() )
@@ -294,7 +294,7 @@ GstEngine::play( const KURL& url )  //SLOT
 
     /* create source */
     if ( url.isLocalFile() ) {
-        if ( !( m_filesrc = createElement( m_thread, "filesrc", "disk_source" ) ) ) { emit endOfTrack(); return; }
+        if ( !( m_filesrc = createElement( m_thread, "filesrc", "disk_source" ) ) ) { goto error; }
         //load track into filesrc
         g_object_set( G_OBJECT( m_filesrc ), "location",
                       static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
@@ -310,12 +310,12 @@ GstEngine::play( const KURL& url )  //SLOT
         g_object_set( G_OBJECT( m_spider ), "location", (const char*) ( QFile::encodeName( url.path() ) ), NULL );
     }
     else
-        if ( !( m_spider = createElement( m_thread, "spider", "spider" ) ) ) { emit endOfTrack(); return; }
+        if ( !( m_spider = createElement( m_thread, "spider", "spider" ) ) ) { goto error; }
 
-    if ( !( m_identity = createElement( m_thread, "identity", "rawscope" ) ) ) { emit endOfTrack(); return; }
-    if ( !( m_volumeElement = createElement( m_thread, "volume", "volume" ) ) ) { emit endOfTrack(); return; }
-    if ( !( m_audioconvert = createElement( m_thread, "audioconvert", "audioconvert" ) ) ) { emit endOfTrack(); return; }
-    if ( !( m_audioscale = createElement( m_thread, "audioscale", "audioscale" ) ) ) { emit endOfTrack(); return; }
+    if ( !( m_identity = createElement( m_thread, "identity", "rawscope" ) ) ) { goto error; }
+    if ( !( m_volumeElement = createElement( m_thread, "volume", "volume" ) ) ) { goto error; }
+    if ( !( m_audioconvert = createElement( m_thread, "audioconvert", "audioconvert" ) ) ) { goto error; }
+    if ( !( m_audioscale = createElement( m_thread, "audioscale", "audioscale" ) ) ) { goto error; }
 
     g_signal_connect( G_OBJECT( m_identity ), "handoff", G_CALLBACK( handoff_cb ), m_thread );
     g_signal_connect( G_OBJECT( m_audiosink ), "eos", G_CALLBACK( eos_cb ), m_thread );
@@ -335,6 +335,10 @@ GstEngine::play( const KURL& url )  //SLOT
         play();
         m_playWhenReady = false;
     }
+    return;
+
+error:
+    emit stopped();    
 }
 
 
