@@ -127,7 +127,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
         QStringList values;
         QStringList names;
 
-        m_db->execSql( QString( "SELECT DISTINCT url FROM tags WHERE artist = %1 AND album = %2 ORDER BY track DESC;" )
+        m_db->execSql( QString( "SELECT DISTINCT url FROM tags WHERE artist = %1 AND album = %2 ORDER BY track;" )
                        .arg( info[0] )
                        .arg( info[1] ), &values, &names );
 
