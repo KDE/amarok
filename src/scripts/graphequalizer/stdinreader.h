@@ -26,8 +26,10 @@ Q_OBJECT
     public slots:
     void dataRecieved()
     {
+        //seperate stdin pointer necesary for OS X for reasons unknown
+        FILE * stdin_ptr = stdin;
         QString signal;
-        QTextIStream(stdin) >> signal;
+        QTextIStream( stdin_ptr ) >> signal;
         if(signal == "configure")
             emit openWindow();
     }
