@@ -26,12 +26,13 @@ class MetaBundle
    public:
 
   //ordered same way as playlist columns
-   MetaBundle( const QString &t1, const QString &t2, const QString &t3, const QString &t4, const QString &t5,
-               const QString &t6, const QString &t7, const TagLib::AudioProperties *ap )
+   MetaBundle( const QString &t1, const QString &t2, const QString &t3, const QString &t4,
+               const QString &t5, const QString &t6, const QString &t7,
+               const TagLib::AudioProperties *ap )
      : m_title( t1 )
      , m_artist( t2 )
      , m_album( t3 )
-     , m_year( t4 )     
+     , m_year( t4 )
      , m_comment( t5 )
      , m_genre( t6 )
      , m_track( t7 )
@@ -45,14 +46,15 @@ class MetaBundle
       }
    }
    MetaBundle( const QString &title, uint length ) : m_title( title ), m_bitrate( 0 ), m_length( length ), m_sampleRate( 0 ) {}
+   MetaBundle() : m_bitrate( 0 ), m_length( 0 ), m_sampleRate( 0 ) {}
 
    const QString m_title;
    const QString m_artist;
    const QString m_album;
-   const QString m_year;   
-   const QString m_comment;   
+   const QString m_year;
+   const QString m_comment;
    const QString m_genre;
-   const QString m_track;   
+   const QString m_track;
 
    uint m_bitrate;
    int  m_length; //-1 no established length, eg streams
