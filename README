@@ -86,11 +86,18 @@ A: It can! Chances are you're using Fedora/RedHat linux, they don't ship with
 
        ALT-F2, gg:redhat mp3 kde, ENTER
 
-Q: The sound stutters, how can I improve it?
+Q: The sound stutters/CPU usage is high, can it be improved?
 A: You can either use the GStreamer engine (it's great!), or tweak aRts. Open
    the Control Center, go to "Sound and Multimedia", then "Sound System". Enable
    "Run with highest possible priority", and increase the size of the sound
-   buffer, but beware the consequences of a high aRts sound buffer (next FAQ).
+   buffer (warning, see the next FAQ!) You should also enusre that your
+   artswrapper is suid:
+   
+       $ su
+       $ chmod a+rsx /path/to/kde/bin/artswrapper
+       
+   Finally you will benefit from installing kdemultimedia in its entirety to get
+   the faster aRts codecs (eg. libarts_mpeglib.so, etc.)
 
 Q: The amaroK analyzers are really unresponsive!
 A: You are probably using the aRts engine, either use the GST or NMM engines, or
@@ -98,8 +105,8 @@ A: You are probably using the aRts engine, either use the GST or NMM engines, or
    lower the buffer the more responsive the visuals. Yes this is a bug! Please
    help us fix it!
 
-Q: I have the right version of GStreamer installed but amaroK configure still
-   can't find it!
+Q: I have the required version of GStreamer installed but configure doesn't
+   find it!
 A: Here's an extract from the PKG-CONFIG man page:
 
      pkg-config retrieves information about packages from  special metadata
