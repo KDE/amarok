@@ -195,7 +195,7 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
 
     QDomDocument doc;
     if( !doc.setContent( m_xml ) ) {
-        m_errors += i18n("The XML we obtained from Amazon is invalid!");
+        m_errors += i18n("The XML obtained from Amazon is invalid.");
         startFetch();
         return;
     }
