@@ -1,84 +1,65 @@
-dnl -- check for the artsgui library
-AC_DEFUN(AC_PATH_LIBARTSGUI,
-[
-        AC_MSG_CHECKING([for libartsgui])
-        ac_artsgui_libraries=NO
+###############################################################################
+# BEGIN KDEMULTIMEDIA CHECK 
+###############################################################################
 
-artsgui_libdirs="/usr/lib /usr/local/lib /usr/local/kde3/lib $prefix/lib $exec_prefix/lib $kde_extra_libs"
+KDE_CHECK_HEADER(arts/artsmodules.h, have_kdemm=true, have_kdemm=false)
 
-artsgui_libdir=NONE
-for dir in $artsgui_libdirs; do
-        try="ls -1 $dir/libartsgui*"
-                if test=`eval $try 2> /dev/null`; then artsgui_libdir=$dir; break; else echo "tried $dir" >&AC_FD_CC ; fi
-done
- 
-ac_artsgui_libraries="$artsgui_libdir"
-
-
-if test "$ac_artsgui_libraries" = NO; then
-        have_artsgui=no
-        DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
-else
-        have_artsgui=yes;
+if test "x$have_kdemm" = "xfalse"; then
+    AC_MSG_ERROR([
+                  You are missing KDEMULTIMEDIA, which is required by amaroK.
+                  Please install the packages KDEMULTIMEDIA and KDEMULTIMEDIA-DEVEL.
+                 ])
 fi
 
-eval "$ac_cv_have_artsgui"
-])
-
-AC_PATH_LIBARTSGUI
-
-taglib_bindirs="/usr/bin /usr/local/bin /usr/local/kde3/bin $prefix/bin $exec_prefix/bin "
-
-taglib_bindir=NONE
-for tag_dir in $taglib_bindirs; do
-        tag_try="ls -1 $tag_dir/$TAGLIB_CONFIG"
-                if test=`eval $tag_try 2> /dev/null`; then taglib_bindir=$tag_dir; break; else echo "tried $tag_dir" >&AC_FD_CC ; fi
-done
-
-if test "$ac_artsgui_libraries" = NO; 
-then
-        AC_MSG_RESULT([not found.  amaroK build will be disabled.])
-else
-	AC_MSG_RESULT([found in $ac_artsgui_libraries])
-fi
+###############################################################################
+# END KDEMULTIMEDIA CHECK 
+###############################################################################
 
 
-dnl ---------- TAGLIB CHECK ----------
 
+###############################################################################
+# BEGIN TAGLIB CHECK 
+###############################################################################
+
+TAGLIB_REQ_VERSION="0.95";
+TAGLIB_URL="http://ktown.kde.org/~wheeler/taglib/";
 AC_DEFUN(VERSION_TO_NUMBER, [`$1 | awk 'BEGIN { FS = "."; } { printf "%d",  ([$]1* 1000 + [$]2) * 1000 + [$]3;}'`])
 
-AC_DEFUN(AC_HAVE_TAGLIB,
-[
-	AC_DEFINE(HAVE_TAGLIB, 1, [have TagLib])
-	taglib_includes=[`$TAGLIB_CONFIG --cflags`]
-	taglib_libs=[`$TAGLIB_CONFIG --libs`]
-	taglib_version=[`$TAGLIB_CONFIG --version`]
-	have_taglib=true
-])
-
-AC_DEFUN(AC_NO_TAGLIB,
-[
-	AC_DEFINE(HAVE_TAGLIB, 0, [don't have TagLib])
-	taglib_includes=""
-	taglib_libs=""
-	taglib_version=""
-	have_taglib=false
-])
-
 AC_PATH_PROG(TAGLIB_CONFIG, taglib-config, no)
+
 if test "x$TAGLIB_CONFIG" = "xno" ; then
-	AC_NO_TAGLIB
-	DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
+    AC_MSG_ERROR([
+                  You are missing TagLib, which is required by amaroK.  You can find TagLib at
+                  $TAGLIB_URL
+                 ])
 else
-	AC_HAVE_TAGLIB
+    AC_DEFINE(HAVE_TAGLIB, 1, [have TagLib])
+    taglib_includes=[`$TAGLIB_CONFIG --cflags`]
+    taglib_libs=[`$TAGLIB_CONFIG --libs`]
+    taglib_version=[`$TAGLIB_CONFIG --version`]
+
+    if test VERSION_TO_NUMBER(echo $taglib_version) -lt VERSION_TO_NUMBER(echo $TAGLIB_REQ_VERSION); then
+        AC_MSG_ERROR([
+                      Your TagLib is too old to use with amaroK.  You can find a more recent TagLib at
+                      $TAGLIB_URL
+                     ])
+    fi
 fi
 
 AC_SUBST(taglib_includes)
 AC_SUBST(taglib_libs)
 
-dnl ---------- END TAGLIB CHECK ----------
+###############################################################################
+# END TAGLIB CHECK 
+###############################################################################
 
 
+
+###############################################################################
+# BEGIN GSTREAMER CHECK 
+###############################################################################
+
+#<pkg-config>
 dnl KDE_PKG_CHECK_MODULES(GSTUFF, gtk+-2.0 >= 1.3 glib = 1.3.4, action-if, action-not)
 dnl defines GSTUFF_LIBS, GSTUFF_CFLAGS, see pkg-config man page
 dnl also defines GSTUFF_PKG_ERRORS on error
@@ -133,98 +114,123 @@ AC_DEFUN(KDE_PKG_CHECK_MODULES, [
      ifelse([$4], , AC_MSG_ERROR([Library requirements ($2) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them.]), [$4])
   fi
 ])
+#</pkg-config>
 
 
+AC_ARG_WITH(gstreamer,
+    AC_HELP_STRING([--without-gstreamer],[build without GStreamer [default=yes]]),
+    [build_gstreamer=$withval],
+    [build_gstreamer=yes]
+)
 
-# check for pkg-config
-AC_ARG_VAR(PKGCONFIGFOUND, [Path to pkg-config])
-AC_CHECK_PROG(PKGCONFIGFOUND, pkg-config,[yes])
-
-if test "$PKGCONFIGFOUND" = "yes" ; then
-# check for GStreamer
-  dnl Now we're ready to ask for gstreamer libs and cflags
-  dnl And we can also ask for the right version of gstreamer
-  HAVE_GST=no
-
-  dnl start with 0.6
-  GST_MAJORMINOR=0.6
-  GST_REQ=0.6.0
-  KDE_PKG_CHECK_MODULES(GST, \
-    gstreamer-$GST_MAJORMINOR >= $GST_REQ \
-    gstreamer-control-$GST_MAJORMINOR >= $GST_REQ \
-    gstreamer-libs-$GST_MAJORMINOR >= $GST_REQ,
-    HAVE_GST=yes,HAVE_GST=no)
-
-  dnl fail back to 0.7
-  if test "x$HAVE_GST" = "xno"; then
-    GST_MAJORMINOR=0.7
+if test "$build_gstreamer" != "no"; then
+    # check for pkg-config
+    AC_ARG_VAR(PKGCONFIGFOUND, [Path to pkg-config])
+    AC_CHECK_PROG(PKGCONFIGFOUND, pkg-config,[yes])
+    
+    if test "$PKGCONFIGFOUND" = "yes" ; then
+    # check for GStreamer
+    dnl Now we're ready to ask for gstreamer libs and cflags
+    dnl And we can also ask for the right version of gstreamer
+    HAVE_GST=no
+    
+    dnl start with 0.6
+    GST_MAJORMINOR=0.6
+    GST_REQ=0.6.0
     KDE_PKG_CHECK_MODULES(GST, \
-      gstreamer-$GST_MAJORMINOR >= $GST_REQ \
-      gstreamer-control-$GST_MAJORMINOR >= $GST_REQ \
-      gstreamer-libs-$GST_MAJORMINOR >= $GST_REQ,
-      HAVE_GST=yes,HAVE_GST=no)
-  fi
-
-  dnl Give error if we don't have gstreamer
-  if test "x$HAVE_GST" = "xno"; then
-    LIB_GST=""
-    CFLAGS_GST=""
-#    DO_NOT_COMPILE="$DO_NOT_COMPILE gst"
-    AC_MSG_WARN([GStreamer version >= $GST_REQ required.])
-  else
-    LIB_GST=$GST_LIBS
-    CFLAGS_GST=$GST_CFLAGS
-    AC_SUBST(LIB_GST)
-    AC_SUBST(CFLAGS_GST)
-    AC_MSG_NOTICE([GStreamer version >= $GST_REQ found.])
-    AC_DEFINE(HAVE_GSTREAMER, 1, [have GStreamer])
-  fi
-else
-  AC_MSG_WARN([No pkg-config found, required for GStreamer])
-#  DO_NOT_COMPILE="$DO_NOT_COMPILE gst"
+        gstreamer-$GST_MAJORMINOR >= $GST_REQ \
+        gstreamer-control-$GST_MAJORMINOR >= $GST_REQ \
+        gstreamer-libs-$GST_MAJORMINOR >= $GST_REQ,
+        HAVE_GST=yes,HAVE_GST=no)
+    
+    dnl fail back to 0.7
+    if test "x$HAVE_GST" = "xno"; then
+        GST_MAJORMINOR=0.7
+        KDE_PKG_CHECK_MODULES(GST, \
+        gstreamer-$GST_MAJORMINOR >= $GST_REQ \
+        gstreamer-control-$GST_MAJORMINOR >= $GST_REQ \
+        gstreamer-libs-$GST_MAJORMINOR >= $GST_REQ,
+        HAVE_GST=yes,HAVE_GST=no)
+    fi
+    
+    dnl Give error if we don't have gstreamer
+    if test "x$HAVE_GST" = "xno"; then
+        LIB_GST=""
+        CFLAGS_GST=""
+    #    DO_NOT_COMPILE="$DO_NOT_COMPILE gst"
+        AC_MSG_WARN([GStreamer version >= $GST_REQ required.])
+    else
+        LIB_GST=$GST_LIBS
+        CFLAGS_GST=$GST_CFLAGS
+        AC_SUBST(LIB_GST)
+        AC_SUBST(CFLAGS_GST)
+        AC_MSG_NOTICE([GStreamer version >= $GST_REQ found.])
+        AC_DEFINE(HAVE_GSTREAMER, 1, [have GStreamer])
+    fi
+    else
+    AC_MSG_WARN([No pkg-config found, required for GStreamer])
+    #  DO_NOT_COMPILE="$DO_NOT_COMPILE gst"
+    fi
 fi
+    
+###############################################################################
+# END GSTREAMER CHECK 
+###############################################################################
 
 
 
-dnl ---------- QT OPENGL CHECK ----------
+###############################################################################
+# BEGIN QT OPENGL CHECK 
+###############################################################################
 
-AC_MSG_CHECKING(for Qt with OpenGL support)
-AC_CACHE_VAL(ac_cv_kde_qt_has_opengl,
-[
-  AC_LANG_SAVE
-  AC_LANG_CPLUSPLUS
+AC_ARG_WITH(opengl,
+    AC_HELP_STRING([--without-opengl],[build without OpenGL [default=yes]]),
+    [build_opengl=$withval],
+    [build_opengl=yes]
+)
 
-  save_CXXFLAGS="$CXXFLAGS"
-  save_LIBS="$LIBS"
-  save_LDFLAGS="$LDFLAGS"
-
-  CXXFLAGS="$CXXFLAGS -I$qt_incdir $all_includes"
-  LDFLAGS="$LDFLAGS -L$qt_libdir $all_libraries $USER_LDFLAGS $KDE_MT_LDFLAGS"
-  LIBS="$LIBS $LIBQT $KDE_MT_LIBS"
-
-  AC_TRY_LINK([
-  #include <qgl.h>
-  ],
-  [
-   (void)new QGLWidget((QWidget*)0, "qgl");
-  ],
-  ac_cv_kde_qt_has_opengl=yes,
-  ac_cv_kde_qt_has_opengl=no)
-
-  CXXFLAGS="$save_CXXFLAGS"
-  LIBS="$save_LIBS"
-  LDFLAGS="$save_LDFLAGS"
-  AC_LANG_RESTORE
-])
-AC_MSG_RESULT($ac_cv_kde_qt_has_opengl)
-
-if test x$ac_cv_kde_qt_has_opengl = xyes; then
-  AC_DEFINE(HAVE_QGLWIDGET, 1, [have Qt with OpenGL support])
-  gl_libs="-lGL"
-else
-  gl_libs=""
+if test "$build_opengl" != "no"; then
+    AC_MSG_CHECKING(for Qt with OpenGL support)
+    AC_CACHE_VAL(ac_cv_kde_qt_has_opengl,
+    [
+    AC_LANG_SAVE
+    AC_LANG_CPLUSPLUS
+    
+    save_CXXFLAGS="$CXXFLAGS"
+    save_LIBS="$LIBS"
+    save_LDFLAGS="$LDFLAGS"
+    
+    CXXFLAGS="$CXXFLAGS -I$qt_incdir $all_includes"
+    LDFLAGS="$LDFLAGS -L$qt_libdir $all_libraries $USER_LDFLAGS $KDE_MT_LDFLAGS"
+    LIBS="$LIBS $LIBQT $KDE_MT_LIBS"
+    
+    AC_TRY_LINK([
+    #include <qgl.h>
+    ],
+    [
+    (void)new QGLWidget((QWidget*)0, "qgl");
+    ],
+    ac_cv_kde_qt_has_opengl=yes,
+    ac_cv_kde_qt_has_opengl=no)
+    
+    CXXFLAGS="$save_CXXFLAGS"
+    LIBS="$save_LIBS"
+    LDFLAGS="$save_LDFLAGS"
+    AC_LANG_RESTORE
+    ])
+    AC_MSG_RESULT($ac_cv_kde_qt_has_opengl)
+    
+    if test x$ac_cv_kde_qt_has_opengl = xyes; then
+    AC_DEFINE(HAVE_QGLWIDGET, 1, [have Qt with OpenGL support])
+    gl_libs="-lGL"
+    else
+    gl_libs=""
+    fi
+    
+    AC_SUBST(gl_libs)
 fi
+    
+###############################################################################
+# END QT OPENGL CHECK 
+###############################################################################
 
-AC_SUBST(gl_libs)
-
-dnl ---------- END QT OPENGL CHECK ----------

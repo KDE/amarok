@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #50 being the highest available (take this one for your next bug and increase here)
+           #51 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
@@ -30,11 +30,6 @@ SHORT-TERM (URGENT):
 
     * fix: #34 playlist: hidden columns can be resized back into sight! -->mxcl
 
-    * add: #30 <markey> kdemultimedia configure check
-
-    * add: #29 <muesli> configure script should fail, if taglib check failed
-              <markey> would be comfy to have a special flag for release which deactivates the check
-
     * fix: #11 <markey> TagLib delivers incorrect length for VBR mp3 files w/o XING header
                (there is no known method to determine that quickly. muesli once claimed he knows one (?))
 
@@ -48,6 +43,8 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+
+    * add: #50 <markey> make amaroK configurable --without-arts -->markey
 
     * fix: #44 <markey> use kdWarning() instead of kdDebug() where appropriate
 

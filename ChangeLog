@@ -2,6 +2,9 @@ amaroK ChangeLog
 ================
 (c) 2002-2004 the amaroK authors.
 
+   
+  * fix: rewritten configure: checks properly for kdemultimedia presence,
+         and adds --without-opengl and --without-gstreamer arguments
 
 VERSION 0.9-beta1:
   * add: display warning when artsd is not running with realtime priority
