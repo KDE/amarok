@@ -210,7 +210,7 @@ void AmarokConfigDialog::updateWidgets()
     soundSystemChanged();
 
     bool dbConfigEnabled = false;
-    if ( AmarokConfig::databaseEngine() != "0" )
+    if ( AmarokConfig::databaseEngine() == "1" )
     {
         dbConfigEnabled = true;
     }
