@@ -74,12 +74,10 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
     // progress
     addWidget( m_pProgress = new KProgress( this ), 0, true );
-    m_pProgress->setMaximumHeight( fontMetrics().height() );
     m_pProgress->hide();
 
     // total songs count
     addWidget( m_pTotal = new QLabel( this ), 0, true );
-    m_pTotal->setFixedHeight( fontMetrics().height() );
 
     // toggle buttons
     const KActionCollection* const ac = pApp->actionCollection();
@@ -94,7 +92,6 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     addWidget( m_pSlider = new QSlider( Qt::Horizontal, this ), 0, true );
     m_pSlider->setTracking( false );
     m_pSlider->setFixedWidth( 70 );
-    m_pSlider->setFixedHeight( fontMetrics().height() );
     connect( m_pSlider, SIGNAL( sliderPressed() ),     SLOT( sliderPressed() ) );
     connect( m_pSlider, SIGNAL( sliderReleased() ),    SLOT( sliderReleased() ) );
     connect( m_pSlider, SIGNAL( sliderMoved( int ) ),  SLOT( sliderMoved( int ) ) );
@@ -102,6 +99,14 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     // time display
     addWidget( m_pTimeLabel = new TimeLabel( " 00:00:00 ", this ), 0, true );
 
+    // make all widgets as high as the time display
+    m_pTitle->setFixedHeight( m_pTimeLabel->height() );
+    m_pProgress->setFixedHeight( m_pTimeLabel->height() );
+    m_pTotal->setFixedHeight( m_pTimeLabel->height() );
+    w1->setFixedHeight( m_pTimeLabel->height() );
+    w2->setFixedHeight( m_pTimeLabel->height() );
+    m_pSlider->setFixedHeight( m_pTimeLabel->height() );
+    
     connect( m_pPauseTimer, SIGNAL(timeout()), SLOT(slotPauseTimer()) );
 
     // set us up the bomb
