@@ -44,7 +44,7 @@ template<class W>
 Analyzer::Base<W>::Base( QWidget *parent, uint timeout, uint scopeSize )
   : W( parent )
   , m_timeout( timeout )
-  , m_fht( scopeSize )
+  , m_fht( new FHT(scopeSize) )
 {}
 
 template<class W> bool
@@ -77,16 +77,16 @@ Analyzer::Base<W>::transform( Scope &scope ) //virtual
     //an FFT scope that has bands for pretty analyzers
 
     //NOTE resizing here is redundant as FHT routines only calculate FHT::size() values
-    //scope.resize( m_fht.size() );
+    //scope.resize( m_fht->size() );
 
     float *front = static_cast<float*>( &scope.front() );
 
-    float* f = new float[ m_fht.size() ];
-    m_fht.copy( &f[0], front );
-    m_fht.logSpectrum( front, &f[0] );
-    m_fht.scale( front, 1.0 / 20 );
+    float* f = new float[ m_fht->size() ];
+    m_fht->copy( &f[0], front );
+    m_fht->logSpectrum( front, &f[0] );
+    m_fht->scale( front, 1.0 / 20 );
 
-    scope.resize( m_fht.size() / 2 ); //second half of values are rubbish
+    scope.resize( m_fht->size() / 2 ); //second half of values are rubbish
     delete [] f;
 }
 
@@ -103,12 +103,12 @@ Analyzer::Base<W>::drawFrame()
         const Engine::Scope &thescope = engine->scope();
         static Analyzer::Scope scope( 512 );
 
-        for( uint x = 0; (int)x < m_fht.size(); ++x ) scope[x] = double(thescope[x]) / (1<<15);
+        for( uint x = 0; (int)x < m_fht->size(); ++x ) scope[x] = double(thescope[x]) / (1<<15);
 
         transform( scope );
         analyze( scope );
 
-        scope.resize( m_fht.size() );
+        scope.resize( m_fht->size() );
 
         break;
     }

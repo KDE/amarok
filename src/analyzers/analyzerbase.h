@@ -43,6 +43,7 @@ public:
 
 protected:
     Base( QWidget*, uint, uint = 7 );
+    ~Base() { delete m_fht; }
 
     void drawFrame();
     virtual void transform( Scope& );
@@ -62,7 +63,7 @@ private:
 protected:
     QTimer m_timer;
     uint   m_timeout;
-    FHT    m_fht;
+    FHT    *m_fht;
 };
 
 

@@ -58,14 +58,14 @@ void Sonogram::analyze(const Scope &s)
 void Sonogram::transform(Scope &scope)
 {
 	float *front = static_cast<float*>(&scope.front());
-	m_fht.power(front);
-	m_fht.scale(front, 1.0 / 128);
+	m_fht->power(front);
+	m_fht->scale(front, 1.0 / 128);
 	scope.resize( scope.size() / 2 );
 }
 
 
 void Sonogram::demo()
 {
-	analyze(Scope(m_fht.size(), 0));
+	analyze(Scope(m_fht->size(), 0));
 }
 

@@ -80,8 +80,8 @@ BoomAnalyzer::transform( Scope &s )
 {
     float *front = static_cast<float*>( &s.front() );
 
-    m_fht.spectrum( front );
-    m_fht.scale( front, 1.0 / 60 );
+    m_fht->spectrum( front );
+    m_fht->scale( front, 1.0 / 60 );
 
     Scope scope( 32, 0 );
 
