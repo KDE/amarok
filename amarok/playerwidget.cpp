@@ -104,6 +104,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
 
     m_pSliderVol = new AmarokSlider( this, Qt::Vertical );
     m_pSliderVol->setFocusPolicy( QWidget::NoFocus );
+    m_pSliderVol->setValue( pApp->config()->masterVolume() ); // cheat-cheat!
 
     QString pathStr( locate( "data", "amarok/images/b_prev.png" ) );
 

@@ -77,7 +77,7 @@ PlayerApp::PlayerApp()
         , m_fgColor( QColor( 0x80, 0xa0, 0xff ) )
         , m_DelayTime( 0 )
         , m_playingURL( KURL() )
-//        , m_pConfig( kapp->config() )
+        , m_pConfig( kapp->config() )
         , m_pMainTimer( new QTimer( this ) )
         , m_pAnimTimer( new QTimer( this ) )
         , m_length( 0 )
@@ -379,6 +379,8 @@ void PlayerApp::readConfig()
     m_pPlayerWidget->m_pButtonPl->setOn( config()->browserWinEnabled() );
 
     m_pBrowserWin->slotUpdateFonts();
+    
+    m_Volume = config()->masterVolume();
 
     setupColors();
 
@@ -414,13 +416,13 @@ void PlayerApp::readConfig()
                             this, SLOT( slotPrev() ), true, true );
 
     // FIXME <berkus> this needs some other way of handling with KConfig XT?!?
-  //  m_pGlobalAccel->setConfigGroup( "Shortcuts" );
-  //  m_pGlobalAccel->readSettings( m_pConfig );
-  //  m_pGlobalAccel->updateConnections();
+    m_pGlobalAccel->setConfigGroup( "Shortcuts" );
+    m_pGlobalAccel->readSettings( m_pConfig );
+    m_pGlobalAccel->updateConnections();
 
     //FIXME use a global actionCollection (perhaps even at global scope)
-  //  m_pPlayerWidget->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
-  //  m_pBrowserWin->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
+    m_pPlayerWidget->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
+    m_pBrowserWin->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
 
     kdDebug() << "end PlayerApp::readConfig()" << endl;
 }

@@ -140,7 +140,7 @@ class PlayerApp : public KUniqueApplication
 
         // ATTRIBUTES ------
         bool m_usingMixerHW;
-        //KConfig *m_pConfig;
+        KConfig *m_pConfig;
         QTimer *m_pMainTimer;
         QTimer *m_pAnimTimer;
         long m_length;
