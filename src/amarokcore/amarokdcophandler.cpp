@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "amarokconfig.h"
+// #include "amarokconfig.h"
 #include "amarokdcophandler.h"
 #include "engine/enginebase.h"
 #include "enginecontroller.h"
@@ -221,7 +221,9 @@ namespace amaroK
     void DcopHandler::enableOSD(bool enable)
     {
         amaroK::OSD::instance()->setEnabled(enable);
-        AmarokConfig::setOsdEnabled(enable);
+        
+        //FIXME deactivated for causing compile troubles
+//         AmarokConfig::setOsdEnabled(enable);
     }
 
 } //namespace amaroK
