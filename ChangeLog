@@ -3,6 +3,7 @@ amaroK Changelog
 (c) 2002-2004 by Mark Kretschmann and the amaroK team. GPL License.
 
  
+  * add: playlist columns for length and bitrate
   * add: merged new audio engine in. this provides a generic interface class, with multiple
          backends. right now there is a backend for aRts and one for GStreamer (still rudimentary)
 

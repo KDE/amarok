@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #27 being the highest available (take this one for your next bug and increase here)
+           #28 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
@@ -37,11 +37,11 @@ SHORT-TERM (URGENT):
 
 MID-TERM:
 
+    * add: #27<markey> playlist column for tracknumber (requested by several users)
+
     * add: <mxcl> option: don't crossfade for sequential tracks on same album. Comments? -->mxcl
            Of course, there would still be the up to 150ms gap, but we can fix that some other
            time..
-
-    * add: <muesli>length and bitrate to the playlist as optional columns. -->muesli or mxcl
 
     * fix: add dirs to combo history when user adds a track from that dir to the playlist
 
