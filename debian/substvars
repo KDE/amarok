@@ -1,0 +1,4 @@
+gstreamer:Depends=gstreamer0.8-oss | gstreamer0.8-audiosink, gstreamer0.8-misc, gstreamer0.8-mad, gstreamer0.8-vorbis
+gstreamer:Recommends=gstreamer0.8-flac, gstreamer0.8-audiofile
+gstreamer:Suggests=gstreamer0.8-plugins
+enginePackages=amarok-arts, amarok-gstreamer, amarok-xine

@@ -1,3 +1,4 @@
 debian/tmp/usr/share/services/amarok_gstengine_plugin.desktop
+debian/tmp/usr/share/config.kcfg/gstconfig.kcfg
 debian/tmp/usr/lib/kde3/libamarok_gstengine_plugin.so
 debian/tmp/usr/lib/kde3/libamarok_gstengine_plugin.la

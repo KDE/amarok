@@ -1,9 +1,38 @@
 #!/usr/bin/make -f
 
+### CDBS INCLUDES
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/simple-patchsys.mk
 include /usr/share/cdbs/1/class/kde.mk
 
-DEB_INSTALL_DOCS_ALL :=
-DEB_INSTALL_DOCS_amarok := README TODO AUTHORS
-DEB_EXTRA_CONNFIGURE_FLAGS := --without-included-sqlite
+### VARIABLES
+DEB_DH_MAKESHLIBS_ARGS_ALL := -n
+DEB_INSTALL_DIRS_amarok    := usr/lib/amarok
+DEB_DH_SHLIBDEPS_ARGS      := -Xusr/lib/amarok/amarok_xmmswrapper2
+
+# We need this commented out until sqlite 3.0 is available in Debian
+# DEB_EXTRA_CONNFIGURE_FLAGS := --without-included-sqlite
+
+### COMMON STUFF
+common-binary-arch::
+	# Use debian/substvars
+	for p in $(DEB_ALL_PACKAGES); do \
+	  cat debian/substvars >>debian/$$p.substvars; \
+	done
+	# Install lintian overrides
+	p=amarok-arts; \
+	dh_install -p$$p debian/overrides/$$p usr/share/lintian/overrides/
+
+### POST-INSTALL HACKING
+# Non-user binaries in /usr/lib, not /usr/bin
+binary-post-install/amarok::
+	p=`basename $@`; \
+	mv debian/$$p/usr/bin/amarokapp           debian/$$p/usr/lib/amarok; \
+	mv debian/$$p/usr/bin/amarok_xmmswrapper2 debian/$$p/usr/lib/amarok
+
+# Make directories in /usr/share/doc be symlinks for packages other than amarok
+common-binary-post-install-arch::
+	for p in $(filter-out amarok,$(DEB_ALL_PACKAGES)); do \
+	  rm -rf debian/$$p/usr/share/doc/$$p; \
+	  ln -sf amarok debian/$$p/usr/share/doc/$$p; \
+	done

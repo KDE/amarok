@@ -1,0 +1,4 @@
+debian/tmp/usr/share/services/amarok_xine-engine.desktop
+debian/tmp/usr/share/services/amarok_xineengine_plugin.desktop
+debian/tmp/usr/lib/kde3/libamarok_xine-engine.so
+debian/tmp/usr/lib/kde3/libamarok_xine-engine.la

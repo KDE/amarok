@@ -1,59 +1,78 @@
 Source: amarok
 Section: kde
-Priority: extra
-Maintainer: Peter Rockai (mornfall) <mornfall@danill.sk>
-Build-Depends: cdbs (>= 0.4.21), debhelper (>> 4.1.0), kdelibs4-dev (>= 4:3.2), kdemultimedia-dev (>= 4:3.2), libtag1-dev (>= 1.1), libgstreamer0.8-dev, libgstreamer-plugins0.8-dev, xmms-dev, libsqlite0-dev
-Standards-Version: 3.5.8.0
+Priority: optional
+Maintainer: Adeodato Simó <asp16@alu.ua.es>
+Build-Depends: cdbs (>= 0.4.21), debhelper (>> 4.1.0), kdelibs4-dev (>= 4:3.2), kdemultimedia-dev (>= 4:3.2), libkjsembed-dev (>= 4:3.2), libgstreamer0.8-dev, libgstreamer-plugins0.8-dev, libtag1-dev (>= 1.2), libxine-dev (>= 1-rc4), libsqlite0-dev, xmms-dev, libtunepimp2-dev
+Standards-Version: 3.6.1
 
 Package: amarok
-Section: kde
 Architecture: any
-Depends: amarok-arts | amarok-gstreamer, ${shlibs:Depends}
-Suggests: amarok-xmms
+Depends: amarok-engines | amarok-engine, ${shlibs:Depends}
 Description: versatile and easy to use audio player for KDE
  amaroK tries to be a little different, providing a simple drag and drop
- interface  that really makes playlist handling easy.
+ interface that really makes playlist handling easy.
  .
  Features include:
-  - fresh playlist concept, very fast to use, with drag and drop
-  - plays all formats supported by aRts, including mp3, ogg,
-    audio CDs, streams
-  - audio effects, like reverb and compressor
-  - compatible with the .m3u and .pls formats for playlists
-  - nice GUI, integrates into the KDE look, but with a unique touch
+   - rapid playlist creation, with drag and drop from a directory view
+   - nice playlist browser for your existing playlists (PLS or M3U formats)
+   - collection-indexing support, for smart browsing and playlist creation
+   - possibility of accessing media via kioslaves, allowing you to play
+     via smb:// or fish:// (normal streams are of course supported)
+   - inline ID3 tag editing, capable of retrieving tags via MusicBrainz
+   - album cover support: automatically displays album covers from the
+     filesystem, or downloaded on the fly
+   - miscellaneous audio effects, including crossfading
+   - easy bindable global shortcuts, rich DCOP interface
+   - On-Screen Display (OSD), on track change or at keypress
  .
- Both aRts and GStreamer support is available in packages amarok-arts and
- amarok-gstreamer, respectively. NMM engine is not yet included.
+ amaroK can output to different sound systems: aRts, GStreamer and XINE
+ support is included in the amarok-{arts,gstreamer,xine} packages,
+ respectively. By default, all of them will be installed (amarok-engines
+ package).
  .
- The xmms visualisation support is available in package amarok-xmms.
+ Support for XMMS visualization plugins is also compiled in (you need to
+ have xmms installed to be able to use it, though).
+
+Package: amarok-engines
+Architecture: any
+Depends: amarok (= ${Source-Version}), ${enginePackages}, ${shlibs:Depends}
+Description: output engines for the amaroK audio player
+ This package depends on all the available amaroK engines, and it's
+ installed by default unless you specify a particular engine. You can
+ safely remove it, as you can remove the amarok-$engine packages that
+ you don't use.
 
 Package: amarok-arts
-Section: kde
-Architecture: any
-Depends: arts (>= 1.2), amarok (= ${Source-Version}), ${shlibs:Depends}
-Description: arts engine for amarok audio player
- Arts support for amaroK, a versatile and easy to use audio player for KDE.
- See package amarok for the actual player.
-
-Package: amarok-gstreamer
-Section: kde
-Architecture: any
-Depends: gstreamer0.8-oss | gstreamer0.8-audiosink, gstreamer0.8-misc, gstreamer0.8-mad, gstreamer0.8-vorbis, amarok (= ${Source-Version}), ${shlibs:Depends}
-Recommends: gstreamer0.8-flac, gstreamer0.8-audiofile
-Suggests: gstreamer0.8-plugins
-Description: gstreamer engine for amarok audio player
- GStreamer support for amaroK, a versatile and easy to use audio player for
- KDE. See package amarok for the actual player.
- .
- The default audiosink that will be installed for amarok-gstreamer is OSS, but
- using ALSA or jack is preferred. To get support for those, install
- gstreamer0.8-alsa or gstreamer0.8-jack respectively. For use with arts,
- amarok-arts is preferred over gstreamer arts output.
-
-Package: amarok-xmms
-Section: kde
 Architecture: any
 Depends: amarok (= ${Source-Version}), ${shlibs:Depends}
-Description: xmms visualisation support for amarok audio player
- Using this package, amaroK can make use of xmms visualisations. Install this
- package if you want additional visualisation support in amaroK.
+Provides: amarok-engine
+Description: aRts engine for the amaroK audio player
+ This package provides the aRts engine for amaroK. Most KDE users will
+ find this engine to just work for them.
+
+Package: amarok-gstreamer
+Architecture: any
+Depends: amarok (= ${Source-Version}), ${gstreamer:Depends}, ${shlibs:Depends}
+Recommends: ${gstreamer:Recommends}
+Suggests: ${gstreamer:Suggests}
+Provides: amarok-engine
+Description: GStreamer engine for the amaroK audio player
+ This package provides the GStreamer engine for amaroK, which you may
+ need if GStreamer is your sound-system of choice or to play some of the
+ audio formats that gstreamer-plugins support but the other engines
+ don't.
+ .
+ The default audiosink that will be installed this package is OSS, but
+ amaroK works with any other audiosinks (e.g., ALSA); there is an option
+ in the configuration dialog to select the preferred sink and device.
+ .
+ For use with aRts, amarok-arts is preferred over gstreamer arts output.
+
+Package: amarok-xine
+Architecture: any
+Depends: amarok (= ${Source-Version}), ${shlibs:Depends}
+Provides: amarok-engine
+Description: xine engine for the amaroK audio player
+ This package provides the xine engine for amaroK, which you may prefer
+ for some reason over the other engines (e.g., it is the lightest engine
+ Dependency-wise).

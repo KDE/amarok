@@ -1,3 +1,70 @@
+amarok (1.1.0-2~kalyxo1) unstable; urgency=low
+
+  * Fix the location of translated amaroK handbook: kde/HTML/$LANG/amarok, not
+    kde/HTML/$LANG directly. [debian/patches/proper-otherlang-handbook-path.patch]
+
+ -- Adeodato Simó <asp16@alu.ua.es>  Mon, 27 Sep 2004 14:02:30 +0200
+
+amarok (1.1.0-1) unstable; urgency=low
+
+  * New upstream version:
+    - several last minute fixes.
+    - includes handbook in several languages (da, et, fr, it, pt, sv).
+
+  * First upload to Debian (closes: #236696).
+
+ -- Adeodato Simó <asp16@alu.ua.es>  Mon, 27 Sep 2004 01:53:56 +0200
+
+amarok (1.1-cvs-0+kalyxo1) experimental; urgency=low
+
+  * New maintainer. Thanks to Peter Rockai for his initial work.
+
+  * Updated to amaroK 1.1 CVS (2004-09-24):
+    - temporarily link statically against libsqlite, since sqlite >= 3.0.7 is
+      required and is not available in Debian (requested in #272271).
+    - added debian/patches/taglib-1.2-suffices.patch to lower the requirement
+      from taglib 1.3 (requested in #273029) to 1.2, which is enough.
+    - new package amarok-xine (yet another engine for amaroK, hurray!)
+    - added the following Build-Dependencies:
+      + libkjsembed-dev (amaroK is now JavaScript scriptable).
+      + libtunepimp2-dev (MusicBrainz support).
+      + libxine-dev (for the xine engine).
+      + libtag1-dev (missing).
+
+  * New package amarok-engines:
+    - depends on all the available engine packages and will be installed by
+      default unless the user specifies an specific engine.
+    - all the amarok-* packages Provide: amarok-engine, and amarok now
+      Depends: amarok-engines | amarok-engine.
+
+  * Removed the amarok-xmms package:
+    - its single binary amarok_xmmswrapper2 is now included in the main amarok
+      package.
+    - include some hackery to prevent amarok from depending on xmms (!).
+      amaroK just does a no-op and issues a warning on stderr if xmms is not
+      installed and user opens the visualizations menu, so this seems safe.
+      A xmms-lib package (in which amarok could easily depend) is requested in
+      #272913.
+
+  * Install amarokapp and amarok_xmmswrapper2 in /usr/lib/amarok instead of
+    /usr/bin:
+    - needed for FHS/Debian Policy compliance.
+    - added debian/patches/some-binaries-in-usr-lib.patch to fix locations in
+      source (amarok/src/loader/loader.cpp, amarok/src/socketserver.cpp).
+
+  * Added lintian overrides for an aRts module which must go in /usr/lib
+    despite not being a shared library. noatun and some other arts-related
+    packages have the same problem, if someone has a solution please share.
+
+  * Made /usr/share/doc/amarok-* symlinks to /usr/share/doc/amarok.
+
+  * Do not make amarok-arts depend on the meta-package "arts"; the
+    dependencies given by ${shlib:Depends} do suffice.
+
+  * debian/control: updated to Standars-Version 3.6.1.
+
+ -- Adeodato Simó <asp16@alu.ua.es>  Fri, 24 Sep 2004 02:49:46 +0200
+
 amarok (1.0.2-1) unstable; urgency=low
 
   * New upstream version.
