@@ -83,7 +83,7 @@ ScriptManager::Selector::exec()
 void
 ScriptManager::Selector::slotAddDirectory()
 {
-    KFileDialog dia( QString::null, "*.js|" + i18n("JavaScript Source Files" ), 0, 0, true );
+    KFileDialog dia( QString::null, "*.*|" + i18n("amaroK Scripts" ), 0, 0, true );
     dia.setMode( KFile::File | KFile::ExistingOnly );
     dia.exec();
     QString dir = dia.selectedURL().path();

@@ -7,6 +7,7 @@
 #include <qdir.h>
 
 #include <kdebug.h>
+#include <krun.h>
 #include <ktextedit.h>
 #include <kurl.h>
 
@@ -86,13 +87,12 @@ ScriptManager::Manager::slotRun( const QString& path ) //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
-/*    KURL url;
+    KURL url;
     url.setPath( path );
     QDir::setCurrent( url.directory() );
-
     kdDebug() << "Running script: " << path << endl;
-    QString script = m_kjs->loadFile( path );
-    m_kjs->view()->execute( script );*/
+
+    KRun* script = new KRun( url );
 }
 
 
