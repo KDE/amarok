@@ -1060,7 +1060,7 @@ Playlist::viewportPaintEvent( QPaintEvent *e )
                   "<h3>The Playlist</h3>"
                     "This is the playlist, to create a listing, "
                     "drag tracks from the browser-panels on the left and drop them here, "
-                    "and then click double-click them to start them playing!"
+                    "and then double-click them to start playback!"
                   "<h3>The Browsers</h3>"
                     "The browsers are the source of all your music."
                 "</div>" ), QApplication::font() );
