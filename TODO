@@ -3,11 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #153 being the highest available (take this one for your next bug and increase here)
+           #154 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
  
+  FIX 153 <markey> PlaylistLoader appears to accept any filetype into the playlist, ignoring canDecode().
+
   FIX 150 <gjehle> Is it a known bug that amarok has problems with streamtitles where there's a >> ' << in the name ?
                    Should be: The DJ Formerly Known As Arnie - Can't Usually Notice Tuesdays - LIVE from Almere, The Netherlands
                    It is:
