@@ -19,24 +19,33 @@ Comment[ta]=amaroKகான சொருகி
 Comment[uz]=amaroK учун плагин
 Comment[xx]=xxPlugin for amaroKxx
 
+# Type of plugin, e.g. "engine".
 [PropertyDef::X-KDE-amaroK-plugintype]
 Type=QString
 
+# Internal name for identification, not translated.
 [PropertyDef::X-KDE-amaroK-name]
 Type=QString
 
+# List of authors.
 [PropertyDef::X-KDE-amaroK-authors]
 Type=QStringList
 
+# List of author's email addresses.
 [PropertyDef::X-KDE-amaroK-email]
 Type=QStringList
 
+# Priority of the plugin. When KTrader returns multiple offers, the one with the highest rank is chosen.
+# Range: 0 (disabled) - 255 (highest)
 [PropertyDef::X-KDE-amaroK-rank]
 Type=int
 
+# Version of the plugin.
 [PropertyDef::X-KDE-amaroK-version]
 Type=int
 
+# Version of the framework this plugin is compatible with.
+# Must be bumped after making incompatible changes.
 [PropertyDef::X-KDE-amaroK-framework-version]
 Type=int
 
