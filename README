@@ -1,6 +1,13 @@
 amaroK README
 =============
 
+RELEASE NOTES
+=============
+This beta release does not support the aRts multimedia framework. Please use
+either the GStreamer- or xine engine.
+
+
+--------------------------------------------------------------------------------
 amaroK - the audio player for KDE
 
 There are many media players around these days, true. What's missing from most
