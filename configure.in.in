@@ -390,8 +390,15 @@ AM_CONDITIONAL(with_xmmswrapper, test x$build_xmmswrapper = xyes )
 # BEGIN LIBVISUAL CHECK
 ###############################################################################
 
-AC_CHECK_HEADER(libvisual/libvisual.h, build_libvisual=yes, build_libvisual=no)
-AM_CONDITIONAL(with_libvisual, test x$build_libvisual = xyes )
+if test x$PKGCONFIGFOUND = xyes; then
+
+    PKG_CHECK_MODULES(LIBVISUAL, libvisual >= 0.1.6, [build_libvisual="yes"], [build_libvisual="no"])
+
+    AC_SUBST(LIBVISUAL_LIBS)
+    AC_SUBST(LIBVISUAL_CFLAGS)
+
+    AM_CONDITIONAL(with_libvisual, test x$build_libvisual = xyes )
+fi
 
 ###############################################################################
 # END LIBVISUAL CHECK

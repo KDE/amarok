@@ -199,7 +199,7 @@ namespace SDL
 
         while( SDL_PollEvent( &event ) )
         {
-            vevent = visual_actor_get_eventqueue( visual_bin_get_actor( Vis::bin ) );
+            vevent = visual_plugin_get_eventqueue( visual_actor_get_plugin( visual_bin_get_actor( Vis::bin ) ) );
 
             switch( event.type )
             {

@@ -1,7 +1,7 @@
 bin_PROGRAMS = amarok_libvisual
 
-INCLUDES = $(all_includes)
+INCLUDES = $(LIBVISUAL_CFLAGS)
 
 amarok_libvisual_SOURCES = libvisual.cpp
 
-amarok_libvisual_LDFLAGS = -lSDL -lvisual
+amarok_libvisual_LDFLAGS = $(LIBVISUAL_LIBS) -lSDL
