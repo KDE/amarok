@@ -420,7 +420,7 @@ PlaylistFile::loadRealAudioRam( QTextStream &stream )
     MetaBundle b;
     QString url;
     //while loop adapted from Kaffeine 0.5
-    while (!stream.eof())
+    while (!stream.atEnd())
     {
         url = stream.readLine(); 
         if (url[0] == '#') continue; /* ignore comments */
