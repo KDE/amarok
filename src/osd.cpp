@@ -49,7 +49,7 @@ void OSDWidget::renderOSDText( const QString &text )
     static QBitmap mask;
 
     // Set a sensible maximum size, don't cover the whole desktop or cross the screen
-    QSize max = QApplication::desktop() ->screen( m_screen ) ->size() - QSize( 40, 100 );
+    QSize max = QApplication::desktop() ->screen( m_screen ) ->size() - QSize( MARGIN*2 + 20, 100 );
     QFont titleFont( "Arial", 12, QFont::Bold );
     QFontMetrics titleFm( titleFont );
 
@@ -62,7 +62,7 @@ void OSDWidget::renderOSDText( const QString &text )
     if ( textRect.width() < titleRect.width() )
         textRect.setWidth( titleRect.width() );
 
-    //this should by within the screen bounds, there is a change the height is too much though
+    //this should still be within the screen bounds
     textRect.addCoords( 0, 0, 20, titleRect.height() );
 
     osdBuffer.resize( textRect.size() );
@@ -259,6 +259,9 @@ void OSDWidget::reposition( QSize newSize )
         break;
     }
 
+    //ensure we don't dip below the screen
+    if( newPos.y()+newSize.height() > screen.height()-MARGIN ) newPos.ry() = screen.height()-MARGIN-newSize.height();
+
     // correct for screen position
     newPos += screen.topLeft();
 
@@ -317,10 +320,6 @@ void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent * /*event*/ )
 
 void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 {
-    //TODO make snapZone into percentage of screen size
-    //TODO consider using QWidget y() property?
-    //TODO do slick move on and then disappear
-
     if ( m_dragging && this == mouseGrabber() )
     {
         const QRect screen      = QApplication::desktop()->screenGeometry( m_screen );
@@ -328,16 +327,15 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
         const uint  eGlobalPosX = e->globalPos().x() - screen.left();
         const uint  snapZone    = screen.width() / 8;
 
-        QPoint newPos = e->globalPos() - m_dragOffset;
-        int maxY = screen.height()-height()-MARGIN;
-        if( newPos.y() < MARGIN ) newPos.ry() = MARGIN;
-        if( newPos.y() > maxY ) newPos.ry() = maxY;
-
-        QPoint destination( MARGIN, newPos.y() );
+        QPoint destination = e->globalPos() - m_dragOffset - screen.topLeft();
+        int maxY = screen.height() - height() - MARGIN;
+        if( destination.y() < MARGIN ) destination.ry() = MARGIN;
+        if( destination.y() > maxY ) destination.ry() = maxY;
 
         if( eGlobalPosX < (hcenter-snapZone) )
         {
             m_alignment = Left;
+            destination.rx() = MARGIN;
         }
         else if( eGlobalPosX > (hcenter+snapZone) )
         {
