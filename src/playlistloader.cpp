@@ -228,7 +228,8 @@ PlaylistLoader::completeJob()
 KURL::List
 PlaylistLoader::recurse( const KURL &url )
 {
-    KURL::List urls;
+    typedef QMap<QString, KURL> FileMap;
+
     KDirLister lister( false );
     lister.setAutoUpdate( false );
     lister.setAutoErrorHandlingEnabled( false, 0 );
@@ -237,12 +238,16 @@ PlaylistLoader::recurse( const KURL &url )
     while( !lister.isFinished() )
         kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
 
-    //returns QPtrList, so we MUST only do it once!
-    KFileItemList items = lister.items();
+    KFileItemList items = lister.items(); //returns QPtrList, so we MUST only do it once!
+    KURL::List urls;
+    FileMap files;
     for( KFileItem *item = items.first(); item; item = items.next() ) {
-        if( item->isFile() ) { urls += item->url(); continue; }
+        if( item->isFile() ) { files[item->name()] = item->url(); continue; }
         if( item->isDir() ) urls += recurse( item->url() );
     }
+
+    foreachType( FileMap, files )
+        urls += *it;
 
     return urls;
 }
@@ -331,7 +336,7 @@ PlaylistFile::loadM3u( QTextStream &stream )
             const QString extinf = line.section( ':', 1 );
             const int length = extinf.section( ',', 0, 0 ).toInt();
             b.setTitle( extinf.section( ',', 1 ) );
-            b.setLength( length <= 0 ? MetaBundle::Undetermined : length );
+            b.setLength( length <= 0 ? /*MetaBundle::Undetermined HACK*/ -2 : length );
         }
 
         else if( !line.startsWith( "#" ) ) {
