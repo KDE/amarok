@@ -1540,9 +1540,9 @@ CollectionDB::dirDirty( const QString& path )
 void
 CollectionDB::coverFetcherResult( CoverFetcher *fetcher )
 {
-    if ( fetcher->error() ) {
-        error() << fetcher->errorMessage() << endl;
-        emit coverFetcherError( fetcher->errorMessage() );
+    if ( fetcher->wasError() ) {
+        error() << fetcher->errors() << endl;
+        emit coverFetcherError( fetcher->errors().front() );
     }
     else {
         setAlbumImage( fetcher->artist(), fetcher->album(), fetcher->image(), fetcher->amazonURL() );
