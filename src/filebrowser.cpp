@@ -59,7 +59,7 @@ protected:
     virtual bool MyDirLister::matchesMimeFilter( const KFileItem *item ) const {
         return
             item->isDir() ||
-            EngineController::canDecode( item->name() ) ||
+            EngineController::canDecode( item->url() ) ||
             item->url().protocol() == "audiocd" ||
             PlaylistFile::isPlaylistFile( item->name() );
     }
@@ -381,7 +381,7 @@ public:
                 t.setWidth( width() - 50 );
 
                 p.setBrush( colorGroup().background() );
-                p.drawRoundRect( 15, 15, t.width() + 20, t.height() + 20, 20, 5 );
+                p.drawRect( 15, 15, t.width() + 20, t.height() + 20 );
                 t.draw( &p, 20, 20, QRect(), colorGroup() );
             }
             else {
