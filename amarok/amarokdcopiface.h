@@ -31,9 +31,9 @@ k_dcop:
    virtual void next() = 0;                                 ///< Equivalent to pressing "Next" button.
    virtual void prev() = 0;                                 ///< Equivalent to pressing "Prev" button.
    virtual void pause() = 0;                                ///< Equivalent to pressing "Pause" button.
-   virtual void seek(int ms) = 0;                           ///< Seek track to milliseconds position.
-   virtual int  trackTotalTime() = 0;                       ///< Return track length in milliseconds.
-   virtual int  trackCurrentTime() = 0;                     ///< Return current play position in milliseconds.
+   virtual void seek(int s) = 0;                            ///< Seek track to seconds position.
+   virtual int  trackTotalTime() = 0;                       ///< Return track length in seconds.
+   virtual int  trackCurrentTime() = 0;                     ///< Return current play position in seconds.
    virtual void addMedia(const KURL &) = 0;                 ///< Add audio media specified by the url.
    virtual void addMediaList(const KURL::List &) = 0;       ///< Add some audio media specified by the url.
    virtual QString nowPlaying() = 0;                        ///< The title of now playing media.
