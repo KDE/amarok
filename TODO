@@ -3,11 +3,15 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number, 
-           #13 being the highest available (take this one for your next bug and increase here)
+           #14 being the highest available (take this one for your next bug and increase here)
 
                       
 SHORT-TERM (URGENT):
 
+    * fix: #13 concerning drag'n'drop to playlist: playlist files (.m3u/.pls) should only get added to
+               playlist when you directly drag them, but not when they are in a subfolder, since it's
+               quite confusing when you add several dirs recursively, and forget about some playlist files
+    
     * fix: #12<markey> prevent zombie processes after amarok has exited (proper exit or crashing). 
               such zombies can lead to very weird behaviour on next amarok start and eat ressources,
               and the user has no chance of noticing what's wrong.
