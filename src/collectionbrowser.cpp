@@ -602,6 +602,8 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
         menu.insertItem( SmallIcon( "2rightarrow" ), i18n( "&Queue After Current Track" ), QUEUE );
 
+        menu.insertSeparator();
+
         if( category == i18n("Artist") ) {
             menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n("Burn All Tracks by This Artist"), BURN_ARTIST );
             menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
@@ -611,7 +613,6 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
             menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() );
         }
         else if( !item->isExpandable() ) {
-            menu.insertSeparator();
             menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n("Burn to CD as Data"), BURN_DATACD );
             menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
             menu.insertItem( SmallIcon( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BURN_AUDIOCD );
