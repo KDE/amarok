@@ -322,35 +322,40 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 
     const int playNext = listView()->m_nextTracks.findRef( this ) + 1;
 
-    static paintCacheItem paintCache[12];
+    static paintCacheItem paintCache[NUM_COLUMNS];
 
     if( this == listView()->currentTrack() )
     {
-        const QString colorString =
+        // Convert QColor to string for use as key in QMap
+        const QString colorKey =
             QString::number( glowBase.red() ) +
             QString::number( glowBase.green() ) +
             QString::number( glowBase.blue() );
 
         const bool cacheValid =
-            width == paintCache[column].width &&
-            height() == paintCache[column].height &&
-            text( column ) == paintCache[column].text;
+            paintCache[column].width == width &&
+            paintCache[column].height == height() &&
+            paintCache[column].text == text( column ) &&
+            paintCache[column].font == p->font();
 
-        if ( cacheValid && paintCache[column].map.find( colorString ) != paintCache[column].map.end() )
+        // If any parameter changed, we must regenerate all pixmaps
+        if ( !cacheValid )
+            paintCache[column].map.clear();
+
+        // Determine if we need to repaint the pixmap, or paint from cache
+        if ( paintCache[column].map.find( colorKey ) == paintCache[column].map.end() )
         {
-            p->drawPixmap( 0, 0, paintCache[column].map[colorString] );
-        }
-        else
-        {
-            //flicker-free drawing
-            QPixmap buffer( width, height() );
+            // Update painting cache
+            paintCache[column].width = width;
+            paintCache[column].height = height();
+            paintCache[column].text = text( column );
+            paintCache[column].font = p->font();
+            paintCache[column].map[colorKey] = QPixmap( width, height() );
 
-            if( buffer.isNull() ) {
-                KListViewItem::paintCell( p, cg, column, width, align );
-                return;
-            }
+            // Don't try to draw if width or height is 0, as this crashes Qt
+            if ( paintCache[column].map[colorKey].isNull() ) return;
 
-            QPainter paint( &buffer, true );
+            QPainter paint( &paintCache[column].map[colorKey], true );
             paint.setFont( p->font() );
 
             // Here we draw the shaded background
@@ -378,15 +383,11 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             paint.drawText( leftMargin, height() / 2 - textHeight / 2 - 1, width, height(), align, _text );
 
             paint.end();
-            p->drawPixmap( 0, 0, buffer );
-
-            if ( !cacheValid ) paintCache[column].map.clear();
-            paintCache[column].width = width;
-            paintCache[column].height = height();
-            paintCache[column].text = text( column );
-            paintCache[column].map[colorString] = buffer;
         }
+
+        p->drawPixmap( 0, 0, paintCache[column].map[colorKey] );
     }
+
     else KListViewItem::paintCell( p, cg, column, width, align );
 
     //figure out if we are in the actual physical first column

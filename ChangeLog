@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.2:
+  ADD: Cache system for current-track rendering in playlist. Reduces
+       CPU load when the playlist is visible.
   ADD: 10-band IIR equalizer for GStreamer-engine.
   FIX: The background gradient effect in Context-Browser is now much
        faster. The gradient also looks nicer. (BR 91276)

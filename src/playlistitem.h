@@ -12,8 +12,8 @@
 #include <kurl.h>      //stack allocated
 
 #include <qcolor.h>    //stack allocated
+#include <qfont.h>     //stack allocated
 #include <qmap.h>
-#include <qpixmap.h>
 
 class QColorGroup;
 class QDomNode;
@@ -75,8 +75,11 @@ class PlaylistItem : public KListViewItem
             int width;
             int height;
             QString text;
+            QFont font;
             QMap<QString, QPixmap> map;
         };
+
+        static const int NUM_COLUMNS = 12;
 
         QString text( int column ) const;
         int     compare( QListViewItem*, int, bool ) const;
