@@ -63,7 +63,10 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
         hbox         = new QHBox( this );
         button       = new KToolBarButton( "locationbar_erase", 0, hbox );
-        m_searchEdit = new KLineEdit( hbox );
+        m_searchEdit = new KLineEdit( hbox, "filter_edit" );
+        m_searchEdit->setPaletteForegroundColor( colorGroup().mid() );
+        m_searchEdit->setText( i18n( "Quick Search..." ) );
+        m_searchEdit->installEventFilter( this );
 
         hbox->setMargin( 1 );
         m_searchEdit->setFrame( QFrame::Sunken );
@@ -153,6 +156,34 @@ CollectionBrowser::openCoverManager()    //SLOT
 {
     CoverManager *coverManager = new CoverManager();
     coverManager->show();
+}
+
+bool CollectionBrowser::eventFilter( QObject *o, QEvent *e )
+{
+    if( o == m_searchEdit ) {
+        switch( e->type() ) {
+           case QEvent::FocusIn:
+               if( m_view->filter().isEmpty() ) {
+                   m_searchEdit->clear();
+                   m_timer->stop();
+                   m_searchEdit->setPaletteForegroundColor( colorGroup().text() );
+                   return FALSE;
+               }
+
+            case QEvent::FocusOut:
+                if( m_view->filter().isEmpty() ) {
+                    m_searchEdit->setPaletteForegroundColor( colorGroup().mid() );
+                    m_searchEdit->setText( i18n("Quick Search...") );
+                    m_timer->stop();
+                    return FALSE;
+                }
+
+            default:
+                return FALSE;
+        };
+    }
+
+    return FALSE;
 }
 
 

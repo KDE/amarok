@@ -85,6 +85,7 @@ private slots:
 private:
     void setupToolbar();
     KURL::List selectedItems();
+    bool eventFilter( QObject*, QEvent* );
 
     class ToolBar: public KToolBar
     {

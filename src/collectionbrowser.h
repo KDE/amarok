@@ -43,6 +43,8 @@ class CollectionBrowser: public QVBox
         void slotCheckFolders();
 
     private:
+        bool eventFilter( QObject*, QEvent* );
+
     //attributes:
         enum CatMenuId { IdScan, IdAlbum, IdArtist, IdGenre, IdYear, IdNone };
 

@@ -116,7 +116,10 @@ FileBrowser::FileBrowser( const char * name )
 
         hbox         = new QHBox( this );
         button       = new KToolBarButton( "locationbar_erase", 0, hbox );
-        m_filterEdit = new KLineEdit( hbox );
+        m_filterEdit = new KLineEdit( hbox, "filter_edit" );
+        m_filterEdit->setPaletteForegroundColor( colorGroup().mid() );
+        m_filterEdit->setText( i18n( "Quick Search..." ) );
+        m_filterEdit->installEventFilter( this );
 
         connect( button, SIGNAL(clicked()), m_filterEdit, SLOT(clear()) );
 
@@ -230,6 +233,33 @@ KURL::List FileBrowser::selectedItems()
     return list;
 }
 
+bool FileBrowser::eventFilter( QObject *o, QEvent *e )
+{
+    if( o == m_filterEdit ) {
+        switch( e->type() ) {
+           case QEvent::FocusIn:
+               if( m_dir->nameFilter().isEmpty() ) {
+                   m_filterEdit->clear();
+                   m_timer->stop();
+                   m_filterEdit->setPaletteForegroundColor( colorGroup().text() );
+                   return FALSE;
+               }
+
+            case QEvent::FocusOut:
+                if( m_dir->nameFilter().isEmpty() ) {
+                    m_filterEdit->setPaletteForegroundColor( colorGroup().mid() );
+                    m_filterEdit->setText( i18n("Quick Search...") );
+                    m_timer->stop();
+                    return FALSE;
+                }
+
+            default:
+                return FALSE;
+        };
+    }
+
+    return FALSE;
+}
 //END Private Methods
 
 
