@@ -77,7 +77,6 @@ ArtsEngine::ArtsEngine()
     kdDebug() << k_funcinfo << endl;
 
     addPluginProperty( "StreamingMode",  "Socket" );
-    addPluginProperty( "HasConfigure",   "true" );
     addPluginProperty( "HasCrossfading", "true" );
 }
 
