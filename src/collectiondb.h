@@ -19,9 +19,13 @@ class CollectionDB : public QObject
     Q_OBJECT
 
     public:
-
         CollectionDB();
         ~CollectionDB();
+
+        //sql helper methods
+        QStringList query( const QString& statement, QStringList* const names = 0, bool debug = false );
+        int sqlInsertID();
+        QString escapeString( QString string );
 
         //table management methods
         bool isDbValid();
@@ -72,11 +76,6 @@ class CollectionDB : public QObject
         bool removeImageFromAlbum( const uint artist_id, const uint album_id );
         bool removeImageFromAlbum( const QString artist, const QString album );
 
-        //sql helper methods
-        QString escapeString( QString string );
-        bool execSql( const QString& statement, QStringList* const values = 0, QStringList* const names = 0, const bool debug = false );
-        int sqlInsertID();
-
         uint artistID( QString value, bool autocreate = true, bool useTempTables = false );
         QString artistValue( uint id );
         uint albumID( QString value, bool autocreate = true, bool useTempTables = false );
@@ -107,6 +106,9 @@ class CollectionDB : public QObject
                                                      QStringList* const values, QStringList* const names );
 
         QString m_amazonLicense;
+
+        QStringList m_values;
+        QStringList m_names;
 
     signals:
         void scanDone( bool changed );

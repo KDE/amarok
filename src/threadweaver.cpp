@@ -5,7 +5,7 @@
 //
 
 #include "collectionbrowser.h"   //CollectionReader::readTags()
-#include "collectiondb.h"        //needed for execSql()
+#include "collectiondb.h"        //needed for query()
 #include "metabundle.h"
 #include "playlistitem.h"
 #include "statusbar.h"
@@ -373,7 +373,7 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
             command += m_parent->escapeString( bundle.comment() ) + "','";
             command += m_parent->escapeString( bundle.track() ) + "', 0);";
 
-            m_parent->execSql( command );
+            m_parent->query( command );
         }
         // Add tag-less tracks to database
         else if ( validMusic.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ).lower() ) )
@@ -399,14 +399,14 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
             command += m_parent->escapeString( i18n( "Unknown" ) ) + "','";
             command += m_parent->escapeString( i18n( "Unknown" ) ) + "', 0);";
 
-            m_parent->execSql( command );
+            m_parent->query( command );
         }
         // Add images to the cover database
         else if ( validImages.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ).lower() ) )
             m_parent->addImageToPath( url.directory(), url.filename(), true );
     }
     // let's lock the database (will block other threads)
-//    m_parent->execSql( "BEGIN TRANSACTION;" );
+//    m_parent->query( "BEGIN TRANSACTION;" );
 
     // remove tables and recreate them (quicker than DELETE FROM)
     if ( !m_incremental )
@@ -425,7 +425,7 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
 
     // remove temp tables and unlock database
     m_parent->dropTables( true );
-//    m_parent->execSql( "END TRANSACTION;" );
+//    m_parent->query( "END TRANSACTION;" );
 
     QStringList albums;
     albums = m_parent->albumList();

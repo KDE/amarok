@@ -246,7 +246,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 
     //<OPEN DATABASE>
         //optimization for speeding up SQLite
-        m_db->execSql( "PRAGMA default_synchronous = OFF;" );
+        m_db->query( "PRAGMA default_synchronous = OFF;" );
 
         //remove database file if version is incompatible
         if ( ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION ) || ( !m_db->isDbValid() ) )
@@ -611,8 +611,8 @@ CollectionView::doubleClicked( QListViewItem* item, const QPoint&, int ) //SLOT
         item->setOpen( !item->isOpen() );
     else
         //direct play & prevent doubles in playlist
-        Playlist::instance()->appendMedia( static_cast<Item*>( item )->url(), true, true ); 
-    
+        Playlist::instance()->appendMedia( static_cast<Item*>( item )->url(), true, true );
+
 }
 
 
@@ -704,17 +704,15 @@ CollectionView::fetchCover() //SLOT
     if ( !item ) return;
 
     QString album = item->text(0);
-    QStringList values;
-    QStringList names;
-    QString command = QString ( "SELECT DISTINCT artist.name FROM artist, album, tags "
-                                "WHERE artist.id = tags.artist AND tags.album = album.id "
-                                "AND album.name = '%1';" ).arg(album);
 
     // find the first artist's name
-    m_db->execSql( command, &values, &names );
+    m_db->query( QString ( "SELECT DISTINCT artist.name FROM artist, album, tags "
+                           "WHERE artist.id = tags.artist AND tags.album = album.id "
+                           "AND album.name = '%1';" )
+                           .arg( album ) );
 
-    if ( !values.isEmpty() )
-        m_db->fetchCover( this, values[0], album, false );
+    if ( !m_db->m_values.isEmpty() )
+        m_db->fetchCover( this, m_db->m_values[0], album, false );
     #endif
 }
 

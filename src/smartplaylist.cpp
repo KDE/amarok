@@ -143,80 +143,83 @@ void SmartPlaylistView::loadDefaultPlaylists()
     QStringList artistList = db.artistList();
 
     /********** All Collection **************/
-    QString query = "SELECT tags.url "
-                    "FROM tags, artist "
-                    "WHERE tags.artist = artist.id "
-                    "ORDER BY artist.name, tags.title;";
-    SmartPlaylist *item = new SmartPlaylist( this, 0, i18n("All Collection"), query, "kfm" );
+    QString sql = "SELECT tags.url "
+                  "FROM tags, artist "
+                  "WHERE tags.artist = artist.id "
+                  "ORDER BY artist.name, tags.title;";
+    SmartPlaylist *item = new SmartPlaylist( this, 0, i18n("All Collection"), sql, "kfm" );
     item->setKey( 1 );
 
     /********** Favorite Tracks **************/
-    query = "SELECT tags.url "
-            "FROM tags, statistics "
-            "WHERE statistics.url = tags.url "
-            "ORDER BY statistics.percentage DESC "
-            "LIMIT 0,15;";
-    item = new SmartPlaylist( this, 0, i18n("Favorite Tracks"), query );
+    sql = "SELECT tags.url "
+          "FROM tags, statistics "
+          "WHERE statistics.url = tags.url "
+          "ORDER BY statistics.percentage DESC "
+          "LIMIT 0,15;";
+
+    item = new SmartPlaylist( this, 0, i18n("Favorite Tracks"), sql );
     item->setKey( 2 );
     SmartPlaylist *childItem = 0;
     for( uint i=0; i < artistList.count(); i++ ) {
-        query = QString( "SELECT tags.url "
-                         "FROM tags, artist, statistics "
-                         "WHERE statistics.url = tags.url AND tags.artist = artist.id AND artist.name = '%1' "
-                         "ORDER BY statistics.percentage DESC "
-                         "LIMIT 0,15;" ).arg( db.escapeString( artistList[i] ) );
-        childItem = new SmartPlaylist( item, childItem, i18n("By ") + artistList[i], query );
+        sql = QString( "SELECT tags.url "
+                       "FROM tags, artist, statistics "
+                       "WHERE statistics.url = tags.url AND tags.artist = artist.id AND artist.name = '%1' "
+                       "ORDER BY statistics.percentage DESC "
+                       "LIMIT 0,15;" )
+                       .arg( db.escapeString( artistList[i] ) );
+
+        childItem = new SmartPlaylist( item, childItem, i18n("By ") + artistList[i], sql );
     }
 
     /********** Most Played **************/
-    query = "SELECT tags.url "
-            "FROM tags, statistics "
-            "WHERE statistics.url = tags.url "
-            "ORDER BY statistics.playcounter DESC "
-            "LIMIT 0,15;";
-    item = new SmartPlaylist( this, 0, i18n("Most Played"), query );
+    sql = "SELECT tags.url "
+          "FROM tags, statistics "
+          "WHERE statistics.url = tags.url "
+          "ORDER BY statistics.playcounter DESC "
+          "LIMIT 0,15;";
+    item = new SmartPlaylist( this, 0, i18n("Most Played"), sql );
     item->setKey( 3 );
     childItem = 0;
     for( uint i=0; i < artistList.count(); i++ ) {
-        query = QString( "SELECT tags.url "
-                         "FROM tags, artist, statistics "
-                         "WHERE statistics.url = tags.url AND tags.artist = artist.id AND artist.name = '%1' "
-                         "ORDER BY statistics.playcounter DESC "
-                         "LIMIT 0,15;" ).arg( db.escapeString( artistList[i] ) );
-        childItem = new SmartPlaylist( item, childItem, i18n("By ") + artistList[i], query );
+        sql = QString( "SELECT tags.url "
+                       "FROM tags, artist, statistics "
+                       "WHERE statistics.url = tags.url AND tags.artist = artist.id AND artist.name = '%1' "
+                       "ORDER BY statistics.playcounter DESC "
+                       "LIMIT 0,15;" ).arg( db.escapeString( artistList[i] ) );
+        childItem = new SmartPlaylist( item, childItem, i18n("By ") + artistList[i], sql );
     }
 
     /********** Newest Tracks **************/
-    query = "SELECT url "
-            "FROM tags "
-            "ORDER BY tags.createdate DESC "
-            "LIMIT 0,15;";
-    item = new SmartPlaylist( this, 0, i18n("Newest Tracks"), query );
+    sql = "SELECT url "
+          "FROM tags "
+          "ORDER BY tags.createdate DESC "
+          "LIMIT 0,15;";
+    item = new SmartPlaylist( this, 0, i18n("Newest Tracks"), sql );
     item->setKey( 4 );
     childItem = 0;
     for( uint i=0; i < artistList.count(); i++ ) {
-        query = QString( "SELECT tags.url "
-                         "FROM tags, artist "
-                         "WHERE tags.artist = artist.id AND artist.name = '%1' "
-                         "ORDER BY tags.createdate DESC "
-                         "LIMIT 0,15;" ).arg( db.escapeString( artistList[i] ) );
-        childItem = new SmartPlaylist( item, childItem, i18n("By ") + artistList[i], query );
+        sql = QString( "SELECT tags.url "
+                       "FROM tags, artist "
+                       "WHERE tags.artist = artist.id AND artist.name = '%1' "
+                       "ORDER BY tags.createdate DESC "
+                       "LIMIT 0,15;" ).arg( db.escapeString( artistList[i] ) );
+        childItem = new SmartPlaylist( item, childItem, i18n("By ") + artistList[i], sql );
     }
 
     /********** Last Played **************/
-    query = "SELECT url "
-            "FROM statistics "
-            "ORDER BY statistics.accessdate DESC "
-            "LIMIT 0,15;";
-    item = new SmartPlaylist( this, 0, i18n("Last Played"), query );
+    sql = "SELECT url "
+          "FROM statistics "
+          "ORDER BY statistics.accessdate DESC "
+          "LIMIT 0,15;";
+    item = new SmartPlaylist( this, 0, i18n("Last Played"), sql );
     item->setKey( 5 );
 
     /********** Never Played **************/
-    query = "SELECT tags.url "
-            "FROM tags, artist "
-            "WHERE tags.url NOT IN(SELECT url FROM statistics) AND tags.artist = artist.id "
-            "ORDER BY artist.name, tags.title;";
-    item = new SmartPlaylist(this, 0, i18n("Never Played"), query );
+    sql = "SELECT tags.url "
+          "FROM tags, artist "
+          "WHERE tags.url NOT IN(SELECT url FROM statistics) AND tags.artist = artist.id "
+          "ORDER BY artist.name, tags.title;";
+    item = new SmartPlaylist(this, 0, i18n("Never Played"), sql );
     item->setKey( 6 );
 
     /********** Genres **************/
@@ -224,22 +227,18 @@ void SmartPlaylistView::loadDefaultPlaylists()
     item->setDragEnabled( false );
     item->setKey( 7 );
 
-    QStringList values;
-    QStringList names;
-
-    db.execSql( "SELECT DISTINCT name "
-                "FROM genre;", &values, &names );
+    QStringList values = db.query( "SELECT DISTINCT name FROM genre;" );
 
     childItem = 0;
     for( uint i=0; i < values.count(); i++ ) {
-        query = QString("SELECT tags.url "
-                        "FROM tags, artist "
-                        "WHERE tags.genre = %1 AND tags.artist = artist.id "
-                        "ORDER BY artist.name, tags.title;" ).arg( db.genreID( values[i], false ) );
-        childItem = new SmartPlaylist( item, childItem, values[i], query );
+        sql = QString( "SELECT tags.url "
+                       "FROM tags, artist "
+                       "WHERE tags.genre = %1 AND tags.artist = artist.id "
+                       "ORDER BY artist.name, tags.title;" )
+                       .arg( db.genreID( values[i], false ) );
+
+        childItem = new SmartPlaylist( item, childItem, values[i], sql );
     }
-    values.clear();
-    names.clear();
 }
 
 
@@ -272,21 +271,15 @@ KURL::List SmartPlaylistView::loadSmartPlaylist( QListViewItem *item )
 
     #define item static_cast<SmartPlaylist*>(item)
 
-    QStringList values;
-    QStringList names;
     KURL::List list;
-
     CollectionDB db;
-    db.execSql( item->query(), &values, &names );
+    QStringList values = db.query( item->query() );
 
     if ( !values.isEmpty() )
     {
         for ( uint i = 0; i < values.count(); ++i )
             list += KURL( values[i] );
     }
-
-    values.clear();
-    names.clear();
 
     #undef item
 

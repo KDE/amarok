@@ -77,12 +77,11 @@ void K3bExporter::exportSelectedTracks( int openmode )
 void K3bExporter::exportAlbum( const QString &album, int openmode )
 {
     CollectionDB db;
-    QStringList values;
-
     QString albumId = QString::number( db.albumID( album, false ) );
-    db.execSql( "SELECT url FROM tags "
-                "WHERE album = " + albumId + " "
-                "ORDER BY track;", &values );
+
+    QStringList values = db.query( "SELECT url FROM tags "
+                                   "WHERE album = " + albumId + " "
+                                   "ORDER BY track;" );
 
     if( values.count() ) {
         KURL::List urls;
@@ -97,14 +96,13 @@ void K3bExporter::exportAlbum( const QString &album, int openmode )
 void K3bExporter::exportArtist( const QString &artist, int openmode )
 {
     CollectionDB db;
-    QStringList values;
+    const QString artistId = QString::number( db.artistID( artist, false ) );
 
-    QString artistId = QString::number( db.artistID( artist, false ) );
-    db.execSql( "SELECT url FROM tags "
-                "WHERE artist = " + artistId + " "
-                "ORDER BY title;", &values );
+    QStringList values = db.query( "SELECT url FROM tags "
+                                   "WHERE artist = " + artistId + " "
+                                   "ORDER BY title;" );
 
-    if( values.count() ) {
+    if( !values.isEmpty() ) {
         KURL::List urls;
 
         for( uint i=0; i < values.count(); i++ )

@@ -142,9 +142,9 @@ void ContextBrowser::openURLRequest( const KURL &url )
     {
         QStringList values;
 
-        m_db->execSql( QString( "SELECT DISTINCT url FROM tags WHERE artist = %1 AND album = %2 ORDER BY track;" )
-                       .arg( info[0] )
-                       .arg( info[1] ), &values );
+        values = m_db->query( QString( "SELECT DISTINCT url FROM tags WHERE artist = %1 AND album = %2 ORDER BY track;" )
+                                       .arg( info[0] )
+                                       .arg( info[1] ), &values );
 
         for ( uint i = 0; i < values.count(); i++ )
         {
@@ -417,11 +417,10 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
         QStringList list = QStringList::split( " @@@ ", url.path() );
         QStringList values;
-        QStringList names;
 
-        m_db->execSql( QString( "select distinct url from tags where artist = '%1' and album = '%2' order by track;" )
-                       .arg( list[0] )
-                       .arg( list[1] ), &values, &names );
+        values = m_db->query( QString( "select distinct url from tags where artist = '%1' and album = '%2' order by track;" )
+                                       .arg( list[0] )
+                                       .arg( list[1] ) );
 
         switch ( id )
         {
@@ -466,7 +465,6 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 void ContextBrowser::showHome() //SLOT
 {
     QStringList values;
-    QStringList names;
 
     // Triggers redisplay when new cover image is downloaded
     #ifdef AMAZON_SUPPORT
@@ -483,13 +481,13 @@ void ContextBrowser::showHome() //SLOT
     browser->write(  "</table>" );
     browser->write(  "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-    m_db->execSql( QString( "SELECT tags.title, tags.url, round( statistics.percentage + 0.4 ), artist.name, album.name "
-                            "FROM tags, artist, album, statistics "
-                            "WHERE artist.id = tags.artist AND album.id = tags.album AND statistics.url = tags.url "
-                            "ORDER BY statistics.percentage DESC "
-                            "LIMIT 0,10;" ), &values, &names );
+    values = m_db->query( "SELECT tags.title, tags.url, round( statistics.percentage + 0.4 ), artist.name, album.name "
+                          "FROM tags, artist, album, statistics "
+                          "WHERE artist.id = tags.artist AND album.id = tags.album AND statistics.url = tags.url "
+                          "ORDER BY statistics.percentage DESC "
+                          "LIMIT 0,10;" );
 
-    if ( values.count() )
+    if ( !values.isEmpty() )
     {
         for ( uint i = 0; i < values.count(); i = i + 5 )
             browser->write( QString ( "<tr><td class='song'><a href=\"file:"
@@ -498,7 +496,6 @@ void ContextBrowser::showHome() //SLOT
     }
 
     values.clear();
-    names.clear();
 
     browser->write( "</table></div><br>" );
     // </Favorite Tracks Information>
@@ -510,11 +507,11 @@ void ContextBrowser::showHome() //SLOT
                      "</table>"
                      "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-    m_db->execSql( QString( "SELECT tags.title, tags.url, artist.name, album.name "
-                            "FROM tags, artist, album "
-                            "WHERE artist.id = tags.artist AND album.id = tags.album "
-                            "ORDER BY tags.createdate DESC "
-                            "LIMIT 0,10;" ), &values, &names );
+    m_db->query( "SELECT tags.title, tags.url, artist.name, album.name "
+                 "FROM tags, artist, album "
+                 "WHERE artist.id = tags.artist AND album.id = tags.album "
+                 "ORDER BY tags.createdate DESC "
+                 "LIMIT 0,10;" );
 
     if ( values.count() )
     {
@@ -523,9 +520,6 @@ void ContextBrowser::showHome() //SLOT
                                     + values[i+1].replace( "\"", QCString( "%22" ) ) + "\"'><b>" + values[i]
                                     + "</b><br>" + values[i+2] + " - " + values[i+3] + "</a></td></tr>" ) );
     }
-
-    values.clear();
-    names.clear();
 
     browser->write( "</table></div><br>" );
     // </Recent Tracks Information>
@@ -547,7 +541,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
         return;
 
     QStringList values;
-    QStringList names;
 
     // take care of sql updates (schema changed errors)
     delete m_db;
@@ -571,11 +564,11 @@ void ContextBrowser::showCurrentTrack() //SLOT
                      "</table>"
                      "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-    m_db->execSql( QString( "SELECT datetime( datetime( statistics.createdate, 'unixepoch' ), 'localtime' ), "
-                            "datetime( datetime( statistics.accessdate, 'unixepoch' ), 'localtime' ), statistics.playcounter, round( statistics.percentage + 0.4 ) "
-                            "FROM  statistics "
-                            "WHERE url = '%1';" )
-                   .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names );
+    values = m_db->query( QString( "SELECT datetime( datetime( statistics.createdate, 'unixepoch' ), 'localtime' ), "
+                                   "datetime( datetime( statistics.accessdate, 'unixepoch' ), 'localtime' ), statistics.playcounter, round( statistics.percentage + 0.4 ) "
+                                   "FROM  statistics "
+                                   "WHERE url = '%1';" )
+                                   .arg( m_db->escapeString( m_currentTrack->url().path() ) ) );
 
     if ( !values.isEmpty() )
          /* making 2 tables is most probably not the cleanest way to do it, but it works. */
@@ -644,7 +637,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
                              );
     }
     values.clear();
-    names.clear();
 
     browser->write( "</table></div>" );
     // </Current Track Information>
@@ -674,12 +666,12 @@ void ContextBrowser::showCurrentTrack() //SLOT
             token += " artist.name = '" + m_db->escapeString( m_relatedArtists[i] ) + "' ";
         }
 
-        m_db->execSql( QString( "SELECT tags.title, tags.url, round( statistics.percentage + 0.4 ), artist.name "
-                                "FROM tags, artist, statistics "
-                                "WHERE tags.artist = artist.id AND ( %1 ) AND statistics.url = tags.url "
-                                "ORDER BY statistics.percentage DESC "
-                                "LIMIT 0,5;" )
-                          .arg( token ), &values );
+        values = m_db->query( QString( "SELECT tags.title, tags.url, round( statistics.percentage + 0.4 ), artist.name "
+                                       "FROM tags, artist, statistics "
+                                       "WHERE tags.artist = artist.id AND ( %1 ) AND statistics.url = tags.url "
+                                       "ORDER BY statistics.percentage DESC "
+                                       "LIMIT 0,5;" )
+                                       .arg( token ) );
 
         if ( !values.isEmpty() )
         {
@@ -700,12 +692,12 @@ void ContextBrowser::showCurrentTrack() //SLOT
     }
 
     // <Favourite Tracks Information>
-    m_db->execSql( QString( "SELECT tags.title, tags.url, round( statistics.percentage + 0.4 ) "
-                            "FROM tags, statistics "
-                            "WHERE tags.artist = %1 AND statistics.url = tags.url "
-                            "ORDER BY statistics.percentage DESC "
-                            "LIMIT 0,5;" )
-                   .arg( artist_id ), &values, &names );
+    values = m_db->query( QString( "SELECT tags.title, tags.url, round( statistics.percentage + 0.4 ) "
+                                   "FROM tags, statistics "
+                                   "WHERE tags.artist = %1 AND statistics.url = tags.url "
+                                   "ORDER BY statistics.percentage DESC "
+                                   "LIMIT 0,5;" )
+                                   .arg( artist_id ) );
 
     if ( !values.isEmpty() )
     {
@@ -720,7 +712,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                       + values[i] + " <i>(" + i18n( "Score:" ) + " " + values[i + 2] + ")</i></a></td></tr>" ) );
 
         values.clear();
-        names.clear();
 
         browser->write( "</table></div>" );
     }
@@ -729,13 +720,13 @@ void ContextBrowser::showCurrentTrack() //SLOT
     // <Tracks on this album>
     if ( !m_currentTrack->album().isEmpty() && !m_currentTrack->artist().isEmpty() )
     {
-        m_db->execSql( QString( "SELECT title, url, track "
-                                "FROM tags "
-                                "WHERE album = %1 AND "
-                                "( tags.sampler = 1 OR tags.artist = %2 ) "
-                                "ORDER BY tags.track;" )
-                       .arg( album_id )
-                       .arg( artist_id ), &values, &names );
+        values = m_db->query( QString( "SELECT title, url, track "
+                                       "FROM tags "
+                                       "WHERE album = %1 AND "
+                                       "( tags.sampler = 1 OR tags.artist = %2 ) "
+                                       "ORDER BY tags.track;" )
+                                       .arg( album_id )
+                                       .arg( artist_id ) );
 
         if ( !values.isEmpty() )
         {
@@ -752,7 +743,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
             }
 
             values.clear();
-            names.clear();
 
             browser->write( "</table></div>" );
         }
@@ -760,11 +750,11 @@ void ContextBrowser::showCurrentTrack() //SLOT
     // </Tracks on this album>
 
     // <Albums by this artist>
-    m_db->execSql( QString( "SELECT DISTINCT album.name, album.id "
-                            "FROM tags, album "
-                            "WHERE album.id = tags.album AND tags.artist = %1 AND album.name <> '' "
-                            "ORDER BY album.name;" )
-                   .arg( artist_id ), &values, &names );
+    values = m_db->query( QString( "SELECT DISTINCT album.name, album.id "
+                                   "FROM tags, album "
+                                   "WHERE album.id = tags.album AND tags.artist = %1 AND album.name <> '' "
+                                   "ORDER BY album.name;" )
+                                   .arg( artist_id ) );
 
     if ( !values.isEmpty() )
     {
