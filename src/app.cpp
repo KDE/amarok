@@ -345,6 +345,8 @@ public:
 //SLOT
 void App::applySettings( bool firstTime )
 {
+    ///Called when the configDialog is closed with OK or Apply
+
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
     //determine and apply colors first
@@ -386,7 +388,6 @@ void App::applySettings( bool firstTime )
         m_pPlayerWindow->setFont( font ); //NOTE dont use unsetFont(), we use custom font sizes (for now)
         m_pPlayerWindow->setModifiedPalette(); //do last for efficiency, forces scroller update
         m_pPlayerWindow->update();
-        amaroK::config()->writeEntry( "XMLFile", "amarokui_xmms.rc" );
 
     } else if( m_pPlayerWindow ) {
 
@@ -403,8 +404,6 @@ void App::applySettings( bool firstTime )
         //forgive user-stupidity
         if( !AmarokConfig::showTrayIcon() )
            playlistWindow()->show();
-
-        amaroK::config()->writeEntry( "XMLFile", "amarokui.rc" );
     }
 
     amaroK::OSD::instance()->applySettings();
@@ -458,20 +457,14 @@ void App::applySettings( bool firstTime )
         if ( !firstTime ) EngineController::instance()->reInit();
     } //</Engine>
 
-    m_pPlaylistWindow->recreateGUI();
-
     /* delete unneeded cover images from cache */
-    QString size = QString::number( AmarokConfig::coverPreviewSize() ) + "@";
-    QDir cacheDir = KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) + "albumcovers/cache/";
-    QStringList obsoleteCovers( cacheDir.entryList( "*" ) );
-    for ( QStringList::Iterator it = obsoleteCovers.begin(); it != obsoleteCovers.end(); ++it )
-    {
+    //TODO for the love of god! why do this here?!!!!!!!?
+    QString size = QString::number( AmarokConfig::coverPreviewSize() ) + '@';
+    QDir cacheDir = KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "albumcovers/cache/";
+    QStringList obsoleteCovers = cacheDir.entryList( "*" );
+    for( QStringList::Iterator it = obsoleteCovers.begin(); it != obsoleteCovers.end(); ++it )
         if ( !( *it ).startsWith( size  ) && !( *it ).startsWith( "50@" ) )
-        {
-            QFile file( cacheDir.filePath( *it ) );
-            file.remove();
-        }
-    }
+            QFile( cacheDir.filePath( *it ) ).remove();
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
