@@ -204,12 +204,13 @@ Vis::Selector::Selector()
     QDir dir( XMMS_PLUGIN_PATH );
     const QFileInfoList *list = dir.entryInfoList();
     QFileInfo *fi;
-
-    for ( QFileInfoListIterator it( *list ); ( fi = *it ); ++it )
-        if ( fi->isFile() && fi->extension() == "so" )
-            new Selector::Item( this, fi->fileName() );
+    if ( list )
+    {
+        for ( QFileInfoListIterator it( *list ); ( fi = *it ); ++it )
+            if ( fi->isFile() && fi->extension() == "so" )
+                new Selector::Item( this, fi->fileName() );
+    }
 }
-
 void
 Vis::Selector::processExited( KProcess *proc )
 {
