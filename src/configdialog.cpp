@@ -190,8 +190,11 @@ void AmarokConfigDialog::soundSystemChanged()
 /** REIMPLEMENTED */
 bool AmarokConfigDialog::hasChanged()
 {
+    KTrader::OfferList offers = PluginManager::query( QString( "[X-KDE-amaroK-plugintype] == 'engine' and [X-KDE-amaroK-name] == '%1'" )
+                                                         .arg( AmarokConfig::soundSystem() ) );
+    
     bool changed =
-        m_pSoundSystem->currentText()            != AmarokConfig::soundSystem();
+        m_pSoundSystem->currentText()            != offers[0]->name();
 
     if ( m_pSoundOutput->isEnabled() )
         changed |= m_pSoundOutput->currentText() != AmarokConfig::soundOutput();
