@@ -43,7 +43,7 @@
 #include <qimage.h>
 
 
-#define escapeHTML(s)     QString(s).replace( "<", "&lt;" ).replace( ">", "&gt;" )
+#define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
 #define escapeHTMLAttr(s) QString(s).replace( "%", "%25" ).replace( "'", "%27" )
 
 
