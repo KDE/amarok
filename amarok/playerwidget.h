@@ -20,6 +20,7 @@
 
 #include "amarokslider.h"
 
+#include <qguardedptr.h>
 #include <qlabel.h>
 #include <qwidget.h>
 #include <qpixmap.h>
@@ -101,7 +102,7 @@ class PlayerWidget : public QWidget
         AmarokSlider *m_pSlider;
         AmarokSlider *m_pSliderVol;
         QLabel *m_pTimeDisplayLabel;
-
+        
         AmarokButton *m_pButtonPl;
         AmarokButton *m_pButtonEq;
         AmarokButton *m_pButtonLogo;
@@ -112,7 +113,7 @@ class PlayerWidget : public QWidget
         QPushButton *m_pButtonStop;
         QPushButton *m_pButtonNext;
 
-        ArtsConfigWidget *m_pPlayObjConfigWidget;
+        QGuardedPtr<ArtsConfigWidget> m_pPlayObjConfigWidget;
 
         void wheelEvent( QWheelEvent *e ); //systray requires access
 
@@ -121,7 +122,6 @@ class PlayerWidget : public QWidget
         void slotConfigGlobalShortcuts();
         void slotCopyClipboard();
         void slotConfigPlayObject();
-        void slotConfigWidgetDestroyed();
         void slotUpdateTrayIcon( bool visible );
         void createVis();
         void slotReportBug();
@@ -147,7 +147,7 @@ class PlayerWidget : public QWidget
         QTimer *scrollTimer;
         QTimer *m_visTimer;
         QBoxLayout *m_pLay6;
-
+        
         QPixmap m_oldBgPixmap;
         QPixmap *m_pScrollPixmap;
         QPixmap *m_pBgPixmap;
@@ -171,6 +171,7 @@ class PlayerWidget : public QWidget
         int m_sxAdd;
         AmarokSystray *m_pTray;
         AmarokDcopHandler *m_pDcopHandler;
+
 };
 
 #endif

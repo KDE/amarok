@@ -159,7 +159,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
         , m_pActionCollection( new KActionCollection( this ) )
         , m_pPopupMenu( NULL )
         , m_pVis( NULL )
-        , m_pPlayObjConfigWidget( NULL )
         , m_visTimer( new QTimer( this ) )
         , m_helpMenu( new KHelpMenu( this, KGlobal::instance()->aboutData(), m_pActionCollection ) )
         , m_pDcopHandler( new AmarokDcopHandler )
@@ -763,16 +762,10 @@ void PlayerWidget::slotConfigPlayObject()
     if ( pApp->m_pPlayObject && !m_pPlayObjConfigWidget )
     {
         m_pPlayObjConfigWidget = new ArtsConfigWidget( pApp->m_pPlayObject->object(), this );
-
-        connect( m_pPlayObjConfigWidget, SIGNAL( destroyed() ), this, SLOT( slotConfigWidgetDestroyed() ) );
+        connect( pApp->m_pPlayObject, SIGNAL( destroyed() ), m_pPlayObjConfigWidget, SLOT( deleteLater() ) );
+        
         m_pPlayObjConfigWidget->show();
     }
-}
-
-
-void PlayerWidget::slotConfigWidgetDestroyed()
-{
-    m_pPlayObjConfigWidget = NULL;
 }
 
 

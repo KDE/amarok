@@ -804,17 +804,10 @@ void PlayerApp::slotPlay() const { m_pBrowserWin->m_pPlaylistWidget->request( Pl
 void PlayerApp::play( const KURL &url, const MetaBundle *tags )
 {
     if ( m_optXFade && m_bIsPlaying && url != m_playingURL )
-    {
-      startXFade();
-    }
+        startXFade();    
+    
     else if ( m_pPlayObject != NULL )
-    {
-        //<mxcl> this used to call stopCurrent(), but that function causes nasty UI flicker so I did this
-        m_pPlayObject->halt();
-        delete m_pPlayObject;
-        m_pPlayObject = NULL;
-        //m_playingURL = KURL(); <berkus> this doesn't work for some reason and i'm not sure if it ever could, but seems almost okay for now
-    }
+        slotStopCurrent();        
 
     KDE::PlayObjectFactory factory( m_Server );
 
@@ -982,7 +975,6 @@ void PlayerApp::slotStopCurrent()
 
         delete m_pPlayObject;
         m_pPlayObject = NULL;
-        //m_playingURL = KURL(); <berkus> this doesn't work for some reason and i'm not sure if it ever could, but seems almost okay for now
     }
 
     m_bIsPlaying = false;
@@ -993,9 +985,6 @@ void PlayerApp::slotStopCurrent()
     m_pPlayerWidget->m_pSlider->setMaxValue( 0 );
     m_pPlayerWidget->setScroll();
     m_pPlayerWidget->timeDisplay( false, 0, 0, 0 );
-
-    delete m_pPlayerWidget->m_pPlayObjConfigWidget;
-    m_pPlayerWidget->m_pPlayObjConfigWidget = NULL;
 }
 
 
@@ -1147,7 +1136,7 @@ void PlayerApp::slotMainTimer()
         else if ( m_XFadeValue > 1.0 )
             m_XFadeValue = 1.0;
 
-        kdDebug() << "[slotMainTimer] m_XFadeValue: " << m_XFadeValue << endl;
+//         kdDebug() << "[slotMainTimer] m_XFadeValue: " << m_XFadeValue << endl;
         m_XFade.percentage( m_XFadeValue );
 
         if( m_XFadeValue == 0.0 || m_XFadeValue == 1.0 )
