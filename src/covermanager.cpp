@@ -160,7 +160,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     m_statusBar->addWidget( m_progressBox = new QHBox( m_statusBar ), 1, true );
     //stop button
     QToolButton *stopButton = new QToolButton( m_progressBox );
-    stopButton->setIconSet( SmallIcon( "cancel" ) );
+    stopButton->setIconSet( SmallIconSet( "cancel" ) );
     connect( stopButton, SIGNAL(clicked()), SLOT(stopFetching()) );
     //progressbar for coverfetching
     m_progress = new KProgress( m_progressBox );
@@ -433,23 +433,23 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
     QPtrList<CoverViewItem> selected = selectedItems();
     if( selected.count() > 1 ) {
         #ifdef AMAZON_SUPPORT
-        menu.insertItem( SmallIcon("www"), i18n("Fetch Selected Covers"), FETCH );
+        menu.insertItem( SmallIconSet("www"), i18n("Fetch Selected Covers"), FETCH );
         #endif
-        menu.insertItem( SmallIcon("editdelete"), i18n("Delete Selected Covers"), DELETE );
+        menu.insertItem( SmallIconSet("editdelete"), i18n("Delete Selected Covers"), DELETE );
 
     }
     else {
-        menu.insertItem( SmallIcon("viewmag"), i18n("Show Fullsize"), SHOW );
+        menu.insertItem( SmallIconSet("viewmag"), i18n("Show Fullsize"), SHOW );
         menu.setItemEnabled( SHOW, item->hasCover() );
         #ifdef AMAZON_SUPPORT
-        menu.insertItem( SmallIcon("www"), i18n("Fetch Cover"), FETCH );
+        menu.insertItem( SmallIconSet("www"), i18n("Fetch Cover"), FETCH );
         menu.insertSeparator();
-        menu.insertItem( SmallIcon("folder_image"), i18n("Add Custom Cover"), CUSTOM );
+        menu.insertItem( SmallIconSet("folder_image"), i18n("Add Custom Cover"), CUSTOM );
         #else
-        menu.insertItem( SmallIcon("folder_image"), i18n("Add Cover"), CUSTOM );
+        menu.insertItem( SmallIconSet("folder_image"), i18n("Add Cover"), CUSTOM );
         #endif
         menu.insertSeparator();
-        menu.insertItem( SmallIcon("editdelete"), i18n("Delete Cover"), DELETE );
+        menu.insertItem( SmallIconSet("editdelete"), i18n("Delete Cover"), DELETE );
         menu.setItemEnabled( DELETE, item->hasCover() );
     }
 

@@ -574,15 +574,15 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         //************* Current Playlist menu ***********
             enum Id { SAVE, CLEAR, RMDUP, BURN_DATACD, BURN_AUDIOCD };
 
-            menu.insertItem( SmallIcon( "filesave" ), i18n( "&Save" ), SAVE );
-            menu.insertItem( SmallIcon( "view_remove" ), i18n( "&Clear" ), CLEAR );
+            menu.insertItem( SmallIconSet( "filesave" ), i18n( "&Save" ), SAVE );
+            menu.insertItem( SmallIconSet( "view_remove" ), i18n( "&Clear" ), CLEAR );
             menu.insertItem( i18n( "Remove Duplicates" ), RMDUP );
 
             menu.insertSeparator();
 
-            menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n("Burn to CD as Data"), BURN_DATACD );
+            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD as Data"), BURN_DATACD );
             menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
-            menu.insertItem( SmallIcon( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BURN_AUDIOCD );
+            menu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BURN_AUDIOCD );
             menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
 
             switch( menu.exec( p ) )
@@ -608,17 +608,17 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             #define item static_cast<PlaylistBrowserItem*>(item)
             enum Id { LOAD, ADD, SAVE, RESTORE, RENAME, REMOVE, DELETE };
 
-            menu.insertItem( SmallIcon( "fileopen" ), i18n( "&Load" ), LOAD );
-            menu.insertItem( SmallIcon( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
+            menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
+            menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
             menu.insertSeparator();
             if( item->isModified() ) {
-                menu.insertItem( SmallIcon("filesave"), i18n( "&Save" ), SAVE );
+                menu.insertItem( SmallIconSet("filesave"), i18n( "&Save" ), SAVE );
                 menu.insertItem( i18n( "Res&tore" ), RESTORE );
                 menu.insertSeparator();
             }
-            menu.insertItem( SmallIcon("editclear"), i18n( "&Rename" ), RENAME );
-            menu.insertItem( SmallIcon("edittrash"), i18n( "R&emove" ), REMOVE );
-            menu.insertItem( SmallIcon("editdelete"), i18n( "&Delete" ), DELETE );
+            menu.insertItem( SmallIconSet("editclear"), i18n( "&Rename" ), RENAME );
+            menu.insertItem( SmallIconSet("edittrash"), i18n( "R&emove" ), REMOVE );
+            menu.insertItem( SmallIconSet("editdelete"), i18n( "&Delete" ), DELETE );
             menu.setAccel( Key_Space, LOAD );
             menu.setAccel( Key_F2, RENAME );
             menu.setAccel( Key_Delete, REMOVE );
@@ -657,21 +657,21 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         enum Actions { MAKE, APPEND, QUEUE, BURN_DATACD, BURN_AUDIOCD, REMOVE, INFO };
 
-        menu.insertItem( SmallIcon( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
-        menu.insertItem( SmallIcon( "2rightarrow" ), i18n( "&Queue After Current Track" ), QUEUE );
+        menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
+        menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
+        menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue After Current Track" ), QUEUE );
 
         menu.insertSeparator();
 
-        menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n("Burn to CD as Data"), BURN_DATACD );
+        menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD as Data"), BURN_DATACD );
         menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() && item->url().isLocalFile() );
-        menu.insertItem( SmallIcon( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BURN_AUDIOCD );
+        menu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BURN_AUDIOCD );
         menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() && item->url().isLocalFile() );
 
         menu.insertSeparator();
 
-        menu.insertItem( SmallIcon("edittrash"), i18n( "&Remove" ), REMOVE );
-        menu.insertItem( SmallIcon("info"), i18n( "&Track Information" ), INFO );
+        menu.insertItem( SmallIconSet("edittrash"), i18n( "&Remove" ), REMOVE );
+        menu.insertItem( SmallIconSet("info"), i18n( "&Track Information" ), INFO );
 
         switch( menu.exec( p ) ) {
             case MAKE:
@@ -916,7 +916,7 @@ void PlaylistBrowserView::mousePressed( int button, QListViewItem *item, const Q
                 enum Id { SAVE, RESTORE };
 
                 KPopupMenu saveMenu( this );
-                saveMenu.insertItem( SmallIcon("filesave"), i18n( "&Save" ), SAVE );
+                saveMenu.insertItem( SmallIconSet("filesave"), i18n( "&Save" ), SAVE );
                 saveMenu.insertItem( i18n( "&Restore" ), RESTORE );
 
                 switch( saveMenu.exec( pnt ) ) {

@@ -104,7 +104,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     // progress
     addWidget( m_pProgressBox = new QHBox( this ), 0, true );
     QToolButton *stopButton = new QToolButton( m_pProgressBox );
-    stopButton->setIconSet( SmallIcon( "cancel" ) );
+    stopButton->setIconSet( SmallIconSet( "cancel" ) );
     m_pProgress = new KProgress( m_pProgressBox );
     connect( stopButton, SIGNAL(clicked()), SLOT(stopPlaylistLoader()) );
     m_pProgressBox->hide();

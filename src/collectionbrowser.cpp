@@ -231,7 +231,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 
     //<PROGRESS BAR>
         m_progressBox = new QHBox( m_parent );
-        QPushButton* button = new QPushButton( SmallIcon( "button_cancel" ), i18n( "Abort" ), m_progressBox );
+        QPushButton* button = new QPushButton( SmallIconSet( "button_cancel" ), i18n( "Abort" ), m_progressBox );
         connect( button, SIGNAL( clicked() ), m_insertdb, SLOT( stopScan() ) );
         m_progress = new KProgress( m_progressBox );
         m_progress->setFixedHeight( button->sizeHint().height() );
@@ -338,7 +338,7 @@ CollectionView::renderView( )  //SLOT
     QStringList values;
     QStringList names;
     bool addedVA = false;
-    m_db->retrieveFirstLevel( tableForCat( m_category1 ), tableForCat( m_category2 ), 
+    m_db->retrieveFirstLevel( tableForCat( m_category1 ), tableForCat( m_category2 ),
                               tableForCat( m_category3 ), m_filter, values, names );
 
     for ( uint i = 0; i < values.count(); i += 2 )
@@ -431,17 +431,17 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     QString category;
 
     if( item->depth() == 0 ) {
-        m_db->retrieveSecondLevel( item->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ), 
+        m_db->retrieveSecondLevel( item->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ),
                                    tableForCat( m_category3 ), m_filter, values, names );
         category = m_category2;
     } else if( item->depth() == 1 ) {
-        m_db->retrieveThirdLevel( item->parent()->text( 0 ), item->text( 0 ), tableForCat( m_category1 ), 
-                                  tableForCat( m_category2 ), tableForCat( m_category3 ), 
+        m_db->retrieveThirdLevel( item->parent()->text( 0 ), item->text( 0 ), tableForCat( m_category1 ),
+                                  tableForCat( m_category2 ), tableForCat( m_category3 ),
                                   m_filter, values, names );
         category = m_category3;
     } else if( item->depth() == 2 ) {
-        m_db->retrieveFourthLevel( item->parent()->parent()->text( 0 ), item->parent()->text( 0 ), 
-                                   item->text( 0 ),  tableForCat( m_category1 ), tableForCat( m_category2 ), 
+        m_db->retrieveFourthLevel( item->parent()->parent()->text( 0 ), item->parent()->text( 0 ),
+                                   item->text( 0 ),  tableForCat( m_category1 ), tableForCat( m_category2 ),
                                    tableForCat( m_category3 ), m_filter, values, names );
         category = i18n("None");
     }
@@ -606,34 +606,34 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         #endif
 
 
-        menu.insertItem( SmallIcon( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
-        menu.insertItem( SmallIcon( "2rightarrow" ), i18n( "&Queue After Current Track" ), QUEUE );
+        menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
+        menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
+        menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue After Current Track" ), QUEUE );
 
         menu.insertSeparator();
 
         if( category == i18n("Artist") ) {
-            menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n("Burn All Tracks by This Artist"), BURN_ARTIST );
+            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn All Tracks by This Artist"), BURN_ARTIST );
             menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
         }
         else if( category == i18n("Album") ) {
-            menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n("Burn This Album"), BURN_ALBUM );
+            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn This Album"), BURN_ALBUM );
             menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() );
         }
         else if( !item->isExpandable() ) {
-            menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n("Burn to CD as Data"), BURN_DATACD );
+            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD as Data"), BURN_DATACD );
             menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
-            menu.insertItem( SmallIcon( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BURN_AUDIOCD );
+            menu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BURN_AUDIOCD );
             menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
         }
 
         menu.insertSeparator();
 
         #ifdef AMAZON_SUPPORT
-        menu.insertItem( SmallIcon( "www" ), i18n( "&Fetch Cover Images" ), this, SLOT( fetchCover() ), 0, COVER );
+        menu.insertItem( SmallIconSet( "www" ), i18n( "&Fetch Cover Images" ), this, SLOT( fetchCover() ), 0, COVER );
         menu.setItemEnabled(COVER, category == i18n("Album") );
         #endif
-        menu.insertItem( SmallIcon( "info" ), i18n( "View/Edit Meta Information..." ), this, SLOT( showTrackInfo() ), 0, INFO );
+        menu.insertItem( SmallIconSet( "info" ), i18n( "View/Edit Meta Information..." ), this, SLOT( showTrackInfo() ), 0, INFO );
 
         menu.setItemEnabled( INFO, !item->isExpandable()  );
 
@@ -822,8 +822,8 @@ CollectionView::listSelected() {
                     values.clear();
                     names.clear();
 
-                    m_db->retrieveSecondLevelURLs( item->text( 0 ), child->text( 0 ), tableForCat( m_category1 ), 
-                                                   tableForCat( m_category2 ), tableForCat( m_category3 ), 
+                    m_db->retrieveSecondLevelURLs( item->text( 0 ), child->text( 0 ), tableForCat( m_category1 ),
+                                                   tableForCat( m_category2 ), tableForCat( m_category3 ),
                                                    m_filter, values, names );
                     for ( uint i = 0; i < values.count(); i++ )
                     {
@@ -861,8 +861,8 @@ CollectionView::listSelected() {
                         values.clear();
                         names.clear();
 
-                        m_db->retrieveThirdLevelURLs( item->text( 0 ), child->text( 0 ), grandChild->text(0), 
-                                                      tableForCat( m_category1 ), tableForCat( m_category2 ), 
+                        m_db->retrieveThirdLevelURLs( item->text( 0 ), child->text( 0 ), grandChild->text(0),
+                                                      tableForCat( m_category1 ), tableForCat( m_category2 ),
                                                       tableForCat( m_category3 ),  m_filter, values, names );
                         for ( uint i = 0; i < values.count(); i++ )
                         {

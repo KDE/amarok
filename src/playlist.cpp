@@ -358,7 +358,7 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
             MetaBundle mb( url );
             item->setText( mb );
             m_totalLength += mb.length();
-            
+
             if ( directPlay )
                 activate( item );
             emit itemCountChanged( childCount(), m_totalLength );
@@ -415,7 +415,7 @@ Playlist::playNextTrack()
         activate( 0 );
         return;
     }
-    
+
     if( !AmarokConfig::repeatTrack() )
     {
         if( !m_nextTracks.isEmpty() )
@@ -1705,7 +1705,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     KPopupMenu popup( this );
 
     popup.insertTitle( KStringHandler::rsqueeze( item->metaBundle().prettyTitle(), 50 ) );
-    popup.insertItem( SmallIcon( "player_play" ), isCurrent && isPlaying ? i18n( "&Restart" ) : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
+    popup.insertItem( SmallIconSet( "player_play" ), isCurrent && isPlaying ? i18n( "&Restart" ) : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
 
     if( !isQueued ) { //not in nextTracks queue
         QString nextText = isCurrent ? i18n("Play This Track &Again") : i18n( "&Queue After Current Track" );
@@ -1714,42 +1714,42 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         if ( nextIndex > 1 )
             nextText += QString( " (%1)" ).arg( nextIndex );
 
-        popup.insertItem( SmallIcon( "2rightarrow" ), nextText, PLAY_NEXT );
+        popup.insertItem( SmallIconSet( "2rightarrow" ), nextText, PLAY_NEXT );
     }
     else
-        popup.insertItem( SmallIcon( "2leftarrow" ), i18n( "&Dequeue (%1)" ).arg( queueIndex+1 ), PLAY_NEXT );
+        popup.insertItem( SmallIconSet( "2leftarrow" ), i18n( "&Dequeue (%1)" ).arg( queueIndex+1 ), PLAY_NEXT );
 
     if( isCurrent )
     {
        amaroK::actionCollection()->action( "pause" )->plug( &popup );
-       popup.insertItem( SmallIcon( "player_stop" ), m_stopAfterCurrent ? i18n( "&Keep Playing After Track" ) : i18n( "&Stop Playing After Track" ), STOP_DONE );
+       popup.insertItem( SmallIconSet( "player_stop" ), m_stopAfterCurrent ? i18n( "&Keep Playing After Track" ) : i18n( "&Stop Playing After Track" ), STOP_DONE );
     }
 
     popup.insertSeparator();
-    popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit '%1' For Selected Tracks" ).arg( tagName ), 0, 0, Key_F2, EDIT );
+    popup.insertItem( SmallIconSet( "edit" ), i18n( "&Edit '%1' For Selected Tracks" ).arg( tagName ), 0, 0, Key_F2, EDIT );
     popup.insertItem( trackColumn
       ? i18n("&Iteratively Assign Track Numbers")
       : i18n("Write '%1' For Selected Tracks").arg( KStringHandler::rsqueeze( tag, 30 ) ), FILL_DOWN );
-    popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy Meta-string" ), 0, 0, CTRL+Key_C, COPY );
+    popup.insertItem( SmallIconSet( "editcopy" ), i18n( "&Copy Meta-string" ), 0, 0, CTRL+Key_C, COPY );
     popup.insertSeparator();
 
     KPopupMenu *burnMenu = new KPopupMenu( this );
-    burnMenu->insertItem( SmallIcon( "cdrom_unmount" ), i18n("Selected Tracks as Data CD"), BURN_SELECTION_DATA );
-    burnMenu->insertItem( SmallIcon( "cdaudio_unmount" ), i18n("Selected Tracks as Audio CD"), BURN_SELECTION_AUDIO );
+    burnMenu->insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Selected Tracks as Data CD"), BURN_SELECTION_DATA );
+    burnMenu->insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("Selected Tracks as Audio CD"), BURN_SELECTION_AUDIO );
     burnMenu->insertSeparator();
-    burnMenu->insertItem( SmallIcon( "cdrom_unmount" ), i18n("This Album as Data CD"), BURN_ALBUM_DATA );
-    burnMenu->insertItem( SmallIcon( "cdaudio_unmount" ), i18n("This Album as Audio CD"), BURN_ALBUM_AUDIO );
+    burnMenu->insertItem( SmallIconSet( "cdrom_unmount" ), i18n("This Album as Data CD"), BURN_ALBUM_DATA );
+    burnMenu->insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("This Album as Audio CD"), BURN_ALBUM_AUDIO );
     burnMenu->insertSeparator();
-    burnMenu->insertItem( SmallIcon( "cdrom_unmount" ), i18n("All Tracks by This Artist as Data CD"), BURN_ARTIST_DATA );
-    burnMenu->insertItem( SmallIcon( "cdaudio_unmount" ), i18n("All Tracks by This Artist as Audio CD"), BURN_ARTIST_AUDIO );
-    popup.insertItem( SmallIcon( "cdwriter_unmount" ), i18n("Burn"), burnMenu, BURN_MENU );
+    burnMenu->insertItem( SmallIconSet( "cdrom_unmount" ), i18n("All Tracks by This Artist as Data CD"), BURN_ARTIST_DATA );
+    burnMenu->insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("All Tracks by This Artist as Audio CD"), BURN_ARTIST_AUDIO );
+    popup.insertItem( SmallIconSet( "cdwriter_unmount" ), i18n("Burn"), burnMenu, BURN_MENU );
     popup.setItemEnabled( BURN_MENU, item->url().isLocalFile() && K3bExporter::isAvailable() );
     popup.insertSeparator();
 
-    popup.insertItem( SmallIcon( "edittrash" ), i18n( "&Remove From Playlist" ), this, SLOT(removeSelectedItems()), Key_Delete );
-    popup.insertItem( SmallIcon( "editdelete" ), i18n("&Delete File", "&Delete %n Selected Files", itemCount ), this, SLOT(deleteSelectedFiles()), SHIFT+Key_Delete );
+    popup.insertItem( SmallIconSet( "edittrash" ), i18n( "&Remove From Playlist" ), this, SLOT(removeSelectedItems()), Key_Delete );
+    popup.insertItem( SmallIconSet( "editdelete" ), i18n("&Delete File", "&Delete %n Selected Files", itemCount ), this, SLOT(deleteSelectedFiles()), SHIFT+Key_Delete );
     popup.insertSeparator();
-    popup.insertItem( SmallIcon( "info" ), i18n( "&View/Edit Meta Information..." ), VIEW ); //TODO rename properties
+    popup.insertItem( SmallIconSet( "info" ), i18n( "&View/Edit Meta Information..." ), VIEW ); //TODO rename properties
 
 
     popup.setItemEnabled( EDIT, canRename ); //only enable for columns that have editable tags
@@ -1765,7 +1765,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     case PLAY_NEXT:
         queue( item );
         break;
-        
+
     case STOP_DONE:
         // we could change the stopAfterCurrent( bool ) to stopAfterCurrent(), but imho, this is much more readable and intuitive - seb
         stopAfterCurrent( !m_stopAfterCurrent );

@@ -258,12 +258,12 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     if ( url.protocol() == "fetchcover" ) {
         menu.insertTitle( i18n( "Cover Image" ) );
 
-        menu.insertItem( SmallIcon( "viewmag" ), i18n( "&Show Fullsize" ), SHOW );
-        menu.insertItem( SmallIcon( "www" ), i18n( "&Fetch From amazon.com" ), FETCH );
-        menu.insertItem( SmallIcon("folder_image"), i18n( "Add &Custom Cover" ), CUSTOM );
+        menu.insertItem( SmallIconSet( "viewmag" ), i18n( "&Show Fullsize" ), SHOW );
+        menu.insertItem( SmallIconSet( "www" ), i18n( "&Fetch From amazon.com" ), FETCH );
+        menu.insertItem( SmallIconSet("folder_image"), i18n( "Add &Custom Cover" ), CUSTOM );
         menu.insertSeparator();
 
-        menu.insertItem( SmallIcon( "editdelete" ), i18n("&Delete Image File"), DELETE );
+        menu.insertItem( SmallIconSet( "editdelete" ), i18n("&Delete Image File"), DELETE );
         menu.insertSeparator();
         menu.insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n( "Cover Manager" ), MANAGER );
 
@@ -277,9 +277,9 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
         menu.insertTitle( i18n("Track"), TITLE );
 
-        menu.insertItem( SmallIcon( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
-        menu.insertItem( SmallIcon( "2rightarrow" ), i18n( "&Queue After Current Track" ), ASNEXT );
+        menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
+        menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
+        menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue After Current Track" ), ASNEXT );
 
         if ( url.protocol() == "album" ) {
             QString sql = "select distinct url from tags where artist = '%1' and album = '%2' order by track;";

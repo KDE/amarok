@@ -115,7 +115,7 @@ Menu::Menu()
 
     insertSeparator();
 
-    insertItem( SmallIcon("help"), i18n( "&Help" ), helpMenu( this ) );
+    insertItem( SmallIconSet("help"), i18n( "&Help" ), helpMenu( this ) );
 
     insertSeparator();
 

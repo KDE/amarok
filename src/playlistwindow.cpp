@@ -226,7 +226,7 @@ PlaylistWindow::init()
 
     //BEGIN Actions menu
     KPopupMenu *actionsMenu = new KPopupMenu( m_menubar );
-    actionsMenu->insertItem( SmallIcon("fileopen"), i18n("Play Media...") );
+    actionsMenu->insertItem( SmallIconSet("fileopen"), i18n("Play Media...") );
     actionCollection()->action("play_audiocd")->plug( actionsMenu );
     actionsMenu->insertSeparator();
     actionCollection()->action("prev")->plug( actionsMenu );
@@ -643,7 +643,7 @@ void PlaylistWindow::slotAddLocation() //SLOT
     dlg.setCaption( kapp->makeStdCaption( i18n( "Enter File, URL or Directory" ) ) );
     dlg.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
     dlg.exec();
-    
+
     if ( !dlg.selectedURL().isEmpty() )
         m_playlist->appendMedia( dlg.selectedURL() );
 }
