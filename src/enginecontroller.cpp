@@ -162,12 +162,12 @@ EngineBase *EngineController::loadEngine() //static
 
 bool EngineController::canDecode( const KURL &url ) //static
 {
-    //TODO engine refactor branch has to be KURL aware for this function
-    //TODO a KFileItem version?
+    //TODO a KFileItem version? <- presumably so we can mimetype check
 
     const QString fileName = url.fileName();
     const QString ext = fileName.mid( fileName.findRev( '.' ) + 1 ).lower();
 
+    //FIXME why do we do this? Please add comments to odd looking code!
     if ( ext == "m3u" || ext == "pls" ) return false;
 
     // Ignore protocols "fetchcover" and "musicbrainz", they're not local but we dont really want them in the playlist :)
@@ -181,6 +181,17 @@ bool EngineController::canDecode( const KURL &url ) //static
         return s_extensionCache[ext];
 
     const bool valid = engine()->canDecode( url );
+
+    if ( !valid && ext == "mp3" )
+        //FIXME is AmarokConfig::soundSystem() translated?
+        //TODO use a key that contains this engine name? ie xineEngineCannotPlayMP3
+        KMessageBox::information( 0,
+           i18n( "<p>The %1 claims it <b>cannot</b> play MP3s!"
+                 "<p>You may want to choose a different engine from the <i>Configure Dialog</i>, or examine "
+                 "the installation of the multimedia-framework that the current engine uses. "
+                 "<p>You may find useful information in the <i>FAQ</i> section of the <i>amaroK HandBook</i>." )
+               .arg( AmarokConfig::soundSystem() ),
+           i18n( "Your Multimedia-framework is teh Sux0r!" ), "engineCannotPlayMp3Warning" );
 
     // Cache this result for the next lookup
     if ( !ext.isEmpty() )
