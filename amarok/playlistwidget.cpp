@@ -717,7 +717,8 @@ void PlaylistWidget::copyToClipboard( const QListViewItem *item ) const //SLOT
 
     if( item != NULL )
     {
-        QApplication::clipboard()->setText( item->text( 0 ) );
+        QApplication::clipboard()->setText( item->text( 0 ), QClipboard::Clipboard );
+        QApplication::clipboard()->setText( item->text( 0 ), QClipboard::Selection );
     }
 }
 
