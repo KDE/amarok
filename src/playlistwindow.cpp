@@ -311,10 +311,8 @@ void PlaylistWindow::setColors( const QPalette &pal, const QColor &bgAlt )
         {
             widget->setPaletteForegroundColor( Qt::white );
         }
-        else if( obj->inherits("QMenuBar") || obj->parent()->isA("QSplitter") )
+        else if( obj->inherits("QMenuBar") || obj->isA("QSplitterHandle") )
         {
-            //I don't understand the QSplitter one, I got it to work by trial and error
-
             widget->setPalette( QApplication::palette() );
         }
 

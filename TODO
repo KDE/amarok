@@ -8,8 +8,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
  
-  ADD 152 <madp8>  Make "Playlists" area in Playlist Browser inherit color scheme i.e. "amaroK" scheme.
-  
   FIX 150 <gjehle> Is it a known bug that amarok has problems with streamtitles where there's a >> ' << in the name ?
                    Should be: The DJ Formerly Known As Arnie - Can't Usually Notice Tuesdays - LIVE from Almere, The Netherlands
                    It is:
