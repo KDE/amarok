@@ -3,5 +3,5 @@ ggzmeta://mindx.dyndns.org:15690=Selected stations
 ggzmeta://mindx.dyndns.org:15691=Contributed stations
 
 [meta]
-metaservers[$e]=ggzmeta://mindx.dyndns.org:15690,ggzmeta://mindx.dyndns.org:15691,file:$(kde-config --prefix)/share/apps/kderadiostation/metasound.xml
+metaservers[$e]=ggzmeta://mindx.dyndns.org:15690,ggzmeta://mindx.dyndns.org:15691,file:$(kde-config --prefix)/share/apps/amarok/data/metasound.xml
 
