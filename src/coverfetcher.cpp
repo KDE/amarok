@@ -1,12 +1,14 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // See COPYING file for licensing information.
 
+#include "amarokconfig.h"
 #include "coverfetcher.h"
 #include "amazonsearch.h"
 #include "collectiondb.h"
 
 #include <qdom.h>
 #include <qlabel.h>
+#include <qcombobox.h>
 #include <qvbox.h>
 
 #include <kconfig.h>
@@ -94,15 +96,32 @@ CoverFetcher::xmlResult( KIO::Job* job ) //SLOT
     QDomDocument doc;
     doc.setContent( m_xmlDocument );
     
-    QString imageUrl = doc.documentElement()
-                          .namedItem( "Details" )
-                          .namedItem( "ImageUrlLarge" )
-                          .firstChild().toText().nodeValue();
+    if ( AmarokConfig::coverSize() == 0 )
+    {
+        m_url = doc.documentElement()
+                   .namedItem( "Details" )
+                   .namedItem( "ImageUrlSmall" )
+                   .firstChild().toText().nodeValue();
+    }
+    else if ( AmarokConfig::coverSize() == 1 )
+    {
+        m_url = doc.documentElement()
+                   .namedItem( "Details" )
+                   .namedItem( "ImageUrlMedium" )
+                   .firstChild().toText().nodeValue();
+    }
+    else
+    {        
+        m_url = doc.documentElement()
+                   .namedItem( "Details" )
+                   .namedItem( "ImageUrlLarge" )
+                   .firstChild().toText().nodeValue();
+    }
    
-    kdDebug() << "imageUrl: " << imageUrl << endl;
+    kdDebug() << "imageUrl: " << m_url << endl;
     m_buffer = new uchar[BUFFER_SIZE];
     
-    KIO::TransferJob* imageJob = KIO::get( imageUrl, false, false );
+    KIO::TransferJob* imageJob = KIO::get( m_url, false, false );
     connect( imageJob, SIGNAL( result( KIO::Job* ) ),
              this,       SLOT( imageResult( KIO::Job* ) ) ); 
     connect( imageJob, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
@@ -170,12 +189,14 @@ CoverFetcher::editSearch() //SLOT
 {
     AmazonSearch* sdlg = new AmazonSearch();
     sdlg->textLabel->setText( m_text );
+    sdlg->sizeCombo->setCurrentItem( AmarokConfig::coverSize() );
     sdlg->searchString->setText( m_keyword );
     sdlg->setModal( true );
             
     if ( sdlg->exec() == QDialog::Accepted ) 
     {    
         m_keyword = sdlg->searchString->text();
+        AmarokConfig::setCoverSize( sdlg->sizeCombo->currentItem() );
         getCover( m_keyword, m_album, CoverFetcher::heavy );
         return;
     }

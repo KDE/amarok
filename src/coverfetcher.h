@@ -45,6 +45,7 @@ class CoverFetcher : public QObject
         QString m_keyword;
         QString m_album;
         QString m_text;   
+        QString m_url;
        
         uchar* m_buffer;
         uint m_bufferIndex;
