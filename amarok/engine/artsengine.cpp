@@ -47,7 +47,9 @@ email                : markey@web.de
 #include <arts/kplayobjectfactory.h>
 #include <arts/soundserver.h>
 
-#define ARTS_TIMER 100
+
+const int ArtsEngine::ARTS_TIMER = 100;
+
 
 ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
         : EngineBase()
@@ -495,8 +497,11 @@ void ArtsEngine::startXfade()
         m_xfadeValue = 1.0;
     
     if ( m_pPlayObjectXfade )
+    {
+        m_pPlayObjectXfade->halt();
         delete m_pPlayObjectXfade;
-    
+    }
+            
     m_pPlayObjectXfade = m_pPlayObject;
     m_pPlayObject = 0;
 }
@@ -512,17 +517,17 @@ void ArtsEngine::timerEvent( QTimerEvent* )
         if ( m_xfadeValue <= 0.0 )
         {
             m_xfadeValue = 0.0;
-            if ( m_pPlayObjectXfade ) {
+            if ( m_pPlayObjectXfade )
+            {
+                m_pPlayObjectXfade->halt();
                 delete m_pPlayObjectXfade;
                 m_pPlayObjectXfade = 0;
             }
         }
-        
         float value;
-        
-/*        if ( m_xfadeFadeout )            
+        if ( m_xfadeFadeout )            
             value = 1.0 - log10( ( 1.0 - m_xfadeValue ) * 9.0 + 1.0 ); 
-        else*/
+        else
             value = log10( m_xfadeValue * 9.0 + 1.0 ); 
         
         m_xfade.percentage( ( m_xfadeCurrent == "invalue2" ) ? value : 1.0 - value );

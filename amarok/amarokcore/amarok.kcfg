@@ -97,7 +97,7 @@
      </entry>
      <entry key="Crossfade Length" type="Int">
         <label>Length of crossfade, in milliseconds</label>
-        <default>2500</default>
+        <default>2200</default>
         <whatsthis></whatsthis>
      </entry>
      <entry key="Track Delay Length" type="Int">

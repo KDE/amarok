@@ -70,6 +70,8 @@ class ArtsEngine : public EngineBase
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
         /////////////////////////////////////////////////////////////////////////////////////
+        static const int                         ARTS_TIMER;
+        
         KArtsDispatcher*                         m_pArtsDispatcher;
         KDE::PlayObject*                         m_pPlayObject;
         KDE::PlayObject*                         m_pPlayObjectXfade;
