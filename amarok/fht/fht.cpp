@@ -106,7 +106,7 @@ void FHT::transform(float *p)
 /**
   * Discrete Hartley transform of data sets with 8 values.
   */
-inline void FHT::transform8(float *p)
+void FHT::transform8(float *p)
 {
 	float a, b, c, d, e, f, g, h, b_f2, d_h2;
 	float a_c_eg, a_ce_g, ac_e_g, aceg, b_df_h, bdfh;
@@ -153,7 +153,7 @@ void FHT::power(float *p)
   * Calculates an FFT power spectrum with doubled values as a
   * result. The values need to be multiplied by 0.5 to be exact.
   * Note that you only get 2^(n-1) power values for a data set
-  * of 2^1 values.
+  * of 2^1 input values.
   * @see FHT::power()
   */
 void FHT::power2(float *p)

@@ -18,6 +18,7 @@
 //
 // $Id$
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "fht.h"
@@ -31,21 +32,27 @@ int main(void)
 	float *s2 = new float[num];	// Hartley coefficients
 	float *s3 = new float[num];	// Fourier power spectrum
 
+	// create a noisy signal with two sine waves
 	for (i = 0; i < num; i++)
-		s1[i] = 100.0 * rand() / (RAND_MAX + 1.0) - 50.0;
+		s1[i] = 100.0 * sin(i * 2)
+			+ 50.0 * sin(i * 7)
+			+ 100.0 * rand() / (RAND_MAX + 1.0);
 
 	f.copy(s2, s1);
 	f.transform(s2);
 
 	f.copy(s3, s1);
 	f.power2(s3);
-	//f.scale(s3, 1.0 / 4096);
+	f.scale(s3, 1.0 / (1 << 17));
 
-	printf("Input\t\tFHT\t\tPower\n");
+	printf("Input\t\tFHT\t\tScaled Power Spectrum\n");
 	for (i = 0; i < num; i++)
-		if (i < num / 2)
-			printf("%f\t%f\t%f\n", s1[i], s2[i], s3[i]);
-		else
+		if (i < num / 2) {
+			printf("%f\t%f\t%f\t", s1[i], s2[i], s3[i]);
+			for (int j = 0; j < s3[i]; j++)
+				putchar('*');
+			putchar('\n');
+		} else
 			printf("%f\t%f\n", s1[i], s2[i]);
 
 	delete[] s1;

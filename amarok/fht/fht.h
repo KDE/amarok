@@ -35,7 +35,7 @@ public:
 	~FHT();
 	inline int	sizeExp() const { return m_exp2; }
 	inline int	size() const { return m_num; }
-	inline void	transform8(float *);
+	void		transform8(float *);
 	void		transform(float *);
 	void		power(float *);
 	void		power2(float *);
