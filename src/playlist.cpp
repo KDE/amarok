@@ -279,7 +279,7 @@ Playlist::insertMedia( KURL::List list, int options )
     {
         KURL::List addMe = list;
         KURL::List::Iterator jt;
-        
+
         // add any songs not in the playlist to it.
         for( MyIt it( this, 0 ); *it; ++it ) {
             jt = addMe.find( (*it)->url() );
@@ -294,7 +294,7 @@ Playlist::insertMedia( KURL::List list, int options )
             // find the songs and queue them.
             for (MyIt it( this, 0 ); *it; ++it ) {
                 jt = list.find( (*it)->url() );
-    
+
                 if ( jt != list.end() )
                 {
                     queue( *it );
@@ -506,12 +506,12 @@ Playlist::queue( QListViewItem *item )
     if( isQueued )
         //remove the item, this is better way than remove( item )
         m_nextTracks.remove( queueIndex ); //sets current() to next item
-    
-    else 
+
+    else
         m_nextTracks.append( item );
-        
+
     refreshNextTracks(); // from current()
-    
+
     //NOTE "item" is repainted due to the setSelected() call
     // ^__ not if called in bulk by context/collection browsers
 
@@ -1021,28 +1021,8 @@ static uint negativeWidth = 0;
 void
 Playlist::viewportResizeEvent( QResizeEvent *e )
 {
-    kdDebug() << k_funcinfo << endl;
-
     //only be clever with the sizing if there is not many items
     //TODO don't allow an item to be made too small (ie less than 50% of ideal width)
-
-//     int idealWidth[12];
-     int newWidth[13];
-//     QFontMetrics fm = fontMetrics();
-//
-//     for( int w, iw, c = 0; c < 12 ; ++c ) {
-//         w = /*header()->sectionSizeHint( c, fm ).width()*/0;
-//
-//         for( QListViewItem* item = firstChild(); item; item = item->itemBelow() ) {
-//             iw = item->width( fm, this, c );
-//             if ( 0 == c )
-//                 iw += itemMargin() - 1;
-//             w = QMAX( w, iw );
-//         }
-//
-//         idealWidth[c] = QMAX( w, QApplication::globalStrut().width() );
-//         idealWidth[c] = QMIN( idealWidth[c], 200 );
-//     }
 
     //makes this much quicker
     header()->blockSignals( true );
@@ -1058,56 +1038,27 @@ Playlist::viewportResizeEvent( QResizeEvent *e )
             case PlaylistItem::Score:
             case PlaylistItem::Length:
             case PlaylistItem::Year:
-                break;
+                break; //these columns retain their width - their items tend to have uniform size
             default:
                 if( m_columnFraction[c] > 0 )
-
                    setColumnWidth( c, int(W * m_columnFraction[c]) );
             }
         }
     }
 
-//     for( int excess = 0, c = 0; c < 11; ++c ) {
-//
-//         if( newWidth[c] == 0 ) continue;
-//
-//         if ( newWidth[c] < idealWidth[c] ) {
-//             excess = idealWidth[c] - newWidth[c];
-//             newWidth[c] = idealWidth[c];
-//             continue;
-//         }
-//
-//         if ( excess ) {
-//             int diff = newWidth[c] - idealWidth[c];
-//
-//             if( diff > excess ) diff = excess;
-//
-//             newWidth[c] -= diff;
-//             excess -= diff;
-//         }
-//     }
-
-//     for( uint c = 0; c < 11; ++c )
-//         setColumnWidth( c, newWidth[c] );
-
     header()->blockSignals( false );
-
-    //header()->resize( visibleWidth(), header()->height() );
-
-    //QScrollView::viewportResizeEvent( e );
 
     //ensure that the listview scrollbars are updated etc.
     triggerUpdate();
-
-    //updateScrollBars();
 }
 
 void
 Playlist::columnResizeEvent( int col, int oldw, int neww )
 {
-    kdDebug() << k_funcinfo << endl;
+    if ( neww == 0 ) {
+        //the column in question has been hidden
+        //we need to adjust the other columns to fit
 
-    if( neww == 0 ) {
         const double W = (double)width() - negativeWidth;
 
         for( uint c = 0; c < m_columnFraction.size(); ++c ) {
@@ -1129,25 +1080,29 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
     }
 
     else if( oldw != 0 ) {
-        //alter the size of the column on the right
+        //adjust the size of the column on the right side of this one
+
         for( int section = col, index = header()->mapToIndex( section ); index < header()->count(); ) {
             section = header()->mapToSection( ++index );
 
             if ( header()->sectionSize( section ) ) {
-                header()->blockSignals( true );
-                //TODO don't do this for last column
-                    setColumnWidth( section, header()->sectionSize( section ) + oldw - neww );
-                header()->blockSignals( false );
+                int newSize = header()->sectionSize( section ) + oldw - neww;
+                if ( newSize > 5 ) {
+                    header()->blockSignals( true );
+                    setColumnWidth( section, newSize );
+                    header()->blockSignals( false );
 
-                break;
+                    //we only want to adjust one column!
+                    break;
+                }
             }
         }
     }
 
     negativeWidth = 0;
-
-    //TODO check for W == 0
     uint w = 0;
+
+    //determine width excluding the columns that have static size
     for( uint x = 0; x < m_columnFraction.size(); ++x ) {
         switch( x ) {
         case PlaylistItem::Track:
@@ -1163,17 +1118,12 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
         negativeWidth += columnWidth( x );
     }
 
+    //determine the revised column fractions
     for( uint x = 0; x < m_columnFraction.size(); ++x )
         m_columnFraction[x] = (double)columnWidth( x ) / double(w);
 
-    double one = 0;
-    for( uint x = 0; x < m_columnFraction.size(); ++x )
-        one += m_columnFraction[x];
-
+    //negative width is an important property, honest!
     negativeWidth -= w;
-
-    kdDebug() << "One? " << one << endl;
-    kdDebug() << "-w: " << negativeWidth << endl;
 }
 
 bool
@@ -1282,7 +1232,7 @@ Playlist::customEvent( QCustomEvent *e )
             KURL::List::Iterator jt;
             for (MyIt it( this, 0 ); *it; ++it ) {
                 jt = m_queueList.find( (*it)->url() );
-    
+
                 if ( jt != m_queueList.end() ) {
                     queue( *it );
                     m_queueList.remove( jt );
@@ -1290,7 +1240,7 @@ Playlist::customEvent( QCustomEvent *e )
             }
             m_queueList.clear();
         }
-        
+
         //force redraw of currentTrack marker, play icon, etc.
         //setCurrentTrack( currentTrack() );
         {
