@@ -1041,7 +1041,7 @@ CollectionDB::scan( const QStringList& folders, bool recursively, bool importPla
 
 
 void
-CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, bool updateCB )
+CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bool updateView )
 {
     QString command = "UPDATE tags SET ";
     command += "title = '" + escapeString( bundle.title() ) + "', ";
@@ -1062,17 +1062,16 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, bool upd
         EngineController::instance()->currentTrackMetaDataChanged( bundle );
     }
 
-    if ( updateCB )    //update the collection browser
+    if ( updateView )    //update the collection browser
       CollectionView::instance()->renderView();
 }
 
 
 void
-CollectionDB::updateURL( const QString &url )
+CollectionDB::updateURL( const QString &url, const bool updateView )
 {
     const MetaBundle bundle = MetaBundle( url );
-
-    updateTags( url, bundle, true );
+    updateTags( url, bundle, updateView );
 }
 
 

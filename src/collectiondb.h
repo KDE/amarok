@@ -70,8 +70,8 @@ class CollectionDB : public QObject
         int getSongPercentage( const QString &url  );
         void setSongPercentage( const QString &url , int percentage );
 
-        void updateTags( const QString &url, const MetaBundle &bundle, bool updateCB=true );
-        void updateURL( const QString &url );
+        void updateTags( const QString &url, const MetaBundle &bundle, const bool updateView = true );
+        void updateURL( const QString &url, const bool updateView = true );
 
         //album methods
         bool isSamplerAlbum( const QString &album );

@@ -13,7 +13,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "collectiondb.h"    //rename()
+#include "collectiondb.h"    //updateURL()
 #include "enginecontroller.h"
 #include "k3bexporter.h"
 #include "metabundle.h"
@@ -1806,6 +1806,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             if ( trackColumn && trackNo > 0 )
                 ++it;
 
+            bool b = true;
             for( ; *it; ++it )
             {
                 if ( trackColumn )
@@ -1818,7 +1819,9 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
                 //FIXME fix this hack!
                 if ( (*it)->exactText( col ) != i18n("Writing tag...") )
-                    m_weaver->append( new TagWriter( this, *it, (*it)->exactText( col ), newTag, col ), true );
+                    m_weaver->append( new TagWriter( this, *it, (*it)->exactText( col ), newTag, col, b ), true );
+
+                b = false;
             }
         }
         break;

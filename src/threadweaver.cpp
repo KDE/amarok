@@ -402,13 +402,14 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
 // CLASS TagWriter
 //////////////////////////////////////////////////////////////////////////////////////////
 
-TagWriter::TagWriter( QObject *o, PlaylistItem *item, const QString &oldTag, const QString &newTag, const int col )
+TagWriter::TagWriter( QObject *o, PlaylistItem *item, const QString &oldTag, const QString &newTag, const int col, const bool updateView )
         : Job( o )
         , m_item( item )
         , m_failed( true )
         , m_oldTagString( oldTag )
         , m_newTagString( newTag )
         , m_tagType( col )
+        , m_updateView( updateView )
 {
     item->setText( col, i18n( "Writing tag..." ) );
 }
@@ -467,7 +468,7 @@ TagWriter::doJob()
         {
            // Update the collection db.
            // Hopefully this does not cause concurreny issues with sqlite3, as we had in BR 87169.
-           CollectionDB().updateURL( path );
+           CollectionDB().updateURL( path, m_updateView );
 
            m_failed = false;
         }
