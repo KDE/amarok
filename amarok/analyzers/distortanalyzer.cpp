@@ -67,6 +67,7 @@ void DistortAnalyzer::init()
     for ( int i = 0; i < NUM_PIXMAPS; i++ )
     {
         m_srcPixmaps[i] = new QPixmap( srcPixmap );
+        m_srcPixmaps[i]->setOptimization( QPixmap::BestOptim );
         m_srcPixmaps[i]->fill( QColor( i*8, i*2, 0xc0 - i*3 ) );
     }
 
@@ -90,7 +91,7 @@ void DistortAnalyzer::drawAnalyzer( std::vector<float> *s )
 
         // VERTICAL:
                 
-        it = sNew.begin();
+        it =  sNew.begin();
         it1 = sNew.end();
         int sinIndex, pixIndex;
         
@@ -103,27 +104,27 @@ void DistortAnalyzer::drawAnalyzer( std::vector<float> *s )
             sinIndex = static_cast<int>( (*it) * SINVEC_SIZE );
             bitBlt( m_pComposePixmap1, x, 0,
                     m_srcPixmaps[ checkIndex( pixIndex, m_srcPixmaps.size() ) ],
-                    x, static_cast<int>( m_sinVector[ checkIndex( sinIndex, m_sinVector.size() ) ] * 20 - 20 ),
+                    x, static_cast<int>( m_sinVector[ checkIndex( sinIndex, m_sinVector.size() ) ] * 21 - 21 ),
                     1, height() );
 
             ++it;
-           --it1;
+            --it1;
         }
 
         // HORIZONTAL:
         
         it = sNew.begin();
 
-        // jump to middle of vector -> more interesting values
-        for ( unsigned int i = 0; i < sNew.size() / 2; i++, ++it )
-        {}
+//         // jump to middle of vector -> more interesting values
+//         for ( unsigned int i = 0; i < sNew.size() / 2; i++, ++it )
+//         {}
 
         for ( uint y = 0; y < height(); ++y )
         {
-            sinIndex = static_cast<int>( (*it) * SINVEC_SIZE );
+            sinIndex = static_cast<int>( ( (*it)/3.0 ) * SINVEC_SIZE );
             
             bitBlt( m_pComposePixmap, 0, y, m_pComposePixmap1,
-                    static_cast<int>( m_sinVector[ checkIndex( sinIndex, m_sinVector.size() ) ] * 14 - 15 ),  y,
+                    static_cast<int>( m_sinVector[ checkIndex( sinIndex, m_sinVector.size() ) ] * 11 - 12 ), y,
                     width(), 1 );
 
            ++it;

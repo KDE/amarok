@@ -732,9 +732,12 @@ void PlayerApp::slotVisTimer()
 {
     //FIXME move to playerWidget
 
+    if ( !m_pPlayerWidget->isVisible() )
+        return;
+        
     static int t = 1;
 
-    if ( m_pPlayerWidget->isVisible() && !m_pPlayerWidget->m_pButtonPause->isDown() )
+    if ( m_pEngine->state() == EngineBase::Playing )
     {
         std::vector<float> *pScopeVector = m_pEngine->scope();
         float *front = static_cast<float*>( &pScopeVector->front() );
