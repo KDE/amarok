@@ -233,18 +233,8 @@ void SmartPlaylistView::loadDefaultPlaylists()
 
     qb.initSQLDrag();
     qb.setOptions( QueryBuilder::optRandomize );
-    qb.setLimit( 0, 25 );
-    new SmartPlaylist( i18n( "25 Tracks" ), qb.query(), item );
-
-    qb.initSQLDrag();
-    qb.setOptions( QueryBuilder::optRandomize );
     qb.setLimit( 0, 50 );
     new SmartPlaylist( i18n( "50 Tracks" ), qb.query(), item );
-
-    qb.initSQLDrag();
-    qb.setOptions( QueryBuilder::optRandomize );
-    qb.setLimit( 0, 100 );
-    new SmartPlaylist( i18n( "100 Tracks" ), qb.query(), item );
 }
 
 
