@@ -92,6 +92,7 @@ LONG-TERM:
     * add: <berkus> add smooth fade outs on stop
 
     * add: make PlayerWidget shadeable (like XMMS) [<mxcl> doesn't the systray provide this functionality already?]
+      [<berkus> no it doesn't, double click the winamp/xmms window and see for yourself]
 
     * display some information about current track in browserwin
 
@@ -102,7 +103,7 @@ LONG-TERM:
     * <mxcl> implement beat detection (thread?), interface should glow/move to
       the beat, visualisations have access to beat/bpm info
 
-    * add pitch-slider (?) (berkus: should be in separate "Effects Control" panel)
+    * add pitch-slider (?) [<berkus> should be in separate "Effects Control" panel]
 
     * add: aRts info widget, showing all available codecs and maybe more
 
