@@ -51,12 +51,12 @@
         <whatsthis></whatsthis>
      </entry>
      <entry key="Repeat Playlist" type="Bool">
-        <label>Whether to play whole playlist again and again and again and again and...</label>
+        <label>Whether to play whole playlist repeatedly</label>
         <default>false</default>
         <whatsthis></whatsthis>
      </entry>
      <entry key="Random Mode" type="Bool">
-        <label>to Whether order in play random tracks</label>
+        <label>Whether to play tracks in random order</label>
         <default>false</default>
         <whatsthis></whatsthis>
      </entry>
@@ -106,7 +106,7 @@
         <whatsthis></whatsthis>
      </entry>
      <entry key="Remember Effects" type="Bool">
-        <label>Persistant audio effects</label>
+        <label>Persistent audio effects</label>
         <default>true</default>
         <whatsthis></whatsthis>
      </entry>

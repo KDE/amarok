@@ -151,7 +151,7 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
 
     if ( m_server.isNull() )
     {
-        KMessageBox::error( 0, i18n( "Cannot start aRts! Exiting." ), i18n( "Fatal Error" ) );
+        KMessageBox::error( 0, i18n( "Cannot start aRts. Exiting." ), i18n( "Fatal Error" ) );
         ::exit( 1 );
     }
 
@@ -167,9 +167,9 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
     
         if ( m_xfade.isNull() ) {
             KMessageBox::error( 0,
-                                i18n( "Cannot find libamarokarts! Probably amaroK was installed with the \
-                                    wrong prefix. Please install again using: ./configure \
-                                    --prefix=`kde-config --prefix`" ),
+                                i18n( "Cannot find libamarokarts. Probably amaroK was installed with the "
+                                      "wrong prefix. Please install again using: ./configure "
+                                      "--prefix=`kde-config --prefix`" ),
                                 i18n( "Fatal Error" ) );
             ::exit( 1 );
         }

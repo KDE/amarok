@@ -103,7 +103,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     QString pathStr( locate( "data", "amarok/images/b_prev.png" ) );
 
     if ( pathStr == QString::null )
-        KMessageBox::sorry( this, i18n( "Error: Could not find icons. Did you forget make install?" ),
+        KMessageBox::sorry( this, i18n( "Error: Could not find icons. Did you forget to 'make install'?" ),
                             i18n( "amaroK Error" ) );
 
     //<Player Buttons>

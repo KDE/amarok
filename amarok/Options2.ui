@@ -224,7 +224,7 @@
                                 </size>
                             </property>
                             <property name="sampleText">
-                                <string>THIS IS.NO SPAM</string>
+                                <string>THIS IS.NOT SPAM</string>
                             </property>
                         </widget>
                     </vbox>
