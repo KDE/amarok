@@ -4,6 +4,9 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
+    * fix: load playlist _after_ showing mainwidget (and asyncronously if possible, at least
+      give ui a chance every 100 read entries or so).
+
     * add: make filebrowser sortable in different modes (time, size, extension..)
       and add tracks to playlist in the same order
 
