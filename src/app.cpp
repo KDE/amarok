@@ -32,7 +32,6 @@ email                : markey@web.de
 #include "socketserver.h"
 #include "systray.h"
 #include "threadweaver.h"        //restoreSession()
-#include "socketserver.h"
 #include "tracktooltip.h"        //engineNewMetaData()
 
 #include <kcmdlineargs.h>        //initCliArgs()
@@ -47,7 +46,7 @@ email                : markey@web.de
 #include <kurldrag.h>            //genericEventHandler()
 
 #include <qevent.h>              //genericEventHandler()
-#include <qeventloop.h>          //ctor
+#include <qeventloop.h>          //applySettings()
 #include <qpixmap.h>             //QPixmap::setDefaultOptimization()
 #include <qpopupmenu.h>          //genericEventHandler
 #include <qtooltip.h>            //default tooltip for trayicon
@@ -221,7 +220,7 @@ void App::initEngine()
             //FIXME this isn't perfect
 
             KMessageBox::error( m_pPlaylistWindow, i18n(
-                "amaroK could not find any engine plugins; it is likely your amaroK installation is"
+                "amaroK could not find any sound-engine plugins; it is likely your amaroK installation is"
                 "broken. The application will now exit. For help join us at #amarok on irc.freenode.net." ) );
 
             KApplication::exit( 1 );
@@ -246,6 +245,60 @@ void App::initEngine()
 }
 
 
+#include <kaction.h>
+#include <kshortcutlist.h>
+void App::initGlobalShortcuts()
+{
+    EngineController* const ec = EngineController::instance();
+
+
+    m_pGlobalAccel->insert( "play", i18n( "Play" ), 0, KKey("WIN+x"), 0,
+                            ec, SLOT( play() ), true, true );
+    m_pGlobalAccel->insert( "pause", i18n( "Pause" ), 0, KKey("WIN+c"), 0,
+                            ec, SLOT( pause() ), true, true );
+    m_pGlobalAccel->insert( "play_pause", i18n( "Play/Pause" ), 0, 0, 0,
+                            ec, SLOT( playPause() ), true, true );
+    m_pGlobalAccel->insert( "stop", i18n( "Stop" ), 0, KKey("WIN+v"), 0,
+                            ec, SLOT( stop() ), true, true );
+    m_pGlobalAccel->insert( "next", i18n( "Next track" ), 0, KKey("WIN+b"), 0,
+                            ec, SLOT( next() ), true, true );
+    m_pGlobalAccel->insert( "prev", i18n( "Previous track" ), 0, KKey("WIN+z"), 0,
+                            ec, SLOT( previous() ), true, true );
+    m_pGlobalAccel->insert( "volup", i18n( "Increase volume" ), 0, KKey("WIN+KP_Add"), 0,
+                            ec, SLOT( increaseVolume() ), true, true );
+    m_pGlobalAccel->insert( "voldn", i18n( "Decrease volume" ), 0, KKey("WIN+KP_Subtract"), 0,
+                            ec, SLOT( decreaseVolume() ), true, true );
+    m_pGlobalAccel->insert( "playlist_add", i18n( "Add media" ), 0, KKey("WIN+a"), 0,
+                            m_pPlaylistWindow, SLOT( slotAddLocation() ), true, true );
+    m_pGlobalAccel->insert( "show", i18n( "Toggle the Playlist Window" ), 0, KKey("WIN+p"), 0,
+                            m_pPlaylistWindow, SLOT( showHide() ), true, true );
+    m_pGlobalAccel->insert( "osd", i18n( "Show the OSD" ), 0, KKey("WIN+o"), 0,
+                            m_pOSD, SLOT( forceShowTrack() ), true, true );
+
+    m_pGlobalAccel->setConfigGroup( "Shortcuts" );
+    m_pGlobalAccel->readSettings( kapp->config() );
+    m_pGlobalAccel->updateConnections();
+
+    //TODO fix kde accel system so that kactions find appropriate global shortcuts
+    //     and there is only one configure shortcuts dialog
+
+    KActionCollection* const ac = actionCollection();
+    KAccelShortcutList list( m_pGlobalAccel );
+
+    for( uint i = 0; i < list.count(); ++i )
+    {
+        KAction *action = ac->action( list.name( i ).latin1() );
+
+        if( action )
+        {
+            //this is a hack really, also it means there may be two calls to the slot for the shortcut
+            action->setShortcutConfigurable( false );
+            action->setShortcut( list.shortcut( i ) );
+        }
+    }
+}
+
+
 void App::restoreSession()
 {
     //here we restore the session
@@ -256,12 +309,13 @@ void App::restoreSession()
     if( bundle )
     {
         EngineController::instance()->play( *bundle );
-        delete bundle;
 
         //did we  save the time?
         const int seconds = AmarokConfig::resumeTime();
         if( seconds > 0 ) EngineController::engine()->seek( seconds * 1000 );
     }
+
+    delete bundle;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -366,60 +420,6 @@ void App::applySettings()
     } //</Engine>
 
     kdDebug() << "END " << k_funcinfo << endl;
-}
-
-
-#include <kaction.h>
-#include <kshortcutlist.h>
-void App::initGlobalShortcuts()
-{
-    EngineController* const ec = EngineController::instance();
-
-
-    m_pGlobalAccel->insert( "play", i18n( "Play" ), 0, KKey("WIN+x"), 0,
-                            ec, SLOT( play() ), true, true );
-    m_pGlobalAccel->insert( "pause", i18n( "Pause" ), 0, KKey("WIN+c"), 0,
-                            ec, SLOT( pause() ), true, true );
-    m_pGlobalAccel->insert( "play_pause", i18n( "Play/Pause" ), 0, 0, 0,
-                            ec, SLOT( playPause() ), true, true );
-    m_pGlobalAccel->insert( "stop", i18n( "Stop" ), 0, KKey("WIN+v"), 0,
-                            ec, SLOT( stop() ), true, true );
-    m_pGlobalAccel->insert( "next", i18n( "Next track" ), 0, KKey("WIN+b"), 0,
-                            ec, SLOT( next() ), true, true );
-    m_pGlobalAccel->insert( "prev", i18n( "Previous track" ), 0, KKey("WIN+z"), 0,
-                            ec, SLOT( previous() ), true, true );
-    m_pGlobalAccel->insert( "volup", i18n( "Increase volume" ), 0, KKey("WIN+KP_Add"), 0,
-                            ec, SLOT( increaseVolume() ), true, true );
-    m_pGlobalAccel->insert( "voldn", i18n( "Decrease volume" ), 0, KKey("WIN+KP_Subtract"), 0,
-                            ec, SLOT( decreaseVolume() ), true, true );
-    m_pGlobalAccel->insert( "playlist_add", i18n( "Add media" ), 0, KKey("WIN+a"), 0,
-                            m_pPlaylistWindow, SLOT( slotAddLocation() ), true, true );
-    m_pGlobalAccel->insert( "show", i18n( "Toggle the Playlist Window" ), 0, KKey("WIN+p"), 0,
-                            m_pPlaylistWindow, SLOT( showHide() ), true, true );
-    m_pGlobalAccel->insert( "osd", i18n( "Show the OSD" ), 0, KKey("WIN+o"), 0,
-                            m_pOSD, SLOT( forceShowTrack() ), true, true );
-
-    m_pGlobalAccel->setConfigGroup( "Shortcuts" );
-    m_pGlobalAccel->readSettings( kapp->config() );
-    m_pGlobalAccel->updateConnections();
-
-    //TODO fix kde accel system so that kactions find appropriate global shortcuts
-    //     and there is only one configure shortcuts dialog
-
-    KActionCollection* const ac = actionCollection();
-    KAccelShortcutList list( m_pGlobalAccel );
-
-    for( uint i = 0; i < list.count(); ++i )
-    {
-        KAction *action = ac->action( list.name( i ).latin1() );
-
-        if( action )
-        {
-            //this is a hack really, also it means there may be two calls to the slot for the shortcut
-            action->setShortcutConfigurable( false );
-            action->setShortcut( list.shortcut( i ) );
-        }
-    }
 }
 
 
@@ -615,11 +615,10 @@ void App::engineStateChanged( EngineBase::EngineState state )
     switch( state )
     {
         case EngineBase::Empty:
-        case EngineBase::Idle: //FIXME should we do this during idle?
             QToolTip::add( m_pTray, i18n( "amaroK - Audio Player" ) );
             break;
-        case EngineBase::Paused:
-        case EngineBase::Playing:
+
+        default:
             break;
     }
 }
@@ -681,7 +680,7 @@ void App::slotConfigGlobalShortcuts()
 
 void App::slotConfigToolBars()
 {
-    KEditToolbar dialog( m_pPlaylistWindow->actionCollection() );
+    KEditToolbar dialog( m_pPlaylistWindow->actionCollection(), QString::null, true, mainWindow() );
 
     dialog.showButtonApply( false );
 

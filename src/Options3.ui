@@ -277,11 +277,5 @@
         <slot>setEnabled(bool)</slot>
     </connection>
 </connections>
-<includes>
-    <include location="local" impldecl="in implementation">Options3.ui.h</include>
-</includes>
-<slots>
-    <slot>kcfg_SchemeCustom_stateChanged( int )</slot>
-</slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
