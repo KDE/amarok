@@ -52,6 +52,7 @@ class PlayPauseAction : public KAction, public EngineObserver
 {
 public:
     PlayPauseAction( KActionCollection* );
+    ~PlayPauseAction();
     virtual void engineStateChanged( EngineBase::EngineState );
 };
 

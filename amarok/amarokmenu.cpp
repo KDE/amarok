@@ -146,6 +146,11 @@ PlayPauseAction::PlayPauseAction( KActionCollection *ac )
     connect( this, SIGNAL( activated() ), ec, SLOT( pause() ) );
 }
 
+PlayPauseAction::~PlayPauseAction()
+{
+    EngineController::instance()->detach( this );
+}
+
 void
 PlayPauseAction::engineStateChanged( EngineBase::EngineState state )
 {
