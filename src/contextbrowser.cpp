@@ -910,7 +910,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                         " you should add it to your Collection." ) +
                 "</p>"
                 "<a href='show:collectionSetup' class='button'>"
-                + i18n( "Click here to change your Collection setup" ) +
+                + i18n( "Change Collection setup" ) +
                 "</a>"
             "</div>"
         "</div>"
@@ -1361,10 +1361,10 @@ void ContextBrowser::showIntroduction()
                     "<p>" +
                     i18n( "This is the Context Browser: "
                           "it shows you contextual information about the currently playing track."
-                          "In order to use this feature of amaroK, you need to build a collection."
+                          "In order to use this feature of amaroK, you need to build a Collection."
                         ) +
                     "</p>"
-                    "<a href='show:collectionSetup' class='button'>" + i18n( "Click here to build one..." ) + "</a>"
+                    "<a href='show:collectionSetup' class='button'>" + i18n( "Build Collection..." ) + "</a>"
                 "</div>"
             "</div>"
             "</html>"
