@@ -103,7 +103,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
         connect( button, SIGNAL(clicked()), this, SLOT(clearFilter()) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
-        QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter collection" ) );
+        QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter albums" ) );
         hbox->addWidget( m_searchBox );
     } //</Search LineEdit>
 
@@ -242,7 +242,7 @@ void CoverManager::fetchCoversLoop() //SLOT
     if( m_fetchCounter < m_fetchCovers.count() ) {
         //get artist and album from keyword
         QStringList values = QStringList::split( " @@@ ", m_fetchCovers[m_fetchCounter] );
-        m_db->fetchCover( this, values[0], values[1], true );
+        m_db->fetchCover( this, values[0], values[1], m_fetchCovers.count() != 1); //edit mode when fetching 1 cover
         m_fetchCounter++;
 
         // Wait 1 second, since amazon caps the number of accesses per client
@@ -604,11 +604,8 @@ void CoverManager::loadCover( const QString &artist, const QString &album )
 void CoverManager::fetchSelectedCovers()
 {
     QPtrList<CoverViewItem> selected = selectedItems();
-    if( selected.count() == 1 )
-        m_db->fetchCover( this, selected.first()->artist(), selected.first()->album(), false );
-    else
-        for ( CoverViewItem* item = selected.first(); item; item = selected.next() )
-            m_fetchCovers += item->artist() + " @@@ " + item->album();
+    for ( CoverViewItem* item = selected.first(); item; item = selected.next() )
+        m_fetchCovers += item->artist() + " @@@ " + item->album();
 
     m_fetchingCovers += selected.count();
 
@@ -668,7 +665,7 @@ void CoverManager::updateStatusBar()
             //fetching finished
             text = i18n( "Finished." );
             if( m_coverErrors )
-                text += i18n( " <b>1</b> cover not found", " <b>%n</b> covers not found", m_coverErrors );
+                text += i18n( " Cover not found", " <b>%n</b> covers not found", m_coverErrors );
             //reset counters
             m_fetchingCovers = 0;
             m_coversFetched = 0;
@@ -677,8 +674,8 @@ void CoverManager::updateStatusBar()
         }
 
         if( m_fetchingCovers == 1 ) {
-            CoverViewItem *currentItem =  static_cast<CoverViewItem*>( m_coverView->currentItem() );
-            text = i18n("Fetching cover for ") + currentItem->artist() + " - " + currentItem->album() + "...";
+            QStringList values = QStringList::split( " @@@ ", m_fetchCovers[0] );    //get artist and album name
+            text = i18n("Fetching cover for ") + values[0] + " - " + values[1] + "...";
         }
         else if( m_fetchingCovers ) {
             text = i18n( "Fetching 1 cover: ", "Fetching <b>%n</b> covers... : ", m_fetchingCovers );
