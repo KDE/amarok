@@ -6,7 +6,7 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  <markey> Plugin-Framework-Version must be bumped in amaroK and all active engines.
+  <markey> Import "babelfish" icon into CVS (it's not in kdelibs).
 
   <mxcl>   Just before we load any engine plugin, write to a file, and it we don't succeed the next time
            amaroK starts show a big warning saying "Gah!" and load a different one.
