@@ -23,7 +23,6 @@ VERSION 1.1:
   ADD: KIO support for GStreamer engine. Allows playing media via all
        protocols supported by KIO (ftp, audiocd, fish, etc). 
   ADD: SearchBrowser operation can now be aborted.
-  ADD: XineEngine plugin, audio only.
   ADD: Progressbar in CollectionBrowser informs about scan progress, and a
        button was added for aborting the scan. (BR 83019)
   ADD: Playlist sliders (volume and position) now move directly when clicked
@@ -37,6 +36,7 @@ VERSION 1.1:
   ADD: Icon for "Menu" button in toolbar. Improves Usability.
 
 VERSION 1.0.2:
+  ADD: xine-engine plugin, audio only.
   FIX: aRts-engine: Compatibility with newer aRts versions improved.
   FIX: aRts-engine: Streams sometimes stopping shortly after playback was
        started. (BR 84417)
