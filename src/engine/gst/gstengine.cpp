@@ -45,7 +45,7 @@ static const int
 SCOPEBUF_SIZE = 40000;
 
 static const int
-STREAMBUF_SIZE = 200000;
+STREAMBUF_SIZE = 400000;
 
 GError*
 GstEngine::error_msg;
@@ -426,7 +426,7 @@ GstEngine::newStreamData( char* buf, int size )  //SLOT
 {
     if ( m_streamBufIndex + size > STREAMBUF_SIZE ) {
         size = STREAMBUF_SIZE - m_streamBufIndex;
-        //         kdDebug() << "Stream buffer overflow!" << endl;
+        kdDebug() << "Stream buffer overflow!" << endl;
     }
 
     // Copy data into stream buffer
