@@ -610,12 +610,22 @@
         <receiver>customSchemeBox</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
+    <connection>
+        <sender>installPushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>Options2</receiver>
+        <slot>installPushButton_clicked()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">Options2.ui.h</include>
 </includes>
+<slots>
+    <slot>installPushButton_clicked()</slot>
+</slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
+    <function access="private" specifier="non virtual">updateStyleComboBox()</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>

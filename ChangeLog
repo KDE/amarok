@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.2.2:
   FEATURES:
+    * Context Browser CSS styles can now be installed and selected from the
+      appearance settings.
     * When selecting multiple files, the "View/Edit Meta Information" dialog
       will show the tags that are common to all of them. (BR 100423)
     * A line graph equalizer added as a script "graphequalizer."
