@@ -437,7 +437,7 @@ CollectionDB::addSongPercentage( const QString url, const int percentage )
         execSql( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
                           "VALUES ( '%1', strftime('%s', 'now'), strftime('%s', 'now'), %2, 1 );" )
                     .arg( escapeString( url ) )
-                    .arg( percentage ) );
+                    .arg( (float)( ( 50 + percentage ) / 2 ) ) );
         return percentage;
     }
 }
