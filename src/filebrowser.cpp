@@ -179,8 +179,7 @@ FileBrowser::FileBrowser( const char * name )
         a = new KActionMenu( i18n("Bookmarks"), "bookmark", actionCollection, "bookmarks" );
         a->setDelayed( false );
 
-        KBookmarkHandler *bookmarkHandler = new KBookmarkHandler( this, a->popupMenu() );
-        connect( bookmarkHandler, SIGNAL(openUrl( const KURL& )), SLOT(setUrl( const KURL& )) );
+        new KBookmarkHandler( m_dir, a->popupMenu() );
     }
 
     {
@@ -371,7 +370,6 @@ public:
 
         if ( childCount() == 0 ) {
             QPainter p( viewport() );
-            QRect r( rect() );
 
             if ( m_text.isEmpty() ) {
                 //TODO Perhaps it's time to put this in some header, as we use it in three places now
@@ -380,15 +378,15 @@ public:
                             "Enter a search term above; you can use wildcards like * and ?"
                         "</div>" ), font() );
 
-                t.setWidth( width() - 40 );
+                t.setWidth( width() - 50 );
 
                 p.setBrush( colorGroup().background() );
-                p.drawRoundRect( 15, 15, t.width() + 10, t.height() + 10, 5, 10 );
+                p.drawRoundRect( 15, 15, t.width() + 20, t.height() + 20, 20, 5 );
                 t.draw( &p, 20, 20, QRect(), colorGroup() );
             }
             else {
                 p.setPen( palette().color( QPalette::Disabled, QColorGroup::Text ) );
-                p.drawText( r, Qt::AlignCenter | Qt::WordBreak, m_text );
+                p.drawText( rect(), Qt::AlignCenter | Qt::WordBreak, m_text );
             }
         }
     }

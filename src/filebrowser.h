@@ -56,7 +56,7 @@ class FileBrowser : public QVBox
     enum MenuId { MakePlaylist, AppendToPlaylist, SelectAllFiles, BurnAudioCd, BurnDataCd };
 
 public:
-    FileBrowser( const char * name = 0 );
+    FileBrowser( const char *name = 0 );
    ~FileBrowser();
 
     KURL url() const { return m_dir->url(); }
@@ -113,7 +113,7 @@ private:
     KURL searchURL() const { return static_cast<FileBrowser*>(parentWidget())->url(); }
 
     QLineEdit  *m_lineEdit;
-    KURLView  *m_listView;
+    KURLView   *m_listView;
     KDirLister *m_lister;
     QRegExp     m_filter;
     KURL::List  m_dirs;
