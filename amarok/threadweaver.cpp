@@ -156,11 +156,7 @@ TagReader::bindTags()
    //for GUI access only
    //we're a friend of PlaylistItem
    if( m_tags )
-   {
        m_item->setText( *m_tags );
-       m_item->corruptFile = FALSE;
-   } else
-       m_item->corruptFile = TRUE;
 }
 
 void

@@ -215,8 +215,8 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         if ( corruptFile )
         {
             QColorGroup corruptCg = cg;
-            QColor corruptBg( 0xcc, 0xcc, 0xcc );
-            corruptCg.setColor( QColorGroup::Base, corruptBg );
+            QColor corruptColor( 0xcc, 0xcc, 0xcc );
+            corruptCg.setColor( QColorGroup::Text, corruptColor );
             KListViewItem::paintCell( p, corruptCg, column, width, align );
         } else
             KListViewItem::paintCell( p, cg, column, width, align );
