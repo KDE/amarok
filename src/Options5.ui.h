@@ -61,7 +61,8 @@ void Options5::init()
                 "<li>Track Length - %7"
                 "<li>Track Number - %8"
                 "<li>Filename - %9"
-                "<li>Score - %10"
+                "<li>Comment - %10
+                "<li>Score - %11"
                 "</ul>"
             "If you surround sections of text that contain a token with curly-braces, that section will be hidden if the token is empty, for example:"
                 "<pre>%11</pre>"
@@ -70,7 +71,7 @@ void Options5::init()
     QToolTip::add( kcfg_OsdText, text.args( QStringList()
             // we don't translate these, it is not sensible to do so
             << "%title" << "%album"  << "%artist" << "%genre" << "%bitrate"
-            << "%year " << "%length" << "%track"  << "%file"  << "%score"
+            << "%year " << "%length" << "%track"  << "%file"  << "%comment" << "%score"
             << "%title {Score: %score}" ) );
 }
 
