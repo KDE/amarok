@@ -128,7 +128,7 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     connect( header(), SIGNAL( indexChange( int, int, int ) ),
              this,       SLOT( columnOrderChanged() ) );
 
-                          
+
     //FIXME causes problems with saving playlists
     //connect( header(), SIGNAL(sizeChange( int, int, int )), SLOT(slotHeaderResized( int, int, int )) );
 
@@ -162,7 +162,7 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     restoreLayout( KGlobal::config(), "PlaylistColumnsLayout" );
     columnOrderChanged();
 
-    
+
     header()->installEventFilter( this );
 
 
@@ -840,13 +840,11 @@ void Playlist::setCurrentTrack( PlaylistItem *item )
 {
     //item has been verified to be the currently playing track, let's paint it red!
 
-    PlaylistItem *prev = currentTrack();
+    PlaylistItem *prev = m_currentTrack;
     const bool canScroll = !renameLineEdit()->isVisible() && selectedItems().count() < 2; //FIXME O(n)
 
     //if nothing is current and then playback starts, we must show the currentTrack
     if( !m_currentTrack && canScroll ) ensureItemVisible( item ); //handles 0 gracefully
-    if( item ) item->setSelected( false ); //looks bad painting selected and glowing
-
 
     if( AmarokConfig::playlistFollowActive() && m_currentTrack && item && canScroll )
     {
@@ -880,19 +878,23 @@ void Playlist::setCurrentTrack( PlaylistItem *item )
 
     if( item ) {
         //remove pixmap in all columns
+        QPixmap null;
         for ( int i = 0; i < header()->count(); i++ )
-            item->setPixmap( i, QPixmap() );
-        
+            item->setPixmap( i, null );
+
         //display "Play" icon
         item->setPixmap( m_firstColumn, SmallIcon( "artsbuilderexecute" ) );
         item->setHeight( fontMetrics().height() * 2 );
+
+        item->setSelected( false ); //looks bad painting selected and glowing
     }
-            
+
     if( prev && item != prev ) {
         //remove pixmap in all columns
+        QPixmap null;
         for ( int i = 0; i < header()->count(); i++ )
-            prev->setPixmap( i, QPixmap() );
-        
+            prev->setPixmap( i, null );
+
         prev->invalidateHeight();
     }
 
@@ -953,21 +955,21 @@ void Playlist::saveUndoState() //SLOT
 
 
 void Playlist::columnOrderChanged() //SLOT
-{    
+{
     kdDebug() << k_funcinfo << endl;
-    
+
     //determine first visible column
     for ( m_firstColumn = 0; m_firstColumn < header()->count(); m_firstColumn++ )
         if ( header()->sectionSize( header()->mapToSection( m_firstColumn ) ) )
             break;
 
     //convert to logical column
-    m_firstColumn = header()->mapToSection( m_firstColumn );            
+    m_firstColumn = header()->mapToSection( m_firstColumn );
     //force redraw of item
     setCurrentTrack( currentTrack() );
 }
-            
-            
+
+
 bool Playlist::saveState( QStringList &list )
 {
     //used by undo system, save state of playlist to undo/redo list
@@ -1268,9 +1270,10 @@ void Playlist::slotGlowTimer() //SLOT
 
     using namespace Glow;
 
-    if( counter > 63-(STEPS*2) )
+    if( counter <= STEPS*2 )
     {
-        const double d = (counter > 63-STEPS) ? STEPS-(counter-(63-STEPS)) : counter-(63-STEPS*2);
+        // 0 -> STEPS -> 0
+        const double d = (counter > STEPS) ? 2*STEPS-counter : counter;
 
         {
             using namespace Base;
@@ -1287,7 +1290,6 @@ void Playlist::slotGlowTimer() //SLOT
 
     ++counter &= 63; //built in bounds checking with &=
 }
-
 
 void Playlist::slotTextChanged( const QString &query ) //SLOT
 {
