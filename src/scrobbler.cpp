@@ -143,7 +143,7 @@ void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
 void Scrobbler::audioScrobblerSimilarArtistsData( KIO::Job*, const QByteArray& data ) //SLOT
 {
     // Append new chunk of string
-    m_similarArtistsBuffer += QString( data );
+    m_similarArtistsBuffer += QString::fromUtf8( data );
 }
 
 
@@ -585,11 +585,11 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
             playStartTime.setTime_t( itemFromQueue->playStartTime() );
             data +=
                 "a[" + QString::number( submitCounter ) + "]=" +
-                KURL::encode_string_no_slash( itemFromQueue->artist().utf8() ) +
+                KURL::encode_string_no_slash( itemFromQueue->artist() ) +
                 "&t[" + QString::number( submitCounter ) + "]=" +
-                KURL::encode_string_no_slash( itemFromQueue->title().utf8() ) +
+                KURL::encode_string_no_slash( itemFromQueue->title() ) +
                 "&b[" + QString::number( submitCounter ) + "]=" +
-                KURL::encode_string_no_slash( itemFromQueue->album().utf8() ) +
+                KURL::encode_string_no_slash( itemFromQueue->album() ) +
                 "&m[" + QString::number( submitCounter ) + "]=" +
                 "&l[" + QString::number( submitCounter ) + "]=" +
                 QString::number( itemFromQueue->length() ) +
@@ -840,7 +840,7 @@ void ScrobblerSubmitter::audioScrobblerSubmitData(
     KIO::Job*, const QByteArray& data ) //SLOT
 {
     // Append new chunk of string
-    m_submitResultBuffer += QString( data );
+    m_submitResultBuffer += QString::fromUtf8( data );
 }
 
 
