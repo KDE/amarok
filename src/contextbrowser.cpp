@@ -382,7 +382,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             for ( uint i = 0; i < values.count(); i += 3 )
             {
                 QString tmp = values[i + 2] == "" ? "" : values[i + 2] + ". ";
-                browser->write( QString ( "<tr><td class='song'><a class='song' href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">" + tmp + values[i*3] + "</a></td></tr>" ) );
+                browser->write( QString ( "<tr><td class='song'><a class='song' href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">" + tmp + values[i] + "</a></td></tr>" ) );
             }
 
             values.clear();
