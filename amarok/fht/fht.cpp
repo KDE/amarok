@@ -144,15 +144,20 @@ void FHT::logSpectrum(float *out, float *p)
 	if (!m_log) {
 		m_log = new int[n];
 		float f = n / log10(n);
-		r = m_log;
-		*r++ = 0;
-		for (i = 1; i < n; i++)
-			*r++ = int(log10(i) * f);
+		for (i = 0, r = m_log; i < n; i++, r++) {
+			k = int(rint(log10(i + 1.0) * f));
+			*r = k >= n ? n - 1 : k;
+		}
 	}
 	semiLogSpectrum(p);
-	for (i = k = l = 0, r = m_log; i < n; i++, r++)
-		for (l = k, j = *r; k < j; k++)
-			*out++ = p[l] + (p[j] - p[l]) * (k - l) / (j - l);
+	float *o = out;
+	*p = 0;
+	for (i = k = l = 0, r = m_log; i < n; i++, r++) {
+		for (l = k, j = *r; k < j; k++) {
+			*o++ = p[l] + (p[j] - p[l]) * (k - l) / (j - l);
+		}
+	}
+	out[0] = out[1] / 2;
 }
 
 
