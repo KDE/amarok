@@ -3,13 +3,15 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
-VERSION 1.2-beta2:
-  FIX: Classic amaroK theme looks better
-  ADD: Context Browser has CSS styling
-  FIX: Cover fetching improvements/fixes
-  ADD: last played: yesterday, etc. in ContextBrowser
+VERSION 1.2-beta3:
   FIX: When an engine fails to load, respect the rank while choosing
        the next engine.
+
+VERSION 1.2-beta2:
+  FIX: Classic amaroK theme looks better.
+  ADD: Context Browser has CSS styling.
+  FIX: Cover fetching improvements/fixes.
+  ADD: Last played: yesterday, etc. in ContextBrowser.
   FIX: Big speedup for PlaylistLoader, when adding many items.
   ADD: Show songs you once played, but didn't play for the longest
        time on ContextBrowser's Home-page. (least played) (BR 89479)
@@ -21,7 +23,7 @@ VERSION 1.2-beta2:
   ADD: DCOP call to clear the playlist. (BR 90149)
   ADD: DCOP call to enable/disable the equalizer.
   ADD: DCOP call to return the score of the currently playing track.
-  ADD: Audioscrobbler submit queue stored in disk. Tracks that are listened
+  ADD: Audioscrobbler submit queue stored on disk. Tracks that are listened
        when offline will be available for submitting later.
   CHG: "Start Scan" button was renamed to "Update". Now it starts an
        incremental scan instead of a full rescan.
