@@ -125,7 +125,7 @@ void Proxy::sendRequest( bool meta )
         QString request = QString( "GET %1 HTTP/1.1\r\n" )
                                 .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) );
         //request metadata
-        if ( meta ) request += "GNAAIcy-MetaData:1\r\n";
+        if ( meta ) request += "Icy-MetaData:1\r\n";
     
         request += "Connection: Keep-Alive\r\n"
                 "User-Agent: aRts/1.2.2\r\n"
