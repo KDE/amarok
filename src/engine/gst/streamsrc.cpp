@@ -42,6 +42,8 @@ static guint gst_streamsrc_signals[ LAST_SIGNAL ] = { 0 };
 GST_BOILERPLATE_FULL ( GstStreamSrc, gst_streamsrc, GstElement, (GTypeFlags) GST_TYPE_ELEMENT, _do_init );
 
 
+// Forward declarations
+
 static void gst_streamsrc_set_property ( GObject * object, guint prop_id,
         const GValue * value, GParamSpec * pspec );
 
@@ -49,6 +51,8 @@ static void gst_streamsrc_get_property ( GObject * object, guint prop_id,
         GValue * value, GParamSpec * pspec );
 
 static GstData *gst_streamsrc_get ( GstPad * pad );
+
+static void gst_streamsrc_dispose ( GObject* );
 
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -98,6 +102,7 @@ gst_streamsrc_class_init ( GstStreamSrcClass * klass )
     
     gobject_class->set_property = gst_streamsrc_set_property;
     gobject_class->get_property = gst_streamsrc_get_property;
+    gobject_class->dispose = gst_streamsrc_dispose;
 }
 
 
@@ -244,6 +249,13 @@ gst_streamsrc_new ( char* buf, int* index, bool* stop )
     object->streamBufStop = stop;
         
     return object;
+}
+
+
+static void
+gst_streamsrc_dispose( GObject* object )
+{
+    G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 

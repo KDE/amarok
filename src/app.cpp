@@ -68,12 +68,13 @@ App::App()
     m_pDcopHandler    = new amaroK::DcopHandler();
     m_pTray           = new amaroK::TrayIcon( m_pPlaylistWindow );
     (void)              new Vis::SocketServer( this );
-
+    
     #ifdef HAVE_KJSEMBED
-    (void)              new ScriptManager::Manager( this );
+    //FIXME deactivated due to leaking memory
+//     (void)              new ScriptManager::Manager( this );
     // Export symbols to KJSEmbed
-    ScriptManager::Manager::instance()->addObject( this );
-    ScriptManager::Manager::instance()->addObject( m_pDcopHandler );
+//     ScriptManager::Manager::instance()->addObject( this );
+//     ScriptManager::Manager::instance()->addObject( m_pDcopHandler );
     #endif
 
     m_pPlaylistWindow->init(); //creates the playlist, browsers, etc.
