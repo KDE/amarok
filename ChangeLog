@@ -22,7 +22,7 @@ amaroK Changelog
          integration with kdeaddons/kicker-applets/mediacontrol.
   * chg: moved DCOP handler to a separate class/file
   * add: threaded playlist insertion
-  * fix: remoived bugs and waste code keyhandling in browser*, it mostly works as expected
+  * fix: removed bugs and waste code keyhandling in browser*, it mostly works as expected
          now with various keypresses going to the correct places
   * fix: cleaned the playlist class's public interface, also fixed some unreported bugs in
          process (inconsistent recursive behavior), please keep the encapsulation, it's a

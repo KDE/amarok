@@ -94,6 +94,7 @@ private:
     QWidget       *m_parent;
     QListViewItem *m_after;  //accessed by GUI thread _only_
     PlaylistItem  *m_first;
+    int            m_recursionCount;
 };
 
 

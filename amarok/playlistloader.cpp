@@ -175,6 +175,7 @@ void PlaylistLoader::run()
 {
        kdDebug() << "[loader] Started..\n";
 
+       m_recursionCount = -1;
        process( m_list );
 
        QApplication::postEvent( m_parent, new LoaderDoneEvent( this ) );
@@ -184,7 +185,8 @@ void PlaylistLoader::run()
 void PlaylistLoader::process( KURL::List &list, bool validate )
 {
    struct STATSTRUCT statbuf;
-
+   ++m_recursionCount;
+   
    for( KURL::List::ConstIterator it = list.begin(); it != list.end(); ++it )
    {
       QString path = (*it).path();
@@ -207,15 +209,18 @@ void PlaylistLoader::process( KURL::List &list, bool validate )
 
       if( int type = isPlaylist( path.lower() ) )
       {
-         if( !(*it).isLocalFile() )
+         if ( !m_recursionCount )     //prevent processing playlist files in subdirs
          {
-           //if the playlist is not local, we need to d/l it, and KIO doesn't work in QThreads. sigh
-           //so this will organise the d/l to occur syncronously and then a new thread spawned :)
-           QApplication::postEvent( m_parent, new LoaderEvent( this, *it ) );
-         }
-         else
-         {
-            loadLocalPlaylist( path, type );
+            if( !(*it).isLocalFile() )
+            {
+                //if the playlist is not local, we need to d/l it, and KIO doesn't work in QThreads. sigh
+                //so this will organise the d/l to occur syncronously and then a new thread spawned :)
+                QApplication::postEvent( m_parent, new LoaderEvent( this, *it ) );
+            }
+            else
+            {
+                loadLocalPlaylist( path, type );
+            }
          }
       }
       else
