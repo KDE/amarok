@@ -54,11 +54,6 @@ IncrementalCollectionReader::IncrementalCollectionReader( CollectionDB *parent )
     m_importPlaylists = false;
     m_incremental     = true;
 
-    // if something is added to a directory higher in the heirarchy
-    // it will change the timestamp of the directories below it
-    // which is very handy for us
-    m_recursively     = false;
-
     setDescription( i18n( "Updating collection" ) );
 }
 
@@ -66,7 +61,13 @@ bool
 IncrementalCollectionReader::doJob()
 {
     /**
-     * Incremental here means only scan directories that has been modified since the last scan
+     * The Incremental Reader works as follows: Here we check the mtime of every directory in the "directories"
+     * table and store all changed directories in m_folders.
+     *
+     * These directories are then scanned in CollectionReader::doJob(), with m_recursively set according to the
+     * user's preference, so the user can add directories or whole directory trees, too. Since we don't want to
+     * rescan unchanged subdirectories, CollectionReader::readDir() checks if we are scanning recursively and
+     * prevents that.
      */
 
     struct stat statBuf;
@@ -98,16 +99,17 @@ IncrementalCollectionReader::doJob()
 bool
 CollectionReader::doJob()
 {
+    if ( m_folders.empty() )
+        return false;
+
     log << "Collection Scan Log\n";
     log << "===================\n";
     log << i18n( "Report this file if amaroK crashes when building the Collection." ).local8Bit();
     log << "\n\n\n";
 
-    if ( !m_folders.empty() ) {
-        // we need to create the temp tables before readDir gets called ( for the dir stats )
-        CollectionDB::instance()->createTables( m_db );
-        setProgressTotalSteps( 100 );
-    }
+    // we need to create the temp tables before readDir gets called ( for the dir stats )
+    CollectionDB::instance()->createTables( m_db );
+    setProgressTotalSteps( 100 );
 
 
     QStringList entries;
@@ -131,9 +133,19 @@ CollectionReader::doJob()
         readTags( entries );
     }
 
+    if ( !m_incremental )
+        CollectionDB::instance()->clearTables();
+    else
+        foreach( m_folders )
+            CollectionDB::instance()->removeSongsInDir( *it );
+
+    // rename tables
+    CollectionDB::instance()->moveTempTables( m_db );
+    CollectionDB::instance()->dropTables( m_db );
+
     log.close();
 
-    return !entries.empty();
+    return true;
 }
 
 
@@ -185,16 +197,17 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
         if ( S_ISDIR( statBuf.st_mode ) ) {
             if ( m_recursively )
             {
+                const QString file = QFile::decodeName( entry );
                 // Check for symlink recursion
-                QFileInfo info( entry );
+                QFileInfo info( file );
                 if ( info.isSymLink() && m_processedDirs.contains( info.readLink() ) ) {
                     warning() << "Skipping, recursive symlink: " << dir << endl;
                     continue;
                 }
 
-                if ( !m_incremental || !CollectionDB::instance()->isDirInCollection( entry ) )
+                if ( !m_incremental || !CollectionDB::instance()->isDirInCollection( file ) )
                     // we MUST add a '/' after the dirname
-                    readDir( QFile::decodeName( entry ) + '/', entries );
+                    readDir( file + '/', entries );
             }
         }
         else if ( S_ISREG( statBuf.st_mode ) ) {
@@ -286,14 +299,4 @@ CollectionReader::readTags( const QStringList& entries )
             images.clear();
         }
     }
-
-    if ( !m_incremental )
-        CollectionDB::instance()->clearTables();
-    else
-        foreach( m_folders )
-            CollectionDB::instance()->removeSongsInDir( *it );
-
-    // rename tables
-    CollectionDB::instance()->moveTempTables( m_db );
-    CollectionDB::instance()->dropTables( m_db );
 }
