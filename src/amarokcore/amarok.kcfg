@@ -160,6 +160,16 @@
         <default>Alsa</default>
         <whatsthis>Select the sound output system. amaroK currently support "Alsa" and "OSS", however their availability depends on the system configuration.</whatsthis>
      </entry>
+     <entry key="Sound Device" type="String">
+        <label>Sound output device to use</label>
+        <default></default>
+        <whatsthis>Select the sound output device. this is useful for gstreamer engine sinks</whatsthis>
+     </entry>
+     <entry key="Default Sound Device" type="Bool">
+        <label>Uses autodetected audiosink sound device</label>
+        <default>true</default>
+        <whatsthis>When enabled, uses default sound device for audiosink.</whatsthis>
+     </entry>     
      <entry key="Title Streaming" type="Bool">
         <label>Read titles of shoutcast streams</label>
         <default>true</default>

@@ -24,8 +24,10 @@ email                : markey@web.de
 #include "enginecontroller.h"
 #include "pluginmanager.h"
 
+#include <qlineedit.h>
 #include <qcombobox.h>
 #include <qlabel.h>
+#include <qcheckbox.h>
 
 #include <kconfigdialog.h>
 #include <kdebug.h>
@@ -40,7 +42,8 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     m_opt4 = new Options4( 0,"Playback" );
     m_pSoundSystem = m_opt4->sound_system;
     m_pSoundOutput = m_opt4->sound_output;
-    
+    m_pSoundDevice = m_opt4->sound_device;
+    m_pDefaultSoundDevice = m_opt4->kcfg_DefaultSoundDevice;
     // Sound System
     QStringList systems;
     KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'engine'" );
@@ -52,10 +55,13 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
                
     connect( m_pSoundSystem, SIGNAL( activated( int ) ), this, SLOT( settingsChangedSlot() ) );
     connect( m_pSoundOutput, SIGNAL( activated( int ) ), this, SLOT( settingsChangedSlot() ) );
-
+    connect( m_pSoundDevice, SIGNAL(textChanged(const  QString& )), this, SLOT( settingsChangedSlot() ) );
+    connect( m_pDefaultSoundDevice, SIGNAL( toggled( bool ) ), this, SLOT( settingsChangedSlot() ) );
+    
     connect( m_pSoundSystem, SIGNAL( activated( int ) ), this, SLOT( soundSystemChanged() ) );
-
-    // add pages
+    connect( m_pDefaultSoundDevice, SIGNAL( toggled( bool ) ), this, SLOT( soundSystemChanged() ) );
+    
+     // add pages
     addPage( new Options1( 0,"General" ),  i18n("General"),  "misc",   i18n("Configure General Options") );
     addPage( new Options2( 0,"Fonts" ),    i18n("Fonts"),    "fonts",  i18n("Configure Fonts") );
     addPage( new Options3( 0,"Colors" ),   i18n("Colors"),   "colors", i18n("Configure Colors") );
@@ -68,8 +74,10 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 
 bool AmarokConfigDialog::hasChanged()
 {
-    return ( m_pSoundSystem->currentText() != AmarokConfig::soundSystem() ) ||
-           ( m_pSoundOutput->currentText() != AmarokConfig::soundOutput() );
+    return ( m_pSoundSystem->currentText()      != AmarokConfig::soundSystem() ) ||
+           ( m_pSoundOutput->currentText()      != AmarokConfig::soundOutput() ) ||
+           ( m_pSoundDevice->text()             != AmarokConfig::soundDevice() ) ||
+           ( m_pDefaultSoundDevice->isChecked() != AmarokConfig::defaultSoundDevice() );
 }
 
 
@@ -90,6 +98,9 @@ void AmarokConfigDialog::updateSettings()
 {
     AmarokConfig::setSoundSystem( m_pSoundSystem->currentText() );
     AmarokConfig::setSoundOutput( m_pSoundOutput->currentText() );
+    AmarokConfig::setSoundDevice( m_pSoundDevice->text() );
+    AmarokConfig::setDefaultSoundDevice( m_pDefaultSoundDevice->isChecked() );
+    
     emit settingsChanged();
 }
 
@@ -97,6 +108,9 @@ void AmarokConfigDialog::updateSettings()
 void AmarokConfigDialog::updateWidgets()
 {
     m_pSoundSystem->setCurrentText( AmarokConfig::soundSystem() );
+    m_pSoundDevice->setText(AmarokConfig::soundDevice());
+    m_pDefaultSoundDevice->setChecked(AmarokConfig::defaultSoundDevice());
+    
     this->soundSystemChanged();
 }
 
@@ -118,11 +132,24 @@ void AmarokConfigDialog::soundSystemChanged()
     {
         m_pSoundOutput->setEnabled( false );
         m_opt4->outputLabel->setEnabled( false );
+        
+        m_pSoundDevice->setEnabled( false );
+        m_opt4->deviceLabel->setEnabled( false );
+        m_pDefaultSoundDevice->setEnabled( false );
     }
     else
     {
         m_pSoundOutput->setEnabled( true );
         m_opt4->outputLabel->setEnabled( true );
+        
+        
+        m_opt4->deviceLabel->setEnabled( true );
+        m_pDefaultSoundDevice->setEnabled( true );        
+        
+        if ( m_pDefaultSoundDevice->isChecked() )
+                        m_pSoundDevice->setEnabled( false );
+        else            m_pSoundDevice->setEnabled( true );
+        
         m_pSoundOutput->insertStringList( outputs );
 
         /**

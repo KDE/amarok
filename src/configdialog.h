@@ -21,6 +21,8 @@ email                : markey@web.de
 #include <kconfigdialog.h>
 
 class QComboBox;
+class QLineEdit;
+class QCheckBox;
 class Options4;
 
 class AmarokConfigDialog : public KConfigDialog
@@ -33,7 +35,9 @@ class AmarokConfigDialog : public KConfigDialog
     private:
         QComboBox* m_pSoundSystem;
         QComboBox* m_pSoundOutput;
-
+        QLineEdit* m_pSoundDevice;
+        QCheckBox* m_pDefaultSoundDevice;
+        
     private slots:
         void updateSettings();
         void updateWidgets();

@@ -328,6 +328,16 @@ GstEngine::play( const KURL& url )            //SLOT
     m_pThread = gst_thread_new ( "thread" );
     m_pAudiosink = gst_element_factory_make( m_soundOutput.latin1(), "play_audio" );
 
+    
+    kdDebug() << "DefaultSoundDevice: " << ((m_defaultSoundDevice) ? "true" : "false") << endl;
+    kdDebug() << "Sound Device:       " << m_soundDevice << endl;
+
+    /* setting device property for AudioSink*/
+    if (!m_defaultSoundDevice || !m_soundDevice.isEmpty())
+    {
+	g_object_set(G_OBJECT (m_pAudiosink), "device", m_soundDevice.latin1(), NULL);
+    }
+
     /* create source */
     if ( url.isLocalFile() ) {
         m_pFilesrc = gst_element_factory_make( "filesrc", "disk_source" );

@@ -449,6 +449,8 @@ void App::applySettings()
     controller->setVolume( AmarokConfig::masterVolume() ); //FIXME this shouldn't be here!
     engine->setRestoreEffects( AmarokConfig::rememberEffects() );
     engine->setSoundOutput( AmarokConfig::soundOutput() );
+    engine->setSoundDevice( AmarokConfig::soundDevice() );
+    engine->setDefaultSoundDevice( AmarokConfig::defaultSoundDevice() );
     engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
 
     // Fonts
