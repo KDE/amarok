@@ -41,7 +41,7 @@ BoomAnalyzer::BoomAnalyzer( QWidget *parent )
     connect( o, SIGNAL(valueChanged(int)), SLOT(changeF_peakSpeed( int )) );
     connect( o, SIGNAL(valueChanged(int)), m, SLOT(setValue( int )) );
 
-    box->show();
+    //box->show();
 }
 
 
