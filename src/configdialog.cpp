@@ -138,9 +138,9 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     delete list;
 
     connect( m_soundSystem, SIGNAL(activated( int )), SLOT(updateButtons()) );
-    connect( aboutEngineButton, SIGNAL(clicked()), this, SLOT(aboutEngine()) );
+    connect( aboutEngineButton, SIGNAL(clicked()), SLOT(aboutEngine()) );
     connect( opt5, SIGNAL(settingsChanged()), SLOT(updateButtons()) ); //see options5.ui.h
-    connect( m_opt2->styleComboBox, SIGNAL(activated(int)), this, SLOT(enableApply()));
+    connect( m_opt2->styleComboBox, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
 }
 
 AmarokConfigDialog::~AmarokConfigDialog()
@@ -198,7 +198,7 @@ void AmarokConfigDialog::updateSettings()
         soundSystemChanged();
     }
     //can't use kconfigxt for the style comboxbox's since we need the string, not the index
-    AmarokConfig::setContextBrowserStyleSheet( m_opt2->styleComboBox->currentText() ); 
+    AmarokConfig::setContextBrowserStyleSheet( m_opt2->styleComboBox->currentText() );
     ContextBrowser::instance()->setStyleSheet();
 }
 
@@ -251,6 +251,7 @@ bool AmarokConfigDialog::hasChanged()
     return  m_soundSystem->currentText() != m_pluginAmarokName[AmarokConfig::soundSystem()] ||
             osd->alignment() != AmarokConfig::osdAlignment() ||
             osd->alignment() != OSDWidget::Center && osd->y() != AmarokConfig::osdYOffset() ||
+            m_opt2->styleComboBox->currentText() != AmarokConfig::contextBrowserStyleSheet() ||
             m_engineConfig && m_engineConfig->hasChanged();
 }
 
@@ -274,10 +275,8 @@ void AmarokConfigDialog::aboutEngine() //SLOT
 {
     PluginManager::showAbout( QString( "Name == '%1'" ).arg( m_soundSystem->currentText() ) );
 }
-void AmarokConfigDialog::enableApply()  //SLOT
-{
-    KDialogBase::enableButtonApply(true); //a KDialogBase slot
-}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
 //////////////////////////////////////////////////////////////////////////////////////////

@@ -43,15 +43,14 @@ class AmarokConfigDialog : public KConfigDialog
                       const QString &header=QString::null, bool manage=true);
 
         void showPage( const QCString& page );
-    public slots:
-        void enableApply();
+
     protected slots:
         void updateSettings();
         void updateWidgets();
         void updateWidgetsDefault();
 
     private slots:
-        void aboutEngine();        
+        void aboutEngine();
     protected:
         bool hasChanged();
         bool isDefault();
