@@ -31,7 +31,10 @@ void Options5::init()
 {
     m_pOSDPreview = new OSDPreviewWidget( "amaroK" );
     m_pOSDPreview->setText( i18n("OSD preview - drag to reposition" ) );
+    m_pOSDPreview->setFont( AmarokConfig::osdFont() );
     m_pOSDPreview->setShadow( AmarokConfig::osdDrawShadow() );
+    m_pOSDPreview->setPosition( (OSDWidget::Position) AmarokConfig::osdAlignment() );
+    m_pOSDPreview->setOffset( AmarokConfig::osdXOffset(), AmarokConfig::osdYOffset() );
     
     connect( m_pOSDPreview, SIGNAL( positionChanged( int, OSDWidget::Position, int, int ) ) ,
              SLOT( osdPositionChanged( int, OSDWidget::Position, int, int ) ) );
