@@ -4,7 +4,7 @@ amaroK ChangeLog
 
 
   ADD: Expand/collapse items by doubleclicking in Collection (BR 81710).
-  FIX: Allow OSD still to be activated by shortcut when disabled (BR 80388). 
+  FIX: Allow OSD still to be shown via shortcut when disabled (BR 80388). 
   FIX: Collection: live-monitoring dirs for changes works again.
   FIX: Changing volume by mousewheel on systray icon works again.
   ADD: Collection automatically rescans itself on startup.
