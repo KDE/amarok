@@ -282,7 +282,7 @@ void ContextBrowser::saveHtmlData()
     QFile exportedDocument(KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "contextbrowser.html");
     exportedDocument.open(IO_WriteOnly);
     QTextStream stream( &exportedDocument );
-    stream << browser->document().toString().string() // the pure html data..
+    stream << m_HTMLSource // the pure html data..
         .replace("<html>",QString("<html><head><style type=\"text/css\">%1</style></head>").arg(m_styleSheet) ); // and the stylesheet code
     exportedDocument.close();
 }
@@ -453,17 +453,18 @@ void ContextBrowser::showHome() //SLOT
         "LIMIT 0,10;" );
 
     browser->begin();
+    m_HTMLSource="";
     browser->setUserStyleSheet( m_styleSheet );
-    browser->write( "<html>" );
+    m_HTMLSource.append( "<html>" );
 
     // <Favorite Tracks Information>
-    browser->write(
+    m_HTMLSource.append(
         "<div class='box'>"
          "<div class='box-header'>" + i18n( "Your Favorite Tracks" ) + "</div>"
          "<table class='box-body' width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
     for( uint i = 0; i < fave.count(); i = i + 5 )
-        browser->write(
+        m_HTMLSource.append(
             "<tr class='" + QString( (i % 10) ? "box-row-alt" : "box-row" ) + "'>"
              "<td class='song'>"
               "<a href=\"file:" + fave[i+1].replace( '"', QCString( "%22" ) ) + "\">"
@@ -474,7 +475,7 @@ void ContextBrowser::showHome() //SLOT
              "</td>"
             "</tr>" );
 
-    browser->write(
+    m_HTMLSource.append(
          "</table>"
         "</div>"
         "<br>"
@@ -488,7 +489,7 @@ void ContextBrowser::showHome() //SLOT
          "<table class='box-body' width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
     for( uint i = 0; i < recent.count(); i = i + 4 )
-        browser->write(
+        m_HTMLSource.append(
             "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
              "<td class='song'>"
               "<a href=\"file:" + recent[i+1].replace( '"', QCString( "%22" ) ) + "\">"
@@ -498,13 +499,14 @@ void ContextBrowser::showHome() //SLOT
              "</td>"
             "</tr>" );
 
-    browser->write(
+    m_HTMLSource.append(
          "</table>"
         "</div>" );
 
     // </Recent Tracks Information>
 
-    browser->write( "</html>" );
+    m_HTMLSource.append( "</html>" );
+    browser->write( m_HTMLSource );
     browser->end();
     saveHtmlData(); // Send html code to file
 }
@@ -563,9 +565,10 @@ void ContextBrowser::showCurrentTrack() //SLOT
     m_currentURL = EngineController::instance()->bundle().url();
 
     browser->begin();
+    m_HTMLSource="";
     browser->setUserStyleSheet( m_styleSheet );
 
-    browser->write( "<html>"
+    m_HTMLSource.append( "<html>"
                     "<script type='text/javascript'>"
                       //Toggle visibility of a block. NOTE: if the block ID starts with the T
                       //letter, 'Table' display will be used instead of the 'Block' one.
@@ -584,7 +587,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     if ( EngineController::engine()->isStream() )
     {
-        browser->write( QStringx(
+        m_HTMLSource.append( QStringx(
              "<div class='box'>"
               "<div class='box-header'>%1</div>"
               "<table class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>"
@@ -618,7 +621,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
         if ( m_metadataHistory.count() > 2 )
         {
-            browser->write(
+            m_HTMLSource.append(
                 "<br>"
                 "<div class='box'>"
                  "<div class='box-header'>" + i18n( "Metadata History" ) + "</div>"
@@ -628,15 +631,16 @@ void ContextBrowser::showCurrentTrack() //SLOT
             // Ignore first two items, as they don't belong in the history
             for ( it = m_metadataHistory.at( 2 ); it != m_metadataHistory.end(); ++it )
             {
-                browser->write( QStringx( "<tr class='box-row'><td>%1</td></tr>" ).arg( *it ) );
+                m_HTMLSource.append( QStringx( "<tr class='box-row'><td>%1</td></tr>" ).arg( *it ) );
             }
 
-            browser->write(
+            m_HTMLSource.append(
                  "</table>"
                 "</div>" );
         }
 
-        browser->write("</html>" );
+        m_HTMLSource.append("</html>" );
+        browser->write( m_HTMLSource );
         browser->end();
         saveHtmlData(); // Send html code to file
         return;
@@ -654,7 +658,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             .arg( m_db->escapeString( currentTrack.url().path() ) ) );
 
     //making 2 tables is most probably not the cleanest way to do it, but it works.
-    browser->write( QStringx(
+    m_HTMLSource.append( QStringx(
         "<div class='box'>"
          "<div class='box-header' style='font-weight: normal;'>"
           "<b>%1</b> - <b>%2</b><br>%3&nbsp;"
@@ -707,16 +711,16 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
         //SAFE   = .arg( x, y )
         //UNSAFE = .arg( x ).arg( y )
-        browser->write( QString("<br>%1<br>%2%3<br>%4<br>")
+        m_HTMLSource.append( QString("<br>%1<br>%2%3<br>%4<br>")
             .arg( i18n( "Track played once", "Track played %n times", playtimes ),
                   scoreBox.arg( score ).arg( score / 2 ),
                   i18n( "Last Played: %1" ).arg( verboseTimeSince( lastPlay ) ),
                   i18n( "First Played: %1" ).arg( verboseTimeSince( firstPlay ) ) ) );
    }
    else
-        browser->write( i18n( "Never played before" ) );
+        m_HTMLSource.append( i18n( "Never played before" ) );
 
-    browser->write(
+    m_HTMLSource.append(
            "</td>"
           "</tr>"
          "</table>"
@@ -725,7 +729,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     if ( !m_db->isFileInCollection( currentTrack.url().path() ) )
     {
-        browser->write( "<div class='warning'>"
+        m_HTMLSource.append( "<div class='warning'>"
                          + i18n("If you would like to see contextual information about this track, you should add it to your Collection.") +
                          "&nbsp;<a href='show:collectionSetup'>" + i18n( "Click here to change your Collection setup" ) + "</a>."
                         "</div>" );
@@ -772,7 +776,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
         if ( !values.isEmpty() )
         {
-            browser->write(
+            m_HTMLSource.append(
                 "<br>"
                 "<div class='box'>"
                  "<div class='box-header' onClick=\"toggleBlock('T_SS')\" style='cursor: pointer;'>"
@@ -781,7 +785,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                  "<table class='box-body' id='T_SS' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
             for ( uint i = 0; i < values.count(); i += 4 )
-                browser->write(
+                m_HTMLSource.append(
                   "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
                    "<td class='song'>"
                     "<a href=\"file:" + values[i].replace( '"', QCString( "%22" ) ) + "\">" + values[i + 2] + " - " + values[i + 1] + "</a>"
@@ -794,7 +798,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                    "</td>"
                   "</tr>" );
 
-            browser->write(
+            m_HTMLSource.append(
                  "</table>"
                 "</div>" );
         }
@@ -812,7 +816,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     if ( !values.isEmpty() )
     {
-        browser->write(
+        m_HTMLSource.append(
             "<br>"
             "<div class='box'>"
              "<div class='box-header' onClick=\"toggleBlock('T_FT')\" style='cursor: pointer;'>"
@@ -821,7 +825,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
              "<table class='box-body' id='T_FT' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
         for ( uint i = 0; i < values.count(); i += 3 )
-            browser->write(
+            m_HTMLSource.append(
               "<tr class='" + QString( (i % 6) ? "box-row-alt" : "box-row" ) + "'>"
                "<td class='song'>"
                 "<a href=\"file:" + values[i + 1].replace( '"', QCString( "%22" ) ) + "\">" + values[i] + "</a>"
@@ -834,7 +838,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                "</td>"
               "</tr>" );
 
-        browser->write(
+        m_HTMLSource.append(
              "</table>"
             "</div>" );
     }
@@ -850,7 +854,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     if ( !values.isEmpty() )
     {
         // write the script to toggle blocks visibility
-        browser->write(
+        m_HTMLSource.append(
             "<br>"
             "<div class='box'>"
              "<div class='box-header'>" + i18n( "Albums By %1" ).arg( artistName ) + "</div>"
@@ -895,7 +899,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 }
             }
 
-            browser->write( QStringx (
+            m_HTMLSource.append( QStringx (
                 "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>"
                  "<td>"
                   "<div class='album-header' onClick=\"toggleBlock('IDA%1')\">"
@@ -927,24 +931,25 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 for ( uint j = 0; j < albumValues.count(); j += 4 )
                 {
                     QString tmp = albumValues[j + 2].stripWhiteSpace().isEmpty() ? "" : "" + albumValues[j + 2] + ". ";
-                    browser->write(
+                    m_HTMLSource.append(
                         "<div class='song'>"
                          "<a class='song' href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">" + tmp + albumValues[j] + "</a>"
                         "</div>" );
                 }
 
-            browser->write(
+            m_HTMLSource.append(
                   "</div>"
                  "</td>"
                 "</tr>" );
         }
-        browser->write(
+        m_HTMLSource.append(
                "</table>"
               "</div>" );
     }
     // </Albums by this artist>
 
-    browser->write( "</html>" );
+    m_HTMLSource.append( "</html>" );
+    browser->write( m_HTMLSource );
     browser->end();
     saveHtmlData(); // Send html code to file
 }
@@ -1109,17 +1114,19 @@ void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& 
 void ContextBrowser::showIntroduction()
 {
     browser->begin();
+    m_HTMLSource="";
     browser->setUserStyleSheet( m_styleSheet );
 
-    browser->write( "<html><div><h2>");
-    browser->write( i18n( "Hello amaroK user!" ) );
-    browser->write( "</h2><br><br>" );
-    browser->write( i18n( "This is the Context Browser: it shows you contextual information about the currently playing track."
+    m_HTMLSource.append( "<html><div><h2>");
+    m_HTMLSource.append( i18n( "Hello amaroK user!" ) );
+    m_HTMLSource.append( "</h2><br><br>" );
+    m_HTMLSource.append( i18n( "This is the Context Browser: it shows you contextual information about the currently playing track."
                           "In order to use this feature of amaroK, you need to build a collection." ) );
-    browser->write( "&nbsp;<a href='show:collectionSetup'>" );
-    browser->write( i18n( "Click here to build one..." ) );
-    browser->write( "</a></div></html>");
+    m_HTMLSource.append( "&nbsp;<a href='show:collectionSetup'>" );
+    m_HTMLSource.append( i18n( "Click here to build one..." ) );
+    m_HTMLSource.append( "</a></div></html>");
 
+    browser->write( m_HTMLSource );
     browser->end();
     saveHtmlData(); // Send html code to file
 }
@@ -1128,12 +1135,14 @@ void ContextBrowser::showIntroduction()
 void ContextBrowser::showScanning()
 {
     browser->begin();
+    m_HTMLSource="";
     browser->setUserStyleSheet( m_styleSheet );
 
-    browser->write( "<html><p>");
-    browser->write( i18n( "Building Collection Database.." ) );
-    browser->write( "</p></html>");
+    m_HTMLSource.append( "<html><p>");
+    m_HTMLSource.append( i18n( "Building Collection Database.." ) );
+    m_HTMLSource.append( "</p></html>");
 
+    browser->write( m_HTMLSource );
     browser->end();
     saveHtmlData(); // Send html code to file
 }
@@ -1225,11 +1234,13 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
         m_lyrics = i18n( "Lyrics not found." );
 
     browser->begin();
+    m_HTMLSource="";
     browser->setUserStyleSheet( m_styleSheet );
 
-    browser->write( "<html><div class='box'><div class='box-header'>"+ i18n( "Lyrics" ) +"</div><div class='box-body'>" );
-    browser->write( m_lyrics );
-    browser->write( "</div></div></html>" );
+    m_HTMLSource.append( "<html><div class='box'><div class='box-header'>"+ i18n( "Lyrics" ) +"</div><div class='box-body'>" );
+    m_HTMLSource.append( m_lyrics );
+    m_HTMLSource.append( "</div></div></html>" );
+    browser->write( m_HTMLSource );
     browser->end();
     saveHtmlData(); // Send html code to file
 }
