@@ -62,7 +62,7 @@ using namespace Debug;
 #define DEBUG_BEGIN kdDebug() << __indent << "BEGIN: " << __PRETTY_FUNCTION__ << endl; DEBUG_INDENT
 
 /// Use this to extroduce a function
-#define DEBUG_END   kdDebug() << __indent << "END: " << __PRETTY_FUNCTION__ << endl; DEBUG_UNDENT
+#define DEBUG_END   DEBUG_UNDENT kdDebug() << __indent << "END: " << __PRETTY_FUNCTION__ << endl;
 
 /// Use this to remind yourself to finish the implementation of a function
 #define AMAROK_NOTIMPLEMENTED kdWarning() << "NOT-IMPLEMENTED: " << __PRETTY_FUNCTION__ << endl;
