@@ -166,20 +166,19 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     browser->write( "</table>" );
     browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-    m_db->execSql( QString( "SELECT tags.title, tags.url, tags.track, statistics.playcounter "
+    m_db->execSql( QString( "SELECT tags.title, tags.url, statistics.playcounter "
                             "FROM tags, artist, statistics "
                             "WHERE tags.artist = artist.id AND artist.name LIKE '%1' AND statistics.url = tags.url "
                             "ORDER BY statistics.playcounter DESC "
                             "LIMIT 0,5;" )
                    .arg( m_db->escapeString( bundle.artist() ) ), &values, &names );
 
-    for ( uint i = 0; i < ( values.count() / 4 ); i++ )
+    for ( uint i = 0; i < ( values.count() / 3 ); i++ )
     {
-        browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:%1\"'>%2%3 <i>(%4)</i></a></td></tr>" )
-                        .arg( values[i*4 + 1] )
-                        .arg( ( values[i*4 + 2] == "" ) ? "" : values[i*4 + 2] + ". " )
-                        .arg( values[i*4] )
-                        .arg( values[i*4 + 3] ) );
+        browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:%1\"'>%2 <i>(%3)</i></a></td></tr>" )
+                        .arg( values[i*3 + 1] )
+                        .arg( values[i*3] )
+                        .arg( values[i*3 + 2] ) );
     }
 
     values.clear();
