@@ -22,6 +22,7 @@
 #include <qtoolbutton.h>
 
 #include <kapplication.h>
+#include <kconfig.h>
 #include <kdebug.h>
 #include <kfiledialog.h>
 #include <kfileitem.h>
@@ -34,6 +35,8 @@
 #include <kpushbutton.h>
 #include <kstandarddirs.h>   //KGlobal::dirs()
 #include <kurl.h>
+
+#include <amarokconfig.h>
 
 
 CoverManager::CoverManager( QWidget *parent, const char *name )
@@ -147,7 +150,11 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     m_currentView = AllAlbums;
     m_artistView->setSelected( m_artistView->firstChild(), true );
 
-    resize(610, 380);
+    //set saved window size
+    KConfig *config = kapp->config();
+    config->setGroup( "Cover Manager" );
+    QSize winSize = config->readSizeEntry( "Window Size", new QSize( 610, 380 ) );    //default size
+    resize( winSize );
 }
 
 
@@ -156,8 +163,10 @@ CoverManager::~CoverManager()
     delete m_db;
     delete m_timer;
 
-    //TODO save window size
-    //save view settings
+    //save window size
+    KConfig *config = kapp->config();
+    config->setGroup( "Cover Manager" );
+    config->writeEntry( "Window Size", size() );
 
 }
 
@@ -267,7 +276,7 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
                     KURL url( coverItem->albumPath() );
                     KFileItem *file = new KFileItem( url, "image/png", 0 );
 
-                    QString imgPath = m_db->getImageForAlbum( allAlbums ? values[i] : item->text(0), values[ allAlbums ? i+1 : i ], "", 80 );
+                    QString imgPath = m_db->getImageForAlbum( allAlbums ? values[i] : item->text(0), values[ allAlbums ? i+1 : i ], "" );
                     coverItem->updateCover( QPixmap( imgPath ) );
 
                     fileList.append( file );
@@ -459,7 +468,7 @@ void CoverManager::coverFetched( const QString &key )
             KFileItem *file = new KFileItem( KURL( coverItem->albumPath() ), "image/png", 0 );
             fileList.append( file );
 
-            QString imgPath = m_db->getImageForAlbum( coverItem->artist(), coverItem->album(), "", 80 );
+            QString imgPath = m_db->getImageForAlbum( coverItem->artist(), coverItem->album(), "" );
             coverItem->updateCover( QPixmap( imgPath ) );
             return;
         }
@@ -567,14 +576,14 @@ QString CoverViewItem::albumPath()
 
 void CoverViewItem::calcRect( const QString& )
 {
-    int thumbHeight = 80, thumbWidth=80;
-
+    int thumbWidth = AmarokConfig::coverPreviewSize();
+    
     QFontMetrics fm = iconView()->fontMetrics();
-    QRect itemPixmapRect( 5, 1, thumbWidth, thumbHeight );
+    QRect itemPixmapRect( 5, 1, thumbWidth, thumbWidth );
     QRect itemRect = rect();
     itemRect.setWidth( thumbWidth + 10 );
-    itemRect.setHeight( thumbHeight + fm.lineSpacing() + 2 );
-    QRect itemTextRect( 0, thumbHeight+2, itemRect.width(), fm.lineSpacing() );
+    itemRect.setHeight( thumbWidth + fm.lineSpacing() + 2 );
+    QRect itemTextRect( 0, thumbWidth+2, itemRect.width(), fm.lineSpacing() );
 
     setPixmapRect( itemPixmapRect );
     setTextRect( itemTextRect );
