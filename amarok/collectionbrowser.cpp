@@ -264,6 +264,7 @@ CollectionView::customEvent( QCustomEvent *e ) {
 
         MetaBundle* bundle;
 
+        kdDebug() << "Number of records to store in db: " << c->list().count() << endl;
         for ( uint i = 0; i < c->list().count(); i++ ) {
             bundle = c->list().at( i );
             QCString command = "insert into tags( url, album, artist, genre, title, year ) values ('";
@@ -283,6 +284,8 @@ CollectionView::customEvent( QCustomEvent *e ) {
 
             execSql( command, 0, 0 );
             delete bundle;
+            //grant event loop some time for breathing
+            if ( i % 10 ) kapp->processEvents();
         }
 
         emit tagsReady();
