@@ -207,8 +207,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
 
     if ( url.protocol() == "lyricspage" )
     {
-        const QString url = "http://lyrc.com.ar/en/add/add.php?%1";
-        kapp->invokeBrowser( url.arg( m_lyricUrl ) );
+        kapp->invokeBrowser( url.url().replace("lyricspage:", "http://lyrc.com.ar/en/add/add.php?") );
     }
 }
 
@@ -1355,18 +1354,19 @@ void ContextBrowser::showLyrics( const QString &hash )
                   .arg( hash );
     else
         url = QString( "http://lyrc.com.ar/en/tema1en.php?artist=%1&songname=%2" )
-                  .arg( EngineController::instance()->bundle().artist() )
-                  .arg( title );
+                .arg(
+                KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ),
+                KURL::encode_string_no_slash( title ) );
 
 
     kdDebug() << "Using this url: " << url << endl;
 
     m_lyrics = QString::null;
-    m_lyricUrl = QString( "grupo=%1&tema=%2&disco=%3&ano=%4" )
-            .arg( EngineController::instance()->bundle().artist() )
-            .arg( title )
-            .arg( EngineController::instance()->bundle().album() )
-            .arg( EngineController::instance()->bundle().year() );
+    m_lyricUrl = QString( "grupo=%1&tema=%2&disco=%3&ano=%4" ).arg(
+            KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ),
+            KURL::encode_string_no_slash( title ),
+            KURL::encode_string_no_slash( EngineController::instance()->bundle().album() ),
+            KURL::encode_string_no_slash( EngineController::instance()->bundle().year() ) );
 
     KIO::TransferJob* job = KIO::get( url, false, false );
 
