@@ -190,7 +190,7 @@ class WebControl( QApplication ):
 # events from amaroK:
 
     def configure( self ):
-        debug( "Alarm Script: configuration" )
+        debug( "configuration" )
 
         self.dia = ConfigDialog()
         self.dia.show()

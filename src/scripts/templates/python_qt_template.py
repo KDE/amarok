@@ -67,7 +67,7 @@ class Notification( QCustomEvent ):
     def __init__( self, str ):
         self.__super_init(QCustomEvent.User + 1)
         self.string = str
-    
+
 class Test( QApplication ):
     """ The main application, also sets up the Qt event loop """
 
@@ -140,7 +140,7 @@ class Test( QApplication ):
 # events from amaroK:
 
     def configure( self ):
-        debug( "Alarm Script: configuration" )
+        debug( "configuration" )
 
         self.dia = ConfigDialog()
         self.dia.show()
