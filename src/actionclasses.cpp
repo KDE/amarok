@@ -95,16 +95,14 @@ Menu::Menu()
     insertSeparator();
 
     insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n( "C&over Manager..." ), ID_SHOW_COVER_MANAGER );
+    insertItem( i18n( "First-run &Wizard..." ), ID_SHOW_WIZARD );
     insertItem( i18n( "&Visualizations..." ), ID_SHOW_VIS_SELECTOR );
+
+    insertSeparator();
 
 //     insertItem( i18n( "&Scripts..." ), ID_SHOW_SCRIPT_SELECTOR );
 //     insertItem( i18n( "&JavaScript Console" ), ID_SHOW_SCRIPT_CONSOLE );
-//
 //     insertSeparator();
-
-    insertItem( i18n( "First-run &Wizard..." ), ID_SHOW_WIZARD );
-
-    insertSeparator();
 
     insertItem( i18n( "&Show Menubar" ), ID_SHOW_MENUBAR );
 
@@ -167,9 +165,6 @@ Menu::slotActivated( int index )
 {
     switch( index )
     {
-    case ID_SHOW_VIS_SELECTOR:
-        Vis::Selector::instance()->show(); //doing it here means we delay creation of the widget
-        break;
     case ID_SHOW_COVER_MANAGER:
         (new CoverManager())->show();
         break;
@@ -177,6 +172,9 @@ Menu::slotActivated( int index )
         pApp->firstRunWizard();
         pApp->playlistWindow()->recreateGUI();
         pApp->applySettings();
+        break;
+    case ID_SHOW_VIS_SELECTOR:
+        Vis::Selector::instance()->show(); //doing it here means we delay creation of the widget
         break;
     #ifdef HAVE_KJSEMBED
     case ID_SHOW_SCRIPT_SELECTOR:
