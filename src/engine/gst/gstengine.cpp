@@ -413,7 +413,7 @@ GstEngine::scope()
     offset /= channels;
     offset *= channels;
     if ( offset < 0 ) offset *= -1;
-    offset = QMIN( offset, available - SCOPE_VALUES * channels );
+    offset = QMIN( offset, available - SCOPE_VALUES*channels*sizeof( gint16 ) );
 
     for ( ulong i = 0; i < SCOPE_VALUES; i++, data += channels ) {
         long temp = 0;
