@@ -14,7 +14,6 @@
 #include <kurl.h>             //stack alloc
 #include <qmap.h>
 
-#include "tagselectdialog.h"
 
 class PlaylistItem;
 
