@@ -484,16 +484,10 @@ TagWriter::doJob()
 
         f.save(); //FIXME this doesn't always work, but! it returns void. Great huh?
 
-        //update the collection db
-
-        //FIXME <markey> Deactivated this code, as it caused BR 87169.
-
-//         CollectionDB *db = new CollectionDB();
-//         db->updateTag( url.path(), field, m_tagString );
-//         delete db;
+        // Update the collection db.
+        // Hopefully this does not cause concurreny issues with sqlite3, as we had in BR 87169.
+        CollectionDB().updateTag( url.path(), field, m_tagString );
     }
-
-    //TODO can solve by reading tags now. Sucks or what?
 
     return true;
 }
