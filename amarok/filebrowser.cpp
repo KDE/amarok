@@ -233,13 +233,8 @@ void KDevFileSelector::readConfig()
     cmbPath->setURLs( AmarokConfig::dirHistory() );
 
     // if we restore history
-    if ( AmarokConfig::restoreLocation() || kapp->isRestored() )
-    {
-        if ( ! AmarokConfig::location().isEmpty() )
-            setDir( AmarokConfig::location() );
-    }
-
-    // else is automatic, as cmpPath->setURL is called when a location is entered.
+    if ( AmarokConfig::restoreLocation() && !AmarokConfig::location().isEmpty() )
+        setDir( AmarokConfig::location() );
 
     filter->setMaxCount( AmarokConfig::filterHistoryLen() );
     filter->setHistoryItems( AmarokConfig::filterHistory(), true );
