@@ -772,8 +772,9 @@ Playlist::engineStateChanged( Engine::State state )
         Glow::startTimer();
 
         if( m_currentTrack ) {
-            //display "Play" icon
-            m_currentTrack->setPixmap( m_firstColumn, amaroK::getPNG( "currenttrack_play" ) );
+            m_currentTrack->setPixmap( m_firstColumn, amaroK::getPNG( AmarokConfig::repeatTrack()
+                ? "currenttrack_repeat"
+                : "currenttrack_play" ) );
             PlaylistItem::setPixmapChanged();
         }
         break;
@@ -786,16 +787,14 @@ Playlist::engineStateChanged( Engine::State state )
         Glow::reset();
 
         if( m_currentTrack ) {
-            //display "Pause" icon
             m_currentTrack->setPixmap( m_firstColumn, amaroK::getPNG( "currenttrack_pause" ) );
             PlaylistItem::setPixmapChanged();
 
-            //slotGlowTimer(); //update glow state
+            slotGlowTimer(); //update glow state
         }
         break;
 
     case Engine::Empty:
-        //TODO do this with setState() in PlaylistWindow?
         amaroK::actionCollection()->action( "pause" )->setEnabled( false );
         amaroK::actionCollection()->action( "stop" )->setEnabled( false );
         amaroK::actionCollection()->action( "playlist_show" )->setEnabled( false );

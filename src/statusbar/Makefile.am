@@ -1,6 +1,10 @@
 noinst_LTLIBRARIES = libstatusbar.la
 
-libstatusbar_la_METASOURCES = popupMessage.moc statusbar.moc statusBarBase.moc
+libstatusbar_la_METASOURCES = \
+    popupMessage.moc \
+    statusbar.moc \
+    statusBarBase.moc \
+    toggleLabel.moc
 
 INCLUDES = \
     -I$(top_srcdir)/amarok/src/ \

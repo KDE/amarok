@@ -363,9 +363,9 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 
         p->drawPixmap( 0, 0, paintCache[column].map[colorKey] );
 
-        if( AmarokConfig::repeatTrack() && column == listView()->m_firstColumn )
+        //if( AmarokConfig::repeatTrack() && column == listView()->m_firstColumn )
             //TODO paint inside cache, but currently I don't want to break anything
-            p->drawPixmap( width - 19, (height() - 16) / 2, SmallIcon( "repeat_one" ) );
+        //    p->drawPixmap( width - 19, (height() - 16) / 2, SmallIcon( "repeat_one" ) );
     }
     else {
         QColorGroup _cg = cg;

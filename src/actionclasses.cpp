@@ -310,6 +310,7 @@ RandomAction::RandomAction( KActionCollection *ac ) :
     ToggleAction( i18n( "Random &Mode" ), &AmarokConfig::setRandomMode, ac, "random_mode" )
 {
     KToggleAction::setChecked( AmarokConfig::randomMode() );
+    setIcon( "random" );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -319,6 +320,7 @@ RepeatTrackAction::RepeatTrackAction( KActionCollection *ac ) :
     ToggleAction( i18n( "Repeat &Track" ), &AmarokConfig::setRepeatTrack, ac, "repeat_track" )
 {
     KToggleAction::setChecked( AmarokConfig::repeatTrack() );
+    setIcon( "repeat_track" );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -328,6 +330,7 @@ RepeatPlaylistAction::RepeatPlaylistAction( KActionCollection *ac ) :
     ToggleAction( i18n( "R&epeat Playlist" ), &AmarokConfig::setRepeatPlaylist, ac, "repeat_playlist" )
 {
     KToggleAction::setChecked( AmarokConfig::repeatPlaylist() );
+    setIcon( "repeat_playlist" );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

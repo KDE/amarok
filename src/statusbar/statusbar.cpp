@@ -31,10 +31,14 @@
 #include "sliderwidget.h"
 #include "statusbar.h"
 #include "timeLabel.h"
+#include "toggleLabel.h"
+#include "toggleLabel.moc"
 
 
 namespace amaroK {
 
+
+KAction *action( const char *name ) { return amaroK::actionCollection()->action( name ); }
 
 //TODO disable hide statusbar? or show when required? that sucks though.
 
@@ -63,15 +67,12 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     m_slider->setMinimumWidth( m_timeLabel->width() );
 
     // TODO Both labels need tooltips (string freeze?)
-    QLabel *rndLabel, *repLabel;
     QWidget *hbox = new QWidget( this );
     QBoxLayout *layout = new QHBoxLayout( hbox, 0, 2 );
     layout->addSpacing( 3 );
-    layout->addWidget( rndLabel = new QLabel( hbox ) );
-    layout->addWidget( repLabel = new QLabel( hbox ) );
+    layout->addWidget( new ToggleLabel( (KToggleAction*)amaroK::action( "random_mode" ), hbox ) );
+    layout->addWidget( new ToggleLabel( (KToggleAction*)amaroK::action( "repeat_playlist" ), hbox ) );
     layout->addSpacing( 3 );
-    rndLabel->setPixmap( SmallIcon( "random" ) );
-    repLabel->setPixmap( SmallIcon( "repeat_playlist" ) ); // Are these icons in KDElibs?
 
     //TODO reimplement insertChild() instead
     addWidget( m_itemCountLabel );
