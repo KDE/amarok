@@ -580,8 +580,20 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
 
 //these functions ask the playlist to change the track, if it can change track it notifies us again via a SIGNAL
 //the SIGNAL is connected to ::play() below
+
+void PlayerApp::slotPlay()
+{
+    kdDebug() << "[PlayerApp::slotPlay()] me got started" << endl;
+    if ( m_pEngine->state() == EngineBase::Paused )
+    {
+        slotPause();
+        m_pPlayerWidget->m_pButtonPlay->setDown( TRUE );
+        m_pPlayerWidget->m_pButtonPlay->setOn( TRUE );
+    } else
+        emit orderCurrentTrack();
+}
+
 void PlayerApp::slotPrev() { emit orderPreviousTrack(); }
-void PlayerApp::slotPlay() { emit orderCurrentTrack(); }
 void PlayerApp::slotNext() { emit orderNextTrack(); }
 
 
@@ -824,7 +836,7 @@ void LoaderServer::newConnection( int sockfd )
     int nbytes = recv( sockfd, buf, sizeof(buf) - 1, 0 );
 
     if ( nbytes < 0 )
-        kdDebug() << "[LoaderServer::newConnection()] recv error\n";
+        kdDebug() << "[LoaderServer::newConnection()] recv error" << endl;
     else
     {
         buf[nbytes] = '\000';
