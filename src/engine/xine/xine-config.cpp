@@ -45,7 +45,7 @@ XineConfigEntry::XineConfigEntry( QWidget *parent, amaroK::PluginConfig *pluginC
     {
         w = new KComboBox( parent );
         for( int i = 0; entry->enum_values[i]; ++i )
-            ((KComboBox*)w)->insertItem( entry->enum_values[i] );
+            ((KComboBox*)w)->insertItem( QString::fromLocal8Bit( entry->enum_values[i] ) );
         ((KComboBox*)w)->setCurrentItem( m_numValue );
         connect( w, SIGNAL(activated( int )), this, SLOT(slotNumChanged( int )) );
         connect( w, SIGNAL(activated( int )), pluginConfig, SIGNAL(viewChanged()) );
@@ -70,7 +70,7 @@ XineConfigEntry::XineConfigEntry( QWidget *parent, amaroK::PluginConfig *pluginC
     }
     case XINE_CONFIG_TYPE_BOOL:
     {
-        QCheckBox *box = new QCheckBox( QString( entry->description ), parent );
+        QCheckBox *box = new QCheckBox( QString::fromLocal8Bit( entry->description ), parent );
         box->setChecked( m_numValue );
         connect( box, SIGNAL(toggled( bool )), this, SLOT(slotBoolChanged( bool )) );
         connect( box, SIGNAL(toggled( bool )), pluginConfig, SIGNAL(viewChanged()) );
@@ -86,7 +86,7 @@ XineConfigEntry::XineConfigEntry( QWidget *parent, amaroK::PluginConfig *pluginC
 
     QToolTip::add( w, QString( entry->help ) );
 
-    QLabel* description = new QLabel( QString( entry->description ) + ':', parent );
+    QLabel* description = new QLabel( QString::fromLocal8Bit( entry->description ) + ':', parent );
     description->setAlignment( QLabel::WordBreak | QLabel::AlignVCenter );
 
     grid->addWidget( w, row, 1 );
