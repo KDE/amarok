@@ -645,7 +645,7 @@ Playlist::restoreCurrentTrack()
         {
            //display "Play" icon
            item->setPixmap( m_firstColumn, locate( "data", QString( "amarok/images/currenttrack_play.png" ) ) );
-           PlaylistItem::s_pixmapChanged = true;
+           PlaylistItem::setPixmapChanged();
         }
     }
 
@@ -729,7 +729,7 @@ Playlist::engineStateChanged( Engine::State state )
         {
             //display "Play" icon
             m_currentTrack->setPixmap( m_firstColumn, locate( "data", QString( "amarok/images/currenttrack_play.png" ) ) );
-            PlaylistItem::s_pixmapChanged = true;
+            PlaylistItem::setPixmapChanged();
         }
         break;
 
@@ -744,7 +744,7 @@ Playlist::engineStateChanged( Engine::State state )
         {
             //display "Pause" icon
             m_currentTrack->setPixmap( m_firstColumn, locate( "data", QString( "amarok/images/currenttrack_pause.png" ) ) );
-            PlaylistItem::s_pixmapChanged = true;
+            PlaylistItem::setPixmapChanged();
         }
         break;
 
@@ -764,7 +764,7 @@ Playlist::engineStateChanged( Engine::State state )
             for( int i = 0; i < header()->count(); i++ )
                 m_currentTrack->setPixmap( i, null );
 
-            PlaylistItem::s_pixmapChanged = true;
+            PlaylistItem::setPixmapChanged();
 
             //reset glow state
             slotGlowTimer();
@@ -894,7 +894,7 @@ Playlist::columnOrderChanged() //SLOT
     {
         m_currentTrack->setPixmap( prevColumn, QPixmap() );
         m_currentTrack->setPixmap( m_firstColumn, locate( "data", QString( "amarok/images/currenttrack_play.png" ) ) );
-        PlaylistItem::s_pixmapChanged = true;
+        PlaylistItem::setPixmapChanged();
     }
 }
 

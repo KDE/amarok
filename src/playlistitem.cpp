@@ -154,6 +154,12 @@ PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi, const QDomNode &n
 // PUBLIC METHODS
 /////////////////////////////////////////////////////////////////////////////////////
 
+void PlaylistItem::setPixmapChanged()
+{
+    s_pixmapChanged = true;
+}
+
+
 MetaBundle PlaylistItem::metaBundle()
 {
     //TODO this meta prop reading causes ogg files to skip, so we need to do it a few seconds before the

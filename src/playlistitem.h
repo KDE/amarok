@@ -40,6 +40,9 @@ class PlaylistItem : public KListViewItem
         void setText( const MetaBundle& bundle);
         void setText( int, const QString& );
 
+        /** Indicates that the current-track pixmap has changed. Animation must be redrawn. */
+        static void setPixmapChanged();
+
         Playlist *listView() const { return (Playlist*)KListViewItem::listView(); }
         PlaylistItem *nextSibling() const { return (PlaylistItem*)KListViewItem::nextSibling(); }
         void setup();
@@ -57,8 +60,6 @@ class PlaylistItem : public KListViewItem
 
         static QColor glowText;
         static QColor glowBase;
-
-        static bool s_pixmapChanged;
 
         static const QString columnName(int n);
 
@@ -100,12 +101,11 @@ class PlaylistItem : public KListViewItem
         void    paintCell( QPainter*, const QColorGroup&, int, int, int );
 
 
-
-
         static QString trackName( const KURL &u ) { return u.protocol() == "http" ? u.prettyURL() : u.fileName(); }
 
         const KURL m_url;
 
+        static bool s_pixmapChanged;
         static const uint STRING_STORE_SIZE = 80;
         static QString stringStore[STRING_STORE_SIZE];
         static const QString& attemptStore( const QString &candidate);
