@@ -27,6 +27,8 @@ email                : markey@web.de
 
 #include <gst/gst.h>
 
+using std::vector;
+
 class KURL;
 
 class GstEngine : public EngineBase
@@ -73,7 +75,7 @@ class GstEngine : public EngineBase
         static void                              typefindError_cb( GstElement *typefind, GstElement *pipeline );
         static void                              typefindFound_cb( GstElement *typefind, GstCaps *caps, GstElement *pipeline );
 
-        void                                     buffer( long len );
+        void                                     interpolate( const vector<float>& inVec, vector<float>& outVec );
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
         /////////////////////////////////////////////////////////////////////////////////////
@@ -81,10 +83,9 @@ class GstEngine : public EngineBase
         GstElement*                              m_pAudiosink;
         GstElement*                              m_pFilesrc;
 
-        float                                    *mScope;
-        int                                      mScopeLength;
-        float                                    *mScopeEnd;
-        float                                    *mCurrent;
+        static vector<float>                     m_scopeBuf;
+        static int                               m_scopeBufIndex;
+        static int                               m_scopeSize;
        
         bool                                     m_typefindResult;
 };

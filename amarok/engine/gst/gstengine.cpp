@@ -18,6 +18,7 @@ email                : markey@web.de
 #include "enginebase.h"
 #include "gstengine.h"
 
+#include <math.h>       //interpolate()
 #include <vector>
 
 #include <qobject.h>
@@ -29,14 +30,25 @@ email                : markey@web.de
 
 #include <gst/gst.h>
 
+using std::vector;
+
 
 AMAROK_EXPORT_PLUGIN( GstEngine )
 
+
 //////////////////////////////////////////////////////////////////////
-// STATIC METHODS
+// STATIC
 //////////////////////////////////////////////////////////////////////
 
-void GstEngine::eos_cb( GstElement *typefind, GstElement *pipeline )
+static const int SCOPEBUF_SIZE = 40000;
+
+vector<float> GstEngine::m_scopeBuf;
+int           GstEngine::m_scopeBufIndex;
+int           GstEngine::m_scopeSize;
+
+
+void
+GstEngine::eos_cb( GstElement *typefind, GstElement *pipeline )
 {
     kdDebug() << "GstEngine::eos_cb" << endl;
 
@@ -45,31 +57,31 @@ void GstEngine::eos_cb( GstElement *typefind, GstElement *pipeline )
 }
 
 
-void GstEngine::handoff_cb( GstElement *identity, GstBuffer *buf, GstElement *pipeline )
+void
+GstEngine::handoff_cb( GstElement *identity, GstBuffer *buf, GstElement *pipeline )
 {
-    kdDebug() << "GstEngine::handoff_cb" << endl;
+//     kdDebug() << k_funcinfo << endl;
     
     if ( GST_IS_BUFFER( buf ) )
     {
-        kdDebug() << "GstEngine::handoff_cb BUFFER_SIZE: " << GST_BUFFER_SIZE( buf ) << endl;
-        
+//         kdDebug() << k_funcinfo << "BUFFER_SIZE: " << GST_BUFFER_SIZE( buf ) << endl;
         guint8* data = GST_BUFFER_DATA( buf );
 
         for ( ulong i = 0; i < GST_BUFFER_SIZE( buf ); ++i )
         {
-            for ( ; pGstEngine->mCurrent < pGstEngine->mScopeEnd && i < GST_BUFFER_SIZE( buf ); ++pGstEngine->mCurrent, ++i )
-            {
-                *pGstEngine->mCurrent = (float) data[ i ] / 256.0;
-            }
-            
-            if ( pGstEngine->mCurrent >= pGstEngine->mScopeEnd )
-                pGstEngine->mCurrent = pGstEngine->mScope;
+            if ( m_scopeBufIndex == m_scopeBuf.size() )
+                m_scopeBufIndex = 0;
+                
+            //convert uint-8 to float and write into buf
+            m_scopeBuf[ m_scopeBufIndex++ ] = (float) data[ i ] / 256.0;
+           
         }
     }
 }
 
 
-void GstEngine::typefindError_cb( GstElement *typefind, GstElement *pipeline )
+void
+GstEngine::typefindError_cb( GstElement *typefind, GstElement *pipeline )
 {
     kdDebug() << "GstEngine::typefindError" << endl;
 
@@ -78,7 +90,8 @@ void GstEngine::typefindError_cb( GstElement *typefind, GstElement *pipeline )
 }
 
 
-void GstEngine::typefindFound_cb( GstElement *typefind, GstCaps *caps, GstElement *pipeline )
+void 
+GstEngine::typefindFound_cb( GstElement *typefind, GstCaps *caps, GstElement *pipeline )
 {
     kdDebug() << "GstEngine::typefindFound" << endl;
 
@@ -102,7 +115,6 @@ void GstEngine::typefindFound_cb( GstElement *typefind, GstCaps *caps, GstElemen
 GstEngine::GstEngine()
         : EngineBase()
         , m_pThread( NULL )
-        , mScope( 0 )
 {}
 
 
@@ -110,15 +122,18 @@ GstEngine::~GstEngine()
 {
     stop();
     gst_object_unref      (GST_OBJECT  (m_pThread));
-    delete [] mScope;
 }
 
 
-void GstEngine::init( bool&, int scopeSize, bool )
+void
+GstEngine::init( bool&, int scopeSize, bool )
 {
-    m_mixerHW = -1;            //initialize 
-    buffer( 1 << scopeSize );
     pGstEngine = this;
+    m_mixerHW = -1;            //initialize 
+    
+    m_scopeBufIndex = 0;
+    m_scopeBuf.resize( SCOPEBUF_SIZE );
+    m_scopeSize = 1 << scopeSize;
     
 //     g_module_open( "libgstreamer-0.8.so", (GModuleFlags) 0 );
     gst_init( NULL, NULL );
@@ -126,7 +141,7 @@ void GstEngine::init( bool&, int scopeSize, bool )
     /* create a new thread to hold the elements */
     kdDebug() << k_funcinfo << "BEFORE gst_thread_new ( thread );\n";
     m_pThread              = gst_thread_new          ( "thread" );
-    
+   
     /* create a disk reader */
     kdDebug() << k_funcinfo << "BEFORE gst_element_factory_make( filesrc, disk_source );\n";
     m_pFilesrc             = gst_element_factory_make( "filesrc", "disk_source" );
@@ -142,7 +157,6 @@ void GstEngine::init( bool&, int scopeSize, bool )
 
     g_signal_connect ( G_OBJECT( pIdentity ), "handoff",
                        G_CALLBACK( handoff_cb ), m_pThread );
-
     g_signal_connect ( G_OBJECT( m_pAudiosink ), "eos",
                        G_CALLBACK( eos_cb ), m_pThread );
 
@@ -158,7 +172,8 @@ void GstEngine::init( bool&, int scopeSize, bool )
 // PUBLIC METHODS
 /////////////////////////////////////////////////////////////////////////////////////
 
-bool GstEngine::initMixer( bool )
+bool
+GstEngine::initMixer( bool )
 {
     closeMixerHW();
     initMixerHW();
@@ -169,7 +184,8 @@ bool GstEngine::initMixer( bool )
 }
 
 
-bool GstEngine::canDecode( const KURL &url, mode_t, mode_t )
+bool
+GstEngine::canDecode( const KURL &url, mode_t, mode_t )
 {
     GstElement *pipeline, *filesrc, *typefind;
     m_typefindResult = false;
@@ -204,7 +220,8 @@ bool GstEngine::canDecode( const KURL &url, mode_t, mode_t )
 }
 
 
-long GstEngine::position() const
+long
+GstEngine::position() const
 {
     if ( ( gst_element_get_state( GST_ELEMENT (m_pThread) ) == GST_STATE_PLAYING ) ||
             ( gst_element_get_state( GST_ELEMENT (m_pThread) ) == GST_STATE_PAUSED ) )
@@ -219,7 +236,8 @@ long GstEngine::position() const
 }
 
 
-EngineBase::EngineState GstEngine::state() const
+EngineBase::EngineState 
+GstEngine::state() const
 {
     switch ( gst_element_get_state( GST_ELEMENT( m_pThread ) ) )
     {
@@ -238,21 +256,22 @@ EngineBase::EngineState GstEngine::state() const
 }
 
 
-bool GstEngine::isStream() const
+bool
+GstEngine::isStream() const
 {
     return false;
 }
 
 
-std::vector<float>* GstEngine::scope()
+vector<float>*
+GstEngine::scope()
 {
-    std::vector<float> *buf = new std::vector<float>( mScopeLength );
-    char *front = (char *)(&buf->front());
-    memcpy(front, mCurrent, (mScopeEnd - mCurrent) * sizeof(float));
-    memcpy(front + (mScopeEnd - mCurrent)*sizeof(float), mScope,
-           (mCurrent - mScope) * sizeof(float));
+    vector<float>* scope = new vector<float>( m_scopeSize );
 
-    return buf;
+    interpolate( m_scopeBuf, *scope );
+    m_scopeBufIndex = 0;
+    
+    return scope;
 }
 
 
@@ -260,7 +279,8 @@ std::vector<float>* GstEngine::scope()
 // PUBLIC SLOTS
 /////////////////////////////////////////////////////////////////////////////////////
 
-const QObject* GstEngine::play( const KURL& url )
+const QObject* 
+GstEngine::play( const KURL& url )
 {
     stop();
 
@@ -271,27 +291,31 @@ const QObject* GstEngine::play( const KURL& url )
 }
 
 
-void GstEngine::play()
+void 
+GstEngine::play()
 {
     /* start playing */
     gst_element_set_state( GST_ELEMENT( m_pThread ), GST_STATE_PLAYING );
 }
 
 
-void GstEngine::stop()
+void 
+GstEngine::stop()
 {
     /* stop the thread */
     gst_element_set_state (GST_ELEMENT( m_pThread ), GST_STATE_NULL );
 }
 
 
-void GstEngine::pause()
+void 
+GstEngine::pause()
 {
     gst_element_set_state( GST_ELEMENT( m_pThread ), GST_STATE_PAUSED );
 }
 
 
-void GstEngine::seek( long ms )
+void 
+GstEngine::seek( long ms )
 {
     if ( ms > 0 )
     {
@@ -305,7 +329,8 @@ void GstEngine::seek( long ms )
 }
 
 
-void GstEngine::setVolume( int percent )
+void 
+GstEngine::setVolume( int percent )
 {
     m_volume = percent;
     EngineBase::setVolumeHW( percent );
@@ -316,18 +341,24 @@ void GstEngine::setVolume( int percent )
 // PRIVATE METHODS
 /////////////////////////////////////////////////////////////////////////////////////
 
-void GstEngine::buffer( long len )
+void
+GstEngine::interpolate( const vector<float> &inVec, vector<float> &outVec )
 {
-    delete [] mScope;
+    double pos = 0.0;
+    const double step = (double)m_scopeBufIndex / outVec.size();
 
-    mScopeLength=len;
-    mScope=new float[len];
-    mScopeEnd=mScope+mScopeLength;
-    mCurrent=mScope;
+    for ( uint i = 0; i < outVec.size(); ++i, pos += step )
+    {
+        unsigned long index = (unsigned long) pos;
 
-    memset(mScope, 0, mScopeLength);
+        if ( index >= m_scopeBufIndex )
+            index = m_scopeBufIndex - 1;
+
+        outVec[i] = inVec[index];
+    }
 }
 
 
 #include "gstengine.moc"
+
 
