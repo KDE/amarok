@@ -1,5 +1,5 @@
 INCLUDES = $(all_includes)
 METASOURCES = AUTO
 noinst_LIBRARIES =  libanalyzers.a
-noinst_HEADERS = analyzerbase.h baranalyzer2.h baranalyzer.h distortanalyzer.h turbine.h
-libanalyzers_a_SOURCES =  analyzerbase.cpp baranalyzer2.cpp baranalyzer.cpp distortanalyzer.cpp turbine.cpp
+noinst_HEADERS = analyzerbase.h baranalyzer2.h baranalyzer.h distortanalyzer.h turbine.h spectralshine.h
+libanalyzers_a_SOURCES =  analyzerbase.cpp baranalyzer2.cpp baranalyzer.cpp distortanalyzer.cpp turbine.cpp spectralshine.cpp

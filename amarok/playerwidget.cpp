@@ -25,6 +25,7 @@ email                :
 #include "analyzers/baranalyzer2.h"
 #include "analyzers/distortanalyzer.h"
 #include "analyzers/turbine.h"
+#include "analyzers/spectralshine.h"
 #include "amarokdcophandler.h"
 
 #include <qbitmap.h>
@@ -136,7 +137,7 @@ AmarokSystray::AmarokSystray( PlayerWidget *playerWidget, KActionCollection *ac 
                                i18n( "[&C] Pause" ), kapp, SLOT( slotPause() ) );
     contextMenu()->insertItem( QIconSet( locate( "data", "amarok/images/b_stop.png" ) ),
                                i18n( "[&V] Stop" ), kapp, SLOT( slotStop() ) );
-    contextMenu()->insertItem( QIconSet( locate( "data", "amarok/images/b_next.png" ) ), 
+    contextMenu()->insertItem( QIconSet( locate( "data", "amarok/images/b_next.png" ) ),
                                i18n( "[&B] Next" ), kapp, SLOT( slotNext() ) );
 
     // don't love them just yet
@@ -693,6 +694,9 @@ void PlayerWidget::createVis()
         break;
     case 3:
         m_pVis = new TurbineAnalyzer( this );
+        break;
+    case 4:
+        m_pVis = new SpectralShineAnalyzer( this );
         break;
     default:
         //oh wise ones! Please forgive my use of the goto command!
