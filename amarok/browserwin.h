@@ -35,20 +35,62 @@ class QCloseEvent;
 class QColor;
 class QListViewItem;
 class QPaintEvent;
-class QPalette;
 class QPoint;
 class QMoveEvent;
 class QSplitter;
 class QVBox;
 
 class KLineEdit;
-class KHistoryCombo;
 class KListView;
-class KMultiTabBar;
 class KURL;
 
 class PlayerApp;
 extern PlayerApp *pApp;
+
+
+/**
+ *@author Max
+ */
+ 
+//In order to remember the size of the tabs when using a QSplitter it is
+//necessary to override sizeHint(). Hence this class.
+//Later it seemed convenient to move management of the widgets (pages)
+//here too, so I did that too.
+ 
+#include <qhbox.h>
+#include <vector>
+
+class KMultiTabBar;
+class QSignalMapper;
+
+class PlaylistSideBar : public QHBox
+{
+Q_OBJECT
+
+public:
+    PlaylistSideBar( QWidget *parent );
+
+    void setPageFont( const QFont& );
+    void addPage( QWidget*, const QString&, const QString& );
+    QWidget *page( const QString& );
+    virtual QSize sizeHint() const;
+
+public slots:
+    void showHide( int );
+    void close();
+    
+private:
+    int  m_savedSize;
+    int  m_current;
+    
+    KMultiTabBar  *m_MTB;
+    QSignalMapper *m_mapper;
+    
+    std::vector<QWidget *> m_widgets;
+};
+
+
+
 
 /**
  *@author mark
@@ -86,13 +128,10 @@ class BrowserWin : public QWidget
         ExpandButton *m_pButtonPrev;
 
         PlaylistWidget *m_pPlaylistWidget;
-        StreamBrowser *m_pStreamBrowser;
-        KDevFileSelector *m_pFileBrowser;
         
         QSplitter *m_pSplitter;
         KLineEdit *m_pPlaylistLineEdit;
-        KMultiTabBar *m_pMultiTabBar;
-
+    
     public slots:
         void slotBrowserDoubleClicked( QListViewItem *pItem );
         void slotUpdateFonts();
@@ -101,9 +140,6 @@ class BrowserWin : public QWidget
     private slots:
         void setBrowserURL( const KURL& ); //sets browser line edit to KURL
         void slotAddLocation();
-        void buttonBrowserClicked();
-        void buttonStreamClicked();
-        void closeAllTabs();
                 
     signals:
         void signalHide();
@@ -114,14 +150,8 @@ class BrowserWin : public QWidget
         void moveEvent( QMoveEvent * );
         void paintEvent( QPaintEvent * );
         void keyPressEvent( QKeyEvent * );
-        void setPaletteRecursively( QWidget* widget, const QPalette &pal );
-        // ATTRIBUTES ------
-        PlaylistSideBar *m_sideBar;
-        KDevFileSelector *m_pBrowserBox;
-        QVBox  *m_pStreamBox;
         
-        //QColor m_TextColor;
-        //QPixmap m_bgPixmap;
+        PlaylistSideBar *m_pSideBar;
 };
 
 #endif

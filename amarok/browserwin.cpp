@@ -27,20 +27,18 @@
 #include <qcolor.h>
 #include <qfile.h>
 #include <qlayout.h>
-#include <qobjectlist.h>
 #include <qpixmap.h>
-#include <qpopupmenu.h>
 #include <qsplitter.h>
 #include <qstring.h>
 #include <qtooltip.h>
 #include <qvbox.h>
 #include <qwidget.h>
+#include <qsignalmapper.h> //PlaylistSideBar
+#include <qobjectlist.h>   //setPaletteRecursively()
 
 #include <kaction.h>
 #include <kapplication.h>
-#include <kcompletion.h>
 #include <kdebug.h>
-#include <kdirlister.h>
 #include <kglobal.h>
 #include <kglobalsettings.h>
 #include <kiconloader.h>
@@ -50,30 +48,87 @@
 #include <kmultitabbar.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
-#include <kurlcompletion.h>
-#include <kcombobox.h>
 
 
+static void setPaletteRecursively( QWidget*, const QPalette&, const QColor& );
 
-//the reason to make this class is because we need to overide sizeHint
-//eventually expand it so things are more OO, currently this is very messsy
 
-//NOTE I've tried to avoid the Q_OBJECT macro to save some bloat
-class PlaylistSideBar : public QHBox
+PlaylistSideBar::PlaylistSideBar( QWidget *parent )
+    : QHBox ( parent )
+    , m_savedSize( 150 )
+    , m_current( -1 )
+    , m_MTB( new KMultiTabBar( KMultiTabBar::Vertical, this ) )
+    , m_mapper( new QSignalMapper( this ) )
+    , m_widgets( 2, (QWidget*)0 )
 {
-public:
-    PlaylistSideBar( QWidget *parent ) : QHBox ( parent ), m_open( true ), m_savedSize( 100 ) {}
-
-    virtual QSize sizeHint() const { return ( m_open ) ? QSize( m_savedSize, 100 ) : QHBox::sizeHint(); }
+    m_MTB->setStyle( KMultiTabBar::VSNET );
+    m_MTB->setPosition( KMultiTabBar::Left );
+    m_MTB->showActiveTabTexts( true ); 
     
-    void close() { if( m_open ) { m_savedSize = width(); m_open = false; } }
-    void open()  { if( m_open ) { m_savedSize = width(); } m_open = true;  }
+    connect( m_mapper, SIGNAL( mapped( int ) ), this, SLOT( showHide( int ) ) );
+}
 
-private:
-    int  m_savedSize;
-    bool m_open;
-};
+QWidget *PlaylistSideBar::page( const QString &widgetName )
+{
+    for( uint i = 0; i <= m_widgets.size(); ++i )
+        if( m_widgets[i] )
+            if( widgetName == m_widgets[i]->name() )
+                return m_widgets[i];
+}
+
+void PlaylistSideBar::setPageFont( const QFont &font )
+{
+    //note - untested because font system was broken when I made this
+    for( uint i = 0; i <= m_widgets.size(); ++i ) if( m_widgets[i] ) m_widgets[i]->setFont( font );
+}
     
+QSize PlaylistSideBar::sizeHint() const
+{
+    //return a fake sizeHint because QHBox doesn't and QSplitter uses the sizeHint
+    return ( m_current != -1 ) ? QSize( m_savedSize, 100 ) : QHBox::sizeHint();
+}
+
+void PlaylistSideBar::addPage( QWidget *widget, const QString& text, const QString& icon )
+{
+    //we need to get count this way, currently it's the only way to do it coz KMultiTabBar sux0rs
+    int id = m_MTB->tabs()->count();
+    
+    //FIXME can we do this with signals/slots?
+    m_MTB->appendTab( KGlobal::iconLoader()->loadIcon( icon, KIcon::NoGroup, KIcon::SizeSmall ), id, text );
+    QObject *tab = m_MTB->tab( id );
+    connect( tab, SIGNAL( clicked() ), m_mapper, SLOT( map() ) );
+    m_mapper->setMapping( tab, id );
+    
+    m_widgets[ id ] = widget;
+    widget->hide();
+}
+
+void PlaylistSideBar::showHide( int index )
+{
+    if( m_current != -1 && m_current != index )
+    {
+        m_widgets[ m_current ]->hide();
+        m_MTB->tab( m_current )->setState( false );
+        m_savedSize = width();
+    }
+    
+    QWidget  *w = m_widgets[ index ];
+    bool isShut = w->isHidden();
+    
+    m_MTB->tab( index )->setState( isShut );
+    if( isShut ) { w->show(); m_current = index; }
+    else         { w->hide(); m_current = -1; m_savedSize = width(); }
+}
+
+void PlaylistSideBar::close()
+{
+    if( m_current != -1 )
+    {
+        showHide( m_current );
+    }
+}
+
+   
 
 
 // CLASS BrowserWin =====================================================================
@@ -81,9 +136,13 @@ private:
 BrowserWin::BrowserWin( QWidget *parent, const char *name )
     : QWidget( parent, name, Qt::WType_TopLevel | Qt::WPaintUnclipped )
     , m_pActionCollection( new KActionCollection( this ) )
+    , m_pSplitter( new QSplitter( this ) )
+    , m_pSideBar( new PlaylistSideBar( m_pSplitter ) )
 {
     setCaption( kapp->makeStdCaption( i18n( "Playlist" ) ) );
     setAcceptDrops( true );
+    m_pSplitter->setResizeMode( m_pSideBar, QSplitter::FollowSizeHint );
+    m_pSideBar ->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
 
     initChildren();
 
@@ -98,7 +157,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     connect( m_pPlaylistWidget, SIGNAL( cleared() ),
              m_pPlaylistLineEdit, SLOT( clear() ) );
     connect( m_pPlaylistWidget, SIGNAL( clicked( QListViewItem * ) ),
-             this, SLOT( closeAllTabs() ) );
+             m_pSideBar, SLOT( close() ) );
           
 
     connect( m_pButtonClear, SIGNAL( clicked() ),
@@ -124,24 +183,20 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 
 
 BrowserWin::~BrowserWin()
-{}
+{
+    //FIXME sucks a little to get ptr this way
+    // this method is good as it saves duplicate pointer to the fileBrowser
+    KDevFileSelector *fileBrowser = (KDevFileSelector *)m_pSideBar->page( "FileBrowser" );
+    
+    if( fileBrowser != NULL ) { fileBrowser->writeConfig( kapp->sessionConfig(), "filebrowser" ); kdDebug() << "COOL!\n"; }
+    else kdDebug() << "NULL!\n";
+}
 
 
 // INIT -------------------------------------------------------------
 
 void BrowserWin::initChildren()
 {
-    //<Containers>
-    m_pSplitter   = new QSplitter( this );
-    m_sideBar     = new PlaylistSideBar( m_pSplitter );
-    QHBox *boxMTB = m_sideBar;
-    QVBox *boxPL  = new QVBox( m_pSplitter );
-    
-    m_pSplitter->setResizeMode( boxMTB,  QSplitter::FollowSizeHint );
-    m_pSplitter->setResizeMode( boxPL, QSplitter::Auto );    
-    boxMTB->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
-    //</Containers>
-    
     //<Buttons>
     m_pButtonAdd     = new ExpandButton( i18n( "Add Item" ), this );
 
@@ -161,50 +216,33 @@ void BrowserWin::initChildren()
     m_pButtonPrev    = new ExpandButton( i18n( "Previous" ), m_pButtonPlay );
     //</Buttons>
 
-    //<MultTabBar>
-    #define BROWSERBOX_ID 0
-    #define STREAMBOX_ID 1
-    m_pMultiTabBar = new KMultiTabBar( KMultiTabBar::Vertical, boxMTB );
-    m_pMultiTabBar->setStyle( KMultiTabBar::VSNET );
-    m_pMultiTabBar->setPosition( KMultiTabBar::Left );
-    m_pMultiTabBar->showActiveTabTexts( true ); 
-    m_pMultiTabBar->appendTab( KGlobal::iconLoader()->loadIcon( "hdd_unmount", KIcon::NoGroup,
-                                                                KIcon::SizeSmall ), BROWSERBOX_ID, "Filebrowser" );
-    m_pMultiTabBar->appendTab( KGlobal::iconLoader()->loadIcon( "network"    , KIcon::NoGroup,
-                                                                KIcon::SizeSmall ), STREAMBOX_ID, "Streambrowser" );
-    m_pMultiTabBar->tab( BROWSERBOX_ID  )->setState( true  );
-    m_pMultiTabBar->tab( STREAMBOX_ID   )->setState( false );
-    connect( m_pMultiTabBar->tab( BROWSERBOX_ID ), SIGNAL( clicked() ), this, SLOT( buttonBrowserClicked() ) );
-    connect( m_pMultiTabBar->tab( STREAMBOX_ID ), SIGNAL( clicked() ), this, SLOT( buttonStreamClicked() ) );
-    //</MultTabBar>
     
-    //<StreamBrowser>
-    m_pStreamBox        = new QVBox( boxMTB );
-    QPushButton *button = new QPushButton( "&Fetch Stream Information", m_pStreamBox );
-    m_pStreamBrowser    = new StreamBrowser( m_pStreamBox, "StreamBrowser" );
-
-    m_pStreamBox->hide();    
-    
-    connect( button, SIGNAL( clicked() ), m_pStreamBrowser, SLOT( slotUpdateStations() ) );
-    connect( button, SIGNAL( clicked() ), button, SLOT( hide() ) );
-    //</StreamBrowser>
-    
-    //</FileBrowser>    
-    m_pBrowserBox  = new KDevFileSelector( boxMTB );
-    m_pFileBrowser = m_pBrowserBox;
-    m_pBrowserBox->readConfig( kapp->sessionConfig(), "filebrowser" );
-    m_pBrowserBox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
-    //</FileBrowser>
-
-    //<Playlist>
-    m_pPlaylistLineEdit = new KLineEdit( boxPL );
-    m_pPlaylistWidget   = new PlaylistWidget( boxPL );
-    connect( m_pPlaylistLineEdit, SIGNAL( textChanged( const QString& ) ),
-             m_pPlaylistWidget, SLOT( slotTextChanged( const QString& ) ) );
-    connect( m_pPlaylistLineEdit, SIGNAL( returnPressed() ),
-             m_pPlaylistWidget, SLOT( slotReturnPressed() ) );
-    QToolTip::add( m_pPlaylistLineEdit, i18n( "Enter filter string" ) );             
-    //</Playlist>
+    { //</FileBrowser>
+        KDevFileSelector *w = new KDevFileSelector( m_pSideBar, "FileBrowser" );
+        w->readConfig( kapp->sessionConfig(), "filebrowser" );
+        m_pSideBar->addPage( w, "FileBrowser", "hdd_unmount" );
+    } //</FileBrowser>
+        
+    { //<StreamBrowser>
+        QVBox   *vb = new QVBox( m_pSideBar );
+        QObject *sb = new StreamBrowser( vb, "StreamBrowser" );    
+        QWidget *b  = new QPushButton( "&Fetch Stream Information", vb );
+        connect( b, SIGNAL( clicked() ), sb, SLOT( slotUpdateStations() ) );
+        connect( b, SIGNAL( clicked() ),  b, SLOT( hide() ) );
+        m_pSideBar->addPage( vb, "StreamBrowser", "network" );
+    } //</StreamBrowser>
+ 
+    { //<Playlist>
+        QVBox *vb = new QVBox( m_pSplitter );
+        m_pPlaylistLineEdit = new KLineEdit( vb );
+        m_pPlaylistWidget   = new PlaylistWidget( vb );
+        connect( m_pPlaylistLineEdit, SIGNAL( textChanged( const QString& ) ),
+                m_pPlaylistWidget, SLOT( slotTextChanged( const QString& ) ) );
+        connect( m_pPlaylistLineEdit, SIGNAL( returnPressed() ),
+                m_pPlaylistWidget, SLOT( slotReturnPressed() ) );
+        m_pSplitter->setResizeMode( vb, QSplitter::Auto );
+        QToolTip::add( m_pPlaylistLineEdit, i18n( "Enter filter string" ) );             
+    } //</Playlist>
     
     //<Layout>
     QBoxLayout *layV = new QVBoxLayout( this );
@@ -334,8 +372,7 @@ void BrowserWin::slotUpdateFonts()
       font = pApp->config()->browserWindowFont();
     }
 
-    m_pFileBrowser   ->setFont( font );
-    m_pStreamBrowser ->setFont( font );
+    m_pSideBar->setPageFont( font );
     m_pPlaylistWidget->setFont( font );
 }
 
@@ -373,88 +410,30 @@ void BrowserWin::setPalettes( const QColor &fg, const QColor &bg, const QColor &
 {
     QPalette pal( fg, bg );
     
-    setPaletteRecursively( m_pPlaylistWidget  , pal );
-    setPaletteRecursively( m_pPlaylistLineEdit, pal );
-    setPaletteRecursively( m_pStreamBrowser   , pal );
-    setPaletteRecursively( m_pFileBrowser     , pal );
-    
-    m_pStreamBrowser->setAlternateBackground( altbg );
+    setPaletteRecursively( m_pPlaylistWidget,   pal, altbg );
+    setPaletteRecursively( m_pPlaylistLineEdit, pal, altbg );
+    setPaletteRecursively( m_pSideBar,          pal, altbg );
     
     update();
-    m_pFileBrowser->update();
     m_pPlaylistWidget->triggerUpdate();
 }
 
 
 //Routine for setting palette recursively in a widget and all its childen
-void BrowserWin::setPaletteRecursively( QWidget* widget, const QPalette &pal )
+static void setPaletteRecursively( QWidget* widget, const QPalette &pal, const QColor& altbg )
 {
-    widget->setPalette( pal );
-    
     QObjectList *list = widget->queryList( "QWidget" );
-    QObjectListIterator it( *list );
-    QObject *obj;
+    list->append( widget );
     
-    while ( ( obj = it.current() ) != NULL )
+    for( QObject *obj = list->first(); obj; obj = list->next() )
     {
-        ( (QWidget*) obj )->setPalette( pal );
-        ++it;
+        static_cast<QWidget*>(obj)->setPalette( pal );
+        if( obj->inherits( "KListView" ) )
+        {
+            KListView *lv = dynamic_cast<KListView *>(obj);
+            if( lv ) lv->setAlternateBackground( altbg );
+        }
     }        
 }
-
-
-//<KMultiTabBar handling>    FIXME I am ugly, please rewrite me! 
-void BrowserWin::buttonBrowserClicked()
-{
-    if ( m_pBrowserBox->isHidden() )
-    {    
-        m_sideBar->open();
-        m_pBrowserBox->show();
-        m_pStreamBox->hide();
-        m_pMultiTabBar->tab( BROWSERBOX_ID )->setState( true  );
-        m_pMultiTabBar->tab( STREAMBOX_ID  )->setState( false );
-    }
-    else
-    {
-        m_sideBar->close();
-        m_pBrowserBox->hide();
-        m_pMultiTabBar->tab( BROWSERBOX_ID )->setState( false  );
-    }
-}
-
-
-void BrowserWin::buttonStreamClicked()
-{
-    if ( m_pStreamBox->isHidden() )
-    {    
-        m_sideBar->open();
-        m_pStreamBox->show();
-        m_pBrowserBox->hide();
-        m_pMultiTabBar->tab( BROWSERBOX_ID )->setState( false  );
-        m_pMultiTabBar->tab( STREAMBOX_ID  )->setState( true );
-    }
-    else
-    {
-        m_sideBar->close();
-        m_pStreamBox->hide();
-        m_pMultiTabBar->tab( STREAMBOX_ID )->setState( false  );
-    }
-}
-//</KMultiTabBar handling>
-      
-
-void BrowserWin::closeAllTabs()
-{
-    //Like KDevelop, hide browsers when user manipulates playlist
-    //Feel free to revert this if it proves undesirable
-    //FIXME not all inclusive behavior yet
-
-    m_sideBar->close();
-    m_pBrowserBox ->hide();
-    m_pMultiTabBar->tab( BROWSERBOX_ID )->setState( false  );
-    m_pStreamBox  ->hide();
-    m_pMultiTabBar->tab( STREAMBOX_ID  )->setState( false );
-}
-
 
 #include "browserwin.moc"
