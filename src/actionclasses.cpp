@@ -1,16 +1,20 @@
 // Maintainer: Max Howell <max.howell@methylblue.com>, (C) 2004
 // Copyright:  See COPYING file that comes with this distribution
 
+#include "config.h"             //HAVE_XMMS definition
+
 #include "actionclasses.h"
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "app.h"
-#include "config.h"             //HAVE_XMMS definition
+#include "covermanager.h"
 #include "enginecontroller.h"
 #include "k3bexporter.h"
 #include "playlistwindow.h"
 #include "scriptmanager.h"
 #include "socketserver.h"       //Vis::Selector::showInstance()
+
+#include <qtooltip.h>
 
 #include <kaction.h>
 #include <kapplication.h>
@@ -20,7 +24,6 @@
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h>
 #include <kurl.h>
-#include <qtooltip.h>
 
 using namespace amaroK;
 
@@ -93,12 +96,16 @@ Menu::Menu()
 
     insertSeparator();
 
+    insertItem( i18n( "C&over Manager..." ), ID_SHOW_COVER_MANAGER );
+
+    insertSeparator();
+
 //     insertItem( i18n( "&Scripts..." ), ID_SHOW_SCRIPT_SELECTOR );
 //     insertItem( i18n( "&JavaScript Console" ), ID_SHOW_SCRIPT_CONSOLE );
 //
 //     insertSeparator();
 
-    insertItem( i18n( "First-run Wizard" ), ID_SHOW_WIZARD );
+    insertItem( i18n( "First-run Wizard..." ), ID_SHOW_WIZARD );
 
     insertSeparator();
 
@@ -157,10 +164,16 @@ Menu::slotAboutToShow()
 void
 Menu::slotActivated( int index )
 {
+    CoverManager *coverManager;
+
     switch( index )
     {
     case ID_SHOW_VIS_SELECTOR:
         Vis::Selector::instance()->show(); //doing it here means we delay creation of the widget
+        break;
+    case ID_SHOW_COVER_MANAGER:
+        coverManager = new CoverManager();
+        coverManager->show();
         break;
     case ID_SHOW_WIZARD:
         pApp->firstRunWizard();

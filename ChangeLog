@@ -10,7 +10,7 @@ VERSION 1.1.1:
   FIX: Pausing failed on some systems with GStreamer-engine. (BR 90417)
   FIX: Never scan the same directory twice.
   FIX: Disable CD-burning menu for streams. (BR 90336)
-  ADD: Open Cover-Manager from Context-Browser popup menu.
+  ADD: Open Cover-Manager from Context-Browser popup-menu and main menu.
   FIX: Made amaroK build with --disable-amazon flag.
   FIX: Docs translations were not installed correctly. (BR 90307)
   FIX: GStreamer-engine refused to play some mp3 files. (BR 90317)
