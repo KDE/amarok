@@ -226,11 +226,9 @@ void
 StreamProvider::connectError() //SLOT
 {
     if ( !m_connectSuccess ) {
-        kdWarning() << "StreamProvider error: Unable to connect to this stream server. Can't play the stream!\n";
+        kdError() << "StreamProvider error: Unable to connect to this stream server. Can't play the stream!\n";
 
         emit sigError();
-        //Commit suicide
-        deleteLater();
     }
 }
 
