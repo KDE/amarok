@@ -18,14 +18,14 @@ SUBDIRS = \
     vis
 
 INCLUDES = \
-    -I$(top_builddir)/amarok/amarok/amarokarts \
-    -I$(top_builddir)/amarok/amarok/amarokcore \
-    -I$(top_srcdir)/amarok/amarok/amarokcore \
-    -I$(top_srcdir)/amarok/amarok/analyzers \
-    -I$(top_srcdir)/amarok/amarok/engine \
-    -I$(top_srcdir)/amarok/amarok/plugin \
-    -I$(top_srcdir)/amarok/amarok/sqlite \
-    -I$(top_srcdir)/amarok/amarok/titleproxy \
+    -I$(top_builddir)/amarok/src/amarokarts \
+    -I$(top_builddir)/amarok/src/amarokcore \
+    -I$(top_srcdir)/amarok/src/amarokcore \
+    -I$(top_srcdir)/amarok/src/analyzers \
+    -I$(top_srcdir)/amarok/src/engine \
+    -I$(top_srcdir)/amarok/src/plugin \
+    -I$(top_srcdir)/amarok/src/sqlite \
+    -I$(top_srcdir)/amarok/src/titleproxy \
     -I$(kde_includes)/arts \
     $(taglib_includes) \
     $(all_includes)
@@ -69,12 +69,12 @@ amarokapp_SOURCES = \
     threadweaver.cpp
 
 amarokapp_LDADD = \
-    $(top_builddir)/amarok/amarok/amarokcore/libamarokcore.la \
-    $(top_builddir)/amarok/amarok/analyzers/libanalyzers.la \
-    $(top_builddir)/amarok/amarok/engine/libengine.la \
-    $(top_builddir)/amarok/amarok/plugin/libplugin.la \
-    $(top_builddir)/amarok/amarok/sqlite/libsqlite.la \
-    $(top_builddir)/amarok/amarok/titleproxy/libtitleproxy.la \
+    $(top_builddir)/amarok/src/amarokcore/libamarokcore.la \
+    $(top_builddir)/amarok/src/analyzers/libanalyzers.la \
+    $(top_builddir)/amarok/src/engine/libengine.la \
+    $(top_builddir)/amarok/src/plugin/libplugin.la \
+    $(top_builddir)/amarok/src/sqlite/libsqlite.la \
+    $(top_builddir)/amarok/src/titleproxy/libtitleproxy.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) \
     $(taglib_libs) $(gl_libs)
 

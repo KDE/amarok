@@ -14,13 +14,13 @@ email                : markey@web.de
  ***************************************************************************/
 
 #include "amarokconfig.h"
-#include "amarokconfigdialog.h"
+#include "configdialog.h"
 #include "Options1.h"
 #include "Options2.h"
 #include "Options3.h"
 #include "Options4.h"
 #include "Options5.h"
-#include "playerapp.h"
+#include "app.h"
 #include "pluginmanager.h"
 
 #include <qcombobox.h>
