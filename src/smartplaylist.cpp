@@ -43,7 +43,7 @@ SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
    : KListView( parent, name )
    , m_loaded( 0 )
 {
-    addColumn( i18n("Smart-playlists") );
+    addColumn( i18n("Smart-Playlists") );
     setSelectionMode(QListView::Single);
     setSorting( 0 ); //enable sorting (used for custom smart playlists)
     setFullWidth( true );
