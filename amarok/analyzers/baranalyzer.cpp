@@ -18,7 +18,7 @@
 #include <qvaluevector.h>
 
 BarAnalyzer::BarAnalyzer( QWidget *parent, const char *name )
-    : AnalyzerBase( 8, parent, name )
+    : AnalyzerBase( 10, parent, name )
     , m_pSrcPixmap( 0 )
     , m_pComposePixmap( 0 )
     , m_roofPixmap( 4, 1 )
@@ -91,8 +91,8 @@ void BarAnalyzer::init()
 void BarAnalyzer::drawAnalyzer( std::vector<float> *s )
 {
     static std::vector<uint> barVector( BAND_COUNT, 0 );
-    static std::vector<int>  roofVector( BAND_COUNT, 0 ); //use ints as it would be dangerous to allow the sign bit to be set for this vector
-    static std::vector<uint> roofVelocityVector( BAND_COUNT, 0 );
+    static std::vector<int>  roofVector( BAND_COUNT, 50 ); //can't risk uint //FIXME 50 is arbituary!
+    static std::vector<uint> roofVelocityVector( BAND_COUNT, 1 );
 
     bitBlt( m_pComposePixmap, 0, 0, grid() ); //start with a blank canvas
 
@@ -116,7 +116,7 @@ void BarAnalyzer::drawAnalyzer( std::vector<float> *s )
         // 2. shift large upwards with a bias towards last value
         // 3. fall downwards at a constant pace
 
-        if ( change > 4 )
+        if ( change > 2 ) //anything too much greater than 2 gives "jitter"
            //add some dynamics - makes the value slightly closer to what it was last time
            y2 = ( barVector[i] * 2 + y2 ) / 3;
         else if( change < -1 )
@@ -137,6 +137,7 @@ void BarAnalyzer::drawAnalyzer( std::vector<float> *s )
         
         //blt last n roofs, a.k.a motion blur
         for ( int c = 0; c < m_roofMem[i]->size(); c++ )
+            //bitBlt( m_pComposePixmap, x, m_roofMem[i]->at( c ), m_roofPixmaps[ c ] );
             bitBlt( m_pComposePixmap, x, m_roofMem[i]->at( c ), m_roofPixmaps[ NUM_ROOFS - 1 - c ] );
         
         //blt the coloured bar

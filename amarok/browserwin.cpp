@@ -54,6 +54,8 @@
 static void setPaletteRecursively( QWidget*, const QPalette&, const QColor& );
 
 
+//FIXME don't use a vector for containment really you want to use a QPtrList
+
 PlaylistSideBar::PlaylistSideBar( QWidget *parent )
     : QHBox( parent )
     , m_current( -1 )
@@ -69,9 +71,18 @@ PlaylistSideBar::PlaylistSideBar( QWidget *parent )
     connect( m_mapper, SIGNAL( mapped( int ) ), this, SLOT( showHide( int ) ) );
 }
 
+PlaylistSideBar::~PlaylistSideBar()
+{
+    KConfig *config = kapp->config();
+    config->setGroup( "PlaylistSideBar" );
+    
+    for( uint i = 0; i < m_widgets.size(); ++i )
+        config->writeEntry( m_widgets[ i ]->name(), m_sizes[ i ] );
+}
+
 QWidget *PlaylistSideBar::page( const QString &widgetName )
 {
-    for( uint i = 0; i <= m_widgets.size(); ++i )
+    for( uint i = 0; i < m_widgets.size(); ++i )
         if( m_widgets[i] )
             if( widgetName == m_widgets[i]->name() )
                 return m_widgets[i];
@@ -82,7 +93,9 @@ QWidget *PlaylistSideBar::page( const QString &widgetName )
 void PlaylistSideBar::setPageFont( const QFont &font )
 {
     //note - untested because font system was broken when I made this
-    for( uint i = 0; i <= m_widgets.size(); ++i )
+    //FIXME dang. you'll need to iterate over the children or something else..
+    //FIXME in fact, I reckon don't set font for the browsers.. they are different
+    for( uint i = 0; i < m_widgets.size(); ++i )
         if( m_widgets[i] )
             m_widgets[i]->setFont( font );
 }
@@ -101,18 +114,24 @@ void PlaylistSideBar::resizeEvent( QResizeEvent *e )
     }
 }
 
-void PlaylistSideBar::addPage( QWidget *widget, const QString& text, const QString& icon, bool show )
+void PlaylistSideBar::addPage( QWidget *widget, const QString& icon, bool show )
 {
     //we need to get count this way, currently it's the only way to do it coz KMultiTabBar sux0rs
     int id = m_MTB->tabs()->count();
+    //we exlusively use widget name to force adoption of sensible, unique widget names for the
+    //purposes of this class
+    QString name( widget->name() );
     
-    //FIXME can we do this with signals/slots?
-    m_MTB->appendTab( KGlobal::iconLoader()->loadIcon( icon, KIcon::NoGroup, KIcon::SizeSmall ), id, text );
+    m_MTB->appendTab( KGlobal::iconLoader()->loadIcon( icon, KIcon::NoGroup, KIcon::SizeSmall ), id, name );
     QObject *tab = m_MTB->tab( id );
     connect( tab, SIGNAL( clicked() ), m_mapper, SLOT( map() ) );
     m_mapper->setMapping( tab, id );
     
+    KConfig *config = kapp->config();
+    config->setGroup( "PlaylistSideBar" );
+    m_sizes[ id ]   = config->readNumEntry( name, widget->sizeHint().width() );
     m_widgets[ id ] = widget;
+    
     widget->hide();
     if( show ) showHide( id );
 }
@@ -235,16 +254,16 @@ void BrowserWin::initChildren()
     { //</FileBrowser>
         KDevFileSelector *w = new KDevFileSelector( m_pSideBar, "FileBrowser" );
         w->readConfig( kapp->sessionConfig(), "filebrowser" );
-        m_pSideBar->addPage( w, "FileBrowser", "hdd_unmount", true );
+        m_pSideBar->addPage( w, "hdd_unmount", true );
     } //</FileBrowser>
         
     { //<StreamBrowser>
-        QVBox   *vb = new QVBox( m_pSideBar );
+        QVBox   *vb = new QVBox( m_pSideBar, "StreamBrowser" );
         QWidget *b  = new QPushButton( "&Fetch Stream Information", vb );
-        QObject *sb = new StreamBrowser( vb, "StreamBrowser" );    
+        QObject *sb = new StreamBrowser( vb, "KDERadioStation" );    
         connect( b, SIGNAL( clicked() ), sb, SLOT( slotUpdateStations() ) );
         connect( b, SIGNAL( clicked() ),  b, SLOT( hide() ) );
-        m_pSideBar->addPage( vb, "StreamBrowser", "network" );
+        m_pSideBar->addPage( vb, "network" );
     } //</StreamBrowser>
  
     { //<Playlist>

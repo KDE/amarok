@@ -43,9 +43,10 @@ Q_OBJECT
 
 public:
     PlaylistSideBar( QWidget *parent );
+    ~PlaylistSideBar();
 
     void setPageFont( const QFont& );
-    void addPage( QWidget*, const QString&, const QString&, bool = false );
+    void addPage( QWidget*, const QString&, bool = false );
     QWidget *page( const QString& );
     virtual QSize sizeHint() const;
     virtual void  resizeEvent( QResizeEvent * );

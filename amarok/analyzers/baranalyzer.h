@@ -18,6 +18,7 @@
 
 #include <qvaluevector.h>
 
+//we undef so --enable-final works
 #undef BAND_COUNT
 #undef ROOF_HOLD_TIME
 #undef ROOF_VELOCITY_REDUCTION_FACTOR

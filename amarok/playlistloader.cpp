@@ -491,10 +491,10 @@ MetaBundle *TagReader::readTags( const KURL &url )
       tags = new MetaBundle( TStringToQString( tag->title() ).stripWhiteSpace(),
                        TStringToQString( tag->artist() ).stripWhiteSpace(),
                        TStringToQString( tag->album() ).stripWhiteSpace(),
-                       QString::number( tag->year() ),
+                       ( tag->year() == 0 ) ? QString() : QString::number( tag->year() ),
                        TStringToQString( tag->comment() ).stripWhiteSpace(),
                        TStringToQString( tag->genre() ).stripWhiteSpace(),
-                       QString::number( tag->track() ),
+                       ( tag->track() == 0 ) ? QString() : QString::number( tag->track() ),
                        f.audioProperties() );
    }
 

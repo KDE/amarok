@@ -41,6 +41,8 @@ public:
 
     void setOptions( bool b1, bool b2, int i ) { options.recurse = b1; options.symlink = b2; options.sortSpec = i; }
 
+    ////////CUSTOMEVENTS
+    
     class LoaderEvent : public QCustomEvent
     {
     public:
@@ -81,6 +83,8 @@ public:
     private:
        PlaylistLoader *m_thread;
     };
+
+    ////////////////////
 
     friend class LoaderEvent;
 

@@ -602,10 +602,6 @@ void PlayerWidget::createVis()
     case 1:
         m_pVis = new DistortAnalyzer( this );
         break;
-        /*    //FIXME deactivated piggz' analyzer for now, since it's too similar to #1 (confusing the user)
-            case 2:
-                m_pVis = new BarAnalyzer2( this );
-                break;*/
     case 2:
         m_pVis = new TurbineAnalyzer( this );
         break;
