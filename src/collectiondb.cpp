@@ -236,7 +236,7 @@ CollectionDB::getMetaBundleForUrl( const QString url, MetaBundle *bundle )
         bundle->m_title = values[3];
         bundle->m_year = values[4];
         bundle->m_comment = values[5];
-        bundle->m_track = values[5];
+        bundle->m_track = values[6];
         bundle->m_url = url;
         
         return true;
