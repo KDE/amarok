@@ -3,10 +3,12 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #162 being the highest available (take this one for your next bug and increase here)
+           #163 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  FIX 162 <markey> Try to achieve Qt 3.2 compatibility for amaroK 1.1.
 
   FIX 161 <markey> Configure prints "Good - your configure finished. Start make now" even when amaroK
                    will _not_ be built. Confusing..
