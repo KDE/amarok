@@ -53,13 +53,12 @@ class BrowserWidget : public KListView
         void directoryChanged( const KURL & );
         void focusIn();
         void browserDrop();
-        //void signalJump();
 
     private:
         void contentsDropEvent( QDropEvent* e );
         void contentsDragMoveEvent( QDragMoveEvent* e );
         void focusInEvent( QFocusEvent *e );
-        QDragObject *BrowserWidget::dragObject();
+        QDragObject *dragObject();
 
 // ATTRIBUTES ------
         int m_Count;
