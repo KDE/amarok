@@ -54,7 +54,7 @@ using amaroK::QStringx;
  * Function that must be used when separating contextBrowser escaped urls
  */
 static inline
-void albumArtistFromUrl( QString url, QString &artist, QString &album )
+void albumArtistTrackFromUrl( QString url, QString &artist, QString &album, QString &track )
 {
     //KHTML removes the trailing space!
     if ( url.endsWith( " @@@" ) )
@@ -64,8 +64,9 @@ void albumArtistFromUrl( QString url, QString &artist, QString &album )
 
     Q_ASSERT( !list.isEmpty() );
 
-    artist = list.front();
-    album  = list.back();
+    artist = list[0];
+    album  = list[1];
+    track = list[2];
 }
 
 
@@ -165,8 +166,8 @@ void ContextBrowser::setFont( const QFont &newFont )
 
 void ContextBrowser::openURLRequest( const KURL &url )
 {
-    QString artist, album;
-    albumArtistFromUrl( url.path(), artist, album );
+    QString artist, album, track;
+    albumArtistTrackFromUrl( url.path(), artist, album, track );
 
     if ( url.protocol() == "album" )
     {
@@ -266,8 +267,10 @@ void ContextBrowser::openURLRequest( const KURL &url )
     /* open konqueror with musicbrainz search result for artist-album */
     if ( url.protocol() == "musicbrainz" )
     {
-        const QString url = "http://www.musicbrainz.org/taglookup.html?artist=%1&album=%2";
-        kapp->invokeBrowser( url.arg( KURL::encode_string_no_slash( artist, 106 /*utf-8*/ ), KURL::encode_string_no_slash( album, 106 /*utf-8*/ ) ) );
+        const QString url = "http://www.musicbrainz.org/taglookup.html?artist=%1&album=%2&track=%3";
+        kapp->invokeBrowser( url.arg( KURL::encode_string_no_slash( artist, 106 /*utf-8*/ ), 
+	    KURL::encode_string_no_slash( album, 106 /*utf-8*/ ),
+	    KURL::encode_string_no_slash( track, 106 /*utf-8*/ ) ) );
     }
 
     if ( url.protocol() == "externalurl" )
@@ -426,8 +429,8 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
     KPopupMenu menu;
     KURL::List urls( url );
-    QString artist, album;
-    albumArtistFromUrl( url.path(), artist, album );
+    QString artist, album, track; // track unused here
+    albumArtistTrackFromUrl( url.path(), artist, album, track );
 
     if ( url.protocol() == "fetchcover" )
     {
@@ -983,8 +986,8 @@ bool CurrentTrackJob::doJob()
                     "</td>"
                     "<td id='current_box-information-td' align='right'>"
                         "<div id='musicbrainz-div'>"
-                            "<a id='musicbrainz-a' title='%8' href='musicbrainz:%9 @@@ %10'>"
-                            "<img id='musicbrainz-image' src='%11' />"
+                            "<a id='musicbrainz-a' title='%8' href='musicbrainz:%9 @@@ %10 @@@ %11'>"
+                            "<img id='musicbrainz-image' src='%12' />"
                             "</a>"
                         "</div>"
                                  )
@@ -999,6 +1002,7 @@ bool CurrentTrackJob::doJob()
             << i18n( "Look up this track at musicbrainz.org" )
             << escapeHTMLAttr( currentTrack.artist() )
             << escapeHTMLAttr( currentTrack.album() )
+	    << escapeHTML( currentTrack.title() )
             << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) ) ) );
 
     if ( !values.isEmpty() )
