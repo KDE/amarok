@@ -21,6 +21,7 @@
 #define KONQUERORSIDEBAR_H
 
 #include <konqsidebarplugin.h>
+#include <dcopclient.h> 
 
 /**
 @author Marco Gulino
@@ -56,7 +57,11 @@ private:
 public slots:
     void updateBrowser(const QString&);
     void updateStatus();
-    void sendControl();
+    void sendPrev() { amarokDCOP->send("amarok", "player", "prev()", ""); }
+    void sendPlay() { amarokDCOP->send("amarok", "player", "play()", ""); }
+    void sendPause() { amarokDCOP->send("amarok", "player", "pause()", ""); }
+    void sendStop() { amarokDCOP->send("amarok", "player", "stop()", ""); }
+    void sendNext() { amarokDCOP->send("amarok", "player", "next()", ""); }
     void openURLRequest( const KURL &url );
 };
 

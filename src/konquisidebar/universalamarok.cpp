@@ -36,6 +36,7 @@
 #include <kiconloader.h> 
 #include <qdatetime.h> 
 #include <qfileinfo.h> 
+#include <ktoolbar.h> 
 
 #define HTML_FILE KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "contextbrowser.html"
 
@@ -50,32 +51,12 @@ UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widget
     updateBrowser(HTML_FILE);
     amarokDCOP=new DCOPClient();
     amarokDCOP->attach();
-    
-    QHBox* buttonsLayout=new QHBox(widget);
-    buttonsLayout->setMargin(0);
-    buttonsLayout->setSpacing(0);
-    KPushButton* b_prev=new KPushButton(buttonsLayout,"prev"); 
-    KPushButton* b_play=new KPushButton(buttonsLayout,"play"); 
-    KPushButton* b_pause=new KPushButton(buttonsLayout,"pause"); 
-    KPushButton* b_stop=new KPushButton(buttonsLayout,"stop"); 
-    KPushButton* b_next=new KPushButton(buttonsLayout,"next"); 
-    
-    b_prev->setSizePolicy(QSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum) );
-    b_play->setSizePolicy(QSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum) );
-    b_pause->setSizePolicy(QSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum) );
-    b_stop->setSizePolicy(QSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum) );
-    b_next->setSizePolicy(QSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum) );
-    
-    b_prev->setIconSet( QIconSet ( KGlobal::iconLoader()->loadIcon( "player_start", KIcon::FirstGroup, KIcon::SizeMedium ) ) );
-    b_play->setIconSet( QIconSet ( KGlobal::iconLoader()->loadIcon( "player_play", KIcon::FirstGroup, KIcon::SizeMedium ) ) );
-    b_pause->setIconSet( QIconSet ( KGlobal::iconLoader()->loadIcon( "player_pause", KIcon::FirstGroup, KIcon::SizeMedium ) ) );
-    b_stop->setIconSet( QIconSet ( KGlobal::iconLoader()->loadIcon( "player_stop", KIcon::FirstGroup, KIcon::SizeMedium ) ) );
-    b_next->setIconSet( QIconSet ( KGlobal::iconLoader()->loadIcon( "player_end", KIcon::FirstGroup, KIcon::SizeMedium ) ) );
-    connect(b_prev,SIGNAL(clicked() ), this, SLOT(sendControl() ) );
-    connect(b_play,SIGNAL(clicked() ), this, SLOT(sendControl() ) );
-    connect(b_pause,SIGNAL(clicked() ), this, SLOT(sendControl() ) );
-    connect(b_stop,SIGNAL(clicked() ), this, SLOT(sendControl() ) );
-    connect(b_next,SIGNAL(clicked() ), this, SLOT(sendControl() ) );
+    KToolBar* toolBar=new KToolBar(widget, "PlayerControls");
+    toolBar->insertButton("player_start",0,SIGNAL(clicked() ),this, SLOT(sendPrev() ) );
+    toolBar->insertButton("player_play",0,SIGNAL(clicked() ),this, SLOT(sendPlay() ) );
+    toolBar->insertButton("player_pause",0,SIGNAL(clicked() ),this, SLOT(sendPause() ) );
+    toolBar->insertButton("player_stop",0,SIGNAL(clicked() ),this, SLOT(sendStop() ) );
+    toolBar->insertButton("player_end",0,SIGNAL(clicked() ),this, SLOT(sendNext() ) );
     
     fileInfo = new QFileInfo(HTML_FILE);
     QTimer *t = new QTimer( this );
@@ -112,7 +93,7 @@ extern "C"
         map->insert ("Type", "Link");
         map->insert ("URL", "");
         map->insert ("Icon", "amarok");
-        map->insert ("Name", i18n ("Amarok"));
+        map->insert ("Name", i18n ("amaroK"));
         map->insert ("Open", "true");
         map->insert ("X-KDE-KonqSidebarModule","konqsidebar_universalamarok");
         fn->setLatin1 ("amarok.desktop");
@@ -159,12 +140,6 @@ QString UniversalAmarok::getCurrentPlaying()
     QDataStream dataparsing(returnData, IO_ReadOnly);
     dataparsing >> result;
     return result;
-}
-
-void UniversalAmarok::sendControl()
-{
-    amarokDCOP->send("amarok", "player", QCString(sender()->name() ) + "()", "");
-//     KMessageBox(NULL,QString("amarok")+"player"+QCString(sender()->name() ) + "()");
 }
 
 
