@@ -134,7 +134,7 @@ PlayerApp::PlayerApp() :
 
     m_pMainTimer = new QTimer( this );
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
-    m_pMainTimer->start( 100 );
+    m_pMainTimer->start( 150 );
 
     m_pAnimTimer = new QTimer( this );
     connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
@@ -1187,10 +1187,10 @@ void PlayerApp::slotVolumeChanged( int value )
 
 void PlayerApp::slotMainTimer()
 {
-    if ( m_optReadMetaInfo )
-    {
-        m_pBrowserWin->m_pPlaylistWidget->fetchMetaInfo();
-    }
+//     if ( m_optReadMetaInfo )
+//     {
+//         m_pBrowserWin->m_pPlaylistWidget->fetchMetaInfo();
+//     }
 
     if ( m_pPlayerWidget->isVisible() )
     {

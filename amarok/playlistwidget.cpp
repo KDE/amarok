@@ -28,6 +28,7 @@
 #include <qpoint.h>
 #include <qpopupmenu.h>
 #include <qstringlist.h>
+#include <qthread.h>
 #include <qtimer.h>
 #include <qvaluelist.h>
 #include <qwidget.h>
@@ -42,6 +43,34 @@
 #include <klineedit.h>
 #include <kaccel.h>
 
+// CLASS TagThread -------------------------------------------------------------
+
+void TagThread::run()
+{
+    m_pCurrentMeta = NULL;
+
+    while ( true )
+    {
+        if ( pApp->m_optReadMetaInfo )
+        {
+            if ( m_pCurrentMeta != NULL )
+            {
+                if ( !m_pCurrentMeta->hasMetaInfo() )
+                {
+                    m_pCurrentMeta->readMetaInfo();
+                    m_pCurrentMeta->setMetaTitle();
+                }
+
+                m_pCurrentMeta = static_cast<PlaylistItem*>( m_pCurrentMeta->nextSibling() );
+            }
+        }
+
+        msleep( 150 );
+    }
+}
+
+
+// CLASS PlaylistWidget --------------------------------------------------------
 
 PlaylistWidget::PlaylistWidget(QWidget *parent, const char *name ) : KListView( parent, name )
 {
@@ -57,7 +86,7 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, const char *name ) : KListView( 
     addColumn( "Genre" );
 
     setCurrentTrack( NULL );
-    m_pCurrentMeta = NULL;
+//    m_pCurrentMeta = NULL;
 
     mGlowCount = 100;
     mGlowAdd = 5;
@@ -66,6 +95,13 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, const char *name ) : KListView( 
     mGlowTimer = new QTimer( this );
     connect( mGlowTimer, SIGNAL( timeout() ), this, SLOT( slotGlowTimer() ) );
     mGlowTimer->start( 50 );
+
+    m_pTagThread = new TagThread();
+    m_pTagThread->start();
+
+//     m_pTagTimer = new QTimer( this );
+//     connect( m_pTagTimer, SIGNAL( timeout() ), this, SLOT( slotTagTimer() ) );
+//     m_pTagTimer->start( 0 );
 
     m_pDirLister = new KDirLister();
     m_pDirLister->setAutoUpdate( false );
@@ -268,25 +304,9 @@ void PlaylistWidget::focusInEvent( QFocusEvent *e )
 
 
 
-void PlaylistWidget::fetchMetaInfo()
-{
-    if ( m_pCurrentMeta != NULL )
-    {
-        if ( !m_pCurrentMeta->hasMetaInfo() )
-        {
-            m_pCurrentMeta->readMetaInfo();
-            m_pCurrentMeta->setMetaTitle();
-        }
-
-        m_pCurrentMeta = static_cast<PlaylistItem*>( m_pCurrentMeta->nextSibling() );
-    }
-}
-
-
-
 PlaylistItem* PlaylistWidget::addItem( PlaylistItem *after, KURL url )
 {
-    m_pCurrentMeta = static_cast<PlaylistItem*>( firstChild() );
+    m_pTagThread->m_pCurrentMeta = static_cast<PlaylistItem*>( firstChild() );
 
     if ( (unsigned long) after == 1 )
     {
@@ -329,6 +349,22 @@ void PlaylistWidget::slotGlowTimer()
 
 
 
+void PlaylistWidget::slotTagTimer()
+{
+    if ( m_pCurrentMeta != NULL )
+    {
+        if ( !m_pCurrentMeta->hasMetaInfo() )
+        {
+            m_pCurrentMeta->readMetaInfo();
+            m_pCurrentMeta->setMetaTitle();
+        }
+
+        m_pCurrentMeta = static_cast<PlaylistItem*>( m_pCurrentMeta->nextSibling() );
+    }
+}
+
+
+
 void PlaylistWidget::slotSetRecursive()
 {
     m_dropRecursively = true;
@@ -341,7 +377,7 @@ void PlaylistWidget::slotTextChanged( const QString &str )
 {
     QListViewItem *pVisibleItem = NULL;
     QListViewItemIterator it( lastItem() );
-    
+
     while ( *it )
     {
         if ( (*it)->text( 0 ).lower().contains( str.lower() ) )

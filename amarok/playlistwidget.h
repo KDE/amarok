@@ -18,6 +18,8 @@
 #ifndef PLAYLISTWIDGET_H
 #define PLAYLISTWIDGET_H
 
+#include <qthread.h>
+
 #include <klistview.h>
 #include <kurl.h>
 
@@ -37,9 +39,22 @@ class KDirLister;
 class PlayerApp;
 extern PlayerApp *pApp;
 
-/**
- *@author mark
- */
+
+// CLASS TagThread -------------------------------------------------------------
+
+class TagThread : public QThread
+{
+    public:
+        virtual void run();
+
+// ATTRIBUTES ------
+        PlaylistItem *m_pCurrentMeta;
+
+    private:
+};
+
+
+// CLASS PlaylistWidget --------------------------------------------------------
 
 class PlaylistWidget : public KListView
 {
@@ -52,7 +67,6 @@ class PlaylistWidget : public KListView
         void setCurrentTrack( QListViewItem *item );
         void unglowItems();
         void triggerSignalPlay();
-        void fetchMetaInfo();
         PlaylistItem* addItem( PlaylistItem *after, KURL url );
 
         void contentsDropEvent( QDropEvent* e);
@@ -61,6 +75,7 @@ class PlaylistWidget : public KListView
 
     public slots:
         void slotGlowTimer();
+        void slotTagTimer();
         void slotSetRecursive();
         void slotTextChanged( const QString &str );
 
@@ -82,7 +97,9 @@ class PlaylistWidget : public KListView
         int m_dropRecursionCounter;
         bool m_dropRecursively;
 
+        TagThread *m_pTagThread;
         QTimer* mGlowTimer;
+        QTimer* m_pTagTimer;
         int mGlowCount, mGlowAdd;
         QColor mGlowColor;
         QListViewItem* m_pCurrentTrack;

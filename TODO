@@ -19,6 +19,8 @@ SHORT-TERM:
 
 MID-TERM:
 
+    * add: generate text or html document from playlist entries
+
     * add: display warning when artsd is run w/o realtime
 
     * fix: small redrawing bugs for ExpandButton

@@ -4,6 +4,8 @@ amaroK Changelog
 
 
 VERSION HEAD:
+  * fixed: rewrote directory reading code in BrowserWidget.cpp.
+    code is now much more readable, and it also fixes a bug.
   * added: additional columns in playlist for tags
   * fixed: made metainfo reading algorithm faster
   * change: switched to TagLib for metainfo reading
