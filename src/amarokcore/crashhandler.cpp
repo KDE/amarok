@@ -104,9 +104,11 @@ namespace amaroK
 
             ::write( handle, gdb_batch, gdb_batch.length() );
             ::fsync( handle );
-
+#if 0 
+//NOTE didn't compile
             // so we can read stderr too
             ::dup2( ::fileno( ::stdout ), ::fileno( ::stderr ) );
+#endif
 
             QCString gdb;
             gdb  = "gdb --nw -n --batch -x ";
