@@ -31,7 +31,7 @@ using amaroK::Plugin;
 
 
 static inline kdbgstream
-debug()
+pluginmanager_debug()
 {
     return kdbgstream( "[PluginManager] ", 0, 0 );
 }
@@ -56,7 +56,7 @@ PluginManager::query( const QString& constraint )
     str += " and ";
     str += "[X-KDE-amaroK-rank] > 0";
 
-    debug() << "Plugin trader constraint: " << str << endl;
+    pluginmanager_debug() << "Plugin trader constraint: " << str << endl;
 
     return KTrader::self()->query( "amaroK/Plugin", str );
 }
@@ -87,7 +87,7 @@ PluginManager::createFromQuery( const QString &constraint )
 Plugin*
 PluginManager::createFromService( const KService::Ptr service )
 {
-    debug() << "Trying to load: " << service->library() << endl;
+    pluginmanager_debug() << "Trying to load: " << service->library() << endl;
 
     //get the library loader instance
     KLibLoader *loader = KLibLoader::self();
@@ -132,7 +132,7 @@ PluginManager::unload( Plugin* plugin )
 
     if ( iter != m_store.end() ) {
         delete (*iter).plugin;
-        debug() << "Unloading library: "<< (*iter).service->library() << endl;
+        pluginmanager_debug() << "Unloading library: "<< (*iter).service->library() << endl;
         (*iter).library->unload();
 
         m_store.erase( iter );

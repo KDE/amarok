@@ -12,9 +12,9 @@
 
 
 #ifdef NDEBUG
-   static inline kndbgstream debug() { return kndbgstream(); }
+   static inline kndbgstream threadweaver_debug() { return kndbgstream(); }
 #else
-   static inline kdbgstream debug() { return kdbgstream( "[ThreadWeaver] ", 0, 0 ); }
+   static inline kdbgstream threadweaver_debug() { return kdbgstream( "[ThreadWeaver] ", 0, 0 ); }
 #endif
 
 
@@ -32,7 +32,7 @@ ThreadWeaver::ThreadWeaver()
 
 ThreadWeaver::~ThreadWeaver()
 {
-    debug() << k_funcinfo << endl;
+    threadweaver_debug() << k_funcinfo << endl;
 
     //TODO abort and wait on all running threads
     //will dependent threads be ok here?
@@ -54,7 +54,7 @@ ThreadWeaver::queueJob( Job *job )
     const QCString name = job->name();
     Thread *thread = findThread( name );
 
-    debug() << "Queuing: " << name << endl;
+    threadweaver_debug() << "Queuing: " << name << endl;
 
     if ( !thread ) {
         thread = new Thread( job->name() );
@@ -145,13 +145,13 @@ ThreadWeaver::registerDependent( QObject *dependent, const char *name )
 void
 ThreadWeaver::dependentAboutToBeDestroyed()
 {
-    debug() << k_funcinfo << ": " <<  sender()->name() << " destroyed\n";
+    threadweaver_debug() << k_funcinfo << ": " <<  sender()->name() << " destroyed\n";
 }
 
 void
 ThreadWeaver::customEvent( QCustomEvent *e )
 {
-    debug() << k_funcinfo << endl;
+    threadweaver_debug() << k_funcinfo << endl;
 
     switch( e->type() )
     {
@@ -173,7 +173,7 @@ ThreadWeaver::customEvent( QCustomEvent *e )
             thread->runJob( 0 );
         }
         else
-            debug() << "Thread was deleted while processing this job: " << QCString(job->name()) << endl;
+            threadweaver_debug() << "Thread was deleted while processing this job: " << QCString(job->name()) << endl;
     }
     default:
         ;
@@ -185,14 +185,14 @@ ThreadWeaver::Thread::Thread( const char *_name )
     : QThread()
     , name( _name )
 {
-    debug() << "Thread::Thread: " << QCString(_name) << endl;
+    threadweaver_debug() << "Thread::Thread: " << QCString(_name) << endl;
 
     QApplication::setOverrideCursor( KCursor::workingCursor() );
 }
 
 ThreadWeaver::Thread::~Thread()
 {
-    debug() << "Thread::~Thread: " << QCString(name) << endl;
+    threadweaver_debug() << "Thread::~Thread: " << QCString(name) << endl;
 
     //if we were aborted, this has already occurred
     ThreadWeaver::instance()->m_threads.remove( this );
@@ -234,11 +234,11 @@ ThreadWeaver::Thread::run()
 
     Job *job = runningJob;
 
-    debug() << "Running Job: " << QCString(job->name()) << endl;
+    threadweaver_debug() << "Running Job: " << QCString(job->name()) << endl;
 
     job->m_aborted |= !job->doJob();
 
-    debug() << "Job Done: " << QCString(job->name()) << ". Aborted? " << job->m_aborted << endl;
+    threadweaver_debug() << "Job Done: " << QCString(job->name()) << ". Aborted? " << job->m_aborted << endl;
 
     QApplication::postEvent( ThreadWeaver::instance(), job );
 }
@@ -262,13 +262,13 @@ ThreadWeaver::Job::Job( const char *name )
     , m_aborted( false )
     , m_thread( 0 )
 {
-    debug() << "Job::Job: " << QCString(m_name) << endl;
+    threadweaver_debug() << "Job::Job: " << QCString(m_name) << endl;
 }
 
 
 ThreadWeaver::Job::~Job()
 {
-    debug() << "Job::~Job: " << QCString(m_name) << endl;
+    threadweaver_debug() << "Job::~Job: " << QCString(m_name) << endl;
 }
 
 
