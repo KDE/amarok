@@ -90,20 +90,15 @@ MetaBundle::MetaBundle( const PlaylistItem *item )
 bool
 MetaBundle::operator==( const MetaBundle& bundle )
 {
-    return m_title == bundle.title();
-
-
-//FIXME Somehow this always evaluates FALSE
-//     return m_artist     == bundle.artist() &&
-//            m_title      == bundle.title() &&
-//            m_album      == bundle.album() &&
-//            m_year       == bundle.year() &&
-//            m_comment    == bundle.comment() &&
-//            m_genre      == bundle.genre() &&
-//            m_track      == bundle.track() &&
-//            m_bitrate    == bundle.bitrate() &&
-//            m_length     == bundle.length() &&
-//            m_sampleRate == bundle.sampleRate();
+    return m_artist     == bundle.artist() &&
+           m_title      == bundle.title() &&
+           m_album      == bundle.album() &&
+           m_year       == bundle.year() &&
+           m_comment    == bundle.comment() &&
+           m_genre      == bundle.genre() &&
+           m_track      == bundle.track() &&
+           m_bitrate    == bundle.bitrate() &&
+           m_sampleRate == bundle.sampleRate();
 }
 
 void
