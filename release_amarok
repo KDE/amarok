@@ -6,12 +6,14 @@
 # License: GPL V2
 #
 # TODO: * Adjust version number in amarok.lsm
-#       * Extract translations from CVS
 
 version=`kdialog --inputbox "amaroK version: "`
 cvsroot=`kdialog --inputbox "CVS root directory: "`
 
-folder=amarok-$version
+folder="amarok-$version"
+doi18n="yes"
+log="/dev/null"
+
 mkdir $folder
 pushd $folder
 cvs -d $cvsroot co -l kdeextragear-1
@@ -23,6 +25,53 @@ cvs -z3 up -l doc
 pushd doc
 cvs -z3 up amarok
 popd
+
+echo
+echo "**** i18n ****"
+echo
+
+# we check out kde-i18n/subdirs in kde-i18n..
+if [ $doi18n = "yes" ]; then
+    echo "cvs co kde-i18n/subdirs" >> $log
+    cvs -z3 -q co -P kde-i18n/subdirs > /dev/null 2>&1
+    i18nlangs="$(cat kde-i18n/subdirs)"
+    echo "available languages: $i18nlangs" >> $log
+
+    mkdir po
+
+    for lang in $i18nlangs; do
+        pofilename="kde-i18n/$lang/messages/kdeextragear-1/amarok.po";
+        echo "cvs co $pofilename" >> $log
+        cvs -z3 -q co -P "$pofilename" > /dev/null 2>&1
+        if [ ! -f "$pofilename" ]; then
+            echo "$lang's $name.po does not exist." >> $log
+            continue
+        fi
+
+        dest=po/$lang
+        mkdir $dest
+        echo -n "Copying $lang's $name.po over... "
+        echo "$lang's $name.po file included." >> $log
+        cp $pofilename $dest
+        echo "done."
+
+        echo "KDE_LANG = $lang
+SUBDIRS = \$(AUTODIRS)
+POFILES = AUTO" > $dest/Makefile.am
+
+        subdirs="non_empty"
+    done
+
+    if [ -z "$subdirs" ]; then
+        rm -Rf po
+    else
+        echo "SUBDIRS = \$(AUTODIRS)" > po/Makefile.am
+    fi
+
+    rm -rf kde-i18n
+fi
+
+echo
 
 # Remove CVS relevant files
 find -name "CVS" -exec rm -rf {} \; 2> /dev/null
@@ -46,6 +95,7 @@ popd
 rm -rf debian
 
 popd # kdeextragear-1
+echo
 
 # Prevent using unsermake
 oldmake=$UNSERMAKE
