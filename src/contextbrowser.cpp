@@ -661,17 +661,17 @@ void ContextBrowser::showCurrentTrack() //SLOT
                         "<tr class='box-row'>"
                             "<td height='42' valign='top' width='90%'>"
                                 "<b>%2</b>"
-                                "<br>"
-                                "<br>"
+                                "<br />"
+                                "<br />"
                                 "%3"
-                                "<br>"
-                                "<br>"
+                                "<br />"
+                                "<br />"
                                 "%4"
-                                "<br>"
+                                "<br />"
                                 "%5"
-                                "<br>"
+                                "<br />"
                                 "%6"
-                                "<br>"
+                                "<br />"
                                 "%7"
                             "</td>"
                         "</tr>"
@@ -994,19 +994,26 @@ void ContextBrowser::showCurrentTrack() //SLOT
             }
 
             m_HTMLSource.append( QStringx (
-                "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>"
-                 "<td>"
-                  "<div class='album-header' onClick=\"toggleBlock('IDA%1')\">"
-                   "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+            "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>"
+                "<td>"
+                    "<div class='album-header' onClick=\"toggleBlock('IDA%1')\">"
+                    "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
                     "<tr>"
-                     "<td width='1'><a href='fetchcover:%2 @@@ %3'><img align='left' vspace='2' hspace='2' title='%4' src='%5'/></a></td>"
-                     "<td valign='middle' align='left'><div class='albuminfo'>%6</div>"
-                     "<a href='album:%7 @@@ %8'><b>%9</b></a>"
-                     "<br><i><font class='default'>%10</font></i></td>"
+                        "<td width='1'>"
+                            "<a href='fetchcover:%2 @@@ %3'>"
+                            "<img class='album-image' align='left' vspace='2' hspace='2'title='%4'src='%5'/>"
+                            "</a>"
+                        "</td>"
+                        "<td valign='middle' align='left'>"
+                            "<span class='album-info'>%6</span> "
+                            "<a href='album:%7 @@@ %8'><span class='album-title'>%9</span></a>"
+                            "<br />"
+                            "<span class='album-year'>%10</span>"
+                        "</td>"
                     "</tr>"
-                   "</table>"
-                  "</div>"
-                  "<div class='album-body' style='display:%11;' id='IDA%12'>" )
+                    "</table>"
+                    "</div>"
+                    "<div class='album-body' style='display:%11;' id='IDA%12'>" )
                 .args( QStringList()
                     << values[ i+1 ]
                     << escapeHTMLAttr( currentTrack.artist() ) // artist name
@@ -1059,7 +1066,7 @@ void ContextBrowser::setStyleSheet()
     kdDebug() << k_funcinfo << endl;
 
     QString themeName = AmarokConfig::contextBrowserStyleSheet().latin1();
-    if ( QFile::exists( KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "styles/" + themeName + "/stylesheet.css" ) )
+    if ( QFile::exists( KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "themes/" + themeName + "/stylesheet.css" ) )
         setStyleSheet_ExternalStyle( m_styleSheet, themeName );
     else
         setStyleSheet_Default( m_styleSheet );
@@ -1109,7 +1116,7 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
 
     //we have to set the color for body due to a KHTML bug
     //KHTML sets the base color but not the text color
-    styleSheet = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); background-repeat: repeat-y; }" )
+    styleSheet = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); background-repeat: repeat; }" )
             .arg( pxSize )
             .arg( text )
             .arg( AmarokConfig::schemeAmarok() ? fg : gradientColor.name() )
@@ -1155,14 +1162,16 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     //"Albums by ..." related styles
     styleSheet += QString( ".album-header {}" );
     styleSheet += QString( ".album-header:hover { color: %1; background-color: %2; cursor: pointer; }" ).arg( fg ).arg( bg );
-    styleSheet += QString( ".album-header:hover a { color: %1 }" ).arg( fg );
+    styleSheet += QString( ".album-header:hover a { color: %1; }" ).arg( fg );
     styleSheet += QString( ".album-body { background-color: %1; border-bottom: solid %2 1px; border-top: solid %3 1px; }" ).arg( colorGroup().base().name() ).arg( bg ).arg( bg );
+    styleSheet += QString( ".album-title { font-weight: bold; }" );
+    styleSheet += QString( ".album-info { float:right; padding-right:4px; font-size: %1px }" ).arg( pxSize );
+    styleSheet += QString( ".album-year { }" );
     styleSheet += QString( ".album-song a { display: block; padding: 1px 2px; font-weight: normal; text-decoration: none; }" );
     styleSheet += QString( ".album-song a:hover { color: %1; background-color: %2; }" ).arg( fg ).arg( bg );
     styleSheet += QString( ".album-song-trackno { text-align: right; width: 2em; display: block; float: left;}" );
     styleSheet += QString( ".album-song-title { } " );
     styleSheet += QString( ".album-song-time { } " );
-    styleSheet += QString( ".album-info { float:right; padding-right:4px; font-size: %1px }" ).arg( pxSize );
 
     //boxes used to display score (sb: score box)
     styleSheet += QString( ".sbtext { padding: 0px 4px; border-left: solid %1 1px; }" ).arg( colorGroup().base().dark( 120 ).name() );
@@ -1183,13 +1192,16 @@ void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& 
     QString text = colorGroup().text().name();
     QString fg   = colorGroup().highlightedText().name();
     QString bg   = colorGroup().highlight().name();
+    QString base   = colorGroup().base().name();
+    const QColor bgColor = colorGroup().highlight();
+    amaroK::Color gradientColor = bgColor;
 
     //we have to set the color for body due to a KHTML bug
     //KHTML sets the base color but not the text color
     styleSheet = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; }" )
             .arg( pxSize )
             .arg( text )
-            .arg( bg );
+            .arg( AmarokConfig::schemeAmarok() ? fg : gradientColor.name() );
 
     QString CSSLocation = KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "themes/" + themeName + "/";
 
@@ -1201,11 +1213,16 @@ void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& 
     QString tmpCSS = eCSSts.read();
     ExternalCSS.close();
 
-    tmpCSS.replace( "./images/", CSSLocation + "images/" );
+    tmpCSS.replace( "./", CSSLocation );
+    tmpCSS.replace( "AMAROK_FONTSIZE-2", pxSize );
     tmpCSS.replace( "AMAROK_FONTSIZE", pxSize );
+    tmpCSS.replace( "AMAROK_FONTSIZE+2", pxSize );
     tmpCSS.replace( "AMAROK_TEXTCOLOR", text );
     tmpCSS.replace( "AMAROK_BGCOLOR", bg );
     tmpCSS.replace( "AMAROK_FGCOLOR", fg );
+    tmpCSS.replace( "AMAROK_BASECOLOR", base );
+    tmpCSS.replace( "AMAROK_DARKBASECOLOR", colorGroup().base().dark( 120 ).name() );
+    tmpCSS.replace( "AMAROK_GRADIENTCOLOR", gradientColor.name() );
 
     styleSheet += tmpCSS;
 }
@@ -1350,11 +1367,11 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
         if ( m_lyrics.find( "<p><hr" ) != -1 )
             m_lyrics = m_lyrics.mid( 0, m_lyrics.find( "<p><hr" ) );
         else
-            m_lyrics = m_lyrics.mid( 0, m_lyrics.find( "<br><br>" ) );
+            m_lyrics = m_lyrics.mid( 0, m_lyrics.find( "<br /><br />" ) );
     }
     else if ( m_lyrics.find( "Suggestions : " ) != -1 )
     {
-        m_lyrics = m_lyrics.mid( m_lyrics.find( "Suggestions : " ), m_lyrics.find( "<br><br>" ) );
+        m_lyrics = m_lyrics.mid( m_lyrics.find( "Suggestions : " ), m_lyrics.find( "<br /><br />" ) );
         showLyricSuggestions();
     }
     else
@@ -1396,7 +1413,7 @@ ContextBrowser::showLyricSuggestions()
 
     m_lyrics.replace( QString( "<font color='white'>" ), QString::null );
     m_lyrics.replace( QString( "</font>" ), QString::null );
-    m_lyrics.replace( QString( "<br><br>" ), QString::null );
+    m_lyrics.replace( QString( "<br /><br />" ), QString::null );
 
     while ( !m_lyrics.isEmpty() )
     {
@@ -1405,12 +1422,12 @@ ContextBrowser::showLyricSuggestions()
         m_lyrics = m_lyrics.mid( m_lyrics.find( ">" ) );
         m_lyricSuggestions << m_lyrics.mid( 1, m_lyrics.find( "</a>" ) - 1 );
     }
-    m_lyrics = i18n( "Lyrics for track not found, here are some suggestions:<br><br>" );
+    m_lyrics = i18n( "Lyrics for track not found, here are some suggestions:" ) + QString("<br /><br />");
 
     for ( uint i=0; i < m_lyricHashes.count() - 1; ++i )
     {
         m_lyrics += QString( "<a href='show:suggestLyric-%1'>" ).arg( m_lyricHashes[i] );
-        m_lyrics += QString( "%1</a><br>" ).arg( m_lyricSuggestions[i] );
+        m_lyrics += QString( "%1</a><br />" ).arg( m_lyricSuggestions[i] );
     }
     m_lyrics += QString( "<p><a href='lyricspage:" + m_lyricUrl + "'>" + i18n("Add Lyrics") + "</a></p>" );
 
