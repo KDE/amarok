@@ -22,10 +22,6 @@ SHORT-TERM (URGENT):
 
     * fix: #60 <markey> I'm still getting the occasional crash in PlaylistItem::setText()
 
-    * fix: #59 global shortcuts should be disabled by default, eg CTRL_ALT_C is a KDevelop shortcut, one user
-           was shocked to find the music stopped whenever he tried to bring up the class window!
-           <markey> using the Win-key by default is bad in a unix app, IMHO (e.g. I don't have a Win-key)
-           
     * fix: #52 <markey> got those today, possibly from new PlayerWidget code (app was freezing):
                 QPainter::begin: Cannot paint null pixmap
                 QPainter::setPen: Will be reset by begin()
@@ -38,18 +34,7 @@ SHORT-TERM (URGENT):
     * fix: #44 <markey> ExpandButtons do not work well with keyboard shortcuts: the button expands, and then
                nothing happens. you must close it using the mouse
 
-    * fix: #40 <markey> change "EQ" button to "FX", as it is more appropriate.
-
     * fix: #34 playlist: hidden columns can be resized back into sight! -->mxcl
-
-    * fix: #7 <mxcl> originally reported all this,
-              <berkus> in summary:
-              * The playwidget and playlistwidget should display as single entry on taskbar.
-              * Clicking on either or on tray icon should bring both up/down.
-              * Setting WType_Dialog on playlist doesn't help, because then playlist always
-               obscures the playwidget.
-              <mxcl> I'm beginning to think this isn't worth worrying about.
-
 
 MID-TERM:
 
@@ -58,18 +43,20 @@ MID-TERM:
     * fix: #44 <markey> use kdWarning() instead of kdDebug() where appropriate
 
     * add: #39 <markey> add playlist column for media-type (mp3, ogg, mod, etc)
+    * add: display type of media next to bitrate (<berkus> i moved it here, seems its the
+           same as above, no?)
 
     * chg: instead of show file info why not use standard KDE properties? This has much more power
            than anything we could whip up and with taglib installed shows meta info and allows
            editing of it. <markey> this is already available in the FileBrowser: right-click -> "Properties"
 
     * add: tabbed playlists.
-           For: it's convenient to have several playlists
-           Against: the playlist is getting cluttered enough as it is!
+           Pro: it's convenient to have several playlists
+           Contra: the playlist is getting cluttered enough as it is!
 
     * add: #32<markey> icecast metadata support (uses UDP channel) -->markey
 
-    * add: #28<muesli> add an option "clean playlist on startup"
+    * add: #28<muesli> add an option "clean up playlist on startup"
               <mxcl> do you mean remove duplicates or dead entries etc. ? Cool.
 
     * add: <mxcl> option: don't crossfade for sequential tracks on same album. Comments? -->mxcl
@@ -84,8 +71,6 @@ MID-TERM:
            maybe override KListView::mouseMoveEvent, or is there a better way?
            <markey> I think the hand cursor looks appropriate here. FWIW, the hand is not only in
            column(0)
-
-    * add: extend keyboard shortcuts [<mxcl> show playlist, also I'd say do this with actions as it's easiest]
 
     * add: "show playlist" to the right click menu, redundant but necessary
 
@@ -117,8 +102,7 @@ MID-TERM:
 
     * add: seeking with mousewheel
            <muesli> what's seeking with mousewheel? <markey> dunno, but several users requested it
-
-    * add: display type of media next to bitrate
+	   <berkus> seeking the track via mousewheel, wheelUp to seek back, wheelDown to seek further
 
     * chg: #21<markey> use more accurate interpolation for analyzers (cubic or spline)
 
@@ -141,8 +125,9 @@ LONG-TERM:
 
     * add: playlist export (generate text or html document from playlist entries)
 
-    * add: make PlayerWidget shadeable (like XMMS) [<mxcl> doesn't the systray provide this functionality
-           already?] [<berkus> no it doesn't, double click the winamp/xmms window and see for yourself]
+    * add: make PlayerWidget shadeable (like XMMS) 
+           <mxcl> doesn't the systray provide this functionality already?
+	   <berkus> no it doesn't, double click the winamp/xmms window and see for yourself
 
     * add: display some information about current track in playlist window
 
@@ -151,7 +136,8 @@ LONG-TERM:
     * add: <mxcl> implement beat detection (thread?), interface should glow/move to
            the beat, visualisations have access to beat/bpm info
 
-    * add: pitch-slider (?) [<berkus> should be in separate "Effects Control" panel]
+    * add: pitch-slider (?)
+           <berkus> should be in separate "Effects Control" panel
 
     * add: audio system info widget, showing all available codecs and similar info
 
@@ -165,6 +151,7 @@ IDEAS:
     * #54<markey> For reducing startup time, we could try not to link to the audio frameworks (aRts, Gst..),
          but instead open the libraries at runtime with dlopen(). I reckon this could be a substantial
          saving (maybe also in memory), since these libs are quite huge.
+	 <berkus> I think kdeinit does the preloading for us...
 
     * #12<markey> prevent zombie processes after amarok has exited (proper exit or crashing).
          such zombies can lead to very weird behaviour on next amarok start and eat ressources,
