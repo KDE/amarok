@@ -65,7 +65,7 @@ void amarokWidget::dropEvent(QDropEvent* event)
     }
 }
 
-bool amarokWidget::eventFilter( QObject *o, QEvent *e )
+bool amarokWidget::eventFilter( QObject *, QEvent *e )
 {
     if(e->type() < QEvent::DragEnter || e->type() > QEvent::Drop )
         return false;
@@ -248,7 +248,7 @@ void UniversalAmarok::showIntroduction()
             "</div>"
             "</html>"
                        );
-kdDebug() << m_HTMLSource << endl; 
+kdDebug() << m_HTMLSource << endl;
     browser->begin();
     browser->write( m_HTMLSource );
     browser->end();
