@@ -1,20 +1,24 @@
 [Desktop Entry]
 Type=Service
 Name=NMM Engine
+Name[es]=Motor NMM
 Name[et]=NMM mootor
 Name[fr]=Moteur NMM
 Name[pt]=Motor NMM
 Name[sv]=NMM-gränssnitt
+Name[ta]=NMM பொறி
 Name[xx]=xxNMM Enginexx
 X-KDE-Library=libamarok_nmmengine_plugin
 Comment=amaroK plugin
 Comment[da]=Plugin for amaroK
+Comment[es]=Plugin de amaroK
 Comment[et]=AmaroKi plugin
 Comment[fr]=module AmaroK
 Comment[nl]=amaroK-plugin
 Comment[pt]='Plugin' para o amaroK
 Comment[pt_BR]=Plug-in do amaroK
 Comment[sv]=Insticksprogram för amaroK
+Comment[ta]=amaroK  சொருகி
 Comment[xx]=xxamaroK pluginxx
 ServiceTypes=amaroK/Plugin
 

@@ -4,12 +4,14 @@ X-KDE-ServiceType=amaroK/Plugin
 Comment=Plugin for amaroK
 Comment[de]=Plugin für amaroK
 Comment[el]=Πρόσθετο για το amaroK
+Comment[es]=Plugin para amaroK
 Comment[et]=AmaroKi plugin
 Comment[fr]=Module pour AmaroK
 Comment[nl]=Plugin voor amaroK
 Comment[pt]='Plugin' para o amaroK
 Comment[pt_BR]=Plug-in para o amaroK
 Comment[sv]=Insticksprogram för amaroK
+Comment[ta]=amaroKகான சொருகி
 Comment[xx]=xxPlugin for amaroKxx
 
 [PropertyDef::X-KDE-amaroK-plugintype]
