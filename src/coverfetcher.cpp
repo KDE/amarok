@@ -24,6 +24,7 @@
 #include <kpushbutton.h>
 
 
+
 CoverFetcher::CoverFetcher( QWidget *parent, const QString& license )
     : QObject( parent, "CoverFetcher" )
     , m_license( license )
@@ -32,13 +33,11 @@ CoverFetcher::CoverFetcher( QWidget *parent, const QString& license )
     QApplication::setOverrideCursor( KCursor::workingCursor() );
 }
 
-
 CoverFetcher::~CoverFetcher()
 {
     QApplication::restoreOverrideCursor();
     delete[] m_buffer;
 }
-
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC
@@ -254,7 +253,7 @@ CoverFetcher::editSearch( QString text ) //SLOT
     class EditSearchDialog : public KDialog
     {
     public:
-        EditSearchDialog( QWidget* parent, const QString &text, const QString &artist, const QString &album )
+        EditSearchDialog( QWidget* parent, const QString &text, const QString &keyword )
             : KDialog( parent )
         {
             setCaption( i18n( "No Cover Found" ) );
@@ -270,8 +269,7 @@ CoverFetcher::editSearch( QString text ) //SLOT
             hbox->addWidget( cancelButton );
 
             vbox->addWidget( new QLabel( "<qt>" + text, this ) );
-            vbox->addWidget( new KLineEdit( artist, this, "Artist" ) );
-            vbox->addWidget( new KLineEdit( album, this, "Album" ) );
+            vbox->addWidget( new KLineEdit( keyword, this, "Keyword" ) );
             vbox->addLayout( hbox );
 
             okButton->setDefault( true );
@@ -283,18 +281,17 @@ CoverFetcher::editSearch( QString text ) //SLOT
             connect( cancelButton, SIGNAL(clicked()), SLOT(reject()) );
         }
 
-        QString artist() { return static_cast<KLineEdit*>(child( "Artist" ))->text(); }
-        QString album()  { return static_cast<KLineEdit*>(child( "Album" ))->text(); }
+        QString keyword() { return static_cast<KLineEdit*>(child( "Keyword" ))->text(); }
     };
 
     if ( text.isEmpty() )
         text = i18n("Search Amazon's cover database with this query:");
 
-    EditSearchDialog dialog( (QWidget*)parent(), text, m_artist, m_album );
+    EditSearchDialog dialog( (QWidget*)parent(), text, m_keyword );
 
     switch( dialog.exec() ) {
     case QDialog::Accepted:
-        getCover( dialog.artist(), dialog.album(), m_saveas, CoverFetcher::heavy );
+        getCover( dialog.keyword(), QString::null, m_saveas, CoverFetcher::heavy );
         break;
     default:
         deleteLater();
