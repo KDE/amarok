@@ -10,6 +10,8 @@ POST 0.7.0
          widgets, just click until it appears (though it looks the same as the original widget
          it just acts differently) - piggz (www.piggz.co.uk)
   * add: combo with history and completion for dir/file chooser
+  * add: in configure.in.in for checking the version of TagLib, if compiled from CVS, if not, 
+         then show, that it uses bundled version of TagLib - Stormy
 
 VERSION 0.7.0:
   * fix: collection of fixes related to showing/raising/hiding the playlist
