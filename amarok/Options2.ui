@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>391</width>
-            <height>340</height>
+            <height>481</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -31,8 +31,8 @@
             <rect>
                 <x>11</x>
                 <y>11</y>
-                <width>369</width>
-                <height>318</height>
+                <width>316</width>
+                <height>225</height>
             </rect>
         </property>
         <property name="sizePolicy">
@@ -58,185 +58,173 @@
         <property name="checked">
             <bool>false</bool>
         </property>
-        <widget class="QLayoutWidget">
+        <vbox>
             <property name="name">
-                <cstring>layout6</cstring>
+                <cstring>unnamed</cstring>
             </property>
-            <property name="geometry">
-                <rect>
-                    <x>20</x>
-                    <y>120</y>
-                    <width>330</width>
-                    <height>80</height>
-                </rect>
-            </property>
-            <vbox>
+            <widget class="QLayoutWidget">
                 <property name="name">
-                    <cstring>unnamed</cstring>
+                    <cstring>layout5</cstring>
                 </property>
-                <widget class="QLabel">
+                <vbox>
                     <property name="name">
-                        <cstring>textLabel2</cstring>
+                        <cstring>unnamed</cstring>
                     </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>150</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Marquees font:</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignTop|AlignLeft</set>
-                    </property>
-                </widget>
-                <widget class="KFontRequester">
-                    <property name="name">
-                        <cstring>kcfg_PlayerWidgetScrollFont</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>4</hsizetype>
-                            <vsizetype>5</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="maximumSize">
-                        <size>
-                            <width>360</width>
-                            <height>40</height>
-                        </size>
-                    </property>
-                    <property name="sampleText">
-                        <string>ENLARGE.MENT pILLS</string>
-                    </property>
-                </widget>
-            </vbox>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout5</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>20</x>
-                    <y>30</y>
-                    <width>330</width>
-                    <height>80</height>
-                </rect>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout10</cstring>
-                    </property>
-                    <grid>
+                    <widget class="QLayoutWidget">
                         <property name="name">
-                            <cstring>unnamed</cstring>
+                            <cstring>layout10</cstring>
                         </property>
-                        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
+                        <grid>
                             <property name="name">
-                                <cstring>textLabel1</cstring>
+                                <cstring>unnamed</cstring>
                             </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>150</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>Player font:</string>
-                            </property>
-                            <property name="alignment">
-                                <set>AlignTop|AlignLeft</set>
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-                <widget class="KFontRequester">
-                    <property name="name">
-                        <cstring>kcfg_PlayerWidgetFont</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>4</hsizetype>
-                            <vsizetype>5</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="maximumSize">
-                        <size>
-                            <width>360</width>
-                            <height>40</height>
-                        </size>
-                    </property>
-                    <property name="sampleText">
-                        <string>FREE OFFER!!! vbk</string>
-                    </property>
-                </widget>
-            </vbox>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout7</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>20</x>
-                    <y>210</y>
-                    <width>330</width>
-                    <height>90</height>
-                </rect>
-            </property>
-            <vbox>
+                            <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
+                                <property name="name">
+                                    <cstring>textLabel1</cstring>
+                                </property>
+                                <property name="minimumSize">
+                                    <size>
+                                        <width>150</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                                <property name="text">
+                                    <string>Player font:</string>
+                                </property>
+                                <property name="alignment">
+                                    <set>AlignTop|AlignLeft</set>
+                                </property>
+                            </widget>
+                        </grid>
+                    </widget>
+                    <widget class="KFontRequester">
+                        <property name="name">
+                            <cstring>kcfg_PlayerWidgetFont</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>4</hsizetype>
+                                <vsizetype>5</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                            <size>
+                                <width>360</width>
+                                <height>40</height>
+                            </size>
+                        </property>
+                        <property name="sampleText">
+                            <string>FREE OFFER!!! vbk</string>
+                        </property>
+                    </widget>
+                </vbox>
+            </widget>
+            <widget class="QLayoutWidget">
                 <property name="name">
-                    <cstring>unnamed</cstring>
+                    <cstring>layout6</cstring>
                 </property>
-                <widget class="QLabel">
+                <vbox>
                     <property name="name">
-                        <cstring>textLabel3</cstring>
+                        <cstring>unnamed</cstring>
                     </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>150</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Playlist-window font:</string>
-                    </property>
-                </widget>
-                <widget class="KFontRequester">
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>textLabel2</cstring>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>150</width>
+                                <height>20</height>
+                            </size>
+                        </property>
+                        <property name="text">
+                            <string>Marquees font:</string>
+                        </property>
+                        <property name="alignment">
+                            <set>AlignTop|AlignLeft</set>
+                        </property>
+                    </widget>
+                    <widget class="KFontRequester">
+                        <property name="name">
+                            <cstring>kcfg_PlayerWidgetScrollFont</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>4</hsizetype>
+                                <vsizetype>5</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                            <size>
+                                <width>360</width>
+                                <height>40</height>
+                            </size>
+                        </property>
+                        <property name="sampleText">
+                            <string>ENLARGE.MENT pILLS</string>
+                        </property>
+                    </widget>
+                </vbox>
+            </widget>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>layout7</cstring>
+                </property>
+                <vbox>
                     <property name="name">
-                        <cstring>kcfg_BrowserWindowFont</cstring>
+                        <cstring>unnamed</cstring>
                     </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>4</hsizetype>
-                            <vsizetype>5</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="maximumSize">
-                        <size>
-                            <width>360</width>
-                            <height>40</height>
-                        </size>
-                    </property>
-                    <property name="sampleText">
-                        <string>THIS IS.NO SPAM</string>
-                    </property>
-                </widget>
-            </vbox>
-        </widget>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>textLabel3</cstring>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>150</width>
+                                <height>20</height>
+                            </size>
+                        </property>
+                        <property name="text">
+                            <string>Playlist-window font:</string>
+                        </property>
+                    </widget>
+                    <widget class="KFontRequester">
+                        <property name="name">
+                            <cstring>kcfg_BrowserWindowFont</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>4</hsizetype>
+                                <vsizetype>5</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                            <size>
+                                <width>360</width>
+                                <height>40</height>
+                            </size>
+                        </property>
+                        <property name="sampleText">
+                            <string>THIS IS.NO SPAM</string>
+                        </property>
+                    </widget>
+                </vbox>
+            </widget>
+        </vbox>
     </widget>
 </widget>
+<customwidgets>
+</customwidgets>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kfontrequester.h</includehint>
+    <includehint>kfontrequester.h</includehint>
+    <includehint>kfontrequester.h</includehint>
+</includehints>
 </UI>
