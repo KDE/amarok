@@ -111,7 +111,6 @@ FileBrowser::FileBrowser( const char * name )
         QHBox *hbox; KToolBarButton *button;
 
         hbox         = new QHBox( this );
-
         button       = new KToolBarButton( "locationbar_erase", 0, hbox );
         m_filterEdit = new KLineEdit( hbox );
 

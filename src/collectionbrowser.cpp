@@ -296,6 +296,9 @@ CollectionView::scan()  //SLOT
     {
         m_isScanning = true;
 
+        //cache the last action
+        cacheItem( this->currentItem() );
+
         m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
         m_insertdb->scan( AmarokConfig::collectionFolders(), AmarokConfig::scanRecursively(),
                                       AmarokConfig::importPlaylists() );
@@ -311,6 +314,9 @@ CollectionView::scanMonitor()  //SLOT
 {
     if ( !m_isScanning && AmarokConfig::monitorChanges() )
     {
+        //cache the last action
+        cacheItem( this->currentItem() );
+
         m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
         m_insertdb->scanModifiedDirs( AmarokConfig::scanRecursively(), AmarokConfig::importPlaylists() );
     }
@@ -362,8 +368,34 @@ CollectionView::scanDone( bool changed ) //SLOT
     m_db = new CollectionDB();
 
     if ( changed )
+    {
         renderView();
 
+        //restore cached item
+        if ( !m_cacheItem.isEmpty() )
+        {
+            QListViewItem* item = this->findItem( m_cacheItem[ 0 ], 0 );
+            if ( item )
+            {
+                item->setOpen( true );
+                for ( uint i = 1; i < m_cacheItem.count(); i++ )
+                {
+                    item = item->firstChild();
+                    while ( item )
+                    {
+                        if ( item->text( 0 ) == m_cacheItem[ i ] )
+                        {
+                            item->setOpen( true );
+                            break;
+                        }
+                        item = item->nextSibling();
+                    }
+                }
+                item->setSelected( true );
+                this->ensureItemVisible( item );
+            }
+        }
+    }
     m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, true );
     m_isScanning = false;
 
@@ -390,8 +422,8 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     } else if( item->depth() == 1 ) {
         m_db->retrieveThirdLevel( item->parent()->text( 0 ), item->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ), tableForCat( m_category3 ), m_filter, &values, &names );
         category = m_category3;
-    } else {
-        m_db->retrieveFourthLevel( item->parent()->parent()->text( 0 ), item->parent()->text( 0 ), item->text(0),  tableForCat( m_category1 ), tableForCat( m_category2 ), tableForCat( m_category3 ), m_filter, &values, &names );
+    } else if( item->depth() == 2 ) {
+        m_db->retrieveFourthLevel( item->parent()->parent()->text( 0 ), item->parent()->text( 0 ), item->text( 0 ),  tableForCat( m_category1 ), tableForCat( m_category2 ), tableForCat( m_category3 ), m_filter, &values, &names );
         category = i18n("None");
     }
 
@@ -696,6 +728,37 @@ void
 CollectionView::startDrag() {
     KURLDrag* d = new KURLDrag( listSelected(), this );
     d->dragCopy();
+}
+
+
+void
+CollectionView::cacheItem( QListViewItem* item )
+{
+    m_cacheItem.clear();
+
+    if ( item )
+    {
+        switch ( item->depth() )
+        {
+            case 0: m_cacheItem << item->text( 0 );
+                    break;
+
+            case 1: m_cacheItem << item->parent()->text( 0 );
+                    m_cacheItem << item->text( 0 );
+                    break;
+
+            case 2: m_cacheItem << item->parent()->parent()->text( 0 );
+                    m_cacheItem << item->parent()->text( 0 );
+                    m_cacheItem << item->text( 0 );
+                    break;
+
+            case 3: m_cacheItem << item->parent()->parent()->parent()->text( 0 );
+                    m_cacheItem << item->parent()->parent()->text( 0 );
+                    m_cacheItem << item->parent()->text( 0 );
+                    m_cacheItem << item->text( 0 );
+                    break;
+            }
+        }
 }
 
 

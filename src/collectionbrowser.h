@@ -119,6 +119,7 @@ class CollectionView : public KListView
 
     private:
         void startDrag();
+        void cacheItem( QListViewItem* item );
         KURL::List listSelected();
 
         QString catForId( int id ) const;
@@ -143,6 +144,8 @@ class CollectionView : public KListView
         bool m_isScanning;
         QHBox* m_progressBox;
         KProgress* m_progress;
+
+        QStringList m_cacheItem;
 };
 
 
