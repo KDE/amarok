@@ -275,6 +275,10 @@ GstEngine::init()
 bool
 GstEngine::canDecode( const KURL &url ) const
 {
+    // We had some bug reports claiming that .mov files cause crashes in canDecode(),
+    // so don't try to decode them
+    if ( url.fileName().lower().endsWith( ".mov" ) ) return false;
+
     int count = 0;
     m_canDecodeSuccess = false;
     GstElement *pipeline, *filesrc, *spider, *fakesink;
