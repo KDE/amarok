@@ -3,12 +3,15 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #95 being the highest available (take this one for your next bug and increase here)
+           #96 being the highest available (take this one for your next bug and increase here)
 
                         
 SHORT-TERM (URGENT):
   
-  FIX #92 <markey> Switching to aRts engine breaks volume -->markey.
+  CHG #95 <muesli> Add some kind of index caching system to collection browser and
+      create the database indices _after_ scanning -->muesli
+
+  FIX #92 <markey> Switching to aRts engine breaks volume -->markey
 
   CHG #90 <markey>We need some fresh artwork, at least some new player buttons before 1.0.
   

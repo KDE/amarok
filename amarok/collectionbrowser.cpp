@@ -408,7 +408,6 @@ uint CollectionView::getValueID( QString name, QString value, bool autocreate )
                       .arg( name )
                       .arg( escapeString( value ) );
     execSql( command, &values, &names );
-    kdDebug() << "sql returned: " << values[0] << endl;
 
     //check if item exists. if not, should we autocreate it?
     if ( values.isEmpty() && autocreate )
