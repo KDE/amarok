@@ -138,3 +138,5 @@
 #define TK_ELSE                           138
 #define TK_INDEX                          139
 #define TK_TO                             140
+#define TK_ADD                            141
+#define TK_COLUMNKW                       142

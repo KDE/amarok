@@ -183,7 +183,12 @@ Expr *sqlite3Expr(int op, Expr *pLeft, Expr *pRight, const Token *pToken){
   Expr *pNew;
   pNew = sqliteMalloc( sizeof(Expr) );
   if( pNew==0 ){
-    /* When malloc fails, we leak memory from pLeft and pRight */
+    /* When malloc fails, delete pLeft and pRight. Expressions passed to 
+    ** this function must always be allocated with sqlite3Expr() for this 
+    ** reason. 
+    */
+    sqlite3ExprDelete(pLeft);
+    sqlite3ExprDelete(pRight);
     return 0;
   }
   pNew->op = op;
@@ -275,7 +280,7 @@ Expr *sqlite3ExprFunction(ExprList *pList, Token *pToken){
   Expr *pNew;
   pNew = sqliteMalloc( sizeof(Expr) );
   if( pNew==0 ){
-    /* sqlite3ExprListDelete(pList); // Leak pList when malloc fails */
+    sqlite3ExprListDelete(pList); /* Avoid leaking memory when malloc fails */
     return 0;
   }
   pNew->op = TK_FUNCTION;
@@ -403,6 +408,7 @@ Expr *sqlite3ExprDup(Expr *p){
   pNew->pRight = sqlite3ExprDup(p->pRight);
   pNew->pList = sqlite3ExprListDup(p->pList);
   pNew->pSelect = sqlite3SelectDup(p->pSelect);
+  pNew->pTab = p->pTab;
   return pNew;
 }
 void sqlite3TokenCopy(Token *pTo, Token *pFrom){
@@ -492,7 +498,10 @@ IdList *sqlite3IdListDup(IdList *p){
   if( pNew==0 ) return 0;
   pNew->nId = pNew->nAlloc = p->nId;
   pNew->a = sqliteMallocRaw( p->nId*sizeof(p->a[0]) );
-  if( pNew->a==0 ) return 0;
+  if( pNew->a==0 ){
+    sqliteFree(pNew);
+    return 0;
+  }
   for(i=0; i<p->nId; i++){
     struct IdList_item *pNewItem = &pNew->a[i];
     struct IdList_item *pOldItem = &p->a[i];
@@ -541,28 +550,34 @@ ExprList *sqlite3ExprListAppend(ExprList *pList, Expr *pExpr, Token *pName){
   if( pList==0 ){
     pList = sqliteMalloc( sizeof(ExprList) );
     if( pList==0 ){
-      /* sqlite3ExprDelete(pExpr); // Leak memory if malloc fails */
-      return 0;
+      goto no_mem;
     }
     assert( pList->nAlloc==0 );
   }
   if( pList->nAlloc<=pList->nExpr ){
-    pList->nAlloc = pList->nAlloc*2 + 4;
-    pList->a = sqliteRealloc(pList->a, pList->nAlloc*sizeof(pList->a[0]));
-    if( pList->a==0 ){
-      /* sqlite3ExprDelete(pExpr); // Leak memory if malloc fails */
-      pList->nExpr = pList->nAlloc = 0;
-      return pList;
+    struct ExprList_item *a;
+    int n = pList->nAlloc*2 + 4;
+    a = sqliteRealloc(pList->a, n*sizeof(pList->a[0]));
+    if( a==0 ){
+      goto no_mem;
     }
+    pList->a = a;
+    pList->nAlloc = n;
   }
   assert( pList->a!=0 );
   if( pExpr || pName ){
     struct ExprList_item *pItem = &pList->a[pList->nExpr++];
     memset(pItem, 0, sizeof(*pItem));
-    pItem->pExpr = pExpr;
     pItem->zName = sqlite3NameFromToken(pName);
+    pItem->pExpr = pExpr;
   }
   return pList;
+
+no_mem:     
+  /* Avoid leaking memory if malloc has failed. */
+  sqlite3ExprDelete(pExpr);
+  sqlite3ExprListDelete(pList);
+  return 0;
 }
 
 /*
@@ -768,7 +783,7 @@ static int lookupName(
   zTab = sqlite3NameFromToken(pTableToken);
   zCol = sqlite3NameFromToken(pColumnToken);
   if( sqlite3_malloc_failed ){
-    return 1;  /* Leak memory (zDb and zTab) if malloc fails */
+    goto lookupname_end;
   }
 
   pExpr->iTable = -1;
@@ -847,6 +862,7 @@ static int lookupName(
             pExpr->iColumn = j==pTab->iPKey ? -1 : j;
             pExpr->affinity = pTab->aCol[j].affinity;
             pExpr->pColl = pTab->aCol[j].pColl;
+            pExpr->pTab = pTab;
             break;
           }
         }
@@ -945,6 +961,7 @@ static int lookupName(
     pMatch->colUsed |= 1<<n;
   }
 
+lookupname_end:
   /* Clean up and return
   */
   sqliteFree(zDb);
@@ -958,6 +975,9 @@ static int lookupName(
   if( cnt==1 ){
     assert( pNC!=0 );
     sqlite3AuthRead(pParse, pExpr, pNC->pSrcList);
+    if( pMatch && !pMatch->pSelect ){
+      pExpr->pTab = pMatch->pTab;
+    }
   }
   return cnt!=1;
 }
@@ -1385,11 +1405,7 @@ void sqlite3ExprCode(Parse *pParse, Expr *pExpr){
         sqlite3VdbeAddOp(v, OP_AggGet, pExpr->iAggCtx, pExpr->iAgg);
       }else if( pExpr->iColumn>=0 ){
         sqlite3VdbeAddOp(v, OP_Column, pExpr->iTable, pExpr->iColumn);
-#ifndef NDEBUG
-        if( pExpr->span.z && pExpr->span.n>0 && pExpr->span.n<100 ){
-          VdbeComment((v, "# %T", &pExpr->span));
-        }
-#endif
+        sqlite3ColumnDefault(v, pExpr->pTab, pExpr->iColumn);
       }else{
         sqlite3VdbeAddOp(v, OP_Recno, pExpr->iTable, 0);
       }

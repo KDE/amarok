@@ -834,7 +834,10 @@ void sqlite3AddColumn(Parse *pParse, Token *pName){
   if( (p->nCol & 0x7)==0 ){
     Column *aNew;
     aNew = sqliteRealloc( p->aCol, (p->nCol+8)*sizeof(p->aCol[0]));
-    if( aNew==0 ) return;
+    if( aNew==0 ){
+      sqliteFree(z);
+      return;
+    }
     p->aCol = aNew;
   }
   pCol = &p->aCol[p->nCol];
@@ -1095,6 +1098,7 @@ static CollSeq * findCollSeqEntry(
   if( 0==pColl && create ){
     pColl = sqliteMalloc( 3*sizeof(*pColl) + nName + 1 );
     if( pColl ){
+      CollSeq *pDel = 0;
       pColl[0].zName = (char*)&pColl[3];
       pColl[0].enc = SQLITE_UTF8;
       pColl[1].zName = (char*)&pColl[3];
@@ -1103,7 +1107,14 @@ static CollSeq * findCollSeqEntry(
       pColl[2].enc = SQLITE_UTF16BE;
       memcpy(pColl[0].zName, zName, nName);
       pColl[0].zName[nName] = 0;
-      sqlite3HashInsert(&db->aCollSeq, pColl[0].zName, nName, pColl);
+      pDel = sqlite3HashInsert(&db->aCollSeq, pColl[0].zName, nName, pColl);
+
+      /* If a malloc() failure occured in sqlite3HashInsert(), it will 
+      ** return the pColl pointer to be deleted (because it wasn't added
+      ** to the hash table).
+      */
+      assert( !pDel || (sqlite3_malloc_failed && pDel==pColl) );
+      sqliteFree(pDel);
     }
   }
   return pColl;
@@ -1394,7 +1405,7 @@ static char *createTableStmt(Table *p){
 ** this is a temporary table or db->init.busy==1.  When db->init.busy==1
 ** it means we are reading the sqlite_master table because we just
 ** connected to the database or because the sqlite_master table has
-** recently changes, so the entry for this table already exists in
+** recently changed, so the entry for this table already exists in
 ** the sqlite_master table.  We do not want to create it again.
 **
 ** If the pSelect argument is not NULL, it means that this routine
@@ -1402,7 +1413,12 @@ static char *createTableStmt(Table *p){
 ** "CREATE TABLE ... AS SELECT ..." statement.  The column names of
 ** the new table will match the result set of the SELECT.
 */
-void sqlite3EndTable(Parse *pParse, Token *pEnd, Select *pSelect){
+void sqlite3EndTable(
+  Parse *pParse,          /* Parse context */
+  Token *pCons,           /* The ',' token after the last column defn. */
+  Token *pEnd,            /* The final ')' token in the CREATE TABLE */
+  Select *pSelect         /* Select from a "CREATE ... AS SELECT" */
+){
   Table *p;
   sqlite3 *db = pParse->db;
 
@@ -1556,6 +1572,14 @@ void sqlite3EndTable(Parse *pParse, Token *pEnd, Select *pSelect){
     pParse->pNewTable = 0;
     db->nTable++;
     db->flags |= SQLITE_InternChanges;
+
+#ifndef SQLITE_OMIT_ALTERTABLE
+    if( !p->pSelect ){
+      assert( !pSelect && pCons && pEnd );
+      if( pCons->z==0 ) pCons = pEnd;
+      p->addColOffset = 13 + (pCons->z - pParse->sNameToken.z);
+    }
+#endif
   }
 }
 
@@ -1618,7 +1642,7 @@ void sqlite3CreateView(
   sEnd.n = 1;
 
   /* Use sqlite3EndTable() to add the view to the SQLITE_MASTER table */
-  sqlite3EndTable(pParse, &sEnd, 0);
+  sqlite3EndTable(pParse, 0, &sEnd, 0);
   return;
 }
 #endif /* SQLITE_OMIT_VIEW */
@@ -2296,7 +2320,7 @@ void sqlite3CreateIndex(
   */
   pIndex = sqliteMalloc( sizeof(Index) + strlen(zName) + 1 +
                         (sizeof(int) + sizeof(CollSeq*))*pList->nExpr );
-  if( pIndex==0 ) goto exit_create_index;
+  if( sqlite3_malloc_failed ) goto exit_create_index;
   pIndex->aiColumn = (int*)&pIndex->keyInfo.aColl[pList->nExpr];
   pIndex->zName = (char*)&pIndex->aiColumn[pList->nExpr];
   strcpy(pIndex->zName, zName);
@@ -2509,9 +2533,13 @@ void sqlite3DropIndex(Parse *pParse, SrcList *pName){
   Vdbe *v;
   sqlite3 *db = pParse->db;
 
-  if( pParse->nErr || sqlite3_malloc_failed ) return;
+  if( pParse->nErr || sqlite3_malloc_failed ){
+    goto exit_drop_index;
+  }
   assert( pName->nSrc==1 );
-  if( SQLITE_OK!=sqlite3ReadSchema(pParse) ) return;
+  if( SQLITE_OK!=sqlite3ReadSchema(pParse) ){
+    goto exit_drop_index;
+  }
   pIndex = sqlite3FindIndex(db, pName->a[0].zName, pName->a[0].zDatabase);
   if( pIndex==0 ){
     sqlite3ErrorMsg(pParse, "no such index: %S", pName, 0);

@@ -271,7 +271,12 @@ void sqlite3VdbeChangeP2(Vdbe *p, int addr, int val){
 void sqlite3VdbeChangeP3(Vdbe *p, int addr, const char *zP3, int n){
   Op *pOp;
   assert( p->magic==VDBE_MAGIC_INIT );
-  if( p==0 || p->aOp==0 ) return;
+  if( p==0 || p->aOp==0 ){
+    if( n==P3_DYNAMIC || n==P3_KEYINFO_HANDOFF ){
+      sqliteFree((void*)zP3);
+    }
+    return;
+  }
   if( addr<0 || addr>=p->nOp ){
     addr = p->nOp - 1;
     if( addr<0 ) return;
@@ -1420,6 +1425,9 @@ void sqlite3VdbeDelete(Vdbe *p){
         sqlite3VdbeDeleteAuxData(pVdbeFunc, 0);
         sqliteFree(pVdbeFunc);
       }
+      if( pOp->p3type==P3_MEM ){
+        sqlite3ValueFree((sqlite3_value*)pOp->p3);
+      }
     }
     sqliteFree(p->aOp);
   }
@@ -1846,4 +1854,11 @@ void sqlite3ExpirePreparedStatements(sqlite3 *db){
   for(p = db->pVdbe; p; p=p->pNext){
     p->expired = 1;
   }
+}
+
+/*
+** Return the database associated with the Vdbe.
+*/
+sqlite3 *sqlite3VdbeDb(Vdbe *v){
+  return v->db;
 }

@@ -31,7 +31,7 @@ extern "C" {
 #ifdef SQLITE_VERSION
 # undef SQLITE_VERSION
 #endif
-#define SQLITE_VERSION         "3.1.3"
+#define SQLITE_VERSION         "3.2.0"
 
 /*
 ** The format of the version string is "X.Y.Z<trailing string>", where
@@ -48,7 +48,7 @@ extern "C" {
 #ifdef SQLITE_VERSION_NUMBER
 # undef SQLITE_VERSION_NUMBER
 #endif
-#define SQLITE_VERSION_NUMBER 3001003
+#define SQLITE_VERSION_NUMBER 3002000
 
 /*
 ** The version string is also compiled into the library so that a program
@@ -1215,10 +1215,31 @@ int sqlite3_expired(sqlite3_stmt*);
 ** is NULL pointer, then SQLite does a search for an appropriate temporary
 ** file directory.
 **
-** Once sqlite3_open() has been called, changing this variable will invalidate the
-** current temporary database, if any.
+** Once sqlite3_open() has been called, changing this variable will invalidate
+** the current temporary database, if any.
 */
 extern char *sqlite3_temp_directory;
+
+/*
+** This function is called to recover from a malloc() failure that occured
+** within the SQLite library. Normally, after a single malloc() fails the 
+** library refuses to function (all major calls return SQLITE_NOMEM).
+** This function library state so that it can be used again.
+**
+** All existing statements (sqlite3_stmt pointers) must be finalized or
+** reset before this call is made. Otherwise, SQLITE_BUSY is returned.
+** If any in-memory databases are in use, either as a main or TEMP
+** database, SQLITE_ERROR is returned. In either of these cases, the 
+** library is not reset and remains unusable.
+**
+** This function is *not* threadsafe. Calling this from within a threaded
+** application when threads other than the caller have used SQLite is
+** dangerous and will almost certainly result in malfunctions.
+**
+** This functionality can be omitted from a build by defining the 
+** SQLITE_OMIT_GLOBALRECOVER at compile time.
+*/
+int sqlite3_global_recover();
 
 #ifdef __cplusplus
 }  /* End of the 'extern "C"' block */

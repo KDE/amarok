@@ -108,7 +108,7 @@ static int selectReadsTable(Select *p, int iDb, int iTab){
   if( p->pSrc==0 ) return 0;
   for(i=0, pItem=p->pSrc->a; i<p->pSrc->nSrc; i++, pItem++){
     if( pItem->pSelect ){
-      if( selectReadsTable(p, iDb, iTab) ) return 1;
+      if( selectReadsTable(pItem->pSelect, iDb, iTab) ) return 1;
     }else{
       if( pItem->pTab->iDb==iDb && pItem->pTab->tnum==iTab ) return 1;
     }
@@ -713,8 +713,8 @@ void sqlite3Insert(
 
 insert_cleanup:
   sqlite3SrcListDelete(pTabList);
-  if( pList ) sqlite3ExprListDelete(pList);
-  if( pSelect ) sqlite3SelectDelete(pSelect);
+  sqlite3ExprListDelete(pList);
+  sqlite3SelectDelete(pSelect);
   sqlite3IdListDelete(pColumn);
 }
 

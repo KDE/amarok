@@ -431,6 +431,11 @@ abort_parse:
   return nErr;
 }
 
+/* The sqlite3_complete() API may be omitted (to save code space) by
+** defining the following symbol.
+*/
+#ifndef SQLITE_OMIT_COMPLETE
+
 /*
 ** Token types used by the sqlite3_complete() routine.  See the header
 ** comments on that procedure for additional information.
@@ -662,3 +667,4 @@ int sqlite3_complete16(const void *zSql){
   return rc;
 }
 #endif /* SQLITE_OMIT_UTF16 */
+#endif /* SQLITE_OMIT_COMPLETE */

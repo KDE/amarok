@@ -26,6 +26,16 @@
 */
 const int sqlite3one = 1;
 
+#ifndef SQLITE_OMIT_GLOBALRECOVER
+/*
+** Linked list of all open database handles. This is used by the 
+** sqlite3_global_recover() function. Entries are added to the list
+** by openDatabase() and removed by sqlite3_close().
+*/
+static sqlite3 *pDbList = 0;
+#endif
+
+
 /*
 ** Fill the InitData structure with an error message that indicates
 ** that the database is corrupt.
@@ -258,7 +268,7 @@ static int sqlite3InitOne(sqlite3 *db, int iDb, char **pzErrMsg){
       db->file_format = 1;
     }
 
-    if( db->file_format==2 ){
+    if( db->file_format==2 || db->file_format==3 ){
       /* File format 2 is treated exactly as file format 1. New 
       ** databases are created with file format 1.
       */ 
@@ -269,11 +279,13 @@ static int sqlite3InitOne(sqlite3 *db, int iDb, char **pzErrMsg){
   /*
   ** file_format==1    Version 3.0.0.
   ** file_format==2    Version 3.1.3.
+  ** file_format==3    Version 3.1.4.
   **
   ** Version 3.0 can only use files with file_format==1. Version 3.1.3
   ** can read and write files with file_format==1 or file_format==2.
+  ** Version 3.1.4 can read and write file formats 1, 2 and 3.
   */
-  if( meta[1]>2 ){
+  if( meta[1]>3 ){
     sqlite3BtreeCloseCursor(curMain);
     sqlite3SetString(pzErrMsg, "unsupported file format", (char*)0);
     return SQLITE_ERROR;
@@ -511,6 +523,23 @@ int sqlite3_close(sqlite3 *db){
   if( db->pErr ){
     sqlite3ValueFree(db->pErr);
   }
+
+#ifndef SQLITE_OMIT_GLOBALRECOVER
+  {
+    sqlite3 *pPrev = pDbList;
+    sqlite3OsEnterMutex();
+    while( pPrev && pPrev->pNext!=db ){
+      pPrev = pPrev->pNext;
+    }
+    if( pPrev ){
+      pPrev->pNext = db->pNext;
+    }else{
+      assert( pDbList==db );
+      pDbList = db->pNext;
+    }
+    sqlite3OsLeaveMutex();
+  }
+#endif
 
   db->magic = SQLITE_MAGIC_ERROR;
   sqliteFree(db);
@@ -1197,6 +1226,14 @@ opendb_out:
     sqlite3Error(db, SQLITE_NOMEM, 0);
   }
   *ppDb = db;
+#ifndef SQLITE_OMIT_GLOBALRECOVER
+  if( db ){
+    sqlite3OsEnterMutex();
+    db->pNext = pDbList;
+    pDbList = db;
+    sqlite3OsLeaveMutex();
+  }
+#endif
   return sqlite3_errcode(db);
 }
 
@@ -1398,3 +1435,39 @@ int sqlite3_collation_needed16(
   return SQLITE_OK;
 }
 #endif /* SQLITE_OMIT_UTF16 */
+
+#ifndef SQLITE_OMIT_GLOBALRECOVER
+/*
+** This function is called to recover from a malloc failure that occured
+** within SQLite. 
+**
+** This function is *not* threadsafe. Calling this from within a threaded
+** application when threads other than the caller have used SQLite is 
+** dangerous and will almost certainly result in malfunctions.
+*/
+int sqlite3_global_recover(){
+  int rc = SQLITE_OK;
+
+  if( sqlite3_malloc_failed ){
+    sqlite3 *db;
+    int i;
+    sqlite3_malloc_failed = 0;
+    for(db=pDbList; db; db=db->pNext ){
+      sqlite3ExpirePreparedStatements(db);
+      for(i=0; i<db->nDb; i++){
+        Btree *pBt = db->aDb[i].pBt;
+        if( pBt && (rc=sqlite3BtreeReset(pBt)) ){
+          goto recover_out;
+        }
+      } 
+      db->autoCommit = 1;
+    }
+  }
+
+recover_out:
+  if( rc!=SQLITE_OK ){
+    sqlite3_malloc_failed = 1;
+  }
+  return rc;
+}
+#endif

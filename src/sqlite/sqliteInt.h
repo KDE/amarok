@@ -452,6 +452,9 @@ struct sqlite3 {
   sqlite3_value *pErr;          /* Most recent error message */
   char *zErrMsg;                /* Most recent error message (UTF-8 encoded) */
   char *zErrMsg16;              /* Most recent error message (UTF-16 encoded) */
+#ifndef SQLITE_OMIT_GLOBALRECOVER
+  sqlite3 *pNext;               /* Linked list of open db handles. */
+#endif
 };
 
 /*
@@ -611,6 +614,9 @@ struct Table {
   Trigger *pTrigger; /* List of SQL triggers on this table */
   FKey *pFKey;       /* Linked list of all foreign keys in this table */
   char *zColAff;     /* String defining the affinity of each column */
+#ifndef SQLITE_OMIT_ALTERTABLE
+  int addColOffset;  /* Offset in CREATE TABLE statement to add a new column */
+#endif
 };
 
 /*
@@ -805,6 +811,10 @@ struct Token {
 ** be the right operand of an IN operator.  Or, if a scalar SELECT appears
 ** in an expression the opcode is TK_SELECT and Expr.pSelect is the only
 ** operand.
+**
+** If the Expr is of type OP_Column, and the table it is selecting from
+** is a disk table or the "old.*" pseudo-table, then pTab points to the
+** corresponding table definition.
 */
 struct Expr {
   u8 op;                 /* Operation performed by this node */
@@ -824,6 +834,7 @@ struct Expr {
   int iAggCtx;           /* The value to pass as P1 of OP_AggGet. */
   Select *pSelect;       /* When the expression is a sub-select.  Also the
                          ** right side of "<expr> IN (<select>)" */
+  Table *pTab;           /* Table for OP_Column expressions. */
 };
 
 /*
@@ -1362,7 +1373,7 @@ void sqlite3AddPrimaryKey(Parse*, ExprList*, int, int);
 void sqlite3AddColumnType(Parse*,Token*,Token*);
 void sqlite3AddDefaultValue(Parse*,Expr*);
 void sqlite3AddCollateType(Parse*, const char*, int);
-void sqlite3EndTable(Parse*,Token*,Select*);
+void sqlite3EndTable(Parse*,Token*,Token*,Select*);
 
 #ifndef SQLITE_OMIT_VIEW
   void sqlite3CreateView(Parse*,Token*,Token*,Token*,Select*,int);
@@ -1536,6 +1547,8 @@ void sqlite3ValueSetStr(sqlite3_value*, int, const void *,u8, void(*)(void*));
 void sqlite3ValueFree(sqlite3_value*);
 sqlite3_value *sqlite3ValueNew();
 sqlite3_value *sqlite3GetTransientValue(sqlite3*db);
+int sqlite3ValueFromExpr(Expr *, u8, u8, sqlite3_value **);
+void sqlite3ValueApplyAffinity(sqlite3_value *, u8, u8);
 extern const unsigned char sqlite3UpperToLower[];
 void sqlite3RootPageMoved(Db*, int, int);
 void sqlite3Reindex(Parse*, Token*, Token*);
@@ -1546,5 +1559,8 @@ void sqlite3NestedParse(Parse*, const char*, ...);
 void sqlite3ExpirePreparedStatements(sqlite3*);
 void sqlite3CodeSubselect(Parse *, Expr *);
 int sqlite3SelectResolve(Parse *, Select *, NameContext *);
+void sqlite3ColumnDefault(Vdbe *, Table *, int);
+void sqlite3AlterFinishAddColumn(Parse *, Token *);
+void sqlite3AlterBeginAddColumn(Parse *, SrcList *);
 
 #endif

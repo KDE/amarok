@@ -69,6 +69,7 @@ typedef struct VdbeOpList VdbeOpList;
 #define P3_FUNCDEF  (-5)  /* P3 is a pointer to a FuncDef structure */
 #define P3_KEYINFO  (-6)  /* P3 is a pointer to a KeyInfo structure */
 #define P3_VDBEFUNC (-7)  /* P3 is a pointer to a VdbeFunc structure */
+#define P3_MEM      (-8)  /* P3 is a pointer to a Mem*    structure */
 
 /* When adding a P3 argument using P3_KEYINFO, a copy of the KeyInfo structure
 ** is made.  That copy is freed when the Vdbe is finalized.  But if the
@@ -120,6 +121,7 @@ int sqliteVdbeSetVariables(Vdbe*,int,const char**);
 void sqlite3VdbeSetNumCols(Vdbe*,int);
 int sqlite3VdbeSetColName(Vdbe*, int, const char *, int);
 void sqlite3VdbeCountChanges(Vdbe*);
+sqlite3 *sqlite3VdbeDb(Vdbe*);
 
 #ifndef NDEBUG
   void sqlite3VdbeComment(Vdbe*, const char*, ...);

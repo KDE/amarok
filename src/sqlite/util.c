@@ -858,18 +858,6 @@ int sqlite3GetVarint32(const unsigned char *p, u32 *v){
   u32 x;
   int n;
   unsigned char c;
-#if 0
-  if( ((c = p[0]) & 0x80)==0 ){
-    *v = c;
-    return 1;
-  }
-  x = c & 0x7f;
-  if( ((c = p[1]) & 0x80)==0 ){
-    *v = (x<<7) | c;
-    return 2;
-  }
-  x = (x<<7) | (c & 0x7f);
-#else
   if( ((signed char*)p)[0]>=0 ){
     *v = p[0];
     return 1;
@@ -880,7 +868,6 @@ int sqlite3GetVarint32(const unsigned char *p, u32 *v){
     return 2;
   }
   x = (x<<7) | (p[1] & 0x7f);
-#endif
   n = 2;
   do{
     x = (x<<7) | ((c = p[n++])&0x7f);
@@ -902,7 +889,7 @@ int sqlite3VarintLen(u64 v){
   return i;
 }
 
-#if (!defined(SQLITE_OMIT_BLOB_LITERAL) && !defined(SQLITE_HAS_CODEC)) \
+#if !defined(SQLITE_OMIT_BLOB_LITERAL) || defined(SQLITE_HAS_CODEC) \
     || defined(SQLITE_TEST)
 /*
 ** Translate a single byte of Hex into an integer.
@@ -917,7 +904,7 @@ static int hexToInt(int h){
     return h - 'A' + 10;
   }
 }
-#endif /* (!SQLITE_OMIT_BLOB_LITERAL && !SQLITE_HAS_CODEC) || SQLITE_TEST */
+#endif /* !SQLITE_OMIT_BLOB_LITERAL || SQLITE_HAS_CODEC || SQLITE_TEST */
 
 #if !defined(SQLITE_OMIT_BLOB_LITERAL) || defined(SQLITE_HAS_CODEC)
 /*
