@@ -1040,6 +1040,56 @@ CollectionDB::getMetaBundleForUrl( const QString& url , MetaBundle* bundle )
 }
 
 
+QValueList<MetaBundle>
+CollectionDB::bundlesByUrls( const KURL::List& urls )
+{
+    QValueList<MetaBundle> bundles;
+    QStringList values;
+    QueryBuilder qb;
+
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+    qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComment );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBitrate );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valSamplerate );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+
+    KURL::List::ConstIterator it;
+    for ( it = urls.begin(); it != urls.end(); ++it )
+        qb.addURLFilter( (*it).path() );
+
+//    qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    values = qb.run();
+
+    for ( uint i = 0; i < values.count(); i += qb.countReturnValues() )
+    {
+        MetaBundle b;
+
+        b.setAlbum     ( values[ i + 0 ] );
+        b.setArtist    ( values[ i + 1 ] );
+        b.setGenre     ( values[ i + 2 ] );
+        b.setTitle     ( values[ i + 3 ] );
+        b.setYear      ( values[ i + 4 ] );
+        b.setComment   ( values[ i + 5 ] );
+        b.setTrack     ( values[ i + 6 ] );
+        b.setBitrate   ( values[ i + 7 ].toInt() );
+        b.setLength    ( values[ i + 8 ].toInt() );
+        b.setSampleRate( values[ i + 9 ].toInt() );
+        b.setUrl       ( values[ i + 10 ] );
+
+        bundles.append( b );
+    }
+
+    return bundles;
+}
+
+
 void
 CollectionDB::addAudioproperties( const MetaBundle& bundle )
 {
@@ -2016,6 +2066,10 @@ QueryBuilder::addReturnValue( int table, int value )
     if ( value & valTitle ) m_values += "title";
     if ( value & valTrack ) m_values += "track";
     if ( value & valScore ) m_values += "percentage";
+    if ( value & valComment ) m_values += "comment";
+    if ( value & valBitrate ) m_values += "bitrate";
+    if ( value & valLength ) m_values += "length";
+    if ( value & valSamplerate ) m_values += "samplerate";
 
     if ( table & tabStats && value & valScore ) m_values += " + 0.4 )";
 
@@ -2028,6 +2082,18 @@ uint
 QueryBuilder::countReturnValues()
 {
     return m_returnValues;
+}
+
+
+void
+QueryBuilder::addURLFilter( const QString& filter )
+{
+  if ( !filter.isEmpty() )
+  {
+    m_where += "OR tags.url = '" + CollectionDB::instance()->escapeString( filter ) + "' ";
+  }
+
+  m_linkTables |= tabSong;
 }
 
 
@@ -2206,7 +2272,8 @@ QueryBuilder::sortBy( int table, int value, bool descending )
 {
     //shall we sort case-sensitively? (not for integer columns!)
     bool b = true;
-    if ( value & valID || value & valTrack || value & valScore ) b = false;
+    if ( value & valID || value & valTrack || value & valScore || value & valLength || value & valBitrate || value & valSamplerate )
+        b = false;
 
     if ( !m_sort.isEmpty() ) m_sort += ",";
     if ( b ) m_sort += "LOWER( ";
@@ -2218,12 +2285,16 @@ QueryBuilder::sortBy( int table, int value, bool descending )
     if ( table & tabSong ) m_sort += "tags.";
     if ( table & tabStats ) m_sort += "statistics.";
 
-    if ( value & valID ) m_sort += "id";
-    if ( value & valName ) m_sort += "name";
-    if ( value & valURL ) m_sort += "url";
-    if ( value & valTitle ) m_sort += "title";
-    if ( value & valTrack ) m_sort += "track";
-    if ( value & valScore ) m_sort += "percentage";
+    if ( value & valID ) m_values += "id";
+    if ( value & valName ) m_values += "name";
+    if ( value & valURL ) m_values += "url";
+    if ( value & valTitle ) m_values += "title";
+    if ( value & valTrack ) m_values += "track";
+    if ( value & valScore ) m_values += "percentage";
+    if ( value & valComment ) m_values += "comment";
+    if ( value & valBitrate ) m_values += "bitrate";
+    if ( value & valLength ) m_values += "length";
+    if ( value & valSamplerate ) m_values += "samplerate";
 
     if ( b ) m_sort += " ) ";
     if ( descending ) m_sort += " DESC ";
