@@ -326,7 +326,8 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     //Allocate buffer pixmap, for flicker-free drawing 
     QPixmap* buffer = new QPixmap( width, height() );
     QPainter painterBuf( buffer, true );
-    
+    painterBuf.setFont( p->font() );
+        
     int  playNext = listView()->m_nextTracks.findRef( this ) + 1;
 
     if( this == listView()->currentTrack() )

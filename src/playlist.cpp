@@ -742,7 +742,7 @@ void Playlist::engineStateChanged( EngineBase::EngineState state )
     {
     case EngineBase::Playing:
         //TODO make it fade in and out of the backgroundColor()
-        m_glowTimer->start( 30 );
+        m_glowTimer->start( 40 );
         m_ac->action( "pause" )->setEnabled( true );
         m_ac->action( "stop" )->setEnabled( true );
         m_ac->action( "prev" )->setEnabled( isTrackBefore() ); //FIXME you also do this in setCurrenTrack
