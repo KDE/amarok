@@ -50,8 +50,6 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
    m_columns = myMax( uint(double(width()+1) / (WIDTH+1)), MAX_COLUMNS );
    m_rows    = uint(double(height()+1) / (HEIGHT+1));
 
-   kdDebug() << "BLOCK ANALYZER RESIZE: " << m_rows << ", " << m_columns << endl;
-
    m_scope.resize( m_columns );
 
    if( m_rows != oldRows ) {
@@ -183,7 +181,7 @@ ensureContrast( const QColor &c1, const QColor &c2, uint amount = 150 )
       if( s1 < 0 ) s1 = 0;
       if( s1 > 255 ) s1 = 255;
 
-      //if s1 is no invalid, Qt will adjust it
+      //if s1 is invalid, Qt will adjust it
       //but it is not possible to increase the contrast any more, we have done our best
 
       return QColor( h, s1, v1, QColor::Hsv );
@@ -251,8 +249,8 @@ BlockAnalyzer::mousePressEvent( QMouseEvent *e )
         }
 
         const int id = menu.exec( e->globalPos() );
-	
-	if ( id != -1 )
+
+        if ( id != -1 )
             changeTimeout( id );
     }
     else
