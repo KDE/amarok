@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #30 being the highest available (take this one for your next bug and increase here)
+           #31 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
@@ -40,6 +40,8 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+
+    * add: #30<markey> kdemultimedia configure check
 
     * add: #27<markey> playlist column for tracknumber (requested by several users)
 
