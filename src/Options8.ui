@@ -15,31 +15,6 @@
     <property name="caption">
         <string>Options8</string>
     </property>
-    <spacer>
-        <property name="name">
-            <cstring>spacer4</cstring>
-        </property>
-        <property name="orientation">
-            <enum>Vertical</enum>
-        </property>
-        <property name="sizeType">
-            <enum>Expanding</enum>
-        </property>
-        <property name="sizeHint">
-            <size>
-                <width>20</width>
-                <height>120</height>
-            </size>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>180</x>
-                <y>260</y>
-                <width>20</width>
-                <height>120</height>
-            </rect>
-        </property>
-    </spacer>
     <widget class="QGroupBox">
         <property name="name">
             <cstring>profileSettingsGroupBox</cstring>
@@ -117,57 +92,6 @@
             </property>
         </widget>
     </widget>
-    <widget class="QGroupBox">
-        <property name="name">
-            <cstring>profileCreationGroupBox</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>140</y>
-                <width>330</width>
-                <height>110</height>
-            </rect>
-        </property>
-        <property name="title">
-            <string>Profile Creation</string>
-        </property>
-        <widget class="QPushButton">
-            <property name="name">
-                <cstring>createProfileButton</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>10</x>
-                    <y>70</y>
-                    <width>106</width>
-                    <height>26</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Create Profile</string>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>createProfileLabel</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>10</x>
-                    <y>20</y>
-                    <width>310</width>
-                    <height>50</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>To submit played tracks to Audioscrobbler, you will need a personal Audioscrobbler profile. If you don't yet have a profile, please click the button below to create one.</string>
-            </property>
-            <property name="alignment">
-                <set>WordBreak|AlignVCenter</set>
-            </property>
-        </widget>
-    </widget>
     <widget class="QCheckBox">
         <property name="name">
             <cstring>kcfg_SubmitPlayedSongs</cstring>
@@ -187,9 +111,83 @@
             <string>Submit played tracks</string>
         </property>
     </widget>
+    <spacer>
+        <property name="name">
+            <cstring>spacer4</cstring>
+        </property>
+        <property name="orientation">
+            <enum>Vertical</enum>
+        </property>
+        <property name="sizeType">
+            <enum>Expanding</enum>
+        </property>
+        <property name="sizeHint">
+            <size>
+                <width>20</width>
+                <height>90</height>
+            </size>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>180</x>
+                <y>290</y>
+                <width>20</width>
+                <height>90</height>
+            </rect>
+        </property>
+    </spacer>
+    <widget class="QGroupBox">
+        <property name="name">
+            <cstring>profileCreationGroupBox</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>140</y>
+                <width>330</width>
+                <height>140</height>
+            </rect>
+        </property>
+        <property name="title">
+            <string>Profile Creation</string>
+        </property>
+        <widget class="QPushButton">
+            <property name="name">
+                <cstring>createProfileButton</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>100</y>
+                    <width>106</width>
+                    <height>26</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Create Profile</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>createProfileLabel</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>20</y>
+                    <width>310</width>
+                    <height>70</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>To submit played tracks to Audioscrobbler, you will need a personal Audioscrobbler profile. If you don't yet have a profile, please click the button below to create one.</string>
+            </property>
+            <property name="alignment">
+                <set>WordBreak|AlignVCenter</set>
+            </property>
+        </widget>
+    </widget>
 </widget>
-<customwidgets>
-</customwidgets>
 <connections>
     <connection>
         <sender>kcfg_SubmitPlayedSongs</sender>
