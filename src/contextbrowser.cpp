@@ -736,7 +736,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             "<br>"
             "<div class='rbcontent'>"
              "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-              "<tr><th>&nbsp;" + i18n( "Albums By %1" ).arg( artistName ) + "</th></tr>"
+              "<tr><th>" + i18n( "Albums By %1" ).arg( artistName ) + "</th></tr>"
              "</table>"
              "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
 
@@ -755,6 +755,30 @@ void ContextBrowser::showCurrentTrack() //SLOT
         }
 
         for ( uint i = 0; i < values.count(); i += 2 ) {
+            QStringList albumValues = m_db->query( QString(
+                "SELECT title, url, track "
+                "FROM tags "
+                "WHERE album = " + values[ i+1 ] +  " AND "
+                "( tags.sampler = 1 OR tags.artist = " + QString::number( artist_id ) +  " ) "
+                "ORDER BY tags.track;" ) );
+
+            QStringList years;
+            for ( uint j=0; j < albumValues.count(); j += 3 )
+            {
+                KURL url = KURL( albumValues[ j+1 ] );
+                MetaBundle *bundle = new MetaBundle( url );
+                years << bundle->year();
+            }
+            QString albumYear = years.first();
+            for ( uint j=0; j < years.count(); j++ )
+            {
+                if ( years[j] != albumYear )
+                {
+                    albumYear = QString::null;
+                    break;
+                }
+            }
+
             browser->write( QStringx (
                 "<tr>"
                  "<td>"
@@ -764,10 +788,11 @@ void ContextBrowser::showCurrentTrack() //SLOT
                      "<a href='fetchcover:%2 @@@ %3'><img width='50' align='left' vspace='2' hspace='2' title='%4' src='%5'/></a></div>"
                      "<div style='float:right;'>%6</div>"
                      "<a href='album:%7 @@@ %8'><b>%9</b></a>"
+                     "<br><i>%10</i>"
                     "</td></tr>"
                    "</table>"
                   "</div>"
-                  "<div class='album-contents' style='display:%10;' id='IDA%11'>" )
+                  "<div class='album-contents' style='display:%11;' id='IDA%12'>" )
                 .args( QStringList()
                     << values[ i+1 ]
                     << escapeHTMLAttr( currentTrack.artist() ) // artist name
@@ -778,15 +803,10 @@ void ContextBrowser::showCurrentTrack() //SLOT
                     << QString::number( artist_id )
                     << values[ i+1 ] //album.id
                     << escapeHTML( values[ i ] )
+                    << ( albumYear.isEmpty() ? "" : albumYear )
                     << ( i ? "none" : "block" )
                     << values[ i+1 ] ) );
 
-            QStringList albumValues = m_db->query( QString(
-                "SELECT title, url, track "
-                "FROM tags "
-                "WHERE album = " + values[ i+1 ] +  " AND "
-                "( tags.sampler = 1 OR tags.artist = " + QString::number( artist_id ) +  " ) "
-                "ORDER BY tags.track;" ) );
             if ( !albumValues.isEmpty() ) {
                 for ( uint j = 0; j < albumValues.count(); j += 3 ) {
                 QString tmp = albumValues[j + 2].stripWhiteSpace().isEmpty() ? "" : "" + albumValues[j + 2] + ". ";

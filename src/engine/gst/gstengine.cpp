@@ -569,7 +569,7 @@ GstEngine::setEqualizerParameters( int preamp, const QValueList<int>& bandGains 
 
     // BEGIN Gains
     m_equalizerGains.resize( bandGains.count() );
-    for ( int i = 0; i < bandGains.count(); i++ )
+    for ( uint i = 0; i < bandGains.count(); i++ )
         m_equalizerGains[i] = ( *bandGains.at( i ) + 100 ) / 2;
 
     gst_element_set( m_gst_equalizer, "gain", &m_equalizerGains, NULL );
