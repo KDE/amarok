@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #55 being the highest available (take this one for your next bug and increase here)
+           #56 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
@@ -48,6 +48,8 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+
+    * add: #55 <markey> (optional) logarithmic scale for volume mixer
 
     * add: #50 <markey> make amaroK configurable --without-arts -->markey
 
