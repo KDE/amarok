@@ -792,11 +792,11 @@ void ContextBrowser::showCurrentTrack() //SLOT
                  "<div class='box-header'>" + i18n( "Metadata History" ) + "</div>"
                  "<table class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
-            QStringList::const_iterator it;
-            // Ignore first two items, as they don't belong in the history
-            for ( it = m_metadataHistory.at( 2 ); it != m_metadataHistory.end(); ++it )
+            // Ignore last two items, as they don't belong in the history
+            for ( uint i = 0; i < m_metadataHistory.count() - 2; ++i )
             {
-                m_HTMLSource.append( QStringx( "<tr class='box-row'><td>%1</td></tr>" ).arg( *it ) );
+                const QString str = m_metadataHistory[i];
+                m_HTMLSource.append( QStringx( "<tr class='box-row'><td>%1</td></tr>" ).arg( str ) );
             }
 
             m_HTMLSource.append(
