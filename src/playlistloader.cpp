@@ -216,7 +216,7 @@ PlaylistLoader::loadPlaylist( const QString &path, Format type )
             else if ( !str.startsWith( "#" ) && !str.isEmpty() )
             {
 
-                if ( !( str[ 0 ] == '/' || str.startsWith( "http://" ) ) ) //FIXME how about ftp etc?
+                if ( !( str[ 0 ] == '/' || str.contains( ':' ) ) )
                     str.prepend( dir );
 
                 createPlaylistItem( KURL::fromPathOrURL( str ), title, length );
