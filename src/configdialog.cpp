@@ -66,7 +66,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 
     // ID3v1 recoding locales
     QTextCodec *codec;
-    for ( int i = 0; codec = QTextCodec::codecForIndex( i ); i++ )
+    for ( int i = 0; ( codec = QTextCodec::codecForIndex( i ) ); i++ )
         opt2->kcfg_TagEncoding->insertItem( codec->name() );
 
     // add pages
