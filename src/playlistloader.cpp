@@ -118,7 +118,7 @@ PlaylistLoader::run()
     {
         const KURL &url = *it;
 
-        if( url.isLocalFile() && loadPlaylist( url.path() ) )
+        if( url.isLocalFile() && isPlaylist( url ) && loadPlaylist( url.path() ) )
             continue;
 
         if ( EngineController::canDecode( url ) )
