@@ -61,12 +61,20 @@ namespace amaroK {
             StreamProvider( KURL url, int streamingMode );
             ~StreamProvider();
 
+            /** Returns true if initialisation was successful */
             bool initSuccess() { return m_initSuccess; }
+            
+            /** Returns URL for proxy server (only relevant in Socket mode) */
             KURL proxyUrl();
 
         signals:
+            /** Transmits new metadata bundle */
             void metaData( const MetaBundle& );
+            
+            /** Transmits chunk of audio data */
             void streamData( char*, int size );
+            
+            /** Signals an error: StreamProvider cannot operate on this stream. */
             void sigError();
             
         private slots:
