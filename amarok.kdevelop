@@ -48,6 +48,9 @@
       <envvars/>
       <directoryradio>build</directoryradio>
       <customdirectory>/</customdirectory>
+      <runarguments>
+        <amarok/>
+      </runarguments>
     </run>
     <configurations>
       <default>

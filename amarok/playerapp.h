@@ -105,12 +105,14 @@ class PlayerApp : public KUniqueApplication
         uint m_optUndoLevels;
         int m_optVisCurrent;
         int m_optBrowserSortSpec;
+        bool m_optTitleStream;
         // </option attributes>
-	
-	int m_DelayTime;
+
+        int m_DelayTime;
         int m_Volume;
         bool m_bSliderIsPressed;
 
+        // <aRts>
         KDE::PlayObject *m_pPlayObject;
         KDE::PlayObject *m_pPlayObjectXFade;
         Arts::SoundServerV2 m_Server;
@@ -120,7 +122,8 @@ class PlayerApp : public KUniqueApplication
         Arts::StereoVolumeControl m_volumeControl;
         Arts::Synth_AMAN_PLAY m_amanPlay;
         Amarok::Synth_STEREO_XFADE m_XFade;
-
+        // </aRts>
+        
     public slots:
         void slotPrev();
         void slotPlay();
@@ -154,10 +157,13 @@ class PlayerApp : public KUniqueApplication
         void slotHide();
         void slotShow();
 
+    private slots:
+        void receiveStreamMeta( QString title, QString url );
+
     signals:
         void sigScope( std::vector<float> *s );
         void sigPlay();
-/*         void sigUpdateFonts(); */
+        /*         void sigUpdateFonts(); */
 
     private:
         void initArts();

@@ -1,4 +1,4 @@
-SUBDIRS = images amarokarts analyzers data
+SUBDIRS = images amarokarts analyzers titleproxy data
 
 INCLUDES = $(all_includes) -I$(kde_includes)/taglib -I$(kde_includes)/arts
 METASOURCES = AUTO
@@ -13,9 +13,8 @@ bin_PROGRAMS = amarok
 
 amarok_SOURCES = main.cpp playerapp.cpp playerwidget.cpp browserwin.cpp browserwidget.cpp playlistwidget.cpp playlistitem.cpp expandbutton.cpp effectwidget.cpp amarokdcopiface.skel configdlg.cpp amarokbutton.cpp amarokfilelist.cpp Options1.ui Options2.ui Options3.ui Options4.ui
 
+amarok_LDADD = ./titleproxy/libtitleproxy.a ./analyzers/libanalyzers.a ./amarokarts/libamarokarts.la -lqtmcop -lkmedia2_idl -lartsflow -lsoundserver_idl -lartskde -lartsgui -lartsgui_kde -lartsmodules -ltag $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE)
 
-
-amarok_LDADD = ./analyzers/libanalyzers.a ./amarokarts/libamarokarts.la -lqtmcop -lkmedia2_idl -lartsflow -lsoundserver_idl -lartskde -lartsgui -lartsgui_kde -lartsmodules -ltag $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE)
 # $(LIBSOCKET)
 amarok_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 

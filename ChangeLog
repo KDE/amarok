@@ -2,7 +2,9 @@ amaroK Changelog
 ==================
 (c) 2002, 2003 by Mark Kretschmann and the amaroK team. GPL License.
 
-POST 0.7.0
+
+  * add: proxy for decoding shoutcast/icecast metadata (experimental!)
+  * add: amaroK now in bugs.kde.org
   * add: configurable delay after each track.  currently 0-10 seconds in 1 sec increments
          but could easily be made to use finder increments if ppl want - piggz (www.piggz.co.uk)
   * add: viswidgetv2.  it seems a lot smoother on my machine.

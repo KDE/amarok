@@ -17,6 +17,7 @@ email                :
 
 #include "amarokarts/amarokarts.h"
 #include "amarokbutton.h"
+#include "analyzers/analyzerbase.h"
 #include "browserwidget.h"
 #include "browserwin.h"
 #include "configdlg.h"
@@ -26,7 +27,7 @@ email                :
 #include "playerwidget.h"
 #include "playlistitem.h"
 #include "playlistwidget.h"
-#include "analyzers/analyzerbase.h"
+#include "titleproxy/titleproxy.h"
 
 #include "debugareas.h"
 
@@ -92,6 +93,7 @@ PlayerApp::PlayerApp() :
         m_pGlobalAccel( new KGlobalAccel( this ) ),
         m_bgColor( Qt::black ),
         m_fgColor( QColor( 0x80, 0xa0, 0xff ) ),
+        m_DelayTime( 0 ),
         m_pPlayObject( NULL ),
         m_pPlayObjectXFade( NULL ),
         m_pArtsDispatcher( NULL ),
@@ -105,8 +107,7 @@ PlayerApp::PlayerApp() :
         m_bChangingSlider( false ),
         m_XFadeRunning( false ),
         m_XFadeValue( 1.0 ),
-        m_XFadeCurrent( "invalue1" ),
-	m_DelayTime( 0 )
+        m_XFadeCurrent( "invalue1" )
 {
     setName( "amaroK" );
 
@@ -682,6 +683,7 @@ void PlayerApp::saveConfig()
     m_pConfig->writeEntry( "Resume Playback", m_optResumePlayback );
     m_pConfig->writeEntry( "Current Analyzer", m_optVisCurrent );
     m_pConfig->writeEntry( "Browser Sorting Spec", m_optBrowserSortSpec );
+    m_pConfig->writeEntry( "Title Streaming", m_optTitleStream );
 
     // Write playlist columns layout
     m_pBrowserWin->m_pPlaylistWidget->saveLayout(m_pConfig, "PlaylistColumnsLayout");
@@ -752,7 +754,8 @@ void PlayerApp::readConfig()
     m_pPlayerWidget->createVis();
 
     m_optBrowserSortSpec = m_pConfig->readNumEntry( "Browser Sorting Spec", QDir::Name | QDir::DirsFirst );
-
+    m_optTitleStream = m_pConfig->readBoolEntry( "Title Streaming", false );
+    
     m_Volume = m_pConfig->readNumEntry( "Master Volume", 50 );
     slotVolumeChanged( m_Volume );
     m_pPlayerWidget->m_pSliderVol->setValue( m_Volume );
@@ -869,6 +872,12 @@ void PlayerApp::setupScrolltext()
                 m_pPlayerWidget->setScroll( str, " ? ", " ? " );
         }
     }
+}
+
+
+void PlayerApp::receiveStreamMeta( QString title, QString url )
+{
+    m_pPlayerWidget->setScroll( title, "--", "--" );
 }
 
 
@@ -1035,7 +1044,22 @@ void PlayerApp::slotPlay()
 
     m_pPlayerWidget->m_pButtonPlay->setOn( true ); //interface consistency
     KDE::PlayObjectFactory factory( m_Server );
-    m_pPlayObject = factory.createPlayObject( item->url(), false ); //second parameter: create BUS(true/false)
+    
+    if ( m_optTitleStream )
+    {    
+        TitleProxy *pProxy = new TitleProxy( item->url() );
+        m_pPlayObject = factory.createPlayObject( pProxy->proxyUrl(), false );
+        
+        connect( m_pPlayObject, SIGNAL( destroyed() ),
+                 pProxy, SLOT( deleteLater() ) );
+        connect( pProxy, SIGNAL( metaData( QString, QString ) ),
+                 this, SLOT( receiveStreamMeta( QString, QString ) ) );
+    }
+    else
+    { 
+        m_pPlayObject = factory.createPlayObject( item->url(), false ); //second parameter: create BUS(true/false)
+    }
+                    
     m_bIsPlaying = true;
 
     if ( m_pPlayObject == NULL )

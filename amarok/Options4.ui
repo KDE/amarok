@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>376</width>
-            <height>246</height>
+            <width>330</width>
+            <height>280</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -214,6 +214,14 @@
             </property>
             <property name="accel">
                 <string>Alt+M</string>
+            </property>
+        </widget>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>checkBoxTitleStream</cstring>
+            </property>
+            <property name="text">
+                <string>Display Shoutcast/Icecast metadata</string>
             </property>
         </widget>
     </vbox>
