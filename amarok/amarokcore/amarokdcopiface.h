@@ -27,6 +27,7 @@ class AmarokIface : virtual public DCOPObject
 
 k_dcop:
    virtual void play() = 0;                                 ///< Equivalent to pressing "Play" button.
+   virtual void playPause() = 0;                            ///< Toggle play/pause state (good for mm keyboard users)
    virtual void stop() = 0;                                 ///< Equivalent to pressing "Stop" button.
    virtual void next() = 0;                                 ///< Equivalent to pressing "Next" button.
    virtual void prev() = 0;                                 ///< Equivalent to pressing "Prev" button.

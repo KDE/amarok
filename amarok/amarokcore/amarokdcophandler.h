@@ -32,6 +32,7 @@ class AmarokDcopHandler : public QObject, virtual public AmarokIface
 
    public /* DCOP */ slots:
       virtual void play();
+      virtual void playPause();
       virtual void stop();
       virtual void next();
       virtual void prev();
