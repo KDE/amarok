@@ -82,9 +82,8 @@ bool
 CollectionDB::isEmpty()
 {
     QStringList values;
-    QStringList names;
 
-    if ( execSql( "SELECT COUNT( url ) FROM tags;", &values, &names ) )
+    if ( execSql( "SELECT COUNT( url ) FROM tags;", &values ) )
         return ( values[0] == "0" );
     else
         return true;
@@ -95,11 +94,10 @@ QString
 CollectionDB::albumSongCount( const QString artist_id, const QString album_id )
 {
     QStringList values;
-    QStringList names;
 
     execSql( QString( "SELECT COUNT( url ) FROM tags WHERE album = %1 AND artist = %2;" )
              .arg( album_id )
-             .arg( artist_id ), &values, &names );
+             .arg( artist_id ), &values );
 
     return values[0];
 }
@@ -119,11 +117,10 @@ QString
 CollectionDB::getPathForAlbum( const QString artist, const QString album )
 {
     QStringList values;
-    QStringList names;
 
     execSql( QString( "SELECT tags.url FROM tags, album, artist WHERE tags.album = album.id AND album.name = '%1' AND tags.artist = artist.id AND artist.name = '%2';" )
                    .arg( escapeString( album ) )
-                   .arg( escapeString( artist ) ), &values, &names );
+                   .arg( escapeString( artist ) ), &values );
     return values[0];
 }
 
@@ -132,11 +129,10 @@ QString
 CollectionDB::getPathForAlbum( const uint artist_id, const uint album_id )
 {
     QStringList values;
-    QStringList names;
 
     execSql( QString( "SELECT url FROM tags WHERE album = %1 AND artist = %2;" )
              .arg( album_id )
-             .arg( artist_id ), &values, &names );
+             .arg( artist_id ), &values );
 
     return values[0];
 }
@@ -267,11 +263,10 @@ bool
 CollectionDB::removeImageFromAlbum( const uint artist_id, const uint album_id )
 {
     QStringList values;
-    QStringList names;
 
     execSql( QString( "SELECT url FROM tags WHERE album = %1 AND artist = %2;" )
              .arg( album_id )
-             .arg( artist_id ), &values, &names );
+             .arg( artist_id ), &values );
 
     if ( !values.isEmpty() )
         return removeImageFromAlbum( values[0], values[1] );
@@ -318,12 +313,11 @@ QStringList
 CollectionDB::artistList( bool withUnknown, bool withCompilations )
 {
     QStringList values;
-    QStringList names;
 
     execSql( "SELECT DISTINCT artist.name FROM artist, tags WHERE 1 " +
              ( withUnknown ? QString() : "AND artist.name <> 'Unknown' " ) +
              ( withCompilations ? QString() : "AND tags.artist = artist.id AND tags.sampler = 0 " ) +
-             "ORDER BY lower( artist.name );", &values, &names );
+             "ORDER BY lower( artist.name );", &values );
 
     return values;
 }
@@ -333,12 +327,11 @@ QStringList
 CollectionDB::albumList( bool withUnknown, bool withCompilations )
 {
     QStringList values;
-    QStringList names;
 
     execSql( "SELECT DISTINCT album.name FROM album, tags WHERE 1 " +
              ( withUnknown ? QString() : "AND album.name <> 'Unknown' " ) +
              ( withCompilations ? QString() : "AND tags.album = album.id AND tags.sampler = 0 " ) +
-             "ORDER BY lower( album.name );", &values, &names );
+             "ORDER BY lower( album.name );", &values );
 
     return values;
 }
@@ -348,14 +341,13 @@ QStringList
 CollectionDB::albumListOfArtist( const QString artist, bool withUnknown, bool withCompilations )
 {
     QStringList values;
-    QStringList names;
 
     execSql( "SELECT DISTINCT album.name FROM album, artist, tags WHERE "
              "tags.album = album.id AND tags.artist = artist.id "
              "AND artist.name = '" + escapeString( artist ) + "' " +
              ( withUnknown ? QString() : "AND album.name <> 'Unknown' " ) +
              ( withCompilations ? QString() : "AND tags.sampler = 0 " ) +
-             "ORDER BY lower( album.name );", &values, &names );
+             "ORDER BY lower( album.name );", &values );
 
     return values;
 }
@@ -365,13 +357,12 @@ QStringList
 CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
 {
     QStringList values;
-    QStringList names;
 
     execSql( "SELECT DISTINCT artist.name, album.name FROM album, artist, tags WHERE "
              "tags.album = album.id AND tags.artist = artist.id " +
              ( withUnknown ? QString() : "AND album.name <> 'Unknown' AND artist.name <> 'Unknown' " ) +
              ( withCompilations ? QString() : "AND tags.sampler = 0 " ) +
-             "ORDER BY lower( album.name );", &values, &names );
+             "ORDER BY lower( album.name );", &values );
 
     return values;
 }
@@ -380,12 +371,12 @@ CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
 bool
 CollectionDB::getMetaBundleForUrl( const QString url, MetaBundle *bundle )
 {
-    QStringList values, names;
+    QStringList values;
 
     execSql( QString( "SELECT album.name, artist.name, genre.name, tags.title, year.name, tags.comment, tags.track, tags.createdate, tags.dir "
                       "FROM tags, album, artist, genre, year "
                       "WHERE album.id = tags.album AND artist.id = tags.artist AND genre.id = tags.genre AND year.id = tags.year AND url = '%1';" )
-                .arg( escapeString( url ) ), &values, &names );
+                .arg( escapeString( url ) ), &values );
 
     if ( values.count() )
     {
@@ -440,10 +431,10 @@ CollectionDB::addSongPercentage( const QString url, const int percentage )
 float
 CollectionDB::getSongPercentage( const QString url )
 {
-    QStringList values, names;
+    QStringList values;
 
     execSql( QString( "SELECT percentage FROM statistics WHERE url = '%1';" )
-                .arg( escapeString( url ) ), &values, &names );
+                .arg( escapeString( url ) ), &values );
 
     if( values.count() )
         return values[0].toFloat();
@@ -479,13 +470,12 @@ bool
 CollectionDB::isDirInCollection( QString path )
 {
     QStringList values;
-    QStringList names;
 
     if ( path.endsWith( "/" ) )
         path = path.left( path.length() - 1 );
 
     execSql( QString( "SELECT changedate FROM directories WHERE dir = '%1';" )
-                .arg( escapeString( path ) ), &values, &names );
+                .arg( escapeString( path ) ), &values );
 
     return !values.isEmpty();
 }
@@ -495,10 +485,9 @@ bool
 CollectionDB::isFileInCollection( const QString url )
 {
     QStringList values;
-    QStringList names;
 
     execSql( QString( "SELECT url FROM tags WHERE url = '%1';" )
-                .arg( escapeString( url ) ), &values, &names );
+                .arg( escapeString( url ) ), &values );
 
     return !values.isEmpty();
 }
@@ -558,11 +547,11 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
         return false;
     }
 
+    int error;
     const char* tail;
     sqlite3_stmt* stmt;
-    int error;
     //compile SQL program to virtual machine
-    error = sqlite3_prepare( m_db, statement.local8Bit(), statement.length(), &stmt, &tail );
+    error = sqlite3_prepare( m_db, statement.utf8(), statement.length(), &stmt, &tail );
 
     if ( error != SQLITE_OK )
     {
@@ -581,7 +570,8 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
 
         if ( error == SQLITE_BUSY )
             kdDebug() << "[CollectionDB] sqlite3_step: BUSY\n";
-
+        if ( error == SQLITE_MISUSE )
+            kdDebug() << "[CollectionDB] sqlite3_step: MISUSE\n";
         if ( error == SQLITE_DONE || error == SQLITE_ERROR )
             break;
 
@@ -773,9 +763,6 @@ CollectionDB::scan( const QStringList& folders, bool recursively )
 void
 CollectionDB::updateTags( const QString &url, const MetaBundle &bundle )
 {
-    QStringList values;
-    QStringList names;
-
     QString command = "UPDATE tags SET ";
     command += "title = '" + escapeString( bundle.title() ) + "', ";
     command += "artist = " + escapeString( QString::number( getValueID( "artist", bundle.artist(), true ) ) ) + ", ";
@@ -787,7 +774,7 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle )
     command += "comment = '" + escapeString( bundle.comment() ) + "' ";
     command += "WHERE url = '" + escapeString( url ) + "';";
 
-    execSql( command, &values, &names );
+    execSql( command );
 
     CollectionView::instance()->renderView();
 
@@ -797,8 +784,6 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle )
 void
 CollectionDB::updateTag( const QString &url, const QString &field, const QString &newTag )
 {
-    QStringList values;
-    QStringList names;
     QStringList idFields;
     idFields << "artist" << "album" << "genre" << "year";
 
@@ -812,7 +797,7 @@ CollectionDB::updateTag( const QString &url, const QString &field, const QString
 
     command += "WHERE url = '" + escapeString(url) + "';";
 
-    execSql( command, &values, &names );
+    execSql( command );
 
     CollectionView::instance()->renderView();
 
@@ -823,12 +808,11 @@ void
 CollectionDB::scanModifiedDirs( bool recursively )
 {
     QStringList values;
-    QStringList names;
     QStringList folders;
     struct stat statBuf;
 
     QString command = QString( "SELECT dir, changedate FROM directories;" );
-    execSql( command, &values, &names );
+    execSql( command, &values );
 
     for ( uint i = 0; i < values.count(); i = i + 2 )
     {
@@ -889,11 +873,10 @@ QString
 CollectionDB::getValueFromID( QString table, uint id )
 {
    QStringList values;
-   QStringList names;
 
    execSql( QString( "SELECT name FROM %1 WHERE id=%2;" )
                                    .arg( table )
-                                   .arg( id ), &values, &names );
+                                   .arg( id ), &values );
 
     return values[0];
 }
