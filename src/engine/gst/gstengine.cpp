@@ -21,6 +21,7 @@ email                : markey@web.de
 #include "streamsrc.h"
 
 #include <math.h>
+#include <unistd.h>
 #include <vector>
 
 #include <qfile.h>
@@ -38,15 +39,11 @@ email                : markey@web.de
 
 using std::vector;
 
-
 AMAROK_EXPORT_PLUGIN( GstEngine )
 
-/////////////////////////////////////////////////////////////////////////////////////
-// static
-/////////////////////////////////////////////////////////////////////////////////////
 
 static const uint
-SCOPEBUF_SIZE = 500000; // 500kb
+SCOPEBUF_SIZE = 250000; // 250kb
 
 static const int
 STREAMBUF_SIZE = 1000000; // 1MB
@@ -61,8 +58,12 @@ GstEngine*
 GstEngine::s_instance;
 
 
+/////////////////////////////////////////////////////////////////////////////////////
+// CALLBACKS
+/////////////////////////////////////////////////////////////////////////////////////
+
 void
-GstEngine::eos_cb( GstElement*, GstElement* )
+GstEngine::eos_cb( GstElement*, GstElement* ) //static
 {
     kdDebug() << k_funcinfo << endl;
 
@@ -73,14 +74,14 @@ GstEngine::eos_cb( GstElement*, GstElement* )
 
 
 void
-GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
+GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer ) //static
 {
     emit instance()->sigScopeData( gst_buffer_copy( buf ) );
 }
 
 
 void
-GstEngine::error_cb( GstElement* /*element*/, GstElement* /*source*/, GError* error, gchar* debug, gpointer /*data*/ )
+GstEngine::error_cb( GstElement* /*element*/, GstElement* /*source*/, GError* error, gchar* debug, gpointer /*data*/ ) //static
 {
     kdDebug() << k_funcinfo << endl;
 
@@ -90,7 +91,7 @@ GstEngine::error_cb( GstElement* /*element*/, GstElement* /*source*/, GError* er
 
 
 void
-GstEngine::kio_resume_cb()
+GstEngine::kio_resume_cb() //static
 {
     if ( instance()->m_transferJob && instance()->m_transferJob->isSuspended() ) {
         instance()->m_transferJob->resume();
@@ -100,7 +101,7 @@ GstEngine::kio_resume_cb()
 
 
 void
-GstEngine::shutdown_cb()
+GstEngine::shutdown_cb() //static
 {
     instance()->m_shutdown = true;
     kdDebug() << "[Gst-Engine] Thread is shut down.\n";
@@ -133,7 +134,7 @@ GstEngine::~GstEngine()
         g_signal_connect( G_OBJECT( m_gst_thread ), "shutdown", G_CALLBACK( shutdown_cb ), m_gst_thread );
         stopNow();
         // Wait for pipeline to shut down properly
-        while ( !m_shutdown );
+        while ( !m_shutdown ) ::usleep( 20000 ); // 20 msec
     }
     else    
         stopNow();
@@ -192,11 +193,9 @@ bool
 GstEngine::canDecode( const KURL &url )
 {
     if ( GstConfig::soundOutput().isEmpty() ) {
-        kdDebug() << k_funcinfo << "Error: No output." << endl;
         QTimer::singleShot( 0, instance(), SLOT( errorNoOutput() ) );
         return false;
     }    
-    
     bool success = false;
     GstElement *pipeline, *filesrc, *spider, *audioconvert, *audioscale, *audiosink;
     
@@ -282,12 +281,14 @@ GstEngine::scope()
         m_scope[i] = temp;
     }
     
-    gst_adapter_flush( m_gst_adapter, bytes );
+    uint available = gst_adapter_available( m_gst_adapter ); 
     
     // Check for buffer overflow
-    if ( gst_adapter_available( m_gst_adapter ) > SCOPEBUF_SIZE )    
-        gst_adapter_clear( m_gst_adapter );
-        
+    if ( available > SCOPEBUF_SIZE )    
+        gst_adapter_flush( m_gst_adapter, available - 10000 );
+    else
+        gst_adapter_flush( m_gst_adapter, bytes );
+    
     return m_scope;
 }
 
@@ -309,7 +310,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
 {
     stopNow();
     Engine::Base::load( url, stream );
-    kdDebug() << "[Gst-Engine] loading url: " << url.url() << endl;
+    kdDebug() << "[Gst-Engine] Loading url: " << url.url() << endl;
     
     if ( GstConfig::soundOutput().isEmpty() ) {
         errorNoOutput();
@@ -494,7 +495,7 @@ void GstEngine::timerEvent( QTimerEvent* )
         // Fade finished?
         if ( m_fadeValue <= 0.0 ) {
             // Fade transition has finished, stop playback
-            kdDebug() << "FADEOUT finished." << endl;
+            kdDebug() << "[Gst-Engine] Fade-out finished.\n";
             m_fadeValue = 0.0;
             cleanPipeline();
             
@@ -580,8 +581,7 @@ GstEngine::kioFinished()  //SLOT
 void
 GstEngine::errorNoOutput() const //SLOT
 {
-    KMessageBox::error( 0, 
-                        i18n( "<p>Please select an <u>output plugin</u> in the engine settings dialog.</p>" ) );
+    KMessageBox::error( 0, i18n( "<p>Please select an <u>output plugin</u> in the engine settings dialog.</p>" ) );
     
     // Show engine settings dialog
     KConfigDialog* dialog = KConfigDialog::exists( "settings" );
@@ -659,6 +659,8 @@ GstEngine::createElement( const QCString& factoryName, GstElement* bin, const QC
 void
 GstEngine::stopNow()
 {    
+    kdDebug() << k_funcinfo << endl;
+    
     m_fadeValue = 0.0;
     cleanPipeline();
     
@@ -673,6 +675,8 @@ void
 GstEngine::cleanPipeline()
 {
     if ( m_pipelineFilled ) {
+        kdDebug() << "[Gst-Engine] Destroying pipeline.\n";
+        
         gst_element_set_state( m_gst_thread, GST_STATE_NULL );
         gst_object_unref( GST_OBJECT( m_gst_thread ) );
         gst_adapter_clear( m_gst_adapter );
