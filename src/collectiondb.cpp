@@ -1371,9 +1371,11 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
 void
 CollectionDB::updateURL( const QString &url, const bool updateView )
 {
-    KURL u;
-    u.setPath( url );
-    const MetaBundle bundle( u );
+    // don't use the KURL ctor as it checks the db first
+    MetaBundle bundle;
+    bundle.setPath( url );
+    bundle.readTags( TagLib::AudioProperties::Fast );
+
     updateTags( url, bundle, updateView );
 }
 
