@@ -1,18 +1,20 @@
 /***************************************************************************
-                       gstengine.cpp - GStreamer audio interface
-
-begin                : Jan 02 2003
-copyright            : (C) 2003 by Mark Kretschmann
-email                : markey@web.de
-***************************************************************************/
-
-/***************************************************************************
+ *   Copyright (C) 2003-2005 by Mark Kretschmann <markey@web.de>           *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
 #define DEBUG_PREFIX "Gst-Engine"
@@ -431,7 +433,7 @@ GstEngine::scope()
     offset /= channels;
     offset *= channels;
     if ( offset < 0 ) offset = -offset; //FIXME Offset should never become < 0. Find out why this happens.
-    offset = QMIN( offset, available - SCOPE_VALUES*channels*sizeof( gint16 ) );
+    offset = QMIN( (guint) offset, available - SCOPE_VALUES*channels*sizeof( gint16 ) );
 
     for ( long i = 0; i < SCOPE_VALUES; i++, data += channels ) {
         long temp = 0;

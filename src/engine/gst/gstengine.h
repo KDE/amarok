@@ -1,18 +1,20 @@
 /***************************************************************************
-                      gstengine.h - GStreamer audio interface
-
-begin                : Jan 02 2003
-copyright            : (C) 2003 by Mark Kretschmann
-email                : markey@web.de
-***************************************************************************/
-
-/***************************************************************************
+ *   Copyright (C) 2003-2005 by Mark Kretschmann <markey@web.de>           *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
 #ifndef AMAROK_GSTENGINE_H
@@ -40,14 +42,24 @@ class KURL;
 class InputPipeline;
 
 /**
- *  GstEngine uses following pipeline for playing (syntax used by gst-launch):
- *  { filesrc location=file.ext ! decodebin ! audioconvert ! audioscale ! volume
- *  ! adder } ! { queue ! equalizer ! identity ! volume ! audiosink }
- *  Part of pipeline between filesrc and first volume is double while
- *  crossfading. First pair of curly braces encloses m_gst_inputThread, second
- *  m_gst_outputThread
-*/
-
+ * @class GstEngine
+ * @short GStreamer engine plugin
+ * @author Mark Kretschmann <markey@web.de>
+ *
+ * GStreamer-Engine implements an N-track (unlimited number of tracks) crossfader
+ * design. Fading to the next track starts at an adjustable time before the current
+ * track ends. Additionally, separate values for volume fade-in and fade-out can be
+ * specified.
+ * Note that the engine cannot do true gapless play at this point. This is a
+ * planned feature.
+ *
+ * GstEngine uses following pipeline for playing (syntax used by gst-launch):
+ * { filesrc location=file.ext ! decodebin ! audioconvert ! audioscale ! volume
+ * ! adder } ! { queue ! equalizer ! identity ! volume ! audiosink }
+ * Part of pipeline between filesrc and first volume is double while
+ * crossfading. First pair of curly braces encloses m_gst_inputThread, second
+ * m_gst_outputThread
+ */
 class GstEngine : public Engine::Base
 {
         friend class GstConfigDialog;
@@ -84,6 +96,7 @@ class GstEngine : public Engine::Base
 
         /** Set whether equalizer is enabled */
         void setEqualizerEnabled( bool );
+
         /** Set equalizer preamp and gains, range -100..100. Gains are 10 values. */
         void setEqualizerParameters( int preamp, const QValueList<int>& bandGains );
 
@@ -102,6 +115,8 @@ class GstEngine : public Engine::Base
 
         void errorNoOutput();
         void configChanged();
+
+        /** Transmits new decoded metadata to the application */
         void newMetaData();
 
     private:
@@ -206,6 +221,11 @@ class GstEngine : public Engine::Base
 };
 
 
+/**
+ * @class InputPipeline
+ * @short Wraps input-pipeline tracks
+ * @author Mark Kretschmann <markey@web.de>
+ */
 class InputPipeline
 {
     public:
