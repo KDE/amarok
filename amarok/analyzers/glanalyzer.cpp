@@ -48,7 +48,13 @@ void GLAnalyzer::analyze( const Scope &s )
 
 		// Calculating new vertical position (y) depending on the data passed by amarok
 		y = float(s[i*2] * 30.0f); //Should multiply by 20 but it looks crappy
-
+		
+		//Some basic bounds checking
+		if (y > 30)
+			y = 30;
+		else if (y < 0)
+			y = 0;
+			
 		if((y - m_oldy[i]) < -0.5f) // Going Down Too Much
 		{
 			y = m_oldy[i] - 0.5f;
