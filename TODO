@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #113 being the highest available (take this one for your next bug and increase here)
+           #114 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
@@ -39,6 +39,8 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+
+  ADD 113 <markey> We must reduce dependency on app.h. Change a single line there -> recompile world :/
 
   ADD 112 <markey> A facility to abort CollectionBrowser's scanning.
 
