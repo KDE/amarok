@@ -42,6 +42,7 @@ k_dcop:
    virtual void seekRelative(int s) = 0;                    ///< Seek to a position relative to the current track position.
    virtual void enableRandomMode(bool enable) = 0;          ///< Switch Random Mode on or off.
 
+   //TODO Move somewhere else
    virtual void scanCollection() = 0;                       ///< Scan the collection.
 
    /* These two methods return raw time in seconds, this is useful for apps like mediacontrol, which calculate
@@ -57,6 +58,22 @@ k_dcop:
 
    /* Compatibility method (used by mediacontrol as well). DO NOT TOUCH! */
    virtual QString nowPlaying() = 0;                        ///< The title of now playing media.
+
+   /* New player API */
+   virtual QString artist() = 0;                            ///< Return the artist of the currently playing track.
+   virtual QString title() = 0;                             ///< Return the title of the currently playing track.
+   virtual QString track() = 0;                             ///< Return the track number.
+   virtual QString album() = 0;                             ///< Return the album of the currently playing track.
+   virtual QString totalTime() = 0;                         ///< Return the total length of the currently playing track ([h:]mm:ss format).
+   virtual QString currentTime() = 0;                       ///< Return the position of the currently playing track ([h:]mm:ss format).
+   virtual QString genre() = 0;                             ///< Return the genre of the currently playing track.
+   virtual QString year() = 0;                              ///< Return the year of the currently playing track.
+   virtual QString comment() = 0;                           ///< Return the comment of the currently playing track.
+   virtual QString bitrate() = 0;                           ///< Return the bitrate of the currently playing track (XX kbps).
+   virtual int sampleRate() = 0;                            ///< Return the sample rate of the currently playing track.
+   virtual QString encodedURL() = 0;                        ///< Return the encoded URL of the currently playing track.
+   virtual QString coverImage() = 0;                        ///< Return the encoded URL of the current track's cover image
+   virtual int  score() = 0;                                ///< Return the score of the currently playing track.
 
    virtual void setVolume(int volume) = 0;                  ///< Set volume in range 0-100%.
    virtual int  getVolume() = 0;                            ///< Return volume in range 0-100%.
@@ -86,23 +103,7 @@ k_dcop:
    virtual void shufflePlaylist() = 0;                      ///< Shuffles the playlist.
    virtual void saveCurrentPlaylist() = 0;                  ///< Saves the current playlist to current.xml
 
-   /* New player API */
-   virtual QString artist() = 0;                            ///< Return the artist of the currently playing track.
-   virtual QString title() = 0;                             ///< Return the title of the currently playing track.
-   virtual QString track() = 0;                             ///< Return the track number.
-   virtual QString album() = 0;                             ///< Return the album of the currently playing track.
-   virtual QString totalTime() = 0;                         ///< Return the total length of the currently playing track ([h:]mm:ss format).
-   virtual QString currentTime() = 0;                       ///< Return the position of the currently playing track ([h:]mm:ss format).
-   virtual QString genre() = 0;                             ///< Return the genre of the currently playing track.
-   virtual QString year() = 0;                              ///< Return the year of the currently playing track.
-   virtual QString comment() = 0;                           ///< Return the comment of the currently playing track.
-   virtual QString bitrate() = 0;                           ///< Return the bitrate of the currently playing track (XX kbps).
-   virtual int sampleRate() = 0;                            ///< Return the sample rate of the currently playing track.
-   virtual QString encodedURL() = 0;                        ///< Return the encoded URL of the currently playing track.
-   virtual QString coverImage() = 0;                        ///< Return the encoded URL of the current track's cover image
-
    virtual void togglePlaylist() = 0;                       ///< Toggle the Playlist-window
-   virtual int  score() = 0;                                ///< Return the score of the currently playing track.
    virtual void playMedia(const KURL &) = 0;                ///< Add audio media specified by the url.
    virtual void shortStatusMessage(const QString&) = 0;     ///< Shows a temporary message on the statusbar
 };

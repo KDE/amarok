@@ -122,6 +122,80 @@ namespace amaroK
         return EngineController::instance()->bundle().prettyTitle();
     }
 
+    QString DcopPlayerHandler::artist()
+    {
+        return EngineController::instance()->bundle().artist();
+    }
+
+    QString DcopPlayerHandler::title()
+    {
+        return EngineController::instance()->bundle().title();
+    }
+
+    QString DcopPlayerHandler::track()
+    {
+        return EngineController::instance()->bundle().track();
+    }
+
+    QString DcopPlayerHandler::album()
+    {
+        return EngineController::instance()->bundle().album();
+    }
+
+    QString DcopPlayerHandler::totalTime()
+    {
+        return EngineController::instance()->bundle().prettyLength();
+    }
+
+    QString DcopPlayerHandler::currentTime()
+    {
+        return MetaBundle::prettyLength( EngineController::engine() ->position() / 1000 );
+    }
+
+    QString DcopPlayerHandler::genre()
+    {
+        return EngineController::instance()->bundle().genre();
+    }
+
+    QString DcopPlayerHandler::year()
+    {
+        return EngineController::instance()->bundle().year();
+    }
+
+    QString DcopPlayerHandler::comment()
+    {
+        return EngineController::instance()->bundle().comment();
+    }
+
+    QString DcopPlayerHandler::bitrate()
+    {
+        return EngineController::instance()->bundle().prettyBitrate();
+    }
+
+    int DcopPlayerHandler::sampleRate()
+    {
+        return EngineController::instance()->bundle().sampleRate();
+    }
+
+    QString DcopPlayerHandler::encodedURL()
+    {
+        return EngineController::instance()->bundle().url().url();
+    }
+
+    QString DcopPlayerHandler::coverImage()
+    {
+        const MetaBundle &bundle = EngineController::instance()->bundle();
+        QString image = CollectionDB::instance()->albumImage( bundle, 0 );
+        return image;
+    }
+
+    int DcopPlayerHandler::score()
+    {
+        const MetaBundle &bundle = EngineController::instance()->bundle();
+        int score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
+        return score;
+    }
+
     int DcopPlayerHandler::trackTotalTime()
     {
         return EngineController::instance()->bundle().length();
@@ -273,83 +347,9 @@ namespace amaroK
         Playlist::instance()->saveXML( Playlist::defaultPlaylistPath() );
     }
 
-    QString DcopPlaylistHandler::artist()
-    {
-        return EngineController::instance()->bundle().artist();
-    }
-
-    QString DcopPlaylistHandler::title()
-    {
-        return EngineController::instance()->bundle().title();
-    }
-
-    QString DcopPlaylistHandler::track()
-    {
-        return EngineController::instance()->bundle().track();
-    }
-
-    QString DcopPlaylistHandler::album()
-    {
-        return EngineController::instance()->bundle().album();
-    }
-
-    QString DcopPlaylistHandler::totalTime()
-    {
-        return EngineController::instance()->bundle().prettyLength();
-    }
-
-    QString DcopPlaylistHandler::currentTime()
-    {
-        return MetaBundle::prettyLength( EngineController::engine() ->position() / 1000 );
-    }
-
-    QString DcopPlaylistHandler::genre()
-    {
-        return EngineController::instance()->bundle().genre();
-    }
-
-    QString DcopPlaylistHandler::year()
-    {
-        return EngineController::instance()->bundle().year();
-    }
-
-    QString DcopPlaylistHandler::comment()
-    {
-        return EngineController::instance()->bundle().comment();
-    }
-
-    QString DcopPlaylistHandler::bitrate()
-    {
-        return EngineController::instance()->bundle().prettyBitrate();
-    }
-
-    int DcopPlaylistHandler::sampleRate()
-    {
-        return EngineController::instance()->bundle().sampleRate();
-    }
-
-    QString DcopPlaylistHandler::encodedURL()
-    {
-        return EngineController::instance()->bundle().url().url();
-    }
-
-    QString DcopPlaylistHandler::coverImage()
-    {
-        const MetaBundle &bundle = EngineController::instance()->bundle();
-        QString image = CollectionDB::instance()->albumImage( bundle, 0 );
-        return image;
-    }
-
     void DcopPlaylistHandler::togglePlaylist()
     {
         PlaylistWindow::self()->showHide();
-    }
-
-    int DcopPlaylistHandler::score()
-    {
-        const MetaBundle &bundle = EngineController::instance()->bundle();
-        int score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
-        return score;
     }
 
     void DcopPlaylistHandler::playMedia( const KURL &url )
