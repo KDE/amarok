@@ -77,17 +77,32 @@ void XmasAnalyzer::init()
 
 #define KRAND(x) (kapp->random() % (x))
 
+class QSaturatedColor : public QColor
+{
+   public:
+      QSaturatedColor() : QColor() {}
+      QSaturatedColor(int r, int g, int b) : QColor() { setRgb(r, g, b); }
+      void setRgb(int r, int g, int b );
+};
+
+void QSaturatedColor::setRgb( int r, int g, int b )
+{
+   r = (r < 0) ? 0 : ((r > 255) ? 255 : r);
+   g = (g < 0) ? 0 : ((g > 255) ? 255 : g);
+   b = (b < 0) ? 0 : ((b > 255) ? 255 : b);
+   QColor::setRgb(r, g, b);
+}
 
 void XmasAnalyzer::drawStar( QPainter &p, int x, int y, QColor startColor )
 {
    p.setPen(startColor);
    p.drawPoint(x,y);
-   p.setPen( QColor(startColor.red() - 15, startColor.green() - 15, startColor.blue() - 15) );
+   p.setPen( QSaturatedColor(startColor.red() - 15, startColor.green() - 15, startColor.blue() - 15) );
    p.drawPoint(x-1,y);
    p.drawPoint(x,y-1);
    p.drawPoint(x+1,y);
    p.drawPoint(x,y+1);
-   p.setPen( QColor(startColor.red() - 35, startColor.green() - 35, startColor.blue() - 35) );
+   p.setPen( QSaturatedColor(startColor.red() - 35, startColor.green() - 35, startColor.blue() - 35) );
    p.drawPoint(x-2,y);
    p.drawPoint(x,y-2);
    p.drawPoint(x+2,y);
@@ -99,7 +114,7 @@ void XmasAnalyzer::drawAnalyzer( std::vector<float> *s )
    int x2;
    static int wave1pos = -WAVESIZE, wave2pos = -WAVESIZE, wavecounter = 0;
    static bool waving = false;
-   static QColor wave1col, wave2col;
+   static QSaturatedColor wave1col, wave2col;
 
    bitBlt( m_pComposePixmap, 0, 0, grid() ); //start with a blank canvas
 
@@ -117,8 +132,8 @@ void XmasAnalyzer::drawAnalyzer( std::vector<float> *s )
    {
       wave1pos = m_pComposePixmap->width() - 1;
       wave2pos = wave1pos + 45;
-      wave1col = QColor(0xff - KRAND(0x80), 0xff - KRAND(0x80), 0xff - KRAND(0x80));
-      wave2col = QColor(0xff - KRAND(0x80), 0xff - KRAND(0x80), 0xff - KRAND(0x80));
+      wave1col = QSaturatedColor(0xff - KRAND(0x80), 0xff - KRAND(0x80), 0xff - KRAND(0x80));
+      wave2col = QSaturatedColor(0xff - KRAND(0x80), 0xff - KRAND(0x80), 0xff - KRAND(0x80));
       waving = true;
    }
 
@@ -126,7 +141,7 @@ void XmasAnalyzer::drawAnalyzer( std::vector<float> *s )
    {
       for ( int i = 0; (i < WAVESIZE) && (i < m_pComposePixmap->width() - wave1pos); i++ )
       {
-         QColor c = QColor( wave1col.red() - i * 2, wave1col.green() - i * 3, wave1col.blue() - i * 2 );
+         QSaturatedColor c = QSaturatedColor( wave1col.red() - i * 2, wave1col.green() - i * 3, wave1col.blue() - i * 2 );
          q.setPen( c );
          q.drawLine( wave1pos + i, 0, wave1pos + i, m_pComposePixmap->height() );
       }
@@ -136,7 +151,7 @@ void XmasAnalyzer::drawAnalyzer( std::vector<float> *s )
    {
       for ( int i = 0; (i < WAVESIZE) && (i < m_pComposePixmap->width() - wave2pos); i++ )
       {
-         QColor c = QColor( wave2col.red() - i * 3, wave2col.green() - i * 2, wave2col.blue() - i * 2 );
+         QSaturatedColor c = QSaturatedColor( wave2col.red() - i * 3, wave2col.green() - i * 2, wave2col.blue() - i * 2 );
          q.setPen( c );
          q.drawLine( wave2pos + i, 0, wave2pos + i, m_pComposePixmap->height() );
       }
@@ -158,7 +173,7 @@ void XmasAnalyzer::drawAnalyzer( std::vector<float> *s )
    if (waving)
       for ( uint i = 0; i < NDOTS; i++)
       {
-         drawStar( q, KRAND(m_pComposePixmap->width() - 5), KRAND(m_pComposePixmap->height() -5), QColor(0xff - KRAND(0x80), 0xff - KRAND(0x80), 0xff - KRAND(0x80)) );
+         drawStar( q, KRAND(m_pComposePixmap->width() - 5), KRAND(m_pComposePixmap->height() -5), QSaturatedColor(0xff - KRAND(0x80), 0xff - KRAND(0x80), 0xff - KRAND(0x80)) );
       }
 
    // and let deers run...
@@ -167,7 +182,7 @@ void XmasAnalyzer::drawAnalyzer( std::vector<float> *s )
       x2  = uint((*it) * 255);
       x2 = m_levelToX[ (x2 > 255) ? 255 : x2 ];
 
-      p.fillRect( p.window(), QColor(0x40 + (+x2*4), 0x30 + x2, 0xff + (-x2*3)) );
+      p.fillRect( p.window(), QSaturatedColor(0x40 + (+x2*4), 0x30 + x2, 0xff + (-x2*3)) );
 
       bitBlt( m_pComposePixmap, x2, 0,
               m_pSantaPixmap );
