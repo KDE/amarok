@@ -28,7 +28,7 @@ static int getBoolean(const u8 *z){
   static const u8 *azTrue[] = { "yes", "on", "true" };
   int i;
   if( z[0]==0 ) return 0;
-  if( isdigit(z[0]) || (z[0]=='-' && isdigit(z[1])) ){
+  if( sqlite3IsNumber(z, 0, SQLITE_UTF8) ){
     return atoi(z);
   }
   for(i=0; i<sizeof(azTrue)/sizeof(azTrue[0]); i++){
@@ -62,7 +62,7 @@ static int getSafetyLevel(u8 *z){
   };
   int i;
   if( z[0]==0 ) return 1;
-  if( isdigit(z[0]) || (z[0]=='-' && isdigit(z[1])) ){
+  if( sqlite3IsNumber(z, 0, SQLITE_UTF8) ){
     return atoi(z);
   }
   for(i=0; i<sizeof(aKey)/sizeof(aKey[0]); i++){
@@ -95,7 +95,7 @@ static int getTempStore(const char *z){
 */
 static int changeTempStorage(Parse *pParse, const char *zStorageType){
   int ts = getTempStore(zStorageType);
-  sqlite *db = pParse->db;
+  sqlite3 *db = pParse->db;
   if( db->temp_store==ts ) return SQLITE_OK;
   if( db->aDb[1].pBt!=0 ){
     if( db->flags & SQLITE_InTrans ){
@@ -147,7 +147,7 @@ static int flagPragma(Parse *pParse, const char *zLeft, const char *zRight){
   int i;
   for(i=0; i<sizeof(aPragma)/sizeof(aPragma[0]); i++){
     if( sqlite3StrICmp(zLeft, aPragma[i].zName)==0 ){
-      sqlite *db = pParse->db;
+      sqlite3 *db = pParse->db;
       Vdbe *v;
       if( zRight==0 ){
         v = sqlite3GetVdbe(pParse);
@@ -193,7 +193,7 @@ void sqlite3Pragma(
   const char *zDb = 0;   /* The database name */
   Token *pId;            /* Pointer to <id> token */
   int iDb;               /* Database index for <database> */
-  sqlite *db = pParse->db;
+  sqlite3 *db = pParse->db;
   Db *pDb;
   Vdbe *v = sqlite3GetVdbe(pParse);
   if( v==0 ) return;
@@ -208,7 +208,7 @@ void sqlite3Pragma(
   if( !zLeft ) return;
   if( minusFlag ){
     zRight = 0;
-    sqlite3SetNString(&zRight, "-", 1, pValue->z, pValue->n, 0);
+    sqlite3SetNString(&zRight, "-", 1, pValue->z, pValue->n, (char*)0);
   }else{
     zRight = sqlite3NameFromToken(pValue);
   }
@@ -283,7 +283,7 @@ void sqlite3Pragma(
       int size = pBt ? sqlite3BtreeGetPageSize(pBt) : 0;
       returnSingleInt(pParse, "page_size", size);
     }else{
-      sqlite3BtreeSetPageSize(pBt, atoi(zRight), 0);
+      sqlite3BtreeSetPageSize(pBt, atoi(zRight), sqlite3BtreeGetReserve(pBt));
     }
   }else
 

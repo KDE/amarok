@@ -461,7 +461,7 @@ int sqlite3VdbeExec(
   int pc;                    /* The program counter */
   Op *pOp;                   /* Current operation */
   int rc = SQLITE_OK;        /* Value to return */
-  sqlite *db = p->db;        /* The database */
+  sqlite3 *db = p->db;       /* The database */
   Mem *pTos;                 /* Top entry in the operand stack */
   char zBuf[100];            /* Space to sprintf() an integer */
 #ifdef VDBE_PROFILE

@@ -270,7 +270,7 @@ static Index *findSortingIndex(
   Index *pMatch;
   Index *pIdx;
   int sortOrder;
-  sqlite *db = pParse->db;
+  sqlite3 *db = pParse->db;
 
   assert( pOrderBy!=0 );
   assert( pOrderBy->nExpr>0 );

@@ -91,13 +91,14 @@ void sqlite3Vacuum(Parse *pParse, Token *pTableName){
 /*
 ** This routine implements the OP_Vacuum opcode of the VDBE.
 */
-int sqlite3RunVacuum(char **pzErrMsg, sqlite *db){
+int sqlite3RunVacuum(char **pzErrMsg, sqlite3 *db){
   int rc = SQLITE_OK;     /* Return code from service routines */
 #if !defined(SQLITE_OMIT_VACUUM) || SQLITE_OMIT_VACUUM
   const char *zFilename;  /* full pathname of the database file */
   int nFilename;          /* number of characters  in zFilename[] */
   char *zTemp = 0;        /* a temporary file in same directory as zFilename */
   int i;                  /* Loop counter */
+  Btree *pMain;           /* The database being vacuumed */
   Btree *pTemp;
   char *zSql = 0;
 
@@ -111,7 +112,8 @@ int sqlite3RunVacuum(char **pzErrMsg, sqlite *db){
   /* Get the full pathname of the database file and create a
   ** temporary filename in the same directory as the original file.
   */
-  zFilename = sqlite3BtreeGetFilename(db->aDb[0].pBt);
+  pMain = db->aDb[0].pBt;
+  zFilename = sqlite3BtreeGetFilename(pMain);
   assert( zFilename );
   if( zFilename[0]=='\0' ){
     /* The in-memory database. Do nothing. Return directly to avoid causing
@@ -150,7 +152,12 @@ int sqlite3RunVacuum(char **pzErrMsg, sqlite *db){
   sqliteFree(zSql);
   zSql = 0;
   if( rc!=SQLITE_OK ) goto end_of_vacuum;
-  execSql(db, "PRAGMA vacuum_db.synchronous = off;");
+  assert( strcmp(db->aDb[db->nDb-1].zName,"vacuum_db")==0 );
+  pTemp = db->aDb[db->nDb-1].pBt;
+  sqlite3BtreeSetPageSize(pTemp, sqlite3BtreeGetPageSize(pMain),
+     sqlite3BtreeGetReserve(pMain));
+  assert( sqlite3BtreeGetPageSize(pTemp)==sqlite3BtreeGetPageSize(pMain) );
+  execSql(db, "PRAGMA vacuum_db.synchronous=OFF");
 
   /* Begin a transaction */
   rc = execSql(db, "BEGIN;");
@@ -206,9 +213,7 @@ int sqlite3RunVacuum(char **pzErrMsg, sqlite *db){
   ** opened for writing. This way, the SQL transaction used to create the
   ** temporary database never needs to be committed.
   */
-  pTemp = db->aDb[db->nDb-1].pBt;
   if( sqlite3BtreeIsInTrans(pTemp) ){
-    Btree *pMain = db->aDb[0].pBt;
     u32 meta;
 
     assert( 0==sqlite3BtreeIsInTrans(pMain) );

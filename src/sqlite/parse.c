@@ -34,7 +34,6 @@ struct TrigEvent { int a; IdList * b; };
 */
 struct AttachKey { int type;  Token key; };
 
-
 #line 39 "parse.c"
 /* Next is all token values, in a form suitable for use by makeheaders.
 ** This section will be null unless lemon is run with the -m switch.
@@ -1262,7 +1261,7 @@ static void yy_destructor(YYCODETYPE yymajor, YYMINORTYPE *yypminor){
     case 195:
     case 198:
     case 201:
-#line 755 "parse.y"
+#line 753 "parse.y"
 {sqlite3ExprListDelete((yypminor->yy232));}
 #line 1268 "parse.c"
       break;
@@ -1282,12 +1281,12 @@ static void yy_destructor(YYCODETYPE yymajor, YYMINORTYPE *yypminor){
       break;
     case 211:
     case 216:
-#line 847 "parse.y"
+#line 845 "parse.y"
 {sqlite3DeleteTriggerStep((yypminor->yy107));}
 #line 1288 "parse.c"
       break;
     case 213:
-#line 831 "parse.y"
+#line 829 "parse.y"
 {sqlite3IdListDelete((yypminor->yy414).b);}
 #line 1293 "parse.c"
       break;
@@ -2487,27 +2486,25 @@ static void yy_reduce(
 {
   Token *pToken = &yymsp[0].minor.yy0;
   Expr *pExpr = yygotominor.yy164 = sqlite3Expr(TK_VARIABLE, 0, 0, pToken);
-  if( pExpr ){
-    pExpr->iTable = ++pParse->nVar;
-  }
+  sqlite3ExprAssignVarNumber(pParse, pExpr);
 }
-#line 2495 "parse.c"
+#line 2493 "parse.c"
         break;
       case 183:
-#line 567 "parse.y"
+#line 565 "parse.y"
 {
   yygotominor.yy164 = sqlite3ExprFunction(yymsp[-1].minor.yy232, &yymsp[-3].minor.yy0);
   sqlite3ExprSpan(yygotominor.yy164,&yymsp[-3].minor.yy0,&yymsp[0].minor.yy0);
 }
-#line 2503 "parse.c"
+#line 2501 "parse.c"
         break;
       case 184:
-#line 571 "parse.y"
+#line 569 "parse.y"
 {
   yygotominor.yy164 = sqlite3ExprFunction(0, &yymsp[-3].minor.yy0);
   sqlite3ExprSpan(yygotominor.yy164,&yymsp[-3].minor.yy0,&yymsp[0].minor.yy0);
 }
-#line 2511 "parse.c"
+#line 2509 "parse.c"
         break;
       case 185:
       case 186:
@@ -2527,12 +2524,12 @@ static void yy_reduce(
       case 204:
       case 205:
       case 206:
-#line 575 "parse.y"
+#line 573 "parse.y"
 {yygotominor.yy164 = sqlite3Expr(yymsp[-1].major, yymsp[-2].minor.yy164, yymsp[0].minor.yy164, 0);}
-#line 2533 "parse.c"
+#line 2531 "parse.c"
         break;
       case 197:
-#line 587 "parse.y"
+#line 585 "parse.y"
 {
   ExprList *pList = sqlite3ExprListAppend(0, yymsp[0].minor.yy164, 0);
   pList = sqlite3ExprListAppend(pList, yymsp[-2].minor.yy164, 0);
@@ -2540,10 +2537,10 @@ static void yy_reduce(
   if( yygotominor.yy164 ) yygotominor.yy164->op = yymsp[-1].minor.yy424;
   sqlite3ExprSpan(yygotominor.yy164, &yymsp[-2].minor.yy164->span, &yymsp[0].minor.yy164->span);
 }
-#line 2544 "parse.c"
+#line 2542 "parse.c"
         break;
       case 198:
-#line 594 "parse.y"
+#line 592 "parse.y"
 {
   ExprList *pList = sqlite3ExprListAppend(0, yymsp[0].minor.yy164, 0);
   pList = sqlite3ExprListAppend(pList, yymsp[-3].minor.yy164, 0);
@@ -2552,94 +2549,94 @@ static void yy_reduce(
   yygotominor.yy164 = sqlite3Expr(TK_NOT, yygotominor.yy164, 0, 0);
   sqlite3ExprSpan(yygotominor.yy164,&yymsp[-3].minor.yy164->span,&yymsp[0].minor.yy164->span);
 }
-#line 2556 "parse.c"
+#line 2554 "parse.c"
         break;
       case 199:
-#line 603 "parse.y"
+#line 601 "parse.y"
 {yygotominor.yy424 = TK_LIKE;}
-#line 2561 "parse.c"
+#line 2559 "parse.c"
         break;
       case 200:
-#line 604 "parse.y"
+#line 602 "parse.y"
 {yygotominor.yy424 = TK_GLOB;}
-#line 2566 "parse.c"
+#line 2564 "parse.c"
         break;
       case 207:
-#line 611 "parse.y"
+#line 609 "parse.y"
 {
   yygotominor.yy164 = sqlite3Expr(TK_ISNULL, yymsp[-1].minor.yy164, 0, 0);
   sqlite3ExprSpan(yygotominor.yy164,&yymsp[-1].minor.yy164->span,&yymsp[0].minor.yy0);
 }
-#line 2574 "parse.c"
+#line 2572 "parse.c"
         break;
       case 208:
-#line 615 "parse.y"
+#line 613 "parse.y"
 {
   yygotominor.yy164 = sqlite3Expr(TK_ISNULL, yymsp[-2].minor.yy164, 0, 0);
   sqlite3ExprSpan(yygotominor.yy164,&yymsp[-2].minor.yy164->span,&yymsp[0].minor.yy0);
 }
-#line 2582 "parse.c"
+#line 2580 "parse.c"
         break;
       case 209:
-#line 619 "parse.y"
+#line 617 "parse.y"
 {
   yygotominor.yy164 = sqlite3Expr(TK_NOTNULL, yymsp[-1].minor.yy164, 0, 0);
   sqlite3ExprSpan(yygotominor.yy164,&yymsp[-1].minor.yy164->span,&yymsp[0].minor.yy0);
 }
-#line 2590 "parse.c"
+#line 2588 "parse.c"
         break;
       case 210:
-#line 623 "parse.y"
+#line 621 "parse.y"
 {
   yygotominor.yy164 = sqlite3Expr(TK_NOTNULL, yymsp[-2].minor.yy164, 0, 0);
   sqlite3ExprSpan(yygotominor.yy164,&yymsp[-2].minor.yy164->span,&yymsp[0].minor.yy0);
 }
-#line 2598 "parse.c"
+#line 2596 "parse.c"
         break;
       case 211:
-#line 627 "parse.y"
+#line 625 "parse.y"
 {
   yygotominor.yy164 = sqlite3Expr(TK_NOTNULL, yymsp[-3].minor.yy164, 0, 0);
   sqlite3ExprSpan(yygotominor.yy164,&yymsp[-3].minor.yy164->span,&yymsp[0].minor.yy0);
 }
-#line 2606 "parse.c"
+#line 2604 "parse.c"
         break;
       case 212:
       case 213:
-#line 631 "parse.y"
+#line 629 "parse.y"
 {
   yygotominor.yy164 = sqlite3Expr(yymsp[-1].major, yymsp[0].minor.yy164, 0, 0);
   sqlite3ExprSpan(yygotominor.yy164,&yymsp[-1].minor.yy0,&yymsp[0].minor.yy164->span);
 }
-#line 2615 "parse.c"
+#line 2613 "parse.c"
         break;
       case 214:
-#line 639 "parse.y"
+#line 637 "parse.y"
 {
   yygotominor.yy164 = sqlite3Expr(TK_UMINUS, yymsp[0].minor.yy164, 0, 0);
   sqlite3ExprSpan(yygotominor.yy164,&yymsp[-1].minor.yy0,&yymsp[0].minor.yy164->span);
 }
-#line 2623 "parse.c"
+#line 2621 "parse.c"
         break;
       case 215:
-#line 643 "parse.y"
+#line 641 "parse.y"
 {
   yygotominor.yy164 = sqlite3Expr(TK_UPLUS, yymsp[0].minor.yy164, 0, 0);
   sqlite3ExprSpan(yygotominor.yy164,&yymsp[-1].minor.yy0,&yymsp[0].minor.yy164->span);
 }
-#line 2631 "parse.c"
+#line 2629 "parse.c"
         break;
       case 216:
-#line 647 "parse.y"
+#line 645 "parse.y"
 {
   yygotominor.yy164 = sqlite3Expr(TK_SELECT, 0, 0, 0);
   if( yygotominor.yy164 ) yygotominor.yy164->pSelect = yymsp[-1].minor.yy375;
   sqlite3ExprSpan(yygotominor.yy164,&yymsp[-2].minor.yy0,&yymsp[0].minor.yy0);
 }
-#line 2640 "parse.c"
+#line 2638 "parse.c"
         break;
       case 217:
-#line 652 "parse.y"
+#line 650 "parse.y"
 {
   ExprList *pList = sqlite3ExprListAppend(0, yymsp[-2].minor.yy164, 0);
   pList = sqlite3ExprListAppend(pList, yymsp[0].minor.yy164, 0);
@@ -2647,10 +2644,10 @@ static void yy_reduce(
   if( yygotominor.yy164 ) yygotominor.yy164->pList = pList;
   sqlite3ExprSpan(yygotominor.yy164,&yymsp[-4].minor.yy164->span,&yymsp[0].minor.yy164->span);
 }
-#line 2651 "parse.c"
+#line 2649 "parse.c"
         break;
       case 218:
-#line 659 "parse.y"
+#line 657 "parse.y"
 {
   ExprList *pList = sqlite3ExprListAppend(0, yymsp[-2].minor.yy164, 0);
   pList = sqlite3ExprListAppend(pList, yymsp[0].minor.yy164, 0);
@@ -2659,58 +2656,58 @@ static void yy_reduce(
   yygotominor.yy164 = sqlite3Expr(TK_NOT, yygotominor.yy164, 0, 0);
   sqlite3ExprSpan(yygotominor.yy164,&yymsp[-5].minor.yy164->span,&yymsp[0].minor.yy164->span);
 }
-#line 2663 "parse.c"
+#line 2661 "parse.c"
         break;
       case 219:
-#line 667 "parse.y"
+#line 665 "parse.y"
 {
   yygotominor.yy164 = sqlite3Expr(TK_IN, yymsp[-4].minor.yy164, 0, 0);
   if( yygotominor.yy164 ) yygotominor.yy164->pList = yymsp[-1].minor.yy232;
   sqlite3ExprSpan(yygotominor.yy164,&yymsp[-4].minor.yy164->span,&yymsp[0].minor.yy0);
 }
-#line 2672 "parse.c"
+#line 2670 "parse.c"
         break;
       case 220:
-#line 672 "parse.y"
+#line 670 "parse.y"
 {
   yygotominor.yy164 = sqlite3Expr(TK_IN, yymsp[-4].minor.yy164, 0, 0);
   if( yygotominor.yy164 ) yygotominor.yy164->pSelect = yymsp[-1].minor.yy375;
   sqlite3ExprSpan(yygotominor.yy164,&yymsp[-4].minor.yy164->span,&yymsp[0].minor.yy0);
 }
-#line 2681 "parse.c"
+#line 2679 "parse.c"
         break;
       case 221:
-#line 677 "parse.y"
+#line 675 "parse.y"
 {
   yygotominor.yy164 = sqlite3Expr(TK_IN, yymsp[-5].minor.yy164, 0, 0);
   if( yygotominor.yy164 ) yygotominor.yy164->pList = yymsp[-1].minor.yy232;
   yygotominor.yy164 = sqlite3Expr(TK_NOT, yygotominor.yy164, 0, 0);
   sqlite3ExprSpan(yygotominor.yy164,&yymsp[-5].minor.yy164->span,&yymsp[0].minor.yy0);
 }
-#line 2691 "parse.c"
+#line 2689 "parse.c"
         break;
       case 222:
-#line 683 "parse.y"
+#line 681 "parse.y"
 {
   yygotominor.yy164 = sqlite3Expr(TK_IN, yymsp[-5].minor.yy164, 0, 0);
   if( yygotominor.yy164 ) yygotominor.yy164->pSelect = yymsp[-1].minor.yy375;
   yygotominor.yy164 = sqlite3Expr(TK_NOT, yygotominor.yy164, 0, 0);
   sqlite3ExprSpan(yygotominor.yy164,&yymsp[-5].minor.yy164->span,&yymsp[0].minor.yy0);
 }
-#line 2701 "parse.c"
+#line 2699 "parse.c"
         break;
       case 223:
-#line 689 "parse.y"
+#line 687 "parse.y"
 {
   SrcList *pSrc = sqlite3SrcListAppend(0, &yymsp[-1].minor.yy318, &yymsp[0].minor.yy318);
   yygotominor.yy164 = sqlite3Expr(TK_IN, yymsp[-3].minor.yy164, 0, 0);
   if( yygotominor.yy164 ) yygotominor.yy164->pSelect = sqlite3SelectNew(0,pSrc,0,0,0,0,0,-1,0);
   sqlite3ExprSpan(yygotominor.yy164,&yymsp[-3].minor.yy164->span,yymsp[0].minor.yy318.z?&yymsp[0].minor.yy318:&yymsp[-1].minor.yy318);
 }
-#line 2711 "parse.c"
+#line 2709 "parse.c"
         break;
       case 224:
-#line 695 "parse.y"
+#line 693 "parse.y"
 {
   SrcList *pSrc = sqlite3SrcListAppend(0, &yymsp[-1].minor.yy318, &yymsp[0].minor.yy318);
   yygotominor.yy164 = sqlite3Expr(TK_IN, yymsp[-4].minor.yy164, 0, 0);
@@ -2718,50 +2715,50 @@ static void yy_reduce(
   yygotominor.yy164 = sqlite3Expr(TK_NOT, yygotominor.yy164, 0, 0);
   sqlite3ExprSpan(yygotominor.yy164,&yymsp[-4].minor.yy164->span,yymsp[0].minor.yy318.z?&yymsp[0].minor.yy318:&yymsp[-1].minor.yy318);
 }
-#line 2722 "parse.c"
+#line 2720 "parse.c"
         break;
       case 225:
-#line 705 "parse.y"
+#line 703 "parse.y"
 {
   yygotominor.yy164 = sqlite3Expr(TK_CASE, yymsp[-3].minor.yy164, yymsp[-1].minor.yy164, 0);
   if( yygotominor.yy164 ) yygotominor.yy164->pList = yymsp[-2].minor.yy232;
   sqlite3ExprSpan(yygotominor.yy164, &yymsp[-4].minor.yy0, &yymsp[0].minor.yy0);
 }
-#line 2731 "parse.c"
+#line 2729 "parse.c"
         break;
       case 226:
-#line 712 "parse.y"
+#line 710 "parse.y"
 {
   yygotominor.yy232 = sqlite3ExprListAppend(yymsp[-4].minor.yy232, yymsp[-2].minor.yy164, 0);
   yygotominor.yy232 = sqlite3ExprListAppend(yygotominor.yy232, yymsp[0].minor.yy164, 0);
 }
-#line 2739 "parse.c"
+#line 2737 "parse.c"
         break;
       case 227:
-#line 716 "parse.y"
+#line 714 "parse.y"
 {
   yygotominor.yy232 = sqlite3ExprListAppend(0, yymsp[-2].minor.yy164, 0);
   yygotominor.yy232 = sqlite3ExprListAppend(yygotominor.yy232, yymsp[0].minor.yy164, 0);
 }
-#line 2747 "parse.c"
+#line 2745 "parse.c"
         break;
       case 236:
-#line 741 "parse.y"
+#line 739 "parse.y"
 {
   if( yymsp[-10].minor.yy424!=OE_None ) yymsp[-10].minor.yy424 = yymsp[0].minor.yy424;
   if( yymsp[-10].minor.yy424==OE_Default) yymsp[-10].minor.yy424 = OE_Abort;
   sqlite3CreateIndex(pParse, &yymsp[-8].minor.yy318, &yymsp[-7].minor.yy318, sqlite3SrcListAppend(0,&yymsp[-5].minor.yy318,&yymsp[-4].minor.yy318),
       yymsp[-2].minor.yy232, yymsp[-10].minor.yy424, &yymsp[-11].minor.yy0, &yymsp[-1].minor.yy0);
 }
-#line 2757 "parse.c"
+#line 2755 "parse.c"
         break;
       case 238:
-#line 750 "parse.y"
+#line 748 "parse.y"
 { yygotominor.yy424 = OE_None; }
-#line 2762 "parse.c"
+#line 2760 "parse.c"
         break;
       case 241:
-#line 760 "parse.y"
+#line 758 "parse.y"
 {
   Expr *p = 0;
   if( yymsp[-1].minor.yy318.n>0 ){
@@ -2770,10 +2767,10 @@ static void yy_reduce(
   }
   yygotominor.yy232 = sqlite3ExprListAppend(yymsp[-4].minor.yy232, p, &yymsp[-2].minor.yy318);
 }
-#line 2774 "parse.c"
+#line 2772 "parse.c"
         break;
       case 242:
-#line 768 "parse.y"
+#line 766 "parse.y"
 {
   Expr *p = 0;
   if( yymsp[-1].minor.yy318.n>0 ){
@@ -2782,238 +2779,238 @@ static void yy_reduce(
   }
   yygotominor.yy232 = sqlite3ExprListAppend(0, p, &yymsp[-2].minor.yy318);
 }
-#line 2786 "parse.c"
+#line 2784 "parse.c"
         break;
       case 244:
-#line 782 "parse.y"
+#line 780 "parse.y"
 {
   sqlite3DropIndex(pParse, sqlite3SrcListAppend(0,&yymsp[-1].minor.yy318,&yymsp[0].minor.yy318));
 }
-#line 2793 "parse.c"
+#line 2791 "parse.c"
         break;
       case 245:
-#line 788 "parse.y"
+#line 786 "parse.y"
 {sqlite3Vacuum(pParse,0);}
-#line 2798 "parse.c"
+#line 2796 "parse.c"
         break;
       case 246:
-#line 789 "parse.y"
+#line 787 "parse.y"
 {sqlite3Vacuum(pParse,&yymsp[0].minor.yy318);}
-#line 2803 "parse.c"
+#line 2801 "parse.c"
         break;
       case 247:
       case 249:
-#line 793 "parse.y"
+#line 791 "parse.y"
 {sqlite3Pragma(pParse,&yymsp[-3].minor.yy318,&yymsp[-2].minor.yy318,&yymsp[0].minor.yy318,0);}
-#line 2809 "parse.c"
+#line 2807 "parse.c"
         break;
       case 248:
-#line 794 "parse.y"
+#line 792 "parse.y"
 {sqlite3Pragma(pParse,&yymsp[-3].minor.yy318,&yymsp[-2].minor.yy318,&yymsp[0].minor.yy0,0);}
-#line 2814 "parse.c"
+#line 2812 "parse.c"
         break;
       case 250:
-#line 796 "parse.y"
+#line 794 "parse.y"
 {
   sqlite3Pragma(pParse,&yymsp[-3].minor.yy318,&yymsp[-2].minor.yy318,&yymsp[0].minor.yy318,1);
 }
-#line 2821 "parse.c"
+#line 2819 "parse.c"
         break;
       case 251:
-#line 799 "parse.y"
+#line 797 "parse.y"
 {sqlite3Pragma(pParse,&yymsp[-4].minor.yy318,&yymsp[-3].minor.yy318,&yymsp[-1].minor.yy318,0);}
-#line 2826 "parse.c"
+#line 2824 "parse.c"
         break;
       case 252:
-#line 800 "parse.y"
+#line 798 "parse.y"
 {sqlite3Pragma(pParse,&yymsp[-1].minor.yy318,&yymsp[0].minor.yy318,0,0);}
-#line 2831 "parse.c"
+#line 2829 "parse.c"
         break;
       case 259:
-#line 810 "parse.y"
+#line 808 "parse.y"
 {
   Token all;
   all.z = yymsp[-3].minor.yy318.z;
   all.n = (yymsp[0].minor.yy0.z - yymsp[-3].minor.yy318.z) + yymsp[0].minor.yy0.n;
   sqlite3FinishTrigger(pParse, yymsp[-1].minor.yy107, &all);
 }
-#line 2841 "parse.c"
+#line 2839 "parse.c"
         break;
       case 260:
-#line 818 "parse.y"
+#line 816 "parse.y"
 {
   SrcList *pTab = sqlite3SrcListAppend(0, &yymsp[-3].minor.yy318, &yymsp[-2].minor.yy318);
   sqlite3BeginTrigger(pParse, &yymsp[-8].minor.yy318, &yymsp[-7].minor.yy318, yymsp[-6].minor.yy424, yymsp[-5].minor.yy414.a, yymsp[-5].minor.yy414.b, pTab, yymsp[-1].minor.yy424, yymsp[0].minor.yy164, yymsp[-10].minor.yy424);
   yygotominor.yy318 = (yymsp[-7].minor.yy318.n==0?yymsp[-8].minor.yy318:yymsp[-7].minor.yy318);
 }
-#line 2850 "parse.c"
+#line 2848 "parse.c"
         break;
       case 261:
       case 264:
-#line 825 "parse.y"
+#line 823 "parse.y"
 { yygotominor.yy424 = TK_BEFORE; }
-#line 2856 "parse.c"
+#line 2854 "parse.c"
         break;
       case 262:
-#line 826 "parse.y"
+#line 824 "parse.y"
 { yygotominor.yy424 = TK_AFTER;  }
-#line 2861 "parse.c"
+#line 2859 "parse.c"
         break;
       case 263:
-#line 827 "parse.y"
+#line 825 "parse.y"
 { yygotominor.yy424 = TK_INSTEAD;}
-#line 2866 "parse.c"
+#line 2864 "parse.c"
         break;
       case 265:
-#line 832 "parse.y"
+#line 830 "parse.y"
 { yygotominor.yy414.a = TK_DELETE; yygotominor.yy414.b = 0; }
-#line 2871 "parse.c"
+#line 2869 "parse.c"
         break;
       case 266:
-#line 833 "parse.y"
+#line 831 "parse.y"
 { yygotominor.yy414.a = TK_INSERT; yygotominor.yy414.b = 0; }
-#line 2876 "parse.c"
+#line 2874 "parse.c"
         break;
       case 267:
-#line 834 "parse.y"
+#line 832 "parse.y"
 { yygotominor.yy414.a = TK_UPDATE; yygotominor.yy414.b = 0;}
-#line 2881 "parse.c"
+#line 2879 "parse.c"
         break;
       case 268:
-#line 835 "parse.y"
+#line 833 "parse.y"
 {yygotominor.yy414.a = TK_UPDATE; yygotominor.yy414.b = yymsp[0].minor.yy246; }
-#line 2886 "parse.c"
+#line 2884 "parse.c"
         break;
       case 269:
       case 270:
-#line 838 "parse.y"
+#line 836 "parse.y"
 { yygotominor.yy424 = TK_ROW; }
-#line 2892 "parse.c"
+#line 2890 "parse.c"
         break;
       case 271:
-#line 840 "parse.y"
+#line 838 "parse.y"
 { yygotominor.yy424 = TK_STATEMENT; }
-#line 2897 "parse.c"
+#line 2895 "parse.c"
         break;
       case 272:
-#line 843 "parse.y"
+#line 841 "parse.y"
 { yygotominor.yy164 = 0; }
-#line 2902 "parse.c"
+#line 2900 "parse.c"
         break;
       case 273:
-#line 844 "parse.y"
+#line 842 "parse.y"
 { yygotominor.yy164 = yymsp[0].minor.yy164; }
-#line 2907 "parse.c"
+#line 2905 "parse.c"
         break;
       case 274:
-#line 848 "parse.y"
+#line 846 "parse.y"
 {
   yymsp[-2].minor.yy107->pNext = yymsp[0].minor.yy107;
   yygotominor.yy107 = yymsp[-2].minor.yy107;
 }
-#line 2915 "parse.c"
+#line 2913 "parse.c"
         break;
       case 275:
-#line 852 "parse.y"
+#line 850 "parse.y"
 { yygotominor.yy107 = 0; }
-#line 2920 "parse.c"
+#line 2918 "parse.c"
         break;
       case 276:
-#line 858 "parse.y"
+#line 856 "parse.y"
 { yygotominor.yy107 = sqlite3TriggerUpdateStep(&yymsp[-3].minor.yy318, yymsp[-1].minor.yy232, yymsp[0].minor.yy164, yymsp[-4].minor.yy424); }
-#line 2925 "parse.c"
+#line 2923 "parse.c"
         break;
       case 277:
-#line 863 "parse.y"
+#line 861 "parse.y"
 {yygotominor.yy107 = sqlite3TriggerInsertStep(&yymsp[-5].minor.yy318, yymsp[-4].minor.yy246, yymsp[-1].minor.yy232, 0, yymsp[-7].minor.yy424);}
-#line 2930 "parse.c"
+#line 2928 "parse.c"
         break;
       case 278:
-#line 866 "parse.y"
+#line 864 "parse.y"
 {yygotominor.yy107 = sqlite3TriggerInsertStep(&yymsp[-2].minor.yy318, yymsp[-1].minor.yy246, 0, yymsp[0].minor.yy375, yymsp[-4].minor.yy424);}
-#line 2935 "parse.c"
+#line 2933 "parse.c"
         break;
       case 279:
-#line 870 "parse.y"
+#line 868 "parse.y"
 {yygotominor.yy107 = sqlite3TriggerDeleteStep(&yymsp[-1].minor.yy318, yymsp[0].minor.yy164);}
-#line 2940 "parse.c"
+#line 2938 "parse.c"
         break;
       case 280:
-#line 873 "parse.y"
+#line 871 "parse.y"
 {yygotominor.yy107 = sqlite3TriggerSelectStep(yymsp[0].minor.yy375); }
-#line 2945 "parse.c"
+#line 2943 "parse.c"
         break;
       case 281:
-#line 876 "parse.y"
+#line 874 "parse.y"
 {
   yygotominor.yy164 = sqlite3Expr(TK_RAISE, 0, 0, 0); 
   yygotominor.yy164->iColumn = OE_Ignore;
   sqlite3ExprSpan(yygotominor.yy164, &yymsp[-3].minor.yy0, &yymsp[0].minor.yy0);
 }
-#line 2954 "parse.c"
+#line 2952 "parse.c"
         break;
       case 282:
-#line 881 "parse.y"
+#line 879 "parse.y"
 {
   yygotominor.yy164 = sqlite3Expr(TK_RAISE, 0, 0, &yymsp[-1].minor.yy318); 
   yygotominor.yy164->iColumn = OE_Rollback;
   sqlite3ExprSpan(yygotominor.yy164, &yymsp[-5].minor.yy0, &yymsp[0].minor.yy0);
 }
-#line 2963 "parse.c"
+#line 2961 "parse.c"
         break;
       case 283:
-#line 886 "parse.y"
+#line 884 "parse.y"
 {
   yygotominor.yy164 = sqlite3Expr(TK_RAISE, 0, 0, &yymsp[-1].minor.yy318); 
   yygotominor.yy164->iColumn = OE_Abort;
   sqlite3ExprSpan(yygotominor.yy164, &yymsp[-5].minor.yy0, &yymsp[0].minor.yy0);
 }
-#line 2972 "parse.c"
+#line 2970 "parse.c"
         break;
       case 284:
-#line 891 "parse.y"
+#line 889 "parse.y"
 {
   yygotominor.yy164 = sqlite3Expr(TK_RAISE, 0, 0, &yymsp[-1].minor.yy318); 
   yygotominor.yy164->iColumn = OE_Fail;
   sqlite3ExprSpan(yygotominor.yy164, &yymsp[-5].minor.yy0, &yymsp[0].minor.yy0);
 }
-#line 2981 "parse.c"
+#line 2979 "parse.c"
         break;
       case 285:
-#line 898 "parse.y"
+#line 896 "parse.y"
 {
   sqlite3DropTrigger(pParse,sqlite3SrcListAppend(0,&yymsp[-1].minor.yy318,&yymsp[0].minor.yy318));
 }
-#line 2988 "parse.c"
+#line 2986 "parse.c"
         break;
       case 286:
-#line 903 "parse.y"
+#line 901 "parse.y"
 {
   sqlite3Attach(pParse, &yymsp[-3].minor.yy318, &yymsp[-1].minor.yy318, yymsp[0].minor.yy72.type, &yymsp[0].minor.yy72.key);
 }
-#line 2995 "parse.c"
+#line 2993 "parse.c"
         break;
       case 287:
-#line 907 "parse.y"
+#line 905 "parse.y"
 { yygotominor.yy72.type = 0; }
-#line 3000 "parse.c"
+#line 2998 "parse.c"
         break;
       case 288:
-#line 908 "parse.y"
+#line 906 "parse.y"
 { yygotominor.yy72.type=1; yygotominor.yy72.key = yymsp[0].minor.yy318; }
-#line 3005 "parse.c"
+#line 3003 "parse.c"
         break;
       case 289:
-#line 909 "parse.y"
+#line 907 "parse.y"
 { yygotominor.yy72.type=2; yygotominor.yy72.key = yymsp[0].minor.yy0; }
-#line 3010 "parse.c"
+#line 3008 "parse.c"
         break;
       case 292:
-#line 915 "parse.y"
+#line 913 "parse.y"
 {
   sqlite3Detach(pParse, &yymsp[0].minor.yy318);
 }
-#line 3017 "parse.c"
+#line 3015 "parse.c"
         break;
   };
   yygoto = yyRuleInfo[yyruleno].lhs;
@@ -3064,8 +3061,7 @@ static void yy_syntax_error(
       sqlite3ErrorMsg(pParse, "incomplete SQL statement");
     }
   }
-
-#line 3069 "parse.c"
+#line 3067 "parse.c"
   sqlite3ParserARG_STORE; /* Suppress warning about unused %extra_argument variable */
 }
 

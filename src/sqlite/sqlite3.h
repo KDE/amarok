@@ -14,8 +14,8 @@
 **
 ** @(#) $Id$
 */
-#ifndef _SQLITE_H_
-#define _SQLITE_H_
+#ifndef _SQLITE3_H_
+#define _SQLITE3_H_
 #include <stdarg.h>     /* Needed for the definition of va_list */
 
 /*
@@ -28,7 +28,7 @@ extern "C" {
 /*
 ** The version of the SQLite library.
 */
-#define SQLITE_VERSION         "3.0.6"
+#define SQLITE_VERSION         "3.0.7"
 
 /*
 ** The version string is also compiled into the library so that a program
@@ -44,7 +44,7 @@ const char *sqlite3_libversion();
 ** Each open sqlite database is represented by an instance of the
 ** following opaque structure.
 */
-typedef struct sqlite sqlite3;
+typedef struct sqlite3 sqlite3;
 
 
 /*
@@ -77,7 +77,7 @@ int sqlite3_close(sqlite3 *);
 /*
 ** The type for a callback function.
 */
-typedef int (*sqlite_callback)(void*,int,char**, char**);
+typedef int (*sqlite3_callback)(void*,int,char**, char**);
 
 /*
 ** A function to executes one or more statements of SQL.
@@ -120,9 +120,9 @@ typedef int (*sqlite_callback)(void*,int,char**, char**);
 ** and sqlite3_busy_timeout() functions below.)
 */
 int sqlite3_exec(
-  sqlite3*,                      /* An open database */
+  sqlite3*,                     /* An open database */
   const char *sql,              /* SQL to be executed */
-  sqlite_callback,              /* Callback function */
+  sqlite3_callback,             /* Callback function */
   void *,                       /* 1st argument to callback function */
   char **errmsg                 /* Error msg written here */
 );
@@ -640,11 +640,18 @@ int sqlite3_bind_parameter_count(sqlite3_stmt*);
 
 /*
 ** Return the name of the i-th parameter.  Ordinary wildcards "?" are
-** nameless and a NULL is returned.  For wildcards of the form :N: or
+** nameless and a NULL is returned.  For wildcards of the form :N or
 ** $vvvv the complete text of the wildcard is returned.
 ** NULL is returned if the index is out of range.
 */
 const char *sqlite3_bind_parameter_name(sqlite3_stmt*, int);
+
+/*
+** Return the index of a parameter with the given name.  The name
+** must match exactly.  If no parameter with the given name is found,
+** return 0.
+*/
+int sqlite3_bind_parameter_index(sqlite3_stmt*, const char *zName);
 
 /*
 ** Return the number of columns in the result set returned by the compiled

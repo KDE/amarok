@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.1:
+  CHG: Updated included sqlite to 3.0.7 (stable).
   ADD: Tag editor can operate on multiple files (mass tagging).
   FIX: Collection encoding broken for non-latin1 characters. (BR 89747)
   ADD: Popup-menu for cover images in Context-Browser.

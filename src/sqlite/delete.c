@@ -65,7 +65,7 @@ void sqlite3DeleteFrom(
   WhereInfo *pWInfo;     /* Information about the WHERE clause */
   Index *pIdx;           /* For looping over indices of the table */
   int iCur;              /* VDBE Cursor number for pTab */
-  sqlite *db;            /* Main database structure */
+  sqlite3 *db;           /* Main database structure */
   int isView;            /* True if attempting to delete from a view */
   AuthContext sContext;  /* Authorization context */
 
@@ -335,7 +335,7 @@ delete_from_cleanup:
 ** entries that point to that record.
 */
 void sqlite3GenerateRowDelete(
-  sqlite *db,        /* The database containing the index */
+  sqlite3 *db,       /* The database containing the index */
   Vdbe *v,           /* Generate code into this VDBE */
   Table *pTab,       /* Table containing the row to be deleted */
   int iCur,          /* Cursor number for the table */
@@ -365,7 +365,7 @@ void sqlite3GenerateRowDelete(
 **       deleted.
 */
 void sqlite3GenerateRowIndexDelete(
-  sqlite *db,        /* The database containing the index */
+  sqlite3 *db,       /* The database containing the index */
   Vdbe *v,           /* Generate code into this VDBE */
   Table *pTab,       /* Table containing the row to be deleted */
   int iCur,          /* Cursor number for the table */

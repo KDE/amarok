@@ -214,13 +214,13 @@
 /* The following value is the maximum cell size assuming a maximum page
 ** size give above.
 */
-#define MX_CELL_SIZE  (SQLITE_MAX_PAGE_SIZE-8)
+#define MX_CELL_SIZE(pBt)  (pBt->pageSize-8)
 
 /* The maximum number of cells on a single page of the database.  This
 ** assumes a minimum cell size of 3 bytes.  Such small cells will be
 ** exceedingly rare, but they are possible.
 */
-#define MX_CELL ((SQLITE_MAX_PAGE_SIZE-8)/3)
+#define MX_CELL(pBt) ((pBt->pageSize-8)/3)
 
 /* Forward declarations */
 typedef struct MemPage MemPage;
@@ -527,8 +527,10 @@ static void _pageIntegrity(MemPage *pPage){
   int i, j, idx, c, pc, hdr, nFree;
   int cellOffset;
   int nCell, cellLimit;
-  u8 used[SQLITE_MAX_PAGE_SIZE];
+  u8 *used;
 
+  used = sqliteMallocRaw( pPage->pBt->pageSize );
+  if( used==0 ) return;
   usableSize = pPage->pBt->usableSize;
   assert( pPage->aData==&((unsigned char*)pPage)[-pPage->pBt->pageSize] );
   hdr = pPage->hdrOffset;
@@ -589,6 +591,7 @@ static void _pageIntegrity(MemPage *pPage){
     if( used[i]==0 ) nFree++;
   }
   assert( nFree==data[hdr+7] );
+  sqliteFree(used);
 }
 #define pageIntegrity(X) _pageIntegrity(X)
 #else
@@ -600,7 +603,7 @@ static void _pageIntegrity(MemPage *pPage){
 ** beginning of the page and all free space is collected 
 ** into one big FreeBlk at the end of the page.
 */
-static void defragmentPage(MemPage *pPage){
+static int defragmentPage(MemPage *pPage){
   int i;                     /* Loop counter */
   int pc;                    /* Address of a i-th cell */
   int addr;                  /* Offset of first byte after cell pointer array */
@@ -610,13 +613,15 @@ static void defragmentPage(MemPage *pPage){
   int cellOffset;            /* Offset to the cell pointer array */
   int brk;                   /* Offset to the cell content area */
   int nCell;                 /* Number of cells on the page */
-  unsigned char *data;               /* The page data */
-  unsigned char temp[SQLITE_MAX_PAGE_SIZE];  /* Temp area for cell content */
+  unsigned char *data;       /* The page data */
+  unsigned char *temp;       /* Temp area for cell content */
 
   assert( sqlite3pager_iswriteable(pPage->aData) );
   assert( pPage->pBt!=0 );
   assert( pPage->pBt->usableSize <= SQLITE_MAX_PAGE_SIZE );
   assert( pPage->nOverflow==0 );
+  temp = sqliteMalloc( pPage->pBt->pageSize );
+  if( temp==0 ) return SQLITE_NOMEM;
   data = pPage->aData;
   hdr = pPage->hdrOffset;
   cellOffset = pPage->cellOffset;
@@ -643,6 +648,8 @@ static void defragmentPage(MemPage *pPage){
   data[hdr+7] = 0;
   addr = cellOffset+2*nCell;
   memset(&data[addr], 0, brk-addr);
+  sqliteFree(temp);
+  return SQLITE_OK;
 }
 
 /*
@@ -702,7 +709,7 @@ static int allocateSpace(MemPage *pPage, int nByte){
   nCell = get2byte(&data[hdr+3]);
   cellOffset = pPage->cellOffset;
   if( nFrag>=60 || cellOffset + 2*nCell > top - nByte ){
-    defragmentPage(pPage);
+    if( defragmentPage(pPage) ) return 0;
     top = get2byte(&data[hdr+5]);
   }
   top -= nByte;
@@ -819,15 +826,17 @@ static int initPage(
   int i;             /* Loop counter */
   int hdr;           /* Offset to beginning of page header */
   u8 *data;          /* Equal to pPage->aData */
+  Btree *pBt;        /* The main btree structure */
   int usableSize;    /* Amount of usable space on each page */
   int cellOffset;    /* Offset from start of page to first cell pointer */
   int nFree;         /* Number of unused bytes on the page */
   int top;           /* First byte of the cell content area */
 
-  assert( pPage->pBt!=0 );
-  assert( pParent==0 || pParent->pBt==pPage->pBt );
+  pBt = pPage->pBt;
+  assert( pBt!=0 );
+  assert( pParent==0 || pParent->pBt==pBt );
   assert( pPage->pgno==sqlite3pager_pagenumber(pPage->aData) );
-  assert( pPage->aData == &((unsigned char*)pPage)[-pPage->pBt->pageSize] );
+  assert( pPage->aData == &((unsigned char*)pPage)[-pBt->pageSize] );
   if( pPage->pParent!=pParent && (pPage->pParent!=0 || pPage->isInit) ){
     /* The parent page should never change unless the file is corrupt */
     return SQLITE_CORRUPT; /* bkpt-CORRUPT */
@@ -842,11 +851,11 @@ static int initPage(
   decodeFlags(pPage, data[hdr]);
   pPage->nOverflow = 0;
   pPage->idxShift = 0;
-  usableSize = pPage->pBt->usableSize;
+  usableSize = pBt->usableSize;
   pPage->cellOffset = cellOffset = hdr + 12 - 4*pPage->leaf;
   top = get2byte(&data[hdr+5]);
   pPage->nCell = get2byte(&data[hdr+3]);
-  if( pPage->nCell>MX_CELL ){
+  if( pPage->nCell>MX_CELL(pBt) ){
     /* To many cells for a single page.  The page must be corrupt */
     return SQLITE_CORRUPT; /* bkpt-CORRUPT */
   }
@@ -1005,12 +1014,8 @@ static void pageReinit(void *pData, int pageSize){
 }
 
 /*
-** Open a new database.
-**
-** Actually, this routine just sets up the internal data structures
-** for accessing the database.  We do not open the database file 
-** until the first page is loaded.
-**
+** Open a database file.
+** 
 ** zFilename is the name of the database file.  If zFilename is NULL
 ** a new database with a random name is created.  This randomly named
 ** database file will be deleted when sqlite3BtreeClose() is called.
@@ -1140,7 +1145,7 @@ int sqlite3BtreeSetPageSize(Btree *pBt, int pageSize, int nReserve){
   if( nReserve<0 ){
     nReserve = pBt->pageSize - pBt->usableSize;
   }
-  if( pageSize>512 && pageSize<SQLITE_MAX_PAGE_SIZE ){
+  if( pageSize>=512 && pageSize<=SQLITE_MAX_PAGE_SIZE ){
     pBt->pageSize = pageSize;
     sqlite3pager_set_pagesize(pBt->pPager, pageSize);
   }
@@ -1218,9 +1223,8 @@ static int lockBtree(Btree *pBt){
   if( pBt->minLocal>pBt->maxLocal || pBt->maxLocal<0 ){
     goto page1_init_failed;
   }
-  assert( pBt->maxLeaf + 23 <= MX_CELL_SIZE );
+  assert( pBt->maxLeaf + 23 <= MX_CELL_SIZE(pBt) );
   pBt->pPage1 = pPage1;
-  pBt->pageSizeFixed = 1;
   return SQLITE_OK;
 
 page1_init_failed:
@@ -1278,6 +1282,7 @@ static int newDatabase(Btree *pBt){
   data[23] = pBt->minLeafFrac;
   memset(&data[24], 0, 100-24);
   zeroPage(pP1, PTF_INTKEY|PTF_LEAF|PTF_LEAFDATA );
+  pBt->pageSizeFixed = 1;
   return SQLITE_OK;
 }
 
@@ -1399,8 +1404,8 @@ void sqlite3BtreeCursorList(Btree *pBt){
   for(pCur=pBt->pCursor; pCur; pCur=pCur->pNext){
     MemPage *pPage = pCur->pPage;
     char *zMode = pCur->wrFlag ? "rw" : "ro";
-    printf("CURSOR %08x rooted at %4d(%s) currently at %d.%d%s\n",
-       (int)pCur, pCur->pgnoRoot, zMode,
+    sqlite3DebugPrintf("CURSOR %p rooted at %4d(%s) currently at %d.%d%s\n",
+       pCur, pCur->pgnoRoot, zMode,
        pPage ? pPage->pgno : 0, pCur->idx,
        pCur->isValid ? "" : " eof"
     );
@@ -2916,6 +2921,7 @@ static int balance_nonroot(MemPage *pPage){
   int pageFlags;               /* Value of pPage->aData[0] */
   int subtotal;                /* Subtotal of bytes in cells on one page */
   int iSpace = 0;              /* First unused byte of aSpace[] */
+  int mxCellPerPage;           /* Maximum number of cells in one page */
   MemPage *apOld[NB];          /* pPage and up to two siblings */
   Pgno pgnoOld[NB];            /* Page numbers for each page in apOld[] */
   MemPage *apCopy[NB];         /* Private copies of apOld[] pages */
@@ -2925,10 +2931,10 @@ static int balance_nonroot(MemPage *pPage){
   u8 *apDiv[NB];               /* Divider cells in pParent */
   int cntNew[NB+2];            /* Index in aCell[] of cell after i-th page */
   int szNew[NB+2];             /* Combined size of cells place on i-th page */
-  u8 *apCell[(MX_CELL+2)*NB];  /* All cells from pages being balanced */
-  int szCell[(MX_CELL+2)*NB];  /* Local size of all cells */
-  u8 aCopy[NB][SQLITE_MAX_PAGE_SIZE+sizeof(MemPage)];  /* Space for apCopy[] */
-  u8 aSpace[SQLITE_MAX_PAGE_SIZE*5];   /* Space to copies of divider cells */
+  u8 **apCell;                 /* All cells begin balanced */
+  int *szCell;                 /* Local size of all cells in apCell[] */
+  u8 *aCopy[NB];               /* Space for holding data of apCopy[] */
+  u8 *aSpace;                  /* Space to hold copies of dividers cells */
 
   /* 
   ** Find the parent page.
@@ -2940,6 +2946,25 @@ static int balance_nonroot(MemPage *pPage){
   sqlite3pager_write(pParent->aData);
   assert( pParent );
   TRACE(("BALANCE: begin page %d child of %d\n", pPage->pgno, pParent->pgno));
+
+  /*
+  ** Allocate space for memory structures
+  */
+  mxCellPerPage = MX_CELL(pBt);
+  apCell = sqliteMallocRaw( 
+       (mxCellPerPage+2)*NB*(sizeof(u8*)+sizeof(int))
+     + sizeof(MemPage)*NB
+     + pBt->pageSize*(5+NB)
+  );
+  if( apCell==0 ){
+    return SQLITE_NOMEM;
+  }
+  szCell = (int*)&apCell[(mxCellPerPage+2)*NB];
+  aCopy[0] = (u8*)&szCell[(mxCellPerPage+2)*NB];
+  for(i=1; i<NB; i++){
+    aCopy[i] = &aCopy[i-1][pBt->pageSize+sizeof(MemPage)];
+  }
+  aSpace = &aCopy[NB-1][pBt->pageSize+sizeof(MemPage)];
   
   /*
   ** Find the cell in the parent page whose left child points back
@@ -3010,7 +3035,7 @@ static int balance_nonroot(MemPage *pPage){
   ** process of being overwritten.
   */
   for(i=0; i<nOld; i++){
-    MemPage *p = apCopy[i] = (MemPage*)&aCopy[i+1][-(int)sizeof(MemPage)];
+    MemPage *p = apCopy[i] = (MemPage*)&aCopy[i][pBt->pageSize];
     p->aData = &((u8*)p)[-pBt->pageSize];
     memcpy(p->aData, apOld[i]->aData, pBt->pageSize + sizeof(MemPage));
     p->aData = &((u8*)p)[-pBt->pageSize];
@@ -3057,7 +3082,7 @@ static int balance_nonroot(MemPage *pPage){
         szCell[nCell] = sz;
         pTemp = &aSpace[iSpace];
         iSpace += sz;
-        assert( iSpace<=sizeof(aSpace) );
+        assert( iSpace<=pBt->pageSize*5 );
         memcpy(pTemp, apDiv[i], sz);
         apCell[nCell] = pTemp+leafCorrection;
         dropCell(pParent, nxDiv, sz);
@@ -3241,13 +3266,13 @@ static int balance_nonroot(MemPage *pPage){
         pCell = &aSpace[iSpace];
         fillInCell(pParent, pCell, 0, info.nKey, 0, 0, &sz);
         iSpace += sz;
-        assert( iSpace<=sizeof(aSpace) );
+        assert( iSpace<=pBt->pageSize*5 );
         pTemp = 0;
       }else{
         pCell -= 4;
         pTemp = &aSpace[iSpace];
         iSpace += sz;
-        assert( iSpace<=sizeof(aSpace) );
+        assert( iSpace<=pBt->pageSize*5 );
       }
       insertCell(pParent, nxDiv, pCell, sz, pTemp);
       put4byte(findOverflowCell(pParent,nxDiv), pNew->pgno);
@@ -3290,6 +3315,7 @@ static int balance_nonroot(MemPage *pPage){
   ** Cleanup before returning.
   */
 balance_cleanup:
+  sqliteFree(apCell);
   for(i=0; i<nOld; i++){
     releasePage(apOld[i]);
   }
@@ -3310,12 +3336,19 @@ balance_cleanup:
 static int balance_shallower(MemPage *pPage){
   MemPage *pChild;             /* The only child page of pPage */
   Pgno pgnoChild;              /* Page number for pChild */
-  int rc;                      /* Return code from subprocedures */
-  u8 *apCell[(MX_CELL+2)*NB];  /* All cells from pages being balanced */
-  int szCell[(MX_CELL+2)*NB];  /* Local size of all cells */
+  int rc = SQLITE_OK;          /* Return code from subprocedures */
+  Btree *pBt;                  /* The main BTree structure */
+  int mxCellPerPage;           /* Maximum number of cells per page */
+  u8 **apCell;                 /* All cells from pages being balanced */
+  int *szCell;                 /* Local size of all cells */
 
   assert( pPage->pParent==0 );
   assert( pPage->nCell==0 );
+  pBt = pPage->pBt;
+  mxCellPerPage = MX_CELL(pBt);
+  apCell = sqliteMallocRaw( mxCellPerPage*(sizeof(u8*)+sizeof(int)) );
+  if( apCell==0 ) return SQLITE_NOMEM;
+  szCell = (int*)&apCell[mxCellPerPage];
   if( pPage->leaf ){
     /* The table is completely empty */
     TRACE(("BALANCE: empty table %d\n", pPage->pgno));
@@ -3336,10 +3369,10 @@ static int balance_shallower(MemPage *pPage){
     assert( pgnoChild>0 );
     assert( pgnoChild<=sqlite3pager_pagecount(pPage->pBt->pPager) );
     rc = getPage(pPage->pBt, pgnoChild, &pChild);
-    if( rc ) return rc;
+    if( rc ) goto end_shallow_balance;
     if( pPage->pgno==1 ){
       rc = initPage(pChild, pPage);
-      if( rc ) return rc;
+      if( rc ) goto end_shallow_balance;
       assert( pChild->nOverflow==0 );
       if( pChild->nFree>=100 ){
         /* The child information will fit on the root page, so do the
@@ -3371,7 +3404,9 @@ static int balance_shallower(MemPage *pPage){
     reparentChildPages(pPage);
     releasePage(pChild);
   }
-  return SQLITE_OK;
+end_shallow_balance:
+  sqliteFree(apCell);
+  return rc;
 }
 
 
@@ -3492,7 +3527,7 @@ int sqlite3BtreeInsert(
   MemPage *pPage;
   Btree *pBt = pCur->pBt;
   unsigned char *oldCell;
-  unsigned char newCell[MX_CELL_SIZE];
+  unsigned char *newCell = 0;
 
   if( pCur->status ){
     return pCur->status;  /* A rollback destroyed this cursor */
@@ -3519,10 +3554,12 @@ int sqlite3BtreeInsert(
   assert( pPage->isInit );
   rc = sqlite3pager_write(pPage->aData);
   if( rc ) return rc;
+  newCell = sqliteMallocRaw( MX_CELL_SIZE(pBt) );
+  if( newCell==0 ) return SQLITE_NOMEM;
   rc = fillInCell(pPage, newCell, pKey, nKey, pData, nData, &szNew);
-  if( rc ) return rc;
+  if( rc ) goto end_insert;
   assert( szNew==cellSizePtr(pPage, newCell) );
-  assert( szNew<=sizeof(newCell) );
+  assert( szNew<=MX_CELL_SIZE(pBt) );
   if( loc==0 && pCur->isValid ){
     int szOld;
     assert( pCur->idx>=0 && pCur->idx<pPage->nCell );
@@ -3532,7 +3569,7 @@ int sqlite3BtreeInsert(
     }
     szOld = cellSizePtr(pPage, oldCell);
     rc = clearCell(pPage, oldCell);
-    if( rc ) return rc;
+    if( rc ) goto end_insert;
     dropCell(pPage, pCur->idx, szOld);
   }else if( loc<0 && pPage->nCell>0 ){
     assert( pPage->leaf );
@@ -3546,6 +3583,8 @@ int sqlite3BtreeInsert(
   /* sqlite3BtreePageDump(pCur->pBt, pCur->pgnoRoot, 1); */
   /* fflush(stdout); */
   moveToRoot(pCur);
+end_insert:
+  sqliteFree(newCell);
   return rc;
 }
 
@@ -3597,7 +3636,7 @@ int sqlite3BtreeDelete(BtCursor *pCur){
     unsigned char *pNext;
     int szNext;
     int notUsed;
-    unsigned char tempCell[MX_CELL_SIZE];
+    unsigned char *tempCell;
     assert( !pPage->leafData );
     getTempCursor(pCur, &leafCur);
     rc = sqlite3BtreeNext(&leafCur, &notUsed);
@@ -3614,10 +3653,13 @@ int sqlite3BtreeDelete(BtCursor *pCur){
     dropCell(pPage, pCur->idx, cellSizePtr(pPage, pCell));
     pNext = findCell(leafCur.pPage, leafCur.idx);
     szNext = cellSizePtr(leafCur.pPage, pNext);
-    assert( sizeof(tempCell)>=szNext+4 );
+    assert( MX_CELL_SIZE(pBt)>=szNext+4 );
+    tempCell = sqliteMallocRaw( MX_CELL_SIZE(pBt) );
+    if( tempCell==0 ) return SQLITE_NOMEM;
     insertCell(pPage, pCur->idx, pNext-4, szNext+4, tempCell);
     put4byte(findOverflowCell(pPage, pCur->idx), pgnoChild);
     rc = balance(pPage);
+    sqliteFree(tempCell);
     if( rc ) return rc;
     dropCell(leafCur.pPage, leafCur.idx, szNext);
     rc = balance(leafCur.pPage);
@@ -3856,7 +3898,7 @@ int sqlite3BtreePageDump(Btree *pBt, int pgno, int recursive){
   pPage->leaf = (c & PTF_LEAF)!=0;
   pPage->hasData = !(pPage->zeroData || (!pPage->leaf && pPage->leafData));
   nCell = get2byte(&data[hdr+3]);
-  printf("PAGE %d:  flags=0x%02x  frag=%d   parent=%d\n", pgno,
+  sqlite3DebugPrintf("PAGE %d:  flags=0x%02x  frag=%d   parent=%d\n", pgno,
     data[hdr], data[hdr+7], 
     (pPage->isInit && pPage->pParent) ? pPage->pParent->pgno : 0);
   assert( hdr == (pgno==1 ? 100 : 0) );
@@ -3886,13 +3928,13 @@ int sqlite3BtreePageDump(Btree *pBt, int pgno, int recursive){
       if( payload[j]<0x20 || payload[j]>0x7f ) payload[j] = '.';
     }
     payload[sz] = 0;
-    printf(
+    sqlite3DebugPrintf(
       "cell %2d: i=%-10s chld=%-4d nk=%-4lld nd=%-4d payload=%s\n",
       i, range, child, info.nKey, info.nData, payload
     );
   }
   if( !pPage->leaf ){
-    printf("right_child: %d\n", get4byte(&data[hdr+8]));
+    sqlite3DebugPrintf("right_child: %d\n", get4byte(&data[hdr+8]));
   }
   nFree = 0;
   i = 0;
@@ -3901,13 +3943,13 @@ int sqlite3BtreePageDump(Btree *pBt, int pgno, int recursive){
     int sz = get2byte(&data[idx+2]);
     sprintf(range,"%d..%d", idx, idx+sz-1);
     nFree += sz;
-    printf("freeblock %2d: i=%-10s size=%-4d total=%d\n",
+    sqlite3DebugPrintf("freeblock %2d: i=%-10s size=%-4d total=%d\n",
        i, range, sz, nFree);
     idx = get2byte(&data[idx]);
     i++;
   }
   if( idx!=0 ){
-    printf("ERROR: next freeblock index out of range: %d\n", idx);
+    sqlite3DebugPrintf("ERROR: next freeblock index out of range: %d\n", idx);
   }
   if( recursive && !pPage->leaf ){
     for(i=0; i<nCell; i++){
@@ -4013,7 +4055,18 @@ struct IntegrityCk {
 /*
 ** Append a message to the error message string.
 */
-static void checkAppendMsg(IntegrityCk *pCheck, char *zMsg1, char *zMsg2){
+static void checkAppendMsg(
+  IntegrityCk *pCheck,
+  char *zMsg1,
+  const char *zFormat,
+  ...
+){
+  va_list ap;
+  char *zMsg2;
+  va_start(ap, zFormat);
+  zMsg2 = sqlite3VMPrintf(zFormat, ap);
+  va_end(ap);
+  if( zMsg1==0 ) zMsg1 = "";
   if( pCheck->zErrMsg ){
     char *zOld = pCheck->zErrMsg;
     pCheck->zErrMsg = 0;
@@ -4022,6 +4075,7 @@ static void checkAppendMsg(IntegrityCk *pCheck, char *zMsg1, char *zMsg2){
   }else{
     sqlite3SetString(&pCheck->zErrMsg, zMsg1, zMsg2, (char*)0);
   }
+  sqliteFree(zMsg2);
 }
 
 /*
@@ -4035,15 +4089,11 @@ static void checkAppendMsg(IntegrityCk *pCheck, char *zMsg1, char *zMsg2){
 static int checkRef(IntegrityCk *pCheck, int iPage, char *zContext){
   if( iPage==0 ) return 1;
   if( iPage>pCheck->nPage || iPage<0 ){
-    char zBuf[100];
-    sprintf(zBuf, "invalid page number %d", iPage);
-    checkAppendMsg(pCheck, zContext, zBuf);
+    checkAppendMsg(pCheck, zContext, "invalid page number %d", iPage);
     return 1;
   }
   if( pCheck->anRef[iPage]==1 ){
-    char zBuf[100];
-    sprintf(zBuf, "2nd reference to page %d", iPage);
-    checkAppendMsg(pCheck, zContext, zBuf);
+    checkAppendMsg(pCheck, zContext, "2nd reference to page %d", iPage);
     return 1;
   }
   return  (pCheck->anRef[iPage]++)>1;
@@ -4063,26 +4113,24 @@ static void checkList(
   int i;
   int expected = N;
   int iFirst = iPage;
-  char zMsg[100];
   while( N-- > 0 ){
     unsigned char *pOvfl;
     if( iPage<1 ){
-      sprintf(zMsg, "%d of %d pages missing from overflow list starting at %d",
+      checkAppendMsg(pCheck, zContext,
+         "%d of %d pages missing from overflow list starting at %d",
           N+1, expected, iFirst);
-      checkAppendMsg(pCheck, zContext, zMsg);
       break;
     }
     if( checkRef(pCheck, iPage, zContext) ) break;
     if( sqlite3pager_get(pCheck->pPager, (Pgno)iPage, (void**)&pOvfl) ){
-      sprintf(zMsg, "failed to get page %d", iPage);
-      checkAppendMsg(pCheck, zContext, zMsg);
+      checkAppendMsg(pCheck, zContext, "failed to get page %d", iPage);
       break;
     }
     if( isFreeList ){
       int n = get4byte(&pOvfl[4]);
       if( n>pCheck->pBt->usableSize/4-8 ){
-        sprintf(zMsg, "freelist leaf count too big on page %d", iPage);
-        checkAppendMsg(pCheck, zContext, zMsg);
+        checkAppendMsg(pCheck, zContext,
+           "freelist leaf count too big on page %d", iPage);
         N--;
       }else{
         for(i=0; i<n; i++){
@@ -4132,9 +4180,8 @@ static int checkTreePage(
   BtCursor cur;
   Btree *pBt;
   int maxLocal, usableSize;
-  char zMsg[100];
   char zContext[100];
-  char hit[SQLITE_MAX_PAGE_SIZE];
+  char *hit;
 
   /* Check that the page exists
   */
@@ -4143,14 +4190,13 @@ static int checkTreePage(
   if( iPage==0 ) return 0;
   if( checkRef(pCheck, iPage, zParentContext) ) return 0;
   if( (rc = getPage(pBt, (Pgno)iPage, &pPage))!=0 ){
-    sprintf(zMsg, "unable to get the page. error code=%d", rc);
-    checkAppendMsg(pCheck, zContext, zMsg);
+    checkAppendMsg(pCheck, zContext,
+       "unable to get the page. error code=%d", rc);
     return 0;
   }
   maxLocal = pPage->leafData ? pBt->maxLeaf : pBt->maxLocal;
   if( (rc = initPage(pPage, pParent))!=0 ){
-    sprintf(zMsg, "initPage() returns error code %d", rc);
-    checkAppendMsg(pCheck, zContext, zMsg);
+    checkAppendMsg(pCheck, zContext, "initPage() returns error code %d", rc);
     releasePage(pPage);
     return 0;
   }
@@ -4197,36 +4243,40 @@ static int checkTreePage(
   */
   data = pPage->aData;
   hdr = pPage->hdrOffset;
-  memset(hit, 0, usableSize);
-  memset(hit, 1, get2byte(&data[hdr+5]));
-  nCell = get2byte(&data[hdr+3]);
-  cellStart = hdr + 12 - 4*pPage->leaf;
-  for(i=0; i<nCell; i++){
-    int pc = get2byte(&data[cellStart+i*2]);
-    int size = cellSizePtr(pPage, &data[pc]);
-    int j;
-    for(j=pc+size-1; j>=pc; j--) hit[j]++;
-  }
-  for(cnt=0, i=get2byte(&data[hdr+1]); i>0 && i<usableSize && cnt<10000; cnt++){
-    int size = get2byte(&data[i+2]);
-    int j;
-    for(j=i+size-1; j>=i; j--) hit[j]++;
-    i = get2byte(&data[i]);
-  }
-  for(i=cnt=0; i<usableSize; i++){
-    if( hit[i]==0 ){
-      cnt++;
-    }else if( hit[i]>1 ){
-      sprintf(zMsg, "Multiple uses for byte %d of page %d", i, iPage);
-      checkAppendMsg(pCheck, zMsg, 0);
-      break;
+  hit = sqliteMalloc( usableSize );
+  if( hit ){
+    memset(hit, 1, get2byte(&data[hdr+5]));
+    nCell = get2byte(&data[hdr+3]);
+    cellStart = hdr + 12 - 4*pPage->leaf;
+    for(i=0; i<nCell; i++){
+      int pc = get2byte(&data[cellStart+i*2]);
+      int size = cellSizePtr(pPage, &data[pc]);
+      int j;
+      for(j=pc+size-1; j>=pc; j--) hit[j]++;
+    }
+    for(cnt=0, i=get2byte(&data[hdr+1]); i>0 && i<usableSize && cnt<10000; 
+           cnt++){
+      int size = get2byte(&data[i+2]);
+      int j;
+      for(j=i+size-1; j>=i; j--) hit[j]++;
+      i = get2byte(&data[i]);
+    }
+    for(i=cnt=0; i<usableSize; i++){
+      if( hit[i]==0 ){
+        cnt++;
+      }else if( hit[i]>1 ){
+        checkAppendMsg(pCheck, 0,
+          "Multiple uses for byte %d of page %d", i, iPage);
+        break;
+      }
+    }
+    if( cnt!=data[hdr+7] ){
+      checkAppendMsg(pCheck, 0, 
+          "Fragmented space is %d byte reported as %d on page %d",
+          cnt, data[hdr+7], iPage);
     }
   }
-  if( cnt!=data[hdr+7] ){
-    sprintf(zMsg, "Fragmented space is %d byte reported as %d on page %d",
-        cnt, data[hdr+7], iPage);
-    checkAppendMsg(pCheck, zMsg, 0);
-  }
+  sqliteFree(hit);
 
   releasePage(pPage);
   return depth+1;
@@ -4282,9 +4332,7 @@ char *sqlite3BtreeIntegrityCheck(Btree *pBt, int *aRoot, int nRoot){
   */
   for(i=1; i<=sCheck.nPage; i++){
     if( sCheck.anRef[i]==0 ){
-      char zBuf[100];
-      sprintf(zBuf, "Page %d is never used", i);
-      checkAppendMsg(&sCheck, zBuf, 0);
+      checkAppendMsg(&sCheck, 0, "Page %d is never used", i);
     }
   }
 
@@ -4292,12 +4340,10 @@ char *sqlite3BtreeIntegrityCheck(Btree *pBt, int *aRoot, int nRoot){
   */
   unlockBtreeIfUnused(pBt);
   if( nRef != *sqlite3pager_stats(pBt->pPager) ){
-    char zBuf[100];
-    sprintf(zBuf, 
+    checkAppendMsg(&sCheck, 0, 
       "Outstanding page count goes from %d to %d during this analysis",
       nRef, *sqlite3pager_stats(pBt->pPager)
     );
-    checkAppendMsg(&sCheck, zBuf, 0);
   }
 
   /* Clean  up and report errors.

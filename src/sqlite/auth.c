@@ -70,7 +70,7 @@
 ** setting of the auth function is NULL.
 */
 int sqlite3_set_authorizer(
-  sqlite *db,
+  sqlite3 *db,
   int (*xAuth)(void*,int,const char*,const char*,const char*,const char*),
   void *pArg
 ){
@@ -104,12 +104,13 @@ void sqlite3AuthRead(
   Expr *pExpr,          /* The expression to check authorization on */
   SrcList *pTabList     /* All table that pExpr might refer to */
 ){
-  sqlite *db = pParse->db;
+  sqlite3 *db = pParse->db;
   int rc;
   Table *pTab;          /* The table being read */
   const char *zCol;     /* Name of the column of the table */
   int iSrc;             /* Index in pTabList->a[] of table being read */
   const char *zDBase;   /* Name of database being accessed */
+  TriggerStack *pStack; /* The stack of current triggers */
 
   if( db->xAuth==0 ) return;
   assert( pExpr->op==TK_COLUMN );
@@ -118,15 +119,14 @@ void sqlite3AuthRead(
   }
   if( iSrc>=0 && iSrc<pTabList->nSrc ){
     pTab = pTabList->a[iSrc].pTab;
-  }else{
+  }else if( (pStack = pParse->trigStack)!=0 ){
     /* This must be an attempt to read the NEW or OLD pseudo-tables
     ** of a trigger.
     */
-    TriggerStack *pStack; /* The stack of current triggers */
-    pStack = pParse->trigStack;
-    assert( pStack!=0 );
     assert( pExpr->iTable==pStack->newIdx || pExpr->iTable==pStack->oldIdx );
     pTab = pStack->pTab;
+  }else{
+    return;
   }
   if( pTab==0 ) return;
   if( pExpr->iColumn>=0 ){
@@ -170,7 +170,7 @@ int sqlite3AuthCheck(
   const char *zArg2,
   const char *zArg3
 ){
-  sqlite *db = pParse->db;
+  sqlite3 *db = pParse->db;
   int rc;
 
   /* Don't do any authorization checks if the database is initialising. */

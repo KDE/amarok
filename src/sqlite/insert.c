@@ -179,7 +179,7 @@ void sqlite3Insert(
   int nColumn;          /* Number of columns in the data */
   int base = 0;         /* VDBE Cursor number for pTab */
   int iCont=0,iBreak=0; /* Beginning and end of the loop over srcTab */
-  sqlite *db;           /* The main database structure */
+  sqlite3 *db;          /* The main database structure */
   int keyColumn = -1;   /* Column that is the INTEGER PRIMARY KEY */
   int endOfLoop;        /* Label for the end of the insertion loop */
   int useTempTable;     /* Store SELECT results in intermediate table */
@@ -286,10 +286,13 @@ void sqlite3Insert(
     if( row_triggers_exist ){
       useTempTable = 1;
     }else{
-      int addr = sqlite3VdbeFindOp(v, 0, OP_OpenRead, pTab->tnum);
+      int addr = 0;
       useTempTable = 0;
-      if( addr>0 ){
-        VdbeOp *pOp = sqlite3VdbeGetOp(v, addr-2);
+      while( useTempTable==0 ){
+        VdbeOp *pOp;
+        addr = sqlite3VdbeFindOp(v, addr, OP_OpenRead, pTab->tnum);
+        if( addr==0 ) break;
+        pOp = sqlite3VdbeGetOp(v, addr-2);
         if( pOp->opcode==OP_Integer && pOp->p1==pTab->iDb ){
           useTempTable = 1;
         }

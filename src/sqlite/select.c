@@ -121,7 +121,7 @@ int sqlite3JoinType(Parse *pParse, Token *pA, Token *pB, Token *pC){
     if( pB==0 ){ pB = &dummy; zSp1 = 0; }
     if( pC==0 ){ pC = &dummy; zSp2 = 0; }
     sqlite3SetNString(&pParse->zErrMsg, "unknown or unsupported join type: ", 0,
-       pA->z, pA->n, zSp1, 1, pB->z, pB->n, zSp2, 1, pC->z, pC->n, 0);
+       pA->z, pA->n, zSp1, 1, pB->z, pB->n, zSp2, 1, pC->z, pC->n, (char*)0);
     pParse->nErr++;
     jointype = JT_INNER;
   }else if( jointype & JT_RIGHT ){
@@ -565,7 +565,7 @@ static void generateSortTail(
   KeyInfo *pInfo;
   ExprList *pOrderBy;
   int nCol, i;
-  sqlite *db = pParse->db;
+  sqlite3 *db = pParse->db;
 
   if( eDest==SRT_Sorter ) return;
   pOrderBy = p->pOrderBy;
@@ -720,7 +720,7 @@ static void generateColumnNames(
 ){
   Vdbe *v = pParse->pVdbe;
   int i, j;
-  sqlite *db = pParse->db;
+  sqlite3 *db = pParse->db;
   int fullNames, shortNames;
 
   /* If this is an EXPLAIN, skip this step */
@@ -1253,7 +1253,7 @@ static void computeLimitRegisters(Parse *pParse, Select *p){
 static int openTempIndex(Parse *pParse, Select *p, int iTab, int keyAsData){
   KeyInfo *pKeyInfo;
   int nColumn;
-  sqlite *db = pParse->db;
+  sqlite3 *db = pParse->db;
   int i;
   Vdbe *v = pParse->pVdbe;
   int addr;

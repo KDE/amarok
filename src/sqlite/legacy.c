@@ -32,9 +32,9 @@
 ** is invoked, even for queries.
 */
 int sqlite3_exec(
-  sqlite *db,                 /* The database on which the SQL executes */
+  sqlite3 *db,                /* The database on which the SQL executes */
   const char *zSql,           /* The SQL to be executed */
-  sqlite_callback xCallback,  /* Invoke this callback routine */
+  sqlite3_callback xCallback, /* Invoke this callback routine */
   void *pArg,                 /* First argument to xCallback() */
   char **pzErrMsg             /* Write error messages here */
 ){

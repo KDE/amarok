@@ -304,9 +304,9 @@ static const unsigned char aJournalMagic[] = {
   static void pager_refinfo(PgHdr *p){
     static int cnt = 0;
     if( !pager3_refinfo_enable ) return;
-    printf(
-       "REFCNT: %4d addr=0x%08x nRef=%d\n",
-       p->pgno, (int)PGHDR_TO_DATA(p), p->nRef
+    sqlite3DebugPrintf(
+       "REFCNT: %4d addr=%p nRef=%d\n",
+       p->pgno, PGHDR_TO_DATA(p), p->nRef
     );
     cnt++;   /* Something to set a breakpoint on */
   }
@@ -3169,8 +3169,8 @@ void sqlite3pager_refdump(Pager *pPager){
   PgHdr *pPg;
   for(pPg=pPager->pAll; pPg; pPg=pPg->pNextAll){
     if( pPg->nRef<=0 ) continue;
-    printf("PAGE %3d addr=0x%08x nRef=%d\n", 
-       pPg->pgno, (int)PGHDR_TO_DATA(pPg), pPg->nRef);
+    sqlite3DebugPrintf("PAGE %3d addr=%p nRef=%d\n", 
+       pPg->pgno, PGHDR_TO_DATA(pPg), pPg->nRef);
   }
 }
 #endif

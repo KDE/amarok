@@ -135,7 +135,7 @@ void sqlite3_result_value(sqlite3_context *pCtx, sqlite3_value *pValue){
 */
 int sqlite3_step(sqlite3_stmt *pStmt){
   Vdbe *p = (Vdbe*)pStmt;
-  sqlite *db;
+  sqlite3 *db;
   int rc;
 
   if( p==0 || p->magic!=VDBE_MAGIC_RUN ){
@@ -150,6 +150,30 @@ int sqlite3_step(sqlite3_stmt *pStmt){
     return SQLITE_MISUSE;
   }
   if( p->pc<0 ){
+    /* Invoke the trace callback if there is one
+    */
+    if( (db = p->db)->xTrace && !db->init.busy ){
+      assert( p->nOp>0 );
+      assert( p->aOp[p->nOp-1].opcode==OP_Noop );
+      assert( p->aOp[p->nOp-1].p3!=0 );
+      assert( p->aOp[p->nOp-1].p3type==P3_DYNAMIC );
+      sqlite3SafetyOff(db);
+      db->xTrace(db->pTraceArg, p->aOp[p->nOp-1].p3);
+      if( sqlite3SafetyOn(db) ){
+        p->rc = SQLITE_MISUSE;
+        return SQLITE_MISUSE;
+      }
+    }
+
+    /* Print a copy of SQL as it is executed if the SQL_TRACE pragma is turned
+    ** on in debugging mode.
+    */
+#ifdef SQLITE_DEBUG
+    if( (db->flags & SQLITE_SqlTrace)!=0 ){
+      sqlite3DebugPrintf("SQL-trace: %s\n", p->aOp[p->nOp-1].p3);
+    }
+#endif /* SQLITE_DEBUG */
+
     db->activeVdbeCnt++;
     p->pc = 0;
   }
@@ -525,16 +549,11 @@ int sqlite3_bind_parameter_count(sqlite3_stmt *pStmt){
 }
 
 /*
-** Return the name of a wildcard parameter.  Return NULL if the index
-** is out of range or if the wildcard is unnamed.
-**
-** The result is always UTF-8.
+** Create a mapping from variable numbers to variable names
+** in the Vdbe.azVar[] array, if such a mapping does not already
+** exist.
 */
-const char *sqlite3_bind_parameter_name(sqlite3_stmt *pStmt, int i){
-  Vdbe *p = (Vdbe*)pStmt;
-  if( p==0 || i<1 || i>p->nVar ){
-    return 0;
-  }
+static void createVarMap(Vdbe *p){
   if( !p->okVar ){
     int j;
     Op *pOp;
@@ -546,5 +565,39 @@ const char *sqlite3_bind_parameter_name(sqlite3_stmt *pStmt, int i){
     }
     p->okVar = 1;
   }
+}
+
+/*
+** Return the name of a wildcard parameter.  Return NULL if the index
+** is out of range or if the wildcard is unnamed.
+**
+** The result is always UTF-8.
+*/
+const char *sqlite3_bind_parameter_name(sqlite3_stmt *pStmt, int i){
+  Vdbe *p = (Vdbe*)pStmt;
+  if( p==0 || i<1 || i>p->nVar ){
+    return 0;
+  }
+  createVarMap(p);
   return p->azVar[i-1];
+}
+
+/*
+** Given a wildcard parameter name, return the index of the variable
+** with that name.  If there is no variable with the given name,
+** return 0.
+*/
+int sqlite3_bind_parameter_index(sqlite3_stmt *pStmt, const char *zName){
+  Vdbe *p = (Vdbe*)pStmt;
+  int i;
+  if( p==0 ){
+    return 0;
+  }
+  createVarMap(p); 
+  for(i=0; i<p->nVar; i++){
+    if( strcmp(p->azVar[i],zName)==0 ){
+      return i+1;
+    }
+  }
+  return 0;
 }
