@@ -99,6 +99,7 @@ class PlaylistWidget : public KListView //: protected KListView
         void slotGlowTimer();
         void slotEraseMarker();
         void slotTextChanged( const QString & );
+        void slotReturnPressed();
         void showContextMenu( QListViewItem *, const QPoint & );
         void activate( QListViewItem * );
 

@@ -4,6 +4,8 @@ amaroK Changelog
 
 
 VERSION 0.8.0:
+  * add: hitting return in the search field of the playlist starts playback of the
+         first visible playlist entry (Qt >=3.2 only)
   * fix: fixed crash bug in playlist searching
   * fix: fixed crash bug when removing playlist-items
   * chg: new layout has been adopted

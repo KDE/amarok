@@ -669,6 +669,21 @@ void PlaylistWidget::slotGlowTimer()
 }
 
 
+void PlaylistWidget::slotReturnPressed()
+{
+    //FIXME: this can be done for 3.1 (looping e.g.), too.
+    //       i'm just too lazy now, but i want to have this
+    //       feature in the release for Qt >=3.2 at least
+    #if QT_VERSION >= 0x030200
+    
+    QListViewItemIterator it( this, QListViewItemIterator::Visible );
+    if ( it.current() )
+        activate( it.current() );
+        
+    #endif // QT_VERSION
+}
+
+
 void PlaylistWidget::slotTextChanged( const QString &str )
 {
     QListViewItem *pVisibleItem = NULL;

@@ -191,8 +191,8 @@ void BrowserWin::initChildren()
 
     connect( m_pPlaylistLineEdit, SIGNAL( textChanged( const QString& ) ),
              m_pPlaylistWidget, SLOT( slotTextChanged( const QString& ) ) );
-//    connect( m_pPlaylistLineEdit, SIGNAL( returnPressed() ),
-//             m_pPlaylistWidget, SIGNAL( returnPressed() ) );
+    connect( m_pPlaylistLineEdit, SIGNAL( returnPressed() ),
+             m_pPlaylistWidget, SLOT( slotReturnPressed() ) );
 
     QBoxLayout *layBrowserWidget = new QVBoxLayout( pBrowserBox );
     layBrowserWidget->addWidget( m_pBrowserLineEdit );
