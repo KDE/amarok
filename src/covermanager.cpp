@@ -56,9 +56,9 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     m_artistView->setSorting( -1 );    //no sort
     m_artistView->setMinimumWidth( 180 );
 
-    KListViewItem *item = new KListViewItem( m_artistView, i18n( "All Artists" ) );
+    KListViewItem *item = new KListViewItem( m_artistView, i18n( "All Albums" ) );
     item->setExpandable( true );
-    item->setPixmap( 0, SmallIcon("personal") );
+    item->setPixmap( 0, SmallIcon("cdrom_unmount") );
 
     //load artists from the collection db
     QStringList values;
@@ -240,22 +240,21 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
 
     QStringList values;
 
-    bool allAlbums = (item == m_artistView->firstChild());
-    if( allAlbums )
-        values = m_db->artistAlbumList( false, false );
+    if( item == m_artistView->firstChild() )
+        values = m_db->albumList( false, false );
     else
         values = m_db->albumListOfArtist( item->text( 0 ), false, false );
 
     if( !values.isEmpty() ) {
 
-        for( uint i=0; i < values.count();  i+=2 )  {
-            if( !values[allAlbums ? i+1 : i].isEmpty() ) {
+        for( uint i=0; i < values.count();  ++i )  {
+            if( !values[i].isEmpty() ) {
                 CoverViewItem *coverItem = new CoverViewItem( m_coverView, m_coverView->lastItem(),
-                                                              allAlbums ? values[i] : item->text(0), values[ allAlbums ? i+1 : i ] );
+                                                              values[i], values[i] );
                 m_coverItems.append( coverItem );
 
                 if( coverItem->hasCover() ) {
-                    QString imgPath = m_db->getImageForAlbum( allAlbums ? values[i] : item->text(0), values[ allAlbums ? i+1 : i ] );
+                    QString imgPath = m_db->getImageForAlbum( values[i], values[i] );
                     coverItem->updateCover( QPixmap( imgPath ) );
                 }
             }
