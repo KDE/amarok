@@ -354,9 +354,18 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     kdDebug() << "[Gst-Engine] Loading url: " << url.url() << endl;
 
     // Make sure we have a functional output pipeline
-    if ( !( m_pipelineFilled && gst_element_get_state( m_gst_thread ) == GST_STATE_PLAYING ) )
+    if ( !( m_pipelineFilled ) )
         if ( !createPipeline() )
             return false;
+
+    // Set output pipeline to PLAYING if it's not already in this state
+    if ( gst_element_get_state( m_gst_thread ) != GST_STATE_PLAYING ) {
+        if ( !gst_element_set_state( m_gst_thread, GST_STATE_PLAYING ) ) {
+            kdError() << "Could not set output pipeline to state PLAYING!\n";
+            destroyPipeline();
+            return false;
+        }
+    }
 
     InputPipeline* input = new InputPipeline();
     if ( input->m_error ) {
@@ -827,11 +836,6 @@ GstEngine::createPipeline()
         destroyPipeline();
         return false;
     }
-    if ( !gst_element_set_state( m_gst_thread, GST_STATE_PLAYING ) ) {
-        kdError() << "Could not set threadOutput to state PLAYING!\n";
-        destroyPipeline();
-        return false;
-    }
 
     setVolume( m_volume );
 
@@ -880,6 +884,11 @@ GstEngine::destroyInput( InputPipeline* input )
 
         // Destroy the pipeline
         m_inputs.remove( input );
+
+        if ( m_pipelineFilled && m_inputs.isEmpty() ) {
+            kdDebug() << "Inputs now empty. Stopping output pipeline.\n";
+            gst_element_set_state( m_gst_thread, GST_STATE_READY );
+        }
     }
 
     // Destroy KIO transmission job
@@ -909,6 +918,7 @@ GstEngine::sendBufferStatus()
 
 InputPipeline::InputPipeline()
     : QObject()
+    , m_state( NO_FADE )
     , m_fade( 0.0 )
     , m_error( false )
     , m_eos( false )
@@ -925,7 +935,6 @@ InputPipeline::InputPipeline()
 
     // More buffers means less dropouts and higher latency
     g_object_set( G_OBJECT( queue ), "max-size-buffers", 500, NULL );
-    g_object_set( G_OBJECT( queue ), "min-threshold-buffers", 10, NULL );
 
     // Start silent
     g_object_set( G_OBJECT( volume ), "volume", 0.0, NULL );
@@ -969,7 +978,7 @@ InputPipeline::setState( State newState )
             break;
 
         default:
-            if ( m_fade == 0.0 )
+            if ( m_state == NO_FADE )
                 m_fade = 1.0;
     }
 
