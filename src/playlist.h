@@ -149,6 +149,7 @@ class Playlist : private KListView, public EngineObserver
 
     private slots:
         void slotGlowTimer();
+        void slotRepeatTrackToggled( bool enabled );
         void slotEraseMarker();
         void slotMouseButtonPressed( int, QListViewItem*, const QPoint&, int );
         void slotSelectionChanged();

@@ -817,7 +817,6 @@ Playlist::engineStateChanged( Engine::State state )
 }
 
 
-
 ////////////////////////////////////////////////////////////////////////////////
 /// KListView Reimplementation
 ////////////////////////////////////////////////////////////////////////////////
@@ -980,11 +979,9 @@ Playlist::paletteChange( const QPalette &p )
 
     KListView::paletteChange( p );
 
-    if( m_currentTrack ) {
-        // repaint currentTrack marker
-        PlaylistItem::setPixmapChanged();
-        m_currentTrack->repaint();
-    }
+    // repaint currentTrack marker
+    Glow::reset();
+    slotGlowTimer();
 }
 
 void
@@ -2158,6 +2155,20 @@ Playlist::slotGlowTimer() //SLOT
     }
 
     ++counter &= 63; //built in bounds checking with &=
+}
+
+void
+Playlist::slotRepeatTrackToggled( bool enabled )
+{
+    if ( !m_currentTrack || EngineController::engine()->state() == Engine::Idle )
+        return;
+
+    if ( enabled ) {
+        m_currentTrack->setPixmap( m_firstColumn, amaroK::getPNG( "currenttrack_repeat" ) );
+        PlaylistItem::setPixmapChanged();
+    }
+    else
+        engineStateChanged( EngineController::engine()->state() );
 }
 
 void

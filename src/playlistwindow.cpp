@@ -196,6 +196,9 @@ PlaylistWindow::init()
     m_toolbar = new amaroK::ToolBar( m_browsers->container(), "playlist_toolbar" );
     QWidget *statusbar = new amaroK::StatusBar( this );
 
+    KAction* repeatTrackAction = amaroK::actionCollection()->action( "repeat_track" );
+    connect( repeatTrackAction, SIGNAL( toggled( bool ) ), playlist, SLOT( slotRepeatTrackToggled( bool ) ) );
+
     connect( m_lineEdit, SIGNAL(textChanged( const QString& )), playlist, SLOT(setFilter( const QString& )) );
 
     m_menubar = new KMenuBar( this );
