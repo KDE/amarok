@@ -140,6 +140,9 @@ PlaylistWindow::PlaylistWindow()
     KActionCollection* const ac = actionCollection();
     const EngineController* const ec = EngineController::instance();
 
+    ac->setAutoConnectShortcuts( false );
+    ac->setWidget( this );
+
     new K3bExporter();
 
     KStdAction::configureToolbars( kapp, SLOT( slotConfigToolBars() ), ac );
@@ -174,9 +177,6 @@ PlaylistWindow::PlaylistWindow()
 
     if ( K3bExporter::isAvailable() )
         new amaroK::BurnMenuAction( ac );
-
-    ac->readShortcutSettings( QString::null, kapp->config() );
-
 
     //if first ever run let KWin place us
     if ( AmarokConfig::playlistWindowPos() != QPoint(-1,-1) )
@@ -378,11 +378,11 @@ void PlaylistWindow::createGUI()
     //we need to unplug to detect if the menu is plugged in App::applySettings()
     //TODO report to bugs.kde.org
     //we unplug after clear as otherwise it crashes! dunno why..
-    KActionPtrList actions = actionCollection()->actions();
-    for( KActionPtrList::Iterator it = actions.begin(), end = actions.end(); it != end; ++it )
-    {
-        (*it)->unplug( m_toolbar );
-    }
+     KActionPtrList actions = actionCollection()->actions();
+     for( KActionPtrList::Iterator it = actions.begin(), end = actions.end(); it != end; ++it )
+     {
+         (*it)->unplug( m_toolbar );
+     }
 
     KXMLGUIBuilder builder( this );
     KXMLGUIFactory factory( &builder, this );
@@ -399,7 +399,7 @@ void PlaylistWindow::createGUI()
     list << "toolbutton_playlist_add"
 //         << "toolbutton_playlist_clear"
 //         << "toolbutton_playlist_shuffle"
-         << "toolbutton_playlist_show"
+//         << "toolbutton_playlist_show"
          << "toolbutton_burn_menu"
          << "toolbutton_amarok_menu";
 
@@ -425,7 +425,7 @@ void PlaylistWindow::createGUI()
     }
 
     if ( AmarokConfig::showMenuBar() ) {
-        if( actionCollection()->action( "amarok_menu" )->isPlugged() )
+        if ( actionCollection()->action( "amarok_menu" )->isPlugged() )
             actionCollection()->action( "amarok_menu" )->unplugAll();
     }
 
