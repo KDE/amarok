@@ -24,7 +24,7 @@ from os import *
 try:
     from qt import *
 except:
-    popen( "kdialog --sorry 'PyQt (KDE bindings for Python) is required for this script.'" )
+    popen( "kdialog --sorry 'PyQt (Qt bindings for Python) is required for this script.'" )
     raise
 
 
