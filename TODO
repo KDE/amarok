@@ -4,6 +4,10 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
+    * add: <mxcl> combo for file/directory browser that remembers what you've entered (like open dialog)
+
+    * fix: <mxcl> session management (broke again!)
+
     * fix: <grue> when adding files from commandline they get sorted in reversed order
 
     * fix: <grue> ctrl-c for copying current title seems broken
@@ -74,7 +78,7 @@ LONG-TERM:
 
     * add: <berkus> add smooth fade outs on stop
 
-    * add: make PlayerWidget shadeable (like XMMS)
+    * add: make PlayerWidget shadeable (like XMMS) [<mxcl> doesn't the systray provide this functionality already?]
 
     * display some information about current track in browserwin
 
