@@ -716,7 +716,7 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
         m_nextTrack = (PlaylistItem*)item;
         break;
     case VIEW:
-        showTrackInfo( static_cast<const PlaylistItem *>(item) );
+        showTrackInfo( static_cast<PlaylistItem *>(item) );
         break;
     case EDIT:
         rename( item, col );
