@@ -1122,7 +1122,7 @@ namespace Glow
         static int    r, g, b;
     }
 
-    static const uint STEPS = 30;
+    static const uint STEPS = 13;
 
     static int counter; //int just in case amaroKScheme method breaks
 }
