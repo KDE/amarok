@@ -30,10 +30,6 @@ SHORT-TERM (URGENT):
                 QPainter::setPen: Will be reset by begin()
                 QPainter::setFont: Will be reset by begin()
 
-    * fix: #49 <mxcl> we force arial on users, but arial only supports latin characters! we must detect the
-               need for another font, or make it configurable (preferably we should detect this, it may be that
-               we should just use the default system font, there is a reason users can choose a default font!)
-
     * fix: #44 <markey> ExpandButtons do not work well with keyboard shortcuts: the button expands, and then
                nothing happens. you must close it using the mouse
 
@@ -135,9 +131,9 @@ LONG-TERM:
            <mxcl> doesn't the systray provide this functionality already?
 	   <berkus> no it doesn't, double click the winamp/xmms window and see for yourself
 	   <larson> How do you propose this should work? Since we are handled by kwin and have
-	   normal window borders, double clicking the titlebar is handled by kwin. Also, should 
+	   normal window borders, double clicking the titlebar is handled by kwin. Also, should
 	   the playlist be shadable?
-	
+
     * add: display some information about current track in playlist window
 
     * add: support for compressed archives / tarballs

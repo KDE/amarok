@@ -21,18 +21,15 @@
 #include <klistview.h> //baseclass
 #include <kurl.h>      //stack allocated
 
-class QColor;
 class QColorGroup;
 class QListViewItem;
 class QPainter;
-class QString;
 class MetaBundle;
 class PlaylistWidget;
 
 class PlaylistItem : public KListViewItem
 {
     public:
-        //FIXME change it so it only accepts PlaylistWidget
         PlaylistItem( PlaylistWidget*, QListViewItem*, const KURL&, const QString& = "", const int length = 0 );
         ~PlaylistItem();
 
@@ -47,9 +44,6 @@ class PlaylistItem : public KListViewItem
         const QString title() const { return KListViewItem::text( 1 ); }
         const KURL &url() const { return m_url; }
 
-        //FIXME move to PlaylistWidget?
-        static PlaylistItem *GlowItem;
-        
         bool corruptFile;
 
     private:

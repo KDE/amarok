@@ -521,7 +521,9 @@ void PlayerApp::setupColors()
     if( AmarokConfig::schemeKDE() )
     {
         //TODO this sucks a bit, perhaps just iterate over all children calling "unsetPalette"?
-        m_pBrowserWin->setColors( QApplication::palette(), KGlobalSettings::alternateBackgroundColor() );
+        QColorGroup group = QApplication::palette().active();
+        group.setColor( QColorGroup::BrightText, group.highlight() ); //GlowColor
+        m_pBrowserWin->setColors( QPalette( group, group, group ), KGlobalSettings::alternateBackgroundColor() );
 
     } else if( AmarokConfig::schemeAmarok() ) {
 
@@ -534,7 +536,7 @@ void PlayerApp::setupColors()
         //bgAlt.setRgb( 74, 81, 107 );
         //bgAlt.setRgb( 83, 86, 112 );
 
-//         QColor highlight( (bg.red() + bgAlt.red())/2, (bg.green() + bgAlt.green())/2, (bg.blue() + bgAlt.blue())/2 );
+//QColor highlight( (bg.red() + bgAlt.red())/2, (bg.green() + bgAlt.green())/2, (bg.blue() + bgAlt.blue())/2 );
 
         group.setColor( QColorGroup::Text, Qt::white );
         group.setColor( QColorGroup::Base, bg );
@@ -543,6 +545,7 @@ void PlayerApp::setupColors()
 
         group.setColor( QColorGroup::Highlight, Qt::white );
         group.setColor( QColorGroup::HighlightedText, bg );
+        group.setColor( QColorGroup::BrightText, QColor( 0xff, 0x40, 0x40 ) ); //GlowColor
 
         group.setColor( QColorGroup::Light,    Qt::white );
         group.setColor( QColorGroup::Midlight, group.background() );
@@ -584,6 +587,7 @@ void PlayerApp::setupColors()
         group.setColor( QColorGroup::Highlight, highlight );
         group.setColor( QColorGroup::HighlightedText, Qt::white );
         group.setColor( QColorGroup::Dark, Qt::darkGray );
+        group.setColor( QColorGroup::BrightText, QColor( 0xff, 0x40, 0x40 ) ); //GlowColor
 
         //FIXME QColorGroup member "disabled" looks very bad (eg for buttons)
         m_pBrowserWin->setColors( QPalette( group, group, group ), bgAlt );

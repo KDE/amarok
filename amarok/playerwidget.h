@@ -87,7 +87,7 @@ class PlayerWidget : public QWidget
         static QString zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1" ).arg( i ) : QString::number( i ); }
 
     public slots:
-        void createAnalyzer( bool = true );
+        void createAnalyzer( int = 0 );
         void slotConfigShortcuts();       //TODO move to playerapp
         void slotConfigGlobalShortcuts(); //TODO move all generic stuff to playerapp
 
@@ -96,7 +96,7 @@ class PlayerWidget : public QWidget
 
     signals:
         void configureDecoder();
-        
+
     private:
         void setScroll( const QStringList& );
         void paintEvent( QPaintEvent *e );

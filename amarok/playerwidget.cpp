@@ -28,6 +28,7 @@ email                : markey@web.de
 #include <math.h> //updateAnalzyer()
 
 #include <qfont.h>
+#include <qfontdatabase.h> //ctor
 #include <qhbox.h>
 #include <qiconset.h>
 #include <qpainter.h>
@@ -67,7 +68,10 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     setPaletteForegroundColor( Qt::white ); //0x80a0ff
     setPaletteBackgroundColor( QColor( 32, 32, 80 ) );
 
-    QFont font( "Arial" ); //= AmarokConfig::playerWidgetFont();
+    QFont font;
+    //for languages using non latin character sets use the default font, otherwise we use arial if available
+    //FIXME having to use the fontDatabase for this is just silly, find a better way!
+    if( QFontDatabase().families( QFont::Latin ).contains( font.family() ) ) font.setFamily( "Arial" );
     font.setBold( TRUE );
     font.setPixelSize( 10 );
     setFont( font );
@@ -123,9 +127,9 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
         m_pScrollFrame->setFont( font );
 
         m_scrollBuffer.fill( backgroundColor() );
-      //</Scroller>
+    { //</Scroller>
 
-      //<TimeLabel>
+    } //<TimeLabel>
         font.setPixelSize( 18 );
 
         m_pTimeLabel = wrapper<QLabel>( QRect(16,36, 9*12+2,16), this, 0, Qt::WRepaintNoErase );
@@ -420,7 +424,10 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
             repaint( true );
         }
-        else if( m_pAnalyzer->geometry().contains( e->pos() ) ) { createAnalyzer( true ); return; }
+        else if( m_pAnalyzer->geometry().contains( e->pos() ) )
+        {
+            createAnalyzer( e->state() & Qt::ControlButton ? -1 : +1 );
+        }
         else startDrag();
     }
 }
@@ -450,9 +457,9 @@ void PlayerWidget::closeEvent( QCloseEvent *e )
 
 // SLOTS ---------------------------------------------------------------------
 
-void PlayerWidget::createAnalyzer( bool increment )
+void PlayerWidget::createAnalyzer( int increment )
 {
-    if( increment ) AmarokConfig::setCurrentAnalyzer( AmarokConfig::currentAnalyzer() + 1 );
+    AmarokConfig::setCurrentAnalyzer( AmarokConfig::currentAnalyzer() + increment );
 
     delete m_pAnalyzer;
 

@@ -26,7 +26,6 @@
 #include <kurl.h>        //KURL::List
 #include <qdir.h>        //stack allocated
 
-class QColor;
 class QCustomEvent;
 class QDragEnterEvent;
 class QDragLeaveEvent;
@@ -168,7 +167,6 @@ class PlaylistWidget : private KListView
         QTimer* const m_GlowTimer; //FIXME allocate on stack
         int m_GlowCount;
         int m_GlowAdd;
-        QColor m_GlowColor;
 
         PlaylistItem  *m_currentTrack; //this track is playing
         //mutable //TODO not supported by gcc 2.9.5

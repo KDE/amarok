@@ -34,9 +34,6 @@
 #include <kurl.h>
 
 
-//statics
-PlaylistItem *PlaylistItem::GlowItem  = 0;
-
 
 PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KURL &u, const QString &title, const int length )
       : KListViewItem( parent, lvi, ( u.protocol() == "file" ) ? u.fileName() : u.prettyURL() )
@@ -44,7 +41,7 @@ PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KU
 {
     setDragEnabled( true );
     setDropEnabled( true );
-    
+
     // our friend threadweaver will take care of this flag
     corruptFile = FALSE;
 
@@ -192,35 +189,33 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 {
     if( column == 9 && text( 9 ).isEmpty() ) listView()->readAudioProperties( this );
 
-    if ( this == PlaylistItem::GlowItem )
+    if ( this == listView()->currentTrack() )
     {
-        const QColor GlowText( 0xff, 0x40, 0x40 ); //FIXME extend QColorGroup and add this member
+        const QColor glowText( cg.brightText() );
         QColorGroup glowCg = cg; //shallow copy
         int h, s, v;
 
-        GlowText.getHsv( &h, &s, &v );
+        glowText.getHsv( &h, &s, &v );
         QColor glowBase( h, ( s > 50 ) ? s - 50 : s + 50, v, QColor::Hsv );
         QColor normBase( cg.base() );
-        glowBase.setRgb( (normBase.red()*3   + glowBase.red()*2)   /5,
-                         (normBase.green()*3 + glowBase.green()*2) /5,
-                         (normBase.blue()*3  + glowBase.blue()*2)  /5 );
+        glowBase.setRgb( (normBase.red()*5   + glowBase.red()*2) /7,
+                         (normBase.green()*5 + glowBase.green()*2) /7,
+                         (normBase.blue()*5  + glowBase.blue()*2) /7 );
 
-        glowCg.setColor( QColorGroup::Text, GlowText );
+        glowCg.setColor( QColorGroup::Text, glowText );
         glowCg.setColor( QColorGroup::Base, glowBase );
 
         //KListViewItem enforces alternate color, so we use QListViewItem
         QListViewItem::paintCell( p, glowCg, column, width, align );
 
-    } else {
-        if ( corruptFile )
-        {
-            QColorGroup corruptCg = cg;
-            QColor corruptColor( 0xcc, 0xcc, 0xcc );
-            corruptCg.setColor( QColorGroup::Text, corruptColor );
-            KListViewItem::paintCell( p, corruptCg, column, width, align );
-        } else
-            KListViewItem::paintCell( p, cg, column, width, align );
+    } else if ( corruptFile ) {
+
+        QColorGroup corruptCg = cg;
+        QColor corruptColor( 0xcc, 0xcc, 0xcc );
+        corruptCg.setColor( QColorGroup::Text, corruptColor );
+        KListViewItem::paintCell( p, corruptCg, column, width, align );
     }
+    else KListViewItem::paintCell( p, cg, column, width, align );
 
     p->setPen( QPen( cg.dark(), 0, Qt::DotLine ) );
     p->drawLine( width - 1, 0, width - 1, height() - 1 );

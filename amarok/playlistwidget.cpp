@@ -167,8 +167,6 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
     //install header eventFilter
     header()->installEventFilter( this );
 
-    m_GlowColor.setRgb( 0xff, 0x40, 0x40 ); //FIXME move into the planned derived QColorGroup
-
     //TODO use timerEvent as is neater
     connect( m_GlowTimer, SIGNAL( timeout() ), this, SLOT( slotGlowTimer() ) );
     m_GlowTimer->start( 70 );
@@ -552,8 +550,7 @@ void PlaylistWidget::setCurrentTrack( PlaylistItem *item )
 {
     //item has been verified to be the currently playing track
 
-    PlaylistItem *tmp = PlaylistItem::GlowItem;
-    PlaylistItem::GlowItem = item;
+    PlaylistItem *prev = currentTrack();
 
     //the following 2 statements may seem strange, they are important however:
     //1. if nothing is current and then playback starts, the user needs to be shown the currentTrack
@@ -596,7 +593,7 @@ void PlaylistWidget::setCurrentTrack( PlaylistItem *item )
 
     m_currentTrack = item;
 
-    repaintItem( tmp );
+    repaintItem( prev );
     repaintItem( item );
 }
 
@@ -893,7 +890,7 @@ void PlaylistWidget::slotGlowTimer() //SLOT
 
         if ( rect.isValid() ) {
             QPainter p( viewport() );
-            p.setPen( m_GlowColor.light( m_GlowCount ) );
+            p.setPen( colorGroup().brightText().light( m_GlowCount ) );
 
             rect.setTop   ( rect.top()      );
             rect.setBottom( rect.bottom()   );
@@ -1089,6 +1086,8 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
         break;
 
     case PlaylistLoader::MakeItem:
+
+        //FIXME directPlay doesn't work for remote playlists due to d/l step!
 
         #define e static_cast<PlaylistLoader::MakeItemEvent*>(e)
         if( PlaylistItem *item = e->makePlaylistItem( this ) )
