@@ -154,6 +154,42 @@
                                 <number>0</number>
                             </property>
                         </widget>
+
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1_6</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Score:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>kIntSpinBox_score</cstring>
+                            </property>
+                        </widget>
+                        <widget class="KIntSpinBox">
+                            <property name="name">
+                                <cstring>kIntSpinBox_score</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="specialValueText">
+                                <string></string>
+                            </property>
+                            <property name="maxValue">
+                                <number>100</number>
+                            </property>
+                            <property name="value">
+                                <number>0</number>
+                            </property>
+                        </widget>
+
+
                     </hbox>
                 </widget>
                 <widget class="QLabel" row="0" column="0">
@@ -492,6 +528,7 @@
     <tabstop>kComboBox_genre</tabstop>
     <tabstop>kIntSpinBox_track</tabstop>
     <tabstop>kIntSpinBox_year</tabstop>
+    <tabstop>kIntSpinBox_score</tabstop>
     <tabstop>kLineEdit_comment</tabstop>
     <tabstop>kLineEdit_length</tabstop>
     <tabstop>kLineEdit_bitrate</tabstop>

@@ -235,12 +235,14 @@ void TagDialog::init()
     // the UI file due to bug in Designer
     kIntSpinBox_track->setSpecialValueText( " " );
     kIntSpinBox_year->setSpecialValueText( " " );
+    kIntSpinBox_score->setSpecialValueText( " " );
 
     //HACK due to deficiency in Qt that will be addressed in version 4
     // QSpinBox doesn't emit valueChanged if you edit the value with
     // the lineEdit until you change the keyboard focus
     connect( kIntSpinBox_year->child( "qt_spinbox_edit" ), SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
     connect( kIntSpinBox_track->child( "qt_spinbox_edit" ), SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+    connect( kIntSpinBox_score->child( "qt_spinbox_edit" ), SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
 
 
     // Connects for modification check
@@ -253,6 +255,7 @@ void TagDialog::init()
     connect( kComboBox_genre,  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
     connect( kIntSpinBox_track,SIGNAL(valueChanged( int )),           SLOT(checkModified()) );
     connect( kIntSpinBox_year, SIGNAL(valueChanged( int )),           SLOT(checkModified()) );
+    connect( kIntSpinBox_score, SIGNAL(valueChanged( int )),           SLOT(checkModified()) );
     connect( kLineEdit_comment,SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
 
     // Remember original button text
@@ -304,6 +307,7 @@ void TagDialog::readTags()
     kLineEdit_location->setText( m_bundle.url().isLocalFile() ? m_bundle.url().path() : m_bundle.url().url() );
     // draw the album cover on the dialog
     QString cover = CollectionDB::instance()->albumImage( m_bundle );
+    kIntSpinBox_score->setValue( CollectionDB::instance()->getSongPercentage( m_bundle.url().path() ) );
 
     if( m_currentCover != cover ) {
         pixmap_cover->setPixmap( QPixmap( cover, "PNG" ) );
@@ -319,6 +323,7 @@ void TagDialog::readTags()
           kComboBox_genre->setEnabled( false );
           kIntSpinBox_track->setEnabled( false );
           kIntSpinBox_year->setEnabled( false );
+          kIntSpinBox_score->setEnabled( false );
           kLineEdit_comment->setEnabled( false );
     }
 
@@ -376,13 +381,13 @@ TagDialog::readMultipleTracks()
     const KURL::List::ConstIterator end = m_urlList.end();
     KURL::List::ConstIterator it = m_urlList.begin();
     MetaBundle first( *it );
-    bool artist=true, album=true, genre=true, comment=true, year=true;
-    
+    bool artist=true, album=true, genre=true, comment=true, year=true, score=true;
+
     for ( ; it != end; ++it ) {
         if( !(*it).isLocalFile() ) {
             // If we have a non local file, don't even lose more time comparing, just leave
             artist=false; album=false; genre=false; comment=false, year=false;
-            break; 
+            break;
         }
         MetaBundle mb( *it );
         if ( artist && mb.artist()!=first.artist() ) { artist=false; };
@@ -390,8 +395,12 @@ TagDialog::readMultipleTracks()
         if ( genre && mb.genre()!=first.genre() ) { genre=false; };
         if ( comment && mb.comment()!=first.comment() ) { comment=false; };
         if ( year && mb.year()!=first.year() ) { year=false; };
-        
-        if (!artist && !album && !genre && !comment && !year)
+        if ( score &&
+            CollectionDB::instance()->getSongPercentage( m_bundle.url().path() ) !=
+            CollectionDB::instance()->getSongPercentage( first.url().path() ) )
+                { score = false; };
+
+        if (!artist && !album && !genre && !comment && !year && !score)
             break;
     }
     // Set them in the dialog and in m_bundle ( so we don't break hasChanged() )
@@ -415,6 +424,9 @@ TagDialog::readMultipleTracks()
         m_bundle.setYear( first.year() );
         kIntSpinBox_year->setValue( first.year().toInt() );
     }
+    if (score) {
+        kIntSpinBox_score->setValue( CollectionDB::instance()->getSongPercentage( first.url().path() ) );
+    }
 }
 
 inline bool
@@ -431,6 +443,7 @@ TagDialog::hasChanged()
     modified |= !equalString( kComboBox_album->lineEdit()->text(), m_bundle.album() );
     modified |= !equalString( kComboBox_genre->lineEdit()->text(), m_bundle.genre() );
     modified |= kIntSpinBox_year->value()  != m_bundle.year().toInt();
+    modified |= kIntSpinBox_score->value() != CollectionDB::instance()->getSongPercentage( m_bundle.url().path() );
     modified |= !equalString( kLineEdit_comment->text(), m_bundle.comment() );
     if (!m_urlList.count()) { //ignore these on MultipleTracksMode
         modified |= !equalString( kLineEdit_title->text(), m_bundle.title() );
@@ -457,6 +470,8 @@ TagDialog::storeTags()
     mb.setLength( m_bundle.length() );
     mb.setBitrate( m_bundle.bitrate() );
     mb.setSampleRate( m_bundle.sampleRate() );
+
+    CollectionDB::instance()->setSongPercentage( url, kIntSpinBox_score->value() );
 
     storedTags.insert( url, mb );
 }

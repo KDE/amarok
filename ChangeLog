@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3-beta1:
   FEATURES:
+    * Add Score widget into the tag editor. (BR 100084)
 
   CHANGES:
 
