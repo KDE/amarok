@@ -24,11 +24,12 @@ email                : markey@web.de
 #include "enginebase.h"
 
 #include <vector>
+
 #include <qobject.h>
+#include <qstringlist.h>
 
 #include <gst/gst.h>
 
-class QStringList;
 class KURL;
 
 class GstEngine : public EngineBase
@@ -47,8 +48,11 @@ class GstEngine : public EngineBase
         bool                                     isStream() const;
         std::vector<float>*                      scope();
         
-        QStringList                              availableEffects() const;
-        bool                                     effectConfigurable( const QString& name ) const;
+        QStringList                              availableEffects() const { return QStringList(); }
+        bool                                     effectConfigurable( long id ) const { return false; }
+        long                                     createEffect( const QString& name ) { return 0; }
+        void                                     removeEffect( long id ) {}
+        void                                     configureEffect( long id ) {}
 
     public slots:
         void                                     open( KURL );

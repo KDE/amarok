@@ -64,8 +64,11 @@ class EngineBase : public QObject
         virtual std::vector<float>*  scope()                                           = 0;
 
         virtual QStringList          availableEffects() const                          = 0; 
-        virtual bool                 effectConfigurable( const QString& name ) const   = 0;        
-                
+        virtual bool                 effectConfigurable( long id ) const               = 0;        
+        virtual long                 createEffect( const QString& name )               = 0;
+        virtual void                 removeEffect( long id )                           = 0;
+        virtual void                 configureEffect( long id )                        = 0;
+               
         virtual void                 open( KURL )                                      = 0;
 
         virtual void                 play()                                            = 0;

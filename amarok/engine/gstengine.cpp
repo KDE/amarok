@@ -250,18 +250,6 @@ std::vector<float>* GstEngine::scope()
 }
 
 
-QStringList GstEngine::availableEffects() const
-{
-    return QStringList();
-}
-
-
-bool GstEngine::effectConfigurable( const QString& name ) const
-{
-    return false;
-}
-
-
 /////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SLOTS
 /////////////////////////////////////////////////////////////////////////////////////

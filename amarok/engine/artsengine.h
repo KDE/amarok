@@ -22,13 +22,19 @@ email                : markey@web.de
 #include "enginebase.h"
 
 #include <vector>
+
+#include <qmap.h>
 #include <qobject.h>
+#include <qwidget.h>
+
+#include <arts/artsgui.h>
 #include <arts/soundserver.h>
 
 class QStringList;
 class QTimerEvent;
 
 class KArtsDispatcher;
+class KArtsWidget;
 class KURL;
 
 namespace KDE { class PlayObject; };
@@ -36,8 +42,8 @@ namespace KDE { class PlayObject; };
 
 class ArtsEngine : public EngineBase
 {
-        Q_OBJECT
-
+    Q_OBJECT
+    
     public:
                                                  ArtsEngine( bool& restart, int scopeSize );
                                                  ~ArtsEngine();
@@ -49,8 +55,12 @@ class ArtsEngine : public EngineBase
         bool                                     isStream() const;
 
         std::vector<float>*                      scope();
+        
         QStringList                              availableEffects() const;        
-        bool                                     effectConfigurable( const QString& name ) const;        
+        bool                                     effectConfigurable( long id ) const;        
+        long                                     createEffect( const QString& name );
+        void                                     removeEffect( long id );
+        void                                     configureEffect( long id );
         
     public slots:
         void                                     open( KURL );
@@ -66,7 +76,26 @@ class ArtsEngine : public EngineBase
         void                                     disableScope();
         void                                     startXfade();
         void                                     timerEvent( QTimerEvent* );
-    
+
+        class ArtsConfigWidget : public QWidget
+        {
+            public:
+                                                 ArtsConfigWidget( Arts::Object object );
+                                                 ~ArtsConfigWidget();
+            
+                ArtsConfigWidget*                *m_pPointer;
+                
+            private:
+                Arts::Widget                     m_gui;
+                KArtsWidget                      *m_pArtsWidget;
+        };
+                    
+        struct EffectContainer
+        {
+            Arts::StereoEffect*                  effect;
+            ArtsConfigWidget*                    widget;
+        };
+        
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
         /////////////////////////////////////////////////////////////////////////////////////
@@ -87,7 +116,8 @@ class ArtsEngine : public EngineBase
         int                                      m_scopeSize;
         long                                     m_volumeId;
         bool                                     m_proxyError;
-
+        QMap<long, EffectContainer>              m_effectMap;
+        
         bool                                     m_xfadeFadeout;
         float                                    m_xfadeValue;
         QString                                  m_xfadeCurrent;
@@ -97,5 +127,6 @@ class ArtsEngine : public EngineBase
         void                                     proxyError();
         void                                     receiveStreamMeta( QString title, QString url, QString kbps );
 };
+
 
 #endif

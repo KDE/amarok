@@ -24,9 +24,12 @@ email                : markey@web.de
 #include <vector>
 
 #include <qdir.h>
+#include <qlayout.h>
 #include <qtimer.h>
 #include <qstring.h>
 
+#include <kapplication.h>
+#include <kartswidget.h>
 #include <kconfig.h>
 #include <kdebug.h>
 #include <kfileitem.h>
@@ -37,6 +40,7 @@ email                : markey@web.de
 #include <kurl.h>
 
 #include <arts/artsflow.h>
+#include <arts/artsgui.h>
 #include <arts/artskde.h>
 #include <arts/artsmodules.h>
 #include <arts/connect.h>
@@ -200,6 +204,9 @@ ArtsEngine::~ ArtsEngine()
     delete m_pPlayObject;
     delete m_pPlayObjectXfade;
     
+    for ( QMap<long, EffectContainer>::Iterator it = m_effectMap.begin(); it != m_effectMap.end(); ++it )
+        removeEffect( it.key() );
+    
     m_scope             = Amarok::RawScope::null();
     m_xfade             = Amarok::Synth_STEREO_XFADE::null();
     m_volumeControl     = Arts::StereoVolumeControl::null();
@@ -297,40 +304,6 @@ bool ArtsEngine::isStream() const
 std::vector<float>* ArtsEngine::scope()
 {
     return m_scope.scope();
-}
-
-
-QStringList ArtsEngine::availableEffects() const
-{
-    QStringList val;
-    Arts::TraderQuery query;
-    query.supports( "Interface", "Arts::StereoEffect" );
-    query.supports( "Interface", "Arts::SynthModule" );
-    std::vector<Arts::TraderOffer> *offers = query.query();
-
-    for ( std::vector<Arts::TraderOffer>::iterator i = offers->begin(); i != offers->end(); i++ )
-    {
-        Arts::TraderOffer &offer = *i;
-        QCString name = offer.interfaceName().c_str();
-        val.append( name );
-    }
-    delete offers;
-
-    return val;
-}
-
-
-bool ArtsEngine::effectConfigurable( const QString& name ) const
-{
-    Arts::TraderQuery query;
-    query.supports( "Interface", "Arts::GuiFactory" );
-    query.supports( "CanCreate", name.latin1() );
-
-    std::vector<Arts::TraderOffer> *queryResults = query.query();
-    bool yes = queryResults->size();
-    delete queryResults;
-
-    return yes;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -445,6 +418,90 @@ void ArtsEngine::setVolume( int percent )
         EngineBase::setVolumeHW( percent );
 }
 
+
+QStringList ArtsEngine::availableEffects() const
+{
+    QStringList val;
+    Arts::TraderQuery query;
+    query.supports( "Interface", "Arts::StereoEffect" );
+    query.supports( "Interface", "Arts::SynthModule" );
+    std::vector<Arts::TraderOffer> *offers = query.query();
+
+    for ( std::vector<Arts::TraderOffer>::iterator i = offers->begin(); i != offers->end(); i++ )
+    {
+        Arts::TraderOffer &offer = *i;
+        QCString name = offer.interfaceName().c_str();
+        val.append( name );
+    }
+    delete offers;
+
+    return val;
+}
+
+
+bool ArtsEngine::effectConfigurable( long id ) const
+{
+    if ( m_effectMap[id].widget )
+        return false;
+        
+    Arts::TraderQuery query;
+    query.supports( "Interface", "Arts::GuiFactory" );
+    query.supports( "CanCreate", (*m_effectMap[id].effect)._interfaceName() );
+
+    std::vector<Arts::TraderOffer> *queryResults = query.query();
+    bool yes = queryResults->size();
+    delete queryResults;
+
+    return yes;
+}
+
+
+long ArtsEngine::createEffect( const QString& name )
+{
+    Arts::StereoEffect* pFX = new Arts::StereoEffect;
+    *pFX = Arts::DynamicCast( m_server.createObject( std::string( name.ascii() ) ) );
+    pFX->start();
+
+    long id = m_effectStack.insertBottom( *pFX, std::string( name.ascii() ) );
+    
+    if ( !id )
+    {
+        kdDebug() << "insertBottom failed" << endl;
+        pFX->stop();
+        delete pFX;
+        return 0;
+    }
+
+    EffectContainer container;
+    container.effect = pFX;
+    container.widget = 0;
+    
+    m_effectMap.insert( id, container );
+    
+    return id;
+}
+
+
+void ArtsEngine::removeEffect( long id )
+{
+    m_effectStack.remove( id );
+    
+    m_effectMap[id].effect->stop();
+    delete m_effectMap[id].widget;
+    delete m_effectMap[id].effect;
+    
+    m_effectMap.remove( id );
+}
+
+
+void ArtsEngine::configureEffect( long id )
+{
+    m_effectMap[id].widget = new ArtsConfigWidget( *m_effectMap[id].effect );
+    m_effectMap[id].widget->show();
+
+    m_effectMap[id].widget->m_pPointer = &m_effectMap[id].widget;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE METHODS
 ////////////////////////////////////////////////////////////////////////////////
@@ -529,6 +586,40 @@ void ArtsEngine::timerEvent( QTimerEvent* )
         m_xfade.percentage( ( m_xfadeCurrent == "invalue2" ) ? value : 1.0 - value );
         kdDebug() << "[timerEvent] percentage: " << m_xfade.percentage() << endl;
     }
+}
+
+
+// CLASS EffectConfigWidget --------------------------------------------------------
+
+ArtsEngine::ArtsConfigWidget::ArtsConfigWidget( Arts::Object object )
+        : QWidget( 0, 0, Qt::WType_TopLevel | Qt::WDestructiveClose )
+{
+    setCaption( kapp->makeStdCaption( QString( object._interfaceName().c_str() ) ) );
+
+    Arts::GenericGuiFactory factory;
+    m_gui = factory.createGui( object );
+
+    if ( m_gui.isNull() )
+    {
+        kdDebug() << "Arts::Widget gui == NULL! Returning.." << endl;
+        return;
+    }
+
+    else
+    {
+        m_pArtsWidget = new KArtsWidget( m_gui, this );
+
+        QBoxLayout *lay = new QHBoxLayout( this );
+        lay->add( m_pArtsWidget );
+    }
+}
+
+
+ArtsEngine::ArtsConfigWidget::~ArtsConfigWidget()
+{
+    delete m_pArtsWidget;
+    m_gui = Arts::Widget::null();
+    *m_pPointer = 0;
 }
 
 

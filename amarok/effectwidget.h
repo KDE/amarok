@@ -19,22 +19,13 @@
 #define EFFECTWIDGET_H
 
 #include <qlistview.h>
-#include <qwidget.h>
 
 #include <kdialogbase.h>
-
-#include <arts/artsgui.h>
 
 class QGroupBox;
 class QPushButton;
 
 class KComboBox;
-class KArtsWidget;
-
-namespace Arts
-{
-    class StereoEffect;
-};
 
 class PlayerApp;
 extern PlayerApp *pApp;
@@ -55,26 +46,8 @@ class EffectListItem : public QListViewItem
         bool configurable() const;
 
 // ATTRIBUTES ------
-        long m_ID;
-        Arts::StereoEffect *m_pFX;
-
-    private:
+        long m_Id;
 };
-
-// CLASS ArtsConfigWidget --------------------------------------------------------
-
-// class ArtsConfigWidget : public QWidget
-// {
-//     Q_OBJECT
-// 
-//     public:
-//         ArtsConfigWidget( Arts::Object object, QWidget *parent );
-//         ~ArtsConfigWidget();
-// 
-//     private:
-//         Arts::Widget m_gui;
-//         KArtsWidget *m_pArtsWidget;
-// };
 
 
 // CLASS EffectWidget ----------------------------------------------------------
@@ -104,7 +77,5 @@ class EffectWidget : public KDialogBase
 
         QGroupBox *m_pGroupBoxTop;
         QGroupBox *m_pGroupBoxBot;
-
-        Arts::StereoEffect *FX;
 };
 #endif

@@ -44,78 +44,32 @@
 #include <klocale.h>
 #include <kstandarddirs.h>
 
+
 // CLASS EffectListItem --------------------------------------------------------
 
 EffectListItem::EffectListItem( QListView *parent, const QString &label ) :
         QListViewItem( parent, label )
 {
-/*    m_pFX = new Arts::StereoEffect;
-    *m_pFX = Arts::DynamicCast( pApp->m_Server.createObject( std::string( label.ascii() ) ) );
-    m_pFX->start();
-
-    m_ID = pApp->m_effectStack.insertBottom( *m_pFX, std::string( label.ascii() ) );
-
-    if ( !m_ID )
-    {
-        kdDebug() << "insertBottom failed" << endl;
-        m_pFX->stop();
-        return;
-    }*/
+    m_Id = pApp->m_pEngine->createEffect( label );
 }
 
 
 EffectListItem::~EffectListItem()
 {
-/*    m_pFX->stop();
-    pApp->m_effectStack.remove( m_ID );
-
-    delete m_pFX;*/
+    pApp->m_pEngine->removeEffect( m_Id );
 }
 
 
 void EffectListItem::configure()
 {
-/*    ArtsConfigWidget *pWidget = new ArtsConfigWidget( *m_pFX, pApp->m_pPlayerWidget );
-    pWidget->show();*/
+    pApp->m_pEngine->configureEffect( m_Id );
 }
 
 
-// CLASS EffectConfigWidget --------------------------------------------------------
+// CLASS EffectWidget --------------------------------------------------------
 
-// ArtsConfigWidget::ArtsConfigWidget( Arts::Object object, QWidget *parent )
-//         : QWidget( parent, 0, Qt::WType_TopLevel | Qt::WDestructiveClose )
-// {
-//     setCaption( kapp->makeStdCaption( QString( object._interfaceName().c_str() ) ) );
-// 
-//     Arts::GenericGuiFactory factory;
-//     m_gui = factory.createGui( object );
-// 
-//     if ( m_gui.isNull() )
-//     {
-//         kdDebug() << "Arts::Widget gui == NULL! Returning.." << endl;
-//         return;
-//     }
-// 
-//     else
-//     {
-//         m_pArtsWidget = new KArtsWidget( m_gui, this );
-// 
-//         QBoxLayout *lay = new QHBoxLayout( this );
-//         lay->add( m_pArtsWidget );
-//     }
-// }
-// 
-// 
-// ArtsConfigWidget::~ArtsConfigWidget()
-// {
-//     delete m_pArtsWidget;
-//     m_gui = Arts::Widget::null();
-// }
+static const int BUTTON_WIDTH = 30;
 
-
-// CLASS EffectWidget -----------------------------------------------------------
-
-#define BUTTON_WIDTH 30
 
 EffectWidget::EffectWidget()
         : KDialogBase( 0, "EffectWidget", false, kapp->makeStdCaption( i18n("Effects") ) )
@@ -147,7 +101,7 @@ EffectWidget::EffectWidget()
     m_pListView->header()->hide();
     m_pListView->addColumn( "void" );
     m_pListView->setSorting( -1 );
-    connect( m_pListView, SIGNAL( clicked( QListViewItem * ) ),
+    connect( m_pListView, SIGNAL( currentChanged( QListViewItem * ) ),
              this, SLOT( slotItemClicked( QListViewItem * ) ) );
 
     QFrame *pContainerBotButtons = new QFrame( m_pGroupBoxBot );
@@ -191,12 +145,15 @@ void EffectWidget::slotButtonBotConf()
 {
     EffectListItem *pItem = static_cast<EffectListItem*>( m_pListView->currentItem() );
     pItem->configure();
+    
+    m_pButtonBotConf->setEnabled( false );
 }
 
 
 void EffectWidget::slotButtonBotRem()
 {
     delete m_pListView->currentItem();
+    
     m_pButtonBotConf->setEnabled( false );
 }
 
@@ -206,7 +163,7 @@ void EffectWidget::slotItemClicked( QListViewItem *pCurrentItem )
     if ( pCurrentItem )
     {
         EffectListItem *pEffect = static_cast<EffectListItem *>( pCurrentItem );
-        m_pButtonBotConf->setEnabled( pApp->m_pEngine->effectConfigurable( pEffect->text( 0 ) ) );
+        m_pButtonBotConf->setEnabled( pApp->m_pEngine->effectConfigurable( pEffect->m_Id ) );
     }
 
     else
