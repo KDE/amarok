@@ -290,13 +290,20 @@ CollectionDB::query( const QString& statement, DbConnection *conn )
 
 
 /**
- * Returns the rowid of the most recently inserted row
- * @return          int rowid
+ * Executes a SQL insert on the already opened database
+ * @param statement SQL statement to execute. Only one SQL statement is allowed.
+ * @return          The rowid of the inserted item.
  */
 int
-CollectionDB::sqlInsertID( DbConnection *conn )
+CollectionDB::insert( const QString& statement, DbConnection *conn )
 {
+    if ( DEBUG )
+        kdDebug() << "insert-start: " << statement << endl;
+
     int id;
+    
+    clock_t start = clock();
+
     DbConnection *dbConn;
     if ( conn != NULL )
     {
@@ -306,14 +313,70 @@ CollectionDB::sqlInsertID( DbConnection *conn )
     {
         dbConn = m_dbConnPool.getDbConnection();
     }
+
 #ifdef USE_MYSQL
+    mysql::mysql_query(dbConn->db(), statement.utf8());
     id = mysql::mysql_insert_id( dbConn->db() );
 #else
+    int error;
+    const char* tail;
+    sqlite3_stmt* stmt;
+
+    //compile SQL program to virtual machine
+    error = sqlite3_prepare( dbConn->db(), statement.utf8(), statement.length(), &stmt, &tail );
+
+    if ( error != SQLITE_OK )
+    {
+        kdError() << k_funcinfo << "[CollectionDB] sqlite3_compile error:" << endl;
+        kdError() << sqlite3_errmsg( dbConn->db() ) << endl;
+        kdError() << "on insert: " << statement << endl;
+    }
+    else
+    {
+        int busyCnt = 0;
+        int number = sqlite3_column_count( stmt );
+        //execute virtual machine by iterating over rows
+        while ( true )
+        {
+            error = sqlite3_step( stmt );
+
+            if ( error == SQLITE_BUSY )
+            {
+                if ( busyCnt++ > 20 ) {
+                    kdError() << "[CollectionDB] Busy-counter has reached maximum. Aborting this sql statement!\n";
+                    break;
+                }
+                ::usleep( 100000 ); // Sleep 100 msec
+                kdDebug() << "[CollectionDB] sqlite3_step: BUSY counter: " << busyCnt << endl;
+            }
+            if ( error == SQLITE_MISUSE )
+                kdDebug() << "[CollectionDB] sqlite3_step: MISUSE" << endl;
+            if ( error == SQLITE_DONE || error == SQLITE_ERROR )
+                break;
+        }
+        //deallocate vm ressources
+        sqlite3_finalize( stmt );
+
+        if ( error != SQLITE_DONE )
+        {
+            kdError() << k_funcinfo << "sqlite_step error.\n";
+            kdError() << sqlite3_errmsg( dbConn->db() ) << endl;
+            kdError() << "on insert: " << statement << endl;
+        }
+    }
     id = sqlite3_last_insert_rowid( dbConn->db() );
 #endif
+
     if ( conn == NULL )
     {
         m_dbConnPool.putDbConnection( dbConn );
+    }
+
+    if ( DEBUG )
+    {
+        clock_t finish = clock();
+        const double duration = (double) (finish - start) / CLOCKS_PER_SEC;
+        kdDebug() << "[CollectionDB] SQL-insert (" << duration << "s): " << statement << endl;
     }
     return id;
 }
@@ -495,13 +558,13 @@ CollectionDB::clearTables( DbConnection *conn )
 void
 CollectionDB::moveTempTables( DbConnection *conn )
 {
-    query( "INSERT INTO tags SELECT * FROM tags_temp;", conn );
-    query( "INSERT INTO album SELECT * FROM album_temp;", conn );
-    query( "INSERT INTO artist SELECT * FROM artist_temp;", conn );
-    query( "INSERT INTO genre SELECT * FROM genre_temp;", conn );
-    query( "INSERT INTO year SELECT * FROM year_temp;", conn );
-    query( "INSERT INTO images SELECT * FROM images_temp;", conn );
-    query( "INSERT INTO directories SELECT * FROM directories_temp;", conn );
+    insert( "INSERT INTO tags SELECT * FROM tags_temp;", conn );
+    insert( "INSERT INTO album SELECT * FROM album_temp;", conn );
+    insert( "INSERT INTO artist SELECT * FROM artist_temp;", conn );
+    insert( "INSERT INTO genre SELECT * FROM genre_temp;", conn );
+    insert( "INSERT INTO year SELECT * FROM year_temp;", conn );
+    insert( "INSERT INTO images SELECT * FROM images_temp;", conn );
+    insert( "INSERT INTO directories SELECT * FROM directories_temp;", conn );
 }
 
 
@@ -648,11 +711,9 @@ CollectionDB::IDFromValue( QString name, QString value, bool autocreate, const b
     //check if item exists. if not, should we autocreate it?
     if ( values.isEmpty() && autocreate )
     {
-        query( QString( "INSERT INTO %1 ( name ) VALUES ( '%2' );" )
+        id = insert( QString( "INSERT INTO %1 ( name ) VALUES ( '%2' );" )
                         .arg( name )
                         .arg( CollectionDB::instance()->escapeString( value ) ), conn );
-
-        id = sqlInsertID( conn );
 
         return id;
     }
@@ -719,7 +780,7 @@ CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, 
             continue;
 
         kdDebug() << "Added image for album: " << (*it).first << " - " << (*it).second << ": " << image << endl;
-        query( QString( "INSERT INTO images%1 ( path, artist, album ) VALUES ( '%1', '%2', '%3' );" )
+        insert( QString( "INSERT INTO images%1 ( path, artist, album ) VALUES ( '%1', '%2', '%3' );" )
          .arg( conn ? "_temp" : "" )
          .arg( escapeString( image ) )
          .arg( escapeString( (*it).first ) )
@@ -1113,7 +1174,8 @@ CollectionDB::addSong( MetaBundle* bundle, const bool temporary, DbConnection *c
     command += ", 0);";
 
     //FIXME: currently there's no way to check if an INSERT query failed or not - always return true atm.
-    query( command, conn );
+    // Now it might be possible as insert returns the rowid.
+    insert( command, conn );
     return true;
 }
 
@@ -1192,7 +1254,7 @@ CollectionDB::addSongPercentage( const QString &url , const int percentage )
         // entry didnt exist yet, create a new one
         score = ( ( 50 + percentage ) / 2 );
 
-        query( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
+        insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
                         "VALUES ( '%1', %2, %3, %4, 1 );" )
                         .arg( escapeString( url ) )
                         .arg( QDateTime::currentDateTime().toTime_t() )
@@ -1244,7 +1306,7 @@ CollectionDB::setSongPercentage( const QString &url , int percentage )
     }
     else
     {
-        query( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
+        insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
                         "VALUES ( '%1', %2, %3, %4, 0 );" )
                         .arg( escapeString( url ) )
                         .arg( QDateTime::currentDateTime().toTime_t() )
@@ -1531,7 +1593,7 @@ CollectionDB::similarArtistsFetched( const QString& artist, const QStringList& s
     query( QString( "DELETE FROM related_artists WHERE artist = '%1';" ).arg( escapeString( artist ) ) );
 
     for ( uint i = 0; i < suggestions.count(); i++ )
-        query( QString( "INSERT INTO related_artists ( artist, suggestion, changedate ) VALUES ( '%1', '%2', 0 );" )
+        insert( QString( "INSERT INTO related_artists ( artist, suggestion, changedate ) VALUES ( '%1', '%2', 0 );" )
                   .arg( escapeString( artist ) )
                   .arg( escapeString( suggestions[ i ] ) ) );
 

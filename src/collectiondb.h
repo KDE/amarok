@@ -111,6 +111,7 @@ class CollectionDB : public QObject, public EngineObserver
 
         //sql helper methods
         QStringList query( const QString& statement, DbConnection *conn = NULL );
+        int insert( const QString& statement, DbConnection *conn = NULL );
 
         //table management methods
         bool isEmpty();
@@ -215,7 +216,6 @@ class CollectionDB : public QObject, public EngineObserver
         void scanModifiedDirs( bool recursively, bool importPlaylists );
 
         QCString makeWidthKey( uint width );
-        int sqlInsertID( DbConnection *conn );
         QString artistValue( uint id );
         QString albumValue( uint id );
         QString genreValue( uint id );
