@@ -1,6 +1,7 @@
 imagesdir = $(kde_datadir)/amarok/images
 
 images_DATA = \
+    amarok_cut.png \
     b_next.png \
     b_pause.png \
     b_play.png \

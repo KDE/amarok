@@ -12,6 +12,7 @@
 
 #include <qapplication.h>
 #include <qfile.h>
+#include <qlabel.h>
 #include <qpushbutton.h>
 #include <qtooltip.h>
 
@@ -19,10 +20,12 @@
 #include <kcursor.h>
 #include <kdebug.h>
 #include <kglobal.h>
+#include <kiconloader.h>
 #include <klineedit.h>
 #include <kmessagebox.h>
 #include <knuminput.h>
 #include <krun.h>
+#include <kstandarddirs.h>
 
 
 TagDialog::TagDialog( const MetaBundle& mb, QWidget* parent )
@@ -101,6 +104,11 @@ TagDialog::TagDialog( const MetaBundle& mb, QWidget* parent )
     connect( pushButton_ok,     SIGNAL(clicked()), SLOT(accept()) );
     connect( pushButton_open,   SIGNAL(clicked()), SLOT(openPressed()) );
     pushButton_ok->setEnabled( false );
+    
+    // draw an icon onto the open-in-konqui button
+    pushButton_open->setPixmap( SmallIcon( "folder_sound" ) );
+    // draw the fancy amaroK logo on the dialog ;-)
+    pixmap_cover->setPixmap( QPixmap( locate( "data", QString( "amarok/images/amarok_cut.png" ) ), "PNG" ) );
 
 #ifdef HAVE_MUSICBRAINZ
     connect( pushButton_musicbrainz, SIGNAL(clicked()), SLOT(musicbrainzQuery()) );
