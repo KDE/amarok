@@ -313,10 +313,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
             KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select cover image file..." ) );
             QImage img( file.directory() + "/" + file.fileName() );
             img.save( item->albumPath(), "PNG" );
-            
-            QPixmap pixmap;
-            pixmap.convertFromImage( img.smoothScale( 60, 60 ) );
-            item->updateCover( pixmap );
+            item->updateCover( img.smoothScale( 60, 60 ) );
             break;
         }
             
