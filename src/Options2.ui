@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>Options2</class>
 <widget class="QWidget">
     <property name="name">
@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>337</width>
+            <width>366</width>
             <height>566</height>
         </rect>
     </property>
@@ -19,6 +19,9 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>Options2</string>
     </property>
     <grid>
         <property name="name">
@@ -294,7 +297,7 @@
                 <cstring>groupBox5</cstring>
             </property>
             <property name="title">
-                <string></string>
+                <string>Tags</string>
             </property>
             <grid>
                 <property name="name">
@@ -634,8 +637,6 @@
         </spacer>
     </grid>
 </widget>
-<customwidgets>
-</customwidgets>
 <connections>
     <connection>
         <sender>kcfg_RecodeID3v1Tags</sender>
@@ -664,6 +665,8 @@
 </connections>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>kcolorbutton.h</includehint>
+    <includehint>kcolorbutton.h</includehint>
     <includehint>kfontrequester.h</includehint>
     <includehint>kfontrequester.h</includehint>
     <includehint>kfontrequester.h</includehint>
