@@ -62,7 +62,7 @@ void ClickLineEdit::drawContents( QPainter *p )
 
     if ( mDrawClickMsg == true && !hasFocus() ) {
         QPen tmp = p->pen();
-        p->setPen( gray );
+        p->setPen( palette().color( QPalette::Disabled, QColorGroup::Text ) );
         QRect cr = contentsRect();
         // Add two pixel margin on the left side
         cr.setLeft( cr.left() + 2 );
