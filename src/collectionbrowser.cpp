@@ -609,11 +609,10 @@ CollectionView::doubleClicked( QListViewItem* item, const QPoint&, int ) //SLOT
 
     if( item->isExpandable() )
         item->setOpen( !item->isOpen() );
-    else {
-        KURL::List list;
-        list << static_cast<Item*>( item )->url();
-        Playlist::instance()->appendMedia( list, true ); //direct play
-    }
+    else
+        //direct play & prevent doubles in playlist
+        Playlist::instance()->appendMedia( static_cast<Item*>( item )->url(), true, true ); 
+    
 }
 
 
