@@ -46,7 +46,7 @@ CoverFetcher::~CoverFetcher()
 void
 CoverFetcher::getCover( const QString& artist, const QString& album, const QString& saveas, QueryMode mode, bool noedit, int size, bool albumonly )
 {
-    kdDebug() << k_funcinfo << endl;
+    kdDebug() << k_funcinfo << endl << artist << ", " << album << ": " << saveas << endl;
 
     m_artist = artist;
     m_album = album;
@@ -56,7 +56,7 @@ CoverFetcher::getCover( const QString& artist, const QString& album, const QStri
 
     QStringList albumExtension;
     albumExtension << i18n( "disc" ) << i18n( "disk" ) << i18n( "remaster" ) << i18n( "cd" ) << i18n( "single" )
-                   << QString( "disc" ) << QString( "disk" ) << QString( "remaster" ) << QString( "cd" ) << QString( "single" );
+                   << "disc" << "disk" << "remaster" << "cd" << "single" << "cds" /*cd single*/;
 
     //### we could use something like this globally, but how to make it clear "it" is for use?
     #define foreach( list ) \
@@ -107,7 +107,7 @@ void
 CoverFetcher::xmlResult( KIO::Job* job ) //SLOT
 {
     if ( !job->error() == 0 ) {
-        kdWarning() << "[CoverFetcher] KIO error! errno: " << job->error() << endl;
+        kdWarning() << "[CoverFetcher] Could not fetch XML data, KIO errno: " << job->error() << endl;
         emit error();
         deleteLater();
         return;
@@ -170,7 +170,8 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
 
     if ( job->error() )
     {
-        kdDebug() << "[CoverFetcher] KIO Job error.\n";
+        kdDebug() << "[CoverFetcher] Could not fetch image data, KIO errno: " << job->error() << endl;
+
 
         if ( !m_albumonly )
             getCover( m_album, m_album, m_saveas, CoverFetcher::heavy, m_noedit, 1, true );
@@ -287,11 +288,11 @@ CoverFetcher::editSearch( QString text ) //SLOT
     if ( text.isEmpty() )
         text = i18n("Search Amazon's cover database with this query:");
 
-    EditSearchDialog dialog( (QWidget*)parent(), text, m_keyword );
+    EditSearchDialog dialog( (QWidget*)parent(), text, m_saveas );
 
     switch( dialog.exec() ) {
     case QDialog::Accepted:
-        getCover( dialog.keyword(), QString::null, m_saveas, CoverFetcher::heavy );
+        getCover( dialog.keyword(), dialog.keyword(), m_saveas, CoverFetcher::heavy );
         break;
     default:
         deleteLater();
@@ -302,17 +303,12 @@ CoverFetcher::editSearch( QString text ) //SLOT
 void
 CoverFetcher::saveCover() //SLOT
 {
-    kdDebug() << k_funcinfo << endl;
-
-    emit imageReady( m_saveas, m_amazonUrl, m_image );
-    deleteLater();
+    saveCover( m_image );
 }
 
 void
 CoverFetcher::saveCover( const QImage& image ) //SLOT
 {
-    kdDebug() << k_funcinfo << endl;
-
     emit imageReady( m_saveas, m_amazonUrl, image );
     deleteLater();
 }

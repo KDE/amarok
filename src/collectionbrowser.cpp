@@ -401,16 +401,15 @@ CollectionView::renderView( )  //SLOT
     QListViewItem *item = firstChild();
     for( QStringList::ConstIterator it = currentItemPath.begin(); item && it != currentItemPath.end(); ) {
         if ( item->text( 0 ) == *it ) {
+            if ( ++it == currentItemPath.end() )
+                break;
             if ( !item->isExpandable() )
                 break;
             item->setOpen( true );
             item = item->firstChild();
-            ++it;
         }
         else
             item = item->nextSibling();
-
-        kdDebug() << *it << endl;
     }
 
     //ensure the previous currentItem is set current and visible
