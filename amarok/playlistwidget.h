@@ -20,6 +20,7 @@
 
 #include <qdir.h>
 #include <qstringlist.h>
+#include <qptrlist.h>
 
 #include <klistview.h>
 #include <krootpixmap.h>
@@ -117,5 +118,9 @@ class PlaylistWidget : public KListView
         QStringList m_undoList;
         QStringList m_redoList;
         unsigned int m_undoCounter;
+
+        QStringList searchTokens;
+        QPtrList<QListViewItem> searchPtrs;
+        QString lastSearch;
 };
 #endif

@@ -35,6 +35,7 @@
 #include <qpoint.h>
 #include <qrect.h>
 #include <qstringlist.h>
+#include <qptrlist.h>
 #include <qtimer.h>
 #include <qvaluelist.h>
 #include <qwidget.h>
@@ -346,6 +347,8 @@ PlaylistItem* PlaylistWidget::addItem( PlaylistItem *after, KURL url )
         pNewItem->setMetaTitle();
     }
 
+    searchTokens.append( pNewItem->text(0) );
+    searchPtrs.append( pNewItem );
     return pNewItem;
 }
 
@@ -463,6 +466,8 @@ void PlaylistWidget::saveM3u( QString fileName )
 
 void PlaylistWidget::clear()
 {
+    searchTokens.clear();
+    searchPtrs.clear();
     KListView::clear();
     setCurrentTrack( NULL );
 
@@ -506,30 +511,49 @@ void PlaylistWidget::slotSetRecursive()
 void PlaylistWidget::slotTextChanged( const QString &str )
 {
     QListViewItem * pVisibleItem = NULL;
-    QListViewItemIterator it( lastItem() );
-    QString low = str.lower(); // save a couple cycles
+    unsigned int x = 0;
+    bool b;
 
-    while ( *it )
+    if ( str.contains( lastSearch ) && !lastSearch.isEmpty() )
+        b = true;
+    else
+        b = false;
+
+    lastSearch = str;
+
+    if (b)
     {
-        if ( ( *it )->text( 0 ).lower().contains( low ) )
+        pVisibleItem = firstChild();
+        while ( pVisibleItem )
         {
-            ( *it )->setVisible( true );
-            pVisibleItem = ( *it );
-        }
-        else
-            ( *it )->setVisible( false );
+            if ( !pVisibleItem -> text(0).lower().contains( str.lower() ) )
+                pVisibleItem -> setVisible( false );
 
-        --it;
+            // iterate
+            pVisibleItem = pVisibleItem -> itemBelow();
+        }
     }
+    else
+        for ( QStringList::Iterator it = searchTokens.begin(); it != searchTokens.end(); ++it )
+        {
+            pVisibleItem = searchPtrs.at( x );
+
+            if ( !(*it).lower().contains( str.lower() ) )
+                pVisibleItem -> setVisible( false );
+            else
+                pVisibleItem -> setVisible( true );
+
+            x++;
+        }
 
     clearSelection();
     triggerUpdate();
 
-    if ( pVisibleItem )
+    /* if ( pVisibleItem )
     {
         setCurrentItem( pVisibleItem );
         setSelected( pVisibleItem, true );
-    }
+    }*/
 }
 
 
