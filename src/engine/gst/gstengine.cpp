@@ -88,19 +88,21 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
     gst_caps_free( caps );
 
     if ( GST_IS_BUFFER( buf ) ) {
-        gint16 * data = ( gint16* ) GST_BUFFER_DATA( buf );
+        kdDebug() << "HANDOFF BUFFER SIZE: " << GST_BUFFER_SIZE( buf ) << endl;
+        
+        float* data = (float*) GST_BUFFER_DATA( buf );
 
         // Divide length by 2 for casting from 8bit to 16bit, and divide by number of channels
         for ( ulong i = 0; i < GST_BUFFER_SIZE( buf ) / 2 / channels; i += channels ) {
             if ( instance()->m_scopeBufIndex == instance()->m_scopeBuf.size() )
                 instance()->m_scopeBufIndex = 0;
 
-            Engine::Scope::value_type temp = 0;
-            for ( int j = 0; j < channels; j++ ) {
+            long temp = 0;
+            for ( int chan = 0; chan < channels; chan++ ) {
                 // Add all channels together so we effectively get a mono scope
-                temp += data[ i + j ];
+                temp += static_cast<int>( data[i+chan] * 32768 );
             }
-            instance()->m_scopeBuf[ instance()->m_scopeBufIndex++ ] = temp;
+            instance()->m_scopeBuf[ instance()->m_scopeBufIndex++ ] = temp / channels;
         }
     }
 }
@@ -312,6 +314,8 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     kdDebug() << "Output Params: " << GstConfig::outputParams() << endl;
     
     QCString output;
+//     GstCaps* filtercaps = gst_caps_new_simple( "audio/x-raw-float", "rate=48000", "buffer-frames=3000", 0 ); 
+    GstCaps* filtercaps = gst_caps_new_simple( "audio/x-raw-float", "rate", G_TYPE_INT, 48000, "buffer-frames", G_TYPE_INT, 1920, 0 );
     
     /* create a new pipeline (thread) to hold the elements */
     if ( !( m_gst_thread = createElement( "thread" ) ) ) { goto error; }
@@ -330,14 +334,18 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     /* setting device property for AudioSink*/
     if ( GstConfig::useCustomSoundDevice() && !GstConfig::soundDevice().isEmpty() )
         g_object_set( G_OBJECT ( m_gst_audiosink ), "device", GstConfig::soundDevice().latin1(), NULL );
-
-    if ( !( m_gst_identity = createElement( "identity", m_gst_thread ) ) ) { goto error; }
+    
+    if ( !( m_gst_identity = createElement( "identity", m_gst_thread, "identity" ) ) ) { goto error; }
+    if ( !( m_gst_tee = createElement( "tee", m_gst_thread ) ) ) { goto error; }
     if ( !( m_gst_volume = createElement( "volume", m_gst_thread ) ) ) { goto error; }
     if ( !( m_gst_volumeFade = createElement( "volume", m_gst_thread ) ) ) { goto error; }
-    if ( !( m_gst_audioconvert = createElement( "audioconvert", m_gst_thread ) ) ) { goto error; }
+    if ( !( m_gst_audioconvert1 = createElement( "audioconvert", m_gst_thread, "audioconvert1" ) ) ) { goto error; }
+    if ( !( m_gst_audioconvert2 = createElement( "audioconvert", m_gst_thread, "audioconvert2" ) ) ) { goto error; }
     if ( !( m_gst_audioscale = createElement( "audioscale", m_gst_thread ) ) ) { goto error; }
+    if ( !( m_gst_bufferconvert = createElement( "buffer-frames-convert", m_gst_thread ) ) ) { goto error; }
 
     g_object_set( G_OBJECT( m_gst_volumeFade ), "volume", 1.0, NULL );
+    g_object_set( G_OBJECT( m_gst_tee ), "num-pads", 2, NULL );
     g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), m_gst_thread );
     g_signal_connect( G_OBJECT( m_gst_audiosink ), "eos", G_CALLBACK( eos_cb ), m_gst_thread );
 //     g_signal_connect ( G_OBJECT( m_thread ), "error", G_CALLBACK ( error_cb ), m_thread );
@@ -357,7 +365,13 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     
     if ( !( m_gst_spider = createElement( "spider", m_gst_thread ) ) ) { goto error; }
     /* link all elements */
-    gst_element_link_many( m_gst_src, m_gst_spider, m_gst_volumeFade, m_gst_identity, m_gst_volume, m_gst_audioconvert, m_gst_audioscale, m_gst_audiosink, 0 );
+    
+    gst_element_link_many( m_gst_src, m_gst_spider, m_gst_volumeFade, m_gst_tee, 0 );
+    gst_element_link_pads( m_gst_tee, "src0", m_gst_volume, "sink" ); 
+    gst_element_link_pads( m_gst_tee, "src1", m_gst_audioconvert2, "sink" ); 
+    gst_element_link_many( m_gst_volume, m_gst_audioscale, m_gst_audioconvert1, m_gst_audiosink, 0 );
+    gst_element_link_many( m_gst_audioconvert2, m_gst_bufferconvert, m_gst_identity, 0 );
+//     gst_element_link_filtered( m_gst_bufferconvert, m_gst_identity, filtercaps );
     
     gst_element_set_state( m_gst_thread, GST_STATE_READY );
     m_pipelineFilled = true;

@@ -104,11 +104,14 @@ class GstEngine : public Engine::Base
         GstElement*                              m_gst_audiosink;
         GstElement*                              m_gst_spider;
         GstElement*                              m_gst_identity;
+        GstElement*                              m_gst_tee;
         GstElement*                              m_gst_volume;
         GstElement*                              m_gst_volumeFade;
-        GstElement*                              m_gst_audioconvert;
+        GstElement*                              m_gst_audioconvert1;
+        GstElement*                              m_gst_audioconvert2;
         GstElement*                              m_gst_audioscale;
-
+        GstElement*                              m_gst_bufferconvert;
+        
         Engine::Scope                            m_scopeBuf;
         uint                                     m_scopeBufIndex;
        
