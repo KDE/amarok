@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2.1:
+  ADD: .ram playlist support with code from Kaffeine (BR 96101)
   FIX: amaroK can now determine the correct track-length even for formats
        unknown to TagLib. Makes it possible to seek e.g. in m4a tracks.
   ADD: Can now pick from multiple Musicbrainz results. Patch from

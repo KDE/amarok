@@ -1,5 +1,6 @@
 // Author: Max Howell (C) Copyright 2003-4
 // Author: Mark Kretschmann (C) Copyright 2004
+// .ram file support from Kaffeine 0.5, Copyright (C) 2004 by Jürgen Kofler (GPL 2 or later)
 // Copyright: See COPYING file that comes with this distribution
 //
 
@@ -338,7 +339,7 @@ PlaylistFile::PlaylistFile( const QString &path )
     case XML:
         m_error = i18n( "This component of amaroK cannot translate XML playlists." );
         return;
-    case RAM:
+    case RAM: loadRealAudioRam( stream ); break;
     case ASX:
     default:
         m_error = i18n( "amaroK does not support this playlist format." );
@@ -413,8 +414,27 @@ PlaylistFile::loadPls( QTextStream &stream )
 
     return true;
 }
-
-
+bool
+PlaylistFile::loadRealAudioRam( QTextStream &stream )
+{
+    MetaBundle b;
+    QString url;
+    //while loop adapted from Kaffeine 0.5
+    while (!stream.eof())
+    {
+        url = stream.readLine(); 
+        if (url[0] == '#') continue; /* ignore comments */
+        if (url == "--stop--") break; /* stop line */
+        if ((url.left(7) == "rtsp://") || (url.left(6) == "pnm://") || (url.left(7) == "http://"))
+        {
+            b.setUrl(KURL(url));
+            m_bundles += b;
+            b = MetaBundle();
+        }
+    }
+    
+    return true;
+}
 /// @class RemotePlaylistFetcher
 
 #include <ktempfile.h>

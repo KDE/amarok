@@ -54,7 +54,7 @@ protected:
     /// make these virtual if you need to
     bool loadM3u( QTextStream& );
     bool loadPls( QTextStream& );
-
+    bool loadRealAudioRam( QTextStream& ); 
     QString m_path;
     QString m_error;
     BundleList m_bundles;
