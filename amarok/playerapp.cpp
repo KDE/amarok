@@ -1485,6 +1485,7 @@ void PlayerApp::slotShowOptions()
     opt1->checkBox4->setChecked( m_optReadMetaInfo );
     opt1->checkBox3->setChecked( m_optShowTrayIcon );
     opt1->checkBox5->setChecked( m_optHidePlaylistWindow );
+    opt1->checkBoxXFade->setChecked( m_optXFade );
 
     if ( m_optDropMode == "Ask" )
         opt1->comboBox1->setCurrentItem( 0 );
@@ -1529,6 +1530,11 @@ void PlayerApp::slotShowOptions()
             m_optHidePlaylistWindow = true;
         else
             m_optHidePlaylistWindow = false;
+
+        if ( opt1->checkBoxXFade->isChecked() )
+            toggleXFade(true);
+        else
+            toggleXFade(false);
 
         switch ( opt1->comboBox1->currentItem() )
         {

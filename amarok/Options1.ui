@@ -156,8 +156,8 @@
             </property>
             <property name="geometry">
                 <rect>
-                    <x>10</x>
-                    <y>20</y>
+                    <x>9</x>
+                    <y>27</y>
                     <width>350</width>
                     <height>130</height>
                 </rect>
@@ -196,6 +196,14 @@
                     </property>
                     <property name="text">
                         <string>&amp;Hide playlist with main window</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>checkBoxXFade</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cross&amp;fade songs (continuous playback)</string>
                     </property>
                 </widget>
             </vbox>
