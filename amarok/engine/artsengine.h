@@ -64,6 +64,7 @@ class ArtsEngine : public EngineBase
     private:
         void                                     enableScope();
         void                                     disableScope();
+        void                                     startXfade();
         void                                     timerEvent( QTimerEvent* );
     
         /////////////////////////////////////////////////////////////////////////////////////
@@ -85,7 +86,7 @@ class ArtsEngine : public EngineBase
         long                                     m_volumeId;
         bool                                     m_proxyError;
 
-        bool                                     m_xfadeRunning;
+        bool                                     m_xfadeFadeout;
         float                                    m_xfadeValue;
         QString                                  m_xfadeCurrent;
             

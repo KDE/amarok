@@ -294,8 +294,7 @@ void PlayerApp::restoreSession()
 
         if ( seconds >= 0 )
         {
-//FIXME <markey> temporarily disabled to fix compile
-//             play( AmarokConfig::resumeTrack(), MetaBundle() );
+            play( AmarokConfig::resumeTrack(), MetaBundle() );
 
             if ( seconds > 0 )
                 m_pEngine->seek( seconds * 1000 );
@@ -347,7 +346,6 @@ void PlayerApp::saveConfig()
     AmarokConfig::setBrowserWinSize    ( m_pBrowserWin->size() );
     AmarokConfig::setBrowserWinEnabled ( m_pPlayerWidget->m_pButtonPl->isOn() );
     AmarokConfig::setBrowserWinSplitter( m_pBrowserWin->m_pSplitter->sizes() );
-    AmarokConfig::setMasterVolume      ( m_pEngine->volume() );
     AmarokConfig::setPlayerPos         ( m_pPlayerWidget->pos() );
     AmarokConfig::setVersion           ( APP_VERSION );
 
@@ -368,8 +366,8 @@ void PlayerApp::readConfig()
     m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(), m_artsNeedsRestart, SCOPE_SIZE );
         
     AmarokConfig::setHardwareMixer( m_pEngine->initMixer( AmarokConfig::hardwareMixer() ) );
-    m_pEngine->setVolume( AmarokConfig::masterVolume() );
-    
+    m_pPlayerWidget->m_pSliderVol->setValue( VOLUME_MAX - AmarokConfig::masterVolume() );
+        
     /*    m_pBrowserWin->m_pBrowserWidget->readDir( AmarokConfig::currentDirectory() );
         m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( AmarokConfig::pathHistory() );*/
 

@@ -57,8 +57,8 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
         , m_scopeSize( 1 << scopeSize )
         , m_volumeId( 0 )
         , m_proxyError( false )
-        , m_xfadeRunning( false )
-        , m_xfadeValue( 1.0 )
+        , m_xfadeFadeout( false )
+        , m_xfadeValue( 0.0 )
         , m_xfadeCurrent( "invalue1" )
 {
     setName( "arts" );
@@ -339,8 +339,11 @@ bool ArtsEngine::effectConfigurable( const QString& name ) const
 void ArtsEngine::open( KURL url )
 {
     if ( !m_proxyError )
-        stop();
-
+    {
+        m_xfadeFadeout = false;
+        startXfade();
+    }
+        
     KDE::PlayObjectFactory factory( m_server );
 
     if ( /* m_optTitleStream && */ !m_proxyError && !url.isLocalFile()  )
@@ -405,22 +408,8 @@ void ArtsEngine::stop()
 {
     kdDebug() << "[void ArtsEngine::stop()]" << endl;
    
-    m_xfadeRunning = true;
-    
-    if ( m_pPlayObjectXfade )
-    {
-        //set mute to prevent sound glitch
-        m_xfadeValue = ( m_xfadeCurrent == "invalue2" ) ? 0.0 : 1.0;
-        m_xfade.percentage( m_xfadeValue );
-        
-        delete m_pPlayObjectXfade;
-    }
-    
-    //switch xfade channels
-    m_xfadeCurrent = ( m_xfadeCurrent == "invalue1" ) ? "invalue2" : "invalue1";
-            
-    m_pPlayObjectXfade = m_pPlayObject;
-    m_pPlayObject = 0;
+    m_xfadeFadeout = true;
+    startXfade();
 }
 
 
@@ -497,39 +486,46 @@ void ArtsEngine::receiveStreamMeta( QString title, QString url, QString kbps )
 }
 
 
+void ArtsEngine::startXfade()
+{
+    m_xfadeValue = 1.0;
+    
+    //switch xfade channels
+    m_xfadeCurrent = ( m_xfadeCurrent == "invalue1" ) ? "invalue2" : "invalue1";
+
+    if ( m_pPlayObjectXfade )
+        delete m_pPlayObjectXfade;
+             
+    m_pPlayObjectXfade = m_pPlayObject;
+    m_pPlayObject = 0;
+}
+    
+
+#include <math.h>
 void ArtsEngine::timerEvent( QTimerEvent* )
 {
-    if ( m_xfadeRunning )
+    if ( m_xfadeValue > 0.0 )
     {
-        kdDebug() << "[timerEvent] m_xfadeValue: " << m_xfadeValue << endl;
-        //prevent division by 0
-        
-        float xfadeStep = ( m_xfadeLength ) ? ( 1.0 / m_xfadeLength * ARTS_TIMER ) : ( 1.0 );
-             
-        { //fade direction
-            if ( m_xfadeCurrent == "invalue2" )
-                m_xfadeValue -= xfadeStep;
-            else
-                m_xfadeValue += xfadeStep;
-        }
-        
-        { //prevent overflow
-            if ( m_xfadeValue < 0.0 )
-                m_xfadeValue = 0.0;
-            else if ( m_xfadeValue > 1.0 )
-                m_xfadeValue = 1.0;
-        }
-            
-        m_xfade.percentage( m_xfadeValue );
+        m_xfadeValue -= ( m_xfadeLength ) ?  1.0 / m_xfadeLength * ARTS_TIMER : 1.0;
 
-        if( m_xfadeValue == 0.0 || m_xfadeValue == 1.0 )
+        if ( m_xfadeValue <= 0.0 )
         {
+            m_xfadeValue = 0.0;
             if ( m_pPlayObjectXfade ) {
                 delete m_pPlayObjectXfade;
                 m_pPlayObjectXfade = 0;
             }
-            m_xfadeRunning = false;
         }
+        
+        float value;
+        
+/*        if ( m_xfadeFadeout )            
+            value = 1.0 - log10( ( 1.0 - m_xfadeValue ) * 9.0 + 1.0 ); 
+        else*/
+            value = log10( m_xfadeValue * 9.0 + 1.0 ); 
+        
+        m_xfade.percentage( ( m_xfadeCurrent == "invalue2" ) ? value : 1.0 - value );
+        kdDebug() << "[timerEvent] percentage: " << m_xfade.percentage() << endl;
     }
 }
 
