@@ -78,7 +78,7 @@ CoverFetcher::xmlResult( KIO::Job* job ) //SLOT
     
     QString imageUrl = doc.documentElement()
                           .namedItem( "Details" )
-                          .namedItem( "ImageUrlMedium" )
+                          .namedItem( "ImageUrlLarge" )
                           .firstChild().toText().nodeValue();
     
     kdDebug() << "imageUrl: " << imageUrl << endl;
