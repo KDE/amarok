@@ -369,9 +369,12 @@ ScriptManager::notifyScripts( const QString& message )
     debug() << "Sending notification: " << msg;
 
     ScriptMap::Iterator it;
-    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
-        if ( it.data().process )
-            it.data().process->writeStdin( msg.latin1(), msg.length() );
+    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it ) {
+        KProcess* proc = it.data().process;
+        if ( proc )
+            while ( !proc->writeStdin( msg.latin1(), msg.length() ) )
+                kapp->processEvents( 100 );
+    }
 }
 
 
@@ -402,8 +405,6 @@ ScriptManager::loadScript( const QString& path )
 void
 ScriptManager::engineStateChanged( Engine::State state )
 {
-    DEBUG_FUNC_INFO
-
     switch ( state )
     {
         case Engine::Empty:
@@ -428,8 +429,6 @@ ScriptManager::engineStateChanged( Engine::State state )
 void
 ScriptManager::engineNewMetaData( const MetaBundle& /*bundle*/, bool /*trackChanged*/ )
 {
-    DEBUG_FUNC_INFO
-
     notifyScripts( "trackChange" );
 }
 
