@@ -58,6 +58,7 @@ scope_port_close( xine_audio_port_t *port_gen, xine_stream_t *stream )
 static void
 scope_port_put_buffer( xine_audio_port_t *port_gen, audio_buffer_t *buf, xine_stream_t *stream )
 {
+    MyNode *new_node;
     const int num_samples = buf->num_frames * myChannels;
 
     /*FIXME both these please*/
@@ -70,7 +71,7 @@ scope_port_put_buffer( xine_audio_port_t *port_gen, audio_buffer_t *buf, xine_st
     /* I keep my own metronom because xine wouldn't for some reason */
     memcpy( myMetronom, stream->metronom, sizeof(metronom_t) );
 
-    MyNode *new_node     = malloc( sizeof(MyNode) );
+    new_node             = malloc( sizeof(MyNode) );
     new_node->vpts       = myMetronom->got_audio_samples( myMetronom, buf->vpts, buf->num_frames );
     new_node->num_frames = buf->num_frames;
     new_node->mem        = malloc( num_samples * 2 );
