@@ -337,6 +337,10 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     Engine::Base::load( url, stream );
     kdDebug() << "[Gst-Engine] Loading url: " << url.url() << endl;
 
+    // Make sure we have an output pipeline
+    if ( !m_pipelineFilled )
+        if ( !createPipeline() ) return false;
+
     InputPipeline* input = new InputPipeline();
     if ( input->m_error ) {
         delete input;
@@ -487,12 +491,14 @@ GstEngine::setVolumeSW( uint percent )  //SLOT
 
 void GstEngine::timerEvent( QTimerEvent* )
 {
-    // Fading management
+    // Fading transition management
 
     InputPipeline* input;
 
+    // Iterate over all input pipelines
     for ( uint i = 0; i < m_inputs.count(); i++ )
     {
+        int count;
         input = m_inputs.at( i );
 
         switch ( input->state() )
@@ -512,7 +518,7 @@ void GstEngine::timerEvent( QTimerEvent* )
                 else {
                     // Set new value for fadeout volume element
                     double value = 1.0 - input->m_fade;
-                    kdDebug() << "XFADE_IN: " << value << endl;
+//                     kdDebug() << "XFADE_IN: " << value << endl;
                     g_object_set( G_OBJECT( input->volume ), "volume", value, NULL );
                 }
                 break;
@@ -529,14 +535,13 @@ void GstEngine::timerEvent( QTimerEvent* )
                         kdDebug() << "[Gst-Engine] Fade-out finished.\n";
                     }
                     // Wait until queue is empty
-                    int count = 0;
                     g_object_get( G_OBJECT( input->queue ), "current-level-buffers", &count, NULL );
                     if ( !count ) destroyInput( input );
                 }
                 else {
                     // Set new value for fadeout volume element
                     double value = 1.0 - log10( ( 1.0 - input->m_fade ) * 9.0 + 1.0 );
-                    kdDebug() << "FADE_OUT: " << value << endl;
+//                     kdDebug() << "FADE_OUT: " << value << endl;
                     g_object_set( G_OBJECT( input->volume ), "volume", value, NULL );
                 }
                 break;
@@ -554,7 +559,7 @@ void GstEngine::timerEvent( QTimerEvent* )
                 else {
                     // Set new value for fadeout volume element
                     double value = 1.0 - input->m_fade;
-                    kdDebug() << "XFADE_IN: " << value << endl;
+//                     kdDebug() << "XFADE_IN: " << value << endl;
                     g_object_set( G_OBJECT( input->volume ), "volume", value, NULL );
                 }
                 break;
@@ -571,14 +576,13 @@ void GstEngine::timerEvent( QTimerEvent* )
                         kdDebug() << "[Gst-Engine] XFade-out finished.\n";
                     }
                     // Wait until queue is empty
-                    int count = 0;
                     g_object_get( G_OBJECT( input->queue ), "current-level-buffers", &count, NULL );
                     if ( !count ) destroyInput( input );
                 }
                 else {
                     // Set new value for fadeout volume element
                     double value = 1.0 - log10( ( 1.0 - input->m_fade ) * 9.0 + 1.0 );
-                    kdDebug() << "XFADE_OUT: " << value << endl;
+//                     kdDebug() << "XFADE_OUT: " << value << endl;
                     g_object_set( G_OBJECT( input->volume ), "volume", value, NULL );
                 }
                 break;
@@ -891,7 +895,8 @@ InputPipeline::InputPipeline()
     if ( !( queue = GstEngine::createElement( "queue", thread ) ) ) { goto error; }
 
     // More buffers means less dropouts and higher latency
-    g_object_set( G_OBJECT( queue ), "max-size-buffers", 200, NULL );
+    g_object_set( G_OBJECT( queue ), "max-size-buffers", 500, NULL );
+    g_object_set( G_OBJECT( queue ), "min-threshold-buffers", 10, NULL );
 
     // Start silent
     g_object_set( G_OBJECT( volume ), "volume", 0.0, NULL );
@@ -905,7 +910,7 @@ error:
 
 InputPipeline::~InputPipeline()
 {
-    kdDebug() << k_funcinfo << endl;
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
 
     if ( !m_error )
     {
@@ -917,12 +922,16 @@ InputPipeline::~InputPipeline()
 
         gst_object_unref( GST_OBJECT( thread ) );
     }
+
+    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 
 void
 InputPipeline::setState( State newState )
 {
+    if ( m_error ) return;
+
     switch ( newState )
     {
         case PLAYING:

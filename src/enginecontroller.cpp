@@ -415,9 +415,11 @@ void EngineController::slotMainTimer() //SLOT
     trackPositionChangedNotify( position );
 
     // Crossfading
-    if ( m_xFadeThisTrack && (m_bundle.length()*1000 - position < (uint)AmarokConfig::crossfadeLength()) )
+    if ( m_engine->state() == Engine::Playing &&
+         m_xFadeThisTrack &&
+         ( m_bundle.length()*1000 - position < (uint) AmarokConfig::crossfadeLength() ) )
     {
-        kdDebug() << "[controller] Crossfading...\n";
+        kdDebug() << "[controller] Crossfading to next track...\n";
         next();
     }
 }
