@@ -337,6 +337,9 @@ ScriptManager::slotStopScript()
     const QString name = li->text( 0 );
 
     // Kill script process
+    m_scripts[name].process->kill();
+    m_scripts[name].process->detach();
+    
     delete m_scripts[name].process;
     m_scripts[name].process = 0;
     slotCurrentChanged( m_base->listView->currentItem() );
