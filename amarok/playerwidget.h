@@ -18,6 +18,8 @@
 #ifndef PLAYERWIDGET_H
 #define PLAYERWIDGET_H
 
+#include "titleproxy/titleproxy.h"    //setScroll()
+
 #include <qguardedptr.h>
 #include <qlabel.h>
 #include <qwidget.h>
@@ -52,7 +54,7 @@ class AmarokSystray;
 class PlayerWidget;
 
 class MetaBundle;
-class TitleProxy::metaPacket;
+
 
 class PlayerWidget : public QWidget
 {
@@ -63,7 +65,6 @@ class PlayerWidget : public QWidget
         ~PlayerWidget();
 
         void setScroll( const MetaBundle& );
-        void setScroll( const TitleProxy::metaPacket& );
         void defaultScroll();
         void drawScroll();
         void timeDisplay();
@@ -107,6 +108,9 @@ class PlayerWidget : public QWidget
         void nextVis();
         //void slotReportBug();
 
+    private slots:
+        void setScroll( const TitleProxy::metaPacket& );
+    
     private:
         void initScroll();
         void setScroll( const QString& );

@@ -370,20 +370,6 @@ void PlayerApp::readConfig()
 }
 
 
-void PlayerApp::receiveStreamMeta( TitleProxy::metaPacket packet )
-{
-    kdDebug() << "metaPacket:: " << endl;
-    kdDebug() << "streamName : " << packet.streamName  << endl;
-    kdDebug() << "streamGenre: " << packet.streamGenre << endl;
-    kdDebug() << "streamUrl  : " << packet.streamUrl   << endl;
-    kdDebug() << "bitRate    : " << packet.bitRate     << endl;
-    kdDebug() << "title      : " << packet.title       << endl;
-    kdDebug() << "url        : " << packet.url         << endl;
-
-    m_pPlayerWidget->setScroll( packet );
-}
-
-
 #include <qpalette.h>
 #include <kglobalsettings.h>
 
@@ -507,10 +493,10 @@ void PlayerApp::play( const MetaBundle &bundle )
         TitleProxy *pProxy = new TitleProxy( url );
         m_pEngine->open( pProxy->proxyUrl() );
 
-        connect( pProxy,    SIGNAL( metaData         ( TitleProxy::metaPacket ) ),
-                 this,      SLOT  ( receiveStreamMeta( TitleProxy::metaPacket ) ) );
-        connect( m_pEngine, SIGNAL( endOfTrack       () ),
-                 pProxy,    SLOT  ( deleteLater      () ) );
+        connect( pProxy,    SIGNAL( metaData    ( const TitleProxy::metaPacket& ) ),
+                 this,      SIGNAL( metaData    ( const TitleProxy::metaPacket& ) ) );
+        connect( m_pEngine, SIGNAL( endOfTrack  () ),
+                 pProxy,    SLOT  ( deleteLater () ) );
     }
     else
         m_pEngine->open( url );
@@ -763,18 +749,6 @@ void PlayerApp::slotPlaylistToggle( bool b )
 {
     if( b ) m_pBrowserWin->show();
     else m_pBrowserWin->hide();
-}
-
-
-void PlayerApp::slotEq( bool b )
-{
-    //FIXME this is no longer needed?
-
-    if ( b )
-    {
-        KMessageBox::sorry( 0, i18n( "Equalizer is not yet implemented." ) );
-        m_pPlayerWidget->m_pButtonEq->setOn( false );
-    }
 }
 
 

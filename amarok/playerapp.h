@@ -22,11 +22,11 @@
 #include <config.h>
 #endif
 
+#include "titleproxy/titleproxy.h"    //metaData()
+
 #include <kuniqueapplication.h>
 #include <kurl.h>
 #include <vector>
-
-#include "titleproxy/titleproxy.h"
 
 #define APP_VERSION "0.8.4"
 
@@ -47,6 +47,7 @@ class MetaBundle;
 class OSDWidget;
 class PlayerWidget;
 class PlaylistItem;
+
 
 class PlayerApp : public KUniqueApplication
 {
@@ -101,17 +102,16 @@ class PlayerApp : public KUniqueApplication
         void slotAnimTimer();
         void slotVisTimer();
         void slotPlaylistToggle( bool b );
-        void slotEq( bool b );
         void slotConfigEffects();
         void slotShowOptions();
 
     private slots:
         void applySettings();
-        void receiveStreamMeta( TitleProxy::metaPacket );
 
     signals:
         //void sigScope( std::vector<float> *s );
         //void sigPlay();
+        void metaData( const TitleProxy::metaPacket& );
         void orderPreviousTrack();
         void orderCurrentTrack();
         void orderNextTrack();

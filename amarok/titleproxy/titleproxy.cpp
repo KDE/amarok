@@ -65,7 +65,7 @@ TitleProxy::TitleProxy(KURL url) : QObject(),
     m_sockRemote.setTimeout(8);
 
     int connectResult = m_sockRemote.connect();
-    //kdDebug() << k_funcinfo << "sock.connect() result: " << connectResult << endl;
+    kdDebug() << k_funcinfo << "sock.connect() result: " << connectResult << endl;
     if ( connectResult != 0 )
         return;
 

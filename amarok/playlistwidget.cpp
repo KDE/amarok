@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "amarokconfig.h"
+#include "metabundle.h"
 #include "playerapp.h" //restoreCurrentTrack(), removeSelectedItems(), restoreCurrentTrack() //FIXME remove!
 #include "playlistbrowser.h"
 #include "playlistitem.h"
 #include "playlistloader.h"
 #include "playlistwidget.h"
-#include "metabundle.h"
+#include "titleproxy/titleproxy.h"    //receiveStreamMeta()
 
 #include <qclipboard.h> //copyToClipboard()
 #include <qcolor.h>
@@ -123,6 +124,8 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
     connect( this, SIGNAL( playRequest( const MetaBundle& ) ),
              pApp,   SLOT( play( const MetaBundle& ) ) );
 
+    connect( pApp, SIGNAL( metaData( const TitleProxy::metaPacket& ) ),
+             this,   SLOT( handleStreamMeta( const TitleProxy::metaPacket& ) ) );
     connect( pApp, SIGNAL( orderPreviousTrack() ),
              this,   SLOT( handleOrderPrev() ) );
     connect( pApp, SIGNAL( orderCurrentTrack() ),
@@ -1056,5 +1059,19 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
     default: ;
     }
 }
+
+
+void PlaylistWidget::handleStreamMeta( const TitleProxy::metaPacket& packet )
+{
+    if ( QListViewItem* pItem = currentItem() )
+    {
+        pItem->setText(  0, packet.streamUrl   );
+        pItem->setText(  1, packet.streamName  );
+        pItem->setText(  2, packet.title       );    //this should not get saved with the playlist
+        pItem->setText(  6, packet.streamGenre );
+        pItem->setText( 10, packet.bitRate     );
+    }
+}
+
 
 #include "playlistwidget.moc"

@@ -19,6 +19,7 @@
 #define PLAYLISTWIDGET_H
 
 #include "browserwin.h"  //friend
+#include "titleproxy/titleproxy.h"    //handleStreamMeta()
 
 #include <qstringlist.h> //stack allocated
 #include <qptrlist.h>    //stack allocated
@@ -132,7 +133,8 @@ class PlaylistWidget : private KListView
         void activate( QListViewItem* );
         void setCurrentTrack( const KURL& );
         void writeTag( QListViewItem*, const QString&, int );
-
+        void handleStreamMeta( const TitleProxy::metaPacket& );
+        
         void undo();
         void redo();
         void saveUndoState();

@@ -238,6 +238,9 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     // connect vistimer
     connect( m_visTimer, SIGNAL( timeout() ), pApp, SLOT( slotVisTimer() ) );
     //    connect( m_pButtonLogo, SIGNAL( clicked() ), m_helpMenu, SLOT( aboutApplication() ) );
+
+    connect( pApp, SIGNAL( metaData( const TitleProxy::metaPacket& ) ),
+             this, SLOT  ( setScroll( const TitleProxy::metaPacket& ) ) );
 }
 
 
@@ -327,6 +330,14 @@ void PlayerWidget::setScroll( const MetaBundle &bundle )
 
 void PlayerWidget::setScroll( const TitleProxy::metaPacket &packet )
 {
+    kdDebug() << "metaPacket:: " << endl;
+    kdDebug() << "streamName : " << packet.streamName  << endl;
+    kdDebug() << "streamGenre: " << packet.streamGenre << endl;
+    kdDebug() << "streamUrl  : " << packet.streamUrl   << endl;
+    kdDebug() << "bitRate    : " << packet.bitRate     << endl;
+    kdDebug() << "title      : " << packet.title       << endl;
+    kdDebug() << "url        : " << packet.url         << endl;
+    
     setScroll( QString( "%1 - %2" ).arg( packet.streamName, packet.title ) );
 
     m_bitrate    = packet.bitRate + " kpbs";
