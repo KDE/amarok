@@ -360,7 +360,7 @@ SmartPlaylist::SmartPlaylist( KListView *parent, KListViewItem *after, QString n
     , m_query( query )
     , m_custom( custom )
 {
-    setPixmap( 0, SmallIcon( icon.isEmpty() ? "player_playlist" : icon ) );
+    setPixmap( 0, SmallIcon( icon.isEmpty() ? "player_playlist_2" : icon ) );
     setDragEnabled(true);
 }
 
@@ -370,7 +370,7 @@ SmartPlaylist::SmartPlaylist( SmartPlaylist *item, KListViewItem *after, QString
     , m_query( query )
     , m_custom( custom )
 {
-    setPixmap( 0, SmallIcon( icon.isEmpty() ? "player_playlist" : icon ) );
+    setPixmap( 0, SmallIcon( icon.isEmpty() ? "player_playlist_2" : icon ) );
     setDragEnabled(true);
 }
 

@@ -21,10 +21,6 @@ SHORT-TERM (URGENT):
 
   FIX 174 <markey> Tagging doesn't trigger a rescan. Maybe we must touch the folder after writing tag.
 
-  FIX 171 <heliocastro>
-                   file /usr/lib/kde3/share/icons/crystalsvg/16x16/actions/player_playlist.png from install of
-                   amarok-3.3.1-1cl conflicts with file from package kde-base-icons-3.3.1-1cl
-
   FIX 162 <markey> Try to achieve Qt 3.2 compatibility for amaroK 1.1.
 
   FIX 161 <markey> Configure prints "Good - your configure finished. Start make now" even when amaroK

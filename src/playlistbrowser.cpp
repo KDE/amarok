@@ -990,7 +990,7 @@ PlaylistBrowserItem::PlaylistBrowserItem( KListView *parent, QListViewItem *afte
     //kdDebug() << fileBaseName( url.path() ) << endl;
     setText(0, fileBaseName( url.path() ) );
     if( m_url.protocol() != "cur" )
-        setPixmap( 0, SmallIcon("player_playlist") );
+        setPixmap( 0, SmallIcon("player_playlist_2") );
 
     if( !m_trackCount )
         load();   //load the playlist file
