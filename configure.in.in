@@ -174,8 +174,12 @@ if test "$build_gstreamer" != "no"; then
         CFLAGS_GST=$GST_CFLAGS
         AC_SUBST(LIB_GST)
         AC_SUBST(CFLAGS_GST)
-        AC_MSG_NOTICE([GStreamer version >= $GST_REQ found. amaroK GStreamer audio-engine will be built])
+        #AC_MSG_NOTICE([GStreamer version >= $GST_REQ found. amaroK GStreamer audio-engine will be built])
         AC_DEFINE(HAVE_GSTREAMER, 1, [have GStreamer])
+
+        echo "*****************************************************"
+        echo "*** amaroK will be built with the GStreamer-engine"
+        echo "*****************************************************"
     fi
     else
     AC_MSG_WARN([No pkg-config found, required to build optional amaroK GStreamer engine])
