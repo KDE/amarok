@@ -105,7 +105,7 @@ TagDialog::TagDialog( const MetaBundle& mb, QWidget* parent )
     pushButton_ok->setEnabled( false );
     
     // draw an icon onto the open-in-konqui button
-    pushButton_open->setPixmap( QPixmap( locate( "data", QString( "amarok/images/folder_crystal.png" ) ), "PNG" ) );;
+    pushButton_open->setPixmap( QPixmap( locate( "data", QString( "amarok/images/folder_crystal.png" ) ), "PNG" ) );
     // draw the fancy amaroK logo on the dialog ;-)
     pixmap_cover->setPixmap( QPixmap( locate( "data", QString( "amarok/images/amarok_cut.png" ) ), "PNG" ) );
 
