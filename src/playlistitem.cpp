@@ -23,6 +23,7 @@
 #include "amarokconfig.h"
 
 #include <qcolor.h>
+#include <qheader.h>
 #include <qlistview.h>
 #include <qpainter.h>
 #include <qpen.h>
@@ -343,7 +344,8 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     else
         KListViewItem::paintCell( &painterBuf, cg, column, width, align );
 
-    if( playNext && column == Title )
+    //figure out if we are in the actual physical first column
+    if( playNext && listView()->header()->mapToSection( column ) == 0 )
     {
         QString str = QString::number( playNext );
 

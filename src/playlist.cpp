@@ -833,7 +833,7 @@ void Playlist::setCurrentTrack( PlaylistItem *item )
 
     m_currentTrack = item;
     if( item ) {
-        item->setPixmap( 0, SmallIcon("artsbuilderexecute") );
+        item->setPixmap( header()->mapToIndex( 0 ), SmallIcon("artsbuilderexecute") );
         item->setHeight( static_cast<int>( fontMetrics().height() * 1.8 ) );
     }
     if( prev && item != prev ) {
