@@ -2,7 +2,7 @@
 #
 # Script for generating a HTML page from amaroK's text ChangeLog
 #
-# (c) 2005 Mark Kretschmann <markey@web.de>
+# (c) 2005 Mark Kretschmann <markey@web.de>, Ian Monroe <ian@monroe.nu>
 # License: GPL V2
 
 
@@ -22,14 +22,27 @@ for bug in allmatches
     url = "<a href='http://bugs.kde.org/show_bug.cgi?id=#{bugnum}'>#{bug}</a>"
     $changelog = $changelog.gsub( bug, url )
 end
-
+#make bullets
+newOldArray = $changelog.split("VERSION 1.2.1:")
+a=newOldArray[0].split('*')
+a.shift
+a.each{|s|
+    $changelog.sub!("*#{s}","<li>#{s}</li>")
+}
 
 $changelog = $changelog.gsub( /amaroK ChangeLog\n\=*\n/, "<h2>amaroK ChangeLog</h2>" )
+#makes an extra </ul>... meh
+['FEATURES','CHANGES','BUGFIXES'].each{ |header|
+    $changelog = $changelog.gsub( "#{header}:\n", "</ul><h4>#{header.capitalize!}</h4><ul>" )
+}
+$changelog.gsub!("VERSION 1.2.1:", "</ul>VERSION 1.2.1:" )
 
-# Replace newlines
-$changelog = $changelog.gsub( "\n", "</BR>\n" )
+# Replace newlines in old format of changelog
+$changelog.sub!(newOldArray[1],newOldArray[1].gsub( /\n/, "</br>\n" ))
 
 
+#format version headers
+$changelog.gsub!(/(VERSION)(.*$)/, '<h3>Version\2</h3>');
 # Write destination file
 $output.write( $changelog )
 
