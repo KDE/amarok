@@ -188,9 +188,7 @@ ensureContrast( const QColor &c1, const QColor &c2, uint amount = 150 )
 void
 BlockAnalyzer::paletteChange( const QPalette& ) //virtual
 {
-   // for some reason the palette for this widget is not changed when
-   // its parent is! I don't understand this at all
-   const QColor bg = parentWidget()->palette().active().background();
+   const QColor bg = palette().active().background();
    const QColor fg = ensureContrast( KGlobalSettings::activeTitleColor(), bg );
 
    const double dr = 15*double(bg.red()   - fg.red())   / (m_rows*16);
@@ -211,7 +209,7 @@ BlockAnalyzer::paletteChange( const QPalette& ) //virtual
 void
 BlockAnalyzer::drawBackground()
 {
-    const QColor bg = parentWidget()->palette().active().background();
+    const QColor bg = palette().active().background();
     const QColor bgdark = bg.dark( 112 );
 
     background()->fill( bg );
