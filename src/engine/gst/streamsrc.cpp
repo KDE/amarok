@@ -50,7 +50,7 @@ static void gst_streamsrc_get_property ( GObject * object, guint prop_id,
 static GstData *gst_streamsrc_get ( GstPad * pad );
 
 // Minimum buffer fill until we start playing
-static const int BUFFER_MIN = 100000;
+static const int BUFFER_MIN = 50000;
 
 // Resume KIO transfer at this point
 static const int BUFFER_RESUME = BUFFER_MIN + 100000;
@@ -173,8 +173,15 @@ gst_streamsrc_get ( GstPad * pad )
     if ( *src->streamBufIndex < BUFFER_RESUME ) 
         g_signal_emit ( G_OBJECT( src ), gst_streamsrc_signals[SIGNAL_KIO_RESUME], 0 );
     
+    if ( *src->streamBufStop ) {
+        // Send EOS event when buffer is empty
+        if ( *src->streamBufIndex == 0 ) {
+            kdDebug() << "Streamsrc EOS\n";
+            return GST_DATA( gst_event_new( GST_EVENT_EOS ) );
+        }
+    }
     // Return when buffer is not filled
-    if ( *src->streamBufIndex < BUFFER_MIN ) 
+    else if ( *src->streamBufIndex < BUFFER_MIN ) 
         return GST_DATA( gst_event_new( GST_EVENT_DISCONTINUOUS ) );
             
     GstBuffer* buf = gst_buffer_new_and_alloc( src->blocksize );
@@ -183,7 +190,7 @@ gst_streamsrc_get ( GstPad * pad )
     
     if ( *src->streamBufIndex > src->blocksize )
         readBytes = src->blocksize;
-    
+        
     // Copy stream buffer content into gst buffer
     memcpy( data, src->streamBuf, readBytes );
     // Move stream buffer content to beginning
@@ -200,14 +207,15 @@ gst_streamsrc_get ( GstPad * pad )
 
 
 GstStreamSrc*
-gst_streamsrc_new ( char* buf, int* index )
+gst_streamsrc_new ( char* buf, int* index, bool* stop )
 {
     GstStreamSrc * object = GST_STREAMSRC ( g_object_new ( GST_TYPE_STREAMSRC, NULL ) );
     gst_object_set_name( (GstObject*) object, "StreamSrc" );
     
     object->streamBuf = buf;
     object->streamBufIndex = index;
-    
+    object->streamBufStop = stop;
+        
     return object;
 }
 

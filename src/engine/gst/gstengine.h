@@ -104,6 +104,7 @@ class GstEngine : public EngineBase
        
         char*                                    m_streamBuf;
         int                                      m_streamBufIndex;
+        bool                                     m_streamBufStop;
         KIO::TransferJob*                        m_transferJob;
         
         bool                                     m_pipelineFilled;

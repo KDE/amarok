@@ -30,11 +30,13 @@ struct _GstStreamSrc
     /* pads */
     GstPad *srcpad;
 
-    char* streamBuf;
-    int* streamBufIndex;
-        
     glong blocksize; /* bytes per read */
     guint64 timeout;  /* read timeout, in nanoseconds */
+
+    // Pointers to member variables of GstEngine
+    char* streamBuf;
+    int* streamBufIndex;
+    bool* streamBufStop;
 };
 
 struct _GstStreamSrcClass
@@ -47,7 +49,7 @@ struct _GstStreamSrcClass
 };
 
 GType gst_streamsrc_get_type( void );
-GstStreamSrc* gst_streamsrc_new ( char* buf, int* index );
+GstStreamSrc* gst_streamsrc_new ( char* buf, int* index, bool* stop );
 
 G_END_DECLS
 

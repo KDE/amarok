@@ -50,7 +50,7 @@ static const int
 STREAMBUF_SIZE = 1000000; // == 1MB
 
 static const int
-STREAMBUF_MAX = STREAMBUF_SIZE - 100000;
+STREAMBUF_MAX = STREAMBUF_SIZE - 50000;
 
 GError*
 GstEngine::error_msg;
@@ -336,7 +336,7 @@ GstEngine::play( const KURL& url )  //SLOT
     }
     else {
         // Create our custom streamsrc element, which transports data into the pipeline
-        m_srcelement = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex ) );
+        m_srcelement = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex, &m_streamBufStop ) );
         gst_bin_add ( GST_BIN ( m_thread ), m_srcelement );
         g_signal_connect( G_OBJECT( m_srcelement ), "kio_resume", G_CALLBACK( kio_resume_cb ), m_thread );
     }
@@ -360,7 +360,8 @@ GstEngine::play( const KURL& url )  //SLOT
     
     if ( !url.isLocalFile()  ) {
         m_streamBufIndex = 0;
-          
+        m_streamBufStop = false;  
+        
         if ( url.protocol() != "http" ) {
             // Use KIO for non-local files, except http, which is handled by TitleProxy
             m_transferJob = KIO::get( url, false, false );
@@ -395,9 +396,8 @@ GstEngine::stop()  //SLOT
     kdDebug() << k_funcinfo << endl;
     if ( !m_pipelineFilled ) return ;
 
-    /* stop the thread */
-    gst_element_set_state ( m_thread, GST_STATE_NULL );
-
+    cleanPipeline();
+    
     if ( m_transferJob ) {
         m_transferJob->kill();
         m_transferJob = 0;
@@ -484,10 +484,9 @@ GstEngine::stopAtEnd()  //SLOT
     kdDebug() << k_funcinfo << endl;
     if ( !m_pipelineFilled ) return ;
 
-    /* stop the thread */
-    gst_element_set_state ( m_thread, GST_STATE_READY );
-    
+    cleanPipeline();
     m_transferJob = 0;
+    
     emit endOfTrack();
 }
 
@@ -521,6 +520,9 @@ GstEngine::kioFinished()  //SLOT
 
     // KIO::Job deletes itself when finished, so we need to zero the pointer
     m_transferJob = 0;
+    
+    // Tell streamsrc: This is the end, my friend
+    m_streamBufStop = true;  
 }
 
 
