@@ -3,6 +3,9 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  * add: Audioproperties are loaded as you scroll the playlist and get saved to playlist files
+  * add: If trackname column is hidden, the title column will show the trackname until a title
+         tag can replace it. If no title tag is found the trackname stays.
   * chg: Pressing "back" in Random Mode now works as expected and walks backwards
          through the list of recently played songs.
   * add: TitleProxy searches for a free local port (added by Stefan Gehn)
@@ -14,10 +17,10 @@ amaroK ChangeLog
   * add: logarithmic fading algorithm makes crossfading smoother
   * add: Select a series of tracks, start inline tag-editing a tag and amaroK will prompt you to
          edit that tag for all tracks one-by-one. Also available: fill-down.
-  * add: improved crossfading: will fade out smoothly when the stop button is pressed 
+  * add: improved crossfading: will fade out smoothly when the stop button is pressed
   * fix: O(n) behavior for playlist scrolling fixed
   * add: setting to make playlist colours the KDE defaults
-  * add: support for tag-editing directly in playlist  
+  * add: support for tag-editing directly in playlist
   * chg: replaced old FileBrowser with the comfortable fileselector from KDevelop
   * add: hide/show selected playlist columns
   * chg: upgrade streambrowser to kderadiostation 0.5
@@ -25,13 +28,13 @@ amaroK ChangeLog
   * chg: amaroK moved out of kdenonbeta. we are now member of KDE Extra Gear 1
   * add: on-screen-display (OSD), shows an overlay with information on the currently playing track
   * chg: use KMultiTabBar for browser selection
-  * chg: migrated settings system to KConfig XT 
+  * chg: migrated settings system to KConfig XT
   * add: playlist columns for length and bitrate
   * add: merged new audio engine in. this provides a generic interface class, with multiple
          backends. right now there is a backend for aRts and one for GStreamer (still rudimentary)
 
-==BEGIN KDE 3.2 DEPENDENCY==         
-         
+==BEGIN KDE 3.2 DEPENDENCY==
+
 VERSION 0.8.3:
   * fix: build issue
 
@@ -249,7 +252,7 @@ VERSION 0.5.1:
   * amaroK uses much less CPU now than it used to. This was mainly achieved by
     using a new FFT-analyzer module, which I took from Noatuns "Winskin"-plugin,
     and modified slightly to my needs. Also some other optimizations were made,
-    which	improved the standby performance, when no song is playing. I'm still
+    which        improved the standby performance, when no song is playing. I'm still
     not satisfied with overall performance, tho, but it seems that most of the
     load is produced by the aRts code itself, so this will rather be difficult
     to improve.
