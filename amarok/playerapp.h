@@ -92,6 +92,7 @@ class PlayerApp : public KUniqueApplication
         QFont m_optPlayerWidgetScrollFont;
         QColor m_optBrowserFgColor;
         QColor m_optBrowserBgColor;
+        bool   m_optBrowserUseCustomColors;
         unsigned int m_optUndoLevels;
         // </option attributes>
 

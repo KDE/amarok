@@ -611,6 +611,7 @@ void PlayerApp::saveConfig()
     m_pConfig->writeEntry( "Browser Window Font", m_optBrowserWindowFont );
     m_pConfig->writeEntry( "Player Widget Font", m_optPlayerWidgetFont);
     m_pConfig->writeEntry( "Player Widget Scroll Font", m_optPlayerWidgetScrollFont );
+    m_pConfig->writeEntry( "BrowserUseCustomColors", m_optBrowserUseCustomColors );
     m_pConfig->writeEntry( "BrowserFgColor", m_optBrowserFgColor );
     m_pConfig->writeEntry( "BrowserBgColor", m_optBrowserBgColor );
     m_pConfig->writeEntry( "Undo Levels", m_optUndoLevels );
@@ -672,6 +673,7 @@ void PlayerApp::readConfig()
     m_optPlayerWidgetScrollFont = m_pConfig->readFontEntry( "Player Widget Scroll Font", &defaultFont );
     m_pBrowserWin->slotUpdateFonts();
 
+    m_optBrowserUseCustomColors = m_pConfig->readBoolEntry( "BrowserUseCustomColors", false );
     m_optBrowserFgColor = m_pConfig->readColorEntry( "BrowserFgColor", &defaultColor );
     m_optBrowserBgColor = m_pConfig->readColorEntry( "BrowserBgColor", &black );
     m_pBrowserWin->m_pBrowserWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
