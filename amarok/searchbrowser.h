@@ -27,7 +27,7 @@ class SearchBrowser : public QVBox
     };
 
     public:
-        SearchBrowser( QWidget *parent=0, const char *name=0 );
+        SearchBrowser( const char *name );
         ~SearchBrowser();
 
     public slots:

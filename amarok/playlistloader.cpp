@@ -483,6 +483,8 @@ PlaylistLoader::DownloadPlaylistEvent::makePlaylistItem( PlaylistWidget *lv )
 
     if( succeeded )
     {
+        kdDebug() << "[PLSloader] Download was succesful!\n";
+
         //the playlist was successfully downloaded
         //KIO::NetAccess created a tempfile, it will be deleted in the new thread's dtor
         KURL url; url.setPath( path ); //required way to set unix paths

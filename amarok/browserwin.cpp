@@ -74,7 +74,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
         KStdAction::open( this, SLOT(slotAddLocation()), ac, "playlist_add" )->setText( i18n("&Add Media") );
         KStdAction::save( this, SLOT(savePlaylist()), ac, "playlist_save" )->setText( i18n("&Save Playlist") );
 
-        ac->action( "options_configure_globals" )->setText( i18n( "Configure Global Shortcuts..." ) );
+        ac->action( "options_configure_globals" )->setText( i18n( "Configure &Global Shortcuts..." ) );
 
         new KAction( i18n( "Previous Track" ), "player_start", 0, ec, SLOT( previous() ), ac, "prev" );
         new KAction( i18n( "Play" ), "player_play", 0, ec, SLOT( play() ), ac, "play" );
@@ -127,12 +127,14 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     //</FileBrowser>
 
     //<SearchBrowser>
-        m_browsers->addPage( new SearchBrowser( 0, "SearchBrowser" ), i18n( "Search" ), "find" );
+        m_browsers->addPage( new SearchBrowser( "SearchBrowser" ), i18n( "Search" ), "find" );
     //</SearchBrowser>
 
+#ifdef PLAYLIST_BROWSER
     //<PlaylistBrowser>
-        //m_browsers->addPage( m_playlist->browser(), i18n( "Playlist" ), "midi" );
+        m_browsers->addPage( m_playlist->browser(), i18n( "Playlist" ), "midi" );
     //</PlaylistBrowser>
+#endif
 
     //<CollectionBrowser>
         m_browsers->addPage( new CollectionBrowser( "CollectionBrowser" ), i18n( "Collection" ), "contents" );
@@ -189,15 +191,14 @@ void BrowserWin::createGUI()
 
     m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want some buttons to have text on right
 
-    const QStringList::ConstIterator last = list.fromLast();
     const QStringList::ConstIterator end  = list.constEnd();
-
-    for( QStringList::ConstIterator it = list.constBegin(); it != end; )
+    const QStringList::ConstIterator last = list.fromLast();
+    for( QStringList::ConstIterator it = list.constBegin(); it != end; ++it )
     {
+        if( it == last ) m_toolbar->setIconText( KToolBar::TextOnly, false );
+
         KToolBarButton* const button = (KToolBarButton*)m_toolbar->child( (*it).latin1() );
         if( button ) button->modeChange();
-
-        if( ++it == last ) m_toolbar->setIconText( KToolBar::TextOnly, false );
     }
 
     m_toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
@@ -284,8 +285,8 @@ void BrowserWin::saveConfig()
 
 bool BrowserWin::eventFilter( QObject *o, QEvent *e )
 {
-    //filters events for a few of the widgets we are parent to
-    //this makes life easier since we have more useful functions available from here
+    //here we filter some events for the Playlist Search LineEdit and the Playlist
+    //this makes life easier since we have more useful functions available from this class
 
     switch( e->type() )
     {
@@ -295,10 +296,10 @@ bool BrowserWin::eventFilter( QObject *o, QEvent *e )
 
     case QEvent::KeyPress:
 
-        //there are a few keypresses that we override
+        //there are a few keypresses that we intercept
 
         #define e static_cast<QKeyEvent*>(e)
-        if( o == m_lineEdit )
+        if( o == m_lineEdit ) //the search lineedit
         {
             //FIXME inefficient to always construct this
             QListViewItemIterator it( m_playlist, QListViewItemIterator::Visible );
@@ -369,7 +370,7 @@ void BrowserWin::savePlaylist() const //SLOT
 
     path = KFileDialog::getSaveFileName( path, "*.m3u" );
 
-    if( !path.isEmpty() ) //FIXME unecessary check
+    if( !path.isEmpty() ) //FIXME unecessary check?
     {
         m_playlist->saveM3U( path );
     }

@@ -29,8 +29,8 @@ SearchBrowser::SearchListView::SearchListView( QWidget *parent, const char *name
 {}
 
 
-SearchBrowser::SearchBrowser( QWidget *parent, const char *name )
-        : QVBox( parent, name )
+SearchBrowser::SearchBrowser( const char *name )
+        : QVBox( 0, name )
         , m_weaver( new ThreadWeaver( this ) )
 {
     KConfig *config = kapp->config();

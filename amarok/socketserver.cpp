@@ -22,7 +22,6 @@
 #include <sys/types.h>
 #include <sys/un.h>
 #include <unistd.h>
-#include <vector>
 
 
 //TODO allow stop/start and pause signals to be sent to registered visualisations
