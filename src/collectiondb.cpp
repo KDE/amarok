@@ -1383,23 +1383,21 @@ CollectionDB::similarArtists( const QString &artist, uint count )
 
 
 void
-CollectionDB::checkCompilations( const QString &path, const bool temporary, DbConnection *conn )
+CollectionDB::checkCompilations( const QString &path, DbConnection *conn )
 {
     QStringList albums;
     QStringList artists;
     QStringList dirs;
 
-    albums = query( QString( "SELECT DISTINCT album.name FROM tags_temp, album%1 AS album WHERE tags_temp.dir = '%2' AND album.id = tags_temp.album;" )
-              .arg( temporary ? "_temp" : "" )
+    albums = query( QString( "SELECT DISTINCT album_temp.name FROM tags_temp, album_temp WHERE tags_temp.dir = '%1' AND album_temp.id = tags_temp.album;" )
               .arg( escapeString( path ) ), conn );
 
     for ( uint i = 0; i < albums.count(); i++ )
     {
         if ( albums[ i ].isEmpty() ) continue;
 
-        const uint album_id = albumID( albums[ i ], false, temporary );
-        artists = query( QString( "SELECT DISTINCT artist.name FROM tags_temp, artist%1 AS artist WHERE tags_temp.album = '%2' AND tags_temp.artist = artist.id;" )
-                            .arg( temporary ? "_temp" : "" )
+        const uint album_id = albumID( albums[ i ], FALSE, TRUE, conn );
+        artists = query( QString( "SELECT DISTINCT artist_temp.name FROM tags_temp, artist_temp WHERE tags_temp.album = '%1' AND tags_temp.artist = artist_temp.id;" )
                             .arg( album_id ), conn );
         dirs    = query( QString( "SELECT DISTINCT dir FROM tags_temp WHERE album = '%1';" )
                             .arg( album_id ), conn );

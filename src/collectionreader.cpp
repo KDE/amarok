@@ -248,7 +248,7 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
 
             cbl.clear();
             images.clear();
-            CollectionDB::instance()->checkCompilations( url.path().section( '/', 0, -2 ), !m_incremental, m_staticDbConnection );
+            CollectionDB::instance()->checkCompilations( url.path().section( '/', 0, -2 ), m_staticDbConnection );
         }
     }
 
