@@ -357,9 +357,9 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
             KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select cover image file - amaroK" ) );
             if ( !file.isEmpty() )
             {
-                QPixmap pix( file.path() );
+                QImage img( file.path() );
                 qApp->processEvents();    //it may takes a while so process pending events
-                m_db->setImageForAlbum( item->artist(), item->album(), pix );
+                m_db->setImageForAlbum( item->artist(), item->album(), QString(), img );
                 item->loadCover();
             }
             break;

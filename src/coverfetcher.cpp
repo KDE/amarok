@@ -104,32 +104,38 @@ CoverFetcher::xmlResult( KIO::Job* job ) //SLOT
     QDomDocument doc;
     doc.setContent( m_xmlDocument );
 
+    // Fetch url for product info page
+    m_url = doc.documentElement()
+               .namedItem( "Details" )
+               .attributes()
+               .namedItem( "url" ).toAttr().value();
+
     if ( m_size == 0 )
     {
-        m_url = doc.documentElement()
-                   .namedItem( "Details" )
-                   .namedItem( "ImageUrlSmall" )
-                   .firstChild().toText().nodeValue();
+        m_imageUrl = doc.documentElement()
+                        .namedItem( "Details" )
+                        .namedItem( "ImageUrlSmall" )
+                        .firstChild().toText().nodeValue();
     }
     else if ( m_size == 1 )
     {
-        m_url = doc.documentElement()
-                   .namedItem( "Details" )
-                   .namedItem( "ImageUrlMedium" )
-                   .firstChild().toText().nodeValue();
+        m_imageUrl = doc.documentElement()
+                        .namedItem( "Details" )
+                        .namedItem( "ImageUrlMedium" )
+                        .firstChild().toText().nodeValue();
     }
     else
     {
-        m_url = doc.documentElement()
-                   .namedItem( "Details" )
-                   .namedItem( "ImageUrlLarge" )
-                   .firstChild().toText().nodeValue();
+        m_imageUrl = doc.documentElement()
+                        .namedItem( "Details" )
+                        .namedItem( "ImageUrlLarge" )
+                        .firstChild().toText().nodeValue();
     }
 
-    kdDebug() << "imageUrl: " << m_url << endl;
+//     kdDebug() << "imageUrl: " << m_imageUrl << endl;
     m_buffer = new uchar[BUFFER_SIZE];
 
-    KIO::TransferJob* imageJob = KIO::get( m_url, false, false );
+    KIO::TransferJob* imageJob = KIO::get( m_imageUrl, false, false );
     connect( imageJob, SIGNAL( result( KIO::Job* ) ),
              this,       SLOT( imageResult( KIO::Job* ) ) );
     connect( imageJob, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
@@ -178,9 +184,9 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
     else
     {
         m_text = i18n( "<h3>New Search</h3>Please edit the search string below and press <b>OK</b>." );
-        m_pixmap.loadFromData( m_buffer, m_bufferIndex );
+        m_image.loadFromData( m_buffer, m_bufferIndex );
 
-        if ( m_pixmap.width() == 1 )
+        if ( m_image.width() == 1 )
         {
             if ( m_size == 2 )
             {
@@ -208,8 +214,8 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
             connect( this, SIGNAL( destroyed() ), container, SLOT( deleteLater() ) );
 
             QWidget* widget = new QWidget( container );
-            widget->setPaletteBackgroundPixmap( m_pixmap );
-            widget->setFixedSize( m_pixmap.size() );
+            widget->setPaletteBackgroundPixmap( QPixmap( m_image ) );
+            widget->setFixedSize( m_image.size() );
 
             QHBox* buttons = new QHBox( container );
             KPushButton* save = new KPushButton( i18n( "Save" ), buttons );
@@ -225,7 +231,7 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
         }
         else
         {
-            m_pixmap.loadFromData( m_buffer, m_bufferIndex );
+            m_image.loadFromData( m_buffer, m_bufferIndex );
             saveCover();
         }
     }
@@ -238,7 +244,7 @@ CoverFetcher::editSearch() //SLOT
     sdlg->textLabel->setText( m_text );
     sdlg->searchString->setText( m_saveas );
     sdlg->setModal( true );
-    connect( sdlg, SIGNAL( imageReady( QPixmap ) ), this, SLOT( saveCover( QPixmap ) ) );
+    connect( sdlg, SIGNAL( imageReady( QImage ) ), this, SLOT( saveCover( QImage ) ) );
 
     if ( sdlg->exec() == QDialog::Accepted )
     {
@@ -258,16 +264,16 @@ CoverFetcher::saveCover() //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
-    emit imageReady( m_saveas, m_pixmap );
+    emit imageReady( m_saveas, m_url, m_image );
     deleteLater();
 }
 
 void
-CoverFetcher::saveCover( QPixmap pixmap ) //SLOT
+CoverFetcher::saveCover( const QImage& image ) //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
-    emit imageReady( m_saveas, pixmap );
+    emit imageReady( m_saveas, m_url, image );
     deleteLater();
 }
 

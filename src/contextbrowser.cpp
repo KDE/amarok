@@ -26,6 +26,7 @@
 #include <kiconloader.h>
 #include <klineedit.h>
 #include <klocale.h>
+#include <kmessagebox.h>
 #include <kpopupmenu.h>
 #include <krun.h>
 #include <kstandarddirs.h>
@@ -150,7 +151,17 @@ void ContextBrowser::openURLRequest( const KURL &url )
 
     // When left-clicking on cover image, open browser with amazon site
     if ( m_url.protocol() == "fetchcover" )
-        kapp->invokeBrowser( "http://www.amazon.com" );
+    {
+        QStringList info = QStringList::split( " @@@ ", m_url.path() );
+        QImage img( m_db->getImageForAlbum( info[0], info[1], 0 ) );
+        const QString amazonUrl = img.text( "amazon-url" );
+        kdDebug() << "[ContextBrowser] Embedded amazon url in cover image: " << amazonUrl << endl;
+
+        if ( url.isEmpty() )
+            kapp->invokeBrowser( "http://www.amazon.com" );
+        else
+            kapp->invokeBrowser( amazonUrl );
+    }
 
     /* open konqueror with musicbrainz search result for artist-album */
     if ( url.protocol() == "musicbrainz" )
@@ -295,7 +306,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
                         QString filename( QFile::encodeName( info[0] + " - " + info[1] ) );
                         filename.replace( " ", "_" ).append( ".png" );
                         img.save( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() )+"/albumcovers/"+filename.lower(), "PNG" );
-                        ContextBrowser::showCurrentTrack();
+                        showCurrentTrack();
                     }
                 }
             #endif
@@ -307,7 +318,15 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
                 break;
 
             case DELETE:
-                break;
+                int button = KMessageBox::warningContinueCancel( this,
+                                          i18n( "Are you sure you want to delete this cover?" ),
+                                          QString::null,
+                                          i18n("&Delete Confirmation") );
+
+                if ( button == KMessageBox::Continue ) {
+                    m_db->removeImageFromAlbum( info[0], info[1] );
+                    showCurrentTrack();
+                }
         }
     }
 

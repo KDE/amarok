@@ -160,7 +160,7 @@ CollectionDB::getPathForAlbum( const uint artist_id, const uint album_id )
 
 
 bool
-CollectionDB::setImageForAlbum( const QString& artist, const QString& album, const QPixmap &pix )
+CollectionDB::setImageForAlbum( const QString& artist, const QString& album, const QString& url, QImage img )
 {
     QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
     QString fileName( artist + " - " + album );
@@ -173,7 +173,7 @@ CollectionDB::setImageForAlbum( const QString& artist, const QString& album, con
                 m_cacheDir.remove( scaledList[i] );
     }
 
-    QImage img( pix.convertToImage() );
+    img.setText( "amazon-url", 0, url );
     return img.save( largeCoverDir.filePath( fileName ), "PNG");
 }
 
@@ -275,13 +275,10 @@ CollectionDB::getImageForPath( const QString path, const uint width )
 
         if ( width > 0 )
         {
-            QImage img( path + "/" + image );
-            QPixmap pix;
-            if( pix.convertFromImage( img.smoothScale( width, width ) ) )
-            {
-                pix.save( m_cacheDir.absPath() + "/" + filename.lower(), "PNG" );
-                return m_cacheDir.absPath() + "/" + filename.lower();
-            }
+            QImage img = QImage( path + "/" + image );
+            img.smoothScale( width, width ).save( m_cacheDir.absPath() + "/" + filename.lower(), "PNG" );
+            return m_cacheDir.absPath() + "/" + filename.lower();
+
         } else
 
             return path + "/" + image;
@@ -337,8 +334,9 @@ CollectionDB::removeImageFromAlbum( const QStringList artists, const QStringList
 
     }
 
-    // TODO We need to check which files have been deleted successfully
-    KIO::DeleteJob *job = KIO::del( urls );
+    // Delete files
+    for ( uint i = 0; i < urls.count(); i++ )
+        QFile::remove( urls[i].path() );
 
     return true;
 }
@@ -1310,8 +1308,8 @@ CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString&
     kdDebug() << "Querying amazon with artist: " << artist << " and album " << album << endl;
 
     CoverFetcher* fetcher = new CoverFetcher( amazonLicense, parent );
-    connect( fetcher, SIGNAL( imageReady( const QString&, const QPixmap& ) ),
-             this,      SLOT( saveCover( const QString&, const QPixmap& ) ) );
+    connect( fetcher, SIGNAL( imageReady( const QString&, const QString&, const QImage& ) ),
+             this,      SLOT( saveCover( const QString&, const QString&, const QImage& ) ) );
 
     fetcher->getCover( artist, album, keyword, CoverFetcher::heavy, edit, 2, false );
     #endif
@@ -1338,13 +1336,13 @@ CollectionDB::dirDirty( const QString& path )
 
 
 void
-CollectionDB::saveCover( const QString& keyword, const QPixmap& pix )
+CollectionDB::saveCover( const QString& keyword, const QString& url, const QImage& img )
 {
     kdDebug() << k_funcinfo << endl;
 
     //get artist and album
     QStringList values = QStringList::split( " - ", keyword );
-    setImageForAlbum( values[0], values[1], pix );
+    setImageForAlbum( values[0], values[1], url, img );
 
     emit coverFetched( keyword );
     emit coverFetched();
