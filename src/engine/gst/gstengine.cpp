@@ -16,12 +16,9 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
-#define DEBUG_PREFIX "Gst-Engine"
-
 #include "config/gstconfig.h"
 #include "equalizer/gstequalizer.h"
 #include "enginebase.h"
-#include "debug.h"
 #include "gstengine.h"
 #include "streamsrc.h"
 
@@ -32,6 +29,7 @@ email                : markey@web.de
 #include <qtimer.h>
 
 #include <kapplication.h>
+#include <kdebug.h>
 #include <kio/job.h>
 #include <klocale.h>
 #include <kmessagebox.h>
@@ -70,7 +68,7 @@ GstEngine::s_instance;
 void
 GstEngine::eos_cb( GstElement* element, GstElement* ) //static
 {
-    DEBUG_FUNC_INFO
+    kdDebug() << k_funcinfo << endl;
 
     // Ignore eos when gst error was raised
     if ( !instance()->m_gst_error.isEmpty() ) return;
@@ -115,7 +113,7 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer ) //static
 void
 GstEngine::candecode_handoff_cb( GstElement*, GstBuffer*, gpointer ) //static
 {
-    DEBUG_FUNC_INFO
+    kdDebug() <<  k_funcinfo << endl;
 
     instance()->m_canDecodeSuccess = true;
 }
@@ -124,29 +122,29 @@ GstEngine::candecode_handoff_cb( GstElement*, GstBuffer*, gpointer ) //static
 void
 GstEngine::found_tag_cb( GstElement*, GstElement*, GstTagList* taglist, gpointer ) //static
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    kdDebug() <<  k_funcinfo << endl;
 
     char* string;
     Engine::SimpleMetaBundle bundle;
     bool success = false;
 
     if ( gst_tag_list_get_string( taglist, GST_TAG_TITLE, &string ) && string ) {
-        debug() << "received tag 'Title': " << QString( string ) << endl;
+        kdDebug() << "[Gst-Engine] received tag 'Title': " << QString( string ) << endl;
         bundle.title = QString( string );
         success = true;
     }
     if ( gst_tag_list_get_string( taglist, GST_TAG_ARTIST, &string ) && string ) {
-        debug() << "received tag 'Artist': " << QString( string ) << endl;
+        kdDebug() << "[Gst-Engine] received tag 'Artist': " << QString( string ) << endl;
         bundle.artist = QString( string );
         success = true;
     }
     if ( gst_tag_list_get_string( taglist, GST_TAG_COMMENT, &string ) && string ) {
-        debug() << "received tag 'Comment': " << QString( string ) << endl;
+        kdDebug() << "[Gst-Engine] received tag 'Comment': " << QString( string ) << endl;
         bundle.comment = QString( string );
         success = true;
     }
     if ( gst_tag_list_get_string( taglist, GST_TAG_ALBUM, &string ) && string ) {
-        debug() << "received tag 'Album': " << QString( string ) << endl;
+        kdDebug() << "[Gst-Engine] received tag 'Album': " << QString( string ) << endl;
         bundle.album = QString( string );
         success = true;
     }
@@ -161,7 +159,7 @@ GstEngine::found_tag_cb( GstElement*, GstElement*, GstTagList* taglist, gpointer
 void
 GstEngine::outputError_cb( GstElement* /*element*/, GstElement* /*domain*/, GError* error, gchar* debug, gpointer /*data*/ ) //static
 {
-    DEBUG_FUNC_INFO
+    kdDebug() << k_funcinfo << endl;
 
     instance()->m_gst_error = QString::fromAscii( error->message );
     instance()->m_gst_debug = QString::fromAscii( debug );
@@ -174,7 +172,7 @@ GstEngine::outputError_cb( GstElement* /*element*/, GstElement* /*domain*/, GErr
 void
 GstEngine::inputError_cb( GstElement* element, GstElement* /*domain*/, GError* error, gchar* debug, gpointer /*data*/ ) //static
 {
-    DEBUG_FUNC_INFO
+    kdDebug() << k_funcinfo << endl;
 
     instance()->m_gst_error = QString::fromAscii( error->message );
     instance()->m_gst_debug = QString::fromAscii( debug );
@@ -199,7 +197,7 @@ GstEngine::kio_resume_cb() //static
 {
     if ( instance()->m_transferJob && instance()->m_transferJob->isSuspended() ) {
         instance()->m_transferJob->resume();
-        debug() << "Gst-Engine: RESUMING kio transfer.\n";
+        kdDebug() << "Gst-Engine: RESUMING kio transfer.\n";
     }
 }
 
@@ -208,7 +206,7 @@ void
 GstEngine::shutdown_cb() //static
 {
     instance()->m_shutdown = true;
-    debug() << "Thread is shut down.\n";
+    kdDebug() << "[Gst-Engine] Thread is shut down.\n";
 }
 
 
@@ -227,7 +225,7 @@ GstEngine::GstEngine()
         , m_shutdown( false )
         , m_eos( false )
 {
-    DEBUG_FUNC_INFO
+    kdDebug() << k_funcinfo << endl;
 
     addPluginProperty( "StreamingMode", "Signal" );
     addPluginProperty( "HasConfigure",  "true" );
@@ -240,8 +238,8 @@ GstEngine::GstEngine()
 
 GstEngine::~GstEngine()
 {
-    DEBUG_FUNC_INFO
-    debug() << "bytes left in gst_adapter: " << gst_adapter_available( m_gst_adapter ) << endl;
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    kdDebug() << "bytes left in gst_adapter: " << gst_adapter_available( m_gst_adapter ) << endl;
 
     if ( m_pipelineFilled ) {
         g_signal_connect( G_OBJECT( m_gst_outputThread ), "shutdown", G_CALLBACK( shutdown_cb ), m_gst_outputThread );
@@ -259,6 +257,8 @@ GstEngine::~GstEngine()
 
     // Save configuration
     GstConfig::writeConfig();
+
+    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 
@@ -269,7 +269,7 @@ GstEngine::~GstEngine()
 bool
 GstEngine::init()
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
 
     s_instance = this;
 
@@ -295,10 +295,11 @@ GstEngine::init()
     }
 
     if ( !createPipeline() )
-        error() << "createPipeline() failed.\n";
+        kdError() << "[Gst-Engine] createPipeline() failed.\n";
 
     startTimer( TIMER_INTERVAL );
 
+    kdDebug() << "END " << k_funcinfo << endl;
     return true;
 }
 
@@ -425,12 +426,12 @@ GstEngine::scope()
         m_scope[i] = temp / channels;
     }
 
-//     debug() << "Timestamp first: " << firstStamp << endl;
-//     debug() << "Timestamp last:  " << lastStamp << endl;
-//     debug() << "Timestamp sink:  " << sinkStamp << endl;
-//     debug() << "factor: " << factor << endl;
-//     debug() << "offset: " << offset << endl;
-//     debug() << endl;
+//     kdDebug() << "[Gst-Engine] Timestamp first: " << firstStamp << endl;
+//     kdDebug() << "[Gst-Engine] Timestamp last:  " << lastStamp << endl;
+//     kdDebug() << "[Gst-Engine] Timestamp sink:  " << sinkStamp << endl;
+//     kdDebug() << "[Gst-Engine] factor: " << factor << endl;
+//     kdDebug() << "[Gst-Engine] offset: " << offset << endl;
+//     kdDebug() << endl;
 
     m_mutexScope.unlock();
     return m_scope;
@@ -440,7 +441,7 @@ GstEngine::scope()
 amaroK::PluginConfig*
 GstEngine::configure() const
 {
-    DEBUG_FUNC_INFO
+    kdDebug() << k_funcinfo << endl;
 
     GstConfigDialog* dialog = new GstConfigDialog( this );
     connect( dialog, SIGNAL( settingsSaved() ), SLOT( configChanged() ) );
@@ -455,11 +456,9 @@ GstEngine::configure() const
 bool
 GstEngine::load( const KURL& url, bool stream )  //SLOT
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
-
     Engine::Base::load( url, stream );
     m_eos = false;
-    debug() << "Loading url: " << url.url() << endl;
+    kdDebug() << "[Gst-Engine] Loading url: " << url.url() << endl;
 
     // Make sure we have a functional output pipeline
     if ( !m_pipelineFilled )
@@ -522,14 +521,13 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
 bool
 GstEngine::play( uint offset )  //SLOT
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
-
+    kdDebug() << k_funcinfo << endl;
     if ( !m_currentInput ) return false;
 
     gst_element_set_state( m_gst_queue, GST_STATE_PAUSED );
 
     if ( !gst_element_set_state( m_gst_inputThread, GST_STATE_PAUSED ) )
-        warning() << "Could not set input thread to PAUSED.\n";
+        kdWarning() << "[Gst-Engine] Could not set input thread to PAUSED.\n";
 
     gst_element_set_state( m_gst_queue, GST_STATE_PLAYING );
 
@@ -540,7 +538,7 @@ GstEngine::play( uint offset )  //SLOT
 
     // Try to play input pipeline; if fails, destroy input bin
     if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PLAYING ) ) {
-        warning() << "Could not set input thread to PLAYING.\n";
+        kdWarning() << "[Gst-Engine] Could not set input thread to PLAYING.\n";
         destroyInput( m_currentInput );
         return false;
     }
@@ -558,8 +556,7 @@ GstEngine::play( uint offset )  //SLOT
 void
 GstEngine::stop()  //SLOT
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
-
+    kdDebug() << k_funcinfo << endl;
     m_eos = false;
     emit stateChanged( Engine::Empty );
 
@@ -576,8 +573,7 @@ GstEngine::stop()  //SLOT
 void
 GstEngine::pause()  //SLOT
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
-
+    kdDebug() << k_funcinfo << endl;
     if ( !m_currentInput ) return;
 
     if ( GST_STATE( m_currentInput->bin ) == GST_STATE_PAUSED ) {
@@ -612,7 +608,7 @@ GstEngine::newStreamData( char* buf, int size )  //SLOT
 {
     if ( m_streamBufIndex + size >= STREAMBUF_SIZE ) {
         m_streamBufIndex = 0;
-        debug() << "Stream buffer overflow!" << endl;
+        kdDebug() << "Gst-Engine: Stream buffer overflow!" << endl;
     }
 
     sendBufferStatus();
@@ -702,7 +698,7 @@ void GstEngine::timerEvent( QTimerEvent* )
                 // Fade finished?
                 if ( input->m_fade < 0.0 ) {
                     // Fade transition has finished, stop playback
-                    debug() << "Fade-in finished.\n";
+                    kdDebug() << "[Gst-Engine] Fade-in finished.\n";
                     input->setState( InputPipeline::NO_FADE );
                 }
                 else {
@@ -735,7 +731,7 @@ void GstEngine::timerEvent( QTimerEvent* )
                 // Fade finished?
                 if ( input->m_fade < 0.0 ) {
                     // Fade transition has finished, stop playback
-                    debug() << "XFade-in finished.\n";
+                    kdDebug() << "[Gst-Engine] XFade-in finished.\n";
                     input->setState( InputPipeline::NO_FADE );
                 }
                 else {
@@ -789,7 +785,7 @@ GstEngine::handleOutputError()  //SLOT
     // Destroy all pipelines
     destroyPipeline();
 
-    error() << text << endl;
+    kdError() << text << endl;
     emit statusText( text );
     emit trackEnded();
 }
@@ -798,7 +794,7 @@ GstEngine::handleOutputError()  //SLOT
 void
 GstEngine::handleInputError()  //SLOT
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    kdDebug() << k_funcinfo << endl;
 
     QString text = "[GStreamer Error] ";
     text += m_gst_error;
@@ -821,7 +817,7 @@ GstEngine::handleInputError()  //SLOT
         }
     }
 
-    error() << text << endl;
+    kdError() << text << endl;
     emit statusText( text );
 }
 
@@ -829,7 +825,7 @@ GstEngine::handleInputError()  //SLOT
 void
 GstEngine::endOfStreamReached()  //SLOT
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    kdDebug() << k_funcinfo << endl;
 
     InputPipeline* input;
 
@@ -837,7 +833,7 @@ GstEngine::endOfStreamReached()  //SLOT
     for ( uint i = 0; i < m_inputs.count(); i++ ) {
         input = m_inputs.at( i );
         if ( input->m_eos ) {
-            debug() << "An input pipeline has reached EOS, destroying.\n";
+            kdDebug() << "An input pipeline has reached EOS, destroying.\n";
 
             const bool fading = input->state() == InputPipeline::FADE_OUT ||
                                 input->state() == InputPipeline::XFADE_OUT;
@@ -857,13 +853,13 @@ GstEngine::newKioData( KIO::Job*, const QByteArray& array )  //SLOT
     int size = array.size();
 
     if ( m_streamBufIndex >= STREAMBUF_MAX ) {
-        debug() << "SUSPENDING kio transfer.\n";
+        kdDebug() << "Gst-Engine: SUSPENDING kio transfer.\n";
         if ( m_transferJob ) m_transferJob->suspend();
     }
 
     if ( m_streamBufIndex + size >= STREAMBUF_SIZE ) {
         m_streamBufIndex = 0;
-        debug() << "Gst-Engine: Stream buffer overflow!" << endl;
+        kdDebug() << "Gst-Engine: Stream buffer overflow!" << endl;
     }
 
     sendBufferStatus();
@@ -885,7 +881,7 @@ GstEngine::newMetaData()  //SLOT
 void
 GstEngine::kioFinished()  //SLOT
 {
-    DEBUG_FUNC_INFO
+    kdDebug() << k_funcinfo << endl;
 
     // KIO::Job deletes itself when finished, so we need to zero the pointer
     m_transferJob = 0;
@@ -908,7 +904,7 @@ GstEngine::errorNoOutput() //SLOT
 void
 GstEngine::configChanged() //SLOT
 {
-    debug() << "Rebuilding output pipeline with new settings.\n";
+    kdDebug() << "[Gst-Engine] Rebuilding output pipeline with new settings.\n";
 
     // Stop playback and rebuild output pipeline, in order to apply new settings
     createPipeline();
@@ -989,8 +985,6 @@ GstEngine::getPluginList( const QCString& classname ) const
 bool
 GstEngine::createPipeline()
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
-
     if ( m_pipelineFilled )
         destroyPipeline();
 
@@ -998,12 +992,12 @@ GstEngine::createPipeline()
         QTimer::singleShot( 0, this, SLOT( errorNoOutput() ) );
         return false;
     }
-    debug() << "Thread scheduling priority: " << GstConfig::threadPriority() << endl;
-    debug() << "Sound output method: " << GstConfig::soundOutput() << endl;
-    debug() << "CustomSoundDevice: " << ( GstConfig::useCustomSoundDevice() ? "true" : "false" ) << endl;
-    debug() << "Sound Device: " << GstConfig::soundDevice() << endl;
-    debug() << "CustomOutputParams: " << ( GstConfig::useCustomOutputParams() ? "true" : "false" ) << endl;
-    debug() << "Output Params: " << GstConfig::outputParams() << endl;
+    kdDebug() << "Thread scheduling priority: " << GstConfig::threadPriority() << endl;
+    kdDebug() << "Sound output method: " << GstConfig::soundOutput() << endl;
+    kdDebug() << "CustomSoundDevice: " << ( GstConfig::useCustomSoundDevice() ? "true" : "false" ) << endl;
+    kdDebug() << "Sound Device: " << GstConfig::soundDevice() << endl;
+    kdDebug() << "CustomOutputParams: " << ( GstConfig::useCustomOutputParams() ? "true" : "false" ) << endl;
+    kdDebug() << "Output Params: " << GstConfig::outputParams() << endl;
 
     m_gst_rootBin = gst_bin_new( "root_bin" );
 
@@ -1054,12 +1048,12 @@ GstEngine::createPipeline()
     setVolume( m_volume );
 
     if ( !gst_element_set_state( m_gst_inputThread, GST_STATE_READY ) ) {
-        error() << "Could not set inputThread to state READY!\n";
+        kdError() << "Could not set inputThread to state READY!\n";
         destroyPipeline();
         return false;
     }
     if ( !gst_element_set_state( m_gst_outputThread, GST_STATE_PLAYING ) ) {
-        error() << "Could not set outputThread to state PLAYING!\n";
+        kdError() << "Could not set outputThread to state PLAYING!\n";
         destroyPipeline();
         return false;
     }
@@ -1072,7 +1066,7 @@ GstEngine::createPipeline()
 void
 GstEngine::destroyPipeline()
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    kdDebug() << k_funcinfo << endl;
 
     m_fadeValue = 0.0;
 
@@ -1088,7 +1082,7 @@ GstEngine::destroyPipeline()
         if ( GST_STATE( m_gst_rootBin ) != GST_STATE_NULL )
             gst_element_set_state( m_gst_rootBin, GST_STATE_NULL );
 
-        debug() << "Destroying GStreamer pipelines.\n";
+        kdDebug() << "[Gst-Engine] Destroying GStreamer pipelines.\n";
         gst_object_unref( GST_OBJECT( m_gst_rootBin ) );
 
         m_pipelineFilled = false;
@@ -1105,10 +1099,10 @@ GstEngine::destroyPipeline()
 void
 GstEngine::destroyInput( InputPipeline* input )
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    kdDebug() << k_funcinfo << endl;
 
     if ( input ) {
-        debug() << "Destroying input pipeline.\n";
+        kdDebug() << "[Gst-Engine] Destroying input pipeline.\n";
 
         // Destroy the pipeline
         m_inputs.remove( input );
@@ -1144,7 +1138,7 @@ InputPipeline::InputPipeline()
     , m_error( false )
     , m_eos( false )
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    kdDebug() << k_funcinfo << endl;
 
     QString binName;
 
@@ -1170,19 +1164,19 @@ error:
 
 InputPipeline::~InputPipeline()
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
 
     if ( GstEngine::instance()->m_currentInput == this )
         GstEngine::instance()->m_currentInput = 0;
 
-    debug() << "Destroying input bin.\n";
+    kdDebug() << "Destroying input bin.\n";
 
     if ( gst_element_get_managing_bin( bin ) == GST_BIN( GstEngine::instance()->m_gst_inputThread ) )
     {
         gst_element_set_state( GstEngine::instance()->m_gst_queue, GST_STATE_PAUSED );
 
         if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PAUSED ) )
-            warning() << "Could not set input thread to PAUSED.\n";
+            kdWarning() << "[Gst-Engine] Could not set input thread to PAUSED.\n";
 
         gst_element_set_state( GstEngine::instance()->m_gst_queue, GST_STATE_PLAYING );
 
@@ -1193,14 +1187,16 @@ InputPipeline::~InputPipeline()
         gst_bin_remove( GST_BIN( GstEngine::instance()->m_gst_inputThread ), bin );
 
         if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PLAYING ) )
-            warning() << "Could not set input thread to PLAYING.\n";
+            kdWarning() << "[Gst-Engine] Could not set input thread to PLAYING.\n";
     }
     else
     {
-        debug() << "Bin is not in thread.\n";
+        kdDebug() << "Bin is not in thread.\n";
         gst_element_set_state( bin, GST_STATE_NULL );
         gst_object_unref( GST_OBJECT( bin ) );
     }
+
+    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 
@@ -1224,12 +1220,6 @@ InputPipeline::setState( State newState )
 }
 
 
-//FIXME Move to enginebase.cpp. Doesn't work currently because amarokapp links to libengine.
-namespace Debug
-{
-    QCString indent; //declared in debug.h
-}
-
-
 #include "gstengine.moc"
+
 
