@@ -239,7 +239,7 @@ ScriptManager::slotEditScript()
     QString name = m_base->directoryListView->currentItem()->text( 0 );
     QFile file( m_scripts[name].url.path() );
 
-    if ( file.isWritable() )
+    if ( QFileInfo( file ).isWritable() )
         file.open( IO_ReadWrite );
     else {
         KMessageBox::information( 0, i18n( "File is not writable, opening in read-only mode." ) );
