@@ -272,7 +272,7 @@ XineEngine::scope()
 
         if( buf->stream != 0 )
         {
-            debug() << "timestamp| pts:" << buf->vpts << " n:" << buf->num_frames << endl;
+            //debug() << "timestamp| pts:" << buf->vpts << " n:" << buf->num_frames << endl;
 
             buf->vpts = myMetronom->got_audio_samples( myMetronom, buf->vpts, buf->num_frames );
             buf->stream = 0;
@@ -285,7 +285,7 @@ XineEngine::scope()
         {
             if( prev != myList ) //thread-safety
             {
-                debug() << "dispose\n";
+                //debug() << "dispose\n";
 
                 prev->next = node->next;
 
@@ -314,7 +314,7 @@ XineEngine::scope()
         Log::diffSize += diff;
         Log::scopeRequests++;
 
-        debug() << "vpts:" << best_buf->vpts << " d:" << diff << " n:" << best_buf->num_frames << endl;
+        //debug() << "vpts:" << best_buf->vpts << " d:" << diff << " n:" << best_buf->num_frames << endl;
 
         if( diff < best_buf->num_frames - 512 ) //done this way as diff is a 64bit int => less cycles
         {
