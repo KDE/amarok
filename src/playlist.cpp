@@ -1620,9 +1620,7 @@ Playlist::removeSelectedItems() //SLOT
         delete item;
     }
 
-    QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
     updateNextPrev();
-
     //NOTE no need to emit childCountChanged(), removeItem() does that for us
 }
 
@@ -1656,11 +1654,12 @@ Playlist::deleteSelectedFiles() //SLOT
 
         job->setAutoErrorHandlingEnabled( false );
 
-        // we must handle delete errors somehow
-        CollectionDB::instance()->removeSongs( urls );
-
         amaroK::StatusBar::instance()->newProgressOperation( job )
                 .setDescription( i18n("Deleting files") );
+
+        // we must handle delete errors somehow
+        CollectionDB::instance()->removeSongs( urls );
+        QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
     }
 }
 
