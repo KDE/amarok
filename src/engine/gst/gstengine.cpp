@@ -550,34 +550,30 @@ GstEngine::newStreamData( char* buf, int size )  //SLOT
 
 
 void
-GstEngine::setEqualizerActive( bool active ) //SLOT
+GstEngine::setEqualizerEnabled( bool enabled ) //SLOT
 {
     if ( !m_pipelineFilled ) return;
 
-    gst_element_set( m_gst_equalizer, "active", active, NULL );
+    gst_element_set( m_gst_equalizer, "active", enabled, NULL );
 }
 
 
 void
-GstEngine::setEqualizerPreamp( int preamp ) //SLOT
+GstEngine::setEqualizerParameters( int preamp, const QValueList<int>& bandGains ) //SLOT
 {
     if ( !m_pipelineFilled ) return;
 
-    gst_element_set( m_gst_equalizer, "preamp", preamp, NULL );
-}
+    // BEGIN Preamp
+    gst_element_set( m_gst_equalizer, "preamp", ( preamp + 100 ) / 2 , NULL );
+    // END
 
-
-void
-GstEngine::setEqualizerGains( const QValueList<int>& gains ) //SLOT
-{
-    if ( !m_pipelineFilled ) return;
-
-    m_equalizerGains.resize( gains.count() );
-
-    for ( int i = 0; i < gains.count(); i++ )
-        m_equalizerGains[i] = *gains.at( i );
+    // BEGIN Gains
+    m_equalizerGains.resize( bandGains.count() );
+    for ( int i = 0; i < bandGains.count(); i++ )
+        m_equalizerGains[i] = ( *bandGains.at( i ) + 100 ) / 2;
 
     gst_element_set( m_gst_equalizer, "gain", &m_equalizerGains, NULL );
+    // END
 }
 
 

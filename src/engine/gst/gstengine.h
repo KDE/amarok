@@ -70,12 +70,10 @@ class GstEngine : public Engine::Base
         void seek( uint ms );
         void newStreamData( char* data, int size );
 
-        /** Set whether equalizer is active */
-        void setEqualizerActive( bool );
-        /** Set equalizer preamp value, range 0-100 */
-        void setEqualizerPreamp( int );
-        /** Set equalizer band gains, 10 values, range 0-100 */
-        void setEqualizerGains( const QValueList<int>& );
+        /** Set whether equalizer is enabled */
+        void setEqualizerEnabled( bool );
+        /** Set equalizer preamp and gains, range -100..100. Gains are 10 values. */
+        void setEqualizerParameters( int preamp, const QValueList<int>& bandGains );
 
     protected:
         void setVolumeSW( uint percent );
