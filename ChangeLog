@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.1.1:
+  FIX: Made amaroK build with --disable-amazon flag.
   FIX: GStreamer-engine refused to play some mp3 files. (BR 90317)
 
 VERSION 1.1:

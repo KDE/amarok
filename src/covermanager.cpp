@@ -367,16 +367,14 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
     #define item static_cast<CoverViewItem*>(item)
     if( !item ) return;
 
-    #ifdef AMAZON_SUPPORT
     enum Id { SHOW, FETCH, CUSTOM, DELETE };
-    #else
-    enum Id { SHOW, CUSTOM, DELETE };
-    #endif
     KPopupMenu menu( this );
 
     QPtrList<CoverViewItem> selected = selectedItems();
     if( selected.count() > 1 ) {
+        #ifdef AMAZON_SUPPORT
         menu.insertItem( SmallIcon("www"), i18n("Fetch selected covers"), FETCH );
+        #endif
         menu.insertItem( SmallIcon("editdelete"), i18n("Delete selected covers"), DELETE );
     }
     else {
