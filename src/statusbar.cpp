@@ -44,8 +44,8 @@ class TimeLabel : public QLabel
 public:
     TimeLabel( const QString &text, QWidget *parent ) : QLabel( text, parent )
     {
-        setFixedSize( sizeHint() );
         setFont( KGlobalSettings::fixedFont() );
+        setFixedSize( sizeHint() );
     }
 
     virtual void mouseDoubleClickEvent( QMouseEvent* )
@@ -73,7 +73,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     addWidget( m_pTitle = new KSqueezedTextLabel( this ), 2 ); //TODO may look nicer without the gray border
 
     // progress
-    addWidget( m_pProgress = new KProgress( this, 0, true ) );
+    addWidget( m_pProgress = new KProgress( this ), 0, true );
     m_pProgress->setMaximumHeight( fontMetrics().height() );
     m_pProgress->hide();
 
@@ -93,7 +93,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     //TODO make this stretchy?
     addWidget( m_pSlider = new QSlider( Qt::Horizontal, this ), 0, true );
     m_pSlider->setTracking( false );
-    m_pSlider->setMinimumWidth( 70 );
+    m_pSlider->setFixedWidth( 70 );
     m_pSlider->setFixedHeight( fontMetrics().height() );
     connect( m_pSlider, SIGNAL( sliderPressed() ),     SLOT( sliderPressed() ) );
     connect( m_pSlider, SIGNAL( sliderReleased() ),    SLOT( sliderReleased() ) );
@@ -129,13 +129,15 @@ void StatusBar::engineStateChanged( EngineBase::EngineState state )
             break;
 
         case EngineBase::Paused:
+            // display TEMPORARY message
             message( "amaroK is paused" );
             m_pPauseTimer->start( 300 );
             break;
 
         case EngineBase::Playing:
             m_pPauseTimer->stop();
-            clear(); //clear TEMPORARY message
+            // clear TEMPORARY message
+            clear();
             enable = true;
             break;
     }
