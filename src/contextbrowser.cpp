@@ -251,7 +251,7 @@ void ContextBrowser::showHome()
         for ( uint i = 0; i < values.count(); i = i + 4 )
             browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:"
                                     + values[i+1].replace( "'", QCString( "%27" ) ) + "\"'><b>" + values[i]
-                                    + "</b><br>" + values[i+3] + " - " + values[i+4] + "</a></td></tr>" ) );
+                                    + "</b><br>" + values[i+2] + " - " + values[i+3] + "</a></td></tr>" ) );
     }
 
     values.clear();
