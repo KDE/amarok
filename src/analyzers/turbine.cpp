@@ -61,10 +61,10 @@ void TurbineAnalyzer::analyze( const Scope &scope )
 
         y = hd2 - uint(bar_height[i]);
         bitBlt( canvas(), x+1, y,   &barPixmap, 0, y );
-        bitBlt( canvas(), x+1, hd2, &barPixmap, 0, bar_height[i] );
+        bitBlt( canvas(), x+1, hd2, &barPixmap, 0, (int)bar_height[i] );
 
         p.setPen( amaroK::ColorScheme::Foreground );
-        p.drawRect( x, y, COLUMN_WIDTH, bar_height[i]*2 );
+        p.drawRect( x, y, COLUMN_WIDTH, (int)bar_height[i]*2 );
 
         const uint x2 = x+COLUMN_WIDTH-1;
         p.setPen( amaroK::ColorScheme::Text );
