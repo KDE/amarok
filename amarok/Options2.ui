@@ -129,7 +129,7 @@
                                 </size>
                             </property>
                             <property name="sampleText">
-                                <string>FREE OFFER!!! vbk</string>
+                                <string></string>
                             </property>
                         </widget>
                     </vbox>
@@ -178,7 +178,7 @@
                                 </size>
                             </property>
                             <property name="sampleText">
-                                <string>ENLARGE.MENT pILLS</string>
+                                <string></string>
                             </property>
                         </widget>
                     </vbox>
@@ -224,7 +224,7 @@
                                 </size>
                             </property>
                             <property name="sampleText">
-                                <string>THIS IS.NOT SPAM</string>
+                                <string></string>
                             </property>
                         </widget>
                     </vbox>
@@ -233,8 +233,6 @@
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <connections>
     <connection>
         <sender>kcfg_UseCustomFonts</sender>
@@ -244,9 +242,4 @@
     </connection>
 </connections>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kfontrequester.h</includehint>
-    <includehint>kfontrequester.h</includehint>
-    <includehint>kfontrequester.h</includehint>
-</includehints>
 </UI>
