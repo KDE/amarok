@@ -307,15 +307,24 @@ QDragObject *SmartPlaylistView::dragObject()
     return drag;
 }
 
-
-void SmartPlaylistView::paintEmptyArea( QPainter *p, const QRect &r )
+#include <qsimplerichtext.h>
+void SmartPlaylistView::viewportPaintEvent( QPaintEvent *e )
 {
+    KListView::viewportPaintEvent( e );
+
     if( !childCount() ) {
-        p->fillRect( r, colorGroup().base() );
-        p->drawText( 10, 10, width()-20, height()-20, Qt::WordBreak,
-                i18n("You need to build a collection to use \"Smart Playlists\"") );
-    } else
-        QListView::paintEmptyArea( p, r );
+        QSimpleRichText t( i18n(
+                "<div align=center>"
+                  "You need to build a collection to use \"Smart Playlists\""
+                "</div>" ), font() );
+
+        t.setWidth( width() - 50 );
+
+        QPainter p( viewport() );
+        p.setBrush( colorGroup().background() );
+        p.drawRect( 15, 15, t.width() + 20, t.height() + 20 );
+        t.draw( &p, 20, 20, QRect(), colorGroup() );
+    }
 }
 
 
