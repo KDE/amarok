@@ -32,6 +32,8 @@
 ContextBrowser::ContextBrowser( const char *name )
         : QVBox( 0, name )
 {
+    sqlInit();
+
     setSpacing( 4 );
     setMargin( 5 );
 
@@ -57,6 +59,7 @@ ContextBrowser::~ContextBrowser()
 
 void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
 {
+    kdDebug() << url.path().latin1() << endl;
     if ( url.protocol() == "album" )
     {
         QStringList info = QStringList::split( "/", url.path() );
@@ -84,7 +87,10 @@ void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
 
 void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 {
+    // take care of sql updates (schema changed errors)
+    delete m_db;
     sqlInit();
+
     browser->begin();
     
     QString styleSheet( "a { color:black; font-size:8px; text-decoration:none; }"
@@ -92,7 +98,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
                         "td { color:black; font-size:8px; text-decoration:none; }"
 
                         ".song { color:black; font-size:8px; text-decoration:none; }"
-                        ".song:hover { color:black; font-weight: bold; text-decoration:underline; background-color:#cccccc; }"
+                        ".song:hover { cursor: default; color:black; font-weight: bold; text-decoration:underline; background-color:#cccccc; }"
                         ".album { color:black; font-weight: bold; font-size:8px; text-decoration:none; }"
                         ".title { font-size: 11px; font-weight: bold; }"
                         ".head { font-size: 10px; font-weight: bold; }"
@@ -127,7 +133,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     {
         if ( values[i].isEmpty() ) continue;
         
-        browser->write( QString ( "<tr><td class='song'><a href=\"file:%1\">%2%3</a></td></tr>" )
+        browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:%1\"'>%2%3</a></td></tr>" )
                         .arg( values[i*3 + 1] )
                         .arg( ( values[i*3 + 2] == "" ) ? "" : values[i*3 + 2] + ". " )
                         .arg( values[i*3] ) );
@@ -163,7 +169,6 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 
     browser->write( "</table><br></html>" );
     browser->end();
-    delete m_db;
 }
 
 
