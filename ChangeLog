@@ -4,9 +4,12 @@ amaroK ChangeLog
 
 
 VERSION 0.9-beta3:
+  * add: playlist items, which couldn't be opened / read (for some reason) will be marked 
+         with a grey background color
   * add: pasting clipboard selection into playlist with MidButton, X11-style  
   * chg: refined on-screen-display with more polished look
   * fix: skipping broken/non-existant tracks
+  * chg: If the current song is paused, the Play Button will resume, not restart it.
   * fix: respect "hide playlist with main window" and playlist minimize/hide behaviour.
   * add: new OSD configuration options: bgcolor, screen position
 

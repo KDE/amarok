@@ -44,6 +44,9 @@ PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KU
 {
     setDragEnabled( true );
     setDropEnabled( true );
+    
+    // our friend threadweaver will take care of this flag
+    corruptFile = FALSE;
 
     KListViewItem::setText( 1, title );
     KListViewItem::setText( 8, u.directory().section( '/', -1 ) );
@@ -199,8 +202,14 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         QListViewItem::paintCell( p, glowCg, column, width, align );
 
     } else {
-
-        KListViewItem::paintCell( p, cg, column, width, align );
+        if ( corruptFile )
+        {
+            QColorGroup corruptCg = cg;
+            QColor corruptBg( 0xcc, 0xcc, 0xcc );
+            corruptCg.setColor( QColorGroup::Base, corruptBg );
+            KListViewItem::paintCell( p, corruptCg, column, width, align );
+        } else
+            KListViewItem::paintCell( p, cg, column, width, align );
     }
 
     p->setPen( QPen( cg.dark(), 0, Qt::DotLine ) );

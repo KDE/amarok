@@ -49,6 +49,8 @@ class PlaylistItem : public KListViewItem
 
         //FIXME move to PlaylistWidget?
         static PlaylistItem *GlowItem;
+        
+        bool corruptFile;
 
     private:
         int  compare( QListViewItem*, int, bool ) const;

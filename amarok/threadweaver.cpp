@@ -158,7 +158,9 @@ TagReader::bindTags()
    if( m_tags )
    {
        m_item->setText( *m_tags );
-   }
+       m_item->corruptFile = FALSE;
+   } else
+       m_item->corruptFile = TRUE;
 }
 
 void
