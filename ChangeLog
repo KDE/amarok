@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.2:
+  ADD: The "Similar Artists" feature (using Audioscrobbler) can now be
+       switched off. (BR 95280)
   FIX: Error in Shoutcast http-request, which made it impossible to play
        many radio streams with GStreamer and aRts. (BR 97211, 98569)
   CHG: Better default directory for selecting a custom cover.
