@@ -112,7 +112,7 @@ MediaDeviceList::MediaDeviceList( MediaDeviceView* parent )
 
     addColumn( i18n( "Artist" ) );
     renderView( 0 );
-    
+
     connect( this, SIGNAL( expanded( QListViewItem* ) ),
              this,   SLOT( renderView( QListViewItem* ) ) );
 
@@ -154,7 +154,7 @@ MediaDeviceList::renderView( QListViewItem* parent )  //SLOT
         item->setDropEnabled( true );
         item->setText( 0, items[ i ] );
         item->setPixmap( 0, pixmap );
-        
+
         if ( track )
             item->setUrl( items[i+1] );
     }
@@ -184,7 +184,7 @@ MediaDeviceList::renderNode( QListViewItem* parent, const KURL& url )  //SLOT
             item = new MediaItem( this );
         else
             item = new MediaItem( parent );
-    
+
         item->setExpandable( fi->isDir() );
         item->setDragEnabled( true );
         item->setDropEnabled( true );
@@ -291,7 +291,7 @@ MediaDeviceList::contentsDragMoveEvent( QDragMoveEvent* e )
 {
 //    const QPoint p = contentsToViewport( e->pos() );
 //    QListViewItem *item = itemAt( p );
-}   
+}
 
 
 void
@@ -383,7 +383,7 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     m_transferList->setDropVisualizerWidth( 3 );
     m_transferList->setAcceptDrops( true );
     m_transferList->addColumn( i18n( "URL" ) );
-    
+
     QHBox* hb( this );
     hb->setSpacing( 4 );
     m_stats = new QLabel( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ), hb );
@@ -433,7 +433,7 @@ MediaDevice::addURL( const KURL& url )
         item->setDropEnabled( true );
         item->setUrl( url.path() );
         item->setText( 0, url.path() );
-    
+
         m_transferURLs << url;
         m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_transferList->childCount() ) );
     } else
@@ -445,7 +445,7 @@ QStringList
 MediaDevice::items( QListViewItem* item )
 {
     QStringList items;
-    
+
     if ( !item )
         m_ipod->getArtists( items );
     else
@@ -463,7 +463,7 @@ MediaDevice::items( QListViewItem* item )
         {
             TrackList* album;
             album = m_ipod->getAlbum( item->parent()->text( 0 ), item->text( 0 ) );
-    
+
             if ( album )
             {
                 TrackList::Iterator it = album->getTrackIDs();
@@ -494,7 +494,7 @@ MediaDevice::songsByArtist( const QString& artist )
         {
             TrackList* album;
             album = m_ipod->getAlbum( artist, it.currentKey() );
-    
+
             if ( album )
             {
                 TrackList::Iterator it = album->getTrackIDs();
@@ -517,7 +517,7 @@ MediaDevice::songsByArtistAlbum( const QString& artist, const QString& album )
 
     TrackList* al;
     al = m_ipod->getAlbum( artist, album );
-    
+
     if ( al )
     {
         TrackList::Iterator it = al->getTrackIDs();
@@ -535,15 +535,20 @@ MediaDevice::songsByArtistAlbum( const QString& artist, const QString& album )
 void
 MediaDevice::transferFiles()  //SLOT
 {
-    m_parent->m_progress->setTotalSteps( m_parent->m_transferList->childCount() );
-    m_parent->m_progress->show();
+    if ( m_ipod->ensureConsistency() )
+    {
+        m_parent->m_progress->setTotalSteps( m_parent->m_transferList->childCount() );
+        m_parent->m_progress->show();
 
-    KIO::CopyJob *job = KIO::copy( m_transferURLs, KURL( "ipod:/Artists/" ), true );
-    connect( job, SIGNAL( copyingDone( KIO::Job *, const KURL &, const KURL &, bool, bool ) ),
-             this,  SLOT( fileTransferred() ) );
+        KIO::CopyJob *job = KIO::copy( m_transferURLs, KURL( "ipod:/Artists/" ), true );
+        connect( job, SIGNAL( copyingDone( KIO::Job *, const KURL &, const KURL &, bool, bool ) ),
+                this,  SLOT( fileTransferred() ) );
 
-    connect( job, SIGNAL( result( KIO::Job * ) ),
-             this,  SLOT( fileTransferFinished() ) );
+        connect( job, SIGNAL( result( KIO::Job * ) ),
+                this,  SLOT( fileTransferFinished() ) );
+    }
+    else
+        kdDebug() << "[MediaBrowser] iPod inconsistent!" << endl;
 }
 
 
@@ -560,15 +565,19 @@ MediaDevice::deleteFiles( const KURL::List& urls )
 
     if ( button == KMessageBox::Continue )
     {
-        m_ipod->lock( true );
-        deleteFromIPod( 0 );
-
         KURL::List::ConstIterator it = urls.begin();
         for ( ; it != urls.end(); ++it )
             QFile::remove( (*it).path() );
 
-        m_ipod->unlock();
-        syncIPod();
+        if ( m_ipod->ensureConsistency() )
+        {
+            m_ipod->lock( true );
+            deleteFromIPod( 0 );
+            m_ipod->unlock();
+            syncIPod();
+        }
+        else
+            kdDebug() << "[MediaBrowser] iPod inconsistent!" << endl;
     }
 }
 
@@ -587,14 +596,12 @@ MediaDevice::deleteFromIPod( MediaItem* item )
     {
         if ( fi->isSelected() )
         {
-            m_ipod->ensureConsistency();
-
             switch ( fi->depth() )
             {
                 case 0:
                     Artist* artist;
                     artist = m_ipod->getArtistByName( fi->text( 0 ) );
-        
+
                     if ( artist )
                         for ( ArtistIterator it( *artist ); it.current(); ++it )
                             m_ipod->deleteAlbum( fi->text( 0 ), it.currentKey() );
@@ -610,7 +617,7 @@ MediaDevice::deleteFromIPod( MediaItem* item )
                     TrackMetadata* track = 0;
                     TrackList* playlist;
                     playlist = m_ipod->getAlbum( fi->parent()->parent()->text( 0 ), fi->parent()->text( 0 ) );
-        
+
                     TrackList::Iterator tit = playlist->getTrackIDs();
                     while( tit.hasNext() )
                     {
@@ -618,10 +625,10 @@ MediaDevice::deleteFromIPod( MediaItem* item )
                         track = m_ipod->getTrackByID( trackid );
                         if ( track && ( track->getTitle() == fi->text( 0 ) ) )
                             break;
-        
+
                         track = 0;
                     }
-        
+
                     if ( track )
                         m_ipod->deleteTrack( track->getID() );
 
@@ -641,8 +648,6 @@ MediaDevice::deleteFromIPod( MediaItem* item )
 bool
 MediaDevice::fileExists( const MetaBundle& bundle )  
 {
-    m_ipod->ensureConsistency();
-
     TrackList* album;
 
     album = m_ipod->getAlbum( bundle.artist(), bundle.album() );
@@ -656,7 +661,7 @@ MediaDevice::fileExists( const MetaBundle& bundle )
                 return true;
         }
     }
-    
+
     return false;
 }
 
@@ -677,7 +682,7 @@ MediaDevice::fileTransferFinished()  //SLOT
     m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_transferList->childCount() ) );
 
     // sync ipod, now
-    syncIPod();
+//    syncIPod();
 
     m_parent->m_progress->hide();
 }
@@ -692,6 +697,12 @@ MediaDevice::syncIPod()  //SLOT
     m_ipod->writeItunesDB();
     if( !m_ipod->getItunesDBError().isEmpty() )
         kdDebug() << "Sync failed: " + m_ipod->getItunesDBError() << endl;
+
+    m_ipod->close();
+    delete m_ipod;
+
+    m_ipod = new IPod::IPod();
+    m_ipod->open( "/mnt/ipod" );
 
     m_parent->m_deviceList->renderView( 0 );
 }
