@@ -18,6 +18,7 @@ email                : markey@web.de
 #include "amarokarts.h"
 #include "artsengine.h"
 
+#include <math.h>            //setVolume(), timerEvent()
 #include <string>
 #include <vector>
 
@@ -383,7 +384,7 @@ void ArtsEngine::connectTimeout()
 {        
     if ( m_pPlayObject && !m_pPlayObject->isNull() && m_pPlayObject->object().isNull() )
     {
-        kdWarning() << "[ArtsEngine::open()] Cannot initialize PlayObject! Skipping this track." << endl;
+        kdWarning() << "[ArtsEngine::connectTimeout()] Cannot initialize PlayObject! Skipping this track." << endl;
         
         emit endOfTrack();
         delete m_pPlayObject;
@@ -444,10 +445,13 @@ void ArtsEngine::setVolume( int percent )
 {
     m_volume = percent;
 
-    if ( m_volumeId )
-        m_volumeControl.scaleFactor( percent * 0.01 );
-    else
+    if ( m_volumeId ) {
+        //using a logarithmic function to make the volume slider more natural
+        m_volumeControl.scaleFactor( 1.0 - log10( ( 100 - percent) * 0.09 + 1.0 ) );
+    }
+    else {
         EngineBase::setVolumeHW( percent );
+    }
 }
 
 
@@ -611,7 +615,6 @@ void ArtsEngine::startXfade()
 }
 
 
-#include <math.h>
 void ArtsEngine::timerEvent( QTimerEvent* )
 {
     if ( m_xfadeValue > 0.0 )

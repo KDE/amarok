@@ -53,8 +53,6 @@ SHORT-TERM (URGENT):
 
 MID-TERM:
 
-    * add: #55 <markey> (optional) logarithmic scale for volume mixer
-
     * add: #50 <markey> make amaroK configurable --without-arts -->markey
 
     * fix: #44 <markey> use kdWarning() instead of kdDebug() where appropriate
