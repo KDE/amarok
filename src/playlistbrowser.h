@@ -10,6 +10,7 @@
 #include <qptrlist.h>
 
 class KAction;
+class KActionMenu;
 class KActionCollection;
 class KToolBar;
 class QCustomEvent;
@@ -29,12 +30,15 @@ Q_OBJECT
    friend class SmartPlaylistView;
 
    public:
+       enum ViewMode { DetailedView=0, ListView };
+
        PlaylistBrowser( const char* );
        ~PlaylistBrowser();
        void loadPlaylists( const QString& path = QString() );
        void addPlaylist( QString path, bool force=false );
        void savePlaylist( PlaylistBrowserItem * );
        QString playlistCacheFile();    //return the playlists stats cache file
+       ViewMode viewMode() { return m_viewMode; }
 
        static PlaylistBrowser *instance() { return s_instance; }
 
@@ -42,6 +46,7 @@ Q_OBJECT
        void openPlaylist();
 
    private slots:
+       void setViewMode( int );
        void showContextMenu( QListViewItem*, const QPoint&, int );
        void removeSelectedItems();
        void renameSelectedPlaylist();
@@ -63,7 +68,9 @@ Q_OBJECT
        SmartPlaylistView *m_smartlistview;
        KActionCollection *m_ac;
        KAction *removeButton, *renameButton, *deleteButton;
+       KActionMenu *viewMenuButton;
        KToolBar *m_toolbar;
+       ViewMode m_viewMode;
 };
 
 

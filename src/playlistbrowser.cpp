@@ -21,6 +21,7 @@
 #include <qtimer.h>    //loading animation
 
 #include <kaction.h>
+#include <kactionclasses.h>
 #include <kactioncollection.h>
 #include <kapplication.h>
 #include <kio/job.h>          //deleteSelectedPlaylists()
@@ -55,9 +56,15 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     //<Toolbar>
     m_ac = new KActionCollection( this );
     KAction *open = new KAction( i18n("Add playlist"), "fileopen", 0, this, SLOT( openPlaylist() ), m_ac, "Open" );
-    renameButton = new KAction( "Rename", "editclear", 0, this, SLOT( renameSelectedPlaylist() ), m_ac, "Rename" );
-    removeButton = new KAction( "Remove", "edittrash", 0, this, SLOT( removeSelectedItems() ), m_ac, "Remove" );
-    deleteButton = new KAction( "Delete", "editdelete", 0, this, SLOT( deleteSelectedPlaylists() ), m_ac, "Delete" );
+    renameButton = new KAction( i18n("Rename"), "editclear", 0, this, SLOT( renameSelectedPlaylist() ), m_ac, "Rename" );
+    removeButton = new KAction( i18n("Remove"), "edittrash", 0, this, SLOT( removeSelectedItems() ), m_ac, "Remove" );
+    deleteButton = new KAction( i18n("Delete"), "editdelete", 0, this, SLOT( deleteSelectedPlaylists() ), m_ac, "Delete" );
+    viewMenuButton = new KActionMenu( i18n("View"), "configure", m_ac );
+    viewMenuButton->setDelayed( false );
+    KPopupMenu *viewMenu = viewMenuButton->popupMenu();
+    viewMenu->insertItem( i18n("Detailed View"), DetailedView );
+    viewMenu->insertItem( i18n("List View"), ListView );
+    connect( viewMenu, SIGNAL( activated(int) ), this, SLOT( setViewMode(int) ) );
 
     m_toolbar = new KToolBar( browserBox );
     m_toolbar->setMovingEnabled(false);
@@ -73,6 +80,9 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     renameButton->plug( m_toolbar);
     removeButton->plug( m_toolbar );
     deleteButton->plug( m_toolbar);
+    m_toolbar->insertLineSeparator();
+    viewMenuButton->plug( m_toolbar );
+
     renameButton->setEnabled( false );
     removeButton->setEnabled( false );
     deleteButton->setEnabled( false );
@@ -91,6 +101,8 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     KConfig *config = kapp->config();
     config->setGroup( "PlaylistBrowser" );
+    m_viewMode = (ViewMode)config->readNumEntry( "View", DetailedView );  //restore the view mode
+    viewMenu->setItemChecked( m_viewMode, true );
     QString str = config->readEntry( "Splitter", "[228,121]" );    //default splitter position
     QTextStream stream( &str, IO_ReadOnly );
     stream >> *m_splitter;     //this sets the splitters position
@@ -105,7 +117,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     connect( m_listview, SIGNAL( currentChanged( QListViewItem * ) ),
             this, SLOT( currentItemChanged( QListViewItem * ) ) );
 
-    setMinimumWidth( m_toolbar->sizeHint().width() + 2 );
+    setMinimumWidth( m_toolbar->sizeHint().width() );
 
     // Check if user has installed a new version
     if ( APP_VERSION != AmarokConfig::version() )
@@ -146,6 +158,8 @@ PlaylistBrowser::~PlaylistBrowser()
     KConfig *config = kapp->config();
     config->setGroup( "PlaylistBrowser" );
 
+    //save view mode
+    config->writeEntry( "View", m_viewMode );
     //save splitter position
     QString str; QTextStream stream( &str, IO_WriteOnly );
     stream << *m_splitter;
@@ -334,7 +348,7 @@ void PlaylistBrowser::renamePlaylist( QListViewItem* item, const QString& newNam
     QString newPath = fileDirPath( oldPath ) + newName + fileExtension( oldPath );
 
     if ( rename( oldPath.latin1(), newPath.latin1() ) == -1 )
-        KMessageBox::error( this, "Error renaming the file." );
+        KMessageBox::error( this, i18n("Error renaming the file.") );
     else
         item->setUrl( newPath );
 
@@ -485,6 +499,21 @@ void PlaylistBrowser::customEvent( QCustomEvent *e )
     // the CollectionReader sends a PlaylistFoundEvent when a playlist is found
     CollectionReader::PlaylistFoundEvent* p = (CollectionReader::PlaylistFoundEvent*)e;
     addPlaylist( p->path() );
+}
+
+
+void PlaylistBrowser::setViewMode( int view )  //SL0T
+{
+    if( m_viewMode == (ViewMode)view )
+        return;
+
+    viewMenuButton->popupMenu()->setItemChecked( m_viewMode, false );
+    viewMenuButton->popupMenu()->setItemChecked( view, true );
+    m_viewMode = (ViewMode)view;
+
+    QListViewItemIterator it( m_listview );
+    for( ; it.current(); ++it )
+        it.current()->setup();
 }
 
 
@@ -1187,12 +1216,19 @@ void PlaylistBrowserItem::setup()
     QFontMetrics fm( listView()->font() );
     int margin = listView()->itemMargin()*2;
     int h = m_savePix ? QMAX( m_savePix->height(), fm.lineSpacing() ) : fm.lineSpacing();
-    setHeight( h + fm.lineSpacing() + margin + 4 );
+    if ( h % 2 > 0 )
+        h++;
+    if( PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DetailedView )
+        setHeight( h + fm.lineSpacing() + margin );
+    else
+        setHeight( h + margin );
 }
 
 
 void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align)
 {
+    bool detailedView = PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DetailedView;
+
     //flicker-free drawing
     static QPixmap buffer;
     buffer.resize( width, height() );
@@ -1211,9 +1247,11 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
         // use alternate background
         pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor() );
 
-    // draw a line at the top
-    pBuf.setPen( cg.text() );
-    pBuf.drawLine( 0, 0, width, 0 );
+    if( detailedView ) {
+        // draw a line at the top
+        pBuf.setPen( cg.text() );
+        pBuf.drawLine( 0, 0, width, 0 );
+    }
 
     KListView *lv = (KListView *)listView();
 
@@ -1242,17 +1280,17 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
     if ( m_url.protocol() == "cur" ) font.setItalic( true );
 
     int text_x = lv->treeStepSize() + 3;
-    int text_y = fm.lineSpacing();
+    int textHeight = detailedView ? fm.lineSpacing() + lv->itemMargin() + 1 : height();
     pBuf.setPen( isSelected() ? cg.highlightedText() : cg.text() );
 
     //if the playlist has been modified a save icon is shown
     if( m_modified && m_savePix ) {
-        pBuf.drawPixmap( text_x, 3, *m_savePix );
+        pBuf.drawPixmap( text_x, (textHeight - m_savePix->height())/2, *m_savePix );
         text_x += m_savePix->width()+4;
     }
 
     // draw the playlist name in bold
-    font.setBold( true );
+    font.setBold( PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DetailedView );
     pBuf.setFont( font );
     QFontMetrics fmName( font );
 
@@ -1269,28 +1307,30 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
         name = text + "...";
     }
 
-    pBuf.drawText( text_x, text_y, name );
+    pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
 
-    QString info;
-    text_y += m_savePix ? QMAX( fm.lineSpacing(), m_savePix->height() ) : fm.lineSpacing();
-    if( m_modified )
+    if( detailedView ) {
+        QString info;
+
+        if( m_modified )
             text_x = lv->treeStepSize() + 3;
-    font.setBold( false );
-    pBuf.setFont( font );
+        font.setBold( false );
+        pBuf.setFont( font );
 
-    if ( m_url.protocol() != "cur" )
-    {
-        if( m_loading )
-            info = i18n( "Loading..." );
-        else
-        {     //playlist loaded
-            // draw the number of tracks and the total length of the playlist
-            info += i18n("1 Track", "%n Tracks", m_trackCount);
-            if( m_length )
-                info += QString(" - [%2]").arg( MetaBundle::prettyTime( m_length ) );
+        if ( m_url.protocol() != "cur" )
+        {
+            if( m_loading )
+                info = i18n( "Loading..." );
+            else
+            {     //playlist loaded
+                // draw the number of tracks and the total length of the playlist
+                info += i18n("1 Track", "%n Tracks", m_trackCount);
+                if( m_length )
+                    info += QString(" - [%2]").arg( MetaBundle::prettyTime( m_length ) );
+            }
+
+            pBuf.drawText( text_x, textHeight, width, fm.lineSpacing(), AlignVCenter, info);
         }
-
-        pBuf.drawText( text_x, text_y, info);
     }
 
     pBuf.end();
@@ -1343,29 +1383,52 @@ TrackItemInfo::TrackItemInfo( const KURL &u, const QString &t, const int l )
 SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
    : KListView( parent, name )
 {
+    CollectionDB *db = new CollectionDB();
+    QStringList values;
+    QStringList names;
+
     addColumn(i18n("Smart Playlists"));
     setSelectionMode(QListView::Single);
     setSorting( -1 ); //no sort
     setFullWidth( true );
     setRootIsDecorated( true );
 
+    /********** All Collection **************/
     SmartPlaylist *lastItem = new SmartPlaylist( this, 0, i18n("All Collection") );
-    lastItem->setQuery( "SELECT  tags.url "
-                        "FROM tags, artist, album "
-                        "WHERE artist.id = tags.artist AND album.id = tags.album "
+    lastItem->setQuery( "SELECT tags.url "
+                        "FROM tags, artist "
+                        "WHERE artist.id = tags.artist "
                         "ORDER BY artist.name DESC" );
     lastItem->setPixmap( 0, SmallIcon("kfm") );
     lastItem->setDragEnabled(true);
 
     //insert items after last item
+
+    /********** Most Played **************/
     lastItem = new SmartPlaylist(this, lastItem, i18n("Most Played") );
-    lastItem->setQuery( "SELECT  tags.url "
+    lastItem->setQuery( "SELECT tags.url "
                         "FROM tags, statistics "
                         "WHERE statistics.url = tags.url "
                         "ORDER BY statistics.playcounter DESC "
                         "LIMIT 0,15;" );
     lastItem->setPixmap( 0, SmallIcon("player_playlist") );
 
+    db->execSql( "SELECT DISTINCT name FROM artist ORDER BY name", &values, &names );
+    SmartPlaylist *item = 0;
+    for( uint i=0; i < values.count(); i++ ) {
+        item = new SmartPlaylist( lastItem, item, i18n("By ") + values[i] );
+        item->setQuery( QString( "SELECT tags.url "
+                        "FROM tags, statistics "
+                        "WHERE statistics.url = tags.url AND tags.artist = %1 "
+                        "ORDER BY statistics.playcounter DESC "
+                        "LIMIT 0,15;" ).arg( db->getValueID( "artist", values[i], false ) ) );
+        item->setPixmap( 0, SmallIcon("player_playlist") );
+        item->setDragEnabled(true);
+    }
+    values.clear();
+    names.clear();
+
+    /********** Newest Tracks **************/
     lastItem =  new SmartPlaylist(this, lastItem, i18n("Newest Tracks") );
     lastItem->setQuery( "SELECT  tags.url "
                         "FROM tags, artist, album "
@@ -1375,7 +1438,8 @@ SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
     lastItem->setPixmap( 0, SmallIcon("player_playlist") );
     lastItem->setDragEnabled(true);
 
-    lastItem =  new SmartPlaylist(this, lastItem, i18n("Recently Played") );
+    /********** Last Played **************/
+    lastItem =  new SmartPlaylist(this, lastItem, i18n("Last Played") );
     lastItem->setQuery( "SELECT  tags.url "
                         "FROM tags, statistics "
                         "WHERE statistics.url = tags.url "
@@ -1384,6 +1448,7 @@ SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
     lastItem->setPixmap( 0, SmallIcon("player_playlist") );
     lastItem->setDragEnabled(true);
 
+    /********** Never Played **************/
     lastItem =  new SmartPlaylist(this, lastItem, i18n("Never Played") );
     lastItem->setQuery( "SELECT url "
                         "FROM tags "
@@ -1391,14 +1456,12 @@ SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
     lastItem->setPixmap( 0, SmallIcon("player_playlist") );
     lastItem->setDragEnabled(true);
 
+    /********** Genres **************/
     lastItem = new SmartPlaylist( this, lastItem, i18n("Genres") );
     lastItem->setPixmap( 0, SmallIcon("player_playlist") );
 
-    CollectionDB *db = new CollectionDB();
-    QStringList values;
-    QStringList names;
-    db->execSql( "SELECT DISTINCT name FROM genre", &values, &names );
-    SmartPlaylist *item = 0;
+    db->execSql( "SELECT DISTINCT name FROM genre ORDER BY name", &values, &names );
+    item = 0;
     for( uint i=0; i < values.count(); i++ ) {
         item = new SmartPlaylist( lastItem, item, values[i] );
         item->setQuery( QString("SELECT url "
@@ -1409,6 +1472,8 @@ SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
     }
     values.clear();
     names.clear();
+
+    delete db;
 
     connect( this, SIGNAL( doubleClicked( QListViewItem *) ), SLOT( loadPlaylistSlot( QListViewItem * ) ) );
 
