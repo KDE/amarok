@@ -2285,16 +2285,16 @@ QueryBuilder::sortBy( int table, int value, bool descending )
     if ( table & tabSong ) m_sort += "tags.";
     if ( table & tabStats ) m_sort += "statistics.";
 
-    if ( value & valID ) m_values += "id";
-    if ( value & valName ) m_values += "name";
-    if ( value & valURL ) m_values += "url";
-    if ( value & valTitle ) m_values += "title";
-    if ( value & valTrack ) m_values += "track";
-    if ( value & valScore ) m_values += "percentage";
-    if ( value & valComment ) m_values += "comment";
-    if ( value & valBitrate ) m_values += "bitrate";
-    if ( value & valLength ) m_values += "length";
-    if ( value & valSamplerate ) m_values += "samplerate";
+    if ( value & valID ) m_sort += "id";
+    if ( value & valName ) m_sort += "name";
+    if ( value & valURL ) m_sort += "url";
+    if ( value & valTitle ) m_sort += "title";
+    if ( value & valTrack ) m_sort += "track";
+    if ( value & valScore ) m_sort += "percentage";
+    if ( value & valComment ) m_sort += "comment";
+    if ( value & valBitrate ) m_sort += "bitrate";
+    if ( value & valLength ) m_sort += "length";
+    if ( value & valSamplerate ) m_sort += "samplerate";
 
     if ( b ) m_sort += " ) ";
     if ( descending ) m_sort += " DESC ";
