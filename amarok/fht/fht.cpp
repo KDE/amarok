@@ -23,18 +23,23 @@
 #include "fht.h"
 
 
-FHT::FHT(int e) :
+/**
+  * Prepare transform for data sets with 2^n numbers, whereby n should
+  * be at least 3. Values of more than 3 need a trigonometry table.
+  * @see makeCasTable()
+  */
+FHT::FHT(int n) :
 	m_buf(0),
 	m_tab(0)
 {
-	if (e < 3) {
+	if (n < 3) {
 		m_num = 0;
 		m_exp2 = -1;
 		return;
 	}
-	m_exp2 = e;
-	m_num = 1 << e;
-	if (e > 3) {
+	m_exp2 = n;
+	m_num = 1 << n;
+	if (n > 3) {
 		m_buf = new float[m_num];
 		m_tab = new float[m_num * 2];
 		makeCasTable();
@@ -49,6 +54,11 @@ FHT::~FHT()
 }
 
 
+/**
+  * Create a table of CAS values (CAS ... Cosine And Sine).
+  * Has only to be done in the constructor and saves from
+  * calculating the same values over and over while transforming.
+  */
 void FHT::makeCasTable(void)
 {
 	float d, *costab, *sintab;
@@ -89,11 +99,13 @@ void FHT::transform(float *p)
 	if (m_num == 8)
 		transform8(p);
 	else
-		_transform(p);
-	return;
+		_transform(p, m_num, 0);
 }
 
 
+/**
+  * Discrete Hartley transform of data sets with 8 values.
+  */
 inline void FHT::transform8(float *p)
 {
 	float a, b, c, d, e, f, g, h, b_f2, d_h2;
@@ -123,38 +135,44 @@ inline void FHT::transform8(float *p)
 }
 
 
-inline float FHT::_transform(float *p)
-{
-	__transform(p, m_num, 0);
-	return 0.0;
-}
-
-
+/**
+  * Calculates a mathematically correct FFT power spectrum.
+  * If further scaling is applied later, use _power instead
+  * and factor the 0.5 in the final scaling factor.
+  * @see FHT::_power()
+  */
 void FHT::power(float *p)
 {
 	_power(p);
-
 	for (int i = 0; i < (m_num / 2); i++)
 		*p++ *= .5;
 }
 
 
-float FHT::_power(float *p)
+/**
+  * Calculates an FFT power spectrum with doubled values as a
+  * result. The values need to be multiplied by 0.5 to be exact.
+  * Note that you only get 2^(n-1) power values for a data set
+  * of 2^1 values.
+  * @see FHT::power()
+  */
+void FHT::_power(float *p)
 {
 	int i;
 	float *q;
-	_transform(p);
+	_transform(p, m_num, 0);
 
 	*p = (*p * *p), *p += *p, p++;
 
 	for (i = 1, q = p + m_num - 2; i < (m_num / 2); i++, --q)
 		*p++ = (*p * *p) + (*q * *q);
-
-	return .5;
 }
 
 
-void FHT::__transform(float *p, int n, int k)
+/**
+  * Recursive in-place Hartley transform. For internal use only!
+  */
+void FHT::_transform(float *p, int n, int k)
 {
 	if (n == 8) {
 		transform8(p + k);
@@ -169,8 +187,8 @@ void FHT::__transform(float *p, int n, int k)
 
 	memcpy(p + k, m_buf, sizeof(float) * n);
 
-	__transform(p, ndiv2, k);
-	__transform(p, ndiv2, k + ndiv2);
+	_transform(p, ndiv2, k);
+	_transform(p, ndiv2, k + ndiv2);
 
 	j = m_num / ndiv2 - 1;
 	t1 = m_buf;

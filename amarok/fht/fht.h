@@ -18,6 +18,9 @@
 //
 // $Id$
 
+#ifndef FHT_H
+#define FHT_H
+
 class FHT {
 	int		m_exp2;
 	int		m_num;
@@ -25,21 +28,20 @@ class FHT {
 	float		*m_tab;
 
 	void		makeCasTable();
+	void 		_transform(float *, int, int);
 
 public:
 	FHT(int);
 	~FHT();
 	inline int	sizeExp() const { return m_exp2; }
 	inline int	size() const { return m_num; }
-	void 		__transform(float *, int, int);
 	inline void	transform8(float *);
 	void		transform(float *);
-	inline float	_transform(float *);
 	void		power(float *);
-	float		_power(float *);
+	void		_power(float *);
 	float		*copy(float *, float *);
 	float		*clear(float *);
 	inline void	scale(float *, float);
 };
 
-
+#endif
