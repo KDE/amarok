@@ -214,6 +214,24 @@ Playlist::~Playlist()
 
 //PUBLIC INTERFACE ===================================================
 
+namespace Glow
+{
+    namespace Text
+    {
+        static double dr, dg, db;
+        static int    r, g, b;
+    }
+    namespace Base
+    {
+        static double dr, dg, db;
+        static int    r, g, b;
+    }
+
+    static const uint STEPS = 13;
+    static uint counter;
+}
+
+
 //QWidget *Playlist::browser() const { return m_browser; }
 void Playlist::showCurrentTrack() { ensureItemVisible( currentTrack() ); } //SLOT
 
@@ -580,7 +598,7 @@ void Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after,
 }
 
 
-void Playlist::slotHeaderResized( int section, int, int newSize )
+void Playlist::slotHeaderResized( int /*section*/, int, int /*newSize*/ )
 {
 #if 0
     //TODO the header has some padding either side of the text, so the fontMetrics width
@@ -758,7 +776,9 @@ void Playlist::engineStateChanged( EngineBase::EngineState state )
         m_ac->action( "next" )->setEnabled( false );
         m_ac->action( "playlist_show" )->setEnabled( false );
 
-        repaintItem( m_currentTrack );
+        //don't leave currentTrack in undefined glow state
+        Glow::counter = 63;
+        slotGlowTimer();
 
         //FALL THROUGH
 
@@ -812,8 +832,14 @@ void Playlist::setCurrentTrack( PlaylistItem *item )
     }
 
     m_currentTrack = item;
-    if( item ) { item->setPixmap( 0, SmallIcon("artsbuilderexecute") ); item->setHeight( fontMetrics().height() * 1.8 ); }
-    if( prev && item != prev ) { prev->setPixmap( 0, QPixmap() ); prev->invalidateHeight(); }
+    if( item ) {
+        item->setPixmap( 0, SmallIcon("artsbuilderexecute") );
+        item->setHeight( static_cast<int>( fontMetrics().height() * 1.8 ) );
+    }
+    if( prev && item != prev ) {
+        prev->setPixmap( 0, QPixmap() );
+        prev->invalidateHeight();
+    }
     m_cachedTrack  = 0; //invalidate cached pointer
 
     repaintItem( prev );
@@ -1109,23 +1135,6 @@ void Playlist::showTrackInfo( PlaylistItem *pItem ) const //SLOT
     box.exec();
 }
 
-namespace Glow
-{
-    namespace Text
-    {
-        static double dr, dg, db;
-        static int    r, g, b;
-    }
-    namespace Base
-    {
-        static double dr, dg, db;
-        static int    r, g, b;
-    }
-
-    static const uint STEPS = 13;
-
-    static int counter; //int just in case amaroKScheme method breaks
-}
 
 void Playlist::paletteChange( const QPalette &p )
 {
