@@ -35,6 +35,7 @@ int main( int argc, char *argv[] )
     aboutData.addAuthor( "Mark 'It's good, but it's not Irssi' Kretschmann", I18N_NOOP( "project founder, developer, maintainer" ), "markey@web.de" );
     aboutData.addAuthor( "Max 'Turtle-Power' Howell", I18N_NOOP( "developer, knight of the regression round-table" ), "max.howell@methylblue.com", "http://www.methyblue.com" );
     aboutData.addAuthor( "Mike 'Purple is not girly!' Diehl", I18N_NOOP( "Preci-i-o-u-u-s handbook maintainer" ), "madpenguin8@yahoo.com" );
+    aboutData.addAuthor( "Pierpaolo 'Spaghetti Coder' Di Panfilo", I18N_NOOP( "developer, playlist-browser" ), "pippo_dp@libero.it" );
     aboutData.addAuthor( "Roman 'And God said, let there be Mac' Becker", I18N_NOOP( "graphics: amaroK logo, splash screen, icons" ), "roman@formmorf.de", "http://www.formmorf.de" );
     aboutData.addAuthor( "Stanislav 'All you need is DCOP' Karchebny", I18N_NOOP( "developer, DCOP, improvements, cleanups, i18n" ), "berk@upnet.ru" );
 
@@ -45,7 +46,6 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Jarkko Lehti", I18N_NOOP( "tester, IRC channel operator, whipping" ), "grue@iki.fi" );
     aboutData.addCredit( "Josef Spillner", I18N_NOOP( "KDE RadioStation code" ), "spillner@kde.org" );
     aboutData.addCredit( "Melchior Franz", I18N_NOOP( "new FFT routine, bugfixes" ), "mfranz@kde.org" );
-    aboutData.addCredit( "Pierpaolo Di Panfilo", I18N_NOOP("Playlist browser"), "pippo_dp@libero.it" );
     aboutData.addCredit( "Scott Wheeler", "TagLib", "wheeler@kde.org" );
     aboutData.addCredit( "Stefan Bogner", I18N_NOOP( "tester, patches, translation" ), "bochi@online.ms" );
     aboutData.addCredit( "Whitehawk Stormchaser", I18N_NOOP( "tester, patches" ), "zerokode@gmx.net" );
