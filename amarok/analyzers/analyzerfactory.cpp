@@ -23,6 +23,7 @@
 #include "baranalyzer.h"
 #include "distortanalyzer.h"
 #include "glanalyzer.h"
+#include "glanalyzer2.h"
 #include "sonogram.h"
 #include "turbine.h"
 
@@ -59,18 +60,21 @@ AnalyzerBase *AnalyzerBase::AnalyzerFactory::createAnalyzer( QWidget *parent )
     case 4:
         analyzer = new GLAnalyzer( parent );
         break;
+    case 5:
+        analyzer = new GLAnalyzer2( parent );
+        break;
 #endif
 #ifndef AMAROK_RELEASE
-    case 5:
+    case 6:
         analyzer = new XmasAnalyzer( parent );
         break;
-    case 6:
+    case 7:
         analyzer = new BlockAnalyzer( parent );
         break;
-    case 7:
+    case 8:
         analyzer = new BarAnalyzer2( parent );
         break;
-    case 8:
+    case 9:
         analyzer = new SpectralShineAnalyzer( this );
         break;
 #endif
