@@ -123,11 +123,11 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 
 
     //<FileBrowser>
-        m_browsers->addPage( new KDevFileSelector( 0, "FileBrowser" ), i18n( "File Browser" ), "hdd_unmount" );
+        m_browsers->addPage( new KDevFileSelector( 0, "FileBrowser" ), i18n( "Files" ), "hdd_unmount" );
     //</FileBrowser>
 
     //<SearchBrowser>
-        m_browsers->addPage( new SearchBrowser( 0, "SearchBrowser" ), i18n( "Search Browser" ), "find" );
+        m_browsers->addPage( new SearchBrowser( 0, "SearchBrowser" ), i18n( "Search" ), "find" );
     //</SearchBrowser>
 
     //<PlaylistBrowser>
@@ -136,7 +136,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 
 #ifdef HAVE_SQLITE
     //<CollectionBrowser>
-        m_browsers->addPage( new CollectionBrowser( "CollectionBrowser" ), i18n( "Collection Browser" ), "contents" );
+        m_browsers->addPage( new CollectionBrowser( "CollectionBrowser" ), i18n( "Collection" ), "contents" );
     //</CollectionBrowser>
 #endif
 
@@ -148,7 +148,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
         QObject *sb = new StreamBrowser( vb );
         connect( b, SIGNAL( clicked() ), sb, SLOT( slotUpdateStations() ) );
         connect( b, SIGNAL( clicked() ),  b, SLOT( deleteLater() ) );
-        m_browsers->addPage( vb, i18n( "Stream Browser" ), "network" );
+        m_browsers->addPage( vb, i18n( "Streams" ), "network" );
     } //</StreamBrowser>
 
 
