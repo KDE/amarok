@@ -144,7 +144,7 @@
     <entry key="ContextBrowser StyleSheet" type="String">
         <label>Set CSS stylesheet used to customize ContextBrowser's rendering</label>
         <whatsthis>Set this to the style dir you want to use.</whatsthis>
-        <default/>
+        <default>flat</default>
     </entry>
     <entry key="Show Menu Bar" type="Bool">
         <label>Whether Menubar is shown</label>
