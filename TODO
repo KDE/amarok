@@ -3,19 +3,25 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #143 being the highest available (take this one for your next bug and increase here)
+           #144 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
-                   
+
   FIX 139 <markey> Find out why collection scan won't work with samba shares. Currently the scan just gets
                    stuck, hogging CPU and doing nothing useful.
-                   
+  
   FIX 134 <markey> Ctrl-C as shortcut for copying title just doesn't work. We need to choose another
                    shortcut. How about a global shortcut?
-
+  
+  ADD 144 <mxcl>   Trying to play radio1's real audio stream with aRts engine caused amaroK to show an
+                   error dialog that I could never read because X was completely frozen. Happened twice
+                   and I had to reboot both times so I don't want to try it again unless I am the only
+                   one it ever happens to! http://www.bbc.co.uk/radio1/realaudio/media/r1live.ram
 
 MID-TERM:
+
+  ADD 143 <mxcl>   DCOP interface for ContextBrowser
 
   ADD 142 <markey> Add "custom" field for gst output sink properties in settings gui. See gstreamer-gconf
                    code in gst-plugins/gst-libs/gst/gconf.
