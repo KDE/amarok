@@ -97,6 +97,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     
     connect( this, SIGNAL( tagsReady() ),
              this,   SLOT( renderView() ) );
+
+    renderView();
 }
 
 
