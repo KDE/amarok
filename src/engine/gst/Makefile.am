@@ -2,13 +2,11 @@ kde_module_LTLIBRARIES = \
     libamarok_gstengine_plugin.la
 
 SUBDIRS = \
-    config \
-    uade
+    config
 
 INCLUDES = \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/engine/gst/config \
-    -I$(top_srcdir)/amarok/src/engine/gst/uade \
     -I$(top_srcdir)/amarok/src/plugin \
     -I$(top_srcdir)/amarok/src \
     $(CFLAGS_GST) \
@@ -17,7 +15,6 @@ INCLUDES = \
 libamarok_gstengine_plugin_la_LIBADD = \
     $(top_builddir)/amarok/src/engine/libengine.la \
     $(top_builddir)/amarok/src/engine/gst/config/libgstconfig.la \
-    $(top_builddir)/amarok/src/engine/gst/uade/libgstuade.la \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     $(LIB_KFILE) \
     $(LIB_KDECORE) \

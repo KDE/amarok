@@ -18,7 +18,6 @@ email                : markey@web.de
 #include "config/gstconfig.h"
 #include "enginebase.h"
 #include "gstengine.h"
-#include "gstuade.h"
 #include "streamsrc.h"
 
 #include <math.h>           //interpolate()
@@ -59,9 +58,6 @@ GstEngine::error_msg;
 
 GstEngine*
 GstEngine::s_instance;
-
-static const QString
-UADE_EXT = ".smod7";
 
 
 void
@@ -205,9 +201,6 @@ GstEngine::canDecode( const KURL &url )
         return false;
     }    
     
-    //TODO HACK
-    if ( url.fileName().endsWith( UADE_EXT ) ) return true;
-    
     bool success = false;
     GstElement *pipeline, *filesrc, *spider, *audioconvert, *audioscale, *audiosink;
     
@@ -219,7 +212,7 @@ GstEngine::canDecode( const KURL &url )
     if ( !( audiosink = createElement( GstConfig::soundOutput().latin1(), pipeline ) ) ) return false;
 
     /* setting device property for AudioSink*/
-    if ( GstConfig::customSoundDevice() && !GstConfig::soundDevice().isEmpty() )
+    if ( GstConfig::useCustomSoundDevice() && !GstConfig::soundDevice().isEmpty() )
         g_object_set( G_OBJECT ( audiosink ), "device", GstConfig::soundDevice().latin1(), NULL );
 
     g_object_set( G_OBJECT( filesrc ), "location", (const char*) QFile::encodeName( url.path() ), NULL );
@@ -307,22 +300,31 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         errorNoOutput();
         return false;
     }    
-   
-    bool isUade = false;
-    if ( url.fileName().endsWith( UADE_EXT ) ) isUade = true;
-
     kdDebug() << "Thread scheduling priority: " << GstConfig::threadPriority() << endl;
     kdDebug() << "Sound output method: " << GstConfig::soundOutput() << endl;
-    kdDebug() << "CustomSoundDevice: " << ( GstConfig::customSoundDevice() ? "true" : "false" ) << endl;
-    kdDebug() << "Sound Device:       " << GstConfig::soundDevice() << endl;
+    kdDebug() << "CustomSoundDevice: " << ( GstConfig::useCustomSoundDevice() ? "true" : "false" ) << endl;
+    kdDebug() << "Sound Device: " << GstConfig::soundDevice() << endl;
+    kdDebug() << "CustomOutputParams: " << ( GstConfig::useCustomOutputParams() ? "true" : "false" ) << endl;
+    kdDebug() << "Output Params: " << GstConfig::outputParams() << endl;
+    
+    QCString output;
     
     /* create a new pipeline (thread) to hold the elements */
     if ( !( m_gst_thread = createElement( "thread" ) ) ) { goto error; }
     g_object_set( G_OBJECT( m_gst_thread ), "priority", GstConfig::threadPriority(), NULL );
-    if ( !( m_gst_audiosink = createElement( GstConfig::soundOutput().latin1(), m_gst_thread ) ) ) { goto error; }
+    
+    // Let gst construct the output element from a string
+    output  = GstConfig::soundOutput().latin1();
+    if ( GstConfig::useCustomOutputParams() ) {
+        output += " ";
+        output += GstConfig::outputParams().latin1();
+    }
+    GError* err;
+    if ( !( m_gst_audiosink = gst_parse_launch( output, &err ) ) ) { goto error; }
+    gst_bin_add( GST_BIN( m_gst_thread ), m_gst_audiosink );
     
     /* setting device property for AudioSink*/
-    if ( GstConfig::customSoundDevice() && !GstConfig::soundDevice().isEmpty() )
+    if ( GstConfig::useCustomSoundDevice() && !GstConfig::soundDevice().isEmpty() )
         g_object_set( G_OBJECT ( m_gst_audiosink ), "device", GstConfig::soundDevice().latin1(), NULL );
 
     if ( !( m_gst_identity = createElement( "identity", m_gst_thread ) ) ) { goto error; }
@@ -349,18 +351,9 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         g_signal_connect( G_OBJECT( m_gst_src ), "kio_resume", G_CALLBACK( kio_resume_cb ), m_gst_thread );
     }
     
-    //TODO HACK
-    if ( isUade ) {
-        m_gst_uadesrc = GST_ELEMENT( gst_uade_new() );
-        gst_bin_add ( GST_BIN ( m_gst_thread ), m_gst_uadesrc );
-        g_object_set( G_OBJECT( m_gst_uadesrc ), "location", (const char*) ( QFile::encodeName( url.path() ) ), NULL );
-        gst_element_link_many( m_gst_uadesrc, m_gst_volumeFade, m_gst_identity, m_gst_volume, m_gst_audioconvert, m_gst_audioscale, m_gst_audiosink, 0 );
-    }
-    else {
-        if ( !( m_gst_spider = createElement( "spider", m_gst_thread ) ) ) { goto error; }
-        /* link all elements */
-        gst_element_link_many( m_gst_src, m_gst_spider, m_gst_volumeFade, m_gst_identity, m_gst_volume, m_gst_audioconvert, m_gst_audioscale, m_gst_audiosink, 0 );
-    }
+    if ( !( m_gst_spider = createElement( "spider", m_gst_thread ) ) ) { goto error; }
+    /* link all elements */
+    gst_element_link_many( m_gst_src, m_gst_spider, m_gst_volumeFade, m_gst_identity, m_gst_volume, m_gst_audioconvert, m_gst_audioscale, m_gst_audiosink, 0 );
     
     gst_element_set_state( m_gst_thread, GST_STATE_READY );
     m_pipelineFilled = true;

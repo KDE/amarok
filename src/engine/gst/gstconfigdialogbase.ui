@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>287</width>
-            <height>103</height>
+            <width>335</width>
+            <height>145</height>
         </rect>
     </property>
     <property name="caption">
@@ -33,7 +33,7 @@
                     </property>
                     <property name="minimumSize">
                         <size>
-                            <width>120</width>
+                            <width>145</width>
                             <height>0</height>
                         </size>
                     </property>
@@ -66,11 +66,11 @@
                 </property>
                 <widget class="QCheckBox">
                     <property name="name">
-                        <cstring>checkBox1</cstring>
+                        <cstring>checkBox_outputDevice</cstring>
                     </property>
                     <property name="minimumSize">
                         <size>
-                            <width>120</width>
+                            <width>145</width>
                             <height>0</height>
                         </size>
                     </property>
@@ -80,7 +80,39 @@
                 </widget>
                 <widget class="KLineEdit">
                     <property name="name">
-                        <cstring>kLineEdit_device</cstring>
+                        <cstring>kLineEdit_outputDevice</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout4_2</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>checkBox_outputParams</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>145</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>Custom parameters:</string>
+                    </property>
+                </widget>
+                <widget class="KLineEdit">
+                    <property name="name">
+                        <cstring>kLineEdit_outputParams</cstring>
                     </property>
                     <property name="enabled">
                         <bool>false</bool>
@@ -101,7 +133,7 @@
             <property name="sizeHint">
                 <size>
                     <width>21</width>
-                    <height>5</height>
+                    <height>40</height>
                 </size>
             </property>
         </spacer>
@@ -111,14 +143,15 @@
 </customwidgets>
 <connections>
     <connection>
-        <sender>checkBox1</sender>
+        <sender>checkBox_outputDevice</sender>
         <signal>toggled(bool)</signal>
-        <receiver>kLineEdit_device</receiver>
+        <receiver>kLineEdit_outputDevice</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
 </connections>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
 </includehints>
 </UI>

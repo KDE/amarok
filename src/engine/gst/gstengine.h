@@ -103,7 +103,6 @@ class GstEngine : public Engine::Base
         GstElement*                              m_gst_src;
         GstElement*                              m_gst_audiosink;
         GstElement*                              m_gst_spider;
-        GstElement*                              m_gst_uadesrc;
         GstElement*                              m_gst_identity;
         GstElement*                              m_gst_volume;
         GstElement*                              m_gst_volumeFade;
