@@ -31,6 +31,7 @@ static const char* const not_close_xpm[]={
 "#...#",
 "#####"};
 
+namespace amaroK { class Drawer; }
 
 
 class BrowserBar : public QWidget
@@ -47,6 +48,7 @@ public:
 
     void     setFont( const QFont& );
     void     addBrowser( QWidget*, const QString&, const QString& );
+    void     removeBrowser( const QCString& );
 
 protected:
     bool eventFilter( QObject*, QEvent* );
@@ -75,7 +77,7 @@ private:
     QWidget         *m_divider; //a qsplitter like widget
     KMultiTabBar    *m_tabBar;
     BrowserList      m_browsers; //the browsers are stored in this qvaluevector
-    QWidget         *m_browserHolder; //parent widget to the browsers
+    amaroK::Drawer  *m_browserHolder; //parent widget to the browsers
     int              m_currentIndex;
     QPushButton     *m_overlapButton;
 

@@ -168,6 +168,14 @@
                         <string>Show statusbar</string>
                     </property>
                 </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>kcfg_ShowWelcomeTab</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Show Welcome-page tab (restart required)</string>
+                    </property>
+                </widget>
             </vbox>
         </widget>
     </vbox>

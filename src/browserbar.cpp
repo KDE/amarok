@@ -58,6 +58,20 @@ public:
     }
 };
 
+class Drawer : public QFrame
+{
+public:
+    Drawer( QWidget *parent ) : QFrame( parent, 0/*,  WType_TopLevel | WX11BypassWM | WStyle_NoBorder*/ )
+    {
+        setFrameShape( QFrame::Box );
+    }
+
+    void setExternal() { setLineWidth( 1 ); setWFlags( WType_TopLevel | WX11BypassWM | WStyle_NoBorder ); }
+    void setInternal() { setLineWidth( 0 ); setWFlags( 0 ); }
+
+    bool isExternal() const { return !testWFlags( 0 ); }
+};
+
 }
 
 
@@ -66,7 +80,7 @@ BrowserBar::BrowserBar( QWidget *parent )
   , m_playlist( new QVBox( this ) )
   , m_divider( new amaroK::Divider( parent ) ) //FIXME why parent?
   , m_tabBar( new KMultiTabBar( KMultiTabBar::Vertical, this ) )
-  , m_browserHolder( new QWidget( this ) ) //FIXME making this a layout would save mem
+  , m_browserHolder( new amaroK::Drawer( this ) )
   , m_currentIndex( -1 )
   , m_mapper( new QSignalMapper( this ) )
 {
@@ -95,7 +109,7 @@ BrowserBar::BrowserBar( QWidget *parent )
     closeButton->setFixedSize( buttonSize );
     m_overlapButton->setFixedSize( buttonSize );
 
-    QVBoxLayout *mainLayout = new QVBoxLayout( m_browserHolder );
+    QVBoxLayout *mainLayout = new QVBoxLayout( m_browserHolder, 0 );
     QHBoxLayout *tinyLayout = new QHBoxLayout();
 #ifdef BROWSER_BAR_LEFT
     tinyLayout->setAlignment( Qt::AlignRight );
@@ -108,6 +122,7 @@ BrowserBar::BrowserBar( QWidget *parent )
 #endif
     mainLayout->addLayout( tinyLayout );
 
+
     connect( m_mapper, SIGNAL( mapped( int ) ), SLOT( showHideBrowser( int ) ) );
 
     m_divider->installEventFilter( this );
@@ -119,6 +134,14 @@ BrowserBar::BrowserBar( QWidget *parent )
     //ensure these widgets are at the front of the stack
     m_browserHolder->raise();
     m_divider->raise();
+
+
+    //DRAWER CODE!!
+
+    //m_browserHolder->setExternal();
+    m_browserHolder->setInternal();
+
+    //-------------
 }
 
 BrowserBar::~BrowserBar()
@@ -256,7 +279,7 @@ BrowserBar::addBrowser( QWidget *widget, const QString &title, const QString& ic
     const int id = m_tabBar->tabs()->count();
     const QString name( widget->name() );
 
-    widget->reparent( m_browserHolder, QPoint(), false ); //we need to own this widget for it to layout properly
+    widget->reparent( m_browserHolder, QPoint() ); //we need to own this widget for it to layout properly
     m_browserHolder->layout()->add( widget );
     widget->hide();
     if( widget->minimumWidth() < 30 ) widget->setMinimumWidth( 30 );
@@ -279,6 +302,25 @@ BrowserBar::addBrowser( QWidget *widget, const QString &title, const QString& ic
     widget->setBaseSize( config->readNumEntry( name, widget->sizeHint().width() ), DEFAULT_HEIGHT );
     m_overlapButton->setOn( config->readBoolEntry( "Stay", true ) );
     if( config->readEntry( "CurrentPane" ) == name ) showHideBrowser( id );
+}
+
+void
+BrowserBar::removeBrowser( const QCString &name )
+{
+    for( int x = 0; x < m_browsers.count(); ++x )
+        if( m_browsers[x]->name() == name )
+        {
+            if( m_currentIndex == x ) closeCurrentBrowser();
+
+            //NOTE we do not delete the browser currently
+            //because we don't need this functionality yet
+            //if you need to delete the browser you must implement:
+            // 1. saving of size, see dtor
+            // 2. either reorder tab ids or ensure iterations over m_browsers check for 0
+
+            m_tabBar->removeTab( x );
+            return;
+        }
 }
 
 void
@@ -324,14 +366,31 @@ BrowserBar::showHideBrowser( int index )
 
         //NOTE it is important that the divider is visible before adjust..() is called
         //NOTE the showEvents are processed after we have adjustedSizes below
+        //FIXME show() is immediate, set geometries first!
         m_divider->show();
         target->show();
         target->setFocus();
         m_tabBar->setTab( index, true );
         m_browserHolder->show();
 
-        if( prevIndex == -1 || !m_overlapButton->isOn() )
+        if( /*m_browserHolder->isExternal()*/ false )
         {
+            m_divider->hide(); //FIXME
+
+            QRect r;
+            QWidget *w = topLevelWidget();
+
+            r.rTop()   = topLevelWidget()->geometry().y();
+            r.rLeft()  = r.rRight() = topLevelWidget()->x();
+            r.rLeft() -= target->baseSize().width();
+
+            r.setHeight( m_tabBar->height() );
+
+            m_browserHolder->stackUnder( w ); //doesn't work
+            m_browserHolder->setGeometry( r );
+
+        } else if( prevIndex == -1 || !m_overlapButton->isOn() ) {
+
             //we need to resize the browserHolder
 
             #ifdef BROWSER_BAR_LEFT

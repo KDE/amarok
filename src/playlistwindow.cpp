@@ -184,8 +184,8 @@ PlaylistWindow::init()
             m_browsers->addBrowser( vb, i18n( "Streams" ), "network" );
         } //</StreamBrowser>
 
+        if( AmarokConfig::showWelcomeTab() )
         { //<WelcomePage>
-            //TODO use a Qt text viewer to save to link time?
             KHTMLPart *w = new KHTMLPart( (QWidget*)0 );
             KURL url; url.setPath( locate("data", "amarok/data/welcome.html") );
             w->widget()->setName( "WelcomePage" );
@@ -480,11 +480,10 @@ void PlaylistWindow::showHide() //SLOT
 
 void PlaylistWindow::welcomeURL( const KURL &url )
 {
-    if( url == QString("remove_tab") )
+    if( url == QString("amarok://remove_tab") )
     {
-        //to XT or not to XT?
-        //yes XT as you'll need a config dialog option
-
+        m_browsers->removeBrowser( "WelcomePage" );
+        AmarokConfig::setShowWelcomeTab( false );
         return; //to avoid code below
     }
 
@@ -503,6 +502,7 @@ void PlaylistWindow::welcomeURL( const KURL &url )
         xml = "amarokui_xmms.rc";
         b = true;
     }
+    else return;
 
     setXMLFile( xml );
     createGUI();
