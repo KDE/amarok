@@ -2,8 +2,6 @@ INCLUDES = $(all_includes) -I$(kde_includes)/arts
 KDE_OPTIONS = nofinal
 METASOURCES = AUTO
 
-libamarokarts_la_COMPILE_FIRST = $(top_builddir)/amarok/amarokconfig.h
-
 lib_LTLIBRARIES = libamarokarts.la
 
 libamarokarts_la_SOURCES = amarokarts.cc synth_stereo_xfade_impl.cpp rawscope_impl.cpp

@@ -4,7 +4,7 @@ INCLUDES = \
 	-I$(kde_includes)/arts \
 	$(taglib_includes) \
 	$(all_includes) \
-	-I$(top_builddir)/amarok/amarokcore
+	-I$(top_builddir)/amarok/amarok/amarokcore
 
 bin_PROGRAMS = amarok
 
@@ -17,11 +17,11 @@ amarok_SOURCES = \
 	kbookmarkhandler.cpp fht.cpp playerapp.cpp playerwidget.cpp
 
 amarok_LDADD = \
-	$(top_builddir)/amarok/amarokcore/libamarokcore.a \
-	$(top_builddir)/amarok/engine/libengine.a \
-	$(top_builddir)/amarok/titleproxy/libtitleproxy.a \
-	$(top_builddir)/amarok/analyzers/libanalyzers.a \
-	$(top_builddir)/amarok/amarokarts/libamarokarts.la \
+	$(top_builddir)/amarok/amarok/amarokcore/libamarokcore.a \
+	$(top_builddir)/amarok/amarok/engine/libengine.a \
+	$(top_builddir)/amarok/amarok/titleproxy/libtitleproxy.a \
+	$(top_builddir)/amarok/amarok/analyzers/libanalyzers.a \
+	$(top_builddir)/amarok/amarok/amarokarts/libamarokarts.la \
 	-lqtmcop -lkmedia2_idl -lartsflow -lsoundserver_idl -lartskde \
 	-lartsgui -lartsgui_kde -lartsmodules -lGL $(LIB_KUTILS) $(LIB_KFILE) \
 	$(LIB_KDEUI) $(LIB_KDECORE) $(taglib_libs) $(LIB_GST)
