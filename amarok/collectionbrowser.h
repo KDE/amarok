@@ -2,12 +2,14 @@
 // See COPYING file for licensing information
 
 
+#include <config.h>
+#ifdef HAVE_SQLITE
+
 #ifndef AMAROK_COLLECTIONBROWSER_H
 #define AMAROK_COLLECTIONBROWSER_H
 
 #include <kiconview.h>
-
-class QSqlDatabase;
+#include <kurl.h>
 
 
 class CollectionBrowser : public KIconView
@@ -21,8 +23,8 @@ class CollectionBrowser : public KIconView
     private:
 
     //attributes:
-        QSqlDatabase* m_pDb;
-        
+        KURL::List m_dirs;
+            
 /*    class Item : public KIconViewItem
     {
         public:
@@ -40,4 +42,6 @@ class CollectionBrowser : public KIconView
 
 
 #endif /* AMAROK_COLLECTIONBROWSER_H */
+
+#endif /* HAVE_SQLITE */
 

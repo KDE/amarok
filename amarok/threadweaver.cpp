@@ -122,6 +122,9 @@ ThreadWeaver::Job::postJob()
 }
 
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// CLASS TagReader
+//////////////////////////////////////////////////////////////////////////////////////////
 
 TagReader::TagReader( QObject *o, PlaylistItem *pi )
    : Job( o, Job::TagReader )
@@ -186,6 +189,46 @@ TagReader::addSearchTokens( QStringList &tokens, QPtrList<QListViewItem> &ptrs )
 }
 
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// CLASS CollectionReader
+//////////////////////////////////////////////////////////////////////////////////////////
+
+CollectionReader::CollectionReader( QObject *o )
+   : Job( o, Job::TagReader )
+//    , m_url( pi->url() )
+   , m_tags( 0 )
+{}
+
+CollectionReader::~CollectionReader()
+{
+    delete m_tags;
+}
+
+bool
+CollectionReader::doJob()
+{
+    if( m_url.protocol() == "file" )
+    {
+        m_tags = readTags( m_url );
+        return true;
+    }
+
+    return false;
+}
+
+MetaBundle*
+CollectionReader::readTags( const KURL &url, bool readAudioProps ) //STATIC
+{
+   //audioproperties are read on demand
+   TagLib::FileRef f( url.path().local8Bit(), readAudioProps ); //this is the slow step
+
+   return f.isNull()? 0 : new MetaBundle( url, f.tag(), f.audioProperties() );
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// CLASS AudioPropertiesReader
+//////////////////////////////////////////////////////////////////////////////////////////
 
 AudioPropertiesReader::AudioPropertiesReader( QObject *o, PlaylistItem *pi )
    : Job( o )
@@ -240,6 +283,9 @@ AudioPropertiesReader::completeJob()
 }
 
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// CLASS TagWriter
+//////////////////////////////////////////////////////////////////////////////////////////
 
 TagWriter::TagWriter( QObject *o, PlaylistItem *pi, const QString &s, const int col )
   : Job( o )
@@ -309,6 +355,9 @@ TagWriter::completeJob()
 }
 
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// CLASS PLStats
+//////////////////////////////////////////////////////////////////////////////////////////
 
 PLStats::PLStats( QObject *o, const KURL &u, const KURL::List &ul )
   : Job( o, Job::PLStats )

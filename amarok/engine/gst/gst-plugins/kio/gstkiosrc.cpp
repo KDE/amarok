@@ -49,7 +49,7 @@ static GstStaticPadTemplate sink_factory =
         ( gchar* ) "sink",
         GST_PAD_SINK,
         GST_PAD_ALWAYS,
-        GST_STATIC_CAPS ( ( gchar* ) "ANY" )
+        GST_STATIC_CAPS ( "ANY" )
     );
 
 static GstStaticPadTemplate src_factory =
@@ -57,7 +57,7 @@ static GstStaticPadTemplate src_factory =
         ( gchar* ) "src",
         GST_PAD_SRC,
         GST_PAD_ALWAYS,
-        GST_STATIC_CAPS ( ( gchar* ) "ANY" )
+        GST_STATIC_CAPS ( "ANY" )
     );
 
 static void	gst_plugin_template_class_init	( GstPluginTemplateClass *klass );
@@ -124,10 +124,10 @@ gst_gst_plugin_template_get_type ( void ) {
 static void
 gst_plugin_template_base_init ( GstPluginTemplateClass *klass ) {
     static GstElementDetails plugin_details = {
-                ( gchar* ) "PluginTemplate",
-                ( gchar* ) "Generic/PluginTemplate",
-                ( gchar* ) "Generic Template Plugin",
-                ( gchar* ) "Thomas Vander Stichele <thomas@apestaart.org>"
+                "PluginTemplate",
+                "Generic/PluginTemplate",
+                "Generic Template Plugin",
+                "Thomas Vander Stichele <thomas@apestaart.org>"
             };
     GstElementClass *element_class = GST_ELEMENT_CLASS ( klass );
 
@@ -254,18 +254,19 @@ plugin_init ( GstPlugin *plugin ) {
                                   GST_TYPE_PLUGIN_TEMPLATE );
 }
 
-/* this is the structure that gst-register looks for
- * so keep the name plugin_desc, or you cannot get your plug-in registered */
+
 GST_PLUGIN_DEFINE (
     GST_VERSION_MAJOR,
     GST_VERSION_MINOR,
-    ( gchar* ) "kiosrc",
-    ( gchar* ) "KIO source plugin",
+    (gchar*) "kiosrc",
+    (gchar*) "KIO source plugin",
     plugin_init,
-    ( gchar* ) "0.1",
-    ( gchar* ) "LGPL",
-    ( gchar* ) "GStreamer",
-    ( gchar* ) "http://gstreamer.net/"
-)
+    (gchar*) "0.1",
+    (gchar*) "LGPL",
+    (gchar*) "GStreamer",
+    (gchar*) "http://gstreamer.net/" )
 
+
+
+    
 

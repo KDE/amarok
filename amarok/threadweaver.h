@@ -103,6 +103,23 @@ private:
 };
 
 
+//@Will read tags for the CollectionBrowser
+class CollectionReader : public ThreadWeaver::Job
+{
+public:
+    CollectionReader( QObject* );
+    ~CollectionReader();
+
+    bool doJob();
+    static MetaBundle* readTags( const KURL&, bool = false );
+
+private:
+    PlaylistItem* const m_item;
+    const KURL  m_url;
+    MetaBundle* m_tags;
+};
+
+
 //@Will read audioProperties for a PlaylistItem
 class AudioPropertiesReader : public ThreadWeaver::Job
 {

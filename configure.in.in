@@ -6,15 +6,9 @@ KDE_CHECK_HEADER(arts/artsmodules.h, have_kdemm=yes, have_kdemm=no)
 
 AM_CONDITIONAL(with_arts, [test x$have_kdemm = xyes -a x$build_arts = xyes])
 
-if test x$build_arts = xyes; then
-    if test x$have_kdemm = xyes; then
-        AC_DEFINE(HAVE_ARTS, 1, [have aRts and kdemultimedia])
-        arts_libs="-lqtmcop -lkmedia2_idl -lartsflow -lsoundserver_idl -lartskde -lartsgui -lartsgui_kde -lartsmodules"
-
-        echo "*****************************************************"
-        echo "*** amaroK will be built with the aRts-engine"
-        echo "*****************************************************"
-    fi
+if test x$build_arts = xyes -a x$have_kdemm = xyes; then
+    AC_DEFINE(HAVE_ARTS, 1, [have aRts and kdemultimedia])
+    arts_libs="-lqtmcop -lkmedia2_idl -lartsflow -lsoundserver_idl -lartskde -lartsgui -lartsgui_kde -lartsmodules"
 fi
 
 AC_SUBST(arts_libs)
@@ -74,19 +68,7 @@ AC_DEFUN(KDE_PKG_CHECK_MODULES, [
     AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
   fi
 
-  if test "$PKG_CONFIG" = "no" ; then
-     #echo "*** The pkg-config script could not be found. Make sure it is"
-     #echo "*** in your path, or set the PKG_CONFIG environment variable"
-     #echo "*** to the full path to pkg-config."
-     #echo "*** Or see http://www.freedesktop.org/software/pkgconfig to get pkg-config."
-
-     echo "************************************************************************"
-     echo "amaroK can build an optional GStreamer audio-engine, however you do not"
-     echo "have pkg-config installed which is required to detect your GStreamer"
-     echo "installation. If you want to build the GStreamer audio-engine you should"
-     echo "download pkg-config from http://www.freedesktop.org/software/pkgconfig"
-     echo "************************************************************************"
-  else
+  if test "$PKG_CONFIG" != "no" ; then
      PKG_CONFIG_MIN_VERSION=0.9.0
      if $PKG_CONFIG --atleast-pkgconfig-version $PKG_CONFIG_MIN_VERSION; then
         AC_MSG_CHECKING(for $2)
@@ -166,10 +148,6 @@ if test "$build_gstreamer" != "no"; then
         AC_SUBST(CFLAGS_GST)
         AC_SUBST(GST_MAJORMINOR)
         AC_DEFINE(HAVE_GSTREAMER, 1, [have GStreamer])
-
-        echo "*****************************************************"
-        echo "*** amaroK will be built with the GStreamer-engine"
-        echo "*****************************************************"
     fi
     else
     AC_MSG_WARN([No pkg-config found, required to build optional amaroK GStreamer engine])
@@ -202,22 +180,15 @@ AC_ARG_WITH(nmm,
 )
 
 if test "$build_nmm" != "no"; then
-
-  #currently NMM libs must by in LD_PATH
-
-  echo "*****************************************************"
-  echo "*** amaroK will be built with the NMM-engine."
-  echo "*** Please ensure that the NMM libraries are in your"
-  echo "*** LD_PATH, or run: ./configure --with-nmm=no"
-  echo "*****************************************************"
-
-  CFLAGS_NMM="-I$nmm_cflags"
-  AC_DEFINE(HAVE_NMM, 1, [have NMM])
+  
+    #currently NMM libs must by in LD_PATH
+    CFLAGS_NMM="-I$nmm_cflags"
+    AC_DEFINE(HAVE_NMM, 1, [have NMM])
 
 else
 
-  #no warning, what's the point?
-  CFLAGS_NMM=""
+    #no warning, what's the point?
+    CFLAGS_NMM=""
 
 fi
 
@@ -284,4 +255,26 @@ fi
 ###############################################################################
 # END QT OPENGL CHECK
 ###############################################################################
+
+
+
+###############################################################################
+# BEGIN SQLITE CHECK
+###############################################################################
+
+AC_CHECK_HEADER(sqlite.h, have_sqlite=yes, have_sqlite=no)
+   
+if test x$have_sqlite = xyes; then
+    sqlite_libs="-lsqlite"
+    AC_DEFINE(HAVE_SQLITE, 1, [have SQLite database library])
+else
+    sqlite_libs=""
+fi
+
+AC_SUBST(sqlite_libs)
+   
+###############################################################################
+# END SQLITE CHECK
+###############################################################################
+
 

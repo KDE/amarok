@@ -15,8 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <config.h>        //for HAVE_SQLITE check
+
 #include "amarokconfig.h"
-#include "amarokmenu.h" //see toolbar construction
+#include "amarokmenu.h"    //see toolbar construction
 #include "browserwin.h"
 #include "browserbar.h"
 #include "collectionbrowser.h"
@@ -164,10 +166,12 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
         //m_browsers->addPage( m_playlist->browser(), i18n( "Playlist Browser" ), "midi" );
     //</PlaylistBrowser>
 
+#ifdef HAVE_SQLITE
     //<CollectionBrowser>
         m_browsers->addPage( new CollectionBrowser( "CollectionBrowser" ), i18n( "Collection Browser" ), "contents" );
     //</CollectionBrowser>
-
+#endif 
+    
     { //<StreamBrowser>
         QVBox   *vb = new QVBox( 0, "StreamBrowser" );
         QWidget *b  = new QPushButton( "&Fetch Stream Information", vb );

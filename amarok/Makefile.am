@@ -47,10 +47,10 @@ amarokapp_SOURCES = \
         playlisttooltip.cpp \
         playlistwidget.cpp \
         pluginmanager.cpp \
-        streambrowser.cpp \
-        threadweaver.cpp \
         searchbrowser.cpp \
-        socketserver.cpp
+        socketserver.cpp \
+        streambrowser.cpp \
+        threadweaver.cpp
 
 
 amarokapp_LDADD = \
@@ -60,10 +60,11 @@ amarokapp_LDADD = \
         $(top_builddir)/amarok/amarok/engine/libengine.a \
         $(top_builddir)/amarok/amarok/plugin/libplugin.a \
         $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) \
-        $(taglib_libs) $(gl_libs)
+        $(taglib_libs) $(gl_libs) $(sqlite_libs)
 
 amarokapp_LDFLAGS = \
     $(all_libraries) \
+    -lsqlite \
     $(KDE_RPATH)
 
 METASOURCES = \

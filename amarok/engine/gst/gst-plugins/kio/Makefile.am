@@ -11,8 +11,8 @@ INCLUDES = \
     $(all_includes)
 
 libgstkio_la_SOURCES = \
-    gstkiosrc.cpp \
-    kioreceiver.cpp
+    gstkiosrc.cpp
+#    kioreceiver.cpp
 
 libgstkio_la_LDFLAGS = \
     -module \
@@ -24,6 +24,9 @@ libgstkio_la_LIBADD = \
     $(LIB_QT) \
     $(LIB_KIO) \
     $(LIB_GST)
+
+libgstkio_la_CXXFLAGS = \
+    $(GST_CFLAGS)
 
 AM_CXXFLAGS = \
     $(CFLAGS_GST) 

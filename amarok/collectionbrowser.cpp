@@ -2,9 +2,13 @@
 // See COPYING file for licensing information
 
 
+#include <config.h>
+#ifdef HAVE_SQLITE
+
 #include "collectionbrowser.h"
 
-#include <qsqldatabase.h>
+#include <sqlite.h>
+#include <vector>
 
 #include <kdebug.h>
 #include <kurldrag.h>    //dragObject()
@@ -17,26 +21,16 @@ CollectionBrowser::CollectionBrowser( const char* name )
     setSelectionMode( QIconView::Extended );
     setItemsMovable( false );
 //     setGridX( 140 );
-    
-    m_pDb = QSqlDatabase::addDatabase( "QSQLITE" );
-    m_pDb->setDatabaseName( "collection.db" );
-    m_pDb->setUserName    ( "mark" );
-    m_pDb->setPassword    ( "test" );
-    m_pDb->setHostName    ( "localhost" );
 
-    if ( !m_pDb->open() )
-        kdWarning() << k_funcinfo << "Could not open collection database.\n";
-        
-    for ( int i = 0; i < 100; i++ ) {
-        QIconViewItem* item =  new QIconViewItem( this );
-        item->setText( "Album" );
-    }
+    KURL url;
+    url.setPath( "/home/mark/mp3" );
+    
+    m_dirs << url;    
 }
 
 
 CollectionBrowser::~CollectionBrowser()
 {
-    m_pDb->close();
 }
 
 
@@ -48,4 +42,7 @@ CollectionBrowser::~CollectionBrowser()
 
 
 #include "collectionbrowser.moc"
+
+#endif /* HAVE_SQLITE */
+
 
