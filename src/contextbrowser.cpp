@@ -296,7 +296,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool /*trackCh
     if ( !m_metadataHistory.first().contains( bundle.prettyTitle() ) )
     {
         newMetaData = true;
-        const QString timeString = QTime::currentTime().toString( "hh:mm" );
+        const QString timeString = KGlobal::locale()->formatTime( QTime::currentTime() );
         m_metadataHistory.prepend( QString( "<td valign='top'>" + timeString + "&nbsp;</td><td align='left'>" + escapeHTML( bundle.prettyTitle() ) + "</td>" ) );
     }
 
