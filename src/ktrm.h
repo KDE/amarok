@@ -26,10 +26,9 @@
 
 #ifndef KTRM_H
 #define KTRM_H
+#endif
 
 #include <config.h>
-
-#if HAVE_MUSICBRAINZ
 
 #include <qobject.h>
 #include <qmap.h>
@@ -199,5 +198,3 @@ private:
     KTRMLookupPrivate *d;
 };
 
-#endif
-#endif
