@@ -193,10 +193,11 @@ TagReader::addSearchTokens( QStringList &tokens, QPtrList<QListViewItem> &ptrs )
 // CLASS CollectionReader
 //////////////////////////////////////////////////////////////////////////////////////////
 
-CollectionReader::CollectionReader( QObject *o )
+CollectionReader::CollectionReader( QObject* o, const KURL& url )
    : Job( o, Job::TagReader )
 //    , m_url( pi->url() )
    , m_tags( 0 )
+   , m_url( url )
 {}
 
 CollectionReader::~CollectionReader()
@@ -217,10 +218,10 @@ CollectionReader::doJob()
 }
 
 MetaBundle*
-CollectionReader::readTags( const KURL &url, bool readAudioProps ) //STATIC
+CollectionReader::readTags( const KURL &url ) //STATIC
 {
    //audioproperties are read on demand
-   TagLib::FileRef f( url.path().local8Bit(), readAudioProps ); //this is the slow step
+   TagLib::FileRef f( url.path().local8Bit(), false /*== read AudioProps */ );
 
    return f.isNull()? 0 : new MetaBundle( url, f.tag(), f.audioProperties() );
 }

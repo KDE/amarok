@@ -11,6 +11,9 @@
 #include <kiconview.h>
 #include <kurl.h>
 
+class ThreadWeaver;
+class QCustomEvent;
+
 
 class CollectionBrowser : public KIconView
 {
@@ -21,10 +24,12 @@ class CollectionBrowser : public KIconView
         ~CollectionBrowser();
         
     private:
-
+        void customEvent( QCustomEvent* );
+    
     //attributes:
         KURL::List m_dirs;
-            
+        ThreadWeaver* m_weaver;
+                
 /*    class Item : public KIconViewItem
     {
         public:

@@ -6,6 +6,8 @@
 #ifdef HAVE_SQLITE
 
 #include "collectionbrowser.h"
+#include "metabundle.h"
+#include "threadweaver.h"
 
 #include <sqlite.h>
 #include <vector>
@@ -14,23 +16,31 @@
 #include <kurldrag.h>    //dragObject()
 
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// public
+//////////////////////////////////////////////////////////////////////////////////////////
 
 CollectionBrowser::CollectionBrowser( const char* name )
    : KIconView( 0, name )
+   , m_weaver( new ThreadWeaver( this ) )
 {
+    kdDebug() << k_funcinfo << endl;
+    
     setSelectionMode( QIconView::Extended );
     setItemsMovable( false );
 //     setGridX( 140 );
 
     KURL url;
-    url.setPath( "/home/mark/mp3" );
-    
+    url.setPath( "/home/mark/mp3/mosaic_days.mp3" );
     m_dirs << url;    
+                
+    m_weaver->append( new CollectionReader( this, url ) );
 }
 
 
 CollectionBrowser::~CollectionBrowser()
 {
+    kdDebug() << k_funcinfo << endl;
 }
 
 
@@ -39,6 +49,26 @@ CollectionBrowser::~CollectionBrowser()
 // {
 //     return new KURLDrag( currentItem()->url(), this );
 // }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// private
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void CollectionBrowser::customEvent( QCustomEvent *e )
+{
+    kdDebug() << k_funcinfo << endl;
+    
+    if ( e->type() == CollectionEventType ) {
+        CollectionEvent* c = static_cast<CollectionEvent*>( e );
+        
+        kdDebug() << "********************************\n";
+        kdDebug() << "CollectionEvent arrived.\n";
+        kdDebug() << "********************************\n";
+        kdDebug() << "Artist: " << c->bundle()->artist() << endl;
+    }
+}
+
 
 
 #include "collectionbrowser.moc"

@@ -7,11 +7,11 @@
 #ifndef THREADWEAVER_H
 #define THREADWEAVER_H
 
-#include <kurl.h>     //stack allocated
-#include <qevent.h>   //baseclass
-#include <qmutex.h>   //stack allocated
-#include <qthread.h>  //baseclass
-#include <qptrlist.h> //stack allocated
+#include <kurl.h>         //stack allocated
+#include <qevent.h>       //baseclass
+#include <qmutex.h>       //stack allocated
+#include <qthread.h>      //baseclass
+#include <qptrlist.h>     //stack allocated
 
 class MetaBundle;
 class PlaylistItem;
@@ -107,16 +107,30 @@ private:
 class CollectionReader : public ThreadWeaver::Job
 {
 public:
-    CollectionReader( QObject* );
+    CollectionReader( QObject*, const KURL& url );
     ~CollectionReader();
 
     bool doJob();
-    static MetaBundle* readTags( const KURL&, bool = false );
+    static MetaBundle* readTags( const KURL& );
 
 private:
-    PlaylistItem* const m_item;
-    const KURL  m_url;
     MetaBundle* m_tags;
+    const KURL  m_url;
+};
+
+static const int CollectionEventType = 8888;
+
+class CollectionEvent : public QCustomEvent
+{
+public:
+    CollectionEvent( MetaBundle* bundle )
+        : QCustomEvent( CollectionEventType )
+        , m_bundle( bundle )
+        {};
+    MetaBundle* bundle() { return m_bundle; }
+
+private:
+    MetaBundle* m_bundle;
 };
 
 
