@@ -24,6 +24,7 @@
 //      allow setting of priority?
 // NOTE for stuff that must be done on job finish whatever results do in job's dtor
 // TODO check QGuradedPtr is thread-safe ish
+// TODO run a separate thread to wait on aborting threads
 
 
 ThreadWeaver::ThreadWeaver()
