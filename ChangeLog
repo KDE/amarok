@@ -3,6 +3,7 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  CHG: Enhanced "Fill-Down" feature for track column (auto-increment) (BR 81194).
   FIX: Closing xmms-visualizations freezes amaroK (BR 81326).
   FIX: CollectionBrowser does not sort by tracknumber (BR 79600).
   FIX: ContextBrowser's URLRequests need to be escaped.

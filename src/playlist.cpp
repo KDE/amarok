@@ -1090,13 +1090,29 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
 
     case FILL_DOWN:
         //Spreadsheet like fill-down
-        //TODO for track, increment obviously
         {
-            const QString newTag = item->exactText( col );
+            QString newTag = item->exactText( col );
             QListViewItemIterator it( item, QListViewItemIterator::Visible | QListViewItemIterator::Selected );
+
+            // special handling for track column
+            bool isNumber;
+            int trackNo;
+            if ( col == 7 )
+            {
+                trackNo = newTag.toInt( &isNumber );
+                // first row has no valid number, let's start with 1
+                if ( !isNumber )
+                {
+                    m_weaver->append( new TagWriter( this, item, "1", col ), true );
+                    trackNo = 1;
+                }
+            }
 
             while( ++it, *it )
             {
+                // special handling for track column
+                if ( col == 7 )
+                    newTag = QString::number( ++trackNo );
                 m_weaver->append( new TagWriter( this, (PlaylistItem*)*it, newTag, col ), true );
             }
         }
