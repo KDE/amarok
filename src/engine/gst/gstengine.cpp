@@ -79,9 +79,10 @@ GstEngine::newPad_cb( GstElement*, GstPad* pad, gboolean, gpointer inputPipeline
     GstPad* audiopad = gst_element_get_pad( input->audioconvert, "sink" );
 
     if ( GST_PAD_IS_LINKED( audiopad ) ) {
-        debug() << "audiopad is already linked." << endl;
-        return;
+        debug() << "audiopad is already linked. Unlinking old pad." << endl;
+        gst_pad_unlink( audiopad, GST_PAD_PEER( audiopad ) );
     }
+
     gst_pad_link( pad, audiopad );
 
     gst_element_unlink( input->volume, instance()->m_gst_adder );
@@ -98,6 +99,8 @@ GstEngine::removedPad_cb( GstElement*, GstPad* pad, gpointer inputPipeline ) //s
 
     InputPipeline* input = static_cast<InputPipeline*>( inputPipeline );
 
+    // Disconnect old signal
+    g_signal_handlers_disconnect_by_func( G_OBJECT( input->decodebin ), (void*) GstEngine::newPad_cb, input );
     // Reconnect signal
     g_signal_connect( G_OBJECT( input->decodebin ), "new-decoded-pad", G_CALLBACK( GstEngine::newPad_cb ), input );
 }
