@@ -162,6 +162,7 @@ void UniversalAmarok::updateBrowser(const QString& file)
     browser->begin();
     browser->openURL(file);
     browser->end();
+    browser->setEncoding("utf8", true);
 }
 
 
