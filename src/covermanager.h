@@ -51,7 +51,7 @@ Q_OBJECT
         //cover fetching
         void fetchMissingCovers();
         void fetchCoversLoop();
-        void coverFetched( const QString & );
+        void coverFetched( const QString &, const QString & );
         void coverFetcherError();
         void stopFetching();
         void updateStatusBar();
@@ -59,7 +59,7 @@ Q_OBJECT
     private:
         enum View { AllAlbums=0, AlbumsWithCover, AlbumsWithoutCover };
 
-        void loadCover( const QString & );
+        void loadCover( const QString &, const QString & );
         void fetchSelectedCovers();
         void deleteSelectedCovers();
         QPtrList<CoverViewItem> selectedItems();

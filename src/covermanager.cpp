@@ -165,7 +165,8 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     #ifdef AMAZON_SUPPORT
-    connect( m_db, SIGNAL( coverFetched(const QString &) ), SLOT( coverFetched(const QString &) ) );
+    connect( m_db, SIGNAL( coverFetched(const QString &, const QString &) ),
+                SLOT( coverFetched(const QString &, const QString &) ) );
     connect( m_db, SIGNAL( coverFetcherError() ), SLOT( coverFetcherError() ) );
     #endif
 
@@ -329,8 +330,9 @@ void CoverManager::loadThumbnails() //SLOT
     for( uint i=0; i < m_loadAlbums.count(); i++ ) {
         if( m_stopLoading ) break;
 
+        QStringList values = QStringList::split( " @@@ ", m_loadAlbums[i] );
         qApp->processEvents();    //it may takes a while so process pending events
-        loadCover( m_loadAlbums[i] );
+        loadCover( values[0], values[1] );
     }
 
     m_searchEdit->setEnabled( true );
@@ -498,10 +500,9 @@ void CoverManager::changeView( int id  ) //SLOT
 }
 
 
-void CoverManager::coverFetched( const QString &key )
+void CoverManager::coverFetched( const QString &artist, const QString &album )
 {
-    QStringList values = QStringList::split( " - ", key );
-    loadCover( values[0] + " @@@ " + values[1] );
+    loadCover( artist, album );
     m_coversFetched++;
     updateStatusBar();
 }
@@ -536,11 +537,11 @@ void CoverManager::stopFetching()
 
 // PRIVATE
 
-void CoverManager::loadCover( const QString &key )
+void CoverManager::loadCover( const QString &artist, const QString &album )
 {
     for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
-        if( key == coverItem->artist() + " @@@ " + coverItem->album() ) {
+        if( artist == coverItem->artist() && album == coverItem->album() ) {
             coverItem->loadCover();
             return;
         }

@@ -1193,10 +1193,8 @@ CollectionDB::retrieveFirstLevelURLs( QString itemText, QString category1, QStri
     }
 
     command += " " + filterToken;
-    if ( category2 != 0 )
-        command += " ORDER BY tags." + category2.lower() + ", tags.track;";
-    else
-        command += " ORDER BY tags.album, tags.track;";
+    QString sorting = category1.lower() == "album" ? "track" : "title";
+    command += " ORDER BY tags." + sorting;
 
     execSql( command, values, names );
 }
@@ -1239,7 +1237,9 @@ CollectionDB::retrieveSecondLevelURLs( QString itemText1, QString itemText2, QSt
         command += category1.lower() + "=" + id;
     }
 
-    command += " " + filterToken + " ORDER BY tags." + category2.lower() + ", tags.track;";
+    command += " " + filterToken;
+    QString sorting = category2.lower() == "album" ? "track" : "title";
+    command += " ORDER BY tags." + sorting;
 
     execSql( command, values, names );
 }
@@ -1279,7 +1279,9 @@ CollectionDB::retrieveThirdLevelURLs( QString itemText1, QString itemText2, QStr
         command += category1.lower() + "=" + id;
     }
 
-    command += " " + filterToken + " ORDER BY tags." + category3.lower() + ", tags.track;";
+    command += " " + filterToken;
+    QString sorting = category3.lower() == "album" ? "track" : "title";
+    command += " ORDER BY tags." + sorting;
 
     execSql( command, values, names );
 }
@@ -1295,14 +1297,15 @@ CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString&
     #ifdef AMAZON_SUPPORT
     /* Static license Key. Thanks muesli ;-) */
     QString amazonLicense = "D1URM11J3F2CEH";
-    QString keyword = artist + " - " + album;
     kdDebug() << "Querying amazon with artist: " << artist << " and album " << album << endl;
 
     CoverFetcher* fetcher = new CoverFetcher( amazonLicense, parent );
-    connect( fetcher, SIGNAL( imageReady( const QString&, const QString&, const QImage& ) ),
-             this,      SLOT( saveCover( const QString&, const QString&, const QImage& ) ) );
+    connect( fetcher, SIGNAL( imageReady( const QString&, const QString&, const QString&, const QImage& ) ),
+             this,      SLOT( saveCover( const QString&, const QString&, const QString&, const QImage& ) ) );
     connect( fetcher, SIGNAL( error() ), this, SLOT( fetcherError() ) );
-    fetcher->getCover( artist, album, keyword, CoverFetcher::heavy, noedit, 2, false );
+
+    fetcher->getCover( artist, album, CoverFetcher::heavy, noedit, 2, false );
+
     #endif
 }
 
@@ -1327,15 +1330,13 @@ CollectionDB::dirDirty( const QString& path )
 
 
 void
-CollectionDB::saveCover( const QString& keyword, const QString& url, const QImage& img )
+CollectionDB::saveCover( const QString& artist, const QString& album, const QString& url, const QImage& img )
 {
     kdDebug() << k_funcinfo << endl;
 
-    //get artist and album
-    QStringList values = QStringList::split( " - ", keyword );
-    setImageForAlbum( values[0], values[1], url, img );
+    setImageForAlbum( artist, album, url, img );
 
-    emit coverFetched( keyword );
+    emit coverFetched( artist, album );
     emit coverFetched();
 }
 
