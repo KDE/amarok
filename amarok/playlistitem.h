@@ -44,6 +44,8 @@ class PlaylistItem : public KListViewItem
         QString title() const { return KListViewItem::text( 1 ); }
         const KURL &url() const { return m_url; }
         QString seconds() const;
+        void setQueuePosition( int i ) { playNext = i; }
+        int queuePosition() { return playNext; }
 
 
 #ifdef CORRUPT_FILE
@@ -68,6 +70,7 @@ class PlaylistItem : public KListViewItem
         void    paintCell( QPainter*, const QColorGroup&, int, int, int );
 
         const KURL m_url;
+        int playNext;
 
         static const uint STRING_STORE_SIZE = 80;
         static QString stringStore[STRING_STORE_SIZE];

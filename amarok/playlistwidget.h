@@ -149,6 +149,7 @@ class PlaylistWidget : private KListView, public EngineObserver
         void switchState( QStringList&, QStringList& );
         void readAudioProperties( PlaylistItem* );
         void removeItem( PlaylistItem* );
+        void refreshNextTracks( uint=0 );
 
 // REIMPLEMENTED ------
         void contentsDropEvent( QDropEvent* );
@@ -171,7 +172,7 @@ class PlaylistWidget : private KListView, public EngineObserver
 
         PlaylistItem  *m_currentTrack; //this track is playing
         PlaylistItem  *m_cachedTrack;  //we expect this to be activated next //FIXME mutable
-        PlaylistItem  *m_nextTrack;    //the track to be played after the current track
+        QPtrList<PlaylistItem> m_nextTracks;    //the tracks to be played after the current track
         QListViewItem *m_marker;
 
         QStringList searchTokens;

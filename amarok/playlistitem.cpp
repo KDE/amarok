@@ -73,7 +73,7 @@ PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KU
 #ifdef CORRUPT_FILE
       , corruptFile( FALSE ) //our friend threadweaver will take care of this flag
 #endif
-      , m_url( u )
+      , m_url( u ), playNext( 0 )
 {
     setDragEnabled( true );
 
@@ -263,6 +263,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 
     if( column == 9 && text( 9 ).isEmpty() ) listView()->readAudioProperties( this );
 
+    bool hideSeparator = false;
     if( this == listView()->currentTrack() )
     {
         const QColor glowText( cg.brightText() );
@@ -281,9 +282,9 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         //KListViewItem enforces alternate color, so we use QListViewItem
         QListViewItem::paintCell( p, glowCg, column, width, align );
 
-        return; //don't draw separator
+        hideSeparator = true; //don't draw separator
 
-    } else if( this == listView()->m_nextTrack ) {
+    } else if( playNext > 0 ) {
 
         QColorGroup glowCg = cg; //shallow copy
         int h, s, v;
@@ -298,7 +299,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         //KListViewItem enforces alternate color, so we use QListViewItem
         QListViewItem::paintCell( p, glowCg, column, width, align );
 
-        return; //don't draw separator
+        hideSeparator = true; //don't draw separator
     }
 #ifdef CORRUPT_FILE
     else if( corruptFile ) {
@@ -310,7 +311,28 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 #endif
     else KListViewItem::paintCell( p, cg, column, width, align );
 
-    if( !isSelected() )
+    if( playNext > 0 && column == Title )
+    {
+        //draw the symbol's outline
+        const int xw = 16; //keep this even
+        const int yh = 15;
+        p->setBrush( Qt::white );
+        p->setPen( Qt::gray );
+        p->drawEllipse( width - xw - 1, 1, xw, yh );
+        p->drawRect( width - xw/2 - 1, 1, xw/2, yh );
+        p->setPen( Qt::white );
+        p->drawLine( width - xw/2 - 1, 2, width - xw/2 - 1, yh - 1 );
+
+        //draw the shadowed inner text
+        const QFont smallFont( "Arial", (playNext > 9) ? 9 : 12 );
+        p->setFont( smallFont );
+        p->setPen( Qt::lightGray );
+        p->drawText( width - xw + 2, 3, xw, yh-1, Qt::AlignCenter, QString::number( playNext ));
+        p->setPen( Qt::blue );
+        p->drawText( width - xw + 1, 2, xw, yh-1, Qt::AlignCenter, QString::number( playNext ));
+    }
+
+    if( !isSelected() && !hideSeparator )
     {
         p->setPen( QPen( cg.midlight()/* cg.dark()*/, 0, Qt::DotLine ) ); //FIXME midlight with kde scheme is bad
         p->drawLine( width - 1, 0, width - 1, height() - 1 );
