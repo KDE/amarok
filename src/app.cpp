@@ -1,5 +1,5 @@
 /***************************************************************************
-                      playerapp.cpp  -  description
+                      app.cpp  -  description
                          -------------------
 begin                : Mit Okt 23 14:35:18 CEST 2002
 copyright            : (C) 2002 by Mark Kretschmann
@@ -14,8 +14,6 @@ email                : markey@web.de
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-#include <assert.h>
 
 #include "amarokconfig.h"
 #include "configdialog.h"
@@ -65,7 +63,7 @@ email                : markey@web.de
 
 
 
-PlayerApp::PlayerApp()
+App::App()
         : KApplication()
         , m_pActionCollection( 0 )
         , m_pGlobalAccel( new KGlobalAccel( this ) )
@@ -119,7 +117,7 @@ PlayerApp::PlayerApp()
     handleCliArgs();
 }
 
-PlayerApp::~PlayerApp()
+App::~App()
 {
     kdDebug() << k_funcinfo << endl;
 
@@ -158,7 +156,7 @@ PlayerApp::~PlayerApp()
 }
 
 
-void PlayerApp::handleCliArgs()
+void App::handleCliArgs()
 {
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
@@ -196,7 +194,7 @@ void PlayerApp::handleCliArgs()
 
 
 //this method processes the cli arguments sent by the loader process
-void PlayerApp::handleLoaderArgs( QCString args ) //SLOT
+void App::handleLoaderArgs( QCString args ) //SLOT
 {
     //extract startup_env part
     int index = args.find( "|" );
@@ -231,7 +229,7 @@ void PlayerApp::handleLoaderArgs( QCString args ) //SLOT
 // INIT
 /////////////////////////////////////////////////////////////////////////////////////
 
-void PlayerApp::initCliArgs( int argc, char *argv[] ) //static
+void App::initCliArgs( int argc, char *argv[] ) //static
 {
     static const char *description = I18N_NOOP( "An audio player for KDE" );
 
@@ -285,11 +283,11 @@ void PlayerApp::initCliArgs( int argc, char *argv[] ) //static
 
     KCmdLineArgs::init( argc, argv, &aboutData );
     KCmdLineArgs::addCmdLineOptions( options );   // Add our own options.
-    PlayerApp::addCmdLineOptions();
+    App::addCmdLineOptions();
 }
 
 
-void PlayerApp::initEngine()
+void App::initEngine()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
@@ -318,7 +316,7 @@ void PlayerApp::initEngine()
 }
 
 
-void PlayerApp::initIpc()
+void App::initIpc()
 {
     int m_sockfd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
     if ( m_sockfd == -1 )
@@ -359,14 +357,14 @@ void PlayerApp::initIpc()
 }
 
 
-void PlayerApp::initPlaylistWindow()
+void App::initPlaylistWindow()
 {
     m_pPlaylistWindow     = new PlaylistWindow( 0, "PlaylistWindow" );
     m_pPlaylist = m_pPlaylistWindow->playlist();
 }
 
 
-void PlayerApp::initPlayerWidget()
+void App::initPlayerWidget()
 {
     m_pPlayerWidget = new PlayerWidget( 0, "PlayerWidget" );
 
@@ -377,7 +375,7 @@ void PlayerApp::initPlayerWidget()
 }
 
 
-void PlayerApp::restoreSession()
+void App::restoreSession()
 {
     //here we restore the session
     //however, do note, this is always done, KDE session management is not involved
@@ -407,7 +405,7 @@ void PlayerApp::restoreSession()
 /////////////////////////////////////////////////////////////////////////////////////
 
 //SLOT
-void PlayerApp::applySettings()
+void App::applySettings()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
@@ -455,7 +453,7 @@ void PlayerApp::applySettings()
 }
 
 
-void PlayerApp::saveConfig()
+void App::saveConfig()
 {
     AmarokConfig::setPlaylistWindowPos     ( m_pPlaylistWindow->pos() );
     AmarokConfig::setPlaylistWindowSize    ( m_pPlaylistWindow->size() );
@@ -469,7 +467,7 @@ void PlayerApp::saveConfig()
 }
 
 
-void PlayerApp::readConfig()
+void App::readConfig()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
@@ -524,7 +522,7 @@ void PlayerApp::readConfig()
 #include <qpalette.h>
 #include <kglobalsettings.h>
 
-void PlayerApp::setupColors()
+void App::setupColors()
 {
     //FIXME you have to fix the XT stuff for this, we need an enum (and preferably, hard-coded amarok-defaults.. or maybe not)
 
@@ -617,13 +615,13 @@ void PlayerApp::setupColors()
 }
 
 
-void PlayerApp::insertMedia( const KURL::List &list )
+void App::insertMedia( const KURL::List &list )
 {
     m_pPlaylistWindow->insertMedia( list );
 }
 
 
-bool PlayerApp::eventFilter( QObject *o, QEvent *e )
+bool App::eventFilter( QObject *o, QEvent *e )
 {
     //Hi! Welcome to one of amaroK's less clear functions!
     //Please don't change anything in here without talking to mxcl or Larson[H] on amaroK
@@ -693,7 +691,7 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
 }
 
 
-void PlayerApp::engineStateChanged( EngineBase::EngineState state )
+void App::engineStateChanged( EngineBase::EngineState state )
 {
     switch( state )
     {
@@ -710,7 +708,7 @@ void PlayerApp::engineStateChanged( EngineBase::EngineState state )
 }
 
 
-void PlayerApp::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
+void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     QString prettyTitle = bundle.prettyTitle();
 
@@ -722,7 +720,7 @@ void PlayerApp::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged
 }
 
 
-void PlayerApp::slotPlaylistShowHide()
+void App::slotPlaylistShowHide()
 {
     //show/hide the playlist global shortcut slot
     //bahavior depends on state of the PlayerWidget and various minimization states
@@ -751,7 +749,7 @@ void PlayerApp::slotPlaylistShowHide()
 }
 
 
-void PlayerApp::showEffectWidget()
+void App::showEffectWidget()
 {
     if ( !EffectWidget::self )
     {
@@ -774,7 +772,7 @@ void PlayerApp::showEffectWidget()
     }
 }
 
-void PlayerApp::slotShowOptions()
+void App::slotShowOptions()
 {
     if( !KConfigDialog::showDialog( "settings" ) )
     {
@@ -787,42 +785,42 @@ void PlayerApp::slotShowOptions()
     }
 }
 
-void PlayerApp::setOsdEnabled( bool enabled ) //SLOT //FIXME required due to dcopHandler
+void App::setOsdEnabled( bool enabled ) //SLOT //FIXME required due to dcopHandler
 {
     m_pOSD->setEnabled( enabled );
 }
 
-void PlayerApp::slotShowVolumeOSD() //SLOT //FIXME required due to dcopHandler
+void App::slotShowVolumeOSD() //SLOT //FIXME required due to dcopHandler
 {
     m_pOSD->showVolume();
 }
 
-void PlayerApp::slotIncreaseVolume()
+void App::slotIncreaseVolume()
 {
     EngineController *controller = EngineController::instance();
     controller->setVolume( controller->engine()->volume() + 100 / 25 );
     m_pOSD->showVolume();
 }
 
-void PlayerApp::slotDecreaseVolume()
+void App::slotDecreaseVolume()
 {
     EngineController *controller = EngineController::instance();
     controller->setVolume( controller->engine()->volume() - 100 / 25 );
     m_pOSD->showVolume();
 }
 
-void PlayerApp::slotConfigShortcuts()
+void App::slotConfigShortcuts()
 {
     KKeyDialog::configure( actionCollection(), m_pPlaylistWindow );
 }
 
-void PlayerApp::slotConfigGlobalShortcuts()
+void App::slotConfigGlobalShortcuts()
 {
     KKeyDialog::configure( m_pGlobalAccel, true, 0, true );
 }
 
 #include <kedittoolbar.h>
-void PlayerApp::slotConfigToolBars()
+void App::slotConfigToolBars()
 {
     KEditToolbar dialog( m_pPlaylistWindow->actionCollection() );
 

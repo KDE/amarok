@@ -20,7 +20,7 @@
 #include <qstring.h>
 
 
-PlayerApp *pApp;
+App *pApp;
 
 
 int main( int argc, char *argv[] )
@@ -31,8 +31,8 @@ int main( int argc, char *argv[] )
     arg0.replace( "amarokapp", "amarok" );
     argv[0] = const_cast<char*>( arg0.latin1() );
     
-    PlayerApp::initCliArgs( argc, argv );
-    PlayerApp app;
+    App::initCliArgs( argc, argv );
+    App app;
     
     return app.exec();
 }

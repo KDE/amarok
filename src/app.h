@@ -1,5 +1,5 @@
 /***************************************************************************
-                         playerapp.h  -  description
+                         app.h  -  description
                             -------------------
    begin                : Mit Okt 23 14:35:18 CEST 2002
    copyright            : (C) 2002 by Mark Kretschmann
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef AMAROK_PLAYERAPP_H
-#define AMAROK_PLAYERAPP_H
+#ifndef AMAROK_APP_H
+#define AMAROK_APP_H
 
 #ifdef HAVE_CONFIG_H
     #include <config.h>
@@ -49,13 +49,13 @@ class KActionCollection;
 class KGlobalAccel;
 
 
-class PlayerApp : public KApplication, public EngineObserver
+class App : public KApplication, public EngineObserver
 {
     Q_OBJECT
 
     public:
-        PlayerApp();
-        ~PlayerApp();
+        App();
+        ~App();
 
         bool playObjectConfigurable();
         void setupColors();
@@ -139,6 +139,6 @@ class LoaderServer : public QServerSocket
         void newConnection( int socket );
 };
 
-#endif                                            // AMAROK_PLAYERAPP_H
+#endif                                            // AMAROK_APP_H
 
-extern PlayerApp* pApp;
+extern App* pApp;

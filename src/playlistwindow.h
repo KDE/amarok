@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef BROWSERWIN_H
-#define BROWSERWIN_H
+#ifndef AMAROK_PLAYLISTWINDOW_H
+#define AMAROK_PLAYLISTWINDOW_H
 
 #include <qwidget.h>        //baseclass
 #include <kurl.h>           //KURL::List
@@ -58,7 +58,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         void setColors( const QPalette&, const QColor& );
         void saveConfig();
 
-        void createGUI(); //should be private but PlayerApp::slowConfigToolbars requires it
+        void createGUI(); //should be private but App::slowConfigToolbars requires it
 
         Playlist *playlist() const { return m_playlist; }
 
@@ -91,4 +91,6 @@ void PlaylistWindow::insertMedia( const KURL &url )
     }
 }
 
-#endif
+
+#endif //AMAROK_PLAYLISTWINDOW_H
+
