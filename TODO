@@ -3,10 +3,14 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #135 being the highest available (take this one for your next bug and increase here)
+           #136 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  FIX 135 <markey> Improve support for desktop environments other than KDE. GNOME users report, 
+                   once you hide amaroK, there's no way to bring the application back into view,
+                   due to missing systray icon. If you switch the systray icon off, the app crashes.
 
   FIX 134 <markey> Ctrl-C as shortcut for copying title just doesn't work. We need to choose another
                    shortcut. How about a global shortcut?
