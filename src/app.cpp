@@ -133,10 +133,6 @@ App::App()
         CollectionDB::instance()->startScan();
 
     handleCliArgs();
-
-    //FIXME if the OSD is deleted before the KApplication
-    //it causes a crash, we don't know why yet
-    //insertChild( amaroK::OSD::instance() );
 }
 
 App::~App()
@@ -159,13 +155,18 @@ App::~App()
     EngineController::instance()->endSession(); //records final statistics
     EngineController::instance()->detach( this );
 
-    //do even if trayicon is not shown, it is safe
+    // do even if trayicon is not shown, it is safe
     amaroK::config()->writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
 
     delete m_pPlayerWindow;   //sets some XT keys
     delete m_pPlaylistWindow; //sets some XT keys
     delete m_pDcopPlayerHandler;
     delete m_pDcopPlaylistHandler;
+
+    // this must be deleted before the connection to the Xserver is
+    // severed, or we risk a crash when the QApplication is exited,
+    // I asked Trolltech! *smug*
+    delete amaroK::OSD::instance();
 
     AmarokConfig::setVersion( APP_VERSION );
     AmarokConfig::writeConfig();
@@ -454,8 +455,9 @@ void App::applySettings( bool firstTime )
     }
 
     if ( !firstTime )
-        // we crash, often, we admit this ;-)
-        AmarokConfig::writeConfig();
+        // Bizarrely and ironically calling this causes crashes for
+        // some people! FIXME
+        //AmarokConfig::writeConfig();
 }
 
 void
