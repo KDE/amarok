@@ -70,9 +70,18 @@ class CollectionView : public KListView
         void tagsReady();    
         
     private slots:
+        /**
+         * Shows the folder selection widget
+         */
         void setupDirs();    
+        
         void scan();        
+        
+        /**
+         * Rebuilds and displays the treeview by querying the database
+         */
         void renderView();
+        
         void slotExpanded( QListViewItem* );
         void slotCollapsed( QListViewItem* );    
         void actionsMenu( int );
@@ -84,18 +93,17 @@ class CollectionView : public KListView
         void startDrag();
         
         /**
-        * Executes an SQL statement on the already opened database
-        * @param statement SQL program to execute. Only one SQL statement is allowed.
-        * @out values      will contain the queried data, set to NULL if not used
-        * @out names       will contain all column names, set to NULL if not used
-        * @return          true if successful
-        */
+         * Executes an SQL statement on the already opened database
+         * @param statement SQL program to execute. Only one SQL statement is allowed.
+         * @retval values   will contain the queried data, set to NULL if not used
+         * @retval names    will contain all column names, set to NULL if not used
+         * @return          true if successful
+         */
         bool execSql( const QCString& statement, QStringList* const values, QStringList* const names );
             
     //attributes:
         CollectionBrowser* m_parent;
         ThreadWeaver* m_weaver;
-        KDirLister* m_dirLister;
         sqlite* m_db;                
         QStringList m_dirs;
         QString m_category;

@@ -10,7 +10,6 @@
 
 #include <kdebug.h>
 #include <kapplication.h>
-#include <kfileitem.h>        //CollectionReader
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
 #include <taglib/tstring.h>
@@ -194,7 +193,7 @@ TagReader::addSearchTokens( QStringList &tokens, QPtrList<QListViewItem> &ptrs )
 // CLASS CollectionReader
 //////////////////////////////////////////////////////////////////////////////////////////
 
-CollectionReader::CollectionReader( QObject* o, const KFileItemList& list )
+CollectionReader::CollectionReader( QObject* o, const QStringList& list )
    : Job( o, Job::CollectionReader )
    , m_itemList( list )
 {}
@@ -205,13 +204,14 @@ CollectionReader::~CollectionReader()
 bool
 CollectionReader::doJob()
 {
-    KFileItem* item;
+    KURL url;
         
-    for ( item = m_itemList.first(); item; item = m_itemList.next() )
-    {   
-        if ( item->url().isValid() && item->isLocalFile() ) {        
-            TagLib::FileRef f( item->url().path().local8Bit(), false /*== read AudioProps */ );
-            MetaBundle* bundle = f.isNull() ? 0 : new MetaBundle( item->url(), f.tag(), f.audioProperties() );
+    for ( int i = 0; i < m_itemList.count(); i++ ) {   
+        url.setPath( m_itemList[i] );
+        
+        if ( url.isValid() && url.isLocalFile() ) {        
+            TagLib::FileRef f( url.path().local8Bit(), false /*== read AudioProps */ );
+            MetaBundle* bundle = f.isNull() ? 0 : new MetaBundle( url, f.tag(), f.audioProperties() );
             
             if ( bundle )
                 m_metaList.append( bundle );

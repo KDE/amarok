@@ -1,7 +1,7 @@
 // (c) Mark Kretschmann 2004
 // See COPYING file for licensing information
 
-    
+
 #include "config.h"
 
 #ifdef HAVE_SQLITE
@@ -12,14 +12,16 @@
 #include "threadweaver.h"
 
 #include <sqlite.h>
+#include <dirent.h>
+#include <sys/stat.h>
 
 #include <qcstring.h>
 #include <qdragobject.h>
 #include <qptrlist.h>
 
 #include <kapplication.h>
+#include <kconfig.h>
 #include <kdebug.h>
-#include <kdirlister.h>
 #include <kglobal.h>
 #include <klocale.h>
 #include <kmenubar.h>
@@ -31,25 +33,25 @@
 CollectionBrowser::CollectionBrowser( const char* name )
     : QVBox( 0, name )
 {
-    QHBox* hbox = new QHBox( this );
-    
+    QHBox * hbox = new QHBox( this );
+
     m_actionsMenu = new KPopupMenu( hbox );
     m_catMenu = new KPopupMenu( hbox );
-    
+
     KMenuBar* menu = new KMenuBar( this );
-    menu->insertItem( "Actions",    m_actionsMenu );
+    menu->insertItem( "Actions", m_actionsMenu );
     menu->insertItem( "Categories", m_catMenu );
-    
+
     CollectionView* view = new CollectionView( this );
 
     m_actionsMenu->insertItem( "Setup Folders", view, SLOT( setupDirs() ) );
-    m_actionsMenu->insertItem( "Scan Now",      view, SLOT( scan() ) );
-    
-    m_catMenu    ->insertItem( "Album",         view, SLOT( actionsMenu( int ) ), 0, IdAlbum  );
-    m_catMenu    ->insertItem( "Artist",        view, SLOT( actionsMenu( int ) ), 0, IdArtist );
-    m_catMenu    ->insertItem( "Genre",         view, SLOT( actionsMenu( int ) ), 0, IdGenre  );
-    m_catMenu    ->insertItem( "Year",          view, SLOT( actionsMenu( int ) ), 0, IdYear   );
-}  
+    m_actionsMenu->insertItem( "Scan Now", view, SLOT( scan() ) );
+
+    m_catMenu ->insertItem( "Album", view, SLOT( actionsMenu( int ) ), 0, IdAlbum );
+    m_catMenu ->insertItem( "Artist", view, SLOT( actionsMenu( int ) ), 0, IdArtist );
+    m_catMenu ->insertItem( "Genre", view, SLOT( actionsMenu( int ) ), 0, IdGenre );
+    m_catMenu ->insertItem( "Year", view, SLOT( actionsMenu( int ) ), 0, IdYear );
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -57,70 +59,64 @@ CollectionBrowser::CollectionBrowser( const char* name )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 CollectionView::CollectionView( CollectionBrowser* parent )
-    : KListView( parent )
-    , m_parent( parent )
-    , m_weaver( new ThreadWeaver( this ) )
-    , m_dirLister( new KDirLister() )
+        : KListView( parent )
+        , m_parent( parent )
+        , m_weaver( new ThreadWeaver( this ) )
 {
     kdDebug() << k_funcinfo << endl;
- 
-    m_dirLister->setAutoUpdate( false );
-    m_dirLister->setAutoErrorHandlingEnabled( false, 0 );
-    
+
     setSelectionMode( QListView::Extended );
     setItemsMovable( false );
     setRootIsDecorated( true );
     setShowSortIndicator( true );
     setFullWidth( true );
     setAcceptDrops( false );
-       
-    QCString path = ( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" )
-                      + "collection.db" ).latin1(); 
-    
+
+    QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
+                      + "collection.db" ).latin1();
+
     m_db = sqlite_open( path, 0, 0 );
-    
+
     if ( !m_db )
         kdWarning() << k_funcinfo << "Could not open SQLite database\n";
-    
+
     QCString command = "create table tags ( url varchar(100),"
-                                           "album varchar(100),"
-                                           "artist varchar(100),"
-                                           "genre varchar(100),"
-                                           "title varchar(100),"
-                                           "year varchar(4) );";
-    
+                       "album varchar(100),"
+                       "artist varchar(100),"
+                       "genre varchar(100),"
+                       "title varchar(100),"
+                       "year varchar(4) );";
+
     execSql( command, 0, 0 );
 
     KConfig* config = KGlobal::config();
     config->setGroup( "Collection Browser" );
-    
+
     m_dirs = config->readListEntry( "Folders" );
     m_category = config->readEntry( "Category", "Album" );
     addColumn( m_category );
     m_recursively = config->readBoolEntry( "Scan Recursively", true );
-    
+
     connect( this, SIGNAL( tagsReady() ),
-             this,   SLOT( renderView() ) );
+             this, SLOT( renderView() ) );
     connect( this, SIGNAL( expanded( QListViewItem* ) ),
-             this,   SLOT( slotExpanded( QListViewItem* ) ) );
+             this, SLOT( slotExpanded( QListViewItem* ) ) );
     connect( this, SIGNAL( collapsed( QListViewItem* ) ),
-             this,   SLOT( slotCollapsed( QListViewItem* ) ) );
-             
+             this, SLOT( slotCollapsed( QListViewItem* ) ) );
+
     renderView();
 }
 
 
-CollectionView::~CollectionView()
-{
+CollectionView::~CollectionView() {
     kdDebug() << k_funcinfo << endl;
-    
+
     KConfig* config = KGlobal::config();
     config->setGroup( "Collection Browser" );
     config->writeEntry( "Folders", m_dirs );
     config->writeEntry( "Category", m_category );
     config->writeEntry( "Scan Recursively", m_recursively );
-    
-    delete m_dirLister;
+
     sqlite_close( m_db );
 }
 
@@ -130,7 +126,7 @@ CollectionView::~CollectionView()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
-CollectionView::setupDirs() //SLOT
+CollectionView::setupDirs()  //SLOT
 {
     DirectoryList list( m_dirs, m_recursively );
     DirectoryList::Result result = list.exec();
@@ -140,87 +136,85 @@ CollectionView::setupDirs() //SLOT
 }
 
 
-void 
-CollectionView::scan() //SLOT
+void
+CollectionView::scan()  //SLOT
 {
     //remove all records
     QCString command = "delete from tags;";
     execSql( command, 0, 0 );
-    
+
     for ( uint i = 0; i < m_dirs.count(); i ++ ) {
-        KURL url;   
-        url.setPath( m_dirs[i] );
-        readDir( url );                
+        KURL url;
+        url.setPath( m_dirs[ i ] );
+        readDir( url );
     }
 }
 
 
-void 
-CollectionView::renderView() //SLOT
+void
+CollectionView::renderView()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     clear();
 
     //query database for all records with the specified category
     QCString command = "select distinct ";
     command += m_category.lower().latin1();
     command += " from tags;";
-    
+
     QStringList values;
     QStringList names;
-    
+
     execSql( command, &values, &names );
-    
+
     for ( uint i = 0; i < values.count(); i++ ) {
-        if ( values[i].isEmpty() ) continue;
-        
-        KListViewItem* item = new KListViewItem( this );    
+        if ( values[ i ].isEmpty() ) continue;
+
+        KListViewItem* item = new KListViewItem( this );
         item->setExpandable( true );
         item->setDragEnabled( false );
         item->setDropEnabled( false );
-        item->setText( 0, values[i] );
-    }    
-        
-    kdDebug() << values << endl;
+        item->setText( 0, values[ i ] );
+    }
 }
 
 
-void 
-CollectionView::slotExpanded( QListViewItem* item ) //SLOT
+void
+CollectionView::slotExpanded( QListViewItem* item )  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
-    if ( !item ) return;
-    
+    if ( !item ) return ;
+
     //query database for all tracks in our sub-category
     QCString command = "select title, url from tags where ";
     command += m_category.lower().latin1();
     command += " = '";
     command += item->text( 0 ).latin1();
     command += "';";
-    
+
     QStringList values;
     QStringList names;
-    
+
     execSql( command, &values, &names );
-    
+
     for ( uint i = 0; i < values.count(); i += 2 ) {
-        if ( values[i].isEmpty() ) continue;
-        
-        Item* child = new Item( item );    
+        if ( values[ i ].isEmpty() ) continue;
+
+        Item* child = new Item( item );
         child->setDragEnabled( true );
         child->setDropEnabled( false );
-        child->setText( 0, values[i+0] );
-        kdDebug() << "url: " << values[i+1] << endl;
-        child->setUrl( values[i+1] );
-    }    
-        
+        child->setText( 0, values[ i + 0 ] );
+        kdDebug() << "url: " << values[ i + 1 ] << endl;
+        child->setUrl( values[ i + 1 ] );
+    }
+
     kdDebug() << values << endl;
 }
 
 
-void 
-CollectionView::slotCollapsed( QListViewItem* item ) //SLOT
+void
+CollectionView::slotCollapsed( QListViewItem* item )  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
@@ -235,11 +229,11 @@ CollectionView::slotCollapsed( QListViewItem* item ) //SLOT
 }
 
 
-void 
-CollectionView::actionsMenu( int id ) //SLOT
+void
+CollectionView::actionsMenu( int id )  //SLOT
 {
-    switch( id ) {
-    
+    switch ( id ) {
+
     case CollectionBrowser::IdAlbum:
         m_category = "Album";
         break;
@@ -253,158 +247,172 @@ CollectionView::actionsMenu( int id ) //SLOT
         m_category = "Year";
         break;
     default:
-        return;
+        return ;
     }
-    
+
     setColumnText( 0, m_category );
     renderView();
 }
 
 
-void 
-CollectionView::readDir( const KURL& url )
-{
-    m_dirLister->openURL( url );
+void
+CollectionView::readDir( const KURL& url ) {
+    kdDebug() << k_funcinfo << endl;
+
+    QStringList list;
+    QString path = url.path();
+    if ( !path.endsWith( "/" ) )
+        path += "/";
     
-    while ( !m_dirLister->isFinished() )
-        kapp->processEvents(); 
-       
-    KFileItemList list = m_dirLister->items();    
-    
+    DIR* d = opendir( path.local8Bit() );
+    dirent *ent;
+    struct stat statBuf;
+
+    while ( ent = readdir( d ) ) {
+        QString entry = ent->d_name;
+        
+        if ( entry == "." || entry == ".." )
+            continue;
+        entry.prepend( path );
+        
+//         kdDebug() << entry << endl;
+        stat( entry.local8Bit(), &statBuf );
+
+        if ( S_ISDIR( statBuf.st_mode ) ) {
+            if ( m_recursively ) {
+                KURL subdir;
+                subdir.setPath( entry );
+                //call this method recursively for each subdir
+                readDir( subdir );
+            }
+        }
+        else if ( S_ISREG( statBuf.st_mode ) )
+            list << entry;
+    }
+    closedir( d );
+
     if ( !list.isEmpty() )
         m_weaver->append( new CollectionReader( this, list ) );
-
-    if ( m_recursively ) {
-        for ( int i = 0; i < list.count(); i++ ) {
-//             kdDebug() << list.at( i )->url().path() << endl;
-            if ( list.at( i )->url().isValid() && list.at( i )->isDir() )
-                readDir( list.at( i )->url() );
-        }
-    }
 }
 
 
-void 
-CollectionView::customEvent( QCustomEvent *e )
-{
+void
+CollectionView::customEvent( QCustomEvent *e ) {
     kdDebug() << k_funcinfo << endl;
-    
-    if ( e->type() == ThreadWeaver::Job::CollectionReader ) {
-        CollectionReader* c = static_cast<CollectionReader*>( e );
-       
+
+    if ( e->type() == (QEvent::Type) ThreadWeaver::Job::CollectionReader ) {
+        CollectionReader * c = static_cast<CollectionReader*>( e );
+
         kdDebug() << "********************************\n";
         kdDebug() << "CollectionEvent arrived.\n";
         kdDebug() << "********************************\n";
-        
+
         kdDebug() << "Number of bundles: " << c->list().count() << endl;
 
         MetaBundle* bundle;
-        
+
         for ( uint i = 0; i < c->list().count(); i++ ) {
             bundle = c->list().at( i );
-//             kdDebug() << bundle->artist() << endl;
-            
+            //             kdDebug() << bundle->artist() << endl;
+
             QCString command = "insert into tags( url, album, artist, genre, title, year ) values ('";
             command += bundle->url().path().latin1();
-            command +=         "','";
+            command += "','";
             command += bundle->album().latin1();
-            command +=         "','";
+            command += "','";
             command += bundle->artist().latin1();
-            command +=         "','";
+            command += "','";
             command += bundle->genre().latin1();
-            command +=         "','";
+            command += "','";
             command += bundle->title().latin1();
-            command +=         "','";
+            command += "','";
             command += bundle->year().latin1();
-            command +=         "');";
-            
+            command += "');";
+
             execSql( command, 0, 0 );
             delete bundle;
         }
-        
+
         emit tagsReady();
     }
 }
 
 
-void 
-CollectionView::dumpDb()
-{
+void
+CollectionView::dumpDb() {
     kdDebug() << k_funcinfo << endl;
-    
+
     QCString command = "select artist from tags;";
-   
+
     QStringList values;
     QStringList names;
-    
+
     execSql( command, &values, &names );
     kdDebug() << values << endl;
 }
 
 
-bool 
+bool
 CollectionView::execSql( const QCString& statement,
-                                     QStringList* const values,
-                                     QStringList* const names )
-{
-//     kdDebug() << k_funcinfo << endl;
-    
+                         QStringList* const values,
+                         QStringList* const names ) {
+    //     kdDebug() << k_funcinfo << endl;
+
     if ( !m_db ) {
         kdWarning() << k_funcinfo << "SQLite pointer == NULL.\n";
         return false;
     }
-    
+
     const char* tail;
     sqlite_vm* vm;
     char* errorStr;
     int error;
     //compile SQL program to virtual machine
     error = sqlite_compile( m_db, statement, &tail, &vm, &errorStr );
-        
+
     if ( error != SQLITE_OK ) {
         kdWarning() << k_funcinfo << "sqlite_compile error:\n";
         kdWarning() << errorStr << endl;
         sqlite_freemem( errorStr );
         return false;
     }
-    
+
     int number;
     const char** value;
     const char** colName;
     //execute virtual machine by iterating over rows
-    while( true ) {
+    while ( true ) {
         error = sqlite_step( vm, &number, &value, &colName );
-        
+
         if ( error == SQLITE_DONE || error == SQLITE_ERROR )
-            break; 
+            break;
         //iterate over columns
         for ( int i = 0; values && names && i < number; i++ ) {
-            *values << value  [i];
-            *names  << colName[i];
+            *values << value [ i ];
+            *names << colName[ i ];
         }
     }
     //deallocate vm ressources
     sqlite_finalize( vm, 0 );
-    
+
     if ( error != SQLITE_DONE ) {
         kdWarning() << k_funcinfo << "sqlite_step error.\n";
         return "error";
     }
-        
+
     return true;
 }
 
 
 void
-CollectionView::startDrag()
-{
+CollectionView::startDrag() {
     KURL::List list;
-    
-    for ( QListViewItem* item = firstChild(); item; item = item->nextSibling() )
-        for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
+
+    for ( QListViewItem * item = firstChild(); item; item = item->nextSibling() )
+        for ( QListViewItem * child = item->firstChild(); child; child = child->nextSibling() )
             if ( child->isSelected() )
-                list << static_cast<Item*>( child )->url();
-                    
+                list << static_cast<Item*>( child ) ->url();
+
     KURLDrag* d = new KURLDrag( list, this );
     d->dragCopy();
 }

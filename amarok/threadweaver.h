@@ -7,11 +7,11 @@
 #ifndef THREADWEAVER_H
 #define THREADWEAVER_H
 
-#include <kfileitem.h>    //stack allocated
 #include <kurl.h>         //stack allocated
 
 #include <qevent.h>       //baseclass
 #include <qmutex.h>       //stack allocated
+#include <qstringlist.h>  //stack allocated
 #include <qthread.h>      //baseclass
 #include <qptrlist.h>     //stack allocated
 
@@ -127,7 +127,7 @@ private:
 class CollectionReader : public ThreadWeaver::Job
 {
 public:
-    CollectionReader( QObject*, const KFileItemList& list );
+    CollectionReader( QObject*, const QStringList& list );
     ~CollectionReader();
 
     bool doJob();
@@ -135,7 +135,7 @@ public:
 
 private:
     QPtrList<MetaBundle> m_metaList;
-    KFileItemList m_itemList;
+    QStringList m_itemList;
 };
 
 
