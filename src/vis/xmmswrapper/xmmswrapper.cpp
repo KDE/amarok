@@ -8,6 +8,7 @@
 #include <dirent.h>
 #include <dlfcn.h>           //dlopen etc.
 #include <stdlib.h>
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/un.h>

@@ -11,5 +11,6 @@ amarok_xmmswrapper2_SOURCES = \
 
 amarok_xmmswrapper2_LDFLAGS = \
     $(xmms_libs) \
-    $(gtk_libs)
+    $(gtk_libs) \
+    $(all_libraries)
 
