@@ -140,6 +140,7 @@ class Playlist : private KListView, public EngineObserver
         void switchState( QStringList&, QStringList& );
         void removeItem( PlaylistItem* );
         void refreshNextTracks( int=-1 );
+        void updateNextPrev();
 
         //engine observer functions
         void engineNewMetaData( const MetaBundle&, bool );

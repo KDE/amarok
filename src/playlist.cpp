@@ -501,9 +501,7 @@ void Playlist::shuffle() //SLOT
 
     m_nextTracks.clear();
 
-    //TODO you need a generic function for this action
-    m_ac->action( "prev" )->setEnabled( isTrackBefore() );
-    m_ac->action( "next" )->setEnabled( isTrackAfter() );
+    updateNextPrev();
 }
 
 
@@ -545,9 +543,15 @@ bool Playlist::isTrackAfter() const
 bool Playlist::isTrackBefore() const
 {
     return !isEmpty() && (
-           !m_prevTracks.isEmpty() ||
+           AmarokConfig::randomMode() && !m_prevTracks.isEmpty() ||
            currentTrack() && (
            AmarokConfig::repeatPlaylist() || currentTrack()->itemAbove() ) );
+}
+
+void Playlist::updateNextPrev()
+{
+    m_ac->action( "prev" )->setEnabled( isTrackBefore() );
+    m_ac->action( "next" )->setEnabled( isTrackAfter() );
 }
 
 
@@ -580,6 +584,8 @@ void Playlist::removeSelectedItems() //SLOT
         }
         else delete item;
     }
+
+    updateNextPrev();
 
     //NOTE no need to emit childCountChanged(), removeItem() does that for us
 }
@@ -796,12 +802,10 @@ void Playlist::engineStateChanged( EngineBase::EngineState state )
         m_ac->action( "pause" )->setEnabled( true );
         m_ac->action( "stop" )->setEnabled( true );
         m_ac->action( "playlist_show" )->setEnabled( true );
-        //m_ac->action( "play" )->setText( i18n( "Restart" ) );
         break;
 
     case EngineBase::Empty:
         //TODO do this with setState() in PlaylistWindow?
-        //m_ac->action( "play" )->setText( i18n( "Play" ) );
         m_ac->action( "pause" )->setEnabled( false );
         m_ac->action( "stop" )->setEnabled( false );
         m_ac->action( "prev" )->setEnabled( false );
@@ -828,7 +832,7 @@ void Playlist::engineStateChanged( EngineBase::EngineState state )
 
 void Playlist::setCurrentTrack( PlaylistItem *item )
 {
-    //item has been verified to be the currently playing track, let's paint it red!
+    //item has been verified to be the currently playing track, let's make it glow!
 
     PlaylistItem *prev = m_currentTrack;
     const bool canScroll = !renameLineEdit()->isVisible() && selectedItems().count() < 2; //FIXME O(n)
@@ -888,8 +892,7 @@ void Playlist::setCurrentTrack( PlaylistItem *item )
         prev->invalidateHeight();
     }
 
-    m_ac->action( "prev" )->setEnabled( isTrackBefore() );
-    m_ac->action( "next" )->setEnabled( isTrackAfter() );
+    updateNextPrev();
 }
 
 
@@ -1397,7 +1400,7 @@ void Playlist::contentsDropEvent( QDropEvent *e )
         setSorting( NO_SORT ); //disableSorting and saveState()
         movableDropEvent( parent, after );
 
-        //TODO FIXME we need to update whether next/prev are enabled/disabled
+        updateNextPrev();
 
     } else {
 
@@ -1455,7 +1458,11 @@ bool Playlist::eventFilter( QObject *o, QEvent *e )
         if( col != -1 )
         {
             //TODO can result in massively wide column appearing!
-            if( columnWidth( col ) == 0 ) adjustColumn( col );
+            if( columnWidth( col ) == 0 )
+            {
+                adjustColumn( col );
+                header()->setResizeEnabled( true, col );
+            }
             else hideColumn( col );
         }
 

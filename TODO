@@ -3,15 +3,14 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #126 being the highest available (take this one for your next bug and increase here)
+           #128 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
 
-  FIX 126 <mxcl>   GST engine seems to use 100% in separate thread if it can't start a stream (reason
-                   unknown) and then won't let you quit amaroK (UI freezes when quit is pressed).
-
   FIX 124 <muesli> Make CollectionBrowser independent of i18n.
+
+  FIX 123 <muesli> Pick the proper fonts and colors for both, Welcome- and ContextBrowser.
 
   FIX 122 <markey> Depend on GStreamer 0.8.1, since amaroK won't build with older versions any more.
 
@@ -26,6 +25,8 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+
+  ADD 127 <mxcl>   Connect PlayerWindow navigation buttons to KAction enabled states
 
   ADD 113 <markey> We must reduce dependency on app.h. Change a single line there -> recompile world :/
 
