@@ -257,7 +257,7 @@ Vis::Selector::Selector( QWidget *parent )
     QStringList entries = QStringList::split( '\n', str );
 
     for( QStringList::ConstIterator it = entries.begin(); it != entries.end(); ++it )
-        new Item( this, "amarok_xmmswrapper", *it );
+        new Item( this, "amarok_xmmswrapper2", *it );
 
     vis = popen( "amarok_libvisual --list", "r" );
     str[ fread( (void*)str, sizeof(char), 4096, vis ) ] = '\0';
