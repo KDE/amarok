@@ -7,9 +7,6 @@ SHORT-TERM:
     * fix: berkus: make sure the expandbutton doesn't fire events when
            it has had its stack expanded (behaviour a-la Winamp Classic)
 
-    * fix: doubleclicking in the playlist's free space (after last mp3 in list)
-           causes amarok to start playing first item.
-
     * fix: app freezing when renaming the file that's currently playing
 
     * fix: sample looping @ end of track or pause
