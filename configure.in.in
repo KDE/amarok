@@ -306,8 +306,13 @@ AM_CONDITIONAL(with_xmmswrapper, test x$build_xmmswrapper = xyes )
 # BEGIN KJSEMBED CHECK
 ###############################################################################
 
-KDE_CHECK_HEADER(kjsembed/kjsembedpart.h, [AC_DEFINE(HAVE_KJSEMBED, 1, [have KJSEMBED])],)
-
+KDE_CHECK_HEADER(kjsembed/kjsembedpart.h, have_kjsembed=yes, have_kjsembed=no)
+ 
+if test x$have_kjsembed = xyes; then
+    AC_SUBST(LIB_KJSEMBED, "-lkjsembed")
+    AC_DEFINE(HAVE_KJSEMBED, 1, [have KJSEMBED])
+fi
+    
 ###############################################################################
 # END KJSEMBED CHECK
 ###############################################################################

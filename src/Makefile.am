@@ -84,7 +84,7 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/sqlite/libsqlite.la \
     $(top_builddir)/amarok/src/titleproxy/libtitleproxy.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) \
-    $(taglib_libs) $(gl_libs) -lkjsembed 
+    $(taglib_libs) $(gl_libs) $(LIB_KJSEMBED) 
 
 amarokapp_LDFLAGS = \
     $(all_libraries) \
