@@ -88,6 +88,7 @@ class ArtsEngine : public EngineBase
         
        long                                      m_scopeId;
        int                                       m_scopeSize;
+       long                                      m_volumeId;
        bool                                      m_proxyError;
 };
 

@@ -52,6 +52,7 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
         , m_pPlayObject( NULL )
         , m_scopeId( 0 )
         , m_scopeSize( scopeSize )
+        , m_volumeId( 0 )
         , m_proxyError( false )
 {
     setName( "ArtsEngine" );
@@ -189,36 +190,26 @@ ArtsEngine::~ ArtsEngine()
 }
 
 
-bool ArtsEngine::initMixer( bool )
+bool ArtsEngine::initMixer( bool software )
 {
-    EngineBase::initMixerHW();
-
-/*    kdDebug() << "begin ArtsEngine::initMixer()" << endl;
-
-    if ( !m_optSoftwareMixerOnly && initMixerHW() )
+    //make sure any previously started volume control gets killed
+    if ( m_volumeId )
     {
-        m_usingMixerHW = true;
+        m_globalEffectStack.remove( m_volumeId );
+        m_volumeId = 0;
+        m_volumeControl = Arts::StereoVolumeControl::null();
+    }
+        
+    if ( software )
+    {
+        m_volumeControl = Arts::DynamicCast( m_server.createObject( "Arts::StereoVolumeControl" ) );
+        m_volumeControl.start();
+        m_volumeId = m_globalEffectStack.insertBottom( m_volumeControl, "Volume Control" );
     }
     else
-    {
-        // Hardware mixer doesn't work --> use arts software-mixing
-        kdDebug() << "Cannot initialise Hardware mixer. Switching to software mixing." << endl;
+        EngineBase::initMixerHW();
 
-        m_volumeControl = Arts::DynamicCast( m_server.createObject( "Arts::StereoVolumeControl" ) );
-
-        if ( m_volumeControl.isNull() )
-        {
-            kdDebug() << "Initialising arts softwaremixing failed!" << endl;
-            return ;
-        }
-
-        m_usingMixerHW = false;
-        m_volumeControl.start();
-        m_globalEffectStack.insertBottom( m_volumeControl, "Volume Control" );
-
-        kdDebug() << "end ArtsEngine::initMixer()" << endl;
-    }*/
-    
+    //FIXME do we need a return value?
     return true;
 }
 
@@ -432,7 +423,10 @@ void ArtsEngine::seek( long ms )
 
 void ArtsEngine::setVolume( int percent )
 {
-    EngineBase::setVolumeHW( percent );
+    if ( m_volumeId )
+        m_volumeControl.scaleFactor( percent * 0.01 );
+    else
+        EngineBase::setVolumeHW( percent );
 }
 
 
