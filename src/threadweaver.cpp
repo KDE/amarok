@@ -229,11 +229,12 @@ void SearchModule::searchDir( QString path )
 
 bool CollectionReader::m_stop;
 
-CollectionReader::CollectionReader( CollectionDB* parent, QObject* statusBar,
+CollectionReader::CollectionReader( CollectionDB* parent, QObject* statusBar, QObject *playlistBrowser,
                                     const QStringList& folders, bool recursively, bool incremental )
         : Job( parent, Job::CollectionReader )
         , m_parent( parent )
         , m_statusBar( statusBar )
+        , m_playlistBrowser( playlistBrowser )
         , m_folders( folders )
         , m_recursively( recursively )
         , m_incremental( incremental )
@@ -308,8 +309,14 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
                     //call ourself recursively for each subdir
                     if ( !m_incremental || !m_parent->isDirInCollection( entry ) )
                         readDir( QFile::decodeName( entry ), entries );
-            } else if ( S_ISREG( statBuf.st_mode ) )
-                entries << QString::fromLocal8Bit( entry );
+            } else if ( S_ISREG( statBuf.st_mode ) ) {
+                 //if a playlist is found it will send a PlaylistFoundEvent to PlaylistBrowser
+                    QString file = QString::fromLocal8Bit( entry );
+                    QString ext = file.right( 4 ).lower();
+                    if( ext == ".m3u" || ext == ".pls" )
+                        QApplication::postEvent( m_playlistBrowser, new PlaylistFoundEvent( file ) );
+                    entries <<  file ;
+            }
         }
 
     }

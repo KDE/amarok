@@ -16,7 +16,6 @@
 #include "amarokconfig.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
-#include "playlistbrowser.h"
 #include "playlistitem.h"
 #include "playlistloader.h"
 #include "playlist.h"
@@ -56,10 +55,6 @@ QMap<QString, bool> Playlist::s_extensionCache;
 
 Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     : KListView( parent, name )
-#define PLAYLIST_BROWSER 1
-#ifdef PLAYLIST_BROWSER
-    , m_browser( new PlaylistBrowser( "PlaylistBrowser" ) )
-#endif
     , m_currentTrack( 0 )
     , m_cachedTrack( 0 )
     , m_marker( 0 )

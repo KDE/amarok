@@ -7,6 +7,7 @@
 #include "coverfetcher.h"
 #include "sqlite/sqlite.h"
 #include "statusbar.h"
+#include "playlistbrowser.h"
 #include "threadweaver.h"
 
 #include <kapplication.h>
@@ -469,7 +470,8 @@ CollectionDB::scan( const QStringList& folders, bool recursively )
     kdDebug() << k_funcinfo << endl;
 
     if ( !folders.isEmpty() )
-        m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), folders, recursively, false ) );
+        m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), PlaylistBrowser::instance(),
+                                         folders, recursively, false ) );
     else
         emit scanDone( false );
 }
@@ -505,7 +507,8 @@ CollectionDB::scanModifiedDirs( bool recursively )
     }
 
     if ( !folders.isEmpty() )
-        m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), folders, recursively, true ) );
+        m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), PlaylistBrowser::instance(),
+                                         folders, recursively, false ) );
     else
         emit scanDone( false );
 }
@@ -732,7 +735,8 @@ CollectionDB::dirDirty( const QString& path )
 {
     kdDebug() << k_funcinfo << "Dirty: " << path << endl;
 
-    m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), path, false, true ) );
+    m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), PlaylistBrowser::instance(),
+                                     path, false, true ) );
 }
 
 

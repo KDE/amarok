@@ -29,7 +29,8 @@ class Playlist;
 class PlaylistLoader : public QThread
 {
 public:
-    PlaylistLoader( const KURL::List&, Playlist*, PlaylistItem* );
+    PlaylistLoader( const KURL::List&, QObject *, PlaylistItem* );
+    PlaylistLoader( const KURL::List&, QObject * );
     ~PlaylistLoader();
 
     void setOptions( bool b1, bool b2, int i ) { options.recurse = b1; options.playFirstItem = b2; options.sortSpec = i; }
@@ -62,6 +63,7 @@ private:
     PlaylistItem   *m_first;
     Playlist       *m_listView;
     int             m_recursionCount;
+    QObject *m_receiver;
     
 public:
     struct Options {
@@ -84,6 +86,9 @@ public:
          , m_title( s )
          , m_length( i )
        {}
+       const KURL &url() { return m_url; }
+       const QString &title() { return m_title; }
+       const int length() { return m_length; }
        virtual PlaylistItem *makePlaylistItem( Playlist* );
        bool playMe() { bool b = m_thread->options.playFirstItem; if( b ) m_thread->options.playFirstItem = false; return b; }
     protected:
@@ -92,7 +97,7 @@ public:
        const QString m_title;
        const int m_length;
     };
-
+    
     class DownloadPlaylistEvent : public MakeItemEvent
     {
     public:

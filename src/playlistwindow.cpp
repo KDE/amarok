@@ -21,6 +21,7 @@
 #include "browserbar.h"
 #include "collectionbrowser.h"
 #include "contextbrowser.h"
+#include "playlistbrowser.h"
 #include "welcomebrowser.h"
 #include "enginecontroller.h" //for actions in ctor
 #include "filebrowser.h"
@@ -166,11 +167,7 @@ PlaylistWindow::init()
         m_browsers->addBrowser( new CollectionBrowser( "CollectionBrowser" ), i18n( "Collection" ), "kfm" );
         m_browsers->addBrowser( new ContextBrowser( "ContextBrowser" ), i18n( "Context" ), "info" );
         m_browsers->addBrowser( new SearchBrowser( "SearchBrowser" ), i18n( "Search" ), "find" );
-
-        #define PLAYLIST_BROWSER 1
-        #ifdef PLAYLIST_BROWSER
-        m_browsers->addBrowser( new PlaylistBrowser( "PlaylistBrowser" ), i18n( "Playlist" ), "midi" );
-        #endif
+        m_browsers->addBrowser( new PlaylistBrowser( "Playlists" ), i18n( "Playlists" ), "midi" );
 
         { //<StreamBrowser>
             QVBox   *vb = new QVBox( 0, "StreamBrowser" );
@@ -457,6 +454,9 @@ void PlaylistWindow::savePlaylist() const //SLOT
     if( !path.isEmpty() ) //FIXME unecessary check?
     {
         m_playlist->saveM3U( path );
+        //add the saved playlist to playlist browser
+        PlaylistBrowser *pb = (PlaylistBrowser *)m_browsers->browser( "Playlists" );
+        pb->addPlaylist( path );
     }
 }
 

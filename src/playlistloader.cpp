@@ -70,13 +70,24 @@
 //TODO reimplement ask recursive in Playlist::insertMedia()
 
 
-PlaylistLoader::PlaylistLoader( const KURL::List &ul, Playlist *lv, PlaylistItem *pi )
-        : m_list( ul )
-        , m_after( pi )
-        , m_first( 0 )
-        , m_listView( lv )
-{}
+PlaylistLoader::PlaylistLoader( const KURL::List &ul, QObject *receiver, PlaylistItem *pi )
+   : m_list( ul )
+   , m_after( pi )
+   , m_first( 0 )
+   , m_listView( (Playlist*)receiver )
+   , m_receiver( receiver )
+{
+}
 
+// this ctor is called by the PlaylistBrowserItem to load playlist info
+PlaylistLoader::PlaylistLoader( const KURL::List &ul, QObject *receiver )
+   : m_list( ul )
+   , m_after( 0 )
+   , m_first( 0 )
+   , m_listView( 0 )
+   , m_receiver( receiver )
+{
+}
 
 //this is a private ctor used by ::makePlaylistItem()
 //it can only be used with placeholders
@@ -109,7 +120,7 @@ void PlaylistLoader::run()
     m_recursionCount = -1;
     process( m_list );
 
-    QApplication::postEvent( m_listView, new PlaylistLoader::DoneEvent( this ) );
+    QApplication::postEvent( m_receiver, new PlaylistLoader::DoneEvent( this ) );
 }
 
 
@@ -180,7 +191,7 @@ void PlaylistLoader::postDownloadRequest( const KURL &u )
 inline
 void PlaylistLoader::postBundle( const KURL &u )
 {
-    QApplication::postEvent( m_listView, new PlaylistLoader::MakeItemEvent( this, u, QString::null, MetaBundle::Undetermined ) );
+    QApplication::postEvent( m_receiver, new PlaylistLoader::MakeItemEvent( this, u, QString::null, MetaBundle::Undetermined ) );
 
     //    PlaylistItem *item = new PlaylistItem( m_listView, m_after, u, QString::null, MetaBundle::Undetermined ); m_after = item;
 }
@@ -188,7 +199,7 @@ void PlaylistLoader::postBundle( const KURL &u )
 inline
 void PlaylistLoader::postBundle( const KURL &u, const QString &s, const int i )
 {
-    QApplication::postEvent( m_listView, new PlaylistLoader::MakeItemEvent( this, u, s , i ) );
+    QApplication::postEvent( m_receiver, new PlaylistLoader::MakeItemEvent( this, u, s , i ) );
 
     //    PlaylistItem *item = new PlaylistItem( m_listView, m_after, u, s, i ); m_after = item;
 }

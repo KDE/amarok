@@ -19,7 +19,6 @@
 #define AMAROK_PLAYLIST_H
 
 #include "engineobserver.h"  //baseclass
-#include "playlistbrowser.h"
 #include "playlistwindow.h"  //friend
 
 #include <qstringlist.h>     //stack allocated
@@ -73,11 +72,6 @@ class Playlist : private KListView, public EngineObserver
 
         void saveM3U( const QString& ) const;
         void saveXML( const QString& ) const;
-
-        #define PLAYLIST_BROWSER 1
-        #ifdef PLAYLIST_BROWSER
-        QWidget *browser() const;
-        #endif
 
         class QDragObject *dragObject();
 
@@ -175,10 +169,6 @@ class Playlist : private KListView, public EngineObserver
         PlaylistItem *lastItem() const { return (PlaylistItem*)KListView::lastItem(); }
 
 // ATTRIBUTES ------
-        #define PLAYLIST_BROWSER 1
-        #ifdef PLAYLIST_BROWSER
-        PlaylistBrowser *m_browser;
-        #endif
 
         PlaylistItem  *m_currentTrack; //the track that is playing
         PlaylistItem  *m_cachedTrack;  //we expect this to be activated next //FIXME mutable

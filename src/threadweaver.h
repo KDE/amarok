@@ -205,7 +205,20 @@ public:
            int m_value;
    };
 
-    CollectionReader( CollectionDB* parent, QObject* statusBar, const QStringList& folders, bool recursively, bool incremental );
+   static const int PlaylistFoundEventType = 8890;
+   class PlaylistFoundEvent : public QCustomEvent
+   {
+       public:
+           PlaylistFoundEvent( QString path )
+           : QCustomEvent( PlaylistFoundEventType )
+           , m_path( path ) {}
+           QString path() { return m_path; }
+       private:
+           QString m_path;
+   };
+   
+    CollectionReader( CollectionDB* parent, QObject* statusBar, QObject* playlistBrowser,
+                                 const QStringList& folders, bool recursively, bool incremental );
 
     static void stop() { m_stop = true; }       
     bool doJob();
@@ -218,6 +231,7 @@ private:
     
     CollectionDB* m_parent;
     QObject* m_statusBar;
+    QObject* m_playlistBrowser;
     QStringList m_folders;
     bool m_recursively;
     bool m_incremental;
