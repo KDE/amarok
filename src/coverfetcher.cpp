@@ -37,8 +37,8 @@ CoverFetcher::CoverFetcher( QWidget *parent, QString artist, QString album )
         for( QStringList::ConstIterator it = list.begin(), end = list.end(); it != end; ++it )
 
     QStringList extensions;
-    extensions << i18n( "disc" ) << i18n( "disk" ) << i18n( "remaster" ) << i18n( "cd" ) << i18n( "single" )
-               << "disc" << "disk" << "remaster" << "cd" << "single" << "cds" /*cd single*/;
+    extensions << i18n( "disc" ) << i18n( "disk" ) << i18n( "remaster" ) << i18n( "cd" ) << i18n( "single" ) << i18n( "soundtrack" )
+               << "disc" << "disk" << "remaster" << "cd" << "single" << "soundtrack" << "cds" /*cd single*/;
 
     //remove all matches to the album filter.
     //TODO remove endings like "album - disk1"
@@ -237,15 +237,12 @@ CoverFetcher::finishedImageFetch( KIO::Job *job ) //SLOT
 
         switch( dialog.exec() ) {
         case KDialog::Accepted:
-            kdDebug() << "SAVE\n";
             finish();
             break;
         case 1000:
-            kdDebug() << "1000\n";
             showQueryEditor();
             break;
         default:
-            kdDebug() << "CANCEL\n";
             deleteLater();
             break;
         }
