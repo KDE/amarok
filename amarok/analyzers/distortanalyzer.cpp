@@ -94,7 +94,8 @@ void DistortAnalyzer::drawAnalyzer( std::vector<float> *s )
         for ( int x = 0; x < width(); x++ )
         {
             sinIndex = static_cast<int>( ((*it)+(*it1)) * SINVEC_SIZE ) % SINVEC_SIZE;
-            pixIndex = static_cast<int>( m_sinVector[sinIndex] * (NUM_PIXMAPS/2-1) + NUM_PIXMAPS/2-1 );
+            pixIndex = static_cast<int>( ( m_sinVector[sinIndex] + 1.0 ) / 2  * (NUM_PIXMAPS-1) );
+            pixIndex %= NUM_PIXMAPS;    // for safety
             
             sinIndex = static_cast<int>( (*it) * SINVEC_SIZE ) % SINVEC_SIZE;
             bitBlt( m_pComposePixmap1, x, 0, m_srcPixmaps[ pixIndex ], x,
