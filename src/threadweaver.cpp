@@ -171,7 +171,7 @@ ThreadWeaver::customEvent( QCustomEvent *e )
     case JobEvent: {
         Job    *job    = (Job*)e;
         Thread *thread = findThread( job->name() );
-        kdbgstream d   = debug() << "Job ";
+        debugstream d   = debug() << "Job ";
 
         if ( !job->isAborted() ) {
             d << "completed";

@@ -22,8 +22,7 @@
 #ifndef COLORGENERATOR_H
 #define COLORGENERATOR_H
 
-#define NDEBUG
-#include <kdebug.h>
+#include <debug.h>
 
 namespace amaroK {
 
@@ -36,10 +35,12 @@ class Color : public QColor
 public:
     Color( const QColor &c ) : QColor( c )
     {
+        DEBUG_BEGIN
+
         int h,s1,s,v1,v;
         getHsv( &h, &s1, &v1 );
 
-        kdDebug() << "Initial Color Properties: s:" << s1 << " v:" << v1 << endl;
+        debug() << "Initial Color Properties: s:" << s1 << " v:" << v1 << endl;
 
         //we want the new colour to be low saturation
         //TODO what if s is less than SATURATION_TARGET to start with
@@ -50,14 +51,14 @@ public:
             int remainingContrast = SATURATION_TARGET - s;
             s = SATURATION_TARGET;
 
-            kdDebug() << "Unapplied Contrast: " << remainingContrast << endl;
+            debug() << "Unapplied Contrast: " << remainingContrast << endl;
 
             //we only add to the value to avoid the dreaded "grey-gradient"
             v += remainingContrast;
 
             if ( v > 255 ) {
                 int error = v - 255;
-                kdDebug() << "Over-compensation: " << error << endl;
+                debug() << "Over-compensation: " << error << endl;
 
                 //if the error is significant then this must be a pretty bright colour
                 //it would look better if the gradient was dark
@@ -70,7 +71,9 @@ public:
 
         setHsv( h, s, v );
 
-        kdDebug() << "Final Colour Properties: s:" << s << " v:" << v << endl;
+        debug() << "Final Colour Properties: s:" << s << " v:" << v << endl;
+
+        DEBUG_END
     }
 };
 

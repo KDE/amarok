@@ -61,7 +61,7 @@ PluginManager::query( const QString& constraint )
 Plugin*
 PluginManager::createFromQuery( const QString &constraint )
 {
-    DEBUG_BEGIN
+    DebugSection section( __PRETTY_FUNCTION__ );
 
     KTrader::OfferList offers = query( constraint );
 
@@ -78,11 +78,7 @@ PluginManager::createFromQuery( const QString &constraint )
             current = i;
     }
 
-    Plugin *plugin = createFromService( offers[current] );
-
-    DEBUG_END
-
-    return plugin;
+    return createFromService( offers[current] );
 }
 
 

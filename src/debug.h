@@ -29,6 +29,8 @@
  * app:   [Blah] output1
  * app:   [Blah] output2
  * app: END: [void function()]
+ *
+ * @see DebugSection
  */
 
 namespace Debug
@@ -41,6 +43,8 @@ namespace Debug
         static inline kndbgstream warning() { return kndbgstream(); }
         static inline kndbgstream error()   { return kndbgstream(); }
         static inline kndbgstream fatal()   { return kndbgstream(); }
+
+        typedef kndbgstream debugstream;
     #else
         #ifndef DEBUG_PREFIX
         #define AMK_PREFIX ""
@@ -60,6 +64,8 @@ namespace Debug
         static inline kdbgstream warning() { return kdbgstream( __indent, 0, KDEBUG_WARN  ) << AMK_PREFIX; }
         static inline kdbgstream error()   { return kdbgstream( __indent, 0, KDEBUG_ERROR ) << AMK_PREFIX; }
         static inline kdbgstream fatal()   { return kdbgstream( __indent, 0, KDEBUG_FATAL ) << AMK_PREFIX; }
+
+        typedef kdbgstream debugstream;
 
         #undef AMK_PREFIX
     #endif
@@ -84,5 +90,49 @@ using namespace Debug;
 
 /// Use this to alert other developers to stop using a function
 #define AMAROK_DEPRECATED kdWarning() << "DEPRECATED: " << __PRETTY_FUNCTION__ << endl;
+
+namespace Debug
+{
+    /**
+     * @class DebugSection
+     * @short Use this to label sections of your code
+     *
+     * Usage:
+     *
+     *     void function()
+     *     {
+     *         DebugSection helper( "section" );
+     *
+     *         debug() << "output1" << endl;
+     *         debug() << "output2" << endl;
+     *     }
+     *
+     * Will output:
+     *
+     *     app: BEGIN: section
+     *     app:  output1
+     *     app:  output2
+     *     app: END: section
+     */
+
+    class DebugSection
+    {
+    public:
+        DebugSection( const char *label ) : m_label( label )
+        {
+            kdDebug() << __indent << "BEGIN: " << m_label << endl;
+            DEBUG_INDENT
+        }
+
+        ~DebugSection()
+        {
+            DEBUG_UNDENT
+                    kdDebug() << __indent << "END: " << m_label << endl;
+        }
+
+    private:
+        const char *m_label;
+    };
+}
 
 #endif
