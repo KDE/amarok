@@ -3,10 +3,12 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #114 being the highest available (take this one for your next bug and increase here)
+           #115 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  FIX 114 <muesli> ContextBrowser needs to be repainted on Color-Scheme changes.
 
   FIX 111 <dato>   Clearing list while playing ==> infinite calls to EC::slotMainTimer().
                    mxcl, can you read the post at the mailing list and comment about the
@@ -18,6 +20,7 @@ SHORT-TERM (URGENT):
   FIX 109 <dato>   Directories with non-ascii chars don't get added to the Collection Browser
                    at scan time. I'll investigate this. --> dato
           <markey> I thought this was fixed some time ago?
+          <muesli> Some more tests would be nice, but it seems it catches all my stuff, here.
 
   ADD 105 <markey> Make ArtsEngine depend not only on kdemultimedia-devel, but also on kdemultimedia,
                    since arts itself contains these crappy decoders and ppl come complain about bad sound.
