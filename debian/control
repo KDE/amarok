@@ -1,0 +1,25 @@
+Source: amarok
+Section: sound
+Priority: extra
+Maintainer: Peter Rockai (mornfall) <mornfall@mornfall.homeip.net>
+Build-Depends: cdbs (>= 0.4.21), debhelper (>> 4.0.18), kdelibs4-dev (>= 4:3.2), kdemultimedia-dev (>= 4:3.2), libtag1-dev (>= 1.1), libgstreamer0.8-dev, libgstreamer-plugins0.8-dev
+Standards-Version: 3.5.8.0
+
+Package: amarok
+Section: sound
+Architecture: any
+Depends: arts (>= 1.2), ${shlibs:Depends}
+Description: versatile and easy to use audio player for KDE
+ amaroK tries to be a little different, providing a simple drag and drop
+ interface  that really makes playlist handling easy.
+ .
+ Features include:
+  - fresh playlist concept, very fast to use, with drag and drop
+  - plays all formats supported by aRts, including mp3, ogg,
+    audio CDs, streams
+  - audio effects, like reverb and compressor
+  - compatible with the .m3u and .pls formats for playlists
+  - nice GUI, integrates into the KDE look, but with a unique touch
+ .
+ This version is built with aRts and GStreamer support, NMM engine is not
+ yet included.

@@ -1,0 +1,24 @@
+amarok (1.0-beta4-2) unstable; urgency=low
+
+  * Patch to final beta4 version.
+
+ -- Peter Rockai (mornfall) <mornfall@danill.sk>  Tue,  1 Jun 2004 17:47:53 +0200
+
+amarok (1.0-beta4-1) unstable; urgency=low
+
+  * New upstream RC (beta4-rc1).
+  * Build with GST support.
+
+ -- Peter Rockai (mornfall) <mornfall@danill.sk>  Tue,  1 Jun 2004 10:24:09 +0200
+
+amarok (1.0-beta3-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Peter Rockai (mornfall) <mornfall@danill.sk>  Sat, 29 May 2004 17:08:55 +0200
+
+amarok (1.0-beta1-0) workstation-unstable; urgency=low
+
+  * Initial packaging
+
+ -- Peter Rockai (mornfall) <mornfall@mornfall.homeip.net>  Sun, 11 Apr 2004  17:05:00 +0200
