@@ -631,6 +631,7 @@ void PlaylistWindow::playAudioCD() //SLOT
 void PlaylistWindow::showScriptSelector() //SLOT
 {
     ScriptManager::instance()->show();
+    ScriptManager::instance()->raise();
 }
 
 

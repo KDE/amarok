@@ -15,10 +15,56 @@
 ############################################################################
 
 from ConfigParser import *
+import Queue
 import sys
 import threading
 from os import *
 from qt import *
+
+
+class ConfigDialog( QDialog ):
+
+    def __init__( self ):
+        QDialog.__init__( self )
+        self.setCaption( "Alarm Script - amaroK" )
+
+        lay = QHBoxLayout( self )
+
+        vbox = QVBox( self )
+        lay.addWidget( vbox )
+
+        htopbox = QHBox( vbox )
+        QLabel( "Alarm time: ", htopbox )
+        self.timeEdit = QTimeEdit( htopbox )
+
+        hbox = QHBox( vbox )
+
+        ok = QPushButton( hbox )
+        ok.setText( "Ok" )
+
+        cancel = QPushButton( hbox )
+        cancel.setText( "Cancel" )
+        cancel.setDefault( True )
+
+        self.connect( ok,     SIGNAL( "clicked()" ), self.save )
+        self.connect( cancel, SIGNAL( "clicked()" ), self, SLOT( "reject()" ) )
+
+        self.adjustSize()
+
+    def save( self ):
+        wakeTime = str( self.timeEdit.time().toString() )
+        print wakeTime
+
+        file = open( "alarmrc", "w" )
+
+        config = ConfigParser()
+        config.add_section( "General" )
+        config.set( "General", "alarmtime", wakeTime)
+        config.write( file )
+
+        file.close()
+
+        self.accept()
 
 
 class Alarm( QApplication ):
@@ -26,8 +72,14 @@ class Alarm( QApplication ):
     def __init__( self, args ):
         QApplication.__init__( self, args )
 
-        t = threading.Thread( target = self.readStdin )
-        t.start()
+        self.queue = Queue.Queue()
+
+        self.timer = QTimer()
+        self.connect( self.timer, SIGNAL( "timeout()" ), self.checkQueue )
+        self.timer.start( 100 )
+
+        self.t = threading.Thread( target = self.readStdin )
+        self.t.start()
 
         config = ConfigParser()
         config.read( "alarmrc" )
@@ -40,37 +92,41 @@ class Alarm( QApplication ):
 
         QTimer.singleShot( secondsleft * 1000, self.wakeup )
 
-
     def wakeup( self ):
         popen( "dcop amarok player play" )
         self.quit()
 
+
+############################################################################
+# Stdin-Reader Thread
+############################################################################
 
     def readStdin( self ):
         while True:
             line = sys.stdin.readline()
 
             if line:
-                self.gotCommand( line )
+                self.queue.put_nowait( line )
             else:
                 break
-
-
-    def gotCommand( self, line ):
-        print "Received command: " + line
-
-        string = QString( line )
-
-        if string.contains( "configure" ):
-            self.configure()
 
 
 ############################################################################
 # Command Handling
 ############################################################################
 
+    def checkQueue( self ):
+        if not self.queue.empty():
+            string = QString( self.queue.get_nowait() )
+
+            if string.contains( "configure" ):
+                self.configure()
+
     def configure( self ):
         print "Alarm Script: configuration"
+
+        self.dia = ConfigDialog()
+        self.dia.show()
 
 
 
