@@ -88,6 +88,9 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
 
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
+    // Sets caption and icon correctly (needed e.g. for GNOME)
+    kapp->setTopWidget( this );
+
     EngineController* const ec = EngineController::instance();
     EngineBase* const engine   = EngineController::engine();
 

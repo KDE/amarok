@@ -120,6 +120,9 @@ PlaylistWindow::PlaylistWindow()
 
     setCaption( "amaroK" );
 
+    // Sets caption and icon correctly (needed e.g. for GNOME)
+    kapp->setTopWidget( this );
+
     KActionCollection* const ac = actionCollection();
     const EngineController* const ec = EngineController::instance();
     EngineController::instance()->attach( this );
@@ -180,11 +183,11 @@ PlaylistWindow::init()
     //this function is necessary because amaroK::actionCollection() returns our actionCollection
     //via the App::m_pPlaylistWindow pointer since App::m_pPlaylistWindow is not defined until
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
-    
+
     // Make sure that CollectionDB has initialized DbConnectionPool, before anyone else
     // tries to make queries (as it is singleton).
     CollectionDB::instance();
-    
+
     m_browsers = new BrowserBar( this );
 
     { //<Search LineEdit>
