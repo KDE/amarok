@@ -19,6 +19,7 @@
 #include <qapplication.h>  //postEvent()
 #include <qtextstream.h>   //loadM3U(),loadPLS()
 #include <qfile.h>         //~PlaylistLoader()
+#include <qtextcodec.h>    //loadXML() 
 
 #include <kapplication.h>
 #include <kurl.h>
@@ -219,6 +220,8 @@ void PlaylistLoader::loadLocalPlaylist( const QString &path, int type )
         QTextStream stream( &file );
 
         switch( type )
+
+
         {
         case 1:
         {
@@ -423,6 +426,7 @@ void PlaylistLoader::loadPLS( QTextStream &stream )
 #include <qdom.h>
 void PlaylistLoader::loadXML( QTextStream &stream )
 {
+    stream.setCodec( QTextCodec::codecForName("utf8") ); 
     QDomDocument d;
     if( !d.setContent(stream.read()) ) { kdDebug() << "Could not load XML\n"; return; }
 
