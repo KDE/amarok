@@ -101,6 +101,7 @@ class CollectionView : public KListView
         QString catForId( int id ) const;
         int idForCat( const QString& cat ) const;
         QPixmap iconForCat( const QString& cat ) const;
+        QString escapeString( QString string );
         
         /**
          * Executes an SQL statement on the already opened database

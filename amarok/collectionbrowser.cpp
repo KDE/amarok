@@ -216,7 +216,7 @@ CollectionView::dirDirty( const QString& path )
     //remove old records with the same dir as our dirty dir, to prevent dupes
     QString command = QString
                       ( "DELETE FROM tags WHERE dir = '%1';" )
-                      .arg( path );
+                      .arg( escapeString( path ) );
     execSql( command );
         
     m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), path, false ) );
@@ -268,7 +268,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             command = QString
                       ( "SELECT DISTINCT title,url FROM tags WHERE %1 = '%2' ORDER BY track;" )
                       .arg( m_category1.lower() )
-                      .arg( item->text( 0 ) );
+                      .arg( escapeString( item->text( 0 ) ) );
         }
         else {        
             QString cat = m_category2.lower().append( "," ).append( m_category2.lower() );
@@ -276,7 +276,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                       ( "SELECT DISTINCT %1 FROM tags WHERE %2 = '%3';" )
                       .arg( cat )
                       .arg( m_category1.lower() )
-                      .arg( item->text( 0 ) );
+                      .arg( escapeString( item->text( 0 ) ) );
         }
                                     
         QStringList values;
@@ -302,9 +302,9 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         QString command = QString
                           ( "SELECT title,url FROM tags WHERE %1 = '%2' AND %3 = '%4' ORDER BY track;" )
                          .arg( m_category1.lower() )
-                         .arg( item->parent()->text( 0 ) )
+                         .arg( escapeString( item->parent()->text( 0 ) ) )
                          .arg( m_category2.lower() )
-                         .arg( item->text( 0 ) );
+                         .arg( escapeString( item->text( 0 ) ) );
         QStringList values;
         QStringList names;
         execSql( command, &values, &names );
@@ -437,49 +437,23 @@ CollectionView::customEvent( QCustomEvent *e ) {
                               "( url, dir, album, artist, genre, title, year, comment, track ) "
                               "VALUES('";
                                                        
-            tag = bundle->url().path();
-            tag.replace( "'", "''" );
-            command += tag;
+            command += escapeString( bundle->url().path() );
             command += "','";
-            
-            tag = bundle->url().directory();
-            tag.replace( "'", "''" );
-            command += tag;
+            command += escapeString( bundle->url().directory() );
             command += "','";
-            
-            tag = bundle->album();
-            tag.replace( "'", "''" );
-            command += tag;
+            command += escapeString( bundle->album() );
             command += "','";
-            
-            tag = bundle->artist();
-            tag.replace( "'", "''" );
-            command += tag;
+            command += escapeString( bundle->artist() );
             command += "','";
-            
-            tag = bundle->genre();
-            tag.replace( "'", "''" );
-            command += tag;
+            command += escapeString( bundle->genre() );
             command += "','";
-            
-            tag = bundle->title();
-            tag.replace( "'", "''" );
-            command += tag;
+            command += escapeString( bundle->title() );
             command += "','";
-            
-            tag = bundle->year();
-            tag.replace( "'", "''" );
-            command += tag;
+            command += escapeString( bundle->year() );
             command += "','";
-
-            tag = bundle->comment();
-            tag.replace( "'", "''" );
-            command += tag;
+            command += escapeString( bundle->comment() );
             command += "','";
-
-            tag = bundle->track();
-            tag.replace( "'", "''" );
-            command += tag;
+            command += escapeString( bundle->track() );
             command += "');";
             
             execSql( command );
@@ -561,7 +535,7 @@ CollectionView::startDrag() {
             QString command = QString
                               ( "SELECT url FROM tags WHERE %1 = '%2' ORDER BY track;" )
                               .arg( m_category1.lower() )
-                              .arg( item->text( 0 ) );
+                              .arg( escapeString( item->text( 0 ) ) );
             QStringList values;
             QStringList names;
             execSql( command, &values, &names );
@@ -586,9 +560,9 @@ CollectionView::startDrag() {
                                       ( "SELECT DISTINCT url FROM tags WHERE %1 = '%2' AND %3 = '%4' "
                                         "ORDER BY track;" )
                                       .arg( m_category1.lower() )
-                                      .arg( item->text( 0 ) )
+                                      .arg( escapeString( item->text( 0 ) ) )
                                       .arg( m_category2.lower() )
-                                      .arg( child->text( 0 ) );
+                                      .arg( escapeString( child->text( 0 ) ) );
                     QStringList values;
                     QStringList names;
                     execSql( command, &values, &names );
@@ -633,7 +607,7 @@ CollectionView::showTrackInfo() //slot
         QString command = QString
                           ( "SELECT DISTINCT artist, album, genre, year, comment FROM tags "
                             "WHERE url = '%1';" )
-                            .arg( item->url().path() );
+                            .arg( escapeString( item->url().path() ) );
         
         QStringList values;
         QStringList names;
@@ -661,6 +635,14 @@ CollectionView::showTrackInfo() //slot
         box.setTextFormat( Qt::RichText );
         box.exec();
     }
+}
+
+
+QString
+CollectionView::escapeString( QString string )
+{
+    string.replace( "'", "''" );
+    return string;
 }
 
 
