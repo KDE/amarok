@@ -39,10 +39,6 @@ class App : public KApplication, public EngineObserver
 {
     Q_OBJECT
 
-    signals:
-        /** Triggers collection database scan */
-        void sigScanCollection();
-
     public:
         App();
         ~App();
