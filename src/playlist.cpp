@@ -35,6 +35,7 @@
 #include <krandomsequence.h> //random Mode
 #include <kstandarddirs.h>   //KGlobal::dirs()
 #include <kstdaction.h>
+#include <kstringhandler.h>  //::showContextMenu()
 #include <kurldrag.h>
 
 #include <qclipboard.h> //copyToClipboard(), slotMouseButtonPressed()
@@ -1086,15 +1087,8 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
     //Markey, sorry for the lengths of these lines! -mxcl
 
     KPopupMenu popup( this );
-    
-    QString title = item->metaBundle().prettyTitle();
-    // Prevent absurdly wide menu (titles can get very long in some cases)
-    const uint maxLength = 50;
-    if ( title.length() > maxLength ) {
-        title.truncate( maxLength );
-        title += "...";
-    }
-    popup.insertTitle( title );
+
+    popup.insertTitle( KStringHandler::rsqueeze( item->metaBundle().prettyTitle(), 30 ) );
     popup.insertItem( SmallIcon( "player_play" ), isCurrent && isPlaying ? i18n( "&Restart" ) : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
 
     if( !isQueued ) //not in nextTracks queue
@@ -1121,7 +1115,7 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
             //because it fills-down "Writing-Tag..." instead
             //but it's a hack that needs to be improved
 
-            popup.insertItem( i18n( "Spreadsheet-style fill down", "&Fill-down Tag" ), FILL_DOWN );
+            popup.insertItem( i18n( "Spreadsheet-style fill-down", "&Fill-down Tag" ), FILL_DOWN );
         }
     }
     popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy Trackname" ), 0, 0, CTRL+Key_C, COPY );
