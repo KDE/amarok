@@ -46,8 +46,6 @@ class MetaBundle;
 class PlaylistBrowser;
 class PlaylistLoader;
 class ThreadWeaver;
-namespace TitleProxy { class metaPacket; }
-
 
 /*
  * @author Mark Kretschmann && Max Howell
@@ -138,7 +136,7 @@ class PlaylistWidget : private KListView
         void activate( QListViewItem* );
         void setCurrentTrack( const KURL& );
         void writeTag( QListViewItem*, const QString&, int );
-        void handleStreamMeta( const TitleProxy::metaPacket& );
+        void handleStreamMeta( const MetaBundle& );
 
         void undo();
         void redo();

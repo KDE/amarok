@@ -348,6 +348,8 @@ bool ArtsEngine::open( const KURL& url )
 
 void ArtsEngine::connectPlayObject()
 {
+    kdDebug() << "[void ArtsEngine::connectPlayObject()]" << endl;
+    
     if ( !m_pPlayObject->object().isNull() )
     {
         m_pPlayObject->object()._node()->start();

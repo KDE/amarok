@@ -2,10 +2,13 @@ SUBDIRS = amarokcore amarokarts analyzers titleproxy engine images data
 
 INCLUDES = \
         -I$(kde_includes)/arts \
+        -I$(top_srcdir)/amarok/amarok/amarokarts \
+        -I$(top_srcdir)/amarok/amarok/amarokcore \
+        -I$(top_srcdir)/amarok/amarok/analyzers \
+        -I$(top_srcdir)/amarok/amarok/engine \
+        -I$(top_srcdir)/amarok/amarok/titleproxy \
         $(taglib_includes) \
-        $(all_includes) \
-        -Iamarokcore \
-        -I$(srcdir)/amarokcore
+        $(all_includes)
 
 bin_PROGRAMS = amarok
 

@@ -20,13 +20,13 @@ email                : markey@web.de
 #include "amarokdcophandler.h"
 #include "amarokslider.h"
 #include "amaroksystray.h"
-#include "analyzers/analyzerbase.h"
+#include "analyzerbase.h"
 #include "browserwin.h"    //for action collection only
 #include "effectwidget.h"  //in the popupmenu
+#include "enginebase.h"    //timeDisplay()
 #include "metabundle.h"    //setScroll()
 #include "playerapp.h"
 #include "playerwidget.h"
-#include "titleproxy/titleproxy.h"    //setScroll()
 
 #include <qbitmap.h>
 #include <qevent.h>
@@ -302,47 +302,14 @@ void PlayerWidget::defaultScroll()
     m_pDcopHandler->setNowPlaying( blank );
 }
 
-#include "engine/enginebase.h"
+
 void PlayerWidget::setScroll( const MetaBundle &bundle )
 {
-    QString text;
+    m_bitrate    = bundle.prettyBitrate();
+    m_samplerate = bundle.prettySampleRate();
+    m_length     = bundle.prettyLength();
 
-    if( pApp->m_pEngine->isStream() ) //TODO this information should be with the bundle (?)
-    {
-        text = QString( "Stream from: %1" ).arg( bundle.prettyURL() );
-
-        m_length     = "--";
-        m_samplerate = "--";
-        m_bitrate    = "--";
-    }
-    else
-    {
-        text = bundle.prettyTitle();
-
-        m_bitrate    = bundle.prettyBitrate();
-        m_samplerate = bundle.prettySampleRate();
-        m_length     = bundle.prettyLength();
-    }
-
-    setScroll( text );
-}
-
-
-void PlayerWidget::setScroll( const TitleProxy::metaPacket &packet )
-{
-    kdDebug() << "metaPacket:: " << endl;
-    kdDebug() << "streamName : " << packet.streamName  << endl;
-    kdDebug() << "streamGenre: " << packet.streamGenre << endl;
-    kdDebug() << "streamUrl  : " << packet.streamUrl   << endl;
-    kdDebug() << "bitRate    : " << packet.bitRate     << endl;
-    kdDebug() << "title      : " << packet.title       << endl;
-    kdDebug() << "url        : " << packet.url         << endl;
-
-    setScroll( QString( "%1 - %2" ).arg( packet.streamName, packet.title ) );
-
-    m_bitrate    = packet.bitRate + " kpbs";
-    m_samplerate = "--";
-    m_length     = "--";
+    setScroll( bundle.prettyTitle() );
 }
 
 

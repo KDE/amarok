@@ -15,15 +15,15 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
-#include "amarokarts/amarokarts.h"
+#include "amarokarts.h"
 #include "amarokbutton.h"
 #include "amarokconfig.h"
 #include "amarokconfigdialog.h"
 #include "amarokslider.h"
-#include "analyzers/analyzerbase.h"
+#include "analyzerbase.h"
 #include "browserwin.h"
 #include "effectwidget.h"
-#include "engine/enginebase.h"
+#include "enginebase.h"
 #include "fht.h"
 #include "metabundle.h" //play( const KURL& )
 #include "osd.h"
@@ -31,7 +31,7 @@ email                : markey@web.de
 #include "playerwidget.h"
 #include "threadweaver.h" //restoreSession()
 #include "playlisttooltip.h"
-#include "titleproxy/titleproxy.h"
+#include "titleproxy.h"
 
 #include <vector>
 #include <string>
@@ -118,6 +118,8 @@ PlayerApp::PlayerApp()
     restoreSession(); //do after processEvents() - sounds better
     m_pAnimTimer->start( ANIM_TIMER ); //do after restoreSession() - looks better
 
+    connect( this, SIGNAL( metaData( const MetaBundle& ) ), m_pOSD, SLOT( showOSD( const MetaBundle& ) ) );
+    
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
 }
 
@@ -224,6 +226,8 @@ void PlayerApp::initPlayerWidget()
              this,                               SLOT  ( slotStop() ) );
     connect( m_pPlayerWidget->m_pButtonNext,     SIGNAL( clicked() ),
              this,                               SLOT  ( slotNext() ) );
+    connect( this,                               SIGNAL( metaData( const MetaBundle& ) ),
+             m_pPlayerWidget,                    SLOT  ( setScroll( const MetaBundle& ) ) );
 
     kdDebug() << "end PlayerApp::initPlayerWidget()" << endl;
 }
@@ -520,8 +524,8 @@ void PlayerApp::play( const MetaBundle &bundle )
                  pProxy,    SLOT  ( deleteLater () ) );
         connect( pProxy,    SIGNAL( error       () ),
                  this,      SLOT  ( proxyError  () ) );
-        connect( pProxy,    SIGNAL( metaData    ( const TitleProxy::metaPacket& ) ),
-                 this,      SIGNAL( metaData    ( const TitleProxy::metaPacket& ) ) );
+        connect( pProxy,    SIGNAL( metaData    ( const MetaBundle& ) ),
+                 this,      SIGNAL( metaData    ( const MetaBundle& ) ) );
     }
     else
         success = m_pEngine->open( url );
@@ -533,9 +537,7 @@ void PlayerApp::play( const MetaBundle &bundle )
 
     m_proxyError = false;
 
-    m_pPlayerWidget->setScroll( bundle );
-    m_pOSD->showOSD( bundle );
-
+    emit metaData( bundle );
     m_length = bundle.length() * 1000;
 
     // update image tooltip

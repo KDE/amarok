@@ -52,7 +52,6 @@ class AmarokSystray;
 class PlayerWidget;
 
 class MetaBundle;
-class TitleProxy::metaPacket;
 
 
 class PlayerWidget : public QWidget
@@ -63,7 +62,6 @@ class PlayerWidget : public QWidget
         PlayerWidget( QWidget *parent = 0, const char *name = 0 );
         ~PlayerWidget();
 
-        void setScroll( const MetaBundle& );
         void defaultScroll();
         void drawScroll();
         void timeDisplay( int );
@@ -104,11 +102,9 @@ class PlayerWidget : public QWidget
         void slotConfigPlayObject();
         void slotUpdateTrayIcon( bool visible );
         void nextVis();
+        void setScroll( const MetaBundle& );
 
         static QString zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1" ).arg( i ) : QString::number( i ); }
-
-    private slots:
-        void setScroll( const TitleProxy::metaPacket& );
 
     private:
         void initScroll();

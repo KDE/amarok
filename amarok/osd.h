@@ -31,15 +31,20 @@ class MetaBundle;
 class OSDWidget : public QWidget
 {
     Q_OBJECT
+      
       public:
         OSDWidget();
-        void showOSD(const MetaBundle&);
         void setFont(QFont newfont);
         void setColor(QColor newcolor);
+      
+      public slots:
+        void showOSD(const MetaBundle&);
+      
       protected slots:
         void removeOSD();
         void minReached();
 //        void dblClick();
+      
       protected:
         void paintOSD(const QString &text);
         void paintEvent(QPaintEvent*);

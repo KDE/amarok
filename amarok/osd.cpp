@@ -106,6 +106,7 @@ void OSDWidget::paintOSD( const QString &text )
   timerMin->start( 150, TRUE );
 }
 
+//SLOT
 void OSDWidget::showOSD( const MetaBundle &bundle )
 {
   if ( isEnabled() )
@@ -139,6 +140,7 @@ void OSDWidget::setColor(QColor newcolor)
   color = newcolor;
 }
 
+//SLOT
 void OSDWidget::minReached()
 {
   if ( textBuffer.count() > 0 )
@@ -149,6 +151,7 @@ void OSDWidget::minReached()
     this->text = "";
 }
 
+//SLOT
 void OSDWidget::removeOSD()
 {
   // hide() and show() prevents flickering

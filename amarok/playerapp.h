@@ -44,7 +44,6 @@ class MetaBundle;
 class OSDWidget;
 class PlayerWidget;
 class PlaylistItem;
-namespace TitleProxy { class metaPacket; }
 
 class PlayerApp : public KUniqueApplication
 {
@@ -107,7 +106,7 @@ class PlayerApp : public KUniqueApplication
     signals:
         //void sigScope( std::vector<float> *s );
         //void sigPlay();
-        void metaData( const TitleProxy::metaPacket& );
+        void metaData( const MetaBundle& );
         void orderPreviousTrack();
         void orderCurrentTrack();
         void orderNextTrack();

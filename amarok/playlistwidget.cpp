@@ -23,7 +23,6 @@
 #include "playlistloader.h"
 #include "playlistwidget.h"
 #include "threadweaver.h"
-#include "titleproxy/titleproxy.h"
 
 #include <qclipboard.h> //copyToClipboard()
 #include <qcolor.h>
@@ -125,8 +124,8 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
     connect( this, SIGNAL( playRequest( const MetaBundle& ) ),
              pApp,   SLOT( play( const MetaBundle& ) ) );
 
-    connect( pApp, SIGNAL( metaData( const TitleProxy::metaPacket& ) ),
-             this,   SLOT( handleStreamMeta( const TitleProxy::metaPacket& ) ) );
+    connect( pApp, SIGNAL( metaData( const MetaBundle& ) ),
+             this,   SLOT( handleStreamMeta( const MetaBundle& ) ) );
     connect( pApp, SIGNAL( orderPreviousTrack() ),
              this,   SLOT( handleOrderPrev() ) );
     connect( pApp, SIGNAL( orderCurrentTrack() ),
@@ -1096,15 +1095,15 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
 }
 
 
-void PlaylistWidget::handleStreamMeta( const TitleProxy::metaPacket& packet )
+void PlaylistWidget::handleStreamMeta( const MetaBundle& bundle )
 {
     if ( QListViewItem* pItem = m_currentTrack )
     {
-        pItem->setText(  0, packet.streamUrl   );
-        pItem->setText(  1, packet.streamName  );
-        pItem->setText(  2, packet.title       );    //this should not get saved with the playlist
-        pItem->setText(  6, packet.streamGenre );
-        pItem->setText( 10, packet.bitRate     );
+        pItem->setText(  0, bundle.prettyURL()     );
+        pItem->setText(  1, bundle.prettyTitle()   );
+        pItem->setText(  2, bundle.m_artist        );    //this should not get saved with the playlist
+        pItem->setText(  6, bundle.m_genre         );
+        pItem->setText( 10, bundle.prettyBitrate() );
     }
 }
 

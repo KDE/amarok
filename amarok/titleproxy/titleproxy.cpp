@@ -15,7 +15,8 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
-#include <titleproxy.h>
+#include "metabundle.h"
+#include "titleproxy.h"
 
 #include <kdebug.h>
 #include <kextsock.h>
@@ -24,11 +25,6 @@ email                : markey@web.de
 #include <qobject.h>
 #include <qsocketnotifier.h>
 #include <qstring.h>
-
-#define MIN_PROXYPORT 6666
-#define MAX_PROXYPORT 7777
-#define IN_BUFSIZE (8192 * 4)
-#define BUFSIZE 8192
 
 // Some info on the shoutcast metadata protocol can be found at:
 // http://www.smackfu.com/stuff/programming/shoutcast.html
@@ -47,6 +43,12 @@ email                : markey@web.de
 //10. Goto 7
 
 using namespace TitleProxy;
+
+static const int MIN_PROXYPORT = 6666;
+static const int MAX_PROXYPORT = 7777;
+static const int IN_BUFSIZE    = (8192 * 4);
+static const int BUFSIZE       = 8192;
+
 
 Proxy::Proxy(KURL url) : QObject(),
         m_url(url),
@@ -220,7 +222,7 @@ void Proxy::processHeader(Q_LONG &index, Q_LONG bytesRead)
                                              QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0)
                         .toInt();
             m_bitRate = m_headerStr.section( "icy-br:", 1, 1,
-                                             QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0);
+                                             QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0).toInt();
             m_streamName = m_headerStr.section( "icy-name:", 1, 1,
                                                 QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0);
             m_streamGenre = m_headerStr.section( "icy-genre:", 1, 1,
@@ -247,16 +249,18 @@ void Proxy::transmitData(const QString &data)
     /*kdDebug() << k_funcinfo <<
       "received new metadata: '" << data << "'" << endl;*/
 
-    metaPacket packet;
+    MetaBundle bundle( extractStr( data, "StreamTitle" ),
+                       m_streamGenre,
+                       m_bitRate );
+    
+    emit metaData( bundle );
 
-    packet.title       = extractStr( data, "StreamTitle" );
+/*    packet.title       = extractStr( data, "StreamTitle" );
     packet.url         = extractStr( data, "StreamUrl" );
     packet.bitRate     = m_bitRate;
     packet.streamGenre = m_streamGenre;
     packet.streamName  = m_streamName;
-    packet.streamUrl   = m_streamUrl;
-
-    emit metaData( packet );
+    packet.streamUrl   = m_streamUrl;*/
 }
 
 
