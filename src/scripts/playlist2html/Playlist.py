@@ -42,6 +42,7 @@ class Playlist:
         self.firstRun = 1
         self.code=""" <html>\n
                     <head>
+                    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
                     <style>
                     body {
                         font-size:10pt;
@@ -73,7 +74,7 @@ class Playlist:
                     <div class="window">%s</div> </body>\n
                 </html>\n
               """
-        self.encoding = "ISO-8859-15"
+        self.encoding = "UTF-8"
         self.fullPage = ""
         self._buildDoc()
 
@@ -94,7 +95,7 @@ class Playlist:
 
 
     def _setFullPage(self):
-        self.fullPage = self.code%(os.environ['LOGNAME'],(self._createTable()).encode(self.encoding))
+        self.fullPage = self.code%(os.environ['LOGNAME'],(self._createTable()).encode(self.encoding,'replace'))
 
 
     def _getMtime(self):

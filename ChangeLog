@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2.1:
+  FIX: playlist2html generates UTF-8 output now. (BR 100140)
   FIX: Bitrate/length showed random values for untagged mp3 files. (BR 100200)
   FIX: Crash when recoding stream MetaData without CODEC selected. (BR 100077)
   CHG: Show an additional "Compilations with Artist" box in ContextBrowser.
