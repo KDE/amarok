@@ -50,22 +50,24 @@ static const int IN_BUFSIZE    = (8192 * 4);
 static const int BUFSIZE       = 8192;
 
 
-Proxy::Proxy(KURL url) : QObject(),
-        m_url(url),
-        m_initSuccess(false),
-        m_metaInt(0),
-        m_byteCount(0),
-        m_metaLen(0),
-        m_headerFinished(false),
-        m_usedPort(0),
-        m_pBuf(0),
-        m_pSockProxy(0)
+Proxy::Proxy(KURL url) 
+    : QObject()
+    , m_url(url)
+    , m_initSuccess(false)
+    , m_metaInt(0)
+    , m_byteCount(0)
+    , m_metaLen(0)
+    , m_headerFinished(false)
+    , m_usedPort(0)
+    , m_pBuf(0)
+    , m_pSockProxy(0)
 {
     connect( this, SIGNAL( error() ), this, SLOT( deleteLater() ) );    //delete yourself in case of error 
     
     //kdDebug() << k_funcinfo << "Called" << endl;
+    
+    //socket must not be buffered! buffered socket will lead to connection problems (getting stuck)
     m_sockRemote.setSocketFlags( KExtendedSocket::inetSocket |
-//                                  KExtendedSocket::bufferedSocket |
                                  KExtendedSocket::streamSocket );
     m_sockRemote.setAddress(url.host(), url.port());
     m_sockRemote.setTimeout(8);
@@ -143,7 +145,6 @@ void Proxy::accept()
     QString str = QString::fromAscii( m_pBuf, bytesRead );
     int index = str.find( "\n", str.find( "GET / HTTP/1.1" ) ) + 1;
 
-//     m_sockRemote.setBufferSize( IN_BUFSIZE );
     m_sockRemote.enableRead( true );
     connect( &m_sockRemote, SIGNAL( readyRead() ), this, SLOT( readRemote() ) );
     m_sockRemote.writeBlock( m_pBuf, index );
