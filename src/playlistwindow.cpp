@@ -517,6 +517,12 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
         {
             typedef QListViewItemIterator It;
 
+            // If ctrl key is pressed, propagate keyEvent to the playlist
+            if ( e->key() & Qt::CTRL ) {
+                QApplication::sendEvent( m_playlist, e );
+                return TRUE;
+            }
+
             switch( e->key() )
             {
             case Key_Down:
