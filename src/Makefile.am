@@ -110,13 +110,13 @@ amarokapp_LDADD = \
 
 ##make this work as it is not a good flag to force on everyone, sadly
 ##"$kde_use_debug_code" != "no"; then
-	RDYNAMIC = -rdynamic
+RDYNAMIC = -rdynamic
 ##endif
 
 amarokapp_LDFLAGS = \
     $(all_libraries) \
     $(KDE_RPATH) \
-	 $(RDYNAMIC)
+    $(RDYNAMIC)
 
 METASOURCES = \
     AUTO

@@ -35,7 +35,7 @@
 
 namespace Debug
 {
-    /// this is used by DEBUG_BEGIN and DEBUG_END (defined in app.cpp)
+    /// this is used by DEBUG_BEGIN and DEBUG_END (defined in app.cpp, enginebase.cpp)
     extern QCString indent;
 
     #ifdef NDEBUG
