@@ -382,7 +382,8 @@ void App::applySettings( bool firstTime )
         //firstTime the engine is the DummyEngine, which isn't a plugin so it can't
         //be queried by the Manager
 
-        if( firstTime || AmarokConfig::soundSystem() != PluginManager::getService( engine )->name() )
+        if( firstTime || AmarokConfig::soundSystem() != 
+                         PluginManager::getService( engine )->property( "X-KDE-amaroK-name" ).toString() )
         {
             engine = EngineController::loadEngine();
             // Invalidate extension cache
