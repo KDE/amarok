@@ -71,6 +71,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
         void savePlaylist() const;
         void slotAddLocation();
         void playAudioCD();
+        void showScriptSelector();
         void slotMenuActivated( int );
         void toolsMenuAboutToShow();
         void slotToggleMenu();

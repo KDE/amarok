@@ -32,7 +32,6 @@ namespace amaroK
                 ID_CONF_DECODER,
                 ID_SHOW_VIS_SELECTOR,
                 ID_SHOW_COVER_MANAGER,
-                ID_SHOW_SCRIPT_SELECTOR,
                 ID_SHOW_EFFECTS,
                 ID_CONFIGURE_EQUALIZER,
                 ID_SHOW_WIZARD

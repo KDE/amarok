@@ -4,6 +4,7 @@
 
 #include <qcheckbox.h>
 
+#include <kapplication.h>
 #include <kfiledialog.h>
 #include <klocale.h>
 #include <klistview.h>
@@ -21,9 +22,12 @@ ScriptManager::Selector* ScriptManager::Selector::instance = 0;
 
 
 ScriptManager::Selector::Selector( const QStringList &directories, QWidget *parent, const char *name )
-        : KDialogBase( parent, name, true, i18n( "Script List" ), Ok | Cancel, Ok, true )
-        , m_dirList( directories )
+        : KDialogBase( parent, name, true, 0, Ok | Cancel, Ok, true )
+//         , m_dirList( directories )
 {
+    kapp->setTopWidget( this );
+    setCaption( kapp->makeStdCaption( i18n( "Script Manager" ) ) );
+
     setWFlags( Qt::WDestructiveClose );
     setModal( false );
 

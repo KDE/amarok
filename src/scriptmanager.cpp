@@ -27,11 +27,23 @@ ScriptManager::Manager::Manager( QObject* object )
 
 
 void
-ScriptManager::Manager::showSelector()
+ScriptManager::Manager::addObject( QObject* object )
+{
+//     m_kjs->addObject( object );
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// public slots
+////////////////////////////////////////////////////////////////////////////////
+
+void
+ScriptManager::Manager::showSelector() //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
-    if ( !Selector::instance ) {
+    if ( !Selector::instance )
+    {
         Selector::instance = new Selector( m_list );
         connect( Selector::instance, SIGNAL( signalEditScript( const QString& ) ),
                 this,   SLOT( slotEdit( const QString& ) ) );
@@ -47,21 +59,12 @@ ScriptManager::Manager::showSelector()
 }
 
 
-void
-ScriptManager::Manager::showConsole()
-{
-}
-
+////////////////////////////////////////////////////////////////////////////////
+// private slots
+////////////////////////////////////////////////////////////////////////////////
 
 void
-ScriptManager::Manager::addObject( QObject* object )
-{
-//     m_kjs->addObject( object );
-}
-
-
-void
-ScriptManager::Manager::slotEdit( const QString& path )
+ScriptManager::Manager::slotEdit( const QString& path ) //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
@@ -79,7 +82,7 @@ ScriptManager::Manager::slotEdit( const QString& path )
 
 
 void
-ScriptManager::Manager::slotRun( const QString& path )
+ScriptManager::Manager::slotRun( const QString& path ) //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
@@ -94,7 +97,7 @@ ScriptManager::Manager::slotRun( const QString& path )
 
 
 void
-ScriptManager::Manager::slotStop( const QString& str )
+ScriptManager::Manager::slotStop( const QString& str ) //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
@@ -103,17 +106,12 @@ ScriptManager::Manager::slotStop( const QString& str )
 
 
 void
-ScriptManager::Manager::slotConfigure( const QString& path )
+ScriptManager::Manager::slotConfigure( const QString& path ) //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
     emit configure( path );
 }
-
-
-////////////////////////////////////////////////////////////////////////////////
-// private
-////////////////////////////////////////////////////////////////////////////////
 
 
 #include "scriptmanager.moc"

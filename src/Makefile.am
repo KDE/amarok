@@ -76,6 +76,9 @@ amarokapp_SOURCES = \
     playlistloader.cpp \
     playlistwindow.cpp \
     pluginmanager.cpp \
+    scriptmanager.cpp \
+    scriptmanagerbase.ui \
+    scriptmanager_selector.cpp \
     scrobbler.cpp \
     searchbrowser.cpp \
     sliderwidget.cpp \

@@ -97,8 +97,7 @@ Menu::Menu()
     insertItem( i18n( "First-Run &Wizard" ), ID_SHOW_WIZARD );
     insertItem( i18n( "&Visualizations" ), ID_SHOW_VIS_SELECTOR );
     insertItem( i18n( "E&qualizer" ), kapp, SLOT( slotConfigEqualizer() ), 0, ID_CONFIGURE_EQUALIZER );
-
-    insertItem( i18n( "&Scripts..." ), ID_SHOW_SCRIPT_SELECTOR );
+    safePlug( ac, "script_manager", this );
     insertSeparator();
 
     safePlug( ac, KStdAction::name(KStdAction::ShowMenubar), this );

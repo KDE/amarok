@@ -25,12 +25,13 @@ namespace ScriptManager
         public:
             Manager( QObject* );
 
-            void showSelector();
-            void showConsole();
             void addObject( QObject* object );
 
             //static
             static Manager *instance() { return s_instance; }
+
+        public slots:
+            void showSelector();
 
         private slots:
             void slotEdit( const QString& );

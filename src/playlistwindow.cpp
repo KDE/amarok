@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "config.h"             //HAVE_XMMS definition
+#include "config.h"           //HAVE_XMMS definition
 
 #include "actionclasses.h"    //see toolbar construction
 #include "amarok.h"
@@ -29,6 +29,7 @@
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistwindow.h"
+#include "scriptmanager.h"
 #include "searchbrowser.h"
 #include "statusbar.h"
 
@@ -136,6 +137,7 @@ PlaylistWindow::PlaylistWindow()
     KStdAction::save( this, SLOT(savePlaylist()), ac, "playlist_save" )->setText( i18n("&Save Playlist As...") );
     KStdAction::showMenubar( this, SLOT(slotToggleMenu()), ac );
     new KAction( i18n("Play Audio CD"), "cdaudio_unmount", 0, this, SLOT(playAudioCD()), ac, "play_audiocd" );
+    new KAction( i18n("Scripts..."), "pencil", 0, this, SLOT(showScriptSelector()), ac, "script_manager" );
 
     ac->action( "options_configure_globals" )->setText( i18n( "Configure &Global Shortcuts..." ) );
 
@@ -253,6 +255,7 @@ PlaylistWindow::init()
     m_toolsMenu->insertItem( i18n("&First-Run Wizard..."), amaroK::Menu::ID_SHOW_WIZARD );
     m_toolsMenu->insertItem( i18n("&Visualizations..."), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
     m_toolsMenu->insertItem( i18n("&Equalizer..."), kapp, SLOT( slotConfigEqualizer() ), 0, amaroK::Menu::ID_CONFIGURE_EQUALIZER );
+    actionCollection()->action("script_manager")->plug( m_toolsMenu );
     m_toolsMenu->insertSeparator();
     m_toolsMenu->insertItem( i18n("&Rescan Collection"), ID_RESCAN_COLLECTION );
 
@@ -654,6 +657,12 @@ void PlaylistWindow::playAudioCD() //SLOT
     m_browsers->showBrowser( 4 ); //show the file browser
     FileBrowser *fb = static_cast<FileBrowser *>( m_browsers->browser("FileBrowser") );
     fb->setDir( KURL("audiocd:/") );
+}
+
+
+void PlaylistWindow::showScriptSelector() //SLOT
+{
+    ScriptManager::Manager::instance()->showSelector();
 }
 
 
