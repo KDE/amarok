@@ -21,6 +21,7 @@
 #include "analyzerbase.h" //declaration here
 
 #include "baranalyzer.h"
+#include "boomanalyzer.h"
 #include "sonogram.h"
 #include "turbine.h"
 
@@ -64,7 +65,12 @@ QWidget *Analyzer::Factory::createAnalyzer( QWidget *parent )
     case 6:
         analyzer = new GLAnalyzer3( parent );
         break;
+    case 7:
+#else
+    case 4:
 #endif
+        analyzer = new BoomAnalyzer( parent );
+        break;
     default:
         AmarokConfig::setCurrentAnalyzer( 0 );
     case 0:

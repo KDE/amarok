@@ -22,7 +22,8 @@ libanalyzers_la_SOURCES = \
     glanalyzer2.cpp \
     glanalyzer3.cpp \
     sonogram.cpp \
-    turbine.cpp
+    turbine.cpp \
+    boomanalyzer.cpp
 
 
 

@@ -86,7 +86,7 @@ Analyzer::Base<W>::transform( Scope &scope ) //virtual
     m_fht.logSpectrum( front, &f[0] );
     m_fht.scale( front, 1.0 / 20 );
 
-    scope.resize( m_fht.size()/2 ); //second half of values are rubbish
+    scope.resize( m_fht.size() / 2 ); //second half of values are rubbish
     delete [] f;
 }
 
@@ -98,16 +98,17 @@ Analyzer::Base<W>::drawFrame()
     switch( engine->state() )
     {
     case Engine::Playing:
+    case Engine::Idle:
     {
         const Engine::Scope &thescope = engine->scope();
         static Analyzer::Scope scope( 512 );
 
-        for( uint x = 0; x < thescope.size(); ++x ) scope[x] = double(thescope[x]) / double(1<<15);
+        for( uint x = 0; (int)x < m_fht.size(); ++x ) scope[x] = double(thescope[x]) / (1<<15);
 
         transform( scope );
         analyze( scope );
 
-        scope.resize( 512 );
+        scope.resize( m_fht.size() );
 
         break;
     }
