@@ -56,7 +56,6 @@ class ArtsEngine : public EngineBase
         bool                                     initMixer( bool hardware );
         bool                                     canDecode( const KURL &url, mode_t mode, mode_t permissions );
         StreamingMode                            streamingMode() { return Socket; }
-        long                                     length() const;
         long                                     position() const;
         EngineBase::EngineState                  state() const;
         bool                                     isStream() const;

@@ -146,9 +146,6 @@ void EngineController::play( const MetaBundle &bundle )
 
     stateChangedNotify( EngineBase::Playing );
     newMetaDataNotify( bundle, true /* track change */ );
-
-    //when TagLib can't get us the track length, we ask the engine as fallback
-//    m_determineLength = ( engine->isStream() || bundle.length() ) ? false : true;
 }
 
 void EngineController::pause()
@@ -218,9 +215,6 @@ inline void EngineController::slotMainTimer()
     const uint position = m_pEngine->position();
     const uint length   = m_bundle.length() * 1000;
 
-    // TODO!!! (if length 0 then check --> over and over )
-    // send signal on success
-    // try to get track length from engine when TagLib fails
     trackPositionChangedNotify( position );
 
     // check if track has ended or is broken

@@ -59,12 +59,6 @@ class EngineBase : public QObject, public amaroK::Plugin {
         virtual QStringList getOutputsList() { return QStringList(); }
 
         /**
-         * Determines track length.
-         * @return Time length in ms
-         */
-        virtual long length() const = 0;
-
-        /**
          * @return Time position in ms
          */
         virtual long position() const = 0;

@@ -222,10 +222,6 @@ NmmEngine::seek( long ms )
 
 
 long
-NmmEngine::length() const
-{ return 0; }
-
-long
 NmmEngine::position() const
 {
     return m_lastKnownPosition;

@@ -25,7 +25,6 @@ public:
 
     bool initMixer( bool hardware );
     bool canDecode( const KURL&, mode_t, mode_t );
-    long length() const;
     long position() const;
     bool isStream() const;
 

@@ -16,6 +16,7 @@
 
 #include <kapplication.h>
 #include <kdebug.h>
+#include <kfilemetainfo.h>
 
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
@@ -164,7 +165,16 @@ TagReader::readTags( const KURL &url, bool /*readAudioProps */) //STATIC
    //audioproperties are no longer read on demand
    TagLib::FileRef f( url.path().local8Bit(), true /*readAudioProps*/, TagLib::AudioProperties::Fast ); //this is the slow step
 
-   return f.isNull()? 0 : new MetaBundle( url, f.tag(), f.audioProperties() );
+   if ( !f.isNull() )
+      return new MetaBundle( url, f.tag(), f.audioProperties() );
+   else {
+      //TODO is this threadsafe?
+      KFileMetaInfo info ( url );
+      if ( info.isValid() )
+          return new MetaBundle( url, info );         
+   }
+          
+   return 0;
 }
 
 void

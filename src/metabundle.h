@@ -9,6 +9,7 @@
 #include <klocale.h> //inline functions
 
 class PlaylistItem;
+class KFileMetaInfo;
 
 namespace TagLib { class AudioProperties; class Tag; }
 
@@ -41,12 +42,15 @@ public:
                 const QString& streamUrl );
 
     //PlaylistItems:
-    MetaBundle( const PlaylistItem *item, TagLib::AudioProperties *ap = 0 );
+    MetaBundle( const PlaylistItem *item, const KFileMetaInfo& info );
 
     //From tags:
     MetaBundle( const KURL &url, TagLib::Tag *tag, TagLib::AudioProperties *ap = 0 );
 
+    //From KFileMetaInfo:
+    MetaBundle( const KURL &url, const KFileMetaInfo& info );
 
+    
     MetaBundle &readTags( bool audioProperties = true );
 
 
@@ -96,6 +100,7 @@ private:
     static /*inline */QString prettyGeneric( const QString&, int );
 
     void init( TagLib::AudioProperties *ap = 0 );
+    void init( const KFileMetaInfo& info );
 };
 
 #endif

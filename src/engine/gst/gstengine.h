@@ -46,7 +46,6 @@ class GstEngine : public EngineBase
         StreamingMode                            streamingMode() { return Signal; }
         QStringList                              getOutputsList() { return getPluginList( "Sink/Audio" ); }
 
-        long                                     length() const { return 0; }
         long                                     position() const;
         EngineState                              state() const;
         bool                                     isStream() const;

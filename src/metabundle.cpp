@@ -2,9 +2,13 @@
 //Copyright:  See COPYING file that comes with this distribution
 //
 
-#include <qstring.h>
 #include "metabundle.h"
 #include "playlistitem.h"
+
+#include <qstring.h>
+
+#include <kfilemetainfo.h>
+
 #include <taglib/tag.h>
 #include <taglib/fileref.h>
 #include <taglib/tstring.h>
@@ -46,8 +50,9 @@ MetaBundle::MetaBundle( const QString& title,
 {}
 
 //PlaylistItem ctor
-MetaBundle::MetaBundle( const PlaylistItem *item, TagLib::AudioProperties *ap )
+MetaBundle::MetaBundle( const PlaylistItem *item, const KFileMetaInfo& info )
   : m_url(     item->url() )
+  
   , m_title(   item->title() )        //because you override text()
   , m_artist(  item->exactText( 2 ) ) //because you override text()
   , m_album(   item->exactText( 3 ) ) //etc.
@@ -56,12 +61,13 @@ MetaBundle::MetaBundle( const PlaylistItem *item, TagLib::AudioProperties *ap )
   , m_genre(   item->exactText( 6 ) )
   , m_track(   item->exactText( 7 ) )
 {
-    init( ap );
+    init( info );
 }
 
 //Taglib::Tag ctor
 MetaBundle::MetaBundle( const KURL &url, TagLib::Tag *tag, TagLib::AudioProperties *ap )
   : m_url( url )
+  
   , m_title(  TStringToQString( tag->title() ).stripWhiteSpace() )
   , m_artist( TStringToQString( tag->artist() ).stripWhiteSpace() )
   , m_album(  TStringToQString( tag->album() ).stripWhiteSpace() )
@@ -73,6 +79,21 @@ MetaBundle::MetaBundle( const KURL &url, TagLib::Tag *tag, TagLib::AudioProperti
     init( ap );
 }
 
+//KFileMetaInfo ctor
+MetaBundle::MetaBundle( const KURL &url, const KFileMetaInfo& info )
+  : m_url( url )
+  
+  , m_title( info.item( "Title" ).string() )
+  , m_artist( info.item( "Artist" ).string() )
+  , m_album( info.item( "Album" ).string() )
+  , m_year( info.item( "Year" ).string() )
+  , m_comment( info.item( "Comment" ).string() )
+  , m_genre( info.item( "Genre" ).string() )
+  , m_track( info.item( "Track" ).string() )
+{
+    init( info );
+}
+
 void
 MetaBundle::init( TagLib::AudioProperties *ap )
 {
@@ -81,6 +102,18 @@ MetaBundle::init( TagLib::AudioProperties *ap )
         m_bitrate    = ap->bitrate();
         m_length     = ap->length();
         m_sampleRate = ap->sampleRate();
+    }
+    else m_bitrate = m_length = m_sampleRate = Undetermined;
+}
+
+void
+MetaBundle::init( const KFileMetaInfo& info )
+{
+    if( info.isValid() )
+    {
+        m_bitrate    = info.item( "Bitrate" ).value().toInt();
+        m_length     = info.item( "Length" ).value().toInt();
+        m_sampleRate = info.item( "Sample Rate" ).value().toInt();
     }
     else m_bitrate = m_length = m_sampleRate = Undetermined;
 }

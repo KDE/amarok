@@ -30,6 +30,7 @@
 #include <qstring.h>
 
 #include <kdebug.h>
+#include <kfilemetainfo.h>
 #include <kiconloader.h>
 #include <kurl.h>
 
@@ -134,9 +135,6 @@ PlaylistItem::PlaylistItem( Playlist* parent, QListViewItem *lvi, const KURL &u,
 // PUBLIC METHODS
 /////////////////////////////////////////////////////////////////////////////////////
 
-#include <taglib/fileref.h>
-#include <taglib/audioproperties.h>
-
 MetaBundle PlaylistItem::metaBundle()
 {
     //TODO this meta prop reading causes ogg files to skip, so we need to do it a few seconds before the
@@ -146,20 +144,16 @@ MetaBundle PlaylistItem::metaBundle()
     //This function isn't called often (on play request), but playlists can contain
     //thousands of items. So favor saving memory over CPU.
 
-    if ( m_url.isLocalFile() )
-    {
-        TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Accurate );
-        //FIXME hold a small cache of metabundles?
-        //then return by reference
-        MetaBundle bundle( this, f.isNull() ? 0 : f.audioProperties() );
-        //just set it as we just did an accurate pass
-        setText( Length,  bundle.prettyLength()  );
-        setText( Bitrate, bundle.prettyBitrate() );
-
-        return bundle;
-
-    } else
-        return MetaBundle( this, 0 );
+    //TODO <markey> why read this crap twice?
+    //              wouldn't it be wise to just keep of copy of the MetaBundle around here? 
+    
+    KFileMetaInfo info( m_url, QString::null, KFileMetaInfo::TechnicalInfo );
+    MetaBundle bundle( this, info );  
+    
+    setText( Length,  bundle.prettyLength()  );
+    setText( Bitrate, bundle.prettyBitrate() );
+    
+    return bundle;
 }
 
 
