@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #21 being the highest available (take this one for your next bug and increase here)
+           #22 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
@@ -103,6 +103,8 @@ MID-TERM:
     * add: display type of media next to bitrate
 
     * add: save/load arts effects on close/startup automatically
+
+    * chg: #21<markey> use more accurate interpolation for analyzers (cubic or spline)
 
     * chg: <mxcl> use QApplication::setPalette to adjust application colours, as it propagates
            changes to all widgets and will hopefully deal with the selection colour issues in
