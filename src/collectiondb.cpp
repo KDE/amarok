@@ -1623,7 +1623,8 @@ CollectionDB::initialize()
     m_dbConnPool->putDbConnection( dbConn );
 
     KConfig* config = amaroK::config( "Collection Browser" );
-    //TODO: somehow raise a nice GUI error here if dbConn.isConnected() is false
+    if(!dbConn->isConnected())
+        amaroK::MessageQueue::instance()->addMessage(dbConn->lastError());
     if ( !dbConn->isInitialized() || !isValid() )
     {
         createTables();
@@ -1924,10 +1925,11 @@ MySqlConnection::MySqlConnection( MySqlConfig* config )
                     QString( "CREATE DATABASE " + config->database() ).latin1() ) )
                     { m_connected = true; }
                 else
-                    { error() << i18n("The MySQL user does not have permission to create a database. Correct the MySQL permissions or use the sqlite database."); }
+                    { setMysqlError(); }
             }
             else 
-                error() << i18n("Unable to connect to the MySQL database. Ensure that MySQL is running, and the hostname, username, and password are correct. Or simply use the sqlite database instead.");
+                setMysqlError();
+
         }
     }
     else
@@ -1987,6 +1989,12 @@ int MySqlConnection::insert( const QString& statement )
 }
 #endif
 
+void 
+MySqlConnection::setMysqlError() 
+{
+    m_error = i18n("MySQL reported the following error:<br>") + mysql::mysql_error(m_db)
+            + i18n("<p>You can configure MySQL in the Collection section under Settings->Configure amaroK</p>");
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS SqliteConfig

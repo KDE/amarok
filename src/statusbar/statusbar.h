@@ -59,6 +59,23 @@ namespace amaroK
         amaroK::Slider *m_slider;
         QTimer *m_pauseTimer;
     };
+    /**
+     * Is used to queue up longMessages for the StatusBar before the StatusBar
+     * is created.
+     */
+    class MessageQueue
+    {
+    public:
+        static MessageQueue* instance();
+        void addMessage ( const QString & );
+        void sendMessages();
+    private:
+        MessageQueue();
+        QValueList<QString> m_messages;
+        bool m_queueMessages;
+    };
+
+
 } //namespace amaroK
 
 #endif

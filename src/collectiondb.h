@@ -83,6 +83,7 @@ class DbConnection
         virtual int insert( const QString& /* statement */ ) = 0;
         const bool isInitialized() const { return m_initialized; }
         virtual bool isConnected()const = 0;
+        virtual const QString lastError() const { return "None"; }
     protected:
         bool m_initialized;
         DbConfig *m_config;
@@ -116,10 +117,12 @@ class MySqlConnection : public DbConnection
         QStringList query( const QString& /* statement */ );
         int insert( const QString& /* statement */ );
         bool isConnected()const { return m_connected; }
-        
+        const QString lastError() const { return m_error; }
     private:
+        void setMysqlError();
         mysql::MYSQL* m_db;
         bool m_connected;
+        QString m_error;
 };
 #endif
 

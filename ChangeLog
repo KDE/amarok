@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.2.1:
+  ADD: displays the MySQL error when unable to establish a connection 
+       to the database
   ADD: amaroK now makes Big Kahuna burgers and fries.
   ADD: Konqueror Sidebar now has full drag and drop support.
   CHG: Replaced "Blue Wolf" icon with Nenad Grujicic's amaroK 1.1

@@ -101,10 +101,8 @@ CollectionReader::doJob()
     if ( m_folders.empty() )
         return false;
     if (!m_db->isConnected())
-    {
-        amaroK::StatusBar::instance()->longMessage(i18n("amaroK is unable to create the Collection Database.<p>Check the collection settings under the menu option Settings->Configure amaroK.</p>"),amaroK::StatusBar::Error);
         return false;
-    }
+
     log << "Collection Scan Log\n";
     log << "===================\n";
     log << i18n( "Report this file if amaroK crashes when building the Collection." ).local8Bit();

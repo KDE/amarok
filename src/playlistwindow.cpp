@@ -340,6 +340,7 @@ PlaylistWindow::init()
 
     connect( playlist, SIGNAL( itemCountChanged( int, int, int, int ) ), statusbar, SLOT( slotItemCountChanged( int, int, int, int ) ) );
     connect( playlist, SIGNAL( aboutToClear() ), m_lineEdit, SLOT( clear() ) );
+    amaroK::MessageQueue::instance()->sendMessages();
 }
 
 

@@ -220,6 +220,42 @@ StatusBar::slotPauseTimer()  //slot
     ++counter &= 3;
 }
 
+///////////////////
+//MessageQueue
+///////////////////
+
+MessageQueue::MessageQueue()
+    : m_queueMessages(true)
+{}
+MessageQueue*
+MessageQueue::instance() 
+{
+    static MessageQueue mq;
+    return &mq;
+}
+
+void
+MessageQueue::addMessage(const QString& message)
+{
+    if(m_queueMessages)
+        m_messages.prepend(message);
+    else
+        StatusBar::instance()->longMessage(message); 
+}
+
+void
+MessageQueue::sendMessages()
+{
+    m_queueMessages = false;
+    QValueList<QString>::iterator it = m_messages.begin();
+    while(!m_messages.empty())
+    {
+        StatusBar::instance()->longMessage(*it);
+        *it = m_messages.remove(*it);
+
+    }
+}
+
 } //namespace amaroK
 
 #include "statusbar.moc"
