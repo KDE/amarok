@@ -116,7 +116,7 @@ void AmarokDcopHandler::addMediaList(const KURL::List &urls)
 
 void AmarokDcopHandler::enableOSD(bool enable)
 {
-   AmarokConfig::setOsdEnabled(enable);
+   pApp->setOsdEnabled(enable);
 }
 
 #include "amarokdcophandler.moc"

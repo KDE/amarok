@@ -62,7 +62,7 @@ class PlayerApp : public KApplication
         void setupColors();
         void insertMedia( const KURL::List& );
         bool decoderConfigurable();
-        
+
         // STATICS
         static const int     ANIM_TIMER  = 30;
         static const int     MAIN_TIMER  = 150;
@@ -99,6 +99,7 @@ class PlayerApp : public KApplication
         void slotMainTimer();
         void slotShowOptions();
         void slotShowOSD();
+        void setOsdEnabled(bool enable);
 
     private slots:
         void handleLoaderArgs( const QCString& args );

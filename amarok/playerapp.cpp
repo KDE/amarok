@@ -202,16 +202,16 @@ void PlayerApp::handleLoaderArgs( const QCString& args )
 {
     //Unfortunately, we must do some ugly string parsing here, since there is (apparently) no way
     //to re-initialize KCmdLineArgs --> FIXME
-    
+
     QStringList strlist = QStringList::split( " ", args );
     KURL::List list;
-    
+
     kdDebug() << "[PlayerApp::handleLoaderArgs] feeding insertMedia() with this list: \n";
     kdDebug() << strlist << endl;
-    
+
     for ( QStringList::Iterator it = strlist.begin(); it != strlist.end(); ++it )
         list << KCmdLineArgs::makeURL( (*it).latin1() );
-    
+
     bool notEnqueue = !args.contains( "-e" );
     //add to the playlist with the correct arguments ( bool clear, bool play )
     m_pBrowserWin->insertMedia( list, notEnqueue, notEnqueue || args.contains( "-p" ) );
@@ -368,6 +368,12 @@ void PlayerApp::applySettings()
     reinterpret_cast<QWidget*>(m_pPlayerWidget->m_pTray)->setShown( AmarokConfig::showTrayIcon() );
 
     setupColors();
+}
+
+void PlayerApp::setOsdEnabled(bool enable)
+{
+   AmarokConfig::setOsdEnabled(enable);
+   m_pOSD->setEnabled ( AmarokConfig::osdEnabled() );
 }
 
 //SLOT
@@ -655,9 +661,9 @@ void PlayerApp::play( const MetaBundle &bundle )
     //TODO replace currentTrack with this, and in PlaylistWidget do a compare type function to see if there is any new data
     emit metaData( bundle );
     //when TagLib can't get us the track length, we ask the engine as fallback
-    m_determineLength = ( m_pEngine->isStream() || bundle.length() ) ? false : true; 
+    m_determineLength = ( m_pEngine->isStream() || bundle.length() ) ? false : true;
     m_length = bundle.length() * 1000;
-    
+
     m_pPlayerWidget->m_pSlider->setValue    ( 0 );
     m_pPlayerWidget->m_pSlider->setMaxValue ( m_length );
 
@@ -788,7 +794,7 @@ void PlayerApp::slotMainTimer()
             m_determineLength = false;
         }
     }
-            
+
     m_pPlayerWidget->m_pSlider->setValue( m_pEngine->position() );
 
     // <Draw TimeDisplay>
@@ -813,7 +819,7 @@ void PlayerApp::slotMainTimer()
          m_pEngine->state() == EngineBase::Idle )
     {
         kdDebug() << "[PlayerApp::slotMainTimer()] Idle detected. Skipping track.\n";
-        
+
         if ( AmarokConfig::trackDelayLength() > 0 ) //this can occur syncronously to XFade and not be fatal
         {
             //delay before start of next track, without freezing the app
@@ -871,10 +877,10 @@ void PlayerApp::slotShowOSD( const MetaBundle& bundle )
 {
    // Strip HTML tags, expand basic HTML entities
    QString text = QString( bundle.prettyTitle() );
-   
+
    if ( bundle.length() )
        text += " - " + bundle.prettyLength();
-                                                
+
    QString plaintext = text.copy();
    plaintext.replace( QRegExp( "</?(?:font|a|b|i)\\b[^>]*>" ), QString( "" ) );
    plaintext.replace( QRegExp( "&lt;" ), QString( "<" ) );
