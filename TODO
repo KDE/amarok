@@ -8,6 +8,10 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+    * fix: #13<mxcl> when starting amarok for the first time, the playlist is really small (the
+              listview not the browsers), so small one user couldn't see it (!) and couldn't figure
+              out how to use amaroK..
+
     * fix: #12<markey> prevent zombie processes after amarok has exited (proper exit or crashing).
               such zombies can lead to very weird behaviour on next amarok start and eat ressources,
               and the user has no chance of noticing what's wrong.
