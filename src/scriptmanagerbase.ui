@@ -64,10 +64,10 @@
                         </property>
                         <widget class="KPushButton">
                             <property name="name">
-                                <cstring>addDirectoryButton</cstring>
+                                <cstring>installButton</cstring>
                             </property>
                             <property name="text">
-                                <string>Add Script</string>
+                                <string>Install Script</string>
                             </property>
                         </widget>
                         <spacer>
@@ -121,7 +121,7 @@
                         </widget>
                         <widget class="KPushButton">
                             <property name="name">
-                                <cstring>configureScriptButton</cstring>
+                                <cstring>configureButton</cstring>
                             </property>
                             <property name="text">
                                 <string>Configure</string>
@@ -129,10 +129,10 @@
                         </widget>
                         <widget class="KPushButton">
                             <property name="name">
-                                <cstring>removeDirectoryButton</cstring>
+                                <cstring>uninstallButton</cstring>
                             </property>
                             <property name="text">
-                                <string>Remove</string>
+                                <string>Uninstall</string>
                             </property>
                         </widget>
                     </vbox>

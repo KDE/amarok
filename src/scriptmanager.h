@@ -56,10 +56,13 @@ class ScriptManager : public KDialogBase, public EngineObserver
         static ScriptManager* instance() { return s_instance ? s_instance : new ScriptManager( PlaylistWindow::self() ); }
 
     private slots:
+        /** Finds all installed scripts and adds them to the listview */
+        void findScripts();
+
         void slotCurrentChanged( QListViewItem* );
 
-        void slotAddScript();
-        void slotRemoveScript();
+        void slotInstallScript();
+        void slotUninstallScript();
         void slotEditScript();
         void slotRunScript();
         void slotStopScript();
@@ -73,12 +76,6 @@ class ScriptManager : public KDialogBase, public EngineObserver
         void notifyScripts( const QString& message );
 
         void loadScript( const QString& path );
-
-        /** Saves all script paths to amarokrc */
-        void saveScripts();
-
-        /** Restores all scripts from amarokrc */
-        void restoreScripts();
 
         /** Observer reimplementations **/
         void engineStateChanged( Engine::State state );

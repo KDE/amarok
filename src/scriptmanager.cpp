@@ -26,10 +26,10 @@
 #include "scriptmanager.h"
 #include "scriptmanagerbase.h"
 
-#include <stdlib.h>
+#include <qfileinfo.h>
+#include <qtimer.h>
 
 #include <kapplication.h>
-#include <kconfig.h>
 #include <kfiledialog.h>
 #include <kiconloader.h>
 #include <klistview.h>
@@ -38,6 +38,7 @@
 #include <kprocess.h>
 #include <kpushbutton.h>
 #include <krun.h>
+#include <kstandarddirs.h>
 #include <ktextedit.h>
 
 
@@ -61,28 +62,26 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
 
     connect( m_base->directoryListView, SIGNAL( currentChanged( QListViewItem* ) ), SLOT( slotCurrentChanged( QListViewItem* ) ) );
 
-    connect( m_base->addDirectoryButton, SIGNAL( clicked() ), SLOT( slotAddScript() ) );
-    connect( m_base->removeDirectoryButton, SIGNAL( clicked() ), SLOT( slotRemoveScript() ) );
+    connect( m_base->installButton, SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
+    connect( m_base->uninstallButton, SIGNAL( clicked() ), SLOT( slotUninstallScript() ) );
     connect( m_base->editButton, SIGNAL( clicked() ), SLOT( slotEditScript() ) );
     connect( m_base->runButton, SIGNAL( clicked() ), SLOT( slotRunScript() ) );
     connect( m_base->stopButton, SIGNAL( clicked() ), SLOT( slotStopScript() ) );
-    connect( m_base->configureScriptButton, SIGNAL( clicked() ), SLOT( slotConfigureScript() ) );
+    connect( m_base->configureButton, SIGNAL( clicked() ), SLOT( slotConfigureScript() ) );
     connect( m_base->aboutButton, SIGNAL( clicked() ), SLOT( slotAboutScript() ) );
 
     QSize sz = sizeHint();
     setMinimumSize( kMax( 350, sz.width() ), kMax( 250, sz.height() ) );
     resize( sizeHint() );
 
-    restoreScripts();
-    slotCurrentChanged( m_base->directoryListView->currentItem() );
+
+    QTimer::singleShot( 0, this, SLOT( findScripts() ) );
 }
 
 
 ScriptManager::~ScriptManager()
 {
     Debug::Block b( __PRETTY_FUNCTION__ );
-
-    saveScripts();
 
     debug() << "Killing running scripts.\n";
     ScriptMap::Iterator it;
@@ -97,47 +96,54 @@ ScriptManager::~ScriptManager()
 // private slots
 ////////////////////////////////////////////////////////////////////////////////
 
+
+void
+ScriptManager::findScripts() //SLOT
+{
+    Debug::Block b( __PRETTY_FUNCTION__ );
+
+    QStringList allFiles = kapp->dirs()->findAllResources( "data", "amarok/scripts/*", true );
+
+    //TODO Make this faster
+
+    QStringList::Iterator it;
+    for ( it = allFiles.begin(); it != allFiles.end(); ++it )
+        if ( QFileInfo( *it ).isExecutable() )
+            loadScript( *it );
+
+    slotCurrentChanged( m_base->directoryListView->currentItem() );
+}
+
+
 void
 ScriptManager::slotCurrentChanged( QListViewItem* item )
 {
     const bool enable = item != 0;
 
-    m_base->removeDirectoryButton->setEnabled( enable );
+    m_base->uninstallButton->setEnabled( enable );
     m_base->editButton->setEnabled( enable );
     m_base->runButton->setEnabled( enable );
     m_base->stopButton->setEnabled( enable );
-    m_base->configureScriptButton->setEnabled( enable );
+    m_base->configureButton->setEnabled( enable );
     m_base->aboutButton->setEnabled( enable );
 }
 
 
 void
-ScriptManager::slotAddScript()
+ScriptManager::slotInstallScript()
 {
-    Debug::Block b( __PRETTY_FUNCTION__ );
+    AMAROK_NOTIMPLEMENTED
 
-    //FIXME How to get the resource folder from KStandardDirs?
-    QString folder( getenv( "KDEDIR" ) );
-    folder.append( "share/apps/amarok/scripts" );
-    debug() << "Folder: " << folder << endl;
-
-    KFileDialog dia( folder, "*.*|" + i18n("amaroK Scripts" ), 0, 0, true );
-    kapp->setTopWidget( &dia );
-    dia.setCaption( kapp->makeStdCaption( i18n( "Select Script" ) ) );
-    dia.setMode( KFile::File | KFile::ExistingOnly );
-    dia.exec();
-
-    loadScript( dia.selectedURL().path() );
+    KMessageBox::sorry( 0, i18n( "This function is not yet implemented." ) );
 }
 
 
 void
-ScriptManager::slotRemoveScript()
+ScriptManager::slotUninstallScript()
 {
-    QString name = m_base->directoryListView->currentItem()->text( 0 );
-    m_scripts.erase( name );
+    AMAROK_NOTIMPLEMENTED
 
-    delete m_base->directoryListView->currentItem();
+    KMessageBox::sorry( 0, i18n( "This function is not yet implemented." ) );
 }
 
 
@@ -320,37 +326,6 @@ ScriptManager::loadScript( const QString& path )
 
         slotCurrentChanged( m_base->directoryListView->currentItem() );
     }
-}
-
-
-void
-ScriptManager::saveScripts()
-{
-    Debug::Block b( __PRETTY_FUNCTION__ );
-
-    QStringList paths;
-    ScriptMap::Iterator it;
-    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
-        paths << it.data().url.path();
-
-    KConfig* config = kapp->config();
-    config->setGroup( "ScriptManager" );
-    config->writePathEntry( "Scripts", paths );
-}
-
-
-void
-ScriptManager::restoreScripts()
-{
-    Debug::Block b( __PRETTY_FUNCTION__ );
-
-    KConfig* config = kapp->config();
-    config->setGroup( "ScriptManager" );
-    QStringList paths = config->readPathListEntry( "Scripts" );
-
-    QStringList::Iterator it;
-    for ( it = paths.begin(); it != paths.end(); ++it )
-        loadScript( *it );
 }
 
 
