@@ -13,9 +13,7 @@ SHORT-TERM:
     * add: <muesli> add OSD support (permanent display or just on events like a song switch)
 
     * fix: <grue> with focus-follows-mouse, both player window and playlist
-      rise to foreground when you point on the player
-
-    * add: <mxcl> combo for file/directory browser that remembers what you've entered (like open dialog)
+      rise to foreground when you point on the player <mxcl> should now be fixed, please check
 
     * fix: <mxcl> session management (broke again!)
 
@@ -46,6 +44,12 @@ SHORT-TERM:
 
 
 MID-TERM:
+
+    * change: can we make all buttons into actions? if we can, we could use setState(), a global actionCollection and save plenty of LOC. I see problems with the play/stop/etc buttons though.
+
+    * change: pre 1.0, big cleanup to reduce mem consumption (I dunno if we use a lot or not, but this is a good goal anyway!)
+
+    * change: pre 1.0, plan, cleanup and future-proof settings file keys. Will almost certainly mean that people will lose their settings, oh well, best to do it for the 1.0 release.
 
     * add: <muesli> reading metadata on the fly (read for displayed playlist-items or onClick)
 

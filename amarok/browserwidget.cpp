@@ -36,12 +36,13 @@
 #include <kfileitem.h>
 #include <kglobal.h>
 #include <kiconloader.h>
-#include <klineedit.h>
+#include <kcombobox.h> //FIXME: we shouldn't have to include this, instead make signals that can connect with this when required
 #include <klistview.h>
 #include <klocale.h>
 #include <kmimetype.h>
 #include <kpopupmenu.h>
 #include <kurl.h>
+
 
 BrowserWidget::BrowserWidget( QWidget *parent, const char *name )
    : KListView( parent,name ),
@@ -111,7 +112,7 @@ void BrowserWidget::focusInEvent( QFocusEvent *e )
 void BrowserWidget::slotCompleted()
 {
     clear();
-    pApp->m_pBrowserWin->m_pBrowserLineEdit->setURL( m_pDirLister->url() );
+    pApp->m_pBrowserWin->m_pBrowserLineEdit->setEditURL( m_pDirLister->url() );
 
     AmarokFileList fileList( m_pDirLister->items(), pApp->m_optBrowserSortSpec );
     KFileItemListIterator it( fileList );

@@ -35,12 +35,15 @@
 #include <qstring.h>
 #include <qtimer.h>
 #include <qwidget.h>
+#include <qtooltip.h>
 
 #include <kdebug.h>
+#include <klocale.h>
 #include <kglobal.h>
 
+
 ExpandButton::ExpandButton( const QString &text, QWidget *parent ) :
-QPushButton( text, parent )
+    QPushButton( text, parent )
 {
     setName( "ExpandButton" );
     setFocusPolicy( QWidget::NoFocus );
@@ -54,13 +57,15 @@ QPushButton( text, parent )
 
 
 ExpandButton::ExpandButton( const QString &text, ExpandButton *parent ) :
-QPushButton( text, parent->parentWidget() )
+    QPushButton( text, parent->parentWidget() )
 {
     setName( "expandButton_child" );
     setFocusPolicy( QWidget::NoFocus );
 
     parent->m_ButtonList.append( this );
     hide();
+
+    QToolTip::add( parent, i18n( "Keep button pressed for sub-menu" ) );
 }
 
 

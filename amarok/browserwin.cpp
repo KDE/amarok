@@ -54,19 +54,20 @@
 #include <kurl.h>
 #include <kurlcompletion.h>
 #include <kurlrequesterdlg.h>
+#include <kcombobox.h>
 
 
 // CLASS BrowserWin =====================================================================
 
 BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
-        QWidget( parent, name, Qt::WType_TopLevel | Qt::WStyle_Dialog | Qt::WPaintUnclipped )
+        QWidget( parent, name, Qt::WType_TopLevel | Qt::WStyle_Dialog | Qt::WPaintUnclipped ),
+        m_pActionCollection( new KActionCollection( this ) )
 {
     setCaption( kapp->makeStdCaption( i18n( "Playlist" ) ) );
     setAcceptDrops( true );
 
     initChildren();
 
-    m_pActionCollection = new KActionCollection( this );
     KStdAction::undo( m_pPlaylistWidget, SLOT( doUndo() ), m_pActionCollection );
     KStdAction::redo( m_pPlaylistWidget, SLOT( doRedo() ), m_pActionCollection );
     KStdAction::prior( this, SLOT( slotKeyPageUp() ), m_pActionCollection );
@@ -83,27 +84,20 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
 
     connect( m_pBrowserWidget, SIGNAL( doubleClicked( QListViewItem* ) ),
              this, SLOT( slotBrowserDoubleClicked( QListViewItem* ) ) );
-
     connect( m_pBrowserWidget, SIGNAL( browserDrop() ),
              this, SLOT( slotBrowserDrop() ) );
-
     connect( m_pPlaylistWidget, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this, SLOT( slotPlaylistRightButton( QListViewItem*, const QPoint& ) ) );
-
     connect( m_pPlaylistWidget, SIGNAL( sigUndoState( bool ) ),
              m_pButtonUndo, SLOT( setEnabled( bool ) ) );
-
     connect( m_pPlaylistWidget, SIGNAL( sigRedoState( bool ) ),
              m_pButtonRedo, SLOT( setEnabled( bool ) ) );
-
     connect( m_pPlaylistWidget, SIGNAL( cleared() ),
              m_pPlaylistLineEdit, SLOT( clear() ) );
-
     connect( m_pButtonShuffle, SIGNAL( clicked() ),
              this, SLOT( slotShufflePlaylist() ) );
-
-    /*    connect( pApp, SIGNAL( sigUpdateFonts() ),
-                 this, SLOT( slotUpdateFonts() ) );*/
+//    connect( pApp, SIGNAL( sigUpdateFonts() ),
+//             this, SLOT( slotUpdateFonts() ) );
 }
 
 
@@ -117,21 +111,19 @@ void BrowserWin::initChildren()
 {
     m_pButtonAdd = new ExpandButton( i18n( "Add Item" ), this );
 
-    m_pButtonClear = new ExpandButton( i18n( "Clear" ), this );
-    QToolTip::add( m_pButtonClear, i18n( "Keep button pressed for sub-menu" ) );
+    m_pButtonClear   = new ExpandButton( i18n( "Clear" ), this );
     m_pButtonShuffle = new ExpandButton( i18n( "Shuffle" ), m_pButtonClear );
-    m_pButtonSave = new ExpandButton( i18n( "Save Playlist" ), m_pButtonClear );
+    m_pButtonSave    = new ExpandButton( i18n( "Save Playlist" ), m_pButtonClear );
 
     m_pButtonUndo = new ExpandButton( i18n( "Undo" ), this );
 
     m_pButtonRedo = new ExpandButton( i18n( "Redo" ), this );
 
-    m_pButtonPlay = new ExpandButton( i18n( "Play" ), this );
-    QToolTip::add( m_pButtonPlay, i18n( "Keep button pressed for sub-menu" ) );
+    m_pButtonPlay  = new ExpandButton( i18n( "Play" ), this );
     m_pButtonPause = new ExpandButton( i18n( "Pause" ), m_pButtonPlay );
-    m_pButtonStop = new ExpandButton( i18n( "Stop" ), m_pButtonPlay );
-    m_pButtonNext = new ExpandButton( i18n( "Next" ), m_pButtonPlay );
-    m_pButtonPrev = new ExpandButton( i18n( "Previous" ), m_pButtonPlay );
+    m_pButtonStop  = new ExpandButton( i18n( "Stop" ), m_pButtonPlay );
+    m_pButtonNext  = new ExpandButton( i18n( "Next" ), m_pButtonPlay );
+    m_pButtonPrev  = new ExpandButton( i18n( "Previous" ), m_pButtonPlay );
 
     m_pSplitter = new QSplitter( this );
 
@@ -146,24 +138,23 @@ void BrowserWin::initChildren()
     m_pPlaylistWidget->setAcceptDrops( true );
     m_pPlaylistWidget->setSelectionMode( QListView::Extended );
 
-    m_pBrowserLineEdit = new KLineEdit( pBrowserWidgetContainer );
-    QToolTip::add( m_pBrowserLineEdit, i18n( "Enter directory/URL" ) );
+    m_pBrowserLineEdit = new KHistoryCombo( true, pBrowserWidgetContainer );
     m_pBrowserLineEdit->setPaletteBackgroundColor( pApp->m_bgColor );
     m_pBrowserLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
-    KURLCompletion *compBrowser = new KURLCompletion( KURLCompletion::DirCompletion );
-    //disabled because the popup combo is useful
-    //    m_pBrowserLineEdit->setCompletionMode( KGlobalSettings::CompletionAuto );
-    m_pBrowserLineEdit->setCompletionObject( compBrowser );
+    m_pBrowserLineEdit->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
+    m_pBrowserLineEdit->setDuplicatesEnabled( false );
+
     connect( m_pBrowserLineEdit, SIGNAL( returnPressed( const QString& ) ),
              m_pBrowserWidget, SLOT( slotReturnPressed( const QString& ) ) );
+    connect( m_pBrowserLineEdit, SIGNAL( returnPressed( const QString& ) ),
+             m_pBrowserLineEdit, SLOT( addToHistory( const QString& ) ) );
 
     m_pPlaylistLineEdit = new KLineEdit( pPlaylistWidgetContainer );
-    QToolTip::add( m_pPlaylistLineEdit, i18n( "Enter Filter String" ) );
     m_pPlaylistLineEdit->setPaletteBackgroundColor( pApp->m_bgColor );
     m_pPlaylistLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
+
     connect( m_pPlaylistLineEdit, SIGNAL( textChanged( const QString& ) ),
              m_pPlaylistWidget, SLOT( slotTextChanged( const QString& ) ) );
-
     connect( m_pPlaylistLineEdit, SIGNAL( returnPressed() ),
              m_pPlaylistWidget, SLOT( slotReturnPressed() ) );
 
@@ -187,6 +178,9 @@ void BrowserWin::initChildren()
     layH->addWidget( m_pButtonUndo );
     layH->addWidget( m_pButtonRedo );
     layH->addWidget( m_pButtonPlay );
+
+    QToolTip::add( m_pBrowserLineEdit, i18n( "Enter directory/URL" ) );
+    QToolTip::add( m_pPlaylistLineEdit, i18n( "Enter Filter String" ) );
 }
 
 
@@ -221,7 +215,7 @@ void BrowserWin::slotBrowserDoubleClicked( QListViewItem* pItem )
 {
     if ( pItem )
     {
-        PlaylistItem * pPlayItem = static_cast<PlaylistItem*>( pItem );
+        PlaylistItem *pPlayItem = static_cast<PlaylistItem*>( pItem );
         KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, pPlayItem->url() );
 
         if ( pPlayItem->text( 0 ) == ".." )

@@ -11,18 +11,12 @@
 //
 //
 #include "baranalyzer.h"
-
-#include <math.h>
 #include <vector>
-
+#include <math.h>
 #include <qpainter.h>
 #include <qpixmap.h>
 
-#include <kdebug.h>
-
-
 #define BAND_COUNT 31
-
 #define TIMEOUT 8
 #define ROOF_HOLD_TIME 32
 #define ROOF_VELOCITY_REDUCTION_FACTOR 26
@@ -104,13 +98,13 @@ void BarAnalyser::drawAnalyzer( std::vector<float> *s )
 
         int change = y2 - barVector[i];
 
-        //using the best of Markey's, piggz and my ideas on the way to shift the bars
+        //using the best of Markey's, piggz and Max's ideas on the way to shift the bars
         //we have the following:
         // 1. don't adjust shift when doing small up movements
         // 2. shift large upwards with a bias towards last value
         // 3. fall downwards at a constant pace
 
-        if ( change > 8 )
+        if ( change > 4 )
            //add some dynamics - makes the value slightly closer to what it was last time
            y2 = ( barVector[i] * 2 + y2 ) / 3;
         else if( change < 0 )

@@ -37,6 +37,7 @@ class QSplitter;
 
 class KActionCollection;
 class KLineEdit;
+class KHistoryCombo;
 class KListView;
 class KURL;
 
@@ -79,7 +80,7 @@ class BrowserWin : public QWidget
         BrowserWidget* m_pBrowserWidget;
         PlaylistWidget* m_pPlaylistWidget;
         QSplitter *m_pSplitter;
-        KLineEdit *m_pBrowserLineEdit;
+        KHistoryCombo *m_pBrowserLineEdit;
         KLineEdit *m_pPlaylistLineEdit;
 
     public slots:

@@ -53,6 +53,9 @@ email                :
 #include <kurl.h>
 #include <kurlrequester.h>
 #include <kurlrequesterdlg.h>
+#include <kcombobox.h> //for *Config(), browserWin::KComboHistory (file chooser lineEdit)
+                       //FIXME this is an extra header this source file doesn't need, Markey's
+                       //compile times would be more pleasant if we could remove some #includes
 
 #include <arts/artsflow.h>
 #include <arts/artskde.h>
@@ -618,7 +621,8 @@ void PlayerApp::saveConfig()
     m_pConfig->setGroup( "General Options" );
 
     m_pConfig->writeEntry( "Master Volume", m_Volume );
-    m_pConfig->writeEntry( "CurrentDirectory" , m_pBrowserWin->m_pBrowserWidget->m_pDirLister->url().path() );
+    m_pConfig->writeEntry( "CurrentDirectory", m_pBrowserWin->m_pBrowserWidget->m_pDirLister->url().path() );
+    m_pConfig->writePathEntry( "PathHistory", m_pBrowserWin->m_pBrowserLineEdit->historyItems() );
     m_pConfig->writeEntry( "PlayerPos", m_pPlayerWidget->pos() );
     m_pConfig->writeEntry( "BrowserWinPos", m_pBrowserWin->pos() );
     m_pConfig->writeEntry( "BrowserWinSize", m_pBrowserWin->size() );
@@ -686,6 +690,7 @@ void PlayerApp::readConfig()
     m_pConfig->setGroup( "General Options" );
 
     m_pBrowserWin->m_pBrowserWidget->readDir( m_pConfig->readPathEntry( "CurrentDirectory", "/" ) );
+    m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( m_pConfig->readPathListEntry( "PathHistory" ) );
     m_pPlayerWidget->move( m_pConfig->readPointEntry( "PlayerPos", &pointZero ) );
     m_pBrowserWin->move( m_pConfig->readPointEntry( "BrowserWinPos", &pointZero ) );
     m_pBrowserWin->resize( m_pConfig->readSizeEntry( "BrowserWinSize", &arbitrarySize ) );
@@ -934,7 +939,7 @@ void PlayerApp::setupColors()
 
     m_pBrowserWin->m_pBrowserLineEdit->setPaletteBackgroundColor( m_optBrowserBgColor );
     m_pBrowserWin->m_pBrowserLineEdit->setPaletteForegroundColor( m_optBrowserFgColor );
-    
+
     m_pBrowserWin->m_pPlaylistLineEdit->setPaletteBackgroundColor( m_optBrowserBgColor );
     m_pBrowserWin->m_pPlaylistLineEdit->setPaletteForegroundColor( m_optBrowserFgColor );
     
