@@ -4,9 +4,9 @@
 #ifndef PLAYLISTBROWSER_H
 #define PLAYLISTBROWSER_H
 
+#include <qvbox.h>
 #include <klistview.h>
 #include <kurl.h>
-#include <qvbox.h>
 #include <qptrlist.h>
 
 class KAction;
@@ -19,7 +19,7 @@ class QPainter;
 class QPixmap;
 class QPoint;
 class QSplitter;
-
+class QTimer;
 
 class PlaylistBrowser : public QVBox
 {
@@ -31,9 +31,10 @@ Q_OBJECT
    public:
        PlaylistBrowser( const char* );
        ~PlaylistBrowser();
-       void loadPlaylists( QStringList files );
+       void loadPlaylists();
        void addPlaylist( QString path, bool force=false );
        void savePlaylist( PlaylistBrowserItem * );
+       QString playlistCacheFile();    //return the playlists stats cache file
        
        static PlaylistBrowser *instance() { return s_instance; }
        
@@ -51,8 +52,8 @@ Q_OBJECT
            
    private:
        void customEvent( QCustomEvent* e );
-       void saveM3U( PlaylistBrowserItem * );
-       void savePLS( PlaylistBrowserItem * );
+       void saveM3U( PlaylistBrowserItem *, bool append );
+       void savePLS( PlaylistBrowserItem *, bool append );
        
        static PlaylistBrowser *s_instance;
        
@@ -75,6 +76,8 @@ Q_OBJECT
     public:
         PlaylistBrowserView( QWidget *parent, const char *name=0 );
         ~PlaylistBrowserView();
+        void startAnimation( PlaylistBrowserItem * );
+        void stopAnimation( PlaylistBrowserItem * );
         
         void rename( QListViewItem *item, int c );
         
@@ -82,8 +85,8 @@ Q_OBJECT
         virtual void keyPressEvent( QKeyEvent * );
     
     private slots:
-        void mousePressed( int, QListViewItem *, const QPoint &, int );
-        void slotEraseMarker();
+        void mousePressed( int, QListViewItem *, const QPoint &, int );       
+        void slotAnimation();
         
     private:
         void startDrag();
@@ -92,8 +95,12 @@ Q_OBJECT
         void contentsDragMoveEvent( QDragMoveEvent* );
         void contentsDragLeaveEvent( QDragLeaveEvent* );
         void viewportPaintEvent( QPaintEvent* );
+        void eraseMarker();
         
         QListViewItem *m_marker;       //track that has the drag/drop marker under it
+        QTimer *m_animationTimer;
+        QPtrList<QListViewItem> m_loadingItems;
+        QPixmap *m_loading1, *m_loading2;    //icons for loading animation
 };
 
 
@@ -103,40 +110,48 @@ Q_OBJECT
     friend class PlaylistTrackItem;
     friend class TrackItemInfo;
     
-   public:
-        PlaylistBrowserItem( KListView *parent, QListViewItem *after, const KURL &  );
+    public:
+        PlaylistBrowserItem( KListView *parent, QListViewItem *after, const KURL &, int tracks=0, int length=0 );
         ~PlaylistBrowserItem();
-       
-        bool isModified() { return m_modified; }
-        void setModified( bool );
-        void load( bool clear=false );    //if clear is true reload the playlist
-       
-        QPixmap *pixmap( int c ) { return m_savePix; }
+        void load();
+        void restore();
         
         const KURL &url() { return m_url; }
         void setUrl( const QString &u ) { m_url = KURL(u); }
-    
-        KURL::List tracksURL();    //returns the list of tracks' url
-        QPtrList<TrackItemInfo> trackList() { return m_trackList; }    //return the list of tracks' information
+        int trackCount() { return m_trackCount; }
+        int length() { return m_length; }
+        bool isModified() { return m_modified; }
+        void setModified( bool );
+        
+        KURL::List tracksURL();    //returns the list of tracks url
+        QPtrList<TrackItemInfo> trackList() { return m_trackList; }    //returns the list of tracks information
+        QPtrList<TrackItemInfo> droppedTracks() { return tmp_droppedTracks; }
         void insertTracks( QListViewItem *after, KURL::List list, QMap<QString,QString> map );
         void removeTrack( QListViewItem *item );
     
         void setOpen( bool );
         void setup();
         void paintCell( QPainter*, const QColorGroup&, int, int, int );
-       
+        
         //rtti is used to distinguish different kinds of list view items
         //in this case playlist items or track items
         int rtti() const { return RTTI; }
         static const int RTTI = 1001;    //playlist item
-       
-   private:
+   
+    signals:
+        void startingLoading();
+        void loaded();
+        
+    private:
         void customEvent( QCustomEvent* e );
             
         KURL m_url;  //playlist url
         int m_length;    //total length in seconds
+        int m_trackCount;    //track counter
         QPtrList<TrackItemInfo> m_trackList;    //tracks in playlist
-        bool m_done;    //playlist loaded
+        QPtrList<TrackItemInfo> tmp_droppedTracks;    //tracks dropped to the playlist while it wasn't been loaded
+        bool m_loading;
+        bool m_loaded;    //playlist loaded
         bool m_modified;    //the playlist has been modified
         QPixmap *m_savePix;
         PlaylistTrackItem *m_lastTrack;

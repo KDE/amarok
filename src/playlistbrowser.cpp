@@ -6,17 +6,17 @@
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistloader.h"    //PlaylistBrowserItem::load()
-#include "tagdialog.h"
+#include "tagdialog.h"    //showContextMenu()
 #include "threadweaver.h"      //PlaylistFoundEvent
 
 #include <qevent.h>            //customEvent()
-#include <qfile.h>                //renamePlaylist()
+#include <qfile.h>                //loadPlaylists(), renamePlaylist()
+#include <qheader.h>        //mousePressed()
 #include <qpainter.h>          //paintCell()
 #include <qpixmap.h>           //paintCell()
-#include <qstyle.h>             //paintCell()
 #include <qsplitter.h>
-#include <qheader.h>        //mousePressed()
-#include <qtextstream.h>    //saveM3U(), savePLS()
+#include <qtextstream.h>    //loadPlaylists(), saveM3U(), savePLS()
+#include <qtimer.h>    //loading animation
 
 #include <kaction.h>
 #include <kactioncollection.h>
@@ -25,15 +25,15 @@
 #include <kdebug.h>
 #include <kfiledialog.h>       //openPlaylist()
 #include <kiconloader.h>       //smallIcon
-#include <klistview.h>
 #include <klocale.h>
 #include <kmessagebox.h>       //renamePlaylist(), deleteSelectedPlaylist()
 #include <kpopupmenu.h>
+#include <kstandarddirs.h>   //KGlobal::dirs() 
 #include <ktoolbar.h>
 #include <klineedit.h>        //rename()
-#include <kurldrag.h>          //dragObject()
+#include <kurldrag.h>        //dragObject()
 
-#include <stdio.h>             //remove() and rename()
+#include <stdio.h>             //rename() in renamePlaylist()
 
 
 PlaylistBrowser *PlaylistBrowser::s_instance = 0;
@@ -43,26 +43,26 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     : QVBox( 0, name )
     , lastPlaylist( 0 )
 {
-    setSpacing( 3 );
     setMargin( 4 );
 
     s_instance = this;
+   
+    m_splitter = new QSplitter( Vertical, this );
     
-    KConfig *config = kapp->config();
-    config->setGroup( "PlaylistBrowser" );
-    
-    m_toolbar = new KToolBar( this );
-    m_toolbar->setMovingEnabled(false);
-    m_toolbar->setFlat(true);
-    m_toolbar->setIconSize( 16 );
-    m_toolbar->setEnableContextMenu( false );
-    
+    QVBox *browserBox = new QVBox( m_splitter );   
+    //<Toolbar>
     m_ac = new KActionCollection( this );
     KAction *open = new KAction( "Add playlist", "fileopen", 0, this, SLOT( openPlaylist() ), m_ac, "Open" );
     renameButton = new KAction( "Rename", "editclear", 0, this, SLOT( renameSelectedPlaylist() ), m_ac, "Rename" );
     removeButton = new KAction( "Remove", "edittrash", 0, this, SLOT( removeSelectedItems() ), m_ac, "Remove" );
     deleteButton = new KAction( "Delete", "editdelete", 0, this, SLOT( deleteSelectedPlaylists() ), m_ac, "Delete" );
     
+    m_toolbar = new KToolBar( browserBox );
+    m_toolbar->setMovingEnabled(false);
+    m_toolbar->setFlat(true);
+    m_toolbar->setIconSize( 16 );
+    m_toolbar->setEnableContextMenu( false );
+
     m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the open button to have text on right
     open->plug( m_toolbar );
     
@@ -74,16 +74,17 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     renameButton->setEnabled( false );
     removeButton->setEnabled( false );
     deleteButton->setEnabled( false );
+    //</Toolbar>
     
-    m_splitter = new QSplitter( Vertical, this );
-    
-    m_listview = new PlaylistBrowserView( m_splitter );
+    m_listview = new PlaylistBrowserView( browserBox );
     
     m_smartlistview = new SmartPlaylistView( m_splitter );
     
-    QString str = config->readEntry( "Splitter" );
+    KConfig *config = kapp->config();
+    config->setGroup( "PlaylistBrowser" );
+    QString str = config->readEntry( "Splitter", "[228,121]" );    //default splitter position
     QTextStream stream( &str, IO_ReadOnly );
-    stream >> *m_splitter; //this sets the splitters position
+    stream >> *m_splitter;     //this sets the splitters position
 
     // signals and slots connections
     connect( m_listview, SIGNAL( rightButtonPressed( QListViewItem *, const QPoint &, int ) ),
@@ -95,27 +96,43 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     connect( m_listview, SIGNAL( currentChanged( QListViewItem * ) ),
             this, SLOT( currentItemChanged( QListViewItem * ) ) );
 
-    // load playlists
-    QStringList files = config->readListEntry( "Playlists" );
-    loadPlaylists( files );
+    setMinimumWidth( m_toolbar->sizeHint().width() + 2 );
+    
+    loadPlaylists();    //load the playlists stats cache
 }
 
 
 PlaylistBrowser::~PlaylistBrowser()
 {
+    //save the playlists stats cache
+    QFile file( playlistCacheFile() );
+
+    if( file.open( IO_WriteOnly ) )
+    {
+        QTextStream stream( &file );
+        QListViewItemIterator it( m_listview );  
+        while( it.current() ) {
+            if( isPlaylist( *it ) ) {
+                PlaylistBrowserItem *item = (PlaylistBrowserItem*)*it;
+                stream << "File=" + item->url().path();
+                stream << "\n";
+                stream << item->trackCount();
+                stream << ",";
+                stream << item->length();
+                stream << ",";
+                QFileInfo fi( item->url().path() );
+                stream << fi.lastModified().toTime_t();
+                stream << "\n";
+            }
+            ++it;
+        }
+        
+        file.close();  
+    }
+    
     KConfig *config = kapp->config();
     config->setGroup( "PlaylistBrowser" );
-   
-    // save the path of all playlists loaded in the playlist browser
-    QStringList urls;
-    QListViewItemIterator it( m_listview );  
-    while( it.current() ) {
-        if( isPlaylist( *it ) )
-            urls += ((PlaylistBrowserItem *)*it)->url().path();
-        ++it;
-    }
-    config->writeEntry( "Playlists", urls);
-
+    
     //save splitter position
     QString str; QTextStream stream( &str, IO_WriteOnly );
     stream << *m_splitter;
@@ -123,13 +140,52 @@ PlaylistBrowser::~PlaylistBrowser()
 }
 
 
-void PlaylistBrowser::loadPlaylists( QStringList files )
+QString PlaylistBrowser::playlistCacheFile()
 {
-    if( files.count() ) {
-        const QStringList::ConstIterator end  = files.constEnd();
-        for( QStringList::ConstIterator it = files.constBegin(); it != end; ++it )
-            addPlaylist( *it );
-    } 
+    //returns the playlists stats cache file
+    return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "playlists";
+}
+
+
+void PlaylistBrowser::loadPlaylists( )
+{
+    QFile file( playlistCacheFile() );
+    //read playlists stats cache containing the number of tracks, the total length in secs and the last modified date 
+    if( file.open( IO_ReadOnly ) )
+    {
+        QTextStream stream( &file );
+        QString str, file;
+        int tracks=0, length=0;
+        QDateTime lastModified;
+        
+        while ( !( str = stream.readLine() ).isNull() ) {
+            if ( str.startsWith( "File=" ) ) {
+                file = str.mid( 5 );
+            }
+            else {
+                tracks = str.section( ',', 0, 0 ).toInt();
+                length = str.section( ',', 1, 1 ).toInt();
+                int time_t = str.section( ',', 2, 2 ).toInt();
+                lastModified.setTime_t( time_t );
+                
+                QFileInfo fi( file );
+                if( fi.exists() ) {
+                    if( fi.lastModified() != lastModified )
+                        addPlaylist( file ); //load the playlist
+                    else {    
+                        if( lastPlaylist == 0 ) {    //first child
+                            removeButton->setEnabled( true );
+                            renameButton->setEnabled( true );
+                            deleteButton->setEnabled( true );
+                        }
+                        lastPlaylist = new PlaylistBrowserItem( m_listview, lastPlaylist, KURL( file ), tracks, length );
+                    }
+                }
+                
+            }
+        }
+    }
+    
 }
 
 
@@ -173,7 +229,7 @@ void PlaylistBrowser::addPlaylist( QString path, bool force )
         if( isPlaylist( *it ) && path == ((PlaylistBrowserItem *)*it)->url().path() ) {
             exists = true; //the playlist is already in the playlist browser
             if( force )
-                ((PlaylistBrowserItem *)*it)->load( true );    //reload the playlist
+                ((PlaylistBrowserItem *)*it)->load();    //reload the playlist
         }
         ++it;
     }
@@ -199,7 +255,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     QPtrList<QListViewItem> selected;
     QListViewItemIterator it( m_listview, QListViewItemIterator::Selected);
     for( ; it.current(); ++it ) {
-        // if the playlist of the track item is already selected the current item is skipped
+        // if the playlist containing this item is already selected the current item will be skipped
         // it will be deleted from the parent
         QListViewItem *parent = it.current()->parent();
         if( parent && parent->isSelected() )
@@ -210,6 +266,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
         
     for( QListViewItem *item = selected.first(); item; item = selected.next() ) {
         if( isPlaylist( item ) ) {
+            //remove the playlist
             if( item == lastPlaylist ) {
                 QListViewItem *above = item->itemAbove();
                 lastPlaylist = above ? (PlaylistBrowserItem *)above : 0;
@@ -217,6 +274,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
             delete item;
         }
         else {
+            //remove the track
             PlaylistBrowserItem *playlist = (PlaylistBrowserItem *)item->parent();
             playlist->removeTrack( item );
         }
@@ -276,7 +334,7 @@ void PlaylistBrowser::deleteSelectedPlaylists() //SLOT
                         "<p>You have selected %1 to be <b>irreversibly</b> "
                         "deleted." ).arg( i18n("1 playlist", "<u>%n playlists</u>", urls.count()) ),
                         QString::null,
-                        i18n("&Delete Selected Files") );
+                        i18n("&Delete") );
 
     if ( button == KMessageBox::Continue )
     {
@@ -289,26 +347,32 @@ void PlaylistBrowser::deleteSelectedPlaylists() //SLOT
 
 void PlaylistBrowser::savePlaylist( PlaylistBrowserItem *item )
 {
-    //save the modified playlist
+    bool append = false;
+    
+    if( item->trackList().count() == 0 ) //the playlist hasn't been loaded so we append the dropped tracks
+        append = true;
+
+    //save the modified playlist in m3u or pls format
     const QString ext = fileExtension( item->url().path() );
     if( ext.lower() == ".m3u" )
-        saveM3U( item );
+        saveM3U( item, append );
     else
-        savePLS( item );
+        savePLS( item, append );
     
-    item->setModified( false );
+    item->setModified( false );    //don't show the save icon
 }
 
 
-void PlaylistBrowser::saveM3U( PlaylistBrowserItem *item )
+void PlaylistBrowser::saveM3U( PlaylistBrowserItem *item, bool append )
 {
     QFile file( item->url().path() );
 
-    if( file.open( IO_WriteOnly ) )
+    if( append ? file.open( IO_WriteOnly | IO_Append ) : file.open( IO_WriteOnly ) )
     {
         QTextStream stream( &file );
-        stream << "#EXTM3U\n";
-        QPtrList<TrackItemInfo> trackList = item->trackList();
+        if( !append ) 
+            stream << "#EXTM3U\n";
+        QPtrList<TrackItemInfo> trackList = append ? item->droppedTracks() : item->trackList();
         for( TrackItemInfo *info = trackList.first(); info; info = trackList.next() )
         {
             stream << "#EXTINF:";
@@ -320,19 +384,19 @@ void PlaylistBrowser::saveM3U( PlaylistBrowserItem *item )
             stream << "\n";
         }
         
-        file.close();  
+        file.close();
     }
 }
 
 
-void PlaylistBrowser::savePLS( PlaylistBrowserItem *item )
+void PlaylistBrowser::savePLS( PlaylistBrowserItem *item, bool append )
 {
     QFile file( item->url().path() );
 
-    if( file.open( IO_WriteOnly ) )
+    if( append ? file.open( IO_WriteOnly | IO_Append ) : file.open( IO_WriteOnly ) )
     {
         QTextStream stream( &file );
-        QPtrList<TrackItemInfo> trackList = item->trackList();
+        QPtrList<TrackItemInfo> trackList = append ? item->droppedTracks() : item->trackList();
         for( TrackItemInfo *info = trackList.first(); info; info = trackList.next() )
         {
             stream << "File=";
@@ -351,11 +415,9 @@ void PlaylistBrowser::savePLS( PlaylistBrowserItem *item )
 
 void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
 {
-    // remove, rename and delete buttons are disabled if there are no playlists
+    // rename remove and delete buttons are disabled if there are no playlists
     // rename and delete buttons are disabled for track items
-    
-    #define item static_cast<PlaylistBrowserItem *>(item)
-    
+
     bool enable_remove = false;
     bool enable_rename = false;
     bool enable_delete = false;
@@ -377,8 +439,6 @@ void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
     removeButton->setEnabled( enable_remove );
     renameButton->setEnabled( enable_rename );
     deleteButton->setEnabled( enable_delete );
-    
-    #undef item
 }
 
 
@@ -429,10 +489,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 Playlist::instance()->appendMedia( item->tracksURL() );
                 break;
             case SAVE:
-                PlaylistBrowser::instance()->savePlaylist( item );
+                savePlaylist( item );
                 break;
             case RESTORE:
-                item->load( true );    //restore the playlist
+                item->restore();
                 break;
             case RENAME:
                 renameSelectedPlaylist();
@@ -469,7 +529,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 Playlist::instance()->queueMedia( item->url() );
                 break;
             case REMOVE:
-                PlaylistBrowser::instance()->removeSelectedItems();
+                removeSelectedItems();
                 break;
             case INFO:
                 TagDialog* dialog = new TagDialog( item->url() );
@@ -495,16 +555,24 @@ PlaylistBrowserView::PlaylistBrowserView( QWidget *parent, const char *name )
     setSelectionMode( QListView::Extended );
     setSorting( -1 );  //no sort
     
-    setDropVisualizer( true );
-    setDropHighlighter( true );
+    setDropVisualizer( true );    //the visualizer (a line marker) is drawn when dragging over tracks
+    setDropHighlighter( true );    //and the highligther (a focus rect) is drawn when dragging over playlists
     setDropVisualizerWidth( 3 );
     setAcceptDrops( true );
     
     setFullWidth( true );
     setTreeStepSize( 20 );
 
+    //<loading animation>
+    m_loading1 = new QPixmap( locate("data", "amarok/images/loading1.png" ) );
+    m_loading2 = new QPixmap( locate("data", "amarok/images/loading2.png" ) );
+    m_animationTimer = new QTimer();
+    connect( m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
+    //</loading animation>
+    
     connect( this, SIGNAL( mouseButtonPressed ( int, QListViewItem *, const QPoint &, int ) ),
             this, SLOT( mousePressed( int, QListViewItem *, const QPoint &, int ) ) );
+          
     //TODO moving tracks
     //connect( this, SIGNAL( moved(QListViewItem *, QListViewItem *, QListViewItem * )),
     //        this, SLOT( itemMoved(QListViewItem *, QListViewItem *, QListViewItem * )));
@@ -513,7 +581,42 @@ PlaylistBrowserView::PlaylistBrowserView( QWidget *parent, const char *name )
 
 PlaylistBrowserView::~PlaylistBrowserView()
 {
+    delete m_animationTimer;
+    delete m_loading1;
+    delete m_loading2;
 }
+
+
+void PlaylistBrowserView::startAnimation( PlaylistBrowserItem *item )
+{
+    //starts the loading animation for item
+    m_loadingItems.append( item );
+    if( !m_animationTimer->isActive() )
+        m_animationTimer->start( 100 );
+}
+
+
+void PlaylistBrowserView::stopAnimation( PlaylistBrowserItem *item )
+{
+    //stops the loading animation for item
+    m_loadingItems.remove( item );
+    if( !m_loadingItems.count() )
+        m_animationTimer->stop();
+}
+
+
+void PlaylistBrowserView::slotAnimation() //SLOT
+{
+    static uint iconCounter=1;
+       
+    for( QListViewItem *item = m_loadingItems.first(); item; item = m_loadingItems.next() )
+        item->setPixmap( 0, iconCounter==1 ? *m_loading1 : *m_loading2 );
+    
+    iconCounter++;
+    if( iconCounter > 2 )
+        iconCounter = 1;
+}
+
 
 void PlaylistBrowserView::contentsDragEnterEvent( QDragEnterEvent *e )
 {
@@ -526,7 +629,7 @@ void PlaylistBrowserView::contentsDragMoveEvent( QDragMoveEvent* e )
     const QPoint p = contentsToViewport( e->pos() );
     QListViewItem *item = itemAt( p );
     if( !item ) {
-        slotEraseMarker();
+        eraseMarker();
         return;
     }
    
@@ -536,7 +639,7 @@ void PlaylistBrowserView::contentsDragMoveEvent( QDragMoveEvent* e )
 
     if( item != m_marker )
     {
-        slotEraseMarker();
+        eraseMarker();
         m_marker = item;
         viewportPaintEvent( 0 );
     }
@@ -545,7 +648,7 @@ void PlaylistBrowserView::contentsDragMoveEvent( QDragMoveEvent* e )
 
 void PlaylistBrowserView::contentsDragLeaveEvent( QDragLeaveEvent* )
 {
-     slotEraseMarker();
+     eraseMarker();
 }
 
 
@@ -557,14 +660,14 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
     const QPoint p = contentsToViewport( e->pos() );
     QListViewItem *item = itemAt( p );
     if( !item ) {
-        slotEraseMarker();
+        eraseMarker();
         return;
     }
     
     if( !isPlaylist( item ) )
         findDrop( e->pos(), parent, after ); 
     
-    slotEraseMarker();
+    eraseMarker();
     
     if( e->source() == viewport() )   
         e->ignore();    //TODO add support to move tracks
@@ -590,7 +693,8 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
     
 }
 
-void PlaylistBrowserView::slotEraseMarker() //SLOT
+
+void PlaylistBrowserView::eraseMarker() //SLOT
 {
     if( m_marker )
     {
@@ -604,6 +708,7 @@ void PlaylistBrowserView::slotEraseMarker() //SLOT
         viewport()->repaint( spot, false );
     }
 }
+
 
 void PlaylistBrowserView::viewportPaintEvent( QPaintEvent *e )
 {
@@ -629,7 +734,6 @@ void PlaylistBrowserView::mousePressed( int button, QListViewItem *item, const Q
     if( !item || button != LeftButton ) return;
    
     if( isPlaylist( item ) ) {
-        #define item static_cast<PlaylistBrowserItem *>(item)
         
         QPoint p = mapFromGlobal( pnt );
         p.setY( p.y() - header()->height() );
@@ -642,7 +746,7 @@ void PlaylistBrowserView::mousePressed( int button, QListViewItem *item, const Q
             return;
         }
 
-        if( item->isModified() ) {    
+        if( static_cast<PlaylistBrowserItem*>(item)->isModified() ) {    
             QRect saveRect = QRect( 23, itemrect.y() + 3, 16, 16 );        
             if( saveRect.contains( p ) ) {
         
@@ -654,17 +758,17 @@ void PlaylistBrowserView::mousePressed( int button, QListViewItem *item, const Q
             
                 switch( saveMenu.exec( pnt ) ) {
                     case SAVE:
-                        PlaylistBrowser::instance()->savePlaylist( item );
+                        PlaylistBrowser::instance()->savePlaylist( static_cast<PlaylistBrowserItem*>(item) );
                         break;
                         
                     case RESTORE:
-                        item->load( true );    //restore the playlist
+                        static_cast<PlaylistBrowserItem*>(item)->restore();
                         break;
                 }        
             }
          
         }
-        #undef item
+
     }
 
     
@@ -673,18 +777,12 @@ void PlaylistBrowserView::mousePressed( int button, QListViewItem *item, const Q
 
 void PlaylistBrowserView::rename( QListViewItem *item, int c )
 {
-    // we reimplement this function to show the 
     KListView::rename( item, c );
     
     QRect rect( itemRect( item ) );
     int fieldX = rect.x() + treeStepSize() + 2;
     int fieldW = rect.width() - treeStepSize() - 2;
-    if( item->pixmap(0) ) {
-        int pixw = item->pixmap(0)->width() + 3;
-        fieldX += pixw;
-        fieldW -= pixw;
-    }
-    
+
     KLineEdit *renameEdit = renameLineEdit();
     renameEdit->setGeometry( fieldX, rect.y(), fieldW, rect.height() );
     renameEdit->show();
@@ -740,51 +838,73 @@ void PlaylistBrowserView::startDrag()
 //    CLASS PlaylistBrowserItem
 ////////////////////////////////////////////////////////////////////////////
 
-PlaylistBrowserItem::PlaylistBrowserItem( KListView *parent, QListViewItem *after, const KURL &url )
+PlaylistBrowserItem::PlaylistBrowserItem( KListView *parent, QListViewItem *after, const KURL &url, int tracks, int length )
     : KListViewItem( parent, after )
     , m_url( url )
-    , m_length( 0 )
-    , m_done( false )
+    , m_length( length )
+    , m_trackCount( tracks )
+    , m_loading( false )
+    , m_loaded( false )
     , m_modified( false )
     , m_savePix( 0 )
     , m_lastTrack( 0 )
 {
     m_trackList.setAutoDelete( true );
-    
+    tmp_droppedTracks.setAutoDelete( false );
+
     setDragEnabled( true );
     setRenameEnabled( 0, false );
     setExpandable(true);
    
     kdDebug() << fileBaseName( url.path() ) << endl;
     setText(0, fileBaseName( url.path() ) );
-   
-    //load the playlist file
-    load();
+    
+    if( !m_trackCount )
+        load();   //load the playlist file  
 }
 
 
 PlaylistBrowserItem::~PlaylistBrowserItem()
 {
     m_trackList.clear();
+    tmp_droppedTracks.setAutoDelete( true );
+    tmp_droppedTracks.clear();
 }
 
 
-void PlaylistBrowserItem::load( bool clear )
+void PlaylistBrowserItem::load()
 {
-    //if clear is true the playlist is restored
-    
-    if( clear ) {
-        setOpen( false );
-        m_trackList.clear();
-        m_length = 0;
-        m_done = false;
-    }
+    m_trackList.clear();
+    m_length = 0;
+    m_loaded = false;
+    m_loading = true;
+    //starts loading animation
+    ((PlaylistBrowserView *)listView())->startAnimation( this );
     
      //read the playlist file in a thread
     KURL::List list;
     list += m_url;
     PlaylistLoader *m_loader = new PlaylistLoader( list, this );
     m_loader->start();
+}
+
+
+void PlaylistBrowserItem::restore()
+{
+    setOpen( false );
+    
+    if( !m_loaded ) {
+        TrackItemInfo *info = tmp_droppedTracks.first();
+        while( info ) {
+            m_length -= info->length();
+            m_trackCount--;
+            tmp_droppedTracks.remove();    //remove current item
+            delete info;
+            info = tmp_droppedTracks.current();    //the new current item
+        }
+    }
+    else
+        load();    //reload the playlist
     
     setModified( false );
 }
@@ -809,6 +929,7 @@ void PlaylistBrowserItem::insertTracks( QListViewItem *after, KURL::List list, Q
         
         TrackItemInfo *newInfo = new TrackItemInfo( *it, title, length );
         m_length += newInfo->length();
+        m_trackCount++;
         
         if( after ) {
             m_trackList.insert( pos+k, newInfo );
@@ -816,23 +937,28 @@ void PlaylistBrowserItem::insertTracks( QListViewItem *after, KURL::List list, Q
                 after = new PlaylistTrackItem( this, after, newInfo );
         }
         else {
-            m_trackList.append( newInfo );
-            if( isOpen() )  //append the track item to the playlist
-                m_lastTrack = new PlaylistTrackItem( this, m_lastTrack, newInfo );
+            if( m_loaded ) {
+                m_trackList.append( newInfo );
+                if( isOpen() )  //append the track item to the playlist
+                    m_lastTrack = new PlaylistTrackItem( this, m_lastTrack, newInfo );
+            }
+            else
+                tmp_droppedTracks.append( newInfo );                
         }
         
     }
     
-    setModified( true );
+    setModified( true );    //show a save icon to save changes
 }
 
 
 void PlaylistBrowserItem::removeTrack( QListViewItem *item )
 {
     #define item static_cast<PlaylistTrackItem*>(item)
-    
+    //remove a track and update playlist stats
     TrackItemInfo *info = item->trackInfo();
     m_length -= info->length();
+    m_trackCount--;
     m_trackList.remove( info );
     if( item == m_lastTrack ) {
         QListViewItem *above = item->itemAbove();
@@ -842,7 +968,7 @@ void PlaylistBrowserItem::removeTrack( QListViewItem *item )
     
     #undef item
     
-    setModified( true );
+    setModified( true );    //show a save icon to save changes
 }
 
 
@@ -862,10 +988,25 @@ void PlaylistBrowserItem::customEvent( QCustomEvent *e )
         }
             
         case PlaylistLoader::Done: {       
-            kdDebug() << text(0) << " DONE" << endl; 
-            m_done = true;
-            // repaint the item to display playlist info
-            repaint();
+            kdDebug() << text(0) << " DONE" << endl;
+            //the tracks dropped on the playlist while it wasn't loaded are added to the track list
+            if( tmp_droppedTracks.count() ) {
+                for ( TrackItemInfo *info = tmp_droppedTracks.first(); info; info = tmp_droppedTracks.next() ) {
+                    m_trackList.append( info );
+                    m_length += info->length();
+                }
+                tmp_droppedTracks.clear();
+            }
+
+            m_loading = false;
+            m_loaded = true;
+            ((PlaylistBrowserView *)listView())->stopAnimation( this );  //stops the loading animation
+            
+            if( m_trackCount ) setOpen( true );
+            else repaint();
+            
+            m_trackCount = m_trackList.count();
+            
             break;
         }
            
@@ -881,9 +1022,17 @@ void PlaylistBrowserItem::setOpen( bool open )
         return;
 
     if( open ) {    //expande
-        //create track items
-        for ( TrackItemInfo *info = m_trackList.first(); info; info = m_trackList.next() ) 
-            m_lastTrack = new PlaylistTrackItem( this, m_lastTrack, info );
+        
+        if( m_loaded ) {
+            //create track items
+            for ( TrackItemInfo *info = m_trackList.first(); info; info = m_trackList.next() ) 
+                m_lastTrack = new PlaylistTrackItem( this, m_lastTrack, info );
+        }
+        else {
+            load();
+            return;
+        }
+        
     }
     else {    //collapse
         
@@ -907,7 +1056,7 @@ KURL::List PlaylistBrowserItem::tracksURL()
 {
     KURL::List list;
     
-    if( m_done )  { //playlist loaded
+    if( m_loaded )  { //playlist loaded
         for( TrackItemInfo *info = m_trackList.first(); info; info = m_trackList.next() )
             list += info->url();
     } 
@@ -970,7 +1119,10 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
     
     QRect rect( ((lv->treeStepSize()-9) / 2) + 1, (height()-9) / 2, 9, 9 );
     
-    if( !m_trackList.isEmpty() ) {
+    if( m_loading && pixmap(0) ) {
+        pBuf.drawPixmap( (lv->treeStepSize() - pixmap(0)->width())/2, (height() - pixmap(0)->height())/2, *pixmap(0) );
+    }
+    else if( m_trackCount ) {
         //draw +/- symbol to expande/collapse the playlist
         
         pBuf.setPen( cg.mid() );
@@ -1025,14 +1177,15 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
     font.setBold( false );
     pBuf.setFont( font );
     
-    if( m_done ) { //playlist loaded
+    if( m_loading )
+        info = "Loading...";
+    else 
+    {     //playlist loaded
         // draw the number of tracks and the total length of the playlist
-        info += QString("%1 Tracks").arg( m_trackList.count() );
+        info += QString("%1 Tracks").arg( m_trackCount );
         if( m_length )
             info += QString(" - [%2]").arg( MetaBundle::prettyTime( m_length ) );   
-    } 
-    else 
-        info = "Loading...";
+    }
         
     pBuf.drawText( text_x, text_y, info);
     
@@ -1122,7 +1275,7 @@ KURL::List SmartPlaylistView::loadSmartPlaylist( QueryType queryType )
     // this function load the smart playlist querying the database for "queryType"
     // (eg. all collection, most played tracks, recently played, newest tracks, never played)
     // and returns the list of tracks
-    //TODO untagged tracks would be useful
+    //TODO stream history, untagged tracks
     
     QStringList values;
     QStringList names;
