@@ -870,11 +870,9 @@ void ContextBrowser::showCurrentStream()
     // <Stream Information>
     browser->write( "<div class='rbcontent'>" );
     browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-    browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Playing Stream:" ) + "</td></tr>" );
-    browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
+    browser->write( "<tr><th>&nbsp;" + i18n( "Playing Stream:" ) + "</th></tr>" );
     browser->write( "</table>" );
-    browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
-
+    browser->write( "<table width='100%' border='0' cellspacing='2' cellpadding='0'>" );
 
     if ( m_currentTrack )
     {
