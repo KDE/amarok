@@ -171,7 +171,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
         {
             /* if a cover exists, open a widget with the image on click */
             QWidget *widget = new QWidget( 0, 0, WDestructiveClose );
-            widget->setCaption( "Cover Viewer - amaroK" );
+            widget->setCaption( i18n( "Cover Viewer" ) + " - amaroK" );
             QPixmap pixmap( m_db->getImageForAlbum( info[0], info[1], locate( "data", "amarok/images/sound.png" ), 0 ) );
             widget->setPaletteBackgroundPixmap( pixmap );
             widget->setMinimumSize( pixmap.size() );
@@ -265,7 +265,7 @@ void ContextBrowser::showHome() //SLOT
     browser->setUserStyleSheet( m_styleSheet );
 
     // <Favorite Tracks Information>
-    browser->write( "<html><div class='menu'><a class='menu' href='show:home'>Home</a>&nbsp;&nbsp;<a class='menu' href='show:context'>Current Track</a></div>");
+    browser->write( "<html><div class='menu'><a class='menu' href='show:home'>" + i18n( "Home" ) + "</a>&nbsp;&nbsp;<a class='menu' href='show:context'>" + i18n( "Current Track" ) + "</a></div>");
     browser->write( "<div class='rbcontent'>" );
     browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
     browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Your Favorite Tracks:" ) + "</td></tr>" );
@@ -329,8 +329,7 @@ void ContextBrowser::showHome() //SLOT
 void ContextBrowser::showCurrentTrack() //SLOT
 {
     #define escapeHTML(s)     QString(s).replace( "<", "&lt;" ).replace( ">", "&gt;" )
-    #define escapeHTMLAttr(s) QString(s).replace( "'", "%27" )
-    // FIX ME: it should escape "%" before "'".
+    #define escapeHTMLAttr(s) QString(s).replace( "%", "%25" ).replace( "'", "%27" )
 
     if ( !m_currentTrack )
         return;
@@ -349,7 +348,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     browser->setUserStyleSheet( m_styleSheet );
 
     // <Current Track Information>
-    browser->write( "<html><div class='menu'><a class='menu' href='show:home'>Home</a>&nbsp;&nbsp;<a class='menu' href='show:context'>Current Track</a></div>");
+    browser->write( "<html><div class='menu'><a class='menu' href='show:home'>" + i18n( "Home" ) + "</a>&nbsp;&nbsp;<a class='menu' href='show:context'>" + i18n( "Current Track" ) + "</a></div>");
     if ( !m_db->isFileInCollection( m_currentTrack->url().path() ) )
     {
         browser->write( "<div><br>");
