@@ -155,7 +155,7 @@ CollectionView::renderView() //SLOT
     clear();
 
     //query database for all records with the specified category
-    QCString command = "select ";
+    QCString command = "select distinct ";
     command += m_category.lower().latin1();
     command += " from tags;";
     
