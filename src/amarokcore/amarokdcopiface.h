@@ -69,7 +69,7 @@ k_dcop:
    virtual QString year() = 0;                              ///< Return the year of the currently playing track.
    virtual QString comment() = 0;                           ///< Return the comment of the currently playing track.
    virtual QString bitrate() = 0;                           ///< Return the bitrate of the currently playing track (XX kbps).
-
+   virtual int sampleRate() = 0;                        ///< Return the sample rate of the currently playing track.
    virtual QString encodedURL() = 0;                        ///< Return the encoded URL of the currently playing track.
    virtual QString coverImage() = 0;                        ///< Return the encoded URL of the current track's cover image
 

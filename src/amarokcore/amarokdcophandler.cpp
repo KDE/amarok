@@ -169,6 +169,11 @@ namespace amaroK
         return EngineController::instance()->bundle().prettyBitrate();
     }
 
+    int DcopHandler::sampleRate()
+    {
+        return EngineController::instance()->bundle().sampleRate();
+    }
+
 // Ok, that should be enough, have fun :-)
 
     QString DcopHandler::encodedURL()
