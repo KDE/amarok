@@ -291,7 +291,7 @@ GstEngine::state() const
     if ( !m_currentInput )
         return Engine::Empty;
 
-    switch ( gst_element_get_state( m_currentInput->bin ) )
+    switch ( gst_element_get_state( m_gst_inputThread ) )
     {
         case GST_STATE_NULL:
             return Engine::Empty;
@@ -457,8 +457,11 @@ GstEngine::stop()  //SLOT
     if ( !m_currentInput ) return;
 
     // When engine is in pause mode, don't fade but destroy right away
-    if ( state() != Engine::Playing )
+    if ( GST_STATE( m_gst_outputThread ) == GST_STATE_PAUSED ) {
         destroyInput( m_currentInput );
+        gst_element_set_state( m_gst_inputThread, GST_STATE_PLAYING );
+        gst_element_set_state( m_gst_outputThread, GST_STATE_PLAYING );
+    }
     else
         m_currentInput->setState( InputPipeline::FADE_OUT );
 
