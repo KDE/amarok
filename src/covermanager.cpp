@@ -341,7 +341,9 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     m_currentView = AllAlbums;
 
     updateStatusBar();
+    #ifdef AMAZON_SUPPORT
     m_fetchButton->setEnabled( missingCovers );
+    #endif
 }
 
 
