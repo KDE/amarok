@@ -39,8 +39,8 @@ OSDWidget::OSDWidget( const QString &appName, QWidget *parent, const char *name 
     setBackgroundMode( NoBackground );
     unsetColors();
 
-    connect( &timer,    SIGNAL( timeout() ), SLOT( hide() ) );
-    connect( &timerMin, SIGNAL( timeout() ), SLOT( minReached() ) );
+    connect( &timer,     SIGNAL( timeout() ), SLOT( hide() ) );
+    connect( &timerMin,  SIGNAL( timeout() ), SLOT( minReached() ) );
 }
 
 
@@ -119,13 +119,6 @@ void OSDWidget::showOSD( const QString &text, bool preemptive )
             m_dirty = true;
 
             show();
-
-            if ( m_duration ) { //if duration is 0 stay forever
-                timer.start( m_duration, TRUE ); //calls hide()
-                timerMin.start( 150 ); //calls minReached()
-            }
-            else timer.stop();
-
         }
         else textBuffer.append( text ); //queue
     }
@@ -149,6 +142,8 @@ void OSDWidget::minReached() //SLOT
 void OSDWidget::setDuration( int ms )
 {
     m_duration = ms;
+
+    if( !m_duration ) timer.stop();
 }
 
 void OSDWidget::setFont( QFont newFont )
@@ -219,6 +214,12 @@ void OSDWidget::show()
     if ( m_dirty ) renderOSDText( m_currentText );
 
     QWidget::show();
+
+    if ( m_duration ) //duration 0 -> stay forever
+    {
+        timer.start( m_duration, TRUE ); //calls hide()
+        timerMin.start( 150 ); //calls minReached()
+    }
 }
 
 void OSDWidget::refresh()
@@ -322,12 +323,12 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 
     if ( m_dragging && this == mouseGrabber() )
     {
-        const QRect screen  = QApplication::desktop() ->screenGeometry( m_screen );
+        const QRect screen  = QApplication::desktop()->screenGeometry( m_screen );
         const uint  hcenter     = screen.width() / 2;
         const uint  eGlobalPosX = e->globalPos().x();
         const uint  snapZone    = screen.width() / 16;
 
-        QPoint newPos = e->globalPos() - m_dragOffset;
+        QPoint newPos = e->globalPos() - m_dragOffset - screen.topLeft();
         int maxY = screen.height()-height()-MARGIN;
         if( newPos.y() < MARGIN ) newPos.ry() = MARGIN;
         if( newPos.y() > maxY ) newPos.ry() = maxY;
