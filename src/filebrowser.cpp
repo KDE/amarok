@@ -88,9 +88,9 @@ FileBrowser::FileBrowser( const char * name )
     //insert our own actions at front of context menu
     QPopupMenu* const menu = ((KActionMenu *)dir->actionCollection()->action("popupMenu"))->popupMenu();
     menu->insertSeparator( 0 );
-    menu->insertItem( i18n( "&Make Playlist" ), this, SLOT(makePlaylist()) );
-    menu->insertItem( i18n( "&Append to Playlist" ), this, SLOT(addToPlaylist()) );
-    menu->insertItem( i18n( "&Select all Files" ), this, SLOT(selectAllFiles()) );
+    menu->insertItem( i18n( "&Make Playlist" ), this, SLOT(makePlaylist()), 0, -1, 0 );
+    menu->insertItem( i18n( "&Append to Playlist" ), this, SLOT(addToPlaylist()), 0, -1, 1 );
+    menu->insertItem( i18n( "&Select all Files" ), this, SLOT(selectAllFiles()), 0, -1, 2 );
 
     dir->setEnableDirHighlighting( true );
     dir->setMode( KFile::Mode((int)KFile::Files | (int)KFile::Directory) ); //allow selection of multiple files + dirs
