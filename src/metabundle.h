@@ -44,6 +44,9 @@ public:
     //PlaylistItems:
     MetaBundle( const PlaylistItem *item, const KFileMetaInfo& info );
 
+    //PlaylistItems:
+    MetaBundle( const PlaylistItem *item );
+    
     //From tags:
     MetaBundle( const KURL &url, TagLib::Tag *tag, TagLib::AudioProperties *ap = 0 );
 

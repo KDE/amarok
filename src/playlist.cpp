@@ -1201,7 +1201,7 @@ bool Playlist::showTrackInfo( const KURL& url ) //STATIC
 
 void Playlist::showTrackInfo( PlaylistItem* item ) //STATIC
 {
-    MetaBundle mb = item->metaBundle();
+    MetaBundle mb( item );
     showTrackInfoDlg( mb );
 }
 

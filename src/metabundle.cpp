@@ -64,6 +64,21 @@ MetaBundle::MetaBundle( const PlaylistItem *item, const KFileMetaInfo& info )
     init( info );
 }
 
+//PlaylistItem ctor
+MetaBundle::MetaBundle( const PlaylistItem *item )
+  : m_url       ( item->url() )
+  , m_title     ( item->title() )         //because you override text()
+  , m_artist    ( item->exactText(  2 ) ) //because you override text()
+  , m_album     ( item->exactText(  3 ) ) //etc.
+  , m_year      ( item->exactText(  4 ) ) //..
+  , m_comment   ( item->exactText(  5 ) ) //.
+  , m_genre     ( item->exactText(  6 ) )
+  , m_track     ( item->exactText(  7 ) )
+  , m_bitrate   ( item->exactText(  8 ).toInt() ) 
+  , m_length    ( item->exactText(  9 ).toInt() )    
+  , m_sampleRate( item->exactText( 10 ).toInt() )
+{}
+
 //Taglib::Tag ctor
 MetaBundle::MetaBundle( const KURL &url, TagLib::Tag *tag, TagLib::AudioProperties *ap )
   : m_url( url )
