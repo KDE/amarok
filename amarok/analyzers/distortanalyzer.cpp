@@ -72,58 +72,55 @@ void DistortAnalyzer::init()
 
 // --------------------------------------------------------------------------------
 
-void DistortAnalyzer::drawAnalyzer( std::vector<float> *s )
+void DistortAnalyzer::analyze( const Scope &s )
 {
     //start with a blank canvas
     eraseCanvas();
     bitBlt( m_pComposePixmap1, 0, 0, background() );
 
-    if ( s ) // don't bother if vector is empty
+    std::vector<float>::const_iterator it, it1;
+    std::vector<float> sNew( width() );
+    Analyzer::interpolate( s, sNew );
+
+    // VERTICAL:
+
+    it =  sNew.begin();
+    it1 = sNew.end();
+    int sinIndex, pixIndex;
+
+    for ( int x = 0; x < width(); x++ )
     {
-        std::vector<float>::const_iterator it, it1;
-        std::vector<float> sNew( width() );
-        Analyzer::interpolate( s, sNew );
+        sinIndex = static_cast<int>( ((*it)+(*it1)) * m_sinVector.size() );
+        pixIndex = static_cast<int>( ( m_sinVector[ checkIndex( sinIndex, m_sinVector.size() ) ] + 1.0 )
+                                        / 2  * (NUM_PIXMAPS-1) );
 
-        // VERTICAL:
+        sinIndex = static_cast<int>( (*it) * m_sinVector.size() );
+        bitBlt( m_pComposePixmap1, x, 0,
+                m_srcPixmaps[ checkIndex( pixIndex, m_srcPixmaps.size() ) ],
+                x, static_cast<int>( m_sinVector[ checkIndex( sinIndex, m_sinVector.size() ) ] * 21 - 21 ),
+                1, height() );
 
-        it =  sNew.begin();
-        it1 = sNew.end();
-        int sinIndex, pixIndex;
+        ++it;
+        --it1;
+    }
 
-        for ( int x = 0; x < width(); x++ )
-        {
-            sinIndex = static_cast<int>( ((*it)+(*it1)) * m_sinVector.size() );
-            pixIndex = static_cast<int>( ( m_sinVector[ checkIndex( sinIndex, m_sinVector.size() ) ] + 1.0 )
-                                         / 2  * (NUM_PIXMAPS-1) );
+    // HORIZONTAL:
 
-            sinIndex = static_cast<int>( (*it) * m_sinVector.size() );
-            bitBlt( m_pComposePixmap1, x, 0,
-                    m_srcPixmaps[ checkIndex( pixIndex, m_srcPixmaps.size() ) ],
-                    x, static_cast<int>( m_sinVector[ checkIndex( sinIndex, m_sinVector.size() ) ] * 21 - 21 ),
-                    1, height() );
+    it = sNew.begin();
 
-            ++it;
-            --it1;
-        }
+//  // jump to middle of vector -> more interesting values
+//  for ( unsigned int i = 0; i < sNew.size() / 2; i++, ++it )
+//  {}
 
-        // HORIZONTAL:
+    for ( uint y = 0; y < height(); ++y )
+    {
+        sinIndex = static_cast<int>( ( (*it)/3.0 ) * m_sinVector.size() );
 
-        it = sNew.begin();
+        bitBlt( canvas(), 0, y, m_pComposePixmap1,
+                static_cast<int>( m_sinVector[ checkIndex( sinIndex, m_sinVector.size() ) ] * 11 - 12 ), y,
+                width(), 1 );
 
-//         // jump to middle of vector -> more interesting values
-//         for ( unsigned int i = 0; i < sNew.size() / 2; i++, ++it )
-//         {}
-
-        for ( uint y = 0; y < height(); ++y )
-        {
-            sinIndex = static_cast<int>( ( (*it)/3.0 ) * m_sinVector.size() );
-
-            bitBlt( canvas(), 0, y, m_pComposePixmap1,
-                    static_cast<int>( m_sinVector[ checkIndex( sinIndex, m_sinVector.size() ) ] * 11 - 12 ), y,
-                    width(), 1 );
-
-           ++it;
-        }
+        ++it;
     }
 }
 

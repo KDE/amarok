@@ -86,15 +86,12 @@ void BarAnalyzer2::init()
 
 // --------------------------------------------------------------------------------
 
-void BarAnalyzer2::drawAnalyzer( std::vector<float> *s )
+void BarAnalyzer2::analyze( const Scope &s )
 {
   uint newval;
   int change;
 
-  if ( s )
-  {
-    Analyzer::interpolate( s, m_bands ); //if no s then we are paused/stopped
-  }
+  Analyzer::interpolate( s, m_bands ); //if no s then we are paused/stopped
 
   eraseCanvas();
 

@@ -29,12 +29,12 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
 }
 
 void
-BlockAnalyzer::drawAnalyzer( std::vector<float> *s )
+BlockAnalyzer::analyze( const Scope &s )
 {
     std::vector<float> v( BAND_COUNT, 0 );
     const int offset = height() - (HEIGHT+1) * ROWS;
 
-    if ( s ) Analyzer::interpolate( s, v );
+    Analyzer::interpolate( s, v );
 
 //    QPixmap m_pix( v.size() * (WIDTH + 1), (HEIGHT + 1) * ROWS );
     eraseCanvas();

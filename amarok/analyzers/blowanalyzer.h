@@ -54,7 +54,7 @@ private:
 public:
   BlowAnalyzer(QWidget *);
   virtual ~BlowAnalyzer();
-  virtual void drawAnalyzer( std::vector<float> * );
+  virtual void analyze( const Scope & );
 
 protected:
   virtual void init();

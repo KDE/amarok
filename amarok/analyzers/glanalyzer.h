@@ -51,11 +51,10 @@ private:
   GLfloat x, y;
 public:
   GLAnalyzer(QWidget *);
-  virtual ~GLAnalyzer();
-  virtual void drawAnalyzer( std::vector<float> * );
+  ~GLAnalyzer();
+  void analyze( const Scope & );
 
 protected:
-  virtual void init();
   void initializeGL();
   void resizeGL( int w, int h );
   void paintGL();

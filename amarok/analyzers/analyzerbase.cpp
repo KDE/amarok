@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "analyzerbase.h"
-
-#include <math.h>   //interpolate()
-#include <qevent.h> //event()
+#include "enginebase.h" //engine->state()
+#include <math.h>       //interpolate()
+#include "playerapp.h"  //m_pEngine
+#include <qevent.h>     //event()
 
 #ifdef DRAW_GRID
 #include <qpainter.h>
@@ -29,11 +30,11 @@
 // INSTRUCTIONS Base2D
 // 1. do anything that depends on height() in init(), Base2D will call it before you are shown
 // 2. otherwise you can use the constructor to initialise things
-// 3. reimplement drawAnalyzer(), and paint to canvas(), Base2D will update the widget when you return control to it
-// 4. if you want to manipulate the scope, reimplement modifyScope()
+// 3. reimplement analyze(), and paint to canvas(), Base2D will update the widget when you return control to it
+// 4. if you want to manipulate the scope, reimplement transform()
 // 5. for convenience <vector> <qpixmap.h> <qwdiget.h> are pre-included
 // TODO make an INSTRUCTIONS file
-
+//can't mod scope in analyze you have to use transform
 
 template<class W>
 Analyzer::Base<W>::Base( QWidget *parent, uint timeout, uint size )
@@ -42,7 +43,7 @@ Analyzer::Base<W>::Base( QWidget *parent, uint timeout, uint size )
   , m_height( 0 )
   , m_fht( size )
 {}
-
+#include <kdebug.h>
 template<class W> bool
 Analyzer::Base<W>::event( QEvent *e )
 {
@@ -64,56 +65,75 @@ Analyzer::Base<W>::event( QEvent *e )
     return QWidget::event( e );
 }
 
-#include "../playerapp.h" //FIXME
-#include "../engine/enginebase.h" //FIXME
+template<class W> void
+Analyzer::Base<W>::transform( Scope &scope ) //virtual
+{
+    //this is a standard transformation that should give
+    //an FFT scope that has bands for pretty analyzers
+
+    float *front = static_cast<float*>( &scope.front() );
+
+    float *f = new float[ m_fht.size() ];
+    m_fht.copy( f, front );
+    m_fht.logSpectrum( front, f );
+    m_fht.scale( front, 1.0 / 20 );
+    delete[] f;
+}
 
 template<class W> void
 Analyzer::Base<W>::drawFrame()
 {
     EngineBase *engine = pApp->m_pEngine;
 
-    if ( engine->state() == EngineBase::Playing )
+    switch( engine->state() )
+    {
+    case EngineBase::Playing:
     {
         Scope *scope = engine->scope();
-        scope->resize( scope->size() / 2 );
+        scope->resize( scope->size() / 2 ); //why do we do this?
 
-        float *front = static_cast<float*>( &scope->front() );
-        if( front )
+        if( !scope->empty() )
         {
-            modifyScope( front );
-            drawAnalyzer( scope );
+            transform( *scope );
+            analyze( *scope );
         }
 
         delete scope;
+
+        break;
     }
-    else
-    {
-        static int t = 201;
+    case EngineBase::Paused:
+        paused();
+        break;
 
-        if ( t > 999 ) t = 1; //0 = wasted calculations
-        if ( t < 201 )
-        {
-            const double dt = double(t) / 200 ;
-            Scope s( 32 );
-            for( uint i = 0; i < s.size(); ++i )
-                s[i] = dt * (sin( M_PI + (i * M_PI) / s.size() ) + 1.0);
-            drawAnalyzer( &s );
-        }
-        else
-            drawAnalyzer( 0 );
-
-        ++t;
+    default:
+        demo();
     }
 }
 
 template<class W> void
-Analyzer::Base<W>::modifyScope( float *front ) //virtual
+Analyzer::Base<W>::paused() //virtual
+{}
+
+template<class W> void
+Analyzer::Base<W>::demo() //virtual
 {
-    float *f = new float[ m_fht.size() ];
-    m_fht.copy( f, front );
-    m_fht.logSpectrum( front, f );
-    m_fht.scale( front, 1.0 / 20 );
-    delete[] f;
+    static int t = 201; //FIXME make static to namespace perhaps
+
+    if( t > 999 ) t = 1; //0 = wasted calculations
+    if( t < 201 )
+    {
+        Scope s( 32 );
+
+        const double dt = double(t) / 200;
+        for( uint i = 0; i < s.size(); ++i )
+            s[i] = dt * (sin( M_PI + (i * M_PI) / s.size() ) + 1.0);
+
+        analyze( s );
+    }
+    else analyze( Scope( 32, 0 ) );
+
+    ++t;
 }
 
 
@@ -164,28 +184,28 @@ Analyzer::Base3D::Base3D( QWidget *parent, uint timeout, uint scopeSize )
 
 
 void
-Analyzer::interpolate( const Scope *inVec, Scope &outVec ) //static
+Analyzer::interpolate( const Scope &inVec, Scope &outVec ) //static
 {
     double pos = 0.0;
-    double step = static_cast<double>(inVec->size()) / outVec.size();
+    const double step = (double)inVec.size() / outVec.size();
 
     for ( uint i = 0; i < outVec.size(); ++i, pos += step )
     {
-        double error = pos - floor( pos );
-        unsigned long offset = static_cast<unsigned long>( pos );
+        const double error = pos - floor( pos );
+        const unsigned long offset = (unsigned long)pos;
 
         unsigned long indexLeft = offset + 0;
 
-        if ( indexLeft >= inVec->size() )
-            indexLeft = inVec->size() - 1;
+        if ( indexLeft >= inVec.size() )
+            indexLeft = inVec.size() - 1;
 
         unsigned long indexRight = offset + 1;
 
-        if ( indexRight >= inVec->size() )
-            indexRight = inVec->size() - 1;
+        if ( indexRight >= inVec.size() )
+            indexRight = inVec.size() - 1;
 
-        outVec[i] = (*inVec)[indexLeft ] * ( 1.0 - error ) +
-                    (*inVec)[indexRight] * error;
+        outVec[i] = inVec[indexLeft ] * ( 1.0 - error ) +
+                    inVec[indexRight] * error;
     }
 }
 

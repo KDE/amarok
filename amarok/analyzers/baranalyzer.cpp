@@ -51,7 +51,7 @@ void BarAnalyzer::init()
     {
         for ( int y = x; y > 0; --y )
         {
-            double fraction = (double)y / (double)height();
+            const double fraction = (double)y / height();
 
 //          p.setPen( QColor( r + (int)(r2  * fraction), g, b - (int)(255 * fraction) ) );
             p.setPen( QColor( r + (int)(r2  * fraction), g, b ) );
@@ -61,7 +61,7 @@ void BarAnalyzer::init()
 }
 
 
-void BarAnalyzer::drawAnalyzer( std::vector<float> *s )
+void BarAnalyzer::analyze( const Scope &s )
 {
     static std::vector<uint> barVector( BAND_COUNT, 0 );
     static std::vector<int>  roofVector( BAND_COUNT, 50 ); //can't risk uint //FIXME 50 is arbituary!
@@ -70,15 +70,13 @@ void BarAnalyzer::drawAnalyzer( std::vector<float> *s )
     //start with a blank canvas
     eraseCanvas();
 
-    //interpolate if necessary, otherwise let the bars fall back to base
-    if( s ) Analyzer::interpolate( s, m_bands );
-    else    std::fill( m_bands.begin(), m_bands.end(), 0 );
+    Analyzer::interpolate( s, m_bands );
 
-    std::vector<float>::const_iterator it( m_bands.begin() );
+    Scope::const_iterator it( m_bands.begin() );
     for ( uint i = 0, x = 10, y2; i < m_bands.size(); ++i, ++it, x+=5 )
     {
         //assign pre[log10]'d value
-        y2 = uint((*it) * 256); //256 is optimised to bitshift
+        y2 = uint((*it) * 256); //256 will be optimised to a bitshift
         y2 = m_lvlMapper[ (y2 > 255) ? 255 : y2 ]; //lvlMapper is array of ints with values 0 to height()
 
         int change = y2 - barVector[i];

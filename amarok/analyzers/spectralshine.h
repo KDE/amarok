@@ -36,7 +36,7 @@ class SpectralShineAnalyzer : public Analyzer::Base2D
       ~SpectralShineAnalyzer();
 
       void init();
-      void drawAnalyzer( std::vector<float> * );
+      void analyze( const Scope & );
 
    protected:
       QPixmap     *m_pSrcPixmap;

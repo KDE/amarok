@@ -45,7 +45,7 @@ void BlowAnalyzer::init()
 
 // --------------------------------------------------------------------------------
 
-void BlowAnalyzer::drawAnalyzer( std::vector<float> *s )
+void BlowAnalyzer::analyze( const Scope &s )
 {
   if (s)
   {

@@ -4,7 +4,9 @@ noinst_LIBRARIES =  libanalyzers.a
 
 INCLUDES = \
 	$(all_includes) \
-	-I$(top_builddir)/amarok/amarok/amarokcore
+	-I$(top_srcdir)/amarok/amarok/amarokcore \
+	-I$(top_srcdir)/amarok/amarok/engine \
+	-I$(top_srcdir)/amarok/amarok/
 
 noinst_HEADERS = \
 	analyzerbase.h \

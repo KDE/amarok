@@ -31,10 +31,9 @@ class GLAnalyzer2 : public Analyzer::Base3D
 public:
     GLAnalyzer2(QWidget *);
     ~GLAnalyzer2();
-    void drawAnalyzer( std::vector<float> * );
+    void analyze( const Scope & );
 
 protected:
-    void init();
     void initializeGL();
     void resizeGL( int w, int h );
     void paintGL();

@@ -37,7 +37,7 @@ public:
   BarAnalyzer2(QWidget *);
   ~BarAnalyzer2();
 
-  void drawAnalyzer( std::vector<float> * );
+  void analyze( const Scope & );
 
 protected:
   void init();

@@ -22,12 +22,10 @@
     #include <sys/types.h>
 #endif
 
-#undef  DRAW_GRID  //disable the grid
-
 #include <config.h>  //HAVE_QGLWIDGET
-#include "../fht.h"  //FIXME
+#include "fht.h"     //stack allocated and convenience
 #include <qgl.h>     //baseclass
-#include <qpixmap.h> //stack allocated
+#include <qpixmap.h> //stack allocated and convenience
 #include <qtimer.h>  //stack allocated
 #include <qwidget.h> //baseclass
 #include <vector>    //included for convenience
@@ -45,11 +43,7 @@ namespace Analyzer {
 
 typedef std::vector<float> Scope;
 
-//TODO consider making an m_scope
-//TODO consider manipulating Scopes by reference
-//TODO init() doesn't get called for GLWidgets, move init() to Base2D or be clever
-//TODO offer a vector full of zero instead of 0 as Scope * (? worth it considering interpolation etc.)
-//perhaps you should try to enforce modification of the scope in modifyScope by passing a const reference to the scope to drawAnalyzer?
+//TODO what would be grand would be to get the raw scope by reference so we could hang on to it for the purpose of paused()
 
 template<class W> class Base : public W
 {
@@ -61,9 +55,10 @@ protected:
     Base( QWidget*, uint, uint = 7 );
 
     void drawFrame();
-
-    virtual void drawAnalyzer( Scope* ) = 0;
-    virtual void modifyScope( float* );
+    virtual void transform( Scope& );
+    virtual void analyze( const Scope& ) = 0;
+    virtual void paused();
+    virtual void demo();
 
 private:
     bool event( QEvent* );
@@ -129,9 +124,11 @@ public:
 };
 
 
-void interpolate( const Scope*, Scope& );
+void interpolate( const Scope&, Scope& );
 void initSin( Scope&, const uint = 6000 );
 
 } //END namespace Analyzer
+
+using Analyzer::Scope;
 
 #endif

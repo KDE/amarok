@@ -31,7 +31,7 @@ class DistortAnalyzer : public Analyzer::Base2D
 
     private:
         void init();
-        void drawAnalyzer( std::vector<float> * );
+        void analyze( const Scope & );
         inline int checkIndex( int, int );
 
     // ATTRIBUTES:

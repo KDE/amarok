@@ -15,13 +15,15 @@
 @author Mark Kretschmann && Max Howell
 */
 
+using Analyzer::Scope;
+
 class BarAnalyzer : public Analyzer::Base2D
 {
     public:
         BarAnalyzer( QWidget* );
 
-        virtual void init();
-        virtual void drawAnalyzer( std::vector<float> * );
+        void init();
+        virtual void analyze( const Scope& );
 
         static const uint BAND_COUNT=32;
         static const uint ROOF_HOLD_TIME=48;
@@ -32,9 +34,8 @@ class BarAnalyzer : public Analyzer::Base2D
         QPixmap m_roofPixmaps[ NUM_ROOFS ];
         QValueVector<int> m_roofMem[ BAND_COUNT ];
 
-        std::vector<float> m_bands;
-
-        uint m_lvlMapper[256];
+        Scope m_bands;
+        uint  m_lvlMapper[256];
 
         const QPixmap *gradient() const { return &m_gradientPixmap; }
 

@@ -10,7 +10,7 @@
 
 // METHODS =====================================================
 
-void TurbineAnalyzer::drawAnalyzer( std::vector<float> *s )
+void TurbineAnalyzer::analyze( const Scope &s )
 {
     static std::vector<uint> barVector( BAND_COUNT, 0 );
     static std::vector<int>  roofVector( BAND_COUNT, 0 );
@@ -18,9 +18,7 @@ void TurbineAnalyzer::drawAnalyzer( std::vector<float> *s )
 
     eraseCanvas();
 
-    //interpolate if necessary, otherwise let the bars fall back to base
-    if( s ) Analyzer::interpolate( s, m_bands );
-    else    std::fill( m_bands.begin(), m_bands.end(), 0 );
+    Analyzer::interpolate( s, m_bands );
 
     std::vector<float>::const_iterator it( m_bands.begin() );
     for ( uint i = 0, x = 10, y2; i < m_bands.size(); ++i, ++it, x+=5 )

@@ -16,12 +16,11 @@
 
 #include "analyzerbase.h"
 
+using Analyzer::Scope;
 
 /**
 @author Melchior FRANZ
 */
-
-namespace Analyzer {
 
 class Sonogram : public Analyzer::Base2D
 {
@@ -30,10 +29,8 @@ class Sonogram : public Analyzer::Base2D
         ~Sonogram();
 
         void init();
-        void drawAnalyzer( std::vector<float> * );
-        void modifyScope( float* );
+        void analyze( const Scope& );
+        void transform( Scope& );
 };
-
-}
 
 #endif

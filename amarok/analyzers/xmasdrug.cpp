@@ -98,7 +98,7 @@ void XmasAnalyzer::drawStar( QPainter &p, int x, int y, QColor startColor )
    p.drawPoint(x,y+2);
 }
 
-void XmasAnalyzer::drawAnalyzer( std::vector<float> *s )
+void XmasAnalyzer::analyze( const Scope &s )
 {
    int x2;
    static int wave1pos = -WAVESIZE, wave2pos = -WAVESIZE, wavecounter = 0;
@@ -113,8 +113,7 @@ void XmasAnalyzer::drawAnalyzer( std::vector<float> *s )
    std::vector<float> bands( BAND_COUNT, 0 );
    std::vector<float>::const_iterator it( bands.begin() );
 
-   if ( s )
-      Analyzer::interpolate( s, bands );
+   Analyzer::interpolate( s, bands );
 
    // splash some waves
    if ((++wavecounter > 300) && !waving)

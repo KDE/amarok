@@ -23,8 +23,11 @@
 #include <math.h>
 #include <kdebug.h>
 
-GLAnalyzer::GLAnalyzer( QWidget *parent ):
-Analyzer::Base3D(parent, 15)
+GLAnalyzer::GLAnalyzer( QWidget *parent )
+  : Analyzer::Base3D(parent, 15)
+  , m_bands(20, 0.0f)
+  , m_oldy(20, -10.0f)
+  , m_peaks(20)
 {
 }
 
@@ -34,27 +37,14 @@ GLAnalyzer::~GLAnalyzer()
 
 // METHODS =====================================================
 
-void GLAnalyzer::init()
+void GLAnalyzer::analyze( const Scope &s )
 {
-        m_bands.resize(20 , 0.0f);
-        m_oldy.resize(20, -10.0f);
-        m_peaks.resize(20);
-}
-
-// --------------------------------------------------------------------------------
-
-void GLAnalyzer::drawAnalyzer( std::vector<float> *s )
-{
-  if (s)
-  {
-    Analyzer::interpolate(s, m_bands); //if no s then we are paused/stopped
-    updateGL();
-  }
+	Analyzer::interpolate(s, m_bands); //if no s then we are paused/stopped
+	updateGL();
 }
 
 void GLAnalyzer::initializeGL()
 {
-	init();
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);// Set clear color to black
 	// Set the shading model
 	glShadeModel(GL_SMOOTH);

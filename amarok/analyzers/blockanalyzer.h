@@ -23,7 +23,7 @@ class BlockAnalyzer : public Analyzer::Base2D
 public:
     BlockAnalyzer( QWidget* );
 
-    void drawAnalyzer( std::vector<float> * );
+    void analyze( const Scope& );
 
 private:
     static const int BAND_COUNT=32;

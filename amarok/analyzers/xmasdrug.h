@@ -33,7 +33,7 @@ class XmasAnalyzer : public Analyzer::Base2D
       ~XmasAnalyzer();
 
       void init();
-      void drawAnalyzer( std::vector<float> * );
+      void analyze( const Scope & );
 
    protected:
       void drawStar( QPainter &p, int x, int y, QColor startColor );

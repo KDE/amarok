@@ -16,7 +16,7 @@ class TurbineAnalyzer : public BarAnalyzer
     public:
         TurbineAnalyzer( QWidget *parent ) : BarAnalyzer( parent ), m_roofPixmap( 4, 1 ) { m_roofPixmap.fill( 0xff5070 ); };
 
-        void drawAnalyzer( std::vector<float> * );
+        void analyze( const Scope & );
 
     private:
         QPixmap m_roofPixmap;

@@ -36,6 +36,11 @@ Analyzer::Base3D(parent, 15)
     loadTexture( locate("data","amarok/data/dot.png"), dotTexture );
     loadTexture( locate("data","amarok/data/wirl1.png"), w1Texture );
     loadTexture( locate("data","amarok/data/wirl2.png"), w2Texture );
+
+    show.paused = true;
+    show.pauseTimer = 0.0;
+    show.rotDegrees = 0.0;
+    frame.rotDegrees = 0.0;
 }
 
 GLAnalyzer2::~GLAnalyzer2()
@@ -43,14 +48,6 @@ GLAnalyzer2::~GLAnalyzer2()
     freeTexture( dotTexture );
     freeTexture( w1Texture );
     freeTexture( w2Texture );
-}
-
-void GLAnalyzer2::init()
-{
-    show.paused = true;
-    show.pauseTimer = 0.0;
-    show.rotDegrees = 0.0;
-    frame.rotDegrees = 0.0;
 }
 
 void GLAnalyzer2::initializeGL()
@@ -97,9 +94,9 @@ void GLAnalyzer2::resizeGL( int w, int h )
     show.timeStamp = (float)tv.tv_sec + (float)tv.tv_usec/1000000.0;
 }
 
-void GLAnalyzer2::drawAnalyzer( std::vector<float> *s )
+void GLAnalyzer2::analyze( const Scope &s )
 {
-    bool haveNoData = !s;
+    bool haveNoData = false; //FIXME!
 
     // if we're going into pause mode, clear timers.
     if ( !show.paused && haveNoData )
@@ -108,7 +105,7 @@ void GLAnalyzer2::drawAnalyzer( std::vector<float> *s )
     // if we have got data, interpolate it (asking myself why I'm doing it here..)
     if ( !(show.paused = haveNoData) )
     {
-        int bands = s->size(),
+        int bands = s.size(),
             lowbands = bands / 4,
             hibands = bands / 3,
             midbands = bands - lowbands - hibands;
@@ -117,7 +114,7 @@ void GLAnalyzer2::drawAnalyzer( std::vector<float> *s )
               maxValue = 0;
         for ( int i = 0; i < bands; i++ )
         {
-            float value = (*s)[i];
+            float value = s[i];
             currentEnergy += value;
             currentMeanBand += (float)i * value;
             if ( value > maxValue )
