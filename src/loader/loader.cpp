@@ -93,13 +93,16 @@ bool Loader::splashEnabled() const
     path += "/.kde/share/config/amarokrc";
 
     QFile file( path ); //close() is called in the dtor
-    file.open( IO_ReadOnly );
-    QString line;
 
-    while ( file.readLine( line, 2000 ) != -1 ) {
-        if ( line.contains( "Show Splashscreen" ) && line.contains( "false" ) )
-            return false;
-    }
+    if( file.open( IO_ReadOnly ) )
+    {
+        QString line;
+
+        while ( file.readLine( line, 2000 ) != -1 )
+            if ( line.contains( "Show Splashscreen" ) && line.contains( "false" ) )
+                return false;
+
+    } //if we fail to open it, just show the splash
 
     //default:
     return true;
