@@ -17,8 +17,8 @@
 
 #include "analyzerbase.h"
 #include "enginebase.h" //engine->state()
+#include "enginecontroller.h"
 #include <math.h>       //interpolate()
-#include "playerapp.h"  //m_pEngine
 #include <qevent.h>     //event()
 
 #ifdef DRAW_GRID
@@ -84,7 +84,7 @@ Analyzer::Base<W>::transform( Scope &scope ) //virtual
 template<class W> void
 Analyzer::Base<W>::drawFrame()
 {
-    EngineBase *engine = pApp->m_pEngine;
+    EngineBase *engine = EngineController::instance()->engine();
 
     switch( engine->state() )
     {

@@ -22,7 +22,9 @@
 #include <qpixmap.h>     //stack allocated
 #include <qpushbutton.h> //baseclass
 #include <qwidget.h>     //baseclass
+
 #include "fht.h"         //stack allocated
+#include "engineobserver.h"
 
 class AmarokDcopHandler;
 class AmarokSlider;
@@ -62,7 +64,7 @@ private:
 };
 
 
-class PlayerWidget : public QWidget
+class PlayerWidget : public QWidget, public EngineObserver
 {
         Q_OBJECT
 
@@ -84,9 +86,20 @@ class PlayerWidget : public QWidget
         void setPlaylistShown( bool on );
         void setEffectsWindowShown( bool on );
 
+    protected:
+    /** Observer reimpls **/
+        void engineStateChanged( EngineBase::EngineState state );
+        void engineVolumeChanged( int percent );
+        void engineNewMetaData( const MetaBundle &/*bundle*/, bool /*trackChanged*/ );
+        void engineTrackPositionChanged( long /*position*/ );
+
     signals:
         void playlistToggled( bool on );
         void effectsWindowActivated();
+
+    private slots:
+        void slotSliderReleased();
+        void slotSliderChanged( int value );
 
     private:
         static QString zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1" ).arg( i ) : QString::number( i ); }
@@ -96,12 +109,16 @@ class PlayerWidget : public QWidget
         void closeEvent( QCloseEvent* );
         void dragEnterEvent( QDragEnterEvent* );
         void dropEvent( QDropEvent* );
+        void showEvent( QShowEvent * );
+        void hideEvent( QHideEvent * );
 
         static const int SCROLL_RATE = 1;
         static const int VOLUME_MAX  = 100;
+        static const int ANIM_TIMER  = 30;
 
         // ATTRIBUTES ------
 
+        QTimer    *m_pAnimTimer;
         QString m_rateString;
 
         AmarokDcopHandler *m_pDcopHandler; //TODO move to playerapp

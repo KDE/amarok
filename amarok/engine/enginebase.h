@@ -45,7 +45,6 @@ class EngineBase : public QObject, public Plugin
 
                                      EngineBase();
         virtual                      ~EngineBase();
-
         virtual void                 init( bool& restart,
                                            int   scopeSize,
                                            bool  restoreEffects )                      = 0;

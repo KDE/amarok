@@ -39,6 +39,7 @@ class KArtsDispatcher;
 class KArtsWidget;
 class KURL;
 
+
 namespace KDE { class PlayObject; };
 
 
@@ -47,7 +48,7 @@ class ArtsEngine : public EngineBase
     Q_OBJECT
 
     public:
-                                                 ArtsEngine();
+                                                 ArtsEngine( );
                                                  ~ArtsEngine();
                                         
         void                                     init( bool& restart, int scopeSize, bool restoreEffects ); 

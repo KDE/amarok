@@ -46,7 +46,8 @@ amarokapp_SOURCES = \
         playlistwidget.cpp \
         pluginmanager.cpp \
         streambrowser.cpp \
-        threadweaver.cpp
+        threadweaver.cpp \
+        enginecontroller.cpp
 
 amarokapp_LDADD = \
         $(top_builddir)/amarok/amarok/amarokcore/libamarokcore.a \

@@ -36,6 +36,7 @@
             AmarokSlider( QWidget *, Qt::Orientation, VDirection = BottomUp );
 
             void setValue( int );
+            bool sliding() { return m_isPressed; }
                 
         signals:
             void sliderPressed();

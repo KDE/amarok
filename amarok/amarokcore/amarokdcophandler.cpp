@@ -19,6 +19,7 @@
 #include "amarokdcophandler.h"
 #include "engine/enginebase.h"
 #include "playerapp.h"
+#include "enginecontroller.h"
 
 #include <dcopclient.h>
 
@@ -36,7 +37,7 @@ AmarokDcopHandler::AmarokDcopHandler()
 
 void AmarokDcopHandler::play()
 {
-    pApp->slotPlay();
+    EngineController::instance()->play();
 }
 
 void AmarokDcopHandler::playPause()
@@ -49,25 +50,25 @@ void AmarokDcopHandler::playPause()
 
 void AmarokDcopHandler::stop()
 {
-    pApp->slotStop();
+    EngineController::instance()->stop();
 }
 
 
 void AmarokDcopHandler::next()
 {
-    pApp->slotNext();
+    EngineController::instance()->next();
 }
 
 
 void AmarokDcopHandler::prev()
 {
-    pApp->slotPrev();
+    EngineController::instance()->previous();
 }
 
 
 void AmarokDcopHandler::pause()
 {
-    pApp->slotPause();
+    EngineController::instance()->pause();
 }
 
 void AmarokDcopHandler::setNowPlaying( const QString &s )
@@ -82,26 +83,27 @@ QString AmarokDcopHandler::nowPlaying()
 
 bool AmarokDcopHandler::isPlaying()
 {
-    return pApp->isPlaying();
+    return EngineController::instance()->engine() ? EngineController::instance()->engine()->loaded() : false;
 }
 
 int AmarokDcopHandler::trackTotalTime()
 {
-   return pApp->trackLength();
+    return EngineController::instance()->trackLength();
 }
 
 void AmarokDcopHandler::seek(int s)
 {
-   if ( (s > 0) && ( pApp->m_pEngine->state() != EngineBase::Empty ) )
-   {
-      pApp->m_pEngine->seek( s * 1000 );
-   }
+    EngineBase *engine = EngineController::instance()->engine();
+    if ( (s > 0) && ( engine->state() != EngineBase::Empty ) )
+    {
+        engine->seek( s * 1000 );
+    }
 }
 
 int AmarokDcopHandler::trackCurrentTime()
 {
    //return time in seconds
-   return pApp->m_pEngine->position() / 1000;
+   return EngineController::instance()->engine()->position() / 1000;
 }
 
 void AmarokDcopHandler::addMedia(const KURL &url)
@@ -116,17 +118,17 @@ void AmarokDcopHandler::addMediaList(const KURL::List &urls)
 
 void AmarokDcopHandler::setVolume(int volume)
 {
-    pApp->slotVolumeChanged(volume);
+    EngineController::instance()->setVolume( volume );
 }
 
 void AmarokDcopHandler::volumeUp()
 {
-    pApp->slotVolumeChanged( pApp->m_pEngine->volume() + 100 / 25 );
+    pApp->slotIncreaseVolume(); // show OSD
 }
 
 void AmarokDcopHandler::volumeDown()
 {
-    pApp->slotVolumeChanged( pApp->m_pEngine->volume() - 100 / 25 );
+    pApp->slotDecreaseVolume(); // show OSD
 }
 
 void AmarokDcopHandler::enableOSD(bool enable)

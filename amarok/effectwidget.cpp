@@ -18,6 +18,7 @@
 #include "effectwidget.h"
 #include "engine/enginebase.h"
 #include "playerapp.h"
+#include "enginecontroller.h"
 
 #include <string>
 #include <vector>
@@ -50,6 +51,7 @@ QRect         EffectWidget::save_geometry;
 EffectWidget::EffectWidget( QWidget* parent )
         : KDialogBase( parent, "EffectWidget", false, kapp->makeStdCaption( i18n("Effects") ) )
 {
+    EngineBase *engine = EngineController::instance()->engine();
     setWFlags( Qt::WDestructiveClose );
     
     showButtonApply( false );
@@ -67,7 +69,7 @@ EffectWidget::EffectWidget( QWidget* parent )
     pFrame->setStretchFactor( m_pGroupBoxBot, 10 );
 
     m_pComboBox = new KComboBox( m_pGroupBoxTop );
-    m_pComboBox->insertStringList( pApp->m_pEngine->availableEffects() );
+    m_pComboBox->insertStringList( engine->availableEffects() );
 
     m_pButtonTopDown = new QPushButton( iconLoader.loadIconSet( "down", KIcon::Toolbar, KIcon::SizeSmall ),
                                         0, m_pGroupBoxTop );
@@ -104,9 +106,9 @@ EffectWidget::EffectWidget( QWidget* parent )
     pLayoutBotButtons->addItem      ( new QSpacerItem( 0, 10 ) );
 
     { //fill listview with restored effect entries
-        std::vector<long> vec = pApp->m_pEngine->activeEffects();
+        std::vector<long> vec = engine->activeEffects();
         for ( uint i = 0; i < vec.size(); i++ )
-                new EffectListItem( m_pListView, pApp->m_pEngine->effectNameForId( vec[i] ), vec[i] );
+                new EffectListItem( m_pListView, engine->effectNameForId( vec[i] ), vec[i] );
     }
                 
     resize( 300, 400 );
@@ -142,7 +144,7 @@ void EffectWidget::slotButtonBotRem()
 {
     if ( QListViewItem *item = m_pListView->currentItem() )
     {
-        pApp->m_pEngine->removeEffect( static_cast<EffectListItem*>( item )->m_id );
+        EngineController::instance()->engine()->removeEffect( static_cast<EffectListItem*>( item )->m_id );
         delete m_pListView->currentItem();
     }
 }
@@ -155,7 +157,7 @@ void EffectWidget::slotChanged() //SLOT
     QListViewItem* item = m_pListView->currentItem();
     
     if ( item ) {
-        m_pButtonBotConf->setEnabled( pApp->m_pEngine->effectConfigurable(
+        m_pButtonBotConf->setEnabled( EngineController::instance()->engine()->effectConfigurable(
                                       static_cast<EffectListItem*>( item )->m_id ) );
     }
     else {
@@ -171,7 +173,7 @@ void EffectWidget::slotChanged() //SLOT
 
 EffectListItem::EffectListItem( QListView *parent, const QString &label )
         : QListViewItem( parent, label )
-        , m_id( pApp->m_pEngine->createEffect( label ) )
+        , m_id( EngineController::instance()->engine()->createEffect( label ) )
         
 {}
 
@@ -188,7 +190,7 @@ EffectListItem::~EffectListItem()
 
 void EffectListItem::configure()
 {
-    pApp->m_pEngine->configureEffect( m_id );
+    EngineController::instance()->engine()->configureEffect( m_id );
 }
 
 

@@ -4,6 +4,7 @@
 #include "amarokconfig.h"
 #include "amarokmenu.h"
 #include "playerapp.h"
+#include "enginecontroller.h"
 
 #include <kaction.h>
 #include <khelpmenu.h>
@@ -59,7 +60,7 @@ AmarokMenu::exec( const QPoint &p, int indexAtPoint ) //NOTE non virtual! :(
     setItemChecked( ID_REPEAT_TRACK,    AmarokConfig::repeatTrack() );
     setItemChecked( ID_REPEAT_PLAYLIST, AmarokConfig::repeatPlaylist() );
     setItemChecked( ID_RANDOM_MODE,     AmarokConfig::randomMode() );
-    setItemEnabled( ID_CONF_DECODER,    pApp->decoderConfigurable() );
+    setItemEnabled( ID_CONF_DECODER,    EngineController::instance()->engine()->decoderConfigurable() );
 
     int index = QPopupMenu::exec( p, indexAtPoint );
 

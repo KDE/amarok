@@ -57,23 +57,16 @@ class PlayerApp : public KApplication
         ~PlayerApp();
 
         bool playObjectConfigurable();
-        bool isPlaying() const;
-        int  trackLength() const { return m_length; }
         void setupColors();
         void insertMedia( const KURL::List& );
-        bool decoderConfigurable();
         static void initCliArgs( int argc, char *argv[] );
 
         KActionCollection *actionCollection() { return m_pActionCollection; }
 
         // STATICS
-        static const int     ANIM_TIMER  = 30;
-        static const int     MAIN_TIMER  = 150;
         static const int     SCOPE_SIZE  = 7;
 
         // ATTRIBUTES
-        static EngineBase *m_pEngine;
-
         KGlobalAccel *m_pGlobalAccel;
 
         PlayerWidget *m_pPlayerWidget;
@@ -82,24 +75,10 @@ class PlayerApp : public KApplication
         QColor m_optBrowserBgAltColor;
         QColor m_optBrowserSelColor;
 
-        bool m_sliderIsPressed;
         bool m_artsNeedsRestart;
 
-        KURL m_playingURL; ///< The URL of the currently playing item
-
     public slots:
-        void slotPrev();
-        void slotNext();
-        void slotPlay();
-        void play( const MetaBundle& );
-        void slotPause();
-        void slotStop();
         void slotPlaylistShowHide();
-        void slotSliderPressed();
-        void slotSliderReleased();
-        void slotSliderChanged( int );
-        void slotVolumeChanged( int value );
-        void slotMainTimer();
         void slotShowOptions();
         void slotShowOSD();
         void slotShowVolumeOSD();
@@ -112,19 +91,10 @@ class PlayerApp : public KApplication
     private slots:
         void handleLoaderArgs( QCString args );
         void applySettings();
-        void proxyError();
         void showEffectWidget();
         void slotEffectWidgetDestroyed();
         void slotShowOSD( const MetaBundle& );
 
-    signals:
-        void metaData( const MetaBundle& );
-        void orderPreviousTrack();
-        void orderCurrentTrack();
-        void orderNextTrack();
-        void currentTrack( const KURL& );
-        void deleteProxy();
-        void configureDecoder();
 
     private:
         void handleCliArgs();
@@ -144,16 +114,10 @@ class PlayerApp : public KApplication
         void setupScrolltext();
 
         // ATTRIBUTES ------
-        QTimer    *m_pMainTimer;
-        QTimer    *m_pAnimTimer;
         long      m_length;
-        int       m_playRetryCounter;
-        int       m_delayTime;
         OSDWidget *m_pOSD;
-        bool      m_proxyError;
         int       m_sockfd;
         QString   m_textForOSD;
-        bool      m_determineLength;
         bool      m_showBrowserWin;
         KActionCollection *m_pActionCollection;
 };

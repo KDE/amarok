@@ -18,7 +18,6 @@ email                : markey@web.de
 #include "amarokconfig.h"
 #include "amarokconfigdialog.h"
 #include "amarokdcophandler.h"
-#include "amarokslider.h" //FIXME
 #include "browserwin.h"
 #include "effectwidget.h"
 #include "enginebase.h"
@@ -30,7 +29,7 @@ email                : markey@web.de
 #include "pluginmanager.h"
 #include "threadweaver.h"        //restoreSession()
 #include "playlisttooltip.h"
-#include "titleproxy.h"
+#include "enginecontroller.h"
 
 #include <kaboutdata.h>          //initCliArgs()
 #include <kaction.h>
@@ -57,29 +56,16 @@ email                : markey@web.de
 #include <qserversocket.h>       //initIpc()
 #include <qsocketnotifier.h>     //initIpc()
 #include <qstring.h>
-#include <qtimer.h>
 
 #include <unistd.h>              //initIpc()
 #include <sys/socket.h>          //initIpc()
 #include <sys/un.h>              //initIpc()
 
 
-//start with a dummy engine that has no capabilities but ensures that amaroK always starts with
-//something even if configuration is corrupt or engine is not compiled into new amaroK etc.
-EngineBase* PlayerApp::m_pEngine = 0;
-
-
 PlayerApp::PlayerApp()
         : KApplication()
         , m_pGlobalAccel( new KGlobalAccel( this ) )
-        , m_sliderIsPressed( false )
-        , m_pMainTimer( new QTimer( this ) )
-        , m_pAnimTimer( new QTimer( this ) )
-        , m_length( 0 )
-        , m_playRetryCounter( 0 )
-        , m_delayTime( 0 )
         , m_pOSD( new OSDWidget( "amaroK" ) )
-        , m_proxyError( false )
         , m_sockfd( -1 )
         , m_showBrowserWin( false )
         , m_pActionCollection( new KActionCollection( 0, this ) )
@@ -94,14 +80,20 @@ PlayerApp::PlayerApp()
     KStdAction::keyBindings( this, SLOT( slotConfigShortcuts() ), actionCollection() );
     KStdAction::preferences( this, SLOT( slotShowOptions() ), actionCollection() );
     KStdAction::quit( this, SLOT( quit() ), actionCollection() );
-    KStdAction::keyBindings( this, SLOT( slotConfigGlobalShortcuts() ), actionCollection(), "options_configure_global_keybinding" );
+    KStdAction::keyBindings( this, SLOT( slotConfigGlobalShortcuts() ),
+                             actionCollection(), "options_configure_global_keybinding" );
     actionCollection()->action( "options_configure_global_keybinding" )->setText( i18n( "Configure Global Shortcuts..." ) );
 
-    new KAction( i18n( "Previous Track" ), "player_start", 0, this, SLOT( slotPrev() ), actionCollection(), "prev" );
-    new KAction( i18n( "Play" ), "player_play", 0, this, SLOT( slotPlay() ), actionCollection(), "play" );
-    new KAction( i18n( "Stop" ), "player_stop", 0, this, SLOT( slotStop() ), actionCollection(), "stop" );
-    new KAction( i18n( "Pause" ), "player_pause", 0, this, SLOT( slotPause() ), actionCollection(), "pause" );
-    new KAction( i18n( "Next Track" ), "player_end", 0, this, SLOT( slotNext() ), actionCollection(), "next" );
+    new KAction( i18n( "Previous Track" ), "player_start", 0, EngineController::instance(),
+                 SLOT( previous() ), actionCollection(), "prev" );
+    new KAction( i18n( "Play" ), "player_play", 0, EngineController::instance(),
+                 SLOT( play() ), actionCollection(), "play" );
+    new KAction( i18n( "Stop" ), "player_stop", 0, EngineController::instance(),
+                 SLOT( stop() ), actionCollection(), "stop" );
+    new KAction( i18n( "Pause" ), "player_pause", 0, EngineController::instance(),
+                 SLOT( pause() ), actionCollection(), "pause" );
+    new KAction( i18n( "Next Track" ), "player_end", 0,
+                 EngineController::instance(), SLOT( next() ), actionCollection(), "next" );
 
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
@@ -118,7 +110,10 @@ PlayerApp::PlayerApp()
     //after this point only analyzer pixmaps will be created
     QPixmap::setDefaultOptimization( QPixmap::BestOptim );
 
+    EngineController::instance()->attach( m_pPlayerWidget );
+
     applySettings();  //will create the engine
+
 
     //restore session as long as the user isn't asking for stuff to be inserted into the playlist etc.
     KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
@@ -127,14 +122,9 @@ PlayerApp::PlayerApp()
     //TODO remember if we were in tray last exit, if so don't show!
     m_pPlayerWidget->show(); //BrowserWin will sponaneously show if appropriate
 
-    connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
-    connect( m_pAnimTimer, SIGNAL( timeout() ), m_pPlayerWidget, SLOT( drawScroll() ) );
     //process some events so that the UI appears and things feel more responsive
     kapp->processEvents();
-    //start timers
-    m_pMainTimer->start( MAIN_TIMER );
 
-    connect( this, SIGNAL( metaData( const MetaBundle& ) ), this, SLOT( slotShowOSD( const MetaBundle& ) ) );
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
 
     handleCliArgs();
@@ -144,8 +134,6 @@ PlayerApp::PlayerApp()
 PlayerApp::~PlayerApp()
 {
     kdDebug() << k_funcinfo << endl;
-
-    m_pMainTimer->stop();
 
     //close loader IPC server socket
     if ( m_sockfd != -1 )
@@ -157,28 +145,28 @@ PlayerApp::~PlayerApp()
 
     //TODO why is this configXT'd? hardly need to accesss these globally.
     //     and it means they're a pain to extend
+    EngineBase *engine = EngineController::instance()->engine();
 
-    if( AmarokConfig::resumePlayback() && !m_playingURL.isEmpty() )
+    if( AmarokConfig::resumePlayback() && !EngineController::instance()->playingURL().isEmpty() )
     {
-        AmarokConfig::setResumeTrack( m_playingURL.url() );
+        AmarokConfig::setResumeTrack( EngineController::instance()->playingURL().url() );
 
-        if ( m_pEngine->state() != EngineBase::Empty )
-            AmarokConfig::setResumeTime( m_pEngine->position() / 1000 );
+        if ( engine->state() != EngineBase::Empty )
+            AmarokConfig::setResumeTime( engine->position() / 1000 );
         else
             AmarokConfig::setResumeTime( -1 );
     }
     else AmarokConfig::setResumeTrack( QString::null ); //otherwise it'll play previous resume next time!
 
-    m_pEngine->stop(); //slotStop() does this plus visual stuff we don't need to do on exit
-    //killTimers(); doesn't kill QTimers only QObject::startTimer() timers
+    engine->stop(); //controller does this plus visual stuff we don't need to do on exit
 
     saveConfig();
 
     delete m_pPlayerWidget;
     delete m_pBrowserWin;
     delete m_pOSD;
-
-    PluginManager::unload( m_pEngine );
+    // delete EngineController
+    PluginManager::unload( engine );
 }
 
 
@@ -205,15 +193,15 @@ void PlayerApp::handleCliArgs()
     //then the others seemed sensible. Feel free to modify this order, but please leave justification in the cvs log
     //I considered doing some sanity checks (eg only stop if paused or playing), but decided it wasn't worth it
     else if ( args->isSet( "pause" ) )
-        pApp->slotPause();
+        EngineController::instance()->pause();
     else if ( args->isSet( "stop" ) )
-        pApp->slotStop();
+        EngineController::instance()->stop();
     else if ( args->isSet( "play" ) ) //will restart if we are playing
-        pApp->slotPlay();
+        EngineController::instance()->play();
     else if ( args->isSet( "next" ) )
-        pApp->slotNext();
+        EngineController::instance()->next();
     else if ( args->isSet( "previous" ) )
-        pApp->slotPrev();
+        EngineController::instance()->previous();
 
     args->clear();    //free up memory
 }
@@ -324,16 +312,18 @@ void PlayerApp::initEngine()
         if ( !plugin )
             //this will call abort(), but this causes amarok to crash anyway!
             kdFatal() << k_funcinfo << "No engine plugin found. Aborting.\n";
-
         AmarokConfig::setSoundSystem( PluginManager::getService( plugin )->name() );
+
         kdDebug() << k_funcinfo << "setting soundSystem to: " << AmarokConfig::soundSystem() << endl;
     }
 
-    m_pEngine = static_cast<EngineBase*>( plugin );
-    m_pEngine->init( m_artsNeedsRestart, SCOPE_SIZE, AmarokConfig::rememberEffects() );
+    EngineBase *engine = static_cast<EngineBase*>( plugin );
+    // feed engine to controller
+    EngineController::instance()->setEngine( engine );
+    engine->init( m_artsNeedsRestart, SCOPE_SIZE, AmarokConfig::rememberEffects() );
 
     //called from AmarokPopup
-    connect( this, SIGNAL( configureDecoder() ), m_pEngine, SLOT( configureDecoder() ) );
+    connect( this, SIGNAL( configureDecoder() ), EngineController::instance()->engine(), SLOT( configureDecoder() ) );
 }
 
 
@@ -396,8 +386,6 @@ void PlayerApp::initPlayerWidget()
 
     m_pPlayerWidget = new PlayerWidget( 0, "PlayerWidget" );
 
-    connect( this,                         SIGNAL( metaData        ( const MetaBundle& ) ),
-             m_pPlayerWidget,                SLOT( setScroll       ( const MetaBundle& ) ) );
     connect( m_pPlayerWidget, SIGNAL( effectsWindowActivated() ),
              this,            SLOT( showEffectWidget() ) );
 
@@ -420,12 +408,12 @@ void PlayerApp::restoreSession()
 
         if( bundle )
         {
-            play( *bundle );
+            EngineController::instance()->play( *bundle );
             delete bundle;
 
             //see if we also saved the time
             int seconds = AmarokConfig::resumeTime();
-            if ( seconds > 0 ) m_pEngine->seek( seconds * 1000 );
+            if ( seconds > 0 ) EngineController::instance()->engine()->seek( seconds * 1000 );
         }
     }
 }
@@ -437,25 +425,28 @@ void PlayerApp::restoreSession()
 //SLOT
 void PlayerApp::applySettings()
 {
-    if ( AmarokConfig::soundSystem() != PluginManager::getService( m_pEngine )->name() )
+    EngineBase *engine = EngineController::instance()->engine();
+    if ( AmarokConfig::soundSystem() != PluginManager::getService( engine )->name() )
     {
         if ( AmarokConfig::soundSystem() == "GstEngine" )
             KMessageBox::information( 0, i18n( "GStreamer support is still experimental. Some features "
                                                "(like effects and visualizations) might not work properly." ) );
 
-        PluginManager::unload( m_pEngine );
-        m_pEngine = NULL;
+        PluginManager::unload( engine );
+        EngineController::instance()->setEngine( NULL );
         initEngine();
+        engine = EngineController::instance()->engine();
 
         kdDebug() << k_funcinfo << " AmarokConfig::soundSystem() == " << AmarokConfig::soundSystem() << endl;
     }
 
-    if ( AmarokConfig::hardwareMixer() != m_pEngine->isMixerHardware() )
-        AmarokConfig::setHardwareMixer( m_pEngine->initMixer( AmarokConfig::hardwareMixer() ) );
 
-    m_pEngine->setVolume( AmarokConfig::masterVolume() );
-    m_pEngine->setRestoreEffects( AmarokConfig::rememberEffects() );
-    m_pEngine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
+    if ( AmarokConfig::hardwareMixer() != engine->isMixerHardware() )
+        AmarokConfig::setHardwareMixer( engine->initMixer( AmarokConfig::hardwareMixer() ) );
+
+    EngineController::instance()->setVolume( AmarokConfig::masterVolume() );
+    engine->setRestoreEffects( AmarokConfig::rememberEffects() );
+    engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
 
     m_pOSD->setEnabled ( AmarokConfig::osdEnabled() );
     m_pOSD->setFont    ( AmarokConfig::osdFont() );
@@ -482,20 +473,11 @@ void PlayerApp::applySettings()
     setupColors();
 }
 
+
 void PlayerApp::setOsdEnabled(bool enable)
 {
     AmarokConfig::setOsdEnabled(enable);
     m_pOSD->setEnabled ( AmarokConfig::osdEnabled() );
-}
-
-
-bool PlayerApp::isPlaying() const
-{
-    //this method can get called by PlaylistWidget::restoreCurrentTrack() before engine is initialised
-    if ( m_pEngine )
-        return m_pEngine->loaded();
-    else
-        return false;
 }
 
 
@@ -504,7 +486,7 @@ void PlayerApp::saveConfig()
     AmarokConfig::setBrowserWinPos     ( m_pBrowserWin->pos() );
     AmarokConfig::setBrowserWinSize    ( m_pBrowserWin->size() );
     AmarokConfig::setBrowserWinEnabled ( m_showBrowserWin );
-    AmarokConfig::setMasterVolume      ( m_pEngine->volume() );
+    AmarokConfig::setMasterVolume      ( EngineController::instance()->engine()->volume() );
     AmarokConfig::setPlayerPos         ( m_pPlayerWidget->pos() );
     AmarokConfig::setVersion           ( APP_VERSION );
 
@@ -522,10 +504,9 @@ void PlayerApp::readConfig()
     m_artsNeedsRestart = AmarokConfig::version() != APP_VERSION;
 
     initEngine();
-
-    AmarokConfig::setHardwareMixer( m_pEngine->initMixer( AmarokConfig::hardwareMixer() ) );
-    m_pEngine->setVolume( AmarokConfig::masterVolume() );
-    m_pPlayerWidget->m_pVolSlider->setValue( m_pEngine->volume() );
+    EngineBase *engine = EngineController::instance()->engine();
+    AmarokConfig::setHardwareMixer( engine->initMixer( AmarokConfig::hardwareMixer() ) );
+    EngineController::instance()->setVolume( AmarokConfig::masterVolume() );
 
     m_pPlayerWidget->move  ( AmarokConfig::playerPos() );
     m_pBrowserWin  ->move  ( AmarokConfig::browserWinPos() );
@@ -540,15 +521,15 @@ void PlayerApp::readConfig()
     m_pGlobalAccel->insert( "show", i18n( "Show/Hide the Playlist" ), 0, KKey("WIN+p"), 0,
                             this, SLOT( slotPlaylistShowHide() ), true, true );
     m_pGlobalAccel->insert( "play", i18n( "Play" ), 0, KKey("WIN+x"), 0,
-                            this, SLOT( slotPlay() ), true, true );
+                            EngineController::instance(), SLOT( play() ), true, true );
     m_pGlobalAccel->insert( "pause", i18n( "Pause" ), 0, KKey("WIN+c"), 0,
-                            this, SLOT( slotPause() ), true, true );
+                            EngineController::instance(), SLOT( pause() ), true, true );
     m_pGlobalAccel->insert( "stop", i18n( "Stop" ), 0, KKey("WIN+v"), 0,
-                            this, SLOT( slotStop() ), true, true );
+                            EngineController::instance(), SLOT( stop() ), true, true );
     m_pGlobalAccel->insert( "next", i18n( "Next Track" ), 0, KKey("WIN+b"), 0,
-                            this, SLOT( slotNext() ), true, true );
+                            EngineController::instance(), SLOT( next() ), true, true );
     m_pGlobalAccel->insert( "prev", i18n( "Previous Track" ), 0, KKey("WIN+z"), 0,
-                            this, SLOT( slotPrev() ), true, true );
+                            EngineController::instance(), SLOT( previous() ), true, true );
     m_pGlobalAccel->insert( "osd", i18n( "Show OSD" ), 0, KKey("WIN+o"), 0,
                             this, SLOT( slotShowOSD() ), true, true );
     m_pGlobalAccel->insert( "volup", i18n( "Increase volume" ), 0, KKey("WIN+KP_Add"), 0,
@@ -665,12 +646,6 @@ void PlayerApp::insertMedia( const KURL::List &list )
 }
 
 
-bool PlayerApp::decoderConfigurable()
-{
-    return m_pEngine->decoderConfigurable();
-}
-
-
 bool PlayerApp::eventFilter( QObject *o, QEvent *e )
 {
     //Hi! Welcome to one of amaroK's less clear functions!
@@ -684,8 +659,6 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
     }
     else if( e->type() == QEvent::Hide && o == m_pPlayerWidget )
     {
-        m_pAnimTimer->stop();
-
         //if the event is not spontaneous then amaroK was responsible for the event
         //we should therefore hide the playlist as well
         //the only spontaneous hide events we care about are iconification and shading
@@ -703,8 +676,6 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
     }
     else if( e->type() == QEvent::Show && o == m_pPlayerWidget )
     {
-        m_pAnimTimer->start( ANIM_TIMER );
-
         //TODO this is broke again if playlist is minimized
         //when fixing you have to make sure that changing desktop doesn't un minimise the playlist
 
@@ -745,121 +716,6 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
 }
 
 
-//these functions ask the playlist to change the track, if it can change track it notifies us again via a SIGNAL
-//the SIGNAL is connected to ::play() below
-
-void PlayerApp::slotPlay()
-{
-    kdDebug() << k_funcinfo << endl;
-    if ( m_pEngine->state() == EngineBase::Paused )
-    {
-        slotPause();
-        m_pPlayerWidget->m_pButtonPlay->setDown( TRUE );
-        m_pPlayerWidget->m_pButtonPlay->setOn( TRUE );
-    }
-    else
-        emit orderCurrentTrack();
-}
-
-void PlayerApp::slotPrev() { emit orderPreviousTrack(); }
-void PlayerApp::slotNext() { emit orderNextTrack(); }
-
-
-void PlayerApp::play( const MetaBundle &bundle )
-{
-    const KURL &url = m_playingURL = bundle.url();
-    emit currentTrack( url );
-
-    if ( AmarokConfig::titleStreaming() &&
-         url.protocol() == "http" &&
-         !m_proxyError &&
-         !url.path().endsWith( ".ogg" ) )
-    {
-        TitleProxy::Proxy *pProxy = new TitleProxy::Proxy( url );
-        const QObject* object = m_pEngine->play( pProxy->proxyUrl() );
-
-        if ( object )
-        {
-            connect( object,    SIGNAL( destroyed   () ),
-                     pProxy,      SLOT( deleteLater () ) );
-            connect( this,      SIGNAL( deleteProxy () ),
-                     pProxy,      SLOT( deleteLater () ) );
-            connect( pProxy,    SIGNAL( error       () ),
-                     this,         SLOT( proxyError  () ) );
-            connect( pProxy,    SIGNAL( metaData    ( const MetaBundle& ) ),
-                     this,       SIGNAL( metaData    ( const MetaBundle& ) ) );
-        }
-        else
-        {
-            delete pProxy;
-            proxyError();
-            return;
-        }
-    }
-    else
-        m_pEngine->play( url );
-
-    m_proxyError = false;
-
-    //TODO replace currentTrack signal with this, and in PlaylistWidget do a compare type function to see if there is any new data
-    emit metaData( bundle );
-    //when TagLib can't get us the track length, we ask the engine as fallback
-    m_determineLength = ( m_pEngine->isStream() || bundle.length() ) ? false : true;
-    m_length = bundle.length() * 1000;
-
-    m_pPlayerWidget->m_pSlider->setValue    ( 0 );
-    m_pPlayerWidget->m_pSlider->setMaxValue ( m_length );
-
-    //interface consistency
-    m_pPlayerWidget->m_pButtonPlay ->setOn  ( true );
-    m_pPlayerWidget->m_pButtonPause->setDown( false );
-}
-
-
-void PlayerApp::proxyError()
-{
-    kdWarning() << k_funcinfo << " TitleProxy error! Switching to normal playback.." << endl;
-
-    m_proxyError = true;
-    m_pEngine->stop();
-    emit deleteProxy();
-    slotPlay();
-}
-
-
-void PlayerApp::slotPause()
-{
-    if ( m_pEngine->loaded() )
-    {
-        if ( m_pEngine->state() == EngineBase::Paused )
-        {
-            m_pEngine->play();
-            m_pPlayerWidget->m_pButtonPause->setDown( false );
-        }
-        else
-        {
-            m_pEngine->pause();
-            m_pPlayerWidget->m_pButtonPause->setDown( true );
-        }
-    }
-}
-
-
-void PlayerApp::slotStop()
-{
-    m_pEngine->stop();
-
-    m_length = 0;
-    m_playingURL = KURL();
-    m_pPlayerWidget->defaultScroll          ();
-    m_pPlayerWidget->timeDisplay            ( 0 );
-    m_pPlayerWidget->m_pSlider->setValue    ( 0 );
-    m_pPlayerWidget->m_pSlider->setMaxValue ( 0 );
-    m_pPlayerWidget->m_pButtonPlay->setOn   ( false );
-    m_pPlayerWidget->m_pButtonPause->setDown( false );
-}
-
-
 void PlayerApp::slotPlaylistShowHide()
 {
     //show/hide the playlist global shortcut slot
@@ -886,103 +742,6 @@ void PlayerApp::slotPlaylistShowHide()
 
     // make sure playerwidget button is in sync
     m_pPlayerWidget->setPlaylistShown( m_showBrowserWin );
-}
-
-
-void PlayerApp::slotSliderPressed()
-{
-    m_sliderIsPressed = true;
-}
-
-
-void PlayerApp::slotSliderReleased()
-{
-    if ( m_pEngine->state() == EngineBase::Playing )
-    {
-        m_pEngine->seek( m_pPlayerWidget->m_pSlider->value() );
-    }
-
-    m_sliderIsPressed = false;
-}
-
-
-void PlayerApp::slotSliderChanged( int value )
-{
-    if ( m_sliderIsPressed )
-    {
-        value /= 1000;    // ms -> sec
-
-        m_pPlayerWidget->timeDisplay( value );
-    }
-}
-
-
-void PlayerApp::slotVolumeChanged( int value )
-{
-    if (value < 0)   value = 0;     // FIXME: I think this belongs to Engine?
-    if (value > 100) value = 100;
-
-    AmarokConfig::setMasterVolume( value );
-    m_pEngine->setVolume( value );
-    m_pPlayerWidget->m_pVolSlider->setValue( value ); // FIXME: slider should reflect actual value, thats why its updated here
-}
-
-
-void PlayerApp::slotMainTimer()
-{
-    if ( m_sliderIsPressed || m_playingURL.isEmpty() )
-        return;
-
-    //try to get track length from engine when TagLib fails
-    if ( m_determineLength )
-    {
-        if ( (m_length = m_pEngine->length()) )
-        {
-            m_pPlayerWidget->m_pSlider->setMaxValue ( m_length );
-            m_determineLength = false;
-        }
-    }
-
-    m_pPlayerWidget->m_pSlider->setValue( m_pEngine->position() );
-
-    // <Draw TimeDisplay>
-    if ( m_pPlayerWidget->isVisible() )
-    {
-        m_pPlayerWidget->timeDisplay( m_pEngine->position() / 1000 );
-    }
-    // </Draw TimeDisplay>
-
-    // <Crossfading>
-    if ( ( AmarokConfig::crossfade() ) &&
-            ( !m_pEngine->isStream() ) &&
-            ( m_length ) &&
-            ( m_length - m_pEngine->position() < AmarokConfig::crossfadeLength() )  )
-    {
-        slotNext();
-        return;
-    }
-
-    // check if track has ended or is broken
-    if ( m_pEngine->state() == EngineBase::Empty ||
-            m_pEngine->state() == EngineBase::Idle )
-    {
-        kdDebug() << k_funcinfo " Idle detected. Skipping track.\n";
-
-        if ( AmarokConfig::trackDelayLength() > 0 ) //this can occur syncronously to XFade and not be fatal
-        {
-            //delay before start of next track, without freezing the app
-            m_delayTime += MAIN_TIMER;
-            if ( m_delayTime >= AmarokConfig::trackDelayLength() )
-            {
-                m_delayTime = 0;
-                slotNext();
-            }
-        }
-        else if( m_pBrowserWin->isAnotherTrack() )
-            slotNext();
-        else
-            slotStop();
-    }
 }
 
 
@@ -1056,18 +815,20 @@ void PlayerApp::slotShowOSD()
 
 void PlayerApp::slotShowVolumeOSD()
 {
-    m_pOSD->showOSD( i18n("Volume %1%").arg( m_pEngine->volume() ), true );
+    m_pOSD->showOSD( i18n("Volume %1%").arg( EngineController::instance()->engine()->volume() ), true );
 }
 
 void PlayerApp::slotIncreaseVolume()
 {
-    m_pPlayerWidget->m_pDcopHandler->volumeUp();
+    EngineController *controller = EngineController::instance();
+    controller->setVolume( controller->engine()->volume() + 100 / 25 );
     slotShowVolumeOSD();
 }
 
 void PlayerApp::slotDecreaseVolume()
 {
-    m_pPlayerWidget->m_pDcopHandler->volumeDown();
+    EngineController *controller = EngineController::instance();
+    controller->setVolume( controller->engine()->volume() - 100 / 25 );
     slotShowVolumeOSD();
 }
 

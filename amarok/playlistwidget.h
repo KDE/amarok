@@ -19,6 +19,7 @@
 #define PLAYLISTWIDGET_H
 
 #include "browserwin.h"  //friend
+#include "engine/engineobserver.h"
 
 #include <qstringlist.h> //stack allocated
 #include <qptrlist.h>    //stack allocated
@@ -78,7 +79,7 @@ class ThreadWeaver;
  *
  ***/
 
-class PlaylistWidget : private KListView
+class PlaylistWidget : private KListView, public EngineObserver
 {
     Q_OBJECT
     public:
@@ -123,6 +124,9 @@ class PlaylistWidget : private KListView
         void setCurrentTrack( const KURL& );
         void undo();
         void redo();
+
+    protected:
+        void engineNewMetaData( const MetaBundle &/*bundle*/, bool /*trackChanged*/ );
 
     private slots:
         void slotGlowTimer();

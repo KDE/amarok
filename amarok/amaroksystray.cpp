@@ -8,6 +8,7 @@
 
 #include "amaroksystray.h"
 #include "playerapp.h"
+#include "enginecontroller.h"
 
 #include <qevent.h>
 #include <kaction.h>
@@ -80,8 +81,9 @@ bool AmarokSystray::event( QEvent *e )
     case QEvent::MouseButtonPress:
         if( static_cast<QMouseEvent*>(e)->button() == Qt::MidButton )
         {
-            if( pApp->isPlaying() ) pApp->slotPause();
-            else pApp->slotPlay();
+            bool isPlaying = EngineController::instance()->engine() ? EngineController::instance()->engine()->loaded() : false;
+            if( isPlaying ) EngineController::instance()->pause();
+            else EngineController::instance()->play();
             return TRUE;
         }
     default:

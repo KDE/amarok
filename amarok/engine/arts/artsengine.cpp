@@ -18,6 +18,7 @@ email                : markey@web.de
 #include "amarokarts.h"
 #include "artsengine.h"
 #include "enginebase.h"
+#include "engineobserver.h"
 
 #include <math.h>            //setVolume(), timerEvent()
 #include <string>
@@ -61,7 +62,7 @@ email                : markey@web.de
 AMAROK_EXPORT_PLUGIN( ArtsEngine )
 
 
-ArtsEngine::ArtsEngine()
+ArtsEngine::ArtsEngine( )
         : EngineBase()
         , m_pPlayObject( 0 )
         , m_pPlayObjectXfade( 0 )

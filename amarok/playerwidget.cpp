@@ -25,6 +25,7 @@ email                : markey@web.de
 #include "playerapp.h"
 #include "playerwidget.h"
 #include "playlisttooltip.h" //setScroll()
+#include "enginecontroller.h"
 
 #include <qfont.h>
 #include <qhbox.h>
@@ -73,6 +74,7 @@ placeWidget( W *w, const QRect &r )
 
 PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     : QWidget( parent, name )
+    , m_pAnimTimer( new QTimer( this ) )
     , m_pDcopHandler( new AmarokDcopHandler ) //FIXME move to playerapp!
     , m_pTray( 0 )
     , m_pAnalyzer( 0 )
@@ -99,13 +101,17 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
         m_pFrameButtons = wrapper<QHBox>( QRect(0, 118, 311, 22), this );
 
         //FIXME change the names of the icons to reflect kde names so we can fall back to them if necessary
-        new NavButton( m_pFrameButtons, "prev",  pApp, SLOT( slotPrev()  ) );
-        m_pButtonPlay  = new NavButton( m_pFrameButtons, "play",  pApp, SLOT( slotPlay()  ) );
-        m_pButtonPause = new NavButton( m_pFrameButtons, "pause", pApp, SLOT( slotPause() ) );
-        new NavButton( m_pFrameButtons, "stop",  pApp, SLOT( slotStop()  ) );
-        new NavButton( m_pFrameButtons, "next",  pApp, SLOT( slotNext()  ) );
+        new NavButton( m_pFrameButtons, "prev",
+                       EngineController::instance(), SLOT( previous()  ) );
+        m_pButtonPlay  = new NavButton( m_pFrameButtons, "play",
+                                        EngineController::instance(), SLOT( play()  ) );
+        m_pButtonPause = new NavButton( m_pFrameButtons, "pause", EngineController::instance(),
+                                        SLOT( pause() ) );
+        new NavButton( m_pFrameButtons, "stop",  EngineController::instance(), SLOT( stop()  ) );
+        new NavButton( m_pFrameButtons, "next",  EngineController::instance(), SLOT( next()  ) );
 
         m_pButtonPlay->setToggleButton( true );
+        m_pButtonPause->setToggleButton( true );
     } //</NavButtons>
 
     { //<Sliders>
@@ -114,15 +120,12 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
 
         m_pVolSlider->setMaxValue( VOLUME_MAX );
 
-        //FIXME move these slots here!
-        connect( m_pSlider,    SIGNAL( sliderPressed() ),
-                 pApp,         SLOT  ( slotSliderPressed() ) );
         connect( m_pSlider,    SIGNAL( sliderReleased() ),
-                 pApp,         SLOT  ( slotSliderReleased() ) );
+                 this,         SLOT  ( slotSliderReleased() ) );
         connect( m_pSlider,    SIGNAL( valueChanged( int ) ),
-                 pApp,         SLOT  ( slotSliderChanged( int ) ) );
+                 this,         SLOT  ( slotSliderChanged( int ) ) );
         connect( m_pVolSlider, SIGNAL( valueChanged( int ) ),
-                 pApp,         SLOT  ( slotVolumeChanged( int ) ) );
+                 EngineController::instance(), SLOT  ( setVolume( int ) ) );
     } //<Sliders>
 
     { //<Scroller>
@@ -145,7 +148,8 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
         m_timeBuffer.fill( backgroundColor() );
     } //<TimeLabel>
 
-    m_pButtonEq = placeWidget( new IconButton( this, "eq" ), QRect(34,85, 28,13) );
+        connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( drawScroll() ) );
+        m_pButtonEq = placeWidget( new IconButton( this, "eq" ), QRect(34,85, 28,13) );
     connect( m_pButtonEq, SIGNAL( released() ),
              this, SIGNAL( effectsWindowActivated() ) );
     m_pButtonPl = placeWidget( new IconButton( this, "pl" ), QRect( 5,85, 28,13) );
@@ -346,9 +350,88 @@ void PlayerWidget::setEffectsWindowShown( bool on )
 }
 
 
+void PlayerWidget::engineStateChanged( EngineBase::EngineState state )
+{
+    switch( state )
+    {
+        case EngineBase::Empty:
+        case EngineBase::Idle:
+            m_pButtonPlay->setOn( false );
+            m_pButtonPause->setOn( false );
+
+            defaultScroll();
+            timeDisplay( 0 );
+            m_pSlider->setValue( 0 );
+            m_pSlider->setMaxValue( 0 );
+        break;
+
+        case EngineBase::Playing:
+            m_pButtonPlay->setOn( true );
+            m_pButtonPause->setOn( false );
+            break;
+
+        case EngineBase::Paused:
+            m_pButtonPause->setOn( true );
+            break;
+    }
+}
+
+void PlayerWidget::engineVolumeChanged( int percent )
+{
+    if( !m_pVolSlider->sliding() )
+    {
+        m_pVolSlider->blockSignals( true );
+        m_pVolSlider->setValue( percent );
+        m_pVolSlider->blockSignals( false );
+    }
+}
+
+void PlayerWidget::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
+{
+    if( trackChanged )
+    {
+        // we are playing
+        m_pButtonPlay->setOn( true );
+        m_pButtonPause->setOn( false );
+        m_pSlider->setMaxValue( bundle.length() * 1000 );
+    }
+
+    setScroll( bundle );
+}
+
+void PlayerWidget::engineTrackPositionChanged( long position )
+{
+    if( isVisible() && !m_pSlider->sliding() )
+    {
+        m_pSlider->setValue( position );
+        timeDisplay( position / 1000 );
+    }
+}
+
+
+void PlayerWidget::slotSliderReleased()
+{
+    EngineBase *engine = EngineController::instance()->engine();
+    if ( engine->state() == EngineBase::Playing )
+    {
+        engine->seek( m_pSlider->value() );
+    }
+}
+
+
+void PlayerWidget::slotSliderChanged( int value )
+{
+    if( m_pSlider->sliding() )
+    {
+        value /= 1000;    // ms -> sec
+
+        timeDisplay( value );
+    }
+}
+
 void PlayerWidget::timeDisplay( int seconds )
 {
-    int songLength = pApp->trackLength() / 1000;
+    int songLength = EngineController::instance()->trackLength() / 1000;
     bool remaining = AmarokConfig::timeDisplayRemaining() && songLength > 0;
 
     if( remaining ) seconds = songLength - seconds;
@@ -393,15 +476,14 @@ void PlayerWidget::wheelEvent( QWheelEvent *e )
     case ShiftButton:
 
         if( e->delta() > 0 )
-            pApp->slotPrev();
+            EngineController::instance()->previous();
         else
-            pApp->slotNext();
+            EngineController::instance()->next();
 
         break;
 
     default:
-
-        pApp->slotVolumeChanged( AmarokConfig::masterVolume() + e->delta() / 18 );
+        EngineController::instance()->setVolume( AmarokConfig::masterVolume() + e->delta() / 18 );
         pApp->slotShowVolumeOSD();
     }
 }
@@ -471,6 +553,18 @@ void PlayerWidget::dropEvent( QDropEvent *e )
     }
     else e->ignore();
 }
+
+void PlayerWidget::showEvent( QShowEvent * )
+{
+    m_pAnimTimer->start( ANIM_TIMER );
+}
+
+
+void PlayerWidget::hideEvent( QHideEvent * )
+{
+    m_pAnimTimer->stop();
+}
+
 
 // SLOTS ---------------------------------------------------------------------
 

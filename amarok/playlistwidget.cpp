@@ -19,6 +19,7 @@
 #include "playlistloader.h"
 #include "playlistwidget.h"
 #include "threadweaver.h"
+#include "enginecontroller.h"
 
 #include <qclipboard.h> //copyToClipboard(), slotMouseButtonPressed()
 #include <qcolor.h>
@@ -69,6 +70,9 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const ch
     , m_undoCounter( 0 )
 {
     kdDebug() << "PlaylistWidget::PlaylistWidget()\n";
+
+    // we want to receive engine updates
+    EngineController::instance()->attach( this );
 
     setShowSortIndicator( true );
     setDropVisualizer( false );   //we handle the drawing for ourselves
@@ -122,7 +126,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const ch
 
     //IMPORTANT CONNECTS!
     connect( this, SIGNAL( playRequest( const MetaBundle& ) ),
-             pApp,   SLOT( play( const MetaBundle& ) ) );
+             EngineController::instance(),   SLOT( play( const MetaBundle& ) ) );
 
     //TODO in order to allow streams to update playlistitems I plan to allow a connection between a
     //metaBundle and the playlistItem is represents. Thus restoring the ability to modify stuff in the
@@ -138,16 +142,12 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const ch
     //         this,   SLOT( handleStreamMeta( const MetaBundle& ) ) );
 
 
-    connect( pApp, SIGNAL( orderPreviousTrack() ),
+    connect( EngineController::instance(), SIGNAL( orderPrevious() ),
              this,   SLOT( handleOrderPrev() ) );
-    connect( pApp, SIGNAL( orderCurrentTrack() ),
+    connect( EngineController::instance(), SIGNAL( orderCurrent() ),
              this,   SLOT( handleOrderCurrent() ) );
-    connect( pApp, SIGNAL( orderNextTrack() ),
+    connect( EngineController::instance(), SIGNAL( orderNext() ),
              this,   SLOT( handleOrder() ) );
-
-    connect( pApp, SIGNAL( currentTrack( const KURL& ) ),
-             this,   SLOT( setCurrentTrack( const KURL& ) ) );
-
 
     //<init undo/redo>
         //create undo buffer directory
@@ -550,7 +550,7 @@ void PlaylistWidget::activate( QListViewItem *item ) //SLOT
         kdDebug() << "[playlist] Requesting playback for: " << item->text( 0 ) << endl;
 
         m_cachedTrack = playItem;
-        emit playRequest( playItem->metaBundle() );
+        EngineController::instance()->play( playItem->metaBundle() );
     }
 }
 
@@ -630,9 +630,10 @@ void PlaylistWidget::setCurrentTrack( PlaylistItem *item )
 
 PlaylistItem *PlaylistWidget::restoreCurrentTrack()
 {
-   if( !pApp->isPlaying() ) return 0;
+    bool loaded = EngineController::instance()->engine() ? EngineController::instance()->engine()->loaded() : false;
+   if( !loaded ) return 0;
 
-   KURL url( pApp->m_playingURL );
+   KURL url( EngineController::instance()->playingURL() );
 
    if( !(m_currentTrack && m_currentTrack->url() == url) )
    {
@@ -797,7 +798,7 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
 
     bool canRename = isRenameable( col );
     bool isCurrent = (item == m_currentTrack);
-    bool isPlaying = pApp->isPlaying();
+    bool isPlaying = EngineController::instance()->engine() ? EngineController::instance()->engine()->loaded() : false;
 
     //Markey, sorry for the lengths of these lines! -mxcl
 
@@ -906,6 +907,24 @@ void PlaylistWidget::showTrackInfo( PlaylistItem *pItem ) const //SLOT
     box.exec();
 }
 
+void PlaylistWidget::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
+{
+    if( trackChanged )
+    {
+        KURL u = bundle.url();
+        //the engine confirms a new track is playing, lets try and highlight it
+        if( m_currentTrack && m_currentTrack->url() == u ) return;
+        if( m_cachedTrack == NULL || (m_cachedTrack && m_cachedTrack->url() != u) )
+        {
+            //FIXME most likely best to start at currentTrack() and be clever
+            for( m_cachedTrack = firstChild();
+                 m_cachedTrack && m_cachedTrack->url() != u;
+                 m_cachedTrack = m_cachedTrack->nextSibling() );
+        }
+
+        setCurrentTrack( m_cachedTrack );
+    }
+}
 
 void PlaylistWidget::slotGlowTimer() //SLOT
 {
