@@ -151,7 +151,6 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         : KListView( parent )
         , m_parent( parent )
         , m_isScanning( false )
-        , m_progressBox( 0 )
 {
     kdDebug() << k_funcinfo << endl;
     m_instance = this;
@@ -168,7 +167,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     if ( !m_db )
         kdWarning() << k_funcinfo << "Could not open SQLite database\n";
 
-    //<read config>
+    //<READ CONFIG>
         KConfig* config = amaroK::config( "Collection Browser" );
 
         m_dirs = config->readListEntry( "Folders" );
@@ -177,9 +176,9 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         addColumn( m_category1 );
         m_recursively = config->readBoolEntry( "Scan Recursively", true );
         m_monitor = config->readBoolEntry( "Monitor Changes", false );
-    //</read config>
+    //</READ CONFIG>
 
-    //<open database>
+    //<OPEN DATABASE>
         //optimization for speeding up SQLite
         m_db->execSql( "PRAGMA default_synchronous = OFF;" );
         // m_db->execSql( "PRAGMA default_cache_size = 4000;" ); default is 2000, that should be enough.
@@ -205,8 +204,17 @@ CollectionView::CollectionView( CollectionBrowser* parent )
             scan();
         else
             scanMonitor();
-    //</open database>
+    //</OPEN DATABASE>
 
+    //<PROGRESS BAR>
+        m_progressBox = new QHBox( m_parent  );
+        QPushButton* button = new QPushButton( SmallIcon( "button_cancel" ), i18n( "Abort" ), m_progressBox );
+        connect( button, SIGNAL( clicked() ), m_insertdb, SLOT( stopScan() ) );
+        m_progress = new KProgress( m_progressBox );
+        m_progress->setFixedHeight( button->sizeHint().height() );
+        m_progressBox->hide();
+    //<PROGRESS BAR>
+    
     connect( this,           SIGNAL( expanded( QListViewItem* ) ),
              this,             SLOT( slotExpand( QListViewItem* ) ) );
     connect( this,           SIGNAL( collapsed( QListViewItem* ) ),
@@ -272,17 +280,8 @@ CollectionView::scan()  //SLOT
     }
     else if ( !m_isScanning )
     {
-        m_isScanning = true;
         m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
         m_insertdb->scan( m_dirs, m_recursively );
-
-        m_progressBox = new QHBox( m_parent  );
-        QPushButton* button = new QPushButton( SmallIcon( "button_cancel" ),
-                                  i18n( "Abort" ), m_progressBox );
-        connect( button, SIGNAL( clicked() ), m_insertdb, SLOT( stopScan() ) );
-        m_progress = new KProgress( m_progressBox );
-        m_progress->setFixedHeight( button->sizeHint().height() );
-        m_progressBox->show();
     }
 }
 
@@ -292,7 +291,6 @@ CollectionView::scanMonitor()  //SLOT
 {
     if ( !m_isScanning && m_monitor )
     {
-        m_isScanning = true;
         m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
         m_insertdb->scanModifiedDirs( m_recursively );
     }
@@ -338,9 +336,6 @@ CollectionView::scanDone( bool changed ) //SLOT
 
     m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, true );
     m_isScanning = false;
-
-    delete m_progressBox;
-    m_progressBox = 0;
 }
 
 
@@ -531,14 +526,16 @@ CollectionView::customEvent( QCustomEvent *e )
 {
     CollectionReader::ProgressEvent* p = dynamic_cast<CollectionReader::ProgressEvent*>( e );
     
-    if ( p && m_progress ) {
+    if ( p ) {
         switch ( p->state() ) {
         case CollectionReader::ProgressEvent::Start:
             m_progress->setProgress( 0 );
-            m_progress->show();
+            m_progressBox->show();
+            m_isScanning = true;
             break;
     
         case CollectionReader::ProgressEvent::Stop:
+            m_progressBox->hide();
             break;
     
         case CollectionReader::ProgressEvent::Total:
