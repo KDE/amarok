@@ -1,4 +1,5 @@
 /* Copyright 2002-2004 Mark Kretschmann, Max Howell
+ * Copyright 2005 Seb Ruiz
  * Licensed as described in the COPYING file found in the root of this distribution
  * Maintainer: Max Howell <max.howell@methylblue.com>
 
@@ -391,6 +392,19 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
 }
 
 void
+Playlist::addRandomTracks( uint songCount )
+{
+    QueryBuilder qb;
+    qb.setOptions( QueryBuilder::optRandomize | QueryBuilder::optRemoveDuplicates );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+
+    qb.setLimit( 0, songCount );
+    QStringList url = qb.run();
+
+    insertMedia( KURL::List( url ), Playlist::Unique );
+}
+
+void
 Playlist::insertMediaSql( const QString& sql, int options )
 {
     // TODO Implement more options
@@ -432,26 +446,11 @@ Playlist::playNextTrack( bool forceNext )
 {
     PlaylistItem *item = currentTrack();
 
-    if( AmarokConfig::dynamicMode() )
+    if( AmarokConfig::dynamicMode() && childCount() < 20 )
     {
-        int songCount = 1;
-
-        // there are no tracks in the playlist (or just the one being played)
-        // we stop playing because it is unpredictable to add tracks AND start playing them.
-        if ( childCount() <= 1 )
-        {
-            songCount = 20 - childCount() ;
-            m_stopAfterCurrent = true;
-        }
-
-        QueryBuilder qb;
-        qb.setOptions( QueryBuilder::optRandomize | QueryBuilder::optRemoveDuplicates );
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-
-        qb.setLimit( 0, songCount );
-        QStringList url = qb.run();
-
-        insertMedia( KURL::List( url ), Playlist::Unique );
+        uint songCount = 1;
+        songCount = 20 - childCount();
+        addRandomTracks( songCount );
     }
 
     if( isEmpty() )
@@ -522,9 +521,28 @@ Playlist::playNextTrack( bool forceNext )
 
         if ( AmarokConfig::dynamicMode() && item != firstChild() )
         {
-            PlaylistItem *first = firstChild();
-            removeItem( first ); //first visible item
-            delete first;
+            MyIterator it( this, MyIterator::Visible );
+
+            for( int x=0; *it; ++it, ++x )
+            {
+                if ( *it == currentTrack() )
+                    if ( x < 5 )
+                    {
+                        activate( item );
+                        return;
+                    }
+                    else if ( x > childCount() - 5 )
+                        kdDebug() << "Not implemented yet" << endl;
+                    else
+                    {
+                        PlaylistItem *first = firstChild();
+                        removeItem( first ); //first visible item
+                        delete first;
+                        addRandomTracks( 1 );
+                    }
+            }
+
+
         }
 
         if ( !item && AmarokConfig::repeatPlaylist() )
