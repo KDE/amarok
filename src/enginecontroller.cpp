@@ -219,8 +219,10 @@ EngineBase *EngineController::loadEngine() //static
     {
         kdWarning() << "Cannot load the: " << AmarokConfig::soundSystem() << " plugin. Trying another engine..\n";
 
-        //try to invoke _any_ engine plugin
-        plugin = PluginManager::createFromQuery( "[X-KDE-amaroK-plugintype] == 'engine'" );
+        // Try to invoke _any_ engine plugin, except the one we already tried
+        plugin = PluginManager::createFromQuery( QString( "[X-KDE-amaroK-plugintype] == 'engine' and "
+                                                          "[X-KDE-amaroK-name] != '%1'" )
+                                                          .arg( AmarokConfig::soundSystem() ) );
 
         if ( !plugin )
         {

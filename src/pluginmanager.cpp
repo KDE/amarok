@@ -62,8 +62,16 @@ PluginManager::createFromQuery( const QString& constraint )
         kdWarning() << k_funcinfo << "No matching plugin found.\n";                                          
         return 0;
     }
-                
-    return createFromService( *offers.begin() );    
+     
+    // Select plugin with highest rank
+    int rank = 0;
+    uint current = 0;
+    for ( uint i = 0; i < offers.count(); i++ ) {
+        if ( offers[i]->property( "X-KDE-amaroK-rank" ).toInt() > rank )
+            current = i;
+    }
+               
+    return createFromService( offers[current] );    
 }
 
     
