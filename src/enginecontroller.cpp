@@ -18,7 +18,6 @@ email                : fh@ez.no
  ***************************************************************************/
 
 #include "amarokconfig.h"
-#include "collectiondb.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
 #include "pluginmanager.h"

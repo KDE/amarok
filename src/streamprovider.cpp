@@ -24,6 +24,9 @@ email                : markey@web.de
 
 #include <qtimer.h>
 
+// TODO:
+// Look at LibVorbisfile for ogg comment decoding.
+
 
 using namespace amaroK;
 
