@@ -23,6 +23,7 @@ AMAROK_EXPORT_PLUGIN( XineEngine )
 #include <math.h>
 #include <qapplication.h>
 #include <qdir.h>
+#include "unistd.h"
 
 
 //define this to use xine in a more standard way
@@ -120,24 +121,35 @@ XineEngine::init()
 bool
 XineEngine::makeNewStream()
 {
-   m_audioPort = xine_open_audio_driver( m_xine, "auto", NULL );
-   if( !m_audioPort ) {
-      KMessageBox::error( 0, i18n("xine was unable to initialize any audio-drivers.") );
-      return false;
-   }
+   {
+      ///this block is so we don't crash if we fail to allocate a thingy
+      xine_stream_t      *stream;
+      xine_audio_port_t  *port;
 
-   m_stream = xine_stream_new( m_xine, m_audioPort, NULL );
-   if( !m_stream ) {
-      KMessageBox::error( 0, i18n("amaroK could not create a new xine-stream.") );
-      return false;
+      port = xine_open_audio_driver( m_xine, "auto", NULL );
+      if( !port ) {
+         KMessageBox::error( 0, i18n("xine was unable to initialize any audio-drivers.") );
+         return false;
+      }
+
+      stream = xine_stream_new( m_xine, port, NULL );
+      if( !stream ) {
+         KMessageBox::error( 0, i18n("amaroK could not create a new xine-stream.") );
+         return false;
+      }
+
+      //assign temporaries to members, the important bits are now created;
+      m_stream = stream;
+      m_audioPort = port;
    }
 
    if( m_eventQueue )
       xine_event_dispose_queue( m_eventQueue );
 
-   xine_event_create_listener_thread( m_eventQueue = xine_event_new_queue( m_stream ),
-                                      &XineEngine::XineEventListener,
-                                      (void*)this );
+   xine_event_create_listener_thread(
+         m_eventQueue = xine_event_new_queue( m_stream ),
+         &XineEngine::XineEventListener,
+         (void*)this );
 
    #ifndef XINE_SAFE_MODE
    //implemented in xine-scope.h
@@ -677,20 +689,16 @@ Fader::run()
     {
         debug() << "sleep: " << (*it).sleep << " volume: " << (*it).volume << endl;
 
-        if( (*it).sleep < 0 )
-            kdDebug() << "sleep < 0 for " << ((*it).stream == m_increase ? "increasing stream" : "decreasing stream") << " at volume=" << (*it).volume << endl;
-        else
-            QThread::usleep( (*it).sleep );
+        if( (*it).sleep > 0 ) //FIXME
+           QThread::usleep( (*it).sleep );
 
         xine_set_param( (*it).stream, XINE_PARAM_AUDIO_AMP_LEVEL, (*it).volume );
     }
 
-    debug() << "[fader] Done!\n";
-
     //stop using cpu!
     xine_stop( m_decrease );
 
-    QThread::msleep( 5000 );
+    QThread::sleep( 5 );
 
     deleteLater();
 }
