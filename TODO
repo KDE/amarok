@@ -3,14 +3,18 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #90 being the highest available (take this one for your next bug and increase here)
+           #92 being the highest available (take this one for your next bug and increase here)
 
                         
 SHORT-TERM (URGENT):
   
+  CHG #90 <markey>We need some fresh artwork, at least some new player buttons before 1.0.
+  
+  CHG #91 <markey>I'd like to get a new website up before 1.0 release.   
+  
   FIX <mxcl> xmmswrapper requires gtk headers and gdk headers unfortunately, without build  fails :(
   
-  ADD <markey> Extend documentation - we cannot honestly go 1.0 with such lackluster docs.
+  ADD <markey>Extend documentation - we cannot honestly go 1.0 with such lackluster docs.
     
   ADD #88 <muesli> In CollectionBrowser's search, let the user decide, which fields are 
       to be searched (like: songtitle, artist, songtitle or artist, album) -->muesli
