@@ -22,7 +22,6 @@
 #include <vector>
 
 #define SHARED_LIB_EXT ".so"
-// #define PLUGIN_PATH "/usr/X11R6/lib/xmms/Visualization/"
 
 //TODO pure c would give a smaller binary <markey> get real, max! :)
 //TODO keep socket open
@@ -251,7 +250,6 @@ XmmsWrapper::XmmsWrapper( const std::string &plugin ) {
         } else { dlclose( h ); return ; }
 
     } //</load plugin>
-
 
     if ( m_vis->init ) { std::cout << "[amK] init()\n"; m_vis->init(); }
     if ( m_vis->playback_start ) { std::cout << "[amK] start()\n"; m_vis->playback_start(); }

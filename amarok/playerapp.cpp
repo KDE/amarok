@@ -117,9 +117,8 @@ PlayerApp::PlayerApp()
 
     handleCliArgs();
 
-    #ifdef AMK_NEW_VIS_SYSTEM
-    new Vis::SocketServer( this );
-    #endif
+    Vis::SocketServer* server = new Vis::SocketServer( this );
+    connect( this, SIGNAL( showVisSelector() ), server, SLOT( showSelector() ) ) ; 
 }
 
 PlayerApp::~PlayerApp()

@@ -10,8 +10,6 @@
 //TODO use only one socket?
 
 
-#define AMK_NEW_VIS_SYSTEM
-
 #include <qserversocket.h>
 
 namespace Vis {
@@ -21,9 +19,11 @@ class SocketServer : public QServerSocket
 Q_OBJECT
 public:
     SocketServer( QObject* );
-
     void newConnection( int );
 
+public slots:
+    void showSelector();    
+    
 private slots:
     void request( int );
 

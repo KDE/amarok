@@ -1,8 +1,5 @@
 // Maintainer: Max Howell <max.howell@methylblue.com>, (C) 2004
 // Copyright: See COPYING file that comes with this distribution
-//
-
-//NOTE If you are wondering how this gets built, it's in ../Makefile.am
 
 
 #include "enginebase.h" //to get the scope
@@ -10,9 +7,12 @@
 #include "fht.h"              //processing the scope
 #include "socketserver.h"
 
-#include <kdebug.h>
+#include <qguardedptr.h>
 #include <qlistview.h>
 #include <qsocketnotifier.h>
+
+#include <kdebug.h>
+
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/un.h>
@@ -20,10 +20,7 @@
 #include <vector>
 
 
-#ifdef AMK_NEW_VIS_SYSTEM
-
-
-static QListView *lv;
+static QGuardedPtr<QListView> lv;
 
 //TODO allow stop/start and pause signals to be sent to registered visualisations
 //TODO build xmms wrapper
@@ -74,15 +71,30 @@ Vis::SocketServer::SocketServer( QObject *parent )
     }
 
     this->setSocket( m_sockfd );
-
-    lv = new QListView( 0 );
-    lv->setCaption( "Visualizations - amaroK" );
-    //lv->show();
-
-    lv->addColumn( "Name" );
-    lv->addColumn( "Description" );
-    lv->show();
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC interface
+////////////////////////////////////////////////////////////////////////////////
+
+void
+Vis::SocketServer::showSelector() //SLOT
+{
+    if ( !lv ) {
+        lv = new QListView( 0, 0, Qt::WDestructiveClose );
+        lv->setCaption( "Visualizations - amaroK" );
+    
+        lv->addColumn( "Name" );
+        lv->addColumn( "Description" );
+        lv->show();
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE interface
+////////////////////////////////////////////////////////////////////////////////
 
 void
 Vis::SocketServer::newConnection( int sockfd )
@@ -162,6 +174,6 @@ Vis::SocketServer::request( int sockfd )
     }
 }
 
+
 #include "socketserver.moc"
 
-#endif

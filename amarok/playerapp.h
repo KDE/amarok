@@ -78,6 +78,9 @@ class PlayerApp : public KApplication, public EngineObserver
         void engineStateChanged( EngineBase::EngineState state );
         void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
 
+    signals:
+        void showVisSelector();
+    
     public slots:
         void slotPlaylistShowHide();
         void slotShowOptions();

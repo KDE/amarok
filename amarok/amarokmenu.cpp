@@ -57,6 +57,10 @@ Menu::Menu( QWidget *parent )
 
     insertSeparator();
 
+    insertItem( i18n( "&Visualizations" ), pApp, SIGNAL( showVisSelector() ) );
+
+    insertSeparator();
+        
     insertItem( i18n( "&Help" ), helpMenu( parent ) );
 
     insertSeparator();
