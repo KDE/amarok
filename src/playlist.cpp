@@ -430,12 +430,34 @@ Playlist::restoreSession()
 void
 Playlist::playNextTrack()
 {
+    PlaylistItem *item = currentTrack();
+
+    if( AmarokConfig::dynamicMode() )
+    {
+        int songCount = 1;
+
+        // there are no tracks in the playlist (or just the one being played)
+        // we stop playing because it is unpredictable to add tracks AND start playing them.
+        if ( childCount() <= 1 )
+        {
+            songCount = 20 - childCount() ;
+            m_stopAfterCurrent = true;
+        }
+
+        QueryBuilder qb;
+        qb.setOptions( QueryBuilder::optRandomize | QueryBuilder::optRemoveDuplicates );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+
+        qb.setLimit( 0, songCount );
+        QStringList url = qb.run();
+
+        insertMedia( KURL::List( url ), Playlist::Unique );
+    }
+
     if( isEmpty() )
         return;
 
-    PlaylistItem *item = currentTrack();
-
-    if ( m_stopAfterCurrent )
+    if( m_stopAfterCurrent )
     {
         m_stopAfterCurrent = false;
         activate( 0 );
@@ -494,31 +516,15 @@ Playlist::playNextTrack()
             else item = tracks.at( KApplication::random() % tracks.count() ); //is O(1)
         }
         else if( item )
-        {
             item = MyIt::nextVisible( item );
-        }
-        else item = *MyIt( this ); //ie. first visible item
+        else
+            item = *MyIt( this ); //ie. first visible item
 
-        if ( AmarokConfig::dynamicMode() )
+        if ( AmarokConfig::dynamicMode() && item != firstChild() )
         {
             PlaylistItem *first = firstChild();
             removeItem( first ); //first visible item
             delete first;
-
-
-            QStringList suggestions = CollectionDB::instance()->similarArtists( item->artist(), 16 );
-
-            QueryBuilder qb;
-            qb.setOptions( QueryBuilder::optRandomize | QueryBuilder::optRemoveDuplicates );
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-
-            if ( !suggestions.isEmpty() ) //if we have no suggestions, we wont get any results
-                qb.addMatches( QueryBuilder::tabArtist, suggestions );
-
-            qb.setLimit( 0, 1 );
-            QStringList url = qb.run();
-
-            insertMedia( KURL::List( url ), Playlist::Unique );
         }
 
         if ( !item && AmarokConfig::repeatPlaylist() )
