@@ -3,6 +3,8 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  FIX: Cover not shown in ContextBrowser, when song gets played for the first
+       time ever (BR 81241).
   ADD: Cover art fetcher, downloads album cover images from amazon.com.
   ADD: Configure->Playback->Device && default device option for audiosinks.
   ADD: ContextBrowser now also shows your overall-favorites and the newest tracks

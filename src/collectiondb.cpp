@@ -96,11 +96,19 @@ CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id,
 
     KURL url;
     url.setPath( values[0] ); 
-             
-    values.clear();
-    names.clear();
+
+    return getImageForAlbum( url.directory(), defaultImage );
+}
+
+
+QString
+CollectionDB::getImageForAlbum( const QString path, const QString defaultImage )
+{
+    QStringList values;
+    QStringList names;
+
     execSql( QString( "SELECT name FROM images WHERE path = '%1';" )
-             .arg( escapeString( url.directory() ) ), &values, &names );
+             .arg( escapeString( path ) ), &values, &names );
 
     if ( values.isEmpty() )
         return defaultImage;
@@ -112,7 +120,7 @@ CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id,
             image = values[i];
     }
 
-    return url.directory() + "/" + image;
+    return path + "/" + image;
 }
 
 

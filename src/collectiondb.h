@@ -23,6 +23,8 @@ class CollectionDB : public QObject
         QString albumSongCount( const QString artist_id, const QString album_id );
         void addImageToPath( const QString path, const QString image, bool temporary );
         QString getImageForAlbum( const QString artist_id, const QString album_id, const QString defaultImage );
+        QString getImageForAlbum( const QString path, const QString defaultImage );
+        
         void incSongCounter( const QString url );
         void updateDirStats( QString path, const long datetime );
         void removeSongsInDir( QString path );
