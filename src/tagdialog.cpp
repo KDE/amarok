@@ -370,7 +370,7 @@ TagDialog::writeTag( MetaBundle mb )
     QCString path = QFile::encodeName( mb.url().path() );
 
     if ( !TagLib::File::isWritable( path ) ) {
-        KMessageBox::error( this, i18n( "The file is not writable." ) );
+        KMessageBox::sorry( this, i18n( "TagLib claims this file is not writable." ) );
         return false;
     }
 
