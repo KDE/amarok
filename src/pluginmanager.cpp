@@ -17,6 +17,7 @@ email                : markey@web.de
 #include "pluginmanager.h"
 
 #include <vector>
+#include <assert.h>
 
 #include <qfile.h>
 #include <qstring.h>
