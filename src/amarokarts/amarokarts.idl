@@ -1,0 +1,17 @@
+#include <artsflow.idl>
+
+module Amarok
+{
+    interface Synth_STEREO_XFADE : Arts::SynthModule
+    {
+        attribute float percentage;
+        in audio stream invalue1_l,invalue1_r,invalue2_l,invalue2_r;
+        out audio stream outvalue_l, outvalue_r;
+    };
+
+    interface RawScope : Arts::StereoEffect
+    {
+        attribute long buffer;
+        sequence<float> scope();
+    };
+};

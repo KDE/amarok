@@ -1,0 +1,20 @@
+[Desktop Entry]
+Type=Service
+Name=GStreamer Engine
+Name[sv]=Gstreamer-gränssnitt
+X-KDE-Library=libamarok_gstengine_plugin
+Comment=Plugin for amaroK
+Comment[de]=Plugin für amaroK
+Comment[et]=AmaroKi plugin
+Comment[pt]='Plugin' para o amaroK
+Comment[pt_BR]='Plugin' para o amaroK
+Comment[sv]=Insticksprogram för amaroK
+ServiceTypes=amaroK/Plugin
+
+X-KDE-amaroK-plugintype=engine
+X-KDE-amaroK-authors=Mark Kretschmann
+X-KDE-amaroK-email=markey@web.de
+X-KDE-amaroK-version=1
+X-KDE-amaroK-framework-version=1
+
+

@@ -1,0 +1,3 @@
+Interface=Amarok::Synth_STEREO_XFADE,Arts::SynthModule,Arts::Object
+Language=C++
+Library=libamarokarts.la

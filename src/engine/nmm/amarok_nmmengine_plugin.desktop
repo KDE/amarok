@@ -1,0 +1,23 @@
+[Desktop Entry]
+Type=Service
+Name=NMM Engine
+Name[et]=NMM mootor
+Name[pt]=Motor NMM
+Name[pt_BR]=Motor NMM
+Name[sv]=NMM-gränssnitt
+X-KDE-Library=libamarok_nmmengine_plugin
+Comment=amaroK plugin
+Comment[da]=Plugin for amaroK
+Comment[et]=AmaroKi plugin
+Comment[pt]='Plugin' para o amaroK
+Comment[pt_BR]='Plugin' para o amaroK
+Comment[sv]=Insticksprogram för amaroK
+ServiceTypes=amaroK/Plugin
+
+X-KDE-amaroK-plugintype=engine
+X-KDE-amaroK-authors=Max Howell
+X-KDE-amaroK-email=max.howell@methylblue.com
+X-KDE-amaroK-version=1
+X-KDE-amaroK-framework-version=1
+
+

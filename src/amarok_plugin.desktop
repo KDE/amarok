@@ -1,0 +1,26 @@
+[Desktop Entry]
+Type=ServiceType
+X-KDE-ServiceType=amaroK/Plugin
+Comment=Plugin for amaroK
+Comment[de]=Plugin für amaroK
+Comment[et]=AmaroKi plugin
+Comment[pt]='Plugin' para o amaroK
+Comment[pt_BR]='Plugin' para o amaroK
+Comment[sv]=Insticksprogram för amaroK
+
+[PropertyDef::X-KDE-amaroK-plugintype]
+Type=QString
+
+[PropertyDef::X-KDE-amaroK-authors]
+Type=QStringList
+
+[PropertyDef::X-KDE-amaroK-email]
+Type=QStringList
+
+[PropertyDef::X-KDE-amaroK-version]
+Type=int
+
+[PropertyDef::X-KDE-amaroK-framework-version]
+Type=int
+
+
