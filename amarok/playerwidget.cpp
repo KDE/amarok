@@ -177,7 +177,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_pDescriptionImage = new QPixmap( locate( "data", "amarok/images/description.png" ) );
 
     m_pDescription = new QLabel ( this );
-    m_pDescription->move( 4, 5 );
+    m_pDescription->move( 4, 6 );
     m_pDescription->setFixedSize( 130, 10 );
     m_pDescription->setPixmap( *m_pDescriptionImage );
 
