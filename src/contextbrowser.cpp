@@ -27,7 +27,7 @@
 #include <khtml_part.h>
 #include <khtmlview.h>
 #include <kiconloader.h>
-#include <kimageeffect.h> // gradient backgroud image
+#include <kimageeffect.h> // gradient background image
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 #include <klocale.h>
@@ -49,7 +49,8 @@ using amaroK::QStringx;
 ContextBrowser::ContextBrowser( const char *name )
    : QVBox( 0, name )
    , m_db( new CollectionDB )
-   , m_gradientImage( 0 )
+   , m_bgGradientImage( 0 )
+   , m_headerGradientImage( 0 )
    , m_shadowGradientImage( 0 )
    , m_albumGradientImage( 0 )
 {
@@ -86,8 +87,10 @@ ContextBrowser::~ContextBrowser()
 {
     delete m_db;
 
-    if( m_gradientImage )
-      m_gradientImage->unlink();
+    if( m_bgGradientImage )
+      m_bgGradientImage->unlink();
+    if( m_headerGradientImage )
+      m_headerGradientImage->unlink();
     if( m_shadowGradientImage )
       m_shadowGradientImage->unlink();
     if( m_albumGradientImage )
@@ -425,15 +428,13 @@ void ContextBrowser::showHome() //SLOT
 
     // <Favorite Tracks Information>
     browser->write(
-        "<div  class='rbcontent'>"
-         "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-          "<tr><th>" + i18n( "Your Favorite Tracks" ) + "</th></tr>"
-         "</table>"
-         "<table class='table-body' width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+        "<div class='box'>"
+         "<div class='box-header'>" + i18n( "Your Favorite Tracks" ) + "</div>"
+         "<table class='box-body' width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
     for( uint i = 0; i < fave.count(); i = i + 5 )
         browser->write(
-            "<tr>"
+            "<tr class='" + QString( (i % 10) ? "box-row-alt" : "box-row" ) + "'>"
              "<td class='song'>"
               "<a href=\"file:" + fave[i+1].replace( '"', QCString( "%22" ) ) + "\">"
                "<b>" + fave[i] + "</b> "
@@ -441,13 +442,7 @@ void ContextBrowser::showHome() //SLOT
                fave[i+3] + " - " + fave[i+4] +
               "</a>"
              "</td>"
-/*           "<td class='sbtext' width='1'><i>" + fave[i+2] + "</i></td>"
-             "<td width='1'>"
-              "<div class='sbouter'>"
-               "<div class='sbinner' style='width: " + QString::number( fave[i+2].toInt() / 2 ) + "px;'></div>"
-              "</div>"
-             "</td>"
-*/          "</tr>" );
+            "</tr>" );
 
     browser->write(
          "</table>"
@@ -458,15 +453,13 @@ void ContextBrowser::showHome() //SLOT
 
     // <Recent Tracks Information>
 
-        "<div class='rbcontent'>"
-         "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-          "<tr><th>" + i18n( "Your Newest Tracks" ) + "</th></tr>"
-         "</table>"
-         "<table class='table-body' width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+        "<div class='box'>"
+         "<div class='box-header'>" + i18n( "Your Newest Tracks" ) + "</div>"
+         "<table class='box-body' width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
     for( uint i = 0; i < recent.count(); i = i + 4 )
         browser->write(
-            "<tr>"
+            "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
              "<td class='song'>"
               "<a href=\"file:" + recent[i+1].replace( '"', QCString( "%22" ) ) + "\">"
                "<b>" + recent[i] + "</b><br>" +
@@ -497,33 +490,38 @@ void ContextBrowser::showCurrentTrack() //SLOT
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
 
-    browser->write( "<html>" );
+    browser->write( "<html>"
+                    "<script type='text/javascript'>"
+                      "function toggleBlock(album) {"
+                        "if (document.getElementById(album).style.display != 'none') {"
+                          "document.getElementById(album).style.display = 'none';"
+                        "} else {"
+                          "document.getElementById(album).style.display = 'block';"
+                        "}"
+                      "}"
+                    "</script>" );
 
     if ( EngineController::engine()->isStream() )
     {
         browser->write( QStringx(
-             "<div class='rbcontent'>"
-              "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-               "<tr><th>&nbsp;%1</th></tr>"
-              "</table>"
-              "<table width='100%' border='0' cellspacing='0' cellpadding='1'>"
-               "<tr>"
+             "<div class='box'>"
+              "<div class='box-header'>%1</div>"
+              "<table class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>"
+               "<tr class='box-row'>"
                 "<td height='42' valign='top' width='90%'>"
-                 "<span class='stream'>"
-                  "<b>%2</b>"
-                  "<br/>"
-                  "<br/>"
-                  "%3"
-                  "<br/>"
-                  "<br/>"
-                  "%4"
-                  "<br/>"
-                  "%5"
-                  "<br/>"
-                  "%6"
-                  "<br/>"
-                  "%7"
-                 "</span>"
+                 "<b>%2</b>"
+                 "<br>"
+                 "<br>"
+                 "%3"
+                 "<br>"
+                 "<br>"
+                 "%4"
+                 "<br>"
+                 "%5"
+                 "<br>"
+                 "%6"
+                 "<br>"
+                 "%7"
                 "</td>"
                "</tr>"
               "</table>"
@@ -540,22 +538,16 @@ void ContextBrowser::showCurrentTrack() //SLOT
         if ( m_metadataHistory.count() > 2 )
         {
             browser->write(
-                    "<br/>"
-                    "<div class='rbcontent'>"
-                     "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-                      "<tr><th>&nbsp;" + i18n( "Metadata History" ) + "</th></tr>"
-                     "</table>"
-                     "<table width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+                "<br>"
+                "<div class='box'>"
+                 "<div class='box-header'>" + i18n( "Metadata History" ) + "</div>"
+                 "<table class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
             QStringList::const_iterator it;
             // Ignore first two items, as they don't belong in the history
             for ( it = m_metadataHistory.at( 2 ); it != m_metadataHistory.end(); ++it )
             {
-                browser->write( QStringx(
-                    "<tr>"
-                        "%1"
-                    "</tr>" )
-                    .arg( *it ) );
+                browser->write( QStringx( "<tr class='box-row'><td>%1</td></tr>" ).arg( *it ) );
             }
 
             browser->write(
@@ -582,27 +574,21 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     //making 2 tables is most probably not the cleanest way to do it, but it works.
     browser->write( QStringx(
-        "<div class='rbcontent'>"
-         "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-          "<tr>"
-           "<th style='font-weight: normal;'>"
-            "<a title='%1' href='musicbrainz:%2 @@@ %3'>"
-             "<img src='%4' style='float: right; width: 38px; height: 22px;' />"
-            "</a>"
-            "<b>%5</b> - <b>%6</b>"
-            "<br/>"
-            "%7"
-           "</th>"
-          "</tr>"
-         "</table>"
-         "<table class='table-body' width='100%'>"
-          "<tr>"
-           "<td width='20%'>"
-            "<a class='menu' href='fetchcover:%8 @@@ %9'>"
+        "<div class='box'>"
+         "<div class='box-header' style='font-weight: normal;>"
+          "<a title='%1' href='musicbrainz:%2 @@@ %3'>"
+           "<img src='%4' style='float: right; width: 38px; height: 22px;'/>"
+          "</a>"
+          "<b>%5</b> - <b>%6</b><br>%7"
+         "</div>"
+         "<table class='box-body' width='100%'>"
+          "<tr class='box-row'>"
+           "<td width='1' style='margin: 0.4em 0.0em;'>"
+            "<a href='fetchcover:%8 @@@ %9'>"
              "<img align='left' hspace='2' src='%11' title='%10'>"
             "</a>"
            "</td>"
-           "<td valign='bottom' align='right' width='80%'>" )
+           "<td valign='bottom' align='right'>" )
         .args( QStringList()
             << i18n( "Look up this track at musicbrainz.com" )
             << escapeHTMLAttr( m_db->escapeString( currentTrack.artist() ) )
@@ -626,15 +612,18 @@ void ContextBrowser::showCurrentTrack() //SLOT
         const uint playtimes = values[2].toInt();
         const uint score = values[3].toInt();
 
-        QString scoreBox = "<table><tbody><tr><td>"+ QString::number( score ) +"</td><td title='Score'><div class='sbouter'><div class='sbinner' style='width: "+ QString::number( score / 2 )+ "px;'></div></div></td></tr></tbody></table>";
+        QString scoreBox = "<table border='0' cellspacing='0' cellpadding='0'><tr><td nowrap>"
+                + QString::number( score ) +
+                "&nbsp;</td><td title='Score'><div class='sbouter'><div class='sbinner' style='width: "
+                + QString::number( score / 2 ) +
+                "px;'></div></div></td></tr></table>";
 
-        browser->write( QStringx("%1<br>%2%3<br>%4<br>")
+        browser->write( QStringx("%1<br>%2%3<br>%4<br>")    
             .args( QStringList()
                 << i18n( "Track played once", "Track played %n times", playtimes )
                 << scoreBox
                 << i18n( "Last play: %1" ).arg( KGlobal::locale()->formatDateTime( lastPlay, true /* short */ ) )
-                << i18n( "First play: %1" ).arg( KGlobal::locale()->formatDateTime( firstPlay, true /* short */ ) )
-                       ) );
+                << i18n( "First play: %1" ).arg( KGlobal::locale()->formatDateTime( firstPlay, true /* short */ ) ) ) );
    }
    else
         browser->write( "" + i18n( "Never played before" )  + "" );
@@ -648,9 +637,10 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     if ( !m_db->isFileInCollection( currentTrack.url().path() ) )
     {
-        browser->write( "<div class='warning' style='padding: 1em 0.5em 2em 0.5em'>" );
-        browser->write( i18n("If you would like to see contextual information about this track, you should add it to your Collection.") );
-        browser->write( "&nbsp;<a class='warning' href='show:collectionSetup'>" + i18n( "Click here to change your Collection setup" ) + "</a>.</div>" );
+        browser->write( "<div class='warning'>"
+                         + i18n("If you would like to see contextual information about this track, you should add it to your Collection.") +
+                         "&nbsp;<a href='show:collectionSetup'>" + i18n( "Click here to change your Collection setup" ) + "</a>."
+                        "</div>" );
     }
 
     // <Suggested Songs>
@@ -696,30 +686,26 @@ void ContextBrowser::showCurrentTrack() //SLOT
         {
             browser->write(
                 "<br>"
-                 "<div class='rbcontent'>"
-                  "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-                   "<tr><th>" + i18n( "Suggested Songs" ) + "</th></tr>"
-                  "</table>"
-                  "<table class='table-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
-
+                "<div class='box'>"
+                 "<div class='box-header'>" + i18n( "Suggested Songs" ) + "</div>"
+                 "<table class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
             for ( uint i = 0; i < values.count(); i += 4 )
                 browser->write(
-                  "<tr>"
-                  "<td class='song'>"
-                    "<a href=\"file:" + values[i].replace( '"', QCString( "%22" ) ) + "\">" + values[i + 2] + " - " + values[i + 1] +
-                    "</a>"
-                  "</td>"
-                  "<td class='sbtext' width='1'>" + values[i + 3] + "</td>"
-                  "<td width='1' title='Score'>"
+                  "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
+                   "<td class='song'>"
+                    "<a href=\"file:" + values[i].replace( '"', QCString( "%22" ) ) + "\">" + values[i + 2] + " - " + values[i + 1] + "</a>"
+                   "</td>"
+                   "<td class='sbtext' width='1'>" + values[i + 3] + "</td>"
+                   "<td width='1' title='Score'>"
                     "<div class='sbouter'>"
-                    "<div class='sbinner' style='width: " + QString::number( values[i + 3].toInt() / 2 ) + "px;'></div>"
+                     "<div class='sbinner' style='width: " + QString::number( values[i + 3].toInt() / 2 ) + "px;'></div>"
                     "</div>"
-                  "</td>"
+                   "</td>"
                   "</tr>" );
 
             browser->write(
-                "</table>"
+                 "</table>"
                 "</div>" );
         }
     }
@@ -738,18 +724,15 @@ void ContextBrowser::showCurrentTrack() //SLOT
     {
         browser->write(
             "<br>"
-            "<div class='rbcontent'>"
-             "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-                "<tr><th>" + i18n( "Favorite Tracks By %1" ).arg( artistName ) + "</th></tr>"
-             "</table>"
-             "<table class='table-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+            "<div class='box'>"
+             "<div class='box-header'>" + i18n( "Favorite Tracks By %1" ).arg( artistName ) + "</div>"
+             "<table class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
         for ( uint i = 0; i < values.count(); i += 3 )
             browser->write(
-              "<tr>"
+              "<tr class='" + QString( (i % 6) ? "box-row-alt" : "box-row" ) + "'>"
                "<td class='song'>"
-                "<a href=\"file:" + values[i + 1].replace( '"', QCString( "%22" ) ) + "\">" + values[i] +
-                "</a>"
+                "<a href=\"file:" + values[i + 1].replace( '"', QCString( "%22" ) ) + "\">" + values[i] + "</a>"
                "</td>"
                "<td class='sbtext' width='1'>" + values[i + 2] + "</td>"
                "<td width='1' title='Score'>"
@@ -774,23 +757,12 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     if ( !values.isEmpty() )
     {
-        // write the script to toggle albumlists and header
+        // write the script to toggle blocks visibility
         browser->write(
-            "<script type='text/javascript'>"
-              "function toggleAlbumTracks(album) {"
-                "if (document.getElementById(album).style.display != 'none') {"
-                  "document.getElementById(album).style.display = 'none';"
-                "} else {"
-                  "document.getElementById(album).style.display = 'block';"
-                "}"
-              "}"
-            "</script>"
             "<br>"
-            "<div class='rbcontent'>"
-             "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-              "<tr><th>" + i18n( "Albums By %1" ).arg( artistName ) + "</th></tr>"
-             "</table>"
-             "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
+            "<div class='box'>"
+             "<div class='box-header'>" + i18n( "Albums By %1" ).arg( artistName ) + "</div>"
+             "<table class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
 
         // place current album first
         uint vectorPlace = 0;
@@ -832,10 +804,10 @@ void ContextBrowser::showCurrentTrack() //SLOT
             }
 
             browser->write( QStringx (
-                "<tr>"
+                "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>"
                  "<td>"
-                  "<div class='album-header' onClick=\"toggleAlbumTracks('IDA%1')\">"
-                   "<table width='100%' style='background-color: transparent;' border='0' cellspacing='0' cellpadding='0'>"
+                  "<div class='album-header' onClick=\"toggleBlock('IDA%1')\">"
+                   "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
                     "<tr>"
                      "<td width='1'><a href='fetchcover:%2 @@@ %3'><img width='50' align='left' vspace='2' hspace='2' title='%4' src='%5'/></a></td>"
                      "<td valign='middle' align='left'><div style='float:right;'>%6</div>"
@@ -844,7 +816,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                     "</tr>"
                    "</table>"
                   "</div>"
-                  "<div class='album-contents' style='display:%11;' id='IDA%12'>" )
+                  "<div class='album-body' style='display:%11;' id='IDA%12'>" )
                 .args( QStringList()
                     << values[ i+1 ]
                     << escapeHTMLAttr( currentTrack.artist() ) // artist name
@@ -865,7 +837,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                     QString tmp = albumValues[j + 2].stripWhiteSpace().isEmpty() ? "" : "" + albumValues[j + 2] + ". ";
                     browser->write(
                         "<div class='song'>"
-                         "<a href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">" + tmp + albumValues[j] + "</a>"
+                         "<a class='song' href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">" + tmp + albumValues[j] + "</a>"
                         "</div>" );
                 }
 
@@ -898,11 +870,16 @@ void ContextBrowser::setStyleSheet()
     amaroK::Color gradient = colorGroup().highlight();
 
     //writing temp gradient image
-    m_gradientImage = new KTempFile( locateLocal( "tmp", "gradient" ), ".png", 0600 );
+    m_bgGradientImage = new KTempFile( locateLocal( "tmp", "gradient" ), ".png", 0600 );
     QImage image = KImageEffect::gradient( QSize( 600, 1 ), gradient, gradient.light(), KImageEffect::PipeCrossGradient );
-    image.save( m_gradientImage->file(), "PNG" );
-    m_gradientImage->close();
-    //writing temp song gradient image (only an 'upper linear shadow')
+    image.save( m_bgGradientImage->file(), "PNG" );
+    m_bgGradientImage->close();
+    //writing temp top shining gradient
+    m_headerGradientImage = new KTempFile( locateLocal( "tmp", "gradient_header" ), ".png", 0600 );
+    QImage imageH = KImageEffect::unbalancedGradient( QSize( 1, 10 ), colorGroup().highlight(), gradient.light(), KImageEffect::VerticalGradient, 100, -100 );
+    imageH.copy( 0, 1, 1, 9 ).save( m_headerGradientImage->file(), "PNG" );
+    m_headerGradientImage->close();
+    //writing temp gradient image (only an 'upper linear shadow')
     m_shadowGradientImage = new KTempFile( locateLocal( "tmp", "gradient_shadow" ), ".png", 0600 );
     QImage imageS = KImageEffect::unbalancedGradient( QSize( 1, 10 ), colorGroup().base(), Qt::gray, KImageEffect::VerticalGradient, 100, -100 );
     imageS.save( m_shadowGradientImage->file(), "PNG" );
@@ -922,34 +899,36 @@ void ContextBrowser::setStyleSheet()
     //KHTML sets the base color but not the text color
     m_styleSheet  = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); background-repeat: repeat-y; }" )
                     .arg( pxSize ).arg( text ).arg( AmarokConfig::schemeAmarok() ? fg : gradient.name() )
-                    .arg( m_gradientImage->name() );
+                    .arg( m_bgGradientImage->name() );
+
+    //text attributes
     m_styleSheet += QString( "a { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
+    m_styleSheet += QString( ".song a { display: block; padding: 1px 2px; }" );
+    m_styleSheet += QString( ".song a:hover { color: %1; background-color: %1; }" ).arg( fg ).arg( bg );
+    m_styleSheet += QString( ".warning { font-size: %1px; color: %2; font-weight: bold; padding: 1em 0.5em 2em 0.5em; }" ).arg( pxSize ).arg( bg );
 
-    m_styleSheet += QString( ".menu { color: %1; background-color: %2; margin: 0.4em 0.0em; font-weight: bold; }" ).arg( fg ).arg( bg );
+    //box: the base container for every block (border hilighted on hover, 'A' without underlining)
+    m_styleSheet += QString( ".box { border: solid %1 1px; text-align: left; }" ).arg( bg );
+    m_styleSheet += QString( ".box a { text-decoration: none; }" );
+    m_styleSheet += QString( ".box:hover { border: solid %1 1px; }" ).arg( text );
 
-    //used in the currentlyPlaying block
-    m_styleSheet += QString( ".stream { font-size: %1px; }" ).arg( pxSize );
-    m_styleSheet += QString( ".warning { font-size: %1px; color: %2; font-weight: bold; }" ).arg( pxSize ).arg( bg );
+    //box contents: header, body, rows and alternate-rows
+    m_styleSheet += QString( ".box-header { color: %1; font-size: %2px; font-weight: bold; padding: 1px 0.5em; border-bottom: 1px solid #000; }" ).arg( fg ).arg( pxSize + 2 );
+    m_styleSheet += QString( ".box-header { background-color: %1; background-image: url( %2 ); background-repeat: repeat-x; }" ).arg( bg ).arg( m_headerGradientImage->name() );
+    m_styleSheet += QString( ".box-header:hover {}" );
 
-    //set background for all tables
-    m_styleSheet += QString( "table { background-color: %1; }" ).arg( colorGroup().base().name() );
+    m_styleSheet += QString( ".box-body { background-color: %1; background-image: url( %2 ); background-repeat: repeat-x; }" ).arg( colorGroup().base().name() ).arg( m_shadowGradientImage->name() );
+    m_styleSheet += QString( ".box-body:hover {}" );
 
-    //header for all sections
-    m_styleSheet += QString( "th { text-align: left; color: %1; font-size: %2px; font-weight: bold; background-color: %3; padding: 1px 0.5em; border-bottom: 1px solid #000; }" )
-                    .arg( fg ).arg( pxSize + 2 ).arg( bg );
+    m_styleSheet += QString( ".box-row {}" );
+    m_styleSheet += QString( ".box-row:hover {}" );
+    m_styleSheet += QString( ".box-row-alt {}" );
+    m_styleSheet += QString( ".box-row-alt:hover {}" );
 
-    //this is the style for the other blocks
-    m_styleSheet += QString( ".rbcontent { border: solid %1 1px; }" ).arg( bg );
-    m_styleSheet += QString( ".rbcontent:hover { border: solid %1 1px; }" ).arg( text );
-
-    //these anchor rules are a little complex
-    m_styleSheet += QString( ".rbcontent a { text-decoration: none; }" );
-    m_styleSheet += QString( ".rbcontent .song a { display: block; padding: 1px 2px; }" );
-    m_styleSheet += QString( ".rbcontent .song a:hover { color: %1; background-color: %1; }" ).arg( fg ).arg( bg );
-    m_styleSheet += QString( ".table-body { background-image: url( %1 ); background-repeat: repeat-x; }" ).arg( m_shadowGradientImage->name() );
-    m_styleSheet += QString( ".album-header { background-image: url( %1 ); background-repeat: repeat-x; }" ).arg( m_albumGradientImage->name() );
-    m_styleSheet += QString( ".album-header:hover { background-image: url( %1 ); cursor: pointer; }" ).arg( m_shadowGradientImage->name() );
-    m_styleSheet += QString( ".album-contents { background-color: %1; border-bottom: solid %2 1px; border-top: solid %3 1px; }" ).arg( colorGroup().base().name() ).arg( bg ).arg( bg );
+    //"Albums by ..." related styles
+    m_styleSheet += QString( ".album-header {}" );
+    m_styleSheet += QString( ".album-header:hover { cursor: pointer; background-image: url( %1 ); background-repeat: repeat-x; }" ).arg( m_albumGradientImage->name() );
+    m_styleSheet += QString( ".album-body { background-color: %1; border-bottom: solid %2 1px; border-top: solid %3 1px; }" ).arg( colorGroup().base().name() ).arg( bg ).arg( bg );
 
     //boxes used to display score (sb: score box)
     m_styleSheet += QString( ".sbtext { padding: 0px 4px; border-left: solid %1 1px; }" ).arg( colorGroup().base().dark( 120 ).name() );
