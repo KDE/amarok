@@ -1,10 +1,10 @@
 /***************************************************************************
-                          playerwidget.cpp  -  description
-                             -------------------
-    begin                : Mit Nov 20 2002
-    copyright            : (C) 2002 by Mark Kretschmann
-    email                :
- ***************************************************************************/
+                         playerwidget.cpp  -  description
+                            -------------------
+   begin                : Mit Nov 20 2002
+   copyright            : (C) 2002 by Mark Kretschmann
+   email                :
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -68,7 +68,7 @@
 // CLASS AmarokButton ------------------------------------------------------------
 
 AmarokButton::AmarokButton( QWidget *parent, QString activePixmap, QString inactivePixmap, bool toggleButton )
-: QLabel( parent )
+        : QLabel( parent )
 
 {
     m_activePixmap = QPixmap( activePixmap );
@@ -85,8 +85,7 @@ AmarokButton::AmarokButton( QWidget *parent, QString activePixmap, QString inact
 
 
 AmarokButton::~AmarokButton()
-{
-}
+{}
 
 
 
@@ -115,7 +114,7 @@ void AmarokButton::mouseReleaseEvent( QMouseEvent *e )
             if ( m_isToggleButton )
             {
                 if ( m_on )
-                    setOn( false);
+                    setOn( false );
                 else
                     setOn( true );
 
@@ -132,7 +131,7 @@ void AmarokButton::mouseReleaseEvent( QMouseEvent *e )
             setOn( false );
         }
 
-    m_clicked = false;
+        m_clicked = false;
     }
 }
 
@@ -164,14 +163,12 @@ bool AmarokButton::isOn()
 // CLASS AmarokSlider ------------------------------------------------------------
 
 AmarokSlider::AmarokSlider( QWidget *parent ) : QSlider( parent )
-{
-}
+{}
 
 
 
 AmarokSlider::~AmarokSlider()
-{
-}
+{}
 
 
 
@@ -185,9 +182,9 @@ void AmarokSlider::mousePressEvent( QMouseEvent *e )
         newVal = static_cast<float>( e->x() ) / static_cast<float>( height() ) * maxValue();
 
     int intVal = static_cast<int>( newVal );
-            
+
     if ( ( intVal < value() - 10 ) || ( intVal > value() + 10 ) )
-    {    
+    {
         pApp->m_bSliderIsPressed = true;
         setValue( intVal );
         emit sliderReleased();
@@ -243,7 +240,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name ) : QWidget( paren
     QString pathStr( locate( "data", "amarok/images/hi16-action-noatunback.png" ) );
     if ( pathStr == QString::null )
         QMessageBox::warning( this, "amaroK Error", "Error: Could not find icons. Did you forget make install?",
-            QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton );
+                              QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton );
 
     m_pButtonPrev = new QPushButton( m_pFrameButtons );
     m_pButtonPrev->setFocusPolicy( QWidget::NoFocus );
@@ -283,7 +280,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name ) : QWidget( paren
     QBoxLayout *lay5 = new QHBoxLayout( lay7 );
 
     m_pButtonLogo = new AmarokButton( this, locate( "data", "amarok/images/logo_new_active.png" ),
-        locate( "data", "amarok/images/logo_new_inactive.png" ), false );
+                                      locate( "data", "amarok/images/logo_new_inactive.png" ), false );
     lay5->addItem( new QSpacerItem( 4, 0 ) );
     lay5->addWidget( m_pButtonLogo );
     m_pTimeDisplayLabel = new QLabel( this );
@@ -292,9 +289,9 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name ) : QWidget( paren
 
     QBoxLayout *lay4 = new QVBoxLayout( lay5 );
     m_pButtonPl = new AmarokButton( this, locate( "data", "amarok/images/pl_active.png" ),
-        locate( "data", "amarok/images/pl_inactive.png" ), true );
+                                    locate( "data", "amarok/images/pl_inactive.png" ), true );
     m_pButtonEq = new AmarokButton( this, locate( "data", "amarok/images/eq_active.png" ),
-        locate( "data", "amarok/images/eq_inactive.png" ), true );
+                                    locate( "data", "amarok/images/eq_inactive.png" ), true );
     lay4->addWidget( m_pButtonPl );
     lay4->addItem( new QSpacerItem( 0, 1 ) );
     lay4->addWidget( m_pButtonEq );
@@ -319,16 +316,16 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name ) : QWidget( paren
     lay4->setResizeMode( QLayout::FreeResize );
     lay5->setResizeMode( QLayout::FreeResize );
     lay7->setResizeMode( QLayout::FreeResize );
-    
+
     m_pFrame->setFixedSize( width(), 25 );
     m_pVis->setFixedSize( 168, 50 );
     m_pTimeDisplayLabel->setFixedSize( 9 * 12 + 2, 12 + 2 );
 
     // set up system tray
-    m_pTray = new KSystemTray(this);
-    m_pTray->setPixmap(pApp->miniIcon());
+    m_pTray = new KSystemTray( this );
+    m_pTray->setPixmap( pApp->miniIcon() );
     m_pTray->show();
-    QToolTip::add(m_pTray, i18n("amaroK media player"));
+    QToolTip::add( m_pTray, i18n( "amaroK media player" ) );
 
     initTimeDisplay();
     initScroll();
@@ -338,8 +335,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name ) : QWidget( paren
 
 
 PlayerWidget::~PlayerWidget()
-{
-}
+{}
 
 
 
@@ -350,7 +346,7 @@ void PlayerWidget::initScroll()
     m_pixmapWidth = 800;
     m_pixmapHeight = 20;
 
-    m_pBgPixmap = new QPixmap( paletteBackgroundPixmap()->convertToImage().copy( m_pFrame->x(), m_pFrame->y(), m_pFrame->width(), m_pFrame->height() ) );
+    m_pBgPixmap = new QPixmap( paletteBackgroundPixmap() ->convertToImage().copy( m_pFrame->x(), m_pFrame->y(), m_pFrame->width(), m_pFrame->height() ) );
 
     m_pComposePixmap = new QPixmap( m_pFrame->width(), m_pixmapHeight );
     m_pScrollPixmap = new QPixmap( m_pixmapWidth, m_pixmapHeight );
@@ -371,7 +367,7 @@ void PlayerWidget::initTimeDisplay()
 
     m_pTimePixmap = new QPixmap( locate( "data", "amarok/images/numbers_transp.png" ) );
 
-    m_pTimeBgPixmap = new QPixmap( paletteBackgroundPixmap()->convertToImage()
+    m_pTimeBgPixmap = new QPixmap( paletteBackgroundPixmap() ->convertToImage()
                                    .copy( m_timeDisplayX, m_timeDisplayY, 9 * m_timeDisplayW, m_timeDisplayW ) );
 
     m_pTimeComposePixmap = new QPixmap( m_pTimeBgPixmap->width(), m_pTimeBgPixmap->height() );
@@ -389,8 +385,8 @@ void PlayerWidget::polish()
 void PlayerWidget::setScroll( QString text, QString bitrate, QString samplerate )
 {
     /* Update tray tooltip */
-    if (QToolTip::textFor(m_pTray) != QString::null) QToolTip::remove(m_pTray);
-    QToolTip::add(m_pTray, text);
+    if ( QToolTip::textFor( m_pTray ) != QString::null ) QToolTip::remove( m_pTray );
+    QToolTip::add( m_pTray, text );
 
     m_bitrate = bitrate;
     m_samplerate = samplerate;
@@ -407,7 +403,7 @@ void PlayerWidget::setScroll( QString text, QString bitrate, QString samplerate 
     font.setStyleHint( QFont::Helvetica );
     font.setFamily( "Helvetica" );
     font.setPointSize( 10 );
-//  font.setBold( true );
+    //  font.setBold( true );
     painterPix.setFont( font );
     painterMask.setFont( font );
 
@@ -417,10 +413,10 @@ void PlayerWidget::setScroll( QString text, QString bitrate, QString samplerate 
     m_pScrollPixmap->setMask( *m_pScrollMask );
 
     QRect rect = painterPix.boundingRect( 0, 0, m_pixmapWidth, m_pixmapHeight,
-        Qt::AlignLeft || Qt::AlignVCenter, text );
+                                          Qt::AlignLeft || Qt::AlignVCenter, text );
     m_scrollWidth = rect.width();
 
-// trigger paintEvent, so the Bitrate and Samplerate text gets drawn
+    // trigger paintEvent, so the Bitrate and Samplerate text gets drawn
     update();
 }
 
@@ -442,14 +438,14 @@ void PlayerWidget::drawScroll()
 
     while ( dx < m_pFrame->width() )
     {
-        subs = -m_pFrame->width()+marginH;
+        subs = -m_pFrame->width() + marginH;
         subs += dx + ( m_scrollWidth - sxTmp );
         if ( subs < 0 )
             subs = 0;
         bitBlt( m_pComposePixmap, dx, marginV,
-            m_pScrollPixmap, sxTmp, m_sy, m_scrollWidth-sxTmp-subs, m_pixmapHeight, Qt::CopyROP );
+                m_pScrollPixmap, sxTmp, m_sy, m_scrollWidth - sxTmp - subs, m_pixmapHeight, Qt::CopyROP );
         dx += ( m_scrollWidth - sxTmp );
-        sxTmp += ( m_scrollWidth - sxTmp) ;
+        sxTmp += ( m_scrollWidth - sxTmp ) ;
 
         if ( sxTmp >= m_scrollWidth )
             sxTmp = 0;
@@ -491,13 +487,13 @@ void PlayerWidget::timeDisplay( bool remaining, int hours, int minutes, int seco
     x += m_timeDisplayW;
     bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, minutes % 10 * m_timeDisplayW, 0, m_timeDisplayW );
     x += m_timeDisplayW;
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, 10*m_timeDisplayW, 0, m_timeDisplayW );
+    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, 10 * m_timeDisplayW, 0, m_timeDisplayW );
     x += m_timeDisplayW;
     bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, seconds / 10 * m_timeDisplayW, 0, m_timeDisplayW );
     x += m_timeDisplayW;
     bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, seconds % 10 * m_timeDisplayW, 0, m_timeDisplayW );
 
-                                                  //offset 1 pixel because of bounding box
+    //offset 1 pixel because of bounding box
     bitBlt( m_pTimeDisplayLabel, 1, 1, m_pTimeComposePixmap );
 }
 
@@ -609,23 +605,23 @@ void PlayerWidget::closeEvent( QCloseEvent *e )
 void PlayerWidget::moveEvent( QMoveEvent *e )
 {
 
-/*
- ** You can get the frame sizes like so (found in Qt sources while looking for something else):
-framew = geometry().x() - x();
-frameh = geometry().y() - y();
-*/
+    /*
+     ** You can get the frame sizes like so (found in Qt sources while looking for something else):
+    framew = geometry().x() - x();
+    frameh = geometry().y() - y();
+    */
 
-/*!  Makes the the playlistwindow stick magnetically to the playerwindow */
-/*    if ( pApp->m_pBrowserWin->isVisible() )
-    {
-        if ( ( e->oldPos().x() - 0 == pApp->m_pBrowserWin->frameGeometry().right() ) ||
-             ( e->oldPos().y() - 0 == pApp->m_pBrowserWin->frameGeometry().bottom() ) ||
-             ( e->oldPos().x() + frameSize().width() + 0 == pApp->m_pBrowserWin->frameGeometry().left() ) ||
-             ( e->oldPos().y() + frameSize().height() + 0 == pApp->m_pBrowserWin->frameGeometry().top() ) )
+    /*!  Makes the the playlistwindow stick magnetically to the playerwindow */
+    /*    if ( pApp->m_pBrowserWin->isVisible() )
         {
-            pApp->m_pBrowserWin->move( e->pos() + ( pApp->m_pBrowserWin->pos() -  e->oldPos() ) );
-        }
-    }*/
+            if ( ( e->oldPos().x() - 0 == pApp->m_pBrowserWin->frameGeometry().right() ) ||
+                 ( e->oldPos().y() - 0 == pApp->m_pBrowserWin->frameGeometry().bottom() ) ||
+                 ( e->oldPos().x() + frameSize().width() + 0 == pApp->m_pBrowserWin->frameGeometry().left() ) ||
+                 ( e->oldPos().y() + frameSize().height() + 0 == pApp->m_pBrowserWin->frameGeometry().top() ) )
+            {
+                pApp->m_pBrowserWin->move( e->pos() + ( pApp->m_pBrowserWin->pos() -  e->oldPos() ) );
+            }
+        }*/
 }
 
 
@@ -652,11 +648,11 @@ void PlayerWidget::slotConfigGlobalShortcuts()
 
 void PlayerWidget::slotCopyClipboard()
 {
-    QListViewItem *currentTrack = pApp->m_pBrowserWin->m_pPlaylistWidget->currentTrack();
+    QListViewItem * currentTrack = pApp->m_pBrowserWin->m_pPlaylistWidget->currentTrack();
 
     if ( currentTrack )
     {
-        QClipboard *cb = QApplication::clipboard();
+        QClipboard * cb = QApplication::clipboard();
         cb->setText( currentTrack->text( 0 ) );
     }
 }
@@ -688,7 +684,7 @@ bool PlayerWidget::playObjectConfigurable()
     if ( pApp->m_pPlayObject && !m_pPlayObjConfigWidget )
     {
         Arts::TraderQuery query;
-        query.supports( "Interface","Arts::GuiFactory" );
+        query.supports( "Interface", "Arts::GuiFactory" );
         query.supports( "CanCreate", pApp->m_pPlayObject->object()._interfaceName() );
 
         std::vector<Arts::TraderOffer> *queryResults = query.query();
