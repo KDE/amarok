@@ -266,7 +266,7 @@ void App::initCliArgs( int argc, char *argv[] ) //static
                          "berk@upnet.ru" );
 
     aboutData.addCredit( "Adam Pigg", I18N_NOOP( "analyzers, patches" ), "adam@piggz.fsnet.co.uk" );
-    aboutData.addCredit( "Adeodato Simo", I18N_NOOP( "patches" ), "asp16@alu.ua.es" );
+    aboutData.addCredit( "Adeodato Simó", I18N_NOOP( "patches" ), "asp16@alu.ua.es" );
     aboutData.addCredit( "Alper Ayazoglu", I18N_NOOP( "graphics: buttons" ), "cubon@cubon.de", "http://cubon.de" );
     aboutData.addCredit( "Danny Allen", I18N_NOOP( "splash screen" ), "dannya40uk@yahoo.co.uk" );
     aboutData.addCredit( "Enrico Ros", I18N_NOOP( "analyzers, king of openGL" ), "eros.kde@email.it" );
