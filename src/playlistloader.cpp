@@ -341,9 +341,7 @@ PlaylistFile::loadM3u( QTextStream &stream )
 
         else if( !line.startsWith( "#" ) )
         {
-            // FIXME: isRelativeURL fails here - what does it do exactly?
             // if( KURL::isRelativeURL( line ) )
-
             if ( !line.startsWith( "/" ) )
                 b.setPath( directory + line );
             else

@@ -1023,7 +1023,7 @@ Playlist::contentsDropEvent( QDropEvent *e )
             ThreadWeaver::instance()->queueJob( new SqlLoader( data, after ) );
         }
 
-        // goto url;
+        goto url;
     }
     else if( KURLDrag::canDecode( e ) ) {
     url:
