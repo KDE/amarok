@@ -250,8 +250,10 @@ void PlaylistWidget::handleOrder( RequestType rt ) //SLOT
               while( x >= 0 ); // try not to play the same tracks two often
 
               // add current item to the recently played list, and make sure this list doesn't get too large
+              //FIXME: max. size of recent-buffer is set "manually" to 50 in the next lines.
+              //       should be configurable or at least #define'd...
               recentPtrs.append( item );
-              while ( recentPtrs.count() > ( childCount() / 2 ) )
+              while ( ( recentPtrs.count() > ( childCount() / 2 ) ) || ( recentPtrs.count() > 50 ) )
                   recentPtrs.remove( recentPtrs.at( 0 ) );
           }
           else
