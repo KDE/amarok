@@ -51,6 +51,8 @@ Loader::Loader( int& argc, char** argv )
         m_pProc = new QProcess( this );
         m_pProc->addArgument( "amarokapp" );
         //hand arguments through to amaroK
+        //NOTE the first argument is /path/to/amarok but this is not /path/to/amarokapp so we ignore it
+        //FIXME it should be converted to /path/top/amarokapp instead, I think, or there might be new bugs
         for ( int i = 1; i < m_argc; i++ )
             m_pProc->addArgument( m_argv[i] );
 
