@@ -97,13 +97,13 @@ PlaylistLoader::~PlaylistLoader()
         delete m_first; //FIXME deleting m_first is dangerous as user may have done it for us!
     }
 
-    kdDebug() << "[loader] Done!\n";
+    kdDebug() << "[PLSloader] Done!\n";
 }
 
 
 void PlaylistLoader::run()
 {
-       kdDebug() << "[loader] Started..\n";
+       kdDebug() << "[PLSloader] Started..\n";
 
        m_recursionCount = -1;
        process( m_list );
@@ -112,7 +112,7 @@ void PlaylistLoader::run()
 }
 
 
-void PlaylistLoader::process( const KURL::List &list, bool validate )
+void PlaylistLoader::process( const KURL::List &list, const bool validate )
 {
    struct STATSTRUCT statbuf;
    ++m_recursionCount;
@@ -175,28 +175,26 @@ void PlaylistLoader::process( const KURL::List &list, bool validate )
 }
 
 
-//FIXME make separate classes you dolt!
 inline
 void PlaylistLoader::postDownloadRequest( const KURL &u )
 {
-    QApplication::postEvent( m_listView, new PlaylistLoader::SomeUrlEvent( this, u ) );
+    QApplication::postEvent( m_listView, new PlaylistLoader::DownloadPlaylistEvent( this, u ) );
 }
 
 inline
 void PlaylistLoader::postBundle( const KURL &u )
 {
-    QApplication::postEvent( m_listView, new PlaylistLoader::SomeUrlEvent( this, u, QString(), MetaBundle::Undetermined ) );
+    QApplication::postEvent( m_listView, new PlaylistLoader::MakeItemEvent( this, u, QString::null, MetaBundle::Undetermined ) );
 }
 
 inline
 void PlaylistLoader::postBundle( const KURL &u, const QString &s, const int i )
 {
-    QApplication::postEvent( m_listView, new PlaylistLoader::SomeUrlEvent( this, u, s ,i ) );
+    QApplication::postEvent( m_listView, new PlaylistLoader::MakeItemEvent( this, u, s ,i ) );
 }
 
 
-inline
-int PlaylistLoader::isPlaylist( const QString &path ) const
+int PlaylistLoader::isPlaylist( const QString &path ) //static
 {
    //TODO investigate faster methods
    //TODO try to achieve retVal optimisation
@@ -209,8 +207,6 @@ int PlaylistLoader::isPlaylist( const QString &path ) const
 
 void PlaylistLoader::loadLocalPlaylist( const QString &path, int type )
 {
-   kdDebug() << "[loader] playlist: " << path << endl;
-
    QFile file( path );
 
       if ( file.open( IO_ReadOnly ) )
@@ -222,8 +218,7 @@ void PlaylistLoader::loadLocalPlaylist( const QString &path, int type )
         case 1:
         {
            KURL::List urls = loadM3u( stream, path.left( path.findRev( '/' ) + 1 ) ); //TODO verify that relative playlists work!!
-           urls.prepend( path ); //FIXME
-           QApplication::postEvent( m_listView, new PlaylistFoundEvent( urls ) );
+           QApplication::postEvent( m_listView, new PlaylistFoundEvent( path, urls ) );
            break;
         }
         case 2:
@@ -238,7 +233,7 @@ void PlaylistLoader::loadLocalPlaylist( const QString &path, int type )
 }
 
 
-bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissions ) const
+bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissions ) //static
 {
    //FIXME determine if the thing at the end of this is a stream! Can arts do this?
    //      currently we always return true as we can't check
@@ -309,7 +304,8 @@ void PlaylistLoader::translate( QString &path, KFileItemList &list )
                KURL url; url.setPath( newPath );     //safe way to do it for unix paths
 
                if( isPlaylist( newPath ) )
-                  QApplication::postEvent( m_listView, new PlaylistFoundEvent( url ) );
+                  //QApplication::postEvent( m_listView, new PlaylistFoundEvent( url ) );
+                  ;
                else
                {
 
@@ -418,65 +414,61 @@ void PlaylistLoader::loadPls( QTextStream &stream )
 
 
 
-PlaylistItem *PlaylistLoader::SomeUrlEvent::makePlaylistItem( PlaylistWidget *lv )
+PlaylistItem*
+PlaylistLoader::MakeItemEvent::makePlaylistItem( PlaylistWidget *lv )
 {
-   //This function must be called from the GUI!
+    PlaylistItem *item = new PlaylistItem( lv, m_thread->m_after, m_url, m_title, m_length );
+    m_thread->m_after = item;
+    return item;
+}
 
-   //Construct a PlaylistItem and update the after pointer
-   //Providing access is limited to the GUI thread, writes to m_after are serialised
+PlaylistItem*
+PlaylistLoader::DownloadPlaylistEvent::makePlaylistItem( PlaylistWidget *lv )
+{
+    PlaylistItem *newItem = MakeItemEvent::makePlaylistItem( lv );
 
-   PlaylistItem *newItem = new PlaylistItem( lv, m_thread->m_after, m_url, m_title, m_length );
+    //it is safe to dereference m_thread currently as LoaderThreads are deleted in the main Event Loop
+    //and we are blocking the event loop right now!
+    //however KIO::NetAccess processes the event loop, so we need to dereference now in case the thread is deleted
 
-   if( m_kio )
-   {
-       //it is safe to dereference m_thread currently as LoaderThreads are deleted in the main Event Loop
-       //and we are blocking the event loop right now!
-       //however KIO::NetAccess processes the event loop, so we need to dereference now in case the thread is deleted
+    //KIO::NetAccess can make it's own tempfile
+    //but we need to add .pls/.m3u extension or the Loader will fail
+    QString path = m_url.filename();
+    int i = path.findRev( '.' );
+    //FIXME KTempFile should default to the suffix "tmp", not "", thus allowing you to have no prefix
+    //      if you so desire. Bad design needs you to fix it!
+    KTempFile tmpfile( QString::null, path.right( i ) ); //default prefix
+    path = tmpfile.name();
 
-      //KIO::NetAccess can make it's own tempfile
-      //but we need to add .pls/.m3u extension or the Loader will fail
-      QString path = m_url.filename();
-      int i = path.findRev( '.' );
-      //FIXME KTempFile should default to the suffix "tmp", not "", thus allowing you to have no prefix
-      //      if you so desire. Bad design needs you to fix it!
-      KTempFile tmpfile( QString::null, path.right( i ) ); //default prefix
-      path = tmpfile.name();
+    kdDebug() << "[PLSloader] Downloading: " << path << endl;
 
-      kdDebug() << "[loader] KIO::download - " << path << endl;
+    //FIXME this will block user input to the interface and process the event queue
+    QApplication::setOverrideCursor( KCursor::waitCursor() );
+        bool succeeded = KIO::NetAccess::download( m_url, path, pApp->m_pBrowserWin );
+    QApplication::restoreOverrideCursor();
 
-      //FIXME this will block user input to the interface and process the event queue
-      QApplication::setOverrideCursor( KCursor::waitCursor() );
-         bool succeeded = KIO::NetAccess::download( m_url, path, pApp->m_pBrowserWin );
-      QApplication::restoreOverrideCursor();
+    if( succeeded )
+    {
+        //the playlist was successfully downloaded
+        //KIO::NetAccess created a tempfile, it will be deleted in the new thread's dtor
+        KURL url; url.setPath( path ); //required way to set unix paths
+        const KURL::List list( url );
 
-      if( succeeded )
-      {
-         //the playlist was successfully downloaded
-         //KIO::NetAccess created a tempfile, it will be deleted in the new thread's dtor
-         KURL url; url.setPath( path ); //required way to set unix paths
-         const KURL::List list( url );
+        //FIXME set options?
+        PlaylistLoader *loader = new PlaylistLoader( list, newItem ); //the item is treated as a placeholder with this ctor
+        loader->start();
 
-         //FIXME set options?
-         PlaylistLoader *loader = new PlaylistLoader( list, newItem ); //the item is treated as a placeholder with this ctor
-         loader->start();
+        //FIXME may dereference what has already been deleted!!!! (NOT SAFE!)
+        //TODO hide it instead of deleting it and set m_after before hand
+        //m_thread->m_after = newItem;
+    }
+    else
+    {
+        KMessageBox::sorry( pApp->m_pBrowserWin, i18n( "The playlist, '%1', could not be downloaded." ).arg( m_url.prettyURL() ) );
+        delete newItem; //we created this in this function, thus it's safe to delete!
+        tmpfile.unlink();
+    }
 
-         //FIXME may dereference what has already been deleted!!!! (NOT SAFE!)
-         //TODO hide it instead of deleting it and set m_after before hand
-         //m_thread->m_after = newItem;
-      }
-      else
-      {
-         KMessageBox::sorry( pApp->m_pBrowserWin, i18n( "The playlist, '%1', could not be downloaded." ).arg( m_url.prettyURL() ) );
-         delete newItem; //we created this in this function, thus it's safe to delete!
-         tmpfile.unlink();
-      }
-
-      //we return 0 because we don't want the Playlist to register this item or try to read its tags
-      return 0;
-   }
-   else
-   {
-      m_thread->m_after = newItem;
-      return newItem;
-   }
+    //we return 0 because we don't want the Playlist to register this item or try to read its tags
+    return 0;
 }

@@ -24,7 +24,7 @@ ThreadWeaver::ThreadWeaver( QWidget *w )
 void
 ThreadWeaver::append( Job* const job, bool priorityJob )
 {
-   //for GUI access only
+   //intended to be used by GUI thread, but is thread-safe
 
     mutex.lock();
     if( priorityJob )
@@ -186,7 +186,7 @@ TagReader::addSearchTokens( QStringList &tokens, QPtrList<QListViewItem> &ptrs )
 
 
 AudioPropertiesReader::AudioPropertiesReader( QObject *o, PlaylistItem *pi )
-   : Job( o, Job::AudioPropertiesReader )
+   : Job( o )
    , m_item( pi )
    , m_listView( static_cast<QListViewItem *>(pi)->listView() )
    , m_url( pi->url() )
@@ -212,8 +212,9 @@ AudioPropertiesReader::doJob()
         int length  = MetaBundle::Unavailable;
         int bitrate = MetaBundle::Unavailable;
 
-        if( !f.isNull() && f.tag() )
+        if( !f.isNull() )
         {
+            //FIXME do we need to check the ap pointer? Seems to have not crashed so far..
             TagLib::AudioProperties *ap = f.audioProperties();
             length  = ap->length();
             bitrate = ap->bitrate();
@@ -229,7 +230,7 @@ AudioPropertiesReader::doJob()
 }
 
 void
-AudioPropertiesReader::bindTags()
+AudioPropertiesReader::completeJob()
 {
     //TODO do in playlistItem class or at least enum these numbers!
     m_item->setText(  9, m_length );
@@ -239,7 +240,7 @@ AudioPropertiesReader::bindTags()
 
 
 TagWriter::TagWriter( QObject *o, PlaylistItem *pi, const QString &s, const int col )
-  : Job( o, Job::TagWriter )
+  : Job( o )
   , m_item( pi )
   , m_tagString( s )
   , m_tagType( col )
@@ -298,8 +299,36 @@ TagWriter::doJob()
 }
 
 void
-TagWriter::updatePlaylistItem()
+TagWriter::completeJob()
 {
     //FIXME see PlaylistItem::setText() for an explanation for this hack
     m_item->setText( m_tagType, m_tagString.isEmpty() ? " " : m_tagString );
 }
+
+
+
+PLStats::PLStats( QObject *o, const KURL &u, const KURL::List &ul )
+  : Job( o, Job::PLStats )
+  , m_url( u )
+  , m_contents( ul )
+  , m_length( 0 )
+{}
+
+bool
+PLStats::doJob()
+{
+    //TODO update playlistItems too
+    //TODO find out if tags are read on creation of the file ref and if so, update them too
+    //TODO currently this is horrendously inefficient, tags are read so many times!
+
+    for( KURL::List::const_iterator it = m_contents.begin(); it != m_contents.end(); ++it )
+    {
+        TagLib::FileRef f( (*it).path().local8Bit(), true, TagLib::AudioProperties::Accurate );
+
+        if( !f.isNull() ) m_length += f.audioProperties()->length();
+    }
+
+    return true;
+}
+
+//yes! no moc! There are no Q_OBJECTS

@@ -21,6 +21,15 @@ class QString;
 class QStringList;
 class QWidget;
 
+
+//@ Create a weaver wherever you need one, they can be created on the stack as they are not QObjects
+//  Derive Job classes and append them to the weaver and the weaver will start the job for you
+//  It can handle however many Jobs you like at two priorities (immediate and queued)
+//  cancel() will stop execution immediately, with a caveat since it can not disable any dispatched events you
+//  have to handle any number of events from the weaver. See PlaylistWidget::clear() for a good solution
+//  halt() is permanant. Only use this to ensure the thread dies before you exit the application
+//  The class is designed to be in use for the durationof the application. It will not delete jobs in the queue
+//  on exit etc. As such it is incomplete, but also in this way it is lightweight and still useful.
 class ThreadWeaver : public QThread
 {
 public:
@@ -36,14 +45,19 @@ public:
    enum EventType { Started = 2000, Done = 2001 };
 
 
+   //@ Derive a job to perform a computationaly expensive task that will not block the UI
+   //  Implement doJob() to perform the task.
+   //  Specify m_target and reimplement customEvent() in that QObject to receive the results
+   //  GenericJob is the default and you should reimplement completeJob() to wind-up the task
    class Job : public QCustomEvent
    {
    public:
       friend class ThreadWeaver;
-      enum JobType { TagReader = 3000, AudioPropertiesReader, TagWriter, PLStats };
+      enum JobType { GenericJob = 3000, TagReader, PLStats };
 
-      Job( QObject*, JobType );
+      Job( QObject*, JobType = GenericJob );
       virtual ~Job() {}
+      virtual void completeJob() {} //called for GenericJobs
 
    protected:
       Job();
@@ -69,7 +83,7 @@ private:
 };
 
 
-
+//@Will read tags for a PlaylistItem
 class TagReader : public ThreadWeaver::Job
 {
 public:
@@ -89,12 +103,13 @@ private:
 };
 
 
+//@Will read audioProperties for a PlaylistItem
 class AudioPropertiesReader : public ThreadWeaver::Job
 {
 public:
     AudioPropertiesReader( QObject*, PlaylistItem* );
     bool doJob();
-    void bindTags();
+    void completeJob();
 private:
     PlaylistItem* const m_item;
     QListView*    const m_listView;
@@ -104,16 +119,33 @@ private:
 };
 
 
+//@Simple threaded TagWriting
 class TagWriter : public ThreadWeaver::Job
 {
 public:
     TagWriter( QObject*, PlaylistItem*, const QString&, const int );
     bool doJob();
-    void updatePlaylistItem();
+    void completeJob();
 private:
     PlaylistItem* const m_item;
     const QString m_tagString;
     const int     m_tagType;
+};
+
+
+//@Determines statistics on a playlist for the PlaylistBrowser
+class PLStats : public ThreadWeaver::Job
+{
+public:
+    PLStats( QObject*, const KURL&, const KURL::List& );
+    bool doJob();
+    const KURL &url() const { return m_url; }
+    const KURL::List &contents() const { return m_contents; }
+    uint length() const { return m_length; }
+private:
+    const KURL m_url;
+    const KURL::List m_contents;
+    uint  m_length;
 };
 
 #endif

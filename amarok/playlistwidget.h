@@ -86,8 +86,7 @@ class PlaylistWidget : private KListView
         void saveM3u( const QString& ) const;
         bool isEmpty() const { return childCount() == 0; }
         bool isAnotherTrack() const;
-
-        QWidget *browser();
+        QWidget *browser() const;
 
         //made public for convenience
         void setFont( const QFont &f ) { KListView::setFont( f ); }
@@ -95,7 +94,7 @@ class PlaylistWidget : private KListView
 
         static const int NO_SORT = 200;
 
-        enum RequestType { Prev = -1, Current = 0, Next = 1, Recent = 2 };
+        enum RequestType { Prev = -1, Current = 0, Next = 1 };
         enum ColumnType  { Trackname = 0,
                            Title = 1,
                            Artist = 2,
@@ -120,22 +119,21 @@ class PlaylistWidget : private KListView
     public slots:
         void handleOrderPrev();
         void handleOrderCurrent();
-        void handleOrderRecent();
         void handleOrder( PlaylistWidget::RequestType = Next );
         void clear();
         void shuffle();
         void removeSelectedItems();
         void copyToClipboard( const QListViewItem* = 0 ) const;
         void showCurrentTrack();
+        void setCurrentTrack( const KURL& );
 
     private slots:
         void slotGlowTimer();
         void slotTextChanged( const QString& );
         void slotEraseMarker();
-
+        void slotMouseButtonPressed( int, QListViewItem*, const QPoint&, int );
         void showContextMenu( QListViewItem*, const QPoint&, int );
         void activate( QListViewItem* );
-        void setCurrentTrack( const KURL& );
         void writeTag( QListViewItem*, const QString&, int );
         void handleStreamMeta( const MetaBundle& );
 
@@ -191,7 +189,8 @@ class PlaylistWidget : private KListView
         QStringList  m_undoList;
         QStringList  m_redoList;
         uint         m_undoCounter;
-	
-	bool directPlay;
+
+        bool directPlay;
 };
+
 #endif

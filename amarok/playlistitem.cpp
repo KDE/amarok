@@ -71,6 +71,9 @@ PlaylistItem::~PlaylistItem()
 
 MetaBundle PlaylistItem::metaBundle()
 {
+    //TODO this meta prop reading causes off files to skip, so we need to do it a few seconds before the
+    //ogg file starts playing or something
+
     //Do this everytime to save cost of storing int for length/samplerate/bitrate
     //This function isn't called often (on play request), but playlists can contain
     //thousands of items. So favor saving memory over CPU.
@@ -90,6 +93,9 @@ MetaBundle PlaylistItem::metaBundle()
 
 QString PlaylistItem::text( int column ) const
 {
+    //if trackname (column 0) is hidden, then show trackname text in title column if there
+    //is no text set for the title (column 1)
+
     if( column == 1 && listView()->columnWidth( 0 ) == 0 && KListViewItem::text( 1 ).isEmpty() )
     {
             return KListViewItem::text( 0 );
@@ -121,14 +127,18 @@ void PlaylistItem::setText( int column, const QString &newText )
     case 10:
         if( newText.isEmpty() )
         {
+            //don't overwrite old text with nothing
+            //we do this because there are several stages to setting text when items are inserted into the
+            //playlist, and not all of them have text set.
+            //we only need to do this for columns 1, 9 and 10 currently
+
             //FIXME removing a tag with inline edit doesn't get updated here, but
             //      you've hacked TagWriter so it sets a space as the new text
             //FIXME that needs fixing because it means the scrolling title has a space! dang.
-            
+
             //NOTE if you don't setText() it crashes amaroK!
-            //<markey> HOTFIX re-inserted this to prevent big crash!
             KListViewItem::setText( column, text( column ) );
-            
+
             break;
         }
         //else do default -->

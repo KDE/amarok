@@ -112,7 +112,6 @@ class PlayerApp : public KApplication
         void orderPreviousTrack();
         void orderCurrentTrack();
         void orderNextTrack();
-        void orderRecentTrack();
         void currentTrack( const KURL& );
 
     private:

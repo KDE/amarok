@@ -1,19 +1,15 @@
-/***************************************************************************
-                       playlistwidget.cpp  -  description
-                          -------------------
- begin                : Don Dez 5 2002
- copyright            : (C) 2002 by Mark Kretschmann
- email                :
-***************************************************************************/
+/* Copyright 2002-2004 Mark Kretschmann, Max Howell
+ * Licensed as described in the COPYING file found in the root of this distribution
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+ * NOTES
+ *
+ * The BrowserWin handles some PlaylistWidget events. Thanks!
+ * This class has a QOBJECT but it's private so you can only connect via BrowserWin::BrowserWin
+ * Mostly it's sensible to implement playlist functionality in this class
+ * TODO Obtaining information about the playlist is currently hard, we need the playlist to be globally
+ *      available and have some more useful public functions
+ */
+
 
 #include "amarokconfig.h"
 #include "metabundle.h"
@@ -24,7 +20,7 @@
 #include "playlistwidget.h"
 #include "threadweaver.h"
 
-#include <qclipboard.h> //copyToClipboard()
+#include <qclipboard.h> //copyToClipboard(), slotMouseButtonPressed()
 #include <qcolor.h>
 #include <qevent.h>
 #include <qfile.h>
@@ -112,8 +108,8 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
              this,   SLOT( activate( QListViewItem* ) ) );
     connect( this, SIGNAL( returnPressed( QListViewItem* ) ),
              this,   SLOT( activate( QListViewItem* ) ) );
-    connect( this, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
-             this,   SLOT( showContextMenu( QListViewItem*, const QPoint&, int ) ) );
+    connect( this, SIGNAL( mouseButtonPressed( int, QListViewItem*, const QPoint&, int ) ),
+             this,   SLOT( slotMouseButtonPressed( int, QListViewItem*, const QPoint&, int ) ) );
     connect( this, SIGNAL( itemRenamed( QListViewItem*, const QString&, int ) ),
              this,   SLOT( writeTag( QListViewItem*, const QString&, int ) ) );
     connect( this, SIGNAL( aboutToClear() ), SLOT( saveUndoState() ) );
@@ -125,16 +121,26 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
     connect( this, SIGNAL( playRequest( const MetaBundle& ) ),
              pApp,   SLOT( play( const MetaBundle& ) ) );
 
-    connect( pApp, SIGNAL( metaData( const MetaBundle& ) ),
-             this,   SLOT( handleStreamMeta( const MetaBundle& ) ) );
+    //TODO in order to allow streams to update playlistitems I plan to allow a connection between a
+    //metaBundle and the playlistItem is represents. Thus restoring the ability to modify stuff in the
+    //playlist but without having problems with threading or the potential that items have been deleted
+    //since the item started playback
+
+    //TODO eventually the playlist should be globally accessible and have a nice public interface
+    //that allows you to request a metaBundle by KURL etc. I don't think there is need to allow iteration
+    //over elements
+
+    //FIXME restore this functionality
+    //connect( pApp, SIGNAL( metaData( const MetaBundle& ) ),
+    //         this,   SLOT( handleStreamMeta( const MetaBundle& ) ) );
+
+
     connect( pApp, SIGNAL( orderPreviousTrack() ),
              this,   SLOT( handleOrderPrev() ) );
     connect( pApp, SIGNAL( orderCurrentTrack() ),
              this,   SLOT( handleOrderCurrent() ) );
     connect( pApp, SIGNAL( orderNextTrack() ),
              this,   SLOT( handleOrder() ) );
-    connect( pApp, SIGNAL( orderRecentTrack() ),
-             this,   SLOT( handleOrderRecent() ) );
 
     connect( pApp, SIGNAL( currentTrack( const KURL& ) ),
              this,   SLOT( setCurrentTrack( const KURL& ) ) );
@@ -200,7 +206,7 @@ PlaylistWidget::~PlaylistWidget()
 
 //PUBLIC INTERFACE ===================================================
 
-QWidget *PlaylistWidget::browser() { return m_browser; }
+QWidget *PlaylistWidget::browser() const { return m_browser; }
 void PlaylistWidget::showCurrentTrack() { ensureItemVisible( currentTrack() ); } //SLOT
 
 
@@ -218,7 +224,7 @@ void PlaylistWidget::insertMedia( const KURL::List &list, bool directPlay )
 
 void PlaylistWidget::handleOrderPrev()    { handleOrder( Prev ); }    //SLOT
 void PlaylistWidget::handleOrderCurrent() { handleOrder( Current ); } //SLOT
-void PlaylistWidget::handleOrderRecent()  { handleOrder( Recent ); }  //SLOT
+
 
 void PlaylistWidget::handleOrder( RequestType rt ) //SLOT
 {
@@ -299,12 +305,6 @@ void PlaylistWidget::handleOrder( RequestType rt ) //SLOT
               if( item == NULL && AmarokConfig::repeatPlaylist() )
                   item = (PlaylistItem*)firstChild();
           }
-      break;
-
-   case Recent:
-      if ( searchPtrs.count() > 0 )
-          item = (PlaylistItem *)searchPtrs.at( searchPtrs.count() -1 );
-
       break;
 
    case Current:
@@ -529,7 +529,7 @@ void PlaylistWidget::insertMediaInternal( const KURL::List &list, QListViewItem 
 
 void PlaylistWidget::activate( QListViewItem *item ) //SLOT
 {
-    kdDebug() << "[PlaylistWidget::activate()]\n";
+    kdDebug() << "[playlist] Requesting playback for: " << item->text( 0 ) << endl;
 
     //lets ask the engine to play something
     if( item )
@@ -558,6 +558,7 @@ void PlaylistWidget::setCurrentTrack( const KURL &u ) //SLOT
     setCurrentTrack( m_cachedTrack );
     m_cachedTrack = 0;
 }
+
 
 void PlaylistWidget::setCurrentTrack( PlaylistItem *item )
 {
@@ -634,11 +635,11 @@ PlaylistItem *PlaylistWidget::restoreCurrentTrack()
 }
 
 
-void PlaylistWidget::setSorting( int i, bool b )
+void PlaylistWidget::setSorting( int col, bool b )
 {
     saveUndoState();
 
-    KListView::setSorting( i, b );
+    KListView::setSorting( col, b );
 }
 
 
@@ -660,8 +661,7 @@ bool PlaylistWidget::saveState( QStringList &list )
 
    //do not change this! It's required by the undo/redo system to work!
    //if you must change this, fix undo/redo first. Ask me what needs fixing <mxcl>
-
-   if( childCount()  )
+   if( !isEmpty() )
    {
       QString fileName;
       m_undoCounter %= AmarokConfig::undoLevels();
@@ -729,6 +729,31 @@ void PlaylistWidget::copyToClipboard( const QListViewItem *item ) const //SLOT
 }
 
 
+void PlaylistWidget::slotMouseButtonPressed( int button, QListViewItem *after, const QPoint &p, int col ) //SLOT
+{
+    switch( button )
+    {
+    case Qt::MidButton:
+        {
+            //FIXME shouldn't the X11 paste get to Qt via some kind of drop?
+            //TODO handle multiple urls?
+            QString path = QApplication::clipboard()->text( QClipboard::Selection );
+            kdDebug() << "[playlist] X11 Paste: " << path << endl;
+
+            insertMediaInternal( KURL::fromPathOrURL( path ), after );
+        }
+        break;
+
+    case Qt::RightButton:
+        showContextMenu( after, p, col );
+        break;
+
+    default:
+        break;
+    }
+}
+
+
 void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLOT
 {
     #define PLAY       0
@@ -746,6 +771,7 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
     bool isPlaying = pApp->isPlaying();
 
     QPopupMenu popup( this );
+    //TODO if paused the play stuff won't do what the user expects
     popup.insertItem( SmallIcon( "player_play" ), isCurrent ? i18n( "&Play (Restart)" ) : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
     if( !isCurrent && isPlaying )
     {
@@ -991,6 +1017,7 @@ void PlaylistWidget::contentsDropEvent( QDropEvent *e )
         {
             insertMediaInternal( urlList, after );
         }
+        else e->ignore();
     }
 }
 
@@ -1009,6 +1036,8 @@ void PlaylistWidget::viewportPaintEvent( QPaintEvent *e )
 
 bool PlaylistWidget::eventFilter( QObject *o, QEvent *e )
 {
+    //we only filter the header currently, but the base class has eventFilters in place too
+
     if( o == header() && e->type() == QEvent::MouseButtonPress &&
         static_cast<QMouseEvent *>(e)->button() == Qt::RightButton )
     {
@@ -1043,6 +1072,8 @@ bool PlaylistWidget::eventFilter( QObject *o, QEvent *e )
 
 void PlaylistWidget::customEvent( QCustomEvent *e )
 {
+    //the threads send their results here for completion that is GUI-safe
+
     switch( e->type() )
     {
     case PlaylistLoader::Started:
@@ -1058,24 +1089,29 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
         QApplication::setOverrideCursor( KCursor::workingCursor() );
         break;
 
-    case PlaylistLoader::SomeUrl:
+    case PlaylistLoader::MakeItem:
 
-        if( PlaylistItem *item = static_cast<PlaylistLoader::SomeUrlEvent*>(e)->makePlaylistItem( this ) )
+        #define e static_cast<PlaylistLoader::MakeItemEvent*>(e)
+        if( PlaylistItem *item = e->makePlaylistItem( this ) )
         {
+            if( directPlay ) { activate( item ); directPlay = false; }
+
             if( AmarokConfig::showMetaInfo() )
                 m_weaver->append( new TagReader( this, item ) );
             else
             {
-                searchTokens.append( item->text( 0 ) );
+                searchTokens.append( item->trackName() );
                 searchPtrs.append( item );
-                if ( directPlay ) handleOrderRecent();
             }
         }
+        #undef e
         break;
 
     case PlaylistLoader::PlaylistFound:
 
-        m_browser->newPlaylist( static_cast<PlaylistLoader::PlaylistFoundEvent*>(e)->playlist() );
+        #define e static_cast<PlaylistLoader::PlaylistFoundEvent*>(e)
+        m_weaver->append( new PLStats( m_browser, e->url(), e->contents() ) );
+        #undef e
         break;
 
     case PlaylistLoader::Done:
@@ -1083,9 +1119,7 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
         //FIXME this doesn't work 100% yet as you can spawn multiple loaders..
         m_clearButton->setEnabled( true );
         QApplication::restoreOverrideCursor();
-
-        if ( !directPlay )
-            restoreCurrentTrack();
+        restoreCurrentTrack(); //just in case the track that is playing is not set current
         break;
 
 
@@ -1099,27 +1133,17 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
         QApplication::restoreOverrideCursor();
         break;
 
+    case ThreadWeaver::Job::GenericJob:
+        #define e static_cast<ThreadWeaver::Job*>(e)
+        e->completeJob();
+        #undef e
+        break;
+
     case ThreadWeaver::Job::TagReader:
 
         #define e static_cast<TagReader*>(e)
         e->bindTags();
         e->addSearchTokens( searchTokens, searchPtrs );
-        #undef e
-
-        if ( directPlay ) handleOrderRecent();
-        break;
-
-    case ThreadWeaver::Job::AudioPropertiesReader:
-
-        #define e static_cast<AudioPropertiesReader*>(e)
-        e->bindTags();
-        #undef e
-        break;
-
-    case ThreadWeaver::Job::TagWriter:
-
-        #define e static_cast<TagWriter*>(e)
-        e->updatePlaylistItem();
         #undef e
         break;
 
@@ -1128,8 +1152,6 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
         //this is a list of all the listItems from a clear operation
         kdDebug() << "Deleting " << static_cast<QPtrList<QListViewItem>*>(e->data())->count() << " items\n";
         delete (QPtrList<QListViewItem>*)e->data();
-        //kdDebug() << "Deleting items..\n";
-        //delete (QListView*)e->data();
         break;
 
     default: ;
