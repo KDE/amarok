@@ -10,8 +10,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "xine-engine.h"
 #include "plugin/plugin.h"
+#include "xine-engine.h"
+#include "xine-scope.h"
 
 AMAROK_EXPORT_PLUGIN( XineEngine )
 
@@ -20,21 +21,36 @@ AMAROK_EXPORT_PLUGIN( XineEngine )
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <qdir.h>
-//#include <xine/xineutils.h>
+#include <qtimer.h>
 
+//xine headers have this as function parameter!
 #define this this_
+//need access to port_ticket
 #define XINE_ENGINE_INTERNAL
-#define METRONOM_INTERNAL
     #include <xine/xine_internal.h> //for port_ticket from struct xine_t
     #include <xine/post.h>
 #undef this
 
+
+extern "C"
+{
+    post_class_t*
+    scope_init_plugin( xine_t* );
+}
+
+static inline kndbgstream
+ndebug()
+{
+    return kndbgstream();
+}
 
 static inline kdbgstream
 debug()
 {
     return kdbgstream( "[xine-engine] ", 0, 0 );
 }
+
+#define debug ndebug
 
 
 //some logging static globals
@@ -57,7 +73,11 @@ XineEngine::XineEngine()
   , m_audioPort( 0 )
   , m_eventQueue( 0 )
   , m_post( 0 )
-{}
+{
+    QTimer *timer = new QTimer( this );
+    connect( timer, SIGNAL(timeout()), SLOT(pruneScopeBuffers()) );
+    timer->start( 200 );
+}
 
 XineEngine::~XineEngine()
 {
@@ -81,7 +101,8 @@ XineEngine::~XineEngine()
 bool
 XineEngine::init( bool&, int, bool )
 {
-    debug() << "Enjoy the xine-engine. Please report bugs to amarok-devel@lists.sourceforge.net\n";
+    debug() << "Welcome to xine-engine! 9 out of 10 cats prefer xine!\n"
+               "Please report bugs to amarok-devel@lists.sourceforge.net\n";
 
     m_xine = xine_new();
 
@@ -208,27 +229,21 @@ XineEngine::state() const
     }
 }
 
-    struct myNode
-    {
-        myNode *next;
-        audio_buffer_t buf;
-    };
-
 std::vector<float>*
 XineEngine::scope()
 {
-    extern myNode myList;
-    extern int myChannels;
-    extern metronom_t *myMetronom;
-    extern int64_t current_vpts;
-    extern bool myMutex;
-
     std::vector<float> &v = *(new std::vector<float>( 512 ));
     current_vpts = m_xine->clock->get_current_time( m_xine->clock );
     audio_buffer_t *best_buf = 0;
     uint x = 0;
 
-    for( myNode *prev = &myList, *node = myList.next; node != &myList; node = node->next )
+
+    /* MY GOD! Why do I have to do this!?
+     * You see if I don't the metronom doesn't make the timestamps accurate! */
+    memcpy( myMetronom, m_stream->metronom, sizeof( metronom_t ) );
+
+
+    for( MyNode *prev = &myList, *node = myList.next; node != &myList; node = node->next )
     {
         audio_buffer_t *buf = &node->buf;
 
@@ -265,12 +280,13 @@ XineEngine::scope()
         diff *= myMetronom->audio_samples;
         diff /= myMetronom->pts_per_smpls;
 
+
         Log::diffSize += diff;
         Log::scopeRequests++;
 
         if( diff+512 <= (uint)best_buf->num_frames )
         {
-            //debug() << "time: " << current_vpts << " vpts: " << best_buf->vpts << " buff_size: " << best_buf->num_frames << " diff: " << diff << " list_size: " << x << endl;
+            debug() << "time: " << current_vpts << " vpts: " << best_buf->vpts << " buff_size: " << best_buf->num_frames << " diff: " << diff << " list_size: " << x << endl;
 
             const int16_t *data16 = best_buf->mem;
             data16 += diff*2;
@@ -282,11 +298,22 @@ XineEngine::scope()
                 v[i] = (double)a / (1<<15);
             }
         }
-        else { Log::buffTooSmall++; debug() << "Buffer too small\n"; }
+        else { Log::buffTooSmall++; debug() << "Buffer too small, diff: " << diff << "buff_size: " << best_buf->num_frames << endl; }
     }
     else { Log::buffNotFound++; debug() << "Buffer not found\n"; }
 
     return &v;
+}
+
+void
+XineEngine::pruneScopeBuffers()
+{
+    //if scope() isn't called regularly the audio buffer list
+    //is never emptied. This is a hacky solution, the better solution
+    //is to prune the list inside the post_plugin put_buffer() function
+    //which I will do eventually
+
+    delete scope();
 }
 
 long
@@ -435,7 +462,7 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
                 message += "</b>:<p>";
                 message += ((char *) data + data->explanation);
             }
-            else break; ///if no explanation then why bother!
+            else break; //if no explanation then why bother!
 
 
         param:

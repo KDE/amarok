@@ -2,8 +2,8 @@
 //Copyright: (C) 2003-2004 J. Kofler, <kaffeine@gmx.net>
 //License:   See xine-engine.cpp
 
-#ifndef VIDEOWINDOW_H
-#define VIDEOWINDOW_H
+#ifndef XINEENGINE_H
+#define XINEENGINE_H
 
 #include "engine/enginebase.h"
 #include <kurl.h>
@@ -37,6 +37,9 @@ public:
 
     StreamingMode streamingMode() { return Socket; }
 
+private slots:
+    void pruneScopeBuffers();
+
 private:
     static  void XineEventListener(void* p, const xine_event_t*);
     virtual void customEvent( QCustomEvent* );
@@ -49,13 +52,5 @@ private:
 
     KURL m_url;
 };
-
-typedef struct post_class_s post_class_t;
-
-extern "C"
-{
-    post_class_t*
-    scope_init_plugin( xine_t* );
-}
 
 #endif
