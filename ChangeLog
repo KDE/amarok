@@ -2,7 +2,8 @@ amaroK ChangeLog
 ================
 (c) 2002-2004 the amaroK authors.
 
-
+ 
+  CHG: SQLite library sourcecode now included with amaroK.
   CHG: The collection-thread now inserts its data in a temporary database while
        scanning, which allows us to safely use the collection in the meantime.
        This is done by two concurrent sqlite-connections (thread-safe). Wrote a

@@ -37,18 +37,6 @@ if test "$PKGCONFIGFOUND" != "yes" ; then
     echo "=                                                  ===="
 fi
 
-if test x$have_sqlite = xno; then
-    echo "========================="
-    echo "=  amaroK - WARNING  =================================="
-    echo "=                                                     ="
-    echo "=  The Collection Browser (music database) will not   ="
-    echo "=  be built. To enjoy the benefits of having all your ="
-    echo "=  music categorised by tag, download SQLite from     ="
-    echo "=  http://www.sqlite.org/ - amaroK requires version   ="
-    echo "=  2.8.0 or higher.                                   ="
-    echo "=                                                  ===="
-fi
-
 if test "x$have_gst" = "xno"; then
     echo "========================="
     echo "=  amaroK - WARNING  =================================="

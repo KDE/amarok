@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <config.h>        //for HAVE_SQLITE check
-
 #include "amarokconfig.h"
 #include "amarokmenu.h"    //see toolbar construction
 #include "browserwin.h"
@@ -136,11 +134,9 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
         //m_browsers->addPage( m_playlist->browser(), i18n( "Playlist" ), "midi" );
     //</PlaylistBrowser>
 
-#ifdef HAVE_SQLITE
     //<CollectionBrowser>
         m_browsers->addPage( new CollectionBrowser( "CollectionBrowser" ), i18n( "Collection" ), "contents" );
     //</CollectionBrowser>
-#endif
 
     { //<StreamBrowser>
         QVBox   *vb = new QVBox( 0, "StreamBrowser" );

@@ -1,10 +1,5 @@
-// (c) Mark Kretschmann 2004
-// See COPYING file for licensing information
-
-
-#include "config.h"
-
-#ifdef HAVE_SQLITE
+// (c) 2004 Mark Kretschmann <markey@web.de>, Christian Muehlhaeuser <chris@chris.de>
+// See COPYING file for licensing information.
 
 #ifndef AMAROK_COLLECTIONBROWSER_H
 #define AMAROK_COLLECTIONBROWSER_H
@@ -165,8 +160,6 @@ class CollectionView : public KListView
 
 
 #endif /* AMAROK_COLLECTIONBROWSER_H */
-
-#endif /* HAVE_SQLITE */
 
 
 

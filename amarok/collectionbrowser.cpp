@@ -1,10 +1,5 @@
-// (c) Mark Kretschmann 2004
-// See COPYING file for licensing information
-
-
-#include "config.h"
-
-#ifdef HAVE_SQLITE
+// (c) 2004 Mark Kretschmann <markey@web.de>, Christian Muehlhaeuser <chris@chris.de>
+// See COPYING file for licensing information.
 
 #include "collectionbrowser.h"
 #include "directorylist.h"
@@ -12,7 +7,7 @@
 #include "statusbar.h"
 #include "threadweaver.h"
 
-#include <sqlite.h>
+#include <sqlite/sqlite.h>
 #include <unistd.h>         //CollectionView ctor
 
 #include <qcstring.h>
@@ -808,7 +803,5 @@ CollectionView::Item::compare( QListViewItem* item, int col, bool ascending ) co
 
 
 #include "collectionbrowser.moc"
-
-#endif /* HAVE_SQLITE */
 
 
