@@ -15,7 +15,6 @@
 
 #include "statusbar.h"
 #include "amarokconfig.h"
-#include "amarokslider.h"
 #include "metabundle.h"
 #include "playerapp.h"
 #include "threadweaver.h"
@@ -23,6 +22,7 @@
 #include <qapplication.h>
 #include <qcolor.h>
 #include <qevent.h>
+#include <qslider.h>
 
 #include <kactionclasses.h>
 #include <kdebug.h>
@@ -68,11 +68,11 @@ StatusBar::StatusBar( QWidget *parent, const char *name ) : KStatusBar( parent, 
     repeat->setOn( tAction->isChecked() );
 
     // position slider
-    addWidget( m_pSlider = new amaroK::Slider( this, Qt::Horizontal ), 0, true );
+    addWidget( m_pSlider = new QSlider( Qt::Horizontal, this ), 0, true );
     m_pSlider->setMinimumWidth( 70 );
     m_pSlider->setMaximumHeight( fontMetrics().height() );
     connect( m_pSlider, SIGNAL( sliderReleased() ), this, SLOT( sliderReleased() ) );
-    connect( m_pSlider, SIGNAL( valueChanged( int ) ), this, SLOT( sliderChanged( int ) ) );
+    connect( m_pSlider, SIGNAL( sliderMoved( int ) ), this, SLOT( sliderMoved( int ) ) );
     
     // time display
     addWidget( (m_pTimeLabel = new ToggleLabel( "", this )), 0, true );
@@ -141,8 +141,7 @@ void StatusBar::engineTrackPositionChanged( long position )
     m_pTimeLabel->setText( str );
 
     // adjust position slider
-    if( !m_pSlider->sliding() )
-        m_pSlider->setValue( position );
+    m_pSlider->setValue( position );
 }
 
 void StatusBar::slotToggleTime()
@@ -183,12 +182,9 @@ void StatusBar::sliderReleased()
     }
 }
 
-void StatusBar::sliderChanged( int value )
+void StatusBar::sliderMoved( int value )
 {
-   if( m_pSlider->sliding() )
-    {
-        engineTrackPositionChanged( static_cast<long>( value ) );    
-    }
+    engineTrackPositionChanged( static_cast<long>( value ) );    
 }
 
 

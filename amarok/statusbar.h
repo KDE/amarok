@@ -22,11 +22,11 @@
 #include "engineobserver.h"
 
 class QCustomEvent;
+class QSlider;
 class KProgress;
 
 namespace amaroK {
 
-class Slider;
 class ToggleLabel;
 
 class StatusBar : public KStatusBar, public EngineObserver
@@ -51,7 +51,7 @@ protected: /* reimpl from engineobserver */
 private slots:
     void slotToggleTime();
     void sliderReleased();
-    void sliderChanged( int value );
+    void sliderMoved( int value );
         
 private:
     void customEvent( QCustomEvent* e );
@@ -61,7 +61,7 @@ private:
     static const int ID_TOTAL  = 2;
     ToggleLabel *m_pTimeLabel;
     KProgress* m_progress;
-    amaroK::Slider* m_pSlider;
+    QSlider* m_pSlider;
 };
 
 
