@@ -157,8 +157,8 @@ SearchBrowser::SearchBrowser( const char *name )
     m_searchButton = new QPushButton( i18n( "&Search" ), hb2 );
     urlEdit->setDuplicatesEnabled( false );
     urlEdit->setCompletionObject( new KURLCompletion() );
-    urlEdit->setURLs( config->readListEntry( "History" ) );
-    urlEdit->lineEdit()->setText( config->readEntry( "Location", "/" ) );
+    urlEdit->setURLs( config->readPathListEntry( "History" ) );
+    urlEdit->lineEdit()->setText( config->readPathEntry( "Location", "/" ) );
 
     splitter    = new QSplitter( Vertical, this );
     resultView  = new SearchListView( splitter );
@@ -203,8 +203,8 @@ SearchBrowser::~SearchBrowser()
 {
     KConfig *config = kapp->config();
     config->setGroup( "SearchBrowser" );
-    config->writeEntry( "Location", urlEdit->lineEdit()->text() );
-    config->writeEntry( "History", urlEdit->urls() );
+    config->writePathEntry( "Location", urlEdit->lineEdit()->text() );
+    config->writePathEntry( "History", urlEdit->urls() );
 
     QString str; QTextStream stream( &str, IO_WriteOnly );
     stream << *splitter;

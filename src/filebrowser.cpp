@@ -86,7 +86,7 @@ FileBrowser::FileBrowser( const char * name )
     KConfig* const config = amaroK::config( "Filebrowser" );
     SearchPane *searchPane;
 
-    const QString currentLocation = config->readEntry( "Location", QDir::homeDirPath() );
+    const QString currentLocation = config->readPathEntry( "Location", QDir::homeDirPath() );
 
     KToolBar *toolbar = new Browser::ToolBar( this );
 
@@ -120,7 +120,7 @@ FileBrowser::FileBrowser( const char * name )
         m_combo = new KURLComboBox( KURLComboBox::Directories, true, box, "path combo" );
         m_combo->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
         m_combo->setMaxItems( 9 );
-        m_combo->setURLs( config->readListEntry( "Dir History" ) );
+        m_combo->setURLs( config->readPathListEntry( "Dir History" ) );
         m_combo->lineEdit()->setText( currentLocation );
 
         //The main widget with file listings and that
@@ -210,8 +210,8 @@ FileBrowser::~FileBrowser()
 
     m_dir->writeConfig( c ); //uses currently set group
 
-    c->writeEntry( "Location", m_dir->url().directory( false, false ) );
-    c->writeEntry( "Dir History", m_combo->urls() );
+    c->writePathEntry( "Location", m_dir->url().directory( false, false ) );
+    c->writePathEntry( "Dir History", m_combo->urls() );
 }
 
 //END Constructor/Destructor
