@@ -707,22 +707,40 @@ void PlayerWidget::setEffectsWindowShown( bool on )
 
 #include <kiconeffect.h>
 NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
-  : QPushButton( parent )
+    : QPushButton( parent )
+    , m_glowIndex( 0 )
 {
+    // Prevent flicker
+    setWFlags( Qt::WNoAutoErase );
+    
     QPixmap pixmap( getPNG( "b_" + icon ) );
-    QIconSet iconSet;
     KIconEffect ie;
 
     // Tint icon blueish for "off" state
-    QPixmap off = ie.apply( pixmap, KIconEffect::Colorize, 0.5, QColor( 0x30, 0x10, 0xff ), false );
-    // Tint more intense for "on" state
-    QPixmap on = ie.apply( pixmap, KIconEffect::Colorize, 1.0, QColor( 0x80, 0x30, 0xff ), false );
+    m_pixmapOff = ie.apply( pixmap, KIconEffect::Colorize, 0.5, QColor( 0x30, 0x10, 0xff ), false );
     // Tint gray and make pseudo-transparent for "disabled" state
-    QPixmap disabled = ie.apply( pixmap, KIconEffect::ToGray, 0.7, QColor(), true );
+    m_pixmapDisabled = ie.apply( pixmap, KIconEffect::ToGray, 0.7, QColor(), true );
 
-    iconSet.setPixmap( off, QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
-    iconSet.setPixmap( on, QIconSet::Automatic, QIconSet::Normal, QIconSet::On  );
-    iconSet.setPixmap( disabled, QIconSet::Automatic, QIconSet::Disabled, QIconSet::Off );
+    int r = 0x20, g = 0x10, b = 0xff;
+    float value = 0.3;
+    // Precalculate pixmaps for "on" icon state
+    for ( int i = 0; i < NUMPIXMAPS; i++ ) {
+        m_glowPixmaps.append( new QPixmap( ie.apply( pixmap, KIconEffect::Colorize, value,
+                                                     QColor( r, g, b ), false ) ) );
+        r += 14;
+        g += 7;
+        b -= 0;
+        value += 0.05;
+    }
+    // And the the same reversed
+    for ( int i = NUMPIXMAPS - 1; i > 0; i-- )
+        m_glowPixmaps.append( m_glowPixmaps.at( i ) );
+
+    // This is just for initialization
+    QIconSet iconSet;
+    iconSet.setPixmap( pixmap, QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
+    iconSet.setPixmap( pixmap, QIconSet::Automatic, QIconSet::Normal, QIconSet::On );
+    iconSet.setPixmap( pixmap, QIconSet::Automatic, QIconSet::Disabled, QIconSet::Off );
     setIconSet( iconSet );
 
     // Use standard palette, since the modified palette from parent widget makes buttons look weird
@@ -734,6 +752,32 @@ NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
 
     connect( action, SIGNAL(enabled( bool )), SLOT(setEnabled( bool )) );
     connect( this, SIGNAL(clicked()), action, SLOT(activate()) );
+    startTimer( GLOW_INTERVAL );
+}
+
+
+void NavButton::timerEvent( QTimerEvent* )
+{
+    if ( isOn() ) {
+        m_glowIndex++;
+        m_glowIndex %= NUMPIXMAPS * 2 - 1;
+    
+        update();
+    }
+}
+
+
+void NavButton::drawButtonLabel( QPainter* p )
+{
+    int x = width() / 2 - m_pixmapOff.width() / 2;
+    int y = height() / 2 - m_pixmapOff.height() / 2;
+    
+    if ( !isEnabled() )
+        p->drawPixmap( x, y, m_pixmapDisabled );
+    else if ( isOn() )
+        p->drawPixmap( x + 1, y + 1, *m_glowPixmaps.at( m_glowIndex ) );
+    else
+        p->drawPixmap( x, y, m_pixmapOff );
 }
 
 

@@ -20,8 +20,11 @@
 
 #include <qlabel.h>      //stack allocated
 #include <qpixmap.h>     //stack allocated
+#include <qptrlist.h>    //stack allocated
 #include <qpushbutton.h> //baseclass
 #include <qwidget.h>     //baseclass
+
+#include <vector>
 
 #include "fht.h"         //stack allocated
 #include "engineobserver.h"
@@ -35,24 +38,45 @@ class QButton;
 class QHBox;
 class QString;
 class QStringList;
+class QTimerEvent;
 
 
 class NavButton : public QPushButton //no QOBJECT macro - why bother?
 {
-public: NavButton( QWidget*, const QString&, KAction* );
+public:
+    NavButton( QWidget*, const QString&, KAction* );
+
+protected:
+    void timerEvent( QTimerEvent* );
+    void drawButtonLabel( QPainter* );
+    
+    static const int GLOW_INTERVAL = 30;
+    static const int NUMPIXMAPS = 16;
+
+    QPixmap m_pixmapOff;
+    QPixmap m_pixmapDisabled;
+        
+    QPtrList<QPixmap> m_glowPixmaps;
+    int m_glowIndex;
 };
+
 
 class IconButton : public QButton
 {
-Q_OBJECT
+    Q_OBJECT
+
 public:
     IconButton( QWidget*, const QString&, const char *signal );
+
 public slots:
     void setOn( bool b ) { QButton::setOn( b ); }
     void setOff()        { QButton::setOn( false ); }
+
 private:
     void drawButton( QPainter* );
-    const QPixmap m_up, m_down;
+    
+    const QPixmap m_up;
+    const QPixmap m_down;
 };
 
 
