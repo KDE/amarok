@@ -380,6 +380,11 @@ namespace amaroK
         return Playlist::defaultPlaylistPath();
     }
 
+    void DcopPlaylistHandler::removeCurrentTrack()
+    {
+        Playlist::instance()->removeItem( Playlist::instance()->currentTrack() );
+    }
+
     void DcopPlaylistHandler::playByIndex(int index)
     {
         Playlist::instance()->activateByIndex( index );

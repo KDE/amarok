@@ -18,6 +18,7 @@
 #ifndef AMAROK_PLAYLIST_H
 #define AMAROK_PLAYLIST_H
 
+#include "amarokdcophandler.h"
 #include "engineobserver.h"  //baseclass
 #include "playlistwindow.h"  //friend
 
@@ -122,6 +123,7 @@ class Playlist : private KListView, public EngineObserver
 
         friend class PlaylistItem;
         friend class UrlLoader;
+        friend void amaroK::DcopPlaylistHandler::removeCurrentTrack(); //calls removeItem() and currentTrack()
         friend void PlaylistWindow::init(); //setting up connections etc.
         friend bool PlaylistWindow::eventFilter( QObject*, QEvent* ); //for convenience we handle some playlist events here
 
