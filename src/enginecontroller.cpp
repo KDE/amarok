@@ -154,8 +154,11 @@ EngineBase *EngineController::loadEngine() //static
 
         //init failed - fall back to currently loaded engine
         KMessageBox::error( 0, i18n( "The new engine could not be loaded." ) );
-        AmarokConfig::setSoundSystem( PluginManager::getService( engine )->property( "X-KDE-amaroK-name" ).toString() );
-    }
+        if( engine != dummyEngine() )
+           AmarokConfig::setSoundSystem( PluginManager::getService( engine )->property( "X-KDE-amaroK-name" ).toString() );
+
+        delete plugin;
+     }
 
     kdDebug() << "END " << k_funcinfo << endl;
 
