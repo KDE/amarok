@@ -485,10 +485,11 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     if( isPlaylist( item ) ) {
         if ( isCurrentPlaylist( item ) ) {
         //************* Current Playlist menu ***********
-            enum Id { SAVE, CLEAR };
+            enum Id { SAVE, CLEAR, RMDUP };
 
             menu.insertItem( i18n( "&Save" ), SAVE );
             menu.insertItem( i18n( "&Clear" ), CLEAR );
+            menu.insertItem( i18n( "Remove Duplicates" ), RMDUP );
 
             switch( menu.exec( p ) )
             {
@@ -497,6 +498,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                     break;
                 case CLEAR:
                     Playlist::instance()->clear();
+                case RMDUP:
+                    Playlist::instance()->removeDuplicates();
                     break;
             }
         }

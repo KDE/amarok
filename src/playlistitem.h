@@ -57,6 +57,10 @@ class PlaylistItem : public KListViewItem
                        Length = 9,
                        Bitrate = 10 };
 
+        // Used for sorting
+        bool operator== ( const PlaylistItem & item ) const;
+        bool operator< ( const PlaylistItem & item ) const;
+
     private:
         QString text( int column ) const;
         int     compare( QListViewItem*, int, bool ) const;

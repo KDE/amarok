@@ -51,6 +51,7 @@
 #include <kglobalsettings.h> //startEditTag()
 #include <kurldrag.h>
 #include <X11/Xlib.h>        //ControlMask in contentsDragMoveEvent()
+#include <qsortedlist.h>
 
 
 class MyIterator : public QListViewItemIterator
@@ -1173,6 +1174,27 @@ Playlist::deleteSelectedFiles() //SLOT
         // TODO We need to check which files have been deleted successfully
         KIO::DeleteJob* job = KIO::del( urls );
         connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( removeSelectedItems() ) );
+    }
+}
+
+void
+Playlist::removeDuplicates() //SLOT
+{
+    QSortedList<PlaylistItem> list;
+    for( QListViewItemIterator it( this ); it.current(); ++it )
+        list.prepend( (PlaylistItem*)it.current() );
+
+    list.sort();
+
+    QPtrListIterator<PlaylistItem> it( list );
+    PlaylistItem *item;
+    while( item = it.current() ) {
+        const KURL &compare = item->url();
+        ++it;
+        if ( it && compare == it.current()->url() ) {
+            removeItem( item );
+            delete item;
+        }
     }
 }
 

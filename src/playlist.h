@@ -103,6 +103,7 @@ class Playlist : private KListView, public EngineObserver
         void shuffle();
         void removeSelectedItems();
         void deleteSelectedFiles();
+        void removeDuplicates();
         void copyToClipboard( const QListViewItem* = 0 ) const;
         void showCurrentTrack() { ensureItemVisible( reinterpret_cast<QListViewItem*>(m_currentTrack) ); }
         void undo();

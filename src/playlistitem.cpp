@@ -225,6 +225,18 @@ void PlaylistItem::setText( int column, const QString &newText )
     }
 }
 
+bool
+PlaylistItem::operator== ( const PlaylistItem & item ) const
+{
+    return item.url() == this->url();
+}
+
+bool
+PlaylistItem::operator< ( const PlaylistItem & item ) const
+{
+    return item.url() < this->url();
+}
+
 /////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE METHODS
 /////////////////////////////////////////////////////////////////////////////////////
