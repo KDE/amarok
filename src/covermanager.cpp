@@ -304,8 +304,10 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
     #ifdef AMAZON
     menu.insertItem( SmallIcon("www"), i18n("Fetch cover"), FETCH );
     menu.insertSeparator();
-    #endif
     menu.insertItem( SmallIcon("folder_image"), i18n("Add custom cover"), CUSTOM );
+    #else
+    menu.insertItem( SmallIcon("folder_image"), i18n("Add cover"), CUSTOM );
+    #endif 
     menu.insertSeparator();
     menu.insertItem( SmallIcon("editdelete"), i18n("Delete cover"), DELETE );
     menu.setItemEnabled( DELETE, item->hasCover() );
@@ -324,7 +326,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
         case CUSTOM: 
         {
             /* This opens a file-open-dialog and copies the selected image to albumcovers, scaled and unscaled. */
-            KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select cover image file..." ) );
+            KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select cover image file - amaroK" ) );
             QImage img( file.directory() + "/" + file.fileName() );
             img.save( item->albumPath(), "PNG" );
             item->updateCover( img.smoothScale( 60, 60 ) );

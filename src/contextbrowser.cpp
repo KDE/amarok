@@ -500,7 +500,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                     << values[i + 2].replace( "\"", "%22" ) // album.id
                                     << escapeHTMLAttr( values[i + 1] ) // artist.name
                                     << escapeHTMLAttr( values[i + 0] ) // album.name
-                                    << escapeHTMLAttr( m_db->getImageForAlbum( values[i + 1], values[i + 0], locate( "data", "amarok/images/sound.png" ) ) )
+                                    << escapeHTMLAttr( m_db->getImageForAlbum( values[i + 1], values[i + 0], locate( "data", "amarok/images/sound.png" ), 40 ) )
                                     << escapeHTML( values[i + 0] ) // album.name
                                     << m_db->albumSongCount( values[i + 3], values[i + 2] )
                                     )
