@@ -80,17 +80,17 @@ namespace amaroK
 // I renamed _all_ id3 tag output DCOP calls to "current....." for consistency reasons.
 // Also, I replaced the prettyTitle with 2 calls, one for the artist and one for the title (more flexible)
    
-    QString DcopHandler::currentArtist()
+    QString DcopHandler::Artist()
     {
         return EngineController::instance()->bundle().artist();
     }
     
-    QString DcopHandler::currentTitle()
+    QString DcopHandler::Title()
     {
         return EngineController::instance()->bundle().title();
     }
     
-    QString DcopHandler::currentAlbum()
+    QString DcopHandler::Album()
     {
         return EngineController::instance()->bundle().album();
     }
@@ -98,34 +98,39 @@ namespace amaroK
 // Changed DCOP time output to mm:ss, by using MetaBundle::prettyLength ;-)
 // prettyLength also adds an "0" when sec < 10
     
-    QString DcopHandler::currentTotalTime()
+    QString DcopHandler::PrettyTitle()
+    {
+        return EngineController::instance()->bundle().prettyTitle();
+    }
+    
+    QString DcopHandler::TotalTime()
     {
         return MetaBundle::prettyLength( EngineController::instance()->bundle().length() );
     }
 
-    QString DcopHandler::currentPosition()
+    QString DcopHandler::Position()
     {
         return MetaBundle::prettyLength( EngineController::engine() ->position() / 1000 );
     }
 
 // Some additional DCOP output, very useful e.g. for IRC-scripts
 
-    QString DcopHandler::currentGenre()
+    QString DcopHandler::Genre()
     {
         return EngineController::instance()->bundle().genre();
     }
 
-    QString DcopHandler::currentYear()
+    QString DcopHandler::Year()
     {
         return EngineController::instance()->bundle().year();
     }
         
-    QString DcopHandler::currentComment()
+    QString DcopHandler::Comment()
     {
         return EngineController::instance()->bundle().comment();
     }
 
-    QString DcopHandler::currentBitrate()
+    QString DcopHandler::Bitrate()
     {
         return EngineController::instance()->bundle().prettyBitrate();
     }
