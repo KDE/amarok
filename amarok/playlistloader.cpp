@@ -51,7 +51,10 @@
 //TODO store threads in a stack that can be emptied on premature program exit, or use one thread and a KURL::List stack
 //TODO don't delete m_first, it may already have been removed! either make it unremovable or do something more intelligent
 
-//FIXME CRASH with URL::List iterator in process
+//TODO check these crashes are fixed. I think they are as I am now using const iterators that do not call detachinternal()
+//TODO ideally we want to do a deep copy of these as the QStrings are shallow copies and thus we have not got a isolated
+//     data set to work with in this thread. However that is nasty resource wise. We only read the KURL::List so technically,
+//     to my knowledge, this is a safe method.
 /*
 20:23 < Markey> |[New Thread 1024 (LWP 4629)]
 20:23 < Markey> |[New Thread 2049 (LWP 4630)]
@@ -99,8 +102,6 @@
 20:24 < Markey> |#14 0x41edb1b0 in pthread_start_thread () from
                 /lib/libpthread.so.0
 
-//I got one too:
-
 [New Thread 16384 (LWP 1601)]
 [New Thread 32769 (LWP 1602)]
 [New Thread 16386 (LWP 1603)]
@@ -119,7 +120,7 @@
 #8  0x0806e850 in QValueListPrivate (this=0x80be0a8, _p=@0x405b7cbc)
     at qvaluelist.h:272
 #9  0x0806e5b5 in QValueList<KURL>::detachInternal() (this=0x81c9c9c)
-    at qvaluelist.h:629kdDebug() << "Shutting down TagReader Thread..\n";
+    at qvaluelist.h:629
 #10 0x080886da in QValueList<KURL>::begin() (this=0x81c9c9c)
     at qvaluelist.h:473
 #11 0x08086af1 in PlaylistLoader::process(KURL::List&, bool) (this=0x81c9c90,
@@ -130,8 +131,6 @@
    from /usr/lib/qt3/lib/libqt-mt.so.3
 #14 0x412b1f60 in pthread_start_thread () from /lib/i686/libpthread.so.0
 #15 0x410f7327 in clone () from /lib/i686/libc.so.6
-
-//FIXME new one too (for empty current.m3u)
 
 [New Thread 16384 (LWP 7839)]
 [New Thread 32769 (LWP 7841)]
@@ -166,7 +165,7 @@
 */
 
 //LESS IMPORTANT
-//TODO add non-local directories as items with a [+] next to, you open them by clicking the plus!!
+//TODO add non-local directories as items with a [+] next to, you open them by clicking the plus!! --maybe not
 //TODO display dialog that lists unloadable media after thread is exited
 //TODO undo/redo suckz0r as you can push both simultaneously and you get a list which is a mixture!
 //     perhaps a static method that accepts a ListView pointer and loads playlists only would help speed
@@ -216,7 +215,7 @@ void PlaylistLoader::run()
 }
 
 
-void PlaylistLoader::process( KURL::List &list, bool validate )
+void PlaylistLoader::process( const KURL::List &list, bool validate )
 {
    struct STATSTRUCT statbuf;
    ++m_recursionCount;
@@ -614,7 +613,7 @@ void TagReader::cancel()
    mutex.unlock();
    
    //this is because currently, tagreader 98% of the time has sent events for playlistitems to be deleted
-   //by processing events you process these playlistItem events and then after this function thery are deleted
+   //by processing events you process these playlistItem events and then after this function theory are deleted
    //FIXME delay deletion of the items instead (use an event to do it instead)
    kapp->processEvents();
 }

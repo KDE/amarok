@@ -83,7 +83,7 @@ public:
 
 private:
     virtual void run();
-    void process( KURL::List &, bool = true );
+    void process( const KURL::List &, bool = true );
 
     bool isValidMedia( const KURL &, mode_t = KFileItem::Unknown, mode_t = KFileItem::Unknown );
     void translate( QString &, KFileItemList & ); //turns a directory into a KURL::List
