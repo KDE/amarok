@@ -27,7 +27,7 @@ debug_prefix = "[Test Script]"
 
 
 class ConfigDialog( QDialog ):
-""" Configuration widget """
+    """ Configuration widget """
 
     def __init__( self ):
         QDialog.__init__( self )
@@ -37,7 +37,7 @@ class ConfigDialog( QDialog ):
         self.adjustSize()
 
     def save( self ):
-    """ Saves configuration to file """
+        """ Saves configuration to file """
 
         self.file = file( "testrc", 'w' )
 
@@ -51,7 +51,7 @@ class ConfigDialog( QDialog ):
 
 
 class Test( QApplication ):
-""" The main application, also sets up the Qt event loop """
+    """ The main application, also sets up the Qt event loop """
 
     def __init__( self, args ):
         QApplication.__init__( self, args )
@@ -64,13 +64,10 @@ class Test( QApplication ):
         self.stdinReader = threading.Thread( target = self.readStdin )
         self.stdinReader.start()
 
-        self.alarmTimer = QTimer()
-        self.connect( self.alarmTimer, SIGNAL( "timeout()" ), self.wakeup )
-
         self.readSettings()
 
     def readSettings( self ):
-    """ Reads settings from configuration file """
+        """ Reads settings from configuration file """
 
         try:
             foovar = config.get( "General", "foo" )
@@ -101,7 +98,7 @@ class Test( QApplication ):
 ############################################################################
 
     def timerEvent( self, event ):
-    """ Polls the notification queue at regular interval """
+        """ Polls the notification queue at regular interval """
 
         if not self.queue.empty():
             string = QString( self.queue.get_nowait() )
@@ -136,30 +133,30 @@ class Test( QApplication ):
         self.connect( self.dia, SIGNAL( "destroyed()" ), self.readSettings )
 
     def engineStatePlay( self ):
-    """ Called when Engine state changes to Play """
+        """ Called when Engine state changes to Play """
         pass
 
     def engineStateIdle( self ):
-    """ Called when Engine state changes to Idle """
+        """ Called when Engine state changes to Idle """
         pass
 
     def engineStatePause( self ):
-    """ Called when Engine state changes to Pause """
+        """ Called when Engine state changes to Pause """
         pass
 
     def engineStateEmpty( self ):
-    """ Called when Engine state changes to Empty """
+        """ Called when Engine state changes to Empty """
         pass
 
     def trackChange( self ):
-    """ Called when a new track starts """
+        """ Called when a new track starts """
         pass
 
 
 ############################################################################
 
 def debug( message ):
-""" Prints debug message to stdout """
+    """ Prints debug message to stdout """
 
     print debug_prefix + " " + message
 
