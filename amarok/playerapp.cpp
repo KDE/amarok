@@ -44,7 +44,6 @@ email                : markey@web.de
 #include <kdebug.h>
 #include <kglobalaccel.h>
 #include <klocale.h>
-#include <kmessagebox.h>
 #include <kshortcut.h>
 #include <kstandarddirs.h>
 #include <ktip.h>
@@ -77,7 +76,7 @@ PlayerApp::PlayerApp()
         , m_pOSD( new OSDWidget() )
         , m_proxyError( false )
 {
-    setName( "amaroK" );
+    setName( "amarok" );
     pApp = this; //global
 
     initPlayerWidget();
@@ -268,7 +267,7 @@ void PlayerApp::applySettings()
                                               m_artsNeedsRestart,
                                               SCOPE_SIZE,
                                               AmarokConfig::rememberEffects() );
-        
+
         m_pEngine->setVolume( AmarokConfig::masterVolume() );
 
         kdDebug() << "[PlayerApp::applySettings()] AmarokConfig::soundSystem() == " << AmarokConfig::soundSystem() << endl;
@@ -496,7 +495,7 @@ void PlayerApp::play( const MetaBundle &bundle )
     m_playingURL = url;
     emit currentTrack( url );
     bool success;
-    
+
     if ( AmarokConfig::titleStreaming() && !m_proxyError && !url.isLocalFile() )
     {
         TitleProxy *pProxy = new TitleProxy( url );
@@ -512,11 +511,11 @@ void PlayerApp::play( const MetaBundle &bundle )
     else
         success = m_pEngine->open( url );
 
-    if ( !success ) {       
+    if ( !success ) {
         slotNext();
         return;
     }
-                    
+
     m_proxyError = false;
 
     m_pPlayerWidget->setScroll( bundle );

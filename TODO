@@ -24,8 +24,6 @@ SHORT-TERM (URGENT):
 
     * fix: #34 playlist: hidden columns can be resized back into sight! -->mxcl
 
-    * fix: #33 <markey> invoking handbook broken. problem seems to be the name: amaroK vs. amarok
-
     * add: #30 <markey> kdemultimedia configure check
 
     * add: #29 <muesli> configure script should fail, if taglib check failed
