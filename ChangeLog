@@ -6,9 +6,9 @@ amaroK ChangeLog
 VERSION 1.2.3:
   FEATURES:
     * New DCOP call "playlist: removeCurrentTrack()". (BR 92973)
-    * DCOP call saveCurrentPlaylist() now returns the path to current.xml.
 
   CHANGES:
+    * DCOP call saveCurrentPlaylist() now returns the path to current.xml.
 
   BUGFIXES:
     * Use a better highlight color in the "Configure Collection" dialog.
