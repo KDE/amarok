@@ -96,4 +96,5 @@ LONG-TERM:
 
 IDEAS:
 
-    * all toplevel widgets (windows) we create should have the amarok logo, not just an X
+    * all toplevel widgets (windows) we create should display the amarok icon, not just an X.
+      is there a way to do that automagically?

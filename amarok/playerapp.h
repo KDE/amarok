@@ -155,7 +155,7 @@ class PlayerApp : public KUniqueApplication
         void readConfig();
 
         void getTrackLength();
-        void toggleXFade( bool on );
+        void setupScrolltext();
         void startXFade();
         void stopXFade();
 

@@ -129,15 +129,13 @@ bool PlaylistItem::hasMetaInfo()
 
 void PlaylistItem::setMetaTitle()
 {
-    if ( !m_tagTitle.isEmpty() )
-        setText( 0, m_tagTitle );
-
-    setText( 1, m_tagArtist );
-    setText( 2, m_tagAlbum );
-    setText( 3, m_tagYear );
-    setText( 4, m_tagComment );
-    setText( 5, m_tagGenre );
-    setText( 6, m_tagDirectory );
+    setText( 1, m_tagTitle );
+    setText( 2, m_tagArtist );
+    setText( 3, m_tagAlbum );
+    setText( 4, m_tagYear );
+    setText( 5, m_tagComment );
+    setText( 6, m_tagGenre );
+    setText( 7, m_tagDirectory );
 }
 
 

@@ -817,70 +817,64 @@ bool PlayerApp::queryClose()
 
 void PlayerApp::getTrackLength()
 {
-    PlaylistItem * item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
-
-    if ( item == NULL )
-        return ;
-    // let aRts calculate length
-    Arts::poTime timeO( m_pPlayObject->overallTime() );
-    m_length = timeO.seconds;
-    m_pPlayerWidget->m_pSlider->setMaxValue( static_cast<int>( timeO.seconds ) );
-
-    KFileMetaInfo metaInfo( item->url().path(), QString::null, KFileMetaInfo::Everything );
-
-    if ( metaInfo.isValid() && !metaInfo.isEmpty() )
+    if ( m_pPlayObject != NULL )
     {
-        QString str, strNum;
-        if ( metaInfo.item( "Artist" ).string() == "---" ||
-                metaInfo.item( "Title" ).string() == "---" )
-        {
-            str.append( item->text( 0 ) + " (" );
-        }
-        else
-        {
-            str.append( metaInfo.item( "Artist" ).string() + " - " );
-            str.append( metaInfo.item( "Title" ).string() + " (" );
-        }
+        Arts::poTime timeO( m_pPlayObject->overallTime() );
 
-        int totSeconds, totMinutes, totHours;
-        totSeconds = ( m_length % 60 );
-        totMinutes = ( m_length / 60 % 60 );
-        totHours = ( m_length / 60 / 60 % 60 );
-        if ( totHours )
-        {
-            strNum.setNum( totHours );
-            str.append( strNum + ":" );
-        }
-        strNum.setNum( totMinutes );
-        str.append( strNum + ":" );
-        str.append( convertDigit( totSeconds ) + ")" );
-
-        m_pPlayerWidget->setScroll( str,
-                                    metaInfo.item( "Bitrate" ).string(),
-                                    metaInfo.item( "Sample Rate" ).string() );
-    }
-    else
-    {
-        QString str( m_pPlayObject->mediaName() );
-
-        if ( str.isEmpty() )
-            m_pPlayerWidget->setScroll( item->text( 0 ), " ? ", " ? " );
-        else
-            m_pPlayerWidget->setScroll( str, " ? ", " ? " );
+        m_length = timeO.seconds;
+        m_pPlayerWidget->m_pSlider->setMaxValue( static_cast<int>( timeO.seconds ) );
     }
 }
 
 
-void PlayerApp::toggleXFade( bool on )
+void PlayerApp::setupScrolltext()
 {
-    if ( on )
-    {
-        m_optXFade = true;
-    }
+    PlaylistItem *item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
 
-    else
+    if ( item != NULL )
     {
-        m_optXFade = false;
+        KFileMetaInfo metaInfo( item->url().path(), QString::null, KFileMetaInfo::Everything );
+
+        if ( metaInfo.isValid() && !metaInfo.isEmpty() )
+        {
+            QString str, strNum;
+            if ( metaInfo.item( "Artist" ).string() == "---" ||
+                    metaInfo.item( "Title" ).string() == "---" )
+            {
+                str.append( item->text( 0 ) + " (" );
+            }
+            else
+            {
+                str.append( metaInfo.item( "Artist" ).string() + " - " );
+                str.append( metaInfo.item( "Title" ).string() + " (" );
+            }
+
+            int totSeconds, totMinutes, totHours;
+            totSeconds = ( m_length % 60 );
+            totMinutes = ( m_length / 60 % 60 );
+            totHours = ( m_length / 60 / 60 % 60 );
+            if ( totHours )
+            {
+                strNum.setNum( totHours );
+                str.append( strNum + ":" );
+            }
+            strNum.setNum( totMinutes );
+            str.append( strNum + ":" );
+            str.append( convertDigit( totSeconds ) + ")" );
+
+            m_pPlayerWidget->setScroll( str,
+                                        metaInfo.item( "Bitrate" ).string(),
+                                        metaInfo.item( "Sample Rate" ).string() );
+        }
+        else
+        {
+            QString str( m_pPlayObject->mediaName() );
+
+            if ( str.isEmpty() )
+                m_pPlayerWidget->setScroll( item->text( 0 ), " ? ", " ? " );
+            else
+                m_pPlayerWidget->setScroll( str, " ? ", " ? " );
+        }
     }
 }
 
@@ -1303,7 +1297,10 @@ void PlayerApp::slotMainTimer()
     }
 
     if ( ( m_length == 0 ) && ( !m_pPlayObject->stream() ) )
+    {
         getTrackLength();
+        setupScrolltext();
+    }
 
     if ( m_bSliderIsPressed )
         return ;
@@ -1489,9 +1486,9 @@ void PlayerApp::slotShowOptions()
             m_optHidePlaylistWindow = false;
 
         if ( opt1->checkBoxXFade->isChecked() )
-            toggleXFade( true );
+            m_optXFade = true;
         else
-            toggleXFade( false );
+            m_optXFade = false;
 
         switch ( opt1->comboBox1->currentItem() )
         {

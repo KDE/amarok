@@ -53,7 +53,8 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) : KListView(
     setPaletteBackgroundColor( pApp->m_bgColor );
     setShowSortIndicator( true );
 
-    addColumn( "Title", 300 );
+    addColumn( "Trackname", 280 );
+    addColumn( "Title", 200 );
     addColumn( "Album", 100 );
     addColumn( "Artist", 100 );
     addColumn( "Year", 40 );
