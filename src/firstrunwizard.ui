@@ -237,63 +237,13 @@
                         <property name="flat">
                             <bool>false</bool>
                         </property>
-                        <spacer>
-                            <property name="name">
-                                <cstring>spacer4_2</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>121</width>
-                                    <height>21</height>
-                                </size>
-                            </property>
-                            <property name="geometry">
-                                <rect>
-                                    <x>130</x>
-                                    <y>30</y>
-                                    <width>121</width>
-                                    <height>21</height>
-                                </rect>
-                            </property>
-                        </spacer>
-                        <spacer>
-                            <property name="name">
-                                <cstring>spacer5</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Vertical</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>20</width>
-                                    <height>220</height>
-                                </size>
-                            </property>
-                            <property name="geometry">
-                                <rect>
-                                    <x>50</x>
-                                    <y>80</y>
-                                    <width>20</width>
-                                    <height>220</height>
-                                </rect>
-                            </property>
-                        </spacer>
                         <widget class="QLabel">
                             <property name="name">
                                 <cstring>picture_modePreview</cstring>
                             </property>
                             <property name="geometry">
                                 <rect>
-                                    <x>20</x>
+                                    <x>0</x>
                                     <y>20</y>
                                     <width>91</width>
                                     <height>41</height>
