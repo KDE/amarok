@@ -99,9 +99,8 @@ class PlayerWidget : public QWidget
 
         void wheelEvent( QWheelEvent *e ); //systray requires access
 
-        void createVis();
-
     public slots:
+        void createVis();
         void slotConfigShortcuts();
         void slotConfigGlobalShortcuts();
         void slotConfigPlayObject();

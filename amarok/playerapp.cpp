@@ -282,6 +282,19 @@ void PlayerApp::restoreSession()
 // METHODS
 /////////////////////////////////////////////////////////////////////////////////////
 
+void PlayerApp::applySettings()
+{
+    m_pEngine->initMixer     ( AmarokConfig::softwareMixerOnly() );
+    m_pEngine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
+
+    m_pOSD->setEnabled( !AmarokConfig::osdEnabled() );      //workaround for reversed config entry
+    m_pOSD->setFont   ( AmarokConfig::osdFont() );
+    m_pOSD->setColor  ( AmarokConfig::osdColor() );
+
+    setupColors();
+}
+
+
 bool PlayerApp::isPlaying() const
 {
     return m_pEngine->loaded();
@@ -312,9 +325,8 @@ void PlayerApp::readConfig()
 {
     kdDebug() << "begin PlayerApp::readConfig()" << endl;
 
-    m_pEngine->initMixer     ( AmarokConfig::softwareMixerOnly() );
-    m_pEngine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
-
+    applySettings();
+    
     /*    m_pBrowserWin->m_pBrowserWidget->readDir( AmarokConfig::currentDirectory() );
         m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( AmarokConfig::pathHistory() );*/
 
@@ -324,21 +336,9 @@ void PlayerApp::readConfig()
 
     m_pPlayerWidget->m_pButtonPl->setOn( AmarokConfig::browserWinEnabled() );
 
-    m_pBrowserWin->slotUpdateFonts();
-
-    setupColors();
-
-    m_pPlayerWidget->createVis();
-
-    m_pOSD->setEnabled( !AmarokConfig::osdEnabled() );      //workaround for reversed config entry
-    m_pOSD->setFont   ( AmarokConfig::osdFont() );
-    m_pOSD->setColor  ( AmarokConfig::osdColor() );
-
-    QValueList<int> splitterList;
-
     //FIXME this is no longer particular relevant, instead record playlistSideBar's savedSize
     //      implement a setConfig() function  <markey> so can we remove it?
-    splitterList = AmarokConfig::browserWinSplitter();
+    QValueList<int> splitterList = AmarokConfig::browserWinSplitter();
     if ( splitterList.count() != 2 )
     {
         splitterList.clear();
@@ -350,8 +350,6 @@ void PlayerApp::readConfig()
     m_pPlayerWidget->slotUpdateTrayIcon( AmarokConfig::showTrayIcon() );
 
     // Actions ==========
-
-    //FIXME does calling this stuff multiple times cause a mem leak?
     m_pGlobalAccel->insert( "add", i18n( "Add Location" ), 0, CTRL + ALT + Key_A, 0,
                             this, SLOT( slotAddLocation() ), true, true );
     m_pGlobalAccel->insert( "show", i18n( "Show/Hide the Playlist" ), 0, CTRL + ALT + Key_H, 0,
@@ -814,8 +812,10 @@ void PlayerApp::slotShowOptions()
     dialog->addPage( new Options4(0,"Playback"), i18n("Playback"), "kmix",   i18n("Configure playback") );
     dialog->addPage( new Options5(0,"OSD"),      i18n("OSD" ),     "tv",     i18n("Configure OSD") );
 
-    connect( dialog, SIGNAL( settingsChanged() ), this, SLOT( readConfig() ) );
-
+    connect( dialog, SIGNAL( settingsChanged() ), this,            SLOT( applySettings() ) );
+    connect( dialog, SIGNAL( settingsChanged() ), m_pBrowserWin,   SLOT( slotUpdateFonts() ) );
+    connect( dialog, SIGNAL( settingsChanged() ), m_pPlayerWidget, SLOT( createVis() ) );
+    
     dialog->setInitialSize( QSize( 460, 390 ) );
     dialog->show();
 }
