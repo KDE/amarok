@@ -1,37 +1,31 @@
+
 // (c) Pierpaolo Di Panfilo 2004
 // See COPYING file for licensing information
 
 #ifndef COVERMANAGER_H
 #define COVERMANAGER_H
 
-#include "collectiondb.h"
-
-#include <qdialog.h>
 #include <qptrlist.h>
+#include <qsplitter.h>
 #include <kiconview.h>
 
-class KListView;
-class KPopupMenu;
-class KProgress;
-class KPushButton;
-
-class QHBox;
-class QLabel;
 class QListViewItem;
-class QPixmap;
-class QPoint;
-class QStringList;
-class QTimer;
-class QToolButton;
-
-class ClickLineEdit;
-class CollectionDB;
-class CoverView;
 class CoverViewItem;
+class ClickLineEdit;
+class KPushButton;
+class KPopupMenu;
+class QToolButton;
+class QLabel;
+class KListView;
+class CoverView;
+class QHBox;
+class KProgress;
 
-class CoverManager : public QWidget
+class CoverManager : public QSplitter
 {
-Q_OBJECT
+        Q_OBJECT
+
+        static CoverManager *s_instance;
 
     public:
         CoverManager();
@@ -41,18 +35,13 @@ Q_OBJECT
         static void viewCover( const QString& artist, const QString& album, QWidget *parent=0 );
 
     private slots:
-        void expandItem( QListViewItem * );
-        void collapseItem( QListViewItem * );
-        void slotArtistSelected( QListViewItem * );
-
+        void slotArtistSelected( QListViewItem* );
         void coverItemExecuted( QIconViewItem *item );
-        void showCoverMenu( QIconViewItem *item, const QPoint & );
-        //filter
+        void showCoverMenu( QIconViewItem *item, const QPoint& );
         void slotSetFilter();
         void slotSetFilterTimeout();
         void changeView( int id );
         void changeLocale( int id );
-        //cover fetching
         void fetchMissingCovers();
         void fetchCoversLoop();
         void coverFetched( const QString&, const QString& );
@@ -74,7 +63,6 @@ Q_OBJECT
 
         KListView      *m_artistView;
         CoverView      *m_coverView;
-        QHBox          *m_searchBox;
         ClickLineEdit  *m_searchEdit;
         KPushButton    *m_fetchButton;
         KPopupMenu     *m_amazonLocaleMenu;
@@ -106,15 +94,11 @@ Q_OBJECT
 
 class CoverView : public KIconView
 {
-Q_OBJECT
-
     public:
         CoverView( QWidget *parent = 0, const char *name = 0, WFlags f = 0 );
 
     protected:
         QDragObject *dragObject();
-
-    private:
 };
 
 class CoverViewItem : public KIconViewItem

@@ -1,15 +1,16 @@
 // (c) Pierpaolo Di Panfilo 2004
 // See COPYING file for licensing information
 
-#include "config.h"
-
+#include "amarok.h"
 #include "amarokconfig.h"
 #include "clicklineedit.h"
 #include "collectiondb.h"
+#include "config.h"
 #include "coverfetcher.h"
 #include "covermanager.h"
 #include "debug.h"
 
+#include <qdesktopwidget.h>  //ctor: desktop size
 #include <qfile.h>
 #include <qfontmetrics.h>    //paintItem()
 #include <qhbox.h>
@@ -23,10 +24,10 @@
 #include <qpoint.h>
 #include <qprogressdialog.h>
 #include <qrect.h>
-#include <qsplitter.h>
 #include <qstringlist.h>
 #include <qtimer.h>    //search filter timer
 #include <qtooltip.h>
+#include <qvbox.h>
 
 #include <kapplication.h>
 #include <kconfig.h>
@@ -50,74 +51,62 @@
 
 
 static QString artistToSelectInInitFunction;
-CoverManager* instance = 0;
+CoverManager *CoverManager::s_instance = 0;
 
 
 CoverManager::CoverManager()
-    : QWidget( 0, "TheCoverManager", WDestructiveClose )
-    , m_timer( new QTimer( this ) )    //search filter timer
-    , m_fetchCounter( 0 )
-    , m_fetchingCovers( 0 )
-    , m_coversFetched( 0 )
-    , m_coverErrors( 0 )
+        : QSplitter( 0, "TheCoverManager" )
+        , m_timer( new QTimer( this ) )    //search filter timer
+        , m_fetchCounter( 0 )
+        , m_fetchingCovers( 0 )
+        , m_coversFetched( 0 )
+        , m_coverErrors( 0 )
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
-    instance = this;
+    s_instance = this;
 
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
-
-    setCaption( kapp->makeStdCaption( i18n("Cover Manager") ) );
-
-    QVBoxLayout *vbox = new QVBoxLayout( this );
-    QSplitter *splitter = new QSplitter( this );
-    vbox->addWidget( splitter );
+    this->setCaption( kapp->makeStdCaption( i18n("Cover Manager") ) );
+    this->setWFlags( WDestructiveClose );
+    this->setMargin( 4 );
 
     //artist listview
-    m_artistView = new KListView( splitter );
+    m_artistView = new KListView( this );
     m_artistView->addColumn(i18n( "Albums By" ));
     m_artistView->setFullWidth( true );
-    //m_artistView->setRootIsDecorated( true );
     m_artistView->setSorting( -1 );    //no sort
     m_artistView->setMinimumWidth( 180 );
-    //add 'All Albums' at the top
     KListViewItem *item = new KListViewItem( m_artistView, i18n( "All Albums" ) );
-    //item->setExpandable( true );
     item->setPixmap( 0, SmallIcon("cdrom_unmount") );
 
     //load artists from the collection db
-    QStringList artists = CollectionDB::instance()->artistList( false, false );
-    if( !artists.isEmpty() ) {
-        for( uint i=0; i < artists.count(); i++ )  {
-            item = new KListViewItem( m_artistView, item, artists[i] );
-            //item->setExpandable( true );
-            item->setPixmap( 0, SmallIcon("personal") );
-        }
+    const QStringList artists = CollectionDB::instance()->artistList( false, false );
+    foreach( artists )  {
+        item = new KListViewItem( m_artistView, item, *it );
+        item->setPixmap( 0, SmallIcon("personal") );
     }
 
-    QWidget *coverWidget = new QWidget( splitter );
-    QVBoxLayout *viewBox = new QVBoxLayout( coverWidget );
-    viewBox->setMargin( 4 );
-    viewBox->setSpacing( 4 );
-    QHBoxLayout *hbox = new QHBoxLayout( viewBox->layout() );
+    QVBox *vbox = new QVBox( this );
+    QHBox *hbox = new QHBox( vbox );
+
+    vbox->setSpacing( 4 );
+    hbox->setSpacing( 4 );
 
     { //<Search LineEdit>
-        m_searchBox = new QHBox( coverWidget );
-        KToolBarButton *button = new KToolBarButton( "locationbar_erase", 0, m_searchBox );
-        m_searchEdit = new ClickLineEdit( i18n( "Filter here..." ), m_searchBox );
+        QHBox *searchBox = new QHBox( hbox );
 
-        m_searchBox->setMargin( 1 );
+        KToolBarButton *button = new KToolBarButton( "locationbar_erase", 0, searchBox );
+        m_searchEdit = new ClickLineEdit( i18n( "Filter here..." ), searchBox );
         m_searchEdit->setFrame( QFrame::Sunken );
-        //make the clear filter button use background color
-        QColorGroup cg = QApplication::palette().active();
-        cg.setColor( QColorGroup::Button, cg.background() );
-        button->setPalette( QPalette(cg, cg, cg) );
+
         connect( button, SIGNAL(clicked()), m_searchEdit, SLOT(clear()) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
         QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter albums" ) );
-        hbox->addWidget( m_searchBox );
+
+        hbox->setStretchFactor( searchBox, 1 );
     } //</Search LineEdit>
 
     // view menu
@@ -138,20 +127,18 @@ CoverManager::CoverManager()
     connect( m_amazonLocaleMenu, SIGNAL( activated(int) ), SLOT( changeLocale(int) ) );
     #endif
 
-    KToolBar* toolBar = new KToolBar( coverWidget );
+    KToolBar* toolBar = new KToolBar( hbox );
     toolBar->setIconText( KToolBar::IconTextRight );
     toolBar->setFrameShape( QFrame::NoFrame );
-    hbox->addWidget( toolBar );
-    hbox->addStretch();
     toolBar->insertButton( "view_choose", 1, m_viewMenu, true, i18n( "View" ) );
     #ifdef AMAZON_SUPPORT
     toolBar->insertButton( "babelfish", 2, m_amazonLocaleMenu, true, i18n( "Amazon Locale" ) );
 
     QString locale = AmarokConfig::amazonLocale();
 
-    if ( locale == "fr" )      m_currentLocale = France;
-    else if ( locale == "de" ) m_currentLocale = Germany;
-    else if ( locale == "uk" ) m_currentLocale = UK;
+         if( locale == "fr" ) m_currentLocale = France;
+    else if( locale == "de" ) m_currentLocale = Germany;
+    else if( locale == "uk" ) m_currentLocale = UK;
     else {
         // make sure we handle old config files correctly
         locale = "us";
@@ -161,26 +148,20 @@ CoverManager::CoverManager()
     m_amazonLocaleMenu->setItemChecked( m_currentLocale, true );
 
     //fetch missing covers button
-    m_fetchButton = new KPushButton( KGuiItem( i18n("Fetch Missing Covers"), "cdrom_unmount" ), coverWidget );
-    hbox->addWidget( m_fetchButton );
+    m_fetchButton = new KPushButton( KGuiItem( i18n("Fetch Missing Covers"), "cdrom_unmount" ), hbox );
     connect( m_fetchButton, SIGNAL(clicked()), SLOT(fetchMissingCovers()) );
     #endif
 
     //cover view
-    m_coverView = new CoverView( coverWidget );
-    viewBox->addWidget( m_coverView, 4 );
+    m_coverView = new CoverView( vbox );
 
     //status bar
-    KStatusBar *m_statusBar = new KStatusBar( coverWidget );
-    //status label
+    KStatusBar *m_statusBar = new KStatusBar( vbox );
     m_statusBar->addWidget( m_statusLabel = new KSqueezedTextLabel( m_statusBar ), 4 );
-
+    m_statusLabel->setIndent( 3 );
     m_statusBar->addWidget( m_progressBox = new QHBox( m_statusBar ), 1, true );
-    //stop button
-    QToolButton *stopButton = new QToolButton( m_progressBox );
-    stopButton->setIconSet( SmallIconSet( "cancel" ) );
+    KPushButton *stopButton = new KPushButton( KGuiItem(i18n("Abort"), "stop"), m_progressBox );
     connect( stopButton, SIGNAL(clicked()), SLOT(stopFetching()) );
-    //progressbar for coverfetching
     m_progress = new KProgress( m_progressBox );
     m_progress->setCenterIndicator( true );
 
@@ -189,19 +170,13 @@ CoverManager::CoverManager()
     m_progressBox->setFixedHeight( h );
     m_progressBox->hide();
 
-    viewBox->addWidget( m_statusBar, 0 );
-
 
     // signals and slots connections
-    connect( m_artistView, SIGNAL( expanded(QListViewItem *) ), SLOT( expandItem(QListViewItem *) ) );
-    connect( m_artistView, SIGNAL( collapsed(QListViewItem *) ), SLOT( collapseItem(QListViewItem *) ) );
-    connect( m_artistView, SIGNAL( selectionChanged( QListViewItem * ) ), SLOT( slotArtistSelected( QListViewItem * ) ) );
-    connect( m_coverView, SIGNAL( rightButtonPressed( QIconViewItem *, const QPoint & ) ),
-                SLOT( showCoverMenu(QIconViewItem *, const QPoint &) ) );
-    connect( m_coverView, SIGNAL( executed( QIconViewItem * ) ),
-                SLOT( coverItemExecuted( QIconViewItem * ) ) );
-    connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
-    connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
+    connect( m_artistView, SIGNAL(selectionChanged( QListViewItem* ) ), SLOT(slotArtistSelected( QListViewItem* )) );
+    connect( m_coverView, SIGNAL(rightButtonPressed( QIconViewItem*, const QPoint& )), SLOT(showCoverMenu( QIconViewItem*, const QPoint& )) );
+    connect( m_coverView, SIGNAL(executed( QIconViewItem* )), SLOT(coverItemExecuted( QIconViewItem* )) );
+    connect( m_timer, SIGNAL(timeout()), SLOT(slotSetFilter()) );
+    connect( m_searchEdit, SIGNAL(textChanged( const QString& )), SLOT(slotSetFilterTimeout()) );
 
     #ifdef AMAZON_SUPPORT
     connect( CollectionDB::instance(), SIGNAL(coverFetched( const QString&, const QString& )), SLOT(coverFetched( const QString&, const QString& )) );
@@ -211,11 +186,8 @@ CoverManager::CoverManager()
 
     m_currentView = AllAlbums;
 
-    //set saved window size
-    KConfig *config = kapp->config();
-    config->setGroup( "Cover Manager" );
-    QSize winSize = config->readSizeEntry( "Window Size", new QSize( 610, 380 ) );    //default size
-    resize( winSize );
+    QSize size = QApplication::desktop()->screenGeometry( this ).size() / 1.5;
+    resize( amaroK::config( "Cover Manager" )->readSizeEntry( "Window Size", &size ) );
 
     show();
 
@@ -225,20 +197,17 @@ CoverManager::CoverManager()
 
 CoverManager::~CoverManager()
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
-    //save window size
-    KConfig *config = kapp->config();
-    config->setGroup( "Cover Manager" );
-    config->writeEntry( "Window Size", size() );
+    amaroK::config( "Cover Manager" )->writeEntry( "Window Size", size() );
 
-    instance = 0;
+    s_instance = 0;
 }
 
 
 void CoverManager::init()
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     QListViewItem *item = 0;
 
@@ -276,7 +245,7 @@ void CoverManager::fetchMissingCovers() //SLOT
 {
     #ifdef AMAZON_SUPPORT
 
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     for ( QIconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>( item );
@@ -323,52 +292,13 @@ void CoverManager::fetchCoversLoop() //SLOT
 
 void CoverManager::showOnce( const QString &artist )
 {
-    if ( !instance ) {
+    if ( !s_instance ) {
         artistToSelectInInitFunction = artist;
         new CoverManager(); //shows itself
     }
     else {
-        instance->setActiveWindow();
-        instance->raise();
-    }
-}
-
-
-void CoverManager::expandItem( QListViewItem *item ) //SLOT
-{
-    if (!item) return;
-
-    QStringList albums;
-
-    if ( item == m_artistView->firstChild() )
-        //All Artists
-        albums = CollectionDB::instance()->albumList( false, true );
-    else
-        albums = CollectionDB::instance()->albumListOfArtist( item->text( 0 ), false, false );
-
-    if ( !albums.isEmpty() )
-    {
-        KListViewItem *after = 0;
-        for ( uint i=0; i < albums.count(); i++ ) {
-            if ( !albums[i].isEmpty() ) {
-                after = new KListViewItem( item, after, albums[i] );
-                after->setPixmap( 0, SmallIcon("cdrom_unmount") );
-            }
-        }
-    }
-
-}
-
-
-void CoverManager::collapseItem( QListViewItem *item ) //SLOT
-{
-    QListViewItem* child = item->firstChild();
-    QListViewItem* childTmp;
-     //delete all children
-     while ( child ) {
-        childTmp = child;
-        child = child->nextSibling();
-        delete childTmp;
+        s_instance->setActiveWindow();
+        s_instance->raise();
     }
 }
 
