@@ -31,7 +31,7 @@ namespace amaroK
         Divider( BrowserBar *w )
                 : QWidget( w, "divider" )
         {
-            setCursor( QCursor(SizeHorCursor) );
+            setCursor( QCursor(SplitHCursor) );
             styleChange( style() );
         }
 
