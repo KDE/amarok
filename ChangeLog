@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 0.9-beta3:
+  * add: pasting clipboard selection into playlist with MidButton, X11-style  
+  * chg: refined on-screen-display with more polished look
   * fix: skipping broken/non-existant tracks
   * fix: respect "hide playlist with main window" and playlist minimize/hide behaviour.
 
