@@ -43,7 +43,7 @@ int main( int argc, char *argv[] )
 {
     KAboutData aboutData( "amarok", I18N_NOOP( "amaroK" ),
                           APP_VERSION, description, KAboutData::License_GPL,
-                          I18N_NOOP( "(c) 2002-2003, Mark Kretschmann and The amaroK Band" ), 
+                          I18N_NOOP( "(c) 2002-2004, Mark Kretschmann and The amaroK Band" ), 
                           I18N_NOOP( "Support channel on irc:\nserver: irc.freenode.net / channel: #amarok" ),
                           I18N_NOOP( "http://amarok.sourceforge.net" ) );
 
