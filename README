@@ -1,33 +1,39 @@
-amaroK README
--------------
 
-INTRODUCTION
-============
-
-amaroK - the audio player for KDE
+ amaroK - the audio player for KDE
+===================================
 
 There are many media players around these days, true. What's missing from most
 players is a user interface, that doesn't get in the way of the user. How many
-buttons do you have to press for simply adding some new tracks to the
-playlist? amaroK tries to be a little different, providing a simple drag and
-drop interface, that really makes playlist handling easy.
-
-    * fresh playlist concept, very fast to use, with drag and drop
-
-    * plays all audio formats, including mp3, ogg, audio CDs, streams
-
-    * audio effects, like reverb and compressor
-
-    * compatible with the .m3u and .pls formats for playlists
-
-    * nice GUI, integrates into the KDE look, but with a unique touch
+buttons do you have to press for simply adding some new tracks to the playlist?
+amaroK tries to be a little different, providing a simple drag and drop
+interface, that really makes playlist handling easy.
 
 
+ FEATURES
+==========
+
+    * Quick and simple drag and drop playlist creation
+    * Music library (built-in sqlite or MySQL)
+    * Multiple backends supported (GStreamer, xine, NMM, MAS and aRts)
+    * Plays all audio formats known to man
+    * 10 band equalizer
+    * Automatic cover art download using Amazon services
+    * The unique and powerful context browser
+    * Automatic play-statistics generation (iRate style)
+    * Full lyrics download
+    * Full Audioscrobbler support
+    * Visualisations with libvisual
+    * Streaming from any KIO source
+    * Crossfading
+    * Fully configurable OSD for track changes
+    * K3B (CD-burning) integration
+    * KDE integration
 --------------------------------------------------------------------------------
-DEPENDENCIES
-============
 
-required
+ DEPENDENCIES
+==============
+
+Required
     * KDE-Libs 3.2
       http://www.kde.org
 
@@ -35,7 +41,7 @@ required
       (metadata tagging library)
       http://freshmeat.net/projects/taglib
 
-recommended
+Recommended
     * GStreamer-0.8.1 + GStreamer-Plugins-0.8.1
       (multimedia framework)
       http://gstreamer.net
@@ -46,7 +52,7 @@ recommended
       (multimedia framework)
       http://xine.sourceforge.net
 
-optional
+Optional
     * aRts 1.2 + KDE-Multimedia 3.2
       (multimedia framework)
       http://www.kde.org
@@ -84,13 +90,12 @@ optional
       http://www.k3b.org
 
 
-Please note, if you obtain these dependencies via a packaging system, you must
-also install the devel versions of these packages!
-
-
+Please note, if compiling from source you must also install the devel versions
+of these packages.
 --------------------------------------------------------------------------------
-IMPORTANT INSTALL INSTRUCTIONS
-==============================
+
+ IMPORTANT INSTALL INSTRUCTIONS
+================================
 
 In order to compile and install amaroK on your system, type the following in the
 base directory of the amaroK distribution:
@@ -105,11 +110,10 @@ Note: --enable-final may not work for beta releases
 
 
 Packages for popular distributions are available at http://amarok.kde.org
-
-
 --------------------------------------------------------------------------------
-INSTALLATION-FAQ
-================
+
+ INSTALLATION-FAQ
+==================
 
 Q: I have the required version of GStreamer installed but configure doesn't
    find it!
@@ -130,21 +134,19 @@ A: The aRts engine is the slowest to load, using an alternative will help.
    drivers (eg Nvidia drivers), you will need to compile amaroK --without-opengl
    in order to get the amarokapp binary to prelink (the amarok binary is not
    important here).
-
-
 --------------------------------------------------------------------------------
-OTHER-FAQS
-==========
+
+ OTHER-FAQS
+============
 
 For answers to problems like "amaroK won't play any MP3s!" and "My MP3s skip
 and stutter!" please visit:
 
-   http://amarok.kde.org/component/option,com_staticxt/staticfile,faq.html
-
-
+   http://amarok.kde.org/
 --------------------------------------------------------------------------------
-INFORMATION FOR PACKAGERS
-=========================
+
+ INFORMATION FOR PACKAGERS
+===========================
 
 For amaroK packages we suggest you build:
 
@@ -178,18 +180,17 @@ real amaroK.
 
 If you make packages for amaroK please let us know and we'll link to you on the
 homepage (as long as you don't object).
-
-
 --------------------------------------------------------------------------------
-CONTRIBUTING
-============
+
+ CONTRIBUTING
+==============
 
 If you wish to contribute to amaroK, you should build it from CVS and subscribe
 to the amarok-devel mailing list. The IRC channel is  also  a  place  where
 it's  nice  to  be, since you can talk to other developers much easier, and
 get instant notification of commits to the CVS.
-
 --------------------------------------------------------------------------------
+
 
 WWW : http://amarok.kde.org
 MAIL: amarok-devel@lists.sourceforge.net
