@@ -1,67 +1,68 @@
 amaroK ChangeLog
 ================
-(c) 2002-2005 the amaroK authors.
+(C) 2002-2005 the amaroK authors.
 
 
 VERSION 1.2:
+  ADD: aKode engine, depends on KDE 3.4. No configure check yet.
   FIX: Don't add non-audio files to the Collection.
-  CHG: We now use the SqlLoader, which greatly improves the performance
-       of SmartPlaylists and the Collection.
+  CHG: We now use the SqlLoader, which greatly improves the performance of
+       adding stuff to the playlist from SmartPlaylists and the Collection.
 
 VERSION 1.2-beta4:
-  ADD: It is now possible to select the right image if there are
-       multiple results from Amazon. Patch from Gregory Isabelli
-       <g_isabelli@yahoo.fr>. (BR 93287)
-  CHG: Reorganized the DCOP interface. We used to have all DCOP functions
-       in the "player" group. Now it's splitted up into several
-       categories. Attention script writers: Adjust your DCOP calls!
+  ADD: It is now possible to select the right image if there are multiple
+       results from Amazon. Patch from Gregory Isabelli <g_isabelli@yahoo.fr>.
+       (BR 93287)
+  CHG: Reorganized the DCOP interface. We used to have all DCOP functions in the
+       "player" group. Now it's splitted up into several categories. Attention
+       script writers: Adjust your DCOP calls!
   FIX: The loader is now more robust and should always find amarokapp.
   CHG: The search-browser has been integrated into the file-browser.
   CHG: OSD can have fake transparency and new fancy shadow.
-  ADD: DCOP function "shortStatusMessage", shows a temporary message
-       on the application's statusbar.
+  ADD: DCOP function "shortStatusMessage", shows a temporary message on the
+       application's statusbar.
   FIX: Frequent crashes when writing tags. (BR 95344)
   FIX: CoverManager updates its status display correctly.
   FIX: "isPlaying" DCOP function now works correctly. (BR 90894)
   ADD: Automatic crash report generator, sends backtraces to amaroK HQ.
-  ADD: DCOP function "saveCurrentPlaylist". Writes the playlist to
-       current.xml, for scripts that need to access the playlist contents.
+  ADD: DCOP function "saveCurrentPlaylist". Writes the playlist to current.xml,
+       for scripts that need to access the playlist contents.
   ADD: Playlist2html, a script for playlist exporting. (BR 96199)
   ADD: Improved statusbar, with animated error notification widget.
-  ADD: New progress display system, can show multiple expandable
-       progress widgets in the statusbar.
+  ADD: New progress display system, can show multiple expandable progress
+       widgets in the statusbar.
   ADD: Alarm script, starts playing music at specified alarm time.
-  ADD: Script-Manager for DCOP script extensions is now functional. Refer
-       to the amaroK Wiki for information on script writing.
+  ADD: Script-Manager for DCOP script extensions is now functional. Refer to the
+       amaroK Wiki for information on script writing.
   ADD: Collection-Browser shows a help message in flat-mode when filter is
        empty. (BR 97000)
   CHG: It is possible to select the Database Engine (SQLite, MySQL) runtime,
-       without amaroK restart. New Database Engines can be added, they need
-       to inherit DbConnection and implement its' virtual methods (see
+       without amaroK restart. New Database Engines can be added, they need to
+       inherit DbConnection and implement its' virtual methods (see
        SqliteConnection and MySqlConnection).
   CHG: New amaroK icon "Blue Wolf", made by Da-Flow.
   FIX: Possible crash when enabling Player-Window. (BR 94668)
 
 VERSION 1.2-beta3:
-  ADD: Smart Playlists can have a random order or a score weighted random
-       order (BR 90861)
+  ADD: Smart Playlists can have a random order or a score weighted random order
+       (BR 90861)
   ADD: Show total length of selected songs in statusbar. (BR 90284)
-  ADD: Context-Browser now caches the tab widgets. Patch from Matias
-       Costa <mcc3@alu.um.es>. (BR 95999)
+  ADD: Context-Browser now caches the tab widgets. Patch from Matias Costa
+       <mcc3@alu.um.es>. (BR 95999)
   FIX: RAND and REP buttons were always enabled at startup. (BR 95861)
   ADD: Implemented "Append Suggestions" functionality. It means that when
-       enabled, amaroK will append a couple of suggested songs to playlist
-       when you play a track. This produces a continuous playlist, something
-       similar to listening to radio.
+       enabled, amaroK will append a couple of suggested songs to playlist when
+       you play a track. This produces a continuous playlist, something similar
+       to listening to radio.
   ADD: Implemented "Play Media..." functionality.
-  FIX: Playlist-Browser was appending to playlist when clicking "Load".
-       Now it replaces the current playlist again, as intended.
+  FIX: Playlist-Browser was appending to playlist when clicking "Load". Now it
+       replaces the current playlist again, as intended.
   ADD: Profile for KDELIRC (Remote Controls). Patch by Dirk Ziegelmeier
        <dziegel@gmx.de>.
   ADD: Remove Duplicates now also removes dead entries from playlist.
   FIX: Accept album-dragging from the ContextBrowser. (BR 86020)
-  FIX: Configure check was missing for the Konqueror Sidebar
-       (depends on KDE-Base).
+  FIX: Configure check was missing for the Konqueror Sidebar (depends on
+       KDE-Base).
   FIX: Browser splitter was drawn incorrectly with some styles. (BR 95333)
   ADD: DCOP call for relative seek. Patch by Andreas Pfaller. (BR 84989)
   CHG: Bumped TagLib dependency to 1.3.1. (1.3 is too damn buggy)
@@ -69,17 +70,17 @@ VERSION 1.2-beta3:
   ADD: Support for last.fm streams.
   FIX: amaroK icon shows correctly in window decoration under GNOME.
   ADD: Support for ID3v2 cover images. (Thanks to M. Thiesen!) (BR 88492)
-  ADD: DCOP calls for the status of Random Mode, Repeat Playlist and
-       Repeat Track.
+  ADD: DCOP calls for the status of Random Mode, Repeat Playlist and Repeat
+       Track.
   ADD: DCOP call to return the sample rate.
   ADD: DCOP call to return the track number. (BR 94825)
   FIX: GStreamer-engine provides better scope synchronisation.
   ADD: Save current track position and play queue on exit. (BR 90379)
-  FIX: Fix Directory column on playlist, show absolute directory path
-       instead of empty string. (BR 90361)
+  FIX: Fix Directory column on playlist, show absolute directory path instead of
+       empty string. (BR 90361)
   ADD: DCOP call to scan your collection. (BR 84621)
-  FIX: When an engine fails to load, respect the rank while choosing
-       the next engine.
+  FIX: When an engine fails to load, respect the rank while choosing the next
+       engine.
 
 VERSION 1.2-beta2:
   FIX: Classic amaroK theme looks better.
@@ -87,28 +88,28 @@ VERSION 1.2-beta2:
   FIX: Cover fetching improvements/fixes.
   ADD: Last played: yesterday, etc. in ContextBrowser.
   FIX: Big speedup for PlaylistLoader, when adding many items.
-  ADD: Show songs you once played, but didn't play for the longest
-       time on ContextBrowser's Home-page. (least played) (BR 89479)
-  FIX: Don't crash on song switch, when there's only one visible
-       playlist item and repeat-list is activated. (BR 94030)
+  ADD: Show songs you once played, but didn't play for the longest time on
+       ContextBrowser's Home-page. (least played) (BR 89479)
+  FIX: Don't crash on song switch, when there's only one visible playlist item
+       and repeat-list is activated. (BR 94030)
   CHG: Add and queue tracks after the current track. (BR 94121)
   ADD: DCOP call to raise the equalizer configuration dialog.
   ADD: Konqueror sidebar to view playing info and control amaroK.
   ADD: DCOP call to clear the playlist. (BR 90149)
   ADD: DCOP call to enable/disable the equalizer.
   ADD: DCOP call to return the score of the currently playing track.
-  ADD: Audioscrobbler submit queue stored on disk. Tracks that are listened
-       when offline will be available for submitting later.
-  CHG: "Start Scan" button was renamed to "Update". Now it starts an
-       incremental scan instead of a full rescan.
+  ADD: Audioscrobbler submit queue stored on disk. Tracks that are listened when
+       offline will be available for submitting later.
+  CHG: "Start Scan" button was renamed to "Update". Now it starts an incremental
+       scan instead of a full rescan.
   FIX: Lyrics parsing failed for certain songs. (BR 94269)
   ADD: xine-engine saves config, and implements crossfade, bug fixed too.
   ADD: Player-Window can also show the BlockAnalyzer.
   CHG: Run incremental scanning once a minute instead of every 30 seconds.
   FIX: When collection scanning was interrupted with Cancel, incremental
        scanning didn't work any longer.
-  CHG: Handle incremental file scanning in a thread. Now the GUI doesn't
-       get blocked every 30 seconds, anymore. (BR 93564)
+  CHG: Handle incremental file scanning in a thread. Now the GUI doesn't get
+       blocked every 30 seconds, anymore. (BR 93564)
   ADD: CollectionBrowser now offers two operation modes:
        The classical TreeView and a new FlatView (like the WinAmp Library).
   FIX: Caching of local cover images was broken for non-unique filenames.
@@ -123,13 +124,13 @@ VERSION 1.2-beta1:
   ADD: Full support for Audioscrobbler, including submission of tracks.
   FIX: Arts engine resumes from position when session is restored.
   ADD: Vorbis stream metadata support (GStreamer-engine). (BR 82378)
-  ADD: Cover image and lyric fetchers include filters for common
-       extensions, such as (Disc 1). (BR 90630)
+  ADD: Cover image and lyric fetchers include filters for common extensions,
+       such as (Disc 1). (BR 90630)
   ADD: Ability to choose from four different Amazon locales. (BR 90664)
   ADD: OSD now draws gradient instead of solid colour.
   ADD: 'Stop after current song' functionality. (BR 88652)
-  FIX: Queue function from context/collection browsers actually properly
-       queues tracks. (BR 90319)
+  FIX: Queue function from context/collection browsers actually properly queues
+       tracks. (BR 90319)
   ADD: MySQL database support. Patch by Andreas Mair <am_ml@linogate.com>.
        Please refer to mailing list for detailed instructions.
   ADD: Metadata history for streams in Context-Browser. (BR 89839)
@@ -137,21 +138,21 @@ VERSION 1.2-beta1:
   ADD: OSD text is now configurable, and it displays the album cover.
   FIX: Remote folders are read recursively when dropped on the playlist.
   FIX: Audiocd protocol in filebrowser had empty folders.
-  ADD: Cache system for current-track animation in playlist. Reduces
-       CPU load when the playlist is visible.
+  ADD: Cache system for current-track animation in playlist. Reduces CPU load
+       when the playlist is visible.
   ADD: 10-band IIR equalizer for GStreamer and xine engines.
-  FIX: The background gradient effect in Context-Browser is now much
-       faster. The gradient also looks nicer. (BR 91276)
-  FIX: Password-protected streams did not work correctly. (BR 91184).
-       Patch by <javapojken@yahoo.se>.
-  ADD: NMM-engine was rewritten and updated for the latest NMM release.
-       Supports audio and video playback.
+  FIX: The background gradient effect in Context-Browser is now much faster. The
+       gradient also looks nicer. (BR 91276)
+  FIX: Password-protected streams did not work correctly. (BR 91184). Patch by
+       <javapojken@yahoo.se>.
+  ADD: NMM-engine was rewritten and updated for the latest NMM release. Supports
+       audio and video playback.
   ADD: Cover-Manager supports drag-and-drop.
   ADD: Tags are now read from the Collection database if they are already
        stored. This speeds up adding items to the playlist. (BR 90137)
   ADD: Context-browser shows "Suggested Tracks", utilizing audioscrobbler.
-  FIX: Configure does no longer print "Good - Configure has finished" when
-       a dependency is missing.
+  FIX: Configure does no longer print "Good - Configure has finished" when a
+       dependency is missing.
   ADD: Intelligent automatic resize for playlist columns
   ADD: Shaded current-track marker in playlist.
   ADD: Automatic song lyrics display.
