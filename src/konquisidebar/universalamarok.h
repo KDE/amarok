@@ -45,21 +45,12 @@ public:
 protected:
     virtual void dragEnterEvent ( QDragEnterEvent * );
     virtual void dropEvent(QDropEvent*);
+    bool eventFilter( QObject *o, QEvent *e );
 
 signals:
     void emitURL( const KURL &);
 };
 
-class htmlWidget : public KHTMLPart
-{
-Q_OBJECT
-public:
-    htmlWidget();
-    ~htmlWidget();
-    virtual bool event ( QEvent * );
-signals:
-    void emitURL( const KURL &);
-};
 
 class UniversalAmarok : public KonqSidebarPlugin
 {

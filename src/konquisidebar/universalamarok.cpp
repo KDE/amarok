@@ -65,31 +65,25 @@ void amarokWidget::dropEvent(QDropEvent* event)
     }
 }
 
-htmlWidget::htmlWidget()
-    : KHTMLPart()
+bool amarokWidget::eventFilter( QObject *o, QEvent *e )
 {
+    if(e->type() < QEvent::DragEnter || e->type() > QEvent::Drop )
+        return false;
+    QApplication::sendEvent(this, e);
+    return true;
 }
-
-htmlWidget::~htmlWidget()
-{
-}
-bool htmlWidget::event(QEvent* event)
-{
-kdDebug() << "Evento ricevuto su htmlWidget:" << event->type() << endl;
-}
-
 
 UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widgetParent, QString &desktopName, const char* name):
                    KonqSidebarPlugin(inst,parent,widgetParent,desktopName,name)
 {
     widget=new amarokWidget(widgetParent);
     widget->resize(580,300);
-htmlWidget *mainBrowser=new htmlWidget();
-    browser = new KHTMLPart(widget, "widget-browser", mainBrowser);
+    browser = new KHTMLPart(widget, "widget-browser");
 //browser=new KHTMLPart(widget);
 kdDebug() << "parentPart() << " << browser->parentPart() << endl;
     browser->setDNDEnabled( true );
     updateBrowser(HTML_FILE);
+browser->view()->installEventFilter(widget);
     amarokDCOP=new DCOPClient();
     amarokDCOP->attach();
     KToolBar* toolBar=new KToolBar(widget, "PlayerControls");
