@@ -702,6 +702,9 @@ void PlayerApp::slotVisTimer()
 //         if ( m_scopeId )
         {
             std::vector<float> *pScopeVector = m_pEngine->scope();
+            if (!pScopeVector)
+                return;
+
             float *front = static_cast<float*>( &pScopeVector->front() );
             m_pFht->power( front );
             m_pFht->scale( front, 1.0 / 64 );
