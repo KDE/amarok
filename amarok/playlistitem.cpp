@@ -154,7 +154,7 @@ void PlaylistItem::setDir( bool on )
 }
 
 
-void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
+void PlaylistItem::paintCell( QPainter *p, const QColorGroup &, int column, int width, int align )
 {
     // FIXME: alternative version
 //     QColorGroup colGroup( cg );
