@@ -18,8 +18,8 @@ extern "C"
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "crashhandler.h"
-#include "debug.h"
 #include <cstdio>         //popen, fread
+#include "debug.h"
 #include <kapplication.h> //invokeMailer()
 #include <kdeversion.h>
 #include <klocale.h>
@@ -104,11 +104,10 @@ namespace amaroK
 
             ::write( handle, gdb_batch, gdb_batch.length() );
             ::fsync( handle );
-#if 0 
-//NOTE didn't compile
+
             // so we can read stderr too
-            ::dup2( ::fileno( ::stdout ), ::fileno( ::stderr ) );
-#endif
+            ::dup2( fileno( stdout ), fileno( stderr ) );
+
 
             QCString gdb;
             gdb  = "gdb --nw -n --batch -x ";
@@ -138,7 +137,7 @@ namespace amaroK
                 if( validFrames < 5 )
                     subject += " [short]";
 
-                if( bt.contains( QRegExp("at .*\\.cpp:\\d*") ) >= 0 )
+                if( bt.contains( QRegExp("at \\w*\\.cpp:\\d+") ) >= 0 )
                     subject += " [good]";
             }
             else
