@@ -231,7 +231,9 @@ void EngineController::play() //SLOT
 void EngineController::play( const MetaBundle &bundle )
 {
     const KURL &url = bundle.url();
-
+    // Destroy stale StreamProvider
+    delete m_stream;
+    
     if ( m_engine->streamingMode() != Engine::NoStreaming && url.protocol() == "http" ) {
         m_bundle = bundle;
         m_xFadeThisTrack = false;
@@ -360,7 +362,6 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
          AmarokConfig::titleStreaming() &&
          m_engine->streamingMode() != Engine::NoStreaming )
     {
-        delete m_stream;
         m_stream = new amaroK::StreamProvider( url, m_engine->streamingMode() );
 
         if ( !m_stream->initSuccess() || !m_engine->play( m_stream->proxyUrl(), isStream ) ) {
