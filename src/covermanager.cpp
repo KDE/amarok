@@ -59,12 +59,10 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     item->setPixmap( 0, SmallIcon("cdrom_unmount") );
 
     //load artists from the collection db
-    QStringList values;
-    values = m_db->artistList( false, false );
-
-    if( !values.isEmpty() ) {
-        for( uint i=0; i < values.count(); i++ )  {
-            item = new KListViewItem( m_artistView, item, values[i] );
+    QStringList artists = m_db->artistList( false, false );
+    if( !artists.isEmpty() ) {
+        for( uint i=0; i < artists.count(); i++ )  {
+            item = new KListViewItem( m_artistView, item, artists[i] );
             item->setExpandable( true );
             item->setPixmap( 0, SmallIcon("personal") );
         }
@@ -72,31 +70,31 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
 
     QWidget *coverWidget = new QWidget( splitter );
     QVBoxLayout *viewBox = new QVBoxLayout( coverWidget );
-    viewBox->setMargin(4);
-    viewBox->setSpacing(4);
+    viewBox->setMargin( 4 );
+    viewBox->setSpacing( 4 );
     QHBoxLayout *hbox = new QHBoxLayout( viewBox->layout() );
 
     //search line edit
     m_searchEdit = new KLineEdit( coverWidget );
     m_searchEdit->setPaletteForegroundColor( colorGroup().mid() );
-    m_searchEdit->setText(i18n( "Search here..." ));
+    m_searchEdit->setText( i18n( "Search here..." ) );
     m_searchEdit->installEventFilter( this );
     m_timer = new QTimer( this );    //search filter timer
 
     //view tool button
-    QToolButton *viewButton = new QToolButton( coverWidget );
-    viewButton->setText( i18n("View") );
-    viewButton->setAutoRaise( true );
-    viewButton->setPaletteBackgroundColor( colorGroup().background() );
+    m_viewButton = new QToolButton( coverWidget );
+    m_viewButton->setText( i18n("View") );
+    m_viewButton->setAutoRaise( true );
+    m_viewButton->setPaletteBackgroundColor( colorGroup().background() );
     // view menu
-    m_viewMenu = new KPopupMenu( viewButton);
+    m_viewMenu = new KPopupMenu( m_viewButton );
     m_viewMenu->insertItem( i18n("All albums"), AllAlbums );
     m_viewMenu->insertItem( i18n("Albums with cover"), AlbumsWithCover );
     m_viewMenu->insertItem( i18n("Albums without cover"), AlbumsWithoutCover );
     m_viewMenu->setItemChecked( AllAlbums, true );
     connect( m_viewMenu, SIGNAL( activated(int) ), SLOT( changeView(int) ) );
-    viewButton->setPopup(m_viewMenu);
-    viewButton->setPopupDelay(0);
+    m_viewButton->setPopup( m_viewMenu );
+    m_viewButton->setPopupDelay( 0 );
 
     #ifdef AMAZON_SUPPORT
     //fetch missing covers button
@@ -104,10 +102,10 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     connect( m_fetchButton, SIGNAL(clicked()), SLOT(fetchMissingCovers()) );
     #endif
     hbox->addWidget( m_searchEdit );
-    hbox->addWidget(viewButton);
+    hbox->addWidget( m_viewButton );
     hbox->addStretch();
     #ifdef AMAZON_SUPPORT
-    hbox->addWidget(m_fetchButton);
+    hbox->addWidget( m_fetchButton );
     #endif
     //cover view
     m_coverView = new KIconView( coverWidget );
@@ -140,7 +138,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     #ifdef AMAZON_SUPPORT
-    connect( m_db, SIGNAL( coverFetched(const QString &) ), SLOT( coverFetched(const QString &) ) );
+    connect( m_db, SIGNAL( coverFetched(const QString &) ), SLOT( loadCover(const QString &) ) );
     #endif
     m_currentView = AllAlbums;
     m_artistView->setSelected( m_artistView->firstChild(), true );
@@ -186,14 +184,15 @@ void CoverManager::fetchMissingCovers() //SLOT
 void CoverManager::fetchMissingCoversLoop() //SLOT
 {
     #ifdef AMAZON_SUPPORT
-    //get artist and album from keyword
-    QStringList values = QStringList::split( " - ", m_missingCovers[m_fetchCounter] );
-    m_db->fetchCover( this, values[0], values[1], true );
-    m_fetchCounter++;
+    if( m_fetchCounter < m_missingCovers.count() ) {
+        //get artist and album from keyword
+        QStringList values = QStringList::split( " - ", m_missingCovers[m_fetchCounter] );
+        m_db->fetchCover( this, values[0], values[1], true );
+        m_fetchCounter++;
 
-    // Wait 1 second, since amazon caps the number of accesses per client
-    QTimer::singleShot( 1000, this, SLOT( fetchMissingCoversLoop() ) );
-    
+        // Wait 1 second, since amazon caps the number of accesses per client
+        QTimer::singleShot( 1000, this, SLOT( fetchMissingCoversLoop() ) );
+    }
     #endif
 }
 
@@ -202,22 +201,22 @@ void CoverManager::expandItem( QListViewItem *item ) //SLOT
 {
     if (!item) return;
 
-    QStringList values;
+    QStringList albums;
 
     if ( item == m_artistView->firstChild() )
         //All Artists
-        values = m_db->albumList( false, false );
+        albums = m_db->albumList( false, false );
     else
-        values = m_db->albumListOfArtist( item->text( 0 ), false, false );
+        albums = m_db->albumListOfArtist( item->text( 0 ), false, false );
 
-    if ( !values.isEmpty() )
+    if ( !albums.isEmpty() )
     {
         KListViewItem *after = 0;
-        for ( uint i=0; i < values.count(); i++ )
+        for ( uint i=0; i < albums.count(); i++ )
         {
-            if ( !values[i].isEmpty() )
+            if ( !albums[i].isEmpty() )
             {
-                after = new KListViewItem( item, after, values[i] );
+                after = new KListViewItem( item, after, albums[i] );
                 after->setPixmap( 0, SmallIcon("cdrom_unmount") );
             }
         }
@@ -243,37 +242,56 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     if( item->depth() ) //album item
         return;
 
-    m_coverView->clear();
-    m_coverItems.clear();
+    //stop thumbnail loading
+    m_stopLoading = true;
+    m_loadAlbums.clear();
 
-    QStringList values;
+    m_coverItems.clear();
+    m_coverView->clear();
+
+    QStringList albums;
 
     bool allAlbums = (item == m_artistView->firstChild());
     if( allAlbums )
-        values = m_db->artistAlbumList( false, false );
+        albums = m_db->artistAlbumList( false, false );
     else
-        values = m_db->albumListOfArtist( item->text( 0 ), false, false );
+        albums = m_db->albumListOfArtist( item->text( 0 ), false, false );
 
-    if( !values.isEmpty() ) {
+    if( !albums.isEmpty() ) {
 
-        for( uint i=0; i < values.count();  allAlbums ? i+=2 : i++)  {
-            if( !values[allAlbums ? i+1 : i].isEmpty() ) {
-                CoverViewItem *coverItem = new CoverViewItem( m_coverView, m_coverView->lastItem(),
-                                                              allAlbums ? values[i] : item->text(0),
-                                                              values[ allAlbums ? i+1 : i ] );
+        for( uint i=0; i < albums.count();  allAlbums ? i+=2 : i++)  {
+            QString artist = allAlbums ? albums[i] : item->text(0);
+            QString album = albums[ allAlbums ? i+1 : i ];
+
+            if( !album.isEmpty() ) {
+                CoverViewItem *coverItem = new CoverViewItem( m_coverView, m_coverView->lastItem(), artist, album);
                 m_coverItems.append( coverItem );
-
-                if( coverItem->hasCover() ) {
-                    QString imgPath = m_db->getImageForAlbum( allAlbums ? values[i] : item->text(0),
-                                                              values[ allAlbums ? i+1 : i ] );
-                    coverItem->updateCover( QPixmap( imgPath ) );
-                }
+                m_loadAlbums += artist + " - " + album; //used for thumbnail loading
             }
         }
 
         updateCounter();
+        m_searchEdit->setEnabled( false );
+        m_viewButton->setEnabled( false );
+        QTimer::singleShot( 0, this, SLOT( loadThumbnails() ) );
     }
 
+}
+
+
+void CoverManager::loadThumbnails() //SLOT
+{
+    m_stopLoading = false;
+
+    for( uint i=0; i < m_loadAlbums.count(); i++ ) {
+        if( m_stopLoading ) break;
+
+        qApp->processEvents();
+        loadCover( m_loadAlbums[i] );
+    }
+
+    m_searchEdit->setEnabled( true );
+    m_viewButton->setEnabled( true );
 }
 
 
@@ -457,19 +475,19 @@ void CoverManager::changeView( int id  ) //SLOT
 }
 
 
-void CoverManager::coverFetched( const QString &key )
+void CoverManager::loadCover( const QString &key )
 {
-    #ifdef AMAZON_SUPPORT
     for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
         if( key == coverItem->artist() + " - " + coverItem->album() )
         {
-            QString imgPath = m_db->getImageForAlbum( coverItem->artist(), coverItem->album() );
-            coverItem->updateCover( QPixmap( imgPath ) );
+            if( QFile::exists( coverItem->albumPath() ) ) {
+                QString imgPath = m_db->getImageForAlbum( coverItem->artist(), coverItem->album() );
+                coverItem->updateCover( QPixmap( imgPath ) );
+            }
             return;
         }
     }
-    #endif
 }
 
 
@@ -555,6 +573,7 @@ void CoverViewItem::updateCover( const QPixmap &cover )
 {
     m_hasCover = !cover.isNull();
     coverPix = ( cover.isNull() ? SmallIcon("image") : cover );
+    repaint();
 }
 
 

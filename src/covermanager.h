@@ -18,7 +18,9 @@ class QLabel;
 class QListViewItem;
 class QPixmap;
 class QPoint;
+class QStringList;
 class QTimer;
+class QToolButton;
 
 class CollectionDB;
 class CoverViewItem;
@@ -37,12 +39,13 @@ Q_OBJECT
         void expandItem( QListViewItem * );
         void collapseItem( QListViewItem * );
         void slotArtistSelected( QListViewItem * );
+        void loadThumbnails();
+        void loadCover( const QString & );
         void coverItemDoubleClicked( QIconViewItem *item );
         void showCoverMenu( QIconViewItem *item, const QPoint & );
         void slotSetFilter();
         void slotSetFilterTimeout();
         void changeView( int id );
-        void coverFetched( const QString & );
         void fetchMissingCovers();
         void fetchMissingCoversLoop();
 
@@ -55,17 +58,23 @@ Q_OBJECT
         KListView *m_artistView;
         KIconView *m_coverView;
         KLineEdit *m_searchEdit;
+        QToolButton *m_viewButton;
         KPopupMenu *m_viewMenu;
         KPushButton *m_fetchButton;
         QLabel *m_counterLabel;
+
         QTimer *m_timer;    //search filter timer
         QPtrList<KIconViewItem> m_coverItems;
         QString m_filter;
         int m_currentView;
 
+        //used for the thumbnail loading
+        QStringList m_loadAlbums;
+        bool m_stopLoading;
+
         // Used by fetchMissingCovers() for temporary storage
         QStringList m_missingCovers;
-        int m_fetchCounter;
+        uint m_fetchCounter;
 };
 
 
