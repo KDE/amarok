@@ -8,7 +8,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  FIX #99 <markey> With KDE color scheme, some widgets are black (inside of the browsers).
+  FIX #99 <markey> With KDE color scheme some widgets inside of the browsers become black,
+          when color scheme is switched at runtime.
   
   ADD #97 <mxcl> if you hold CTRL when dropping to pl it has a plus sign but drops at cursor, but shift drops
                  at bottom of pl, but has no icon on drag cursor.
