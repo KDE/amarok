@@ -29,7 +29,7 @@ if test x$amarok_warning_xineold = xyes; then
     echo " ===  amaroK - WARNING  ========================================================"
     echo " =========================="
     echo " ="
-    echo " = amaroK requires xine version: $xine_version_min."
+    echo " = amaroK requires xine-lib version: 1.0-rc4"
     echo " = amaroK will still be built, but you must use another sound-engine."
     echo " ="
 fi
@@ -137,7 +137,7 @@ else
     fi
 
     if test x$build_xine = xyes; then
-        echo " =   + Xine-engine (note: at least libxine 1.0.0 rc4 may be required)"
+        echo " =   + xine-engine"
     fi
 
     if test x$build_nmm = xyes; then
@@ -145,7 +145,7 @@ else
     fi
 
     if test x$build_xmmswrapper = xyes; then
-        echo " =   + XMMS Visualisation Wrapper"
+        echo " =   + XMMS Visualization Wrapper"
     fi
 
     echo " ="

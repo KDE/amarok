@@ -123,7 +123,7 @@ AC_SUBST(taglib_libs)
 ###############################################################################
 
 AC_ARG_WITH(gstreamer,
-    AC_HELP_STRING([--without-gstreamer],[build amaroK without GStreamer [default=no]]),
+    AC_HELP_STRING([--without-gstreamer],[build amaroK without GStreamer [default=with]]),
     [build_gstreamer=$withval],
     [build_gstreamer=yes]
 )
@@ -171,7 +171,7 @@ AM_CONDITIONAL(with_gst, [test x$have_gst = xyes])
 ###############################################################################
 
 AC_ARG_WITH(xine,
-    AC_HELP_STRING([--without-xine],[build amaroK without Xine [default=no]]),
+    AC_HELP_STRING([--without-xine],[build amaroK without xine [default=with]]),
     [build_xine=$withval],
     [build_xine=yes]
 )
@@ -186,17 +186,25 @@ if test "$build_xine" != "no"; then
         LIBS_XINE=[`xine-config --libs`]
 
         xine_version=`xine-config --version`
+        xine_version=VERSION_TO_NUMBER(echo $xine_version)
         xine_version_min="1.0.0"
+        xine_version_min=VERSION_TO_NUMBER(echo $xine_version_min)
 
-        AC_MSG_CHECKING([for libxine version >= $xine_version_min])
+        xine_include=`xine-config --cflags | sed -r 's/-I(.*)/\1/'`
 
-        if test VERSION_TO_NUMBER(echo $xine_version) -lt VERSION_TO_NUMBER(echo $xine_version_min); then
+        AC_MSG_CHECKING([for xine-lib version >= 1.0-rc4])
+
+        if test $xine_version -eq $xine_version_min \
+             -a `sed -ne '/^#define XINE_VERSION/s/.*-rc\([0-9]\+\).*/\1/p' $xine_include/xine.h` -gt 3 \
+             -o $xine_version -gt $xine_version_min; then
+
+            echo "yes"
+
+        else
+            echo "no"
+
             amarok_warning_xineold=yes
             build_xine=no
-
-            echo "no"
-        else
-            echo "yes"
         fi
     else
         build_xine=no
@@ -217,7 +225,7 @@ AC_SUBST(LIBS_XINE)
 ###############################################################################
 
 AC_ARG_WITH(nmm,
-    AC_HELP_STRING([--with-nmm],[build amaroK with NMM support [default=no]]),
+    AC_HELP_STRING([--with-nmm],[build amaroK with NMM support [default=without]]),
     [build_nmm=$withval],
     [build_nmm=no]
 )
@@ -249,7 +257,7 @@ AC_SUBST(CFLAGS_NMM)
 ###############################################################################
 
 AC_ARG_WITH(opengl,
-    AC_HELP_STRING([--without-opengl],[build amaroK without OpenGL [default=no]]),
+    AC_HELP_STRING([--without-opengl],[build amaroK without OpenGL [default=with]]),
     [build_opengl=$withval],
     [build_opengl=yes]
 )
@@ -307,7 +315,7 @@ fi
 LIB_SQLITE=""
 
 AC_ARG_WITH(included-sqlite,
-    AC_HELP_STRING([--without-included-sqlite],[don't use the included sqlite sources [default=no]]),
+    AC_HELP_STRING([--without-included-sqlite],[don't use the included sqlite sources [default=with]]),
     [included_sqlite=$withval],
     [included_sqlite=yes]
 )
