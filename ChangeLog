@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta2:
+  FIX: When an engine fails to load, respect the rank while choosing
+       the next engine.
   FIX: Big speedup for PlaylistLoader, when adding many items.
   ADD: Show songs you once played, but didn't play for the longest
        time on ContextBrowser's Home-page. (least played) (BR 89479)
