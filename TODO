@@ -8,8 +8,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  FIX 133 <markey> OSD preview reported incompatible with KDE 3.3 (HEAD): preview vanishes instantly when moved.
-
   FIX 132 <mxcl>   GSTengine, pick a bad audio sink in playback config and it crashes, default sink is one
                    nobody has. Needs fixing or we should disable the code.
           
