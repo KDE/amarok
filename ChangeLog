@@ -4,6 +4,8 @@ amaroK Changelog
 
 
 VERSION 0.6.0-PRE5:
+  * changed: MetaInfo reading now off by default. the slowdown was potentially
+    confusing to new users
   * added: documentation
   * fixed: cleaned up Makefile.am a bit
   * fixed: defined new APP_VERSION macro, since the old approach did not work
@@ -78,7 +80,7 @@ VERSION 0.5.1:
     the new mcopclasses  
   * fixed possible compile error in viswidget.cpp 
   * amaroK uses much less CPU now than it used to. This was mainly achieved by 
-    using a new FFT-analyzer module, which I took from Noatuns "Winskin"-plugin, 
+    using a new FFT-analyzer module, which I took from Noatuns "Winskin"-plugin,
     and modified slightly to my needs. Also some other optimizations were made, 
     which	improved the standby performance, when no song is playing. I'm still 
     not satisfied with overall performance, tho, but it seems that most of the 

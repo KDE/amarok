@@ -8,12 +8,10 @@ SHORT-TERM:
 
     * fix: sample looping @ end of track or pause
 
-    * fix: go to the last played track on startup
-
     * fix: some URLs seem not to work (redirection), e.g.:
       http://robotron.ton.tut.fi:80
 
-    * fix: crash when pressing buttons several times too fast
+    * fix: buttons in PlaylistWindow stuck when pressed several times too fast
 
     * fix: "help" menu item
 
@@ -26,6 +24,8 @@ SHORT-TERM:
 
 
 MID-TERM:
+
+    * fix: go to the last played track on startup
 
     * add: background "transparency" for playlist window
 

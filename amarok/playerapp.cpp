@@ -664,7 +664,7 @@ void PlayerApp::readConfig()
     m_optTimeDisplayRemaining = m_pConfig->readBoolEntry( "Time Display Remaining", false );
     m_optRepeatTrack = m_pConfig->readBoolEntry( "Repeat Track", false );
     m_optRepeatPlaylist = m_pConfig->readBoolEntry( "Repeat Playlist", false );
-    m_optReadMetaInfo = m_pConfig->readBoolEntry( "Show MetaInfo", true );
+    m_optReadMetaInfo = m_pConfig->readBoolEntry( "Show MetaInfo", false );
 
     m_Volume = m_pConfig->readNumEntry( "Master Volume", 50 );
     slotVolumeChanged( m_Volume );

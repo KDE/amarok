@@ -586,16 +586,16 @@ void PlayerWidget::closeEvent( QCloseEvent *e )
 void PlayerWidget::moveEvent( QMoveEvent *e )
 {
 /*!  Makes the the playlistwindow stick magnetically to the playerwindow */
-    if ( pApp->m_pBrowserWin->isVisible() )
+/*    if ( pApp->m_pBrowserWin->isVisible() )
     {
-        if ( ( e->oldPos().x() == pApp->m_pBrowserWin->x() - 1 ) ||
-             ( e->oldPos().y() == pApp->m_pBrowserWin->y() - 1 ) ||
-             ( e->oldPos().x() + width() == pApp->m_pBrowserWin->x() - 1 ) ||
-             ( e->oldPos().y() + height() == pApp->m_pBrowserWin->y() - 1 ) )
+        if ( ( e->oldPos().x() - 0 == pApp->m_pBrowserWin->frameGeometry().right() ) ||
+             ( e->oldPos().y() - 0 == pApp->m_pBrowserWin->frameGeometry().bottom() ) ||
+             ( e->oldPos().x() + frameSize().width() + 0 == pApp->m_pBrowserWin->frameGeometry().left() ) ||
+             ( e->oldPos().y() + frameSize().height() + 0 == pApp->m_pBrowserWin->frameGeometry().top() ) )
         {
             pApp->m_pBrowserWin->move( e->pos() + ( pApp->m_pBrowserWin->pos() -  e->oldPos() ) );
         }
-    }
+    }*/
 }
 
 
