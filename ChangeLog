@@ -3,6 +3,8 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  FIX: Gst engine refusing to add certain filetypes to the playlist, when
+       the engine was idle (BR 82713).
   FIX: Rare playlist redraw bug, which resulted in messed up items.
 
 VERSION 1.0-beta4:

@@ -211,8 +211,6 @@ GstEngine::initMixer( bool hardware )
 bool
 GstEngine::canDecode( const KURL &url, mode_t, mode_t )
 {
-    if ( !m_pipelineFilled ) return false;
-
     GstElement *pipeline, *filesrc, *typefind;
     m_typefindResult = false;
 
