@@ -318,7 +318,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
 
     // some sizing details
     initScroll(); //requires m_pFrame to be created
-    setFixedSize( 310, 130 + m_pFrame->height() ); //was 155
+    setFixedSize( 310, 115 + m_pFrame->height() ); //y was 130
     initTimeDisplay();
     m_pTimeDisplayLabel->setFixedSize( 9 * 12 + 2, 12 + 2 );
     timeDisplay( false, 0, 0, 0 );

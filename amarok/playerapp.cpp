@@ -108,10 +108,10 @@ PlayerApp::PlayerApp()
     initArts();
     initPlayerWidget();
     initBrowserWin();
-    initMixer();
 
     readConfig();
-
+    initMixer();          //initMixer() depends on a config value, so it must be executed after readConfig()
+    
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
     connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
     m_pMainTimer->start( MAIN_TIMER );
@@ -360,8 +360,6 @@ void PlayerApp::initPlayerWidget()
 
     m_pPlayerWidget->m_pSliderVol->setMinValue( 0 );
     m_pPlayerWidget->m_pSliderVol->setMaxValue( 100 );
-    m_pPlayerWidget->m_pSliderVol->setValue( m_Volume );
-
 
     connect( m_pPlayerWidget->m_pSlider, SIGNAL( sliderPressed() ),
              this, SLOT( slotSliderPressed() ) );

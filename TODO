@@ -181,3 +181,28 @@ DISCUSSING:
            
 DUMPED:
 
+
+BACKTRACES/VALGRIND/DEFECTS:
+
+12.19.03:
+valgrind --logfile=amarok12_19_03valgrind.log --trace-children=yes /opt/kde3/bin/amarok
+
+==2121== Invalid write of size 4
+==2121==    at 0x80883E0: PlaylistLoader::LoaderEvent::makePlaylistItem(QListView*) (amarok/playlistloader.cpp:484)
+==2121==    by 0x80824F1: PlaylistWidget::customEvent(QCustomEvent*) (amarok/playlistwidget.cpp:351)
+==2121==    by 0x419FA5FB: QObject::event(QEvent*) (in /usr/lib/qt3/lib/libqt-mt.so.3.2.3)
+==2121==    by 0x41A3153B: QWidget::event(QEvent*) (in /usr/lib/qt3/lib/libqt-mt.so.3.2.3)
+==2121==    Address 0x47AB064C is 20 bytes inside a block of size 28 free'd
+==2121==    at 0x4015F64A: __builtin_delete (in /usr/lib/valgrind/valgrind.so)
+==2121==    by 0x4015F66A: operator delete(void*) (in /usr/lib/valgrind/valgrind.so)
+==2121==    by 0x808A937: PlaylistLoader::~PlaylistLoader() (amarok/playlistloader.h:32)
+==2121==    by 0x8085690: PlaylistLoader::LoaderDoneEvent::dispose() (amarok/playlistloader.h:67)
+==2121== discard syms in /opt/kde3/lib/libx11globalcomm.so.1.0.0 due to munmap()
+==2121== discard syms in /usr/lib/qt3/plugins/imageformats/libqmng.so due to munmap()
+==2121== discard syms in /usr/lib/libmng.so.1.0.0 due to munmap()
+==2121== discard syms in /usr/lib/liblcms.so.1.0.9 due to munmap()
+==2121== discard syms in /usr/lib/qt3/plugins/imageformats/libqjpeg.so due to munmap()
+==2121== discard syms in /usr/lib/libjpeg.so.62.0.0 due to munmap()
+==2121== discard syms in /usr/lib/libGLU.so.1.3 due to munmap()
+==2121== discard syms in /opt/kde3/lib/kde3/plugins/styles/plastik.so due to munmap()
+
