@@ -64,6 +64,7 @@ class DcopHandler : public QObject, virtual public AmarokIface
       virtual void volumeDown();
       virtual void mute();
       virtual void enableOSD(bool enable);
+      virtual void togglePlaylist();
 
    private:
 };

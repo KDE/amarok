@@ -1191,7 +1191,7 @@ Playlist::removeDuplicates() //SLOT
     while( (item = it.current()) ) {
         const KURL &compare = item->url();
         ++it;
-        if ( it && compare == it.current()->url() ) {
+        if ( *it && compare == it.current()->url() ) {
             removeItem( item );
             delete item;
         }

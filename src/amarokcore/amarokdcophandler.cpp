@@ -21,6 +21,7 @@
 #include "engine/enginebase.h"
 #include "enginecontroller.h"
 #include "playlist.h"
+#include "playlistwindow.h"
 #include "osd.h"
 #include "collectiondb.h"
 
@@ -240,6 +241,11 @@ namespace amaroK
     {
         amaroK::OSD::instance()->setEnabled(enable);
         AmarokConfig::setOsdEnabled(enable);
+    }
+
+    void DcopHandler::togglePlaylist()
+    {
+        PlaylistWindow::self()->showHide();
     }
 
 } //namespace amaroK

@@ -88,6 +88,8 @@ namespace amaroK
 /// CLASS PlaylistWindow
 //////////////////////////////////////////////////////////////////////////////////////////
 
+PlaylistWindow *PlaylistWindow::s_instance = 0;
+
 #include <time.h>
 template <class B> void
 PlaylistWindow::addBrowser( const char *name, const QString &title, const QString &icon )
@@ -100,7 +102,7 @@ PlaylistWindow::addBrowser( const char *name, const QString &title, const QStrin
 
     const double duration = (double) (finish - start) / CLOCKS_PER_SEC;
 
-    kdDebug() << "  Time: " << duration << "s\n";
+    kdDebug() << "    Time: " << duration << "s\n";
 }
 
 
@@ -108,6 +110,8 @@ PlaylistWindow::PlaylistWindow()
    : QWidget( 0, "PlaylistWindow", Qt::WGroupLeader )
    , KXMLGUIClient()
 {
+    s_instance = this;
+
     setCaption( "amaroK" );
 
     KActionCollection* const ac = actionCollection();

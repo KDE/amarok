@@ -54,9 +54,10 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
         void createGUI(); //should be private but App::slowConfigToolbars requires it
         void recreateGUI();
 
-        KStatusBar *statusBar() const { return m_statusbar; }
-
         virtual bool eventFilter( QObject*, QEvent* );
+
+        //instance is declared in KXMLGUI
+        static PlaylistWindow *self() { return s_instance; }
 
     public slots:
         void showHide();
@@ -78,6 +79,8 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
         KStatusBar *m_statusbar;
         ToolBar    *m_toolbar;
         int m_lastBrowser;
+
+        static PlaylistWindow *s_instance;
 };
 
 

@@ -174,9 +174,14 @@ void App::handleCliArgs() //static
         for ( int i = 0; i < args->count(); i++ )
             list << args->url( i );
 
-        if( notEnqueue ) Playlist::instance()->clear();
-        Playlist::instance()->appendMedia( list, notEnqueue || args->isSet( "play" ) );
+        if ( args->isSet( "queue" ) )
+            Playlist::instance()->queueMedia( list );
+        else if( args->isSet( "append" ) )
+            Playlist::instance()->appendMedia( list );
+        else
+            Playlist::instance()->replaceMedia( list );
     }
+
     //we shouldn't let the user specify two of these since it is pointless!
     //so we prioritise, pause > stop > play > next > prev
     //thus pause is the least destructive, followed by stop as brakes are the most important bit of a car(!)
@@ -194,6 +199,9 @@ void App::handleCliArgs() //static
         EngineController::instance()->next();
     else if ( args->isSet( "previous" ) )
         EngineController::instance()->previous();
+
+    if (  args->isSet( "toggle-playlist-window" ) )
+        pApp->m_pPlaylistWindow->showHide();
 
     args->clear();    //free up memory
 }
@@ -222,8 +230,13 @@ void App::initCliArgs( int argc, char *argv[] ) //static
             { "f", 0, 0 },
             { "next", I18N_NOOP( "Skip forwards in playlist" ), 0 },
             { ":", I18N_NOOP("Additional options:"), 0 },
+            { "a", 0, 0 },
+            { "append", I18N_NOOP( "Append files/URLs to playlist" ), 0 },
             { "e", 0, 0 },
-            { "enqueue", I18N_NOOP( "Enqueue Files/URLs" ), 0 },
+            { "enqueue", I18N_NOOP("See append, available for backwards compatability"), 0 },
+            { "queue", I18N_NOOP("Queue URLs after the currently playing track"), 0 },
+            { "m", 0, 0 },
+            { "toggle-playlist-window", I18N_NOOP("Toggle the Playlist-window"), 0 },
             { "wizard", I18N_NOOP( "Run First-run Wizard" ), 0 },
             { 0, 0, 0 }
         };
@@ -376,9 +389,15 @@ void App::applySettings( bool firstTime )
 
     amaroK::OSD::instance()->applySettings();
 
-    playlistWindow()->setFont( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font(), AmarokConfig::useCustomFonts() ? AmarokConfig::contextBrowserFont() : QApplication::font() );
+    playlistWindow()->setFont(
+        AmarokConfig::useCustomFonts()
+            ? AmarokConfig::playlistWindowFont()
+            : QApplication::font(),
+        AmarokConfig::useCustomFonts()
+            ? AmarokConfig::contextBrowserFont()
+            : QApplication::font() );
 
-    reinterpret_cast<QWidget*>(playlistWindow()->statusBar())->setShown( AmarokConfig::showStatusBar() );
+    amaroK::StatusBar::instance()->setShown( AmarokConfig::showStatusBar() );
 
     m_pTray->setShown( AmarokConfig::showTrayIcon() );
 

@@ -60,7 +60,8 @@ class Playlist : private KListView, public EngineObserver
         ~Playlist();
 
         void appendMedia( KURL::List, bool play = false, bool preventDoubles = false );
-        void queueMedia( const KURL::List&/*, bool preventDoubles = false*/ );
+        void queueMedia( const KURL::List& );
+        void replaceMedia( const KURL::List &list ) { clear(); appendMedia( list ); }
         bool isEmpty() const { return childCount() == 0; }
 
         bool isTrackBefore() const;
