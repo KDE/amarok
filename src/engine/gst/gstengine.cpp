@@ -303,7 +303,8 @@ GstEngine::play( const KURL& url )  //SLOT
     /* create a new pipeline (thread) to hold the elements */
     m_thread = gst_thread_new ( "thread" );
     g_object_set( G_OBJECT( m_thread ), "priority", m_threadPriority, NULL );
-
+    
+    kdDebug() << "Thread scheduling priority: " << m_threadPriority << endl;
     kdDebug() << "Sound output method: " << m_soundOutput << endl;
 
     if ( !( m_audiosink = createElement( m_soundOutput.latin1(), "play_audio" ) ) ) return;
