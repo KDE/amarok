@@ -17,6 +17,7 @@
 #include "qstringx.h"
 #include "sqlite/sqlite3.h"
 
+#include <kactioncollection.h>
 #include <kapplication.h> //kapp->config(), QApplication::setOverrideCursor()
 #include <kconfig.h>      //config object
 #include <kdebug.h>
@@ -31,6 +32,8 @@
 #include <kpopupmenu.h>
 #include <krun.h>
 #include <kstandarddirs.h>
+#include <ktoolbar.h>
+#include <ktoolbarbutton.h> //ctor
 #include <kurl.h>
 #include <kurlcombobox.h>
 
@@ -52,6 +55,21 @@ ContextBrowser::ContextBrowser( const char *name )
 
     setSpacing( 4 );
     setMargin( 5 );
+
+    KToolBar* toolbar = new KToolBar( this );
+    toolbar->setMovingEnabled( false );
+    toolbar->setFlat( true );
+    toolbar->setIconSize( 16 );
+    toolbar->setEnableContextMenu( false );
+
+    KActionCollection* ac = new KActionCollection( this );
+    KAction* homeAction = new KAction( i18n( "Home" ), "reload", 0, this, SLOT( showHome() ), ac, "Home" );
+    KAction* trackAction = new KAction( i18n( "Current Track" ), "today", 0, this, SLOT( showCurrentTrack() ), ac, "Current Track" );
+
+    toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the open button to have text on right
+    homeAction->plug( toolbar );
+    trackAction->plug( toolbar );
+
     QWidget::setFont( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );
 
     QHBox *hb1 = new QHBox( this );
@@ -451,21 +469,6 @@ void ContextBrowser::showHome() //SLOT
 
     browser->write( "<html>" );
 
-    QString menu = "<div class='menu'>"
-                    "<a>%1</a>"
-                    "&nbsp;&nbsp;"
-                    "<a href='show:%2'>%3</a>"
-                   "</div>";
-
-    menu = menu.arg( i18n("Home") );
-
-    if ( EngineController::engine()->isStream() )
-        menu = menu.arg( "stream" ).arg( i18n("Current Stream") );
-    else
-        menu = menu.arg( "context" ).arg( i18n("Current Track") );
-
-    browser->write( menu );
-
     browser->write( "<div class='rbcontent'>" );
     browser->write(  "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
     browser->write(   "<tr><th>" + i18n( "Your Favorite Tracks" ) + "</th></tr>" );
@@ -549,14 +552,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
     browser->setUserStyleSheet( m_styleSheet );
 
     browser->write( "<html>" );
-
-    QString menu = "<div class='menu'>"
-                    "<a href='show:home'>%1</a>"
-                    "&nbsp;&nbsp;"
-                    "<a>%2</a>"
-                   "</div>";
-
-    browser->write( menu.arg( i18n("Home") ).arg( EngineController::engine()->isStream() ? i18n("Current Stream") : i18n("Current Track") ) );
 
     // <Current Track Information>
     browser->write( "<div class='rbcontent'>"
@@ -792,9 +787,9 @@ void ContextBrowser::setStyleSheet()
     //KHTML sets the base color but not the text color
     m_styleSheet  = QString( "body { font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); }" )
                        .arg( pxSize ).arg( text ).arg( colorGroup().highlight().name() ).arg( locate( "data", "amarok/images/fadein.png" ) );
-    m_styleSheet += QString( "body a { color: %1; }" ).arg( text );
+    m_styleSheet += QString( "a { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
 
-    m_styleSheet += QString( ".menu { margin: 0.4em 0.0em; font-weight: bold; }" );
+    m_styleSheet += QString( ".menu { color: %1; background-color: %2; margin: 0.4em 0.0em; font-weight: bold; }" ).arg( fg ).arg( bg );
 
     //used in the currentlyPlaying block
     //m_styleSheet += QString( ".album { font-weight: bold; }" );
@@ -859,8 +854,7 @@ void ContextBrowser::showCurrentStream()
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
 
-    browser->write( "<html><div class='menu'><a class='menu' href='show:home'>" + i18n( "Home" ) + "</a>&nbsp;&nbsp;<a class='menu' href='show:stream'>"
-                    + i18n( "Current Stream" ) + "</a></div>");
+    browser->write( "<html>" );
 
     // <Stream Information>
     browser->write( "<div class='rbcontent'>" );
