@@ -4,7 +4,7 @@ Before amaroK was born, most KDE users were stuck with XMMS; others would even r
 audio players. Now those days are over. amaroK, written for the KDE desktop environment with its slick GUI and
 plugable, engine-independent audio capabilities is coming to a computer near you!
 
-amaroK is the first KDE application to use the GStreamer Multimedia Framework without any dependency on external bindings. amaroK can also integrate with xine so you have the freedom of choosing your own flavour. With version 1.1 there are many exciting changes that make using amaroK even more fun. Here are some of the features that you will simply love :
+amaroK is the first KDE application to use the GStreamer Multimedia Framework without any dependency on external bindings. amaroK can also integrate with xine so you have the freedom of choosing your own flavour. With version 1.1-beta1 there are many exciting changes that make using amaroK even more fun. Here are some of the features that you will simply love :
 
 - Fully Integrated with KDE : Play from your Samba share with smb:/ , or use the fish KIOSlave to play from a remote host.
 - Simple and Elegant : Collection-based system where you can choose songs from a variety of criteria, including artist, most played, never played, etc.
