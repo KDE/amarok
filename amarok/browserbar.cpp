@@ -20,12 +20,11 @@
 #include <kmultitabbar.h>  //m_multiTabBar
 
 
-//TODO panes don't remember their widths
-//     you possibly don't need to use baseSize anymore..
-//TODO rename class and files
 //TODO update commentry
 //TODO change container() name, it is poor
 //TODO make pageholder a layout
+//TODO get the browsers to offer more sensible minimumWidths!
+//TODO perhaps you can add pages and holder to multitabbar, and then just size that accordingly?
 
 
 //<mxcl>
@@ -226,7 +225,7 @@ BrowserBar::addPage( QWidget *widget, const QString &title, const QString& icon 
     m_mapper->setMapping( tab, id );
 
     KConfig *config = kapp->config();
-    config->setGroup( "BrowserBar" );
+    config->setGroup( "PlaylistSideBar" );
     widget->setBaseSize( config->readNumEntry( name, widget->sizeHint().width() ), DefaultHeight );
     {
         //FIXME what if there's no correlation between QPtrList index and multiTabBar id?
