@@ -1014,11 +1014,8 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental, DbConnection 
 
     command += escapeString( bundle->url().path() ) + "','";
     command += escapeString( bundle->url().directory() ) + "',";
-    command += "'" + QString::number( QFileInfo( bundle->url().path() ).created().toTime_t() ) + "',";
+    command += QString::number( QFileInfo( bundle->url().path() ).lastModified().toTime_t() ) + ",";
 
-    // if it's an incremental scan, we're directly writing to the tables
-    // fullscans use seperate temp tables which will be merged, later
-    // this makes the collectionbrowser usable during full rescans
     command += escapeString( QString::number( albumID( bundle->album(),   true, !incremental, false, conn ) ) ) + ",";
     command += escapeString( QString::number( artistID( bundle->artist(), true, !incremental, false, conn ) ) ) + ",";
     command += escapeString( QString::number( genreID( bundle->genre(),   true, !incremental, false, conn ) ) ) + ",'";

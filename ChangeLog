@@ -14,6 +14,7 @@ VERSION 1.2.3:
     * DCOP call saveCurrentPlaylist() now returns the path to current.xml.
 
   BUGFIXES:
+    * The Collection Scan finally checks for the right file modification time.
     * Adding a compilation disc from ContextBrowser was broken.
     * GStreamer-engine: Reduced the gap when switching to next track without
       crossfading.

@@ -325,9 +325,7 @@ MediaDeviceList::rmbPressed( QListViewItem* item, const QPoint& point, int ) //S
 
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue After Current Track" ), QUEUE );
-	menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
-        
-
+        menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
         menu.insertSeparator();
 
         switch ( item->depth() )
