@@ -82,7 +82,7 @@ CollectionDB::CollectionDB()
     DbConnection *dbConn = m_dbConnPool.getDbConnection();
     bool initialized = dbConn->isInitialized();
     m_dbConnPool.putDbConnection( dbConn );
-    
+
     KConfig* config = amaroK::config( "Collection Browser" );
     if ( !initialized || !isValid() )
     {
@@ -106,7 +106,7 @@ CollectionDB::CollectionDB()
             createStatsTable();
         }
     }
-        
+
     m_dbConnPool.createDbConnections();
 
 #ifdef USE_MYSQL
@@ -120,7 +120,7 @@ CollectionDB::CollectionDB()
     // TODO: Should write to config in dtor, but it crashes...
     config->writeEntry( "Database Version", DATABASE_VERSION );
     config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
-    
+
     startTimer( MONITOR_INTERVAL * 1000 );
 
     connect( Scrobbler::instance(), SIGNAL( similarArtistsFetched( const QString&, const QStringList& ) ),
@@ -699,7 +699,7 @@ QStringList
 CollectionDB::albumTracks( const QString &artist_id, const QString &album_id )
 {
   return query( QString(
-      "SELECT tags.url "    
+      "SELECT tags.url "
       "FROM tags, year "
       "WHERE tags.album = %1 AND "
       "( tags.sampler = 1 OR tags.artist = %2 ) "
@@ -759,7 +759,7 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage
 
 
 QString
-CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width ) 
+CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
 {
     QCString widthKey = makeWidthKey( width );
     QCString tagKey = md5sum( trackInformation.url().path(), trackInformation.artist() ); //what's more unique than the file name?
@@ -768,14 +768,14 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
     //FIXME: the cashed versions will never be refreshed
     if ( tagCoverDir.exists( widthKey + tagKey ) )
     {
-        // cached version 
+        // cached version
         return tagCoverDir.filePath( widthKey + tagKey );
     } else
     {
         // look into the tag
         TagLib::MPEG::File f( QFile::encodeName( trackInformation.url().path() ) );
         TagLib::ID3v2::Tag *tag = f.ID3v2Tag();
-  
+
         if ( tag )
         {
             TagLib::ID3v2::FrameList l = f.ID3v2Tag()->frameListMap()[ "APIC" ];
@@ -784,17 +784,17 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
                 kdDebug() << "Found APIC frame(s)" << endl;
                 TagLib::ID3v2::Frame *f = l.front();
                 TagLib::ID3v2::AttachedPictureFrame *ap = (TagLib::ID3v2::AttachedPictureFrame*)f;
-                  
+
                 const TagLib::ByteVector &imgVector = ap->picture();
                 kdDebug() << "Size of image: " <<  imgVector.size() << " byte" << endl;
-        
+
                 QByteArray imgData;
                 const char *tempCString = imgVector.data();
-        
+
                 // is there a better way to do this?
                 imgData.setRawData ( tempCString , imgVector.size() );
-                QImage image = QImage( imgData ); 
-        
+                QImage image = QImage( imgData );
+
                 // if we don't reset, the whole system get's meesed up
                 imgData.resetRawData ( tempCString , imgVector.size() );
                 if (! image.isNull() )
@@ -807,12 +807,12 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
                     {
                         image.save( tagCoverDir.filePath( tagKey ), "PNG" );
                         return tagCoverDir.filePath( tagKey );
-                    }    
+                    }
                 } // image.isNull
-            } // apic list is empty 
+            } // apic list is empty
         } // tag is empty
     } // caching
- 
+
     return QString::null;
 }
 
@@ -821,7 +821,7 @@ QString
 CollectionDB::findImageByArtistAlbum( const QString &artist, const QString &album, uint width )
 {
     QCString widthKey = makeWidthKey( width );
-  
+
     if ( artist.isEmpty() && album.isEmpty() )
         return notAvailCover( width );
     else
@@ -840,7 +840,7 @@ CollectionDB::findImageByArtistAlbum( const QString &artist, const QString &albu
                 {
                     QImage img( largeCoverDir.filePath( key ) );
                     img.smoothScale( width, width, QImage::ScaleMin ).save( m_cacheDir.filePath( widthKey + key ), "PNG" );
-    
+
                     return m_cacheDir.filePath( widthKey + key );
                 }
                 else
@@ -861,7 +861,7 @@ CollectionDB::albumImage( const uint artist_id, const uint album_id, const uint 
 
 
 QString
-CollectionDB::albumImage( const QString &artist, const QString &album, uint width ) 
+CollectionDB::albumImage( const QString &artist, const QString &album, uint width )
 {
     // we aren't going to need a 1x1 size image. this is just a quick hack to be able to show full size images.
     if ( width == 1) width = AmarokConfig::coverPreviewSize();
@@ -870,11 +870,11 @@ CollectionDB::albumImage( const QString &artist, const QString &album, uint widt
 
 
 QString
-CollectionDB::albumImage( MetaBundle trackInformation, uint width ) 
+CollectionDB::albumImage( MetaBundle trackInformation, uint width )
 {
     // we aren't going to need a 1x1 size image. this is just a quick hack to be able to show full size images.
     if ( width == 1) width = AmarokConfig::coverPreviewSize();
-  
+
     QString path = findImageByMetabundle( trackInformation, width );
     if ( path.isNull() )
       path = findImageByArtistAlbum( trackInformation.artist(), trackInformation.album(), width );
@@ -883,11 +883,11 @@ CollectionDB::albumImage( MetaBundle trackInformation, uint width )
 }
 
 
-QCString 
-CollectionDB::makeWidthKey( uint width ) 
+QCString
+CollectionDB::makeWidthKey( uint width )
 {
     return QString::number( width ).local8Bit() + "@";
-} 
+}
 
 
 QString
@@ -1417,6 +1417,9 @@ void CollectionDB::engineTrackEnded( int finalPosition, int trackLength )
 {
     //This is where percentages are calculated
     //TODO statistics are not calculated when currentTrack doesn't exist
+
+    // Don't update statistics if song has been played for less than 15 seconds
+    if ( finalPosition < 15000 ) return;
 
     const KURL &url = EngineController::instance()->bundle().url();
     if ( url.path().isEmpty() ) return;
