@@ -41,9 +41,11 @@ SHORT-TERM (URGENT):
              both.
 
     * fix: <mxcl> reimplement ask recursively on drop operations to playlist
-           <markey> replace with "add all media in current directory"
-           <mxcl> I don't understand what you mean by that..
-
+           <markey> replace with "add all media in current directory".
+           basically just a shortcut for going up to the parent directory, and then dragging
+           the directory. imagine you're in the root directory of some filesystem, and want to add all
+           files in it.. currently you'd have to select all files manually 
+           
     * fix: <mxcl> GroupBoxes can't have check boxes with Qt 3.1, so before next release do
            some #ifdefs to surround that code and hope nobody gets too pissed about it -->mxcl
 
@@ -51,9 +53,7 @@ SHORT-TERM (URGENT):
 
     * fix: opening hidden directories is impossible in filebrowser
 
-    * fix: app freezing when renaming the file that's currently playing
-
-    * fix: redirected URLs do not work
+    * fix: redirected URLs do not work (? - we need some testcase)
 
     * add: extend keyboard shortcuts [<mxcl> show playlist, also I'd say do this with actions as it's easiest]
 
