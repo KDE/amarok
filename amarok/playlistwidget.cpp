@@ -370,13 +370,21 @@ bool PlaylistWidget::loadPlaylist( KURL url, QListViewItem *destination )
         QFile file( tmpFile );
         if ( file.open( IO_ReadOnly ) )
         {
-            QString str;
+            QString str, dir = ( url.protocol() == "file" ) ? url.directory( false ) : url.url( 1 );
             QTextStream stream( &file );
+
+
 
             while ( ( str = stream.readLine() ) != QString::null )
             {
                 if ( !str.startsWith( "#" ) )
                 {
+                    //you can have http:// references, absolute references (eg /home/moo.ogg),
+                    //or relative references. We need to amend relative references.
+
+                    if ( !( str[0] == '/' || str.startsWith( "http://" ) ) )
+                        str.prepend( dir );
+
                     pCurr = addItem( pCurr, str );
                 }
             }
