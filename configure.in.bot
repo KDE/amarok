@@ -1,9 +1,9 @@
 # configure.in.bot
 # This file is used for printing important messages at the end of configure
 
-echo
+echo ""
 
-if test x$amarok_error_notaglib = xyes ; then
+if test x$amarok_error_notaglib = xyes; then
     echo "================================================================================"
     echo "=  amaroK - ERROR  ============================================================="
     echo "================================================================================"
@@ -24,7 +24,7 @@ if test x$amarok_error_taglibold = xyes; then
     echo "=                                                                           ===="
 fi
 
-if test "$PKGCONFIGFOUND" != "yes" ; then
+if test x$PKGCONFIGFOUND != xyes; then
     echo "================================================================================"
     echo "=  amaroK - WARNING  ==========================================================="
     echo "================================================================================"
@@ -112,26 +112,28 @@ if test x$no_engine = xyes; then
     echo "=                                                                           ===="
 fi
 
-if test x$build_arts = xyes -a x$have_kdemm = xyes; then
-    echo "================================================================================"    
-    echo "==== amaroK will be built with the aRts-engine                              ===="
-fi
-
-if test x$have_gst = xyes; then
-    echo "================================================================================"
-    echo "==== amaroK will be built with the GStreamer-engine                         ===="
-fi
-
-if test x$build_nmm = xyes; then
-    echo "================================================================================"
-    echo "==== amaroK will be built with the NMM-engine                               ===="
-    echo "================================================================================"
-    echo "=  amaroK - INFO  =============================================================="
-    echo "=                                                                              ="
-    echo "=  If the build fails, reconfigure --without-nmm, or ask for help on #amarok   ="
-    echo "=  (irc.freenode.net)                                                          ="
-    echo "=                                                                           ===="
-fi
+if test x$no_amarok != xyes; then
+    if test x$build_arts = xyes -a x$have_kdemm = xyes; then
+        echo "================================================================================"    
+        echo "==== amaroK will be built with the aRts-engine                              ===="
+    fi
     
+    if test x$have_gst = xyes; then
+        echo "================================================================================"
+        echo "==== amaroK will be built with the GStreamer-engine                         ===="
+    fi
+    
+    if test x$build_nmm = xyes; then
+        echo "================================================================================"
+        echo "==== amaroK will be built with the NMM-engine                               ===="
+        echo "================================================================================"
+        echo "=  amaroK - INFO  =============================================================="
+        echo "=                                                                              ="
+        echo "=  If the build fails, reconfigure --without-nmm, or ask for help on #amarok   ="
+        echo "=  (irc.freenode.net)                                                          ="
+        echo "=                                                                           ===="
+    fi
+fi    
+
 echo "================================================================================"
 

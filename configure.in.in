@@ -274,12 +274,12 @@ AC_ARG_WITH(included-sqlite,
     [included_sqlite=yes]
 )
 
-if test "$included_sqlite" = "no"; then
-    if test "$PKGCONFIGFOUND" = "yes" ; then
+if test x$included_sqlite = xno; then
+    if test x$PKGCONFIGFOUND = xyes; then
         KDE_PKG_CHECK_MODULES(SQLITE, sqlite >= 2.8, have_sqlite=yes,have_sqlite=no)
 
         if test x$have_sqlite = xyes; then
-            dnl  AC_DEFINE(HAVE_SQLITE, 1, [have SQLite database library])
+            ## AC_DEFINE(HAVE_SQLITE, 1, [have SQLite database library])
             LIB_SQLITE=$SQLITE_LIBS
         else
             # We don't support not having sqlite anymore
