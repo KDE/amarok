@@ -13,6 +13,7 @@ VERSION 1.2.3:
     * DCOP call saveCurrentPlaylist() now returns the path to current.xml.
 
   BUGFIXES:
+    * Adding a compilation disc from ContextBrowser was broken.
     * GStreamer-engine: Reduced the gap when switching to next track without
       crossfading.
     * GStreamer-engine: amaroK was swallowing the beginning of a track when

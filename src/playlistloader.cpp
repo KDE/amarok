@@ -93,7 +93,22 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
                 m_URLs += url;
            }
         }
+        else if( protocol == "compilation" ) {
+            QueryBuilder qb;
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, url.path() );
+            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+            qb.setOptions( QueryBuilder::optOnlyCompilations );
+            QStringList values = qb.run();
 
+            KURL::List urls;
+            KURL url;
+
+            for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it ) {
+                url.setPath( *it );
+                m_URLs += url;
+            }
+        }
         else {
             // this is the best way I found for recursing if required
             // and not recusring if not required

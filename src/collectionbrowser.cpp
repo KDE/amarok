@@ -615,7 +615,8 @@ void
 CollectionView::cat1Menu( int id, bool rerender )  //SLOT
 {
     m_parent->m_cat1Menu->setItemChecked( m_cat1, false ); //uncheck old item
-    m_parent->m_cat2Menu->setItemEnabled( m_cat1, true );  //enable old item
+    m_parent->m_cat2Menu->setItemEnabled( m_cat1, true );  //enable old items
+    m_parent->m_cat3Menu->setItemEnabled( m_cat1, true );
     m_cat1 = id;
     updateColumnHeader();
     m_parent->m_cat1Menu->setItemChecked( m_cat1, true );
@@ -911,6 +912,12 @@ CollectionView::updateColumnHeader()
             }
         }
     }
+    
+    m_parent->m_categoryMenu->setItemChecked( CollectionBrowser::IdArtist, m_cat1 == CollectionBrowser::IdArtist && m_cat2 == CollectionBrowser::IdNone );
+    m_parent->m_categoryMenu->setItemChecked( CollectionBrowser::IdAlbum, m_cat1 == CollectionBrowser::IdAlbum && m_cat2 == CollectionBrowser::IdNone );
+    m_parent->m_categoryMenu->setItemChecked( CollectionBrowser::IdArtistAlbum, m_cat1 == CollectionBrowser::IdArtist && m_cat2 == CollectionBrowser::IdAlbum && m_cat3 == CollectionBrowser::IdNone );
+    m_parent->m_categoryMenu->setItemChecked( CollectionBrowser::IdGenreArtist, m_cat1 == CollectionBrowser::IdGenre && m_cat2 == CollectionBrowser::IdArtist && m_cat3 == CollectionBrowser::IdNone );
+    m_parent->m_categoryMenu->setItemChecked( CollectionBrowser::IdGenreArtistAlbum, m_cat1 == CollectionBrowser::IdGenre && m_cat2 == CollectionBrowser::IdArtist && m_cat3 == CollectionBrowser::IdAlbum );
 }
 void
 CollectionView::startDrag()

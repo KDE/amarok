@@ -191,6 +191,28 @@ void ContextBrowser::openURLRequest( const KURL &url )
         return;
     }
 
+    if ( url.protocol() == "compilation" )
+    {
+        QueryBuilder qb;
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, url.path() );
+        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+        qb.setOptions( QueryBuilder::optOnlyCompilations );
+        QStringList values = qb.run();
+
+        KURL::List urls;
+        KURL url;
+
+        for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it ) {
+            url.setPath( *it );
+            urls.append( url );
+        }
+
+        Playlist::instance()->insertMedia( urls, Playlist::Unique );
+
+        return;
+    }
+
     if ( url.protocol() == "file" )
         Playlist::instance()->insertMedia( url, Playlist::DirectPlay | Playlist::Unique );
 
@@ -1354,21 +1376,20 @@ bool CurrentTrackJob::doJob()
                         "</td>"
                         "<td valign='middle' align='left'>"
                             "<span class='album-info'>%5</span> "
-                            "<a href='album:%6 @@@ %7'><span class='album-title'>%8</span></a>"
+                            "<a href='compilation:%6'><span class='album-title'>%7</span></a>"
                             "<br />"
-                            "<span class='album-year'>%10</span>"
+                            "<span class='album-year'>%8</span>"
                         "</td>"
                     "</tr>"
                     "</table>"
                     "</div>"
-                    "<div class='album-body' style='display:%11;' id='IDA%12'>" )
+                    "<div class='album-body' style='display:%9;' id='IDA%10'>" )
                 .args( QStringList()
                     << values[ i + 1 ]
                     << escapeHTMLAttr( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] ) // album.name
                     << i18n( "Click for information from amazon.com, right-click for menu." )
                     << escapeHTMLAttr( CollectionDB::instance()->albumImage( currentTrack.artist(), values[ i ], 50 ) )
                     << i18n( "Single", "%n Tracks",  albumValues.count() / 5 )
-                    << QString::number( artist_id )
                     << values[ i + 1 ] //album.id
                     << escapeHTML( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] )
                     << albumYear
