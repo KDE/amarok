@@ -798,8 +798,6 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         #endif
         menu.insertItem( SmallIconSet( "info" ), i18n( "View/Edit Meta Information..." ), this, SLOT( showTrackInfo() ), 0, INFO );
 
-        menu.setItemEnabled( INFO, !item->isExpandable()  );
-
         switch( menu.exec( point ) )
         {
             case APPEND:
@@ -894,22 +892,17 @@ CollectionView::fetchCover() //SLOT
 void
 CollectionView::showTrackInfo() //SLOT
 {
-    QPtrList<QListViewItem> items = selectedItems();
-    if ( items.count() == 1 ) {
-        Item* item = static_cast<Item*>( items.first() );
-        if ( !item || item->isExpandable() ) return;
-        TagDialog* dialog = new TagDialog( item->url() );
-        dialog->show();
-    }
-    else {
-        //edit multiple tracks in tag dialog
-        KURL::List urls;
-        for( Item* item = static_cast<Item*>( items.first() ); item; item = static_cast<Item*>( items.next() ) )
-            if (!item->isExpandable())
-                urls << item->url();
-        TagDialog* dialog = new TagDialog( urls, instance() );
-        dialog->show();
-    }
+     KURL::List urls = listSelected();
+     int selectedTracksNumber = urls.count();
+     //If we have only one, call the full dialog. Otherwise, the multiple tracks one.
+     if (selectedTracksNumber == 1) {
+          TagDialog* dialog = new TagDialog( urls.first() );
+          dialog->show();
+     }
+     else if (selectedTracksNumber)  {
+          TagDialog* dialog = new TagDialog( urls, instance() );
+          dialog->show();
+     }
 }
 
 
