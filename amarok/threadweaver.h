@@ -50,6 +50,8 @@ class QWidget;
 //  The parent of the thread also gets two other events, ThreadWeaver::Started and ThreadWeaver::Done,
 //  you may want to set the application overrideCursor based on these events for instance.
 //
+//  Finally, please note, QThread is not a QObject so you must delete the ThreadWeaver in your classes dtor.
+//
 //  The class is not complete in that it has a few obvious flaws, feel free to improve!
 
 class ThreadWeaver : public QThread
