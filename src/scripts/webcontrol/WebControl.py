@@ -30,10 +30,13 @@ import BaseHTTPServer
 
 import time
 
+# necessary for <= python2.2 that cannot handle "infds" in var
+import string
+
 try:
     from qt import *
 except:
-    popen( "kdialog --sorry 'PyQt (Qt bindings for Python) is required for this script.'" )
+    os.popen( "kdialog --sorry 'PyQt (Qt bindings for Python) is required for this script.'" )
     raise
 
 
@@ -55,7 +58,7 @@ class ConfigDialog( QDialog ):
         try:
             config = ConfigParser.ConfigParser()
             config.read( "webcontrolrc" )
-            allowControl = "True" in config.get( "General", "allowcontrol" )
+            allowControl = string.find(config.get( "General", "allowcontrol" ), "True") >= 0
         except:
             pass
 
@@ -133,7 +136,7 @@ class WebControl( QApplication ):
 
         try:
 
-            RequestHandler.AmarokStatus.allowControl = "True" in config.get( "General", "allowcontrol" )
+            RequestHandler.AmarokStatus.allowControl = string.find(config.get( "General", "allowcontrol" ), "True") >= 0
 
         except:
             debug( "No config file found, using defaults." )

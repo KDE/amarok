@@ -18,6 +18,9 @@ from Playlist import Playlist
 # for system call
 import os
 
+# necessary for <= python2.2 that cannot handle "infds" in var
+import string
+
 # the port number to listen to
 PORT = 4774
 
@@ -126,7 +129,7 @@ class AmarokStatus:
         if self.playState != -1:
             res = self.playState == self.EnginePlay
         else:
-            res = "true" in self.dcop_isplaying.result()
+            res = string.find(self.dcop_isplaying.result(), "true") >= 0
             if res:
                 self.playState = self.EnginePlay
             else:
@@ -262,12 +265,12 @@ class RequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         # Surely there must be a better way that this:)
         #
         self.send_response(200)
-        if ".png" in self.path:
+        if string.find(self.path, ".png") >= 0:
             self.send_header("content-type","image/png")
             self.send_header("Cache-Control","no-cache")
             self.end_headers()
             self._sendFile(self.path)
-        elif ".js" in self.path or ".css" in self.path:
+        elif (string.find(self.path, ".js") >= 0) or (string.find(self.path, ".css") >= 0):
             self.send_header("content-type","text/plain")
             self.end_headers()
             self._sendFile(self.path)
