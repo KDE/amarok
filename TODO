@@ -3,10 +3,12 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #140 being the highest available (take this one for your next bug and increase here)
+           #141 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+  FIX 140 <dato>   The playlist toolbar analizer doesn't work if the volume slider is not included.
+                   (bug#83671) I think we should fix this in the 1.0 branch.
 
   FIX 139 <markey> Find out why collection scan won't work with samba shares.
                    (fix or at least show error message)
