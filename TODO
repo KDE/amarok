@@ -13,9 +13,6 @@ SHORT-TERM (URGENT):
 
   FIX 167 <markey> Adapt Player-Window colors from "Custom color scheme" mode too.
 
-  FIX 166 <markey> Playlist context menu can get very wide due to the "Write [blah] For Selected Tracks".
-                   Maybe a SqueezeText would be better.
-
   FIX 162 <markey> Try to achieve Qt 3.2 compatibility for amaroK 1.1.
 
   FIX 161 <markey> Configure prints "Good - your configure finished. Start make now" even when amaroK

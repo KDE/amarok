@@ -1294,7 +1294,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     popup.insertSeparator();
     popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit Tag Inline: '%1'" ).arg( tagName ), 0, 0, Key_F2, EDIT );
-    popup.insertItem( trackColumn ? i18n("&Iteratively Assign Track Numbers") : i18n("Write '%1' For Selected Tracks").arg( tag ), FILL_DOWN );
+    popup.insertItem( trackColumn ? i18n("&Iteratively Assign Track Numbers") : i18n("Write '%1' for Selected Tracks").arg( KStringHandler::rsqueeze( tag, 30 ) ), FILL_DOWN );
     popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy Meta-string" ), 0, 0, CTRL+Key_C, COPY );
     popup.insertSeparator();
     popup.insertItem( SmallIcon( "edittrash" ), i18n( "&Remove From Playlist" ), this, SLOT(removeSelectedItems()), Key_Delete );
