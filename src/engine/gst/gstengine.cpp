@@ -24,10 +24,11 @@ email                : markey@web.de
 #include <vector>
 
 #include <qfile.h>
-#include <qstringlist.h>
 #include <qtimer.h>
 
 #include <kdebug.h>
+#include <klocale.h>
+#include <kmessagebox.h>
 #include <kurl.h>
 
 #include <gst/gst.h>
@@ -520,8 +521,10 @@ GstEngine::createElement( const QCString& factoryName, const QCString& name )
     if ( element )
         gst_bin_add ( GST_BIN ( m_thread ), element );
     else {
-        kdWarning() << "GStreamer could not create the element: " << factoryName << endl
-                    << "Please make sure that you have run 'gst-register', and consult the GStreamer manual." << endl;
+        KMessageBox::error( 0,
+            i18n( "<h3>GStreamer could not create the element: <i>") + QString( factoryName ) + i18n( "</i></h3>"
+            "<p>Please make sure that you have installed all neccessary GStreamer plugins, and run 'gst-register' afterwards.</p>"
+            "<p>For further assistance consult the GStreamer manual, and join #gstreamer on irc.freenode.net.</p>" ) );
         gst_object_unref( GST_OBJECT( m_thread ) );
         emit stopped();
     }
