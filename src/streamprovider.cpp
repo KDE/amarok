@@ -273,6 +273,8 @@ StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
                 error();
                 return false;
             }
+
+            transmitData( QString::null );
             connect( &m_sockRemote, SIGNAL( connectionClosed() ), this, SLOT( connectError() ) );
             return true;
         }
@@ -287,7 +289,7 @@ StreamProvider::transmitData( const QString &data )
     kdDebug() << "[StreamProvider] Received new metadata: " << data << endl;
 
     // Prevent spamming by ignoring repeated identical data (some servers repeat it every 10 seconds)
-    if ( data == m_lastMetadata ) return;
+    if ( !data.isNull() && data == m_lastMetadata ) return;
     m_lastMetadata = data;
 
     MetaBundle bundle( extractStr( data, "StreamTitle" ),
