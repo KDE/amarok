@@ -158,10 +158,13 @@ CollectionDB::getImageForAlbum( const QString artist, const QString album, const
         if ( largeCoverDir.exists( key.lower() ) )
             if ( width > 0 )
             {
-                QImage img( largeCoverDir.filePath( key.lower() ) );
-                img.smoothScale( width, width ).save( m_coverDir.filePath( widthKey + key.lower() ), "PNG" );
-    
-                return m_coverDir.filePath( widthKey + key.lower() );
+                if ( !m_cacheDir.exists( widthKey + key.lower() ) )
+                {
+                    QImage img( largeCoverDir.filePath( key.lower() ) );
+                    img.smoothScale( width, width ).save( m_cacheDir.filePath( widthKey + key.lower() ), "PNG" );
+                }
+
+                return m_cacheDir.filePath( widthKey + key.lower() );
             }
             else
                 return largeCoverDir.filePath( key.lower() );
