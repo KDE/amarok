@@ -22,7 +22,7 @@
 #include <config.h>
 #endif
 
-#define APP_VERSION "0.6.91"
+#define APP_VERSION "0.7.0"
 
 #include "amarokarts/amarokarts.h"
 
@@ -103,7 +103,6 @@ class PlayerApp : public KUniqueApplication
         KDE::PlayObject *m_pPlayObject;
         KDE::PlayObject *m_pPlayObjectXFade;
         Arts::SoundServerV2 m_Server;
-//        Amarok::WinSkinFFT m_Scope;
         Arts::StereoFFTScope m_Scope;
         Arts::StereoEffectStack m_globalEffectStack;
         Arts::StereoEffectStack m_effectStack;
