@@ -107,7 +107,7 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
 void
 GstEngine::typefindFound_cb( GstElement* /*typefind*/, GstCaps* /*caps*/, GstElement* /*pipeline*/ )
 {
-    kdDebug() << "GstEngine::typefindFound" << endl;
+//     kdDebug() << "GstEngine::typefindFound" << endl;
 
     self->m_typefindResult = true;
 }
@@ -203,27 +203,31 @@ GstEngine::canDecode( const KURL &url, mode_t, mode_t )
     pipeline = gst_pipeline_new( "pipeline" );
 
     /* create a disk reader */
-    filesrc = gst_element_factory_make( "filesrc", "disk_source" );
-    g_object_set( G_OBJECT( filesrc ), "location",
-                  static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
+    if ( !( filesrc = gst_element_factory_make( "filesrc", "disk_source" ) ) ) goto error;
+    gst_bin_add ( GST_BIN ( pipeline ), filesrc );
 
-    typefind = gst_element_factory_make( "typefind", "typefind" );
+    if ( !( typefind = gst_element_factory_make( "typefind", "typefind" ) ) ) goto error;
+    gst_bin_add ( GST_BIN ( pipeline ), typefind );
 
-    gst_bin_add_many( GST_BIN ( pipeline ), filesrc, typefind, NULL );
-
+    g_object_set( G_OBJECT( filesrc ), "location", (const char*) QFile::encodeName( url.path() ), NULL );
     gst_element_link_many( filesrc, typefind, NULL );
-
-    g_signal_connect ( G_OBJECT( typefind ), "have-type",
-                       G_CALLBACK( typefindFound_cb ), pipeline );
-
+    
+    g_signal_connect ( G_OBJECT( typefind ), "have-type", G_CALLBACK( typefindFound_cb ), pipeline );
     gst_element_set_state( pipeline, GST_STATE_PLAYING );
 
+    // Iterate over the pipeline until operation is finished
     while ( gst_bin_iterate ( GST_BIN ( pipeline ) ) );
 
     gst_element_set_state( pipeline, GST_STATE_NULL );
     gst_object_unref( GST_OBJECT( pipeline ) );
 
     return m_typefindResult;
+
+error:
+    kdWarning() << "GStreamer element factory does not work. " << endl
+                << "Please make sure that you have run 'gst-register', and consult the GStreamer manual." << endl;
+    gst_object_unref( GST_OBJECT( pipeline ) );
+    return false;
 }
 
 
@@ -520,7 +524,7 @@ GstEngine::createElement( const QCString& factoryName, const QCString& name )
         gst_bin_add ( GST_BIN ( m_thread ), element );
     else {
         kdWarning() << "GStreamer could not create the element: " << factoryName << endl
-                    << "Please make sure that you have run 'gst-register'" << endl;
+                    << "Please make sure that you have run 'gst-register', and consult the GStreamer manual." << endl;
         gst_object_unref( GST_OBJECT( m_thread ) );
         emit stopped();
     }
