@@ -60,6 +60,8 @@ MID-TERM:
     * change: select tracks on mouseup, not mousedown
 
     * add: title streaming (mp3PlayObject needs to be patched)
+
+    * add: save/load arts effects on close/startup automatically
     
 
 LONG-TERM:
