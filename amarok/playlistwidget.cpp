@@ -708,15 +708,19 @@ void PlaylistWidget::slotGlowTimer()
             m_GlowAdd = -m_GlowAdd;
     
         m_GlowCount += m_GlowAdd;
-            
         PlaylistItem::GlowColor = m_GlowColor.light( m_GlowCount );
     
         //draw glowing rectangle around current track, to indicate activity
-        if ( item->isVisible() ) {
+        QRect rect = itemRect( item );
+        
+        if ( rect.isValid() ) {
             QPainter p( viewport() );
             p.setPen( PlaylistItem::GlowColor );
-            QRect rect = itemRect( item );
-            rect.setWidth( contentsWidth() );    //neccessary to draw on the complete width
+            
+            rect.setTop   ( rect.top()    + 1 );
+            rect.setBottom( rect.bottom() - 1 );
+            rect.setWidth ( contentsWidth()   );    //neccessary to draw on the complete width
+            
             p.drawRect( rect );        
         }
     }
