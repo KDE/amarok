@@ -80,7 +80,6 @@ class App : public KApplication, public EngineObserver
         void pruneCoverImages();
 
         // ATTRIBUTES ------
-        QString              m_engineToLoad;
         KGlobalAccel        *m_pGlobalAccel;
         PlayerWidget        *m_pPlayerWindow;
         PlaylistWindow      *m_pPlaylistWindow;

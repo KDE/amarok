@@ -46,7 +46,7 @@ class EngineController : public QObject, public EngineSubject
 public:
     // plugins have their own static space, so calling instance
     // from a plugin won't do any good. you'll only get a new
-    // instance with a dummyEngine
+    // instance with a voidEngine
     static EngineController *instance();
     static EngineBase       *engine() { return instance()->m_engine; }
     static EngineBase       *loadEngine();
@@ -97,8 +97,8 @@ private:
     EngineController();
 
 private:
-    static bool s_initialised;
     static ExtensionCache s_extensionCache;
+    static amaroK::Plugin *loadEngine( const QString &engineName );
 
     //xx000, xx100, xx200, so at most will be 200ms delay before time displays are updated
     static const int MAIN_TIMER = 300;

@@ -63,7 +63,6 @@ email                : markey@web.de
 
 App::App()
         : KApplication()
-        , m_engineToLoad( AmarokConfig::soundSystem() )
         , m_pPlayerWindow( 0 ) //will be created in applySettings()
 {
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
@@ -105,6 +104,9 @@ App::App()
     //load previous playlist in separate thread
     if ( restoreSession && AmarokConfig::savePlaylist() )
         Playlist::instance()->restoreSession();
+
+    if( args->isSet( "engine" ) )
+      AmarokConfig::setSoundSystem( args->getOption( "engine" ) );
 
     //create engine, show PlayerWindow, show TrayIcon etc.
     applySettings( true );
@@ -256,6 +258,7 @@ void App::initCliArgs( int argc, char *argv[] ) //static
             { "m", 0, 0 },
             { "toggle-playlist-window", I18N_NOOP("Toggle the Playlist-window"), 0 },
             { "wizard", I18N_NOOP( "Run First-run Wizard" ), 0 },
+            { "engine <name>", I18N_NOOP( "Use the <name> engine" ), 0 },
             { 0, 0, 0 }
         };
 
@@ -433,8 +436,6 @@ void App::applySettings( bool firstTime )
 
     { //<Engine>
         EngineBase *engine = EngineController::engine();
-
-        if ( firstTime ) AmarokConfig::setSoundSystem( m_engineToLoad );
 
         if( firstTime || AmarokConfig::soundSystem() !=
                          PluginManager::getService( engine )->property( "X-KDE-amaroK-name" ).toString() )

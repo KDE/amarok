@@ -32,7 +32,6 @@ email                : fh@ez.no
 #include <kio/job.h>
 #include <kmessagebox.h>
 
-bool EngineController::s_initialised = false;
 
 ExtensionCache EngineController::s_extensionCache;
 
@@ -43,13 +42,6 @@ EngineController::instance()
     //will only be instantiated the first time this function is called
     //will work with the inline directive
     static EngineController Instance;
-
-    if ( !EngineController::s_initialised ) {
-        EngineController::s_initialised = true;
-        // Load void-engine
-        AmarokConfig::setSoundSystem( "void-engine" );
-        loadEngine();
-    }
 
     return &Instance;
 }
@@ -63,6 +55,8 @@ EngineController::EngineController()
     , m_timer( new QTimer( this ) )
     , m_stream( 0 )
 {
+    m_engine = (EngineBase*)loadEngine( "void-engine" );
+
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotMainTimer() ) );
 }
 
@@ -75,47 +69,13 @@ EngineBase *EngineController::loadEngine() //static
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
-    EngineBase *engine = instance()->m_engine;
+    Engine::Base   *engine = instance()->m_engine;
+    amaroK::Plugin *plugin = loadEngine( AmarokConfig::soundSystem() );
 
-    //now load new engine
-    const QString query    = "[X-KDE-amaroK-plugintype] == 'engine' and [X-KDE-amaroK-name] == '%1'";
-    amaroK::Plugin* plugin = PluginManager::createFromQuery( query.arg( AmarokConfig::soundSystem() ) );
-
-    if( !plugin )
-    {
-        QString query = "[X-KDE-amaroK-plugintype] == 'engine' and [X-KDE-amaroK-name] != '%1'";
-        KTrader::OfferList offers = PluginManager::query( query.arg( AmarokConfig::soundSystem() ) );
-
-        while( !plugin && !offers.isEmpty() ) {
-            plugin = PluginManager::createFromService( offers.front() );
-            offers.pop_front();
-        }
-
-        if( !plugin )
-        {
-            KMessageBox::error( 0, i18n(
-                "<p>amaroK could not find any sound-engine plugins. "
-                "It is likely that amaroK is installed under the wrong prefix, please fix your installation using:<pre>"
-                "$ cd /path/to/amarok/source-code/<br>"
-                "$ su -c \"make uninstall\"<br>"
-                "$ ./configure --prefix=`kde-config --prefix` && su -c \"make install\"<br>"
-                "$ kbuildsycoca<br>"
-                "$ amarok</pre>"
-                "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net." ) );
-
-            ::exit( EXIT_SUCCESS );
-        }
-
-        AmarokConfig::setSoundSystem( PluginManager::getService( plugin )->property( "X-KDE-amaroK-name" ).toString() );
-
-        //TODO KMessageBox::error( 0, i18n( "The requested engine could not be loaded, instead %1 was loaded." ) );
-        kdDebug() << "Setting soundSystem to: " << AmarokConfig::soundSystem() << endl;
-    }
-
-    connect( (EngineBase*) plugin, SIGNAL(stateChanged( Engine::State )), instance(), SLOT(slotStateChanged( Engine::State )) );
-    connect( (EngineBase*) plugin, SIGNAL(trackEnded()), instance(), SLOT(slotTrackEnded()) );
-    connect( (EngineBase*) plugin, SIGNAL(statusText( const QString& )), instance(), SIGNAL(statusText( const QString& )) );
-    connect( (EngineBase*) plugin, SIGNAL(showConfigDialog( int )), kapp, SLOT(slotConfigAmarok( int )) );
+    connect( (EngineBase*)plugin, SIGNAL(stateChanged( Engine::State )), instance(), SLOT(slotStateChanged( Engine::State )) );
+    connect( (EngineBase*)plugin, SIGNAL(trackEnded()), instance(), SLOT(slotTrackEnded()) );
+    connect( (EngineBase*)plugin, SIGNAL(statusText( const QString& )), instance(), SIGNAL(statusText( const QString& )) );
+    connect( (EngineBase*)plugin, SIGNAL(showConfigDialog( int )), kapp, SLOT(slotConfigAmarok( int )) );
 
     if( static_cast<EngineBase*>(plugin)->init() )
     {
@@ -123,14 +83,14 @@ EngineBase *EngineController::loadEngine() //static
         //otherwise leave amaroK with the old engine loaded
 
         //set amaroK to stopped state
-        if ( engine ) instance()->stop();
+        instance()->stop();
 
         //new engine, new ext cache required
         extensionCache().clear();
 
         //assign new engine, unload old one. Order is thread-safe!
         instance()->m_engine = static_cast<EngineBase*>(plugin);
-        if ( engine ) PluginManager::unload( engine );
+        PluginManager::unload( engine );
 
         engine = static_cast<EngineBase*>(plugin);
 
@@ -160,8 +120,47 @@ EngineBase *EngineController::loadEngine() //static
 }
 
 
+amaroK::Plugin *EngineController::loadEngine( const QString &engineName )
+{
+    QString query = "[X-KDE-amaroK-plugintype] == 'engine' and [X-KDE-amaroK-name] == '%1'";
+    amaroK::Plugin* plugin = PluginManager::createFromQuery( query.arg( engineName ) );
+
+    if( !plugin ) {
+       query = "[X-KDE-amaroK-plugintype] == 'engine' and [X-KDE-amaroK-name] != '%1'";
+       KTrader::OfferList offers = PluginManager::query( query.arg( engineName ) );
+
+       //TODO prioritise high rank engines
+       while( !plugin && !offers.isEmpty() ) {
+          plugin = PluginManager::createFromService( offers.front() );
+          offers.pop_front();
+       }
+
+       if( !plugin ) {
+          KMessageBox::error( 0, i18n(
+            "<p>amaroK could not find any sound-engine plugins. "
+            "It is likely that amaroK is installed under the wrong prefix, please fix your installation using:<pre>"
+            "$ cd /path/to/amarok/source-code/<br>"
+            "$ su -c \"make uninstall\"<br>"
+            "$ ./configure --prefix=`kde-config --prefix` && su -c \"make install\"<br>"
+            "$ kbuildsycoca<br>"
+            "$ amarok</pre>"
+            "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net." ) );
+
+          ::exit( EXIT_SUCCESS );
+       }
+
+       AmarokConfig::setSoundSystem( PluginManager::getService( plugin )->property( "X-KDE-amaroK-name" ).toString() );
+
+       StatusBar::instance()->message( i18n( "Sorry, the requested engine could not be loaded" ) );
+   }
+
+   return plugin;
+}
+
+
 bool EngineController::canDecode( const KURL &url ) //static
 {
+   //NOTE this function must be thread-safe
     //TODO a KFileItem version? <- presumably so we can mimetype check
 
     const QString fileName = url.fileName();
@@ -182,6 +181,8 @@ bool EngineController::canDecode( const KURL &url ) //static
 
     const bool valid = engine()->canDecode( url );
 
+
+//FIXME this function must be thread-safe
 //     if ( !valid && ext == "mp3" )
 //         //FIXME is AmarokConfig::soundSystem() translated?
 //         //TODO use a key that contains this engine name? ie xineEngineCannotPlayMP3
@@ -255,6 +256,7 @@ void EngineController::play( const MetaBundle &bundle )
     // Destroy stale StreamProvider
     delete m_stream;
 
+    //TODO bummer why'd I do it this way? it should _not_ be in play!
     //let amaroK know that the previous track is no longer playing
     if ( m_timer->isActive() && m_bundle.length() > 0 )
         trackEnded( m_engine->position(), m_bundle.length() * 1000 );
