@@ -162,7 +162,8 @@ OSDWidget::render( const uint M, const QSize &size )
 {
     /// render with margin/spacing @param M and @param size
 
-    QRect rect( QPoint(), size );
+    QPoint point;
+    QRect rect( point, size );
 
     // roundedness, I looked in Qt sources to figure this out ;-)
     const uint xround = (M * 200) / size.width();
