@@ -34,10 +34,15 @@
 #include <kurl.h>
 
 
+//statics
+QString PlaylistItem::stringStore[STRING_STORE_SIZE];
+
 
 PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KURL &u, const QString &title, const int length )
       : KListViewItem( parent, lvi, ( u.protocol() == "file" ) ? u.fileName() : u.prettyURL() )
+#ifdef CORRUPT_FILE
       , corruptFile( FALSE ) //our friend threadweaver will take care of this flag
+#endif
       , m_url( u )
 {
     setDragEnabled( true );
@@ -63,7 +68,7 @@ MetaBundle PlaylistItem::metaBundle()
     //Do this everytime to save cost of storing int for length/samplerate/bitrate
     //This function isn't called often (on play request), but playlists can contain
     //thousands of items. So favor saving memory over CPU.
-    
+
     if ( m_url.isLocalFile() ) {
         TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Accurate );
         //FIXME hold a small cache of metabundles?
@@ -72,14 +77,14 @@ MetaBundle PlaylistItem::metaBundle()
         //just set it as we just did an accurate pass
         setText(  9, bundle.prettyLength()  );
         setText( 10, bundle.prettyBitrate() );
-        
+
         return bundle;
     }
     else {
         MetaBundle bundle( this, 0 );
-        
+
         return bundle;
-    }        
+    }
 }
 
 
@@ -114,6 +119,17 @@ void PlaylistItem::setText( const MetaBundle &bundle )
 void PlaylistItem::setText( int column, const QString &newText )
 {
     switch( column ) {
+    case 2: //artist
+    case 3: //album
+    case 6: //genre
+    case 7: //track #
+    case 8: //directory
+        //these are good candidates for the stringStore
+        //NOTE title is not a good candidate, it probably will never repeat in the playlist
+
+        KListViewItem::setText( column, attemptStore( newText ) );
+        break;
+
     case 1:
     case 9:
     case 10:
@@ -134,6 +150,7 @@ void PlaylistItem::setText( int column, const QString &newText )
             break;
         }
         //else do default -->
+
     default:
         KListViewItem::setText( column, newText );
     }
@@ -184,7 +201,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 {
     if( column == 9 && text( 9 ).isEmpty() ) listView()->readAudioProperties( this );
 
-    if ( this == listView()->currentTrack() )
+    if( this == listView()->currentTrack() )
     {
         const QColor glowText( cg.brightText() );
         QColorGroup glowCg = cg; //shallow copy
@@ -203,15 +220,61 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         //KListViewItem enforces alternate color, so we use QListViewItem
         QListViewItem::paintCell( p, glowCg, column, width, align );
 
-    } else if ( corruptFile ) {
+    } else if( this == listView()->m_nextTrack ) {
+
+        QColorGroup glowCg = cg; //shallow copy
+        int h, s, v;
+        cg.brightText().getHsv( &h, &s, &v );
+        h -= 60;
+        const QColor glowText( h,s,v, QColor::Hsv );
+        const QColor normBase( cg.base() );
+
+        QColor glowBase( h + 120, ( s > 50 ) ? s - 50 : s + 50, v, QColor::Hsv );
+
+        glowBase.setRgb( (normBase.red()*5   + glowBase.red()*2) /7,
+                         (normBase.green()*5 + glowBase.green()*2) /7,
+                         (normBase.blue()*5  + glowBase.blue()*2) /7 );
+
+        glowCg.setColor( QColorGroup::Text, glowText );
+        glowCg.setColor( QColorGroup::Base, glowBase );
+
+        //KListViewItem enforces alternate color, so we use QListViewItem
+        QListViewItem::paintCell( p, glowCg, column, width, align );
+    }
+#ifdef CORRUPT_FILE
+    else if( corruptFile ) {
 
         QColorGroup corruptCg = cg;
         QColor corruptColor( 0xcc, 0xcc, 0xcc );
         corruptCg.setColor( QColorGroup::Text, corruptColor );
         KListViewItem::paintCell( p, corruptCg, column, width, align );
     }
+#endif
     else KListViewItem::paintCell( p, cg, column, width, align );
 
     p->setPen( QPen( cg.dark(), 0, Qt::DotLine ) );
     p->drawLine( width - 1, 0, width - 1, height() - 1 );
+}
+
+
+const QString &PlaylistItem::attemptStore( const QString &candidate )
+{
+    //principal is to cause collisions at reasonable rate to reduce memory
+    //consumption while not using such a big store that it is mostly filled with empty QStrings
+    //because collisions are so rare
+
+    if( candidate.isEmpty() ) return candidate; //nothing to try to share
+
+    uchar hash = candidate[0].unicode() % STRING_STORE_SIZE;
+
+    if( stringStore[hash] == candidate )
+    {
+        kdDebug() << "[StringStore] Collision[" << int(hash) << "]: " << candidate << endl;
+
+    } else { //replace
+
+        stringStore[hash] = candidate;
+    }
+
+    return stringStore[hash];
 }

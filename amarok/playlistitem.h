@@ -42,14 +42,19 @@ class PlaylistItem : public KListViewItem
         const QString trackName() const { return KListViewItem::text( 0 ); }
         const QString title() const { return KListViewItem::text( 1 ); }
         const KURL &url() const { return m_url; }
-
+#ifdef CORRUPT_FILE
         bool corruptFile;
+#endif
 
     private:
         int  compare( QListViewItem*, int, bool ) const;
         void paintCell( QPainter*, const QColorGroup&, int, int, int );
 
         const KURL m_url;
+
+        static const uint STRING_STORE_SIZE = 80;
+        static QString stringStore[STRING_STORE_SIZE];
+        static const QString& attemptStore( const QString& );
 };
 
 #endif
