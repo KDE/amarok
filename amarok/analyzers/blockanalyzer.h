@@ -11,12 +11,14 @@
 @author Max Howell
 */
 
-class ResizeEvent;
+class QResizeEvent;
+class QMouseEvent;
 
 class BlockAnalyzer : public Analyzer::Base2D
 {
 public:
     BlockAnalyzer( QWidget* );
+    ~BlockAnalyzer();
 
     static const uint HEIGHT      = 2;
     static const uint WIDTH       = 4;
@@ -28,6 +30,7 @@ public:
     void transform( Scope& );
     void analyze( const Scope& );
     void resizeEvent( QResizeEvent* );
+    void mousePressEvent( QMouseEvent* );
 
 private:
     QPixmap m_glow[MAX_ROWS];

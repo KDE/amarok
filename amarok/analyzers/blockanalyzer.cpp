@@ -12,7 +12,9 @@
 
 #include "blockanalyzer.h"
 #include "fht.h"
+#include <kconfig.h> //config object
 #include <kdebug.h>
+#include <kglobal.h> //config object
 #include <math.h>
 #include <qevent.h>
 
@@ -35,6 +37,20 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
     setMaximumSize( MAX_COLUMNS*(WIDTH+1) -1, MAX_ROWS*(HEIGHT+1) -1 );
 }
 
+BlockAnalyzer::~BlockAnalyzer()
+{
+    //NOTE there is no point to use KConfig XT unless these options are added to the config dialog
+    //     which may be worthwhile, personally I think that is more trouble than it is worth.
+/*
+    KConfig *config = KGlobal::config();
+    
+    config->setGroup( "ToolBarAnalyzer" );
+    config->writeEntry( "Timeout", timeout() );
+    //config->writeEntry( "FhtSize", m_fht.size() );
+*/
+}
+
+
 static inline uint limit( uint val, uint max, uint min ) { return val < min ? min : val > max ? max : val; }
 
 uint /*ox,*/ oy;
@@ -51,7 +67,7 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
 
     m_scope.resize( m_columns );
 
-    if( e->oldSize().height() != height() ) //this block speeds up window resizes vastly
+    if( (uint)e->oldSize().height() != height() ) //this block speeds up window resizes vastly
     {
         //NOTE height should only be set once! but it tends to get set many times when Qt is setting up
         //     the layout of the toolBar, what a waste of cycles!
@@ -63,7 +79,7 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
         }
         lvlMapper[m_rows] = 0;
 
-        //for( uint x = 0; x <= m_rows; ++x ) kdDebug() << x << ": " << lheight should not actually change, ever, but due to KToolBar being crap, it doesvlMapper[x] << "\n";
+        //for( uint x = 0; x <= m_rows; ++x ) kdDebug() << x << ": " << endl;
 
 
         QColor darkColor( backgroundColor().dark( 125 ) );
@@ -155,5 +171,47 @@ BlockAnalyzer::analyze( const Scope &s )
                 bitBlt( canvas(), x*(WIDTH+1), y*(HEIGHT+1) + oy, &m_dark );
         }
 
+    }
+}
+
+
+#include <klocale.h>
+#include <kpopupmenu.h>
+#include <math.h>
+#include <qevent.h>
+
+void
+BlockAnalyzer::mousePressEvent( QMouseEvent *e )
+{
+    if( e->button() == Qt::RightButton )
+    {
+        KPopupMenu menu;
+
+        const uint ids[7] = { 40, 33, 20, 9, 8, 7, 6 };
+        
+        uint compare = timeout();
+        QString body = i18n( "%1 fps" );
+        menu.insertTitle( i18n( "Framerate" ) );
+
+        for( uint x = 0; x < 7; ++x )
+        {
+            const uint v = ids[x];
+            
+            if( x == 3 )
+            {
+                body = "%1";
+                compare = m_fht.sizeExp();
+                menu.insertTitle( i18n( "Spectrum Size" ) );
+            }
+        
+            menu.insertItem( body.arg( x<3 ? 1000/v : 1 << (v-1) ), v );
+            menu.setItemChecked( v, v == compare );
+        }
+
+        
+        int id = menu.exec( e->globalPos() );
+
+        if( id >= 20 ) { m_timer.changeInterval( id ); m_timeout = id; }
+        //else if( id > 0 ) changeFhtSize( id );
     }
 }
