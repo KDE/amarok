@@ -4,8 +4,6 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
-    * debug: xfading. after playing last track in PL, the sound gets into a loop
-
     * <berkus> in ui dialogs font labels need to resize vertically
       dynamically adopting the font size
 
@@ -70,7 +68,7 @@ LONG-TERM:
 
     * add: adjustable gap between tracks, making recording easier
 
-    * add: < berkus> add smooth fade outs on stop
+    * add: <berkus> add smooth fade outs on stop
 
     * add: make PlayerWidget shadeable (like XMMS)
 
@@ -80,7 +78,8 @@ LONG-TERM:
 
     * add visualisations
 
-    * <mxcl> implement beat detection (thread?), interface should glow/move to the beat, visualisations have access to beat/bpm info
+    * <mxcl> implement beat detection (thread?), interface should glow/move to
+      the beat, visualisations have access to beat/bpm info
 
     * add pitch-slider (?) (berkus: should be in separate "Effects Control" panel)
 
