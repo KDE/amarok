@@ -109,6 +109,7 @@ PlaylistWindow::addBrowser( const char *name, const QString &title, const QStrin
 PlaylistWindow::PlaylistWindow()
    : QWidget( 0, "PlaylistWindow", Qt::WGroupLeader )
    , KXMLGUIClient()
+   , m_lastBrowser( 0 )
 {
     s_instance = this;
 

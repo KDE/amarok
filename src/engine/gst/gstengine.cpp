@@ -968,7 +968,7 @@ InputPipeline::~InputPipeline()
         int filled = 1;
         while( filled ) {
             gst_element_get( queue, "current-level-buffers", &filled, NULL );
-            ::usleep( 10000 ); // 10 msec
+            ::usleep( 20000 ); // 20 msec
         }
 
         if ( GstEngine::instance()->m_pipelineFilled )
