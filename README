@@ -47,15 +47,15 @@ optional
     * Libvisual 0.1.6 + SDL 1.2
       http://libvisual.sf.net
       http://www.libsdl.org
-      
+
     * MusicBrainz 2.1
       http://www.musicbrainz.org/
-      
+
     * NMM 0.4.4
       http://www.networkmultimedia.org
-      
+
     * xine 1.0.0
-      http://xine.sourceforge.net     
+      http://xine.sourceforge.net
 
     * XMMS 1.2 + XMMS visualization plugins
       http://xmms.org
@@ -83,6 +83,9 @@ compile failure. See the file INSTALL for more information.
 
 
                 % ./configure --enable-final --prefix=`kde-config --prefix`
+
+
+Packages for popular distributions are available at http://amarok.kde.org
 
 
 --------------------------------------------------------------------------------
@@ -153,6 +156,9 @@ amaroK is modular and wil be fully functional without 2, 3 and 4.
 amaroK ships with two binaries: amarok and amarokapp. The amarok binary is a
 wrapper designed to speed up command line argument passing. amarokapp is the
 real amaroK.
+
+If you make packages for amaroK please let us know and we'll link to you on the
+homepage (as long as you don't object).
 
 
 --------------------------------------------------------------------------------

@@ -39,8 +39,8 @@ if test x$PKGCONFIGFOUND != xyes; then
     echo " ===  amaroK - WARNING  ========================================================"
     echo " =========================="
     echo " ="
-    echo " = pkg-config could not be found, this means some optional components (the"
-    echo " = GStreamer-engine and Collection Browser) cannot be built."
+    echo " = pkg-config could not be found, this means some optional components (eg the"
+    echo " = GStreamer-engine) cannot be built."
     echo " = See amarok/README for help with this issue."
     echo " ="
 

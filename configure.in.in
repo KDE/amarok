@@ -191,7 +191,7 @@ if test "$build_xine" != "no"; then
         xine_version_min="1.0.0"
         xine_version_min=VERSION_TO_NUMBER(echo $xine_version_min)
 
-        xine_include=`xine-config --cflags | sed 's/-I\(.*\)/\1/'`
+        xine_include=`xine-config --cflags | sed  -e 's/-I\([^ \t]*\).*/\1/'`
         xine_rc_version=`sed -ne '/^#define XINE_VERSION/s/.*-rc\([0-9]\+\).*/\1/p' $xine_include/xine.h`
         : ${xine_rc_version:=4} # if this is no rc version, it fulfills the requirements
 
@@ -399,7 +399,7 @@ if test x$PKGCONFIGFOUND = xyes; then
     AC_SUBST(LIBVISUAL_LIBS)
     AC_SUBST(LIBVISUAL_CFLAGS)
 
-    AM_CONDITIONAL(with_libvisual, test x$build_libvisual = xyes )
+    AM_CONDITIONAL(with_libvisual, test x$build_libvisual = xyes)
 fi
 
 ###############################################################################
