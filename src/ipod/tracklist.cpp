@@ -20,12 +20,12 @@
 #include "tracklist.h"
 
 TrackList::TrackList()
-    : Playlist(), max_tracknumber(0), unsaved_changes(false)
+    : IPodPlaylist(), max_tracknumber(0), unsaved_changes(false)
 {
 }
 
-TrackList::TrackList(const Playlist& playlist)
-    : Playlist(playlist), max_tracknumber(0), unsaved_changes(false)
+TrackList::TrackList(const IPodPlaylist& playlist)
+    : IPodPlaylist(playlist), max_tracknumber(0), unsaved_changes(false)
 {
     max_tracknumber = playlist.getNumTracks();
 }
@@ -47,7 +47,7 @@ uint TrackList::addPlaylistItem(const TrackMetadata& track)
 uint TrackList::addPlaylistItem(const Q_UINT32& trackid)
 {
     unsaved_changes = true;
-    return Playlist::addPlaylistItem(trackid);
+    return IPodPlaylist::addPlaylistItem(trackid);
 }
 
 
@@ -64,14 +64,14 @@ void TrackList::removeAll(Q_UINT32 trackid) {
 Q_UINT32 TrackList::removeTrackAt(Iterator& pos) {
     // TODO check if maxtrackid and maxtracknumber is still valid
     unsaved_changes = true;
-    return Playlist::removeTrackAt(pos);
+    return IPodPlaylist::removeTrackAt(pos);
 }
 
 
 Q_UINT32 TrackList::setTrackIDAt( uint pos, Q_UINT32 newtrackid) {
     // TODO check if maxtrackid and maxtracknumber is still valid
     unsaved_changes = true;
-    return Playlist::setTrackIDAt(pos, newtrackid);
+    return IPodPlaylist::setTrackIDAt(pos, newtrackid);
 }
 
 
@@ -88,7 +88,7 @@ Q_UINT32 TrackList::getMaxTrackNumber() const {
  */
 void TrackList::setTitle( const QString& newtitle)
 {
-    Playlist::setTitle(newtitle);
+    IPodPlaylist::setTitle(newtitle);
     doneAddingData();    // consisteny check
     unsaved_changes = true;
 }

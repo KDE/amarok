@@ -22,8 +22,8 @@
 
 #include <qstring.h>
 #include "track.h"
-#include "playlist.h"
-#include "playlistitem.h"
+#include "ipod_playlist.h"
+#include "ipod_playlistitem.h"
 
 namespace itunesdb {
 
@@ -55,7 +55,7 @@ public:
      * handles the given playlist.
      * The given playlist is only valid during the call.
      */
-    virtual void handlePlaylist( const Playlist& playlist) = 0;
+    virtual void handlePlaylist( const IPodPlaylist& playlist) = 0;
     
     /**
      * handles the given track.

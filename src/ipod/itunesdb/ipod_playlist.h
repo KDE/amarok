@@ -17,28 +17,65 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef ITUNESDBPLAYLISTITEM_H
-#define ITUNESDBPLAYLISTITEM_H
+#ifndef ITUNESDBPLAYLIST_H
+#define ITUNESDBPLAYLIST_H
+
+#include <qvaluevector.h>
 
 #include "listitem.h"
+#include "ipod_playlistitem.h"
 
-#define PLAYLISTITEM_INVALID 0xEEEEEEEE
+#define TRACKLIST_UNDEFINED 0xFFFFFFFF
+
 namespace itunesdb {
 
 /**
-@author Michael Schulze
+ @author Michael Schulze
 */
-class PlaylistItem : public ListItem
+class IPodPlaylist : public ListItem
 {
 public:
-    PlaylistItem();
-    PlaylistItem( Q_UINT32 ipod_id);
-    virtual ~PlaylistItem();
+    typedef QValueVector<Q_UINT32> TrackList_T;
+    class Iterator {
+    protected:
+        TrackList_T& _list;
+        TrackList_T::iterator _iterator;
+        friend class itunesdb::IPodPlaylist;
+    public:
+        Iterator(TrackList_T& list)
+            : _list(list) {
+            _iterator = _list.begin();
+        }
+        bool hasNext() {
+            return _iterator != _list.end();
+        }
+        const Q_UINT32& next() {
+            return *_iterator++;
+        }
+    };
     
-    const Q_UINT32& getID() const;
+    IPodPlaylist();
+    virtual ~IPodPlaylist();
+
+    const QString& getTitle() const;
+    void setTitle( const QString& newtitle);
     void doneAddingData();
+    
+    virtual uint addPlaylistItem(const IPodPlaylistItem& item);
+    virtual uint addPlaylistItem(const Q_UINT32& trackid);
+    virtual Q_UINT32 removeTrackAt( Iterator& pos);
+    virtual Q_UINT32 setTrackIDAt( uint pos, Q_UINT32 trackid);
+    
+    Iterator getTrackIDs();
+    uint getNumTracks() const;
+    
+    void clear();
+    
+    void writeData( QByteArray& data, bool isMainlist);
+    QDataStream & writeToStream (QDataStream & outstream, bool isMainlist);
+
 protected:
-    Q_UINT32 id;
+    TrackList_T tracklist;
 };
 
 };

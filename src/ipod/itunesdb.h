@@ -28,8 +28,8 @@
 
 #include "itunesdb/ItunesDBListener.h"
 #include "itunesdb/itunesdbdatasource.h"
-#include "itunesdb/playlist.h"
-#include "itunesdb/playlistitem.h"
+#include "itunesdb/ipod_playlist.h"
+#include "itunesdb/ipod_playlistitem.h"
 
 #include "trackmetadata.h"
 #include "tracklist.h"
@@ -87,14 +87,14 @@ public:
     void writeFinished();
     Q_UINT32 getNumPlaylists();
     Q_UINT32 getNumTracks();
-    Playlist * getMainplaylist();
-    Playlist * firstPlaylist();
-    Playlist * nextPlaylist();
+    IPodPlaylist * getMainplaylist();
+    IPodPlaylist * firstPlaylist();
+    IPodPlaylist * nextPlaylist();
     Track * firstTrack();
     Track * nextTrack();
     
     // ItunesDBListener Methods - for documentation see itunesdb/itunesdblistener.h
-    void handlePlaylist(const Playlist& playlist);
+    void handlePlaylist(const IPodPlaylist& playlist);
     void handleTrack(const Track& track);
     void handleError(const QString &message);
     void setNumPlaylists(Q_UINT32 numplaylists);

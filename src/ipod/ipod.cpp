@@ -17,10 +17,6 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
- 
-namespace IPod
-{
-
 #include "ipod.h"
 
 #include <kdebug.h>
@@ -222,7 +218,7 @@ IPod::IPodError IPod::deletePlaylist(const QString& title, bool log)
 
 
 QStringList * IPod::getPlaylistTitles(QStringList& buffer) {
-    for(Playlist * playlist= itunesdb.firstPlaylist(); playlist != NULL; playlist= itunesdb.nextPlaylist()) {
+    for(IPodPlaylist * playlist= itunesdb.firstPlaylist(); playlist != NULL; playlist= itunesdb.nextPlaylist()) {
         buffer.append(playlist->getTitle());
     }
     return &buffer;
@@ -244,7 +240,7 @@ QStringList * IPod::getArtists( QStringList &buffer) const
 }
 
 QString IPod::getName() {
-    Playlist * mainlist = itunesdb.getMainplaylist();
+    IPodPlaylist * mainlist = itunesdb.getMainplaylist();
     if(mainlist != NULL)
         return mainlist->getTitle();
     else
@@ -252,7 +248,7 @@ QString IPod::getName() {
 }
 
 void IPod::setName(const QString& name) {
-    Playlist * mainlist = itunesdb.getMainplaylist();
+    IPodPlaylist * mainlist = itunesdb.getMainplaylist();
     if(mainlist != NULL) {
         mainlist->setTitle(name);
         pendingchanges = true;
@@ -269,7 +265,7 @@ IPod::IPodError IPod::createPlaylist(const QString& playlisttitle, bool log) {
         return Err_AlreadyExists;
     }
     
-    Playlist playlist;
+    IPodPlaylist playlist;
     playlist.setTitle(playlisttitle);
     itunesdb.handlePlaylist(playlist);
     
@@ -610,4 +606,3 @@ void IPod::flushLog()
     logfileentrypos = 0;
 }
 
-}

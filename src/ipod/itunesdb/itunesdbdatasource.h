@@ -23,8 +23,8 @@
 #include <qvaluelist.h>
 
 #include "track.h"
-#include "playlist.h"
-#include "playlistitem.h"
+#include "ipod_playlist.h"
+#include "ipod_playlistitem.h"
 
 namespace itunesdb {
 
@@ -57,19 +57,19 @@ public:
     /**
      * returns the main playlist. This playlist is special since every track needs to be in there
      */
-    virtual Playlist * getMainplaylist() = 0;
+    virtual IPodPlaylist * getMainplaylist() = 0;
 
     /**
      * returns the first playlist and sets the playlist position for nextPlaylist() to the first
      * playlist
      * 
      */
-    virtual Playlist * firstPlaylist() = 0;
+    virtual IPodPlaylist * firstPlaylist() = 0;
     
     /**
      * returns the next playlist (see firstPlaylist())
      */
-    virtual Playlist * nextPlaylist() = 0;
+    virtual IPodPlaylist * nextPlaylist() = 0;
     
     /**
      * returns the first Track that needs to be written and sets the track position for nextTrack()

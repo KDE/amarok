@@ -17,55 +17,55 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "playlist.h"
+#include "ipod_playlist.h"
 #include <qbuffer.h>
 
 namespace itunesdb {
 
-Playlist::Playlist()
+IPodPlaylist::IPodPlaylist()
     : ListItem(ITEMTYPE_PLAYLIST)
 {
 }
 
-Playlist::~Playlist() {
+IPodPlaylist::~IPodPlaylist() {
     tracklist.clear();
 }
 
-const QString& Playlist::getTitle() const
+const QString& IPodPlaylist::getTitle() const
 {
     return getItemProperty( MHOD_TITLE);
 }
 
 
-void Playlist::doneAddingData() {
+void IPodPlaylist::doneAddingData() {
     if( getItemProperty(MHOD_TITLE).isEmpty())
         setItemProperty("_no_title_", MHOD_TITLE);
 }
 
 /*!
-    \fn Playlist::setTitle( QString& newtitle)
+    \fn IPodPlaylist::setTitle( QString& newtitle)
  */
-void Playlist::setTitle( const QString& newtitle)
+void IPodPlaylist::setTitle( const QString& newtitle)
 {
     setItemProperty( newtitle, MHOD_TITLE);
     doneAddingData();    // consisteny check
 }
 
-uint Playlist::addPlaylistItem(const PlaylistItem& item) {
+uint IPodPlaylist::addPlaylistItem(const IPodPlaylistItem& item) {
     return addPlaylistItem(item.getID());
 }
 
 /*!
-    \fn Playlist::addTrack( Q_UINT32& trackid)
+    \fn IPodPlaylist::addTrack( Q_UINT32& trackid)
  */
-uint Playlist::addPlaylistItem(const Q_UINT32& trackid)
+uint IPodPlaylist::addPlaylistItem(const Q_UINT32& trackid)
 {
     tracklist.append(trackid);
     return tracklist.count() - 1;
 }
 
 
-Q_UINT32 Playlist::removeTrackAt( Iterator& pos) {
+Q_UINT32 IPodPlaylist::removeTrackAt( Iterator& pos) {
     Q_UINT32 retval= *(--pos._iterator);
     if( pos._iterator != pos._list.end())
         pos._iterator= tracklist.erase( pos._iterator);
@@ -73,7 +73,7 @@ Q_UINT32 Playlist::removeTrackAt( Iterator& pos) {
 }
 
 
-Q_UINT32 Playlist::setTrackIDAt( uint pos, Q_UINT32 newtrackid) {
+Q_UINT32 IPodPlaylist::setTrackIDAt( uint pos, Q_UINT32 newtrackid) {
     Q_UINT32 retval;
     if( pos < tracklist.count()) {
         retval= tracklist[pos];
@@ -86,28 +86,28 @@ Q_UINT32 Playlist::setTrackIDAt( uint pos, Q_UINT32 newtrackid) {
 }
 
 
-Playlist::Iterator Playlist::getTrackIDs() {
+IPodPlaylist::Iterator IPodPlaylist::getTrackIDs() {
     return Iterator( tracklist);
 }
 
 /*!
-    \fn itunesdb::Playlist::getNumTracks()
+    \fn itunesdb::IPodPlaylist::getNumTracks()
  */
-uint Playlist::getNumTracks() const
+uint IPodPlaylist::getNumTracks() const
 {
     return tracklist.count();
 }
 
 
-void Playlist::clear() {
+void IPodPlaylist::clear() {
     tracklist.clear();
     setItemProperty(QString::null, MHOD_TITLE);
 }
 
 /*!
-    \fn itunesdb::Playlist::writePlaylistData( QByteArray& data)
+    \fn itunesdb::IPodPlaylist::writePlaylistData( QByteArray& data)
  */
-void Playlist::writeData( QByteArray& data, bool isMainlist)
+void IPodPlaylist::writeData( QByteArray& data, bool isMainlist)
 {
     QBuffer buffer( data);
     buffer.open(IO_WriteOnly);
@@ -179,7 +179,7 @@ void Playlist::writeData( QByteArray& data, bool isMainlist)
 }
 
 
-QDataStream & Playlist::writeToStream(QDataStream & outstream, bool isMainlist) {
+QDataStream & IPodPlaylist::writeToStream(QDataStream & outstream, bool isMainlist) {
     QByteArray buffer;
     writeData(buffer, isMainlist);
     outstream.writeRawBytes( buffer.data(), buffer.size());

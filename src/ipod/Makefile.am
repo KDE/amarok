@@ -7,7 +7,8 @@ noinst_LTLIBRARIES = libipod.la
 
 libipod_la_SOURCES = ipod.cpp \
 	             itunesdb.cpp \
-	             tracklist.cpp
+	             tracklist.cpp \
+	             trackmetadata.cpp
 
 noinst_HEADERS =     ipod.h \
 	             itunesdb.h \

@@ -17,67 +17,31 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef ITUNESDBPLAYLIST_H
-#define ITUNESDBPLAYLIST_H
-
-#include <qvaluevector.h>
-
-#include "listitem.h"
-#include "playlistitem.h"
-
-#define TRACKLIST_UNDEFINED 0xFFFFFFFF
+#include "ipod_playlistitem.h"
 
 namespace itunesdb {
 
-/**
- @author Michael Schulze
-*/
-class Playlist : public ListItem
+IPodPlaylistItem::IPodPlaylistItem( Q_UINT32 ipod_id)
+    : ListItem( ITEMTYPE_PLAYLISTITEM)
 {
-public:
-    typedef QValueVector<Q_UINT32> TrackList_T;
-    class Iterator {
-    protected:
-        TrackList_T& _list;
-        TrackList_T::iterator _iterator;
-        friend class itunesdb::Playlist;
-    public:
-        Iterator(TrackList_T& list)
-            : _list(list) {
-            _iterator = _list.begin();
-        }
-        bool hasNext() {
-            return _iterator != _list.end();
-        }
-        const Q_UINT32& next() {
-            return *_iterator++;
-        }
-    };
-    
-    Playlist();
-    virtual ~Playlist();
+    id = ipod_id;
+}
 
-    const QString& getTitle() const;
-    void setTitle( const QString& newtitle);
-    void doneAddingData();
-    
-    virtual uint addPlaylistItem(const PlaylistItem& item);
-    virtual uint addPlaylistItem(const Q_UINT32& trackid);
-    virtual Q_UINT32 removeTrackAt( Iterator& pos);
-    virtual Q_UINT32 setTrackIDAt( uint pos, Q_UINT32 trackid);
-    
-    Iterator getTrackIDs();
-    uint getNumTracks() const;
-    
-    void clear();
-    
-    void writeData( QByteArray& data, bool isMainlist);
-    QDataStream & writeToStream (QDataStream & outstream, bool isMainlist);
+IPodPlaylistItem::IPodPlaylistItem()
+    : ListItem( ITEMTYPE_PLAYLISTITEM)
+{
+    id = PLAYLISTITEM_INVALID;
+}
 
-protected:
-    TrackList_T tracklist;
-};
+IPodPlaylistItem::~IPodPlaylistItem() {
+}
+
+const Q_UINT32& IPodPlaylistItem::getID() const {
+    return id;
+}
+
+void IPodPlaylistItem::doneAddingData() {
+    // do nothing here for now
+}
 
 };
-
-#endif

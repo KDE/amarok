@@ -20,17 +20,14 @@
 #include <sys/stat.h>
 #include <sys/file.h>
 
+#include "itunesdb.h"
+#include "itunesdb/itunesdbparser.h"
+#include "itunesdb/itunesdbwriter.h"
+
 #include <qfile.h>
 #include <qfileinfo.h>
 
 #include <kdebug.h>
-
-namespace IPod
-{
-
-#include "itunesdb.h"
-#include "itunesdb/itunesdbparser.h"
-#include "itunesdb/itunesdbwriter.h"
 
 ITunesDB::ITunesDB(bool resolve_slashes)
     : artistmap(101, false), playlistmap(17, false), playlistiterator(playlistmap)
@@ -116,19 +113,19 @@ Q_UINT32 ITunesDB::getNumTracks()
 }
 
 
-Playlist * ITunesDB::getMainplaylist() {
+IPodPlaylist * ITunesDB::getMainplaylist() {
     return &mainlist;
 }
 
 
-Playlist * ITunesDB::firstPlaylist()
+IPodPlaylist * ITunesDB::firstPlaylist()
 {
     playlistiterator= PlaylistMapIterator( playlistmap);
     return playlistiterator.current();
 }
 
 
-Playlist * ITunesDB::nextPlaylist()
+IPodPlaylist * ITunesDB::nextPlaylist()
 {
     return playlistiterator.current() ? ++playlistiterator : NULL;
 }
@@ -216,8 +213,8 @@ void ITunesDB::parseFinished()
     }
     */
     
-    for( Playlist * playlist= firstPlaylist(); playlist != NULL; playlist= nextPlaylist()) {
-        Playlist::Iterator track_iter= playlist->getTrackIDs();
+    for( IPodPlaylist * playlist= firstPlaylist(); playlist != NULL; playlist= nextPlaylist()) {
+        IPodPlaylist::Iterator track_iter= playlist->getTrackIDs();
         while( track_iter.hasNext()) {
             Track * track= getTrackByID( track_iter.next());
             if( track == NULL) {    // track couldn't be found
@@ -250,7 +247,7 @@ void ITunesDB::handleTrack(const Track& track)
 }
 
 
-void ITunesDB::handlePlaylist(const Playlist& playlist) {
+void ITunesDB::handlePlaylist(const IPodPlaylist& playlist) {
     // TODO find out another way to find out if this is the mainlist (maybe a handleMainlist() or have some state thingy
     if (mainlist.getTitle().isEmpty()) {
         mainlist.setTitle(playlist.getTitle());
@@ -594,4 +591,3 @@ void ITunesDB::insertTrackToDataBase(TrackMetadata& track)
     // kdDebug() << "ITunesDB::insertTrackToDataBase() done" << endl;
 }
 
-}

@@ -17,31 +17,30 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "playlistitem.h"
+#ifndef ITUNESDBPLAYLISTITEM_H
+#define ITUNESDBPLAYLISTITEM_H
 
+#include "listitem.h"
+
+#define PLAYLISTITEM_INVALID 0xEEEEEEEE
 namespace itunesdb {
 
-PlaylistItem::PlaylistItem( Q_UINT32 ipod_id)
-    : ListItem( ITEMTYPE_PLAYLISTITEM)
+/**
+@author Michael Schulze
+*/
+class IPodPlaylistItem : public ListItem
 {
-    id = ipod_id;
-}
-
-PlaylistItem::PlaylistItem()
-    : ListItem( ITEMTYPE_PLAYLISTITEM)
-{
-    id = PLAYLISTITEM_INVALID;
-}
-
-PlaylistItem::~PlaylistItem() {
-}
-
-const Q_UINT32& PlaylistItem::getID() const {
-    return id;
-}
-
-void PlaylistItem::doneAddingData() {
-    // do nothing here for now
-}
+public:
+    IPodPlaylistItem();
+    IPodPlaylistItem( Q_UINT32 ipod_id);
+    virtual ~IPodPlaylistItem();
+    
+    const Q_UINT32& getID() const;
+    void doneAddingData();
+protected:
+    Q_UINT32 id;
+};
 
 };
+
+#endif

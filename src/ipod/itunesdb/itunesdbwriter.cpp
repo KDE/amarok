@@ -141,7 +141,7 @@ void itunesdb::ItunesDBWriter::fillPlaylistBuffer( QByteArray& buffer)
     QDataStream stream( &io_buffer);
     stream.setByteOrder( QDataStream::LittleEndian);
 
-    Playlist * mainlist= datasource->getMainplaylist();
+    IPodPlaylist * mainlist= datasource->getMainplaylist();
     if(mainlist == NULL)
         return;
     
@@ -163,7 +163,7 @@ void itunesdb::ItunesDBWriter::fillPlaylistBuffer( QByteArray& buffer)
     // write the mainlist
     mainlist->writeToStream(stream, true);
     
-    for( Playlist * playlist= datasource->firstPlaylist(); playlist != NULL; playlist= datasource->nextPlaylist()) {
+    for( IPodPlaylist * playlist= datasource->firstPlaylist(); playlist != NULL; playlist= datasource->nextPlaylist()) {
         playlist->writeToStream(stream, false);
     }
     

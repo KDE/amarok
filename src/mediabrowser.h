@@ -53,7 +53,6 @@ class MediaBrowser : public QVBox
 
     private:
         MediaDeviceView* m_view;
-        MediaDevice* m_device;
 
         KLineEdit* m_searchEdit;
 };
@@ -103,6 +102,7 @@ class MediaDeviceView : public QVBox
     private:
         QLabel*          m_stats;
         KProgress*       m_progress;
+        MediaDevice*     m_device;
         MediaDeviceList* m_deviceList;
         KListView*       m_transferList;
 
@@ -117,7 +117,7 @@ class MediaDevice : public QObject
     friend class MediaDeviceView;
 
     public:
-        MediaDevice( MediaBrowser* parent );
+        MediaDevice( MediaDeviceView* parent );
         ~MediaDevice();
 
         void addURL( const KURL& url );
@@ -136,7 +136,7 @@ class MediaDevice : public QObject
         bool fileExists( const MetaBundle& bundle );
         KURL::List m_transferURLs;
 
-        MediaBrowser* m_parent;
+        MediaDeviceView* m_parent;
         IPod::IPod* m_ipod;
         static MediaDevice *s_instance;
 };

@@ -45,7 +45,7 @@ void ItunesDBParser::parse(QFile& file)
 {
     Q_UINT32 magic, headerlen, filesize;
     
-    PlaylistItem current_playlistitem;
+    IPodPlaylistItem current_playlistitem;
     Track current_track;
     
     ListItem * listitem = NULL;
@@ -161,7 +161,7 @@ void ItunesDBParser::parse(QFile& file)
                 // there's a playlist waiting to be handed over to the listener
                 listener->handlePlaylist( current_playlist);
             }
-            current_playlist = Playlist();
+            current_playlist = IPodPlaylist();
             listitem = &current_playlist;    // TODO working with a copy is wrong here
             seekRelative(stream, blocklen- 8);
             }
@@ -177,7 +177,7 @@ void ItunesDBParser::parse(QFile& file)
             seekRelative(stream, 16);
             stream >> itemid;
             
-            current_playlistitem = PlaylistItem( itemid);
+            current_playlistitem = IPodPlaylistItem( itemid);
             listitem = &current_playlistitem;
             
             seekRelative(stream, blocklen- 28);
@@ -221,7 +221,7 @@ void itunesdb::ItunesDBParser::handleItem( ListItem& item)
         }
         break;
     case ITEMTYPE_PLAYLIST: {
-        Playlist * pPlaylist = dynamic_cast <Playlist *> (&item);
+        IPodPlaylist * pPlaylist = dynamic_cast <IPodPlaylist *> (&item);
         if( pPlaylist == NULL)
             break;
         pPlaylist->doneAddingData();
@@ -229,7 +229,7 @@ void itunesdb::ItunesDBParser::handleItem( ListItem& item)
         }
         break;
     case ITEMTYPE_PLAYLISTITEM: {
-        PlaylistItem * pPlaylistitem = dynamic_cast <PlaylistItem *> (&item);
+        IPodPlaylistItem * pPlaylistitem = dynamic_cast <IPodPlaylistItem *> (&item);
         if( pPlaylistitem == NULL)
             break;
         pPlaylistitem->doneAddingData();

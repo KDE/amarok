@@ -6,10 +6,10 @@
 #include "amarokconfig.h"
 #include "clicklineedit.h"
 #include "colorgenerator.h"
-#include "mediabrowser.h"
 #include "metabundle.h"
 #include "playlist.h"      //appendMedia()
 #include "statusbar.h"
+#include "mediabrowser.h"
 
 #include <qdatetime.h>
 #include <qimage.h>
@@ -52,8 +52,6 @@ bool MediaBrowser::isAvailable() //static
 MediaBrowser::MediaBrowser( const char *name )
    : QVBox( 0, name )
 {
-    m_device = new MediaDevice( this );
-
     setSpacing( 4 );
     setMargin( 5 );
 
@@ -129,7 +127,24 @@ MediaDeviceList::renderView()
 {
     clear();
 //    renderNode( 0, KURL( "ipod:/Artists/" ) );
-    m_parent->m_parent->m_device->items( 0 );
+
+    KIconLoader iconLoader;
+    QPixmap pixmap = iconLoader.loadIcon( "usbpendrive_unmount", KIcon::Toolbar, KIcon::SizeSmall );
+
+    QStringList items;
+    items = m_parent->m_device->items( 0 );
+
+    for ( uint i = 0; i < items.count(); ++i )
+    {
+        MediaItem* item;
+        item = new MediaItem( this );
+        item->setExpandable( true );
+        item->setDragEnabled( true );
+        item->setDropEnabled( true );
+//        item->setUrl( "ipod:" + fi->url().path() );
+        item->setText( 0, items[ i ] );
+        item->setPixmap( 0, pixmap );
+    }
 }
 
 
@@ -146,11 +161,10 @@ MediaDeviceList::renderNode( QListViewItem* parent, const KURL& url )  //SLOT
     KFileItem* fi;
     KFileItemList fil = dl.items();
 
+    KIconLoader iconLoader;
+    QPixmap pixmap = iconLoader.loadIcon( "usbpendrive_unmount", KIcon::Toolbar, KIcon::SizeSmall );
     for ( fi = fil.first(); fi; fi = fil.next() )
     {
-        KIconLoader iconLoader;
-        QPixmap pixmap = iconLoader.loadIcon( "usbpendrive_unmount", KIcon::Toolbar, KIcon::SizeSmall );
-
         MediaItem* item;
         if ( !parent )
             item = new MediaItem( this );
@@ -271,6 +285,7 @@ MediaDeviceList::contentsDragMoveEvent( QDragMoveEvent* e )
 
 MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     : QVBox( parent )
+    , m_device ( new MediaDevice( this ) )
     , m_deviceList( new MediaDeviceList( this ) )
     , m_transferList( new KListView( this ) )
     , m_parent( parent )
@@ -304,7 +319,7 @@ MediaDeviceView::~MediaDeviceView()
 {}
 
 
-MediaDevice::MediaDevice( MediaBrowser* parent )
+MediaDevice::MediaDevice( MediaDeviceView* parent )
     : m_parent( parent )
 {
     s_instance = this;
@@ -326,14 +341,14 @@ MediaDevice::addURL( const KURL& url )
     MetaBundle mb( url, false );
     if ( !fileExists( mb ) && ( m_transferURLs.findIndex( url ) == -1 ) )
     {
-        MediaItem* item = new MediaItem( m_parent->m_view->m_transferList );
+        MediaItem* item = new MediaItem( m_parent->m_transferList );
         item->setExpandable( false );
         item->setDropEnabled( true );
         item->setUrl( url.path() );
         item->setText( 0, url.path() );
     
         m_transferURLs << url;
-        m_parent->m_view->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_view->m_transferList->childCount() ) );
+        m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_transferList->childCount() ) );
     } else
         amaroK::StatusBar::instance()->message( i18n( "Track already exists on iPod: " + url.path().local8Bit() ) );
 }
@@ -344,6 +359,7 @@ MediaDevice::items( QListViewItem* item )
 {
     QStringList items;
     m_ipod->getArtists( items );
+
     return items;
 }
 
@@ -351,8 +367,8 @@ MediaDevice::items( QListViewItem* item )
 void
 MediaDevice::transferFiles()  //SLOT
 {
-    m_parent->m_view->m_progress->setTotalSteps( m_parent->m_view->m_transferList->childCount() );
-    m_parent->m_view->m_progress->show();
+    m_parent->m_progress->setTotalSteps( m_parent->m_transferList->childCount() );
+    m_parent->m_progress->show();
 
     KIO::CopyJob *job = KIO::copy( m_transferURLs, KURL( "ipod:/Artists/" ), true );
     connect( job, SIGNAL( copyingDone( KIO::Job *, const KURL &, const KURL &, bool, bool ) ),
@@ -380,21 +396,21 @@ MediaDevice::fileExists( const MetaBundle& bundle )
 void
 MediaDevice::fileTransferred( KIO::Job *job, const KURL &from, const KURL &to, bool dir, bool renamed )  //SLOT
 {
-    m_parent->m_view->m_progress->setProgress( m_parent->m_view->m_progress->value() + 1 );
-    m_parent->m_view->m_deviceList->renderView();
+    m_parent->m_progress->setProgress( m_parent->m_progress->value() + 1 );
+    m_parent->m_deviceList->renderView();
 }
 
 
 void
 MediaDevice::fileTransferFinished( KIO::Job *job )  //SLOT
 {
-    m_parent->m_view->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_view->m_transferList->childCount() ) );
-    m_parent->m_view->m_transferList->clear();
+    m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_transferList->childCount() ) );
+    m_parent->m_transferList->clear();
     m_transferURLs.clear();
     
     // sync ipod, now
     KIO::get( "ipod:/Utilities/Synchronize?really=OK", false, false );
-    m_parent->m_view->m_progress->hide();
+    m_parent->m_progress->hide();
 }
 
 

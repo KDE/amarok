@@ -24,8 +24,8 @@
 
 #include "ItunesDBListener.h"
 #include "track.h"
-#include "playlistitem.h"
-#include "playlist.h"
+#include "ipod_playlistitem.h"
+#include "ipod_playlist.h"
 
 #include <qfile.h>
 
@@ -38,7 +38,7 @@ namespace itunesdb {
 class ItunesDBParser{
 private:
     ItunesDBListener * listener;
-    Playlist current_playlist;
+    IPodPlaylist current_playlist;
     
 public:
     /**
