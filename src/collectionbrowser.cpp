@@ -111,7 +111,7 @@ CollectionDB::escapeString( QString string ) //static
 bool   
 CollectionDB::execSql( const QString& statement, QStringList* const values, QStringList* const names ) //static
 {
-    //     kdDebug() << k_funcinfo << endl;
+    kdDebug() << "execSql(): " << statement << endl;
 
     if ( !m_db ) {
         kdWarning() << k_funcinfo << "SQLite pointer == NULL.\n";
@@ -442,7 +442,7 @@ CollectionView::renderView( )  //SLOT
                       .arg( m_db->escapeString( m_filter ) );
 
     QString command = QString
-                      ( "SELECT DISTINCT %1.name FROM tags, %2 WHERE tags.%3=%4.id %5" )
+                      ( "SELECT DISTINCT %1.name FROM tags, %2 WHERE tags.%3=%4.id %5;" )
                       .arg( m_category1.lower() )
                       .arg( m_category1.lower() )
                       .arg( m_category1.lower() )

@@ -300,6 +300,8 @@ CollectionReader::readDir( const QString& dir, QStringList& entries ) {
 
 void
 CollectionReader::readTags( const QStringList& entries ) {
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    
     KURL url;
     CollectionDB* const insertdb = CollectionView::m_insertdb;
     insertdb->createTables( true );
@@ -359,6 +361,8 @@ CollectionReader::readTags( const QStringList& entries ) {
     insertdb->dropTables( true );
     // unlock database
     insertdb->execSql( "END TRANSACTION;" );
+    
+    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 
