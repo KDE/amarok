@@ -192,6 +192,15 @@ DO-NOT-IMPLEMENT:
 
 BACKTRACE/DEBUG
 
+GStreamer problem with playing certain mp3s:
+
+ERROR (0x8549e60 - 304361:01:49.126432000)        GST_PADS( 9828) gstpad.c(2490):gst_pad_set_explicit_caps:<mad1> failed to negotiate (try_set_caps with "audio/x-raw-int, endianness=(int)1234, signed=(boolean)true, width=(int)16, depth=(int)16, rate=(int)22050, channels=(int)2" returned REFUSED)
+ERROR (0x8549e60 - 304361:01:49.136835000)       scheduler( 9828) gstoptimalscheduler.c(2609):gst_opt_scheduler_iterate:<GstOptScheduler@0x8532e08> in error state
+
+(process:9824): GStreamer-WARNING **: element thread0 claimed state-change success,but state didn't change to PLAYING. State is PAUSED (NONE_PENDING pending), fix the element
+
+
+
 From Lauri on FreeBSD:
 
 Program received signal SIGSEGV, Segmentation fault.
