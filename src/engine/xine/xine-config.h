@@ -52,11 +52,6 @@ private:
     int      m_numValue;
     QCString m_key;
     QCString m_stringValue;
-
-    KLineEdit *stringEdit;
-    KComboBox *enumEdit;
-    QSpinBox  *numEdit;
-    QCheckBox *boolEdit;
 };
 
 

@@ -18,6 +18,7 @@
 #include <qlayout.h>
 #include <qscrollview.h>
 #include <qspinbox.h>
+#include <qtooltip.h>
 #include <xine.h>
 #include "xine-config.h"
 
@@ -29,63 +30,60 @@ XineConfigEntry::XineConfigEntry( QWidget *parent, amaroK::PluginConfig *pluginC
     , m_stringValue( entry->str_value )
 {
     QGridLayout *grid = (QGridLayout*)parent->layout();
+    QWidget *w = 0;
 
     switch (entry->type)
     {
     case XINE_CONFIG_TYPE_STRING:
     {
-        stringEdit = new KLineEdit( m_stringValue, parent );
-        grid->addWidget( stringEdit, row, 1 );
-        connect( stringEdit, SIGNAL(textChanged( const QString& )), this, SLOT(slotStringChanged( const QString& )) );
-        connect( stringEdit, SIGNAL(textChanged( const QString& )), pluginConfig, SIGNAL(viewChanged()) );
+        w = new KLineEdit( m_stringValue, parent );
+        connect( w, SIGNAL(textChanged( const QString& )), this, SLOT(slotStringChanged( const QString& )) );
+        connect( w, SIGNAL(textChanged( const QString& )), pluginConfig, SIGNAL(viewChanged()) );
         break;
     }
     case XINE_CONFIG_TYPE_ENUM:
     {
-        enumEdit = new KComboBox( parent );
+        KComboBox *box = (KComboBox*)w = new KComboBox( parent );
         for( int i = 0; entry->enum_values[i]; ++i )
-            enumEdit->insertItem( entry->enum_values[i] );
-        enumEdit->setCurrentItem( m_numValue );
-        grid->addWidget( enumEdit, row, 1 );
-        connect( enumEdit, SIGNAL(activated( int )), this, SLOT(slotNumChanged( int )) );
-        connect( enumEdit, SIGNAL(activated( int )), pluginConfig, SIGNAL(viewChanged()) );
+            box->insertItem( entry->enum_values[i] );
+        box->setCurrentItem( m_numValue );
+        connect( w, SIGNAL(activated( int )), this, SLOT(slotNumChanged( int )) );
+        connect( w, SIGNAL(activated( int )), pluginConfig, SIGNAL(viewChanged()) );
         break;
     }
     case XINE_CONFIG_TYPE_NUM:
     {
-        numEdit = new QSpinBox( -999999, 999999, 1, parent );
-        numEdit->setValue( m_numValue );
-        grid->addWidget( numEdit, row, 1 );
-        connect( numEdit, SIGNAL(valueChanged( int )), this, SLOT(slotNumChanged( int )) );
-        connect( numEdit, SIGNAL(valueChanged( int )), pluginConfig, SIGNAL(viewChanged()) );
+        ((QSpinBox*)w = new QSpinBox( entry->range_min, entry->range_max, 1, parent ))->setValue( m_numValue );
+        connect( w, SIGNAL(valueChanged( int )), this, SLOT(slotNumChanged( int )) );
+        connect( w, SIGNAL(valueChanged( int )), pluginConfig, SIGNAL(viewChanged()) );
         break;
     }
     case XINE_CONFIG_TYPE_RANGE:
     {
-        numEdit = new QSpinBox( parent );
-        numEdit->setValue( m_numValue );
-        numEdit->setRange( entry->range_min, entry->range_max );
-        grid->addWidget( numEdit, row, 1 );
-        connect( numEdit, SIGNAL(valueChanged( int )), this, SLOT(slotNumChanged( int )) );
-        connect( numEdit, SIGNAL(valueChanged( int )), pluginConfig, SIGNAL(viewChanged()) );
+        QSpinBox *box = (QSpinBox*)w = new QSpinBox( parent );
+        box->setValue( m_numValue );
+        box->setRange( entry->range_min, entry->range_max );
+        connect( w, SIGNAL(valueChanged( int )), this, SLOT(slotNumChanged( int )) );
+        connect( w, SIGNAL(valueChanged( int )), pluginConfig, SIGNAL(viewChanged()) );
         break;
     }
     case XINE_CONFIG_TYPE_BOOL:
     {
-        boolEdit = new QCheckBox( parent );
-        boolEdit->setChecked( m_numValue );
-        grid->addWidget( boolEdit, row, 1 );
-        connect( boolEdit, SIGNAL(toggled( bool )), this, SLOT(slotBoolChanged( bool )) );
-        connect( boolEdit, SIGNAL(toggled( bool )), pluginConfig, SIGNAL(viewChanged()) );
+        ((QCheckBox*)w = new QCheckBox( parent ))->setChecked( m_numValue );
+        connect( w, SIGNAL(toggled( bool )), this, SLOT(slotBoolChanged( bool )) );
+        connect( w, SIGNAL(toggled( bool )), pluginConfig, SIGNAL(viewChanged()) );
         break;
     }
     case XINE_CONFIG_TYPE_UNKNOWN:
         ;
     }
 
+    QToolTip::add( w, QString::fromUtf8( entry->help ) );
+
     QLabel* description = new QLabel( QString::fromUtf8( entry->description ) + ':', parent );
     description->setAlignment( QLabel::WordBreak | QLabel::AlignVCenter );
 
+    grid->addWidget( w, row, 1 );
     grid->addWidget( description, row, 0 );
 }
 
@@ -137,7 +135,8 @@ XineConfigDialog::XineConfigDialog( const xine_t* const xine, QWidget *p )
             QString pageName( ent->key );
             pageName = pageName.left( pageName.find( '.' ) );
 
-            // if (pageName == "decoder") continue;
+            if ( pageName == "vcd" )
+                continue;
 
             if ( pageName == currentPage )
             {
