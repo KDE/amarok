@@ -97,9 +97,13 @@ void AnalyzerBase::initSin( std::vector<float> &v ) const
 
 void AnalyzerBase::mousePressEvent( QMouseEvent *e )
 {
-    emit clicked();
-    
-    e->accept(); //don't propagate to PlayerWidget!
+    if( e->button() == Qt::LeftButton )
+    {
+        emit clicked();
+        
+        e->accept();  //don't propagate to PlayerWidget!
+    }
+    else e->ignore();
 }
 
 
