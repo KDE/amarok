@@ -8,10 +8,10 @@
 #include "qvbox.h"           //baseclass
 
 #include <klistview.h>       //baseclass
-#include <klineedit.h>       //baseclass
 #include <qstringlist.h>     //stack allocated
 #include <kurl.h>            //stack allocated
 
+class ClickLineEdit;
 class CollectionDB;
 class sqlite;
 
@@ -41,12 +41,9 @@ class CollectionBrowser: public QVBox
     private slots:
         void slotSetFilterTimeout();
         void slotSetFilter();
-        void clearFilter();
 
     private:
-        bool eventFilter( QObject*, QEvent* );
-
-    //attributes:
+        //attributes:
         enum CatMenuId { IdScan, IdAlbum, IdArtist, IdGenre, IdYear, IdNone };
 
         KAction* m_configureAction;

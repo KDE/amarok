@@ -5,6 +5,7 @@
 #include "config.h"
 
 #include "amarokconfig.h"
+#include "clicklineedit.h"
 #include "collectionbrowser.h"
 #include "collectiondb.h"
 #include "directorylist.h"
@@ -63,12 +64,11 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
         hbox         = new QHBox( this );
         button       = new KToolBarButton( "locationbar_erase", 0, hbox );
-        m_searchEdit = new KLineEdit( hbox, "filter_edit" );
-        m_searchEdit->installEventFilter( this );
+        m_searchEdit = new ClickLineEdit( hbox, i18n( "Filter here..." ), "filter_edit" );
 
         hbox->setMargin( 1 );
         m_searchEdit->setFrame( QFrame::Sunken );
-        connect( button, SIGNAL( clicked() ), this, SLOT( clearFilter() ) );
+        connect( button, SIGNAL( clicked() ), m_searchEdit, SLOT( clear() ) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
         QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter collection" ) );
@@ -83,12 +83,6 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_categoryMenu = tagfilterMenuButton->popupMenu();
 
     m_view = new CollectionView( this );
-
-    {
-        //set the lineEdit to initial state
-        QEvent e( QEvent::FocusOut );
-        eventFilter( m_searchEdit, &e );
-    }
 
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
 
@@ -153,19 +147,6 @@ CollectionBrowser::slotSetFilter() //SLOT
 }
 
 void
-CollectionBrowser::clearFilter()
-{
-    m_searchEdit->clear();
-    m_timer->stop();
-    slotSetFilter();
-    if( !m_searchEdit->hasFocus() ) {
-        //set the lineEdit to initial state
-        QEvent e( QEvent::FocusOut );
-        eventFilter( m_searchEdit, &e);
-    }
-}
-
-void
 CollectionBrowser::scan()  //SLOT
 {
     m_view->scan();
@@ -175,39 +156,6 @@ void
 CollectionBrowser::setupDirs()  //SLOT
 {
     m_view->setupDirs();
-}
-
-bool CollectionBrowser::eventFilter( QObject *o, QEvent *e )
-{
-    if( o == m_searchEdit )
-    {
-        switch( e->type() )
-	{
-           case QEvent::FocusIn:
-               if( m_view->filter().isEmpty() )
-	       {
-                   m_searchEdit->clear();
-                   m_timer->stop();
-                   m_searchEdit->setPaletteForegroundColor( colorGroup().text() );
-                   return FALSE;
-               }
-
-            case QEvent::FocusOut:
-                if( m_view->filter().isEmpty() )
-		{
-                    m_searchEdit->setPalette( palette() );
-                    m_searchEdit->setPaletteForegroundColor( palette().color( QPalette::Disabled, QColorGroup::Text ) );
-                    m_searchEdit->setText( i18n("Filter here...") );
-                    m_timer->stop();
-                    return FALSE;
-                }
-
-            default:
-                return FALSE;
-        };
-    }
-
-    return FALSE;
 }
 
 
