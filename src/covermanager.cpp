@@ -191,7 +191,7 @@ void CoverManager::fetchCoversLoop() //SLOT
     if( m_fetchCounter < m_fetchCovers.count() ) {
         //get artist and album from keyword
         QStringList values = QStringList::split( " @@@ ", m_fetchCovers[m_fetchCounter] );
-        m_counterLabel->setText( i18n( "Fetching cover for: %1" ).arg( m_fetchCovers[m_fetchCounter] ) );
+        m_counterLabel->setText( i18n( "Fetching cover for %1 - %2" ).arg(values[0], values[1]) );
         m_db->fetchCover( this, values[0], values[1], true );
         m_fetchCounter++;
 
@@ -287,6 +287,7 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
 
     m_viewMenu->setItemChecked( m_currentView, false );
     m_viewMenu->setItemChecked( AllAlbums, true );
+    m_currentView = AllAlbums;
 
     updateCounter();
 }
@@ -515,7 +516,6 @@ void CoverManager::deleteSelectedCovers()
 
         if ( m_db->removeImageFromAlbum( artists, albums ) )    //delete selected cover
               for ( CoverViewItem* item = selected.first(); item; item = selected.next() )
-                  //FIXME kio::del is used to delete covers so the cover image is still there when loadCover is called
                   item->loadCover();    //show the nocover icon
     }
 }
