@@ -133,6 +133,11 @@ EngineBase *EngineController::loadEngine() //static
         kdDebug() << "Setting soundSystem to: " << AmarokConfig::soundSystem() << endl;
     }
 
+    connect( engine, SIGNAL(stateChanged( Engine::State )), instance(), SLOT(slotStateChanged( Engine::State )) );
+    connect( engine, SIGNAL(trackEnded()), instance(), SLOT(slotTrackEnded()) );
+    connect( engine, SIGNAL(statusText( const QString& )), instance(), SIGNAL(statusText( const QString& )) );
+    connect( engine, SIGNAL(showConfigDialog( int )), kapp, SLOT(slotConfigAmarok( int )) );
+
     if( static_cast<EngineBase*>(plugin)->init() )
     {
         //only change things if the init was successful,
@@ -149,11 +154,6 @@ EngineBase *EngineController::loadEngine() //static
         if( engine != dummyEngine() ) PluginManager::unload( engine );
 
         engine = static_cast<EngineBase*>(plugin);
-
-        connect( engine, SIGNAL(stateChanged( Engine::State )), instance(), SLOT(slotStateChanged( Engine::State )) );
-        connect( engine, SIGNAL(trackEnded()), instance(), SLOT(slotTrackEnded()) );
-        connect( engine, SIGNAL(statusText( const QString& )), instance(), SIGNAL(statusText( const QString& )) );
-        connect( engine, SIGNAL(showConfigDialog( int )), kapp, SLOT(slotConfigAmarok( int )) );
 
         //NOTE engine settings are set in App::applySettings()
 
