@@ -410,8 +410,8 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
             case Key_Return:
             case Key_Enter:
-                m_lineEdit->clear();
                 m_playlist->activate( *It( m_playlist, It::Visible ) );
+                m_lineEdit->clear();
                 m_playlist->showCurrentTrack();
                 return TRUE;
 
