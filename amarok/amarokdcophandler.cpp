@@ -1,12 +1,11 @@
+//author Berkus
+//FIXME get berkus to license this under something!
+
 #include "amarokdcophandler.h"
-#include "amarokslider.h"
 #include "engine/enginebase.h"
 #include "playerapp.h"
-#include "playerwidget.h"
 
 #include <dcopclient.h>
-
-#include <kdebug.h>
 
 AmarokDcopHandler::AmarokDcopHandler()
    : DCOPObject( "player" )
@@ -79,8 +78,8 @@ void AmarokDcopHandler::seek(int s)
 
 int AmarokDcopHandler::trackCurrentTime()
 {
-   //FIXME must be a more reliable way to get the currentTime
-   return pApp->m_pPlayerWidget->m_pSlider->value();
+   //return time in seconds
+   return pApp->m_pEngine->position() / 1000;
 }
 
 void AmarokDcopHandler::addMedia(const KURL &url)
