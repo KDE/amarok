@@ -30,7 +30,7 @@ email                : markey@web.de
 #include "threadweaver.h"        //restoreSession()
 #include "playlisttooltip.h"
 #include "enginecontroller.h"
-// #include "vis/socketserver.h"    //please leave directory prefix
+#include "vis/socketserver.h"    //please leave directory prefix
 
 #include <kaboutdata.h>          //initCliArgs()
 #include <kaction.h>
