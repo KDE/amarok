@@ -377,10 +377,9 @@ void App::applySettings()
     }
     else m_pOSD->unsetColors();
     m_pOSD->setDuration( AmarokConfig::osdDuration() );
-    m_pOSD->setPosition( (OSDWidget::Position)AmarokConfig::osdAlignment() );
+    m_pOSD->setAlignment( (OSDWidget::Alignment)AmarokConfig::osdAlignment() );
     m_pOSD->setScreen( AmarokConfig::osdScreen() );
     m_pOSD->setOffset( AmarokConfig::osdXOffset(), AmarokConfig::osdYOffset() );
-    m_pOSD->setHorizontalAutoCenter( AmarokConfig::osdHorizontalAutoCenter() );
 
 
     playlistWindow()->setFont( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );

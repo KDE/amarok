@@ -12,40 +12,35 @@ the Free Software Foundation; either version 2 of the License, or
   email:     muesli@chareit.net
 */
 
+#include "amarokconfig.h" //previewWidget
 #include "osd.h"
 
 #include <qapplication.h>
 #include <qbitmap.h>
-#include <qimage.h>
 #include <qpainter.h>
-#include <qpixmap.h>
-#include <qtimer.h>
 
-#include <kcursor.h>         //previewWidget
 #include <kdebug.h>
-#include <kglobalsettings.h> //activeTitleColor()
+#include <kglobalsettings.h> //unsetColors()
+
+#include <X11/Xlib.h> //reposition()
 
 
 OSDWidget::OSDWidget( const QString &appName, QWidget *parent, const char *name )
-        : QWidget( parent, name,
-                   WType_TopLevel | WStyle_StaysOnTop |
-                   WStyle_Customize | WStyle_NoBorder |
-                   WStyle_Tool | WRepaintNoErase | WX11BypassWM )
+        : QWidget( parent, name, WType_TopLevel | WNoAutoErase | WStyle_Customize | WX11BypassWM | WStyle_StaysOnTop )
         , m_appName( appName )
         , m_duration( 5000 )
-        , timer( new QTimer( this ) )
-        , timerMin( new QTimer( this ) )
-        , m_position( Top )
+        , m_shadow( true )
+        , m_alignment( Middle )
         , m_screen( 0 )
-        , m_offset( 10, 40 )
+        , m_y( MARGIN )
         , m_dirty( false )
 {
     setFocusPolicy( NoFocus );
     setBackgroundMode( NoBackground );
     unsetColors();
 
-    connect( timer, SIGNAL( timeout() ), SLOT( removeOSD() ) );
-    connect( timerMin, SIGNAL( timeout() ), SLOT( minReached() ) );
+    connect( &timer,    SIGNAL( timeout() ), SLOT( hide() ) );
+    connect( &timerMin, SIGNAL( timeout() ), SLOT( minReached() ) );
 }
 
 
@@ -72,8 +67,6 @@ void OSDWidget::renderOSDText( const QString &text )
 
     osdBuffer.resize( textRect.size() );
     mask.resize( textRect.size() );
-    resize( textRect.size() );
-    rePosition();
 
     // Start painting!
     QPainter bufferPainter( &osdBuffer );
@@ -85,8 +78,8 @@ void OSDWidget::renderOSDText( const QString &text )
     bufferPainter.drawRoundRect( textRect, 1500 / textRect.width(), 1500 / textRect.height() );
     bufferPainter.setFont( font() );
 
-    const uint w = width() - 1;
-    const uint h = height() - 1;
+    const uint w = textRect.width()  - 1;
+    const uint h = textRect.height() - 1;
 
     // Draw the text shadow
     if ( m_shadow ) {
@@ -108,44 +101,55 @@ void OSDWidget::renderOSDText( const QString &text )
     maskPainter.drawRoundRect( textRect, 1500 / textRect.width(), 1500 / textRect.height() );
     setMask( mask );
 
+    //do last to reduce noticeable change when showing multiple OSDs in succession
+    reposition( textRect.size() );
+
     m_currentText = text;
     m_dirty = false;
+
+    update();
 }
+
 
 void OSDWidget::showOSD( const QString &text, bool preemptive )
 {
     if ( isEnabled() && !text.isEmpty() ) {
-        if ( preemptive == false && timerMin->isActive() ) {
-            textBuffer.append( text ); // queue
-        } else {
-            timer->stop();
+        if ( preemptive || !timerMin.isActive() ) {
+            m_currentText = text;
+            m_dirty = true;
 
-            if ( m_currentText != text || m_dirty ) renderOSDText( text );
+            show();
 
-            if ( !isVisible() ) {
-                raise();
-                QWidget::show();
-            } else
-                update();
-
-            // let it disappear via a QTimer
-            if ( m_duration )   // if duration is 0 stay forever
-            {
-                timer->start( m_duration, TRUE );
-                timerMin->start( 150 );
+            if ( m_duration ) { //if duration is 0 stay forever
+                timer.start( m_duration, TRUE ); //calls hide()
+                timerMin.start( 150 ); //calls minReached()
             }
+            else timer.stop();
+
         }
+        else textBuffer.append( text ); //queue
     }
 }
+
+
+void OSDWidget::minReached() //SLOT
+{
+    if ( !textBuffer.isEmpty() ) {
+        renderOSDText( textBuffer.front() );
+        textBuffer.pop_front();
+
+        if( m_duration )
+            //timerMin is still running
+            timer.start( m_duration, TRUE );
+    }
+    else timerMin.stop();
+}
+
 
 void OSDWidget::setDuration( int ms )
 {
     m_duration = ms;
 }
-
-
-//TODO personally I feel you should just insist people call refresh()
-//     after they set settings and then inline all these
 
 void OSDWidget::setFont( QFont newFont )
 {
@@ -179,60 +183,24 @@ void OSDWidget::unsetColors()
     refresh();
 }
 
-
-void OSDWidget::setOffset( int x, int y )
+void OSDWidget::setOffset( int /*x*/, int y )
 {
-    m_offset = QPoint( x, y );
-    rePosition();
+    //m_offset = QPoint( x, y );
+    m_y = y;
+    reposition();
 }
 
-
-void OSDWidget::setPosition( Position pos )
+void OSDWidget::setAlignment( Alignment a )
 {
-    m_position = pos;
-    rePosition();
+    m_alignment = a;
+    reposition();
 }
 
 void OSDWidget::setScreen( uint screen )
 {
-    m_screen = screen;
-    if ( m_screen >= QApplication::desktop() ->numScreens() )
-        m_screen = QApplication::desktop() ->numScreens() - 1;
-    rePosition();
-}
-
-void OSDWidget::setHorizontalAutoCenter( bool center )
-{
-    amaroK::OSD::m_horizontalAutoCenter = center;
-    rePosition();
-}
-
-void OSDWidget::refresh()
-{
-    if ( isVisible() ) {
-        //we need to update the buffer
-        renderOSDText( m_currentText );
-
-        //may as well update(), visible or not, if we're not visible Qt will wait until we are
-        update();
-    } else m_dirty = true; //ensure we are re-rendered before we are shown
-}
-
-
-//SLOT
-void OSDWidget::minReached()
-{
-    if ( !textBuffer.isEmpty() ) {
-        renderOSDText( textBuffer.front() );
-        textBuffer.pop_front();
-        update();
-
-        if ( m_duration )   // if duration is 0 stay forever
-        {
-            //timerMin is still running
-            timer->start( m_duration, TRUE );
-        }
-    } else timerMin->stop();
+    const int n = QApplication::desktop()->numScreens();
+    m_screen = (screen >= n) ? n-1 : screen;
+    reposition();
 }
 
 
@@ -243,72 +211,83 @@ void OSDWidget::paintEvent( QPaintEvent* )
 
 void OSDWidget::mousePressEvent( QMouseEvent* )
 {
-    removeOSD();
+    hide();
 }
 
 void OSDWidget::show()
 {
-    if ( m_dirty ) {
-        //renderOSDText() sets m_dirty=false for us
-        renderOSDText( m_currentText );
-    }
+    if ( m_dirty ) renderOSDText( m_currentText );
 
     QWidget::show();
 }
 
-
-void OSDWidget::rePosition()
+void OSDWidget::refresh()
 {
-    QPoint newPos = m_offset;
-    const QRect screenRect = QApplication::desktop() ->screenGeometry( m_screen );
+    if ( isVisible() )
+    {
+        //we need to update the buffer
+        renderOSDText( m_currentText );
+    }
+    else m_dirty = true; //ensure we are re-rendered before we are shown
+}
 
-    switch ( m_position ) {
-        case Free:
+void OSDWidget::reposition( QSize newSize )
+{
+    if( !newSize.isValid() ) newSize = size();
+
+    QPoint newPos( MARGIN, m_y );
+    const QRect screen = QApplication::desktop()->screenGeometry( m_screen );
+
+    //TODO m_y is the middle of the OSD, and don't exceed screen margins
+
+    switch ( m_alignment ) {
+    case Left:
         break;
 
-        case Top:
-        newPos.rx() = ( screenRect.width() - osdBuffer.width() ) / 2;
-        newPos.ry() = MARGIN;
+    case Right:
+        newPos.rx() = screen.width() - MARGIN - newSize.width();
         break;
 
-        case Center:
-        newPos.rx() = ( screenRect.width() - osdBuffer.width() ) / 2;
-        newPos.ry() = ( screenRect.height() - osdBuffer.height() ) / 2;
-        break;
+    case Center:
+        newPos.ry() = (screen.height() - newSize.height()) / 2;
 
-        case Bottom:
-        newPos.rx() = ( screenRect.width() - osdBuffer.width() ) / 2;
-        newPos.ry() = screenRect.height() - osdBuffer.height() - MARGIN;
+        //FALL THROUGH
+
+    case Middle:
+        newPos.rx() = (screen.width() - newSize.width()) / 2;
         break;
     }
 
     // correct for screen position
-    newPos += screenRect.topLeft();
+    newPos += screen.topLeft();
 
-    // Be nice and center the text, if the user wishes so
-    if ( amaroK::OSD::m_horizontalAutoCenter )
-        newPos.setX( screenRect.width() / 2 - osdBuffer.width() / 2 );
+    //ensure we are painted before we move
+    if( isVisible() ) paintEvent( 0 );
 
-    // TODO: check for sanity?
-    move( newPos ); //no need to check if pos() == newPos, Qt does that too
+    //fancy X11 move+resize, reduces visual artifacts
+    XMoveResizeWindow( x11Display(), winId(), newPos.x(), newPos.y(), newSize.width(), newSize.height() );
 }
+
 
 
 //////  OSDPreviewWidget below /////////////////////
 
-QPoint OSDPreviewWidget::m_previewOffset;
+#include <kcursor.h>         //previewWidget
+#include <klocale.h>
 
-
-OSDPreviewWidget::OSDPreviewWidget( const QString &appName ) : OSDWidget( appName )
+OSDPreviewWidget::OSDPreviewWidget( const QString &appName, QWidget *parent, const char *name )
+    : OSDWidget( appName, parent, name )
+    , m_dragging( false )
 {
-    m_dragging = false;
-    setDuration( 0 );
+    m_currentText = i18n( "OSD Preview - drag to reposition" );
+    m_duration    = 0;
 }
 
 
 void OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
 {
     m_dragOffset = event->pos();
+
     if ( event->button() == LeftButton && !m_dragging ) {
         grabMouse( KCursor::sizeAllCursor() );
         m_dragging = true;
@@ -327,35 +306,66 @@ void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent * /*event*/ )
 
         if ( currentScreen != -1 ) {
             // set new data
-            m_previewOffset = pos();
-            m_position = Free;
             m_screen = currentScreen;
+            m_y      = QWidget::y();
 
-            emit positionChanged( m_screen, m_position, x(), y() );
+            emit positionChanged();
         }
     }
 }
 
 void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 {
-    if ( m_dragging && this == mouseGrabber() ) {
-        // Be nice and center the text, if the user wishes so
-        if ( amaroK::OSD::m_horizontalAutoCenter ) {
-            const QRect screenRect = QApplication::desktop() ->screenGeometry( m_screen );
-            move( screenRect.width() / 2 - osdBuffer.width() / 2, ( e->globalPos() - m_dragOffset ).y() );
-        } else
-            move( e->globalPos() - m_dragOffset );
+    //TODO make 100 into percentage of screen size
+    //TODO consider using QWidget y() property?
+    //TODO do slick move on and then disappear
+
+    if ( m_dragging && this == mouseGrabber() )
+    {
+        const QRect screenRect  = QApplication::desktop() ->screenGeometry( m_screen );
+        const uint  hcenter     = screenRect.width() / 2;
+        const uint  eGlobalPosX = e->globalPos().x();
+
+        QPoint newPos = e->globalPos() - m_dragOffset;
+        int maxY = screenRect.height()-height()-MARGIN;
+        if( newPos.y() < MARGIN ) newPos.ry() = MARGIN;
+        if( newPos.y() > maxY ) newPos.ry() = maxY;
+
+        if( eGlobalPosX < (hcenter-100) )
+        {
+            m_alignment = Left;
+            move( MARGIN, newPos.y() );
+        }
+        else if( eGlobalPosX > (hcenter+100) )
+        {
+            m_alignment = Right;
+            move( screenRect.width() - MARGIN - width(), newPos.y() );
+        }
+        else
+        {
+            const uint eGlobalPosY = e->globalPos().y();
+            const uint vcenter     = screenRect.height()/2;
+
+            if( eGlobalPosY >= (vcenter-100) && eGlobalPosY <= (vcenter+100) )
+            {
+                m_alignment = Center;
+                move( hcenter - width()/2, vcenter - height()/2 );
+
+            } else {
+
+                m_alignment = Middle;
+                move( hcenter - (width()/2), newPos.y() );
+            }
+        }
     }
 }
 
 
+
 //////  amaroK::OSD below /////////////////////
 
-#include "enginecontroller.h"
 #include "metabundle.h"
 #include <qregexp.h>
-
-bool amaroK::OSD::m_horizontalAutoCenter;
 
 void amaroK::OSD::showTrack( const MetaBundle &bundle )
 {
@@ -368,8 +378,8 @@ void amaroK::OSD::showTrack( const MetaBundle &bundle )
     }
 
     text.replace( QRegExp( "</?(?:font|a|b|i)\\b[^>]*>" ), QString::null );
-    text.replace( "&lt;", "<" );
-    text.replace( "&gt;", ">" );
+    text.replace( "&lt;",  "<" );
+    text.replace( "&gt;",  ">" );
     text.replace( "&amp;", "&" );
 
     m_text = text;

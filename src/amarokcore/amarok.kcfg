@@ -247,18 +247,13 @@
     <entry key="Osd Alignment" type="Enum">
         <label>Align OSD to</label>
     <choices>
-        <choice name="Free"/>
-        <choice name="Top"/>
+        <choice name="Left"/>
+        <choice name="Middle"/>
         <choice name="Center"/>
-        <choice name="Bottom"/>
+        <choice name="Right"/>
     </choices>
         <default>Center</default>
         <whatsthis>The relative position of the OSD. Possible choiced are TopCenter, TopLeft, TopRight, BottomCenter, BottomLeft, BottomRight, and Center.</whatsthis>
-    </entry>
-    <entry key="Osd Horizontal Auto Center" type="Bool">
-        <label>Whether the OSD should automatically center horizontally.</label>
-        <default>false</default>
-        <whatsthis>You can make the OSD center automatically when you set this to true. Helps to prevent text clipping.</whatsthis>
     </entry>
 
 </group>

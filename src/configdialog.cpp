@@ -97,16 +97,16 @@ void AmarokConfigDialog::triggerChanged()
 void AmarokConfigDialog::updateSettings()
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     AmarokConfig::setSoundSystem( m_pSoundSystem->currentText() );
+    AmarokConfig::setSoundDevice( m_pSoundDevice->text() );
     if ( !m_pSoundOutput->currentText().isEmpty() )
         AmarokConfig::setSoundOutput( m_pSoundOutput->currentText() );
-    AmarokConfig::setSoundDevice( m_pSoundDevice->text() );
 
-    AmarokConfig::setOsdAlignment( OSDWidget::Free );
-    AmarokConfig::setOsdXOffset( OSDPreviewWidget::m_previewOffset.x() );
-    AmarokConfig::setOsdYOffset( OSDPreviewWidget::m_previewOffset.y() );
-    
+    OSDWidget *osd = (OSDWidget*)child( "osdpreview" );
+    AmarokConfig::setOsdAlignment( osd->alignment() );
+    AmarokConfig::setOsdYOffset( osd->y() );
+
     emit settingsChanged();
     updateWidgets();
     m_changed = false;
@@ -122,10 +122,10 @@ void AmarokConfigDialog::updateSettings()
 void AmarokConfigDialog::updateWidgets()
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     m_pSoundSystem->setCurrentText( AmarokConfig::soundSystem() );
     m_pSoundDevice->setText( AmarokConfig::soundDevice() );
-    
+
     soundSystemChanged();
 }
 
@@ -138,7 +138,7 @@ void AmarokConfigDialog::updateWidgets()
 void AmarokConfigDialog::updateWidgetsDefault()
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     m_pSoundSystem->setCurrentText( "aRts Engine" );
     soundSystemChanged();
 }
@@ -193,16 +193,16 @@ void AmarokConfigDialog::soundSystemChanged()
 bool AmarokConfigDialog::hasChanged()
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     bool changed =
         m_pSoundSystem->currentText()            != AmarokConfig::soundSystem();
-    
-    if ( m_pSoundOutput->isEnabled() )  
+
+    if ( m_pSoundOutput->isEnabled() )
         changed |= m_pSoundOutput->currentText() != AmarokConfig::soundOutput();
-    
-    if ( m_pSoundDevice->isEnabled() )  
+
+    if ( m_pSoundDevice->isEnabled() )
         changed |= m_pSoundDevice->text()        != AmarokConfig::soundDevice();
-       
+
     return m_changed || changed;
 }
 
@@ -211,7 +211,7 @@ bool AmarokConfigDialog::hasChanged()
 bool AmarokConfigDialog::isDefault()
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     return ( m_pSoundSystem->currentText() == "aRts Engine" );
 }
 

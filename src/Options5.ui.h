@@ -29,25 +29,15 @@ email                : fh@ez.no
 
 void Options5::init()
 {
-    m_pOSDPreview = new OSDPreviewWidget( "amaroK" );
-    m_pOSDPreview->setText( i18n("OSD preview - drag to reposition" ) );
-    m_pOSDPreview->setFont( AmarokConfig::osdFont() );
-    m_pOSDPreview->setShadow( AmarokConfig::osdDrawShadow() );
-    m_pOSDPreview->setPosition( (OSDWidget::Position) AmarokConfig::osdAlignment() );
+    m_pOSDPreview = new OSDPreviewWidget( "amaroK", this ); //must be child!!!
+    m_pOSDPreview->setAlignment( (OSDWidget::Alignment)AmarokConfig::osdAlignment() );
     m_pOSDPreview->setOffset( AmarokConfig::osdXOffset(), AmarokConfig::osdYOffset() );
-    
-    connect( m_pOSDPreview, SIGNAL( positionChanged( int, OSDWidget::Position, int, int ) ) ,
-             SLOT( osdPositionChanged( int, OSDWidget::Position, int, int ) ) );
 
-    int numScreens = QApplication::desktop()->numScreens();
+    connect( m_pOSDPreview, SIGNAL(positionChanged()), SLOT(slotPositionChanged()) );
+
+    const int numScreens = QApplication::desktop()->numScreens();
     for( int i = 0; i < numScreens; i++ )
         kcfg_OsdScreen->insertItem( QString::number( i ) );
-}
-
-
-void Options5::destroy()
-{
-    delete m_pOSDPreview;
 }
 
 
@@ -69,31 +59,19 @@ void Options5::backgroundColorChanged( const QColor &color )
 }
 
 
-void Options5::alignmentChanged( int alignment )
-{
-    m_pOSDPreview->setPosition( (OSDWidget::Position)alignment );
-}
-
-
 void Options5::screenChanged( int screen )
 {
     m_pOSDPreview->setScreen( screen );
 }
 
 
-void Options5::osdPositionChanged( int screen, OSDWidget::Position alignment, int /*xOffset*/, int /*yOffset*/ )
+void Options5::slotPositionChanged()
 {
-    // atomic
     kcfg_OsdScreen->blockSignals( true );
-    kcfg_OsdAlignment->blockSignals( true );
-
-    kcfg_OsdScreen->setCurrentItem( screen );
-    kcfg_OsdAlignment->setCurrentItem( alignment );
-
+    kcfg_OsdScreen->setCurrentItem( m_pOSDPreview->screen() );
     kcfg_OsdScreen->blockSignals( false );
-    kcfg_OsdAlignment->blockSignals( false );
 
-    AmarokConfigDialog* conf = static_cast<AmarokConfigDialog*>( KConfigDialog::exists( "settings" ) );
+    AmarokConfigDialog* conf = (AmarokConfigDialog*)KConfigDialog::exists( "settings" );
     if ( conf ) conf->triggerChanged();
 }
 
@@ -109,7 +87,6 @@ void Options5::showEvent( QShowEvent * )
     useCustomColorsToggled( kcfg_OsdUseCustomColors->isChecked() );
 
     m_pOSDPreview->setFont( kcfg_OsdFont->font() );
-    m_pOSDPreview->setPosition( (OSDWidget::Position)kcfg_OsdAlignment->currentItem() );
     m_pOSDPreview->setScreen( kcfg_OsdScreen->currentItem() );
     m_pOSDPreview->setShown( kcfg_OsdEnabled->isChecked() );
 }

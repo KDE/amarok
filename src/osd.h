@@ -15,7 +15,8 @@
 #ifndef AMAROK_OSD_H
 #define AMAROK_OSD_H
 
-#include <qpixmap.h>
+#include <qpixmap.h> //stack allocated
+#include <qtimer.h>  //stack allocated
 #include <qwidget.h> //baseclass
 
 class QFont;
@@ -28,13 +29,8 @@ class OSDWidget : public QWidget
 {
     Q_OBJECT
       public:
-        enum Position {
-          Free,
-          Top,
-          Center,
-          Bottom,
-        };
- 
+        enum Alignment { Left, Middle, Center, Right };
+
         OSDWidget(const QString &appName, QWidget *parent = 0, const char *name = "osd");
         void setDuration(int ms);
         void setFont(QFont newfont);
@@ -42,14 +38,18 @@ class OSDWidget : public QWidget
         void setTextColor(QColor newcolor);
         void setBackgroundColor(QColor newColor);
         void setOffset( int x, int y );
-        void setPosition(Position pos);
+        void setAlignment(Alignment);
         void setScreen(uint screen);
-        void setHorizontalAutoCenter(bool center);
         void setText(const QString &text) { m_currentText = text; refresh(); }
 
         void unsetColors();
-     
-public slots:    
+
+        int screen()    { return m_screen; }
+        int alignment() { return m_alignment; }
+        int y()         { return m_y; }
+
+      public slots:
+        //TODO rename show, scrap removeOSD, just use hide() <- easier to learn
         void showOSD(const QString&, bool preemptive=false );
         void removeOSD() { hide(); } //inlined as is convenience function
 
@@ -61,30 +61,29 @@ public slots:
         void renderOSDText(const QString &text);
         void paintEvent(QPaintEvent*);
         void mousePressEvent( QMouseEvent* );
-        //void showEvent( QShowEvent* );
         void show();
 
-        /* always call rePosition if the size of osdBuffer has changed */
-        void rePosition();
+        /* call to reposition a new OSD text or when position attributes change */
+        void reposition( QSize newSize = QSize() );
 
-        //called after most set*() calls to update the OSD
+        /* called after most set*() calls to update the OSD */
         void refresh();
 
         static const int MARGIN = 35;
-        
+
         QString     m_appName;
         int         m_duration;
-        QTimer      *timer;
-        QTimer      *timerMin;
+        QTimer      timer;
+        QTimer      timerMin;
         QPixmap     osdBuffer;
         QStringList textBuffer;
         QString     m_currentText;
         bool        m_shadow;
 
-        Position    m_position;
+        Alignment   m_alignment;
         int         m_screen;
-        QPoint      m_offset;
-        
+        uint        m_y;
+
         bool m_dirty; //if dirty we will be re-rendered before we are shown
 };
 
@@ -95,12 +94,12 @@ class OSDPreviewWidget : public OSDWidget
 {
     Q_OBJECT
 public:
-    OSDPreviewWidget( const QString &appName );
+    OSDPreviewWidget( const QString &appName, QWidget *parent = 0, const char *name = "osdpreview" );
 
     static QPoint m_previewOffset;
 
 signals:
-    void positionChanged( int screen, OSDWidget::Position alignment, int XOffset, int YOffset );
+    void positionChanged();
 
 protected:
     void mousePressEvent( QMouseEvent * );
@@ -108,7 +107,7 @@ protected:
     void mouseMoveEvent( QMouseEvent * );
 
 private:
-    bool m_dragging;
+    bool   m_dragging;
     QPoint m_dragOffset;
 };
 
@@ -121,8 +120,6 @@ class OSD : public OSDWidget
 Q_OBJECT
 public:
     OSD() : OSDWidget( "amaroK" ) {}
-    
-    static bool m_horizontalAutoCenter;
 
 public slots:
     void showTrack( const MetaBundle &bundle );
