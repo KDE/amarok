@@ -620,7 +620,7 @@ void Playlist::deleteSelectedFiles() //SLOT
                     i18n( "<p>You have selected %1 to be <b>irreversibly</b> deleted." ).
                         arg( count > 1 ?
                             i18n( "1 file", "<u>%n files</u>", count ) : //we must use this form of i18n()
-                            static_cast<PlaylistItem*>(currentItem())->url().prettyURL().prepend("'<i>").append("</i>'") ),
+                            static_cast<PlaylistItem*>(currentItem())->url().prettyURL().prepend("<i>'").append("'</i>") ),
                     QString::null,
                     i18n("&Delete") );
 
