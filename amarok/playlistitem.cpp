@@ -220,9 +220,12 @@ void PlaylistItem::paintCell( QPainter * p, const QColorGroup & cg, int column, 
 
     pPainterBuf.drawText( margin, 0, width - margin, height(), align, text( column ) );
 
-    QPen linePen( Qt::darkGray, 0, Qt::DotLine );
-    pPainterBuf.setPen( linePen );
-    pPainterBuf.drawLine( width - 1, 0, width - 1, height() - 1 );
+    if ( listView() && QString( listView()->name() ) == "PlaylistWidget" )
+    {
+        QPen linePen( Qt::darkGray, 0, Qt::DotLine );
+        pPainterBuf.setPen( linePen );
+        pPainterBuf.drawLine( width - 1, 0, width - 1, height() - 1 );
+    }
 
     pPainterBuf.end();
     p->drawPixmap( 0, 0, *pBufPixmap );

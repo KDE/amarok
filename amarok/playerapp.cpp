@@ -1228,11 +1228,6 @@ void PlayerApp::slotVolumeChanged( int value )
 
 void PlayerApp::slotMainTimer()
 {
-//     if ( m_optReadMetaInfo )
-//     {
-//         m_pBrowserWin->m_pPlaylistWidget->fetchMetaInfo();
-//     }
-
     if ( m_pPlayerWidget->isVisible() )
     {
         if ( m_optTimeDisplayRemaining )

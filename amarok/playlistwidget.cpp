@@ -65,7 +65,6 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) : KListView(
     connect( header(), SIGNAL( clicked( int ) ), this, SLOT( slotHeaderClicked( int ) ) );
 
     setCurrentTrack( NULL );
-    m_pCurrentMeta = NULL;
 
     m_GlowCount = 100;
     m_GlowAdd = 5;
@@ -74,10 +73,6 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) : KListView(
     m_GlowTimer = new QTimer( this );
     connect( m_GlowTimer, SIGNAL( timeout() ), this, SLOT( slotGlowTimer() ) );
     m_GlowTimer->start( 50 );
-
-    m_pTagTimer = new QTimer( this );
-    connect( m_pTagTimer, SIGNAL( timeout() ), this, SLOT( slotTagTimer() ) );
-    m_pTagTimer->start( 150 );
 
     m_pDirLister = new KDirLister();
     m_pDirLister->setAutoUpdate( false );
@@ -273,16 +268,25 @@ void PlaylistWidget::focusInEvent( QFocusEvent *e )
 
 PlaylistItem* PlaylistWidget::addItem( PlaylistItem *after, KURL url )
 {
-    m_pCurrentMeta = static_cast<PlaylistItem*>( firstChild() );
+    PlaylistItem *pNewItem;
 
+// we're abusing *after as a flag. value 1 == append to list
     if ( ( unsigned long ) after == 1 )
     {
-        return new PlaylistItem( this, lastItem(), url );
+        pNewItem = new PlaylistItem( this, lastItem(), url );
     }
     else
     {
-        return new PlaylistItem( this, after, url );
+        pNewItem = new PlaylistItem( this, after, url );
     }
+
+    if ( pApp->m_optReadMetaInfo )
+    {
+        pNewItem->readMetaInfo();
+        pNewItem->setMetaTitle();
+    }
+
+    return pNewItem;
 }
 
 
@@ -310,24 +314,6 @@ void PlaylistWidget::slotGlowTimer()
         item->setGlowCol( m_GlowColor.light( m_GlowCount ) );
         repaintItem( item );
         m_GlowCount += m_GlowAdd;
-    }
-}
-
-
-void PlaylistWidget::slotTagTimer()
-{
-    if ( pApp->m_optReadMetaInfo )
-    {
-        if ( m_pCurrentMeta != NULL )
-        {
-            if ( !m_pCurrentMeta->hasMetaInfo() )
-            {
-                m_pCurrentMeta->readMetaInfo();
-                m_pCurrentMeta->setMetaTitle();
-            }
-
-            m_pCurrentMeta = static_cast<PlaylistItem*>( m_pCurrentMeta->nextSibling() );
-        }
     }
 }
 

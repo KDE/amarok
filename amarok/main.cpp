@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "playerapp.h"
 
 #include <qcstring.h>
@@ -25,7 +24,6 @@
 #include <kuniqueapplication.h>
 #include <kdebug.h>
 #include <kurl.h>
-
 
 PlayerApp *pApp;
 
@@ -66,17 +64,6 @@ int main( int argc, char *argv[] )
     {
       app.restore();
     }
-
-    //     if (app.isRestored())
-    //     {
-    //         RESTORE(PlayerApp);
-    //     }
-    //     else
-    //     {
-    //        PlayerApp *pPlayerApp = new PlayerApp();
-    //        app.setMainWidget( pPlayerApp );
-    //        pPlayerApp->show();
-    //     }
 
     return app.exec();
 }

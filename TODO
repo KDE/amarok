@@ -18,6 +18,10 @@ SHORT-TERM:
 
 MID-TERM:
 
+    * add: "undo" button to undo changes in playlist
+
+    * add: "random" play (as opposed to shuffle..)
+
     * honor KDE single/double-click setting in BrowserWin
 
     * add: generate text or html document from playlist entries

@@ -58,7 +58,6 @@ class PlaylistWidget : public KListView
 
     public slots:
         void slotGlowTimer();
-        void slotTagTimer();
         void slotSetRecursive();
         void slotTextChanged( const QString &str );
         void slotHeaderClicked( int section );
@@ -86,6 +85,5 @@ class PlaylistWidget : public KListView
         int m_GlowCount, m_GlowAdd;
         QColor m_GlowColor;
         QListViewItem* m_pCurrentTrack;
-        PlaylistItem *m_pCurrentMeta;
 };
 #endif
