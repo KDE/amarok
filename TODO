@@ -4,31 +4,25 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
-    * fix: <mxcl> GroupBoxes can't have check boxes with Qt 3.1, so before next release do some #ifdefs to surround that code and hope nobody gets too pissed about it
+    * fix: crash when pressing RMB on player while proxy is connecting
+    
+    * fix: <mxcl> GroupBoxes can't have check boxes with Qt 3.1, so before next release do
+           some #ifdefs to surround that code and hope nobody gets too pissed about it
+    
     * fix: writePathEntry is a KDE 3.1.3 function, which is perhaps too recent for the 0.7.1 release
 
-    * fix: <mxcl>when you clear and undo it loses selection and then stops, need a search for current item in playlist function
+    * fix: <mxcl>when you clear and undo it loses selection and then stops, need a search
+            for current item in playlist function
 
     * fix: <mxcl>pause vis/anim timers when hide/show main widget as a courtesy to our users
 
-    * add: history to add dialog, or implement better system for adding urls etc.
-
-    * add: <mxcl> more KTips, better KTips, somehow use the "Did you know" tip dialog (eg kmail, gideon, etc.)
-
-    * fix: <mxcl>dialog boxes show behind the playlist (KDE 3.1), with no amarok.rc, playlist covers main widget on first start!
-
-    * add: a "hide playlist when main widget is not active" option (?? comments please: )
-
-    * add: "show playlist" to the right click menu, redundant but necessary
+    * fix: <mxcl>dialog boxes show behind the playlist (KDE 3.1), with no amarok.rc, playlist
+            covers main widget on first start! <markey> that sometimes also happens with 3.2
 
     * fix: <muesli> clean up the GUI [mxcl wants to help, we should perhaps branch amaroK while we work]
 
-    * add: <muesli> background chooser
-
-    * add: <muesli> add OSD support (permanent display or just on events like a song switch)
-
     * fix: <grue> with focus-follows-mouse, both player window and playlist
-      rise to foreground when you point on the player <mxcl> should now be fixed, please check
+           rise to foreground when you point on the player <mxcl> should now be fixed, please check
 
     * fix: <grue> when adding files from commandline they get sorted in reversed order
 
@@ -37,49 +31,49 @@ SHORT-TERM:
     * fix: opening hidden directories is impossible in filebrowser
 
     * fix: <berkus> make sure the expandbutton doesn't fire events when
-      it has had its stack expanded (behaviour a-la Winamp Classic) (?)
+           it has had its stack expanded (behaviour a-la Winamp Classic) (?)
 
     * fix: app freezing when renaming the file that's currently playing
 
     * fix: sample looping (annoying noise) @ end of track or pause (fixed?)
 
     * fix: redirected URLs do not work
+                    
+    * add: history to add dialog, or implement better system for adding urls etc.
 
+    * add: <mxcl> more KTips, better KTips, somehow use the "Did you know" tip dialog (eg kmail, gideon, etc.)
+    
+    * add: a "hide playlist when main widget is not active" option (?? comments please: )
+
+    * add: "show playlist" to the right click menu, redundant but necessary
+
+    * add: <muesli> background chooser
+
+    * add: <muesli> add OSD support (permanent display or just on events like a song switch)
+    
     * add: extend keyboard shortcuts [<mxcl> show playlist, also I'd say do this with actions as it's easiest]
 
     * add: extend documentation
 
     * add: show not only total track length but also remaining time in
-      playerwidget
+           playerwidget
 
 
 MID-TERM:
 
-    * change: can we make all buttons into actions? if we can, we could use setState(), a global
-      actionCollection and save plenty of LOC. I see problems with the play/stop/etc buttons though.
-
-    * change: pre 1.0, big cleanup to reduce mem consumption (I dunno if we use a lot or not, but
-      this is a good goal anyway!)
-
-    * change: pre 1.0, plan, cleanup and future-proof settings file keys. Will almost certainly
-      mean that people will lose their settings, oh well, best to do it for the 1.0 release.
-
+    * fix: honor KDE single/double-click setting in BrowserWin
+    
     * add: <muesli> reading metadata on the fly (read for displayed playlist-items or onClick)
 
     * add: "add item"-dialog should support multiple selections
 
     * add: playmode indication button in main widget (repeat track/pl/shuffle), clickable
 
-    * fix: honor KDE single/double-click setting in BrowserWin
-
     * add: display warning when artsd is run w/o realtime
 
     * add: background pseudo-transparency for playlist window
 
     * add: better cleanup at program exit; delete all new'ed objects
-
-    * extend: ability to get currently playing title to clipboard, or writing
-      info in some file or some other easy way to get this info..
 
     * add: function for adding all files in current dir to playlist
 
@@ -91,32 +85,45 @@ MID-TERM:
 
     * add: display type of media next to bitrate
 
-    * change: select tracks on mouseup, not mousedown
-
     * add: save/load arts effects on close/startup automatically
+    
+    * chg: can we make all buttons into actions? if we can, we could use setState(), a global
+           actionCollection and save plenty of LOC. I see problems with the play/stop/etc
+           buttons though.
 
+    * chg: pre 1.0, big cleanup to reduce mem consumption (I dunno if we use a lot or not, but
+           this is a good goal anyway!)
+
+    * chg: pre 1.0, plan, cleanup and future-proof settings file keys. Will almost certainly
+           mean that people will lose their settings, oh well, best to do it for the 1.0 release.
+
+    * chg: ability to get currently playing title to clipboard, or writing
+           info in some file or some other easy way to get this info..
+
+    * chg: select tracks on mouseup, not mousedown
+                      
 
 LONG-TERM:
 
-    * add: generate text or html document from playlist entries
-
     * fix: polish and finish i18n() stuff
 
+    * add: generate text or html document from playlist entries
+    
     * add: <berkus> add smooth fade outs on stop
 
-    * add: make PlayerWidget shadeable (like XMMS) [<mxcl> doesn't the systray provide this functionality already?]
-      [<berkus> no it doesn't, double click the winamp/xmms window and see for yourself]
+    * add: make PlayerWidget shadeable (like XMMS) [<mxcl> doesn't the systray provide this functionality
+           already?] [<berkus> no it doesn't, double click the winamp/xmms window and see for yourself]
 
-    * display some information about current track in browserwin
+    * add: display some information about current track in browserwin
 
-    * support for compressed archives / tarballs
+    * add: support for compressed archives / tarballs
 
     * add visualisations
 
-    * <mxcl> implement beat detection (thread?), interface should glow/move to
-      the beat, visualisations have access to beat/bpm info
+    * add: <mxcl> implement beat detection (thread?), interface should glow/move to
+           the beat, visualisations have access to beat/bpm info
 
-    * add pitch-slider (?) [<berkus> should be in separate "Effects Control" panel]
+    * add: pitch-slider (?) [<berkus> should be in separate "Effects Control" panel]
 
     * add: aRts info widget, showing all available codecs and maybe more
 
