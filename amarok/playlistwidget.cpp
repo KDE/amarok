@@ -374,7 +374,6 @@ void PlaylistWidget::shuffle() //SLOT
 {
     QPtrList<QListViewItem> list;
     KRandomSequence seq( (long)KApplication::random() );
-    seq.randomize( &list );
 
     setSorting( NO_SORT );
 
@@ -392,6 +391,9 @@ void PlaylistWidget::shuffle() //SLOT
     }
 
     //shuffle the rest
+    seq.randomize( &list );
+
+    //reinsert rest
     for( uint i = 0; i < list.count(); ++i )
     {
         insertItem( list.at( i ) );
