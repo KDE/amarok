@@ -50,7 +50,7 @@ PluginManager::query( const QString& constraint )
 {
     // Add versioning constraint
     QString
-    str  = "[X-KDE-amaroK-framework-version] >= ";
+    str  = "[X-KDE-amaroK-framework-version] == ";
     str += QString::number( FrameworkVersion );
     str += " and ";
     str += constraint;
