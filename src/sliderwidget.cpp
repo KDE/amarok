@@ -178,11 +178,15 @@ void amaroK::PlaylistSlider::mousePressEvent( QMouseEvent* e )
 }
 
 
-void amaroK::PlaylistSlider::wheelEvent( QWheelEvent * e )
+void amaroK::PlaylistSlider::wheelEvent( QWheelEvent* e )
 {
-    // TimerSlider generates a sliderMoved event when using wheel. The statusbar handles
+    // PlaylistSlider generates a sliderMoved event when using wheel. The statusbar handles
     // the 'scroll' by seeking in the track.
-    QSlider::wheelEvent( e );
+    
+    // Invert delta --> Moving wheel forwards seeks forward.
+    QWheelEvent event( e->pos(), ( -1 ) * e->delta(), e->state(), e->orientation() );
+    
+    QSlider::wheelEvent( &event );
     emit sliderMoved( value() );
 }
 

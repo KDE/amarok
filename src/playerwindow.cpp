@@ -440,8 +440,8 @@ bool PlayerWidget::event( QEvent *e )
             else
             {
                 EngineBase *engine = EngineController::engine();
-                int seek = engine->position() - (e->delta() / 120 ) * 10000; // 10 seconds
-                engine->seek( seek < 0 ? 0 : seek  );
+                int seek = engine->position() + ( e->delta() / 120 ) * 10000; // 10 seconds
+                engine->seek( seek < 0 ? 0 : seek );
             }
         }
 

@@ -225,8 +225,8 @@ inline void StatusBar::sliderMoved( int value )
     if ( m_sliderPressed )
         drawTimeDisplay( static_cast<long>( value ) );
     else
-	//that's the case of scrolling with the mouse wheel
-	EngineController::engine()->seek( value * 1000 );
+    //that's the case of scrolling with the mouse wheel
+    EngineController::engine()->seek( value * 1000 );
 }
 
 
