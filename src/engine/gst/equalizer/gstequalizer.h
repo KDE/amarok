@@ -10,50 +10,64 @@
 
 G_BEGIN_DECLS
 
-#define GST_TYPE_STREAMSRC \
-  (gst_equalizer_get_type())
-#define GST_STREAMSRC(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_STREAMSRC,GstEqualizer))
-#define GST_STREAMSRC_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_STREAMSRC,GstEqualizerClass))
-#define GST_IS_STREAMSRC(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_STREAMSRC))
-#define GST_IS_STREAMSRC_CLASS(obj) \
-  (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_STREAMSRC))
+#define BAND_NUM 10
+#define EQ_MAX_BANDS 10
+#define EQ_CHANNELS 2
 
+#define GST_TYPE_EQUALIZER \
+  (gst_equalizer_get_type())
+#define GST_EQUALIZER(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_EQUALIZER,GstEqualizer))
+#define GST_EQUALIZER_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_EQUALIZER,GstEqualizerClass))
+#define GST_IS_EQUALIZER(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_EQUALIZER))
+#define GST_IS_EQUALIZER_CLASS(obj) \
+  (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_EQUALIZER))
 
 typedef struct _GstEqualizer GstEqualizer;
 typedef struct _GstEqualizerClass GstEqualizerClass;
 
+// Floating point
+typedef struct
+{
+    float beta;
+    float alpha;
+    float gamma;
+} sIIRCoefficients;
+
+/* Coefficient history for the IIR filter */
+typedef struct
+{
+    float x[3]; /* x[n], x[n-1], x[n-2] */
+    float y[3]; /* y[n], y[n-1], y[n-2] */
+} sXYData;
+
+
 struct _GstEqualizer
 {
     GstElement element;
-    /* pads */
     GstPad *srcpad;
 
     int band_count;
+    int rate;
 
     // Properties
     glong blocksize; /* Bytes per read */
     guint64 timeout;  /* Read timeout, in nanoseconds */
 
+    // Gain for each band
+    // values should be between -0.2 and 1.0
     float gain[EQ_MAX_BANDS][EQ_CHANNELS] __attribute__((aligned));
+
+    // Volume gain
+    // values should be between 0.0 and 1.0
     float preamp[EQ_CHANNELS] __attribute__((aligned));
 
-    /* Floating point */
-    typedef struct
-    {
-        float beta;
-        float alpha;
-        float gamma;
-    } sIIRCoefficients;
+    // Coefficients
+    sIIRCoefficients* iir_cf;
 
-    /* Coefficient history for the IIR filter */
-    typedef struct
-    {
-        float x[3]; /* x[n], x[n-1], x[n-2] */
-        float y[3]; /* y[n], y[n-1], y[n-2] */
-    } sXYData;
+    sXYData data_history[EQ_MAX_BANDS][EQ_CHANNELS] __attribute__((aligned));
 };
 
 struct _GstEqualizerClass
@@ -72,9 +86,9 @@ static void gst_equalizer_get_property ( GObject * object, guint prop_id,
 
 static GstElementStateReturn gst_equalizer_change_state (GstElement* element);
 
-static void clean_history();
+static void clean_history( GstEqualizer* obj );
 static void set_filters( GstEqualizer* obj, gint bands, gint sfreq );
-static GstData *gst_equalizer_chain ( GstPad* pad, GstData* data );
+static void gst_equalizer_chain ( GstPad* pad, GstData* data );
 
 GType gst_equalizer_get_type( void );
 GstEqualizer* gst_equalizer_new ();

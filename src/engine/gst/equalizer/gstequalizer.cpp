@@ -9,16 +9,11 @@
 #include "iir_cf.h"         // IIR filter coefficients
 
 #include <string.h>
-
 #include <kdebug.h>
 
 
 GST_DEBUG_CATEGORY_STATIC ( gst_equalizer_debug );
 #define GST_CAT_DEFAULT gst_equalizer_debug
-
-#define BAND_NUM 10
-#define EQ_MAX_BANDS 10
-#define EQ_CHANNELS 2
 
 /* signals and args */
 enum {
@@ -35,9 +30,7 @@ GstElementDetails gst_equalizer_details =
                           (gchar*) "Parametric Equalizer",
                           (gchar*) "Mark Kretschmann <markey@web.de>" );
 
-static guint gst_equalizer_signals[ LAST_SIGNAL ] = { 0 };
-
-static sXYData data_history[EQ_MAX_BANDS][EQ_CHANNELS] __attribute__((aligned));
+// static guint gst_equalizer_signals[ LAST_SIGNAL ] = { 0 };
 
 #define _do_init(bla) \
     GST_DEBUG_CATEGORY_INIT (gst_equalizer_debug, "equalizer", 0, "equalizer element");
@@ -81,14 +74,14 @@ gst_equalizer_class_init ( GstEqualizerClass * klass )
 
 
 static void
-gst_equalizer_init ( GstEqualizer * streamsrc )
+gst_equalizer_init ( GstEqualizer* obj )
 {
     kdDebug() << k_funcinfo << endl;
 
-    streamsrc->srcpad = gst_pad_new ( "src", GST_PAD_SRC );
+    obj->srcpad = gst_pad_new ( "src", GST_PAD_SRC );
 
-    gst_pad_set_get_function ( streamsrc->srcpad, gst_equalizer_get );
-    gst_element_add_pad ( GST_ELEMENT ( streamsrc ), streamsrc->srcpad );
+    gst_pad_set_chain_function ( obj->srcpad, gst_equalizer_chain );
+    gst_element_add_pad ( GST_ELEMENT ( obj ), obj->srcpad );
 
     // Properties
 //     streamsrc->blocksize = DEFAULT_BLOCKSIZE;
@@ -163,47 +156,47 @@ gst_equalizer_change_state (GstElement * element)
 }
 
 
-static void clean_history()
+static void clean_history( GstEqualizer* obj )
 {
     /* Zero the history arrays */
-    bzero(data_history, sizeof(sXYData) * EQ_MAX_BANDS * EQ_CHANNELS);
+    bzero(obj->data_history, sizeof(sXYData) * EQ_MAX_BANDS * EQ_CHANNELS);
 }
 
 
 static void
 set_filters( GstEqualizer* obj, gint bands, gint sfreq )
 {
-    rate = sfreq;
-    switch(rate)
+    obj->rate = sfreq;
+    switch(obj->rate)
     {
-        case 11025: iir_cf = iir_cf10_11k_11025;
+        case 11025: obj->iir_cf = iir_cf10_11k_11025;
                     obj->band_count = 10;
         break;
-        case 22050: iir_cf = iir_cf10_22k_22050;
+        case 22050: obj->iir_cf = iir_cf10_22k_22050;
                     obj->band_count = 10;
         break;
         case 48000:
             obj->band_count = BAND_NUM;
             switch( bands )
             {
-                case 31: iir_cf = iir_cf31_48000; break;
-                case 25: iir_cf = iir_cf25_48000; break;
-                case 15: iir_cf = iir_cf15_48000; break;
+                case 31: obj->iir_cf = iir_cf31_48000; break;
+                case 25: obj->iir_cf = iir_cf25_48000; break;
+                case 15: obj->iir_cf = iir_cf15_48000; break;
                 default:
-                         iir_cf = iir_cf10_48000;
+                         obj->iir_cf = iir_cf10_48000;
                 break;
             }
         break;
         default:
             obj->band_count = BAND_NUM;
-            rate = 44100;
+            obj->rate = 44100;
             switch( bands )
             {
-                case 31: iir_cf = iir_cf31_44100; break;
-                case 25: iir_cf = iir_cf25_44100; break;
-                case 15: iir_cf = iir_cf15_44100; break;
+                case 31: obj->iir_cf = iir_cf31_44100; break;
+                case 25: obj->iir_cf = iir_cf25_44100; break;
+                case 15: obj->iir_cf = iir_cf15_44100; break;
                 default:
-                         iir_cf = iir_cf10_44100;
+                         obj->iir_cf = iir_cf10_44100;
                 break;
             }
         break;
@@ -211,21 +204,21 @@ set_filters( GstEqualizer* obj, gint bands, gint sfreq )
 }
 
 
-static GstData*
+void
 gst_equalizer_chain ( GstPad* pad, GstData* data_in )
 {
 //__inline__ int iir(gpointer * d, gint length, gint srate, gint nch)
 
-    g_return_val_if_fail( pad != NULL, NULL );
+    g_return_if_fail( pad != NULL );
 
     GstEqualizer* obj = GST_EQUALIZER ( GST_OBJECT_PARENT ( pad ) );
     GstBuffer* buf = GST_BUFFER( data_in );
-    gpointer* d = GST_BUFFER_DATA( buf );
+    guint8* d = GST_BUFFER_DATA( buf );
     gint length = GST_BUFFER_SIZE( buf );
     gint srate = 41000;
     gint nch = 2;
 
-    gint16 *data = (gint16 *) *d;
+    gint16 *data = (gint16*) *d;
     /* Indexes for the history arrays
      * These have to be kept between calls to this function
      * hence they are static */
@@ -236,10 +229,10 @@ gst_equalizer_chain ( GstPad* pad, GstData* data_in )
     float out[EQ_CHANNELS], pcm[EQ_CHANNELS];
 
     // Load the correct filter table according to the sampling rate if needed
-    if (srate != rate)
+    if (srate != obj->rate)
     {
         set_filters( obj, BAND_NUM, srate );
-        clean_history();
+        clean_history( obj );
     }
 
     /**
@@ -263,30 +256,30 @@ gst_equalizer_chain ( GstPad* pad, GstData* data_in )
         {
             pcm[channel] = data[index+channel];
             /* Preamp gain */
-            pcm[channel] *= preamp[channel];
+            pcm[channel] *= obj->preamp[channel];
 
             out[channel] = 0.;
             /* For each band */
             for (band = 0; band < obj->band_count; band++)
             {
                 /* Store Xi(n) */
-                data_history[band][channel].x[i] = pcm[channel];
+                obj->data_history[band][channel].x[i] = pcm[channel];
                 /* Calculate and store Yi(n) */
-                data_history[band][channel].y[i] =
+                obj->data_history[band][channel].y[i] =
                     (
                     /* = alpha * [x(n)-x(n-2)] */
-                    iir_cf[band].alpha * ( data_history[band][channel].x[i]
-                    -  data_history[band][channel].x[k])
+                    obj->iir_cf[band].alpha * ( obj->data_history[band][channel].x[i]
+                    -  obj->data_history[band][channel].x[k])
                     /* + gamma * y(n-1) */
-                    + iir_cf[band].gamma * data_history[band][channel].y[j]
+                    + obj->iir_cf[band].gamma * obj->data_history[band][channel].y[j]
                     /* - beta * y(n-2) */
-                    - iir_cf[band].beta * data_history[band][channel].y[k]
+                    - obj->iir_cf[band].beta * obj->data_history[band][channel].y[k]
                     );
                 /*
                  * The multiplication by 2.0 was 'moved' into the coefficients to save
                  * CPU cycles here */
                 /* Apply the gain  */
-                out[channel] +=  data_history[band][channel].y[i]*gain[band][channel]; // * 2.0;
+                out[channel] +=  obj->data_history[band][channel].y[i]*obj->gain[band][channel]; // * 2.0;
             } /* For each band */
 
             /* Volume stuff
@@ -329,7 +322,7 @@ gst_equalizer_new ()
 
 //     object->m_buffering = buffering;
 
-    return object;
+    return obj;
 }
 
 

@@ -2,7 +2,8 @@ kde_module_LTLIBRARIES = \
     libamarok_gstengine_plugin.la
 
 SUBDIRS = \
-    config
+    config \
+    equalizer
 
 INCLUDES = \
     -I$(top_srcdir)/amarok/src/engine \
