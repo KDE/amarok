@@ -6,26 +6,21 @@ SHORT-TERM:
 
     * fix: <mxcl> reimplement ask recursively on drop operations to playlist
 
-    * fix: <mxcl> you can't move playlist entries around with sorting on (you need to disable it on drag drop or something)
-
-    * fix: <mxcl> GroupBoxes can't have check boxes with Qt 3.1, so before next release do some #ifdefs to surround that code and hope nobody gets too pissed about it
-
-    * fix: crash when pressing RMB on player while proxy is connecting
-
-    * fix: sample looping (annoying noise) @ end of track or pause (fixed? <berkus> NOT FIXED!)
-
-    * fix: playobject config GUI seems totally b0rked on 3.2
+    * fix: <mxcl> you can't move playlist entries around with sorting on (you need to disable it
+           on drag drop or something) <markey> arrgs.. just noticed that you changed sorting logic
+           on PlaylistWidget rev. 1.36. why? The exact reason for my code was to change sorting from
+           mode into a command (==not active all the time), so d'n'd works..
 
     * fix: <mxcl> GroupBoxes can't have check boxes with Qt 3.1, so before next release do
            some #ifdefs to surround that code and hope nobody gets too pissed about it
 
+    * fix: playobject config GUI seems totally b0rked on 3.2
+
     * fix: writePathEntry is a KDE 3.1.3 function, which is perhaps too recent for the 0.7.1 release
 
-    * fix: <mxcl>pause vis/anim timers when hide/show main widget as a courtesy to our users
+    * fix: <mxcl> pause vis/anim timers when hide/show main widget as a courtesy to our users
 
-    * add: a "hide playlist when main widget is not active" option (?? comments please: )
-
-    * fix: <mxcl>dialog boxes show behind the playlist (KDE 3.1), with no amarok.rc, playlist
+    * fix: <mxcl> dialog boxes show behind the playlist (KDE 3.1), with no amarok.rc, playlist
             covers main widget on first start! <markey> that sometimes also happens with 3.2
 
     * fix: <muesli> clean up the GUI [mxcl wants to help, we should perhaps branch amaroK while we work]
@@ -57,8 +52,7 @@ SHORT-TERM:
 
     * add: extend documentation
 
-    * add: show not only total track length but also remaining time in
-           playerwidget
+    * add: show not only total track length but also remaining time in playerwidget
 
 
 MID-TERM:
