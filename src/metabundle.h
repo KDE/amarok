@@ -12,7 +12,7 @@ class PlaylistItem;
 
 namespace TagLib { class AudioProperties; class Tag; }
 
-#define PRETTY_TITLE_CACHE
+//#define PRETTY_TITLE_CACHE
 
 /*
  * This class is not very complete, it fits our needs as they stand currently

@@ -87,19 +87,7 @@ MetaBundle::init( TagLib::AudioProperties *ap )
 QString
 MetaBundle::prettyTitle() const
 {
-    if( !m_artist.isEmpty() )
-    {
-        QString
-        s  = m_artist;
-        s += " - ";
-        s += m_title;
-
-        return s;
-    }
-    else return m_title;
-
-
-    //FIXME fix title/artist ordering and insert in place of above
+    //NOTE this gets regressed often, please be careful!
 
     #ifdef PRETTY_TITLE_CACHE
     if( m_prettyTitleCache.isEmpty() )
@@ -127,12 +115,12 @@ MetaBundle::prettyTitle() const
 }
 
 QString
-MetaBundle::prettyTitle( QString fileName ) //static
+MetaBundle::prettyTitle( QString filename ) //static
 {
-    QString s;
+    QString &s = filename; //just so the code is more readable
 
     //remove file extension, s/_/ /g and decode %2f-like sequences
-    s = fileName.left( s.findRev( '.' ) ).replace( '_', ' ' );
+    s = s.left( s.findRev( '.' ) ).replace( '_', ' ' );
     s = KURL::decode_string(s);
 
     return s;

@@ -22,7 +22,7 @@ class Playlist;
 class PlaylistItem : public KListViewItem
 {
     public:
-        PlaylistItem( Playlist*, QListViewItem*, const KURL&, const QString& = "", const int length = 0 );
+        PlaylistItem( Playlist*, QListViewItem*, const KURL&, const QString& = QString::null, const int length = 0 );
         PlaylistItem( Playlist*, QListViewItem*, const KURL&, const QDomNode& );
 
         QString exactText( int col ) const { return KListViewItem::text( col ); }
