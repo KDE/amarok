@@ -6,7 +6,9 @@ TODO-list for amaroK
            #3 being the highest available (take this one for your next bug and increase here)
 
                       
-SHORT-TERM:
+SHORT-TERM (URGENT):
+
+    * fix: crash when pressing cancel in "Add item" dialog
 
     * fix: clicking tray icon to hide does not work (KDE 3.2 Nov 29 HEAD). Either KDE or amaroK
            fault (see #1 also, might be related) #2
@@ -16,6 +18,7 @@ SHORT-TERM:
            I know what to do about this.
 
     * fix: <mxcl> reimplement ask recursively on drop operations to playlist
+           <markey> replace with "add all media in current directory"
 
     * fix: <mxcl> GroupBoxes can't have check boxes with Qt 3.1, so before next release do
            some #ifdefs to surround that code and hope nobody gets too pissed about it -->mxcl
@@ -23,8 +26,6 @@ SHORT-TERM:
     * fix: playobject config GUI seems totally b0rked on 3.2 -->markey
 
     * fix: writePathEntry is a KDE 3.1.3 function, which is perhaps too recent for the 0.7.1 release
-
-    * fix: pause vis/anim timers when hide/show main widget as a courtesy to our users -->mxcl
 
     * fix: <mxcl> dialog boxes show behind the playlist (KDE 3.1), with no amarok.rc, playlist
       #1    covers main widget on first start! <markey> that sometimes also happens with 3.2
@@ -47,29 +48,31 @@ SHORT-TERM:
 
     * fix: redirected URLs do not work
 
-    * add: history to add dialog, or implement better system for adding urls etc.
-
-    * add: more KTips, better KTips, somehow use the "Did you know" tip dialog (eg kmail, gideon, etc.) -->mxcl
-
-    * add: "show playlist" to the right click menu, redundant but necessary
-
-    * add: <muesli> background chooser
-
-    * add: <muesli> add OSD support (permanent display or just on events like a song switch)
-
     * add: extend keyboard shortcuts [<mxcl> show playlist, also I'd say do this with actions as it's easiest]
-
-    * add: extend documentation
-
-    * add: show not only total track length but also remaining time in playerwidget
 
 
 MID-TERM:
 
-    * add: column "length" in playlist
+    * fix: pause vis/anim timers when hide/show main widget as a courtesy to our users -->mxcl
 
     * fix: honor KDE single/double-click setting in BrowserWin
+
+    * add: "show playlist" to the right click menu, redundant but necessary
     
+    * add: <muesli> background chooser
+
+    * add: <muesli> add OSD support (permanent display or just on events like a song switch)
+    
+    * add: show not only total track length but also remaining time in playerwidget
+    
+    * add: more KTips, better KTips, somehow use the "Did you know" tip dialog (eg kmail, gideon, etc.) -->mxcl
+
+    * add: extend documentation
+
+    * add: history to add dialog, or implement better system for adding urls etc.
+
+    * add: column "length" in playlist
+
     * add: <muesli> reading metadata on the fly (read for displayed playlist-items or onClick)
 
     * add: "add item"-dialog should support multiple selections
