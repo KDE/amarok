@@ -8,6 +8,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
  
+  ADD 152 <madp8>  Make "Playlists" area in Playlist Browser inherit color scheme i.e. "amaroK" scheme.
+  
   FIX 151 <markey> When rescanning dirty folders, CollectionBrowser only displays the folder which was modified.
                    The other folders are somehow forgotten.
 
@@ -21,8 +23,6 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
- 
- ADD 152<madpenguin8> Make "Playlists" area in Playlist Browser inherit color scheme i.e. "amaroK" scheme.
 
   ADD 148 <markey> AudioCD support for gst engine (cdparanoia ! *sink). -->markey
 
