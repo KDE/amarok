@@ -273,10 +273,11 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
     #define item static_cast<CoverViewItem*>(item)
     if( !item ) return;
     
-    enum Id { FETCH, DELETE };
+    enum Id { SHOW, FETCH, DELETE };
     
     KPopupMenu menu( this );
-    menu.insertItem( i18n("Fetch cover"), FETCH );
+    menu.insertItem( SmallIcon("viewmag"), i18n("Show fullsize"), SHOW );
+    menu.insertItem( SmallIcon("filesave"), i18n("Fetch cover"), FETCH );
     menu.insertSeparator();
     menu.insertItem( SmallIcon("editdelete"), i18n("Delete cover"), DELETE );
     
@@ -284,6 +285,10 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
         menu.setItemEnabled( false, DELETE);
         
     switch( menu.exec(p) ) {
+        case SHOW:
+            coverItemDoubleClicked( item );
+            break;
+                    
         case FETCH:
             m_db->fetchCover( this, item->artist() + " - " + item->album(), false );
             break;
