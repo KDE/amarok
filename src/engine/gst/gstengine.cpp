@@ -71,7 +71,7 @@ void
 GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
 {
     int channels = 2;  //2 == default, if we cannot determine the value from gst
-    GstCaps* caps = gst_pad_get_caps( gst_element_get_pad( self->m_pSpider, "src_0" ) );
+    GstCaps* caps = gst_pad_get_caps( gst_element_get_pad( self->m_spider, "src_0" ) );
 
     for ( int i = 0; i < gst_caps_get_size( caps ); i++ ) {
         GstStructure* structure = gst_caps_get_structure( caps, i );
@@ -150,7 +150,7 @@ GstEngine::error_cb( GstElement* /*element*/, GstElement* /*source*/, GError* er
 
 GstEngine::GstEngine()
         : EngineBase()
-        , m_pThread( NULL )
+        , m_thread( NULL )
         , m_scopeBufIndex( 0 )
         , m_streamBufIn( 0 )
         , m_streamBufOut( 0 )
@@ -250,7 +250,7 @@ GstEngine::position() const
     GstFormat fmt = GST_FORMAT_TIME;
     //value will hold the current time position in nanoseconds
     gint64 value;
-    gst_element_query( m_pSpider, GST_QUERY_POSITION, &fmt, &value );
+    gst_element_query( m_spider, GST_QUERY_POSITION, &fmt, &value );
 
     return ( long ) ( value / GST_MSECOND ); // ns -> ms
 }
@@ -261,7 +261,7 @@ GstEngine::state() const
 {
     if ( !m_pipelineFilled ) return Empty;
 
-    switch ( gst_element_get_state( GST_ELEMENT( m_pThread ) ) ) {
+    switch ( gst_element_get_state( GST_ELEMENT( m_thread ) ) ) {
     case GST_STATE_NULL:
         return Empty;
     case GST_STATE_READY:
@@ -309,8 +309,8 @@ GstEngine::play( const KURL& url )             //SLOT
     kdDebug() << "Sound output method: " << m_soundOutput << endl;
 
     /* create a new thread to hold the elements */
-    m_pThread = gst_thread_new ( "thread" );
-    m_pAudiosink = gst_element_factory_make( m_soundOutput.latin1(), "play_audio" );
+    m_thread = gst_thread_new ( "thread" );
+    m_audiosink = gst_element_factory_make( m_soundOutput.latin1(), "play_audio" );
 
 
     kdDebug() << "DefaultSoundDevice: " << ( ( m_defaultSoundDevice ) ? "true" : "false" ) << endl;
@@ -318,46 +318,46 @@ GstEngine::play( const KURL& url )             //SLOT
 
     /* setting device property for AudioSink*/
     if (!m_defaultSoundDevice && !m_soundDevice.isEmpty())
-        g_object_set(G_OBJECT (m_pAudiosink), "device", m_soundDevice.latin1(), NULL);
+        g_object_set(G_OBJECT (m_audiosink), "device", m_soundDevice.latin1(), NULL);
 
     /* create source */
     if ( url.isLocalFile() ) {
-        m_pFilesrc = gst_element_factory_make( "filesrc", "disk_source" );
+        m_filesrc = gst_element_factory_make( "filesrc", "disk_source" );
         //load track into filesrc
-        g_object_set( G_OBJECT( m_pFilesrc ), "location",
+        g_object_set( G_OBJECT( m_filesrc ), "location",
                       static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
     } else {
-        m_pFilesrc = gst_element_factory_make( "fakesrc", "disk_source" );
-        g_object_set( G_OBJECT( m_pFilesrc ), "signal-handoffs", true, NULL );
-        g_object_set( G_OBJECT( m_pFilesrc ), "sizetype", 2, NULL );
-        //         g_object_set( G_OBJECT( m_pFilesrc ), "sizemax", 2048, NULL );
-        g_signal_connect ( G_OBJECT( m_pFilesrc ), "handoff",
-                           G_CALLBACK( handoff_fakesrc_cb ), m_pThread );
+        m_filesrc = gst_element_factory_make( "fakesrc", "disk_source" );
+        g_object_set( G_OBJECT( m_filesrc ), "signal-handoffs", true, NULL );
+        g_object_set( G_OBJECT( m_filesrc ), "sizetype", 2, NULL );
+        //         g_object_set( G_OBJECT( m_filesrc ), "sizemax", 2048, NULL );
+        g_signal_connect ( G_OBJECT( m_filesrc ), "handoff",
+                           G_CALLBACK( handoff_fakesrc_cb ), m_thread );
     }
 
-    m_pSpider = gst_element_factory_make( "spider", "spider" );
+    m_spider = gst_element_factory_make( "spider", "spider" );
     /* and an audio sink */
-    m_pIdentity = gst_element_factory_make( "identity", "rawscope" );
-    m_pVolume = gst_element_factory_make( "volume", "volume" );
+    m_identity = gst_element_factory_make( "identity", "rawscope" );
+    m_volumeElement = gst_element_factory_make( "volume", "volume" );
 
-    m_pAudioconvert = gst_element_factory_make( "audioconvert", "audioconvert" );
-    m_pAudioscale = gst_element_factory_make( "audioscale", "audioscale" );
+    m_audioconvert = gst_element_factory_make( "audioconvert", "audioconvert" );
+    m_audioscale = gst_element_factory_make( "audioscale", "audioscale" );
 
-    g_signal_connect ( G_OBJECT( m_pIdentity ), "handoff",
-                       G_CALLBACK( handoff_cb ), m_pThread );
-    g_signal_connect ( G_OBJECT( m_pAudiosink ), "eos",
-                       G_CALLBACK( eos_cb ), m_pThread );
-    g_signal_connect ( G_OBJECT( m_pThread ), "error",
-                       G_CALLBACK ( error_cb ), m_pThread );
+    g_signal_connect ( G_OBJECT( m_identity ), "handoff",
+                       G_CALLBACK( handoff_cb ), m_thread );
+    g_signal_connect ( G_OBJECT( m_audiosink ), "eos",
+                       G_CALLBACK( eos_cb ), m_thread );
+    g_signal_connect ( G_OBJECT( m_thread ), "error",
+                       G_CALLBACK ( error_cb ), m_thread );
 
     /* add objects to the main pipeline */
-    gst_bin_add_many( GST_BIN( m_pThread ), m_pFilesrc, m_pSpider, m_pIdentity,
-                      m_pVolume, m_pAudioconvert, m_pAudioscale, m_pAudiosink, NULL );
+    gst_bin_add_many( GST_BIN( m_thread ), m_filesrc, m_spider, m_identity,
+                      m_volumeElement, m_audioconvert, m_audioscale, m_audiosink, NULL );
     /* link src to sink */
-    gst_element_link_many( m_pFilesrc, m_pSpider, m_pIdentity,
-                           m_pVolume, m_pAudioconvert, m_pAudioscale, m_pAudiosink, NULL );
+    gst_element_link_many( m_filesrc, m_spider, m_identity,
+                           m_volumeElement, m_audioconvert, m_audioscale, m_audiosink, NULL );
 
-    gst_element_set_state( GST_ELEMENT( m_pThread ), GST_STATE_READY );
+    gst_element_set_state( GST_ELEMENT( m_thread ), GST_STATE_READY );
     
     m_pipelineFilled = true;
     setVolume( volume() );
@@ -376,7 +376,7 @@ GstEngine::play()             //SLOT
     if ( !m_pipelineFilled ) return ;
 
     /* start playing */
-    gst_element_set_state( GST_ELEMENT( m_pThread ), GST_STATE_PLAYING );
+    gst_element_set_state( GST_ELEMENT( m_thread ), GST_STATE_PLAYING );
 }
 
 
@@ -387,7 +387,7 @@ GstEngine::stop()             //SLOT
     if ( !m_pipelineFilled ) return ;
 
     /* stop the thread */
-    gst_element_set_state ( m_pThread, GST_STATE_NULL );
+    gst_element_set_state ( m_thread, GST_STATE_NULL );
 }
 
 
@@ -397,7 +397,7 @@ GstEngine::pause()             //SLOT
     kdDebug() << k_funcinfo << endl;
     if ( !m_pipelineFilled ) return ;
 
-    gst_element_set_state( GST_ELEMENT( m_pThread ), GST_STATE_PAUSED );
+    gst_element_set_state( GST_ELEMENT( m_thread ), GST_STATE_PAUSED );
 }
 
 
@@ -413,7 +413,7 @@ GstEngine::seek( long ms )             //SLOT
                                                GST_SEEK_FLAG_FLUSH ),
                                                ms * GST_MSECOND );
 
-        gst_element_send_event( m_pAudiosink, event );
+        gst_element_send_event( m_audiosink, event );
     }
 }
 
@@ -426,10 +426,10 @@ GstEngine::setVolume( int percent )             //SLOT
     if ( isMixerHardware() ) {
         EngineBase::setVolumeHW( percent );
         if ( m_pipelineFilled )
-            g_object_set( G_OBJECT( m_pVolume ), "volume", 1.0, NULL );
+            g_object_set( G_OBJECT( m_volumeElement ), "volume", 1.0, NULL );
     } else {
         if ( m_pipelineFilled )
-            g_object_set( G_OBJECT( m_pVolume ), "volume", ( double ) percent / 100.0, NULL );
+            g_object_set( G_OBJECT( m_volumeElement ), "volume", ( double ) percent / 100.0, NULL );
     }
 
 }
@@ -486,7 +486,7 @@ GstEngine::stopAtEnd()             //SLOT
     if ( !m_pipelineFilled ) return ;
 
     /* stop the thread */
-    gst_element_set_state ( m_pThread, GST_STATE_READY );
+    gst_element_set_state ( m_thread, GST_STATE_READY );
 }
 
 
@@ -540,8 +540,8 @@ void
 GstEngine::cleanPipeline()
 {
     if ( m_pipelineFilled ) {
-        gst_element_set_state ( m_pThread, GST_STATE_NULL );
-        gst_object_unref( GST_OBJECT( m_pThread ) );
+        gst_element_set_state ( m_thread, GST_STATE_NULL );
+        gst_object_unref( GST_OBJECT( m_thread ) );
         m_pipelineFilled = false;
     }
 }

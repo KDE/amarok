@@ -87,14 +87,14 @@ class GstEngine : public EngineBase
         static GError*                           error_msg;
         static GstEngine*                        self;
         
-        GstElement*                              m_pThread;
-        GstElement*                              m_pAudiosink;
-        GstElement*                              m_pSpider;
-        GstElement*                              m_pFilesrc;
-        GstElement*                              m_pIdentity;
-        GstElement*                              m_pVolume;
-        GstElement*                              m_pAudioconvert;
-        GstElement*                              m_pAudioscale;
+        GstElement*                              m_thread;
+        GstElement*                              m_audiosink;
+        GstElement*                              m_spider;
+        GstElement*                              m_filesrc;
+        GstElement*                              m_identity;
+        GstElement*                              m_volumeElement;
+        GstElement*                              m_audioconvert;
+        GstElement*                              m_audioscale;
 
         vector<float>                            m_scopeBuf;
         uint                                     m_scopeBufIndex;
