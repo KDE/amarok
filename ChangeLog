@@ -2,6 +2,8 @@ amaroK Changelog
 ==================
 (c) 2002, 2003 by Mark Kretschmann and the amaroK team. GPL License.
 
+  * add: added dcop implementation for url adding. Relevant diffs for mediacontrol are
+         available.
   * fix: libamarokarts detection code
   * add: added long-awaited DCOP methods for manipulating the playback. This also adds
          integration with kdeaddons/kicker-applets/mediacontrol.
