@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2:
+  FIX: Don't add non-audio files to the Collection.
   CHG: We now use the SqlLoader, which greatly improves the performance
        of SmartPlaylists and the Collection.
 
