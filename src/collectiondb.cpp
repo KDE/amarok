@@ -1047,47 +1047,55 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
     QStringList values;
     QueryBuilder qb;
 
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-    qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComment );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBitrate );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valSamplerate );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-
+    uint i = 0;
     KURL::List::ConstIterator it;
     for ( it = urls.begin(); it != urls.end(); ++it )
+    {
         values << (*it).path();
-
-    qb.addURLFilters( values );
-
-//    qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    values = qb.run();
-
-    if ( values.count() )
-        for ( uint i = 0; i < values.count(); i += qb.countReturnValues() )
+        i++;
+        if ( i % 50 == 0 )
         {
-            MetaBundle b;
+            qb.clear();
 
-            b.setAlbum     ( values[ i + 0 ] );
-            b.setArtist    ( values[ i + 1 ] );
-            b.setGenre     ( values[ i + 2 ] );
-            b.setTitle     ( values[ i + 3 ] );
-            b.setYear      ( values[ i + 4 ] );
-            b.setComment   ( values[ i + 5 ] );
-            b.setTrack     ( values[ i + 6 ] );
-            b.setBitrate   ( values[ i + 7 ].toInt() );
-            b.setLength    ( values[ i + 8 ].toInt() );
-            b.setSampleRate( values[ i + 9 ].toInt() );
-            b.setUrl       ( values[ i + 10 ] );
+            qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+            qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+            qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+            qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComment );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBitrate );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valSamplerate );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
 
-            bundles.append( b );
+            qb.addURLFilters( values );
+            qb.setOptions( QueryBuilder::optRemoveDuplicates );
+
+            values = qb.run();
+            if ( values.count() )
+                for ( uint i = 0; i < values.count(); i += qb.countReturnValues() )
+                {
+                    MetaBundle b;
+
+                    b.setAlbum     ( values[ i + 0 ] );
+                    b.setArtist    ( values[ i + 1 ] );
+                    b.setGenre     ( values[ i + 2 ] );
+                    b.setTitle     ( values[ i + 3 ] );
+                    b.setYear      ( values[ i + 4 ] );
+                    b.setComment   ( values[ i + 5 ] );
+                    b.setTrack     ( values[ i + 6 ] );
+                    b.setBitrate   ( values[ i + 7 ].toInt() );
+                    b.setLength    ( values[ i + 8 ].toInt() );
+                    b.setSampleRate( values[ i + 9 ].toInt() );
+                    b.setUrl       ( values[ i + 10 ] );
+
+                    bundles.append( b );
+                }
+
+            values.clear();
         }
+    }
 
     return bundles;
 }
