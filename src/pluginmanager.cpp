@@ -203,6 +203,7 @@ PluginManager::dump( const KService::Ptr service )
       << "X-KDE-amaroK-rank             : " << service->property( "X-KDE-amaroK-rank" ).toString() << ENDLI
       << "X-KDE-amaroK-version          : " << service->property( "X-KDE-amaroK-version" ).toString() << ENDLI
       << "X-KDE-amaroK-framework-version: " << service->property( "X-KDE-amaroK-framework-version" ).toString()
+      << endl
       << endl;
 
     #undef ENDLI
