@@ -1,5 +1,5 @@
 ********************************************
-amaroK File List (last updated: 26-May-2004)
+amaroK File List (last updated: 22-Jul-2004)
 ********************************************
 
 The files are listed in alphabetical order, which isn't useful for priority ordering. The important files
@@ -13,8 +13,6 @@ SRC
     KConfig-XT
   AMAROKFILELIST.CPP
     not currently used. Will sort KFileLists.
-  AMAROKNAVBUTTON.CPP
-    not currently used. Candidate for removal.
   APP.CPP
     this is the kapplication derived class, it is parent to many objects that are fundamental to the
     running of amaroK, eg engine, dcop, systray, top-level widgets, etc.
@@ -25,9 +23,9 @@ SRC
   COLLECTIONBROWSER.CPP
     in construtuction, media library type thing.
   EFFECTWIDGET.CPP
-    * insert description here *
+    widget for engine effect configuration
   ENGINECONTROLLER.CPP
-    controls the current engine
+    interface between amaroK and the engine
   FHT.CPP
     amaroK's sophisticated and flexible FHT (basically FFT) routine for spectrum analysis
   FILEBROWSER.CPP
@@ -41,7 +39,7 @@ SRC
   PLAYLIST.CPP
     big class that is the playlistwidget
   PLAYLISTBROWSER.CPP
-    likely to be superceded by CollectionBrowser.
+    The PlaylistBrowser.
   PLAYLISTITEM.CPP
     derived from KListViewItem, playlist items
   PLAYLISTLOADER.CPP
@@ -59,7 +57,6 @@ SRC
     flexible class that will queue, process, and dispatch results for "Jobs" in a separate thread. Used by
     a variety of amaroK components
   TRACKTOOLTIP.CPP
-    not actually related to the PlaylistWidget. Used by PlayerWidget to show some info on the currently
-    playing track.
+    Used by PlayerWidget to show some info on the currently playing track.
 
     
