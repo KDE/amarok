@@ -6,8 +6,6 @@ if test x$amarok_error_notaglib = xyes ; then
     echo ""
     echo "You are missing TagLib, which is required by amaroK.  You can find TagLib at"
     echo $TAGLIB_URL
-    
-    no_amarok=yes
 fi
     
 
@@ -15,8 +13,6 @@ if test x$amarok_error_taglibold = xyes; then
     echo ""    
     echo "Your TagLib is too old to use with amaroK.  You can find a more recent TagLib at"
     echo $TAGLIB_URL
-    
-    no_amarok=yes
 fi
 
 
@@ -37,8 +33,8 @@ fi
 
 if test $have_sqlite = xno; then
     echo ""
-    echo "You are missing the SQLite database library."
-    echo "The CollectionBrowser will be deactivated."
+    echo "You are missing the SQLite database library!"
+    echo "The Collection Browser will be deactivated."
     echo "You can download SQLite from: http://www.sqlite.org"
 fi
 
@@ -75,17 +71,12 @@ if test $build_nmm = xyes; then
 fi
   
 
-if test x$have_kdemm = xno; then
-    if test x$have_gst = xno; then
-        if test x$have_nmm = xno; then
-            DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
-            echo ""
-            echo "AMAROK WILL NOT BE BUILT."
-            echo "REASON:"
-            echo "NO SUITABLE MULTIMEDIA FRAMEWORK WAS DETECTED."
-            echo "CANNOT COMPILE AMAROK WITHOUT AN AUDIO ENGINE."
-        fi
-    fi
+if test x$no_engine = xyes; then
+    echo ""
+    echo "AMAROK WILL NOT BE BUILT."
+    echo "REASON:"
+    echo "NO SUITABLE MULTIMEDIA FRAMEWORK WAS DETECTED."
+    echo "CANNOT COMPILE AMAROK WITHOUT AN AUDIO ENGINE."
 fi
     
   

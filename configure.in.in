@@ -1,63 +1,3 @@
-###############################################################################
-# BEGIN KDEMULTIMEDIA CHECK
-###############################################################################
-
-KDE_CHECK_HEADER(arts/artsmodules.h, have_kdemm=yes, have_kdemm=no)
-
-AM_CONDITIONAL(with_arts, [test x$have_kdemm = xyes -a x$build_arts = xyes])
-
-if test x$build_arts = xyes -a x$have_kdemm = xyes; then
-    AC_DEFINE(HAVE_ARTS, 1, [have aRts and kdemultimedia])
-    arts_libs="-lqtmcop -lkmedia2_idl -lartsflow -lsoundserver_idl -lartskde -lartsgui -lartsgui_kde -lartsmodules"
-fi
-
-AC_SUBST(arts_libs)
-
-###############################################################################
-# END KDEMULTIMEDIA CHECK
-###############################################################################
-
-
-
-###############################################################################
-# BEGIN TAGLIB CHECK
-###############################################################################
-
-TAGLIB_REQ_VERSION="0.95";
-TAGLIB_URL="http://ktown.kde.org/~wheeler/taglib/";
-AC_DEFUN([VERSION_TO_NUMBER], [`$1 | awk 'BEGIN { FS = "."; } { printf "%d",  ([$]1* 1000 + [$]2) * 1000 + [$]3;}'`])
-
-AC_PATH_PROG(TAGLIB_CONFIG, taglib-config, no)
-
-if test "x$TAGLIB_CONFIG" = "xno" ; then
-    amarok_error_notaglib=yes
-    DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
-else
-    AC_DEFINE(HAVE_TAGLIB, 1, [have TagLib])
-    taglib_includes=[`$TAGLIB_CONFIG --cflags`]
-    taglib_libs=[`$TAGLIB_CONFIG --libs`]
-    taglib_version=[`$TAGLIB_CONFIG --version`]
-
-    if test VERSION_TO_NUMBER(echo $taglib_version) -lt VERSION_TO_NUMBER(echo $TAGLIB_REQ_VERSION); then
-        amarok_error_taglibold=yes
-        DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
-    fi
-fi
-
-AC_SUBST(taglib_includes)
-AC_SUBST(taglib_libs)
-
-###############################################################################
-# END TAGLIB CHECK
-###############################################################################
-
-
-
-###############################################################################
-# BEGIN GSTREAMER CHECK
-###############################################################################
-
-#<pkg-config>
 dnl KDE_PKG_CHECK_MODULES(GSTUFF, gtk+-2.0 >= 1.3 glib = 1.3.4, action-if, action-not)
 dnl defines GSTUFF_LIBS, GSTUFF_CFLAGS, see pkg-config man page
 dnl also defines GSTUFF_PKG_ERRORS on error
@@ -106,8 +46,69 @@ AC_DEFUN([KDE_PKG_CHECK_MODULES], [
      ifelse([$4], , AC_MSG_WARN([Library requirements ($2) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them.]), [$4])
   fi
 ])
-#</pkg-config>
 
+
+
+###############################################################################
+# BEGIN KDEMULTIMEDIA CHECK
+###############################################################################
+
+KDE_CHECK_HEADER(arts/artsmodules.h, have_kdemm=yes, have_kdemm=no)
+
+AM_CONDITIONAL(with_arts, [test x$have_kdemm = xyes -a x$build_arts = xyes])
+
+if test x$build_arts = xyes -a x$have_kdemm = xyes; then
+    AC_DEFINE(HAVE_ARTS, 1, [have aRts and kdemultimedia])
+    arts_libs="-lqtmcop -lkmedia2_idl -lartsflow -lsoundserver_idl -lartskde -lartsgui -lartsgui_kde -lartsmodules"
+fi
+
+AC_SUBST(arts_libs)
+
+###############################################################################
+# END KDEMULTIMEDIA CHECK
+###############################################################################
+
+
+
+###############################################################################
+# BEGIN TAGLIB CHECK
+###############################################################################
+
+TAGLIB_REQ_VERSION="0.95";
+TAGLIB_URL="http://ktown.kde.org/~wheeler/taglib/";
+AC_DEFUN([VERSION_TO_NUMBER], [`$1 | awk 'BEGIN { FS = "."; } { printf "%d",  ([$]1* 1000 + [$]2) * 1000 + [$]3;}'`])
+
+AC_PATH_PROG(TAGLIB_CONFIG, taglib-config, no)
+
+if test "x$TAGLIB_CONFIG" = "xno" ; then
+    amarok_error_notaglib=yes
+    DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
+    no_amarok=yes
+else
+    AC_DEFINE(HAVE_TAGLIB, 1, [have TagLib])
+    taglib_includes=[`$TAGLIB_CONFIG --cflags`]
+    taglib_libs=[`$TAGLIB_CONFIG --libs`]
+    taglib_version=[`$TAGLIB_CONFIG --version`]
+
+    if test VERSION_TO_NUMBER(echo $taglib_version) -lt VERSION_TO_NUMBER(echo $TAGLIB_REQ_VERSION); then
+        amarok_error_taglibold=yes
+        DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
+        no_amarok=yes
+    fi
+fi
+
+AC_SUBST(taglib_includes)
+AC_SUBST(taglib_libs)
+
+###############################################################################
+# END TAGLIB CHECK
+###############################################################################
+
+
+
+###############################################################################
+# BEGIN GSTREAMER CHECK
+###############################################################################
 
 AC_ARG_WITH(gstreamer,
     AC_HELP_STRING([--without-gstreamer],[build without GStreamer [default=yes]]),
@@ -276,5 +277,45 @@ AC_SUBST(sqlite_libs)
 ###############################################################################
 # END SQLITE CHECK
 ###############################################################################
+
+
+
+###############################################################################
+# BEGIN XMMS CHECK
+###############################################################################
+
+AC_CHECK_PROG(XMMS_CONFIG, xmms-config, yes)
+
+if test x$XMMS_CONFIG = xyes; then
+    xmms_plugin_path=`xmms-config --visualization-plugin-dir`
+    xmms_cflags=`xmms-config --cflags`    
+    xmms_libs=`xmms-config --libs`    
+fi
+        
+AM_CONDITIONAL(with_xmmswrapper, test x$XMMS_CONFIG = xyes)
+
+AC_DEFINE_UNQUOTED(XMMS_PLUGIN_PATH, "$xmms_plugin_path", [Define the path to XMMS plugins])
+AC_SUBST(xmms_cflags)
+AC_SUBST(xmms_libs)
+
+###############################################################################
+# END XMMS CHECK
+###############################################################################
+
+
+
+###############################################################################
+# BEGIN DO_NOT_COMPILE CHECK
+###############################################################################
+
+if test x$have_kdemm = xno -a x$have_gst = xno -a x$have_nmm = xno; then
+    DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
+    no_engine=yes
+fi
+           
+###############################################################################
+# END DO_NOT_COMPILE CHECK
+###############################################################################
+
 
 

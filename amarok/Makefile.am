@@ -2,7 +2,7 @@ if with_arts
     AMAROKARTS_BUILD = amarokarts
 endif
 
-SUBDIRS = amarokcore $(AMAROKARTS_BUILD) plugin analyzers titleproxy engine images data loader
+SUBDIRS = amarokcore $(AMAROKARTS_BUILD) plugin analyzers titleproxy engine images data loader vis
 
 bin_PROGRAMS = amarokapp
 

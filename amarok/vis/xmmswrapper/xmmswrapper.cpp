@@ -1,6 +1,9 @@
 //Maintainer: Max Howell <max.howell@methylblue.com>, (C) 2004
 //Copyright:  See COPYING file that comes with this distribution
 
+
+#include "config.h"
+
 #include <dirent.h>
 #include <dlfcn.h>    //dlopen etc.
 #include <gtk/gtk.h>  //gtk_init(), gtk_rgb_init()
@@ -19,22 +22,18 @@
 #include <vector>
 
 #define SHARED_LIB_EXT ".so"
-#define PLUGIN_PATH "/usr/X11R6/lib/xmms/Visualization/"
+// #define PLUGIN_PATH "/usr/X11R6/lib/xmms/Visualization/"
 
-
-//TODO pure c would give a smaller binary
+//TODO pure c would give a smaller binary <markey> get real, max! :)
 //TODO keep socket open
 
-
 #include "fft.c"
-
 
 
 GtkWidget dummy;
 GtkWidget *equalizerwin = &dummy; //required by msa visplugin
 GtkWidget *playlistwin = &dummy; //required by msa visplugin
 GtkWidget *mainwin = &dummy; //required by msa visplugin
-
 
 
 int tryConnect();
@@ -55,7 +54,7 @@ main( int argc, char** argv ) {
         std::list<std::string> list;
 
         //scan plugins
-        const char *dirname = PLUGIN_PATH;
+        const char *dirname = XMMS_PLUGIN_PATH;
         DIR *dir;
         struct dirent *ent;
         struct stat statbuf;
@@ -228,7 +227,7 @@ XmmsWrapper::XmmsWrapper( const std::string &plugin ) {
     std::cout << "[amK] loading xmms plugin: " << plugin << '\n';
 
     std::string
-    path = PLUGIN_PATH;
+    path = XMMS_PLUGIN_PATH;
     path += plugin;
 
     { //<load plugin>
