@@ -78,7 +78,6 @@ amarokapp_SOURCES = \
     pluginmanager.cpp \
     scriptmanager.cpp \
     scriptmanagerbase.ui \
-    scriptmanager_selector.cpp \
     scrobbler.cpp \
     searchbrowser.cpp \
     sliderwidget.cpp \

@@ -33,7 +33,6 @@ email                : markey@web.de
 #include "playlist.h"
 #include "playlistwindow.h"
 #include "pluginmanager.h"
-#include "scriptmanager.h"
 #include "scrobbler.h"
 #include "socketserver.h"
 #include "statusbar.h"
@@ -106,8 +105,6 @@ App::App()
     //initializes Unix domain socket for loader communication, and hides the splash
     //do here so splash is hidden just after amaroK's windows appear
     (void) new LoaderServer( this );
-
-    new ScriptManager::Manager( this );
 
     //after this point only analyzer and temporary pixmaps will be created
     QPixmap::setDefaultOptimization( QPixmap::BestOptim );
@@ -401,7 +398,7 @@ void App::applySettings( bool firstTime )
     amaroK::OSD::instance()->applySettings();
 
     CollectionDB::instance()->applySettings();
-    
+
     Scrobbler::instance()->applySettings();
 
     playlistWindow()->setFont(

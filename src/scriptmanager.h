@@ -1,51 +1,54 @@
+// (c) 2003 Scott Wheeler <wheeler@kde.org>,
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // See COPYING file for licensing information.
-
 
 #ifndef AMAROK_SCRIPTMANAGER_H
 #define AMAROK_SCRIPTMANAGER_H
 
-#include "scriptmanager_selector.h"
+#include <qmap.h>
 
-#include <qobject.h>            //baseclass
-#include <qstringlist.h>        //stack allocated
+#include <kdialogbase.h>    //baseclass
+#include <kurl.h>
 
+class ScriptManagerBase;
+class KRun;
 
-namespace ScriptManager
+class ScriptManager : public KDialogBase
 {
+        Q_OBJECT
 
-    class Manager : public QObject
-    {
-            Q_OBJECT
+    public:
+        ScriptManager( QWidget *parent = 0, const char *name = 0 );
+        virtual ~ScriptManager();
 
-        signals:
-            void stop( const QString& );
-            void configure( const QString& );
+        static ScriptManager* instance() { return s_instance ? s_instance : new ScriptManager(); }
 
-        public:
-            Manager( QObject* );
+    public slots:
 
-            void addObject( QObject* object );
+    private slots:
+        void slotAddScript();
+        void slotRemoveScript();
+        void slotEditScript();
+        void slotRunScript();
+        void slotStopScript();
+        void slotConfigureScript();
 
-            //static
-            static Manager *instance() { return s_instance; }
+    private:
+        static ScriptManager* s_instance;
 
-        public slots:
-            void showSelector();
+        ScriptManagerBase* m_base;
 
-        private slots:
-            void slotEdit( const QString& );
-            void slotRun( const QString& );
-            void slotStop( const QString& );
-            void slotConfigure( const QString& );
+        struct ScriptItem {
+            KURL url;
+            KRun* process;
+        };
 
-        private:
-            static Manager* s_instance;
+        typedef QMap<QString, ScriptItem> ScriptMap;
 
-            QStringList m_list;
-    };
+        ScriptMap m_scripts;
+};
 
-} //namespace ScriptManager
 
 #endif /* AMAROK_SCRIPTMANAGER_H */
+
 
