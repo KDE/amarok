@@ -84,11 +84,11 @@ void OSDWidget::renderOSDText( const QString &text )
       bufferPainter.drawText( 2, 0, width()-1, height()-1, AlignLeft | WordBreak, text );
       bufferPainter.drawText( 0, 2, width()-1, height()-1, AlignLeft | WordBreak, text );
       bufferPainter.drawText( 2, 2, width()-1, height()-1, AlignLeft | WordBreak, text );*/
-    bufferPainter.drawText( 13, titleFm->height() + 2, width()-1, height()-1, AlignLeft | WordBreak, text );
+    bufferPainter.drawText( 13, titleFm->height() + 1, width()-1, height()-1, AlignLeft | WordBreak, text );
 
     // Draw the text
     bufferPainter.setPen( m_textColor );
-    bufferPainter.drawText( 10, titleFm->height(), width()-1, height()-1, AlignLeft | WordBreak, text );
+    bufferPainter.drawText( 10, titleFm->height() - 1, width()-1, height()-1, AlignLeft | WordBreak, text );
     bufferPainter.end();
 
     // Masking for transparency
