@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number, 
-           #14 being the highest available (take this one for your next bug and increase here)
+           #16 being the highest available (take this one for your next bug and increase here)
 
                       
 SHORT-TERM (URGENT):
@@ -22,9 +22,6 @@ SHORT-TERM (URGENT):
               PlaylistItem::metaBundle(). If it's still doing it wrong we should consider setting it
               to Accurate.
     
-    * reg: #9<berkus> file sorting is regressed. Should add in the same order as shown in 
-             filebrowser, now doesn't sort until you press the column heading.
-
     * fix: #7<mxcl> Still with KDE 3.2, the playlist doesn't raise/minimise/shade with the main
              widget. KWin handles this if playlist is WType_Dialog, but this has other problems.
              To see how important dual raise is, raise another window above amarok's windows and

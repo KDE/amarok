@@ -26,11 +26,16 @@
 class AmarokFileList : public KFileItemList
 {
     public:
-        AmarokFileList( KFileItemList list, int sortSpec );
+        AmarokFileList( int sortSpec );
+        AmarokFileList( const KFileItemList&, int sortSpec ); //substitute for copy-ctor
+        AmarokFileList( const AmarokFileList& ); //undefined, unwanted
+        AmarokFileList *operator=( const AmarokFileList& ); //undefined, unwanted
         ~AmarokFileList();
+        
+        void sort();
 
     private:
-        int compareItems( Item item1, Item item2 );
+        virtual int compareItems( Item item1, Item item2 );
 
         // ATTRIBUTES ------
         int m_sortSpec;

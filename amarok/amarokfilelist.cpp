@@ -18,7 +18,7 @@
 #include "amarokfilelist.h"
 
 #include <kfileitem.h>
-#include <kfileview.h>
+#include <kfileview.h> //compareItems
 
 #include <qdir.h>
 #include <qptrcollection.h>
@@ -27,19 +27,28 @@
 
 // CLASS AmarokFileList =================================================================
 
-AmarokFileList::AmarokFileList( KFileItemList list, int sortSpec ) :
-    KFileItemList( list ),
-    m_sortSpec( sortSpec )
-{
-    if ( ( m_sortSpec & QDir::SortByMask ) != QDir::Unsorted )
-    {
-        sort();
-    }
-}
+AmarokFileList::AmarokFileList( int i )
+   : m_sortSpec( i )
+{}
 
+AmarokFileList::AmarokFileList( const KFileItemList &fil, int i )
+   : KFileItemList( fil )
+   , m_sortSpec( i )
+{
+    sort();
+}
 
 AmarokFileList::~AmarokFileList()
 {}
+
+
+void AmarokFileList::sort()
+{
+    if ( ( m_sortSpec & QDir::SortByMask ) != QDir::Unsorted )
+    {
+        KFileItemList::sort();
+    }
+}
 
 
 int AmarokFileList::compareItems( QPtrCollection::Item item1, QPtrCollection::Item item2 )
@@ -72,4 +81,3 @@ int AmarokFileList::compareItems( QPtrCollection::Item item1, QPtrCollection::It
 
     return key1.compare( key2 );
 }
-

@@ -21,6 +21,7 @@ class QTextStream;
 class QMutex;
 class PlaylistItem;
 class MetaBundle;
+//class KFileItemList;
 
 
 class PlaylistLoader : public QThread
@@ -32,9 +33,10 @@ public:
     struct Options {
         bool recurse;
         bool symlink;
+        int  sortSpec;
     } options;
 
-    void setOptions( bool b1, bool b2 ) { options.recurse = b1; options.symlink = b2; }
+    void setOptions( bool b1, bool b2, int i ) { options.recurse = b1; options.symlink = b2; options.sortSpec = i; }
 
     class LoaderEvent : public QCustomEvent
     {
@@ -84,7 +86,7 @@ private:
     void process( KURL::List &, bool = true );
 
     bool isValidMedia( const KURL &, mode_t = KFileItem::Unknown, mode_t = KFileItem::Unknown );
-    void translate( QString &, KURL::List & ); //turns a directory into a KURL::List
+    void translate( QString &, KFileItemList & ); //turns a directory into a KURL::List
     int  isPlaylist( const QString & );
     void loadLocalPlaylist( const QString &, int );
     void loadM3u( QTextStream &, const QString & );

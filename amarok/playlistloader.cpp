@@ -7,6 +7,7 @@
 #include "playlistloader.h"
 #include "metabundle.h"
 #include "playlistitem.h"
+#include "amarokfilelist.h"            
 
 #include <qapplication.h>
 #include <qtextstream.h>
@@ -17,6 +18,7 @@
 #include <kdebug.h>
 #include <ktempfile.h>
 #include <kio/netaccess.h>
+#include <kfileitem.h> //process()
 
 //file stat
 #include <dirent.h>
@@ -129,6 +131,38 @@
 #14 0x412b1f60 in pthread_start_thread () from /lib/i686/libpthread.so.0
 #15 0x410f7327 in clone () from /lib/i686/libc.so.6
 
+//FIXME new one too (for empty current.m3u)
+
+[New Thread 16384 (LWP 7839)]
+[New Thread 32769 (LWP 7841)]
+[New Thread 16386 (LWP 7842)]
+0x41ff9ab6 in waitpid () from /lib/i686/libpthread.so.0
+#0  0x41ff9ab6 in waitpid () from /lib/i686/libpthread.so.0
+#1  0x41484ba2 in KCrash::defaultCrashHandler(int) (sig=11) at kcrash.cpp:246
+#2  0x41ff896c in __pthread_sighandler () from /lib/i686/libpthread.so.0
+#3  <signal handler called>
+#4  0x41b8b842 in QString::operator=(QString const&) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#5  0x41489cfa in KURL::operator=(KURL const&) (this=0x81e4850, _u=@0x80e3908)
+    at kurl.cpp:913
+#6  0x41486b67 in KURL (this=0x81e4850, _u=@0x80e3908) at kurl.cpp:454
+#7  0x08070452 in QValueListPrivate<KURL>::insert(QValueListIterator<KURL>, KURL const&) (this=0x81fb988, it={node = 0x80d97c0}, x=@0x21) at qvaluelist.h:289
+#8  0x08070760 in QValueListPrivate (this=0x81fb988, _p=@0x427e1cac)
+    at qvaluelist.h:272
+#9  0x08070585 in QValueList<KURL>::detachInternal() (this=0x81decf4)
+    at qvaluelist.h:629
+#10 0x0808a6ea in QValueList<KURL>::begin() (this=0x81decf4)
+    at qvaluelist.h:473
+#11 0x08088747 in PlaylistLoader::process(KURL::List&, bool) (this=0x81dece8, 
+    list=@0x81decf4, validate=true) at playlistloader.cpp:190
+#12 0x080886d7 in PlaylistLoader::run() (this=0x81dece8)
+    at playlistloader.cpp:179
+#13 0x418546d5 in QThreadInstance::start(void*) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#14 0x41ff2f60 in pthread_start_thread () from /lib/i686/libpthread.so.0
+#15 0x4225c327 in clone () from /lib/i686/libc.so.6
+
+
 */
 
 //LESS IMPORTANT
@@ -198,11 +232,21 @@ void PlaylistLoader::process( KURL::List &list, bool validate )
          if( S_ISDIR( statbuf.st_mode ) )
          {
             //some options prevent recursion
-            if( list.count() > 1 && ( !options.recurse || ( !options.symlink && S_ISLNK( statbuf.st_mode ) ) ) ) continue; //FIXME depth check too
+            //FIXME depth check too
+            if( list.count() > 1 && ( !options.recurse || ( !options.symlink && S_ISLNK( statbuf.st_mode ) ) ) ) continue; 
 
-            KURL::List list2;
-            translate( path, list2 );
-            process( list2, false ); //false will prevent checking for dir, etc.
+            AmarokFileList files( options.sortSpec );
+            files.setAutoDelete( true );
+            translate( path, files );
+            files.sort();
+            
+            KURL::List urls;
+            for( KFileItemListIterator it( files ); *it; ++it )
+            {
+                urls << (*it)->url();
+            }
+
+            process( urls, false ); //false will prevent stating for dir, etc.
             continue;
          }
       }
@@ -272,10 +316,7 @@ void PlaylistLoader::loadLocalPlaylist( const QString &path, int type )
 }
 
 
-
-
 #include <arts/soundserver.h>
-
 bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissions )
 {
    QString ext = url.path().right( 4 ).lower();
@@ -307,7 +348,7 @@ bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissi
 }
 
 
-void PlaylistLoader::translate( QString &path, KURL::List &list )
+void PlaylistLoader::translate( QString &path, KFileItemList &list )
 {
    DIR *d = opendir( path.local8Bit() );
    if( !path.endsWith( "/" ) ) path += '/';
@@ -328,6 +369,7 @@ void PlaylistLoader::translate( QString &path, KURL::List &list )
          //get file information
          if( LSTAT( newpath.local8Bit(), &statbuf ) == 0 )
          {
+            //check for these first as they are not mutually exclusive WRT dir/files
             if( S_ISCHR(  statbuf.st_mode ) ||
                 S_ISBLK(  statbuf.st_mode ) ||
                 S_ISFIFO( statbuf.st_mode ) ||
@@ -346,7 +388,8 @@ void PlaylistLoader::translate( QString &path, KURL::List &list )
                //we save some time and pass the stat'd information
                if( isValidMedia( url, statbuf.st_mode & S_IFMT, statbuf.st_mode & 07777 ) )
                {
-                  list << url;
+                  //true means don't determine mimetype (waste of cycles for sure!)
+                  list.append( new KFileItem( statbuf.st_mode & S_IFMT, statbuf.st_mode & 07777, url, true ) );
                }
             }
          } //if( LSTAT )

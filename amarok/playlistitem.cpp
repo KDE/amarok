@@ -83,11 +83,6 @@ const MetaBundle *PlaylistItem::metaBundle() const
     //FIXME only do once!
     TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Fast );
     
-    if( !f.isNull() && f.audioProperties() )
-    {
-        kdDebug() << "AudioProps Read!\n";
-    }
-    
     return new MetaBundle( text( 1 ),
                            text( 2 ),
                            text( 3 ),

@@ -93,7 +93,7 @@ class PlaylistWidget : public KListView //: protected KListView
         void removeSelectedItems();
         void doUndo();
         void doRedo();
-        void copyAction();
+        void copyAction( QListViewItem* = 0 );
 
     private slots:
         void slotGlowTimer();

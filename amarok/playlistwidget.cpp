@@ -450,7 +450,7 @@ void PlaylistWidget::startLoader( const KURL::List &list, PlaylistItem *after )
     if( loader )
     {
         setCursor( KCursor::workingCursor() );
-        loader->setOptions( ( pApp->m_optDropMode == "Recursively" ), pApp->m_optFollowSymlinks );
+        loader->setOptions( ( pApp->m_optDropMode == "Recursively" ), pApp->m_optFollowSymlinks, pApp->m_optBrowserSortSpec );
         loader->start();
     }
     else kdDebug() << "[loader] Unable to create loader-thread!\n";
@@ -517,11 +517,13 @@ void PlaylistWidget::setSorting( int i, bool b )
 // SLOTS ============================================
 
 #include <qclipboard.h>
-void PlaylistWidget::copyAction()
+void PlaylistWidget::copyAction( QListViewItem *item )
 {
-    if( currentTrack() != NULL )
+    if( item == NULL ) item = currentTrack();
+
+    if( item != NULL )
     {
-        QApplication::clipboard()->setText( currentTrack()->text( 0 ) );
+        QApplication::clipboard()->setText( item->text( 0 ) );
     }
 }
 
@@ -550,24 +552,28 @@ void PlaylistWidget::activate( QListViewItem *item )
 void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p )
 {
     QPopupMenu popup( this );
-    popup.insertItem( i18n( "Show File Info" ), 0 );
-    popup.insertItem( i18n( "Play Track" ), 1 );
-    popup.insertItem( i18n( "Remove Selected" ), this, SLOT( removeSelectedItems() ) );
+    popup.insertItem( i18n( "&Play track" ), 0 );    
+    popup.insertItem( i18n( "&Show track information" ), 1 );
+    popup.insertItem( i18n( "&Copy trackname to clipboard" ), 2 ); //FIXME use KAction
+    popup.insertItem( i18n( "&Remove selected items" ), this, SLOT( removeSelectedItems() ), Key_Delete );
 
     // only enable when file is selected
     popup.setItemEnabled( 0, ( item != NULL ) );
     popup.setItemEnabled( 1, ( item != NULL ) );
+    popup.setItemEnabled( 2, ( item != NULL ) );
     //NOTE there is no point in showing item 3 if no items are selected, but it is not cheap to determine
     //     this property for large playlists, my suggestion: don't fret the small stuff ;-)
 
     switch( popup.exec( p ) )
     {
-    case 0:
+    case 1:
         showTrackInfo( static_cast<const PlaylistItem *>(item) );
         break;
-    case 1:
+    case 0:
         activate( item );
         break;
+    case 2:
+        copyAction( item );
     }
 }
 
