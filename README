@@ -33,8 +33,8 @@ required
       http://freshmeat.net/projects/taglib
     
 recommended
-    * GStreamer-0.8 + Gst-Plugins-0.8
-      http://gstreamer.net
+    * aRts 1.2 + KDEMULTIMEDIA 3.2
+      http://www.kde.org
 
     * SQLite 2.8
       http://www.sqlite.org  
@@ -42,8 +42,8 @@ recommended
     * OpenGL accelerated X-Server
             
 optional
-    * aRts 1.2 + KDEMULTIMEDIA 3.2
-      http://www.kde.org
+    * GStreamer-0.8 + Gst-Plugins-0.8
+      http://gstreamer.net
     
     * NMM 0.4.4
       http://www.networkmultimedia.org
