@@ -24,12 +24,12 @@
 
 #define APP_VERSION "0.6.90"
 
-
 #include "amarokarts/amarokarts.h"
 
 #include <kglobalaccel.h>
 #include <kuniqueapplication.h>
 #include <vector>
+#include <arts/artsmodules.h>
 #include <arts/kartsdispatcher.h>
 #include <arts/kplayobjectfactory.h>
 
@@ -85,12 +85,14 @@ class PlayerApp : public KUniqueApplication
         bool m_optShowTrayIcon;
         bool m_optHidePlaylistWindow;
         QString m_optDropMode;
+        bool m_optXFade;
         // </option attributes>
 
         int m_Volume;
         bool m_bSliderIsPressed;
 
-        KDE::PlayObject* m_pPlayObject;
+        KDE::PlayObject *m_pPlayObject;
+        KDE::PlayObject *m_pPlayObjectXFade;
         Arts::SoundServerV2 m_Server;
         Amarok::WinSkinFFT m_Scope;
         Arts::StereoEffectStack m_globalEffectStack;
@@ -98,6 +100,9 @@ class PlayerApp : public KUniqueApplication
         Arts::StereoEffect *freeverb;
         Arts::StereoVolumeControl m_volumeControl;
         Arts::Synth_AMAN_PLAY m_amanPlay;
+        Arts::Synth_DATA m_synthData;
+        Arts::Synth_XFADE m_XFadeL;
+        Arts::Synth_XFADE m_XFadeR;
 
     public slots:
         void slotPrev();
@@ -149,9 +154,14 @@ class PlayerApp : public KUniqueApplication
         bool initScope();
         void initBrowserWin();
         void initColors();
+
         void saveConfig();
         void readConfig();
+
         void getTrackLength();
+        void toggleXFade( bool on );
+        void startXFade();
+        void stopXFade();
 
         QString convertDigit( const long &digit );
 
@@ -163,12 +173,15 @@ class PlayerApp : public KUniqueApplication
         QTimer *m_pAnimTimer;
         long m_scopeId;
         bool m_scopeActive;
-        long m_Length;
+        long m_length;
         int m_Mixer;
         int m_playRetryCounter;
         EffectWidget *m_pEffectWidget;
-
         bool m_bIsPlaying;
         bool m_bChangingSlider;
+
+        bool m_XFadeRunning;
+        float m_XFadeValue;
+        QString m_XFadeCurrent;
 };
 #endif                                            // KDETEST_H

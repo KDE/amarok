@@ -43,14 +43,10 @@
 #include <kfileitem.h>
 #include <kglobalaccel.h>
 #include <kiconloader.h>
-#include <kicontheme.h>
-#include <kkeydialog.h>
 #include <klineedit.h>
 #include <klocale.h>
-#include <kmainwindow.h>
 #include <kmessagebox.h>
 #include <kmimetype.h>
-#include <krun.h>
 #include <kshortcut.h>
 #include <kstandarddirs.h>
 #include <ktip.h>
@@ -62,35 +58,27 @@
 #include <kio/netaccess.h>
 
 #include <arts/artsflow.h>
-#include <arts/artsgui.h>
 #include <arts/artskde.h>
+#include <arts/artsmodules.h>
 #include <arts/connect.h>
 #include <arts/dynamicrequest.h>
 #include <arts/flowsystem.h>
-
 #include <arts/kartsdispatcher.h>
-#include <arts/kartswidget.h>
 #include <arts/kmedia2.h>
 #include <arts/kplayobjectfactory.h>
 #include <arts/soundserver.h>
 
+#include <qpopupmenu.h>
 #include <qcheckbox.h>
+#include <qcombobox.h>
 #include <qdialog.h>
 #include <qdir.h>
 #include <qfileinfo.h>
-#include <qlayout.h>
-#include <qpainter.h>
-#include <qpalette.h>
 #include <qpoint.h>
-#include <qpopupmenu.h>
-#include <qpushbutton.h>
 #include <qsize.h>
-#include <qslider.h>
 #include <qstring.h>
 #include <qtimer.h>
-#include <qtoolbutton.h>
 #include <qvaluelist.h>
-#include <qvbox.h>
 
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -103,12 +91,16 @@ PlayerApp::PlayerApp() :
         m_bgColor( Qt::black ),
         m_fgColor( QColor( 0x80, 0xa0, 0xff ) ),
         m_pPlayObject( NULL ),
+        m_pPlayObjectXFade( NULL ),
         m_pArtsDispatcher( NULL ),
-        m_Length( 0 ),
+        m_length( 0 ),
         m_playRetryCounter( 0 ),
         m_pEffectWidget( NULL ),
         m_bIsPlaying( false ),
-        m_bChangingSlider( false )
+        m_bChangingSlider( false ),
+        m_XFadeRunning( false ),
+        m_XFadeCurrent( "invalue1" ),
+        m_XFadeValue( 1.0 )
 {
     setName( "amarok" );
 
@@ -161,6 +153,9 @@ PlayerApp::~PlayerApp()
     delete m_pEffectWidget;
     delete m_pPlayerWidget;
 
+    m_XFadeL = Arts::Synth_XFADE::null();
+    m_XFadeR = Arts::Synth_XFADE::null();
+    m_synthData = Arts::Synth_DATA::null();
     m_Scope = Amarok::WinSkinFFT::null();
     m_volumeControl = Arts::StereoVolumeControl::null();
     m_effectStack = Arts::StereoEffectStack::null();
@@ -276,7 +271,7 @@ void PlayerApp::saveSessionState()
 
 void PlayerApp::initArts()
 {
-    // We must restart artsd after first installation, because we install new mcopctypes
+    // We must restart artsd after first installation, because we install new mcoptypes
 
     m_pConfig->setGroup( "" );
 
@@ -294,7 +289,6 @@ void PlayerApp::initArts()
     m_pArtsDispatcher = new KArtsDispatcher();
 
     // *** most of the following code was taken from noatun's engine.cpp
-
     m_Server = Arts::Reference( "global:Arts_SoundServerV2" );
     if ( m_Server.isNull() || m_Server.error() )
     {
@@ -360,21 +354,36 @@ void PlayerApp::initArts()
         KMessageBox::error( 0, i18n( "Cannot start aRts! Exiting." ), i18n( "Fatal Error" ) );
         exit( 1 );
     }
+    // *** until here
 
     m_amanPlay = Arts::DynamicCast( m_Server.createObject( "Arts::Synth_AMAN_PLAY" ) );
     m_amanPlay.title( "amarok" );
     m_amanPlay.autoRestoreID( "amarok" );
     m_amanPlay.start();
 
+    m_synthData = Arts::DynamicCast( m_Server.createObject( "Arts::Synth_DATA" ) );
+    m_synthData.value( m_XFadeValue );
+    m_synthData.start();
+
+    m_XFadeL = Arts::DynamicCast( m_Server.createObject( "Arts::Synth_XFADE" ) );
+    m_XFadeR = Arts::DynamicCast( m_Server.createObject( "Arts::Synth_XFADE" ) );
+    m_XFadeL.start();
+    m_XFadeR.start();
+
     m_globalEffectStack = Arts::DynamicCast( m_Server.createObject( "Arts::StereoEffectStack" ) );
     m_globalEffectStack.start();
-    Arts::connect( m_globalEffectStack, m_amanPlay );
 
     m_effectStack = Arts::DynamicCast( m_Server.createObject( "Arts::StereoEffectStack" ) );
     m_effectStack.start();
     long id = m_globalEffectStack.insertBottom( m_effectStack, "Effect Stack" );
 
-    // *** until here
+    Arts::connect( m_synthData, std::string( "outvalue" ), m_XFadeL, std::string( "percentage" ) );
+    Arts::connect( m_synthData, std::string( "outvalue" ), m_XFadeR, std::string( "percentage" ) );
+
+    Arts::connect( m_XFadeL, std::string( "outvalue" ), m_globalEffectStack, std::string( "inleft" ) );
+    Arts::connect( m_XFadeR, std::string( "outvalue" ), m_globalEffectStack, std::string( "inright" ) );
+
+    Arts::connect( m_globalEffectStack, m_amanPlay );
 }
 
 
@@ -686,6 +695,7 @@ void PlayerApp::saveConfig()
     m_pConfig->writeEntry( "Random Mode", m_optRandomMode );
     m_pConfig->writeEntry( "Show MetaInfo", m_optReadMetaInfo );
     m_pConfig->writeEntry( "Show Tray Icon", m_optShowTrayIcon );
+    m_pConfig->writeEntry( "Crossfading", m_optXFade );
     m_pConfig->writeEntry( "Hide Playlist Window", m_optHidePlaylistWindow );
 
     //store current item
@@ -730,6 +740,7 @@ void PlayerApp::readConfig()
     m_optRepeatPlaylist = m_pConfig->readBoolEntry( "Repeat Playlist", false );
     m_optReadMetaInfo = m_pConfig->readBoolEntry( "Show MetaInfo", false );
     m_optShowTrayIcon = m_pConfig->readBoolEntry( "Show Tray Icon", true );
+    m_optXFade = m_pConfig->readBoolEntry( "Crossfading", true );
     m_optHidePlaylistWindow = m_pConfig->readBoolEntry( "Hide Playlist Window", true );
 
     m_Volume = m_pConfig->readNumEntry( "Master Volume", 50 );
@@ -817,7 +828,7 @@ void PlayerApp::getTrackLength()
         return ;
     // let aRts calculate length
     Arts::poTime timeO( m_pPlayObject->overallTime() );
-    m_Length = timeO.seconds;
+    m_length = timeO.seconds;
     m_pPlayerWidget->m_pSlider->setMaxValue( static_cast<int>( timeO.seconds ) );
 
     KFileMetaInfo metaInfo( item->url().path(), QString::null, KFileMetaInfo::Everything );
@@ -837,9 +848,9 @@ void PlayerApp::getTrackLength()
         }
 
         int totSeconds, totMinutes, totHours;
-        totSeconds = ( m_Length % 60 );
-        totMinutes = ( m_Length / 60 % 60 );
-        totHours = ( m_Length / 60 / 60 % 60 );
+        totSeconds = ( m_length % 60 );
+        totMinutes = ( m_length / 60 % 60 );
+        totHours = ( m_length / 60 / 60 % 60 );
         if ( totHours )
         {
             strNum.setNum( totHours );
@@ -861,6 +872,55 @@ void PlayerApp::getTrackLength()
             m_pPlayerWidget->setScroll( item->text( 0 ), " ? ", " ? " );
         else
             m_pPlayerWidget->setScroll( str, " ? ", " ? " );
+    }
+}
+
+
+void PlayerApp::toggleXFade( bool on )
+{
+    if ( on )
+    {
+        m_optXFade = true;
+    }
+
+    else
+    {
+        m_optXFade = false;
+    }
+}
+
+
+void PlayerApp::startXFade()
+{
+    m_XFadeRunning = true;
+
+    if ( m_XFadeCurrent == "invalue1" )
+        m_XFadeCurrent = "invalue2";
+    else
+        m_XFadeCurrent = "invalue1";
+
+    m_pPlayObjectXFade = m_pPlayObject;
+    m_pPlayObject = NULL;
+    m_length = 0;
+
+    delete m_pPlayerWidget->m_pPlayObjConfigWidget;
+    m_pPlayerWidget->m_pPlayObjConfigWidget = NULL;
+
+    slotNext();
+}
+
+
+void PlayerApp::stopXFade()
+{
+    if ( m_pPlayObjectXFade != NULL )
+    {
+        m_pPlayObjectXFade->halt();
+        m_pPlayObjectXFade->object()._node()->stop();
+
+        delete m_pPlayObjectXFade;
+        m_pPlayObjectXFade = NULL;
+
+        m_XFadeRunning = false;
     }
 }
 
@@ -934,7 +994,7 @@ void PlayerApp::slotPlay()
 
     m_pPlayerWidget->m_pButtonPlay->setOn( true ); //interface consistency
 
-    m_Length = 0;
+    m_length = 0;
     KDE::PlayObjectFactory factory( m_Server );
     factory.setAllowStreaming( true );
     m_pPlayObject = NULL;
@@ -969,7 +1029,7 @@ void PlayerApp::slotPlay()
 
     if ( m_pPlayObject->stream() )
     {
-        m_Length = 0;
+        m_length = 0;
         m_pPlayerWidget->m_pSlider->setMaxValue( 0 );
         m_pPlayerWidget->timeDisplay( false, 0, 0, 0 );
 
@@ -988,10 +1048,13 @@ void PlayerApp::slotConnectPlayObj()
 {
     if ( !m_pPlayObject->object().isNull() )
     {
-        m_pPlayObject->object()._node() ->start();
+        m_pPlayObject->object()._node()->start();
 
-        Arts::connect( m_pPlayObject->object(), std::string( "left" ), m_globalEffectStack, std::string( "inleft" ) );
-        Arts::connect( m_pPlayObject->object(), std::string( "right" ), m_globalEffectStack, std::string( "inright" ) );
+        Arts::connect( m_pPlayObject->object(), std::string( "left" ), m_XFadeL, m_XFadeCurrent.latin1() );
+        Arts::connect( m_pPlayObject->object(), std::string( "right" ), m_XFadeR, m_XFadeCurrent.latin1() );
+
+/*        Arts::connect( m_pPlayObject->object(), std::string( "left" ), m_globalEffectStack, std::string( "inleft" ) );
+        Arts::connect( m_pPlayObject->object(), std::string( "right" ), m_globalEffectStack, std::string( "inright" ) );*/
     }
 }
 
@@ -1021,20 +1084,26 @@ void PlayerApp::slotStop()
     {
         m_pPlayerWidget->m_pButtonPlay->setOn( false );
 
-        if ( m_pPlayObject )
+        if ( m_pPlayObject != NULL )
         {
             m_pPlayObject->halt();
-
-            Arts::disconnect( m_pPlayObject->object(), std::string( "left" ), m_globalEffectStack, std::string( "inleft" ) );
-            Arts::disconnect( m_pPlayObject->object(), std::string( "right" ), m_globalEffectStack, std::string( "inright" ) );
             m_pPlayObject->object()._node() ->stop();
 
             delete m_pPlayObject;
             m_pPlayObject = NULL;
         }
 
+        if ( m_pPlayObjectXFade != NULL )
+        {
+            m_pPlayObjectXFade->halt();
+            m_pPlayObjectXFade->object()._node() ->stop();
+
+            delete m_pPlayObjectXFade;
+            m_pPlayObjectXFade = NULL;
+        }
+
         m_bIsPlaying = false;
-        m_Length = 0;
+        m_length = 0;
         m_pPlayerWidget->m_pButtonPause->setDown( false );
         m_pPlayerWidget->m_pSlider->setValue( 0 );
         m_pPlayerWidget->m_pSlider->setMinValue( 0 );
@@ -1211,7 +1280,7 @@ void PlayerApp::slotSliderChanged( int value )
     {
         if ( m_optTimeDisplayRemaining )
         {
-            value = m_Length - value;
+            value = m_length - value;
             m_pPlayerWidget->timeDisplay( true, value / 60 / 60 % 60, value / 60 % 60, value % 60 );
         }
         else
@@ -1247,7 +1316,7 @@ void PlayerApp::slotMainTimer()
     {
         if ( m_optTimeDisplayRemaining )
         {
-            int sliderSeconds = m_Length - m_pPlayerWidget->m_pSlider->value();
+            int sliderSeconds = m_length - m_pPlayerWidget->m_pSlider->value();
             m_pPlayerWidget->timeDisplay( true, sliderSeconds / 60 / 60 % 60, sliderSeconds / 60 % 60, sliderSeconds % 60 );
         }
         else
@@ -1268,13 +1337,44 @@ void PlayerApp::slotMainTimer()
         return ;
     }
 
-    if ( ( m_Length == 0 ) && ( !m_pPlayObject->stream() ) )
+    if ( ( m_length == 0 ) && ( !m_pPlayObject->stream() ) )
         getTrackLength();
 
     if ( m_bSliderIsPressed )
         return ;
     if ( !m_bIsPlaying )
         return ;
+
+    Arts::poTime timeC( m_pPlayObject->currentTime() );
+    m_pPlayerWidget->m_pSlider->setValue( static_cast<int>( timeC.seconds ) );
+
+    // <Crossfading>
+    if ( m_optXFade and m_length - timeC.seconds < 4 and not m_XFadeRunning )
+    {
+        startXFade();
+    }
+    if ( m_XFadeRunning )
+    {
+        if ( m_XFadeCurrent == "invalue2" )
+        {
+            m_XFadeValue -= 0.04;
+            if ( m_XFadeValue < 0.0 )
+            {
+                stopXFade();
+                m_XFadeValue = 0.0;
+            }
+        }
+        else
+            m_XFadeValue += 0.04;
+            if ( m_XFadeValue > 1.0 )
+            {
+                stopXFade();
+                m_XFadeValue = 1.0;
+            }
+
+        m_synthData.value( m_XFadeValue );
+    }
+    // </Crossfading>
 
     // check if track has ended
     if ( m_pPlayObject->state() == Arts::posIdle )
@@ -1299,9 +1399,6 @@ void PlayerApp::slotMainTimer()
             m_scopeActive = false;
         }
     }
-
-    Arts::poTime timeC( m_pPlayObject->currentTime() );
-    m_pPlayerWidget->m_pSlider->setValue( static_cast<int>( timeC.seconds ) );
 }
 
 
