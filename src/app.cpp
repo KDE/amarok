@@ -70,7 +70,7 @@ App::App()
 
     if ( amaroK::config()->readBoolEntry( "First Run", true ) ) {
         //stop the splashscreen first, socket server is a temporary on purpose!
-        LoaderServer( 0 );
+        LoaderServer server( 0 );
         firstRunWizard();
     }
 
