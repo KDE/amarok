@@ -3,10 +3,15 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #167 being the highest available (take this one for your next bug and increase here)
+           #169 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  FIX 168 <markey> Configuring collection folders only works from Collection-Browser menu, but not from wizard
+                   or Context-Browser.
+
+  FIX 167 <markey> Adapt Player-Window colors from "Custom color scheme" mode too.
 
   FIX 166 <markey> Playlist context menu can get very wide due to the "Write [blah] For Selected Tracks".
                    Maybe a SqueezeText would be better.
@@ -21,10 +26,8 @@ SHORT-TERM (URGENT):
 
   FIX 156 <markey> Fix suppression of compile warnings for sqlite etc. -w -Wall is the problem.
 
-  FIX 153 <markey> PlaylistLoader appears to accept any filetype into the playlist, ignoring canDecode().
-
-  FIX 134 <markey> Ctrl-C as shortcut for copying title just doesn't work. We need to choose another
-                   shortcut. How about a global shortcut?
+  FIX 134 <markey> Ctrl-C in Playlist (and other Ctrl shortcuts) for copying title doesn't work, because the
+                   event gets eaten by another widget.
 
 
 MID-TERM:
