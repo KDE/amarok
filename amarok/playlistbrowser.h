@@ -5,13 +5,15 @@
 #define PLAYLISTBROWSER_H
 
 #include <kiconview.h>
-#include <kurl.h> //KURL::List
+#include <kurl.h>  //KURL::List
+#include <qrect.h> //QRect
 
 class QColorGroup;
 class QCustomEvent;
 class QDragObject;
 class QPainter;
 class QPixmap;
+class QResizeEvent;
 
 class PlaylistBrowser : public KIconView
 {
@@ -28,6 +30,7 @@ public:
 
 private:
     void customEvent( QCustomEvent* );
+    void resizeEvent( QResizeEvent* );
 
     class Item : public KIconViewItem
     {
@@ -42,6 +45,7 @@ private:
         const KURL m_url;
         int m_numberTracks;
         QString m_length;
+        QRect m_bounds;
     };
 
     Item *currentItem() const { return (Item *)KIconView::currentItem(); }

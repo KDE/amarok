@@ -19,7 +19,8 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 {
     setResizeMode( QIconView::Adjust );
     setSelectionMode( QIconView::Extended );
-    setGridX( 100 );
+
+    setGridX( 140 );
 }
 
 PlaylistBrowser::~PlaylistBrowser()
@@ -30,6 +31,18 @@ PlaylistBrowser::dragObject()
 {
     return new KURLDrag( currentItem()->url(), this );
 }
+#include <kdebug.h>
+void
+PlaylistBrowser::resizeEvent( QResizeEvent *e )
+{
+//    int width = e->size().width();
+
+//    setGridX( width > 100 ? width : 100 );
+
+    KIconView::resizeEvent( e );
+
+    //TODO adjust mode may be unecessary
+}
 
 void
 PlaylistBrowser::customEvent( QCustomEvent *e )
@@ -37,55 +50,52 @@ PlaylistBrowser::customEvent( QCustomEvent *e )
     if( e->type() != ThreadWeaver::Job::PLStats ) return;
 
     #define e static_cast<PLStats*>(e)
-    Item *item = new PlaylistBrowser::Item( this, e->url(), e->contents(), e->length() );
+    new PlaylistBrowser::Item( this, e->url(), e->contents(), e->length() );
     #undef e
 }
 
 
 
 PlaylistBrowser::Item::Item( QIconView *parent, const KURL &u, const KURL::List &list, const uint length )
-   : KIconViewItem( parent )
+   : KIconViewItem( parent, u.fileName() )
    , m_url( u )
    , m_numberTracks( list.count() )
    , m_length( MetaBundle::prettyLength( length ) )
 {
-    QString name = u.fileName();
-    setText( fileBasename( name ) );
     setDragEnabled( true );
-    setPixmap( findCoverArt( list.first() ) );
+    setPixmap( findCoverArt(list.first()) ); //causes calcRect()
 }
-
+#include <kdebug.h>
 void
 PlaylistBrowser::Item::paintItem( QPainter *p, const QColorGroup &cg )
 {
     QIconViewItem::paintItem( p, cg );
 
     QFontMetrics fm( iconView()->font() );
-    p->setPen( Qt::green );
-    QRect r = textRect( false );
-    p->drawText( r.left(), r.bottom(), metaString() );
+    p->setPen( QColor(0x80, 0xa0, 0xff) );
+
+    QRect r = m_bounds;
+    r.moveBy( x(), y() );
+
+    kdDebug() << r << endl;
+
+    p->drawText( r, Qt::AlignHCenter | Qt::WordBreak, metaString() );
 }
-#include <kdebug.h>
+
 void
-PlaylistBrowser::Item::calcRect( const QString &s )
+PlaylistBrowser::Item::calcRect( const QString &foo )
 {
+    kdDebug() << "calcRect()!\n";
+
+    KIconViewItem::calcRect( foo );
+
     const QFontMetrics fm( iconView()->font() );
-    const uint width = fm.width( metaString() );
-    QRect r = textRect( true );
-    r.setWidth( width );
-    setTextRect( r );
+    QRect r = rect();
+    m_bounds = fm.boundingRect( 0, textRect().bottom() + fm.leading(), r.width(), iconView()->height(), Qt::AlignHCenter | Qt::WordBreak, metaString() );
 
-    KIconViewItem::calcRect( s );
+    r.rBottom() += m_bounds.height() + fm.leading();
 
-    r = textRect( true );
-    r.rBottom() += fm.height();
-    setTextRect( r );
-//kdDebug() << "text: " << r << endl;
-    r = rect();
-    r.rBottom() += fm.height();
-    r.setWidth( width );
     setItemRect( r );
-//kdDebug() << "item: " << r << endl;
 }
 
 inline QString
@@ -96,7 +106,8 @@ PlaylistBrowser::Item::metaString() const
 
 #include <dirent.h>
 #include <qimage.h>
-QPixmap PlaylistBrowser::findCoverArt( const KURL &url ) //static
+QPixmap
+PlaylistBrowser::findCoverArt( const KURL &url ) //static
 {
     //TODO this function should save the thumbnail to amarok dir too so it is found in this function next time
     //TODO check our thumbnail cache first
@@ -104,10 +115,7 @@ QPixmap PlaylistBrowser::findCoverArt( const KURL &url ) //static
     //TODO pixmap generation should be done in the thread
 
     QStringList validExts;
-    validExts << "jpg";
-    validExts << "png";
-    validExts << "gif";
-    validExts << "jpeg";
+    validExts << "jpg" << "png" << "gif" << "jpeg";
 
     DIR *d = opendir( url.directory( FALSE, FALSE ).local8Bit() );
     if( d )
