@@ -74,6 +74,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     resize( sizeHint() );
 
     restoreScripts();
+    slotCurrentChanged( m_base->directoryListView->currentItem() );
 }
 
 
@@ -145,6 +146,10 @@ ScriptManager::slotEditScript()
 {
     Debug::Block b( __PRETTY_FUNCTION__ );
 
+    KTextEdit* editor = new KTextEdit();
+    kapp->setTopWidget( editor );
+    editor->setCaption( kapp->makeStdCaption( i18n( "Edit Script" ) ) );
+
     QString name = m_base->directoryListView->currentItem()->text( 0 );
     QFile file( m_scripts[name].url.path() );
 
@@ -153,11 +158,8 @@ ScriptManager::slotEditScript()
     else {
         KMessageBox::information( 0, i18n( "File is not writable, opening in read-only mode." ) );
         file.open( IO_ReadOnly );
+        editor->setReadOnly( true );
     }
-
-    KTextEdit* editor = new KTextEdit();
-    kapp->setTopWidget( editor );
-    editor->setCaption( kapp->makeStdCaption( i18n( "Edit Script" ) ) );
 
     QTextStream stream( &file );
     editor->setText( stream.read() );
@@ -249,6 +251,7 @@ ScriptManager::slotAboutScript()
     }
 
     KTextEdit* editor = new KTextEdit();
+    editor->setReadOnly( true );
     kapp->setTopWidget( editor );
     editor->setCaption( kapp->makeStdCaption( i18n( "About %1" ).arg( name ) ) );
 
