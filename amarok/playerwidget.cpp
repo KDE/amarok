@@ -710,5 +710,16 @@ void PlayerWidget::slotUpdateTrayIcon( bool visible )
     }
 }
 
+void PlayerWidget::show()
+{
+   emit sigRestored();
+   QWidget::show();
+}
+
+void PlayerWidget::hide()
+{
+   emit sigMinimized();
+   QWidget::hide();
+}
 
 #include "playerwidget.moc"

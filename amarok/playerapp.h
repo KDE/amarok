@@ -83,6 +83,7 @@ class PlayerApp : public KUniqueApplication
         bool m_optRepeatPlaylist;
         bool m_optRandomMode;
         bool m_optShowTrayIcon;
+        bool m_optHidePlaylistWindow;
         QString m_optDropMode;
         // </option attributes>
 
@@ -129,6 +130,8 @@ class PlayerApp : public KUniqueApplication
         void slotSetRepeatTrack();
         void slotSetRepeatPlaylist();
         void slotShowHelp();
+        void slotWidgetMinimized();
+        void slotWidgetRestored();
 
     private slots:
         void saveSessionState();

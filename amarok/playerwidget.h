@@ -142,6 +142,13 @@ class PlayerWidget : public QWidget
         void slotConfigWidgetDestroyed();
         void slotUpdateTrayIcon( bool visible );
 
+        virtual void show();
+        virtual void hide();
+
+    signals:
+        void sigMinimized();
+        void sigRestored();
+
     private:
         void initScroll();
         void initTimeDisplay();

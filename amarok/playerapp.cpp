@@ -133,6 +133,9 @@ PlayerApp::PlayerApp() :
     connect( this, SIGNAL( saveYourself() ), this, SLOT( saveSessionState() ) );
     connect( this, SIGNAL( sigShowTrayIcon( bool ) ), m_pPlayerWidget, SLOT( slotUpdateTrayIcon( bool ) ) );
 
+    connect( m_pPlayerWidget, SIGNAL( sigMinimized() ), this, SLOT( slotWidgetMinimized() ) );
+    connect( m_pPlayerWidget, SIGNAL( sigRestored() ), this, SLOT( slotWidgetRestored() ) );
+
     m_pMainTimer = new QTimer( this );
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
 
@@ -249,6 +252,8 @@ void PlayerApp::restore()
             time.custom = 0;
             time.customUnit = std::string();
 
+          // try to fix a crash on session restore when there's nothing to restore
+          if (m_pPlayObject && !m_pPlayObject->isNull())
             m_pPlayObject->seek( time );
         }
     }
@@ -681,6 +686,7 @@ void PlayerApp::saveConfig()
     m_pConfig->writeEntry( "Random Mode", m_optRandomMode );
     m_pConfig->writeEntry( "Show MetaInfo", m_optReadMetaInfo );
     m_pConfig->writeEntry( "Show Tray Icon", m_optShowTrayIcon );
+    m_pConfig->writeEntry( "Hide Playlist Window", m_optHidePlaylistWindow );
 
     //store current item
     PlaylistItem *item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
@@ -724,6 +730,7 @@ void PlayerApp::readConfig()
     m_optRepeatPlaylist = m_pConfig->readBoolEntry( "Repeat Playlist", false );
     m_optReadMetaInfo = m_pConfig->readBoolEntry( "Show MetaInfo", false );
     m_optShowTrayIcon = m_pConfig->readBoolEntry( "Show Tray Icon", true );
+    m_optHidePlaylistWindow = m_pConfig->readBoolEntry( "Hide Playlist Window", true );
 
     m_Volume = m_pConfig->readNumEntry( "Master Volume", 50 );
     slotVolumeChanged( m_Volume );
@@ -1380,6 +1387,7 @@ void PlayerApp::slotShowOptions()
     opt1->checkBox6->setChecked( m_optConfirmExit );
     opt1->checkBox4->setChecked( m_optReadMetaInfo );
     opt1->checkBox3->setChecked( m_optShowTrayIcon );
+    opt1->checkBox5->setChecked( m_optHidePlaylistWindow );
 
     if ( m_optDropMode == "Ask" )
         opt1->comboBox1->setCurrentItem( 0 );
@@ -1419,6 +1427,11 @@ void PlayerApp::slotShowOptions()
             m_optShowTrayIcon = true;
         else
             m_optShowTrayIcon = false;
+
+        if ( opt1->checkBox5->isChecked() )
+            m_optHidePlaylistWindow = true;
+        else
+            m_optHidePlaylistWindow = false;
 
         switch ( opt1->comboBox1->currentItem() )
         {
@@ -1496,6 +1509,18 @@ void PlayerApp::slotSetRepeatPlaylist()
 void PlayerApp::slotShowHelp()
 {
     KApplication::KApp->invokeHelp( QString::null, "amarok" );
+}
+
+void PlayerApp::slotWidgetMinimized()
+{
+   if (m_optHidePlaylistWindow && m_pPlayerWidget->m_pButtonPl->isOn())
+      m_pBrowserWin->hide();
+}
+
+void PlayerApp::slotWidgetRestored()
+{
+   if (m_optHidePlaylistWindow && m_pPlayerWidget->m_pButtonPl->isOn())
+      m_pBrowserWin->show();
 }
 
 #include "playerapp.moc"

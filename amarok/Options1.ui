@@ -159,7 +159,7 @@
                     <x>10</x>
                     <y>20</y>
                     <width>350</width>
-                    <height>90</height>
+                    <height>130</height>
                 </rect>
             </property>
             <vbox>
@@ -188,6 +188,14 @@
                     </property>
                     <property name="text">
                         <string>Show &amp;tray icon</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>checkBox5</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Hide playlist with main window</string>
                     </property>
                 </widget>
             </vbox>
