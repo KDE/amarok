@@ -22,7 +22,7 @@ SHORT-TERM (URGENT):
              * The playwidget and playlistwidget should display as single entry on taskbar.
 	     * Clicking on either or on tray icon should bring both up/down.
 	     * Setting WType_Dialog on playlist doesn't help, because then playlist always
-	       overlays the playwidget.
+	       obscures the playwidget.
 
     * fix: <mxcl> GroupBoxes can't have check boxes with Qt 3.1, so before next release do
            some #ifdefs to surround that code and hope nobody gets too pissed about it -->mxcl
