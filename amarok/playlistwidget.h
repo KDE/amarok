@@ -41,13 +41,16 @@ class QRect;
 class QString;
 class QTimer;
 
+class KAction;
+class KActionCollection;
+
 class MetaBundle;
 class PlaylistBrowser;
 class PlaylistLoader;
 class ThreadWeaver;
 
 /*
- * @author Mark Kretschmann && Max Howell
+ * @authors Mark Kretschmann && Max Howell
  *
  * PlaylistWidget inherits KListView privately and thus is no longer a ListView
  * Instead it is a part of BrowserWin and they interact in harmony. The change
@@ -78,7 +81,7 @@ class PlaylistWidget : private KListView
 {
     Q_OBJECT
     public:
-        PlaylistWidget( QWidget* = 0, const char* = 0 );
+        PlaylistWidget( QWidget*, KActionCollection*, const char* = 0 );
         ~PlaylistWidget();
 
         void insertMedia( const KURL::List&, bool directPlay = false );
@@ -181,9 +184,9 @@ class PlaylistWidget : private KListView
 
         ThreadWeaver* const m_weaver;
 
-        QPushButton *m_undoButton;
-        QPushButton *m_redoButton;
-        QPushButton *m_clearButton;
+        KAction *m_undoButton;
+        KAction *m_redoButton;
+        KAction *m_clearButton;
 
         QDir         m_undoDir;
         QStringList  m_undoList;

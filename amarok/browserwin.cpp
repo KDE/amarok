@@ -90,60 +90,19 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     clearButton->setIconSet( SmallIconSet( "locationbar_erase" ) );
     connect( clearButton, SIGNAL( clicked() ), m_lineEdit, SLOT( clear() ) );
     */
-    
-    //ToolBar
-        QPopupMenu* actions_popup = new QPopupMenu( this );
-        actions_popup->insertItem( KGlobal::iconLoader()->loadIconSet( "clear_left", KIcon::NoGroup, KIcon::SizeSmall ),
-                                   "Clear" );
-        actions_popup->insertItem( KGlobal::iconLoader()->loadIconSet( "rebuild",    KIcon::NoGroup, KIcon::SizeSmall ), 
-                                   "Shuffle", m_playlist, SLOT( shuffle() ) );
-        actions_popup->insertItem( KGlobal::iconLoader()->loadIconSet( "filesaveas", KIcon::NoGroup, KIcon::SizeSmall ),
-                                   "Save Playlist", this, SLOT( savePlaylist() ) );
-        
-        KToolBar* toolbar = new KToolBar( this );
-        toolbar->setIconText( KToolBar::IconTextBottom );
-        
-        toolbar->insertButton( "fileopen",    id_addItem,         true, "Add item" );
-        connect( toolbar->getButton( id_addItem ), SIGNAL( clicked() ), this, SLOT( slotAddLocation() ) );
-        
-        toolbar->insertButton( "midi",        id_playlistActions, true, "Playlist actions" );
-        toolbar->getButton( id_playlistActions )->setDelayedPopup( actions_popup );
+    KToolBar* toolbar = new KToolBar( this );
+    toolbar->setIconText( KToolBar::IconTextBottom );
 
-        toolbar->insertLineSeparator();
-                
-        toolbar->insertButton( "undo",        id_undo,            true, "Undo" );
-        connect( toolbar->getButton( id_undo ), SIGNAL( clicked() ), m_playlist, SLOT( undo() ) );
-        toolbar->insertButton( "redo",        id_redo,            true, "Redo" );
-        connect( toolbar->getButton( id_undo ), SIGNAL( clicked() ), m_playlist, SLOT( redo() ) );
-        
-        toolbar->insertLineSeparator();
-        
-        toolbar->insertButton( "player_play", id_play,            true, "Play" );
-        connect( toolbar->getButton( id_play ), SIGNAL( clicked() ), pApp, SLOT( slotPlay() ) );
-    
-        toolbar->insertButton( "player_fwd", id_next,             true, "Next" );
-        connect( toolbar->getButton( id_next ), SIGNAL( clicked() ), pApp, SLOT( slotNext() ) );
-    
-        toolbar->insertButton( "player_stop", id_stop,            true, "Stop" );
-        connect( toolbar->getButton( id_stop ), SIGNAL( clicked() ), pApp, SLOT( slotStop() ) );
-
-        toolbar->insertButton( "player_pause", id_pause,          true, "Pause" );
-        connect( toolbar->getButton( id_pause ), SIGNAL( clicked() ), pApp, SLOT( slotPause() ) );
-        
-        toolbar->insertButton( "player_rew", id_prev,            true, "Previous" );
-        connect( toolbar->getButton( id_prev ), SIGNAL( clicked() ), pApp, SLOT( slotPrev() ) );
-    //ToolBar    
-        
     QBoxLayout *layV = new QVBoxLayout( this );
-    layV->addWidget( toolbar );
     layV->addWidget( m_splitter );
-    
-    QVBox *box = new QVBox( m_splitter );
+    layV->addWidget( toolbar );
+
+    QVBox *box  = new QVBox( m_splitter );
 
     QHBox *boxH = new QHBox( box );
-    m_lineEdit = new KLineEdit( boxH );
+    m_lineEdit  = new KLineEdit( boxH );
 
-    m_playlist = new PlaylistWidget( box );
+    m_playlist = new PlaylistWidget( box, m_pActionCollection );
     m_splitter->setResizeMode( m_sideBar, QSplitter::FollowSizeHint );
     m_splitter->setResizeMode( box,       QSplitter::Auto );
     m_sideBar->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
@@ -156,7 +115,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 //    showCurrentTrack->resize(24,24);
     connect( showCurrentTrack, SIGNAL( clicked() ), m_playlist, SLOT(showCurrentTrack()) );
 
-    {
+    {/*
         ExpandButton *add =
         new ExpandButton( i18n( "&Add Item..." ), this, this, SLOT( slotAddLocation() ) );
 
@@ -171,19 +130,57 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
         new ExpandButton( i18n( "Play&list Actions" ), this, m_playlist, SLOT( showCurrentTrack() ) );
         new ExpandButton( i18n( "Shuffle" ), playlist, m_playlist, SLOT( shuffle() ) );
         new ExpandButton( i18n( "Save Playlist..." ), playlist, this, SLOT( savePlaylist() ) );
-        //FIXME eventually the playlist should own this action and allow connection via a KAction type interface
+
         m_playlist->m_clearButton = new ExpandButton( i18n( "Clear" ), playlist, m_playlist, SLOT( clear() ) );
 
-        m_playlist->m_undoButton->reparent( this, QPoint(), false );
-        m_playlist->m_redoButton->reparent( this, QPoint(), false );
+        QPushButton *undo = new ExpandButton( i18n( "Undo" ), this, m_playlist, SLOT( undo() ) );
+        QPushButton *redo = new ExpandButton( i18n( "Redo" ), this, m_playlist, SLOT( redo() ) );
 
         QBoxLayout *layH = new QHBoxLayout( layV );
         layH->addWidget( add );
         layH->addWidget( playlist );
-        layH->addWidget( m_playlist->m_undoButton );
-        layH->addWidget( m_playlist->m_redoButton );
+        layH->addWidget( undo );
+        layH->addWidget( redo );
         layH->addWidget( play );
-    }
+  */}
+
+    {//<ToolBar>
+        QPopupMenu* actions_popup = new QPopupMenu( this );
+        m_playlist->m_clearButton->plug( actions_popup );
+        actionCollection()->action( "shuffle_playlist" )->plug( actions_popup  );
+        actionCollection()->action( "save_playlist" )->plug( actions_popup  );
+
+        toolbar->insertButton( "fileopen",    id_addItem,         true, i18n( "Add Item" ) );
+        connect( toolbar->getButton( id_addItem ), SIGNAL( clicked() ), this, SLOT( slotAddLocation() ) );
+
+        toolbar->insertButton( "midi",        id_playlistActions, true, i18n( "Playlist Actions" ) );
+        toolbar->getButton( id_playlistActions )->setDelayedPopup( actions_popup );
+        actionCollection()->action( "show_current_track" )->plug( toolbar );
+
+        toolbar->insertLineSeparator();
+
+        m_playlist->m_undoButton->plug( toolbar );
+        m_playlist->m_redoButton->plug( toolbar );
+
+        toolbar->insertLineSeparator();
+
+        //FIXME replace with actions provided by engine
+        toolbar->insertButton( "player_rew", id_prev,            true, "Previous" );
+        connect( toolbar->getButton( id_prev ), SIGNAL( clicked() ), pApp, SLOT( slotPrev() ) );
+
+        toolbar->insertButton( "player_play", id_play,            true, "Play" );
+        connect( toolbar->getButton( id_play ), SIGNAL( clicked() ), pApp, SLOT( slotPlay() ) );
+
+        toolbar->insertButton( "player_pause", id_pause,          true, "Pause" );
+        connect( toolbar->getButton( id_pause ), SIGNAL( clicked() ), pApp, SLOT( slotPause() ) );
+
+        toolbar->insertButton( "player_stop", id_stop,            true, "Stop" );
+        connect( toolbar->getButton( id_stop ), SIGNAL( clicked() ), pApp, SLOT( slotStop() ) );
+
+        toolbar->insertButton( "player_fwd", id_next,             true, "Next" );
+        connect( toolbar->getButton( id_next ), SIGNAL( clicked() ), pApp, SLOT( slotNext() ) );
+    }//</ToolBar>
+
 
     //</FileBrowser>
         m_sideBar->addPage( new KDevFileSelector( 0, "FileBrowser" ), i18n( "File Browser" ), "hdd_unmount" );
@@ -209,15 +206,13 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     m_lineEdit->installEventFilter( this );
 
 
-    connect( m_playlist,   SIGNAL( aboutToClear() ),
-             m_lineEdit,     SLOT( clear() ) );
+    connect( m_playlist, SIGNAL( aboutToClear() ),
+             m_lineEdit,   SLOT( clear() ) );
     //FIXME you need to detect focus out from the sideBar and connect to that..
-    connect( m_playlist,   SIGNAL( clicked( QListViewItem * ) ),
-             m_sideBar,      SLOT( autoClosePages() ) );
-    connect( m_lineEdit,   SIGNAL( textChanged( const QString& ) ),
-             m_playlist,     SLOT( slotTextChanged( const QString& ) ) );
-
-    //TODO KStdAction::copy( m_playlist, SLOT( copyAction() ), m_actionCollection );
+    connect( m_playlist, SIGNAL( clicked( QListViewItem * ) ),
+             m_sideBar,    SLOT( autoClosePages() ) );
+    connect( m_lineEdit, SIGNAL( textChanged( const QString& ) ),
+             m_playlist,   SLOT( slotTextChanged( const QString& ) ) );
 
     QToolTip::add( m_lineEdit, i18n( "Enter filter string" ) );
 }
@@ -377,7 +372,7 @@ void BrowserWin::savePlaylist() const //SLOT
 void BrowserWin::slotAddLocation() //SLOT
 {
     KURLRequesterDlg dlg( QString::null, 0, 0 );
-    dlg.setCaption( kapp->makeStdCaption( i18n( "Enter file or URL" ) ) );
+    dlg.setCaption( kapp->makeStdCaption( i18n( "Enter File, URL or Directory" ) ) );
     dlg.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
     dlg.exec();
 

@@ -57,6 +57,8 @@ class BrowserWin : public QWidget
         void setColors( const QPalette&, const QColor& );
         void saveConfig();
 
+        KActionCollection *actionCollection() const { return m_pActionCollection; }
+
         KActionCollection *m_pActionCollection;
 
     private slots:
@@ -66,7 +68,7 @@ class BrowserWin : public QWidget
     private:
         enum ButtonIds { id_addItem, id_playlistActions, id_undo, id_redo, id_play,
                          id_next, id_stop, id_pause, id_prev };
-        
+
         bool    eventFilter( QObject*, QEvent* );
 
         QSplitter       *m_splitter;

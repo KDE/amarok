@@ -34,6 +34,7 @@
 #include <qstringlist.h>
 #include <qtimer.h>
 
+#include <kaction.h>
 #include <kcursor.h>
 #include <kdebug.h>
 #include <kiconloader.h>
@@ -43,12 +44,13 @@
 #include <kpopupmenu.h>
 #include <krandomsequence.h>
 #include <kstandarddirs.h>
+#include <kstdaction.h>
 #include <kurl.h>
 #include <kurldrag.h>
 
 
 
-PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ const char *name )
+PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const char *name )
     : KListView( parent, name )
     , m_browser( /*new PlaylistBrowser( "PlaylistBrowser" )*/ 0 )
     , m_GlowTimer( new QTimer( this ) )
@@ -59,8 +61,9 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
     , m_nextTrack( 0 )
     , m_marker( 0 )
     , m_weaver( new ThreadWeaver( this ) )
-    , m_undoButton( new QPushButton( i18n( "&Undo" ), 0 ) )
-    , m_redoButton( new QPushButton( i18n( "&Redo" ), 0 ) )
+    , m_undoButton(  KStdAction::undo(  this, SLOT( undo() ),  ac ) )
+    , m_redoButton(  KStdAction::redo(  this, SLOT( redo() ),  ac ) )
+    , m_clearButton( KStdAction::clear( this, SLOT( clear() ), ac ) )
     , m_undoDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) )
     , m_undoCounter( 0 )
 {
@@ -111,8 +114,6 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
     connect( this, SIGNAL( itemRenamed( QListViewItem*, const QString&, int ) ),
              this,   SLOT( writeTag( QListViewItem*, const QString&, int ) ) );
     connect( this, SIGNAL( aboutToClear() ), SLOT( saveUndoState() ) );
-    connect( m_undoButton, SIGNAL( clicked() ), SLOT( undo() ) );
-    connect( m_redoButton, SIGNAL( clicked() ), SLOT( redo() ) );
 
 
     //IMPORTANT CONNECTS!
@@ -157,12 +158,13 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
 
         m_undoButton->setEnabled( false );
         m_redoButton->setEnabled( false );
-        m_undoButton->setFlat( true );
-        m_redoButton->setFlat( true );
-        m_undoButton->setFocusPolicy( QWidget::NoFocus );
-        m_redoButton->setFocusPolicy( QWidget::NoFocus );
     //</init undo/redo>
 
+    KStdAction::copy( this, SLOT( copyAction() ), ac );
+    new KAction( i18n( "Save Playlist" ), "filesaveas", CTRL+Key_S, this, SLOT( saveM3u() ), ac, "save_playlist" );
+    new KAction( i18n( "Shuffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "shuffle_playlist" );
+    new KAction( i18n( "Show Current Track" ), "2uparrow", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "show_current_track" );
+    //QToolTip::add( ac->action( "show_current_track" ), i18n( "Scroll to currently playing track" ) );
 
     //install header eventFilter
     header()->installEventFilter( this );
@@ -773,10 +775,11 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
     bool isCurrent = (item == m_currentTrack);
     bool isPlaying = pApp->isPlaying();
 
+    //Markey, sorry for the lengths of these lines! -mxcl
+
     QPopupMenu popup( this );
-    //TODO if paused the play stuff won't do what the user expects
-    popup.insertItem( SmallIcon( "player_play" ), isCurrent ? i18n( "&Play (Restart)" ) : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
-    popup.insertItem( i18n( "Play this Track &Next" ), PLAY_NEXT );
+    popup.insertItem( SmallIcon( "player_play" ), isCurrent && isPlaying ? i18n( "&Play (Restart)" ) : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
+    popup.insertItem( i18n( "Play this Track &Next" ), PLAY_NEXT ); //FIXME the text for this sucks
     popup.insertItem( SmallIcon( "info" ), i18n( "&View Meta Information..." ), VIEW ); //TODO rename properties
     popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit Tag: '%1'" ).arg( columnText( col ) ), EDIT );
     if( canRename )
@@ -843,7 +846,7 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
 
 void PlaylistWidget::showTrackInfo( PlaylistItem *pItem ) const //SLOT
 {
-    QString str  = "<html><body><table border=\"1\">";
+    QString str  = "<html><body><table width=\"100%\" border=\"1\">";
     QString body = "<tr><td>%1</td><td>%2</td></tr>";
 
     if( AmarokConfig::showMetaInfo() )
