@@ -236,6 +236,12 @@ namespace amaroK
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( enable );
     }
 
+    void DcopPlayerHandler::enableRepeatPlaylist(bool enable)
+    {
+        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "repeat_playlist" ))->setChecked( enable );
+    }
+
+
     void DcopPlayerHandler::scanCollection()
     {
         CollectionDB::instance()->startScan();

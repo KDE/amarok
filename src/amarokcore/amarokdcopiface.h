@@ -41,6 +41,7 @@ k_dcop:
    virtual void seek(int s) = 0;                            ///< Seek track to seconds position.
    virtual void seekRelative(int s) = 0;                    ///< Seek to a position relative to the current track position.
    virtual void enableRandomMode(bool enable) = 0;          ///< Switch Random Mode on or off.
+   virtual void enableRepeatPlaylist(bool enable) = 0;      ///< Switch Repeat Playlist on or off.
 
    //TODO Move to Collection interface for 1.3
    virtual void scanCollection() = 0;                       ///< Scan the collection.
