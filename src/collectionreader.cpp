@@ -244,7 +244,7 @@ CollectionReader::readTags( const QStringList& entries )
         // Add tag-less tracks to database
 
         else if ( validMusic.contains( ext ) ) {
-            MetaBundle bundle; bundle.setUrl( url );
+            MetaBundle bundle; bundle.setPath( *it );
             CollectionDB::instance()->addSong( &bundle, m_incremental, m_db );
 
             CoverBundle cover( bundle.artist(), bundle.album() );
@@ -254,7 +254,7 @@ CollectionReader::readTags( const QStringList& entries )
 
         else if ( validMusic.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ).lower() ) )
         {
-            MetaBundle bundle; bundle.setUrl( url.path() );
+            MetaBundle bundle; bundle.setPath( *it );
             CollectionDB::instance()->addSong( &bundle, m_incremental, m_db );
 
             CoverBundle cover( bundle.artist(), bundle.album() );

@@ -161,7 +161,7 @@ class CollectionDB : public QObject, public EngineObserver
     public:
         static CollectionDB *instance();
 
-        static QString escapeString( QString string );
+        static QString escapeString( QString string ) { return string.replace( '\'', "''" ); }
 
         /**
          * This method returns a static DbConnection for components that want to use

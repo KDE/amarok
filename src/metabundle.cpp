@@ -35,8 +35,9 @@ const MetaBundle MetaBundle::null;
 
 MetaBundle::MetaBundle( const KURL &u, bool readAudioProperties, CollectionDB* const db )
   : m_url( u )
+  , m_exists( !m_url.isLocalFile() || QFile::exists( u.path() ) )
 {
-    if( m_url.isLocalFile() && !QFile::exists( m_url.path() ) ) {
+    if( !m_exists ) {
         init( 0 );
         return;
     }
@@ -93,6 +94,7 @@ MetaBundle::MetaBundle( const QString& title,
   , m_bitrate   ( bitrate )
   , m_length    ( Irrelevant )
   , m_sampleRate( Unavailable )
+  , m_exists( true )
 {
    if( title.contains( '-' ) ) {
       m_title  = title.section( '-', 1, 1 ).stripWhiteSpace();
@@ -114,6 +116,7 @@ MetaBundle::MetaBundle( const PlaylistItem *item )
   , m_comment( item->exactText( 5 ) ) //.
   , m_genre  ( item->exactText( 6 ) )
   , m_track  ( item->exactText( 7 ) )
+  , m_exists ( true ) //FIXME
 {
     if( m_url.isLocalFile() )
     {
@@ -152,6 +155,7 @@ MetaBundle::MetaBundle( const KURL &url, TagLib::Tag *tag, TagLib::AudioProperti
   , m_comment( TStringToQString( tag->comment() ).stripWhiteSpace() )
   , m_genre(   TStringToQString( tag->genre() ).stripWhiteSpace() )
   , m_track(   tag->track() ? QString::number( tag->track() ) : QString::null )
+  , m_exists( true )
 {
     init( ap );
 }

@@ -559,14 +559,6 @@ CollectionDB::valueFromID( QString table, uint id )
 
 
 QString
-CollectionDB::escapeString( QString string )
-{
-    string.replace( "'", "''" );
-    return string;
-}
-
-
-QString
 CollectionDB::albumSongCount( const QString &artist_id, const QString &album_id )
 {
     QStringList values =
@@ -1031,7 +1023,7 @@ CollectionDB::getMetaBundleForUrl( const QString& url , MetaBundle* bundle )
         bundle->setLength( values[8].toInt() );
         bundle->setSampleRate( values[9].toInt() );
 
-        bundle->setUrl( url );
+        bundle->setPath( url );
 
         return true;
     }
@@ -1043,16 +1035,17 @@ CollectionDB::getMetaBundleForUrl( const QString& url , MetaBundle* bundle )
 QValueList<MetaBundle>
 CollectionDB::bundlesByUrls( const KURL::List& urls )
 {
-    QValueList<MetaBundle> bundles;
-    QStringList values;
+    typedef QValueList<MetaBundle> BundleList;
+    BundleList bundles;
+    QStringList paths;
     QueryBuilder qb;
 
     uint i = 0;
-    KURL::List::ConstIterator it;
-    for ( it = urls.begin(); it != urls.end(); ++it )
+    for ( KURL::List::ConstIterator it = urls.begin(), end = urls.end(); it != end; ++it )
     {
-        values << (*it).path();
+        paths += (*it).path();
         i++;
+
         if ( i % 50 == 0 || i == urls.count() )
         {
             qb.clear();
@@ -1069,31 +1062,43 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valSamplerate );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
 
-            qb.addURLFilters( values );
+            qb.addURLFilters( paths );
             qb.setOptions( QueryBuilder::optRemoveDuplicates );
 
-            values = qb.run();
-            if ( values.count() )
-                for ( uint j = 0; j < values.count(); j += qb.countReturnValues() )
-                {
-                    MetaBundle b;
+            const QStringList values = qb.run();
 
-                    b.setAlbum     ( values[ j + 0 ] );
-                    b.setArtist    ( values[ j + 1 ] );
-                    b.setGenre     ( values[ j + 2 ] );
-                    b.setTitle     ( values[ j + 3 ] );
-                    b.setYear      ( values[ j + 4 ] );
-                    b.setComment   ( values[ j + 5 ] );
-                    b.setTrack     ( values[ j + 6 ] );
-                    b.setBitrate   ( values[ j + 7 ].toInt() );
-                    b.setLength    ( values[ j + 8 ].toInt() );
-                    b.setSampleRate( values[ j + 9 ].toInt() );
-                    b.setUrl       ( values[ j + 10 ] );
+            BundleList buns50;
+            MetaBundle b;
+            foreach( values )
+            {
+                b.setAlbum     (    *it );
+                b.setArtist    (  *++it );
+                b.setGenre     (  *++it );
+                b.setTitle     (  *++it );
+                b.setYear      (  *++it );
+                b.setComment   (  *++it );
+                b.setTrack     (  *++it );
+                b.setBitrate   ( (*++it).toInt() );
+                b.setLength    ( (*++it).toInt() );
+                b.setSampleRate( (*++it).toInt() );
+                b.setPath      (  *++it );
 
-                    bundles.append( b );
-                }
+                buns50.append( b );
+            }
 
-            values.clear();
+            // we get no guarantee about the order that the database
+            // will return our values, and sqlite indeed doesn't return
+            // them in the desired order :( (MySQL does though)
+            foreach( paths ) {
+                for( BundleList::Iterator jt = buns50.begin(), end = buns50.end(); jt != end; ++jt )
+                    if ( (*jt).url().path() == (*it) ) {
+                        bundles += *jt;
+                        buns50.remove( jt );
+                        break;
+                    }
+            }
+
+            paths.clear();
         }
     }
 

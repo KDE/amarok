@@ -35,12 +35,12 @@ public:
     /**
      * Creates an empty MetaBundle
      */
-    MetaBundle() { init(); }
+    MetaBundle() : m_exists( true ) { init(); }
 
     /**
      * Creates a MetaBundle for url, tags will be obtained and set
      */
-    MetaBundle( const KURL &u, bool readAudioProperties = true, CollectionDB* const db = 0 );
+    explicit MetaBundle( const KURL &u, bool readAudioProperties = true, CollectionDB* const db = 0 );
 
     //StreamProvider:
     MetaBundle( const QString& title,
@@ -63,6 +63,8 @@ public:
 
     MetaBundle &readTags( bool readAudioProperties = true );
 
+    /** used by PlaylistItem, should be true for everything but local files that aren't there */
+    bool exists() const { return m_exists; }
 
     int length()     const { return m_length > 0 ? m_length : 0; }
     int bitrate()    const { return m_bitrate; }
@@ -82,7 +84,7 @@ public:
     const QString &streamName() const { return m_streamName; }
     const QString &streamUrl()  const { return m_streamUrl; }
 
-    void setUrl( KURL url ) { m_url = url; }
+    void setPath( QString path ) { m_url.setPath( path ); }
     void setTitle( QString title ) { m_title = title; }
     void setArtist( QString artist ) { m_artist = artist; }
     void setAlbum( QString album ) { m_album = album; }
@@ -123,6 +125,8 @@ private:
     int m_bitrate;
     int m_length;
     int m_sampleRate;
+
+    bool m_exists;
 
     static /*inline */QString prettyGeneric( const QString&, int );
 
