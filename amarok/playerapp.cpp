@@ -29,9 +29,6 @@ email                : markey@web.de
 #include "playlisttooltip.h"
 #include "titleproxy.h"
 
-#include <vector>
-#include <string>
-
 #include <kaction.h>
 #include <kapp.h>
 #include <kcmdlineargs.h>
