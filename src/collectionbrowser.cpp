@@ -73,7 +73,10 @@ CollectionBrowser::CollectionBrowser( const char* name )
     //m_view->setMargin( 2 );
 
     m_actionsMenu->insertItem( i18n( "Configure Folders" ), m_view, SLOT( setupDirs() ) );
-    m_actionsMenu->insertItem( i18n( "Configure Cover Download" ), m_view, SLOT( setupCoverFetcher() ) );
+    
+//     //FIXME Deactivated for 1.0 release.
+//     m_actionsMenu->insertItem( i18n( "Configure Cover Download" ), m_view, SLOT( setupCoverFetcher() ) );
+    
     m_actionsMenu->insertSeparator();
     m_actionsMenu->insertItem( i18n( "Start Scan" ), m_view, SLOT( scan() ), 0, IdScan );
 
@@ -437,7 +440,8 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         if ( ( item->depth() && m_category2 == i18n( "None" ) ) || item->depth() == 2 ) {
             menu.insertItem( i18n( "Track Information" ), this, SLOT( showTrackInfo() ) );
-            menu.insertItem( i18n( "Fetch Cover Image" ), this, SLOT( fetchCover() ) );
+//             //FIXME Deactivated for 1.0 release.
+//             menu.insertItem( i18n( "Fetch Cover Image" ), this, SLOT( fetchCover() ) );
         }
 
         menu.exec( point );
