@@ -464,38 +464,38 @@ void ContextBrowser::showCurrentTrack() //SLOT
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
 
-    browser->write(
-            "<html>"
-             "<div class='rbcontent'>"
-              "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-               "<tr><th>&nbsp;" + i18n( "Currently Playing" ) + "</th></tr>"
-              "</table>"
-              "<table width='100%' border='0' cellspacing='0' cellpadding='1'>" );
-
+    browser->write( "<html>" );
 
     if ( EngineController::engine()->isStream() ) {
         browser->write( QStringx(
+             "<div class='rbcontent'>"
+              "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+               "<tr><th>&nbsp;%1</th></tr>"
+              "</table>"
+              "<table width='100%' border='0' cellspacing='0' cellpadding='1'>"
                "<tr>"
                 "<td height='42' valign='top' class='rbcurrent' width='90%'>"
                  "<span class='stream'>"
-                  "<b>%1</b>"
+                  "<b>%2</b>"
                   "<br/>"
                   "<br/>"
-                  "<i>%2</i>"
+                  "<i>%3</i>"
                   "<br/>"
-                  "<br/>"
-                  "%3"
                   "<br/>"
                   "%4"
                   "<br/>"
                   "%5"
                   "<br/>"
                   "%6"
+                  "<br/>"
+                  "%7"
                  "</span>"
                 "</td>"
-                "<td valign='top' align='right' width='10%'></td>"
-               "</tr>" )
+               "</tr>"
+              "</table>"
+             "</div>" )
             .args( QStringList()
+                << i18n( "Stream Details" )
                 << escapeHTML( currentTrack.prettyTitle() )
                 << escapeHTML( currentTrack.streamName() )
                 << escapeHTML( currentTrack.genre() )
@@ -503,18 +503,14 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 << escapeHTML( currentTrack.streamUrl() )
                 << escapeHTML( currentTrack.prettyURL() ) ) );
 
-        browser->write(
-              "</table>"
-             "</div>" );
-
         if ( m_metadataHistory.count() > 2 ) {
             browser->write(
                     "<br/>"
                     "<div class='rbcontent'>"
-                    "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-                    "<tr><th>&nbsp;" + i18n( "Metadata History" ) + "</th></tr>"
-                    "</table>"
-                    "<table width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+                     "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+                      "<tr><th>&nbsp;" + i18n( "Metadata History" ) + "</th></tr>"
+                     "</table>"
+                     "<table width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
             QStringList::const_iterator it;
             // Ignore first two items, as they don't belong in the history
@@ -527,7 +523,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             }
 
             browser->write(
-                "</table>"
+                 "</table>"
                 "</div>" );
         }
 
@@ -550,36 +546,35 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     //making 2 tables is most probably not the cleanest way to do it, but it works.
     browser->write( QStringx(
-        "<tr>"
-         "<td height='42' valign='top' class='rbcurrent' width='90%'>"
-          "<span class='album'>"
-           "<b>%1 - %2</b>"
-          "</span>"
-          "<br>%3"
-         "</td>"
-         "<td valign='top' align='right' width='10%'>"
-          "<a title='%4' href='musicbrainz:%5 @@@ %6'>"
-           "<img src='%7'>"
-          "</a>"
-         "</td>"
-        "</tr>"
-       "</table>"
-       "<table width='100%'>"
-        "<tr>"
-         "<td width='20%'>"
-          "<a class='menu' href='fetchcover:%8 @@@ %9'>"
-           "<img align='left' hspace='2' src='%11' title='%10'>"
-          "</a>"
-         "</td>"
-         "<td valign='bottom' align='right' width='80%'>" )
+        "<div class='rbcontent'>"
+         "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+          "<tr>"
+           "<th style='font-weight: normal;'>"
+            "<a title='%1' href='musicbrainz:%2 @@@ %3'>"
+             "<img src='%4' style='float: right; width: 38px; height: 22px;' />"
+            "</a>"
+            "<b>%5</b> - <b><i>%6</i></b>"
+            "<br/>"
+            "<i>%7</i>"
+           "</th>"
+          "</tr>"
+         "</table>"
+         "<table width='100%'>"
+          "<tr>"
+           "<td width='20%'>"
+            "<a class='menu' href='fetchcover:%8 @@@ %9'>"
+             "<img align='left' hspace='2' src='%11' title='%10'>"
+            "</a>"
+           "</td>"
+           "<td valign='bottom' align='right' width='80%'>" )
         .args( QStringList()
-            << escapeHTML( currentTrack.artist() )
-            << escapeHTML( currentTrack.title() )
-            << escapeHTML( currentTrack.album() )
             << i18n( "Look up this track at musicbrainz.com" )
             << escapeHTMLAttr( m_db->escapeString( currentTrack.artist() ) )
             << escapeHTMLAttr( m_db->escapeString( currentTrack.album() ) )
             << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) )
+            << escapeHTML( currentTrack.title() )
+            << escapeHTML( currentTrack.artist() )
+            << escapeHTML( currentTrack.album() )
             << escapeHTMLAttr( currentTrack.artist() )
             << escapeHTMLAttr( currentTrack.album() )
             << escapeHTMLAttr( m_db->albumImage( currentTrack.artist(), currentTrack.album() ) )
@@ -595,7 +590,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         const uint playtimes = values[2].toInt();
         const uint score = values[3].toInt();
 
-        QString scoreBox = "<table><tbody><tr><td><i>"+ QString::number( score ) +"</i></td><td title='Score'><div class='sbouter'><div class='sbinner' style='width: "+ QString::number( score / 2 )+ "px;'></div></div></td><tr></tbody></table>";
+        QString scoreBox = "<table><tbody><tr><td><i>"+ QString::number( score ) +"</i></td><td title='Score'><div class='sbouter'><div class='sbinner' style='width: "+ QString::number( score / 2 )+ "px;'></div></div></td></tr></tbody></table>";
 
         browser->write( QStringx("%1<br>%2%3<br>%4<br>")
             .args( QStringList()
