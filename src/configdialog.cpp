@@ -71,6 +71,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     Options8 *opt8 = new Options8( 0, "Scrobbler" );
 
     // Sound System
+    opt6->setName( "Engine" );
     opt6->setSpacing( 12 );
     opt6->setMargin( 11 );
     QWidget *groupBox, *aboutEngineButton;
@@ -128,6 +129,30 @@ AmarokConfigDialog::~AmarokConfigDialog()
 {
     delete m_engineConfig;
 }
+
+
+/** Reimplemented from KConfigDialog */
+void AmarokConfigDialog::addPage( QWidget *page, const QString &itemName, const QString &pixmapName, const QString &header, bool manage )
+{
+    // Add the widget pointer to our list, for later reference
+    m_pageList << page;
+
+    KConfigDialog::addPage( page, itemName, pixmapName, header, manage );
+}
+
+
+/** Show page by object name */
+void AmarokConfigDialog::showPage( const QCString& page )
+{
+    for ( int index = 0; index < m_pageList.count(); index++ )
+    {
+        if ( m_pageList[index]->name() == page ) {
+            KConfigDialog::showPage( index );
+            return;
+        }
+    }
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PROTECTED SLOTS

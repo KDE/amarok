@@ -2,7 +2,7 @@
 <class>Options1</class>
 <widget class="QWidget">
     <property name="name">
-        <cstring>Options1</cstring>
+        <cstring>General</cstring>
     </property>
     <property name="geometry">
         <rect>

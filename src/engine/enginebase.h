@@ -63,7 +63,7 @@ namespace Engine
         void stateChanged( Engine::State );
 
         /** Shows amaroK config dialog at specified page */
-        void showConfigDialog( int );
+        void showConfigDialog( const QCString& );
 
     public:
         virtual ~Base();
@@ -179,7 +179,7 @@ namespace Engine
         Base( Effects* = 0 );
 
         /** shows the amaroK configuration dialog at the engine page */
-        void showEngineConfigDialog() { emit showConfigDialog( 5 ); }
+        void showEngineConfigDialog() { emit showConfigDialog( "Engine" ); }
 
         virtual void setVolumeSW( uint percent ) = 0;
         void setVolumeHW( uint percent );

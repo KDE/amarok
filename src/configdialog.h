@@ -17,6 +17,8 @@ email                : markey@web.de
 #define AMAROKCONFIGDIALOG_H
 
 #include <qmap.h>
+#include <qvaluelist.h>
+
 #include <kconfigdialog.h>
 
 class QComboBox;
@@ -34,6 +36,11 @@ class AmarokConfigDialog : public KConfigDialog
     public:
         AmarokConfigDialog( QWidget *parent, const char* name, KConfigSkeleton *config );
         ~AmarokConfigDialog();
+
+        void addPage( QWidget *page, const QString &itemName, const QString &pixmapName,
+                      const QString &header=QString::null, bool manage=true);
+
+        void showPage( const QCString& page );
 
     protected slots:
         void updateSettings();
@@ -55,6 +62,8 @@ class AmarokConfigDialog : public KConfigDialog
         amaroK::PluginConfig *m_engineConfig;
         QGroupBox            *m_engineConfigFrame;
         class Options4       *m_opt4;
+
+        QValueList<QWidget*> m_pageList;
 
         QMap<QString, QString> m_pluginName;
         QMap<QString, QString> m_pluginAmarokName;

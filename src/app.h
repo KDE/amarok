@@ -59,7 +59,7 @@ class App : public KApplication, public EngineObserver
 
     public slots:
         void applySettings( bool firstTime = false );
-        void slotConfigAmarok( int page = 0 );
+        void slotConfigAmarok( const QCString& page = QCString() );
         void slotConfigShortcuts();
         void slotConfigGlobalShortcuts();
         void slotConfigToolBars();

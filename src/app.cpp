@@ -730,11 +730,11 @@ void App::slotConfigEqualizer() //SLOT
 }
 
 
-void App::slotConfigAmarok( int page )
+void App::slotConfigAmarok( const QCString& page )
 {
     kdDebug() << k_funcinfo << endl;
 
-    KConfigDialog* dialog = KConfigDialog::exists( "settings" );
+    AmarokConfigDialog* dialog = (AmarokConfigDialog*) KConfigDialog::exists( "settings" );
 
     if( !dialog )
     {
@@ -754,8 +754,7 @@ void App::slotConfigAmarok( int page )
     //so that if the engine page is needed to be shown it works
     kapp->processEvents();
 
-    dialog->showPage( page );
-
+    if ( !page.isNull() ) dialog->showPage( page );
 }
 
 void App::slotConfigShortcuts()

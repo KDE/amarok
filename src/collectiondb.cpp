@@ -299,7 +299,7 @@ CollectionDB::insert( const QString& statement, DbConnection *conn )
         kdDebug() << "insert-start: " << statement << endl;
 
     int id;
-    
+
     clock_t start = clock();
 
     DbConnection *dbConn;
@@ -1545,7 +1545,7 @@ CollectionDB::startScan()  //SLOT
         {
             scan( AmarokConfig::collectionFolders(), AmarokConfig::scanRecursively(),
                 AmarokConfig::importPlaylists() );
-    
+
             amaroK::StatusBar::instance()->message( i18n( "Building Collection..." ) );
         }
     }
@@ -1664,7 +1664,7 @@ DbConnection::DbConnection()
     if ( m_db )
     {
         if (AmarokConfig::mySqlUser().isEmpty())
-            pApp->slotConfigAmarok(5);
+            pApp->slotConfigAmarok("MySql");
 
         if (mysql::mysql_real_connect(m_db, AmarokConfig::mySqlHost().latin1(),
                                             AmarokConfig::mySqlUser().latin1(),

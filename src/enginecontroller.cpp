@@ -76,7 +76,7 @@ EngineBase *EngineController::loadEngine() //static
     connect( (EngineBase*)plugin, SIGNAL(trackEnded()), instance(), SLOT(slotTrackEnded()) );
     connect( (EngineBase*)plugin, SIGNAL(statusText( const QString& )), instance(), SIGNAL(statusText( const QString& )) );
     connect( (EngineBase*)plugin, SIGNAL(metaData( const Engine::SimpleMetaBundle& )), instance(), SLOT(slotEngineMetaData( const Engine::SimpleMetaBundle& )) );
-    connect( (EngineBase*)plugin, SIGNAL(showConfigDialog( int )), kapp, SLOT(slotConfigAmarok( int )) );
+    connect( (EngineBase*)plugin, SIGNAL(showConfigDialog( const QCString& )), kapp, SLOT(slotConfigAmarok( const QCString& )) );
 
     if( static_cast<EngineBase*>(plugin)->init() )
     {
