@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.1-beta2:
+  ADD: Systray icon shows track progress (thanks eros!).
   CHG: Imported SQLite3 and ported CollectionDB.
   ADD: "Cool-Streams", a list of amaroK Squad recommended streams for
        playlist-browser.
