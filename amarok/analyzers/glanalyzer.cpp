@@ -96,7 +96,10 @@ void GLAnalyzer::analyze( const Scope &s )
 
 void GLAnalyzer::initializeGL()
 {
+	// Clear frame (next fading will be preferred to clearing)
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);// Set clear color to black
+        glClear( GL_COLOR_BUFFER_BIT );
+
 	// Set the shading model
 	glShadeModel(GL_SMOOTH);
 

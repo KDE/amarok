@@ -231,8 +231,8 @@ void GLAnalyzer3::paintGL()
     double currentTime = (double)tv.tv_sec + (double)tv.tv_usec/1000000.0;
     show.dT = currentTime - show.timeStamp;
     show.timeStamp = currentTime;
-    if ( show.dT > 0.1 )
-	show.dT = 0.1;			// limit max dT to 0.1
+    if ( show.dT > 0.05 )
+	show.dT = 0.05;			// limit max dT to 0.05
     show.colorK += show.dT * 0.4;
     if ( show.colorK > 3.0 )
 	show.colorK -= 3.0;

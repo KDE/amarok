@@ -133,7 +133,8 @@ void GLAnalyzer2::analyze( const Scope &s )
             frame.dEnergy = currentEnergy - frame.energy;
             frame.energy = currentEnergy;
 //            printf( "%d  [%f :: %f ]\t%f \n", bands, frame.energy, frame.meanBand, maxValue         );
-        }
+        } else
+	    frame.energy = 0.0;
     }
 
     // update the frame
@@ -168,9 +169,13 @@ void GLAnalyzer2::paintGL()
 
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glEnable( GL_TEXTURE_2D );
+    float alphaN = show.paused ? 0.2 : (frame.energy / 10.0),
+	  alphaP = show.paused ? 1.0 : (1 - frame.energy / 20.0);
+    if ( alphaN > 1.0 )
+	alphaN = 1.0;
+    if ( alphaP < 0.1 )
+	alphaP = 0.1;
     glBindTexture( GL_TEXTURE_2D, w2Texture );
-    float alphaN = 1.0 <? (frame.energy / 10.0),
-	  alphaP = 0.2 >? (1 - frame.energy / 20.0);
     setTextureMatrix( show.rotDegrees, 0.707*alphaP );
     glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
     glBegin( GL_TRIANGLE_STRIP );
@@ -210,8 +215,10 @@ void GLAnalyzer2::paintGL()
     {
         if ( show.pauseTimer > 0.5 )
         {
-             show.pauseTimer -= 0.5;
-             drawFullDot( 0.0f, 0.4f, 0.8f, 1.0f );
+	    if ( show.pauseTimer > 0.6 )
+        	show.pauseTimer -= 0.6;
+            drawFullDot( 0.0f, 0.4f, 0.8f, 1.0f );
+            drawFullDot( 0.0f, 0.4f, 0.8f, 1.0f );
         }
         show.pauseTimer += show.dT;
         return;
@@ -224,18 +231,17 @@ void GLAnalyzer2::paintGL()
         glDisable( GL_TEXTURE_2D );
 
     glLoadIdentity();
-    glRotatef( -frame.rotDegrees, 0,0,1 );
+//    glRotatef( -frame.rotDegrees, 0,0,1 );
     glBegin( GL_QUADS );
 //     Particle * particle = particleList.first();
 //     for (; particle; particle = particleList.next())
     {
-
 	glColor4f( 0.0f, 1.0f, 0.0f, 1.0f );
 	drawDot( 0, 0, 10 >? (10.0 * frame.energy) );
 	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
-	drawDot( 5, 0, 10 >? (5.0 * frame.energy) );
+	drawDot( 6, 0, 10 >? (5.0 * frame.energy) );
 	glColor4f( 0.0f, 0.4f, 1.0f, 1.0f );
-	drawDot( -5, 0, 10 >? (5.0 * frame.energy) );
+	drawDot( -6, 0, 10 >? (5.0 * frame.energy) );
     }
     glEnd();
 }
