@@ -81,7 +81,7 @@ BlockAnalyzer::transform( Scope &s )
     float *front = static_cast<float*>( &s.front() );
 
     m_fht.spectrum( front );
-    m_fht.scale( front, 1.0 / 20 );
+    m_fht.scale( front, 1.0 / 10 );
 
     //the second half is pretty dull, so only show it if the user has a large analyzer
     //by setting to m_scope.size() if large we prevent interpolation of large analyzers, this is good!
