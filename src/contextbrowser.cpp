@@ -438,20 +438,29 @@ void ContextBrowser::showHome() //SLOT
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
 
-    // <Favorite Tracks Information>
+    browser->write( "<html>" );
+
+    QString menu = "<div class='menu'>"
+                    "<a>%1</a>"
+                    "&nbsp;&nbsp;"
+                    "<a href='show:%2'>%3</a>"
+                   "</div>";
+
+    menu = menu.arg( i18n("Home") );
+
     if ( EngineController::engine()->isStream() )
-        browser->write( "<html><div class='menu'><a class='menu' href='show:home'>" + i18n( "Home" ) + "</a>&nbsp;&nbsp;<a class='menu' href='show:stream'>"
-                        + i18n( "Current Stream" ) + "</a></div>");
+        menu = menu.arg( "stream" ).arg( i18n("Current Stream") );
     else
-        browser->write( "<html><div class='menu'><a class='menu' href='show:home'>" + i18n( "Home" ) + "</a>&nbsp;&nbsp;<a class='menu' href='show:context'>"
-                        + i18n( "Current Track" ) + "</a></div>");
+        menu = menu.arg( "context" ).arg( i18n("Current Track") );
+
+    browser->write( menu );
 
     browser->write( "<div class='rbcontent'>" );
-    browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-    browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Your Favorite Tracks:" ) + "</td></tr>" );
-    browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
-    browser->write( "</table>" );
-    browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+    browser->write(  "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
+    browser->write(   "<tr><td class='head'>&nbsp;" + i18n( "Your Favorite Tracks:" ) + "</td></tr>" );
+    browser->write(   "<tr><td height='1' bgcolor='black'></td></tr>" );
+    browser->write(  "</table>" );
+    browser->write(  "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
     m_db->execSql( QString( "SELECT tags.title, tags.url, round( statistics.percentage + 0.5 ), artist.name, album.name "
                             "FROM tags, artist, album, statistics "
@@ -527,8 +536,16 @@ void ContextBrowser::showCurrentTrack() //SLOT
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
 
-    browser->write( "<html><div class='menu'><a class='menu' href='show:home'>" + i18n( "Home" ) + "</a>&nbsp;&nbsp;<a class='menu' href='show:context'>"
-                    + i18n( "Current Track" ) + "</a></div>");
+    browser->write( "<html>" );
+
+    QString menu = "<div class='menu'>"
+                    "<a href='show:home'>%1</a>"
+                    "&nbsp;&nbsp;"
+                    "<a>%3</a>"
+                   "</div>";
+
+    browser->write( menu.arg( i18n("Home") ).arg( EngineController::engine()->isStream() ? i18n("Current Stream") : i18n("Current Track") ) );
+
     if ( !m_db->isFileInCollection( m_currentTrack->url().path() ) )
     {
         browser->write( "<div><br>");
@@ -553,16 +570,28 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     if ( !values.isEmpty() )
          /* making 2 tables is most probably not the cleanest way to do it, but it works. */
-         browser->write( QStringx ( "<tr><td height='42' valign='top' class='rbcurrent' width='90%'>"
-                                    "<span class='album'><b>%1 - %2</b></span><br>%3</td><td valign='top' align='right' width='10%'>"
-                                    "<a href='musicbrainz:%4 @@@ %5'><img src='%6'></a></td></tr></table>"
-                                    "<table width='100%'><tr><td width='20%'><a class='menu' href='fetchcover:%7 @@@ %8'>"
-                                    "<img hspace='2' src='%9'></a></td>"
-                                    "<td valign='bottom' align='right' width='80%'>" +
+         browser->write( QStringx ( "<tr>"
+                                     "<td height='42' valign='top' class='rbcurrent' width='90%'>"
+                                      "<span class='album'><b>%1 - %2</b></span>"
+                                      "<br>%3"
+                                     "</td>"
+                                     "<td valign='top' align='right' width='10%'>"
+                                      "<a title='%10' href='musicbrainz:%4 @@@ %5'><img src='%6'></a>"
+                                     "</td>"
+                                    "</tr>"
+                                   "</table>"
+                                   "<table width='100%'>"
+                                    "<tr>"
+                                     "<td width='20%'>"
+                                      "<a class='menu' href='fetchcover:%7 @@@ %8'>"
+                                       "<img hspace='2' src='%9'>"
+                                      "</a>"
+                                     "</td>"
+                                     "<td valign='bottom' align='right' width='80%'>" +
                                     i18n( "Track played 1 time", "Track played %n times", values[4].toInt() ) + "<br>" +
-                                    i18n( "Score:" ) + " %10" + "<br>" +
-                                    i18n( "Last play:" ) + " %11" + "<br>" +
-                                    i18n( "First play:" ) + " %12" + "</i></td></tr>" )
+                                    i18n( "Score: %1" ).arg( values[5] ) + "<br>" +
+                                    i18n( "Last play: %1" ).arg( values[3].left( values[3].length() - 3 ) ) + "<br>" +
+                                    i18n( "First play: %1" ).arg( values[2].left( values[2].length() - 3 ) ) + "</i></td></tr>" )
                          .args( QStringList()
                                 << escapeHTML( m_currentTrack->artist() )
                                 << escapeHTML( m_currentTrack->title() )
@@ -573,9 +602,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                 << escapeHTMLAttr( m_currentTrack->artist() )
                                 << escapeHTMLAttr( m_currentTrack->album() )
                                 << escapeHTMLAttr( m_db->getImageForAlbum( values[1], values[0] ) )
-                                << values[5]
-                                << values[3].left( values[3].length() - 3 )
-                                << values[2].left( values[2].length() - 3 )
+                                << i18n( "Look up this track at musicbrainz.com" )
                                 )
                          );
     else
@@ -746,7 +773,9 @@ void ContextBrowser::setStyleSheet()
     const QString fg   = colorGroup().highlightedText().name();
     const QString bg   = colorGroup().highlight().name();
 
-    m_styleSheet  = QString( "body { font-size: %1px; }" ).arg( pxSize );
+    //we have to set the color for body due to a KHTML bug
+    //KHTML sets the base color but not the text color
+    m_styleSheet  = QString( "body { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
     m_styleSheet += QString( "body a { color: %1; }" ).arg( text );
 
     m_styleSheet += QString( ".menu a { font-weight: bold; }" );
