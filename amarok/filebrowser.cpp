@@ -129,8 +129,9 @@ KDevFileSelector::KDevFileSelector( QWidget * parent, const char * name )
     cmbPath->listBox()->installEventFilter( this );
 
     dir = new KDevDirOperator( QString::null, this, "operator" );
-    dir->setView(KFile::/*Simple*/Detail);
-
+    dir->setView( KFile::Detail );
+    dir->setMode( KFile::Files );
+    
     KActionCollection *coll = dir->actionCollection();
     // some shortcuts of diroperator that clashes with KDev
     coll->action( "delete" )->setShortcut( KShortcut( ALT + Key_Delete ) );
@@ -524,7 +525,7 @@ void KDevDirOperator::activatedMenu( const KFileItem *fi, const QPoint & pos )
     popup->popup(pos);
 }
 
-//we override this method, so that we can modify the newly created KFileView
+//we override this method, so that we can set the alternateBackgroundColor
 #include <klistview.h>
 #include <kfileview.h>
 KFileView* KDevDirOperator::createView( QWidget *parent, KFile::FileView view )
@@ -532,8 +533,6 @@ KFileView* KDevDirOperator::createView( QWidget *parent, KFile::FileView view )
     kdDebug() << "[KDevDirOperator::createView()]" << endl;
     
     KFileView *pView = KDirOperator::createView( parent, view );
-    
-    pView->setSelectionMode( KFile::Extended );
     
     if ( dynamic_cast<QObject*>( pView )->inherits( "KListView" ) )
         dynamic_cast<KListView*>( pView )->setAlternateBackground( KDevFileSelector::altBgColor );
