@@ -215,17 +215,18 @@ MediaDeviceList::slotCollapse( QListViewItem* item )  //SLOT
 void
 MediaDeviceList::startDrag()
 {
-    nodeBuildDragList( 0 );
-    KURLDrag* d = new KURLDrag( m_dragList, this );
+    KURL::List urls = nodeBuildDragList( 0 );
+    kdDebug() << urls.first().path() << endl;
+    KURLDrag* d = new KURLDrag( urls, this );
     d->dragCopy();
 }
 
 
-void
+KURL::List
 MediaDeviceList::nodeBuildDragList( MediaItem* item )
 {
+    KURL::List items;
     MediaItem* fi;
-    m_dragList.clear();
 
     if ( !item )
         fi = (MediaItem*)firstChild();
@@ -239,23 +240,25 @@ MediaDeviceList::nodeBuildDragList( MediaItem* item )
             switch ( fi->depth() )
             {
                 case 0:
-                    m_dragList += m_parent->m_device->songsByArtist( fi->text( 0 ) );
+                    items += m_parent->m_device->songsByArtist( fi->text( 0 ) );
                     break;
                 case 1:
-                    m_dragList += m_parent->m_device->songsByArtistAlbum( fi->parent()->text( 0 ), fi->text( 0 ) );
+                    items += m_parent->m_device->songsByArtistAlbum( fi->parent()->text( 0 ), fi->text( 0 ) );
                     break;
                 case 2:
-                    m_dragList << fi->url().path();
+                    items += fi->url().path();
                     break;
             }
         } else
         {
             if ( fi->childCount() )
-                nodeBuildDragList( (MediaItem*)fi->firstChild() );
+                items += nodeBuildDragList( (MediaItem*)fi->firstChild() );
         }
 
         fi = (MediaItem*)fi->nextSibling();
     }
+
+    return items;
 }
 
 
@@ -285,8 +288,8 @@ MediaDeviceList::contentsDropEvent( QDropEvent *e )
 void
 MediaDeviceList::contentsDragMoveEvent( QDragMoveEvent* e )
 {
-    const QPoint p = contentsToViewport( e->pos() );
-    QListViewItem *item = itemAt( p );
+//    const QPoint p = contentsToViewport( e->pos() );
+//    QListViewItem *item = itemAt( p );
 }   
 
 
@@ -295,7 +298,7 @@ MediaDeviceList::rmbPressed( QListViewItem* item, const QPoint& point, int ) //S
 {
     if ( item )
     {
-        nodeBuildDragList( 0 );
+        KURL::List urls = nodeBuildDragList( 0 );
         KPopupMenu menu( this );
 
         enum Actions { APPEND, MAKE, QUEUE, BURN_ARTIST, BURN_ALBUM,
@@ -333,13 +336,13 @@ MediaDeviceList::rmbPressed( QListViewItem* item, const QPoint& point, int ) //S
         switch( menu.exec( point ) )
         {
             case APPEND:
-                Playlist::instance()->insertMedia( m_dragList, Playlist::Append );
+                Playlist::instance()->insertMedia( urls, Playlist::Append );
                 break;
             case MAKE:
-                Playlist::instance()->insertMedia( m_dragList, Playlist::Replace );
+                Playlist::instance()->insertMedia( urls, Playlist::Replace );
                 break;
             case QUEUE:
-                Playlist::instance()->insertMedia( m_dragList, Playlist::Queue );
+                Playlist::instance()->insertMedia( urls, Playlist::Queue );
                 break;
             case BURN_ARTIST:
                 K3bExporter::instance()->exportArtist( item->text(0) );
@@ -348,13 +351,13 @@ MediaDeviceList::rmbPressed( QListViewItem* item, const QPoint& point, int ) //S
                 K3bExporter::instance()->exportAlbum( item->text(0) );
                 break;
             case BURN_DATACD:
-                K3bExporter::instance()->exportTracks( m_dragList, K3bExporter::DataCD );
+                K3bExporter::instance()->exportTracks( urls, K3bExporter::DataCD );
                 break;
             case BURN_AUDIOCD:
-                K3bExporter::instance()->exportTracks( m_dragList, K3bExporter::AudioCD );
+                K3bExporter::instance()->exportTracks( urls, K3bExporter::AudioCD );
                 break;
             case DELETE:
-                m_parent->m_device->deleteFiles( m_dragList );
+                m_parent->m_device->deleteFiles( urls );
                 break;
         }
     }
@@ -536,10 +539,10 @@ MediaDevice::transferFiles()  //SLOT
 
     KIO::CopyJob *job = KIO::copy( m_transferURLs, KURL( "ipod:/Artists/" ), true );
     connect( job, SIGNAL( copyingDone( KIO::Job *, const KURL &, const KURL &, bool, bool ) ),
-             this,  SLOT( fileTransferred( KIO::Job *, const KURL &, const KURL &, bool, bool ) ) );
+             this,  SLOT( fileTransferred() ) );
 
     connect( job, SIGNAL( result( KIO::Job * ) ),
-             this,  SLOT( fileTransferFinished( KIO::Job * ) ) );
+             this,  SLOT( fileTransferFinished() ) );
 }
 
 
@@ -554,14 +557,81 @@ MediaDevice::deleteFiles( const KURL::List& urls )
                     QString::null,
                     i18n("&Delete") );
 
-    kdDebug() << urls.first().path() << endl;
     if ( button == KMessageBox::Continue )
     {
+        m_ipod->ensureConsistency();
+        m_ipod->lock( true );
+        deleteFromIPod( 0 );
+
         KURL::List::ConstIterator it = urls.begin();
         for ( ; it != urls.end(); ++it )
             QFile::remove( (*it).path() );
 
+        m_ipod->unlock();
         syncIPod();
+    }
+}
+
+
+void
+MediaDevice::deleteFromIPod( MediaItem* item )
+{
+    MediaItem* fi;
+
+    if ( !item )
+        fi = (MediaItem*)m_parent->m_deviceList->firstChild();
+    else
+        fi = item;
+
+    while ( fi )
+    {
+        if ( fi->isSelected() )
+        {
+            switch ( fi->depth() )
+            {
+                case 0:
+                    Artist* artist;
+                    artist = m_ipod->getArtistByName( fi->text( 0 ) );
+        
+                    if ( artist )
+                        for ( ArtistIterator it( *artist ); it.current(); ++it )
+                            m_ipod->deleteAlbum( fi->text( 0 ), it.currentKey() );
+
+                    m_ipod->deleteArtist( fi->text( 0 ) );
+
+                    break;
+                case 1:
+                    m_ipod->deleteAlbum( fi->parent()->text( 0 ), fi->text( 0 ) );
+
+                    break;
+                case 2:
+                    TrackMetadata* track = 0;
+                    TrackList* playlist;
+                    playlist = m_ipod->getAlbum( fi->parent()->parent()->text( 0 ), fi->parent()->text( 0 ) );
+        
+                    TrackList::Iterator tit = playlist->getTrackIDs();
+                    while( tit.hasNext() )
+                    {
+                        Q_UINT32 trackid = tit.next();
+                        track = m_ipod->getTrackByID( trackid );
+                        if ( track && ( track->getTitle() == fi->text( 0 ) ) )
+                            break;
+        
+                        track = 0;
+                    }
+        
+                    if ( track )
+                        m_ipod->deleteTrack( track->getID() );
+
+                    break;
+            }
+        } else
+        {
+            if ( fi->childCount() )
+                deleteFromIPod( (MediaItem*)fi->firstChild() );
+        }
+
+        fi = (MediaItem*)fi->nextSibling();
     }
 }
 
@@ -569,6 +639,8 @@ MediaDevice::deleteFiles( const KURL::List& urls )
 bool
 MediaDevice::fileExists( const MetaBundle& bundle )  
 {
+    m_ipod->ensureConsistency();
+
     TrackList* album;
 
     kdDebug() << "lala: " << bundle.artist() << " - " << bundle.album() << endl;
@@ -590,7 +662,7 @@ MediaDevice::fileExists( const MetaBundle& bundle )
 
 
 void
-MediaDevice::fileTransferred( KIO::Job *job, const KURL &from, const KURL &to, bool dir, bool renamed )  //SLOT
+MediaDevice::fileTransferred()  //SLOT
 {
     m_parent->m_progress->setProgress( m_parent->m_progress->value() + 1 );
     m_parent->m_deviceList->renderView( 0 );
@@ -598,7 +670,7 @@ MediaDevice::fileTransferred( KIO::Job *job, const KURL &from, const KURL &to, b
 
 
 void
-MediaDevice::fileTransferFinished( KIO::Job *job )  //SLOT
+MediaDevice::fileTransferFinished()  //SLOT
 {
     m_parent->m_transferList->clear();
     m_transferURLs.clear();
@@ -616,16 +688,11 @@ MediaDevice::syncIPod()  //SLOT
 {
     kdDebug() << "[MediaBrowser] Syncing IPod!" << endl;
 
-    KIO::get( "ipod:/Utilities/Synchronize?really=OK", false, false );
-//    m_ipod->writeItunesDB();
+    m_ipod->ensureConsistency();
+    m_ipod->writeItunesDB();
     if( !m_ipod->getItunesDBError().isEmpty() )
         kdDebug() << "Sync failed: " + m_ipod->getItunesDBError() << endl;
 
-    m_ipod->close();
-    m_ipod->open( "/mnt/ipod" );
-    if( !m_ipod->getItunesDBError().isEmpty() )
-        kdDebug() << "Sync failed: " + m_ipod->getItunesDBError() << endl;
-    
     m_parent->m_deviceList->renderView( 0 );
 }
 

@@ -77,13 +77,12 @@ class MediaDeviceList : public KListView
 
     private:
         void startDrag();
-        void nodeBuildDragList( MediaItem* item );
+        KURL::List nodeBuildDragList( MediaItem* item );
         void contentsDragEnterEvent( QDragEnterEvent* );
         void contentsDropEvent( QDropEvent *e );
         void contentsDragMoveEvent( QDragMoveEvent* e );
 
         MediaDeviceView* m_parent;
-        KURL::List       m_dragList;
 };
 
 
@@ -129,10 +128,11 @@ class MediaDevice : public QObject
     public slots:
         void transferFiles();
         void deleteFiles( const KURL::List& urls );
+        void deleteFromIPod( MediaItem* item );
         
     private slots:
-        void fileTransferred( KIO::Job *job, const KURL &from, const KURL &to, bool dir, bool renamed );
-        void fileTransferFinished( KIO::Job *job );
+        void fileTransferred();
+        void fileTransferFinished();
         void syncIPod();
 
     private:
