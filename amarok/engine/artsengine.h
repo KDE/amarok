@@ -39,7 +39,7 @@ class ArtsEngine : public EngineBase
         Q_OBJECT
 
     public:
-                                                 ArtsEngine( bool& restart );
+                                                 ArtsEngine( bool& restart, int scopeSize );
                                                  ~ArtsEngine();
 
         bool                                     initMixer( bool software );
@@ -87,6 +87,7 @@ class ArtsEngine : public EngineBase
 //         Amarok::Synth_STEREO_XFADE               m_XFade;
         
        long                                      m_scopeId;
+       int                                       m_scopeSize;
        bool                                      m_proxyError;
 };
 

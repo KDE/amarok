@@ -57,18 +57,18 @@ void EngineBase::setVolumeHW( int percent )
 
 //////////////////////////////////////////////////////////////////////
 
-EngineBase* EngineBase::createEngine( QString system, bool& restart )
+EngineBase* EngineBase::createEngine( QString system, bool& restart, int scopeSize )
 {
     if ( system == "arts" )
-        return new ArtsEngine( restart );
+        return new ArtsEngine( restart, scopeSize );
     
 #ifdef HAVE_GSTREAMER    
     if ( system == "gstreamer" )
-        return new GstEngine();
+        return new GstEngine( scopeSize );
 #endif           
 
     //fallthru, needs fixing when we stop depending on aRts
-    return new ArtsEngine( restart );
+    return new ArtsEngine( restart, scopeSize );
 }
 
 

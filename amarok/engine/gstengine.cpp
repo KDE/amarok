@@ -39,21 +39,37 @@ extern "C"
 // STATIC METHODS
 //////////////////////////////////////////////////////////////////////
 
-void GstEngine::typefindFound_cb( GstElement *typefind, GstCaps *caps, GstElement *pipeline )
+void GstEngine::eos_cb( GstElement *typefind, GstElement *pipeline )
 {
-    kdDebug() << "GstEngine::typefindFound" << endl;
+    kdDebug() << "GstEngine::eos_cb" << endl;
 
-    pGstEngine->m_typefindResult = true;
+    gst_element_set_state( GST_ELEMENT( pGstEngine->m_pThread ), GST_STATE_READY );
+    //     pGstEngine->emit endOfTrack();
 }
 
-//     const GList *elements = gst_registry_pool_feature_list( GST_TYPE_ELEMENT_FACTORY );
-// 
-//     while ( elements != NULL )
-//     {
-//         factory = (GstElementFactory *) elements->data;
-//         const gchar *klass = gst_element_factory_get_klass( factory );
-//         elements = elements->next;
-//     }
+
+void GstEngine::handoff_cb( GstElement *identity, GstBuffer *buf, GstElement *pipeline )
+{
+    kdDebug() << "GstEngine::handoff_cb" << endl;
+    
+    if ( GST_IS_BUFFER( buf ) )
+    {
+        kdDebug() << "GstEngine::handoff_cb BUFFER_SIZE: " << GST_BUFFER_SIZE( buf ) << endl;
+        
+        guint8* data = GST_BUFFER_DATA( buf );
+
+        for ( ulong i = 0; i < GST_BUFFER_SIZE( buf ); ++i )
+        {
+            for ( ; pGstEngine->mCurrent < pGstEngine->mScopeEnd && i < GST_BUFFER_SIZE( buf ); ++pGstEngine->mCurrent, ++i )
+            {
+                *pGstEngine->mCurrent = data[ i ];
+            }
+            
+            if ( pGstEngine->mCurrent >= pGstEngine->mScopeEnd )
+                pGstEngine->mCurrent = pGstEngine->mScope;
+        }
+    }
+}
 
 
 void GstEngine::typefindError_cb( GstElement *typefind, GstElement *pipeline )
@@ -65,59 +81,70 @@ void GstEngine::typefindError_cb( GstElement *typefind, GstElement *pipeline )
 }
 
 
-void GstEngine::eos_cb( GstElement *typefind, GstElement *pipeline )
+void GstEngine::typefindFound_cb( GstElement *typefind, GstCaps *caps, GstElement *pipeline )
 {
-    kdDebug() << "GstEngine::eos_cb" << endl;
+    kdDebug() << "GstEngine::typefindFound" << endl;
 
-    gst_element_set_state( GST_ELEMENT( pGstEngine->m_pThread ), GST_STATE_READY );
-//     pGstEngine->emit endOfTrack();
+    pGstEngine->m_typefindResult = true;
 }
 
+//     const GList *elements = gst_registry_pool_feature_list( GST_TYPE_ELEMENT_FACTORY );
+//
+//     while ( elements != NULL )
+//     {
+//         factory = (GstElementFactory *) elements->data;
+//         const gchar *klass = gst_element_factory_get_klass( factory );
+//         elements = elements->next;
+//     }
 
-//////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////
 // CLASS GSTENGINE
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
 
-GstEngine::GstEngine()
+GstEngine::GstEngine( int scopeSize )
         : EngineBase()
         , m_pThread( NULL )
+        , mScope( 0 )
 {
     pGstEngine = this;
     gst_init( NULL, NULL );
-
-    /* create a new thread to hold the elements */
-    m_pThread = gst_thread_new( "thread" );
-
-    /* create a disk reader */
-    m_pFilesrc = gst_element_factory_make( "filesrc", "disk_source" );
-
-    GstElement *spider = gst_element_factory_make( "spider", "spider" );
-
-    /* and an audio sink */
-    m_pAudiosink = gst_element_factory_make( "osssink", "play_audio" );
+    buffer( scopeSize );
     
+    /* create a new thread to hold the elements */
+    m_pThread              = gst_thread_new          ( "thread" );
+    /* create a disk reader */
+    m_pFilesrc             = gst_element_factory_make( "filesrc", "disk_source" );
+    GstElement *spider     = gst_element_factory_make( "spider", "spider" );
+    /* and an audio sink */
+    m_pAudiosink           = gst_element_factory_make( "osssink", "play_audio" );
+//     GstElement *pIdentity  = gst_element_factory_make( "identity", "rawscope" );
+
+//     g_signal_connect ( G_OBJECT( pIdentity ), "handoff",
+//                        G_CALLBACK( handoff_cb ), m_pThread );
+
     g_signal_connect ( G_OBJECT( m_pAudiosink ), "eos",
                        G_CALLBACK( eos_cb ), m_pThread );
 
     /* add objects to the main pipeline */
-    gst_bin_add_many( GST_BIN ( m_pThread ), m_pFilesrc, spider, m_pAudiosink, NULL );
-
+    gst_bin_add_many( GST_BIN( m_pThread ), m_pFilesrc, spider, m_pAudiosink, /*pIdentity,*/ NULL );
     /* link src to sink */
-    gst_element_link_many( m_pFilesrc, spider, m_pAudiosink, NULL );
+    
+    gst_element_link_many( m_pFilesrc, spider, /*pIdentity,*/ m_pAudiosink, NULL );
 }
 
 
 GstEngine::~GstEngine()
 {
     stop();
-
     gst_object_unref      (GST_OBJECT  (m_pThread));
+    delete [] mScope;
 }
 
 
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC METHODS
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
 
 bool GstEngine::initMixer( bool )
 {
@@ -202,7 +229,13 @@ bool GstEngine::isStream() const
 
 std::vector<float>* GstEngine::scope()
 {
-    return new std::vector<float>;
+    std::vector<float> *buf = new std::vector<float>( mScopeLength);
+    char *front = (char *)(&buf->front());
+    memcpy(front, mCurrent, (mScopeEnd - mCurrent) * sizeof(float));
+    memcpy(front + (mScopeEnd - mCurrent)*sizeof(float), mScope,
+           (mCurrent - mScope) * sizeof(float));
+
+    return buf;
 }
 
 
@@ -218,14 +251,14 @@ bool GstEngine::effectConfigurable( const QString& name ) const
 }
 
 
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SLOTS
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
 
 void GstEngine::open( KURL url )
 {
     stop();
-    
+
     g_object_set( G_OBJECT( m_pFilesrc ), "location", url.path().latin1(), NULL );
 }
 
@@ -255,9 +288,9 @@ void GstEngine::seek( long ms )
     if ( ms > 0 )
     {
         GstEvent *event = gst_event_new_seek( (GstSeekType) ( GST_FORMAT_TIME |
-                                                              GST_SEEK_METHOD_SET |
-                                                              GST_SEEK_FLAG_FLUSH ),
-                                                              ms * GST_MSECOND );
+                                              GST_SEEK_METHOD_SET |
+                                              GST_SEEK_FLAG_FLUSH ),
+                                              ms * GST_MSECOND );
 
         gst_element_send_event( m_pAudiosink, event );
     }
@@ -270,9 +303,21 @@ void GstEngine::setVolume( int percent )
 }
 
 
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE METHODS
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+
+void GstEngine::buffer( long len )
+{
+    delete [] mScope;
+
+    mScopeLength=len;
+    mScope=new float[len];
+    mScopeEnd=mScope+mScopeLength;
+    mCurrent=mScope;
+
+    memset(mScope, 0, mScopeLength);
+}
 
 
 #include "gstengine.moc"

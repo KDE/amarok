@@ -36,7 +36,7 @@ class GstEngine : public EngineBase
         Q_OBJECT
 
     public:
-                                                 GstEngine();
+                                                 GstEngine( int scopeSize );
                                                  ~GstEngine();
 
         bool                                     initMixer( bool software );
@@ -48,9 +48,9 @@ class GstEngine : public EngineBase
 
         std::vector<float>*                      scope();
 
-        QStringList                              availableEffects() const;        
-        bool                                     effectConfigurable( const QString& name ) const;        
-        
+        QStringList                              availableEffects() const;
+        bool                                     effectConfigurable( const QString& name ) const;
+
     public slots:
         void                                     open( KURL );
 
@@ -62,9 +62,12 @@ class GstEngine : public EngineBase
         void                                     setVolume( int percent );
 
     private:
-        static void                              typefindFound_cb( GstElement *typefind, GstCaps *caps, GstElement *pipeline );
-        static void                              typefindError_cb( GstElement *typefind, GstElement *pipeline );
         static void                              eos_cb( GstElement *typefind, GstElement *pipeline );
+        static void                              handoff_cb( GstElement *identity, GstBuffer *buf, GstElement *pipeline );
+        static void                              typefindError_cb( GstElement *typefind, GstElement *pipeline );
+        static void                              typefindFound_cb( GstElement *typefind, GstCaps *caps, GstElement *pipeline );
+
+        void                                     buffer( long len );
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
         /////////////////////////////////////////////////////////////////////////////////////
@@ -72,6 +75,11 @@ class GstEngine : public EngineBase
         GstElement*                              m_pAudiosink;
         GstElement*                              m_pFilesrc;
 
+        float                                    *mScope;
+        int                                      mScopeLength;
+        float                                    *mScopeEnd;
+        float                                    *mCurrent;
+       
         bool                                     m_typefindResult;
 };
 

@@ -149,8 +149,9 @@ class PlayerApp : public KUniqueApplication
         EffectWidget *m_pEffectWidget;
         bool m_bIsPlaying;
         bool m_bChangingSlider;
+        const int m_scopeSize;
         FHT *m_pFht;
-        
+                
         bool m_XFadeRunning;
         float m_XFadeValue;
         QString m_XFadeCurrent;

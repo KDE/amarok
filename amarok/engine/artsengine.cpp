@@ -47,12 +47,11 @@ email                : markey@web.de
 #include <arts/kplayobjectfactory.h>
 #include <arts/soundserver.h>
  
-#define SCOPE_SIZE 64
-
-ArtsEngine::ArtsEngine( bool& restart )
+ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
         : EngineBase()
         , m_pPlayObject( NULL )
         , m_scopeId( 0 )
+        , m_scopeSize( scopeSize )
         , m_proxyError( false )
 {
     setName( "ArtsEngine" );
@@ -457,7 +456,7 @@ void ArtsEngine::enableScope()
     if ( !m_scopeId )
     {
         m_scope.start();
-        m_scope.buffer( SCOPE_SIZE );
+        m_scope.buffer( m_scopeSize );
         m_scopeId = m_globalEffectStack.insertTop( m_scope, "Analyzer" );
     }
 }

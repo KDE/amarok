@@ -67,7 +67,7 @@ email                : markey@web.de
 #define VOLUME_MAX 99
 #define MAIN_TIMER 150
 #define ANIM_TIMER 30
-
+#define SCOPE_SIZE 64
 
 PlayerApp::PlayerApp()
         : KUniqueApplication( true, true, false )
@@ -94,7 +94,7 @@ PlayerApp::PlayerApp()
 
     readConfig();
     
-    m_pEngine = EngineBase::createEngine( config()->soundSystem(), m_artsNeedsRestart );
+    m_pEngine = EngineBase::createEngine( config()->soundSystem(), m_artsNeedsRestart, SCOPE_SIZE );
     m_pEngine ->initMixer( config()->softwareMixerOnly() );
 
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
