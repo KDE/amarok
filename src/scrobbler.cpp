@@ -121,7 +121,7 @@ void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
             KURL::decode_string( artist.mid( 0, artist.find( "\" title" ) ) );
 
         //kdDebug() << artist << endl;
-        if ( !artist.isEmpty() ) suggestions << artist;
+        if ( !artist.isEmpty() ) suggestions << artist.replace( "+", " " );
 
         m_similarArtistsBuffer =
             m_similarArtistsBuffer.mid(
