@@ -3,10 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #45 being the highest available (take this one for your next bug and increase here)
+           #46 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+    * add: #45 <markey> we should get a "contribute stream" function into streambrowser before release!
+               that would sooooo much enhance it :)
 
     * fix: #44 <markey> ExpandButtons do not work well with keyboard shortcuts: the button expands, and then
                nothing happens. you must close it using the mouse
