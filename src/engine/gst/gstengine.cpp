@@ -71,6 +71,39 @@ GstEngine::eos_cb( GstElement* /*element*/, gpointer inputPipeline ) //static
 
 
 void
+GstEngine::newPad_cb( GstElement*, GstPad* pad, gboolean, gpointer inputPipeline ) //static
+{
+    DEBUG_BLOCK
+
+    InputPipeline* input = static_cast<InputPipeline*>( inputPipeline );
+    GstPad* audiopad = gst_element_get_pad( input->audioconvert, "sink" );
+
+    if ( GST_PAD_IS_LINKED( audiopad ) ) {
+        debug() << "audiopad is already linked." << endl;
+        return;
+    }
+    gst_pad_link( pad, audiopad );
+
+    gst_element_unlink( input->volume, instance()->m_gst_adder );
+    gst_element_link( input->volume, instance()->m_gst_adder );
+
+    gst_bin_sync_children_state( GST_BIN( input->bin ) );
+}
+
+
+void
+GstEngine::removedPad_cb( GstElement*, GstPad* pad, gpointer inputPipeline ) //static
+{
+    DEBUG_BLOCK
+
+    InputPipeline* input = static_cast<InputPipeline*>( inputPipeline );
+
+    // Reconnect signal
+    g_signal_connect( G_OBJECT( input->decodebin ), "new-decoded-pad", G_CALLBACK( GstEngine::newPad_cb ), input );
+}
+
+
+void
 GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer ) //static
 {
     instance()->m_mutexScope.lock();
@@ -318,7 +351,7 @@ GstEngine::position() const
     GstFormat fmt = GST_FORMAT_TIME;
     // Value will hold the current time position in nanoseconds. Must be initialized!
     gint64 value = 0;
-    gst_element_query( m_currentInput->spider, GST_QUERY_POSITION, &fmt, &value );
+    gst_element_query( m_currentInput->decodebin, GST_QUERY_POSITION, &fmt, &value );
 
     return static_cast<uint>( ( value / GST_MSECOND ) ); // nanosec -> msec
 }
@@ -334,7 +367,7 @@ GstEngine::length() const
     GstFormat fmt = GST_FORMAT_TIME;
     // Value will hold the current time position in nanoseconds. Must be initialized!
     gint64 value = 0;
-    gst_element_query( m_currentInput->spider, GST_QUERY_TOTAL, &fmt, &value );
+    gst_element_query( m_currentInput->decodebin, GST_QUERY_TOTAL, &fmt, &value );
 
     return static_cast<uint>( ( value / GST_MSECOND ) ); // nanosec -> msec
 }
@@ -478,7 +511,9 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         g_signal_connect( G_OBJECT( input->src ), "kio_resume", G_CALLBACK( kio_resume_cb ), input->bin );
     }
 
-    gst_element_link_many( input->src, input->spider, input->audioconvert, input->audioscale, input->volume, NULL );
+    gst_element_link( input->src, input->decodebin );
+    gst_element_link_many( input->audioconvert, input->audioscale, input->volume, NULL );
+
     // Prepare bin for playing
     gst_element_set_state( input->bin, GST_STATE_READY );
 
@@ -530,11 +565,9 @@ GstEngine::play( uint offset )  //SLOT
 
     // Put input bin into input thread
     gst_bin_add( GST_BIN( m_gst_inputThread ), m_currentInput->bin );
-    // Link elements
-    gst_element_link( m_currentInput->volume, m_gst_adder );
 
     // Try to play input pipeline; if fails, destroy input bin
-    if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PLAYING ) ) {
+    if ( !gst_element_set_state( m_gst_inputThread, GST_STATE_PLAYING ) ) {
         warning() << "Could not set input thread to PLAYING.\n";
         destroyInput( m_currentInput );
         return false;
@@ -543,7 +576,7 @@ GstEngine::play( uint offset )  //SLOT
     g_signal_connect( G_OBJECT( m_currentInput->bin ), "error", G_CALLBACK ( inputError_cb ), m_currentInput );
 
     // If "Resume playback on start" is enabled, we must seek to the last position
-    seek( offset );
+    if ( offset ) seek( offset );
 
     emit stateChanged( Engine::Playing );
     return true;
@@ -1020,7 +1053,7 @@ GstEngine::createPipeline()
     gst_bin_add_many( GST_BIN( m_gst_rootBin ), m_gst_inputThread, m_gst_outputThread, NULL );
 
     // More buffers means less dropouts and higher latency
-    gst_element_set( m_gst_queue, "max-size-buffers", 50, NULL );
+    gst_element_set( m_gst_queue, "max-size-buffers", 80, NULL );
 
     g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), NULL );
     g_signal_connect ( G_OBJECT( m_gst_outputThread ), "error", G_CALLBACK ( outputError_cb ), NULL );
@@ -1125,13 +1158,15 @@ InputPipeline::InputPipeline()
 
     /* create a new pipeline (thread) to hold the elements */
     if ( !( bin = GstEngine::createElement( "bin" ) ) ) { goto error; }
-    if ( !( spider = GstEngine::createElement( "spider", bin ) ) ) { goto error; }
+    if ( !( decodebin = GstEngine::createElement( "decodebin", bin ) ) ) { goto error; }
     if ( !( audioconvert = GstEngine::createElement( "audioconvert", bin ) ) ) { goto error; }
     if ( !( audioscale = GstEngine::createElement( "audioscale", bin ) ) ) { goto error; }
     if ( !( volume = GstEngine::createElement( "volume", bin ) ) ) { goto error; }
 
-    g_signal_connect( G_OBJECT( spider ), "eos", G_CALLBACK( GstEngine::eos_cb ), this );
-//     g_signal_connect( G_OBJECT( spider ), "found-tag", G_CALLBACK( GstEngine::found_tag_cb ), bin );
+    g_signal_connect( G_OBJECT( decodebin ), "eos", G_CALLBACK( GstEngine::eos_cb ), this );
+    g_signal_connect( G_OBJECT( decodebin ), "new-decoded-pad", G_CALLBACK( GstEngine::newPad_cb ), this );
+    g_signal_connect( G_OBJECT( decodebin ), "removed-decoded-pad", G_CALLBACK( GstEngine::removedPad_cb ), this );
+    g_signal_connect( G_OBJECT( decodebin ), "found-tag", G_CALLBACK( GstEngine::found_tag_cb ), 0 );
 
     // Start silent
     gst_element_set( volume, "volume", 0.0, NULL );

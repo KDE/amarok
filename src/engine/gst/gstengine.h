@@ -112,8 +112,12 @@ class GstEngine : public Engine::Base
 
         QStringList getOutputsList() { return getPluginList( "Sink/Audio" ); }
 
+        // CALLBACKS:
         /** Called at end of track */
         static void eos_cb( GstElement*, gpointer );
+        /** Called when decodebin has generated a new pad */
+        static void newPad_cb( GstElement*, GstPad*, gboolean, gpointer );
+        static void removedPad_cb( GstElement*, GstPad*, gpointer );
         /** Duplicates audio data for application side processing */
         static void handoff_cb( GstElement*, GstBuffer*, gpointer );
         static void candecode_handoff_cb( GstElement*, GstBuffer*, gpointer );
@@ -122,6 +126,7 @@ class GstEngine : public Engine::Base
         static void inputError_cb( GstElement*, GstElement*, GError*, gchar*, gpointer );
         static void kio_resume_cb();
         static void shutdown_cb();
+
 
         /** Get a list of available plugins from a specified Class */
         QStringList getPluginList( const QCString& classname ) const;
@@ -210,7 +215,7 @@ class InputPipeline
 
         GstElement* bin;
         GstElement* src;
-        GstElement* spider;
+        GstElement* decodebin;
         GstElement* audioconvert;
         GstElement* audioscale;
         GstElement* volume;
