@@ -511,6 +511,7 @@ void App::applyColorScheme()
         group.setColor( QColorGroup::Base, bg );
         group.setColor( QColorGroup::Background, bg.light(120) );
 
+        group.setColor( QColorGroup::Dark, Qt::white );
         group.setColor( QColorGroup::Highlight, Qt::white );
         group.setColor( QColorGroup::HighlightedText, bg );
         //group.setColor( QColorGroup::BrightText, QColor( 0xff, 0x40, 0x40 ) ); //GlowColor
