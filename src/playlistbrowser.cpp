@@ -1338,7 +1338,7 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
 
     QPainter pBuf( &buffer, true );
     // use alternate background
-    pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor(column) );
+    pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor() );
 
     if( detailedView ) {
         // draw a line at the top
@@ -1361,7 +1361,7 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
         pBuf.setPen( cg.mid() );
         pBuf.drawRect( rect );
         //fill the rect with base color if the item has alternate color and viceversa
-        QColor color = backgroundColor(column) == lv->alternateBackground() ? cg.base() : lv->alternateBackground();
+        QColor color = backgroundColor() == lv->alternateBackground() ? cg.base() : lv->alternateBackground();
         pBuf.fillRect( rect.x()+1, rect.y()+1, rect.width()-2, rect.height()-2, color );
         // +/- drawing
         pBuf.setPen( cg.text() );
