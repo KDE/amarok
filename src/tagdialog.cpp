@@ -27,10 +27,105 @@
 #include <kstandarddirs.h>
 
 
-TagDialog::TagDialog( const MetaBundle& mb, QWidget* parent )
+TagDialog::TagDialog( const KURL& url, QWidget* parent )
+    : TagDialogBase( parent )
+    , m_bundle( MetaBundle( url ) )
+    , m_playlistItem( 0 )
+{
+    init();
+}
+
+
+TagDialog::TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent )
     : TagDialogBase( parent )
     , m_bundle( mb )
+    , m_playlistItem( item )
 {
+    init();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE SLOTS
+////////////////////////////////////////////////////////////////////////////////
+
+void
+TagDialog::accept() //SLOT
+{
+    if ( hasChanged() ) {
+        pushButton_ok->setEnabled( false ); //visual feedback
+        if ( writeTag() )
+            if ( m_playlistItem )
+                syncItemText();
+    }                
+
+    deleteLater();
+}
+
+
+inline void
+TagDialog::openPressed() //SLOT
+{
+    // run konqueror with the track's directory
+    const QString cmd = "kfmclient openURL \"%1\"";
+    KRun::runCommand( cmd.arg( m_path ), "kfmclient", "konqueror" );
+}
+
+
+inline void
+TagDialog::checkModified() //SLOT
+{
+    pushButton_ok->setEnabled( hasChanged() );
+}
+
+
+void
+TagDialog::musicbrainzQuery() //SLOT
+{
+#ifdef HAVE_MUSICBRAINZ
+    kdDebug() << k_funcinfo << endl;
+
+    KTRMLookup* ktrm = new KTRMLookup( m_bundle.url().path(), true );
+    connect( ktrm, SIGNAL( sigResult( KTRMResultList ) ), SLOT( queryDone( KTRMResultList ) ) );
+
+    pushButton_musicbrainz->setEnabled( false );
+    pushButton_musicbrainz->setText( i18n( "Generating TRM..." ) );
+    QApplication::setOverrideCursor( KCursor::workingCursor() );
+#endif
+}
+
+
+void
+TagDialog::queryDone( KTRMResultList results ) //SLOT
+{
+#ifdef HAVE_MUSICBRAINZ
+    kdDebug() << k_funcinfo << endl;
+    QApplication::restoreOverrideCursor();
+
+    pushButton_musicbrainz->setEnabled( true );
+    pushButton_musicbrainz->setText( m_buttonMbText );
+
+    if ( !results.isEmpty() )
+    {
+        if ( !results[0].title().isEmpty() )    kLineEdit_title->setText( results[0].title() );
+        if ( !results[0].artist().isEmpty() )   kComboBox_artist->setCurrentText( results[0].artist() );
+        if ( !results[0].album().isEmpty() )    kComboBox_album->setCurrentText( results[0].album() );
+                                                kIntSpinBox_track->setValue( results[0].track() );
+                                                kIntSpinBox_year->setValue( results[0].year() );
+    }
+    else
+        KMessageBox::sorry( this, i18n( "The track was not found in the MusicBrainz database." ) );
+#endif
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE
+////////////////////////////////////////////////////////////////////////////////
+
+void TagDialog::init()
+{
+    setWFlags( getWFlags() | Qt::WDestructiveClose );    
     kLineEdit_title->setText( m_bundle.title() );
 
     //get artist and album list from collection db
@@ -121,104 +216,6 @@ TagDialog::TagDialog( const MetaBundle& mb, QWidget* parent )
 }
 
 
-void
-TagDialog::exec( PlaylistItem *item )
-{
-    if( exec() == QDialog::Accepted )
-    {
-        //Playlist uses this function and guarentees playlistItem will
-        //still exist
-
-        item->setText( PlaylistItem::Title,   kLineEdit_title->text() );
-        item->setText( PlaylistItem::Artist,  kComboBox_artist->currentText() );
-        item->setText( PlaylistItem::Album,   kComboBox_album->currentText() );
-        item->setText( PlaylistItem::Genre,   kComboBox_genre->currentText() );
-        item->setText( PlaylistItem::Track,   kIntSpinBox_track->text() );
-        item->setText( PlaylistItem::Year,    kIntSpinBox_year->text() );
-        item->setText( PlaylistItem::Comment, kLineEdit_comment->text() );
-    }
-}
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-// PRIVATE SLOTS
-////////////////////////////////////////////////////////////////////////////////
-
-void
-TagDialog::accept() //SLOT
-{
-    if ( hasChanged() ) {
-        pushButton_ok->setEnabled( false ); //visual feedback
-        if( !writeTag() )
-            QDialog::reject();
-    }
-
-    QDialog::accept();
-}
-
-
-inline void
-TagDialog::openPressed() //SLOT
-{
-    // run konqueror with the track's directory
-    const QString cmd = "kfmclient openURL \"%1\"";
-    KRun::runCommand( cmd.arg( m_path ), "kfmclient", "konqueror" );
-}
-
-
-inline void
-TagDialog::checkModified() //SLOT
-{
-    pushButton_ok->setEnabled( hasChanged() );
-}
-
-
-void
-TagDialog::musicbrainzQuery() //SLOT
-{
-#ifdef HAVE_MUSICBRAINZ
-    kdDebug() << k_funcinfo << endl;
-
-    KTRMLookup* ktrm = new KTRMLookup( m_bundle.url().path(), true );
-    connect( ktrm, SIGNAL( sigResult( KTRMResultList ) ), SLOT( queryDone( KTRMResultList ) ) );
-
-    pushButton_musicbrainz->setEnabled( false );
-    pushButton_musicbrainz->setText( i18n( "Generating TRM..." ) );
-    QApplication::setOverrideCursor( KCursor::workingCursor() );
-#endif
-}
-
-
-void
-TagDialog::queryDone( KTRMResultList results ) //SLOT
-{
-#ifdef HAVE_MUSICBRAINZ
-    kdDebug() << k_funcinfo << endl;
-    QApplication::restoreOverrideCursor();
-
-    pushButton_musicbrainz->setEnabled( true );
-    pushButton_musicbrainz->setText( m_buttonMbText );
-
-    if ( !results.isEmpty() )
-    {
-        if ( !results[0].title().isEmpty() )    kLineEdit_title->setText( results[0].title() );
-        if ( !results[0].artist().isEmpty() )   kComboBox_artist->setCurrentText( results[0].artist() );
-        if ( !results[0].album().isEmpty() )    kComboBox_album->setCurrentText( results[0].album() );
-                                                kIntSpinBox_track->setValue( results[0].track() );
-                                                kIntSpinBox_year->setValue( results[0].year() );
-    }
-    else
-        KMessageBox::sorry( this, i18n( "The track was not found in the MusicBrainz database." ) );
-#endif
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// PRIVATE
-////////////////////////////////////////////////////////////////////////////////
-
-
 bool
 TagDialog::hasChanged()
 {
@@ -273,5 +270,31 @@ TagDialog::writeTag()
     }
     else return false;
 }
+
+
+void
+TagDialog::syncItemText()
+{    
+    QListViewItem* item = m_playlistItem->listView()->firstChild();
+    
+    // Find out if item still exists in the listView
+    do {
+        if ( item == m_playlistItem ) break;
+        item = item->nextSibling();
+    }
+    while( item );
+    
+    if ( item ) {
+        // Reflect changes in PlaylistItem text
+        m_playlistItem->setText( PlaylistItem::Title,   kLineEdit_title->text() );
+        m_playlistItem->setText( PlaylistItem::Artist,  kComboBox_artist->currentText() );
+        m_playlistItem->setText( PlaylistItem::Album,   kComboBox_album->currentText() );
+        m_playlistItem->setText( PlaylistItem::Genre,   kComboBox_genre->currentText() );
+        m_playlistItem->setText( PlaylistItem::Track,   kIntSpinBox_track->text() );
+        m_playlistItem->setText( PlaylistItem::Year,    kIntSpinBox_year->text() );
+        m_playlistItem->setText( PlaylistItem::Comment, kLineEdit_comment->text() );
+    }
+}
+
 
 #include "tagdialog.moc"

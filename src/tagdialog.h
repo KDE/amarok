@@ -26,10 +26,8 @@ class TagDialog : public TagDialogBase
     Q_OBJECT
 
     public:
-        TagDialog( const MetaBundle& mb, QWidget* parent );
-
-        int exec() { return TagDialogBase::exec(); }
-        void exec( PlaylistItem* );
+        TagDialog( const KURL& url, QWidget* parent = 0 );
+        TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent = 0 );
 
     private slots:
         void accept();
@@ -40,10 +38,13 @@ class TagDialog : public TagDialogBase
         void queryDone( KTRMResultList results );
 
     private:
+        void init();
         bool hasChanged();
         bool writeTag();
-
+        void syncItemText();
+        
         MetaBundle m_bundle;
+        QListViewItem* m_playlistItem;
         QString m_buttonMbText;
         QString m_path;
 };

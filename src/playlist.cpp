@@ -1268,7 +1268,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     case VIEW:
     {
-        TagDialog( item, this ).exec( item );
+        showTagDialog( item );
         break;
     }
 
@@ -1599,6 +1599,12 @@ Playlist::writeTag( QListViewItem *lvi, const QString &tag, int col ) //SLOT
     QListViewItem *below = lvi->itemBelow();
     //FIXME will result in nesting of this function?
     if( below && below->isSelected() ) { rename( below, col ); }
+}
+
+void Playlist::showTagDialog( PlaylistItem* item )
+{
+    TagDialog* dialog = new TagDialog( item->metaBundle(), item, instance() );
+    dialog->show();
 }
 
 #include "playlist.moc"
