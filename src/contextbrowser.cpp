@@ -1113,31 +1113,33 @@ void ContextBrowser::showCurrentTrack() //SLOT
             "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
 
         uint vectorPlace = 0;
-    // find album of the current track (if it exists)
+        // find album of the current track (if it exists)
         while ( vectorPlace < values.count() && values[ vectorPlace+1 ] != QString::number( album_id ) )
             vectorPlace += 2;
         for ( uint i = 0; i < values.count(); i += 2 )
         {
-            QStringList albumValues = CollectionDB::instance()->query( QString(
-                "SELECT tags.title, tags.url, tags.track, year.name, tags.length "
-                "FROM tags, year "
-                "WHERE tags.album = %1 AND "
-                "( tags.sampler = 1 OR tags.artist = %2 ) "
-                "AND year.id = tags.year "
-                "ORDER BY tags.track;" ).arg( values[ i+1 ] ).arg( artist_id ) );
+            qb.clear();
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
+            qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
+            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, values[ i+1 ] );
+            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
+            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+            qb.setOptions( QueryBuilder::optNoCompilations );
+            QStringList albumValues = qb.run();
 
             QString albumYear;
             if ( !albumValues.isEmpty() )
             {
                 albumYear = albumValues[ 3 ];
                 for ( uint j = 0; j < albumValues.count(); j += 5 )
-                {
                     if ( albumValues[j + 3] != albumYear || albumYear == "0" )
                     {
                         albumYear = QString::null;
                         break;
                     }
-                }
             }
 
             m_HTMLSource.append( QStringx (
@@ -1234,26 +1236,27 @@ void ContextBrowser::showCurrentTrack() //SLOT
             vectorPlace += 2;
         for ( uint i = 0; i < values.count(); i += 2 )
         {
-            QStringList albumValues = CollectionDB::instance()->query( QString(
-                "SELECT tags.title, tags.url, tags.track, year.name, tags.length "
-                "FROM tags, year "
-                "WHERE tags.album = %1 AND "
-                "( tags.sampler = 1 OR tags.artist = %2 ) "
-                "AND year.id = tags.year "
-                "ORDER BY tags.track;" ).arg( values[ i+1 ] ).arg( artist_id ) );
+            qb.clear();
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
+            qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
+            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, values[ i+1 ] );
+            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+            qb.setOptions( QueryBuilder::optOnlyCompilations );
+            QStringList albumValues = qb.run();
 
             QString albumYear;
             if ( !albumValues.isEmpty() )
             {
                 albumYear = albumValues[ 3 ];
                 for ( uint j = 0; j < albumValues.count(); j += 5 )
-                {
                     if ( albumValues[j + 3] != albumYear || albumYear == "0" )
                     {
                         albumYear = QString::null;
                         break;
                     }
-                }
             }
 
             m_HTMLSource.append( QStringx (
