@@ -32,6 +32,7 @@ class AmarokConfigDialog : public KConfigDialog
         // ATTRIBUTES ------
     private:
         QComboBox* m_pSoundSystem;
+        QComboBox* m_pSoundOutput;
 
     private:
         bool hasChanged();

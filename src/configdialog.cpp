@@ -37,16 +37,24 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     //manage dynamic itemLists (at least I don't know how to do it)
     Options4* pOpt4 = new Options4( 0,"Playback" );
     m_pSoundSystem = pOpt4->sound_system;
-
-    KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'engine'" );
+    m_pSoundOutput = pOpt4->sound_output;
     QStringList list;
+
+    // Sound System
+    KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'engine'" );
 
     for( KTrader::OfferList::ConstIterator it = offers.begin(); it != offers.end(); ++it )
         list << (*it)->name();
 
     m_pSoundSystem->insertStringList( list );
     m_pSoundSystem->setCurrentText  ( AmarokConfig::soundSystem() );
-   
+
+    // Sound Output    
+    list.clear();
+    list << "OSS";
+    list << "Alsa";
+    m_pSoundOutput->insertStringList( list );
+       
     // add screens
     connect( m_pSoundSystem, SIGNAL( activated( int ) ), this, SLOT( settingsChangedSlot() ) );
 

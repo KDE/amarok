@@ -3,6 +3,8 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
   
+  ADD: Option for selecting sound output system (OSS/Alsa). Currently only
+       used with GStreamer engine.
   CHG: Extended and updated handbook, thanks to Mike Diehl <madpenguin8@yahoo.com>.
   ADD: Context menu item "Make Playlist" in Collection Browser generates new
        playlists on the fly, without the need for drag-and-drop.  
