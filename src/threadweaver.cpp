@@ -208,13 +208,10 @@ CollectionReader::doJob()
     QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Start ) );
 
     const QString logPath = KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "collection_scan.log";
-    QFile::remove( logPath );
-    QFile logFile( logPath );
-    logFile.open( IO_WriteOnly );
-    m_log.setDevice( &logFile );
-    m_log << "Collection Scan logfile\n";
-    m_log << "=======================\n";
-    m_log << i18n( "Last processed file is at the bottom. Report this file in case of crashes while building the Collection.\n\n\n" );
+    std::ofstream log(  QFile::encodeName( logPath ) );
+    log << "Collection Scan logfile\n";
+    log << "=======================\n";
+    log << i18n( "Last processed file is at the bottom. Report this file in case of crashes while building the Collection.\n\n\n" ).local8Bit();
 
     if ( !m_incremental )
         m_parent->purgeDirCache();
@@ -233,14 +230,12 @@ CollectionReader::doJob()
 
     if ( !entries.empty() ) {
         QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Total, entries.count() ) );
-        readTags( entries );
+        readTags( entries, log );
     }
-
-    m_log.unsetDevice();
-    logFile.close();
 
     QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Stop ) );
 
+    log.close();
     return !entries.empty();
 }
 
@@ -319,7 +314,7 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
 
 
 void
-CollectionReader::readTags( const QStringList& entries )
+CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
@@ -340,7 +335,7 @@ CollectionReader::readTags( const QStringList& entries )
 
         url.setPath( entries[ i ] );
         // Append path to logfile
-        m_log << url.path() << endl;
+        log << url.path().local8Bit() << "\n";
 
         TagLib::FileRef f( QFile::encodeName( url.path() ), false );  //false == don't read audioprops
 

@@ -7,14 +7,15 @@
 #ifndef THREADWEAVER_H
 #define THREADWEAVER_H
 
-#include <kurl.h>         //stack allocated
+#include <fstream>        //stack allocated
 
 #include <qevent.h>       //baseclass
 #include <qmutex.h>       //stack allocated
 #include <qptrlist.h>     //stack allocated
 #include <qstringlist.h>  //stack allocated
-#include <qtextstream.h>  //stack allocated
 #include <qthread.h>      //baseclass
+
+#include <kurl.h>         //stack allocated
 
 class MetaBundle;
 class PlaylistItem;
@@ -209,7 +210,7 @@ public:
 
 private:
     void readDir( const QString& dir, QStringList& entries );
-    void readTags( const QStringList& entries );
+    void readTags( const QStringList& entries, std::ofstream& log );
 
     static bool m_stop;
 
@@ -220,7 +221,6 @@ private:
     bool m_importPlaylists;
     bool m_incremental;
     QStringList m_processedDirs;
-    QTextStream m_log;
 };
 
 
