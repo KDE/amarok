@@ -465,7 +465,6 @@ void PlayerApp::saveConfig()
     AmarokConfig::setMasterVolume      ( EngineController::instance()->engine()->volume() );
     AmarokConfig::setPlayerPos         ( m_pPlayerWidget->pos() );
     AmarokConfig::setVersion           ( APP_VERSION );
-
     m_pBrowserWin->saveConfig();
 
     AmarokConfig::writeConfig();

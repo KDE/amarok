@@ -49,24 +49,30 @@ private:
     ToggleLabel *m_pTimeLabel;
 };
 
+
+
+
 class ToggleLabel : public QLabel
 {
     Q_OBJECT
 public:
     ToggleLabel( const QString &text, QWidget *parent = 0, const char *name = 0 );
+    ~ToggleLabel();
 
+    void setColorToggle( bool on );
 
 protected:
     virtual void mouseDoubleClickEvent ( QMouseEvent * e );
 
 public slots:
-    virtual void setOn ( bool );
+    virtual void setOn( bool );
 
 signals:
-    void toggled( int state );
+    void toggled( bool state );
 
 private:
-    bool State;
+    bool m_State;
+    bool m_ColorToggle;
 };
 
 }

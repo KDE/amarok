@@ -66,6 +66,28 @@ public:
     virtual int plug( QWidget *, int index = -1 );
 };
 
+
+class RandomAction : public KToggleAction
+{
+public:
+    RandomAction( KActionCollection *ac );
+    virtual void setChecked( bool on );
+};
+
+class RepeatTrackAction : public KToggleAction
+{
+public:
+    RepeatTrackAction( KActionCollection *ac );
+    virtual void setChecked( bool on );
+};
+
+class RepeatPlaylistAction : public KToggleAction
+{
+public:
+    RepeatPlaylistAction( KActionCollection *ac );
+    virtual void setChecked( bool on );
+};
+
 }
 
 #endif

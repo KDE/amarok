@@ -36,9 +36,9 @@ Menu::Menu( QWidget *parent )
 
     setCheckable( true );
 
-    insertItem( i18n( "Repeat &Track" ),    ID_REPEAT_TRACK );
-    insertItem( i18n( "Repeat &Playlist" ), ID_REPEAT_PLAYLIST );
-    insertItem( i18n( "Random &Mode" ),     ID_RANDOM_MODE );
+    safePlug( ac, "repeat_track", this );
+    safePlug( ac, "repeat_playlist", this );
+    safePlug( ac, "random_mode", this );
 
     insertSeparator();
 
@@ -76,28 +76,15 @@ Menu::helpMenu( QWidget *parent ) //STATIC
 void
 Menu::slotAboutToShow()
 {
-    setItemChecked( ID_REPEAT_TRACK,    AmarokConfig::repeatTrack() );
-    setItemChecked( ID_REPEAT_PLAYLIST, AmarokConfig::repeatPlaylist() );
-    setItemChecked( ID_RANDOM_MODE,     AmarokConfig::randomMode() );
     setItemEnabled( ID_CONF_DECODER,    EngineController::instance()->engine()->decoderConfigurable() );
 }
 
 void
 Menu::slotActivated( int index )
 {
-    switch( index ) {
-    case ID_REPEAT_TRACK:
-        AmarokConfig::setRepeatTrack( !isItemChecked(ID_REPEAT_TRACK) );
-        break;
-    case ID_REPEAT_PLAYLIST:
-        AmarokConfig::setRepeatPlaylist( !isItemChecked(ID_REPEAT_PLAYLIST) );
-        break;
-    case ID_RANDOM_MODE:
-        AmarokConfig::setRandomMode( !isItemChecked(ID_RANDOM_MODE) );
-        break;
-    case ID_CONF_DECODER:
+    if( index == ID_CONF_DECODER )
+    {
         EngineController::engine()->configureDecoder();
-        break;
     }
 }
 
@@ -197,5 +184,47 @@ AnalyzerAction::plug( QWidget *w, int index )
     }
     else return -1;
 }
+
+
+RandomAction::RandomAction( KActionCollection *ac ) :
+    KToggleAction( i18n( "Random &Mode" ), 0, ac, "random_mode" )
+{
+    setChecked( AmarokConfig::randomMode() );
+}
+
+void RandomAction::setChecked( bool on )
+{
+    KToggleAction::setChecked( on );
+    AmarokConfig::setRandomMode( on );
+}
+
+
+RepeatTrackAction::RepeatTrackAction( KActionCollection *ac ) :
+    KToggleAction( i18n( "Repeat &Track" ), 0, ac, "repeat_track" )
+{
+    setChecked( AmarokConfig::repeatTrack() );
+}
+
+void RepeatTrackAction::setChecked( bool on )
+{
+    KToggleAction::setChecked( on );
+    AmarokConfig::setRepeatTrack( on );
+}
+
+
+RepeatPlaylistAction::RepeatPlaylistAction( KActionCollection *ac ) :
+    KToggleAction( i18n( "Repeat &Playlist" ), 0, ac, "repeat_playlist" )
+{
+    setChecked( AmarokConfig::repeatPlaylist() );
+}
+
+void RepeatPlaylistAction::setChecked( bool on )
+{
+    KToggleAction::setChecked( on );
+    AmarokConfig::setRepeatPlaylist( on );
+}
+
+
+
 
 #include "amarokmenu.moc"

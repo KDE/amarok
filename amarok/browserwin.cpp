@@ -28,6 +28,7 @@
 #include "playlistwidget.h"
 #include "streambrowser.h"
 #include "searchbrowser.h"
+#include "statusbar.h"
 
 #include <qcolor.h>        //setPalettes()
 #include <qevent.h>        //eventFilter()
@@ -86,6 +87,11 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
         new amaroK::MenuAction( ac );
         new amaroK::PlayPauseAction( ac );
         new amaroK::AnalyzerAction( ac );
+
+        new amaroK::RepeatTrackAction( ac );
+        new amaroK::RepeatPlaylistAction( ac );
+        new amaroK::RandomAction( ac );
+
     //</actions>
 
 
@@ -98,15 +104,15 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     m_lineEdit->installEventFilter( this ); //we intercept keyEvents
 
     QBoxLayout *layV = new QVBoxLayout( this );
-    layV->addWidget( m_browsers );
+    layV->addWidget( m_browsers, 10 );
     layV->addWidget( m_toolbar );
+    layV->addWidget( new amaroK::StatusBar( this, "statusbar" ) );
 
 
     //<XMLGUI>
         setXMLFile( "amarokui.rc" );
         createGUI(); //NOTE we implement this
     //</XMLGUI>
-
 
     //<FileBrowser>
         m_browsers->addPage( new KDevFileSelector( 0, "FileBrowser" ), i18n( "File Browser" ), "hdd_unmount" );
