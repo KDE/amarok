@@ -709,12 +709,18 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         KPopupMenu menu( this );
 
         int cat = 0;
-        if( item->depth() == 0 )
-            cat = m_cat1;
-        else if( item->depth() == 1 )
-            cat = m_cat2;
-        else if( item->depth() == 2 )
-            cat = m_cat3;
+        switch ( item->depth() )
+        {
+            case 0:
+                cat = m_cat1;
+                break;
+            case 1:
+                cat = m_cat2;
+                break;
+            case 2:
+                cat = m_cat3;
+                break;
+        }
 
         #ifdef AMAZON_SUPPORT
         enum Actions { APPEND, MAKE, QUEUE, BURN_ARTIST, BURN_ALBUM,
@@ -724,22 +730,24 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                        BURN_DATACD, BURN_AUDIOCD, INFO };
         #endif
 
-
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
         menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue After Current Track" ), QUEUE );
 
         menu.insertSeparator();
 
-        if( cat == CollectionBrowser::IdArtist ) {
+        if( cat == CollectionBrowser::IdArtist )
+        {
             menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn All Tracks by This Artist"), BURN_ARTIST );
             menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
         }
-        else if( cat == CollectionBrowser::IdAlbum ) {
+        else if( cat == CollectionBrowser::IdAlbum )
+        {
             menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn This Album"), BURN_ALBUM );
             menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() );
         }
-        else if( !item->isExpandable() ) {
+        else if( !item->isExpandable() )
+        {
             menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD as Data"), BURN_DATACD );
             menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
             menu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BURN_AUDIOCD );
@@ -756,8 +764,8 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         menu.setItemEnabled( INFO, !item->isExpandable()  );
 
-        switch( menu.exec( point ) ) {
-
+        switch( menu.exec( point ) )
+        {
             case APPEND:
                 Playlist::instance()->insertMedia( listSelected(), Playlist::Append );
                 break;

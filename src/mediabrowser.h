@@ -71,6 +71,7 @@ class MediaDeviceList : public KListView
 
     private slots:
         void slotCollapse( QListViewItem* );
+        void rmbPressed( QListViewItem*, const QPoint&, int );
         void renderView( QListViewItem* parent );
         void renderNode( QListViewItem* parent, const KURL& url );
 
@@ -125,6 +126,7 @@ class MediaDevice : public QObject
 
     public slots:
         void transferFiles();
+        void deleteFiles( const KURL::List& files );
         
     private slots:
         void fileTransferred( KIO::Job *job, const KURL &from, const KURL &to, bool dir, bool renamed );

@@ -6,6 +6,7 @@
 #include "amarokconfig.h"
 #include "clicklineedit.h"
 #include "colorgenerator.h"
+#include "k3bexporter.h"
 #include "metabundle.h"
 #include "playlist.h"      //appendMedia()
 #include "statusbar.h"
@@ -116,6 +117,9 @@ MediaDeviceList::MediaDeviceList( MediaDeviceView* parent )
 
     connect( this, SIGNAL( collapsed( QListViewItem* ) ),
              this,   SLOT( slotCollapse( QListViewItem* ) ) );
+
+    connect( this, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
+             this,   SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
 }
 
 
@@ -150,11 +154,8 @@ MediaDeviceList::renderView( QListViewItem* parent )  //SLOT
         item->setText( 0, items[ i ] );
         item->setPixmap( 0, pixmap );
         
-        QStringList path = QStringList::split( ':', items[ i + 1 ] );
-        path[2] = path[2].lower();
-
         if ( track )
-            item->setUrl( QString( "/mnt/ipod/" ) + path.join( "/" ) );
+            item->setUrl( items[i+1] );
     }
 }
 
@@ -280,6 +281,75 @@ MediaDeviceList::contentsDragMoveEvent( QDragMoveEvent* e )
 }   
 
 
+void
+MediaDeviceList::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SLOT
+{
+    if ( item ) {
+        KPopupMenu menu( this );
+
+        enum Actions { APPEND, MAKE, QUEUE, BURN_ARTIST, BURN_ALBUM,
+                       BURN_DATACD, BURN_AUDIOCD, DELETE };
+
+        menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
+        menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
+        menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue After Current Track" ), QUEUE );
+
+        menu.insertSeparator();
+
+        switch ( item->depth() )
+        {
+            case 0: 
+                menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn All Tracks by This Artist"), BURN_ARTIST );
+                menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
+                break;
+
+            case 1:
+                menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn This Album"), BURN_ALBUM );
+                menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() );
+                break;
+
+            case 2:
+                menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD as Data"), BURN_DATACD );
+                menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
+                menu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BURN_AUDIOCD );
+                menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
+                break;
+        }
+
+        menu.insertSeparator();
+        menu.insertItem( SmallIconSet( "editdelete" ), i18n("Delete File"), DELETE );
+
+        switch( menu.exec( point ) )
+        {
+            case APPEND:
+                Playlist::instance()->insertMedia( m_dragList, Playlist::Append );
+                break;
+            case MAKE:
+                Playlist::instance()->insertMedia( m_dragList, Playlist::Replace );
+                break;
+            case QUEUE:
+                Playlist::instance()->insertMedia( m_dragList, Playlist::Queue );
+                break;
+            case BURN_ARTIST:
+                K3bExporter::instance()->exportArtist( item->text(0) );
+                break;
+            case BURN_ALBUM:
+                K3bExporter::instance()->exportAlbum( item->text(0) );
+                break;
+            case BURN_DATACD:
+                K3bExporter::instance()->exportTracks( m_dragList, K3bExporter::DataCD );
+                break;
+            case BURN_AUDIOCD:
+                K3bExporter::instance()->exportTracks( m_dragList, K3bExporter::AudioCD );
+                break;
+            case DELETE:
+                m_parent->m_device->deleteFiles( m_dragList );
+                break;
+        }
+    }
+}
+
+
 MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     : QVBox( parent )
     , m_device ( new MediaDevice( this ) )
@@ -313,7 +383,11 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
 
 
 MediaDeviceView::~MediaDeviceView()
-{}
+{
+    delete m_transferList;
+    delete m_deviceList;
+    delete m_device;
+}
 
 
 MediaDevice::MediaDevice( MediaDeviceView* parent )
@@ -364,7 +438,6 @@ MediaDevice::items( QListViewItem* item )
         {
             Artist* artist;
             artist = m_ipod->getArtistByName( item->text( 0 ) );
-    
             if ( artist )
                 for ( ArtistIterator it( *artist ); it.current(); ++it )
                     items << it.currentKey();
@@ -377,12 +450,11 @@ MediaDevice::items( QListViewItem* item )
             if ( album )
             {
                 TrackList::Iterator it = album->getTrackIDs();
-
                 while ( it.hasNext() )
                 {
                     TrackMetadata* track = m_ipod->getTrackByID( it.next() );
                     items << track->getTitle();
-                    items << track->getPath();
+                    items << m_ipod->getRealPath( track->getPath() );
                 }
             }
         }
@@ -407,17 +479,32 @@ MediaDevice::transferFiles()  //SLOT
 }
 
 
+void
+MediaDevice::deleteFiles( const KURL::List& files )
+{
+}
+
+
 bool
 MediaDevice::fileExists( const MetaBundle& bundle )  
 {
-    // trackno - songtitle.extension
-    QString filename = QString( "%1 - %2.mp3" )
-                          .arg( bundle.track().toInt() > 0 ? bundle.track() : "1" )
-                          .arg( bundle.title() );
+    TrackList* album;
 
-    QString path = escapeIPod( bundle.artist() ) + "/" + escapeIPod( bundle.album() ) + "/";
-
-    return KIO::NetAccess::exists( KURL( "ipod:/Artists/" + path + filename ) );
+    kdDebug() << "lala: " << bundle.artist() << " - " << bundle.album() << endl;
+    album = m_ipod->getAlbum( bundle.artist(), bundle.album() );
+    if ( album )
+    {
+        TrackList::Iterator it = album->getTrackIDs();
+        while ( it.hasNext() )
+        {
+            TrackMetadata* track = m_ipod->getTrackByID( it.next() );
+            kdDebug() << "lala: " << track->getArtist() << " - " << track->getTitle() << endl;
+            if ( track->getTitle() == bundle.title() )
+                return true;
+        }
+    }
+    
+    return false;
 }
 
 
