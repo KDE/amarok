@@ -550,9 +550,13 @@ void PlayerApp::setupColors()
         //bgAlt.setRgb( 74, 81, 107 );
         //bgAlt.setRgb( 83, 86, 112 );
 
+        /*PLEASE don't do this, it makes lots of widget ugly
+         *instead customise BrowserWin::setColors();
+         */
+        //group.setColor( QColorGroup::Foreground, Qt::white );
+        
         group.setColor( QColorGroup::Text, Qt::white );
         group.setColor( QColorGroup::Base, bg );
-        group.setColor( QColorGroup::Foreground, Qt::white );                  //QLabels in SearchBrowser
         group.setColor( QColorGroup::Background, bg.dark( 115 ) );
 
         group.setColor( QColorGroup::Highlight, Qt::white );

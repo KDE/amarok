@@ -239,23 +239,27 @@ void BrowserWin::setColors( const QPalette &pal, const QColor &bgAlt )
     //this updates all children's palettes recursively (thanks Qt!)
     m_browsers->setPalette( pal );
 
-    const bool changeMenuBar = !AmarokConfig::schemeKDE();
+    const bool schemeKDE = !AmarokConfig::schemeKDE();
     QObjectList *list = m_browsers->queryList( "QWidget" );
 
     for( QObject *obj = list->first(); obj; obj = list->next() )
     {
-        if( changeMenuBar && obj->inherits("QMenuBar") )
-        {
-            static_cast<QWidget*>(obj)->setPalette( QApplication::palette() );
-        }
-        else if( obj->inherits("KListView") )
+        if( obj->inherits("KListView") )
         {
             KListView *lv = dynamic_cast<KListView *>(obj); //slow, but safe
             if( lv ) lv->setAlternateBackground( bgAlt );
         }
-        else if ( obj->inherits("QLabel") )
+        else if( schemeKDE )
         {
-            static_cast<QLabel*>(obj)->setPalette( pal );
+            if( obj->inherits("QLabel") )
+            {
+                static_cast<QLabel*>(obj)->setPalette( pal );
+                static_cast<QLabel*>(obj)->setPaletteForegroundColor( Qt::white );
+            }
+            else if( obj->inherits("QMenuBar") )
+            {
+                static_cast<QWidget*>(obj)->setPalette( QApplication::palette() );
+            }
         }
     }
 
