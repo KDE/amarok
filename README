@@ -30,6 +30,7 @@ interface, that really makes playlist handling easy.
     * KDE integration
 --------------------------------------------------------------------------------
 
+
  DEPENDENCIES
 ==============
 
@@ -94,6 +95,7 @@ Please note, if compiling from source you must also install the devel versions
 of these packages.
 --------------------------------------------------------------------------------
 
+
  IMPORTANT INSTALL INSTRUCTIONS
 ================================
 
@@ -111,6 +113,7 @@ Note: --enable-final may not work for beta releases
 
 Packages for popular distributions are available at http://amarok.kde.org
 --------------------------------------------------------------------------------
+
 
  INSTALLATION-FAQ
 ==================
@@ -136,6 +139,7 @@ A: The aRts engine is the slowest to load, using an alternative will help.
    important here).
 --------------------------------------------------------------------------------
 
+
  OTHER-FAQS
 ============
 
@@ -144,6 +148,7 @@ and stutter!" please visit:
 
    http://amarok.kde.org/
 --------------------------------------------------------------------------------
+
 
  INFORMATION FOR PACKAGERS
 ===========================
@@ -181,6 +186,7 @@ real amaroK.
 If you make packages for amaroK please let us know and we'll link to you on the
 homepage (as long as you don't object).
 --------------------------------------------------------------------------------
+
 
  CONTRIBUTING
 ==============
