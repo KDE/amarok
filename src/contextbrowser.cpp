@@ -1514,6 +1514,10 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
         return;
     }
 
+    /* We don't want to display any links or images in our lyrics */
+    m_lyrics.replace( QRegExp("<[aA][^>]*>[^<]*</[aA]>"), QString::null );
+    m_lyrics.replace( QRegExp("<[iI][mM][gG][^>]*>"), QString::null );
+
     if ( m_lyrics.find( "<font size='2'>" ) != -1 )
     {
         m_lyrics = m_lyrics.mid( m_lyrics.find( "<font size='2'>" ) );
