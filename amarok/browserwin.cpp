@@ -82,6 +82,8 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
    , KXMLGUIClient()
 //   , m_pActionCollection( new KActionCollection( this ) )
 {
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
+
     setCaption( "amaroK" );
 
     m_browsers = new BrowserBar( this );
@@ -103,6 +105,8 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
         setXMLFile( "amarokui.rc" );
         KToolBar *toolbar = createGUI(); //NOTE we implement this
     //</XMLGUI>
+
+    kdDebug() << "Created XMLGUI\n";
 
     QBoxLayout *layV = new QVBoxLayout( this );
     layV->addWidget( m_browsers );
@@ -163,12 +167,15 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
              m_playlist,   SLOT( slotTextChanged( const QString& ) ) );
 
     QToolTip::add( m_lineEdit, i18n( "Enter filter string" ) );
+    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 ///////// public interface
 
 KToolBar *BrowserWin::createGUI()
 {
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
+
     //if we have been called from the toolBarEdit Dialog
     //we need to clear the toolbar first
     //otherwise we haven't created the toolbar yet
@@ -179,24 +186,32 @@ KToolBar *BrowserWin::createGUI()
     KToolBar *toolbar = (KToolBar*)child( "playlist_toolbar" );
     if( toolbar ) toolbar->clear();
 
-    KXMLGUIBuilder builder( this );
-    KXMLGUIFactory factory( &builder, this );
+    KXMLGUIBuilder *builder = new KXMLGUIBuilder( this );
+    kdDebug() << "Instantiated builder.\n";
+
+    KXMLGUIFactory *factory = new KXMLGUIFactory( builder, this );
+    kdDebug() << "Instantiated factory.\n";
 
     //build Toolbar, plug actions
-    factory.addClient( this );
+    factory->addClient( this );
+    kdDebug() << "Added client.\n";
 
     if( !toolbar ) toolbar = (KToolBar*)child( "playlist_toolbar" );
 
-    //TODO will crash if we can't find these
+    KToolBarButton *b;
     toolbar->setIconText( KToolBar::IconTextRight, false );
-        static_cast<KToolBarButton*>(toolbar->child( "toolbutton_playlist_add" ))->modeChange();
-        static_cast<KToolBarButton*>(toolbar->child( "toolbutton_playlist_clear" ))->modeChange();
-        static_cast<KToolBarButton*>(toolbar->child( "toolbutton_playlist_shuffle" ))->modeChange();
-        static_cast<KToolBarButton*>(toolbar->child( "toolbutton_playlist_show" ))->modeChange();
+        if((b = static_cast<KToolBarButton*>(toolbar->child( "toolbutton_playlist_add" )))) b->modeChange();
+        if((b = static_cast<KToolBarButton*>(toolbar->child( "toolbutton_playlist_clear" )))) b->modeChange();
+        if((b = static_cast<KToolBarButton*>(toolbar->child( "toolbutton_playlist_shuffle" )))) b->modeChange();
+        if((b = static_cast<KToolBarButton*>(toolbar->child( "toolbutton_playlist_show" )))) b->modeChange();
     toolbar->setIconText( KToolBar::TextOnly, false );
-        static_cast<KToolBarButton*>(toolbar->child( "toolbutton_amarok_menu" ))->modeChange();
+        if((b = static_cast<KToolBarButton*>(toolbar->child( "toolbutton_amarok_menu" )))) b->modeChange();
     toolbar->setIconText( KToolBar::IconOnly, false );
 
+    kdDebug() << "END " << k_funcinfo << endl;
+
+    delete factory;
+    delete builder;
     return toolbar;
     //TODO conserve memory? (delete XML QDom)
 }
