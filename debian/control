@@ -2,12 +2,13 @@ Source: amarok
 Section: kde
 Priority: optional
 Maintainer: Adeodato Simó <asp16@alu.ua.es>
-Build-Depends: cdbs (>= 0.4.21), debhelper (>> 4.1.0), kdelibs4-dev (>= 4:3.2), kdemultimedia-dev (>= 4:3.2), libkjsembed-dev (>= 4:3.2), libgstreamer0.8-dev, libgstreamer-plugins0.8-dev, libtag1-dev (>= 1.2), libxine-dev (>= 1-rc4), libsqlite0-dev, xmms-dev, libtunepimp2-dev
+Build-Depends: cdbs (>= 0.4.21), debhelper (>> 4.1.0), kdelibs4-dev (>= 4:3.2), kdemultimedia-dev (>= 4:3.2), libkjsembed-dev (>= 4:3.2), libgstreamer0.8-dev, libgstreamer-plugins0.8-dev, libtag1-dev (>= 1.3), libxine-dev (>= 1-rc4), libsqlite0-dev, xmms-dev, libtunepimp2-dev
 Standards-Version: 3.6.1
 
 Package: amarok
 Architecture: any
 Depends: amarok-engines | amarok-engine, ${shlibs:Depends}
+Recommends: kdemultimedia-kio-plugins
 Description: versatile and easy to use audio player for KDE
  amaroK tries to be a little different, providing a simple drag and drop
  interface that really makes playlist handling easy.

@@ -20,17 +20,8 @@ common-binary-arch::
 	for p in $(DEB_ALL_PACKAGES); do \
 	  cat debian/substvars >>debian/$$p.substvars; \
 	done
-	# Install lintian overrides
-	p=amarok-arts; \
-	dh_install -p$$p debian/overrides/$$p usr/share/lintian/overrides/
 
 ### POST-INSTALL HACKING
-# Non-user binaries in /usr/lib, not /usr/bin
-binary-post-install/amarok::
-	p=`basename $@`; \
-	mv debian/$$p/usr/bin/amarokapp           debian/$$p/usr/lib/amarok; \
-	mv debian/$$p/usr/bin/amarok_xmmswrapper2 debian/$$p/usr/lib/amarok
-
 # Make directories in /usr/share/doc be symlinks for packages other than amarok
 common-binary-post-install-arch::
 	for p in $(filter-out amarok,$(DEB_ALL_PACKAGES)); do \

@@ -13,7 +13,7 @@ debian/tmp/usr/lib/kde3/libamarok_void-engine_plugin.la
 debian/tmp/usr/lib/kde3/libamarok_void-engine_plugin.so
 
 debian/tmp/usr/bin/amarok
-debian/tmp/usr/bin/amarokapp
-debian/tmp/usr/bin/amarok_xmmswrapper2
+debian/tmp/usr/bin/amarokapp		/usr/lib/amarok
+debian/tmp/usr/bin/amarok_xmmswrapper2	/usr/lib/amarok
 
 debian/tmp/etc/*

@@ -1,3 +1,24 @@
+amarok (1.1.1-2~pre1) unstable; urgency=low
+
+  * debian/amarok.1:
+    - correct "hyphen vs. minus sign" usage.
+
+  * Taglib 1.3 is now in the archive:
+    - removed debian/patches/taglib-1.2-suffices.patch.
+    - update Build-Depends to libtag1-dev (>= 1.3).
+
+  * Make amarok recommend: kdemultimedia-kio-plugins, since otherwise it won't
+    be able to play audio CDs. Added note stating so to README.Debian.
+
+  * Added note to README.Debian explaining why the amarokapp and
+    amarok_xmmswrapper2 binaries are shipped in /usr/lib/amarok instead of
+    /usr/bin, differing from upstream.
+
+  * Added note to README.Debian about the 'Socket-path is not a link or a
+    directory' error.
+
+ -- Adeodato Simó <asp16@alu.ua.es>  Tue, 09 Nov 2004 03:43:22 +0100
+
 amarok (1.1.1-1) unstable; urgency=low
 
   * New upstream release packaged. Most notably, fixes several GStreamer

@@ -4,3 +4,5 @@ debian/tmp/usr/lib/kde3/libamarok_artsengine_plugin.la
 debian/tmp/usr/lib/libamarokarts.so
 debian/tmp/usr/lib/libamarokarts.la
 debian/tmp/usr/lib/mcop/*
+
+debian/overrides/amarok-arts	/usr/share/lintian/overrides
