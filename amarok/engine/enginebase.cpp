@@ -26,32 +26,49 @@ email                : markey@web.de
 
 #include "qstringlist.h"
 
-EngineBase::~EngineBase()
-{}
 
+EngineBase::~EngineBase()
+{
+    closeMixerHW();
+}
 
 //////////////////////////////////////////////////////////////////////
 
 bool EngineBase::initMixerHW()
 {
     if ( ( m_mixerHW = ::open( "/dev/mixer", O_RDWR ) ) < 0 )
-        return false;
-
-    int devmask, recmask, i_recsrc, stereodevs;
-    if ( ioctl( m_mixerHW, SOUND_MIXER_READ_DEVMASK, &devmask )       == -1 ) return false;
-    if ( ioctl( m_mixerHW, SOUND_MIXER_READ_RECMASK, &recmask )       == -1 ) return false;
-    if ( ioctl( m_mixerHW, SOUND_MIXER_READ_RECSRC, &i_recsrc )       == -1 ) return false;
-    if ( ioctl( m_mixerHW, SOUND_MIXER_READ_STEREODEVS, &stereodevs ) == -1 ) return false;
-    if ( !devmask )                                                           return false;
-
+        return false;  //failed
+    else
+    {        
+        int devmask, recmask, i_recsrc, stereodevs;
+        if ( ioctl( m_mixerHW, SOUND_MIXER_READ_DEVMASK, &devmask )       == -1 ) return false;
+        if ( ioctl( m_mixerHW, SOUND_MIXER_READ_RECMASK, &recmask )       == -1 ) return false;
+        if ( ioctl( m_mixerHW, SOUND_MIXER_READ_RECSRC, &i_recsrc )       == -1 ) return false;
+        if ( ioctl( m_mixerHW, SOUND_MIXER_READ_STEREODEVS, &stereodevs ) == -1 ) return false;
+        if ( !devmask )                                                           return false;
+    }
+    
     return true;
+}
+
+
+void EngineBase::closeMixerHW()
+{
+    if ( m_mixerHW != -1 )
+    {
+        ::close( m_mixerHW );   //close /dev/mixer device
+        m_mixerHW = -1;
+    }
 }
 
 
 void EngineBase::setVolumeHW( int percent )
 {
-    percent = percent + ( percent << 8 );
-    ioctl( m_mixerHW, MIXER_WRITE( 4 ), &percent );
+    if ( m_mixerHW != -1 )
+    {
+        percent = percent + ( percent << 8 );
+        ioctl( m_mixerHW, MIXER_WRITE( 4 ), &percent );
+    }
 }
 
 

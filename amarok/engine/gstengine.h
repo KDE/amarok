@@ -39,7 +39,7 @@ class GstEngine : public EngineBase
                                                  GstEngine( int scopeSize );
                                                  ~GstEngine();
 
-        bool                                     initMixer( bool software );
+        bool                                     initMixer( bool hardware );
         bool                                     canDecode( const KURL &url );
 
         long                                     position() const;

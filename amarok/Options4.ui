@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>386</width>
-            <height>340</height>
+            <height>342</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -252,13 +252,13 @@
         </widget>
         <widget class="QCheckBox">
             <property name="name">
-                <cstring>kcfg_SoftwareMixerOnly</cstring>
+                <cstring>kcfg_HardwareMixer</cstring>
             </property>
             <property name="text">
-                <string>Use only software &amp;mixer (requires restart)</string>
+                <string>Use hardware volume mixer</string>
             </property>
             <property name="accel">
-                <string>Alt+M</string>
+                <string></string>
             </property>
         </widget>
         <widget class="QCheckBox">
@@ -266,7 +266,7 @@
                 <cstring>kcfg_TitleStreaming</cstring>
             </property>
             <property name="text">
-                <string>Display Shoutcast/Icecast metadata</string>
+                <string>Display Shoutcast metadata (title streaming)</string>
             </property>
         </widget>
     </vbox>

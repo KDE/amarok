@@ -108,7 +108,8 @@ GstEngine::GstEngine( int scopeSize )
         , mScope( 0 )
 {
     setName( "gstreamer" );
-    
+    m_mixerHW = -1;     //initialize 
+
     pGstEngine = this;
     gst_init( NULL, NULL );
     buffer( 1 << scopeSize );
@@ -153,7 +154,12 @@ GstEngine::~GstEngine()
 
 bool GstEngine::initMixer( bool )
 {
-    EngineBase::initMixerHW();
+    closeMixerHW();
+    initMixerHW();
+    
+    setVolume( m_volume );
+
+    return true;
 }
 
 
@@ -304,6 +310,7 @@ void GstEngine::seek( long ms )
 
 void GstEngine::setVolume( int percent )
 {
+    m_volume = percent;
     EngineBase::setVolumeHW( percent );
 }
 

@@ -130,9 +130,9 @@
         <default>30</default>
         <whatsthis></whatsthis>
      </entry>
-     <entry key="Software Mixer Only" type="Bool">
-        <label>Use engine's software mixer instead of mucking on /dev/mixer directly</label>
-        <default>true</default>
+     <entry key="Hardware Mixer" type="Bool">
+        <label>Use soundcard hardware mixer for volume</label>
+        <default>false</default>
         <whatsthis></whatsthis>
      </entry>
      <entry key="Current Analyzer" type="Int">
@@ -156,7 +156,7 @@
         <whatsthis></whatsthis>
      </entry>
      <entry key="Master Volume" type="Int">
-        <label>Master volume</label>
+        <label>Master volume (range 0-100)</label>
         <default>50</default>
         <whatsthis></whatsthis>
      </entry>

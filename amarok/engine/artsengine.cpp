@@ -62,7 +62,8 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
         , m_xfadeCurrent( "invalue1" )
 {
     setName( "arts" );
-
+    m_mixerHW = -1;     //initialize
+    
     // We must restart artsd whenever we installed new mcopclasses
     if ( restart )
     {
@@ -207,27 +208,29 @@ ArtsEngine::~ ArtsEngine()
 }
 
 
-bool ArtsEngine::initMixer( bool software )
+bool ArtsEngine::initMixer( bool hardware )
 {
-    //make sure any previously started volume control gets killed
-    if ( m_volumeId )
-    {
-        m_globalEffectStack.remove( m_volumeId );
-        m_volumeId = 0;
-        m_volumeControl = Arts::StereoVolumeControl::null();
+    { //make sure any previously started volume control gets killed
+        if ( m_volumeId )
+        {
+            m_globalEffectStack.remove( m_volumeId );
+            m_volumeId = 0;
+            m_volumeControl = Arts::StereoVolumeControl::null();
+        }
+        closeMixerHW();
     }
-
-    if ( software )
-    {
+            
+    if ( hardware )
+        hardware = initMixerHW();
+    else
+    {    
         m_volumeControl = Arts::DynamicCast( m_server.createObject( "Arts::StereoVolumeControl" ) );
         m_volumeControl.start();
         m_volumeId = m_globalEffectStack.insertBottom( m_volumeControl, "Volume Control" );
     }
-    else
-        EngineBase::initMixerHW();
-
-    //FIXME do we need a return value?
-    return true;
+    
+    setVolume( m_volume );
+    return hardware;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -447,6 +450,8 @@ void ArtsEngine::seek( long ms )
 
 void ArtsEngine::setVolume( int percent )
 {
+    m_volume = percent;
+    
     if ( m_volumeId )
         m_volumeControl.scaleFactor( percent * 0.01 );
     else

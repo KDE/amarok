@@ -38,7 +38,10 @@ class EngineBase : public QObject
 
         virtual                      ~EngineBase();
 
-        virtual bool                 initMixer( bool software )                        = 0;
+        //@param hardware true for soundcard hardware mixing
+        //@return true if using hardware mixing
+        virtual bool                 initMixer( bool hardware )                        = 0;
+        
         virtual bool                 canDecode( const KURL &url )                      = 0;
 
         //@return time position in ms
@@ -46,10 +49,14 @@ class EngineBase : public QObject
         virtual EngineState          state() const                                     = 0;
         
         //@return true if media is loaded, system is ready to play
-                bool                 loaded()       { return state() != Empty; }  
+                bool                 loaded() { return state() != Empty; }  
         
         //@return volume in range 0 to 99
         inline  int                  volume() const { return m_volume; }
+         
+        //@return true if using hardware mixer
+                bool                 isMixerHardware() const { return m_mixerHW != -1; }
+        
         virtual bool                 isStream() const                                  = 0;
 
         //@return pointer to result of FFT calculation. must be deleted after use.
@@ -77,6 +84,7 @@ class EngineBase : public QObject
         static EngineBase*           createEngine( QString system, bool& restart, int scopeSize );
 
     protected:
+        void                         closeMixerHW();
         bool                         initMixerHW();
         void                         setVolumeHW( int percent );
         /////////////////////////////////////////////////////////////////////////////////////

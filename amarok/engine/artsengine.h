@@ -42,7 +42,7 @@ class ArtsEngine : public EngineBase
                                                  ArtsEngine( bool& restart, int scopeSize );
                                                  ~ArtsEngine();
 
-        bool                                     initMixer( bool software );
+        bool                                     initMixer( bool hardware );
         bool                                     canDecode( const KURL &url );
         long                                     position() const;
         EngineBase::EngineState                  state() const;

@@ -317,7 +317,9 @@ void PlayerApp::applySettings()
         kdDebug() << "[PlayerApp::applySettings()] AmarokConfig::soundSystem() == " << AmarokConfig::soundSystem() << endl;
     }
 
-    m_pEngine->initMixer     ( AmarokConfig::softwareMixerOnly() );
+    if ( AmarokConfig::hardwareMixer() != m_pEngine->isMixerHardware() )
+        AmarokConfig::setHardwareMixer( m_pEngine->initMixer( AmarokConfig::hardwareMixer() ) );
+    
     m_pEngine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
 
     m_pOSD->setEnabled( !AmarokConfig::osdEnabled() );      //workaround for reversed config entry
@@ -345,6 +347,7 @@ void PlayerApp::saveConfig()
     AmarokConfig::setBrowserWinSize    ( m_pBrowserWin->size() );
     AmarokConfig::setBrowserWinEnabled ( m_pPlayerWidget->m_pButtonPl->isOn() );
     AmarokConfig::setBrowserWinSplitter( m_pBrowserWin->m_pSplitter->sizes() );
+    AmarokConfig::setMasterVolume      ( m_pEngine->volume() );
     AmarokConfig::setPlayerPos         ( m_pPlayerWidget->pos() );
     AmarokConfig::setVersion           ( APP_VERSION );
 
@@ -356,7 +359,6 @@ void PlayerApp::saveConfig()
 }
 
 
-//FIXME split this up, make separate methods or each config page
 void PlayerApp::readConfig()
 {
     kdDebug() << "begin PlayerApp::readConfig()" << endl;
@@ -364,7 +366,10 @@ void PlayerApp::readConfig()
     //we must restart artsd after each version change, so that it picks up any plugin changes
     m_artsNeedsRestart = AmarokConfig::version() != APP_VERSION;
     m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(), m_artsNeedsRestart, SCOPE_SIZE );
-
+        
+    AmarokConfig::setHardwareMixer( m_pEngine->initMixer( AmarokConfig::hardwareMixer() ) );
+    m_pEngine->setVolume( AmarokConfig::masterVolume() );
+    
     /*    m_pBrowserWin->m_pBrowserWidget->readDir( AmarokConfig::currentDirectory() );
         m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( AmarokConfig::pathHistory() );*/
 
