@@ -81,7 +81,8 @@ TagDialog::accept() //SLOT
     pushButton_ok->setEnabled( false ); //visual feedback
     saveTags();
 
-    deleteLater();
+//     NOTE: Can't do this when object is created on the stack
+//     deleteLater();
 }
 
 
