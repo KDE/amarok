@@ -1,5 +1,5 @@
 /***************************************************************************
-                          loader.h  -  description
+                          loader.h  -  loader application for amaroK
                              -------------------
     begin                : 2004/02/19
     copyright            : (C) 2004 by Mark Kretschmann
@@ -21,7 +21,7 @@
 #include <qapplication.h>    //baseclass
 
 class OSDWidget;
-class QProcess;
+
 
 class Loader : public QApplication
 {
@@ -32,18 +32,17 @@ class Loader : public QApplication
         ~Loader();
         
     private slots:
-        void gotPrefix();
         void loaded();
         
     private:
-        int tryConnect();
+        void showSplash();
+        int  tryConnect();
 
 // ATTRIBUTES ------
         int        m_argc;        
         char**     m_argv;
         
         OSDWidget* m_pOsd;
-        QProcess*  m_pPrefixProc;
 };
 
 

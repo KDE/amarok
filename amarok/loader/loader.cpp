@@ -1,5 +1,5 @@
 /***************************************************************************
-                          loader.cpp  -  description
+                          loader.cpp  -  loader application for amaroK
                              -------------------
     begin                : 2004/02/19
     copyright            : (C) 2004 by Mark Kretschmann
@@ -32,16 +32,44 @@ Loader::Loader( int& argc, char** argv )
     : QApplication( argc, argv )
     , m_argc( argc )
     , m_argv( argv )
-    , m_pOsd( new OSDWidget )
+    , m_pOsd( NULL )
 {
     qDebug( "[Loader::Loader()]" );
 
-    m_pPrefixProc = new QProcess( this );
-    m_pPrefixProc->addArgument( "kde-config" );
-    m_pPrefixProc->addArgument( "--prefix" );
-    connect( m_pPrefixProc, SIGNAL( processExited() ), this, SLOT( gotPrefix() ) );    
+    int sockfd = tryConnect();
     
-    m_pPrefixProc->start();
+    //determine whether an amaroK instance is already running (LoaderServer)
+    if ( sockfd == -1 ) { 
+        //no, amaroK is not running -> show splash, start new instance
+        qDebug( "[Loader::Loader()] LoaderServer (amaroK instance) not running." );
+        showSplash();
+        
+        QProcess* proc = new QProcess( this );
+        proc->addArgument( "amarok" );
+        //hand arguments through to amaroK
+        for ( int i = 1; i < m_argc; i++ )
+            proc->addArgument( m_argv[i] );
+        proc->start();
+        
+        //wait until LoaderServer starts (== amaroK is up and running)
+        while( ( sockfd = tryConnect() ) == -1 )
+            ::usleep( 500 * 1000 );    //==500ms                    
+    }
+    else {
+        //yes, amaroK is running -> transmit new command line args to the LoaderServer
+        qDebug( "[Loader::Loader()] connected to LoaderServer!" );
+        
+        //put all arguments into one string
+        QCString str;
+        for ( int i = 1; i < m_argc; i++ ) {
+            str.append( m_argv[i] );
+            str.append( " " );
+        }
+        ::send( sockfd, str, str.length(), 0 );
+    }
+
+    ::close(sockfd );
+    loaded();    
 }
 
 
@@ -56,39 +84,28 @@ Loader::~Loader()
 ////////////////////////////////////////////////////////////////////////////////
 
 //SLOT
-void Loader::gotPrefix()
+void Loader::showSplash()
 {
-    QString path = m_pPrefixProc->readStdout();
+    //get KDE prefix from kde-config
+    QProcess* proc = new QProcess( this );
+    proc->addArgument( "kde-config" );
+    proc->addArgument( "--prefix" );
+    proc->start();
+
+    //wait until process has finished        
+    while ( proc->isRunning() );
+    
+    //read output from kde-config
+    QString path = proc->readStdout();
     path.remove( "\n" );
     path += "/share/apps/amarok/images/logo_splash.png";
     qDebug( path.latin1() );
+    
+    m_pOsd = new OSDWidget;
     m_pOsd->showSplash( path );
-    
-    int sockfd = tryConnect();
-    
-    if ( sockfd == -1 ) {
-        QProcess* proc = new QProcess( this );
-        proc->addArgument( "amarok" );
-        
-        //hand arguments through to amaroK
-        for ( int i = 1; i < m_argc; i++ )
-            proc->addArgument( m_argv[i] );
-        
-        proc->start();
-        connect( proc, SIGNAL( processExited() ), this, SLOT( loaded() ) );    
-    }
-    else
-    {
-        qDebug( "[Loader::gotPrefix()] connected!" );
-        
-        QCString text = "Captain to ship: battle station all decks!";
-        ::send( sockfd, text, text.length(), 0 );
-        ::close(sockfd );
-        
-        loaded();    
-    }
 }
     
+
 int Loader::tryConnect()
 {
     //try to connect to the LoaderServer
@@ -106,7 +123,7 @@ int Loader::tryConnect()
     int len = ::strlen( local.sun_path ) + sizeof( local.sun_family );
     
     if ( ::connect( sockfd, (struct sockaddr*) &local, len ) == -1 ) {
-        qDebug( "[Loader::tryConnect()] connect() error" );
+        qDebug( "[Loader::tryConnect()] connect() failed" );
         return -1;
     }
 
@@ -117,7 +134,7 @@ int Loader::tryConnect()
 void Loader::loaded()
 {
     qDebug( "[Loader::loaded()]" );
-    quit();
+    ::exit( 0 );
 }
 
 

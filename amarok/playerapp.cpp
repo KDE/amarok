@@ -40,7 +40,6 @@ email                : markey@web.de
 #include <kshortcut.h>
 #include <kstandarddirs.h>
 #include <ktip.h>
-#include <kuniqueapplication.h>
 #include <kurl.h>
 #include <kconfigdialog.h>
 #include <kwin.h>    //eventFilter()
@@ -62,7 +61,7 @@ email                : markey@web.de
 EngineBase* PlayerApp::m_pEngine = 0;
 
 PlayerApp::PlayerApp()
-        : KUniqueApplication( true, true, false )
+        : KApplication()
         , m_pGlobalAccel( new KGlobalAccel( this ) )
         , m_sliderIsPressed( false )
         , m_pMainTimer( new QTimer( this ) )
@@ -90,7 +89,6 @@ PlayerApp::PlayerApp()
 
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
-    initIpc();   //initializes Unix domain socket for loader communication
     initPlayerWidget();
     initBrowserWin();
 
@@ -111,6 +109,8 @@ PlayerApp::PlayerApp()
 
     m_pOSD->removeOSD();
     //TODO remember if we were in tray last exit, if so don't show!
+    
+    initIpc();   //initializes Unix domain socket for loader communication, will also hide the splash
     m_pPlayerWidget->show(); //BrowserWin will sponaneously show if appropriate
 
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
@@ -123,8 +123,9 @@ PlayerApp::PlayerApp()
     m_pMainTimer->start( MAIN_TIMER );
 
     connect( this, SIGNAL( metaData( const MetaBundle& ) ), m_pOSD, SLOT( showOSD( const MetaBundle& ) ) );
-
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
+   
+    handleCliArgs( KCmdLineArgs::parsedArgs() );
 }
 
 
@@ -171,19 +172,15 @@ PlayerApp::~PlayerApp()
 }
 
 
-int PlayerApp::newInstance()
+void PlayerApp::handleCliArgs( KCmdLineArgs* args )
 {
-    KCmdLineArgs * args = KCmdLineArgs::parsedArgs();
-
     if ( args->count() > 0 )
     {
         KURL::List list;
         bool notEnqueue = !args->isSet( "enqueue" );
 
         for ( int i = 0; i < args->count(); i++ )
-        {
             list << args->url( i );
-        }
 
         //add to the playlist with the correct arguments ( bool clear, bool play )
         m_pBrowserWin->insertMedia( list, notEnqueue, notEnqueue || args->isSet( "play" ) );
@@ -206,8 +203,9 @@ int PlayerApp::newInstance()
     else if ( args->isSet( "previous" ) )
         pApp->slotPrev();
 
-    return KUniqueApplication::newInstance();
+    args->clear();    //free up memory
 }
+
 
 /////////////////////////////////////////////////////////////////////////////////////
 // INIT
@@ -785,7 +783,7 @@ void LoaderServer::newConnection( int sockfd )
 {
     kdDebug() << "[LoaderServer::newConnection()]\n";
 
-    char buf[1024];
+    char buf[2000];
     int nbytes = recv( sockfd, buf, sizeof(buf) - 1, 0 );
 
     if ( nbytes < 0 )
@@ -796,6 +794,8 @@ void LoaderServer::newConnection( int sockfd )
         QCString result = buf;
         qDebug( result );
     }
+
+    ::close( sockfd );
 }
 
 

@@ -24,19 +24,10 @@
 
 #include <qserversocket.h>         //baseclass
 
-#include <kuniqueapplication.h>    //baseclass
+#include <kapplication.h>          //baseclass
 #include <kurl.h>                  //needed for KURL::List (nested)
 
 #define APP_VERSION "0.9-CVS"
-
-class QColor;
-class QListView;
-class QListViewItem;
-class QString;
-class QTimer;
-class QEvent;
-
-class KGlobalAccel;
 
 class BrowserWin;
 class EngineBase;
@@ -45,15 +36,24 @@ class OSDWidget;
 class PlayerWidget;
 class PlaylistItem;
 
-class PlayerApp : public KUniqueApplication
+class QColor;
+class QEvent;
+class QListView;
+class QListViewItem;
+class QString;
+class QTimer;
+
+class KCmdLineArgs;
+class KGlobalAccel;
+
+
+class PlayerApp : public KApplication
 {
         Q_OBJECT
 
     public:
         PlayerApp();
         ~PlayerApp();
-
-        int newInstance();
 
         bool playObjectConfigurable();
         bool isPlaying() const;
@@ -112,6 +112,7 @@ class PlayerApp : public KUniqueApplication
         void currentTrack( const KURL& );
 
     private:
+        void handleCliArgs( KCmdLineArgs* args );
         void initBrowserWin();
         void initColors();
         void initConfigDialog();

@@ -388,7 +388,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
         popup.insertItem( i18n( "Repeat Play&list" ), ID_REPEAT_PLAYLIST );
         popup.insertItem( i18n( "Random &Mode" ),     ID_RANDOM_MODE );
       popup.insertSeparator();
-        popup.insertItem( i18n( "Configure &Effects..." ), m_pButtonEq, SLOT( toggle() ) );
+        popup.insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( showEffectWidget() ) );
         popup.insertItem( i18n( "Configure &PlayObject..." ), this, SLOT( slotConfigPlayObject() ), 0, ID_CONF_PLAYOBJECT );
       popup.insertSeparator();
         m_pActionCollection->action( "options_configure_keybinding" )->plug( &popup );
