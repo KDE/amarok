@@ -136,6 +136,16 @@ namespace amaroK
 
 // Ok, that should be enough, have fun :-)
     
+    int DcopHandler::trackTotalTime()
+    {
+        return EngineController::instance()->bundle().length();
+    }
+
+    int DcopHandler::trackCurrentTime()
+    {
+        return EngineController::engine() ->position() / 1000;
+    }
+
     void DcopHandler::seek(int s)
     {
         EngineBase* const engine = EngineController::engine();
