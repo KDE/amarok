@@ -61,7 +61,7 @@ PluginManager::query( const QString& constraint )
 Plugin*
 PluginManager::createFromQuery( const QString &constraint )
 {
-    DebugSection section( __PRETTY_FUNCTION__ );
+    Debug::Block block( __PRETTY_FUNCTION__ );
 
     KTrader::OfferList offers = query( constraint );
 
@@ -184,7 +184,7 @@ PluginManager::showAbout( const QString &constraint )
 void
 PluginManager::dump( const KService::Ptr service )
 {
-    #define ENDLI endl << Debug::__indent
+    #define ENDLI endl << Debug::indent
 
     kdDebug()
       << ENDLI

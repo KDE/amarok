@@ -893,7 +893,7 @@ namespace amaroK
 
 namespace Debug
 {
-    QCString __indent; //declared in debug.h
+    QCString indent; //declared in debug.h
 }
 
 #include "app.moc"

@@ -30,13 +30,13 @@
  * app:   [Blah] output2
  * app: END: [void function()]
  *
- * @see DebugSection
+ * @see Block
  */
 
 namespace Debug
 {
     /// this is used by DEBUG_BEGIN and DEBUG_END (defined in app.cpp)
-    extern QCString __indent;
+    extern QCString indent;
 
     #ifdef NDEBUG
         static inline kndbgstream debug()   { return kndbgstream(); }
@@ -60,10 +60,10 @@ namespace Debug
             KDEBUG_FATAL = 3
         };
 
-        static inline kdbgstream debug()   { return kdbgstream( __indent, 0, KDEBUG_INFO  ) << AMK_PREFIX; }
-        static inline kdbgstream warning() { return kdbgstream( __indent, 0, KDEBUG_WARN  ) << AMK_PREFIX; }
-        static inline kdbgstream error()   { return kdbgstream( __indent, 0, KDEBUG_ERROR ) << AMK_PREFIX; }
-        static inline kdbgstream fatal()   { return kdbgstream( __indent, 0, KDEBUG_FATAL ) << AMK_PREFIX; }
+        static inline kdbgstream debug()   { return kdbgstream( indent, 0, KDEBUG_INFO  ) << AMK_PREFIX; }
+        static inline kdbgstream warning() { return kdbgstream( indent, 0, KDEBUG_WARN  ) << AMK_PREFIX; }
+        static inline kdbgstream error()   { return kdbgstream( indent, 0, KDEBUG_ERROR ) << AMK_PREFIX; }
+        static inline kdbgstream fatal()   { return kdbgstream( indent, 0, KDEBUG_FATAL ) << AMK_PREFIX; }
 
         typedef kdbgstream debugstream;
 
@@ -71,19 +71,23 @@ namespace Debug
     #endif
 }
 
-using namespace Debug;
+using Debug::debug;
+using Debug::warning;
+using Debug::error;
+using Debug::fatal;
+using Debug::debugstream;
 
 /// Standard function announcer
-#define DEBUG_FUNC_INFO kdDebug() << Debug::__indent << k_funcinfo << endl;
+#define DEBUG_FUNC_INFO kdDebug() << Debug::indent << k_funcinfo << endl;
 
-#define DEBUG_INDENT Debug::__indent += "  ";
-#define DEBUG_UNINDENT Debug::__indent.truncate( Debug::__indent.length() - 2 );
+#define DEBUG_INDENT Debug::indent += "  ";
+#define DEBUG_UNINDENT Debug::indent.truncate( Debug::indent.length() - 2 );
 
 /// Use this to introduce a function
-#define DEBUG_BEGIN kdDebug() << __indent << "BEGIN: " << __PRETTY_FUNCTION__ << endl; DEBUG_INDENT
+#define DEBUG_BEGIN kdDebug() << Debug::indent << "BEGIN: " << __PRETTY_FUNCTION__ << endl; DEBUG_INDENT
 
 /// Use this to extroduce a function
-#define DEBUG_END   DEBUG_UNINDENT kdDebug() << __indent << "END: " << __PRETTY_FUNCTION__ << endl;
+#define DEBUG_END   DEBUG_UNINDENT kdDebug() << Debug::indent << "END: " << __PRETTY_FUNCTION__ << endl;
 
 /// Use this to remind yourself to finish the implementation of a function
 #define AMAROK_NOTIMPLEMENTED kdWarning() << "NOT-IMPLEMENTED: " << __PRETTY_FUNCTION__ << endl;
@@ -94,14 +98,14 @@ using namespace Debug;
 namespace Debug
 {
     /**
-     * @class DebugSection
+     * @class Block
      * @short Use this to label sections of your code
      *
      * Usage:
      *
      *     void function()
      *     {
-     *         DebugSection s( "section" );
+     *         Debug::Block s( "section" );
      *
      *         debug() << "output1" << endl;
      *         debug() << "output2" << endl;
@@ -113,21 +117,34 @@ namespace Debug
      *     app:  output1
      *     app:  output2
      *     app: END: section
+     *
+     * Generally this is the easiest way to highlight a block of code.
+     * Also it is worth noting that it is the only way to highlight blocks
+     * like these:
+     *
+     *     {
+     *       DEBUG_BEGIN
+     *       return someFunction();
+     *       DEBUG_END
+     *     }
+     *
+     * DEBUG_END is never processed.
+     *
      */
 
-    class DebugSection
+    class Block
     {
     public:
-        DebugSection( const char *label ) : m_label( label )
+        Block( const char *label ) : m_label( label )
         {
-            kdDebug() << __indent << "BEGIN: " << m_label << endl;
+            kdDebug() << indent << "BEGIN: " << m_label << endl;
             DEBUG_INDENT
         }
 
-        ~DebugSection()
+        ~Block()
         {
             DEBUG_UNINDENT
-            kdDebug() << __indent << "END: " << m_label << endl;
+            kdDebug() << indent << "END: " << m_label << endl;
         }
 
     private:

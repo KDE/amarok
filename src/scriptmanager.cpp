@@ -160,7 +160,7 @@ ScriptManager::slotEditScript()
 void
 ScriptManager::slotRunScript()
 {
-    DEBUG_BEGIN
+    Debug::Block b( __PRETTY_FUNCTION__ );
 
     if ( !m_base->directoryListView->selectedItem() ) return ;
 
@@ -181,8 +181,6 @@ ScriptManager::slotRunScript()
     script->start( KProcess::NotifyOnExit, KProcess::Stdin );
     m_scripts[name].process = script;
     connect( script, SIGNAL( processExited( KProcess* ) ), SLOT( scriptFinished( KProcess* ) ) );
-
-    DEBUG_END
 }
 
 
@@ -209,7 +207,7 @@ ScriptManager::slotStopScript()
 void
 ScriptManager::slotConfigureScript()
 {
-    DEBUG_BEGIN
+    Debug::Block b( __PRETTY_FUNCTION__ );
 
     if ( !m_base->directoryListView->selectedItem() ) return;
 
@@ -223,8 +221,6 @@ ScriptManager::slotConfigureScript()
     m_scripts[name].process->writeStdin( command.latin1(), command.length() );
 
     debug() << "Starting script configuration." << endl;
-
-    DEBUG_END
 }
 
 

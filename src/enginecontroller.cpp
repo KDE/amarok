@@ -17,6 +17,8 @@ email                : fh@ez.no
  *                                                                         *
  ***************************************************************************/
 
+#define DEBUG_PREFIX "controller"
+
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
@@ -155,11 +157,6 @@ amaroK::Plugin *EngineController::loadEngine( const QString &engineName )
        query = "[X-KDE-amaroK-plugintype] == 'engine' and [X-KDE-amaroK-name] != '%1'";
        KTrader::OfferList offers = PluginManager::query( query.arg( engineName ) );
 
-       /*
-         for ( uint i = 0; i < offers.count(); i++ )
-             kdDebug() << "  - offers[" << i << "].name: " << offers[i]->name()
-             << "; rank:" << offers[i]->property( "X-KDE-amaroK-rank" ).toInt() << endl;
-       */
        while( !plugin && !offers.isEmpty() ) {
           // prioritise highest rank for left engines
           int rank = 0;
@@ -288,7 +285,7 @@ void EngineController::play() //SLOT
 void EngineController::play( const MetaBundle &bundle )
 {
     const KURL &url = bundle.url();
-    kdDebug() << "[controller] Loading URL: " << url.url() << endl;
+    debug() << "Loading URL: " << url.url() << endl;
     // Destroy stale StreamProvider
     delete m_stream;
 
@@ -424,7 +421,7 @@ EngineController::bundle() const
 void EngineController::playRemote( KIO::Job* job ) //SLOT
 {
     const QString mimetype = static_cast<KIO::MimetypeJob*>( job )->mimetype();
-    kdDebug() << "[controller] Detected mimetype: " << mimetype << endl;
+    debug() << "Detected mimetype: " << mimetype << endl;
 
     const KURL &url = m_bundle.url();
 
@@ -489,7 +486,7 @@ void EngineController::slotMainTimer() //SLOT
          m_xFadeThisTrack &&
          ( m_bundle.length()*1000 - position < (uint) AmarokConfig::crossfadeLength() ) )
     {
-        kdDebug() << "[controller] Crossfading to next track...\n";
+        debug() << "Crossfading to next track...\n";
         next();
     }
 }

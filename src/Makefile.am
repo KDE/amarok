@@ -108,9 +108,15 @@ amarokapp_LDADD = \
     $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(LIB_MUSICBRAINZ) \
     $(mysql_libs)
 
+##make this work as it is not a good flag to force on everyone, sadly
+##"$kde_use_debug_code" != "no"; then
+	RDYNAMIC = -rdynamic
+##endif
+
 amarokapp_LDFLAGS = \
     $(all_libraries) \
-    $(KDE_RPATH)
+    $(KDE_RPATH) \
+	 $(RDYNAMIC)
 
 METASOURCES = \
     AUTO

@@ -17,6 +17,7 @@
 
 #include "amarok.h"
 #include "app.h"
+#include "crashhandler.h"
 #include <kaboutdata.h>
 
 
@@ -67,6 +68,8 @@ int main( int argc, char *argv[] )
 
     App::initCliArgs( argc, argv );
     App app;
+
+    KCrash::setCrashHandler( amaroK::Crash::crashHandler );
 
     return app.exec();
 }
