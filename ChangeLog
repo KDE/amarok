@@ -4,6 +4,9 @@ amaroK ChangeLog
 
 
 VERSION 0.9:
+  * chg: playlistBrowser removed until next release
+  * fix: playerWidget font is now configurable, you need to start new track for the
+         scrolling marquee to get updated. Default font is used by default.
   * fix: fixed several stability issues concerning stream-playback
   * add: whatsthis for all configurable options.
   * fix: amaroK registering with dcop as "amarok-PID". it's back to just "amarok" now.

@@ -176,6 +176,8 @@ void PlayerApp::handleCliArgs()
         for ( int i = 0; i < args->count(); i++ )
             list << args->url( i );
 
+        kdDebug() << "List size: " << list.count() << endl;
+
         //add to the playlist with the correct arguments ( bool clear, bool play )
         m_pBrowserWin->insertMedia( list, notEnqueue, notEnqueue || args->isSet( "play" ) );
     }
@@ -414,6 +416,12 @@ void PlayerApp::applySettings()
     m_pPlayerWidget->createAnalyzer( false );
     m_pBrowserWin->setFont( AmarokConfig::useCustomFonts() ?
                             AmarokConfig::browserWindowFont() : QApplication::font() );
+
+    QFont font = m_pPlayerWidget->font();
+    font.setFamily( AmarokConfig::useCustomFonts() ?
+                    AmarokConfig::playerWidgetFont().family() : QApplication::font().family() );
+    m_pPlayerWidget->setFont( font );
+    m_pPlayerWidget->update(); //FIXME doesn't update the scroller, we require the metaBundle to do that, wait for my metaBundle modifications..
 
     reinterpret_cast<QWidget*>(m_pPlayerWidget->m_pTray)->setShown( AmarokConfig::showTrayIcon() );
 

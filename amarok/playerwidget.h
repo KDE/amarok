@@ -78,11 +78,8 @@ class PlayerWidget : public QWidget
         void wheelEvent( QWheelEvent* ); //systray requires access
         void startDrag();
 
-        //const KPopupMenu *helpMenu() const { return m_helpMenu->menu(); }
-
         // ATTRIBUTES ------
         KActionCollection *m_pActionCollection;
-        //QGuardedPtr<ArtsConfigWidget> m_pPlayObjConfigWidget;
 
         static QString zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1" ).arg( i ) : QString::number( i ); }
 

@@ -69,9 +69,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     setPaletteBackgroundColor( QColor( 32, 32, 80 ) );
 
     QFont font;
-    //for languages using non latin character sets use the default font, otherwise we use arial if available
-    //FIXME having to use the fontDatabase for this is just silly, find a better way!
-    if( QFontDatabase().families( QFont::Latin ).contains( font.family() ) ) font.setFamily( "Arial" );
     font.setBold( TRUE );
     font.setPixelSize( 10 );
     setFont( font );
@@ -132,7 +129,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     } //<TimeLabel>
         font.setPixelSize( 18 );
 
-        m_pTimeLabel = wrapper<QLabel>( QRect(16,36, 9*12+2,16), this, 0, Qt::WRepaintNoErase );
+        m_pTimeLabel = wrapper<QLabel>( QRect(16,36, 9*12+2,18), this, 0, Qt::WRepaintNoErase );
         m_pTimeLabel->setFont( font );
 
         m_timeBuffer.resize( m_pTimeLabel->size() );
