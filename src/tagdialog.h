@@ -57,7 +57,7 @@ class TagDialog : public TagDialogBase
         QString m_buttonMbText;
         QString m_path;
         QString m_currentCover;
-        QString mbTrack;
+        QString m_mbTrack;
 };
 
 

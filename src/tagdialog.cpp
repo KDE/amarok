@@ -2,6 +2,7 @@
 // See COPYING file for licensing information.
 
 #include "collectiondb.h"
+#include "metabundle.h"
 #include "playlistitem.h"
 #include "tagdialog.h"
 
@@ -126,8 +127,8 @@ TagDialog::musicbrainzQuery() //SLOT
 #ifdef HAVE_MUSICBRAINZ
     kdDebug() << k_funcinfo << endl;
 
-    mbTrack = m_bundle.url().path();
-    KTRMLookup* ktrm = new KTRMLookup( mbTrack, true );
+    m_mbTrack = m_bundle.url().path();
+    KTRMLookup* ktrm = new KTRMLookup( m_mbTrack, true );
     connect( ktrm, SIGNAL( sigResult( KTRMResultList ) ), SLOT( queryDone( KTRMResultList ) ) );
 
     pushButton_musicbrainz->setEnabled( false );
@@ -149,7 +150,7 @@ TagDialog::queryDone( KTRMResultList results ) //SLOT
 
     if ( !results.isEmpty() )
     {
-        if ( m_bundle.url().path() == mbTrack ) {
+        if ( m_bundle.url().path() == m_mbTrack ) {
             if ( !results[0].title().isEmpty() )    kLineEdit_title->setText( results[0].title() );
             if ( !results[0].artist().isEmpty() )   kComboBox_artist->setCurrentText( results[0].artist() );
             if ( !results[0].album().isEmpty() )    kComboBox_album->setCurrentText( results[0].album() );
@@ -157,14 +158,15 @@ TagDialog::queryDone( KTRMResultList results ) //SLOT
             if ( results[0].year() != 0 )           kIntSpinBox_year->setValue( results[0].year() );
         }
         else {
-            MetaBundle mb( KURL( mbTrack ) );
+            MetaBundle mb;
+            mb.setUrl( m_mbTrack );
             if ( !results[0].title().isEmpty() )    mb.setTitle( results[0].title() );
-            if ( !results[0].artist().isEmpty() )  mb.setArtist( results[0].artist() );
-            if ( !results[0].album().isEmpty() ) mb.setAlbum( results[0].album() );
-            if ( results[0].track() != 0 )           mb.setTrack( QString::number( results[0].track() ) );
-            if ( results[0].year() != 0 )            mb.setYear( QString::number( results[0].year() ) );
+            if ( !results[0].artist().isEmpty() )   mb.setArtist( results[0].artist() );
+            if ( !results[0].album().isEmpty() )    mb.setAlbum( results[0].album() );
+            if ( results[0].track() != 0 )          mb.setTrack( QString::number( results[0].track() ) );
+            if ( results[0].year() != 0 )           mb.setYear( QString::number( results[0].year() ) );
 
-            storedTags.insert( mbTrack, mb );
+            storedTags.insert( m_mbTrack, mb );
         }
 
     }
