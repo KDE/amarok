@@ -1,6 +1,6 @@
 // FHT - Fast Hartley Transform Class
 //
-// Copyright (C) 2004  Melchior FRANZ - mfranz@aon.at
+// Copyright (C) 2004  Melchior FRANZ - mfranz@kde.org
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License as
@@ -19,7 +19,7 @@
 // $Id$
 
 class fht {
-	void		makecastable(void);
+	void		makecastable();
 	int		exp2;
 	int		num;
 	double		*buf;
@@ -28,8 +28,8 @@ class fht {
 public:
 	fht(int exp);
 	~fht();
-	inline int	getexp(void) const { return exp2; }
-	inline int	getwidth(void) const { return num; }
+	inline int	getexp() const { return exp2; }
+	inline int	getwidth() const { return num; }
 	void 		__transform(double *, int, int);
 	inline void	transform8(double *);
 	void		transform(double *);

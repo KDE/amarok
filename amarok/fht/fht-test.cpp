@@ -1,6 +1,6 @@
 // FHT - Fast Hartley Transform Class
 //
-// Copyright (C) 2004  Melchior FRANZ - mfranz@aon.at
+// Copyright (C) 2004  Melchior FRANZ - mfranz@kde.org
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License as

@@ -1,6 +1,6 @@
 // FHT - Fast Hartley Transform Class
 //
-// Copyright (C) 2004  Melchior FRANZ - mfranz@aon.at
+// Copyright (C) 2004  Melchior FRANZ - mfranz@kde.org
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License as
@@ -25,7 +25,7 @@
 
 fht::fht(int e)
 {
-	if (e < 4) {
+	if (e < 3) {
 		buf = tab = 0;
 		num = 0;
 		exp2 = -1;
@@ -33,9 +33,11 @@ fht::fht(int e)
 	}
 	exp2 = e;
 	num = 1 << e;
-	buf = new double[num];
-	tab = new double[num * 2];
-	makecastable();
+	if (e > 3) {
+		buf = new double[num];
+		tab = new double[num * 2];
+		makecastable();
+	}
 }
 
 
@@ -86,7 +88,7 @@ void fht::transform(double *p)
 	if (num == 8)
 		transform8(p);
 	else
-		_transform(p);		// doesn't need scaling
+		_transform(p);
 	return;
 }
 
