@@ -51,7 +51,7 @@ int main( int argc, char *argv[] )
     aboutData.addAuthor( "Christian Muehlhaeuser", "Developer", "chris@chris.de", "http://www.chris.de" );
     aboutData.addAuthor( "Max Howell", "Developer", "max.howell@methylblue.com" );
     aboutData.addAuthor( "Stanislav Karchebny", "Patches, improvements, visualizations, cleanups, i18n",
-                         "berk@inbox.ru" );
+                         "berk@upnet.ru" );
 
     aboutData.addCredit( "Adam Pigg", "Analyzer, Patches", "adam@piggz.fsnet.co.uk" );
     aboutData.addCredit( "Alper Ayazoglu", "Graphics: Buttons", "cubon@cubon.de", "http://cubon.de" );
