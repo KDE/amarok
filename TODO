@@ -8,7 +8,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-          <muesli> Emitted signal "scoreChanged" (CollectionEmitter) doesnt reach Playlist anymore.
+          <muesli> When PlaylistLoader adds a bunch of items to the playlist, it deletes the item _above_ the first 
+                   added item, afterwards.
 
           <markey> Make CoverManager thumbnail generation threaded.
 
