@@ -81,7 +81,7 @@ void AmarokSlider::mousePressEvent( QMouseEvent *e )
     if ( orientation() == QSlider::Horizontal )
         newVal = static_cast<float>( e->x() ) / static_cast<float>( width() ) * maxValue();
     else
-        newVal = static_cast<float>( e->x() ) / static_cast<float>( height() ) * maxValue();
+        newVal = static_cast<float>( e->y() ) / static_cast<float>( height() ) * maxValue();
 
     int intVal = static_cast<int>( newVal );
 

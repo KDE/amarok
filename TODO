@@ -7,8 +7,6 @@ SHORT-TERM:
     * fix: load playlist _after_ showing mainwidget (and asyncronously if possible, at least
       give ui a chance every 100 read entries or so).
 
-    * fix: clicking on volume slider makes it jump around randomly
-
     * fix: opening hidden directories is impossible in filebrowser
 
     * fix: shortcuts not saved (?)
