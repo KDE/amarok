@@ -182,11 +182,15 @@ void Proxy::readRemote() //SLOT
             m_byteCount = 0;
             m_metaLen = m_pBuf[ index++ ] << 4;
         }
-        else if ( m_icyMode && m_metaLen ) {
-            m_metaData.append( m_pBuf[ index++ ] );
-            --m_metaLen;
-
-            if ( !m_metaLen ) {
+        // Are we in a metadata interval?
+        else if ( m_metaLen ) {
+            int length = ( m_metaLen > bytesRead - index ) ? ( bytesRead - index ) : ( m_metaLen );
+            m_metaData.append( QString::fromAscii( m_pBuf + index, length ) );
+            index += length;
+            m_metaLen -= length;
+            
+            if ( m_metaLen == 0 ) {
+                // Transmit metadata string
                 transmitData( m_metaData );
                 m_metaData = "";
             }
