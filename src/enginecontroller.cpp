@@ -165,14 +165,14 @@ void EngineController::stop()
     stateChangedNotify( m_pEngine->state() );
 }
 
-int EngineController::increaseVolume()
+int EngineController::increaseVolume( int ticks )
 {
-    return setVolume( m_pEngine->volume() + 100/25 );
+    return setVolume( m_pEngine->volume() + ticks );
 }
 
-int EngineController::decreaseVolume()
+int EngineController::decreaseVolume( int ticks )
 {
-    return setVolume( m_pEngine->volume() - 100/25 );
+    return setVolume( m_pEngine->volume() - ticks );
 }
 
 void EngineController::setEngine( EngineBase *engine )

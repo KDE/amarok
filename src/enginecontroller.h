@@ -55,8 +55,8 @@ public slots:
     void stop();
     void playPause(); //pauses if playing, plays if paused or stopped
 
-    int increaseVolume();
-    int decreaseVolume();
+    int increaseVolume( int ticks = 100/25 );
+    int decreaseVolume( int ticks = 100/25 );
     int setVolume( int percent );
 
 signals:

@@ -555,7 +555,7 @@ void App::genericEventHandler( QWidget *source, QEvent *e )
     {
         #define e static_cast<QWheelEvent*>(e)
         const bool up = e->delta() > 0;
-
+        
         switch( e->state() )
         {
         case ControlButton:
@@ -564,8 +564,7 @@ void App::genericEventHandler( QWidget *source, QEvent *e )
             break;
 
         default:
-            if( up ) EngineController::instance()->increaseVolume();
-            else     EngineController::instance()->decreaseVolume();
+            EngineController::instance()->increaseVolume( e->delta() / 18 );
         }
 
         e->accept();
