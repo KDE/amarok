@@ -23,6 +23,7 @@
 #include <kurl.h>
 #include <klocale.h>
 
+//taglib includes
 #include <tag.h>
 #include <tstring.h>
 #include <audioproperties.h>
@@ -46,14 +47,14 @@ public:
     static const int Irrelevant   = -1;
     static const int Unavailable  =  0;
 
-    MetaBundle( const QString& title = "", const QString& genre = "", int bitrate = -2 )
-      : m_title     ( title ) 
+    MetaBundle( const QString &title, const QString &genre, int bitrate -2 ) //TitleProxy ctor
+      : m_title     ( title )
       , m_genre     ( genre )
       , m_bitrate   ( bitrate )
       , m_length    ( -2 )
       , m_sampleRate( -2 )
     {}
-    
+
     //TODO one without audioProps please
     //And have ability to determine bitrate etc from the strings, slow but infrequently called so ok
     MetaBundle( const PlaylistItem *item, TagLib::AudioProperties *ap )
@@ -89,7 +90,7 @@ public:
     {
         init( ap );
     }
-    
+
 // ATTRIBUTES ------
     int length()     const { return m_length > 0 ? m_length : 0; }
     int bitrate()    const { return m_bitrate; }
