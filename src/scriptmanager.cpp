@@ -1,7 +1,21 @@
-// (c) 2003 Scott Wheeler <wheeler@kde.org>,
-// (c) 2004 Mark Kretschmann <markey@web.de>
-// See COPYING file for licensing information.
-
+/***************************************************************************
+ *   Copyright (C) 2004-2005 by Mark Kretschmann <markey@web.de>           *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 
 #define DEBUG_PREFIX "ScriptManager"
 
@@ -13,6 +27,7 @@
 #include <stdlib.h>
 
 #include <kapplication.h>
+#include <kconfig.h>
 #include <kfiledialog.h>
 #include <kiconloader.h>
 #include <klistview.h>
@@ -22,10 +37,6 @@
 #include <krun.h>
 #include <ktextedit.h>
 
-
-////////////////////////////////////////////////////////////////////////////////
-// public interface
-////////////////////////////////////////////////////////////////////////////////
 
 ScriptManager* ScriptManager::s_instance = 0;
 
@@ -54,6 +65,8 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     QSize sz = sizeHint();
     setMinimumSize( kMax( 350, sz.width() ), kMax( 250, sz.height() ) );
     resize( sizeHint() );
+
+    restoreScripts();
 }
 
 
@@ -61,20 +74,21 @@ ScriptManager::~ScriptManager()
 {
     DEBUG_BEGIN
 
-    s_instance = 0;
+    saveScripts();
 
     debug() << "Killing running scripts.\n";
-
     ScriptMap::Iterator it;
     for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
         delete it.data().process;
+
+    s_instance = 0;
 
     DEBUG_END
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// private interface
+// private slots
 ////////////////////////////////////////////////////////////////////////////////
 
 void
@@ -93,22 +107,7 @@ ScriptManager::slotAddScript()
     dia.setMode( KFile::File | KFile::ExistingOnly );
     dia.exec();
 
-    QString path = dia.selectedURL().path();
-
-    if ( !path.isEmpty() ) {
-        KURL url;
-        url.setPath( path );
-
-        KListViewItem* li = new KListViewItem( m_base->directoryListView, url.fileName() );
-        li->setPixmap( 0, SmallIcon( "stop" ) );
-
-        ScriptItem item;
-        item.url = url;
-        item.process = 0;
-        item.li = li;
-
-        m_scripts[url.fileName()] = item;
-    }
+    loadScript( dia.selectedURL().path() );
 
     DEBUG_END
 }
@@ -234,6 +233,67 @@ ScriptManager::scriptFinished( KProcess* process ) //SLOT
                 it.data().li->setPixmap( 0, SmallIcon( "stop" ) );
         }
     }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// private
+////////////////////////////////////////////////////////////////////////////////
+
+void
+ScriptManager::loadScript( const QString& path )
+{
+    if ( !path.isEmpty() ) {
+        KURL url;
+        url.setPath( path );
+
+        KListViewItem* li = new KListViewItem( m_base->directoryListView, url.fileName() );
+        li->setPixmap( 0, SmallIcon( "stop" ) );
+
+        ScriptItem item;
+        item.url = url;
+        item.process = 0;
+        item.li = li;
+
+        m_scripts[url.fileName()] = item;
+    }
+}
+
+
+/** Saves all script pathes to amarokrc */
+void
+ScriptManager::saveScripts()
+{
+    DEBUG_BEGIN
+
+    QStringList pathes;
+    ScriptMap::Iterator it;
+    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
+        pathes << it.data().url.path();
+
+    KConfig* config = kapp->config();
+    config->setGroup( "ScriptManager" );
+    config->writePathEntry( "Scripts", pathes );
+
+    DEBUG_END
+}
+
+
+/** Restores all scripts from amarokrc */
+void
+ScriptManager::restoreScripts()
+{
+    DEBUG_BEGIN
+
+    KConfig* config = kapp->config();
+    config->setGroup( "ScriptManager" );
+    QStringList pathes = config->readPathListEntry( "Scripts" );
+
+    QStringList::Iterator it;
+    for ( it = pathes.begin(); it != pathes.end(); ++it )
+        loadScript( *it );
+
+    DEBUG_END
 }
 
 
