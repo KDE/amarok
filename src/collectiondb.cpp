@@ -774,7 +774,7 @@ CollectionDB::fetchCover( QObject* parent, const QString& key ) //SLOT
     connect( fetcher, SIGNAL( imageReady( const QString&, const QPixmap& ) ),
              this,      SLOT( saveCover( const QString&, const QPixmap& ) ) );
     
-    fetcher->getCover( key, CoverFetcher::heavy );
+    fetcher->getCover( key, key, CoverFetcher::heavy );
 }
 
 

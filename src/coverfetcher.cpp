@@ -40,7 +40,7 @@ CoverFetcher::~CoverFetcher()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
-CoverFetcher::getCover( const QString& keyword, QueryMode mode )
+CoverFetcher::getCover( const QString& keyword, const QString& album, QueryMode mode )
 {
     /* reset all values (if search isn't started as new CoverFetcher) */
     delete m_buffer;
@@ -49,6 +49,7 @@ CoverFetcher::getCover( const QString& keyword, QueryMode mode )
     
     kdDebug() << k_funcinfo << endl;
     m_keyword = keyword;
+    m_album = album;
         
     QString url = QString( "http://xml.amazon.com/onca/xml3?t=webservices-20&dev-t=%1"
                            "&KeywordSearch=%2&mode=music&type=%3&page=1&f=xml" )
@@ -139,8 +140,8 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
         /* if the "OK" button is pressed, search again using the search string provided in AmazonSearch's lineedit */
         if ( sdlg->exec() == QDialog::Accepted ) 
         {    
-            search = sdlg->searchString->text();
-            getCover( search, CoverFetcher::heavy );
+            m_keyword = sdlg->searchString->text();
+            getCover( m_keyword, m_album, CoverFetcher::heavy );
             return;
         }
         else
@@ -176,7 +177,7 @@ CoverFetcher::saveCover() //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     
-    emit imageReady( m_keyword, m_pixmap );
+    emit imageReady( m_album, m_pixmap );
     deleteLater();
 }
 
