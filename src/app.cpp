@@ -453,11 +453,6 @@ void App::applySettings( bool firstTime )
         engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
         engine->setVolume( AmarokConfig::masterVolume() );
 
-        // Broadcast current engine state; needed for SysTray
-        //TODO this seriously sucks, mainly it causes the OSD to show itself
-        //     but also it is fricking inefficient
-        //     for 1.2 fix this properly, ie just call a function for the systray!
-        if ( !firstTime ) EngineController::instance()->reInit();
     } //</Engine>
 
     /* delete unneeded cover images from cache */

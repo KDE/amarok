@@ -53,13 +53,9 @@ public:
     static bool              canDecode( const KURL& );
     static ExtensionCache   &extensionCache() { return s_extensionCache; }
 
-    /** Broadcast current engine-state and metadata */
-    void reInit();
-
     uint trackLength() const { return m_bundle.length() * 1000; }
     const MetaBundle &bundle() const;
     const KURL &playingURL() const { return m_bundle.url(); }
-    bool isStream() const;
 
     void restoreSession();
     void endSession();

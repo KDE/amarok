@@ -214,7 +214,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle &bundle, bool /*trackCh
     if ( m_db->isEmpty() || !m_db->isDbValid() )
         showIntroduction();
     else
-        if ( EngineController::instance()->isStream() )
+        if ( EngineController::engine()->isStream() )
             showCurrentStream();
         else
             showCurrentTrack();
@@ -226,7 +226,7 @@ void ContextBrowser::engineStateChanged( Engine::State state )
     switch( state )
     {
         case Engine::Playing:
-            if ( EngineController::instance()->isStream() )
+            if ( EngineController::engine()->isStream() )
                 showCurrentStream();
             break;
         case Engine::Empty:
@@ -368,7 +368,7 @@ void ContextBrowser::showHome() //SLOT
     browser->setUserStyleSheet( m_styleSheet );
 
     // <Favorite Tracks Information>
-    if ( EngineController::instance()->isStream() )
+    if ( EngineController::engine()->isStream() )
         browser->write( "<html><div class='menu'><a class='menu' href='show:home'>" + i18n( "Home" ) + "</a>&nbsp;&nbsp;<a class='menu' href='show:stream'>"
                         + i18n( "Current Stream" ) + "</a></div>");
     else

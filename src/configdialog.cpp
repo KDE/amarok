@@ -216,10 +216,14 @@ void AmarokConfigDialog::soundSystemChanged()
         m_engineConfig = EngineController::engine()->configure();
         m_engineConfig->view()->reparent( m_engineConfigFrame, QPoint() );
         m_engineConfigFrame->setTitle( i18n( "Configure %1" ).arg( m_soundSystem->currentText() ) );
+        m_engineConfigFrame->show();
 
         connect( m_engineConfig, SIGNAL(viewChanged()), SLOT(updateButtons()) );
     }
-    else m_engineConfig = 0;
+    else {
+        m_engineConfig = 0;
+        m_engineConfigFrame->hide();
+    }
 }
 
 #include "configdialog.moc"

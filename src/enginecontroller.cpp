@@ -147,6 +147,11 @@ EngineBase *EngineController::loadEngine() //static
 
         engine = static_cast<EngineBase*>(plugin);
 
+        //the engine is not required to do this when we unload it
+        //but we need to do it to ensure amaroK looks correctly
+        //and to delete m_stream
+        instance()->slotStateChanged( Engine::Empty );
+
         //NOTE engine settings are set in App::applySettings()
 
     } else {
@@ -196,19 +201,6 @@ bool EngineController::canDecode( const KURL &url ) //static
         extensionCache().insert( ext, valid );
 
     return valid;
-}
-
-
-void EngineController::reInit()
-{
-    slotStateChanged( m_engine->state() );
-    slotNewMetaData( m_bundle );
-}
-
-
-bool EngineController::isStream() const
-{
-    return m_engine->isStream();
 }
 
 
