@@ -43,10 +43,10 @@
 #include <kglobal.h>
 #include <kglobalsettings.h>
 #include <kiconloader.h>
-#include <kjanuswidget.h>
 #include <klocale.h>
 #include <klineedit.h>
 #include <klistview.h>
+#include <kmultitabbar.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
 #include <kurlcompletion.h>
@@ -135,42 +135,44 @@ void BrowserWin::initChildren()
     //</Buttons>
 
     m_pSplitter      = new QSplitter( this );
-    m_pJanusWidget   = new KJanusWidget( m_pSplitter, 0, KJanusWidget::IconList );
+    m_pMultiTabBar   = new KMultiTabBar( KMultiTabBar::Vertical, m_pSplitter );
+    m_pMultiTabBar   ->setStyle( KMultiTabBar::KONQSBC );
+    m_pMultiTabBar   ->setPosition( KMultiTabBar::Left );
+    m_pMultiTabBar   ->showActiveTabTexts( true ); 
+       
+    #define BROWSERBOX_ID 0
+    #define STREAMBOX_ID 1
+    m_pMultiTabBar->appendTab( KGlobal::iconLoader()->loadIcon( "hdd_unmount", KIcon::NoGroup,
+                                                                KIcon::SizeSmall ), BROWSERBOX_ID, "Filebrowser" );
+    m_pMultiTabBar->appendTab( KGlobal::iconLoader()->loadIcon( "network"    , KIcon::NoGroup,
+                                                                KIcon::SizeSmall ), STREAMBOX_ID, "Streambrowser" );
+    
+    m_pMultiTabBar->tab( BROWSERBOX_ID  )->setState( true  );
+    m_pMultiTabBar->tab( STREAMBOX_ID   )->setState( false );
 
-    //HACK Traverse childrenlist of KJanusWidget in order to find members which are not exposed in API
-    QObject *pIconBox = m_pJanusWidget->child( 0, "KListBox" );
-    if ( pIconBox )    static_cast<QWidget*>( pIconBox )->setFocusPolicy( QWidget::NoFocus );
-    QObject *pHeader = m_pJanusWidget->child( "KJanusWidgetTitleLabel" );
-    if ( pHeader )     static_cast<QWidget*>( pHeader )->hide();
-    QObject *pSeparator = m_pJanusWidget->child( 0, "KSeparator" );
-    if ( pSeparator )  static_cast<QWidget*>( pSeparator )->hide();
-
-    QWidget *pBrowserBox = m_pJanusWidget->addPage( QString( i18n( "files" ) ), QString::null,
-                           KGlobal::iconLoader()->loadIcon( "hdd_unmount", KIcon::NoGroup,
-                           KIcon::SizeMedium ) );
-    QVBox *pStreamBox    = m_pJanusWidget->addVBoxPage( QString( i18n( "streams" ) ), QString::null,
-                           KGlobal::iconLoader()->loadIcon( "network", KIcon::NoGroup,
-                           KIcon::SizeMedium ) );
-//     QWidget *pMediaBox =   m_pJanusWidget->addPage( QString( i18n( "media" ) ), QString::null,
-//                            KGlobal::iconLoader()->loadIcon( "folder_sound", KIcon::NoGroup,
-//                            KIcon::SizeMedium ) );
-
+    connect( m_pMultiTabBar->tab( BROWSERBOX_ID ), SIGNAL( clicked() ), this, SLOT( buttonBrowserClicked() ) );
+    connect( m_pMultiTabBar->tab( STREAMBOX_ID ), SIGNAL( clicked() ), this, SLOT( buttonStreamClicked() ) );
+   
+    m_pBrowserBox = new QWidget( m_pSplitter );
+    m_pStreamBox  = new QVBox  ( m_pSplitter );
+    m_pStreamBox->hide();
+    
     //<Browser>
     //<mxcl> MAKE_IT_CLEAN: move to browserWidget, also use a validator to make sure has trailing /
-    m_pBrowserLineEdit = new KHistoryCombo( true, pBrowserBox );
+    m_pBrowserLineEdit = new KHistoryCombo( true, m_pBrowserBox );
     m_pBrowserLineEdit->setPaletteBackgroundColor( pApp->m_bgColor );
     m_pBrowserLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
     m_pBrowserLineEdit->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
     m_pBrowserLineEdit->setDuplicatesEnabled( false );
     m_pBrowserLineEdit->setMinimumWidth( 1 );
 
-    m_pBrowserWidget = new BrowserWidget( pBrowserBox, "FileBrowser" );
+    m_pBrowserWidget = new BrowserWidget( m_pBrowserBox, "FileBrowser" );
     m_pBrowserWidget->setAcceptDrops( true );
     m_pBrowserWidget->setSorting( -1 );
     m_pBrowserWidget->setSelectionMode( QListView::Extended );
 
-    QPushButton *button = new QPushButton( "&Fetch Stream Information", pStreamBox );
-    m_pStreamBrowser    = new StreamBrowser( pStreamBox, "StreamBrowser" );
+    QPushButton *button = new QPushButton( "&Fetch Stream Information", m_pStreamBox );
+    m_pStreamBrowser    = new StreamBrowser( m_pStreamBox, "StreamBrowser" );
 
     connect( button, SIGNAL( clicked() ), m_pStreamBrowser, SLOT( slotUpdateStations() ) );
     connect( button, SIGNAL( clicked() ), button, SLOT( hide() ) );
@@ -196,7 +198,7 @@ void BrowserWin::initChildren()
     connect( m_pPlaylistLineEdit, SIGNAL( returnPressed() ),
              m_pPlaylistWidget, SLOT( slotReturnPressed() ) );
 
-    QBoxLayout *layBrowserWidget = new QVBoxLayout( pBrowserBox );
+    QBoxLayout *layBrowserWidget = new QVBoxLayout( m_pBrowserBox );
     layBrowserWidget->addWidget( m_pBrowserLineEdit );
     layBrowserWidget->addWidget( m_pBrowserWidget );
 
@@ -204,7 +206,7 @@ void BrowserWin::initChildren()
     layPlaylistWidget->addWidget( m_pPlaylistLineEdit );
     layPlaylistWidget->addWidget( m_pPlaylistWidget );
 
-    m_pSplitter->setResizeMode( m_pJanusWidget, QSplitter::Stretch );
+    m_pSplitter->setResizeMode( m_pMultiTabBar, QSplitter::Stretch );
     m_pSplitter->setResizeMode( pPlaylistWidgetContainer, QSplitter::Stretch );
 
     QBoxLayout *layV = new QVBoxLayout( this );
@@ -383,24 +385,67 @@ void BrowserWin::setPalettes( const QColor &fg, const QColor &bg, const QColor &
     m_pStreamBrowser->setPaletteForegroundColor( fg );
     m_pStreamBrowser->setAlternateBackground( altbg );
 
-    //HACK Traverse childrenlist of KJanusWidget in order to find members which are not exposed in API
-    QObject *pIconBox = m_pJanusWidget->child( 0, "KListBox" );
-    if ( pIconBox )
-    {
-        static_cast<QWidget*>( pIconBox )->setPaletteBackgroundColor( bg );
-        static_cast<QWidget*>( pIconBox )->setPaletteForegroundColor( fg );
-    }
-
     m_pBrowserLineEdit->setPaletteBackgroundColor( bg );
     m_pBrowserLineEdit->setPaletteForegroundColor( fg );
 
     m_pPlaylistLineEdit->setPaletteBackgroundColor( bg );
     m_pPlaylistLineEdit->setPaletteForegroundColor( fg );
 
+/*    m_pMultiTabBar->setPaletteBackgroundColor( bg );
+    m_pMultiTabBar->setPaletteForegroundColor( fg );*/
+    
     update();
     m_pBrowserWidget->triggerUpdate();
     m_pPlaylistWidget->triggerUpdate();
 }
 
+
+void BrowserWin::buttonBrowserClicked()
+{
+    QValueList<int> list = m_pSplitter->sizes();
+
+    if ( m_pBrowserBox->isHidden() )
+    {    
+        m_boxSize = *list.at(2);
+        m_pStreamBox->hide();
+        m_pBrowserBox->show();
+        m_pMultiTabBar->tab( BROWSERBOX_ID )->setState( true  );
+        m_pMultiTabBar->tab( STREAMBOX_ID  )->setState( false );
+    }
+    else
+    {
+        m_boxSize = *list.at(1);
+        m_pBrowserBox->hide();
+        m_pMultiTabBar->tab( BROWSERBOX_ID )->setState( false  );
+    }
+
+    *list.at(1) = m_boxSize;
+    m_pSplitter->setSizes( list );
+}
+
+
+void BrowserWin::buttonStreamClicked()
+{
+    QValueList<int> list = m_pSplitter->sizes();
+   
+    if ( m_pStreamBox->isHidden() )
+    {    
+        m_boxSize = *list.at(1);
+        m_pStreamBox->show();
+        m_pBrowserBox->hide();
+        m_pMultiTabBar->tab( BROWSERBOX_ID )->setState( false  );
+        m_pMultiTabBar->tab( STREAMBOX_ID  )->setState( true );
+    }
+    else
+    {
+        m_boxSize = *list.at(2);
+        m_pStreamBox->hide();
+        m_pMultiTabBar->tab( STREAMBOX_ID )->setState( false  );
+    }
+
+    *list.at(2) = m_boxSize;
+    m_pSplitter->setSizes( list );
+}
+        
 
 #include "browserwin.moc"

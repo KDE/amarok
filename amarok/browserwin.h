@@ -37,11 +37,12 @@ class QPaintEvent;
 class QPoint;
 class QMoveEvent;
 class QSplitter;
+class QVBox;
 
-class KJanusWidget;
 class KLineEdit;
 class KHistoryCombo;
 class KListView;
+class KMultiTabBar;
 class KURL;
 
 class PlayerApp;
@@ -89,7 +90,7 @@ class BrowserWin : public QWidget
         QSplitter *m_pSplitter;
         KHistoryCombo *m_pBrowserLineEdit;
         KLineEdit *m_pPlaylistLineEdit;
-        KJanusWidget *m_pJanusWidget;
+        KMultiTabBar *m_pMultiTabBar;
 
     public slots:
         void slotBrowserDoubleClicked( QListViewItem *pItem );
@@ -99,7 +100,9 @@ class BrowserWin : public QWidget
     private slots:
         void setBrowserURL( const KURL& ); //sets browser line edit to KURL
         void slotAddLocation();
-
+        void buttonBrowserClicked();
+        void buttonStreamClicked();
+                
     signals:
         void signalHide();
 
@@ -111,6 +114,10 @@ class BrowserWin : public QWidget
         void keyPressEvent( QKeyEvent * );
 
         // ATTRIBUTES ------
+        QWidget *m_pBrowserBox;
+        QVBox   *m_pStreamBox;
+        int     m_boxSize;
+        
         //QColor m_TextColor;
         //QPixmap m_bgPixmap;
 };

@@ -382,11 +382,13 @@ void PlayerApp::readConfig()
 
     QValueList<int> splitterList;
     splitterList = config()->browserWinSplitter();
-    if ( splitterList.count() != 2 )
+     if ( splitterList.count() != 4 )
     {
         splitterList.clear();
         splitterList.append( 70 );
         splitterList.append( 140 );
+        splitterList.append( 140 );
+        splitterList.append( 340 );
     }
     m_pBrowserWin->m_pSplitter->setSizes( splitterList );
 
