@@ -1,6 +1,6 @@
 [Desktop Entry]
 ServiceTypes=audio/midi,audio/mid,audio/mpegurl,audio/wav,audio/x-wav,audio/aiff,audio/x-aiff,audio/x-mid,audio/x-midi,audio/x-mp3,audio/mp3,audio/x-mpeg-url,application/ogg,inode/directory,audio/x-mpegurl
-Actions=addToPlaylist
+Actions=addToPlaylist;
 
 [Desktop Action addToPlaylist]
 Name=Add to amaroK Playlist
@@ -17,9 +17,10 @@ Name[pt]=Adicionar à Lista do amaroK
 Name[pt_BR]=Adicionar à Lista de Músicas do Amarok
 Name[ru]=Добавить в amaroK
 Name[sr]=Додај на amaroK-ову листу
-Name[sr@Latn]=Додај на amaroK-ову листу
 Name[sv]=Lägg till i amaroK-spellistan
+Name[ta]=அமரோக் வாசிப்பு பட்டியலில் சேர்
 Name[tg]=Илова кардани амароК ба рӯйхати файлҳо
+Name[uz]=amaroK қўшиқ рўйхатига қўшиш
 Name[xx]=xxAdd to amaroK Playlistxx
 Name[zh_CN]=添加到 amaroK 播放列表
 Icon=amarok
