@@ -821,8 +821,8 @@ void PlayerApp::setupScrolltext()
         if ( item->hasMetaInfo() )
         {
             QString str, strNum;
-            if ( item->artist() == "---" ||
-                    item->title() == "---" )
+            if ( item->artist() == "" ||
+                    item->title() == "" )
             {
                 str.append( item->text( 0 ) + " (" );
             }
