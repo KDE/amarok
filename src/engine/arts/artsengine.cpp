@@ -653,8 +653,8 @@ void ArtsEngine::timerEvent( QTimerEvent* )
             if ( m_pPlayObjectXfade )
             {
                 m_pPlayObjectXfade->halt();
-//                 delete m_pPlayObjectXfade;
-//                 m_pPlayObjectXfade = 0;
+                delete m_pPlayObjectXfade;
+                m_pPlayObjectXfade = 0;
             }
         }
         float value;

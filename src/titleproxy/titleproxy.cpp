@@ -115,13 +115,7 @@ Proxy::~Proxy()
     kdDebug() << k_funcinfo << endl;
     
     delete[] m_pBuf;
-    
-    if ( m_pSockProxy ) {
-        m_pSockProxy->flush();
-        m_pSockProxy->closeNow();
-        m_pSockProxy->reset();
-//         delete m_pSockProxy;
-    }
+    delete m_pSockProxy;
 }
 
 
@@ -145,7 +139,7 @@ void Proxy::accept()
 {
     m_sockPassive.accept( m_pSockProxy );
     m_sockPassive.close();                        // don't take another connection
-    m_pSockProxy->setSocketFlags( KExtendedSocket::inetSocket | KExtendedSocket::bufferedSocket );
+//     m_pSockProxy->setSocketFlags( KExtendedSocket::inetSocket );
 
     int bytesRead = m_pSockProxy->readBlock( m_pBuf, BUFSIZE );
     m_pSockProxy->setBlockingMode( false );
@@ -192,7 +186,6 @@ void Proxy::readRemote()
                 m_metaData = "";
 
             }
-
         }
         else
         {
@@ -207,7 +200,6 @@ void Proxy::readRemote()
             m_byteCount += bytesWrite;
 
         }
-
     }
 }
 

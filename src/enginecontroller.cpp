@@ -107,17 +107,16 @@ void EngineController::play( const MetaBundle &bundle )
         TitleProxy::Proxy *pProxy = new TitleProxy::Proxy( url );
         const QObject* object = m_pEngine->play( pProxy->proxyUrl() );
 
+        connect( this,      SIGNAL( deleteProxy () ),
+                 pProxy,      SLOT( deleteLater () ) );
+        connect( pProxy,    SIGNAL( error       () ),
+                 this,        SLOT( proxyError  () ) );
+        connect( pProxy,    SIGNAL( metaData( const MetaBundle& ) ),
+                 this,        SLOT( newMetaData( const MetaBundle& ) ) );
+        
         if ( object )
-        {
             connect( object,    SIGNAL( destroyed   () ),
                      pProxy,      SLOT( deleteLater () ) );
-            connect( this,      SIGNAL( deleteProxy () ),
-                     pProxy,      SLOT( deleteLater () ) );
-            connect( pProxy,    SIGNAL( error       () ),
-                     this,        SLOT( proxyError  () ) );
-            connect( pProxy,    SIGNAL( metaData( const MetaBundle& ) ),
-                     this,        SLOT( newMetaData( const MetaBundle& ) ) );
-        }
         else
             proxyError();
     }
