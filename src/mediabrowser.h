@@ -15,7 +15,6 @@
 #include <kurl.h>            //stack allocated
 
 
-class Color;
 class MetaBundle;
 
 class KProgress;

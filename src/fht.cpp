@@ -98,7 +98,7 @@ void FHT::logSpectrum(float *out, float *p)
 	int n = m_num / 2, i, j, k, *r;
 	if (!m_log) {
 		m_log = new int[n];
-		float f = n / log10(n);
+		float f = n / log10((double)n);
 		for (i = 0, r = m_log; i < n; i++, r++) {
 			j = int(rint(log10(i + 1.0) * f));
 			*r = j >= n ? n - 1 : j;
