@@ -146,9 +146,18 @@ CollectionDB::getPathForAlbum( const uint artist_id, const uint album_id )
 QString
 CollectionDB::getImageForAlbum( const QString artist, const QString album, const uint width )
 {
+    uint artistid = getValueID( "artist", artist, false );
+    uint albumid = getValueID( "album", album, false );
+
+    return getImageForAlbum( artistid, albumid, width );
+}
+
+QString
+CollectionDB::getImageForAlbum( const uint artist_id, const uint album_id, const uint width )
+{
     QString widthKey = QString::number( width ) + "@";
 
-    if( artist.isEmpty() && album.isEmpty() )
+    if( artist_id == 0 && album_id == 0 )
     {
         if( m_cacheDir.exists( widthKey + "nocover.png" ) )
             return m_cacheDir.filePath( widthKey + "nocover.png" );
@@ -161,9 +170,7 @@ CollectionDB::getImageForAlbum( const QString artist, const QString album, const
     }
     else
     {
-        uint artistid = getValueID( "artist", artist, false );
-        uint albumid = getValueID( "album", album, false );
-        QString key( QString::number( artistid ) + " - " + QString::number( albumid ) + ".png" );
+        QString key( QString::number( artist_id ) + "-" + QString::number( album_id ) + ".png" );
 
         if ( m_cacheDir.exists( widthKey + key ) )
             return m_cacheDir.filePath( widthKey + key );
@@ -184,21 +191,10 @@ CollectionDB::getImageForAlbum( const QString artist, const QString album, const
         }
 
         KURL url;
-        url.setPath( getPathForAlbum( artist, album ) );
+        url.setPath( getPathForAlbum( artist_id, album_id ) );
 
         return getImageForPath( url.directory(), width );
     }
-}
-
-QString
-CollectionDB::getImageForAlbum( const uint artist_id, const uint album_id, const uint width )
-{
-    QStringList values;
-    execSql( QString( "SELECT DISTINCT artist.name, album.name FROM artist, album "
-                      "WHERE artist.id = %1 AND album.id = %2;" )
-                      .arg( artist_id ).arg( album_id ), &values );
-
-    return getImageForAlbum( values[0], values[1], width );
 }
 
 
@@ -210,9 +206,9 @@ CollectionDB::getImageForPath( const QString path, const uint width )
     QStringList names;
     QStringList ids;
     KURL file( path );
-    execSql( QString( "select distinct artist,album from tags where dir = '%1'" )
+    execSql( QString( "SELECT DISTINCT artist, album FROM tags WHERE dir = '%1'" )
                      .arg( path ), &ids );
-    
+
     if ( path.isEmpty() )
     {
         if( m_cacheDir.exists( widthKey + "nocover.png" ) )
@@ -268,26 +264,8 @@ CollectionDB::getImageForPath( const QString path, const uint width )
 bool
 CollectionDB::removeImageFromAlbum( const uint artist_id, const uint album_id )
 {
-    QStringList values;
-
-    execSql( QString( "SELECT url FROM tags WHERE album = %1 AND artist = %2;" )
-             .arg( album_id )
-             .arg( artist_id ), &values );
-
-    if ( !values.isEmpty() )
-        return removeImageFromAlbum( values[0], values[1] );
-    else
-        return false;
-}
-
-
-bool
-CollectionDB::removeImageFromAlbum( const QString artist, const QString album )
-{
     QString widthKey = "*@";
-    uint artistid = getValueID( "artist", artist, false );
-    uint albumid = getValueID( "album", album, false );
-    QString key( QString::number( artistid ) + " - " + QString::number( albumid ) + ".png" );
+    QString key( QString::number( artist_id ) + "-" + QString::number( album_id ) + ".png" );
 
     // remove scaled versions of images
     QStringList scaledList = m_cacheDir.entryList( widthKey + key );
@@ -313,6 +291,19 @@ CollectionDB::removeImageFromAlbum( const QString artist, const QString album )
     }
 
     return true;
+}
+
+
+bool
+CollectionDB::removeImageFromAlbum( const QString artist, const QString album )
+{
+    uint artistid = getValueID( "artist", artist, false );
+    uint albumid = getValueID( "album", album, false );
+
+    if ( artistid && albumid )
+        return removeImageFromAlbum( artistid, albumid );
+    else
+        return false;
 }
 
 
@@ -891,6 +882,9 @@ CollectionDB::getValueID( QString name, QString value, bool autocreate, bool use
         return id;
     }
 
+    if ( values.isEmpty() )
+        return 0;
+
     return values[0].toUInt();
 }
 
@@ -1102,8 +1096,8 @@ CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString&
     QString amazonLicense = "D1URM11J3F2CEH";
     uint artistid = getValueID( "artist", artist, false );
     uint albumid = getValueID( "album", album, false );
-    QString keyword = artistid + " - " + albumid;
-    
+    QString keyword = QString::number( artistid ) + "-" + QString::number( albumid );
+
     kdDebug() << "Querying amazon with artist: " << artist << " and album " << album << endl;
 
     CoverFetcher* fetcher = new CoverFetcher( amazonLicense, parent );

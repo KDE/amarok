@@ -76,6 +76,8 @@ class CoverViewItem : public KIconViewItem
         void updateCover( const QPixmap& );
         QString artist() { return m_artist; }
         QString album() { return m_album; }
+        uint artist_id() { return m_artist_id; }
+        uint album_id() { return m_album_id; }
         bool hasCover() { return m_hasCover; }
         QString albumPath();
         
@@ -87,6 +89,8 @@ class CoverViewItem : public KIconViewItem
     private:
         QString m_artist;
         QString m_album;
+        uint m_artist_id;
+        uint m_album_id;
         bool m_hasCover;
         bool noedit;
 };
