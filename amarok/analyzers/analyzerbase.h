@@ -18,6 +18,10 @@
 #ifndef ANALYZERBASE_H
 #define ANALYZERBASE_H
 
+#ifdef __FreeBSD__
+    #include <sys/types.h>
+#endif
+
 #define SINVEC_SIZE 6000
 #undef  DRAW_GRID  //disable the grid
 

@@ -22,6 +22,10 @@ email                : markey@web.de
 #include <qobject.h>
 #include <kurl.h>
 
+#ifdef __FreeBSD__
+    #include <sys/types.h>
+#endif
+
 class QString;
 class QStringList;
 

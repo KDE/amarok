@@ -52,6 +52,7 @@ email                : markey@web.de
 #include <arts/kplayobjectfactory.h>
 #include <arts/soundserver.h>
 
+#include <sys/wait.h>
 
 const int ArtsEngine::ARTS_TIMER = 100;
 
