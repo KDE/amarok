@@ -463,7 +463,7 @@ amaroK::OSD::forceToggleOSD()
     if ( !isShown() ) {
         const bool b = isEnabled();
         setEnabled( true );
-        OSDWidget::show();
+        OSDWidget::show( m_text );
         setEnabled( b );
     }
     else
@@ -559,9 +559,5 @@ namespace ShadowEngine
         return alphaShadow;
     }
 }
-
-#ifdef NDEBUG
-#warning Please, please compile with --enable-debug=full!
-#endif
 
 #include "osd.moc"

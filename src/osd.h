@@ -35,7 +35,7 @@ class OSDWidget : public QWidget
 
       public slots:
         /** calls setText() then show() */
-        void show( const QString &text ) { if( text != m_text ) { m_text = text; show(); } }
+        void show( const QString &text ) { m_text = text; show(); }
 
         /** reimplemented, shows the OSD */
         virtual void show();
