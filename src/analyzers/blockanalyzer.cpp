@@ -23,6 +23,7 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
  , m_store( 2 << 8, 0 )      //vector<uint>
  , m_scope( MIN_COLUMNS )    //Scope
  , m_columns( MIN_COLUMNS )  //uint
+ , m_rows( MIN_ROWS )        //uint
 {
     for( uint x = 0; x < MAX_ROWS; ++x ) m_glow[x].resize( WIDTH, HEIGHT );
 
@@ -236,9 +237,9 @@ BlockAnalyzer::paletteChange( const QPalette &p )
     const QColor bg = backgroundColor().dark( 112 );
     const QColor fg = ensureContrast( KGlobalSettings::activeTitleColor(), bg );
 
-    const double dr = 7.5*double(bg.red()   - fg.red())   / (m_rows*8);
-    const double dg = 7.5*double(bg.green() - fg.green()) / (m_rows*8);
-    const double db = 7.5*double(bg.blue()  - fg.blue())  / (m_rows*8);
+    const double dr = 15*double(bg.red()   - fg.red())   / (m_rows*16);
+    const double dg = 15*double(bg.green() - fg.green()) / (m_rows*16);
+    const double db = 15*double(bg.blue()  - fg.blue())  / (m_rows*16);
 
     const int r = fg.red(), g = fg.green(), b = fg.blue();
 
