@@ -191,7 +191,6 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     //<OPEN DATABASE>
         //optimization for speeding up SQLite
         m_db->execSql( "PRAGMA default_synchronous = OFF;" );
-        // m_db->execSql( "PRAGMA default_cache_size = 4000;" ); default is 2000, that should be enough.
 
         //remove database file if version is incompatible
         if ( ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION ) || ( !m_db->isDbValid() ) )
@@ -202,6 +201,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         }
         if ( ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION ) || ( !m_db->isDbValid() ) )
         {
+            kdDebug() << "Rebuilding stats-database!" << endl;
             m_db->dropStatsTable();
             m_db->createStatsTable();
         }
@@ -284,7 +284,8 @@ CollectionView::scan()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
-    if ( m_dirs.isEmpty() ) {
+    if ( m_dirs.isEmpty() )
+    {
         m_insertdb->dropTables();
         this->clear();
     }

@@ -412,7 +412,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                             "datetime( datetime( statistics.accessdate, 'unixepoch' ), 'localtime' ), statistics.playcounter, round( statistics.percentage + 0.5 ) "
                             "FROM album, tags, artist, statistics "
                             "WHERE album.id = tags.album AND artist.id = tags.artist AND statistics.url = tags.url AND tags.url = '%1';" )
-                   .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names );
+                   .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names, true );
 
     if ( !values.isEmpty() )
          /* making 2 tables is most probably not the cleanest way to do it, but it works. */
@@ -446,7 +446,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         m_db->execSql( QString( "SELECT album.name, artist.name "
                                 "FROM album, tags, artist "
                                 "WHERE album.id = tags.album AND artist.id = tags.artist AND tags.url = '%1';" )
-                      .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names );
+                      .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names, true );
 
              browser->write( QStringx ( "<tr><td height='42' valign='top' class='rbcurrent' width='90%'>"
                                         "<span class='album'><b>%1 - %2</b></span><br>%3</td>"
@@ -476,12 +476,12 @@ void ContextBrowser::showCurrentTrack() //SLOT
     // </Current Track Information>
 
     // <Favourite Tracks Information>
-    m_db->execSql( QString( "SELECT tags.title, tags.url, round( statistics.percentage + 0.5 )"
+    m_db->execSql( QString( "SELECT tags.title, tags.url, round( statistics.percentage + 0.5 ) "
                             "FROM tags, artist, statistics "
                             "WHERE tags.artist = artist.id AND artist.name LIKE '%1' AND statistics.url = tags.url "
                             "ORDER BY statistics.percentage DESC "
                             "LIMIT 0,5;" )
-                   .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names );
+                   .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names, true );
 
     if ( !values.isEmpty() )
     {
@@ -510,11 +510,10 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                 "FROM tags, artist, album "
                                 "WHERE tags.album = album.id AND album.name LIKE '%1' AND "
                                       "tags.artist = artist.id AND "
-                                      "( artist.name LIKE '%2' OR tags.dir = '%3' ) "
+                                      "( tags.sampler = 1 OR artist.name LIKE '%2' ) "
                                 "ORDER BY tags.track;" )
                        .arg( m_db->escapeString( m_currentTrack->album() ) )
-                       .arg( m_db->escapeString( m_currentTrack->artist() ) )
-                       .arg( m_db->escapeString( m_currentTrack->url().directory( true, false ) ) ), &values, &names );
+                       .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names, true );
 
         if ( !values.isEmpty() )
         {
@@ -527,7 +526,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
             for ( uint i = 0; i < values.count(); i += 3 )
             {
-                QString tmp = values[i + 2] == "" ? "" : values[i + 2] + ". ";
+                QString tmp = values[i + 2].stripWhiteSpace() == "" ? "" : values[i + 2] + ". ";
                 browser->write( QString ( "<tr><td class='song'></td><td><a class='song' href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">" + tmp + values[i] + "</a></td></tr>" ) );
             }
 
@@ -544,7 +543,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                             "FROM album, tags, artist "
                             "WHERE album.id = tags.album AND tags.artist = artist.id AND album.name <> '' AND artist.name LIKE '%1' "
                             "ORDER BY album.name;" )
-                   .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names );
+                   .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names, true );
 
     if ( !values.isEmpty() )
     {

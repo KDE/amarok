@@ -602,6 +602,8 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
     {
         kdError() << k_funcinfo << "sqlite_step error.\n";
         kdError() << sqlite3_errmsg( m_db ) << endl;
+        kdError() << "on query: " << statement << endl;
+
         return false;
     }
 
@@ -749,6 +751,10 @@ CollectionDB::createStatsTable()
                       "accessdate INTEGER,"
                       "percentage FLOAT,"
                       "playcounter INTEGER );" ) );
+
+    execSql( "CREATE INDEX url_stats ON statistics( url );" );
+    execSql( "CREATE INDEX percentage_stats ON statistics( percentage );" );
+    execSql( "CREATE INDEX playcounter_stats ON statistics( playcounter );" );
 }
 
 
