@@ -68,14 +68,14 @@ App::App()
     m_pOSD            = amaroK::OSD::instance(); //creates the OSD
     m_pTray           = new amaroK::TrayIcon( m_pPlaylistWindow );
     (void)              new Vis::SocketServer( this );
-        
+
     #ifdef HAVE_KJSEMBED
     (void)              new ScriptManager::Manager( this );
     // Export symbols to KJSEmbed
     ScriptManager::Manager::instance()->addObject( this );
     ScriptManager::Manager::instance()->addObject( m_pDcopHandler );
     #endif
-    
+
     m_pPlaylistWindow->init(); //creates the playlist, browsers, etc.
     initGlobalShortcuts();
 
@@ -361,7 +361,9 @@ void App::applySettings( bool firstTime )
     setupColors();
 
 
-    if( firstTime && !amaroK::config()->readBoolEntry( "HiddenOnExit", false ) )
+    //on startup we need to show the window, but only if it wasn't hidden on exit
+    //and always if the trayicon isn't showing
+    if( firstTime && (!amaroK::config()->readBoolEntry( "HiddenOnExit", false ) || !AmarokConfig::showTrayIcon()) )
     {
         mainWindow()->show();
 
