@@ -93,8 +93,6 @@ App::App()
 
     // Invoke first-run wizard if needed
     if ( config()->readBoolEntry( "First Run", true ) ) {
-        amaroK::StatusBar::instance()->message( i18n( "Invoking first-run wizard.." ), 3000 );
-        processEvents();
         firstrunWizard();
         config()->writeEntry( "First Run", false );
     }
@@ -701,6 +699,9 @@ void App::slotConfigToolBars()
 
 void App::firstrunWizard() //SLOT
 {
+    amaroK::StatusBar::instance()->message( i18n( "Invoking first-run wizard.." ), 3000 );
+    processEvents();
+    
     // Load wizard ui file dynamically and generate widget
     QWizard* wizard = (QWizard*) QWidgetFactory::create( locate( "data","amarok/data/firstrun_wizard.ui" ) ); 
     
