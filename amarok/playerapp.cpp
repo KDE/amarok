@@ -80,14 +80,20 @@ email                :
 #include <sys/wait.h>
 
 #define MAIN_TIMER 150
+#define ANIM_TIMER 30
+
 
 PlayerApp::PlayerApp() :
         KUniqueApplication( true, true, false ),
+        m_pGlobalAccel( new KGlobalAccel( this ) ),
         m_bgColor( Qt::black ),
         m_fgColor( QColor( 0x80, 0xa0, 0xff ) ),
         m_pPlayObject( NULL ),
         m_pPlayObjectXFade( NULL ),
         m_pArtsDispatcher( NULL ),
+        m_pConfig( kapp->config() ),
+        m_pMainTimer( new QTimer( this ) ),
+        m_pAnimTimer( new QTimer( this ) ),
         m_length( 0 ),
         m_playRetryCounter( 0 ),
         m_pEffectWidget( NULL ),
@@ -101,18 +107,16 @@ PlayerApp::PlayerApp() :
 
     pApp = this; //global
 
-    m_pConfig = kapp->config();
-    m_pGlobalAccel = new KGlobalAccel( this );
-
     initArts();
     if ( !initScope() )
     {
         KMessageBox::error( 0, i18n( "Cannot find libamarokarts! Maybe installed in the wrong directory? Aborting.." ), i18n( "Fatal Error" ) );
-        return ;
+        return;
     }
+
     initPlayerWidget();
-    initMixer();
     initBrowserWin();
+    initMixer();
 
     readConfig();
 
@@ -122,23 +126,26 @@ PlayerApp::PlayerApp() :
     connect( m_pPlayerWidget, SIGNAL( sigMinimized() ), this, SLOT( slotWidgetMinimized() ) );
     connect( m_pPlayerWidget, SIGNAL( sigRestored() ), this, SLOT( slotWidgetRestored() ) );
 
-    m_pMainTimer = new QTimer( this );
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
-
-    m_pMainTimer->start( MAIN_TIMER );
-
-    m_pAnimTimer = new QTimer( this );
     connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
-    m_pAnimTimer->start( 25 );
+    m_pMainTimer->start( MAIN_TIMER );
+    m_pAnimTimer->start( ANIM_TIMER );
 
+    //restore last playlist (before we show the widget too)
+    m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( kapp->dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "current.m3u", 0 );
+    m_pBrowserWin->m_pPlaylistWidget->writeUndo();
+
+    //moved out from readConfig() to facilitate "faster" loading
     m_pPlayerWidget->show();
+    m_pConfig->setGroup( "General Options" );
+    if ( m_pConfig->readBoolEntry( "BrowserWin Enabled", true ) == true )
+    {
+        m_pPlayerWidget->m_pButtonPl->setOn( true );
+        m_pBrowserWin->show();
+    }
+
     kapp->processEvents();
 
-    //restore last playlist
-    m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( kapp->dirs()->saveLocation(
-                                      "data", kapp->instanceName() + "/" ) + "current.m3u", 0 );
-    m_pBrowserWin->m_pPlaylistWidget->writeUndo();
-    
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
 }
 
@@ -150,9 +157,11 @@ PlayerApp::~PlayerApp()
     slotStop();
 
     killTimers();
+
     saveConfig();
 
     delete m_pEffectWidget;
+    delete m_pBrowserWin;
     delete m_pPlayerWidget;
 
     m_XFade = Amarok::Synth_STEREO_XFADE::null();
@@ -272,7 +281,7 @@ void PlayerApp::saveSessionState()
 
       config->writeEntry( "track", static_cast<PlaylistItem*>
                         ( m_pBrowserWin->m_pPlaylistWidget->currentTrack() ) ->url().url() );
-      
+
       config->writeEntry( "position", timeC.seconds );
     }
 }
@@ -395,7 +404,7 @@ void PlayerApp::initPlayerWidget()
     //TEST
     kdDebug(DA_COMMON) << "begin PlayerApp::initPlayerWidget()" << endl;
 
-    m_pPlayerWidget = new PlayerWidget();
+    m_pPlayerWidget = new PlayerWidget( 0, "PlayerWidget" );
     //    setCentralWidget(m_pPlayerWidget);
 
     m_bSliderIsPressed = false;
@@ -522,10 +531,9 @@ bool PlayerApp::initScope()
 
 void PlayerApp::initBrowserWin()
 {
-    //TEST
     kdDebug(DA_COMMON) << "begin PlayerApp::initBrowserWin()" << endl;
 
-    m_pBrowserWin = new BrowserWin();
+    m_pBrowserWin = new BrowserWin( 0, "BrowserWin" );
 
     connect( m_pBrowserWin->m_pButtonAdd, SIGNAL( clicked() ),
              this, SLOT( slotAddLocation() ) );
@@ -731,12 +739,6 @@ void PlayerApp::readConfig()
     }
     m_pBrowserWin->m_pSplitter->setSizes( splitterList );
 
-    if ( m_pConfig->readBoolEntry( "BrowserWin Enabled", true ) == true )
-    {
-        m_pPlayerWidget->m_pButtonPl->setOn( true );
-        m_pBrowserWin->show();
-    }
-
     m_pPlayerWidget->slotUpdateTrayIcon( m_optShowTrayIcon );
 
     // Read playlist columns layout
@@ -864,18 +866,17 @@ void PlayerApp::startXFade()
 {
     kdDebug(DA_COMMON) << "void PlayerApp::startXFade()" << endl;
 
-    if ( !m_XFadeRunning )
-    {    
-        m_XFadeRunning = true;
-    
-        if ( m_XFadeCurrent == "invalue1" )
-            m_XFadeCurrent = "invalue2";
-        else
-            m_XFadeCurrent = "invalue1";
-    
-        m_pPlayObjectXFade = m_pPlayObject;
-        m_pPlayObject = NULL;
-    }
+    m_XFadeRunning = true;
+
+    if ( m_XFadeCurrent == "invalue1" )
+        m_XFadeCurrent = "invalue2";
+    else
+        m_XFadeCurrent = "invalue1";
+
+    m_pPlayObjectXFade = m_pPlayObject;
+    m_pPlayObject = NULL;
+
+    slotNext();
 }
 
 
@@ -964,6 +965,7 @@ void PlayerApp::slotPrev()
     //    * perhaps we should stop playback dead if the playing item is removed from the playlist (this gives a more consistent interface) <berkus>: no no no when a track is deleted we should continue playing it (this is consistent with WinAmp classic and also i hate when it stops playing in the middle of the song when i'm trying to compose a new playlist already).
     //FIXME detection of empty playlist seems broken for above behavior
     //FIXME <markey> this comment is becoming a f*cking bible. may I add greetings to my grandma?
+    //FIXME <mxcl> if( pItem != NULL && !m_bIsPlaying ) KGreet::emphatically( m_pMarkey->grandma() );
 
     if ( pItem == NULL )
     {
@@ -1349,11 +1351,10 @@ void PlayerApp::slotMainTimer()
     // <Crossfading>
     if ( ( m_optXFade ) &&
          ( !m_pPlayObject->stream() ) &&
-         ( m_length != 0 ) &&
+         ( !m_XFadeRunning ) &&
          ( m_length * 1000 - ( timeC.seconds * 1000 + timeC.ms ) < m_optXFadeLength )  )
     {
         startXFade();
-        slotNext();
         return;
     }
     if ( m_XFadeRunning )
@@ -1413,7 +1414,7 @@ void PlayerApp::slotAnimTimer()
         {
             std::vector<float> *pScopeVector = m_Scope.scope();
             m_pPlayerWidget->m_pVis->drawAnalyzer( pScopeVector );
-//            delete pScopeVector;
+            delete pScopeVector;
         }
         else
             m_pPlayerWidget->m_pVis->drawAnalyzer( NULL );
@@ -1423,13 +1424,9 @@ void PlayerApp::slotAnimTimer()
 
 void PlayerApp::slotItemDoubleClicked( QListViewItem *item )
 {
-   if (item)
-   {
-       if ( m_optXFade )
-           startXFade();
-       
-       m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( static_cast<PlaylistItem*>( item ) );
-       slotPlay();
+   if (item) {
+    m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( static_cast<PlaylistItem*>( item ) );
+    slotPlay();
    }
 }
 

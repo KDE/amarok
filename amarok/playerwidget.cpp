@@ -164,18 +164,18 @@ void AmarokSystray::mousePressEvent( QMouseEvent *e )
 // CLASS PlayerWidget ------------------------------------------------------------
 
 PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
-        : QWidget( parent, name )
-        , DCOPObject( "player" )
+      : QWidget( parent, name ),
+        DCOPObject( "player" ),
+        m_pPopupMenu( NULL ),
+        m_pPlayObjConfigWidget( NULL ),
+        m_nowPlaying( "" ),
+        m_pActionCollection( new KActionCollection( this ) )
 {
-    setName( "PlayerWidget " );
+    //setName( "PlayerWidget " );
     setCaption( "amaroK" );
     setFixedSize( 310, 155 );
     setPaletteForegroundColor( pApp->m_fgColor );
-    m_pPopupMenu = NULL;
-    m_pPlayObjConfigWidget = NULL;
-    m_nowPlaying = "";
 
-    m_pActionCollection = new KActionCollection( this );
     KStdAction::aboutApp( pApp, SLOT( slotShowAbout() ), m_pActionCollection );
     KStdAction::helpContents( pApp, SLOT( slotShowHelp() ), m_pActionCollection );
     KStdAction::tipOfDay( pApp, SLOT( slotShowTip() ), m_pActionCollection );
@@ -186,7 +186,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     KStdAction::quit( pApp, SLOT( quit() ), m_pActionCollection );
     KStdAction::copy( this, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection,
                 "copy_clipboard" )->setText( i18n( "Copy Current Title to Clipboard" ) );
-    
+
 //     new KAction( "Copy Current Title to Clipboard", CTRL + Key_C,
 //                  this, SLOT( slotCopyClipboard() ), m_pActionCollection, "copy_clipboard" );
 

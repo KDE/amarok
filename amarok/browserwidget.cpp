@@ -43,19 +43,20 @@
 #include <kpopupmenu.h>
 #include <kurl.h>
 
-BrowserWidget::BrowserWidget( QWidget *parent, const char *name ) : KListView( parent,name )
+BrowserWidget::BrowserWidget( QWidget *parent, const char *name )
+   : KListView( parent,name ),
+     m_pDirLister( new KDirLister() ),
+     m_Count( 0 )
 {
-    setName( "BrowserWidget" );
+    //setName( "BrowserWidget" );
     setFocusPolicy( QWidget::ClickFocus );
 
-    addColumn( i18n("Filebrowser") );
+    addColumn( i18n( "Filebrowser" ) );
     setFullWidth( true );
     setAcceptDrops( true );
-    m_Count = 0;
 
     connect( header(), SIGNAL( clicked( int ) ), this, SLOT( slotHeaderClicked( int ) ) );
 
-    m_pDirLister = new KDirLister();
     m_pDirLister->setAutoUpdate( true );
     connect( m_pDirLister, SIGNAL( completed() ), this, SLOT( slotCompleted() ) );
 }
@@ -63,6 +64,7 @@ BrowserWidget::BrowserWidget( QWidget *parent, const char *name ) : KListView( p
 
 BrowserWidget::~BrowserWidget()
 {
+  delete m_pDirLister;
 }
 
 
@@ -77,7 +79,6 @@ void BrowserWidget::readDir( KURL url )
 void BrowserWidget::contentsDragMoveEvent( QDragMoveEvent* e)
 {
     e->acceptAction();
-
 }
 
 

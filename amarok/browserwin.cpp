@@ -61,7 +61,7 @@
 BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
         QWidget( parent, name, Qt::WPaintUnclipped )
 {
-    setName( "BrowserWin" );
+    //setName( "BrowserWin" ); set this when you create it
     setCaption( kapp->makeStdCaption( i18n( "Playlist" ) ) );
     setAcceptDrops( true );
 
@@ -137,7 +137,7 @@ void BrowserWin::initChildren()
     m_pSplitter = new QSplitter( this );
 
     QWidget *pBrowserWidgetContainer = new QWidget( m_pSplitter );
-    m_pBrowserWidget = new BrowserWidget( pBrowserWidgetContainer );
+    m_pBrowserWidget = new BrowserWidget( pBrowserWidgetContainer, "BrowserWidget" );
     m_pBrowserWidget->setAcceptDrops( true );
     m_pBrowserWidget->setSorting( -1 );
     m_pBrowserWidget->setSelectionMode( QListView::Extended );
@@ -185,6 +185,8 @@ void BrowserWin::initChildren()
     layH->addWidget( m_pButtonUndo );
     layH->addWidget( m_pButtonRedo );
     layH->addWidget( m_pButtonPlay );
+
+    m_pBrowserWidget->show();
 }
 
 
