@@ -33,6 +33,7 @@
 #include <dcopclient.h> 
 #include <kmessagebox.h> 
 #include <qpushbutton.h> 
+#include <kiconloader.h> 
 
 UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widgetParent, QString &desktopName, const char* name):
                    KonqSidebarPlugin(inst,parent,widgetParent,desktopName,name)
