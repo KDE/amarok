@@ -254,6 +254,9 @@ CollectionReader::readTags( const QStringList& entries )
         bundle.setPath( path );
         bundle.readTags( TagLib::AudioProperties::Fast );
 
+        if( validImages.contains( ext ) )
+          images += url.path();
+        else
         if( bundle.isValidMedia() )
         {
             CoverBundle cover( bundle.artist(), bundle.album() );
@@ -263,8 +266,6 @@ CollectionReader::readTags( const QStringList& entries )
 
            CollectionDB::instance()->addSong( &bundle, m_incremental, m_db );
         }
-        else if( validImages.contains( ext ) )
-                images += url.path();
 
         // Update Compilation-flag, when this is the last loop-run
         // or we're going to switch to another dir in the next run
