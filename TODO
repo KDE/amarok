@@ -10,10 +10,6 @@ SHORT-TERM (URGENT):
 
   FIX 114 <muesli> ContextBrowser needs to be repainted on Color-Scheme changes.
 
-  FIX 111 <dato>   Clearing list while playing ==> infinite calls to EC::slotMainTimer().
-                   mxcl, can you read the post at the mailing list and comment about the
-                   (uncommited) change to Playlist::handleOrder()? thx. --> dato
-
   FIX 110 <dato>   [Don't sure if it's a bug or a "still not implemented". Written here as a reminder.]
                    Changing the Spectrum Size of toolbar's analyzer does not work. It's fixed at 128.
 

@@ -261,7 +261,11 @@ void Playlist::handleOrder( RequestType request ) //SLOT
     //NOTE PLEASE only modify this function with EXTREME care!
     //     most modifications ever have caused regressions you WILL not expect!
 
-    if( isEmpty() ) return;
+    if( isEmpty() )
+    {
+        activate( NULL );
+        return;
+    }
 
     PlaylistItem *item = currentTrack();
     if( !item ) request = Next;
@@ -700,7 +704,7 @@ void Playlist::activate( QListViewItem *lvi, bool rememberTrack ) //SLOT
 
     PlaylistItem* const item = (PlaylistItem*)lvi;
 
-    if( rememberTrack && item )
+    if( rememberTrack && item != NULL )
     {
         m_prevTracks.insert( 0, item ); //is push_back, see QPtrStack docs
 
@@ -710,7 +714,7 @@ void Playlist::activate( QListViewItem *lvi, bool rememberTrack ) //SLOT
     }
 
 
-    if( item )
+    if( item != NULL )
     {
         //if we are playing something from the next tracks list, remove it from the list
         //do it here rather than in setCurrentTrack(), because if playback fails we don't
@@ -787,8 +791,11 @@ void Playlist::engineStateChanged( EngineBase::EngineState state )
 
         //don't leave currentTrack in undefined glow state
         Glow::counter = 63;
-        currentTrack()->m_playing = false;
-        currentTrack()->invalidateHeight();
+        if ( currentTrack() != NULL )
+        {
+            currentTrack()->m_playing = false;
+            currentTrack()->invalidateHeight();
+        }
         slotGlowTimer();
 
         //FALL THROUGH
