@@ -158,7 +158,7 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
 
     KStdAction::copy( this, SLOT( copyToClipboard() ), ac, "playlist_copy" );
     new KAction( i18n( "Shu&ffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
-    new KAction( i18n( "&Show Playing" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
+    new KAction( i18n( "&Goto Current" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
     m_clearButton = new KAction( i18n( "&Clear" ), "view_remove", 0, this, SLOT( clear() ), ac, "playlist_clear" );
 
     ac->action( "playlist_show" )->setEnabled( false ); //FIXME instead get the engineController to set state on registration!

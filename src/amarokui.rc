@@ -5,7 +5,6 @@
  <Action name="playlist_save"/>
  <Action name="playlist_clear"/>
  <Action name="playlist_shuffle"/>
- <Action name="playlist_show"/>
  <Separator lineSeparator="true"/>
  <Action name="playlist_undo"/>
  <Action name="playlist_redo"/>

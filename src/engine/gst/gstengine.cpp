@@ -106,7 +106,6 @@ GstEngine::handoff_fakesrc_cb( GstElement*, GstBuffer* buf, GstPad, gpointer )
 {
     kdDebug() << k_funcinfo << endl;
 //     if ( !GST_IS_BUFFER( buf ) ) return;
-//     buf = gst_buffer_copy_on_write( buf );
             
     kdDebug() << "buf->size: " << buf->size << endl;
     guint8* data = buf->data;
@@ -321,8 +320,8 @@ GstEngine::play( const KURL& url )  //SLOT
         g_object_set( G_OBJECT( m_pFilesrc ), "signal-handoffs", true, NULL );
         g_object_set( G_OBJECT( m_pFilesrc ), "sizetype", 2, NULL );
         g_object_set( G_OBJECT( m_pFilesrc ), "sizemax", 2048, NULL );
-//         g_object_set( G_OBJECT( m_pFilesrc ), "loop-based", true, NULL );
-        g_object_set( G_OBJECT( m_pFilesrc ), "num-buffers", 1000000, NULL );
+        g_object_set( G_OBJECT( m_pFilesrc ), "fill-type", 1, NULL );
+        g_object_set( G_OBJECT( m_pFilesrc ), "data", 1, NULL );
         g_signal_connect ( G_OBJECT( m_pFilesrc ), "handoff",
                            G_CALLBACK( handoff_fakesrc_cb ), m_pThread );
     }
