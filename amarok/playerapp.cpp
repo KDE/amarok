@@ -258,7 +258,7 @@ void PlayerApp::initBrowserWin()
     m_pBrowserWin = new BrowserWin( m_pPlayerWidget, "BrowserWin" );
 
     connect( m_pPlayerWidget->m_pButtonPl, SIGNAL( toggled( bool ) ),
-             m_pBrowserWin,                SLOT  ( setShown( bool ) ) );
+             this,                         SLOT  ( slotPlaylistShowHide( ) ) );
 
     kdDebug() << "end PlayerApp::initBrowserWin()" << endl;
 }
@@ -522,19 +522,31 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
         //if the event is not spontaneous then amaroK was responsible for the event
         //we should therefore hide the playlist as well
         //the only spontaneous hide event we care about is minimization
-        if( !e->spontaneous() ) m_pBrowserWin->hide();
-        else
+        if( AmarokConfig::hidePlaylistWindow() && !e->spontaneous() ) m_pBrowserWin->hide();
+        else if( AmarokConfig::hidePlaylistWindow() )
         {
             //check to see if we've been minimized
             KWin::WindowInfo info = KWin::windowInfo( m_pPlayerWidget->winId() );
 
-            if( info.valid() && info.isMinimized() ) m_pBrowserWin->hide();
+            // minimize not hide when playerwidget is minimized
+            if( info.valid() && info.isMinimized() )
+                KWin::iconifyWindow( m_pBrowserWin->winId(), false );
         }
     }
     else if( e->type() == QEvent::Show && o == m_pPlayerWidget )
     {
         m_pAnimTimer->start( ANIM_TIMER );
-        if( m_pPlayerWidget->m_pButtonPl->isOn() ) m_pBrowserWin->show();
+        if( AmarokConfig::hidePlaylistWindow() && m_pPlayerWidget->m_pButtonPl->isOn() && e->spontaneous())
+        {
+            // deIconify and show the browserwin when we come from a minimized state
+            KWin::deIconifyWindow( m_pBrowserWin->winId(), false );
+            m_pBrowserWin->show();
+        }
+        else if( m_pPlayerWidget->m_pButtonPl->isOn() )
+        {
+            // make sure browserwin or at least (if minimized) the taskbar entry for browserwin is shown
+            m_pBrowserWin->show();
+        }
     }
 
     return FALSE;
@@ -633,6 +645,8 @@ void PlayerApp::slotStop()
 void PlayerApp::slotPlaylistShowHide()
 {
     m_pBrowserWin->setShown( m_pBrowserWin->isHidden() );
+    // rise the playlist if is set to shown from an iconified state
+    if( m_pBrowserWin->isShown() ) KWin::deIconifyWindow( m_pBrowserWin->winId() );
 }
 
 
