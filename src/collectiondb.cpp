@@ -1893,11 +1893,11 @@ QStringList MySqlConnection::query( const QString& statement )
     if ( !mysql::mysql_query( m_db, statement.utf8() ) )
     {
         mysql::MYSQL_RES* result;
-        if ( result = mysql::mysql_use_result( m_db ) )
+        if ( ( result = mysql::mysql_use_result( m_db ) ) )
         {
             int number = mysql::mysql_field_count( m_db );
             mysql::MYSQL_ROW row;
-            while ( row = mysql::mysql_fetch_row( result ) )
+            while ( ( row = mysql::mysql_fetch_row( result ) ) )
             {
                 for ( int i = 0; i < number; i++ )
                 {
