@@ -173,6 +173,8 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
 
     if ( job->error() )
     {
+        kdDebug() << "[CoverFetcher] KIO Job error.\n";
+
         if ( !m_albumonly )
             getCover( m_album, m_album, m_saveas, CoverFetcher::heavy, m_noedit, 1, true );
 
@@ -195,22 +197,23 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
 
         if ( m_image.width() == 1 )
         {
-            if ( m_size == 2 )
+            if ( m_size )
             {
-                if ( m_albumonly ) getCover( m_album, m_album, m_saveas, CoverFetcher::heavy, m_noedit, 1, m_albumonly );
-                else getCover( m_artist, m_album, m_saveas, CoverFetcher::heavy, m_noedit, 1, m_albumonly );
-            }
-            else if ( m_size == 1 )
-            {
-                if ( m_albumonly ) getCover( m_album, m_album, m_saveas, CoverFetcher::heavy, m_noedit, 0, m_albumonly );
-                else getCover( m_artist, m_album, m_saveas, CoverFetcher::heavy, m_noedit, 0, m_albumonly );
-
+                if ( m_albumonly ) getCover( m_album, m_album, m_saveas, CoverFetcher::heavy, m_noedit, m_size-1, m_albumonly );
+                else getCover( m_artist, m_album, m_saveas, CoverFetcher::heavy, m_noedit, m_size-1, m_albumonly );
             }
             else if ( !m_noedit )
             {
                 m_text = i18n( "<h3>Cover found, but without images.</h3>"
                                "If you would like to search again, you can edit the search string below and press <b>OK</b>." );
                 editSearch();
+            }
+            else
+            {
+                kdDebug() << "[CoverFetcher] Image is invalid." << endl;
+                emit error();
+                deleteLater();
+                return;
             }
         }
         else if ( !m_noedit )
