@@ -16,10 +16,13 @@
 #include <qfileinfo.h>
 #include <qlistview.h>
 #include <qmap.h>        //::recurse()
+#include <qstringlist.h>
 #include <qtextstream.h> //::loadPlaylist()
 
 #include <kapplication.h>
+#include <kdebug.h>
 #include <kdirlister.h>
+#include <kurl.h>
 
 
 bool PlaylistLoader::s_stop;
@@ -44,15 +47,41 @@ PlaylistLoader::PlaylistLoader( const KURL::List &urls, QListViewItem *after, bo
     {
         const KURL url = *it;
 
-        if ( url.isLocalFile() )
-        {
-            if ( QFileInfo( url.path() ).isDir() )
-                recurse( url );
-            else
-                m_fileURLs.append( url );
+        if ( url.protocol() == "fetchcover" ) {
+            // ignore
+            continue;
         }
-        else if ( !recurse( url ) )
-            m_fileURLs.append( url );
+        if ( url.protocol() == "album" ) {
+           // url looks like:   album:<artist_id> @@@ <album_id>
+           // extract artist_id, album_id
+           QString myUrl = url.path();
+           if ( myUrl.endsWith( " @@@" ) )
+                myUrl += ' ';
+           const QStringList list = QStringList::split( " @@@ ", myUrl, true );
+           Q_ASSERT( !list.isEmpty() );
+           QString artist_id = list.front();
+           QString album_id  = list.back();
+
+           // get tracks for album, and add them to the playlist
+           QStringList trackValues = CollectionDB::instance()->albumTracks( artist_id, album_id );
+           if ( !trackValues.isEmpty() )
+              for ( uint j = 0; j < trackValues.count(); j++ )
+              {
+                   KURL url;
+                   url.setPath(trackValues[j]);
+                   url.setProtocol("file");
+                   m_fileURLs.append( url );
+              }
+        } else
+            if ( url.isLocalFile() )
+            {
+                if ( QFileInfo( url.path() ).isDir() )
+                    recurse( url );
+                else
+                    m_fileURLs.append( url );
+            }
+            else if ( !recurse( url ) )
+                m_fileURLs.append( url );
     }
     // END
 
@@ -162,7 +191,6 @@ PlaylistLoader::postItem( const KURL &url, const QString &title, const uint leng
 }
 
 
-#include <kdebug.h>
 bool
 PlaylistLoader::loadPlaylist( const QString &path, Format type )
 {

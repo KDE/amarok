@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta3:
+  FIX: accept album urls from the context browser (BR 86020)
   FIX: Configure check was missing for the Konqueror Sidebar
        (depends on KDEBASE).
   FIX: Browser splitter was drawn incorrectly with some styles. (BR 95333)
