@@ -334,6 +334,9 @@ CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, 
 {
     for ( QValueList< QPair<QString, QString> >::ConstIterator it = info.begin(); it != info.end(); ++it )
     {
+        if ( (*it).first.isEmpty() || (*it).second.isEmpty() )
+            continue;
+
         kdDebug() << "Added image for album: " << (*it).first << " - " << (*it).second << ": " << image << endl;
         query( QString( "INSERT INTO images%1 ( path, artist, album ) VALUES ( '%1', '%2', '%3' );" )
          .arg( temporary ? "_temp" : "" )
@@ -584,40 +587,42 @@ CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
 
 
 bool
-CollectionDB::addSong( const MetaBundle& bundle, const bool temporary )
+CollectionDB::addSong( MetaBundle* bundle, const bool temporary )
 {
-    if ( !QFileInfo( bundle.url().path() ).isReadable() ) return false;
+    if ( !QFileInfo( bundle->url().path() ).isReadable() ) return false;
 
     QString command = "INSERT INTO tags_temp "
                       "( url, dir, createdate, album, artist, genre, year, title, comment, track, sampler, length ) "
                       "VALUES ('";
 
-    QString artist = bundle.artist();
-    QString title = bundle.title();
-    if ( bundle.title().isEmpty() )
+    QString artist = bundle->artist();
+    QString title = bundle->title();
+    if ( title.isEmpty() )
     {
-        title = bundle.url().fileName();
-        if ( bundle.url().fileName().find( '-' ) > 0 )
+        title = bundle->url().fileName();
+        if ( bundle->url().fileName().find( '-' ) > 0 )
         {
-            if ( artist.isEmpty() ) artist = bundle.url().fileName().section( '-', 0, 0 ).stripWhiteSpace();
-            title = bundle.url().fileName().section( '-', 1 ).stripWhiteSpace();
+            if ( artist.isEmpty() ) artist = bundle->url().fileName().section( '-', 0, 0 ).stripWhiteSpace();
+            title = bundle->url().fileName().section( '-', 1 ).stripWhiteSpace();
             title = title.left( title.findRev( '.' ) ).stripWhiteSpace();
+            if ( title.isEmpty() ) title = bundle->url().fileName();
         }
     }
+    bundle->setArtist( artist );
+    bundle->setTitle( title );
 
-    command += escapeString( bundle.url().path() ) + "','";
-    command += escapeString( bundle.url().directory() ) + "',";
-//    command += "'" + QString::number( QDateTime::currentDateTime().toTime_t() ) + "',";
-    command += "'" + QString::number( QFileInfo( bundle.url().path() ).created().toTime_t() ) + "',";
+    command += escapeString( bundle->url().path() ) + "','";
+    command += escapeString( bundle->url().directory() ) + "',";
+    command += "'" + QString::number( QFileInfo( bundle->url().path() ).created().toTime_t() ) + "',";
 
-    command += escapeString( QString::number( albumID( bundle.album().isEmpty() ? i18n( "Unknown" ) : bundle.album(), true, !temporary ) ) ) + ",";
-    command += escapeString( QString::number( artistID( artist.isEmpty() ? i18n( "Unknown" ) : artist, true, !temporary ) ) ) + ",";
-    command += escapeString( QString::number( genreID( bundle.genre().isEmpty() ? i18n( "Unknown" ) : bundle.genre(), true, !temporary ) ) ) + ",'";
-    command += escapeString( QString::number( yearID( bundle.year().isEmpty() ? i18n( "Unknown" ) : bundle.year(), true, !temporary ) ) ) + "','";
+    command += escapeString( QString::number( albumID( bundle->album().isEmpty() ? i18n( "Unknown" ) : bundle->album(), true, !temporary ) ) ) + ",";
+    command += escapeString( QString::number( artistID( bundle->artist().isEmpty() ? i18n( "Unknown" ) : bundle->artist(), true, !temporary ) ) ) + ",";
+    command += escapeString( QString::number( genreID( bundle->genre().isEmpty() ? i18n( "Unknown" ) : bundle->genre(), true, !temporary ) ) ) + ",'";
+    command += escapeString( QString::number( yearID( bundle->year().isEmpty() ? i18n( "Unknown" ) : bundle->year(), true, !temporary ) ) ) + "','";
 
-    command += escapeString( title.isEmpty() ? bundle.url().fileName() : title ) + "','";
-    command += escapeString( bundle.comment() ) + "','";
-    command += escapeString( bundle.track() ) + "', ";
+    command += escapeString( bundle->title() ) + "','";
+    command += escapeString( bundle->comment() ) + "','";
+    command += escapeString( bundle->track() ) + "', ";
     command += artist == i18n( "Various Artists" ) ? "1" : "0";
     command += ", 0);";
 
@@ -628,7 +633,7 @@ CollectionDB::addSong( const MetaBundle& bundle, const bool temporary )
 
 
 bool
-CollectionDB::getMetaBundleForUrl( const QString &url , MetaBundle *bundle )
+CollectionDB::getMetaBundleForUrl( const QString& url , MetaBundle* bundle )
 {
     query( QString( "SELECT album.name, artist.name, genre.name, tags.title, year.name, tags.comment, tags.track, tags.bitrate, tags.length, tags.samplerate "
                     "FROM tags, album, artist, genre, year "

@@ -349,7 +349,7 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
         if ( !f.isNull() )
         {
             MetaBundle bundle( url, f.tag(), 0 );
-            m_parent->addSong( bundle, m_incremental );
+            m_parent->addSong( &bundle, m_incremental );
 
             if ( !cbl.contains( CoverBundle( bundle.artist(), bundle.album() ) ) )
                 cbl.append( CoverBundle( bundle.artist(), bundle.album() ) );
@@ -359,7 +359,10 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
         {
             MetaBundle bundle;
             bundle.setUrl( url.path() );
-            m_parent->addSong( bundle, m_incremental );
+            m_parent->addSong( &bundle, m_incremental );
+
+            if ( !cbl.contains( CoverBundle( bundle.artist(), bundle.album() ) ) )
+                cbl.append( CoverBundle( bundle.artist(), bundle.album() ) );
         }
         // Add images to the cover database
         else if ( validImages.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ).lower() ) )

@@ -62,8 +62,8 @@ class CollectionDB : public QObject
         void purgeDirCache();
 
         //song methods
-        bool addSong( const MetaBundle& bundle, const bool temporary = false );
-        bool getMetaBundleForUrl( const QString &url , MetaBundle *bundle );
+        bool addSong( MetaBundle* bundle, const bool temporary = false );
+        bool getMetaBundleForUrl( const QString& url , MetaBundle* bundle );
         void addAudioproperties( const MetaBundle& bundle );
 
         int addSongPercentage( const QString &url , const int percentage );
