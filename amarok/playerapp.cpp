@@ -101,10 +101,6 @@ PlayerApp::PlayerApp() :
 
     pApp = this; //global
 
-    m_browserWindowFont = QFont( "Arial", 9 );
-    m_playerWidgetFont = QFont( "Helvetica", 8 );
-    m_playerWidgetScrollFont = QFont( "Helvetica", 10 );
-
     m_pConfig = kapp->config();
     m_pGlobalAccel = new KGlobalAccel( this );
 
@@ -611,6 +607,9 @@ void PlayerApp::saveConfig()
     m_pConfig->writeEntry( "Crossfading", m_optXFade );
     m_pConfig->writeEntry( "Crossfade Length", m_optXFadeLength );
     m_pConfig->writeEntry( "Hide Playlist Window", m_optHidePlaylistWindow );
+    m_pConfig->writeEntry( "Browser Window Font", m_optBrowserWindowFont );
+    m_pConfig->writeEntry( "Player Widget Font", m_optPlayerWidgetFont);
+    m_pConfig->writeEntry( "Player Widget Scroll Font", m_optPlayerWidgetScrollFont );
     m_pConfig->writeEntry( "BrowserFgColor", m_optBrowserFgColor );
     m_pConfig->writeEntry( "BrowserBgColor", m_optBrowserBgColor );
     m_pConfig->writeEntry( "Undo Levels", m_optUndoLevels );
@@ -641,6 +640,7 @@ void PlayerApp::readConfig()
     //        that's it. so &( QPoint( 0, 0 ) ); would have done the same. what do you guys think?
     QPoint pointZero = QPoint( 0, 0 );
     QSize arbitrarySize = QSize ( 600, 450 );
+    QFont defaultFont( "Helvetica", 9 );
 
     m_pConfig->setGroup( "General Options" );
 
@@ -662,11 +662,18 @@ void PlayerApp::readConfig()
     m_optXFade = m_pConfig->readBoolEntry( "Crossfading", true );
     m_optXFadeLength = m_pConfig->readNumEntry( "Crossfade Length", 3000 );
     m_optHidePlaylistWindow = m_pConfig->readBoolEntry( "Hide Playlist Window", true );
+
+    m_optBrowserWindowFont = m_pConfig->readFontEntry( "Browser Window Font", &defaultFont );
+    m_optPlayerWidgetFont = m_pConfig->readFontEntry( "Player Widget Font", &defaultFont );
+    m_optPlayerWidgetScrollFont = m_pConfig->readFontEntry( "Player Widget Scroll Font", &defaultFont );
+    m_pBrowserWin->slotUpdateFonts();
+
     m_optBrowserFgColor = m_pConfig->readColorEntry( "BrowserFgColor", &( QColor( 0x80, 0xa0, 0xff ) ) );
     m_optBrowserBgColor = m_pConfig->readColorEntry( "BrowserBgColor", &( QColor( Qt::black ) ) );
     m_pBrowserWin->m_pBrowserWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
     m_pBrowserWin->m_pPlaylistWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
     m_pBrowserWin->update();
+
     m_optUndoLevels = m_pConfig->readUnsignedNumEntry( "Undo Levels", 30 );
 
     m_Volume = m_pConfig->readNumEntry( "Master Volume", 50 );

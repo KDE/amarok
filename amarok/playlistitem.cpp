@@ -172,7 +172,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     if ( listView() && QString( listView()->name() ) == "PlaylistWidget" &&
          isAlternate() )
     {
-        pPainterBuf.setBackgroundColor( pApp->m_optBrowserBgColor.dark( 250 ) );
+        pPainterBuf.setBackgroundColor( pApp->m_optBrowserBgColor.light( 200 ) );
     }
     else
     {
@@ -203,6 +203,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         margin += pixmap( 0 ) ->width() + 1;
     }
 
+    pPainterBuf.setFont( listView()->font() );
     pPainterBuf.drawText( margin, 0, width - margin, height(), align, text( column ) );
 
     // draw column separator line

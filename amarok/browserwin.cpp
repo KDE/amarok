@@ -67,7 +67,6 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
         QWidget( parent, name, Qt::WPaintUnclipped )
 {
     setName( "BrowserWin" );
-    setFont ( pApp->m_browserWindowFont );
 
     setCaption( kapp->makeStdCaption( i18n("Playlist") ) );
     setAcceptDrops( true );
@@ -146,7 +145,6 @@ void BrowserWin::initChildren()
     QToolTip::add( m_pBrowserLineEdit, i18n("Enter directory/URL") );
     m_pBrowserLineEdit->setPaletteBackgroundColor( pApp->m_bgColor );
     m_pBrowserLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
-    m_pBrowserLineEdit->setFont ( pApp->m_browserWindowFont );
     KURLCompletion *compBrowser = new KURLCompletion( KURLCompletion::DirCompletion );
     //disabled because the popup combo is useful
     //    m_pBrowserLineEdit->setCompletionMode( KGlobalSettings::CompletionAuto );
@@ -157,7 +155,6 @@ void BrowserWin::initChildren()
     QToolTip::add( m_pPlaylistLineEdit, i18n("Enter Filter String") );
     m_pPlaylistLineEdit->setPaletteBackgroundColor( pApp->m_bgColor );
     m_pPlaylistLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
-    m_pPlaylistLineEdit->setFont ( pApp->m_browserWindowFont );
     connect( m_pPlaylistLineEdit, SIGNAL( textChanged( const QString& ) ), m_pPlaylistWidget, SLOT( slotTextChanged( const QString& ) ) );
 
     QBoxLayout *layBrowserWidget = new QVBoxLayout( pBrowserWidgetContainer );
@@ -506,9 +503,8 @@ void BrowserWin::slotKeyDelete()
 
 void BrowserWin::slotUpdateFonts()
 {
-    setFont ( pApp->m_browserWindowFont );
-    m_pBrowserLineEdit->setFont ( pApp->m_browserWindowFont );
-    m_pPlaylistLineEdit->setFont ( pApp->m_browserWindowFont );
+    m_pBrowserWidget->setFont( pApp->m_optBrowserWindowFont );
+    m_pPlaylistWidget->setFont( pApp->m_optBrowserWindowFont );
 }
 
 

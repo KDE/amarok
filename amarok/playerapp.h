@@ -71,10 +71,6 @@ class PlayerApp : public KUniqueApplication
         QColor m_bgColor;
         QColor m_fgColor;
 
-        QFont m_browserWindowFont;
-        QFont m_playerWidgetFont;
-        QFont m_playerWidgetScrollFont;
-
         // <option attributes>
         bool m_optSavePlaylist;
         bool m_optConfirmClear;
@@ -90,6 +86,9 @@ class PlayerApp : public KUniqueApplication
         QString m_optDropMode;
         bool m_optXFade;
         long m_optXFadeLength;
+        QFont m_optBrowserWindowFont;
+        QFont m_optPlayerWidgetFont;
+        QFont m_optPlayerWidgetScrollFont;
         QColor m_optBrowserFgColor;
         QColor m_optBrowserBgColor;
         unsigned int m_optUndoLevels;
