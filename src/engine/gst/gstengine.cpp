@@ -147,6 +147,7 @@ GstEngine::shutdown_cb() //static
 
 GstEngine::GstEngine()
         : Engine::Base( /*StreamingMode*/ Engine::Signal, /*hasConfigure*/ true, /*hasXFade*/ true )
+        , m_gst_thread( 0 )
         , m_currentInput( 0 )
         , m_streamBuf( new char[STREAMBUF_SIZE] )
         , m_transferJob( 0 )
@@ -165,7 +166,7 @@ GstEngine::~GstEngine()
     kdDebug() << "BEGIN " << k_funcinfo << endl;
     kdDebug() << "bytes left in gst_adapter: " << gst_adapter_available( m_gst_adapter ) << endl;
 
-    if ( GST_IS_THREAD( m_gst_thread ) ) {
+    if ( m_gst_thread ) {
         g_signal_connect( G_OBJECT( m_gst_thread ), "shutdown", G_CALLBACK( shutdown_cb ), m_gst_thread );
         destroyPipeline();
         // Wait for pipeline to shut down properly
@@ -265,7 +266,7 @@ uint
 GstEngine::position() const
 {
     if ( !m_currentInput ) return 0;
-    if ( !GST_IS_THREAD( m_currentInput->thread ) ) return 0;
+    if ( !m_currentInput->thread ) return 0;
 
     GstFormat fmt = GST_FORMAT_TIME;
     // Value will hold the current time position in nanoseconds. Must be initialized!
@@ -279,13 +280,13 @@ GstEngine::position() const
 Engine::State
 GstEngine::state() const
 {
-    if ( !GST_IS_THREAD( m_gst_thread ) )
+    if ( ! m_gst_thread )
         return Engine::Empty;
     if ( m_eos )
         return Engine::Idle;
     if ( !m_currentInput )
         return Engine::Empty;
-    if ( !GST_IS_THREAD( m_currentInput->thread ) )
+    if ( ! m_currentInput->thread )
         return Engine::Empty;
 
     switch ( gst_element_get_state( m_currentInput->thread ) )
@@ -358,7 +359,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     kdDebug() << "[Gst-Engine] Loading url: " << url.url() << endl;
 
     // Make sure we have a functional output pipeline
-    if ( !GST_IS_THREAD( m_gst_thread ) )
+    if ( !m_gst_thread )
         if ( !createPipeline() )
             return false;
 
@@ -434,7 +435,7 @@ GstEngine::play( uint )  //SLOT
     kdDebug() << k_funcinfo << endl;
     if ( !m_currentInput ) return false;
 
-    if ( !GST_IS_THREAD( m_currentInput->thread ) ) {
+    if ( !m_currentInput->thread ) {
         destroyInput( m_currentInput );
         return false;
     }
@@ -473,7 +474,7 @@ GstEngine::pause()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     if ( !m_currentInput ) return;
-    if ( !GST_IS_THREAD( m_currentInput->thread ) ) return;
+    if ( !m_currentInput->thread ) return;
 
     if ( state() == Engine::Paused )
         gst_element_set_state( m_currentInput->thread, GST_STATE_PLAYING );
@@ -487,7 +488,7 @@ GstEngine::pause()  //SLOT
 void
 GstEngine::seek( uint ms )  //SLOT
 {
-    if ( !GST_IS_THREAD( m_gst_thread ) ) return;
+    if ( !m_gst_thread ) return;
 
     if ( ms > 0 )
     {
@@ -524,7 +525,7 @@ GstEngine::newStreamData( char* buf, int size )  //SLOT
 void
 GstEngine::setVolumeSW( uint percent )  //SLOT
 {
-    if ( !GST_IS_THREAD( m_gst_thread ) ) return;
+    if ( !m_gst_thread ) return;
 
     gst_element_set( m_gst_volume, "volume", (double) percent * 0.01, NULL );
 }
@@ -806,7 +807,7 @@ GstEngine::getPluginList( const QCString& classname ) const
 bool
 GstEngine::createPipeline()
 {
-    if ( GST_IS_THREAD( m_gst_thread ) )
+    if ( m_gst_thread )
         destroyPipeline();
 
     if ( GstConfig::soundOutput().isEmpty() ) {
@@ -822,6 +823,7 @@ GstEngine::createPipeline()
 
     /* create a new pipeline (thread) to hold the elements */
     if ( !( m_gst_thread = createElement( "thread" ) ) ) { return false; }
+    g_object_add_weak_pointer( (GObject*) m_gst_thread, (gpointer*) &m_gst_thread );
     gst_element_set( m_gst_thread, "priority", GstConfig::threadPriority(), NULL );
 
     // Let gst construct the output element from a string
@@ -875,7 +877,7 @@ GstEngine::destroyPipeline()
     // Clear the scope adapter
     gst_adapter_clear( m_gst_adapter );
 
-    if ( GST_IS_THREAD( m_gst_thread ) ) {
+    if ( m_gst_thread ) {
         kdDebug() << "[Gst-Engine] Destroying output pipeline.\n";
 
         // Destroy the pipeline
@@ -904,7 +906,7 @@ GstEngine::destroyInput( InputPipeline* input )
         // Destroy the pipeline
         m_inputs.remove( input );
 
-        if ( GST_IS_THREAD( m_gst_thread ) && m_inputs.isEmpty() ) {
+        if ( m_gst_thread && m_inputs.isEmpty() ) {
             kdDebug() << "Inputs now empty. Stopping output pipeline.\n";
 
             if ( GST_STATE( m_gst_thread ) != GST_STATE_READY )
@@ -951,6 +953,8 @@ InputPipeline::InputPipeline()
     if ( !( volume = GstEngine::createElement( "volume", thread ) ) ) { goto error; }
     if ( !( queue = GstEngine::createElement( "queue", thread ) ) ) { goto error; }
 
+    g_object_add_weak_pointer( (GObject*) thread, (gpointer*) &thread );
+
     g_signal_connect( G_OBJECT( spider ), "eos", G_CALLBACK( GstEngine::eos_cb ), thread );
 
     // Set thread priority for less dropouts
@@ -976,7 +980,7 @@ InputPipeline::~InputPipeline()
     if ( state() != NEAR_DEATH )
         prepareToDie();
 
-    if ( GST_IS_THREAD( thread ) ) {
+    if ( thread ) {
         kdDebug() << "Unreffing input thread.\n";
 
         gst_element_set_state( thread, GST_STATE_NULL );
@@ -996,7 +1000,7 @@ void InputPipeline::prepareToDie()
         kdDebug() << "m_currentInput == this; setting to 0.\n";
     }
 
-    if ( GST_IS_THREAD( thread ) )
+    if ( thread )
     {
         if ( GST_STATE( thread ) == GST_STATE_PLAYING )
         {
@@ -1015,7 +1019,7 @@ void InputPipeline::prepareToDie()
                 kdDebug() << k_funcinfo << "Count reached 0\n";
         }
 
-        if ( GST_IS_THREAD( GstEngine::instance()->m_gst_thread ) )
+        if ( GstEngine::instance()->m_gst_thread )
             gst_element_unlink( queue, GstEngine::instance()->m_gst_adder );
     }
 
