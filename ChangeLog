@@ -4,8 +4,9 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta4:
-  ADD: Allow to select from multiple results with Amazon cover search.
-       (BR 93287)
+  ADD: It is now possible to select the right image if there are
+       multiple results from Amazon. Patch from Gregory Isabelli
+       <g_isabelli@yahoo.fr>. (BR 93287)
   CHG: Reorganized the DCOP interface. We used to have all DCOP functions
        in the "player" group. Now it's splitted up into several
        categories. Attention script writers: Adjust your DCOP calls!
