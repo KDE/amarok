@@ -238,9 +238,12 @@ void ContextBrowser::collectionScanDone()
 
 void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool /*trackChanged*/ )
 {
+    bool newMetaData = false;
+
     // Add stream metadata history item to list
     if ( !m_metadataHistory.last().contains( bundle.prettyTitle() ) )
     {
+        newMetaData = true;
         const QString timeString = QTime::currentTime().toString( "hh:mm" );
         m_metadataHistory << QString( "<td valign='top'>" + timeString + "&nbsp;</td><td align='left'>" + escapeHTML( bundle.prettyTitle() ) + "</td>" );
     }
@@ -248,7 +251,9 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool /*trackCh
     switch( m_db->isEmpty() || !m_db->isValid() )
     {
         case true:  showIntroduction();
-        case false: if ( m_tabBar->currentTab() != m_tabCurrent || bundle.url() != m_currentURL ) showCurrentTrack();
+
+        case false: if ( m_tabBar->currentTab() != m_tabCurrent || bundle.url() != m_currentURL || newMetaData )
+                        showCurrentTrack();
     }
 }
 
