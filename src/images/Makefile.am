@@ -10,7 +10,6 @@ images_DATA = \
     b_prev.png \
     b_stop.png \
     bucky.png \
-    context_gradient.png \
     covermanager.png \
     currenttrack_play.png \
     description.png \
