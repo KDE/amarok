@@ -10,7 +10,6 @@
   begin:     Fre Sep 26 2003
   copyright: (C) 2003 by Christian Muehlhaeuser
   email:     muesli@chareit.net
-
 */
 
 #ifndef OSD_H
