@@ -22,15 +22,10 @@ what                 : interface to the Media Application Server (MAS)
 #include <assert.h>
 #include <math.h>            //setVolume(), timerEvent()
 #include <string>
-#include <vector>
+//#include <vector>
 
-#include <qdir.h>
-#include <qdom.h>
-#include <qfile.h>
-#include <qlayout.h>
-#include <qstring.h>
-#include <qtextstream.h>
 #include <qtimer.h>
+#include <qfile.h>
 
 #include <kapplication.h>
 #include <kconfig.h>
@@ -46,7 +41,7 @@ what                 : interface to the Media Application Server (MAS)
 #include "masengine.h"
 //#define DB_CUTOFF -40.0
 #define BUFFER_TIME_MS 300
-/* #define POSTOUT_TIME_MS 100 */
+#define POSTOUT_TIME_MS 100
 //#define QUERY_MIX_VOLUME 0
 //#define QUERY_MIX_EPSILON 5
 
@@ -55,7 +50,7 @@ what                 : interface to the Media Application Server (MAS)
 AMAROK_EXPORT_PLUGIN( MasEngine )
 
 
-MasEngine::MasEngine( )
+MasEngine::MasEngine()
         : Engine::Base()
         , m_inited (false)
 //        , m_scopeId( 0 )
@@ -68,8 +63,11 @@ MasEngine::MasEngine( )
 
 {
     kdDebug() << k_funcinfo << endl;
-
+    
     addPluginProperty( "StreamingMode",  "NoStreaming" );
+    addPluginProperty( "HasConfigure",   "false" );
+    addPluginProperty( "HasCrossfading", "false" );
+    addPluginProperty( "HasEqualizer",   "false" );
 }
 
 
@@ -78,7 +76,6 @@ MasEngine::~MasEngine()
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
     if ( m_inited ) stop();
-
     m_pPlayingTimer->stop();
     killTimers();
 
@@ -96,7 +93,7 @@ bool MasEngine::init()
     */
 
     if (!masinit() ) {
-        KMessageBox::error( 0, i18n("<h3>amaroK could not initialise MAS.</h3>"
+        KMessageBox::error( 0, i18n("<h3>amaroK could not initialise MAS.</h3>" 
                         "<p>Check for a running mas daemon.</p>") );
         kdDebug() << "  connecting to MAS daemon failed. Aborting. " << endl;
         kdDebug() << "  Please restart amarok." << endl;
@@ -118,13 +115,13 @@ bool MasEngine::init()
 
 bool MasEngine::canDecode( const KURL &url ) const
 {
-    static QStringList list;
+    QStringList list;
 
     kdDebug() << "BEGIN " << k_funcinfo << endl;
     kdDebug() << "  Param: url: " << url << endl;
     //kdDebug() << "  url.protocol()   >" << url.protocol() <<"<"<< endl;
 
-    if (url.protocol() == "http" ) return false;
+    if (url.protocol() == "http" ) return false; 
 
     // TODO determine list of supported MimeTypes/Extensions from MAS
     list += QString("audio/x-mp3");
@@ -152,9 +149,15 @@ bool MasEngine::load( const KURL& url, bool stream )
     kdDebug() << "  Param: url " << url << endl;
 
     if ( !url.isLocalFile() ) {         // for now
-       return false;
+        kdDebug() << "  only local files are supported (for now)" << endl;
+        return false;
     }
 
+    if ( !canDecode(url) ) {
+        kdDebug() << "  cannot decode!" << endl;
+        return false;
+    }
+    
     if ( m_url == url ) {
        return true;
     } else {
@@ -249,7 +252,7 @@ void MasEngine::playingTimeout() //SLOT
         m_pPlayingTimer->stop();
 
         m_state = Engine::Idle;
-        emit trackEnded( );
+        emit trackEnded();
     }
 
     //kdDebug() << "END " << k_funcinfo << endl;
@@ -437,7 +440,6 @@ bool MasEngine::masinit()
     mas_port_t   tmp_source;
     mas_channel_t local;
 
-
     err = mas_get_local_control_channel( &local );
     if ( err < 0 ) masc_logerror( err, "getting local control channel" );
     printf ("  after mas_get_local_control_channel\n");
@@ -447,7 +449,6 @@ bool MasEngine::masinit()
     err = mas_asm_get_device_by_name( (char*)"anx", &anx );
     mas_assert( err >= 0, (char*)"Couldn't get anx device" );
     printf ("  after mas_asm_get_device_by_name\n");
-
 
     m_sink_clkid = 0;
     err = mas_get( anx, (char*)"mc_clkid", NULL, &nugget );
@@ -488,18 +489,11 @@ bool MasEngine::masinit()
     printf ("  after mas_asm_instantiate_device (visual)\n");
 #endif
 
-    /* id3 tag parser */
-    /* we have no need to read the tags from MAS */
-/*
-    err = mas_asm_instantiate_device_on_channel( (char*)"tag", 0, 0, &m_id3_device, local );
-    mas_assert( err >= 0, (char*)"Couldn't instantiate tag device" );
-*/
 
     /* get a handle to the mixer */
     err = mas_asm_get_device_by_name( (char*)"mix", &m_mix_device );
     mas_assert( err >= 0, (char*)"Couldn't get mixer device" );
     printf ("  after mas_asm_get_device_by_name (mix)\n");
-
 
     /* start making connections:
      *
@@ -550,11 +544,11 @@ bool MasEngine::masinit()
 
     printf ("  after ... masc_strike_package ...\n");
 
-/*     masc_setup_package( &nugget, NULL, 0, 0 ); */
-/*     masc_pushk_uint32( &nugget, "postout_time_ms", POSTOUT_TIME_MS ); */
-/*     masc_finalize_package( &nugget ); */
-/*     mas_set( m_sbuf, "postout_time_ms", &nugget ); */
-/*     masc_strike_package( &nugget ); */
+    masc_setup_package( &nugget, NULL, 0, 0 );
+    masc_pushk_uint32( &nugget, "postout_time_ms", POSTOUT_TIME_MS );
+    masc_finalize_package( &nugget );
+    mas_set( m_sbuf, "postout_time_ms", &nugget );
+    masc_strike_package( &nugget );
 
     /* If we can use a sample clock, let's do it... */
     if ( m_sink_clkid > 0 )

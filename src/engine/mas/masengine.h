@@ -21,22 +21,13 @@ what                 : interface to the Media Application Server (MAS)
 
 #include "enginebase.h"
 
-#include <vector>
-
-#include <qguardedptr.h>
-#include <qmap.h>
-#include <qstringlist.h>
-#include <qwidget.h>
-
-#include <qwidget.h>
+//#include <vector>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <mas/mas.h>
-#include <mas/mas_core.h>
-
+  #include <mas/mas.h>
+  #include <mas/mas_core.h>
 #ifdef __cplusplus
 }
 #endif
@@ -44,9 +35,6 @@ extern "C" {
 
 class QTimer;
 class KURL;
-
-namespace KDE { class PlayObject; }
-
 
 class MasEngine : public Engine::Base
 {
@@ -62,12 +50,11 @@ class MasEngine : public Engine::Base
         bool canDecode( const KURL& ) const;
         uint position() const;
         Engine::State state() const {return m_state;}
-//        std::vector<float>* scope();
-
 /*
+        const Engine::Scope& scope();
         bool decoderConfigurable();
         void configureDecoder();
-  */
+ */
         bool supportsXFade() const     { return false; }
 
     public slots:
@@ -105,14 +92,10 @@ class MasEngine : public Engine::Base
 
         mas_device_t m_mp1a_source_device;
         mas_device_t m_visual;
-
         mas_device_t m_sbuf;
         mas_device_t m_codec;
-        //mas_device_t m_id3_device;
-
         mas_device_t m_mix_device;
         mas_port_t m_mix_sink;
-
         mas_device_t m_sink_mc;
         mas_device_t m_source_mc;
         int32 m_sink_clkid;
@@ -120,5 +103,5 @@ class MasEngine : public Engine::Base
         //double m_measured_sample_freq;
 };
 
-#endif
+#endif     // AMAROK_MASENGINE_H
 
