@@ -982,7 +982,8 @@ InputPipeline::~InputPipeline()
 
     if ( GST_IS_THREAD( thread ) ) {
         kdDebug() << "Unreffing input thread.\n";
-//         gst_element_set_state( thread, GST_STATE_NULL );
+
+        gst_element_set_state( thread, GST_STATE_NULL );
         gst_object_unref( GST_OBJECT( thread ) );
     }
 
@@ -1013,8 +1014,6 @@ void InputPipeline::prepareToDie()
         }
         if ( !count )
             kdDebug() << k_funcinfo << "Count reached 0\n";
-
-        gst_element_set_state( thread, GST_STATE_READY );
 
         if ( GstEngine::instance()->m_pipelineFilled )
             gst_element_unlink( queue, GstEngine::instance()->m_gst_adder );
