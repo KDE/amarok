@@ -891,7 +891,7 @@ InputPipeline::InputPipeline()
     if ( !( queue = GstEngine::createElement( "queue", thread ) ) ) { goto error; }
 
     // More buffers means less dropouts and higher latency
-    g_object_set( G_OBJECT( queue ), "max-size-buffers", 150, NULL );
+    g_object_set( G_OBJECT( queue ), "max-size-buffers", 200, NULL );
 
     // Start silent
     g_object_set( G_OBJECT( volume ), "volume", 0.0, NULL );

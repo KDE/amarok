@@ -37,7 +37,7 @@ XineConfigEntry::XineConfigEntry( QWidget *parent, amaroK::PluginConfig *pluginC
         stringEdit = new KLineEdit( m_stringValue, parent );
         grid->addWidget( stringEdit, row, 1 );
         connect( stringEdit, SIGNAL(textChanged( const QString& )), this, SLOT(slotStringChanged( const QString& )) );
-        connect( stringEdit, SIGNAL(textChanged( const QString& )), pluginConfig, SIGNAL(settingsChanged()) );
+        connect( stringEdit, SIGNAL(textChanged( const QString& )), pluginConfig, SIGNAL(viewChanged()) );
         break;
     }
     case XINE_CONFIG_TYPE_ENUM:
@@ -48,7 +48,7 @@ XineConfigEntry::XineConfigEntry( QWidget *parent, amaroK::PluginConfig *pluginC
         enumEdit->setCurrentItem( m_numValue );
         grid->addWidget( enumEdit, row, 1 );
         connect( enumEdit, SIGNAL(activated( int )), this, SLOT(slotNumChanged( int )) );
-        connect( enumEdit, SIGNAL(activated( int )), pluginConfig, SIGNAL(settingsChanged()) );
+        connect( enumEdit, SIGNAL(activated( int )), pluginConfig, SIGNAL(viewChanged()) );
         break;
     }
     case XINE_CONFIG_TYPE_NUM:
@@ -57,7 +57,7 @@ XineConfigEntry::XineConfigEntry( QWidget *parent, amaroK::PluginConfig *pluginC
         numEdit->setValue( m_numValue );
         grid->addWidget( numEdit, row, 1 );
         connect( numEdit, SIGNAL(valueChanged( int )), this, SLOT(slotNumChanged( int )) );
-        connect( numEdit, SIGNAL(valueChanged( int )), pluginConfig, SIGNAL(settingsChanged()) );
+        connect( numEdit, SIGNAL(valueChanged( int )), pluginConfig, SIGNAL(viewChanged()) );
         break;
     }
     case XINE_CONFIG_TYPE_RANGE:
@@ -67,7 +67,7 @@ XineConfigEntry::XineConfigEntry( QWidget *parent, amaroK::PluginConfig *pluginC
         numEdit->setRange( entry->range_min, entry->range_max );
         grid->addWidget( numEdit, row, 1 );
         connect( numEdit, SIGNAL(valueChanged( int )), this, SLOT(slotNumChanged( int )) );
-        connect( numEdit, SIGNAL(valueChanged( int )), pluginConfig, SIGNAL(settingsChanged()) );
+        connect( numEdit, SIGNAL(valueChanged( int )), pluginConfig, SIGNAL(viewChanged()) );
         break;
     }
     case XINE_CONFIG_TYPE_BOOL:
@@ -76,7 +76,7 @@ XineConfigEntry::XineConfigEntry( QWidget *parent, amaroK::PluginConfig *pluginC
         boolEdit->setChecked( m_numValue );
         grid->addWidget( boolEdit, row, 1 );
         connect( boolEdit, SIGNAL(toggled( bool )), this, SLOT(slotBoolChanged( bool )) );
-        connect( boolEdit, SIGNAL(toggled( bool )), pluginConfig, SIGNAL(settingsChanged()) );
+        connect( boolEdit, SIGNAL(toggled( bool )), pluginConfig, SIGNAL(viewChanged()) );
         break;
     }
     case XINE_CONFIG_TYPE_UNKNOWN:

@@ -15,9 +15,6 @@ class GstConfigDialog : public amaroK::PluginConfig
 {
     Q_OBJECT
 
-    signals:
-        void settingsSaved();
-
     public:
         GstConfigDialog( GstEngine const * const engine );
         ~GstConfigDialog();

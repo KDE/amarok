@@ -40,13 +40,13 @@ GstConfigDialog::GstConfigDialog( GstEngine const * const engine )
     m_view->kIntSpinBox_fadeout->setValue( GstConfig::fadeoutDuration() );
 
     // Connections for modification check
-    connect( m_view->kComboBox_output, SIGNAL( activated( int ) ), SIGNAL( settingsChanged() ) );
-    connect( m_view->checkBox_outputDevice, SIGNAL( toggled( bool ) ), SIGNAL( settingsChanged() ) );
-    connect( m_view->kLineEdit_outputDevice, SIGNAL( textChanged( const QString& ) ), SIGNAL( settingsChanged() ) );
-    connect( m_view->checkBox_outputParams, SIGNAL( toggled( bool ) ), SIGNAL( settingsChanged() ) );
-    connect( m_view->kLineEdit_outputParams, SIGNAL( textChanged( const QString& ) ), SIGNAL( settingsChanged() ) );
-    connect( m_view->kIntSpinBox_fadein, SIGNAL( valueChanged( int ) ), SIGNAL( settingsChanged() ) );
-    connect( m_view->kIntSpinBox_fadeout, SIGNAL( valueChanged( int ) ), SIGNAL( settingsChanged() ) );
+    connect( m_view->kComboBox_output, SIGNAL( activated( int ) ), SIGNAL( viewChanged() ) );
+    connect( m_view->checkBox_outputDevice, SIGNAL( toggled( bool ) ), SIGNAL( viewChanged() ) );
+    connect( m_view->kLineEdit_outputDevice, SIGNAL( textChanged( const QString& ) ), SIGNAL( viewChanged() ) );
+    connect( m_view->checkBox_outputParams, SIGNAL( toggled( bool ) ), SIGNAL( viewChanged() ) );
+    connect( m_view->kLineEdit_outputParams, SIGNAL( textChanged( const QString& ) ), SIGNAL( viewChanged() ) );
+    connect( m_view->kIntSpinBox_fadein, SIGNAL( valueChanged( int ) ), SIGNAL( viewChanged() ) );
+    connect( m_view->kIntSpinBox_fadeout, SIGNAL( valueChanged( int ) ), SIGNAL( viewChanged() ) );
 }
 
 
@@ -89,8 +89,7 @@ GstConfigDialog::save() //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
-    if ( hasChanged() )
-        emit settingsSaved();
+    bool changed =  hasChanged();
 
     GstConfig::setSoundOutput( m_view->kComboBox_output->currentText() );
     GstConfig::setUseCustomSoundDevice( m_view->checkBox_outputDevice->isChecked() );
@@ -99,6 +98,9 @@ GstConfigDialog::save() //SLOT
     GstConfig::setOutputParams( m_view->kLineEdit_outputParams->text() );
     GstConfig::setFadeinDuration( m_view->kIntSpinBox_fadein->value() );
     GstConfig::setFadeoutDuration( m_view->kIntSpinBox_fadeout->value() );
+
+    if ( changed )
+        emit settingsSaved();
 }
 
 

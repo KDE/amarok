@@ -215,7 +215,7 @@ void AmarokConfigDialog::soundSystemChanged()
         //KDialogBase doesn't do this as it has no knowledge of the engine config widget at all!
         m_engineConfig->view()->reparent( m_enginePage, QPoint() );
 
-        connect( m_engineConfig, SIGNAL(settingsChanged()), SLOT(updateButtons()) );
+        connect( m_engineConfig, SIGNAL(viewChanged()), SLOT(updateButtons()) );
     }
 }
 

@@ -20,9 +20,10 @@ namespace amaroK
 
         signals:
             /** Emit whenever some view setting is changed by the user */
-            //TODO this is wrongly named, instead name it doUpdateButtons()
-            //     or something better, settingsChanged has a different meaning in KConfigDialog
-            void settingsChanged();
+            void viewChanged();
+
+            /** Emit after settings have been saved to config. Can be used for updating engine state. */
+            void settingsSaved();
 
         public:
             /** Return the view widget */
