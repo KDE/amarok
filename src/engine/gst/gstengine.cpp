@@ -418,10 +418,12 @@ GstEngine::setVolume( int percent )             //SLOT
             g_object_set( G_OBJECT( m_volumeElement ), "volume", 1.0, NULL );
     } else {
         if ( m_pipelineFilled )
-            g_object_set( G_OBJECT( m_volumeElement ), "volume", ( double ) percent / 100.0, NULL );
+            // We're using a logarithmic function to make the volume ramp more natural
+            g_object_set( G_OBJECT( m_volumeElement ), "volume",
+                          (double) 1.0 - log10( (100 - percent) * 0.09 + 1.0 ), NULL );
     }
-
 }
+        
 
 void
 GstEngine::newStreamData( char* buf, int size )            //SLOT
