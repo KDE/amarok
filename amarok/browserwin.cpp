@@ -159,7 +159,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     //</FileBrowser>
 
     { //<SearchBrowser>
-        m_browsers->addPage( new SearchBrowser( 0, "SearchBrowser" ), i18n( "Search Browser" ), "SearchBrowser" );
+        m_browsers->addPage( new SearchBrowser( 0, "SearchBrowser" ), i18n( "Search Browser" ), "find" );
     } //</SearchBrowser>
 
     //<PlaylistBrowser>
