@@ -121,8 +121,6 @@ void EngineController::play( const MetaBundle &bundle )
     m_bundle = bundle;
     const KURL &url = bundle.url();
 
-    kdDebug() << "[engine] Playing: " << url.filename() << endl;
-
     if ( url.protocol() == "http" ) {
         // Detect mimetype of remote file
         KIO::MimetypeJob* job = KIO::mimetype( url, false );
@@ -169,8 +167,6 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
     }
     else
         m_pEngine->play( url, stream );
-
-    kdDebug() << "[engine] Playing: " << url.filename() << endl;
 
     stateChangedNotify( EngineBase::Playing );
     newMetaDataNotify( m_bundle, true /* track change */ );
