@@ -18,7 +18,9 @@
 #include <loader.h>
 #include <splash.h>
 
+#include <stdlib.h>
 #include <qprocess.h>
+#include <qstring.h>
 
 
 Loader::Loader( int& argc, char** argv )
@@ -27,7 +29,9 @@ Loader::Loader( int& argc, char** argv )
 {
     qDebug( "[Loader::Loader()]" );
 
-    m_pOsd->showSplash( "/opt/kde3/share/apps/amarok/images/logo_splash.png" );
+    QString path( getenv( "KDEDIR" ) );
+    path += "/share/apps/amarok/images/logo_splash.png";
+    m_pOsd->showSplash( path );
         
     QProcess* proc = new QProcess( this );
     proc->addArgument( "amarok" );
