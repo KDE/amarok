@@ -108,6 +108,17 @@ if test x$included_sqlite = xno; then
   fi
 fi
 
+if test x$amarok_warning_mysql_notfound = xyes; then
+    echo " =========================="
+    echo " ===  amaroK - WARNING  ========================================================"
+    echo " =========================="
+    echo " ="
+    echo " = mysql_config could not be found, this means that support for MySql"
+    echo " = will be disabled."
+    echo " ="
+
+fi
+
 if test x$no_engine = xyes; then
     all_tests=bad
     echo " =================================="

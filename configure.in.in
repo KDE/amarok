@@ -357,14 +357,25 @@ AC_ARG_ENABLE(mysql,
 )
 
 if test "$enable_mysql" = "yes"; then
-    LIB_MYSQL="-lmysqlclient"
+
+    AC_CHECK_PROG(MYSQL_CONFIG, mysql_config, yes)
+
+    if test x$MYSQL_CONFIG = xyes; then
+        AC_DEFINE(USE_MYSQL, 1, [MySql database support enabled])
+
+        mysql_includes=`mysql_config --include`
+        mysql_libs=`mysql_config --libs`
+    else
+        amarok_warning_mysql_notfound=yes
+        enable_mysql=no
+    fi
+
     AC_DEFINE(USE_MYSQL, 1, [MySql database support enabled])
-else
-    LIB_MYSQL = ""
 fi
 
 AM_CONDITIONAL(enable_mysql, test x$enable_mysql = xyes)
-AC_SUBST(LIB_MYSQL)
+AC_SUBST(mysql_includes)
+AC_SUBST(mysql_libs)
 
 ###############################################################################
 # END MYSQL CHECK

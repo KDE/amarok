@@ -17,7 +17,7 @@
 #include <qdatetime.h>
 namespace mysql
 {
-#include <mysql/mysql.h>
+#include <mysql.h>
 }
 #else
 #include "sqlite/sqlite3.h"
