@@ -8,6 +8,7 @@
 #include "collectiondb.h"        //needed for execSql()
 #include "metabundle.h"
 #include "playlistitem.h"
+#include "statusbar.h"
 #include "threadweaver.h"
 
 #include <errno.h>
@@ -23,13 +24,6 @@
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
 #include <taglib/id3v2framefactory.h>
-
-
-static inline const TagLib::String LocaleAwareTString( const QString &s )
-{
-    // return TagLib::String( s.local8Bit().data(), TagLib::String::Latin1 );
-    return QStringToTString( s );
-}
 
 
 ThreadWeaver::ThreadWeaver( QObject *w )
@@ -234,6 +228,8 @@ CollectionReader::doJob()
 void
 CollectionReader::readDir( const QString& dir, QStringList& entries )
 {
+    //TODO use a KDirLister, this will prevent infinite recursive directory trees being a problem
+
     m_processedDirs << dir;
     struct stat statBuf;
 
@@ -294,8 +290,8 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
                 entries <<  file ;
             }
         }
-
     }
+
     closedir( d );
 }
 
@@ -423,70 +419,75 @@ CollectionReader::readTags( const QStringList& entries )
 // CLASS TagWriter
 //////////////////////////////////////////////////////////////////////////////////////////
 
-TagWriter::TagWriter( QObject *o, PlaylistItem *pi, const QString &s, const int col )
+TagWriter::TagWriter( QObject *o, PlaylistItem *item, const QString &newTag, const int col )
         : Job( o )
-        , m_item( pi )
-        , m_tagString( s )
+        , m_item( item )
+        , m_failed( true )
+        , m_oldTagString( item->exactText( col ) )
+        , m_newTagString( newTag )
         , m_tagType( col )
 {
-    //TODO deepcopy?
-    //TODO use a enum for TagType
-    pi->setText( col, i18n( "Writing tag..." ) );
+    item->setText( col, i18n( "Writing tag..." ) );
 }
 
 bool
 TagWriter::doJob()
 {
-    const KURL url = m_item->url();
-    TagLib::ID3v2::FrameFactory::instance()->setDefaultTextEncoding(TagLib::String::UTF8);
-    TagLib::FileRef f( QFile::encodeName( url.path() ), false );
+    const QString path = m_item->url().path();
+    //TODO I think this causes problems with writing and reading tags for non latin1 people
+    //check with wheels abolut what it does and why to do it
+    //TagLib::ID3v2::FrameFactory::instance()->setDefaultTextEncoding( TagLib::String::UTF8 );
+    TagLib::FileRef f( QFile::encodeName( path ), false );
 
     if ( !f.isNull() ) {
-        TagLib::Tag * t = f.tag();
-        const TagLib::String s = LocaleAwareTString( m_tagString );
+        TagLib::Tag *t = f.tag();
         QString field;
 
         switch ( m_tagType ) {
         case PlaylistItem::Title:
-            t->setTitle( s );
+            t->setTitle( QStringToTString( m_newTagString ));
             field = "title";
             break;
         case PlaylistItem::Artist:
-            t->setArtist( s );
+            t->setArtist( QStringToTString( m_newTagString ) );
             field = "artist";
             break;
         case PlaylistItem::Album:
-            t->setAlbum( s );
+            t->setAlbum( QStringToTString( m_newTagString ) );
             field = "album";
             break;
         case PlaylistItem::Year:
-            t->setYear( m_tagString.toInt() );
+            t->setYear( m_newTagString.toInt() );
             field = "year";
             break;
         case PlaylistItem::Comment:
             //FIXME how does this work for vorbis files?
             //Are we likely to overwrite some other comments?
             //Vorbis can have multiple comment fields..
-            t->setComment( s );
+            t->setComment( QStringToTString( m_newTagString ) );
             field = "comment";
             break;
         case PlaylistItem::Genre:
-            t->setGenre( s );
+            t->setGenre( QStringToTString( m_newTagString ) );
             field = "genre";
             break;
         case PlaylistItem::Track:
-            t->setTrack( m_tagString.toInt() );
+            t->setTrack( m_newTagString.toInt() );
             field = "track";
             break;
+
         default:
-            return false;
+            return true;
         }
 
-        f.save(); //FIXME this doesn't always work, but! it returns void. Great huh?
+        if( f.save() )
+        {
+           // Update the collection db.
+           // Hopefully this does not cause concurreny issues with sqlite3, as we had in BR 87169.
+           CollectionDB().updateTag( path, field, m_newTagString );
 
-        // Update the collection db.
-        // Hopefully this does not cause concurreny issues with sqlite3, as we had in BR 87169.
-        CollectionDB().updateTag( url.path(), field, m_tagString );
+           m_failed = false;
+        }
     }
 
     return true;
@@ -495,8 +496,15 @@ TagWriter::doJob()
 void
 TagWriter::completeJob()
 {
-    //FIXME see PlaylistItem::setText() for an explanation for this hack
-    m_item->setText( m_tagType, m_tagString.isEmpty() ? " " : m_tagString );
+    if( m_failed )
+    {
+       amaroK::StatusBar::instance()->message( i18n( "Sorry, the tag could not be changed!" ) );
+       //FIXME this hack is explained in PlaylistItem::setText()
+       m_item->setText( m_tagType, m_oldTagString.isEmpty() ? " " :  m_oldTagString );
+    }
+    else
+        //FIXME this hack is explained in PlaylistItem::setText()
+        m_item->setText( m_tagType, m_newTagString.isEmpty() ? " " : m_newTagString );
 }
 
 

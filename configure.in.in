@@ -87,7 +87,7 @@ AC_SUBST(arts_libs)
 # BEGIN TAGLIB CHECK
 ###############################################################################
 
-TAGLIB_REQ_VERSION="1.1";
+TAGLIB_REQ_VERSION="1.3";
 AC_DEFUN([VERSION_TO_NUMBER], [`$1 | awk 'BEGIN { FS = "."; } { printf "%d",  ([$]1* 1000 + [$]2) * 1000 + [$]3;}'`])
 
 AC_PATH_PROG(TAGLIB_CONFIG, taglib-config, no)
@@ -191,7 +191,7 @@ if test "$build_xine" != "no"; then
         xine_version_min="1.0.0"
         xine_version_min=VERSION_TO_NUMBER(echo $xine_version_min)
 
-        xine_include=`xine-config --cflags |  sed -e 's|.*-I/|/|;s/ .*//'`
+        xine_include=`xine-config --cflags | sed -e 's/-I\([^ \t]*\).*/\1/'`
         xine_rc_version=`sed -ne '/^#define XINE_VERSION/s/.*-rc\([0-9]\+\).*/\1/p' $xine_include/xine.h`
         : ${xine_rc_version:=4} # if this is no rc version, it fulfills the requirements
 

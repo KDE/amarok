@@ -45,7 +45,7 @@ required
     * KDElibs 3.2
       http://www.kde.org
 
-    * TagLib 1.1
+    * TagLib 1.3
       (metadata tagging library)
       http://freshmeat.net/projects/taglib
 
