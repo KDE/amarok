@@ -28,24 +28,14 @@
 CollectionBrowser::CollectionBrowser( const char* name )
     : QVBox( 0, name )
 {
-    QPushButton* button = new QPushButton( "Select Folders", this );
-    new Browser( this );
+    QHBox* hbox = new QHBox( this );
+    QPushButton* button  = new QPushButton( "Select Folders", hbox );
+    QPushButton* button1 = new QPushButton( "Scan", hbox );
+        
+    CollectionView* view = new CollectionView( this );
 
-    connect( button, SIGNAL( clicked() ), this, SLOT( setupDirs() ) );
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// private
-//////////////////////////////////////////////////////////////////////////////////////////
-
-void
-CollectionBrowser::setupDirs() //SLOT
-{
-    DirectoryList list( m_dirs.toStringList(), false );
-    DirectoryList::Result result = list.exec();
-
-    m_dirs = KURL::List( result.dirs );
+    connect( button,  SIGNAL( clicked() ), view, SLOT( setupDirs() ) );
+    connect( button1, SIGNAL( clicked() ), view, SLOT( scan() ) );
 }
 
 
@@ -53,9 +43,9 @@ CollectionBrowser::setupDirs() //SLOT
 // CLASS Browser
 //////////////////////////////////////////////////////////////////////////////////////////
 
-CollectionBrowser::Browser::Browser( QWidget* parent )
-    : KIconView( parent, 0 )
-    , m_parent( static_cast<CollectionBrowser*>( parent ) )
+CollectionView::CollectionView( CollectionBrowser* parent )
+    : KIconView( parent )
+    , m_parent( parent )
     , m_weaver( new ThreadWeaver( this ) )
     , m_dirLister( new KDirLister() )
 {
@@ -73,17 +63,22 @@ CollectionBrowser::Browser::Browser( QWidget* parent )
     
     QCString command = "create table tags ( title varchar(100), artist varchar(100) );";
     execSql( command, 0, 0 );
-                
-    KURL url;
-    url.setPath( "/home/mark/mp3" );
-    m_parent->m_dirs << url;
-    readDir( url );                
+
+    KConfig* config = KGlobal::config();
+    config->setGroup( "Collection Browser" );
+    m_dirs = config->readListEntry( "Folders" );
+
+    scan();
 }
 
 
-CollectionBrowser::Browser::~Browser()
+CollectionView::~CollectionView()
 {
     kdDebug() << k_funcinfo << endl;
+    
+    KConfig* config = KGlobal::config();
+    config->setGroup( "Collection Browser" );
+    config->writeEntry( "Folders", m_dirs );
     
     delete m_dirLister;
     sqlite_close( m_db );
@@ -94,8 +89,29 @@ CollectionBrowser::Browser::~Browser()
 // private
 //////////////////////////////////////////////////////////////////////////////////////////
 
+void
+CollectionView::setupDirs() //SLOT
+{
+    DirectoryList list( m_dirs, false );
+    DirectoryList::Result result = list.exec();
+
+    m_dirs = result.dirs;
+}
+
+
 void 
-CollectionBrowser::Browser::readDir( const KURL& url )
+CollectionView::scan() //SLOT
+{
+    for ( uint i = 0; i < m_dirs.count(); i ++ ) {
+        KURL url;   
+        url.setPath( m_dirs[i] );
+        readDir( url );                
+    }
+}
+
+
+void 
+CollectionView::readDir( const KURL& url )
 {
     m_dirLister->openURL( url );
     
@@ -107,7 +123,7 @@ CollectionBrowser::Browser::readDir( const KURL& url )
 
 
 void 
-CollectionBrowser::Browser::customEvent( QCustomEvent *e )
+CollectionView::customEvent( QCustomEvent *e )
 {
     kdDebug() << k_funcinfo << endl;
     
@@ -122,7 +138,7 @@ CollectionBrowser::Browser::customEvent( QCustomEvent *e )
 
         MetaBundle* bundle;
         
-        for ( int i = 0; i < c->list().count(); i++ ) {
+        for ( uint i = 0; i < c->list().count(); i++ ) {
             bundle = c->list().at( i );
 //             kdDebug() << bundle->artist() << endl;
             
@@ -139,7 +155,7 @@ CollectionBrowser::Browser::customEvent( QCustomEvent *e )
 
 
 void 
-CollectionBrowser::Browser::dumpDb()
+CollectionView::dumpDb()
 {
     kdDebug() << k_funcinfo << endl;
     
@@ -154,7 +170,7 @@ CollectionBrowser::Browser::dumpDb()
 
 
 bool 
-CollectionBrowser::Browser::execSql( const QCString& statement,
+CollectionView::execSql( const QCString& statement,
                                      QStringList* const values,
                                      QStringList* const names )
 {
