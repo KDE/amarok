@@ -32,15 +32,15 @@
 #include <khtml_part.h>
 #include <khtmlview.h>
 #include <kiconloader.h>
+#include <kimageeffect.h> // gradient backgroud image
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
 #include <krun.h>
-#include <ktabbar.h>
 #include <kstandarddirs.h> //locate file
+#include <ktabbar.h>
 #include <ktempfile.h>
 #include <kurl.h>
-#include <kimageeffect.h> // gradient backgroud image
 
 #define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
 #define escapeHTMLAttr(s) QString(s).replace( "%", "%25" ).replace( "'", "%27" )
@@ -59,6 +59,7 @@ ContextBrowser::ContextBrowser( const char *name )
 
     m_tabBar = new KTabBar( this );
     connect( m_tabBar, SIGNAL( selected( int ) ), SLOT( tabChanged( int ) ) );
+
     m_tabHome    = m_tabBar->addTab( new QTab( SmallIconSet( "gohome" ), i18n( "Home" ) ) );
     m_tabCurrent = m_tabBar->addTab( new QTab( SmallIconSet( "today" ), i18n( "Current Track" ) ) );
     m_tabLyrics  = m_tabBar->addTab( new QTab( SmallIconSet( "document" ), i18n( "Lyrics" ) ) );
@@ -224,14 +225,18 @@ void ContextBrowser::engineStateChanged( Engine::State state ) {
     switch( state ) {
         case Engine::Empty:
             m_metadataHistory.clear();
+            m_tabBar->blockSignals( true );
             m_tabBar->setTabEnabled( m_tabCurrent, false );
             m_tabBar->setTabEnabled( m_tabLyrics, false );
+            m_tabBar->blockSignals( false );
             showHome();
             break;
         case Engine::Playing:
             m_metadataHistory.clear();
+            m_tabBar->blockSignals( true );
             m_tabBar->setTabEnabled( m_tabCurrent, true );
             m_tabBar->setTabEnabled( m_tabLyrics, true );
+            m_tabBar->blockSignals( false );
             break;
         default:
             ;
@@ -395,6 +400,10 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
 void ContextBrowser::showHome() //SLOT
 {
+    m_tabBar->blockSignals( true );
+    m_tabBar->setCurrentTab( m_tabHome );
+    m_tabBar->blockSignals( false );
+
     QStringList fave = m_db->query(
         "SELECT tags.title, tags.url, round( statistics.percentage + 0.4 ), artist.name, album.name "
         "FROM tags, artist, album, statistics "
@@ -478,6 +487,10 @@ void ContextBrowser::showHome() //SLOT
 
 void ContextBrowser::showCurrentTrack() //SLOT
 {
+    m_tabBar->blockSignals( true );
+    m_tabBar->setCurrentTab( m_tabCurrent );
+    m_tabBar->blockSignals( false );
+
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
 
     browser->begin();
