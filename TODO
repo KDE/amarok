@@ -134,7 +134,10 @@ LONG-TERM:
     * add: make PlayerWidget shadeable (like XMMS)
            <mxcl> doesn't the systray provide this functionality already?
 	   <berkus> no it doesn't, double click the winamp/xmms window and see for yourself
-
+	   <larson> How do you propose this should work? Since we are handled by kwin and have
+	   normal window borders, double clicking the titlebar is handled by kwin. Also, should 
+	   the playlist be shadable?
+	
     * add: display some information about current track in playlist window
 
     * add: support for compressed archives / tarballs
