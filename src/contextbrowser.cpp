@@ -11,7 +11,6 @@
 #include "coverfetcher.h"
 #include "covermanager.h"
 #include "enginecontroller.h"
-#include "k3bexporter.h"
 #include "metabundle.h"
 #include "playlist.h"     //appendMedia()
 #include "playlistitem.h"     //appendMedia()
