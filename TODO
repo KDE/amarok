@@ -51,6 +51,7 @@ SHORT-TERM (URGENT):
              * Clicking on either or on tray icon should bring both up/down.
              * Setting WType_Dialog on playlist doesn't help, because then playlist always
                obscures the playwidget.
+             <mxcl> I'm beginning to think this isn't worth worrying about.
 
 
 MID-TERM:

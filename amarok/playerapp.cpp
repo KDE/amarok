@@ -457,15 +457,17 @@ void PlayerApp::insertMedia( const KURL::List &list )
 
 bool PlayerApp::eventFilter( QObject *o, QEvent *e )
 {
-    if( o == m_pBrowserWin && e->type() == QEvent::Close )
+    //put the o == test last as these events are fairly rare
+    //TODO is using a switch better here?
+    if( e->type() == QEvent::Close && o == m_pBrowserWin )
     {
         m_pPlayerWidget->m_pButtonPl->setOn( false );
     }
-    else if( o == m_pPlayerWidget && e->type() == QEvent::Hide )
+    else if( e->type() == QEvent::Hide && o == m_pPlayerWidget && !e->spontaneous() )
     {
         m_pBrowserWin->hide();
     }
-    else if( o == m_pPlayerWidget && e->type() == QEvent::Show )
+    else if( e->type() == QEvent::Show && o == m_pPlayerWidget && !e->spontaneous() )
     {
         m_pBrowserWin->show();
     }
