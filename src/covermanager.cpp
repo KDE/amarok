@@ -447,9 +447,9 @@ void CoverManager::coverFetched( const QString &key )
     #ifdef AMAZON_SUPPORT
     for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
-        if( key == QString::number( coverItem->artist_id() ) + "-" + QString::number( coverItem->album_id() ) )
+        if( key == coverItem->artist() + " - " + coverItem->album() )
         {
-            QString imgPath = m_db->getImageForAlbum( coverItem->artist_id(), coverItem->album_id() );
+            QString imgPath = m_db->getImageForAlbum( coverItem->artist(), coverItem->album() );
             coverItem->updateCover( QPixmap( imgPath ) );
             return;
         }
@@ -527,10 +527,9 @@ CoverViewItem::CoverViewItem( QIconView *parent, QIconViewItem *after, QString a
     calcRect();
 
     CollectionDB db;
-    m_artist_id = db.getValueID( "artist", artist, false );
-    m_album_id = db.getValueID( "album", album, false );
 
     QFile file( albumPath() );
+    kdDebug() << albumPath() << endl;
     if( file.exists() )
         m_hasCover = true;
 
@@ -552,9 +551,9 @@ void CoverViewItem::updateCover( const QPixmap &cover )
 
 QString CoverViewItem::albumPath()
 {
-    QString fileName( QString::number( m_artist_id ) + "-" + QString::number( m_album_id ) + ".png" );
+    QString fileName( m_artist + " - " + m_album + ".png" );
 
-    return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) + "albumcovers/" + fileName;
+    return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) + "albumcovers/large/" + fileName.lower();
 }
 
 

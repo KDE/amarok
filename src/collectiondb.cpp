@@ -161,20 +161,11 @@ CollectionDB::getPathForAlbum( const uint artist_id, const uint album_id )
 QString
 CollectionDB::getImageForAlbum( const QString artist, const QString album, const uint width )
 {
-    uint artistid = getValueID( "artist", artist, false );
-    uint albumid = getValueID( "album", album, false );
-
-    return getImageForAlbum( artistid, albumid, width );
-}
-
-QString
-CollectionDB::getImageForAlbum( const uint artist_id, const uint album_id, const uint width )
-{
     QString widthKey = QString::number( width ) + "@";
 
-    if( artist_id == 0 && album_id == 0 )
+    if ( artist.isEmpty() && album.isEmpty() )
     {
-        if( m_cacheDir.exists( widthKey + "nocover.png" ) )
+        if ( m_cacheDir.exists( widthKey + "nocover.png" ) )
             return m_cacheDir.filePath( widthKey + "nocover.png" );
         else
         {
@@ -185,14 +176,14 @@ CollectionDB::getImageForAlbum( const uint artist_id, const uint album_id, const
     }
     else
     {
-        QString key( QString::number( artist_id ) + "-" + QString::number( album_id ) + ".png" );
+        QString key( QFile::encodeName( artist.lower() + " - " + album.lower() ) );
+        key.replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ).append( ".png" );
 
         if ( m_cacheDir.exists( widthKey + key ) )
             return m_cacheDir.filePath( widthKey + key );
         else
         {
-            QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/" ) );
-
+            QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
             if ( largeCoverDir.exists( key ) )
                 if ( width > 0 )
                 {
@@ -206,10 +197,21 @@ CollectionDB::getImageForAlbum( const uint artist_id, const uint album_id, const
         }
 
         KURL url;
-        url.setPath( getPathForAlbum( artist_id, album_id ) );
+        url.setPath( getPathForAlbum( artist, album ) );
 
         return getImageForPath( url.directory(), width );
     }
+}
+
+QString
+CollectionDB::getImageForAlbum( const uint artist_id, const uint album_id, const uint width )
+{
+    QStringList values;
+    execSql( QString( "SELECT DISTINCT artist.name, album.name FROM artist, album "
+                      "WHERE artist.id = %1 AND album.id = %2;" )
+                      .arg( artist_id ).arg( album_id ), &values );
+
+    return getImageForAlbum( values[0], values[1], width );
 }
 
 
@@ -217,12 +219,6 @@ QString
 CollectionDB::getImageForPath( const QString path, const uint width )
 {
     QString widthKey = QString::number( width ) + "@";
-    QStringList values;
-    QStringList names;
-    QStringList ids;
-    KURL file( path );
-    execSql( QString( "SELECT DISTINCT artist, album FROM tags WHERE dir = '%1'" )
-                     .arg( path ), &ids );
 
     if ( path.isEmpty() )
     {
@@ -236,11 +232,17 @@ CollectionDB::getImageForPath( const QString path, const uint width )
         }
     }
 
-    QString filename( QString::number( width ) + "@" + ids[0] + "-" + ids[1] + ".png" );
+    QStringList values;
+    QStringList names;
+    KURL file( path );
 
+    QString filename( QString::number( width ) + "@" + file.fileName() );
+    filename.replace( "'", "_" ).append( ".png" );
+
+#ifdef AMAZON_SUPPORT
     if ( m_cacheDir.exists( filename.lower() ) )
         return m_cacheDir.absPath() + "/" + filename.lower();
-
+#endif
     execSql( QString( "SELECT name FROM images WHERE path = '%1';" )
              .arg( escapeString( path ) ), &values, &names );
 
@@ -279,11 +281,28 @@ CollectionDB::getImageForPath( const QString path, const uint width )
 bool
 CollectionDB::removeImageFromAlbum( const uint artist_id, const uint album_id )
 {
+    QStringList values;
+
+    execSql( QString( "SELECT url FROM tags WHERE album = %1 AND artist = %2;" )
+             .arg( album_id )
+             .arg( artist_id ), &values );
+
+    if ( !values.isEmpty() )
+        return removeImageFromAlbum( values[0], values[1] );
+    else
+        return false;
+}
+
+
+bool
+CollectionDB::removeImageFromAlbum( const QString artist, const QString album )
+{
     QString widthKey = "*@";
-    QString key( QString::number( artist_id ) + "-" + QString::number( album_id ) + ".png" );
+    QString key( QFile::encodeName( artist + " - " + album ) );
+    key.replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ).append( ".png" );
 
     // remove scaled versions of images
-    QStringList scaledList = m_cacheDir.entryList( widthKey + key );
+    QStringList scaledList = m_cacheDir.entryList( widthKey + key.lower() );
     if ( scaledList.count() > 0 )
     {
         for ( uint i = 0; i < scaledList.count(); i++ )
@@ -297,28 +316,15 @@ CollectionDB::removeImageFromAlbum( const uint artist_id, const uint album_id )
 
     // remove large, original images
     QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/" ) );
-    if ( largeCoverDir.exists( key ) )
+    if ( largeCoverDir.exists( key.lower() ) )
     {
-        KURL url( largeCoverDir.filePath( key ) );
+        KURL url( largeCoverDir.filePath( key.lower() ) );
         KIO::DeleteJob* job = KIO::del( url );
         if ( job->error() )
             return false;
     }
 
     return true;
-}
-
-
-bool
-CollectionDB::removeImageFromAlbum( const QString artist, const QString album )
-{
-    uint artistid = getValueID( "artist", artist, false );
-    uint albumid = getValueID( "album", album, false );
-
-    if ( artistid && albumid )
-        return removeImageFromAlbum( artistid, albumid );
-    else
-        return false;
 }
 
 
@@ -334,7 +340,7 @@ CollectionDB::artistList( bool withUnknown, bool withCompilations )
         execSql( "SELECT DISTINCT artist.name FROM tags, artist WHERE 1 " +
                ( withUnknown ? QString() : "AND artist.name <> 'Unknown' " ) +
                ( withCompilations ? QString() : "AND tags.artist = artist.id AND tags.sampler = 0 " ) +
-                 "ORDER BY lower( artist.name );", &values, 0, true );
+                 "ORDER BY lower( artist.name );", &values );
 
     return values;
 }
@@ -352,7 +358,7 @@ CollectionDB::albumList( bool withUnknown, bool withCompilations )
         execSql( "SELECT DISTINCT album.name FROM tags, album WHERE 1 " +
                ( withUnknown ? QString() : "AND album.name <> 'Unknown' " ) +
                ( withCompilations ? QString() : "AND tags.album = album.id AND tags.sampler = 0 " ) +
-                 "ORDER BY lower( album.name );", &values, 0, true );
+                 "ORDER BY lower( album.name );", &values );
 
     return values;
 }
@@ -368,7 +374,7 @@ CollectionDB::albumListOfArtist( const QString artist, bool withUnknown, bool wi
              "AND artist.name = '" + escapeString( artist ) + "' " +
              ( withUnknown ? QString() : "AND album.name <> 'Unknown' " ) +
              ( withCompilations ? QString() : "AND tags.sampler = 0 " ) +
-             "ORDER BY lower( album.name );", &values, 0, true );
+             "ORDER BY lower( album.name );", &values );
 
     return values;
 }
@@ -383,7 +389,7 @@ CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
              "tags.album = album.id AND tags.artist = artist.id " +
              ( withUnknown ? QString() : "AND album.name <> 'Unknown' AND artist.name <> 'Unknown' " ) +
              ( withCompilations ? QString() : "AND tags.sampler = 0 " ) +
-             "ORDER BY lower( album.name );", &values, 0, true );
+             "ORDER BY lower( album.name );", &values );
 
     return values;
 }
@@ -1117,10 +1123,7 @@ CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString&
     #ifdef AMAZON_SUPPORT
     /* Static license Key. Thanks muesli ;-) */
     QString amazonLicense = "D1URM11J3F2CEH";
-    uint artistid = getValueID( "artist", artist, false );
-    uint albumid = getValueID( "album", album, false );
-    QString keyword = QString::number( artistid ) + "-" + QString::number( albumid );
-
+    QString keyword = artist + " - " + album;
     kdDebug() << "Querying amazon with artist: " << artist << " and album " << album << endl;
 
     CoverFetcher* fetcher = new CoverFetcher( amazonLicense, parent );
@@ -1156,11 +1159,11 @@ CollectionDB::saveCover( const QString& keyword, const QPixmap& pix )
 {
     kdDebug() << k_funcinfo << endl;
 
+    QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
     QImage img( pix.convertToImage() );
 
-    QString fileName( keyword + ".png" );
-
-    img.save( m_coverDir.filePath( fileName ), "PNG");
+    QString fileName( keyword.lower().replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ) + ".png" );
+    img.save( largeCoverDir.filePath( fileName ), "PNG");
 
     emit coverFetched( keyword );
     emit coverFetched();
