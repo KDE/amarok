@@ -76,6 +76,7 @@ class PlaylistWidget : public KListView
         void clear();
         void slotGlowTimer();
         void slotSetRecursive();
+        void slotReturnPressed();
         void slotTextChanged( const QString &str );
         void slotHeaderClicked( int section );
         void slotEraseMarker();

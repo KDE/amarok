@@ -66,13 +66,13 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
     setAcceptDrops( true );
 
     initChildren();
-    
+
     m_pActionCollection = new KActionCollection( this );
     KStdAction::undo( m_pPlaylistWidget, SLOT( doUndo() ), m_pActionCollection );
     KStdAction::redo( m_pPlaylistWidget, SLOT( doRedo() ), m_pActionCollection );
     KStdAction::prior( this, SLOT( slotKeyPageUp() ), m_pActionCollection );
     KStdAction::next( this, SLOT( slotKeyPageDown() ), m_pActionCollection );
-    
+
     new KAction( "Go one item up", Key_Up,
                  this, SLOT( slotKeyUp() ), m_pActionCollection, "up" );
     new KAction( "Go one item down", Key_Down,
@@ -81,7 +81,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
                  this, SLOT( slotKeyEnter() ), m_pActionCollection, "enter" );
     new KAction( "Remove item", ALT + Key_Delete,
                  this, SLOT( slotKeyDelete() ), m_pActionCollection, "delete" );
-    
+
     connect( m_pBrowserWidget, SIGNAL( doubleClicked( QListViewItem* ) ),
              this, SLOT( slotBrowserDoubleClicked( QListViewItem* ) ) );
 
@@ -164,6 +164,9 @@ void BrowserWin::initChildren()
     m_pPlaylistLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
     connect( m_pPlaylistLineEdit, SIGNAL( textChanged( const QString& ) ),
              m_pPlaylistWidget, SLOT( slotTextChanged( const QString& ) ) );
+
+    connect( m_pPlaylistLineEdit, SIGNAL( returnPressed() ),
+             m_pPlaylistWidget, SLOT( slotReturnPressed() ) );
 
     QBoxLayout *layBrowserWidget = new QVBoxLayout( pBrowserWidgetContainer );
     layBrowserWidget->addWidget( m_pBrowserLineEdit );
