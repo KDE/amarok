@@ -41,6 +41,7 @@ email                : markey@web.de
 #include <kaction.h>
 #include <kapp.h>
 #include <kcmdlineargs.h>
+#include <qcombobox.h>
 #include <kconfig.h>
 #include <kdebug.h>
 #include <kglobalaccel.h>
@@ -67,6 +68,7 @@ email                : markey@web.de
 
 PlayerApp::PlayerApp()
         : KUniqueApplication( true, true, false )
+        , m_pEngine( NULL )
         , m_pGlobalAccel( new KGlobalAccel( this ) )
         , m_sliderIsPressed( false )
         , m_pMainTimer( new QTimer( this ) )
@@ -82,12 +84,10 @@ PlayerApp::PlayerApp()
 
     initPlayerWidget();
     initBrowserWin();
-
-    //we must restart artsd after each version change, so that it picks up any plugin changes
-    m_artsNeedsRestart = AmarokConfig::version() != APP_VERSION;
-    m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(), m_artsNeedsRestart, SCOPE_SIZE );
+    initConfigDialog();
 
     readConfig();
+    applySettings();
 
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
     connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
@@ -192,6 +192,30 @@ int PlayerApp::newInstance()
 // INIT
 /////////////////////////////////////////////////////////////////////////////////////
 
+void PlayerApp::initConfigDialog()
+{
+    KConfigDialog *dialog = new KConfigDialog( m_pPlayerWidget, "settings", AmarokConfig::self() );
+
+    Options4* pOpt4 = new Options4( 0,"Playback" );
+    
+    //we must handle the "Sound Setting" QComboBox manually, since KConfigDialog can't manage dynamic itemLists
+    //(at least I don't know how to do it)
+    m_pSoundSystem = pOpt4->sound_system; 
+    m_pSoundSystem->insertStringList( m_pEngine->listEngines() );
+    m_pSoundSystem->setCurrentText  ( AmarokConfig::soundSystem() );
+            
+    dialog->addPage( new Options1( 0,"General" ),  i18n("General"),  "misc",   i18n("Configure general options") );
+    dialog->addPage( new Options2( 0,"Fonts" ),    i18n("Fonts"),    "fonts",  i18n("Configure fonts") );
+    dialog->addPage( new Options3( 0,"Colors" ),   i18n("Colors"),   "colors", i18n("Configure Colors") );
+    dialog->addPage( pOpt4,                        i18n("Playback"), "kmix",   i18n("Configure playback") );
+    dialog->addPage( new Options5( 0,"OSD" ),      i18n("OSD" ),     "tv",     i18n("Configure OSD") );
+
+    connect( dialog, SIGNAL( settingsChanged() ), this, SLOT( applySettings() ) );
+     
+    dialog->setInitialSize( QSize( 460, 390 ) );
+}
+
+
 void PlayerApp::initPlayerWidget()
 {
     kdDebug() << "begin PlayerApp::initPlayerWidget()" << endl;
@@ -284,6 +308,14 @@ void PlayerApp::restoreSession()
 
 void PlayerApp::applySettings()
 {
+    if ( m_pSoundSystem->currentText() != AmarokConfig::soundSystem() )    
+    {
+        delete m_pEngine;
+        AmarokConfig::setSoundSystem( m_pSoundSystem->currentText() );
+        m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(), m_artsNeedsRestart, SCOPE_SIZE );
+        kdDebug() << "[PlayerApp::applySettings()] AmarokConfig::soundSystem() == " << AmarokConfig::soundSystem() << endl;
+    }   
+
     m_pEngine->initMixer     ( AmarokConfig::softwareMixerOnly() );
     m_pEngine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
 
@@ -328,8 +360,10 @@ void PlayerApp::readConfig()
 {
     kdDebug() << "begin PlayerApp::readConfig()" << endl;
 
-    applySettings();
-    
+    //we must restart artsd after each version change, so that it picks up any plugin changes
+    m_artsNeedsRestart = AmarokConfig::version() != APP_VERSION;
+    m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(), m_artsNeedsRestart, SCOPE_SIZE );
+        
     /*    m_pBrowserWin->m_pBrowserWidget->readDir( AmarokConfig::currentDirectory() );
         m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( AmarokConfig::pathHistory() );*/
 
@@ -376,7 +410,7 @@ void PlayerApp::readConfig()
     //FIXME use a global actionCollection (perhaps even at global scope)
     m_pPlayerWidget->m_pActionCollection->readShortcutSettings( QString::null, kapp->config() );
     m_pBrowserWin->m_pActionCollection->readShortcutSettings( QString::null, kapp->config() );
-
+    
     kdDebug() << "end PlayerApp::readConfig()" << endl;
 }
 
@@ -802,26 +836,6 @@ void PlayerApp::slotEq( bool b )
 }
 
 
-void PlayerApp::slotShowOptions()
-{
-    if( KConfigDialog::showDialog("settings") )
-        return;
-
-    KConfigDialog *dialog = new KConfigDialog( m_pPlayerWidget, "settings", AmarokConfig::self() );
-
-    dialog->addPage( new Options1(0,"General"),  i18n("General"),  "misc",   i18n("Configure general options") );
-    dialog->addPage( new Options2(0,"Fonts"),    i18n("Fonts"),    "fonts",  i18n("Configure fonts") );
-    dialog->addPage( new Options3(0,"Colors"),   i18n("Colors"),   "colors", i18n("Configure Colors") );
-    dialog->addPage( new Options4(0,"Playback"), i18n("Playback"), "kmix",   i18n("Configure playback") );
-    dialog->addPage( new Options5(0,"OSD"),      i18n("OSD" ),     "tv",     i18n("Configure OSD") );
-
-    connect( dialog, SIGNAL( settingsChanged() ), this, SLOT( applySettings() ) );
-     
-    dialog->setInitialSize( QSize( 460, 390 ) );
-    dialog->show();
-}
-
-
 void PlayerApp::slotConfigEffects()
 {
     // we never destroy the EffectWidget, just hide it, since destroying would delete the EffectListItems
@@ -853,6 +867,12 @@ void PlayerApp::slotShow()
 {
     if ( m_pPlayerWidget->m_pButtonPl->isOn() )
         m_pBrowserWin->show();
+}
+
+
+void PlayerApp::slotShowOptions()
+{    
+    KConfigDialog::showDialog( "settings" );
 }
 
 

@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>386</width>
-            <height>338</height>
+            <height>340</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -216,7 +216,7 @@
                 </widget>
                 <widget class="QComboBox">
                     <property name="name">
-                        <cstring>kcfg_SoundSystem</cstring>
+                        <cstring>sound_system</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>

@@ -61,7 +61,7 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
         , m_xfadeValue( 1.0 )
         , m_xfadeCurrent( "invalue1" )
 {
-    setName( "ArtsEngine" );
+    setName( "arts" );
 
     // We must restart artsd whenever we installed new mcopclasses
     if ( restart )

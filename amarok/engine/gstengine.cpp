@@ -107,6 +107,8 @@ GstEngine::GstEngine( int scopeSize )
         , m_pThread( NULL )
         , mScope( 0 )
 {
+    setName( "gstreamer" );
+    
     pGstEngine = this;
     gst_init( NULL, NULL );
     buffer( 1 << scopeSize );

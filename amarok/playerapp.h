@@ -42,6 +42,7 @@ class QTimer;
 class KGlobalAccel;
 
 class BrowserWin;
+class QComboBox;
 class EffectWidget;
 class EngineBase;
 class FHT;
@@ -120,10 +121,11 @@ class PlayerApp : public KUniqueApplication
         /*         void sigUpdateFonts(); */
     
     private:
-        bool initMixerHW();
         void initBrowserWin();
         void initColors();
+        void initConfigDialog();
         void initMixer();
+        bool initMixerHW();
         void initPlayerWidget();
         void readConfig();
         void restoreSession();
@@ -139,7 +141,8 @@ class PlayerApp : public KUniqueApplication
         EffectWidget *m_pEffectWidget;
         FHT *m_pFht;
         OSDWidget *m_pOSD;
-                
+        QComboBox* m_pSoundSystem;
+
 //         int m_beatCounter;
 //         float m_lastPeak;
 //         float m_beatEnergy[63];
