@@ -349,8 +349,10 @@ GstEngine::play( const KURL& url )             //SLOT
         kdDebug() << k_funcinfo << "Playing HTTP stream." << endl;
         m_playFlag = true;
     }
-    else
+    else {
         play();
+        m_playFlag = false;
+    }
 }
 
 
