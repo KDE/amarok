@@ -17,8 +17,6 @@ email                :
 
 #include <titleproxy.h>
 
-#include <string.h>
-
 #include <kdebug.h>
 #include <kextsock.h>
 #include <kurl.h>
@@ -54,8 +52,6 @@ TitleProxy::TitleProxy( KURL url ) :
         m_byteCount( 0 ),
         m_metaLen( 0 ),
         m_headerFinished( false ),
-        m_pBufIn( NULL ),
-        m_pBufOut( NULL ),
         m_pSockServer( NULL )
 {
     m_urlRemote = url;
@@ -72,28 +68,26 @@ TitleProxy::TitleProxy( KURL url ) :
     if ( connectResult != 0 )
         return;
 
-    m_sockLocal.setSocketFlags( KExtendedSocket::inetSocket |
-                                KExtendedSocket::passiveSocket );
-    m_sockLocal.setAddress( "localhost", PROXYPORT );
-    int listenResult = m_sockLocal.listen();
-
-    kdDebug() << "sock.listen() result: " << listenResult << endl;
+    m_sockPassive.setHost( "localhost" );
+    m_sockPassive.setPort( PROXYPORT );
+    m_sockPassive.setSocketFlags( KExtendedSocket::passiveSocket );
+    
+    int listenResult = m_sockPassive.listen();
+    kdDebug() << "m_sockPassive.listen() result: " << listenResult << endl;
 
     if ( listenResult != 0 )
         return;
 
-    m_pBufIn = new char[ BUFSIZE ];
-    m_pBufOut = new char[ BUFSIZE ];
+    m_pBuf = new char[ BUFSIZE ];
 
-    connect( &m_sockLocal, SIGNAL( readyAccept() ), this, SLOT( accept() ) );
+    connect( &m_sockPassive, SIGNAL( readyAccept() ), this, SLOT( accept() ) );
     m_initSuccess = true;
 }
 
 
 TitleProxy::~TitleProxy()
 {
-    delete[] m_pBufIn;
-    delete[] m_pBufOut;
+    delete[] m_pBuf;
     delete m_pSockServer;
 }
 
@@ -115,75 +109,51 @@ KURL TitleProxy::proxyUrl()
 
 void TitleProxy::accept()
 {
-    int acceptResult = m_sockLocal.accept( m_pSockServer );
+    int acceptResult = m_sockPassive.accept( m_pSockServer );
     m_pSockServer->setSocketFlags( KExtendedSocket::inetSocket | KExtendedSocket::bufferedSocket );
     kdDebug() << "acceptResult: " << acceptResult << endl;
 
-    int bytesRead = m_pSockServer->readBlock( m_pBufIn, BUFSIZE );
-    kdDebug() << "TitleProxy::readLocal() received block: " << endl << QCString( m_pBufIn, bytesRead ) << endl;
-
+    int bytesRead = m_pSockServer->readBlock( m_pBuf, BUFSIZE );
+    kdDebug() << "TitleProxy::readLocal() received block: " << endl << QCString( m_pBuf, bytesRead ) << endl;
     m_pSockServer->setBlockingMode( false );
 
-    QString str = QString::fromAscii( m_pBufIn, bytesRead );
+    QString str = QString::fromAscii( m_pBuf, bytesRead );
     int index = str.find( "GET / HTTP/1.1" );
     index = str.find( "\n", index );
     index++;
     
-    m_sockRemote.setBufferSize( 128 * 1024 );
+    m_sockRemote.setBufferSize( 32 * 1024 );
     m_sockRemote.enableRead( true );
     connect( &m_sockRemote, SIGNAL( readyRead() ), this, SLOT( readRemote() ) );
-    m_sockRemote.writeBlock( m_pBufIn, index );
+    m_sockRemote.writeBlock( m_pBuf, index );
 
-    QCString icyStr( "Icy-MetaData:1\r\n" );
-    m_sockRemote.writeBlock( icyStr.data(), icyStr.length() );
-    m_sockRemote.writeBlock( m_pBufIn + index, bytesRead - index );
+    QString icyStr( "Icy-MetaData:1\r\n" );
+    m_sockRemote.writeBlock( icyStr.latin1(), icyStr.length() );
+    m_sockRemote.writeBlock( m_pBuf + index, bytesRead - index );
 }
 
 
 void TitleProxy::readRemote()
 {
-    int index = 0;
-    char *pOut = m_pBufOut;
-    
-    Q_LONG bytesWrite = 0;
-    Q_LONG bytesRead = m_sockRemote.readBlock( m_pBufIn, BUFSIZE );
+    Q_LONG index = 0, bytesWrite = 0;
+    Q_LONG bytesRead = m_sockRemote.readBlock( m_pBuf, BUFSIZE );
     //    kdDebug() << "TitleProxy::readRemote(): bytesRead = " << bytesRead << endl;
 
-    if ( bytesRead <= 0 )
-        return;
-
-    while ( index < bytesRead )
-    {
-        if ( !m_headerFinished )
-        {
-            m_headerStr.append( m_pBufIn[ index ] );
-            --m_byteCount;
-                                    
-            if ( m_headerStr.endsWith( "\r\n\r\n" ) )
-            {
-                m_headerFinished = true;
-                
-                m_metaInt = m_headerStr.section( "icy-metaint:", 1, 1,
-                            QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0)
-                            .toInt();
-                m_bitRate = m_headerStr.section( "icy-br:", 1, 1,
-                            QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 );
-            }                                                      
-        }
+    if ( !m_headerFinished )
+        processHeader( index, bytesRead );
         
-        else if ( m_byteCount == m_metaInt )
+    //This is the main loop which processes the stream data
+    while ( index < bytesRead )
+    {                
+        if ( m_byteCount == m_metaInt )
         {
-            m_metaLen = (unsigned char) m_pBufIn[ index++ ];
-            m_metaLen *= 16;
-
-            if ( m_metaLen ) kdDebug() << "m_metaLen: " << m_metaLen << "\n" << endl;
             m_byteCount = 0;
-            continue;
+            m_metaLen = m_pBuf[ index++ ] * 16;
+//            if ( m_metaLen ) kdDebug() << "m_metaLen: " << m_metaLen << "\n" << endl;
         }
-
-        if ( m_metaLen )
+        else if ( m_metaLen )
         {
-            m_metaData.append( m_pBufIn[ index++ ] );
+            m_metaData.append( m_pBuf[ index++ ] );
             --m_metaLen;
 
             if ( !m_metaLen )
@@ -191,16 +161,49 @@ void TitleProxy::readRemote()
                 transmitData( m_metaData );
                 m_metaData = "";
             }
-            continue;
         }
+        else 
+        {
+            bytesWrite = bytesRead - index;
+            
+            if ( bytesWrite > m_metaInt - m_byteCount )
+                bytesWrite = m_metaInt - m_byteCount;
+                        
+            m_pSockServer->writeBlock( m_pBuf + index, bytesWrite );
         
-        *(pOut++) = m_pBufIn[ index++ ];
-        ++m_byteCount;
-        ++bytesWrite;
+            index += bytesWrite;
+            m_byteCount += bytesWrite;
+        }
     }
+}        
 
-    m_pSockServer->writeBlock( m_pBufOut, bytesWrite );
-}
+
+void TitleProxy::processHeader( Q_LONG &index, Q_LONG bytesRead )
+{    
+    while ( index < bytesRead )
+    {
+        m_headerStr.append( m_pBuf[ index++ ] );
+                                
+        if ( m_headerStr.endsWith( "\r\n\r\n" ) )
+        {
+            kdDebug() << "DUMP:" << m_headerStr << endl;
+            
+            m_metaInt = m_headerStr.section( "icy-metaint:", 1, 1,
+                        QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0)
+                        .toInt();
+            
+            kdDebug() << "m_metaInt: " << m_metaInt << endl;
+            
+            m_bitRate = m_headerStr.section( "icy-br:", 1, 1,
+                        QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0);
+        
+            m_pSockServer->writeBlock( m_headerStr.latin1(), m_headerStr.length() );
+            m_headerFinished = true;
+            
+            break;
+        }                                                      
+    }
+}     
 
 
 void TitleProxy::transmitData( QString data )

@@ -48,6 +48,7 @@ class TitleProxy : public QObject
 
     private slots:
         void readRemote();
+        void processHeader( Q_LONG &index, Q_LONG bytesRead );
         void accept();
 
     private:
@@ -65,11 +66,10 @@ class TitleProxy : public QObject
         bool m_headerFinished;
         QString m_headerStr;
         
-        char *m_pBufIn;
-        char *m_pBufOut;
+        char *m_pBuf;
 
-        KExtendedSocket m_sockLocal;
         KExtendedSocket m_sockRemote;
+        KExtendedSocket m_sockPassive;
         KExtendedSocket *m_pSockServer;
 };
 #endif
