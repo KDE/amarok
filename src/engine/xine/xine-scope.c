@@ -71,12 +71,6 @@ scope_port_open(xine_audio_port_t *port_gen, xine_stream_t *stream, uint32_t bit
   this->channels = _x_ao_mode2channels(mode);
   if( this->channels > MAXCHANNELS ) this->channels = MAXCHANNELS;
 
-
-  /* MY GOD! Why do I have to do this!?
-   * You see if I don't the metronom doesn't make the timestamps accurate! */
-  memcpy( this->metronom, stream->metronom, sizeof( metronom_t ) );
-
-
   myChannels  = this->channels;
   myList.next = &myList; /* ths list is empty, I promise! */
   myMutex     = 0;
@@ -115,6 +109,11 @@ scope_port_put_buffer( xine_audio_port_t *port_gen, audio_buffer_t *buf, xine_st
     post_audio_port_t   *port = (post_audio_port_t *)port_gen;
     post_plugin_scope_t *this = (post_plugin_scope_t *)port->post;
     myNode *node, *prev;
+
+
+    /* MY GOD! Why do I have to do this!?
+     * You see if I don't the metronom doesn't make the timestamps accurate! */
+    memcpy( this->metronom, stream->metronom, sizeof( metronom_t ) );
 
 
     /*FIXME*/
