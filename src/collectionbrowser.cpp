@@ -1165,6 +1165,14 @@ CollectionView::viewportPaintEvent( QPaintEvent *e )
 }
 
 
+void
+CollectionView::viewportResizeEvent( QResizeEvent* )
+{
+    // Needed for correct redraw of the flat-view bubble help
+    triggerUpdate();
+}
+
+
 #include "collectionbrowser.moc"
 
 

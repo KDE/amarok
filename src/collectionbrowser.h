@@ -129,7 +129,9 @@ class CollectionView : public KListView
         QPixmap iconForCategory( const int cat ) const;
         QString captionForCategory( const int cat ) const;
 
-        void viewportPaintEvent( QPaintEvent* ); // Reimplemented from KListView
+        // Reimplemented from KListView
+        void viewportPaintEvent( QPaintEvent* );
+        void viewportResizeEvent( QResizeEvent* );
 
     //attributes:
         static CollectionView* m_instance;
