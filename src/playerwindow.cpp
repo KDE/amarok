@@ -558,12 +558,9 @@ bool PlayerWidget::eventFilter( QObject *o, QEvent *e )
 
     if( o == m_pAnalyzer )
     {
-        if( e->type() == QEvent::Close )
-        {
-            QKeyEvent ke( /*QEvent::KeyPress*/QEvent::Type(6), Qt::Key_D, 0, 0 );
-            event( &ke );
-        }
-        return FALSE;
+        //delete analyzer, create same one back in Player Window
+        if( e->type() == QEvent::Close ) createAnalyzer( 0 );
+        return TRUE;
     }
 
     switch( e->type() )
@@ -712,7 +709,7 @@ NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
 {
     // Prevent flicker
     setWFlags( Qt::WNoAutoErase );
-    
+
     QPixmap pixmap( getPNG( "b_" + icon ) );
     KIconEffect ie;
 
@@ -761,7 +758,7 @@ void NavButton::timerEvent( QTimerEvent* )
     if ( isOn() ) {
         m_glowIndex++;
         m_glowIndex %= NUMPIXMAPS * 2 - 1;
-    
+
         update();
     }
 }
@@ -771,7 +768,7 @@ void NavButton::drawButtonLabel( QPainter* p )
 {
     int x = width() / 2 - m_pixmapOff.width() / 2;
     int y = height() / 2 - m_pixmapOff.height() / 2;
-    
+
     if ( !isEnabled() )
         p->drawPixmap( x, y, m_pixmapDisabled );
     else if ( isOn() )
