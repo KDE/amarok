@@ -365,6 +365,9 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         return;
 
     KURL url( urlString );
+    if( url.path().contains( "lyric", FALSE ) )
+        return;
+
     KPopupMenu menu;
     KURL::List urls( url );
     QString artist, album;
