@@ -10,8 +10,6 @@ SHORT-TERM:
 
     * fix: shortcuts not saved (?)
 
-    * fix: playmode checks in popup menu set incorrectly upon loading (?)
-
     * fix: <berkus> make sure the expandbutton doesn't fire events when
       it has had its stack expanded (behaviour a-la Winamp Classic) (?)
 
@@ -32,8 +30,6 @@ SHORT-TERM:
 MID-TERM:
 
     * add: "add item"-dialog should support multiple selections
-
-    * add: option for forcing software mixing
 
     * add: option to add dirs sorted automatically
 
@@ -68,9 +64,6 @@ MID-TERM:
 
 
 LONG-TERM:
-
-    * add: playmode indication button in main widget (repeat track/pl/shuffle),
-      clickable
 
     * add: title streaming (mp3PlayObject needs to be patched)
 
