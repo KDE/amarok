@@ -26,6 +26,7 @@ email                : markey@web.de
 #include <qstring.h>
 #include <qstringlist.h>
 #include <qtimer.h>
+#include <qfile.h>
 
 #include <kdebug.h>
 #include <kurl.h>
@@ -155,7 +156,7 @@ GstEngine::init( bool&, int scopeSize, bool )
 
     gst_init( NULL, NULL );
     fillPipeline( true );
-    
+
     kdDebug() << "END " << k_funcinfo << endl;
 }
 
@@ -168,7 +169,7 @@ GstEngine::getPluginList( const QCString& classname )
     GList* plugins = NULL;
     GList* features = NULL;
     QStringList results;
-    
+
     pool_registries = gst_registry_pool_list ();
     registries = pool_registries;
 
@@ -230,7 +231,7 @@ GstEngine::canDecode( const KURL &url, mode_t, mode_t )
 
     /* create a disk reader */
     filesrc = gst_element_factory_make( "filesrc", "disk_source" );
-    g_object_set( G_OBJECT( filesrc ), "location", url.path().latin1(), NULL );
+    g_object_set( G_OBJECT( filesrc ), "location", QFile::encodeName( url.path() ), NULL );
 
     typefind = gst_element_factory_make( "typefind", "typefind" );
 
@@ -318,7 +319,7 @@ GstEngine::play( const KURL& url )  //SLOT
     if ( !m_pipelineFilled ) return 0;
 
     //load track into filesrc
-    g_object_set( G_OBJECT( m_pFilesrc ), "location", url.path().latin1(), NULL );
+    g_object_set( G_OBJECT( m_pFilesrc ), "location", QFile::encodeName( url.path() ), NULL );
     play();
 
     return 0;

@@ -111,6 +111,7 @@ PlaylistBrowser::Item::metaString() const
 
 #include <dirent.h>
 #include <qimage.h>
+#include <qfile.h>
 QPixmap
 PlaylistBrowser::findCoverArt( const KURL &url ) //static
 {
@@ -122,7 +123,7 @@ PlaylistBrowser::findCoverArt( const KURL &url ) //static
     QStringList validExts;
     validExts << "jpg" << "png" << "gif" << "jpeg";
 
-    DIR *d = opendir( url.directory( FALSE, FALSE ).local8Bit() );
+    DIR *d = opendir( QFile::encodeName( url.directory( FALSE, FALSE ) ) );
     if( d )
     {
         dirent *ent;

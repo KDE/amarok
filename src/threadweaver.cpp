@@ -12,6 +12,8 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
+#include <qfile.h>
+
 #include <kapplication.h>
 #include <kdebug.h>
 
@@ -159,7 +161,7 @@ MetaBundle*
 TagReader::readTags( const KURL &url, bool readAudioProps ) //STATIC
 {
    //audioproperties are read on demand
-   TagLib::FileRef f( url.path().local8Bit(), readAudioProps ); //this is the slow step
+   TagLib::FileRef f( QFile::encodeName( url.path() ), readAudioProps ); //this is the slow step
 
    return f.isNull()? 0 : new MetaBundle( url, f.tag(), f.audioProperties() );
 }
@@ -194,7 +196,7 @@ bool SearchModule::doJob()
     resultCount = 0;
 
     QApplication::postEvent( m_parent, new ProgressEvent( ProgressEvent::Start, m_historyItem ) );
-    searchDir( m_path.local8Bit() );
+    searchDir( m_path );
     QApplication::postEvent( m_parent, new ProgressEvent( ProgressEvent::Stop, m_historyItem ) );
 
     return TRUE;
@@ -202,17 +204,17 @@ bool SearchModule::doJob()
 
 void SearchModule::searchDir( QString path )
 {
-    DIR *d = opendir( path.local8Bit() );
+    DIR *d = opendir( QFile::encodeName( path ) );
     if ( d )
     {
         dirent *ent;
         while ( ( ent = readdir( d ) ) )
         {
             QString file( ent->d_name );
-            
+
             if ( file != "." && file != ".." )
             {
-                DIR *t = opendir( path.local8Bit() + file.local8Bit() + "/" );
+                DIR *t = opendir( QFile::encodeName( path ) + QFile::encodeName( file ) + "/" );
                 if ( t )
                 {
                     closedir( t );
@@ -253,15 +255,15 @@ CollectionReader::~CollectionReader()
 bool
 CollectionReader::doJob() {
     QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Start ) );
-    
+
     QStringList entries;
     //iterate over all folders
     for ( uint i = 0; i < m_folders.count(); i++ )
         readDir( m_folders[i], entries );
-         
+
     if ( entries.empty() )
-        return false;        
-        
+        return false;
+
     QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Total, entries.count() ) );
     readTags( entries );
     QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Stop ) );
@@ -272,18 +274,18 @@ CollectionReader::doJob() {
 void
 CollectionReader::readDir( const QString& dir, QStringList& entries ) {
     m_dirList <<  dir;
-    DIR* d = opendir( dir.local8Bit() );
+    DIR* d = opendir( QFile::encodeName( dir ) );
     if ( !d ) return;
     dirent *ent;
     struct stat statBuf;
 
-    while ( ent = readdir( d ) ) {
+    while ( (ent = readdir( d )) ) {
         QCString entry = ent->d_name;
 
         if ( entry == "." || entry == ".." )
             continue;
-        entry.prepend( ( dir.endsWith( "/" ) ? dir : dir + "/" ).local8Bit() );
-        
+        entry.prepend( QFile::encodeName( dir.endsWith( "/" ) ? dir : dir + "/" ) );
+
 //         kdDebug() << entry << endl;
         stat( entry, &statBuf );
 
@@ -301,25 +303,25 @@ CollectionReader::readDir( const QString& dir, QStringList& entries ) {
 void
 CollectionReader::readTags( const QStringList& entries ) {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
-    
+
     KURL url;
     CollectionDB* const insertdb = CollectionView::m_insertdb;
     insertdb->createTables( true );
-        
-    for ( uint i = 0; i < entries.count(); i++ ) {   
+
+    for ( uint i = 0; i < entries.count(); i++ ) {
         if ( !( i % 20 ) ) //don't post events too often since this blocks amaroK
             QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Progress, i ) );
-        
+
         url.setPath( entries[i] );
-        TagLib::FileRef f( url.path().local8Bit(), false );  //false == don't read audioprops
-                
+        TagLib::FileRef f( QFile::encodeName( url.path() ), false );  //false == don't read audioprops
+
         if ( !f.isNull() ) {
             MetaBundle* bundle = new MetaBundle( url, f.tag(), 0 );
-            
+
             QString command = "INSERT INTO tags_temp "
                                 "( url, dir, album, artist, genre, title, year, comment, track ) "
                                 "VALUES('";
-                                
+
             command += insertdb->escapeString( bundle->url().path() ) + "','";
             command += insertdb->escapeString( bundle->url().directory() ) + "',";
             command += insertdb->escapeString( QString::number( insertdb->getValueID( "album_temp", bundle->album() ) ) ) + ",";
@@ -329,7 +331,7 @@ CollectionReader::readTags( const QStringList& entries ) {
             command += insertdb->escapeString( QString::number( insertdb->getValueID( "year_temp", bundle->year() ) ) ) + "','";
             command += insertdb->escapeString( bundle->comment() ) + "','";
             command += insertdb->escapeString( bundle->track() ) + "');";
-    
+
             insertdb->execSql( command );
             delete bundle;
         } else
@@ -346,7 +348,7 @@ CollectionReader::readTags( const QStringList& entries ) {
     }
     // let's lock the database (will block other threads)
     insertdb->execSql( "BEGIN TRANSACTION;" );
-    
+
     // remove tables and recreate them (quicker than DELETE FROM)
     insertdb->dropTables();
     insertdb->createTables();
@@ -358,7 +360,7 @@ CollectionReader::readTags( const QStringList& entries ) {
     insertdb->dropTables( true );
     // unlock database
     insertdb->execSql( "END TRANSACTION;" );
-    
+
     kdDebug() << "END " << k_funcinfo << endl;
 }
 
@@ -390,7 +392,7 @@ AudioPropertiesReader::doJob()
     {
         //This is a quick scan
         //A more accurate scan is done when the track is played, and those properties are recorded with the track
-        TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Fast );
+        TagLib::FileRef f( QFile::encodeName( m_url.path() ), true, TagLib::AudioProperties::Fast );
         int length  = MetaBundle::Unavailable;
         int bitrate = MetaBundle::Unavailable;
 
@@ -438,7 +440,7 @@ bool
 TagWriter::doJob()
 {
     const KURL url = m_item->url();
-    TagLib::FileRef f( url.path().local8Bit(), false );
+    TagLib::FileRef f( QFile::encodeName( url.path() ), false );
 
     if( !f.isNull() )
     {
@@ -510,7 +512,7 @@ PLStats::doJob()
 
     for( KURL::List::const_iterator it = m_contents.begin(); it != m_contents.end(); ++it )
     {
-        TagLib::FileRef f( (*it).path().local8Bit(), true, TagLib::AudioProperties::Accurate );
+        TagLib::FileRef f( QFile::encodeName( (*it).path() ), true, TagLib::AudioProperties::Accurate );
 
         if( !f.isNull() ) m_length += f.audioProperties()->length();
     }

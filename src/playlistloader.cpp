@@ -126,7 +126,7 @@ void PlaylistLoader::process( const KURL::List &list, const bool validate )
 
       if( validate && (*it).isLocalFile() )
       {
-         QCString localePath = path.local8Bit();
+         QCString localePath = QFile::encodeName( path );
 
          if( LSTAT( localePath, &statbuf ) != 0 ) continue;
 
@@ -271,7 +271,7 @@ void PlaylistLoader::translate( QString &path, KFileItemList &list )
    QStringList files;
    DIR *d = opendir( encodedPath );
    #else
-   DIR *d = opendir( path.local8Bit() );
+   DIR *d = opendir( QFile::encodeName( path ) );
    #endif
 
 
@@ -284,11 +284,11 @@ void PlaylistLoader::translate( QString &path, KFileItemList &list )
 
       while( (ent = READDIR( d )) )
       {
-         const QString file = QString::fromLocal8Bit( ent->d_name );
+         const QString file = QFile::decodeName( ent->d_name );
          if( file == "." || file == ".." ) continue;
 
          const QString  newPath( path+file );
-         const QCString localePath = newPath.local8Bit();
+         const QCString localePath = QFile::encodeName( newPath );
 
          //get file information
          if( LSTAT( localePath, &statbuf ) == 0 )
@@ -350,7 +350,7 @@ void PlaylistLoader::translate( QString &path, KFileItemList &list )
           const QStringList::Iterator end = directories.end();
           for( QStringList::Iterator it = directories.begin(); it != end; ++it )
           {
-              translate( *it, (*it).local8Bit() ); //FIXME cache QCStrings from above too
+              translate( *it, QFile::encodeName((*it)) ); //FIXME cache QCStrings from above too
           }
       }
       #endif

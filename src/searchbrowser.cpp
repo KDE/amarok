@@ -41,16 +41,16 @@ SearchBrowser::SearchBrowser( const char *name )
 
     QHBox *hb1 = new QHBox( this );
     hb1->setSpacing( 4 );
-    QLabel *label1 = new QLabel( "Search &for:", hb1 );
+    QLabel *label1 = new QLabel( i18n( "Search &for:" ), hb1 );
     searchEdit = new KLineEdit( hb1 );
     label1->setBuddy( searchEdit );
 
     QHBox *hb2 = new QHBox( this );
     hb2->setSpacing( 4 );
-    QLabel *label2 = new QLabel( "&In:", hb2 );
+    QLabel *label2 = new QLabel( i18n( "where", "&In:" ), hb2 );
     urlEdit = new KURLComboBox( KURLComboBox::Directories, TRUE, hb2 );
     label2->setBuddy( urlEdit );
-    QWidget *searchButton = new QPushButton( "&Search", hb2 );
+    QWidget *searchButton = new QPushButton( i18n( "&Search" ), hb2 );
     urlEdit->setDuplicatesEnabled( false );
     urlEdit->setCompletionObject( new KURLCompletion() );
     urlEdit->setURLs( config->readListEntry( "History" ) );
@@ -124,7 +124,7 @@ void SearchBrowser::slotStartSearch()
             KListViewItem *item;
             item = new KListViewItem( historyView, searchEdit->text() );
             item->setText( 1, "0" );
-            item->setText( 2, "Waiting for other thread" );
+            item->setText( 2, i18n( "Waiting for other thread" ) );
             item->setText( 3, path );
             historyView->setSelected( item, true );
 
@@ -157,13 +157,13 @@ void SearchBrowser::customEvent( QCustomEvent *e )
 
         switch ( p->state() ) {
             case SearchModule::ProgressEvent::Start:
-                p->item()->setText( 2, "Started" );
+                p->item()->setText( 2, i18n( "Started" ) );
                 QApplication::setOverrideCursor( KCursor::workingCursor() );
                 resultView->clear();
                 break;
 
             case SearchModule::ProgressEvent::Stop:
-                p->item()->setText( 2, "Done" );
+                p->item()->setText( 2, i18n( "Done" ) );
                 QApplication::restoreOverrideCursor();
                 break;
 

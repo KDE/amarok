@@ -737,7 +737,7 @@ void Playlist::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
 
         //if the track hasn't changed then we should update the meta data for the item
         m_currentTrack->setText( bundle );
-    
+
     }
     if( !m_cachedTrack || m_cachedTrack->url() != bundle.url() )
     {
@@ -1033,7 +1033,7 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
     if( canRename )
     {
         const QListViewItem *below = item->itemBelow();
-        if( below && below->isSelected() && item->exactText( col ) != "Writing tag..." )
+        if( below && below->isSelected() && item->exactText( col ) != i18n( "Writing tag..." ) )
         {
             //we disable Fill-Down when the current cell is having it's tag written
             //but it's a hack that needs to be improved
@@ -1186,7 +1186,7 @@ void Playlist::paletteChange( const QPalette &p )
 void Playlist::slotGlowTimer() //SLOT
 {
     if( !currentTrack() ) return;
-        
+
     using namespace Glow;
 
     if( counter > 63-(STEPS*2) )

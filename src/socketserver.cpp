@@ -239,8 +239,8 @@ Vis::Selector::rightButton( QListViewItem* item, const QPoint& pos, int )
     if ( !item ) return;
 
     KPopupMenu menu( this );
-    menu.insertItem( "Configure", 0 );
-    menu.insertItem( "Fullscreen", 1 );
+    menu.insertItem( i18n( "Configure" ), 0 );
+    menu.insertItem( i18n( "Fullscreen" ), 1 );
 
     switch( menu.exec( pos ) )
     {

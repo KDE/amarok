@@ -143,7 +143,7 @@ App::~App()
     delete m_pPlaylistWindow; //sets some XT keys
     delete m_pOSD;
     AmarokConfig::writeConfig();
-    
+
     // delete EngineController
     PluginManager::unload( engine );
 }
@@ -204,7 +204,7 @@ void App::handleLoaderArgs( QCString args ) //SLOT
 
     int argc = strlist.count();
     if ( argc < 2 ) return;
-    char **argv = new char*[argc]; 
+    char **argv = new char*[argc];
 
     for ( int i = 0; i < argc; i++ ) {
         argv[i] = qstrdup( strlist[i].local8Bit() );
@@ -215,7 +215,7 @@ void App::handleLoaderArgs( QCString args ) //SLOT
     KCmdLineArgs::reset();
     initCliArgs( argc, argv );
     handleCliArgs();
-    
+
     //clean up your room
     for ( int i = 0; i < argc; i++ )
         delete[] argv[i];
@@ -257,27 +257,27 @@ void App::initCliArgs( int argc, char *argv[] ) //static
 
     //TODO should we i18n this stuff?
 
-    aboutData.addAuthor( "Christian \"babe-magnet\" Muehlhaeuser", "developer, stud", "chris@chris.de", "http://www.chris.de" );
-    aboutData.addAuthor( "Frederik \"ich bin kein Deustcher!\" Holljen", "developer, 733t code, OSD improvement, patches", "fh@ez.no" );
-    aboutData.addAuthor( "Mark \"it's good, but it's not irssi\" Kretschmann", "project founder, developer, maintainer", "markey@web.de" );
-    aboutData.addAuthor( "Max \"sleep? there's no time!\" Howell", "developer, knight of the regression round-table",
+    aboutData.addAuthor( "Christian \"babe-magnet\" Muehlhaeuser", I18N_NOOP( "developer, stud" ), "chris@chris.de", "http://www.chris.de" );
+    aboutData.addAuthor( "Frederik \"ich bin kein Deustcher!\" Holljen", I18N_NOOP( "developer, 733t code, OSD improvement, patches" ), "fh@ez.no" );
+    aboutData.addAuthor( "Mark \"it's good, but it's not irssi\" Kretschmann", I18N_NOOP( "project founder, developer, maintainer" ), "markey@web.de" );
+    aboutData.addAuthor( "Max \"sleep? there's no time!\" Howell", I18N_NOOP( "developer, knight of the regression round-table" ),
                          "max.howell@methylblue.com", "http://www.methyblue.com" );
-    aboutData.addAuthor( "Stanislav \"did someone say DCOP?\" Karchebny", "developer, DCOP, improvements, cleanups, i18n",
+    aboutData.addAuthor( "Stanislav \"did someone say DCOP?\" Karchebny", I18N_NOOP( "developer, DCOP, improvements, cleanups, i18n" ),
                          "berk@upnet.ru" );
 
-    aboutData.addCredit( "Adam Pigg", "analyzers, patches", "adam@piggz.fsnet.co.uk" );
-    aboutData.addCredit( "Alper Ayazoglu", "graphics: buttons", "cubon@cubon.de", "http://cubon.de" );
-    aboutData.addCredit( "Danny Allen", "splash screen", "dannya40uk@yahoo.co.uk" );
-    aboutData.addCredit( "Enrico Ros", "analyzers, king of openGL", "eros.kde@email.it" );
-    aboutData.addCredit( "Jarkko Lehti", "tester, IRC channel operator, whipping", "grue@iki.fi" );
-    aboutData.addCredit( "Josef Spillner", "KDE RadioStation code", "spillner@kde.org" );
-    aboutData.addCredit( "Markus A. Rykalski", "graphics", "exxult@exxult.de" );
-    aboutData.addCredit( "Melchior Franz", "new FFT routine, bugfixes", "mfranz@kde.org" );
-    aboutData.addCredit( "Mike Diehl", "handbook", "madpenguin8@yahoo.com" );
-    aboutData.addCredit( "Roman Becker", "graphics: amaroK logo", "roman@formmorf.de", "http://www.formmorf.de" );
+    aboutData.addCredit( "Adam Pigg", I18N_NOOP( "analyzers, patches" ), "adam@piggz.fsnet.co.uk" );
+    aboutData.addCredit( "Alper Ayazoglu", I18N_NOOP( "graphics: buttons" ), "cubon@cubon.de", "http://cubon.de" );
+    aboutData.addCredit( "Danny Allen", I18N_NOOP( "splash screen" ), "dannya40uk@yahoo.co.uk" );
+    aboutData.addCredit( "Enrico Ros", I18N_NOOP( "analyzers, king of openGL" ), "eros.kde@email.it" );
+    aboutData.addCredit( "Jarkko Lehti", I18N_NOOP( "tester, IRC channel operator, whipping" ), "grue@iki.fi" );
+    aboutData.addCredit( "Josef Spillner", I18N_NOOP( "KDE RadioStation code" ), "spillner@kde.org" );
+    aboutData.addCredit( "Markus A. Rykalski", I18N_NOOP( "graphics" ), "exxult@exxult.de" );
+    aboutData.addCredit( "Melchior Franz", I18N_NOOP( "new FFT routine, bugfixes" ), "mfranz@kde.org" );
+    aboutData.addCredit( "Mike Diehl", I18N_NOOP( "handbook" ), "madpenguin8@yahoo.com" );
+    aboutData.addCredit( "Roman Becker", I18N_NOOP( "graphics: amaroK logo" ), "roman@formmorf.de", "http://www.formmorf.de" );
     aboutData.addCredit( "Scott Wheeler", "Taglib", "wheeler@kde.org" );
-    aboutData.addCredit( "The Noatun Authors", "code and inspiration", 0, "http://noatun.kde.org" );
-    aboutData.addCredit( "Whitehawk Stormchaser", "tester, patches", "zerokode@gmx.net" );
+    aboutData.addCredit( "The Noatun Authors", I18N_NOOP( "code and inspiration" ), 0, "http://noatun.kde.org" );
+    aboutData.addCredit( "Whitehawk Stormchaser", I18N_NOOP( "tester, patches" ), "zerokode@gmx.net" );
 
     KCmdLineArgs::init( argc, argv, &aboutData );
     KCmdLineArgs::addCmdLineOptions( options );   // Add our own options.
@@ -420,7 +420,7 @@ void App::applySettings()
         delete m_pPlayerWindow;
         m_pPlayerWindow = 0;
     }
-    
+
     // Engine
     if ( AmarokConfig::soundSystem() != PluginManager::getService( EngineController::engine() )->name() ) {
         PluginManager::unload( EngineController::engine() );
@@ -438,7 +438,7 @@ void App::applySettings()
     engine->setRestoreEffects( AmarokConfig::rememberEffects() );
     engine->setSoundOutput( AmarokConfig::soundOutput() );
     engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
-    
+
     // OSD
     m_pOSD->setEnabled( AmarokConfig::osdEnabled() );
     m_pOSD->setFont( AmarokConfig::osdFont() );

@@ -48,7 +48,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     QHBox * hbox2 = new QHBox( this );
     hbox2->setSpacing( 4 );
-    new QLabel( "Search for:", hbox2 );
+    new QLabel( i18n( "Search for:" ), hbox2 );
     m_searchEdit = new KLineEdit( hbox2 );
 
     m_view = new CollectionView( this );
@@ -57,17 +57,17 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_actionsMenu->insertItem( i18n( "Configure Folders" ), m_view, SLOT( setupDirs() ) );
     m_actionsMenu->insertItem( i18n( "Start Scan" ), m_view, SLOT( scan() ) );
 
-    m_cat1Menu ->insertItem( "Album", m_view, SLOT( cat1Menu( int ) ), 0, IdAlbum );
-    m_cat1Menu ->insertItem( "Artist", m_view, SLOT( cat1Menu( int ) ), 0, IdArtist );
-    m_cat1Menu ->insertItem( "Genre", m_view, SLOT( cat1Menu( int ) ), 0, IdGenre );
-    m_cat1Menu ->insertItem( "Year", m_view, SLOT( cat1Menu( int ) ), 0, IdYear );
+    m_cat1Menu ->insertItem( i18n( "Album" ), m_view, SLOT( cat1Menu( int ) ), 0, IdAlbum );
+    m_cat1Menu ->insertItem( i18n( "Artist"), m_view, SLOT( cat1Menu( int ) ), 0, IdArtist );
+    m_cat1Menu ->insertItem( i18n( "Genre" ), m_view, SLOT( cat1Menu( int ) ), 0, IdGenre );
+    m_cat1Menu ->insertItem( i18n( "Year" ), m_view, SLOT( cat1Menu( int ) ), 0, IdYear );
 
-    m_cat2Menu ->insertItem( "None", m_view, SLOT( cat2Menu( int ) ), 0, IdNone );
+    m_cat2Menu ->insertItem( i18n( "None" ), m_view, SLOT( cat2Menu( int ) ), 0, IdNone );
     m_cat2Menu ->insertSeparator();
-    m_cat2Menu ->insertItem( "Album", m_view, SLOT( cat2Menu( int ) ), 0, IdAlbum );
-    m_cat2Menu ->insertItem( "Artist", m_view, SLOT( cat2Menu( int ) ), 0, IdArtist );
-    m_cat2Menu ->insertItem( "Genre", m_view, SLOT( cat2Menu( int ) ), 0, IdGenre );
-    m_cat2Menu ->insertItem( "Year", m_view, SLOT( cat2Menu( int ) ), 0, IdYear );
+    m_cat2Menu ->insertItem( i18n( "Album" ), m_view, SLOT( cat2Menu( int ) ), 0, IdAlbum );
+    m_cat2Menu ->insertItem( i18n( "Artist" ), m_view, SLOT( cat2Menu( int ) ), 0, IdArtist );
+    m_cat2Menu ->insertItem( i18n( "Genre" ), m_view, SLOT( cat2Menu( int ) ), 0, IdGenre );
+    m_cat2Menu ->insertItem( i18n( "Year" ), m_view, SLOT( cat2Menu( int ) ), 0, IdYear );
 
     m_view->cat1Menu( m_view->idForCat( m_view->m_category1 ) );
     m_view->cat2Menu( m_view->idForCat( m_view->m_category2 ) );
@@ -126,8 +126,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         config->setGroup( "Collection Browser" );
 
         m_dirs = config->readListEntry( "Folders" );
-        m_category1 = config->readEntry( "Category1", "Artist" );
-        m_category2 = config->readEntry( "Category2", "None" );
+        m_category1 = config->readEntry( "Category1", i18n( "Artist" ) );
+        m_category2 = config->readEntry( "Category2", i18n( "None" ) );
         addColumn( m_category1 );
         m_recursively = config->readBoolEntry( "Scan Recursively", true );
         m_monitor = config->readBoolEntry( "Monitor Changes", false );
@@ -306,7 +306,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
     if  ( item->depth() == 0 ) {
         QString command;
-        if ( m_category2 == "None" ) {
+        if ( m_category2 == i18n( "None" ) ) {
             QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
 
             command = QString
@@ -349,10 +349,10 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             child->setDragEnabled( true );
             child->setDropEnabled( false );
             child->setText( 0, values[ i + 0 ] );
-            if ( m_category2 != "None" )
+            if ( m_category2 != i18n( "None" ) )
                 child->setPixmap( 0, pixmap );
             child->setUrl( values[ i + 1 ] );
-            child->setExpandable( m_category2 != "None" );
+            child->setExpandable( m_category2 != i18n( "None" ) );
     //         kdDebug() << "url: " << values[ i + 1 ] << endl;
         }
     }
@@ -390,10 +390,10 @@ QPixmap
 CollectionView::iconForCat( const QString& cat ) const
 {
     QString icon;
-    if ( cat == "Album"  ) icon = "cdrom_unmount";
-    if ( cat == "Artist" ) icon = "personal";
-    if ( cat == "Genre"  ) icon = "kfm";
-    if ( cat == "Year"   ) icon = "history";
+    if ( cat == i18n( "Album" ) ) icon = "cdrom_unmount";
+    if ( cat == i18n( "Artist" ) ) icon = "personal";
+    if ( cat == i18n( "Genre" ) ) icon = "kfm";
+    if ( cat == i18n( "Year" ) ) icon = "history";
 
     KIconLoader iconLoader;
     return iconLoader.loadIcon( icon, KIcon::Toolbar, KIcon::SizeSmall );
@@ -424,10 +424,10 @@ CollectionView::cat1Menu( int id )  //SLOT
     m_category1 = catForId( id );
     setColumnText( 0, m_category1 );
     m_parent->m_cat1Menu->setItemChecked( idForCat( m_category1 ), true );
-    
+
     //prevent choosing the same category in both menus
     m_parent->m_cat2Menu->setItemEnabled( id , false );
-    
+
     renderView();
 }
 
@@ -439,7 +439,7 @@ CollectionView::cat2Menu( int id )  //SLOT
     m_parent->m_cat1Menu->setItemEnabled( idForCat( m_category2 ), true );  //enable old item
     m_category2 = catForId( id );
     m_parent->m_cat2Menu->setItemChecked( idForCat( m_category2 ), true );
-    
+
     //prevent choosing the same category in both menus
     m_parent->m_cat1Menu->setItemEnabled( id , false );
 
@@ -452,28 +452,28 @@ CollectionView::catForId( int id ) const
 {
     switch ( id ) {
         case CollectionBrowser::IdAlbum:
-            return "Album";
+            return i18n( "Album" );
         case CollectionBrowser::IdArtist:
-            return "Artist";
+            return i18n( "Artist" );
         case CollectionBrowser::IdGenre:
-            return "Genre";
+            return i18n( "Genre" );
         case CollectionBrowser::IdYear:
-            return "Year";
+            return i18n( "Year" );
         default:
             break;
     }
 
-    return "None";
+    return i18n( "None" );
 }
 
 
 int
 CollectionView::idForCat( const QString& cat ) const
 {
-    if ( cat == "Album"  ) return CollectionBrowser::IdAlbum;
-    if ( cat == "Artist" ) return CollectionBrowser::IdArtist;
-    if ( cat == "Genre"  ) return CollectionBrowser::IdGenre;
-    if ( cat == "Year"   ) return CollectionBrowser::IdYear;
+    if ( cat == i18n( "Album" ) ) return CollectionBrowser::IdAlbum;
+    if ( cat == i18n( "Artist" ) ) return CollectionBrowser::IdArtist;
+    if ( cat == i18n( "Genre" ) ) return CollectionBrowser::IdGenre;
+    if ( cat == i18n( "Year" ) ) return CollectionBrowser::IdYear;
 
     //falltrough:
     return CollectionBrowser::IdNone;
@@ -512,7 +512,7 @@ CollectionView::startDrag() {
     d->dragCopy();
 }
 
-        
+
 KURL::List
 CollectionView::listSelected() {
     //Here we determine the URLs of all selected items. We use two passes, one for the parent items,
@@ -554,7 +554,7 @@ CollectionView::listSelected() {
         }
 
     //second pass: category 1
-    if ( m_category2 == "None" ) {
+    if ( m_category2 == i18n( "None" ) ) {
         for ( item = firstChild(); item; item = item->nextSibling() )
             for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
                 if ( child->isSelected() )
@@ -612,12 +612,12 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 {
     if ( item ) {
         KPopupMenu menu( this );
-        
+
         menu.insertItem( i18n( "Make Playlist" ), this, SLOT( makePlaylist() ) );
-        
-        if ( ( item->depth() && m_category2 == "None" ) || item->depth() == 2 )
+
+        if ( ( item->depth() && m_category2 == i18n( "None" ) ) || item->depth() == 2 )
             menu.insertItem( i18n( "Track Information" ), this, SLOT( showTrackInfo() ) );
-        
+
         menu.exec( point );
     }
 }
@@ -637,7 +637,7 @@ CollectionView::showTrackInfo() //slot
     Item* item = static_cast<Item*>( currentItem() );
     if ( !item ) return;
 
-    if ( m_category2 == "None" || item->depth() == 2 ) {
+    if ( m_category2 == i18n( "None" ) || item->depth() == 2 ) {
         QString command = QString
                           ( "SELECT DISTINCT artist.name, album.name, genre.name, year.name, comment FROM tags, artist, album, genre, year "
                             "WHERE artist.id = tags.artist AND album.id = tags.album AND genre.id = tags.genre AND year.id = tags.year AND tags.url = '%1';" )
@@ -655,7 +655,7 @@ CollectionView::showTrackInfo() //slot
         str += body.arg( i18n( "Artist" ), values[0] );
         str += body.arg( i18n( "Album" ),  values[1] );
         str += body.arg( i18n( "Genre" ),  values[2] );
-        str += body.arg( i18n( "Year" ),   values[3] );
+        str += body.arg( i18n( "Year" ),  values[3] );
         str += body.arg( i18n( "Comment" ),values[4] );
     //     str += body.arg( i18n( "Length" ), mb.prettyLength() );
     //     str += body.arg( i18n( "Bitrate" ),mb.prettyBitrate() );
@@ -677,7 +677,7 @@ CollectionView::Item::compare( QListViewItem* item, int col, bool ascending ) co
 {
     //We overload compare() just to prevent the listView from sorting our items.
 
-    if ( item->depth() == 1 && ( (CollectionView*) listView() )->m_category2 == "None" )
+    if ( item->depth() == 1 && ( (CollectionView*) listView() )->m_category2 == i18n( "None" ) )
         return 0;
     if ( item->depth() == 2 )
         return 0;

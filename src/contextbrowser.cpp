@@ -39,7 +39,7 @@ ContextBrowser::ContextBrowser( const char *name )
 
     QHBox *hb1 = new QHBox( this );
     hb1->setSpacing( 4 );
-    
+
     browser = new KHTMLPart( hb1 );
     browser->begin();
     browser->write( "<html></html>" );
@@ -47,8 +47,8 @@ ContextBrowser::ContextBrowser( const char *name )
 
     connect( browser->browserExtension(),
              SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ), this,
-             SLOT( openURLRequest(const KURL &, const KParts::URLArgs & ) ) );   
-    
+             SLOT( openURLRequest(const KURL &, const KParts::URLArgs & ) ) );
+
     setFocusProxy( hb1 ); //so focus is given to a sensible widget when the tab is opened
 }
 
@@ -92,7 +92,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     sqlInit();
 
     browser->begin();
-    
+
     QString styleSheet;
     styleSheet =  QString( "div { color: %1; font-size: 8px; text-decoration: none; }" )
                   .arg( colorGroup().text().name() );
@@ -118,21 +118,22 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 
     browser->setUserStyleSheet( styleSheet );
 
-    browser->write( QString( "<html><div class='title'>Info for %1</div>" )
-                    .arg( bundle.artist() ) );
+    browser->write( QString::fromLatin1( "<html><div class='title'>" )
+                    + i18n( "Info for %1" ).arg( bundle.artist() )
+                    + QString::fromLatin1("</div>" ) );
 
     QStringList values;
     QStringList names;
-    
+
     if ( m_db->execSql( QString( "SELECT datetime( datetime(accessdate, 'unixepoch'), 'localtime' ), playcounter FROM statistics WHERE url = '%1';" )
                         .arg( m_db->escapeString( bundle.url().path() ) ), &values, &names ) )
     {
         if ( !values.count() )
         {
-            values << "Never";
+            values << i18n( "Never" );
             values << "0";
         }
-        browser->write( QString( "<div>Last playtime: <b>%1</b><br>Total plays: <b>%2</b></div>" )
+        browser->write( i18n( "<div>Last playtime: <b>%1</b><br>Total plays: <b>%2</b></div>" )
                         .arg( values[0] )
                         .arg( values[1] ) );
     }
@@ -142,9 +143,9 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 
     browser->write( "<br><div class='rbcontent'>" );
     browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-    browser->write( "<tr><td class='head'>Other titles on this album:</td></tr>" );
+    browser->write( "<tr><td class='head'>" + i18n( "Other titles on this album:" ) + "</td></tr>" );
     browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
-    browser->write( "</table>" );    
+    browser->write( "</table>" );
     browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
     m_db->execSql( QString( "SELECT tags.title, tags.url, tags.track "
@@ -171,11 +172,11 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 
     browser->write( "<br><div class='rbcontent'>" );
     browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-    browser->write( "<tr><td class='head'>Other albums:</td></tr>" );
+    browser->write( "<tr><td class='head'>" + i18n( "Other albums:" ) + "</td></tr>" );
     browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
-    browser->write( "</table>" );    
+    browser->write( "</table>" );
     browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
-    
+
     m_db->execSql( QString( "SELECT DISTINCT album.name, album.id, artist.id "
                             "FROM album, tags, artist "
                             "WHERE album.id = tags.album AND tags.artist = artist.id AND artist.name "

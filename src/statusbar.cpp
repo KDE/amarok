@@ -106,7 +106,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     w1->setFixedHeight( m_pTimeLabel->height() );
     w2->setFixedHeight( m_pTimeLabel->height() );
     m_pSlider->setFixedHeight( m_pTimeLabel->height() );
-    
+
     connect( m_pPauseTimer, SIGNAL(timeout()), SLOT(slotPauseTimer()) );
 
     // set us up the bomb
@@ -136,7 +136,7 @@ void StatusBar::engineStateChanged( EngineBase::EngineState state )
 
         case EngineBase::Paused:
             // display TEMPORARY message
-            message( "amaroK is paused" );
+            message( i18n( "amaroK is paused" ) );
             m_pPauseTimer->start( 300 );
             break;
 

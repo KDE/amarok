@@ -185,7 +185,7 @@ void FileBrowser::slotFilterChange( const QString & nf )
     {
         dir->clearFilter();
         filter->lineEdit()->setText( QString::null );
-        QToolTip::add( btnFilter, QString( i18n("Apply last filter (\"%1\")") ).arg( lastFilter ) );
+        QToolTip::add( btnFilter, i18n("Apply last filter (\"%1\")").arg( lastFilter ) );
 
     } else {
 
