@@ -1,8 +1,8 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // See COPYING file for licensing information.
 
-#include "metabundle.h"
 #include "collectiondb.h"
+#include "metabundle.h"
 #include "playlistitem.h"
 #include "tagdialog.h"
 
@@ -17,10 +17,10 @@
 #include <kcombobox.h>
 #include <kdebug.h>
 #include <kglobal.h>
+#include <kglobalsettings.h>    //init()
 #include <klineedit.h>
 #include <kmessagebox.h>
 #include <knuminput.h>
-#include <kglobalsettings.h>    //init()
 
 
 TagDialog::TagDialog( const KURL& url, QWidget* parent )
@@ -163,6 +163,7 @@ TagDialog::init()
     
 #ifdef HAVE_MUSICBRAINZ
     connect( pushButton_musicbrainz, SIGNAL( clicked() ), this, SLOT( musicbrainzQuery() ) );
+    pushButton_musicbrainz->setEnabled( m_metaBundle.url().isLocalFile() );
 #else
     pushButton_musicbrainz->setEnabled( false );
 #endif
@@ -176,13 +177,13 @@ TagDialog::hasChanged()
 {    
     bool modified = false;
     
-    modified |= kLineEdit_title->text()        != m_metaBundle.title();
+    modified |= kLineEdit_title->text()              != m_metaBundle.title();
     modified |= kComboBox_artist->lineEdit()->text() != m_metaBundle.artist();
-    modified |= kComboBox_album->lineEdit()->text() != m_metaBundle.album();
-    modified |= kComboBox_genre->lineEdit()->text() != m_metaBundle.genre();
-    modified |= kIntSpinBox_track->value()     != m_metaBundle.track().toInt();
-    modified |= kIntSpinBox_year->value()      != m_metaBundle.year().toInt();
-    modified |= kLineEdit_comment->text()      != m_metaBundle.comment();
+    modified |= kComboBox_album->lineEdit()->text()  != m_metaBundle.album();
+    modified |= kComboBox_genre->lineEdit()->text()  != m_metaBundle.genre();
+    modified |= kIntSpinBox_track->value()           != m_metaBundle.track().toInt();
+    modified |= kIntSpinBox_year->value()            != m_metaBundle.year().toInt();
+    modified |= kLineEdit_comment->text()            != m_metaBundle.comment();
 
     return modified;
 }    
