@@ -324,8 +324,6 @@ void ArtsEngine::open( KURL url )
     if ( m_pPlayObject )
         stop();
 
-    KDE::PlayObjectFactory factory( m_server );
-
 /*    if ( m_optTitleStream && !m_proxyError && !url.isLocalFile()  )
     {
         TitleProxy *pProxy = new TitleProxy( url );
@@ -336,8 +334,9 @@ void ArtsEngine::open( KURL url )
         connect( pProxy, SIGNAL( metaData( QString, QString, QString ) ),
                  this, SLOT( receiveStreamMeta( QString, QString, QString ) ) );
         connect( pProxy, SIGNAL( error() ), this, SLOT( proxyError() ) );
-    }*/
-    
+    }*/        
+        
+    KDE::PlayObjectFactory factory( m_server );
     m_pPlayObject = factory.createPlayObject( url, false ); //second parameter:
                                                                 //create BUS(true/false)
 //     m_proxyError = false;
@@ -356,7 +355,7 @@ void ArtsEngine::open( KURL url )
     }
 
     if ( m_pPlayObject->object().isNull() )
-        connect( m_pPlayObject, SIGNAL( playObjectCreated() ), this, SLOT( slotConnectPlayObject() ) );
+        connect( m_pPlayObject, SIGNAL( playObjectCreated() ), this, SLOT( connectPlayObject() ) );
     else
         connectPlayObject();
 

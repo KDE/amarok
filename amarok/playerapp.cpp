@@ -576,56 +576,56 @@ void PlayerApp::play( const KURL &url, const MetaBundle *tags )
     
     if ( tags )
     {
-       QString text, bps, Hz, length;
-
-       if( tags->m_title.isEmpty() )
-       {
-          text = url.fileName();
-       }
-       else
-       {
-          //TODO <berkus> user tunable title format!
-          text = tags->m_artist;
-          if( text != "" ) text += " - ";
-          text += tags->m_title;
-       }
-
-       //FIXME add this back
-       //text.append( " (" + tags->length() + ")" );
-
-       bps  = QString::number( tags->m_bitrate );
-       bps += "kbps";
-       Hz   = QString::number( tags->m_sampleRate );
-       Hz  += "Hz";
-       
-       // length to string
-       if ( floor( tags->m_length / 60 ) < 10 ) length += "0";
-       length += QString::number( floor( tags->m_length / 60 ) );
-       length += ":";
-       if ( tags->m_length % 60 < 10 ) length += "0";
-       length += QString::number( tags->m_length % 60 );
-
-       m_pPlayerWidget->setScroll( text, bps, Hz, length ); //FIXME get end function to add units!
-       
-       // OSD message
-       m_pOSD->showOSD( text + " - " + length );
+        m_length = tags->m_length * 1000;      // sec -> ms
+        QString text, bps, Hz, length;
+        
+        if( tags->m_title.isEmpty() )
+        {
+            text = url.fileName();
+        }
+        else
+        {
+            //TODO <berkus> user tunable title format!
+            text = tags->m_artist;
+            if( text != "" ) text += " - ";
+            text += tags->m_title;
+        }
+        
+        //FIXME add this back
+        //text.append( " (" + tags->length() + ")" );
+        
+        bps  = QString::number( tags->m_bitrate );
+        bps += "kbps";
+        Hz   = QString::number( tags->m_sampleRate );
+        Hz  += "Hz";
+        
+        // length to string
+        if ( floor( tags->m_length / 60 ) < 10 ) length += "0";
+        length += QString::number( floor( tags->m_length / 60 ) );
+        length += ":";
+        if ( tags->m_length % 60 < 10 ) length += "0";
+        length += QString::number( tags->m_length % 60 );
+        
+        m_pPlayerWidget->setScroll( text, bps, Hz, length ); //FIXME get end function to add units!
+        
+        // OSD message
+        m_pOSD->showOSD( text + " - " + length );
     }
     else
     {
-       m_pPlayerWidget->setScroll( url.fileName() );
+        m_length = 0;
+    
+        if ( m_pEngine->isStream() )
+            m_pPlayerWidget->setScroll( i18n( "Stream from: %1" ).arg( url.prettyURL() ), "?", "--" );
+        else   
+            m_pPlayerWidget->setScroll( url.fileName() );
     }
 
     kdDebug() << "[play()] Playing " << url.prettyURL() << endl;
     m_pEngine->play();
     
     //set track length stuff
-    if ( m_pEngine->isStream() )
-    {
-        m_pPlayerWidget->m_pSlider->setMaxValue( 0 );
-        m_pPlayerWidget->setScroll( i18n( "Stream from: %1" ).arg( url.prettyURL() ), "?", "--" );
-    }
 
-    m_length = tags->m_length * 1000;      // sec -> ms
     m_playingURL = url;
 
     m_pPlayerWidget->m_pSlider->setValue   ( 0 );
