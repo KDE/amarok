@@ -330,9 +330,10 @@ PlaylistWindow::init()
     //</Browsers>
 
 
-    connect( m_playlist, SIGNAL(itemCountChanged( int, int )), m_statusbar, SLOT(slotItemCountChanged( int, int )) );
-    connect( m_playlist, SIGNAL(aboutToClear()), m_lineEdit, SLOT(clear()) );
-    connect( m_lineEdit, SIGNAL(textChanged( const QString& )), SLOT(slotSetFilterTimeout()) );
+    connect( m_playlist, SIGNAL( itemCountChanged( int, int ) ), m_statusbar, SLOT( slotItemCountChanged( int, int ) ) );
+    connect( m_playlist, SIGNAL( aboutToClear() ), m_lineEdit, SLOT( clear() ) );
+    connect( m_lineEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
+    connect( m_lineEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilterTimeout() ) );
     connect( m_timer,    SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
 }
 
@@ -543,6 +544,9 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
             case Key_Return:
             case Key_Enter:
+                // make sure the view gets updated
+                slotSetFilter();
+
                 m_playlist->activate( *It( m_playlist, It::Visible ) );
                 m_playlist->showCurrentTrack();
                 m_lineEdit->clear();
@@ -660,6 +664,7 @@ void PlaylistWindow::playAudioCD() //SLOT
 
 void PlaylistWindow::slotSetFilter()
 {
+    if ( m_timer->isActive() ) m_timer->stop();
     m_playlist->setSearchFilter( m_lineEdit->text(), m_searchField );
 }
 
@@ -667,7 +672,7 @@ void PlaylistWindow::slotSetFilter()
 void PlaylistWindow::slotSetFilterTimeout() //SLOT
 {
     if ( m_timer->isActive() ) m_timer->stop();
-    m_timer->start( 180, true );
+    m_timer->start( 280, true );
 }
 
 
