@@ -65,7 +65,7 @@ class MasEngine : public Engine::Base
                                                                                                   
         bool initMixer( bool hardware );
         bool canDecode( const KURL& ) const;
-	//StreamingMode streamingMode() { return MasEngine::NoStreaming; }
+        //StreamingMode streamingMode() { return MasEngine::NoStreaming; }
 
         uint position() const;
         Engine::State state() const {return m_state;} 
@@ -91,7 +91,7 @@ class MasEngine : public Engine::Base
     private:
         void startXfade();
         //void timerEvent( QTimerEvent* );
-	bool masinit();
+        bool masinit();
 
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
@@ -102,31 +102,31 @@ class MasEngine : public Engine::Base
         long m_scopeId;
         int  m_scopeSize;
         long m_volumeId;
-	uint m_lastKnownPosition;
+        uint m_lastKnownPosition;
 
-	Engine::State m_state;
+        Engine::State m_state;
   //      bool m_xfadeFadeout;
    //     float m_xfadeValue;
    //     QString m_xfadeCurrent;
         QTimer* m_pPlayingTimer;
 
-	KURL m_url;
-	
-	mas_device_t m_mp1a_source_device;
-	mas_device_t m_visual;
+        KURL m_url;
 
- 	mas_device_t m_sbuf;
-	mas_device_t m_codec;
-	//mas_device_t m_id3_device;
+        mas_device_t m_mp1a_source_device;
+        mas_device_t m_visual;
 
-	mas_device_t m_mix_device;
-	mas_port_t m_mix_sink;
+        mas_device_t m_sbuf;
+        mas_device_t m_codec;
+        //mas_device_t m_id3_device;
 
-	mas_device_t m_sink_mc;
-	mas_device_t m_source_mc;
-	int32 m_sink_clkid;
-	int32 m_source_clkid;
-	double m_measured_sample_freq;
+        mas_device_t m_mix_device;
+        mas_port_t m_mix_sink;
+
+        mas_device_t m_sink_mc;
+        mas_device_t m_source_mc;
+        int32 m_sink_clkid;
+        int32 m_source_clkid;
+        double m_measured_sample_freq;
 
 };
 
