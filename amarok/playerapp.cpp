@@ -574,17 +574,16 @@ void PlayerApp::slotStop()
 
 void PlayerApp::slotPlaylistShowHide()
 {
-	if( m_pBrowserWin->isHidden() )
-	{
-		m_pPlayerWidget->m_pButtonPl->setOn(true);
-		m_pBrowserWin->show();
-	}
-	else
-	{
-		m_pPlayerWidget->m_pButtonPl->setOn(false);
-		m_pBrowserWin->hide();
-	}
-	
+    if( m_pBrowserWin->isHidden() )
+    {
+        m_pPlayerWidget->m_pButtonPl->setOn(true);
+        m_pBrowserWin->show();
+    }
+    else
+    {
+        m_pPlayerWidget->m_pButtonPl->setOn(false);
+        m_pBrowserWin->hide();
+    }
 }
 
 bool PlayerApp::playObjectConfigurable()
