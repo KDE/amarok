@@ -55,7 +55,7 @@ class EffectWidget : public KDialogBase
 
     private:
 // ATTRIBUTES ------
-        static const int EffectWidget::BUTTON_WIDTH = 30;
+        static const int BUTTON_WIDTH = 30;
         
         KComboBox   *m_pComboBox;
         QListView   *m_pListView;
