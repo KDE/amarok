@@ -1215,7 +1215,7 @@ CollectionDB::valueFromID( QString table, uint id )
 
 void
  CollectionDB::retrieveFirstLevel( const QString& category1, const QString& category2, const QString& category3,
-                                   QString& filter, QStringList& values, QStringList& names )
+                                   QString filter, QStringList& values, QStringList& names )
 {
     QString filterToken;
 
@@ -1257,7 +1257,7 @@ void
 
 void
 CollectionDB::retrieveSecondLevel( const QString& itemText, const QString& category1, const QString& category2, 
-                                   const QString& category3, QString& filter, QStringList& values, 
+                                   const QString& category3, QString filter, QStringList& values, 
                                    QStringList& names )
 {
     QString filterToken;
@@ -1323,7 +1323,7 @@ CollectionDB::retrieveSecondLevel( const QString& itemText, const QString& categ
 
 void
 CollectionDB::retrieveThirdLevel( const QString& itemText1, const QString& itemText2, const QString& category1, 
-                                  const QString& category2, const QString& category3, QString& filter, 
+                                  const QString& category2, const QString& category3, QString filter, 
                                   QStringList& values, QStringList& names )
 {
     QString filterToken;
@@ -1388,7 +1388,7 @@ CollectionDB::retrieveThirdLevel( const QString& itemText1, const QString& itemT
 void
 CollectionDB::retrieveFourthLevel( const QString& itemText1, const QString& itemText2, const QString& itemText3, 
                                    const QString& category1, const QString& category2, 
-                                   const QString& category3, QString& filter, 
+                                   const QString& category3, QString filter, 
                                    QStringList& values, QStringList& names )
 {
     QString filterToken;
@@ -1433,7 +1433,7 @@ CollectionDB::retrieveFourthLevel( const QString& itemText1, const QString& item
 
 void
 CollectionDB::retrieveFirstLevelURLs( const QString& itemText, const QString& category1, QString category2, 
-                                      const QString& category3, QString& filter, 
+                                      const QString& category3, QString filter, 
                                       QStringList& values, QStringList& names )
 {
     QString filterToken;
@@ -1484,7 +1484,7 @@ CollectionDB::retrieveFirstLevelURLs( const QString& itemText, const QString& ca
 
 void
 CollectionDB::retrieveSecondLevelURLs( const QString& itemText1, const QString& itemText2, const QString& category1, 
-                                       const QString& category2, const QString& category3, QString& filter,
+                                       const QString& category2, const QString& category3, QString filter,
                                        QStringList& values, QStringList& names )
 {
     QString filterToken;
@@ -1532,7 +1532,7 @@ CollectionDB::retrieveSecondLevelURLs( const QString& itemText1, const QString& 
 void
 CollectionDB::retrieveThirdLevelURLs( const QString& itemText1, const QString& itemText2, const QString& itemText3, 
                                       const QString& category1, const QString& category2, const QString& category3, 
-                                      QString& filter, QStringList& values, QStringList& names )
+                                      QString filter, QStringList& values, QStringList& names )
 { 
     QString filterToken;
     if ( !filter.isEmpty() )

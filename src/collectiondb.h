@@ -109,26 +109,26 @@ class CollectionDB : public QObject
 
         //tree methods
         void retrieveFirstLevel( const QString& category1, const QString& category2, const QString& category3,
-                                            QString& filter, QStringList& values, QStringList& names );
+                                            QString filter, QStringList& values, QStringList& names );
         void retrieveSecondLevel( const QString& itemText, const QString& category1, const QString& category2, 
-                                                 const QString& category3, QString& filter, 
+                                                 const QString& category3, QString filter, 
                                                  QStringList& values, QStringList& names );
         void retrieveThirdLevel( const QString& itemText1, const QString& itemText2, const QString& category1, 
-                                             const QString& category2, const QString& category3, QString& filter, 
+                                             const QString& category2, const QString& category3, QString filter, 
                                             QStringList& values, QStringList& names );
         void retrieveFourthLevel( const QString& itemText1, const QString& itemText2, const QString& itemText3, 
                                                const QString& category1, const QString& category2, 
-                                               const QString& category3, QString& filter, 
+                                               const QString& category3, QString filter, 
                                                QStringList& values, QStringList& names );
 
         void retrieveFirstLevelURLs( const QString& itemText, const QString& category1, QString gcategory2, const QString& category3,
-                                                    QString& filter, QStringList& values, QStringList& names );
+                                                    QString filter, QStringList& values, QStringList& names );
         void retrieveSecondLevelURLs( const QString& itemText1, const QString& itemText2, const QString& category1, 
-                                                         const QString& category2, const QString& category3, QString& filter,
+                                                         const QString& category2, const QString& category3, QString filter,
                                                          QStringList& values, QStringList& names );
         void retrieveThirdLevelURLs( const QString& itemText1, const QString& itemText2, const QString& itemText3, 
                                                      const QString& category1, const QString& category2, const QString& category3, 
-                                                     QString& filter, QStringList& values, QStringList& names );
+                                                     QString filter, QStringList& values, QStringList& names );
 
         //member variables
         QString m_amazonLicense;
