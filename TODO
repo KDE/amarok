@@ -68,9 +68,6 @@ LONG-TERM:
 
     * add: adjustable gap between tracks, making recording easier
 
-    * fix: find solution for dropping items to the first position. maybe an empty line
-      at the top or bottom? (should be unneeded with the guide line)
-
     * add: < berkus> add smooth fade outs on stop
 
     * change: < berkus> the volume slider is too small to make good adjustment,
@@ -90,7 +87,7 @@ LONG-TERM:
 
     * add bookmarks (inside of tracks) and nifty bookmark browser
 
-    * add pitch-slider (?)
+    * add pitch-slider (?) (berkus: should be in separate "Effects Control" panel)
 
 
 IDEAS:
