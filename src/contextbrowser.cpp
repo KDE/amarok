@@ -662,7 +662,7 @@ void ContextBrowser::showHome() //SLOT
 
         m_HTMLSource.append(
                                 "</a></td>"
-                                "<td class='sbtext' width='1'>" + fave[i + 2] + "</td>"
+                                "<td class='sbtext' width='1'>" + ( ( fave[i + 2].length() > 1 ) ? fave[i + 2] : " " + fave[i + 2] ) + "</td>"
                                 "<td width='1' title='" + i18n( "Score" ) + "'>"
                                     "<div class='sbouter'>"
                                         "<div class='sbinner' style='width: " + QString::number( fave[i + 2].toInt() / 2 ) + "px;'></div>"
@@ -711,7 +711,7 @@ void ContextBrowser::showHome() //SLOT
 
         m_HTMLSource.append(
                                 "</a></td>"
-                                "<td class='sbtext' width='1'>" + recent[i + 4] + "</td>"
+                                "<td class='sbtext' width='1'>" + ( ( recent[i + 4].length() > 1 ) ? recent[i + 4] : " " + recent[i + 4] ) + "</td>"
                                 "<td width='1' title='" + i18n( "Score" ) + "'>"
                                     "<div class='sbouter'>"
                                         "<div class='sbinner' style='width: " + QString::number( recent[i + 4].toInt() / 2 ) + "px;'></div>"
@@ -764,7 +764,7 @@ void ContextBrowser::showHome() //SLOT
         m_HTMLSource.append(
                                 "<br /><span class='song-time'>" + i18n( "Last played: %1" ).arg( verboseTimeSince( lastPlay ) ) + "</span>"
                                 "</a></td>"
-                                "<td class='sbtext' width='1'>" + least[i + 5] + "</td>"
+                                "<td class='sbtext' width='1'>" + ( ( least[i + 5].length() > 1 ) ? least[i + 5] : " " + least[i + 5] ) + "</td>"
                                 "<td width='1' title='" + i18n( "Score" ) + "'>"
                                     "<div class='sbouter'>"
                                         "<div class='sbinner' style='width: " + QString::number( least[i + 5].toInt() / 2 ) + "px;'></div>"
@@ -1078,7 +1078,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                             "<span class='album-song-title'>" + values[i + 1] + "</span>"
                             "</a>"
                         "</td>"
-                        "<td class='sbtext' width='1'>" + values[i + 3] + "</td>"
+                        "<td class='sbtext' width='1'>" + ( ( values[i + 3].length() > 1 ) ? values[i + 3] : " " + values[i + 3] ) + "</td>"
                         "<td width='1' title='" + i18n( "Score" ) + "'>"
                             "<div class='sbouter'>"
                                 "<div class='sbinner' style='width: " + QString::number( values[i + 3].toInt() / 2 ) + "px;'></div>"
@@ -1128,7 +1128,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                         "<span class='album-song-title'>" + values[i] + "</span>"
                         "</a>"
                     "</td>"
-                    "<td class='sbtext' width='1'>" + values[i + 2] + "</td>"
+                    "<td class='sbtext' width='1'>" + ( ( values[i + 2].length() > 1 ) ? values[i + 2] : " " + values[i + 2] ) + "</td>"
                     "<td width='1' title='" + i18n( "Score" ) + "'>"
                         "<div class='sbouter'>"
                             "<div class='sbinner' style='width: " + QString::number( values[i + 2].toInt() / 2 ) + "px;'></div>"
