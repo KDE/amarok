@@ -475,6 +475,8 @@ void PlaylistWidget::keyPressEvent( QKeyEvent *e )
 
 bool PlaylistWidget::eventFilter( QObject *o, QEvent *e )
 {
+    #define AUTO_FIT_COLUMNS 100
+
     if( o == header() && e->type() == QEvent::MouseButtonPress && static_cast<QMouseEvent *>(e)->button() == Qt::RightButton )
     {
         //currently the only use for this filter is to get mouse clicks on the header()
@@ -487,11 +489,17 @@ bool PlaylistWidget::eventFilter( QObject *o, QEvent *e )
             popup.insertItem( columnText( i ), i, i );
             popup.setItemChecked( i, columnWidth( i ) != 0 );
         }
-
+/*
+        //FIXME this is neat, but it doesn't respect hidden columns
+        popup.insertSeparator();
+        popup.insertItem( i18n( "Auto-fit columns" ), AUTO_FIT_COLUMNS );
+        popup.setItemChecked( AUTO_FIT_COLUMNS, true );
+*/
         int col = popup.exec( static_cast<QMouseEvent *>(e)->globalPos() );
 
         if( col != -1 )
         {
+//          if( col == AUTO_FIT_COLUMNS ) header()->setStretchEnabled( true ); else
             if( columnWidth( col ) == 0 ) adjustColumn( col );
             else hideColumn( col );
         }
@@ -595,6 +603,7 @@ void PlaylistWidget::copyAction( QListViewItem *item )
         QApplication::clipboard()->setText( item->text( 0 ) );
     }
 }
+
 
 void PlaylistWidget::activate( QListViewItem *item )
 {
@@ -905,6 +914,10 @@ void PlaylistWidget::writeTag( QListViewItem *lvi, const QString &tag, int col )
 {
     //Surely we don't need to test for NULL here?
     static_cast<PlaylistItem*>(lvi)->writeTag( tag, col );
+
+    QListViewItem *below = lvi->itemBelow();
+    //FIXME will result in nesting of this function?
+    if( below && below->isSelected() ) { rename( below, col ); }
 }
 
 
