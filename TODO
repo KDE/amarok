@@ -3,10 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #69 being the highest available (take this one for your next bug and increase here)
+           #70 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+    * fix: #69 <markey> volume OSD display does not work correctly. won't get updated while
+               changing volume and displays bogus values
 
     * fix: #67 <mikmak> sometimes the aRts effects-saver writes an empty <effectname> tag. leads to
                crash on startup when restoring effects
@@ -16,17 +19,15 @@ SHORT-TERM (URGENT):
 
     * fix: #62 < buff> hmm: one question: I have QT installes without OpenGL, aRrts is available and configure is run with
                "--without-gstreamer": after compiling I have an amaroK _without_ aRts and _with_ gstreamer compiled in
-               0.9-beta2 btw
+               0.9-beta2 btw <markey> WORKSFORME
 
     * fix: #61 <markey> allow removing of playlist items by dragging back into browser.
                (RFC: is this still appropriate or would it be misleading?)
 
     * fix: #60 <markey> I'm still getting the occasional crash in PlaylistItem::setText()
 
-    * fix: #52 <markey> got those today, possibly from new PlayerWidget code (app was freezing):
+    * fix: #52 <markey> got this today, possibly from new PlayerWidget code (app was freezing):
                 QPainter::begin: Cannot paint null pixmap
-                QPainter::setPen: Will be reset by begin()
-                QPainter::setFont: Will be reset by begin()
 
     * fix: #44 <markey> ExpandButtons do not work well with keyboard shortcuts: the button expands, and then
                nothing happens. you must close it using the mouse
