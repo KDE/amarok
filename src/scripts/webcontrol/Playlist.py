@@ -86,7 +86,7 @@ class Playlist:
     def _loadHtmlTemplate(self):
         ep = Globals.EXEC_PATH
         st = os.stat(ep + "/" + self.templateFilename)[8]
-        print str(self.templateLastChanged) + " " + str(st) + " " + ep
+
         if self.templateLastChanged != st:
             tmp = open(ep + "/" + self.templateFilename).read()
             a = compile(tmp, "<string>", 'exec')

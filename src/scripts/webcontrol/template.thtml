@@ -5,7 +5,7 @@ code[0]=""" <html>\n
             <head>\n
             <meta http-equiv="Expires" content="0" />\n
             <meta http-equiv="Pragma" content="no-cache" />\n
-            <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />\n
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />\n
             <link rel="stylesheet" href="main.css" type="text/css" />\n
             <script type="text/javascript" src="main.js"></script>\n
             </head>\n
