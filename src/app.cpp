@@ -469,32 +469,19 @@ void App::applyColorScheme()
 
     if( AmarokConfig::schemeKDE() )
     {
-        QObject* const browserBar = m_pPlaylistWindow->child( "BrowserBar" );
-        QObjectList* const list = browserBar->queryList( "QWidget" );
-        list->prepend( browserBar );
+        QObjectList* const list = m_pPlaylistWindow->queryList( "QWidget" );
+        list->prepend( m_pPlaylistWindow );
 
         kdDebug() << "Discovered " << list->count() << " widgets in PlaylistWindow\n";
 
-        for( QObject *o = list->first(); o; o = list->next() )
-        {
-            //We have to unset the palette due to BrowserWin::setColors() setting
+        for( QObject *o = list->first(); o; o = list->next() ) {
+            //We have to unset the palette due to PlaylistWindow::setColors() setting
             //some widgets' palettes, and thus they won't propagate the changes
 
             static_cast<QWidget*>(o)->unsetPalette();
 
-            //FIXME this is hack for our greyed out text search box thingies (eg FileBrowser)
-            if ( qstrcmp( o->name(), "filter_edit" ) == 0 ) {
-                QEvent e( QEvent::FocusOut );
-                App::sendEvent( o, &e );
-            }
-
-            if( o->inherits( "KListView" ) )
-            {
-                //TODO find out how KListView alternate colors are updated when a
-                //     control center colour change is made
-
+            if ( o->inherits( "KListView" ) )
                 static_cast<KListView*>(o)->setAlternateBackground( KGlobalSettings::alternateBackgroundColor() );
-            }
         }
 
         delete list;
@@ -507,12 +494,6 @@ void App::applyColorScheme()
         QColorGroup group = QApplication::palette().active();
         const QColor bg( amaroK::blue );
         const QColor bgAlt( 57, 64, 98 );
-
-        /* PLEASE don't do this, it makes lots of widget ugly
-         * instead customise BrowserWin::setColors();
-         * OR figure out wicked colour scheme!
-         */
-        //group.setColor( QColorGroup::Foreground, Qt::white );
 
         group.setColor( QColorGroup::Text, Qt::white );
         group.setColor( QColorGroup::Base, bg );
