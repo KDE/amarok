@@ -62,7 +62,7 @@ MasEngine::MasEngine( )
 //        , m_xfadeFadeout( false )
 //        , m_xfadeValue( 0.0 )
 //        , m_xfadeCurrent( "invalue2" )
-  	, m_lastKnownPosition( 0 )
+        , m_lastKnownPosition( 0 )
         , m_state( Engine::Empty )
         , m_pPlayingTimer( new QTimer( this ) )
 
@@ -91,9 +91,14 @@ bool MasEngine::init()
     m_scopeSize = 1 << scopeSize;
     m_restoreEffects = restoreEffects;
     m_mixerHW = -1;   //initialize
-*/
+    */
 
-    masinit();
+    if (!masinit() ) {
+        KMessageBox::error( 0, i18n("amaroK could not initialise MAS. Check for a running mas daemon.") );
+        kdDebug() << "  connecting to mas daemon failed. Aborting. " << endl;
+        kdDebug() << k_funcinfo << "  returns FALSE !" << endl;
+        return false;
+    }
     
     connect ( m_pPlayingTimer, SIGNAL( timeout() ), this, SLOT( playingTimeout() ) );
                 
@@ -119,7 +124,7 @@ bool MasEngine::initMixer( bool hardware )
         hardware = initMixerHW();
     else
     {
-    	
+  
     }    
     kdDebug() << "END " << k_funcinfo << endl;
     return true;
@@ -145,7 +150,7 @@ bool MasEngine::canDecode( const KURL &url ) const
     kdDebug() << "mimetype: " << mimetype->name().latin1() << endl;
        
     return list.contains( mimetype->name().latin1() );
-}
+}  // canDecode
 
 
 bool MasEngine::load( const KURL& url, bool stream )
@@ -165,11 +170,15 @@ bool MasEngine::load( const KURL& url, bool stream )
     kdDebug() << "  url.protocol >" << url.protocol() <<"<"<< endl;
     kdDebug() << "  url.host     >" << url.host() <<"<"<< endl;
     kdDebug() << "  url.port     >" << url.port() <<"<"<< endl;
+    kdDebug() << "  url.isLocalFile()     >" << url.isLocalFile() <<"<"<< endl;
+    kdDebug() << "  url.htmlURL()     >" << url.htmlURL() <<"<"<< endl;
+    kdDebug() << "  url.prettyURL()     >" << url.prettyURL() <<"<"<< endl;
+    kdDebug() << "  url.isValid()     >" << url.isValid() <<"<"<< endl;
 
     if ( m_url == url ) {
-	return true;
+       return true;
     } else {
-        stop();
+       stop();
    }
     m_url = url;    
     kdDebug() << "  m_url(2) " << m_url << endl;
@@ -178,6 +187,11 @@ bool MasEngine::load( const KURL& url, bool stream )
     masc_setup_package( &pkg, pbuf, sizeof pbuf, MASC_PACKAGE_STATIC );       
     masc_pushk_int16( &pkg, (char*)"pos", pos );
     masc_push_string( &pkg, (char *)m_url.path().latin1() );
+    
+    QCString cs= QFile::encodeName( m_url.path());
+    kdDebug() << "  cs " << cs << endl;
+    //char *x = cs;
+    //masc_push_string( &pkg, x);
     masc_finalize_package( &pkg );
     
     mas_set( m_mp1a_source_device, (char*)"playlist", &pkg );
@@ -191,7 +205,7 @@ bool MasEngine::load( const KURL& url, bool stream )
 
     kdDebug() << "END " << k_funcinfo << endl;
     return true;
-}	// play
+}   // load
 
 
 bool MasEngine::play( unsigned int offset)
@@ -202,18 +216,18 @@ bool MasEngine::play( unsigned int offset)
     kdDebug() << "  param: offset " << offset << endl;
 
     if ( m_state != Engine::Playing ) {
-	/* change the track */
-	masc_setup_package( &pkg, pbuf, sizeof pbuf, MASC_PACKAGE_STATIC );
-	masc_pushk_int16( &pkg, (char*)"pos", 1 );
-	masc_finalize_package( &pkg );
-	mas_set( m_mp1a_source_device, (char*)"ctrack", &pkg );
-	masc_finalize_package( &pkg );
-	
-	mas_source_flush( m_codec ); 
-	mas_source_play( m_mp1a_source_device );
-	mas_source_play_on_mark( m_sbuf );
-	
-	printf( "mas_source_play()\n" );    
+        /* change the track */
+        masc_setup_package( &pkg, pbuf, sizeof pbuf, MASC_PACKAGE_STATIC );
+        masc_pushk_int16( &pkg, (char*)"pos", 1 );
+        masc_finalize_package( &pkg );
+        mas_set( m_mp1a_source_device, (char*)"ctrack", &pkg );
+        masc_finalize_package( &pkg );
+
+        mas_source_flush( m_codec ); 
+        mas_source_play( m_mp1a_source_device );
+        mas_source_play_on_mark( m_sbuf );
+
+        printf( "mas_source_play()\n" );    
     }
     
     m_pPlayingTimer->start(MAS_TIMER, false);
@@ -223,7 +237,7 @@ bool MasEngine::play( unsigned int offset)
 
     kdDebug() << "END " << k_funcinfo << endl;
     return true;
-}	// play
+}   // play
 
 
 /*
@@ -232,7 +246,7 @@ bool MasEngine::play( unsigned int offset)
 uint MasEngine::position() const
 {    
     return m_lastKnownPosition;
-}
+}   // position
 
 
 //////////////////////////////////////////////////////////////////////
@@ -252,14 +266,14 @@ void MasEngine::playingTimeout() //SLOT
     //masc_log_message( 0, (char*)"after calling source ctrack: pos %d", pos);
 
     if ( pos == 0 ) {
-    	m_pPlayingTimer->stop();
+        m_pPlayingTimer->stop();
 
-    	m_state = Engine::Idle;
-    	emit trackEnded( );
+        m_state = Engine::Idle;
+        emit trackEnded( );
     }
     
     //kdDebug() << "END " << k_funcinfo << endl;
-}
+}   // playingTimeout
 
 //SLOT
 
@@ -286,7 +300,6 @@ void MasEngine::stop()
     m_lastKnownPosition = 0;
     
     kdDebug() << "END " << k_funcinfo << endl;
-    //emit stopped();			// crash when stop called from the destructor
 }
 
 
@@ -295,27 +308,27 @@ void MasEngine::pause()
     kdDebug() << "BEGIN " << k_funcinfo << endl;
     
     if(m_state == Engine::Paused) {
- 	mas_source_play( m_mp1a_source_device );
-	mas_source_play_on_mark( m_sbuf );
-   	
-	m_state = Engine::Playing;
-	m_pPlayingTimer->start(MAS_TIMER, false);
+        mas_source_play( m_mp1a_source_device );
+        mas_source_play_on_mark( m_sbuf );
 
+        m_state = Engine::Playing;
+        m_pPlayingTimer->start(MAS_TIMER, false);
+    
     } else {
-	mas_source_pause( m_mp1a_source_device );
-	mas_source_pause( m_sbuf );
-	printf( "performed:\nmas_source_pause()\n" );
-	
-	m_state = Engine::Paused;
-	m_pPlayingTimer->stop();
+        mas_source_pause( m_mp1a_source_device );
+        mas_source_pause( m_sbuf );
+        printf( "performed:\nmas_source_pause()\n" );
+
+        m_state = Engine::Paused;
+        m_pPlayingTimer->stop();
     }
     
     emit stateChanged( state() );
         
     kdDebug() << "END " << k_funcinfo << endl;
-}
+}   // pause
 
-// TODO nothing yet
+// TODO depends on MAS support
 void MasEngine::seek( unsigned int ms )
 {
 //    kdDebug() << "BEGIN " << k_funcinfo << endl;
@@ -323,7 +336,7 @@ void MasEngine::seek( unsigned int ms )
     kdDebug() << "  param: ms " << ms << endl;
 
 //    kdDebug() << "END " << k_funcinfo << endl;
-}
+}   // seek
 
 
 void MasEngine::setVolumeSW( unsigned int percent )
@@ -340,7 +353,7 @@ void MasEngine::setVolumeSW( unsigned int percent )
     kdDebug() << "  after mas_mix_attenuate_db" << endl;
 
     kdDebug() << "END " << k_funcinfo << endl;
-}
+}   // setVolumeSW
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE METHODS
@@ -377,13 +390,49 @@ bool MasEngine::masinit()
     masc_log_message( 0, (char*)"" );
 
     err = mas_init();
+    kdDebug() << "  mas_init err:" << err << endl;
     if (err < 0)
     {
-    	// FIXME start server ?
-	KMessageBox::error( 0, i18n("amaroK could not initialise MAS. Check for a running mas daemon.") );
+        kdWarning() << "masd not running.. trying to start" << endl;
+        // masd seems not to be running, let's try to run it
+        QCString cmdline;
+        cmdline = QFile::encodeName( KStandardDirs::findExe( QString::fromLatin1( "kdesu" ) ) );
+        // TODO !!!hardcoded path
+        cmdline += " -n -f /usr/local/mas/log/mas-1.log -c ";
+        cmdline += "/usr/local/mas/bin/mas-launch";
+
+        kdDebug() << "  cmdline: " << cmdline << endl;
+        int status = ::system( cmdline );
+        kdDebug() << "  status: " << status << endl;
+        ::sleep( 15 );
+
+        if ( status != -1 && WIFEXITED( status ) )
+        {
+            // We could have a race-condition here.
+            // The correct way to do it is to make artsd fork-and-exit
+            // after starting to listen to connections (and running artsd
+            // directly instead of using kdeinit), but this is better
+            // than nothing.
+            int time = 0;
+            do
+            {
+                kdDebug() << "  time: " << time << endl;
+                // every time it fails, we should wait a little longer
+                // between tries
+                ::sleep( 1 + time / 2 );
+                err = mas_init();
+                kdDebug() << "  mas_init err: " << err << endl;
+            }
+            while ( ++time < 5 && ( err < 0 ) );
+        }
+    }
+    kdDebug() << "  mas_init err: " << err << endl;
+    
+    if (err < 0)
+    {
         return false;
     }
-    kdDebug() << "  after mas_init" << endl;
+    kdDebug() << "  mas_init successful ..." << endl;
 
     struct mas_data_characteristic* dc;
     struct mas_package nugget;
@@ -540,6 +589,7 @@ bool MasEngine::masinit()
     }
 
     return true;
-}
+}   // masinit
+
 #include "masengine.moc"
 
