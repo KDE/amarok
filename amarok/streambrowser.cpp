@@ -32,6 +32,7 @@
 #include <kapplication.h>
 
 #include <qlayout.h>
+#include <qpushbutton.h>
 #include <qdom.h>
 #include <qpixmap.h>
 #include <qlistview.h>
@@ -46,7 +47,9 @@ StreamBrowser::StreamBrowser( QWidget *parent, const char *name )
         KConfig *config;
         QString sync;
 
-        view = new StreamBrowserListView(this);
+        QPushButton *button = new QPushButton( "&Fetch Stream Information", this );
+
+        view = new StreamBrowserListView( this );
         view->setAllColumnsShowFocus(true);
         view->addColumn(i18n("Stream"));
         view->addColumn(i18n("Bandwidth"));
@@ -56,9 +59,11 @@ StreamBrowser::StreamBrowser( QWidget *parent, const char *name )
         view->addColumn(i18n("Type"));
 
         vbox = new QVBoxLayout(this, 5);
+        vbox->add(button);
         vbox->add(view);
 
-        setCaption(i18n("_drag_ streams to playlist"));
+
+        setCaption(i18n("StreamBrowser (drag streams to playlist)"));
         resize(600, 300);
 
         m_query = "<?xml version=\"1.0\"><query class=\"metasound\" type=\"connection\">0.1</query>\n";
@@ -84,11 +89,10 @@ StreamBrowser::StreamBrowser( QWidget *parent, const char *name )
 //        config->setGroup("settings");
 //        sync = config->readEntry("synchronization", "startup");
 
-view->setDragEnabled( true );
+        view->setDragEnabled( true );
 
-//        show();
-
-        slotUpdateStations();
+        connect( button, SIGNAL( clicked() ), this, SLOT( slotUpdateStations() ) );
+        connect( button, SIGNAL( clicked() ), button, SLOT( hide() ) );
 }
 
 StreamBrowser::~StreamBrowser()
