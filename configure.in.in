@@ -311,7 +311,7 @@ AC_SUBST(xmms_libs)
 # BEGIN DO_NOT_COMPILE CHECK
 ###############################################################################
 
-if test x$have_kdemm = xno -a x$have_gst = xno -a x$have_nmm = xno; then
+if test x$have_kdemm != xyes -a x$have_gst != xyes -a x$have_nmm != xyes; then
     DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
     no_engine=yes
 fi
