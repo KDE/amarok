@@ -58,7 +58,7 @@ if doi18n == "yes"
 
     # docs
     for lang in i18nlangs
-        lang = lang.chomp
+        lang.chomp!
         if FileTest.exists? "doc/#{lang}"
             `rm -Rf doc/#{lang}`
         end
@@ -86,7 +86,7 @@ if doi18n == "yes"
     Dir.mkdir( "po" )
 
     for lang in i18nlangs
-        lang = lang.chomp
+        lang.chomp!
         pofilename = "kde-i18n/#{lang}/messages/kdeextragear-1/amarok.po"
         cvsQuiet( "co -P #{pofilename}" )
         if not FileTest.exists? pofilename then next end
