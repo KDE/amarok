@@ -54,7 +54,7 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
    m_rows    = uint(double(height()+1) / (HEIGHT+1));
 
    //this is the y-offset for drawing from the top of the widget
-   m_y = (height() - (m_rows * (HEIGHT+1))) / 2;
+   m_y = (height() - (m_rows * (HEIGHT+1)) + 2) / 2;
 
    m_scope.resize( m_columns );
 
@@ -132,7 +132,7 @@ BlockAnalyzer::analyze( const Analyzer::Scope &s )
       //we start bltting from the top and go down
       //so blt blanks first, then blt glow blocks
       //REMEMBER: y is a number from 0 to m_rows, 0 means all blocks are glowing, m_rows means none are
-      bitBlt( canvas(), x*(WIDTH+1), y*(HEIGHT+1), glow(), 0, y*(HEIGHT+1) );
+      bitBlt( canvas(), x*(WIDTH+1), y*(HEIGHT+1) + m_y, glow(), 0, y*(HEIGHT+1) );
    }
 }
 
@@ -201,7 +201,7 @@ BlockAnalyzer::paletteChange( const QPalette& ) //virtual
    QPainter p( glow() );
    for( int y = 0; (uint)y < m_rows; ++y )
       //graduate the fg color
-      p.fillRect( 0, y*(HEIGHT+1) + m_y, WIDTH, HEIGHT, QColor( r+int(dr*y), g+int(dg*y), b+int(db*y) ) );
+      p.fillRect( 0, y*(HEIGHT+1), WIDTH, HEIGHT, QColor( r+int(dr*y), g+int(dg*y), b+int(db*y) ) );
 
    drawBackground();
 }
