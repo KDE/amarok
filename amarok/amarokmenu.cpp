@@ -126,7 +126,8 @@ MenuAction::plug( QWidget *w, int index )
         bar->alignItemRight( id );
 
         KToolBarButton* button = bar->getButton( id );
-        button->setPopup( new amaroK::Menu( 0 ) );
+        button->setPopup( new amaroK::Menu( 0 ) ); //do not parent to the toolbar! Causes the about dialog to
+                                                   //cause the toolbar to increase it's height when opened. Odd. 
         button->setName( "toolbutton_amarok_menu" );
 
         return containerCount() - 1;
