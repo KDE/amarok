@@ -73,13 +73,17 @@ class CollectionDB : public QObject
         QStringList artistAlbumList( bool withUnknown = true, bool withCompilations = true );
 
         //cover management methods
-        bool setImageForAlbum( const QString& artist, const QString& album, const QString& url, QImage pix );
-        QString getImageForAlbum( const uint artist_id, const uint album_id, const uint width = AmarokConfig::coverPreviewSize() );
-        QString getImageForAlbum( const QString artist, const QString album, const uint width = AmarokConfig::coverPreviewSize() );
+        bool setAlbumImage( const QString& artist, const QString& album, const KURL& url );
+        bool setAlbumImage( const QString& artist, const QString& album, const QImage img );
+
+        QString albumImage( const uint artist_id, const uint album_id, const uint width = AmarokConfig::coverPreviewSize() );
+        QString albumImage( const QString artist, const QString album, const uint width = AmarokConfig::coverPreviewSize() );
+
+        bool removeAlbumImage( const uint artist_id, const uint album_id );
+        bool removeAlbumImage( const QString artist, const QString album );
+
         void addImageToPath( const QString path, const QString image, bool temporary );
         QString getImageForPath( const QString path, uint width = AmarokConfig::coverPreviewSize() );
-        bool removeImageFromAlbum( const uint artist_id, const uint album_id );
-        bool removeImageFromAlbum( const QString artist, const QString album );
 
         uint artistID( QString value, bool autocreate = true, bool useTempTables = false );
         QString artistValue( uint id );
@@ -153,6 +157,9 @@ class CollectionEmitter : public QObject
     signals:
         void scanStarted();
         void scanDone( bool changed );
+
+        void metaDataEdited( const MetaBundle &bundle );
+
         void coverFetched( const QString &keyword );
         void coverFetched();
         void coverFetcherError();

@@ -31,6 +31,7 @@ class ContextBrowser : public QVBox, public EngineObserver
         void openURLRequest(const KURL &url );
         void collectionScanStarted();
         void collectionScanDone();
+        void metaDataEdited( const MetaBundle &bundle );
 
     protected:
         void engineTrackEnded( int finalPosition, int trackLength );

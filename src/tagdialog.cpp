@@ -281,7 +281,7 @@ void TagDialog::readTags()
     kLineEdit_samplerate->setText( m_bundle.prettySampleRate() );
     kLineEdit_location->setText( m_bundle.url().isLocalFile() ? m_bundle.url().path() : m_bundle.url().url() );
     // draw the album cover on the dialog
-    QString cover = CollectionDB().getImageForAlbum( m_bundle.artist(), m_bundle.album() );
+    QString cover = CollectionDB().albumImage( m_bundle.artist(), m_bundle.album() );
     if( m_currentCover != cover ) {
         pixmap_cover->setPixmap( QPixmap( cover, "PNG" ) );
         m_currentCover = cover;
@@ -473,7 +473,7 @@ TagDialog::writeTag( MetaBundle mb, bool updateCB )
         if( result )
             //update the collection db
             CollectionDB().updateTags( path, mb, updateCB );
-        
+
         QApplication::restoreOverrideCursor();
 
         return result;

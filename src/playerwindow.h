@@ -98,6 +98,7 @@ class PlayerWidget : public QWidget, public EngineObserver
     public slots:
         void createAnalyzer( int = 0 );
         void setEffectsWindowShown( bool );
+        void metaDataEdited( const MetaBundle &bundle );
 
     protected:
     /** Observer reimpls **/
@@ -157,6 +158,8 @@ class PlayerWidget : public QWidget, public EngineObserver
         amaroK::Slider *m_pVolSlider;
         QToolButton    *m_pButtonPlay;
         QToolButton    *m_pButtonPause;
+
+        QString m_currentURL;
 };
 
 #endif

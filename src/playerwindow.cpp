@@ -19,6 +19,7 @@ email                : markey@web.de
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "analyzerbase.h"
+#include "collectiondb.h"
 #include "enginecontroller.h"
 #include "metabundle.h"      //setScroll()
 #include "playerwindow.h"
@@ -106,7 +107,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     //another quit shortcut because the other window has all the accels
     QAccel *accel = new QAccel( this );
     accel->insertItem( CTRL + Key_Q );
-    connect( accel, SIGNAL(activated( int )), kapp, SLOT(quit()) );
+    connect( accel, SIGNAL( activated( int ) ), kapp, SLOT( quit() ) );
 
     QFont font;
     font.setBold( true );
@@ -197,6 +198,8 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     //KWin::setOnAllDesktops( winId(), true );
 
     connect( m_pAnimTimer, SIGNAL( timeout() ), SLOT( drawScroll() ) );
+    connect( CollectionDB::emitter(), SIGNAL( metaDataEdited( const MetaBundle & ) ),
+                                        SLOT( metaDataEdited( const MetaBundle & ) ) );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
@@ -338,6 +341,8 @@ void PlayerWidget::engineVolumeChanged( int percent )
 
 void PlayerWidget::engineNewMetaData( const MetaBundle &bundle, bool )
 {
+    m_currentURL == bundle.url().path();
+
     m_pSlider->setMaxValue( bundle.length() * 1000 );
     m_pSlider->setEnabled( bundle.length() > 0 );
 
@@ -771,6 +776,24 @@ void PlayerWidget::setEffectsWindowShown( bool on )
 }
 
 
+void PlayerWidget::metaDataEdited( const MetaBundle &bundle )
+{
+  if ( m_currentURL == bundle.url().path() )
+  {
+      kdDebug() << "LALALA: current song edited, updating view" << endl;
+      kdDebug() << bundle.album() << endl;
+      QStringList list( bundle.prettyTitle() );
+      list << bundle.album();
+      if( bundle.length() ) list << bundle.prettyLength();
+      setScroll( list );
+
+      //update image tooltip
+      TrackToolTip::add( m_pScrollFrame, bundle );
+
+      update(); //we need to update rateString
+  }
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS NavButton
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -824,8 +847,8 @@ NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
     setFocusPolicy( QWidget::NoFocus );
     setEnabled( action->isEnabled() );
 
-    connect( action, SIGNAL(enabled( bool )), SLOT(setEnabled( bool )) );
-    connect( this, SIGNAL(clicked()), action, SLOT(activate()) );
+    connect( action, SIGNAL( enabled( bool ) ),   SLOT( setEnabled( bool ) ) );
+    connect( this,   SIGNAL( clicked() ), action, SLOT( activate() ) );
     startTimer( GLOW_INTERVAL );
 }
 

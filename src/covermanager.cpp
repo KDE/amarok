@@ -141,7 +141,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     #endif
 
     //load the 'nocover' icon
-    nocover = new QPixmap( m_db->getImageForAlbum( QString::null, QString::null, 50 ) );
+    nocover = new QPixmap( m_db->albumImage( QString::null, QString::null, 50 ) );
 
     //cover view
     m_coverView = new CoverView( coverWidget );
@@ -217,7 +217,7 @@ void CoverManager::viewCover( const QString artist, const QString album, QWidget
     //QDialog means "escape" works as expected
     QDialog *dialog = new QDialog( parent, 0, false, WDestructiveClose | WType_TopLevel );
     dialog->setCaption( kapp->makeStdCaption( artist + " - " + album ) );
-    QPixmap pixmap( CollectionDB().getImageForAlbum( artist, album, 0 ) );
+    QPixmap pixmap( CollectionDB().albumImage( artist, album, 0 ) );
     dialog->setPaletteBackgroundPixmap( pixmap );
     dialog->setFixedSize( pixmap.size() );
     dialog->show();
@@ -439,9 +439,8 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
             KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select cover image file - amaroK" ) );
             if ( !file.isEmpty() )
             {
-                QImage img( file.path() );
                 qApp->processEvents();    //it may takes a while so process pending events
-                m_db->setImageForAlbum( item->artist(), item->album(), QString(), img );
+                m_db->setAlbumImage( item->artist(), item->album(), file );
                 item->loadCover();
             }
             break;
@@ -638,7 +637,7 @@ void CoverManager::deleteSelectedCovers()
     if ( button == KMessageBox::Continue ) {
         for ( CoverViewItem* item = selected.first(); item; item = selected.next() ) {
             qApp->processEvents();
-            if ( m_db->removeImageFromAlbum( item->artist(), item->album() ) )    //delete selected cover
+            if ( m_db->removeAlbumImage( item->artist(), item->album() ) )    //delete selected cover
                   item->loadCover();    //show the nocover icon
         }
     }
@@ -777,7 +776,7 @@ QDragObject *CoverView::dragObject()
     KMultipleDrag *drag = new KMultipleDrag( this );
     drag->setPixmap( item->coverPixmap() );
     drag->addDragObject( new QIconDrag( 0 ) );
-    QString imagePath = CollectionDB().getImageForAlbum( item->artist(), item->album(), 0 );
+    QString imagePath = CollectionDB().albumImage( item->artist(), item->album(), 0 );
     drag->addDragObject( new QImageDrag( QImage( imagePath ) ) );
     drag->addDragObject( new KURLDrag( KURL( imagePath ) ) );
 
@@ -792,7 +791,7 @@ CoverViewItem::CoverViewItem( QIconView *parent, QIconViewItem *after, QString a
     : KIconViewItem( parent, after, album )
     , m_artist( artist )
     , m_album( album )
-    , m_coverImagePath( CollectionDB().getImageForAlbum( m_artist, m_album, 0 ) )
+    , m_coverImagePath( CollectionDB().albumImage( m_artist, m_album, 0 ) )
     , m_hasCover( QFile::exists( m_coverImagePath ) )
     , m_coverPix( 0 )
 {
@@ -809,7 +808,7 @@ void CoverViewItem::loadCover()
     m_hasCover = QFile::exists( m_coverImagePath );
 
     if( m_hasCover ) {
-        m_coverPix = QPixmap( CollectionDB().getImageForAlbum( m_artist, m_album ) );  //create the scaled cover
+        m_coverPix = QPixmap( CollectionDB().albumImage( m_artist, m_album ) );  //create the scaled cover
     }
     else if( !m_coverPix.isNull() )
         m_coverPix.resize( 0, 0 );    //make it a null pixmap
@@ -895,11 +894,11 @@ void CoverViewItem::dropped( QDropEvent *e, const QValueList<QIconDragItem> & )
            if( button == KMessageBox::Cancel )
                return;
        }
-       
+
        QImage img;
        QImageDrag::decode( e, img );
-       CollectionDB().setImageForAlbum( artist(), album(), QString(), img ); 
-       m_coverImagePath = CollectionDB().getImageForAlbum( m_artist, m_album, 0 ); 
+       CollectionDB().setAlbumImage( artist(), album(), img ); 
+       m_coverImagePath = CollectionDB().albumImage( m_artist, m_album, 0 ); 
        m_hasCover = QFile::exists( m_coverImagePath );
        loadCover();
     }

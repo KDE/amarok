@@ -98,6 +98,8 @@ ContextBrowser::ContextBrowser( const char *name )
                                             SLOT( collectionScanStarted() ) );
     connect( CollectionDB::emitter(),     SIGNAL( scanDone( bool ) ),
                                             SLOT( collectionScanDone() ) );
+    connect( CollectionDB::emitter(),     SIGNAL( metaDataEdited( const MetaBundle & ) ),
+                                            SLOT( metaDataEdited( const MetaBundle & ) ) );
 
     if ( m_db->isEmpty() || !m_db->isValid() )
     {
@@ -187,7 +189,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
     if ( m_url.protocol() == "fetchcover" )
     {
         QStringList info = QStringList::split( " @@@ ", m_url.path() );
-        QImage img( m_db->getImageForAlbum( info[0], info[1], 0 ) );
+        QImage img( m_db->albumImage( info[0], info[1], 0 ) );
         const QString amazonUrl = img.text( "amazon-url" );
         kdDebug() << "[ContextBrowser] Embedded amazon url in cover image: " << amazonUrl << endl;
 
@@ -232,6 +234,18 @@ void ContextBrowser::collectionScanDone()
     }
 }
 
+
+void ContextBrowser::metaDataEdited( const MetaBundle &bundle )
+{
+    if ( m_currentTrack->url() == bundle.url() )
+    {
+        kdDebug() << "current song edited, updating view" << endl;
+
+        delete m_currentTrack;
+        m_currentTrack = new MetaBundle( bundle );
+        showCurrentTrack();
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PROTECTED
@@ -326,7 +340,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         KPopupMenu menu( this );
         menu.insertTitle( i18n( "Cover Image" ) );
         menu.insertItem( SmallIcon( "viewmag" ), i18n( "Show Fullsize" ), SHOW );
-        menu.setItemEnabled( SHOW, !m_db->getImageForAlbum( info[0], info[1], 0 ).contains( "nocover" ) );
+        menu.setItemEnabled( SHOW, !m_db->albumImage( info[0], info[1], 0 ).contains( "nocover" ) );
         menu.insertItem( SmallIcon( "www" ), i18n( "Fetch From amazon.com" ), FETCH );
     #ifndef AMAZON_SUPPORT
         menu.setItemEnabled( FETCH, false );
@@ -380,7 +394,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
                                           i18n("&Delete Confirmation") );
 
                 if ( button == KMessageBox::Continue ) {
-                    m_db->removeImageFromAlbum( info[0], info[1] );
+                    m_db->removeAlbumImage( info[0], info[1] );
                     showCurrentTrack();
                 }
         }
@@ -611,7 +625,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                 << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) )
                                 << escapeHTMLAttr( m_currentTrack->artist() )
                                 << escapeHTMLAttr( m_currentTrack->album() )
-                                << escapeHTMLAttr( m_db->getImageForAlbum( m_currentTrack->artist(), m_currentTrack->album() ) )
+                                << escapeHTMLAttr( m_db->albumImage( m_currentTrack->artist(), m_currentTrack->album() ) )
                                 << i18n( "Track played once", "Track played %n times", values[2].toInt() )
                                 << i18n( "Score: %1" ).arg( values[3] )
                                 << i18n( "Last play: %1" ).arg( values[1].left( values[1].length() - 3 ) )
@@ -637,7 +651,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                     << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) )
                                     << escapeHTMLAttr( m_currentTrack->artist() )
                                     << escapeHTMLAttr( m_currentTrack->album() )
-                                    << escapeHTMLAttr( m_db->getImageForAlbum( m_currentTrack->artist(), m_currentTrack->album() ) )
+                                    << escapeHTMLAttr( m_db->albumImage( m_currentTrack->artist(), m_currentTrack->album() ) )
                                     )
                              );
     }
@@ -785,7 +799,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                     << values[ i+1 ] //album.id
                                     << escapeHTMLAttr( m_currentTrack->artist() ) // artist name
                                     << escapeHTMLAttr( values[ i ] ) // album.name
-                                    << escapeHTMLAttr( m_db->getImageForAlbum( m_currentTrack->artist(), values[ i ], 50 ) )
+                                    << escapeHTMLAttr( m_db->albumImage( m_currentTrack->artist(), values[ i ], 50 ) )
                                     << QString::number( artist_id )
                                     << values[ i+1 ] //album.id
                                     << escapeHTML( values[ i ] ) // album.name
