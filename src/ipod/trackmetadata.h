@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #ifndef TRACKMETADATA_H
 #define TRACKMETADATA_H
 
@@ -30,26 +31,27 @@ Holds track metadata information: Additional to the information itunesdb::Track 
 @author Michael Schulze
 */
 
+
+class MetaBundle;
 class TrackList;
 
 class TrackMetadata : public itunesdb::Track
 {
-public:
-    TrackMetadata();
-    TrackMetadata(Q_UINT32 trackid);
-    TrackMetadata(const Track& track);
-    
-    ~TrackMetadata();
-    
-    const QString& getFileExtension() const;
-    void setFileExtension(const QString& extension);
-    bool readFromFile(const QString& filename);
-    
-    QStringList& toLogEntry(QStringList& valuebuffer) const;
-    bool readFromLogEntry(const QStringList& values);
+    public:
+        TrackMetadata();
+        TrackMetadata(Q_UINT32 trackid);
+        TrackMetadata(const Track& track);
 
-private:
-    QString file_extension;
+        ~TrackMetadata();
+        const QString& getFileExtension() const;
+        void setFileExtension(const QString& extension);
+        bool readFromBundle( const MetaBundle& bundle );
+
+        QStringList& toLogEntry(QStringList& valuebuffer) const;
+        bool readFromLogEntry(const QStringList& values);
+
+    private:
+        QString file_extension;
 };
 
 #endif

@@ -540,12 +540,40 @@ MediaDevice::transferFiles()  //SLOT
         m_parent->m_progress->setTotalSteps( m_parent->m_transferList->childCount() );
         m_parent->m_progress->show();
 
-        KIO::CopyJob *job = KIO::copy( m_transferURLs, KURL( "ipod:/Artists/" ), true );
-        connect( job, SIGNAL( copyingDone( KIO::Job *, const KURL &, const KURL &, bool, bool ) ),
-                this,  SLOT( fileTransferred() ) );
+        // ok, let's copy the stuff to the ipod
+        m_ipod->lock( true );
+        if ( m_ipod->ensureConsistency() )
+        {
+            // iterate through items
+            KURL::List::Iterator it = m_transferURLs.begin();
+            for ( ; it != m_transferURLs.end(); ++it )
+            {
+                kdDebug() << "[MediaBrowser] Transfering: " << (*it).path() << endl;
+                MetaBundle bundle( *it, true, CollectionDB::instance() );
 
-        connect( job, SIGNAL( result( KIO::Job * ) ),
-                this,  SLOT( fileTransferFinished() ) );
+                TrackMetadata track = m_ipod->createNewTrackMetadata();
+                track.setPath( track.getPath() + ".mp3" );
+                QString trackpath = m_ipod->getRealPath( track.getPath() );
+
+                KIO::CopyJob *job = KIO::copy( *it, KURL( trackpath ), true );
+                connect( job, SIGNAL( copyingDone( KIO::Job *, const KURL &, const KURL &, bool, bool ) ),
+                        this,  SLOT( fileTransferred() ) );
+
+                if( !track.readFromBundle( bundle ) )
+                {
+                    kdDebug() << "[MediaBrowser] Reading tags failed! File not added!" << endl;
+                    QFile::remove( trackpath );
+                }
+                else
+                    m_ipod->addTrack( track );
+            }
+        }
+        else
+            kdDebug() << "[MediaBrowser] iPod inconsistent!" << endl;
+
+        m_ipod->unlock();
+        syncIPod();
+        fileTransferFinished();
     }
     else
         kdDebug() << "[MediaBrowser] iPod inconsistent!" << endl;
