@@ -118,7 +118,10 @@ GstEngine::GstEngine( int scopeSize )
     GstElement *spider     = gst_element_factory_make( "spider", "spider" );
     /* and an audio sink */
     m_pAudiosink           = gst_element_factory_make( "osssink", "play_audio" );
-//     GstElement *pIdentity  = gst_element_factory_make( "identity", "rawscope" );
+    GstElement *pIdentity  = gst_element_factory_make( "identity", "rawscope" );
+
+    g_signal_connect ( G_OBJECT( m_pAudiosink ), "handoff",
+                       G_CALLBACK( handoff_cb ), m_pThread );
 
 //     g_signal_connect ( G_OBJECT( pIdentity ), "handoff",
 //                        G_CALLBACK( handoff_cb ), m_pThread );
@@ -127,7 +130,7 @@ GstEngine::GstEngine( int scopeSize )
                        G_CALLBACK( eos_cb ), m_pThread );
 
     /* add objects to the main pipeline */
-    gst_bin_add_many( GST_BIN( m_pThread ), m_pFilesrc, spider, m_pAudiosink, /*pIdentity,*/ NULL );
+    gst_bin_add_many( GST_BIN( m_pThread ), m_pFilesrc, spider, /*pIdentity,*/ m_pAudiosink, NULL );
     /* link src to sink */
     
     gst_element_link_many( m_pFilesrc, spider, /*pIdentity,*/ m_pAudiosink, NULL );
@@ -229,7 +232,7 @@ bool GstEngine::isStream() const
 
 std::vector<float>* GstEngine::scope()
 {
-    std::vector<float> *buf = new std::vector<float>( mScopeLength);
+    std::vector<float> *buf = new std::vector<float>( mScopeLength );
     char *front = (char *)(&buf->front());
     memcpy(front, mCurrent, (mScopeEnd - mCurrent) * sizeof(float));
     memcpy(front + (mScopeEnd - mCurrent)*sizeof(float), mScope,

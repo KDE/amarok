@@ -22,7 +22,11 @@
 #include <config.h>
 #endif
 
+#define ANIM_TIMER 30
 #define APP_VERSION "0.8.4"
+#define MAIN_TIMER 150
+#define SCOPE_SIZE 6
+#define VOLUME_MAX 100
 
 #include <kglobalaccel.h>
 #include <kuniqueapplication.h>

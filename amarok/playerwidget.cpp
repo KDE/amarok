@@ -458,8 +458,8 @@ void PlayerWidget::wheelEvent( QWheelEvent *e )
 
     if ( pApp->m_Volume < 0 )
         pApp->m_Volume = 0;
-    if ( pApp->m_Volume > 100 )
-        pApp->m_Volume = 100;
+    if ( pApp->m_Volume > VOLUME_MAX )
+        pApp->m_Volume = VOLUME_MAX;
 
     pApp->slotVolumeChanged( pApp->m_Volume );
     m_pSliderVol->setValue( pApp->m_Volume );

@@ -65,11 +65,6 @@ email                : markey@web.de
 #include <qvaluelist.h>
 #include <qpushbutton.h> //initPlayerWidget()
 
-#define VOLUME_MAX 100
-#define MAIN_TIMER 150
-#define ANIM_TIMER 30
-#define SCOPE_SIZE 6
-
 PlayerApp::PlayerApp()
         : KUniqueApplication( true, true, false )
         , m_pGlobalAccel( new KGlobalAccel( this ) )
