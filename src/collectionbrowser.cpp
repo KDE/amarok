@@ -385,14 +385,13 @@ CollectionView::renderView( )  //SLOT
 
     for ( uint i = 0; i < values.count(); i += 2 )
     {
-        if ( values[i].isEmpty() ) continue;
+        if ( values[i].isEmpty() )
+          values[i] = i18n( "Unknown" );
 
-        if ( m_category1 == i18n("Artist") && values[i + 1] == "1" )
+        if ( m_category1 == i18n( "Artist" ) && ( values[i + 1] == "1" || values[i] == i18n( "Various Artists" ) ) )
         {
-            if ( addedVA ) continue;
-
-            values[i] = i18n( "Various Artists" );
-            addedVA = TRUE;
+            addedVA = true;
+            continue;
         }
 
         KListViewItem* item = new KListViewItem( this );
@@ -400,6 +399,16 @@ CollectionView::renderView( )  //SLOT
         item->setDragEnabled( true );
         item->setDropEnabled( false );
         item->setText( 0, values[ i ] );
+        item->setPixmap( 0, pixmap );
+    }
+
+    if ( addedVA )
+    {
+        KListViewItem* item = new KListViewItem( this );
+        item->setExpandable( true );
+        item->setDragEnabled( true );
+        item->setDropEnabled( false );
+        item->setText( 0, i18n( "Various Artists" ) );
         item->setPixmap( 0, pixmap );
     }
 }
