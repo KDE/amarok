@@ -891,8 +891,6 @@ Playlist::setColumnWidth( int col, int width )
 void
 Playlist::rename( QListViewItem *item, int column ) //SLOT
 {
-    KListView::rename( item, column );
-
     switch( column )
     {
         case PlaylistItem::Artist:
@@ -915,6 +913,31 @@ Playlist::rename( QListViewItem *item, int column ) //SLOT
     renameLineEdit()->completionObject()->setCompletionMode( KGlobalSettings::CompletionPopupAuto );
 
     m_editOldTag = static_cast<PlaylistItem *>(item)->exactText( column );
+
+    KListView::rename( item, column );
+}
+
+void
+Playlist::writeTag( QListViewItem *qitem, const QString &newTag, int column ) //SLOT
+{
+    if( m_itemsToChangeTagsFor.isEmpty() )
+        m_itemsToChangeTagsFor.append( (PlaylistItem*)qitem );
+
+    for( PlaylistItem *item = m_itemsToChangeTagsFor.first(); item; item = m_itemsToChangeTagsFor.next() )
+    {
+        const QString &oldTag = item == qitem ? m_editOldTag : item->exactText(column);
+
+        if( oldTag != newTag && !(oldTag.isEmpty() && newTag.isEmpty()) )
+        {
+            if( column == PlaylistItem::Score )
+                CollectionDB::instance()->setSongPercentage( item->url().path(), newTag.toInt() );
+            else
+                ThreadWeaver::instance()->queueJob( new TagWriter( item, oldTag, newTag, column ) );
+        }
+    }
+
+    m_itemsToChangeTagsFor.clear();
+    m_editOldTag = QString::null;
 }
 
 void
@@ -1830,6 +1853,17 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     }
 
     case EDIT:
+        // do this because QListView sucks, if track change occurs during
+        // an edit event, the rename operation ends, BUT, the list is not
+        // cleared because writeTag is never called. Q/K ListView sucks
+        m_itemsToChangeTagsFor.clear();
+
+        if( !item->isSelected() )
+            m_itemsToChangeTagsFor.append( item );
+        else
+            for( MyIt it( this, MyIt::Selected ); *it; ++it )
+                m_itemsToChangeTagsFor.append( *it );
+
         rename( item, col );
         break;
 
@@ -2174,40 +2208,7 @@ Playlist::slotEraseMarker() //SLOT
 }
 
 void
-Playlist::writeTag( QListViewItem *lvi, const QString &newTag, int column ) //SLOT
-{
-    QPtrList<QListViewItem> list;    //the list of the items to be edited
-    if( !lvi->isSelected() )
-        list.append( lvi );    //when the user is using the tab ordered renaming edit only the renaming item
-    else
-        list = selectedItems();
-
-    for( QListViewItem *item = list.first(); item; item = list.next() ) {
-        #define item static_cast<PlaylistItem*>(item)
-
-        if( !item->isVisible() )
-           continue;
-
-        const QString &oldTag = item == lvi ? m_editOldTag : item->exactText(column);
-        if( oldTag != newTag && !(oldTag.isEmpty() && newTag.isEmpty()) )  //write the new tag only if it's changed
-        {
-            if ( column == PlaylistItem::Score )
-                // update score in database, only
-                CollectionDB::instance()->setSongPercentage( item->url().path(), newTag.toInt() );
-            else
-                ThreadWeaver::instance()->queueJob( new TagWriter( item, oldTag, newTag, column ) );
-        }
-
-        #undef item
-    }
-
-    /*QListViewItem *below = lvi->itemBelow();
-    //FIXME will result in nesting of this function?
-    if ( below && below->isSelected() )
-        rename( below, column );*/
-}
-
-void Playlist::showTagDialog( QPtrList<QListViewItem> items )
+Playlist::showTagDialog( QPtrList<QListViewItem> items )
 {
     // despite being modal, the user can still modify the playlist
     // in a dangerous fashion, eg dcop clear() will get processed by

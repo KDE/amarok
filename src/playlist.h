@@ -211,6 +211,8 @@ class Playlist : private KListView, public EngineObserver
         QPtrList<PlaylistItem> m_prevTracks; //the previous history
         QPtrList<PlaylistItem> m_nextTracks; //the tracks to be played after the current track
 
+        QPtrList<PlaylistItem> m_itemsToChangeTagsFor;
+
         int m_firstColumn;
         int m_totalLength;
         int m_selectCounter;
