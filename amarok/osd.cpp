@@ -57,12 +57,18 @@ void OSDWidget::renderOSDText( const QString &text )
 
     QFontMetrics *fm = new QFontMetrics( font );
     /* AlignAuto = we want to align Arabic to the right, don't we? */
-    QRect fmRect = fm->boundingRect( 0, 0, d->width(), d->height(), AlignAuto | WordBreak, text );
+    /* Sane width and height limits - don't go over the screen dimensions,
+       and don't cover whole desktop neither. */
+    QRect fmRect = fm->boundingRect( 0, 0, d->width()-40, d->height()-100, AlignAuto | WordBreak, text );
 
     QFont titleFont("Arial", 12, QFont::Bold);
     QFontMetrics *titleFm = new QFontMetrics( titleFont );
+    /* Measure how much title will take, but don't let it take too much vertically. */
+    QRect titleRect = titleFm->boundingRect( 0, 0, d->width()-40, titleFm->height(), AlignAuto, m_appName );
 
-    fmRect.addCoords( 0, 0, 20, titleFm->height() );
+    if ( fmRect.width() < titleRect.width() )
+	fmRect.setWidth( titleRect.width() );
+    fmRect.addCoords( 0, 0, 20, titleRect.height() );
 
     resize( fmRect.size() );
     //    QPixmap *buffer = new QPixmap( fmRect.width(), fmRect.height() );
