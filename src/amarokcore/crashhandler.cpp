@@ -1,19 +1,12 @@
-//Copyright (C) 2005 Max Howell <max.howell@methylblue.com>
-//Licensed as described in the COPYING accompanying this distribution
-//
-
-#include "debug.h"
-
-#include "amarok.h"
-#include "amarokconfig.h"
-#include "crashhandler.h"
-#include <cstdio>         //popen, fread
-#include <kapplication.h> //invokeMailer()
-#include <kdeversion.h>
-#include <klocale.h>
-#include <ktempfile.h>
-#include <qfile.h>
-#include <qtextstream.h>
+/***************************************************************************
+ *   Copyright (C) 2005 Max Howell <max.howell@methylblue.com>             *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 extern "C"
 {
@@ -21,6 +14,19 @@ extern "C"
     #include <sys/wait.h>  //waitpid
     #include <unistd.h>    //write, getpid
 }
+
+#include "amarok.h"
+#include "amarokconfig.h"
+#include "crashhandler.h"
+#include "debug.h"
+#include <cstdio>         //popen, fread
+#include <kapplication.h> //invokeMailer()
+#include <kdeversion.h>
+#include <klocale.h>
+#include <ktempfile.h>
+#include <qfile.h>
+#include <qregexp.h>
+#include <qtextstream.h>
 
 
 namespace amaroK
@@ -31,6 +37,21 @@ namespace amaroK
         CrashHandlerWidget();
     };
     #endif
+
+    static QString
+    runCommand( const QCString &command )
+    {
+        static const uint SIZE = 40960; //40 KiB
+        static char stdout[ SIZE ];
+
+        debug() << "Running: " << command << endl;
+
+        FILE *process = ::popen( command, "r" );
+        stdout[ std::fread( (void*)stdout, sizeof(char), SIZE-1, process ) ] = '\0';
+        ::pclose( process );
+
+        return QString::fromLocal8Bit( stdout );
+    }
 
     void
     Crash::crashHandler( int /*signal*/ )
@@ -44,8 +65,8 @@ namespace amaroK
             // we are the child process (the result of the fork)
             debug() << "amaroK is crashing...\n";
 
-            QString bt;
             QString path = amaroK::saveLocation() + "backtrace";
+            QString subject = APP_VERSION;
             QString body = i18n(
                     "amaroK has crashed! We're terribly sorry about this :(\n\n"
                     "But, all is not lost! You could potentially help us fix the crash. "
@@ -53,50 +74,83 @@ namespace amaroK
                     "or if you have time, write a brief description of how the crash happened first.\n\n"
                     "Many thanks.\n\n" );
 
-            body += "Engine      %1\n"
+            body += "Engine:     %1\n"
                     "Build date: " __DATE__ "\n"
                     "CC version: " __VERSION__ "\n" //assuming we're using GCC
                     "KDElibs:    " KDE_VERSION_STRING "\n";
 
+            #ifdef NDEBUG
+            body += "NDEBUG:     true";
+            #endif
 
             /// obtain the backtrace with gdb
-
-            const QString GDB = "gdb";
-
-//             if ( KStandardDirs::findExe( GDB ).isEmpty() ) {
-//                 KMessageBox::error( 0, i18n("Could not generate a backtrace because 'gdb' was not found.") );
-//                 std::_exit( 235 );
-//             }
 
             KTempFile temp;
             temp.setAutoDelete( true );
 
             const int handle = temp.handle();
 
-            ::write( handle, "bt\n\n", 4 );
+//             QCString gdb_command_string =
+//                     "file amarokapp\n"
+//                     "attach " + QCString().setNum( ::getppid() ) + "\n"
+//                     "bt\n" "echo \\n\n"
+//                     "thread apply all bt\n";
+
+            const QCString gdb_batch =
+                    "bt\n"
+                    "echo \\n\\n\n"
+                    "echo ==== (gdb) thread apply all bt ====\\n\n"
+                    "thread apply all bt\n";
+
+            ::write( handle, gdb_batch, gdb_batch.length() );
             ::fsync( handle );
 
-            QCString
+            // so we can read stderr too
+            ::dup2( ::fileno( ::stdout ), ::fileno( ::stderr ) );
+
+            QCString gdb;
             gdb  = "gdb --nw -n --batch -x ";
             gdb += temp.name().latin1();
             gdb += " amarokapp ";
             gdb += QCString().setNum( ::getppid() );
 
-            debug() << gdb << endl;
+            QString bt = runCommand( gdb );
 
-            const uint SIZE = 40960; //40 KiB
-            char stdout[ SIZE ];
-            FILE *process = ::popen( gdb, "r" );
-            stdout[ std::fread( (void*)stdout, sizeof(char), SIZE, process ) ] = '\0';
-            ::pclose( process );
+            /// clean up
+            bt.remove( QRegExp("(\\(no debugging symbols found\\)\\.\\.\\.)+\n") );
+            bt.stripWhiteSpace();
 
-            bt = QString::fromLocal8Bit( stdout );
+            /// analyze usefulness
+            const QString fileCommandOutput = runCommand( "file `which amarokapp`" );
 
+            if( fileCommandOutput.findRev( "not stripped", false ) >= 0 )
+                subject += " [stripped]";
+
+            const int invalidFrames = bt.contains( QRegExp("\n#[0-9]+\\s+0x[0-9A-Fa-f]+ \\w* \\?\\?") );
+            const int validFrames = bt.contains( QRegExp("\n#[0-9]+\\s+0x[0-9A-Fa-f]+") );
+
+            if( invalidFrames > 0 && validFrames / invalidFrames < 2 )
+                subject += " [likely invalid]";
+
+            if( bt.isEmpty() )
+                subject += " [empty]";
+
+            if( bt.contains( QRegExp("at .*\\.cpp:\\d*") ) >= 0 )
+                subject += " [good]";
+
+
+            //TODO -fomit-frame-pointer buggers up the backtrace, so detect it
+            //TODO -O optimization can rearrange execution and stuff so show a warning for the developer
+            //TODO pass the CXXFLAGS used with the email
 
             {   /// write a file to contain the backtrace
+                //TODO using Qt is dodgy as may depend on corrupted QApplication instance
                 QFile file( path );
                 file.open( IO_WriteOnly );
-                QTextStream( &file ) << "GDB output:\n\n" << bt << "\n\nkdBacktrace():\n\n" << kdBacktrace();
+                QTextStream( &file )
+                        << "==== file `which amarokapp` =======\n" << fileCommandOutput << "\n\n"
+                        << "==== (gdb) bt =====================\n" << bt << "\n\n"
+                        << "==== kdBacktrace() ================\n" << kdBacktrace();
             }
 
             //TODO startup notification
@@ -104,7 +158,7 @@ namespace amaroK
                     /*to*/          "amarok-backtraces@lists.sf.net",
                     /*cc*/          QString(),
                     /*bcc*/         QString(),
-                    /*subject*/     "amaroK " APP_VERSION " Crash Backtrace",
+                    /*subject*/     subject,
                     /*body*/        body.arg( AmarokConfig::soundSystem() ),
                     /*messageFile*/ QString(),
                     /*attachURLs*/  QStringList( path ),
