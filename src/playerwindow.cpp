@@ -722,7 +722,7 @@ void PlayerWidget::setEffectsWindowShown( bool on )
 #include <kiconeffect.h>
 #include <kimageeffect.h>
 NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
-    : QPushButton( parent )
+    : QToolButton( parent )
     , m_glowIndex( 0 )
 {
     // Prevent flicker
@@ -769,7 +769,6 @@ NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
     //setPalette( KApplication::palette() );
 
     setFocusPolicy( QWidget::NoFocus );
-    setFlat( true );
     setEnabled( action->isEnabled() );
 
     connect( action, SIGNAL(enabled( bool )), SLOT(setEnabled( bool )) );

@@ -21,7 +21,7 @@
 #include <qlabel.h>      //stack allocated
 #include <qpixmap.h>     //stack allocated
 #include <qptrlist.h>    //stack allocated
-#include <qpushbutton.h> //baseclass
+#include <qtoolbutton.h> //baseclass
 #include <qwidget.h>     //baseclass
 
 #include <vector>
@@ -41,7 +41,7 @@ class QStringList;
 class QTimerEvent;
 
 
-class NavButton : public QPushButton //no QOBJECT macro - why bother?
+class NavButton : public QToolButton //no QOBJECT macro - why bother?
 {
 public:
     NavButton( QWidget*, const QString&, KAction* );
@@ -152,8 +152,8 @@ class PlayerWidget : public QWidget, public EngineObserver
         IconButton     *m_pPlaylistButton;
         amaroK::Slider *m_pSlider;
         amaroK::Slider *m_pVolSlider;
-        QPushButton    *m_pButtonPlay;
-        QPushButton    *m_pButtonPause;
+        QToolButton    *m_pButtonPlay;
+        QToolButton    *m_pButtonPause;
 };
 
 #endif
