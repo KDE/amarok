@@ -407,7 +407,7 @@ void PlayerWidget::determineAmarokColors() //static
 
 void PlayerWidget::setModifiedPalette()
 {
-    QColorGroup cg = palette().active();
+    QColorGroup cg = QApplication::palette().active();
     cg.setColor( QColorGroup::Background, amaroK::ColorScheme::Base );
     cg.setColor( QColorGroup::Foreground, amaroK::ColorScheme::Text );
     setPalette( QPalette(cg, palette().disabled(), cg) );
