@@ -34,7 +34,6 @@ class MetaBundle;
 class PlaylistItem;
 class PlaylistLoader;
 class QTimer;
-class ThreadWeaver;
 
 
 /*
@@ -129,6 +128,7 @@ class Playlist : private KListView, public EngineObserver
         void updateMetaData( const MetaBundle& );
         void setFilter( const QString &filter );
         void scoreChanged( const QString &path, int score );
+        void addCustomColumn();
 
     private slots:
         void slotGlowTimer();
@@ -192,7 +192,6 @@ class Playlist : private KListView, public EngineObserver
         QPtrList<PlaylistItem> m_prevTracks; //the previous history
         QPtrList<PlaylistItem> m_nextTracks; //the tracks to be played after the current track
 
-        ThreadWeaver* const m_weaver;
         int           m_firstColumn;
         int           m_totalLength;
 

@@ -13,7 +13,6 @@ class KLineEdit;
 class KURLComboBox;
 class QCustomEvent;
 class QPushButton;
-class ThreadWeaver;
 
 class SearchBrowser : public QVBox
 {
@@ -67,7 +66,6 @@ class SearchBrowser : public QVBox
         void showResults( KURL::List );
         void customEvent( QCustomEvent* );
 
-        ThreadWeaver* m_weaver;
         SearchListView *resultView;
         HistoryListView *historyView;
         KLineEdit *searchEdit;

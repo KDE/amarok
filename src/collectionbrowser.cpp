@@ -8,13 +8,13 @@
 #include "clicklineedit.h"
 #include "collectionbrowser.h"
 #include "collectiondb.h"
+#include "collectionreader.h"
 #include "directorylist.h"
 #include "k3bexporter.h"
 #include "metabundle.h"
 #include "playlist.h"       //insertMedia()
 #include "statusbar.h"
 #include "tagdialog.h"
-#include "threadweaver.h"
 
 #include <unistd.h>         //CollectionView ctor
 

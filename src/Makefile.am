@@ -28,12 +28,12 @@ amarokapp_SOURCES = \
     Options7.ui \
     Options8.ui \
     actionclasses.cpp \
-    amarokfilelist.cpp \
     app.cpp \
     browserbar.cpp \
     clicklineedit.cpp \
     collectionbrowser.cpp \
     collectiondb.cpp \
+    collectionreader.cpp \
     configdialog.cpp \
     contextbrowser.cpp \
     coverfetcher.cpp \

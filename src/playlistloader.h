@@ -1,4 +1,4 @@
-// Author: Max Howell (C) Copyright 2003
+// Author: Max Howell (C) Copyright 2003-4
 // Author: Mark Kretschmann (C) Copyright 2004
 // Copyright: See COPYING file that comes with this distribution
 //
@@ -6,23 +6,23 @@
 #ifndef PLAYLISTLOADER_H
 #define PLAYLISTLOADER_H
 
+#include <kurl.h>         //KURL::List
 #include "metabundle.h"   //TagsEvent
-
 #include <qdom.h>         //stack alloc
 #include <qevent.h>       //baseclass
-#include <qthread.h>      //baseclass
-#include <kurl.h>         //KURL::List
+#include "threadweaver.h"
+
 
 class CollectionDB;
 class QListView;
 class QListViewItem;
 class KDirLister;
 
-class PlaylistLoader : public QThread
+class PlaylistLoader : public ThreadWeaver::Job
 {
 public:
-    PlaylistLoader( const KURL::List&, QListView*, QListViewItem*, bool playFirstUrl = false );
-    ~PlaylistLoader();
+    PlaylistLoader( const KURL::List&, QListViewItem*, bool playFirstUrl = false );
+   ~PlaylistLoader();
 
     enum Format { M3U, PLS, XML, UNKNOWN };
     enum EventType { Started = 1010, Done, Item, DomItem };
@@ -71,24 +71,23 @@ public:
 
     class DoneEvent : public QCustomEvent
     {
-        PlaylistLoader *m_loader;
         KURL::List      m_badURLs;
+
     public:
         DoneEvent( PlaylistLoader *loader )
             : QCustomEvent( Done )
-            , m_loader( loader )
             , m_badURLs( loader->m_badURLs )
         {}
 
         KURL::List &badURLs() { return m_badURLs; }
-
-        ~DoneEvent() { delete m_loader; }
     };
 
     friend class DoneEvent;
 
 protected:
-    virtual void run();
+    virtual bool doJob();
+    virtual void completeJob() {}
+
     virtual void postItem( const KURL&, const QString&, const uint );
 
     bool loadPlaylist( const QString& ); //inlined

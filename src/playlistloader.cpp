@@ -1,4 +1,4 @@
-// Author: Max Howell (C) Copyright 2003
+// Author: Max Howell (C) Copyright 2003-4
 // Author: Mark Kretschmann (C) Copyright 2004
 // Copyright: See COPYING file that comes with this distribution
 //
@@ -12,7 +12,6 @@
 #include "playlistloader.h"
 #include "statusbar.h"
 
-#include <qapplication.h>
 #include <qfile.h>       //::loadPlaylist()
 #include <qfileinfo.h>
 #include <qlistview.h>
@@ -25,8 +24,8 @@
 
 bool PlaylistLoader::s_stop;
 
-PlaylistLoader::PlaylistLoader( const KURL::List &urls, QListView *parent, QListViewItem *after, bool playFirstUrl )
-    : QThread()
+PlaylistLoader::PlaylistLoader( const KURL::List &urls, QListViewItem *after, bool playFirstUrl )
+    : ThreadWeaver::Job( "PlaylistLoader" )
     , m_URLs( urls )
     , m_afterItem( after )
     , m_playFirstUrl( playFirstUrl )
@@ -98,7 +97,7 @@ PlaylistLoader::downloadPlaylist( const KURL &url, QListView *listView, QListVie
         KURL url;
         url.setPath( path );
 
-        (new PlaylistLoader( KURL::List( url ), listView, item, directPlay ))->start( QThread::IdlePriority );
+        ThreadWeaver::instance()->queueJob( new PlaylistLoader( KURL::List( url ), item, directPlay ) );
 
     } else {
 
@@ -112,8 +111,8 @@ PlaylistLoader::downloadPlaylist( const KURL &url, QListView *listView, QListVie
 // PROTECTED
 /////////////////////////////////////////////////////////////////////////////////////
 
-void
-PlaylistLoader::run()
+bool
+PlaylistLoader::doJob()
 {
     amaroK::StatusBar::startProgress();
     QApplication::postEvent( Playlist::instance(), new StartedEvent( m_afterItem, m_playFirstUrl ) );
@@ -139,12 +138,14 @@ PlaylistLoader::run()
         amaroK::StatusBar::showProgress( uint(progress) );
 
         // Allow GUI thread some time to breathe
-        msleep( 2 );
+        //FIXME msleep( 2 );
    }
    // END
 
     amaroK::StatusBar::stopProgress();
     QApplication::postEvent( Playlist::instance(), new DoneEvent( this ) );
+
+    return true;
 }
 
 
@@ -279,6 +280,7 @@ PlaylistLoader::recurse( const KURL &url, bool recursing )
         m_dirLister->openURL( url );
 
         while ( !m_dirLister->isFinished() )
+            //FIXME sigh, this is a crash waiting to happen
             kapp->processEvents( 100 );
 
         KFileItem* item;
@@ -315,4 +317,3 @@ PlaylistLoader::postItem( const KURL &url )
     MetaBundle bundle( url, true, m_db );
     QApplication::postEvent( Playlist::instance(), new ItemEvent( bundle ) );
 }
-

@@ -25,8 +25,10 @@ class Playlist;
 class PlaylistItem : public KListViewItem
 {
     public:
+        //used by PlaylistLoader
+        PlaylistItem( QListView*, QListViewItem* );
+
         PlaylistItem( const KURL&, QListViewItem* );
-        PlaylistItem( const KURL&, QListView*, QListViewItem* );
         PlaylistItem( const KURL&, QListViewItem*, const MetaBundle& );
         PlaylistItem( const KURL&, QListViewItem*, const QDomNode& );
 

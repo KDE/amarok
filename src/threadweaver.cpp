@@ -1,520 +1,274 @@
-//
 // Author: Max Howell (C) Copyright 2004
-//
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#include "config.h"	// Has USE_MYSQL
+// the asserts we use in this module prevent crashes, so best to abort the application if they fail
+#define QT_FATAL_ASSERT
 
-#include "collectionbrowser.h"   //CollectionReader::readTags()
-#include "collectiondb.h"        //needed for query()
-#include "metabundle.h"
-#include "playlistitem.h"
-#include "statusbar.h"
+#include <kcursor.h>
+#include <kdebug.h>
+#include <qapplication.h>
 #include "threadweaver.h"
 
-#include <errno.h>
-#include <dirent.h>
-#include <sys/stat.h>
 
-#include <qfile.h>
-
-#include <kapplication.h>
-#include <kdebug.h>
-#include <klocale.h>
-#include <kstandarddirs.h>       //KGlobal::dirs()
-
-#include <taglib/tstring.h>
-#include <taglib/fileref.h>
-#include <taglib/tag.h>
-#include <taglib/id3v2framefactory.h>
+#ifdef NDEBUG
+   static inline kndbgstream debug() { return kndbgstream(); }
+#else
+   static inline kdbgstream debug() { return kdbgstream( "[ThreadWeaver] ", 0, 0 ); }
+#endif
 
 
-ThreadWeaver::ThreadWeaver( QObject *w )
-        : m_parent( w )
-        , m_bool( true )
-        , m_currentJob( 0 )
+// if you need to make more than one queue for a jobtype ask max to ammend the api
+// TODO how to handle shutdown
+//      detailed error handling
+//      allow setting of priority?
+// NOTE for stuff that must be done on job finish whatever results do in job's dtor
+// TODO check QGuradedPtr is thread-safe ish
+
+
+ThreadWeaver::ThreadWeaver()
 {}
 
-void
-ThreadWeaver::append( Job* const job, bool priorityJob )
+ThreadWeaver::~ThreadWeaver()
 {
-    //intended to be used by GUI thread, but is thread-safe
+    debug() << k_funcinfo << endl;
 
-    mutex.lock();
-    if ( priorityJob )
-        m_Q.prepend( job );
+    //TODO abort and wait on all running threads
+    //will dependent threads be ok here?
+}
+
+inline ThreadWeaver::Thread*
+ThreadWeaver::findThread( const QCString &name )
+{
+    for( ThreadList::ConstIterator it = m_threads.begin(), end = m_threads.end(); it != end; ++it )
+        if ( name == (*it)->name ) //is a string comparison, not a pointer comparison
+            return (*it);
+
+    return 0;
+}
+
+int
+ThreadWeaver::queueJob( Job *job )
+{
+    const QCString name = job->name();
+    Thread *thread = findThread( name );
+
+    debug() << "Queuing: " << name << endl;
+
+    if ( !thread ) {
+        thread = new Thread( job->name() );
+        m_threads += thread;
+    }
+
+    thread->runJob( job );
+
+    return thread->pendingJobs.count();
+}
+
+int
+ThreadWeaver::queueJobs( const JobList &jobs )
+{
+    //you can't use this yet!
+    return -1;
+}
+
+void
+ThreadWeaver::onlyOneJob( Job *job )
+{
+    const QCString name = job->name();
+    Thread *thread = findThread( name );
+
+    if ( thread )
+        thread->abortAllJobs();
+    else {
+        thread = new Thread( job->name() );
+        m_threads += thread;
+    }
+
+    thread->runJob( job );
+}
+
+int
+ThreadWeaver::abortAllJobsNamed( const QCString &name )
+{
+    int count = -1;
+    Thread *thread = findThread( name );
+
+    if ( thread ) {
+        count = thread->pendingJobs.count() + thread->runningJob ? 1 : 0;
+        dispose( thread );
+    }
+
+    return count;
+}
+
+void
+ThreadWeaver::dispose( Thread *thread )
+{
+    // we use dispose to abort threads because it is possible that Jobs
+    // are in the Qt eventloop, and they can't be deleted out from under
+    // Qt or the application will crash, so we delay thread deletion
+
+    thread->abortAllJobs();
+    thread->wait(); //FIXME blocks the UI of course
+
+    //get it out of the list of expected receivers now
+    m_threads.remove( thread );
+
+    QCustomEvent *e = new QCustomEvent( DeleteThreadEvent );
+    e->setData( thread );
+
+    QApplication::postEvent( this, e );
+}
+
+void
+ThreadWeaver::registerDependent( QObject *dependent, const char *name )
+{
+    connect( dependent, SIGNAL(destroyed()), SLOT(dependentAboutToBeDestroyed()) );
+}
+
+void
+ThreadWeaver::dependentAboutToBeDestroyed()
+{
+    debug() << k_funcinfo << ": " <<  sender()->name() << " destroyed\n";
+}
+
+void
+ThreadWeaver::customEvent( QCustomEvent *e )
+{
+    debug() << k_funcinfo << endl;
+
+    switch( e->type() )
+    {
+    case DeleteThreadEvent:
+        delete (Thread*)e->data();
+        break;
+
+    case JobEvent: {
+        Job *job = (Job*)e;
+        // is there any more jobs of this type?
+        // if so start the next one
+        Thread *thread = findThread( job->name() );
+
+        if ( thread ) {
+            if ( !job->isAborted() )
+                job->completeJob();
+
+            //run next job, if there is one
+            thread->runJob( 0 );
+        }
+        else
+            debug() << "Thread was deleted while processing this job: " << QCString(job->name()) << endl;
+    }
+    default:
+        ;
+    }
+}
+
+
+
+ThreadWeaver::Thread::Thread( const char *_name )
+    : QThread()
+    , name( _name )
+{
+    debug() << "Thread::Thread: " << QCString(_name) << endl;
+
+    QApplication::setOverrideCursor( KCursor::workingCursor() );
+}
+
+ThreadWeaver::Thread::~Thread()
+{
+    debug() << "Thread::~Thread: " << QCString(name) << endl;
+
+    //if we were aborted, this has already occurred
+    ThreadWeaver::instance()->m_threads.remove( this );
+
+    Q_ASSERT( finished() );
+    Q_ASSERT( pendingJobs.isEmpty() );
+
+    QApplication::restoreOverrideCursor();
+}
+
+void
+ThreadWeaver::Thread::runJob( Job *job )
+{
+    if ( !job ) {
+        if ( !pendingJobs.isEmpty() ) {
+            runningJob = pendingJobs.front();
+            pendingJobs.pop_front();
+            start( IdlePriority ); //will wait for the current operation to complete, should be soon
+        }
+        else {
+            wait(); //sometimes we get the finished event before the thread has finished
+            delete this; //FIXME safer to use ThreadWeaver::dispose()
+            return;
+        }
+    }
+    else if( !running() ) {
+       runningJob = job;
+       start( IdlePriority );
+    }
     else
-        m_Q.append( job );
-
-    if ( !running() )
-        start( QThread::LowestPriority );
-
-    mutex.unlock();
-}
-
-bool
-ThreadWeaver::remove( Job* const job )
-{
-    //TODO you need to be able to only remove jobs of a certain type frankly.
-    //TODO this is no good when you say need to remove a job that will act on a playlistitem etc.
-    //maybe above is void* and you make operator== pure virtual?
-
-    bool b;
-
-    mutex.lock();
-    //TODO we delete or user deletes is yet undecided
-    b = m_Q.remove( job );
-    mutex.unlock();
-
-    //TODO inform users of thread that you have to postpone deletion of stuff that may be in event loop
-    return b;
+        pendingJobs += job;
 }
 
 void
-ThreadWeaver::cancel()
+ThreadWeaver::Thread::run()
 {
-    m_Q.setAutoDelete( true );
-    mutex.lock();
-    m_currentJob = 0; //FIXME will never be deleted!
-    m_Q.clear();
-    mutex.unlock();
-    m_Q.setAutoDelete( false );
+    // BE THREAD-SAFE!
 
-    //TODO inform users of thread that you have to postpone deletion of stuff that may be in event loop
+    Job *job = runningJob;
+
+    debug() << "Running Job: " << QCString(job->name()) << endl;
+
+    job->m_aborted |= !job->doJob();
+
+    debug() << "Job Done: " << QCString(job->name()) << ". Aborted? " << job->m_aborted << endl;
+
+    QApplication::postEvent( ThreadWeaver::instance(), job );
 }
 
 void
-ThreadWeaver::run()
+ThreadWeaver::Thread::abortAllJobs()
 {
-    msleep( 200 ); //this is an attempt to encourage the queue to be filled with more than 1 item before we
-    //start processing, and thus prevent unecessary stopping and starting of the thread
+    for( JobList::Iterator it = pendingJobs.begin(), end = pendingJobs.end(); it != end; ++it )
+        delete *it;
 
-    kdDebug() << "[weaver] Started..\n";
-    QApplication::postEvent( m_parent, new QCustomEvent( ThreadWeaver::Started ) );
+    //this will be deleted when after it has been aborted
+    runningJob->m_aborted = true;
 
-    while ( m_bool ) {
-        mutex.lock();
-        if ( m_Q.isEmpty() ) { mutex.unlock(); break; } //we exit the loop here
-        m_currentJob = m_Q.getFirst();
-        m_Q.removeFirst();
-        mutex.unlock();
-
-        bool b = m_currentJob->doJob();
-
-        mutex.lock();
-        if ( m_currentJob ) {
-            if ( b ) m_currentJob->postJob(); //Qt will delete the job for us
-            else delete m_currentJob;     //we need to delete the job
-        }
-        mutex.unlock();
-    }
-
-    kdDebug() << "[weaver] Done!\n";
-    QApplication::postEvent( m_parent, new QCustomEvent( ThreadWeaver::Done ) );
+    pendingJobs.clear();
 }
 
 
 
-ThreadWeaver::Job::Job( QObject *obj, JobType type )
-        : QCustomEvent( type )
-        , m_target( obj )
-{}
-
-inline void
-ThreadWeaver::Job::postJob()
+ThreadWeaver::Job::Job( const char *name )
+    : QCustomEvent( ThreadWeaver::JobEvent )
+    , m_name( name )
+    , m_aborted( false )
 {
-    QApplication::postEvent( m_target, this );
+    debug() << "Job::Job: " << QCString(m_name) << endl;
+}
+
+ThreadWeaver::Job::~Job()
+{
+    debug() << "Job::~Job: " << QCString(m_name) << endl;
 }
 
 
-//////////////////////////////////////////////////////////////////////////////////////////
-// CLASS SearchPath
-//////////////////////////////////////////////////////////////////////////////////////////
 
-bool SearchModule::m_stop;
-
-SearchModule::SearchModule( QObject* parent, QString path, QString token, KListView* resultView, KListViewItem* historyItem )
-        : Job( parent, Job::SearchModule )
-        , resultCount( 0 )
-        , m_parent( parent )
-        , m_path( path )
-        , m_token( token )
-        , m_resultView( resultView )
-        , m_historyItem( historyItem )
-{}
-
-bool SearchModule::doJob()
+ThreadWeaver::DependentJob::DependentJob( QObject *dependent, const char *name )
+    : Job( name )
+    , m_dependent( dependent )
 {
-    m_stop = false;
-
-    QApplication::postEvent( m_parent, new ProgressEvent( ProgressEvent::Start, m_historyItem ) );
-    searchDir( m_path );
-    QApplication::postEvent( m_parent, new ProgressEvent( ProgressEvent::Stop, m_historyItem ) );
-
-    return TRUE;
-}
-
-void SearchModule::searchDir( QString path )
-{
-    DIR * d = opendir( QFile::encodeName( path ) );
-    if ( d ) {
-        dirent * ent;
-        while ( ( ent = readdir( d ) ) ) {
-            // Check if we shall abort
-            if ( m_stop ) return;
-
-            QString file( ent->d_name );
-
-            if ( file != "." && file != ".." ) {
-                DIR * t = opendir( QFile::encodeName( path ) + QFile::encodeName( file ) + "/" );
-                if ( t ) {
-                    closedir( t );
-                    searchDir( path + file + "/" );
-                } else
-                    if ( file.contains( m_token, FALSE ) ) {
-                        QApplication::postEvent( m_parent, new ProgressEvent( ProgressEvent::Progress, m_historyItem, m_resultView, ++resultCount, path, file ) );
-                        m_resultList.append( path + file );
-                    }
-            }
-        }
-        closedir( d );
-        free( ent );
-    }
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// CLASS CollectionReader
-//////////////////////////////////////////////////////////////////////////////////////////
-
-bool CollectionReader::m_stop;
-
-CollectionReader::CollectionReader( CollectionDB* parent, QObject *playlistBrowser,
-                                    const QStringList& folders, bool recursively, bool importPlaylists, bool incremental )
-        : Job( parent, Job::CollectionReader )
-        , m_parent( parent )
-        , m_playlistBrowser( playlistBrowser )
-        , m_folders( folders )
-        , m_recursively( recursively )
-        , m_importPlaylists( importPlaylists )
-        , m_incremental( incremental )
-{}
-
-
-bool
-CollectionReader::doJob()
-{
-    m_stop = false;
-
-    if ( m_incremental )
-    {
-        QStringList values;
-        struct stat statBuf;
-
-        values = m_parent->query( "SELECT dir, changedate FROM directories;" );
-
-        for ( uint i = 0; i < values.count(); i += 2 )
-        {
-            if ( stat( QFile::encodeName( values[i] ), &statBuf ) == 0 )
-            {
-                if ( QString::number( (long)statBuf.st_mtime ) != values[i + 1] )
-                {
-                    m_folders << values[i];
-                    kdDebug() << "Collection dir changed: " << values[i] << endl;
-                }
-            }
-            else
-            {
-                // this folder has been removed
-                m_folders << values[i];
-                kdDebug() << "Collection dir removed: " << values[i] << endl;
-            }
-        }
-    }
-
-    const QString logPath = KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "collection_scan.log";
-    std::ofstream log(  QFile::encodeName( logPath ) );
-    log << "Collection Scan logfile\n";
-    log << "=======================\n";
-    log << i18n( "Last processed file is at the bottom. Report this file in case of crashes while building the Collection.\n\n\n" ).local8Bit();
-
-
-    if ( !m_folders.empty() )
-    {
-        // we need to create the temp tables before readDir gets called ( for the dir stats )
-        m_parent->createTables( true );
-        QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Start ) );
-    }
-
-    //iterate over all folders
-    QStringList entries;
-    for ( uint i = 0; i < m_folders.count(); i++ )
-    {
-        QString dir = m_folders[ i ];
-        if ( !dir.endsWith( "/" ) ) dir += '/';
-
-        readDir( dir, entries );
-    }
-
-    if ( !entries.empty() )
-    {
-        QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Total, entries.count() ) );
-        readTags( entries, log );
-    }
-
-    QApplication::postEvent( m_parent, new ProgressEvent( ProgressEvent::Stop, entries.count() ) );
-    log.close();
-
-    return !entries.empty();
+    ThreadWeaver::instance()->registerDependent( dependent, name );
 }
 
 void
-CollectionReader::readDir( const QString& dir, QStringList& entries )
+ThreadWeaver::DependentJob::completeJob()
 {
-    if ( m_processedDirs.contains( dir ) ) {
-        kdDebug() << "[CollectionReader] Already scanned: " << dir << endl;
-        return;
-    }
-
-    m_processedDirs << dir;
-    struct stat statBuf;
-
-    //update dir statistics for rescanning purposes
-    if ( stat( QFile::encodeName( dir ), &statBuf ) == 0 )
-        m_parent->updateDirStats( dir, ( long ) statBuf.st_mtime, !m_incremental );
-    else
-    {
-        if ( m_incremental )
-        {
-            m_parent->removeSongsInDir( dir );
-            m_parent->removeDirFromCollection( dir );
-        }
-        return;
-    }
-
-    DIR * d = opendir( QFile::encodeName( dir ) );
-    dirent *ent;
-
-    if (d == NULL)
-    {
-        if (errno == EACCES)
-            kdWarning() << "[CollectionReader] Skipping non-readable dir " << dir << endl;
-        return;
-    }
-
-    while ( ( ent = readdir( d ) ) )
-    {
-        QCString entry = ent->d_name;
-
-        if ( entry == "." || entry == ".." )
-            continue;
-        entry.prepend( QFile::encodeName( dir ) );
-
-        if ( stat( entry, &statBuf ) == 0 )
-        {
-            if ( S_ISDIR( statBuf.st_mode ) )
-            {
-                if ( m_recursively ) {
-                    // Check for symlink recursion
-                    QFileInfo info( entry );
-                    if ( info.isSymLink() && m_processedDirs.contains( info.readLink() ) ) {
-                        kdWarning() << "[CollectionReader] Skipping recursive symlink.\n";
-                        continue;
-                    }
-                    if ( !m_incremental || !m_parent->isDirInCollection( entry ) )
-                        // we MUST add a '/' after the dirname
-                        readDir( QFile::decodeName( entry ) + '/', entries );
-                }
-            }
-            else if ( S_ISREG( statBuf.st_mode ) )
-            {
-                //if a playlist is found it will send a PlaylistFoundEvent to PlaylistBrowser
-                QString file = QString::fromLocal8Bit( entry );
-                QString ext = file.right( 4 ).lower();
-                if( m_importPlaylists && (ext == ".m3u" || ext == ".pls") )
-                    QApplication::postEvent( m_playlistBrowser, new PlaylistFoundEvent( file ) );
-                entries <<  file ;
-            }
-        }
-    }
-
-    closedir( d );
+    //syncronous
+    QApplication::sendEvent( m_dependent, this );
 }
 
-
-void
-CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
-{
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
-
-    typedef QPair<QString, QString> CoverBundle;
-    QValueList<CoverBundle> cbl;
-    QStringList images;
-    KURL url;
-
-    QStringList validImages, validMusic;
-    validImages << "jpg" << "png" << "gif" << "jpeg";
-    validMusic  << "mp3" << "ogg" << "wav" << "flac";
-
-    for ( uint i = 0; i < entries.count(); i++ )
-    {
-        // Check if we shall abort the scan
-        if ( m_stop ) return;
-
-        if ( !( i % 20 ) ) //don't post events too often since this blocks amaroK
-            QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Progress, i ) );
-
-        url.setPath( entries[ i ] );
-
-        // Append path to logfile
-        log << url.path().local8Bit() << "\n";
-        log.flush();
-
-        TagLib::FileRef f( QFile::encodeName( url.path() ), false );  //false == don't read audioprops
-        if ( !f.isNull() )
-        {
-            MetaBundle bundle( url, f.tag(), 0 );
-            m_parent->addSong( &bundle, m_incremental );
-
-            if ( !cbl.contains( CoverBundle( bundle.artist(), bundle.album() ) ) )
-                cbl.append( CoverBundle( bundle.artist(), bundle.album() ) );
-        }
-        // Add tag-less tracks to database
-        else if ( validMusic.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ).lower() ) )
-        {
-            MetaBundle bundle;
-            bundle.setUrl( url.path() );
-            m_parent->addSong( &bundle, m_incremental );
-
-            if ( !cbl.contains( CoverBundle( bundle.artist(), bundle.album() ) ) )
-                cbl.append( CoverBundle( bundle.artist(), bundle.album() ) );
-        }
-        // Add images to the cover database
-        else if ( validImages.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ).lower() ) )
-            images << url.path();
-
-        // Update Compilation-flag, when this is the last loop-run or we're going to switch to another dir in the next run
-        if ( ( i + 1 ) == entries.count() || url.path().section( '/', 0, -2 ) != entries[ i + 1 ].section( '/', 0, -2 ) )
-        {
-            // we entered the next directory
-            for ( uint j = 0; j < images.count(); j++ )
-                m_parent->addImageToAlbum( images[ j ], cbl, true );
-
-            cbl.clear();
-            images.clear();
-            m_parent->checkCompilations( url.path().section( '/', 0, -2 ) );
-        }
-    }
-
-    // remove tables and recreate them (quicker than DELETE FROM)
-    if ( !m_incremental )
-    {
-        m_parent->dropTables();
-        m_parent->createTables();
-    } else
-    {
-        // remove old entries from database, only
-        for ( uint i = 0; i < m_folders.count(); i++ )
-            m_parent->removeSongsInDir( m_folders[ i ] );
-    }
-
-    // rename tables
-    m_parent->moveTempTables();
-    m_parent->dropTables( true );
-
-    kdDebug() << "END " << k_funcinfo << endl;
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// CLASS TagWriter
-//////////////////////////////////////////////////////////////////////////////////////////
-
-TagWriter::TagWriter( QObject *o, PlaylistItem *item, const QString &oldTag, const QString &newTag, const int col, const bool updateView )
-        : Job( o )
-        , m_item( item )
-        , m_failed( true )
-        , m_oldTagString( oldTag )
-        , m_newTagString( newTag )
-        , m_tagType( col )
-        , m_updateView( updateView )
-{
-    item->setText( col, i18n( "Writing tag..." ) );
-}
-
-bool
-TagWriter::doJob()
-{
-    const QString path = m_item->url().path();
-    //TODO I think this causes problems with writing and reading tags for non latin1 people
-    //check with wheels abolut what it does and why to do it
-    //TagLib::ID3v2::FrameFactory::instance()->setDefaultTextEncoding( TagLib::String::UTF8 );
-    TagLib::FileRef f( QFile::encodeName( path ), false );
-
-    if ( !f.isNull() ) {
-        TagLib::Tag *t = f.tag();
-        QString field;
-
-        switch ( m_tagType ) {
-        case PlaylistItem::Title:
-            t->setTitle( QStringToTString( m_newTagString ));
-            field = "title";
-            break;
-        case PlaylistItem::Artist:
-            t->setArtist( QStringToTString( m_newTagString ) );
-            field = "artist";
-            break;
-        case PlaylistItem::Album:
-            t->setAlbum( QStringToTString( m_newTagString ) );
-            field = "album";
-            break;
-        case PlaylistItem::Year:
-            t->setYear( m_newTagString.toInt() );
-            field = "year";
-            break;
-        case PlaylistItem::Comment:
-            //FIXME how does this work for vorbis files?
-            //Are we likely to overwrite some other comments?
-            //Vorbis can have multiple comment fields..
-            t->setComment( QStringToTString( m_newTagString ) );
-            field = "comment";
-            break;
-        case PlaylistItem::Genre:
-            t->setGenre( QStringToTString( m_newTagString ) );
-            field = "genre";
-            break;
-        case PlaylistItem::Track:
-            t->setTrack( m_newTagString.toInt() );
-            field = "track";
-            break;
-
-        default:
-            return true;
-        }
-
-        if( f.save() )
-        {
-           // Update the collection db.
-           // Hopefully this does not cause concurreny issues with sqlite3, as we had in BR 87169.
-           CollectionDB().updateURL( path, m_updateView );
-
-           m_failed = false;
-        }
-    }
-
-    return true;
-}
-
-void
-TagWriter::completeJob()
-{
-    if( m_failed ) {
-        m_item->setText( m_tagType, m_oldTagString.isEmpty() ? " " : m_oldTagString );
-        amaroK::StatusBar::instance()->message( i18n( "The tag could not be changed." ) );
-    }
-    m_item->setText( m_tagType, m_newTagString.isEmpty() ? " " : m_newTagString );
-}
-
-
-//yes! no moc! There are no Q_OBJECTS
+#include "threadweaver.moc"

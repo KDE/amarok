@@ -502,8 +502,6 @@ bool PlayerWidget::event( QEvent *e )
 
     case QEvent::Show:
 
-        kdDebug() << "Qt::showEvent\n";
-
         m_pAnimTimer->start( ANIM_TIMER );
 
         if( AmarokConfig::hidePlaylistWindow() && m_pPlaylistButton->isOn() )

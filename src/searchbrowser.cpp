@@ -28,8 +28,69 @@
 #include <sys/stat.h>
 
 
+class SearchModule : public ThreadWeaver::Job
+{
+public:
+    static const int ProgressEventType = 8889;
+    class ProgressEvent : public QCustomEvent
+    {
+        public:
+            enum State { Start = -1, Stop = -2, Progress = -3 };
+
+            ProgressEvent( int state, KListViewItem* historyItem = 0, KListView* resultView = 0, int count = 0, QString curPath = "", QString curFile = "" )
+            : QCustomEvent( ProgressEventType )
+            , m_state( state )
+            , m_count( count )
+            , m_tresultView ( resultView )
+            , m_item ( historyItem )
+            , m_curPath ( curPath )
+            , m_curFile ( curFile ) {}
+
+            int state() { return m_state; }
+            int count() { return m_count; }
+            KListView* resultView() { return m_tresultView; }
+            KListViewItem* item() { return m_item; }
+            QString curPath() { return m_curPath; }
+            QString curFile() { return m_curFile; }
+        private:
+            int m_state;
+            int m_count;
+            KListView* m_tresultView;
+            KListViewItem* m_item;
+            QString m_curPath;
+            QString m_curFile;
+    };
+
+    SearchModule( QObject* parent, const QString path, const QString token, KListView* resultView, KListViewItem* historyItem );
+
+    static void stop() { m_stop = true; }
+    bool doJob();
+    QStringList resultList() { return m_resultList; }
+private:
+
+    virtual void completeJob() {}
+
+    void searchDir( QString path );
+
+    static bool m_stop;
+
+    uint resultCount;
+    QObject *m_parent;
+    QString m_path;
+    QString m_token;
+    KListView *m_resultView;
+    KListViewItem *m_historyItem;
+    QStringList m_resultList;
+};
+
+
+
+
+
+
+
 SearchBrowser::SearchListView::SearchListView( QWidget *parent, const char *name )
-        : KListView ( parent, name )
+    : KListView ( parent, name )
 {}
 
 KURL::List SearchBrowser::SearchListView::selectedUrls()
@@ -72,8 +133,7 @@ QDragObject *SearchBrowser::HistoryListView::dragObject()
 
 
 SearchBrowser::SearchBrowser( const char *name )
-        : QVBox( 0, name )
-        , m_weaver( new ThreadWeaver( this ) )
+    : QVBox( 0, name )
 {
     setSpacing( 4 );
     setMargin( 5 );
@@ -187,7 +247,8 @@ void SearchBrowser::slotStartSearch()
             m_searchButton->setText( i18n( "&Abort" ) );
             disconnect( m_searchButton, SIGNAL( clicked() ), this, SLOT( slotStartSearch() ) );
             connect( m_searchButton, SIGNAL( clicked() ), this, SLOT( stopSearch() ) );
-            m_weaver->append( new SearchModule( this, path, searchEdit->text(), resultView, historyItem ) );
+
+            ThreadWeaver::instance()->queueJob( new SearchModule( this, path, searchEdit->text(), resultView, historyItem ) );
         }
     }
 }
@@ -324,5 +385,59 @@ void SearchBrowser::historySelectionChanged()
 }
 
 
-#include "searchbrowser.moc"
 
+
+///SearchModule
+
+bool SearchModule::m_stop;
+
+SearchModule::SearchModule( QObject* parent, QString path, QString token, KListView* resultView, KListViewItem* historyItem )
+        : ThreadWeaver::Job( "SearchModule" )
+        , resultCount( 0 )
+        , m_parent( parent )
+        , m_path( path )
+        , m_token( token )
+        , m_resultView( resultView )
+        , m_historyItem( historyItem )
+{}
+
+bool SearchModule::doJob()
+{
+    m_stop = false;
+
+    QApplication::postEvent( m_parent, new ProgressEvent( ProgressEvent::Start, m_historyItem ) );
+    searchDir( m_path );
+    QApplication::postEvent( m_parent, new ProgressEvent( ProgressEvent::Stop, m_historyItem ) );
+
+    return TRUE;
+}
+
+void SearchModule::searchDir( QString path )
+{
+    DIR * d = opendir( QFile::encodeName( path ) );
+    if ( d ) {
+        dirent * ent;
+        while ( ( ent = readdir( d ) ) ) {
+            // Check if we shall abort
+            if ( m_stop ) return;
+
+            QString file( ent->d_name );
+
+            if ( file != "." && file != ".." ) {
+                DIR * t = opendir( QFile::encodeName( path ) + QFile::encodeName( file ) + "/" );
+                if ( t ) {
+                    closedir( t );
+                    searchDir( path + file + "/" );
+                } else
+                    if ( file.contains( m_token, FALSE ) ) {
+                        QApplication::postEvent( m_parent, new ProgressEvent( ProgressEvent::Progress, m_historyItem, m_resultView, ++resultCount, path, file ) );
+                        m_resultList.append( path + file );
+                    }
+            }
+        }
+        closedir( d );
+        free( ent );
+    }
+}
+
+#include "searchbrowser.moc"

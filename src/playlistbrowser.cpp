@@ -3,6 +3,7 @@
 // License: GPL V2. See COPYING file for information.
 
 #include "collectiondb.h"      //smart playlists
+#include "collectionreader.h"
 #include "k3bexporter.h"
 #include "metabundle.h"        //paintCell()
 #include "playlist.h"
@@ -1091,7 +1092,7 @@ void PlaylistBrowserItem::load()
     ((PlaylistBrowserView *)listView())->startAnimation( this );
 
      //read the playlist file in a thread
-    (new PlaylistReader( this, m_url.path() ))->start();
+    ThreadWeaver::instance()->queueJob( new PlaylistReader( this, m_url.path() ) );
 }
 
 

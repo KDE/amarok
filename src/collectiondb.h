@@ -25,7 +25,6 @@ class CollectionEmitter;
 class CoverFetcher;
 class MetaBundle;
 class Scrobbler;
-class ThreadWeaver;
 
 class CollectionDB : public QObject
 {
@@ -151,7 +150,6 @@ class CollectionDB : public QObject
         sqlite3* m_db;
 #endif
 
-        ThreadWeaver* m_weaver;
         bool m_monitor;
         QDir m_cacheDir;
         QDir m_coverDir;

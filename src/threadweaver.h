@@ -1,245 +1,248 @@
-//
 // Author: Max Howell (C) Copyright 2004
-//
 // Copyright: See COPYING file that comes with this distribution
 //
 
 #ifndef THREADWEAVER_H
 #define THREADWEAVER_H
 
-#include <fstream>        //stack allocated
-
-#include <qevent.h>       //baseclass
-#include <qmutex.h>       //stack allocated
-#include <qptrlist.h>     //stack allocated
-#include <qstringlist.h>  //stack allocated
-#include <qthread.h>      //baseclass
-
-#include <kurl.h>         //stack allocated
-
-class MetaBundle;
-class PlaylistItem;
-class CollectionDB;
-class KListView;
-class KListViewItem;
-class QListView;
-class QListViewItem;
-class QString;
-class QStringList;
-class QWidget;
+#include <qevent.h>   //baseclass
+#include <qguardedptr.h>
+#include <qmap.h>
+#include <qobject.h>
+#include <qthread.h>
+#include <qvaluelist.h>
 
 
-//  Weavers allow you to use a single QThread for a variety of computationally expensive tasks.
-//
-//  Weavers process ThreadWeaver::Jobs. Derive from one and reimplement doJob(). The weaver will process
-//  all the jobs append()ed to its queue in order. Jobs are processed in FIFO order unless you set the
-//  priority to immediate (see append()).
-//
-//  The class is designed to handle frequently requested tasks, or situations where you have lots of
-//  different tasks that must all be handled by a thread. For example, the playlist dispatches a Job for
-//  every file that requires tag reading. It also has a Job for writing tags, and reading audio properties.
-//  If you plan to batch process something you probably should just derive a class from QThread.
-//
-//  When a job has completed and returned true from doJob(), it is dispatched to the specified target object
-//  which can recieve the Job itself as an event in its QCustomEvent().
-//
-//  cancel() will prevent any further Jobs being dispatched and will clear the queue. However almost
-//  certainly some Jobs will already be in Qt's event queue on there way to the target. The user has to ensure
-//  this situation is safe. See Playlist::clear() for a good solution.
-//
-//  halt() will permanantly stop the thread, it should be used in conjunction with Qthread::wait() when the
-//  program is exiting.
-//
-//  The parent of the thread also gets two other events, ThreadWeaver::Started and ThreadWeaver::Done,
-//  you may want to set the application overrideCursor based on these events for instance.
-//
-//  Finally, please note, QThread is not a QObject so you must delete the ThreadWeaver in your classes dtor.
-//
-//  The class is not complete in that it has a few obvious flaws, feel free to improve!
+//not all these are always generated, but the idea is just to prevent it
+#define DISABLE_GENERATED_MEMBER_FUNCTIONS( T ) \
+    T(); \
+    T( const T& ); \
+    T &operator=( const T& ); \
+    bool operator==( const T& ) const;
 
-class ThreadWeaver : public QThread
+
+/**
+ * @class ThreadWeaver
+ * @author Max Howell <max.howell@methylblue.com>
+ * @short ThreadWeaver is here to encourage you to use threads and to make their use easy.
+ *
+ * You create Jobs on the heap and ThreadWeaver allows you to easily queue them, abort them,
+ * ensure only one runs at once, ensure that bad data is never acted on, and even cleans up for
+ * you should the class that wants the Job's results get deleted while a thread is running.
+ *
+ * You also will (soon) get thread-safe error handling and thread-safe progress reporting.
+ *
+ * Usual use:
+ *
+ * ThreadWeaver::instance()->queueJob( new MyJob( DataToProcess ) );
+ *
+ * That's it! The queue is fifo, the ThreadWeaver takes ownership of the Job, and the Weaver
+ * calls Job::completeJob() on completion which you reimplement to do whatever you need done.
+ *
+ * @see ThreadWeaver::Job
+ */
+
+class ThreadWeaver : public QObject
 {
+    Q_OBJECT
+
 public:
-   ThreadWeaver( QObject* );
-
    class Job;
+   typedef QValueList<Job*> JobList;
 
-   void append( Job* const, bool = false );
-   bool remove( Job* const ); //TODO implement virtual operator== ?
-   void cancel();
-   void halt() { m_bool = false; } //thread-safe, permanant shutdown
+   enum EventType { JobEvent = 2000, JobStartedEvent = JobEvent, JobFinishedEvent, DeleteThreadEvent };
 
-   enum EventType { Started = 2000, Done = 2001 };
+   static ThreadWeaver *instance();
+
+   /**
+    * Will queue a job for processing.
+    * If the ThreadWeaver is already handling a job of this type then the job
+    * will be queued, otherwise the job will be processed immediately.
+    * Allocate the job on the heap, and ThreadWeaver will delete it for you.
+    * This is not thread-safe!
+    * @see ThreadWeaver::Job
+    */
+   int queueJob( Job* );
+
+   /**
+    * Queue multiple jobs simultaneously, you should use this to avoid the race
+    * condition where the first job finishes before you can queue the next one.
+    * The only valid usage, is when the jobs are the same type!
+    * This is not thread-safe!
+    */
+   int queueJobs( const JobList& );
+
+   /**
+    * If there are other jobs running, it will cancel them
+    * and start this one afterwards.
+    */
+   void onlyOneJob( Job* );
 
 
-   //  Derive a job to perform a computationaly expensive task that will not block the UI
-   //  Implement doJob() to perform the task.
-   //  @param QObject *
-   //    The Job isa QEvent, and will be posted to this object if you return true from your implementation
-   //    of doJob()
-   //  @param JobType
-   //    This QEvent type, so you can distinguish this event when you recieve the event. Generic Job is
-   //    the default value, and using this is covienient if you plan to just reimplement completeJob(),
-   //    thus preventing casting at the target customEvent()
-   class Job : public QCustomEvent
-   {
-   public:
-      friend class ThreadWeaver;
-      enum JobType { GenericJob = 3000, TagReader, CollectionReader, SearchModule };
+   /**
+    * All the named jobs will be halted and deleted
+    * You cannot use any data from the jobs reliably after this point.
+    * You will not receive any completion notification from these jobs.
+    * This is not thread-safe!
+    * @return -1 if there is no thread that operates on the named job, otherwise how many jobs were aborted
+    */
+   int abortAllJobsNamed( const QCString &name );
 
-      Job( QObject *, JobType = GenericJob );
-      virtual ~Job() {}
-      virtual void completeJob() {} //should be called in QObject::CustomEvent
-
-   protected:
-      Job();
-      Job( const Job& );
-      bool operator==( const Job& ) const;
-
-   private:
-      virtual bool doJob() = 0;
-      void postJob();
-
-      QObject *m_target;
-   };
+private slots:
+   void dependentAboutToBeDestroyed();
 
 private:
-   void run();
+    ThreadWeaver();
+   ~ThreadWeaver();
 
-   QObject* const m_parent; //TODO can const this?
-   bool           m_bool;
-   QPtrList<Job>  m_Q;
-   Job           *m_currentJob;
-
-   QMutex mutex;
-};
+    virtual void customEvent( QCustomEvent* );
 
 
-//@Will search files for the SearchBrowser
-class SearchModule : public ThreadWeaver::Job
-{
-public:
-    static const int ProgressEventType = 8889;
-    class ProgressEvent : public QCustomEvent
+    /**
+     * Class Thread
+     */
+    class Thread : public QThread
     {
-        public:
-            enum State { Start = -1, Stop = -2, Progress = -3 };
+    public:
+        Thread( const char* );
 
-            ProgressEvent( int state, KListViewItem* historyItem = 0, KListView* resultView = 0, int count = 0, QString curPath = "", QString curFile = "" )
-            : QCustomEvent( ProgressEventType )
-            , m_state( state )
-            , m_count( count )
-            , m_tresultView ( resultView )
-            , m_item ( historyItem )
-            , m_curPath ( curPath )
-            , m_curFile ( curFile ) {}
+        virtual void run();
 
-            int state() { return m_state; }
-            int count() { return m_count; }
-            KListView* resultView() { return m_tresultView; }
-            KListViewItem* item() { return m_item; }
-            QString curPath() { return m_curPath; }
-            QString curFile() { return m_curFile; }
-        private:
-            int m_state;
-            int m_count;
-            KListView* m_tresultView;
-            KListViewItem* m_item;
-            QString m_curPath;
-            QString m_curFile;
+        void runJob( Job *job );
+
+        JobList pendingJobs;
+        Job *runningJob;
+
+        char const * const name;
+
+        void abortAllJobs();
+
+    protected:
+        DISABLE_GENERATED_MEMBER_FUNCTIONS( Thread );
+
+    private:
+        friend void ThreadWeaver::customEvent( QCustomEvent* );
+
+        ~Thread();
     };
 
-    SearchModule( QObject* parent, const QString path, const QString token, KListView* resultView, KListViewItem* historyItem );
 
-    static void stop() { m_stop = true; }
-    bool doJob();
-    QStringList resultList() { return m_resultList; }
-private:
-    void searchDir( QString path );
+    /// safe disposal for threads that may not have finished
+    void dispose( Thread* );
 
-    static bool m_stop;
+    /// returns the thread that handles Jobs that use @name
+    inline Thread *findThread( const QCString &name );
 
-    uint resultCount;
-    QObject *m_parent;
-    QString m_path;
-    QString m_token;
-    KListView *m_resultView;
-    KListViewItem *m_historyItem;
-    QStringList m_resultList;
-};
+    typedef QValueList<Thread*> ThreadList;
 
+    ThreadList m_threads;
 
-//@Will read tags for the CollectionBrowser
-class CollectionReader : public ThreadWeaver::Job
-{
 public:
-   static const int ProgressEventType = 8889;
-   class ProgressEvent : public QCustomEvent
-   {
-       public:
-           enum State { Start = -1, Stop = -2, Total = -3, Progress = -4 };
+    /**
+     * @class Job
+     * @short You do some work in the background with these
+     */
+    class Job : public QCustomEvent
+    {
+        friend class ThreadWeaver;
+        friend class ThreadWeaver::Thread;
 
-           ProgressEvent( int state, int value = -1 )
-           : QCustomEvent( ProgressEventType )
-           , m_state( state )
-           , m_value( value ) {}
-           int state() { return m_state; }
-           int value() { return m_value; }
-       private:
-           int m_state;
-           int m_value;
-   };
+    public:
+        /**
+         * The name is important, all like-named jobs are queued and run FIFO.
+         * Always allocate Jobs on the heap, ThreadWeaver will take ownership of the memory.
+         */
+        Job( const char *name );
+        virtual ~Job();
 
-   static const int PlaylistFoundEventType = 8890;
-   class PlaylistFoundEvent : public QCustomEvent
-   {
-       public:
-           PlaylistFoundEvent( QString path )
-           : QCustomEvent( PlaylistFoundEventType )
-           , m_path( path ) {}
-           QString path() { return m_path; }
-       private:
-           QString m_path;
-   };
+        const char *name() const { return m_name; }
 
-    CollectionReader( CollectionDB* parent, QObject* playlistBrowser, const QStringList& folders,
-                      bool recursively, bool importPlaylists, bool incremental );
+        /**
+         * If this is true then in the worst case the entire amaroK UI is frozen waiting for
+         * your Job to abort! You should check for this often, but not so often that your
+         * code's readability suffers as a result.
+         * @note if your thread was aborted pending jobs will not have completeJob() called for them
+         *       even if you return true from doJob()
+         *
+         * @note it is safe to abort a thread yourself, if you just want to abort one job, return false from
+         *       doJob()
+         */
 
-    static void stop() { m_stop = true; }
-    bool doJob();
+        //TODO run a separate thread to wait on aborting threads
+
+        bool isAborted() const { return m_aborted; }
+
+    protected:
+        /**
+         * Executed inside the thread, this should be reimplemented to do the job's work.
+         */
+        virtual bool doJob() = 0;
+
+        /**
+         * This is executed in the GUI thread after doJob() has completed
+         */
+        virtual void completeJob() = 0;
+
+    private:
+        char const * const m_name;
+        bool m_aborted;
+
+    protected:
+        DISABLE_GENERATED_MEMBER_FUNCTIONS( Job )
+    };
+
+
+    /**
+     * @class DependentJob
+     * @short A Job that depends on the existence of a QObject
+     *
+     * This Job type is dependent on a QObject class,
+     * if that class is deleted this Job will promptly abort and be deleted.
+     * completeJob() is implemented to send a JobCompletionEvent to the
+     * dependent. You can still override this if you want no handling in your
+     * dependent class.
+     *
+     * The dependent is a QGuardedPointer, so you can reference the pointer
+     * safely if you always test for 0 first, however it is definately safest
+     * to not rely on that pointer, pass required data-members with the job,
+     * only operate on the dependent in completeJob() which is only called if
+     * the dependent is still instantiated!
+     *
+     * It is only safe to have one dependent, if you depend on multiple objects
+     * that might get deleted while you are running you should instead try to make
+     * the multiple objects children of one QObject and depend on the top-most parent
+     * or best of all would be to make copies of the data you need instead of being
+     * dependent
+     */
+
+    class DependentJob : public Job
+    {
+    public:
+        DependentJob( QObject *dependent, const char *name );
+
+        virtual void completeJob();
+
+        QObject *dependent() { return m_dependent; }
+
+    private:
+        const QGuardedPtr<QObject> m_dependent;
+
+    protected:
+        DISABLE_GENERATED_MEMBER_FUNCTIONS( DependentJob );
+    };
 
 private:
-    void readDir( const QString& dir, QStringList& entries );
-    void readTags( const QStringList& entries, std::ofstream& log );
+    friend DependentJob::DependentJob( QObject*, const char* );
 
-    static bool m_stop;
-
-    CollectionDB* m_parent;
-    QObject* m_playlistBrowser;
-    QStringList m_folders;
-    bool m_recursively;
-    bool m_importPlaylists;
-    bool m_incremental;
-    QStringList m_processedDirs;
+    void registerDependent( QObject*, const char* );
 };
 
-
-//@Simple threaded TagWriting
-class TagWriter : public ThreadWeaver::Job
+inline ThreadWeaver*
+ThreadWeaver::instance()
 {
-public:
-    TagWriter( QObject*, PlaylistItem*, const QString &oldTag, const QString &newTag, const int, const bool updateView = true );
-    bool doJob();
-    void completeJob();
-private:
-    PlaylistItem* const m_item;
-    bool m_failed;
+    static ThreadWeaver instance;
 
-    QString m_oldTagString;
-    QString m_newTagString;
-    int     m_tagType;
-    bool    m_updateView;
-};
-
+    return &instance;
+}
 
 #endif

@@ -57,27 +57,57 @@
 
 
 /**
- * Iterator class that by default encourages you to only edit the visible items!
- * It is here because we have had many nasty bugs related to editing invisible items
- * because normal methods for iteration also iterate over invisible items (due to filtration)
- * Also it does conversion to PlaylistItem* for you, saving you the cast.
+ * Iterator class that only edits visible items!
+ * Preferentially always use this! Invisible items should not be operated on!
+ * To iterate over all items add MyIt::All to the flags parameter
  */
 
 class MyIterator : public QListViewItemIterator
 {
 public:
-    MyIterator( QListViewItem *item, int flags = MyIterator::Visible )
-        : QListViewItemIterator( item, flags )
+    MyIterator( QListViewItem *item, int flags = 0 )
+        : QListViewItemIterator( item, flags | MyIterator::Visible )
     {}
 
-    MyIterator( QListView *view, int flags = MyIterator::Visible )
-        : QListViewItemIterator( view, flags )
+    MyIterator( QListView *view, int flags = 0 )
+        : QListViewItemIterator( view, flags | MyIterator::Visible )
     {}
+
+    //this gets OR'd with Visible, and thus everything is returned
+    enum IteratorFlag { All = MyIterator::Invisible };
 
     PlaylistItem *operator*() { return (PlaylistItem*)QListViewItemIterator::operator*(); }
+
+    /// @return the next visible PlaylistItem after item
+    static PlaylistItem *nextVisible( PlaylistItem *item )
+    {
+        MyIterator it( item );
+        return (*it == item) ? *(MyIterator&)(++it) : *it;
+    }
 };
 
 typedef MyIterator MyIt;
+
+
+/**
+ * Threaded tag-updating
+ */
+
+class TagWriter : public ThreadWeaver::Job
+{
+public:
+    TagWriter( PlaylistItem*, const QString &oldTag, const QString &newTag, const int, const bool updateView = true );
+    bool doJob();
+    void completeJob();
+private:
+    PlaylistItem* const m_item;
+    bool m_failed;
+
+    QString m_oldTagString;
+    QString m_newTagString;
+    int     m_tagType;
+    bool    m_updateView;
+};
 
 
 namespace Glow
@@ -117,7 +147,6 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     : KListView( parent, name )
     , m_currentTrack( 0 )
     , m_marker( 0 )
-    , m_weaver( new ThreadWeaver( this ) )
     , m_firstColumn( 0 )
     , m_totalLength( 0 )
     , m_undoDir( KGlobal::dirs()->saveLocation( "data", "amarok/undo/", true ) )
@@ -229,15 +258,6 @@ Playlist::~Playlist()
 {
     saveLayout( KGlobal::config(), "PlaylistColumnsLayout" );
 
-    if( m_weaver->running() )
-    {
-        kdDebug() << "[weaver] Halting jobs..\n";
-        m_weaver->halt();
-        m_weaver->wait();
-    }
-
-    delete m_weaver;
-
     if( AmarokConfig::savePlaylist() ) saveXML( defaultPlaylistPath() );
 
     EngineController::instance()->detach( this );
@@ -269,7 +289,7 @@ Playlist::insertMedia( KURL::List list, int options )
 
         KURL::List::Iterator jt;
 
-        for( MyIt it( this, 0 ); *it; ++it ) {
+        for( MyIt it( this, MyIt::All ); *it; ++it ) {
             jt = list.find( (*it)->url() );
 
             if ( jt != list.end() ) {
@@ -294,7 +314,7 @@ Playlist::insertMedia( KURL::List list, int options )
         KURL::List::Iterator jt;
 
         // add any songs not in the playlist to it.
-        for( MyIt it( this, 0 ); *it; ++it ) {
+        for( MyIt it( this, MyIt::All ); *it; ++it ) {
             jt = addMe.find( (*it)->url() );
 
             if ( jt != addMe.end() ) {
@@ -305,7 +325,7 @@ Playlist::insertMedia( KURL::List list, int options )
         if ( addMe.isEmpty() ) // all songs to be queued are already in the playlist
         {
             // find the songs and queue them.
-            for (MyIt it( this, 0 ); *it; ++it ) {
+            for (MyIt it( this, MyIt::All ); *it; ++it ) {
                 jt = list.find( (*it)->url() );
 
                 if ( jt != list.end() )
@@ -335,6 +355,7 @@ Playlist::insertMedia( KURL::List list, int options )
 void
 Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool directPlay )
 {
+    //TODO queue these in the threadweaver?
     if( list.count() == 1 )
     {
         const KURL &url = list.front();
@@ -351,7 +372,7 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
     if( !list.isEmpty() )
     {
         setSorting( NO_SORT );
-        (new PlaylistLoader( list, this, after, directPlay ))->start( QThread::IdlePriority );
+        ThreadWeaver::instance()->queueJob( new PlaylistLoader( list, after, directPlay ) );
     }
 
     return;
@@ -376,7 +397,7 @@ Playlist::restoreSession()
 
     KURL url;
     url.setPath( path );
-    (new PlaylistLoader( url, this, 0 ))->start( QThread::IdlePriority );
+    ThreadWeaver::instance()->queueJob( new PlaylistLoader( url, 0 ) );
 }
 
 
@@ -418,7 +439,7 @@ Playlist::playNextTrack()
             {
                 //we have played everything
 
-                if ( m_prevTracks.count() <= 40 ) {
+                if ( m_prevTracks.count() <= 80 ) {
                     m_prevTracks.clear();
 
                     // don't add it to previous tracks if we only have one file in the playlist
@@ -433,9 +454,9 @@ Playlist::playNextTrack()
                 else {
                     m_prevTracks.first(); //set's current item to first item
 
-                    //keep 40 tracks in the previous list so item time user pushes play
+                    //keep 80 tracks in the previous list so item time user pushes play
                     //we don't risk playing anything too recent
-                    while( m_prevTracks.count() > 40 )
+                    while( m_prevTracks.count() > 80 )
                         m_prevTracks.remove(); //removes current item
                 }
 
@@ -450,7 +471,7 @@ Playlist::playNextTrack()
         }
         else if( item )
         {
-            item = *(MyIt&)++MyIt( item );
+            item = MyIt::nextVisible( item );
         }
         else item = *MyIt( this ); //ie. first visible item
 
@@ -470,7 +491,7 @@ Playlist::playPrevTrack()
     PlaylistItem *item = m_currentTrack;
 
     if ( !AmarokConfig::randomMode() || m_prevTracks.count() <= 1 )
-        item = *(MyIt&)--MyIt( item );
+        item = *(MyIt&)--MyIt( item ); //the previous track to item that is visible
 
     else {
         // if enough songs in buffer, jump to the previous one
@@ -810,9 +831,7 @@ Playlist::clear() //SLOT
     m_ac->action( "prev" )->setEnabled( false );
     m_ac->action( "next" )->setEnabled( false );
 
-    //TODO make it possible to tell when it is safe to not delay deletion
-    //TODO you'll have to do the same as below for removeSelected() too.
-    m_weaver->cancel(); //cancel all jobs in this weaver, no new events will be sent
+    ThreadWeaver::instance()->abortAllJobsNamed( "TagWriter" );
 
     //now we have to ensure we don't delete the items before any events the weaver sent
     //have been processed, so we stick them in a QPtrList and delete it later
@@ -1020,7 +1039,7 @@ Playlist::dragObject()
     KURL::List list;
     QMap<QString,QString> map;
 
-    for( MyIterator it( this, MyIterator::Selected ); *it; ++it )
+    for( MyIt it( this, MyIt::Selected ); *it; ++it )
     {
         const PlaylistItem *item = (PlaylistItem*)*it;
         const KURL &url = item->url();
@@ -1175,35 +1194,49 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
     if( o == header() && e->type() == QEvent::MouseButtonPress && me->button() == Qt::RightButton )
     {
-        enum { HIDE_THIS_COLUMN = 1000 };
+        enum { HIDE = 1000, CUSTOM };
 
         const int mouseOverColumn = header()->sectionAt( me->pos().x() );
 
         KPopupMenu popup;
         popup.setCheckable( true );
-        popup.insertItem( i18n("&Hide This Column"), HIDE_THIS_COLUMN ); //TODO
-        popup.setItemEnabled( HIDE_THIS_COLUMN, mouseOverColumn != -1 );
+        popup.insertItem( i18n("&Hide This Column"), HIDE ); //TODO
+        popup.setItemEnabled( HIDE, mouseOverColumn != -1 );
 
         for( int i = 0; i < columns(); ++i ) //columns() references a property
         {
             popup.insertItem( columnText( i ), i, i + 1 );
             popup.setItemChecked( i, columnWidth( i ) != 0 );
         }
+
+        popup.insertSeparator();
+        popup.insertItem( i18n("&Add Custom Column..."), CUSTOM ); //TODO
+
+        //do last so it doesn't get the first id
         popup.insertTitle( i18n( "Playlist Columns" ), /*id*/ -1, /*index*/ 1 );
 
         int col = popup.exec( static_cast<QMouseEvent *>(e)->globalPos() );
 
-        if ( col == HIDE_THIS_COLUMN )
+        switch( col ) {
+        case HIDE:
             hideColumn( mouseOverColumn );
-        else if( col != -1 )
-        {
-            //TODO can result in massively wide column appearing!
-            if( columnWidth( col ) == 0 )
+            break;
+
+        case CUSTOM:
+            addCustomColumn();
+            break;
+
+        default:
+            if( col != -1 )
             {
-                adjustColumn( col );
-                header()->setResizeEnabled( true, col );
+                //TODO can result in massively wide column appearing!
+                if( columnWidth( col ) == 0 )
+                {
+                    adjustColumn( col );
+                    header()->setResizeEnabled( true, col );
+                }
+                else hideColumn( col );
             }
-            else hideColumn( col );
         }
 
         //determine first visible column again, since it has changed
@@ -1253,8 +1286,7 @@ Playlist::customEvent( QCustomEvent *e )
     {
     case PlaylistLoader::Started:
         #define e static_cast<PlaylistLoader::StartedEvent*>(e)
-        afterItem = new PlaylistItem( KURL(), this, e->afterItem );
-        afterItem->setVisible( false );
+        afterItem = new PlaylistItem( this, e->afterItem );
         directPlay = e->directPlay;
         #undef e
 
@@ -1285,7 +1317,7 @@ Playlist::customEvent( QCustomEvent *e )
 
         if ( !m_queueList.isEmpty() ) {
             KURL::List::Iterator jt;
-            for (MyIt it( this, 0 ); *it; ++it ) {
+            for( MyIt it( this, MyIt::All ); *it; ++it ) {
                 jt = m_queueList.find( (*it)->url() );
 
                 if ( jt != m_queueList.end() ) {
@@ -1331,22 +1363,6 @@ Playlist::customEvent( QCustomEvent *e )
             activate( item );
             directPlay = false;
         }
-        break;
-
-    case ThreadWeaver::Started:
-
-        QApplication::setOverrideCursor( KCursor::workingCursor() );
-        break;
-
-    case ThreadWeaver::Done:
-
-        QApplication::restoreOverrideCursor();
-        break;
-
-    case ThreadWeaver::Job::GenericJob:
-        #define e static_cast<ThreadWeaver::Job*>(e)
-        e->completeJob();
-        #undef e
         break;
 
     case 4000: //dustbinEvent
@@ -1472,39 +1488,33 @@ void
 Playlist::shuffle() //SLOT
 {
     QPtrList<QListViewItem> list;
-    KRandomSequence seq( (long)KApplication::random() );
 
     setSorting( NO_SORT );
 
-    //first take nextTracks
-    for( PlaylistItem *item = m_nextTracks.first(); item; item = m_nextTracks.next() )
-    {
-        takeItem( item );
+    //if there are nexttracks re-order them
+    if( !m_nextTracks.isEmpty() ) {
+        for( PlaylistItem *item = m_nextTracks.first(); item; item = m_nextTracks.next() ) {
+            takeItem( item );
+            insertItem( item );
+        }
+
+        updateNextPrev();
+
+        return;
     }
 
-    //remove rest
-    for( MyIt it( this ); *it; ++it )
-    {
+    //remove
+    for( MyIt it( this ); *it; ++it ) {
         list.append( *it );
         takeItem( *it );
     }
 
-    //shuffle the rest
-    seq.randomize( &list );
+    //shuffle
+    KRandomSequence( (long)KApplication::random() ).randomize( &list );
 
-    //reinsert rest
+    //reinsert in new order
     for( QListViewItem *item = list.first(); item; item = list.next() )
-    {
         insertItem( item );
-    }
-
-    //now put nextTracks into playlist so they are first and from first to last
-    for( PlaylistItem *item = m_nextTracks.last(); item; item = m_nextTracks.prev() )
-    {
-        insertItem( item );
-    }
-
-    m_nextTracks.clear();
 
     updateNextPrev();
 }
@@ -1517,7 +1527,7 @@ Playlist::removeSelectedItems() //SLOT
     //assemble a list of what needs removing
     //calling removeItem() iteratively is more efficient if they are in _reverse_ order, hence the prepend()
     QPtrList<QListViewItem> list;
-    for( MyIterator it( this, MyIterator::Selected );
+    for( MyIterator it( this, MyIt::Selected );
          it.current();
          list.prepend( it.current() ), ++it );
 
@@ -1529,15 +1539,7 @@ Playlist::removeSelectedItems() //SLOT
     {
         removeItem( (PlaylistItem*)item );
 
-        //if tagreader is running don't let tags be read for this item and delete later
-        if( m_weaver->running() )
-        {
-            //FIXME this will cause childCount() to report wrongly
-            //FIXME make a customEvent to deleteLater(), can't use QObject::deleteLater() as we don't inherit QObject!
-            item->setVisible( false ); //will be removed next time playlist is cleared
-            //FIXME m_weaver->remove( item );
-        }
-        else delete item;
+        delete item;
     }
 
     updateNextPrev();
@@ -1565,7 +1567,7 @@ Playlist::deleteSelectedFiles() //SLOT
         KURL::List urls;
 
         //assemble a list of what needs removing
-        for( MyIterator it( this, MyIterator::Visible | MyIterator::Selected );
+        for( MyIterator it( this, MyIterator::Selected );
              it.current();
              urls << static_cast<PlaylistItem*>( *it )->url(), ++it );
 
@@ -1646,32 +1648,20 @@ Playlist::setFilter( const QString &query ) //SLOT
 
     const QString loweredQuery = query.lower();
     const QStringList terms = QStringList::split( ' ', loweredQuery );
-    PlaylistItem *item = 0;
-    MyIt it( this, loweredQuery.startsWith( m_lastSearch ) ? MyIterator::Visible : 0 );
+    MyIt it( this, loweredQuery.startsWith( m_lastSearch ) ? MyIt::Visible : MyIt::All );
 
-    while( (item = (PlaylistItem*)it.current()) )
-    {
-        bool listed = true;
+    for( ;*it; ++it ) {
+        bool b = false;
 
         //if query is empty skip the loops and show all items
-        if( !query.isEmpty() )
-        {
-            for( uint x = 0; listed && x < terms.count(); ++x ) //v.count() is constant time
-            {
-                bool b = false;
-
-                for( int y = 0; !b && y < columns(); ++y )
-                    if ( columnWidth( y ) )
-                        b = item->exactText( y ).lower().contains( terms[x] );
-
-                // exit loop, when one of the search tokens doesn't match
-                if( !b )
-                   listed = false;
-            }
-        }
-
-        item->setVisible( listed );
-        ++it;
+        for( uint x = 0; x < terms.count(); ++x ) //v.count() is constant time
+            for( int y = 0; y < columns(); ++y )
+                if ( columnWidth( y ) ) {
+                    b = (*it)->exactText( y ).lower().contains( terms[x] );
+                    goto done;
+                }
+    done:
+        (*it)->setVisible( b );
     }
 
     m_lastSearch = loweredQuery;
@@ -1685,7 +1675,7 @@ Playlist::setFilter( const QString &query ) //SLOT
 void
 Playlist::scoreChanged( const QString &path, int score )
 {
-    for( MyIt it( this, 0 ); *it; ++it )
+    for( MyIt it( this, MyIt::All ); *it; ++it )
     {
         PlaylistItem *item = (PlaylistItem*)*it;
         if ( item->url().path() == path )
@@ -1812,7 +1802,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         //Spreadsheet like fill-down
         {
             QString newTag = item->exactText( col );
-            MyIterator it( this, MyIterator::Visible | MyIterator::Selected );
+            MyIterator it( this, MyIterator::Selected );
 
             //special handling for track column
             uint trackNo = (*it)->exactText( PlaylistItem::Track ).toInt(); //returns 0 if it is not a number
@@ -1835,7 +1825,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
                 //FIXME fix this hack!
                 if ( (*it)->exactText( col ) != i18n("Writing tag...") )
-                    m_weaver->append( new TagWriter( this, *it, (*it)->exactText( col ), newTag, col, b ), true );
+                    ThreadWeaver::instance()->queueJob( new TagWriter( *it, (*it)->exactText( col ), newTag, col, b ) );
 
                 b = false;
             }
@@ -1915,6 +1905,7 @@ Playlist::removeItem( PlaylistItem *item )
         //we don't need to do that in random mode, it's getting randomly selected anyways
         if( m_nextTracks.isEmpty() && !AmarokConfig::randomMode() )
         {
+            //*MyIt( item ) returns either "item" or if item is hidden, the next visible playlistitem
             PlaylistItem* const next = *MyIt( item );
             m_nextTracks.append( next );
             repaintItem( next );
@@ -1922,7 +1913,8 @@ Playlist::removeItem( PlaylistItem *item )
     }
 
     //keep m_nextTracks queue synchronised
-    if( m_nextTracks.removeRef( item ) ) refreshNextTracks();
+    if( m_nextTracks.removeRef( item ) )
+       refreshNextTracks();
 
     //keep recent buffer synchronised
     m_prevTracks.removeRef( item ); //removes all pointers to item
@@ -2102,7 +2094,7 @@ Playlist::writeTag( QListViewItem *lvi, const QString &newTag, int column ) //SL
                 // update score in database, only
                 CollectionDB().setSongPercentage( item->url().path(), newTag.toInt() );
             else
-                m_weaver->append( new TagWriter( this, item, oldTag, newTag, column ), true );
+                ThreadWeaver::instance()->queueJob( new TagWriter( item, oldTag, newTag, column ) );
         }
 
         #undef item
@@ -2136,6 +2128,208 @@ void Playlist::showTagDialog( QPtrList<QListViewItem> items )
         TagDialog *dialog = new TagDialog( urls, instance() );
         dialog->show();
     }
+}
+
+#include <kactivelabel.h>
+#include <kdialog.h>
+#include <kpushbutton.h>
+#include <qgroupbox.h>
+#include <qlayout.h>
+#include <qprocess.h>
+void
+Playlist::addCustomColumn()
+{
+    class CustomColumnDialog : public KDialog
+    {
+    public:
+        CustomColumnDialog( QWidget *parent )
+        {
+            QLabel *textLabel1, *textLabel2, *textLabel3;
+            QLineEdit *lineEdit1, *lineEdit2;
+            QGroupBox *groupBox1;
+
+            textLabel1 = new QLabel( i18n(
+                "<p>You can create a custom column that runs a shell command against each item in the playlist. "
+                "The shell command is run as the user <b>nobody</b>, this is for security reasons.\n"
+                "<p>You can only run the command against local files for the time being. "
+                "The fullpath is inserted at the position <b>%f</b> in the string. "
+                "If you don't specify <b>%f</b> it is appended." ), this );
+            textLabel2 = new QLabel( i18n( "Column &Name:" ), this );
+            textLabel3 = new QLabel( i18n( "&Command:" ), this );
+
+            lineEdit1  = new QLineEdit( this, "ColumnName" );
+            lineEdit2  = new QLineEdit( this, "Command" );
+
+            groupBox1 = new QGroupBox( 1, Qt::Vertical, i18n( "Examples" ), this );
+            groupBox1->layout()->setMargin( 11 );
+            new KActiveLabel( i18n( "file --brief %f\n" "ls -sh %f\n" "basename %f\n" "dirname %f" ), groupBox1 );
+
+            // buddies
+            textLabel2->setBuddy( lineEdit1 );
+            textLabel3->setBuddy( lineEdit2 );
+
+            // layouts
+            QHBoxLayout *layout1 = new QHBoxLayout( 0, 0, 6 );
+            layout1->addItem( new QSpacerItem( 181, 20, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
+            layout1->addWidget( new KPushButton( KStdGuiItem::ok(), this, "OkButton" ) );
+            layout1->addWidget( new KPushButton( KStdGuiItem::cancel(), this, "CancelButton" ) );
+
+            QGridLayout *layout2 = new QGridLayout( 0, 2, 2, 0, 6 );
+            layout2->QLayout::add( textLabel2 );
+            layout2->QLayout::add( lineEdit1 );
+            layout2->QLayout::add( textLabel3 );
+            layout2->QLayout::add( lineEdit2 );
+
+            QVBoxLayout *Form1Layout = new QVBoxLayout( this, 11, 6, "Form1Layout");
+            Form1Layout->addWidget( textLabel1 );
+            Form1Layout->addWidget( groupBox1 );
+            Form1Layout->addLayout( layout2 );
+            Form1Layout->addLayout( layout1 );
+            Form1Layout->addItem( new QSpacerItem( 20, 231, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
+
+            // properties
+            setCaption( i18n("Add Custom Column") );
+
+            // connects
+            connect(
+                child( "OkButton" ),
+                SIGNAL(clicked()),
+                SLOT(accept()) );
+            connect(
+                child( "CancelButton" ),
+                SIGNAL(clicked()),
+                SLOT(reject()) );
+        }
+
+        QString command() { return static_cast<KLineEdit*>(child("Command"))->text(); }
+        QString name()    { return static_cast<KLineEdit*>(child("ColumnName"))->text(); }
+    };
+
+    CustomColumnDialog dialog( this );
+
+    if ( dialog.exec() == QDialog::Accepted ) {
+        const int index = addColumn( dialog.name(), 100 );
+        QStringList args = QStringList::split( ' ', dialog.command() );
+
+        QStringList::Iterator pcf = args.find( "%f" );
+        if ( pcf == args.end() ) {
+            //there is no %f, so add one on the end
+            //TODO prolly this is confusing, instead ask the user if we should add one
+            args += "%f";
+            --pcf;
+        }
+
+        kdDebug() << args << endl;
+
+        //TODO need to do it with a %u for url and %f for file
+        //FIXME gets stuck it seems if you submit broken commands
+
+        //FIXME issues with the column resize stuff that cause freezing in eventFilters
+
+        for( MyIt it( this ); *it; ++it ) {
+            if( (*it)->url().protocol() != "file" )
+               continue;
+
+            *pcf = (*it)->url().path();
+
+            kdDebug() << args << endl;
+
+            QProcess p( args );
+            for( p.start(); p.isRunning(); /*kapp->processEvents()*/ )
+                ::usleep( 5000 );
+
+            (*it)->setText( index, p.readStdout() );
+        }
+    }
+}
+
+#include <taglib/fileref.h>
+#include <taglib/tag.h>
+
+TagWriter::TagWriter( PlaylistItem *item, const QString &oldTag, const QString &newTag, const int col, const bool updateView )
+        : ThreadWeaver::Job( "TagWriter" )
+        , m_item( item )
+        , m_failed( true )
+        , m_oldTagString( oldTag )
+        , m_newTagString( newTag )
+        , m_tagType( col )
+        , m_updateView( updateView )
+{
+    item->setText( col, i18n( "Writing tag..." ) );
+}
+
+bool
+TagWriter::doJob()
+{
+    const QString path = m_item->url().path();
+    //TODO I think this causes problems with writing and reading tags for non latin1 people
+    //check with wheels abolut what it does and why to do it
+    //TagLib::ID3v2::FrameFactory::instance()->setDefaultTextEncoding( TagLib::String::UTF8 );
+    TagLib::FileRef f( QFile::encodeName( path ), false );
+
+    if ( !f.isNull() ) {
+        TagLib::Tag *t = f.tag();
+        QString field;
+
+        switch ( m_tagType ) {
+        case PlaylistItem::Title:
+            t->setTitle( QStringToTString( m_newTagString ));
+            field = "title";
+            break;
+        case PlaylistItem::Artist:
+            t->setArtist( QStringToTString( m_newTagString ) );
+            field = "artist";
+            break;
+        case PlaylistItem::Album:
+            t->setAlbum( QStringToTString( m_newTagString ) );
+            field = "album";
+            break;
+        case PlaylistItem::Year:
+            t->setYear( m_newTagString.toInt() );
+            field = "year";
+            break;
+        case PlaylistItem::Comment:
+            //FIXME how does this work for vorbis files?
+            //Are we likely to overwrite some other comments?
+            //Vorbis can have multiple comment fields..
+            t->setComment( QStringToTString( m_newTagString ) );
+            field = "comment";
+            break;
+        case PlaylistItem::Genre:
+            t->setGenre( QStringToTString( m_newTagString ) );
+            field = "genre";
+            break;
+        case PlaylistItem::Track:
+            t->setTrack( m_newTagString.toInt() );
+            field = "track";
+            break;
+
+        default:
+            return true;
+        }
+
+        if( f.save() )
+        {
+           // Update the collection db.
+           // Hopefully this does not cause concurreny issues with sqlite3, as we had in BR 87169.
+            if( m_updateView )
+               CollectionDB().updateURL( path, m_updateView );
+
+           m_failed = false;
+        }
+    }
+
+    return true;
+}
+
+void
+TagWriter::completeJob()
+{
+    if ( m_failed ) {
+        m_item->setText( m_tagType, m_oldTagString.isEmpty() ? " " : m_oldTagString );
+        amaroK::StatusBar::instance()->message( i18n( "The tag could not be changed." ) );
+    }
+    m_item->setText( m_tagType, m_newTagString.isEmpty() ? " " : m_newTagString );
 }
 
 #include "playlist.moc"

@@ -12,6 +12,7 @@
 #include "amarokconfig.h"
 #include "collectionbrowser.h"    //updateTags()
 #include "collectiondb.h"
+#include "collectionreader.h"
 #include "coverfetcher.h"
 #include "enginecontroller.h"
 #include "metabundle.h"           //updateTags()
@@ -46,9 +47,8 @@ CollectionEmitter* CollectionDB::s_emitter = 0;
 
 
 CollectionDB::CollectionDB()
-        : m_weaver( new ThreadWeaver( this ) )
-        , m_cacheDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) )
-        , m_coverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) )
+        : m_cacheDir( KGlobal::dirs()->saveLocation( "data", "amarok/" ) )
+        , m_coverDir( KGlobal::dirs()->saveLocation( "data", "amarok/" ) )
 {
 #ifdef USE_MYSQL
     m_db = mysql::mysql_init(NULL);
@@ -1061,8 +1061,7 @@ CollectionDB::scan( const QStringList& folders, bool recursively, bool importPla
     {
         emit s_emitter->scanStarted();
 
-        m_weaver->append( new CollectionReader( this, PlaylistBrowser::instance(), folders,
-                                                recursively, importPlaylists, false ) );
+        ThreadWeaver::instance()->onlyOneJob( new CollectionReader( this, PlaylistBrowser::instance(), folders, recursively, importPlaylists, false ) );
     }
 }
 
@@ -1073,7 +1072,7 @@ CollectionDB::scanModifiedDirs( bool recursively, bool importPlaylists )
     if ( PlaylistBrowser::instance() )
     {
         emit s_emitter->scanStarted();
-        m_weaver->append( new CollectionReader( this, PlaylistBrowser::instance(), QStringList(),
+        ThreadWeaver::instance()->onlyOneJob( new CollectionReader( this, PlaylistBrowser::instance(), QStringList(),
                                                 recursively, importPlaylists, true ) );
     }
 }
@@ -1298,7 +1297,7 @@ CollectionDB::dirDirty( const QString& path )
 {
     kdDebug() << k_funcinfo << "Dirty: " << path << endl;
 
-    m_weaver->append( new CollectionReader( this, PlaylistBrowser::instance(), path, false, false, true ) );
+    ThreadWeaver::instance()->queueJob( new CollectionReader( this, PlaylistBrowser::instance(), path, false, false, true ) );
 }
 
 
