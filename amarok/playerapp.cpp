@@ -388,7 +388,7 @@ void PlayerApp::restoreSession()
 
     if ( AmarokConfig::resumePlayback() && !AmarokConfig::resumeTrack().isEmpty() )
     {
-        MetaBundle *bundle = TagReader::readTags( AmarokConfig::resumeTrack(), true );
+        MetaBundle *bundle = TagReader::readTags( KURL(AmarokConfig::resumeTrack()), true );
 
         if( bundle )
         {

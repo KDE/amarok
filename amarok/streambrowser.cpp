@@ -715,7 +715,7 @@ void StreamBrowser::slotActivate(QListViewItem *item)
             }
             if(!cache || !QFile::exists(tmp))
             {
-                    if(KIO::NetAccess::download(item->text(4), tmp, this ))
+                    if(KIO::NetAccess::download(KURL(item->text(4)), tmp, this ))
                             success = true;
                     else
                     {

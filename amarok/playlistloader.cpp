@@ -441,7 +441,7 @@ void PlaylistLoader::loadXML( QTextStream &stream )
         //TODO  check this is safe, is it ok to cause paint Events from this thread?
         //TODO  if this is safe you may want to do it all like this
         //FIXME may be non-crash bugs due to non serialised access to m_after
-        m_after = new PlaylistItem( m_listView, m_after, e.attribute( URL ), n );
+        m_after = new PlaylistItem( m_listView, m_after, KURL(e.attribute( URL )), n );
 
         n = n.nextSibling();
     }

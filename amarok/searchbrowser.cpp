@@ -44,7 +44,7 @@ SearchBrowser::SearchBrowser( QWidget *parent, const char *name )
 
     KURLCompletion *cmpl = new KURLCompletion();
     urlEdit->setCompletionObject( cmpl );
-    urlEdit->setURL( "/" );
+    urlEdit->setURL( KURL( "/") );
 
     QVBox *vb1 = new QVBox( this );
     vb1->setSpacing( 2 );

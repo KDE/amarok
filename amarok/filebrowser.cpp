@@ -130,7 +130,7 @@ KDevFileSelector::KDevFileSelector( QWidget * parent, const char * name )
     lo->addWidget(cmbPath);
     cmbPath->listBox()->installEventFilter( this );
 
-    dir = new KDevDirOperator( QString::null, this, "operator" );
+    dir = new KDevDirOperator( KURL(), this, "operator" );
     dir->readConfig( config );
     dir->setView( KFile::Default ); //will set userconfigured view
     dir->setMode( KFile::Files );
@@ -246,7 +246,7 @@ void KDevFileSelector::readConfig()
     // if we restore history
     if ( AmarokConfig::restoreLocation() && !AmarokConfig::location().isEmpty() ) {
         setDir( AmarokConfig::location() );
-        cmbPath->setURL( AmarokConfig::location() );
+        cmbPath->setURL( KURL(AmarokConfig::location()) );
     }
 
     filter->setMaxCount( AmarokConfig::filterHistoryLen() );
