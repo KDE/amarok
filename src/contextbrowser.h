@@ -43,7 +43,6 @@ class ContextBrowser : public QVBox, public EngineObserver
         void showCurrentTrack();
 
     private:
-        void viewImage( const QString& artist, const QString& album );
         void setStyleSheet();
         void showIntroduction();
         void showScanning();

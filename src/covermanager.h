@@ -33,6 +33,7 @@ Q_OBJECT
     public:
         CoverManager( QWidget *parent=0, const char *name=0 );
         ~CoverManager();
+        static void viewCover( const QString artist, const QString album, QWidget *parent=0 );
 
     private slots:
         void expandItem( QListViewItem * );
@@ -40,7 +41,7 @@ Q_OBJECT
         void slotArtistSelected( QListViewItem * );
         void loadThumbnails();
 
-        void coverItemDoubleClicked( QIconViewItem *item );
+        void coverItemExecuted( QIconViewItem *item );
         void showCoverMenu( QIconViewItem *item, const QPoint & );
         //filter
         void slotSetFilter();
@@ -86,6 +87,7 @@ Q_OBJECT
 
         //used for the thumbnail loading
         QStringList m_loadAlbums;
+        bool m_loadingThumbnails;
         bool m_stopLoading;
 
         // Used by fetchCoversLoop() for temporary storage
@@ -108,7 +110,6 @@ class CoverViewItem : public KIconViewItem
         bool hasCover() { return m_hasCover; }
         const QString artist() { return m_artist; }
         const QString album() { return m_album; }
-        const QString coverImagePath();
 
     protected:
         void paintItem(QPainter* painter, const QColorGroup& colorGroup);
@@ -118,6 +119,7 @@ class CoverViewItem : public KIconViewItem
     private:
         QString m_artist;
         QString m_album;
+        QString m_coverImagePath;
         bool m_hasCover;
         QPixmap m_coverPix;
 };

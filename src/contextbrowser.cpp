@@ -319,7 +319,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         {
             case SHOW:
                 /* open an image view widget */
-                viewImage( info[0], info[1] );
+                CoverManager::viewCover( info[0], info[1], this );
                 break;
 
             case FETCH:
@@ -328,7 +328,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
                 m_db->fetchCover( this, info[0], info[1], false );
             #else
                 if( m_db->getImageForAlbum( info[0], info[1], 0 ) != locate( "data", "amarok/images/nocover.png" ) )
-                    viewImage( info[0], info[1] );
+                     CoverManager::viewCover( info[0], info[1], this );
                 else
                 {
                     /* if no cover exists, open a file dialog to add a cover */
@@ -544,8 +544,8 @@ void ContextBrowser::showCurrentTrack() //SLOT
     delete m_db;
     m_db = new CollectionDB();
 
-    uint artist_id = m_db->getValueID( "artist", m_currentTrack->artist() );
-    uint album_id = m_db->getValueID( "album", m_currentTrack->album() );
+    uint artist_id = m_db->getValueID( "artist", m_currentTrack->artist(), false );
+    uint album_id = m_db->getValueID( "album", m_currentTrack->album(), false );
 
     // Triggers redisplay when new cover image is downloaded
     connect( m_db, SIGNAL( coverFetched() ), this, SLOT( showCurrentTrack() ) );
@@ -762,18 +762,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
 //////////////////////////////////////////////////////////////////////////////////////////
-
-void ContextBrowser::viewImage( const QString& artist, const QString& album )
-{
-   //this code is duplicated in CoverManager::coverItemDoubleClicked()
-
-    QDialog *dialog = new QDialog( this, 0, false, WDestructiveClose | WType_TopLevel );
-    dialog->setCaption( kapp->makeStdCaption( artist + " - " + album ) );
-    QPixmap pixmap( m_db->getImageForAlbum( artist, album, 0 ) );
-    dialog->setPaletteBackgroundPixmap( pixmap );
-    dialog->setFixedSize( pixmap.size() );
-    dialog->show();
-}
 
 namespace amaroK {
 class Color : public QColor {

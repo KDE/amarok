@@ -149,7 +149,6 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     m_coverView->arrangeItemsInGrid();
     m_coverView->setAutoArrange( TRUE );
     m_coverView->setItemsMovable( FALSE );
-    m_coverView->setMode( KIconView::Select );
     viewBox->addWidget( m_coverView, 4 );
 
     //status bar
@@ -180,8 +179,8 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     connect( m_artistView, SIGNAL( selectionChanged( QListViewItem * ) ), SLOT( slotArtistSelected( QListViewItem * ) ) );
     connect( m_coverView, SIGNAL( rightButtonPressed( QIconViewItem *, const QPoint & ) ),
                 SLOT( showCoverMenu(QIconViewItem *, const QPoint &) ) );
-    connect( m_coverView, SIGNAL( clicked( QIconViewItem * ) ),
-                SLOT( coverItemDoubleClicked( QIconViewItem * ) ) );
+    connect( m_coverView, SIGNAL( executed( QIconViewItem * ) ),
+                SLOT( coverItemExecuted( QIconViewItem * ) ) );
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     #ifdef AMAZON_SUPPORT
@@ -210,6 +209,18 @@ CoverManager::~CoverManager()
     KConfig *config = kapp->config();
     config->setGroup( "Cover Manager" );
     config->writeEntry( "Window Size", size() );
+}
+
+
+void CoverManager::viewCover( const QString artist, const QString album, QWidget *parent ) //static
+{
+    //QDialog means "escape" works as expected
+    QDialog *dialog = new QDialog( parent, 0, false, WDestructiveClose | WType_TopLevel );
+    dialog->setCaption( kapp->makeStdCaption( artist + " - " + album ) );
+    QPixmap pixmap( CollectionDB().getImageForAlbum( artist, album, 0 ) );
+    dialog->setPaletteBackgroundPixmap( pixmap );
+    dialog->setFixedSize( pixmap.size() );
+    dialog->show();
 }
 
 
@@ -348,14 +359,14 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     #endif
 }
 
-static bool m_loadingThumbnails = false; //MOVE me to header, or make this implementation better
+
 void CoverManager::loadThumbnails() //SLOT
 {
-    m_stopLoading = false;
     m_loadingThumbnails = true;
+    m_stopLoading = false;
 
     for( QStringList::ConstIterator it = m_loadAlbums.begin(), end = m_loadAlbums.end(); it != end; ++it ) {
-        if( m_stopLoading ) break;
+        if( m_stopLoading ) return;
 
         const QStringList values = QStringList::split( " @@@ ", *it );
 
@@ -373,11 +384,10 @@ void CoverManager::loadThumbnails() //SLOT
 
 void CoverManager::closeEvent( QCloseEvent *e )
 {
-    //prevent crash by not closing during thumbnail loading
     if( m_loadingThumbnails )
-       e->ignore();
-    else
-       e->accept();
+        m_stopLoading = true;
+
+    e->accept();
 }
 
 
@@ -414,7 +424,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
 
     switch( menu.exec(p) ) {
         case SHOW:
-            coverItemDoubleClicked( item );
+            viewCover( item->artist(), item->album(), this );
             break;
 
         #ifdef AMAZON_SUPPORT
@@ -448,26 +458,17 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
 }
 
 
-void CoverManager::coverItemDoubleClicked( QIconViewItem *item ) //SLOT
+void CoverManager::coverItemExecuted( QIconViewItem *item ) //SLOT
 {
-   //this code is duplicated in ContextBrowser::viewImage()
-
     #define item static_cast<CoverViewItem*>(item)
 
     if( !item ) return;
 
-    if ( item->hasCover() ) {
-        //QDialog means "escape" works as expected
-        QDialog *dialog = new QDialog( this, 0, false, WDestructiveClose | WType_TopLevel );
-        dialog->setCaption( kapp->makeStdCaption( item->album() ) );
-        QPixmap pixmap( item->coverImagePath() );
-        dialog->setPaletteBackgroundPixmap( pixmap );
-        dialog->setFixedSize( pixmap.size() );
-        dialog->show();
-    }
+    item->setSelected( true );
+    if ( item->hasCover() )
+        viewCover( item->artist(), item->album(), this );
     else
         fetchSelectedCovers();
-
 
     #undef item
 }
@@ -767,37 +768,28 @@ CoverViewItem::CoverViewItem( QIconView *parent, QIconViewItem *after, QString a
     : KIconViewItem( parent, after, album )
     , m_artist( artist )
     , m_album( album )
-    , m_hasCover( QFile::exists( coverImagePath() ) )
+    , m_coverImagePath( CollectionDB().getImageForAlbum( m_artist, m_album, 0 ) )
+    , m_hasCover( QFile::exists( m_coverImagePath ) )
     , m_coverPix( 0 )
 {
     setDragEnabled( false );
     calcRect();
 
-    kdDebug() << coverImagePath() << endl;
+    kdDebug() << m_coverImagePath << endl;
 }
 
 
 void CoverViewItem::loadCover()
 {
-    m_hasCover = QFile::exists( coverImagePath() );
+    m_hasCover = QFile::exists( m_coverImagePath );
 
     if( m_hasCover ) {
-        QString imgPath = CollectionDB().getImageForAlbum( m_artist, m_album );
-        m_coverPix = QPixmap( imgPath );
+        m_coverPix = QPixmap( CollectionDB().getImageForAlbum( m_artist, m_album ) );  //create the scaled cover
     }
     else if( !m_coverPix.isNull() )
         m_coverPix.resize( 0, 0 );    //make it a null pixmap
 
     repaint();
-}
-
-
-const QString CoverViewItem::coverImagePath()
-{
-    QString fileName( m_artist + " - " + m_album );
-    fileName.replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ).append( ".png" );
-
-    return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) + "albumcovers/large/" + fileName.lower();
 }
 
 
