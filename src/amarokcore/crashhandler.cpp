@@ -126,17 +126,21 @@ namespace amaroK
             if( fileCommandOutput.findRev( "not stripped", false ) >= 0 )
                 subject += " [stripped]";
 
-            const int invalidFrames = bt.contains( QRegExp("\n#[0-9]+\\s+0x[0-9A-Fa-f]+ \\w* \\?\\?") );
-            const int validFrames = bt.contains( QRegExp("\n#[0-9]+\\s+0x[0-9A-Fa-f]+") );
+            if( !bt.isEmpty() ) {
+                const int invalidFrames = bt.contains( QRegExp("\n#[0-9]+\\s+0x[0-9A-Fa-f]+ \\w* \\?\\?") );
+                const int validFrames = bt.contains( QRegExp("\n#[0-9]+\\s+0x[0-9A-Fa-f]+") );
 
-            if( invalidFrames > 0 && validFrames / invalidFrames < 2 )
-                subject += " [likely invalid]";
+                if( invalidFrames > 0 && validFrames / invalidFrames < 2 )
+                    subject += " [likely invalid]";
 
-            if( bt.isEmpty() )
-                subject += " [empty]";
+                if( validFrames < 5 )
+                    subject += " [short]";
 
-            if( bt.contains( QRegExp("at .*\\.cpp:\\d*") ) >= 0 )
-                subject += " [good]";
+                if( bt.contains( QRegExp("at .*\\.cpp:\\d*") ) >= 0 )
+                    subject += " [good]";
+            }
+            else
+                subject += "[empty]";
 
 
             //TODO -fomit-frame-pointer buggers up the backtrace, so detect it
