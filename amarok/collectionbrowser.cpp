@@ -270,7 +270,9 @@ CollectionView::readDir( const KURL& url )
         kapp->processEvents(); 
        
     KFileItemList list = m_dirLister->items();    
-    m_weaver->append( new CollectionReader( this, list ) );
+    
+    if ( !list.isEmpty() )
+        m_weaver->append( new CollectionReader( this, list ) );
 
     if ( m_recursively ) {
         for ( int i = 0; i < list.count(); i++ ) {
@@ -320,7 +322,7 @@ CollectionView::customEvent( QCustomEvent *e )
             delete bundle;
         }
         
-        if ( c->list().count() ) emit tagsReady();
+        emit tagsReady();
     }
 }
 

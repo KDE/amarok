@@ -217,7 +217,9 @@ CollectionReader::doJob()
                 m_metaList.append( bundle );
         }
     }
-    
+    if ( m_metaList.isEmpty() )
+        return false;
+        
     return true;
 }
 
