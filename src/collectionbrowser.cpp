@@ -103,6 +103,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     toolbar->setIconText( KToolBar::IconTextRight, false );
     tagfilterMenuButton->plug( toolbar );
+
     toolbar->insertLineSeparator();
 
     toolbar->setIconText( KToolBar::IconOnly, false );
@@ -645,6 +646,8 @@ CollectionView::cat2Menu( int id, bool rerender )  //SLOT
     m_parent->m_cat3Menu->setItemEnabled( m_cat3, true );  //enable old item
     m_cat2 = id;
     m_parent->m_cat2Menu->setItemChecked( m_cat2, true );
+    if( id != CollectionBrowser::IdNone )
+        setColumnText( 0, columnText(0) + " / " + captionForCategory( m_cat2 ) );
 
     enableCat3Menu( id != CollectionBrowser::IdNone );
 
@@ -670,6 +673,8 @@ CollectionView::cat3Menu( int id, bool rerender )  //SLOT
     m_parent->m_cat3Menu->setItemChecked( m_cat3, false ); //uncheck old item
     m_cat3 = id;
     m_parent->m_cat3Menu->setItemChecked( m_cat3, true );
+    if( id != CollectionBrowser::IdNone )
+        setColumnText( 0, columnText(0) + " / " + captionForCategory( m_cat3 ) );
 
     if ( rerender )
         renderView();
@@ -811,7 +816,13 @@ CollectionView::setViewMode( int mode, bool rerender )
         m_parent->m_treeViewAction->setEnabled( false );
         m_parent->m_flatViewAction->setEnabled( true );
 
-        addColumn( captionForCategory( m_cat1 ) );
+        QString headerText = captionForCategory( m_cat1 );
+        if ( m_cat2 != CollectionBrowser::IdNone )
+            headerText += " / " + captionForCategory( m_cat2 );
+        if ( m_cat3 != CollectionBrowser::IdNone )
+            headerText += " / " + captionForCategory( m_cat3 );
+
+        addColumn( headerText );
         setResizeMode( QListView::NoColumn );
         setRootIsDecorated( true );
         setFullWidth( true );
