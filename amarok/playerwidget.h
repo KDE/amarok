@@ -77,17 +77,20 @@ class PlayerWidget : public QWidget
         void wheelEvent( QWheelEvent* ); //systray requires access
         void startDrag();
 
-        static QString zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1" ).arg( i ) : QString::number( i ); }
-
     public slots:
         void createAnalyzer( int = 0 );
         void setScroll( const MetaBundle& );
         void drawScroll();
+        void setPlaylistShown( bool on );
+        void setEffectsWindowShown( bool on );
 
     signals:
         void configureDecoder();
+        void playlistToggled( bool on );
+        void effectsWindowActivated();
 
     private:
+        static QString zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1" ).arg( i ) : QString::number( i ); }
         void setScroll( const QStringList& );
         void paintEvent( QPaintEvent* );
         void mousePressEvent( QMouseEvent* );

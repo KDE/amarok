@@ -80,6 +80,7 @@ PlayerApp::PlayerApp()
         , m_pOSD( new OSDWidget( "amaroK" ) )
         , m_proxyError( false )
         , m_sockfd( -1 )
+        , m_showBrowserWin( false )
         , m_pActionCollection( new KActionCollection( this ) )
 {
     //TODO readConfig and applySettings first
@@ -375,8 +376,7 @@ void PlayerApp::initBrowserWin()
 
     m_pBrowserWin = new BrowserWin( 0, "BrowserWin" );
 
-    connect( m_pPlayerWidget->m_pButtonPl, SIGNAL( toggled( bool ) ),
-             //m_pBrowserWin,                SLOT  ( setShown( bool ) ) );
+    connect( m_pPlayerWidget, SIGNAL( playlistToggled( bool ) ),
              this,                SLOT  ( slotPlaylistShowHide() ) );
 
     kdDebug() << "END " << k_funcinfo << endl;
@@ -391,8 +391,8 @@ void PlayerApp::initPlayerWidget()
 
     connect( this,                         SIGNAL( metaData        ( const MetaBundle& ) ),
              m_pPlayerWidget,                SLOT( setScroll       ( const MetaBundle& ) ) );
-    connect( m_pPlayerWidget->m_pButtonEq, SIGNAL( released        () ),
-             this,                           SLOT( showEffectWidget() ) );
+    connect( m_pPlayerWidget, SIGNAL( effectsWindowActivated() ),
+             this,            SLOT( showEffectWidget() ) );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
@@ -496,7 +496,7 @@ void PlayerApp::saveConfig()
 {
     AmarokConfig::setBrowserWinPos     ( m_pBrowserWin->pos() );
     AmarokConfig::setBrowserWinSize    ( m_pBrowserWin->size() );
-    AmarokConfig::setBrowserWinEnabled ( m_pPlayerWidget->m_pButtonPl->isOn() );
+    AmarokConfig::setBrowserWinEnabled ( m_showBrowserWin );
     AmarokConfig::setMasterVolume      ( m_pEngine->volume() );
     AmarokConfig::setPlayerPos         ( m_pPlayerWidget->pos() );
     AmarokConfig::setVersion           ( APP_VERSION );
@@ -524,7 +524,8 @@ void PlayerApp::readConfig()
     m_pBrowserWin  ->move  ( AmarokConfig::browserWinPos() );
     m_pBrowserWin  ->resize( AmarokConfig::browserWinSize() );
 
-    m_pPlayerWidget->m_pButtonPl->setOn( AmarokConfig::browserWinEnabled() );
+    m_showBrowserWin = AmarokConfig::browserWinEnabled();
+    m_pPlayerWidget->setPlaylistShown( m_showBrowserWin );
 
     // Actions ==========
     m_pGlobalAccel->insert( "add", i18n( "Add Location" ), 0, KKey("WIN+a"), 0,
@@ -669,8 +670,7 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
 
     if( e->type() == QEvent::Close && o == m_pBrowserWin && m_pPlayerWidget->isShown() )
     {
-        m_pPlayerWidget->m_pButtonPl->setOn( false );
-        return TRUE; //so we don't end up in infinite loop!
+        m_pPlayerWidget->setPlaylistShown( m_showBrowserWin = false );
     }
     else if( e->type() == QEvent::Hide && o == m_pPlayerWidget )
     {
@@ -698,16 +698,16 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
         //TODO this is broke again if playlist is minimized
         //when fixing you have to make sure that changing desktop doesn't un minimise the playlist
 
-        if( AmarokConfig::hidePlaylistWindow() && m_pPlayerWidget->m_pButtonPl->isOn() && e->spontaneous()/*)
-                        {
-                            //this is to battle a kwin bug that affects xinerama users
-                            //FIXME I commented this out for now because spontaneous show events are sent to widgets
-                            //when you switch desktops, so this would cause the playlist to deiconify when switching desktop!
-                            //KWin::deIconifyWindow( m_pBrowserWin->winId(), false );
-                            m_pBrowserWin->show();
-                            eatActivateEvent = true;
-                        }
-                        else if( */ || m_pPlayerWidget->m_pButtonPl->isOn() )
+        if( AmarokConfig::hidePlaylistWindow() && m_showBrowserWin && e->spontaneous()/*)
+        {
+            //this is to battle a kwin bug that affects xinerama users
+            //FIXME I commented this out for now because spontaneous show events are sent to widgets
+            //when you switch desktops, so this would cause the playlist to deiconify when switching desktop!
+            //KWin::deIconifyWindow( m_pBrowserWin->winId(), false );
+            m_pBrowserWin->show();
+            eatActivateEvent = true;
+        }
+        else if( */ || m_showBrowserWin )
         {
             //if minimized the taskbar entry for browserwin is shown
             m_pBrowserWin->show();
@@ -718,10 +718,7 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
             //slotPlaylistHideShow() can make it so the PL is shown but the button is off.
             //this is intentional behavior BTW
             //FIXME it would be nice not to have to set this as it us unclean(TM)
-            IconButton *w = m_pPlayerWidget->m_pButtonPl;
-            w->blockSignals( true );
-            w->setOn( true );
-            w->blockSignals( false );
+            m_pPlayerWidget->setPlaylistShown( true );
         }
     }
     /*
@@ -864,24 +861,21 @@ void PlayerApp::slotPlaylistShowHide()
     if( !m_pBrowserWin->isShown() )
     {
         if( isMinimized ) KWin::deIconifyWindow( info.win() );
-        m_pBrowserWin->setShown( true );
+        m_pBrowserWin->setShown( m_showBrowserWin = true );
     }
     else if( isMinimized ) KWin::deIconifyWindow( info.win() );
     else
     {
         KWin::WindowInfo info2 = KWin::windowInfo( m_pPlayerWidget->winId() );
         if( info2.valid() && info2.isMinimized() ) KWin::iconifyWindow( info.win() );
-        else m_pBrowserWin->setShown( false );
+        else
+        {
+            m_pBrowserWin->setShown( m_showBrowserWin = false );
+        }
     }
 
-    //only do if shown so that it doesn't affect expected layout after restore from systray
-    if( m_pPlayerWidget->isShown() )
-    {
-        IconButton *w = m_pPlayerWidget->m_pButtonPl;
-        w->blockSignals( true );
-        w->setOn( m_pBrowserWin->isShown() );
-        w->blockSignals( false );
-    }
+    // make sure playerwidget button is in sync
+    m_pPlayerWidget->setPlaylistShown( m_showBrowserWin );
 }
 
 
@@ -988,8 +982,6 @@ void PlayerApp::showEffectWidget()
     {
         EffectWidget::self = new EffectWidget();
 
-        connect( EffectWidget::self,           SIGNAL( destroyed() ),
-                 m_pPlayerWidget->m_pButtonEq, SLOT  ( setOff   () ) );
         connect( m_pPlayerWidget,              SIGNAL( destroyed() ),
                  EffectWidget::self,           SLOT  ( deleteLater() ) );
 
@@ -999,7 +991,10 @@ void PlayerApp::showEffectWidget()
             EffectWidget::self->setGeometry( EffectWidget::save_geometry );
     }
     else
+    {
+        m_pPlayerWidget->setEffectsWindowShown( false );
         delete EffectWidget::self;
+    }
 }
 
 
