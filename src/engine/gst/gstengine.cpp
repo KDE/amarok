@@ -459,7 +459,7 @@ GstEngine::stop()  //SLOT
     if ( !m_currentInput ) return;
 
     // When engine is in pause mode, don't fade but destroy right away
-    if ( state() == Engine::Paused )
+    if ( state() != Engine::Playing )
         m_currentInput->prepareToDie();
     else
         m_currentInput->setState( InputPipeline::FADE_OUT );
@@ -999,18 +999,22 @@ void InputPipeline::prepareToDie()
 
     if ( GST_IS_THREAD( thread ) )
     {
-        gst_element_set_state( thread, GST_STATE_PAUSED );
+        if ( GST_STATE( thread ) == GST_STATE_PLAYING )
+        {
+            gst_element_set_state( thread, GST_STATE_PAUSED );
 
-        // Wait until queue is empty
-        int filled = 1;
-        int count = 100;
-        while( filled && count ) {
-            gst_element_get( queue, "current-level-buffers", &filled, NULL );
-            ::usleep( 20000 ); // 20 msec
-            count--;
+            kdDebug() << k_funcinfo << "Waiting for queue to become empty.\n";
+
+            int filled = 1;
+            int count = 100;
+            while( filled && count ) {
+                gst_element_get( queue, "current-level-buffers", &filled, NULL );
+                ::usleep( 20000 ); // 20 msec
+                count--;
+            }
+            if ( !count )
+                kdDebug() << k_funcinfo << "Count reached 0\n";
         }
-        if ( !count )
-            kdDebug() << k_funcinfo << "Count reached 0\n";
 
         if ( GST_IS_THREAD( GstEngine::instance()->m_gst_thread ) )
             gst_element_unlink( queue, GstEngine::instance()->m_gst_adder );
