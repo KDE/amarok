@@ -6,7 +6,7 @@
 #define AMAROK_SCROBBLER_H
 
 #include "engineobserver.h"
-#include <qdom.h> 
+#include <qdom.h>
 #include <qobject.h>
 #include <qptrdict.h>
 #include <qptrlist.h>
@@ -28,7 +28,7 @@ class Scrobbler : public QObject, public EngineObserver
     public:
         static Scrobbler *instance();
 
-        void similarArtists( QString /*artist*/ );
+        void similarArtists( const QString & /*artist*/ );
         void applySettings();
 
     signals:
@@ -65,9 +65,9 @@ class SubmitItem
             const QString& /*title*/,
             int /*length*/ );
         SubmitItem( const QDomElement& /* domElement */ );
-        
+
         bool operator==( const SubmitItem& item );
-        
+
         const void setArtist( const QString& artist ) { m_artist = artist; }
         const void setAlbum( const QString& album ) { m_album = album; }
         const void setTitle( const QString& title ) { m_title = title; }
@@ -76,7 +76,7 @@ class SubmitItem
         const QString title() const { return m_title; }
         const int length() const { return m_length; }
         const uint playStartTime() const { return m_playStartTime; }
-        
+
         QDomElement toDomElement( QDomDocument& /* document */ ) const;
 
     private:

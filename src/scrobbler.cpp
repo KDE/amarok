@@ -63,7 +63,7 @@ Scrobbler::~Scrobbler()
 /**
  * Queries similar artists from Audioscrobbler.
  */
-void Scrobbler::similarArtists( QString artist )
+void Scrobbler::similarArtists( const QString & artist )
 {
     QString url =
         QString( "http://www.audioscrobbler.com/similar/%1" )
@@ -165,7 +165,7 @@ void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
         }
         return;
     }
-    
+
     m_prevPos = 0;
 
     // Plugins must not submit tracks played from online radio stations, even
@@ -271,7 +271,7 @@ void Scrobbler::appendSimilar( SubmitItem* item ) const
     qb.addMatches( QueryBuilder::tabArtist, suggestions );
     qb.setLimit( 0, 5 );
     QStringList values = qb.run();
-    
+
     for ( uint i = 0; i < values.count(); i++ )
     {
         kdDebug() << "SUGGESTION: " + values[i] << endl;
