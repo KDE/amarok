@@ -815,8 +815,6 @@ CoverViewItem::CoverViewItem( QIconView *parent, QIconViewItem *after, QString a
     setDragEnabled( hasCover() );
     setDropEnabled( true );
     calcRect();
-
-    kdDebug() << m_coverImagePath << endl;
 }
 
 

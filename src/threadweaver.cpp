@@ -371,7 +371,9 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
             command += m_parent->escapeString( title.isEmpty() ? url.fileName() : title ) + "','";
             command += m_parent->escapeString( QString::number( m_parent->yearID( bundle.year().isEmpty() ? i18n( "Unknown" ) : bundle.year(), true, !m_incremental ) ) ) + "','";
             command += m_parent->escapeString( bundle.comment() ) + "','";
-            command += m_parent->escapeString( bundle.track() ) + "', 0, 0);";
+            command += m_parent->escapeString( bundle.track() ) + "', ";
+            command += artist == i18n( "Various Artists" ) ? "1" : "0";
+            command += ", 0);";
 
             m_parent->query( command );
         }
@@ -397,7 +399,9 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
             command += m_parent->escapeString( title.isEmpty() ? url.fileName() : title ) + "','";
             command += m_parent->escapeString( QString::number( m_parent->yearID( i18n( "Unknown" ), true, !m_incremental ) ) ) + "','";
             command += m_parent->escapeString( i18n( "Unknown" ) ) + "','";
-            command += m_parent->escapeString( i18n( "Unknown" ) ) + "', 0, 0);";
+            command += m_parent->escapeString( i18n( "Unknown" ) ) + "', ";
+            command += artist == i18n( "Various Artists" ) ? "1" : "0";
+            command += ", 0);";
 
             m_parent->query( command );
         }
