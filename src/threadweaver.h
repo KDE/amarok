@@ -150,7 +150,7 @@ private:
     ThreadWeaver();
    ~ThreadWeaver();
 
-    enum EventType { JobEvent = 2000, OverrideCursorEvent };
+    enum EventType { JobEvent = 2000, OverrideCursorEvent, RestoreOverrideCursorEvent };
 
     virtual bool event( QEvent* );
 

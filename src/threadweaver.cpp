@@ -136,7 +136,9 @@ ThreadWeaver::event( QEvent *e )
 
         thread->m_job = 0;
 
-        QApplication::restoreOverrideCursor();
+        QApplication::postEvent(
+                ThreadWeaver::instance(),
+                new QCustomEvent( ThreadWeaver::RestoreOverrideCursorEvent ) );
 
         if ( !job->isAborted() ) {
             d << "completed";
@@ -174,6 +176,12 @@ ThreadWeaver::event( QEvent *e )
         // we have to do this for the PlaylistLoader case, as Qt uses the same
         // function for drag and drop operations.
         QApplication::setOverrideCursor( KCursor::workingCursor() );
+        break;
+
+    case RestoreOverrideCursorEvent:
+        // we have to do this for the PlaylistLoader case, as Qt uses the same
+        // function for drag and drop operations.
+        QApplication::restoreOverrideCursor();
         break;
 
     default:
