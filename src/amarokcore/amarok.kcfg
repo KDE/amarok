@@ -263,11 +263,17 @@
         <default code="true">QFont("Helvetica",9)</default>
     <whatsthis>The font to use in the player window.</whatsthis>
     </entry>
-    <entry key="Player Widget Scroll Font" type="Font">
-        <label>Font in player window title scroller</label>
-        <default code="true">QFont("Helvetica",9)</default>
-    <whatsthis>The font to use in the player window title scroller.</whatsthis>
+    <entry key="Recode ID3v1 Tags" type="Bool">
+        <label>Recode ID3v1 tags</label>
+        <default>false</default>
+        <whatsthis>If set, ID3v1 tags will be recoded with the chosen encoding.</whatsthis>
     </entry>
+    <entry key="Tag Encoding" type="Int">
+        <label>Encoding charset</label>
+        <default></default>
+    <whatsthis>The charset with which to decode ID3v1 tags.</whatsthis>
+    </entry>
+
 </group>
 
 <group name="Colors">
@@ -313,6 +319,14 @@
         <label>Time to resume at, in seconds</label>
         <default>-1</default>
         <whatsthis>Internal: Playback position in the track to resume on startup.</whatsthis>
+    </entry>
+</group>
+
+<group name="CoverFetcher">
+    <entry key="Cover Size" type="Int">
+        <label>Cover size to be used for fetching covers from amazon</label>
+        <default>2</default>
+        <whatsthis>Cover size to be used for fetching covers from amazon.</whatsthis>
     </entry>
 </group>
 
