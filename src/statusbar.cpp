@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "amarokconfig.h"
+#include "app.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
-#include "app.h"
+#include "statusbar.h"
 #include "threadweaver.h"
 
 #include <qapplication.h>
@@ -31,8 +32,6 @@
 #include <kglobalsettings.h>
 #include <kprogress.h>
 #include <ksqueezedtextlabel.h>
-
-
 
 
 using namespace amaroK;
