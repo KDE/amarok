@@ -115,11 +115,11 @@ KFileMetaInfo* PlaylistItem::metaInfo()
 void PlaylistItem::setMetaTitle()
 {
     if ( m_pMetaInfo)
-    {       
+    {
         if ( m_pMetaInfo->isValid() && !m_pMetaInfo->isEmpty() )
         {
-            if ( m_pMetaInfo->item( "Title" ).string() != "---" )    
-            {        
+            if ( m_pMetaInfo->item( "Title" ).string() != "---" )
+            {
                 QString str;
 
                 str += m_pMetaInfo->item( "Artist" ).string();
@@ -131,9 +131,9 @@ void PlaylistItem::setMetaTitle()
         }
     }
 }
-    
 
-                
+
+
 bool PlaylistItem::isDir()
 {
     return m_isDir;
@@ -148,7 +148,7 @@ void PlaylistItem::setDir( bool on )
 
 
 
-void PlaylistItem::paintCell( QPainter* p, const QColorGroup& cg, int column, int width, int align  )
+void PlaylistItem::paintCell( QPainter* p, const QColorGroup& /*cg*/, int /*column*/, int width, int align )
 {
     QColor col( 0x80, 0xa0, 0xff );
     int margin = 1;
@@ -192,6 +192,6 @@ void PlaylistItem::paintCell( QPainter* p, const QColorGroup& cg, int column, in
 
 
 // paintFocus is an empty dummy function to disable focus drawing
-void PlaylistItem::paintFocus( QPainter* p, const QColorGroup& cg, const QRect& r )
+void PlaylistItem::paintFocus( QPainter* /*p*/, const QColorGroup& /*cg*/, const QRect& /*r*/ )
 {
 }

@@ -181,3 +181,5 @@ void BrowserWidget::slotReturnPressed( const QString &str )
 {
     readDir( str );
 }
+
+#include "browserwidget.moc"

@@ -139,9 +139,11 @@ void ExpandButton::slotStartExpand()
         yPos -= child->height();
         child->move( x(), yPos );
         child->setDown( true );
-        bitBlt( m_pBlitMap2, 0, height() * i, &QPixmap::grabWidget( child ) );
+        QPixmap tmp = QPixmap::grabWidget( child );
+        bitBlt( m_pBlitMap2, 0, height() * i, &tmp );
         child->setDown( false );
-        bitBlt( m_pBlitMap1, 0, height() * i, &QPixmap::grabWidget( child ) );
+        tmp = QPixmap::grabWidget( child );
+        bitBlt( m_pBlitMap1, 0, height() * i, &tmp );
     }
 
 //  m_pBlitMap1->setMask( m_pBlitMap1->createHeuristicMask() );
@@ -217,3 +219,5 @@ void ExpandButton::slotAnimTimer()
     }
     bitBlt( parentWidget(), x(), y() - m_pComposePixmap->height(), m_pComposePixmap );
 }
+
+#include "expandbutton.moc"

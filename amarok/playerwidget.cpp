@@ -670,3 +670,5 @@ bool PlayerWidget::playObjectConfigurable()
 
     return false;
 }
+
+#include "playerwidget.moc"

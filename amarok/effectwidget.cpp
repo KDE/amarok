@@ -278,3 +278,5 @@ void EffectWidget::slotItemClicked( QListViewItem *pCurrentItem )
         m_pButtonBotConf->setEnabled( false );
     }
 }
+
+#include "effectwidget.moc"

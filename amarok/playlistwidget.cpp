@@ -366,3 +366,5 @@ void PlaylistWidget::slotTextChanged( const QString &str )
         setSelected( pVisibleItem, true );
     }
 }
+
+#include "playlistwidget.moc"

@@ -74,7 +74,7 @@ QWidget( parent, name, Qt::WPaintUnclipped )
 
     m_pActionCollection = new KActionCollection( this );
     m_pActionCollection->setAutoConnectShortcuts( true );
-    
+
     initChildren();
 
     connect( m_pBrowserWidget, SIGNAL( doubleClicked( QListViewItem* ) ),
@@ -147,15 +147,15 @@ void BrowserWin::initChildren()
     KURLCompletion *compBrowser = new KURLCompletion();
     m_pBrowserLineEdit->setCompletionMode( KGlobalSettings::CompletionAuto );
     m_pBrowserLineEdit->setCompletionObject( compBrowser );
-    connect( m_pBrowserLineEdit, SIGNAL( returnPressed( const QString& ) ), m_pBrowserWidget, SLOT( slotReturnPressed( const QString& ) ) ); 
+    connect( m_pBrowserLineEdit, SIGNAL( returnPressed( const QString& ) ), m_pBrowserWidget, SLOT( slotReturnPressed( const QString& ) ) );
 
     m_pPlaylistLineEdit = new KLineEdit( pPlaylistWidgetContainer );
     QToolTip::add( m_pPlaylistLineEdit, "Enter Filter String" );
     m_pPlaylistLineEdit->setPaletteBackgroundColor( pApp->m_bgColor );
     m_pPlaylistLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
     m_pPlaylistLineEdit->setFont ( QFont( "Arial", 9 ) );
-    connect( m_pPlaylistLineEdit, SIGNAL( textChanged( const QString& ) ), m_pPlaylistWidget, SLOT( slotTextChanged( const QString& ) ) ); 
-        
+    connect( m_pPlaylistLineEdit, SIGNAL( textChanged( const QString& ) ), m_pPlaylistWidget, SLOT( slotTextChanged( const QString& ) ) );
+
     QBoxLayout *layBrowserWidget = new QVBoxLayout( pBrowserWidgetContainer );
     layBrowserWidget->addWidget( m_pBrowserLineEdit );
     layBrowserWidget->addWidget( m_pBrowserWidget );
@@ -299,7 +299,7 @@ bool BrowserWin::isFileValid( const KURL &url )
 
 
 
-void BrowserWin::slotPlaylistRightButton( QListViewItem *pItem, const QPoint &rPoint )
+void BrowserWin::slotPlaylistRightButton( QListViewItem */*pItem*/, const QPoint &rPoint )
 {
     QPopupMenu popup( this );
     int item1 = popup.insertItem( "Show File Info", this, SLOT( slotShowInfo() ) );
@@ -308,8 +308,8 @@ void BrowserWin::slotPlaylistRightButton( QListViewItem *pItem, const QPoint &rP
     if ( !m_pPlaylistWidget->currentItem() )
         popup.setItemEnabled( item1, false );
 
-    int item2 = popup.insertItem( "Play Track", this, SLOT( slotMenuPlay() ) );
-    int item3 = popup.insertItem( "Remove Selected", this, SLOT( slotBrowserDrop() ) );
+    /*int item2 = */popup.insertItem( "Play Track", this, SLOT( slotMenuPlay() ) );
+    /*int item3 = */popup.insertItem( "Remove Selected", this, SLOT( slotBrowserDrop() ) );
 
     popup.exec( rPoint );
 }
@@ -373,20 +373,20 @@ void BrowserWin::slotMenuPlay()
 
 void BrowserWin::slotKeyUp()
 {
-    KListView *pListView;
+    KListView *pListView = 0L;
 
     if ( m_pPlaylistLineEdit->hasFocus() )
         pListView = m_pPlaylistWidget;
 
     if ( m_pBrowserLineEdit->hasFocus() )
         pListView = m_pBrowserWidget;
-                        
+
     QListViewItem *item = pListView->currentItem();
 
     if ( item->itemAbove() )
     {
         item = item->itemAbove();
-        
+
         pListView->setSelected( pListView->currentItem(), false );
         pListView->ensureItemVisible( item );
         pListView->setSelected( item, true );
@@ -398,20 +398,20 @@ void BrowserWin::slotKeyUp()
 
 void BrowserWin::slotKeyDown()
 {
-    KListView *pListView;    
+    KListView *pListView = 0L;
 
     if ( m_pPlaylistLineEdit->hasFocus() )
         pListView = m_pPlaylistWidget;
 
     if ( m_pBrowserLineEdit->hasFocus() )
         pListView = m_pBrowserWidget;
-                        
+
     QListViewItem *item = pListView->currentItem();
 
     if ( item->itemBelow() )
     {
         item = item->itemBelow();
-        
+
         pListView->setSelected( pListView->currentItem(), false );
         pListView->ensureItemVisible( item );
         pListView->setSelected( item, true );
@@ -423,23 +423,23 @@ void BrowserWin::slotKeyDown()
 
 void BrowserWin::slotKeyPageUp()
 {
-    KListView *pListView;    
+    KListView *pListView = 0L;
 
     if ( m_pPlaylistLineEdit->hasFocus() )
         pListView = m_pPlaylistWidget;
 
     if ( m_pBrowserLineEdit->hasFocus() )
         pListView = m_pBrowserWidget;
-                        
+
     QListViewItem *item = pListView->currentItem();
-    
+
     for ( int i = 1; i < pListView->visibleHeight() / item->height(); i++ )
     {
         if ( item->itemAbove() == NULL )
             break;
         item = item->itemAbove();
     }
-    
+
     if ( item )
     {
         pListView->setSelected( pListView->currentItem(), false );
@@ -453,23 +453,23 @@ void BrowserWin::slotKeyPageUp()
 
 void BrowserWin::slotKeyPageDown()
 {
-    KListView *pListView;    
+    KListView *pListView = 0L;
 
     if ( m_pPlaylistLineEdit->hasFocus() )
         pListView = m_pPlaylistWidget;
 
     if ( m_pBrowserLineEdit->hasFocus() )
         pListView = m_pBrowserWidget;
-                        
+
     QListViewItem *item = pListView->currentItem();
-    
+
     for ( int i = 1; i < pListView->visibleHeight() / item->height(); i++ )
     {
         if ( item->itemBelow() == NULL )
             break;
         item = item->itemBelow();
     }
-    
+
     if ( item )
     {
         pListView->setSelected( pListView->currentItem(), false );
@@ -491,7 +491,7 @@ void BrowserWin::slotKeyEnter()
             m_pPlaylistWidget->setCurrentTrack( m_pPlaylistWidget->currentItem() );
             pApp->slotPlay();
         }
-    }        
+    }
 
     if ( m_pBrowserLineEdit->hasFocus() )
     {
@@ -509,9 +509,11 @@ void BrowserWin::slotKeyDelete()
     if ( m_pPlaylistLineEdit->hasFocus() )
     {
         slotBrowserDrop();
-    }        
+    }
 
     if ( m_pBrowserLineEdit->hasFocus() )
     {
     }
 }
+
+#include "browserwin.moc"

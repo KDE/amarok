@@ -1416,3 +1416,5 @@ void PlayerApp::slotShowHelp()
     KApplication::KApp->invokeHelp( QString::null, "amarok" );
 }
 
+
+#include "playerapp.moc"
