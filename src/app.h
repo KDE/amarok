@@ -111,7 +111,7 @@ class App : public KApplication, public EngineObserver
 
         // ATTRIBUTES ------
         KGlobalAccel        *m_pGlobalAccel;
-        PlayerWidget        *m_pPlayerWidget;
+        PlayerWidget        *m_pPlayerWindow;
         PlaylistWindow      *m_pPlaylistWindow;
         Playlist            *m_pPlaylist;
         amaroK::DcopHandler *m_pDcopHandler;

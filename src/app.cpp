@@ -19,6 +19,7 @@ email                : markey@web.de
 #include "amarokdcophandler.h"
 #include "app.h"
 #include "configdialog.h"
+#include "contextbrowser.h"
 #include "effectwidget.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
@@ -31,7 +32,6 @@ email                : markey@web.de
 #include "socketserver.h"
 #include "systray.h"
 #include "threadweaver.h"        //restoreSession()
-#include "contextbrowser.h"
 #include "tracktooltip.h"        //engineNewMetaData()
 
 #include <kaboutdata.h>          //initCliArgs()
@@ -66,7 +66,7 @@ App::App()
         : KApplication()
         , m_pActionCollection( 0 )
         , m_pGlobalAccel( new KGlobalAccel( this ) )
-        , m_pPlayerWidget( 0 ) //will be created in applySettings()
+        , m_pPlayerWindow( 0 ) //will be created in applySettings()
         , m_pDcopHandler( new amaroK::DcopHandler )
         , m_pTray( 0 )
         , m_pOSD( new amaroK::OSD() )
@@ -387,37 +387,37 @@ void App::applySettings()
     // Player Window
     if( AmarokConfig::showPlayerWindow() )
     {
-        if( !m_pPlayerWidget )
+        if( !m_pPlayerWindow )
         {
-            m_pPlayerWidget = new PlayerWidget( m_pPlaylistWindow, "PlayerWidget", Qt::WType_TopLevel );
+            m_pPlayerWindow = new PlayerWidget( m_pPlaylistWindow, "PlayerWidget", Qt::WType_TopLevel );
 
-            m_pPlayerWidget->move( AmarokConfig::playerPos() );
-            m_pPlayerWidget->setPlaylistShown( m_showPlaylistWindow );
+            m_pPlayerWindow->move( AmarokConfig::playerPos() );
+            m_pPlayerWindow->setPlaylistShown( m_showPlaylistWindow );
 
-            m_pPlayerWidget->createAnalyzer( false );
+            m_pPlayerWindow->createAnalyzer( false );
 
             m_pPlaylistWindow->installEventFilter( this );
-            m_pPlayerWidget->installEventFilter( this );
+            m_pPlayerWindow->installEventFilter( this );
 
-            connect( m_pPlayerWidget, SIGNAL(playlistToggled( bool )),  SLOT(slotPlaylistShowHide()) );
-            connect( m_pPlayerWidget, SIGNAL(effectsWindowActivated()), SLOT(showEffectWidget()) );
+            connect( m_pPlayerWindow, SIGNAL(playlistToggled( bool )),  SLOT(slotPlaylistShowHide()) );
+            connect( m_pPlayerWindow, SIGNAL(effectsWindowActivated()), SLOT(showEffectWidget()) );
 
-            m_pPlayerWidget->show();
+            m_pPlayerWindow->show();
         }
 
-        QFont font = m_pPlayerWidget->font();
+        QFont font = m_pPlayerWindow->font();
         font.setFamily( AmarokConfig::useCustomFonts() ?
                         AmarokConfig::playerWidgetFont().family() : QApplication::font().family() );
-        m_pPlayerWidget->setFont( font ); //NOTE dont use unsetFont(), we use custom font sizes (for now)
-        m_pPlayerWidget->update(); //FIXME doesn't update the scroller
+        m_pPlayerWindow->setFont( font ); //NOTE dont use unsetFont(), we use custom font sizes (for now)
+        m_pPlayerWindow->update(); //FIXME doesn't update the scroller
 
-    } else if( m_pPlayerWidget ) {
+    } else if( m_pPlayerWindow ) {
 
         m_pPlaylistWindow->removeEventFilter( this );
-        m_pPlayerWidget->removeEventFilter( this );
+        m_pPlayerWindow->removeEventFilter( this );
 
-        delete m_pPlayerWidget;
-        m_pPlayerWidget = 0;
+        delete m_pPlayerWindow;
+        m_pPlayerWindow = 0;
     }
     
     // Engine
@@ -465,7 +465,7 @@ void App::saveConfig()
     AmarokConfig::setMasterVolume( EngineController::engine()->volume() ); //engineController should set when volume is changed
     AmarokConfig::setVersion( APP_VERSION );
     AmarokConfig::setPlaylistWindowEnabled( m_showPlaylistWindow ); //TODO should be set when toggled no?
-    if ( m_pPlayerWidget ) AmarokConfig::setPlayerPos( m_pPlayerWidget->pos() );
+    if ( m_pPlayerWindow ) AmarokConfig::setPlayerPos( m_pPlayerWindow->pos() );
 }
 
 
@@ -639,11 +639,11 @@ bool App::eventFilter( QObject *o, QEvent *e )
 
     //NOTE this eventFilter is only processed if the AmarokConfig::showPlayerWindow() is true
 
-    if( e->type() == QEvent::Close && o == m_pPlaylistWindow && m_pPlayerWidget->isShown() )
+    if( e->type() == QEvent::Close && o == m_pPlaylistWindow && m_pPlayerWindow->isShown() )
     {
-        m_pPlayerWidget->setPlaylistShown( m_showPlaylistWindow = false );
+        m_pPlayerWindow->setPlaylistShown( m_showPlaylistWindow = false );
     }
-    else if( e->type() == QEvent::Hide && o == m_pPlayerWidget )
+    else if( e->type() == QEvent::Hide && o == m_pPlayerWindow )
     {
         //if the event is not spontaneous then amaroK was responsible for the event
         //we should therefore hide the playlist as well
@@ -651,7 +651,7 @@ bool App::eventFilter( QObject *o, QEvent *e )
         if( AmarokConfig::hidePlaylistWindow() && !e->spontaneous() ) m_pPlaylistWindow->hide();
         else if( AmarokConfig::hidePlaylistWindow() )
         {
-            KWin::WindowInfo info = KWin::windowInfo( m_pPlayerWidget->winId() );
+            KWin::WindowInfo info = KWin::windowInfo( m_pPlayerWindow->winId() );
 
             if( !info.valid() ); //do nothing
             else if( info.isMinimized() )
@@ -660,7 +660,7 @@ bool App::eventFilter( QObject *o, QEvent *e )
                 m_pPlaylistWindow->hide();
         }
     }
-    else if( e->type() == QEvent::Show && o == m_pPlayerWidget )
+    else if( e->type() == QEvent::Show && o == m_pPlayerWindow )
     {
         //TODO this is broke again if playlist is minimized
         //when fixing you have to make sure that changing desktop doesn't un minimise the playlist
@@ -685,7 +685,7 @@ bool App::eventFilter( QObject *o, QEvent *e )
             //slotPlaylistHideShow() can make it so the PL is shown but the button is off.
             //this is intentional behavior BTW
             //FIXME it would be nice not to have to set this as it us unclean(TM)
-            m_pPlayerWidget->setPlaylistShown( true );
+            m_pPlayerWindow->setPlaylistShown( true );
         }
     }
 
@@ -736,7 +736,7 @@ void App::slotPlaylistShowHide()
     else if( isMinimized ) KWin::deIconifyWindow( info.win() );
     else
     {
-        KWin::WindowInfo info2 = KWin::windowInfo( m_pPlayerWidget->winId() );
+        KWin::WindowInfo info2 = KWin::windowInfo( m_pPlayerWindow->winId() );
         if( info2.valid() && info2.isMinimized() ) KWin::iconifyWindow( info.win() );
         else
         {
@@ -745,7 +745,7 @@ void App::slotPlaylistShowHide()
     }
 
     // make sure playerwidget button is in sync
-    m_pPlayerWidget->setPlaylistShown( m_showPlaylistWindow );
+    m_pPlayerWindow->setPlaylistShown( m_showPlaylistWindow );
 }
 
 
@@ -755,12 +755,12 @@ void App::showEffectWidget()
     {
         EffectWidget::self = new EffectWidget();
 
-        if( m_pPlayerWidget )
+        if( m_pPlayerWindow )
         {
-            connect( m_pPlayerWidget,    SIGNAL( destroyed() ),
+            connect( m_pPlayerWindow,    SIGNAL( destroyed() ),
                      EffectWidget::self,   SLOT( deleteLater() ) );
             connect( EffectWidget::self, SIGNAL( destroyed() ),
-                     m_pPlayerWidget,      SLOT( setEffectsWindowShown() ) ); //defaults to false
+                     m_pPlayerWindow,      SLOT( setEffectsWindowShown() ) ); //defaults to false
         }
 
         EffectWidget::self->show();
@@ -770,7 +770,7 @@ void App::showEffectWidget()
     }
     else
     {
-        if( m_pPlayerWidget ) m_pPlayerWidget->setEffectsWindowShown( false );
+        if( m_pPlayerWindow ) m_pPlayerWindow->setEffectsWindowShown( false );
         delete EffectWidget::self;
     }
 }

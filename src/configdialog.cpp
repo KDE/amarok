@@ -80,7 +80,7 @@ void AmarokConfigDialog::show()
         m_pSoundOutput->insertStringList( outputs );
         
         //find index of current item
-        for ( int i = 0; i < outputs.count(); i++ )
+        for ( uint i = 0; i < outputs.count(); i++ )
             if ( outputs[i] == AmarokConfig::soundOutput() ) {
                 m_pSoundOutput->setCurrentItem( i );
                 break;
