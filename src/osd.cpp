@@ -164,8 +164,12 @@ OSDWidget::paintEvent( QPaintEvent* )
 {
     //TODO double buffer? but is slow...
 
-    if( AmarokConfig::osdUseFakeTranslucency() )
-       bitBlt( this, 0, 0, &m_screenshot );
+    if( !AmarokConfig::osdUseFakeTranslucency() )
+       m_screenshot.fill( backgroundColor() );
+
+    bitBlt( this, 0, 0, &m_screenshot );
+
+
     //else
     //    fill background with plain colour
 
