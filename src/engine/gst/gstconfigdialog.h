@@ -14,16 +14,16 @@ class GstEngine;
 class GstConfigDialog : public amaroK::PluginConfig
 {
     Q_OBJECT
-       
+
     public:
-        GstConfigDialog( GstEngine* engine );
+        GstConfigDialog( GstEngine const * const engine );
         ~GstConfigDialog();
-            
-        QWidget* view() const { return static_cast<QWidget*>( m_view ); }
-                
+
+        QWidget* view() { return m_view; }
+
         bool hasChanged() const;
         bool isDefault() const;
-    
+
     public slots:
         void save();
 

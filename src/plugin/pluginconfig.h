@@ -11,28 +11,31 @@ class QWidget;
 namespace amaroK
 {
     /**
-     * Interface class for plugin configuration GUIs
-     */ 
+     * Class to allow user configuration of your plugin; you provide a GUI widget via view()
+     */
+
     class PluginConfig : public QObject
     {
         Q_OBJECT
-        
+
         signals:
-            /** Emitted when view was modified */
+            /** Emit whenever some view setting is changed by the user */
+            //TODO this is wrongly named, instead name it doUpdateButtons()
+            //     or something better, settingsChanged has a different meaning in KConfigDialog
             void settingsChanged();
-        
+
         public:
-            /** Return the configuration GUI */
-            virtual QWidget* view() const = 0;
-            
-            /** Return whether the view was modified */
+            /** Return the view widget */
+            virtual QWidget* view() = 0;
+
+            /** Return true if any of the view settings are different to the currently saved state */
             virtual bool hasChanged() const = 0;
-            
-            /** Return whether all view settings are in default state */
+
+            /** Return true if all view settings are in their default states */
             virtual bool isDefault() const = 0;
 
-        public slots:                
-            /** Save view state into configuration */
+        public slots:
+            /** Save view state using, eg KConfig */
             virtual void save() = 0;
     };
 }

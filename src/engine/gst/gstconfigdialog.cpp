@@ -15,29 +15,29 @@
 #include <knuminput.h>
 
 
-GstConfigDialog::GstConfigDialog( GstEngine* engine )
+GstConfigDialog::GstConfigDialog( GstEngine const * const engine )
     : PluginConfig()
-    , m_engine( engine )
+    , m_engine( (GstEngine*)engine )
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     m_view = new GstConfigDialogBase();
-            
+
     // Initialise widgets with current settings
     const QStringList outputs = m_engine->getOutputsList();
     m_view->kComboBox_output->insertStringList( outputs );
-    
+
     if ( outputs.contains( GstConfig::soundOutput() ) )
         m_view->kComboBox_output->setCurrentText( GstConfig::soundOutput() );
-    
+
     m_view->checkBox_outputDevice->setChecked( GstConfig::useCustomSoundDevice() );
     m_view->kLineEdit_outputDevice->setText( GstConfig::soundDevice() );
 
     m_view->checkBox_outputParams->setChecked( GstConfig::useCustomOutputParams() );
     m_view->kLineEdit_outputParams->setText( GstConfig::outputParams() );
-    
+
     m_view->kIntSpinBox_fadeout->setValue( GstConfig::fadeoutDuration() );
-    
+
     // Connections for modification check
     connect( m_view->kComboBox_output, SIGNAL( activated( int ) ), SIGNAL( settingsChanged() ) );
     connect( m_view->checkBox_outputDevice, SIGNAL( toggled( bool ) ), SIGNAL( settingsChanged() ) );
@@ -55,7 +55,7 @@ GstConfigDialog::~GstConfigDialog()
 
 
 /////////////////////////////////////////////////////////////////////////////////////
-// PUBLIC 
+// PUBLIC
 /////////////////////////////////////////////////////////////////////////////////////
 
 bool
@@ -85,7 +85,7 @@ void
 GstConfigDialog::save() //SLOT
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     GstConfig::setSoundOutput( m_view->kComboBox_output->currentText() );
     GstConfig::setUseCustomSoundDevice( m_view->checkBox_outputDevice->isChecked() );
     GstConfig::setSoundDevice( m_view->kLineEdit_outputDevice->text() );

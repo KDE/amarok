@@ -27,6 +27,8 @@ public:
     Engine::State state() const;
     const Engine::Scope &scope();
 
+    amaroK::PluginConfig *configure() const;
+
 protected:
     void setVolumeSW( uint );
 

@@ -73,7 +73,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     opt4->kcfg_Crossfade->setEnabled( EngineController::engine()->hasXFade() );
     opt4->kcfg_CrossfadeLength->setEnabled( EngineController::engine()->hasXFade() );
     opt4->crossfadeLengthLabel->setEnabled( EngineController::engine()->hasXFade() );
-    
+
     // ID3v1 recoding locales
     QTextCodec *codec;
     for ( int i = 0; ( codec = QTextCodec::codecForIndex( i ) ); i++ )
@@ -86,9 +86,9 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     addPage( opt4, i18n( "Playback" ), "kmix", i18n( "Configure Playback" ) );
     addPage( opt5, i18n( "OSD" ), "tv", i18n( "Configure On-Screen-Display" ) );
 
-    connect( m_soundSystem, SIGNAL( activated( int ) ), SLOT( settingsChangedSlot() ) );
+    connect( m_soundSystem, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
     connect( opt4->pushButton_aboutEngine, SIGNAL( clicked() ), this, SLOT( aboutEngine() ) );
-    connect( opt5, SIGNAL( settingsChanged() ), SLOT( settingsChangedSlot() ) ); //see options5.ui.h
+    connect( opt5, SIGNAL( settingsChanged() ), SLOT( updateButtons() ) ); //see options5.ui.h
 }
 
 
@@ -199,9 +199,9 @@ void AmarokConfigDialog::aboutEngine() //SLOT
 void AmarokConfigDialog::soundSystemChanged()
 {
     // Remove old engine config page
-    delete m_enginePage;
-    m_enginePage = 0;
-    delete m_engineConfig;
+    delete m_engineConfig; //might delete the view
+    delete m_enginePage;   //if view still exists this is its parent, so it will be deleted now
+    m_enginePage   = 0;
     m_engineConfig = 0;
 
     if( EngineController::engine()->hasConfigure() )
@@ -209,15 +209,14 @@ void AmarokConfigDialog::soundSystemChanged()
         m_enginePage = addVBoxPage( i18n( "Engine" ),
                                     i18n( "Configure " ) + PluginManager::getService( EngineController::engine() )->name(),
                                     DesktopIcon( "amarok" ) );
-        
+
         m_engineConfig = EngineController::engine()->configure();
+
+        //KDialogBase doesn't do this as it has no knowledge of the engine config widget at all!
         m_engineConfig->view()->reparent( m_enginePage, QPoint() );
-        
-        connect( m_engineConfig, SIGNAL( settingsChanged() ), this, SLOT( settingsChangedSlot() ) );
+
+        connect( m_engineConfig, SIGNAL(settingsChanged()), SLOT(updateButtons()) );
     }
 }
 
-
 #include "configdialog.moc"
-
-

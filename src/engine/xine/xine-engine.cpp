@@ -10,6 +10,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "xine-config.h"
 #include "xine-engine.h"
 #include "xine-scope.h"
 
@@ -39,7 +40,7 @@ namespace Log
 
 
 XineEngine::XineEngine()
-  : EngineBase()
+  : EngineBase( Engine::NoStreaming, true )
   , m_xine( 0 )
   , m_stream( 0 )
   , m_audioPort( 0 )
@@ -119,6 +120,7 @@ XineEngine::init()
                                        (void*)this );
 
     startTimer( 200 ); //prunes the scope
+
 
     return true;
 }
@@ -318,6 +320,12 @@ XineEngine::timerEvent( QTimerEvent* )
 
         prev = node;
     }
+}
+
+amaroK::PluginConfig*
+XineEngine::configure() const
+{
+    return new XineConfigDialog( m_xine );
 }
 
 void

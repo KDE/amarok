@@ -316,7 +316,7 @@ GstEngine::configure() const
 {
     kdDebug() << k_funcinfo << endl;
 
-    return new GstConfigDialog( instance() );
+    return new GstConfigDialog( this );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
