@@ -98,7 +98,7 @@ class CollectionView : public KListView
 
         /** Tries to download the cover image from Amazon.com */
         void fetchCover();
-        void gotCover( const QPixmap& image );
+        void gotCover( const QString& keyword, const QPixmap& image );
         /** Shows dialog with information on selected track */
         void showTrackInfo();
 

@@ -31,10 +31,11 @@ CoverFetcher::getCover( const QString& keyword, QueryMode mode )
 {
     kdDebug() << k_funcinfo << endl;
     
-    //reset stuff
+    // Initialisations
     m_xmlDocument = QString();
     m_image = QByteArray();
-    
+    m_keyword = keyword;
+        
     QString url = QString( "http://xml.amazon.com/onca/xml3?t=webservices-20&dev-t=%1"
                            "&KeywordSearch=%2&mode=music&type=%3&page=1&f=xml" )
                            .arg( m_license )
@@ -113,7 +114,7 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
         return;
     }
 
-    emit imageReady( QPixmap( m_image ) );
+    emit imageReady( m_keyword, QPixmap( m_image ) );
 }
 
 

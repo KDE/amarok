@@ -28,6 +28,7 @@
 #include <klocale.h>
 #include <kmenubar.h>
 #include <kpopupmenu.h>
+#include <kpushbutton.h>    //gotCover()
 #include <ktoolbarbutton.h> //ctor
 #include <kurldrag.h>       //dragObject()
 
@@ -74,9 +75,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     //m_view->setMargin( 2 );
 
     m_actionsMenu->insertItem( i18n( "Configure Folders..." ), m_view, SLOT( setupDirs() ) );
-
-//     //FIXME Deactivated for 1.0 release.
-//     m_actionsMenu->insertItem( i18n( "Configure Cover Download" ), m_view, SLOT( setupCoverFetcher() ) );
+    m_actionsMenu->insertItem( i18n( "Configure Cover Download" ), m_view, SLOT( setupCoverFetcher() ) );
 
     m_actionsMenu->insertSeparator();
     m_actionsMenu->insertItem( i18n( "Start Scan" ), m_view, SLOT( scan() ), 0, IdScan );
@@ -204,8 +203,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
              this,             SLOT( doubleClicked( QListViewItem*, const QPoint&, int ) ) );
     connect( this,           SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,             SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
-    connect( m_coverFetcher, SIGNAL( imageReady( const QPixmap& ) ),
-             this,             SLOT( gotCover( const QPixmap& ) ) );
+    connect( m_coverFetcher, SIGNAL( imageReady( const QString&, const QPixmap& ) ),
+             this,             SLOT( gotCover( const QString&, const QPixmap& ) ) );
 
     startTimer( MONITOR_INTERVAL );
 }
@@ -436,28 +435,28 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
     if ( item ) {
         KPopupMenu menu( this );
 
-        enum Actions { MAKE, APPEND, QUEUE };
+        enum Actions { MAKE, APPEND, QUEUE, COVER, INFO };
 
         menu.insertItem( i18n( "&Make Playlist" ), MAKE );
         menu.insertItem( i18n( "&Add to Playlist" ), APPEND ); //TODO say Append to Playlist
         menu.insertItem( i18n( "&Queue After Current Track" ), QUEUE );
-
-        if ( ( item->depth() && m_category2 == i18n( "None" ) ) || item->depth() == 2 ) {
-            menu.insertItem( i18n( "Track Information" ), this, SLOT( showTrackInfo() ) );
-//             //FIXME Deactivated for 1.0 release.
-//             menu.insertItem( i18n( "Fetch Cover Image" ), this, SLOT( fetchCover() ) );
-        }
+        
+        menu.insertSeparator();
+        
+        menu.insertItem( i18n( "&Fetch Cover Images" ), this, SLOT( fetchCover() ), 0, COVER );
+        menu.insertItem( i18n( "Track Information" ), this, SLOT( showTrackInfo() ), 0, INFO );
+        
+        menu.setItemEnabled( INFO, ( item->depth() && m_category2 == i18n( "None" ) ) || item->depth() == 2 );
 
         switch( menu.exec( point ) ) {
-        case MAKE:
-            Playlist::instance()->clear(); //FALL THROUGH
-        case APPEND:
-            Playlist::instance()->appendMedia( listSelected() );
-            break;
-
-        case QUEUE:
-            Playlist::instance()->queueMedia( listSelected() );
-            break;
+            case MAKE:
+                Playlist::instance()->clear(); //FALL THROUGH
+            case APPEND:
+                Playlist::instance()->appendMedia( listSelected() );
+                break;
+            case QUEUE:
+                Playlist::instance()->queueMedia( listSelected() );
+                break;
         }
     }
 }
@@ -473,32 +472,45 @@ CollectionView::fetchCover() //SLOT
     if ( m_amazonLicense.isEmpty() )
         setupCoverFetcher();
 
-    QString command = QString
-                        ( "SELECT DISTINCT artist.name, album.name FROM artist, tags, album "
-                        "WHERE artist.id = tags.artist AND album.id = tags.album AND tags.url = '%1';" )
-                        .arg( m_db->escapeString( item->url().path() ) );
-
-    QStringList values;
-    QStringList names;
-    m_db->execSql( command, &values, &names );
-    if ( values.isEmpty() ) return;
-
-    QString key = values[0] + " - " + values[1];
-    kdDebug() << "keyword: " << key << endl;
-    m_coverFetcher->getCover( key, CoverFetcher::heavy );
+    KURL::List urls( listSelected() );
+    
+    for ( uint i = 0; i < urls.count(); i++ ) {
+        QString command = QString
+                            ( "SELECT DISTINCT artist.name, album.name FROM artist, tags, album "
+                            "WHERE artist.id = tags.artist AND album.id = tags.album AND tags.url = '%1';" )
+                            .arg( m_db->escapeString( urls[i].path() ) );
+        QStringList values;
+        QStringList names;
+        m_db->execSql( command, &values, &names );
+        if ( values.isEmpty() ) continue;
+        QString key = values[0] + " - " + values[1];
+        kdDebug() << "keyword: " << key << endl;
+        m_coverFetcher->getCover( key, CoverFetcher::heavy );
+    }
 }
 
 
 void
-CollectionView::gotCover( const QPixmap& image ) //SLOT
+CollectionView::gotCover( const QString& keyword, const QPixmap& image ) //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
-    QWidget* widget = new QWidget( 0, 0, WDestructiveClose );
+    QVBox* container = new QVBox( 0, 0, WDestructiveClose );
+    container->setCaption( keyword + " - amaroK" );
+    
+    QWidget* widget = new QWidget( container );
     widget->setPaletteBackgroundPixmap( image );
-    widget->resize( image.size() );
-
-    widget->show();
+    widget->setFixedSize( image.size() );
+    
+    QHBox* buttons = new QHBox( container );
+    KPushButton* save = new KPushButton( i18n( "Save" ), buttons );
+    KPushButton* cancel = new KPushButton( i18n( "Cancel" ), buttons );
+    connect( cancel, SIGNAL( clicked() ), container, SLOT( deleteLater() ) );
+    connect( save, SIGNAL( clicked() ), m_db, SLOT( saveCover() ) );
+            
+    container->adjustSize();
+    container->setFixedSize( container->size() );
+    container->show();
 }
 
 

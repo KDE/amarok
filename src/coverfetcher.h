@@ -25,7 +25,7 @@ class CoverFetcher : public QObject
         void getCover( const QString& keyword, QueryMode mode = lite );
         
     signals:
-        void imageReady( const QPixmap& image );        
+        void imageReady( const QString& keyword, const QPixmap& image );        
         
     private slots:
         void xmlData( KIO::Job* job, const QByteArray& data );
@@ -36,6 +36,7 @@ class CoverFetcher : public QObject
     private:
         QString m_license;
         QString m_xmlDocument;
+        QString m_keyword;
         QByteArray m_image;
 };    
     
