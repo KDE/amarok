@@ -12,6 +12,7 @@
 #include <sys/mman.h>
 
 #define DEFAULT_BLOCKSIZE 4096
+#define MAPFILE_PATH "/home/mark/mapfile"
 
 
 GST_DEBUG_CATEGORY_STATIC ( gst_uade_debug );
@@ -143,31 +144,11 @@ gst_uade_init ( GstUade* gstuade )
     gstuade->blocksize = DEFAULT_BLOCKSIZE;
     gstuade->timeout = 0;
     gstuade->streamBufIndex = 0;
-    
-    QCString mapPath( "/home/mark/mapfile" );
-        
-    gstuade->uade_struct = uade_mmap_file( mapPath.data(), sizeof( struct uade_msgstruct ) );
-    if ( !gstuade->uade_struct ) {
-        kdWarning() << "uade.c/uade: couldn't mmap file: " << mapPath << endl;
-        uade_exit( -1 );
-    }
-    
-    kdDebug() << "CHECKPOINT before getpid()\n";
-    gstuade->uade_struct->masterpid = getpid();
-    kdDebug() << "CHECKPOINT after getpid()\n";
-    
-    kdDebug() << "CHECKPOINT before fork()\n";
-    int uadepid = fork();
-    kdDebug() << "CHECKPOINT after fork()\n";
-    
-    if ( !uadepid ) {
-        execl( "/usr/local/bin/uade", "--xmms-slave", mapPath.data(), 0 );
-        kdWarning() << "uade: shit fuck. couldn't exec uade exe. not found probably\n";
-        abort();
-    }
 
-    while ( gstuade->uade_struct->uade_inited_boolean == 0 ) {
-        sleep( 1 );
+    gstuade->uade_struct = uade_mmap_file( MAPFILE_PATH, sizeof( struct uade_msgstruct ) );
+    if ( !gstuade->uade_struct ) {
+        kdWarning() << "uade.c/uade: couldn't mmap file: " << MAPFILE_PATH << endl;
+        uade_exit( -1 );
     }
 }
 
@@ -196,10 +177,14 @@ gst_uade_set_property ( GObject * object, guint prop_id, const GValue * value,
             src->timeout = g_value_get_uint64 ( value );
             break;
 
+            default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID ( object, prop_id, pspec );
+            break;
+            
             case ARG_LOCATION:
-            strcpy( src->uade_struct->playername, g_value_get_string( value ) );
-            src->uade_struct->modulename[ 0 ] = 0; /* we played a custom */
-            strcpy( src->uade_struct->scorename, "/shit/uadescore" );
+            src->uade_struct->playername[0] = 0;
+            strcpy( src->uade_struct->modulename, g_value_get_string( value ) );
+            src->uade_struct->scorename[0] = 0;
             src->uade_struct->set_subsong = 0;
             src->uade_struct->subsong = 0;
             src->uade_struct->dontwritebit = 0;
@@ -209,9 +194,19 @@ gst_uade_set_property ( GObject * object, guint prop_id, const GValue * value,
             src->uade_struct->sbuf_readoffset = 0;
             src->uade_struct->loadnewsongboolean = 1;
             src->uade_struct->touaemsgtype = UADE_PLAYERNAME;
-
-            default:
-            G_OBJECT_WARN_INVALID_PROPERTY_ID ( object, prop_id, pspec );
+            
+            src->uade_struct->masterpid = getpid();
+            int uadepid = fork();
+            
+            if ( !uadepid ) {
+                execl( "/usr/local/bin/uade", "--xmms-slave", MAPFILE_PATH, 0 );
+                kdWarning() << "uade: shit fuck. couldn't exec uade exe. not found probably\n";
+                abort();
+            }
+            while ( src->uade_struct->uade_inited_boolean == 0 ) {
+                sleep( 1 );
+            }
+            
             break;
     }
 }
