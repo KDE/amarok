@@ -69,7 +69,7 @@ void AmarokSlider::setValue( int val )
 QSize AmarokSlider::sizeHint() const
 {
     constPolish();
-    
+
     if ( m_orientation == Horizontal )
         return QSize( 1, THICKNESS + MARGIN ).expandedTo( QApplication::globalStrut() );
     else
@@ -113,25 +113,26 @@ void AmarokSlider::paintEvent( QPaintEvent * )
 {
     int length = ( m_orientation == Qt::Horizontal ) ? width() : height();
     int pos = positionFromValue( value(), length-2-1 );
-    
-    QPixmap *pBufPixmap = new QPixmap( width(), height() );
-    bitBlt( pBufPixmap, 0, 0, parentWidget()->paletteBackgroundPixmap(), x(), y(), width(), height() );
 
-    QPainter p( pBufPixmap, this );
-        
+    QPixmap pBufPixmap( width(), height() );
+    //bitBlt( &pBufPixmap, 0, 0, parentWidget(), x(), y(), width(), height() );
+    pBufPixmap.fill( parentWidget()->backgroundColor() );
+
+    QPainter p( &pBufPixmap, this );
+
     if ( m_orientation == Qt::Vertical )
-    {    
+    {
         p.translate( 0, height()-1 );
-        p.rotate( -90 );    
+        p.rotate( -90 );
         pos = length-2-1 - pos;
-    }        
-    
+    }
+
     p.translate( 0, MARGIN );
     p.drawRect( 0, 0, length-1, THICKNESS-1 );
-    p.fillRect( 1, 1, pos,      THICKNESS-2-1, 
+    p.fillRect( 1, 1, pos,      THICKNESS-2-1,
                 QBrush( QColor( 0x00, 0x20, 0x90 ), QBrush::SolidPattern ) );
     p.translate( 0, -MARGIN );
-                       
+
     //<Triangle Marker>
     QPointArray pa( 3 );
     pa.setPoint( 0, pos - 3, 1 );
@@ -140,11 +141,9 @@ void AmarokSlider::paintEvent( QPaintEvent * )
     p.setBrush( QBrush( paletteForegroundColor(), QBrush::SolidPattern ) );
     p.drawConvexPolygon( pa );
     //</Triangle Marker>
-    
+
     p.end();
-    bitBlt( this, 0, 0, pBufPixmap );
-        
-    delete pBufPixmap;
+    bitBlt( this, 0, 0, &pBufPixmap );
 }
 
 

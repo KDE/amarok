@@ -20,44 +20,44 @@
 
 #include <vector>
 
+class QWidget;
+
 #define SINVEC_SIZE 6000
 
 /**
  *@author Max, Piggz
  */
 
-class QWidget;
-
 class AnalyzerBase
 {
 public:
-    AnalyzerBase( uint );
     virtual ~AnalyzerBase();
-    virtual void drawAnalyzer( std::vector<float> * ) = 0;
+
+    virtual void drawAnalyzer( std::vector<float>* ) = 0;
     uint timeout() const { return m_timeout; }
 
 protected:
-    void interpolate( std::vector<float> *, std::vector<float> & ) const;
+    AnalyzerBase( uint );
+
+    void interpolate( std::vector<float>*, std::vector<float>& ) const;
     virtual void init() = 0;
 
 private:
     uint m_timeout;
 
 public:
-    //Currently this is a rather small class, its only purpose
-    //to ensure that making changes to analyzers will not require
-    //rebuilding the world!
-
-    //eventually it would be better to make analyzers pluggable
-    //but I can't be arsed, nor can I see much reason to do so
-    //yet!
 
     class AnalyzerFactory
     {
+        //Currently this is a rather small class, its only purpose
+        //to ensure that making changes to analyzers will not require
+        //rebuilding the world!
+
+        //eventually it would be better to make analyzers pluggable
+        //but I can't be arsed, nor can I see much reason to do so
+        //yet!
     public:
-        static
-        //const
-        AnalyzerBase *createAnalyzer( QWidget * );
+        static AnalyzerBase *createAnalyzer( QWidget* );
     };
 };
 

@@ -127,7 +127,7 @@ void BarAnalyzer::drawAnalyzer( std::vector<float> *s )
             m_roofMem[i].erase( m_roofMem[i].begin() );
 
         //blt last n roofs, a.k.a motion blur
-        for ( int c = 0; c < m_roofMem[i].size(); c++ )
+        for ( uint c = 0; c < m_roofMem[i].size(); ++c )
             //bitBlt( m_pComposePixmap, x, m_roofMem[i]->at( c ), m_roofPixmaps[ c ] );
             bitBlt( m_pComposePixmap, x, m_roofMem[i].at( c ), &m_roofPixmaps[ NUM_ROOFS - 1 - c ] );
 

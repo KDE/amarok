@@ -27,18 +27,15 @@
 
 
 // INSTRUCTIONS
-// 1. inherit AnalyzerBase( first parameter to AnalyzerBase is the frequency (in milliseconds) that drawAnalyser will be called)
+// 1. inherit AnalyzerBase2d( first parameter to AnalyzerBase2d is the frequency (in milliseconds) that drawAnalyser will be called)
 // 2. do anything that depends on height() in init()
 // 3. otherwise you can use the constructor
 // 4. blt to this at the end of your implementation of drawAnalyser()
 
 
-AnalyzerBase2d::AnalyzerBase2d( uint timeout, QWidget *parent, const char *name ) :
-   QWidget( parent, name ),
-   AnalyzerBase( timeout )
-{}
-
-AnalyzerBase2d::~AnalyzerBase2d()
+AnalyzerBase2d::AnalyzerBase2d( uint timeout, QWidget *parent, const char *name )
+   : QWidget( parent, name )
+   , AnalyzerBase( timeout )
 {}
 
 
@@ -48,37 +45,33 @@ void AnalyzerBase2d::polish()
 {
     QWidget::polish();
 
-    m_iVisHeight = QWidget::height();
+    m_height = QWidget::height();
 
     //we use polish for initialzing (instead of ctor), because we need to know the widget's final size
-    initGrid();
-    init(); //virtual
-}
 
-
-void AnalyzerBase2d::initGrid()
-{
-    m_grid.resize( width(), height() );
-    bitBlt( &m_grid, 0, 0, parentWidget()->paletteBackgroundPixmap(), x(), y(), width(), height() );
-
-  #ifdef DRAW_GRID
-    QPainter painterGrid( &m_grid );
+    m_background.resize( size() );
+#ifdef DRAW_GRID
+    QPainter painterGrid( &m_background );
     painterGrid.setPen( QPen( QColor( 0x20, 0x20, 0x50 ) ) );
 
-    for( int x = 0, w = m_grid.width(), h = m_grid.height()-1;
+    for( int x = 0, w = m_background.width(), h = m_background.height()-1;
          x < w;
          x += 3 )
     {
         painterGrid.drawLine( x, 0, x, h );
     }
 
-    for( int y = 0, w = m_grid.width()-1 , h = m_grid.height();
+    for( int y = 0, w = m_background.width()-1 , h = m_background.height();
          y < h;
          y += 3 )
     {
         painterGrid.drawLine( 0, y, w, y );
     }
-  #endif    
+#else
+    m_background.fill( parentWidget()->backgroundColor() );
+#endif
+
+    init(); //virtual
 }
 
 
@@ -92,17 +85,6 @@ void AnalyzerBase2d::initSin( std::vector<float> &v ) const
         v.push_back( sin( radian ) );
         radian += step;
     }
-}
-
-void AnalyzerBase2d::mousePressEvent( QMouseEvent *e )
-{
-    if( e->button() == Qt::LeftButton )
-    {
-        emit clicked();
-        
-        e->accept();  //don't propagate to PlayerWidget!
-    }
-    else e->ignore();
 }
 
 #include "analyzerbase2d.moc"

@@ -19,20 +19,12 @@
 #define ANALYZERBASE3D_H
 
 #include <config.h>
-
 #ifdef HAVE_QGLWIDGET
 
+#include "analyzerbase.h"
 #include <qgl.h>
-
 #include <GL/gl.h>
 #include <GL/glu.h>
-
-#include <vector>
-#include "analyzerbase.h"
-
-class QMouseEvent;
-class QQLWidget;
-
 
 /**
  *@author PiggZ
@@ -42,18 +34,8 @@ class AnalyzerBase3d : public QGLWidget, public AnalyzerBase
 {
     Q_OBJECT
 
-    public:
-        AnalyzerBase3d( uint, QWidget *parent=0, const char *name=0 );
-        virtual ~AnalyzerBase3d();
-
-    signals:
-        void clicked();
-
     protected:
-        virtual void mousePressEvent( QMouseEvent* );
-
-    private:
-
+        AnalyzerBase3d( uint, QWidget* =0, const char* =0 );
 };
 
 #endif

@@ -71,7 +71,9 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
         , m_pDcopHandler( new AmarokDcopHandler )
 {
     setCaption( "amaroK" );
+    //TODO set using amaroK QColorGroup..
     setPaletteForegroundColor( 0x80a0ff );
+    setPaletteBackgroundColor( QColor( 32, 32, 80 ) );
 
     //actions
     //FIXME declare these in PlayerApp.cpp and have globall action collection
@@ -86,7 +88,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     // amaroK background pixmap
     m_oldBgPixmap.resize( 311, 22 );
 
-    setPaletteBackgroundPixmap( QPixmap( locate( "data", "amarok/images/player_background.jpg" ) ) );
+    //setPaletteBackgroundPixmap( QPixmap( locate( "data", "amarok/images/player_background.jpg" ) ) );
 
     m_pFrame = new QFrame( this );
 
@@ -245,15 +247,10 @@ PlayerWidget::~PlayerWidget()
 
 void PlayerWidget::initScroll()
 {
-    //so, the font selection in the options doesn't work, but since we offer font selection there
-    //here we should show the font the user has already chosen, ie the KDE default font.
-    //FIXME get the font selection working
-    //      I feel this should wait until we implement KConfig XT since that will make life easier
-
     //QFont font( "Helvetica", 10 );
     //font.setStyleHint( QFont::Helvetica );
     //int frameHeight = QFontMetrics( font ).height() + 5;
-    int frameHeight = 16;
+    const int frameHeight = 16;
 
     m_pFrame->setFixedSize( 246, frameHeight );
     //    m_pFrame->setFixedSize( 252, frameHeight );
@@ -263,8 +260,13 @@ void PlayerWidget::initScroll()
     m_pixmapWidth  = 2000;
     m_pixmapHeight = frameHeight; //config()->playerWidgetScrollFont
 
-    m_pBgPixmap = new QPixmap( paletteBackgroundPixmap() ->convertToImage().copy( m_pFrame->x(),
-                               m_pFrame->y(), m_pFrame->width(), m_pFrame->height() ) );
+//NOTE this crashes VNC as it returns 0
+//    QPixmap *bgPix = paletteBackgroundPixmap();
+//    m_pBgPixmap = new QPixmap( bgPix->convertToImage().copy( m_pFrame->x(),
+//                              m_pFrame->y(), m_pFrame->width(), m_pFrame->height() ) );
+
+    m_pBgPixmap = new QPixmap( m_pFrame->width(), m_pFrame->height() );
+    m_pBgPixmap->fill( backgroundColor() );
 
     m_pComposePixmap = new QPixmap( m_pFrame->width(), m_pixmapHeight );
     m_pScrollPixmap = new QPixmap( m_pixmapWidth, m_pixmapHeight );
@@ -308,7 +310,7 @@ void PlayerWidget::setScroll( QString text, const QString &bitrate, const QStrin
     QPainter painterPix( m_pScrollPixmap );
     QPainter painterMask( m_pScrollMask );
     painterPix.setBackgroundColor( Qt::black );
-    painterPix.setPen( QColor( 255, 255, 255 ) );
+    painterPix.setPen( Qt::white );
     painterMask.setPen( Qt::color1 );
 
     QFont scrollerFont( "Arial" );
@@ -319,7 +321,7 @@ void PlayerWidget::setScroll( QString text, const QString &bitrate, const QStrin
     painterMask.setFont( scrollerFont );
 
     painterPix.eraseRect( 0, 0, m_pixmapWidth, m_pixmapHeight );
-    painterPix.drawText( 0, 0, m_pixmapWidth, m_pixmapHeight, Qt::AlignLeft || Qt::AlignVCenter, text );
+    painterPix.drawText(  0, 0, m_pixmapWidth, m_pixmapHeight, Qt::AlignLeft || Qt::AlignVCenter, text );
     painterMask.drawText( 0, 0, m_pixmapWidth, m_pixmapHeight, Qt::AlignLeft || Qt::AlignVCenter, text );
     m_pScrollPixmap->setMask( *m_pScrollMask );
 
@@ -391,15 +393,14 @@ void PlayerWidget::timeDisplay()
     if ( m_seconds < 10 ) str += "0";
     str += QString::number( m_seconds );
 
-/*    m_pTimeDisplayLabel ->setFont( timeFont );
-    m_pTimeDisplayLabel ->setPaletteForegroundColor( QColor( 255, 255, 255 ) );*/
     QFont timeFont( "Arial" );
     timeFont.setBold( TRUE );
     timeFont.setPixelSize( 18 );
 
+    m_pTimeDisplayLabelBuf->fill( backgroundColor() );
+
     QPainter p( m_pTimeDisplayLabelBuf );
-    p.drawPixmap( 0, 0, *paletteBackgroundPixmap() );
-    p.setPen( QColor( 255, 255, 255 ) );
+    p.setPen( Qt::white );
     p.setFont( timeFont );
     p.drawText( 0, 16, str );
     bitBlt( m_pTimeDisplayLabel, 0, 0, m_pTimeDisplayLabelBuf );    // FIXME ugly hack for flickerfixing*/
@@ -523,15 +524,20 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
     }
     else //other buttons
     {
-        QRect rect( m_pTimeDisplayLabel->geometry() | m_pTimeSign->geometry() );
+        QRect rect( dynamic_cast<QWidget *>(m_pVis)->geometry() );
+
+        if( rect.contains( e->pos() ) ) { nextVis(); return; }
+
+        rect  = m_pTimeDisplayLabel->geometry();
+        rect |= m_pTimeSign->geometry();
 
         if ( rect.contains( e->pos() ) )
         {
             AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
             timeDisplay();
         }
-	else
-	    startDrag();
+        else
+            startDrag();
     }
 }
 
@@ -608,7 +614,7 @@ void PlayerWidget::createVis()
         dynamic_cast<QWidget*>(m_pVis)->move( 119, 45 );
     }
 
-    connect( dynamic_cast<QWidget*>(m_pVis), SIGNAL( clicked() ), this, SLOT( nextVis() ) );
+//    connect( dynamic_cast<QWidget*>(m_pVis), SIGNAL( clicked() ), this, SLOT( nextVis() ) );
 
     m_visTimer->start( m_pVis->timeout() );
     dynamic_cast<QWidget*>(m_pVis)->show();

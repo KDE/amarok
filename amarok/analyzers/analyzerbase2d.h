@@ -18,16 +18,12 @@
 #ifndef ANALYZERBASE2D_H
 #define ANALYZERBASE2D_H
 
-#include <qwidget.h>
-#include <qpixmap.h>
-#include <vector>
 #include "analyzerbase.h"
+#include <qwidget.h>  //baseclass
+#include <qpixmap.h>  //stack allocated
+#include <vector>     //std::vector FIXME
 
-class QMouseEvent;
-class QWidget;
 
-
-#define SINVEC_SIZE 6000
 #undef DRAW_GRID  //disable the grid
 
 /**
@@ -39,29 +35,24 @@ class AnalyzerBase2d : public QWidget, public AnalyzerBase
     Q_OBJECT
 
     public:
-        AnalyzerBase2d( uint, QWidget *parent=0, const char *name=0 );
-        virtual ~AnalyzerBase2d();
-        const QPixmap *grid() const { return &m_grid; }
-
         //this is called often in drawAnalyser implementations
         //so you felt you had to shorten the workload by re-implementing it
         //but! don't forget to set it to the new value for height when
         //we start allowing the main Widget to be resized
-        uint height() const { return m_iVisHeight; }
-
-    signals:
-        void clicked();
+        uint height() const { return m_height; }
+        const QPixmap *grid() const { return &m_background; } //DEPRECATE
+        const QPixmap *background() const { return &m_background; }
 
     protected:
+        AnalyzerBase2d( uint, QWidget* =0, const char* =0 );
+
         void initSin( std::vector<float> & ) const;
-        virtual void mousePressEvent( QMouseEvent* );
 
     private:
-        void initGrid();
         virtual void polish();
 
-        uint m_iVisHeight;
-        QPixmap m_grid;
+        uint m_height;
+        QPixmap m_background;
 };
 
 #endif
