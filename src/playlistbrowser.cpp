@@ -46,11 +46,9 @@ PlaylistBrowser *PlaylistBrowser::s_instance = 0;
 
 
 PlaylistBrowser::PlaylistBrowser( const char *name )
-    : QVBox( 0, name )
-    , lastPlaylist( 0 )
+        : QVBox( 0, name )
+        , lastPlaylist( 0 )
 {
-    setMargin( 4 );
-
     s_instance = this;
 
     m_splitter = new QSplitter( Vertical, this );
@@ -270,15 +268,12 @@ void PlaylistBrowser::addPlaylist( QString path, bool force )
     if( !file.exists() ) return;
 
     bool exists = false;
-    QListViewItemIterator it( m_listview );
-    while( it.current() ) {
+    for( QListViewItemIterator it( m_listview ); *it; ++it )
         if( isPlaylist( *it ) && path == ((PlaylistBrowserItem *)*it)->url().path() ) {
             exists = true; //the playlist is already in the playlist browser
             if( force )
-                ((PlaylistBrowserItem *)*it)->load();    //reload the playlist
+                ((PlaylistBrowserItem *)*it)->load(); //reload the playlist
         }
-        ++it;
-    }
 
     if( !exists ) {
         if( lastPlaylist == 0 ) {    //first child
@@ -330,7 +325,6 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
             playlist->removeTrack( item );
         }
     }
-
 }
 
 

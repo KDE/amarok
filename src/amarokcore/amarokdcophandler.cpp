@@ -20,7 +20,6 @@
 #include "amarokdcophandler.h"
 #include "app.h" //transferCliArgs
 #include "debug.h"
-#include "browserbar.h"
 #include "collectiondb.h"
 #include "contextbrowser.h"
 #include "engine/enginebase.h"
@@ -28,7 +27,6 @@
 #include "equalizersetup.h"
 #include "osd.h"
 #include "playlist.h"
-#include "playlistwindow.h"
 #include "statusbar.h"
 
 #include <dcopclient.h>
@@ -317,9 +315,8 @@ namespace amaroK
 
     void DcopPlayerHandler::setContextStyle(const QString& msg)
     {
-        AmarokConfig::setContextBrowserStyleSheet(msg);
-        ContextBrowser* m_contextBrowser=(ContextBrowser*) (PlaylistWindow::self()->browserBar()->browser( "ContextBrowser" ) );
-        m_contextBrowser->setStyleSheet();
+        AmarokConfig::setContextBrowserStyleSheet( msg );
+        ContextBrowser::instance()->setStyleSheet();
     }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -362,17 +359,16 @@ namespace amaroK
 
     void DcopPlaylistHandler::playMedia( const KURL &url )
     {
-        ContextBrowser* m_contextBrowser=(ContextBrowser*) (PlaylistWindow::self()->browserBar()->browser( "ContextBrowser" ) );
-        m_contextBrowser->openURLRequest( url );
+        ContextBrowser::instance()->openURLRequest( url );
     }
 
     void DcopPlaylistHandler::shortStatusMessage(const QString& msg)
     {
         StatusBar::instance()->shortMessage( msg );
     }
-	
 
-    
+
+
 } //namespace amaroK
 
 #include "amarokdcophandler.moc"

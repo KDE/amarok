@@ -60,7 +60,6 @@ MediaBrowser::MediaBrowser( const char *name )
    : QVBox( 0, name )
 {
     setSpacing( 4 );
-    setMargin( 5 );
 
     KToolBar* toolbar = new KToolBar( this );
     toolbar->setMovingEnabled(false);

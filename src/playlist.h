@@ -57,7 +57,8 @@ class QTimer;
 
 class Playlist : private KListView, public EngineObserver
 {
-    Q_OBJECT
+        Q_OBJECT
+
     public:
         ~Playlist();
 
@@ -161,7 +162,7 @@ class Playlist : private KListView, public EngineObserver
         void columnResizeEvent( int, int, int );
 
     private:
-        Playlist( QWidget*, KActionCollection*, const char* = 0 );
+        Playlist( QWidget* );
         Playlist( const Playlist& ); //not defined
 
         static Playlist *s_instance;

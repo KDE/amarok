@@ -16,7 +16,6 @@
 #ifndef AMAROK_PLAYLISTWINDOW_H
 #define AMAROK_PLAYLISTWINDOW_H
 
-#include "engineobserver.h" //baseclass
 #include <qwidget.h>        //baseclass
 #include <kxmlguiclient.h>  //baseclass (for XMLGUI)
 
@@ -27,11 +26,10 @@ class ContextBrowser;
 class KMenuBar;
 class KPopupMenu;
 class KToolBar;
-class Playlist;
 class QTimer;
 
 
-class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserver
+class PlaylistWindow : public QWidget, public KXMLGUIClient
 {
         Q_OBJECT
 
@@ -40,12 +38,10 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
        ~PlaylistWindow();
 
         void init();
-
         void applySettings();
 
         void createGUI(); //should be private but App::slowConfigToolbars requires it
         void recreateGUI();
-        BrowserBar* browserBar() { return m_browsers; }
 
         virtual bool eventFilter( QObject*, QEvent* );
 
@@ -67,19 +63,15 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
 
     protected:
         virtual void closeEvent( QCloseEvent* );
-        virtual void engineStateChanged( Engine::State );
         virtual QSize sizeHint() const;
 
     private:
-        template <class B> void addBrowser( const char*, const QString&, const QString& );
-
         enum MenuId { ID_SHOW_TOOLBAR = 2000, ID_SHOW_PLAYERWINDOW, ID_RESCAN_COLLECTION };
 
         KMenuBar      *m_menubar;
         KPopupMenu    *m_toolsMenu;
         KPopupMenu    *m_settingsMenu;
         BrowserBar    *m_browsers;
-        Playlist      *m_playlist;
         KPopupMenu    *m_searchMenu;
         ClickLineEdit *m_lineEdit;
         KToolBar      *m_toolbar;

@@ -93,20 +93,9 @@ namespace amaroK
 
 PlaylistWindow *PlaylistWindow::s_instance = 0;
 
-
-template <class B> void
-PlaylistWindow::addBrowser( const char *name, const QString &title, const QString &icon )
-{
-    Debug::Block timer( name );
-
-    m_browsers->addBrowser( new B( name ), title, icon );
-}
-
-
 PlaylistWindow::PlaylistWindow()
         : QWidget( 0, "PlaylistWindow", Qt::WGroupLeader )
         , KXMLGUIClient()
-        , EngineObserver( EngineController::instance() )
         , m_lastBrowser( 0 )
 {
     s_instance = this;
@@ -186,6 +175,9 @@ PlaylistWindow::init()
     { //<Search LineEdit>
         KToolBar *bar = new KToolBar( m_browsers->container() );
         bar->setIconSize( 22, false ); //looks more sensible
+        bar->setFlat( true ); //removes the ugly frame
+        bar->setMovingEnabled( false ); //removes the ugly frame
+
         QWidget *button = new KToolBarButton( "locationbar_erase", 1, bar );
         m_lineEdit = new ClickLineEdit( i18n( "Filter here..." ), bar );
 
@@ -200,11 +192,11 @@ PlaylistWindow::init()
         QToolTip::add( m_lineEdit, i18n( "Enter space-separated terms to filter playlist" ) );
     } //</Search LineEdit>
 
-    m_playlist  = new Playlist( m_browsers->container(), actionCollection() );
-    m_toolbar   = new amaroK::ToolBar( m_browsers->container(), "playlist_toolbar" );
-    QWidget *m_statusbar = new amaroK::StatusBar( this );
+    QFrame *playlist = new Playlist( m_browsers->container() );
+    m_toolbar = new amaroK::ToolBar( m_browsers->container(), "playlist_toolbar" );
+    QWidget *statusbar = new amaroK::StatusBar( this );
 
-    connect( m_lineEdit, SIGNAL(textChanged( const QString& )), m_playlist, SLOT(setFilter( const QString& )) );
+    connect( m_lineEdit, SIGNAL(textChanged( const QString& )), playlist, SLOT(setFilter( const QString& )) );
 
     m_menubar = new KMenuBar( this );
     m_menubar->setShown( AmarokConfig::showMenuBar() );
@@ -250,12 +242,10 @@ PlaylistWindow::init()
     m_toolsMenu->insertSeparator();
     m_toolsMenu->insertItem( i18n("&Rescan Collection"), ID_RESCAN_COLLECTION );
 
+    #if defined HAVE_XMMS || defined HAVE_LIBVISUAL
+    m_toolsMenu->setItemEnabled( amaroK::Menu::ID_SHOW_VIS_SELECTOR, true );
+    #else
     m_toolsMenu->setItemEnabled( amaroK::Menu::ID_SHOW_VIS_SELECTOR, false );
-    #ifdef HAVE_XMMS
-    m_toolsMenu->setItemEnabled( amaroK::Menu::ID_SHOW_VIS_SELECTOR, true );
-    #endif
-    #ifdef HAVE_LIBVISUAL
-    m_toolsMenu->setItemEnabled( amaroK::Menu::ID_SHOW_VIS_SELECTOR, true );
     #endif
 
     connect( m_toolsMenu, SIGNAL( aboutToShow() ), SLOT( toolsMenuAboutToShow() ) );
@@ -298,13 +288,15 @@ PlaylistWindow::init()
     layV->addWidget( m_menubar );
     layV->addWidget( m_browsers, 1 );
     layV->addWidget( m_toolbar );
-    layV->addWidget( m_statusbar );
-    layV->setSpacing( 2 );
+    layV->addSpacing( 2 );
+    layV->addWidget( statusbar );
 
     //The volume slider later becomes our FocusProxy, so all wheelEvents get redirected to it
     m_toolbar->setFocusPolicy( QWidget::WheelFocus );
-    m_playlist->setMargin( 2 );
-    m_playlist->installEventFilter( this ); //we intercept keyEvents
+    m_toolbar->setFlat( true );
+    m_toolbar->setMovingEnabled( false );
+    playlist->setMargin( 2 );
+    playlist->installEventFilter( this ); //we intercept keyEvents
 
 
     //<XMLGUI>
@@ -323,22 +315,28 @@ PlaylistWindow::init()
 
 
     //<Browsers>
-        debug() << "Initialising browsers, please report long start times!\n";
+        debug() << "Creating browsers. Please report long start times!\n";
         DEBUG_INDENT
+        #define addBrowserMacro( Type, name, text, icon ) { \
+            Debug::Block block( name ); \
+            m_browsers->addBrowser( new Type( name ), text, icon ); }
 
-        addBrowser<ContextBrowser>( "ContextBrowser", i18n( "Context" ), "info" );
-        addBrowser<CollectionBrowser>( "CollectionBrowser", i18n( "Collection" ), "kfm" );
-        addBrowser<PlaylistBrowser>( "PlaylistBrowser", i18n( "Playlists" ), "player_playlist_2" );
-        if ( MediaBrowser::isAvailable() )
-            addBrowser<MediaBrowser>( "MediaBrowser", i18n( "Media Device" ), "usbpendrive_unmount" );
-        addBrowser<FileBrowser>( "FileBrowser", i18n( "Files" ), "hdd_unmount" );
+        addBrowserMacro( ContextBrowser, "ContextBrowser", i18n( "Context" ), "info" )
+        addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n( "Collection" ), "kfm" )
+        addBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n( "Playlists" ), "player_playlist_2" )
 
+        if( MediaBrowser::isAvailable() )
+            addBrowserMacro( MediaBrowser, "MediaBrowser", i18n( "Media Device" ), "usbpendrive_unmount" )
+
+        addBrowserMacro( FileBrowser, "FileBrowser", i18n( "Files" ), "hdd_unmount" )
+
+        #undef addBrowserMacro
         DEBUG_UNINDENT
     //</Browsers>
 
 
-    connect( m_playlist, SIGNAL( itemCountChanged( int, int, int, int ) ), m_statusbar, SLOT( slotItemCountChanged( int, int, int, int ) ) );
-    connect( m_playlist, SIGNAL( aboutToClear() ), m_lineEdit, SLOT( clear() ) );
+    connect( playlist, SIGNAL( itemCountChanged( int, int, int, int ) ), statusbar, SLOT( slotItemCountChanged( int, int, int, int ) ) );
+    connect( playlist, SIGNAL( aboutToClear() ), m_lineEdit, SLOT( clear() ) );
 }
 
 
@@ -413,8 +411,6 @@ void PlaylistWindow::createGUI()
     }
 
     m_toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
-    m_toolbar->setFlat( true );
-    m_toolbar->setMovingEnabled( false ); //removes the ugly frame
     conserveMemory();
     setUpdatesEnabled( true );
 }
@@ -425,12 +421,12 @@ void PlaylistWindow::applySettings()
     switch( AmarokConfig::useCustomFonts() )
     {
     case true:
-        m_playlist->setFont( AmarokConfig::playlistWindowFont() );
-        m_browsers->browser( "ContextBrowser" )->setFont( AmarokConfig::contextBrowserFont() );
+        Playlist::instance()->setFont( AmarokConfig::playlistWindowFont() );
+        ContextBrowser::instance()->setFont( AmarokConfig::contextBrowserFont() );
         break;
     case false:
-        m_playlist->unsetFont();
-        m_browsers->browser( "ContextBrowser" )->unsetFont();
+        Playlist::instance()->unsetFont();
+        ContextBrowser::instance()->unsetFont();
         break;
     }
 }
@@ -443,10 +439,6 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
     switch( e->type() )
     {
-    case 8/*QEvent::FocusIn*/:
-        m_browsers->autoCloseBrowsers();
-        break;
-
     case 6/*QEvent::KeyPress*/:
 
         //there are a few keypresses that we intercept
@@ -456,7 +448,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
         if( e->key() == Key_F2 )
         {
             // currentItem is ALWAYS visible.
-            QListViewItem *item = m_playlist->currentItem();
+            QListViewItem *item = Playlist::instance()->currentItem();
 
             // intercept F2 for inline tag renaming
             // NOTE: tab will move to the next tag
@@ -465,7 +457,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
             // item may still be null, but this is safe
             // NOTE: column 0 cannot be edited currently, hence we pick column 1
-            m_playlist->rename( item, 1 ); //TODO what if this column is hidden?
+            Playlist::instance()->rename( item, 1 ); //TODO what if this column is hidden?
 
             return TRUE;
         }
@@ -476,17 +468,17 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
             // If ctrl key is pressed, propagate keyEvent to the playlist
             if ( e->key() & Qt::CTRL ) {
-                QApplication::sendEvent( m_playlist, e );
+                QApplication::sendEvent( Playlist::instance(), e );
                 return TRUE;
             }
 
             switch( e->key() )
             {
             case Key_Down:
-                if( QListViewItem *item = *It( m_playlist, It::Visible ) )
+                if( QListViewItem *item = *It( Playlist::instance(), It::Visible ) )
                 {
-                    m_playlist->setFocus();
-                    m_playlist->setCurrentItem( item );
+                    Playlist::instance()->setFocus();
+                    Playlist::instance()->setCurrentItem( item );
                     item->setSelected( true );
                     return TRUE;
                 }
@@ -494,13 +486,13 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
             case Key_PageDown:
             case Key_PageUp:
-                QApplication::sendEvent( m_playlist, e );
+                QApplication::sendEvent( Playlist::instance(), e );
                 return TRUE;
 
             case Key_Return:
             case Key_Enter:
-                m_playlist->activate( *It( m_playlist, It::Visible ) );
-                m_playlist->showCurrentTrack();
+                Playlist::instance()->activate( *It( Playlist::instance(), It::Visible ) );
+                Playlist::instance()->showCurrentTrack();
                 m_lineEdit->clear();
                 return TRUE;
 
@@ -513,19 +505,19 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
             }
         }
 
-        //following are for m_playlist only
+        //following are for Playlist::instance() only
         //we don't handle these in the playlist because often we manipulate the lineEdit too
 
-        if( e->key() == Key_Up && m_playlist->currentItem()->itemAbove() == 0 )
+        if( e->key() == Key_Up && Playlist::instance()->currentItem()->itemAbove() == 0 )
         {
-            m_playlist->currentItem()->setSelected( false );
+            Playlist::instance()->currentItem()->setSelected( false );
             m_lineEdit->setFocus();
             return TRUE;
         }
 
         if( e->key() == Key_Delete )
         {
-            m_playlist->removeSelectedItems();
+            Playlist::instance()->removeSelectedItems();
             return TRUE;
         }
 
@@ -545,35 +537,12 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
     return QWidget::eventFilter( o, e );
 }
 
+
 void PlaylistWindow::closeEvent( QCloseEvent *e )
 {
     amaroK::genericEventHandler( this, e );
 }
 
-
-void PlaylistWindow::engineStateChanged( Engine::State state )
-{
-    if( !AmarokConfig::autoShowContextBrowser() ) return;
-
-    const int CONTEXT_INDEX = 0;
-
-    switch( state )
-    {
-        case Engine::Playing:
-            m_lastBrowser = m_browsers->currentIndex();
-            m_browsers->showBrowser( CONTEXT_INDEX );
-            break;
-
-        case Engine::Empty:
-            if( m_browsers->currentIndex() == CONTEXT_INDEX )
-                m_browsers->showBrowser( m_lastBrowser );
-            break;
-
-        case Engine::Idle:
-        case Engine::Paused:
-            break;
-    }
-}
 
 #include <qdesktopwidget.h>
 QSize PlaylistWindow::sizeHint() const
@@ -581,19 +550,15 @@ QSize PlaylistWindow::sizeHint() const
     return QApplication::desktop()->screenGeometry( (QWidget*)this ).size() / 1.5;
 }
 
+
 void PlaylistWindow::savePlaylist() const //SLOT
 {
-    FileBrowser *fb = (FileBrowser*)m_browsers->browser( "FileBrowser" );
-    QString path = fb ? fb->url().path() : "~";
+    QString path = KFileDialog::getSaveFileName(
+            static_cast<FileBrowser*>(m_browsers->browser( "FileBrowser" ))->url().path(), "*.m3u" );
 
-    path = KFileDialog::getSaveFileName( path, "*.m3u" );
-
-    if( !path.isEmpty() ) //FIXME unecessary check?
-    {
-        m_playlist->saveM3U( path );
-        //add the saved playlist to playlist browser
-        PlaylistBrowser *pb = (PlaylistBrowser*)m_browsers->browser( "PlaylistBrowser" );
-        pb->addPlaylist( path, true );
+    if( !path.isEmpty() ) {
+        Playlist::instance()->saveM3U( path );
+        PlaylistBrowser::instance()->addPlaylist( path, true );
     }
 }
 
@@ -607,17 +572,16 @@ void PlaylistWindow::slotPlayMedia() //SLOT
 
 void PlaylistWindow::slotAddLocation( bool directPlay ) //SLOT
 {
-    KURLRequesterDlg dlg( QString::null, 0, 0 );
-    kapp->setTopWidget( &dlg );
-    dlg.setCaption( kapp->makeStdCaption( i18n( "Enter File, URL or Directory" ) ) );
-    dlg.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
-    dlg.exec();
+    KURLRequesterDlg dialog( QString::null, this, 0 );
+    dialog.setCaption( kapp->makeStdCaption( i18n( "Enter File, URL or Directory" ) ) );
+    dialog.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
+    dialog.exec();
 
-    if ( !dlg.selectedURL().isEmpty() ) {
-        int options = Playlist::Append;
-        if ( directPlay ) options |= Playlist::DirectPlay;
-        m_playlist->insertMedia( dlg.selectedURL(), options );
+    if( !dialog.selectedURL().isEmpty() ) {
+        const int options = directPlay ? Playlist::Append | Playlist::DirectPlay : Playlist::Append;
+        Playlist::instance()->insertMedia( dialog.selectedURL(), options );
     }
+
 }
 
 

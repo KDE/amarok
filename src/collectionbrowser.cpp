@@ -51,7 +51,6 @@ CollectionBrowser::CollectionBrowser( const char* name )
     , m_timer( new QTimer( this ) )
 {
     setSpacing( 4 );
-    setMargin( 5 );
 
     KToolBar* toolbar = new KToolBar( this );
     toolbar->setMovingEnabled(false);

@@ -1,102 +1,79 @@
-// Maintainer: Max Howell (C) Copyright 2004
-// Copyright:  See COPYING file that comes with this distribution
-//
+/***************************************************************************
+ *   Copyright (C) 2004, 2005 Max Howell <max.howell@methylblue.com>       *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
-#ifndef PLAYLISTSIDEBAR_H
-#define PLAYLISTSIDEBAR_H
+#ifndef BROWSERBAR_H
+#define BROWSERBAR_H
 
-#include <qhbox.h>        //baseclass
-#include <qpushbutton.h>  //baseclass
-#include <qvaluevector.h> //stack allocated
+#include <engineobserver.h> //baseclass
+#include <qwidget.h>        //baseclass
+#include <qvaluevector.h>   //stack allocated
 
 typedef QValueVector<QWidget*> BrowserList;
-typedef QValueVector<QWidget*>::ConstIterator BrowserIterator;
 
 class KMultiTabBar;
 class KMultiTabBarTab;
 class KURL;
-class QObjectList;
-class QPixmap;
-class QPushButton;
 class QSignalMapper;
 class QVBox;
 
-static const char* const not_close_xpm[]={
-"5 5 2 1",
-"# c black",
-". c None",
-"#####",
-"#...#",
-"#...#",
-"#...#",
-"#####"};
 
-namespace amaroK { class Drawer; }
-
-
-class BrowserBar : public QWidget
+class BrowserBar : public QWidget, protected EngineObserver
 {
     Q_OBJECT
 
 public:
     BrowserBar( QWidget *parent );
-    ~BrowserBar();
+   ~BrowserBar();
 
-    QVBox   *container() const { return (QVBox*)m_playlist; }
-    QWidget *browser( const QCString& ) const;
-    uint     position() const { return m_pos; }
+    QVBox *container() const { return m_playlistBox; }
 
-    void     setFont( const QFont& );
-    void     addBrowser( QWidget*, const QString&, const QString& );
-    void     removeBrowser( const QCString& );
-    int      currentIndex() { return m_currentIndex; }
+    QWidget *browser( const QString& ) const;
+    QWidget *browser( int index ) const { if( index < 0 ) index = 0; return m_browsers[index]; }
+    QWidget *currentBrowser() const { return browser( m_currentIndex ); }
+
+    void addBrowser( QWidget*, const QString&, const QString& );
+
+    /// for internal use
+    void mouseMovedOverDivider( QMouseEvent* );
 
 protected:
-    bool eventFilter( QObject*, QEvent* );
-    bool event( QEvent* );
+    virtual bool eventFilter( QObject*, QEvent* );
+    virtual bool event( QEvent* );
+    virtual void polish();
+    virtual void timerEvent( QTimerEvent* );
+
+protected:
+    virtual void engineStateChanged( Engine::State );
 
 public slots:
-    void showBrowser( const QCString& name );
-    void showBrowser( int index ) { if ( index != currentIndex() ) showHideBrowser( index ); }
+    void showBrowser( const QString& name ) { showBrowser( indexForName( name ) ); }
+    void showBrowser( int index ) { if( index != m_currentIndex ) showHideBrowser( index ); }
     void showHideBrowser( int );
-    void autoCloseBrowsers();
     void closeCurrentBrowser() { showHideBrowser( m_currentIndex ); }
 
-private slots:
-    void toggleOverlap( bool );
-
 private:
+    int indexForName( const QString& ) const;
+
     void adjustWidgetSizes();
-    QWidget *currentBrowser() { return m_browsers[m_currentIndex]; }
-    uint maxBrowserWidth() const { return uint(width() * 0.85); }
+    uint maxBrowserWidth() const { return width() / 2; }
 
     static const int DEFAULT_HEIGHT = 50;
 
-    uint             m_pos; //the x-axis position of m_divider
-    QVBox           *m_playlist; //not the playlist, but parent to the playlist and searchBar
-    QWidget         *m_divider; //a qsplitter like widget
-    KMultiTabBar    *m_tabBar;
-    BrowserList      m_browsers; //the browsers are stored in this qvaluevector
-    amaroK::Drawer  *m_browserHolder; //parent widget to the browsers
-    int              m_currentIndex;
-    QPushButton     *m_overlapButton;
-
-    QSignalMapper   *m_mapper; //maps tab clicks to browsers
-
-
-    class TinyButton : public QPushButton
-    {
-    public:
-        TinyButton( QWidget*, const QPixmap&, const QString& );
-
-    protected:
-        virtual void drawButton( QPainter* );
-        virtual void enterEvent( QEvent* ) { m_mouseOver = true; repaint( false ); }
-        virtual void leaveEvent( QEvent* ) { m_mouseOver = false; repaint( false ); }
-
-    private:
-        bool m_mouseOver;
-    };
+    uint           m_pos;         ///the x-axis position of m_divider
+    QVBox         *m_playlistBox; ///parent to playlist, playlist filter and toolbar
+    QWidget       *m_divider;     ///a qsplitter like widget
+    KMultiTabBar  *m_tabBar;
+    BrowserList    m_browsers;
+    QWidget       *m_browserBox;  ///parent widget to the browsers
+    int            m_currentIndex;
+    QSignalMapper *m_mapper;      ///maps tab clicks to browsers
 };
 
 #endif

@@ -23,11 +23,15 @@ class ContextBrowser : public QTabWidget, public EngineObserver
 {
     Q_OBJECT
 
+        static ContextBrowser *s_instance;
+
     public:
         ContextBrowser( const char *name );
        ~ContextBrowser();
 
-        virtual void setFont( const QFont& );
+        static ContextBrowser *instance() { return s_instance; }
+
+        void setFont( const QFont& );
         void setStyleSheet();
 
     public slots:

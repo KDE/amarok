@@ -67,6 +67,9 @@ void albumArtistFromUrl( QString url, QString &artist, QString &album )
 }
 
 
+ContextBrowser *ContextBrowser::s_instance = 0;
+
+
 ContextBrowser::ContextBrowser( const char *name )
         : QTabWidget( 0, name )
         , EngineObserver( EngineController::instance() )
@@ -74,6 +77,8 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_headerGradientImage( 0 )
         , m_shadowGradientImage( 0 )
 {
+    s_instance = this;
+
     m_homePage = new KHTMLPart( this, "home_page" );
     m_homePage->setDNDEnabled( true );
     m_currentTrackPage = new KHTMLPart( this, "current_track_page" );
@@ -140,10 +145,8 @@ ContextBrowser::~ContextBrowser()
 
 void ContextBrowser::setFont( const QFont &newFont )
 {
-//    if( newFont != font() ) {
-        QWidget::setFont( newFont );
-        setStyleSheet();
-//    }
+    QWidget::setFont( newFont );
+    setStyleSheet();
 }
 
 
@@ -550,6 +553,7 @@ void ContextBrowser::showHome() //SLOT
     }
 
     if ( CollectionDB::instance()->isEmpty() || !CollectionDB::instance()->isValid() ) {
+        //TODO show scanning message if scanning, not the introduction
         showIntroduction();
         return;
     }

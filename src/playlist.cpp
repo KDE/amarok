@@ -161,21 +161,21 @@ namespace Glow
 Playlist *Playlist::s_instance = 0;
 
 
-Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
-    : KListView( parent, name )
-    , EngineObserver( EngineController::instance() )
-    , m_currentTrack( 0 )
-    , m_marker( 0 )
-    , m_firstColumn( 0 )
-    , m_totalLength( 0 )
-    , m_selectCounter( 0 )
-    , m_selectLength( 0 )
-    , m_undoDir( amaroK::saveLocation( "undo/" ) )
-    , m_undoCounter( 0 )
-    , m_stopAfterCurrent( false )
-    , m_showHelp( true )
-    , m_lockStack( 0 )
-    , m_columnFraction( 13, 0 )
+Playlist::Playlist( QWidget *parent )
+        : KListView( parent, "ThePlaylist" )
+        , EngineObserver( EngineController::instance() )
+        , m_currentTrack( 0 )
+        , m_marker( 0 )
+        , m_firstColumn( 0 )
+        , m_totalLength( 0 )
+        , m_selectCounter( 0 )
+        , m_selectLength( 0 )
+        , m_undoDir( amaroK::saveLocation( "undo/" ) )
+        , m_undoCounter( 0 )
+        , m_stopAfterCurrent( false )
+        , m_showHelp( true )
+        , m_lockStack( 0 )
+        , m_columnFraction( 13, 0 )
 {
     s_instance = this;
 
@@ -245,6 +245,8 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
 
     connect( &Glow::timer, SIGNAL(timeout()), SLOT(slotGlowTimer()) );
 
+
+    KActionCollection* const ac = amaroK::actionCollection();
     KStdAction::copy( this, SLOT( copyToClipboard() ), ac, "playlist_copy" );
     KStdAction::selectAll( this, SLOT( selectAll() ), ac, "playlist_select_all" );
     m_clearButton = KStdAction::clear( this, SLOT( clear() ), ac, "playlist_clear" );
@@ -377,6 +379,8 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
         setSorting( NO_SORT );
         ThreadWeaver::instance()->queueJob( new UrlLoader( list, after, directPlay ) );
     }
+    else
+        amaroK::StatusBar::instance()->shortMessage( i18n("Cannot insert nothing into the playlist!") );
 }
 
 void
@@ -402,7 +406,12 @@ Playlist::restoreSession()
 {
     KURL url;
     url.setPath( amaroK::saveLocation() + "current.xml" );
-    ThreadWeaver::instance()->queueJob( new UrlLoader( url, 0 ) );
+
+    // check it exists, because on the first ever run it doesn't and
+    // it looks bad to show "some URLs were not suitable.." on the
+    // first ever-run
+    if( QFile::exists( url.path() ) )
+        ThreadWeaver::instance()->queueJob( new UrlLoader( url, 0 ) );
 }
 
 
@@ -843,6 +852,7 @@ Playlist::clear() //SLOT
     amaroK::actionCollection()->action( "play" )->setEnabled( false );
     amaroK::actionCollection()->action( "prev" )->setEnabled( false );
     amaroK::actionCollection()->action( "next" )->setEnabled( false );
+    amaroK::actionCollection()->action( "playlist_clear" )->setEnabled( false );
 
     ThreadWeaver::instance()->abortAllJobsNamed( "TagWriter" );
 
@@ -852,7 +862,6 @@ Playlist::clear() //SLOT
     KListView::clear();
 
     emit itemCountChanged( childCount(), m_totalLength, 0, 0 );
-    updateNextPrev();
 }
 
 void
@@ -1667,7 +1676,7 @@ void
 Playlist::updateMetaData( const MetaBundle &mb ) //SLOT
 {
     for( MyIt it( this, MyIt::All ); *it; ++it )
-        if ( mb.url() == (*it)->url() )
+        if( mb.url() == (*it)->url() )
             (*it)->setText( mb );
 }
 

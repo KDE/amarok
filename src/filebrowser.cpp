@@ -203,7 +203,6 @@ FileBrowser::FileBrowser( const char * name )
     connect( m_dir, SIGNAL(urlEntered( const KURL& )), searchPane, SLOT(urlChanged( const KURL& )) );
 
     setSpacing( 4 );
-    setMargin( 5 );
     setFocusProxy( m_dir ); //so the dirOperator is focussed when we get focus events
     setMinimumWidth( toolbar->sizeHint().width() );
 }
