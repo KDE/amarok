@@ -708,8 +708,8 @@ NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
     QPixmap off = ie.apply( getPNG( "b_" + icon ), KIconEffect::Colorize, 0.3, Qt::blue, false );
     // Tint gray for "on" icon state
     QPixmap on = ie.apply( off, KIconEffect::ToGray, 0.7, QColor(), false );
-    // Fade gamma value and make pseudo-transparent for disabled state
-    QPixmap disabled = ie.apply( off, KIconEffect::ToGamma, 0.5, QColor(), true );
+    // Tint gray and make pseudo-transparent for disabled state
+    QPixmap disabled = ie.apply( off, KIconEffect::ToGray, 1.0, QColor(), true );
     
     iconSet.setPixmap( off, QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
     iconSet.setPixmap( on, QIconSet::Automatic, QIconSet::Normal, QIconSet::On  );
