@@ -1063,10 +1063,7 @@ GstEngine::destroyPipeline()
     m_mutexScope.unlock();
 
     if ( m_pipelineFilled ) {
-        if ( GST_STATE( m_gst_rootBin ) != GST_STATE_NULL )
-            gst_element_set_state( m_gst_rootBin, GST_STATE_NULL );
-
-        debug() << "Destroying GStreamer pipelines.\n";
+        debug() << "Unreffing root bin." << endl;
         gst_object_unref( GST_OBJECT( m_gst_rootBin ) );
 
         m_pipelineFilled = false;
