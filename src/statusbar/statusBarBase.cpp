@@ -176,7 +176,18 @@ void
 StatusBar::resetMainText()
 {
     m_mainTextLabel->unsetPalette();
-    m_mainTextLabel->setText( m_mainText );
+
+    if( allDone() )
+        m_mainTextLabel->setText( m_mainText );
+
+    else {
+        m_mainTextLabel->setPaletteBackgroundColor( m_mainTextLabel->paletteBackgroundColor().dark( 110 ) );
+
+        if( m_progressMap.count() == 1 )
+            m_mainTextLabel->setText( (*m_progressMap.begin())->description() + "..." );
+        else
+            m_mainTextLabel->setText( i18n("Multiple background-tasks running") );
+    }
 }
 
 void
@@ -228,6 +239,16 @@ StatusBar::customEvent( QCustomEvent *e )
 
 /// application wide progress monitor
 
+inline bool
+StatusBar::allDone()
+{
+    for( ProgressMap::Iterator it = m_progressMap.begin(), end = m_progressMap.end(); it != end; ++it )
+        if( (*it)->m_done == false )
+            return false;
+
+    return true;
+}
+
 ProgressBar&
 StatusBar::newProgressOperation( QObject *owner )
 {
@@ -239,7 +260,9 @@ StatusBar::newProgressOperation( QObject *owner )
 
     connect( owner, SIGNAL(destroyed( QObject* )), SLOT(endProgressOperation( QObject* )) );
 
-    updateTotalProgress();
+    // so we can show the correct progress information
+    // after the ProgressBar is setup
+    QTimer::singleShot( 0, this, SLOT(updateProgressAppearance()) );
 
     progressBox()->show();
     cancelButton()->setEnabled( true );
@@ -280,21 +303,16 @@ StatusBar::endProgressOperation( QObject *owner )
 {
     //the owner of this progress operation has been deleted
     //we need to stop listening for progress from it
+    //NOTE we don't delete it yet, as this upsets some
+    //things, we just call setDone().
 
     if ( !m_progressMap.contains( owner ) )
         return ;
 
     m_progressMap[owner]->setDone();
 
-    bool done = true;
-    for( ProgressMap::Iterator it = m_progressMap.begin(), end = m_progressMap.end(); it != end; ++it )
-        if ( ( *it ) ->m_done == false ) {
-            done = false;
-            break;
-        }
-
-    if ( done && !m_popupProgress->isShown() ) {
-        //FIXME we need to be able to stop this
+    if ( allDone() && !m_popupProgress->isShown() ) {
+        resetMainText();
         cancelButton()->setEnabled( false );
         QTimer::singleShot( 2000, this, SLOT(hideMainProgressBar()) );
     }
@@ -419,6 +437,16 @@ StatusBar::updateTotalProgress()
 
     m_mainProgressBar->setTotalSteps( totalSteps );
     m_mainProgressBar->setProgress( progress );
+}
+
+void
+StatusBar::updateProgressAppearance()
+{
+    toggleProgressWindowButton()->setShown( m_progressMap.count() > 1 );
+
+    resetMainText();
+
+    updateTotalProgress();
 }
 
 } //namespace KDE

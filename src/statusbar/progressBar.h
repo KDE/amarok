@@ -51,6 +51,8 @@ namespace KDE
 
         void setDone();
 
+        QString description() const { return m_description; }
+
     protected:
         ProgressBar( QWidget *parent, QLabel *label );
        ~ProgressBar();

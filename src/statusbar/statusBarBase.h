@@ -172,6 +172,7 @@ namespace KDE
         /** For internal use against KIO::Jobs */
         void setProgress( KIO::Job*, unsigned long percent );
         void hideMainProgressBar();
+        void updateProgressAppearance();
 
     protected:
         virtual void polish();
@@ -194,9 +195,11 @@ namespace KDE
         };
 
         void updateTotalProgress();
+        bool allDone(); ///@return true if all progress operations are complete
 
-        QWidget *cancelButton() { return ( QWidget* ) child( "cancelButton" ); }
-        QWidget *progressBox()  { return ( QWidget* ) child( "progressBox" ); }
+        QWidget *cancelButton() { return (QWidget*)child( "cancelButton" ); }
+        QWidget *toggleProgressWindowButton() { return (QWidget*)child( "showAllProgressDetails" ); }
+        QWidget *progressBox() { return (QWidget*)child( "progressBox" ); }
 
         OverlayWidget *m_popupProgress;
         QProgressBar  *m_mainProgressBar;
