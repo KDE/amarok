@@ -68,6 +68,15 @@ MID-TERM:
 
 LONG-TERM:
 
+    * add: < berkus> add smooth fade outs on stop
+
+    * change: < berkus> the volume slider is too small to make good adjustment,
+      move it to the right and maximize height (?)
+
+    * add: make amarok trayable
+
+    * add: make PlayerWidget shadeable (like XMMS)
+
     * display some information about current track in browserwin
 
     * support for compressed archives / tarballs

@@ -32,13 +32,14 @@
 #include <qstring.h>
 
 #include <kdebug.h>
+#include <klistview.h>
 #include <kurl.h>
 
 #include <fileref.h>
 #include <tag.h>
 
 PlaylistItem::PlaylistItem( QListView* parent, const KURL &url ) :
-        QListViewItem( parent, nameForUrl( url ) )
+        KListViewItem( parent, nameForUrl( url ) )
 {
 
     m_url = url;
@@ -47,7 +48,7 @@ PlaylistItem::PlaylistItem( QListView* parent, const KURL &url ) :
 
 
 PlaylistItem::PlaylistItem( QListView* parent, QListViewItem *after, const KURL &url ) :
-        QListViewItem( parent, after )
+        KListViewItem( parent, after )
 {
     m_url = url;
     init();
@@ -80,7 +81,6 @@ void PlaylistItem::init()
     m_bIsGlowing = false;
     setDragEnabled( true );
     setDropEnabled( true );
-    m_alternate = false;
 }
 
 
@@ -153,30 +153,6 @@ void PlaylistItem::setDir( bool on )
 }
 
 
-bool PlaylistItem::isAlternate()
-{
-    if ( listView() )
-    {
-        if ( QString( listView()->name() ) == "PlaylistWidget" )
-        {
-            if ( itemAbove() )
-            {
-                if ( static_cast<PlaylistItem*>( itemAbove() )->m_alternate )
-                {
-                    m_alternate = false;
-                }
-                else
-                {
-                    m_alternate = true;
-                }
-            }
-        }
-    }
-
-    return m_alternate;
-}
-
-
 void PlaylistItem::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align )
 {
     QColor col( 0x80, 0xa0, 0xff );
@@ -185,7 +161,8 @@ void PlaylistItem::paintCell( QPainter * p, const QColorGroup & cg, int column, 
     QPixmap *pBufPixmap = new QPixmap( width, height() );
     QPainter pPainterBuf( pBufPixmap, true );
 
-    if ( isAlternate() )
+    if ( listView() && QString( listView()->name() ) == "PlaylistWidget" &&
+         isAlternate() )
     {
         pPainterBuf.setBackgroundColor( QColor( Qt::darkGray ).dark( 250 ) );
     }
