@@ -32,10 +32,6 @@ SHORT-TERM (URGENT):
 
   ADD 180 <muesli> Show "Artist - Song" for Various Artist folder.
 
-  FIX 161 <markey> Configure prints "Good - your configure finished. Start make now" even when amaroK
-                   will _not_ be built. Confusing..
-                   I don't think we can fix this.
-
   FIX 134 <markey> Ctrl-C in Playlist (and other Ctrl shortcuts) for copying title doesn't work, because the
                    event gets eaten by another widget.
 
