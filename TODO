@@ -6,16 +6,12 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-          <markey> Implement "Play Media". -->markey
-
           <muesli> Sort albums by date, name in ContextBrowser.
 
           <muesli> Don't show '0' as a date for an album in ContextBrowser.
 
           <tronical> amarok/src/playlist.cpp:1675: warning: enumeral mismatch in conditional expression:
                      `QListViewItemIterator::IteratorFlag' vs `MyIterator::IteratorFlag'
-
-          <markey> "REP" and "RAND" buttons show wrong state at startup.
 
           <mxcl>   Should be able to open collection browser by right clicking on stuff in contextB,
                    so show the artist or album that is right clicked.
