@@ -68,9 +68,12 @@ MetaBundle::MetaBundle( const PlaylistItem *item )
         {
             KFileMetaInfo info( m_url, QString::null, KFileMetaInfo::Everything );
 
-            m_bitrate    = info.item( "Bitrate" ).value().toInt();
-            m_length     = info.item( "Length" ).value().toInt();
-            m_sampleRate = info.item( "Sample Rate" ).value().toInt();
+            if ( info.isValid() )
+            {
+                m_bitrate    = info.item( "Bitrate" ).value().toInt();
+                m_length     = info.item( "Length" ).value().toInt();
+                m_sampleRate = info.item( "Sample Rate" ).value().toInt();
+            }
         }
         else init( f.audioProperties() );
 
