@@ -44,6 +44,7 @@ email                : markey@web.de
 #include <kdebug.h>
 #include <kglobalaccel.h>
 #include <klocale.h>
+#include <kmessagebox.h>    //applySettings()
 #include <kshortcut.h>
 #include <kstandarddirs.h>
 #include <ktip.h>
@@ -262,6 +263,10 @@ void PlayerApp::applySettings()
 {
     if ( AmarokConfig::soundSystem() != m_pEngine->name() )
     {
+        if ( AmarokConfig::soundSystem() == "gstreamer" )
+            KMessageBox::information( 0, i18n( "GStreamer support is still experimental. Some features "
+                                               "(like effects and visualizations) might not work properly." ) );
+        
         delete m_pEngine;
         m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(),
                                               m_artsNeedsRestart,
