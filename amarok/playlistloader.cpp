@@ -541,7 +541,11 @@ void TagReader::append( PlaylistItem *item )
 
       if( !running() )
       {
+#if QT_VERSION >= 0x030200         
           start( QThread::LowestPriority );
+#else
+          start();
+#endif          
           m_parent->setCursor( KCursor::workingCursor() );
       }
    }
