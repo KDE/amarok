@@ -1,3 +1,16 @@
+amarok (1.1.1-1~kalyxo1) unstable; urgency=low
+
+  * New upstream release packaged. Most notably, fixes several
+    GStreamer-engine related bugs.
+
+  * debian/rules:
+    - call dh_install with --list-missing (DEB_DH_INSTALL_ARGS).
+
+  * debian/patches/:
+    - removed proper-otherlang-handbook-path.patch, issue fixed upstream.
+
+ -- Adeodato Simó <asp16@alu.ua.es>  Sat, 09 Oct 2004 21:43:20 +0200
+
 amarok (1.1.0-2) unstable; urgency=low
 
   * Fix the location of translated amaroK handbook: kde/HTML/$LANG/amarok, not

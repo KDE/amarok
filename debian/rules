@@ -9,6 +9,7 @@ include /usr/share/cdbs/1/class/kde.mk
 DEB_DH_MAKESHLIBS_ARGS_ALL := -n
 DEB_INSTALL_DIRS_amarok    := usr/lib/amarok
 DEB_DH_SHLIBDEPS_ARGS      := -Xusr/lib/amarok/amarok_xmmswrapper2
+DEB_DH_INSTALL_ARGS        := --list-missing
 
 # We need this commented out until sqlite 3.0 is available in Debian
 # DEB_EXTRA_CONNFIGURE_FLAGS := --without-included-sqlite
