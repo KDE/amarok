@@ -220,6 +220,9 @@ CollectionReader::readTags( const QStringList& entries )
     QStringList validImages; validImages << "jpg" << "png" << "gif" << "jpeg";
 //    QStringList validMusic; validMusic << "mp3" << "ogg" << "wav" << "flac";
 
+    QValueList<CoverBundle> covers;
+    QStringList images;
+
     foreach( entries )
     {
         // Check if we shall abort the scan
@@ -230,8 +233,6 @@ CollectionReader::readTags( const QStringList& entries )
 
         const QString path = *it;
         KURL url; url.setPath( path );
-        QValueList<CoverBundle> covers;
-        QStringList images;
         const QString ext = amaroK::extension( *it );
         const QString dir = amaroK::directory( *it );
 
@@ -274,6 +275,10 @@ CollectionReader::readTags( const QStringList& entries )
                 CollectionDB::instance()->addImageToAlbum( *it, covers, m_db );
 
             CollectionDB::instance()->checkCompilations( dir, !m_incremental, m_db );
+
+            // clear now because we've processed them
+            covers.clear();
+            images.clear();
         }
     }
 
