@@ -2,6 +2,7 @@
 Type=Service
 Name=xine Engine
 Name[cs]=xine
+Name[es]=Motor xine
 Name[et]=xine mootor
 Name[it]=Motore xine
 Name[nl]=xine-engine
@@ -9,6 +10,7 @@ Name[pt]=Motor Xine
 Name[pt_BR]=Mecanismo Xine
 Name[ru]=Движок Xine
 Name[sv]=Xine-gränssnitt
+Name[xx]=xxxine Enginexx
 X-KDE-Library=libamarok_xine-engine
 Comment=Plugin for amaroK
 Comment[cs]=Modul pro amaroK
@@ -35,5 +37,5 @@ X-KDE-amaroK-authors=Max Howell
 X-KDE-amaroK-email=max.howell@methylblue.com
 X-KDE-amaroK-rank=254
 X-KDE-amaroK-version=1
-X-KDE-amaroK-framework-version=2
+X-KDE-amaroK-framework-version=3
 
