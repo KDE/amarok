@@ -110,6 +110,8 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
                   .arg( colorGroup().text().name() );
     styleSheet += QString( ".head { color: %1; font-size: 10px; font-weight: bold; background-color: %2; }" )
                   .arg( colorGroup().base().name() ).arg( colorGroup().highlight().name() );
+    styleSheet += QString( ".rbcurrent { color: %1; border: solid %2 1px; }" )
+                  .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
     styleSheet += QString( ".rbalbum { color: %1; border: solid %2 1px; }" )
                   .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
     styleSheet += QString( ".rbalbum:hover { color: %1; cursor: default; background-color: %2; border: solid %3 1px; }" )
@@ -124,7 +126,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     // <Current Track Information>
     browser->write( "<html><div class='rbcontent'>" );
     browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-    browser->write( "<tr><td class='head'>" + i18n( "Currently playing:" ) + "</td></tr>" );
+    browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Currently playing:" ) + "</td></tr>" );
     browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
     browser->write( "</table>" );
     browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
@@ -141,10 +143,11 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
         values << i18n( "Never" );
         values << "0";
     }
-    browser->write( QString ( "<tr><td height='42' valign='top' class='rbalbum'>"
-                              "<span class='album'>%1</span><br><br><img align='left' valign='center' hspace='2' width='40' height='40' src='%2'>"
-                              "%3<br>Last play: %4<br>Total plays: %5</td>"
+    browser->write( QString ( "<tr><td height='42' valign='top' class='rbcurrent'>"
+                              "<span class='album'>%1 - %2</span><br><br><img align='left' valign='center' hspace='2' width='40' height='40' src='%3'>"
+                              "%4<br>Last play: %5<br>Total plays: %6</td>"
                               "</tr>" )
+                    .arg( bundle.artist() )
                     .arg( bundle.title() )
                     .arg( m_db->getImageForAlbum( values[1], values[0], locate( "data", "amarok/images/sound.png" ) ) )
                     .arg( bundle.album() )
@@ -161,7 +164,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     // <Favourite Tracks Information>
     browser->write( "<br><div class='rbcontent'>" );
     browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-    browser->write( "<tr><td class='head'>" + i18n( "Favorite tracks of this artist:" ) + "</td></tr>" );
+    browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Favorite tracks of this artist:" ) + "</td></tr>" );
     browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
     browser->write( "</table>" );
     browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
@@ -191,7 +194,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     // <Other Tracks on this album>
     browser->write( "<br><div class='rbcontent'>" );
     browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-    browser->write( "<tr><td class='head'>" + i18n( "Other tracks on this album:" ) + "</td></tr>" );
+    browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Other tracks on this album:" ) + "</td></tr>" );
     browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
     browser->write( "</table>" );
     browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
@@ -222,7 +225,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     // <Other albums of this artist>
     browser->write( "<br><div class='rbcontent'>" );
     browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-    browser->write( "<tr><td class='head'>" + i18n( "Other albums:" ) + "</td></tr>" );
+    browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Other albums:" ) + "</td></tr>" );
     browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
     browser->write( "</table>" );
     browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
