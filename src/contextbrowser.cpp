@@ -936,6 +936,21 @@ void ContextBrowser::setStyleSheet()
 {
     kdDebug() << k_funcinfo << endl;
 
+    QString themeName = AmarokConfig::contextBrowserStyleSheet().latin1();
+    if (AmarokConfig::contextBrowserStyleSheet().latin1())
+        if ( QFile::exists( KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "styles/" + themeName + "/stylesheet.css" ) )
+            setStyleSheet_ExternalStyle( m_styleSheet, themeName );
+        else
+            setStyleSheet_default( m_styleSheet );
+    else
+            setStyleSheet_default( m_styleSheet );
+    browser->setUserStyleSheet( m_styleSheet );
+}
+
+void ContextBrowser::setStyleSheet_Flat( QString& styleSheet )
+{
+    //This is the reference style, "inherited" by all the other stylesheets.
+
     //colorscheme/font dependant parameters
     int pxSize = fontMetrics().height() - 4;
     const QString text = colorGroup().text().name();
@@ -943,38 +958,16 @@ void ContextBrowser::setStyleSheet()
     const QString bg   = colorGroup().highlight().name();
     amaroK::Color gradient = colorGroup().highlight();
 
-    //writing temp gradient image
-    if ( m_bgGradientImage )
-        delete m_bgGradientImage;
-    m_bgGradientImage = new KTempFile( locateLocal( "tmp", "gradient" ), ".png", 0600 );
-    QImage image = KImageEffect::gradient( QSize( 600, 1 ), gradient, gradient.light(), KImageEffect::PipeCrossGradient );
-    image.save( m_bgGradientImage->file(), "PNG" );
-    m_bgGradientImage->close();
-
     //we have to set the color for body due to a KHTML bug
     //KHTML sets the base color but not the text color
-    m_styleSheet = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); background-repeat: repeat-y; }" )
-                   .arg( pxSize ).arg( text ).arg( AmarokConfig::schemeAmarok() ? fg : gradient.name() )
-                   .arg( m_bgGradientImage->name() );
+    styleSheet = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; }" )
+            .arg( pxSize )
+            .arg( text )
+            .arg( AmarokConfig::schemeAmarok() ? fg : gradient.name() );
 
-    //'Body' is the only common entity, for other definitions use the selected style
-    switch( AmarokConfig::contextBrowserStyleSheet() )
-    {
-        case AmarokConfig::EnumContextBrowserStyleSheet::Flat:
-            setStyleSheet_Flat( m_styleSheet );
-            break;
-        case AmarokConfig::EnumContextBrowserStyleSheet::Gradient1:
-            setStyleSheet_Gradient1( m_styleSheet );
-            break;
-        case AmarokConfig::EnumContextBrowserStyleSheet::OtherStyle:
-            setStyleSheet_OtherStyle( m_styleSheet );
-            break;
-    };
-
-    browser->setUserStyleSheet( m_styleSheet );
 }
 
-void ContextBrowser::setStyleSheet_Flat( QString& styleSheet )
+void ContextBrowser::setStyleSheet_default( QString& styleSheet )
 {
     //This is the reference style, "inherited" by most of the other stylesheets.
     //Empty definition must not be removed, they're useful as reference.
@@ -984,12 +977,43 @@ void ContextBrowser::setStyleSheet_Flat( QString& styleSheet )
     const QString text = colorGroup().text().name();
     const QString fg   = colorGroup().highlightedText().name();
     const QString bg   = colorGroup().highlight().name();
+    const QColor baseColor = colorGroup().base();
+    const QColor bgColor = colorGroup().highlight();
+    amaroK::Color gradientColor = bgColor;
+
+    //writing temp background gradient image
+    if ( m_bgGradientImage )
+        delete m_bgGradientImage;
+    m_bgGradientImage = new KTempFile( locateLocal( "tmp", "gradient" ), ".png", 0600 );
+    QImage image = KImageEffect::gradient( QSize( 600, 1 ), gradientColor, gradientColor.light(), KImageEffect::PipeCrossGradient );
+    image.save( m_bgGradientImage->file(), "PNG" );
+    m_bgGradientImage->close();
+
+    //writing temp top shining gradient
+    if ( m_headerGradientImage )
+        delete m_headerGradientImage;
+    m_headerGradientImage = new KTempFile( locateLocal( "tmp", "gradient_header" ), ".png", 0600 );
+    QImage imageH = KImageEffect::unbalancedGradient( QSize( 1, 10 ), bgColor, gradientColor.light(), KImageEffect::VerticalGradient, 100, -100 );
+    imageH.copy( 0, 1, 1, 9 ).save( m_headerGradientImage->file(), "PNG" );
+    m_headerGradientImage->close();
+
+    //writing temp gradient image (only an 'upper linear shadow')
+    if ( m_shadowGradientImage )
+        delete m_shadowGradientImage;
+    m_shadowGradientImage = new KTempFile( locateLocal( "tmp", "gradient_shadow" ), ".png", 0600 );
+    QImage imageS = KImageEffect::unbalancedGradient( QSize( 1, 10 ), baseColor, Qt::gray, KImageEffect::VerticalGradient, 100, -100 );
+    imageS.save( m_shadowGradientImage->file(), "PNG" );
+    m_shadowGradientImage->close();
+
+    styleSheet += QString( "body { background-image: url( %1 ); background-repeat: repeat-y; }" ).arg( m_bgGradientImage->name() );
 
     //text attributes
     styleSheet += QString( "a { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
     styleSheet += QString( ".song a { display: block; padding: 1px 2px; }" );
     styleSheet += QString( ".song a:hover { color: %1; background-color: %2; }" ).arg( fg ).arg( bg );
-    styleSheet += QString( ".warning { font-size: %1px; color: %2; font-weight: bold; padding: 1em 0.5em 2em 0.5em; }" ).arg( pxSize ).arg( bg );
+    styleSheet += QString( ".warning { font-size: %1px; color: %2; font-weight: bold; padding: 1em 0.5em 2em 0.5em; }" )
+            .arg( pxSize )
+            .arg( bg );
 
     //box: the base container for every block (border hilighted on hover, 'A' without underlining)
     styleSheet += QString( ".box { border: solid %1 1px; text-align: left; }" ).arg( bg );
@@ -997,10 +1021,16 @@ void ContextBrowser::setStyleSheet_Flat( QString& styleSheet )
     styleSheet += QString( ".box:hover { border: solid %1 1px; }" ).arg( text );
 
     //box contents: header, body, rows and alternate-rows
-    styleSheet += QString( ".box-header { color: %1; background-color: %2; font-size: %3px; font-weight: bold; padding: 1px 0.5em; border-bottom: 1px solid #000; }" ).arg( fg ).arg( bg ).arg( pxSize + 2 );
+    styleSheet += QString( ".box-header { color: %1; background-color: %2; background-image: url( %4 ); background-repeat: repeat-x; font-size: %3px; font-weight: bold; padding: 1px 0.5em; border-bottom: 1px solid #000; }" )
+            .arg( fg )
+            .arg( bg )
+            .arg( pxSize + 2 )
+            .arg( m_headerGradientImage->name() );
     styleSheet += QString( ".box-header:hover {}" );
 
-    styleSheet += QString( ".box-body { background-color: %1; }" ).arg( colorGroup().base().name() );
+    styleSheet += QString( ".box-body { padding: 2px; background-color: %1; background-image: url( %2 ); background-repeat: repeat-x; }" )
+            .arg( colorGroup().base().name() )
+            .arg( m_shadowGradientImage->name() );
     styleSheet += QString( ".box-body:hover {}" );
 
     styleSheet += QString( ".box-row {}" );
@@ -1019,38 +1049,7 @@ void ContextBrowser::setStyleSheet_Flat( QString& styleSheet )
     styleSheet += QString( ".sbinner { height: 8px; background-color: %1; border: solid %2 1px; }" ).arg( bg ).arg( fg );
 }
 
-void ContextBrowser::setStyleSheet_Gradient1( QString& styleSheet )
-{
-    // "INHERIT" Flat style
-    setStyleSheet_Flat( styleSheet );
-
-    //colorscheme/font dependant parameters
-    const QColor baseColor = colorGroup().base();
-    const QColor bgColor = colorGroup().highlight();
-    amaroK::Color gradientColor = bgColor;
-
-    //writing temp top shining gradient
-    if ( m_headerGradientImage )
-        delete m_headerGradientImage;
-    m_headerGradientImage = new KTempFile( locateLocal( "tmp", "gradient_header" ), ".png", 0600 );
-    QImage imageH = KImageEffect::unbalancedGradient( QSize( 1, 10 ), bgColor, gradientColor.light(), KImageEffect::VerticalGradient, 100, -100 );
-    imageH.copy( 0, 1, 1, 9 ).save( m_headerGradientImage->file(), "PNG" );
-    m_headerGradientImage->close();
-
-    //writing temp gradient image (only an 'upper linear shadow')
-    if ( m_shadowGradientImage )
-        delete m_shadowGradientImage;
-    m_shadowGradientImage = new KTempFile( locateLocal( "tmp", "gradient_shadow" ), ".png", 0600 );
-    QImage imageS = KImageEffect::unbalancedGradient( QSize( 1, 10 ), baseColor, Qt::gray, KImageEffect::VerticalGradient, 100, -100 );
-    imageS.save( m_shadowGradientImage->file(), "PNG" );
-    m_shadowGradientImage->close();
-
-    //style: apply gradients
-    styleSheet += QString( ".box-header { background-image: url( %1 ); background-repeat: repeat-x; }" ).arg( m_headerGradientImage->name() );
-    styleSheet += QString( ".box-body { background-image: url( %2 ); background-repeat: repeat-x; }" ).arg( m_shadowGradientImage->name() );
-}
-
-void ContextBrowser::setStyleSheet_OtherStyle( QString& styleSheet )
+void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& themeName )
 {
     // "INHERIT" Flat style
     setStyleSheet_Flat( styleSheet );
@@ -1061,7 +1060,7 @@ void ContextBrowser::setStyleSheet_OtherStyle( QString& styleSheet )
     QString fg   = colorGroup().highlightedText().name();
     QString bg   = colorGroup().highlight().name();
 
-    QString CSSLocation = KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "styles/default/";
+    QString CSSLocation = KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "styles/" + themeName + "/";
 
     QFile ExternalCSS( CSSLocation + "stylesheet.css" );
     if ( !ExternalCSS.open( IO_ReadOnly ) )
@@ -1076,6 +1075,7 @@ void ContextBrowser::setStyleSheet_OtherStyle( QString& styleSheet )
     tmpCSS.replace( "AMAROK_TEXTCOLOR", text );
     tmpCSS.replace( "AMAROK_BGCOLOR", bg );
     tmpCSS.replace( "AMAROK_FGCOLOR", fg );
+
     styleSheet += tmpCSS;
 }
 
@@ -1198,9 +1198,9 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
 
-    browser->write( "<html><div>" );
+    browser->write( "<html><div class='box'><div class='box-header'>"+ i18n( "Lyrics" ) +"</div><div class='box-body'>" );
     browser->write( m_lyrics );
-    browser->write( "</div></html>" );
+    browser->write( "</div></div></html>" );
     browser->end();
 }
 
