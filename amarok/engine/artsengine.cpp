@@ -15,6 +15,9 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
+#include <config.h>
+#ifdef HAVE_ARTS
+ 
 #include "amarokarts.h"
 #include "artsengine.h"
 
@@ -819,3 +822,6 @@ ArtsEngine::ArtsConfigWidget::~ArtsConfigWidget()
 
 
 #include "artsengine.moc"
+
+#endif /*HAVE_ARTS*/
+

@@ -1,4 +1,8 @@
-SUBDIRS = amarokcore amarokarts analyzers titleproxy engine images data loader
+if with_arts
+    AMAROKARTS_BUILD = amarokarts
+endif
+    
+SUBDIRS = amarokcore $(AMAROKARTS_BUILD) analyzers titleproxy engine images data loader
 
 bin_PROGRAMS = amarokapp
 

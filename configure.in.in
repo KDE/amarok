@@ -2,14 +2,15 @@
 # BEGIN KDEMULTIMEDIA CHECK
 ###############################################################################
 
-KDE_CHECK_HEADER(arts/artsmodules.h, amarok_error_nokdemm=no, amarok_error_nokdemm=yes)
+KDE_CHECK_HEADER(arts/artsmodules.h, have_kdemm=yes, have_kdemm=no)
 
-if test x$amarok_error_nokdemm = xyes; then
-    DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
+if test x$build_arts = xyes; then
+    if test x$have_kdemm = xyes; then
+        AC_DEFINE(HAVE_ARTS, 1, [have aRts and kdemultimedia])
+        AM_CONDITIONAL(with_arts, [test x$have_kdemm = xyes])
+    fi
 fi
-
-
-
+    
 ###############################################################################
 # END KDEMULTIMEDIA CHECK
 ###############################################################################
@@ -133,7 +134,7 @@ if test "$build_gstreamer" != "no"; then
     # check for GStreamer
     dnl Now we're ready to ask for gstreamer libs and cflags
     dnl And we can also ask for the right version of gstreamer
-    HAVE_GST=no
+    have_gst=no
 
     dnl start with 0.6
     GST_MAJORMINOR=0.6
@@ -142,20 +143,20 @@ if test "$build_gstreamer" != "no"; then
         gstreamer-$GST_MAJORMINOR >= $GST_REQ \
         gstreamer-control-$GST_MAJORMINOR >= $GST_REQ \
         gstreamer-libs-$GST_MAJORMINOR >= $GST_REQ,
-        HAVE_GST=yes,HAVE_GST=no)
+        have_gst=yes,have_gst=no)
 
     dnl fail back to 0.7
-    if test "x$HAVE_GST" = "xno"; then
+    if test "x$have_gst" = "xno"; then
         GST_MAJORMINOR=0.7
         KDE_PKG_CHECK_MODULES(GST, \
         gstreamer-$GST_MAJORMINOR >= $GST_REQ \
         gstreamer-control-$GST_MAJORMINOR >= $GST_REQ \
         gstreamer-libs-$GST_MAJORMINOR >= $GST_REQ,
-        HAVE_GST=yes,HAVE_GST=no)
+        have_gst=yes,have_gst=no)
     fi
 
     dnl Give error if we don't have gstreamer
-    if test "x$HAVE_GST" = "xno"; then
+    if test "x$have_gst" = "xno"; then
         LIB_GST=""
         CFLAGS_GST=""
     #    DO_NOT_COMPILE="$DO_NOT_COMPILE gst"
@@ -196,7 +197,6 @@ AC_ARG_WITH(nmm,
     [nmm_cflags=/usr/local/include]
 )
 
-
 if test "$build_nmm" != "no"; then
 
   #currently NMM libs must by in LD_PATH
@@ -210,18 +210,18 @@ if test "$build_nmm" != "no"; then
   CFLAGS_NMM="-I$nmm_cflags"
   LIB_NMM="-lnmmbase -lnmmaudio -lnmmmpegread -lnmmmpegaudiodec -lnmmfile -lnmmoggvorbis"
   AC_DEFINE(HAVE_NMM, 1, [have NMM])
-  have_nmm=true
+  have_nmm=yes
 
 else
 
   #no warning, what's the point?
   CFLAGS_NMM=""
   LIB_NMM=""
-  have_nmm=false
+  have_nmm=no
 
 fi
 
-AM_CONDITIONAL(link_lib_NMM, test x$have_nmm = xtrue)
+AM_CONDITIONAL(link_lib_NMM, test x$have_nmm = xyes)
 AC_SUBST(LIB_NMM)
 AC_SUBST(CFLAGS_NMM)
 

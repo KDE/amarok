@@ -1,12 +1,3 @@
-if test x$amarok_error_nokdemm = xyes; then
-    echo ""
-    echo "You are missing KDEMULTIMEDIA, which is required by amaroK."
-    echo "Please install the packages KDEMULTIMEDIA and KDEMULTIMEDIA-DEVEL."
-    
-    no_amarok=yes
-fi
-
-
 if test x$amarok_error_notaglib = xyes ; then
     echo ""
     echo "You are missing TagLib, which is required by amaroK.  You can find TagLib at"
@@ -27,8 +18,24 @@ fi
 
 if test x$no_amarok = xyes; then
     echo ""
-    echo "AMAROK WILL NOT BE BUILT. THERE ARE MISSING DEPENDENCIES."
+    echo "AMAROK WILL NOT BE BUILT."
+    echo "REASON:"
+    echo "THERE ARE MISSING DEPENDENCIES."
     echo "PLEASE INSTALL THE MISSING PACKAGES FIRST!"
 fi
 
 
+if test x$have_kdemm = xno; then
+    if test x$have_gst = xno; then
+        if test x$have_nmm = xno; then
+            DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
+            echo ""
+            echo "AMAROK WILL NOT BE BUILT."
+            echo "REASON:"
+            echo "NO SUITABLE MULTIMEDIA FRAMEWORK WAS DETECTED."
+            echo "CANNOT COMPILE AMAROK WITHOUT AN AUDIO ENGINE."
+        fi
+    fi
+fi
+    
+  

@@ -28,7 +28,6 @@ email                : markey@web.de
 #include "qstringlist.h"
 
 
-
 bool EngineBase::m_restoreEffects;
 
 
@@ -93,8 +92,10 @@ EngineBase* EngineBase::createEngine( QString system, bool& restart, int scopeSi
     //TODO capitalise the engine names in the right places, this causes an issue with the configdialog engine
     //selector however
 
+#ifdef HAVE_ARTS
     if ( system == "arts" )
         return new ArtsEngine( restart, scopeSize );
+#endif
 
 #ifdef HAVE_GSTREAMER
     if ( system == "gstreamer" )
@@ -106,8 +107,7 @@ EngineBase* EngineBase::createEngine( QString system, bool& restart, int scopeSi
         return new NmmEngine();
 #endif
 
-    //fallthru, needs fixing when we stop depending on aRts
-    return new ArtsEngine( restart, scopeSize );
+    return 0;
 }
 
 
@@ -115,7 +115,9 @@ QStringList EngineBase::listEngines()
 {
     QStringList list;
 
+#ifdef HAVE_ARTS
     list.append( "arts" );
+#endif
 
 #ifdef HAVE_GSTREAMER
     list.append( "gstreamer" );

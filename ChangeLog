@@ -2,6 +2,9 @@ amaroK ChangeLog
 ================
 (c) 2002-2004 the amaroK authors.
 
+
+  * chg: made amaroK aRts-independent. with the --without-arts configure switch
+         it's possible to build the app without aRts support, using only NMM or GST
   * add: Shift drag appends items to the end of the playlist.
   * fix: startup notification icon staying on screen when amaroK started by loader
   * fix: amaroK showing the "X" icon instead of the correct one

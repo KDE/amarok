@@ -15,6 +15,9 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
+#include <config.h>
+#ifdef HAVE_ARTS
+
 #ifndef AMAROK_ARTSENGINE_H
 #define AMAROK_ARTSENGINE_H
 
@@ -134,5 +137,6 @@ class ArtsEngine : public EngineBase
         QTimer*                                  m_pConnectTimer;
 };
 
-
 #endif
+
+#endif /*HAVE_ARTS*/

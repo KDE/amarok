@@ -15,11 +15,11 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
-#ifndef AMAROK_GSTENGINE_H
-#define AMAROK_GSTENGINE_H
-
 #include <config.h>
 #ifdef HAVE_GSTREAMER
+
+#ifndef AMAROK_GSTENGINE_H
+#define AMAROK_GSTENGINE_H
 
 #include "enginebase.h"
 
@@ -92,5 +92,7 @@ class GstEngine : public EngineBase
 
 static GstEngine* pGstEngine;
 
-#endif /*HAVE_GSTREAMER*/
 #endif /*AMAROK_GSTENGINE_H*/
+
+#endif /*HAVE_GSTREAMER*/
+
