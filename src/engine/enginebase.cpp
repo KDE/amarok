@@ -29,6 +29,8 @@ email                : markey@web.de
 
 EngineBase::EngineBase()
     : amaroK::Plugin()
+    , m_mixerHW( -1 )
+    , m_defaultSoundDevice( true )
 {}
 
 
@@ -88,7 +90,7 @@ void EngineBase::setXfadeLength( int ms )
 void EngineBase::setSoundOutput( const QString& output )
 {
     kdDebug() << "Setting sound output to: " << output << endl;
-    
+
     m_soundOutput = output;
 }
 
