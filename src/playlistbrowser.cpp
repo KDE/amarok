@@ -28,7 +28,6 @@
 #include <kactioncollection.h>
 #include <kapplication.h>
 #include <kio/job.h>           //deleteSelectedPlaylists()
-#include <kio/netaccess.h>
 #include <kdebug.h>
 #include <kfiledialog.h>       //openPlaylist()
 #include <kiconloader.h>       //smallIcon
@@ -133,6 +132,11 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     // Load the playlists stats cache
     loadPlaylists();
+
+    // Add default streams playlist as the next item under "Current Playlist"
+    lastPlaylist = static_cast<PlaylistBrowserItem*>( m_listview->firstChild() );
+    addPlaylist( locate( "data","amarok/data/Cool-Streams.m3u" ) );
+    lastPlaylist = static_cast<PlaylistBrowserItem*>( m_listview->lastItem() );
 }
 
 
@@ -224,22 +228,6 @@ void PlaylistBrowser::loadPlaylists()
 
             }
         }
-    }
-    else {  // couldn't open playlist cache, so assume first run: make user-copy of Cool-Streams.m3u and load it
-        KURL src;
-        src.setPath( locate( "data","amarok/data/Cool-Streams.m3u" ) );
-
-        // we used to use a playlists file, this conflicts with our new system
-        const QString folder = amaroK::saveLocation() + "playlists";
-        if ( !QFileInfo( folder ).isDir() )
-            QFile::remove( folder );
-
-        KURL destination;
-        destination.setPath( amaroK::saveLocation( "playlists/" ) + "Cool-Streams.m3u" );
-
-        if( src.hasPath() && destination.hasPath() )
-            if ( KIO::NetAccess::file_copy( src, destination ) )
-                addPlaylist( destination.path() );
     }
 }
 
