@@ -1365,6 +1365,7 @@ QueryBuilder::linkTables( int tables )
     if ( tables & tabArtist ) m_tables += ",artist";
     if ( tables & tabGenre ) m_tables += ",genre";
     if ( tables & tabYear ) m_tables += ",year";
+    if ( tables & tabStats ) m_tables += ",statistics";
 
     // when there are multiple tables involved, we always need table tags for linking them
     m_tables = m_tables.mid( 1 );
@@ -1377,6 +1378,7 @@ QueryBuilder::linkTables( int tables )
         if ( tables & tabArtist ) m_where += "AND artist.id=tags.artist ";
         if ( tables & tabGenre ) m_where += "AND genre.id=tags.genre ";
         if ( tables & tabYear ) m_where += "AND year.id=tags.year ";
+        if ( tables & tabStats ) m_where += "AND statistics.url=tags.url ";
     }
 }
 
@@ -1385,18 +1387,23 @@ void
 QueryBuilder::addReturnValue( int table, int value )
 {
     if ( !m_values.isEmpty() && m_values != "DISTINCT " ) m_values += ",";
-
+    if ( table & tabStats && value & valScore ) m_values += "round(";
+    
     if ( table & tabAlbum ) m_values += "album.";
     if ( table & tabArtist ) m_values += "artist.";
     if ( table & tabGenre ) m_values += "genre.";
     if ( table & tabYear ) m_values += "year.";
     if ( table & tabSong ) m_values += "tags.";
+    if ( table & tabStats ) m_values += "statistics.";
 
     if ( value & valID ) m_values += "id";
     if ( value & valName ) m_values += "name";
     if ( value & valURL ) m_values += "url";
     if ( value & valTitle ) m_values += "title";
     if ( value & valTrack ) m_values += "track";
+    if ( value & valScore ) m_values += "percentage";
+
+    if ( table & tabStats && value & valScore ) m_values += " + 0.4 )";
 
     m_linkTables |= table;
     m_returnValues++;
@@ -1447,6 +1454,37 @@ QueryBuilder::addMatch( int tables, const QString& match )
             if ( tables & tabGenre ) m_where += "OR genre.name = '' ";
             if ( tables & tabYear ) m_where += "OR year.name = '' ";
         }
+        m_where += " ) ";
+    }
+
+    m_linkTables |= tables;
+}
+
+
+void
+QueryBuilder::addMatches( int tables, const QStringList& match )
+{
+    if ( !match.isEmpty() )
+    {
+        m_where += "AND ( 0 ";
+        
+        for ( uint i = 0; i < match.count(); i++ )
+        {
+            if ( tables & tabAlbum ) m_where += "OR album.name LIKE '" + m_db.escapeString( match[i] ) + "' ";
+            if ( tables & tabArtist ) m_where += "OR artist.name LIKE '" + m_db.escapeString( match[i] ) + "' ";
+            if ( tables & tabGenre ) m_where += "OR genre.name LIKE '" + m_db.escapeString( match[i] ) + "' ";
+            if ( tables & tabYear ) m_where += "OR year.name LIKE '" + m_db.escapeString( match[i] ) + "' ";
+            if ( tables & tabSong ) m_where += "OR tags.title LIKE '" + m_db.escapeString( match[i] ) + "' ";
+
+            if ( match[i] == i18n( "Unknown" ) )
+            {
+                if ( tables & tabAlbum ) m_where += "OR album.name = '' ";
+                if ( tables & tabArtist ) m_where += "OR artist.name = '' ";
+                if ( tables & tabGenre ) m_where += "OR genre.name = '' ";
+                if ( tables & tabYear ) m_where += "OR year.name = '' ";
+            }
+        }
+
         m_where += " ) ";
     }
 
@@ -1507,15 +1545,22 @@ QueryBuilder::setOptions( int options )
     if ( options & optNoCompilations ) m_where += "AND tags.sampler = 0 ";
     if ( options & optOnlyCompilations ) m_where += "AND tags.sampler = 1 ";
     if ( options & optRemoveDuplicates ) m_values = "DISTINCT " + m_values;
+
+    if ( options & optRandomize ) m_sort =
+    #ifdef USE_MYSQL
+                                       "RAND() ";
+    #else
+                                       "random() ";
+    #endif
 }
 
 
 void
-QueryBuilder::sortBy( int table, int value )
+QueryBuilder::sortBy( int table, int value, bool descending )
 {
     //shall we sort case-sensitively? (not for integer columns!)
     bool b = true;
-    if ( value & valID || value & valTrack ) b = false;
+    if ( value & valID || value & valTrack || value & valScore ) b = false;
 
     if ( !m_sort.isEmpty() ) m_sort += ",";
     if ( b ) m_sort += "LOWER( ";
@@ -1525,14 +1570,17 @@ QueryBuilder::sortBy( int table, int value )
     if ( table & tabGenre ) m_sort += "genre.";
     if ( table & tabYear ) m_sort += "year.";
     if ( table & tabSong ) m_sort += "tags.";
+    if ( table & tabStats ) m_sort += "statistics.";
 
     if ( value & valID ) m_sort += "id";
     if ( value & valName ) m_sort += "name";
     if ( value & valURL ) m_sort += "url";
     if ( value & valTitle ) m_sort += "title";
     if ( value & valTrack ) m_sort += "track";
+    if ( value & valScore ) m_sort += "percentage";
 
     if ( b ) m_sort += " ) ";
+    if ( descending ) m_sort += " DESC ";
 }
 
 

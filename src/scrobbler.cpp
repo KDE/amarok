@@ -75,7 +75,7 @@ Scrobbler::audioScrobblerRelatedArtistResult( KIO::Job* job ) //SLOT
 
     while ( m_buffer.find( "<small>[<a href=\"/similar/" ) )
     {
-        if ( x++ > 10 ) break;
+        if ( x++ > 15 ) break;
 
         m_buffer = m_buffer.mid( m_buffer.find( "<small>[<a href=\"/similar/" ) );
 

@@ -432,7 +432,7 @@ void ContextBrowser::showHome() //SLOT
         browser->write(
             "<tr>"
              "<td class='song'>"
-              "<a href='file:" + fave[i+1].replace( '"', QCString("%22") ) + "'>"
+              "<a href='file:" + fave[i+1].replace( '"', QCString( "%22" ) ) + "'>"
                "<b>" + fave[i] + "</b> "
                "(" + i18n("Score: %1").arg( fave[i+2] ) + ")<br>" +
                fave[i+3] + " - " + fave[i+4] +
@@ -465,7 +465,7 @@ void ContextBrowser::showHome() //SLOT
         browser->write(
             "<tr>"
              "<td class='song'>"
-              "<a href='file:" + recent[i+1].replace( '"', QCString("%22") ) + "'>"
+              "<a href='file:" + recent[i+1].replace( '"', QCString( "%22" ) ) + "'>"
                "<b>" + recent[i] + "</b><br>" +
                recent[i+2] + " - " + recent[i+3] +
               "</a>"
@@ -645,51 +645,72 @@ void ContextBrowser::showCurrentTrack() //SLOT
         browser->write( "&nbsp;<a class='warning' href='show:collectionSetup'>" + i18n( "Click here to change your Collection setup" ) + "</a>.</div>" );
     }
 
-    // scrobblaaaaaar
+    // retrieve suggested songs
     if ( m_relatedArtists.isEmpty() )
         m_scrobbler->relatedArtists( currentTrack.artist() );
     else {
         QString token;
+        QueryBuilder qb;
 
-        for ( uint i = 0; i < m_relatedArtists.count(); i++ ) {
-            if ( i > 0 )
-                token += " OR ";
-            token += " artist.name = '" + m_db->escapeString( m_relatedArtists[i] ) + "' ";
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
+        qb.addMatches( QueryBuilder::tabArtist, m_relatedArtists );
+        qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valScore, true );
+        qb.setLimit( 0, 5 );
+        values = qb.run();
+        
+        // not enough items returned, let's fill the list with score-less tracks
+        if ( values.count() < 5 * qb.countReturnValues() )
+        {
+            qb.clear();
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+            qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+            qb.addMatches( QueryBuilder::tabArtist, m_relatedArtists );
+            qb.setOptions( QueryBuilder::optRandomize );
+            qb.setLimit( 0, 5 - values.count() / 4 );
+
+            QStringList sl;
+            sl = qb.run();
+            for ( uint i = 0; i < sl.count(); i += qb.countReturnValues() )
+            {
+                values << sl[i];
+                values << sl[i + 1];
+                values << sl[i + 2];
+                values << "0";
+            }
         }
-
-        values = m_db->query( QString( "SELECT tags.title, tags.url, artist.name "
-                                       "FROM tags, artist "
-                                       "WHERE tags.artist = artist.id AND ( %1 ) "
-#ifdef USE_MYSQL
-                                       "ORDER BY RAND() "
-#else
-                                       "ORDER BY random() "
-#endif
-                                       "LIMIT 0,5;" )
-                              .arg( token ) );
 
         if ( !values.isEmpty() ) {
             browser->write(
                 "<br>"
                  "<div class='rbcontent'>"
                   "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-                   "<tr><th>" + i18n("Suggested Songs") + "</th></tr>"
+                   "<tr><th>" + i18n( "Suggested Songs" ) + "</th></tr>"
                   "</table>"
                   "<table width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
-            for ( uint i = 0; i < values.count(); i += 3 )
+                  
+            for ( uint i = 0; i < values.count(); i += 4 )
                 browser->write(
-                   "<tr>"
-                    "<td class=\"song\">"
-                     "<a href=\"file:" + values[i + 1].replace( '"', QCString("%22") ) + "\">" +
-                      values[i + 2] + " - " + values[i] +
-                     "</a>"
-                    "</td>"
-                   "</tr>" );
-
+                  "<tr>"
+                  "<td class='song'>"
+                    "<a href='file:" + values[i].replace( '"', QCString( "%22" ) ) + "'>" + values[i + 2] + " - " + values[i + 1] +
+                    "</a>"
+                  "</td>"
+                  "<td class='sbtext' width='1'>" + values[i + 3] + "</td>"
+                  "<td width='1' title='Score'>"
+                    "<div class='sbouter'>"
+                    "<div class='sbinner' style='width: " + QString::number( values[i + 3].toInt() / 2 ) + "px;'></div>"
+                    "</div>"
+                  "</td>"
+                  "</tr>" );
+    
             browser->write(
-                  "</table>"
-                 "</div>" );
+                "</table>"
+                "</div>" );
         }
     }
 
@@ -715,7 +736,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             browser->write(
               "<tr>"
                "<td class='song'>"
-                "<a href='file:" + values[i + 1].replace( '"', QCString("%22") ) + "'>" + values[i] +
+                "<a href='file:" + values[i + 1].replace( '"', QCString( "%22" ) ) + "'>" + values[i] +
                 "</a>"
                "</td>"
                "<td class='sbtext' width='1'>" + values[i + 2] + "</td>"
