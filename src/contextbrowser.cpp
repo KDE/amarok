@@ -17,8 +17,10 @@
 #include "qstringx.h"
 
 #include <qdatetime.h>
+#include <qfile.h> // External CSS opening
 #include <qimage.h>
 #include <qregexp.h>
+#include <qtextstream.h>  // External CSS reading
 
 #include <kapplication.h> //kapp
 #include <kdebug.h>
@@ -951,6 +953,7 @@ void ContextBrowser::setStyleSheet()
             setStyleSheet_Gradient1( m_styleSheet );
             break;
         case AmarokConfig::EnumContextBrowserStyleSheet::OtherStyle:
+            setStyleSheet_OtherStyle( m_styleSheet );
             break;
     };
 
@@ -1031,6 +1034,35 @@ void ContextBrowser::setStyleSheet_Gradient1( QString& styleSheet )
     //style: apply gradients
     styleSheet += QString( ".box-header { background-image: url( %1 ); background-repeat: repeat-x; }" ).arg( m_headerGradientImage->name() );
     styleSheet += QString( ".box-body { background-image: url( %2 ); background-repeat: repeat-x; }" ).arg( m_shadowGradientImage->name() );
+}
+
+void ContextBrowser::setStyleSheet_OtherStyle( QString& styleSheet )
+{
+    // "INHERIT" Flat style
+    setStyleSheet_Flat( styleSheet );
+
+    //colorscheme/font dependant parameters
+    QString pxSize = QString::number( fontMetrics().height() - 4 );
+    QString text = colorGroup().text().name();
+    QString fg   = colorGroup().highlightedText().name();
+    QString bg   = colorGroup().highlight().name();
+    
+    QString CSSLocation = KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "styles/default/"; 
+    
+    QFile ExternalCSS( CSSLocation + "stylesheet.css" );
+    if ( !ExternalCSS.open( IO_ReadOnly ) )
+        return;
+
+    QTextStream eCSSts( &ExternalCSS );
+    QString tmpCSS = eCSSts.read();
+    ExternalCSS.close();
+    
+    tmpCSS.replace( "./images/", CSSLocation + "images/" );
+    tmpCSS.replace( "AMAROK_FONTSIZE", pxSize );
+    tmpCSS.replace( "AMAROK_TEXTCOLOR", text );
+    tmpCSS.replace( "AMAROK_BGCOLOR", bg );
+    tmpCSS.replace( "AMAROK_FGCOLOR", fg );
+    styleSheet += tmpCSS;
 }
 
 void ContextBrowser::showIntroduction()
