@@ -91,10 +91,10 @@ Menu::Menu()
 
     insertSeparator();
 
-    insertItem( i18n( "&Scripts..." ), ID_SHOW_SCRIPT_SELECTOR );
-    insertItem( i18n( "&JavaScript Console" ), ID_SHOW_SCRIPT_CONSOLE );
-
-    insertSeparator();
+//     insertItem( i18n( "&Scripts..." ), ID_SHOW_SCRIPT_SELECTOR );
+//     insertItem( i18n( "&JavaScript Console" ), ID_SHOW_SCRIPT_CONSOLE );
+//
+//     insertSeparator();
 
     insertItem( i18n( "First-run Wizard" ), ID_SHOW_WIZARD );
 
