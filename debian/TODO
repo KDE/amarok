@@ -1,2 +1,0 @@
-- link dynamically against sqlite once 3.0 enters Debian (#272271).
-- do something wrt --disable-maintainer-mode.

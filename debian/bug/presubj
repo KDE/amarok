@@ -1,0 +1,16 @@
+About these amaroK packages
+===========================
+
+    You're using an experimental version of amaroK, which I packaged
+    into deb for the sole benefit of users preferring not to compile
+    themselves.
+
+    This version is not in the Debian archive, so please do not report
+    bugs to the Debian BTS. Instead, I kindly request that you directly
+    submit your bugs for this version to the upstream Bugzilla:
+
+	    http://bugs.kde.org
+
+    Thanks.
+
+ -- Adeodato Simó <asp16@alu.ua.es>

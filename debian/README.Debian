@@ -6,6 +6,10 @@ amaroK packages for Debian
     - if you want amarok to be able to play CDs, you need to install the
       kdemultimedia-kio-plugins package.
 
+    - the scripts available in the 'Scripts' menu need that you install
+      some other packages for them to work. Those packages are listed in
+      the Suggest: field of the amarok package.
+
     - these Debian packages ship the amarokapp and amarok_xmmswrapper2
       binaries in /usr/lib/amarok instead of /usr/bin, which upstream
       does. This is done to comply with Debian Policy, which mandates

@@ -1,0 +1,18 @@
+Index: cvs/src/streamprovider.h
+===================================================================
+RCS file: /home/kde/kdeextragear-1/amarok/src/streamprovider.h,v
+retrieving revision 1.31
+retrieving revision 1.32
+diff -u -p -r1.31 -r1.32
+--- a/amarok/src/streamprovider.h    25 Feb 2005 09:23:55 -0000      1.31
++++ b/amarok/src/streamprovider.h    4 Mar 2005 06:58:21 -0000       1.32
+@@ -134,7 +134,7 @@ namespace amaroK {
+
+         public:
+             StreamProxy( Q_UINT16 port, QObject* parent )
+-                : QServerSocket( port, 1, parent ) {};
++                : QServerSocket( 0x7f000001 /* 127.0.0.1 */, port, 1, parent ) {};
+
+         signals:
+             void connected( int socket );
+

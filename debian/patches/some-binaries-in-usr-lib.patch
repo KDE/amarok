@@ -1,0 +1,39 @@
+--- a/amarok/src/loader/loader.cpp
++++ b/amarok/src/loader/loader.cpp
+@@ -66,7 +66,7 @@
+                     // this argument cannot be passed to the running amarokapp
+                     // or KCmdLineArgs would exit the application
+ 
+-                    QProcess proc( QString("amarokapp") );
++                    QProcess proc( QString("/usr/lib/amarok/amarokapp") );
+                     proc.setCommunication( 0 ); //show everything
+                     proc.addArgument( arg );
+                     proc.start();
+@@ -141,7 +141,7 @@
+      if( !QApplication::isSessionRestored() && isSplashEnabled() )
+         m_splash = new Splash;
+ 
+-    args.prepend( "amarokapp" );
++    args.prepend( "/usr/lib/amarok/amarokapp" );
+ 
+     m_proc = new QProcess( args, this );
+     m_proc->setCommunication( QProcess::Stdout );
+--- a/amarok/src/socketserver.cpp
++++ b/amarok/src/socketserver.cpp
+@@ -169,14 +169,14 @@
+ 
+     //can I get a pointer to the data section of a QCString?
+     char str[4096];
+-    FILE *vis = popen( "amarok_xmmswrapper2 --list", "r" );
++    FILE *vis = popen( "/usr/lib/amarok/amarok_xmmswrapper2 --list", "r" );
+     str[ fread( (void*)str, sizeof(char), 4096, vis ) ] = '\0';
+     pclose( vis );
+ 
+     QStringList entries = QStringList::split( '\n', QString::fromLocal8Bit( str ) );
+ 
+     for( QStringList::ConstIterator it = entries.begin(); it != entries.end(); ++it )
+-        new Item( this, "amarok_xmmswrapper2", *it, "xmms" );
++        new Item( this, "/usr/lib/amarok/amarok_xmmswrapper2", *it, "xmms" );
+ 
+     vis = popen( "amarok_libvisual --list", "r" );
+     str[ fread( (void*)str, sizeof(char), 4096, vis ) ] = '\0';

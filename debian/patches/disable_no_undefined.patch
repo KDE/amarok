@@ -1,0 +1,18 @@
+--- a/admin/acinclude.m4.in
++++ b/admin/acinclude.m4.in
+@@ -1665,15 +1665,6 @@
+        KDE_USE_CLOSURE_TRUE="#"
+        KDE_USE_CLOSURE_FALSE=""
+        KDE_NO_UNDEFINED=""
+-       case $host in 
+-         *-*-linux-gnu)
+-           KDE_CHECK_COMPILER_FLAG([Wl,--no-undefined],
+-                [KDE_CHECK_COMPILER_FLAG([Wl,--allow-shlib-undefined],
+-		[KDE_NO_UNDEFINED="-Wl,--no-undefined -Wl,--allow-shlib-undefined"],
+-		[KDE_NO_UNDEFINED=""])],
+-	    [KDE_NO_UNDEFINED=""])
+-           ;;
+-       esac
+   fi
+   AC_SUBST(KDE_USE_CLOSURE_TRUE)
+   AC_SUBST(KDE_USE_CLOSURE_FALSE)
