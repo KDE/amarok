@@ -515,7 +515,9 @@ void CoverManager::updateCounter()
         text += i18n(" - ( <b>%3</b> without cover )" ).arg( missingCounter );
                 
     m_counterLabel->setText( text );
+    #ifdef AMAZON
     m_fetchButton->setEnabled( missingCounter != 0 );
+    #endif
 }
 
 
