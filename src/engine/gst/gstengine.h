@@ -88,6 +88,7 @@ class GstEngine : public EngineBase
         GstElement*                              m_thread;
         GstElement*                              m_audiosink;
         GstElement*                              m_spider;
+        GstElement*                              m_uadesrc;
         GstElement*                              m_filesrc;
         GstElement*                              m_identity;
         GstElement*                              m_volumeElement;

@@ -313,14 +313,6 @@ GstEngine::play( const KURL& url )  //SLOT
         gst_bin_add ( GST_BIN ( m_thread ), m_filesrc );
     }
 
-    //TODO HACK
-    if ( isUade ) {
-        m_spider = GST_ELEMENT( gst_uade_new() );
-        g_object_set( G_OBJECT( m_spider ), "location", (const char*) ( QFile::encodeName( url.path() ) ), NULL );
-    }
-    else
-        if ( !( m_spider = createElement( m_thread, "spider", "spider" ) ) ) { goto error; }
-
     if ( !( m_identity = createElement( m_thread, "identity", "rawscope" ) ) ) { goto error; }
     if ( !( m_volumeElement = createElement( m_thread, "volume", "volume" ) ) ) { goto error; }
     if ( !( m_audioconvert = createElement( m_thread, "audioconvert", "audioconvert" ) ) ) { goto error; }
@@ -330,8 +322,19 @@ GstEngine::play( const KURL& url )  //SLOT
     g_signal_connect( G_OBJECT( m_audiosink ), "eos", G_CALLBACK( eos_cb ), m_thread );
 //     g_signal_connect ( G_OBJECT( m_thread ), "error", G_CALLBACK ( error_cb ), m_thread );
 
+    //TODO HACK
+    if ( isUade ) {
+        m_uadesrc = GST_ELEMENT( gst_uade_new() );
+        gst_bin_add ( GST_BIN ( m_thread ), m_uadesrc );
+        g_object_set( G_OBJECT( m_uadesrc ), "location", (const char*) ( QFile::encodeName( url.path() ) ), NULL );
+        gst_element_link_many( m_uadesrc, m_identity, m_volumeElement, m_audioconvert, m_audioscale, m_audiosink, 0 );
+    }
+    else {
+        if ( !( m_spider = createElement( m_thread, "spider", "spider" ) ) ) { goto error; }
+        gst_element_link_many( m_filesrc, m_spider, m_identity, m_volumeElement, m_audioconvert, m_audioscale, m_audiosink, 0 );
+    }
+        
     /* link all elements */
-    gst_element_link_many( m_filesrc, m_spider, m_identity, m_volumeElement, m_audioconvert, m_audioscale, m_audiosink, 0 );
     gst_element_set_state( m_thread, GST_STATE_READY );
 
     m_pipelineFilled = true;

@@ -35,16 +35,9 @@ enum {
 
 GstElementDetails gst_uade_details =
     GST_ELEMENT_DETAILS ( ( gchar* ) "UADE",
-                          ( gchar* ) "Codec/Decoder/Audio",
+                          ( gchar* ) "Source",
                           ( gchar* ) "Module decoder based on UADE engine",
                           ( gchar* ) "Mark Kretschmann <markey@web.de>" );
-                          
-static GstStaticPadTemplate gstuade_src_template =
-    GST_STATIC_PAD_TEMPLATE ("gstuade_src",
-    GST_PAD_SRC,
-    GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ( "audio/x-raw-int" )
-    );
                           
 static guint gst_uade_signals[ LAST_SIGNAL ] = { 0 };
 
@@ -61,7 +54,7 @@ static void gst_uade_set_property ( GObject * object, guint prop_id,
 static void gst_uade_get_property ( GObject * object, guint prop_id,
                                     GValue * value, GParamSpec * pspec );
 
-static void gst_uade_chain ( GstPad*, GstData* );
+static GstData* gst_uade_get ( GstPad* );
 
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -127,7 +120,7 @@ void uade_exit( int code )
 static void
 gst_uade_base_init ( gpointer g_class )
 {
-    GstElementClass * gstelement_class = GST_ELEMENT_CLASS ( g_class );
+    GstElementClass* gstelement_class = GST_ELEMENT_CLASS ( g_class );
     gst_element_class_set_details ( gstelement_class, &gst_uade_details );
 }
 
@@ -165,11 +158,10 @@ gst_uade_class_init ( GstUadeClass * klass )
 static void
 gst_uade_init ( GstUade* gstuade )
 {
-//     gstuade->srcpad = gst_pad_new ( "sink", GST_PAD_SINK );
-    gstuade->srcpad = gst_pad_new_from_template (gst_static_pad_template_get (&gstuade_src_template), "src");
+    gstuade->srcpad = gst_pad_new ( "src", GST_PAD_SRC );
     
+    gst_pad_set_get_function ( gstuade->srcpad, gst_uade_get );
     gst_element_add_pad ( GST_ELEMENT ( gstuade ), gstuade->srcpad );
-    gst_pad_set_chain_function ( gstuade->srcpad, gst_uade_chain );
     
     gstuade->blocksize = DEFAULT_BLOCKSIZE;
     gstuade->timeout = 0;
@@ -285,41 +277,43 @@ gst_uade_get_property ( GObject * object, guint prop_id, GValue * value, GParamS
 }
 
 
-static GstElementStateReturn
-gst_uade_change_state ( GstElement * element )
+// static GstElementStateReturn
+// gst_uade_change_state ( GstElement * element )
+// {
+//     GstUade* gstuade = GST_GSTUADE ( element );
+// 
+//     switch ( GST_STATE_TRANSITION ( element ) ) {
+//             case GST_STATE_NULL_TO_READY:
+//             break;
+//             case GST_STATE_READY_TO_PAUSED:
+//             break;
+//             case GST_STATE_PAUSED_TO_PLAYING:
+//             break;
+//             case GST_STATE_PLAYING_TO_PAUSED:
+//             break;
+//             case GST_STATE_PAUSED_TO_READY:
+//             break;
+//             case GST_STATE_READY_TO_NULL:
+//             break;
+//             default:
+//             break;
+//     }
+// 
+//     if ( GST_ELEMENT_CLASS ( parent_class ) ->change_state )
+//         return GST_ELEMENT_CLASS ( parent_class ) ->change_state ( element );
+// 
+//     return GST_STATE_SUCCESS;
+// }
+
+
+static GstData*
+gst_uade_get ( GstPad* pad )
 {
-    GstUade* gstuade = GST_GSTUADE ( element );
-
-    switch ( GST_STATE_TRANSITION ( element ) ) {
-            case GST_STATE_NULL_TO_READY:
-            break;
-            case GST_STATE_READY_TO_PAUSED:
-            break;
-            case GST_STATE_PAUSED_TO_PLAYING:
-            break;
-            case GST_STATE_PLAYING_TO_PAUSED:
-            break;
-            case GST_STATE_PAUSED_TO_READY:
-            break;
-            case GST_STATE_READY_TO_NULL:
-            break;
-            default:
-            break;
-    }
-
-    if ( GST_ELEMENT_CLASS ( parent_class ) ->change_state )
-        return GST_ELEMENT_CLASS ( parent_class ) ->change_state ( element );
-
-    return GST_STATE_SUCCESS;
-}
-
-
-static void
-gst_uade_chain ( GstPad* pad, GstData* data )
-{
-   
-    GstUade* src = GST_GSTUADE ( gst_pad_get_parent( pad ) );
-    GstBuffer* buf = GST_BUFFER( data );
+    kdDebug() << k_funcinfo << endl;
+    
+    GstUade* src = GST_GSTUADE ( GST_OBJECT_PARENT ( pad ) );
+    GstBuffer* buf = gst_buffer_new_and_alloc( src->blocksize );
+    GstData* data = GST_DATA( buf );
     
     struct uade_msgstruct *uade_struct = src->uade_struct;
     int datainbuffer;
@@ -351,7 +345,7 @@ gst_uade_chain ( GstPad* pad, GstData* data )
     GST_BUFFER_SIZE ( buf ) = read_bytes;
     GST_BUFFER_TIMESTAMP ( buf ) = GST_CLOCK_TIME_NONE;
 
-    gst_pad_push ( src->srcpad, GST_DATA( buf ) );
+    return GST_DATA( buf );
 }
 
 
