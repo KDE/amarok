@@ -83,7 +83,6 @@ private:
 
     EngineBase *m_pEngine;
     MetaBundle m_bundle;
-    bool m_proxyError;
     QTimer *m_pMainTimer;
     long m_delayTime;
     int m_muteVolume;

@@ -29,6 +29,7 @@ email                : fh@ez.no
 
 #include <qtimer.h>
 
+using namespace amaroK;
 
 static
 class DummyEngine : public EngineBase
@@ -66,7 +67,6 @@ EngineController *EngineController::instance()
 
 EngineController::EngineController()
     : m_pEngine( &dummyEngine )
-    , m_proxyError( false )
     , m_pMainTimer( new QTimer( this ) )
     , m_delayTime( 0 )
     , m_muteVolume( 0 )
@@ -137,32 +137,32 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
     kdDebug() << "DETECTED MIMETYPE: " << mimetype << endl;
     
     const KURL &url = m_bundle.url();
-    const bool stream = mimetype.isEmpty() || mimetype == "text/html";               
+    const bool isStream = mimetype.isEmpty() || mimetype == "text/html";               
          
-    if ( stream &&
+    if ( isStream &&
          AmarokConfig::titleStreaming() &&
          m_pEngine->streamingMode() != EngineBase::NoStreaming )
     {
-        TitleProxy::Proxy* proxy = new TitleProxy::Proxy( url, m_pEngine->streamingMode() );
-        if ( !proxy->initSuccess() ) {
-            delete proxy;
+        StreamProvider* stream = new StreamProvider( url, m_pEngine->streamingMode() );
+        if ( !stream->initSuccess() ) {
+            delete stream;
             emit orderNext();
             return;
         }
         m_pEngine->stop(); //hack, prevents artsengine killing the proxy when stopped() is emitted
-        m_pEngine->play( proxy->proxyUrl(), stream );
+        m_pEngine->play( stream->proxyUrl(), isStream );
 
-        connect( proxy,     SIGNAL( metaData( const MetaBundle& ) ),
+        connect( stream,    SIGNAL( metaData( const MetaBundle& ) ),
                  this,        SLOT( newMetaData( const MetaBundle& ) ) );
-        connect( proxy,     SIGNAL( streamData( char*, int ) ),
+        connect( stream,    SIGNAL( streamData( char*, int ) ),
                  m_pEngine,   SLOT( newStreamData( char*, int ) ) );
-        connect( proxy,     SIGNAL( proxyError() ),
+        connect( stream,    SIGNAL( sigError() ),
                  this,      SIGNAL( orderNext() ) );
         connect( m_pEngine, SIGNAL( stopped() ),
-                 proxy,       SLOT( deleteLater() ) );
+                 stream,      SLOT( deleteLater() ) );
     }
     else
-        m_pEngine->play( url, stream );
+        m_pEngine->play( url, isStream );
 
     stateChangedNotify( EngineBase::Playing );
     newMetaDataNotify( m_bundle, true /* track change */ );

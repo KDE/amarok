@@ -27,32 +27,39 @@ email                :
 class QString;
 class MetaBundle;
 
-namespace TitleProxy
-{
+namespace amaroK {
     /**
-     * Proxy Concept:
-     * 1. Connect to streamserver
-     * 2. Listen on localhost, let aRts connect to proxyserver
-     * 3. Write GET request to streamserver, containing Icy-MetaData:1 token
-     * 4. Read MetaInt token from streamserver (==metadata offset)
+     * Stream radio handler. 
      *
-     * 5. Read stream data (mp3 + metadata) from streamserver
-     * 6. Filter out metadata, send to app
-     * 7. Write mp3 data to proxyserver
-     * 8. Goto 5
+     * Provider Concept:
+     * 1. Connect to streamserver
+     * 2. Write GET request to streamserver, containing Icy-MetaData:1 token
+     * 3. Read MetaInt token from streamserver (==metadata offset)
+     *
+     * 4. Read stream data (mp3 + metadata) from streamserver
+     * 5. Filter out metadata, send to app
+     * 6. Send stream data to application
+     * 7. Goto 4
      *
      * Some info on the shoutcast metadata protocol can be found at:
      * @see http://www.smackfu.com/stuff/programming/shoutcast.html
      *
-     * @short A proxy server for extracting metadata from Shoutcast streams.
+     * @short A class for handling Shoutcast streams and metadata.
      */
-
-    class Proxy : public QObject
+    class StreamProvider : public QObject
     {
             Q_OBJECT
         public:
-            Proxy( KURL url, int streamingMode );
-            ~Proxy();
+            /**
+             * Constructs a StreamProvider.
+             * @param url URL of stream server
+             * @param streamingMode The class has two modes of transferring stream data to the application:
+             *                      Signal: Transfer the data directly via Qt SIGNAL.
+             *                              (this mode is to be preferred).
+             *                      Socket: Sets up proxy server and writes the data to the proxy.
+             */
+            StreamProvider( KURL url, int streamingMode );
+            ~StreamProvider();
 
             bool initSuccess() { return m_initSuccess; }
             KURL proxyUrl();
@@ -60,7 +67,7 @@ namespace TitleProxy
         signals:
             void metaData( const MetaBundle& );
             void streamData( char*, int size );
-            void proxyError();
+            void sigError();
             
         private slots:
             void accept( int socket );
@@ -104,13 +111,16 @@ namespace TitleProxy
     };
 
 
-    class Server : public QServerSocket
+    /**
+     * Stream proxy server. 
+     */
+    class StreamProxy : public QServerSocket
     {
             Q_OBJECT
 
         public:
-            Server( Q_UINT16 port, QObject* parent )
-                    : QServerSocket( port, 1, parent ) {};
+            StreamProxy( Q_UINT16 port, QObject* parent )
+                : QServerSocket( port, 1, parent ) {};
 
         signals:
             void connected( int socket );
@@ -119,7 +129,7 @@ namespace TitleProxy
             void newConnection( int socket ) { emit connected( socket ); }
     };
 
-} //namespace TitleProxy
+} //namespace amaroK
 
 #endif /*AMAROK_TITLEPROXY_H*/
 

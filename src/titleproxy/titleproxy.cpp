@@ -27,14 +27,14 @@ email                : markey@web.de
 #include <qtimer.h>
 
 
-using namespace TitleProxy;
+using namespace amaroK;
 
 static const uint MIN_PROXYPORT = 6700;
 static const uint MAX_PROXYPORT = 7777;
 static const int BUFSIZE = 16384;
 
 
-Proxy::Proxy( KURL url, int streamingMode )
+StreamProvider::StreamProvider( KURL url, int streamingMode )
         : QObject()
         , m_url( url )
         , m_streamingMode( streamingMode )
@@ -58,9 +58,9 @@ Proxy::Proxy( KURL url, int streamingMode )
     
     if ( streamingMode == EngineBase::Socket ) {
         uint i;
-        Server* server;
+        StreamProxy* server;
         for ( i = MIN_PROXYPORT; i <= MAX_PROXYPORT; i++ ) {
-            server = new Server( i, this );
+            server = new StreamProxy( i, this );
             kdDebug() << k_funcinfo <<
             "Trying to bind to port: " << i << endl;
             if ( server->ok() )     // found a free port
@@ -80,7 +80,7 @@ Proxy::Proxy( KURL url, int streamingMode )
 }
 
 
-Proxy::~Proxy()
+StreamProvider::~StreamProvider()
 {
     kdDebug() << k_funcinfo << endl;
 
@@ -92,7 +92,8 @@ Proxy::~Proxy()
 // PUBLIC
 //////////////////////////////////////////////////////////////////////////////////////////
 
-KURL Proxy::proxyUrl()
+KURL
+StreamProvider::proxyUrl()
 {
     if ( m_initSuccess ) {
         KURL url;
@@ -110,7 +111,8 @@ KURL Proxy::proxyUrl()
 // PRIVATE SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void Proxy::accept( int socket ) //SLOT
+void 
+StreamProvider::accept( int socket ) //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     
@@ -121,7 +123,8 @@ void Proxy::accept( int socket ) //SLOT
 }
 
 
-void Proxy::connectToHost() //SLOT
+void 
+StreamProvider::connectToHost() //SLOT
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
@@ -140,7 +143,8 @@ void Proxy::connectToHost() //SLOT
 }
 
 
-void Proxy::sendRequest() //SLOT
+void 
+StreamProvider::sendRequest() //SLOT
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
                 
@@ -150,30 +154,31 @@ void Proxy::sendRequest() //SLOT
     bool auth = !( username.isEmpty() && password.isEmpty() );
                                 
     QString request = QString( "GET %1 HTTP/1.0\r\n"
-                                "Host: %2\r\n"
-                                "User-Agent: amaroK/1.1\r\n"
-                                "%3"
-                                "%4"
-                                "\r\n" )
-                                .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) )
-                                .arg( m_url.host() )
-                                .arg( m_icyMode ? "Icy-MetaData:1\r\n" : "" )
-                                .arg( auth ? "Authorization: Basic " + authString : "" ); 
+                               "Host: %2\r\n"
+                               "User-Agent: amaroK/1.1\r\n"
+                               "%3"
+                               "%4"
+                               "\r\n" )
+                               .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) )
+                               .arg( m_url.host() )
+                               .arg( m_icyMode ? "Icy-MetaData:1\r\n" : "" )
+                               .arg( auth ? "Authorization: Basic " + authString : "" ); 
 
-//     kdDebug() << "TitleProxy sending request:\n" << request << endl; 
+//     kdDebug() << "StreamProvider sending request:\n" << request << endl; 
     m_sockRemote.writeBlock( request.latin1(), request.length() );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
 
 
-void Proxy::readRemote() //SLOT
+void 
+StreamProvider::readRemote() //SLOT
 {
     m_connectSuccess = true;
     Q_LONG index = 0;
     Q_LONG bytesWrite = 0;
     Q_LONG bytesRead = m_sockRemote.readBlock( m_pBuf, BUFSIZE );
-    if ( bytesRead == -1 ) { emit proxyError(); return; }
+    if ( bytesRead == -1 ) { emit sigError(); return; }
 
     if ( !m_headerFinished )
         if ( !processHeader( index, bytesRead ) ) return;
@@ -186,7 +191,7 @@ void Proxy::readRemote() //SLOT
         }
         // Are we in a metadata interval?
         else if ( m_metaLen ) {
-            int length = ( m_metaLen > bytesRead - index ) ? ( bytesRead - index ) : ( m_metaLen );
+            uint length = ( m_metaLen > bytesRead - index ) ? ( bytesRead - index ) : ( m_metaLen );
             m_metaData.append( QString::fromAscii( m_pBuf + index, length ) );
             index += length;
             m_metaLen -= length;
@@ -217,12 +222,13 @@ void Proxy::readRemote() //SLOT
 }
 
 
-void Proxy::connectError() //SLOT
+void 
+StreamProvider::connectError() //SLOT
 {
     if ( !m_connectSuccess ) {
-        kdWarning() << "TitleProxy error: Unable to connect to this stream server. Can't play the stream!\n";
+        kdWarning() << "StreamProvider error: Unable to connect to this stream server. Can't play the stream!\n";
 
-        emit proxyError();
+        emit sigError();
         //Commit suicide
         deleteLater();
     }
@@ -233,7 +239,8 @@ void Proxy::connectError() //SLOT
 // PRIVATE
 //////////////////////////////////////////////////////////////////////////////////////////
 
-bool Proxy::processHeader( Q_LONG &index, Q_LONG bytesRead )
+bool 
+StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
 {
     kdDebug() << k_funcinfo << endl;
     
@@ -278,7 +285,8 @@ bool Proxy::processHeader( Q_LONG &index, Q_LONG bytesRead )
 }
 
 
-void Proxy::transmitData( const QString &data )
+void 
+StreamProvider::transmitData( const QString &data )
 {
     kdDebug() << k_funcinfo << " received new metadata: '" << data << "'" << endl;
 
@@ -298,9 +306,10 @@ void Proxy::transmitData( const QString &data )
 }
 
 
-void Proxy::error()
+void 
+StreamProvider::error()
 {
-    kdDebug() <<  "TitleProxy error: Stream does not support shoutcast metadata. "
+    kdDebug() <<  "StreamProvider error: Stream does not support shoutcast metadata. "
                   "Restarting in non-metadata mode.\n";
 
     m_sockRemote.close();
@@ -311,7 +320,8 @@ void Proxy::error()
 }
 
 
-QString Proxy::extractStr( const QString &str, const QString &key )
+QString 
+StreamProvider::extractStr( const QString &str, const QString &key )
 {
     int index = str.find( key, 0, true );
     if ( index == -1 ) {
