@@ -529,15 +529,13 @@ void PlaylistWidget::insertMediaInternal( const KURL::List &list, QListViewItem 
 
 void PlaylistWidget::activate( QListViewItem *item ) //SLOT
 {
-    kdDebug() << "[playlist] Requesting playback for: " << item->text( 0 ) << endl;
-
     //lets ask the engine to play something
-    if( item )
+    if( PlaylistItem* playItem = static_cast<PlaylistItem*>( item ) )
     {
-        #define item static_cast<PlaylistItem *>(item)
-        m_cachedTrack = item;
-        emit playRequest( item->metaBundle() );
-        #undef item
+        kdDebug() << "[playlist] Requesting playback for: " << item->text( 0 ) << endl;
+
+        m_cachedTrack = playItem;
+        emit playRequest( playItem->metaBundle() );
     }
 }
 
