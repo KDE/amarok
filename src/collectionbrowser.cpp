@@ -485,12 +485,13 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     if  ( item->depth() == 0 ) {
         QString command;
         if ( m_category2 == "None" ) {
+            QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
+
             command = QString
-                      ( "SELECT DISTINCT tags.title, tags.url FROM tags, %1 WHERE tags.%3=%4.id %5 ORDER BY track;" )
+                      ( "SELECT DISTINCT tags.title, tags.url FROM tags, %1 WHERE tags.%2=%3 %4 ORDER BY track;" )
                       .arg( m_category1.lower() )
                       .arg( m_category1.lower() )
-                      .arg( m_category1.lower() )
-                      .arg( m_category1.lower() )
+                      .arg( id )
                       .arg( filterToken );
         }
         else {
@@ -548,7 +549,6 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                           .arg( m_category1.lower() )
                           .arg( filterToken );
 
-           kdDebug() << command << endl;
         QStringList values;
         QStringList names;
         m_db->execSql( command, &values, &names );
@@ -706,7 +706,6 @@ CollectionView::listSelected() {
                               .arg( id )
                               .arg( filterToken );
 
-                    kdDebug() << command << endl;
             QStringList values;
             QStringList names;
             m_db->execSql( command, &values, &names );
