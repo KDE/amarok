@@ -135,6 +135,17 @@ void ContextBrowser::engineNewMetaData( const MetaBundle &bundle, bool /*trackCh
 }
 
 
+void ContextBrowser::engineStateChanged( EngineBase::EngineState state )
+{
+    switch( state ) {
+    case EngineBase::Empty:
+        showHome();
+    default:
+        break;
+    }
+}
+
+
 void ContextBrowser::paletteChange( const QPalette& pal )
 {
     kdDebug() << k_funcinfo << endl;
