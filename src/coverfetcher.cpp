@@ -42,14 +42,14 @@ CoverFetcher::~CoverFetcher()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
-CoverFetcher::getCover( const QString& artist, const QString& album, QueryMode mode, bool noedit, int size, bool albumonly )
+CoverFetcher::getCover( const QString& artist, const QString& album, const QString& saveas, QueryMode mode, bool noedit, int size, bool albumonly )
 {
     kdDebug() << k_funcinfo << endl;
     m_artist = artist;
     m_album = album;
     if ( artist == album ) m_keyword = album;
     else m_keyword = artist + " - " + album;
-    if ( !m_saveas ) m_saveas = artist + " - " + album;
+    m_saveas = saveas;
     m_noedit = noedit;
     m_size = size;
     m_albumonly = albumonly;
@@ -164,7 +164,7 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
         {
             if ( !m_albumonly )
             {
-                getCover( m_album, m_album, CoverFetcher::heavy, false, 1, true );
+                getCover( m_album, m_album, m_saveas, CoverFetcher::heavy, false, 1, true );
             }
             else
             {
@@ -184,22 +184,22 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
                 {
                     if ( m_albumonly )
                     {
-                        getCover( m_album, m_album, CoverFetcher::heavy, false, 1 );
+                        getCover( m_album, m_album, m_saveas, CoverFetcher::heavy, false, 1 );
                     }
                     else
                     {
-                        getCover( m_artist, m_album, CoverFetcher::heavy, false, 1 );
+                        getCover( m_artist, m_album, m_saveas, CoverFetcher::heavy, false, 1 );
                     }
                 }
                 else if ( m_size == 1 )
                 {
                     if ( m_albumonly )
                     {
-                        getCover( m_album, m_album, CoverFetcher::heavy, false, 0 );
+                        getCover( m_album, m_album, m_saveas, CoverFetcher::heavy, false, 0 );
                     }
                     else
                     {
-                        getCover( m_artist, m_album, CoverFetcher::heavy, false, 0 );
+                        getCover( m_artist, m_album, m_saveas, CoverFetcher::heavy, false, 0 );
                     }
                 }
                 else
@@ -252,7 +252,7 @@ CoverFetcher::editSearch() //SLOT
     if ( sdlg->exec() == QDialog::Accepted ) 
     {    
         m_album = sdlg->searchString->text();
-        getCover( m_album, m_album, CoverFetcher::heavy );
+        getCover( m_album, m_album, m_saveas, CoverFetcher::heavy );
         return;
     }
     else
