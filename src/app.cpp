@@ -638,7 +638,10 @@ void App::slotConfigEffects( bool show )
 {
     if( show )
     {
-        if( !EffectWidget::self )
+        if ( !EngineController::engine()->hasEffects() )
+            KMessageBox::sorry( 0, i18n( "Effects are not available with this engine." ) );
+        
+        else if( !EffectWidget::self )
         {
             //safe even if m_pPlayerWindow is 0
             connect( EffectWidget::self, SIGNAL(destroyed()), m_pPlayerWindow, SLOT(setEffectsWindowShown()) );
@@ -646,7 +649,8 @@ void App::slotConfigEffects( bool show )
         }
         else EffectWidget::self->raise();
     }
-    else delete EffectWidget::self; //will set self = 0 in its dtor
+    else
+        delete EffectWidget::self; //will set self = 0 in its dtor
 
     if( m_pPlayerWindow ) m_pPlayerWindow->setEffectsWindowShown( show );
 }
