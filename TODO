@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #94 being the highest available (take this one for your next bug and increase here)
+           #95 being the highest available (take this one for your next bug and increase here)
 
                         
 SHORT-TERM (URGENT):
@@ -24,6 +24,8 @@ SHORT-TERM (URGENT):
       
 MID-TERM:
   
+  ADD #94 <markey> Progress display for playlist reading, in statusbar.
+
   FIX #87 <muesli> don't rely on KDE timeouts to see whether a file is accessible or not,
       since this really sucks for disconnected network shares. XMMS handles
       this way better and it really is a problem in userland. maybe a thread
