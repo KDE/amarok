@@ -1,4 +1,5 @@
 INCLUDES = \
+    -I$(top_builddir)/amarok/src \
     -I$(top_srcdir)/amarok/src \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/plugin \
