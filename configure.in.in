@@ -222,19 +222,16 @@ if test "$build_nmm" != "no"; then
   echo "*****************************************************"
 
   CFLAGS_NMM="-I$nmm_cflags"
-  nmm_libs="-lnmmbase -lnmmaudio -lnmmmpegread -lnmmmpegaudiodec -lnmmfile -lnmmoggvorbis"
   AC_DEFINE(HAVE_NMM, 1, [have NMM])
 
 else
 
   #no warning, what's the point?
   CFLAGS_NMM=""
-  LIB_NMM=""
 
 fi
 
 AM_CONDITIONAL(with_nmm, test x$build_nmm = xyes)
-AC_SUBST(nmm_libs)
 AC_SUBST(CFLAGS_NMM)
 
 ###############################################################################
