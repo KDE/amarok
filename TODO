@@ -3,15 +3,11 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number, 
-           #14 being the highest available (take this one for your next bug and increase here)
+           #13 being the highest available (take this one for your next bug and increase here)
 
                       
 SHORT-TERM (URGENT):
 
-    * fix: #13 concerning drag'n'drop to playlist: playlist files (.m3u/.pls) should only get added to
-               playlist when you directly drag them, but not when they are in a subfolder, since it's
-               quite confusing when you add several dirs recursively, and forget about some playlist files
-    
     * fix: #12<markey> prevent zombie processes after amarok has exited (proper exit or crashing). 
               such zombies can lead to very weird behaviour on next amarok start and eat ressources,
               and the user has no chance of noticing what's wrong.
@@ -24,8 +20,6 @@ SHORT-TERM (URGENT):
     
     * reg: #9<berkus> file sorting is regressed. Should add in the same order as shown in 
              filebrowser, now doesn't sort until you press the column heading.
-
-    * fix: #8<markey> "report bug" uses "amarok" instead of "amaroK" as appname. does it make a diff?
 
     * fix: #7<mxcl> Still with KDE 3.2, the playlist doesn't raise/minimise/shade with the main
              widget. KWin handles this if playlist is WType_Dialog, but this has other problems.
