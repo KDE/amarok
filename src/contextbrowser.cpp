@@ -236,18 +236,19 @@ void ContextBrowser::engineNewMetaData( const MetaBundle &bundle, bool /*trackCh
     delete m_currentTrack;
     m_currentTrack = new MetaBundle( bundle );
 
-    if ( m_db->isEmpty() || !m_db->isDbValid() )
+/*    if ( m_db->isEmpty() || !m_db->isDbValid() )
         showIntroduction();
-    else if ( EngineController::instance()->isStream() )
+    if ( EngineController::instance()->isStream() )
         showCurrentStream();
-    else
-        showCurrentTrack();
+    else*/
+
 }
 
 
 void ContextBrowser::engineStateChanged( Engine::State state )
 {
-    if ( m_db->isEmpty() || !m_db->isDbValid() ) {
+    if ( m_db->isEmpty() || !m_db->isDbValid() )
+    {
         showIntroduction();
         return;
     }
@@ -257,6 +258,8 @@ void ContextBrowser::engineStateChanged( Engine::State state )
         case Engine::Playing:
             if ( EngineController::instance()->isStream() )
                 showCurrentStream();
+            else
+                showCurrentTrack();
             break;
         case Engine::Empty:
             showHome();
@@ -283,11 +286,6 @@ void ContextBrowser::paletteChange( const QPalette& pal )
 
 void ContextBrowser::showHome() //SLOT
 {
-    if ( m_db->isEmpty() || !m_db->isDbValid() ) {
-        showIntroduction();
-        return;
-    }
-
     QStringList values;
     QStringList names;
 
@@ -410,7 +408,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     m_db->execSql( QString( "SELECT album.name, artist.name, datetime( datetime( statistics.createdate, 'unixepoch' ), 'localtime' ), "
                             "datetime( datetime( statistics.accessdate, 'unixepoch' ), 'localtime' ), statistics.playcounter, round( statistics.percentage + 0.5 ) "
-                            "FROM album, tags, artist, statistics "
+                            "FROM tags, album, artist, statistics "
                             "WHERE album.id = tags.album AND artist.id = tags.artist AND statistics.url = tags.url AND tags.url = '%1';" )
                    .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names );
 
@@ -444,7 +442,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     else
     {
         m_db->execSql( QString( "SELECT album.name, artist.name "
-                                "FROM album, tags, artist "
+                                "FROM tags, album, artist "
                                 "WHERE album.id = tags.album AND artist.id = tags.artist AND tags.url = '%1';" )
                       .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names );
 
@@ -540,7 +538,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     // <Albums by this artist>
     m_db->execSql( QString( "SELECT DISTINCT album.name, artist.name, album.id, artist.id "
-                            "FROM album, tags, artist "
+                            "FROM tags, album, artist "
                             "WHERE album.id = tags.album AND tags.artist = artist.id AND album.name <> '' AND artist.name LIKE '%1' "
                             "ORDER BY album.name;" )
                    .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names );

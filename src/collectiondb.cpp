@@ -91,7 +91,8 @@ CollectionDB::escapeString( QString string )
 bool
 CollectionDB::isDbValid()
 {
-    if ( ( !execSql( "SELECT COUNT( url ) FROM tags;" ) ) || ( !execSql( "SELECT COUNT( url ) FROM statistics;" ) ) )
+    if ( ( !execSql( "SELECT COUNT( url ) FROM tags LIMIT 0, 1;", 0, 0, true ) ) ||
+         ( !execSql( "SELECT COUNT( url ) FROM statistics LIMIT 0, 1;", 0, 0, true ) ) )
         return false;
     else
         return true;
@@ -103,7 +104,7 @@ CollectionDB::isEmpty()
 {
     QStringList values;
 
-    if ( execSql( "SELECT COUNT( url ) FROM tags;", &values ) )
+    if ( execSql( "SELECT COUNT( url ) FROM tags LIMIT 0, 1;", &values, 0, true ) )
         return ( values[0] == "0" );
     else
         return true;
@@ -138,9 +139,10 @@ CollectionDB::getPathForAlbum( const QString artist, const QString album )
 {
     QStringList values;
 
-    execSql( QString( "SELECT tags.url FROM tags, album, artist WHERE tags.album = album.id AND album.name = '%1' AND tags.artist = artist.id AND artist.name = '%2';" )
+    execSql( QString( "SELECT tags.url FROM tags, album, artist WHERE tags.album = album.id AND album.name = '%1' AND tags.artist = artist.id AND artist.name = '%2' LIMIT 0, 1;" )
                    .arg( escapeString( album ) )
                    .arg( escapeString( artist ) ), &values );
+
     return values[0];
 }
 
@@ -150,7 +152,7 @@ CollectionDB::getPathForAlbum( const uint artist_id, const uint album_id )
 {
     QStringList values;
 
-    execSql( QString( "SELECT url FROM tags WHERE album = %1 AND artist = %2;" )
+    execSql( QString( "SELECT url FROM tags WHERE album = %1 AND artist = %2 LIMIT 0, 1;" )
              .arg( album_id )
              .arg( artist_id ), &values );
 
