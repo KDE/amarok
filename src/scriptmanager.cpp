@@ -195,7 +195,7 @@ ScriptManager::slotInstallScript()
     }
 
     QString destination = amaroK::saveLocation( "scripts/" );
-    const KArchiveDirectory* archiveDir = archive.directory();
+    const KArchiveDirectory* const archiveDir = archive.directory();
 
     // Prevent installing a script that's already installed
     const QString scriptFolder = destination + archiveDir->entries().first();
@@ -226,15 +226,15 @@ ScriptManager::slotInstallScript()
 void
 ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination )
 {
-    QStringList entries = archiveDir->entries();
+    const QStringList entries = archiveDir->entries();
 
-    QStringList::Iterator it;
+    QStringList::ConstIterator it;
     for ( it = entries.begin(); it != entries.end(); ++it ) {
         const QString entry = *it;
-        const KArchiveEntry* archEntry = archiveDir->entry( entry );
+        const KArchiveEntry* const archEntry = archiveDir->entry( entry );
 
         if ( archEntry->isDirectory() ) {
-            KArchiveDirectory* dir = (KArchiveDirectory*) archEntry;
+            KArchiveDirectory* const dir = (KArchiveDirectory*) archEntry;
             recurseInstall( dir, destination + entry + "/" );
         }
         else {
@@ -262,7 +262,7 @@ ScriptManager::slotUninstallScript()
     const QString directory = m_scripts[name].url.directory();
 
     // Delete directory recursively
-    KURL url = KURL::fromPathOrURL( directory );
+    const KURL url = KURL::fromPathOrURL( directory );
     if ( !KIO::NetAccess::del( url, 0 ) ) {
         KMessageBox::sorry( 0, i18n( "<p>Could not uninstall this script.</p><p>The ScriptManager can only uninstall scripts which have been installed as packages.</p>" ) );
         return;
@@ -302,10 +302,10 @@ ScriptManager::slotRunScript()
 {
     DEBUG_BLOCK
 
-    QListViewItem* li = m_base->listView->currentItem();
+    QListViewItem* const li = m_base->listView->currentItem();
     const QString name = li->text( 0 );
 
-    KURL url = m_scripts[name].url;
+    const KURL url = m_scripts[name].url;
     KProcIO* script = new KProcIO();
     script->setComm( KProcess::Stdin );
 
@@ -333,7 +333,7 @@ ScriptManager::slotStopScript()
 {
     DEBUG_BLOCK
 
-    QListViewItem* li = m_base->listView->currentItem();
+    QListViewItem* const li = m_base->listView->currentItem();
     const QString name = li->text( 0 );
 
     // Kill script process
@@ -424,7 +424,7 @@ ScriptManager::notifyScripts( const QString& message )
 
     ScriptMap::Iterator it;
     for ( it = m_scripts.begin(); it != m_scripts.end(); ++it ) {
-        KProcIO* proc = it.data().process;
+        KProcIO* const proc = it.data().process;
         if ( proc ) proc->writeStdin( message );
     }
 }
@@ -436,8 +436,7 @@ ScriptManager::loadScript( const QString& path )
     DEBUG_BLOCK
 
     if ( !path.isEmpty() ) {
-        KURL url;
-        url.setPath( path );
+        const KURL url = KURL::fromPathOrURL( path );
 
         KListViewItem* li = new KListViewItem( m_base->listView, url.fileName() );
         li->setPixmap( 0, SmallIcon( "stop" ) );
