@@ -59,6 +59,7 @@ class MyDirLister : public KDirLister
             return
                 item->isDir() ||
                 EngineController::canDecode( item->url().path() ) ||
+                item->url().protocol() == "audiocd" ||
                 PlaylistLoader::isPlaylist( item->url() );
         }
 };
