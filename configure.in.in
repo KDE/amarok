@@ -166,6 +166,7 @@ AM_CONDITIONAL(with_gst, [test x$have_gst = xyes])
 ###############################################################################
 
 
+
 ###############################################################################
 # BEGIN XINE CHECK
 ###############################################################################
@@ -220,6 +221,7 @@ AC_SUBST(LIBS_XINE)
 ###############################################################################
 # END XINE CHECK
 ###############################################################################
+
 
 
 ###############################################################################
@@ -392,7 +394,7 @@ AM_CONDITIONAL(with_xmmswrapper, test x$build_xmmswrapper = xyes )
 
 if test x$PKGCONFIGFOUND = xyes; then
 
-    PKG_CHECK_MODULES(LIBVISUAL, libvisual >= 0.1.6, [build_libvisual="yes"], [build_libvisual="no"])
+    KDE_PKG_CHECK_MODULES(LIBVISUAL, libvisual >= 0.1.6, [build_libvisual="yes"], [build_libvisual="no"])
 
     AC_SUBST(LIBVISUAL_LIBS)
     AC_SUBST(LIBVISUAL_CFLAGS)
