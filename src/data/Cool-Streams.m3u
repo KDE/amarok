@@ -1,19 +1,31 @@
 #EXTM3U
 
 #EXTINF:-1,Bassdrive [Drum 'n Base]
-http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=354239&file=filename.pls
+http://www.bassdrive.com/BassDrive.m3u
 
-#EXTINF:-1,Digitally Imported [House/Trance]
-http://shoutcast.com/sbin/shoutcast-playlist.pls?rn=374&file=filename.pls
+#EXTINF:-1,Digitally Imported - Classic Techno [Techno]
+http://www.digitallyimported.com/mp3/classictechno96k.pls
+
+#EXTINF:-1,Digitally Imported - Deep House [Deep House]
+http://www.digitallyimported.com/mp3/deephouse96k.pls
+
+#EXTINF:-1,Digitally Imported - Progressive [Progressive Techno]
+http://www.digitallyimported.com/mp3/progressive96k.pls
+
+#EXTINF:-1,Digitally Imported - Trance [Trance]
+http://www.digitallyimported.com/mp3/trance96k.pls
 
 #EXTINF:-1,Frequence 3 [Pop]
-http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=2565&file=filename.pls
+http://www.frequence3.com/stream/winamp_hautdebit.m3u
 
 #EXTINF:-1,Groove Salad [Chill-Out]
-http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=801&file=filename.pls
+http://www.somafm.com/groovesalad.pls
+
+#EXTINF:-1,Indie Pop Rocks [Indie]
+http://www.somafm.com/indiepop.pls
 
 #EXTINF:-1,Mostly Classical [Classical]
-http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=7264&file=filename.pls
+http://www.mostlyclassical.com/mp3/classical96k.pls
 
 #EXTINF:-1,mth.House [House]
 http://stream.mth-house.de:8500/listen.pls
@@ -22,13 +34,13 @@ http://stream.mth-house.de:8500/listen.pls
 http://shoutcast.com/sbin/shoutcast-playlist.pls?rn=1750&file=filename.pls
 
 #EXTINF:-1,Philosomatika [Goa]
-http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=9411&file=filename.pls
+http://philosomatika.com/Philosomatika.pls
 
 #EXTINF:-1,Proton Radio [Dance/Electronic]
 http://protonradio.com/proton.m3u
 
 #EXTINF:-1,Pure DJ [House]
-http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=833&file=filename.pls
+http://www.puredj.com/etc/pls/128K.pls
 
 #EXTINF:-1,Radio Paradise [Rock/Pop/Alternative]
 http://www.radioparadise.com/musiclinks/rp_128.m3u
