@@ -701,8 +701,18 @@ void PlayerWidget::createVis()
         goto firstcase;
     }
 
-    m_pVis->setFixedSize( 168, 80 );
-    m_pVis->move( 113, 20 );
+    // we special-case the DistortAnalyzer, since it needs more height. yes, this ugly.. I need whipping
+    if ( pApp->m_optVisCurrent == 1 )
+    {
+        m_pVis->setFixedSize( 168, 80 );
+        m_pVis->move( 113, 20 );
+    }
+    else
+    {        
+        m_pVis->setFixedSize( 168, 50 );
+        m_pVis->move( 113, 40 );
+    }
+                
 //    m_pLay6->addWidget( m_pVis );
     connect( m_pVis, SIGNAL( clicked() ), this, SLOT( createVis() ) );
 
