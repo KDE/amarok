@@ -61,13 +61,17 @@ CollectionBrowser::CollectionBrowser( const char* name )
     toolbar->setEnableContextMenu( false );
 
     { //<Search LineEdit>
-        QHBox *hbox; KToolBarButton *button;
+        KToolBarButton *button;
+        KToolBar* searchToolBar = new KToolBar( this );
+        searchToolBar->setMovingEnabled(false);
+        searchToolBar->setFlat(true);
+        searchToolBar->setIconSize( 16 );
+        searchToolBar->setEnableContextMenu( false );
 
-        hbox         = new QHBox( this );
-        button       = new KToolBarButton( "locationbar_erase", 0, hbox );
-        m_searchEdit = new ClickLineEdit( hbox, i18n( "Filter here..." ), "filter_edit" );
+        button       = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
+        m_searchEdit = new ClickLineEdit( searchToolBar, i18n( "Filter here..." ), "filter_edit" );
+        searchToolBar->setStretchableWidget( m_searchEdit );
 
-        hbox->setMargin( 1 );
         m_searchEdit->setFrame( QFrame::Sunken );
         connect( button, SIGNAL( clicked() ), m_searchEdit, SLOT( clear() ) );
 

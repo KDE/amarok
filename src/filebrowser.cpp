@@ -98,11 +98,16 @@ FileBrowser::FileBrowser( const char * name )
         currentLocation = QDir::homeDirPath();
 
     { //Search LineEdit
-        QHBox *hbox; KToolBarButton *button;
+        KToolBarButton *button;
+        KToolBar* searchToolBar = new KToolBar( this );
+        searchToolBar->setMovingEnabled(false);
+        searchToolBar->setFlat(true);
+        searchToolBar->setIconSize( 16 );
+        searchToolBar->setEnableContextMenu( false );
 
-        hbox         = new QHBox( this );
-        button       = new KToolBarButton( "locationbar_erase", 0, hbox );
-        m_filterEdit = new ClickLineEdit( hbox, i18n( "Filter here..." ), "filter_edit" );
+        button       = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
+        m_filterEdit = new ClickLineEdit( searchToolBar, i18n( "Filter here..." ), "filter_edit" );
+        searchToolBar->setStretchableWidget( m_filterEdit );
 
         connect( button, SIGNAL( clicked() ), m_filterEdit, SLOT( clear() ) );
 
