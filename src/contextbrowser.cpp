@@ -18,6 +18,7 @@
 #include "playlist.h"      //appendMedia()
 #include "qstringx.h"
 #include "statusbar.h"
+#include "tagdialog.h"
 #include "threadweaver.h"
 
 #include <qdatetime.h>
@@ -416,7 +417,7 @@ void ContextBrowser::tabChanged( QWidget *page )
 
 void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& point )
 {
-    enum { SHOW, FETCH, CUSTOM, DELETE, APPEND, ASNEXT, MAKE, MANAGER, TITLE };
+    enum { SHOW, FETCH, CUSTOM, DELETE, APPEND, ASNEXT, MAKE, INFO, MANAGER, TITLE };
 
     if( urlString.isEmpty() || urlString.startsWith( "musicbrainz" ) || urlString.startsWith( "lyricspage" ) )
         return;
@@ -457,6 +458,8 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue After Current Track" ), ASNEXT );
         menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
 
+        menu.insertSeparator();
+        menu.insertItem( SmallIconSet( "info" ), i18n( "&View/Edit Meta Information..." ), INFO );
 
         if ( url.protocol() == "album" )
         {
@@ -505,6 +508,17 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         Playlist::instance()->insertMedia( urls, Playlist::Queue );
         break;
 
+    case INFO:
+    {
+        if ( urls.count() > 1 ) {
+          TagDialog* dialog = new TagDialog( urls, instance() );
+          dialog->show();
+        } else if ( !urls.isEmpty() ) {
+            TagDialog* dialog = new TagDialog( urls.first() );
+            dialog->show();
+        }
+        break;
+    }
     case MAKE:
         Playlist::instance()->clear();
 
