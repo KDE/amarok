@@ -9,13 +9,15 @@
 
 #include <qheader.h>
 #include <qpainter.h>
+#include <qpoint.h>
 #include <qstring.h>
 #include <qstringlist.h>
-#include <qtextstream.h>    //loadSmartPlaylists()
+#include <qtextstream.h>    //loadCustomPlaylists()
 
-#include <kapplication.h>    //smartPlaylistsFile()
+#include <kapplication.h>    //customPlaylistsFile()
 #include <kiconloader.h>
 #include <klocale.h>
+#include <kpopupmenu.h>
 #include <kpushbutton.h>    //SmartPlaylistBox ctor
 #include <kstandarddirs.h>    //KGlobal::dirs()
 #include <kurldrag.h>         //dragObject()
@@ -58,6 +60,8 @@ SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
         connect( CollectionView::instance(), SIGNAL( sigScanDone() ), SLOT( collectionScanDone() ) );
 
     connect( this, SIGNAL( doubleClicked(QListViewItem*) ), SLOT( loadPlaylistSlot(QListViewItem*) ) );
+    connect( this, SIGNAL( rightButtonPressed( QListViewItem *, const QPoint &, int ) ),
+                     SLOT( showContextMenu( QListViewItem *, const QPoint &, int ) ) );
 }
 
 
@@ -116,8 +120,8 @@ void SmartPlaylistView::loadDefaultPlaylists()
     /********** All Collection **************/
     QString query = "SELECT tags.url "
                     "FROM tags, artist "
-                    "WHERE artist.id = tags.artist "
-                    "ORDER BY artist.name;";
+                    "WHERE tags.artist = artist.id "
+                    "ORDER BY artist.name, tags.title;";
     SmartPlaylist *item = new SmartPlaylist( this, 0, i18n("All Collection"), query, "kfm" );
     item->setKey( 1 );
 
@@ -166,7 +170,7 @@ void SmartPlaylistView::loadDefaultPlaylists()
     item->setKey( 4 );
     childItem = 0;
     for( uint i=0; i < artistList.count(); i++ ) {
-        query = QString( "SELECT url "
+        query = QString( "SELECT tags.url "
                          "FROM tags, artist "
                          "WHERE tags.artist = artist.id AND artist.name = '%1' "
                          "ORDER BY tags.createdate DESC "
@@ -183,9 +187,10 @@ void SmartPlaylistView::loadDefaultPlaylists()
     item->setKey( 5 );
 
     /********** Never Played **************/
-    query = "SELECT url "
-            "FROM tags "
-            "WHERE url NOT IN(SELECT url FROM statistics);";
+    query = "SELECT tags.url "
+            "FROM tags, artist "
+            "WHERE tags.url NOT IN(SELECT url FROM statistics) AND tags.artist = artist.id ";
+            "ORDER BY artist.name, tags.title;";
     item = new SmartPlaylist(this, 0, i18n("Never Played"), query );
     item->setKey( 6 );
 
@@ -198,14 +203,14 @@ void SmartPlaylistView::loadDefaultPlaylists()
     QStringList names;
 
     db->execSql( "SELECT DISTINCT name "
-                 "FROM genre "
-                 "ORDER BY name;", &values, &names );
+                          "FROM genre;", &values, &names );
 
     childItem = 0;
     for( uint i=0; i < values.count(); i++ ) {
-        query = QString("SELECT url "
-                        "FROM tags "
-                        "WHERE tags.genre = %1;" ).arg( db->getValueID( "genre", values[i], false ) );
+        query = QString("SELECT tags.url "
+                        "FROM tags, artist "
+                        "WHERE tags.genre = %1 AND tags.artist = artist.id "
+                        "ORDER BY artist.name, tags.title;" ).arg( db->getValueID( "genre", values[i], false ) );
         childItem = new SmartPlaylist( item, childItem, values[i], query );
     }
     values.clear();
@@ -304,6 +309,33 @@ void SmartPlaylistView::loadPlaylistSlot( QListViewItem *item ) //SLOT
 }
 
 
+void SmartPlaylistView::showContextMenu( QListViewItem *item, const QPoint &p, int ) //SLOT
+{
+    #define item static_cast<SmartPlaylist*>(item)
+
+    if( !item ) return;
+
+    if( item->isCustom() ) {
+        enum Id { EDIT, REMOVE };
+
+        KPopupMenu menu;
+        //menu.insertItem( i18n("Edit"), EDIT );
+        menu.insertItem( i18n("Remove"), REMOVE );
+
+        switch( menu.exec( p ) ) {
+            case EDIT:
+                break;
+
+            case REMOVE:
+                delete item;
+                break;
+        };
+    }
+
+    #undef item
+}
+
+
 void SmartPlaylistView::collectionScanDone() //SLOT
 {
     if( CollectionDB().isEmpty() ) {
@@ -345,7 +377,7 @@ SmartPlaylist::SmartPlaylist( SmartPlaylist *item, KListViewItem *after, QString
 QString SmartPlaylist::key( int column, bool ) const
 {
     //we want to show default playlists above the custom playlists
-    return ( m_custom ? text(column) : QString( "000000" + QString::number(m_key) ) );
+    return ( m_custom || parent() ? text(column) : QString( "000000" + QString::number(m_key) ) );
 }
 
 #include "smartplaylist.moc"

@@ -32,6 +32,7 @@
 #include <qlayout.h>
 #include <qobjectlist.h>   //setPaletteRecursively()
 #include <qpalette.h>      //setPalettes()
+#include <qtimer.h>    //search filter timer
 #include <qtooltip.h>      //QToolTip::add()
 #include <qvbox.h>         //contains the playlist
 
@@ -44,6 +45,7 @@
 #include <kiconloader.h>    //ClearFilter button
 #include <klineedit.h>      //m_lineEdit
 #include <klocale.h>
+#include <kpopupmenu.h>
 #include <kstandarddirs.h>    //Welcome Tab, locate welcome.html
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h>   //createGUI()
@@ -172,14 +174,33 @@ PlaylistWindow::init()
 
     { //<Search LineEdit>
         QHBox *box; KToolBarButton *button;
+        KToolBarButton *searchButton;
 
-        box        = new QHBox( m_browsers->container() );
-        button     = new KToolBarButton( "locationbar_erase", 0, box );
-        m_lineEdit = new KLineEdit( box );
+        box               = new QHBox( m_browsers->container() );
+        button           = new KToolBarButton( "locationbar_erase", 1, box );
+        m_lineEdit      = new KLineEdit( box );
+        searchButton = new KToolBarButton( SmallIcon("find"), 0, box);
 
         box->setMargin( 4 );
+
+        m_searchMenu = new KPopupMenu( searchButton );
+        m_searchMenu->insertItem( i18n("All"), 1000 );
+        m_searchMenu->insertSeparator();
+        m_searchMenu->insertItem( i18n("Title"), 1 );
+        m_searchMenu->insertItem( i18n("Artist"), 2);
+        m_searchMenu->insertItem( i18n("Album"), 3 );
+        m_searchMenu->insertItem( i18n("Genre"), 6 );
+        //set current search field to "All"
+        m_searchMenu->setItemChecked( 1000, true );
+        m_searchField = 1000;
+
+        connect( m_searchMenu, SIGNAL( activated(int) ), SLOT( setSearchField(int) ) );
+        searchButton->setPopup( m_searchMenu );
+
         m_lineEdit->setFrame( QFrame::Sunken );
         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
+
+        m_timer = new QTimer( this );
 
         connect( button, SIGNAL(clicked()), m_lineEdit, SLOT(clear()) );
 
@@ -226,8 +247,8 @@ PlaylistWindow::init()
              m_statusbar,  SLOT(slotItemCountChanged( int, int )) );
     connect( m_playlist, SIGNAL(aboutToClear()),
              m_lineEdit,   SLOT(clear()) );
-    connect( m_lineEdit, SIGNAL(textChanged( const QString& )),
-             m_playlist,   SLOT(slotTextChanged( const QString& )) );
+    connect( m_lineEdit, SIGNAL(textChanged( const QString& )), SLOT(slotSetFilterTimeout()) );
+    connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
 }
 
 
@@ -512,6 +533,30 @@ void PlaylistWindow::slotAddLocation() //SLOT
     dlg.exec();
 
     m_playlist->appendMedia( dlg.selectedURL() );
+}
+
+
+void PlaylistWindow::slotSetFilter()
+{
+    m_playlist->setSearchFilter( m_lineEdit->text(), m_searchField );
+}
+
+
+void PlaylistWindow::slotSetFilterTimeout() //SLOT
+{
+    if ( m_timer->isActive() ) m_timer->stop();
+    m_timer->start( 180, true );
+}
+
+
+void PlaylistWindow::setSearchField( int field )
+{
+    if( m_searchField == field ) return;
+
+    m_searchMenu->setItemChecked( m_searchField, false );
+    m_searchMenu->setItemChecked( field, true );
+    m_lineEdit->clear();
+    m_searchField = field;
 }
 
 

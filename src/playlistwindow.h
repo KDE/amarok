@@ -34,8 +34,10 @@ class BrowserBar;
 class ContextBrowser;
 class CollectionBrowser;
 class KLineEdit;
+class KPopupMenu;
 class KStatusBar;
 class Playlist;
+class QTimer;
 
 
 class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserver
@@ -65,6 +67,9 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
     private slots:
         void savePlaylist() const;
         void slotAddLocation();
+        void slotSetFilter();
+        void slotSetFilterTimeout();
+        void setSearchField( int );
 
     protected:
         virtual void closeEvent( QCloseEvent* );
@@ -75,10 +80,13 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
 
         BrowserBar *m_browsers;
         Playlist   *m_playlist;
+        KPopupMenu *m_searchMenu;
         KLineEdit  *m_lineEdit;
         KStatusBar *m_statusbar;
         ToolBar    *m_toolbar;
+        QTimer *m_timer;  //search filter timer
         int m_lastBrowser;
+        int m_searchField;
 
         static PlaylistWindow *s_instance;
 };

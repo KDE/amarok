@@ -1248,6 +1248,54 @@ Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
 void Playlist::undo() { switchState( m_undoList, m_redoList ); } //SLOT
 void Playlist::redo() { switchState( m_redoList, m_undoList ); } //SLOT
 
+
+void
+Playlist::setSearchFilter( const QString &query, int column ) //SLOT
+{
+    //TODO if we provided the lineEdit m_lastSearch would be unecessary
+
+    const QString loweredQuery = query.lower();
+    const QStringList terms = QStringList::split( ' ', loweredQuery );
+    PlaylistItem *item = 0;
+    MyIterator it( this, loweredQuery.startsWith( m_lastSearch ) ? MyIterator::Visible : 0 );
+
+    while( (item = (PlaylistItem*)it.current()) )
+    {
+        bool listed = true;
+
+        //if query is empty skip the loops and show all items
+        if( !query.isEmpty() )
+        {
+            for( uint x = 0; listed && x < terms.count(); ++x ) //v.count() is constant time
+            {
+                bool b = false;
+
+                if( column == 1000 ) { //All
+                    //search in Title, Artist, Album, Genre
+                    uint columns[4] = { 1,2,3,6 };
+                    for( uint y = 0; !b && y < 4; ++y )
+                        b = item->exactText( columns[y] ).lower().contains( terms[x] );
+                } else
+                    b = item->exactText( column ).lower().contains( terms[x] );
+
+                // exit loop, when one of the search tokens doesn't match
+                if( !b ) listed = false;
+            }
+        }
+
+        item->setVisible( listed );
+        ++it;
+    }
+
+    m_lastSearch = loweredQuery;
+
+    //to me it seems sensible to do this, BUT if it seems annoying to you, remove it
+    showCurrentTrack();
+    clearSelection(); //we do this because QListView selects inbetween visible items, this is a non ideal solution
+    triggerUpdate();
+}
+
+
 void
 Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLOT
 {
@@ -1568,48 +1616,6 @@ Playlist::slotGlowTimer() //SLOT
     ++counter &= 63; //built in bounds checking with &=
 }
 
-void
-Playlist::slotTextChanged( const QString &query ) //SLOT
-{
-    //TODO allow a slight delay before searching
-    //TODO if we provided the lineEdit m_lastSearch would be unecessary
-
-    const QString loweredQuery = query.lower();
-    const QStringList terms = QStringList::split( ' ', loweredQuery );
-    PlaylistItem *item = 0;
-    MyIterator it( this, loweredQuery.startsWith( m_lastSearch ) ? MyIterator::Visible : 0 );
-
-    while( (item = (PlaylistItem*)it.current()) )
-    {
-        bool listed = true;
-
-        //if query is empty skip the loops and show all items
-        if( !query.isEmpty() )
-        {
-            for( uint x = 0; listed && x < terms.count(); ++x ) //v.count() is constant time
-            {
-                bool b = false;
-
-                //search in Trackname, Artist, Songtitle, Album
-                for( uint y = 0; !b && y < 4; ++y )
-                    b = item->exactText( y ).lower().contains( terms[x] );
-
-                // exit loop, when one of the search tokens doesn't match
-                if( !b ) listed = false;
-            }
-        }
-
-        item->setVisible( listed );
-        ++it;
-    }
-
-    m_lastSearch = loweredQuery;
-
-    //to me it seems sensible to do this, BUT if it seems annoying to you, remove it
-    showCurrentTrack();
-    clearSelection(); //we do this because QListView selects inbetween visible items, this is a non ideal solution
-    triggerUpdate();
-}
 
 void
 Playlist::slotEraseMarker() //SLOT

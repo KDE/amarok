@@ -49,12 +49,14 @@ class TagDialog : public TagDialogBase
         void saveTags();
         bool writeTag( MetaBundle mb );
         void syncItemText( MetaBundle mb );
+        bool equalString( const QString&, const QString& );
 
         MetaBundle m_bundle;
         PlaylistItem* m_playlistItem;
         QMap<QString, MetaBundle> storedTags;
         QString m_buttonMbText;
         QString m_path;
+        QString m_currentCover;
 };
 
 

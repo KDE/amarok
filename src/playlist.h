@@ -113,10 +113,10 @@ class Playlist : private KListView, public EngineObserver
         void playPrevTrack();
         void playCurrentTrack();
         void playNextTrack();
+        void setSearchFilter( const QString &filter, int column );
 
     private slots:
         void slotGlowTimer();
-        void slotTextChanged( const QString& );
         void slotEraseMarker();
         void slotMouseButtonPressed( int, QListViewItem*, const QPoint&, int );
         void showContextMenu( QListViewItem*, const QPoint&, int );

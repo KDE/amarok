@@ -34,6 +34,7 @@ Q_OBJECT
 
     private slots:
         void loadPlaylistSlot( QListViewItem * );
+        void showContextMenu( QListViewItem *item, const QPoint &p, int );
         void collectionScanDone();
 
     private:

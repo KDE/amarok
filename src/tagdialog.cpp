@@ -31,6 +31,7 @@ TagDialog::TagDialog( const KURL& url, QWidget* parent )
     : TagDialogBase( parent )
     , m_bundle( MetaBundle( url ) )
     , m_playlistItem( 0 )
+    , m_currentCover( 0 )
 {
     init();
 }
@@ -40,6 +41,7 @@ TagDialog::TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent 
     : TagDialogBase( parent )
     , m_bundle( mb )
     , m_playlistItem( item )
+    , m_currentCover( 0 )
 {
     init();
 }
@@ -168,23 +170,25 @@ void TagDialog::init()
 
     //get artist and album list from collection db
     QStringList artistList, albumList;
-    QString cover;
     {
         CollectionDB db;
         artistList = db.artistList();
         albumList  = db.albumList();
-        cover = db.getImageForAlbum( m_bundle.artist(), m_bundle.album() );
     }
 
     //enable auto-completion for artist, album and genre
     kComboBox_artist->insertStringList( artistList );
     kComboBox_artist->completionObject()->insertItems( artistList );
+    kComboBox_artist->completionObject()->setIgnoreCase( true );
+
     kComboBox_album->insertStringList( albumList );
     kComboBox_album->completionObject()->insertItems( albumList );
+    kComboBox_album->completionObject()->setIgnoreCase( true );
 
     QStringList genreList = MetaBundle::genreList();
     kComboBox_genre->insertStringList( genreList );
     kComboBox_genre->completionObject()->insertItems( genreList );
+    kComboBox_genre->completionObject()->setIgnoreCase( true );
 
     //looks better to have a blank label than 0
     kIntSpinBox_track->setSpecialValueText( " " );
@@ -213,8 +217,6 @@ void TagDialog::init()
 
     // draw an icon onto the open-in-konqui button
     pushButton_open->setPixmap( QPixmap( locate( "data", QString( "amarok/images/folder_crystal.png" ) ), "PNG" ) );
-    // draw the album cover on the dialog
-    pixmap_cover->setPixmap( QPixmap( cover, "PNG" ) );
 
 #ifdef HAVE_MUSICBRAINZ
     connect( pushButton_musicbrainz, SIGNAL(clicked()), SLOT(musicbrainzQuery()) );
@@ -240,6 +242,12 @@ void TagDialog::readTags()
     kLineEdit_bitrate->setText( m_bundle.prettyBitrate() );
     kLineEdit_samplerate->setText( m_bundle.prettySampleRate() );
     kLineEdit_location->setText( m_bundle.url().isLocalFile() ? m_bundle.url().path() : m_bundle.url().url() );
+    // draw the album cover on the dialog
+    QString cover = CollectionDB().getImageForAlbum( m_bundle.artist(), m_bundle.album() );
+    if( m_currentCover != cover ) {
+        pixmap_cover->setPixmap( QPixmap( cover, "PNG" ) );
+        m_currentCover = cover;
+    }
 
     // Disable the tag editor for streams
     if ( !m_bundle.url().isLocalFile() )
@@ -281,16 +289,25 @@ bool
 TagDialog::hasChanged()
 {
     bool modified = false;
-
-    modified |= kLineEdit_title->text()              != m_bundle.title();
-    modified |= kComboBox_artist->lineEdit()->text() != m_bundle.artist();
-    modified |= kComboBox_album->lineEdit()->text()  != m_bundle.album();
-    modified |= kComboBox_genre->lineEdit()->text()  != m_bundle.genre();
-    modified |= kIntSpinBox_track->value()           != m_bundle.track().toInt();
-    modified |= kIntSpinBox_year->value()            != m_bundle.year().toInt();
-    modified |= kLineEdit_comment->text()            != m_bundle.comment();
+    modified |= !equalString( kLineEdit_title->text(), m_bundle.title() );
+    modified |= !equalString( kComboBox_artist->lineEdit()->text(), m_bundle.artist() );
+    modified |= !equalString( kComboBox_album->lineEdit()->text(), m_bundle.album() );
+    modified |= !equalString( kComboBox_genre->lineEdit()->text(), m_bundle.genre() );
+    modified |= kIntSpinBox_track->value() != m_bundle.track().toInt();
+    modified |= kIntSpinBox_year->value()  != m_bundle.year().toInt();
+    modified |= !equalString( kLineEdit_comment->text(), m_bundle.comment() );
 
     return modified;
+}
+
+
+bool
+TagDialog::equalString( const QString &a, const QString &b )
+{
+    if( a.isEmpty() && b.isEmpty() )
+        return true;
+    else
+        return a == b;
 }
 
 
