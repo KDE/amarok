@@ -236,9 +236,9 @@ void ContextBrowser::openURLRequest( const KURL &url )
         kapp->invokeBrowser( url.arg( KURL::encode_string_no_slash( artist, 106 /*utf-8*/ ), KURL::encode_string_no_slash( album, 106 /*utf-8*/ ) ) );
     }
 
-    if ( url.protocol() == "lyricspage" )
+    if ( url.protocol() == "externalurl" )
     {
-        kapp->invokeBrowser( url.url().replace("lyricspage:", "http://lyrc.com.ar/en/add/add.php?") );
+        kapp->invokeBrowser( url.url().replace("externalurl:", "http:") );
     }
 }
 
@@ -1080,7 +1080,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
 
         uint vectorPlace = 0;
-	// find album of the current track (if it exists)
+    // find album of the current track (if it exists)
         while ( vectorPlace < values.count() && values[ vectorPlace+1 ] != QString::number( album_id ) )
             vectorPlace += 2;
         for ( uint i = 0; i < values.count(); i += 2 )
@@ -1476,11 +1476,14 @@ void ContextBrowser::showLyrics( const QString &hash )
     debug() << "Using this url: " << url << endl;
 
     m_lyrics = QString::null;
-    m_lyricUrl = QString( "grupo=%1&tema=%2&disco=%3&ano=%4" ).arg(
+    m_lyricAddUrl = QString( "externalurl://lyrc.com.ar/en/add/add.php?grupo=%1&tema=%2&disco=%3&ano=%4" ).arg(
             KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ),
             KURL::encode_string_no_slash( title ),
             KURL::encode_string_no_slash( EngineController::instance()->bundle().album() ),
             KURL::encode_string_no_slash( EngineController::instance()->bundle().year() ) );
+    m_lyricSearchUrl = QString( "externalurl://www.google.com/search?q=lyrics \"%1\" \"%2\"" )
+        .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ),
+              KURL::encode_string_no_slash( title ) );
 
     KIO::TransferJob* job = KIO::get( url, false, false );
 
@@ -1527,7 +1530,8 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
     else
     {
         m_lyrics = i18n( "Lyrics not found." );
-        m_lyrics += QString( "<div id='lyrics_box_addlyrics'><a href='lyricspage:" + m_lyricUrl + "' class='button'>" + i18n("Add Lyrics") + "</a></div>" );
+        m_lyrics += QString( "<div id='lyrics_box_addlyrics'><a href='" + m_lyricAddUrl + "' class='button'>" + i18n("Add Lyrics") + "</a></div>" );
+        m_lyrics += QString( "<div id='lyrics_box_searchlyrics'><a href='" + m_lyricSearchUrl + "' class='button'>" + i18n("Search Lyrics") + "</a></div>" );
     }
 
 
@@ -1580,7 +1584,8 @@ ContextBrowser::showLyricSuggestions()
         m_lyrics += QString( "<a href='show:suggestLyric-%1'>" ).arg( m_lyricHashes[i] );
         m_lyrics += QString( "%1</a><br />" ).arg( m_lyricSuggestions[i] );
     }
-    m_lyrics += QString( "<div id='lyrics_box_addlyrics'><a href='lyricspage:" + m_lyricUrl + "' class='button'>" + i18n("Add Lyrics") + "</a></div>" );
+    m_lyrics += QString( "<div id='lyrics_box_addlyrics'><a href='" + m_lyricAddUrl + "' class='button'>" + i18n("Add Lyrics") + "</a></div>" );
+    m_lyrics += QString( "<div id='lyrics_box_searchlyrics'><a href='" + m_lyricSearchUrl + "' class='button'>" + i18n("Search Lyrics") + "</a></div>" );
 
 
 }

@@ -80,7 +80,8 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         QString       m_lyrics;
         QStringList   m_lyricSuggestions;
         QStringList   m_lyricHashes;
-        QString       m_lyricUrl;
+        QString       m_lyricAddUrl;
+        QString       m_lyricSearchUrl;
         QString       m_HTMLSource;
         KTempFile    *m_bgGradientImage;
         KTempFile    *m_headerGradientImage;
