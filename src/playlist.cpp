@@ -617,10 +617,10 @@ void Playlist::deleteSelectedFiles() //SLOT
     //NOTE we assume that currentItem is the main target
     int count  = selectedItems().count();
     int button = KMessageBox::warningContinueCancel( this,
-                    i18n( "<p>You have selected '%1' to be <b>irreversibly</b> deleted." ).
+                    i18n( "<p>You have selected %1 to be <b>irreversibly</b> deleted." ).
                         arg( count > 1 ?
-                            i18n("<u>%1 files</u>").arg( count ) :
-                            static_cast<PlaylistItem*>(currentItem())->url().prettyURL() ),
+                            i18n( "1 file", "<u>%n files</u>", count ) : //we must use this form of i18n()
+                            static_cast<PlaylistItem*>(currentItem())->url().prettyURL().prepend("'<i>").append("</i>'") ),
                     QString::null,
                     i18n("&Delete") );
 
@@ -1230,7 +1230,7 @@ void Playlist::startEditTag( QListViewItem *item, int column )
 {
     KLineEdit *edit = renameLineEdit();
     CollectionDB *db = new CollectionDB();
-    
+
     switch( column )
     {
         case PlaylistItem::Artist:
@@ -1249,10 +1249,10 @@ void Playlist::startEditTag( QListViewItem *item, int column )
             edit->completionObject()->clear();
             break;
     }
-    
+
     delete db;
     edit->completionObject()->setCompletionMode( KGlobalSettings::CompletionPopupAuto );
-    
+
     m_editText = ((PlaylistItem *)item)->exactText( column );
 
     rename( item, column );
