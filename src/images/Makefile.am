@@ -10,12 +10,12 @@ images_DATA = \
     b_prev.png \
     b_stop.png \
     bucky.png \
+    context_gradient.png \
     covermanager.png \
     currenttrack_play.png \
     description.png \
     eq_active2.png \
     eq_inactive2.png \
-    fadein.png \
     folder_crystal.png \
     loading1.png \
     loading2.png \

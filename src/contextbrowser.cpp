@@ -839,7 +839,7 @@ void ContextBrowser::setStyleSheet()
     //KHTML sets the base color but not the text color
     m_styleSheet  = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); }" )
                        .arg( pxSize ).arg( text ).arg( AmarokConfig::schemeAmarok() ? fg : gradient.name() )
-                       .arg( locate( "data", "amarok/images/fadein.png" ) );
+                       .arg( locate( "data", "amarok/images/context_gradient.png" ) );
     m_styleSheet += QString( "a { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
 
     m_styleSheet += QString( ".menu { color: %1; background-color: %2; margin: 0.4em 0.0em; font-weight: bold; }" ).arg( fg ).arg( bg );
