@@ -97,7 +97,6 @@ CollectionDB::CollectionDB()
             kdDebug() << "Rebuilding database!" << endl;
             dropTables();
             createTables();
-            startScan();
         }
         if ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
         {
@@ -122,12 +121,9 @@ CollectionDB::CollectionDB()
     config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
 
     startTimer( MONITOR_INTERVAL * 1000 );
-
+    
     connect( Scrobbler::instance(), SIGNAL( similarArtistsFetched( const QString&, const QStringList& ) ),
              this,                  SLOT( similarArtistsFetched( const QString&, const QStringList& ) ) );
-
-    // This is used when the collection folders were changed in the first-run wizard
-//     connect( kapp, SIGNAL( sigScanCollection() ), this, SLOT( startScan() ) );
 }
 
 
@@ -1539,17 +1535,20 @@ CollectionDB::startScan()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
-    if ( AmarokConfig::collectionFolders().isEmpty() )
+    if ( !m_isScanning )
     {
-        dropTables();
-        createTables();
-    }
-    else if ( !m_isScanning )
-    {
-        scan( AmarokConfig::collectionFolders(), AmarokConfig::scanRecursively(),
-              AmarokConfig::importPlaylists() );
-
-        amaroK::StatusBar::instance()->message( i18n( "Building Collection..." ) );
+        if ( AmarokConfig::collectionFolders().isEmpty() )
+        {
+            dropTables();
+            createTables();
+        }
+        else
+        {
+            scan( AmarokConfig::collectionFolders(), AmarokConfig::scanRecursively(),
+                AmarokConfig::importPlaylists() );
+    
+            amaroK::StatusBar::instance()->message( i18n( "Building Collection..." ) );
+        }
     }
 }
 
