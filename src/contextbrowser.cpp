@@ -200,33 +200,6 @@ void ContextBrowser::metaDataEdited( const MetaBundle &bundle ) {
 // PROTECTED
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void ContextBrowser::engineTrackEnded( int finalPosition, int trackLength ) {
-    //This is where percentages are calculated
-    //TODO statistics are not calculated when currentTrack doesn't exist
-
-    const KURL &url = EngineController::instance()->bundle().url();
-
-    // sanity check
-    if ( finalPosition > trackLength || finalPosition == 0 )
-        finalPosition = trackLength;
-
-    int pct = (int) ( ( (double) finalPosition / (double) trackLength ) * 100 );
-
-    // increase song counter & calculate new statistics
-    float score = m_db->addSongPercentage( url.path(), pct );
-
-    // TODO speedtest
-    if( score ) {
-        QListViewItemIterator it( Playlist::instance() );
-        for( ; it.current(); ++it ) {
-            PlaylistItem *item = static_cast<PlaylistItem*>(*it);
-            if ( item->url() == url )
-                item->setText( PlaylistItem::Score, QString::number( score ) );
-        }
-    }
-}
-
-
 void ContextBrowser::engineNewMetaData( const MetaBundle&, bool /*trackChanged*/ ) {
     m_relatedArtists.clear();
 

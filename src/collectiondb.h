@@ -6,6 +6,7 @@
 #define AMAROK_COLLECTIONDB_H
 
 #include "amarokconfig.h"
+#include "engineobserver.h"
 #include "sqlite/sqlite3.h"
 
 #include <qdir.h>            //stack allocated
@@ -56,8 +57,8 @@ class CollectionDB : public QObject
         //song methods
         bool getMetaBundleForUrl( const QString url, MetaBundle *bundle );
         void addAudioproperties( const MetaBundle& bundle );
-        uint addSongPercentage( const QString url, const int percentage );
-        uint getSongPercentage( const QString url );
+        int addSongPercentage( const QString url, const int percentage );
+        int getSongPercentage( const QString url );
         void setSongPercentage( const QString url, int percentage );
 
         //album methods
@@ -148,16 +149,23 @@ class CollectionDB : public QObject
 };
 
 
-class CollectionEmitter : public QObject
+class CollectionEmitter : public QObject, public EngineObserver
 {
     Q_OBJECT
 
     friend class CollectionDB;
 
+    public:
+        CollectionEmitter();
+
+    protected:
+        void engineTrackEnded( int finalPosition, int trackLength );
+
     signals:
         void scanStarted();
         void scanDone( bool changed );
 
+        void scoreChanged( const QString &url, int score );
         void metaDataEdited( const MetaBundle &bundle );
 
         void coverFetched( const QString &keyword );

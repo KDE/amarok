@@ -10,8 +10,6 @@ SHORT-TERM (URGENT):
 
           <mxcl> when an engine fails to load, the next best engine should be chosen, not the first in the list
 
-          <muesli> Add signals for MetaData changes / Score changes to CollectionEmitter.
-
           <markey> When the KDE color scheme is changed while amaroK is running, all toolbar buttons
                    (those with text) lose their texts.
 

@@ -7,6 +7,7 @@
 #include "collectionbrowser.h"    //updateTags()
 #include "collectiondb.h"
 #include "coverfetcher.h"
+#include "enginecontroller.h"
 #include "metabundle.h"           //updateTags()
 #include "playlistbrowser.h"
 #include "threadweaver.h"
@@ -529,7 +530,7 @@ CollectionDB::addAudioproperties( const MetaBundle& bundle )
 }
 
 
-uint
+int
 CollectionDB::addSongPercentage( const QString url, const int percentage )
 {
     float score;
@@ -560,11 +561,13 @@ CollectionDB::addSongPercentage( const QString url, const int percentage )
                         .arg( score ) );
     }
 
-    return getSongPercentage( url );
+    int iscore = getSongPercentage( url );
+    emit s_emitter->scoreChanged( url, iscore );
+    return iscore;
 }
 
 
-uint
+int
 CollectionDB::getSongPercentage( const QString url )
 {
     QStringList values = query( QString( "SELECT round( percentage + 0.4 ) FROM statistics WHERE url = '%1';" )
@@ -605,6 +608,8 @@ CollectionDB::setSongPercentage( const QString url, int percentage )
                         .arg( escapeString( url ) )
                         .arg( percentage ) );
     }
+
+    emit s_emitter->scoreChanged( url, percentage );
 }
 
 
@@ -1447,6 +1452,7 @@ CollectionDB::stopScan() //SLOT
     CollectionReader::stop();
 }
 
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -1493,6 +1499,35 @@ CollectionDB::customEvent( QCustomEvent *e )
         kdDebug() << k_funcinfo << endl;
         emit s_emitter->scanDone( true );
     }
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// CLASS CollectionEmitter
+//////////////////////////////////////////////////////////////////////////////////////////
+
+CollectionEmitter::CollectionEmitter()
+{
+    EngineController::instance()->attach( this );
+}
+
+
+void CollectionEmitter::engineTrackEnded( int finalPosition, int trackLength )
+{
+    //This is where percentages are calculated
+    //TODO statistics are not calculated when currentTrack doesn't exist
+
+    const KURL &url = EngineController::instance()->bundle().url();
+    if ( url.path().isEmpty() ) return;
+
+    // sanity check
+    if ( finalPosition > trackLength || finalPosition == 0 )
+        finalPosition = trackLength;
+
+    int pct = (int) ( ( (double) finalPosition / (double) trackLength ) * 100 );
+
+    // increase song counter & calculate new statistics
+    CollectionDB().addSongPercentage( url.path(), pct );
 }
 
 

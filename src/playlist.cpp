@@ -177,6 +177,9 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     connect( this,     SIGNAL( aboutToClear() ),
              this,       SLOT( saveUndoState() ) );
 
+    connect( CollectionDB::emitter(), SIGNAL( scoreChanged( const QString&, int ) ),
+             this,       SLOT( scoreChanged( const QString&, int ) ) );
+
     connect( &Glow::timer, SIGNAL(timeout()), SLOT(slotGlowTimer()) );
 
     KStdAction::copy( this, SLOT( copyToClipboard() ), ac, "playlist_copy" );
@@ -1571,6 +1574,16 @@ Playlist::setSearchFilter( const QString &query, int column ) //SLOT
     triggerUpdate();
 }
 
+void
+Playlist::scoreChanged( const QString &path, int score )
+{
+    for( MyIt it( this, 0 ); *it; ++it )
+    {
+        PlaylistItem *item = (PlaylistItem*)*it;
+        if ( item->url().path() == path )
+            item->setText( PlaylistItem::Score, QString::number( score ) );
+    }
+}
 
 void
 Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLOT

@@ -34,7 +34,6 @@ class ContextBrowser : public QVBox, public EngineObserver
         void metaDataEdited( const MetaBundle &bundle );
 
     protected:
-        void engineTrackEnded( int finalPosition, int trackLength );
         void engineNewMetaData( const MetaBundle&, bool );
         void engineStateChanged( Engine::State );
         void paletteChange( const QPalette& );

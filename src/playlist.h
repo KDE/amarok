@@ -104,7 +104,6 @@ class Playlist : private KListView, public EngineObserver
 
         friend class PlaylistItem;
         friend class PlaylistLoader;
-        friend class ContextBrowser;
         friend void PlaylistWindow::init(); //setting up connections etc.
         friend bool PlaylistWindow::eventFilter( QObject*, QEvent* ); //for convenience we handle some playlist events here
 
@@ -130,6 +129,7 @@ class Playlist : private KListView, public EngineObserver
         void playNextTrack();
         void updateMetaData( const MetaBundle& );
         void setSearchFilter( const QString &filter, int column );
+        void scoreChanged( const QString &path, int score );
 
     private slots:
         void slotGlowTimer();
