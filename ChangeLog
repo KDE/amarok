@@ -15,7 +15,8 @@ VERSION 1.2-beta4:
   ADD: New progress display system, can show multiple expandable
        progress widgets in the statusbar.
   ADD: Alarm script, starts playing music at specified alarm time.
-  ADD: Script-Manager for DCOP script extensions is now functional.
+  ADD: Script-Manager for DCOP script extensions is now functional. Refer
+       to the amaroK Wiki for information on script writing.
   ADD: Collection-Browser shows a help message in flat-mode when filter is
        empty. (BR 97000)
   CHG: It is possible to select the Database Engine (SQLite, MySQL) runtime,
