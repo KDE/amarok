@@ -46,6 +46,7 @@ private slots:
     void slotToggleTime();
 
 private:
+    static const int ID_STATUS = 1;
     ToggleLabel *m_pTimeLabel;
 };
 

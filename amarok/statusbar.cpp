@@ -13,6 +13,8 @@
 amaroK::StatusBar::StatusBar( QWidget *parent, const char *name ) : KStatusBar( parent, name )
 {
     EngineController::instance()->attach( this );
+    // message
+    insertItem("", ID_STATUS, 10 );
 
     // random
     ToggleLabel *rand = new ToggleLabel( i18n( "RAND" ), this );
@@ -34,6 +36,7 @@ amaroK::StatusBar::StatusBar( QWidget *parent, const char *name ) : KStatusBar( 
     m_pTimeLabel->setColorToggle( false );
     connect( m_pTimeLabel, SIGNAL( toggled( bool ) ), this, SLOT( slotToggleTime() ) );
 
+    setItemAlignment( ID_STATUS, AlignLeft|AlignVCenter );
     // make the time label show itself.
     engineTrackPositionChanged( 0 );
 }
@@ -52,6 +55,7 @@ void amaroK::StatusBar::engineStateChanged( EngineBase::EngineState state )
         case EngineBase::Idle:
         case EngineBase::Empty:
             engineTrackPositionChanged( 0 );
+            changeItem("", ID_STATUS);
             break;
         case EngineBase::Playing: // gcc silense
         case EngineBase::Paused:
@@ -62,7 +66,8 @@ void amaroK::StatusBar::engineStateChanged( EngineBase::EngineState state )
 
 void amaroK::StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
-    message( bundle.prettyTitle() + "  (" + bundle.prettyLength() + ")" );
+//    message( bundle.prettyTitle() + "  (" + bundle.prettyLength() + ")" );
+    changeItem( bundle.prettyTitle() + "  (" + bundle.prettyLength() + ")", ID_STATUS);
 }
 
 void amaroK::StatusBar::engineTrackPositionChanged( long position )
