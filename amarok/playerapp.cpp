@@ -28,6 +28,8 @@ email                :
 #include "effectwidget.h"
 #include "amarokarts/amarokarts.h"
 
+#include "debugareas.h"
+
 #include <vector>
 #include <string>
 
@@ -153,8 +155,7 @@ PlayerApp::PlayerApp() :
 
 PlayerApp::~PlayerApp()
 {
-    //TEST
-    kdDebug() << "PlayerApp:~PlayerApp()" << endl;
+    kdDebug(DA_COMMON) << "PlayerApp:~PlayerApp()" << endl;
 
     slotStop();
 
@@ -296,7 +297,7 @@ void PlayerApp::initArts()
         int kill_status = ::system( kill_cmdline );
         if ( kill_status != -1 && WIFEXITED( kill_status ) )
         {
-            kdDebug() << "killall artsd succeeded." << endl;
+            kdDebug(DA_COMMON) << "killall artsd succeeded." << endl;
         }
     }
     m_pArtsDispatcher = new KArtsDispatcher();
@@ -395,7 +396,7 @@ void PlayerApp::initArts()
 void PlayerApp::initPlayerWidget()
 {
     //TEST
-    kdDebug() << "begin PlayerApp::initPlayerWidget()" << endl;
+    kdDebug(DA_COMMON) << "begin PlayerApp::initPlayerWidget()" << endl;
 
     m_pPlayerWidget = new PlayerWidget();
     //    setCentralWidget(m_pPlayerWidget);
@@ -448,14 +449,14 @@ void PlayerApp::initPlayerWidget()
              this, SLOT( slotShowAbout() ) );
 
     //TEST
-    kdDebug() << "end PlayerApp::initPlayerWidget()" << endl;
+    kdDebug(DA_COMMON) << "end PlayerApp::initPlayerWidget()" << endl;
 }
 
 
 void PlayerApp::initMixer()
 {
     //TEST
-    kdDebug() << "begin PlayerApp::initMixer()" << endl;
+    kdDebug(DA_COMMON) << "begin PlayerApp::initMixer()" << endl;
 
     if ( initMixerHW() )
     {
@@ -465,13 +466,13 @@ void PlayerApp::initMixer()
     else
     {
         // Hardware mixer doesn't work --> use arts software-mixing
-        kdDebug() << "Cannot initialise Hardware mixer. Switching to software mixing." << endl;
+        kdDebug(DA_COMMON) << "Cannot initialise Hardware mixer. Switching to software mixing." << endl;
 
         m_volumeControl = Arts::DynamicCast( m_Server.createObject( "Arts::StereoVolumeControl" ) );
 
         if ( m_volumeControl.isNull() )
         {
-            kdDebug() << "Initialising arts softwaremixing failed!" << endl;
+            kdDebug(DA_COMMON) << "Initialising arts softwaremixing failed!" << endl;
             return ;
         }
 
@@ -480,7 +481,7 @@ void PlayerApp::initMixer()
         long id = m_globalEffectStack.insertBottom( m_volumeControl, "Volume Control" );
 
         //TEST
-        kdDebug() << "end PlayerApp::initMixer()" << endl;
+        kdDebug(DA_COMMON) << "end PlayerApp::initMixer()" << endl;
     }
 }
 
@@ -504,13 +505,13 @@ bool PlayerApp::initMixerHW()
 bool PlayerApp::initScope()
 {
     //TEST
-    kdDebug() << "begin PlayerApp::initScope()" << endl;
+    kdDebug(DA_COMMON) << "begin PlayerApp::initScope()" << endl;
 
     m_Scope = Arts::DynamicCast( m_Server.createObject( "Amarok::WinSkinFFT" ) );
 
     if ( m_Scope.isNull() )
     {
-        kdDebug() << "m_Scope.isNull()!" << endl;
+        kdDebug(DA_COMMON) << "m_Scope.isNull()!" << endl;
         return false;
     }
 
@@ -518,7 +519,7 @@ bool PlayerApp::initScope()
     long id = m_globalEffectStack.insertBottom( m_Scope, "Analyzer" );
 
     //TEST
-    kdDebug() << "end PlayerApp::initScope()" << endl;
+    kdDebug(DA_COMMON) << "end PlayerApp::initScope()" << endl;
     return true;
 }
 
@@ -526,7 +527,7 @@ bool PlayerApp::initScope()
 void PlayerApp::initBrowserWin()
 {
     //TEST
-    kdDebug() << "begin PlayerApp::initBrowserWin()" << endl;
+    kdDebug(DA_COMMON) << "begin PlayerApp::initBrowserWin()" << endl;
 
     m_pBrowserWin = new BrowserWin();
 
@@ -567,7 +568,7 @@ void PlayerApp::initBrowserWin()
              this, SLOT( slotPlaylistHide() ) );
 
     //TEST
-    kdDebug() << "end PlayerApp::initBrowserWin()" << endl;
+    kdDebug(DA_COMMON) << "end PlayerApp::initBrowserWin()" << endl;
 }
 
 
@@ -723,7 +724,7 @@ void PlayerApp::saveConfig()
 void PlayerApp::readConfig()
 {
     //TEST
-    kdDebug() << "begin PlayerApp::readConfig()" << endl;
+    kdDebug(DA_COMMON) << "begin PlayerApp::readConfig()" << endl;
 
     // FIXME: ok, the compiler warning is gone now. but the result is the same: those variables are
     //        still temporary. so what have we gained? frankly, why does KConfig take a pointer here,
@@ -778,7 +779,7 @@ void PlayerApp::readConfig()
 
     KURL currentlyPlaying = m_pConfig->readEntry( "CurrentSelection" );
 
-    kdDebug() << "Attempting to select: " << currentlyPlaying.path() << endl;
+    kdDebug(DA_COMMON) << "Attempting to select: " << currentlyPlaying.path() << endl;
 
     for ( PlaylistItem * item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->firstChild() );
             item;
@@ -816,7 +817,7 @@ void PlayerApp::readConfig()
     new KAction( "Delete item", SHIFT + Key_Delete, m_pBrowserWin, SLOT( slotKeyDelete() ), m_pBrowserWin->m_pActionCollection, "delete" );
 
     //TEST
-    kdDebug() << "end PlayerApp::readConfig()" << endl;
+    kdDebug(DA_COMMON) << "end PlayerApp::readConfig()" << endl;
 }
 
 
@@ -896,7 +897,7 @@ void PlayerApp::setupScrolltext()
 
 void PlayerApp::startXFade()
 {
-    kdDebug() << "void PlayerApp::startXFade()" << endl;
+    kdDebug(DA_COMMON) << "void PlayerApp::startXFade()" << endl;
 
     m_XFadeRunning = true;
 
@@ -914,7 +915,7 @@ void PlayerApp::startXFade()
 
 void PlayerApp::stopXFade()
 {
-    kdDebug() << "void PlayerApp::stopXFade()" << endl;
+    kdDebug(DA_COMMON) << "void PlayerApp::stopXFade()" << endl;
 
     m_XFadeRunning = false;
 
@@ -1026,13 +1027,13 @@ void PlayerApp::slotPlay()
 
     if ( m_pPlayObject == NULL )
     {
-        kdDebug() << "Can't initialize Playobject. m_pPlayObject == NULL." << endl;
+        kdDebug(DA_COMMON) << "Can't initialize Playobject. m_pPlayObject == NULL." << endl;
         slotNext();
         return ;
     }
     if ( m_pPlayObject->isNull() )
     {
-        kdDebug() << "Can't initialize Playobject. m_pPlayObject->isNull()." << endl;
+        kdDebug(DA_COMMON) << "Can't initialize Playobject. m_pPlayObject->isNull()." << endl;
         delete m_pPlayObject;
         m_pPlayObject = NULL;
         slotNext();
@@ -1217,14 +1218,14 @@ void PlayerApp::slotClearPlaylistAsk()
 
 void PlayerApp::slotUndoPlaylist()
 {
-    kdDebug() << "PlayerApp::slotUndoPlaylist()" << endl;
+    kdDebug(DA_COMMON) << "PlayerApp::slotUndoPlaylist()" << endl;
     KMessageBox::sorry( 0, "Not yet implemented. /me gives user a chocolate cookie." );
 }
 
 
 void PlayerApp::slotRedoPlaylist()
 {
-    kdDebug() << "PlayerApp::slotRedoPlaylist()" << endl;
+    kdDebug(DA_COMMON) << "PlayerApp::slotRedoPlaylist()" << endl;
     KMessageBox::sorry( 0, "Not yet implemented. /me gives user a chocolate cookie." );
 }
 

@@ -22,6 +22,8 @@
 #include "browserwidget.h"
 #include "playlistitem.h"
 
+#include "debugareas.h"
+
 #include <qbrush.h>
 #include <qcolor.h>
 #include <qcursor.h>
@@ -55,6 +57,8 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) :
         m_GlowCount( 100 ),
         m_GlowAdd( 5 )
 {
+    kdDebug(DA_PLAYLIST) << "PlaylistWidget::PlaylistWidget()" << endl;
+    
     setName( "PlaylistWidget" );
     setFocusPolicy( QWidget::ClickFocus );
     setPaletteBackgroundColor( pApp->m_bgColor );
@@ -143,8 +147,12 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
 
         if ( e->source() == NULL )                      // dragging from outside amarok
         {
+            kdDebug(DA_PLAYLIST) << "dropped item from outside amaroK" << endl;
+            
             if ( !KURLDrag::decode( e, urlList ) || urlList.isEmpty() )
                 return ;
+            
+            kdDebug(DA_PLAYLIST) << "dropped item KURL parsed ok" << endl;
 
             m_pDropCurrentItem = static_cast<PlaylistItem*>( after );
             playlistDrop( urlList );
@@ -189,6 +197,8 @@ void PlaylistWidget::playlistDrop( KURL::List urlList )
 
     for ( KURL::List::Iterator it = urlList.begin(); it != urlList.end(); it++ )
     {
+        kdDebug(DA_PLAYLIST) << "dropping item " << (*it).prettyURL() << " to playlist" << endl;
+        
         m_pDirLister->openURL( ( *it ).upURL(), false, false );   // URL; keep = true, reload = true
         while ( !m_pDirLister->isFinished() )
             kapp->processEvents( 300 );
@@ -196,7 +206,7 @@ void PlaylistWidget::playlistDrop( KURL::List urlList )
         KFileItem *fileItem = m_pDirLister->findByURL( *it );
 
         if ( !fileItem )
-            kdDebug() << "fileItem is 0!" << endl;
+            kdDebug(DA_PLAYLIST) << "fileItem is 0!" << endl;
 
         if ( fileItem && fileItem->isDir() )
         {
@@ -228,6 +238,7 @@ void PlaylistWidget::playlistDrop( KURL::List urlList )
         }
         else
         {
+           kdDebug(DA_PLAYLIST) << "dropping item " << (*it).prettyURL() << " to playlist [2]" << endl;
             if ( pApp->m_pBrowserWin->isFileValid( *it ) )
             {
                 m_pDropCurrentItem = addItem( m_pDropCurrentItem, *it );
@@ -358,7 +369,7 @@ void PlaylistWidget::slotGlowTimer()
 void PlaylistWidget::slotSetRecursive()
 {
     m_dropRecursively = true;
-    kdDebug() << "slotSetRecursive()" << endl;
+    kdDebug(DA_PLAYLIST) << "slotSetRecursive()" << endl;
 }
 
 
