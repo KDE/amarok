@@ -317,9 +317,11 @@ CollectionReader::readTags( const QStringList& entries )
     KURL url;
     m_parent->createTables( true );
 
-    QStringList validExtensions;
-    validExtensions << "jpg" << "png" << "gif" << "jpeg";
-
+    QStringList validImages;
+    validImages << "jpg" << "png" << "gif" << "jpeg";
+    QStringList validMusic;
+    validMusic << "mp3" << "ogg" << "flac" << "wav";
+    
     for ( uint i = 0; i < entries.count(); i++ ) {
         if ( !( i % 20 ) )  //don't post events too often since this blocks amaroK
             QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Progress, i ) );
@@ -327,12 +329,12 @@ CollectionReader::readTags( const QStringList& entries )
         url.setPath( entries[ i ] );
         TagLib::FileRef f( QFile::encodeName( url.path() ), false );  //false == don't read audioprops
 
+        QString command = "INSERT INTO tags_temp "
+                            "( url, dir, createdate, album, artist, genre, title, year, comment, track ) "
+                            "VALUES('";
+
         if ( !f.isNull() ) {
             MetaBundle bundle( url, f.tag(), 0 );
-
-            QString command = "INSERT INTO tags_temp "
-                              "( url, dir, createdate, album, artist, genre, title, year, comment, track ) "
-                              "VALUES('";
 
             command += m_parent->escapeString( bundle.url().path() ) + "','";
             command += m_parent->escapeString( bundle.url().directory() ) + "',";
@@ -346,12 +348,25 @@ CollectionReader::readTags( const QStringList& entries )
             command += m_parent->escapeString( bundle.track() ) + "');";
 
             m_parent->execSql( command );
-
-        } else {
-            // Add images to the cover database
-            if ( validExtensions.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ) ) )
-                m_parent->addImageToPath( url.directory(), url.filename(), true );
         }
+        // Add tag-less tracks to database
+        if ( validMusic.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ) ) ) {
+            command += m_parent->escapeString( url.path() ) + "','";
+            command += m_parent->escapeString( url.directory() ) + "',";
+            command += "strftime('%s', 'now'),";
+            command += m_parent->escapeString( QString::number( m_parent->getValueID( "album", i18n( "unknown" ), true, !m_incremental ) ) ) + ",";
+            command += m_parent->escapeString( QString::number( m_parent->getValueID( "artist", i18n( "unknown" ), true, !m_incremental ) ) ) + ",";
+            command += m_parent->escapeString( QString::number( m_parent->getValueID( "genre", i18n( "unknown" ), true, !m_incremental ) ) ) + ",'";
+            command += m_parent->escapeString( url.fileName() ) + "','";
+            command += m_parent->escapeString( QString::number( m_parent->getValueID( "year", i18n( "unknown" ), true, !m_incremental ) ) ) + "','";
+            command += m_parent->escapeString( i18n( "unknown" ) ) + "','";
+            command += m_parent->escapeString( i18n( "unknown" ) ) + "');";
+
+            m_parent->execSql( command );
+        }
+        // Add images to the cover database
+        if ( validImages.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ) ) )
+            m_parent->addImageToPath( url.directory(), url.filename(), true );
     }
     // let's lock the database (will block other threads)
     m_parent->execSql( "BEGIN TRANSACTION;" );
