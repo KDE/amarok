@@ -11,6 +11,9 @@ libamarokarts_la_SOURCES = winSkinFFT_impl.cpp visQueue.cpp realFFTFilter.cpp re
 
 EXTRA_DIST = amarokarts.h realFFT.h realFFTFilter.h visQueue.h winSkinFFT_impl.h
 
+amarokarts.cc amarokarts.h amarokarts.mcoptype amarokarts.mcopclass : $(srcdir)/amarokarts.idl $(MCOPIDL)
+	$(MCOPIDL) -t $(INCLUDES) $(srcdir)/amarokarts.idl
+
 mcoptypedir = $(libdir)/mcop
 mcoptype_DATA = amarokarts.mcoptype amarokarts.mcopclass
 
