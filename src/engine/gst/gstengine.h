@@ -47,7 +47,6 @@ class GstEngine : public Engine::Base
         Q_OBJECT
 
     signals:
-        void sigGstError( GError*, gchar* );
         void sigScopeData( GstBuffer* );
 
     public:
@@ -76,7 +75,7 @@ class GstEngine : public Engine::Base
         void timerEvent( QTimerEvent* );
 
     private slots:
-        void handleGstError( GError*, gchar* );
+        void handleGstError();
         void endOfStreamReached();
         void kioFinished();
         void newKioData( KIO::Job*, const QByteArray& array );
@@ -137,6 +136,9 @@ class GstEngine : public Engine::Base
         GstElement* m_gst_audioscale;
         GstElement* m_gst_audioconvert;
         GstElement* m_gst_audiosink;
+
+        GError* m_gst_error;
+        gchar* m_gst_debug;
 
         QPtrList<InputPipeline> m_inputs;
         InputPipeline* m_currentInput;

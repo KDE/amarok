@@ -115,8 +115,11 @@ GstEngine::error_cb( GstElement* /*element*/, GstElement* /*source*/, GError* er
 {
     kdDebug() << k_funcinfo << endl;
 
+    instance()->m_gst_error = error;
+    instance()->m_gst_debug = debug;
+
     // Process error message in application thread
-    emit instance()->sigGstError( error, debug );
+    QTimer::singleShot( 0, instance(), SLOT( handleGstError() ) );
 }
 
 
@@ -217,7 +220,6 @@ GstEngine::init()
 
     m_gst_adapter = gst_adapter_new();
     startTimer( TIMER_INTERVAL );
-    connect( this, SIGNAL( sigGstError( GError*, gchar* ) ), SLOT( handleGstError( GError*, gchar* ) ) );
 
     createPipeline();
 
@@ -523,12 +525,12 @@ void GstEngine::timerEvent( QTimerEvent* )
 {
     // Fading transition management
 
+    QPtrList<InputPipeline> destroyList;
     InputPipeline* input;
 
     // Iterate over all input pipelines
     for ( uint i = 0; i < m_inputs.count(); i++ )
     {
-        int count;
         input = m_inputs.at( i );
 
         switch ( input->state() )
@@ -560,13 +562,7 @@ void GstEngine::timerEvent( QTimerEvent* )
                 // Fade finished?
                 if ( input->m_fade < 0.0 ) {
                     // Fade transition has finished, stop playback
-                    if ( gst_element_get_state( input->thread ) == GST_STATE_PLAYING ) {
-                        gst_element_set_state( input->thread, GST_STATE_NULL );
-                        kdDebug() << "[Gst-Engine] Fade-out finished.\n";
-                    }
-                    // Wait until queue is empty
-                    gst_element_get( input->queue, "current-level-buffers", &count, NULL );
-                    if ( !count ) destroyInput( input );
+                    destroyList.append( input );
                 }
                 else {
                     // Set new value for fadeout volume element
@@ -601,13 +597,7 @@ void GstEngine::timerEvent( QTimerEvent* )
                 // Fade finished?
                 if ( input->m_fade < 0.0 ) {
                     // Fade transition has finished, stop playback
-                    if ( gst_element_get_state( input->thread ) == GST_STATE_PLAYING ) {
-                        gst_element_set_state( input->thread, GST_STATE_NULL );
-                        kdDebug() << "[Gst-Engine] XFade-out finished.\n";
-                    }
-                    // Wait until queue is empty
-                    gst_element_get( input->queue, "current-level-buffers", &count, NULL );
-                    if ( !count ) destroyInput( input );
+                    destroyList.append( input );
                 }
                 else {
                     // Set new value for fadeout volume element
@@ -618,6 +608,10 @@ void GstEngine::timerEvent( QTimerEvent* )
                 break;
         }
     }
+
+    // Destroy pipelines which are finished
+    for ( uint i = 0; i < destroyList.count(); i++ )
+        destroyInput( destroyList.at( i ) );
 }
 
 
@@ -626,13 +620,20 @@ void GstEngine::timerEvent( QTimerEvent* )
 /////////////////////////////////////////////////////////////////////////////////////
 
 void
-GstEngine::handleGstError( GError* error, gchar* debugmsg )  //SLOT
+GstEngine::handleGstError()  //SLOT
 {
-    kdError() << "[GStreamer Error] " << endl;
-    kdError() << error->message << endl;
-    kdError() << debugmsg << endl;
+    QString text = "[GStreamer Error] ";
 
-    emit statusText( "[GStreamer Error] " + QString( error->message ) );
+    if ( m_gst_error )
+        text += QString( m_gst_error->message );
+
+    if ( m_gst_debug ) {
+        text += " * ";
+        text += m_gst_debug;
+    }
+
+    kdError() << text << endl;
+    emit statusText( text );
 }
 
 
@@ -958,23 +959,28 @@ InputPipeline::~InputPipeline()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
-    if ( GstEngine::instance()->m_currentInput == this )
+    if ( GstEngine::instance()->m_currentInput == this ) {
         GstEngine::instance()->m_currentInput = 0;
+        kdDebug() << "m_currentInput == this; setting to 0.\n";
+    }
 
     if ( GST_IS_THREAD( thread ) )
     {
-//         if ( gst_element_get_state( thread ) != GST_STATE_PAUSED )
-//             gst_element_set_state( thread, GST_STATE_PAUSED );
-//
-//         // Wait until queue is empty
-//         int filled = 1;
-//         while( filled ) {
-//             gst_element_get( queue, "current-level-buffers", &filled, NULL );
-//             ::usleep( 20000 ); // 20 msec
-//         }
+        gst_element_send_event( thread, gst_event_new( GST_EVENT_FLUSH ) );
+        gst_element_set_state( thread, GST_STATE_PAUSED );
+
+        // Wait until queue is empty
+        int filled = 1;
+        while( filled ) {
+            gst_element_get( queue, "current-level-buffers", &filled, NULL );
+            ::usleep( 20000 ); // 20 msec
+        }
 
         if ( GstEngine::instance()->m_pipelineFilled )
             gst_element_unlink( queue, GstEngine::instance()->m_gst_adder );
+
+        if ( gst_element_get_state( thread ) != GST_STATE_NULL )
+            gst_element_set_state( thread, GST_STATE_NULL );
 
         kdDebug() << "Unreffing input thread.\n";
         gst_object_unref( GST_OBJECT( thread ) );
