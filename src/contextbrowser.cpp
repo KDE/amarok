@@ -1048,7 +1048,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                     << escapeHTMLAttr( values[ i ] ) // album.name
                     << i18n( "Click for information from amazon.com, right-click for menu." )
                     << escapeHTMLAttr( CollectionDB::instance()->albumImage( currentTrack.artist(), values[ i ], 50 ) )
-                    << i18n( "Single", "%n Tracks",  albumValues.count() / 4 )
+                    << i18n( "Single", "%n Tracks",  albumValues.count() / 5 )
                     << QString::number( artist_id )
                     << values[ i+1 ] //album.id
                     << escapeHTML( values[ i ] )
