@@ -361,6 +361,8 @@ CollectionDB::purgeDirCache()
 void
 CollectionDB::scan( const QStringList& folders, bool recursively )
 {
+    kdDebug() << k_funcinfo << endl;
+    
     if ( !folders.isEmpty() )
         m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), folders, recursively, false ) );
 }
@@ -450,7 +452,7 @@ CollectionDB::customEvent( QCustomEvent *e )
     if ( e->type() == (QEvent::Type) ThreadWeaver::Job::CollectionReader )
     {
         kdDebug() << k_funcinfo << endl;
-        emit scanDone();
+        emit scanDone( true );
     }
 }
 

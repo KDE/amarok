@@ -120,10 +120,10 @@ CollectionDB* CollectionView::m_insertdb;
 CollectionView::CollectionView( CollectionBrowser* parent )
         : KListView( parent )
         , m_parent( parent )
+        , m_isScanning( false )
 {
     kdDebug() << k_funcinfo << endl;
 
-    m_isScanning = false;
     setSelectionMode( QListView::Extended );
     setItemsMovable( false );
     setRootIsDecorated( true );
@@ -159,11 +159,11 @@ CollectionView::CollectionView( CollectionBrowser* parent )
             m_db->dropTables();
             m_db->createTables();
             m_insertdb = new CollectionDB();
-            scan( false );
+            scan();
         } else
         {
             m_insertdb = new CollectionDB();
-            scan( true );
+            scanMonitor();
         }
 
     //</open database>
@@ -222,19 +222,29 @@ CollectionView::setupDirs()  //SLOT
 
 
 void
-CollectionView::scan( bool modifiedOnly )  //SLOT
+CollectionView::scan()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
-
+    
     if ( !m_isScanning )
     {
         m_isScanning = true;
         m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
         
-        if ( modifiedOnly )
-            m_insertdb->scanModifiedDirs( m_recursively );
-        else
-            m_insertdb->scan( m_dirs, m_recursively );
+        m_insertdb->scan( m_dirs, m_recursively );
+    }
+}
+
+
+void
+CollectionView::scanMonitor()  //SLOT
+{
+    kdDebug() << k_funcinfo << endl;
+
+    if ( !m_isScanning )
+    {
+        m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
+        m_insertdb->scanModifiedDirs( m_recursively );
     }
 }
 
@@ -461,7 +471,7 @@ void
 CollectionView::timerEvent( QTimerEvent* )
 {
     if ( m_monitor )
-        scan( true );
+        scanMonitor();
 }
 
 
