@@ -6,7 +6,6 @@
 #include "collectionbrowser.h"
 #include "directorylist.h"
 #include "metabundle.h"
-#include "sqlite/sqlite.h"
 #include "statusbar.h"
 
 #include <unistd.h>         //CollectionView ctor
