@@ -52,8 +52,18 @@ GstEngine::eos_cb( GstElement*, GstElement* )
 {
     kdDebug() << k_funcinfo << endl;
 
-    pObject->stop();
+    g_idle_add( (GSourceFunc) GstEngine::eos_handler, (gpointer) 0 );
     //     pObject->emit endOfTrack();
+}
+
+bool
+GstEngine::eos_handler( gpointer )
+{
+    kdDebug() << k_funcinfo << endl;
+    
+    pObject->stop();
+    //false == deactivate idle handler
+    return false;
 }
 
 
@@ -372,8 +382,8 @@ GstEngine::fillPipeline()
     g_signal_connect ( G_OBJECT( m_pIdentity ), "handoff",
                        G_CALLBACK( handoff_cb ), m_pThread );
     
-/*    g_signal_connect ( G_OBJECT( m_pAudiosink ), "eos",
-                       G_CALLBACK( eos_cb ), m_pThread );*/
+    g_signal_connect ( G_OBJECT( m_pAudiosink ), "eos",
+                       G_CALLBACK( eos_cb ), m_pThread );
     
     /* add objects to the main pipeline */
     gst_bin_add_many( GST_BIN( m_pThread ), m_pFilesrc, m_pSpider, m_pIdentity,

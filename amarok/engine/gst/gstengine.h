@@ -71,6 +71,7 @@ class GstEngine : public EngineBase
 
     private:
         static void                              eos_cb( GstElement *typefind, GstElement *pipeline );
+        static bool                              eos_handler( gpointer );
         static void                              handoff_cb( GstElement *identity, GstBuffer *buf, GstElement *pipeline );
         static void                              typefindError_cb( GstElement *typefind, GstElement *pipeline );
         static void                              typefindFound_cb( GstElement *typefind, GstCaps *caps, GstElement *pipeline );
