@@ -1155,7 +1155,7 @@ CollectionDB::addAudioproperties( const MetaBundle& bundle )
 
 
 int
-CollectionDB::addSongPercentage( const QString &url , const int percentage )
+CollectionDB::addSongPercentage( const QString &url, int percentage )
 {
     float score;
     QStringList values =
@@ -1163,6 +1163,10 @@ CollectionDB::addSongPercentage( const QString &url , const int percentage )
             "SELECT playcounter, createdate, percentage FROM statistics "
             "WHERE url = '%1';" )
             .arg( escapeString( url ) ) );
+
+    // check boundaries
+    if ( percentage > 100 ) percentage = 100;
+    if ( percentage < 1 )   percentage = 1;
 
     if ( !values.isEmpty() )
     {
@@ -1466,7 +1470,7 @@ void CollectionDB::engineTrackEnded( int finalPosition, int trackLength )
     if ( url.path().isEmpty() ) return;
 
     // sanity check
-    if ( finalPosition > trackLength || finalPosition == 0 )
+    if ( finalPosition > trackLength || finalPosition <= 0 )
         finalPosition = trackLength;
 
     int pct = (int) ( ( (double) finalPosition / (double) trackLength ) * 100 );
