@@ -30,6 +30,10 @@ class CollectionDB : public QObject
     Q_OBJECT
 
     public:
+        //attributes:
+        enum qBuilderTables  { tabAlbum = 1, tabArtist = 2, tabGenre = 4, tabYear = 8 };
+        enum qBuilderOptions { optNoCompilations = 1, optOnlyCompilations = 2, optNoUnknowns = 4 };
+
         CollectionDB();
         ~CollectionDB();
 
@@ -78,8 +82,11 @@ class CollectionDB : public QObject
         QString getPathForAlbum( const QString &artist, const QString &album );
 
         //list methods
-        QStringList artistList( bool withUnknown = true, bool withCompilations = true );
-        QStringList albumList( bool withUnknown = true, bool withCompilations = true );
+        QStringList artistList( int options = 0, const QString& filter = QString::null, int flags = 0 );
+        QStringList albumList( int options = 0, const QString& filter = QString::null, int flags = 0 );
+        QStringList genreList( int options = 0, const QString& filter = QString::null, int flags = 0 );
+        QStringList yearList( int options = 0, const QString& filter = QString::null, int flags = 0 );
+
         QStringList albumListOfArtist( const QString &artist, bool withUnknown = true, bool withCompilations = true );
         QStringList artistAlbumList( bool withUnknown = true, bool withCompilations = true );
 
@@ -150,6 +157,12 @@ class CollectionDB : public QObject
 
     private:
         void customEvent( QCustomEvent* );
+
+        QString qBuilderLinkTables( int tables );
+        QString qBuilderAddFilter( int tables, const QString& filter );
+        QString qBuilderExcludeFilter( int tables, const QString& filter );
+        QString qBuilderSetOptions( int options );
+
         uint IDFromValue( QString name, QString value, bool autocreate = true, bool useTempTables = false );
         QString valueFromID( QString table, uint id );
 

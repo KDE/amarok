@@ -336,21 +336,16 @@ CollectionView::renderView( )  //SLOT
 
     //query database for all records with the specified category
     QStringList values;
-    QStringList names;
-    bool addedVA = false;
-    m_db->retrieveFirstLevel( tableForCat( m_category1 ), tableForCat( m_category2 ),
-                              tableForCat( m_category3 ), m_filter, values, names );
 
-    for ( uint i = 0; i < values.count(); i += 2 )
+    if ( m_category1 == i18n( "Artist" ) ) values = m_db->artistList( CollectionDB::optNoCompilations, m_filter, m_cat1 | m_cat2 | m_cat3 );
+    if ( m_category1 == i18n( "Album" ) )  values = m_db->albumList( 0, m_filter, m_cat1 | m_cat2 | m_cat3 );
+    if ( m_category1 == i18n( "Genre" ) )  values = m_db->genreList( 0, m_filter, m_cat1 | m_cat2 | m_cat3 );
+    if ( m_category1 == i18n( "Year" ) )   values = m_db->yearList( 0, m_filter, m_cat1 | m_cat2 | m_cat3 );
+
+    for ( int i = values.count() - 1; i >= 0; --i )
     {
         if ( values[i].isEmpty() )
-          values[i] = i18n( "Unknown" );
-
-        if ( m_category1 == i18n( "Artist" ) && ( values[i + 1] == "1" || values[i] == i18n( "Various Artists" ) ) )
-        {
-            addedVA = true;
-            continue;
-        }
+            values[i] = i18n( "Unknown" );
 
         KListViewItem* item = new KListViewItem( this );
         item->setExpandable( true );
@@ -360,14 +355,18 @@ CollectionView::renderView( )  //SLOT
         item->setPixmap( 0, pixmap );
     }
 
-    if ( addedVA )
+    if ( m_category1 == i18n( "Artist" ) )
     {
-        KListViewItem* item = new KListViewItem( this );
-        item->setExpandable( true );
-        item->setDragEnabled( true );
-        item->setDropEnabled( false );
-        item->setText( 0, i18n( "Various Artists" ) );
-        item->setPixmap( 0, pixmap );
+        values = m_db->artistList( CollectionDB::optOnlyCompilations, m_filter, m_cat1 | m_cat2 | m_cat3 );
+        if ( values.count() )
+        {
+            KListViewItem* item = new KListViewItem( this );
+            item->setExpandable( true );
+            item->setDragEnabled( true );
+            item->setDropEnabled( false );
+            item->setText( 0, i18n( "Various Artists" ) );
+            item->setPixmap( 0, pixmap );
+        }
     }
 }
 
@@ -488,6 +487,7 @@ CollectionView::cat1Menu( int id, bool rerender )  //SLOT
     m_parent->m_cat1Menu->setItemChecked( idForCat( m_category1 ), false ); //uncheck old item
     m_parent->m_cat2Menu->setItemEnabled( idForCat( m_category1 ), true );  //enable old item
     m_category1 = catForId( id );
+    m_cat1 = id;
     setColumnText( 0, m_category1 );
     m_parent->m_cat1Menu->setItemChecked( idForCat( m_category1 ), true );
 
@@ -521,6 +521,7 @@ CollectionView::cat2Menu( int id, bool rerender )  //SLOT
     m_parent->m_cat2Menu->setItemChecked( idForCat( m_category2 ), false ); //uncheck old item
     m_parent->m_cat3Menu->setItemEnabled( idForCat( m_category3 ), true );  //enable old item
     m_category2 = catForId( id );
+    m_cat2 = id;
     m_parent->m_cat2Menu->setItemChecked( idForCat( m_category2 ), true );
 
     enableCat3Menu(  id != CollectionBrowser::IdNone );
@@ -546,6 +547,7 @@ CollectionView::cat3Menu( int id, bool rerender )  //SLOT
 {
     m_parent->m_cat3Menu->setItemChecked( idForCat( m_category3 ), false ); //uncheck old item
     m_category3 = catForId( id );
+    m_cat3 = id;
     m_parent->m_cat3Menu->setItemChecked( idForCat( m_category3 ), true );
 
     if ( rerender )

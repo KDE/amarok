@@ -44,7 +44,7 @@ class CollectionBrowser: public QVBox
 
     private:
         //attributes:
-        enum CatMenuId { IdScan, IdAlbum, IdArtist, IdGenre, IdYear, IdNone };
+        enum CatMenuId { IdAlbum = 1, IdArtist = 2, IdGenre = 4, IdYear = 8 , IdScan = 16, IdNone = 32 };
 
         KAction* m_configureAction;
         KAction* m_scanAction;
@@ -135,6 +135,9 @@ class CollectionView : public KListView
 
         CollectionBrowser* m_parent;
         QString m_filter;
+        int m_cat1;
+        int m_cat2;
+        int m_cat3;
         QString m_category1;
         QString m_category2;
         QString m_category3;

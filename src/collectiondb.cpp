@@ -538,30 +538,94 @@ CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
 
 
 QStringList
-CollectionDB::artistList( bool withUnknown, bool withCompilations )
+CollectionDB::artistList( int options, const QString& filter, int flags )
 {
-    if ( withUnknown && withCompilations )
-        return query( "SELECT DISTINCT name FROM artist "
-                      "ORDER BY lower( name );" );
-    else
-        return query( "SELECT DISTINCT artist.name FROM tags, artist WHERE 1 " +
-                      ( withUnknown ? QString() : "AND artist.name <> 'Unknown' " ) +
-                      ( withCompilations ? QString() : "AND tags.artist = artist.id AND tags.sampler = 0 " ) +
-                      "ORDER BY lower( artist.name );" );
+    QString cmd;
+
+    // make sure artists is set in flags
+    flags |= tabArtist;
+    cmd = "SELECT DISTINCT artist.name FROM tags";
+    // link tables & add filter
+    cmd += qBuilderLinkTables( flags );
+    cmd += qBuilderAddFilter( flags, filter );
+
+    if ( options & optNoUnknowns )
+        cmd += qBuilderExcludeFilter( tabArtist, "Unknown" );
+
+    cmd += qBuilderSetOptions( options );
+    cmd += "ORDER BY lower(artist.name);";
+
+    kdDebug() << cmd << endl;
+    return query( cmd );
 }
 
 
 QStringList
-CollectionDB::albumList( bool withUnknown, bool withCompilations )
+CollectionDB::albumList( int options, const QString& filter, int flags )
 {
-    if ( withUnknown && withCompilations )
-        return query( "SELECT DISTINCT name FROM album "
-                      "ORDER BY lower( name );" );
-    else
-        return query( "SELECT DISTINCT album.name FROM tags, album WHERE 1 " +
-                      ( withUnknown ? QString() : "AND album.name <> 'Unknown' " ) +
-                      ( withCompilations ? QString() : "AND tags.album = album.id AND tags.sampler = 0 " ) +
-                      "ORDER BY lower( album.name );" );
+    QString cmd;
+
+    // make sure artists is set in flags
+    flags |= tabAlbum;
+    cmd = "SELECT DISTINCT album.name FROM tags";
+    // link tables & add filter
+    cmd += qBuilderLinkTables( flags );
+    cmd += qBuilderAddFilter( flags, filter );
+
+    if ( options & optNoUnknowns )
+        cmd += qBuilderExcludeFilter( tabAlbum, "Unknown" );
+
+    cmd += qBuilderSetOptions( options );
+    cmd += "ORDER BY lower(album.name);";
+
+    kdDebug() << cmd << endl;
+    return query( cmd );
+}
+
+
+QStringList
+CollectionDB::genreList( int options, const QString& filter, int flags )
+{
+    QString cmd;
+
+    // make sure artists is set in flags
+    flags |= tabGenre;
+    cmd = "SELECT DISTINCT genre.name FROM tags";
+    // link tables & add filter
+    cmd += qBuilderLinkTables( flags );
+    cmd += qBuilderAddFilter( flags, filter );
+
+    if ( options & optNoUnknowns )
+        cmd += qBuilderExcludeFilter( tabGenre, "Unknown" );
+
+    cmd += qBuilderSetOptions( options );
+    cmd += "ORDER BY lower(genre.name);";
+
+    kdDebug() << cmd << endl;
+    return query( cmd );
+}
+
+
+QStringList
+CollectionDB::yearList( int options, const QString& filter, int flags )
+{
+    QString cmd;
+
+    // make sure artists is set in flags
+    flags |= tabYear;
+    cmd = "SELECT DISTINCT year.name FROM tags";
+    // link tables & add filter
+    cmd += qBuilderLinkTables( flags );
+    cmd += qBuilderAddFilter( flags, filter );
+
+    if ( options & optNoUnknowns )
+        cmd += qBuilderExcludeFilter( tabYear, "Unknown" );
+
+    cmd += qBuilderSetOptions( options );
+    cmd += "ORDER BY lower(year.name);";
+
+    kdDebug() << cmd << endl;
+    return query( cmd );
 }
 
 
@@ -1215,7 +1279,7 @@ CollectionDB::valueFromID( QString table, uint id )
 
 
 void
- CollectionDB::retrieveFirstLevel( const QString& category1, const QString& category2, const QString& category3,
+CollectionDB::retrieveFirstLevel( const QString& category1, const QString& category2, const QString& category3,
                                    QString filter, QStringList& values, QStringList& names )
 {
     QString filterToken;
@@ -1573,6 +1637,73 @@ CollectionDB::retrieveThirdLevelURLs( const QString& itemText1, const QString& i
     values = query( command, names );
 }
 
+
+QString
+CollectionDB::qBuilderLinkTables( int tables )
+{
+    QString s;
+
+    if ( tables & tabAlbum ) s += ",album";
+    if ( tables & tabArtist ) s += ",artist";
+    if ( tables & tabGenre ) s += ",genre";
+    if ( tables & tabYear ) s += ",year";
+    s += " WHERE 1 ";
+    if ( tables & tabAlbum ) s += "AND album.id=tags.album ";
+    if ( tables & tabArtist ) s += "AND artist.id=tags.artist ";
+    if ( tables & tabGenre ) s += "AND genre.id=tags.genre ";
+    if ( tables & tabYear ) s += "AND year.id=tags.year ";
+
+    return s;
+}
+
+
+QString
+CollectionDB::qBuilderAddFilter( int tables, const QString& filter )
+{
+    QString s;
+
+    if ( !filter.isEmpty() )
+    {
+        s += "AND ( 0 ";
+        if ( tables & tabAlbum ) s += "OR album.name LIKE '%" + filter + "%' ";
+        if ( tables & tabArtist ) s += "OR artist.name LIKE '%" + filter + "%' ";
+        if ( tables & tabGenre ) s += "OR genre.name LIKE '%" + filter + "%' ";
+        if ( tables & tabYear ) s += "OR year.name LIKE '%" + filter + "%' ";
+        s += " ) ";
+    }
+
+    return s;
+}
+
+
+QString
+CollectionDB::qBuilderExcludeFilter( int tables, const QString& filter )
+{
+    QString s;
+
+    if ( !filter.isEmpty() )
+    {
+        s += "AND ( 1 ";
+        if ( tables & tabAlbum ) s += "AND album.name <> '" + filter + "' ";
+        if ( tables & tabArtist ) s += "AND artist.name <> '" + filter + "' ";
+        if ( tables & tabGenre ) s += "AND genre.name <> '" + filter + "' ";
+        if ( tables & tabYear ) s += "AND year.name <> '" + filter + "' ";
+        s += " ) ";
+    }
+
+    return s;
+}
+
+
+QString
+CollectionDB::qBuilderSetOptions( int options )
+{
+    QString s;
+    if ( options & optNoCompilations ) s += "AND tags.sampler <> 1 ";
+    if ( options & optOnlyCompilations ) s += "AND tags.sampler = 1 ";
+
+    return s;
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
