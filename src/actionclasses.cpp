@@ -1,13 +1,10 @@
 // Maintainer: Max Howell <max.howell@methylblue.com>, (C) 2004
 // Copyright:  See COPYING file that comes with this distribution
 
-#ifdef HAVE_CONFIG_H
-    #include <config.h> //HAVE_XMMS definition
-#endif
-
 #include "actionclasses.h"
 #include "amarokconfig.h"
 #include "app.h"                //actionCollection() and a SLOT
+#include "config.h"             //HAVE_XMMS definition
 #include "enginecontroller.h"
 #include "playlistwindow.h"     //need amaroK::ToolBar
 #include "scriptmanager.h"
@@ -93,7 +90,12 @@ Menu::Menu()
    
     insertItem( i18n( "&Scripts..." ), ID_SHOW_SCRIPT_SELECTOR );
     insertItem( i18n( "&JavaScript Console" ), ID_SHOW_SCRIPT_CONSOLE );
-
+    
+    #ifndef HAVE_KJSEMBED
+    setItemEnabled( ID_SHOW_SCRIPT_SELECTOR, false );
+    setItemEnabled( ID_SHOW_SCRIPT_CONSOLE, false );
+    #endif
+    
     insertSeparator();
     
     insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( slotConfigEffects() ) );
@@ -157,12 +159,14 @@ Menu::slotActivated( int index )
     case ID_SHOW_VIS_SELECTOR:
         Vis::Selector::instance()->show(); //doing it here means we delay creation of the widget
         break;
+    #ifdef HAVE_KJSEMBED
     case ID_SHOW_SCRIPT_SELECTOR:
         ScriptManager::Manager::instance()->showSelector();
         break;
     case ID_SHOW_SCRIPT_CONSOLE:
         ScriptManager::Manager::instance()->showConsole();
         break;
+    #endif
     }
 }
 

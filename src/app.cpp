@@ -18,6 +18,7 @@ email                : markey@web.de
 #include "amarokconfig.h"
 #include "amarokdcophandler.h"
 #include "app.h"
+#include "config.h"
 #include "configdialog.h"
 #include "effectwidget.h"
 #include "enginebase.h"
@@ -69,10 +70,12 @@ App::App()
     (void)              new Vis::SocketServer( this );
     (void)              new ScriptManager::Manager( this );
         
+    #ifdef HAVE_KJSEMBED
     // Export symbols to KJSEmbed
     ScriptManager::Manager::instance()->addObject( this );
     ScriptManager::Manager::instance()->addObject( m_pDcopHandler );
-
+    #endif
+    
     m_pPlaylistWindow->init(); //creates the playlist, browsers, etc.
     initGlobalShortcuts();
 

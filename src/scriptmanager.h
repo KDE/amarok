@@ -1,6 +1,9 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // See COPYING file for licensing information.
 
+#include "config.h"
+#ifdef HAVE_KJSEMBED
+
 #ifndef AMAROK_SCRIPTMANAGER_H
 #define AMAROK_SCRIPTMANAGER_H
 
@@ -49,7 +52,7 @@ namespace ScriptManager
 
 } //namespace ScriptManager
 
-
 #endif /* AMAROK_SCRIPTMANAGER_H */
 
+#endif /*HAVE_KJSEMBED*/
 

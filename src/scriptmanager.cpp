@@ -1,6 +1,8 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // See COPYING file for licensing information.
 
+#include "config.h"
+#ifdef HAVE_KJSEMBED
 
 #include "scriptmanager.h"
 
@@ -106,4 +108,5 @@ ScriptManager::Manager::slotConfigure( const QString& path )
    
 #include "scriptmanager.moc"
 
+#endif /*HAVE_KJSEMBED*/
 
