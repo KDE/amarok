@@ -4,9 +4,9 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
+#include "browserwin.h"
 #include "playlistitem.h" //for Tags struct
 #include "playlistloader.h"
-#include "playlistwidget.h"
 
 #include <qapplication.h>
 #include <qtextstream.h>
@@ -38,22 +38,28 @@ extern PlayerApp *pApp;
 //TODO ensure that thread still lives until last event it sends is processed since we depend on it (stupidly)
 //TODO store threads in a stack that can be emptied on premature program exit
 //TODO properly delete threads after use, currently you are being naughty!
-//TODO get setCurrentTrack to insert an item if it's not found, document that it is done after all thread operations are complete
-//     also you can get the customEvent function to check if new items are current if current request is sitting there
+//TODO get setCurrentTrack to insert an item if it's not found, document that it is done after all thread
+//     operations are complete
+//     also you can get the customEvent function to check if new items are current if current request is
+//     sitting there
 
 //LESS IMPORTANT
 //TODO add non-local directories as items with a [+] next to, you open them by clicking the plus!!
 //TODO display dialog that lists unloadable media after thread is exited
 //TODO undo/redo suckz0r as you can push both simultaneously and you get a list which is a mixture!
-//     perhaps a static method that accepts a ListView pointer and loads playlists only would help speed up undo/redo
+//     perhaps a static method that accepts a ListView pointer and loads playlists only would help speed
+//     up undo/redo
 //TODO stop blocking on netaccess::download()
 //TODO delete temporary playlist files
 //TODO recursion limits
 //TODO either remove the option or always read metatags (also remove extra columns if you keep the option)
-//TODO extract and bundle extra info from playlists (especially important for streams) (bundle it with the URLs somehow and then allow replacement if metatags exist (?) )
+//TODO extract and bundle extra info from playlists (especially important for streams) (bundle it with
+//     the URLs somehow and then allow replacement if metatags exist (?) )
 //TODO consider loading the TagLib::AudioProperties on demand only as they are slow to load
-//TODO rethink recursion options <mxcl> IMHO they suck big chunks, always do it recursively, why drop/add a directory if you don't want its contents?
+//TODO rethink recursion options <mxcl> IMHO they suck big chunks, always do it recursively, why drop/add a
+//     directory if you don't want its contents?
 //     you can always open the dir and select the files. Stupid option and PITA to implement.
+//     <markey> non-recursive adding should get replaced by "add all media files in current directory" 
 //TODO reimplement ask recursive in PlaylistWidget::insertMedia()
 
 PlaylistItem *PlaylistLoader::PlaylistEvent::makePlaylistItem( QListView *lv )
@@ -66,7 +72,8 @@ PlaylistItem *PlaylistLoader::PlaylistEvent::makePlaylistItem( QListView *lv )
    {
       QString path = m_url.filename();
       int i = path.findRev( '.' );
-      //FIXME KTempFile should default to the suffix "tmp", not "", thus allowing you to have no prefix if you so desire. Bad design needs you to fix it!
+      //FIXME KTempFile should default to the suffix "tmp", not "", thus allowing you to have no prefix
+      //      if you so desire. Bad design needs you to fix it!
       KTempFile tmpfile( QString::null, path.right( i ) ); //default prefix
       path = tmpfile.name();
 
@@ -146,7 +153,8 @@ void PlaylistLoader::process( KURL::List &list, bool bTranslate )
 
          if( S_ISDIR( statbuf.st_mode ) )
          {
-            if( pApp->m_optDropMode != "Recursively" || ( !pApp->m_optFollowSymlinks && S_ISLNK( statbuf.st_mode ) && list.count() > 1 ) ) continue; //FIXME depth check too
+            if( pApp->m_optDropMode != "Recursively" || ( !pApp->m_optFollowSymlinks && S_ISLNK
+              ( statbuf.st_mode ) && list.count() > 1 ) ) continue; //FIXME depth check too
 
             KURL::List list2;
             translate( *it, list2 );
