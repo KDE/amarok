@@ -17,6 +17,7 @@ VERSION 1.2-beta2:
   FIX: Play button was sometimes stuck in disabled state.
   FIX: OSD was showing "%artist - %track" instead of "%artist - %title".
   FIX: Forward command line option --engine to amarokapp.
+  FIX: CoverFetcher was always looking for "album - album".
 
 VERSION 1.2-beta1:
   ADD: Full support for Audioscrobbler, including submission of tracks.
