@@ -9,7 +9,7 @@ VERSION 1.2.3:
   CHANGES:
 
   BUGFIXES:
-
+    * Fix units for samplerate (BR 101528)
 
 VERSION 1.2.2:
   FEATURES:
