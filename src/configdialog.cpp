@@ -40,13 +40,12 @@ email                : markey@web.de
 #include <qradiobutton.h>
 #include <qspinbox.h>
 #include <qtextcodec.h>
-#include <qvbox.h>
 #include <qtooltip.h>
+#include <qvbox.h>
 
 #include <kapplication.h> //kapp
-#include <kdebug.h>
-#include <klocale.h>
 #include <kiconloader.h>
+#include <klocale.h>
 #include <kstandarddirs.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -60,6 +59,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 {
     setWFlags( WDestructiveClose );
 
+    // IMPORTANT Don't simply change the page names, they are used as identifiers in other parts of the app.
             m_opt1 = new Options1( 0, "General" );
     Options2 *opt2 = new Options2( 0, "Appearance" );
             m_opt4 = new Options4( 0, "Playback" );
@@ -240,6 +240,8 @@ bool AmarokConfigDialog::hasChanged()
 /** REIMPLEMENTED */
 bool AmarokConfigDialog::isDefault()
 {
+    AMAROK_NOTIMPLEMENTED
+
     return false;
 }
 
