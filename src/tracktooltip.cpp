@@ -27,8 +27,26 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags )
 
     QString image = CollectionDB().albumImage( tags.artist(), tags.album() );
 
-    left  << i18n( "Title" ) << i18n( "Artist" ) << i18n( "Album" ) << i18n( "Length" ) << i18n( "Bitrate" ) << i18n( "Samplerate" );
-    right << tags.title() << tags.artist() << tags.album() << tags.prettyLength() << tags.prettyBitrate() << tags.prettySampleRate();
+    left  << i18n( "Title" ) << i18n( "Artist" ) << i18n( "Album" );
+    right << tags.title() << tags.artist() << tags.album();
+    
+    if ( tags.length() )
+    {
+        left << i18n( "Length" );
+        right << tags.prettyLength();
+    }
+    if ( tags.bitrate() )
+    {
+        left << i18n( "Bitrate" );
+        right << tags.prettyBitrate();
+    }
+    if ( tags.sampleRate() )
+    {
+        left << i18n( "Samplerate" );
+        right << tags.prettySampleRate();
+    }
+    
+        
 
     //NOTE it seems to be necessary to <center> each element indivdually
     tipBuf += "<center><b>amaroK</b></center><table cellpadding='2' cellspacing='2' align='center'><tr>";
