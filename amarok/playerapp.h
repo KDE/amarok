@@ -125,6 +125,7 @@ class PlayerApp : public KUniqueApplication
         void slotConnectPlayObj();
         void slotPause();
         void slotStop();
+        void slotStopCurrent();
         void slotNext();
         void slotSavePlaylist();
         void slotClearPlaylistAsk();

@@ -167,9 +167,9 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
       : QWidget( parent, name ),
         DCOPObject( "player" ),
         m_pPopupMenu( NULL ),
+        m_pActionCollection( new KActionCollection( this ) ),
         m_pPlayObjConfigWidget( NULL ),
-        m_nowPlaying( "" ),
-        m_pActionCollection( new KActionCollection( this ) )
+        m_nowPlaying( "" )
 {
     //setName( "PlayerWidget " );
     setCaption( "amaroK" );

@@ -1023,7 +1023,7 @@ void PlayerApp::slotPlay()
         m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( item );
     }
 
-    slotStop();
+    slotStopCurrent();
 
     m_pPlayerWidget->m_pButtonPlay->setOn( true ); //interface consistency
     KDE::PlayObjectFactory factory( m_Server );
@@ -1102,6 +1102,13 @@ void PlayerApp::slotPause()
 
 void PlayerApp::slotStop()
 {
+     stopXFade();
+     slotStopCurrent();
+}
+
+
+void PlayerApp::slotStopCurrent()
+{
     m_pPlayerWidget->m_pButtonPlay->setOn( false );
 
     if ( m_pPlayObject != NULL )
@@ -1111,8 +1118,6 @@ void PlayerApp::slotStop()
         delete m_pPlayObject;
         m_pPlayObject = NULL;
     }
-
-//     stopXFade();
 
     m_bIsPlaying = false;
     m_length = 0;
