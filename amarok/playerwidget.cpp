@@ -665,7 +665,6 @@ void PlayerWidget::createVis()
     switch( pApp->m_optVisCurrent )
     {
     case 0:
-    firstcase:
         m_pVis = new BarAnalyzer( this );
         break;
     case 1:
@@ -697,8 +696,9 @@ void PlayerWidget::createVis()
         //viswidgets IMHO - <mxcl>
 
         //this is so we don't have to remember how many viswidgets there are
+        m_pVis = new BarAnalyzer( this );
         pApp->m_optVisCurrent = 0;
-        goto firstcase;
+    break;
     }
 
     // we special-case the DistortAnalyzer, since it needs more height. yes, this ugly.. I need whipping
