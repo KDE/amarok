@@ -23,7 +23,6 @@ email                : markey@web.de
 #include <kurl.h>
 
 #include <qobject.h>
-#include <qsocketnotifier.h>
 #include <qstring.h>
 
 // Some info on the shoutcast metadata protocol can be found at:
@@ -44,10 +43,10 @@ email                : markey@web.de
 
 using namespace TitleProxy;
 
-static const int MIN_PROXYPORT = 6666;
-static const int MAX_PROXYPORT = 7777;
-static const int IN_BUFSIZE    = (8192 * 4);
-static const int BUFSIZE       = 8192;
+static const uint MIN_PROXYPORT = 6666;
+static const uint MAX_PROXYPORT = 7777;
+static const int  IN_BUFSIZE    = (8192 * 4);
+static const int  BUFSIZE       = 8192;
 
 
 Proxy::Proxy(KURL url) 
@@ -80,7 +79,7 @@ Proxy::Proxy(KURL url)
     }
 
     int listenResult = -1;
-    unsigned int i = 0;
+    uint i;
     for(i = MIN_PROXYPORT; i <= MAX_PROXYPORT; i++)
     {
         m_sockPassive.setPort(i);
