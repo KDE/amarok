@@ -24,6 +24,7 @@
 #include <kio/job.h>
 #include <klineedit.h>            //setupCoverFetcher()
 #include <klocale.h>
+#include <kmdcodec.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
 
@@ -289,8 +290,8 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage
     removeAlbumImage( artist, album );
 
     QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
-    QString key( QFile::encodeName( artist.lower() + " - " + album.lower() ) );
-    key.replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ).append( ".png" );
+    KMD5 context( artist.lower().local8Bit() + album.lower().local8Bit() );
+    QCString key = context.hexDigest();
 
     // Save Amazon product page URL as embedded string, for later retreival
     if ( !amazonUrl.isEmpty() )
@@ -304,7 +305,7 @@ QString
 CollectionDB::albumImage( const QString artist, const QString album, uint width )
 {
     if ( !width ) width = AmarokConfig::coverPreviewSize();
-    QString widthKey = QString::number( width ) + "@";
+    QCString widthKey = QString::number( width ).local8Bit() + "@";
 
     if ( artist.isEmpty() && album.isEmpty() )
     {
@@ -319,8 +320,8 @@ CollectionDB::albumImage( const QString artist, const QString album, uint width 
     }
     else
     {
-        QString key( QFile::encodeName( artist.lower() + " - " + album.lower() ) );
-        key.replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ).append( ".png" );
+        KMD5 context( artist.lower().local8Bit() + album.lower().local8Bit() );
+        QCString key = context.hexDigest();
 
         // check cache for existing cover
         if ( m_cacheDir.exists( widthKey + key ) )
@@ -424,20 +425,20 @@ CollectionDB::removeAlbumImage( const uint artist_id, const uint album_id )
 bool
 CollectionDB::removeAlbumImage( const QString artist, const QString album )
 {
-    QString widthKey = "*@";
-    QString key( QFile::encodeName( artist + " - " + album ) );
-    key.replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ).append( ".png" );
+    QCString widthKey = "*@";
+    KMD5 context( artist.lower().local8Bit() + album.lower().local8Bit() );
+    QCString key = context.hexDigest();
 
     // remove scaled versions of images
-    QStringList scaledList = m_cacheDir.entryList( widthKey + key.lower() );
+    QStringList scaledList = m_cacheDir.entryList( widthKey + key );
     if ( scaledList.count() > 0 )
         for ( uint i = 0; i < scaledList.count(); i++ )
             QFile::remove( m_cacheDir.filePath( scaledList[ i ] ) );
 
     // remove large, original image
     QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
-    if ( largeCoverDir.exists( key.lower() ) )
-        return QFile::remove( largeCoverDir.filePath( key.lower() ) );
+    if ( largeCoverDir.exists( key ) )
+        return QFile::remove( largeCoverDir.filePath( key ) );
 
     return false;
 }
