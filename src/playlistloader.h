@@ -17,11 +17,12 @@ class PlaylistLoader : public QThread
 {
 public:
     PlaylistLoader( const KURL::List&, QListView*, QListViewItem* );
+    ~PlaylistLoader();
 
     enum Format { M3U, PLS, XML, UNKNOWN };
     enum EventType { Started = 1010, Done, Item, Tags };
 
-    static void stop() {} //TODO
+    static void stop() { if ( s_instance ) s_instance->m_stop = true; }
     static void downloadPlaylist( const KURL&, QListView*, QListViewItem* );
     static bool isPlaylist( const KURL& );        //inlined
     static Format playlistType( const QString& ); //inlined
@@ -70,10 +71,14 @@ private:
     void addBadURL( const KURL &url ) { m_badURLs += url; }
 
 private:
+    static PlaylistLoader* s_instance;
+
     PlaylistItem *m_markey;
 
     const KURL::List m_URLs;
           KURL::List m_badURLs;
+
+    bool m_stop;
 
     typedef QPair<KURL,PlaylistItem*> Pair;
     typedef QValueList<Pair> List;
