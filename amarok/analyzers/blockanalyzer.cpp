@@ -21,6 +21,8 @@
 #include <qevent.h>
 
 
+#define DARK 112
+
 static float lvlMapper[BlockAnalyzer::MAX_ROWS+1];// = { 0.080, 0.140, 0.200, 0.300, 0.500, 0.700, 100 };
 
 
@@ -31,7 +33,7 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
  , m_scope( MIN_COLUMNS )    //Scope
  , m_columns( MIN_COLUMNS )  //uint
 {
-    QColor darkColor( backgroundColor().dark( 125 ) );
+    QColor darkColor( backgroundColor().dark( DARK ) );
 
     m_dark.fill( darkColor );
 
@@ -45,7 +47,7 @@ BlockAnalyzer::~BlockAnalyzer()
     //     which may be worthwhile, personally I think that is more trouble than it is worth.
 /*
     KConfig *config = KGlobal::config();
-    
+
     config->setGroup( "ToolBarAnalyzer" );
     config->writeEntry( "Timeout", timeout() );
     //config->writeEntry( "FhtSize", m_fht.size() );
@@ -84,7 +86,7 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
         //for( uint x = 0; x <= m_rows; ++x ) kdDebug() << x << ": " << endl;
 
 
-        QColor darkColor( backgroundColor().dark( 125 ) );
+        QColor darkColor( backgroundColor().dark( DARK ) );
 
         double dr = 7.5*double(darkColor.red()   - 32) / (m_rows*8);
         double dg = 7.5*double(darkColor.green() - 32) / (m_rows*8);
@@ -184,7 +186,7 @@ BlockAnalyzer::mousePressEvent( QMouseEvent *e )
         KPopupMenu menu;
 
         const uint ids[7] = { 40, 33, 20, 9, 8, 7, 6 };
-        
+
         uint compare = timeout();
         QString body = i18n( "%1 fps" );
         menu.insertTitle( i18n( "Framerate" ) );
@@ -192,19 +194,19 @@ BlockAnalyzer::mousePressEvent( QMouseEvent *e )
         for( uint x = 0; x < 7; ++x )
         {
             const uint v = ids[x];
-            
+
             if( x == 3 )
             {
                 body = "%1";
                 compare = m_fht.sizeExp();
                 menu.insertTitle( i18n( "Spectrum Size" ) );
             }
-        
+
             menu.insertItem( body.arg( x<3 ? 1000/v : 1 << (v-1) ), v );
             menu.setItemChecked( v, v == compare );
         }
 
-        
+
         int id = menu.exec( e->globalPos() );
 
         if( id >= 20 ) { m_timer.changeInterval( id ); m_timeout = id; }
