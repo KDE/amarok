@@ -405,14 +405,17 @@ void ArtsEngine::stop()
     m_xfadeRunning = true;
     
     //switch xfade channels
-    if ( m_xfadeCurrent == "invalue1" )
-        m_xfadeCurrent = "invalue2";
-    else
-        m_xfadeCurrent = "invalue1";
+    m_xfadeCurrent = ( m_xfadeCurrent == "invalue1" ) ? "invalue2" : "invalue1";
     
     if ( m_pPlayObjectXfade )
+    {
+        //set mute to prevent sound glitch
+        m_xfadeValue = ( m_xfadeCurrent == "invalue2" ) ? 0.0 : 1.0;
+        m_xfade.percentage( m_xfadeValue );
+        
         delete m_pPlayObjectXfade;
-    
+    }
+            
     m_pPlayObjectXfade = m_pPlayObject;
     m_pPlayObject = 0;
 }
