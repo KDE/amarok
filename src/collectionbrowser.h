@@ -14,6 +14,7 @@
 #include <qstringlist.h>     //stack allocated
 #include <kurl.h>            //stack allocated
 
+class CoverFetcher;
 class sqlite;
 
 class QCString;
@@ -80,6 +81,7 @@ class CollectionView : public KListView
         
     private slots:
         void setupDirs();    
+        void setupCoverFetcher();
         void scan();
         void scanMonitor();
         
@@ -99,6 +101,8 @@ class CollectionView : public KListView
         /** Adds all selected tracks to current playlist */
         void addToPlaylist();
         /** Shows dialog with information on selected track */
+        void fetchCover();
+        /** Tries to download the cover image from Amazon.com */
         void showTrackInfo();
                 
     private:
@@ -127,6 +131,8 @@ class CollectionView : public KListView
         bool m_recursively;
         bool m_monitor;
         bool m_isScanning;
+        CoverFetcher* m_coverFetcher;
+        QString m_amazonLicense;
 };
 
 

@@ -44,6 +44,7 @@ amarokapp_SOURCES = \
     collectiondb.cpp \
     configdialog.cpp \
     contextbrowser.cpp \
+    coverfetcher.cpp \
     directorylist.cpp \
     directorylistbase.ui \
     effectwidget.cpp \

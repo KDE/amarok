@@ -4,6 +4,7 @@
 
 #include "app.h"            //makePlaylist()
 #include "collectionbrowser.h"
+#include "coverfetcher.h"
 #include "directorylist.h"
 #include "metabundle.h"
 #include "statusbar.h"
@@ -21,6 +22,7 @@
 #include <kconfig.h>
 #include <kdebug.h>
 #include <kiconloader.h>    //renderView()
+#include <kinputdialog.h>   //setupCoverFetcher()
 #include <klocale.h>
 #include <kmenubar.h>
 #include <kpopupmenu.h>
@@ -70,6 +72,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     m_actionsMenu->insertItem( i18n( "Configure Folders" ), m_view, SLOT( setupDirs() ) );
     m_actionsMenu->insertItem( i18n( "Start Scan" ), m_view, SLOT( scan() ), 0, IdScan );
+    m_actionsMenu->insertItem( i18n( "Configure Cover Fetcher" ), m_view, SLOT( setupCoverFetcher() ) );
 
     m_cat1Menu ->insertItem( i18n( "Album" ), m_view, SLOT( cat1Menu( int ) ), 0, IdAlbum );
     m_cat1Menu ->insertItem( i18n( "Artist"), m_view, SLOT( cat1Menu( int ) ), 0, IdArtist );
@@ -88,7 +91,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ),
              this,           SLOT( slotSetFilterTimeout() ) );
-
+    
     setFocusProxy( m_view ); //default object to get focus
     setMinimumWidth( menu->sizeHint().width() + 2 ); //set a reasonable minWidth
 }
@@ -128,6 +131,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         : KListView( parent )
         , m_parent( parent )
         , m_isScanning( false )
+        , m_coverFetcher( new CoverFetcher( this ) )
 {
     kdDebug() << k_funcinfo << endl;
 
@@ -149,6 +153,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         addColumn( m_category1 );
         m_recursively = config->readBoolEntry( "Scan Recursively", true );
         m_monitor = config->readBoolEntry( "Monitor Changes", false );
+        m_amazonLicense = config->readEntry( "Amazon License Key" );
     //</read config>
 
     //<open database>
@@ -209,6 +214,7 @@ CollectionView::~CollectionView() {
     config->writeEntry( "Monitor Changes", m_monitor );
     config->writeEntry( "Database Version", DATABASE_VERSION );
     config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
+    config->writeEntry( "Amazon License Key", m_amazonLicense );
 
     delete m_db;
 }
@@ -232,6 +238,17 @@ CollectionView::setupDirs()  //SLOT
     m_monitor = result.monitorChanges;
 
     scan();
+}
+
+
+void
+CollectionView::setupCoverFetcher()  //SLOT
+{
+    m_amazonLicense = KInputDialog::getText( "Enter Amazon Webservice Key",
+                                             "License Key:",
+                                             m_amazonLicense );
+    
+    m_coverFetcher->setLicense( m_amazonLicense );
 }
 
 
@@ -412,6 +429,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         menu.insertItem( i18n( "Make Playlist" ), this, SLOT( makePlaylist() ) );
         menu.insertItem( i18n( "Add to Playlist" ), this, SLOT( addToPlaylist() ) );
+        menu.insertItem( i18n( "Fetch Cover Image" ), this, SLOT( fetchCover() ) );
         
         if ( ( item->depth() && m_category2 == i18n( "None" ) ) || item->depth() == 2 )
             menu.insertItem( i18n( "Track Information" ), this, SLOT( showTrackInfo() ) );
@@ -433,6 +451,13 @@ void
 CollectionView::addToPlaylist() //SLOT
 {
     pApp->insertMedia( listSelected() );
+}
+
+
+void
+CollectionView::fetchCover() //SLOT
+{
+    m_coverFetcher->getCover( "Genesis - We can't dance" );
 }
 
 
