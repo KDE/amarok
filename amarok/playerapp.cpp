@@ -204,13 +204,15 @@ void PlayerApp::handleLoaderArgs( const QCString& args )
     //to re-initialize KCmdLineArgs --> FIXME
     
     QStringList strlist = QStringList::split( " ", args );
+    KURL::List list;
     
     kdDebug() << "[PlayerApp::handleLoaderArgs] feeding BrowserWin::insertMedia() with this list: \n";
     kdDebug() << strlist << endl;
     
-    KURL::List list( strlist );
+    for ( QStringList::Iterator it = strlist.begin(); it != strlist.end(); ++it )
+        list << KCmdLineArgs::makeURL( (*it).latin1() );
+    
     bool notEnqueue = !args.contains( "-e" );
-
     //add to the playlist with the correct arguments ( bool clear, bool play )
     m_pBrowserWin->insertMedia( list, notEnqueue, notEnqueue || args.contains( "-p" ) );
 
