@@ -128,11 +128,13 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     setMinimumWidth( m_toolbar->sizeHint().width() );
 
-    // Add default streams playlist as the next item under "Current Playlist"
-    addPlaylist( locate( "data","amarok/data/Cool-Streams.m3u" ) );
-
     // Load the playlists stats cache
     loadPlaylists();
+
+    // Add default streams playlist as the next item under "Current Playlist"
+    lastPlaylist = static_cast<PlaylistBrowserItem*>( m_listview->firstChild() );
+    addPlaylist( locate( "data","amarok/data/Cool-Streams.m3u" ) );
+    lastPlaylist = static_cast<PlaylistBrowserItem*>( m_listview->lastItem() );
 }
 
 
