@@ -2,6 +2,8 @@ amaroK ChangeLog
 ================
 (c) 2002-2004 the amaroK authors.
 
+  * chg: Random Mode now stores the recently played songs in a buffer, which prevents
+         playing the same songs too often.
   * add: "Play Next" context menu option
   * add: selected aRts-effects will be remembered on next program start, including settings
   * fix: sort numerical playlist columns in correct order

@@ -31,9 +31,6 @@ SHORT-TERM (URGENT):
     * add: #29<muesli> configure script should fail, if taglib check failed
               <markey> would be comfy to have a special flag for release which deactivates the check
 
-    * chg: #24<muesli> random mode needs to remember (at least) the last 10 songs, so you could
-              go back in history, if you want to repeat a song. -->muesli
-
     * fix: #11<markey> bitrate display often shows bogus values (especially with VBR, it seems)
               <mxcl> currently taglib is scanning files in Fast mode and on demand, the code is in
               PlaylistItem::metaBundle(). If it's still doing it wrong we should consider setting it
