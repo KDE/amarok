@@ -98,10 +98,10 @@ ContextBrowser::~ContextBrowser()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void ContextBrowser::setFont( const QFont &newFont ) {
-    if( newFont != font() ) {
+//    if( newFont != font() ) {
         QWidget::setFont( newFont );
         setStyleSheet();
-    }
+//    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -366,7 +366,8 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
                 showCurrentTrack();
             }
         }
-        else CoverManager::viewCover( info[0], info[1], this );
+        else
+            CoverManager::viewCover( info[0], info[1], this );
         break;
     #endif
 
@@ -492,6 +493,8 @@ void ContextBrowser::showCurrentTrack() //SLOT
             "</html>" );
 
         browser->end();
+
+        //TODO if we have artist information we can show the following stuff too! cool :)
 
         return;
     }
@@ -722,12 +725,11 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
 
 namespace amaroK {
-class Color : public QColor {
+    class Color : public QColor {
         static const int CONTRAST = 130;
         static const int SATURATION_TARGET = 30;
-public:
-        Color( const QColor &c )
-: QColor( c ) {
+    public:
+        Color( const QColor &c ) : QColor( c ) {
             int h,s1,s,v1,v;
             getHsv( &h, &s1, &v1 );
 
@@ -858,10 +860,8 @@ void ContextBrowser::showScanning() {
 // If I'm violating any copyright or such
 // please contact / sue me. Thanks.
 
-void ContextBrowser::showLyrics() {
-
-
-
+void ContextBrowser::showLyrics()
+{
     QString url = QString( "http://lyrc.com.ar/en/tema1en.php?artist=%1&songname=%2" )
                   .arg( EngineController::instance()->bundle().artist() )
                   .arg( EngineController::instance()->bundle().title() );
@@ -904,7 +904,7 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
 
-    browser->write( "<div>" );
+    browser->write( "<html><div>" );
     browser->write( m_lyrics );
     browser->write( "</div></html>" );
     browser->end();
