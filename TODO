@@ -13,8 +13,6 @@ SHORT-TERM (URGENT):
                      Update: Would be even better to detect the mpeglib arts-plugins directly, since some
                      distros offer them as a sperate package.
                      
-  CHG #102 <muesli> keep secondary database connection open while scanning, only.
-
   FIX #101 <mxcl> we need to update the tooltip for 1.0, especially the drag back to FileBrowser bit
 
   FIX #99 <markey> With KDE color scheme some widgets inside of the browsers become black,
