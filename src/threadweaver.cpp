@@ -69,7 +69,8 @@ ThreadWeaver::queueJob( Job *job )
 int
 ThreadWeaver::queueJobs( const JobList &jobs )
 {
-    Q_ASSERT( !jobs.isEmpty() );
+    if ( jobs.isEmpty() )
+        return -1;
 
     const char *name = jobs.front()->name();
     Thread *thread = findThread( name );

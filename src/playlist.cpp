@@ -1794,7 +1794,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         //Spreadsheet like fill-down
         {
             QString newTag = item->exactText( col );
-            MyIterator it( this, MyIterator::Selected );
+            MyIt it( this, MyIt::Selected );
 
             //special handling for track column
             uint trackNo = (*it)->exactText( PlaylistItem::Track ).toInt(); //returns 0 if it is not a number
@@ -1804,9 +1804,9 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             if ( trackColumn && trackNo > 0 )
                 ++it;
 
-            bool b = true;
-            for( ; *it; ++it )
-            {
+            ThreadWeaver::JobList jobs;
+            bool updateView = true;
+            for( ; *it; ++it ) {
                 if ( trackColumn )
                     //special handling for track column
                     newTag = QString::number( ++trackNo );
@@ -1817,10 +1817,12 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
                 //FIXME fix this hack!
                 if ( (*it)->exactText( col ) != i18n("Writing tag...") )
-                    ThreadWeaver::instance()->queueJob( new TagWriter( *it, (*it)->exactText( col ), newTag, col, b ) );
+                    jobs.prepend( new TagWriter( *it, (*it)->exactText( col ), newTag, col, updateView ) );
 
-                b = false;
+                updateView = false;
             }
+
+            ThreadWeaver::instance()->queueJobs( jobs );
         }
         break;
 
@@ -2135,6 +2137,7 @@ Playlist::addCustomColumn()
     {
     public:
         CustomColumnDialog( QWidget *parent )
+            : KDialog( parent )
         {
             QLabel *textLabel1, *textLabel2, *textLabel3;
             QLineEdit *lineEdit1, *lineEdit2;
