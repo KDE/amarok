@@ -474,7 +474,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
               "</table>"
               "<table width='100%' border='0' cellspacing='0' cellpadding='1'>"
                "<tr>"
-                "<td height='42' valign='top' class='rbcurrent' width='90%'>"
+                "<td height='42' valign='top' width='90%'>"
                  "<span class='stream'>"
                   "<b>%2</b>"
                   "<br/>"
@@ -604,11 +604,10 @@ void ContextBrowser::showCurrentTrack() //SLOT
         browser->write( "<i>" + i18n( "Never played before" )  + "</i>" );
 
     browser->write(
-         "</td>"
-        "</tr>"
-       "</table>"
-      "</div>" );
-
+           "</td>"
+          "</tr>"
+         "</table>"
+        "</div>" );
     // </Current Track Information>
 
     if ( !m_db->isFileInCollection( currentTrack.url().path() ) ) {
@@ -703,33 +702,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
     }
     // </Favourite Tracks Information>
 
-    // <Tracks on this album>
-    if ( !currentTrack.album().isEmpty() && !currentTrack.artist().isEmpty() ) {
-        values = m_db->query( QString( "SELECT title, url, track "
-                                       "FROM tags "
-                                       "WHERE album = %1 AND "
-                                       "( tags.sampler = 1 OR tags.artist = %2 ) "
-                                       "ORDER BY tags.track;" )
-                              .arg( album_id )
-                              .arg( artist_id ) );
-
-        if ( !values.isEmpty() ) {
-            browser->write( "<br><div class='rbcontent'>"
-                            "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-                            "<tr><th>" + i18n( "Tracks On This Album" ) + "</th></tr>"
-                            "</table>"
-                            "<table width='100%' border='0' cellspacing='0' cellpadding='1'>" );
-
-            for ( uint i = 0; i < values.count(); i += 3 ) {
-                QString tmp = values[i + 2].stripWhiteSpace().isEmpty() ? "" : values[i + 2] + ". ";
-                browser->write( QString ( "<tr><td class='song'><a href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">" + tmp + values[i] + "</a></td></tr>" ) );
-            }
-
-            browser->write( "</table></div>" );
-        }
-    }
-    // </Tracks on this album>
-
     // <Albums by this artist>
     values = m_db->query( QString( "SELECT DISTINCT album.name, album.id "
                                    "FROM tags, album "
@@ -738,37 +710,89 @@ void ContextBrowser::showCurrentTrack() //SLOT
                           .arg( artist_id ) );
 
     if ( !values.isEmpty() ) {
-        browser->write( "<br><div class='rbcontent'>" );
-        browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-        browser->write( "<tr><th>&nbsp;" + i18n( "Albums By This Artist" ) + "</th></tr>" );
-        browser->write( "</table>" );
-        browser->write( "<table width='100%' border='0' cellspacing='2' cellpadding='0'>" );
+        // write the script to toggle albumlists and header
+        browser->write(
+            "<script type='text/javascript'>"
+              "function toggleAlbumTracks(album) {"
+                "if (document.getElementById(album).style.display != 'none') {"
+                  "document.getElementById(album).style.display = 'none';"
+                "} else {"
+                  "document.getElementById(album).style.display = 'block';"
+                "}"
+              "}"
+            "</script>"
+            "<br>"
+            "<div class='rbcontent'>"
+             "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+              "<tr><th>&nbsp;" + i18n( "Albums By This Artist" ) + "</th></tr>"
+             "</table>"
+             "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+
+        // place current album first
+        int vectorPlace = 0;
+        while ( vectorPlace < values.count() && values[ vectorPlace+1 ] != QString::number( album_id ) )
+            vectorPlace += 2;
+        // if album found, swap that entry with the first one
+        if ( vectorPlace != 0 && vectorPlace < values.count() ) {
+            QString tmp = values[ vectorPlace ];
+            values[ vectorPlace ] = values[ 0 ];
+            values[ 0 ] = tmp;
+            tmp = values[ vectorPlace+1 ];
+            values[ vectorPlace+1 ] = values[ 1 ];
+            values[ 1 ] = tmp;
+        }
 
         for ( uint i = 0; i < values.count(); i += 2 ) {
-            browser->write( QStringx ( "<tr>"
-                                       "<td class='rbalbum' onClick='window.location.href=\"album:%1 @@@ %2\"' height='42' valign='top'>"
-                                       "<a href='fetchcover:%3 @@@ %4'><img align='left' hspace='2' title='" +
-                                       i18n( "Click for information from amazon.com, right-click for menu." ) +
-                                       "' src='%5'></a>"
-                                       /* *** UGLY HACK ALERT ***
-                                          Without the 2 <br> after %9, hover borks on mouseover.
-                                          TODO: find out why + make it nice ;) */
-                                       "<a href='album:%6 @@@ %7'><b>%8</b><br>%9<br><br></a>"
-                                       "</td>"
-                                       "</tr>" )
-                            .args( QStringList()
-                                   << QString::number( artist_id )
-                                   << values[ i+1 ] //album.id
-                                   << escapeHTMLAttr( currentTrack.artist() ) // artist name
-                                   << escapeHTMLAttr( values[ i ] ) // album.name
-                                   << escapeHTMLAttr( m_db->albumImage( currentTrack.artist(), values[ i ], 50 ) )
-                                   << QString::number( artist_id )
-                                   << values[ i+1 ] //album.id
-                                   << escapeHTML( values[ i ] ) // album.name
-                                   << i18n( "1 Track", "%n Tracks", m_db->albumSongCount( QString::number(artist_id), values[ i+1 ] ).toInt() )
-                                 ) );
+            browser->write( QStringx (
+                "<tr>"
+                 "<td height='42' width='1' valign='top'>"
+                  "<a href='fetchcover:%1 @@@ %2'><img align='left' title='%3' src='%4'></a><br>"
+                 "</td>"
+                 "<td valign='top'>"
+                  "<div>"
+                   "<div class='album-header' onClick=\"toggleAlbumTracks('IDA%5')\">"
+                    "<div style='float:right;'>%6</div>"
+                    "<a href='album:%7 @@@ %8'><b>%9</b></a>"
+                   "</div>"
+                   "<div class='album-contents' style='display:%10;' id='IDA%11'>" )
+                .args( QStringList()
+                    << escapeHTMLAttr( currentTrack.artist() ) // artist name
+                    << escapeHTMLAttr( values[ i ] ) // album.name
+                    << i18n( "Click for information from amazon.com, right-click for menu." )
+                    << escapeHTMLAttr( m_db->albumImage( currentTrack.artist(), values[ i ], 50 ) )
+                    << values[ i+1 ]
+                    << i18n( "Single", "%n Tracks", m_db->albumSongCount( QString::number(artist_id), values[ i+1 ] ).toInt() )
+                    << QString::number( artist_id )
+                    << values[ i+1 ] //album.id
+                    << escapeHTML( values[ i ] )
+                    << ( i ? "none" : "block" )
+                    << values[ i+1 ] ) );
+
+            QStringList albumValues = m_db->query( QString(
+                "SELECT title, url, track "
+                "FROM tags "
+                "WHERE album = " + values[ i+1 ] +  " AND "
+                "( tags.sampler = 1 OR tags.artist = " + QString::number( artist_id ) +  " ) "
+                "ORDER BY tags.track;" ) );
+            if ( !albumValues.isEmpty() ) {
+                for ( uint j = 0; j < albumValues.count(); j += 3 ) {
+                QString tmp = albumValues[j + 2].stripWhiteSpace().isEmpty() ? "" : "<i>" + albumValues[j + 2] + ".</i> ";
+                    browser->write(
+                        "<div class='song'>"
+                         "<a href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">" + tmp + albumValues[j] + "</a>"
+                        "</div>" );
+                }
+            }
+
+            browser->write(
+                   "</div>"
+                  "</div>"
+                 "</td>"
+                "</tr>" );
         }
-        browser->write( "</table></div>" );
+        browser->write(
+               "</table>"
+              "</div>" );
     }
     // </Albums by this artist>
 
@@ -813,9 +837,6 @@ void ContextBrowser::setStyleSheet() {
     m_styleSheet += QString( "th { text-align: left; color: %1; font-size: %2px; font-weight: bold; background-color: %3; padding: 1px 0.5em; border-bottom: 1px solid #000; }" )
                     .arg( fg ).arg( pxSize + 2 ).arg( bg );
 
-    //rb? dunno, but this is the style for the currentlyPlaying block
-    m_styleSheet += QString( ".rbcurrent { border: solid %1 1px; }" ).arg( colorGroup().base().name() );
-
     //this is the style for the other blocks
     m_styleSheet += QString( ".rbcontent { border: solid %1 1px; }" ).arg( bg );
     m_styleSheet += QString( ".rbcontent:hover { border: solid %1 1px; }" ).arg( text );
@@ -824,9 +845,9 @@ void ContextBrowser::setStyleSheet() {
     m_styleSheet += QString( ".rbcontent a { text-decoration: none; }" );
     m_styleSheet += QString( ".rbcontent .song a { display: block; padding: 1px 2px; }" );
     m_styleSheet += QString( ".rbcontent .song a:hover { color: %1; background-color: %1; }" ).arg( fg ).arg( bg );
-
-    m_styleSheet += QString( ".rbcontent .rbalbum:hover { background-color: %1; cursor: pointer; }" ).arg( bg );
-    m_styleSheet += QString( ".rbcontent .rbalbum:hover a { color: %1; }" ).arg( fg );
+    m_styleSheet += QString( ".album-header { color: %1; background-color: %2; padding: 1px 0.5em; }" ).arg( fg ).arg( bg );
+    m_styleSheet += QString( ".album-header:hover { background-color: %1; cursor: n-resize; }" ).arg( colorGroup().highlight().light( 120 ).name() );
+    m_styleSheet += QString( ".album-contents { background-color: %1; border: solid %2 1px; padding: 1px 0.5em; }" ).arg( colorGroup().base().name() ).arg( bg );
 
     //boxes used to display score (sb: score box)
     m_styleSheet += QString( ".sbtext { padding: 0px 4px; border-left: solid %1 1px; }" ).arg( colorGroup().base().dark( 120 ).name() );
