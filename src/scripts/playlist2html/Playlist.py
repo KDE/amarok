@@ -16,8 +16,8 @@ class Track(object):
     __slots__ = FIELDS
 
     def __init__(self, **kwargs):
-        for key,value in kwargs:
-            setattr(self, key,value)
+        for key,value in kwargs.iteritems():
+            setattr(self, key, value)
 
 
     def toRow(self, style=''):
@@ -149,4 +149,4 @@ class Playlist:
     def sync(self):
         """Saves the current amaroK-Playlist to the current.xml file. Calls
         amarok via dcop"""
-        os.system("dcop amarok player saveCurrentPlaylist")
+        os.system("dcop amarok playlist saveCurrentPlaylist")
