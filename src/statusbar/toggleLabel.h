@@ -53,7 +53,7 @@ public:
         QString tip = "<qt><img src='%1' style='margin:auto'><br>&nbsp;";
         tip += action->isChecked() ? i18n("%2: on") : i18n("%2: off");
         tip += "&nbsp;";
-        const QString path = KGlobal::iconLoader()->iconPath( action->icon(), KIcon::Desktop );
+        const QString path = KGlobal::iconLoader()->iconPath( action->icon(), -KIcon::SizeHuge );
 
         QToolTip::add( this, tip.arg( path ).arg( action->text().remove('&') ) );
     }
