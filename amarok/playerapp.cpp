@@ -77,7 +77,7 @@ PlayerApp::PlayerApp()
         , m_fgColor( QColor( 0x80, 0xa0, 0xff ) )
         , m_DelayTime( 0 )
         , m_playingURL( KURL() )
-        , m_pConfig( kapp->config() )
+//        , m_pConfig( kapp->config() )
         , m_pMainTimer( new QTimer( this ) )
         , m_pAnimTimer( new QTimer( this ) )
         , m_length( 0 )
@@ -127,17 +127,17 @@ PlayerApp::~PlayerApp()
 
     //Save current item info in dtor rather than saveConfig() as it is only relevant on exit
     //and we may in the future start to use read and saveConfig() in other situations
-    m_pConfig->setGroup( "Session" );
+//    m_pConfig->setGroup( "Session" );
     KURL url( m_pEngine->loaded() ?  m_playingURL : m_pBrowserWin->m_pPlaylistWidget->currentTrackURL() );
 
     if ( !url.isEmpty() )
     {
-       m_pConfig->writeEntry( "Track", url.url() );
+//       m_pConfig->writeEntry( "Track", url.url() );
        
-       if ( m_pEngine->state() != EngineBase::Empty )
-           m_pConfig->writeEntry( "Time", m_pEngine->position() / 1000 );
-       else
-           m_pConfig->deleteEntry( "Time" );
+//       if ( m_pEngine->state() != EngineBase::Empty )
+//           m_pConfig->writeEntry( "Time", m_pEngine->position() / 1000 );
+//       else
+//           m_pConfig->deleteEntry( "Time" );
     }
 
     slotStop();
@@ -345,6 +345,15 @@ AmarokConfig *PlayerApp::config()
 
 void PlayerApp::saveConfig()
 {
+    config()->setMasterVolume( m_Volume );
+    config()->setCurrentDirectory( m_pBrowserWin->m_pBrowserWidget->m_pDirLister->url().path() );
+    config()->setPathHistory( m_pBrowserWin->m_pBrowserLineEdit->historyItems() );
+    config()->setPlayerPos( m_pPlayerWidget->pos() );
+    config()->setBrowserWinPos( m_pBrowserWin->pos() );
+    config()->setBrowserWinSize( m_pBrowserWin->size() );
+    config()->setBrowserWinSplitter( m_pBrowserWin->m_pSplitter->sizes() );
+    config()->setBrowserWinEnabled( m_pPlayerWidget->m_pButtonPl->isOn() );
+    
     config()->writeConfig();
     
     if (config()->savePlaylist())
@@ -405,13 +414,13 @@ void PlayerApp::readConfig()
                             this, SLOT( slotPrev() ), true, true );
 
     // FIXME <berkus> this needs some other way of handling with KConfig XT?!?
-    m_pGlobalAccel->setConfigGroup( "Shortcuts" );
-    m_pGlobalAccel->readSettings( m_pConfig );
-    m_pGlobalAccel->updateConnections();
+  //  m_pGlobalAccel->setConfigGroup( "Shortcuts" );
+  //  m_pGlobalAccel->readSettings( m_pConfig );
+  //  m_pGlobalAccel->updateConnections();
 
     //FIXME use a global actionCollection (perhaps even at global scope)
-    m_pPlayerWidget->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
-    m_pBrowserWin->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
+  //  m_pPlayerWidget->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
+  //  m_pBrowserWin->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
 
     kdDebug() << "end PlayerApp::readConfig()" << endl;
 }
