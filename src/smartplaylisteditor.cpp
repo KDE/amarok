@@ -567,3 +567,5 @@ int CriteriaEditor::getValueType( int index )
 }
 
 //#include "smartplaylisteditor.moc"
+
+#include "smartplaylisteditor.moc"
