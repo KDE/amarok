@@ -1,8 +1,8 @@
 /***************************************************************************
-                          viswidget.h  -  description
+                          anaylyzerbase3d.h  -  description
                              -------------------
     begin                : Die Jan 7 2003
-    copyright            : (C) 2003 by Mark Kretschmann
+    copyright            : (C) 2003 by Adam Pigg
     email                :
  ***************************************************************************/
 
@@ -15,31 +15,41 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef ANALYZERBASE_H
-#define ANALYZERBASE_H
+#ifndef ANALYZERBASE3D_H
+#define ANALYZERBASE3D_H
+
+#include <qgl.h>
+
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 #include <vector>
+#include "analyzerbase.h"
 
-#define SINVEC_SIZE 6000
+class QMouseEvent;
+class QQLWidget;
+
 
 /**
- *@author Max
+ *@author PiggZ
  */
 
-class AnalyzerBase
+class AnalyzerBase3d : public QGLWidget, public AnalyzerBase
 {
+    Q_OBJECT
+
     public:
-        AnalyzerBase( uint );
-        virtual ~AnalyzerBase();
-        virtual void drawAnalyzer( std::vector<float> * ) = 0;
-        uint timeout() const { return m_timeout; }
+        AnalyzerBase3d( uint, QWidget *parent=0, const char *name=0 );
+        virtual ~AnalyzerBase3d();
+
+    signals:
+        void clicked();
 
     protected:
-        void interpolate( std::vector<float> *, std::vector<float> & ) const;
-        virtual void init() = 0;
-	
+        virtual void mousePressEvent( QMouseEvent* );
+
     private:
-        uint m_timeout;
+
 };
 
 #endif

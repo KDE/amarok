@@ -1,9 +1,9 @@
 /***************************************************************************
-                          viswidget.h  -  description
+                          gloscope.h  -  description
                              -------------------
-    begin                : Die Jan 7 2003
-    copyright            : (C) 2003 by Mark Kretschmann
-    email                :
+    begin                : Jan 17 2004
+    copyright            : (C) 2004 by Adam Pigg
+    email                : adam@piggz.co.uk
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,31 +15,40 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef ANALYZERBASE_H
-#define ANALYZERBASE_H
+#ifndef GLOSCOPE_H
+#define GLOSCOPE_H
 
+#include "analyzerbase3d.h"
+#include <qgl.h>
 #include <vector>
 
-#define SINVEC_SIZE 6000
+class QMouseEvent;
+class QWidget;
 
 /**
- *@author Max
+ *@author piggz
  */
 
-class AnalyzerBase
+class GLAnalyzer : public AnalyzerBase3d
 {
-    public:
-        AnalyzerBase( uint );
-        virtual ~AnalyzerBase();
-        virtual void drawAnalyzer( std::vector<float> * ) = 0;
-        uint timeout() const { return m_timeout; }
+  Q_OBJECT
 
-    protected:
-        void interpolate( std::vector<float> *, std::vector<float> & ) const;
-        virtual void init() = 0;
-	
-    private:
-        uint m_timeout;
+private:
+  std::vector<float> m_bands;
+  std::vector<float> m_oldy;
+  void interpolate(std::vector<float> *);
+  void drawScope();
+  
+  GLfloat x, y;
+public:
+  GLAnalyzer(QWidget *parent=0, const char *name=0);
+  virtual ~GLAnalyzer();
+  virtual void drawAnalyzer( std::vector<float> * );
+
+protected:
+  virtual void init();
+  void initializeGL();
+  void resizeGL( int w, int h );
+  void paintGL();
 };
-
 #endif

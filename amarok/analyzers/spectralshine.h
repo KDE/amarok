@@ -18,7 +18,7 @@
 #ifndef ANALYZER_SPECTRALSHINE_H
 #define ANALYZER_SPECTRALSHINE_H
 
-#include "analyzerbase.h"
+#include "analyzerbase2d.h"
 
 
 class QPixmap;
@@ -27,7 +27,7 @@ class QPixmap;
 @author Stanislav Karchebny
 */
 
-class SpectralShineAnalyzer : public AnalyzerBase
+class SpectralShineAnalyzer : public AnalyzerBase2d
 {
    Q_OBJECT
 

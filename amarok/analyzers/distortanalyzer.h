@@ -18,12 +18,12 @@
 #ifndef VISDISTORTWIDGET_H
 #define VISDISTORTWIDGET_H
 
-#include "analyzerbase.h"
+#include "analyzerbase2d.h"
 #include <vector>
 
 class QPixmap;
 
-class DistortAnalyzer : public AnalyzerBase
+class DistortAnalyzer : public AnalyzerBase2d
 {
     Q_OBJECT
 

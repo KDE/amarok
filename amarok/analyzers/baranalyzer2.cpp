@@ -35,7 +35,7 @@
 #define MAX_DECREASE -3
 
 BarAnalyzer2::BarAnalyzer2( QWidget *parent, const char *name ) :
-    AnalyzerBase( 30, parent, name ),
+    AnalyzerBase2d( 30, parent, name ),
     m_pBgPixmap( 0 ),
     m_pSrcPixmap( 0 ),
     m_pComposePixmap( 0 ),

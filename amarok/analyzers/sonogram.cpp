@@ -17,7 +17,7 @@
 #include "sonogram.h"
 
 Sonogram::Sonogram(QWidget *parent, const char *name) :
-	AnalyzerBase(16, parent, name),
+	AnalyzerBase2d(16, parent, name),
 	m_pPixmap(0)
 {
 }

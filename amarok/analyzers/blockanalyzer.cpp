@@ -23,7 +23,7 @@
 static float lvlMapper[ROWS] = { 0.100, 0.200, 0.300, 0.450, 0.625, 0.800, 10.0 };
 
 BlockAnalyzer::BlockAnalyzer( QWidget *parent, const char *name )
- : AnalyzerBase( 16, parent, name  )
+ : AnalyzerBase2d( 16, parent, name  )
  , m_block1( WIDTH, HEIGHT )
  , m_block2( WIDTH, HEIGHT )
 {}

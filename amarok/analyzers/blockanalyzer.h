@@ -12,13 +12,13 @@
 #ifndef BLOCKANALYZER_H
 #define BLOCKANALYZER_H
 
-#include "analyzerbase.h"
+#include "analyzerbase2d.h"
 
 /**
 @author Max Howell
 */
 
-class BlockAnalyzer : public AnalyzerBase
+class BlockAnalyzer : public AnalyzerBase2d
 {
 Q_OBJECT
 

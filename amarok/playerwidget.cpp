@@ -31,6 +31,7 @@ email                : markey@web.de
 #include "analyzers/turbine.h"
 //#include "analyzers/spectralshine.h"
 #include "analyzers/xmasdrug.h"
+#include "analyzers/glanalyzer.h"
 #include "amarokdcophandler.h"
 
 #include "amarokconfig.h"
@@ -620,6 +621,9 @@ void PlayerWidget::createVis()
     case 6:
         m_pVis = new Sonogram( this );
         break;
+    case 7:
+        m_pVis = new GLAnalyzer( this );
+        break;
     case 0:
     default: //so we don't have to remember how many vis's there are
         m_pVis = new BarAnalyzer( this );
@@ -629,19 +633,19 @@ void PlayerWidget::createVis()
     // we special-case the DistortAnalyzer, since it needs more height. yes, this ugly.. I need whipping
     if ( AmarokConfig::currentAnalyzer() == 1 )
     {
-        m_pVis->setFixedSize( 168, 70 );
-        m_pVis->move( 119, 30 );
+        dynamic_cast<QWidget*>(m_pVis)->setFixedSize( 168, 70 );
+        dynamic_cast<QWidget*>(m_pVis)->move( 119, 30 );
     }
     else
     {
-        m_pVis->setFixedSize( 168, 50 );
-        m_pVis->move( 119, 45 );
+        dynamic_cast<QWidget*>(m_pVis)->setFixedSize( 168, 50 );
+        dynamic_cast<QWidget*>(m_pVis)->move( 119, 45 );
     }
 
-    connect( m_pVis, SIGNAL( clicked() ), this, SLOT( nextVis() ) );
+    connect( dynamic_cast<QWidget*>(m_pVis), SIGNAL( clicked() ), this, SLOT( nextVis() ) );
 
     m_visTimer->start( m_pVis->timeout() );
-    m_pVis->show();
+    dynamic_cast<QWidget*>(m_pVis)->show();
 }
 
 

@@ -34,7 +34,7 @@
 
 
 DistortAnalyzer::DistortAnalyzer( QWidget *parent, const char *name )
-        : AnalyzerBase( 30, parent, name )
+        : AnalyzerBase2d( 30, parent, name )
         , m_pComposePixmap( 0 )
         , m_pComposePixmap1( 0 )
 {}

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          viswidget.h  -  description
+                          anaylyzerbase2d.h  -  description
                              -------------------
     begin                : Die Jan 7 2003
     copyright            : (C) 2003 by Mark Kretschmann
@@ -15,31 +15,53 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef ANALYZERBASE_H
-#define ANALYZERBASE_H
+#ifndef ANALYZERBASE2D_H
+#define ANALYZERBASE2D_H
 
+#include <qwidget.h>
+#include <qpixmap.h>
 #include <vector>
+#include "analyzerbase.h"
+
+class QMouseEvent;
+class QWidget;
+
 
 #define SINVEC_SIZE 6000
+#undef DRAW_GRID  //disable the grid
 
 /**
  *@author Max
  */
 
-class AnalyzerBase
+class AnalyzerBase2d : public QWidget, public AnalyzerBase
 {
+    Q_OBJECT
+
     public:
-        AnalyzerBase( uint );
-        virtual ~AnalyzerBase();
-        virtual void drawAnalyzer( std::vector<float> * ) = 0;
-        uint timeout() const { return m_timeout; }
+        AnalyzerBase2d( uint, QWidget *parent=0, const char *name=0 );
+        virtual ~AnalyzerBase2d();
+        const QPixmap *grid() const { return &m_grid; }
+
+        //this is called often in drawAnalyser implementations
+        //so you felt you had to shorten the workload by re-implementing it
+        //but! don't forget to set it to the new value for height when
+        //we start allowing the main Widget to be resized
+        uint height() const { return m_iVisHeight; }
+
+    signals:
+        void clicked();
 
     protected:
-        void interpolate( std::vector<float> *, std::vector<float> & ) const;
-        virtual void init() = 0;
-	
+        void initSin( std::vector<float> & ) const;
+        virtual void mousePressEvent( QMouseEvent* );
+
     private:
-        uint m_timeout;
+        void initGrid();
+        virtual void polish();
+
+        uint m_iVisHeight;
+        QPixmap m_grid;
 };
 
 #endif

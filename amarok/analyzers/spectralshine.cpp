@@ -31,7 +31,7 @@
 
 
 SpectralShineAnalyzer::SpectralShineAnalyzer( QWidget *parent, const char *name )
-   : AnalyzerBase( 8, parent, name )
+   : AnalyzerBase2d( 8, parent, name )
    , m_pComposePixmap( 0 )
    , m_pSrcPixmap( 0 )
 {

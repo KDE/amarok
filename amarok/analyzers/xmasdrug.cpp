@@ -37,7 +37,7 @@
 
 
 XmasAnalyzer::XmasAnalyzer( QWidget *parent, const char *name )
-   : AnalyzerBase( TIMEOUT, parent, name )
+   : AnalyzerBase2d( TIMEOUT, parent, name )
    , m_pComposePixmap( 0 )
    , m_pBuckPixmap( 0 )
 {

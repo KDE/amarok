@@ -14,7 +14,7 @@
 #ifndef BARANALYZER_H
 #define BARANALYZER_H
 
-#include "analyzerbase.h"
+#include "analyzerbase2d.h"
 
 #include <qvaluevector.h>
 
@@ -35,7 +35,7 @@
 @author Mark Kretschmann && Max Howell
 */
 
-class BarAnalyzer : public AnalyzerBase
+class BarAnalyzer : public AnalyzerBase2d
 {
     Q_OBJECT
 

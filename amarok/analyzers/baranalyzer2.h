@@ -18,7 +18,7 @@
 #ifndef VISWIDGETV2_H
 #define VISWIDGETV2_H
 
-#include "analyzerbase.h"
+#include "analyzerbase2d.h"
 
 #include <vector>
 
@@ -39,7 +39,7 @@ typedef struct
 }
 peak_t;
 
-class BarAnalyzer2 : public AnalyzerBase
+class BarAnalyzer2 : public AnalyzerBase2d
 {
   Q_OBJECT
 

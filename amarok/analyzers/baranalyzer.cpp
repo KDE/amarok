@@ -18,7 +18,7 @@
 #include <qvaluevector.h>
 
 BarAnalyzer::BarAnalyzer( QWidget *parent, const char *name )
-    : AnalyzerBase( 10, parent, name )
+    : AnalyzerBase2d( 10, parent, name )
     , m_pSrcPixmap( 0 )
     , m_pComposePixmap( 0 )
     , m_roofPixmap( 4, 1 )

@@ -14,14 +14,14 @@
 #ifndef SONOGRAM_H
 #define SONOGRAM_H
 
-#include "analyzerbase.h"
+#include "analyzerbase2d.h"
 
 
 /**
 @author Melchior FRANZ
 */
 
-class Sonogram : public AnalyzerBase
+class Sonogram : public AnalyzerBase2d
 {
     Q_OBJECT
 

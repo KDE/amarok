@@ -15,10 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "analyzerbase.h"
+#include "analyzerbase3d.h"
 
 #include <math.h>
 #include <vector>
+
 
 // INSTRUCTIONS
 // 1. inherit AnalyzerBase( first parameter to AnalyzerBase is the frequency (in milliseconds) that drawAnalyser will be called)
@@ -27,45 +28,26 @@
 // 4. blt to this at the end of your implementation of drawAnalyser()
 
 
-AnalyzerBase::AnalyzerBase( uint timeout ) :
-   m_timeout( timeout )
+AnalyzerBase3d::AnalyzerBase3d( uint timeout, QWidget *parent, const char *name ) :
+   QGLWidget( parent, name ),
+   AnalyzerBase( timeout )
 {}
 
-AnalyzerBase::~AnalyzerBase()
+AnalyzerBase3d::~AnalyzerBase3d()
 {}
 
 
 // METHODS =====================================================
 
-void AnalyzerBase::interpolate( std::vector<float> *oldVec, std::vector<float> &newVec ) const
+void AnalyzerBase3d::mousePressEvent( QMouseEvent *e )
 {
-    if ( oldVec->size() )
-    {    
-        uint newSize = newVec.size(); //vector::size() is O(1)
-    
-        //necessary? code bloat if not
-        if( newSize == oldVec->size() ) { newVec = *oldVec; return; }
-    
-        double pos = 0.0;
-        double step = static_cast<double>( oldVec->size() ) / newSize;
-    
-        for ( uint i = 0; i < newSize; ++i, pos += step )
-        {
-            double error = pos - floor( pos );
-            ulong offset = static_cast<unsigned long>( pos );
-    
-            ulong indexLeft = offset + 0;
-    
-            if ( indexLeft >= oldVec->size() )
-                indexLeft = oldVec->size() - 1;
-    
-            ulong indexRight = offset + 1;
-    
-            if ( indexRight >= oldVec->size() )
-                indexRight = oldVec->size() - 1;
-    
-            newVec[i] = (*oldVec)[indexLeft] * ( 1.0 - error ) +
-                        (*oldVec)[indexRight] * error;
-        }
+    if( e->button() == Qt::LeftButton )
+    {
+        emit clicked();
+        
+        e->accept();  //don't propagate to PlayerWidget!
     }
+    else e->ignore();
 }
+
+#include "analyzerbase3d.moc"
