@@ -10,8 +10,6 @@ SHORT-TERM (URGENT):
 
     * fix: #82 about dialog makes toolbar go crazy
 
-    * fix: #80 with the new toolbar it's impossible to resize the playlist smaller than ca. 700px width
-
 MID-TERM:
 
     * fix: #79 GstEngine log volume -->markey
