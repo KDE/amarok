@@ -71,8 +71,9 @@ NmmEngine::state() const
 
 
 void
-NmmEngine::play( const KURL& url, bool /*stream*/ )
+NmmEngine::play( const KURL& url, bool stream )
 {
+    m_stream = stream;
     if( !url.isLocalFile() ) return 0; //FIXME
 
     stop(); //NOTE essential!!
@@ -226,10 +227,6 @@ NmmEngine::position() const
 {
     return m_lastKnownPosition;
 }
-
-bool
-NmmEngine::isStream() const
-{ return false; }
 
 
 bool

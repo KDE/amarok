@@ -58,7 +58,6 @@ class ArtsEngine : public EngineBase
         StreamingMode                            streamingMode() { return Socket; }
         long                                     position() const;
         EngineBase::EngineState                  state() const;
-        bool                                     isStream() const;
 
         std::vector<float>*                      scope();
 

@@ -267,13 +267,6 @@ GstEngine::state() const
 }
 
 
-bool
-GstEngine::isStream() const
-{
-    return false;
-}
-
-
 vector<float>*
 GstEngine::scope()
 {
@@ -293,6 +286,7 @@ GstEngine::scope()
 void
 GstEngine::play( const KURL& url, bool stream )  //SLOT
 {
+    m_stream = stream;
     kdDebug() << "Gst-Engine: url.path()     == " << url.path()     << endl;
     kdDebug() << "Gst-Engine: url.protocol() == " << url.protocol() << endl;
     kdDebug() << "Gst-Engine: url.host()     == " << url.host()     << endl;

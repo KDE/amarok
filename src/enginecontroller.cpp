@@ -42,7 +42,6 @@ class DummyEngine : public EngineBase
     virtual long length() const { return 0; }
     virtual long position() const { return 0; }
     virtual EngineState state() const { return EngineBase::Empty; }
-    virtual bool isStream() const { return false; }
     virtual void play( const KURL&, bool ) {}
     virtual void play() {}
     virtual void stop() {}

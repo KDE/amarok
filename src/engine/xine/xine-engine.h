@@ -22,13 +22,12 @@ public:
     bool initMixer( bool );
     bool canDecode( const KURL&, mode_t, mode_t );
     long position() const;
-    bool isStream() const { return false; }
 
     std::vector<float>* scope();
 
     EngineBase::EngineState state() const;
 
-    void  play( const KURL &url, bool /*stream*/ ) { m_url = url; play(); }
+    void  play( const KURL &url, bool stream ) { m_url = url; m_stream = stream; play(); }
     void  play();
     void  stop();
     void  pause();

@@ -329,15 +329,6 @@ EngineBase::EngineState ArtsEngine::state() const
 }
 
 
-bool ArtsEngine::isStream() const
-{
-    if ( m_pPlayObject )
-        return m_pPlayObject->stream();
-    else
-        return false;
-}
-
-
 std::vector<float>* ArtsEngine::scope()
 {
     return m_scope.scope();
@@ -345,8 +336,10 @@ std::vector<float>* ArtsEngine::scope()
 
 //////////////////////////////////////////////////////////////////////
 
-void ArtsEngine::play( const KURL& url, bool /*stream*/ )
+void ArtsEngine::play( const KURL& url, bool stream )
 {
+    m_stream = stream;
+    
     kdDebug() << "aRts-Engine: url.path()     == " << url.path()     << endl;
     kdDebug() << "aRts-Engine: url.protocol() == " << url.protocol() << endl;
     kdDebug() << "aRts-Engine: url.host()     == " << url.host()     << endl;

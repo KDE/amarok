@@ -48,7 +48,6 @@ class GstEngine : public EngineBase
 
         long                                     position() const;
         EngineState                              state() const;
-        bool                                     isStream() const;
         std::vector<float>*                      scope();
 
     public slots:
