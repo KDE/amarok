@@ -18,6 +18,8 @@
 #include <qpixmap.h> //stack allocated
 #include <qtimer.h>  //stack allocated
 #include <qwidget.h> //baseclass
+#include <qimage.h>
+#include <qvaluelist.h>
 
 class QStringList;
 class QTimer;
@@ -36,9 +38,10 @@ class OSDWidget : public QWidget
         int screen()    { return m_screen; }
         int alignment() { return m_alignment; }
         int y()         { return m_y; }
+        bool showCover() { return m_cover; }
 
       public slots:
-        void show( const QString&, const QString& = QString::null, bool preemptive = false );
+        void show( const QString&, bool preemptive = false, bool useImage = false );
         void show();
 
         void setDuration( int ms );
@@ -50,19 +53,20 @@ class OSDWidget : public QWidget
         void setAlignment( Alignment );
         void setScreen( int screen );
         void setText( const QString &text ) { m_currentText = text; refresh(); }
-        void setCover ( bool cover ) { m_cover = cover; refresh(); }
 
       protected slots:
         void minReached();
 
       protected:
         /* render text into osdBuffer */
-        void renderOSDText( const QString&, const QString& = QString::null );
+        void renderOSDText( const QString& );
         void mousePressEvent( QMouseEvent* );
         bool event( QEvent* );
 
         /* call to reposition a new OSD text or when position attributes change */
         void reposition( QSize newSize = QSize() );
+
+        void loadImage( QString &location );
 
         /* called after most set*() calls to update the OSD */
         void refresh();
@@ -75,9 +79,10 @@ class OSDWidget : public QWidget
         QTimer      timerMin;
         QPixmap     osdBuffer;
         QStringList textBuffer;
-        QStringList imageBuffer;
+        QValueList<QImage> imageBuffer;
         QString     m_currentText;
-        QString     m_currentImage;
+        QImage      m_image;
+        bool        m_useImage;
         bool        m_shadow;
         bool        m_cover;
 
@@ -123,10 +128,11 @@ namespace amaroK
             static OSD *instance();
 
             void applySettings();
+            void setImage( const MetaBundle &bundle );
 
         public slots:
             void showTrack( const MetaBundle &bundle );
-            void showTrack() { show( m_text, m_image ); }
+            void showTrack() { show( m_text, false, true ); }
 
             //this function is for the showOSD global shortcut, it should always work //FIXME sucks
             void forceShowTrack() { bool b = isEnabled(); setEnabled( true ); showTrack(); setEnabled( b ); }
@@ -135,7 +141,6 @@ namespace amaroK
             OSD() : OSDWidget( "amaroK" ) {}
 
             QString m_text;
-            QString m_image;
     };
 }
 

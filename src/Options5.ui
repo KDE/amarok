@@ -278,7 +278,7 @@
                                 <cstring>kcfg_OsdText</cstring>
                             </property>
                             <property name="toolTip" stdset="0">
-                                <string>&lt;b&gt;Tags Displayed in OSD&lt;/b&gt;&lt;br&gt;Valid Variables:&lt;ul&gt;&lt;li&gt;Title - %track&lt;li&gt;Album - %album&lt;li&gt;Artist - %artist&lt;li&gt; Genre - %genre&lt;li&gt;Bitrate - %bitrate&lt;li&gt;Year - %year&lt;li&gt;Track Length - %length&lt;li&gt;Track Number - %number&lt;/ul&gt;&lt;br&gt;Braces { } can be added around text which includes one of the above variables, and will only be displayed if the track element exists.</string>
+                                <string>&lt;b&gt;Tags Displayed in OSD&lt;/b&gt;&lt;br&gt;Valid Variables:&lt;ul&gt;&lt;li&gt;Title - %title&lt;li&gt;Album - %album&lt;li&gt;Artist - %artist&lt;li&gt; Genre - %genre&lt;li&gt;Bitrate - %bitrate&lt;li&gt;Year - %year&lt;li&gt;Track Length - %length&lt;li&gt;Track Number - %track&lt;/ul&gt;&lt;br&gt;Braces { } can be added around text which includes one of the above variables, and will only be displayed if the track element exists.</string>
                             </property>
                             <property name="whatsThis" stdset="0">
                                 <string>The text which should be shown in the OSD</string>

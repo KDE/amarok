@@ -19,7 +19,7 @@ the Free Software Foundation; either version 2 of the License, or
 #include <qapplication.h>
 #include <qbitmap.h>
 #include <qpainter.h>
-#include <qimage.h> 
+#include <qimage.h>
 
 #include <kdebug.h>
 #include <kglobalsettings.h> //unsetColors()
@@ -46,7 +46,7 @@ OSDWidget::OSDWidget( const QString &appName, QWidget *parent, const char *name 
 }
 
 
-void OSDWidget::renderOSDText( const QString &text , const QString &imageLocation )
+void OSDWidget::renderOSDText( const QString &text )
 {
     static QBitmap mask;
 
@@ -54,44 +54,28 @@ void OSDWidget::renderOSDText( const QString &text , const QString &imageLocatio
     QSize max = QApplication::desktop() ->screen( m_screen ) ->size() - QSize( MARGIN*2 + 20, 100 );
     QFont titleFont( "Arial", 12, QFont::Bold );
     QFontMetrics titleFm( titleFont );
-    
+
     // The title cannnot be taller than one line
     QRect titleRect = titleFm.boundingRect( 0, 0, max.width(), titleFm.height(), AlignLeft, m_appName );
     // The osd cannot be larger than the screen
     QRect textRect = fontMetrics().boundingRect( 0, 0, max.width(), max.height(), AlignLeft | WordBreak, text );
-    int showCover = 0;
     // determine appropriate image size based on size of screen
     int imageSize = QApplication::desktop()->screen( m_screen )->width() / 16;
-    
-    // we don't want to show the cover if it is the generic one.
-    if ( imageLocation.find( QString("nocover") ) == -1 && m_cover && !imageLocation.isEmpty())
-        showCover = 1;
-        
+
     if ( textRect.width() < titleRect.width() )
         textRect.setWidth( titleRect.width() );
 
-    //this should still be within the screen bounds
-    QImage image = QImage::QImage();
-    if ( showCover )
-    {
-        // does the file exist? if not, tell the osd where to shove it.
-        bool result = image.load( imageLocation );
-        if (result == false)
-            showCover = 0;
-        else
-            image = image.smoothScale( imageSize, imageSize );
-    }
     //dimensions
-    if ( showCover )
+    if ( !m_image.isNull() && m_useImage )
     {
         if ( textRect.height() + titleRect.height() < (imageSize + 20) )
             textRect.setHeight( imageSize + 20 );
         else
             textRect.setBottom( titleRect.height() + textRect.height() );
-            
+
         // we add pixels to the width because of the image size, and 40 for padding;
         // 10px before image, 10px after image, 20px after text
-        textRect.addCoords( 0, 0, imageSize + 40, 0);
+        textRect.addCoords( 0, 0, imageSize + 40, 0 );
     }
     else
     {
@@ -99,6 +83,7 @@ void OSDWidget::renderOSDText( const QString &text , const QString &imageLocatio
         // so we can see the last line!
         textRect.addCoords( 0, 0, 20, titleRect.height() );
     }
+
     osdBuffer.resize( textRect.size() );
     mask.resize( textRect.size() );
 
@@ -120,35 +105,35 @@ void OSDWidget::renderOSDText( const QString &text , const QString &imageLocatio
     int shadowOffset = 0;
     //image position.
     int imagePosition = 0;
-    
 
     // Paint the album cover if existant
-    if ( showCover )
+    if ( !m_image.isNull() && m_useImage )
     {
+        m_image = m_image.smoothScale( imageSize, imageSize );
         if ( text.isRightToLeft() )
         {
             imagePosition = -10;
-            bufferPainter.drawImage( textRect.width() - imageSize - 10, -imagePosition, image );
+            bufferPainter.drawImage( textRect.width() - imageSize - 10, -imagePosition, m_image );
             imagePosition -= imageSize;
         }
         else
         {
             imagePosition = 10;
-            bufferPainter.drawImage( imagePosition, imagePosition, image );
+            bufferPainter.drawImage( imagePosition, imagePosition, m_image );
             imagePosition += imageSize;
         }
     }
-    
-    //set text position according to direction.
+    //text position
     if ( text.isRightToLeft() )
     {
         textPosition = imagePosition - 10;
         shadowOffset = -3;
-    } else
+    }
+    else
     {
         textPosition = imagePosition + 10;
         shadowOffset = 3;
-    } //text position set
+    }
 
     // Draw the text shadow
     if ( m_shadow )
@@ -180,21 +165,21 @@ void OSDWidget::renderOSDText( const QString &text , const QString &imageLocatio
     update();
 }
 
-
-void OSDWidget::show( const QString &text, const QString &image, bool preemptive )
+void OSDWidget::show( const QString &text, bool preemptive, bool useImage )
 {
+    m_useImage = useImage;
+
     if ( isEnabled() && !text.isEmpty() )
     {
         if ( preemptive || !timerMin.isActive() )
         {
             m_currentText = text;
-            m_currentImage = image;
             m_dirty = true;
 
             show();
         } else {
             textBuffer.append( text ); //queue
-            imageBuffer.append( image ); //queue
+            imageBuffer.append( m_image ); //queue
         }
     }
 }
@@ -204,7 +189,8 @@ void OSDWidget::minReached() //SLOT
 {
     if ( !textBuffer.isEmpty() )
     {
-        renderOSDText( textBuffer.front(), imageBuffer.front() );
+        m_image = imageBuffer.front();
+        renderOSDText( textBuffer.front() );
         textBuffer.pop_front();
         imageBuffer.pop_front();
 
@@ -313,7 +299,7 @@ void OSDWidget::mousePressEvent( QMouseEvent* )
 void OSDWidget::show()
 {
     if ( m_dirty )
-        renderOSDText( m_currentText, m_currentImage );
+        renderOSDText( m_currentText );
 
     QWidget::show();
 
@@ -330,7 +316,7 @@ void OSDWidget::refresh()
     if ( isVisible() )
     {
         //we need to update the buffer
-        renderOSDText( m_currentText , m_currentImage );
+        renderOSDText( m_currentText );
     } else
         m_dirty = true; //ensure we are re-rendered before we are shown
 }
@@ -378,7 +364,16 @@ void OSDWidget::reposition( QSize newSize )
     XMoveResizeWindow( x11Display(), winId(), newPos.x(), newPos.y(), newSize.width(), newSize.height() );
 }
 
+void OSDWidget::loadImage( QString &location )
+{
+    QImage image = QImage::QImage();
 
+    if ( image.load( location ) )
+        m_image = image;
+    else
+        m_image = QImage::QImage(); //null image
+
+}
 
 //////  OSDPreviewWidget below /////////////////////
 
@@ -392,7 +387,6 @@ OSDPreviewWidget::OSDPreviewWidget( const QString &appName, QWidget *parent, con
     m_currentText = i18n( "OSD Preview - drag to reposition" );
     m_duration    = 0;
 }
-
 
 void OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
 {
@@ -502,30 +496,22 @@ amaroK::OSD::showTrack( const MetaBundle &bundle ) //slot
 
     QString replaceMe = "\\{[^}]*%1[^}]*\\}";
     QStringList element, identifier;
-    
+
     QString length, bitrate = QString::null;
-    
+
     if( bundle.length())
         length = QString ("%1").arg(bundle.prettyLength());
     if( bundle.bitrate() )
         bitrate = QString ("%1").arg(bundle.prettyBitrate());
-    
-    element    << bundle.album() << bundle.track() << bundle.genre() << bundle.year()
-               << bundle.track()<< length << bitrate;
-    identifier << i18n("%album") << i18n("%track") << i18n("%genre") << i18n("%year")
-               << i18n("%number") << i18n( "%length" ) << i18n( "%bitrate" );
-        
-    if ( bundle.artist().isEmpty() ) {
-        text.replace( "%artist", bundle.prettyTitle( bundle.url().fileName() ), FALSE );
-        text.replace( "%track", QString::null , FALSE);
-    } else {
-        text.replace( "%artist", bundle.artist() , FALSE );
-        text.replace( "%track", bundle.title() , FALSE );
-    }
 
-    // Lets get the location of the cover image
-    QString image = CollectionDB().albumImage( bundle.artist(), bundle.album() );
+    // NOTE: Order is important, the items will be evaluated first. Thus, prettyTitle must be last.
+    element    << bundle.artist() << bundle.album() << bundle.title() << bundle.genre()
+               << bundle.year() << bundle.track()<< length << bitrate << bundle.prettyTitle( bundle.url().filename() );
+    identifier << i18n("%artist") << i18n("%album") << i18n("%title") << i18n("%genre")
+               << i18n("%year") << i18n("%track") << i18n( "%length" ) << i18n( "%bitrate" ) << i18n( "%artist - %title" );
 
+    // This loop will go through the two lists and replace each identifier by the appropriate bundle
+    // information.
     for ( uint x = 0; x < identifier.count(); ++x )
     {
         if ( !element[x].isEmpty() )
@@ -536,7 +522,7 @@ amaroK::OSD::showTrack( const MetaBundle &bundle ) //slot
             text.replace( identifier[x], QString::null, FALSE );
         }
     }
-    
+
     // If we end up replacing many lines with QString::null, we could get blank lines.  lets remove them.
     text.replace( QRegExp( "\n+" ) , "\n" );
     text.replace( QRegExp( "\n +\n" ) , "\n" );
@@ -552,11 +538,23 @@ amaroK::OSD::showTrack( const MetaBundle &bundle ) //slot
     text.replace( "\\n", "\n" );
 
     m_text = text;
-    m_image = image;
+
+    if ( AmarokConfig::osdCover() )
+        setImage( bundle );
 
     showTrack();
 }
 
+void
+amaroK::OSD::setImage( const MetaBundle &bundle )
+{
+    //avoid showing the generic cover.  we can overwrite this by passing an arg.
+    QString imageLocation = CollectionDB().albumImage( bundle.artist(), bundle.album() );
+    if ( imageLocation.find( QString("nocover") ) != -1 )
+        imageLocation = QString::null;
+
+    loadImage( imageLocation );
+}
 
 void
 amaroK::OSD::applySettings()
@@ -568,7 +566,6 @@ amaroK::OSD::applySettings()
     setScreen( AmarokConfig::osdScreen() );
     setShadow( AmarokConfig::osdDrawShadow() );
     setFont( AmarokConfig::osdFont() );
-    setCover( AmarokConfig::osdCover() );
 
     if( AmarokConfig::osdUseCustomColors() )
     {
