@@ -1,4 +1,5 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
+// (c) 2004 Stefan Bogner <bochi@online.ms>
 // See COPYING file for licensing information.
 
 #ifndef AMAROK_COVERFETCHER_H

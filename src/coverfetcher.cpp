@@ -1,4 +1,5 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
+// (c) 2004 Stefan Bogner <bochi@online.ms>
 // See COPYING file for licensing information.
 
 #include "amarokconfig.h"
@@ -77,6 +78,7 @@ CoverFetcher::getCover( const QString& keyword, const QString& album, QueryMode 
 void 
 CoverFetcher::xmlData( KIO::Job*, const QByteArray& data ) //SLOT
 {
+    // Append new chunk of string
     m_xmlDocument += QString( data );
 }
 
@@ -139,7 +141,7 @@ CoverFetcher::imageData( KIO::Job*, const QByteArray& data ) //SLOT
         return;
     }
         
-    //append new chunk of data to buffer
+    // Append new chunk of data to buffer
     memcpy( m_buffer + m_bufferIndex, data.data(), data.size() );
     m_bufferIndex += data.size();
 }
@@ -153,7 +155,8 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
     /* if no cover is found, open the amazon search dialogue, else show the cover viewer. */
     if ( job->error() != 0 ) 
     {
-        m_text = "<h3>No cover image found!</h3>If you would like to search again, you can edit the search string below and press <b>OK</b>.";
+        m_text = "<h3>No cover image found!</h3>"
+                 "If you would like to search again, you can edit the search string below and press <b>OK</b>.";
         editSearch();
     }
     else
