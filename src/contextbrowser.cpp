@@ -216,7 +216,7 @@ void ContextBrowser::engineTrackEnded( int finalPosition, int trackLength )
     if ( m_currentTrack )
     {
         // sanity check
-        if ( finalPosition > trackLength )
+        if ( finalPosition > trackLength || finalPosition == 0 )
             finalPosition = trackLength;
 
         int pct = (int) ( ( (double) finalPosition / (double) trackLength ) * 100 );
