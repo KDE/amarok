@@ -330,7 +330,7 @@ inline void PlaylistSideBar::autoClosePages() //SLOT
 // CLASS BrowserWin =====================================================================
 
 BrowserWin::BrowserWin( QWidget *parent, const char *name )
-   : QWidget( parent, name, Qt::WType_TopLevel | Qt::WPaintUnclipped )
+   : QWidget( parent, name, Qt::WType_TopLevel | Qt::WNoAutoErase )
    , m_pActionCollection( new KActionCollection( this ) )
    , m_splitter( new QSplitter( this ) )
    , m_sideBar( new PlaylistSideBar( m_splitter ) )

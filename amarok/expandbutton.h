@@ -18,14 +18,14 @@
 #ifndef EXPANDBUTTON_H
 #define EXPANDBUTTON_H
 
-#include <qpushbutton.h>
-#include <qptrlist.h>
+#include <qpushbutton.h> //baseclass
+#include <qptrlist.h>    //m_ButtonList
 
-class QWidget;
-class QString;
 class QMouseEvent;
 class QPixmap;
+class QString;
 class QTimer;
+class QWidget;
 
 class ExpandButton : public QPushButton
 {
@@ -59,10 +59,13 @@ class ExpandButton : public QPushButton
         int m_animHeight;
         float m_animAdd, m_animSpeed;
 
+        QWidget *m_pPaintWidget;
         QTimer  *m_pTimer;
         QPixmap *m_pSavePixmap;
         QPixmap *m_pComposePixmap;
         QPixmap *m_pBlitMap1;
         QPixmap *m_pBlitMap2;
 };
+
+      
 #endif

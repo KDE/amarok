@@ -3,7 +3,7 @@
                              -------------------
     begin                : Die Feb 4 2003
     copyright            : (C) 2003 by Mark Kretschmann
-    email                :
+    email                : markey@web.de
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,20 +17,14 @@
 
 #include "expandbutton.h"
 
-#include <qbitmap.h>
-#include <qevent.h>
-#include <qobject.h>
-#include <qobjectlist.h>
-#include <qpaintdevice.h>
 #include <qpainter.h>
-#include <qpalette.h>
 #include <qpixmap.h>
 #include <qpoint.h>
 #include <qpointarray.h>
 #include <qptrlist.h>
+#include <qpushbutton.h>
 #include <qstring.h>
 #include <qtimer.h>
-#include <qwidget.h>
 #include <qtooltip.h>
 
 #include <kdebug.h>
@@ -47,7 +41,6 @@ ExpandButton::ExpandButton( const QString &text, QWidget *parent, QObject *recei
     setFocusPolicy( QWidget::NoFocus );
     setFlat( true );
 
-    //m_ButtonList = QPtrList<ExpandButton>(); disabled because it will already be initialised in this way on construction
     connect( this, SIGNAL( pressed() ), this,     SLOT( slotDelayExpand() ) );
     connect( this, SIGNAL( clicked() ), receiver, slot );
 }
@@ -72,10 +65,8 @@ ExpandButton::ExpandButton( const QString &text, ExpandButton *parent, QObject *
 }
 
 
-
 ExpandButton::~ExpandButton()
-{
-}
+{}
 
 
 // METHODS ----------------------------------------------------
@@ -105,14 +96,11 @@ void ExpandButton::mouseMoveEvent( QMouseEvent *e )
     for ( unsigned int i = 0; i < m_ButtonList.count(); i++ )
     {
         ExpandButton *child = m_ButtonList.at( i );
+        
         if ( child->hitButton( child->mapFromGlobal( e->globalPos() ) ) )
-        {
             child->setDown( true );
-        }
         else
-        {
             child->setDown( false );
-        }
     }
 }
 
@@ -132,18 +120,22 @@ void ExpandButton::slotDelayExpand()
 void ExpandButton::slotStartExpand()
 {
     m_expanded = true;
-    m_animSpeed = 0.3;
-
+    m_animSpeed = 0.5;
+    
+    m_pPaintWidget = new QWidget( 0, 0, Qt::WNoAutoErase );
+    m_pPaintWidget->resize( width(), m_ButtonList.count() * height() );
+    
     m_pSavePixmap = new QPixmap( QPixmap::grabWindow( parentWidget()->winId(),
-        x(), y() - m_ButtonList.count() * height(),
-        width(), m_ButtonList.count() * height() ) );
-
-    m_pComposePixmap = new QPixmap( m_pSavePixmap->size() );
-
-                                                  // contains all buttons in "up" position
-    m_pBlitMap1 = new QPixmap( m_pComposePixmap->size() );
-                                                  // contains all buttons in "down" position
-    m_pBlitMap2 = new QPixmap( m_pComposePixmap->size() );
+                                 x(), y() - m_ButtonList.count() * height(),
+                                 width(), m_ButtonList.count() * height() ) );
+    
+    bitBlt( m_pPaintWidget, 0, 0, m_pSavePixmap );
+    m_pPaintWidget->reparent( parentWidget(), QPoint( x(), y() - m_ButtonList.count() * height() ) );             
+    
+    m_pComposePixmap = new QPixmap( m_pPaintWidget->size() );
+                                                  
+    m_pBlitMap1 = new QPixmap( m_pComposePixmap->size() ); // contains all buttons in "up" position
+    m_pBlitMap2 = new QPixmap( m_pComposePixmap->size() ); // contains all buttons in "down" position
     bitBlt( m_pBlitMap1, 0, 0, m_pBlitMap1, 0, 0, -1, -1, Qt::ClearROP );
     bitBlt( m_pBlitMap2, 0, 0, m_pBlitMap2, 0, 0, -1, -1, Qt::ClearROP );
 
@@ -162,12 +154,8 @@ void ExpandButton::slotStartExpand()
         bitBlt( m_pBlitMap1, 0, height() * i, &tmp );
     }
 
-    // FIXME: with the mask the buttons get transparent, which looks cool, but won't work with the Liquid
-    //        style, since that's badly b0rked. Fuck Liquid.
-//     m_pBlitMap1->setMask( m_pBlitMap1->createHeuristicMask() );
-//     m_pBlitMap2->setMask( m_pBlitMap2->createHeuristicMask() );
-
     m_animHeight = 0; m_animAdd = 0;
+    m_pPaintWidget->show();
     m_pTimer = new QTimer( this );
     connect( m_pTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
     m_pTimer->start( 20, false );
@@ -195,24 +183,16 @@ void ExpandButton::slotAnimTimer()
 
         if ( m_animHeight < 0 )
         {
-                                                  // Restore painted areas
-            bitBlt( parentWidget(), x(), y() - m_pComposePixmap->height(), m_pSavePixmap );
-
             m_expanded = false;
             setDown( false );
             delete m_pTimer;
-            m_pTimer = NULL;
+            delete m_pPaintWidget;
             delete m_pSavePixmap;
-            m_pSavePixmap = NULL;
             delete m_pComposePixmap;
-            m_pComposePixmap = NULL;
             delete m_pBlitMap1;
-            m_pBlitMap1 = NULL;
             delete m_pBlitMap2;
-            m_pBlitMap2 = NULL;
             m_animFlag = ANIM_IDLE;
-
-            parentWidget()->update();
+            
             return;
         }
     }
@@ -234,7 +214,8 @@ void ExpandButton::slotAnimTimer()
 
         yPos += height();
     }
-    bitBlt( parentWidget(), x(), y() - m_pComposePixmap->height(), m_pComposePixmap );
+    
+    bitBlt( m_pPaintWidget, 0, 0, m_pComposePixmap );
 }
 
 
