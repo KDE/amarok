@@ -4,6 +4,8 @@ amaroK Changelog
 
 
 VERSION 0.6.0-PRE5:
+  * fixed: animated buttons don't get stuck anymore
+  * fixed: invoking help
   * changed: MetaInfo reading now off by default. the slowdown was potentially
     confusing to new users
   * added: documentation

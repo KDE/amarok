@@ -11,12 +11,6 @@ SHORT-TERM:
     * fix: some URLs seem not to work (redirection), e.g.:
       http://robotron.ton.tut.fi:80
 
-    * fix: buttons in PlaylistWindow stuck when pressed several times too fast
-
-    * fix: "help" menu item
-
-    * add: display warning when artsd is run w/o realtime
-
     * add: extend keyboard shortcuts
 
     * add: extend documentation
@@ -24,6 +18,10 @@ SHORT-TERM:
 
 
 MID-TERM:
+
+    * add: display warning when artsd is run w/o realtime
+
+    * fix: small redrawing bugs for ExpandButton
 
     * fix: go to the last played track on startup
 

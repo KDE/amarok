@@ -72,17 +72,20 @@ ExpandButton::~ExpandButton()
 
 void ExpandButton::mouseReleaseEvent( QMouseEvent *e )
 {
-    m_animFlag = ANIM_SHRINK;
-    m_animAdd = 0;
-
-    if ( hitButton( e->pos() ) )
-        emit clicked();
-
-    for ( unsigned int i = 0; i < m_ButtonList.count(); i++ )
+    if ( m_animFlag == ANIM_EXPAND or m_animFlag == ANIM_SHOW )
     {
-        ExpandButton *child = m_ButtonList.at( i );
-        if ( child->hitButton( child->mapFromGlobal( e->globalPos() ) ) )
-            child->animateClick();
+        m_animFlag = ANIM_SHRINK;
+        m_animAdd = 0;
+
+        if ( hitButton( e->pos() ) )
+            emit clicked();
+
+        for ( unsigned int i = 0; i < m_ButtonList.count(); i++ )
+        {
+            ExpandButton *child = m_ButtonList.at( i );
+            if ( child->hitButton( child->mapFromGlobal( e->globalPos() ) ) )
+                child->animateClick();
+        }
     }
 }
 

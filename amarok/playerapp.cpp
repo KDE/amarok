@@ -1413,6 +1413,6 @@ void PlayerApp::slotSetRepeatPlaylist()
 
 void PlayerApp::slotShowHelp()
 {
-    kapp->invokeHelp();
+    KApplication::KApp->invokeHelp( QString::null, "amarok" );
 }
 
