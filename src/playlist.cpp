@@ -1291,6 +1291,20 @@ Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
 void Playlist::undo() { switchState( m_undoList, m_redoList ); } //SLOT
 void Playlist::redo() { switchState( m_redoList, m_undoList ); } //SLOT
 
+void
+Playlist::updateMetaData( const MetaBundle &mb ) //SLOT
+{
+    PlaylistItem* item = static_cast<PlaylistItem*>( firstChild() );
+    if( !item ) return;
+
+    do {
+        if ( item->url() == mb.url() )
+            item->setText( mb );    // update metadata in playlist item
+
+        item = item->nextSibling();
+    }
+    while( item );
+}
 
 void
 Playlist::setSearchFilter( const QString &query, int column ) //SLOT
@@ -1430,7 +1444,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     case VIEW:
     {
-        showTagDialog( item );
+        showTagDialog( selectedItems() );
         break;
     }
 
@@ -1752,10 +1766,22 @@ Playlist::writeTag( QListViewItem *lvi, const QString &tag, int col ) //SLOT
     if( below && below->isSelected() ) { rename( below, col ); }
 }
 
-void Playlist::showTagDialog( PlaylistItem* item )
+void Playlist::showTagDialog( QPtrList<QListViewItem> items )
 {
-    TagDialog* dialog = new TagDialog( item->metaBundle(), item, instance() );
-    dialog->show();
+    if( items.count() == 1 ) {
+        PlaylistItem *item = static_cast<PlaylistItem*>( items.first() );
+        TagDialog *dialog = new TagDialog( item->metaBundle(), item, instance() );
+        dialog->show();
+    }
+    else {
+        //edit multiple tracks in tag dialog
+        KURL::List urls;
+        for( QListViewItem *item = items.first(); item; item = items.next() )
+            urls << static_cast<PlaylistItem*>( item )->url();
+
+        TagDialog *dialog = new TagDialog( urls, instance() );
+        dialog->show();
+    }
 }
 
 #include "playlist.moc"

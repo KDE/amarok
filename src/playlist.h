@@ -116,6 +116,7 @@ class Playlist : private KListView, public EngineObserver
         void playPrevTrack();
         void playCurrentTrack();
         void playNextTrack();
+        void updateMetaData( const MetaBundle& );
         void setSearchFilter( const QString &filter, int column );
 
     private slots:
@@ -144,7 +145,7 @@ class Playlist : private KListView, public EngineObserver
         void removeItem( PlaylistItem* );
         void refreshNextTracks( int=-1 );
         void startEditTag( QListViewItem *, int );    //start inline tag editing with auto-completion
-        void showTagDialog( PlaylistItem* item );
+        void showTagDialog( QPtrList<QListViewItem> items );
 
         //engine observer functions
         void engineNewMetaData( const MetaBundle&, bool );

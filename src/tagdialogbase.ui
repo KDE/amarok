@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>501</width>
-            <height>434</height>
+            <height>448</height>
         </rect>
     </property>
     <property name="caption">
@@ -235,6 +235,9 @@
                     <property name="text">
                         <string>&amp;Fill-in Tags Using MusicBrainz</string>
                     </property>
+                    <property name="accel">
+                        <string>Alt+F</string>
+                    </property>
                     <property name="autoDefault">
                         <bool>false</bool>
                     </property>
@@ -244,7 +247,7 @@
                 </widget>
                 <widget class="QLabel" row="11" column="0">
                     <property name="name">
-                        <cstring>textLabel1_6_5</cstring>
+                        <cstring>locationLabel</cstring>
                     </property>
                     <property name="text">
                         <string>Location:</string>
@@ -284,7 +287,7 @@
                 </widget>
                 <widget class="QLabel" row="8" column="0">
                     <property name="name">
-                        <cstring>textLabel1_6_2</cstring>
+                        <cstring>lengthLabel</cstring>
                     </property>
                     <property name="text">
                         <string>Length:</string>
@@ -338,7 +341,7 @@
                 </widget>
                 <widget class="QLabel" row="9" column="0">
                     <property name="name">
-                        <cstring>textLabel1_6_3</cstring>
+                        <cstring>bitrateLabel</cstring>
                     </property>
                     <property name="text">
                         <string>Bitrate:</string>
@@ -365,7 +368,7 @@
                 </widget>
                 <widget class="QLabel" row="10" column="0">
                     <property name="name">
-                        <cstring>textLabel1_6_4</cstring>
+                        <cstring>samplerateLabel</cstring>
                     </property>
                     <property name="text">
                         <string>Samplerate:</string>
@@ -485,8 +488,6 @@
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <tabstops>
     <tabstop>kLineEdit_title</tabstop>
     <tabstop>kComboBox_artist</tabstop>

@@ -1,8 +1,10 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
+// (c) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>
 // See COPYING file for licensing information.
 
 #include "collectiondb.h"
 #include "metabundle.h"
+#include "playlist.h"
 #include "playlistitem.h"
 #include "tagdialog.h"
 
@@ -32,6 +34,17 @@ TagDialog::TagDialog( const KURL& url, QWidget* parent )
     : TagDialogBase( parent )
     , m_bundle( MetaBundle( url ) )
     , m_playlistItem( 0 )
+    , m_currentCover( 0 )
+{
+    init();
+}
+
+
+TagDialog::TagDialog( const KURL::List list, QWidget* parent )
+    : TagDialogBase( parent )
+    , m_bundle( MetaBundle() )
+    , m_playlistItem( 0 )
+    , m_urlList( list )
     , m_currentCover( 0 )
 {
     init();
@@ -234,12 +247,20 @@ void TagDialog::init()
     // draw an icon onto the open-in-konqui button
     pushButton_open->setPixmap( QPixmap( locate( "data", QString( "amarok/images/folder_crystal.png" ) ), "PNG" ) );
 
+    if( !m_playlistItem ) {
+        pushButton_previous->hide();
+        pushButton_next->hide();
+    }
+
 #ifdef HAVE_MUSICBRAINZ
     connect( pushButton_musicbrainz, SIGNAL(clicked()), SLOT(musicbrainzQuery()) );
     QToolTip::add( pushButton_musicbrainz, i18n("Please install MusicBrainz to enable this functionality") );
 #endif
 
-    readTags();
+    if( m_urlList.count() )    //editing multiple tracks
+        setMultipleTracksMode();
+    else
+        readTags();
 
     adjustSize();
 }
@@ -294,10 +315,33 @@ void TagDialog::readTags()
     if( m_playlistItem ) {
         pushButton_previous->setEnabled( m_playlistItem->itemAbove() );
         pushButton_next->setEnabled( m_playlistItem->itemBelow() );
-    } else {
-        pushButton_previous->hide();
-        pushButton_next->hide();
     }
+}
+
+
+void
+TagDialog::setMultipleTracksMode()
+{
+    kComboBox_artist->setCurrentText( "" );
+    kComboBox_album->setCurrentText( "" );
+    kComboBox_genre->setCurrentText( "" );
+
+    kLineEdit_title->setEnabled( false );
+    kIntSpinBox_track->setEnabled( false );
+
+    pushButton_musicbrainz->hide();
+
+    line1->hide();
+    lengthLabel->hide();
+    kLineEdit_length->hide();
+    bitrateLabel->hide();
+    kLineEdit_bitrate->hide();
+    samplerateLabel->hide();
+    kLineEdit_samplerate->hide();
+    locationLabel->hide();
+    kLineEdit_location->hide();
+    pushButton_open->hide();
+    pixmap_cover->hide();
 }
 
 
@@ -352,15 +396,49 @@ TagDialog::storeTags()
 void
 TagDialog::saveTags()
 {
-    if( hasChanged() )
-        storeTags();
+    if( m_urlList.count() )    //editing multiple tracks
+        saveMultipleTracks();
+    else
+    {
+        if( hasChanged() )
+            storeTags();
 
-    QMap<QString, MetaBundle>::ConstIterator it;
-    for( it = storedTags.begin(); it != storedTags.end(); ++it ) {
-        if( writeTag( it.data() ) )
-            syncItemText( it.data() );
+        QMap<QString, MetaBundle>::ConstIterator it;
+        for( it = storedTags.begin(); it != storedTags.end(); ++it ) {
+            if( writeTag( it.data() ) )
+                Playlist::instance()->updateMetaData( it.data() );
+        }
     }
+}
 
+
+void
+TagDialog::saveMultipleTracks()
+{
+    const KURL::List::ConstIterator end = m_urlList.end();
+    for ( KURL::List::ConstIterator it = m_urlList.begin(); it != end; ++it ) {
+        if( !(*it).isLocalFile() ) continue;
+
+        MetaBundle mb( *it );
+
+        if( !kComboBox_artist->currentText().isEmpty() )
+            mb.setArtist( kComboBox_artist->currentText() );
+
+        if( !kComboBox_album->currentText().isEmpty() )
+            mb.setAlbum( kComboBox_album->currentText() );
+
+        if( !kComboBox_genre->currentText().isEmpty() )
+            mb.setGenre( kComboBox_genre->currentText() );
+
+        if( !kLineEdit_comment->text().isEmpty() )
+            mb.setComment( kLineEdit_comment->text() );
+
+        if( kIntSpinBox_year->value() )
+            mb.setYear( QString::number( kIntSpinBox_year->value() ) );
+
+        if( writeTag( mb ) )
+            Playlist::instance()->updateMetaData( mb );
+    }
 }
 
 
@@ -400,31 +478,6 @@ TagDialog::writeTag( MetaBundle mb )
         return true;
     }
     else return false;
-}
-
-
-void
-TagDialog::syncItemText( MetaBundle mb )
-{
-    if( !m_playlistItem ) return;
-
-    PlaylistItem* item = (PlaylistItem*)((KListView*)m_playlistItem->listView())->firstChild();
-
-    // Find out if item still exists in the listView
-    do {
-        if ( item->url() == mb.url() ) {
-            // Reflect changes in PlaylistItem text
-            item->setText( PlaylistItem::Title,   mb.title() );
-            item->setText( PlaylistItem::Artist,  mb.artist() );
-            item->setText( PlaylistItem::Album,   mb.album() );
-            item->setText( PlaylistItem::Genre,   mb.genre() );
-            item->setText( PlaylistItem::Track,   mb.track() );
-            item->setText( PlaylistItem::Year,    mb.year() );
-            item->setText( PlaylistItem::Comment, mb.comment() );
-        }
-        item = item->nextSibling();
-    }
-    while( item );
 }
 
 

@@ -28,6 +28,7 @@ class TagDialog : public TagDialogBase
 
     public:
         TagDialog( const KURL& url, QWidget* parent = 0 );
+        TagDialog( const KURL::List list, QWidget* parent = 0 );
         TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent = 0 );
 
     private slots:
@@ -44,16 +45,18 @@ class TagDialog : public TagDialogBase
     private:
         void init();
         void readTags();
+        void setMultipleTracksMode();
         bool hasChanged();
         void storeTags();
         void saveTags();
+        void saveMultipleTracks();
         bool writeTag( MetaBundle mb );
-        void syncItemText( MetaBundle mb );
         bool equalString( const QString&, const QString& );
 
         MetaBundle m_bundle;
         PlaylistItem* m_playlistItem;
         QMap<QString, MetaBundle> storedTags;
+        KURL::List m_urlList;
         QString m_buttonMbText;
         QString m_path;
         QString m_currentCover;
