@@ -52,7 +52,7 @@ void WelcomeBrowser::paletteChange( const QPalette& pal )
 
 void WelcomeBrowser::setStyleSheet()
 {
-    QFontMetrics fm( AmarokConfig::playlistWindowFont() );
+    QFontMetrics fm( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );
     int pxSize = fm.height() - 3;
 
     m_styleSheet =  QString( "div { color: %1; font-size: %2px; text-decoration: none; }" )

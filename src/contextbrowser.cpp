@@ -146,7 +146,7 @@ void ContextBrowser::paletteChange( const QPalette& pal )
 
 void ContextBrowser::setStyleSheet()
 {
-    QFontMetrics fm( AmarokConfig::playlistWindowFont() );
+    QFontMetrics fm( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );
     int pxSize = fm.height() - 4;
 
     m_styleSheet =  QString( "div { color: %1; font-size: %2px; text-decoration: none; }" )
