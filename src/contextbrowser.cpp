@@ -35,11 +35,10 @@
 ContextBrowser::ContextBrowser( const char *name )
         : QVBox( 0, name )
         , m_currentTrack( 0 )
+        , m_db( new CollectionDB() )
 {
     EngineController::instance()->attach( this );
-
-    m_db = new CollectionDB();
-
+    
     setSpacing( 4 );
     setMargin( 5 );
     QWidget::setFont( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );
@@ -184,63 +183,10 @@ void ContextBrowser::paletteChange( const QPalette& pal )
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
-// PRIVATE
+// PRIVATE SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void ContextBrowser::setStyleSheet()
-{
-    int pxSize = fontMetrics().height() - 4;
-
-    m_styleSheet =  QString( "div { color: %1; font-size: %2px; text-decoration: none; }" )
-                    .arg( colorGroup().text().name() ).arg( pxSize );
-    m_styleSheet += QString( "td { color: %1; font-size: %2px; text-decoration: none; }" )
-                    .arg( colorGroup().text().name() ).arg( pxSize );
-    m_styleSheet += QString( ".menu { color: %1; font-weight: bold; }" )
-                    .arg( colorGroup().text().name() );
-    m_styleSheet += QString( ".song { color: %1; font-size: %2px; text-decoration: none; }" )
-                    .arg( colorGroup().text().name() ).arg( pxSize );
-    m_styleSheet += QString( ".song:hover { color: %1; cursor: default; background-color: %2; }" )
-                    .arg( colorGroup().highlightedText().name() ).arg( colorGroup().highlight().name() );
-    m_styleSheet += QString( "A.song { color: %1; font-size: %2px; text-decoration: none; display: block; }" )
-                    .arg( colorGroup().text().name() ).arg( pxSize );
-    m_styleSheet += QString( "A.song:hover { color: %1; font-size: %2px; text-decoration: none; display: block; }" )
-                    .arg( colorGroup().highlightedText().name() ).arg( pxSize );
-    m_styleSheet += QString( ".album { font-weight: bold; font-size: %1px; text-decoration: none; }" )
-                    .arg( pxSize );
-    m_styleSheet += QString( ".title { color: %1; font-size: %2px; font-weight: bold; }" )
-                    .arg( colorGroup().text().name() ).arg( pxSize + 3 );
-    m_styleSheet += QString( ".head { color: %1; font-size: %2px; font-weight: bold; background-color: %3; }" )
-                    .arg( colorGroup().highlightedText().name() ).arg( pxSize + 2 ).arg( colorGroup().highlight().name() );
-    m_styleSheet += QString( ".rbcurrent { color: %1; border: solid %2 1px; }" )
-                    .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
-    m_styleSheet += QString( ".rbalbum { color: %1; border: solid %2 1px; }" )
-                    .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
-    m_styleSheet += QString( ".rbalbum:hover { color: %1; cursor: default; background-color: %2; border: solid %3 1px; }" )
-                    .arg( colorGroup().highlightedText().name() ).arg( colorGroup().highlight().name() ).arg( colorGroup().text().name() );
-    m_styleSheet += QString( ".rbcontent { border: solid %1 1px; }" )
-                    .arg( colorGroup().highlight().name() );
-    m_styleSheet += QString( ".rbcontent:hover { border: solid %1 1px; }" )
-                    .arg( colorGroup().text().name() );
-}
-
-
-void ContextBrowser::showIntroduction()
-{
-    browser->begin();
-    browser->setUserStyleSheet( m_styleSheet );
-
-    // <Favorite Tracks Information>
-    browser->write( "<html><div>");
-    browser->write( i18n( "Hello amaroK user!" )
-                    + "<br><br>" + i18n( "To use the extended features of amaroK, you need to build a collection." )
-                    + "&nbsp;<a href='show:collectionSetup'>" + i18n( "Click here to create one." ) + "</a>" );
-    browser->write( "</div></html>");
-
-    browser->end();
-}
-
-
-void ContextBrowser::showHome()
+void ContextBrowser::showHome() //SLOT
 {
     QStringList values;
     QStringList names;
@@ -248,6 +194,8 @@ void ContextBrowser::showHome()
     // take care of sql updates (schema changed errors)
     delete m_db;
     m_db = new CollectionDB();
+    // Triggers redisplay when new cover image is downloaded
+    connect( m_db, SIGNAL( coverFetched() ), this, SLOT( showCurrentTrack() ) );
 
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
@@ -314,7 +262,7 @@ void ContextBrowser::showHome()
 }
 
 
-void ContextBrowser::showCurrentTrack()
+void ContextBrowser::showCurrentTrack() //SLOT
 {
     if ( !m_currentTrack )
         return;
@@ -325,6 +273,8 @@ void ContextBrowser::showCurrentTrack()
     // take care of sql updates (schema changed errors)
     delete m_db;
     m_db = new CollectionDB();
+    // Triggers redisplay when new cover image is downloaded
+    connect( m_db, SIGNAL( coverFetched() ), this, SLOT( showCurrentTrack() ) );
 
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
@@ -345,7 +295,7 @@ void ContextBrowser::showCurrentTrack()
 
     if ( values.count() )
         browser->write( QString ( "<tr><td height='42' valign='top' class='rbcurrent'>"
-                                  "<span class='album'>%1 - %2</span><br>%3<br><br><a class='menu' href='fetchcover:%4 - %5'><img align='left' valign='center' hspace='2' width='70' height='70' src='%6'></a>"
+                                  "<span class='album'>%1 - %2</span><br>%3<br><br><a class='menu' href='fetchcover:%4 - %5'><img align='left' valign='center' hspace='2' width='80' height='80' src='%6'></a>"
                                   "<i>First play: %7<br>Last play: %8<br>Total plays: %9</i></td>"
                                   "</tr>" )
                         .arg( m_currentTrack->artist() )
@@ -366,7 +316,7 @@ void ContextBrowser::showCurrentTrack()
 
         if ( values.count() )
             browser->write( QString ( "<tr><td height='42' valign='top' class='rbcurrent'>"
-                                      "<span class='album'>%1 - %2</span><br>%3<br><br><a class='menu' href='fetchcover:%4 - %5'><img align='left' valign='center' hspace='2' width='70' height='70' src='%6'></a>"
+                                      "<span class='album'>%1 - %2</span><br>%3<br><br><a class='menu' href='fetchcover:%4 - %5'><img align='left' valign='center' hspace='2' width='80' height='80' src='%6'></a>"
                                       "<i>Never played before</i></td>"
                                       "</tr>" )
                             .arg( m_currentTrack->artist() )
@@ -463,7 +413,7 @@ void ContextBrowser::showCurrentTrack()
         for ( uint i = 0; i < ( values.count() / 3 ); i++ )
         {
             browser->write( QString ( "<tr><td onClick='window.location.href=\"album:%1/%2\"' height='42' valign='top' class='rbalbum'>"
-                                      "<a class='menu' href='fetchcover:%3 - %4'><img align='left' hspace='2' width='70' height='70' src='%5'></a><span class='album'>%6</span><br>%7 Tracks</td>"
+                                      "<a class='menu' href='fetchcover:%3 - %4'><img align='left' hspace='2' width='80' height='80' src='%5'></a><span class='album'>%6</span><br>%7 Tracks</td>"
                                       "</tr>" )
                             .arg( values[i*3 + 2] )
                             .arg( values[i*3 + 1] )
@@ -479,6 +429,63 @@ void ContextBrowser::showCurrentTrack()
     // </Albums by this artist>
 
     browser->write( "<br></html>" );
+    browser->end();
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// PRIVATE
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void ContextBrowser::setStyleSheet()
+{
+    int pxSize = fontMetrics().height() - 4;
+
+    m_styleSheet =  QString( "div { color: %1; font-size: %2px; text-decoration: none; }" )
+                    .arg( colorGroup().text().name() ).arg( pxSize );
+    m_styleSheet += QString( "td { color: %1; font-size: %2px; text-decoration: none; }" )
+                    .arg( colorGroup().text().name() ).arg( pxSize );
+    m_styleSheet += QString( ".menu { color: %1; font-weight: bold; }" )
+                    .arg( colorGroup().text().name() );
+    m_styleSheet += QString( ".song { color: %1; font-size: %2px; text-decoration: none; }" )
+                    .arg( colorGroup().text().name() ).arg( pxSize );
+    m_styleSheet += QString( ".song:hover { color: %1; cursor: default; background-color: %2; }" )
+                    .arg( colorGroup().highlightedText().name() ).arg( colorGroup().highlight().name() );
+    m_styleSheet += QString( "A.song { color: %1; font-size: %2px; text-decoration: none; display: block; }" )
+                    .arg( colorGroup().text().name() ).arg( pxSize );
+    m_styleSheet += QString( "A.song:hover { color: %1; font-size: %2px; text-decoration: none; display: block; }" )
+                    .arg( colorGroup().highlightedText().name() ).arg( pxSize );
+    m_styleSheet += QString( ".album { font-weight: bold; font-size: %1px; text-decoration: none; }" )
+                    .arg( pxSize );
+    m_styleSheet += QString( ".title { color: %1; font-size: %2px; font-weight: bold; }" )
+                    .arg( colorGroup().text().name() ).arg( pxSize + 3 );
+    m_styleSheet += QString( ".head { color: %1; font-size: %2px; font-weight: bold; background-color: %3; }" )
+                    .arg( colorGroup().highlightedText().name() ).arg( pxSize + 2 ).arg( colorGroup().highlight().name() );
+    m_styleSheet += QString( ".rbcurrent { color: %1; border: solid %2 1px; }" )
+                    .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
+    m_styleSheet += QString( ".rbalbum { color: %1; border: solid %2 1px; }" )
+                    .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
+    m_styleSheet += QString( ".rbalbum:hover { color: %1; cursor: default; background-color: %2; border: solid %3 1px; }" )
+                    .arg( colorGroup().highlightedText().name() ).arg( colorGroup().highlight().name() ).arg( colorGroup().text().name() );
+    m_styleSheet += QString( ".rbcontent { border: solid %1 1px; }" )
+                    .arg( colorGroup().highlight().name() );
+    m_styleSheet += QString( ".rbcontent:hover { border: solid %1 1px; }" )
+                    .arg( colorGroup().text().name() );
+}
+
+
+void ContextBrowser::showIntroduction()
+{
+    browser->begin();
+    browser->setUserStyleSheet( m_styleSheet );
+
+    // <Favorite Tracks Information>
+    browser->write( "<html><div>");
+    browser->write( i18n( "Hello amaroK user!" )
+                    + "<br><br>" + i18n( "To use the extended features of amaroK, you need to build a collection." )
+                    + "&nbsp;<a href='show:collectionSetup'>" + i18n( "Click here to create one." ) + "</a>" );
+    browser->write( "</div></html>");
+
     browser->end();
 }
 

@@ -34,11 +34,13 @@ class ContextBrowser : public QVBox, public EngineObserver
         void engineStateChanged( EngineBase::EngineState );
         void paletteChange( const QPalette& );
 
+    private slots:
+        void showHome();
+        void showCurrentTrack();
+    
     private:
         void setStyleSheet();
         void showIntroduction();
-        void showHome();
-        void showCurrentTrack();
 
         KHTMLPart *browser;
         MetaBundle *m_currentTrack;

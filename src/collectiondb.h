@@ -17,7 +17,7 @@ class CollectionDB : public QObject
     Q_OBJECT
     
     public:
-        static const int COVER_SIZE = 70;
+        static const int COVER_SIZE = 80;
         
         CollectionDB();
         ~CollectionDB();
@@ -74,7 +74,8 @@ class CollectionDB : public QObject
     
     signals:
         void scanDone( bool changed );
-
+        void coverFetched();
+        
     public slots:
         void setupCoverFetcher();
         void fetchCover( QObject* parent, const QString& key );
