@@ -211,7 +211,7 @@ void SmartPlaylistEditor::updateMatchWidgets()
         m_matchLabel->show();
     }
     else {
-        m_matchCheck->setText( i18n("Match the following condition" ) );
+        m_matchCheck->setText( i18n("Match the following conditions" ) );
         m_matchCombo->hide();
         m_matchLabel->hide();
     }
@@ -513,26 +513,25 @@ void CriteriaEditor::loadCriteriaList( int valueType )
     switch( valueType ) {
         case String:
         case AutoCompletionString:
-            items << "contains" << "does not contain" << "is" << "is not"
-                  << "starts with" << "ends with";
+            items << i18n( "contains" ) << i18n( "does not contain" ) << i18n( "is" ) << i18n( "is not" )
+                  << i18n( "starts with" ) << i18n( "ends with" );
             break;
 
         case Number:
-            items << "is" << "is not" << "is greater than" << "is smaller than"
-                  << "is between";
+            items << i18n( "is" ) << i18n( "is not" ) << i18n( "is greater than" ) << i18n( "is smaller than" )
+                  << i18n( "is between" );
             break;
 
         case Year: //fall through
         case Date:
-            items << "is" << "is not" << "is before" << "is after"
-                  << "is in the last" << "is between";
+            items << i18n( "is" ) << i18n( "is not" ) << i18n( "is before" ) << i18n( "is after" )
+                  << i18n( "is in the last" ) << i18n( "is between" );
             break;
         default: ;
     };
 
     m_criteriaCombo->clear();
-    for ( QStringList::ConstIterator it = items.begin(); it != items.end(); ++it )
-        m_criteriaCombo->insertItem( i18n( (*it).latin1() ) );
+    m_criteriaCombo->insertStringList( items );
 }
 
 

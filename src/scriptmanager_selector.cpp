@@ -26,7 +26,7 @@ ScriptManager::Selector::Selector( const QStringList &directories, QWidget *pare
 {
     setWFlags( Qt::WDestructiveClose );
     setModal( false );
-    
+
     m_base = new ScriptManagerBase( this );
     setMainWidget( m_base );
     m_base->directoryListView->setFullWidth( true );
@@ -79,7 +79,7 @@ ScriptManager::Selector::exec()
 void
 ScriptManager::Selector::slotAddDirectory()
 {
-    KFileDialog dia( QString::null, "*.js|JavaScript Source Files", 0, 0, true );
+    KFileDialog dia( QString::null, "*.js|" + i18n("JavaScript Source Files" ), 0, 0, true );
     dia.setMode( KFile::File | KFile::ExistingOnly );
     dia.exec();
     QString dir = dia.selectedURL().path();
@@ -146,4 +146,3 @@ ScriptManager::Selector::slotConfigureScript()
 
 
 #include "scriptmanager_selector.moc"
-

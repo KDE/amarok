@@ -121,7 +121,7 @@ void SmartPlaylistView::createCustomPlaylist() //SLOT
             counter++;
     }
 
-    SmartPlaylistEditor *editor = new SmartPlaylistEditor( this, QString("Untitled %1").arg(counter) );
+    SmartPlaylistEditor *editor = new SmartPlaylistEditor( this, i18n("Untitled %1").arg(counter) );
     SmartPlaylistEditor::Result r = editor->exec();
     if( r.result == QDialog::Accepted )
         new SmartPlaylist( this, 0, r.playlistName, r.query, QString::null, true );
@@ -168,7 +168,7 @@ void SmartPlaylistView::loadDefaultPlaylists()
                        "LIMIT 0,15;" )
                        .arg( db.escapeString( artistList[i] ) );
 
-        childItem = new SmartPlaylist( item, childItem, i18n("By ") + artistList[i], sql );
+        childItem = new SmartPlaylist( item, childItem, i18n("By %1").arg( artistList[i] ), sql );
     }
 
     /********** Most Played **************/
@@ -186,7 +186,7 @@ void SmartPlaylistView::loadDefaultPlaylists()
                        "WHERE statistics.url = tags.url AND tags.artist = artist.id AND artist.name = '%1' "
                        "ORDER BY statistics.playcounter DESC "
                        "LIMIT 0,15;" ).arg( db.escapeString( artistList[i] ) );
-        childItem = new SmartPlaylist( item, childItem, i18n("By ") + artistList[i], sql );
+        childItem = new SmartPlaylist( item, childItem, i18n("By %1").arg( artistList[i] ), sql );
     }
 
     /********** Newest Tracks **************/
@@ -203,7 +203,7 @@ void SmartPlaylistView::loadDefaultPlaylists()
                        "WHERE tags.artist = artist.id AND artist.name = '%1' "
                        "ORDER BY tags.createdate DESC "
                        "LIMIT 0,15;" ).arg( db.escapeString( artistList[i] ) );
-        childItem = new SmartPlaylist( item, childItem, i18n("By ") + artistList[i], sql );
+        childItem = new SmartPlaylist( item, childItem, i18n("By %1").arg( artistList[i] ), sql );
     }
 
     /********** Last Played **************/

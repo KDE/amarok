@@ -707,7 +707,9 @@ void ContextBrowser::showCurrentTrack() //SLOT
         for ( uint i = 0; i < values.count(); i += 2 ) {
             browser->write( QStringx ( "<tr>"
                                        "<td class='rbalbum' onClick='window.location.href=\"album:%1 @@@ %2\"' height='42' valign='top'>"
-                                       "<a href='fetchcover:%3 @@@ %4'><img align='left' hspace='2' title='Click for information from amazon.com, right-click for menu.' src='%5'></a>"
+                                       "<a href='fetchcover:%3 @@@ %4'><img align='left' hspace='2' title='" +
+                                       i18n( "Click for information from amazon.com, right-click for menu." ) +
+                                       "' src='%5'></a>"
                                        /* *** UGLY HACK ALERT ***
                                           Without the 2 <br> after %9, hover borks on mouseover.
                                           TODO: find out why + make it nice ;) */
