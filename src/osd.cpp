@@ -88,7 +88,6 @@ void OSDWidget::renderOSDText( const QString &text )
         // so we can see the last line!
         textRect.addCoords( 0, 0, 20, titleRect.height() );
     }
-
     osdBuffer.resize( textRect.size() );
     mask.resize( textRect.size() );
 
@@ -388,13 +387,14 @@ void OSDWidget::createGradient( QSize size )
 {
     amaroK::Color gradient = colorGroup().highlight();
 
+    if ( AmarokConfig::osdUseCustomColors() )
+        gradient = backgroundColor();
+
     //writing temp gradient image
     m_gradient = new KTempFile( locateLocal( "tmp", "osdgradient" ), ".png", 0600 );
     QImage image = KImageEffect::gradient( size , gradient, gradient.light(), KImageEffect::PipeCrossGradient, 3 );
     image.save( m_gradient->file(), "PNG" );
     m_gradient->close();
-
-    kdDebug() << "Gradient for osd: " << m_gradient->name() << endl;
 }
 
 
