@@ -51,8 +51,8 @@ email                : markey@web.de
 
 ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
         : EngineBase()
-        , m_pPlayObject( NULL )
-        , m_pPlayObjectXfade( NULL )
+        , m_pPlayObject( 0 )
+        , m_pPlayObjectXfade( 0 )
         , m_scopeId( 0 )
         , m_scopeSize( 1 << scopeSize )
         , m_volumeId( 0 )
@@ -194,8 +194,8 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
 
 ArtsEngine::~ ArtsEngine()
 {
-    stopXfade();
-    stopCurrent();
+    delete m_pPlayObject;
+    delete m_pPlayObjectXfade;
     
     m_scope             = Amarok::RawScope::null();
     m_xfade             = Amarok::Synth_STEREO_XFADE::null();
@@ -335,7 +335,8 @@ bool ArtsEngine::effectConfigurable( const QString& name ) const
 
 void ArtsEngine::open( KURL url )
 {
-    startXfade();
+    if ( !m_proxyError )
+        stop();
 
     KDE::PlayObjectFactory factory( m_server );
 
@@ -382,8 +383,6 @@ void ArtsEngine::connectPlayObject()
     {
         m_pPlayObject->object()._node()->start();
 
-        switchXfade();
-
         Arts::connect( m_pPlayObject->object(), "left", m_xfade, ( m_xfadeCurrent + "_l" ).latin1() );
         Arts::connect( m_pPlayObject->object(), "right", m_xfade, ( m_xfadeCurrent + "_r" ).latin1() );
     }
@@ -401,8 +400,21 @@ void ArtsEngine::play()
 
 void ArtsEngine::stop()
 {
-    switchXfade();
-    startXfade();
+    kdDebug() << "[void ArtsEngine::stop()]" << endl;
+   
+    m_xfadeRunning = true;
+    
+    //switch xfade channels
+    if ( m_xfadeCurrent == "invalue1" )
+        m_xfadeCurrent = "invalue2";
+    else
+        m_xfadeCurrent = "invalue1";
+    
+    if ( m_pPlayObjectXfade )
+        delete m_pPlayObjectXfade;
+    
+    m_pPlayObjectXfade = m_pPlayObject;
+    m_pPlayObject = 0;
 }
 
 
@@ -477,89 +489,39 @@ void ArtsEngine::receiveStreamMeta( QString title, QString url, QString kbps )
 }
 
 
-void ArtsEngine::stopCurrent()   
-{   
-   if ( m_pPlayObject )
-    {
-        m_pPlayObject->halt();
-
-        delete m_pPlayObject;
-        m_pPlayObject = NULL;
-    }
-}
-    
-
-void ArtsEngine::startXfade()
-{
-    kdDebug() << "void ArtsEngine::startXfade()" << endl;
-   
-    m_xfadeRunning = true;
-    
-    if ( m_pPlayObjectXfade )
-    {
-        m_pPlayObjectXfade->halt();
-        delete m_pPlayObjectXfade;
-    }      
-    
-    m_pPlayObjectXfade = m_pPlayObject;
-    m_pPlayObject = NULL;
-}
-
-
-void ArtsEngine::stopXfade()
-{
-    kdDebug() << "void PlayerApp::stopXfade()" << endl;
-
-    m_xfadeRunning = false;
-
-    if ( m_xfadeCurrent == "invalue2" )
-        m_xfadeValue = 0.0;
-    else
-        m_xfadeValue = 1.0;
-
-    m_xfade.percentage( m_xfadeValue );
-
-    if ( m_pPlayObjectXfade )
-    {
-        m_pPlayObjectXfade->halt();
-
-        delete m_pPlayObjectXfade;
-        m_pPlayObjectXfade = NULL;
-    }
-}
-
-
-void ArtsEngine::switchXfade()
-{
-    if ( m_xfadeCurrent == "invalue1" )
-        m_xfadeCurrent = "invalue2";
-    else
-        m_xfadeCurrent = "invalue1";
-}
-
-
 void ArtsEngine::timerEvent( QTimerEvent* )
 {
     if ( m_xfadeRunning )
     {
-        //prevent division by 0
-        float xfadeStep = ( m_xfadeLength ) ? ( 1.0 / m_xfadeLength * ARTS_TIMER ) : ( 1.0 );
-                        
-        if ( m_xfadeCurrent == "invalue2" )
-            m_xfadeValue -= xfadeStep;
-        else
-            m_xfadeValue += xfadeStep;
-
-        if ( m_xfadeValue < 0.0 )
-            m_xfadeValue = 0.0;
-        else if ( m_xfadeValue > 1.0 )
-            m_xfadeValue = 1.0;
-
         kdDebug() << "[timerEvent] m_xfadeValue: " << m_xfadeValue << endl;
+        //prevent division by 0
+        
+        float xfadeStep = ( m_xfadeLength ) ? ( 1.0 / m_xfadeLength * ARTS_TIMER ) : ( 1.0 );
+             
+        { //fade direction
+            if ( m_xfadeCurrent == "invalue2" )
+                m_xfadeValue -= xfadeStep;
+            else
+                m_xfadeValue += xfadeStep;
+        }
+        
+        { //prevent overflow
+            if ( m_xfadeValue < 0.0 )
+                m_xfadeValue = 0.0;
+            else if ( m_xfadeValue > 1.0 )
+                m_xfadeValue = 1.0;
+        }
+            
         m_xfade.percentage( m_xfadeValue );
 
         if( m_xfadeValue == 0.0 || m_xfadeValue == 1.0 )
-            stopXfade();
+        {
+            if ( m_pPlayObjectXfade ) {
+                delete m_pPlayObjectXfade;
+                m_pPlayObjectXfade = 0;
+            }
+            m_xfadeRunning = false;
+        }
     }
 }
 

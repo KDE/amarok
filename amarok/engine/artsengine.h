@@ -64,10 +64,6 @@ class ArtsEngine : public EngineBase
     private:
         void                                     enableScope();
         void                                     disableScope();
-        void                                     stopCurrent();
-        void                                     startXfade();
-        void                                     stopXfade();
-        void                                     switchXfade();
         void                                     timerEvent( QTimerEvent* );
     
         /////////////////////////////////////////////////////////////////////////////////////
