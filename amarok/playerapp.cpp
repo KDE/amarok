@@ -330,7 +330,7 @@ void PlayerApp::readConfig()
 
     m_pPlayerWidget->createVis();
 
-    m_pOSD->setEnabled( AmarokConfig::osdEnabled() );
+    m_pOSD->setEnabled( !AmarokConfig::osdEnabled() );      //workaround for reversed config entry
     m_pOSD->setFont   ( AmarokConfig::osdFont() );
     m_pOSD->setColor  ( AmarokConfig::osdColor() );
     
