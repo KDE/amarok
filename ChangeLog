@@ -3,6 +3,7 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  FIX: FileBrowser didn't remember its current folder (BR 81816).
   ADD: Expand/collapse items by doubleclicking in Collection (BR 81710).
   FIX: Allow OSD still to be shown via shortcut when disabled (BR 80388). 
   FIX: Collection: live-monitoring dirs for changes works again.

@@ -70,6 +70,7 @@ FileBrowser::FileBrowser( const char * name )
     cmbPath->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
     cmbPath->setMaxItems( 9 );
     cmbPath->setURLs( config->readListEntry( "Dir History" ) );
+    cmbPath->lineEdit()->setText( config->readEntry( "Location" ) );
     setFocusProxy( cmbPath ); //so the dirOperator is focussed when we get focus events
 
     dir = new KDirOperator( KURL( config->readEntry( "Location" ) ), this );
@@ -133,11 +134,8 @@ FileBrowser::~FileBrowser()
 
     dir->writeConfig( c ); //uses currently set group
 
-    QStringList l;
-    for( int i = 0; i < cmbPath->count(); ++i ) l.append( cmbPath->text( i ) );
-    c->writeEntry( "Dir History", l ); //NOTE KURLComboBox::urls() may be necessary
-
-    c->writeEntry( "Location", cmbPath->currentText() ); //FIXME is not a properly encoded URL
+    c->writeEntry( "Location", dir->url().directory( false, false ) );
+    c->writeEntry( "Dir History", cmbPath->urls() );
     c->writeEntry( "Filter History", filter->historyItems() );
     c->writeEntry( "Current Filter", filter->currentText() );
     c->writeEntry( "Last Filter", lastFilter );
