@@ -194,20 +194,20 @@ GstEngine::canDecode( const KURL &url, mode_t, mode_t )
     gst_bin_add ( GST_BIN ( pipeline ), audioscale );
     if ( !( audiosink = gst_element_factory_make( m_soundOutput.latin1(), "audiosink" ) ) ) goto error;
     gst_bin_add ( GST_BIN ( pipeline ), audiosink );
-    
+
     /* setting device property for AudioSink*/
     if ( !m_defaultSoundDevice && !m_soundDevice.isEmpty() )
         g_object_set( G_OBJECT ( audiosink ), "device", m_soundDevice.latin1(), NULL );
-    
+
     g_object_set( G_OBJECT( filesrc ), "location", (const char*) QFile::encodeName( url.path() ), NULL );
-    
+
     gst_element_link_many( filesrc, spider, audioconvert, audioscale, audiosink, NULL );
     gst_element_set_state( pipeline, GST_STATE_PLAYING );
 
     // Try to iterate over the bin, if it works gst can decode our file
     if ( gst_bin_iterate ( GST_BIN ( pipeline ) ) )
         success = true;
-    
+
     gst_element_set_state( pipeline, GST_STATE_NULL );
     gst_object_unref( GST_OBJECT( pipeline ) );
 
@@ -292,7 +292,7 @@ GstEngine::play( const KURL& url )  //SLOT
     /* create a new pipeline (thread) to hold the elements */
     m_thread = gst_thread_new ( "thread" );
     g_object_set( G_OBJECT( m_thread ), "priority", m_threadPriority, NULL );
-    
+
     kdDebug() << "Thread scheduling priority: " << m_threadPriority << endl;
     kdDebug() << "Sound output method: " << m_soundOutput << endl;
 
@@ -316,15 +316,15 @@ GstEngine::play( const KURL& url )  //SLOT
         m_filesrc = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex ) );
         gst_bin_add ( GST_BIN ( m_thread ), m_filesrc );
     }
-    
+
     //TODO HACK
     if ( url.path().contains( "_uade" ) ) {
         m_spider = GST_ELEMENT( gst_uade_new() );
         g_object_set( G_OBJECT( m_spider ), "location", (const char*) ( QFile::encodeName( url.path() ) ), NULL );
     }
-    else    
+    else
         if ( !( m_spider = createElement( "spider", "spider" ) ) ) return;
-    
+
     if ( !( m_identity = createElement( "identity", "rawscope" ) ) ) return;
     if ( !( m_volumeElement = createElement( "volume", "volume" ) ) ) return;
     if ( !( m_audioconvert = createElement( "audioconvert", "audioconvert" ) ) ) return;
@@ -514,21 +514,21 @@ GstEngine::getPluginList( const QCString& classname )
 
 
 GstElement*
-GstEngine::createElement( const QCString& factoryName, const QCString& name ) 
+GstEngine::createElement( const QCString& factoryName, const QCString& name )
 {
     GstElement* element = gst_element_factory_make( factoryName, name );
-    
+
     if ( element )
         gst_bin_add ( GST_BIN ( m_thread ), element );
     else {
         KMessageBox::error( 0,
-            i18n( "<h3>GStreamer could not create the element: <i>") + QString( factoryName ) + i18n( "</i></h3>"
-            "<p>Please make sure that you have installed all neccessary GStreamer plugins, and run 'gst-register' afterwards.</p>"
-            "<p>For further assistance consult the GStreamer manual, and join #gstreamer on irc.freenode.net.</p>" ) );
+            i18n( "<h3>GStreamer could not create the element: <i>%1</i></h3> "
+                  "<p>Please make sure that you have installed all necessary GStreamer plugins, and run 'gst-register' afterwards.</p>"
+                  "<p>For further assistance consult the GStreamer manual, and join #gstreamer on irc.freenode.net.</p>" ).arg( factoryName ) );
         gst_object_unref( GST_OBJECT( m_thread ) );
         emit stopped();
     }
-                
+
     return element;
 }
 
