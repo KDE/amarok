@@ -338,37 +338,6 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
     m_ac->action( "prev" )->setEnabled( true );
     m_ac->action( "next" )->setEnabled( true );
 
-    /*if( list.count() == 1 )
-    {
-        //if safe just add it
-
-        const KURL &url = list.front();
-
-        if( PlaylistLoader::isPlaylist( url ) )
-        {
-            if( !url.isLocalFile() )
-            {
-                PlaylistLoader::downloadPlaylist( url, this, after, directPlay );
-                return;
-            }
-            //else use the normal loader route
-        }
-        else if( url.isLocalFile() && !QFileInfo( url.path() ).isDir() && EngineController::canDecode( url ) )
-        {
-            setSorting( NO_SORT );
-            PlaylistItem *item = new PlaylistItem( url, this, after );
-            MetaBundle mb( url, true, true );
-            item->setText( mb );
-            m_totalLength += mb.length();
-
-            if ( directPlay )
-                activate( item );
-            emit itemCountChanged( childCount(), m_totalLength );
-            return;
-        }
-        //else go via the loader as that will present an error dialog
-    }*/
-
     if( !list.isEmpty() )
     {
         setSorting( NO_SORT );
