@@ -35,8 +35,8 @@ SmartPlaylistEditor::SmartPlaylistEditor( QString defaultName, QWidget *parent, 
 
     m_fields.clear();
     m_fields << "Artist" << "Album" << "Genre" << "Title" << "Track #" << "Year"
-           << "Comment" << "Play Counter" << "Score" << "First Play" << "Last Play"
-           << "Modified Date";
+             << "Comment" << "Play Counter" << "Score" << "First Play" << "Last Play"
+             << "Modified Date";
 
     m_dbFields.clear();
     m_dbFields << "artist.name" << "album.name" << "genre.name" << "tags.title"

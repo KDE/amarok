@@ -321,10 +321,14 @@ void SmartPlaylistView::paintEmptyArea( QPainter *p, const QRect &r )
 
 void SmartPlaylistView::makePlaylist( QListViewItem *item ) //SLOT
 {
+    #define item static_cast<SmartPlaylist*>(item)
     if( !item )
         return;
-
-    Playlist::instance()->insertMediaSql( static_cast<SmartPlaylist*>(item)->sqlForTags, Playlist::Clear );
+    else if( !item->sqlForTags.isEmpty() )
+        Playlist::instance()->insertMediaSql( item->sqlForTags, Playlist::Clear );
+    else
+        Playlist::instance()->insertMedia( item->urls(), Playlist::Clear );
+    #undef item
 }
 
 
