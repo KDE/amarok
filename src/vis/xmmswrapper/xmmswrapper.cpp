@@ -3,13 +3,11 @@
 
 #include <config.h>
 
-#include <gtk/gtk.h>         //gtk_init(), gtk_rgb_init()
 #include <xmms/configfile.h> //visplugins use this stuff, see extern "C" block
 
 #include <dirent.h>
 #include <dlfcn.h>           //dlopen etc.
 #include <stdlib.h>
-#include <sys/types.h>       //this must be _before_ sys/socket on freebsd (which suggests freebsd needs to sort itself out)
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/un.h>
@@ -109,7 +107,7 @@ main( int argc, char** argv )
     // 2. render a frame
     // 3. do a gtk_event_loop iteration
 
-    float   float_data[ 512 ];
+    gint16  pcm_data[2][512];
     timeval tv;
     fd_set  fds;
     int     nbytes = 0;
@@ -141,9 +139,9 @@ main( int argc, char** argv )
         }
 
         ::send( sockfd, "PCM", 4, 0 );
-        nbytes = ::recv( sockfd, float_data, 512 * sizeof( float ), 0 );
+        nbytes = ::recv( sockfd, pcm_data, 512 * sizeof( gint16 ), 0 );
 
-        wrap.render( float_data );
+        wrap.render( pcm_data );
     }
 
     ::close( sockfd );
@@ -154,7 +152,6 @@ main( int argc, char** argv )
 int
 tryConnect()
 {
-    //TODO remove qt and kde isms
     #ifndef MAX_PATH
     #define MAX_PATH 256
     #endif
@@ -173,14 +170,14 @@ tryConnect()
         strcpy( &local.sun_path[ 0 ], path );
         local.sun_family = AF_UNIX;
 
-        std::cout << "[amK] Connecting to: " << path << '\n';
+        std::cout << "[XMMSWrapper] Connecting to: " << path << '\n';
 
         if( ::connect( fd, ( struct sockaddr* ) & local, sizeof( local ) ) == -1 )
         {
             ::close( fd );
             fd = -1;
 
-            std::cerr << "[amK] Could not connect to the socket\n";
+            std::cerr << "[XMMSWrapper] Could not connect to the socket\n";
         }
     }
 
@@ -248,7 +245,7 @@ getPlugin( int argc, char **argv )
 
 XmmsWrapper::XmmsWrapper( const string &plugin )
 {
-    std::cout << "[amK] loading xmms plugin: " << plugin << '\n';
+    std::cout << "[XMMSWrapper] loading xmms plugin: " << plugin << '\n';
 
     string
     path = XMMS_PLUGIN_PATH;
@@ -280,8 +277,9 @@ XmmsWrapper::XmmsWrapper( const string &plugin )
 
     } //</load plugin>
 
-    if ( m_vis->init ) { std::cout << "[amK] init()\n"; m_vis->init(); }
-    if ( m_vis->playback_start ) { std::cout << "[amK] start()\n"; m_vis->playback_start(); }
+    if ( m_vis->init ) { std::cout << "[XMMSWrapper] init()\n"; m_vis
+    ->init(); }
+    if ( m_vis->playback_start ) { std::cout << "[XMMSWrapper] start()\n"; m_vis->playback_start(); }
 }
 
 
@@ -289,32 +287,23 @@ XmmsWrapper::~XmmsWrapper()
 {
     dlclose( m_vis );
 
-    std::cout << "[amK] ~\n";
+    std::cout << "[XMMSWrapper] ~\n";
 }
 
 
 void XmmsWrapper::configure()
 {
     if ( m_vis->configure ) {
-        std::cout << "[amK] configure()\n";
+        std::cout << "[XMMSWrapper] configure()\n";
         m_vis->configure();
     }
 }
 
 
-void XmmsWrapper::render( float *float_data )
+void XmmsWrapper::render( gint16 pcm_data[2][512] )
 {
-    gint16 pcm_data[ 2 ][ 512 ];
-
-    for ( uint x = 0; x < 512; ++x )
-    {
-        //NOTE we times by 1<<14 rather than 1<<15 (maximum value of signed 16bit)
-        //     this is because values of pcm data tend to range 0-2 (although there
-        //     is no theoretical maximum.
-        //NOTE actually the maximum value is signed 16 bit, just like on a CD
-
-        pcm_data[ 0 ][ x ] = pcm_data[ 1 ][ x ] = gint16( float_data[ x ] * ( 1 << 14 ) );
-    }
+    for( uint x = 0; x < 512; ++x )
+        pcm_data[ 1 ][ x ] = pcm_data[ 0 ][ x ];
 
 
     if( renderPCM() )

@@ -221,7 +221,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         m_progress->setFixedHeight( button->sizeHint().height() );
         m_progressBox->hide();
     //<PROGRESS BAR>
-    
+
     connect( this,           SIGNAL( expanded( QListViewItem* ) ),
              this,             SLOT( slotExpand( QListViewItem* ) ) );
     connect( this,           SIGNAL( collapsed( QListViewItem* ) ),
@@ -454,13 +454,13 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         enum Actions { MAKE, APPEND, QUEUE, COVER, INFO };
 
         menu.insertItem( i18n( "&Make Playlist" ), MAKE );
-        menu.insertItem( i18n( "&Add to Playlist" ), APPEND ); //TODO say Append to Playlist
+        menu.insertItem( i18n( "&Append to the Playlist" ), APPEND );
         menu.insertItem( i18n( "&Queue After Current Track" ), QUEUE );
 
         menu.insertSeparator();
 
         menu.insertItem( i18n( "&Fetch Cover Images" ), this, SLOT( fetchCover() ), 0, COVER );
-        menu.insertItem( i18n( "Track Information" ), this, SLOT( showTrackInfo() ), 0, INFO );
+        menu.insertItem( i18n( "Edit Meta Information..." ), this, SLOT( showTrackInfo() ), 0, INFO );
 
         menu.setItemEnabled( INFO, ( item->depth() && m_category2 == i18n( "None" ) ) || item->depth() == 2 );
 
@@ -532,7 +532,7 @@ void
 CollectionView::customEvent( QCustomEvent *e )
 {
     CollectionReader::ProgressEvent* p = dynamic_cast<CollectionReader::ProgressEvent*>( e );
-    
+
     if ( p ) {
         switch ( p->state() ) {
         case CollectionReader::ProgressEvent::Start:
@@ -540,15 +540,15 @@ CollectionView::customEvent( QCustomEvent *e )
             m_progressBox->show();
             m_isScanning = true;
             break;
-    
+
         case CollectionReader::ProgressEvent::Stop:
             m_progressBox->hide();
             break;
-    
+
         case CollectionReader::ProgressEvent::Total:
             m_progress->setTotalSteps( p->value() );
             break;
-    
+
         case CollectionReader::ProgressEvent::Progress:
             m_progress->setProgress( p->value() );
         }

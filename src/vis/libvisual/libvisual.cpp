@@ -62,7 +62,6 @@ main( int argc, char** argv )
     // 1. we sleep for a bit, listening for messages from amaroK
     // 2. render a frame
 
-    float   float_data[ 512 ];
     timeval tv;
     fd_set  fds;
     int     nbytes = 0;
@@ -70,7 +69,7 @@ main( int argc, char** argv )
 
     while( nbytes != -1 && SDL::event_handler() )
     {
-        //set the time to wait, we have to do this everytime on linux
+        //set the time to wait
         tv.tv_sec  = 0;
         tv.tv_usec = render_time > 16 ? 0 : (16 - render_time) * 1000; //60Hz
 
@@ -92,16 +91,7 @@ main( int argc, char** argv )
 
         //request pcm data
         send( sockfd, "PCM", 4, 0 );
-        nbytes = recv( sockfd, float_data, 512 * sizeof( float ), 0 );
-
-        //convert useless floats to 16bit ints
-        for( uint x = 0; x < 512; ++x )
-        {
-            //let the pcm data range from 0-2
-            //for some reason this looks best
-
-            Vis::pcm_data[x] = int16_t( float_data[ x ] * ( 1 << 14 ) );
-        }
+        nbytes = recv( sockfd, Vis::pcm_data, 512 * sizeof( int16_t ), 0 );
 
         render_time = LibVisual::render();
     }

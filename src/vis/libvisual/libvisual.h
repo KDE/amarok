@@ -4,10 +4,9 @@
 #ifndef LIBVISUAL_H
 #define LIBVISUAL_H
 
-#define private private_
-    #include <libvisual/libvisual.h>
-    #include <SDL/SDL.h>
-#undef private
+#include <libvisual/libvisual.h>
+#include <SDL/SDL.h>
+
 
 static int tryConnect();
 

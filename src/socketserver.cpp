@@ -183,10 +183,7 @@ Vis::SocketNotifier::request( int sockfd ) //slot
 
     if( nbytes > 0 )
     {
-        const Engine::Scope &scope = EngineController::engine()->scope();
-
-        //buf[nbytes] = '\000';
-        QString result( buf );
+        QCString result( buf );
 
         if( result == "REG" )
         {
@@ -198,45 +195,10 @@ Vis::SocketNotifier::request( int sockfd ) //slot
         }
         else if( result == "PCM" )
         {
-            if( scope.empty() ) kdDebug() << "empty scope!\n";
-            if( scope.size() < 512 ) kdDebug() << "scope too small!\n";
+            const Engine::Scope &scope = EngineController::engine()->scope();
 
-            //int16_t data[512]; for( uint x = 0; x < 512; ++x ) data[x] = (*scope)[x];
-
-            ::send( sockfd, &scope[0], 512*sizeof(int16_t), 0 );
+            ::send( sockfd, &scope[0], scope.size()*sizeof(int16_t), 0 );
         }
-        #if 0 //TODO renenable as required
-        else if( result == "FFT" )
-        {
-            FHT fht( 9 ); //data set size 512
-
-            {
-                static float max = -100;
-                static float min = 100;
-
-                bool b = false;
-
-                for( uint x = 0; x < scope->size(); ++x )
-                {
-                    float val = (*scope)[x];
-                    if( val > max ) { max = val; b = true; }
-                    if( val < min ) { min = val; b = true; }
-                }
-
-                if( b ) kdDebug() << "max: " << max << ", min: " << min << endl;
-            }
-
-            float *front = static_cast<float*>( &scope->front() );
-
-            fht.spectrum( front );
-            fht.scale( front, 1.0 / 64 );
-
-            //only half the samples from the fft are useful
-            ::send( sockfd, scope, 256*sizeof(float), 0 );
-
-            delete scope;
-        }
-        #endif
 
     } else {
 

@@ -25,6 +25,7 @@ void fft_close (fft_state *state);
 
 #include <xmms/plugin.h> //VisPlugin struct
 #include <string>
+#include <gtk/gtk.h> //gint16, gtk_init(), gtk_rgb_init()
 
 class XmmsWrapper
 {
@@ -37,7 +38,7 @@ public:
     bool renderPCM() const { return vis()->render_pcm  && vis()->num_pcm_chs_wanted > 0; }
     bool renderFFT() const { return vis()->render_freq && vis()->num_freq_chs_wanted > 0; }
 
-    void render( float* );
+    void render( gint16 pcm_data[2][512] );
 
     VisPlugin *vis() { return m_vis; }
     const VisPlugin *vis() const { return m_vis; }
