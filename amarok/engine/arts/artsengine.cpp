@@ -80,9 +80,11 @@ ArtsEngine::ArtsEngine( )
 
 ArtsEngine::~ ArtsEngine()
 {
+    killTimers();
     m_pConnectTimer->stop();
     delete m_pPlayObject;
     delete m_pPlayObjectXfade;
+    delete m_pArtsDispatcher;
     saveEffects();
 
     m_scope             = Amarok::RawScope::null();

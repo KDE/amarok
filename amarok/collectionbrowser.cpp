@@ -325,32 +325,53 @@ CollectionView::customEvent( QCustomEvent *e ) {
                 }
                     
         MetaBundle* bundle;
+        QString tag;
         kdDebug() << "Number of records to store in db: " << c->bundleList().count() << endl;
         execSql( "BEGIN TRANSACTION;" );
         
         for ( uint i = 0; i < c->bundleList().count(); i++ ) {
             bundle = c->bundleList().at( i );
             
-            QCString command = "INSERT INTO tags "
-                               "( url, dir,  album, artist, genre, title, year ) "
-                               "VALUES('";
+            QString command = "INSERT INTO tags "
+                              "( url, dir,  album, artist, genre, title, year ) "
+                              "VALUES('";
+                                                       
+            tag = bundle->url().path();
+            tag.remove( "'" );
+            command += tag;
+            command += "','";
             
-            command += bundle->url().path().latin1();
+            tag = bundle->url().directory();
+            tag.remove( "'" );
+            command += tag;
             command += "','";
-            command += bundle->url().directory().latin1();
+            
+            tag = bundle->album();
+            tag.remove( "'" );
+            command += tag;
             command += "','";
-            command += bundle->album().latin1();
+            
+            tag = bundle->artist();
+            tag.remove( "'" );
+            command += tag;
             command += "','";
-            command += bundle->artist().latin1();
+            
+            tag = bundle->genre();
+            tag.remove( "'" );
+            command += tag;
             command += "','";
-            command += bundle->genre().latin1();
+            
+            tag = bundle->title();
+            tag.remove( "'" );
+            command += tag;
             command += "','";
-            command += bundle->title().latin1();
-            command += "','";
-            command += bundle->year().latin1();
+            
+            tag = bundle->year();
+            tag.remove( "'" );
+            command += tag;
             command += "');";
 
-            execSql( command );
+            execSql( command.latin1() );
             delete bundle;
             //grant event loop some time for breathing
             if ( i % 10 ) kapp->processEvents();
