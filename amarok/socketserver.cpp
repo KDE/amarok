@@ -77,7 +77,7 @@ Vis::SocketServer::SocketServer( QObject *parent )
 
     lv = new QListView( 0 );
     lv->setCaption( "Visualizations - amaroK" );
-    lv->show();
+    //lv->show();
 
     lv->addColumn( "Name" );
     lv->addColumn( "Description" );
