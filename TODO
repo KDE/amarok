@@ -8,6 +8,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+          <markey> Saving covers from context-browser produces filenames starting with "fetchcover:".
+
   ADD 180 <muesli> Show "Artist - Song" for Various Artist folder.
 
   FIX 176 <muesli> Context sometimes still shows "Build a collection", just after the scan
