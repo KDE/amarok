@@ -22,6 +22,7 @@ class QCString;
 class QCustomEvent;
 class QDragObject;
 class QPixmap;
+class QPoint;
 class QStringList;
 
 class KDirWatch;
@@ -90,6 +91,8 @@ class CollectionView : public KListView
         void slotCollapse( QListViewItem* );    
         void cat1Menu( int );
         void cat2Menu( int );
+        void rmbPressed( QListViewItem*, const QPoint&, int );
+        void showTrackInfo();
         
     private:
         void customEvent( QCustomEvent* );

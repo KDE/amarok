@@ -17,6 +17,7 @@
 
 #include <qcstring.h>
 #include <qdragobject.h>
+#include <qmessagebox.h>
 #include <qptrlist.h>
 
 #include <kapplication.h>
@@ -132,6 +133,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
              this,         SLOT( slotExpand( QListViewItem* ) ) );
     connect( this,       SIGNAL( collapsed( QListViewItem* ) ),
              this,         SLOT( slotCollapse( QListViewItem* ) ) );
+    connect( this,       SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
+             this,         SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
     connect( m_dirWatch, SIGNAL( dirty( const QString& ) ),
              this,         SLOT( dirDirty( const QString& ) ) );
              
@@ -587,6 +590,57 @@ CollectionView::startDrag() {
     
     KURLDrag* d = new KURLDrag( list, this );
     d->dragCopy();
+}
+
+
+void
+CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SLOT
+{
+    if ( !item || item->depth() != 2 ) return;
+    
+    KPopupMenu menu( this );
+    menu.insertItem( i18n( "Track Information" ), this, SLOT( showTrackInfo() ) );
+
+    menu.exec( point );
+}
+
+
+void 
+CollectionView::showTrackInfo() //slot
+{
+    Item* item = static_cast<Item*>( currentItem() );    
+    if ( !item || item->depth() != 2 ) return;
+
+    QString command = QString
+                        ( "SELECT DISTINCT artist, album, genre, year FROM tags "
+                          "WHERE url = '%1';" )
+                        .arg( item->url().path() );
+    
+    QStringList values;
+    QStringList names;
+    execSql( command, &values, &names );
+    if ( values.isEmpty() ) return;
+    
+    QString str  = "<html><body><table width=\"100%\" border=\"1\">";
+    QString body = "<tr><td>%1</td><td>%2</td></tr>";
+
+    str += body.arg( i18n( "Title" ),  item->text( 0 ) );
+    str += body.arg( i18n( "Artist" ), values[0] );
+    str += body.arg( i18n( "Album" ),  values[1] );
+    str += body.arg( i18n( "Genre" ),  values[2] );
+    str += body.arg( i18n( "Year" ),   values[3] );
+//     str += body.arg( i18n( "Comment" ),mb.comment() );
+//     str += body.arg( i18n( "Length" ), mb.prettyLength() );
+//     str += body.arg( i18n( "Bitrate" ),mb.prettyBitrate() );
+//     str += body.arg( i18n( "Samplerate" ), mb.prettySampleRate() );
+
+    str.append( "</table></body></html>" );
+
+    QMessageBox box( i18n( "Meta Information" ), str, QMessageBox::Information,
+                     QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton,
+                     0, 0, true, Qt::WStyle_DialogBorder );
+    box.setTextFormat( Qt::RichText );
+    box.exec();
 }
 
 
