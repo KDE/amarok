@@ -298,7 +298,7 @@ CollectionView::renderView( )  //SLOT
     //query database for all records with the specified category
     QStringList values;
     QStringList names;
-    m_db->retrieveFirstLevel( m_category1, m_filter, &values, &names );
+    m_db->retrieveFirstLevel( m_category1, m_category2, m_filter, &values, &names );
 
     for ( uint i = 0; i < values.count(); i++ ) {
         if ( values[i].isEmpty() ) continue;
@@ -546,7 +546,7 @@ CollectionView::listSelected() {
             values.clear();
             names.clear();
 
-            m_db->retrieveFirstLevelURLs( item->text( 0 ), m_category1, m_filter, &values, &names );
+            m_db->retrieveFirstLevelURLs( item->text( 0 ), m_category1, m_category2, m_filter, &values, &names );
             for ( uint i = 0; i < values.count(); i++ )
             {
                 KURL tmp;

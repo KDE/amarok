@@ -3,6 +3,7 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  FIX: Filtering the collection now searches the second category, too. (BR 81681).
   FIX: Filter in playlist was only working for the first argument.
   ADD: Option for auto centering the OSD horizontally.
   CHG: Collection-Monitor now processes removed dirs in a thread.
