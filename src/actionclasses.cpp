@@ -1,14 +1,16 @@
 // Maintainer: Max Howell <max.howell@methylblue.com>, (C) 2004
 // Copyright:  See COPYING file that comes with this distribution
 
+#ifdef HAVE_CONFIG_H
+    #include <config.h> //HAVE_XMMS definition
+#endif
+
 #include "actionclasses.h"
 #include "amarokconfig.h"
 #include "app.h"                //actionCollection() and a SLOT
-#include "config.h"             //HAVE_XMMS definition
 #include "enginecontroller.h"
 #include "playlistwindow.h"     //need amaroK::ToolBar
-#include "scriptmanager.h"
-#include "socketserver.h"       //Vis::Selector::showInstance(
+#include "socketserver.h"       //Vis::Selector::showInstance()
 
 #include <kaction.h>
 #include <khelpmenu.h>
@@ -67,7 +69,7 @@ MenuAction::plug( QWidget *w, int index )
         button->setPopup( amaroK::Menu::instance() );
         button->setName( "toolbutton_amarok_menu" );
         button->setIcon( "configure" );
-
+        
         return containerCount() - 1;
     }
     else return -1;
@@ -88,17 +90,7 @@ Menu::Menu()
     insertItem( i18n( "&Visualizations..." ), ID_SHOW_VIS_SELECTOR );
 
     insertSeparator();
-   
-    insertItem( i18n( "&Scripts..." ), ID_SHOW_SCRIPT_SELECTOR );
-    insertItem( i18n( "&JavaScript Console" ), ID_SHOW_SCRIPT_CONSOLE );
-    
-    #ifndef HAVE_KJSEMBED
-    setItemEnabled( ID_SHOW_SCRIPT_SELECTOR, false );
-    setItemEnabled( ID_SHOW_SCRIPT_CONSOLE, false );
-    #endif
-    
-    insertSeparator();
-    
+
     insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( slotConfigEffects() ) );
     insertItem( i18n( "Configure &Decoder..." ), ID_CONF_DECODER );
 
@@ -160,14 +152,6 @@ Menu::slotActivated( int index )
     case ID_SHOW_VIS_SELECTOR:
         Vis::Selector::instance()->show(); //doing it here means we delay creation of the widget
         break;
-    #ifdef HAVE_KJSEMBED
-    case ID_SHOW_SCRIPT_SELECTOR:
-        ScriptManager::Manager::instance()->showSelector();
-        break;
-    case ID_SHOW_SCRIPT_CONSOLE:
-        ScriptManager::Manager::instance()->showConsole();
-        break;
-    #endif
     }
 }
 
@@ -281,7 +265,7 @@ VolumeAction::plug( QWidget *w, int index )
         m_slider->setFixedHeight( 35 );
         m_slider->setMaxValue( amaroK::VOLUME_MAX );
         m_slider->setValue( amaroK::VOLUME_MAX - AmarokConfig::masterVolume() );
-        QToolTip::add( m_slider, i18n( "Volume control" ) );
+        QToolTip::add( m_slider, i18n( "Volume Control" ) );
         connect( m_slider, SIGNAL(valueChanged( int )), SLOT(sliderMoved( int )) );
         connect( bar, SIGNAL(wheelMoved( int )), SLOT(wheelMoved( int )) );
 

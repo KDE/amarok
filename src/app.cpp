@@ -18,7 +18,6 @@ email                : markey@web.de
 #include "amarokconfig.h"
 #include "amarokdcophandler.h"
 #include "app.h"
-#include "config.h"
 #include "configdialog.h"
 #include "effectwidget.h"
 #include "enginebase.h"
@@ -30,7 +29,6 @@ email                : markey@web.de
 #include "playlistwindow.h"
 #include "plugin.h"
 #include "pluginmanager.h"
-#include "scriptmanager.h"
 #include "socketserver.h"
 #include "systray.h"
 #include "tracktooltip.h"        //engineNewMetaData()
@@ -68,13 +66,6 @@ App::App()
     m_pOSD            = amaroK::OSD::instance(); //creates the OSD
     m_pTray           = new amaroK::TrayIcon( m_pPlaylistWindow );
     (void)              new Vis::SocketServer( this );
-
-    #ifdef HAVE_KJSEMBED
-    (void)              new ScriptManager::Manager( this );
-    // Export symbols to KJSEmbed
-    ScriptManager::Manager::instance()->addObject( this );
-    ScriptManager::Manager::instance()->addObject( m_pDcopHandler );
-    #endif
 
     m_pPlaylistWindow->init(); //creates the playlist, browsers, etc.
     initGlobalShortcuts();
@@ -210,6 +201,50 @@ void App::initCliArgs( int argc, char *argv[] ) //static
 }
 
 
+void App::initEngine()
+{
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
+
+    const QString query    = "[X-KDE-amaroK-plugintype] == 'engine' and Name == '%1'";
+    amaroK::Plugin* plugin = PluginManager::createFromQuery( query.arg( AmarokConfig::soundSystem() ) );
+
+    if ( !plugin )
+    {
+        kdWarning() << "Cannot load the: " << AmarokConfig::soundSystem() << " plugin. Trying another engine..\n";
+
+        //try to invoke _any_ engine plugin
+        plugin = PluginManager::createFromQuery( "[X-KDE-amaroK-plugintype] == 'engine'" );
+
+        if ( !plugin )
+        {
+            KMessageBox::error( m_pPlaylistWindow, i18n(
+                "<p>amaroK could not find any sound-engine plugins. "
+                "It is likely that amaroK is installed under the wrong prefix, please fix your installation using:"
+                "<pre>cd /path/to/amarok/source-code/<br>"
+                "su -c \"make uninstall\"<br>"
+                "./configure --prefix=`kde-config --prefix` && su -c \"make install\"</pre>"
+                "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net." ) );
+
+            ::exit( EXIT_SUCCESS );
+        }
+
+        AmarokConfig::setSoundSystem( PluginManager::getService( plugin )->name() );
+        kdDebug() << "Setting soundSystem to: " << AmarokConfig::soundSystem() << endl;
+    }
+
+    // feed engine to controller
+    EngineBase* const engine = (EngineBase*)plugin;
+    bool restartArts = AmarokConfig::version() != APP_VERSION;
+
+    engine->init( restartArts, amaroK::SCOPE_SIZE, AmarokConfig::rememberEffects() );
+    EngineController::setEngine( engine ); //will set engine's volume
+
+    //NOTE applySettings() must be called now to ensure mixer settings are set
+
+    kdDebug() << "END " << k_funcinfo << endl;
+}
+
+
 #include <kaction.h>
 #include <kshortcutlist.h>
 void App::initGlobalShortcuts()
@@ -225,19 +260,19 @@ void App::initGlobalShortcuts()
                             ec, SLOT( playPause() ), true, true );
     m_pGlobalAccel->insert( "stop", i18n( "Stop" ), 0, KKey("WIN+v"), 0,
                             ec, SLOT( stop() ), true, true );
-    m_pGlobalAccel->insert( "next", i18n( "Next Track" ), 0, KKey("WIN+b"), 0,
+    m_pGlobalAccel->insert( "next", i18n( "Next track" ), 0, KKey("WIN+b"), 0,
                             ec, SLOT( next() ), true, true );
-    m_pGlobalAccel->insert( "prev", i18n( "Previous Track" ), 0, KKey("WIN+z"), 0,
+    m_pGlobalAccel->insert( "prev", i18n( "Previous track" ), 0, KKey("WIN+z"), 0,
                             ec, SLOT( previous() ), true, true );
-    m_pGlobalAccel->insert( "volup", i18n( "Increase Volume" ), 0, KKey("WIN+KP_Add"), 0,
+    m_pGlobalAccel->insert( "volup", i18n( "Increase volume" ), 0, KKey("WIN+KP_Add"), 0,
                             ec, SLOT( increaseVolume() ), true, true );
-    m_pGlobalAccel->insert( "voldn", i18n( "Decrease Volume" ), 0, KKey("WIN+KP_Subtract"), 0,
+    m_pGlobalAccel->insert( "voldn", i18n( "Decrease volume" ), 0, KKey("WIN+KP_Subtract"), 0,
                             ec, SLOT( decreaseVolume() ), true, true );
-    m_pGlobalAccel->insert( "playlist_add", i18n( "Add Media" ), 0, KKey("WIN+a"), 0,
+    m_pGlobalAccel->insert( "playlist_add", i18n( "Add media" ), 0, KKey("WIN+a"), 0,
                             m_pPlaylistWindow, SLOT( slotAddLocation() ), true, true );
-    m_pGlobalAccel->insert( "show", i18n( "Toggle Playlist Window" ), 0, KKey("WIN+p"), 0,
+    m_pGlobalAccel->insert( "show", i18n( "Toggle the Playlist Window" ), 0, KKey("WIN+p"), 0,
                             m_pPlaylistWindow, SLOT( showHide() ), true, true );
-    m_pGlobalAccel->insert( "osd", i18n( "Show OSD" ), 0, KKey("WIN+o"), 0,
+    m_pGlobalAccel->insert( "osd", i18n( "Show the OSD" ), 0, KKey("WIN+o"), 0,
                             m_pOSD, SLOT( forceShowTrack() ), true, true );
 
     m_pGlobalAccel->setConfigGroup( "Shortcuts" );
@@ -361,9 +396,7 @@ void App::applySettings( bool firstTime )
     setupColors();
 
 
-    //on startup we need to show the window, but only if it wasn't hidden on exit
-    //and always if the trayicon isn't showing
-    if( firstTime && (!amaroK::config()->readBoolEntry( "HiddenOnExit", false ) || !AmarokConfig::showTrayIcon()) )
+    if( firstTime && !amaroK::config()->readBoolEntry( "HiddenOnExit", false ) )
     {
         mainWindow()->show();
 
@@ -371,18 +404,19 @@ void App::applySettings( bool firstTime )
         kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
     }
 
-    
+
     { //<Engine>
+        //TODO move loading of engine and initEngine() to engineController; it can handle things better
+
         EngineBase *engine = EngineController::engine();
         const bool b = QCString( engine->name() ) == "Dummy";
 
         if( b || AmarokConfig::soundSystem() != PluginManager::getService( engine )->name() )
         {
             if( !b ) PluginManager::unload( engine );
-            EngineController::instance()->loadEngine();
+
+            initEngine();
             engine = EngineController::engine();
-            // Invalidate extension cache
-            Playlist::s_extensionCache.clear();
 
             AmarokConfig::setHardwareMixer( engine->initMixer( AmarokConfig::hardwareMixer() ) );
         }
@@ -394,7 +428,6 @@ void App::applySettings( bool firstTime )
          engine->setDefaultSoundDevice( !AmarokConfig::customSoundDevice() );
          engine->setRestoreEffects( AmarokConfig::rememberEffects() );
          engine->setVolume( AmarokConfig::masterVolume() );
-         engine->setThreadPriority( AmarokConfig::threadPriority() );
          //TODO deprecate/improve
          engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
     } //</Engine>
@@ -520,9 +553,9 @@ void App::genericEventHandler( QWidget *source, QEvent *e )
             //FIXME this isn't a good way to determine if there is a currentTrack, need playlist() function
             const bool b = EngineController::engine()->loaded();
 
-            popup.insertItem( i18n( "&Append to Playlist" ), 101 );
-            popup.insertItem( i18n( "Append && &play" ), 102 );
-            if( b ) popup.insertItem( i18n( "&Queue After Current Track" ), 103 );
+            popup.insertItem( i18n( "&Append to playlist" ), 101 );
+            popup.insertItem( i18n( "Append and &play" ), 102 );
+            if( b ) popup.insertItem( i18n( "&Queue after current track" ), 103 );
             popup.insertSeparator();
             popup.insertItem( i18n( "&Cancel" ), 0 );
 

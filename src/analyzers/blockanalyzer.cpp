@@ -67,7 +67,7 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
         m_rows = limit( uint(double(height()+1) / (HEIGHT+1)), MAX_ROWS, MIN_ROWS );
 
         const uint PRE = 1, PRO = 1; //PRE and PRO allow us to restrict the range somewhat
-        for( uint z = 0; z < m_rows; ++z )
+        for( uint z = 0; z < m_rows; ++z )\
         {
             lvlMapper[z] = 1-(log10(PRE+z) / log10(PRE+m_rows+PRO));
         }

@@ -126,7 +126,7 @@ PlaylistWindow::init()
         m_lineEdit = new KLineEdit( hbox );
 
         hbox->setMargin( 4 );
-        button->setIconSet( SmallIconSet( QApplication::reverseLayout() ? "clear_left" : "locationbar_erase" ) );
+        button->setIconSet( SmallIconSet( "locationbar_erase.png" ) );
         m_lineEdit->setFrame( QFrame::Sunken );
         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
 
@@ -166,9 +166,8 @@ PlaylistWindow::init()
         m_browsers->addBrowser( new ContextBrowser( "ContextBrowser" ), i18n( "Context" ), "info" );
         m_browsers->addBrowser( new SearchBrowser( "SearchBrowser" ), i18n( "Search" ), "find" );
 
-        #define PLAYLIST_BROWSER 1
         #ifdef PLAYLIST_BROWSER
-        m_browsers->addBrowser( new PlaylistBrowser( "PlaylistBrowser" ), i18n( "Playlist" ), "midi" );
+        m_browsers->addBrowser( m_playlist->browser(), i18n( "Playlist" ), "midi" );
         #endif
 
         { //<StreamBrowser>
@@ -464,12 +463,12 @@ void PlaylistWindow::showHide() //SLOT
     const KWin::WindowInfo info = KWin::windowInfo( winId() );
     const uint desktop = KWin::currentDesktop();
     const bool isOnThisDesktop = info.isOnDesktop( desktop );
+    
     #if KDE_IS_VERSION(3,2,1)
     const bool isShaded = info.hasState( NET::Shaded );
     #else
     const bool isShaded = false;
     #endif
-
 
     if( isShaded )
     {
@@ -521,12 +520,6 @@ void PlaylistWindow::welcomeURL( const KURL &url )
     pApp->applySettings();
 
     amaroK::config()->writeEntry( "XMLFile", xml );
-}
-
-
-void amaroK::ToolBar::mousePressEvent( QMouseEvent *e )
-{
-    if( e->button() == RightButton ) amaroK::Menu::instance()->popup( e->globalPos() );
 }
 
 #include "playlistwindow.moc"

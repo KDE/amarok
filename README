@@ -92,10 +92,10 @@ A: You can either use the GStreamer engine (it's great!), or tweak aRts. Open
    "Run with highest possible priority", and increase the size of the sound
    buffer (warning, see the next FAQ!) You should also enusre that your
    artswrapper is suid:
-   
+
        $ su
        $ chmod a+rsx /path/to/kde/bin/artswrapper
-       
+
    Finally you will benefit from installing kdemultimedia in its entirety to get
    the faster aRts codecs (eg. libarts_mpeglib.so, etc.)
 

@@ -17,7 +17,6 @@ email                : markey@web.de
 
 #include "enginebase.h"
 #include "gstengine.h"
-#include "gstuade.h"
 #include "streamsrc.h"
 
 #include <math.h>           //interpolate()
@@ -51,7 +50,7 @@ GError*
 GstEngine::error_msg;
 
 GstEngine*
-GstEngine::s_instance;
+GstEngine::self;
 
 
 void
@@ -61,7 +60,7 @@ GstEngine::eos_cb( GstElement*, GstElement* )
 
     //this is the Qt equivalent to an idle function: delay the call until all events are finished,
     //otherwise gst will crash horribly
-    QTimer::singleShot( 0, instance(), SLOT( stopAtEnd() ) );
+    QTimer::singleShot( 0, self, SLOT( stopAtEnd() ) );
 }
 
 
@@ -69,7 +68,7 @@ void
 GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
 {
     int channels = 2;  //2 == default, if we cannot determine the value from gst
-    GstCaps* caps = gst_pad_get_caps( gst_element_get_pad( instance()->m_spider, "src_0" ) );
+    GstCaps* caps = gst_pad_get_caps( gst_element_get_pad( self->m_spider, "src_0" ) );
 
     for ( int i = 0; i < gst_caps_get_size( caps ); i++ ) {
         GstStructure* structure = gst_caps_get_structure( caps, i );
@@ -88,8 +87,8 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
 
         //divide length by 2 for casting from 8bit to 16bit, and divide by number of channels
         for ( ulong i = 0; i < GST_BUFFER_SIZE( buf ) / 2 / channels; i += channels ) {
-            if ( instance()->m_scopeBufIndex == instance()->m_scopeBuf.size() ) {
-                instance()->m_scopeBufIndex = 0;
+            if ( self->m_scopeBufIndex == self->m_scopeBuf.size() ) {
+                self->m_scopeBufIndex = 0;
                 //                 kdDebug() << k_funcinfo << "m_scopeBuf overflow!\n";
             }
 
@@ -99,10 +98,28 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
                 //convert uint-16 to float and write into buf
                 temp += ( float ) ( data[ i + j ] - 32768 ) / 32768.0;
             }
-            instance()->m_scopeBuf[ instance()->m_scopeBufIndex++ ] = temp;
+            self->m_scopeBuf[ self->m_scopeBufIndex++ ] = temp;
         }
     }
 }
+
+
+void
+GstEngine::typefindFound_cb( GstElement* /*typefind*/, GstCaps* /*caps*/, GstElement* /*pipeline*/ )
+{
+//     kdDebug() << "GstEngine::typefindFound" << endl;
+
+    self->m_typefindResult = true;
+}
+
+//     const GList *elements = gst_registry_pool_feature_list( GST_TYPE_ELEMENT_FACTORY );
+//
+//     while ( elements != NULL )
+//     {
+//         factory = (GstElementFactory *) elements->data;
+//         const gchar *klass = gst_element_factory_get_klass( factory );
+//         elements = elements->next;
+//     }
 
 
 void
@@ -110,7 +127,7 @@ GstEngine::error_cb( GstElement* /*element*/, GstElement* /*source*/, GError* er
 {
     kdDebug() << k_funcinfo << endl;
 
-    QTimer::singleShot( 0, instance(), SLOT( handleError() ) );
+    QTimer::singleShot( 0, self, SLOT( handleError() ) );
 }
 
 
@@ -150,7 +167,7 @@ GstEngine::init( bool&, int scopeSize, bool )
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
-    s_instance = this;
+    self = this;
     m_mixerHW = -1;            //initialize
 
     m_scopeBuf.resize( SCOPEBUF_SIZE );
@@ -177,40 +194,34 @@ GstEngine::initMixer( bool hardware )
 bool
 GstEngine::canDecode( const KURL &url, mode_t, mode_t )
 {
-    bool success = false;
-    GstElement *pipeline, *filesrc, *spider, *audioconvert, *audioscale, *audiosink;
+    GstElement* pipeline;
+    GstElement* filesrc;
+    GstElement* typefind;
+    m_typefindResult = false;
 
     /* create a new pipeline to hold the elements */
     pipeline = gst_pipeline_new( "pipeline" );
+
     /* create a disk reader */
-    if ( !( filesrc = gst_element_factory_make( "filesrc", "filesrc" ) ) ) goto error;
+    if ( !( filesrc = gst_element_factory_make( "filesrc", "disk_source" ) ) ) goto error;
     gst_bin_add ( GST_BIN ( pipeline ), filesrc );
-    if ( !( spider = gst_element_factory_make( "spider", "spider" ) ) ) goto error;
-    gst_bin_add ( GST_BIN ( pipeline ), spider );
-    if ( !( audioconvert = gst_element_factory_make( "audioconvert", "audioconvert" ) ) ) goto error;
-    gst_bin_add ( GST_BIN ( pipeline ), audioconvert );
-    if ( !( audioscale = gst_element_factory_make( "audioscale", "audioscale" ) ) ) goto error;
-    gst_bin_add ( GST_BIN ( pipeline ), audioscale );
-    if ( !( audiosink = gst_element_factory_make( m_soundOutput.latin1(), "audiosink" ) ) ) goto error;
-    gst_bin_add ( GST_BIN ( pipeline ), audiosink );
-    
-    /* setting device property for AudioSink*/
-    if ( !m_defaultSoundDevice && !m_soundDevice.isEmpty() )
-        g_object_set( G_OBJECT ( audiosink ), "device", m_soundDevice.latin1(), NULL );
-    
+
+    if ( !( typefind = gst_element_factory_make( "typefind", "typefind" ) ) ) goto error;
+    gst_bin_add ( GST_BIN ( pipeline ), typefind );
+
     g_object_set( G_OBJECT( filesrc ), "location", (const char*) QFile::encodeName( url.path() ), NULL );
+    gst_element_link_many( filesrc, typefind, NULL );
     
-    gst_element_link_many( filesrc, spider, audioconvert, audioscale, audiosink, NULL );
+    g_signal_connect ( G_OBJECT( typefind ), "have-type", G_CALLBACK( typefindFound_cb ), pipeline );
     gst_element_set_state( pipeline, GST_STATE_PLAYING );
 
-    // Try to iterate over the bin, if it works gst can decode our file
-    if ( gst_bin_iterate ( GST_BIN ( pipeline ) ) )
-        success = true;
-    
+    // Iterate over the pipeline until operation is finished
+    while ( gst_bin_iterate ( GST_BIN ( pipeline ) ) );
+
     gst_element_set_state( pipeline, GST_STATE_NULL );
     gst_object_unref( GST_OBJECT( pipeline ) );
 
-    return success;
+    return m_typefindResult;
 
 error:
     kdWarning() << "GStreamer element factory does not work. " << endl
@@ -290,9 +301,8 @@ GstEngine::play( const KURL& url )  //SLOT
 
     /* create a new pipeline (thread) to hold the elements */
     m_thread = gst_thread_new ( "thread" );
-    g_object_set( G_OBJECT( m_thread ), "priority", m_threadPriority, NULL );
-    
-    kdDebug() << "Thread scheduling priority: " << m_threadPriority << endl;
+    g_object_set( G_OBJECT( m_thread ), "priority", 2, NULL );
+
     kdDebug() << "Sound output method: " << m_soundOutput << endl;
 
     if ( !( m_audiosink = createElement( m_soundOutput.latin1(), "play_audio" ) ) ) return;
@@ -315,15 +325,8 @@ GstEngine::play( const KURL& url )  //SLOT
         m_filesrc = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex ) );
         gst_bin_add ( GST_BIN ( m_thread ), m_filesrc );
     }
-    
-    //TODO HACK
-    if ( url.path().contains( "_uade" ) ) {
-        m_spider = GST_ELEMENT( gst_uade_new() );
-        g_object_set( G_OBJECT( m_spider ), "location", (const char*) ( QFile::encodeName( url.path() ) ), NULL );
-    }
-    else    
-        if ( !( m_spider = createElement( "spider", "spider" ) ) ) return;
-    
+        
+    if ( !( m_spider = createElement( "spider", "spider" ) ) ) return;
     if ( !( m_identity = createElement( "identity", "rawscope" ) ) ) return;
     if ( !( m_volumeElement = createElement( "volume", "volume" ) ) ) return;
     if ( !( m_audioconvert = createElement( "audioconvert", "audioconvert" ) ) ) return;
@@ -426,7 +429,7 @@ GstEngine::newStreamData( char* buf, int size )  //SLOT
 {
     if ( m_streamBufIndex + size > STREAMBUF_SIZE ) {
         size = STREAMBUF_SIZE - m_streamBufIndex;
-        kdDebug() << "Stream buffer overflow!" << endl;
+        //         kdDebug() << "Stream buffer overflow!" << endl;
     }
 
     // Copy data into stream buffer
@@ -462,7 +465,7 @@ GstEngine::stopAtEnd()  //SLOT
     /* stop the thread */
     gst_element_set_state ( m_thread, GST_STATE_READY );
 
-    emit endOfTrack();
+    emit stopped();
 }
 
 
