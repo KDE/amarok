@@ -45,19 +45,21 @@ void Sonogram::drawAnalyzer(std::vector<float> *s)
 	QPainter p(m_pPixmap);
 
 	bitBlt(m_pPixmap, 0, 0, m_pPixmap, 1, 0, x, height());
-	std::vector<float>::iterator it = s->begin();
-	for (uint y = height() - 1; y && it < s->end(); it++) {
-		if (*it < .005)
-			c = Qt::black;
-		else if (*it < .05)
-			c.setHsv(95, 255, 255 - int(*it * 4000.0));
-		else if (*it < 1.0)
-			c.setHsv(95 - int(*it * 90.0), 255, 255);
-		else
-			c = Qt::red;
+	if (s) {
+		std::vector<float>::iterator it = s->begin();
+		for (uint y = height() - 1; y && it < s->end(); it++) {
+			if (*it < .005)
+				c = Qt::black;
+			else if (*it < .05)
+				c.setHsv(95, 255, 255 - int(*it * 4000.0));
+			else if (*it < 1.0)
+				c.setHsv(95 - int(*it * 90.0), 255, 255);
+			else
+				c = Qt::red;
 
-		p.setPen(c);
-		p.drawPoint(x, y--);
+			p.setPen(c);
+			p.drawPoint(x, y--);
+		}
 	}
 	bitBlt(this, 0, 0, m_pPixmap);
 }
