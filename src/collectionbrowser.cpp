@@ -378,7 +378,7 @@ CollectionView::scanDone( bool changed ) //SLOT
             if ( item )
             {
                 item->setOpen( true );
-                for ( uint i = 1; i < m_cacheItem.count(); i++ )
+                for ( uint i = 1; i < m_cacheItem.count() && item; i++ )
                 {
                     item = item->firstChild();
                     while ( item )
@@ -391,8 +391,12 @@ CollectionView::scanDone( bool changed ) //SLOT
                         item = item->nextSibling();
                     }
                 }
-                item->setSelected( true );
-                this->ensureItemVisible( item );
+
+                if ( item )
+                {
+                    item->setSelected( true );
+                    this->ensureItemVisible( item );
+                }
             }
         }
     }
