@@ -69,8 +69,21 @@ ThreadWeaver::queueJob( Job *job )
 int
 ThreadWeaver::queueJobs( const JobList &jobs )
 {
+    Q_ASSERT( !jobs.isEmpty() );
+
+    const char *name = jobs.front()->name();
+    Thread *thread = findThread( name );
+    if ( !thread ) {
+        thread = new Thread( name );
+        m_threads += thread;
+    }
+
+    thread->pendingJobs += jobs;
+    if ( !thread->running() )
+        thread->runJob( 0 ); //FIXME currently not wise to call runJob( 0 ) when running
+
     //you can't use this yet!
-    return -1;
+    return thread->jobCount();
 }
 
 void
@@ -96,7 +109,7 @@ ThreadWeaver::abortAllJobsNamed( const QCString &name )
     Thread *thread = findThread( name );
 
     if ( thread ) {
-        count = thread->pendingJobs.count() + thread->runningJob ? 1 : 0;
+        count = thread->jobCount();
         dispose( thread );
     }
 
@@ -206,6 +219,7 @@ ThreadWeaver::Thread::runJob( Job *job )
         }
     }
     else if( !running() ) {
+       job->m_thread = this;
        runningJob = job;
        start( IdlePriority );
     }
@@ -247,6 +261,7 @@ ThreadWeaver::Job::Job( const char *name )
     : QCustomEvent( ThreadWeaver::JobEvent )
     , m_name( name )
     , m_aborted( false )
+    , m_thread( 0 )
 {
     debug() << "Job::Job: " << QCString(m_name) << endl;
 }

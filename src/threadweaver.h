@@ -92,7 +92,8 @@ public:
     /**
      * Queue multiple jobs simultaneously, you should use this to avoid the race
      * condition where the first job finishes before you can queue the next one.
-     * The only valid usage, is when the jobs are the same type!
+     * This isn't a fatal condition, but it does cause wasteful thread deletion
+     * and re-creation. The only valid usage, is when the jobs are the same type!
      *
      * This is not thread-safe - only call it from the GUI-thread!
      *
@@ -121,7 +122,7 @@ public:
     int abortAllJobsNamed( const QCString &name );
 
 private slots:
-void dependentAboutToBeDestroyed();
+    void dependentAboutToBeDestroyed();
 
 private:
     ThreadWeaver();
@@ -148,6 +149,10 @@ private:
         char const * const name;
 
         void abortAllJobs();
+
+        int jobCount() const { return pendingJobs.count() + runningJob ? 1 : 0; }
+
+        void msleep( int ms ) { QThread::msleep( ms ); } //we need to make this public for class Job
 
     protected:
         DISABLE_GENERATED_MEMBER_FUNCTIONS( Thread );
@@ -206,8 +211,12 @@ public:
          * Aborted jobs will not have completeJob() called for them, even if
          * they return true from doJob()
          */
-
         bool isAborted() const { return m_aborted; }
+
+        /**
+         * Calls QThread::msleep( int )
+         */
+        void msleep( int ms ) { m_thread->msleep( ms ); }
 
     protected:
         /**
@@ -227,6 +236,7 @@ public:
     private:
         char const * const m_name;
         bool m_aborted;
+        Thread *m_thread;
 
     protected:
         DISABLE_GENERATED_MEMBER_FUNCTIONS( Job )
@@ -277,6 +287,10 @@ private:
     friend DependentJob::DependentJob( QObject*, const char* );
 
     void registerDependent( QObject*, const char* );
+
+protected:
+    ThreadWeaver( const ThreadWeaver& );
+    ThreadWeaver &operator=( const ThreadWeaver& );
 };
 
 inline ThreadWeaver*
