@@ -51,9 +51,13 @@ CollectionReader::~CollectionReader()
 IncrementalCollectionReader::IncrementalCollectionReader( CollectionDB *parent )
     : CollectionReader( parent, QStringList() )
 {
-    m_recursively     = false;
     m_importPlaylists = false;
     m_incremental     = true;
+
+    // if something is added to a directory higher in the heirarchy
+    // it will change the timestamp of the directories below it
+    // which is very handy for us
+    m_recursively     = false;
 
     setDescription( i18n( "Updating collection" ) );
 }
