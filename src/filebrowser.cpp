@@ -102,6 +102,19 @@ FileBrowser::FileBrowser( const char * name )
     m_cmbPath->lineEdit()->setText( currentLocation );
     setFocusProxy( m_cmbPath ); //so the dirOperator is focussed when we get focus events
 
+    { //<Search LineEdit>
+        QHBox *hbox; KToolBarButton *button;
+
+        hbox         = new QHBox( this );
+        button       = new KToolBarButton( "locationbar_erase", 0, hbox );
+        m_filterEdit = new KLineEdit( hbox );
+
+        connect( button, SIGNAL(clicked()), m_filterEdit, SLOT(clear()) );
+
+        QToolTip::add( button, i18n( "Clear filter" ) );
+        QToolTip::add( m_filterEdit, i18n( "Enter space-separated terms to filter files" ) );
+    } //</Search LineEdit>
+
     m_dir = new MyDirOperator( KURL( currentLocation ), this );
     connect( m_dir, SIGNAL(urlEntered( const KURL& )), SLOT(dirUrlEntered( const KURL& )) );
 
@@ -147,19 +160,6 @@ FileBrowser::FileBrowser( const char * name )
         KBookmarkHandler *bookmarkHandler = new KBookmarkHandler( this, a->popupMenu() );
         connect( bookmarkHandler, SIGNAL(openURL( const QString& )), SLOT(setDir( const QString& )) );
     }
-
-    { //<Search LineEdit>
-        QHBox *hbox; KToolBarButton *button;
-
-        hbox         = new QHBox( this );
-        button       = new KToolBarButton( "locationbar_erase", 0, hbox );
-        m_filterEdit = new KLineEdit( hbox );
-
-        connect( button, SIGNAL(clicked()), m_filterEdit, SLOT(clear()) );
-
-        QToolTip::add( button, i18n( "Clear filter" ) );
-        QToolTip::add( m_filterEdit, i18n( "Enter space-separated terms to filter files" ) );
-    } //</Search LineEdit>
 
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
     connect( m_filterEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
