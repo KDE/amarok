@@ -51,35 +51,35 @@ QWidget *Analyzer::Factory::createAnalyzer( QWidget *parent )
     switch( AmarokConfig::currentAnalyzer() )
     {
     case 1:
-        analyzer = new DistortAnalyzer( parent );
-        break;
-    case 2:
         analyzer = new Sonogram( parent );
         break;
-    case 3:
+    case 2:
         analyzer = new TurbineAnalyzer( parent );
         break;
-    case 4:
+    case 3:
         analyzer = new QLabel( i18n( "Click for Analyzers" ), parent ); //blank analzyer to satisfy Grue
         static_cast<QLabel *>(analyzer)->setAlignment( Qt::AlignCenter );
         break;
 #ifdef HAVE_QGLWIDGET
-    case 5:
+    case 4:
         analyzer = new GLAnalyzer( parent );
         break;
-    case 6:
+    case 5:
         analyzer = new GLAnalyzer2( parent );
         break;
-    case 7:
+    case 6:
         analyzer = new GLAnalyzer3( parent );
         break;
 #endif
 #ifndef AMAROK_RELEASE
-    case 8:
+    case 7:
         analyzer = new XmasAnalyzer( parent );
         break;
-    case 9:
+    case 8:
         analyzer = new BlockAnalyzer( parent );
+        break;
+    case 9:
+        analyzer = new DistortAnalyzer( parent );
         break;
     case 10:
         analyzer = new BarAnalyzer2( parent );
