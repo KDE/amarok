@@ -132,7 +132,7 @@ void BrowserWin::initChildren()
     QObject *pHeader = m_pJanusWidget->child( "KJanusWidgetTitleLabel" );
     if ( pHeader )     static_cast<QWidget*>( pHeader )->hide();
     QObject *pSeparator = m_pJanusWidget->child( 0, "KSeparator" );
-    if ( pHeader )     static_cast<QWidget*>( pSeparator )->hide();
+    if ( pSeparator )  static_cast<QWidget*>( pSeparator )->hide();
             
     QWidget *pBrowserBox = m_pJanusWidget->addPage( QString( i18n( "files" ) ), QString::null,
                            KGlobal::iconLoader()->loadIcon( "hdd_unmount", KIcon::NoGroup,
