@@ -304,15 +304,6 @@ Playlist::insertMedia( KURL::List list, int options )
                     list.remove( jt );
                 }
             }
-        } else if ( addMe.count() == 1 ) //inserting 1 item is safe.
-        {
-            after = lastItem();
-            insertMediaInternal( addMe, after, directPlay );
-            //insertMediaInternal will insert the item to 'after' which is the last track.
-            //hence, the track to queue must now be the last item, so no need to iterate the entire playlist
-            //looking for it -> we know where it is.
-            //NOTE: if you change after = lastItem(), change queue( lastItem() );
-            queue ( lastItem() );
         } else {
             after = lastItem(); //insert after the last item in the playlist.
             // wait until Playlist loader has finished its process, then go to customEvent() to start the queue process.
