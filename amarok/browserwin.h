@@ -26,6 +26,7 @@ class ExpandButton;
 class PlaylistItem;
 class PlaylistWidget;
 
+class QHideEvent;
 class QCloseEvent;
 class QColor;
 class QListViewItem;
@@ -103,9 +104,10 @@ class BrowserWin : public QWidget
 
     private:
         void initChildren();
-        void closeEvent( QCloseEvent *e );
-        void moveEvent( QMoveEvent *e );
-        void paintEvent( QPaintEvent *e );
+        void closeEvent( QCloseEvent * );
+        void hideEvent( QHideEvent * );
+        void moveEvent( QMoveEvent * );
+        void paintEvent( QPaintEvent * );
 
         // ATTRIBUTES ------
         QColor m_TextColor;

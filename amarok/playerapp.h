@@ -139,7 +139,7 @@ class PlayerApp : public KUniqueApplication
         void slotItemDoubleClicked( QListViewItem *item );
         void slotShowAbout();
         void slotPlaylistToggle( bool b );
-        void slotPlaylistHide();
+        void slotPlaylistIsHidden();
         void slotEq( bool b );
         void slotShowOptions();
         void slotConfigEffects();

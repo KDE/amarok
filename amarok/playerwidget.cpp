@@ -156,7 +156,12 @@ void AmarokSystray::wheelEvent( QWheelEvent *e )
 void AmarokSystray::mousePressEvent( QMouseEvent *e )
 {
   if( e->button() == MidButton )
-    static_cast<PlayerApp *>(kapp)->slotPause();
+  {
+    if( static_cast<PlayerApp *>(kapp)->isPlaying() )
+       static_cast<PlayerApp *>(kapp)->slotPause();
+    else
+       static_cast<PlayerApp *>(kapp)->slotPlay();
+  }
   else
     KSystemTray::mousePressEvent( e );
 }
@@ -167,8 +172,8 @@ void AmarokSystray::mousePressEvent( QMouseEvent *e )
 PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
       : QWidget( parent, name ),
         DCOPObject( "player" ),
-        m_pPopupMenu( NULL ),
         m_pActionCollection( new KActionCollection( this ) ),
+        m_pPopupMenu( NULL ),
         m_pPlayObjConfigWidget( NULL ),
         m_nowPlaying( "" )
 {
@@ -716,17 +721,29 @@ void PlayerWidget::slotUpdateTrayIcon( bool visible )
 }
 
 
+void PlayerWidget::windowActivationChange( bool oldActive )
+{
+    //FIXME show() emits AboutToShow, and then causes the widget to be activated, which again emits AboutToShow
+
+    if( !oldActive )
+       emit sigAboutToShow();
+
+    //QWidget::windowActivationChange( oldActive );
+}
+
 void PlayerWidget::show()
 {
-    emit sigRestored();
-    QWidget::show();
+  //this is done in show() rather than showEvent() because
+  //we need to show() the playlist first or it will steal focus
+  emit sigAboutToShow();
+
+  QWidget::show();
 }
 
 
-void PlayerWidget::hide()
+void PlayerWidget::hideEvent( QHideEvent * )
 {
     emit sigMinimized();
-    QWidget::hide();
 }
 
 

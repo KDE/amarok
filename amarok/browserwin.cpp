@@ -199,6 +199,12 @@ void BrowserWin::closeEvent( QCloseEvent *e )
     emit signalHide();
 }
 
+void BrowserWin::hideEvent( QHideEvent * )
+{
+    //only do this when the user explicitly requests hiding, eg. minimisation
+    if( isMinimized() )
+       emit signalHide();
+}
 
 void BrowserWin::moveEvent( QMoveEvent * )
 {

@@ -32,6 +32,7 @@ class QBoxLayout;
 class QFrame;
 class QMouseEvent;
 class QMoveEvent;
+class QShowEvent;
 class QPaintEvent;
 class QPopupMenu;
 class QPushButton;
@@ -110,6 +111,8 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
         void timeDisplay( bool remaining, int hours, int minutes, int seconds );
         void createVis();
 
+        void show();
+
         // ATTRIBUTES ------
         KActionCollection *m_pActionCollection;
 
@@ -149,9 +152,6 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
         void slotConfigWidgetDestroyed();
         void slotUpdateTrayIcon( bool visible );
 
-        virtual void show();
-        virtual void hide();
-
     public /* DCOP */ slots:
        /* FIXME: move dcop iface to a separate impl class */
        void play();
@@ -164,7 +164,7 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
 
     signals:
         void sigMinimized();
-        void sigRestored();
+        void sigAboutToShow();
 
     private slots:
         void visClicked();
@@ -173,6 +173,9 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
         void initScroll();
         void initTimeDisplay();
         void polish();
+
+        virtual void windowActivationChange( bool );
+        virtual void hideEvent( QHideEvent * );
 
         void paintEvent( QPaintEvent *e );
         void mouseReleaseEvent( QMouseEvent *e );

@@ -124,21 +124,14 @@ PlayerApp::PlayerApp() :
     connect( this, SIGNAL( saveYourself() ), this, SLOT( saveSessionState() ) );
 
     connect( m_pPlayerWidget, SIGNAL( sigMinimized() ), this, SLOT( slotWidgetMinimized() ) );
-    connect( m_pPlayerWidget, SIGNAL( sigRestored() ), this, SLOT( slotWidgetRestored() ) );
+    connect( m_pPlayerWidget, SIGNAL( sigAboutToShow() ), this, SLOT( slotWidgetRestored() ) );
 
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
     connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
     m_pMainTimer->start( MAIN_TIMER );
     m_pAnimTimer->start( ANIM_TIMER );
 
-    //moved out from readConfig() to facilitate "faster" loading
-    m_pPlayerWidget->show();
-    m_pConfig->setGroup( "General Options" );
-    if ( m_pConfig->readBoolEntry( "BrowserWin Enabled", true ) == true )
-    {
-        m_pPlayerWidget->m_pButtonPl->setOn( true );
-        m_pBrowserWin->show();
-    }
+    m_pPlayerWidget->show(); //browserwin will be shown automatically if the playlistButton is setOn( true )
 
     kapp->processEvents();
     
@@ -571,7 +564,7 @@ void PlayerApp::initBrowserWin()
              this, SLOT( slotItemDoubleClicked( QListViewItem* ) ) );
 
     connect( m_pBrowserWin, SIGNAL( signalHide() ),
-             this, SLOT( slotPlaylistHide() ) );
+             this, SLOT( slotPlaylistIsHidden() ) );
 
     //TEST
     kdDebug(DA_COMMON) << "end PlayerApp::initBrowserWin()" << endl;
@@ -708,6 +701,9 @@ void PlayerApp::readConfig()
     m_optXFade = m_pConfig->readBoolEntry( "Crossfading", true );
     m_optXFadeLength = m_pConfig->readNumEntry( "Crossfade Length", 3000 );
     m_optHidePlaylistWindow = m_pConfig->readBoolEntry( "Hide Playlist Window", true );
+
+    if ( m_pConfig->readBoolEntry( "BrowserWin Enabled", true ) )
+       m_pPlayerWidget->m_pButtonPl->setOn( true );
 
     m_optBrowserWindowFont = m_pConfig->readFontEntry( "Browser Window Font", &defaultFont );
     m_optPlayerWidgetFont = m_pConfig->readFontEntry( "Player Widget Font", &defaultFont );
@@ -1457,7 +1453,7 @@ void PlayerApp::slotPlaylistToggle( bool b )
 {
     if ( b )
     {
-        m_pBrowserWin->show();
+        m_pBrowserWin->showNormal();
     }
     else
     {
@@ -1466,7 +1462,7 @@ void PlayerApp::slotPlaylistToggle( bool b )
 }
 
 
-void PlayerApp::slotPlaylistHide()
+void PlayerApp::slotPlaylistIsHidden()
 {
     m_pPlayerWidget->m_pButtonPl->setOn( false );
 }
@@ -1571,15 +1567,31 @@ void PlayerApp::slotShowHelp()
 
 void PlayerApp::slotWidgetMinimized()
 {
-    if ( m_optHidePlaylistWindow && m_pPlayerWidget->m_pButtonPl->isOn() )
-        m_pBrowserWin->hide();
-}
+  //do not minimise the browserWindow as this will break slotWidgetRestored()
+  //also this way the taskbar is less cluttered
+  //!isMinimised() because hiding the widget clears it's minimisation status, and undesired behavior
+  //HOWEVER when using SysTray to hide, one expects it all to hide, hmmm I dunno what to do here
 
+    if ( m_optHidePlaylistWindow && !m_pBrowserWin->isMinimized() )
+    {
+        m_pBrowserWin->hide();
+    }
+}
 
 void PlayerApp::slotWidgetRestored()
 {
-    if ( m_optHidePlaylistWindow && m_pPlayerWidget->m_pButtonPl->isOn() )
-        m_pBrowserWin->show();
+    //we don't restore the playlist if it was minimized; the user minimized it, that's where s/he wants it!
+
+    if ( m_optHidePlaylistWindow && !m_pBrowserWin->isMinimized() )
+    {
+        if ( m_pPlayerWidget->m_pButtonPl->isOn() )
+            //do this always; there are strange circumstances when this is necessary - trust me :)
+            m_pBrowserWin->show();
+
+        //we need to raise the playlist when the browserWindow is raised
+        //if both widgets are obscured by other window, you want both widgets to be raised
+        m_pBrowserWin->raise();
+    }
 }
 
 
