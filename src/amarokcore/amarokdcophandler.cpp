@@ -298,12 +298,12 @@ namespace amaroK
 
         QStringList::ConstIterator it = args.constBegin();
         for( int i = 1; i < argc; ++i, ++it ) {
-            argv[i] = qstrdup((*it).local8Bit());
+            argv[i] = qstrdup( (*it).local8Bit() );
             debug() << "Extracted: " << argv[i] << endl;
         }
 
         // required, loader doesn't add it
-        argv[0] = (char*)"amarokapp";
+        argv[0] = qstrdup( "amarokapp" );
 
         // re-initialize KCmdLineArgs with the new arguments
         App::initCliArgs( argc, argv );
@@ -311,7 +311,9 @@ namespace amaroK
 
         //FIXME are we meant to leave this around?
         //FIXME are we meant to allocate it all on the heap?
-        delete[] argv;
+        //NOTE we allow the memory leak because I think there are
+        // some very mysterious crashes due to deleting this
+        //delete[] argv;
     }
 
     void DcopPlayerHandler::setContextStyle(const QString& msg)
