@@ -341,11 +341,12 @@ PlaylistFile::loadM3u( QTextStream &stream )
 
         else if( !line.startsWith( "#" ) )
         {
-            // NOTE This will not work with full URLs
-            // eg http://someplace.com/playlist.m3u
-            // we need a better check, what was wrong with:
-            // if( KURL::isRelativeURL( line ) )
-            if( !line.startsWith( "/" ) )
+            // KURL::isRelativeURL() expects a protocol, so prepend it if missing
+            QString url = line;
+            if ( url.startsWith( "/" ) )
+                url.prepend( "file://" );
+
+            if( KURL::isRelativeURL( url ) )
                 b.setPath( directory + line );
             else
                 b.setUrl( KURL::fromPathOrURL( line ) );
