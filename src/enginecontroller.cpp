@@ -182,16 +182,16 @@ bool EngineController::canDecode( const KURL &url ) //static
 
     const bool valid = engine()->canDecode( url );
 
-    if ( !valid && ext == "mp3" )
-        //FIXME is AmarokConfig::soundSystem() translated?
-        //TODO use a key that contains this engine name? ie xineEngineCannotPlayMP3
-        KMessageBox::information( 0,
-           i18n( "<p>The %1 claims it <b>cannot</b> play MP3s."
-                 "<p>You may want to choose a different engine from the <i>Configure Dialog</i>, or examine "
-                 "the installation of the multimedia-framework that the current engine uses. "
-                 "<p>You may find useful information in the <i>FAQ</i> section of the <i>amaroK HandBook</i>." )
-               .arg( AmarokConfig::soundSystem() ),
-           i18n( "Multimedia Framework Cannot Play MP3s" ), "engineCannotPlayMp3Warning" );
+//     if ( !valid && ext == "mp3" )
+//         //FIXME is AmarokConfig::soundSystem() translated?
+//         //TODO use a key that contains this engine name? ie xineEngineCannotPlayMP3
+//         KMessageBox::information( 0,
+//            i18n( "<p>The %1 claims it <b>cannot</b> play MP3s."
+//                  "<p>You may want to choose a different engine from the <i>Configure Dialog</i>, or examine "
+//                  "the installation of the multimedia-framework that the current engine uses. "
+//                  "<p>You may find useful information in the <i>FAQ</i> section of the <i>amaroK HandBook</i>." )
+//                .arg( AmarokConfig::soundSystem() ),
+//            i18n( "Multimedia Framework Cannot Play MP3s" ), "engineCannotPlayMp3Warning" );
 
     // Cache this result for the next lookup
     if ( !ext.isEmpty() )

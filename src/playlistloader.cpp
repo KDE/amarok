@@ -79,7 +79,7 @@ PlaylistLoader::run()
         else if( EngineController::canDecode( url ) ) item = createPlaylistItem( url );
         else addBadURL( url );
 
-        m_needSecondPass |= !item->inCollection() || !item->hasAudioproperties();
+        if ( item ) m_needSecondPass |= !item->inCollection() || !item->hasAudioproperties();
         progress += increment;
         amaroK::StatusBar::showProgress( uint(progress) );
     }
