@@ -5,6 +5,10 @@ amaroK Changelog
 POST 0.7.0
   * add: configurable delay after each track.  currently 0-10 seconds in 1 sec increments
          but could easily be made to use finder increments if ppl want - piggz (www.piggz.co.uk)
+  * add: viswidgetv2.  it seems a lot smoother on my machine.  
+         its quite easy to tweak the dynamics is needed.  is accessible the same as the other
+         widgets, just click until it appears (though it looks the same as the original widget
+         it just acts differently) - piggz (www.piggz.co.uk)
 
 VERSION 0.7.0:
   * fix: collection of fixes related to showing/raising/hiding the playlist
