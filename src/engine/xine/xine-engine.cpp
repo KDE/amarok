@@ -198,7 +198,7 @@ XineEngine::load( const KURL &url, bool isStream )
        return true;
     }
 
-    delete s_fader;
+    //s_fader will delete itself
 
     return false;
 }
