@@ -14,6 +14,7 @@
 
 #include <qdatetime.h>
 #include <qimage.h>
+#include <qlabel.h>
 #include <qpushbutton.h>
 #include <qregexp.h>
 #include <qtooltip.h>       //QToolTip::add()
@@ -28,6 +29,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
+#include <kprogress.h>
 #include <krun.h>
 #include <kstandarddirs.h> //locate file
 #include <ktabbar.h>
@@ -51,6 +53,8 @@ bool MediaBrowser::isAvailable() //static
 MediaBrowser::MediaBrowser( const char *name )
    : QVBox( 0, name )
 {
+    m_device = new MediaDevice( this );
+
     setSpacing( 4 );
     setMargin( 5 );
 
@@ -80,8 +84,6 @@ MediaBrowser::MediaBrowser( const char *name )
     } //</Search LineEdit>
 
     m_view = new MediaDeviceView( this );
-    m_device = new MediaDevice( this );
-    m_device->hide();
 
     setFocusProxy( m_view ); //default object to get focus
     setMinimumWidth( toolbar->sizeHint().width() + 2 ); //set a reasonable minWidth
@@ -94,7 +96,7 @@ MediaBrowser::~MediaBrowser()
 }
 
 
-MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
+MediaDeviceList::MediaDeviceList( MediaDeviceView* parent )
     : KListView( parent )
     , m_parent( parent )
 {
@@ -110,21 +112,21 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
 
     addColumn( i18n( "Artist" ) );
     renderView();
+    
+    connect( this, SIGNAL( expanded( QListViewItem* ) ),
+             this,   SLOT( slotExpand( QListViewItem* ) ) );
 
-    connect( this,           SIGNAL( expanded( QListViewItem* ) ),
-             this,             SLOT( slotExpand( QListViewItem* ) ) );
-
-    connect( this,           SIGNAL( collapsed( QListViewItem* ) ),
-             this,             SLOT( slotCollapse( QListViewItem* ) ) );
+    connect( this, SIGNAL( collapsed( QListViewItem* ) ),
+             this,   SLOT( slotCollapse( QListViewItem* ) ) );
 }
 
 
-MediaDeviceView::~MediaDeviceView()
+MediaDeviceList::~MediaDeviceList()
 {}
 
 
 void
-MediaDeviceView::renderView()
+MediaDeviceList::renderView()
 {
     clear();
     renderNode( 0, KURL( "ipod:/Artists/" ) );
@@ -132,7 +134,7 @@ MediaDeviceView::renderView()
 
 
 void
-MediaDeviceView::renderNode( QListViewItem* parent, const KURL& url )  //SLOT
+MediaDeviceList::renderNode( QListViewItem* parent, const KURL& url )  //SLOT
 {
     KDirLister dl;
     dl.setAutoErrorHandlingEnabled( false, 0 );
@@ -166,7 +168,7 @@ MediaDeviceView::renderNode( QListViewItem* parent, const KURL& url )  //SLOT
 
 
 void
-MediaDeviceView::slotExpand( QListViewItem* item )  //SLOT
+MediaDeviceList::slotExpand( QListViewItem* item )  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     if ( !item ) return;
@@ -181,7 +183,7 @@ MediaDeviceView::slotExpand( QListViewItem* item )  //SLOT
 
 
 void
-MediaDeviceView::slotCollapse( QListViewItem* item )  //SLOT
+MediaDeviceList::slotCollapse( QListViewItem* item )  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
@@ -199,7 +201,7 @@ MediaDeviceView::slotCollapse( QListViewItem* item )  //SLOT
 
 
 void
-MediaDeviceView::startDrag()
+MediaDeviceList::startDrag()
 {
     nodeBuildDragList( 0 );
     KURLDrag* d = new KURLDrag( m_dragList, this );
@@ -208,7 +210,7 @@ MediaDeviceView::startDrag()
 
 
 void
-MediaDeviceView::nodeBuildDragList( MediaItem* item )
+MediaDeviceList::nodeBuildDragList( MediaItem* item )
 {
     MediaItem* fi;
 
@@ -237,7 +239,7 @@ MediaDeviceView::nodeBuildDragList( MediaItem* item )
 
 
 void
-MediaDeviceView::contentsDragEnterEvent( QDragEnterEvent *e )
+MediaDeviceList::contentsDragEnterEvent( QDragEnterEvent *e )
 {
     kdDebug() << "[MediaBrowser] Items dropping?" << endl;
     e->accept( e->source() != viewport() && KURLDrag::canDecode( e ) );
@@ -245,7 +247,7 @@ MediaDeviceView::contentsDragEnterEvent( QDragEnterEvent *e )
 
 
 void
-MediaDeviceView::contentsDropEvent( QDropEvent *e )
+MediaDeviceList::contentsDropEvent( QDropEvent *e )
 {
     KURL::List list;
     if ( KURLDrag::decode( e, list ) )
@@ -260,21 +262,20 @@ MediaDeviceView::contentsDropEvent( QDropEvent *e )
 
 
 void
-MediaDeviceView::contentsDragMoveEvent( QDragMoveEvent* e )
+MediaDeviceList::contentsDragMoveEvent( QDragMoveEvent* e )
 {
     const QPoint p = contentsToViewport( e->pos() );
     QListViewItem *item = itemAt( p );
 }   
 
 
-MediaDevice::MediaDevice( MediaBrowser* parent )
+MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     : QVBox( parent )
+    , m_deviceList( new MediaDeviceList( this ) )
     , m_transferList( new KListView( this ) )
     , m_parent( parent )
 {
-    s_instance = this;
-    setFixedHeight( 200 );
-
+    m_transferList->setFixedHeight( 200 );
     m_transferList->setSelectionMode( QListView::Extended );
     m_transferList->setItemsMovable( false );
     m_transferList->setShowSortIndicator( true );
@@ -285,9 +286,28 @@ MediaDevice::MediaDevice( MediaBrowser* parent )
     m_transferList->setDropVisualizerWidth( 3 );
     m_transferList->setAcceptDrops( true );
     m_transferList->addColumn( i18n( "URL" ) );
+    
+    QHBox* hb( this );
+    hb->setSpacing( 4 );
+    m_stats = new QLabel( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ), hb );
+    m_progress = new KProgress( hb );
+    QPushButton* transferButton = new QPushButton( SmallIconSet( "rebuild" ), i18n( "Transfer" ), hb );
 
-    QPushButton* transferButton = new QPushButton( SmallIconSet( "rebuild" ), i18n( "Transfer" ), this );
+    m_progress->setFixedHeight( transferButton->sizeHint().height() );
+    m_progress->hide();
+
     connect( transferButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( transferFiles() ) );
+}
+
+
+MediaDeviceView::~MediaDeviceView()
+{}
+
+
+MediaDevice::MediaDevice( MediaBrowser* parent )
+    : m_parent( parent )
+{
+    s_instance = this;
 }
 
 
@@ -297,14 +317,14 @@ MediaDevice::addURL( const KURL& url )
     MetaBundle mb( url, false );
     if ( !fileExists( mb ) && ( m_transferURLs.findIndex( url ) == -1 ) )
     {
-        MediaItem* item = new MediaItem( m_transferList );
+        MediaItem* item = new MediaItem( m_parent->m_view->m_transferList );
         item->setExpandable( false );
         item->setDropEnabled( true );
         item->setUrl( url.path() );
         item->setText( 0, url.path() );
     
         m_transferURLs << url;
-        show();
+        m_parent->m_view->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_view->m_transferList->childCount() ) );
     } else
         amaroK::StatusBar::instance()->message( i18n( "Track already exists on iPod: " + url.path().local8Bit() ) );
 }
@@ -313,7 +333,8 @@ MediaDevice::addURL( const KURL& url )
 void
 MediaDevice::transferFiles()  //SLOT
 {
-    kdDebug() << "[MediaBrowser] Transfer files requested!" << endl;
+    m_parent->m_view->m_progress->setTotalSteps( m_parent->m_view->m_transferList->childCount() );
+    m_parent->m_view->m_progress->show();
 
     KIO::CopyJob *job = KIO::copy( m_transferURLs, KURL( "ipod:/Artists/" ), true );
     connect( job, SIGNAL( copyingDone( KIO::Job *, const KURL &, const KURL &, bool, bool ) ),
@@ -341,18 +362,21 @@ MediaDevice::fileExists( const MetaBundle& bundle )
 void
 MediaDevice::fileTransferred( KIO::Job *job, const KURL &from, const KURL &to, bool dir, bool renamed )  //SLOT
 {
-    m_parent->m_view->renderView();
+    m_parent->m_view->m_progress->setProgress( m_parent->m_view->m_progress->value() + 1 );
+    m_parent->m_view->m_deviceList->renderView();
 }
 
 
 void
 MediaDevice::fileTransferFinished( KIO::Job *job )  //SLOT
 {
-    m_transferList->clear();
+    m_parent->m_view->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_view->m_transferList->childCount() ) );
+    m_parent->m_view->m_transferList->clear();
     m_transferURLs.clear();
     
     // sync ipod, now
     KIO::get( "ipod:/Utilities/Synchronize?really=OK", false, false );
+    m_parent->m_view->m_progress->hide();
 }
 
 

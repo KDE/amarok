@@ -4,6 +4,7 @@
 #ifndef AMAROK_MEDIABROWSER_H
 #define AMAROK_MEDIABROWSER_H
 
+#include <qhbox.h>
 #include <qvbox.h>
 
 #include <kio/job.h>
@@ -14,6 +15,8 @@
 class Color;
 class MetaBundle;
 
+class KProgress;
+class QLabel;
 class QPalette;
 
 
@@ -53,44 +56,17 @@ class MediaBrowser : public QVBox
 };
 
 
-class MediaDevice : public QVBox
+class MediaDeviceList : public KListView
 {
     Q_OBJECT
     friend class MediaBrowser;
-    friend class MediaDeviceView;
+    friend class MediaDevice;
     friend class Item;
-
+    
     public:
-        MediaDevice( MediaBrowser* m_parent );
-        void addURL( const KURL& url );
+        MediaDeviceList( MediaDeviceView* parent );
+        ~MediaDeviceList();
 
-        static MediaDevice *instance() { return s_instance; }
-
-    private slots:
-        void transferFiles();
-        void fileTransferred( KIO::Job *job, const KURL &from, const KURL &to, bool dir, bool renamed );
-        void fileTransferFinished( KIO::Job *job );
-
-    private:
-        bool fileExists( const MetaBundle& bundle );
-        KListView* m_transferList;
-        KURL::List m_transferURLs;
-
-        MediaBrowser* m_parent;
-        static MediaDevice *s_instance;
-};
-
-
-class MediaDeviceView : public KListView
-{
-    Q_OBJECT
-    friend class MediaBrowser;
-    friend class Item;
-
-    public:
-        MediaDeviceView( MediaBrowser* parent );
-        ~MediaDeviceView();
-        
         void renderView();
 
     private slots:
@@ -105,8 +81,58 @@ class MediaDeviceView : public KListView
         void contentsDropEvent( QDropEvent *e );
         void contentsDragMoveEvent( QDragMoveEvent* e );
 
-        MediaBrowser* m_parent;
-        KURL::List    m_dragList;
+        MediaDeviceView* m_parent;
+        KURL::List       m_dragList;
 };
+
+
+class MediaDeviceView : public QVBox
+{
+    Q_OBJECT
+    friend class MediaBrowser;
+    friend class MediaDevice;
+    friend class MediaDeviceList;
+
+    public:
+        MediaDeviceView( MediaBrowser* parent );
+        ~MediaDeviceView();
+        
+    private:
+        QLabel*          m_stats;
+        KProgress*       m_progress;
+        MediaDeviceList* m_deviceList;
+        KListView*       m_transferList;
+
+        MediaBrowser* m_parent;
+};
+
+
+class MediaDevice : public QObject
+{
+    Q_OBJECT
+    friend class MediaBrowser;
+    friend class MediaDeviceView;
+
+    public:
+        MediaDevice( MediaBrowser* parent );
+        void addURL( const KURL& url );
+
+        static MediaDevice *instance() { return s_instance; }
+
+    public slots:
+        void transferFiles();
+        
+    private slots:
+        void fileTransferred( KIO::Job *job, const KURL &from, const KURL &to, bool dir, bool renamed );
+        void fileTransferFinished( KIO::Job *job );
+
+    private:
+        bool fileExists( const MetaBundle& bundle );
+        KURL::List m_transferURLs;
+
+        MediaBrowser* m_parent;
+        static MediaDevice *s_instance;
+};
+
 
 #endif /* AMAROK_MEDIABROWSER_H */
