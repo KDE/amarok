@@ -34,7 +34,7 @@ public:
 private slots:
     void slotAboutToShow();
     void slotActivated( int index );
-
+    
 private:
     static KHelpMenu *HelpMenu;
 };

@@ -905,7 +905,7 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
     popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit Tag: '%1'" ).arg( columnText( col ) ), EDIT );
     if( canRename )
     {
-        QListViewItem *below = item->itemBelow();
+        const QListViewItem *below = item->itemBelow();
         if( below && below->isSelected() )
         {
             popup.insertItem( i18n( "Spreadsheet-style fill down", "&Fill-down" ), FILL_DOWN );

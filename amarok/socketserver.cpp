@@ -9,34 +9,29 @@
 #include "fht.h"              //processing the scope
 #include "socketserver.h"
 
-#include <qsocketnotifier.h>
-
 #include <kdebug.h>
-#include <klistview.h>
 #include <klocale.h>
-#include <kprocess.h>         //visClicked()
-
-#include <dirent.h>
+#include <kprocess.h> //Vis::Selector
+#include <kstandarddirs.h>
+#include <qsocketnotifier.h>
 #include <sys/socket.h>
-#include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/un.h>
 #include <unistd.h>
 #include <vector>
 
-#include <kstandarddirs.h>
+#include <dirent.h> //FIXME use QDir
+#include <sys/stat.h>
 
-QGuardedPtr<Vis::Selector> Vis::SocketServer::lv;
-std::vector<Vis::SocketServer::VisItem> Vis::SocketServer::m_visList;
-bool Vis::SocketServer::m_ignoreState = false;
+
+QGuardedPtr<Vis::Selector> Vis::Selector::m_instance;
+
 
 //TODO allow stop/start and pause signals to be sent to registered visualisations
-//TODO build xmms wrapper
 //TODO see if we need two socket servers
 //TODO allow transmission of visual data back to us here and allow that to be embedded in stuff
 //TODO decide whether to use 16 bit integers or 32 bit floats as data sent to analyzers
 //     remember that there may be 1024 operations on these data points up to 50 times every second!
-//TODO keep socket connections open, don't constantly open and close them
 //TODO consider moving fht.* here
 //TODO allow visualisations to determine their own data sizes
 
@@ -82,50 +77,6 @@ Vis::SocketServer::SocketServer( QObject *parent )
 /////////////////////////////////////////////////////////////////////////////////////////
 
 void
-Vis::SocketServer::showSelector() //SLOT
-{
-    if ( !lv ) {
-        lv = new Selector();
-        lv->setFullWidth( true );
-        lv->setShowSortIndicator( true );
-        lv->setSorting( 0 );
-        lv->setCaption( i18n( "Visualizations - amaroK" ) );
-        lv->addColumn( i18n( "Name" ) );
-        lv->resize( 250, 250 );
-        lv->show();
-            
-        QString dirname = XMMS_PLUGIN_PATH;
-        dirname.append( "/" );
-        QString filepath;
-        DIR *dir;
-        struct dirent *ent;
-        struct stat statbuf;
-
-        dir = opendir( dirname.local8Bit() );
-        if ( !dir ) return;
-        
-        m_ignoreState = true;
-        while ( ( ent = readdir( dir ) ) ) {
-            QString filename = QString::fromLocal8Bit( ent->d_name );
-            filepath = dirname + filename;
-            if ( filename.endsWith( ".so" ) )
-                if ( !stat( filepath.local8Bit(), &statbuf ) && S_ISREG( statbuf.st_mode ) ) {
-                    VisListItem* item = new VisListItem( lv, filename );
-                    
-                    for ( uint i = 0; i < m_visList.size(); i++ )
-                        item->setOn( filename == m_visList[i].name );
-                }
-        }
-        m_ignoreState = false;
-    }
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////////////
-// PRIVATE interface
-/////////////////////////////////////////////////////////////////////////////////////////
-
-void
 Vis::SocketServer::newConnection( int sockfd )
 {
     kdDebug() << "[Vis::Server] Connection requested: " << sockfd << endl;
@@ -135,12 +86,17 @@ Vis::SocketServer::newConnection( int sockfd )
     connect( sn, SIGNAL(activated( int )), SLOT(request( int )) );
 }
 
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// PRIVATE interface
+/////////////////////////////////////////////////////////////////////////////////////////
+
 void
 Vis::SocketServer::request( int sockfd )
 {
-    std::vector<float> *scope = EngineController::instance()->engine()->scope(); //FIXME hacked to give 512 values
+    std::vector<float> *scope = EngineController::engine()->scope();
 
-    char buf[32]; //docs should state requests can only be 32bytes at most
+    char buf[32]; //TODO docs should state requests can only be 32bytes at most
     int nbytes = recv( sockfd, buf, sizeof(buf) - 1, 0 );
 
     if( nbytes > 0 )
@@ -204,42 +160,105 @@ Vis::SocketServer::request( int sockfd )
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
-// CLASS VisListItem
+// CLASS Vis::Selector
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void
-Vis::SocketServer::VisListItem::stateChange( bool ) //SLOT
+Vis::Selector::Selector()
+  : KListView()
 {
-    kdDebug() << k_funcinfo << endl;
+    //TODO we will have to update the status of the visualisation window using the socket
+    //     it should know which processes are requesting data from it
+    //FIXME problem, you can have more than one of each vis running!
+    //      solution (for now) data starve multiple registrants
+
+    //TODO for now we keep the widget around as this will keep the checkboxes set as the user expects
+    //     it isn't a perfect system, but it will suffice
+    //setWFlags( Qt::WDestructiveClose ); //FIXME these are the defaults no?
+
+    setFullWidth( true );
+    setShowSortIndicator( true );
+    setSorting( 0 );
+    setCaption( i18n( "Visualizations - amaroK" ) );
+    addColumn( i18n( "Name" ) );
+    resize( 250, 250 );
     
-    if ( !m_ignoreState && state() == On ) {    
-        KProcess* proc = new KProcess();
-        *proc << KStandardDirs::findExe( "amarok_xmmswrapper" ) << text( 0 );
+    
+    QString dirname = "/usr/lib/xmms/Visualization";
+    dirname.append( "/" );
+    QString filepath;
+    DIR *dir;
+    struct dirent *ent;
+    struct stat statbuf;
+
+    dir = opendir( dirname.local8Bit() );//TODO use QDir, it's just better to do that
+
+    while( (ent = readdir( dir )) )
+    {
+        QString filename = QString::fromLocal8Bit( ent->d_name );
         
-        if ( proc->start() ) {
-            kdDebug() << "Starting XMMS visualization.\n";
-            VisItem item;
-            item.vis = proc;
-            item.name = text( 0 );
-            m_visList.push_back( item );
+        filepath = dirname + filename;
+        
+        if( filename.endsWith( ".so" ) &&
+            !stat( filepath.local8Bit(), &statbuf ) &&
+            S_ISREG( statbuf.st_mode ) )
+        {
+            new Selector::Item( this, filename );
         }
-        else    
-            kdWarning() << "Could not run amarok_xmmswrapper!\n";
     }
     
-    if ( !m_ignoreState && state() == Off ) {
-        for ( std::vector<VisItem>::iterator it = m_visList.begin(); it != m_visList.end(); it++ )
-            if ( (*it).name == text( 0 ) ) {
-                kdDebug() << "Stopping XMMS visualization.\n";
-                (*it).vis->kill();
-                delete (*it).vis;
-                m_visList.erase( it );
-                break;
-            }
-    }    
+    closedir( dir );
+}
+
+void
+Vis::Selector::processExited( KProcess *proc )
+{
+    for( Item *item = (Item*)firstChild(); item; item = (Item*)item->nextSibling() )
+    {
+        if( item->m_proc == proc ) item->setOn( false ); //will delete m_proc for us
+    }
+    
+    kdDebug() << "done\n";
+}
+
+Vis::Selector::Item::~Item()
+{
+    //if( m_proc ) m_proc->kill(); //NOTE makes no difference to kill speed
+    delete m_proc; //kills the process too
+}
+
+void
+Vis::Selector::Item::stateChange( bool ) //SLOT
+{
+    //TODO was !m_ignoreState sillyness here, why!?
+
+    switch( state() ) {
+    case On:
+        m_proc = new KProcess();
+        *m_proc << KStandardDirs::findExe( "amarok_xmmswrapper" ) << text( 0 );
+
+        connect( m_proc, SIGNAL(processExited( KProcess* )), (Selector*)listView(), SLOT(processExited( KProcess* )) );
+
+        kdDebug() << "[Vis::Selector] Starting XMMS visualization..\n";
+
+        if( m_proc->start() ) break;
+
+        //ELSE FALL_THROUGH
+
+        kdWarning() << "[Vis::Selector] Could not start amarok_xmmswrapper!\n";
+
+    case Off:
+        kdDebug() << "[Vis::Selector] Stopping XMMS visualization\n";        
+            
+        //m_proc->kill(); no point, will be done by delete, and crashes amaroK in some cases
+        delete m_proc;
+        m_proc = 0;
+        
+        break;
+    
+    default:
+        break;
+    }
 }
 
 
 #include "socketserver.moc"
-
-

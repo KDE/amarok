@@ -117,8 +117,7 @@ PlayerApp::PlayerApp()
 
     handleCliArgs();
 
-    Vis::SocketServer* server = new Vis::SocketServer( this );
-    connect( this, SIGNAL( showVisSelector() ), server, SLOT( showSelector() ) ) ;
+    new Vis::SocketServer( this );
 }
 
 PlayerApp::~PlayerApp()

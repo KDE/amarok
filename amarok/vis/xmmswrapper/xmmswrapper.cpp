@@ -42,7 +42,7 @@ GtkWidget *mainwin = &dummy; //required by msa visplugin
 
 
 int tryConnect();
-void vis_disable_plugin( VisPlugin *vp ) {} //seems to be a required function (see loadVis() )
+void vis_disable_plugin( VisPlugin *vp ) { exit( 0 ); } //this is called by the plugin when it wants to quit
 
 QString socketpath; //global
 KInstance *inst;
@@ -127,6 +127,7 @@ main( int argc, char** argv )
             //NOTE we times by 1<<14 rather than 1<<15 (maximum value of signed 16bit)
             //     this is because values of pcm data tend to range 0-2 (although there
             //     is no theoretical maximum.
+            //NOTE actually the maximum value is signed 16 bit, just like on a CD
 
             for ( uint x = 0; x < 512; ++x ) {
                 pcm_data[ 0 ][ x ] = gint16( float_data[ x ] * ( 1 << 14 ) );

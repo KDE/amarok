@@ -3,8 +3,10 @@
 
 #include "amarokconfig.h"
 #include "amarokmenu.h"
-#include "playerapp.h"
 #include "enginecontroller.h"
+#include "playerapp.h"    //actionCollection() and a SLOT
+#include "socketserver.h" //Vis::Selector::showInstance()
+
 
 #include <kaction.h>
 #include <kapplication.h>
@@ -46,7 +48,7 @@ Menu::Menu( QWidget *parent )
 
     insertSeparator();
 
-    insertItem( i18n( "&Visualizations" ), pApp, SIGNAL( showVisSelector() ) );
+    insertItem( i18n( "&Visualizations" ), Vis::Selector::instance(), SLOT( show() ) ); //sucks using a slot to call a function
 
     insertSeparator();
 

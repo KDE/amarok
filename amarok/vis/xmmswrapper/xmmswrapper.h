@@ -18,6 +18,7 @@ void fft_close (fft_state *state);
 #define FFT_BUFFER_SIZE_LOG 9
 #define FFT_BUFFER_SIZE (1 << FFT_BUFFER_SIZE_LOG)
 
+//END fft.h
 
 
 //BEGIN XmmsWrapper
