@@ -440,11 +440,11 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
 // CLASS TagWriter
 //////////////////////////////////////////////////////////////////////////////////////////
 
-TagWriter::TagWriter( QObject *o, PlaylistItem *item, const QString &newTag, const int col )
+TagWriter::TagWriter( QObject *o, PlaylistItem *item, const QString &oldTag, const QString &newTag, const int col )
         : Job( o )
         , m_item( item )
         , m_failed( true )
-        , m_oldTagString( item->exactText( col ) )
+        , m_oldTagString( oldTag )
         , m_newTagString( newTag )
         , m_tagType( col )
 {
@@ -517,15 +517,11 @@ TagWriter::doJob()
 void
 TagWriter::completeJob()
 {
-    if( m_failed )
-    {
-       amaroK::StatusBar::instance()->message( i18n( "The tag could not be changed." ) );
-       //FIXME this hack is explained in PlaylistItem::setText()
-       m_item->setText( m_tagType, m_oldTagString.isEmpty() ? " " :  m_oldTagString );
+    if( m_failed ) {
+        m_item->setText( m_tagType, m_oldTagString.isEmpty() ? " " : m_oldTagString );
+        amaroK::StatusBar::instance()->message( i18n( "The tag could not be changed." ) );
     }
-    else
-        //FIXME this hack is explained in PlaylistItem::setText()
-        m_item->setText( m_tagType, m_newTagString.isEmpty() ? " " : m_newTagString );
+    m_item->setText( m_tagType, m_newTagString.isEmpty() ? " " : m_newTagString );
 }
 
 

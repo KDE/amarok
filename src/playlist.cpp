@@ -13,7 +13,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "collectiondb.h"    //startEditTag()
+#include "collectiondb.h"    //rename()
 #include "enginecontroller.h"
 #include "k3bexporter.h"
 #include "metabundle.h"
@@ -49,7 +49,7 @@
 #include <kstandarddirs.h>   //KGlobal::dirs()
 #include <kstdaction.h>
 #include <kstringhandler.h>  //::showContextMenu()
-#include <kglobalsettings.h> //startEditTag()
+#include <kglobalsettings.h> //rename()
 #include <kurldrag.h>
 #include <X11/Xlib.h>        //ControlMask in contentsDragMoveEvent()
 #include <qsortedlist.h>
@@ -113,7 +113,7 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     , m_totalLength( 0 )
     , m_undoDir( KGlobal::dirs()->saveLocation( "data", "amarok/undo/", true ) )
     , m_undoCounter( 0 )
-    , m_editText( 0 )
+    , m_editOldTag( 0 )
     , m_ac( ac ) //REMOVE
     , m_columnFraction( 13, 0 )
 {
@@ -715,6 +715,35 @@ Playlist::setColumnWidth( int col, int width )
     //NOTE  default column sizes are stored in default amarokrc so that restoreLayout() in ctor will
     //      call this function. This is necessary because addColumn() doesn't call setColumnWidth() GRRR!
     header()->setResizeEnabled( width != 0, col );
+}
+
+void
+Playlist::rename( QListViewItem *item, int column ) //SLOT
+{
+    KListView::rename( item, column );
+
+    switch( column )
+    {
+        case PlaylistItem::Artist:
+            renameLineEdit()->completionObject()->setItems( CollectionDB().artistList() );
+            break;
+
+        case PlaylistItem::Album:
+            renameLineEdit()->completionObject()->setItems( CollectionDB().albumList() );
+            break;
+
+        case PlaylistItem::Genre:
+            renameLineEdit()->completionObject()->setItems( MetaBundle::genreList() );
+            break;
+
+        default:
+            renameLineEdit()->completionObject()->clear();
+            break;
+    }
+
+    renameLineEdit()->completionObject()->setCompletionMode( KGlobalSettings::CompletionPopupAuto );
+
+    m_editOldTag = static_cast<PlaylistItem *>(item)->exactText( column );
 }
 
 void
@@ -1571,7 +1600,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     else popup.insertItem( SmallIcon( "2leftarrow" ), i18n( "&Dequeue (%1)" ).arg( queueIndex+1 ), PLAY_NEXT );
 
     popup.insertSeparator();
-    popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit Tag Inline: '%1'" ).arg( tagName ), 0, 0, Key_F2, EDIT );
+    popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit '%1'", "&Edit '%1' for Selected Tracks", itemCount ).arg( tagName ), 0, 0, Key_F2, EDIT );
     popup.insertItem( trackColumn ? i18n("&Iteratively Assign Track Numbers") : i18n("Write '%1' for Selected Tracks").arg( KStringHandler::rsqueeze( tag, 30 ) ), FILL_DOWN );
     popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy Meta-string" ), 0, 0, CTRL+Key_C, COPY );
     popup.insertSeparator();
@@ -1628,7 +1657,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     }
 
     case EDIT:
-        startEditTag( item, col );
+        rename( item, col );
         break;
 
     case FILL_DOWN:
@@ -1657,7 +1686,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
                 //FIXME fix this hack!
                 if ( (*it)->exactText( col ) != i18n("Writing tag...") )
-                    m_weaver->append( new TagWriter( this, *it, newTag, col ), true );
+                    m_weaver->append( new TagWriter( this, *it, (*it)->exactText( col ), newTag, col ), true );
             }
         }
         break;
@@ -1904,59 +1933,34 @@ Playlist::slotEraseMarker() //SLOT
 }
 
 void
-Playlist::startEditTag( QListViewItem *item, int column )
+Playlist::writeTag( QListViewItem *lvi, const QString &newTag, int column ) //SLOT
 {
-    KLineEdit *edit = renameLineEdit();
+    QPtrList<QListViewItem> list;    //the list of the items to be edited
+    if( !lvi->isSelected() )
+        list.append( lvi );    //when the user is using the tab ordered renaming edit only the renaming item
+    else
+        list = selectedItems();
 
-    switch( column )
-    {
-        case PlaylistItem::Artist:
-            edit->completionObject()->setItems( CollectionDB().artistList() );
-            break;
+    for( QListViewItem *item = list.first(); item; item = list.next() ) {
+        #define item static_cast<PlaylistItem*>(item)
 
-        case PlaylistItem::Album:
-            edit->completionObject()->setItems( CollectionDB().albumList() );
-            break;
-
-        case PlaylistItem::Genre:
-            edit->completionObject()->setItems( MetaBundle::genreList() );
-            break;
-
-        default:
-            edit->completionObject()->clear();
-            break;
-    }
-
-    edit->completionObject()->setCompletionMode( KGlobalSettings::CompletionPopupAuto );
-
-    m_editText = static_cast<PlaylistItem *>(item)->exactText( column );
-
-    rename( item, column );
-}
-
-void
-Playlist::writeTag( QListViewItem *lvi, const QString &tag, int column ) //SLOT
-{
-    if ( m_editText != tag && !(m_editText.isEmpty() && tag.isEmpty()) )    //write the new tag only if it's changed
-    {
-        if ( column == PlaylistItem::Score )
+        const QString &oldTag = item == lvi ? m_editOldTag : item->exactText(column);
+        if( oldTag != newTag && !(oldTag.isEmpty() && newTag.isEmpty()))  //write the new tag only if it's changed
         {
-            #define lvi static_cast<PlaylistItem*>(lvi)
-
-            // update score in database, only
-            CollectionDB db;
-            db.setSongPercentage( lvi->url().path(), tag.toInt() );
-
-            #undef lvi
+            if ( column == PlaylistItem::Score )
+                // update score in database, only
+                CollectionDB().setSongPercentage( item->url().path(), newTag.toInt() );
+            else
+                m_weaver->append( new TagWriter( this, item, oldTag, newTag, column ), true );
         }
-        else
-            m_weaver->append( new TagWriter( this, (PlaylistItem *)lvi, tag, column ), true );
+
+        #undef item
     }
 
-    QListViewItem *below = lvi->itemBelow();
+    /*QListViewItem *below = lvi->itemBelow();
     //FIXME will result in nesting of this function?
     if ( below && below->isSelected() )
-        rename( below, column );
+        rename( below, column );*/
 }
 
 void Playlist::showTagDialog( QPtrList<QListViewItem> items )

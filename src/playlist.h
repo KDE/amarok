@@ -147,7 +147,6 @@ class Playlist : private KListView, public EngineObserver
         void switchState( QStringList&, QStringList& );
         void removeItem( PlaylistItem* );
         void refreshNextTracks( int=-1 );
-        void startEditTag( QListViewItem *, int );    //start inline tag editing with auto-completion
         void showTagDialog( QPtrList<QListViewItem> items );
 
         //engine observer functions
@@ -170,6 +169,7 @@ class Playlist : private KListView, public EngineObserver
         bool eventFilter( QObject*, QEvent* );
         void setSorting( int, bool=true );
         void setColumnWidth( int, int );
+        void rename( QListViewItem*, int );
         PlaylistItem *firstChild() const { return (PlaylistItem*)KListView::firstChild(); }
         PlaylistItem *lastItem() const { return (PlaylistItem*)KListView::lastItem(); }
 
@@ -196,7 +196,7 @@ class Playlist : private KListView, public EngineObserver
         uint         m_undoCounter;
 
         //text before inline editing ( the new tag is written only if it's changed )
-        QString m_editText;
+        QString m_editOldTag;
 
         KActionCollection* const m_ac;
 

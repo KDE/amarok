@@ -228,7 +228,7 @@ private:
 class TagWriter : public ThreadWeaver::Job
 {
 public:
-    TagWriter( QObject*, PlaylistItem*, const QString &newTag, const int );
+    TagWriter( QObject*, PlaylistItem*, const QString &oldTag, const QString &newTag, const int );
     bool doJob();
     void completeJob();
 private:
