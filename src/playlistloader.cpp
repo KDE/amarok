@@ -18,10 +18,11 @@
 #include <qfile.h>       //::loadPlaylist()
 #include <qfileinfo.h>
 #include <qlistview.h>
+#include <qmap.h>        //::recurse()
 #include <qtextstream.h> //::loadPlaylist()
 
-#include <dirent.h>      //::recurse()
-#include <sys/stat.h>
+#include <kapplication.h>
+#include <kdirlister.h>
 
 
 bool PlaylistLoader::s_stop = false;
@@ -32,12 +33,17 @@ PlaylistLoader::PlaylistLoader( const KURL::List &urls, QListView *parent, QList
     , m_marker( parent ? new PlaylistItem( KURL(), parent, after ) : 0 )
     , m_playFirstUrl( playFirstUrl )
     , m_db( new CollectionDB )
-{}
+    , m_dirLister( new KDirLister() )
+{
+    m_dirLister->setAutoUpdate( false );
+    m_dirLister->setAutoErrorHandlingEnabled( false, 0 );
+}
 
 PlaylistLoader::~PlaylistLoader()
 {
     s_stop = false;
     delete m_db;
+    delete m_dirLister;
 }
 
 void
@@ -60,24 +66,24 @@ PlaylistLoader::run()
     {
         const KURL &url = *it;
 
-        if( url.isLocalFile() )
-        {
-            const QString path = url.path();
+        // Read directory where this item located, in order to determine whether the item is a file
+        m_dirLister->openURL( url.upURL() );
 
-            if( QFileInfo( path ).isDir() ) { recurse( path ); continue; }
+        while ( !m_dirLister->isFinished() )
+            msleep( 100 );
 
-            if( loadPlaylist( path ) ) continue;
-
-            if( EngineController::canDecode( url ) ) item = createPlaylistItem( url );
-
-            else addBadURL( url );
+        if( m_dirLister->findByURL( url )->isDir() ) {
+            recurse( url );
+            continue;
         }
-        else if( isPlaylist( url ) )
-        {
-            //TODO
-        }
-        else if( EngineController::canDecode( url ) ) item = createPlaylistItem( url );
-        else addBadURL( url );
+
+        if( url.isLocalFile() && loadPlaylist( url.path() ) )
+            continue;
+
+        if( EngineController::canDecode( url ) )
+            item = createPlaylistItem( url );
+        else
+            addBadURL( url );
 
         if ( item ) m_needSecondPass |= !item->inCollection() || !item->hasAudioproperties();
         progress += increment;
@@ -157,71 +163,41 @@ PlaylistLoader::createPlaylistItem( const KURL &url, const QString &title, const
 }
 
 void
-PlaylistLoader::recurse( QString path )
+PlaylistLoader::recurse( const KURL &url )
 {
-    KURL url;
-    DIR *d = opendir( QFile::encodeName( path ) );
+        typedef QMap<QString, KURL> FileMap;
 
-    if( d )
-    {
-        QStringList dirs;
-        QStringList files;
-        struct stat statbuf;
+        KURL::List dirs;
+        FileMap files;
 
-        if( !path.endsWith( "/" ) ) path += '/';
+        m_dirLister->openURL( url );
 
-        for( dirent *ent; ( ent = readdir( d ) ) && !s_stop; )
-        {
-            if ( strcmp( ent->d_name, "." ) == 0 || strcmp( ent->d_name, ".." ) == 0 ) continue;
+        while ( !m_dirLister->isFinished() )
+            msleep( 100 );
 
-            const QString file = QFile::decodeName( ent->d_name );
-            const QString newPath = path + file;
-            const QCString localePath = QFile::encodeName( newPath );
+        KFileItem* item;
+        KFileItemList items = m_dirLister->items();
 
-            //get file information
-            if( lstat( localePath, &statbuf ) == 0 )
-            {
-                //check for these first as they are not mutually exclusive WRT dir/files
-                if( S_ISCHR( statbuf.st_mode ) ||
-                    S_ISBLK( statbuf.st_mode ) ||
-                    S_ISFIFO( statbuf.st_mode ) ||
-                    S_ISSOCK( statbuf.st_mode ) ) continue;
+        for ( item = items.first(); item; item = items.next() ) {
+            if ( item->url().fileName() == "." || item->url().fileName() == ".." )
+                continue;
+            if ( item->isFile() )
+                files[item->url().fileName()] = item->url();
+            if ( item->isDir() )
+                dirs << item->url();
+        }
 
-                if( S_ISDIR( statbuf.st_mode )/*FIXME && options.recurse */)  //is directory
-                {
-                    //FIXME if( !options.symlink && S_ISLNK( statbuf.st_mode ) ) continue;
-
-                    dirs += newPath;
-                }
-
-                else if( S_ISREG( statbuf.st_mode ) )  //is file
-                {
-                    url.setPath( newPath ); //safe way to do it for unix paths
-
-                    if ( EngineController::canDecode( url ) )
-                        files += newPath;
-                    else
-                        addBadURL( url );
-                }
-            } //if( LSTAT )
-        } //for
-
-        closedir( d );
-
-        //alpha-sort the files we found, and then post them to the playlist
-        files.sort();
-        const QStringList::ConstIterator end1 = files.end();
-        for ( QStringList::ConstIterator it = files.begin(); it != end1; ++it ) {
-            url.setPath( *it );
-            PlaylistItem* item = createPlaylistItem( url );
+        // Post files to the playlist
+        const FileMap::ConstIterator end1 = files.end();
+        for ( FileMap::ConstIterator it = files.begin(); it != end1; ++it ) {
+            PlaylistItem* item = createPlaylistItem( it.data() );
             m_needSecondPass |= !item->inCollection() || !item->hasAudioproperties();
         }
 
-        const QStringList::Iterator end2 = dirs.end();
-        for ( QStringList::Iterator it = dirs.begin(); it != end2; ++it )
+        // Recurse folders
+        const KURL::List::Iterator end2 = dirs.end();
+        for ( KURL::List::Iterator it = dirs.begin(); it != end2; ++it )
             recurse( *it );
-    } //if( d )
-    else { url.setPath( path ); addBadURL( url ); }
 }
 
 #include <kdebug.h>

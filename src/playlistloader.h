@@ -14,6 +14,7 @@
 class CollectionDB;
 class QListView;
 class QListViewItem;
+class KDirLister;
 
 class PlaylistLoader : public QThread
 {
@@ -68,7 +69,7 @@ protected:
     bool loadPlaylist( const QString&, Format );
 
 private:
-    void recurse( QString );
+    void recurse( const KURL& );
     PlaylistItem *createPlaylistItem( const KURL& );
     void addBadURL( const KURL &url ) { m_badURLs += url; }
 
@@ -82,6 +83,7 @@ private:
     bool m_playFirstUrl;
     CollectionDB* m_db;
     bool m_needSecondPass;
+    KDirLister* m_dirLister;
 
     typedef QPair<KURL,PlaylistItem*> Pair;
     typedef QValueList<Pair> List;
