@@ -493,13 +493,13 @@ CollectionView::listSelected() {
     {
         for ( item = firstChild(); item; item = item->nextSibling() )
             for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
-                if ( child->isSelected() )
+                if ( child->isSelected() && !child->parent()->isSelected() )
                     list << static_cast<Item*>( child ) ->url();
     }
     else {
         for ( item = firstChild(); item; item = item->nextSibling() )
             for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
-                if ( child->isSelected() )
+                if ( child->isSelected() && !child->parent()->isSelected() )
                 {
                     values.clear();
                     names.clear();
@@ -518,7 +518,7 @@ CollectionView::listSelected() {
     for ( item = firstChild(); item; item = item->nextSibling() )
         for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
             for ( QListViewItem* grandChild = child->firstChild(); grandChild; grandChild = grandChild->nextSibling() )
-                if ( grandChild->isSelected() )
+                if ( grandChild->isSelected() && !child->parent()->isSelected() && !child->isSelected() )
                     list << static_cast<Item*>( grandChild ) ->url();
 
     return list;
