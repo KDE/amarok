@@ -13,8 +13,6 @@ SHORT-TERM (URGENT):
 
   FIX 124 <muesli> Make CollectionBrowser independent of i18n.
 
-  FIX 122 <markey> Depend on GStreamer 0.8.1, since amaroK won't build with older versions any more.
-
   FIX 121 <markey> We should cut down on unnecessary/redundant debug output/warnings (noise).
 
   ADD 105 <markey> Make ArtsEngine depend not only on kdemultimedia-devel, but also on kdemultimedia,

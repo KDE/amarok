@@ -137,7 +137,7 @@ if test "$build_gstreamer" != "no"; then
         have_gst=no
     
         GST_MAJORMINOR=0.8
-        GST_REQ=0.8.0
+        GST_REQ=0.8.1
         
         KDE_PKG_CHECK_MODULES(GST, \
             gstreamer-$GST_MAJORMINOR >= $GST_REQ \

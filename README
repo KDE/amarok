@@ -42,7 +42,7 @@ recommended
     * OpenGL accelerated X-Server
             
 optional
-    * GStreamer-0.8 + Gst-Plugins-0.8
+    * GStreamer-0.8.1 + Gst-Plugins-0.8.1
       http://gstreamer.net
     
     * NMM 0.4.4
