@@ -140,7 +140,9 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
          AmarokConfig::titleStreaming() &&
          m_pEngine->streamingMode() != Engine::NoStreaming )
     {
+        delete m_stream;
         m_stream = new amaroK::StreamProvider( url, m_pEngine->streamingMode() );
+        
         if ( !m_stream->initSuccess() ) {
             delete m_stream;
             m_stream = 0;

@@ -87,6 +87,7 @@ class GstEngine : public Engine::Base
         QStringList                              getPluginList( const QCString& classname );
         
         GstElement*                              createElement( const QCString& factoryName, GstElement* bin = 0, const QCString& name = 0 );
+        void                                     stopNow();
         void                                     cleanPipeline();
         void                                     interpolate( const Engine::Scope& inVec, Engine::Scope& outVec );
     

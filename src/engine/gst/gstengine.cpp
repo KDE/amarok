@@ -294,14 +294,12 @@ GstEngine::configure() const
 bool
 GstEngine::load( const KURL& url, bool stream )  //SLOT
 {
+    stopNow();
     Engine::Base::load( url, stream );
     kdDebug() << "Gst-Engine: url.url() == " << url.url() << endl;
     
     bool isUade = false;
     if ( url.fileName().endsWith( UADE_EXT ) ) isUade = true;
-    
-    m_fadeValue = 0.0;
-    if ( m_pipelineFilled ) cleanPipeline();
 
     kdDebug() << "Thread scheduling priority: " << GstConfig::threadPriority() << endl;
     kdDebug() << "Sound output method: " << GstConfig::soundOutput() << endl;
@@ -404,21 +402,14 @@ GstEngine::stop()  //SLOT
         // Not fading --> start fade now
         m_fadeValue = 1.0;
     }
-    else {        
-        // Already fading --> stop now
-        m_fadeValue = 0.0;
-        cleanPipeline();
-        
-        if ( m_transferJob ) {
-            m_transferJob->kill();
-            m_transferJob = 0;
-        }
-    }    
+    else
+        // Fading --> stop playback
+        stopNow();        
     
     emit stateChanged( Engine::Empty );
 }
-
-
+                
+    
 void
 GstEngine::pause()  //SLOT
 {
@@ -634,6 +625,19 @@ GstEngine::createElement( const QCString& factoryName, GstElement* bin, const QC
     }
 
     return element;
+}
+
+
+void
+GstEngine::stopNow()
+{    
+    m_fadeValue = 0.0;
+    cleanPipeline();
+    
+    if ( m_transferJob ) {
+        m_transferJob->kill();
+        m_transferJob = 0;
+    }
 }
 
 
