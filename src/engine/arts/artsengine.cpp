@@ -193,8 +193,8 @@ bool ArtsEngine::init()
 
     if ( m_server.isNull() )
     {
-        KMessageBox::error( 0, i18n( "Cannot start aRts. Exiting." ), i18n( "Fatal Error" ) );
-        ::exit( 1 );
+        KMessageBox::error( 0, i18n( "Cannot start aRts. You must use another engine." ), i18n( "Fatal Error" ) );
+        return false;
     }
 
     { //amanPlay
@@ -214,8 +214,8 @@ bool ArtsEngine::init()
                                       "If that does not work then amaroK was probably installed with the wrong prefix; "
                                       "please re-configure amaroK using:"
                                       "<pre>./configure --prefix=`kde-config --prefix` && su -c \"make install\"</pre>" ),
-                                i18n( "Fatal Error" ) );
-            ::exit( EXIT_SUCCESS );
+                                i18n( "amaroK Error" ) );
+            return false;
         }
 
         m_xfade.percentage( m_xfadeValue );
