@@ -172,13 +172,15 @@ amaroK::Plugin *EngineController::loadEngine( const QString &engineName )
        if( !plugin ) {
           KMessageBox::error( 0, i18n(
             "<p>amaroK could not find any sound-engine plugins. "
-            "It is likely that amaroK is installed under the wrong prefix, please fix your installation using:<pre>"
+            "Please run <i>kbuildsycoca</i> on the shell, then restart amaroK.</p>"
+            "<p>If this does not help, "
+            "it is likely that amaroK is installed under the wrong prefix, please fix your installation using:<pre>"
             "$ cd /path/to/amarok/source-code/<br>"
             "$ su -c \"make uninstall\"<br>"
             "$ ./configure --prefix=`kde-config --prefix` && su -c \"make install\"<br>"
             "$ kbuildsycoca<br>"
             "$ amarok</pre>"
-            "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net." ) );
+            "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net.</p>" ) );
 
           ::exit( EXIT_SUCCESS );
        }
