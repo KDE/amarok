@@ -80,13 +80,6 @@ PlayerApp::PlayerApp()
     setName( "amarok" );
     pApp = this; //global
 
-    if ( AmarokConfig::showSplashscreen() ) {
-        m_pOSD->showSplash( locate( "data", "amarok/images/logo_splash.png" ) );
-        //<mxcl> is there any events to process? I know newInstance is triggered by an event,
-        //is it safe to do this because newInstance() expects the playlist to exist!
-        kapp->processEvents();
-    }
-
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
     initPlayerWidget();
@@ -97,28 +90,25 @@ PlayerApp::PlayerApp()
     m_pPlayerWidget->installEventFilter( this );
 
     readConfig();
-
+    initIpc();   //initializes Unix domain socket for loader communication, will also hide the splash
+    
     //after this point only analyzer pixmaps will be created
     QPixmap::setDefaultOptimization( QPixmap::BestOptim );
-
+    
     applySettings();  //will create the engine
 
     //restore session as long as the user isn't asking for stuff to be inserted into the playlist etc.
     KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
     if( args->count() == 0 || args->isSet( "enqueue" ) ) restoreSession(); //resume playback + load prev PLS
 
-    m_pOSD->removeOSD();
     //TODO remember if we were in tray last exit, if so don't show!
     
-    initIpc();   //initializes Unix domain socket for loader communication, will also hide the splash
     m_pPlayerWidget->show(); //BrowserWin will sponaneously show if appropriate
 
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
     connect( m_pAnimTimer, SIGNAL( timeout() ), m_pPlayerWidget, SLOT( drawScroll() ) );
-
     //process some events so that the UI appears and things feel more responsive
     kapp->processEvents();
-
     //start timers
     m_pMainTimer->start( MAIN_TIMER );
 
@@ -206,6 +196,36 @@ void PlayerApp::handleCliArgs( KCmdLineArgs* args )
     args->clear();    //free up memory
 }
 
+//SLOT
+void PlayerApp::handleLoaderArgs( const QCString& args )
+{
+    //Unfortunately, we must do some ugly string parsing here, since there is (apparently) no way
+    //to re-initialize KCmdLineArgs --> FIXME
+
+    QString data = args;
+    KURL::List list;
+    bool notEnqueue = !data.contains( "-e" );
+    QString str;
+        
+    for ( int i = 0;; ++i ) {
+        str = data.section( " ", i, i );
+        if ( str.isEmpty() )
+            break;
+        if ( !str.startsWith( "-" ) )
+            list << str;
+    }
+    //add to the playlist with the correct arguments ( bool clear, bool play )
+    m_pBrowserWin->insertMedia( list, notEnqueue, notEnqueue || data.contains( "-p" ) );
+
+    if ( data.contains( "-s" ) )
+        pApp->slotStop();
+    if ( data.contains( "-p" ) ) //will restart if we are playing
+        pApp->slotPlay();
+    if ( data.contains( "-f" ) )
+        pApp->slotNext();
+    if ( data.contains( "-r" ) )
+        pApp->slotPrev();
+}
 
 /////////////////////////////////////////////////////////////////////////////////////
 // INIT
@@ -248,6 +268,9 @@ void PlayerApp::initIpc()
 
     LoaderServer* server = new LoaderServer( this );
     server->setSocket( m_sockfd );
+    
+    connect( server, SIGNAL( loaderArgs( const QCString& ) ),
+             this,   SLOT( handleLoaderArgs( const QCString& ) ) );
 }
 
 
@@ -805,8 +828,10 @@ void LoaderServer::newConnection( int sockfd )
     else
     {
         buf[nbytes] = '\000';
-        QCString result = buf;
+        QCString result( buf ); 
         qDebug( result );
+        
+        emit loaderArgs( result );
     }
 
     ::close( sockfd );

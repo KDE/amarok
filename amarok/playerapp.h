@@ -37,6 +37,7 @@ class PlayerWidget;
 class PlaylistItem;
 
 class QColor;
+class QCString;
 class QEvent;
 class QListView;
 class QListViewItem;
@@ -98,6 +99,7 @@ class PlayerApp : public KApplication
         void slotShowOptions();
 
     private slots:
+        void handleLoaderArgs( const QCString& args );
         void applySettings();
         void loaderMessage();
         void proxyError();
@@ -142,9 +144,14 @@ class PlayerApp : public KApplication
 
 class LoaderServer : public QServerSocket
 {
+    Q_OBJECT
+    
     public:
         LoaderServer( QObject* parent );
         
+    signals:
+        void loaderArgs( const QCString& );
+    
     private :   
         void newConnection( int socket );
 };

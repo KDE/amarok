@@ -47,15 +47,17 @@ Loader::Loader( int& argc, char** argv )
             showSplash();
         
         QProcess* proc = new QProcess( this );
-        proc->addArgument( "amarok" );
+        proc->addArgument( "amarokapp" );
         //hand arguments through to amaroK
         for ( int i = 1; i < m_argc; i++ )
             proc->addArgument( m_argv[i] );
         proc->start();
         
         //wait until LoaderServer starts (== amaroK is up and running)
-        while( ( sockfd = tryConnect() ) == -1 )
-            ::usleep( 500 * 1000 );    //==500ms                    
+        while( ( sockfd = tryConnect() ) == -1 ) {
+            processEvents();
+            ::usleep( 200 * 1000 );    //== 200ms                    
+        }
     }
     else {
         //yes, amaroK is running -> transmit new command line args to the LoaderServer
@@ -125,6 +127,7 @@ void Loader::showSplash()
     
     m_pOsd = new OSDWidget;
     m_pOsd->showSplash( path );
+    processEvents();
 }
     
 
