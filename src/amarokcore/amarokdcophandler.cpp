@@ -325,7 +325,18 @@ namespace amaroK
         AmarokConfig::setContextBrowserStyleSheet( msg );
         ContextBrowser::instance()->setStyleSheet();
     }
-
+    void DcopPlayerHandler::setEqualizer(int preamp, int band60, int band170, int band310, 
+        int band600, int band1k, int band3k, int band6k, int band12k, int band14k, int band16k)
+    {
+        QValueList<int> gains;
+        gains << band60 << band170 << band310 << band600 << band1k 
+            << band3k << band6k << band12k << band14k << band16k;
+        AmarokConfig::setEqualizerGains( gains ); 
+        AmarokConfig::setEqualizerPreamp( preamp );
+        EngineController::engine()->setEqualizerParameters(preamp, gains);
+        if (EqualizerSetup::isInstantiated())
+            EqualizerSetup::instance()->updateSliders(preamp,gains);
+    }
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopPlaylistHandler
 /////////////////////////////////////////////////////////////////////////////////////

@@ -105,6 +105,16 @@ EqualizerSetup::~EqualizerSetup()
     s_instance = 0;
 }
 
+void
+EqualizerSetup::updateSliders(int preamp, QValueList<int> gains)
+{
+    m_slider_preamp->setValue(preamp);
+    for ( uint i = 0; i < m_bandSliders.count(); i++ )
+    {
+        m_bandSliders.at(i)->setValue((*gains.at(i)));
+    }
+    m_equalizerGraph->update();
+}
 
 /////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SLOTS

@@ -4,11 +4,12 @@ amaroK ChangeLog
 
 
 VERSION 1.2.2:
+  ADD: New DCOP call player: setEqualizer(preamp, the 10 eq settings)
   FIX: GStreamer-engine can now play vorbis radio streams properly, with
        full metadata support. (BR 89821)
   FIX: GStreamer-engine now uses the "decodebin" autoplugger, which fixes
        the lag issues that some users had during crossfading. (BR 99570)
-
+  
 VERSION 1.2.1:
   FIX: Made the Tag-Editor only operate on visible items. (BR 100268)
   ADD: Database settings added to the first-run wizard.
@@ -27,7 +28,7 @@ VERSION 1.2.1:
   FIX: Directory column in the playlist was eating the first letter.
   ADD: New DCOP call "playlist: setStopAfterCurrent(bool)". (BR 99944)
   FIX: Coverfetcher: Do not crash when no cover was found. (BR 99942)
-  FIX: Support for amazon.co.jp was broken.
+  ADD: Support for amazon.co.jp cover fetching
   CHG: Toolbar items reordered for optimal usability, as suggested by
        Aaron "Tom Green" Seigo.
   FIX: Show covers for albums containing chars '#' or '?'. (BR 96971 99780)

@@ -86,6 +86,7 @@ k_dcop:
    virtual void enableOSD(bool enable) = 0;                 ///< Switch OSD display on or off.
    virtual void showOSD() = 0;                              ///< Show the OSD display on the screen.
    virtual void setContextStyle(const QString& ) =0;        ///< Set the CSS style for the context browser
+   virtual void setEqualizer(int, int, int, int, int, int, int, int, int, int, int) =0;      ///< Set the equalizer bands
 
    virtual void transferCliArgs( QStringList args ) = 0;
 };

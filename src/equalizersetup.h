@@ -31,9 +31,12 @@ class EqualizerSetup : public QVBox
 
     public:
         static EqualizerSetup* instance() { return s_instance ? s_instance : new EqualizerSetup(); }
+        static bool isInstantiated() { return s_instance ? true : false; }
 
         EqualizerSetup();
        ~EqualizerSetup();
+        //for use by DCOP to update GUI
+        void updateSliders(int, QValueList<int>);
 
     private slots:
         void setEqualizerEnabled( bool );
