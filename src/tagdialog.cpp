@@ -13,12 +13,12 @@
 #include <taglib/tfile.h>
 #include <taglib/tstring.h>
 
-#include <qapplication.h>
 #include <qfile.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
 #include <qtooltip.h>
 
+#include <kapplication.h>
 #include <kcombobox.h>
 #include <kcursor.h>
 #include <kdebug.h>
@@ -47,6 +47,7 @@ TagDialog::TagDialog( const KURL::List list, QWidget* parent )
     , m_urlList( list )
     , m_currentCover( 0 )
 {
+    setCaption( kapp->makeStdCaption( i18n( "Meta Information (Multiple Files)" ) ) );
     init();
 }
 

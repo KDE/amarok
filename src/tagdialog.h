@@ -1,4 +1,5 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
+// (c) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>
 // See COPYING file for licensing information.
 
 #ifndef AMAROK_TAGDIALOG_H
