@@ -225,7 +225,6 @@ void PlaylistItem::setText( int column, const QString &newText )
     case Artist:
     case Album:
     case Genre:
-    case Year: //TODO check this doesn't hog the store
     case Directory:
 
         //these are good candidates for the stringStore
@@ -239,9 +238,10 @@ void PlaylistItem::setText( int column, const QString &newText )
         break;
     
     case Track:
-        KListViewItem::setText( Track, newText == "0" ? QString::null : newText );
+    case Year:
+        KListViewItem::setText( column, newText == "0" ? QString::null : newText );
         break;
-
+    
     default:
         KListViewItem::setText( column, newText );
         break;
