@@ -21,12 +21,15 @@
 #include <qobject.h>
 #include "amarokdcopiface.h"
 
-class AmarokDcopHandler : public QObject, virtual public AmarokIface
+namespace amaroK
+{
+
+class DcopHandler : public QObject, virtual public AmarokIface
 {
       Q_OBJECT
 
    public:
-      AmarokDcopHandler();
+      DcopHandler();
       void setNowPlaying( const QString & );
 //      void setTrackTotalTime( int );
 
@@ -53,5 +56,7 @@ class AmarokDcopHandler : public QObject, virtual public AmarokIface
       QString m_nowPlaying; /* state for nowPlaying() */
 //      int m_trackTotalTime;
 };
+
+}
 
 #endif
