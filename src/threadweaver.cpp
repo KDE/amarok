@@ -16,11 +16,11 @@
 
 #include <kapplication.h>
 #include <kdebug.h>
-#include <kfilemetainfo.h>
 
+#include <taglib/tstring.h>
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
-#include <taglib/tstring.h>
+
 
 
 static inline const TagLib::String LocaleAwareTString( const QString &s )
@@ -147,30 +147,14 @@ TagReader::~TagReader()
 bool
 TagReader::doJob()
 {
-    if ( m_url.protocol() == "file" ) {
-        m_tags = readTags( m_url );
+    //TODO move this check to the playlist
+    if( m_url.isLocalFile() )
+    {
+        m_tags = new MetaBundle( m_url );
         return true;
     }
 
     return false;
-}
-
-MetaBundle*
-TagReader::readTags( const KURL &url, bool /*readAudioProps */ )  //STATIC
-{
-    //audioproperties are no longer read on demand
-    TagLib::FileRef f( url.path().local8Bit(), true /*readAudioProps*/, TagLib::AudioProperties::Fast ); //this is the slow step
-
-    if ( !f.isNull() )
-        return new MetaBundle( url, f.tag(), f.audioProperties() );
-    else {
-        //TODO is this threadsafe?
-        KFileMetaInfo info ( url );
-        if ( info.isValid() )
-            return new MetaBundle( url, info );
-    }
-
-    return 0;
 }
 
 void
@@ -178,7 +162,7 @@ TagReader::bindTags()
 {
     //for GUI access only
     //we're a friend of PlaylistItem
-    if ( m_tags ) m_item->setText( *m_tags );
+    if( m_tags ) m_item->setText( *m_tags );
 }
 
 
@@ -336,25 +320,25 @@ CollectionReader::readTags( const QStringList& entries )
         TagLib::FileRef f( QFile::encodeName( url.path() ), false );  //false == don't read audioprops
 
         if ( !f.isNull() ) {
-            MetaBundle * bundle = new MetaBundle( url, f.tag(), 0 );
+            MetaBundle bundle( url, f.tag(), 0 );
 
             QString command = "INSERT INTO tags_temp "
                               "( url, dir, createdate, album, artist, genre, title, year, comment, track ) "
                               "VALUES('";
 
-            command += m_parent->escapeString( bundle->url().path() ) + "','";
-            command += m_parent->escapeString( bundle->url().directory() ) + "',";
+            command += m_parent->escapeString( bundle.url().path() ) + "','";
+            command += m_parent->escapeString( bundle.url().directory() ) + "',";
             command += "strftime('%s', 'now'),";
-            command += m_parent->escapeString( QString::number( m_parent->getValueID( "album", bundle->album(), true, !m_incremental ) ) ) + ",";
-            command += m_parent->escapeString( QString::number( m_parent->getValueID( "artist", bundle->artist(), true, !m_incremental ) ) ) + ",";
-            command += m_parent->escapeString( QString::number( m_parent->getValueID( "genre", bundle->genre(), true, !m_incremental ) ) ) + ",'";
-            command += m_parent->escapeString( bundle->title() ) + "','";
-            command += m_parent->escapeString( QString::number( m_parent->getValueID( "year", bundle->year(), true, !m_incremental ) ) ) + "','";
-            command += m_parent->escapeString( bundle->comment() ) + "','";
-            command += m_parent->escapeString( bundle->track() ) + "');";
+            command += m_parent->escapeString( QString::number( m_parent->getValueID( "album", bundle.album(), true, !m_incremental ) ) ) + ",";
+            command += m_parent->escapeString( QString::number( m_parent->getValueID( "artist", bundle.artist(), true, !m_incremental ) ) ) + ",";
+            command += m_parent->escapeString( QString::number( m_parent->getValueID( "genre", bundle.genre(), true, !m_incremental ) ) ) + ",'";
+            command += m_parent->escapeString( bundle.title() ) + "','";
+            command += m_parent->escapeString( QString::number( m_parent->getValueID( "year", bundle.year(), true, !m_incremental ) ) ) + "','";
+            command += m_parent->escapeString( bundle.comment() ) + "','";
+            command += m_parent->escapeString( bundle.track() ) + "');";
 
             m_parent->execSql( command );
-            delete bundle;
+
         } else {
             // Add images to the cover database
             if ( validExtensions.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ) ) )
@@ -382,60 +366,6 @@ CollectionReader::readTags( const QStringList& entries )
     m_parent->execSql( "END TRANSACTION;" );
 
     kdDebug() << "END " << k_funcinfo << endl;
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// CLASS AudioPropertiesReader
-//////////////////////////////////////////////////////////////////////////////////////////
-
-AudioPropertiesReader::AudioPropertiesReader( QObject *o, PlaylistItem *pi )
-        : Job( o )
-        , m_item( pi )
-        , m_listView( static_cast<QListViewItem *>( pi ) ->listView() )
-        , m_url( pi->url() )
-{
-    //TODO derive this from TagReader?
-}
-
-bool
-AudioPropertiesReader::doJob()
-{
-    //TODO it is probably safer to record the itemPos in the ctor and check here with listview->itemAt()
-    //TODO it is probably more efficient to do this with less specifity, i.e. when view scrolls put a job
-    //     in to read tags for visible items, and then get this function to get the visible items for that moment
-
-    int y = m_item->itemPos(); //const //FIXME slow function!
-    int h = m_item->height();  //const
-    int y2 = m_listView->contentsY(); //TODO find out the performance of this function
-    if ( ( y + h ) >= y2 && y <= ( y2 + m_listView->visibleHeight() ) ) {
-        //This is a quick scan
-        //A more accurate scan is done when the track is played, and those properties are recorded with the track
-        TagLib::FileRef f( QFile::encodeName( m_url.path() ), true, TagLib::AudioProperties::Fast );
-        int length = MetaBundle::Unavailable;
-        int bitrate = MetaBundle::Unavailable;
-
-        if ( !f.isNull() ) {
-            //FIXME do we need to check the ap pointer? Seems to have not crashed so far..
-            TagLib::AudioProperties * ap = f.audioProperties();
-            length = ap->length();
-            bitrate = ap->bitrate();
-        }
-
-        m_length = MetaBundle::prettyLength( length );
-        m_bitrate = MetaBundle::prettyBitrate( bitrate );
-
-        return true;
-    }
-
-    return false;
-}
-
-void
-AudioPropertiesReader::completeJob()
-{
-    m_item->setText( PlaylistItem::Length, m_length );
-    m_item->setText( PlaylistItem::Bitrate, m_bitrate );
 }
 
 
@@ -512,7 +442,7 @@ TagWriter::completeJob()
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS PLStats
 //////////////////////////////////////////////////////////////////////////////////////////
-
+#if 0
 PLStats::PLStats( QObject *o, const KURL &u, const KURL::List &ul )
         : Job( o, Job::PLStats )
         , m_url( u )
@@ -535,5 +465,5 @@ PLStats::doJob()
 
     return true;
 }
-
+#endif
 //yes! no moc! There are no Q_OBJECTS

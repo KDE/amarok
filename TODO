@@ -20,12 +20,7 @@ SHORT-TERM (URGENT):
                    since arts itself contains these crappy decoders and ppl come complain about bad sound.
                    Update: Would be even better to detect the mpeglib arts-plugins directly, since some
                    distros offer them as a sperate package.
-                     
-  FIX 101 <mxcl>   We need to update the tooltip for 1.0, especially the drag back to FileBrowser bit.
-         
-  ADD  97 <mxcl>   If you hold CTRL when dropping to pl it has a plus sign but drops at cursor, but shift drops
-                   at bottom of pl, but has no icon on drag cursor.
- 
+
   FIX     <mxcl>   Xmmswrapper requires gtk headers and gdk headers unfortunately, without build  fails :(
 
 
@@ -61,7 +56,7 @@ MID-TERM:
                    another file from that folder for the next few minutes. what about hdd
                    sleep-timeouts? opinions?
 
-  CHG  78 <unknown>Determine some behavior for the clear/shuffle/etc. buttons when a search is in action
+  CHG  78 <mxcl>   Determine some behavior for the clear/shuffle/etc. buttons when a search is in action
                    clear   -> only clear the stuff that was searched for?
                    shuffle -> stop the search and do normal shuffle?
                    ADDitionally what to do when user rearranges a set of items that are the search result?
@@ -88,7 +83,7 @@ MID-TERM:
   FIX              Add dirs to combo history when user adds a track from that dir to the playlist.
 
   ADD              "Show playlist" to the right click menu, redundant but necessary.
- 
+
   ADD              More KTips, better KTips, somehow use the "Did you know" tip dialog (eg kmail, gideon, etc.) -->mxcl
 
   ADD              History to add dialog, or implement better system for adding urls etc.
@@ -106,7 +101,7 @@ MID-TERM:
                    the directory. imagine you're in the root directory of some filesystem, and want to add all
                    files in it.. currently you'd have to select all files manually.
 
-      
+
 LONG-TERM:
 
   ADD  93 <markey> New engine: using ALSA (maybe OSS, too) and XMMS plugins for decoding.
@@ -145,7 +140,7 @@ LONG-TERM:
 
 
 IDEAS:
-  
+
   ADD  12 <markey> Prevent zombie processes after amarok has exited (proper exit or crashing).
                    such zombies can lead to very weird behaviour on next amarok start and eat ressources,
                    and the user has no chance of noticing what's wrong.

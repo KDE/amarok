@@ -44,11 +44,8 @@
 #include <qpainter.h>
 #include <qpen.h>    //slotGlowTimer()
 #include <qtimer.h>
-#include <X11/Xlib.h>        //contentsDragMoveEvent
 
-#include <taglib/fileref.h>
-#include <taglib/tag.h>
-#include <taglib/tstring.h>
+#include <X11/Xlib.h> //ControlMask in contentsDragMoveEvent()
 
 
 Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
@@ -760,7 +757,7 @@ void Playlist::activate( QListViewItem *lvi, bool rememberTrack ) //SLOT
         m_cachedTrack = item;
 
         //tell the engine to play the new track
-        EngineController::instance()->play( item->metaBundle() );
+        EngineController::instance()->play( MetaBundle( item ) );
 
     } else {
 
@@ -785,7 +782,9 @@ void Playlist::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
         //if the track hasn't changed then we should update the meta data for the item
         m_currentTrack->setText( bundle );
 
+        return;
     }
+
     if( !m_cachedTrack || m_cachedTrack->url() != bundle.url() )
     {
         //FIXME most likely best to start at currentTrack() and be clever
@@ -793,8 +792,8 @@ void Playlist::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
              m_cachedTrack && m_cachedTrack->url() != bundle.url();
              m_cachedTrack = m_cachedTrack->nextSibling() );
     }
-    if ( trackChanged )
-        setCurrentTrack( m_cachedTrack );
+
+    setCurrentTrack( m_cachedTrack );
 }
 
 
@@ -823,7 +822,7 @@ void Playlist::engineStateChanged( EngineBase::EngineState state )
         m_ac->action( "playlist_show" )->setEnabled( false );
 
         //don't leave currentTrack in undefined glow state
-        Glow::counter = Glow::STEPS * 2;
+        Glow::counter = 0;
         if ( currentTrack() ) currentTrack()->invalidateHeight();
         slotGlowTimer();
 
@@ -1109,9 +1108,10 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
         if( below && below->isSelected() && item->exactText( col ) != i18n( "Writing tag..." ) )
         {
             //we disable Fill-Down when the current cell is having it's tag written
+            //because it fills-down "Writing-Tag..." instead
             //but it's a hack that needs to be improved
 
-            popup.insertItem( i18n( "Spreadsheet-style fill down", "&Fill-down this tag" ), FILL_DOWN );
+            popup.insertItem( i18n( "Spreadsheet-style fill down", "&Fill-down Tag" ), FILL_DOWN );
         }
     }
     popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy Trackname" ), 0, 0, CTRL+Key_C, COPY );
@@ -1143,9 +1143,7 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
         break;
 
     case VIEW:
-        if ( !showTrackInfo( item->url() ) )
-            //fallback when no meta info available for this URL
-            showTrackInfo( item );
+        showTrackInfo( MetaBundle( item ) );
         break;
 
     case EDIT:
@@ -1191,39 +1189,19 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
 }
 
 
-bool Playlist::showTrackInfo( const KURL& url ) //STATIC
+void Playlist::showTrackInfo( const KURL& url ) //STATIC
 {
-    MetaBundle mb;
-    TagLib::FileRef f( url.path().local8Bit(), true /*readAudioProps*/, TagLib::AudioProperties::Fast );
-
-    if ( !f.isNull() )
-        mb = MetaBundle::MetaBundle( url, f.tag(), f.audioProperties() );
-    else
-    {
-        KFileMetaInfo info( url, QString::null, KFileMetaInfo::Everything );
-        if ( info.isValid() )
-            mb = MetaBundle::MetaBundle( url, info );  
-        else
-            return false;
-    }
-
-    showTrackInfoDlg( mb );
-    return true;
+    showTrackInfo( MetaBundle( url ) );
 }
 
 
-void Playlist::showTrackInfo( PlaylistItem* item ) //STATIC
+#include "app.h" //FIXME sucks including this header just for here! move this function to separate module
+void Playlist::showTrackInfo( const MetaBundle& mb ) //STATIC
 {
-    MetaBundle mb( item );
-    showTrackInfoDlg( mb );
-}
+    const QString body = "<tr><td>%1</td><td>%2</td></tr>";
 
-
-void Playlist::showTrackInfoDlg( const MetaBundle& mb ) //STATIC
-{
-    QString str  = "<html><body><table width=\"100%\" border=\"1\">";
-    QString body = "<tr><td>%1</td><td>%2</td></tr>";
-
+    QString
+    str  = "<html><body><table width=\"100%\" border=\"1\">";
     str += body.arg( i18n( "Title" ),      mb.title() );
     str += body.arg( i18n( "Artist" ),     mb.artist() );
     str += body.arg( i18n( "Album" ),      mb.album() );
@@ -1233,10 +1211,10 @@ void Playlist::showTrackInfoDlg( const MetaBundle& mb ) //STATIC
     str += body.arg( i18n( "Length" ),     mb.prettyLength() );
     str += body.arg( i18n( "Bitrate" ),    mb.prettyBitrate() );
     str += body.arg( i18n( "Samplerate" ), mb.prettySampleRate() );
-    str += body.arg( i18n( "Location" ),   mb.url().path() );
+    str += body.arg( i18n( "Location" ),   mb.url().isLocalFile() ? mb.url().path() : mb.url().url() );
+    str += "</table></body></html>";
 
-    str.append( "</table></body></html>" );
-    KMessageBox::information( 0, str, i18n( "Meta Information" )  );
+    KMessageBox::information( pApp->mainWindow(), str, i18n( "Meta Information" ) );
 }
 
 
@@ -1355,6 +1333,7 @@ void Playlist::slotTextChanged( const QString &query ) //SLOT
     showCurrentTrack();
     clearSelection(); //we do this because QListView selects inbetween visible items, this is a non ideal solution
     triggerUpdate();
+
 }
 
 
@@ -1380,13 +1359,6 @@ void Playlist::writeTag( QListViewItem *lvi, const QString &tag, int col ) //SLO
     //FIXME will result in nesting of this function?
     if( below && below->isSelected() ) { rename( below, col ); }
 }
-
-
-void Playlist::readAudioProperties( PlaylistItem *pi )
-{
-    if( AmarokConfig::showMetaInfo() ) m_weaver->append( new AudioPropertiesReader( this, pi ) );
-}
-
 
 
 // PRIVATE EVENTS =======================================================

@@ -23,35 +23,16 @@
 
 #include <qstringlist.h>     //stack allocated
 #include <qptrlist.h>        //stack allocated
-#include <qmap.h>            //stack allocated
 #include <klistview.h>       //baseclass
 #include <kurl.h>            //KURL::List
 #include <qdir.h>            //stack allocated
 
-class QColor;
-class QCustomEvent;
-class QDragEnterEvent;
-class QDragLeaveEvent;
-class QDragMoveEvent;
-class QDropEvent;
-class QEvent;
-class QFocusEvent;
-class QKeyEvent;
-class QListViewItem;
-class QPalette;
-class QPaintEvent;
-class QPoint;
-class QRect;
-class QString;
-class QTimer;
-
 class KAction;
 class KActionCollection;
-
 class MetaBundle;
-//class PlaylistBrowser;
 class PlaylistItem;
 class PlaylistLoader;
+class QTimer;
 class ThreadWeaver;
 
 
@@ -108,8 +89,8 @@ class Playlist : private KListView, public EngineObserver
         //static
         static const int NO_SORT = 200;
         static QString defaultPlaylistPath();
-        static bool showTrackInfo( const KURL& url );
-        static void showTrackInfo( PlaylistItem* item );
+        static void showTrackInfo( const KURL& url );
+        static void showTrackInfo( const MetaBundle& bundle );
 
         //enums, typedefs and friends
         enum RequestType { Prev = -1, Current = 0, Next = 1 };
@@ -156,16 +137,12 @@ class Playlist : private KListView, public EngineObserver
         void insertMediaInternal( const KURL::List&, PlaylistItem*, bool directPlay = false );
         bool saveState( QStringList& );
         void switchState( QStringList&, QStringList& );
-        void readAudioProperties( PlaylistItem* );
         void removeItem( PlaylistItem* );
         void refreshNextTracks( int=-1 );
 
         //engine observer functions
         void engineNewMetaData( const MetaBundle&, bool );
         void engineStateChanged( EngineBase::EngineState );
-
-// STATIC        
-        static void showTrackInfoDlg( const MetaBundle& bundle );
 
 // REIMPLEMENTED ------
         void contentsDropEvent( QDropEvent* );
@@ -202,7 +179,7 @@ class Playlist : private KListView, public EngineObserver
         QTimer*       const m_glowTimer;
         ThreadWeaver* const m_weaver;
         int           m_firstColumn;
-        
+
         KAction *m_undoButton;
         KAction *m_redoButton;
         KAction *m_clearButton;

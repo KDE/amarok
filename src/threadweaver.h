@@ -121,8 +121,6 @@ public:
     ~TagReader();
 
     bool doJob();
-    static MetaBundle* readTags( const KURL&, bool = false );
-
     void bindTags();
 
 private:

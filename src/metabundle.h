@@ -31,7 +31,7 @@ public:
 
     //these shouldn't be used if possible!
     MetaBundle() { init(); }
-    MetaBundle( const KURL &u ) : m_url( u ) { init(); }
+    MetaBundle( const KURL &u ) : m_url( u ) { readTags(); }
 
     //TitleProxy:
     MetaBundle( const QString& title,
@@ -42,18 +42,12 @@ public:
                 const QString& streamUrl );
 
     //PlaylistItems:
-    MetaBundle( const PlaylistItem *item, const KFileMetaInfo& info );
-
-    //PlaylistItems:
     MetaBundle( const PlaylistItem *item );
-    
+
     //From tags:
     MetaBundle( const KURL &url, TagLib::Tag *tag, TagLib::AudioProperties *ap = 0 );
 
-    //From KFileMetaInfo:
-    MetaBundle( const KURL &url, const KFileMetaInfo& info );
 
-    
     MetaBundle &readTags( bool audioProperties = true );
 
 

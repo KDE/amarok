@@ -144,15 +144,7 @@ MetaBundle PlaylistItem::metaBundle()
     //This function isn't called often (on play request), but playlists can contain
     //thousands of items. So favor saving memory over CPU.
 
-    //TODO <markey> we should deprecate this method, it seems out of place
-    
-    KFileMetaInfo info( m_url, QString::null, KFileMetaInfo::Everything );
-    MetaBundle bundle( this, info );  
-    
-    setText( Length,  bundle.prettyLength()  );
-    setText( Bitrate, bundle.prettyBitrate() );
-    
-    return bundle;
+    return MetaBundle( this );
 }
 
 

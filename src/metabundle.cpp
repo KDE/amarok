@@ -42,51 +42,54 @@ MetaBundle::MetaBundle( const QString& title,
                         const QString& /*streamName*/,
                         const QString& streamUrl )
   : m_url       ( streamUrl )
-  , m_title     ( url + QString( " -- " ) + title )
+  , m_title     ( /*url + QString( " -- " ) + */title )
   , m_genre     ( genre )
   , m_bitrate   ( bitrate )
-  , m_length    ( Undetermined )
-  , m_sampleRate( Undetermined )
+  , m_length    ( Irrelevant )
+  , m_sampleRate( Unavailable )
 {}
-
-//PlaylistItem ctor
-MetaBundle::MetaBundle( const PlaylistItem *item, const KFileMetaInfo& info )
-  : m_url(     item->url() )
-  
-  , m_title(   item->title() )        //because you override text()
-  , m_artist(  item->exactText( 2 ) ) //because you override text()
-  , m_album(   item->exactText( 3 ) ) //etc.
-  , m_year(    item->exactText( 4 ) ) //..
-  , m_comment( item->exactText( 5 ) ) //.
-  , m_genre(   item->exactText( 6 ) )
-  , m_track(   item->exactText( 7 ) )
-{
-    init( info );
-}
 
 //PlaylistItem ctor
 MetaBundle::MetaBundle( const PlaylistItem *item )
-  : m_url       ( item->url() )
-  , m_title     ( item->title() )         //because you override text()
-  , m_artist    ( item->exactText(  2 ) ) //because you override text()
-  , m_album     ( item->exactText(  3 ) ) //etc.
-  , m_year      ( item->exactText(  4 ) ) //..
-  , m_comment   ( item->exactText(  5 ) ) //.
-  , m_genre     ( item->exactText(  6 ) )
-  , m_track     ( item->exactText(  7 ) )
-  , m_bitrate   ( item->exactText(  8 ).toInt() ) 
-  , m_length    ( item->exactText(  9 ).toInt() )    
-  , m_sampleRate( item->exactText( 10 ).toInt() )
-{}
+  : m_url    ( item->url() )
+  , m_title  ( item->title() )        //because you override text()
+  , m_artist ( item->exactText( 2 ) ) //because you override text()
+  , m_album  ( item->exactText( 3 ) ) //etc.
+  , m_year   ( item->exactText( 4 ) ) //..
+  , m_comment( item->exactText( 5 ) ) //.
+  , m_genre  ( item->exactText( 6 ) )
+  , m_track  ( item->exactText( 7 ) )
+{
+    if( m_url.isLocalFile() )
+    {
+        TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Accurate );
 
-//Taglib::Tag ctor
+        if ( f.isNull() )
+        {
+            KFileMetaInfo info( m_url, QString::null, KFileMetaInfo::Everything );
+
+            m_bitrate    = info.item( "Bitrate" ).value().toInt();
+            m_length     = info.item( "Length" ).value().toInt();
+            m_sampleRate = info.item( "Sample Rate" ).value().toInt();
+        }
+        else init( f.audioProperties() );
+
+    } else { //is Stream
+
+        //FIXME not correct handling, say is ftp://file
+        m_bitrate    = item->exactText( 10 ).left( 3 ).toInt();
+        m_sampleRate = Undetermined;
+        m_length     = Unavailable;
+    }
+}
+
+//Taglib::Tag ctor //TODO DEPRECATE
 MetaBundle::MetaBundle( const KURL &url, TagLib::Tag *tag, TagLib::AudioProperties *ap )
   : m_url( url )
-  
-  , m_title(  TStringToQString( tag->title() ).stripWhiteSpace() )
-  , m_artist( TStringToQString( tag->artist() ).stripWhiteSpace() )
-  , m_album(  TStringToQString( tag->album() ).stripWhiteSpace() )
-  , m_year(   tag->year() ? QString::number( tag->year() ) : QString::null )
+  , m_title(   TStringToQString( tag->title() ).stripWhiteSpace() )
+  , m_artist(  TStringToQString( tag->artist() ).stripWhiteSpace() )
+  , m_album(   TStringToQString( tag->album() ).stripWhiteSpace() )
+  , m_year(    tag->year() ? QString::number( tag->year() ) : QString::null )
   , m_comment( TStringToQString( tag->comment() ).stripWhiteSpace() )
   , m_genre(   TStringToQString( tag->genre() ).stripWhiteSpace() )
   , m_track(   tag->track() ? QString::number( tag->track() ) : QString::null )
@@ -94,27 +97,11 @@ MetaBundle::MetaBundle( const KURL &url, TagLib::Tag *tag, TagLib::AudioProperti
     init( ap );
 }
 
-//KFileMetaInfo ctor
-MetaBundle::MetaBundle( const KURL &url, const KFileMetaInfo& info )
-  : m_url( url )
-  
-{
-    if ( info.isValid() ) {   
-        m_title   = info.item( "Title" ).string();
-        m_artist  = info.item( "Artist" ).string();
-        m_album   = info.item( "Album" ).string();
-        m_year    = info.item( "Year" ).string();
-        m_comment = info.item( "Comment" ).string();
-        m_genre   = info.item( "Genre" ).string();
-        m_track   = info.item( "Track" ).string();
-    }
-    
-    init( info );
-}
-
 void
 MetaBundle::init( TagLib::AudioProperties *ap )
 {
+    if( !m_url.isLocalFile() ) return;
+
     if( ap )
     {
         m_bitrate    = ap->bitrate();
@@ -129,6 +116,13 @@ MetaBundle::init( const KFileMetaInfo& info )
 {
     if( info.isValid() )
     {
+        m_title      = info.item( "Title" ).string();
+        m_artist     = info.item( "Artist" ).string();
+        m_album      = info.item( "Album" ).string();
+        m_year       = info.item( "Year" ).string();
+        m_comment    = info.item( "Comment" ).string();
+        m_genre      = info.item( "Genre" ).string();
+        m_track      = info.item( "Track" ).string();
         m_bitrate    = info.item( "Bitrate" ).value().toInt();
         m_length     = info.item( "Length" ).value().toInt();
         m_sampleRate = info.item( "Sample Rate" ).value().toInt();
@@ -143,11 +137,8 @@ MetaBundle::readTags( bool audioProperties )
 
    TagLib::FileRef f( m_url.path().local8Bit(), audioProperties, TagLib::AudioProperties::Fast );
 
-   if ( f.isNull() ) {
-       init( 0 );
-
-   } else {
-
+   if ( !f.isNull() )
+   {
         if( f.tag() )
         {
             TagLib::Tag *tag = f.tag();
@@ -162,6 +153,7 @@ MetaBundle::readTags( bool audioProperties )
         }
         init( f.audioProperties() );
     }
+    else init( KFileMetaInfo( m_url, QString::null, KFileMetaInfo::Everything ) );
 
     return *this;
 }
@@ -200,7 +192,7 @@ MetaBundle::prettyLength( int seconds ) //static
     else if( seconds == Unavailable ) s = '?';
     else if( seconds == Irrelevant  ) s = '-';
 
-    return s;
+    return s; //Undetermined = ""
 }
 
 QString
@@ -234,5 +226,5 @@ MetaBundle::prettyGeneric( const QString &s, int i ) //static
 {
     //TODO ensure this inlines
 
-    return ( i > 0 ) ? s.arg( i ) : ( i == Undetermined ) ? QString::null : "?";
+    return ( i > 0 ) ? s.arg( i ) : ( i == Undetermined ) ? "?" : QString::null;
 }

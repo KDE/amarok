@@ -309,7 +309,6 @@ void App::restoreSession()
     {
         KURL track( AmarokConfig::resumeTrack() );
         MetaBundle bundle( track );
-        bundle.readTags();
 
         EngineController::instance()->play( bundle );
         EngineController::engine()->seek( AmarokConfig::resumeTime() * 1000 );
