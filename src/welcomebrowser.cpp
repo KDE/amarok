@@ -4,6 +4,7 @@
 
 
 #include "app.h"
+#include "amarokconfig.h"
 #include "welcomebrowser.h"
 
 #include <khtml_part.h>
@@ -30,16 +31,6 @@ WelcomeBrowser::~WelcomeBrowser()
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
-// PUBLIC SLOTS
-//////////////////////////////////////////////////////////////////////////////////////////
-
-void WelcomeBrowser::openURLRequest(const KURL &url )
-{
-
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////////////
 // PROTECTED
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -60,17 +51,20 @@ void WelcomeBrowser::paletteChange( const QPalette& pal )
 
 void WelcomeBrowser::setStyleSheet()
 {
-    m_styleSheet =  QString( "div { color: %1; font-size: 10px; text-decoration: none; }" )
-                    .arg( colorGroup().text().name() );
+    QFontMetrics fm( AmarokConfig::playlistWindowFont() );
+    int pxSize = fm.height() - 3;
+
+    m_styleSheet =  QString( "div { color: %1; font-size: %2px; text-decoration: none; }" )
+                    .arg( colorGroup().text().name() ).arg( pxSize );
                     
-    m_styleSheet +=  QString( "a { color: %1; font-size: 10px; }" )
-                    .arg( colorGroup().highlight().name() );
+    m_styleSheet +=  QString( "a { color: %1; font-size: %2px; }" )
+                    .arg( colorGroup().highlight().name() ).arg( pxSize );
 
-    m_styleSheet += QString( ".title { color: %1; font-size: 12px; font-weight: bold; text-decoration: none; }" )
-                    .arg( colorGroup().highlight().name() );
+    m_styleSheet += QString( ".title { color: %1; font-size: %2px; font-weight: bold; text-decoration: none; }" )
+                    .arg( colorGroup().highlight().name() ).arg( pxSize + 2 );
 
-    m_styleSheet += QString( ".subtitle { color: %1; font-size: 11px; font-weight: bold; text-decoration: none; }" )
-                    .arg( colorGroup().text().name() );
+    m_styleSheet += QString( ".subtitle { color: %1; font-size: %2px; font-weight: bold; text-decoration: none; }" )
+                    .arg( colorGroup().text().name() ).arg( pxSize + 1 );
 }
 
 

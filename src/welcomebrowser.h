@@ -21,9 +21,6 @@ class WelcomeBrowser : public QVBox
         WelcomeBrowser(  QObject* parent, const char *name );
         ~WelcomeBrowser();
 
-    public slots:
-        void openURLRequest(const KURL &url );
-        
     protected:
         void paletteChange( const QPalette& );
 

@@ -3,6 +3,7 @@
 
 
 #include "app.h"
+#include "amarokconfig.h"
 #include "collectiondb.h"
 #include "contextbrowser.h"
 #include "enginecontroller.h"
@@ -145,21 +146,25 @@ void ContextBrowser::paletteChange( const QPalette& pal )
 
 void ContextBrowser::setStyleSheet()
 {
-    m_styleSheet =  QString( "div { color: %1; font-size: 8px; text-decoration: none; }" )
-                    .arg( colorGroup().text().name() );
-    m_styleSheet += QString( "td { color: %1; font-size: 8px; text-decoration: none; }" )
-                    .arg( colorGroup().text().name() );
+    QFontMetrics fm( AmarokConfig::playlistWindowFont() );
+    int pxSize = fm.height() - 4;
+
+    m_styleSheet =  QString( "div { color: %1; font-size: %2px; text-decoration: none; }" )
+                    .arg( colorGroup().text().name() ).arg( pxSize );
+    m_styleSheet += QString( "td { color: %1; font-size: %2px; text-decoration: none; }" )
+                    .arg( colorGroup().text().name() ).arg( pxSize );
     m_styleSheet += QString( ".menu { color: %1; font-weight: bold; }" )
                     .arg( colorGroup().text().name() );
-    m_styleSheet += QString( ".song { color: %1; font-size: 8px; text-decoration: none; }" )
-                    .arg( colorGroup().text().name() );
+    m_styleSheet += QString( ".song { color: %1; font-size: %2px; text-decoration: none; }" )
+                    .arg( colorGroup().text().name() ).arg( pxSize );
     m_styleSheet += QString( ".song:hover { color: %1; cursor: default; background-color: %2; }" )
                     .arg( colorGroup().base().name() ).arg( colorGroup().highlight().name() );
-    m_styleSheet += QString( ".album { font-weight: bold; font-size: 8px; text-decoration: none; }" );
-    m_styleSheet += QString( ".title { color: %1; font-size: 11px; font-weight: bold; }" )
-                    .arg( colorGroup().text().name() );
-    m_styleSheet += QString( ".head { color: %1; font-size: 10px; font-weight: bold; background-color: %2; }" )
-                    .arg( colorGroup().base().name() ).arg( colorGroup().highlight().name() );
+    m_styleSheet += QString( ".album { font-weight: bold; font-size: %1px; text-decoration: none; }" )
+                    .arg( pxSize );
+    m_styleSheet += QString( ".title { color: %1; font-size: %2px; font-weight: bold; }" )
+                    .arg( colorGroup().text().name() ).arg( pxSize + 3 );
+    m_styleSheet += QString( ".head { color: %1; font-size: %2px; font-weight: bold; background-color: %3; }" )
+                    .arg( colorGroup().base().name() ).arg( pxSize + 2 ).arg( colorGroup().highlight().name() );
     m_styleSheet += QString( ".rbcurrent { color: %1; border: solid %2 1px; }" )
                     .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
     m_styleSheet += QString( ".rbalbum { color: %1; border: solid %2 1px; }" )
