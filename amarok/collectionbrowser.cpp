@@ -96,7 +96,7 @@ void CollectionBrowser::customEvent( QCustomEvent *e )
         
         for ( int i = 0; i < c->list().count(); i++ ) {
             bundle = c->list().at( i );
-            kdDebug() << bundle->artist() << endl;
+//             kdDebug() << bundle->artist() << endl;
             
             QCString command = "insert into tags( artist ) values ('";
             command += bundle->artist().latin1();
@@ -106,6 +106,21 @@ void CollectionBrowser::customEvent( QCustomEvent *e )
             delete bundle;
         }
     }
+    dumpDb();
+}
+
+
+void CollectionBrowser::dumpDb()
+{
+    kdDebug() << k_funcinfo << endl;
+    
+    QCString command = "select artist from tags;";
+   
+    QStringList values;
+    QStringList names;
+    
+    execSql( command, &values, &names );
+    kdDebug() << values << endl;
 }
 
 

@@ -30,7 +30,16 @@ class CollectionBrowser : public KIconView
         
     private:
         void readDir( const KURL& url );
+        void dumpDb();
         void customEvent( QCustomEvent* );
+        
+        /**
+         * Executes an SQL statement on the already opened database
+         * @param statement SQL statement to execute
+         * @out values      will contain the queried data, set to NULL if not needed
+         * @out names       will contain all column names, set to NULL if not needed
+         * @return          true if successful
+         */
         bool execSql( const QCString& statement, QStringList* const values, QStringList* const names );
             
     //attributes:
