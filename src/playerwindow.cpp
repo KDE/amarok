@@ -303,6 +303,7 @@ void PlayerWidget::engineStateChanged( Engine::State state )
             m_pButtonPlay->setOn( false );
             m_pButtonPause->setOn( false );
             m_pSlider->setValue( 0 );
+            m_pSlider->setMinValue( 0 );
             m_pSlider->setMaxValue( 0 );
             m_pTimeLabel->hide();
             m_pTimeSign->hide();
@@ -339,6 +340,7 @@ void PlayerWidget::engineNewMetaData( const MetaBundle &bundle, bool )
 {
     m_currentURL == bundle.url().path();
 
+    m_pSlider->setMinValue( 0 ); // Important. minValue could have been changed by bogus maxValues
     m_pSlider->setMaxValue( bundle.length() * 1000 );
     m_pSlider->setEnabled( bundle.length() > 0 );
 
