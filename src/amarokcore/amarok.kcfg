@@ -187,7 +187,7 @@
     </entry>
     <entry key="Equalizer Preamp" type="Int">
         <label>Preamp value for equalizer</label>
-        <default>0</default>
+        <default>100</default>
         <min>0</min>
         <max>100</max>
     </entry>
