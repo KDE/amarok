@@ -646,7 +646,6 @@ GstEngine::handleGstError()  //SLOT
     }
 
     // Stop playback and rebuild output pipeline
-    destroyPipeline();
     createPipeline();
 
     kdError() << text << endl;
@@ -732,7 +731,6 @@ GstEngine::configChanged() //SLOT
     kdDebug() << "[Gst-Engine] Rebuilding output pipeline with new settings.\n";
 
     // Stop playback and rebuild output pipeline, in order to apply new settings
-    destroyPipeline();
     createPipeline();
 
     emit stateChanged( Engine::Empty );
@@ -808,7 +806,8 @@ GstEngine::getPluginList( const QCString& classname ) const
 bool
 GstEngine::createPipeline()
 {
-    destroyPipeline();
+    if ( GST_IS_THREAD( m_gst_thread ) )
+        destroyPipeline();
 
     if ( GstConfig::soundOutput().isEmpty() ) {
         errorNoOutput();
