@@ -27,6 +27,7 @@ email                : markey@web.de
 #include <kio/jobclasses.h>
 
 #include <gst/gst.h>
+#include <adapter.h>
 
 using std::vector;
 
@@ -38,7 +39,7 @@ class GstEngine : public Engine::Base
         friend class GstConfigDialog;        
         
         Q_OBJECT
-
+        
     public:
                                                  GstEngine();
                                                  ~GstEngine();
@@ -70,7 +71,7 @@ class GstEngine : public Engine::Base
         void                                     kioFinished();
         void                                     newKioData( KIO::Job*, const QByteArray& array );
         void                                     errorNoOutput() const;
-        
+                
     private:
         static GstEngine*                        instance() { return s_instance; }
         
@@ -104,16 +105,12 @@ class GstEngine : public Engine::Base
         GstElement*                              m_gst_audiosink;
         GstElement*                              m_gst_spider;
         GstElement*                              m_gst_identity;
-        GstElement*                              m_gst_tee;
         GstElement*                              m_gst_volume;
         GstElement*                              m_gst_volumeFade;
-        GstElement*                              m_gst_audioconvert1;
-        GstElement*                              m_gst_audioconvert2;
+        GstElement*                              m_gst_audioconvert;
         GstElement*                              m_gst_audioscale;
-        GstElement*                              m_gst_bufferconvert;
         
-        Engine::Scope                            m_scopeBuf;
-        uint                                     m_scopeBufIndex;
+        GstAdapter*                              m_gst_adapter;
        
         char*                                    m_streamBuf;
         int                                      m_streamBufIndex;

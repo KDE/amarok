@@ -20,8 +20,9 @@ libamarok_gstengine_plugin_la_LIBADD = \
     $(LIB_KDECORE) \
     $(LIB_KDEUI) \
     $(LIB_GST)
-
+    
 libamarok_gstengine_plugin_la_SOURCES = \
+    adapter.c \
     gstconfigdialog.cpp \
     gstconfigdialogbase.ui \
     gstengine.cpp \

@@ -46,7 +46,7 @@ AMAROK_EXPORT_PLUGIN( GstEngine )
 /////////////////////////////////////////////////////////////////////////////////////
 
 static const int
-SCOPEBUF_SIZE = 40000;
+SCOPEBUF_SIZE = 30000;
 
 static const int
 STREAMBUF_SIZE = 1000000; // == 1MB
@@ -75,8 +75,6 @@ GstEngine::eos_cb( GstElement*, GstElement* )
 void
 GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
 {
-    instance()->m_scopeBufIndex = 0;
-    
     int channels = 2;  //2 == default, if we cannot determine the value from gst
     GstCaps* caps = gst_pad_get_caps( gst_element_get_pad( instance()->m_gst_spider, "src_0" ) );
 
@@ -89,22 +87,8 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
     gst_caps_free( caps );
 
     if ( GST_IS_BUFFER( buf ) ) {
-//         kdDebug() << "HANDOFF BUFFER SIZE: " << GST_BUFFER_SIZE( buf ) << endl;
-        
-        float* data = (float*) GST_BUFFER_DATA( buf );
-
-        // Divide length by 2 for casting from 8bit to 16bit, and divide by number of channels
-        for ( ulong i = 0; i < GST_BUFFER_SIZE( buf ) / 2 / channels; i += channels ) {
-            if ( instance()->m_scopeBufIndex == instance()->m_scopeBuf.size() )
-                instance()->m_scopeBufIndex = 0;
-
-            long temp = 0;
-            for ( int chan = 0; chan < channels; chan++ ) {
-                // Add all channels together so we effectively get a mono scope
-                temp += static_cast<int>( data[i+chan] * 32768 );
-            }
-            instance()->m_scopeBuf[ instance()->m_scopeBufIndex++ ] = temp / channels;
-        }
+        gst_buffer_ref( buf );
+        gst_adapter_push( instance()->m_gst_adapter, buf );
     }
 }
 
@@ -135,8 +119,6 @@ GstEngine::kio_resume_cb()
 GstEngine::GstEngine()
         : Engine::Base( Engine::Signal, true )
         , m_gst_thread( 0 )
-        , m_scopeBuf( SCOPEBUF_SIZE )
-        , m_scopeBufIndex( 0 )
         , m_streamBuf( new char[STREAMBUF_SIZE] )
         , m_transferJob( 0 )
         , m_fadeValue( 0.0 )
@@ -150,6 +132,8 @@ GstEngine::~GstEngine()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
+    kdDebug() << "bytes left in gst_adapter: " << gst_adapter_available( m_gst_adapter ) << endl;
+    
     stop();
     cleanPipeline();
     delete[] m_streamBuf;
@@ -191,6 +175,8 @@ GstEngine::init()
         return false;
     }
                       
+    m_gst_adapter = gst_adapter_new();
+    connect( this, SIGNAL( sigScopeData( GstBuffer* ) ), SLOT( slotScopeData( GstBuffer* ) ) );
     startTimer( TIMER_INTERVAL );
 
     kdDebug() << "END " << k_funcinfo << endl;
@@ -276,11 +262,28 @@ GstEngine::state() const
 const Engine::Scope&
 GstEngine::scope()
 {
-    for ( int i = 0; i < 512; i++ )
-        m_scope[i] = m_scopeBuf[i];
+    int channels = 2;
+    uint bytes = 512 * channels * sizeof( gint16 );
     
-    m_scopeBufIndex = 0;
-
+    gint16* data = (gint16*) gst_adapter_peek( m_gst_adapter, bytes );
+    if ( !data ) return m_scope;
+    
+    for ( ulong i = 0; i < 512; i += channels ) {
+        long temp = 0;
+        
+        for ( int chan = 0; chan < channels; chan++ ) {
+            // Add all channels together so we effectively get a mono scope
+            temp += data[i+chan];
+        }
+        m_scope[i] = temp;
+    }
+    
+    gst_adapter_flush( m_gst_adapter, bytes );
+    
+    // Check for buffer overflow
+    if ( gst_adapter_available( m_gst_adapter ) > SCOPEBUF_SIZE )    
+        gst_adapter_clear( m_gst_adapter );
+        
     return m_scope;
 }
 
@@ -316,19 +319,6 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     kdDebug() << "Output Params: " << GstConfig::outputParams() << endl;
     
     QCString output;
-    bool caps_ok;
-    
-    GstCaps* filtercaps_src  = gst_caps_new_simple( "audio/x-raw-float",
-                                                    "buffer-frames", G_TYPE_INT, 1470,
-                                                    0 );
-    
-    GstCaps* filtercaps_sink = gst_caps_new_simple( "audio/x-raw-float",
-                                                    "buffer-frames", G_TYPE_INT, 1470,
-                                                    "rate", G_TYPE_INT, 44100,
-                                                    "channels", G_TYPE_INT, 2,
-                                                    "endianness", G_TYPE_INT, 1234,
-                                                    "width", G_TYPE_INT, 32,
-                                                    0 );
     
     /* create a new pipeline (thread) to hold the elements */
     if ( !( m_gst_thread = createElement( "thread" ) ) ) { goto error; }
@@ -349,16 +339,12 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         g_object_set( G_OBJECT ( m_gst_audiosink ), "device", GstConfig::soundDevice().latin1(), NULL );
     
     if ( !( m_gst_identity = createElement( "identity", m_gst_thread ) ) ) { goto error; }
-    if ( !( m_gst_tee = createElement( "tee", m_gst_thread ) ) ) { goto error; }
     if ( !( m_gst_volume = createElement( "volume", m_gst_thread ) ) ) { goto error; }
     if ( !( m_gst_volumeFade = createElement( "volume", m_gst_thread ) ) ) { goto error; }
-    if ( !( m_gst_audioconvert1 = createElement( "audioconvert", m_gst_thread, "audioconvert1" ) ) ) { goto error; }
-    if ( !( m_gst_audioconvert2 = createElement( "audioconvert", m_gst_thread, "audioconvert2" ) ) ) { goto error; }
+    if ( !( m_gst_audioconvert = createElement( "audioconvert", m_gst_thread, "audioconvert" ) ) ) { goto error; }
     if ( !( m_gst_audioscale = createElement( "audioscale", m_gst_thread ) ) ) { goto error; }
-    if ( !( m_gst_bufferconvert = createElement( "buffer-frames-convert", m_gst_thread ) ) ) { goto error; }
 
     g_object_set( G_OBJECT( m_gst_volumeFade ), "volume", 1.0, NULL );
-    g_object_set( G_OBJECT( m_gst_tee ), "num-pads", 2, NULL );
     g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), m_gst_thread );
     g_signal_connect( G_OBJECT( m_gst_audiosink ), "eos", G_CALLBACK( eos_cb ), m_gst_thread );
 //     g_signal_connect ( G_OBJECT( m_thread ), "error", G_CALLBACK ( error_cb ), m_thread );
@@ -379,17 +365,8 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     if ( !( m_gst_spider = createElement( "spider", m_gst_thread ) ) ) { goto error; }
     
     /* link elements */
-    gst_element_link_many( m_gst_src, m_gst_spider, m_gst_volumeFade, m_gst_tee, 0 );
-    gst_element_link_pads( m_gst_tee, "src0", m_gst_volume, "sink" ); 
-    gst_element_link_pads( m_gst_tee, "src1", m_gst_audioconvert2, "sink" ); 
-    gst_element_link_many( m_gst_volume, m_gst_audioscale, m_gst_audioconvert1, m_gst_audiosink, 0 );
-    
-    gst_element_link_many( m_gst_audioconvert2, m_gst_bufferconvert, m_gst_identity, 0 );
-//     gst_caps_set_simple( gst_element_get_pad( m_gst_bufferconvert, "sink" ), "buffer-frames", G_TYPE_INT, 1470, 0 );
-//     if ( !caps_ok ) kdDebug() << "gst_pad_try_set_caps() FAILED.\n";
+    gst_element_link_many( m_gst_src, m_gst_spider, m_gst_volumeFade, m_gst_identity, m_gst_volume, m_gst_audioscale, m_gst_audioconvert, m_gst_audiosink, 0 );
 
-//     gst_element_link( m_gst_bufferconvert, m_gst_identity );
-    
     gst_element_set_state( m_gst_thread, GST_STATE_READY );
     m_pipelineFilled = true;
     setVolume( m_volume );
@@ -706,7 +683,7 @@ GstEngine::cleanPipeline()
 void
 GstEngine::interpolate( const Engine::Scope& inVec, Engine::Scope& outVec )
 {
-    double pos = 0.0;
+/*    double pos = 0.0;
     const double step = (double) m_scopeBufIndex / outVec.size();
 
     for ( uint i = 0; i < outVec.size(); ++i, pos += step ) {
@@ -716,7 +693,7 @@ GstEngine::interpolate( const Engine::Scope& inVec, Engine::Scope& outVec )
             index = m_scopeBufIndex - 1;
 
         outVec[i] = inVec[index];
-    }
+    }*/
 }
 
                   
