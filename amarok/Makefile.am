@@ -11,7 +11,7 @@ EXTRA_DIST = browserwidget.h browserwin.h \
 
 bin_PROGRAMS = amarok
 
-amarok_SOURCES = main.cpp playerapp.cpp playerwidget.cpp browserwin.cpp browserwidget.cpp playlistwidget.cpp playlistitem.cpp expandbutton.cpp effectwidget.cpp amarokdcopiface.skel configdlg.cpp amarokbutton.cpp amarokfilelist.cpp Options1.ui Options2.ui Options3.ui Options4.ui
+amarok_SOURCES = main.cpp playerapp.cpp playerwidget.cpp browserwin.cpp browserwidget.cpp playlistwidget.cpp playlistitem.cpp expandbutton.cpp effectwidget.cpp amarokdcopiface.skel configdlg.cpp amarokbutton.cpp amarokfilelist.cpp streambrowser.cpp Options1.ui Options2.ui Options3.ui Options4.ui
 
 amarok_LDADD = ./titleproxy/libtitleproxy.a ./analyzers/libanalyzers.a ./amarokarts/libamarokarts.la -lqtmcop -lkmedia2_idl -lartsflow -lsoundserver_idl -lartskde -lartsgui -lartsgui_kde -lartsmodules -ltag $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE)
 
@@ -24,6 +24,9 @@ KDE_ICON = AUTO
 
 rcdir = $(kde_datadir)/amarok
 rc_DATA = amarokui.rc
+
+configdir = $(kde_confdir)
+config_DATA = amarokrc
 
 applnk_DATA =  amarok.desktop
 applnkdir = $(kde_appsdir)/Multimedia
