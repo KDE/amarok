@@ -1377,6 +1377,20 @@ CollectionDB::checkCompilations( const QString &path, const bool temporary, DbCo
 
 
 void
+CollectionDB::setCompilation( const QString &album, const bool enabled, const bool updateView )
+{
+    query( QString( "UPDATE tags, album SET tags.sampler = %1 WHERE tags.album = album.id AND album.name = '%2';" )
+              .arg( enabled ? "1" : "0" )
+              .arg( escapeString( album ) ) );
+
+    // Update the Collection-Browser view,
+    // using QTimer to make sure we don't manipulate the GUI from a thread
+    if ( updateView )
+        QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
+}
+
+
+void
 CollectionDB::removeDirFromCollection( QString path )
 {
     if ( path.endsWith( "/" ) )

@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.2.3:
   FEATURES:
+    * You can mark/unmark albums as compilations via CollectionBrowser's
+      right-click contextmenu.
     * New DCOP call "collection: query(const QString& sql)".
     * New DCOP call "playlist: removeCurrentTrack()". (BR 92973)
 

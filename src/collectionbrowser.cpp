@@ -760,16 +760,18 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         #ifdef AMAZON_SUPPORT
         enum Actions { APPEND, MAKE, QUEUE, BURN_ARTIST, BURN_ALBUM,
-                       BURN_DATACD, BURN_AUDIOCD, COVER, INFO };
+                       BURN_DATACD, BURN_AUDIOCD, COVER, INFO,
+                       COMPILATION_SET, COMPILATION_UNSET };
         #else
         enum Actions { APPEND, MAKE, QUEUE, BURN_ARTIST, BURN_ALBUM,
-                       BURN_DATACD, BURN_AUDIOCD, INFO };
+                       BURN_DATACD, BURN_AUDIOCD, INFO,
+                       COMPILATION_SET, COMPILATION_UNSET };
         #endif
 
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue After Current Track" ), QUEUE );
-	menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
-        
+        menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
+
         menu.insertSeparator();
 
         if( cat == CollectionBrowser::IdArtist )
@@ -796,7 +798,14 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         menu.insertItem( SmallIconSet( "www" ), i18n( "&Fetch Cover Images" ), this, SLOT( fetchCover() ), 0, COVER );
         menu.setItemEnabled(COVER, cat == CollectionBrowser::IdAlbum );
         #endif
-        menu.insertItem( SmallIconSet( "info" ), i18n( "View/Edit Meta Information..." ), this, SLOT( showTrackInfo() ), 0, INFO );
+        menu.insertItem( SmallIconSet( "info" ), i18n( "&View/Edit Meta Information..." ), this, SLOT( showTrackInfo() ), 0, INFO );
+
+        if ( cat == CollectionBrowser::IdAlbum )
+        {
+            menu.insertSeparator();
+            menu.insertItem( SmallIconSet( "ok" ), i18n( "&Mark as Compilation" ), COMPILATION_SET );
+            menu.insertItem( SmallIconSet( "cancel" ), i18n( "&Unmark as Compilation" ), COMPILATION_UNSET );
+        }
 
         switch( menu.exec( point ) )
         {
@@ -820,6 +829,12 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 break;
             case BURN_AUDIOCD:
                 K3bExporter::instance()->exportTracks( listSelected(), K3bExporter::AudioCD );
+                break;
+            case COMPILATION_SET:
+                CollectionDB::instance()->setCompilation( item->text(0), true );
+                break;
+            case COMPILATION_UNSET:
+                CollectionDB::instance()->setCompilation( item->text(0), false );
                 break;
         }
     }
