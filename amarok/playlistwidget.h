@@ -100,8 +100,6 @@ class PlaylistWidget : private KListView, public EngineObserver
         //enums, typedefs and friends
         enum RequestType { Prev = -1, Current = 0, Next = 1 };
 
-        typedef QMap<PlaylistItem*, QString> SearchTokens;
-
         friend class PlaylistItem;
         friend class PlaylistLoader;
         friend BrowserWin::BrowserWin( QWidget*, const char* );   //setting up connections etc.
@@ -176,7 +174,7 @@ class PlaylistWidget : private KListView, public EngineObserver
         QListViewItem *m_marker;       //track that has the drag/drop marker under it
 
         //NOTE these container types were carefully chosen
-        SearchTokens               m_tokens;     //to speed up searches
+        QString                    m_lastSearch; //contains the last search token
         QValueStack<PlaylistItem*> m_prevTracks; //the previous history
         QPtrList<PlaylistItem>     m_nextTracks; //the tracks to be played after the current track
 

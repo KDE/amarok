@@ -81,8 +81,6 @@ PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KU
     KListViewItem::setText( 1, title );
     setText( Directory, u.directory().section( '/', -1 ) ); //try for stringStore
     setText( Length, MetaBundle::prettyLength( length ) );
-
-    setTokens();
 }
 
 
@@ -102,7 +100,6 @@ PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KU
         //FIXME this is duplication of setText()
         //TODO  it would be neat to have all store columns adjacent and at top end so you can use
         //      a simple bit of logic to discern which ones to store
-        //TODO  may be better to just be able to use setText(), problem is the setTokens calls
         //FIXME use the MetaBundle implicitly shared bitrate and track # strings
         switch( x ) {
         case Artist:
@@ -116,8 +113,6 @@ PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KU
             KListViewItem::setText( x, text );
         }
     }
-
-    setTokens();
 }
 
 
@@ -256,8 +251,6 @@ void PlaylistItem::setText( int column, const QString &newText )
     case TrackName:
     case Title:
     case Artist:
-        setTokens();
-        break;
     default:
         break;
     }
@@ -266,19 +259,6 @@ void PlaylistItem::setText( int column, const QString &newText )
 /////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE METHODS
 /////////////////////////////////////////////////////////////////////////////////////
-
-void
-PlaylistItem::setTokens()
-{
-    QString
-    token  = exactText( TrackName );
-    token += ' ';
-    token += exactText( Title );
-    token += ' ';
-    token += exactText( Artist );
-
-    listView()->m_tokens.insert( this, token.lower() );
-}
 
 int
 PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const

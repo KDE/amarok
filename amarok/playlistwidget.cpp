@@ -406,7 +406,7 @@ void PlaylistWidget::clear() //SLOT
     emit aboutToClear(); //will saveUndoState()
 
     setCurrentTrack( NULL );
-    m_tokens.clear();
+//    m_tokens.clear();
     m_prevTracks.clear();
     m_nextTracks.clear();
 
@@ -553,7 +553,7 @@ void PlaylistWidget::removeItem( PlaylistItem *item )
     }
 
     //keep search system synchronised
-    m_tokens.remove( item );
+//    m_tokens.remove( item );
 
     //keep recent buffer synchronised
     m_prevTracks.remove( item ); //removes all items
@@ -1036,30 +1036,34 @@ void PlaylistWidget::slotGlowTimer() //SLOT
 void PlaylistWidget::slotTextChanged( const QString &query ) //SLOT
 {
     const QStringList v = QStringList::split( ' ', query.lower() );
-    const SearchTokens::Iterator end = m_tokens.end();
-
-    //we could just do this with the QStringList, as operator[] is linear,
-    //but we are rarely going to lists larger than 3 in size...
-    //QValueVector<QString> v( queries.size() );
-    //qCopy( queries.begin(), queries.end(), v.begin() );
-
-    uint y;
+    const uint vc = v.count();
+    QListViewItem *item = 0;
+    QListViewItemIterator it;
     bool b;
 
-    for( SearchTokens::Iterator it = m_tokens.begin(); it != end; ++it )
-    {
-        b = query.isEmpty();
+    if ( query.lower().startsWith( m_lastSearch ) )
+        it = QListViewItemIterator( this, QListViewItemIterator::Visible );
+    else
+        it = QListViewItemIterator( this );
+    
+    m_lastSearch = query.lower();
 
-        for( y = 0; !b && y < v.count(); ++y )
-            if( it.data().find( v[y] ) != -1 ) //find() is quicker than contains()
-                b = true;
+    while ( it.current() ) {
+        item = it.current();
+        b = true;
+        
+        for( uint x = 0; b && x < vc; ++x )
+            // search in Trackname, Artist, Songtitle, Album
+            if ( !( item->text( 0 ).lower().contains( v[x] ) || item->text( 1 ).lower().contains( v[x] ) ||
+                    item->text( 2 ).lower().contains( v[x] ) || item->text( 3 ).lower().contains( v[x] ) ) )
+                b = false;
 
-        it.key()->setVisible( b );
+        item->setVisible( b );
+        ++it;
     }
 
     //to me it seems sensible to do this, BUT if it seems annoying to you, remove it
     showCurrentTrack();
-
     clearSelection(); //we do this because QListView selects inbetween visible items, this is a non ideal solution
     triggerUpdate();
 }

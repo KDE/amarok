@@ -3,6 +3,8 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  CHG: Removed the search-token index. Searching now iterates through the playlist,
+       offering direct and specific access to the metadata.
   FIX: Bug where fill-down would cause lots of extra tags to be written when a search is
        in progress (BR 79482).
   FIX: Defect in plugin framework code, leading to a crash on some systems
