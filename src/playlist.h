@@ -73,7 +73,6 @@ class Playlist : private KListView, public EngineObserver
          *  @param options you can OR these together, see the enum
          */
         void insertMedia( KURL::List, int options = Append );
-        void addSuggestedTracks( PlaylistItem * item, uint songCount );
 
         /** Add media to the playlist, using SqlLoader
          *  @param sql     Sql program to execute

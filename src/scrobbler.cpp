@@ -80,7 +80,7 @@ void Scrobbler::similarArtists( const QString & artist )
 //                 </param>
 //             </params>
 //         </methodCall>
-        
+
         QDomDocument reqdoc;
 
         QDomElement methodCall = reqdoc.createElement( "methodCall" );
@@ -88,7 +88,7 @@ void Scrobbler::similarArtists( const QString & artist )
         QDomText methodNameValue = reqdoc.createTextNode( "getSimilarArtists" );
         methodName.appendChild( methodNameValue );
         methodCall.appendChild( methodName );
-        
+
         QDomElement params = reqdoc.createElement( "params" );
         QDomElement param1 = reqdoc.createElement( "param" );
         QDomElement value1 = reqdoc.createElement( "value" );
@@ -98,7 +98,7 @@ void Scrobbler::similarArtists( const QString & artist )
         value1.appendChild( type1 );
         param1.appendChild( value1 );
         params.appendChild( param1 );
-        
+
         QDomElement param2 = reqdoc.createElement( "param" );
         QDomElement value2 = reqdoc.createElement( "value" );
         QDomElement type2 = reqdoc.createElement( "int" );
@@ -107,22 +107,22 @@ void Scrobbler::similarArtists( const QString & artist )
         value2.appendChild( type2 );
         param2.appendChild( value2 );
         params.appendChild( param2 );
-        
+
         methodCall.appendChild( params );
         reqdoc.appendChild( methodCall );
-        
+
         QString xmlRequest = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + reqdoc.toString();
-        
+
         QByteArray postData;
         QDataStream stream( postData, IO_WriteOnly );
         stream.writeRawBytes( xmlRequest.utf8(), xmlRequest.length() );
-        
+
         m_similarArtistsBuffer = "";
         m_artist = artist;
-        
+
         KIO::TransferJob* job = KIO::http_post( "http://ws.audioscrobbler.com/xmlrpc", postData, false );
         job->addMetaData( "content-type", "Content-Type: text/xml" );
-        
+
         connect( job, SIGNAL( result( KIO::Job* ) ),
                 this,  SLOT( audioScrobblerSimilarArtistsResult( KIO::Job* ) ) );
         connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
@@ -141,7 +141,7 @@ void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
         warning() << "KIO error! errno: " << job->error() << endl;
         return;
     }
-    
+
 //     Result looks like this:
 //     <?xml version="1.0" encoding="UTF-8"?>
 //     <methodResponse>
@@ -163,19 +163,19 @@ void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
 //             </param>
 //         </params>
 //     </methodResponse>
-    
+
     QDomDocument document;
     if ( !document.setContent( m_similarArtistsBuffer ) )
     {
         debug() << "Couldn't read similar artists response" << endl;
         return;
     }
-    
+
     QDomNodeList values =
         document.elementsByTagName( "methodResponse" ).item( 0 )
             .namedItem( "params" ).namedItem( "param" ).namedItem( "value" )
             .namedItem( "array" ).namedItem( "data" ).childNodes();
-    
+
     QStringList suggestions;
     for ( uint i = 0; i < values.count(); i++ )
     {
@@ -184,7 +184,7 @@ void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
         //debug() << "Suggestion: " << artist << endl;
         suggestions << artist;
     }
-    
+
     debug() << "Suggestions retrieved (" << suggestions.count() << ")" << endl;
     if ( suggestions.count() > 0 )
         emit similarArtistsFetched( m_artist, suggestions );
@@ -276,7 +276,7 @@ void Scrobbler::engineTrackPositionChanged( long position )
     if ( position > 240 * 1000 || position > 0.5 * m_item->length() * 1000 )
     {
         m_submitter->submitItem( m_item );
-        if ( AmarokConfig::appendSuggestions() )
+        if ( AmarokConfig::dynamicMode() )
             appendSimilar( m_item );
         m_item = NULL;
         m_validForSending = false;
@@ -300,7 +300,7 @@ void Scrobbler::applySettings()
     {
         handshakeNeeded = true;
     }
-    
+
     m_submitter->setEnabled( AmarokConfig::submitPlayedSongs() );
     m_submitter->setUsername( AmarokConfig::scrobblerUsername() );
     m_submitter->setPassword( AmarokConfig::scrobblerPassword() );
@@ -880,7 +880,7 @@ void ScrobblerSubmitter::enqueueItem( SubmitItem* item )
     }
 
     m_submitQueue.inSort( item );
-    
+
     // Save submit queue to disk so it is more uptodate in case of crash.
     saveSubmitQueue();
 }

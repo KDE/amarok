@@ -392,23 +392,6 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
 }
 
 void
-Playlist::addSuggestedTracks( PlaylistItem *item, uint songCount )
-{
-    QStringList suggestions = CollectionDB::instance()->similarArtists( item->artist(), 16 );
-
-    QueryBuilder qb;
-    qb.setOptions( QueryBuilder::optRandomize | QueryBuilder::optRemoveDuplicates );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-
-    qb.addMatches( QueryBuilder::tabArtist, suggestions ); //suggestions
-
-    qb.setLimit( 0, songCount );
-    QStringList url = qb.run();
-
-    insertMedia( KURL::List( url ), Playlist::Unique );
-}
-
-void
 Playlist::insertMediaSql( const QString& sql, int options )
 {
     // TODO Implement more options
@@ -449,13 +432,6 @@ void
 Playlist::playNextTrack( bool forceNext )
 {
     PlaylistItem *item = currentTrack();
-
-    if( AmarokConfig::dynamicMode() && childCount() < 20 )
-    {
-        uint songCount = 1;
-        songCount = 20 - childCount();
-        addSuggestedTracks( item, songCount );
-    }
 
     if( isEmpty() )
         return;
@@ -522,32 +498,6 @@ Playlist::playNextTrack( bool forceNext )
             item = MyIt::nextVisible( item );
         else
             item = *MyIt( this ); //ie. first visible item
-
-        if ( AmarokConfig::dynamicMode() && item != firstChild() )
-        {
-            MyIterator it( this, MyIterator::Visible );
-
-            for( int x=0; *it; ++it, ++x )
-            {
-                if ( *it == currentTrack() )
-                    if ( x < 5 )
-                    {
-                        activate( item );
-                        return;
-                    }
-                    else if ( x > childCount() - 5 )
-                        kdDebug() << "Not implemented yet" << endl;
-                    else
-                    {
-                        PlaylistItem *first = firstChild();
-                        removeItem( first ); //first visible item
-                        delete first;
-                        addSuggestedTracks( item, 1 );
-                    }
-            }
-
-
-        }
 
         if ( !item && AmarokConfig::repeatPlaylist() )
             item = *MyIt( this ); //ie. first visible item

@@ -88,7 +88,6 @@ SmartPlaylistView::~SmartPlaylistView()
     }
 }
 
-
 void SmartPlaylistView::createCustomPlaylist() //SLOT
 {
     //open a dialog to create a custom smart playlist

@@ -61,11 +61,6 @@
         <whatsthis>Dynamic playlist which removes the played track from the playlist and appends a similar song.</whatsthis>
         <default>false</default>
     </entry>
-    <entry key="Append Suggestions" type="Bool">
-        <label>Whether to automatically add suggestions to playlist</label>
-        <whatsthis>If set, amaroK adds suggestions to playlist, thus automatically generating playlist as you play tracks.</whatsthis>
-        <default>false</default>
-    </entry>
     <entry key="Show Tray Icon" type="Bool">
         <label>Whether to show icon in system tray</label>
         <whatsthis>Enable/Disable tray icon for amaroK.</whatsthis>

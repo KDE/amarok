@@ -8,9 +8,9 @@ VERSION 1.2.2:
     * When selecting multiple files, the "View/Edit Meta Information" dialog
       will show the tags that are common to all of them. (BR 100423)
     * A line graph equalizer added as a script "graphequalizer."
-    * Dynamic playlist mode which removes-once-played, whilst appending a
-      suggested song to the end of the playlist. (BR 99305)
-    * New DCOP call player: setEqualizer(preamp, the 10 eq settings)
+
+  CHANGES:
+    * Append suggestions is now Dynamic-mode, icon in statusbar too.
 
   BUGFIXES:
     * Track is set as a number in the database, so shouldn't be added rounded

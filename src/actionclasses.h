@@ -128,11 +128,6 @@ namespace amaroK
             RepeatPlaylistAction( KActionCollection *ac );
     };
 
-    class AppendSuggestionsAction : public ToggleAction
-    {
-        public:
-            AppendSuggestionsAction( KActionCollection *ac );
-    };
 
     class DynamicAction : public ToggleAction
     {
