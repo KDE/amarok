@@ -3,10 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #136 being the highest available (take this one for your next bug and increase here)
+           #137 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  FIX 136 <markey> Don't use kdFatal() when no engine plugin is found, cause it always makes the 
+                   crashhandler show up. Use exit() instead.
 
   FIX 135 <markey> Improve support for desktop environments other than KDE. GNOME users report, 
                    once you hide amaroK, there's no way to bring the application back into view,
