@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta2:
+  FIX: Caching for local cover images was broken for non-unique filenames.
   FIX: "Visualizations" menu entry was always disabled.
   FIX: Play button was sometimes stuck in disabled state.
   FIX: OSD was showing %artist - %track by default, now shows %title.
