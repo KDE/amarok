@@ -128,7 +128,7 @@ void OSDWidget::renderOSDText( const QString &text )
 
 void OSDWidget::showOSD( const QString &text, bool preemptive )
 {
-    if ( isEnabled() && !text.isEmpty() )
+    if ( !text.isEmpty() )
     {
         if ( preemptive == false && timerMin->isActive() )
         {

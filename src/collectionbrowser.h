@@ -92,6 +92,7 @@ class CollectionView : public KListView
         void slotCollapse( QListViewItem* );    
         void cat1Menu( int );
         void cat2Menu( int );
+        void doubleClicked( QListViewItem*, const QPoint&, int );
         void rmbPressed( QListViewItem*, const QPoint&, int );
         
         /** Creates a new playlist containing all selected tracks on-the-fly */

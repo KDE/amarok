@@ -22,7 +22,7 @@
     #include <config.h>
 #endif
 
-#include "engineobserver.h" //baseclass
+#include "engineobserver.h"        //baseclass
 #include <kapplication.h>          //baseclass
 #include <kurl.h>                  //needed for KURL::List (nested)
 #include <qserversocket.h>         //baseclass
@@ -30,8 +30,7 @@
 #define APP_VERSION "1.0-CVS"
 
 
-namespace amaroK
-{
+namespace amaroK {
     class OSD;
     class TrayIcon;
     class DcopHandler;
@@ -39,16 +38,16 @@ namespace amaroK
     static const int VOLUME_MAX = 100;
 }
 
-class PlaylistWindow;
 class MetaBundle;
 class PlayerWidget;
 class Playlist;
+class PlaylistWindow;
 
+class KActionCollection;
+class KGlobalAccel;
 class QColor;
 class QCString;
 class QEvent;
-class KActionCollection;
-class KGlobalAccel;
 
 
 class App : public KApplication, public EngineObserver
@@ -85,11 +84,10 @@ class App : public KApplication, public EngineObserver
         void slotShowOptions();
         void slotIncreaseVolume();
         void slotDecreaseVolume();
+        void slotShowVolumeOsd();
         void slotConfigShortcuts();
         void slotConfigGlobalShortcuts();
         void slotConfigToolBars();
-        void setOsdEnabled( bool );
-        void slotShowVolumeOSD();
 
     private slots:
         void handleLoaderArgs( QCString args );
@@ -139,6 +137,6 @@ class LoaderServer : public QServerSocket
         void newConnection( int socket );
 };
 
-#endif                                            // AMAROK_APP_H
+#endif  // AMAROK_APP_H
 
 extern App* pApp;

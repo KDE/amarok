@@ -174,6 +174,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
              this,         SLOT( slotExpand( QListViewItem* ) ) );
     connect( this,       SIGNAL( collapsed( QListViewItem* ) ),
              this,         SLOT( slotCollapse( QListViewItem* ) ) );
+    connect( this,       SIGNAL( doubleClicked( QListViewItem*, const QPoint&, int ) ),
+             this,         SLOT( doubleClicked( QListViewItem*, const QPoint&, int ) ) );
     connect( this,       SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,         SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
 
@@ -573,6 +575,18 @@ CollectionView::listSelected() {
                     list << static_cast<Item*>( grandChild ) ->url();
 
     return list;
+}
+
+
+void
+CollectionView::doubleClicked( QListViewItem* item, const QPoint& point, int ) //SLOT
+{
+    if ( !item ) return;
+    
+    if ( item->isOpen() )
+        slotCollapse( item );
+    else
+        slotExpand( item );
 }
 
 

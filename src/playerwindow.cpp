@@ -489,7 +489,7 @@ void PlayerWidget::wheelEvent( QWheelEvent *e )
 
     default:
         EngineController::instance()->setVolume( AmarokConfig::masterVolume() + e->delta() / 18 );
-        pApp->slotShowVolumeOSD();
+        pApp->slotShowVolumeOsd();
     }
 }
 

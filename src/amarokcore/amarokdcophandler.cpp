@@ -1,10 +1,10 @@
 /***************************************************************************
-                          amarokdcophandler.cpp  -  DCOP Implementation
-                             -------------------
-    begin                : Sat Oct 11 2003
-    copyright            : (C) 2003 by Stanislav Karchebny
-    email                : berkus@users.sf.net
- ***************************************************************************/
+                         amarokdcophandler.cpp  -  DCOP Implementation
+                            -------------------
+   begin                : Sat Oct 11 2003
+   copyright            : (C) 2003 by Stanislav Karchebny
+   email                : berkus@users.sf.net
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -17,8 +17,8 @@
 
 #include "amarokconfig.h"
 #include "amarokdcophandler.h"
-#include "engine/enginebase.h"
 #include "app.h"
+#include "engine/enginebase.h"
 #include "enginecontroller.h"
 
 #include <dcopclient.h>
@@ -26,117 +26,128 @@
 namespace amaroK
 {
 
-DcopHandler::DcopHandler()
-   : DCOPObject( "player" )
-   , m_nowPlaying( QString::null )
-{
-   // Register with DCOP
-   if ( !kapp->dcopClient()->isRegistered() )
-   {
-      kapp->dcopClient()->registerAs( "amarok", false );
-      kapp->dcopClient()->setDefaultObject( objId() );
-   }
-}
+    DcopHandler::DcopHandler()
+        : DCOPObject( "player" )
+        , m_nowPlaying( QString::null )
+    {
+        // Register with DCOP
+        if ( !kapp->dcopClient() ->isRegistered() ) {
+            kapp->dcopClient() ->registerAs( "amarok", false );
+            kapp->dcopClient() ->setDefaultObject( objId() );
+        }
+    }
 
-void DcopHandler::play()
-{
-   EngineController::instance()->play();
-}
+    
+    void DcopHandler::play()
+    {
+        EngineController::instance() ->play();
+    }
 
-void DcopHandler::playPause()
-{
-   if (isPlaying())  pause();
-   else              play();
-}
+    
+    void DcopHandler::playPause()
+    {
+        if ( isPlaying() ) pause();
+        else play();
+    }
 
-void DcopHandler::stop()
-{
-   EngineController::instance()->stop();
-}
-
-
-void DcopHandler::next()
-{
-   EngineController::instance()->next();
-}
+    
+    void DcopHandler::stop()
+    {
+        EngineController::instance() ->stop();
+    }
 
 
-void DcopHandler::prev()
-{
-   EngineController::instance()->previous();
-}
+    void DcopHandler::next()
+    {
+        EngineController::instance() ->next();
+    }
 
 
-void DcopHandler::pause()
-{
-   EngineController::instance()->pause();
-}
+    void DcopHandler::prev()
+    {
+        EngineController::instance() ->previous();
+    }
 
-void DcopHandler::setNowPlaying( const QString &s )
-{
-   m_nowPlaying = s;
-}
 
-QString DcopHandler::nowPlaying()
-{
-   return m_nowPlaying;
-}
+    void DcopHandler::pause()
+    {
+        EngineController::instance() ->pause();
+    }
 
-bool DcopHandler::isPlaying()
-{
-   return EngineController::engine() ? EngineController::engine()->loaded() : false;
-}
+    
+    void DcopHandler::setNowPlaying( const QString &s )
+    {
+        m_nowPlaying = s;
+    }
 
-int DcopHandler::trackTotalTime()
-{
-   return EngineController::instance()->trackLength() / 1000;
-}
+    
+    QString DcopHandler::nowPlaying()
+    {
+        return m_nowPlaying;
+    }
 
-void DcopHandler::seek(int s)
-{
-   EngineBase *engine = EngineController::instance()->engine();
-   if ( (s > 0) && ( engine->state() != EngineBase::Empty ) )
-   {
-      engine->seek( s * 1000 );
-   }
-}
+    
+    bool DcopHandler::isPlaying()
+    {
+        return EngineController::engine() ? EngineController::engine() ->loaded() : false;
+    }
 
-int DcopHandler::trackCurrentTime()
-{
-   //return time in seconds
-   return EngineController::engine()->position() / 1000;
-}
+    
+    int DcopHandler::trackTotalTime()
+    {
+        return EngineController::instance() ->trackLength() / 1000;
+    }
 
-void DcopHandler::addMedia(const KURL &url)
-{
-   pApp->insertMedia(url);
-}
+    
+    void DcopHandler::seek( int s )
+    {
+        EngineBase * engine = EngineController::instance() ->engine();
+        if ( ( s > 0 ) && ( engine->state() != EngineBase::Empty ) ) {
+            engine->seek( s * 1000 );
+        }
+    }
 
-void DcopHandler::addMediaList(const KURL::List &urls)
-{
-   pApp->insertMedia(urls);
-}
+    
+    int DcopHandler::trackCurrentTime()
+    {
+        //return time in seconds
+        return EngineController::engine() ->position() / 1000;
+    }
 
-void DcopHandler::setVolume(int volume)
-{
-   EngineController::instance()->setVolume( volume );
-}
+    
+    void DcopHandler::addMedia( const KURL &url )
+    {
+        pApp->insertMedia( url );
+    }
 
-void DcopHandler::volumeUp()
-{
-   pApp->slotIncreaseVolume(); // show OSD
-}
+    void DcopHandler::addMediaList( const KURL::List &urls )
+    {
+        pApp->insertMedia( urls );
+    }
 
-void DcopHandler::volumeDown()
-{
-   pApp->slotDecreaseVolume(); // show OSD
-}
+    
+    void DcopHandler::setVolume( int volume )
+    {
+        EngineController::instance() ->setVolume( volume );
+    }
 
-void DcopHandler::enableOSD(bool enable)
-{
-   pApp->setOsdEnabled(enable);
-}
+    void DcopHandler::volumeUp()
+    {
+        pApp->slotIncreaseVolume(); // show OSD
+    }
 
-}
+    
+    void DcopHandler::volumeDown()
+    {
+        pApp->slotDecreaseVolume(); // show OSD
+    }
+
+    
+    void DcopHandler::enableOSD( bool enable )
+    {
+        AmarokConfig::setOsdEnabled( enable );
+    }
+
+} //namespace amaroK
 
 #include "amarokdcophandler.moc"

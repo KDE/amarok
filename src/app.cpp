@@ -712,7 +712,9 @@ void App::engineStateChanged( EngineBase::EngineState state )
 
 void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
-    m_pOSD->showTrack( bundle );
+    if ( AmarokConfig::osdEnabled() )
+        m_pOSD->showTrack( bundle );
+    
     m_pDcopHandler->setNowPlaying( bundle.prettyTitle() );
     m_pPlaylistWindow->m_contextBrowser->showContextForItem( bundle );
     PlaylistToolTip::add( m_pTray, bundle );
@@ -789,15 +791,6 @@ void App::slotShowOptions()
     }
 }
 
-void App::setOsdEnabled( bool enabled ) //SLOT //FIXME required due to dcopHandler
-{
-    m_pOSD->setEnabled( enabled );
-}
-
-void App::slotShowVolumeOSD() //SLOT //FIXME required due to dcopHandler
-{
-    m_pOSD->showVolume();
-}
 
 void App::slotIncreaseVolume()
 {
@@ -805,6 +798,7 @@ void App::slotIncreaseVolume()
     controller->setVolume( controller->engine()->volume() + 100 / 25 );
     m_pOSD->showVolume();
 }
+
 
 void App::slotDecreaseVolume()
 {
@@ -814,15 +808,24 @@ void App::slotDecreaseVolume()
     m_pOSD->showVolume();
 }
 
+
+void App::slotShowVolumeOsd()    //FIXME remove this crap
+{
+    m_pOSD->showVolume();
+}
+
+
 void App::slotConfigShortcuts()
 {
     KKeyDialog::configure( actionCollection(), m_pPlaylistWindow );
 }
 
+
 void App::slotConfigGlobalShortcuts()
 {
     KKeyDialog::configure( m_pGlobalAccel, true, 0, true );
 }
+
 
 #include <kedittoolbar.h>
 void App::slotConfigToolBars()
