@@ -340,6 +340,7 @@ CollectionReader::readTags( const QStringList& entries ) {
 
             if ( validExtensions.contains( url.filename().mid( url.filename().findRev('.')+1 ) ) )
             {
+                kdDebug() << url.directory() << " - " << url.filename() << endl;
                 insertdb->addImageToPath( url.directory(), url.filename(), true );
             }
         }
