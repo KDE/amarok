@@ -148,6 +148,16 @@ PlaylistLoader::postItem( const KURL &url, const QString &title, const uint leng
     QApplication::postEvent( Playlist::instance(), new ItemEvent( bundle ) );
 }
 
+void
+PlaylistLoader::postItem( const KURL &url, const uint length )
+{
+    MetaBundle bundle( url, true, m_db );
+
+    bundle.setLength( length );
+
+    QApplication::postEvent( Playlist::instance(), new ItemEvent( bundle ) );
+}
+
 
 #include <kdebug.h>
 bool
@@ -175,7 +185,6 @@ PlaylistLoader::loadPlaylist( const QString &path, Format type )
             {
                 QString extinf = str.section( ':', 1);
                 length = extinf.section( ',', 0, 0 ).toInt();
-                title = extinf.section( ',', 1 );
 
                 if ( length == 0 ) length = MetaBundle::Undetermined;
             }
@@ -185,7 +194,7 @@ PlaylistLoader::loadPlaylist( const QString &path, Format type )
                 if ( !( str[ 0 ] == '/' || str.contains( "://" ) ) )
                     str.prepend( dir );
 
-                postItem( KURL::fromPathOrURL( str ), title, length );
+                postItem( KURL::fromPathOrURL( str ), length );
 
                 length = MetaBundle::Undetermined;
                 title = QString();

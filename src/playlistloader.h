@@ -90,6 +90,7 @@ public:
 protected:
     virtual void run();
     virtual void postItem( const KURL&, const QString&, const uint );
+    virtual void postItem( const KURL&, const uint );
 
     bool loadPlaylist( const QString& ); //inlined
     bool loadPlaylist( const QString&, Format );
