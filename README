@@ -63,7 +63,7 @@ optional
     * OpenGL accelerated X-Server
       (visualization rendering)
 
-    * Libvisual 0.1.6 + SDL 1.2
+    * Libvisual 0.2.0 + SDL 1.2
       (visualization framework)
       http://libvisual.sf.net
       http://www.libsdl.org
