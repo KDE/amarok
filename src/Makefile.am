@@ -115,3 +115,14 @@ messages: rc.cpp
 	        $(XGETTEXT) $$LIST -o $(podir)/amarok.pot; \
 	fi
 
+install-exec-hook:
+	@echo ""
+	@echo "==========================="
+	@echo "=  amaroK - INSTALLED  ================================"
+	@echo "=                                                     ="
+	@echo "=  Type amarok to start!                              ="
+	@echo "=                                                     ="
+	@echo "=  If you have problems, please consult the README;   ="
+	@echo "=  if the problems continue join us on #amarok.       ="
+	@echo "=                                                     ="
+	@echo "======================================================="
