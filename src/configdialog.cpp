@@ -48,17 +48,18 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     Options5 *opt5 = new Options5( 0, "OSD" );
 
     //TODO find out when KConfig XT can handle QComboBoxes
-    m_pSoundSystem = opt4->sound_system;
+    m_soundSystem = opt4->sound_system;
 
     // Sound System
-    QStringList systems;
     KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'engine'" );
 
-    for ( KTrader::OfferList::ConstIterator it = offers.begin(); it != offers.end(); ++it )
-        systems << ( *it )->property( "X-KDE-amaroK-name" ).toString();
-
-    m_pSoundSystem->insertStringList( systems );
-
+    for ( KTrader::OfferList::ConstIterator it = offers.begin(); it != offers.end(); ++it ) {
+        m_soundSystem->insertItem( (*it)->name() );
+        // Save name properties in QMap for lookup
+        m_pluginName[(*it)->name()] = (*it)->property( "X-KDE-amaroK-name" ).toString();
+        m_pluginAmarokName[(*it)->property( "X-KDE-amaroK-name" ).toString()] = (*it)->name();   
+    }
+        
     // add pages
     addPage( new Options1( 0, "General" ), i18n( "General" ), "misc", i18n( "Configure General Options" ) );
     addPage( new Options2( 0, "Fonts" ), i18n( "Fonts" ), "fonts", i18n( "Configure Fonts" ) );
@@ -66,7 +67,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     addPage( opt4, i18n( "Playback" ), "kmix", i18n( "Configure Playback" ) );
     addPage( opt5, i18n( "OSD" ), "tv", i18n( "Configure On-Screen-Display" ) );
     
-    connect( m_pSoundSystem, SIGNAL( activated( int ) ), SLOT( settingsChangedSlot() ) );
+    connect( m_soundSystem, SIGNAL( activated( int ) ), SLOT( settingsChangedSlot() ) );
     connect( opt4->pushButton_aboutEngine, SIGNAL( clicked() ), this, SLOT( aboutEngine() ) );
     connect( opt5, SIGNAL( settingsChanged() ), SLOT( settingsChangedSlot() ) ); //see options5.ui.h
 }
@@ -83,7 +84,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
  */
 void AmarokConfigDialog::updateSettings()
 {
-    AmarokConfig::setSoundSystem( m_pSoundSystem->currentText() );
+    AmarokConfig::setSoundSystem( m_pluginName[m_soundSystem->currentText()] );
     
     OSDWidget *osd = (OSDWidget*)child( "osdpreview" );
     AmarokConfig::setOsdAlignment( osd->alignment() );
@@ -103,7 +104,7 @@ void AmarokConfigDialog::updateSettings()
  */
 void AmarokConfigDialog::updateWidgets()
 {
-    m_pSoundSystem->setCurrentText( AmarokConfig::soundSystem() );
+    m_soundSystem->setCurrentText( m_pluginAmarokName[AmarokConfig::soundSystem()] );
     
     soundSystemChanged();
 }
@@ -116,7 +117,7 @@ void AmarokConfigDialog::updateWidgets()
  */
 void AmarokConfigDialog::updateWidgetsDefault()
 {
-    m_pSoundSystem->setCurrentItem( 0 );
+    m_soundSystem->setCurrentItem( 0 );
     
     soundSystemChanged();
 }
@@ -136,7 +137,7 @@ bool AmarokConfigDialog::hasChanged()
     bool engineChanged = false;
     if ( m_engineConfig ) engineChanged = m_engineConfig->hasChanged();
                
-    return  m_pSoundSystem->currentText() != AmarokConfig::soundSystem() ||
+    return  m_soundSystem->currentText() != m_pluginAmarokName[AmarokConfig::soundSystem()] ||
             osd->alignment()              != AmarokConfig::osdAlignment() ||
             osd->y()                      != AmarokConfig::osdYOffset() ||
             engineChanged;
@@ -156,7 +157,7 @@ bool AmarokConfigDialog::isDefault()
 
 void AmarokConfigDialog::aboutEngine() //SLOT
 {
-    PluginManager::showAbout( QString( "[X-KDE-amaroK-name] == '%1'" ).arg( m_pSoundSystem->currentText() ) );
+    PluginManager::showAbout( QString( "Name == '%1'" ).arg( m_soundSystem->currentText() ) );
 }
 
 

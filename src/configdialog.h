@@ -16,6 +16,7 @@ email                : markey@web.de
 #ifndef AMAROKCONFIGDIALOG_H
 #define AMAROKCONFIGDIALOG_H
 
+#include <qmap.h>
 #include <kconfigdialog.h>
 
 class QComboBox;
@@ -47,9 +48,12 @@ class AmarokConfigDialog : public KConfigDialog
     private:
         void soundSystemChanged();
 
-        QComboBox* m_pSoundSystem;
+        QComboBox* m_soundSystem;
         amaroK::PluginConfig* m_engineConfig;
         QVBox* m_enginePage;
+
+        QMap<QString, QString> m_pluginName;
+        QMap<QString, QString> m_pluginAmarokName;
 };
 
 
