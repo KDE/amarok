@@ -20,7 +20,6 @@
 
 #include "engineobserver.h"  //baseclass
 #include "playlistwindow.h"  //friend
-#include "contextbrowser.h"  //friend
 
 #include <qstringlist.h>     //stack allocated
 #include <qptrlist.h>        //stack allocated
