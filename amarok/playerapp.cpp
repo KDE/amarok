@@ -1026,7 +1026,15 @@ void PlayerApp::slotConnectPlayObj()
             m_XFadeCurrent = "invalue2";
         else
             m_XFadeCurrent = "invalue1";
-        
+
+        if ( !m_XFadeRunning )
+        {
+            if ( m_XFadeCurrent == "invalue2" )
+                m_XFade.percentage( m_XFadeValue = 0.0 );
+            else
+                m_XFade.percentage( m_XFadeValue = 1.0 );
+        }
+                                
         Arts::connect( m_pPlayObject->object(), "left", m_XFade, ( m_XFadeCurrent + "_l" ).latin1() );
         Arts::connect( m_pPlayObject->object(), "right", m_XFade, ( m_XFadeCurrent + "_r" ).latin1() );
     }
