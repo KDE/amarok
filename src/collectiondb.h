@@ -166,6 +166,9 @@ class CollectionDB : public QObject, public EngineObserver
         /** Saves images obtained from CoverFetcher */
         bool setAlbumImage( const QString& artist, const QString& album, QImage img, const QString& amazonUrl = QString::null );
 
+        QString findImageByMetabundle( MetaBundle trackInformation, const uint = 1 );
+        QString findImageByArtistAlbum( const QString &artist, const QString &album, const uint width = 1 );
+        QString albumImage( MetaBundle trackInformation, const uint width = 1 );
         QString albumImage( const uint artist_id, const uint album_id, const uint width = 1 );
         QString albumImage( const QString &artist, const QString &album, const uint width = 1 );
 
@@ -209,6 +212,7 @@ class CollectionDB : public QObject, public EngineObserver
         void scan( const QStringList& folders, bool recursively, bool importPlaylists );
         void scanModifiedDirs( bool recursively, bool importPlaylists );
 
+        QCString makeWidthKey( uint width );
         int sqlInsertID( DbConnection *conn );
         QString artistValue( uint id );
         QString albumValue( uint id );

@@ -41,6 +41,11 @@
 #include <time.h>                 //query()
 #include <unistd.h>               //usleep()
 
+#include <mpegfile.h>
+#include <mpegfile.h>
+#include <id3v2tag.h>
+#include <attachedpictureframe.h>
+#include <tbytevector.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionDB
@@ -739,13 +744,71 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage
 
 
 QString
-CollectionDB::albumImage( const QString &artist, const QString &album, uint width )
+CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width ) 
 {
-    // we aren't going to need a 1x1 size image. this is just a quick hack to be able to show full size images.
-    if ( width == 1) width = AmarokConfig::coverPreviewSize();
+    QCString widthKey = makeWidthKey ( width );
+    QCString tagKey = md5sum( trackInformation.url().path(), trackInformation.artist() ); //what's more unique than the file name?
+    QDir tagCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/tagcover/" ) );
 
-    QCString widthKey = QString::number( width ).local8Bit() + "@";
+    //FIXME: the cashed versions will never be refreshed
+    if ( tagCoverDir.exists( widthKey + tagKey ) )
+    {
+        // cached version 
+        return tagCoverDir.filePath( widthKey + tagKey );
+    } else
+    {
+        // look into the tag
+        TagLib::MPEG::File f( QFile::encodeName( trackInformation.url().path() ) );
+        TagLib::ID3v2::Tag *tag = f.ID3v2Tag();
+  
+        if ( tag )
+        {
+            TagLib::ID3v2::FrameList l = f.ID3v2Tag()->frameListMap()["APIC"];
+            kdDebug() << "got an ID3v2 Tag " << endl;
 
+            if ( !l.isEmpty() )
+            {
+                kdDebug() << "Found APIC frame(s)" << endl;
+                TagLib::ID3v2::Frame *f = l.front();
+                TagLib::ID3v2::AttachedPictureFrame *ap = (TagLib::ID3v2::AttachedPictureFrame*)f;
+                  
+                const TagLib::ByteVector &imgVector = ap->picture();
+                kdDebug() << "Size of image: " <<  imgVector.size() << " byte" << endl;
+        
+                QByteArray imgData;
+                const char *tempCString = imgVector.data();
+        
+                // is there a better way to do this?
+                imgData.setRawData ( tempCString , imgVector.size() );
+                QImage image = QImage( imgData ); 
+        
+                // if we don't reset, the whole system get's meesed up
+                imgData.resetRawData ( tempCString , imgVector.size() );
+                if (! image.isNull() )
+                {
+                    if ( width > 1 )
+                    {
+                        image.smoothScale( width, width, QImage::ScaleMin ).save( tagCoverDir.filePath( widthKey + tagKey ), "PNG" );
+                        return tagCoverDir.filePath( widthKey + tagKey ) ;
+                    } else
+                    {
+                        image.save( tagCoverDir.filePath( tagKey ), "PNG" );
+                        return tagCoverDir.filePath( tagKey );
+                    }    
+                } // image.isNull
+            } // apic list is empty 
+        } // tag is empty
+    } // caching
+ 
+    return QString::null;
+}
+
+
+QString
+CollectionDB::findImageByArtistAlbum( const QString &artist, const QString &album, uint width )
+{
+    QCString widthKey = makeWidthKey( width );
+  
     if ( artist.isEmpty() && album.isEmpty() )
         return notAvailCover( width );
     else
@@ -764,7 +827,7 @@ CollectionDB::albumImage( const QString &artist, const QString &album, uint widt
                 {
                     QImage img( largeCoverDir.filePath( key ) );
                     img.smoothScale( width, width, QImage::ScaleMin ).save( m_cacheDir.filePath( widthKey + key ), "PNG" );
-
+    
                     return m_cacheDir.filePath( widthKey + key );
                 }
                 else
@@ -776,11 +839,51 @@ CollectionDB::albumImage( const QString &artist, const QString &album, uint widt
     }
 }
 
+
 QString
 CollectionDB::albumImage( const uint artist_id, const uint album_id, const uint width )
 {
     return albumImage( artistValue( artist_id ), albumValue( album_id ), width );
 }
+
+
+QString
+CollectionDB::albumImage(const QString &artist, const QString &album, uint width ) 
+{
+    // we aren't going to need a 1x1 size image. this is just a quick hack to be able to show full size images.
+    if ( width == 1) width = AmarokConfig::coverPreviewSize();
+  
+    // I hate accessing big static globals directly... any chance that bundle is undefined?
+    const MetaBundle &currentTrack = EngineController::instance()->bundle();
+  
+    // ok, let't first have a look into the file if it has it's own image:
+    QString path = findImageByMetabundle(currentTrack, width);
+  
+    if ( !path.isNull() )
+        return path;
+    else
+        return findImageByArtistAlbum( artist, album, width );
+}
+
+
+QString
+CollectionDB::albumImage( MetaBundle trackInformation, uint width ) 
+{
+    // we aren't going to need a 1x1 size image. this is just a quick hack to be able to show full size images.
+    if ( width == 1) width = AmarokConfig::coverPreviewSize();
+  
+    QString path = findImageByMetabundle( trackInformation, width );
+    if ( path.isNull() )
+      path = findImageByArtistAlbum( trackInformation.artist(), trackInformation.album(), width );
+
+    return path;
+}
+
+QCString 
+CollectionDB::makeWidthKey( uint width ) 
+{
+    return QString::number( width ).local8Bit() + "@";
+} 
 
 
 QString
