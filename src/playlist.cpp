@@ -1058,11 +1058,15 @@ Playlist::viewportPaintEvent( QPaintEvent *e )
         QSimpleRichText t( i18n(
                 "<div align=center>"
                   "<h3>The Playlist</h3>"
-                    "This is the playlist, to create a listing, "
-                    "drag tracks from the browser-panels on the left and drop them here, "
-                    "and then double-click them to start playback!"
+                    "This is the playlist. "
+                    "To create a listing, "
+                      "<b>drag</b> tracks from the browser-panels on the left, "
+                      "<b>drop</b> them here and then <b>double-click</b> them to start playback!"
                   "<h3>The Browsers</h3>"
-                    "The browsers are the source of all your music."
+                    "The browsers are the source of all your music. "
+                    "The collection-browser holds your collection. "
+                    "The playlist-browser holds your pre-set playlistings. "
+                    "The file-browser shows a file-selector which you can use to access any music on your computer. "
                 "</div>" ), QApplication::font() );
 
         const int wd3 = viewport()->width() / 3;
