@@ -626,9 +626,9 @@ void App::setupColors()
 }
 
 
-void App::insertMedia( const KURL::List &list )
+void App::insertMedia( const KURL::List &list, bool directPlay, bool preventDoubles )
 {
-    m_pPlaylistWindow->insertMedia( list );
+    m_pPlaylistWindow->insertMedia( list, false, directPlay, preventDoubles );
 }
 
 

@@ -242,8 +242,21 @@ QString Playlist::defaultPlaylistPath() //static
 }
 
 
-void Playlist::insertMedia( const KURL::List &list, bool directPlay )
+void Playlist::insertMedia( KURL::List list, bool directPlay, bool preventDoubles )
 {
+    if ( preventDoubles )
+        for ( QListViewItemIterator it( this ); it.current(); ++it )
+        {
+            PlaylistItem *tItem = (PlaylistItem *)it.current();
+            if ( list.contains( tItem->url() ) )
+            {
+                list.remove( tItem->url() );
+                
+                if ( directPlay )
+                    activate ( tItem );
+            }
+        }
+
     if( !list.isEmpty() )
     {
         //FIXME lastItem() scales badly!
@@ -593,7 +606,8 @@ int Playlist::mapToLogicalColumn( int physical )
 
 void Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool directPlay )
 {
-   //we don't check list.isEmpty(), this is a private function so we shouldn't have to
+    //we don't check list.isEmpty(), this is a private function so we shouldn't have to
+    
     PlaylistLoader *loader = new PlaylistLoader( list, this, after );
 
     if( loader )
@@ -861,7 +875,7 @@ void Playlist::setCurrentTrack( PlaylistItem *item )
         prev->m_playing = false;
         prev->invalidateHeight();
     }
-        
+
     repaintItem( prev );
     repaintItem( item );
 

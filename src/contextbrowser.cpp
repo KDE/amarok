@@ -75,12 +75,12 @@ void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
 
             KURL tmp;
             tmp.setPath( values[i] );
-            pApp->insertMedia( tmp );
+            pApp->insertMedia( tmp, false, true );
         }
     }
 
     if ( url.protocol() == "file" )
-        pApp->insertMedia( url );
+        pApp->insertMedia( url, true, true );
 }
 
 

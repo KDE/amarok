@@ -60,7 +60,7 @@ class App : public KApplication, public EngineObserver
 
         bool playObjectConfigurable();
         void setupColors();
-        void insertMedia( const KURL::List& );
+        void insertMedia( const KURL::List&, bool directPlay = false, bool preventDoubles = false );
         static void initCliArgs( int argc, char *argv[] );
         amaroK::DcopHandler *dcopHandler() const { return m_pDcopHandler; }
 

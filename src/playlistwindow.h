@@ -56,7 +56,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         //convenience functions
         void insertMedia( const QString& );
         void insertMedia( const KURL& );
-        void insertMedia( const KURL::List&, bool clearList = false, bool directPlay = false );
+        void insertMedia( const KURL::List&, bool clearList = false, bool directPlay = false, bool preventDoubles = false );
         void restoreSessionPlaylist();
         bool isAnotherTrack() const;
 

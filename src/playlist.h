@@ -79,7 +79,7 @@ class Playlist : private KListView, public EngineObserver
         Playlist( QWidget*, KActionCollection*, const char* = 0 );
         ~Playlist();
 
-        void insertMedia( const KURL::List&, bool directPlay = false );
+        void insertMedia( KURL::List list, bool directPlay = false, bool preventDoubles = false );
         bool isEmpty() const { return childCount() == 0; }
         bool isTrackBefore() const;
         bool isTrackAfter() const;
@@ -116,7 +116,7 @@ class Playlist : private KListView, public EngineObserver
         void itemCountChanged(int newCount);
 
     public slots:
-        void insertMedia( const KURL &u ) { insertMedia( KURL::List(u), false ); }
+        void insertMedia( const KURL &u ) { insertMedia( KURL::List(u), false, false ); }
         void handleOrderPrev(); //DEPRECATE
         void handleOrderCurrent(); //DEPRECATE
         void handleOrder( Playlist::RequestType = Next ); //DEPRECATE
@@ -144,7 +144,7 @@ class Playlist : private KListView, public EngineObserver
         PlaylistItem *currentTrack() const { return m_currentTrack; }
         void setCurrentTrack( PlaylistItem* );
         void showTrackInfo( PlaylistItem* ) const;
-        void insertMediaInternal( const KURL::List&, PlaylistItem*, bool = false );
+        void insertMediaInternal( const KURL::List&, PlaylistItem*, bool directPlay = false );
         bool saveState( QStringList& );
         void switchState( QStringList&, QStringList& );
         void readAudioProperties( PlaylistItem* );

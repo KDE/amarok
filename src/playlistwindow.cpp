@@ -252,11 +252,11 @@ void PlaylistWindow::createGUI()
 }
 
 
-void PlaylistWindow::insertMedia( const KURL::List &list, bool clearList, bool directPlay )
+void PlaylistWindow::insertMedia( const KURL::List &list, bool clearList, bool directPlay, bool preventDoubles )
 {
     if( clearList ) m_playlist->clear(); //FIXME clear currently is not 100% bug free, it might not work as expected
 
-    m_playlist->insertMedia( list, directPlay );
+    m_playlist->insertMedia( list, directPlay, preventDoubles );
 }
 
 
