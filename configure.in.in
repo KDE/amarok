@@ -415,7 +415,18 @@ AM_CONDITIONAL(with_xmmswrapper, test x$build_xmmswrapper = xyes )
 # BEGIN LIBVISUAL CHECK
 ###############################################################################
 
-if test x$PKGCONFIGFOUND = xyes; then
+## libvisual plugin depends on sdl
+AC_CHECK_PROG(SDL_CONFIG, sdl-config, yes)
+
+if test x$SDL_CONFIG = xyes; then
+    sdl_cflags=`sdl-config --cflags`
+    sdl_libs=`sdl-config --libs`
+fi
+
+AC_SUBST(sdl_cflags)
+AC_SUBST(sdl_libs)
+
+if test x$PKGCONFIGFOUND = xyes -a x$SDL_CONFIG = xyes; then
 
     PKG_CHECK_MODULES(LIBVISUAL, libvisual >= 0.2.0, [build_libvisual="yes"], [build_libvisual="no"])
 
