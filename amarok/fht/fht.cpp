@@ -94,6 +94,63 @@ void FHT::scale(float *p, float d)
 }
 
 
+/**
+  * Exponentially Weighted Moving Average (EWMA) filter.
+  * @d is the filtered data, @s is fresh input, @w is the
+  * weighting factor.
+  */
+void FHT::ewma(float *d, float *s, float w)
+{
+	for (int i = 0; i < (m_num / 2); i++, d++, s++)
+		*d = *d * w + *s * (1 - w);
+}
+
+
+/**
+  * Fourier spectrum.
+  */
+void FHT::spectrum(float *p)
+{
+	power2(p);
+	for (int i = 0; i < (m_num / 2); i++, p++)
+		*p = (float)sqrt(*p * .5);
+}
+
+
+/**
+  * Calculates a mathematically correct FFT power spectrum.
+  * If further scaling is applied later, use power2 instead
+  * and factor the 0.5 in the final scaling factor.
+  * @see FHT::power2()
+  */
+void FHT::power(float *p)
+{
+	power2(p);
+	for (int i = 0; i < (m_num / 2); i++)
+		*p++ *= .5;
+}
+
+
+/**
+  * Calculates an FFT power spectrum with doubled values as a
+  * result. The values need to be multiplied by 0.5 to be exact.
+  * Note that you only get @f$2^{n-1}@f$ power values for a data set
+  * of @f$2^n@f$ input values.
+  * @see FHT::power()
+  */
+void FHT::power2(float *p)
+{
+	int i;
+	float *q;
+	_transform(p, m_num, 0);
+
+	*p = (*p * *p), *p += *p, p++;
+
+	for (i = 1, q = p + m_num - 2; i < (m_num / 2); i++, --q)
+		*p++ = (*p * *p) + (*q * *q);
+}
+
+
 void FHT::transform(float *p)
 {
 	if (m_num == 8)
@@ -132,52 +189,6 @@ void FHT::transform8(float *p)
 	*--p = a_ce_g + b_df_h;
 	*--p = ac_e_g + b_f2;
 	*--p = aceg + bdfh;
-}
-
-
-/**
-  * Fourier spectrum.
-  */
-void FHT::spectrum(float *p)
-{
-	power2(p);
-	for (int i = 0; i < (m_num / 2); i++) {
-		*p++ = (float)sqrt(*p * .5);
-	}
-}
-
-
-/**
-  * Calculates a mathematically correct FFT power spectrum.
-  * If further scaling is applied later, use power2 instead
-  * and factor the 0.5 in the final scaling factor.
-  * @see FHT::power2()
-  */
-void FHT::power(float *p)
-{
-	power2(p);
-	for (int i = 0; i < (m_num / 2); i++)
-		*p++ *= .5;
-}
-
-
-/**
-  * Calculates an FFT power spectrum with doubled values as a
-  * result. The values need to be multiplied by 0.5 to be exact.
-  * Note that you only get @f$2^{n-1}@f$ power values for a data set
-  * of @f$2^n@f$ input values.
-  * @see FHT::power()
-  */
-void FHT::power2(float *p)
-{
-	int i;
-	float *q;
-	_transform(p, m_num, 0);
-
-	*p = (*p * *p), *p += *p, p++;
-
-	for (i = 1, q = p + m_num - 2; i < (m_num / 2); i++, --q)
-		*p++ = (*p * *p) + (*q * *q);
 }
 
 

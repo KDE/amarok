@@ -47,7 +47,7 @@ int main(void)
 
 	f.copy(s3, s1);
 	f.power2(s3);
-	f.scale(s3, 1.0 / (f.size() * f.size() * 128.0));
+	f.scale(s3, 1.0 / (f.size() * f.size() * 256.0));
 
 	printf("Input\t\tFHT\t\tScaled Power Spectrum\n");
 	for (int i = 0; i < num; i++)

@@ -35,14 +35,15 @@ public:
 	~FHT();
 	inline int	sizeExp() const { return m_exp2; }
 	inline int	size() const { return m_num; }
-	void		transform8(float *);
-	void		transform(float *);
-	void		spectrum(float *);
-	void		power(float *);
-	void		power2(float *);
 	float		*copy(float *, float *);
 	float		*clear(float *);
 	void		scale(float *, float);
+	void		ewma(float *, float *, float);
+	void		spectrum(float *);
+	void		power(float *);
+	void		power2(float *);
+	void		transform8(float *);
+	void		transform(float *);
 };
 
 #endif
