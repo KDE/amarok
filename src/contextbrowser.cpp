@@ -744,7 +744,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         {
             browser->write( QStringx ( "<tr>"
                                         "<td class='rbalbum' onClick='window.location.href=\"album:%1 @@@ %2\"' height='42' valign='top'>"
-                                         "<a href='javascript:window.location.href=\"fetchcover:%3 @@@ %4\"'><img align='left' hspace='2' src='%5'></a>"
+                                         "<a href='fetchcover:%3 @@@ %4'><img align='left' hspace='2' src='%5'></a>"
                                          /* *** UGLY HACK ALERT ***
                                             Without the 2 <br> after %9, hover borks on mouseover.
                                             TODO: find out why + make it nice ;) */
