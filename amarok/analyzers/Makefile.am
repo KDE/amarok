@@ -19,6 +19,7 @@ noinst_HEADERS = \
 	xmasdrug.h \
 	glanalyzer.h \
 	glanalyzer2.h \
+	glanalyzer3.h \
 	blowanalyzer.h
 
 libanalyzers_a_SOURCES = \
@@ -33,4 +34,5 @@ libanalyzers_a_SOURCES = \
 	baranalyzer2.cpp \
 	glanalyzer.cpp \
 	glanalyzer2.cpp \
+	glanalyzer3.cpp \
 	blowanalyzer.cpp
