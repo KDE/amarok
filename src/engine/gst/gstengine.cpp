@@ -657,7 +657,7 @@ GstEngine::endOfStreamReached()  //SLOT
             const bool fading = input->state() == InputPipeline::FADE_OUT ||
                                 input->state() == InputPipeline::XFADE_OUT;
 
-            input->prepareToDie();
+            destroyInput( input );
             m_eos = true;
 
             if ( !fading ) emit trackEnded();
@@ -968,8 +968,7 @@ InputPipeline::~InputPipeline()
 
     if ( GST_IS_THREAD( thread ) ) {
         kdDebug() << "Unreffing input thread.\n";
-
-        gst_element_set_state( thread, GST_STATE_NULL );
+//         gst_element_set_state( thread, GST_STATE_NULL );
         gst_object_unref( GST_OBJECT( thread ) );
     }
 
@@ -989,6 +988,7 @@ void InputPipeline::prepareToDie()
     if ( GST_IS_THREAD( thread ) )
     {
         gst_element_set_state( thread, GST_STATE_PAUSED );
+
         // Wait until queue is empty
         int filled = 1;
         while( filled ) {
