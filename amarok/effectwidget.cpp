@@ -44,39 +44,14 @@
 #include <kstandarddirs.h>
 
 
-// CLASS EffectListItem --------------------------------------------------------
-
-EffectListItem::EffectListItem( QListView *parent, const QString &label )
-        : QListViewItem( parent, label )
-        , m_id( pApp->m_pEngine->createEffect( label ) )
-        
-{}
-
-
-EffectListItem::EffectListItem( QListView *parent, const QString &label, long id )
-        : QListViewItem( parent, label )
-        , m_id( id )
-{}
-
-
-EffectListItem::~EffectListItem()
-{}
-
-
-void EffectListItem::configure()
-{
-    pApp->m_pEngine->configureEffect( m_id );
-}
-
-
-// CLASS EffectWidget --------------------------------------------------------
-
-static const int BUTTON_WIDTH = 30;
-
+EffectWidget* EffectWidget::self = 0;
+QPoint        EffectWidget::save_pos;
 
 EffectWidget::EffectWidget( QWidget* parent )
         : KDialogBase( parent, "EffectWidget", false, kapp->makeStdCaption( i18n("Effects") ) )
 {
+    setWFlags( Qt::WDestructiveClose );
+    
     showButtonApply( false );
     showButtonCancel( false );
     setButtonText( Ok, i18n("Close") );
@@ -139,15 +114,21 @@ EffectWidget::EffectWidget( QWidget* parent )
 
 
 EffectWidget::~EffectWidget()
-{}
+{
+    self = 0;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE METHODS
 ////////////////////////////////////////////////////////////////////////////////
 
-void EffectWidget::hideEvent( QHideEvent* )
+void EffectWidget::closeEvent( QCloseEvent* e )
 {
-    emit sigHide( false );
+    kdDebug() << "[EffectWidget::closeEvent()]" << endl;
+    
+    save_pos = pos();
+    QWidget::closeEvent( e );
 }
 
 
@@ -189,5 +170,34 @@ void EffectWidget::slotItemClicked( QListViewItem *pCurrentItem )
         m_pButtonBotConf->setEnabled( false );
     }
 }
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// CLASS EffectListItem
+////////////////////////////////////////////////////////////////////////////////
+
+EffectListItem::EffectListItem( QListView *parent, const QString &label )
+        : QListViewItem( parent, label )
+        , m_id( pApp->m_pEngine->createEffect( label ) )
+        
+{}
+
+
+EffectListItem::EffectListItem( QListView *parent, const QString &label, long id )
+        : QListViewItem( parent, label )
+        , m_id( id )
+{}
+
+
+EffectListItem::~EffectListItem()
+{}
+
+
+void EffectListItem::configure()
+{
+    pApp->m_pEngine->configureEffect( m_id );
+}
+
 
 #include "effectwidget.moc"

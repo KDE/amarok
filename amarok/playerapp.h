@@ -22,9 +22,8 @@
 #include <config.h>
 #endif
 
-#include <kuniqueapplication.h>
-#include <kurl.h>
-#include <vector>
+#include <kuniqueapplication.h>    //baseclass
+#include <kurl.h>                  //needed for KURL::List (nested)
 
 #define APP_VERSION "0.9-CVS"
 
@@ -98,10 +97,9 @@ class PlayerApp : public KUniqueApplication
     private slots:
         void applySettings();
         void proxyError();
-
+        void showEffectWidget();
+        
     signals:
-        //void sigScope( std::vector<float> *s );
-        //void sigPlay();
         void metaData( const MetaBundle& );
         void orderPreviousTrack();
         void orderCurrentTrack();
@@ -124,17 +122,15 @@ class PlayerApp : public KUniqueApplication
         void setupScrolltext();
 
         // ATTRIBUTES ------
-        QTimer *m_pMainTimer;
-        QTimer *m_pAnimTimer;
-        long m_length;
-        int m_playRetryCounter;
-        int m_delayTime;
-
+        QTimer    *m_pMainTimer;
+        QTimer    *m_pAnimTimer;
+        long      m_length;
+        int       m_playRetryCounter;
+        int       m_delayTime;
 
         OSDWidget *m_pOSD;
-        bool m_proxyError;
+        bool      m_proxyError;
 };
-
 
 #endif                                            // AMAROK_PLAYERAPP_H
 

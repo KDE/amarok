@@ -88,22 +88,6 @@ PlayerApp::PlayerApp()
 
     readConfig();
 
-    { //<EffectConfigWidget>
-
-        //TODO currently we can't only create on demand
-        //     as the class holds the effectslist, solution: make the list a static member
-        //     with a static functions for retrieval etc.
-
-        EffectWidget *pEffectWidget = new EffectWidget(); //gets destroyed with PlayerWidget
-
-        connect( m_pPlayerWidget->m_pButtonEq, SIGNAL( toggled  ( bool ) ),
-                 pEffectWidget,                SLOT  ( setShown ( bool ) ) );
-        connect( pEffectWidget,                SIGNAL( sigHide  ( bool ) ),
-                 m_pPlayerWidget->m_pButtonEq, SLOT  ( setOn    ( bool ) ) );
-        connect( m_pPlayerWidget,              SIGNAL( destroyed() ),
-                 pEffectWidget,                SLOT  ( deleteLater() ) );
-    } //</EffectConfigWidget>
-
     //after this point only analyzer pixmaps will be created
     QPixmap::setDefaultOptimization( QPixmap::BestOptim );
 
@@ -238,8 +222,10 @@ void PlayerApp::initPlayerWidget()
 
     m_pPlayerWidget = new PlayerWidget( 0, "PlayerWidget" );
 
-    connect( this,            SIGNAL( metaData( const MetaBundle& ) ),
-             m_pPlayerWidget, SLOT  ( setScroll( const MetaBundle& ) ) );
+    connect( this,                         SIGNAL( metaData        ( const MetaBundle& ) ),
+             m_pPlayerWidget,              SLOT  ( setScroll       ( const MetaBundle& ) ) );
+    connect( m_pPlayerWidget->m_pButtonEq, SIGNAL( released        () ),
+             this,                         SLOT  ( showEffectWidget() ) );
 
     kdDebug() << "end PlayerApp::initPlayerWidget()" << endl;
 }
@@ -682,6 +668,25 @@ void PlayerApp::slotMainTimer()
         else
             slotStop();
     }
+}
+
+
+void PlayerApp::showEffectWidget()
+{
+    if ( !EffectWidget::self )
+    {
+        EffectWidget::self = new EffectWidget( m_pPlayerWidget );
+    
+        connect( EffectWidget::self,           SIGNAL( destroyed() ),
+                 m_pPlayerWidget->m_pButtonEq, SLOT  ( setOff   () ) );
+    
+        if ( !EffectWidget::save_pos.isNull() )
+            EffectWidget::self->move( EffectWidget::save_pos );
+    
+        EffectWidget::self->show();
+    }
+    else
+        delete EffectWidget::self;
 }
 
 

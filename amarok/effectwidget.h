@@ -23,17 +23,57 @@
 #include <kdialogbase.h>
 
 class QGroupBox;
-class QHideEvent;
+class QMoveEvent;
+class QPoint;
 class QPushButton;
 class QWidget;
-
 class KComboBox;
+
+class EffectListItem;
 
 /**
  *@author mark
  */
 
-// CLASS EffectListItem --------------------------------------------------------
+//singleton
+class EffectWidget : public KDialogBase
+{
+    Q_OBJECT
+
+    public:
+        EffectWidget( QWidget* parent = 0 );
+        ~EffectWidget();
+
+// ATTRIBUTES ------
+        static EffectWidget* self;
+        static QPoint        save_pos;
+    
+    private slots:
+        void slotButtonTop();
+        void slotButtonBotConf();
+        void slotButtonBotRem();
+        void slotItemClicked( QListViewItem *pCurrentItem );
+
+    private:
+        void closeEvent( QCloseEvent* );
+
+// ATTRIBUTES ------
+        static const int EffectWidget::BUTTON_WIDTH = 30;
+        
+        KComboBox   *m_pComboBox;
+        QListView *m_pListView;
+
+        QPushButton *m_pButtonTopDown;
+        QPushButton *m_pButtonBotConf;
+        QPushButton *m_pButtonBotRem;
+
+        QGroupBox *m_pGroupBoxTop;
+        QGroupBox *m_pGroupBoxBot;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// CLASS EffectListItem
+////////////////////////////////////////////////////////////////////////////////
 
 class EffectListItem : public QListViewItem
 {
@@ -50,37 +90,4 @@ class EffectListItem : public QListViewItem
 };
 
 
-// CLASS EffectWidget ----------------------------------------------------------
-
-class EffectWidget : public KDialogBase
-{
-    Q_OBJECT
-
-    public:
-        EffectWidget( QWidget* parent = 0 );
-        ~EffectWidget();
-
-    signals:
-        void sigHide( bool shown );
-        
-    private slots:
-        void slotButtonTop();
-        void slotButtonBotConf();
-        void slotButtonBotRem();
-        void slotItemClicked( QListViewItem *pCurrentItem );
-
-    private:
-        void hideEvent( QHideEvent* );
-
-// ATTRIBUTES ------
-        KComboBox   *m_pComboBox;
-        QListView *m_pListView;
-
-        QPushButton *m_pButtonTopDown;
-        QPushButton *m_pButtonBotConf;
-        QPushButton *m_pButtonBotRem;
-
-        QGroupBox *m_pGroupBoxTop;
-        QGroupBox *m_pGroupBoxBot;
-};
 #endif

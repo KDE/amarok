@@ -58,6 +58,7 @@ public:
     IconButton( QWidget*, const QString&/*, QObject*, const char*, bool=false*/ );
 public slots:
     void setOn( bool b ) { QButton::setOn( b ); }
+    void setOff()        { QButton::setOn( false ); }
 private:
     void drawButton( QPainter* );
     const QPixmap m_up, m_down;
