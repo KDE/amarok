@@ -52,6 +52,8 @@ GstConfigDialog::GstConfigDialog( GstEngine const * const engine )
 GstConfigDialog::~GstConfigDialog()
 {
     kdDebug() << k_funcinfo << endl;
+
+    delete m_view;
 }
 
 

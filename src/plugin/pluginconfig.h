@@ -26,7 +26,9 @@ namespace amaroK
             void settingsSaved();
 
         public:
-            /** Return the view widget */
+            /** Return the view widget,
+              * The PluginConfig object owns this pointer, nobody else will delete it for you
+              */
             virtual QWidget* view() = 0;
 
             /** Return true if any of the view settings are different to the currently saved state */

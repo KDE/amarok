@@ -28,7 +28,7 @@ namespace amaroK
 
             /**
              * TODO @param parent you must parent the widget to parent
-             * @return the configure widget for your plugin
+             * @return the configure widget for your plugin, create it on the heap!
              */
              //TODO rename configureWidget( QWidget *parent )
             virtual PluginConfig* configure() const { return 0; }

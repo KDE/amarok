@@ -20,6 +20,7 @@ email                : markey@web.de
 #include <kconfigdialog.h>
 
 class QComboBox;
+class QGroupBox;
 class QVBox;
 
 namespace amaroK {
@@ -39,19 +40,19 @@ class AmarokConfigDialog : public KConfigDialog
         void updateWidgets();
         void updateWidgetsDefault();
 
-    private slots:        
+    private slots:
         void aboutEngine();
-            
+
     protected:
         bool hasChanged();
         bool isDefault();
-    
+
     private:
         void soundSystemChanged();
 
         QComboBox* m_soundSystem;
-        amaroK::PluginConfig* m_engineConfig;
-        QVBox* m_enginePage;
+        amaroK::PluginConfig *m_engineConfig;
+        QGroupBox            *m_engineConfigFrame;
         bool m_changedExternal;
 
         QMap<QString, QString> m_pluginName;

@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>300</width>
-            <height>200</height>
+            <width>303</width>
+            <height>184</height>
         </rect>
     </property>
     <property name="caption">
@@ -24,73 +24,13 @@
         </property>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout3</cstring>
+                <cstring>layout10</cstring>
             </property>
-            <hbox>
+            <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>120</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Output plugin:</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string></string>
-                    </property>
-                </widget>
-                <widget class="KComboBox">
-                    <property name="name">
-                        <cstring>kComboBox_output</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>7</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>GStreamer sink</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout4</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>checkBox_outputDevice</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>120</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Device:</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Use custom sound device</string>
-                    </property>
-                </widget>
-                <widget class="KLineEdit">
+                <widget class="KLineEdit" row="1" column="1">
                     <property name="name">
                         <cstring>kLineEdit_outputDevice</cstring>
                     </property>
@@ -101,34 +41,149 @@
                         <string>Custom sound device. Example: /dev/dsp2</string>
                     </property>
                 </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout4_2</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QCheckBox">
+                <widget class="KIntSpinBox" row="5" column="1">
                     <property name="name">
-                        <cstring>checkBox_outputParams</cstring>
+                        <cstring>kIntSpinBox_fadeout</cstring>
                     </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>120</width>
-                            <height>0</height>
-                        </size>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
                     </property>
-                    <property name="text">
-                        <string>Parameters:</string>
+                    <property name="suffix">
+                        <string> msec</string>
                     </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Use custom sink parameters</string>
+                    <property name="maxValue">
+                        <number>10000</number>
+                    </property>
+                    <property name="lineStep">
+                        <number>100</number>
+                    </property>
+                    <property name="value">
+                        <number>2000</number>
                     </property>
                 </widget>
-                <widget class="KLineEdit">
+                <widget class="KIntSpinBox" row="4" column="1">
+                    <property name="name">
+                        <cstring>kIntSpinBox_fadein</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="suffix">
+                        <string> msec</string>
+                    </property>
+                    <property name="maxValue">
+                        <number>10000</number>
+                    </property>
+                    <property name="lineStep">
+                        <number>100</number>
+                    </property>
+                    <property name="value">
+                        <number>2000</number>
+                    </property>
+                </widget>
+                <widget class="Line" row="3" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>line1</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>HLine</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="1" column="0">
+                    <property name="name">
+                        <cstring>checkBox_outputDevice</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Device:</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Use custom sound device</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="4" column="0">
+                    <property name="name">
+                        <cstring>textLabel1_2_2</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Fade-in duration:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="5" column="0">
+                    <property name="name">
+                        <cstring>textLabel1_2</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Fade-out duration:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Output plugin:</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string></string>
+                    </property>
+                </widget>
+                <widget class="KComboBox" row="0" column="1">
+                    <property name="name">
+                        <cstring>kComboBox_output</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>GStreamer sink</string>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="2" column="1">
                     <property name="name">
                         <cstring>kLineEdit_outputParams</cstring>
                     </property>
@@ -139,119 +194,26 @@
                         <string>Custom parameters. Example: sync=true host=95.25.2.1</string>
                     </property>
                 </widget>
-            </hbox>
-        </widget>
-        <widget class="Line">
-            <property name="name">
-                <cstring>line1</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout4_3</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
+                <widget class="QCheckBox" row="2" column="0">
                     <property name="name">
-                        <cstring>textLabel1_2_2</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>120</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Fade-in duration:</string>
-                    </property>
-                </widget>
-                <widget class="KIntSpinBox">
-                    <property name="name">
-                        <cstring>kIntSpinBox_fadein</cstring>
+                        <cstring>checkBox_outputParams</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
-                            <hsizetype>7</hsizetype>
-                            <vsizetype>0</vsizetype>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>5</vsizetype>
                             <horstretch>0</horstretch>
                             <verstretch>0</verstretch>
                         </sizepolicy>
                     </property>
-                    <property name="suffix">
-                        <string> msec</string>
-                    </property>
-                    <property name="maxValue">
-                        <number>10000</number>
-                    </property>
-                    <property name="lineStep">
-                        <number>100</number>
-                    </property>
-                    <property name="value">
-                        <number>2000</number>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout4</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1_2</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>120</width>
-                            <height>0</height>
-                        </size>
-                    </property>
                     <property name="text">
-                        <string>Fade-out duration:</string>
+                        <string>Parameters:</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Use custom sink parameters</string>
                     </property>
                 </widget>
-                <widget class="KIntSpinBox">
-                    <property name="name">
-                        <cstring>kIntSpinBox_fadeout</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>7</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="suffix">
-                        <string> msec</string>
-                    </property>
-                    <property name="maxValue">
-                        <number>10000</number>
-                    </property>
-                    <property name="lineStep">
-                        <number>100</number>
-                    </property>
-                    <property name="value">
-                        <number>2000</number>
-                    </property>
-                </widget>
-            </hbox>
+            </grid>
         </widget>
         <spacer>
             <property name="name">
@@ -266,7 +228,7 @@
             <property name="sizeHint">
                 <size>
                     <width>21</width>
-                    <height>70</height>
+                    <height>16</height>
                 </size>
             </property>
         </spacer>
@@ -291,6 +253,9 @@
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>klineedit.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>kcombobox.h</includehint>
     <includehint>klineedit.h</includehint>
 </includehints>
 </UI>

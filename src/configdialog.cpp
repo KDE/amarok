@@ -26,7 +26,9 @@ email                : markey@web.de
 #include "pluginmanager.h"
 
 #include <qcombobox.h>
+#include <qgroupbox.h>
 #include <qlabel.h>
+#include <qlayout.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
@@ -45,7 +47,6 @@ email                : markey@web.de
 AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConfigSkeleton *config )
         : KConfigDialog( parent, name, config )
         , m_engineConfig( 0 )
-        , m_enginePage( 0 )
         , m_changedExternal( false )
 {
     setWFlags( WDestructiveClose );
@@ -53,12 +54,17 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     Options2 *opt2 = new Options2( 0, "Fonts" );
     Options4 *opt4 = new Options4( 0, "Playback" );
     Options5 *opt5 = new Options5( 0, "OSD" );
-
-    //TODO find out when KConfig XT can handle QComboBoxes
-    //    --> it works in KDE 3.3
-    m_soundSystem = opt4->sound_system;
+    QVBox    *opt6 = new QVBox;
 
     // Sound System
+    opt6->setSpacing( 12 );
+    opt6->setMargin( 11 );
+    QWidget *groupBox, *aboutEngineButton;
+    groupBox            = new QGroupBox( 2, Qt::Horizontal, i18n("Sound System"), opt6 );
+    m_engineConfigFrame = new QGroupBox( 1, Qt::Horizontal, opt6 );
+    m_soundSystem       = new QComboBox( false, groupBox );
+    aboutEngineButton   = new QPushButton( i18n("About..."), groupBox );
+
     KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'engine'" );
 
     for ( KTrader::OfferList::ConstIterator it = offers.begin(); it != offers.end(); ++it ) {
@@ -84,9 +90,10 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     addPage( new Options3( 0, "Colors" ), i18n( "Colors" ), "colors", i18n( "Configure Colors" ) );
     addPage( opt4, i18n( "Playback" ), "kmix", i18n( "Configure Playback" ) );
     addPage( opt5, i18n( "OSD" ), "tv", i18n( "Configure On-Screen-Display" ) );
+    addPage( opt6, i18n( "Engine" ), "amarok", i18n( "Configure Engine" ) );
 
     connect( m_soundSystem, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
-    connect( opt4->pushButton_aboutEngine, SIGNAL( clicked() ), this, SLOT( aboutEngine() ) );
+    connect( aboutEngineButton, SIGNAL( clicked() ), this, SLOT( aboutEngine() ) );
     connect( opt5, SIGNAL( settingsChanged() ), SLOT( updateButtons() ) ); //see options5.ui.h
 }
 
@@ -149,8 +156,6 @@ void AmarokConfigDialog::updateWidgets()
 void AmarokConfigDialog::updateWidgetsDefault()
 {
     m_soundSystem->setCurrentItem( 0 );
-
-    soundSystemChanged();
 }
 
 
@@ -163,8 +168,7 @@ bool AmarokConfigDialog::hasChanged()
 {
     OSDWidget *osd = (OSDWidget*) child( "osdpreview" );
 
-    bool engineChanged = false;
-    if ( m_engineConfig ) engineChanged = m_engineConfig->hasChanged();
+    bool engineChanged = m_engineConfig ? m_engineConfig->hasChanged() : false;
 
     return  m_soundSystem->currentText() != m_pluginAmarokName[AmarokConfig::soundSystem()] ||
             osd->alignment()             != AmarokConfig::osdAlignment() ||
@@ -197,25 +201,25 @@ void AmarokConfigDialog::aboutEngine() //SLOT
 
 void AmarokConfigDialog::soundSystemChanged()
 {
-    // Remove old engine config page
-    delete m_engineConfig; //might delete the view
-    delete m_enginePage;   //if view still exists this is its parent, so it will be deleted now
-    m_enginePage   = 0;
-    m_engineConfig = 0;
+    ///A new sound system has been LOADED
+    ///If only the sound system widget has been changed don't call this!
+
+    //TODO fix it not working with apply!
+    //TODO enable/disable crossfading
+
+    // remove old engine config widget
+    // will delete the view if implementation is done correctly
+    delete m_engineConfig;
 
     if( EngineController::engine()->hasConfigure() )
     {
-        m_enginePage = addVBoxPage( i18n( "Engine" ),
-                                    i18n( "Configure " ) + PluginManager::getService( EngineController::engine() )->name(),
-                                    DesktopIcon( "amarok" ) );
-
         m_engineConfig = EngineController::engine()->configure();
-
-        //KDialogBase doesn't do this as it has no knowledge of the engine config widget at all!
-        m_engineConfig->view()->reparent( m_enginePage, QPoint() );
+        m_engineConfig->view()->reparent( m_engineConfigFrame, QPoint() );
+        m_engineConfigFrame->setTitle( i18n( "Configure %1" ).arg( m_soundSystem->currentText() ) );
 
         connect( m_engineConfig, SIGNAL(viewChanged()), SLOT(updateButtons()) );
     }
+    else m_engineConfig = 0;
 }
 
 #include "configdialog.moc"
