@@ -33,6 +33,7 @@ amarokapp_SOURCES = \
         browserwin.cpp \
         collectionbrowser.cpp \
         effectwidget.cpp \
+        enginecontroller.cpp \
         fht.cpp \
         filebrowser.cpp \
         kbookmarkhandler.cpp \
@@ -46,10 +47,10 @@ amarokapp_SOURCES = \
         playlistwidget.cpp \
         pluginmanager.cpp \
         streambrowser.cpp \
-        threadweaver.cpp \
-        vis/socketserver.cpp \
-        enginecontroller.cpp
+        threadweaver.cpp
 
+#        vis/socketserver.cpp \
+        
 
 amarokapp_LDADD = \
         $(top_builddir)/amarok/amarok/amarokcore/libamarokcore.a \
