@@ -1,17 +1,6 @@
 amaroK README
 -------------
 
-RELEASE NOTES
-=============
-
-If you experience problems with building your Collection, please do:
-rm $KDEHOME/share/apps/amarok/collection.db
-
-amaroK is now using a new version of the SQLite library, which can sometimes
-cause compatibility issues with an older database file.
-
-
---------------------------------------------------------------------------------
 INTRODUCTION
 ============
 
