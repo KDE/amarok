@@ -1,20 +1,21 @@
 Begin3
-Title:          amarok 
+Title:          amarok
 Version:        1.1
-Entered-date:   
+Entered-date:
 Description:    Audio player for KDE
-Keywords:       player multimedia kde mp3 ogg audio music arts 
+Keywords:       player multimedia kde mp3 ogg audio music arts
 Author:         Christian Muehlhaeuser <chris@chris.de>
                 Frederik Holljen <fh@ez.no>
                 Mark Kretschmann <markey@web.de>
                 Max Howell <max.howell@methylblue.com>
                 Mike Diehl <madpenguin8@yahoo.com>
+                Pierpaolo Di Panfilo <pippo_dp@libero.it>
                 Roman Becker <roman@formmorf.de>
                 Stanislav Karchebny <berk@inbox.ru>
-Maintained-by:  Mark Kretschmann <markey@web.de> 
-Primary-site:   
+Maintained-by:  Mark Kretschmann <markey@web.de>
+Primary-site:
 Home-page:      http://amarok.kde.org
-Original-site:  
+Original-site:
 Platforms:      Linux and other Unices
 Copying-policy: GNU Public License
 End
