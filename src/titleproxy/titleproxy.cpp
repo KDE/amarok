@@ -29,7 +29,7 @@ email                : markey@web.de
 
 using namespace TitleProxy;
 
-static const uint MIN_PROXYPORT = 6666;
+static const uint MIN_PROXYPORT = 6700;
 static const uint MAX_PROXYPORT = 7777;
 static const int BUFSIZE = 16384;
 
