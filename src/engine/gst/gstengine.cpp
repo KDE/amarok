@@ -17,6 +17,7 @@ email                : markey@web.de
 
 #include "enginebase.h"
 #include "gstengine.h"
+#include "gstuade.h"
 #include "streamsrc.h"
 
 #include <math.h>           //interpolate()

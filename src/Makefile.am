@@ -110,20 +110,20 @@ kde_servicetypes_DATA = \
     amarok_plugin.desktop
 
 messages: rc.cpp
-	$(EXTRACTRC) `find . -name "*.rc" -o -name "*.ui"` > rc.cpp
-	LIST=`find . -name \*.h -o -name \*.hh -o -name \*.H -o -name \*.hxx -o -name \*.hpp -o -name \*.cpp -o -name \*.cc -o -name \*.cxx -o -name \*.ecpp -o -name \*.C`; \
-	if test -n "$$LIST"; then \
-	        $(XGETTEXT) $$LIST -o $(podir)/amarok.pot; \
-	fi
+    $(EXTRACTRC) `find . -name "*.rc" -o -name "*.ui"` > rc.cpp
+    LIST=`find . -name \*.h -o -name \*.hh -o -name \*.H -o -name \*.hxx -o -name \*.hpp -o -name \*.cpp -o -name \*.cc -o -name \*.cxx -o -name \*.ecpp -o -name \*.C`; \
+    if test -n "$$LIST"; then \
+            $(XGETTEXT) $$LIST -o $(podir)/amarok.pot; \
+    fi
 
 install-exec-hook:
-	@echo ""
-	@echo "==========================="
-	@echo "=  amaroK - INSTALLED  ================================"
-	@echo "=                                                     ="
-	@echo "=  Type amarok to start!                              ="
-	@echo "=                                                     ="
-	@echo "=  If you have problems, please consult the README;   ="
-	@echo "=  if the problems continue join us on #amarok.       ="
-	@echo "=                                                     ="
-	@echo "======================================================="
+    @echo ""
+    @echo "==========================="
+    @echo "=  amaroK - INSTALLED  ================================"
+    @echo "=                                                     ="
+    @echo "=  Type amarok to start!                              ="
+    @echo "=                                                     ="
+    @echo "=  If you have problems, please consult the README;   ="
+    @echo "=  if the problems continue join us on #amarok.       ="
+    @echo "=                                                     ="
+    @echo "======================================================="
