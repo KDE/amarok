@@ -8,7 +8,7 @@
 <!--  <include>kapplication.h</include>
   <include>kglobalsettings.h</include>
   <include>config.h</include> -->
- 
+
   <group name="General Options">
      <entry key="Version" type="String">
         <label>Amarok Version</label>
@@ -100,11 +100,6 @@
         <default>-1</default>
         <whatsthis>The ID of the visual analyzer to display.</whatsthis>
      </entry>
-     <entry key="Browser Sorting Spec" type="Int">
-        <label>Sorting mode of filebrowser</label>
-        <default code="true">QDir::Name | QDir::DirsFirst</default>
-        <whatsthis>Set the sorting mode of the filebrowser. The sorting mode is a list of ORed  QDir::SortSpect items. http://doc.trolltech.com/3.2/qdir.html#SortSpec-enum</whatsthis>
-     </entry>
      <entry key="Remember Effects" type="Bool">
         <label>Persistent audio effects</label>
         <default>true</default>
@@ -126,7 +121,7 @@
 	<whatsthis>Enable/Disable splashscreen during amaroK startup.</whatsthis>
      </entry>
   </group>
- 
+
   <group name="Playback">
      <entry key="Master Volume" type="Int">
         <label>Master volume</label>
@@ -152,8 +147,8 @@
      </entry>
      <entry key="Sound System" type="String">
         <label>Sound system to use</label>
-        <default>ArtsEngine</default>
-        <whatsthis>This setting selects the sound system to use. The currently supported sound systems are "arts" and "gstreamer". However, the availability of these systems depend on the compile time configuration options.</whatsthis>
+        <default>aRts Engine</default>
+        <whatsthis>Select the sound system used to play media. amaroK currently support "aRts", "GStreamer" and "NMM", however their availability depends on the configuration used at compile time.</whatsthis>
      </entry>
      <entry key="Title Streaming" type="Bool">
         <label>Read titles of shoutcast streams</label>
@@ -161,7 +156,7 @@
         <whatsthis>Enable/Disable shoutcast metadata fetching. If set, amaroK displays metadata also for shoutcast streams.</whatsthis>
      </entry>
   </group>
-       
+
   <group name="OSD">
      <entry key="Osd Enabled" type="Bool">
         <label>Use On-Screen Display</label>
@@ -225,7 +220,7 @@
     </entry>
 
   </group>
-  
+
   <group name="Fonts">
      <entry key="Use Custom Fonts" type="Bool">
         <label>Whether to use user-defined fonts</label>
@@ -248,7 +243,7 @@
 	<whatsthis>The font to use in the player window title scroller.</whatsthis>
      </entry>
   </group>
-  
+
   <group name="Colors">
      <entry key="Scheme Amarok" type="Bool">
         <label>Whether to use amaroK standard colors in the playlist window</label>
@@ -276,7 +271,7 @@
 	<whatsthis>The color to use as background color in the playlist. The color is specified in RGB, a comma separated list containing three integers between 0 and 255.</whatsthis>
      </entry>
   </group>
-  
+
   <group name="Session">
      <entry key="Resume Playback" type="Bool">
         <label>Resume playback of last played track on startup</label>
@@ -292,55 +287,6 @@
         <label>Time to resume at, in seconds</label>
         <default>-1</default>
         <whatsthis>Internal: Playback position in the track to resume on startup.</whatsthis>
-     </entry>
-  </group>
-  
-  <!-- Internal, no need to comment -->
-  <group name="Filebrowser">
-     <entry key="Pathcombo History Len" type="Int">
-        <label></label>
-        <default>9</default>
-        <whatsthis></whatsthis>
-     </entry>
-     <entry key="Dir History" type="StringList">
-        <label></label>
-        <whatsthis></whatsthis>
-     </entry>
-     <entry key="Restore Location" type="Bool">
-        <label></label>
-        <default>true</default>
-        <whatsthis></whatsthis>
-     </entry>
-     <entry key="Location" type="Path">
-        <label></label>
-        <whatsthis></whatsthis>
-     </entry>
-     <entry key="Filter History Len" type="Int">
-        <label></label>
-        <default>9</default>
-        <whatsthis></whatsthis>
-     </entry>
-     <entry key="Filter History" type="StringList">
-        <label></label>
-        <whatsthis></whatsthis>
-     </entry>
-     <entry key="Last Filter" type="String">
-        <label></label>
-        <whatsthis></whatsthis>
-     </entry>
-     <entry key="Restore Last Filter" type="Bool">
-        <label></label>
-        <default>true</default>
-        <whatsthis></whatsthis>
-     </entry>
-     <entry key="Current Filter" type="String">
-        <label></label>
-        <whatsthis></whatsthis>
-     </entry>
-     <entry key="Auto Sync Events" type="Int">
-        <label></label>
-        <default>0</default>
-        <whatsthis></whatsthis>
      </entry>
   </group>
 
