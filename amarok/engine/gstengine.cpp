@@ -254,11 +254,12 @@ std::vector<float>* GstEngine::scope()
 // PUBLIC SLOTS
 /////////////////////////////////////////////////////////////////////////////////////
 
-void GstEngine::open( const KURL& url )
+void GstEngine::play( const KURL& url )
 {
     stop();
 
     g_object_set( G_OBJECT( m_pFilesrc ), "location", url.path().latin1(), NULL );
+    play();
 }
 
 

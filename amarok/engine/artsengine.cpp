@@ -296,6 +296,9 @@ EngineBase::EngineState ArtsEngine::state() const
 {
     if ( m_pPlayObject && !m_pPlayObject->isNull() )
     {
+        if ( m_pPlayObject->object().isNull() )
+            return Playing;
+        
         switch ( m_pPlayObject->state() )
         {
             case Arts::posPaused:
@@ -327,7 +330,7 @@ std::vector<float>* ArtsEngine::scope()
 
 //////////////////////////////////////////////////////////////////////
 
-void ArtsEngine::open( const KURL& url )
+void ArtsEngine::play( const KURL& url )
 {
     m_xfadeFadeout = false;
     startXfade();
@@ -341,12 +344,14 @@ void ArtsEngine::open( const KURL& url )
     {
         if ( m_pPlayObject->object().isNull() )
         {            
-            kdDebug() << "[void ArtsEngine::open()] m_pPlayObject->object().isNull()" << endl;
+            kdDebug() << "[void ArtsEngine::play()] m_pPlayObject->object().isNull()" << endl;
             connect( m_pPlayObject, SIGNAL( playObjectCreated() ), this, SLOT( connectPlayObject() ) );
             QTimer::singleShot( TIMEOUT, this, SLOT( connectTimeout() ) );
         }
         else
             connectPlayObject();
+    
+        play();
     }
 }
 
@@ -367,7 +372,6 @@ void ArtsEngine::connectPlayObject()
         
         Arts::connect( m_pPlayObject->object(), "left", m_xfade, ( m_xfadeCurrent + "_l" ).latin1() );
         Arts::connect( m_pPlayObject->object(), "right", m_xfade, ( m_xfadeCurrent + "_r" ).latin1() );
-    
     }
     else
         //something went wrong, we can't play this track
@@ -386,16 +390,16 @@ void ArtsEngine::connectTimeout()
         m_pPlayObject = NULL;
     }
 }
-        
+
 
 void ArtsEngine::play()
 {
-    if ( m_pPlayObject )
+    if ( m_pPlayObject && !m_pPlayObject->isNull() )
     {
         m_pPlayObject->play();
     }
 }
-
+        
 
 void ArtsEngine::stop()
 {
@@ -415,7 +419,7 @@ void ArtsEngine::stop()
 
 void ArtsEngine::pause()
 {
-    if ( m_pPlayObject )
+    if ( m_pPlayObject && !m_pPlayObject->isNull() )
     {
         m_pPlayObject->pause();
     }

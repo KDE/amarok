@@ -629,7 +629,7 @@ void PlayerApp::play( const MetaBundle &bundle )
     if ( AmarokConfig::titleStreaming() && !m_proxyError && !url.isLocalFile() )
     {
         TitleProxy::Proxy *pProxy = new TitleProxy::Proxy( url );
-        m_pEngine->open( pProxy->proxyUrl() );
+        m_pEngine->play( pProxy->proxyUrl() );
 
         connect( m_pEngine, SIGNAL( endOfTrack  () ),
                  pProxy,      SLOT( deleteLater () ) );
@@ -639,7 +639,7 @@ void PlayerApp::play( const MetaBundle &bundle )
                  this,      SIGNAL( metaData    ( const MetaBundle& ) ) );
     }
     else
-        m_pEngine->open( url );
+        m_pEngine->play( url );
 
     m_proxyError = false;
 
@@ -647,12 +647,8 @@ void PlayerApp::play( const MetaBundle &bundle )
     emit metaData( bundle );
     //when TagLib can't get us the track length, we ask the engine as fallback
     m_determineLength = ( m_pEngine->isStream() || bundle.length() ) ? false : true; 
-    
     m_length = bundle.length() * 1000;
     
-    kdDebug() << "[play()] " << url.prettyURL() << endl;
-    m_pEngine->play();
-
     m_pPlayerWidget->m_pSlider->setValue    ( 0 );
     m_pPlayerWidget->m_pSlider->setMaxValue ( m_length );
 
@@ -826,6 +822,8 @@ void PlayerApp::slotMainTimer()
     if ( m_pEngine->state() == EngineBase::Empty ||
          m_pEngine->state() == EngineBase::Idle )
     {
+        kdDebug() << "[PlayerApp::slotMainTimer()] Idle detected. Skipping track.\n";
+        
         if ( AmarokConfig::trackDelayLength() > 0 ) //this can occur syncronously to XFade and not be fatal
         {
             //delay before start of next track, without freezing the app

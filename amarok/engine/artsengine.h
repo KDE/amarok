@@ -66,7 +66,7 @@ class ArtsEngine : public EngineBase
         void                                     configureEffect( long id );
 
     public slots:
-        void                                     open( const KURL& );
+        void                                     play( const KURL& );
         void                                     play();
         void                                     stop();
         void                                     pause();
@@ -108,7 +108,7 @@ class ArtsEngine : public EngineBase
         // ATTRIBUTES
         /////////////////////////////////////////////////////////////////////////////////////
         static const int                         ARTS_TIMER = 100;   //ms
-        static const int                         TIMEOUT    = 3000;  //ms
+        static const int                         TIMEOUT    = 5000;  //ms FIXME make option?
 
         KArtsDispatcher*                         m_pArtsDispatcher;
         KDE::PlayObject*                         m_pPlayObject;
