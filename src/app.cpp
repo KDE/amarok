@@ -19,6 +19,7 @@ email                : markey@web.de
 #include "amarokconfig.h"
 #include "amarokdcophandler.h"
 #include "app.h"
+#include "collectionbrowser.h"
 #include "config.h"
 #include "configdialog.h"
 #include "effectwidget.h"
@@ -444,6 +445,10 @@ void App::applySettings( bool firstTime )
         engine->setEqualizerEnabled( AmarokConfig::equalizerEnabled() );
         engine->setEqualizerParameters( AmarokConfig::equalizerPreamp(), AmarokConfig::equalizerGains() );
     } //</Engine>
+
+    { //<MySql>
+        CollectionView::instance()->renderView();
+    } //</MySql>
 
     /* delete unneeded cover images from cache */
     QString size = QString::number( AmarokConfig::coverPreviewSize() ) + '@';
