@@ -131,11 +131,10 @@ void EngineController::play( const MetaBundle &bundle )
                  m_pEngine,   SLOT( newStreamData( char*, int ) ) );
         connect( proxy,     SIGNAL( proxyError() ),
                  this,      SIGNAL( orderNext() ) );
+        connect( m_pEngine, SIGNAL( stopped() ),
+                 proxy,       SLOT( deleteLater() ) );
         
         m_pEngine->play( proxy->proxyUrl() );
-
-        connect( m_pEngine, SIGNAL( stopped () ),
-                 proxy,       SLOT( deleteLater() ) );
     }
     else
         m_pEngine->play( url );

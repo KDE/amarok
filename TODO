@@ -10,7 +10,10 @@ SHORT-TERM (URGENT):
 
   FIX 132 <mxcl>   GSTengine, pick a bad audio sink in playback config and it crashes, default sink is one
                    nobody has. Needs fixing or we should disable the code.
-
+          
+          <markey> I've added many sanity checks to the gst engine. If you still encounter problems,
+                   please attach a backtrace.
+                   
   FIX 130 <markey> Regression: transferring CLI commands from loader somehow broken. Can't start my streams
                    by clicking on link.
 

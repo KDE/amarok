@@ -430,8 +430,8 @@ void App::applySettings( bool firstTime )
          engine->setDefaultSoundDevice( !AmarokConfig::customSoundDevice() );
          engine->setRestoreEffects( AmarokConfig::rememberEffects() );
          engine->setVolume( AmarokConfig::masterVolume() );
-        //TODO deprecate/improve
-        engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
+         //TODO deprecate/improve
+         engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
     } //</Engine>
 
     kdDebug() << "END " << k_funcinfo << endl;

@@ -23,7 +23,6 @@ email                : markey@web.de
 #include <vector>
 
 #include <qfile.h>
-#include <qmessagebox.h>    //fillPipeline()
 #include <qstringlist.h>
 #include <qtimer.h>
 
@@ -247,7 +246,7 @@ GstEngine::state() const
 {
     if ( !m_pipelineFilled )
         return Empty;
-    if ( m_playFlag )
+    if ( m_playWhenReady )
         return Playing;
 
     switch ( gst_element_get_state( m_thread ) )
@@ -296,13 +295,13 @@ GstEngine::play( const KURL& url )  //SLOT
     stop();
     if ( m_pipelineFilled ) cleanPipeline();
 
-    kdDebug() << "Sound output method: " << m_soundOutput << endl;
-
-    /* create a new thread to hold the elements */
+    /* create a new pipeline (thread) to hold the elements */
     m_thread = gst_thread_new ( "thread" );
     g_object_set( G_OBJECT( m_thread ), "priority", 2, NULL );
 
-    m_audiosink = gst_element_factory_make( m_soundOutput.latin1(), "play_audio" );
+    kdDebug() << "Sound output method: " << m_soundOutput << endl;
+
+    if ( !( m_audiosink = createElement( m_soundOutput.latin1(), "play_audio" ) ) ) return;
 
     kdDebug() << "DefaultSoundDevice: " << ( m_defaultSoundDevice ? "true" : "false" ) << endl;
     kdDebug() << "Sound Device:       " << m_soundDevice << endl;
@@ -313,35 +312,29 @@ GstEngine::play( const KURL& url )  //SLOT
 
     /* create source */
     if ( url.isLocalFile() ) {
-        m_filesrc = gst_element_factory_make( "filesrc", "disk_source" );
+        if ( !( m_filesrc = createElement( "filesrc", "disk_source" ) ) ) return;
         //load track into filesrc
         g_object_set( G_OBJECT( m_filesrc ), "location",
                       static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
-    } else {
-        m_filesrc = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex ) );
     }
+    else {
+        m_filesrc = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex ) );
+        gst_bin_add ( GST_BIN ( m_thread ), m_filesrc );
+    }
+        
+    if ( !( m_spider = createElement( "spider", "spider" ) ) ) return;
+    if ( !( m_identity = createElement( "identity", "rawscope" ) ) ) return;
+    if ( !( m_volumeElement = createElement( "volume", "volume" ) ) ) return;
+    if ( !( m_audioconvert = createElement( "audioconvert", "audioconvert" ) ) ) return;
+    if ( !( m_audioscale = createElement( "audioscale", "audioscale" ) ) ) return;
 
-    m_spider = gst_element_factory_make( "spider", "spider" );
-    /* and an audio sink */
-    m_identity = gst_element_factory_make( "identity", "rawscope" );
-    m_volumeElement = gst_element_factory_make( "volume", "volume" );
+    g_signal_connect( G_OBJECT( m_identity ), "handoff", G_CALLBACK( handoff_cb ), m_thread );
+    g_signal_connect( G_OBJECT( m_audiosink ), "eos", G_CALLBACK( eos_cb ), m_thread );
+//     g_signal_connect ( G_OBJECT( m_thread ), "error", G_CALLBACK ( error_cb ), m_thread );
 
-    m_audioconvert = gst_element_factory_make( "audioconvert", "audioconvert" );
-    m_audioscale = gst_element_factory_make( "audioscale", "audioscale" );
-
-    g_signal_connect ( G_OBJECT( m_identity ), "handoff",
-                       G_CALLBACK( handoff_cb ), m_thread );
-    g_signal_connect ( G_OBJECT( m_audiosink ), "eos",
-                       G_CALLBACK( eos_cb ), m_thread );
-    //     g_signal_connect ( G_OBJECT( m_thread ), "error",
-    //                        G_CALLBACK ( error_cb ), m_thread );
-
-    /* add objects to the main pipeline */
-    gst_bin_add_many( GST_BIN( m_thread ), m_filesrc, m_spider, m_identity,
-                      m_volumeElement, m_audioconvert, m_audioscale, m_audiosink, NULL );
-    /* link src to sink */
-    gst_element_link_many( m_filesrc, m_spider, m_identity,
-                           m_volumeElement, m_audioconvert, m_audioscale, m_audiosink, NULL );
+    /* link all elements */
+    gst_element_link_many( m_filesrc, m_spider, m_identity, m_volumeElement, m_audioconvert,
+                           m_audioscale, m_audiosink, NULL );
 
     gst_element_set_state( m_thread, GST_STATE_READY );
 
@@ -350,10 +343,10 @@ GstEngine::play( const KURL& url )  //SLOT
 
     if ( url.protocol() == "http" ) {
         m_streamBufIndex = 0;
-        m_playFlag = true;
+        m_playWhenReady = true;
     } else {
         play();
-        m_playFlag = false;
+        m_playWhenReady = false;
     }
 }
 
@@ -441,9 +434,9 @@ GstEngine::newStreamData( char* buf, int size )  //SLOT
     m_streamBufIndex += size;
 
     // Wait until buffer is partly filled, then start playback
-    if ( m_playFlag && m_streamBufIndex > STREAMBUF_SIZE / 2 ) {
+    if ( m_playWhenReady && m_streamBufIndex > STREAMBUF_SIZE / 2 ) {
         play();
-        m_playFlag = false;
+        m_playWhenReady = false;
     }
 }
 
@@ -515,6 +508,23 @@ GstEngine::getPluginList( const QCString& classname )
     pool_registries = NULL;
 
     return results;
+}
+
+
+GstElement*
+GstEngine::createElement( const QCString& factoryName, const QCString& name ) 
+{
+    GstElement* element = gst_element_factory_make( factoryName, name );
+    
+    if ( element )
+        gst_bin_add ( GST_BIN ( m_thread ), element );
+    else {
+        kdWarning() << "GStreamer could not create the element: " << factoryName << endl;
+        gst_object_unref( GST_OBJECT( m_thread ) );
+        emit stopped();
+    }
+                
+    return element;
 }
 
 

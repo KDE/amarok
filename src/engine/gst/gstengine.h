@@ -76,6 +76,7 @@ class GstEngine : public EngineBase
         /** Get a list of available plugins from a specified Class */
         QStringList                              getPluginList( const QCString& classname );
         
+        GstElement*                              createElement( const QCString& factoryName, const QCString& name );
         void                                     cleanPipeline();
         void                                     interpolate( const vector<float>& inVec, vector<float>& outVec );
         /////////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +102,7 @@ class GstEngine : public EngineBase
         int                                      m_streamBufIndex;
         
         /** Used for delayed starting of the pipeline (for streaming) */
-        bool                                     m_playFlag;
+        bool                                     m_playWhenReady;
         
         bool                                     m_typefindResult;
         bool                                     m_pipelineFilled;
