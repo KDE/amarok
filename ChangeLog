@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta2:
+  FIX: forward command line option --engine to amarokapp
 
 
 VERSION 1.2-beta1:
