@@ -897,7 +897,7 @@ CollectionView::showTrackInfo() //SLOT
     QPtrList<QListViewItem> items = selectedItems();
     if ( items.count() == 1 ) {
         Item* item = static_cast<Item*>( items.first() );
-        if ( !item ) return;
+        if ( !item || item->isExpandable() ) return;
         TagDialog* dialog = new TagDialog( item->url() );
         dialog->show();
     }
@@ -905,7 +905,8 @@ CollectionView::showTrackInfo() //SLOT
         //edit multiple tracks in tag dialog
         KURL::List urls;
         for( Item* item = static_cast<Item*>( items.first() ); item; item = static_cast<Item*>( items.next() ) )
-            urls << item->url();
+            if (!item->isExpandable())
+                urls << item->url();
         TagDialog* dialog = new TagDialog( urls, instance() );
         dialog->show();
     }
