@@ -50,6 +50,7 @@ ContextBrowser::ContextBrowser( const char *name )
     EngineController::instance()->attach( this );
 
     m_toolbar = new KToolBar( this );
+    m_toolbar->setMovingEnabled( false );
     m_toolbar->setFlat( true );
     m_toolbar->setIconSize( 16 );
     m_toolbar->setIconText( KToolBar::IconTextRight );

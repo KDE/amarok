@@ -178,10 +178,13 @@ CollectionBrowser::setupDirs()  //SLOT
 
 bool CollectionBrowser::eventFilter( QObject *o, QEvent *e )
 {
-    if( o == m_searchEdit ) {
-        switch( e->type() ) {
+    if( o == m_searchEdit )
+    {
+        switch( e->type() )
+	{
            case QEvent::FocusIn:
-               if( m_view->filter().isEmpty() ) {
+               if( m_view->filter().isEmpty() )
+	       {
                    m_searchEdit->clear();
                    m_timer->stop();
                    m_searchEdit->setPaletteForegroundColor( colorGroup().text() );
@@ -189,7 +192,8 @@ bool CollectionBrowser::eventFilter( QObject *o, QEvent *e )
                }
 
             case QEvent::FocusOut:
-                if( m_view->filter().isEmpty() ) {
+                if( m_view->filter().isEmpty() )
+		{
                     m_searchEdit->setPalette( palette() );
                     m_searchEdit->setPaletteForegroundColor( palette().color( QPalette::Disabled, QColorGroup::Text ) );
                     m_searchEdit->setText( i18n("Filter here...") );

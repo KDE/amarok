@@ -209,6 +209,12 @@ PlaylistWindow::init()
         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
         m_timer = new QTimer( this );
 
+	{
+        //set the lineEdit to initial state
+		QEvent e( QEvent::FocusOut );
+		eventFilter( m_lineEdit, &e );
+	}
+
         connect( button, SIGNAL(clicked()), this, SLOT(clearFilter()) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
@@ -481,14 +487,13 @@ void PlaylistWindow::setFont( const QFont &font, const QFont &contextfont )
 
 bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 {
-    // Handle filter default text
-
     if( o == m_lineEdit )
     {
         switch( e->type() )
         {
            case QEvent::FocusIn:
-               if( m_lineEdit->text() == i18n("Filter here...") ) {
+               if( m_lineEdit->text() == i18n( "Filter here..." ) )
+	       {
                    m_lineEdit->clear();
                    m_timer->stop();
                    m_lineEdit->setPaletteForegroundColor( colorGroup().text() );
@@ -496,10 +501,11 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                }
 
             case QEvent::FocusOut:
-                if( m_lineEdit->text().isEmpty() ) {
+                if( m_lineEdit->text().isEmpty() )
+		{
                     m_lineEdit->setPalette( palette() );
                     m_lineEdit->setPaletteForegroundColor( palette().color( QPalette::Disabled, QColorGroup::Text ) );
-                    m_lineEdit->setText( i18n("Filter here...") );
+                    m_lineEdit->setText( i18n( "Filter here..." ) );
                     m_timer->stop();
                     return FALSE;
                 }
@@ -597,6 +603,9 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
         if( ( e->key() >= Key_0 && e->key() <= Key_Z ) || e->key() == Key_Backspace )
         {
             m_lineEdit->setFocus();
+            if ( m_lineEdit->text() == i18n( "Filter here..." ) )
+                m_lineEdit->clear();
+
             QApplication::sendEvent( m_lineEdit, e );
             return TRUE;
         }
