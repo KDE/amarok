@@ -7,11 +7,6 @@
 # License: GPL V2
 
 
-def log( text )
-    puts( "#{text}\n" )
-end
-
-
 # version  = `kdialog --inputbox "amaroK version: "`.chomp
 # username = `kdialog --inputbox "CVS username: "`.chomp
 
@@ -23,10 +18,19 @@ username = gets.chomp
 puts( "\n " )
 
 name     = "amaroK"
-cvsroot  = ":pserver:#{username}@cvs.kde.org:/home/kde"
+$cvsroot  = ":pserver:#{username}@cvs.kde.org:/home/kde"
 folder   = "amarok-#{version}"
 doi18n   = "yes"
 $log      = "/dev/null"
+
+
+def log( text )
+    puts( "#{text}\n" )
+end
+
+def cvs( command )
+    `cvs -z3 -d #{$cvsroot} #{command} > /dev/null 2>&1`
+end
 
 
 # Prevent using unsermake
@@ -40,12 +44,12 @@ ENV["UNSERMAKE"] = "no"
 Dir.mkdir( folder )
 Dir.chdir( folder )
 
-`cvs -d #{cvsroot} co -l kdeextragear-1`
-`cvs -z3 -d #{cvsroot} co kdeextragear-1/amarok`
-`cvs -z3 -d #{cvsroot} co -l kdeextragear-1/doc`
-`cvs -z3 -d #{cvsroot} co kdeextragear-1/doc/amarok`
+cvs( "co -l kdeextragear-1" )
+cvs( "co kdeextragear-1/amarok" )
+cvs( "co -l kdeextragear-1/doc" )
+cvs( "co kdeextragear-1/doc/amarok" )
 Dir.chdir( "kdeextragear-1" )
-'cvs -z3 -d #{cvsroot} co admin'
+cvs( "co admin" )
 
 print "\n"
 print "**** i18n ****"
@@ -55,9 +59,9 @@ print "\n"
 # we check out kde-i18n/subdirs in kde-i18n..
 if doi18n == "yes"
     log( "cvs co kde-i18n/subdirs" )
-    `cvs -z3 -d #{cvsroot} -q co -P kde-i18n/subdirs > /dev/null 2>&1`
+    cvs( "co -P kde-i18n/subdirs" )
     i18nlangs = `cat kde-i18n/subdirs`
-    log( "Available languages: #{i18nlangs}" )
+    log( "Available languages:\n #{i18nlangs}" )
 
     # docs
     for lang in i18nlangs
@@ -66,8 +70,7 @@ if doi18n == "yes"
             `rm -Rf doc/#{lang}`
         end
         docdirname = "kde-i18n/#{lang}/docs/kdeextragear-1/amarok"
-        log( "cvs co #{docdirname}" )
-        `cvs -z3 -q -d "#{cvsroot}" co -P "#{docdirname}" > /dev/null 2>&1`
+        cvs( "co -P #{docdirname}" )
         if not FileTest.exists? ( docdirname ) then next end
         print "Copying #{lang}'s #{name} documentation over...\n"
         `cp -R #{docdirname} doc/#{lang}`
@@ -83,8 +86,7 @@ if doi18n == "yes"
     for lang in i18nlangs
         lang = lang.chomp
         pofilename = "kde-i18n/#{lang}/messages/kdeextragear-1/amarok.po"
-        `echo "cvs co #{pofilename}" >> #{$log}`
-        `cvs -z3 -d #{cvsroot} -q co -P "#{pofilename}" > /dev/null 2>&1`
+        cvs( "co -P #{pofilename}" )
         if not FileTest.exists? pofilename then next end
 
         dest = po/#{lang}
