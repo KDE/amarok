@@ -110,7 +110,7 @@ PlayerApp::PlayerApp() :
    m_bChangingSlider( false ),
    m_pEffectWidget( NULL )
 {
-    setName( "PlayerApp" );
+    setName( "amarok" );
 
     pApp = this; //global
 
@@ -121,7 +121,7 @@ PlayerApp::PlayerApp() :
     initArts();
     if ( !initScope() )
     {
-        KMessageBox::error( 0, "Fatal Error", "Cannot find libamarokarts! Maybe installed in the wrong directory? Aborting.." );
+        KMessageBox::error( 0, "Cannot find libamarokarts! Maybe installed in the wrong directory? Aborting..", "Fatal Error" );
         return;
     }
     initPlayerWidget();
@@ -131,9 +131,11 @@ PlayerApp::PlayerApp() :
     readConfig();
 
     connect( this, SIGNAL( sigplay() ), this, SLOT( slotPlay() ) );
+    connect( this, SIGNAL( saveYourself() ), this, SLOT( saveSessionState() ) );
 
     m_pMainTimer = new QTimer( this );
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
+
     m_pMainTimer->start( 150 );
 
     m_pAnimTimer = new QTimer( this );
@@ -141,9 +143,6 @@ PlayerApp::PlayerApp() :
     m_pAnimTimer->start( 30 );
 
     m_pPlayerWidget->show();
-
-    //max added tmp
-    m_pBrowserWin->m_pPlaylistWidget->slotGlowTimer();
 
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
 }
@@ -169,7 +168,6 @@ PlayerApp::~PlayerApp()
 
     delete m_pArtsDispatcher;
 }
-
 
 
 int PlayerApp::newInstance()
@@ -223,6 +221,49 @@ int PlayerApp::newInstance()
         pApp->slotStop();
 
     return KUniqueApplication::newInstance();
+}
+
+
+void PlayerApp::restore()
+{
+      //attempt to restore previous session
+      KConfig *config = sessionConfig();
+
+      KURL url    = config->readEntry( "track" );
+      int seconds = config->readNumEntry( "position" );
+
+      //FIXME this is duplicated in slotAddLocation, reduce LOC
+
+      if( !url.isEmpty() && url.isValid() )
+      {
+        if( m_pBrowserWin->isFileValid( url ) )
+        {
+          PlaylistItem *item = new PlaylistItem( m_pBrowserWin->m_pPlaylistWidget, url );
+
+          m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( item );
+          slotPlay();
+
+          //FIXME I just copied this code, do I need all these properties?
+          Arts::poTime time;
+          time.ms = 0;
+          time.seconds = seconds;
+          time.custom = 0;
+          time.customUnit = std::string();
+
+          m_pPlayObject->seek( time );
+        }
+      }
+}
+
+//session management
+void PlayerApp::saveSessionState()
+{
+  KConfig *config = sessionConfig();
+
+  Arts::poTime timeC( m_pPlayObject->currentTime() );
+
+  config->writeEntry( "track",  static_cast<PlaylistItem*>(m_pBrowserWin->m_pPlaylistWidget->currentTrack())->url().url() );
+  config->writeEntry( "position", timeC.seconds );
 }
 
 

@@ -46,6 +46,8 @@ QPushButton( text, parent )
     m_animFlag = ANIM_IDLE;
     m_ButtonList = QPtrList<ExpandButton>();
     connect( this, SIGNAL( pressed() ), this, SLOT( slotStartExpand() ) );
+
+    setFlat( true );
 }
 
 

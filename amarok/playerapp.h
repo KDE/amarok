@@ -61,6 +61,8 @@ class PlayerApp : public KUniqueApplication
         void saveM3u( QString fileName );
         bool queryClose();
 
+        void restore();
+
 // ATTRIBUTES ------
         KGlobalAccel *m_pGlobalAccel;
 
@@ -116,7 +118,10 @@ class PlayerApp : public KUniqueApplication
         void slotSetRepeatPlaylist();
         void slotShowHelp();
 
-        signals:
+    private slots:
+        void saveSessionState();
+
+    signals:
         void sigScope( std::vector<float> *s );
         void sigPlay();
 
