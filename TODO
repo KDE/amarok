@@ -161,3 +161,58 @@ DISCUSSING:
            have limited screen width, like in console or kdevelop. pretty please with icing =)
            <mxcl> I added a 110 char marker to my editor (since ages ago). However I don't always keep to it.
            Breaking lines is most often ugly :( Mostly I do though. You can praise me now ;)
+
+BACKTRACE
+
+2004-Mar-22: a user reported this when clicking on a shoutcast stream from konqi
+
+12:47 <tim> [New Thread 1108444832 (LWP 25175)]
+12:47 <tim> 0x41d0a411 in __waitpid_nocancel () from /lib/tls/libpthread.so.0
+12:47 <tim> #0  0x41d0a411 in __waitpid_nocancel () from /lib/tls/libpthread.so.0
+12:47 <tim> #1  0x4148bc48 in __JCR_LIST__ () from /opt/kde3.2.1-sarge1/lib/libkdecore.so.4
+12:47 <tim> #2  <signal handler called>
+12:47 <tim> #3  0x41f96da9 in raise () from /lib/tls/libc.so.6
+12:47 <tim> #4  0x420a3110 in sys_sigabbrev () from /lib/tls/libc.so.6
+12:47 <tim> #5  0x08095aaf in PlayerApp::initCliArgs(int, char**) (argc=1095308544,
+12:47 <tim>     argv=0x6324) at playerapp.cpp:269
+12:47 <tim> #6  0x080953fd in PlayerApp::handleLoaderArgs(QCString const&) (
+12:47 <tim>     this=0xfffffe00, args=@0xfffffe00) at playerapp.cpp:213
+12:48 <tim> #7  0x0809c890 in PlayerApp::qt_invoke(int, QUObject*) (this=0xbfffee60,
+12:48 <tim>     _id=36, _o=0xbfffdea0) at qucom_p.h:312
+12:48 <tim> #8  0x4178c31c in QObject::activate_signal(QConnectionList*, QUObject*) ()
+12:48 <tim>    from /opt/kde3.2.1-sarge1/lib/libqt-mt.so.3
+12:48 <tim> #9  0x0809cb78 in LoaderServer::loaderArgs(QCString const&) (this=0x829a760,
+12:48 <tim>     t0=@0xfffffe00) at playerapp.moc:341
+12:48 <tim> #10 0x0809bc09 in LoaderServer::newConnection(int) (this=0xfffffe00, sockfd=20)
+12:48 <tim>     at playerapp.cpp:1013
+12:48 <tim> #11 0x4197904b in QServerSocket::incomingConnection(int) ()
+12:48 <tim>    from /opt/kde3.2.1-sarge1/lib/libqt-mt.so.3
+12:48 <tim> #12 0x41ad90c2 in QServerSocket::qt_invoke(int, QUObject*) ()
+12:48 <tim>    from /opt/kde3.2.1-sarge1/lib/libqt-mt.so.3
+12:48 <tim> #13 0x0809cbbf in LoaderServer::qt_invoke(int, QUObject*) (this=0xfffffe00,
+12:48 <tim>     _id=-512, _o=0xfffffe00) at playerapp.moc:346
+12:48 <tim> #14 0x4178c31c in QObject::activate_signal(QConnectionList*, QUObject*) ()
+12:48 <tim>    from /opt/kde3.2.1-sarge1/lib/libqt-mt.so.3
+12:48 <tim> #15 0x4178c47d in QObject::activate_signal(int, int) ()
+12:48 <tim>    from /opt/kde3.2.1-sarge1/lib/libqt-mt.so.3
+12:48 <tim> #16 0x41aaab22 in QSocketNotifier::activated(int) ()
+12:48 <tim>    from /opt/kde3.2.1-sarge1/lib/libqt-mt.so.3
+12:48 <tim> #17 0x417a82a0 in QSocketNotifier::event(QEvent*) ()
+12:48 <tim>    from /opt/kde3.2.1-sarge1/lib/libqt-mt.so.3
+12:48 <tim> #18 0x41730a2f in QApplication::internalNotify(QObject*, QEvent*) ()
+12:48 <tim>    from /opt/kde3.2.1-sarge1/lib/libqt-mt.so.3
+12:49 <tim> #19 0x4173003b in QApplication::notify(QObject*, QEvent*) ()
+12:49 <tim>    from /opt/kde3.2.1-sarge1/lib/libqt-mt.so.3
+12:49 <tim> #20 0x4131acbd in KApplication::notify(QObject*, QEvent*) ()
+12:49 <tim>    from /opt/kde3.2.1-sarge1/lib/libkdecore.so.4
+12:49 <tim> #21 0x4172076a in QEventLoop::activateSocketNotifiers() ()
+12:49 <tim>    from /opt/kde3.2.1-sarge1/lib/libqt-mt.so.3
+12:49 <tim> #22 0x416dbbb8 in QEventLoop::processEvents(unsigned) ()
+12:49 <tim>    from /opt/kde3.2.1-sarge1/lib/libqt-mt.so.3
+12:49 <tim> #23 0x41744288 in QEventLoop::enterLoop() ()
+12:49 <tim>    from /opt/kde3.2.1-sarge1/lib/libqt-mt.so.3
+12:49 <tim> #24 0x41744138 in QEventLoop::exec() ()
+12:49 <tim>    from /opt/kde3.2.1-sarge1/lib/libqt-mt.so.3
+12:49 <tim> #25 0x41730c81 in QApplication::exec() ()
+12:49 <tim>    from /opt/kde3.2.1-sarge1/lib/libqt-mt.so.3
+12:49 <tim> #26 0x080ace1f in main (argc=-512, argv=0xfffffe00) at main.cpp:30
