@@ -32,32 +32,41 @@ required
       http://www.kde.org
 
     * TagLib 1.1
+      (metadata tagging library)
       http://freshmeat.net/projects/taglib
 
 recommended
-    * GStreamer-0.8.1 + Gst-Plugins-0.8.1
+    * GStreamer-0.8.1 + GStreamer-Plugins-0.8.1
+      (multimedia framework)
       http://gstreamer.net
 
 optional
     * aRts 1.2 + KDEMultimedia 3.2
+      (multimedia framework)
       http://www.kde.org
 
+    * xine 1.0.0
+      (multimedia framework)
+      http://xine.sourceforge.net
+
+    * NMM 0.4.4
+      (multimedia framework)
+      http://www.networkmultimedia.org
+
     * OpenGL accelerated X-Server
+      (visualization rendering)
 
     * Libvisual 0.1.6 + SDL 1.2
+      (visualization framework)
       http://libvisual.sf.net
       http://www.libsdl.org
 
-    * MusicBrainz 2.1
+    * libtunepimp 0.3
+      (automatic tagging support)
       http://www.musicbrainz.org/
 
-    * NMM 0.4.4
-      http://www.networkmultimedia.org
-
-    * xine 1.0.0
-      http://xine.sourceforge.net
-
     * XMMS 1.2 + XMMS visualization plugins
+      (visualization plugins)
       http://xmms.org
 
 
