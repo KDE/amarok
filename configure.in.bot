@@ -4,139 +4,139 @@
 echo ""
 
 if test x$amarok_error_notaglib = xyes; then
-    echo "======================="
-    echo "=  amaroK - ERROR  ============================================================="
-    echo "================================================================================"
-    echo "=                                                                              ="
-    echo "=  amaroK cannot be built because, either the TagLib library is not installed  ="
-    echo "=  or, if relevant, the taglib-devel package is not installed.                 ="
-    echo "=  TagLib can be obtained from: http://ktown.kde.org/~wheeler/taglib/          ="
-    echo "=                                                                           ===="
+    echo " ========================"
+    echo " ===  amaroK - ERROR  =========================================================="
+    echo " ========================"
+    echo " ="
+    echo " = amaroK cannot be built because, either the TagLib library is not installed,"
+    echo " = or if relevant, the taglib-devel package is not installed."
+    echo " = TagLib can be obtained from: http://ktown.kde.org/~wheeler/taglib/"
+    echo " ="
 fi
 
 if test x$amarok_error_taglibold = xyes; then
-    echo "======================="
-    echo "=  amaroK - ERROR  ============================================================="
-    echo "================================================================================"
-    echo "=                                                                              ="
-    echo "=  amaroK cannot be built because your TagLib version is too old. Please       ="
-    echo "=  obtain a more recent version from: http://ktown.kde.org/~wheeler/taglib/    ="
-    echo "=                                                                           ===="
+    echo " ========================"
+    echo " ===  amaroK - ERROR  =========================================================="
+    echo " ========================"
+    echo " ="
+    echo " = amaroK cannot be built because your TagLib version is too old. Please"
+    echo " = obtain the latest version from: http://ktown.kde.org/~wheeler/taglib/"
+    echo " ="
 fi
 
 if test x$PKGCONFIGFOUND != xyes; then
-    echo "========================="
-    echo "=  amaroK - WARNING  ==========================================================="
-    echo "================================================================================"
-    echo "=                                                                              ="
-    echo "=  pkg-config could not be found, this means some optional components (the     ="
-    echo "=  GStreamer-engine and Collection Browser) cannot be built.                   ="
-    echo "=  Either ensure pkg-config is in your path, set the PKG_CONFIG environment    ="
-    echo "=  variable to the full path to pkg-config, or download it from:               ="
-    echo "=  http://www.freedesktop.org/software/pkgconfig                               ="
-    echo "=                                                                           ===="
+    echo " =========================="
+    echo " ===  amaroK - WARNING  ========================================================"
+    echo " =========================="
+    echo " ="
+    echo " = pkg-config could not be found, this means some optional components (the"
+    echo " = GStreamer-engine and Collection Browser) cannot be built."
+    echo " = See amarok/README for help with this issue."
+    echo " ="
+
 fi
 
 if test x$have_gst = xno; then
-    echo "================================================================================"
-    echo "=  amaroK - WARNING  ==========================================================="
-    echo "================================================================================"
-    echo "=                                                                              ="
-    echo "=  The optional GStreamer-engine will not be built. If you want to use the     ="
-    echo "=  powerful GStreamer multimedia framework with amaroK, please download        ="
-    echo "=  version $GST_REQ or higher from http://freedesktop.org/~gstreamer/.         ="
-    echo "=  If you are sure GStreamer is already installed then there is most likely a  ="
-    echo "=  problem with your pkg-config setup, check: man pkg-config.                  ="
-    echo "=                                                                           ===="
+    echo " =========================="
+    echo " ===  amaroK - WARNING  ========================================================"
+    echo " =========================="
+    echo " ="
+    echo " = The optional GStreamer-engine will not be built. If you want to use the"
+    echo " = powerful GStreamer multimedia framework with amaroK, please download"
+    echo " = version $GST_REQ or higher from http://freedesktop.org/~gstreamer/."
+    echo " = If you are sure GStreamer is already installed then there is most likely a"
+    echo " = problem with your pkg-config setup, see amarok/README"
+    echo " ="
 
 fi
 
 if test x$have_gst_plugins = xno -a x$have_gst = xyes; then
-    echo "================================================================================"
-    echo "=  amaroK - WARNING  ==========================================================="
-    echo "================================================================================"
-    echo "=                                                                              ="
-    echo "=  The amaroK GStreamer-engine will be built, but no GStreamer plugins were    ="
-    echo "=  detected! If you have no plugins you will not be able to play any media     ="
-    echo "=  using the GStreamer-engine! You need at least the MP3 plugin and a sink     ="
-    echo "=  plugin, (eg. ALSAsink). Please refer to http://freedesktop.org/~gstreamer/  ="
-    echo "=                                                                           ===="
-
+    echo " =========================="
+    echo " ===  amaroK - WARNING  ========================================================"
+    echo " =========================="
+    echo " ="
+    echo " = No GStreamer plugins were detected!"
+    echo " = Without plugins you will not be able to play any media using the"
+    echo " = GStreamer-engine! You need at least the MP3 plugin and a sink plugin, (eg."
+    echo " = ALSAsink). Please refer to http://freedesktop.org/~gstreamer/"
+    echo " = NOTE: you will still be able to play media with another engine plugin."
+    echo " ="
 fi
 
 if test x$included_sqlite = xno; then
   if test x$have_sqlite = xyes; then
-    echo "================================================================================"
-    echo "=  amaroK - WARNING  ==========================================================="
-    echo "================================================================================"
-    echo "=                                                                              ="
-    echo "=  You have passed the --without-included-sqlite option to configure, which    ="
-    echo "=  means that SQLite will be dynamically linked instead of statically linked.  ="
-    echo "=  IMPORTANT: please make sure the libsqlite.so library in your system is      ="
-    echo "=  threadsafe!!! amaroK won't work propely otherwise. You have been warned.    ="
-    echo "=                                                                           ===="
+    echo " =========================="
+    echo " ===  amaroK - WARNING  ========================================================"
+    echo " =========================="
+    echo " ="
+    echo " = You have passed the --without-included-sqlite option to configure, which"
+    echo " = means that SQLite will be dynamically linked instead of statically linked."
+    echo " = IMPORTANT: you must ensure the libsqlite.so library in your system is"
+    echo " = threadsafe!!! amaroK will not be stable otherwise."
+    echo " ="
   else
-    echo "================================================================================"
-    echo "=  amaroK - ERROR  ============================================================="
-    echo "================================================================================"
-    echo "=                                                                              ="
-    echo "=  You have passed the --without-included-sqlite option to configure, but      ="
-    echo "=  the development files of SQLite could not be found. Please make sure you    ="
-    echo "=  have the relevant package installed or, even better, use the included       ="
-    echo "=  sqlite (unless you *really* know what you're doing, of course).             ="
-    echo "=                                                                           ===="
+    echo " ========================"
+    echo " ===  amaroK - ERROR  =========================================================="
+    echo " ========================"
+    echo " ="
+    echo " = You have passed the --without-included-sqlite option to configure, but"
+    echo " = the development files for SQLite could not be found. Please make sure you"
+    echo " = have the relevant package installed or, even better, use the included"
+    echo " = sqlite (unless you *really* know what you're doing, of course)."
+    echo " ="
   fi
 fi
 
 if test x$no_amarok = xyes; then
-    echo "================================================================================"
-    echo "=  AMAROK WILL NOT BE BUILT  ==================================================="
-    echo "================================================================================"
-    echo "=                                                                              ="
-    echo "=  Some mandatory dependencies are either not installed or not installed       ="
-    echo "=  correctly. Please refer to the amaroK README. Further assistance can be     ="
-    echo "=  found at http://amarok.kde.org or in #amarok on irc.freenode.net.           ="
-    echo "=  You should still be able to build other modules from kde-extragear1.        ="
-    echo "=                                                                           ===="
+    echo " =================================="
+    echo " ===  AMAROK WILL NOT BE BUILT  ================================================"
+    echo " =================================="
+    echo " ="
+    echo " = Some mandatory dependencies are either not installed or not installed"
+    echo " = correctly. See the amaroK README for help with this issue. Further assistance"
+    echo " = can be found at http://amarok.kde.org or in amarok on irc.freenode.net."
+    echo " = You will still be able to build other modules from kde-extragear1."
+    echo " ="
 fi
 
 if test x$no_engine = xyes; then
-    echo "================================================================================"
-    echo "=  AMAROK WILL NOT BE BUILT  ==================================================="
-    echo "================================================================================"
-    echo "=                                                                              ="
-    echo "=  No suitable multimedia framework was detected. You need to install at least ="
-    echo "=  one of the supported frameworks as detailed in the amaroK README.           ="
-    echo "=  If you are thinking, 'I have aRts you stupid configure!', then you probably ="
-    echo "=  need to install kdemultimedia-devel.                                        ="
-    echo "=                                                                           ===="
+    echo " =================================="
+    echo " ===  AMAROK WILL NOT BE BUILT  ================================================"
+    echo " =================================="
+    echo " ="
+    echo " = No suitable multimedia framework was detected. You need to install at least"
+    echo " = one of the supported frameworks as detailed in the amaroK README."
+    echo " = If you are thinking, 'I have aRts you stupid configure!', then you probably"
+    echo " = need to install kdemultimedia-devel."
+    echo " ="
 fi
 
 if test x$no_amarok != xyes; then
 
-    echo "======================="
-    echo "===  amaroK - INFO  ============================================================"
-    echo "================================================================================"
-    echo "=                                                                              ="
-    echo "=  amaroK will be built with the following engine plugins:                     ="
+    echo " ======================="
+    echo " ===  amaroK - INFO  ==========================================================="
+    echo " ======================="
+    echo " ="
+    echo " = amaroK will be built with the following engine plugins:"
 
 
     if test x$build_arts = xyes -a x$have_kdemm = xyes; then
-        echo "=   * aRts-engine                                                           ===="
+        echo " =   + aRts-engine"
     fi
 
     if test x$have_gst = xyes; then
-        echo "=   * GStreamer-engine                                                      ===="
+        echo " =   + GStreamer-engine"
     fi
 
     if test x$build_xine = xyes; then
-        echo "=   * Xine-engine                                                           ===="
+        echo " =   + Xine-engine"
     fi
 
     if test x$build_nmm = xyes; then
-        echo "=   * NMM-engine (note: unmaintained)                                       ===="
+        echo " =   + NMM-engine (note: unmaintained)"
     fi
+
+    echo " ="
 fi
 
-echo "================================================================================"
-
+echo " ==============================================================================="

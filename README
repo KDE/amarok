@@ -21,7 +21,7 @@ drop interface, that really makes playlist handling easy.
     * nice GUI, integrates into the KDE look, but with a unique touch
 
 
-This file was last updated with relevance to amaroK 1.0-beta1
+This file was last updated with relevance to amaroK 1.0.1
 
 
 --------------------------------------------------------------------------------
@@ -51,6 +51,9 @@ optional
     * XMMS 1.2 + XMMS visualization plugins
       http://xmms.org
 
+    * Xine 1.0.0
+      http://xine.sourceforge.net
+
 
 Please note, if you obtain these dependencies via a packaging system, you must
 also install the devel versions of these packages!
@@ -77,58 +80,21 @@ compile failure. See the file INSTALL for more information.
 
 
 --------------------------------------------------------------------------------
-MINI-FAQ
-========
-
-Q: Why can't amaroK play MP3s?
-A: It can! Chances are you're using Fedora/RedHat linux, they don't ship with
-   MP3 decoders by default (due to patenting issues). Solution:
-
-       ALT-F2, gg:redhat mp3 kde, ENTER
-
-Q: The sound stutters/CPU usage is high, can it be improved?
-A: You can either use the GStreamer engine (it's great!), or tweak aRts. Open
-   the Control Center, go to "Sound and Multimedia", then "Sound System". Enable
-   "Run with highest possible priority", and increase the size of the sound
-   buffer (warning, see the next FAQ!) You should also enusre that your
-   artswrapper is suid:
-   
-       $ su
-       $ chmod a+rsx /path/to/kde/bin/artswrapper
-       
-   Finally you will benefit from installing kdemultimedia in its entirety to get
-   the faster aRts codecs (eg. libarts_mpeglib.so, etc.)
-
-Q: The amaroK analyzers are really unresponsive!
-A: You are probably using the aRts engine, either use the GST or NMM engines, or
-   reduce the size of your aRts buffer in the Control Center, sound system. The
-   lower the buffer the more responsive the visuals. Yes this is a bug! Please
-   help us fix it!
+INSTALLATION-FAQ
+================
 
 Q: I have the required version of GStreamer installed but configure doesn't
    find it!
+Q: I have pkg-config problems.
 A: Here's an extract from the PKG-CONFIG man page:
 
      pkg-config retrieves information about packages from  special metadata
      files. These files are named after the package, with the extension
      .pc. By default, pkg-config looks in the directory prefix/lib/pkgconfig
-     for these  files;  it will  also  look in the colon-separated list of 
+     for these  files;  it will  also  look in the colon-separated list of
      directories specified by the PKG_CONFIG_PATH environment variable.
-     
+
    So, do export PKG_CONFIG_PATH="/path/to/gstreamer-0.x.y.pc" and reconfigure.
-   
-Q: Can amaroK output directly to OSS/ALSA?
-A: Yes, but not yet. One reason we use aRts/GStreamer and NMM is for codecs.
-   To output directly to ALSA, etc. someone needs to write an amaroK engine
-   plugin that uses libmad and libvorbis to decode directly to alsa. And then
-   call it amaroK_ALSA_engine. :-)
-
-Q: There are no visualizations in the visualizations dialog.
-A: You probably don't have xmms-config installed, reconfigure and build after
-   installing the appropriate xmms-devel package.
-
-Q: I've found a bug / I've got a great idea for amaroK!
-A: Please report it at http://bugs.kde.org.
 
 Q: Can I improve amaroK's startup time?
 A: The aRts engine is the slowest to load, using an alternative will help.
@@ -137,17 +103,52 @@ A: The aRts engine is the slowest to load, using an alternative will help.
    in order to get the amarokapp binary to prelink (the amarok binary is not
    important here).
 
-Q: Do you accept patches!
-A: Happily! Your best course of action is to let us know what you plan to do
-   before you do any work so we can discuss it, but don't fret we haven't turned
-   down a patch yet! Discussion is mostly to help you patch the correct bits of
-   amaroK. Then either submit a patch to the mailing list, or commit if you have
-   cvs access. However, please let us know before you commit new features to
-   cvs! If you have a bug fix then just commit, this is open source afterall:)
+
+--------------------------------------------------------------------------------
+OTHER-FAQS
+==========
+
+For answers to questions like "amaroK won't play any MP3s!" please visit:
+
+   http://amarok.kde.org/component/option,com_staticxt/staticfile,faq.html
 
 
 --------------------------------------------------------------------------------
+INFORMATION FOR PACKAGERS
+=========================
 
+For amaroK packages we suggest you build:
+
+                % ./configure --enable-final --disable-debug
+
+There is a special option for packagers who wish to use the version of sqlite
+that is distributed with their operating system:
+
+                % ./configure --without-included-sqlite
+
+However, the sqlite you ship MUST be threadsafe! Also amaroK will take longer
+to start with this option since sqlite is not statically linked into the
+amarok binary. The amaroK binary will be approximately 200kB smaller.
+
+We suggest compiling Os, there is no particular part of amaroK that would
+benefit from optimisation, so the smallest binary is probably the best route.
+
+In order to limit the dependencies the amaroK package demands we suggest
+splitting amaroK into the following packages:
+
+   1. amaroK + aRts-engine
+   2. GStreamer-engine
+   3. Xine-engine
+   4. amarok_xmmswrapper
+
+amaroK is modular and wil be fully functional without 2, 3 and 4.
+
+amaroK ships with two binaries: amarok and amarokapp. The amarok is a wrapper
+designed to speed up command line argument passing. amarokapp is the real
+amaroK.
+
+
+--------------------------------------------------------------------------------
 CONTRIBUTING
 ------------
 
