@@ -48,10 +48,11 @@ void OSDWidget::showSplash( const QString& imagePath )
     paint.drawImage( 0, 0, image.createAlphaMask() );
     paint.end();
 
-    QWidget* const d = QApplication::desktop();
-    QPoint p = d->rect().topLeft();
-    p.rx() += (d->width()-image.width()) / 2;
-    p.ry() += (d->height()-image.height()) / 2;
+    // Keep in mind the Xinerama-case when changing this
+    QRect d = QApplication::desktop()->screenGeometry( QApplication::desktop()->screenNumber( QPoint(0,0) ) );
+    QPoint p = d.topLeft();
+    p.rx() += (d.width()-image.width()) / 2;
+    p.ry() += (d.height()-image.height()) / 2;
     move( p );
     resize( osdBuffer.size() );
 
