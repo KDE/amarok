@@ -104,7 +104,6 @@ PlayerApp::PlayerApp()
     if( args->count() == 0 || args->isSet( "enqueue" ) ) restoreSession(); //resume playback + load prev PLS
 
     //TODO remember if we were in tray last exit, if so don't show!
-
     m_pPlayerWidget->show(); //BrowserWin will sponaneously show if appropriate
 
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
@@ -130,12 +129,6 @@ PlayerApp::~PlayerApp()
     //close loader IPC server socket
     if ( m_sockfd != -1 )
         ::close( m_sockfd );
-
-    //hiding these widgets stops visual oddness
-    //I know they won't dissapear because the event Loop isn't updated, but it stops
-    //some syncronous updates etc.
-    m_pPlayerWidget->hide();
-    m_pBrowserWin->hide();
 
     //Save current item info in dtor rather than saveConfig() as it is only relevant on exit
     //and we may in the future start to use read and saveConfig() in other situations
