@@ -51,14 +51,12 @@ rm -rf $folder.tar.bz2 2> /dev/null
 mkdir $folder
 pushd $folder
 cvs -d $cvsroot co -l kdeextragear-1
+cvs -z3 -d $cvsroot co kdeextragear-1/amarok
+cvs -z3 -d $cvsroot co -l kdeextragear-1/doc
+cvs -z3 -d $cvsroot co -l kdeextragear-1/doc/amarok
 pushd kdeextragear-1
 
-cvs -z3 co admin
-cvs -z3 up amarok
-cvs -z3 up -l doc
-pushd doc
-cvs -z3 up amarok
-popd
+cvs -z3 -d $cvsroot co admin
 
 echo
 echo "**** i18n ****"
@@ -67,7 +65,7 @@ echo
 # we check out kde-i18n/subdirs in kde-i18n..
 if [ $doi18n = "yes" ]; then
     echo "cvs co kde-i18n/subdirs" >> $log
-    cvs -z3 -q co -P kde-i18n/subdirs > /dev/null 2>&1
+    cvs -z3 -d $cvsroot -q co -P kde-i18n/subdirs > /dev/null 2>&1
     i18nlangs="$(cat kde-i18n/subdirs)"
     echo "available languages: $i18nlangs" >> $log
 
@@ -94,7 +92,7 @@ if [ $doi18n = "yes" ]; then
     for lang in $i18nlangs; do
         pofilename="kde-i18n/$lang/messages/kdeextragear-1/amarok.po";
         echo "cvs co $pofilename" >> $log
-        cvs -z3 -q co -P "$pofilename" > /dev/null 2>&1
+        cvs -z3 -d $cvsroot -q co -P "$pofilename" > /dev/null 2>&1
         if [ ! -f "$pofilename" ]; then
             echo "$lang's $name.po does not exist." >> $log
             continue
