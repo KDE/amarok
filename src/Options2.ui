@@ -35,6 +35,23 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
+                <widget class="QCheckBox" row="0" column="0">
+                    <property name="name">
+                        <cstring>kcfg_UseCustomFonts</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Use custom fonts</string>
+                    </property>
+                    <property name="checked">
+                        <bool>false</bool>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Check to enable custom fonts.</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Check to enable custom fonts.</string>
+                    </property>
+                </widget>
                 <widget class="QGroupBox" row="1" column="0">
                     <property name="name">
                         <cstring>fontGroupBox</cstring>
@@ -68,61 +85,6 @@
                                 <property name="name">
                                     <cstring>unnamed</cstring>
                                 </property>
-                                <widget class="QLayoutWidget" row="1" column="0">
-                                    <property name="name">
-                                        <cstring>layout7</cstring>
-                                    </property>
-                                    <vbox>
-                                        <property name="name">
-                                            <cstring>unnamed</cstring>
-                                        </property>
-                                        <property name="spacing">
-                                            <number>2</number>
-                                        </property>
-                                        <widget class="QLabel">
-                                            <property name="name">
-                                                <cstring>textLabel3</cstring>
-                                            </property>
-                                            <property name="minimumSize">
-                                                <size>
-                                                    <width>150</width>
-                                                    <height>20</height>
-                                                </size>
-                                            </property>
-                                            <property name="text">
-                                                <string>Playlist-window font:</string>
-                                            </property>
-                                            <property name="whatsThis" stdset="0">
-                                                <string>The font to use in the playlist window.</string>
-                                            </property>
-                                        </widget>
-                                        <widget class="KFontRequester">
-                                            <property name="name">
-                                                <cstring>kcfg_PlaylistWindowFont</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>5</hsizetype>
-                                                    <vsizetype>5</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="maximumSize">
-                                                <size>
-                                                    <width>360</width>
-                                                    <height>40</height>
-                                                </size>
-                                            </property>
-                                            <property name="sampleText">
-                                                <string></string>
-                                            </property>
-                                            <property name="whatsThis" stdset="0">
-                                                <string>The font to use in the playlist window.</string>
-                                            </property>
-                                        </widget>
-                                    </vbox>
-                                </widget>
                                 <widget class="QLayoutWidget" row="0" column="0">
                                     <property name="name">
                                         <cstring>layout5</cstring>
@@ -150,6 +112,9 @@
                                             <property name="alignment">
                                                 <set>AlignTop|AlignLeft</set>
                                             </property>
+                                            <property name="toolTip" stdset="0">
+                                                <string>The font to use in the player window.</string>
+                                            </property>
                                             <property name="whatsThis" stdset="0">
                                                 <string>The font to use in the player window.</string>
                                             </property>
@@ -175,8 +140,72 @@
                                             <property name="sampleText">
                                                 <string></string>
                                             </property>
+                                            <property name="toolTip" stdset="0">
+                                                <string>The font to use in the player window.</string>
+                                            </property>
                                             <property name="whatsThis" stdset="0">
                                                 <string>The font to use in the player window.</string>
+                                            </property>
+                                        </widget>
+                                    </vbox>
+                                </widget>
+                                <widget class="QLayoutWidget" row="1" column="0">
+                                    <property name="name">
+                                        <cstring>layout7</cstring>
+                                    </property>
+                                    <vbox>
+                                        <property name="name">
+                                            <cstring>unnamed</cstring>
+                                        </property>
+                                        <property name="spacing">
+                                            <number>2</number>
+                                        </property>
+                                        <widget class="QLabel">
+                                            <property name="name">
+                                                <cstring>textLabel3</cstring>
+                                            </property>
+                                            <property name="minimumSize">
+                                                <size>
+                                                    <width>150</width>
+                                                    <height>20</height>
+                                                </size>
+                                            </property>
+                                            <property name="text">
+                                                <string>Playlist-window font:</string>
+                                            </property>
+                                            <property name="toolTip" stdset="0">
+                                                <string>The font to use in the playlist window.</string>
+                                            </property>
+                                            <property name="whatsThis" stdset="0">
+                                                <string>The font to use in the playlist window.</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="KFontRequester">
+                                            <property name="name">
+                                                <cstring>kcfg_PlaylistWindowFont</cstring>
+                                            </property>
+                                            <property name="sizePolicy">
+                                                <sizepolicy>
+                                                    <hsizetype>5</hsizetype>
+                                                    <vsizetype>5</vsizetype>
+                                                    <horstretch>0</horstretch>
+                                                    <verstretch>0</verstretch>
+                                                </sizepolicy>
+                                            </property>
+                                            <property name="maximumSize">
+                                                <size>
+                                                    <width>360</width>
+                                                    <height>40</height>
+                                                </size>
+                                            </property>
+                                            <property name="sampleText">
+                                                <string></string>
+                                            </property>
+                                            <property name="toolTip" stdset="0">
+                                                <string>The font to use in the playlist window.</string>
+                                            </property>
+                                            <property name="whatsThis" stdset="0">
+                                                <string>The font to use in the playlist window.</string>
                                             </property>
                                         </widget>
                                     </vbox>
@@ -205,8 +234,11 @@
                                             <property name="text">
                                                 <string>Context-browser font:</string>
                                             </property>
+                                            <property name="toolTip" stdset="0">
+                                                <string>The font to use in the context browser.</string>
+                                            </property>
                                             <property name="whatsThis" stdset="0">
-                                                <string>The font to use in the playlist window.</string>
+                                                <string>The font to use in the context browser.</string>
                                             </property>
                                         </widget>
                                         <widget class="KFontRequester">
@@ -230,8 +262,11 @@
                                             <property name="sampleText">
                                                 <string></string>
                                             </property>
+                                            <property name="toolTip" stdset="0">
+                                                <string>The font to use in the context browser.</string>
+                                            </property>
                                             <property name="whatsThis" stdset="0">
-                                                <string>The font to use in the playlist window.</string>
+                                                <string>The font to use in the context browser.</string>
                                             </property>
                                         </widget>
                                     </vbox>
@@ -240,26 +275,32 @@
                         </widget>
                     </grid>
                 </widget>
+                <widget class="Line" row="2" column="0">
+                    <property name="name">
+                        <cstring>line1</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>HLine</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
                 <widget class="QCheckBox" row="3" column="0">
                     <property name="name">
                         <cstring>kcfg_RecodeID3v1Tags</cstring>
                     </property>
                     <property name="text">
-                        <string>Recode ID3v1 tags</string>
+                        <string>&amp;Recode ID3v1 tags</string>
                     </property>
-                </widget>
-                <widget class="QCheckBox" row="0" column="0">
-                    <property name="name">
-                        <cstring>kcfg_UseCustomFonts</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Use custom fonts</string>
-                    </property>
-                    <property name="checked">
-                        <bool>false</bool>
+		    <property name="toolTip" stdset="0">
+			<string>XXX</string>
                     </property>
                     <property name="whatsThis" stdset="0">
-                        <string>Check to enable custom fonts.</string>
+                        <string>XXX</string>
                     </property>
                 </widget>
                 <widget class="QLayoutWidget" row="4" column="0">
@@ -307,22 +348,14 @@
                                     <verstretch>0</verstretch>
                                 </sizepolicy>
                             </property>
+		    	    <property name="toolTip" stdset="0">
+				<string>XXX</string>
+                    	    </property>
+                    	    <property name="whatsThis" stdset="0">
+                        	<string>XXX</string>
+                    	    </property>
                         </widget>
                     </hbox>
-                </widget>
-                <widget class="Line" row="2" column="0">
-                    <property name="name">
-                        <cstring>line1</cstring>
-                    </property>
-                    <property name="frameShape">
-                        <enum>HLine</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>Sunken</enum>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
                 </widget>
             </grid>
         </widget>

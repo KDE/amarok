@@ -48,6 +48,9 @@
                     <property name="text">
                         <string>&amp;amaroK default color scheme</string>
                     </property>
+                    <property name="toolTip" stdset="0">
+                        <string>If selected, amaroK uses the amaroK standard colors in the playlist.</string>
+                    </property>
                     <property name="whatsThis" stdset="0">
                         <string>If selected, amaroK uses the amaroK standard colors in the playlist.</string>
                     </property>
@@ -58,6 +61,9 @@
                     </property>
                     <property name="text">
                         <string>Current &amp;KDE color scheme</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>If selected, amaroK uses the KDE standard colors in the playlist.</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>If selected, amaroK uses the KDE standard colors in the playlist.</string>
@@ -83,6 +89,9 @@
                             </property>
                             <property name="checked">
                                 <bool>true</bool>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>If selected, amaroK uses the user-defined colors in the playlist.</string>
                             </property>
                             <property name="whatsThis" stdset="0">
                                 <string>If selected, amaroK uses the user-defined colors in the playlist.</string>
@@ -148,35 +157,7 @@
                                         <cstring>kcfg_PlaylistWindowFgColor</cstring>
                                     </property>
                                     <property name="whatsThis" stdset="0">
-                                        <string></string>
-                                    </property>
-                                </widget>
-                                <widget class="QLabel" row="1" column="0">
-                                    <property name="name">
-                                        <cstring>bgColor</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>true</bool>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>4</hsizetype>
-                                            <vsizetype>5</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="text">
-                                        <string>&amp;Background:</string>
-                                    </property>
-                                    <property name="indent">
-                                        <number>16</number>
-                                    </property>
-                                    <property name="buddy" stdset="0">
-                                        <cstring>kcfg_PlaylistWindowBgColor</cstring>
-                                    </property>
-                                    <property name="whatsThis" stdset="0">
-                                        <string>Selects the color to use as background color  in the playlist.</string>
+                                        <string>Selects the color to use as foreground color  in the playlist.</string>
                                     </property>
                                 </widget>
                                 <widget class="KColorButton" row="0" column="1">
@@ -204,8 +185,40 @@
                                             <blue>255</blue>
                                         </color>
                                     </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>Click to select the foreground text color in the playlist window.</string>
+
+                                    </property>
                                     <property name="whatsThis" stdset="0">
-                                        <string>Selects the color to use as foreground (text) color  in the playlist.</string>
+                                        <string>Selects the color to use as foreground (text) color in the playlist.</string>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel" row="1" column="0">
+                                    <property name="name">
+                                        <cstring>bgColor</cstring>
+                                    </property>
+                                    <property name="enabled">
+                                        <bool>true</bool>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>4</hsizetype>
+                                            <vsizetype>5</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                    <property name="text">
+                                        <string>&amp;Background:</string>
+                                    </property>
+                                    <property name="indent">
+                                        <number>16</number>
+                                    </property>
+                                    <property name="buddy" stdset="0">
+                                        <cstring>kcfg_PlaylistWindowBgColor</cstring>
+                                    </property>
+                                    <property name="whatsThis" stdset="0">
+                                        <string>Selects the color to use as background color in the playlist.</string>
                                     </property>
                                 </widget>
                                 <widget class="KColorButton" row="1" column="1">
@@ -245,8 +258,11 @@
                                             <blue>80</blue>
                                         </color>
                                     </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>Click to select the background color in the playlist window.</string>
+                                    </property>
                                     <property name="whatsThis" stdset="0">
-                                        <string>Selects the color to use as background color  in the playlist.</string>
+                                        <string>Selects the color to use as background color in the playlist.</string>
                                     </property>
                                 </widget>
                             </grid>
