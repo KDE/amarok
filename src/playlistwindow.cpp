@@ -523,4 +523,10 @@ void PlaylistWindow::welcomeURL( const KURL &url )
     amaroK::config()->writeEntry( "XMLFile", xml );
 }
 
+
+void amaroK::ToolBar::mousePressEvent( QMouseEvent *e )
+{
+    if( e->button() == RightButton ) amaroK::Menu::instance()->popup( e->globalPos() );
+}
+
 #include "playlistwindow.moc"

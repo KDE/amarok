@@ -36,9 +36,11 @@ namespace amaroK
         signals:
             void wheelMoved( int delta );
 
+        protected:
+            virtual void mousePressEvent( QMouseEvent* );
+
         private:
-            void wheelEvent( QWheelEvent* e )
-                { emit wheelMoved( e->delta() ); }
+            virtual void wheelEvent( QWheelEvent *e ) { emit wheelMoved( e->delta() ); }
     };
 }
 
