@@ -11,8 +11,9 @@
 
 class KHelpMenu;
 
+namespace amaroK {
 
-class AmarokMenu : public QPopupMenu {
+class Menu : public QPopupMenu {
 public:
 
     static const int ID_REPEAT_TRACK    = 100;
@@ -20,7 +21,7 @@ public:
     static const int ID_RANDOM_MODE     = 102;
     static const int ID_CONF_DECODER    = 103;
 
-    AmarokMenu( QWidget *parent );
+    Menu( QWidget *parent );
     int exec( const QPoint&, int indexAtPoint = -1 );
 
     static KPopupMenu *helpMenu( QWidget *parent = 0 );
@@ -28,5 +29,7 @@ public:
 private:
     static KHelpMenu *HelpMenu;
 };
+
+}
 
 #endif

@@ -18,20 +18,20 @@ email                : markey@web.de
 #include "amarokconfig.h"
 #include "amarokconfigdialog.h"
 #include "amarokdcophandler.h"
+#include "amaroksystray.h"
 #include "browserwin.h"
 #include "effectwidget.h"
 #include "enginebase.h"
+#include "enginecontroller.h"
 #include "metabundle.h"
 #include "osd.h"
 #include "playerapp.h"
 #include "playerwidget.h"
+#include "playlisttooltip.h"     //engineNewMetaData()
 #include "plugin.h"
 #include "pluginmanager.h"
 #include "threadweaver.h"        //restoreSession()
-#include "playlisttooltip.h"     //engineNewMetaData()
-#include "enginecontroller.h"
 #include "vis/socketserver.h"    //please leave directory prefix
-#include "amaroksystray.h"
 
 #include <kaboutdata.h>          //initCliArgs()
 #include <kaction.h>
@@ -71,7 +71,7 @@ PlayerApp::PlayerApp()
         , m_pGlobalAccel( new KGlobalAccel( this ) )
         , m_pDcopHandler( new AmarokDcopHandler )
         , m_pTray( 0 )
-        , m_pOSD( new amK::OSD() )
+        , m_pOSD( new amaroK::OSD() )
         , m_sockfd( -1 )
         , m_showBrowserWin( false )
         , m_pActionCollection( new KActionCollection( 0, this ) )
@@ -118,7 +118,7 @@ PlayerApp::PlayerApp()
 
     EngineController::instance()->attach( m_pPlayerWidget );
     EngineController::instance()->attach( this );
-    m_pTray = new AmarokSystray( m_pPlayerWidget, actionCollection() ); //show/hide is handled by KConfig XT
+    m_pTray = new amaroK::Systray( m_pPlayerWidget, actionCollection() ); //shown/hidden in applySettings()
 
 
     applySettings();  //will load the engine
@@ -156,10 +156,10 @@ PlayerApp::~PlayerApp()
     //and we may in the future start to use read and saveConfig() in other situations
     //    kapp->config()->setGroup( "Session" );
 
-    //TODO why is this configXT'd? hardly need to accesss these globally.
-    //     and it means they're a pain to extend
     EngineBase *engine = EngineController::instance()->engine();
 
+    //TODO why are these configXT'd? We hardly need to accesss these globally.
+    //     and it means they're a pain to extend
     if( AmarokConfig::resumePlayback() && !EngineController::instance()->playingURL().isEmpty() )
     {
         AmarokConfig::setResumeTrack( EngineController::instance()->playingURL().url() );
@@ -171,7 +171,7 @@ PlayerApp::~PlayerApp()
     }
     else AmarokConfig::setResumeTrack( QString::null ); //otherwise it'll play previous resume next time!
 
-    engine->stop(); //controller does this plus visual stuff we don't need to do on exit
+    engine->stop(); //slotStop() is not necessary
 
     saveConfig();
 
@@ -789,10 +789,10 @@ void PlayerApp::showEffectWidget()
     {
         EffectWidget::self = new EffectWidget();
 
-        connect( m_pPlayerWidget,              SIGNAL( destroyed() ),
-                 EffectWidget::self,           SLOT  ( deleteLater() ) );
-        connect( EffectWidget::self,           SIGNAL( destroyed() ),
-                 this,        SLOT( slotEffectWidgetDestroyed() ) );
+        connect( m_pPlayerWidget,    SIGNAL( destroyed() ),
+                 EffectWidget::self,   SLOT( deleteLater() ) );
+        connect( EffectWidget::self, SIGNAL( destroyed() ),
+                 m_pPlayerWidget,      SLOT( setEffectsWindowShown() ) ); //defaults to false
 
         EffectWidget::self->show();
 
@@ -805,13 +805,6 @@ void PlayerApp::showEffectWidget()
         delete EffectWidget::self;
     }
 }
-
-
-void PlayerApp::slotEffectWidgetDestroyed()
- {
-     m_pPlayerWidget->setEffectsWindowShown( false );
- }
-
 
 void PlayerApp::slotShowOptions()
 {
@@ -826,12 +819,12 @@ void PlayerApp::slotShowOptions()
     }
 }
 
-void PlayerApp::setOsdEnabled( bool enabled ) //SLOT //FIXME this slot sucks
+void PlayerApp::setOsdEnabled( bool enabled ) //SLOT //FIXME required due to dcopHandler
 {
     m_pOSD->setEnabled( enabled );
 }
 
-void PlayerApp::slotShowVolumeOSD() //SLOT //FIXME this slot sucks
+void PlayerApp::slotShowVolumeOSD() //SLOT //FIXME required due to dcopHandler
 {
     m_pOSD->showVolume();
 }

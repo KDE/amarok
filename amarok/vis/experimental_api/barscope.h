@@ -10,7 +10,7 @@
 
 class QTimerEvent;
 
-class MyVis : public QWidget, public amK::Vis
+class MyVis : public QWidget, public amaroK::Vis
 {
 public:
     MyVis();

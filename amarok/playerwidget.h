@@ -26,11 +26,8 @@
 #include "fht.h"         //stack allocated
 #include "engineobserver.h"
 
-class AmarokSlider;
-class ArtsConfigWidget;
-class KHelpMenu;
+namespace amaroK { class Slider; }
 class MetaBundle;
-class PlayerApp;
 class PlayerWidget;
 class QBitmap;
 class QButton;
@@ -68,7 +65,6 @@ class PlayerWidget : public QWidget, public EngineObserver
 
     public:
         PlayerWidget( QWidget* =0, const char* =0 );
-        ~PlayerWidget();
 
         void defaultScroll();
         void timeDisplay( int );
@@ -80,7 +76,7 @@ class PlayerWidget : public QWidget, public EngineObserver
         void setScroll( const MetaBundle& );
         void drawScroll();
         void setPlaylistShown( bool on );
-        void setEffectsWindowShown( bool on );
+        void setEffectsWindowShown( bool on = false );
 
     protected:
     /** Observer reimpls **/
@@ -115,9 +111,9 @@ class PlayerWidget : public QWidget, public EngineObserver
         // ATTRIBUTES ------
 
         QTimer    *m_pAnimTimer;
-        QString m_rateString;
+        QString    m_rateString;
 
-        QWidget           *m_pAnalyzer;
+        QWidget   *m_pAnalyzer;
 
         QPixmap m_scrollTextPixmap;
         QPixmap m_scrollBuffer;
@@ -132,12 +128,12 @@ class PlayerWidget : public QWidget, public EngineObserver
         QLabel *m_pVolSign;
         QLabel *m_pDescription;
         QHBox  *m_pFrameButtons;
-        IconButton   *m_pButtonEq;
-        IconButton   *m_pButtonPl;
-        AmarokSlider *m_pSlider;
-        AmarokSlider *m_pVolSlider;
-        QPushButton  *m_pButtonPlay;
-        QPushButton  *m_pButtonPause;
+        IconButton     *m_pButtonEq;
+        IconButton     *m_pButtonPl;
+        amaroK::Slider *m_pSlider;
+        amaroK::Slider *m_pVolSlider;
+        QPushButton    *m_pButtonPlay;
+        QPushButton    *m_pButtonPause;
 };
 
 #endif

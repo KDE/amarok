@@ -26,6 +26,7 @@ email                : markey@web.de
 #include "playlisttooltip.h" //setScroll()
 #include "enginecontroller.h"
 
+#include <qdragobject.h>
 #include <qfont.h>
 #include <qhbox.h>
 #include <qpainter.h>
@@ -33,7 +34,7 @@ email                : markey@web.de
 #include <qpopupmenu.h>
 #include <qrect.h>
 #include <qstringlist.h>
-#include <qdragobject.h>
+#include <qtooltip.h>
 
 #include <kaction.h>
 #include <kdebug.h>
@@ -112,8 +113,8 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     } //</NavButtons>
 
     { //<Sliders>
-        m_pSlider    = placeWidget( new AmarokSlider( this, Qt::Horizontal ), QRect(4,103, 303,12) );
-        m_pVolSlider = placeWidget( new AmarokSlider( this, Qt::Vertical ), QRect(294,18, 12,79) );
+        m_pSlider    = placeWidget( new amaroK::Slider( this, Qt::Horizontal ), QRect(4,103, 303,12) );
+        m_pVolSlider = placeWidget( new amaroK::Slider( this, Qt::Vertical ), QRect(294,18, 12,79) );
 
         m_pVolSlider->setMaxValue( VOLUME_MAX );
 
@@ -145,13 +146,11 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
         m_timeBuffer.fill( backgroundColor() );
     } //<TimeLabel>
 
-        connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( drawScroll() ) );
-        m_pButtonEq = placeWidget( new IconButton( this, "eq" ), QRect(34,85, 28,13) );
-    connect( m_pButtonEq, SIGNAL( released() ),
-             this, SIGNAL( effectsWindowActivated() ) );
+    connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( drawScroll() ) );
+    m_pButtonEq = placeWidget( new IconButton( this, "eq" ), QRect(34,85, 28,13) );
+    connect( m_pButtonEq, SIGNAL( released() ), this, SIGNAL( effectsWindowActivated() ) );
     m_pButtonPl = placeWidget( new IconButton( this, "pl" ), QRect( 5,85, 28,13) );
-    connect( m_pButtonPl, SIGNAL( toggled( bool ) ),
-             this, SIGNAL( playlistToggled( bool ) ) );
+    connect( m_pButtonPl, SIGNAL( toggled( bool ) ), this, SIGNAL( playlistToggled( bool ) ) );
 
 
     m_pDescription = wrapper<QLabel>( QRect(4,6, 130,10), this );
@@ -168,11 +167,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     //KWin::setType( winId(), NET::Override );
     //KWin::setOnAllDesktops( winId(), true );
 }
-
-
-PlayerWidget::~PlayerWidget()
-{}
-
 
 // METHODS ----------------------------------------------------------------
 
@@ -207,7 +201,7 @@ void PlayerWidget::setScroll( const QStringList &list )
 {
 //#define MAX_KNOWS_BEST
 #ifdef  MAX_KNOWS_BEST
-static const char* const not_close_xpm[]={
+static const char* const separator_xpm[]={
 "5 5 2 1",
 "# c #80a0ff",
 ". c none",
@@ -217,7 +211,7 @@ static const char* const not_close_xpm[]={
 "#...#",
 "#####"};
 #else
-static const char* const not_close_xpm[]={
+static const char* const separator_xpm[]={
 "4 4 1 1",
 "# c #80a0ff",
 "####",
@@ -227,7 +221,7 @@ static const char* const not_close_xpm[]={
 #endif
     //TODO make me pretty!
 
-    QPixmap separator( const_cast< const char** >(not_close_xpm) );
+    QPixmap separator( const_cast< const char** >(separator_xpm) );
 
     const QString s = list.first();
 
@@ -249,7 +243,7 @@ static const char* const not_close_xpm[]={
 
     //FIXME WORKAROUND prevents crash
     if ( text.isEmpty() )
-        text = "FIXME: EMPTY STRING MAKES ME CRASH!";
+        text = "FIXME: EMPTY STRING -> NULL PIXMAP -> CRASH!";
 
     QFont font( m_pScrollFrame->font() );
     QFontMetrics fm( font );
@@ -480,7 +474,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
 {
     if ( e->button() == QMouseEvent::RightButton )
     {
-        AmarokMenu popup( this );
+        amaroK::Menu popup( this );
         popup.exec( e->globalPos() );
     }
     else //other buttons
@@ -563,6 +557,7 @@ void PlayerWidget::createAnalyzer( int increment )
 
     m_pAnalyzer = Analyzer::Factory::createAnalyzer( this );
     m_pAnalyzer->setGeometry( 119,40, 168,56 );
+    QToolTip::add( m_pAnalyzer, i18n( "Click for more analyzers" ) );
     m_pAnalyzer->show();
 }
 

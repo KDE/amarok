@@ -20,6 +20,17 @@
 #include <kmultitabbar.h>  //m_multiTabBar
 
 
+/**
+ * The SideBbar/MultTab/Tray all-in-one spectacular!
+ *
+ * @author Max Howell.
+*/
+
+//Important: name the widgets you plan to add to the bar! The name is important and browser settings are
+//associated with it. You also can get the widget pointer using page( "name" );
+
+
+
 //TODO update commentry
 //TODO change container() name, it is poor
 //TODO make pageholder a layout
@@ -35,11 +46,6 @@
 //I suggest using KDockWindow and KDockWidget if they have been cleaned up and made easier to understand
 //with KDE 4
 
-/**
- * The SideBbar/MultTab/Tray all-in-one spectacular!
- *
- * @author Max Howell.
-*/
 
 //NOTE I use the "current" property of the QPtrList, m_widgets, to represent
 //the currently visible widget. This had a number of advantages, one of

@@ -32,8 +32,8 @@
 #define MARGIN 3
 
 //---<init>---
-AmarokSlider::AmarokSlider( QWidget *parent, Qt::Orientation orient, VDirection dir )
-        : QWidget( parent, "AmarokSlider", Qt::WRepaintNoErase )
+amaroK::Slider::Slider( QWidget *parent, Qt::Orientation orient, VDirection dir )
+        : QWidget( parent, "amaroK::Slider", Qt::WRepaintNoErase )
         , QRangeControl()
         , m_isPressed( false )
         , m_orientation( orient )
@@ -47,13 +47,13 @@ AmarokSlider::AmarokSlider( QWidget *parent, Qt::Orientation orient, VDirection 
 //---</init>---
 
 
-QSize AmarokSlider::minimumSizeHint() const
+QSize amaroK::Slider::minimumSizeHint() const
 {
     return sizeHint();
 }
 
 
-void AmarokSlider::setValue( int val )
+void amaroK::Slider::setValue( int val )
 {
     if ( val != value() )
     {
@@ -64,7 +64,7 @@ void AmarokSlider::setValue( int val )
 }
 
 
-QSize AmarokSlider::sizeHint() const
+QSize amaroK::Slider::sizeHint() const
 {
     constPolish();
 
@@ -76,7 +76,7 @@ QSize AmarokSlider::sizeHint() const
 
 
 //---<events>---
-void AmarokSlider::mouseMoveEvent( QMouseEvent *e )
+void amaroK::Slider::mouseMoveEvent( QMouseEvent *e )
 {
     if ( m_isPressed )
     {
@@ -88,7 +88,7 @@ void AmarokSlider::mouseMoveEvent( QMouseEvent *e )
 }
 
 
-void AmarokSlider::mousePressEvent( QMouseEvent *e )
+void amaroK::Slider::mousePressEvent( QMouseEvent *e )
 {
     if( e->button() == Qt::LeftButton )
     {
@@ -101,14 +101,14 @@ void AmarokSlider::mousePressEvent( QMouseEvent *e )
 }
 
 
-void AmarokSlider::mouseReleaseEvent( QMouseEvent * )
+void amaroK::Slider::mouseReleaseEvent( QMouseEvent * )
 {
     m_isPressed = false;
     emit sliderReleased();
 }
 
 
-void AmarokSlider::paintEvent( QPaintEvent * )
+void amaroK::Slider::paintEvent( QPaintEvent * )
 {
     int length = ( m_orientation == Qt::Horizontal ) ? width() : height();
     int val = value();

@@ -101,7 +101,7 @@ private:
 
 
 
-namespace amK {
+namespace amaroK {
 
 class OSD : public OSDWidget
 {

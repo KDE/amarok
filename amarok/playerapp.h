@@ -30,9 +30,13 @@
 #define APP_VERSION "0.9.1-CVS"
 
 
-namespace amK { class OSD; }
+namespace amaroK
+{
+    class OSD;
+    class Systray;
+}
 class AmarokDcopHandler;
-class AmarokSystray;
+
 class BrowserWin;
 class MetaBundle;
 class PlayerWidget;
@@ -82,7 +86,6 @@ class PlayerApp : public KApplication, public EngineObserver
         void handleLoaderArgs( QCString args );
         void applySettings();
         void showEffectWidget();
-        void slotEffectWidgetDestroyed();
 
     private:
         void handleCliArgs();
@@ -104,8 +107,8 @@ class PlayerApp : public KApplication, public EngineObserver
         PlayerWidget      *m_pPlayerWidget;
         BrowserWin        *m_pBrowserWin;
         AmarokDcopHandler *m_pDcopHandler;
-        AmarokSystray     *m_pTray;
-        amK::OSD          *m_pOSD;
+        amaroK::Systray   *m_pTray;
+        amaroK::OSD       *m_pOSD;
         KActionCollection *m_pActionCollection;
 
         long      m_length; //DEPRECATE

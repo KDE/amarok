@@ -21,7 +21,7 @@ main( int argc, char **argv )
     return a.exec();
 }
 
-MyVis::MyVis() : QWidget(), amK::Vis()
+MyVis::MyVis() : QWidget(), amaroK::Vis()
 {
     startTimer( 100 );
 }

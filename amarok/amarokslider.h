@@ -16,46 +16,49 @@
  ***************************************************************************/
 
 #ifndef AMAROKSLIDER_H
-    
-    #define AMAROKSLIDER_H
-    
-    #include <qrangecontrol.h>
-    #include <qwidget.h>
-    
-    class QMouseEvent;
-    class QPaintEvent;
-    class QSize;
-    
-    class AmarokSlider : public QWidget, public QRangeControl
-    {
-            Q_OBJECT
-    
-        public:
-	    enum VDirection { TopDown = 1, BottomUp = 1 };
-	    
-            AmarokSlider( QWidget *, Qt::Orientation, VDirection = BottomUp );
+#define AMAROKSLIDER_H
 
-            void setValue( int );
-            bool sliding() { return m_isPressed; }
-                
-        signals:
-            void sliderPressed();
-            void sliderReleased();
-            void valueChanged( int );    
-            
-        private:
-            QSize minimumSizeHint() const;
-            QSize sizeHint() const;
-            
-            void mouseMoveEvent( QMouseEvent * );
-            void mousePressEvent( QMouseEvent * );
-            void mouseReleaseEvent( QMouseEvent * );
-            void paintEvent( QPaintEvent * );
-            
-            // ATTRIBUTES ------
-            bool m_isPressed;
-            Qt::Orientation m_orientation;
-	    VDirection m_dir;
-    };
-   
+#include <qrangecontrol.h>
+#include <qwidget.h>
+
+class QMouseEvent;
+class QPaintEvent;
+class QSize;
+
+namespace amaroK {
+
+class Slider : public QWidget, public QRangeControl
+{
+        Q_OBJECT
+
+    public:
+        enum VDirection { TopDown = 1, BottomUp = 1 };
+
+        Slider( QWidget *, Qt::Orientation, VDirection = BottomUp );
+
+        void setValue( int );
+        bool sliding() { return m_isPressed; }
+
+    signals:
+        void sliderPressed();
+        void sliderReleased();
+        void valueChanged( int );
+
+    private:
+        QSize minimumSizeHint() const;
+        QSize sizeHint() const;
+
+        void mouseMoveEvent( QMouseEvent * );
+        void mousePressEvent( QMouseEvent * );
+        void mouseReleaseEvent( QMouseEvent * );
+        void paintEvent( QPaintEvent * );
+
+        // ATTRIBUTES ------
+        bool m_isPressed;
+        Qt::Orientation m_orientation;
+        VDirection m_dir;
+};
+
+}
+
 #endif

@@ -14,17 +14,19 @@
 class KActionCollection;
 class QEvent;
 
-//TODO use Amarok namespace
+namespace amaroK {
 
-class AmarokSystray : public KSystemTray
+class Systray : public KSystemTray
 {
 Q_OBJECT
 
 public:
-    AmarokSystray( QWidget *, KActionCollection * );
+    Systray( QWidget *, KActionCollection * );
 
 private:
     bool event( QEvent* );
 };
+
+}
 
 #endif

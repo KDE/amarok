@@ -133,7 +133,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 
         toolbar->insertButton( QString::null, 101, true, i18n( "Menu" ) );
         menuItem = toolbar->getButton( 101 );
-        menuItem->setPopup( new AmarokMenu( this ) );
+        menuItem->setPopup( new amaroK::Menu( this ) );
         toolbar->alignItemRight( 101 );
 
         //TEXT ON RIGHT HACK

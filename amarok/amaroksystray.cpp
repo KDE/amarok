@@ -16,7 +16,7 @@
 #include <kpopupmenu.h>
 
 
-AmarokSystray::AmarokSystray( QWidget *playerWidget, KActionCollection *ac ) : KSystemTray( playerWidget )
+amaroK::Systray::Systray( QWidget *playerWidget, KActionCollection *ac ) : KSystemTray( playerWidget )
 {
     setPixmap( KSystemTray::loadIcon("amarok") ); // @since 3.2
     setAcceptDrops( true );
@@ -59,12 +59,13 @@ AmarokSystray::AmarokSystray( QWidget *playerWidget, KActionCollection *ac ) : K
 
     ac->action( "options_configure" )->plug( contextMenu() );
 
+    //seems to be necessary
     actionCollection()->action( "file_quit" )->disconnect();
     connect( actionCollection()->action( "file_quit" ), SIGNAL( activated() ), kapp, SLOT( quit() ) );
 }
 
-
-bool AmarokSystray::event( QEvent *e )
+bool
+amaroK::Systray::event( QEvent *e )
 {
     switch( e->type() ) {
     case QEvent::Wheel:

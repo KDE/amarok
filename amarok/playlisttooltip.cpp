@@ -23,7 +23,7 @@
 void PlaylistToolTip::add( QWidget * widget, const MetaBundle & tags )
 {
     const KURL &url = tags.url();
-    const QString tr = "<tr><td width=70>%1:</td><td align=left>%2</td></tr>";
+    const QString tr = "<tr><td width=70 align=right>%1:</td><td align=left>%2</td></tr>";
 
     QString tipBuf;
 

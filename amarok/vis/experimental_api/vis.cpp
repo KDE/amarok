@@ -10,9 +10,11 @@
 #include "vis.h"
 
 
-using namespace amK;
+using amaroK::short16;
+namespace amK = amaroK;
 
-Vis::Vis()
+
+amK::Vis::Vis()
   : m_path( getenv( "HOME" ) )
 {
     m_data[0].resize( 512 );
@@ -23,7 +25,7 @@ Vis::Vis()
 }
 
 int
-Vis::tryConnect()
+amK::Vis::tryConnect()
 {
     //try to connect to the VisServer
     int fd = socket( AF_UNIX, SOCK_STREAM, 0 );
@@ -48,7 +50,7 @@ Vis::tryConnect()
 }
 
 std::vector<short16>*
-Vis::fetchPCM()
+amK::Vis::fetchPCM()
 {
     const int nch = 1; //no of channels?
     int sockfd;

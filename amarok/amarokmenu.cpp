@@ -11,10 +11,10 @@
 #include <klocale.h>
 
 //static member
-KHelpMenu *AmarokMenu::HelpMenu = 0;
+KHelpMenu *amaroK::Menu::HelpMenu = 0;
 
 
-AmarokMenu::AmarokMenu( QWidget *parent )
+amaroK::Menu::Menu( QWidget *parent )
   : QPopupMenu( parent )
 {
     KActionCollection *ac = pApp->actionCollection();
@@ -46,7 +46,7 @@ AmarokMenu::AmarokMenu( QWidget *parent )
 }
 
 KPopupMenu*
-AmarokMenu::helpMenu( QWidget *parent ) //STATIC
+amaroK::Menu::helpMenu( QWidget *parent ) //STATIC
 {
     if( HelpMenu == 0 )
         HelpMenu = new KHelpMenu( parent, KGlobal::instance()->aboutData(), pApp->actionCollection() );
@@ -55,7 +55,7 @@ AmarokMenu::helpMenu( QWidget *parent ) //STATIC
 }
 
 int
-AmarokMenu::exec( const QPoint &p, int indexAtPoint ) //NOTE non virtual! :(
+amaroK::Menu::exec( const QPoint &p, int indexAtPoint ) //NOTE non virtual! :(
 {
     setItemChecked( ID_REPEAT_TRACK,    AmarokConfig::repeatTrack() );
     setItemChecked( ID_REPEAT_PLAYLIST, AmarokConfig::repeatPlaylist() );

@@ -370,13 +370,13 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent */*event*/ )
 #include <qregexp.h>
 
 void
-amK::OSD::showVolume()
+amaroK::OSD::showVolume()
 {
     showOSD( i18n("Volume %1%").arg( EngineController::instance()->engine()->volume() ), true );
 }
 
 void
-amK::OSD::showTrack( const MetaBundle &bundle )
+amaroK::OSD::showTrack( const MetaBundle &bundle )
 {
     // Strip HTML tags, expand basic HTML entities
     QString text = bundle.prettyTitle();
@@ -398,7 +398,7 @@ amK::OSD::showTrack( const MetaBundle &bundle )
 }
 
 void
-amK::OSD::showTrack()
+amaroK::OSD::showTrack()
 {
     showOSD( m_text );
 }

@@ -8,9 +8,9 @@
 #include <sys/types.h>
 #include <vector>
 
-namespace amK {
+namespace amaroK {
 
-typedef int16_t short16; //amK::short //FIXME this isn't acceptable
+typedef int16_t short16;
 
 class Vis
 {
