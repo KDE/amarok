@@ -1927,7 +1927,7 @@ MySqlConnection::MySqlConnection( MySqlConfig* config )
                     { error() << i18n("The MySQL user does not have permission to create a database. Correct the MySQL permissions or use the sqlite database."); }
             }
             else 
-                error() << i18n("Unable to connect to the MySQL database. Ensure that MySQL is running, and the hostname, user name and password are correct. Or simply use the sqlite database instead.");
+                error() << i18n("Unable to connect to the MySQL database. Ensure that MySQL is running, and the hostname, username, and password are correct. Or simply use the sqlite database instead.");
         }
     }
     else
