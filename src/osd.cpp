@@ -72,8 +72,8 @@ OSDWidget::show() //virtual
         debug() << newGeometry << endl;
         debug() << unite << endl;
 
-        KPixmap pix = QPixmap::grabWindow( qt_xrootwin(), newGeometry.x(), newGeometry.y(), newGeometry.width(), newGeometry.height() );
-        KPixmapEffect::fade( m_screenshot, 0.80, backgroundColor() );
+        KPixmap pix = QPixmap::grabWindow( qt_xrootwin(), unite.x(), unite.y(), unite.width(), unite.height() );
+        KPixmapEffect::fade( pix, 0.80, backgroundColor() );
 
         p = oldGeometry.topLeft() - unite.topLeft();
         bitBlt( &pix, p, &m_screenshot );
