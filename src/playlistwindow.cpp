@@ -118,8 +118,6 @@ PlaylistWindow::PlaylistWindow()
 {
     s_instance = this;
 
-    setCaption( "amaroK" );
-
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
 

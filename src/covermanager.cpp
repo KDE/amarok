@@ -63,6 +63,9 @@ CoverManager::CoverManager()
 {
     instance = this;
 
+    // Sets caption and icon correctly (needed e.g. for GNOME)
+    kapp->setTopWidget( this );
+
     setCaption( kapp->makeStdCaption( i18n("Cover Manager") ) );
 
     QVBoxLayout *vbox = new QVBoxLayout( this );
