@@ -10,6 +10,8 @@
 #include "scriptmanager.h"
 #include "scriptmanagerbase.h"
 
+#include <stdlib.h>
+
 #include <kapplication.h>
 #include <kfiledialog.h>
 #include <kiconloader.h>
@@ -18,7 +20,6 @@
 #include <kprocess.h>
 #include <kpushbutton.h>
 #include <krun.h>
-#include <kstandarddirs.h>
 #include <ktextedit.h>
 
 
@@ -79,7 +80,14 @@ ScriptManager::~ScriptManager()
 void
 ScriptManager::slotAddScript()
 {
-    KFileDialog dia( locate( "data","amarok/scripts/" ), "*.*|" + i18n("amaroK Scripts" ), 0, 0, true );
+    DEBUG_BEGIN
+
+    //FIXME How to get the resource folder from KStandardDirs?
+    QString folder( getenv( "KDEDIR" ) );
+    folder.append( "share/apps/amarok/scripts" );
+    debug() << "Folder: " << folder << endl;
+
+    KFileDialog dia( folder, "*.*|" + i18n("amaroK Scripts" ), 0, 0, true );
     kapp->setTopWidget( &dia );
     dia.setCaption( kapp->makeStdCaption( i18n( "Select Script" ) ) );
     dia.setMode( KFile::File | KFile::ExistingOnly );
@@ -101,6 +109,8 @@ ScriptManager::slotAddScript()
 
         m_scripts[url.fileName()] = item;
     }
+
+    DEBUG_END
 }
 
 
