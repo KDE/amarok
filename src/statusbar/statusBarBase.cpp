@@ -289,7 +289,9 @@ StatusBar::toggleProgressWindow( bool show ) //slot
     for ( ProgressMap::Iterator it = m_progressMap.begin(), end = m_progressMap.end(); it != end; ) {
         if ( ( *it ) ->m_done == true ) {
 
-            delete * it;
+            delete (*it)->m_label;
+            delete (*it)->m_abort;
+            delete (*it);
 
             ProgressMap::Iterator jt = it;
             ++it;

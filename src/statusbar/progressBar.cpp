@@ -17,6 +17,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include "debug.h"
 #include <klocale.h>
 #include <kpushbutton.h>
 #include <kstdguiitem.h>
@@ -32,6 +33,8 @@ ProgressBar::ProgressBar( QWidget *parent, QLabel *label )
         , m_label( label )
         , m_done( false )
 {
+    DEBUG_FUNC_INFO
+
     m_label->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
     m_abort = new KPushButton( KStdGuiItem::cancel(), parent );
     m_abort->hide();
@@ -41,11 +44,7 @@ ProgressBar::ProgressBar( QWidget *parent, QLabel *label )
 }
 
 ProgressBar::~ProgressBar()
-{
-    //we have to manage the label (which is no child() of us)
-    delete m_label;
-    delete m_abort;
-}
+{}
 
 ProgressBar&
 ProgressBar::setDescription( const QString &text )
