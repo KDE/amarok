@@ -98,7 +98,7 @@ main( int argc, char** argv )
     socketpath += "/visualization_socket";
 
     gtk_init( &argc, &argv ); //xmms plugins require this
-
+    gdk_rgb_init();
     XmmsWrapper wrap( argc > 1 ? argv[1] : "" );
 
     int    sockfd;
@@ -274,6 +274,7 @@ extern "C"
 
     //these are the actual functions that vis plugins all use
     //xmms/pluginenum.h
+    /*
     ConfigFile *xmms_cfg_new(void) {}
     ConfigFile *xmms_cfg_open_file(gchar * filename) { return 0; }
     gboolean    xmms_cfg_write_file(ConfigFile * cfg, gchar * filename) { return false; }
@@ -291,7 +292,7 @@ extern "C"
     void xmms_cfg_write_float(ConfigFile * cfg, gchar * section, gchar * key, gfloat value) {}
     void xmms_cfg_write_double(ConfigFile * cfg, gchar * section, gchar * key, gdouble value) {}
     void xmms_cfg_remove_key(ConfigFile * cfg, gchar * section, gchar * key) {}
-
+    */
 
     //libxmms/util.h
     GtkWidget *xmms_show_message(gchar * title, gchar * text, gchar * button_text, gboolean modal, GtkSignalFunc button_action, gpointer action_data) {}
