@@ -157,7 +157,7 @@ Analyzer::Base<W>::resizeForBands( int bands )
         exp = 9;
 
     resizeExponent( exp );
-    return m_fht->size();
+    return m_fht->size() / 2;
 }
 
 template<class W> void
