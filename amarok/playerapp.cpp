@@ -984,6 +984,8 @@ void PlayerApp::showEffectWidget()
 
         connect( m_pPlayerWidget,              SIGNAL( destroyed() ),
                  EffectWidget::self,           SLOT  ( deleteLater() ) );
+        connect( EffectWidget::self,           SIGNAL( destroyed() ),
+                 this,        SLOT( slotEffectWidgetDestroyed() ) );
 
         EffectWidget::self->show();
 
@@ -996,6 +998,12 @@ void PlayerApp::showEffectWidget()
         delete EffectWidget::self;
     }
 }
+
+
+void PlayerApp::slotEffectWidgetDestroyed()
+ {
+     m_pPlayerWidget->setEffectsWindowShown( false );
+ }
 
 
 void PlayerApp::slotShowOptions()
@@ -1011,7 +1019,7 @@ void PlayerApp::slotShowOptions()
     }
 }
 
-// going to remove OSDWidget::showOSD(const MetaBundle&)
+
 void PlayerApp::slotShowOSD( const MetaBundle& bundle )
 {
     // Strip HTML tags, expand basic HTML entities
