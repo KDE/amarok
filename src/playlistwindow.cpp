@@ -224,7 +224,7 @@ PlaylistWindow::init()
     //BEGIN Play menu
     KPopupMenu *fileMenu = new KPopupMenu( m_menubar );
     fileMenu->insertItem( SmallIcon("fileopen"), i18n("Play Media...") );
-    fileMenu->insertItem( SmallIcon("cdaudio_unmount"),i18n("Play Audio CD") );
+//     fileMenu->insertItem( SmallIcon("cdaudio_unmount"),i18n("Play Audio CD") );
     fileMenu->insertSeparator();
     actionCollection()->action("prev")->plug( fileMenu );
     actionCollection()->action("play_pause")->plug( fileMenu );
