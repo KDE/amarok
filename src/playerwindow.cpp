@@ -428,7 +428,7 @@ bool PlayerWidget::event( QEvent *e )
             setPaletteForegroundColor( Text );
 
             //ensure the timeDisplay is updated etc.
-            engineNewMetaData( EngineController::instance()->bundle() );
+            engineNewMetaData( EngineController::instance()->bundle(), false );
 
             return TRUE; //we handled it
         }
