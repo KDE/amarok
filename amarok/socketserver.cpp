@@ -9,7 +9,6 @@
 #include "fht.h"              //processing the scope
 #include "socketserver.h"
 
-#include <qguardedptr.h>
 #include <qsocketnotifier.h>
 
 #include <kdebug.h>
@@ -27,7 +26,9 @@
 
 #include <kstandarddirs.h>
 
-static QGuardedPtr<Vis::Selector> lv;
+QGuardedPtr<Vis::Selector> Vis::SocketServer::lv;
+std::vector<Vis::SocketServer::VisItem> Vis::SocketServer::m_visList;
+bool Vis::SocketServer::m_ignoreState = false;
 
 //TODO allow stop/start and pause signals to be sent to registered visualisations
 //TODO build xmms wrapper
@@ -90,10 +91,8 @@ Vis::SocketServer::showSelector() //SLOT
         lv->setSorting( 0 );
         lv->setCaption( i18n( "Visualizations - amaroK" ) );
         lv->addColumn( i18n( "Name" ) );
+        lv->resize( 250, 250 );
         lv->show();
-        
-        connect( lv, SIGNAL( doubleClicked( QListViewItem*, const QPoint&, int ) ),
-                 this, SLOT( visClicked( QListViewItem*, const QPoint&, int ) ) );
             
         QString dirname = XMMS_PLUGIN_PATH;
         dirname.append( "/" );
@@ -104,14 +103,20 @@ Vis::SocketServer::showSelector() //SLOT
 
         dir = opendir( dirname.local8Bit() );
         if ( !dir ) return;
-
-        while ( ent = readdir( dir ) ) {
+        
+        m_ignoreState = true;
+        while ( ( ent = readdir( dir ) ) ) {
             QString filename = QString::fromLocal8Bit( ent->d_name );
             filepath = dirname + filename;
             if ( filename.endsWith( ".so" ) )
-                if ( !stat( filepath.local8Bit(), &statbuf ) && S_ISREG( statbuf.st_mode ) )
-                    new KListViewItem( lv, filename );
+                if ( !stat( filepath.local8Bit(), &statbuf ) && S_ISREG( statbuf.st_mode ) ) {
+                    VisListItem* item = new VisListItem( lv, filename );
+                    
+                    for ( uint i = 0; i < m_visList.size(); i++ )
+                        item->setOn( filename == m_visList[i].name );
+                }
         }
+        m_ignoreState = false;
     }
 }
 
@@ -119,22 +124,6 @@ Vis::SocketServer::showSelector() //SLOT
 /////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE interface
 /////////////////////////////////////////////////////////////////////////////////////////
-
-void
-Vis::SocketServer::visClicked( QListViewItem* item, const QPoint&, int ) //SLOT
-{
-    kdDebug() << k_funcinfo << endl;
-    
-    if ( !item ) return;
-    
-    KProcess* proc = new KProcess( this );
-    connect( proc, SIGNAL( processExited( KProcess* ) ), proc, SLOT( deleteLater() ) );
-    *proc << KStandardDirs::findExe( "amarok_xmmswrapper" ) << item->text( 0 );
-    
-    if ( !proc->start() )
-        kdWarning() << "Could not run xmmswrapper!\n";
-}
-
 
 void
 Vis::SocketServer::newConnection( int sockfd )
@@ -188,7 +177,6 @@ Vis::SocketServer::request( int sockfd )
                 }
 
                 if( b ) kdDebug() << "max: " << max << ", min: " << min << endl;
-
             }
 
             float *front = static_cast<float*>( &scope->front() );
@@ -215,5 +203,43 @@ Vis::SocketServer::request( int sockfd )
 }
 
 
+/////////////////////////////////////////////////////////////////////////////////////////
+// CLASS VisListItem
+/////////////////////////////////////////////////////////////////////////////////////////
+
+void
+Vis::SocketServer::VisListItem::stateChange( bool ) //SLOT
+{
+    kdDebug() << k_funcinfo << endl;
+    
+    if ( !m_ignoreState && state() == On ) {    
+        KProcess* proc = new KProcess();
+        *proc << KStandardDirs::findExe( "amarok_xmmswrapper" ) << text( 0 );
+        
+        if ( proc->start() ) {
+            kdDebug() << "Starting XMMS visualization.\n";
+            VisItem item;
+            item.vis = proc;
+            item.name = text( 0 );
+            m_visList.push_back( item );
+        }
+        else    
+            kdWarning() << "Could not run amarok_xmmswrapper!\n";
+    }
+    
+    if ( !m_ignoreState && state() == Off ) {
+        for ( std::vector<VisItem>::iterator it = m_visList.begin(); it != m_visList.end(); it++ )
+            if ( (*it).name == text( 0 ) ) {
+                kdDebug() << "Stopping XMMS visualization.\n";
+                (*it).vis->kill();
+                delete (*it).vis;
+                m_visList.erase( it );
+                break;
+            }
+    }    
+}
+
+
 #include "socketserver.moc"
+
 
