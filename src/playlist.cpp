@@ -20,6 +20,7 @@
 #include "playlist.h"
 #include "playlistitem.h"
 #include "playlistloader.h"
+#include "statusbar.h"       //for status messages
 #include "tagdialog.h"
 #include "threadweaver.h"
 
@@ -950,7 +951,8 @@ Playlist::customEvent( QCustomEvent *e )
 
             if( !list.isEmpty() )
             {
-                KMessageBox::error( this, i18n("Some URLs could not be loaded") );//TODO details dialog
+                amaroK::StatusBar::instance()->message( i18n("Some URLs could not be loaded."), 4000 );
+//                 KMessageBox::error( this, i18n("Some URLs could not be loaded.") );//TODO details dialog
 
                 for( KURL::List::ConstIterator it = list.begin(); it != list.end(); ++it )
                     kdDebug() << *it << endl;

@@ -53,7 +53,7 @@ public slots:
     void message( const QString&, int ms ); //reimpl. from QStatusBar
     void restoreMessage();
     void clearMessage();
-    void engineMessage( const QString &s ) { message( s, 2000 ); } //NOTE leave inlined!
+    void engineMessage( const QString &s ) { message( s, 3000 ); } //NOTE leave inlined!
 
 protected: /* reimpl from engineobserver */
     virtual void engineStateChanged( Engine::State state );

@@ -164,11 +164,13 @@ void StatusBar::message( const QString& message ) //SLOT
 
 void StatusBar::message( const QString& message, int ms ) //SLOT
 {
+    // TODO Show statusbar for messages in case it is hidden
+
     m_pTitle->setText( message );
 
     // Remove possible old timer
-    disconnect( this, SLOT( restoreMessage() ) );    
-    
+    disconnect( this, SLOT( restoreMessage() ) );
+
     QTimer::singleShot( ms, this, SLOT( restoreMessage() ) );
 }
 
