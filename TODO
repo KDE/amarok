@@ -3,9 +3,9 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #96 being the highest available (take this one for your next bug and increase here)
+           #97 being the highest available (take this one for your next bug and increase here)
 
-                        
+
 SHORT-TERM (URGENT):
 
   09:21 < samppa> hey markey: i tested your loader changes, seems that there is some bug in the new code, since i get now this:
@@ -15,19 +15,22 @@ SHORT-TERM (URGENT):
       create the database indices _after_ scanning -->muesli
 
   CHG #90 <markey>We need some fresh artwork, at least some new player buttons before 1.0.
-  
-  CHG #91 <markey>I'd like to get a new website up before 1.0 release.   
-  
+
+  CHG #91 <markey>I'd like to get a new website up before 1.0 release.
+
   FIX <mxcl> xmmswrapper requires gtk headers and gdk headers unfortunately, without build  fails :(
-  
+
   ADD <markey>Extend documentation - we cannot honestly go 1.0 with such lackluster docs.
-    
-  ADD #88 <muesli> In CollectionBrowser's search, let the user decide, which fields are 
+
+  ADD #88 <muesli> In CollectionBrowser's search, let the user decide, which fields are
       to be searched (like: songtitle, artist, songtitle or artist, album) -->muesli
 
-      
+
 MID-TERM:
-  
+
+  ADD #96 <mxcl> user asked for a CTRL-J itty-bitty dialog that allows you to jump to a specific part
+                 of a track. I'll see if I can do it with tiny amount of code -->mxcl
+
   ADD #94 <markey> Progress display for playlist reading, in statusbar.
 
   FIX #87 <muesli> don't rely on KDE timeouts to see whether a file is accessible or not,
@@ -35,13 +38,13 @@ MID-TERM:
       this way better and it really is a problem in userland. maybe a thread
       helps, which simply tries to fopen() the file. if this task hasn't been
       finished in (let's say) 3 seconds, jump to the next song. XMMS even
-      remembers such files and their folders, so that it's not going to open 
+      remembers such files and their folders, so that it's not going to open
       another file from that folder for the next few minutes. what about hdd
       sleep-timeouts? opinions?
 
   ADD #89 <muesli> Mostly / recently played song statistics tab. this will enhance the
       collection database. we'll be ready to compete with winamp's media library, then ;-)
-    
+
   CHG #78 Determine some behavior for the clear/shuffle/etc. buttons when a search is in action
       clear   -> only clear the stuff that was searched for?
       shuffle -> stop the search and do normal shuffle?
@@ -59,7 +62,7 @@ MID-TERM:
       Display type of media next to bitrate (<berkus> i moved it here, seems its the same as above, no?)
 
   CHG Instead of show file info why not use standard KDE properties? This has much more power
-      than anything we could whip up and with taglib installed shows meta info and allows editing of it. 
+      than anything we could whip up and with taglib installed shows meta info and allows editing of it.
 
   ADD #28<muesli> add an option "clean up playlist on startup"
       <mxcl> do you mean remove duplicates or dead entries etc. ? Cool.
@@ -79,7 +82,7 @@ MID-TERM:
   ADD "Show playlist" to the right click menu, redundant but necessary
 
   ADD More KTips, better KTips, somehow use the "Did you know" tip dialog (eg kmail, gideon, etc.) -->mxcl
-           
+
   ADD Reduce arts buffer to ~20ms for much better analyzers etc.
 
   ADD History to add dialog, or implement better system for adding urls etc.
@@ -113,8 +116,8 @@ MID-TERM:
 
 
 LONG-TERM:
-  
-  ADD #93<markey> New engine: using ALSA (maybe OSS, too) and XMMS plugins for decoding. 
+
+  ADD #93<markey> New engine: using ALSA (maybe OSS, too) and XMMS plugins for decoding.
 
   ADD #32<markey> icecast metadata support (uses UDP channel) -->markey
 
@@ -123,7 +126,7 @@ LONG-TERM:
   ADD Tabbed playlists.
       Pro: it's convenient to have several playlists
       Contra: the playlist is getting cluttered enough as it is!
-    
+
   ADD Seeking with mousewheel
       <muesli> what's seeking with mousewheel? <markey> dunno, but several users requested it
       <berkus> seeking the track via mousewheel, wheelUp to seek back, wheelDown to seek further
@@ -169,7 +172,7 @@ IDEAS:
 
 
 DISCUSSING:
-    
+
   * <markey> I'd very much appreciate people keeping line length in all amaroK sources/textfiles
     at 110 characters max. Longer lines cause horrible dynamic line breaks or scrolling when you only
     have limited screen width, like in console or kdevelop. pretty please with icing =)
