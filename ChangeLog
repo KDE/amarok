@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.2:
+  FIX: Shoutcast radio with GStreamer is improved, no more dropouts when
+       starting a stream.
   ADD: The "Similar Artists" feature (using Audioscrobbler) can now be
        switched off. (BR 95280)
   FIX: Error in Shoutcast http-request, which made it impossible to play
