@@ -64,7 +64,7 @@ class CollectionView : public KListView
         CollectionView( CollectionBrowser* parent );
         ~CollectionView();
         
-        Item* currentItem() { return static_cast<Item*>( currentItem() ); }
+        Item* currentItem() { return static_cast<Item*>( KListView::currentItem() ); }
         
     signals:
         void tagsReady();    

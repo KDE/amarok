@@ -69,7 +69,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     setRootIsDecorated( true );
     setShowSortIndicator( true );
     setFullWidth( true );
-    
+    setAcceptDrops( false );
+       
     QCString path = ( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" )
                       + "collection.db" ).latin1(); 
     
@@ -380,11 +381,15 @@ CollectionView::execSql( const QCString& statement,
 void
 CollectionView::startDrag()
 {
-    if ( currentItem() ) {
-        KURLDrag* d = new KURLDrag( currentItem()->url(), this, "DragObject" );
-            d->dragCopy();
-    }
-        
+    KURL::List list;
+    
+    for ( QListViewItem* item = firstChild(); item; item = item->nextSibling() )
+        for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
+            if ( child->isSelected() )
+                list << static_cast<Item*>( child )->url();
+                    
+    KURLDrag* d = new KURLDrag( list, this );
+    d->dragCopy();
 }
 
 
