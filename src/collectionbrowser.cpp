@@ -2,6 +2,8 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // See COPYING file for licensing information.
 
+#include "config.h"
+
 #include "collectionbrowser.h"
 #include "collectiondb.h"
 #include "covermanager.h"    //openCoverManager()
