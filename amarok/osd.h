@@ -47,6 +47,7 @@ class OSDWidget : public QWidget
         void paintOSD(const QString &text);
         void paintEvent(QPaintEvent*);
 //        void mouseDoubleClickEvent(QMouseEvent *e);
+        void mousePressEvent( QMouseEvent* );
         
         static const int SPLASH_DURATION = 6000; 
         

@@ -209,4 +209,10 @@ void OSDWidget::paintEvent( QPaintEvent* )
 }
 
 
+void OSDWidget::mousePressEvent( QMouseEvent* )
+{
+    removeOSD();
+}
+
+
 #include "osd.moc"
