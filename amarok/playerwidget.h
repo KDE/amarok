@@ -23,6 +23,8 @@
 #include <qpixmap.h>
 #include <qslider.h>
 
+#include <ksystemtray.h>
+
 #include "amarokdcopiface.h"
 
 class QBitmap;
@@ -46,7 +48,6 @@ class ArtsConfigWidget;
 class PlayerApp;
 extern PlayerApp *pApp;
 
-class AmarokSystray;
 
 /**
  *@author mark
@@ -112,6 +113,21 @@ class AmarokSlider : public QSlider
 };
 
 
+// CLASS AmarokSystray ------------------------------------------------------------
+
+class PlayerWidget;
+
+class AmarokSystray : public KSystemTray
+{
+   public:
+      AmarokSystray( PlayerWidget * );
+
+   private:
+      void wheelEvent( QWheelEvent * );
+      void showEvent( QShowEvent * ) {} //Don't add me a Quit button automagically
+};
+
+
 // CLASS PlayerWidget ------------------------------------------------------------
 
 class PlayerWidget : public QWidget, virtual public AmarokIface
@@ -152,6 +168,8 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
         int m_IdConfPlayObject;
         int m_IdRandomMode;
         ArtsConfigWidget *m_pPlayObjConfigWidget;
+
+        friend void AmarokSystray::wheelEvent( QWheelEvent * ); //so the tray can use PlayerWidget::wheelEvent()
 
     public slots:
         void slotConfigShortcuts();

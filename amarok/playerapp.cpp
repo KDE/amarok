@@ -244,6 +244,7 @@ void PlayerApp::restore()
     {
         if ( m_pBrowserWin->isFileValid( url ) )
         {
+            //FIXME see if item is in playlist already first (should be!)
             PlaylistItem * item = new PlaylistItem( m_pBrowserWin->m_pPlaylistWidget, url );
 
             m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( item );
@@ -269,10 +270,13 @@ void PlayerApp::saveSessionState()
 {
     KConfig * config = sessionConfig();
 
-    Arts::poTime timeC( m_pPlayObject->currentTime() );
+    if( m_bIsPlaying )
+    {
+      Arts::poTime timeC( m_pPlayObject->currentTime() );
 
-    config->writeEntry( "track", static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() ) ->url().url() );
-    config->writeEntry( "position", timeC.seconds );
+      config->writeEntry( "track", static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() ) ->url().url() );
+      config->writeEntry( "position", timeC.seconds );
+    }
 }
 
 
@@ -935,19 +939,40 @@ void PlayerApp::stopXFade()
 
 void PlayerApp::slotPrev()
 {
-    // do nothing when list is empty
     if ( m_pBrowserWin->m_pPlaylistWidget->childCount() == 0 )
+        return;
+
+    QListViewItem *pItem = m_pBrowserWin->m_pPlaylistWidget->currentTrack(); //NULL is handled later
+
+    if ( pItem != NULL ) //optRepeatTrack only applies to next since that is called automatically
     {
-        m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( NULL );
-        return ;
+        //I've talked on a few channels, people hate it when media players restart the current track
+        //first before going to the previous one (most players do this), so let's not do it!
+        pItem = pItem->itemAbove();
     }
 
-    QListViewItem *pItem = m_pBrowserWin->m_pPlaylistWidget->currentTrack();
+    //if pItem == NULL and bIsPlaying == TRUE  then we reached the beginning of the playlist
+    //if pItem == NULL and bIsPlaying == FALSE then nothing is selected
+    //FIXME always the chance that nothing is selected and bIsPlaying (eg deleted currentTrack from playlist)
+    //      current behavior will stop playback, is this acceptable?
+    //    * perhaps if user expects playback to continue we should continue playing from the beginning
+    //    * perhaps we should stop playback dead if the playing item is removed from the playlist (this gives a more consistent interface)
+    //FIXME detection of empty playlist seems broken for above behavior
 
     if ( pItem == NULL )
-        return ;
-
-    pItem = pItem->itemAbove();
+    {
+        if ( m_bIsPlaying && !!m_optRepeatPlaylist )
+        {
+            //no previous track, don't restart this track because we don't restart tracks when previous is pushed as a rule
+            //also if we are repeating playlists then there is a previous track, i.e. the last track
+            return ;
+        }
+        else
+        {
+            //nothing is selected and we are not playing, select last track
+            pItem = m_pBrowserWin->m_pPlaylistWidget->lastItem();
+        }
+    }
 
     if ( pItem != NULL )
     {
@@ -965,10 +990,7 @@ void PlayerApp::slotPrev()
 
 void PlayerApp::slotPlay()
 {
-    //Markey: I moved this function above the item determination function below
-    // although I'm not 100% sure it was a good idea as I can't tell if it is necessary to setCurrentTrack()
-    // please check!
-
+    // commenting this out prevents toggling the play button, which seems broken
 //     if ( m_bIsPlaying && !m_pPlayerWidget->m_pButtonPlay->isOn() )     //bit of a hack really
 //     {
 //         slotStop();
@@ -1109,13 +1131,7 @@ void PlayerApp::slotStop()
 
 void PlayerApp::slotNext()
 {
-    QListViewItem *pItem = m_pBrowserWin->m_pPlaylistWidget->currentTrack();
-
-    if ( pItem == NULL )
-    {
-        slotStop();
-        return ;
-    }
+    QListViewItem *pItem = m_pBrowserWin->m_pPlaylistWidget->currentTrack(); //NULL is handled later
 
     // random mode
     if ( m_optRandomMode && m_pBrowserWin->m_pPlaylistWidget->childCount() > 3 )
@@ -1132,15 +1148,20 @@ void PlayerApp::slotNext()
 
         pItem = pNextItem;
     }
-
-    else if ( !m_optRepeatTrack )
+    else if ( !m_optRepeatTrack && pItem != NULL )
     {
         pItem = pItem->nextSibling();
     }
 
+    //if pItem == NULL and bIsPlaying == TRUE  then we reached end of playlist
+    //if pItem == NULL and bIsPlaying == FALSE then nothing is selected
+    //FIXME always the chance that nothing is selected and bIsPlaying (eg deleted currentTrack from playlist)
+    //      current behavior will stop playback, is this acceptable?
+    //FIXME detection of empty playlist seems broken for above behavior
+
     if ( pItem == NULL )
     {
-        if ( m_pBrowserWin->m_pPlaylistWidget->childCount() == 0 || !m_optRepeatPlaylist )
+        if ( m_pBrowserWin->m_pPlaylistWidget->childCount() == 0 || ( !m_optRepeatPlaylist && m_bIsPlaying ) )
         {
             slotStop();
             return ;

@@ -198,45 +198,54 @@ void AmarokSlider::mousePressEvent( QMouseEvent *e )
 
 // AmarokSystray
 // FIXME Move implementation to separate sourcefile
-class AmarokSystray : public KSystemTray
+AmarokSystray::AmarokSystray( PlayerWidget *child ) : KSystemTray( child )
 {
-   public:
-      AmarokSystray(PlayerWidget *child) : KSystemTray(child)
-      {
-         setPixmap(kapp->miniIcon());
+    setPixmap(kapp->miniIcon());
 
-         // Re-construct menu
-         KAction* quitAction = KStdAction::quit(this, SIGNAL(quitSelected()), actionCollection());
+    // Re-construct menu
+    KAction* quitAction = KStdAction::quit(this, SIGNAL(quitSelected()), actionCollection());
 
-         contextMenu()->clear();
-         contextMenu()->insertTitle(kapp->miniIcon(), kapp->caption());
+    //actions first, then other stuff, quit last
+    contextMenu()->clear();
+    contextMenu()->insertTitle(kapp->miniIcon(), kapp->caption());
 
-         quitAction->plug(contextMenu());
-         connect(this, SIGNAL(quitSelected()), child, SLOT(close()));
+    contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunback.png" )), "(&Z) Prev", kapp, SLOT( slotPrev() ) );
+    contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunplay.png" )), "(&X) Play", kapp, SLOT( slotPlay() ) );
+    contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunpause.png" )), "(&C) Pause", kapp, SLOT( slotPause() ) );
+    contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunstop.png" )), "(&V) Stop", kapp, SLOT( slotStop() ) );
+    contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunforward.png" )), "(&B) Next", kapp, SLOT( slotNext() ) );
 
-         contextMenu()->insertItem(i18n("&Configure..."), kapp, SLOT(slotShowOptions()));
-         contextMenu()->insertItem(i18n("&Help"), (new KHelpMenu(this, KGlobal::instance()->aboutData()))->menu());
+    contextMenu()->insertSeparator();
 
-         contextMenu()->insertSeparator();
+    contextMenu()->insertItem(i18n("&Configure..."), kapp, SLOT(slotShowOptions()));
+    contextMenu()->insertItem(i18n("&Help"), (new KHelpMenu(this, KGlobal::instance()->aboutData()))->menu());
+    quitAction->plug(contextMenu());
+    connect(this, SIGNAL(quitSelected()), child, SLOT(close()));
 
-         contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunback.png" )), i18n("[&Z] Prev"), kapp, SLOT( slotPrev() ) );
 
-         contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunplay.png" )), i18n("[&X] Play"), kapp, SLOT( slotPlay() ) );
+    // don't love them just yet
+    setAcceptDrops(false);
+}
 
-         contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunpause.png" )), i18n("[&C] Pause"), kapp, SLOT( slotPause() ) );
+void AmarokSystray::wheelEvent( QWheelEvent *e )
+{
+        if(e->orientation() == Horizontal)
+          return;
 
-         contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunstop.png" )), i18n("[&V] Stop"), kapp, SLOT( slotStop() ) );
+        switch( e->state() ) {
+        case ShiftButton:
+          static_cast<PlayerApp *>(kapp)->m_pPlayerWidget->wheelEvent( e );
+          break;
+        default:
+          if(e->delta() > 0)
+            static_cast<PlayerApp *>(kapp)->slotNext();
+          else
+            static_cast<PlayerApp *>(kapp)->slotPrev();
+          break;
+        }
 
-         contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunforward.png" )), i18n("[&B] Next"), kapp, SLOT( slotNext() ) );
-
-         // don't love them just yet
-         setAcceptDrops(false);
-      }
-
-      /* Don't add me a Quit button automagically */
-      void showEvent( QShowEvent * ) {}
-
-};
+        e->accept();
+}
 
 // CLASS PlayerWidget ------------------------------------------------------------
 
@@ -405,7 +414,7 @@ void PlayerWidget::initScroll()
     m_pComposePixmap = new QPixmap( m_pFrame->width(), m_pixmapHeight );
     m_pScrollPixmap = new QPixmap( m_pixmapWidth, m_pixmapHeight );
     m_pScrollMask = new QBitmap( m_pixmapWidth, m_pixmapHeight );
-    setScroll( i18n("   welcome to amarok   "), " ", " " );
+    setScroll( i18n("   welcome to amaroK   "), " ", " " );
 
     m_sx = m_sy = 0;
     m_sxAdd = 1;
