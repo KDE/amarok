@@ -119,6 +119,8 @@ public:
    void cancel();
    void halt() { m_bool = false; } //thread-safe, permanant shutdown
 
+   static MetaBundle *readTags( const KURL &url );
+
    enum EventType { Started = 2000, SomeTags = 2001, Done = 2002 };
 
 
@@ -141,7 +143,6 @@ public:
 
 private:
    void run();
-   MetaBundle *readTags( const KURL &url );
 
    //should qualify for a QValueList value (i.e. have a. copy ctor, b. default ctor, c. assignment operator)
    //TODO this is no longer required as long as it is safe to derefernce playlistItem for: url() const

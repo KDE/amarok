@@ -108,6 +108,7 @@ public:
     KActionCollection *actionCollection() { return mActionCollection; };
     QString location() const;
     static QColor altBgColor;
+    QSize sizeHint() { return QSize( 100, 100 ); }
 
 public slots:
     void slotFilterChange(const QString&);

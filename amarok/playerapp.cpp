@@ -29,6 +29,7 @@ email                : markey@web.de
 #include "osd.h"
 #include "playerapp.h"
 #include "playerwidget.h"
+#include "playlistloader.h" //restoreSession()
 
 #include <vector>
 #include <string>
@@ -82,7 +83,6 @@ PlayerApp::PlayerApp()
     //we monitor for close, hide and show events
     m_pPlayerWidget->installEventFilter( this );
     m_pBrowserWin  ->installEventFilter( this );
-    m_pPlayerWidget->show(); //browserWin gets shown automatically if buttonPl isOn()
 
     readConfig();
 
@@ -91,15 +91,16 @@ PlayerApp::PlayerApp()
     connect( dialog, SIGNAL( settingsChanged() ), this, SLOT( applySettings() ) );
 
     applySettings();
+    m_pPlayerWidget->show(); //browserWin gets shown automatically if buttonPl isOn()
 
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
     connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
     m_pMainTimer->start( MAIN_TIMER );
 
-    restoreSession();
-    m_pAnimTimer->start( ANIM_TIMER ); //do after restoreSession() - looks better
-
     kapp->processEvents();
+
+    restoreSession(); //do after processEvents() - sounds better
+    m_pAnimTimer->start( ANIM_TIMER ); //do after restoreSession() - looks better
 
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
 }
@@ -243,11 +244,15 @@ void PlayerApp::restoreSession()
 
         if ( seconds >= 0 )
         {
+            MetaBundle *bundle = TagReader::readTags( AmarokConfig::resumeTrack() );
+
             //TODO make a static syncronous readTags function
-            play( AmarokConfig::resumeTrack(), MetaBundle() );
+            play( AmarokConfig::resumeTrack(), *bundle );
 
             if ( seconds > 0 )
                 m_pEngine->seek( seconds * 1000 );
+
+            delete bundle;
         }
     }
 }

@@ -447,11 +447,12 @@ void PlaylistWidget::setCurrentTrack( const KURL &u ) //SLOT
 {
     //the engine confirms a new track is playing, lets try and highlight it
 
+    if( m_currentTrack && m_currentTrack->url() == u ) return;
     if( m_cachedTrack == NULL || (m_cachedTrack && m_cachedTrack->url() != u) )
     {
         //FIXME most likely best to start at currentTrack() and be clever
         for( m_cachedTrack = (PlaylistItem *)firstChild();
-             m_cachedTrack->url() != u;
+             m_cachedTrack && m_cachedTrack->url() != u;
              m_cachedTrack = (PlaylistItem *)m_cachedTrack->nextSibling() );
     }
 

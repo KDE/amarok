@@ -508,7 +508,7 @@ void TagReader::run()
 }
 
 
-MetaBundle *TagReader::readTags( const KURL &url )
+MetaBundle *TagReader::readTags( const KURL &url ) //STATIC
 {
    MetaBundle *tags = 0;
 
