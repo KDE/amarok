@@ -168,47 +168,6 @@ void App::handleCliArgs()
 }
 
 
-#if 0
-
-YOU NEED TO CHECK THAT YOUR MOVED CODE HASN't BEEN made invalid by changes here!
-
-//this method processes the cli arguments sent by the loader process
-void App::handleLoaderArgs( QCString args ) //SLOT
-{
-    //extract startup_env part
-    int index = args.find( "|" );
-    QCString startup_env = args.left( index );
-    args.remove( 0, index + 1 );
-    kdDebug() << k_funcinfo << "DESKTOP_STARTUP_ID: " << startup_env << endl;
-
-    //stop startup cursor animation
-    setStartupId( startup_env );
-    KStartupInfo::appStarted();
-
-    //divide argument line into single strings
-    QStringList strlist = QStringList::split( "|", args );
-
-    int argc = strlist.count();
-    if ( argc < 2 ) return;
-    char **argv = new char*[argc];
-
-    for ( int i = 0; i < argc; i++ ) {
-        argv[i] = qstrdup( strlist[i].local8Bit() );
-        kdDebug() << k_funcinfo << " extracted string: " << argv[i] << endl;
-    }
-
-    //re-initialize KCmdLineArgs with the new arguments
-    KCmdLineArgs::reset();
-    initCliArgs( argc, argv );
-    handleCliArgs();
-
-    //clean up your room
-    for ( int i = 0; i < argc; i++ )
-        delete[] argv[i];
-    delete[] argv;
-}
-#endif
-
 /////////////////////////////////////////////////////////////////////////////////////
 // INIT
 /////////////////////////////////////////////////////////////////////////////////////
