@@ -42,7 +42,7 @@ log="/dev/null"
 
 # Prevent using unsermake
 oldmake=$UNSERMAKE
-export UNSERMAKE=""
+export UNSERMAKE=no
 
 # Remove old folder, if exists
 rm -rf $folder 2> /dev/null
