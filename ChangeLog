@@ -4,6 +4,8 @@ amaroK Changelog
 
 
 VERSION 0.8.2:
+  * add: added Hide/Show Playlist global shortcut (thanks gogo)
+  * chg: mousewheel over trayicon behaviour changed
   * chg: search tokens can now be entered in random order
          ("Presley Elvis" will find "Elvis Presley")
   * fix: qt 3.1 compile issues
