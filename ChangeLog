@@ -8,6 +8,8 @@ amaroK ChangeLog
   * add: merged new audio engine in. this provides a generic interface class, with multiple
          backends. right now there is a backend for aRts and one for GStreamer (still rudimentary)
 
+==BEGIN KDE 3.2 DEPENDENCY==         
+         
 VERSION 0.8.3:
   * fix: build issue
 
