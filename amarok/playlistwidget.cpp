@@ -1201,16 +1201,19 @@ bool PlaylistWidget::eventFilter( QObject *o, QEvent *e )
             QPoint p = static_cast<QMouseEvent*>(e)->pos();
             PlaylistItem *item = static_cast<PlaylistItem*>(itemAt(p) );
             const int queueIndex = m_nextTracks.findRef( item );
-            item->setSelected( false ); //for prettiness
-            if( queueIndex!= -1 )
+            if( item )
             {
-                //if is Queued, remove the item
-                m_nextTracks.at( queueIndex ); //set current item
-                m_nextTracks.remove();
+                item->setSelected( false ); //for prettiness
+                if( queueIndex!= -1 )
+                {
+                    //if is Queued, remove the item
+                    m_nextTracks.at( queueIndex ); //set current item
+                    m_nextTracks.remove();
+                }
+                else m_nextTracks.append( item );
+                repaintItem( item );
+                refreshNextTracks();
             }
-            else m_nextTracks.append( item );
-            repaintItem( item );
-            refreshNextTracks();
             return TRUE;
         }
         else
