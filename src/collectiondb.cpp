@@ -2069,19 +2069,11 @@ QueryBuilder::QueryBuilder()
 void
 QueryBuilder::linkTables( int tables )
 {
-    if ( tables & tabAlbum ) m_tables += ",album";
-    if ( tables & tabArtist ) m_tables += ",artist";
-    if ( tables & tabGenre ) m_tables += ",genre";
-    if ( tables & tabYear ) m_tables += ",year";
-    if ( tables & tabStats ) m_tables += ",statistics";
-
-    // when there are multiple tables involved, we always need table tags for linking them
-    m_tables = m_tables.mid( 1 );
+    m_tables += tableName( tables );
     if ( m_tables.contains( ',' ) ) tables |= tabSong;
 
     if ( tables & tabSong )
     {
-        m_tables = "tags," + m_tables;
         if ( tables & tabAlbum ) m_where += "AND album.id=tags.album ";
         if ( tables & tabArtist ) m_where += "AND artist.id=tags.artist ";
         if ( tables & tabGenre ) m_where += "AND genre.id=tags.genre ";
@@ -2097,27 +2089,8 @@ QueryBuilder::addReturnValue( int table, int value )
     if ( !m_values.isEmpty() && m_values != "DISTINCT " ) m_values += ",";
     if ( table & tabStats && value & valScore ) m_values += "round(";
 
-    if ( table & tabAlbum ) m_values += "album.";
-    if ( table & tabArtist ) m_values += "artist.";
-    if ( table & tabGenre ) m_values += "genre.";
-    if ( table & tabYear ) m_values += "year.";
-    if ( table & tabSong ) m_values += "tags.";
-    if ( table & tabStats ) m_values += "statistics.";
-
-    if ( value & valID ) m_values += "id";
-    if ( value & valName ) m_values += "name";
-    if ( value & valURL ) m_values += "url";
-    if ( value & valTitle ) m_values += "title";
-    if ( value & valTrack ) m_values += "track";
-    if ( value & valScore ) m_values += "percentage";
-    if ( value & valComment ) m_values += "comment";
-    if ( value & valBitrate ) m_values += "bitrate";
-    if ( value & valLength ) m_values += "length";
-    if ( value & valSamplerate ) m_values += "samplerate";
-    if ( value & valPlayCounter ) m_values += "playcounter";
-    if ( value & valAccessDate ) m_values += "accessdate";
-    if ( value & valCreateDate ) m_values += "createdate";
-    if ( value & valPercentage ) m_values += "percentage";
+    m_values += tableName( table ) + ".";
+    m_values += valueName( value );
 
     if ( table & tabStats && value & valScore ) m_values += " + 0.4 )";
 
@@ -2299,6 +2272,26 @@ QueryBuilder::excludeMatch( int tables, const QString& match )
 
 
 void
+QueryBuilder::exclusiveFilter( int tableMatching, int tableNotMatching, int value )
+{
+    m_join += " LEFT JOIN ";
+    m_join += tableName( tableNotMatching );
+    m_join += " ON ";
+
+    m_join += tableName( tableMatching ) + ".";
+    m_join += valueName( value );
+    m_join+= " = ";
+    m_join += tableName( tableNotMatching ) + ".";
+    m_join += valueName( value );
+
+    m_where += " AND ";
+    m_where += tableName( tableNotMatching ) + ".";
+    m_where += valueName( value );
+    m_where += " IS null ";
+}
+
+
+void
 QueryBuilder::setOptions( int options )
 {
     if ( options & optNoCompilations || options & optOnlyCompilations )
@@ -2312,12 +2305,6 @@ QueryBuilder::setOptions( int options )
     {
         if ( !m_sort.isEmpty() ) m_sort += ",";
         m_sort += "RAND() ";
-
-/*#ifdef USE_MYSQL
-            "RAND() ";
-#else
-            "random() ";
-#endif*/
     }
 }
 
@@ -2334,27 +2321,8 @@ QueryBuilder::sortBy( int table, int value, bool descending )
     if ( !m_sort.isEmpty() ) m_sort += ",";
     if ( b ) m_sort += "LOWER( ";
 
-    if ( table & tabAlbum ) m_sort += "album.";
-    if ( table & tabArtist ) m_sort += "artist.";
-    if ( table & tabGenre ) m_sort += "genre.";
-    if ( table & tabYear ) m_sort += "year.";
-    if ( table & tabSong ) m_sort += "tags.";
-    if ( table & tabStats ) m_sort += "statistics.";
-
-    if ( value & valID ) m_sort += "id";
-    if ( value & valName ) m_sort += "name";
-    if ( value & valURL ) m_sort += "url";
-    if ( value & valTitle ) m_sort += "title";
-    if ( value & valTrack ) m_sort += "track";
-    if ( value & valScore ) m_sort += "percentage";
-    if ( value & valComment ) m_sort += "comment";
-    if ( value & valBitrate ) m_sort += "bitrate";
-    if ( value & valLength ) m_sort += "length";
-    if ( value & valSamplerate ) m_sort += "samplerate";
-    if ( value & valPlayCounter ) m_sort += "playcounter";
-    if ( value & valAccessDate ) m_sort += "accessdate";
-    if ( value & valCreateDate ) m_sort += "createdate";
-    if ( value & valPercentage ) m_sort += "percentage";
+    m_sort += tableName( table ) + ".";
+    m_sort += valueName( value );
 
     if ( b ) m_sort += " ) ";
     if ( descending ) m_sort += " DESC ";
@@ -2395,7 +2363,7 @@ QueryBuilder::buildQuery()
     {
         linkTables( m_linkTables );
 
-        m_query = "SELECT " + m_values + " FROM " + m_tables + " WHERE 1 " + m_where;
+        m_query = "SELECT " + m_values + " FROM " + m_tables + " " + m_join + " WHERE 1 " + m_where;
         if ( !m_sort.isEmpty() ) m_query += " ORDER BY " + m_sort;
         m_query += m_limit;
     }
@@ -2406,7 +2374,7 @@ QStringList
 QueryBuilder::run()
 {
     buildQuery();
-    // debug() << m_query << endl;
+    //debug() << m_query << endl;
     return CollectionDB::instance()->query( m_query );
 }
 
@@ -2417,12 +2385,54 @@ QueryBuilder::clear()
     m_query = "";
     m_values = "";
     m_tables = "";
+    m_join = "";
     m_where = "";
     m_sort = "";
     m_limit = "";
 
     m_linkTables = 0;
     m_returnValues = 0;
+}
+
+
+QString
+QueryBuilder::tableName( int table )
+{
+    QString tables = "";
+
+    if ( table & tabSong )   tables += ",tags";
+    if ( table & tabArtist ) tables += ",artist";
+    if ( table & tabAlbum )  tables += ",album";
+    if ( table & tabGenre )  tables += ",genre";
+    if ( table & tabYear )   tables += ",year";
+    if ( table & tabStats )  tables += ",statistics";
+
+    // when there are multiple tables involved, we always need table tags for linking them
+    return tables.mid( 1 );
+}
+
+
+QString
+QueryBuilder::valueName( int value )
+{
+    QString values = "";
+
+    if ( value & valID )          values += "id";
+    if ( value & valName )        values += "name";
+    if ( value & valURL )         values += "url";
+    if ( value & valTitle )       values += "title";
+    if ( value & valTrack )       values += "track";
+    if ( value & valScore )       values += "percentage";
+    if ( value & valComment )     values += "comment";
+    if ( value & valBitrate )     values += "bitrate";
+    if ( value & valLength )      values += "length";
+    if ( value & valSamplerate )  values += "samplerate";
+    if ( value & valPlayCounter ) values += "playcounter";
+    if ( value & valAccessDate )  values += "accessdate";
+    if ( value & valCreateDate )  values += "createdate";
+    if ( value & valPercentage )  values += "percentage";
+
+    return values;
 }
 
 

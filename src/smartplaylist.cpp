@@ -200,14 +200,14 @@ void SmartPlaylistView::loadDefaultPlaylists()
     item->setKey( ++c );
 
     /********** Never Played **************/
-    item = new SmartPlaylist( i18n( "Never Played" ), QString(), this );
-    item->setDragEnabled( true ); //because we pass QString() in the ctor
+    qb.initSQLDrag();
+    qb.exclusiveFilter( QueryBuilder::tabSong, QueryBuilder::tabStats, QueryBuilder::valURL );
+    qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+
+    item = new SmartPlaylist( i18n( "Never Played" ), qb.query(), this );
     item->setKey( ++c );
-    item->sqlForUrls =
-            "SELECT tags.url "
-            "FROM tags, artist "
-            "WHERE tags.url NOT IN(SELECT url FROM statistics) AND tags.artist = artist.id "
-            "ORDER BY artist.name, tags.title;";
 
     /********** Genres **************/
     item = new SmartPlaylist( i18n( "Genres" ), QString(), this );

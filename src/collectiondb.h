@@ -347,6 +347,8 @@ class QueryBuilder
         void addMatches( int tables, const QStringList& match );
         void excludeMatch( int tables, const QString& match );
 
+        void exclusiveFilter( int tableMatching, int tableNotMatching, int value );
+
         void setOptions( int options );
         void sortBy( int table, int value, bool descending = false );
         void setLimit( int startPos, int length );
@@ -359,11 +361,15 @@ class QueryBuilder
         QStringList run();
 
     private:
+        QString tableName( int table );
+        QString valueName( int value );
+
         void linkTables( int tables );
 
         QString m_query;
         QString m_values;
         QString m_tables;
+        QString m_join;
         QString m_where;
         QString m_sort;
         QString m_limit;
