@@ -257,12 +257,23 @@ static int sqlite3InitOne(sqlite3 *db, int iDb, char **pzErrMsg){
       /* This happens if the database was initially empty */
       db->file_format = 1;
     }
+
+    if( db->file_format==2 ){
+      /* File format 2 is treated exactly as file format 1. New 
+      ** databases are created with file format 1.
+      */ 
+      db->file_format = 1;
+    }
   }
 
   /*
-  **  file_format==1    Version 3.0.0.
+  ** file_format==1    Version 3.0.0.
+  ** file_format==2    Version 3.1.3.
+  **
+  ** Version 3.0 can only use files with file_format==1. Version 3.1.3
+  ** can read and write files with file_format==1 or file_format==2.
   */
-  if( meta[1]>1 ){
+  if( meta[1]>2 ){
     sqlite3BtreeCloseCursor(curMain);
     sqlite3SetString(pzErrMsg, "unsupported file format", (char*)0);
     return SQLITE_ERROR;

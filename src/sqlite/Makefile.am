@@ -12,6 +12,7 @@ libsqlite_la_LDFLAGS = \
     $(LIBPTHREAD)
 
 libsqlite_la_SOURCES = \
+    alter.c \
     attach.c \
     auth.c \
     btree.c \
