@@ -218,7 +218,7 @@
     <entry key="Osd Font" type="Font">
         <label>Font for On-Screen Display</label>
         <whatsthis>The font to use for the On-Screen Display.</whatsthis>
-        <default code="true">QFont("Arial",20)</default>
+        <default code="true">KGlobalSettings::generalFont()</default>
     </entry>
     <entry key="Osd Draw Shadow" type="Bool">
         <label>Draw a shadow around the text.</label>

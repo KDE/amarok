@@ -9,6 +9,8 @@ VERSION 1.2.3:
   CHANGES:
 
   BUGFIXES:
+    * Default OSD font is grabbed from KGlobalSettings::generalFont()
+      (BR 101496)
     * Fix units for samplerate (BR 101528)
 
 VERSION 1.2.2:
