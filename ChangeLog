@@ -4,12 +4,15 @@ amaroK ChangeLog
 
 
 VERSION 1.2.2:
+  FIX: The handbook translations were not built when amaroK was installed from
+       the tarball. I've written a new release script in Ruby, which can
+       handle the new structure of kde-i18n. (BR 100498)
   ADD: New DCOP call player: setEqualizer(preamp, the 10 eq settings)
   FIX: GStreamer-engine can now play vorbis radio streams properly, with
        full metadata support. (BR 89821)
   FIX: GStreamer-engine now uses the "decodebin" autoplugger, which fixes
        the lag issues that some users had during crossfading. (BR 99570)
-  
+
 VERSION 1.2.1:
   FIX: Made the Tag-Editor only operate on visible items. (BR 100268)
   ADD: Database settings added to the first-run wizard.
