@@ -313,9 +313,17 @@ PlaylistLoader::generateBundle( const KURL &url )
         bundle = MetaBundle( url );
 
     // If it's in Collection but no audioproperties available, read them and store
-    else if ( !bundle.length() ) {
-        bundle = MetaBundle( url );
-        m_db->addAudioproperties( bundle );
+    else if ( !bundle.length() )
+    {
+        // Generate a seperate MetaBundle for the audio properties. The Collection got
+        // advanced tag-guessing for songs with empty tags, so we better stick with its MetaBundle.
+        MetaBundle apBundle;
+        apBundle = MetaBundle( url );
+
+        bundle.setBitrate( apBundle.bitrate() );
+        bundle.setLength( apBundle.length() );
+        bundle.setSampleRate( apBundle.sampleRate() );
+        m_db->addAudioproperties( apBundle );
     }
 
     return bundle;

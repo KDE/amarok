@@ -178,6 +178,8 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     connect( this,     SIGNAL( aboutToClear() ),
              this,       SLOT( saveUndoState() ) );
 
+    // make sure CollectionEmitter was initialized
+    CollectionDB db;
     connect( CollectionDB::emitter(), SIGNAL( scoreChanged( const QString&, int ) ),
              this,       SLOT( scoreChanged( const QString&, int ) ) );
 
