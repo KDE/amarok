@@ -87,20 +87,22 @@ void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
 void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 {
     browser->begin();
-    QString styleSheet( "a,td { color:black; font-size:8px; text-decoration:none; }"
+    QString styleSheet( "a { color:black; font-size:8px; text-decoration:none; }"
+                        "td { color:black; font-size:8px; text-decoration:none; }"
                         "a:hover { color:black; text-decoration:underline; background-color:#cccccc; }"
+                        ".album { color:black; font-weight: bold; font-size:8px; text-decoration:none; }"
                         ".title { font-size: 11px; font-weight: bold; }"
                         ".head { font-size: 10px; font-weight: bold; }" );
 
     browser->setUserStyleSheet( styleSheet );
 
-    browser->write( QString( "<html><div class='title'>Info for %1<br></div>" )
+    browser->write( QString( "<html><div class='title'>Info for %1</div>" )
                     .arg( bundle.artist() ) );
 
     QStringList values;
     QStringList names;
 
-    browser->write( "<div class='head'>Other titles:</div>" );
+    browser->write( "<div class='head'><br>Other titles:</div>" );
     browser->write( "<table border='0' cellspacing='1' cellpadding='1'>" );
 
     m_db->execSql( QString( "SELECT tags.title, tags.url FROM tags, artist WHERE tags.artist = artist.id AND artist.name LIKE '%1' ORDER BY random();" )
@@ -128,7 +130,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     {
         if ( values[i].isEmpty() ) continue;
 
-        browser->write( QString ( "<tr><td><img src='%1' height='40'></td><td valign='top'><a href=\"album:%2/%3\">%4</td><td width='30' align='right'>%5</td></tr>" )
+        browser->write( QString ( "<tr><td><img src='%1' width='40' height='40'></td><td valign='top'><a class='album' href=\"album:%2/%3\">%4</a><br>%5 Tracks</td></tr>" )
                         .arg( m_db->getImageForAlbum( values[i*3 + 2], values[i*3 + 1] ) )
                         .arg( values[i*3 + 2] )
                         .arg( values[i*3 + 1] )
