@@ -624,3 +624,45 @@ BT from samppa 09.01.2004: Huge playlist > 14000 items, hangs at startup
 #32 0x0807a485 in App (this=0xbfffee70) at app.cpp:106
 #33 0x080febb9 in main (argc=2, argv=0xbffff004) at main.cpp:62
 
+
+BT for coverfetching 2-dec-2004
+
+#0  0xb726654b in QString::QString () from /usr/lib/libqt-mt.so.3
+#1  0x080cc4c3 in CoverManager::loadCover ()
+#2  0x080cc172 in CoverManager::coverFetched ()
+#3  0x080cec19 in CoverManager::qt_invoke ()
+#4  0xb6f944a6 in QObject::activate_signal () from /usr/lib/libqt-mt.so.3
+#5  0x080ac15f in CollectionEmitter::coverFetched ()
+#6  0x080a798f in CollectionDB::coverFetcherResult ()
+#7  0x080abd90 in CollectionDB::qt_invoke ()
+#8  0xb6f9452c in QObject::activate_signal () from /usr/lib/libqt-mt.so.3
+#9  0x080c6008 in CoverFetcher::result ()
+#10 0x080c5b48 in CoverFetcher::finish ()
+#11 0x080c55c2 in CoverFetcher::finishedImageFetch ()
+#12 0x080c60cf in CoverFetcher::qt_invoke ()
+#13 0xb6f9452c in QObject::activate_signal () from /usr/lib/libqt-mt.so.3
+#14 0xb7a8dbaa in KIO::Job::result () from /usr/lib/libkio.so.4
+#15 0xb7a770dc in KIO::Job::emitResult () from /usr/lib/libkio.so.4
+#16 0xb7a785dc in KIO::SimpleJob::slotFinished () from /usr/lib/libkio.so.4
+#17 0xb7a7ba2e in KIO::TransferJob::slotFinished () from /usr/lib/libkio.so.4
+#18 0xb7a8fb8d in KIO::TransferJob::qt_invoke () from /usr/lib/libkio.so.4
+#19 0xb6f9452c in QObject::activate_signal () from /usr/lib/libqt-mt.so.3
+#20 0xb6f94354 in QObject::activate_signal () from /usr/lib/libqt-mt.so.3
+#21 0xb7a6d46e in KIO::SlaveInterface::finished () from /usr/lib/libkio.so.4
+#22 0xb7a6c069 in KIO::SlaveInterface::dispatch () from /usr/lib/libkio.so.4
+#23 0xb7a6b589 in KIO::SlaveInterface::dispatch () from /usr/lib/libkio.so.4
+#24 0xb7a68fbb in KIO::Slave::gotInput () from /usr/lib/libkio.so.4
+#25 0xb7a6acd8 in KIO::Slave::qt_invoke () from /usr/lib/libkio.so.4
+#26 0xb6f9452c in QObject::activate_signal () from /usr/lib/libqt-mt.so.3
+#27 0xb6f9468d in QObject::activate_signal () from /usr/lib/libqt-mt.so.3
+#28 0xb72d2eb2 in QSocketNotifier::activated () from /usr/lib/libqt-mt.so.3
+#29 0xb6fb0cd0 in QSocketNotifier::event () from /usr/lib/libqt-mt.so.3
+#30 0xb6f37bcf in QApplication::internalNotify () from /usr/lib/libqt-mt.so.3
+#31 0xb6f371ce in QApplication::notify () from /usr/lib/libqt-mt.so.3
+#32 0xb7512da3 in KApplication::notify () from /usr/lib/libkdecore.so.4
+#33 0xb6f275da in QEventLoop::activateSocketNotifiers () from /usr/lib/libqt-mt.so.3
+#34 0xb6ee0c03 in QEventLoop::processEvents () from /usr/lib/libqt-mt.so.3
+#35 0xb6f49f28 in QEventLoop::enterLoop () from /usr/lib/libqt-mt.so.3
+#36 0xb6f49dd8 in QEventLoop::exec () from /usr/lib/libqt-mt.so.3
+#37 0xb6f37e21 in QApplication::exec () from /usr/lib/libqt-mt.so.3
+#38 0x0815fa40 in main ()
