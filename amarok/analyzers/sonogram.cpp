@@ -57,6 +57,8 @@ void Sonogram::analyze(const Scope &s)
 
 void Sonogram::transform(Scope &scope)
 {
+	scope.resize( scope.size() / 2 );
+
 	float *front = static_cast<float*>(&scope.front());
 
 	m_fht.power(front);

@@ -23,13 +23,15 @@ class BlockAnalyzer : public Analyzer::Base2D
 public:
     BlockAnalyzer( QWidget* );
 
+    void init();
+    void transform( Scope& );
     void analyze( const Scope& );
 
 private:
-    static const int BAND_COUNT=32;
+    QPixmap m_glow;
+    QPixmap m_dark;
 
-    QPixmap m_block1;
-    QPixmap m_block2;
+    Scope m_store;
 };
 
 #endif

@@ -18,15 +18,19 @@
 
 
 BarAnalyzer::BarAnalyzer( QWidget *parent )
-    : Analyzer::Base2D( parent, 10 )
+    : Analyzer::Base2D( parent, 12 )
     , m_bands( BAND_COUNT )
+    , barVector( BAND_COUNT, 0 )
+    , roofVector( BAND_COUNT, 50 )
+    , roofVelocityVector( BAND_COUNT, ROOF_VELOCITY_REDUCTION_FACTOR )
 {}
 
 // METHODS =====================================================
 
 void BarAnalyzer::init()
 {
-    const double F = double(height() - 2) / (log10( 255 ) * 1.0 );
+    const uint MAX_AMPLITUDE = 1.0;
+    const double F = double(height() - 2) / (log10( 255 ) * MAX_AMPLITUDE );
 
     //generate a list of values that express amplitudes in range 0-MAX_AMP as ints from 0-height() on log scale
     for ( uint x = 0; x < 256; ++x )
@@ -34,14 +38,14 @@ void BarAnalyzer::init()
         m_lvlMapper[x] = uint( F * log10( x+1 ) );
     }
 
-    m_gradientPixmap.resize( height()*4, height() );
+    m_gradientPixmap.resize( height()*COLUMN_WIDTH, height() );
     m_composePixmap.resize( size() );
 
     QColor col( 0xff, 0x50, 0x70 );
 
     for ( uint i = 0; i < NUM_ROOFS; ++i )
     {
-        m_roofPixmaps[i].resize( 4, 1 );
+        m_roofPixmaps[i].resize( COLUMN_WIDTH, 1 );
         m_roofPixmaps[i].fill( col.dark( i + 100 + i * 5  ) );
     }
 
@@ -53,27 +57,25 @@ void BarAnalyzer::init()
         {
             const double fraction = (double)y / height();
 
-//          p.setPen( QColor( r + (int)(r2  * fraction), g, b - (int)(255 * fraction) ) );
-            p.setPen( QColor( r + (int)(r2  * fraction), g, b ) );
-            p.drawLine( x * 4, height() - y, x * 4 + 4, height() - y );
+//          p.setPen( QColor( r + (int)(r2 * fraction), g, b - (int)(255 * fraction) ) );
+            p.setPen( QColor( r + (int)(r2 * fraction), g, b ) );
+            p.drawLine( x*COLUMN_WIDTH, height() - y, (x+1)*COLUMN_WIDTH, height() - y );
         }
     }
+
+    setMinimumSize( QSize( BAND_COUNT * COLUMN_WIDTH, 10 ) );
 }
 
 
 void BarAnalyzer::analyze( const Scope &s )
 {
-    static std::vector<uint> barVector( BAND_COUNT, 0 );
-    static std::vector<int>  roofVector( BAND_COUNT, 50 ); //can't risk uint //FIXME 50 is arbituary!
-    static std::vector<uint> roofVelocityVector( BAND_COUNT, ROOF_VELOCITY_REDUCTION_FACTOR );
-
     //start with a blank canvas
     eraseCanvas();
 
     Analyzer::interpolate( s, m_bands );
 
     Scope::const_iterator it( m_bands.begin() );
-    for ( uint i = 0, x = 10, y2; i < m_bands.size(); ++i, ++it, x+=5 )
+    for ( uint i = 0, x = 0, y2; i < m_bands.size(); ++i, ++it, x+=COLUMN_WIDTH+1 )
     {
         //assign pre[log10]'d value
         y2 = uint((*it) * 256); //256 will be optimised to a bitshift
@@ -90,7 +92,7 @@ void BarAnalyzer::analyze( const Scope &s )
         if ( change > 2 ) //anything too much greater than 2 gives "jitter"
            //add some dynamics - makes the value slightly closer to what it was last time
            y2 = ( barVector[i] * 2 + y2 ) / 3;
-        else if( change < -1 )
+        else if ( change < -1 )
            y2 = barVector[i] - 1;
 
 
@@ -113,7 +115,7 @@ void BarAnalyzer::analyze( const Scope &s )
 
         //blt the bar
         bitBlt( canvas(), x, height() - y2,
-                gradient(), y2 * 4, height() - y2, 4, y2, Qt::CopyROP );
+                gradient(), y2 * COLUMN_WIDTH, height() - y2, COLUMN_WIDTH, y2, Qt::CopyROP );
 
         m_roofMem[i].push_back( height() - roofVector[i] - 2 );
 

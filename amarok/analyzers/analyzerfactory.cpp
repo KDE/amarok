@@ -32,7 +32,7 @@
 //#define AMAROK_RELEASE
 #ifndef AMAROK_RELEASE
     #include "distortanalyzer.h"
-    #include "blockanalyzer.h"
+//    #include "blockanalyzer.h"
     #include "baranalyzer2.h"
 //    #include "spectralshine.h"
     #include "xmasdrug.h"
@@ -76,8 +76,9 @@ QWidget *Analyzer::Factory::createAnalyzer( QWidget *parent )
         analyzer = new XmasAnalyzer( parent );
         break;
     case 8:
-        analyzer = new BlockAnalyzer( parent );
-        break;
+        //analyzer = new BlockAnalyzer( parent );
+        //break;
+        AmarokConfig::setCurrentAnalyzer( 9 );
     case 9:
         analyzer = new DistortAnalyzer( parent );
         break;

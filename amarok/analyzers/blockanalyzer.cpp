@@ -15,42 +15,103 @@
 #define ROWS   7
 
 #include "blockanalyzer.h"
+#include "fht.h"
+#include <math.h>
+
+#include <kdebug.h>
 
 //static const float lvlMapper[ROWS] = { 0.155, 0.456, 0.632, 0.757, 0.854, 0.933, 10.0 };
-static const float lvlMapper[ROWS] = { 0.100, 0.200, 0.300, 0.450, 0.625, 0.800, 10.0 };
+static float lvlMapper[ROWS+1];// = { 0.080, 0.140, 0.200, 0.300, 0.500, 0.700, 100 };
 
 BlockAnalyzer::BlockAnalyzer( QWidget *parent )
- : Analyzer::Base2D( parent, 16 )
- , m_block1( WIDTH, HEIGHT )
- , m_block2( WIDTH, HEIGHT )
+ : Analyzer::Base2D( parent, 20, 7 ) //more data in interesting region please
+ , m_glow( WIDTH, HEIGHT )
+ , m_dark( WIDTH, HEIGHT )
+ , m_store( 16, 0 )
 {
-    m_block1.fill( QColor( 172, 149, 156 ) );
-    m_block2.fill( QColor( 82, 68, 106 ) );
+    m_glow.fill( QColor( 32, 32, 82 ) ); //amaroK blue
+    m_dark.fill( backgroundColor().dark( 150 ) );
+}
+
+void
+BlockAnalyzer::init()
+{
+    const uint bands = (double)width() / (WIDTH+1);
+    if( bands < 16 ) m_store.resize( 16 );
+    else             m_store.resize( bands );
+
+    std::fill( m_store.begin(), m_store.end(), 0 );
+
+    for( uint x = 2; x < ROWS+2; ++x )
+    {
+        lvlMapper[ROWS+2-x] = 1-(log10(x) / log10(ROWS+2));
+
+        kdDebug() << ROWS+2-x << ": " << lvlMapper[ROWS+2-x] << endl;
+    }
+
+    lvlMapper[ROWS] = 10000;
+
+    setMinimumWidth( (m_store.size() + 2) * (WIDTH+1) ); //+2 is 2 blocks margin either side
+}
+
+void
+BlockAnalyzer::transform( Scope &scope )
+{
+    scope.resize( scope.size() / 4 );
+
+    float *front = static_cast<float*>( &scope.front() );
+
+    float f[ m_fht.size() ];
+    m_fht.copy( &f[0], front );
+    m_fht.logSpectrum( front, &f[0] );
+    m_fht.scale( front, 1.0 / 20 );
 }
 
 void
 BlockAnalyzer::analyze( const Scope &s )
 {
-    std::vector<float> v( BAND_COUNT, 0 );
+    // z = 2 3 2 1 0 2
+    //     . . . . # .
+    //     . . . # # .
+    //     # . # # # #
+    //     # # # # # #
+    //
+    // visual aid for how this analyzer works.
+    // as can be seen the value of z is from the top in units of blocks
+
     const int offset = height() - (HEIGHT+1) * ROWS;
+    Scope v( m_store.size() + 7 );
 
     Analyzer::interpolate( s, v );
 
-//    QPixmap m_pix( v.size() * (WIDTH + 1), (HEIGHT + 1) * ROWS );
     eraseCanvas();
 
-    for ( uint x = 0; x < v.size(); ++x )
+    for( uint x = 0; x < m_store.size(); ++x )
     {
-        uint z;
-        for( z = 0; v[x] > lvlMapper[z]; ++z );
-        //uint z = uint( ROWS - v[x] * ROWS );
+        uint z = 0;
+
+        for( ; v[x+7] > lvlMapper[z]; ++z );
         z = ROWS - 1 - z;
-        for( uint y = 0; y < ROWS; ++y )
+
+        //too high is not fatal
+        //higher than stored value means we are falling
+        //fall gradually
+        //m_store is twice size of regular units so falling is slower
+        if( z * 2 > m_store[x] )
         {
-            if( y > z )
-                bitBlt( canvas(), x * (WIDTH + 1), y * (HEIGHT + 1) + offset, &m_block1 );
+            z = ++m_store[x] / 2 ;
+        }
+        else m_store[x] = z * 2;
+
+        //we start bltting from the top and go down
+        //so start with dark and then blt glow blocks
+        //REMEMBER: z is a number from 0 to 6, y is 1 to 7 so that the method works
+        for( uint y = 1; y <= ROWS; ++y )
+        {
+            if( y > z ) //greater than z means we blt bottom, ie glow blocks
+                bitBlt( canvas(), (x+2) * (WIDTH + 1), y * (HEIGHT + 1) + offset, &m_glow ); //x+1 = margin
             else
-                bitBlt( canvas(), x * (WIDTH + 1), y * (HEIGHT + 1) + offset, &m_block2 );
+                bitBlt( canvas(), (x+2) * (WIDTH + 1), y * (HEIGHT + 1) + offset, &m_dark );
         }
 
     }

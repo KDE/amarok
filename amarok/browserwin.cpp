@@ -52,6 +52,7 @@
 
 #include <ktoolbarbutton.h>
 #include <qiconset.h> //FIXME
+#include <blockanalyzer.h> //FIXME TMP
 
 
 //Routine for setting palette recursively in a widget and all its childen
@@ -84,7 +85,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 {
     setCaption( "amaroK" );
 
-    KToolBar* toolbar = new KToolBar( this );
+    KToolBar* toolbar = new KToolBar( this, "TOOLBAR" );
     toolbar->setEnableContextMenu( true );
 
     QBoxLayout *layV = new QVBoxLayout( this );
@@ -128,6 +129,11 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
         ac->action( "shuffle_playlist" )->plug( toolbar );
         m_playlist->m_clearButton->plug( toolbar );
         ac->action( "show_current_track" )->plug( toolbar );
+
+        toolbar->insertLineSeparator();
+
+        toolbar->insertWidget( 102, 32*4, new BlockAnalyzer( toolbar ) );
+        toolbar->getWidget( 102 )->setBackgroundColor( backgroundColor().dark( 120 ) );
 
         toolbar->insertLineSeparator();
 
