@@ -318,15 +318,23 @@ void PlaylistWidget::handleOrder( RequestType request ) //SLOT
                             // did we cycle around completely? if so, every song was already played once.
                             // fallback to random output, then
                             if ( item == tItem )
-                            {
-                                // be sure that no song gets played twice in a row
-                                if ( item == currentTrack() )
-                                    item = (PlaylistItem*)item->itemBelow();
-                                if ( !item )
-                                  item = firstChild();
-
-                                break;
-                            }
+                                // we only pick another song, if playlist repeating 
+                                // is enabled, otherwise we're done
+                                if ( AmarokConfig::repeatPlaylist() )
+                                {
+                                    // be sure that no song gets played twice in a row
+                                    if ( item == currentTrack() )
+                                        item = (PlaylistItem*)item->itemBelow();
+                                    if ( !item )
+                                      item = firstChild();
+    
+                                    break;
+                                }
+                                else
+                                {
+                                    item = 0;
+                                    break;
+                                }
                         }
                     }
                     x++;
