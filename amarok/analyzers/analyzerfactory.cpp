@@ -24,6 +24,7 @@
 #include "distortanalyzer.h"
 #include "glanalyzer.h"
 #include "sonogram.h"
+#include "turbine.h"
 
 //FIXME is there a better define?
 #define AMAROK_RELEASE
@@ -32,7 +33,6 @@
     #include "blockanalyzer.h"
     #include "baranalyzer2.h"
     #include "spectralshine.h"
-    #include "turbine.h"
     #include "xmasdrug.h"
 #endif
 
@@ -57,20 +57,20 @@ AnalyzerBase *AnalyzerBase::AnalyzerFactory::createAnalyzer( QWidget *parent )
         analyzer = new GLAnalyzer( parent );
         break;
 #endif
-#ifndef AMAROK_RELEASE
     case 4:
-        analyzer = new XmasAnalyzer( parent );
-        break;
-    case 5:
-        analyzer = new BlockAnalyzer( parent );
-        break;
-    case 6:
-        analyzer = new BarAnalyzer2( parent );
-        break;
-    case 7:
         analyzer = new TurbineAnalyzer( parent );
         break;
-   case 8:
+#ifndef AMAROK_RELEASE
+    case 5:
+        analyzer = new XmasAnalyzer( parent );
+        break;
+    case 6:
+        analyzer = new BlockAnalyzer( parent );
+        break;
+    case 7:
+        analyzer = new BarAnalyzer2( parent );
+        break;
+    case 8:
         analyzer = new SpectralShineAnalyzer( this );
         break;
 #endif
