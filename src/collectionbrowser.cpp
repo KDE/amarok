@@ -267,7 +267,7 @@ CollectionView::setupDirs()  //SLOT
     CollectionSetup *setup = new CollectionSetup( &dialog );
     dialog.setMainWidget( setup );
     dialog.showButtonApply( false );
-    dialog.resize( 300, 350 );
+    dialog.resize( 300, 400 );
 
     if ( dialog.exec() != QDialog::Rejected )
     {
@@ -293,7 +293,8 @@ CollectionView::scan()  //SLOT
     else if ( !m_isScanning )
     {
         m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
-        m_insertdb->scan( AmarokConfig::collectionFolders(), AmarokConfig::scanRecursively() );
+        m_insertdb->scan( AmarokConfig::collectionFolders(), AmarokConfig::scanRecursively(),
+                                      AmarokConfig::importPlaylists() );
     }
 }
 
@@ -304,7 +305,7 @@ CollectionView::scanMonitor()  //SLOT
     if ( !m_isScanning && AmarokConfig::monitorChanges() )
     {
         m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
-        m_insertdb->scanModifiedDirs( AmarokConfig::scanRecursively() );
+        m_insertdb->scanModifiedDirs( AmarokConfig::scanRecursively(), AmarokConfig::importPlaylists() );
     }
 }
 

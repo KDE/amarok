@@ -790,12 +790,13 @@ CollectionDB::purgeDirCache()
 
 
 void
-CollectionDB::scan( const QStringList& folders, bool recursively )
+CollectionDB::scan( const QStringList& folders, bool recursively, bool importPlaylists )
 {
     kdDebug() << k_funcinfo << endl;
 
     if ( !folders.isEmpty() )
-        m_weaver->append( new CollectionReader( this, PlaylistBrowser::instance(), folders, recursively, false ) );
+        m_weaver->append( new CollectionReader( this, PlaylistBrowser::instance(), folders,
+                                                                              recursively, importPlaylists, false ) );
     else
         emit scanDone( false );
 }
@@ -846,7 +847,7 @@ CollectionDB::updateTag( const QString &url, const QString &field, const QString
 
 
 void
-CollectionDB::scanModifiedDirs( bool recursively )
+CollectionDB::scanModifiedDirs( bool recursively, bool importPlaylists )
 {
     QStringList values;
     QStringList folders;
@@ -874,7 +875,8 @@ CollectionDB::scanModifiedDirs( bool recursively )
     }
 
     if ( !folders.isEmpty() )
-        m_weaver->append( new CollectionReader( this, PlaylistBrowser::instance(), folders, recursively, true ) );
+        m_weaver->append( new CollectionReader( this, PlaylistBrowser::instance(), folders,
+                                                                             recursively, importPlaylists, true ) );
     else
         emit scanDone( false );
 }
@@ -1235,7 +1237,7 @@ CollectionDB::dirDirty( const QString& path )
 {
     kdDebug() << k_funcinfo << "Dirty: " << path << endl;
 
-    m_weaver->append( new CollectionReader( this, PlaylistBrowser::instance(), path, false, true ) );
+    m_weaver->append( new CollectionReader( this, PlaylistBrowser::instance(), path, false, false, true ) );
 }
 
 

@@ -78,8 +78,8 @@ class CollectionDB : public QObject
         void dropStatsTable();
 
         void purgeDirCache();
-        void scanModifiedDirs( bool recursively );
-        void scan( const QStringList& folders, bool recursively );
+        void scanModifiedDirs( bool recursively, bool importPlaylists );
+        void scan( const QStringList& folders, bool recursively, bool importPlaylists );
         void updateTags( const QString &url, const MetaBundle &bundle );
         void updateTag( const QString &url, const QString &field, const QString &newTag );
 

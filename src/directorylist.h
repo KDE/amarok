@@ -43,6 +43,7 @@ public:
     QStringList dirs() const { return m_dirs; }
     bool recursive() const { return m_recursive->isChecked(); }
     bool monitor() const { return m_monitor->isChecked(); }
+    bool importPlaylists() const { return m_playlists->isChecked(); }
 
 private:
     static CollectionSetup* s_instance;
@@ -51,6 +52,7 @@ private:
     QStringList m_dirs;
     QCheckBox *m_recursive;
     QCheckBox *m_monitor;
+    QCheckBox *m_playlists;
 };
 
 
