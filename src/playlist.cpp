@@ -1016,7 +1016,7 @@ Playlist::viewportResizeEvent( QResizeEvent *e )
 }
 
 void
-Playlist::columnResizeEvent( uint col, int oldw, int neww )
+Playlist::columnResizeEvent( int col, int oldw, int neww )
 {
     kdDebug() << k_funcinfo << endl;
 

@@ -141,7 +141,7 @@ class Playlist : private KListView, public EngineObserver
         void columnOrderChanged();
         void updateNextPrev();
         void activate( QListViewItem* );
-        void columnResizeEvent( uint, int, int );
+        void columnResizeEvent( int, int, int );
 
     private:
         Playlist( QWidget*, KActionCollection*, const char* = 0 );
