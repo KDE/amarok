@@ -4,10 +4,11 @@ amaroK ChangeLog
 
 
 VERSION 1.1.1:
-  FIX: Never scan the same directory twice
+  FIX: Never scan the same directory twice.
   FIX: Disable CD-burning menu for streams. (BR 90336)
   ADD: Open Cover-Manager from Context-Browser popup menu.
   FIX: Made amaroK build with --disable-amazon flag.
+  FIX: Docs translations were not installed correctly. (BR 90307)
   FIX: GStreamer-engine refused to play some mp3 files. (BR 90317)
 
 VERSION 1.1:
