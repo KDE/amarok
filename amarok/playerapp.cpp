@@ -844,7 +844,7 @@ void PlayerApp::slotMainTimer()
 
     //try to get track length from engine when TagLib fails
     if ( m_determineLength ) {
-        if ( m_length = m_pEngine->length() ) {
+        if ( (m_length = m_pEngine->length()) ) {
             m_pPlayerWidget->m_pSlider->setMaxValue ( m_length );
             m_determineLength = false;
         }
@@ -952,17 +952,21 @@ void PlayerApp::slotShowOSD()
       m_pOSD->showOSD( m_textForOSD );
 }
 
+void PlayerApp::slotShowVolumeOSD()
+{
+    m_pOSD->showOSD( QString("Volume %1%").arg( m_pEngine->volume() ) );
+}
 
 void PlayerApp::slotIncreaseVolume()
 {
     m_pPlayerWidget->m_pDcopHandler->volumeUp();
-    m_pOSD->showOSD( QString("Volume %1%").arg( m_pEngine->volume() ) );
+    slotShowVolumeOSD();
 }
 
 void PlayerApp::slotDecreaseVolume()
 {
     m_pPlayerWidget->m_pDcopHandler->volumeDown();
-    m_pOSD->showOSD( QString("Volume %1%").arg( m_pEngine->volume() ) );
+    slotShowVolumeOSD();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

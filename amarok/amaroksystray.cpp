@@ -22,7 +22,6 @@
 AmarokSystray::AmarokSystray( QWidget *playerWidget, KActionCollection *ac ) : KSystemTray( playerWidget )
 {
     setPixmap( KSystemTray::loadIcon("amarok") ); // @since 3.2
-    //setPixmap( kapp->miniIcon() ); // 3.1 compatibility for 0.7
 
     // Usability note:
     // Popping up menu item has some implications..
@@ -56,9 +55,7 @@ AmarokSystray::AmarokSystray( QWidget *playerWidget, KActionCollection *ac ) : K
 
     contextMenu()->insertSeparator();
 
-    //FIXME bother with configure?
     ac->action( "options_configure" )->plug( contextMenu() );
-    //contextMenu()->insertItem( i18n( "&Help" ), (QPopupMenu *)playerWidget->helpMenu() );
 
     setAcceptDrops( true );
 
@@ -73,6 +70,7 @@ void AmarokSystray::wheelEvent( QWheelEvent *e )
     //the parent isVisible() and the active window!
 
     QApplication::sendEvent( parentWidget(), e );
+    pApp->slotShowVolumeOSD();
 }
 
 
