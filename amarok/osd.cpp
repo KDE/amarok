@@ -23,7 +23,6 @@
 #include <qregexp.h>
 #include <qtimer.h>
 
-#include <kcolorcombo.h>
 
 OSDWidget::OSDWidget()
     : QWidget(NULL, "osd",
