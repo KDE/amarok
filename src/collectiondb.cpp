@@ -1910,12 +1910,17 @@ MySqlConnection::MySqlConnection( MySqlConfig* config )
                 if ( !mysql::mysql_query(
                         m_db,
                         QString( "CREATE DATABASE " + config->database() ).latin1() ) )
-		debug() << "Failed to create database " << config->database() << "\n";
+        //TODO: make the StatusBar accessible before the playlist window is created, 
+        //and make these longMessage's.
+        error() << i18n("The MySQL user does not have permission to create a database. Correct the MySQL permissions or use the sqlite database."); //note that this is just a guess on why it would error here
+            }
+            else {
+    error() << i18n("Unable to connect to the MySQL database. Ensure that MySQL is running, and the hostname, user name and password are correct. Or simply use the sqlite database instead.");
             }
         }
     }
     else
-		debug() << "Failed to allocate/initialize MySql struct\n";
+		error() << "Failed to allocate/initialize MySql struct\n";
 }
 
 
@@ -2037,7 +2042,6 @@ DbConnectionPool::DbConnectionPool() : m_semaphore( POOL_SIZE )
 #ifdef USE_MYSQL
     }
 #endif
-
     enqueue( dbConn );
     m_semaphore--;
     debug() << "Available db connections: " << m_semaphore.available() << endl;
@@ -2078,7 +2082,6 @@ void DbConnectionPool::createDbConnections()
         else
 #endif
             dbConn = new SqliteConnection( static_cast<SqliteConfig*> ( m_dbConfig ) );
-
         enqueue( dbConn );
         m_semaphore--;
     }
