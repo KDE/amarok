@@ -250,24 +250,18 @@ void Playlist::handleOrder( RequestType request ) //SLOT
         //FIXME pre 1.172 we didn't need to store the currentTrack in the prevTracks list,
         //      which made the code simpler
 
-        if( m_prevTracks.isEmpty() )
+        if ( m_prevTracks.count() < 2 )
         {
             item = (PlaylistItem *)item->itemAbove();
-
             if( !item && AmarokConfig::repeatPlaylist() ) item = lastItem();
         }
         else
         {
-            // if enough songs in buffer, jump to the previous one,
-            // otherwise restart the current song
-            //FIXME aah! why restart current song? WHY!!!??!
-            if ( m_prevTracks.count() > 1 )
+            // if enough songs in buffer, jump to the previous one
             {
                 item = m_prevTracks.at( 1 );
                 m_prevTracks.remove( m_prevTracks.at( 0 ) );
             }
-            else
-                item = m_prevTracks.at( 0 );
         }
 
         activate( item, false ); //don't append this to the prevTrack stack, that _would_ be daft!
