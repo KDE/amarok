@@ -107,7 +107,7 @@ class Playlist : private KListView, public EngineObserver
 
     signals:
         void aboutToClear();
-        void itemCountChanged( int newCount, int newLength );
+        void itemCountChanged( int newCount, int newLength, int selCount, int selLength );
 
     public slots:
         void appendMedia( const QString &path );
@@ -134,6 +134,7 @@ class Playlist : private KListView, public EngineObserver
         void slotGlowTimer();
         void slotEraseMarker();
         void slotMouseButtonPressed( int, QListViewItem*, const QPoint&, int );
+        void slotSelectionChanged();
         void showContextMenu( QListViewItem*, const QPoint&, int );
         void writeTag( QListViewItem*, const QString&, int );
         void saveUndoState();
@@ -194,6 +195,8 @@ class Playlist : private KListView, public EngineObserver
 
         int           m_firstColumn;
         int           m_totalLength;
+        int           m_selectCounter;
+        int           m_selectLength;
 
         KAction *m_undoButton;
         KAction *m_redoButton;

@@ -222,10 +222,21 @@ void StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged
     m_pSlider->setEnabled( bundle.length() > 0 );
 }
 
-void StatusBar::slotItemCountChanged(int newCount, int newLength)
+void StatusBar::slotItemCountChanged( int newCount, int newLength, int selCount, int selLength )
 {
-    QString text = i18n( "1 Track", "%n Tracks", newCount );
-    text += QString(" - [%1]").arg( MetaBundle::prettyTime( newLength ) );
+    QString text;
+
+    if ( selCount > 1 )
+    {
+        text = QString( i18n( "Selected %1 out of %2 Tracks" ) ).arg( selCount ).arg( newCount );
+        text += QString( " - [%1 / %2]" ).arg( MetaBundle::prettyTime( selLength ) ).arg( MetaBundle::prettyTime( newLength ) );
+    }
+    else
+    {
+        text = i18n( "1 Track", "%n Tracks", newCount );
+        text += QString( " - [%1]" ).arg( MetaBundle::prettyTime( newLength ) );
+    }
+
     m_pTotal->setText( text );
 }
 

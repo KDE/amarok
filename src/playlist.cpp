@@ -215,6 +215,8 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
              this,       SLOT( activate( QListViewItem* ) ) );
     connect( this,     SIGNAL( mouseButtonPressed( int, QListViewItem*, const QPoint&, int ) ),
              this,       SLOT( slotMouseButtonPressed( int, QListViewItem*, const QPoint&, int ) ) );
+    connect( this,     SIGNAL( selectionChanged() ),
+             this,       SLOT( slotSelectionChanged() ) );
     connect( this,     SIGNAL( itemRenamed( QListViewItem*, const QString&, int ) ),
              this,       SLOT( writeTag( QListViewItem*, const QString&, int ) ) );
     connect( this,     SIGNAL( aboutToClear() ),
@@ -844,7 +846,7 @@ Playlist::clear() //SLOT
     }
     QApplication::postEvent( this, new QCustomEvent( QCustomEvent::Type(4000), list ) );
 
-    emit itemCountChanged( childCount(), m_totalLength );
+    emit itemCountChanged( childCount(), m_totalLength, 0, 0 );
 }
 
 void
@@ -1313,7 +1315,7 @@ Playlist::customEvent( QCustomEvent *e )
             if( length > 0 )
                 m_totalLength += length;
         }
-        emit itemCountChanged( itemCount, m_totalLength );
+        emit itemCountChanged( itemCount, m_totalLength, m_selectCounter, m_selectLength );
 
         if ( !m_queueList.isEmpty() ) {
             KURL::List::Iterator jt;
@@ -1955,7 +1957,7 @@ Playlist::removeItem( PlaylistItem *item )
     int length = item->seconds().toInt();
     if( length > 0 ) m_totalLength -= length;
 
-    emit itemCountChanged( childCount()-1, m_totalLength );
+    emit itemCountChanged( childCount()-1, m_totalLength, m_selectCounter, m_selectLength );
 }
 
 void
@@ -2066,6 +2068,24 @@ Playlist::slotMouseButtonPressed( int button, QListViewItem *after, const QPoint
     default:
         ;
     }
+}
+
+void
+Playlist::slotSelectionChanged() //SLOT
+{
+    m_selectCounter = 0;
+    m_selectLength = 0;
+
+    for( MyIt it( this, MyIt::Selected ); *it; ++it )
+    {
+        ++m_selectCounter;
+        int length = static_cast<PlaylistItem *>(*it)->seconds().toInt();
+        if( length > 0 )
+            m_selectLength += length;
+    }
+
+    kdDebug() << "[playlist] Selection changed, updating statusbar" << endl;
+    emit itemCountChanged( childCount(), m_totalLength, m_selectCounter, m_selectLength );
 }
 
 void

@@ -48,7 +48,7 @@ public:
 
 public slots:
     /** update total song count */
-    void slotItemCountChanged( int newCount, int newLength );
+    void slotItemCountChanged( int newCount, int newLength, int selCount, int selLength );
     void message( const QString& message ); //reimpl. from QStatusBar
     void messageTemporary( const QString& message );
     void restore();

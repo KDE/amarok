@@ -335,7 +335,7 @@ PlaylistWindow::init()
     //</Browsers>
 
 
-    connect( m_playlist, SIGNAL( itemCountChanged( int, int ) ), m_statusbar, SLOT( slotItemCountChanged( int, int ) ) );
+    connect( m_playlist, SIGNAL( itemCountChanged( int, int, int, int ) ), m_statusbar, SLOT( slotItemCountChanged( int, int, int, int ) ) );
     connect( m_playlist, SIGNAL( aboutToClear() ), m_lineEdit, SLOT( clear() ) );
 }
 
