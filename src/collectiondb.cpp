@@ -521,35 +521,23 @@ CollectionDB::customEvent( QCustomEvent *e )
 void
 CollectionDB::retrieveFirstLevel( QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names )
 {
-    
-    // Without conversion from the i18n String to the english term the database will try to select from
-    // the i18n String (e.g. SELECT DISTINCT jahr.name FROM tags.... - jahr has to be year).
-    if ( category1 == i18n( "Album" ) ) category1 = "Album";
-    if ( category1 == i18n( "Artist" ) ) category1 = "Artist";
-    if ( category1 == i18n( "Genre" ) ) category1 = "Genre";
-    if ( category1 == i18n( "Year" ) ) category1 = "Year";
-    if ( category2 == i18n( "Album" ) ) category2 = "Album";
-    if ( category2 == i18n( "Artist" ) ) category2 = "Artist";
-    if ( category2 == i18n( "Genre" ) ) category2 = "Genre";
-    if ( category2 == i18n( "Year" ) ) category2 = "Year";
-    
     QString filterToken;
     if ( filter != "" )
     {
         filter = escapeString( filter );
         filterToken = "AND ( " + category1.lower() + ".name LIKE '%" + filter + "%' OR ";
-        if ( category2 != i18n( "None" ) )
+        if ( category2 != 0 )
             filterToken += category2.lower() + ".name LIKE '%" + filter + "%' OR ";
 
         filterToken += "tags.title LIKE '%" + filter + "%' )";
     }
 
     QString command = "SELECT DISTINCT " + category1.lower() + ".name FROM tags, " + category1.lower();
-    if ( category2 != i18n( "None" ) )
+    if ( category2 != 0 )
         command += ", " + category2.lower();
         
     command += " WHERE tags." + category1.lower() + "=" + category1.lower() + ".id ";
-    if ( category2 != i18n( "None" ) )
+    if ( category2 != 0 )
         command += "AND tags." + category2.lower() + "=" + category2.lower() + ".id ";
         
     command += filterToken;
@@ -567,7 +555,7 @@ CollectionDB::retrieveSecondLevel( QString itemText, QString category1, QString 
         filter = escapeString( filter );
 
     QString command;
-    if ( category2 == i18n( "None" ) )
+    if ( category2 == 0 )
     {
         if ( filter != "" )
             filterToken = "AND ( " + category1.lower() + ".name LIKE '%" + filter + "%' OR tags.title LIKE '%" + filter + "%' )";
@@ -626,7 +614,7 @@ CollectionDB::retrieveFirstLevelURLs( QString itemText, QString category1, QStri
     {
         filter = escapeString( filter );
         filterToken = "AND ( " + category1.lower() + ".name LIKE '%" + filter + "%' OR ";
-        if ( category2 != i18n( "None" ) )
+        if ( category2 != 0 )
             filterToken += category2.lower() + ".name LIKE '%" + filter + "%' OR ";
 
         filterToken += "tags.title LIKE '%" + filter + "%' )";
@@ -636,11 +624,11 @@ CollectionDB::retrieveFirstLevelURLs( QString itemText, QString category1, QStri
     //query database for all tracks in our sub-category
     QString id = QString::number( getValueID( category1.lower(), itemText, false ) );
     QString command = "SELECT DISTINCT tags.url FROM tags, " + category1.lower();
-    if ( category2 != i18n( "None" ) )
+    if ( category2 != 0 )
         command += ", " + category2.lower();
      
     command += " WHERE tags." + category1.lower() + "=" + category1.lower() + ".id ";
-    if ( category2 != i18n( "None" ) )
+    if ( category2 != 0 )
         command += "AND tags." + category2.lower() + "=" + category2.lower() + ".id ";
 
     command += "AND tags." + category1.lower() + "=" + id + " " + filterToken + " ORDER BY tags.dir, tags.track, tags.url;";

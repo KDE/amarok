@@ -116,6 +116,7 @@ class CollectionView : public KListView
         QString catForId( int id ) const;
         int idForCat( const QString& cat ) const;
         QPixmap iconForCat( const QString& cat ) const;
+        QString tableForCat( const QString& cat ) const;
         
     //attributes:
         //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.

@@ -298,7 +298,7 @@ CollectionView::renderView( )  //SLOT
     //query database for all records with the specified category
     QStringList values;
     QStringList names;
-    m_db->retrieveFirstLevel( m_category1, m_category2, m_filter, &values, &names );
+    m_db->retrieveFirstLevel( tableForCat( m_category1 ), tableForCat( m_category2 ), m_filter, &values, &names );
 
     for ( uint i = 0; i < values.count(); i++ ) {
         if ( values[i].isEmpty() ) continue;
@@ -338,7 +338,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     if  ( item->depth() == 0 ) {
         QStringList values;
         QStringList names;
-        m_db->retrieveSecondLevel( item->text( 0 ), m_category1, m_category2, m_filter, &values, &names );
+        m_db->retrieveSecondLevel( item->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ), m_filter, &values, &names );
 
         QPixmap pixmap = iconForCat( m_category2 );
 
@@ -356,7 +356,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     else {
         QStringList values;
         QStringList names;
-        m_db->retrieveThirdLevel( item->parent()->text( 0 ), item->text( 0 ), m_category1, m_category2, m_filter, &values, &names );
+        m_db->retrieveThirdLevel( item->parent()->text( 0 ), item->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ), m_filter, &values, &names );
 
         for ( uint i = 0; i < values.count(); i += 2 ) {
             Item* child = new Item( item );
@@ -546,7 +546,7 @@ CollectionView::listSelected() {
             values.clear();
             names.clear();
 
-            m_db->retrieveFirstLevelURLs( item->text( 0 ), m_category1, m_category2, m_filter, &values, &names );
+            m_db->retrieveFirstLevelURLs( item->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ), m_filter, &values, &names );
             for ( uint i = 0; i < values.count(); i++ )
             {
                 KURL tmp;
@@ -571,7 +571,7 @@ CollectionView::listSelected() {
                     values.clear();
                     names.clear();
 
-                    m_db->retrieveSecondLevelURLs( item->text( 0 ), child->text( 0 ), m_category1, m_category2, m_filter, &values, &names );
+                    m_db->retrieveSecondLevelURLs( item->text( 0 ), child->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ), m_filter, &values, &names );
                     for ( uint i = 0; i < values.count(); i++ )
                     {
                         KURL tmp;
@@ -636,6 +636,19 @@ CollectionView::iconForCat( const QString& cat ) const
 
     KIconLoader iconLoader;
     return iconLoader.loadIcon( icon, KIcon::Toolbar, KIcon::SizeSmall );
+}
+
+
+QString
+CollectionView::tableForCat( const QString& cat ) const
+{
+    if ( cat == i18n( "Album" ) ) return "album";
+    if ( cat == i18n( "Artist" ) ) return "artist";
+    if ( cat == i18n( "Genre" ) ) return "genre";
+    if ( cat == i18n( "Year" ) ) return "year";
+
+    //falltrough:
+    return 0;
 }
 
 
