@@ -409,7 +409,6 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     }
     else {
         // Create our custom streamsrc element, which transports data into the pipeline
-        m_streamBuffering = true;
         input->src = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex, &m_streamBufStop, &m_streamBuffering ) );
         gst_element_set( input->src, "buffer_min", STREAMBUF_MIN, NULL );
         gst_bin_add ( GST_BIN ( input->bin ), input->src );
@@ -433,6 +432,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     if ( !url.isLocalFile()  ) {
         m_streamBufIndex = 0;
         m_streamBufStop = false;
+        m_streamBuffering = true;
 
         if ( !stream ) {
             // Use KIO for non-local files, except http, which is handled by TitleProxy
