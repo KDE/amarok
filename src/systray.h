@@ -32,17 +32,17 @@ private:
     bool event( QEvent* );
     
     // repaints trayIcon showing progress (and overlay if present)
-    void paintIcon( int percent = 100, QPixmap * overlay = 0 );
-
+    void paintIcon( int percent = 100, bool force = false );
     // blend an overlay icon over 'sourcePixmap' and repaint trayIcon
-    void blendOverlay( QPixmap * sourcePixmap, QPixmap * overlay );
+    void blendOverlay( QPixmap * sourcePixmap );
 
-    // load overlay pixmap (taken from icons/b_iconName.png)
-    QPixmap * loadOverlay( const char * iconName );
-
+    long trackLength, trackPercent;
+    long drawnPercent;  // last computed percentage (for caching purposes)
     QPixmap *baseIcon, *grayedIcon, *alternateIcon;
     QPixmap *playOverlay, *pauseOverlay, *stopOverlay;
-    long trackLength, trackPercent, drawnPercent;
+    QPixmap *overlay;   // the current overlay (may be NULL)
+    int blinkTimerID;   // timer ID returned by QObject::startTimer()
+    bool overlayVisible;// used for blinking / hiding overlay
 };
 
 }

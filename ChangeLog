@@ -5,7 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.1-beta2:
   ADD: Custom Smart Playlists with built-in editor.
-  ADD: Systray icon shows track progress.
+  ADD: Systray icon shows track progress and play status.
   CHG: Imported SQLite3 and ported CollectionDB.
   ADD: "Cool-Streams", a list of amaroK Squad recommended streams for
        playlist-browser.
