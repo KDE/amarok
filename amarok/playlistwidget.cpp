@@ -158,6 +158,7 @@ void PlaylistWidget::insertMedia( const KURL::List &list, bool doclear )
 void PlaylistWidget::insertMedia( const KURL::List &list, PlaylistItem *after )
 {
    kdDebug() << "PlaylistWidget::insertMedia()\n";
+   if( after == 0 ) kdDebug() << "Insert After 0\n";
 
    if( !list.isEmpty() )
    {
@@ -451,8 +452,9 @@ bool PlaylistWidget::eventFilter( QObject *o, QEvent *e )
     if( o == header() && e->type() == QEvent::MouseButtonPress && static_cast<QMouseEvent *>(e)->button() == Qt::RightButton )
     {
         //currently the only use for this filter is to get mouse clicks on the header()
-        QPopupMenu popup;
+        KPopupMenu popup;
         popup.setCheckable( true );
+        popup.insertTitle( "Available Columns" ); //FIXME are you here because this isn't i18n? In that case first think up a better menu-title! Thanks! -mxcl
                 
         for( int i = 0; i < columns(); ++i ) //columns() references a property
         {
@@ -546,6 +548,9 @@ void PlaylistWidget::setSorting( int i, bool b )
   }
 
   KListView::setSorting( i, b );
+  
+  //this is one of the rare cases that we ensure the currentTrack is visible
+  ensureItemVisible( currentTrack() );
 }
 
 
