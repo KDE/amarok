@@ -177,7 +177,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
         browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
     
         for ( uint i = 0; i < ( values.count() / 3 ); i++ )
-            browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:" + values[i*3 + 1].replace( "'", QCString( "%27" ) ) + "\"'>" + values[i*3] + "<i>(" + values[i*3 + 2] + ")</i></a></td></tr>" ) );
+            browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:" + values[i*3 + 1].replace( "'", QCString( "%27" ) ) + "\"'>" + values[i*3] + " <i>(" + values[i*3 + 2] + ")</i></a></td></tr>" ) );
     
         values.clear();
         names.clear();
