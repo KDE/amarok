@@ -1,5 +1,6 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
+// (c) 2004 Sami Nieminen <sami.nieminen@iki.fi>
 // See COPYING file for licensing information.
 
 #include "config.h"
@@ -82,7 +83,6 @@ CollectionDB::CollectionDB()
         createStatsTable();
     }
     m_dbConnPool.createDbConnections();
-    //m_staticConnection
 
 #ifdef USE_MYSQL
 
@@ -98,6 +98,7 @@ CollectionDB::CollectionDB()
         kdDebug() << "Rebuilding database!" << endl;
         dropTables();
         createTables();
+        startScan();
     }
     if ( ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION ) || ( !isValid() ) )
     {
@@ -105,15 +106,13 @@ CollectionDB::CollectionDB()
         dropStatsTable();
         createStatsTable();
     }
-    if ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION )
-        startScan();
-    else
-        scanMonitor();
     //</OPEN DATABASE>
 
     // TODO: Should write to config in dtor, but it crashes...
     config->writeEntry( "Database Version", DATABASE_VERSION );
     config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
+    
+    startTimer( MONITOR_INTERVAL * 1000 );
 
     connect( Scrobbler::instance(), SIGNAL( similarArtistsFetched( const QString&, const QStringList& ) ),
              this,                  SLOT( similarArtistsFetched( const QString&, const QStringList& ) ) );
@@ -184,10 +183,6 @@ CollectionDB::query( const QString& statement, DbConnection *conn )
         mysql::MYSQL_RES* result;
         if ((result = mysql::mysql_use_result(dbConn->db())))
         {
-            mysql::MYSQL_FIELD* field;
-//             while ((field = mysql::mysql_fetch_field(result)))
-//                     names  << QString( field->name );
-
             int number = mysql::mysql_field_count(dbConn->db());
             mysql::MYSQL_ROW row;
             while ((row = mysql::mysql_fetch_row(result)))
@@ -255,7 +250,6 @@ CollectionDB::query( const QString& statement, DbConnection *conn )
             for ( int i = 0; i < number; i++ )
             {
                 values << QString::fromUtf8( (const char*) sqlite3_column_text( stmt, i ) );
-//                 names << QString( sqlite3_column_name( stmt, i ) );
             }
         }
         //deallocate vm ressources
@@ -1325,6 +1319,14 @@ void CollectionDB::engineTrackEnded( int finalPosition, int trackLength )
 }
 
 
+void
+CollectionDB::timerEvent( QTimerEvent* )
+{
+    if ( AmarokConfig::monitorChanges() )
+        scanMonitor();
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -1446,14 +1448,11 @@ CollectionDB::scanModifiedDirs( bool recursively, bool importPlaylists )
 {
     kdDebug() << k_funcinfo << endl;
 
-    if ( !m_isScanning && PlaylistBrowser::instance() )
-    {
-        m_isScanning = true;
-        emit scanStarted();
+    m_isScanning = true;
+    emit scanStarted();
 
-        ThreadWeaver::instance()->onlyOneJob( new CollectionReader( this, PlaylistBrowser::instance(), QStringList(),
-                                                recursively, importPlaylists, true ) );
-    }
+    ThreadWeaver::instance()->onlyOneJob( new CollectionReader( this, PlaylistBrowser::instance(), QStringList(),
+                                            recursively, importPlaylists, true ) );
 }
 
 

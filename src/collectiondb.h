@@ -1,5 +1,6 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
+// (c) 2004 Sami Nieminen <sami.nieminen@iki.fi>
 // See COPYING file for licensing information.
 
 #ifndef AMAROK_COLLECTIONDB_H
@@ -179,6 +180,8 @@ class CollectionDB : public QObject, public EngineObserver
     protected:
         QCString md5sum( const QString& artist, const QString& album, const QString& file = QString::null );
         void engineTrackEnded( int finalPosition, int trackLength );
+        /** Manages regular folder monitoring scan */
+        void timerEvent( QTimerEvent* e );
 
     public slots:
         void fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit );
@@ -195,6 +198,7 @@ class CollectionDB : public QObject, public EngineObserver
         //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.
         static const int DATABASE_VERSION = 17;
         static const int DATABASE_STATS_VERSION = 3;
+        static const int MONITOR_INTERVAL = 60; //sec
         static const bool DEBUG = false;
 
         CollectionDB();

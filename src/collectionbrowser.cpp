@@ -41,9 +41,6 @@
 
 namespace amaroK { extern KConfig *config( const QString& ); }
 
-static const int MONITOR_INTERVAL = 60; //sec
-
-
 CollectionBrowser::CollectionBrowser( const char* name )
     : QVBox( 0, name )
     , m_cat1Menu( new KPopupMenu( this ) )
@@ -232,8 +229,6 @@ CollectionView::CollectionView( CollectionBrowser* parent )
              this,             SLOT( invokeItem( QListViewItem* ) ) );
     connect( this,           SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,             SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
-
-    startTimer( MONITOR_INTERVAL * 1000 );
 }
 
 
