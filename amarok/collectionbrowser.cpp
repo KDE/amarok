@@ -4,10 +4,10 @@
 #include "collectionbrowser.h"
 #include "directorylist.h"
 #include "metabundle.h"
+#include "sqlite/sqlite.h"
 #include "statusbar.h"
 #include "threadweaver.h"
 
-#include <sqlite/sqlite.h>
 #include <unistd.h>         //CollectionView ctor
 
 #include <qcstring.h>
