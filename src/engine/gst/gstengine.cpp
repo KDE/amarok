@@ -103,6 +103,14 @@ GstEngine::kio_resume_cb()
 }
 
 
+void
+GstEngine::shutdown_cb()
+{
+    instance()->m_shutdown = true;
+    kdDebug() << "[Gst-Engine] Thread is shut down.\n";
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////////
 // CLASS GSTENGINE
 /////////////////////////////////////////////////////////////////////////////////////
@@ -114,6 +122,7 @@ GstEngine::GstEngine()
         , m_transferJob( 0 )
         , m_fadeValue( 0.0 )
         , m_pipelineFilled( false )
+        , m_shutdown( false )
 {
     kdDebug() << k_funcinfo << endl;
 }
@@ -122,10 +131,17 @@ GstEngine::GstEngine()
 GstEngine::~GstEngine()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
-
     kdDebug() << "bytes left in gst_adapter: " << gst_adapter_available( m_gst_adapter ) << endl;
     
-    stopNow();
+    if ( m_pipelineFilled ) {
+        g_signal_connect( G_OBJECT( m_gst_thread ), "shutdown", G_CALLBACK( shutdown_cb ), m_gst_thread );
+        stopNow();
+        // Wait for pipeline to shut down properly
+        while ( !m_shutdown );
+    }
+    else    
+        stopNow();
+    
     delete[] m_streamBuf;
     g_object_unref( G_OBJECT( m_gst_adapter ) );
 

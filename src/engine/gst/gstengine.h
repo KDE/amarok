@@ -84,9 +84,10 @@ class GstEngine : public Engine::Base
         static void eos_cb( GstElement*, GstElement* );
         /** Duplicates audio data for application side processing */
         static void handoff_cb( GstElement*, GstBuffer*, gpointer );
-
+        
         static void error_cb( GstElement*, GstElement*, GError*, gchar*, gpointer );
         static void kio_resume_cb();
+        static void shutdown_cb();
 
         /** Get a list of available plugins from a specified Class */
         QStringList getPluginList( const QCString& classname ) const; 
@@ -122,6 +123,7 @@ class GstEngine : public Engine::Base
         float m_fadeValue;
 
         bool m_pipelineFilled;
+        bool m_shutdown;
 };
 
 
