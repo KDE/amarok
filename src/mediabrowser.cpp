@@ -4,9 +4,8 @@
 
 #define DEBUG_PREFIX "MediaBrowser"
 
-#include "config.h"        //for AMAZON_SUPPORT
-
 #include "amarokconfig.h"
+#include "browserToolBar.h"
 #include "clicklineedit.h"
 #include "colorgenerator.h"
 #include "debug.h"
@@ -39,7 +38,6 @@
 #include <kstandarddirs.h> //locate file
 #include <ktabbar.h>
 #include <ktempfile.h>
-#include <ktoolbar.h>
 #include <ktoolbarbutton.h> //ctor
 #include <kurldrag.h>       //dragObject()
 
@@ -57,39 +55,27 @@ bool MediaBrowser::isAvailable() //static
 
 
 MediaBrowser::MediaBrowser( const char *name )
-   : QVBox( 0, name )
+        : QVBox( 0, name )
 {
     setSpacing( 4 );
 
-    KToolBar* toolbar = new KToolBar( this );
-    toolbar->setMovingEnabled(false);
-    toolbar->setFlat(true);
-    toolbar->setIconSize( 16 );
-    toolbar->setEnableContextMenu( false );
-
     { //<Search LineEdit>
-        KToolBarButton *button;
-        KToolBar* searchToolBar = new KToolBar( this );
-        searchToolBar->setMovingEnabled(false);
-        searchToolBar->setFlat(true);
-        searchToolBar->setIconSize( 16 );
-        searchToolBar->setEnableContextMenu( false );
-
-        button       = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
+        KToolBar* searchToolBar = new Browser::ToolBar( this );
+        KToolBarButton *button = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
         m_searchEdit = new ClickLineEdit( i18n( "Filter here..." ), searchToolBar );
-        searchToolBar->setStretchableWidget( m_searchEdit );
 
+        searchToolBar->setStretchableWidget( m_searchEdit );
         m_searchEdit->setFrame( QFrame::Sunken );
+
         connect( button, SIGNAL( clicked() ), m_searchEdit, SLOT( clear() ) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
-        QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter collection" ) );
+        QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter collection" ) ); //TODO text is wrong
     } //</Search LineEdit>
 
     m_view = new MediaDeviceView( this );
 
     setFocusProxy( m_view ); //default object to get focus
-    setMinimumWidth( toolbar->sizeHint().width() + 2 ); //set a reasonable minWidth
 }
 
 

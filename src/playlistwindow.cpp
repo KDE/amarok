@@ -173,7 +173,7 @@ PlaylistWindow::init()
     m_browsers = new BrowserBar( this );
 
     { //<Search LineEdit>
-        KToolBar *bar = new KToolBar( m_browsers->container() );
+        KToolBar *bar = new KToolBar( m_browsers->container(), "NotMainToolBar" );
         bar->setIconSize( 22, false ); //looks more sensible
         bar->setFlat( true ); //removes the ugly frame
         bar->setMovingEnabled( false ); //removes the ugly frame

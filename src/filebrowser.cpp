@@ -22,6 +22,7 @@
 */
 
 #include "amarok.h"
+#include "browserToolBar.h"
 #include "clicklineedit.h"
 #include "enginecontroller.h"
 #include "filebrowser.h"
@@ -83,30 +84,18 @@ FileBrowser::FileBrowser( const char * name )
 {
     KActionCollection *actionCollection;
     KConfig* const config = amaroK::config( "Filebrowser" );
-    KToolBar *toolbar;
     SearchPane *searchPane;
 
     const QString currentLocation = config->readEntry( "Location", QDir::homeDirPath() );
 
-    { //mainToolbar
-        toolbar = new KToolBar( this );
-        toolbar->setIconSize( 16 );
-
-        // these properties remove the ugly frame and stop weird things
-        // happening to some people's toolbars, don't remove them!
-        toolbar->setMovingEnabled( false );
-        toolbar->setFlat( true );
-        toolbar->setEnableContextMenu( false );
-    }
+    KToolBar *toolbar = new Browser::ToolBar( this );
 
     { //Filter LineEdit
-        KToolBar* searchToolBar = new KToolBar( this );
+        KToolBar* searchToolBar = new Browser::ToolBar( this );
         KToolBarButton *button = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
         m_filter = new ClickLineEdit( i18n( "Filter here..." ), searchToolBar );
 
-        searchToolBar->setIconSize( 16 );
         searchToolBar->setStretchableWidget( m_filter );
-        searchToolBar->setMovingEnabled( false );
 
         connect( button, SIGNAL(clicked()), m_filter, SLOT(clear()) );
 

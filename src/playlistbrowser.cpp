@@ -3,6 +3,7 @@
 // License: GPL V2. See COPYING file for information.
 
 #include "amarok.h"            //actionCollection()
+#include "browserToolBar.h"
 #include "collectiondb.h"      //smart playlists
 #include "collectionreader.h"
 #include "k3bexporter.h"
@@ -35,7 +36,6 @@
 #include <kmessagebox.h>       //renamePlaylist(), deleteSelectedPlaylist()
 #include <kpopupmenu.h>
 #include <kstandarddirs.h>     //KGlobal::dirs()
-#include <ktoolbar.h>
 #include <klineedit.h>         //rename()
 #include <kurldrag.h>          //dragObject()
 
@@ -54,6 +54,8 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     m_splitter = new QSplitter( Vertical, this );
 
     QVBox *browserBox = new QVBox( m_splitter );
+    browserBox->setSpacing( 3 );
+
     //<Toolbar>
     m_ac = new KActionCollection( this );
     KAction *open = new KAction( i18n("Add Playlist..."), "fileopen", 0, this, SLOT( openPlaylist() ), m_ac, "Open" );
@@ -73,12 +75,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     viewMenu->setItemChecked( Unsorted, true );
     connect( viewMenu, SIGNAL( activated(int) ), SLOT( slotViewMenu(int) ) );
 
-    m_toolbar = new KToolBar( browserBox );
-    m_toolbar->setMovingEnabled(false);
-    m_toolbar->setFlat(true);
-    m_toolbar->setIconSize( 16 );
-    m_toolbar->setEnableContextMenu( false );
-
+    m_toolbar = new Browser::ToolBar( browserBox );
     m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the open button to have text on right
     open->plug( m_toolbar );
 

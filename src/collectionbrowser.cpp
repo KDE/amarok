@@ -5,6 +5,7 @@
 #include "config.h"
 
 #include "amarokconfig.h"
+#include "browserToolBar.h"
 #include "clicklineedit.h"
 #include "collectionbrowser.h"
 #include "collectiondb.h"
@@ -36,7 +37,6 @@
 #include <kiconloader.h>    //renderView()
 #include <klocale.h>
 #include <kpopupmenu.h>
-#include <ktoolbar.h>
 #include <ktoolbarbutton.h> //ctor
 #include <kurldrag.h>       //dragObject()
 
@@ -52,19 +52,12 @@ CollectionBrowser::CollectionBrowser( const char* name )
 {
     setSpacing( 4 );
 
-    KToolBar* toolbar = new KToolBar( this );
-    toolbar->setMovingEnabled(false);
-    toolbar->setFlat(true);
-    toolbar->setIconSize( 16 );
-    toolbar->setEnableContextMenu( false );
+    KToolBar* toolbar = new Browser::ToolBar( this );
 
     { //<Search LineEdit>
         KToolBarButton *button;
-        KToolBar* searchToolBar = new KToolBar( this );
-        searchToolBar->setMovingEnabled(false);
-        searchToolBar->setFlat(true);
-        searchToolBar->setIconSize( 16 );
-        searchToolBar->setEnableContextMenu( false );
+        KToolBar* searchToolBar = new Browser::ToolBar( this );
+
 
         button       = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
         m_searchEdit = new ClickLineEdit( i18n( "Filter here..." ), searchToolBar );

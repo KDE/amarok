@@ -2,6 +2,7 @@
 // See COPYING file for licensing information
 
 #include "amarok.h"
+#include "browserToolBar.h"
 #include "collectiondb.h"
 #include "k3bexporter.h"
 #include "playlist.h"
@@ -22,17 +23,12 @@
 #include <kmultipledrag.h>    //::dragObject()
 #include <kpopupmenu.h>
 #include <kurldrag.h>         //::dragObject()
-#include <ktoolbar.h>
 
 
 SmartPlaylistBox::SmartPlaylistBox( QWidget *parent, const char *name )
         : QVBox( parent, name )
 {
-    KToolBar *toolbar = new KToolBar( this );
-    toolbar->setFlat( true );
-    toolbar->setMovingEnabled( false );
-    toolbar->setIconSize( 16 );
-
+    KToolBar *toolbar = new Browser::ToolBar( this );
     QObject *view = new SmartPlaylistView( this );
 
     toolbar->setIconText( KToolBar::IconTextRight, false ); //the "create smart-playlist" will have text on right
