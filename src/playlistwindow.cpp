@@ -257,7 +257,7 @@ PlaylistWindow::init()
     //BEGIN Tools menu
     KPopupMenu *toolsMenu = new KPopupMenu( m_menubar );
     toolsMenu->insertItem( i18n("&Player-window") );
-    toolsMenu->insertItem( i18n("&Cover Manager..."), amaroK::Menu::ID_SHOW_COVER_MANAGER );
+    toolsMenu->insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n("&Cover Manager..."), amaroK::Menu::ID_SHOW_COVER_MANAGER );
     toolsMenu->insertItem( i18n("&First-run Wizard..."), amaroK::Menu::ID_SHOW_WIZARD );
     toolsMenu->insertItem( i18n("&Visualizations..."), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
     connect( toolsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
@@ -286,11 +286,11 @@ PlaylistWindow::init()
     connect( m_settingsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
     //END Settings menu
 
-    m_menubar->insertItem( "&Play", fileMenu );
-    m_menubar->insertItem( "&Playlist", playlistMenu );
-    m_menubar->insertItem( "&Tools", toolsMenu );
-    m_menubar->insertItem( "&Settings", m_settingsMenu );
-    m_menubar->insertItem( "&Help",  amaroK::Menu::helpMenu() );
+    m_menubar->insertItem( i18n( "&Play" ), fileMenu );
+    m_menubar->insertItem( i18n( "&Playlist" ), playlistMenu );
+    m_menubar->insertItem( i18n( "&Tools" ), toolsMenu );
+    m_menubar->insertItem( i18n( "&Settings" ), m_settingsMenu );
+    m_menubar->insertItem( i18n( "&Help" ), amaroK::Menu::helpMenu() );
 
 
     QBoxLayout *layV = new QVBoxLayout( this );
