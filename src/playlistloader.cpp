@@ -32,7 +32,7 @@ PlaylistLoader::PlaylistLoader( const KURL::List &urls, QListView *parent, QList
 
 PlaylistLoader::~PlaylistLoader()
 {
-    s_stop = true;
+    s_stop = false;
 }
 
 void
