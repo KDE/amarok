@@ -107,6 +107,62 @@ void FHT::ewma(float *d, float *s, float w)
 
 
 /**
+  * Test routine to create wobbling sine or rectangle wave.
+  * @d: destination vector, @rect: rectangle if true, sine otherwise.
+  */
+static inline float sind(float d) { return sin(d *  M_PI / 180); }
+void FHT::pattern(float *p, bool rect = false)
+{
+	static float f = 1.0;
+	static float h = 0.1;
+	int i;
+	for (i = 0; i < 3 * m_num / 4; i++, p++) {
+		float o = 360.0 * i / m_num;
+		*p = sind(f * o);
+		if (rect)
+			*p = *p < 0 ? -1.0 : 1.0;
+	}
+	for (; i < m_num; i++)
+		*p++ = 0.0;
+	if (f > m_num / 2.0 || f < .05)
+		h = -h;
+	f += h;
+}
+
+
+/**
+  * Logarithmic Audio spectrum. @d is the input array, @a is the spcectrum.
+  * @d: raw input, @a: spectrum output
+  */
+void FHT::logSpectrum(float *a, float *d)
+{
+	int n = m_num / 2, i, j, k, l;
+	float f = n / log10(n), *p, e;
+	power2(d);
+	for (i = 0, p = d; i < n; i++, p++) {
+		e = 10.0 * log10(sqrt(*p * .5));
+		*p = e < 0.0 ? 0 : e;
+	}
+	for (i = k = l = 0; i < n; i++) {
+		j = i ? int(log10(i) * f) : 0;
+		for (l = k; k < j; k++)
+			*a++ = d[l] + (d[j] - d[l]) * (k - l) / (j - l);
+	}
+}
+
+
+/**
+  * Semi-logarithmic Audio spectrum.
+  */
+void FHT::semiLogSpectrum(float *p)
+{
+	power2(p);
+	for (int i = 0; i < (m_num / 2); i++, p++)
+		*p = 10.0 * log10(sqrt(*p * .5));
+}
+
+
+/**
   * Fourier spectrum.
   */
 void FHT::spectrum(float *p)

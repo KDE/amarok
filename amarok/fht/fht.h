@@ -39,6 +39,9 @@ public:
 	float		*clear(float *);
 	void		scale(float *, float);
 	void		ewma(float *, float *, float);
+	void		pattern(float *, bool);
+	void		logSpectrum(float *, float *);
+	void		semiLogSpectrum(float *);
 	void		spectrum(float *);
 	void		power(float *);
 	void		power2(float *);
