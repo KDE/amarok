@@ -40,4 +40,5 @@ QString QStringx::args( const QStringList& l )
 
 } // namespace amaroK
 
+
 #endif // AMAROK_QSTRINGX_H
