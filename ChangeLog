@@ -4,7 +4,9 @@ amaroK ChangeLog
 
 
 VERSION 1.2.1:
-  FIX: show covers for albums containing chars '#' or '?' (BR 96971 99780)
+  CHG: Toolbar items reordered for optimal usability, as suggested by
+       Aaron "Tom Green" Seigo.
+  FIX: Show covers for albums containing chars '#' or '?'. (BR 96971 99780)
   ADD: Help file for the playlist2html script.
   ADD: New DCOP call "playlist: playByIndex(int)".
   CHG: Upgraded internal SQLite database to 3.1.2.
