@@ -1937,12 +1937,17 @@ QueryBuilder::setOptions( int options )
     if ( options & optOnlyCompilations ) m_where += "AND tags.sampler = 1 ";
     if ( options & optRemoveDuplicates ) m_values = "DISTINCT " + m_values;
 
-    if ( options & optRandomize ) m_sort =
-    #ifdef USE_MYSQL
-                                       "RAND() ";
-    #else
-                                       "random() ";
-    #endif
+    if ( options & optRandomize )
+    {
+        if ( !m_sort.isEmpty() ) m_sort += ",";
+        m_sort +=
+
+#ifdef USE_MYSQL
+            "RAND() ";
+#else
+            "random() ";
+#endif
+    }
 }
 
 

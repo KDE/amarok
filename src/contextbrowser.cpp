@@ -860,7 +860,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         values = qb.run();
 
         // not enough items returned, let's fill the list with score-less tracks
-        if ( values.count() < 5 * qb.countReturnValues() )
+        if ( values.count() < 8 * qb.countReturnValues() )
         {
             qb.clear();
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
@@ -868,7 +868,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
             qb.addMatches( QueryBuilder::tabArtist, relArtists );
             qb.setOptions( QueryBuilder::optRandomize );
-            qb.setLimit( 0, 5 - values.count() / 4 );
+            qb.setLimit( 0, 8 - values.count() / 4 );
 
             QStringList sl;
             sl = qb.run();
