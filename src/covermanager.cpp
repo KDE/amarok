@@ -368,6 +368,9 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
                     m_loadAlbums += artist + " @@@ " + album; //used for thumbnail loading
                 else
                     missingCovers++;
+
+                // Update GUI regularly
+                if ( !( i % 10 ) ) kapp->processEvents();
             }
         }
 
