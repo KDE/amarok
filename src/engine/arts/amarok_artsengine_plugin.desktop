@@ -10,6 +10,7 @@ Name[ru]=aRts
 Name[sl]=Pogon aRts
 Name[sv]=aRts-gränssnitt
 Name[ta]=aRts  பொறி
+Name[uz]=aRts тизими
 Name[xx]=xxaRts Enginexx
 X-KDE-Library=libamarok_artsengine_plugin
 Comment=Plugin for amaroK
@@ -25,6 +26,7 @@ Comment[ru]=Модуль amaroK
 Comment[sl]=Vstavek za amaroK
 Comment[sv]=Insticksprogram för amaroK
 Comment[ta]=amaroKகான சொருகி
+Comment[uz]=amaroK учун плагин
 Comment[xx]=xxPlugin for amaroKxx
 ServiceTypes=amaroK/Plugin
 

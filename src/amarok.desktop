@@ -19,6 +19,7 @@ GenericName[ru]=Мультимедиа проигрыватель
 GenericName[sl]=Predvajalnik zvoka
 GenericName[sv]=Ljudspelare
 GenericName[ta]=கேட்பொலி இயக்கி
+GenericName[uz]=Аудио плейер
 GenericName[xx]=xxAudio Playerxx
 Exec=amarok %U
 Comment=Uncle Rodney says, "10/10, amaroK is seriously super!"

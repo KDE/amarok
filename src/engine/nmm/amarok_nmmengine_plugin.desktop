@@ -9,6 +9,7 @@ Name[ru]=NMM
 Name[sl]=Pogon NMM
 Name[sv]=NMM-gränssnitt
 Name[ta]=NMM பொறி
+Name[uz]=NMM тизими
 Name[xx]=xxNMM Enginexx
 X-KDE-Library=libamarok_nmmengine_plugin
 Comment=amaroK plugin
@@ -23,6 +24,7 @@ Comment[ru]=модуль amaroK
 Comment[sl]=Vstavek za amaroK
 Comment[sv]=Insticksprogram för amaroK
 Comment[ta]=amaroK  சொருகி
+Comment[uz]=amaroK плагини
 Comment[xx]=xxamaroK pluginxx
 ServiceTypes=amaroK/Plugin
 
