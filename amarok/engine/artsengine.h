@@ -25,14 +25,14 @@ email                : markey@web.de
 #include <qobject.h>
 #include <arts/soundserver.h>
 
-namespace KDE
-{
-    class PlayObject;
-};
+class QStringList;
+class QTimerEvent;
 
 class KArtsDispatcher;
-class QStringList;
 class KURL;
+
+namespace KDE { class PlayObject; };
+
 
 class ArtsEngine : public EngineBase
 {
@@ -50,7 +50,8 @@ class ArtsEngine : public EngineBase
         bool                                     isStream() const;
 
         std::vector<float>*                      scope();
-
+        void                                     startXFade();
+        
         QStringList                              availableEffects() const;        
         bool                                     effectConfigurable( const QString& name ) const;        
         
@@ -64,32 +65,40 @@ class ArtsEngine : public EngineBase
         void                                     seek( long ms );
         void                                     setVolume( int percent );
 
-    private slots:
-        void                                     connectPlayObject();
-        void                                     proxyError();
-        void                                     receiveStreamMeta( QString title, QString url, QString kbps );
-        
     private:
         void                                     enableScope();
         void                                     disableScope();
+        void                                     stopCurrent();
+        void                                     stopXFade();
+        void                                     timerEvent( QTimerEvent* );
+    
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
         /////////////////////////////////////////////////////////////////////////////////////
         KArtsDispatcher*                         m_pArtsDispatcher;
         KDE::PlayObject*                         m_pPlayObject;
+        KDE::PlayObject*                         m_pPlayObjectXFade;
         Arts::SoundServerV2                      m_server;
-        Amarok::RawScope                         m_scope;
-//         Arts::StereoFFTScope                     m_scope;
         Arts::StereoEffectStack                  m_globalEffectStack;
         Arts::StereoEffectStack                  m_effectStack;
         Arts::StereoVolumeControl                m_volumeControl;
         Arts::Synth_AMAN_PLAY                    m_amanPlay;
-//         Amarok::Synth_STEREO_XFADE               m_XFade;
-        
-       long                                      m_scopeId;
-       int                                       m_scopeSize;
-       long                                      m_volumeId;
-       bool                                      m_proxyError;
+        Amarok::RawScope                         m_scope;
+        Amarok::Synth_STEREO_XFADE               m_XFade;
+               
+        long                                     m_scopeId;
+        int                                      m_scopeSize;
+        long                                     m_volumeId;
+        bool                                     m_proxyError;
+
+        bool                                     m_XFadeRunning;
+        float                                    m_XFadeValue;
+        QString                                  m_XFadeCurrent;
+            
+    private slots:
+        void                                     connectPlayObject();
+        void                                     proxyError();
+        void                                     receiveStreamMeta( QString title, QString url, QString kbps );
 };
 
 #endif

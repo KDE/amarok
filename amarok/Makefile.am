@@ -1,18 +1,33 @@
-SUBDIRS = images amarokarts analyzers titleproxy data engine
+SUBDIRS = $(AUTODIRS)
 
-INCLUDES = -I$(kde_includes)/arts $(taglib_includes) -I$(top_builddir)/amarok/amarok/ui $(all_includes)
+INCLUDES = \
+	-I$(kde_includes)/arts \
+	$(taglib_includes) \
+	$(all_includes)
 
 bin_PROGRAMS = amarok
 
-amarok_SOURCES = main.cpp browserwin.cpp streambrowser.cpp playlistwidget.cpp playlistitem.cpp playlistloader.cpp expandbutton.cpp effectwidget.cpp amarokdcopiface.skel amarokdcophandler.cpp amarokbutton.cpp amarokfilelist.cpp amarokconfig.kcfgc ui/Options1.ui ui/Options2.ui ui/Options3.ui ui/Options4.ui ui/Options5.ui amarokslider.cpp amaroksystray.cpp osd.cpp filebrowser.cpp kactionselector.cpp  kbookmarkhandler.cpp fht.cpp playerapp.cpp playerwidget.cpp
+amarok_SOURCES = \
+	main.cpp browserwin.cpp streambrowser.cpp playlistwidget.cpp \
+	playlistitem.cpp playlistloader.cpp expandbutton.cpp effectwidget.cpp \
+	amarokdcopiface.skel amarokdcophandler.cpp amarokbutton.cpp amarokfilelist.cpp \
+	amarokconfig.kcfgc Options1.ui Options2.ui Options3.ui Options4.ui Options5.ui \
+	amarokslider.cpp amaroksystray.cpp osd.cpp filebrowser.cpp kactionselector.cpp \
+	kbookmarkhandler.cpp fht.cpp playerapp.cpp playerwidget.cpp
 
-amarok_LDADD = ./engine/libengine.a ./titleproxy/libtitleproxy.a ./analyzers/libanalyzers.a ./amarokarts/libamarokarts.la -lqtmcop -lkmedia2_idl -lartsflow -lsoundserver_idl -lartskde -lartsgui -lartsgui_kde -lartsmodules -lGL $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(taglib_libs) $(LIB_GST)
+amarok_LDADD = \
+	$(top_builddir)/amarok/amarok/engine/libengine.a \
+	$(top_builddir)/amarok/amarok/titleproxy/libtitleproxy.a \
+	$(top_builddir)/amarok/amarok/analyzers/libanalyzers.a \
+	$(top_builddir)/amarok/amarok/amarokarts/libamarokarts.la \
+	-lqtmcop -lkmedia2_idl -lartsflow -lsoundserver_idl -lartskde \
+	-lartsgui -lartsgui_kde -lartsmodules -lGL $(LIB_KUTILS) $(LIB_KFILE) \
+	$(LIB_KDEUI) $(LIB_KDECORE) $(taglib_libs) $(LIB_GST)
 
 # $(LIBSOCKET)
 amarok_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
 METASOURCES = AUTO
-
 KDE_ICON = AUTO
 
 rcdir = $(kde_datadir)/amarok

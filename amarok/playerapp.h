@@ -141,10 +141,6 @@ class PlayerApp : public KUniqueApplication
         FHT *m_pFht;
         OSDWidget *m_pOSD;
                 
-        bool m_XFadeRunning;
-        float m_XFadeValue;
-        QString m_XFadeCurrent;
-    
 //         int m_beatCounter;
 //         float m_lastPeak;
 //         float m_beatEnergy[63];

@@ -55,6 +55,12 @@ void EngineBase::setVolumeHW( int percent )
 }
 
 
+void EngineBase::setXFadeLength( int ms )
+{
+    m_xFadeLength = ms;
+}
+
+
 //////////////////////////////////////////////////////////////////////
 
 EngineBase* EngineBase::createEngine( QString system, bool& restart, int scopeSize )

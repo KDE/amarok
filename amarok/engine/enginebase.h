@@ -67,6 +67,9 @@ class EngineBase : public QObject
         virtual void                 seek( long ms )                                   = 0;
         //@param percent set volume in range 0 to 99
         virtual void                 setVolume( int percent )                          = 0;
+                void                 setXFadeLength( int ms );
+        virtual void                 startXFade()                                      = 0;
+                
         QStringList                  listEngines();
         //
         //@param system name of multimedia framework
@@ -82,6 +85,7 @@ class EngineBase : public QObject
         /////////////////////////////////////////////////////////////////////////////////////
         int                          m_mixerHW;
         int                          m_volume;
+        int                          m_xFadeLength;
 };
 
 #endif

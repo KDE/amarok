@@ -84,10 +84,11 @@ PlayerApp::PlayerApp()
     initPlayerWidget();
     initBrowserWin();
 
-    readConfig();
-
+    //we must restart artsd after each version change, so that it picks up any plugin changes
+    m_artsNeedsRestart = AmarokConfig::version() != APP_VERSION;
     m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(), m_artsNeedsRestart, SCOPE_SIZE );
-    m_pEngine ->initMixer( AmarokConfig::softwareMixerOnly() );
+    
+    readConfig();
 
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
     connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
@@ -308,13 +309,14 @@ void PlayerApp::saveConfig()
 }
 
 
+//FIXME split this up, make separate methods or each config page
 void PlayerApp::readConfig()
 {
     kdDebug() << "begin PlayerApp::readConfig()" << endl;
 
-    //we restart artsd after each version change, so that it picks up any plugin changes
-    m_artsNeedsRestart = AmarokConfig::version() != APP_VERSION;
-
+    m_pEngine->initMixer     ( AmarokConfig::softwareMixerOnly() );
+    m_pEngine->setXFadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
+    
     /*    m_pBrowserWin->m_pBrowserWidget->readDir( AmarokConfig::currentDirectory() );
         m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( AmarokConfig::pathHistory() );*/
 
@@ -337,7 +339,7 @@ void PlayerApp::readConfig()
     QValueList<int> splitterList;
     
     //FIXME this is no longer particular relevant, instead record playlistSideBar's savedSize
-    //      implement a setConfig() function
+    //      implement a setConfig() function  <markey> so can we remove it?
     splitterList = AmarokConfig::browserWinSplitter();
     if ( splitterList.count() != 2 )
     {
@@ -351,6 +353,7 @@ void PlayerApp::readConfig()
 
     // Actions ==========
 
+    //FIXME does calling this stuff multiple times cause a mem leak?
     m_pGlobalAccel->insert( "add", i18n( "Add Location" ), 0, CTRL + ALT + Key_A, 0,
                             this, SLOT( slotAddLocation() ), true, true );
     m_pGlobalAccel->insert( "show", i18n( "Show/Hide the Playlist" ), 0, CTRL + ALT + Key_H, 0,
@@ -656,6 +659,15 @@ void PlayerApp::slotMainTimer()
     }
     // </Draw TimeDisplay>
 
+    // <Crossfading>
+    if ( ( AmarokConfig::crossfade() ) &&
+         ( !m_pEngine->isStream() ) &&
+         ( m_length - m_pEngine->position() < AmarokConfig::crossfadeLength() )  )
+    {
+        m_pEngine->startXFade();
+        return;
+    }
+            
     // check if track has ended
     if ( m_pEngine->state() == EngineBase::Idle )
     {
@@ -703,56 +715,9 @@ void PlayerApp::slotVisTimer()
         pScopeVector->resize( pScopeVector->size() / 2 );
 
         m_pPlayerWidget->m_pVis->drawAnalyzer( pScopeVector );
-
-        /*
-                    // Muesli's Beat Detection - A Night's Oddysee
-                    // shift old elements
-                    for ( uint x = 0; x < 18; ++x )
-                        for ( uint y = 42; y > 0; --y ) m_beatEnergy[x][y] = m_beatEnergy[x][y - 1];
-         
-                    // get current energy values
-                    for ( uint x = 0; x < pScopeVector->size(); ++x ) m_beatEnergy[x][0] = pScopeVector->at(x);
-         
-                    // compare to old elements and get averages
-                    double beatAvg[18];
-        //            double beatVariance[18];
-        //            double beatMood[18];
-                    
-                    for ( uint x = 0; x < 18; ++x )
-                    {
-                        beatAvg[x] = 0;
-                        for ( uint y = 1; y < 44; ++y )  beatAvg[x] += m_beatEnergy[x][y];
-                        
-                        beatAvg[x] = beatAvg[x] / 43;
-                    }
-        */
-        /*            for ( uint x = 0; x < 18; ++x )
-                    {
-                        beatVariance[x] = 0;
-                        for ( uint y = 0; y < 42; ++y )  beatVariance[x] += (pow((m_beatEnergy[x][y] - beatAvg[x]), 2) / 43);
-                    }
-                        
-                    for ( uint x = 0; x < 18; ++x )
-                        beatMood[x] = (-0.0025714 * beatVariance[x]) + 1.5142857;
-        */
-
-        // do we have a beat? let's dance!
-        /*            int total_hits = 0;
-                    for ( uint x = 0; x < 18; ++x )
-                    {
-                        double factor = cos( x * 4 ) * 18;
-                        factor = beatAvg[x] * factor;
-                        
-                        if ( m_beatEnergy[x][0] > factor )
-                        {
-                            total_hits++;
-                            kdDebug() << "*CLAP* factor: " << factor << " - x: " << x << " - average energy: " << beatAvg[x] << " - current peak: " << m_beatEnergy[x][0] << endl;
-                        }
-                    }
-         
-                    if ( total_hits > 3 ) kdDebug() << "***CLAPCLAPCLAP***" << endl;
-        */
+        
         delete pScopeVector;
+        //FIXME <markey> beat detection code temporarily moved to VIS_PLAN, since it was disabled anyway
     }
     else
     {

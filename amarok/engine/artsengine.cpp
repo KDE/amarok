@@ -16,7 +16,7 @@ email                : markey@web.de
  ***************************************************************************/
 
 #include "../amarokarts/amarokarts.h"
-#include "artsengine.h" 
+#include "artsengine.h"
 #include "enginebase.h"
 #include "../titleproxy/titleproxy.h"
 
@@ -46,20 +46,26 @@ email                : markey@web.de
 #include <arts/kmedia2.h>
 #include <arts/kplayobjectfactory.h>
 #include <arts/soundserver.h>
- 
+
+#define ARTS_TIMER 100
+
 ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
         : EngineBase()
         , m_pPlayObject( NULL )
+        , m_pPlayObjectXFade( NULL )
         , m_scopeId( 0 )
         , m_scopeSize( 1 << scopeSize )
         , m_volumeId( 0 )
         , m_proxyError( false )
+        , m_XFadeRunning( false )
+        , m_XFadeValue( 1.0 )
+        , m_XFadeCurrent( "invalue1" )
 {
     setName( "ArtsEngine" );
-    
+
     // We must restart artsd whenever we installed new mcopclasses
-    if ( restart )        
-    {        
+    if ( restart )
+    {
         QCString kill_cmdline;
         kill_cmdline = "killall artsd";
 
@@ -70,7 +76,7 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
             restart = false;
         }
     }
-    
+
     m_pArtsDispatcher = new KArtsDispatcher();
 
     m_server = Arts::Reference( "global:Arts_SoundServerV2" );
@@ -139,49 +145,59 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
         ::exit( 1 );
     }
 
-    m_amanPlay = Arts::DynamicCast( m_server.createObject( "Arts::Synth_AMAN_PLAY" ) );
-    m_amanPlay.title( "amarok" );
-    m_amanPlay.autoRestoreID( "amarok" );
-    m_amanPlay.start();
-/*
-    m_XFade = Arts::DynamicCast( m_server.createObject( "Amarok::Synth_STEREO_XFADE" ) );
-
-    if ( m_XFade.isNull() )
-    {
-        KMessageBox::error( 0,
-                            i18n( "Cannot find libamarokarts! Probably amaroK was installed with the \
-                                   wrong prefix. Please install again using: ./configure \
-                                   --prefix=`kde-config --prefix`" ),
-                            i18n( "Fatal Error" ) );
-        ::exit( 1 );
+    { //amanPlay
+        m_amanPlay = Arts::DynamicCast( m_server.createObject( "Arts::Synth_AMAN_PLAY" ) );
+        m_amanPlay.title( "amarok" );
+        m_amanPlay.autoRestoreID( "amarok" );
+        m_amanPlay.start();
+    }
+        
+    { //XFade
+        m_XFade = Arts::DynamicCast( m_server.createObject( "Amarok::Synth_STEREO_XFADE" ) );
+    
+        if ( m_XFade.isNull() ) {
+            KMessageBox::error( 0,
+                                i18n( "Cannot find libamarokarts! Probably amaroK was installed with the \
+                                    wrong prefix. Please install again using: ./configure \
+                                    --prefix=`kde-config --prefix`" ),
+                                i18n( "Fatal Error" ) );
+            ::exit( 1 );
+        }
+        
+        m_XFade.percentage( m_XFadeValue );
+        m_XFade.start();
+    }
+    
+    { //globalEffectStack
+        m_globalEffectStack = Arts::DynamicCast( m_server.createObject( "Arts::StereoEffectStack" ) );
+        m_globalEffectStack.start();
+    }
+            
+    { //effectStack
+        m_effectStack = Arts::DynamicCast( m_server.createObject( "Arts::StereoEffectStack" ) );
+        m_effectStack.start();
+        m_globalEffectStack.insertBottom( m_effectStack, "Effect Stack" );
+    }
+        
+    { //scope
+        m_scope = Arts::DynamicCast( m_server.createObject( "Amarok::RawScope" ) );
+        enableScope();
     }
 
-    m_XFade.percentage( m_XFadeValue );
-    m_XFade.start();
-*/
-    m_globalEffectStack = Arts::DynamicCast( m_server.createObject( "Arts::StereoEffectStack" ) );
-    m_globalEffectStack.start();
-
-    m_effectStack = Arts::DynamicCast( m_server.createObject( "Arts::StereoEffectStack" ) );
-    m_effectStack.start();
-    m_globalEffectStack.insertBottom( m_effectStack, "Effect Stack" );
-
-    m_scope = Arts::DynamicCast( m_server.createObject( "Amarok::RawScope" ) );
-/*    m_scope = Arts::DynamicCast( m_server.createObject( "Arts::StereoFFTScope" ) );*/
-    enableScope();
-    
-//     Arts::connect( m_XFade, "outvalue_l", m_globalEffectStack, "inleft" );
-//     Arts::connect( m_XFade, "outvalue_r", m_globalEffectStack, "inright" );
-
-    Arts::connect( m_globalEffectStack, m_amanPlay );
+    Arts::connect( m_globalEffectStack  , m_amanPlay );
+    Arts::connect( m_XFade, "outvalue_l", m_globalEffectStack, "inleft" );
+    Arts::connect( m_XFade, "outvalue_r", m_globalEffectStack, "inright" );
+            
+    startTimer( ARTS_TIMER );
 }
 
 
 ArtsEngine::~ ArtsEngine()
 {
+    stop();
+    
     m_scope             = Amarok::RawScope::null();
-//     m_XFade             = Amarok::Synth_STEREO_XFADE::null();
-/*    m_scope             = Arts::StereoFFTScope::null();*/
+    m_XFade             = Amarok::Synth_STEREO_XFADE::null();
     m_volumeControl     = Arts::StereoVolumeControl::null();
     m_effectStack       = Arts::StereoEffectStack::null();
     m_globalEffectStack = Arts::StereoEffectStack::null();
@@ -199,7 +215,7 @@ bool ArtsEngine::initMixer( bool software )
         m_volumeId = 0;
         m_volumeControl = Arts::StereoVolumeControl::null();
     }
-        
+
     if ( software )
     {
         m_volumeControl = Arts::DynamicCast( m_server.createObject( "Arts::StereoVolumeControl" ) );
@@ -222,17 +238,17 @@ bool ArtsEngine::canDecode( const KURL &url )
     //      it's extension is not common, it can't be read. Not perfect
 
     KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, url, false ); //false = determineMimeType straight away
-//     KFileItem fileItem( mode, permissions, url, false ); //false = determineMimeType straight away
+    //     KFileItem fileItem( mode, permissions, url, false ); //false = determineMimeType straight away
     KMimeType::Ptr mimetype = fileItem.determineMimeType();
-    
+
     Arts::TraderQuery query;
     query.supports( "Interface", "Arts::PlayObject" );
     query.supports( "MimeType", mimetype->name().latin1() );
     std::vector<Arts::TraderOffer> *offers = query.query();
-    
+
     bool result = !offers->empty();
     delete offers;
-    
+
     return result;
 }
 
@@ -249,9 +265,9 @@ long ArtsEngine::position() const
 EngineBase::EngineState ArtsEngine::state() const
 {
     if ( m_pPlayObject )
-    {        
+    {
         switch ( m_pPlayObject->state() )
-        {        
+        {
             case Arts::posPaused:
                 return Paused;
             case Arts::posPlaying:
@@ -260,8 +276,8 @@ EngineBase::EngineState ArtsEngine::state() const
                 return Idle;
         }
     }
-    
-    return EngineBase::Empty;        
+
+    return EngineBase::Empty;
 }
 
 
@@ -295,7 +311,7 @@ QStringList ArtsEngine::availableEffects() const
         val.append( name );
     }
     delete offers;
-    
+
     return val;
 }
 
@@ -318,11 +334,14 @@ bool ArtsEngine::effectConfigurable( const QString& name ) const
 
 void ArtsEngine::open( KURL url )
 {
-    if ( m_pPlayObject )
-        stop();
+    if ( m_xFadeLength )
+        startXFade();
+
+    else if ( m_pPlayObject )
+        stopCurrent();
 
     KDE::PlayObjectFactory factory( m_server );
-    
+
     if ( /* m_optTitleStream && */ !m_proxyError && !url.isLocalFile()  )
     {
         TitleProxy *pProxy = new TitleProxy( url );
@@ -332,10 +351,10 @@ void ArtsEngine::open( KURL url )
                  this,   SLOT  ( receiveStreamMeta( QString, QString, QString ) ) );
         connect( pProxy, SIGNAL( error() ), this, SLOT( proxyError() ) );
         connect( m_pPlayObject, SIGNAL( destroyed() ), pProxy, SLOT( deleteLater() ) );
-    }        
-    else        
+    }
+    else
         m_pPlayObject = factory.createPlayObject( url, false ); //second parameter: create BUS(true/false)
-        
+
     m_proxyError = false;
 
     if ( !m_pPlayObject  )
@@ -366,8 +385,21 @@ void ArtsEngine::connectPlayObject()
     {
         m_pPlayObject->object()._node()->start();
 
-        Arts::connect( m_pPlayObject->object(), "left", m_globalEffectStack, "inleft" );
-        Arts::connect( m_pPlayObject->object(), "right", m_globalEffectStack, "inright" );
+        if ( m_XFadeCurrent == "invalue1" )
+            m_XFadeCurrent = "invalue2";
+        else
+            m_XFadeCurrent = "invalue1";
+
+        if ( !m_XFadeRunning )
+        {
+            if ( m_XFadeCurrent == "invalue2" )
+                m_XFade.percentage( m_XFadeValue = 0.0 );
+            else
+                m_XFade.percentage( m_XFadeValue = 1.0 );
+        }
+        
+        Arts::connect( m_pPlayObject->object(), "left", m_XFade, ( m_XFadeCurrent + "_l" ).latin1() );
+        Arts::connect( m_pPlayObject->object(), "right", m_XFade, ( m_XFadeCurrent + "_r" ).latin1() );
     }
 }
 
@@ -377,23 +409,14 @@ void ArtsEngine::play()
     if ( m_pPlayObject )
     {
         m_pPlayObject->play();
-        
-//         enableScope();
     }
 }
 
 
 void ArtsEngine::stop()
 {
-    if ( m_pPlayObject )
-    {
-        m_pPlayObject->halt();
-    
-        delete m_pPlayObject;
-        m_pPlayObject = NULL;
-    
-//         disableScope();
-    }
+   stopXFade();
+   stopCurrent();
 }
 
 
@@ -402,7 +425,7 @@ void ArtsEngine::pause()
     if ( m_pPlayObject )
     {
         m_pPlayObject->pause();
-    }    
+    }
 }
 
 
@@ -415,7 +438,7 @@ void ArtsEngine::seek( long ms )
         time.seconds = ms / 1000;
         time.custom = 0;
         time.customUnit = std::string();
-        
+
         m_pPlayObject->seek( time );
     }
 }
@@ -429,6 +452,19 @@ void ArtsEngine::setVolume( int percent )
         EngineBase::setVolumeHW( percent );
 }
 
+
+void ArtsEngine::startXFade()
+{
+    kdDebug() << "void ArtsEngine::startXFade()" << endl;
+
+    if ( m_XFadeRunning )
+        stopXFade();
+
+    m_XFadeRunning = true;
+
+    m_pPlayObjectXFade = m_pPlayObject;
+    m_pPlayObject = NULL;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE METHODS
@@ -466,6 +502,66 @@ void ArtsEngine::proxyError()
 void ArtsEngine::receiveStreamMeta( QString title, QString url, QString kbps )
 {
     emit metaData( title, url, kbps );
+}
+
+
+void ArtsEngine::stopCurrent()   
+{   
+   if ( m_pPlayObject )
+    {
+        m_pPlayObject->halt();
+
+        delete m_pPlayObject;
+        m_pPlayObject = NULL;
+    }
+}
+    
+
+void ArtsEngine::stopXFade()
+{
+    kdDebug() << "void PlayerApp::stopXFade()" << endl;
+
+    m_XFadeRunning = false;
+
+    if ( m_XFadeCurrent == "invalue2" )
+        m_XFadeValue = 0.0;
+    else
+        m_XFadeValue = 1.0;
+
+    m_XFade.percentage( m_XFadeValue );
+
+    if ( m_pPlayObjectXFade != NULL )
+    {
+        m_pPlayObjectXFade->halt();
+
+        delete m_pPlayObjectXFade;
+        m_pPlayObjectXFade = NULL;
+    }
+}
+
+
+void ArtsEngine::timerEvent( QTimerEvent* )
+{
+    if ( m_XFadeRunning )
+    {
+        float xfadeStep = 1.0 / m_xFadeLength * ARTS_TIMER;
+
+        if ( m_XFadeCurrent == "invalue2" )
+            m_XFadeValue -= xfadeStep;
+        else
+            m_XFadeValue += xfadeStep;
+
+        if ( m_XFadeValue < 0.0 )
+            m_XFadeValue = 0.0;
+        else if ( m_XFadeValue > 1.0 )
+            m_XFadeValue = 1.0;
+
+        kdDebug() << "[timerEvent] m_XFadeValue: " << m_XFadeValue << endl;
+        m_XFade.percentage( m_XFadeValue );
+
+        if( m_XFadeValue == 0.0 || m_XFadeValue == 1.0 )
+            stopXFade();
+    }
 }
 
 

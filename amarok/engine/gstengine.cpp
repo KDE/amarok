@@ -242,6 +242,10 @@ std::vector<float>* GstEngine::scope()
 }
 
 
+void GstEngine::startXFade()
+{}
+
+
 QStringList GstEngine::availableEffects() const
 {
     return QStringList();
