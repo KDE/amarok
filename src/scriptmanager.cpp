@@ -233,31 +233,10 @@ ScriptManager::slotEditScript()
 {
     DEBUG_BLOCK
 
-    KTextEdit* editor = new KTextEdit();
-    kapp->setTopWidget( editor );
-    editor->setCaption( kapp->makeStdCaption( i18n( "Edit Script" ) ) );
-
-    QFont font( "fixed" );
-    font.setFixedPitch( true );
-    font.setStyleHint( QFont::TypeWriter );
-    editor->setFont( font );
-
     QString name = m_base->directoryListView->currentItem()->text( 0 );
-    QFile file( m_scripts[name].url.path() );
+    const QString cmd = "kwrite %1";
 
-    if ( QFileInfo( file ).isWritable() )
-        file.open( IO_ReadWrite );
-    else {
-        KMessageBox::information( 0, i18n( "File is not writable, opening in read-only mode." ) );
-        file.open( IO_ReadOnly );
-        editor->setReadOnly( true );
-    }
-
-    QTextStream stream( &file );
-    editor->setText( stream.read() );
-    editor->setTextFormat( QTextEdit::PlainText );
-    editor->resize( 640, 480 );
-    editor->show();
+    KRun::runCommand( cmd.arg( m_scripts[name].url.path() ) );
 }
 
 
