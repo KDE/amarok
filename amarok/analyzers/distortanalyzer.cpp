@@ -33,10 +33,10 @@
 #define NUM_PIXMAPS 32
 
 
-DistortAnalyzer::DistortAnalyzer( QWidget *parent, const char *name ) :
-   AnalyzerBase( 30, parent, name ),
-   m_pComposePixmap( 0 ),
-   m_pComposePixmap1( 0 )
+DistortAnalyzer::DistortAnalyzer( QWidget *parent, const char *name )
+        : AnalyzerBase( 30, parent, name )
+        , m_pComposePixmap( 0 )
+        , m_pComposePixmap1( 0 )
 {}
 
 
@@ -96,13 +96,15 @@ void DistortAnalyzer::drawAnalyzer( std::vector<float> *s )
         
         for ( int x = 0; x < width(); x++ )
         {
-            sinIndex = static_cast<int>( ((*it)+(*it1)) * SINVEC_SIZE ) % SINVEC_SIZE;
-            pixIndex = static_cast<int>( ( m_sinVector[sinIndex] + 1.0 ) / 2  * (NUM_PIXMAPS-1) );
-            pixIndex %= NUM_PIXMAPS;    // for safety
+            sinIndex = static_cast<int>( ((*it)+(*it1)) * SINVEC_SIZE );
+            pixIndex = static_cast<int>( ( m_sinVector[ checkIndex( sinIndex, m_sinVector.size() ) ] + 1.0 )
+                                         / 2  * (NUM_PIXMAPS-1) );
             
-            sinIndex = static_cast<int>( (*it) * SINVEC_SIZE ) % SINVEC_SIZE;
+            sinIndex = static_cast<int>( (*it) * SINVEC_SIZE );
             bitBlt( m_pComposePixmap1, x, 0,
-                    m_srcPixmaps[ pixIndex ], x, (int)( m_sinVector[sinIndex] * 20 ) - 20 , 1, height() );
+                    m_srcPixmaps[ checkIndex( pixIndex, m_srcPixmaps.size() ) ],
+                    x, static_cast<int>( m_sinVector[ checkIndex( sinIndex, m_sinVector.size() ) ] * 20 - 20 ),
+                    1, height() );
 
             ++it;
            --it1;
@@ -118,10 +120,11 @@ void DistortAnalyzer::drawAnalyzer( std::vector<float> *s )
 
         for ( uint y = 0; y < height(); ++y )
         {
-            sinIndex = static_cast<int>( (*it) * SINVEC_SIZE ) % SINVEC_SIZE;
+            sinIndex = static_cast<int>( (*it) * SINVEC_SIZE );
             
             bitBlt( m_pComposePixmap, 0, y, m_pComposePixmap1,
-                    static_cast<int>( m_sinVector[sinIndex] * 14 - 15 ),  y, width(), 1, Qt::CopyROP );
+                    static_cast<int>( m_sinVector[ checkIndex( sinIndex, m_sinVector.size() ) ] * 14 - 15 ),  y,
+                    width(), 1 );
 
            ++it;
         }
@@ -135,6 +138,17 @@ void DistortAnalyzer::drawAnalyzer( std::vector<float> *s )
 void DistortAnalyzer::paintEvent( QPaintEvent * )
 {
     drawAnalyzer( &m_backupVector );
+}
+
+
+int DistortAnalyzer::checkIndex( int index, int size )
+{
+    if ( index < 0 )
+        return 0;
+    if ( index > size - 1 )
+        return size - 1;
+    
+    return index;
 }
 
 

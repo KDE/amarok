@@ -36,7 +36,8 @@ class DistortAnalyzer : public AnalyzerBase
     private:
         virtual void init();
         virtual void drawAnalyzer( std::vector<float> * );
-
+        inline int checkIndex( int, int );
+        
     // ATTRIBUTES:
         QPixmap *m_pComposePixmap;
         QPixmap *m_pComposePixmap1;
