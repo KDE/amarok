@@ -21,15 +21,16 @@ amaroK::StatusBar* amaroK::StatusBar::m_self;
 amaroK::StatusBar::StatusBar( QWidget *parent, const char *name ) : KStatusBar( parent, name )
 {
     m_self = this;
-    
     EngineController::instance()->attach( this );
     // message
     insertItem( QString::null, ID_STATUS, 10 );
 
+    // progress
     m_progress = new KProgress( this );
-    addWidget( m_progress, 0, true );
+    m_progress->setMaximumHeight( fontMetrics().height() );
     m_progress->hide();
-    
+    addWidget( m_progress, 0, true );
+
     // random
     ToggleLabel *rand = new ToggleLabel( i18n( "RAND" ), this );
     addWidget( rand, 0, true );
@@ -67,14 +68,14 @@ void amaroK::StatusBar::engineStateChanged( EngineBase::EngineState state )
 {
     switch( state )
     {
-        case EngineBase::Idle:
-        case EngineBase::Empty:
-            engineTrackPositionChanged( 0 );
-            changeItem( QString::null, ID_STATUS );
-            break;
-        case EngineBase::Playing: // gcc silence
-        case EngineBase::Paused:
-            break;
+	case EngineBase::Idle:
+	case EngineBase::Empty:
+	    engineTrackPositionChanged( 0 );
+	    changeItem( QString::null, ID_STATUS );
+	    break;
+	case EngineBase::Playing: // gcc silence
+	case EngineBase::Paused:
+	    break;
     }
 }
 
@@ -114,26 +115,26 @@ void amaroK::StatusBar::customEvent( QCustomEvent *e )
     if ( e->type() == (QEvent::Type) CollectionReader::ProgressEventType ) {
 //         kdDebug() << k_funcinfo << "Received ProgressEvent\n";
 
-        CollectionReader::ProgressEvent* p =
-            static_cast<CollectionReader::ProgressEvent*>( e );        
-        
-        switch ( p->state() ) {
-            case CollectionReader::ProgressEvent::Start:
-                m_progress->setProgress( 0 );
-                m_progress->show();
-                break;
-            case CollectionReader::ProgressEvent::Stop:
-                m_progress->hide();
-                break;
-            case CollectionReader::ProgressEvent::Total:
-                m_progress->setTotalSteps( p->value() );
-                break;
-            case CollectionReader::ProgressEvent::Progress:
-                m_progress->setProgress( p->value() );
-        }
+	CollectionReader::ProgressEvent* p =
+	    static_cast<CollectionReader::ProgressEvent*>( e );
+
+	switch ( p->state() ) {
+	    case CollectionReader::ProgressEvent::Start:
+		m_progress->setProgress( 0 );
+		m_progress->show();
+		break;
+	    case CollectionReader::ProgressEvent::Stop:
+		m_progress->hide();
+		break;
+	    case CollectionReader::ProgressEvent::Total:
+		m_progress->setTotalSteps( p->value() );
+		break;
+	    case CollectionReader::ProgressEvent::Progress:
+		m_progress->setProgress( p->value() );
+	}
     }
 }
-    
+
 
 /********** ToggleLabel ****************/
 
@@ -160,8 +161,8 @@ void amaroK::ToggleLabel::mouseDoubleClickEvent ( QMouseEvent */*e*/ )
     m_State = !m_State;
     if( m_ColorToggle )
     {
-        QColorGroup group = palette().active();
-        setPaletteForegroundColor( m_State ? group.text() : group.mid() );
+	QColorGroup group = palette().active();
+	setPaletteForegroundColor( m_State ? group.text() : group.mid() );
     }
     emit toggled( m_State );
 }
@@ -170,8 +171,8 @@ void amaroK::ToggleLabel::setOn( bool on )
 {
     if( m_ColorToggle )
     {
-        QColorGroup group = palette().active();
-        setPaletteForegroundColor( on ? group.text() : group.mid() );
+	QColorGroup group = palette().active();
+	setPaletteForegroundColor( on ? group.text() : group.mid() );
     }
 
     m_State = on;
