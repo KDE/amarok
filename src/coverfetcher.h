@@ -25,6 +25,7 @@ class CoverFetcher : public QObject
         ~CoverFetcher();
 
         void setLicense( const QString& license ) { m_license = license; }
+        void getCover( const QString& keyword, QueryMode mode = lite, bool noedit = false, int size = 2, bool albumonly = false );
         void getCover( const QString& artist, const QString& album, QueryMode mode = lite, bool noedit = false, int size = 2, bool albumonly = false );
 
     signals:
