@@ -3,10 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #64 being the highest available (take this one for your next bug and increase here)
+           #65 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+    * fix: #64 <markey> when loading a playlist for the first time after startup, amaroK starts playing
+               the first track automagically
 
     * fix: #62 < buff> hmm: one question: I have QT installes without OpenGL, aRrts is available and configure is run with
                "--without-gstreamer": after compiling I have an amaroK _without_ aRts and _with_ gstreamer compiled in
@@ -19,7 +22,8 @@ SHORT-TERM (URGENT):
 
     * fix: #59 global shortcuts should be disabled by default, eg CTRL_ALT_C is a KDevelop shortcut, one user
            was shocked to find the music stopped whenever he tried to bring up the class window!
-
+           <markey> using the Win-key by default is bad in a unix app, IMHO (e.g. I don't have a Win-key)
+           
     * fix: #52 <markey> got those today, possibly from new PlayerWidget code (app was freezing):
                 QPainter::begin: Cannot paint null pixmap
                 QPainter::setPen: Will be reset by begin()
@@ -191,97 +195,3 @@ DISCUSSING:
 
 TROUBLE:
 
-BT 2004/02/09 (while trying to start a stream):
-
-[New Thread 1024 (LWP 24369)]
-[New Thread 2049 (LWP 24371)]
-0x421b2449 in wait4 () from /lib/libc.so.6
-#0  0x421b2449 in wait4 () from /lib/libc.so.6
-#1  0x4222efd0 in __DTOR_END__ () from /lib/libc.so.6
-#2  0x42070a73 in waitpid () from /lib/libpthread.so.0
-#3  0x41308a3d in KCrash::defaultCrashHandler(int) ()
-   from /opt/kde3/lib/libkdecore.so.4
-#4  0x4206e11b in pthread_sighandler () from /lib/libpthread.so.0
-#5  <signal handler called>
-#6  0x4016c339 in KDE::PlayObject::object() ()
-   from /opt/kde3/lib/libartskde.so.1
-#7  0x080c24dc in ArtsEngine::connectPlayObject() (this=0x821fdd0)
-    at /opt/kde3/include/arts/reference.h:179
-#8  0x080c84b9 in ArtsEngine::qt_invoke(int, QUObject*) (this=0x821fdd0,
-    _id=8, _o=0xbfffe340) at amarok/engine/artsengine.moc:118
-#9  0x416da310 in QObject::activate_signal(QConnectionList*, QUObject*) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#10 0x416da144 in QObject::activate_signal(int) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#11 0x401693fb in KDE::PlayObject::playObjectCreated() ()
-   from /opt/kde3/lib/libartskde.so.1
-#12 0x4016b3d3 in KDE::PlayObject::attachPlayObject(Arts::PlayObject) ()
-   from /opt/kde3/lib/libartskde.so.1
-#13 0x4016945d in KDE::PlayObject::qt_invoke(int, QUObject*) ()
-   from /opt/kde3/lib/libartskde.so.1
-#14 0x416da310 in QObject::activate_signal(QConnectionList*, QUObject*) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#15 0x40171722 in KDE::PlayObjectCreator::playObjectCreated(Arts::PlayObject)
-    () from /opt/kde3/lib/libartskde.so.1
-#16 0x40172967 in KDE::PlayObjectCreator::slotMimeType(QString const&) ()
-   from /opt/kde3/lib/libartskde.so.1
-#17 0x401717b2 in KDE::PlayObjectCreator::qt_invoke(int, QUObject*) ()
-   from /opt/kde3/lib/libartskde.so.1
-#18 0x416da310 in QObject::activate_signal(QConnectionList*, QUObject*) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#19 0x416da7d0 in QObject::activate_signal(int, QString) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#20 0x40177434 in Arts::KIOInputStream_impl::mimeTypeFound(QString const&) ()
-   from /opt/kde3/lib/libartskde.so.1
-#21 0x401784b4 in Arts::KIOInputStream_impl::slotResult(KIO::Job*) ()
-   from /opt/kde3/lib/libartskde.so.1
-#22 0x40177542 in Arts::KIOInputStream_impl::qt_invoke(int, QUObject*) ()
-   from /opt/kde3/lib/libartskde.so.1
-#23 0x416da310 in QObject::activate_signal(QConnectionList*, QUObject*) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#24 0x40d6b3c2 in KIO::Job::result(KIO::Job*) () from /opt/kde3/lib/libkio.so.4
-#25 0x40d56462 in KIO::Job::emitResult() () from /opt/kde3/lib/libkio.so.4
-#26 0x40d578ee in KIO::SimpleJob::slotFinished() ()
-   from /opt/kde3/lib/libkio.so.4
-#27 0x40d5a40e in KIO::TransferJob::slotFinished() ()
-   from /opt/kde3/lib/libkio.so.4
-#28 0x40d6cbcd in KIO::TransferJob::qt_invoke(int, QUObject*) ()
-   from /opt/kde3/lib/libkio.so.4
-#29 0x416da310 in QObject::activate_signal(QConnectionList*, QUObject*) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#30 0x416da144 in QObject::activate_signal(int) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#31 0x40d4ca8e in KIO::SlaveInterface::finished() ()
-   from /opt/kde3/lib/libkio.so.4
-#32 0x40d4b88d in KIO::SlaveInterface::dispatch(int, QMemArray<char> const&) ()
-   from /opt/kde3/lib/libkio.so.4
-#33 0x40d4af39 in KIO::SlaveInterface::dispatch() ()
-   from /opt/kde3/lib/libkio.so.4
-#34 0x40d48a6b in KIO::Slave::gotInput() () from /opt/kde3/lib/libkio.so.4
-#35 0x40d4a660 in KIO::Slave::qt_invoke(int, QUObject*) ()
-   from /opt/kde3/lib/libkio.so.4
-#36 0x416da310 in QObject::activate_signal(QConnectionList*, QUObject*) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#37 0x416da470 in QObject::activate_signal(int, int) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#38 0x41a057b2 in QSocketNotifier::activated(int) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#39 0x416f6810 in QSocketNotifier::event(QEvent*) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#40 0x4167fe25 in QApplication::internalNotify(QObject*, QEvent*) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#41 0x4167f215 in QApplication::notify(QObject*, QEvent*) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#42 0x4128a08c in KApplication::notify(QObject*, QEvent*) ()
-   from /opt/kde3/lib/libkdecore.so.4
-#43 0x4166d678 in QEventLoop::activateSocketNotifiers() ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#44 0x416293b2 in QEventLoop::processEvents(unsigned) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#45 0x41691c26 in QEventLoop::enterLoop() ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#46 0x41691ac8 in QEventLoop::exec() () from /usr/lib/qt3/lib/libqt-mt.so.3
-#47 0x41680071 in QApplication::exec() () from /usr/lib/qt3/lib/libqt-mt.so.3
-#48 0x080b1074 in main (argc=5, argv=0xbffff5f4)
-    at amarok/amarokcore/main.cpp:73
-#49 0x4212c4f2 in __libc_start_main () from /lib/libc.so.6
