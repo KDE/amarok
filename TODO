@@ -6,6 +6,9 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  <markey> Make the "Add Playlist" button in the Playlist-Browser show a Enter-Location dialog, just like
+           in Konqueror. This way you will be able to open remote stream playlists with it.
+
   <markey> Most doc translation directories in the tarball have a Makefile.am sized 0. What's going on?
 
   <mxcl>   Changing the title track to "" does such things as I cannot figure out, it appears to work, but
