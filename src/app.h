@@ -68,6 +68,9 @@ class App : public KApplication, public EngineObserver
         QWidget             *mainWindow() const { return (QWidget*)m_pPlaylistWindow; }
         PlaylistWindow      *playlistWindow() const { return m_pPlaylistWindow; }
 
+        // FRIENDS ------
+        friend class PlaylistWindow; //requires access to applySettings()
+
         // ATTRIBUTES ------
         KActionCollection *m_pActionCollection;
 

@@ -1,0 +1,14 @@
+<!DOCTYPE kpartgui>
+<kpartgui name="amarok" version="3">
+<ToolBar name="playlist_toolbar"><Text>Playlist Toolbar</Text>
+ <Action name="playlist_add"/>
+ <Action name="playlist_save"/>
+ <Action name="playlist_clear"/>
+ <Action name="playlist_shuffle"/>
+ <Action name="playlist_show"/>
+ <Separator lineSeparator="true"/>
+ <Action name="playlist_undo"/>
+ <Action name="playlist_redo"/>
+ <Action name="amarok_menu"/>
+</ToolBar>
+</kpartgui>

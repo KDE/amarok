@@ -48,6 +48,7 @@ class BrowserBar;
 class ContextBrowser;
 class CollectionBrowser;
 class KLineEdit;
+class KStatusBar;
 class Playlist;
 
 
@@ -67,6 +68,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         void createGUI(); //should be private but App::slowConfigToolbars requires it
 
         Playlist *playlist() const { return m_playlist; }
+        KStatusBar *statusBar() const { return m_statusbar; }
 
         virtual bool eventFilter( QObject*, QEvent* );
 
@@ -76,6 +78,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
     private slots:
         void savePlaylist() const;
         void slotAddLocation();
+        void welcomeURL( const KURL& );
 
     protected:
         virtual void closeEvent( QCloseEvent* );
@@ -84,6 +87,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         BrowserBar *m_browsers;
         Playlist   *m_playlist;
         KLineEdit  *m_lineEdit;
+        KStatusBar *m_statusbar;
         amaroK::ToolBar *m_toolbar;
 };
 

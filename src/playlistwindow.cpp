@@ -111,7 +111,7 @@ PlaylistWindow::init()
 {
     //this function is necessary because we reference pApp->actionCollection() are members of
     //this function and some objects we create in this function use pApp->actionCollection()
-    //but since pApp->m_pPlaylistWindow is no defined until the above ctor returns it causes a
+    //but since pApp->m_pPlaylistWindow is not defined until the above ctor returns it causes a
     //crash unless we do the initialisation in 2 stages.
 
     kdDebug() << "BEGIN " << k_funcinfo << endl;
@@ -139,25 +139,25 @@ PlaylistWindow::init()
     } //</Search LineEdit>
 
 
-    KStatusBar *statusbar;
-
-    m_toolbar  = new amaroK::ToolBar( this, "playlist_toolbar" );
-    statusbar  = new amaroK::StatusBar( this );
-    m_playlist = new Playlist( m_browsers->container(), actionCollection() );
+    m_toolbar   = new amaroK::ToolBar( this, "playlist_toolbar" );
+    m_statusbar = new amaroK::StatusBar( this );
+    m_playlist  = new Playlist( m_browsers->container(), actionCollection() );
 
 
     QBoxLayout *layV = new QVBoxLayout( this );
     layV->addWidget( m_browsers, 1 );
     layV->addWidget( m_toolbar );
-    layV->addWidget( statusbar );
+    layV->addWidget( m_statusbar );
 
-
+    m_statusbar->setShown( AmarokConfig::showStatusBar() );
     m_playlist->setMargin( 2 );
     m_playlist->installEventFilter( this ); //we intercept keyEvents
 
 
     //<XMLGUI>
-        setXMLFile( "amarokui.rc" );
+        KConfig* const config = kapp->config();
+        config->setGroup( "General" );
+        setXMLFile( config->readEntry( "XMLFile", "amarokui.rc" ) );
         createGUI(); //NOTE we implement this
     //</XMLGUI>
 
@@ -191,16 +191,19 @@ PlaylistWindow::init()
             w->widget()->setName( "WelcomePage" );
             w->openURL( url );
             m_browsers->addBrowser( w->widget(), i18n( "Welcome" ), "help" );
+
+           connect( w->browserExtension(), SIGNAL(openURLRequest( const KURL&, const KParts::URLArgs&) ),
+                    this,                    SLOT(welcomeURL( const KURL& )) );
         } //</WelcomePage>
 
         connect( m_browsers, SIGNAL(  activated( const KURL& )),
-                 m_playlist,   SLOT(insertMedia( const KURL& )) );
+                 m_playlist,   SLOT(appendMedia( const KURL& )) );
 
     //</Browsers>
 
 
     connect( m_playlist, SIGNAL(itemCountChanged( int )),
-             statusbar,    SLOT(slotItemCountChanged( int )) );
+             m_statusbar,  SLOT(slotItemCountChanged( int )) );
     connect( m_playlist, SIGNAL(aboutToClear()),
              m_lineEdit,   SLOT(clear()) );
     connect( m_lineEdit, SIGNAL(textChanged( const QString& )),
@@ -472,6 +475,44 @@ void PlaylistWindow::showHide() //SLOT
     else if( !info.isMinimized() && !isShaded ) setShown( !isShown() );
 
     if( isShown() ) KWin::deIconifyWindow( winId() );
+}
+
+
+void PlaylistWindow::welcomeURL( const KURL &url )
+{
+    if( url == QString("remove_tab") )
+    {
+        //to XT or not to XT?
+        //yes XT as you'll need a config dialog option
+
+        return; //to avoid code below
+    }
+
+    bool b;
+    QString xml;
+
+    if( url == QString( "amarok://default_mode" ) )
+    {
+        //this is the same as amarokui.rc, but we name it separately to ensure it
+        //loads the original and not the user-modified scheme
+        xml = "amarokui.rc";
+        b = false;
+    }
+    else if( url == QString("amarok://amaamp_mode") )
+    {
+        xml = "amarokui_xmms.rc";
+        b = true;
+    }
+
+    setXMLFile( xml );
+    createGUI();
+    AmarokConfig::setShowPlayerWindow( b );
+    AmarokConfig::setShowStatusBar( !b );
+    pApp->applySettings();
+
+    KConfig* const config = kapp->config();
+    config->setGroup( "General" );
+    config->writeEntry( "XMLFile", xml );
 }
 
 #include "playlistwindow.moc"

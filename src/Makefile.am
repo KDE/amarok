@@ -93,7 +93,8 @@ KDE_ICON = \
 rcdir = \
     $(kde_datadir)/amarok
 rc_DATA = \
-    amarokui.rc
+    amarokui.rc \
+    amarokui_xmms.rc
 
 configdir = \
     $(kde_confdir)

@@ -380,7 +380,8 @@ void App::applySettings()
     m_pOSD->setOffset( AmarokConfig::osdXOffset(), AmarokConfig::osdYOffset() );
 
 
-    m_pPlaylistWindow->setFont( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );
+    playlistWindow()->setFont( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );
+    reinterpret_cast<QWidget*>(playlistWindow()->statusBar())->setShown( AmarokConfig::showStatusBar() );
 
     m_pTray->setShown( AmarokConfig::showTrayIcon() ); //TODO delete when not in use
 
@@ -414,11 +415,11 @@ void App::applySettings()
         else if( AmarokConfig::hardwareMixer() != engine->isMixerHardware() )
             AmarokConfig::setHardwareMixer( engine->initMixer( AmarokConfig::hardwareMixer() ) );
 
-        engine->setSoundOutput( AmarokConfig::soundOutput() );
-        engine->setSoundDevice( AmarokConfig::soundDevice() );
-        engine->setDefaultSoundDevice( !AmarokConfig::customSoundDevice() );
-        engine->setRestoreEffects( AmarokConfig::rememberEffects() );
-        engine->setVolume( AmarokConfig::masterVolume() );
+         engine->setSoundOutput( AmarokConfig::soundOutput() );
+         engine->setSoundDevice( AmarokConfig::soundDevice() );
+         engine->setDefaultSoundDevice( !AmarokConfig::customSoundDevice() );
+         engine->setRestoreEffects( AmarokConfig::rememberEffects() );
+         engine->setVolume( AmarokConfig::masterVolume() );
         //TODO deprecate/improve
         engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
 
