@@ -15,6 +15,7 @@
 #include <qhbox.h>
 #include <qpushbutton.h>
 #include <kurldrag.h>
+#include "threadweaver.h"
 
 
 SearchBrowser::SearchListView::SearchListView( QWidget *parent, const char *name )
@@ -24,6 +25,7 @@ SearchBrowser::SearchListView::SearchListView( QWidget *parent, const char *name
 
 SearchBrowser::SearchBrowser( QWidget *parent, const char *name )
         : QVBox( parent, name )
+        , m_weaver( new ThreadWeaver( this ) )
 {
     QHBox *hb = new QHBox( this );
     searchEdit = new KLineEdit( hb );
@@ -46,6 +48,11 @@ SearchBrowser::SearchBrowser( QWidget *parent, const char *name )
     historyView->addColumn( i18n( "Progress" ) );
     historyView->addColumn( i18n( "Base Folder" ) );
 
+    historyView->setColumnWidthMode( 0, QListView::Manual );
+    historyView->setColumnWidthMode( 1, QListView::Manual );
+    historyView->setColumnWidthMode( 2, QListView::Manual );
+    historyView->setColumnWidthMode( 3, QListView::Manual );
+
     connect( searchEdit,   SIGNAL( returnPressed() ), this, SLOT( slotStartSearch() ) );
     connect( searchButton, SIGNAL( clicked() ),       this, SLOT( slotStartSearch() ) );
 }
@@ -57,8 +64,12 @@ SearchBrowser::~SearchBrowser()
 
 void SearchBrowser::slotStartSearch()
 {
-    SearchThread *worker = new SearchThread( this );
-    worker->start( QThread::LowestPriority );
+    KListViewItem *item;
+    item = new KListViewItem( historyView, searchEdit->text() );
+    item->setText( 1, "0" );
+    item->setText( 3, urlEdit->currentText() );
+    
+    m_weaver->append( new SearchModule( this, urlEdit->currentText(), searchEdit->text(), resultView, item ) );
 }
 
 
@@ -73,71 +84,19 @@ void SearchBrowser::SearchListView::startDrag()
     }
 }
 
-
-SearchBrowser::SearchThread::SearchThread( SearchBrowser *parent ) : QThread()
+void SearchBrowser::customEvent( QCustomEvent *e )
 {
-    this->parent = parent;
-    resultCount = 0;
-}
-
-
-SearchBrowser::SearchThread::~SearchThread()
-{
-}
-
-
-void SearchBrowser::SearchThread::run()
-{
-    QString token = parent->searchEdit->text();
-    KURL *url = new KURL( parent->urlEdit->currentText() );
-    
-    item = new KListViewItem( parent->historyView, token );
-    item->setText( 1, "0" );
-    item->setText( 2, url->directory( FALSE, FALSE ) );
-    
-    parent->resultView->clear();    
-    searchDir( url->directory( FALSE, FALSE ).local8Bit() );
-}
-
-
-void SearchBrowser::SearchThread::searchDir( QString path )
-{
-    QString token = parent->searchEdit->text();
-
-//    kdDebug() << "Reading DIRECTORY: " << path << endl;
-
-    DIR *d = opendir( path.local8Bit() );
-    if ( d )
+    if ( e->type() == (QEvent::Type) ThreadWeaver::Job::SearchModule )
     {
-        dirent *ent;
-        while ( ( ent = readdir( d ) ) )
-        {
-            QString file( ent->d_name );
-            
-            if ( file != "." && file != ".." )
-            {
-                DIR *t = opendir( path.local8Bit() + file.local8Bit() + "/" );
-                if ( t )
-                {
-                    closedir( t );
-                    searchDir( path + file + "/" );
-                }
-                else
-                    if ( file.contains( token, FALSE ) )
-                    {
-                        item->setText( 1, QString::number( ++resultCount ) );
-                        item->setText( 2, path );
-                        
-                        KListViewItem *resItem = new KListViewItem( parent->resultView, file );
-                        resItem->setText( 1, path );
-                        resItem->setText( 2, path + file );
-                    }
-            }
-        }
-        closedir( d );
-        free( ent );
+        SearchModule *sm = static_cast<SearchModule *>( e );
+
+        kdDebug() << "********************************\n";
+        kdDebug() << "SearchModuleEvent arrived.\n";
+        kdDebug() << "********************************\n";
+        
     }
 }
 
+        
 #include "searchbrowser.moc"
 

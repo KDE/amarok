@@ -173,6 +173,75 @@ TagReader::bindTags()
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
+// CLASS SearchPath
+//////////////////////////////////////////////////////////////////////////////////////////
+
+SearchModule::SearchModule( QObject* parent, QString path, QString token, KListView* resultView, KListViewItem* historyItem )
+   : Job( parent, Job::SearchModule )
+   , m_parent( parent )
+   , m_path( path )
+   , m_token( token )
+   , m_resultView( resultView )
+   , m_historyItem( historyItem )
+{}
+
+SearchModule::~SearchModule()
+{}
+
+bool SearchModule::doJob()
+{
+    m_resultView->clear();
+
+    resultCount = 0;
+    searchDir( m_path.local8Bit() );
+    
+    return TRUE;
+}
+
+void SearchModule::searchDir( QString path )
+{
+//    kdDebug() << "Reading DIRECTORY: " << path << endl;
+    m_historyItem->setText( 2, path );
+
+    DIR *d = opendir( path.local8Bit() );
+    if ( d )
+    {
+        dirent *ent;
+        while ( ( ent = readdir( d ) ) )
+        {
+            QString file( ent->d_name );
+            
+            if ( file != "." && file != ".." )
+            {
+                DIR *t = opendir( path.local8Bit() + file.local8Bit() + "/" );
+                if ( t )
+                {
+                    closedir( t );
+                    searchDir( path + file + "/" );
+                }
+                else
+                    if ( file.contains( m_token, FALSE ) )
+                    {
+                        m_historyItem->setText( 1, QString::number( ++resultCount ) );
+
+                        KListViewItem *resItem = new KListViewItem( m_resultView, file );
+                        resItem->setText( 1, path );
+                        resItem->setText( 2, path + file );
+
+                        m_resultList.append( path + file );
+                    }
+            }
+        }
+        closedir( d );
+        free( ent );
+    }
+
+//    if ( item->text( 3 ) == path )
+//        item->setText( 2, "Done" );
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionReader
 //////////////////////////////////////////////////////////////////////////////////////////
 

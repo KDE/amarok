@@ -11,6 +11,8 @@
 #include <klineedit.h>
 #include <kurlcombobox.h>
 
+class ThreadWeaver;
+class QCustomEvent;
 
 class SearchBrowser : public QVBox
 {
@@ -33,31 +35,13 @@ class SearchBrowser : public QVBox
         void slotStartSearch();
 
     private:
+        void customEvent( QCustomEvent* );
+        
+        ThreadWeaver* m_weaver;
         SearchListView *resultView;
         KListView *historyView;
         KLineEdit *searchEdit;
         KURLComboBox *urlEdit;
-
-    class SearchThread : public QThread
-    {
-        public:
-            friend class SearchBrowser;
-
-            SearchThread( SearchBrowser *parent=0 );
-            ~SearchThread();
-            
-        private:
-            void searchDir( QString path );
-
-            uint resultCount;
-            SearchBrowser *parent;
-            KListViewItem *item;
-
-        protected:
-            void run();
-    };
-
-    friend class SearchThread;
 };
 
 #endif /* AMAROK_SEARCHBROWSER_H */

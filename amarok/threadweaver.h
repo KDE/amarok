@@ -17,6 +17,8 @@
 
 class MetaBundle;
 class PlaylistItem;
+class KListView;
+class KListViewItem;
 class QListView;
 class QListViewItem;
 class QString;
@@ -78,7 +80,7 @@ public:
    {
    public:
       friend class ThreadWeaver;
-      enum JobType { GenericJob = 3000, TagReader, PLStats, CollectionReader };
+      enum JobType { GenericJob = 3000, TagReader, PLStats, CollectionReader, SearchModule };
 
       Job( QObject *, JobType = GenericJob );
       virtual ~Job() {}
@@ -124,6 +126,45 @@ private:
     PlaylistItem* const m_item;
     const KURL  m_url;
     MetaBundle* m_tags;
+};
+
+
+//@Will search files for the SearchBrowser
+class SearchModule : public ThreadWeaver::Job
+{
+public:
+    static const int ProgressEventType = 8889;
+    class ProgressEvent : public QCustomEvent
+    {
+        public:
+            enum State { Start = -1, Stop = -2, Total = -3, Progress = -4 };
+
+            ProgressEvent( int state, int value = -1 )
+            : QCustomEvent( ProgressEventType )
+            , m_state( state )
+            , m_value( value ) {}
+            int state() { return m_state; }
+            int value() { return m_value; }
+        private:
+            int m_state;
+            int m_value;
+    };
+
+    SearchModule( QObject* parent, const QString path, const QString token, KListView* resultView, KListViewItem* historyItem );
+    ~SearchModule();
+
+    bool doJob();
+    QStringList resultList() { return m_resultList; }
+private:
+    void searchDir( QString path );
+
+    uint resultCount;
+    QObject *m_parent;
+    QString m_path;
+    QString m_token;
+    KListView *m_resultView;
+    KListViewItem *m_historyItem;
+    QStringList m_resultList;
 };
 
 
