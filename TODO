@@ -181,6 +181,35 @@ DO-NOT-IMPLEMENT:
 
 BACKTRACE/DEBUG
 
+From markey, while dragging files into playlist:
+
+TagLib: Could not open file /mp3/Marillion_Brave/(07) Alone Again In The Lap Of Luxury- Now Wash Your Hands - Marillion.mp3
+TagLib: Could not open file /mp3/Marillion_Brave/(07) Alone Again In The Lap Of Luxury- Now Wash Your Hands - Marillion.mp3
+TagLib: Could not open file /mp3/Marillion_Brave/(10) The Great Escape- The Last Of You; Falling From The Moon - Marillion.mp3
+TagLib: Could not open file /mp3/Marillion_Brave/(10) The Great Escape- The Last Of You; Falling From The Moon - Marillion.mp3
+[New Thread 17426 (LWP 13010)]
+[New Thread 18451 (LWP 13011)]
+[New Thread 19476 (LWP 13012)]
+
+Program received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 1024 (LWP 12933)]
+0x00000001 in ?? ()
+(gdb) bt
+#0  0x00000001 in ?? ()
+#1  0x41065d05 in QApplication::notify(QObject*, QEvent*) () from /usr/lib/./libqt-mt.so.3
+#2  0x40c2dab6 in KApplication::notify(QObject*, QEvent*) () from /opt/kde3/lib/libkdecore.so.4
+#3  0x41068333 in qt_dispatchEnterLeave(QWidget*, QWidget*) () from /usr/lib/./libqt-mt.so.3
+#4  0x40ff7bc9 in QApplication::x11ProcessEvent(_XEvent*) () from /usr/lib/./libqt-mt.so.3
+#5  0x4100ed57 in QEventLoop::processEvents(unsigned) () from /usr/lib/./libqt-mt.so.3
+#6  0x410789c6 in QEventLoop::enterLoop() () from /usr/lib/./libqt-mt.so.3
+#7  0x41078868 in QEventLoop::exec() () from /usr/lib/./libqt-mt.so.3
+#8  0x41066b61 in QApplication::exec() () from /usr/lib/./libqt-mt.so.3
+#9  0x08127dce in main (argc=1, argv=0xbffff1e4)
+    at /home/mark/mysource/kdecvs/kdeextragear-1/amarok/src/amarokcore/main.cpp:68
+#10 0x419684f2 in __libc_start_main () from /lib/libc.so.6
+
+
+
 From Arpu, on switching to gst-engine:
 
 amarok: [GstConfigDialog::GstConfigDialog(const GstEngine*)]
