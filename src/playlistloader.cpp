@@ -6,11 +6,10 @@
 //
 
 #ifndef FAST_TRANSLATE
-#include "amarokfilelist.h"    //for sorting directories
+//#include "amarokfilelist.h"    //for sorting directories
 #endif
 #include "engine/enginebase.h" //isValidMedia()
 #include "metabundle.h"
-#include "app.h"
 #include "playlistitem.h"
 #include "playlistloader.h"
 #include "playlist.h"    //we're tied to this class

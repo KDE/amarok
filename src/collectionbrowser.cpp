@@ -2,7 +2,6 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // See COPYING file for licensing information.
 
-#include "app.h"            //makePlaylist()
 #include "amazonsetup.h"
 #include "collectionbrowser.h"
 #include "coverfetcher.h"
@@ -32,8 +31,9 @@
 #include <kurldrag.h>       //dragObject()
 
 
-static const int
-MONITOR_INTERVAL = 1000 * 30; //ms
+namespace amaroK { extern KConfig *config( const QString& ); }
+static const int MONITOR_INTERVAL = 1000 * 30; //ms
+
 
 CollectionBrowser::CollectionBrowser( const char* name )
     : QVBox( 0, name )
@@ -147,8 +147,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     setSorting( -1 );
 
     //<read config>
-        KConfig* config = KGlobal::config();
-        config->setGroup( "Collection Browser" );
+        KConfig* config = amaroK::config( "Collection Browser" );
 
         m_dirs = config->readListEntry( "Folders" );
         m_category1 = config->readEntry( "Category1", i18n( "Artist" ) );
@@ -211,8 +210,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 CollectionView::~CollectionView() {
     kdDebug() << k_funcinfo << endl;
 
-    KConfig* config = KGlobal::config();
-    config->setGroup( "Collection Browser" );
+    KConfig* const config = amaroK::config( "Collection Browser" );
     config->writeEntry( "Folders", m_dirs );
     config->writeEntry( "Category1", m_category1 );
     config->writeEntry( "Category2", m_category2 );
@@ -232,7 +230,7 @@ CollectionView::~CollectionView() {
 void
 CollectionView::setupDirs()  //SLOT
 {
-    DirectoryList list( m_dirs, m_recursively, m_monitor, pApp->mainWindow() );
+    DirectoryList list( m_dirs, m_recursively, m_monitor, parentWidget() );
     DirectoryList::Result result = list.exec();
 
     // Check to see if Cancel was pressed
@@ -250,7 +248,7 @@ CollectionView::setupDirs()  //SLOT
 void
 CollectionView::setupCoverFetcher()  //SLOT
 {
-    AmazonDialog* dia = new AmazonDialog( pApp->mainWindow() );
+    AmazonDialog* dia = new AmazonDialog( parentWidget() );
     dia->kLineEdit1->setText( m_amazonLicense );
     dia->setModal( true );
 
@@ -450,15 +448,15 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 void
 CollectionView::makePlaylist() //SLOT
 {
-    pApp->actionCollection()->action( "playlist_clear" )->activate();
-    pApp->playlist()->insertMedia( listSelected() );
+    Playlist::instance()->clear();
+    Playlist::instance()->appendMedia( listSelected() );
 }
 
 
 void
 CollectionView::addToPlaylist() //SLOT
 {
-    pApp->playlist()->insertMedia( listSelected() );
+    Playlist::instance()->appendMedia( listSelected() );
 }
 
 

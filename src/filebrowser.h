@@ -63,9 +63,6 @@ public:
 
     static QColor altBgColor;
 
-signals:
-    void activated( const KURL& );
-
 public slots:
     void slotFilterChange( const QString& );
     void setDir( const KURL& );

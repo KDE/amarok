@@ -120,7 +120,7 @@ class OSD : public OSDWidget
 {
 Q_OBJECT
 public:
-    OSD() : OSDWidget( "amaroK" ) {}
+    static OSD *instance();
 
 public slots:
     void showTrack( const MetaBundle &bundle );
@@ -130,6 +130,8 @@ public slots:
     void forceShowTrack() { bool b = isEnabled(); setEnabled( true ); showTrack(); setEnabled( b ); }
 
 private:
+    OSD() : OSDWidget( "amaroK" ) {}
+
     QString m_text;
 };
 

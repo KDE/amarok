@@ -285,9 +285,6 @@ BrowserBar::addBrowser( QWidget *widget, const QString &title, const QString& ic
     widget->hide();
     if( widget->minimumWidth() < 30 ) widget->setMinimumWidth( 30 );
 
-    //this is a signal the browser should emit when a single KURL is activated by the user
-    connect( widget, SIGNAL(activated( const KURL& )), SIGNAL(activated( const KURL& )) );
-
     m_tabBar->appendTab( KGlobal::iconLoader()->loadIcon( icon, KIcon::NoGroup, KIcon::SizeSmall ), id, title );
     QWidget *tab = m_tabBar->tab( id );
     tab->setFocusPolicy( QWidget::NoFocus ); //FIXME you can focus on the tab, but they respond to no input!

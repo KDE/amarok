@@ -63,7 +63,7 @@ App::App()
     m_pGlobalAccel    = new KGlobalAccel( this );
     m_pPlaylistWindow = new PlaylistWindow();
     m_pDcopHandler    = new amaroK::DcopHandler();
-    m_pOSD            = new amaroK::OSD();
+    m_pOSD            = amaroK::OSD::instance(); //create's the OSD
     m_pTray           = new amaroK::TrayIcon( m_pPlaylistWindow );
     (void)              new Vis::SocketServer( this );
 
@@ -71,7 +71,7 @@ App::App()
     initGlobalShortcuts();
 
     //load previous playlist in separate thread
-    if( bRestoreSession && AmarokConfig::savePlaylist() ) playlist()->restoreSession();
+    if( bRestoreSession && AmarokConfig::savePlaylist() ) Playlist::instance()->restoreSession();
 
     //create engine, show PlayerWindow, show TrayIcon etc.
     applySettings( true );
@@ -123,7 +123,6 @@ App::~App()
 
     delete m_pPlayerWindow;   //sets some XT keys
     delete m_pPlaylistWindow; //sets some XT keys
-    delete m_pOSD;
     delete m_pDcopHandler;
 
     AmarokConfig::setVersion( APP_VERSION );
@@ -146,8 +145,8 @@ void App::handleCliArgs()
         for ( int i = 0; i < args->count(); i++ )
             list << args->url( i );
 
-        if( notEnqueue ) playlist()->clear();
-        playlist()->appendMedia( list, notEnqueue || args->isSet( "play" ) );
+        if( notEnqueue ) Playlist::instance()->clear();
+        Playlist::instance()->appendMedia( list, notEnqueue || args->isSet( "play" ) );
     }
     //we shouldn't let the user specify two of these since it is pointless!
     //so we prioritise, pause > stop > play > next > prev
@@ -238,7 +237,7 @@ void App::initEngine()
     EngineBase* const engine = (EngineBase*)plugin;
     bool restartArts = AmarokConfig::version() != APP_VERSION;
 
-    engine->init( restartArts, SCOPE_SIZE, AmarokConfig::rememberEffects() );
+    engine->init( restartArts, amaroK::SCOPE_SIZE, AmarokConfig::rememberEffects() );
     EngineController::setEngine( engine ); //will set engine's volume
 
     //NOTE applySettings() must be called now to ensure mixer settings are set
@@ -569,10 +568,10 @@ void App::genericEventHandler( QWidget *source, QEvent *e )
             {
             case 101:
             case 102:
-                playlist()->appendMedia( list, id == 102 );
+                Playlist::instance()->appendMedia( list, id == 102 );
 
             case 103:
-                playlist()->queueMedia( list );
+                Playlist::instance()->queueMedia( list );
             }
         }
         #undef e
@@ -608,14 +607,14 @@ void App::genericEventHandler( QWidget *source, QEvent *e )
 
         static_cast<QCloseEvent*>(e)->accept(); //if we don't do this the info box appears on quit()!
 
-        if( AmarokConfig::showTrayIcon() && !e->spontaneous() && !kapp->sessionSaving() )
+        if( AmarokConfig::showTrayIcon() && !e->spontaneous() && !sessionSaving() )
         {
             KMessageBox::information( source,
                 i18n( "<qt>Closing the main-window will keep amaroK running in the System Tray. "
                       "Use <B>Quit</B> from the menu, or the amaroK tray-icon to exit the application.</qt>" ),
                 i18n( "Docking in System Tray" ), "hideOnCloseInfo" );
         }
-        else kapp->quit();
+        else quit();
 
         break;
 
@@ -713,11 +712,6 @@ void App::slotConfigToolBars()
 KActionCollection *App::actionCollection() const
 {
     return m_pPlaylistWindow->actionCollection();
-}
-
-Playlist *App::playlist() const
-{
-    return m_pPlaylistWindow->playlist();
 }
 
 QWidget *App::mainWindow() const

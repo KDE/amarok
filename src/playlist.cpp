@@ -20,6 +20,7 @@
 #include "playlistitem.h"
 #include "playlistloader.h"
 #include "playlist.h"
+#include "osd.h"
 #include "threadweaver.h"
 
 #include <kapplication.h>
@@ -48,6 +49,9 @@
 #include <X11/Xlib.h> //ControlMask in contentsDragMoveEvent()
 
 
+Playlist *Playlist::s_instance = 0;
+
+
 Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     : KListView( parent, name )
 #ifdef PLAYLIST_BROWSER
@@ -65,6 +69,7 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
+    s_instance = this;
 
     EngineController* const ec = EngineController::instance();
     ec->attach( this );
@@ -1032,6 +1037,8 @@ void Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
         #define item static_cast<const PlaylistItem*>(item)
         QApplication::clipboard()->setText( item->trackName(), QClipboard::Clipboard );
         QApplication::clipboard()->setText( item->trackName(), QClipboard::Selection );
+
+        amaroK::OSD::instance()->showOSD( QString( "Copied: %1" ).arg( item->trackName() ) );
         #undef item
     }
 }

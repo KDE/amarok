@@ -2,12 +2,12 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // See COPYING file for licensing information.
 
-#include "app.h"
 #include "collectiondb.h"
 #include "sqlite/sqlite.h"
 #include "statusbar.h"
 #include "threadweaver.h"
 
+#include <kapplication.h>
 #include <kdebug.h>
 #include <kglobal.h>
 #include <klocale.h>
@@ -71,7 +71,7 @@ CollectionDB::isEmpty()
     QStringList names;
 
     if ( execSql( "SELECT COUNT( url ) FROM tags;", &values, &names ) )
-        return ( values[0] == "0" ); 
+        return ( values[0] == "0" );
     else
         return true;
 }
@@ -112,7 +112,7 @@ CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id,
              .arg( artist_id ), &values, &names );
 
     KURL url;
-    url.setPath( values[0] ); 
+    url.setPath( values[0] );
 
     return getImageForPath( url.directory(), defaultImage );
 }
@@ -142,7 +142,7 @@ CollectionDB::getImageForPath( const QString path, const QString defaultImage, c
             if ( values[i].contains( "front", false ) )
                 image = values[i];
         }
-    
+
         QImage img( path + "/" + image );
         QPixmap pix;
         if( pix.convertFromImage( img.smoothScale( width, width ) ) )
@@ -160,7 +160,7 @@ void
 CollectionDB::incSongCounter( const QString url )
 {
     QStringList values, names;
-    
+
     execSql( QString( "SELECT playcounter, createdate FROM statistics WHERE url = '%1';" )
                   .arg( escapeString( url ) ), &values, &names );
 
@@ -183,7 +183,7 @@ CollectionDB::incSongCounter( const QString url )
 void
 CollectionDB::updateDirStats( QString path, const long datetime )
 {
-    if ( path.endsWith( "/" ) ) 
+    if ( path.endsWith( "/" ) )
         path = path.left( path.length() - 1 );
 
     execSql( QString( "REPLACE INTO directories ( dir, changedate ) VALUES ( '%1', %2 );" )
@@ -195,7 +195,7 @@ CollectionDB::updateDirStats( QString path, const long datetime )
 void
 CollectionDB::removeSongsInDir( QString path )
 {
-    if ( path.endsWith( "/" ) ) 
+    if ( path.endsWith( "/" ) )
         path = path.left( path.length() - 1 );
 
     execSql( QString( "DELETE FROM tags WHERE dir = '%1';" )
@@ -208,13 +208,13 @@ CollectionDB::isDirInCollection( QString path )
 {
     QStringList values;
     QStringList names;
-    
-    if ( path.endsWith( "/" ) ) 
+
+    if ( path.endsWith( "/" ) )
         path = path.left( path.length() - 1 );
 
     execSql( QString( "SELECT changedate FROM directories WHERE dir = '%1';" )
              .arg( escapeString( path ) ), &values, &names );
-             
+
     return !values.isEmpty();
 }
 
@@ -222,7 +222,7 @@ CollectionDB::isDirInCollection( QString path )
 void
 CollectionDB::removeDirFromCollection( QString path )
 {
-    if ( path.endsWith( "/" ) ) 
+    if ( path.endsWith( "/" ) )
         path = path.left( path.length() - 1 );
 
     execSql( QString( "DELETE FROM directories WHERE dir = '%1';" )
@@ -300,7 +300,7 @@ void
 CollectionDB::createTables( bool temporary )
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     //create tag table
     execSql( QString( "CREATE %1 TABLE tags%2 ("
                         "url VARCHAR(100),"
@@ -315,35 +315,35 @@ CollectionDB::createTables( bool temporary )
                         "track NUMBER(4) );" )
                         .arg( temporary ? "TEMPORARY" : "" )
                         .arg( temporary ? "_temp" : "" ) );
-    
+
     //create album table
     execSql( QString( "CREATE %1 TABLE album%2 ("
                         "id INTEGER PRIMARY KEY,"
                         "name VARCHAR(100) );" )
                         .arg( temporary ? "TEMPORARY" : "" )
                         .arg( temporary ? "_temp" : "" ) );
-    
+
     //create artist table
     execSql( QString( "CREATE %1 TABLE artist%2 ("
                         "id INTEGER PRIMARY KEY,"
                         "name VARCHAR(100) );" )
                         .arg( temporary ? "TEMPORARY" : "" )
                         .arg( temporary ? "_temp" : "" ) );
-    
+
     //create genre table
     execSql( QString( "CREATE %1 TABLE genre%2 ("
                         "id INTEGER PRIMARY KEY,"
                         "name VARCHAR(100) );" )
                         .arg( temporary ? "TEMPORARY" : "" )
                         .arg( temporary ? "_temp" : "" ) );
-    
+
     //create year table
     execSql( QString( "CREATE %1 TABLE year%2 ("
                         "id INTEGER PRIMARY KEY,"
                         "name VARCHAR(100) );" )
                         .arg( temporary ? "TEMPORARY" : "" )
                         .arg( temporary ? "_temp" : "" ) );
-    
+
     //create images table
     execSql( QString( "CREATE %1 TABLE images%2 ("
                         "path VARCHAR(100),"
@@ -360,14 +360,14 @@ CollectionDB::createTables( bool temporary )
                 .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
     execSql( QString( "CREATE INDEX year_idx%1 ON year%2( name );" )
                 .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
-    
+
     if ( !temporary )
     {
         execSql( "CREATE INDEX album_tag ON tags( album );" );
         execSql( "CREATE INDEX artist_tag ON tags( artist );" );
         execSql( "CREATE INDEX genre_tag ON tags( genre );" );
         execSql( "CREATE INDEX year_tag ON tags( year );" );
-        
+
         // create directory statistics database
         execSql( QString( "CREATE TABLE directories ("
                             "dir VARCHAR(100) UNIQUE,"
@@ -380,7 +380,7 @@ void
 CollectionDB::dropTables( bool temporary )
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     execSql( QString( "DROP TABLE tags%1;" ).arg( temporary ? "_temp" : "" ) );
     execSql( QString( "DROP TABLE album%1;" ).arg( temporary ? "_temp" : "" ) );
     execSql( QString( "DROP TABLE artist%1;" ).arg( temporary ? "_temp" : "" ) );
@@ -406,7 +406,7 @@ void
 CollectionDB::createStatsTable()
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     // create music statistics database
     execSql( QString( "CREATE TABLE statistics ("
                       "url VARCHAR(100) UNIQUE,"
@@ -420,7 +420,7 @@ void
 CollectionDB::dropStatsTable()
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     execSql( "DROP TABLE statistics;" );
 }
 
@@ -436,7 +436,7 @@ void
 CollectionDB::scan( const QStringList& folders, bool recursively )
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     if ( !folders.isEmpty() )
         m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), folders, recursively, false ) );
 }
@@ -452,7 +452,7 @@ CollectionDB::scanModifiedDirs( bool recursively )
 
     QString command = QString( "SELECT dir, changedate FROM directories;" );
     execSql( command, &values, &names );
-    
+
     for ( uint i = 0; i < values.count(); i = i + 2 )
     {
         if ( stat( values[i].local8Bit(), &statBuf ) == 0 )
@@ -460,17 +460,17 @@ CollectionDB::scanModifiedDirs( bool recursively )
             if ( QString::number( (long)statBuf.st_mtime ) != values[i + 1] )
             {
                 folders << values[i];
-                kdDebug() << "Collection dir changed: " << values[i] << endl;    
+                kdDebug() << "Collection dir changed: " << values[i] << endl;
             }
         }
         else
         {
             // this folder has been removed
             folders << values[i];
-            kdDebug() << "Collection dir removed: " << values[i] << endl;    
+            kdDebug() << "Collection dir removed: " << values[i] << endl;
         }
     }
-    
+
     if ( !folders.isEmpty() )
         m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), folders, recursively, true ) );
     else
@@ -545,11 +545,11 @@ CollectionDB::retrieveFirstLevel( QString category1, QString category2, QString 
     QString command = "SELECT DISTINCT " + category1.lower() + ".name FROM tags, " + category1.lower();
     if ( category2 != 0 )
         command += ", " + category2.lower();
-        
+
     command += " WHERE tags." + category1.lower() + "=" + category1.lower() + ".id ";
     if ( category2 != 0 )
         command += "AND tags." + category2.lower() + "=" + category2.lower() + ".id ";
-        
+
     command += filterToken;
     command += " ORDER BY " + category1.lower() + ".name DESC;";
 
@@ -628,7 +628,7 @@ CollectionDB::retrieveFirstLevelURLs( QString itemText, QString category1, QStri
             filterToken += category2.lower() + ".name LIKE '%" + filter + "%' OR ";
 
         filterToken += "tags.title LIKE '%" + filter + "%' )";
-    
+
     }
 
     //query database for all tracks in our sub-category
@@ -636,13 +636,13 @@ CollectionDB::retrieveFirstLevelURLs( QString itemText, QString category1, QStri
     QString command = "SELECT DISTINCT tags.url FROM tags, " + category1.lower();
     if ( category2 != 0 )
         command += ", " + category2.lower();
-     
+
     command += " WHERE tags." + category1.lower() + "=" + category1.lower() + ".id ";
     if ( category2 != 0 )
         command += "AND tags." + category2.lower() + "=" + category2.lower() + ".id ";
 
     command += "AND tags." + category1.lower() + "=" + id + " " + filterToken + " ORDER BY tags.dir, tags.track, tags.url;";
-                    
+
     execSql( command, values, names );
 }
 

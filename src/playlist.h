@@ -57,7 +57,6 @@ class Playlist : private KListView, public EngineObserver
 {
     Q_OBJECT
     public:
-        Playlist( QWidget*, KActionCollection*, const char* = 0 );
         ~Playlist();
 
         void insertMedia( const KURL &url ) { appendMedia( url ); } //DEPRECATED
@@ -91,6 +90,8 @@ class Playlist : private KListView, public EngineObserver
         static QString defaultPlaylistPath();
         static void showTrackInfo( const KURL& url );
         static void showTrackInfo( const MetaBundle& bundle );
+
+        static Playlist *instance() { return s_instance; }
 
         //enums, typedefs and friends
         enum RequestType { Prev = -1, Current = 0, Next = 1 };
@@ -133,6 +134,11 @@ class Playlist : private KListView, public EngineObserver
         void updateNextPrev();
 
     private:
+        Playlist( QWidget*, KActionCollection*, const char* = 0 );
+        Playlist( const Playlist& ); //not defined
+
+        static Playlist *s_instance;
+
         PlaylistItem *restoreCurrentTrack();
         PlaylistItem *currentTrack() const { return m_currentTrack; }
         void setCurrentTrack( PlaylistItem* );

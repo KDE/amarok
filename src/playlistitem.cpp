@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "amarokconfig.h"
-#include "app.h"
 #include "metabundle.h"
 #include "playlistitem.h"
 #include "playlist.h"

@@ -54,9 +54,6 @@ protected:
     bool eventFilter( QObject*, QEvent* );
     bool event( QEvent* );
 
-signals:
-    void activated( const KURL& );
-
 public slots:
     void showHideBrowser( int );
     void autoCloseBrowsers();

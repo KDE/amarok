@@ -2,14 +2,14 @@
 // See COPYING file for licensing information
 
 
-#include "app.h"
+#include "app.h" //openUrlRequest() FIXME remove this if possible
 #include "amarokconfig.h"
 #include "collectionbrowser.h"
 #include "collectiondb.h"
 #include "contextbrowser.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
-#include "playlist.h"     //insertMedia()
+#include "playlist.h"     //appendMedia()
 #include "sqlite/sqlite.h"
 
 #include <kapplication.h> //kapp->config(), QApplication::setOverrideCursor()
@@ -93,12 +93,12 @@ void ContextBrowser::openURLRequest( const KURL &url )
 
             KURL tmp;
             tmp.setPath( values[i] );
-            pApp->playlist()->appendMedia( tmp, false, true );
+            Playlist::instance()->appendMedia( tmp, false, true );
         }
     }
 
     if ( url.protocol() == "file" )
-        pApp->playlist()->appendMedia( url, true, true );
+        Playlist::instance()->appendMedia( url, true, true );
 
     if ( m_url.protocol() == "show" )
     {
@@ -128,7 +128,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle &bundle, bool /*trackCh
 
     delete m_currentTrack;
     m_currentTrack = new MetaBundle( bundle );
-    
+
     if ( !m_db->isEmpty() )
         showCurrentTrack();
 

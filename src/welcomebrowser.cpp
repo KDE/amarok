@@ -3,13 +3,13 @@
 // See COPYING file for licensing information
 
 
-#include "app.h"
 #include "amarokconfig.h"
 #include "welcomebrowser.h"
 
 #include <khtml_part.h>
 #include <kdebug.h>
 #include <klocale.h>
+#include <qapplication.h>
 
 
 WelcomeBrowser::WelcomeBrowser( QObject* parent, const char *name )

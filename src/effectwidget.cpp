@@ -17,7 +17,6 @@
 
 #include "effectwidget.h"
 #include "engine/enginebase.h"
-#include "app.h"
 #include "enginecontroller.h"
 
 #include <vector>
@@ -30,6 +29,7 @@
 #include <qtooltip.h>
 #include <qvbox.h>
 
+#include <kapplication.h>
 #include <kcombobox.h>
 #include <kdebug.h>
 #include <klocale.h>

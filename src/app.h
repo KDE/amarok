@@ -42,6 +42,7 @@ namespace amaroK {
     class DcopHandler;
 
     static const int VOLUME_MAX = 100;
+    static const int SCOPE_SIZE = 9; //= 2**9 = 512
 
     KConfig *config( const QString &group = "General" );
 }
@@ -65,21 +66,12 @@ class App : public KApplication, public EngineObserver
         static void initCliArgs( int argc, char *argv[] );
 
         KActionCollection   *actionCollection() const;
-        Playlist            *playlist() const;
         amaroK::DcopHandler *dcopHandler() const { return m_pDcopHandler; }
-        amaroK::OSD         *osd() const { return m_pOSD; }
         QWidget             *mainWindow() const;
         PlaylistWindow      *playlistWindow() const { return m_pPlaylistWindow; }
 
         // FRIENDS ------
         friend class PlaylistWindow; //requires access to applySettings()
-
-        // ATTRIBUTES ------
-        KActionCollection   *m_pActionCollection;
-        amaroK::OSD         *m_pOSD;
-
-        // STATICS ------
-        static const int SCOPE_SIZE = 9; //= 2**9 = 512
 
     protected: /* for OSD, tray, and dcop */
         void engineStateChanged( EngineBase::EngineState state );
@@ -108,6 +100,8 @@ class App : public KApplication, public EngineObserver
         PlaylistWindow      *m_pPlaylistWindow;
         amaroK::DcopHandler *m_pDcopHandler;
         amaroK::TrayIcon    *m_pTray;
+        KActionCollection   *m_pActionCollection;
+        amaroK::OSD         *m_pOSD;
 };
 
 

@@ -20,7 +20,6 @@
    the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 */
-#include "app.h"
 #include "amarokconfig.h"
 #include "filebrowser.h"
 #include "kbookmarkhandler.h"
@@ -282,20 +281,20 @@ inline void FileBrowser::slotViewChanged( KFileView *view )
 
 inline void FileBrowser::makePlaylist()
 {
-    pApp->playlist()->clear();
-    pApp->playlist()->appendMedia( selectedItems() );
+    Playlist::instance()->clear();
+    Playlist::instance()->appendMedia( selectedItems() );
 }
 
 
 inline void FileBrowser::addToPlaylist()
 {
-    pApp->playlist()->appendMedia( selectedItems() );
+    Playlist::instance()->appendMedia( selectedItems() );
 }
 
 
 inline void FileBrowser::activateThis( const KFileItem *item )
 {
-    emit activated( item->url() );
+    Playlist::instance()->appendMedia( item->url() );
 }
 
 //END Private Slots

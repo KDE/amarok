@@ -383,7 +383,15 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 #include "metabundle.h"
 #include <qregexp.h>
 
-void amaroK::OSD::showTrack( const MetaBundle &bundle )
+amaroK::OSD*
+amaroK::OSD::instance()
+{
+    static OSD osd;
+    return &osd;
+}
+
+void
+amaroK::OSD::showTrack( const MetaBundle &bundle ) //slot
 {
     // Strip HTML tags, expand basic HTML entities
     QString text = bundle.prettyTitle();
