@@ -282,7 +282,7 @@ CollectionView::scanMonitor()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
-    if ( !m_isScanning )
+    if ( !m_isScanning && m_monitor )
     {
         m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
         m_insertdb->scanModifiedDirs( m_recursively );
