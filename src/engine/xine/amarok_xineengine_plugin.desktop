@@ -1,6 +1,21 @@
 [Desktop Entry]
 Type=Service
 Name=xine Engine
+Name[cs]=xine
+Name[es]=Motor xine
+Name[et]=xine mootor
+Name[fr]=Moteur xine
+Name[it]=Motore xine
+Name[ms]=Enjin xine
+Name[nl]=xine-engine
+Name[pt]=Motor Xine
+Name[pt_BR]=Mecanismo Xine
+Name[ru]=Движок Xine
+Name[sr]=xine програм
+Name[sr@Latn]=xine програм
+Name[sv]=Xine-gränssnitt
+Name[xx]=xxxine Enginexx
+Name[zh_CN]=xine 引擎
 ServiceTypes=amaroK/Plugin
 
 X-KDE-amaroK-plugintype=engine
