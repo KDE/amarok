@@ -11,8 +11,8 @@ VERSION 1.2-beta2:
   ADD: DCOP call to return the score of the currently playing track.
   ADD: Audioscrobbler submit queue stored in disk. Tracks that are listened
        when offline will be available for submitting later.
-  CHG: "Start Scan" button was removed, as well as "Monitor Changes"
-       option. Collection is now always monitored.
+  CHG: "Start Scan" button was renamed to "Update". Now it starts an
+       incremental scan instead of a full rescan.
   FIX: Lyrics parsing failed for certain songs. (BR 94269)
   ADD: xine-engine saves config, and implements crossfade, bug fixed too.
   ADD: Player-Window can also show the BlockAnalyzer.

@@ -42,7 +42,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     m_view = new QListView( this );
     m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
-    m_monitor   = new QCheckBox( i18n("&Monitor changes"), this );
+    m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), this );
     m_playlists = new QCheckBox( i18n("&Import playlists"), this );
 
     QToolTip::add( m_recursive, i18n( "If selected, amaroK reads all folders recursively." ) );

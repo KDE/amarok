@@ -40,7 +40,8 @@
 
 
 namespace amaroK { extern KConfig *config( const QString& ); }
-static const int MONITOR_INTERVAL = 1000 * 60; //ms
+
+static const int MONITOR_INTERVAL = 60; //sec
 
 
 CollectionBrowser::CollectionBrowser( const char* name )
@@ -80,7 +81,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     } //</Search LineEdit>
 
     KActionCollection* ac = new KActionCollection( this );
-    m_scanAction = new KAction( i18n( "Start Scan" ), "reload", 0, this, SLOT( scan() ), ac, "Start Scan" );
+    m_scanAction = new KAction( i18n( "Update" ), "reload", 0, this, SLOT( scanMonitor() ), ac, "Start Scan" );
 
     // we need m_scanAction to be initialized before CollectionView's CTOR
     m_view = new CollectionView( this );
@@ -97,6 +98,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     toolbar->setIconText( KToolBar::IconTextRight, false );
     m_scanAction->plug( toolbar );
     toolbar->insertLineSeparator();
+    m_scanAction->setEnabled( !AmarokConfig::monitorChanges() );
 
     toolbar->setIconText( KToolBar::IconOnly, false );
     m_treeViewAction->plug( toolbar );
@@ -168,6 +170,12 @@ void
 CollectionBrowser::scan()  //SLOT
 {
     m_view->scan();
+}
+
+void
+CollectionBrowser::scanMonitor()  //SLOT
+{
+    m_view->scanMonitor();
 }
 
 void
@@ -269,7 +277,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     connect( this,           SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,             SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
 
-    startTimer( MONITOR_INTERVAL );
+    startTimer( MONITOR_INTERVAL * 1000 );
 }
 
 
@@ -308,6 +316,8 @@ CollectionView::setupDirs()  //SLOT
 
         if ( rescan )
             scan();
+
+        m_parent->m_scanAction->setEnabled( !AmarokConfig::monitorChanges() );
     }
 }
 
@@ -336,7 +346,7 @@ CollectionView::scan()  //SLOT
 void
 CollectionView::scanMonitor()  //SLOT
 {
-    if ( !m_isScanning && AmarokConfig::monitorChanges() )
+    if ( !m_isScanning )
         m_insertdb->scanModifiedDirs( AmarokConfig::scanRecursively(), AmarokConfig::importPlaylists() );
 }
 
@@ -519,7 +529,7 @@ CollectionView::scanDone( bool changed ) //SLOT
             }
         }
     }
-    m_parent->m_scanAction->setEnabled( true );
+    m_parent->m_scanAction->setEnabled( !AmarokConfig::monitorChanges() );
     m_isScanning = false;
 
     amaroK::StatusBar::instance()->clear();
@@ -925,11 +935,11 @@ CollectionView::customEvent( QCustomEvent *e )
                 m_progress->setProgress( 0 );
                 m_progressBox->show();
                 break;
-            
+
             case CollectionReader::ProgressEvent::Total:
                 m_progress->setTotalSteps( p->value() );
                 break;
-    
+
             case CollectionReader::ProgressEvent::Progress:
                 m_progress->setProgress( p->value() );
         }
