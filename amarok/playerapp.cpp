@@ -675,15 +675,17 @@ void PlayerApp::showEffectWidget()
 {
     if ( !EffectWidget::self )
     {
-        EffectWidget::self = new EffectWidget( m_pPlayerWidget );
+        EffectWidget::self = new EffectWidget();
     
         connect( EffectWidget::self,           SIGNAL( destroyed() ),
                  m_pPlayerWidget->m_pButtonEq, SLOT  ( setOff   () ) );
-    
-        if ( !EffectWidget::save_pos.isNull() )
-            EffectWidget::self->move( EffectWidget::save_pos );
+        connect( m_pPlayerWidget,              SIGNAL( destroyed() ),
+                 EffectWidget::self,           SLOT  ( deleteLater() ) );
     
         EffectWidget::self->show();
+        
+        if ( EffectWidget::save_geometry.isValid() )
+            EffectWidget::self->setGeometry( EffectWidget::save_geometry );
     }
     else
         delete EffectWidget::self;

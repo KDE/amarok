@@ -23,9 +23,8 @@
 #include <kdialogbase.h>
 
 class QGroupBox;
-class QMoveEvent;
-class QPoint;
 class QPushButton;
+class QRect;
 class QWidget;
 class KComboBox;
 
@@ -46,7 +45,7 @@ class EffectWidget : public KDialogBase
 
 // ATTRIBUTES ------
         static EffectWidget* self;
-        static QPoint        save_pos;
+        static QRect         save_geometry;
     
     private slots:
         void slotButtonTop();
@@ -55,20 +54,18 @@ class EffectWidget : public KDialogBase
         void slotItemClicked( QListViewItem *pCurrentItem );
 
     private:
-        void closeEvent( QCloseEvent* );
-
 // ATTRIBUTES ------
         static const int EffectWidget::BUTTON_WIDTH = 30;
         
         KComboBox   *m_pComboBox;
-        QListView *m_pListView;
+        QListView   *m_pListView;
 
         QPushButton *m_pButtonTopDown;
         QPushButton *m_pButtonBotConf;
         QPushButton *m_pButtonBotRem;
 
-        QGroupBox *m_pGroupBoxTop;
-        QGroupBox *m_pGroupBoxBot;
+        QGroupBox   *m_pGroupBoxTop;
+        QGroupBox   *m_pGroupBoxBot;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

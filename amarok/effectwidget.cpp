@@ -30,8 +30,8 @@
 #include <qlayout.h>
 #include <qlistview.h>
 #include <qpixmap.h>
-#include <qpoint.h>
 #include <qpushbutton.h>
+#include <qrect.h>
 #include <qsizepolicy.h>
 #include <qstring.h>
 #include <qtooltip.h>
@@ -45,7 +45,7 @@
 
 
 EffectWidget* EffectWidget::self = 0;
-QPoint        EffectWidget::save_pos;
+QRect         EffectWidget::save_geometry;
 
 EffectWidget::EffectWidget( QWidget* parent )
         : KDialogBase( parent, "EffectWidget", false, kapp->makeStdCaption( i18n("Effects") ) )
@@ -116,21 +116,13 @@ EffectWidget::EffectWidget( QWidget* parent )
 EffectWidget::~EffectWidget()
 {
     self = 0;
+    save_geometry = geometry();
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE METHODS
 ////////////////////////////////////////////////////////////////////////////////
-
-void EffectWidget::closeEvent( QCloseEvent* e )
-{
-    kdDebug() << "[EffectWidget::closeEvent()]" << endl;
-    
-    save_pos = pos();
-    QWidget::closeEvent( e );
-}
-
 
 void EffectWidget::slotButtonTop()
 {
