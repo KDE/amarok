@@ -35,7 +35,6 @@ email                : markey@web.de
 #include "playlistwindow.h"
 #include "pluginmanager.h"
 #include "scrobbler.h"
-#include "socketserver.h"
 #include "statusbar.h"
 #include "systray.h"
 #include "tracktooltip.h"        //engineNewMetaData()
@@ -91,7 +90,6 @@ App::App()
     m_pGlobalAccel    = new KGlobalAccel( this );
     m_pPlaylistWindow = new PlaylistWindow();
     m_pTray           = new amaroK::TrayIcon( m_pPlaylistWindow );
-    (void)              new Vis::SocketServer( this );
 
     m_pPlaylistWindow->init(); //creates the playlist, browsers, etc.
     initGlobalShortcuts();

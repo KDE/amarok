@@ -8,7 +8,7 @@
 #include <SDL.h>
 
 
-static int tryConnect();
+static int tryConnect( const char *path );
 
 namespace SDL
 {

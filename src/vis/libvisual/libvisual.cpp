@@ -13,36 +13,34 @@
 int
 main( int argc, char** argv )
 {
-    if( argc > 1 )
+    if( argc <= 1 || strcmp( argv[1], "--list" ) == 0 )
     {
-        if( strcmp( argv[1], "--list" ) == 0 )
+        visual_init( &argc, &argv );
+
+        #if 0
+        VisList *list = visual_actor_get_list();
+
+        for( VisListEntry *entry = list->head->next; entry != list->tail; entry = entry->next )
         {
-            visual_init( &argc, &argv );
+            VisPluginInfo *info = static_cast<VisActor*>(entry->data)->plugin->ref->info;
 
-            #if 0
-            VisList *list = visual_actor_get_list();
-
-            for( VisListEntry *entry = list->head->next; entry != list->tail; entry = entry->next )
-            {
-                VisPluginInfo *info = static_cast<VisActor*>(entry->data)->plugin->ref->info;
-
-                std::cout << info->name << '|' << info->about << std::endl;
-            }
-            #endif
-
-            const char *plugin = NULL;
-
-            while( plugin = visual_actor_get_next_by_name( plugin ) )
-                std::cout << plugin << '\n';
-
-            std::exit( 0 );
+            std::cout << info->name << '|' << info->about << std::endl;
         }
-        else Vis::plugin = argv[1];
+        #endif
+
+        const char *plugin = NULL;
+
+        while( plugin = visual_actor_get_next_by_name( plugin ) )
+            std::cout << plugin << '\n';
+
+        std::exit( 0 );
     }
+    else if( argc == 3 )
+        Vis::plugin = argv[2];
 
 
     //connect to socket
-    const int sockfd = tryConnect();
+    const int sockfd = tryConnect( argv[1] );
 
     //register fd/pid combo with amaroK
     {
@@ -102,19 +100,8 @@ main( int argc, char** argv )
 }
 
 static int
-tryConnect()
+tryConnect( const char *path )
 {
-    //the small amarok binary will return the path to the amarok socket if it can
-    //TODO test error handling
-    #ifndef MAX_PATH
-    #define MAX_PATH 256
-    #endif
-
-    char path[MAX_PATH];
-    FILE *amarok = popen( "amarok --vis-socket-path", "r" );
-    fread( path, sizeof(char), MAX_PATH, amarok );
-    pclose( amarok );
-
     const int fd = socket( AF_UNIX, SOCK_STREAM, 0 );
 
     if( fd != -1 )

@@ -9,14 +9,13 @@
 #include "debug.h"
 #include "enginebase.h"       //to get the scope
 #include "enginecontroller.h" //to get the engine
-#include "fht.h"              //processing the scope
 #include <klocale.h>
 #include <kpopupmenu.h>       //Vis::Selector
 #include <kprocess.h>         //Vis::Selector
-#include <kstandarddirs.h>
-#include <qdir.h>
+#include <kstandarddirs.h>    //locateLocal()
 #include <qtooltip.h>         //Vis::Selector ctor
 #include "socketserver.h"
+#include <vector>
 
 extern "C"
 {
@@ -27,6 +26,7 @@ extern "C"
 }
 
 
+
 //TODO allow stop/start and pause signals to be sent to registered visualisations
 //TODO allow transmission of visual data back to us here and allow that to be embedded in stuff
 //TODO decide whether to use 16 bit integers or 32 bit floats as data sent to analyzers
@@ -34,36 +34,33 @@ extern "C"
 
 
 
-////////////////////////////////////////////////////////////////////////////////
-// CLASS amaroK::SocketServer
-////////////////////////////////////////////////////////////////////////////////
+/// @class amaroK::SocketServer
 
-amaroK::SocketServer::SocketServer( const QString &socketname, QObject *parent )
+amaroK::SocketServer::SocketServer( const QString &socketName, QObject *parent )
         : QServerSocket( parent )
 {
     m_sockfd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
 
-    if ( m_sockfd == -1 )
-    {
+    if( m_sockfd == -1 ) {
         warning() << "socket() error\n";
         return;
     }
 
+    m_path = locateLocal( "socket", socketName ).local8Bit();
+
     sockaddr_un local;
     local.sun_family = AF_UNIX;
-    QCString path = ::locateLocal( "socket", socketname ).local8Bit();
-    ::strcpy( &local.sun_path[0], path );
-    ::unlink( path );
+    qstrcpy( &local.sun_path[0], m_path );
+    ::unlink( m_path ); //FIXME why do we delete it?
 
-    if ( ::bind( m_sockfd, (sockaddr*) &local, sizeof(local) ) == -1 )
-    {
+    if( ::bind( m_sockfd, (sockaddr*) &local, sizeof(local) ) == -1 ) {
         warning() << "bind() error\n";
-        ::close ( m_sockfd );
+        ::close( m_sockfd );
         m_sockfd = -1;
         return;
     }
-    if ( ::listen( m_sockfd, 1 ) == -1 )
-    {
+
+    if( ::listen( m_sockfd, 1 ) == -1 ) {
         warning() << "listen() error\n";
         ::close( m_sockfd );
         m_sockfd = -1;
@@ -75,38 +72,31 @@ amaroK::SocketServer::SocketServer( const QString &socketname, QObject *parent )
 
 amaroK::SocketServer::~SocketServer()
 {
-    if( m_sockfd != -1 ) ::close( m_sockfd );
+    if( m_sockfd != -1 )
+        ::close( m_sockfd );
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-// CLASS Vis::SocketServer
-////////////////////////////////////////////////////////////////////////////////
 
+/// @class Vis::SocketServer
 
 Vis::SocketServer::SocketServer( QObject *parent )
         : amaroK::SocketServer( "amarok.visualization_socket", parent )
 {}
 
-
-/////////////////////////////////////////////////////////////////////////////////////////
-// PUBLIC interface
-/////////////////////////////////////////////////////////////////////////////////////////
-
 void
 Vis::SocketServer::newConnection( int sockfd )
 {
-    debug() << "[Vis::Server] Connection requested: " << sockfd << endl;
-    new SocketNotifier( sockfd );
+    debug() << "Connection requested: " << sockfd << endl;
+    new SocketNotifier( sockfd ); //handles its own memory
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////////////
-// CLASS Vis::SocketNotifier
-/////////////////////////////////////////////////////////////////////////////////////////
+
+/// @class Vis::SocketNotifier
 
 Vis::SocketNotifier::SocketNotifier( int sockfd )
-  : QSocketNotifier( sockfd, QSocketNotifier::Read, this )
+        : QSocketNotifier( sockfd, QSocketNotifier::Read, this )
 {
     connect( this, SIGNAL(activated( int )), SLOT(request( int )) );
 }
@@ -135,9 +125,8 @@ Vis::SocketNotifier::request( int sockfd ) //slot
 
             ::send( sockfd, &scope[0], scope.size()*sizeof(int16_t), 0 );
         }
-
-    } else {
-
+    }
+    else {
         debug() << "recv() error, closing socket: " << sockfd << endl;
         ::close( sockfd );
         delete this;
@@ -145,36 +134,26 @@ Vis::SocketNotifier::request( int sockfd ) //slot
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////////////
-// CLASS Vis::Selector
-/////////////////////////////////////////////////////////////////////////////////////////
 
-Vis::Selector* Vis::Selector::m_instance = 0;
+/// @class Vis::Selector
 
 Vis::Selector*
 Vis::Selector::instance()
 {
-    if ( !m_instance ) m_instance =  new Selector( reinterpret_cast<QWidget*>(pApp->playlistWindow()) );
+    QWidget *parent = (QWidget*)pApp->playlistWindow();
+    QObject *o = parent->child( "Vis::Selector::instance" );
 
-    return m_instance;
+    debug() << bool(o == 0) << endl;
+
+    return o ? (Selector*)o : new Selector( parent );
 }
 
 Vis::Selector::Selector( QWidget *parent )
-  : QListView( parent, 0, Qt::WType_Dialog )
+        : QListView( parent, "Vis::Selector::instance", Qt::WType_Dialog )
+        , m_server( new SocketServer( this ) )
 {
-    //TODO we will have to update the status of the visualisation window using the socket
-    //     it should know which processes are requesting data from it
-    //FIXME problem, you can have more than one of each vis running!
-    //      solution (for now) data starve multiple registrants <markey> Is there really a need for
-    //      running multiple instances of the _same_ vis? Methinks that's a gimmick.
-    //      <mxcl> yeah I agree, but it can happen as the vis binaries can be executed externally to
-    //      amaroK so we have to cater for the eventuality. Data starving causes them to exit.
+    debug() << m_server->path() << endl;
 
-    //TODO for now we keep the widget around as this will keep the checkboxes set as the user expects
-    //     it isn't a perfect system, but it will suffice
-    //setWFlags( Qt::WDestructiveClose ); //FIXME reenable when we can
-
-    kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n( "Visualizations" ) ) );
 
     setSorting( 0 );
@@ -184,8 +163,9 @@ Vis::Selector::Selector( QWidget *parent )
     addColumn( QString() );
     reinterpret_cast<QWidget*>(header())->hide();
 
-    connect( this, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
-             this,   SLOT( rightButton       ( QListViewItem*, const QPoint&, int ) ) );
+
+     connect( this, SIGNAL(rightButtonPressed( QListViewItem*, const QPoint&, int )),
+              this, SLOT(rightButton( QListViewItem*, const QPoint&, int )) );
 
     //can I get a pointer to the data section of a QCString?
     char str[4096];
@@ -215,9 +195,8 @@ void
 Vis::Selector::processExited( KProcess *proc )
 {
     for( Item *item = (Item*)firstChild(); item; item = (Item*)item->nextSibling() )
-    {
-        if( item->m_proc == proc ) item->setOn( false ); //will delete m_proc via stateChange( bool )
-    }
+        if( item->m_proc == proc )
+            item->setOn( false ); //will delete m_proc via stateChange( bool )
 }
 
 void
@@ -226,9 +205,11 @@ Vis::Selector::mapPID( int pid, int sockfd )
     //TODO if we don't find the PID, request process plugin so we can assign the correct checkitem
 
     for( Item *item = (Item*)firstChild(); item; item = (Item*)item->nextSibling() )
-    {
-        if( item->m_proc && item->m_proc->pid() == pid ) { item->m_sockfd = sockfd; return; }
-    }
+        if( item->m_proc && item->m_proc->pid() == pid )
+        {
+            item->m_sockfd = sockfd;
+            return;
+        }
 
     debug() << "No matching pid in the Vis::Selector!\n";
 }
@@ -238,7 +219,7 @@ Vis::Selector::rightButton( QListViewItem* item, const QPoint& pos, int )
 {
     //TODO if the vis is not running it cannot be configured and you shouldn't show the popupmenu!
 
-    if ( !item ) return;
+    if( !item ) return;
 
     KPopupMenu menu( this );
     menu.insertItem( i18n( "Configure" ), 0 );
@@ -258,9 +239,8 @@ Vis::Selector::rightButton( QListViewItem* item, const QPoint& pos, int )
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////////////
-// CLASS Vis::Selector::Item
-/////////////////////////////////////////////////////////////////////////////////////////
+
+/// @class Vis::Selector::Item
 
 Vis::Selector::Item::~Item()
 {
@@ -270,37 +250,34 @@ Vis::Selector::Item::~Item()
 void
 Vis::Selector::Item::stateChange( bool ) //SLOT
 {
-    //TODO was !m_ignoreState stuff here, why!?
-
     switch( state() ) {
     case On:
         m_proc = new KProcess();
        *m_proc << KStandardDirs::findExe( m_command )
+               << Selector::instance()->m_server->path()
                << text( 0 );
 
         connect( m_proc, SIGNAL(processExited( KProcess* )), listView(), SLOT(processExited( KProcess* )) );
 
         debug() << "Starting visualization..\n";
-
-        if( m_proc->start() ) break;
+        if( m_proc->start() )
+            break;
 
         //ELSE FALL_THROUGH
 
-        warning() << "Could not start amarok_xmmswrapper!\n";
+        warning() << "Could not start " << text( 0 ) << endl;
 
     case Off:
-        debug() << "Stopping XMMS visualization\n";
+        debug() << "Stopping visualization\n";
 
-        //m_proc->kill(); no point, will be done by delete, and crashes amaroK in some cases
         delete m_proc;
         m_proc = 0;
 
         break;
 
     default:
-        break;
+        ;
     }
 }
-
 
 #include "socketserver.moc"
