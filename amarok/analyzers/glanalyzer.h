@@ -20,8 +20,6 @@
 
 #include <config.h>
 
-#ifdef HAVE_QGLWIDGETNOWAY
-
 #include "analyzerbase3d.h"
 #include <qgl.h>
 #include <vector>
@@ -33,6 +31,13 @@ class QWidget;
  *@author piggz
  */
 
+typedef struct
+{
+  float level;
+  uint delay;
+}
+peak_tx;
+
 class GLAnalyzer : public AnalyzerBase3d
 {
   Q_OBJECT
@@ -40,8 +45,14 @@ class GLAnalyzer : public AnalyzerBase3d
 private:
   std::vector<float> m_bands;
   std::vector<float> m_oldy;
+  std::vector<peak_tx> m_peaks;
+  
   void interpolate(std::vector<float> *);
   void drawScope();
+  void drawCube();
+  void drawFrame();
+  void drawBar(float xPos, float height);
+  void drawPeak(float xPos, float ypos);
   
   GLfloat x, y;
 public:
@@ -55,5 +66,4 @@ protected:
   void resizeGL( int w, int h );
   void paintGL();
 };
-#endif
 #endif
