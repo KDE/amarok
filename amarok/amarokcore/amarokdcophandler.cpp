@@ -38,6 +38,13 @@ void AmarokDcopHandler::play()
     pApp->slotPlay();
 }
 
+void AmarokDcopHandler::playPause()
+{
+    if (isPlaying())
+	pause();
+    else
+	play();
+}
 
 void AmarokDcopHandler::stop()
 {
