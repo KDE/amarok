@@ -81,7 +81,8 @@ class PlayerWidget : public QWidget
         QFrame *m_pFrameButtons;
         AmarokSlider *m_pSlider;
         AmarokSlider *m_pSliderVol;
-        QLabel *m_pTimeDisplayLabel;
+        QLabel  *m_pTimeDisplayLabel;
+        QPixmap *m_pTimeDisplayLabelBuf;
         QLabel *m_pTimeSign;
 
         AmarokButton *m_pButtonPl;
@@ -152,6 +153,10 @@ class PlayerWidget : public QWidget
         AmarokSystray *m_pTray;
         AmarokDcopHandler *m_pDcopHandler;
 
+        bool m_remaining;
+        int m_hours;
+        int m_minutes;
+        int m_seconds;
 };
 
 #endif

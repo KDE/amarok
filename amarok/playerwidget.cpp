@@ -162,13 +162,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_oldBgPixmap.fill( m_pButtonPlay->paletteBackgroundColor() );
 
     // MainWindow Layout
-    QFont timeFont( "Arial" );
-    timeFont.setBold( TRUE );
-    timeFont.setPixelSize( 18 );
-
-    m_pTimeDisplayLabel = new QLabel( this );
-    m_pTimeDisplayLabel->setFont( timeFont );
-    m_pTimeDisplayLabel->setPaletteForegroundColor( QColor( 255, 255, 255 ) );
+    m_pTimeDisplayLabel = new QLabel( this, 0, Qt::WRepaintNoErase );
     m_pTimeDisplayLabel->move( 16, 36 );
 
     m_pTimePlusPixmap   = new QPixmap( locate( "data", "amarok/images/time_plus.png" ) );
@@ -237,6 +231,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     initScroll(); //requires m_pFrame to be created
 
     m_pTimeDisplayLabel->setFixedSize( 9 * 12 + 2, 16 );
+    m_pTimeDisplayLabelBuf = new QPixmap( m_pTimeDisplayLabel->size() );    // FIXME flickerfixer hack
     timeDisplay( false, 0, 0, 0 );
 
     // connect vistimer
@@ -375,6 +370,11 @@ void PlayerWidget::drawScroll()
 
 void PlayerWidget::timeDisplay( bool remaining, int hours, int minutes, int seconds )
 {
+    m_remaining = remaining;
+    m_hours = hours;
+    m_minutes = minutes;
+    m_seconds = seconds;
+    
     QString str;
 
     if ( hours < 10 ) str += "0";
@@ -388,8 +388,19 @@ void PlayerWidget::timeDisplay( bool remaining, int hours, int minutes, int seco
     if ( seconds < 10 ) str += "0";
     str += QString::number( seconds );
 
-    m_pTimeDisplayLabel->setText( str );
-
+/*    m_pTimeDisplayLabel ->setFont( timeFont );
+    m_pTimeDisplayLabel ->setPaletteForegroundColor( QColor( 255, 255, 255 ) );*/
+    QFont timeFont( "Arial" );
+    timeFont.setBold( TRUE );
+    timeFont.setPixelSize( 18 );
+        
+    QPainter p( m_pTimeDisplayLabelBuf );
+    p.drawPixmap( 0, 0, *paletteBackgroundPixmap() );    
+    p.setPen( QColor( 255, 255, 255 ) );    
+    p.setFont( timeFont );
+    p.drawText( 0, 16, str );       
+    bitBlt( m_pTimeDisplayLabel, 0, 0, m_pTimeDisplayLabelBuf );    // FIXME ugly hack for flickerfixing*/
+    
     if (!remaining)
         m_pTimeSign->setPixmap( *m_pTimePlusPixmap );
     else
@@ -419,6 +430,8 @@ void PlayerWidget::paintEvent( QPaintEvent * )
     pF.drawText( 6, 68, str );
 
     drawScroll();    // necessary for pause mode
+
+    timeDisplay( m_remaining, m_hours, m_minutes, m_seconds );
 }
 
 
