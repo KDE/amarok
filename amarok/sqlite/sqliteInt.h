@@ -108,9 +108,16 @@
 #ifndef INT8_TYPE
 # define INT8_TYPE signed char
 #endif
+
+/* Patched for amaroK */
 #ifndef INTPTR_TYPE
-# define INTPTR_TYPE int
+# if SIZEOF_CHAR_P==4
+#   define INTPTR_TYPE int
+# else
+#   define INTPTR_TYPE long long
+# endif
 #endif
+
 typedef UINT32_TYPE u32;           /* 4-byte unsigned integer */
 typedef UINT16_TYPE u16;           /* 2-byte unsigned integer */
 typedef UINT8_TYPE u8;             /* 1-byte unsigned integer */

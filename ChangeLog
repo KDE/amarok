@@ -4,6 +4,7 @@ amaroK ChangeLog
 
  
 VERSION 1.0-beta2:
+  FIX: Crash on AMD64 due to assumption about pointer size.
   CHG: SQLite library sourcecode now included with amaroK.
   CHG: The collection-thread now inserts its data in a temporary database while
        scanning, which allows us to safely use the collection in the meantime.
