@@ -252,6 +252,9 @@
                             <property name="backgroundMode">
                                 <enum>PaletteBackground</enum>
                             </property>
+                            <property name="frameShape">
+                                <enum>Box</enum>
+                            </property>
                             <property name="text">
                                 <string></string>
                             </property>
