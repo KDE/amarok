@@ -1210,7 +1210,7 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
 
     //boxes used to display score (sb: score box)
     styleSheet += QString( ".sbtext { padding: 0px 4px; border-left: solid %1 1px; }" ).arg( colorGroup().base().dark( 120 ).name() );
-    styleSheet += QString( ".sbouter { width: 52px; height: 10px; background-color: #E0E0E0; border: solid #808080 1px; }" );
+    styleSheet += QString( ".sbouter { width: 52px; height: 10px; background-color: %1; border: solid %2 1px; }" ).arg( colorGroup().base().dark( 120 ).name() ).arg( bg );
     styleSheet += QString( ".sbinner { height: 8px; background-color: %1; border: solid %2 1px; }" ).arg( bg ).arg( fg );
 
     styleSheet += QString( "#current_box-header-album { font-weight: normal; }" );
@@ -1414,7 +1414,7 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
     else
     {
         m_lyrics = i18n( "Lyrics not found." );
-        m_lyrics += QString( "<p><a href='lyricspage:" + m_lyricUrl + "'>" + i18n("Add Lyrics") + "</a></p>" );
+        m_lyrics += QString( "<div id='lyrics_box_addlyrics'><a href='lyricspage:" + m_lyricUrl + "'>" + i18n("Add Lyrics") + "</a></div>" );
     }
 
 
@@ -1466,7 +1466,7 @@ ContextBrowser::showLyricSuggestions()
         m_lyrics += QString( "<a href='show:suggestLyric-%1'>" ).arg( m_lyricHashes[i] );
         m_lyrics += QString( "%1</a><br />" ).arg( m_lyricSuggestions[i] );
     }
-    m_lyrics += QString( "<p><a href='lyricspage:" + m_lyricUrl + "'>" + i18n("Add Lyrics") + "</a></p>" );
+    m_lyrics += QString( "<div id='lyrics_box_addlyrics'><a href='lyricspage:" + m_lyricUrl + "'>" + i18n("Add Lyrics") + "</a></div>" );
 
 
 }
