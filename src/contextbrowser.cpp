@@ -877,34 +877,23 @@ void ContextBrowser::showCurrentStream()
     if ( m_currentTrack )
     {
         browser->write( QStringx ( "<tr><td height='42' valign='top' class='rbcurrent' width='90%'>"
-                                   "<span class='album'><b>%1 - %2</b></span><br>%3</td><td valign='top' align='right' width='10%'>"
-                                   "</td></tr></table>"
-                                   "<table width='100%'><tr><td width='20%'><a class='menu' href='fetchcover:%7 @@@ %8'>"
-                                   "<img hspace='2' src='%9'></a></td></tr>" )
+                                   "<span class='album'><b>%1</b></span><br/>%2<br/>%3<br/>%4</td>"
+                                   "<td valign='top' align='right' width='10%'> </td></tr></table>" )
                         .args( QStringList()
-                            << escapeHTML( m_currentTrack->artist() )
-                            << escapeHTML( m_currentTrack->title() )
-                            << escapeHTML( m_currentTrack->album() )
-                            << escapeHTMLAttr( m_currentTrack->artist() )
-                            << escapeHTMLAttr( m_currentTrack->album() )
-                            << escapeHTMLAttr( m_db->getImageForAlbum( "stream", "stream" ) )
+                            << escapeHTML( m_currentTrack->prettyTitle() )
+                            << escapeHTML( m_currentTrack->genre() )
+                            << escapeHTML( m_currentTrack->prettyBitrate() )
+                            << escapeHTML( m_currentTrack->prettyURL() )
                             )
                         );
     }
     else
     {
         browser->write( QStringx ( "<tr><td height='42' valign='top' class='rbcurrent' width='90%'>"
-                                   "<span class='album'><b>%1 - %2</b></span><br>%3</td><td valign='top' align='right' width='10%'>"
-                                   "</td></tr></table>"
-                                   "<table width='100%'><tr><td width='20%'><a class='menu' href='fetchcover:%7 @@@ %8'>"
-                                   "<img hspace='2' src='%9'></a></td></tr>" )
+                                   "<span class='album'><b>%1</b></span></td>"
+                                   "<td valign='top' align='right' width='10%'></td></tr></table>" )
                         .args( QStringList()
                             << escapeHTML( m_url.path() )
-                            << escapeHTML( QString::null )
-                            << escapeHTML( QString::null )
-                            << escapeHTMLAttr( QString::null )
-                            << escapeHTMLAttr( QString::null )
-                            << escapeHTMLAttr( m_db->getImageForAlbum( "stream", "stream" ) )
                             )
                         );
     }
