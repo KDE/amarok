@@ -17,21 +17,18 @@
 
 #include "amarokconfig.h"
 #include "collectiondb.h"
+#include "debug.h"
+#include <kfilemetainfo.h>
+#include <kiconloader.h>
+#include <kstringhandler.h>
+#include <math.h>
 #include "metabundle.h"
 #include "playlistitem.h"
 #include "playlist.h"
-
-#include <math.h>
-
 #include <qpainter.h>
 #include <qpen.h>
 #include <qpixmap.h>
 #include <qrect.h>
-
-#include <kdebug.h>
-#include <kfilemetainfo.h>
-#include <kiconloader.h>
-#include <kstringhandler.h>
 
 QColor PlaylistItem::glowText = Qt::white;
 QColor PlaylistItem::glowBase = Qt::white;
@@ -291,10 +288,10 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 
     const int playNext = listView()->m_nextTracks.findRef( this ) + 1;
 
-    static paintCacheItem paintCache[NUM_COLUMNS];
-
     if( this == listView()->currentTrack() && !isSelected() )
     {
+        static paintCacheItem paintCache[NUM_COLUMNS];
+
         // Convert QColor to string for use as key in QMap
         const QString colorKey =
             QString::number( glowBase.red() ) +
@@ -308,6 +305,8 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             paintCache[column].font == p->font() &&
             !s_pixmapChanged;
 
+        debug() << cacheValid << endl;
+
         // If any parameter changed, we must regenerate all pixmaps
         if ( !cacheValid )
         {
@@ -319,6 +318,9 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         // Determine if we need to repaint the pixmap, or paint from cache
         if ( paintCache[column].map.find( colorKey ) == paintCache[column].map.end() )
         {
+            debug() << "HELLO\n";
+
+
             // Update painting cache
             paintCache[column].width = width;
             paintCache[column].height = height();
@@ -362,10 +364,6 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         }
 
         p->drawPixmap( 0, 0, paintCache[column].map[colorKey] );
-
-        //if( AmarokConfig::repeatTrack() && column == listView()->m_firstColumn )
-            //TODO paint inside cache, but currently I don't want to break anything
-        //    p->drawPixmap( width - 19, (height() - 16) / 2, SmallIcon( "repeat_one" ) );
     }
     else {
         QColorGroup _cg = cg;

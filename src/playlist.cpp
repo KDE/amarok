@@ -935,6 +935,8 @@ Playlist::columnOrderChanged() //SLOT
 void
 Playlist::paletteChange( const QPalette &p )
 {
+    DEBUG_FUNC_INFO
+
     using namespace Glow;
 
     QColor fg;
@@ -960,7 +962,7 @@ Playlist::paletteChange( const QPalette &p )
     {
         using namespace Text;
 
-        const uint steps = STEPS+5; //so we don't fade all the way to base
+        const uint steps = STEPS + 5; //so we don't fade all the way to base
 
         fg = colorGroup().highlightedText();
         bg = colorGroup().text();
@@ -977,6 +979,12 @@ Playlist::paletteChange( const QPalette &p )
     Glow::counter = 63; //ensure color is set
 
     KListView::paletteChange( p );
+
+    if( m_currentTrack ) {
+        // repaint currentTrack marker
+        PlaylistItem::setPixmapChanged();
+        m_currentTrack->repaint();
+    }
 }
 
 void
@@ -1513,12 +1521,8 @@ Playlist::burnSelectedTracks( int projectType )
 void
 Playlist::shuffle() //SLOT
 {
-    //last item is never shuffled
-    debug() << __PRETTY_FUNCTION__ << ": FIX THIS FUNCTION!\n";
-
     QPtrList<QListViewItem> list;
 
-    setFilter( QString() ); //FIXME
     setSorting( NO_SORT );
 
     //if there are nexttracks re-order them
@@ -2155,7 +2159,6 @@ Playlist::slotGlowTimer() //SLOT
 
     ++counter &= 63; //built in bounds checking with &=
 }
-
 
 void
 Playlist::slotEraseMarker() //SLOT
