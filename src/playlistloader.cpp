@@ -264,7 +264,11 @@ UrlLoader::recurse( const KURL &url )
     }
 
     foreachType( FileMap, files )
-        urls += *it;
+        // users often have playlist files that reflect directories
+        // higher up, or stuff in this directory. Don't add them as
+        // it produces double entries
+        if( !PlaylistFile::isPlaylistFile( (*it).fileName() ) )
+            urls += *it;
 
     return urls;
 }
@@ -480,14 +484,14 @@ SqlLoader::doJob()
 {
     DEBUG_BLOCK
 
-    BundleList bundles;
-    QStringList values = CollectionDB::instance()->query( m_sql );
+    const QStringList values = CollectionDB::instance()->query( m_sql );
 
     setProgressTotalSteps( values.count() );
 
+    BundleList bundles;
     uint x = 0;
     for( for_iterators( QStringList, values ); it != end || isAborted(); ++it ) {
-        setProgress( ++x * 11 );
+        setProgress( x += 11 );
 
         MetaBundle b;
         b.setAlbum     (    *it );
