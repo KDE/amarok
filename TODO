@@ -72,14 +72,12 @@ MID-TERM:
 
 LONG-TERM:
 
-    add: < berkus> its a "drop-line" like in DeliPlayer - when you get a bunch of files (or a single file) and drag it around theres a single (red) line appears that shows position in which the file(s) will get dropped if you release your mouse
+    * add: < berkus> its a "drop-line" like in DeliPlayer - when you get a bunch of files (or a single file) and drag it around theres a single (red) line appears that shows position in which the file(s) will get dropped if you release your mouse
 
     * add: < berkus> add smooth fade outs on stop
 
     * change: < berkus> the volume slider is too small to make good adjustment,
       move it to the right and maximize height (?)
-
-    * add: make amarok trayable
 
     * add: make PlayerWidget shadeable (like XMMS)
 
