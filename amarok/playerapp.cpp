@@ -134,7 +134,7 @@ PlayerApp::PlayerApp() :
     m_pPlayerWidget->show();
     kapp->processEvents();
 
-    //restore last playlist    
+    //restore last playlist
     m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( kapp->dirs()->saveLocation(
                                       "data", kapp->instanceName() + "/" ) + "current.m3u", 0 );
     m_pBrowserWin->m_pPlaylistWidget->writeUndo();
@@ -771,9 +771,12 @@ void PlayerApp::readConfig()
                             this, SLOT( slotNext() ), true, true );
     m_pGlobalAccel->insert( "prev", "Previous Track", 0, CTRL + ALT + Key_R, 0,
                             this, SLOT( slotPrev() ), true, true );
-    
+
+    m_pGlobalAccel->setConfigGroup( "Shortcuts" );
     m_pGlobalAccel->readSettings( m_pConfig );
     m_pGlobalAccel->updateConnections();
+
+
 
     m_pPlayerWidget->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
     m_pBrowserWin->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
@@ -1409,6 +1412,7 @@ void PlayerApp::slotAnimTimer()
         {
             std::vector<float> *pScopeVector = m_Scope.scope();
             m_pPlayerWidget->m_pVis->drawAnalyzer( pScopeVector );
+            delete pScopeVector;
         }
         else
             m_pPlayerWidget->m_pVis->drawAnalyzer( NULL );

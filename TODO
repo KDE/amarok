@@ -8,8 +8,6 @@ SHORT-TERM:
 
     * fix: opening hidden directories is impossible in filebrowser
 
-    * fix: shortcuts not saved (?)
-
     * fix: <berkus> make sure the expandbutton doesn't fire events when
       it has had its stack expanded (behaviour a-la Winamp Classic) (?)
 
