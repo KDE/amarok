@@ -20,18 +20,18 @@
 #include <math.h>
 #include <qpainter.h>
 #include <qpixmap.h>
+#include <qbitmap.h>
 
 #include <kstandarddirs.h>
 
 // FIXME: WIP
-
 
 #undef BAND_COUNT
 #undef TIMEOUT
 #undef MAX_AMPLITUDE
 
 #define BAND_COUNT 7
-#define TIMEOUT 8
+#define TIMEOUT 60
 #define MAX_AMPLITUDE 1.1
 
 
@@ -63,8 +63,12 @@ void XmasAnalyzer::init()
    }
 
    m_pComposePixmap = new QPixmap( size() );
-   m_pBuckPixmap = new QPixmap( locate( "data", "amarok/images/bucky.png" ) );
-   m_pBuckPixmap->setOptimization( QPixmap::BestOptim );
+   m_pBuckPixmap = new QBitmap( locate( "data", "amarok/images/bucky.png" ) );
+//   m_pBuckPixmap->setOptimization( QPixmap::BestOptim );
+//   m_pSantaPixmap = new QPixmap( locate( "data", "amarok/images/santa.png" ) );
+//   m_pSantaPixmap->setOptimization( QPixmap::BestOptim );
+   m_pSantaPixmap = new QPixmap( m_pBuckPixmap->width(), m_pBuckPixmap->height() );
+   m_pSantaPixmap->setMask(*m_pBuckPixmap);
 }
 
 
@@ -74,7 +78,9 @@ void XmasAnalyzer::drawAnalyzer( std::vector<float> *s )
 
    bitBlt( m_pComposePixmap, 0, 0, grid() ); //start with a blank canvas
 
-   QPainter p( m_pComposePixmap );
+   QPainter p( m_pSantaPixmap );
+   p.setPen( Qt::red );
+   p.eraseRect( p.window() );
 
    std::vector<float> bands( BAND_COUNT, 0 );
    std::vector<float>::const_iterator it( bands.begin() );
@@ -82,13 +88,13 @@ void XmasAnalyzer::drawAnalyzer( std::vector<float> *s )
    if ( s )
       interpolate( s, bands );
 
-   for ( uint i = 0, x = 10; i < bands.size(); ++i, ++it, x+=5 )
+   for ( uint i = 0; i < bands.size(); ++i, ++it )
    {
       x2 = uint((*it) * 255);
       x2 = m_levelToX[ (x2 > 255) ? 255 : x2 ];
 
       bitBlt( m_pComposePixmap, x2, 0,
-              m_pBuckPixmap, 0, 0, m_pBuckPixmap->width(), m_pBuckPixmap->height(), Qt::CopyROP );
+              m_pSantaPixmap );
    }
 
    bitBlt( this, 0, 0, m_pComposePixmap );

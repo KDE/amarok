@@ -40,7 +40,8 @@ class XmasAnalyzer : public AnalyzerBase
 
    protected:
       QPixmap     *m_pComposePixmap;
-      QPixmap     *m_pBuckPixmap;
+      QBitmap     *m_pBuckPixmap;
+      QPixmap     *m_pSantaPixmap;
 
       uint m_levelToX[256];
 };
