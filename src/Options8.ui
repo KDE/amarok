@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>Options8</class>
 <widget class="QDialog">
     <property name="name">
@@ -17,9 +17,6 @@
             <width>1</width>
             <height>1</height>
         </size>
-    </property>
-    <property name="caption">
-        <string>Options8</string>
     </property>
     <vbox>
         <property name="name">
