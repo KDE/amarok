@@ -1,7 +1,6 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // See COPYING file for licensing information
 
-
 #include "config.h"        //for AMAZON_SUPPORT
 
 #include "amarokconfig.h"
@@ -38,6 +37,11 @@
 #include <ktoolbarbutton.h> //ctor
 #include <kurl.h>
 #include <kurldrag.h>       //dragObject()
+
+namespace IPod
+{
+#include "ipod/ipod.h"
+}
 
 #define escapeIPod(s)   QString(s).replace( "/", "%252f" )
 
@@ -129,7 +133,8 @@ void
 MediaDeviceList::renderView()
 {
     clear();
-    renderNode( 0, KURL( "ipod:/Artists/" ) );
+//    renderNode( 0, KURL( "ipod:/Artists/" ) );
+    m_parent->m_parent->m_device->items( 0 );
 }
 
 
@@ -307,7 +312,17 @@ MediaDeviceView::~MediaDeviceView()
 MediaDevice::MediaDevice( MediaBrowser* parent )
     : m_parent( parent )
 {
+    IPod::IPod* m_ipod;
     s_instance = this;
+
+    m_ipod = new IPod::IPod();
+    m_ipod->open( "/mnt/ipod/" );
+}
+
+
+MediaDevice::~MediaDevice()
+{
+//    delete m_ipod;
 }
 
 
@@ -327,6 +342,15 @@ MediaDevice::addURL( const KURL& url )
         m_parent->m_view->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_view->m_transferList->childCount() ) );
     } else
         amaroK::StatusBar::instance()->message( i18n( "Track already exists on iPod: " + url.path().local8Bit() ) );
+}
+
+
+QStringList
+MediaDevice::items( QListViewItem* item )
+{
+    QStringList items;
+//    m_ipod->getArtists( items );
+    return items;
 }
 
 

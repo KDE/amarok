@@ -6,8 +6,8 @@ endif
 
 bin_PROGRAMS = amarokapp
 
-SUBDIRS = amarokcore $(SQLITE_SUBDIR) analyzers data plugin engine images \
-	loader vis konquisidebar
+SUBDIRS = amarokcore $(SQLITE_SUBDIR) analyzers data plugin engine ipod \
+	images loader vis konquisidebar
 
 INCLUDES = \
     -I$(top_builddir)/amarok/src/amarokcore \
@@ -81,6 +81,8 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/analyzers/libanalyzers.la \
     $(top_builddir)/amarok/src/engine/libengine.la \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
+    $(top_builddir)/amarok/src/ipod/libipod.la \
+    $(top_builddir)/amarok/src/ipod/itunesdb/libitunesdb.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) \
     $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(LIB_MUSICBRAINZ) \
     $(mysql_libs)

@@ -39,8 +39,9 @@ class MediaItem : public KListViewItem
 class MediaBrowser : public QVBox
 {
     Q_OBJECT
-    friend class MediaDeviceView;
     friend class MediaDevice;
+    friend class MediaDeviceList;
+    friend class MediaDeviceView;
 
     public:
         static bool isAvailable();
@@ -115,7 +116,10 @@ class MediaDevice : public QObject
 
     public:
         MediaDevice( MediaBrowser* parent );
+        ~MediaDevice();
+
         void addURL( const KURL& url );
+        QStringList items( QListViewItem* item );
 
         static MediaDevice *instance() { return s_instance; }
 
@@ -131,6 +135,7 @@ class MediaDevice : public QObject
         KURL::List m_transferURLs;
 
         MediaBrowser* m_parent;
+//        IPod::IPod* m_ipod;
         static MediaDevice *s_instance;
 };
 
