@@ -44,7 +44,6 @@ template<class W>
 Analyzer::Base<W>::Base( QWidget *parent, uint timeout, uint scopeSize )
   : W( parent )
   , m_timeout( timeout )
-  , m_height( 0 )
   , m_fht( scopeSize )
 {}
 
@@ -171,7 +170,6 @@ Analyzer::Base2D::polish()
 void
 Analyzer::Base2D::resizeEvent( QResizeEvent *e )
 {
-    m_height = QWidget::height();
     m_background.resize( size() );
     m_canvas.resize( size() );
 

@@ -40,7 +40,6 @@ template<class W> class Base : public W
 {
 public:
     uint timeout() const { return m_timeout; }
-    uint height()  const { return m_height; }
 
 protected:
     Base( QWidget*, uint, uint = 7 );
@@ -63,7 +62,6 @@ private:
 protected:
     QTimer m_timer;
     uint   m_timeout;
-    uint   m_height;
     FHT    m_fht;
 };
 

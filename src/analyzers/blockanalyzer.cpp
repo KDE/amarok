@@ -31,6 +31,12 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
 
     setMinimumSize( MIN_COLUMNS*(WIDTH+1) -1, MIN_ROWS*(HEIGHT+1) -1 ); //-1 is padding, no drawing takes place there
     setMaximumSize( MAX_COLUMNS*(WIDTH+1) -1, MAX_ROWS*(HEIGHT+1) -1 );
+
+    //ensure that paletteChange() gets called via resizeEvent()
+    //FIXME Qt should do this! but the very first resizeEvent is with QResizeEvent( size(), size() );
+    //TODO  I reported the bug, lets see what happens for Qt 4.0
+    QResizeEvent re( size(), QSize() );
+    resizeEvent( &re );
 }
 
 BlockAnalyzer::~BlockAnalyzer()
@@ -49,16 +55,16 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
     Analyzer::Base2D::resizeEvent( e );
 
     //all is explained in analyze()..
-
-    m_columns = limit( uint(double(width()+1) / (WIDTH+1)), MAX_COLUMNS, MIN_COLUMNS ); //+1 to counter -1 in maxSizes, trust me we need this!
-    m_rows    = limit( uint(double(height()+1) / (HEIGHT+1)), MAX_ROWS, MIN_ROWS );
-
+    //+1 to counter -1 in maxSizes, trust me we need this!
+    m_columns = limit( uint(double(width()+1) / (WIDTH+1)), MAX_COLUMNS, MIN_COLUMNS );
     m_scope.resize( m_columns );
 
     if( (uint)e->oldSize().height() != height() ) //this block speeds up window resizes vastly
     {
         //NOTE height should only be set once! but it tends to get set many times when Qt is setting up
         //     the layout of the toolBar, what a waste of cycles!
+
+        m_rows = limit( uint(double(height()+1) / (HEIGHT+1)), MAX_ROWS, MIN_ROWS );
 
         const uint PRE = 1, PRO = 1; //PRE and PRO allow us to restrict the range somewhat
         for( uint z = 0; z < m_rows; ++z )
@@ -69,10 +75,11 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
 
         //for( uint x = 0; x <= m_rows; ++x ) kdDebug() << x << ": " << endl;
 
+
         paletteChange( palette() );
 
         //ox = uint(((width()%(WIDTH+1))-1)/2); //TODO make member // -1 due to margin on right in draw routine
-        oy = height()%(HEIGHT+1);             //TODO make member
+        oy = height()%(HEIGHT+1); //TODO make member
     }
 }
 
@@ -230,7 +237,7 @@ ensureContrast( const QColor &c1, const QColor &c2, uint amount = 150 )
 }
 
 void
-BlockAnalyzer::paletteChange( const QPalette &p )
+BlockAnalyzer::paletteChange( const QPalette &p ) //virtual
 {
     //Qt calls this function when the palette is changed
 
