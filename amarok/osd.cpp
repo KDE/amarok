@@ -43,7 +43,7 @@ void OSDWidget::paintOSD( const QString &text )
 {
     this->text = text;
     // Drawing process itself
-    //QPainter paint;
+    QPainter paint;
     QColor bg( 0, 0, 0 );
     QColor fg( 255, 255, 255 );
 
@@ -52,11 +52,13 @@ void OSDWidget::paintOSD( const QString &text )
     // Get desktop dimensions
     QWidget *d = QApplication::desktop();
 
-    QRect fmRect = fm->boundingRect( 0, 0, d->width(), d->height(), AlignLeft | WordBreak, this->text );
-//    fmRect.addCoords( 0, 0, fmRect.width() + 2, fmRect.height() + 2);
+    /* AlignAuto = we want to align Arabic to the right, don't we? */
+    QRect fmRect = fm->boundingRect( 0, 0, d->width(), d->height(), AlignAuto | WordBreak, this->text );
 
     QFont titleFont("Arial", 12);
-    fmRect.addCoords( 0, 0, fmRect.width() + 2, 20 );
+    QFontMetrics *titleFm = new QFontMetrics( titleFont );
+
+    fmRect.addCoords( 0, 0, 20, titleFm->height() );
 
     resize( fmRect.size() );
     //    QPixmap *buffer = new QPixmap( fmRect.width(), fmRect.height() );
@@ -65,7 +67,9 @@ void OSDWidget::paintOSD( const QString &text )
     // Draw the OnScreenMessage
     QPainter paintBuffer( &buffer );
 
-    paintBuffer.fillRect( fmRect, QColor(0x00, 0x00, 0x80) );
+    paintBuffer.setBrush( QColor(0x00, 0x00, 0x80) );
+    paintBuffer.drawRoundRect( fmRect, 1500 / fmRect.width(), 1500 / fmRect.height() );
+    //paintRoundRect( paintBuffer, fmRect );
 
     paintBuffer.setFont( titleFont );
     paintBuffer.setPen( color );
@@ -79,33 +83,36 @@ void OSDWidget::paintOSD( const QString &text )
       paintBuffer.drawText( 2, 0, width()-1, height()-1, AlignLeft | WordBreak, this->text );
       paintBuffer.drawText( 0, 2, width()-1, height()-1, AlignLeft | WordBreak, this->text );
       paintBuffer.drawText( 2, 2, width()-1, height()-1, AlignLeft | WordBreak, this->text );*/
-    paintBuffer.drawText( 3, 23, width()-1, height()-1, AlignLeft | WordBreak, this->text );
+    paintBuffer.drawText( 3, titleFm->height() + 3, width()-1, height()-1, AlignLeft | WordBreak, this->text );
 
     // Draw the text
     paintBuffer.setPen( color );
-    paintBuffer.drawText( 1, 21, width()-1, height()-1, AlignLeft | WordBreak, this->text );
+    paintBuffer.drawText( 1, titleFm->height() + 1, width()-1, height()-1, AlignLeft | WordBreak, this->text );
     paintBuffer.end();
 
     // Masking for transparency
-    /*QBitmap bm( fmRect.size() );
+    QBitmap bm( fmRect.size() );
     paint.begin( &bm );
     paint.fillRect( 0, 0, fmRect.width(), fmRect.height(), bg );
-    paint.setPen( Qt::color0 );
+    paint.setBrush( fg );
+    paint.drawRoundRect( fmRect, 1500 / fmRect.width(), 1500 / fmRect.height() );
+/*    paint.setPen( Qt::color0 );
     paint.setFont( font );
     //  paint.drawText( 0, 0, width()-1, height()-1, AlignLeft | WordBreak, this->text );
     paint.drawText( 1, 1, width()-1, height()-1, AlignLeft | WordBreak, this->text );
-    paint.drawText( 3, 3, width()-1, height()-1, AlignLeft | WordBreak, this->text );
+    paint.drawText( 3, 3, width()-1, height()-1, AlignLeft | WordBreak, this->text );*/
     //  paint.drawText( 2, 0, width()-1, height()-1, AlignLeft | WordBreak, this->text );
     //  paint.drawText( 0, 2, width()-1, height()-1, AlignLeft | WordBreak, this->text );
     //  paint.drawText( 2, 2, width()-1, height()-1, AlignLeft | WordBreak, this->text );
-    paint.end();*/
+    paint.end();
 
     delete fm;
+    delete titleFm;
 
     // Let's make it real, flush the buffers
     osdBuffer = buffer;
     // Repaint the QWidget and get it on top
-    ////setMask( bm );
+    setMask( bm );
     //    qApp->syncX();
     QWidget::show();
     raise();
