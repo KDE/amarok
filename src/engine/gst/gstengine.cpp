@@ -854,7 +854,7 @@ GstEngine::createPipeline()
     if ( !( m_gst_audioconvert = createElement( "audioconvert", m_gst_outputThread, "audioconvert" ) ) ) { return false; }
 
     // More buffers means less dropouts and higher latency
-    gst_element_set( m_gst_queue, "max-size-buffers", 100, NULL );
+    gst_element_set( m_gst_queue, "max-size-buffers", 150, NULL );
 
     g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), m_gst_outputThread );
     g_signal_connect ( G_OBJECT( m_gst_outputThread ), "error", G_CALLBACK ( error_cb ), m_gst_outputThread );
