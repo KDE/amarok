@@ -50,7 +50,13 @@ class Config( QDialog ):
 
 
     def save( self ):
-        print self.timeEdit.time().toString()
+        wakeTime = str( self.timeEdit.time().toString() )
+        print wakeTime
+
+        file = open( "alarmrc", "w" )
+        file.writelines( "wake time = " + wakeTime )
+        file.close()
+
         self.accept()
 
 
