@@ -198,10 +198,6 @@ void ContextBrowser::setStyleSheet()
                     .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
     m_styleSheet += QString( ".rbalbum:hover { color: %1; cursor: default; background-color: %2; border: solid %3 1px; }" )
                     .arg( colorGroup().base().name() ).arg( colorGroup().highlight().name() ).arg( colorGroup().text().name() );
-    m_styleSheet += QString( "A.rbalbum { color: %1; font-size: %2px; text-decoration: none; display: block; border: none; }" )
-                    .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
-    m_styleSheet += QString( "A.rbalbum:hover { color: %1; font-size: %2px; text-decoration: none; display: block; border: none; }" )
-                    .arg( colorGroup().base().name() ).arg( colorGroup().highlight().name() ).arg( colorGroup().text().name() );
     m_styleSheet += QString( ".rbcontent { border: solid %1 1px; }" )
                     .arg( colorGroup().highlight().name() );
     m_styleSheet += QString( ".rbcontent:hover { border: solid %1 1px; }" )
@@ -443,8 +439,8 @@ void ContextBrowser::showCurrentTrack()
 
         for ( uint i = 0; i < ( values.count() / 3 ); i++ )
         {
-            browser->write( QString ( "<tr><td class='rbalbum'><a href=\"album:%1/%2\"' height='42' valign='top' class='rbalbum'>"
-                                      "<img align='left' hspace='2' width='40' height='40' src='%3'>%4<br>%5 Tracks</a></td>"
+            browser->write( QString ( "<tr><td onClick='window.location.href=\"album:%1/%2\"' height='42' valign='top' class='rbalbum'>"
+                                      "<img align='left' hspace='2' width='40' height='40' src='%3'><b>%4</b><br>%5 Tracks</td>"
                                       "</tr>" )
                             .arg( values[i*3 + 2] )
                             .arg( values[i*3 + 1] )

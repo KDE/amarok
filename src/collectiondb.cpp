@@ -102,7 +102,7 @@ CollectionDB::addImageToPath( const QString path, const QString image, bool temp
 
 
 QString
-CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id, const QString defaultImage )
+CollectionDB::getPathForAlbum( const QString artist_id, const QString album_id )
 {
     QStringList values;
     QStringList names;
@@ -113,6 +113,19 @@ CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id,
 
     KURL url;
     url.setPath( values[0] );
+
+    return url.directory();
+}
+
+
+QString
+CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id, const QString defaultImage )
+{
+    QString path;
+    path = getPathForAlbum( artist_id, album_id );
+
+    KURL url;
+    url.setPath( path );
 
     return getImageForPath( url.directory(), defaultImage );
 }
