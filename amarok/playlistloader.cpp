@@ -326,9 +326,8 @@ bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissi
 
    if( !b && url.protocol() != "http" )
    {
-       b = pApp->m_pEngine->canDecode( url );
-       
-//        if( !b ) kdDebug() << "Rejected mimetype \"" << fileItem.mimetype() << "\" for: " << url.prettyURL() << endl;
+       if ( !( b = pApp->m_pEngine->canDecode( url ) ) )
+           kdDebug() << "Rejected URL: " << url.prettyURL() << endl;
     }
 
     return b;
@@ -482,11 +481,7 @@ PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
       //      <mxcl> true, but "amarok4857895.tmp" looked bad in the playlist, so I used KTempFile
       
       //we delete the tempfile in the new thread's dtor
-      #if KDE_IS_VERSION(3,1,92)
       if( KIO::NetAccess::download( m_url, path, m_thread->m_parent ) ) //should be thread-safe as we are only reading it no?
-      #else
-      if( KIO::NetAccess::download( m_url, path ) )
-      #endif
       {
          //we set true to ensure the place-holder (newItem) is deleted after processing
          PlaylistLoader *loader = new PlaylistLoader( KURL::List( KURL( path ) ), lv, newItem, true );
@@ -529,11 +524,7 @@ void TagReader::append( PlaylistItem *item )
 
       if( !running() )
       {
-#if QT_VERSION >= 0x030200         
           start( QThread::LowestPriority );
-#else
-          start();
-#endif          
           m_parent->setCursor( KCursor::workingCursor() );
       }
    }
