@@ -43,7 +43,7 @@
 #include <kaccel.h>
 
 
-PlaylistWidget::PlaylistWidget(QWidget *parent, const char *name ) : KListView(parent,name)
+PlaylistWidget::PlaylistWidget(QWidget *parent, const char *name ) : KListView( parent, name )
 {
     setName( "PlaylistWidget" );
     setFocusPolicy( QWidget::ClickFocus );
@@ -286,7 +286,7 @@ void PlaylistWidget::fetchMetaInfo()
 
 PlaylistItem* PlaylistWidget::addItem( PlaylistItem *after, KURL url )
 {
-    m_pCurrentMeta = firstChild();
+    m_pCurrentMeta = static_cast<PlaylistItem*>( firstChild() );
 
     if ( (unsigned long) after == 1 )
     {
