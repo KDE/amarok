@@ -273,9 +273,8 @@ void ContextBrowser::engineStateChanged( Engine::State state )
             m_tabBar->blockSignals( false );
             break;
         default:
-        saveHtmlData();
+            ;
     }
-
 }
 
 void ContextBrowser::saveHtmlData()
@@ -638,7 +637,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
         browser->write("</html>" );
         browser->end();
-
+        saveHtmlData(); // Send html code to file
         return;
     }
 
@@ -946,6 +945,8 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     browser->write( "</html>" );
     browser->end();
+
+    saveHtmlData(); // Send html code to file
 }
 
 
