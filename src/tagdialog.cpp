@@ -255,6 +255,7 @@ void TagDialog::init()
 
 #ifdef HAVE_MUSICBRAINZ
     connect( pushButton_musicbrainz, SIGNAL(clicked()), SLOT(musicbrainzQuery()) );
+#else
     QToolTip::add( pushButton_musicbrainz, i18n("Please install MusicBrainz to enable this functionality") );
 #endif
 
