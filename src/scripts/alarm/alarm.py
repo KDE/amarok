@@ -19,6 +19,7 @@ import sys
 from os import *
 from qt import *
 
+
 class Alarm( QApplication ):
 
     def __init__( self, args ):
