@@ -22,3 +22,5 @@ mcoptype_DATA = amarokarts.mcoptype amarokarts.mcopclass
 
 amarokmcopdir = $(libdir)/mcop/Amarok
 amarokmcop_DATA = WinSkinFFT.mcopclass Synth_STEREO_XFADE.mcopclass
+
+CLEANFILES = amarokarts.cc amarokarts.h amarokarts.mcopclass amarokarts.mcoptype
