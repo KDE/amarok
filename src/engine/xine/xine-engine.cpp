@@ -88,8 +88,9 @@ bool
 XineEngine::init()
 {
     debug() <<
-        "Welcome! 9 out of 10 cats prefer xine!\n"
+        "Initialising..\n"
         "Please report bugs to http://bugs.kde.org\n"
+        "Please note that some bugs can be fixed by using the newest available xine-lib\n"
         #ifdef XINE_SAFE_MODE
         "Running in safe-mode\n"
         #endif
@@ -145,8 +146,9 @@ XineEngine::init()
                                        &XineEngine::XineEventListener,
                                        (void*)this );
 
+    #ifndef XINE_SAFE_MODE
     startTimer( 200 ); //prunes the scope
-
+    #endif
 
     return true;
 }
@@ -165,6 +167,9 @@ XineEngine::load( const KURL &url, bool stream )
     if( xine_open( m_stream, url.url().local8Bit() ) )
     {
        #ifndef XINE_SAFE_MODE
+       //we must ensure the scope is pruned of old buffers
+       timerEvent( 0 );
+
        xine_post_out_t *source = xine_get_audio_source( m_stream );
        xine_post_in_t  *target = (xine_post_in_t*)xine_post_input( m_post, const_cast<char*>("audio in") );
        xine_post_wire( source, target );
@@ -302,12 +307,12 @@ XineEngine::scope()
     {
         MyNode *best_node = 0;
 
-        for( MyNode *node = myList->next; node != myList; node = node->next, ++Log::bufferCount )
+        for( MyNode *node = myList->next; node != myList; node = node->next, Log::bufferCount++ )
             if( node->vpts <= current_vpts && (!best_node || node->vpts > best_node->vpts) )
                best_node = node;
 
         if( !best_node || best_node->vpts_end < current_vpts ) {
-           ++Log::noSuitableBuffer; break; }
+           Log::noSuitableBuffer++; break; }
 
         int64_t
         diff  = current_vpts;
@@ -339,7 +344,7 @@ XineEngine::scope()
         current_vpts++; //FIXME needs to be done for some reason, or you get situations where it uses same buffer again and again
     }
 
-    ++Log::scopeCallCount;
+    Log::scopeCallCount++;
 
     return m_scope;
 }
@@ -347,31 +352,31 @@ XineEngine::scope()
 void
 XineEngine::timerEvent( QTimerEvent* )
 {
-    //here we prune the buffer list regularly
+   //here we prune the buffer list regularly
 
-    //we operate on a subset of the list for thread-safety
-    MyNode * const first_node = myList->next;
-    MyNode const * const list_end = myList;
+   //we operate on a subset of the list for thread-safety
+   MyNode * const first_node = myList->next;
+   MyNode const * const list_end = myList;
 
-    current_vpts = xine_get_current_vpts( m_stream );
+   current_vpts = (xine_get_status( m_stream ) == XINE_STATUS_PLAY)
+      ? xine_get_current_vpts( m_stream )
+      : std::numeric_limits<int64_t>::max(); //if state is not playing OR paused, empty the list
 
-    for( MyNode *prev = first_node, *node = first_node->next; node != list_end; node = node->next )
-    {
-        //we never delete first_node
-        //this maintains thread-safety
+   for( MyNode *prev = first_node, *node = first_node->next; node != list_end; node = node->next )
+   {
+      //we never delete first_node
+      //this maintains thread-safety
+      if( node->vpts_end < current_vpts ) {
+         prev->next = node->next;
 
-        if( node->vpts_end < current_vpts )
-        {
-           prev->next = node->next;
+         free( node->mem );
+         free( node );
 
-           free( node->mem );
-           free( node );
+         node = prev;
+      }
 
-           node = prev;
-        }
-
-        prev = node;
-    }
+      prev = node;
+   }
 }
 
 amaroK::PluginConfig*
