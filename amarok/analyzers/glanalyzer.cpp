@@ -186,6 +186,9 @@ void GLAnalyzer::drawFloor()
                 
         glScalef(40.0f, 1.0f, 10.0f);
         drawCube();
+	
+	//Set colour to full blue
+	glColor3f(0.0f, 0.0f, 1.0f);
         drawFrame();
         glPopMatrix();
 }
