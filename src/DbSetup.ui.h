@@ -10,7 +10,6 @@
 ** These will automatically be called by the form's constructor and
 ** destructor.
 *****************************************************************************/
-#include "config.h"
 
 void DbSetup::init()
 {
@@ -18,11 +17,11 @@ void DbSetup::init()
        kcfg_DatabaseEngine->insertItem( "MySQL", 1 );
     #endif
        connect(kcfg_DatabaseEngine, SIGNAL(activated( int )), SLOT(databaseEngineChanged()) );
+       mysqlConfig->setEnabled(AmarokConfig::databaseEngine() != "0"); //disable if sqlite
 }
-
 
 void DbSetup::databaseEngineChanged()
 {
     mysqlConfig->setEnabled(kcfg_DatabaseEngine->currentItem() != 0);
-    
+
 }

@@ -215,15 +215,7 @@ void AmarokConfigDialog::updateSettings()
 void AmarokConfigDialog::updateWidgets()
 {
     m_soundSystem->setCurrentText( m_pluginAmarokName[AmarokConfig::soundSystem()] );
-
     soundSystemChanged();
-
-    bool dbConfigEnabled = false;
-    if ( AmarokConfig::databaseEngine() == "1" )
-    {
-        dbConfigEnabled = true;
-    }
-    m_opt7->dbSetupFrame->mysqlConfig->setEnabled( dbConfigEnabled );
 }
 
 
