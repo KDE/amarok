@@ -43,7 +43,8 @@ XineConfigEntry::XineConfigEntry( QWidget *parent, amaroK::PluginConfig *pluginC
     }
     case XINE_CONFIG_TYPE_ENUM:
     {
-        KComboBox *box = (KComboBox*)w = new KComboBox( parent );
+        KComboBox *box = new KComboBox( parent );
+	   	w = box;
         for( int i = 0; entry->enum_values[i]; ++i )
             box->insertItem( entry->enum_values[i] );
         box->setCurrentItem( m_numValue );
@@ -53,14 +54,16 @@ XineConfigEntry::XineConfigEntry( QWidget *parent, amaroK::PluginConfig *pluginC
     }
     case XINE_CONFIG_TYPE_NUM:
     {
-        ((QSpinBox*)w = new QSpinBox( entry->range_min, entry->range_max, 1, parent ))->setValue( m_numValue );
+        w = new QSpinBox( entry->range_min, entry->range_max, 1, parent );
+		( ( QSpinBox* )w )->setValue( m_numValue );
         connect( w, SIGNAL(valueChanged( int )), this, SLOT(slotNumChanged( int )) );
         connect( w, SIGNAL(valueChanged( int )), pluginConfig, SIGNAL(viewChanged()) );
         break;
     }
     case XINE_CONFIG_TYPE_RANGE:
     {
-        QSpinBox *box = (QSpinBox*)w = new QSpinBox( parent );
+        QSpinBox *box = new QSpinBox( parent );
+		w = box;
         box->setValue( m_numValue );
         box->setRange( entry->range_min, entry->range_max );
         connect( w, SIGNAL(valueChanged( int )), this, SLOT(slotNumChanged( int )) );
@@ -69,7 +72,9 @@ XineConfigEntry::XineConfigEntry( QWidget *parent, amaroK::PluginConfig *pluginC
     }
     case XINE_CONFIG_TYPE_BOOL:
     {
-        ((QCheckBox*)w = new QCheckBox( parent ))->setChecked( m_numValue );
+        QCheckBox *box = new QCheckBox( parent );
+        w = box;
+		box->setChecked( m_numValue );
         connect( w, SIGNAL(toggled( bool )), this, SLOT(slotBoolChanged( bool )) );
         connect( w, SIGNAL(toggled( bool )), pluginConfig, SIGNAL(viewChanged()) );
         break;
