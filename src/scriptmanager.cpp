@@ -91,11 +91,19 @@ ScriptManager::~ScriptManager()
     DEBUG_BLOCK
 
     debug() << "Killing running scripts.\n";
-    ScriptMap::Iterator it;
-    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
-        delete it.data().process;
 
+    QStringList runningScripts;
+    ScriptMap::Iterator it;
+    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it ) {
+        if ( it.data().process ) {
+            delete it.data().process;
+            runningScripts << it.key();
+        }
+    }
+
+    // Save config
     KConfig* const config = amaroK::config( "ScriptManager" );
+    config->writeEntry( "Running Scripts", runningScripts );
     config->writeEntry( "Auto Run", m_base->checkBox_autoRun->isChecked() );
 
     s_instance = 0;
