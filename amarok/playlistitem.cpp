@@ -37,8 +37,8 @@
 
 PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KURL &u, const QString &title, const int length )
       : KListViewItem( parent, lvi, ( u.protocol() == "file" ) ? u.fileName() : u.prettyURL() )
-      , m_url( u )
       , corruptFile( FALSE ) //our friend threadweaver will take care of this flag
+      , m_url( u )
 {
     setDragEnabled( true );
     //setDropEnabled( true );

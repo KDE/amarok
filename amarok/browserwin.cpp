@@ -98,17 +98,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
         actions_popup->insertItem( KGlobal::iconLoader()->loadIconSet( "rebuild",    KIcon::NoGroup, KIcon::SizeSmall ), 
                                    "Shuffle", m_playlist, SLOT( shuffle() ) );
         actions_popup->insertItem( KGlobal::iconLoader()->loadIconSet( "filesaveas", KIcon::NoGroup, KIcon::SizeSmall ),
-                                   "Save Playlist", m_playlist, SLOT( savePlaylist() ) );
-        
-        QPopupMenu* play_popup = new QPopupMenu( this );
-        play_popup->insertItem( KGlobal::iconLoader()->loadIconSet( "player_fwd",    KIcon::NoGroup, KIcon::SizeSmall ),
-                                "Next", pApp, SLOT( slotNext() ) );
-        play_popup->insertItem( KGlobal::iconLoader()->loadIconSet( "player_stop",   KIcon::NoGroup, KIcon::SizeSmall ),
-                                "Stop", pApp, SLOT( slotStop() ) );
-        play_popup->insertItem( KGlobal::iconLoader()->loadIconSet( "player_pause",  KIcon::NoGroup, KIcon::SizeSmall ),
-                                "Pause", pApp, SLOT( slotPause() ) );
-        play_popup->insertItem( KGlobal::iconLoader()->loadIconSet( "player_rew",    KIcon::NoGroup, KIcon::SizeSmall ),
-                                "Previous", pApp, SLOT( slotPrev() ) );
+                                   "Save Playlist", this, SLOT( savePlaylist() ) );
         
         KToolBar* toolbar = new KToolBar( this );
         toolbar->setIconText( KToolBar::IconTextBottom );
@@ -118,15 +108,30 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
         
         toolbar->insertButton( "midi",        id_playlistActions, true, "Playlist actions" );
         toolbar->getButton( id_playlistActions )->setDelayedPopup( actions_popup );
-        
+
+        toolbar->insertLineSeparator();
+                
         toolbar->insertButton( "undo",        id_undo,            true, "Undo" );
         connect( toolbar->getButton( id_undo ), SIGNAL( clicked() ), m_playlist, SLOT( undo() ) );
         toolbar->insertButton( "redo",        id_redo,            true, "Redo" );
         connect( toolbar->getButton( id_undo ), SIGNAL( clicked() ), m_playlist, SLOT( redo() ) );
         
+        toolbar->insertLineSeparator();
+        
         toolbar->insertButton( "player_play", id_play,            true, "Play" );
         connect( toolbar->getButton( id_play ), SIGNAL( clicked() ), pApp, SLOT( slotPlay() ) );
-        toolbar->getButton( id_play )->setDelayedPopup( play_popup );
+    
+        toolbar->insertButton( "player_fwd", id_next,             true, "Next" );
+        connect( toolbar->getButton( id_next ), SIGNAL( clicked() ), pApp, SLOT( slotNext() ) );
+    
+        toolbar->insertButton( "player_stop", id_stop,            true, "Stop" );
+        connect( toolbar->getButton( id_stop ), SIGNAL( clicked() ), pApp, SLOT( slotStop() ) );
+
+        toolbar->insertButton( "player_pause", id_pause,          true, "Pause" );
+        connect( toolbar->getButton( id_pause ), SIGNAL( clicked() ), pApp, SLOT( slotPause() ) );
+        
+        toolbar->insertButton( "player_rew", id_prev,            true, "Previous" );
+        connect( toolbar->getButton( id_prev ), SIGNAL( clicked() ), pApp, SLOT( slotPrev() ) );
     //ToolBar    
         
     QBoxLayout *layV = new QVBoxLayout( this );

@@ -64,7 +64,8 @@ class BrowserWin : public QWidget
         void slotAddLocation();
 
     private:
-        enum ButtonIds { id_addItem, id_playlistActions, id_undo, id_redo, id_play };
+        enum ButtonIds { id_addItem, id_playlistActions, id_undo, id_redo, id_play,
+                         id_next, id_stop, id_pause, id_prev };
         
         bool    eventFilter( QObject*, QEvent* );
 
