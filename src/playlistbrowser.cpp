@@ -119,7 +119,7 @@ PlaylistBrowser::~PlaylistBrowser()
         QTextStream stream( &file );
         QListViewItemIterator it( m_listview );
         while( it.current() ) {
-            if( isPlaylist( *it ) ) {
+            if( isPlaylist( *it ) && !isCurrentPlaylist( *it ) ) {
                 PlaylistBrowserItem *item = (PlaylistBrowserItem*)*it;
                 stream << "File=" + item->url().path();
                 stream << "\n";
