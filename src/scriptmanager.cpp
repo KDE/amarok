@@ -366,7 +366,7 @@ ScriptManager::slotAboutScript()
     debug() << "Path: " << file.name() << endl;
 
     if ( !file.open( IO_ReadOnly ) ) {
-        KMessageBox::sorry( this, i18n( "There is no help text for this script." ) );
+        KMessageBox::sorry( this, i18n( "There is no information available for this script." ) );
         return;
     }
 
