@@ -60,7 +60,7 @@ class GstEngine : public EngineBase
         bool                                     decoderConfigurable()               { return false; }
 
     public slots:
-        void                                     play( const KURL& );
+        const QObject*                           play( const KURL& );
         void                                     play();
         void                                     stop();
         void                                     pause();

@@ -80,7 +80,7 @@ class EngineBase : public QObject
                
         virtual bool                 decoderConfigurable()                             = 0;
         
-        virtual void                 play( const KURL& )                               = 0;
+        virtual const QObject*       play( const KURL& )                               = 0;
         virtual void                 play()                                            = 0;
         virtual void                 stop()                                            = 0;
         virtual void                 pause()                                           = 0;

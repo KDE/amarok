@@ -693,21 +693,28 @@ void PlayerApp::play( const MetaBundle &bundle )
     const KURL &url = bundle.m_url;
     m_playingURL = url;
     emit currentTrack( url );
-
+    
     if ( AmarokConfig::titleStreaming() &&
          !m_proxyError &&
          !url.isLocalFile() &&
          !url.path().endsWith( ".ogg" ) )
     {
         TitleProxy::Proxy *pProxy = new TitleProxy::Proxy( url );
-        m_pEngine->play( pProxy->proxyUrl() );
+        const QObject* object = m_pEngine->play( pProxy->proxyUrl() );
 
-        connect( m_pEngine, SIGNAL( endOfTrack  () ),
-                 pProxy,      SLOT( deleteLater () ) );
-        connect( pProxy,    SIGNAL( error       () ),
-                 this,        SLOT( proxyError  () ) );
-        connect( pProxy,    SIGNAL( metaData    ( const MetaBundle& ) ),
-                 this,      SIGNAL( metaData    ( const MetaBundle& ) ) );
+        if ( object ) {
+            connect( object,    SIGNAL( destroyed   () ),
+                     pProxy,      SLOT( deleteLater () ) );
+            connect( pProxy,    SIGNAL( error       () ),
+                    this,         SLOT( proxyError  () ) );
+            connect( pProxy,    SIGNAL( metaData    ( const MetaBundle& ) ),
+                    this,       SIGNAL( metaData    ( const MetaBundle& ) ) );
+        }
+        else {
+            delete pProxy;
+            proxyError();
+            return;
+        }
     }
     else
         m_pEngine->play( url );

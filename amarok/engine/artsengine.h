@@ -69,7 +69,7 @@ class ArtsEngine : public EngineBase
         bool                                     decoderConfigurable();
  
     public slots:
-        void                                     play( const KURL& );
+        const QObject*                           play( const KURL& );
         void                                     play();
         void                                     stop();
         void                                     pause();

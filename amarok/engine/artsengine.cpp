@@ -80,7 +80,7 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
         int kill_status = ::system( kill_cmdline );
         if ( kill_status != -1 && WIFEXITED( kill_status ) )
         {
-            kdDebug() << "killall artsd succeeded." << endl;
+            kdWarning() << "killall artsd succeeded." << endl;
             restart = false;
         }
     }
@@ -102,7 +102,7 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
 
     if ( m_server.isNull() || m_server.error() )
     {
-        kdDebug() << "aRtsd not running.. trying to start" << endl;
+        kdWarning() << "aRtsd not running.. trying to start" << endl;
         // aRts seems not to be running, let's try to run it
         // First, let's read the configuration as in kcmarts
         QCString cmdline;
@@ -214,7 +214,6 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
 
 ArtsEngine::~ ArtsEngine()
 {
-    emit endOfTrack();
     m_pConnectTimer->stop();
     delete m_pPlayObject;
     delete m_pPlayObjectXfade;
@@ -313,8 +312,8 @@ EngineBase::EngineState ArtsEngine::state() const
                 return Idle;
         }
     }
-    else
-        return EngineBase::Empty;
+    
+    return EngineBase::Empty;
 }
 
 
@@ -334,7 +333,7 @@ std::vector<float>* ArtsEngine::scope()
 
 //////////////////////////////////////////////////////////////////////
 
-void ArtsEngine::play( const KURL& url )
+const QObject* ArtsEngine::play( const KURL& url )
 {
     m_xfadeFadeout = false;
     startXfade();
@@ -347,7 +346,7 @@ void ArtsEngine::play( const KURL& url )
     else
     {
         if ( m_pPlayObject->object().isNull() ) {            
-            kdDebug() << "[void ArtsEngine::play()] m_pPlayObject->object().isNull()" << endl;
+            kdDebug() << k_funcinfo << " m_pPlayObject->object().isNull()" << endl;
             
             connect( m_pPlayObject, SIGNAL( playObjectCreated() ), this, SLOT( connectPlayObject() ) );
             m_pConnectTimer->start( TIMEOUT, true );
@@ -358,15 +357,17 @@ void ArtsEngine::play( const KURL& url )
                 
         play();
     }
+
+    return m_pPlayObject;
 }
 
 
 void ArtsEngine::connectPlayObject() //SLOT
 {
-    kdDebug() << "[void ArtsEngine::connectPlayObject()]" << endl;
+    kdDebug() << k_funcinfo << endl;
     m_pConnectTimer->stop();
         
-    if ( !m_pPlayObject->object().isNull() )
+    if ( m_pPlayObject && !m_pPlayObject->isNull() && !m_pPlayObject->object().isNull() )
     {
         m_pPlayObject->object()._node()->start();
 
@@ -389,7 +390,6 @@ void ArtsEngine::connectTimeout()
     
     delete m_pPlayObject;
     m_pPlayObject = NULL;
-    emit endOfTrack();
 }
 
 
@@ -404,9 +404,8 @@ void ArtsEngine::play()
 
 void ArtsEngine::stop()
 {
-    kdDebug() << "[void ArtsEngine::stop()]" << endl;
+    kdDebug() << k_funcinfo << endl;
 
-    emit endOfTrack();
     //switch xfade channels
     m_xfadeCurrent = ( m_xfadeCurrent == "invalue1" ) ? "invalue2" : "invalue1";
 
@@ -615,7 +614,6 @@ void ArtsEngine::startXfade()
     {
         m_pPlayObjectXfade->halt();
         delete m_pPlayObjectXfade;
-        emit endOfTrack();
     }
 
     m_pPlayObjectXfade = m_pPlayObject;
@@ -637,7 +635,6 @@ void ArtsEngine::timerEvent( QTimerEvent* )
                 m_pPlayObjectXfade->halt();
                 delete m_pPlayObjectXfade;
                 m_pPlayObjectXfade = 0;
-                emit endOfTrack();
             }
         }
         float value;
@@ -647,14 +644,14 @@ void ArtsEngine::timerEvent( QTimerEvent* )
             value = log10( m_xfadeValue * 9.0 + 1.0 );
 
         m_xfade.percentage( ( m_xfadeCurrent == "invalue2" ) ? value : 1.0 - value );
-        kdDebug() << "[timerEvent] percentage: " << m_xfade.percentage() << endl;
+//         kdDebug() << k_funcinfo << "percentage: " << m_xfade.percentage() << endl;
     }
 }
 
 
 void ArtsEngine::loadEffects()
 {
-    kdDebug() << "[ArtsEngine::loadEffects()]" << endl;
+    kdDebug() << k_funcinfo << endl;
 
     QDomDocument doc;
     QFile file( kapp->dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "arts-effects.xml" );

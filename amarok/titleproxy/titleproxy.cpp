@@ -63,7 +63,7 @@ Proxy::Proxy(KURL url)
 {
     connect( this, SIGNAL( error() ), this, SLOT( deleteLater() ) );    //delete yourself in case of error 
     
-    //kdDebug() << k_funcinfo << "Called" << endl;
+    kdDebug() << k_funcinfo << endl;
     
     //socket must not be buffered! buffered socket will lead to connection problems (getting stuck)
     m_sockRemote.setSocketFlags( KExtendedSocket::inetSocket |
@@ -89,7 +89,7 @@ Proxy::Proxy(KURL url)
         m_sockPassive.setSocketFlags(KExtendedSocket::passiveSocket);
         listenResult = m_sockPassive.listen();
         kdDebug() << k_funcinfo <<
-        "Trying to bind to port " << i << ", listen() result: " << listenResult << endl;
+                     "Trying to bind to port " << i << ", listen() result: " << listenResult << endl;
         if(listenResult == 0)                     // found a free port
             break;
         m_sockPassive.reset();
@@ -112,7 +112,8 @@ Proxy::Proxy(KURL url)
 
 Proxy::~Proxy()
 {
-    //kdDebug() << k_funcinfo << "Called" << endl;
+    kdDebug() << k_funcinfo << endl;
+    
     delete[] m_pBuf;
     delete m_pSockProxy;
 }
@@ -250,8 +251,7 @@ void Proxy::processHeader(Q_LONG &index, Q_LONG bytesRead)
 
 void Proxy::transmitData(const QString &data)
 {
-    /*kdDebug() << k_funcinfo <<
-      "received new metadata: '" << data << "'" << endl;*/
+    kdDebug() << k_funcinfo << " received new metadata: '" << data << "'" << endl;
 
     MetaBundle bundle( extractStr( data, "StreamTitle" ),
                        extractStr( data, "StreamUrl" ),
