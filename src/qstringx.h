@@ -23,7 +23,7 @@ public:
     QStringx( const char* str ) : QString( str ) {};
     virtual ~QStringx() {};
     
-    QString args( const QStringList& args )
+    QString args( const QStringList& args ) const
     {
         const QStringList text = QStringList::split( QRegExp( "%\\d+" ), *this, TRUE );
         
