@@ -703,6 +703,7 @@ void PlayerWidget::setEffectsWindowShown( bool on )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 #include <kiconeffect.h>
+#include <kimageeffect.h>
 NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
     : QPushButton( parent )
     , m_glowIndex( 0 )
@@ -719,14 +720,19 @@ NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
     m_pixmapDisabled = ie.apply( pixmap, KIconEffect::ToGray, 0.7, QColor(), true );
 
     int r = 0x20, g = 0x10, b = 0xff;
+    float percentRed = 0.0;
     QPixmap temp;
     // Precalculate pixmaps for "on" icon state
     for ( int i = 0; i < NUMPIXMAPS; i++ ) {
-        temp = ie.apply( pixmap, KIconEffect::Colorize, 1.0, QColor( r, 0x10, 0x30 ), false );
+        QImage img = pixmap.convertToImage();
+        temp = KImageEffect::channelIntensity( img, percentRed, KImageEffect::Red );  
+        temp = ie.apply( temp, KIconEffect::Colorize, 1.0, QColor( r, 0x10, 0x30 ), false );
         temp = ie.apply( temp, KIconEffect::Colorize, 1.0, QColor( r, g, b ), false );
+      
         // Create new pixmap on the heap and add pointer to list
         m_glowPixmaps.append( new QPixmap( temp ) );
         
+        percentRed = percentRed + 1.0 / NUMPIXMAPS;
         r += 14;
         g += 2;
         b -= 0;

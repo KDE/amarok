@@ -50,7 +50,7 @@ protected:
     void timerEvent( QTimerEvent* );
     void drawButtonLabel( QPainter* );
     
-    static const int GLOW_INTERVAL = 30;
+    static const int GLOW_INTERVAL = 35;
     static const int NUMPIXMAPS = 16;
 
     QPixmap m_pixmapOff;
