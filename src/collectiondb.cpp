@@ -425,7 +425,7 @@ CollectionDB::addSongPercentage( const QString url, const int percentage )
     QStringList values, names;
 
     execSql( QString( "SELECT playcounter, createdate, percentage FROM statistics WHERE url = '%1';" )
-                .arg( escapeString( url ) ), &values, &names );
+                .arg( escapeString( url ) ), &values, &names, true );
 
     if ( values.count() )
     {
@@ -437,7 +437,7 @@ CollectionDB::addSongPercentage( const QString url, const int percentage )
                     .arg( escapeString( url ) )
                     .arg( values[1] )
                     .arg( score )
-                    .arg( values[0] + " + 1" ) );
+                    .arg( values[0] + " + 1" ), 0, 0, true );
         return (uint)score;
     } else
     {
@@ -445,7 +445,7 @@ CollectionDB::addSongPercentage( const QString url, const int percentage )
         execSql( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
                           "VALUES ( '%1', strftime('%s', 'now'), strftime('%s', 'now'), %2, 1 );" )
                     .arg( escapeString( url ) )
-                    .arg( (float)( ( 50 + percentage ) / 2 ) ) );
+                    .arg( (float)( ( 50 + percentage ) / 2 ) ), 0, 0, true );
         return percentage;
     }
 }
