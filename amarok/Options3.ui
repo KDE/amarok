@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>304</width>
-            <height>272</height>
+            <height>274</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -115,6 +115,9 @@
                                     <property name="name">
                                         <cstring>textLabel2</cstring>
                                     </property>
+                                    <property name="enabled">
+                                        <bool>false</bool>
+                                    </property>
                                     <property name="sizePolicy">
                                         <sizepolicy>
                                             <hsizetype>0</hsizetype>
@@ -136,6 +139,9 @@
                                 <widget class="QLabel" row="1" column="0">
                                     <property name="name">
                                         <cstring>textLabel1</cstring>
+                                    </property>
+                                    <property name="enabled">
+                                        <bool>false</bool>
                                     </property>
                                     <property name="sizePolicy">
                                         <sizepolicy>
