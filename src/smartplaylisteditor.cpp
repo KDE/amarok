@@ -217,7 +217,7 @@ QString SmartPlaylistEditor::query()
         }
     }
 
-    QString query = "SELECT tags.url FROM " + tables + whereStr + orderStr;
+    QString query = "SELECT DISTINCT tags.url FROM " + tables + whereStr + orderStr;
 
     if( m_limitCheck->isChecked() )
         query += " LIMIT 0," + QString::number( m_limitSpin->value() );
