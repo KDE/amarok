@@ -38,8 +38,6 @@ GstConfigDialog::GstConfigDialog( GstEngine const * const engine )
     m_view->kIntSpinBox_fadein->setValue( GstConfig::fadeinDuration() );
     m_view->kIntSpinBox_fadeout->setValue( GstConfig::fadeoutDuration() );
 
-    m_view->checkBox_equalizer->setChecked( GstConfig::useEqualizer() );
-
     // Connections for modification check
     connect( m_view->kComboBox_output, SIGNAL( activated( int ) ), SIGNAL( viewChanged() ) );
     connect( m_view->checkBox_outputDevice, SIGNAL( toggled( bool ) ), SIGNAL( viewChanged() ) );
@@ -48,7 +46,6 @@ GstConfigDialog::GstConfigDialog( GstEngine const * const engine )
     connect( m_view->kLineEdit_outputParams, SIGNAL( textChanged( const QString& ) ), SIGNAL( viewChanged() ) );
     connect( m_view->kIntSpinBox_fadein, SIGNAL( valueChanged( int ) ), SIGNAL( viewChanged() ) );
     connect( m_view->kIntSpinBox_fadeout, SIGNAL( valueChanged( int ) ), SIGNAL( viewChanged() ) );
-    connect( m_view->checkBox_equalizer, SIGNAL( toggled( bool ) ), SIGNAL( viewChanged() ) );
 }
 
 
@@ -73,8 +70,7 @@ GstConfigDialog::hasChanged() const
            GstConfig::useCustomOutputParams() != m_view->checkBox_outputParams->isChecked() ||
            GstConfig::outputParams()          != m_view->kLineEdit_outputParams->text() ||
            GstConfig::fadeinDuration()        != m_view->kIntSpinBox_fadein->value() ||
-           GstConfig::fadeoutDuration()       != m_view->kIntSpinBox_fadeout->value() ||
-           GstConfig::useEqualizer()          != m_view->checkBox_equalizer->isChecked();
+           GstConfig::fadeoutDuration()       != m_view->kIntSpinBox_fadeout->value();
 }
 
 
@@ -103,7 +99,6 @@ GstConfigDialog::save() //SLOT
     GstConfig::setOutputParams( m_view->kLineEdit_outputParams->text() );
     GstConfig::setFadeinDuration( m_view->kIntSpinBox_fadein->value() );
     GstConfig::setFadeoutDuration( m_view->kIntSpinBox_fadeout->value() );
-    GstConfig::setUseEqualizer( m_view->checkBox_equalizer->isChecked() );
 
     if ( changed )
         emit settingsSaved();
