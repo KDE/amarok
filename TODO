@@ -8,13 +8,11 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-    * fix: #68: <tranql> restoring last playlist on startup broken in beta3 (always empty)
-
     * fix: #67 <mikmak> sometimes the aRts effects-saver writes an empty <effectname> tag. leads to
                crash on startup when restoring effects
 
     * fix: #66 <Grue_> seems that the latest taglib from cvs is not compatible with amarok
-               <mxcl> can you be more specific?
+               <mxcl> can you be more specific? WORKSFORME
 
     * fix: #62 < buff> hmm: one question: I have QT installes without OpenGL, aRrts is available and configure is run with
                "--without-gstreamer": after compiling I have an amaroK _without_ aRts and _with_ gstreamer compiled in

@@ -24,9 +24,9 @@
 
 #include <iostream>
 #include <stdlib.h>
-#include <unistd.h>  
+#include <unistd.h>
 #include <sys/socket.h>
-#include <sys/un.h>    
+#include <sys/un.h>
 
 
 Loader::Loader( int& argc, char** argv )
@@ -39,30 +39,30 @@ Loader::Loader( int& argc, char** argv )
 //     qDebug( "[Loader::Loader()]" );
 
     m_sockfd = tryConnect();
-    
+
     //determine whether an amaroK instance is already running (LoaderServer)
-    if ( m_sockfd == -1 ) { 
+    if ( m_sockfd == -1 ) {
         //no, amaroK is not running -> show splash, start new instance
         qDebug( "[amaroK loader] amaroK not running. Trying to start it..\n" );
-        
+
         if ( splashEnabled() )
             showSplash();
-        
+
         m_pProc = new QProcess( this );
         m_pProc->addArgument( "amarokapp" );
         //hand arguments through to amaroK
-        for ( int i = 0; i < m_argc; i++ )
+        for ( int i = 1; i < m_argc; i++ )
             m_pProc->addArgument( m_argv[i] );
-        
+
         connect( m_pProc, SIGNAL( readyReadStdout() ), this, SLOT( stdoutActive() ) );
         connect( m_pProc, SIGNAL( processExited() ),   this, SLOT( doExit() ) );
         m_pProc->setCommunication( QProcess::Stdin || QProcess::Stdout );
         m_pProc->start();
-        
+
         //wait until LoaderServer starts (== amaroK is up and running)
         while( ( m_sockfd = tryConnect() ) == -1 ) {
             processEvents();
-            ::usleep( 200 * 1000 );    //== 200ms                    
+            ::usleep( 200 * 1000 );    //== 200ms
         }
         QCString str = "STARTUP";
         ::send( m_sockfd, str, str.length(), 0 );
@@ -71,7 +71,7 @@ Loader::Loader( int& argc, char** argv )
     else {
         //yes, amaroK is running -> transmit new command line args to the LoaderServer and exit
         std::cout << "[amaroK loader] amaroK is already running. Transmitting command line arguments..\n";
-        
+
         //put all arguments into one string
         QCString str;
         for ( int i = 0; i < m_argc; i++ ) {
@@ -103,14 +103,14 @@ bool Loader::splashEnabled() const
     file.open( IO_ReadOnly );
     QString line;
     QString found;
-    
+
     while ( file.readLine( line, 2000 ) != -1 ) {
         if ( line.contains( "Show Splashscreen" ) && line.contains( "false" ) )
             return false;
     }
-    
+
     //default:
-    return true; 
+    return true;
 }
 
 
@@ -123,20 +123,20 @@ void Loader::showSplash()
     proc->addArgument( "--prefix" );
     proc->start();
 
-    //wait until process has finished        
+    //wait until process has finished
     while ( proc->isRunning() );
-    
+
     //read output from kde-config
     QString path = proc->readStdout();
     path.remove( "\n" );
     path += "/share/apps/amarok/images/logo_splash.png";
 //     qDebug( path.latin1() );
-    
+
     m_pOsd = new OSDWidget;
     m_pOsd->showSplash( path );
     processEvents();
 }
-    
+
 
 int Loader::tryConnect()
 {
@@ -151,9 +151,9 @@ int Loader::tryConnect()
     QCString path( ::getenv( "HOME" ) );
     path += "/.kde/share/apps/amarok/.loader_socket";
     ::strcpy( &local.sun_path[0], path );
-    
+
     int len = ::strlen( local.sun_path ) + sizeof( local.sun_family );
-    
+
     if ( ::connect( fd, (struct sockaddr*) &local, len ) == -1 ) {
 //         qDebug( "[Loader::tryConnect()] connect() failed" );
         return -1;
@@ -166,13 +166,13 @@ int Loader::tryConnect()
 void Loader::doExit()
 {
     std::cout << "[amaroK loader] Loader exiting.\n";
-    
+
     delete m_pOsd;
     delete m_pProc;
-    
+
     if ( m_sockfd != -1 )
         ::close( m_sockfd );
-    
+
     ::exit( 0 );
 }
 
@@ -180,7 +180,7 @@ void Loader::doExit()
 void Loader::stdoutActive()
 {
     qDebug( "[Loader::stdoutActive()]" );
-    
+
     //hand amarokapp's stdout messages through to the cli
     std::cout << m_pProc->readStdout() << "\n";
 }
@@ -195,9 +195,9 @@ void Loader::stdoutActive()
 // TODO
 ////////////////////////////////////////////////////////////////////////////////
 
-//* IPC. When amaroK is already loaded, find the instance and send the command args to it, without 
+//* IPC. When amaroK is already loaded, find the instance and send the command args to it, without
 //  loading a new instance (much faster). This way we can also get rid of KUniqueApplication
-//* For a challenge, make this work without Qt! This would reduce loading time even more, especially 
+//* For a challenge, make this work without Qt! This would reduce loading time even more, especially
 //  when Qt is not already in memory
 //* Eventually rename loader to "amarok", and amaroK to "amarok-app"
 
