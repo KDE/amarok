@@ -645,7 +645,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         #endif
 
 
-        menu.insertItem( i18n( "&Append to the Playlist" ), APPEND );
+        menu.insertItem( i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( i18n( "&Make Playlist" ), MAKE );
         menu.insertItem( i18n( "&Queue After Current Track" ), QUEUE );
 
@@ -659,9 +659,9 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         }
         else if( !item->isExpandable() ) {
             menu.insertSeparator();
-            menu.insertItem( i18n("Burn to CD as data"), BURN_DATACD );
+            menu.insertItem( i18n("Burn to CD as Data"), BURN_DATACD );
             menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
-            menu.insertItem( i18n("Burn to CD as audio"), BURN_AUDIOCD );
+            menu.insertItem( i18n("Burn to CD as Audio"), BURN_AUDIOCD );
             menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
         }
 

@@ -129,8 +129,8 @@ PlaylistWindow::PlaylistWindow()
     KStdAction::keyBindings( kapp, SLOT( slotConfigGlobalShortcuts() ), ac, "options_configure_globals" );
     KStdAction::preferences( kapp, SLOT( slotConfigAmarok() ), ac );
     KStdAction::quit( kapp, SLOT( quit() ), ac );
-    KStdAction::open( this, SLOT(slotAddLocation()), ac, "playlist_add" )->setText( i18n("&Add Media") );
-    KStdAction::save( this, SLOT(savePlaylist()), ac, "playlist_save" )->setText( i18n("&Save Playlist") );
+    KStdAction::open( this, SLOT(slotAddLocation()), ac, "playlist_add" )->setText( i18n("&Add Media...") );
+    KStdAction::save( this, SLOT(savePlaylist()), ac, "playlist_save" )->setText( i18n("&Save Playlist As...") );
     new KAction( i18n("Play Audio CD"), "cdaudio_unmount", 0, this, SLOT(playAudioCD()), ac, "play_audiocd" );
 
     ac->action( "options_configure_globals" )->setText( i18n( "Configure &Global Shortcuts..." ) );
@@ -263,10 +263,10 @@ PlaylistWindow::init()
 
     //BEGIN Tools menu
     m_toolsMenu = new KPopupMenu( m_menubar );
-    m_toolsMenu->insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n("&Cover Manager..."), amaroK::Menu::ID_SHOW_COVER_MANAGER );
-    m_toolsMenu->insertItem( i18n("&First-run Wizard..."), amaroK::Menu::ID_SHOW_WIZARD );
-    m_toolsMenu->insertItem( i18n("&Visualizations..."), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
-    m_toolsMenu->insertItem( i18n("&Equalizer..."), kapp, SLOT( slotConfigEqualizer() ), 0, amaroK::Menu::ID_CONFIGURE_EQUALIZER );
+    m_toolsMenu->insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n("&Cover Manager"), amaroK::Menu::ID_SHOW_COVER_MANAGER );
+    m_toolsMenu->insertItem( i18n("&First-Run Wizard"), amaroK::Menu::ID_SHOW_WIZARD );
+    m_toolsMenu->insertItem( i18n("&Visualizations"), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
+    m_toolsMenu->insertItem( i18n("&Equalizer"), kapp, SLOT( slotConfigEqualizer() ), 0, amaroK::Menu::ID_CONFIGURE_EQUALIZER );
     #ifndef HAVE_XMMS
     m_toolsMenu->setItemEnabled( amaroK::Menu::ID_SHOW_VIS_SELECTOR, false );
     #endif

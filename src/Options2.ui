@@ -245,7 +245,7 @@
                         <cstring>kcfg_RecodeID3v1Tags</cstring>
                     </property>
                     <property name="text">
-                        <string>Recode ID3v1 Tags</string>
+                        <string>Recode ID3v1 tags</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox" row="0" column="0">

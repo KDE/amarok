@@ -13,7 +13,7 @@
         </rect>
     </property>
     <property name="caption">
-        <string>First-run Wizard - amaroK</string>
+        <string>First-Run Wizard</string>
     </property>
     <widget class="QWidget">
         <property name="name">
@@ -142,7 +142,7 @@
                             </sizepolicy>
                         </property>
                         <property name="text">
-                            <string>Single window with player and playlist 
+                            <string>Single window with player and playlist
 functionality combined (like JuK)</string>
                         </property>
                     </widget>

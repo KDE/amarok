@@ -270,7 +270,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
         menu.insertTitle( i18n("Track"), TITLE );
 
-        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Append To Playlist" ), APPEND );
+        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIcon( "next" ), i18n( "&Queue After Current Track" ), ASNEXT );
         menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
 
@@ -299,7 +299,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     case DELETE:
     {
         const int button = KMessageBox::warningContinueCancel( this,
-            i18n( "This cover will be permanently deleted" ),
+            i18n( "This cover will be permanently deleted." ),
             QString::null,
             i18n("&Delete") );
 

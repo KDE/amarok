@@ -39,7 +39,7 @@ SmartPlaylistBox::SmartPlaylistBox( QWidget *parent, const char *name )
     SmartPlaylistView *smartListView = new SmartPlaylistView( this );
 
     KActionCollection *ac = new KActionCollection( this );
-    KAction *createSmartPlayist = new KAction( i18n("Create Smart-playlist"), "filenew", 0, smartListView, SLOT( createCustomPlaylist() ), ac, "Create Smart-playlist" );
+    KAction *createSmartPlayist = new KAction( i18n("Create Smart-Playlist"), "filenew", 0, smartListView, SLOT( createCustomPlaylist() ), ac, "Create Smart-playlist" );
     KAction *remove = new KAction( i18n("Remove"), "edittrash", 0, smartListView, SLOT( removeSelectedPlaylists() ), ac, "Remove" );
 
     toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the "create smart-playlist" button to have text on right
@@ -59,7 +59,7 @@ SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
    : KListView( parent, name )
    , m_loaded( 0 )
 {
-    addColumn( i18n("Smart-playlists") );
+    addColumn( i18n("Smart-Playlists") );
     setSelectionMode(QListView::Extended);
     setSorting( 0 ); //enable sorting (used for custom smart playlists)
     setFullWidth( true );
@@ -334,9 +334,9 @@ void SmartPlaylistView::showContextMenu( QListViewItem *item, const QPoint &p, i
 
     KPopupMenu menu( this );
     //TODO menu.insertItem( i18n("Edit"), EDIT );
-    menu.insertItem( i18n("Burn to CD as data"), BURN_DATACD );
+    menu.insertItem( i18n("Burn to CD as Data"), BURN_DATACD );
     menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
-    menu.insertItem( i18n("Burn to CD as audio"), BURN_AUDIOCD );
+    menu.insertItem( i18n("Burn to CD as Audio"), BURN_AUDIOCD );
     menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
     if( item->isCustom() ) {
         menu.insertSeparator();

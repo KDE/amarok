@@ -231,8 +231,8 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
 
             QHBox* buttons = new QHBox( container );
             KPushButton* save = new KPushButton( i18n( "Save" ), buttons );
-            KPushButton* newsearch = new KPushButton( i18n( "New search" ), buttons );
-            KPushButton* cancel = new KPushButton( i18n( "Cancel" ), buttons );
+            KPushButton* newsearch = new KPushButton( i18n( "New Search" ), buttons );
+            KPushButton* cancel = new KPushButton( i18n( "&Cancel" ), buttons );
             connect( cancel, SIGNAL( clicked() ), this, SLOT( deleteLater() ) );
             connect( newsearch, SIGNAL( clicked() ), this, SLOT( editSearch() ) );
             connect( save, SIGNAL( clicked() ), this, SLOT( saveCover() ) );

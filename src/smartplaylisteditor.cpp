@@ -476,9 +476,9 @@ void CriteriaEditor::loadEditWidgets()
                 m_intSpinBox1->setMinValue( 1 );
                 m_intSpinBox1->show();
                 m_dateCombo = new KComboBox( m_editBox );
-                m_dateCombo->insertItem( i18n("days") );
-                m_dateCombo->insertItem( i18n("months") );
-                m_dateCombo->insertItem( i18n("years") );
+                m_dateCombo->insertItem( i18n("Days") );
+                m_dateCombo->insertItem( i18n("Months") );
+                m_dateCombo->insertItem( i18n("Years") );
                 m_dateCombo->show();
             }
             else {

@@ -125,9 +125,9 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     hbox->addStretch();
     // view menu
     m_viewMenu = new KPopupMenu( m_viewButton );
-    m_viewMenu->insertItem( i18n("All albums"), AllAlbums );
-    m_viewMenu->insertItem( i18n("Albums with cover"), AlbumsWithCover );
-    m_viewMenu->insertItem( i18n("Albums without cover"), AlbumsWithoutCover );
+    m_viewMenu->insertItem( i18n("All Albums"), AllAlbums );
+    m_viewMenu->insertItem( i18n("Albums with Cover"), AlbumsWithCover );
+    m_viewMenu->insertItem( i18n("Albums without Cover"), AlbumsWithoutCover );
     m_viewMenu->setItemChecked( AllAlbums, true );
     connect( m_viewMenu, SIGNAL( activated(int) ), SLOT( changeView(int) ) );
     m_viewButton->setPopup( m_viewMenu );
@@ -135,7 +135,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
 
     #ifdef AMAZON_SUPPORT
     //fetch missing covers button
-    m_fetchButton = new KPushButton( KGuiItem( i18n("Fetch missing covers"), "cdrom_unmount" ), coverWidget );
+    m_fetchButton = new KPushButton( KGuiItem( i18n("Fetch Missing Covers"), "cdrom_unmount" ), coverWidget );
     hbox->addWidget( m_fetchButton );
     connect( m_fetchButton, SIGNAL(clicked()), SLOT(fetchMissingCovers()) );
     #endif
@@ -402,23 +402,23 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
     QPtrList<CoverViewItem> selected = selectedItems();
     if( selected.count() > 1 ) {
         #ifdef AMAZON_SUPPORT
-        menu.insertItem( SmallIcon("www"), i18n("Fetch selected covers"), FETCH );
+        menu.insertItem( SmallIcon("www"), i18n("Fetch Selected Covers"), FETCH );
         #endif
-        menu.insertItem( SmallIcon("editdelete"), i18n("Delete selected covers"), DELETE );
+        menu.insertItem( SmallIcon("editdelete"), i18n("Delete Selected Covers"), DELETE );
 
     }
     else {
-        menu.insertItem( SmallIcon("viewmag"), i18n("Show fullsize"), SHOW );
+        menu.insertItem( SmallIcon("viewmag"), i18n("Show Fullsize"), SHOW );
         menu.setItemEnabled( SHOW, item->hasCover() );
         #ifdef AMAZON_SUPPORT
-        menu.insertItem( SmallIcon("www"), i18n("Fetch cover"), FETCH );
+        menu.insertItem( SmallIcon("www"), i18n("Fetch Cover"), FETCH );
         menu.insertSeparator();
-        menu.insertItem( SmallIcon("folder_image"), i18n("Add custom cover"), CUSTOM );
+        menu.insertItem( SmallIcon("folder_image"), i18n("Add Custom Cover"), CUSTOM );
         #else
-        menu.insertItem( SmallIcon("folder_image"), i18n("Add cover"), CUSTOM );
+        menu.insertItem( SmallIcon("folder_image"), i18n("Add Cover"), CUSTOM );
         #endif
         menu.insertSeparator();
-        menu.insertItem( SmallIcon("editdelete"), i18n("Delete cover"), DELETE );
+        menu.insertItem( SmallIcon("editdelete"), i18n("Delete Cover"), DELETE );
         menu.setItemEnabled( DELETE, item->hasCover() );
     }
 
@@ -436,7 +436,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
         case CUSTOM:
         {
             /* This opens a file-open-dialog and copies the selected image to albumcovers, scaled and unscaled. */
-            KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select cover image file - amaroK" ) );
+            KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select Cover Image File" ) );
             if ( !file.isEmpty() )
             {
                 qApp->processEvents();    //it may takes a while so process pending events

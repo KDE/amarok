@@ -56,7 +56,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     QVBox *browserBox = new QVBox( m_splitter );
     //<Toolbar>
     m_ac = new KActionCollection( this );
-    KAction *open = new KAction( i18n("Add playlist"), "fileopen", 0, this, SLOT( openPlaylist() ), m_ac, "Open" );
+    KAction *open = new KAction( i18n("Add Playlist..."), "fileopen", 0, this, SLOT( openPlaylist() ), m_ac, "Open" );
     renameButton = new KAction( i18n("Rename"), "editclear", 0, this, SLOT( renameSelectedPlaylist() ), m_ac, "Rename" );
     removeButton = new KAction( i18n("Remove"), "edittrash", 0, this, SLOT( removeSelectedItems() ), m_ac, "Remove" );
     deleteButton = new KAction( i18n("Delete"), "editdelete", 0, this, SLOT( deleteSelectedPlaylists() ), m_ac, "Delete" );
@@ -580,9 +580,9 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
             menu.insertSeparator();
 
-            menu.insertItem( i18n("Burn to CD as data"), BURN_DATACD );
+            menu.insertItem( i18n("Burn to CD as Data"), BURN_DATACD );
             menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
-            menu.insertItem( i18n("Burn to CD as audio"), BURN_AUDIOCD );
+            menu.insertItem( i18n("Burn to CD as Audio"), BURN_AUDIOCD );
             menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
 
             switch( menu.exec( p ) )
@@ -609,7 +609,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             enum Id { LOAD, ADD, SAVE, RESTORE, RENAME, REMOVE, DELETE };
 
             menu.insertItem( i18n( "&Load" ), LOAD );
-            menu.insertItem( i18n( "&Append to playlist" ), ADD );
+            menu.insertItem( i18n( "&Append to Playlist" ), ADD );
             menu.insertSeparator();
             if( item->isModified() ) {
                 menu.insertItem( SmallIcon("filesave"), i18n( "&Save" ), SAVE );
@@ -663,9 +663,9 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         menu.insertSeparator();
 
-        menu.insertItem( i18n("Burn to CD as data"), BURN_DATACD );
+        menu.insertItem( i18n("Burn to CD as Data"), BURN_DATACD );
         menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() && item->url().isLocalFile() );
-        menu.insertItem( i18n("Burn to CD as audio"), BURN_AUDIOCD );
+        menu.insertItem( i18n("Burn to CD as Audio"), BURN_AUDIOCD );
         menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() && item->url().isLocalFile() );
 
         menu.insertSeparator();

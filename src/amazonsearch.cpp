@@ -54,7 +54,7 @@ AmazonSearch::AmazonSearch( QWidget* parent, const char* name, bool modal, WFlag
 
 void AmazonSearch::openFile() //SLOT
 {
-    KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select cover image file - amaroK" ) );
+    KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select Cover Image File" ) );
 
     if ( !file.isEmpty() )
     {

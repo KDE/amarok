@@ -13,7 +13,7 @@
         </rect>
     </property>
     <property name="caption">
-        <string>Meta Information - amaroK</string>
+        <string>Meta Information</string>
     </property>
     <vbox>
         <property name="name">
@@ -233,7 +233,7 @@
                         <cstring>pushButton_musicbrainz</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Fill-in Tags Using MusicBrainz</string>
+                        <string>&amp;Fill-In Tags Using MusicBrainz</string>
                     </property>
                     <property name="autoDefault">
                         <bool>false</bool>

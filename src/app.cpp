@@ -288,7 +288,7 @@ void App::initGlobalShortcuts()
                             ec, SLOT( increaseVolume() ), true, true );
     m_pGlobalAccel->insert( "voldn", i18n( "Decrease Volume" ), 0, KKey("WIN+KP_Subtract"), 0,
                             ec, SLOT( decreaseVolume() ), true, true );
-    m_pGlobalAccel->insert( "playlist_add", i18n( "Add Media" ), 0, KKey("WIN+a"), 0,
+    m_pGlobalAccel->insert( "playlist_add", i18n( "Add Media..." ), 0, KKey("WIN+a"), 0,
                             m_pPlaylistWindow, SLOT( slotAddLocation() ), true, true );
     m_pGlobalAccel->insert( "show", i18n( "Toggle Playlist Window" ), 0, KKey("WIN+p"), 0,
                             m_pPlaylistWindow, SLOT( showHide() ), true, true );

@@ -95,7 +95,7 @@
                         <cstring>kcfg_AutoShowContextBrowser</cstring>
                     </property>
                     <property name="text">
-                        <string>Auto show Context-Browser</string>
+                        <string>Auto show context browser</string>
                     </property>
                 </widget>
             </vbox>
@@ -116,7 +116,7 @@
                         <cstring>textLabel1</cstring>
                     </property>
                     <property name="text">
-                        <string>Default size for cover previews</string>
+                        <string>Default size for cover previews:</string>
                     </property>
                 </widget>
                 <widget class="QSpinBox" row="4" column="1">

@@ -62,7 +62,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     groupBox            = new QGroupBox( 2, Qt::Horizontal, i18n("Sound System"), opt6 );
     m_engineConfigFrame = new QGroupBox( 1, Qt::Horizontal, opt6 );
     m_soundSystem       = new QComboBox( false, groupBox );
-    aboutEngineButton   = new QPushButton( i18n("About..."), groupBox );
+    aboutEngineButton   = new QPushButton( i18n("About"), groupBox );
 
     KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'engine'" );
 
