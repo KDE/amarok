@@ -1046,7 +1046,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 albumYear = albumValues[ 3 ];
                 for ( uint j = 0; j < albumValues.count(); j += 5 )
                 {
-                    if ( albumValues[j + 3] != albumYear )
+                    if ( albumValues[j + 3] != albumYear || albumYear == "0" )
                     {
                         albumYear = QString::null;
                         break;
