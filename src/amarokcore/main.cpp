@@ -40,7 +40,7 @@ int main( int argc, char *argv[] )
     aboutData.addAuthor( "Mike 'Purple is not girly!' Diehl", I18N_NOOP( "Preci-i-o-u-u-s handbook maintainer (madpenguin8)" ), "madpenguin8@yahoo.com" );
     aboutData.addAuthor( "Pierpaolo 'Spaghetti Coder' Di Panfilo", I18N_NOOP( "Playlist-browser, cover-manager (teax)" ), "pippo_dp@libero.it" );
     aboutData.addAuthor( "Roman 'And God said, let there be Mac' Becker", I18N_NOOP( "amaroK logo, splash screen, icons" ), "roman@formmorf.de", "http://www.formmorf.de" );
-    aboutData.addAuthor( "Stanislav 'All you need is DCOP' Karchebny", I18N_NOOP( "DCOP, improvements, cleanups, i18n (berkus)" ), "berk@upnet.ru" );
+    aboutData.addAuthor( "Stanislav 'All you need is DCOP' Karchebny", I18N_NOOP( "DCOP, improvements, cleanups, i18n (berkus)" ), "berkus@madfire.net" );
 
     aboutData.addCredit( "Adam Pigg", I18N_NOOP( "Analyzers, patches" ), "adam@piggz.fsnet.co.uk" );
     aboutData.addCredit( "Adeodato Simó", I18N_NOOP( "Patches" ), "asp16@alu.ua.es" );
