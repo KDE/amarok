@@ -64,7 +64,7 @@ if test x$have_gst = xno; then
     echo " ="
     echo " = The optional GStreamer-engine will not be built. If you want to use the"
     echo " = powerful GStreamer multimedia framework with amaroK, please download"
-    echo " = version $GST_REQ or higher from http://freedesktop.org/~gstreamer/."
+    echo " = version $GST_REQ or higher from http://gstreamer.freedesktop.org/"
     echo " = If you are sure GStreamer is already installed then there is most likely a"
     echo " = problem with your pkg-config setup, see amarok/README"
     echo " ="
@@ -79,7 +79,7 @@ if test x$have_gst_plugins = xno -a x$have_gst = xyes; then
     echo " = No GStreamer plugins were detected!"
     echo " = Without plugins you will not be able to play any media using the"
     echo " = GStreamer-engine! You need at least the MP3 plugin and a sink plugin, (eg."
-    echo " = ALSAsink). Please refer to http://freedesktop.org/~gstreamer/"
+    echo " = ALSAsink). Please refer to http://gstreamer.freedesktop.org/"
     echo " = NOTE: you will still be able to play media with another engine plugin."
     echo " ="
 fi
