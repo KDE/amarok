@@ -1,6 +1,5 @@
 amaroK README
 =============
-
 amaroK - a new media player for KDE
 
 There are many media players around these days, true. What's missing from most
@@ -21,10 +20,44 @@ drop interface, that really makes playlist handling easy.
 
     - nice GUI, integrates into the KDE look, but with a unique touch
 
-
+    
 --------------------------------------------------------------------------------
+DEPENDENCIES
+============   
 
-Important Install Instructions
+Required:
+    
+    * KDELIBS 3.2
+      http://www.kde.org
+    
+    * TagLib 1.0
+      http://freshmeat.net/projects/taglib
+    
+Recommended:
+    
+    * GStreamer-0.8 + Gst-Plugins-0.8
+      http://gstreamer.net
+
+    * SQLite 2.8
+      http://www.sqlite.org  
+      
+    * SDL
+      http://www.libsdl.org      
+
+    * OpenGL accelerated X-Server
+            
+Optional:
+    
+    * aRts 1.2 + KDEMULTIMEDIA 3.2
+      http://www.kde.org
+    
+    * NMM 0.4.4
+      http://www.networkmultimedia.org
+    
+          
+        
+--------------------------------------------------------------------------------
+IMPORTANT INSTALL INSTRUCTIONS
 ==============================
 
 In order to compile and install amaroK on your system, type the following in the
@@ -45,5 +78,7 @@ compile failure. See the file INSTALL for more information.
 
 --------------------------------------------------------------------------------
 
-Project Site:   http://amarok.sf.net
-Irc Channel:    irc.freenode.net: #amarok
+WWW:  http://amarok.sf.net
+IRC:  irc.freenode.net, #amarok
+MAIL: amarok-devel@lists.sourceforge.net
+
