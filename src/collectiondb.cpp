@@ -458,8 +458,8 @@ CollectionDB::updateDirStats( QString path, const long datetime )
         path = path.left( path.length() - 1 );
 
     execSql( QString( "REPLACE INTO directories ( dir, changedate ) VALUES ( '%1', %2 );" )
-             .arg( escapeString( path ) )
-             .arg( datetime ) );
+                .arg( escapeString( path ) )
+                .arg( datetime ) );
 }
 
 
@@ -470,7 +470,7 @@ CollectionDB::removeSongsInDir( QString path )
         path = path.left( path.length() - 1 );
 
     execSql( QString( "DELETE FROM tags WHERE dir = '%1';" )
-             .arg( escapeString( path ) ) );
+                .arg( escapeString( path ) ) );
 }
 
 
@@ -484,7 +484,7 @@ CollectionDB::isDirInCollection( QString path )
         path = path.left( path.length() - 1 );
 
     execSql( QString( "SELECT changedate FROM directories WHERE dir = '%1';" )
-             .arg( escapeString( path ) ), &values, &names );
+                .arg( escapeString( path ) ), &values, &names );
 
     return !values.isEmpty();
 }
@@ -497,7 +497,7 @@ CollectionDB::isFileInCollection( const QString url )
     QStringList names;
 
     execSql( QString( "SELECT url FROM tags WHERE url = '%1';" )
-             .arg( escapeString( url ) ), &values, &names );
+                .arg( escapeString( url ) ), &values, &names );
 
     return !values.isEmpty();
 }
@@ -536,7 +536,7 @@ CollectionDB::removeDirFromCollection( QString path )
         path = path.left( path.length() - 1 );
 
     execSql( QString( "DELETE FROM directories WHERE dir = '%1';" )
-             .arg( escapeString( path ) ) );
+                .arg( escapeString( path ) ) );
 }
 
 
@@ -546,7 +546,8 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
     if ( debug )
         kdDebug() << "SQL-query: " << statement << endl;
 
-    if ( !m_db ) {
+    if ( !m_db )
+    {
         kdWarning() << k_funcinfo << "SQLite pointer == NULL.\n";
         return false;
     }
@@ -556,9 +557,9 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
     int error;
     //compile SQL program to virtual machine
     error = sqlite3_prepare( m_db, statement.local8Bit(), statement.length(), &stmt, &tail );
-//    error = sqlite3_compile( m_db, statement.local8Bit(), &tail, &vm, &errorStr );
 
-    if ( error != SQLITE_OK ) {
+    if ( error != SQLITE_OK )
+    {
         kdWarning() << k_funcinfo << "sqlite_compile error:\n";
         kdWarning() << sqlite3_errmsg( m_db ) << endl;
         kdWarning() << "on query: " << statement << endl;
@@ -578,19 +579,14 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
         for ( int i = 0; i < number; i++ )
         {
             if ( values ) *values << QString( (const char*)sqlite3_column_text( stmt, i ) );
-            
-/*            if ( sqlite3_column_type( stmt, i ) == 1 )
-                *values << QString::number( sqlite3_column_int( stmt, i ) );*/
-
-//            *names << QString::fromAscii( (const char *)sqlite3_column_text( stmt, i ) );
-//            if ( values ) *values << QString::fromLocal8Bit( value [i] );
-//            if ( names ) *names << QString::fromLocal8Bit( colName[i] );
+            if ( names )  *names  << QString( sqlite3_column_name( stmt, i ) );
         }
     }
     //deallocate vm ressources
     sqlite3_finalize( stmt );
 
-    if ( error != SQLITE_DONE ) {
+    if ( error != SQLITE_DONE )
+    {
         kdWarning() << k_funcinfo << "sqlite_step error.\n";
         kdWarning() << sqlite3_errmsg( m_db ) << endl;
         return false;
