@@ -30,8 +30,20 @@ protected:
 
 private:
     bool event( QEvent* );
-    void paintProgressIcon( int percent = 100 );
+    
+    enum TrayOverlay { OV_none, OV_play, OV_pause, OV_stop };
+
+    // repaints trayIcon showing progress (and overlay if present)
+    void paintIcon( int percent, TrayOverlay overlay );
+    
+    // blend an overlay icon over 'sourcePixmap' and repaint trayIcon
+    void blendOverlay( QPixmap * sourcePixmap, TrayOverlay overlay );
+
+    // load overlay pixmap (taken from icons/b_iconName.png)
+    QPixmap * loadOverlay( const char * iconName );
+
     QPixmap *baseIcon, *grayedIcon, *alternateIcon;
+    QPixmap *playOverlay, *pauseOverlay, *stopOverlay;
     long trackLength, trackPercent, drawnPercent;
 };
 
