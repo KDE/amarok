@@ -207,7 +207,8 @@ void EngineController::restoreSession()
 
 void EngineController::endSession()
 {
-    if ( m_bundle.length() > 0 )
+    //only update song stats, when we're not going to resume it
+    if ( m_bundle.length() > 0 && !AmarokConfig::resumePlayback() )
         trackEnded( m_engine->position(), m_bundle.length() * 1000 );
 }
 
