@@ -465,7 +465,7 @@ CollectionDB::getImageForPath( const QString path, uint width )
     if ( m_cacheDir.exists( filename.lower() ) )
         return m_cacheDir.absPath() + "/" + filename.lower();
 #endif
-    query( QString( "SELECT name FROM images WHERE path = '%1';" )
+    query( QString( "SELECT name FROM images WHERE path = '%1' ORDER BY name;" )
                     .arg( escapeString( path ) ) );
 
     if ( !m_values.isEmpty() )
