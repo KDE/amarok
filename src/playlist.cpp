@@ -338,6 +338,23 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
     m_ac->action( "prev" )->setEnabled( true );
     m_ac->action( "next" )->setEnabled( true );
 
+    if( list.count() == 1 )
+    {
+        //if safe just add it
+
+        const KURL &url = list.front();
+
+        if( PlaylistLoader::isPlaylist( url ) )
+        {
+            if( !url.isLocalFile() )
+            {
+                PlaylistLoader::downloadPlaylist( url, this, after, directPlay );
+                return;
+            }
+            //else use the normal loader route
+        }
+    }
+
     if( !list.isEmpty() )
     {
         setSorting( NO_SORT );
