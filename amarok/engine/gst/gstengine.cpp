@@ -48,7 +48,7 @@ int           GstEngine::m_scopeSize;
 
 
 void
-GstEngine::eos_cb( GstElement *typefind, GstElement *pipeline )
+GstEngine::eos_cb( GstElement*, GstElement* )
 {
     kdDebug() << "GstEngine::eos_cb" << endl;
 
@@ -58,30 +58,36 @@ GstEngine::eos_cb( GstElement *typefind, GstElement *pipeline )
 
 
 void
-GstEngine::handoff_cb( GstElement *identity, GstBuffer *buf, GstElement *pipeline )
+GstEngine::handoff_cb( GstElement*, GstBuffer* buf, GstElement* )
 {
-//     kdDebug() << k_funcinfo << endl;
-    
+    const int channels = 2;    //FIXME read number of channels from GST    
+
     if ( GST_IS_BUFFER( buf ) )
     {
 //         kdDebug() << k_funcinfo << "BUFFER_SIZE: " << GST_BUFFER_SIZE( buf ) << endl;
-        guint8* data = GST_BUFFER_DATA( buf );
+        gint16* data = (gint16*) GST_BUFFER_DATA( buf );
 
-        for ( ulong i = 0; i < GST_BUFFER_SIZE( buf ); ++i )
+        //divide length by 2 for casting from 8bit to 16bit, and divide by number of channels
+        for ( ulong i = 0; i < GST_BUFFER_SIZE( buf ) / 2 / channels; i += channels )
         {
             if ( m_scopeBufIndex == m_scopeBuf.size() )
                 m_scopeBufIndex = 0;
                 
-            //convert uint-8 to float and write into buf
-            m_scopeBuf[ m_scopeBufIndex++ ] = (float) data[ i ] / 256.0;
-           
+            float temp = 0.0;
+            //add all channels together so we effectively get a mono scope
+            for ( int j = 0; j < channels; j++ ) {             
+                //convert uint-16 to float and write into buf
+                temp += (float)( data[i+j] - 32768 ) / 32768.0 / channels;
+            }
+            
+            m_scopeBuf[m_scopeBufIndex++] = temp;                
         }
     }
 }
 
 
 void
-GstEngine::typefindError_cb( GstElement *typefind, GstElement *pipeline )
+GstEngine::typefindError_cb( GstElement*, GstElement *pipeline )
 {
     kdDebug() << "GstEngine::typefindError" << endl;
 
@@ -152,11 +158,9 @@ GstEngine::init( bool&, int scopeSize, bool )
     m_pAudiosink           = gst_element_factory_make( "osssink", "play_audio" );
     GstElement *pIdentity  = gst_element_factory_make( "identity", "rawscope" );
 
-//     g_signal_connect ( G_OBJECT( m_pAudiosink ), "handoff",
-//                        G_CALLBACK( handoff_cb ), m_pThread );
-
     g_signal_connect ( G_OBJECT( pIdentity ), "handoff",
                        G_CALLBACK( handoff_cb ), m_pThread );
+    
     g_signal_connect ( G_OBJECT( m_pAudiosink ), "eos",
                        G_CALLBACK( eos_cb ), m_pThread );
 

@@ -49,7 +49,7 @@ Loader::Loader( int& argc, char** argv )
         m_pProc = new QProcess( this );
         
         QString path = argv[0];
-        path.replace( "amarok", "amarokapp" );        
+        path.replace( "amarok", "amarokapp" );   //FIXME!!! don't replace in path
         m_pProc->addArgument( path );
         
         //hand arguments through to amaroK
