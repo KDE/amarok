@@ -30,7 +30,6 @@ QString QStringx::args( const QStringList& l )
 {
   QStringList k = QStringList::split( QRegExp( "%\\d+" ), *this, TRUE );
   Q_ASSERT( k.count()-1 == l.count() );
-  // let's marge!
   QString r;
   for ( unsigned int i=0 ; i < k.count()-1 ; ++i )
     r += k[i] + l[i];
