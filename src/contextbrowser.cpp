@@ -340,7 +340,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
     if ( url.protocol() == "file" )
     {
-        enum menuIds { APPEND, ASNEXT, MAKE, BURN_DATACD, BURN_AUDIOCD };
+        enum menuIds { APPEND, ASNEXT, MAKE };
 
         KPopupMenu menu( this );
         menu.insertTitle( i18n( "Track" ) );
@@ -348,12 +348,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         //menu.setItemEnabled( APPEND );
         menu.insertItem( SmallIcon( "next" ), i18n( "&Queue After Current Track" ), ASNEXT );
         menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
-        menu.insertSeparator();
-        menu.insertItem( SmallIcon( "cdaudio_unmount" ), i18n( "&Burn Audio-CD" ), BURN_AUDIOCD );
-        menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n( "Burn &Data-CD" ), BURN_DATACD );
-        menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
-        menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
-
+        
         switch ( menu.exec( point ) )
         {
             case APPEND:
@@ -369,31 +364,19 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
                 Playlist::instance()->appendMedia( url, true, true );
                 break;
 
-            case BURN_DATACD:
-                K3bExporter::instance()->exportTracks( url, K3bExporter::DataCD );
-                break;
-
-            case BURN_AUDIOCD:
-                K3bExporter::instance()->exportTracks( url, K3bExporter::AudioCD );
-                break;
         }
     }
     if ( url.protocol() == "album" )
     {
-        enum menuIds { APPEND, ASNEXT, MAKE, BURN_DATACD, BURN_AUDIOCD };
+        enum menuIds { APPEND, ASNEXT, MAKE };
 
         KPopupMenu menu( this );
         menu.insertTitle( i18n( "Album" ) );
         menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Append To Playlist" ), APPEND );
         menu.insertItem( SmallIcon( "next" ), i18n( "&Queue After Current Track" ), ASNEXT );
         menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
-        menu.insertSeparator();
-        menu.insertItem( SmallIcon( "cdaudio_unmount" ), i18n( "&Burn Audio-CD" ), BURN_AUDIOCD );
-        menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n( "Burn &Data-CD" ), BURN_DATACD );
-        menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
-        menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
-
-         int id = menu.exec( point );
+                 
+        int id = menu.exec( point );
 
         QStringList list = QStringList::split( " @@@ ", url.path() );
         QStringList values;
@@ -439,15 +422,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
                     Playlist::instance()->appendMedia( tmp, false, true );
                 }
             break;
-
-            case BURN_DATACD:
-                K3bExporter::instance()->exportTracks( url, K3bExporter::DataCD );
-                break;
-
-            case BURN_AUDIOCD:
-                K3bExporter::instance()->exportTracks( url, K3bExporter::AudioCD );
-                break;
-        }
+         }
      }
 }
 
