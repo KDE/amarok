@@ -113,10 +113,10 @@ PlaylistLoader::~PlaylistLoader()
 
 class TagsEvent : public QCustomEvent {
 public:
-    TagsEvent( const KURL &u, PlaylistItem *i )
+    TagsEvent( const MetaBundle &b, PlaylistItem *i )
             : QCustomEvent( 1000 )
             , item( i )
-            , bundle( u, true, CollectionDB::instance() ) {}
+            , bundle( b ) {}
 
     TagsEvent( const KURL &u, const QDomNode &n )
             : QCustomEvent( 1001 )
@@ -133,21 +133,25 @@ public:
 bool
 PlaylistLoader::doJob()
 {
-    typedef QPair<KURL, PlaylistItem*> Pair;
+    typedef QValueList<MetaBundle> BundleList;
+    typedef QPair<MetaBundle, PlaylistItem*> Pair;
     typedef QValueList<Pair> PairList;
     PairList pairs;
 
     setProgressTotalSteps( m_URLs.count() );
     setStatus( i18n("Populating playlist") );
 
-    // 1st pass create items
-    KURL::List::ConstIterator it;
-    KURL::List::ConstIterator end = m_URLs.end();
+    //TODO should I only send it local urls?
+    BundleList bundles = CollectionDB::instance()->bundlesByUrls( m_URLs );
 
-    for ( it = m_URLs.begin(); it != end && !isAborted(); ++it ) {
+    // 1st pass create items
+    BundleList::ConstIterator it;
+    BundleList::ConstIterator end = bundles.end();
+
+    for ( it = bundles.begin(); it != end && !isAborted(); ++it ) {
         incrementProgress();
 
-        const KURL &url = *it;
+        const KURL &url = (*it).url();
 
         if ( isPlaylist( url ) ) {
             if ( !loadPlaylist( url.path() ) )
@@ -157,7 +161,7 @@ PlaylistLoader::doJob()
 
         if ( EngineController::canDecode( url ) ) {
             PlaylistItem *item = new PlaylistItem( url, m_markerListViewItem );
-            pairs += Pair( url, item );
+            pairs += Pair( *it, item );
         }
         else
             m_badURLs += url;
@@ -172,7 +176,7 @@ PlaylistLoader::doJob()
    for( PairList::ConstIterator it = pairs.begin(), end = pairs.end(); it != end && !isAborted(); ++it ) {
        incrementProgress();
 
-       if ( (*it).first.isLocalFile() )
+//        if ( (*it).first.url().isLocalFile() )
            QApplication::postEvent( this, new TagsEvent( (*it).first, (*it).second ) );
    }
 
