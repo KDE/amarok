@@ -36,6 +36,8 @@
 #include <qwidget.h>
 #include <qsignalmapper.h> //PlaylistSideBar
 #include <qobjectlist.h>   //setPaletteRecursively()
+#include <qpainter.h>      //PlaylistSideBar::TinyButton
+#include <qstyle.h>        //PlaylistSideBar::PlaylistSideBar
 
 #include <kaction.h>
 #include <kapplication.h>
@@ -54,116 +56,250 @@
 static void setPaletteRecursively( QWidget*, const QPalette&, const QColor& );
 
 
-//FIXME don't use a vector for containment really you want to use a QPtrList
+
+
+//<mxcl>
+//I avoided using KDockWidget as it is horrendously large and we only wanted a subset
+//of its functionality. But this turned out to be more code than I thought.
+//Maybe this was a silly decision.. change it if you like.
+
+/**
+ * A mini-button usually placed in the dockpanel.
+ * @internal
+ *
+ * @author Max Judin, Max Howell.
+*/
+
+PlaylistSideBar::TinyButton::TinyButton( QWidget *parent )
+  : QPushButton( parent )
+  , m_mouseOver( false )
+{
+    setFocusPolicy( NoFocus );
+}
+
+void PlaylistSideBar::TinyButton::drawButton( QPainter* p )
+{
+    p->fillRect( rect(), colorGroup().brush( QColorGroup::Button ) );
+    p->drawPixmap( (width() - pixmap()->width()) / 2, (height() - pixmap()->height()) / 2, *pixmap() );
+
+    //this is from kdockwidget_private.cpp and is now better code
+    //TODO commit improvements
+
+    if( isOn() || isDown() ) { //draw buttonPressed state
+        p->setPen( colorGroup().dark() );
+        p->moveTo( 0, height() - 1 );
+        p->lineTo( 0, 0 );
+        p->lineTo( width() - 1, 0 );
+
+        p->setPen( colorGroup().light() );
+        p->lineTo( width() - 1, height() - 1 );
+        p->lineTo( 0, height() - 1 );
+    }
+    else if( m_mouseOver ) { //draw mouseOver state
+        p->setPen( colorGroup().light() );
+        p->moveTo( 0, height() - 1 );
+        p->lineTo( 0, 0 );
+        p->lineTo( width() - 1, 0 );
+
+        p->setPen( colorGroup().dark() );
+        p->lineTo( width() - 1, height() - 1 );
+        p->lineTo( 0, height() - 1 );
+    }
+}
+
+void PlaylistSideBar::TinyButton::enterEvent( QEvent * )
+{
+    m_mouseOver = true;
+    repaint();
+}
+
+void PlaylistSideBar::TinyButton::leaveEvent( QEvent * )
+{
+    m_mouseOver = false;
+    repaint();
+}
+
+
+
+/**
+ * The SideBbar/MultTab/Tray all-in-one spectacular!
+ *
+ * @author Max Howell.
+*/
+
+//NOTE I use the "current" property of the QPtrList, m_widgets, to represent
+//the currently visible widget. This had a number of advantages, one of
+//which is not clarity of source! Apologies.
+//NOTE I use the baseSize().width() property to remember page widths as it
+//an otherwise unused property and this saves memory
 
 PlaylistSideBar::PlaylistSideBar( QWidget *parent )
     : QHBox( parent )
-    , m_current( -1 )
-    , m_MTB( new KMultiTabBar( KMultiTabBar::Vertical, this ) )
+    , m_multiTabBar( new KMultiTabBar( KMultiTabBar::Vertical, this ) )
+    , m_pageHolder( new QWidget( this ) ) //FIXME making this a layout would save mem
+    , m_stayButton( 0 )
     , m_mapper( new QSignalMapper( this ) )
-    , m_widgets( 2, (QWidget*)0 )
-    , m_sizes( 2, 200 ) //basically this is the default value for the sidebar widths
+    , m_pages()
 {
-    m_MTB->setStyle( KMultiTabBar::VSNET );
-    m_MTB->setPosition( KMultiTabBar::Left );
-    m_MTB->showActiveTabTexts( true ); 
-    
-    connect( m_mapper, SIGNAL( mapped( int ) ), this, SLOT( showHide( int ) ) );
+    m_multiTabBar->setStyle( KMultiTabBar::VSNET );
+    m_multiTabBar->setPosition( KMultiTabBar::Left );
+    m_multiTabBar->showActiveTabTexts( true );
+
+    m_stayButton = new TinyButton( m_pageHolder );
+    m_stayButton->setToggleButton( true );
+    m_stayButton->setPixmap( const_cast< const char** >(not_close_xpm) );
+    QToolTip::add( m_stayButton, i18n( "The tray stays open", "Stay" ) );
+
+    QPushButton *closeButton = new TinyButton( m_pageHolder );
+    closeButton->setPixmap( style().stylePixmap( QStyle::SP_TitleBarCloseButton , this) );
+    QToolTip::add( closeButton, i18n( "Close" ) );
+    connect( closeButton, SIGNAL( clicked() ), SLOT( close() ) );
+
+    QSize buttonSize = closeButton->pixmap()->size();
+    closeButton->setFixedSize( buttonSize );
+    m_stayButton->setFixedSize( buttonSize );
+
+    QVBoxLayout *mainLayout = new QVBoxLayout( m_pageHolder );
+    QHBoxLayout *tinyLayout = new QHBoxLayout();
+    tinyLayout->setAlignment( Qt::AlignRight );
+    tinyLayout->addWidget( m_stayButton );
+    tinyLayout->addWidget( closeButton );
+    mainLayout->addLayout( tinyLayout );
+
+    KConfig *config = kapp->config();
+    config->setGroup( "PlaylistSideBar" );
+    m_stayButton->setOn( config->readBoolEntry( "Stay", true ) );
+
+    connect( m_mapper, SIGNAL( mapped( int ) ), SLOT( showHidePage( int ) ) );
 }
 
 PlaylistSideBar::~PlaylistSideBar()
 {
     KConfig *config = kapp->config();
     config->setGroup( "PlaylistSideBar" );
-    
-    for( uint i = 0; i < m_widgets.size(); ++i )
-        config->writeEntry( m_widgets[ i ]->name(), m_sizes[ i ] );
+    config->writeEntry( "Stay", m_stayButton->isOn() );
+
+    for( QPtrList<QWidget>::ConstIterator it = m_pages.constBegin(); *it; ++it )
+        config->writeEntry( (*it)->name(), (*it)->baseSize().width() );
+}
+
+void PlaylistSideBar::addPage( QWidget *widget, const QString& icon, bool show )
+{
+    //hi, this function is ugly - blame the monstrosity that is KMultiTabBar
+
+    widget->reparent( m_pageHolder, 0, QPoint() ); //FIXME
+    m_pageHolder->layout()->add( widget );
+
+    //we need to get next available id this way
+    //currently it's the only way to do it coz KMultiTabBar sux0rs
+    int id = m_multiTabBar->tabs()->count();
+    //we exlusively use widget name to force adoption of sensible, unique widget names for the
+    //purposes of this class
+    QString name( widget->name() );
+
+    m_multiTabBar->appendTab( KGlobal::iconLoader()->loadIcon( icon, KIcon::NoGroup, KIcon::SizeSmall ), id, name );
+    QWidget *tab = m_multiTabBar->tab( id );
+    tab->setFocusPolicy( QWidget::NoFocus ); //FIXME currently if you tab to these widgets, they respond to no input!
+
+    //we use a SignalMapper to show/hide the corresponding page when tabs are clicked
+    connect( tab, SIGNAL( clicked() ), m_mapper, SLOT( map() ) );
+    m_mapper->setMapping( tab, id );
+
+    KConfig *config = kapp->config();
+    config->setGroup( "PlaylistSideBar" );
+    widget->setBaseSize( config->readNumEntry( name, widget->sizeHint().width() ), DefaultHeight );
+    {
+        //FIXME what if there's no correlation between QPtrList index and multiTabBar id?
+        //we need some kind of sensible behavior that doesn't require much code
+        int index = m_pages.at();
+        m_pages.append( widget );
+        m_pages.at( index ); //restore "current"
+    }
+
+    widget->hide();
+    if( show ) showHidePage( id );
+}
+
+void PlaylistSideBar::showHidePage( int replaceIndex )
+{
+    setUpdatesEnabled( false );
+
+    int currentIndex = m_pages.at(); //doesn't set "current"
+    QWidget *current = m_pages.current();
+    QWidget *replace = m_pages.at( replaceIndex ); //sets "current" to replaceIndex
+
+    if( replace != NULL ) //just in case
+    {
+        //FIXME make me pretty!
+
+        if( current != NULL && current != replace )
+        {
+            //we need to close the open page
+            current->hide();
+            m_multiTabBar->tab( currentIndex )->setState( false );
+        }
+
+        bool isHidden = replace->isHidden();
+
+        m_multiTabBar->tab( replaceIndex )->setState( isHidden );
+        if( isHidden ) { replace->show(); m_pageHolder->show(); setMaximumWidth( 2000 ); }
+        else           { m_pages.last(); m_pages.next(); //quickly sets "current" to NULL
+                         replace->hide(); m_pageHolder->hide(); setMaximumWidth( m_multiTabBar->width() ); }
+    }
+
+    setUpdatesEnabled( true );
+}
+
+QSize PlaylistSideBar::sizeHint() const
+{
+    //return a sizeHint that will make the splitter space our pages as the user expects
+    //note you can't just return width() that wouldn't work unfortunately
+    return ( m_pages.current() ) ? m_pages.current()->baseSize() : m_multiTabBar->size();
+}
+
+void PlaylistSideBar::resizeEvent( QResizeEvent *e )
+{
+    if( m_pages.current() )
+    {
+        m_pages.current()->setBaseSize( e->size().width(), DefaultHeight );
+    }
 }
 
 QWidget *PlaylistSideBar::page( const QString &widgetName )
 {
-    for( uint i = 0; i < m_widgets.size(); ++i )
-        if( m_widgets[i] )
-            if( widgetName == m_widgets[i]->name() )
-                return m_widgets[i];
-    
+    for( QPtrList<QWidget>::ConstIterator it = m_pages.constBegin(); *it; ++it )
+        if( widgetName == (*it)->name() )
+            return *it;
+
     return 0;
 }
 
 void PlaylistSideBar::setPageFont( const QFont &font )
 {
+    //Hi! are you here because this function doesn't work?
+    //Please consider not changing the fonts for the browsers as they require a
+    //readable font, and the user already set a readable font - his default font
+    //thanks! - mxcl
+
     //note - untested because font system was broken when I made this
-    //FIXME dang. you'll need to iterate over the children or something else..
-    //FIXME in fact, I reckon don't set font for the browsers.. they are different
-    for( uint i = 0; i < m_widgets.size(); ++i )
-        if( m_widgets[i] )
-            m_widgets[i]->setFont( font );
-}
-    
-QSize PlaylistSideBar::sizeHint() const
-{
-    //return a sizeHint that will make the splitter space our pages as the user expects
-    return ( m_current != -1 ) ? QSize( m_sizes[ m_current ], 100 ) : m_MTB->sizeHint();
+    //FIXME you'll need to iterate over the children or something else..
+/*    for( uint i = 0; i < m_pages.size(); ++i )
+        if( m_pages[i] )
+            m_pages[i]->setFont( font );*/
 }
 
-void PlaylistSideBar::resizeEvent( QResizeEvent *e )
+inline void PlaylistSideBar::close() //SLOT
 {
-    if( m_current != -1 )
-    {
-        m_sizes[ m_current ] = e->size().width();
-    }
+    //this works even if "current" is NULL
+    showHidePage( m_pages.at() );
 }
 
-void PlaylistSideBar::addPage( QWidget *widget, const QString& icon, bool show )
+inline void PlaylistSideBar::autoClosePages() //SLOT
 {
-    //we need to get count this way, currently it's the only way to do it coz KMultiTabBar sux0rs
-    int id = m_MTB->tabs()->count();
-    //we exlusively use widget name to force adoption of sensible, unique widget names for the
-    //purposes of this class
-    QString name( widget->name() );
-    
-    m_MTB->appendTab( KGlobal::iconLoader()->loadIcon( icon, KIcon::NoGroup, KIcon::SizeSmall ), id, name );
-    QObject *tab = m_MTB->tab( id );
-    connect( tab, SIGNAL( clicked() ), m_mapper, SLOT( map() ) );
-    m_mapper->setMapping( tab, id );
-    
-    KConfig *config = kapp->config();
-    config->setGroup( "PlaylistSideBar" );
-    m_sizes[ id ]   = config->readNumEntry( name, widget->sizeHint().width() );
-    m_widgets[ id ] = widget;
-    
-    widget->hide();
-    if( show ) showHide( id );
+    if( !m_stayButton->isOn() ) close();
 }
 
-void PlaylistSideBar::showHide( int index )
-{
-    //FIXME please make me prettier!
-    
-    if( m_current != -1 && m_current != index )
-    {
-        //we need to close the open page
-        m_widgets[ m_current ]->hide();
-        m_MTB->tab( m_current )->setState( false );
-    }
-    
-    QWidget  *w = m_widgets[ index ];
-    bool isShut = w->isHidden();
-    
-    m_MTB->tab( index )->setState( isShut );
-    if( isShut ) { w->show(); m_current = index; setMaximumWidth( 2000 ); }
-    else         { w->hide(); m_current = -1;    setMaximumWidth( m_MTB->width() ); } //FIXME maximumWidth() seems more sensible, BUT that returns 32000!
-}
 
-void PlaylistSideBar::close()
-{
-    if( m_current != -1 )
-    {
-        showHide( m_current );
-    }
-}
-
-   
 
 // CLASS BrowserWin =====================================================================
 
@@ -190,9 +326,11 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
              m_pButtonRedo, SLOT( setEnabled( bool ) ) );
     connect( m_pPlaylistWidget, SIGNAL( cleared() ),
              m_pPlaylistLineEdit, SLOT( clear() ) );
-    //connect( m_pPlaylistWidget, SIGNAL( clicked( QListViewItem * ) ),
-    //        m_pSideBar, SLOT( close() ) );
-          
+    connect( m_pPlaylistLineEdit, SIGNAL( clicked() ),
+             m_pSideBar, SLOT( autoClosePages() ) );
+    connect( m_pPlaylistWidget, SIGNAL( clicked( QListViewItem * ) ),
+             m_pSideBar, SLOT( autoClosePages() ) );
+
 
     connect( m_pButtonClear, SIGNAL( clicked() ),
              m_pPlaylistWidget, SLOT( clear() ) );
@@ -219,9 +357,10 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 BrowserWin::~BrowserWin()
 {
     //FIXME sucks a little to get ptr this way
+    //FIXME instead force the widgets to derive from SideBarWidget or something
     // this method is good as it saves duplicate pointer to the fileBrowser
     KDevFileSelector *fileBrowser = (KDevFileSelector *)m_pSideBar->page( "FileBrowser" );
-    
+
     //NOTE this doesn't seem to save anything yet..
     if( fileBrowser != NULL ) fileBrowser->writeConfig( kapp->sessionConfig(), "filebrowser" );
 }
@@ -250,22 +389,22 @@ void BrowserWin::initChildren()
     m_pButtonNext    = new ExpandButton( i18n( "Next" ), m_pButtonPlay );
     m_pButtonPrev    = new ExpandButton( i18n( "Previous" ), m_pButtonPlay );
     //</Buttons>
-    
+
     { //</FileBrowser>
         KDevFileSelector *w = new KDevFileSelector( m_pSideBar, "FileBrowser" );
         w->readConfig( kapp->sessionConfig(), "filebrowser" );
         m_pSideBar->addPage( w, "hdd_unmount", true );
     } //</FileBrowser>
-        
+
     { //<StreamBrowser>
         QVBox   *vb = new QVBox( m_pSideBar, "StreamBrowser" );
         QWidget *b  = new QPushButton( "&Fetch Stream Information", vb );
-        QObject *sb = new StreamBrowser( vb, "KDERadioStation" );    
+        QObject *sb = new StreamBrowser( vb, "KDERadioStation" );
         connect( b, SIGNAL( clicked() ), sb, SLOT( slotUpdateStations() ) );
         connect( b, SIGNAL( clicked() ),  b, SLOT( hide() ) );
         m_pSideBar->addPage( vb, "network" );
     } //</StreamBrowser>
- 
+
     { //<Playlist>
         QVBox *vb = new QVBox( m_pSplitter );
         m_pPlaylistLineEdit = new KLineEdit( vb );
@@ -275,9 +414,9 @@ void BrowserWin::initChildren()
         connect( m_pPlaylistLineEdit, SIGNAL( returnPressed() ),
                 m_pPlaylistWidget, SLOT( slotReturnPressed() ) );
         m_pSplitter->setResizeMode( vb, QSplitter::Auto );
-        QToolTip::add( m_pPlaylistLineEdit, i18n( "Enter filter string" ) );             
+        QToolTip::add( m_pPlaylistLineEdit, i18n( "Enter filter string" ) );
     } //</Playlist>
-    
+
     //<Layout>
     QBoxLayout *layV = new QVBoxLayout( this );
     layV->addWidget( m_pSplitter );
@@ -341,7 +480,7 @@ void BrowserWin::setPalettes( const QPalette &pal, const QColor &bgAlt )
     setPaletteRecursively( m_pPlaylistWidget,   pal, bgAlt );
     setPaletteRecursively( m_pPlaylistLineEdit, pal, bgAlt );
     setPaletteRecursively( m_pSideBar,          pal, bgAlt );
-    
+
     update();
     m_pPlaylistWidget->triggerUpdate();
 }
@@ -352,7 +491,7 @@ static void setPaletteRecursively( QWidget* widget, const QPalette &pal, const Q
 {
     QObjectList *list = widget->queryList( "QWidget" );
     list->append( widget );
-    
+
     for( QObject *obj = list->first(); obj; obj = list->next() )
     {
         static_cast<QWidget*>(obj)->setPalette( pal );
@@ -366,7 +505,7 @@ static void setPaletteRecursively( QWidget* widget, const QPalette &pal, const Q
             KListView *lv = dynamic_cast<KListView *>(obj); //slow, but safe
             if( lv ) lv->setAlternateBackground( bgAlt );
         }
-    }        
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

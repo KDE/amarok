@@ -29,13 +29,26 @@ extern PlayerApp *pApp;
 //necessary to override sizeHint(). Hence this class.
 //Later it seemed convenient to move management of the widgets (pages)
 //here too, so I did that too.
- 
-#include <qhbox.h> //baseclass
-#include <vector>  //statically allocated
+
+#include <qhbox.h>       //baseclass
+#include <qptrlist.h>    //stack allocated
+#include <qpushbutton.h> //baseclass
 
 class KMultiTabBar;
 class QSignalMapper;
 class QResizeEvent;
+class QPushButton;
+
+static const char* const not_close_xpm[]={
+"5 5 2 1",
+"# c black",
+". c None",
+"#####",
+"#...#",
+"#...#",
+"#...#",
+"#####"};
+
 
 class PlaylistSideBar : public QHBox
 {
@@ -49,20 +62,39 @@ public:
     void addPage( QWidget*, const QString&, bool = false );
     QWidget *page( const QString& );
     virtual QSize sizeHint() const;
-    virtual void  resizeEvent( QResizeEvent * );
 
 public slots:
-    void showHide( int );
+    void showHidePage( int );
     void close();
-    
+    void autoClosePages();
+
 private:
-    int  m_current;
-    
-    KMultiTabBar  *m_MTB;
-    QSignalMapper *m_mapper;
-    
-    std::vector<QWidget *> m_widgets;
-    std::vector<int>       m_sizes;
+    static const int DefaultHeight = 50;
+
+    KMultiTabBar     *m_multiTabBar;
+    QWidget          *m_pageHolder;
+    QPushButton      *m_stayButton;
+    QSignalMapper    *m_mapper;
+    QPtrList<QWidget> m_pages;
+
+    virtual void  resizeEvent( QResizeEvent * );
+
+
+    // CLASS DockButton =================
+
+    class TinyButton : public QPushButton
+    {
+    public:
+        TinyButton( QWidget * = 0 );
+
+    protected:
+        virtual void drawButton( QPainter * );
+        virtual void enterEvent( QEvent * );
+        virtual void leaveEvent( QEvent * );
+
+    private:
+        bool m_mouseOver;
+    };
 };
 
 
@@ -96,7 +128,7 @@ class BrowserWin : public QWidget
 
 // ATTRIBUTES ------
         KActionCollection *m_pActionCollection;
-        
+
         ExpandButton *m_pButtonAdd;
 
         ExpandButton *m_pButtonClear;
@@ -114,10 +146,10 @@ class BrowserWin : public QWidget
         ExpandButton *m_pButtonPrev;
 
         PlaylistWidget *m_pPlaylistWidget;
-        
+
         QSplitter *m_pSplitter;
         KLineEdit *m_pPlaylistLineEdit;
-    
+
     public slots:
         void slotUpdateFonts();
         void savePlaylist();
@@ -129,12 +161,12 @@ class BrowserWin : public QWidget
         void initChildren();
         void closeEvent( QCloseEvent* );
         void keyPressEvent( QKeyEvent* );
-        
+
         PlaylistSideBar *m_pSideBar;
 
     private slots:
         void slotAddLocation();
-                
+
 };
 
 #endif
