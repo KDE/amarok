@@ -1048,7 +1048,10 @@ CollectionDB::retrieveFirstLevelURLs( QString itemText, QString category1, QStri
     else
         command += category1.lower() + "=" + id;
 
-    command += " " + filterToken + " ORDER BY tags." + category2.lower() + ", tags.track;";
+    if ( category2 != 0 )
+        command += " " + filterToken + " ORDER BY tags." + category2.lower() + ", tags.track;";
+    else
+        command += " " + filterToken + " ORDER BY tags.album, tags.track;";
 
     execSql( command, values, names );
 }
