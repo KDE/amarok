@@ -30,6 +30,7 @@
 #include <kpopupmenu.h>
 #include <krun.h>
 #include <kstandarddirs.h>
+#include <ktempfile.h>
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h> //ctor
 #include <kurl.h>
@@ -42,34 +43,26 @@ using amaroK::QStringx;
 
 ContextBrowser::ContextBrowser( const char *name )
    : QVBox( 0, name )
-   , m_currentTrack( 0 )
    , m_db( new CollectionDB )
    , m_scrobbler( new Scrobbler )
+   , m_gradientImage( 0 )
 {
     EngineController::instance()->attach( this );
 
+    m_toolbar = new KToolBar( this );
+    m_toolbar->setFlat( true );
+    m_toolbar->setIconSize( 16 );
+    m_toolbar->setIconText( KToolBar::IconTextRight );
+    m_toolbar->insertButton( "gohome", Home, SIGNAL(clicked()), this, SLOT(showHome()), true, i18n("Statistics") );
+    m_toolbar->insertButton( "today", CurrentTrack, SIGNAL(clicked()), this, SLOT(showCurrentTrack()), true, i18n("Current Track") );
+    m_toolbar->insertButton( "document", Lyrics, SIGNAL(clicked()), this, SLOT(showLyrics()), true, i18n("Lyrics") );
+
+    browser = new KHTMLPart( this );
+    browser->setDNDEnabled( true );
+
     setSpacing( 4 );
     setMargin( 5 );
-
-    KToolBar* toolbar = new KToolBar( this );
-    toolbar->setFlat( true );
-    toolbar->setIconSize( 16 );
-    toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the open button to have text on right
-
-    toolbar->insertButton( "today", -1, SIGNAL(clicked()), this, SLOT(showHome()), true, i18n("Current Track") );
-    toolbar->insertButton( "gohome", -1, SIGNAL(clicked()), this, SLOT(showCurrentTrack()), true, i18n("Statistics") );
-    toolbar->insertButton( "document", -1, SIGNAL(clicked()), this, SLOT(showLyrics()), true, i18n("Lyrics") );
-
-    QWidget::setFont( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );
-
-    QHBox *hb1 = new QHBox( this );
-    hb1->setSpacing( 4 );
-
-    browser = new KHTMLPart( hb1 );
-    browser->setDNDEnabled( true );
-    browser->view()->setMarginWidth( 4 );
-    browser->view()->setMarginHeight( 4 );
-    setStyleSheet();
+    setFocusProxy( browser->view() ); //so focus is given to a sensible widget when the tab is opened
 
     connect( browser->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
              this,                          SLOT( openURLRequest( const KURL & ) ) );
@@ -78,28 +71,24 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( m_scrobbler,                 SIGNAL( relatedArtistsFetched( QStringList& ) ),
              this,                          SLOT( relatedArtistsFetched( QStringList& ) ) );
 
-    connect( CollectionDB::emitter(),     SIGNAL( scanStarted() ),
-             SLOT( collectionScanStarted() ) );
-    connect( CollectionDB::emitter(),     SIGNAL( scanDone( bool ) ),
-             SLOT( collectionScanDone() ) );
-    connect( CollectionDB::emitter(),     SIGNAL( metaDataEdited( const MetaBundle & ) ),
-             SLOT( metaDataEdited( const MetaBundle & ) ) );
+    connect( CollectionDB::emitter(), SIGNAL(scanStarted()), SLOT(collectionScanStarted()) );
+    connect( CollectionDB::emitter(), SIGNAL(scanDone( bool )), SLOT(collectionScanDone()) );
+    connect( CollectionDB::emitter(), SIGNAL(metaDataEdited( const MetaBundle& )), SLOT(metaDataEdited( const MetaBundle& )) );
+    connect( CollectionDB::emitter(), SIGNAL(coverFetched()), SLOT(showCurrentTrack()) );
 
-    if ( m_db->isEmpty() || !m_db->isValid() ) {
-        showIntroduction();
-        m_emptyDB = true;
-    } else {
-        showHome();
-        m_emptyDB = false;
-    }
-
-    setFocusProxy( hb1 ); //so focus is given to a sensible widget when the tab is opened
+    //the stylesheet will be set up and home will be shown later due to engine signals and doodaa
+    //if we call it here setStyleSheet is called 3 times during startup!!
 }
 
 
-ContextBrowser::~ContextBrowser() {
-    delete m_currentTrack;
-    temp_img->unlink();
+ContextBrowser::~ContextBrowser()
+{
+    delete m_db;
+    delete m_scrobbler;
+
+    if( m_gradientImage )
+      m_gradientImage->unlink();
+
     EngineController::instance()->detach( this );
 }
 
@@ -108,13 +97,9 @@ ContextBrowser::~ContextBrowser() {
 // PUBLIC METHODS
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void ContextBrowser::setFont( const QFont &newFont ) //virtual
-{
+void ContextBrowser::setFont( const QFont &newFont ) {
     QWidget::setFont( newFont );
     setStyleSheet();
-    browser->setUserStyleSheet( m_styleSheet );
-    browser->setStandardFont( newFont.key() );
-    showCurrentTrack();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -122,7 +107,6 @@ void ContextBrowser::setFont( const QFont &newFont ) //virtual
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void ContextBrowser::openURLRequest( const KURL &url ) {
-    m_url = url;
     QStringList info = QStringList::split( " @@@ ", url.path() );
 
     if ( url.protocol() == "album" ) {
@@ -145,16 +129,14 @@ void ContextBrowser::openURLRequest( const KURL &url ) {
     if ( url.protocol() == "file" )
         Playlist::instance()->appendMedia( url, true, true );
 
-    if ( m_url.protocol() == "show" ) {
-        if ( m_url.path() == "home" )
+    if ( url.protocol() == "show" ) {
+        if ( url.path() == "home" )
             showHome();
-        else if ( m_url.path() == "context" )
+        else if ( url.path() == "context" || url.path() == "stream" )
             showCurrentTrack();
-        else if ( m_url.path() == "stream" )
-            showCurrentStream();
-        else if ( m_url.path() == "lyrics" )
+        else if ( url.path() == "lyrics" )
             showLyrics();
-        else if ( m_url.path() == "collectionSetup" ) {
+        else if ( url.path() == "collectionSetup" ) {
             //TODO if we do move the configuration to the main configdialog change this,
             //     otherwise we need a better solution
             QObject *o = parent()->child( "CollectionBrowser" );
@@ -164,8 +146,8 @@ void ContextBrowser::openURLRequest( const KURL &url ) {
     }
 
     // When left-clicking on cover image, open browser with amazon site
-    if ( m_url.protocol() == "fetchcover" ) {
-        QStringList info = QStringList::split( " @@@ ", m_url.path() );
+    if ( url.protocol() == "fetchcover" ) {
+        QStringList info = QStringList::split( " @@@ ", url.path() );
         QImage img( m_db->albumImage( info[0], info[1], 0 ) );
         const QString amazonUrl = img.text( "amazon-url" );
         kdDebug() << "[ContextBrowser] Embedded amazon url in cover image: " << amazonUrl << endl;
@@ -207,11 +189,8 @@ void ContextBrowser::collectionScanDone() {
 
 
 void ContextBrowser::metaDataEdited( const MetaBundle &bundle ) {
-    if ( m_currentTrack->url() == bundle.url() ) {
-        kdDebug() << "current song edited, updating view" << endl;
-
-        delete m_currentTrack;
-        m_currentTrack = new MetaBundle( bundle );
+    if ( EngineController::instance()->bundle().url() == bundle.url() ) {
+        kdDebug() << "Current song edited, updating Context Browser" << endl;
         showCurrentTrack();
     }
 }
@@ -224,63 +203,58 @@ void ContextBrowser::engineTrackEnded( int finalPosition, int trackLength ) {
     //This is where percentages are calculated
     //TODO statistics are not calculated when currentTrack doesn't exist
 
-    if ( m_currentTrack ) {
-        // sanity check
-        if ( finalPosition > trackLength || finalPosition == 0 )
-            finalPosition = trackLength;
+    const KURL &url = EngineController::instance()->bundle().url();
 
-        int pct = (int) ( ( (double) finalPosition / (double) trackLength ) * 100 );
+    // sanity check
+    if ( finalPosition > trackLength || finalPosition == 0 )
+        finalPosition = trackLength;
 
-        // increase song counter & calculate new statistics
-        float score = m_db->addSongPercentage( m_currentTrack->url().path(), pct );
+    int pct = (int) ( ( (double) finalPosition / (double) trackLength ) * 100 );
 
-        // TODO speedtest
-        if ( score ) {
-            QListViewItemIterator it( Playlist::instance() );
-            for( ; it.current(); ++it ) {
-                PlaylistItem *item = static_cast<PlaylistItem*>(*it);
-                if ( item->url() == m_currentTrack->url() )
-                    item->setText( PlaylistItem::Score, QString::number( score ) );
-            }
+    // increase song counter & calculate new statistics
+    float score = m_db->addSongPercentage( url.path(), pct );
+
+    // TODO speedtest
+    if( score ) {
+        QListViewItemIterator it( Playlist::instance() );
+        for( ; it.current(); ++it ) {
+            PlaylistItem *item = static_cast<PlaylistItem*>(*it);
+            if ( item->url() == url )
+                item->setText( PlaylistItem::Score, QString::number( score ) );
         }
     }
 }
 
 
-void ContextBrowser::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ ) {
+void ContextBrowser::engineNewMetaData( const MetaBundle&, bool /*trackChanged*/ ) {
     m_relatedArtists.clear();
-    delete m_currentTrack;
-    m_currentTrack = new MetaBundle( bundle );
 
     if ( m_db->isEmpty() || !m_db->isValid() )
         showIntroduction();
     else
-        if ( EngineController::engine()->isStream() )
-            showCurrentStream();
-        else
-            showCurrentTrack();
+        showCurrentTrack();
 }
 
 
 void ContextBrowser::engineStateChanged( Engine::State state ) {
     switch( state ) {
-    case Engine::Playing:
-        if ( EngineController::engine()->isStream() )
-            showCurrentStream();
-        break;
     case Engine::Empty:
+        m_toolbar->getButton( CurrentTrack )->setEnabled( false );
+        m_toolbar->getButton( Lyrics )->setEnabled( false );
         showHome();
-    default:
         break;
+    case Engine::Playing:
+        m_toolbar->getButton( CurrentTrack )->setEnabled( true );
+        m_toolbar->getButton( Lyrics )->setEnabled( true );
+        break;
+    default:
+        ;
     }
 }
 
 
 void ContextBrowser::paletteChange( const QPalette& pal ) {
-    kdDebug() << k_funcinfo << endl;
-
     QVBox::paletteChange( pal );
-
     setStyleSheet();
 }
 
@@ -404,14 +378,6 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
 void ContextBrowser::showHome() //SLOT
 {
-    QStringList values;
-
-    // Triggers redisplay when new cover image is downloaded
-    #ifdef AMAZON_SUPPORT
-
-    connect( CollectionDB::emitter(), SIGNAL( coverFetched(const QString&) ), this, SLOT( showCurrentTrack() ) );
-    #endif
-
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
 
@@ -423,11 +389,12 @@ void ContextBrowser::showHome() //SLOT
     browser->write(  "</table>" );
     browser->write(  "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-    values = m_db->query( "SELECT tags.title, tags.url, round( statistics.percentage + 0.4 ), artist.name, album.name "
-                          "FROM tags, artist, album, statistics "
-                          "WHERE artist.id = tags.artist AND album.id = tags.album AND statistics.url = tags.url "
-                          "ORDER BY statistics.percentage DESC "
-                          "LIMIT 0,10;" );
+    QStringList values = m_db->query(
+        "SELECT tags.title, tags.url, round( statistics.percentage + 0.4 ), artist.name, album.name "
+        "FROM tags, artist, album, statistics "
+        "WHERE artist.id = tags.artist AND album.id = tags.album AND statistics.url = tags.url "
+        "ORDER BY statistics.percentage DESC "
+        "LIMIT 0,10;" );
 
     if ( !values.isEmpty() ) {
         for ( uint i = 0; i < values.count(); i = i + 5 )
@@ -472,37 +439,56 @@ void ContextBrowser::showCurrentTrack() //SLOT
     #define escapeHTML(s)     QString(s).replace( "<", "&lt;" ).replace( ">", "&gt;" )
     #define escapeHTMLAttr(s) QString(s).replace( "%", "%25" ).replace( "'", "%27" )
 
-    if ( EngineController::engine()->isStream() )
-        showCurrentStream();
-
-    if ( !m_currentTrack )
-        return;
-
-    QStringList values;
-
-    uint artist_id = m_db->artistID( m_currentTrack->artist() );
-    uint album_id  = m_db->albumID ( m_currentTrack->album() );
-
-    // Triggers redisplay when new cover image is downloaded
-    connect( CollectionDB::emitter(), SIGNAL( coverFetched() ), this, SLOT( showCurrentTrack() ) );
+    const MetaBundle &currentTrack = EngineController::instance()->bundle();
 
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
 
-    browser->write( "<html>" );
+    browser->write(
+            "<html>"
+             "<div class='rbcontent'>"
+              "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+               "<tr><th>&nbsp;" + i18n( "Currently Playing" ) + "</th></tr>"
+              "</table>"
+              "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-    // <Current Track Information>
-    browser->write( "<div class='rbcontent'>"
-                    "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-                    "<tr><th>" + i18n( "Currently Playing" ) + "</th></tr>"
-                    "</table>"
-                    "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-    values = m_db->query( QString( "SELECT datetime( datetime( statistics.createdate, 'unixepoch' ), 'localtime' ), "
-                                   "datetime( datetime( statistics.accessdate, 'unixepoch' ), 'localtime' ), statistics.playcounter, round( statistics.percentage + 0.4 ) "
-                                   "FROM  statistics "
-                                   "WHERE url = '%1';" )
-                          .arg( m_db->escapeString( m_currentTrack->url().path() ) ) );
+    if ( EngineController::engine()->isStream() ) {
+        browser->write( QStringx(
+               "<tr>"
+                "<td height='42' valign='top' class='rbcurrent' width='90%'>"
+                 "<span class='stream'><b>%1</b><br/>%2<br/>%3<br/>%4</span>"
+                "</td>"
+                "<td valign='top' align='right' width='10%'></td>"
+               "</tr>" )
+            .args( QStringList()
+                << escapeHTML( currentTrack.prettyTitle() )
+                << escapeHTML( currentTrack.genre() )
+                << escapeHTML( currentTrack.prettyBitrate() )
+                << escapeHTML( currentTrack.prettyURL() ) ) );
+
+        browser->write(
+              "</table>"
+             "</div>"
+            "</html>" );
+
+        browser->end();
+
+        return;
+    }
+
+
+    const uint artist_id = m_db->artistID( currentTrack.artist() );
+    const uint album_id  = m_db->albumID ( currentTrack.album() );
+
+    // Triggers redisplay when new cover image is downloaded
+
+    QStringList values = m_db->query( QString(
+        "SELECT datetime( datetime( statistics.createdate, 'unixepoch' ), 'localtime' ), "
+        "datetime( datetime( statistics.accessdate, 'unixepoch' ), 'localtime' ), statistics.playcounter, round( statistics.percentage + 0.4 ) "
+        "FROM  statistics "
+        "WHERE url = '%1';" )
+            .arg( m_db->escapeString( currentTrack.url().path() ) ) );
 
     if ( !values.isEmpty() )
         /* making 2 tables is most probably not the cleanest way to do it, but it works. */
@@ -531,16 +517,16 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                    "</td>"
                                    "</tr>" )
                         .args( QStringList()
-                               << escapeHTML( m_currentTrack->artist() )
-                               << escapeHTML( m_currentTrack->title() )
-                               << escapeHTML( m_currentTrack->album() )
+                               << escapeHTML( currentTrack.artist() )
+                               << escapeHTML( currentTrack.title() )
+                               << escapeHTML( currentTrack.album() )
                                << i18n( "Look up this track at musicbrainz.com" )
-                               << escapeHTMLAttr( m_db->escapeString( m_currentTrack->artist() ) )
-                               << escapeHTMLAttr( m_db->escapeString( m_currentTrack->album() ) )
+                               << escapeHTMLAttr( m_db->escapeString( currentTrack.artist() ) )
+                               << escapeHTMLAttr( m_db->escapeString( currentTrack.album() ) )
                                << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) )
-                               << escapeHTMLAttr( m_currentTrack->artist() )
-                               << escapeHTMLAttr( m_currentTrack->album() )
-                               << escapeHTMLAttr( m_db->albumImage( m_currentTrack->artist(), m_currentTrack->album() ) )
+                               << escapeHTMLAttr( currentTrack.artist() )
+                               << escapeHTMLAttr( currentTrack.album() )
+                               << escapeHTMLAttr( m_db->albumImage( currentTrack.artist(), currentTrack.album() ) )
                                << i18n( "Track played once", "Track played %n times", values[2].toInt() )
                                << i18n( "Score: %1" ).arg( values[3] )
                                << i18n( "Last play: %1" ).arg( values[1].left( values[1].length() - 3 ) )
@@ -557,15 +543,15 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                    "<i>" + i18n( "Never played before" )  + "</i></td>"
                                    "</tr>" )
                         .args( QStringList()
-                               << escapeHTML( m_currentTrack->artist() )
-                               << escapeHTML( m_currentTrack->title() )
-                               << escapeHTML( m_currentTrack->album() )
-                               << escapeHTMLAttr( m_db->escapeString( m_currentTrack->artist() ) )
-                               << escapeHTMLAttr( m_db->escapeString( m_currentTrack->album() ) )
+                               << escapeHTML( currentTrack.artist() )
+                               << escapeHTML( currentTrack.title() )
+                               << escapeHTML( currentTrack.album() )
+                               << escapeHTMLAttr( m_db->escapeString( currentTrack.artist() ) )
+                               << escapeHTMLAttr( m_db->escapeString( currentTrack.album() ) )
                                << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) )
-                               << escapeHTMLAttr( m_currentTrack->artist() )
-                               << escapeHTMLAttr( m_currentTrack->album() )
-                               << escapeHTMLAttr( m_db->albumImage( m_currentTrack->artist(), m_currentTrack->album() ) )
+                               << escapeHTMLAttr( currentTrack.artist() )
+                               << escapeHTMLAttr( currentTrack.album() )
+                               << escapeHTMLAttr( m_db->albumImage( currentTrack.artist(), currentTrack.album() ) )
                              )
                       );
     }
@@ -574,7 +560,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     browser->write( "</table></div>" );
     // </Current Track Information>
 
-    if ( !m_db->isFileInCollection( m_currentTrack->url().path() ) ) {
+    if ( !m_db->isFileInCollection( currentTrack.url().path() ) ) {
         browser->write( "<div class='warning' style='padding: 1em 0.5em 2em 0.5em'>");
         browser->write(   i18n("If you would like to see contextual information about this track, "
                                "you must add it to your Collection.") );
@@ -587,7 +573,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     // scrobblaaaaaar
     if ( m_relatedArtists.isEmpty() )
-        m_scrobbler->relatedArtists( m_currentTrack->artist() );
+        m_scrobbler->relatedArtists( currentTrack.artist() );
     else {
         QString token;
 
@@ -647,7 +633,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     // </Favourite Tracks Information>
 
     // <Tracks on this album>
-    if ( !m_currentTrack->album().isEmpty() && !m_currentTrack->artist().isEmpty() ) {
+    if ( !currentTrack.album().isEmpty() && !currentTrack.artist().isEmpty() ) {
         values = m_db->query( QString( "SELECT title, url, track "
                                        "FROM tags "
                                        "WHERE album = %1 AND "
@@ -702,9 +688,9 @@ void ContextBrowser::showCurrentTrack() //SLOT
                             .args( QStringList()
                                    << QString::number( artist_id )
                                    << values[ i+1 ] //album.id
-                                   << escapeHTMLAttr( m_currentTrack->artist() ) // artist name
+                                   << escapeHTMLAttr( currentTrack.artist() ) // artist name
                                    << escapeHTMLAttr( values[ i ] ) // album.name
-                                   << escapeHTMLAttr( m_db->albumImage( m_currentTrack->artist(), values[ i ], 50 ) )
+                                   << escapeHTMLAttr( m_db->albumImage( currentTrack.artist(), values[ i ], 50 ) )
                                    << QString::number( artist_id )
                                    << values[ i+1 ] //album.id
                                    << escapeHTML( values[ i ] ) // album.name
@@ -778,16 +764,16 @@ void ContextBrowser::setStyleSheet() {
     amaroK::Color gradient = colorGroup().highlight();
 
     //writing temp gradient image
-    temp_img = new KTempFile(locateLocal("tmp", "gradient"), ".png", 0600);
-    QImage grad = KImageEffect::gradient(QSize(600,1), gradient, gradient.light(), KImageEffect::PipeCrossGradient, 3);
-    grad.save( temp_img->file(), "PNG" );
-    temp_img->close();
+    m_gradientImage = new KTempFile( locateLocal( "tmp", "gradient" ), ".png", 0600 );
+    QImage image = KImageEffect::gradient( QSize( 600, 1 ), gradient, gradient.light(), KImageEffect::PipeCrossGradient, 3 );
+    image.save( m_gradientImage->file(), "PNG" );
+    m_gradientImage->close();
 
     //we have to set the color for body due to a KHTML bug
     //KHTML sets the base color but not the text color
     m_styleSheet  = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); backgroud-repeat: repeat-y; }" )
                     .arg( pxSize ).arg( text ).arg( AmarokConfig::schemeAmarok() ? fg : gradient.name() )
-                    .arg( temp_img->name() );
+                    .arg( m_gradientImage->name() );
     m_styleSheet += QString( "a { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
 
     m_styleSheet += QString( ".menu { color: %1; background-color: %2; margin: 0.4em 0.0em; font-weight: bold; }" ).arg( fg ).arg( bg );
@@ -843,52 +829,9 @@ void ContextBrowser::showScanning() {
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
 
-    browser->write( "<html><div>");
+    browser->write( "<html><p>");
     browser->write( i18n( "Building Collection Database.." ) );
-    browser->write( "</div></html>");
-
-    browser->end();
-}
-
-
-void ContextBrowser::showCurrentStream() {
-    browser->begin();
-    browser->setUserStyleSheet( m_styleSheet );
-
-    browser->write( "<html>" );
-
-    // <Stream Information>
-    browser->write( "<div class='rbcontent'>" );
-    browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-    browser->write( "<tr><th>&nbsp;" + i18n( "Playing Stream:" ) + "</th></tr>" );
-    browser->write( "</table>" );
-    browser->write( "<table width='100%' border='0' cellspacing='2' cellpadding='0'>" );
-
-    if ( m_currentTrack ) {
-        browser->write( QStringx ( "<tr><td height='42' valign='top' class='rbcurrent' width='90%'>"
-                                   "<span class='stream'><b>%1</b><br/>%2<br/>%3<br/>%4</span></td>"
-                                   "<td valign='top' align='right' width='10%'> </td></tr></table>" )
-                        .args( QStringList()
-                               << escapeHTML( m_currentTrack->prettyTitle() )
-                               << escapeHTML( m_currentTrack->genre() )
-                               << escapeHTML( m_currentTrack->prettyBitrate() )
-                               << escapeHTML( m_currentTrack->prettyURL() )
-                             )
-                      );
-    } else {
-        browser->write( QStringx ( "<tr><td height='42' valign='top' class='rbcurrent' width='90%'>"
-                                   "<span class='stream'><b>%1</b></span></td>"
-                                   "<td valign='top' align='right' width='10%'></td></tr></table>" )
-                        .args( QStringList()
-                               << escapeHTML( m_url.path() )
-                             )
-                      );
-    }
-
-    browser->write( "</table></div>" );
-    // </Stream Information>
-
-    browser->write( "</div></html>" );
+    browser->write( "</p></html>");
 
     browser->end();
 }
@@ -901,18 +844,19 @@ void ContextBrowser::showCurrentStream() {
 // please contact / sue me. Thanks.
 
 void ContextBrowser::showLyrics() {
-    if ( !m_currentTrack )
-        return;
+
+
 
     QString url = QString( "http://lyrc.com.ar/en/tema1en.php?artist=%1&songname=%2" )
-                  .arg( m_currentTrack->artist() )
-                  .arg( m_currentTrack->title() );
+                  .arg( EngineController::instance()->bundle().artist() )
+                  .arg( EngineController::instance()->bundle().title() );
 
     kdDebug() << "Using this url: " << url << endl;
-    m_lyrics = "";
 
-    KIO::TransferJob* job = KIO::get
-                                ( url, false, false );
+    m_lyrics = QString::null;
+
+    KIO::TransferJob* job = KIO::get( url, false, false );
+
     connect( job, SIGNAL( result( KIO::Job* ) ),
              this,  SLOT( lyricsResult( KIO::Job* ) ) );
     connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
