@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 
+VERSION 0.9-beta2:
+  * add: splash-screen shown during program startup (optional)
   * fix: made stream playback with TitleProxy more stable (by using an unbuffered socket)
   * add: show stream metadata in on-screen-display
   * chg: transformed "EQ" button into a togglebutton, which can also hide the effect browser
