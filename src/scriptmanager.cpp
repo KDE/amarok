@@ -17,11 +17,14 @@ using namespace KJSEmbed;
 // public 
 ////////////////////////////////////////////////////////////////////////////////
 
+ScriptManager::Manager*
+ScriptManager::Manager::s_instance = 0;
+
+
 ScriptManager::Manager::Manager( QObject* object )
-        : QObject( object )
+        : QObject( object, "ScriptManager" )
 {
-    setName( "ScriptManager" );
-    self = this;
+    s_instance = this;
     
     //KJSEmbed
     m_kjs = new KJSEmbedPart( this );
@@ -29,23 +32,19 @@ ScriptManager::Manager::Manager( QObject* object )
 }
 
 
-ScriptManager::Manager::~Manager()
-{}
-
-
 void
-ScriptManager::Manager::showSelector() //static
+ScriptManager::Manager::showSelector()
 {
     kdDebug() << k_funcinfo << endl;  
     
     if ( !Selector::instance ) {
-        Selector::instance = new Selector( self->m_list );
+        Selector::instance = new Selector( m_list );
         connect( Selector::instance, SIGNAL( signalRunScript( const QString& ) ),
-                self,   SLOT( slotRun( const QString& ) ) );
+                this,   SLOT( slotRun( const QString& ) ) );
         connect( Selector::instance, SIGNAL( signalStopScript( const QString& ) ),
-                self,   SLOT( slotStop( const QString& ) ) );
+                this,   SLOT( slotStop( const QString& ) ) );
         connect( Selector::instance, SIGNAL( signalConfigureScript( const QString& ) ),
-                self,   SLOT( slotConfigure( const QString& ) ) );
+                this,   SLOT( slotConfigure( const QString& ) ) );
     }
                     
     Selector::instance->show();
@@ -53,9 +52,9 @@ ScriptManager::Manager::showSelector() //static
 
 
 void
-ScriptManager::Manager::showConsole() //static
+ScriptManager::Manager::showConsole()
 {
-    JSConsoleWidget* console = self->m_kjs->view();
+    JSConsoleWidget* console = m_kjs->view();
     console->show();
 }
 
@@ -77,8 +76,8 @@ ScriptManager::Manager::slotRun( const QString& path )
     QDir::setCurrent( url.directory() );
     
     kdDebug() << "Running script: " << path << endl;
-    QString script = self->m_kjs->loadFile( path );
-    self->m_kjs->view()->execute( script );
+    QString script = m_kjs->loadFile( path );
+    m_kjs->view()->execute( script );
 }
 
 
@@ -103,9 +102,6 @@ ScriptManager::Manager::slotConfigure( const QString& path )
 ////////////////////////////////////////////////////////////////////////////////
 // private 
 ////////////////////////////////////////////////////////////////////////////////
-
-ScriptManager::Manager*
-ScriptManager::Manager::self;
 
    
 #include "scriptmanager.moc"

@@ -158,10 +158,10 @@ Menu::slotActivated( int index )
         Vis::Selector::instance()->show(); //doing it here means we delay creation of the widget
         break;
     case ID_SHOW_SCRIPT_SELECTOR:
-        ScriptManager::Manager::showSelector();
+        ScriptManager::Manager::instance()->showSelector();
         break;
     case ID_SHOW_SCRIPT_CONSOLE:
-        ScriptManager::Manager::showConsole();
+        ScriptManager::Manager::instance()->showConsole();
         break;
     }
 }

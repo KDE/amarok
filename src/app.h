@@ -46,9 +46,6 @@ namespace amaroK {
 
     KConfig *config( const QString &group = "General" );
 }
-namespace ScriptManager {
-    class Manager;
-}
 
 class MetaBundle;
 class PlayerWidget;
@@ -72,9 +69,6 @@ class App : public KApplication, public EngineObserver
         amaroK::DcopHandler *dcopHandler() const { return m_pDcopHandler; }
         QWidget             *mainWindow() const;
         PlaylistWindow      *playlistWindow() const { return m_pPlaylistWindow; }
-
-        // ATTRIBUTES
-        ScriptManager::Manager* m_scripter;
 
         // FRIENDS ------
         friend class PlaylistWindow; //requires access to applySettings()

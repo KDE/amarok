@@ -67,10 +67,11 @@ App::App()
     m_pOSD            = amaroK::OSD::instance(); //creates the OSD
     m_pTray           = new amaroK::TrayIcon( m_pPlaylistWindow );
     (void)              new Vis::SocketServer( this );
-    m_scripter        = new ScriptManager::Manager( this );
-    
-    m_scripter->addObject( this );
-    m_scripter->addObject( m_pDcopHandler );
+    (void)              new ScriptManager::Manager( this );
+        
+    // Export symbols to KJSEmbed
+    ScriptManager::Manager::instance()->addObject( this );
+    ScriptManager::Manager::instance()->addObject( m_pDcopHandler );
 
     m_pPlaylistWindow->init(); //creates the playlist, browsers, etc.
     initGlobalShortcuts();

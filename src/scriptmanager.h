@@ -27,20 +27,22 @@ namespace ScriptManager
             
         public:
             Manager( QObject* );
-            ~Manager();
 
-            static void showSelector();
-            static void showConsole();
+            void showSelector();
+            void showConsole();
             void addObject( QObject* object );
-            
+
+            //static    
+            static Manager *instance() { return s_instance; }
+                        
         private slots:
             void slotRun( const QString& );             
             void slotStop( const QString& );             
             void slotConfigure( const QString& );             
             
         private:
-            static Manager* self;
-
+            static Manager* s_instance;
+            
             KJSEmbed::KJSEmbedPart* m_kjs;
             QStringList m_list;
     };
