@@ -48,6 +48,8 @@ class EngineBase : public QObject
         virtual bool                 canDecode( const KURL &url,
                                                 mode_t mode, mode_t permissions )      = 0;
 
+        //@return time length in ms
+        virtual long                 length() const                                    = 0;
         //@return time position in ms
         virtual long                 position() const                                  = 0;
         virtual EngineState          state() const                                     = 0;

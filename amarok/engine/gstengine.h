@@ -43,6 +43,7 @@ class GstEngine : public EngineBase
         bool                                     initMixer( bool hardware );
         bool                                     canDecode( const KURL &url, mode_t mode, mode_t permissions );
 
+        long                                     length() const                      { return 0; }
         long                                     position() const;
         EngineBase::EngineState                  state() const;
         bool                                     isStream() const;

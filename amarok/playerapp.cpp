@@ -25,7 +25,7 @@ email                : markey@web.de
 #include "osd.h"
 #include "playerapp.h"
 #include "playerwidget.h"
-#include "threadweaver.h" //restoreSession()
+#include "threadweaver.h"        //restoreSession()
 #include "playlisttooltip.h"
 #include "titleproxy.h"
 
@@ -36,26 +36,26 @@ email                : markey@web.de
 #include <kdebug.h>
 #include <kglobalaccel.h>
 #include <klocale.h>
-#include <kmessagebox.h>    //applySettings()
+#include <kmessagebox.h>         //applySettings()
 #include <kshortcut.h>
 #include <kstandarddirs.h>
 #include <ktip.h>
 #include <kurl.h>
 #include <kconfigdialog.h>
-#include <kwin.h>    //eventFilter()
+#include <kwin.h>                //eventFilter()
 
-#include <qcstring.h>     //initIpc()
-#include <qpixmap.h> //QPixmap::setDefaultOptimization()
+#include <qcstring.h>            //initIpc()
+#include <qpixmap.h>             //QPixmap::setDefaultOptimization()
 #include <qsize.h>
-#include <qserversocket.h>   //initIpc()
-#include <qsocketnotifier.h> //initIpc()
+#include <qserversocket.h>       //initIpc()
+#include <qsocketnotifier.h>     //initIpc()
 #include <qstring.h>
 #include <qtimer.h>
 #include <qregexp.h>
 
-#include <unistd.h>       //initIpc()
-#include <sys/socket.h>   //initIpc()
-#include <sys/un.h>       //initIpc()
+#include <unistd.h>              //initIpc()
+#include <sys/socket.h>          //initIpc()
+#include <sys/un.h>              //initIpc()
 
 
 //statics
@@ -244,7 +244,6 @@ void PlayerApp::initIpc()
         kdDebug() << "[PlayerApp::initIpc()] socket() error\n";
         return;
     }
-
     sockaddr_un local;
     local.sun_family = AF_UNIX;
     QCString path( ::getenv( "HOME" ) );
@@ -267,7 +266,7 @@ void PlayerApp::initIpc()
     server->setSocket( m_sockfd );
 
     connect( server, SIGNAL( loaderArgs( const QCString& ) ),
-             this,   SLOT( handleLoaderArgs( const QCString& ) ) );
+             this,     SLOT( handleLoaderArgs( const QCString& ) ) );
 }
 
 
@@ -292,9 +291,9 @@ void PlayerApp::initPlayerWidget()
     m_pPlayerWidget = new PlayerWidget( 0, "PlayerWidget" );
 
     connect( this,                         SIGNAL( metaData        ( const MetaBundle& ) ),
-             m_pPlayerWidget,              SLOT  ( setScroll       ( const MetaBundle& ) ) );
+             m_pPlayerWidget,                SLOT( setScroll       ( const MetaBundle& ) ) );
     connect( m_pPlayerWidget->m_pButtonEq, SIGNAL( released        () ),
-             this,                         SLOT  ( showEffectWidget() ) );
+             this,                           SLOT( showEffectWidget() ) );
 
     kdDebug() << "end PlayerApp::initPlayerWidget()" << endl;
 }
@@ -600,8 +599,6 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
 }
 
 
-// SLOTS -----------------------------------------------------------------
-
 //these functions ask the playlist to change the track, if it can change track it notifies us again via a SIGNAL
 //the SIGNAL is connected to ::play() below
 
@@ -633,9 +630,9 @@ void PlayerApp::play( const MetaBundle &bundle )
         m_pEngine->open( pProxy->proxyUrl() );
 
         connect( m_pEngine, SIGNAL( endOfTrack  () ),
-                 pProxy,    SLOT  ( deleteLater () ) );
+                 pProxy,      SLOT( deleteLater () ) );
         connect( pProxy,    SIGNAL( error       () ),
-                 this,      SLOT  ( proxyError  () ) );
+                 this,        SLOT( proxyError  () ) );
         connect( pProxy,    SIGNAL( metaData    ( const MetaBundle& ) ),
                  this,      SIGNAL( metaData    ( const MetaBundle& ) ) );
     }
@@ -646,9 +643,11 @@ void PlayerApp::play( const MetaBundle &bundle )
 
     //TODO replace currentTrack with this, and in PlaylistWidget do a compare type function to see if there is any new data
     emit metaData( bundle );
-
+    //when TagLib can't get us the track length, we ask the engine as fallback
+    m_determineLength = ( m_pEngine->isStream() || bundle.length() ) ? false : true; 
+    
     m_length = bundle.length() * 1000;
-
+    
     kdDebug() << "[play()] " << url.prettyURL() << endl;
     m_pEngine->play();
 
@@ -731,15 +730,10 @@ void PlayerApp::slotPlaylistShowHide()
         w->blockSignals( true );
         w->setOn( m_pBrowserWin->isShown() );
         w->blockSignals( false );
-
     }
-
-
-
-
 }
 
-
+//FIXME move to ArtsEngine
 bool PlayerApp::playObjectConfigurable()
 {
     //     if ( m_pPlayObject && !m_pPlayObject->object().isNull() && !m_pPlayerWidget->m_pPlayObjConfigWidget )
@@ -799,6 +793,14 @@ void PlayerApp::slotMainTimer()
     if ( m_sliderIsPressed || m_playingURL.isEmpty() )
         return;
 
+    //try to get track length from engine when TagLib fails
+    if ( m_determineLength ) {
+        if ( m_length = m_pEngine->length() ) {
+            m_pPlayerWidget->m_pSlider->setMaxValue ( m_length );
+            m_determineLength = false;
+        }
+    }
+            
     m_pPlayerWidget->m_pSlider->setValue( m_pEngine->position() );
 
     // <Draw TimeDisplay>

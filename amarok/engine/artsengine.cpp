@@ -272,6 +272,16 @@ bool ArtsEngine::canDecode( const KURL &url, mode_t mode, mode_t permissions )
 }
 
 
+long ArtsEngine::length() const
+{
+    if ( m_pPlayObject )
+        return m_pPlayObject->overallTime().seconds * 1000 +
+               m_pPlayObject->overallTime().ms;
+    else
+        return 0;
+}
+
+
 long ArtsEngine::position() const
 {
     if ( m_pPlayObject )

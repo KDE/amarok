@@ -141,6 +141,7 @@ class PlayerApp : public KApplication
         bool      m_proxyError;
         int       m_sockfd;
         QString   m_textForOSD;
+        bool      m_determineLength;
 };
 
 
