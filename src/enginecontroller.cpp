@@ -104,8 +104,10 @@ EngineController::loadEngine() //static
     m_engine = loadEngine( AmarokConfig::soundSystem() );
 
     const QString engineName = PluginManager::getService( m_engine )->property( "X-KDE-amaroK-name" ).toString();
-    if( engineName != AmarokConfig::soundSystem() )
-    {
+
+    if( !AmarokConfig::soundSystem().isEmpty() && engineName != AmarokConfig::soundSystem() ) {
+        //AmarokConfig::soundSystem() is empty on the first-ever-run
+
         amaroK::StatusBar::instance()->longMessage( i18n(
                 "Sorry, the '%1' could not be loaded, instead we have loaded the '%2'." )
                         .arg( AmarokConfig::soundSystem() )
