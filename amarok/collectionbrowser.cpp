@@ -122,7 +122,9 @@ CollectionView::CollectionView( CollectionBrowser* parent )
                         "artist varchar(100),"
                         "genre varchar(100),"
                         "title varchar(100),"
-                        "year varchar(4) );";
+                        "year varchar(4),"
+                        "comment varchar(100),"
+                        "track number(4) );";
     
         execSql( command );
     //</open database>
@@ -260,15 +262,23 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     kdDebug() << "item depth: " << item->depth() << endl;
     if  ( item->depth() == 0 ) {    
         //Filter for category 1:
-        QString cat = ( m_category2 == "None" ) ? "title,url" : m_category2.lower()
-                                                                           .append( "," )
-                                                                           .append( m_category2.lower() );
         
-        QString command = QString
-                          ( "SELECT DISTINCT %1 FROM tags WHERE %2 = '%3';" )
-                          .arg( cat )
-                          .arg( m_category1.lower() )
-                          .arg( item->text( 0 ) );
+        QString command;
+        if ( m_category2 == "None" ) {
+            command = QString
+                      ( "SELECT DISTINCT title,url FROM tags WHERE %1 = '%2' ORDER BY track;" )
+                      .arg( m_category1.lower() )
+                      .arg( item->text( 0 ) );
+        }
+        else {        
+            QString cat = m_category2.lower().append( "," ).append( m_category2.lower() );
+            command = QString
+                      ( "SELECT DISTINCT %1 FROM tags WHERE %2 = '%3';" )
+                      .arg( cat )
+                      .arg( m_category1.lower() )
+                      .arg( item->text( 0 ) );
+        }
+                                    
         QStringList values;
         QStringList names;
         execSql( command, &values, &names );
@@ -292,7 +302,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     else {
         //Filter for category 2:
         QString command = QString
-                          ( "SELECT title,url FROM tags WHERE %1 = '%2' AND %3 = '%4';" )
+                          ( "SELECT title,url FROM tags WHERE %1 = '%2' AND %3 = '%4' ORDER BY track;" )
                          .arg( m_category1.lower() )
                          .arg( item->parent()->text( 0 ) )
                          .arg( m_category2.lower() )
@@ -428,7 +438,7 @@ CollectionView::customEvent( QCustomEvent *e ) {
             bundle = c->bundleList().at( i );
  
             QString command = "INSERT INTO tags "
-                              "( url, dir,  album, artist, genre, title, year ) "
+                              "( url, dir, album, artist, genre, title, year, comment, track ) "
                               "VALUES('";
                                                        
             tag = bundle->url().path();
@@ -462,6 +472,16 @@ CollectionView::customEvent( QCustomEvent *e ) {
             command += "','";
             
             tag = bundle->year();
+            tag.remove( "'" );
+            command += tag;
+            command += "','";
+
+            tag = bundle->comment();
+            tag.remove( "'" );
+            command += tag;
+            command += "','";
+
+            tag = bundle->track();
             tag.remove( "'" );
             command += tag;
             command += "');";
@@ -543,7 +563,7 @@ CollectionView::startDrag() {
         if ( item->isSelected() ) {
             //query database for all tracks in our sub-category
             QString command = QString
-                              ( "SELECT url FROM tags WHERE %1 = '%2';" )
+                              ( "SELECT url FROM tags WHERE %1 = '%2' ORDER BY track;" )
                               .arg( m_category1.lower() )
                               .arg( item->text( 0 ) );
             QStringList values;
@@ -567,7 +587,8 @@ CollectionView::startDrag() {
                 if ( child->isSelected() ) {
                     //query database for all tracks in our sub-category
                     QString command = QString
-                                      ( "SELECT DISTINCT url FROM tags WHERE %1 = '%2' AND %3 = '%4';" )
+                                      ( "SELECT DISTINCT url FROM tags WHERE %1 = '%2' AND %3 = '%4' "
+                                        "ORDER BY track;" )
                                       .arg( m_category1.lower() )
                                       .arg( item->text( 0 ) )
                                       .arg( m_category2.lower() )
@@ -612,7 +633,7 @@ CollectionView::showTrackInfo() //slot
     if ( !item || item->depth() != 2 ) return;
 
     QString command = QString
-                        ( "SELECT DISTINCT artist, album, genre, year FROM tags "
+                        ( "SELECT DISTINCT artist, album, genre, year, comment FROM tags "
                           "WHERE url = '%1';" )
                         .arg( item->url().path() );
     
@@ -629,7 +650,7 @@ CollectionView::showTrackInfo() //slot
     str += body.arg( i18n( "Album" ),  values[1] );
     str += body.arg( i18n( "Genre" ),  values[2] );
     str += body.arg( i18n( "Year" ),   values[3] );
-//     str += body.arg( i18n( "Comment" ),mb.comment() );
+    str += body.arg( i18n( "Comment" ),values[4] );
 //     str += body.arg( i18n( "Length" ), mb.prettyLength() );
 //     str += body.arg( i18n( "Bitrate" ),mb.prettyBitrate() );
 //     str += body.arg( i18n( "Samplerate" ), mb.prettySampleRate() );
@@ -641,6 +662,20 @@ CollectionView::showTrackInfo() //slot
                      0, 0, true, Qt::WStyle_DialogBorder );
     box.setTextFormat( Qt::RichText );
     box.exec();
+}
+
+
+int
+CollectionView::Item::compare( QListViewItem* item, int col, bool ascending ) const
+{
+    //We overload compare() just to prevent the listView from sorting our items.
+    
+    if ( item->depth() == 1 && ( (CollectionView*) listView() )->m_category2 == "None" )
+        return 0;
+    if ( item->depth() == 2 )
+        return 0;
+                        
+    return KListViewItem::compare( item, col, ascending );
 }
 
 

@@ -61,6 +61,7 @@ class CollectionView : public KListView
                 void setUrl( const KURL& url ) { m_url = url; }
                 const KURL& url() const { return m_url; }
             private:
+                int compare( QListViewItem*, int, bool ) const;
             //attributes:
                 KURL m_url;
         };
@@ -112,7 +113,7 @@ class CollectionView : public KListView
             
     //attributes:
         //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.
-        static const int DATABASE_VERSION = 1;
+        static const int DATABASE_VERSION = 2;
         
         CollectionBrowser* m_parent;
         ThreadWeaver* m_weaver;
