@@ -1625,8 +1625,9 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     else popup.insertItem( SmallIcon( "2leftarrow" ), i18n( "&Dequeue (%1)" ).arg( queueIndex+1 ), PLAY_NEXT );
 
     popup.insertSeparator();
-    popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit '%1'", "&Edit '%1' for Selected Tracks", itemCount ).arg( tagName ), 0, 0, Key_F2, EDIT );
-    popup.insertItem( trackColumn ? i18n("&Iteratively Assign Track Numbers") : i18n("Write '%1' for Selected Tracks").arg( KStringHandler::rsqueeze( tag, 30 ) ), FILL_DOWN );
+    popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit '%1' for Selected Tracks" ).arg( tagName ), 0, 0, Key_F2, EDIT );
+    popup.insertItem( trackColumn ? i18n("&Iteratively Assign Track Numbers") : i18n("Write '%1' for Selected Tracks").
+                      arg( KStringHandler::rsqueeze( tag, 30 ) ), FILL_DOWN );
     popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy Meta-string" ), 0, 0, CTRL+Key_C, COPY );
     popup.insertSeparator();
 
@@ -1644,7 +1645,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.insertSeparator();
 
     popup.insertItem( SmallIcon( "edittrash" ), i18n( "&Remove From Playlist" ), this, SLOT(removeSelectedItems()), Key_Delete );
-    popup.insertItem( SmallIcon( "editdelete" ), i18n("&Delete File", "&Delete Selected Files", itemCount ), this, SLOT(deleteSelectedFiles()), SHIFT+Key_Delete );
+    popup.insertItem( SmallIcon( "editdelete" ), i18n("&Delete File", "&Delete %n Selected Files", itemCount ), this, SLOT(deleteSelectedFiles()), SHIFT+Key_Delete );
     popup.insertSeparator();
     popup.insertItem( SmallIcon( "info" ), i18n( "&View/Edit Meta Information..." ), VIEW ); //TODO rename properties
 
