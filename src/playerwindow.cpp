@@ -677,7 +677,7 @@ void PlayerWidget::createAnalyzer( int increment )
     delete m_pAnalyzer;
 
     m_pAnalyzer = Analyzer::Factory::createAnalyzer( this );
-    m_pAnalyzer->setGeometry( 119,40, 168,56 );
+    m_pAnalyzer->setGeometry( 120,40, 168,56 );
     m_pAnalyzer->show();
 
     QString tooltip = i18n( "Click for more analyzers." );
