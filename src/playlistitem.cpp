@@ -124,7 +124,7 @@ PlaylistItem::PlaylistItem( Playlist* parent, QListViewItem *lvi, const KURL &u,
 {
     setDragEnabled( true );
 
-    KListViewItem::setText( 1, title );
+    KListViewItem::setText( Title, title );
     setText( Directory, u.directory().section( '/', -1 ) ); //try for stringStore
     setText( Length, MetaBundle::prettyLength( length ) );
 }
@@ -199,9 +199,9 @@ QString PlaylistItem::text( int column ) const
     //if trackname (column 0) is hidden, then show trackname text in title column if there
     //is no text set for the title (column 1)
 
-    if( column == 1 && listView()->columnWidth( 0 ) == 0 && KListViewItem::text( 1 ).isEmpty() )
+    if( column == Title && listView()->columnWidth( TrackName ) == 0 && KListViewItem::text( Title ).isEmpty() )
     {
-            return KListViewItem::text( 0 );
+            return KListViewItem::text( TrackName );
     }
 
     return KListViewItem::text( column );
@@ -228,15 +228,15 @@ PlaylistItem::seconds() const
 
 void PlaylistItem::setText( const MetaBundle &bundle )
 {
-    setText( 1,  bundle.prettyTitle() );
-    setText( 2,  bundle.artist() );
-    setText( 3,  bundle.album() );
-    setText( 4,  bundle.year() );
-    setText( 5,  bundle.comment() );
-    setText( 6,  bundle.genre() );
-    setText( 7,  bundle.track() );
-    setText( 9,  bundle.prettyLength() );
-    setText( 10, bundle.prettyBitrate() );
+    setText( Title,   bundle.prettyTitle() );
+    setText( Artist,  bundle.artist() );
+    setText( Album,   bundle.album() );
+    setText( Year,    bundle.year() );
+    setText( Comment, bundle.comment() );
+    setText( Genre,   bundle.genre() );
+    setText( Track,   bundle.track() );
+    setText( Length,  bundle.prettyLength() );
+    setText( Bitrate, bundle.prettyBitrate() );
 }
 
 

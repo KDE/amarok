@@ -33,8 +33,8 @@ class PlaylistItem : public KListViewItem
         PlaylistItem *nextSibling() const { return (PlaylistItem*)KListViewItem::nextSibling(); }
 
         MetaBundle metaBundle();
-        QString trackName() const { return KListViewItem::text( 0 ); }
-        QString title() const { return KListViewItem::text( 1 ); }
+        QString trackName() const { return KListViewItem::text( TrackName ); }
+        QString title() const { return KListViewItem::text( Title ); }
         const KURL &url() const { return m_url; }
         QString seconds() const;
 
