@@ -43,8 +43,9 @@ class GstEngine : public EngineBase
                                                                                                   
         bool                                     initMixer( bool hardware );
         bool                                     canDecode( const KURL &url, mode_t mode, mode_t permissions );
+        QStringList                              getOutputsList() { return getPluginList( "Sink/Audio" ); }
 
-        long                                     length() const                      { return 0; }
+        long                                     length() const { return 0; }
         long                                     position() const;
         EngineBase::EngineState                  state() const;
         bool                                     isStream() const;
@@ -63,6 +64,9 @@ class GstEngine : public EngineBase
         static void                              handoff_cb( GstElement*, GstBuffer*, gpointer );
         static void                              typefindFound_cb( GstElement*, GstCaps*, GstElement* );
 
+        /** Get a list of available plugins from a specified Class */
+        QStringList                              getPluginList( const QCString& classname );
+        
         void                                     fillPipeline( bool init = false );
         void                                     cleanPipeline();
         void                                     interpolate( const vector<float>& inVec, vector<float>& outVec );

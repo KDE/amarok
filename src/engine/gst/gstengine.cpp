@@ -1,6 +1,6 @@
 /***************************************************************************
-                      gstengine.cpp  -  GStreamer audio interface
-                         -------------------
+                     gstengine.cpp  -  GStreamer audio interface
+                        -------------------
 begin                : Jan 02 2003
 copyright            : (C) 2003 by Mark Kretschmann
 email                : markey@web.de
@@ -21,7 +21,7 @@ email                : markey@web.de
 #include <math.h>           //interpolate()
 #include <vector>
 
-#include <qmessagebox.h>    //fillPipeline() 
+#include <qmessagebox.h>    //fillPipeline()
 #include <qobject.h>
 #include <qstring.h>
 #include <qstringlist.h>
@@ -36,7 +36,6 @@ using std::vector;
 
 
 AMAROK_EXPORT_PLUGIN( GstEngine )
-
 
 //////////////////////////////////////////////////////////////////////
 // STATIC
@@ -54,7 +53,7 @@ GstEngine::eos_cb( GstElement*, GstElement* )
 {
     kdDebug() << k_funcinfo << endl;
 
-    //this is the Qt equivalent to an idle function: delay the call until all events are finished, 
+    //this is the Qt equivalent to an idle function: delay the call until all events are finished,
     //otherwise gst will crash horribly
     QTimer::singleShot( 0, pObject, SLOT( stop() ) );
 }
@@ -68,41 +67,39 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
 
     for ( int i = 0; i < gst_caps_get_size( caps ); i++ ) {
         GstStructure* structure = gst_caps_get_structure( caps, i );
-        
+
         if ( gst_structure_has_field( structure, "channels" ) ) {
-//             kdDebug() << k_funcinfo << "Field 'channels' found." << endl;
-            gst_structure_get_int( structure, "channels", &channels ); 
+            //             kdDebug() << k_funcinfo << "Field 'channels' found." << endl;
+            gst_structure_get_int( structure, "channels", &channels );
         }
     }
     gst_caps_free( caps );
-//     kdDebug() << k_funcinfo << "Channels: " << channels << endl;
+    //     kdDebug() << k_funcinfo << "Channels: " << channels << endl;
 
-    if ( GST_IS_BUFFER( buf ) )
-    {
-//         kdDebug() << k_funcinfo << "BUFFER_SIZE: " << GST_BUFFER_SIZE( buf ) << endl;
-        gint16* data = (gint16*) GST_BUFFER_DATA( buf );
+    if ( GST_IS_BUFFER( buf ) ) {
+        //         kdDebug() << k_funcinfo << "BUFFER_SIZE: " << GST_BUFFER_SIZE( buf ) << endl;
+        gint16 * data = ( gint16* ) GST_BUFFER_DATA( buf );
 
         //divide length by 2 for casting from 8bit to 16bit, and divide by number of channels
-        for ( ulong i = 0; i < GST_BUFFER_SIZE( buf ) / 2 / channels; i += channels )
-        {
+        for ( ulong i = 0; i < GST_BUFFER_SIZE( buf ) / 2 / channels; i += channels ) {
             if ( pObject->m_scopeBufIndex == pObject->m_scopeBuf.size() ) {
                 pObject->m_scopeBufIndex = 0;
                 kdDebug() << k_funcinfo << "m_scopeBuf overflow!\n";
             }
-                                
+
             float temp = 0.0;
             //add all channels together so we effectively get a mono scope
-            for ( int j = 0; j < channels; j++ ) {             
+            for ( int j = 0; j < channels; j++ ) {
                 //convert uint-16 to float and write into buf
-                temp += (float)( data[i+j] - 32768 ) / 32768.0;
+                temp += ( float ) ( data[ i + j ] - 32768 ) / 32768.0;
             }
-            pObject->m_scopeBuf[pObject->m_scopeBufIndex++] = temp;                
+            pObject->m_scopeBuf[ pObject->m_scopeBufIndex++ ] = temp;
         }
     }
 }
 
 
-void 
+void
 GstEngine::typefindFound_cb( GstElement* /*typefind*/, GstCaps* /*caps*/, GstElement* /*pipeline*/ )
 {
     kdDebug() << "GstEngine::typefindFound" << endl;
@@ -125,9 +122,9 @@ GstEngine::typefindFound_cb( GstElement* /*typefind*/, GstCaps* /*caps*/, GstEle
 /////////////////////////////////////////////////////////////////////////////////////
 
 GstEngine::GstEngine()
-    : EngineBase()
-    , m_pThread( NULL )
-    , m_pipelineFilled( false )
+        : EngineBase()
+        , m_pThread( NULL )
+        , m_pipelineFilled( false )
 {
     kdDebug() << k_funcinfo << endl;
 }
@@ -136,7 +133,7 @@ GstEngine::GstEngine()
 GstEngine::~GstEngine()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
-    
+
     stop();
     cleanPipeline();
 
@@ -148,22 +145,61 @@ void
 GstEngine::init( bool&, int scopeSize, bool )
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
-    
+
     pObject = this;
-    m_mixerHW = -1;            //initialize 
-    
+    m_mixerHW = -1;            //initialize
+
     m_scopeBufIndex = 0;
     m_scopeBuf.resize( SCOPEBUF_SIZE );
     m_scopeSize = 1 << scopeSize;
-    
-//     g_module_open( "libgstreamer-0.8.so", (GModuleFlags) 0 );
+
     gst_init( NULL, NULL );
     fillPipeline( true );
-
+    
     kdDebug() << "END " << k_funcinfo << endl;
 }
 
 
+QStringList
+GstEngine::getPluginList( const QCString& classname )
+{
+    GList* pool_registries = NULL;
+    GList* registries = NULL;
+    GList* plugins = NULL;
+    GList* features = NULL;
+    QStringList results;
+    
+    pool_registries = gst_registry_pool_list ();
+    registries = pool_registries;
+
+    while ( registries ) {
+        GstRegistry * registry = GST_REGISTRY ( registries->data );
+        plugins = registry->plugins;
+
+        while ( plugins ) {
+            GstPlugin * plugin = GST_PLUGIN ( plugins->data );
+            features = gst_plugin_get_feature_list ( plugin );
+
+            while ( features ) {
+                GstPluginFeature * feature = GST_PLUGIN_FEATURE ( features->data );
+
+                if ( GST_IS_ELEMENT_FACTORY ( feature ) ) {
+                    GstElementFactory * factory = GST_ELEMENT_FACTORY ( feature );
+
+                    if ( g_strrstr ( factory->details.klass, classname ) )
+                        results << g_strdup ( GST_OBJECT_NAME ( factory ) );
+                }
+                features = g_list_next ( features );
+            }
+            plugins = g_list_next ( plugins );
+        }
+        registries = g_list_next ( registries );
+    }
+    g_list_free ( pool_registries );
+    pool_registries = NULL;
+
+    return results;
+}
 
 /////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC METHODS
@@ -173,10 +209,10 @@ bool
 GstEngine::initMixer( bool hardware )
 {
     closeMixerHW();
-    
+
     if ( hardware )
         hardware = initMixerHW();
-    
+
     return hardware;
 }
 
@@ -185,7 +221,7 @@ bool
 GstEngine::canDecode( const KURL &url, mode_t, mode_t )
 {
     if ( !m_pipelineFilled ) return false;
-    
+
     GstElement *pipeline, *filesrc, *typefind;
     m_typefindResult = false;
 
@@ -207,7 +243,7 @@ GstEngine::canDecode( const KURL &url, mode_t, mode_t )
 
     gst_element_set_state( GST_ELEMENT( pipeline ), GST_STATE_PLAYING );
 
-    while( gst_bin_iterate ( GST_BIN ( pipeline ) ) );
+    while ( gst_bin_iterate ( GST_BIN ( pipeline ) ) );
 
     gst_element_set_state( GST_ELEMENT( pipeline ), GST_STATE_NULL );
     gst_object_unref( GST_OBJECT( pipeline ) );
@@ -220,34 +256,33 @@ long
 GstEngine::position() const
 {
     if ( !m_pipelineFilled ) return 0;
-    
+
     GstFormat fmt = GST_FORMAT_TIME;
     //value will hold the current time position in nanoseconds
     gint64 value;
     gst_element_query( m_pSpider, GST_QUERY_POSITION, &fmt, &value );
-    
-    return (long) ( value / GST_MSECOND ); // ns -> ms
+
+    return ( long ) ( value / GST_MSECOND ); // ns -> ms
 }
 
 
-EngineBase::EngineState 
+EngineBase::EngineState
 GstEngine::state() const
 {
     if ( !m_pipelineFilled ) return Empty;
-    
-    switch ( gst_element_get_state( GST_ELEMENT( m_pThread ) ) )
-    {
-        case GST_STATE_NULL:
-            return Empty;
-        case GST_STATE_READY:
-            return Idle;
-        case GST_STATE_PLAYING:
-            return Playing;
-        case GST_STATE_PAUSED:
-            return Paused;
 
-        default:
-            return Empty;
+    switch ( gst_element_get_state( GST_ELEMENT( m_pThread ) ) ) {
+    case GST_STATE_NULL:
+        return Empty;
+    case GST_STATE_READY:
+        return Idle;
+    case GST_STATE_PLAYING:
+        return Playing;
+    case GST_STATE_PAUSED:
+        return Paused;
+
+    default:
+        return Empty;
     }
 }
 
@@ -266,7 +301,7 @@ GstEngine::scope()
 
     interpolate( m_scopeBuf, *scope );
     m_scopeBufIndex = 0;
-    
+
     return scope;
 }
 
@@ -275,13 +310,13 @@ GstEngine::scope()
 // PUBLIC SLOTS
 /////////////////////////////////////////////////////////////////////////////////////
 
-const QObject* 
-GstEngine::play( const KURL& url ) //SLOT
+const QObject*
+GstEngine::play( const KURL& url )  //SLOT
 {
     stop();
     fillPipeline();
     if ( !m_pipelineFilled ) return 0;
-        
+
     //load track into filesrc
     g_object_set( G_OBJECT( m_pFilesrc ), "location", url.path().latin1(), NULL );
     play();
@@ -290,71 +325,70 @@ GstEngine::play( const KURL& url ) //SLOT
 }
 
 
-void 
-GstEngine::play() //SLOT
+void
+GstEngine::play()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
-    if ( !m_pipelineFilled ) return;
-    
+    if ( !m_pipelineFilled ) return ;
+
     gst_element_set_state( GST_ELEMENT( m_pThread ), GST_STATE_READY );
     /* start playing */
     gst_element_set_state( GST_ELEMENT( m_pThread ), GST_STATE_PLAYING );
 }
 
 
-void 
-GstEngine::stop() //SLOT
+void
+GstEngine::stop()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
-    if ( !m_pipelineFilled ) return;
-    
+    if ( !m_pipelineFilled ) return ;
+
     /* stop the thread */
-    gst_element_set_state (GST_ELEMENT( m_pThread ), GST_STATE_NULL );
+    gst_element_set_state ( GST_ELEMENT( m_pThread ), GST_STATE_NULL );
 }
 
 
-void 
-GstEngine::pause() //SLOT
+void
+GstEngine::pause()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
-    if ( !m_pipelineFilled ) return;
-    
+    if ( !m_pipelineFilled ) return ;
+
     gst_element_set_state( GST_ELEMENT( m_pThread ), GST_STATE_PAUSED );
 }
 
 
-void 
-GstEngine::seek( long ms ) //SLOT
+void
+GstEngine::seek( long ms )  //SLOT
 {
-    if ( !m_pipelineFilled ) return;
-    
+    if ( !m_pipelineFilled ) return ;
+
     if ( ms > 0 )
     {
-        GstEvent *event = gst_event_new_seek( (GstSeekType) ( GST_FORMAT_TIME |
-                                                              GST_SEEK_METHOD_SET |
-                                                              GST_SEEK_FLAG_FLUSH ),
-                                                              ms * GST_MSECOND );
+        GstEvent * event = gst_event_new_seek( ( GstSeekType ) ( GST_FORMAT_TIME |
+                                               GST_SEEK_METHOD_SET |
+                                               GST_SEEK_FLAG_FLUSH ),
+                                               ms * GST_MSECOND );
 
         gst_element_send_event( m_pAudiosink, event );
     }
 }
 
 
-void 
-GstEngine::setVolume( int percent ) //SLOT
+void
+GstEngine::setVolume( int percent )  //SLOT
 {
     m_volume = percent;
-    
+
     if ( isMixerHardware() ) {
         EngineBase::setVolumeHW( percent );
         if ( m_pipelineFilled )
             g_object_set( G_OBJECT( m_pVolume ), "volume", 1.0, NULL );
-    }
-    else {
+    } else {
         if ( m_pipelineFilled )
-            g_object_set( G_OBJECT( m_pVolume ), "volume", (double) percent / 100.0, NULL );
+            g_object_set( G_OBJECT( m_pVolume ), "volume", ( double ) percent / 100.0, NULL );
     }
-    
+
 }
 
 
@@ -366,49 +400,39 @@ void
 GstEngine::fillPipeline( bool init )
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
-    
+
     if ( m_pipelineFilled )
         cleanPipeline();
-    
-    kdDebug() << "Sound output method: " << m_soundOutput << endl;    
-    if ( m_soundOutput == "OSS" )
-        m_pAudiosink = gst_element_factory_make( "osssink", "play_audio" );
-    else    
-        m_pAudiosink = gst_element_factory_make( "alsasink", "play_audio" );
-    
-    if ( !m_pAudiosink ) {
-        if ( init )
-            QMessageBox::warning( 0, 0, "The selected sound output is not supported on your system.\n"
-                                        "Please choose a different setting in the configuration dialog.",
-                                        QMessageBox::Ok, QMessageBox::NoButton ); 
-        return;
-    }
+
+    kdDebug() << "Sound output method: " << m_soundOutput << endl;
+    m_pAudiosink = gst_element_factory_make( m_soundOutput.latin1(), "play_audio" );
+
     /* create a disk reader */
-    m_pFilesrc   = gst_element_factory_make( "filesrc", "disk_source" );
-    m_pSpider    = gst_element_factory_make( "spider", "spider" );
+    m_pFilesrc = gst_element_factory_make( "filesrc", "disk_source" );
+    m_pSpider = gst_element_factory_make( "spider", "spider" );
     /* and an audio sink */
-    
-    m_pIdentity  = gst_element_factory_make( "identity", "rawscope" );
-    m_pVolume    = gst_element_factory_make( "volume", "volume" );
+
+    m_pIdentity = gst_element_factory_make( "identity", "rawscope" );
+    m_pVolume = gst_element_factory_make( "volume", "volume" );
 
     /* create a new thread to hold the elements */
-    m_pThread              = gst_thread_new          ( "thread" );
-        
+    m_pThread = gst_thread_new ( "thread" );
+
     g_signal_connect ( G_OBJECT( m_pIdentity ), "handoff",
                        G_CALLBACK( handoff_cb ), m_pThread );
-    
+
     g_signal_connect ( G_OBJECT( m_pAudiosink ), "eos",
                        G_CALLBACK( eos_cb ), m_pThread );
-    
+
     /* add objects to the main pipeline */
     gst_bin_add_many( GST_BIN( m_pThread ), m_pFilesrc, m_pSpider, m_pIdentity,
-                                            m_pVolume, m_pAudiosink, NULL );
+                      m_pVolume, m_pAudiosink, NULL );
     /* link src to sink */
     gst_element_link_many( m_pFilesrc, m_pSpider, m_pIdentity, m_pVolume, m_pAudiosink, NULL );
 
     setVolume( volume() );
     m_pipelineFilled = true;
-    
+
     kdDebug() << "END " << k_funcinfo << endl;
 }
 
@@ -427,16 +451,15 @@ void
 GstEngine::interpolate( const vector<float> &inVec, vector<float> &outVec )
 {
     double pos = 0.0;
-    const double step = (double)m_scopeBufIndex / outVec.size();
+    const double step = ( double ) m_scopeBufIndex / outVec.size();
 
-    for ( uint i = 0; i < outVec.size(); ++i, pos += step )
-    {
-        unsigned long index = (unsigned long) pos;
+    for ( uint i = 0; i < outVec.size(); ++i, pos += step ) {
+        unsigned long index = ( unsigned long ) pos;
 
         if ( index >= m_scopeBufIndex )
             index = m_scopeBufIndex - 1;
 
-        outVec[i] = inVec[index];
+        outVec[ i ] = inVec[ index ];
     }
 }
 

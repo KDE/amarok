@@ -55,6 +55,9 @@ class EngineBase : public QObject, public amaroK::Plugin {
         virtual bool initMixer( bool hardware ) = 0;
 
         virtual bool canDecode( const KURL &url, mode_t mode, mode_t permissions ) = 0;
+        
+        /** Get list of available output plugins */
+        virtual QStringList getOutputsList() { return QStringList(); }
 
         /**
          * Determines track length.
