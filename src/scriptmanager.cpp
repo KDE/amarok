@@ -263,14 +263,19 @@ ScriptManager::slotUninstallScript()
         return;
     }
 
-    // Remove all scripts from internal list that were in the uninstalled directory
-    ScriptMap::Iterator itScripts;
-    for ( itScripts = m_scripts.begin(); itScripts != m_scripts.end(); ++itScripts ) {
-        if ( itScripts.data().url.directory() == directory ) {
-            delete itScripts.data().li;
-            delete itScripts.data().process;
-            m_scripts.erase( itScripts );
-        }
+    // Find all scripts that were in the uninstalled folder
+    QStringList keys;
+    ScriptMap::Iterator it;
+    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
+        if ( it.data().url.directory() == directory )
+            keys << it.key();
+
+    // Kill script processes, remove entries from script list
+    QStringList::Iterator itKeys;
+    for ( itKeys = keys.begin(); itKeys != keys.end(); ++itKeys ) {
+        delete m_scripts[*itKeys].li;
+        delete m_scripts[*itKeys].process;
+        m_scripts.erase( *itKeys );
     }
 }
 
@@ -453,17 +458,22 @@ ScriptManager::loadScript( const QString& path )
 bool
 ScriptManager::rmRecursively( const QString& directory )
 {
+    DEBUG_BLOCK
+
     QDir dir( directory );
     QStringList files = dir.entryList();
 
     // Remove all files
     bool success = false;
     QStringList::Iterator it;
-    for ( it = files.begin(); it != files.end(); ++it )
+    for ( it = files.begin(); it != files.end(); ++it ) {
         success |= dir.remove( *it );
+        debug() << "Removed file: " << *it << endl;
+    }
 
     // Remove directory as well
     dir.rmdir( directory );
+    debug() << "Removed directory: " << directory << endl;
 
     return success;
 }
