@@ -8,12 +8,10 @@
     <group name="Gst-Engine">
         <entry key="Sound Output" type="String">
             <label>Sound output method to use</label>
-            <default>Alsa</default>
-            <whatsthis>Select the sound output system. amaroK currently support "Alsa" and "OSS", however their availability depends on the system configuration.</whatsthis>
+            <whatsthis>Select the sound output plugin ("sink"). Their availability depends on the system configuration.</whatsthis>
         </entry>
         <entry key="Sound Device" type="String">
             <label>Sound output device to use</label>
-            <default></default>
             <whatsthis>Select the sound output device. this is useful for gstreamer engine sinks</whatsthis>
         </entry>
         <entry key="Custom Sound Device" type="Bool">
