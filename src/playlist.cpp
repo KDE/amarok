@@ -1302,8 +1302,8 @@ Playlist::customEvent( QCustomEvent *e )
         m_undoButton->setEnabled( !m_undoList.isEmpty() );
         m_redoButton->setEnabled( !m_redoList.isEmpty() );
 
-        //just in case the track that is playing is not set current
-        restoreCurrentTrack();
+        refreshNextTracks( 0 );
+        
         //necessary usually
         m_totalLength = 0;
         int itemCount = 0;
@@ -1358,7 +1358,27 @@ Playlist::customEvent( QCustomEvent *e )
     case PlaylistLoader::DomItem:
         #define e static_cast<PlaylistLoader::DomItemEvent*>(e)
         item = new PlaylistItem( e->url, afterItem, e->node );
+        int queueIndex =
+            e->node.toElement().attribute( "queue_index" ).isEmpty() ? -1 :
+                e->node.toElement().attribute( "queue_index" ).toInt();
         #undef e
+        if ( queueIndex == 0 )
+        {
+            setCurrentTrack( item );
+        }
+        else if ( queueIndex > 0 )
+        {
+            int count = m_nextTracks.count();
+            if ( count < queueIndex )
+            {
+                for ( int i = 0; i < queueIndex - count; i++ )
+                {
+                    // Append foo values and replace with correct values later.
+                    m_nextTracks.append( item );
+                }
+            }
+            m_nextTracks.replace( queueIndex - 1, item );
+        }
         if ( directPlay ) {
             activate( item );
             directPlay = false;
@@ -1413,9 +1433,8 @@ Playlist::saveM3U( const QString &path ) const
 }
 
 void
-Playlist::saveXML( const QString &path ) const
+Playlist::saveXML( const QString &path )
 {
-    //TODO save nextTrack queue
     QFile file( path );
 
     if( !file.open( IO_WriteOnly ) ) return;
@@ -1428,8 +1447,18 @@ Playlist::saveXML( const QString &path ) const
 
     for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
     {
+        int queueIndex = m_nextTracks.findRef( item );
+        bool isQueued = queueIndex != -1;
         QDomElement i = newdoc.createElement("item");
         i.setAttribute("url", item->url().url());
+        if ( isQueued )
+        {
+            i.setAttribute( "queue_index", queueIndex + 1 );
+        }
+        else if ( item == currentTrack() )
+        {
+            i.setAttribute( "queue_index", 0 );
+        }
 
         for( int x = 1; x < columns(); ++x )
         {
