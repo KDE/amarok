@@ -101,6 +101,7 @@ PlayerApp::PlayerApp() :
         m_pConfig( kapp->config() ),
         m_pMainTimer( new QTimer( this ) ),
         m_pAnimTimer( new QTimer( this ) ),
+        m_scopeId( 0 ),
         m_length( 0 ),
         m_playRetryCounter( 0 ),
         m_pEffectWidget( NULL ),
@@ -184,7 +185,7 @@ PlayerApp::~PlayerApp()
     delete m_pPlayerWidget; //deletes browserWin
 
     m_XFade = Amarok::Synth_STEREO_XFADE::null();
-    m_Scope = Arts::StereoFFTScope::null();
+    m_scope = Arts::StereoFFTScope::null();
     m_volumeControl = Arts::StereoVolumeControl::null();
     m_effectStack = Arts::StereoEffectStack::null();
     m_globalEffectStack = Arts::StereoEffectStack::null();
@@ -473,20 +474,19 @@ bool PlayerApp::initMixerHW()
 bool PlayerApp::initScope()
 {
     kdDebug() << "begin PlayerApp::initScope()" << endl;
+    
+    m_scope = Arts::DynamicCast( m_Server.createObject( "Arts::StereoFFTScope" ) );
 
-    m_Scope = Arts::DynamicCast( m_Server.createObject( "Arts::StereoFFTScope" ) );
-
-    if ( m_Scope.isNull() )
+    if ( m_scope.isNull() )
     {
-        kdDebug() << "m_Scope.isNull()!" << endl;
+        kdDebug() << "m_scope.isNull()!" << endl;
         return false;
     }
-
-    m_scopeActive = false;
-    m_globalEffectStack.insertBottom( m_Scope, "Analyzer" );
-
-    kdDebug() << "end PlayerApp::initScope()" << endl;
-    return true;
+    else 
+    {
+        kdDebug() << "end PlayerApp::initScope()" << endl;
+        return true;
+    }
 }
 
 
@@ -1349,11 +1349,7 @@ void PlayerApp::slotMainTimer()
 {
     if ( m_pPlayObject == NULL || m_pPlayObject->isNull() )
     {
-        if ( m_scopeActive )
-        {
-            m_Scope.stop();
-            m_scopeActive = false;
-        }
+        disableScope();
         return;
     }
 
@@ -1368,6 +1364,12 @@ void PlayerApp::slotMainTimer()
     if ( !m_bIsPlaying )
         return;
 
+    //only enable scope when needed, so we save some cpu
+    if ( m_pPlayObject->state() == Arts::posPlaying )
+        enableScope();
+    else
+        disableScope();
+                
     Arts::poTime timeC( m_pPlayObject->currentTime() );
     m_pPlayerWidget->m_pSlider->setValue( static_cast<int>( timeC.seconds ) );
 
@@ -1440,23 +1442,27 @@ void PlayerApp::slotMainTimer()
                 return;
         }
     }
+}
 
-    if ( m_pPlayObject->state() == Arts::posPlaying )
+
+void PlayerApp::enableScope()
+{
+    if ( !m_scopeId )
     {
-        if ( !m_scopeActive )
-        {
-            m_Scope.start();
-            m_scopeActive = true;
-        }
-    }
-    else
+        m_scope.start();
+        m_scopeId = m_globalEffectStack.insertBottom( m_scope, "Analyzer" );
+    }            
+}
+
+
+void PlayerApp::disableScope()
+{
+    if ( m_scopeId )
     {
-        if ( m_scopeActive )
-        {
-            m_Scope.stop();
-            m_scopeActive = false;
-        }
-    }
+        m_scope.stop();
+        m_globalEffectStack.remove( m_scopeId );
+        m_scopeId = 0;
+    }            
 }
 
 
@@ -1477,9 +1483,9 @@ void PlayerApp::slotVisTimer()
 
     if ( m_pPlayerWidget->isVisible() && !m_pPlayerWidget->m_pButtonPause->isDown() )
     {
-        if ( m_scopeActive )
+        if ( m_scopeId )
         {
-            std::vector<float> *pScopeVector = m_Scope.scope();
+            std::vector<float> *pScopeVector = m_scope.scope();
             m_pPlayerWidget->m_pVis->drawAnalyzer( pScopeVector );
             delete pScopeVector;
         }

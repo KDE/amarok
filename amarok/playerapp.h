@@ -120,7 +120,7 @@ class PlayerApp : public KUniqueApplication
         KDE::PlayObject *m_pPlayObject;
         KDE::PlayObject *m_pPlayObjectXFade;
         Arts::SoundServerV2 m_Server;
-        Arts::StereoFFTScope m_Scope;
+        Arts::StereoFFTScope m_scope;
         Arts::StereoEffectStack m_globalEffectStack;
         Arts::StereoEffectStack m_effectStack;
         Arts::StereoVolumeControl m_volumeControl;
@@ -187,6 +187,9 @@ class PlayerApp : public KUniqueApplication
         void startXFade();
         void stopXFade();
 
+        void enableScope();
+        void disableScope();
+        
         // ATTRIBUTES ------
         KArtsDispatcher *m_pArtsDispatcher;
         bool m_usingMixerHW;
@@ -194,7 +197,6 @@ class PlayerApp : public KUniqueApplication
         QTimer *m_pMainTimer;
         QTimer *m_pAnimTimer;
         long m_scopeId;
-        bool m_scopeActive;
         long m_length;
         int m_Mixer;
         int m_playRetryCounter;
