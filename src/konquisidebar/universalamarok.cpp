@@ -77,7 +77,7 @@ UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widget
                    KonqSidebarPlugin(inst,parent,widgetParent,desktopName,name)
 {
     widget=new amarokWidget(widgetParent);
-    widget->resize(580,300);
+//    widgetParent->resize(580,300);
     browser = new KHTMLPart(widget, "widget-browser");
 //browser=new KHTMLPart(widget);
 kdDebug() << "parentPart() << " << browser->parentPart() << endl;
@@ -97,6 +97,11 @@ browser->view()->installEventFilter(widget);
 
     toolBar->insertSeparator();
     toolBar->insertButton("arts",0,SIGNAL(clicked() ),this, SLOT(sendMute() ) );
+    toolBar->insertSeparator();
+    toolBar->insertButton("gohome",0,SIGNAL(clicked() ),this, SLOT(cbHome() ) );
+    toolBar->insertButton("today",0,SIGNAL(clicked() ),this, SLOT(currentTrack() ) );
+    toolBar->insertButton("document",0,SIGNAL(clicked() ),this, SLOT(lyrics() ) );
+
 
     vol_slider=new QSlider(0,100,1,0,Qt::Vertical, toolBar,"volume");
     connect(vol_slider, SIGNAL( valueChanged(int) ), this, SLOT(volChanged(int ) ) );
@@ -198,8 +203,8 @@ QString UniversalAmarok::getCurrentPlaying()
  */
 void UniversalAmarok::openURLRequest( const KURL &url )
 {
+   kdDebug() << "amarok-sidebar: Catched url request: " << url << endl;
    checkForAmarok();
-   kdDebug() << "Catched url request: " << url << endl;
    QByteArray data;
    QDataStream arg(data, IO_WriteOnly);
    arg << url;
