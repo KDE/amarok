@@ -807,7 +807,7 @@ void ContextBrowser::setStyleSheet()
     //m_styleSheet += QString( ".album { font-weight: bold; }" );
 
     //header for all sections
-    m_styleSheet += QString( "th { color: %1; font-size: %2px; font-weight: bold; background-color: %3; padding: 1px 0.5em; border-bottom: 1px solid #000; }" )
+    m_styleSheet += QString( "th { text-align: left; color: %1; font-size: %2px; font-weight: bold; background-color: %3; padding: 1px 0.5em; border-bottom: 1px solid #000; }" )
                     .arg( fg ).arg( pxSize + 2 ).arg( bg );
 
     //rb? dunno, but this is the style for the currentlyPlaying block
