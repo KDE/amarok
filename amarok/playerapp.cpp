@@ -331,9 +331,11 @@ void PlayerApp::initIpc()
     }
     sockaddr_un local;
     local.sun_family = AF_UNIX;
-    QCString path = ::locate( "socket", QString( "amarok/.loader_socket" ) ).local8Bit();
+    QCString path = ::locateLocal( "socket", "amarok.loader_socket" ).local8Bit();
     ::strcpy( &local.sun_path[0], path );
     ::unlink( path );
+    
+    kdDebug() << "Opening control socket on " << path << endl;
 
     int len = sizeof( local );
 

@@ -28,9 +28,6 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 
-#include <kinstance.h>
-#include <kstandarddirs.h>
-
 Loader::Loader( int& argc, char** argv )
     : QApplication( argc, argv )
     , m_argc ( argc )
@@ -38,10 +35,6 @@ Loader::Loader( int& argc, char** argv )
     , m_pProc( NULL )
     , m_pOsd ( NULL )
 {
-    // create KInstance
-    m_kinst = new KInstance("amarokloader");
-    Q_ASSERT(m_kinst);
-    
     m_sockfd = tryConnect();
 
     //determine whether an amaroK instance is already running (LoaderServer)
@@ -150,6 +143,10 @@ void Loader::showSplash()
     processEvents();
 }
 
+// getpwuid/getuid
+#include <sys/types.h>
+#include <pwd.h>
+#include <unistd.h>
 
 int Loader::tryConnect()
 {
@@ -161,8 +158,20 @@ int Loader::tryConnect()
     }
     sockaddr_un local;
     local.sun_family = AF_UNIX;
-    QCString path = ::locate( "socket", QString( "amarok/.loader_socket" ), m_kinst ).local8Bit();
+    
+    // find out current user name
+    struct passwd *p = getpwuid( getuid() );
+    if (!p) {
+	qDebug( "[Loader::tryConnect()] Current user has no /etc/passwd entry?!?" );
+	return -1;
+    }
+    
+    QCString path("/tmp/ksocket-");
+    path += p->pw_name;
+    path += "/amarok.loader_socket";
     ::strcpy( &local.sun_path[0], path );
+
+    std::cerr << "[Loader::tryConnect()] connecting to" << local.sun_path << '\n';
 
     int len = sizeof( local );
 

@@ -22,7 +22,6 @@
 
 class OSDWidget;
 class QProcess;
-class KInstance;
 
 class Loader : public QApplication
 {
@@ -48,8 +47,6 @@ class Loader : public QApplication
         int        m_sockfd;
         QProcess*  m_pProc;
         OSDWidget* m_pOsd;
-	
-	KInstance *m_kinst;
 };
 
 

@@ -9,8 +9,7 @@ amarok_SOURCES = \
         splash.cpp
           
 amarok_LDADD = \
-        $(LIB_QT) \
-	$(LIB_KDECORE)
+        $(LIB_QT)
 
 amarok_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
