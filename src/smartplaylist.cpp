@@ -189,7 +189,7 @@ void SmartPlaylistView::loadDefaultPlaylists()
     /********** Never Played **************/
     query = "SELECT tags.url "
             "FROM tags, artist "
-            "WHERE tags.url NOT IN(SELECT url FROM statistics) AND tags.artist = artist.id ";
+            "WHERE tags.url NOT IN(SELECT url FROM statistics) AND tags.artist = artist.id "
             "ORDER BY artist.name, tags.title;";
     item = new SmartPlaylist(this, 0, i18n("Never Played"), query );
     item->setKey( 6 );
