@@ -433,6 +433,7 @@ Playlist::playNextTrack()
     if( isEmpty() )
         return;
 
+    PlaylistItem *prev = currentTrack();
     PlaylistItem *item = currentTrack();
 
     if ( m_stopAfterCurrent )
@@ -499,9 +500,29 @@ Playlist::playNextTrack()
         }
         else item = *MyIt( this ); //ie. first visible item
 
+        if ( AmarokConfig::dynamicMode() )
+        {
+            PlaylistItem *first = firstChild();
+            removeItem( first ); //first visible item
+            delete first;
+
+
+            QStringList suggestions = CollectionDB::instance()->similarArtists( item->artist(), 16 );
+
+            QueryBuilder qb;
+            qb.setOptions( QueryBuilder::optRandomize | QueryBuilder::optRemoveDuplicates );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+            qb.addMatches( QueryBuilder::tabArtist, suggestions );
+            qb.setLimit( 0, 1 );
+            QStringList urls = qb.run();
+
+            insertMedia( KURL::List( urls ), Playlist::Unique );
+        }
+
         if ( !item && AmarokConfig::repeatPlaylist() )
             item = *MyIt( this ); //ie. first visible item
     }
+
 
     if ( EngineController::engine()->loaded() )
         activate( item );
