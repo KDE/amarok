@@ -8,6 +8,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+          <mxcl>   Context Browser doesn't update images when you fetch them using the Cover Manager.
+
           <markey> "New Search" for cover images is broken. Does not save the image.
 
           <mxcl>   StatusBar feedback for cover fetching pls
