@@ -142,15 +142,10 @@
         <whatsthis>Automatically switches to ContextBrowser when playback is started.</whatsthis>
         <default>true</default>
     </entry>
-    <entry key="ContextBrowser StyleSheet" type="Enum">
+    <entry key="ContextBrowser StyleSheet" type="String">
         <label>Set CSS stylesheet used to customize ContextBrowser's rendering</label>
-        <whatsthis>Choose between one of those rendering styles.</whatsthis>
-        <choices>
-            <choice name="Flat"/>
-            <choice name="Gradient1"/>
-            <choice name="OtherStyle"/>
-        </choices>
-        <default>Gradient1</default>
+        <whatsthis>Set this to the style dir you want to use.</whatsthis>
+        <default/>
     </entry>
     <entry key="Show Menu Bar" type="Bool">
         <label>Whether Menubar is shown</label>
