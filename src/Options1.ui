@@ -246,15 +246,9 @@
 <connections>
     <connection>
         <sender>kcfg_ShowTrayIcon</sender>
-        <signal>stateChanged(1)</signal>
+        <signal>toggled( bool )</signal>
         <receiver>kcfg_AnimateTrayIcon</receiver>
-        <slot>setHidden(false)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg_ShowTrayIcon</sender>
-        <signal>stateChanged(0)</signal>
-        <receiver>kcfg_AnimateTrayIcon</receiver>
-        <slot>setHidden(true)</slot>
+        <slot>setEnabled( bool )</slot>
     </connection>
 </connections>
 <layoutdefaults spacing="6" margin="11"/>
