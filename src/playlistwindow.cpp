@@ -155,7 +155,7 @@ PlaylistWindow::PlaylistWindow()
     if( K3bExporter::isAvailable() )
         new amaroK::BurnMenuAction( ac );
 
-    if( !AmarokConfig::playlistWindowPos().isNull() ) {
+    if( AmarokConfig::playlistWindowSize().isValid() ) {
         // if first ever run, use sizeHint(), and let
         // KWin place us otherwise use the stored values
         resize( AmarokConfig::playlistWindowSize() );
