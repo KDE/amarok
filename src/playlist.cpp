@@ -59,25 +59,25 @@
 
 
 /**
- * Iterator class that only edits visible items!
- * Preferentially always use this! Invisible items should not be operated on!
- * To iterate over all items add MyIt::All to the flags parameter
+ * Iterator class that only edits visible items! Preferentially always use
+ * this! Invisible items should not be operated on! To iterate over all
+ * items use MyIt::All as the flags parameter. MyIt::All cannot be OR'd,
+ * sorry.
  */
 
 class MyIterator : public QListViewItemIterator
 {
 public:
     MyIterator( QListViewItem *item, int flags = 0 )
-        : QListViewItemIterator( item, flags | Visible )
+        //QListViewItemIterator is not great and doesn't allow you to see everything if you
+        //mask both Visible and Invisible :( instead just visible items are returned
+        : QListViewItemIterator( item, flags == All ? 0 : flags | Visible )
     {}
 
     MyIterator( QListView *view, int flags = 0 )
-        : QListViewItemIterator( view, flags | Visible )
-    {
-        kdDebug() << flags << endl;
-    }
+        : QListViewItemIterator( view, flags == All ? 0 : flags | Visible )
+    {}
 
-    //this gets OR'd with Visible, and thus everything is returned
     enum IteratorFlag { All = MyIterator::Invisible };
 
     PlaylistItem *operator*() { return (PlaylistItem*)QListViewItemIterator::operator*(); }
