@@ -22,7 +22,7 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags )
 {
     CollectionDB db;
     QString tipBuf;
-    const QString image = db.getImageForPath( tags.url().directory(), QString::null, 80 );
+    const QString image = db.getImageForPath( tags.url().directory(), QString::null );
     const QString tableRow = "<tr><td width=70 align=right>%1:</td><td align=left>%2</td></tr>";
     QStringList left, right;
     left  << i18n( "Title" ) << i18n( "Artist" ) << i18n( "Album" ) << i18n( "Length" ) << i18n( "Bitrate" ) << i18n( "Samplerate" );

@@ -753,14 +753,14 @@ void App::pruneCoverImages()
     const int MAX_DAYS = 90;
 
     QDir covers( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/" ) );
-    QDir coversLarge( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
+    QDir coverCache( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/cache/" ) );
 
     QFileInfoList list( *covers.entryInfoList( QDir::Files ) );
-    QFileInfoList listLarge( *coversLarge.entryInfoList( QDir::Files ) );
+    QFileInfoList listCache( *coverCache.entryInfoList( QDir::Files ) );
 
     // Merge both lists
-    for ( uint i = 0; i < listLarge.count(); i++ )
-        list.append( listLarge.at( i ) );
+    for ( uint i = 0; i < listCache.count(); i++ )
+        list.append( listCache.at( i ) );
 
     int count = 0;
     QDate currentDate = QDate::currentDate();

@@ -41,18 +41,16 @@ CollectionDB::CollectionDB()
 
     m_db = sqlite_open( path, 0, 0 );
 
-#ifdef AMAZON_SUPPORT
-    // create image cache dir, if it doesn't exist.
-    if( !m_cacheDir.exists( "cache", false ) )
-        m_cacheDir.mkdir( "cache", false );
-    m_cacheDir.cd( "cache" );
-#endif
     // create cover dir, if it doesn't exist.
     if( !m_coverDir.exists( "albumcovers", false ) )
         m_coverDir.mkdir( "albumcovers", false );
     m_coverDir.cd( "albumcovers" );
-    if( !m_coverDir.exists( "large", false ) )
-        m_coverDir.mkdir( "large", false );
+    
+     // create image cache dir, if it doesn't exist.
+    if( !m_cacheDir.exists( "albumcovers/cache", false ) )
+        m_cacheDir.mkdir( "albumcovers/cache", false );
+    m_cacheDir.cd( "albumcovers/cache" );
+
 }
 
 
@@ -199,14 +197,14 @@ CollectionDB::getImageForPath( const QString path, const QString defaultImage, c
 
     QStringList values;
     QStringList names;
+    KURL file( path );
 
-    QString escapedPath( QString::number( width ) + "@" + path );
-    escapedPath.replace( "/", "_" );
-    escapedPath.replace( "'", "_" );
+    QString filename( QString::number( width ) + "@" + file.fileName() );
+    filename.replace( "'", "_" ).append( ".png" );
 
 #ifdef AMAZON_SUPPORT
-    if ( m_cacheDir.exists( escapedPath ) )
-        return m_cacheDir.absPath() + "/" + escapedPath;
+    if ( m_cacheDir.exists( filename.lower() ) )
+        return m_cacheDir.absPath() + "/" + filename.lower();
 #endif
     execSql( QString( "SELECT name FROM images WHERE path = '%1';" )
              .arg( escapeString( path ) ), &values, &names );
@@ -224,8 +222,8 @@ CollectionDB::getImageForPath( const QString path, const QString defaultImage, c
             QPixmap pix;
             if( pix.convertFromImage( img.smoothScale( width, width ) ) )
             {
-                pix.save( m_cacheDir.absPath() + "/" + escapedPath, "PNG" );
-                return m_cacheDir.absPath() + "/" + escapedPath;
+                pix.save( m_cacheDir.absPath() + "/" + filename.lower(), "PNG" );
+                return m_cacheDir.absPath() + "/" + filename.lower();
             }
         } else
       
@@ -912,7 +910,7 @@ CollectionDB::saveCover( const QString& keyword, const QPixmap& pix )
     QString fileName( QFile::encodeName( keyword ) );
     fileName.replace( " ", "_" ).append( ".png" );
     
-    img.save( m_coverDir.filePath( "large/"+fileName.lower() ), "PNG");
+    img.save( m_coverDir.filePath( fileName.lower() ), "PNG");
     
     emit coverFetched( keyword );
     emit coverFetched();

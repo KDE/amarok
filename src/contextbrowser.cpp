@@ -185,7 +185,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
             QImage img( file.directory() + "/" + file.fileName() );
             QString filename( QFile::encodeName( info[0] + " - " + info[1] ) );
             filename.replace( " ", "_" ).append( ".png" );
-            img.save( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() )+"/albumcovers/large/"+filename.lower(), "PNG" );
+            img.save( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() )+"/albumcovers/"+filename.lower(), "PNG" );
             ContextBrowser::showCurrentTrack();
         }
      }
