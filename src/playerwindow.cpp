@@ -561,7 +561,7 @@ bool PlayerWidget::eventFilter( QObject *o, QEvent *e )
     {
         //delete analyzer, create same one back in Player Window
         if( e->type() == QEvent::Close ) createAnalyzer( 0 );
-        return TRUE;
+        return FALSE;
     }
 
     switch( e->type() )
@@ -591,11 +591,9 @@ bool PlayerWidget::eventFilter( QObject *o, QEvent *e )
 
             if( !(info.isMinimized()
             #if KDE_IS_VERSION(3,2,1)
-            || info.hasState( NET::Shaded ))
-            #else
-            )
+            || info.hasState( NET::Shaded )
             #endif
-            ) break;
+            ) ) break;
         }
 
         //FALL THROUGH
