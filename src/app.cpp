@@ -803,7 +803,9 @@ void App::firstRunWizard()
         case FirstRunWizard::XMMS:
             amaroK::config()->writeEntry( "XMLFile", "amarokui_xmms.rc" );
             AmarokConfig::setShowPlayerWindow( true );
-            AmarokConfig::setShowStatusBar( false );
+            //FIXME the statusbar is now quite essential and also without it
+            // the popup messages break. Fix in 1.2.1
+            AmarokConfig::setShowStatusBar( /*false*/ true );
             break;
 
         case FirstRunWizard::Compact:
