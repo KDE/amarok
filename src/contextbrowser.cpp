@@ -929,9 +929,9 @@ void ContextBrowser::showLyrics( const QString &hash )
     QString replaceMe = " \\([^}]*%1[^}]*\\)";
     QStringList production;
     production << i18n( "live" ) << i18n( "acoustic" ) << i18n( "cover" ) << i18n( "mix" )
-               << i18n( "edit" ) << i18n( "medley" )
+               << i18n( "edit" ) << i18n( "medley" ) << i18n( "unplugged" )
                << QString( "live" ) << QString( "acoustic" ) << QString( "cover" ) << QString( "mix" )
-               << QString( "edit" ) << QString( "medley" );
+               << QString( "edit" ) << QString( "medley" ) << QString( "unplugged" );
 
     QString title  = EngineController::instance()->bundle().title();
 
