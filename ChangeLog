@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2:
+  FIX: Cover-Manager's full-screen view works with Bughira (brushed metal).
   ADD: Script-Manager can auto-run scripts on application startup.
   ADD: aKode engine, depends on KDE 3.4. No configure check yet.
   FIX: Don't add non-audio files to the Collection.
