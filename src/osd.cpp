@@ -401,6 +401,9 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
     text.replace( "&gt;",  ">" );
     text.replace( "&amp;", "&" );
 
+    // KDE 3.3 rejects \n in the .kcfg file, and KConfig turns \n into \\n, so...
+    text.replace( "\\n", "\n" );
+
     m_text = text.stripWhiteSpace();
 
     if ( AmarokConfig::osdCover() ) {
