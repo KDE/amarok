@@ -233,7 +233,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
     if ( url.protocol() == "musicbrainz" )
     {
         const QString url = "http://www.musicbrainz.org/taglookup.html?artist=%1&album=%2";
-        kapp->invokeBrowser( url.arg( artist, album ) );
+        kapp->invokeBrowser( url.arg( KURL::encode_string_no_slash( artist, 106 /*utf-8*/ ), KURL::encode_string_no_slash( album, 106 /*utf-8*/ ) ) );
     }
 
     if ( url.protocol() == "lyricspage" )
