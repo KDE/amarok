@@ -503,7 +503,7 @@ void TagReader::append( PlaylistItem *item )
       m_Q.push_back( bundle );
       mutex.unlock();
 
-      if( !running() ) start( QThread::LowestPriority );
+      if( !running() ) start( QThread::LowestPriority ); //FIXME QThread::priority not present in Qt prior to 3.2
    }
 }
 
@@ -517,7 +517,7 @@ void TagReader::run()
 
     while( m_bool )
     {
-        mutex.lock();
+        mutex.lock(); //lock first to prevent queue changes while we query it
         if( m_Q.empty() ) { mutex.unlock(); break; }
         Bundle bundle( m_Q.front() );
         mutex.unlock();
@@ -583,11 +583,11 @@ void TagReader::remove( PlaylistItem *pi )
    //      you've "solved" this by processing events after calling this in PlaylistWidget
 
    mutex.lock();
-   m_Q.remove( Bundle(pi, "", 0) );
+   kdDebug() << "[reader] Removing item " << pi->url() << endl;
+   uint n = m_Q.remove( Bundle(pi, "", 0) );
+   kdDebug() << "[reader] Removed " << n << " items\n";
    mutex.unlock();
-
 }
-
 
 
 TagReader::TagReaderEvent::~TagReaderEvent()
@@ -599,8 +599,10 @@ void TagReader::TagReaderEvent::bindTags()
 {
    //for GUI access only
    //we're a friend of PlaylistItem
+   kdDebug() << "TagReader::TagReaderEvent::bindTags(): m_item=" << m_item << endl;
    if( m_tags )
    {
        m_item->setMeta( *m_tags );
+       kdDebug() << "TagReader::TagReaderEvent::bindTags(): setMeta() passed" << endl;
    }
 }
