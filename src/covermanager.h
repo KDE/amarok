@@ -82,7 +82,7 @@ class CoverViewItem : public KIconViewItem
         QString artist() { return m_artist; }
         QString album() { return m_album; }
         bool hasCover() { return m_hasCover; }
-        QString albumPath( bool scaled = false );
+        QString albumPath();
         
     protected:
         void paintItem(QPainter* painter, const QColorGroup& colorGroup);
