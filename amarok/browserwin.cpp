@@ -22,96 +22,38 @@
 #include "expandbutton.h"
 #include "playerapp.h"
 
+#include "debugareas.h"
+
 #include <vector>
 
-#include <qwidget.h>
+#include <qbitmap.h>
+#include <qcolor.h>
+#include <qfile.h>
 #include <qlayout.h>
 #include <qmessagebox.h>
-#include <qfile.h>
-#include <qfileinfo.h>
-#include <qtextstream.h>
-#include <qsplitter.h>
-#include <qcolor.h>
-#include <qfont.h>
-#include <qpopupmenu.h>
-#include <qdir.h>
-#include <qbitmap.h>
 #include <qpixmap.h>
-#include <qptrlist.h>
+#include <qpopupmenu.h>
+#include <qsplitter.h>
+#include <qstring.h>
 #include <qtooltip.h>
+#include <qwidget.h>
 
 #include <kaction.h>
 #include <kapplication.h>
 #include <kcompletion.h>
 #include <kdebug.h>
 #include <kdirlister.h>
-#include <kfileitem.h>
 #include <kfilemetainfo.h>
-#include <kfileview.h>
 #include <kglobalsettings.h>
 #include <klocale.h>
 #include <klineedit.h>
 #include <klistview.h>
-#include <kmimetype.h>
 #include <krandomsequence.h>
 #include <kstandarddirs.h>
 #include <ktip.h>
 #include <kurl.h>
 #include <kurlcompletion.h>
 #include <kurlrequesterdlg.h>
-
-#include <arts/kplayobject.h>
-#include <arts/kmedia2.h>
-#include <arts/soundserver.h>
-
-
-// CLASS AmarokFileList =================================================================
-
-AmarokFileList::AmarokFileList( KFileItemList list, int sortSpec ) :
-    KFileItemList( list ),
-    m_sortSpec( sortSpec )
-{
-    if ( ( m_sortSpec & QDir::SortByMask ) != QDir::Unsorted )
-    {
-        sort();
-    }
-}
-
-
-AmarokFileList::~AmarokFileList()
-{}
-
-
-int AmarokFileList::compareItems( QPtrCollection::Item item1, QPtrCollection::Item item2 )
-{
-    QString key1, key2;
-    KFileItem *fileItem1 = static_cast<KFileItem*>( item1 );
-    KFileItem *fileItem2 = static_cast<KFileItem*>( item2 );
-
-    if ( ( m_sortSpec & QDir::SortByMask ) == QDir::Name )
-    {
-        key1 = KFileView::sortingKey( fileItem1->url().path(), fileItem1->isDir(), m_sortSpec );
-        key2 = KFileView::sortingKey( fileItem2->url().path(), fileItem2->isDir(), m_sortSpec );
-    }
-
-    if ( ( m_sortSpec & QDir::SortByMask ) == QDir::Time )
-    {
-        key1 = KFileView::sortingKey( static_cast<KIO::filesize_t >(
-                                      fileItem1->time( KIO::UDS_MODIFICATION_TIME ) ),
-                                      fileItem1->isDir(), m_sortSpec );
-        key2 = KFileView::sortingKey( static_cast<KIO::filesize_t >(
-                                      fileItem2->time( KIO::UDS_MODIFICATION_TIME ) ),
-                                      fileItem2->isDir(), m_sortSpec );
-    }
-
-    if ( ( m_sortSpec & QDir::SortByMask ) == QDir::Size )
-    {
-        key1 = KFileView::sortingKey( fileItem1->size(), fileItem1->isDir(), m_sortSpec );
-        key2 = KFileView::sortingKey( fileItem2->size(), fileItem2->isDir(), m_sortSpec );
-    }
-
-    return key1.compare( key2 );
-}
 
 
 // CLASS BrowserWin =====================================================================
@@ -120,13 +62,24 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
         QWidget( parent, name, Qt::WPaintUnclipped )
 {
     setName( "BrowserWin" );
-
     setCaption( kapp->makeStdCaption( i18n( "Playlist" ) ) );
     setAcceptDrops( true );
 
     m_pActionCollection = new KActionCollection( this );
-    m_pActionCollection->setAutoConnectShortcuts( true );
-
+    KStdAction::undo( this, SLOT( m_pPlaylistWidget->doUndo() ), m_pActionCollection );
+    KStdAction::redo( this, SLOT( m_pPlaylistWidget->doRedo() ), m_pActionCollection );
+    KStdAction::prior( this, SLOT( slotKeyPageUp() ), m_pActionCollection );
+    KStdAction::next( this, SLOT( slotKeyPageDown() ), m_pActionCollection );
+    
+    new KAction( "Go one item up", Key_Up,
+                 this, SLOT( slotKeyUp() ), m_pActionCollection, "up" );
+    new KAction( "Go one item down", Key_Down,
+                 this, SLOT( slotKeyDown() ), m_pActionCollection, "down" );
+    new KAction( "Enter directory / Play Track", ALT + Key_Return,
+                 this, SLOT( slotKeyEnter() ), m_pActionCollection, "enter" );
+    new KAction( "Remove item", ALT + Key_Delete,
+                 this, SLOT( slotKeyDelete() ), m_pActionCollection, "delete" );
+    
     initChildren();
 
     connect( m_pBrowserWidget, SIGNAL( doubleClicked( QListViewItem* ) ),
@@ -202,13 +155,15 @@ void BrowserWin::initChildren()
     //disabled because the popup combo is useful
     //    m_pBrowserLineEdit->setCompletionMode( KGlobalSettings::CompletionAuto );
     m_pBrowserLineEdit->setCompletionObject( compBrowser );
-    connect( m_pBrowserLineEdit, SIGNAL( returnPressed( const QString& ) ), m_pBrowserWidget, SLOT( slotReturnPressed( const QString& ) ) );
+    connect( m_pBrowserLineEdit, SIGNAL( returnPressed( const QString& ) ),
+             m_pBrowserWidget, SLOT( slotReturnPressed( const QString& ) ) );
 
     m_pPlaylistLineEdit = new KLineEdit( pPlaylistWidgetContainer );
     QToolTip::add( m_pPlaylistLineEdit, i18n( "Enter Filter String" ) );
     m_pPlaylistLineEdit->setPaletteBackgroundColor( pApp->m_bgColor );
     m_pPlaylistLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
-    connect( m_pPlaylistLineEdit, SIGNAL( textChanged( const QString& ) ), m_pPlaylistWidget, SLOT( slotTextChanged( const QString& ) ) );
+    connect( m_pPlaylistLineEdit, SIGNAL( textChanged( const QString& ) ),
+             m_pPlaylistWidget, SLOT( slotTextChanged( const QString& ) ) );
 
     QBoxLayout *layBrowserWidget = new QVBoxLayout( pBrowserWidgetContainer );
     layBrowserWidget->addWidget( m_pBrowserLineEdit );
@@ -277,7 +232,7 @@ void BrowserWin::slotBrowserDoubleClicked( QListViewItem* pItem )
             m_pBrowserWidget->readDir( fileItem.url() );
         }
 
-        else if ( isFileValid( fileItem.url() ) )
+        else if ( pApp->isFileValid( fileItem.url() ) )
             m_pPlaylistWidget->addItem( ( PlaylistItem* ) 1, fileItem.url() );
     }
 }
@@ -320,27 +275,6 @@ void BrowserWin::slotBrowserDrop()
     }
 
     m_pPlaylistWidget->writeUndo();
-}
-
-
-bool BrowserWin::isFileValid( const KURL &url )
-{
-    KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, url );
-    KMimeType::Ptr mimeTypePtr = fileItem.determineMimeType();
-
-    Arts::TraderQuery query;
-    query.supports( "Interface", "Arts::PlayObject" );
-    query.supports( "MimeType", mimeTypePtr->name().latin1() );
-    std::vector<Arts::TraderOffer> *offers = query.query();
-
-    if ( offers->empty() )
-    {
-        delete offers;
-        return false;
-    }
-
-    delete offers;
-    return true;
 }
 
 
@@ -550,7 +484,8 @@ void BrowserWin::slotKeyDelete()
     }
 
     if ( m_pBrowserLineEdit->hasFocus() )
-    {}}
+    {}
+}
 
 
 void BrowserWin::slotUpdateFonts()

@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "amarokfilelist.h"
 #include "browserwidget.h"
 #include "browserwin.h"
 #include "playerapp.h"

@@ -19,10 +19,7 @@
 #define BROWSERWIN_H
 
 #include <qpixmap.h>
-#include <qptrcollection.h>
 #include <qwidget.h>
-
-#include <kfileitem.h>
 
 class BrowserWidget;
 class ExpandButton;
@@ -49,22 +46,6 @@ extern PlayerApp *pApp;
  *@author mark
  */
 
-// CLASS AmarokFileList =================================================================
-
-class AmarokFileList : public KFileItemList
-{
-    public:
-        AmarokFileList( KFileItemList list, int sortSpec );
-        ~AmarokFileList();
-
-    private:
-        int compareItems( QPtrCollection::Item item1, QPtrCollection::Item item2 );
-
-        // ATTRIBUTES ------
-        int m_sortSpec;
-};
-
-
 // CLASS BrowserWin =====================================================================
 
 class BrowserWin : public QWidget
@@ -75,10 +56,9 @@ class BrowserWin : public QWidget
         BrowserWin( QWidget *parent = 0, const char *name = 0 );
         ~BrowserWin();
 
-        bool isFileValid( const KURL &url );
-        // ATTRIBUTES ------
+// ATTRIBUTES ------
         KActionCollection *m_pActionCollection;
-
+        
         ExpandButton *m_pButtonAdd;
 
         ExpandButton *m_pButtonClear;

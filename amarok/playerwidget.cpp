@@ -170,10 +170,15 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     KStdAction::helpContents( pApp, SLOT( slotShowHelp() ), m_pActionCollection );
     KStdAction::tipOfDay( pApp, SLOT( slotShowTip() ), m_pActionCollection );
     KStdAction::keyBindings( this, SLOT( slotConfigShortcuts() ), m_pActionCollection );
-    KStdAction::keyBindings( this, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection, "options_configure_global_keybinding" )->setText( i18n( "Configure Global Shortcuts" ) );
+    KStdAction::keyBindings( this, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection,
+                "options_configure_global_keybinding" )->setText( i18n( "Configure Global Shortcuts" ) );
     KStdAction::preferences( pApp, SLOT( slotShowOptions() ), m_pActionCollection );
     KStdAction::quit( pApp, SLOT( quit() ), m_pActionCollection );
-
+    KStdAction::copy( this, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection,
+                "copy_clipboard" )->setText( i18n( "Copy Current Title to Clipboard" ) );
+    
+//     new KAction( "Copy Current Title to Clipboard", CTRL + Key_C,
+//                  this, SLOT( slotCopyClipboard() ), m_pActionCollection, "copy_clipboard" );
 
     m_oldBgPixmap.resize( size() );
 
@@ -544,7 +549,6 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
 
             m_pPopupMenu->insertSeparator();
 
-
             m_pActionCollection->action( "options_configure" )->plug( m_pPopupMenu );
             m_pActionCollection->action( "options_configure_keybinding" )->plug( m_pPopupMenu );
             m_pActionCollection->action( "options_configure_global_keybinding" )->plug( m_pPopupMenu );
@@ -568,7 +572,6 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             //m_pPopupMenu->insertItem( i18n( "Quit" ), pApp, SLOT( quit() ) );
             m_pActionCollection->action( "file_quit" )->plug( m_pPopupMenu );
             //actionCollection()->action( "file_quit" )->plug( m_pPopupMenu );
-
         }
 
         m_pPopupMenu->setItemChecked( m_IdRepeatTrack, pApp->m_optRepeatTrack );
@@ -606,23 +609,23 @@ void PlayerWidget::closeEvent( QCloseEvent *e )
 
 void PlayerWidget::moveEvent( QMoveEvent * )
 {
-    /*
-     ** You can get the frame sizes like so (found in Qt sources while looking for something else):
-    framew = geometry().x() - x();
-    frameh = geometry().y() - y();
-    */
+//     You can get the frame sizes like so (found in Qt sources while looking for something else):
+/*    int framew = geometry().x() - x();
+    int frameh = geometry().y() - y();*/
 
-    /*!  Makes the the playlistwindow stick magnetically to the playerwindow */
-    /*    if ( pApp->m_pBrowserWin->isVisible() )
+    // Makes the the playlistwindow stick magnetically to the playerwindow 
+    
+/*    if ( pApp->m_pBrowserWin->isVisible() )
+    {
+        if ( ( frameGeometry().x() == pApp->m_pBrowserWin->frameGeometry().right() + 1 ) )
+                ( e->oldPos().y() == pApp->m_pBrowserWin->frameGeometry().bottom() ) ||
+                ( e->oldPos().x() + frameSize().width() + 0 == pApp->m_pBrowserWin->frameGeometry().left() ) ||
+                ( e->oldPos().y() + frameSize().height() + 0 == pApp->m_pBrowserWin->frameGeometry().top() ) )
         {
-            if ( ( e->oldPos().x() - 0 == pApp->m_pBrowserWin->frameGeometry().right() ) ||
-                 ( e->oldPos().y() - 0 == pApp->m_pBrowserWin->frameGeometry().bottom() ) ||
-                 ( e->oldPos().x() + frameSize().width() + 0 == pApp->m_pBrowserWin->frameGeometry().left() ) ||
-                 ( e->oldPos().y() + frameSize().height() + 0 == pApp->m_pBrowserWin->frameGeometry().top() ) )
-            {
-                pApp->m_pBrowserWin->move( e->pos() + ( pApp->m_pBrowserWin->pos() -  e->oldPos() ) );
-            }
-        }*/
+            pApp->m_pBrowserWin->move( e->pos() + ( pApp->m_pBrowserWin->pos() -  e->oldPos() ) );
+            pApp->m_pBrowserWin->move( e->pos() + ( pApp->m_pBrowserWin->pos() -  e->oldPos() ) );
+        }
+    }*/
 }
 
 

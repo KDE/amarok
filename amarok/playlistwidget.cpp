@@ -15,18 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "playlistwidget.h"
-#include "playerapp.h"
-#include "browserwin.h"
+#include "amarokfilelist.h"
 #include "browserwidget.h"
+#include "browserwin.h"
+#include "playerapp.h"
 #include "playlistitem.h"
+#include "playlistwidget.h"
 
 #include "debugareas.h"
 
 #include <qbrush.h>
 #include <qcolor.h>
 #include <qcursor.h>
-#include <qdir.h>
 #include <qevent.h>
 #include <qfile.h>
 #include <qheader.h>
@@ -40,6 +40,7 @@
 #include <qwidget.h>
 
 #include <kaccel.h>
+#include <kaction.h>
 #include <kapplication.h>
 #include <kdebug.h>
 #include <kdirlister.h>
@@ -249,8 +250,8 @@ void PlaylistWidget::playlistDrop( KURL::List urlList )
         }
         else
         {
-            //            kdDebug(DA_PLAYLIST) << "dropping item " << (*it).prettyURL() << " to playlist [2]" << endl;
-            if ( pApp->m_pBrowserWin->isFileValid( *it ) )
+            // kdDebug(DA_PLAYLIST) << "dropping item " << (*it).prettyURL() << " to playlist [2]" << endl;
+            if ( pApp->isFileValid( *it ) )
             {
                 m_pDropCurrentItem = addItem( m_pDropCurrentItem, *it );
             }

@@ -184,7 +184,7 @@ int PlayerApp::newInstance()
                 if ( !m_pBrowserWin->m_pPlaylistWidget->
                      loadPlaylist( args->url( i ), m_pBrowserWin->m_pPlaylistWidget->lastItem() ) )
                 {
-                    if ( m_pBrowserWin->isFileValid( args->url( i ) ) )
+                    if ( isFileValid( args->url( i ) ) )
                         m_pBrowserWin->m_pPlaylistWidget->addItem( ( PlaylistItem* ) 1, args->url( i ) );
                 }
             }
@@ -198,7 +198,7 @@ int PlayerApp::newInstance()
             {
                 if ( !m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( args->url( i ), 0 ) )
                 {
-                    if ( m_pBrowserWin->isFileValid( args->url( i ) ) )
+                    if ( isFileValid( args->url( i ) ) )
                         m_pBrowserWin->m_pPlaylistWidget->addItem( 0, args->url( i ) );
                 }
             }
@@ -232,7 +232,7 @@ void PlayerApp::restore()
 
     if ( !url.isEmpty() && url.isValid() )
     {
-        if ( m_pBrowserWin->isFileValid( url ) )
+        if ( isFileValid( url ) )
         {
             //FIXME see if item is in playlist already first (should be!)
             PlaylistItem * item = new PlaylistItem( m_pBrowserWin->m_pPlaylistWidget, url );
@@ -577,6 +577,27 @@ QString PlayerApp::convertDigit( const long &digit )
 }
 
 
+bool PlayerApp::isFileValid( const KURL &url )
+{
+    KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, url );
+    KMimeType::Ptr mimeTypePtr = fileItem.determineMimeType();
+
+    Arts::TraderQuery query;
+    query.supports( "Interface", "Arts::PlayObject" );
+    query.supports( "MimeType", mimeTypePtr->name().latin1() );
+    std::vector<Arts::TraderOffer> *offers = query.query();
+
+    if ( offers->empty() )
+    {
+        delete offers;
+        return false;
+    }
+
+    delete offers;
+    return true;
+}
+
+
 void PlayerApp::saveConfig()
 {
     m_pConfig->setGroup( "" );
@@ -735,27 +756,25 @@ void PlayerApp::readConfig()
             break;
         }
     }
-
-    m_pGlobalAccel->insert( "add", "Add Location", 0, CTRL + SHIFT + Key_A, 0, this, SLOT( slotAddLocation() ), true, true );
-    m_pGlobalAccel->insert( "play", "Play", 0, CTRL + SHIFT + Key_P, 0, this, SLOT( slotPlay() ), true, true );
-    m_pGlobalAccel->insert( "stop", "Stop", 0, CTRL + SHIFT + Key_S, 0, this, SLOT( slotStop() ), true, true );
-    m_pGlobalAccel->insert( "next", "Next Track", 0, CTRL + SHIFT + Key_N, 0, this, SLOT( slotNext() ), true, true );
-    m_pGlobalAccel->insert( "prev", "Previous Track", 0, CTRL + SHIFT + Key_R, 0, this, SLOT( slotPrev() ), true, true );
+    
+// Actions ==========
+    m_pGlobalAccel->insert( "add", "Add Location", 0, CTRL + ALT + Key_A, 0,
+                            this, SLOT( slotAddLocation() ), true, true );
+    m_pGlobalAccel->insert( "play", "Play", 0, CTRL + ALT + Key_P, 0,
+                            this, SLOT( slotPlay() ), true, true );
+    m_pGlobalAccel->insert( "stop", "Stop", 0, CTRL + ALT + Key_S, 0,
+                            this, SLOT( slotStop() ), true, true );
+    m_pGlobalAccel->insert( "next", "Next Track", 0, CTRL + ALT + Key_N, 0,
+                            this, SLOT( slotNext() ), true, true );
+    m_pGlobalAccel->insert( "prev", "Previous Track", 0, CTRL + ALT + Key_R, 0,
+                            this, SLOT( slotPrev() ), true, true );
+    
     m_pGlobalAccel->readSettings( m_pConfig );
     m_pGlobalAccel->updateConnections();
 
     m_pPlayerWidget->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
-
-    new KAction( "Copy Current Title to Clipboard", CTRL + Key_C, m_pPlayerWidget, SLOT( slotCopyClipboard() ), m_pPlayerWidget->m_pActionCollection, "copy_clipboard" );
-
     m_pBrowserWin->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
-    new KAction( "Go one item up", Key_Up, m_pBrowserWin, SLOT( slotKeyUp() ), m_pBrowserWin->m_pActionCollection, "up" );
-    new KAction( "Go one item down", Key_Down, m_pBrowserWin, SLOT( slotKeyDown() ), m_pBrowserWin->m_pActionCollection, "down" );
-    new KAction( "Go one page up", Key_PageUp, m_pBrowserWin, SLOT( slotKeyPageUp() ), m_pBrowserWin->m_pActionCollection, "page_up" );
-    new KAction( "Go one page down", Key_PageDown, m_pBrowserWin, SLOT( slotKeyPageDown() ), m_pBrowserWin->m_pActionCollection, "page_down" );
-    new KAction( "Enter item", SHIFT + Key_Return, m_pBrowserWin, SLOT( slotKeyEnter() ), m_pBrowserWin->m_pActionCollection, "enter" );
-    new KAction( "Delete item", SHIFT + Key_Delete, m_pBrowserWin, SLOT( slotKeyDelete() ), m_pBrowserWin->m_pActionCollection, "delete" );
-
+    
     //TEST
     kdDebug(DA_COMMON) << "end PlayerApp::readConfig()" << endl;
 }
@@ -1219,7 +1238,7 @@ void PlayerApp::slotAddLocation()
     {
         if ( !m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( url, 0 ) )
         {
-            if ( m_pBrowserWin->isFileValid( url ) )
+            if ( isFileValid( url ) )
                 new PlaylistItem( m_pBrowserWin->m_pPlaylistWidget, url );
         }
     }

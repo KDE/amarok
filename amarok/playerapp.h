@@ -60,6 +60,8 @@ class PlayerApp : public KUniqueApplication
         virtual ~PlayerApp();
 
         virtual int newInstance();
+        
+        bool isFileValid( const KURL &url );
         bool queryClose();
         void restore();
         bool playObjectConfigurable();
