@@ -43,15 +43,15 @@ namespace amaroK
     runCommand( const QCString &command )
     {
         static const uint SIZE = 40960; //40 KiB
-        static char stdout[ SIZE ];
+        static char stdoutBuf[ SIZE ];
 
         debug() << "Running: " << command << endl;
 
         FILE *process = ::popen( command, "r" );
-        stdout[ std::fread( (void*)stdout, sizeof(char), SIZE-1, process ) ] = '\0';
+        stdoutBuf[ std::fread( (void*)stdoutBuf, sizeof(char), SIZE-1, process ) ] = '\0';
         ::pclose( process );
 
-        return QString::fromLocal8Bit( stdout );
+        return QString::fromLocal8Bit( stdoutBuf );
     }
 
     void
