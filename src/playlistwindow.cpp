@@ -333,8 +333,17 @@ PlaylistWindow::init()
 
 
     //<XMLGUI>
-        setXMLFile( amaroK::config()->readEntry( "XMLFile", "amarokui.rc" ) );
+    {
+        QString xmlFile = amaroK::config()->readEntry( "XMLFile", "amarokui.rc" );
+
+        if ( xmlFile == "amarokui_first.rc" )
+            // this bug can bite you if you are a pre 1.2 user, we
+            // deleted amarokui_first.rc, but we must still support it
+            xmlFile = "amarokui.rc";
+
+        setXMLFile( xmlFile );
         createGUI(); //NOTE we implement this
+    }
     //</XMLGUI>
 
 

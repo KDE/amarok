@@ -95,7 +95,10 @@ public:
     QString prettyLength() const { return prettyLength( m_length ); }
     QString prettySampleRate( bool shortened = false ) const { return prettyGeneric( i18n( "SampleRate", "%1 kHz" ), shortened ? m_sampleRate / 1000 : m_sampleRate ); }
 
-    static /*inline */QString prettyBitrate( int );
+
+    // these are helpful statics, don't use these in preference
+    // to the ones above!
+    static QString prettyBitrate( int );
     static QString prettyLength( int );
     static QString prettyTime( int, bool showHours = true );
     static QString zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1" ).arg( i ) : QString::number( i ); }

@@ -135,6 +135,8 @@ App::App()
 
     handleCliArgs();
 
+    insertChild( amaroK::OSD::instance() );
+
     DEBUG_END
 }
 
@@ -681,7 +683,7 @@ void App::engineStateChanged( Engine::State state )
 
 void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
-    amaroK::OSD::instance()->showTrack( bundle );
+    amaroK::OSD::instance()->show( bundle );
 
     TrackToolTip::add( m_pTray, bundle );
 }
@@ -689,7 +691,7 @@ void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 
 void App::engineVolumeChanged( int newVolume )
 {
-    amaroK::OSD::instance()->show( i18n("Volume: %1%").arg( newVolume ), true );
+    amaroK::OSD::instance()->OSDWidget::show( i18n("Volume: %1%").arg( newVolume ) );
 }
 
 void App::slotConfigEffects( bool show ) //SLOT

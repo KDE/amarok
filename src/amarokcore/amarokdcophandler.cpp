@@ -303,7 +303,7 @@ namespace amaroK
 
     void DcopHandler::showOSD()
     {
-        amaroK::OSD::instance()->showTrack();
+        amaroK::OSD::instance()->forceShowTrack();
     }
 
     void DcopHandler::togglePlaylist()

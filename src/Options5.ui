@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>399</width>
+            <width>408</width>
             <height>468</height>
         </rect>
     </property>
@@ -328,7 +328,7 @@
                                 <enum>UpDownArrows</enum>
                             </property>
                             <property name="maxValue">
-                                <number>10000</number>
+                                <number>600000</number>
                             </property>
                             <property name="minValue">
                                 <number>500</number>
@@ -393,6 +393,12 @@
         <signal>toggled(bool)</signal>
         <receiver>mainBox</receiver>
         <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_OsdUseCustomColors</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>Options5</receiver>
+        <slot>useCustomColorsToggled(bool)</slot>
     </connection>
 </connections>
 <includes>

@@ -170,7 +170,7 @@ void AmarokConfigDialog::showPage( const QCString& page )
  */
 void AmarokConfigDialog::updateSettings()
 {
-    OSDWidget *osd = (OSDWidget*)child( "osdpreview" );
+    OSDPreviewWidget *osd = (OSDPreviewWidget*)child( "osdpreview" );
     AmarokConfig::setOsdAlignment( osd->alignment() );
     AmarokConfig::setOsdYOffset( osd->y() );
     amaroK::OSD::instance()->applySettings();
@@ -226,7 +226,7 @@ void AmarokConfigDialog::updateWidgetsDefault()
 /** REIMPLEMENTED */
 bool AmarokConfigDialog::hasChanged()
 {
-    OSDWidget *osd = (OSDWidget*) child( "osdpreview" );
+    OSDPreviewWidget *osd = (OSDPreviewWidget*) child( "osdpreview" );
 
     bool engineChanged = m_engineConfig ? m_engineConfig->hasChanged() : false;
 

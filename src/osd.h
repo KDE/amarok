@@ -15,95 +15,95 @@
 #ifndef AMAROK_OSD_H
 #define AMAROK_OSD_H
 
+#include <kpixmap.h>
 #include <qimage.h>
-#include <qpixmap.h> //stack allocated
-#include <qtimer.h>  //stack allocated
 #include <qvaluelist.h>
 #include <qwidget.h> //baseclass
 
 
-class QStringList;
-class MetaBundle;
-
 class OSDWidget : public QWidget
 {
     Q_OBJECT
-      public:
+
+    public:
         enum Alignment { Left, Middle, Center, Right };
 
-        OSDWidget( const QString &appName, QWidget *parent = 0, const char *name = "osd" );
+        OSDWidget( QWidget *parent, const char *name = "osd" );
 
+        /** resets the colours to defaults */
         void unsetColors();
 
-        int screen()    { return m_screen; }
-        int alignment() { return m_alignment; }
-        int y()         { return m_y; }
-        bool showCover() { return m_cover; }
-
       public slots:
-        void show( const QString&, bool preemptive = false, bool useImage = false );
-        void show();
+        /** calls setText() then show() */
+        void show( const QString &text ) { setText( text ); show(); }
 
-        void setDuration( int ms );
-        void setFont( const QFont &newfont );
-        void setShadow( bool shadow );
-        void setTextColor( const QColor &newcolor );
-        void setBackgroundColor(const QColor &newColor );
-        void setOffset( int x, int y );
-        void setAlignment( Alignment );
+        /** reimplemented, shows the OSD */
+        virtual void show();
+
+        /**
+         * For the sake of somplicity, when these settings are
+         * changed they do not take effect until the next time
+         * the OSD is shown!
+         *
+         * To force an update call show();
+         */
+        void setDuration( int ms ) { m_duration = ms; }
+        void setTextColor( const QColor &color ) { setPaletteForegroundColor( color ); }
+        void setBackgroundColor(const QColor &color ) { setPaletteBackgroundColor( color ); }
+        void setOffset( int y ) { m_y = y; }
+        void setAlignment( Alignment alignment ) { m_alignment = alignment; }
+        void setImage( const QImage &image ) { m_image = image; }
         void setScreen( int screen );
-        void setText( const QString &text ) { m_currentText = text; refresh(); }
+        void setText( const QString &text ) { m_text = text; }
+        void setDrawShadow( bool b ) { m_drawShadow = b; }
 
-      protected slots:
-        void minReached();
+    protected:
+        /** determine new size and position */
+        void determineMetrics();
 
-      protected:
-        /* render text into osdBuffer */
-        void renderOSDText( const QString& );
-        void mousePressEvent( QMouseEvent* );
-        bool event( QEvent* );
-
-        /* call to reposition a new OSD text or when position attributes change */
+        /** call to reposition a new OSD text or when position attributes change */
         void reposition( QSize newSize = QSize() );
 
-        void loadImage( QString &location );
-        QPixmap createGradient( QSize size );
+        /** reimplemented */
+        virtual void mousePressEvent( QMouseEvent* );
+        virtual void paintEvent( QPaintEvent* );
+        virtual bool event( QEvent* );
 
-        /* called after most set*() calls to update the OSD */
-        void refresh();
-
+        /** distance from left/right edges */
         static const int MARGIN = 15;
 
-        QString     m_appName;
         int         m_duration;
-        QTimer      timer;
-        QTimer      timerMin;
-        QPixmap     osdBuffer;
-        QStringList textBuffer;
-        QValueList<QImage> imageBuffer;
-        QString     m_currentText;
-        QImage      m_image;
-        bool        m_useImage;
-        bool        m_shadow;
-        bool        m_cover;
-
+        QTimer     *m_timer;
         Alignment   m_alignment;
         int         m_screen;
         uint        m_y;
-
-        bool m_dirty; //if dirty we will be re-rendered before we are shown
+        bool        m_drawShadow;
+        QString     m_text;
+        QImage      m_image;
+        KPixmap     m_screenshot;
 };
 
 
 
-// do not pollute OSDWidget with this preview stuff
 class OSDPreviewWidget : public OSDWidget
 {
     Q_OBJECT
-public:
-    OSDPreviewWidget( const QString &appName, QWidget *parent = 0, const char *name = "osdpreview" );
 
-    static QPoint m_previewOffset;
+public:
+    OSDPreviewWidget( QWidget *parent );
+
+    int screen()    { return m_screen; }
+    int alignment() { return m_alignment; }
+    int y()         { return m_y; }
+
+public slots:
+    void setTextColor( const QColor &color ) { OSDWidget::setTextColor( color ); doUpdate(); }
+    void setBackgroundColor(const QColor &color ) { OSDWidget::setBackgroundColor( color ); doUpdate(); }
+    void setDrawShadow( bool b ) { OSDWidget::setDrawShadow( b ); doUpdate(); }
+    void setFont( const QFont &font ) { OSDWidget::setFont( font ); doUpdate(); }
+
+private:
+    inline void doUpdate() { if( isShown() ) show(); }
 
 signals:
     void positionChanged();
@@ -120,28 +120,33 @@ private:
 
 
 
+class MetaBundle;
+
 namespace amaroK
 {
     class OSD : public OSDWidget
     {
-      Q_OBJECT
-        public:
-            static OSD *instance();
+        Q_OBJECT
 
-            void applySettings();
-            void setImage( const MetaBundle &bundle );
+    public:
+        static OSD *instance()
+        {
+            static OSD *s_instance = new OSD;
+            return s_instance;
+        }
 
-        public slots:
-            void showTrack( const MetaBundle &bundle );
-            void showTrack() { show( m_text, false, true ); }
+        void applySettings();
+        void show( const MetaBundle &bundle );
 
-            //this function is for the showOSD global shortcut, it should always work //FIXME sucks
-            void forceShowTrack() { bool b = isEnabled(); setEnabled( true ); showTrack(); setEnabled( b ); }
+    public slots:
+        // this function is for the showOSD global shortcut,
+        // it should always work //FIXME sucks
+        void forceShowTrack() { bool b = isEnabled(); setEnabled( true ); OSDWidget::show( m_text ); setEnabled( b ); }
 
-        private:
-            OSD() : OSDWidget( "amaroK" ) {}
+    private:
+        OSD() : OSDWidget( 0 ) {}
 
-            QString m_text;
+        QString m_text;
     };
 }
 

@@ -1,320 +1,105 @@
 /*
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-*/
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * osd.cpp:   Shows some text in a pretty way independent to the WM
+ * begin:     Fre Sep 26 2003
+ * copyright: (C) 2004 Christian Muehlhaeuser <chris@chris.de>
+ *            (C) 2004 Seb Ruiz <seb100@optusnet.com.au>
+ *            (C) 2004, 2005 Max Howell
+ */
 
-/*
-  osd.cpp  -  Provides an interface to a plain QWidget, which is independent of KDE (bypassed to X11)
-  begin:     Fre Sep 26 2003
-  copyright: (C) 2003 by Christian Muehlhaeuser, 2004 by Seb Ruiz
-  email:     chris@chris.de; seb100@optusnet.com.au
-*/
-
-#include "amarokconfig.h"    //previewWidget
+#include "amarokconfig.h"
 #include "collectiondb.h"    //for albumCover location
-#include "colorgenerator.h"  //for gradient
+#include "debug.h"
+#include <kapplication.h>
+#include <kpixmap.h>
+#include <kpixmapeffect.h>
 #include "osd.h"
-
-#include <qapplication.h>
 #include <qbitmap.h>
 #include <qpainter.h>
+#include <qtimer.h>
 
-#include <kimageeffect.h>    //gradient backgroud image
-#include <kglobalsettings.h> //unsetColors()
+namespace ShadowEngine
+{
+    QImage makeShadow( const QPixmap &textPixmap, const QColor &bgColor );
+}
 
-#include <X11/Xlib.h>        //reposition()
-
-
-OSDWidget::OSDWidget( const QString &appName, QWidget *parent, const char *name )
+OSDWidget::OSDWidget( QWidget *parent, const char *name )
         : QWidget( parent, name, WType_TopLevel | WNoAutoErase | WStyle_Customize | WX11BypassWM | WStyle_StaysOnTop )
-        , m_appName( appName )
-        , m_duration( 5000 )
-        , m_shadow( true )
+        , m_duration( 2000 )
+        , m_timer( new QTimer( this ) )
         , m_alignment( Middle )
         , m_screen( 0 )
         , m_y( MARGIN )
-        , m_dirty( false )
+        , m_drawShadow( true )
 {
     setFocusPolicy( NoFocus );
     setBackgroundMode( NoBackground );
     unsetColors();
 
-    connect( &timer,     SIGNAL( timeout() ), SLOT( hide() ) );
-    connect( &timerMin,  SIGNAL( timeout() ), SLOT( minReached() ) );
+    connect( m_timer, SIGNAL( timeout() ), SLOT( hide() ) );
+
+    //or crashes, KWin bug I think, crashes in QWidget::icon()
+    kapp->setTopWidget( this );
 }
 
-
-void OSDWidget::renderOSDText( const QString &text )
+void
+OSDWidget::show() //virtual
 {
-    static QBitmap mask;
+    if ( !isEnabled() )
+        return;
 
+    class Grabber : public QWidget {
+    public:
+        Grabber( const QRect &r, const QColor &color ) : QWidget( 0, 0 ) {
+            move( 0, 0 );
+            screen = QPixmap::grabWindow( winId(), r.x(), r.y(), r.width(), r.height() );
+            KPixmapEffect::fade( screen, 0.80, color );
+        }
+        KPixmap screen;
+    };
+
+    const QRect oldGeometry = QRect( pos(), size() );
+
+    determineMetrics();
+
+    const QRect newGeometry = QRect( pos(), size() );
+
+    //TODO handle case when already shown properly
+    if( !isShown() ) {
+        // obtain snapshot of the screen where we are about to appear
+        Grabber g( QRect(pos(), size()), backgroundColor() );
+        m_screenshot = g.screen;
+
+        QWidget::show();
+    }
+    else
+        paintEvent( 0 );
+
+    if( m_duration ) //duration 0 -> stay forever
+       m_timer->start( m_duration, true ); //calls hide()
+}
+
+void
+OSDWidget::determineMetrics()
+{
     // Set a sensible maximum size, don't cover the whole desktop or cross the screen
-    QSize max = QApplication::desktop() ->screen( m_screen ) ->size() - QSize( MARGIN*2 + 20, 100 );
-    QFont titleFont( "Arial", 12, QFont::Bold );
-    QFontMetrics titleFm( titleFont );
+    QSize max = QApplication::desktop()->screen( m_screen )->size() - QSize( MARGIN * 2 + 20, 100 );
 
-    // The title cannnot be taller than one line
-    QRect titleRect = titleFm.boundingRect( 0, 0, max.width(), titleFm.height(), AlignLeft, m_appName );
     // The osd cannot be larger than the screen
-    QRect textRect = fontMetrics().boundingRect( 0, 0, max.width(), max.height(), AlignLeft | WordBreak, text );
+    QRect rect = fontMetrics().boundingRect( 0, 0, max.width(), max.height(), AlignLeft | WordBreak, m_text );
 
-    if ( textRect.width() < titleRect.width() )
-        textRect.setWidth( titleRect.width() );
+    rect.addCoords( -20, -10, 20, 10 );
 
-    int imageSize = textRect.height() + titleRect.height() - 10;
-
-    if ( !m_image.isNull() && m_useImage )
-        textRect.addCoords( 0, 0, imageSize + 40, titleRect.height() + 10 );
-    else
-        textRect.addCoords( 0, 0, 20, titleRect.height() );
-
-    osdBuffer.resize( textRect.size() );
-    mask.resize( textRect.size() );
-
-    // Start painting!
-    QPainter bufferPainter( &osdBuffer );
-    QPainter maskPainter( &mask );
-
-    // Draw backing rectangle
-    bufferPainter.setPen( Qt::black );
-
-//  Disabled for now
-//     QBrush brush;
-//     brush.setPixmap( createGradient( textRect.size() ) );
-//     bufferPainter.setBrush( brush );
-
-    bufferPainter.setBrush( backgroundColor() );
-    bufferPainter.drawRoundRect( textRect, 1500 / textRect.width(), 1500 / textRect.height() );
-    bufferPainter.setFont( font() );
-
-    const uint w = textRect.width()  - 1;
-    const uint h = textRect.height() - 1;
-    //text position in Rect.
-    int textPosition = 0;
-    //shadow offset.
-    int shadowOffset = 0;
-    //image position.
-    int imagePosition = 0;
-
-    // Paint the album cover if existant
-    if ( !m_image.isNull() && m_useImage )
-    {
-        m_image = m_image.smoothScale( imageSize, imageSize, QImage::ScaleMin );
-        if ( text.isRightToLeft() )
-        {
-            imagePosition = -10;
-            bufferPainter.drawImage( textRect.width() - imageSize - 10, -imagePosition, m_image );
-            imagePosition -= imageSize;
-        }
-        else
-        {
-            imagePosition = 10;
-            bufferPainter.drawImage( imagePosition, imagePosition, m_image );
-            imagePosition += imageSize;
-        }
-    }
-    //text position
-    if ( text.isRightToLeft() )
-    {
-        textPosition = imagePosition - 10;
-        shadowOffset = -2;
-    }
-    else
-    {
-        textPosition = imagePosition + 10;
-        shadowOffset = 2;
-    }
-
-    // Draw the text shadow
-    if ( m_shadow )
-    {
-        bufferPainter.setPen( backgroundColor().dark( 175 ) );
-        bufferPainter.drawText( textPosition+shadowOffset, titleFm.height() + 1, w, h, AlignAuto | WordBreak, text );
-    }
-
-    // Draw the text
-    bufferPainter.setPen( foregroundColor() );
-    bufferPainter.drawText( textPosition, titleFm.height() - 1, w, h, AlignAuto | WordBreak, text );
-
-    // Draw the title text
-    bufferPainter.setFont( titleFont );
-    bufferPainter.drawText( textPosition, 3, w, h, AlignLeft, m_appName );
-
-    // Masking for transparency
-    mask.fill( Qt::black );
-    maskPainter.setBrush( Qt::white );
-    maskPainter.drawRoundRect( textRect, 1500 / textRect.width(), 1500 / textRect.height() );
-    setMask( mask );
-
-    // Do last to reduce noticeable change when showing multiple OSDs in succession
-    reposition( textRect.size() );
-
-    m_currentText = text;
-    m_dirty = false;
-
-    update();
+    // size and move us
+    reposition( rect.size() );
 }
 
-void OSDWidget::show( const QString &text, bool preemptive, bool useImage )
-{
-    m_useImage = useImage;
-
-    if ( isEnabled() && !text.isEmpty() )
-    {
-        if ( preemptive || !timerMin.isActive() )
-        {
-            m_currentText = text;
-            m_dirty = true;
-
-            show();
-        } else {
-            textBuffer.append( text ); //queue
-            imageBuffer.append( m_image ); //queue
-        }
-    }
-}
-
-
-void OSDWidget::minReached() //SLOT
-{
-    if ( !textBuffer.isEmpty() )
-    {
-        m_image = imageBuffer.front();
-        renderOSDText( textBuffer.front() );
-        textBuffer.pop_front();
-        imageBuffer.pop_front();
-
-        if( m_duration )
-            //timerMin is still running
-            timer.start( m_duration, TRUE );
-    } else
-        timerMin.stop();
-}
-
-
-void OSDWidget::setDuration( int ms )
-{
-    m_duration = ms;
-
-    if( !m_duration )
-        timer.stop();
-}
-
-
-void OSDWidget::setFont(const QFont &newFont )
-{
-    QWidget::setFont( newFont );
-    refresh();
-}
-
-
-void OSDWidget::setShadow( bool shadow )
-{
-    m_shadow = shadow;
-    refresh();
-}
-
-
-void OSDWidget::setTextColor( const QColor &newColor )
-{
-    setPaletteForegroundColor( newColor );
-    refresh();
-}
-
-
-void OSDWidget::setBackgroundColor( const QColor &newColor )
-{
-    setPaletteBackgroundColor( newColor );
-    refresh();
-}
-
-
-void OSDWidget::unsetColors()
-{
-    setPaletteForegroundColor( KGlobalSettings::activeTextColor() );
-    setPaletteBackgroundColor( KGlobalSettings::activeTitleColor() );
-
-    refresh();
-}
-
-
-void OSDWidget::setOffset( int /*x*/, int y )
-{
-    //m_offset = QPoint( x, y );
-    m_y = y;
-    reposition();
-}
-
-
-void OSDWidget::setAlignment( Alignment a )
-{
-    m_alignment = a;
-    reposition();
-}
-
-
-void OSDWidget::setScreen( int screen )
-{
-    const int n = QApplication::desktop()->numScreens();
-    m_screen = (screen >= n) ? n-1 : screen;
-    reposition();
-}
-
-
-bool OSDWidget::event( QEvent *e )
-{
-    switch( e->type() )
-    {
-        case QEvent::Paint:
-            bitBlt( this, 0, 0, &osdBuffer );
-            return TRUE;
-
-        case QEvent::ApplicationPaletteChange:
-            if ( !AmarokConfig::osdUseCustomColors() ) //FIXME not portable!
-                unsetColors(); //updates colors for new palette
-            return TRUE;
-
-        default:
-            return QWidget::event( e );
-    }
-}
-
-
-void OSDWidget::mousePressEvent( QMouseEvent* )
-{
-    hide();
-}
-
-
-void OSDWidget::show()
-{
-    if ( m_dirty )
-        renderOSDText( m_currentText );
-
-    QWidget::show();
-
-    if ( m_duration ) //duration 0 -> stay forever
-    {
-        timer.start( m_duration, TRUE ); //calls hide()
-        timerMin.start( 150 ); //calls minReached()
-    }
-}
-
-
-void OSDWidget::refresh()
-{
-    if ( isVisible() )
-    {
-        //we need to update the buffer
-        renderOSDText( m_currentText );
-    } else
-        m_dirty = true; //ensure we are re-rendered before we are shown
-}
-
-
-void OSDWidget::reposition( QSize newSize )
+void
+OSDWidget::reposition( QSize newSize )
 {
     if( !newSize.isValid() ) newSize = size();
 
@@ -349,32 +134,89 @@ void OSDWidget::reposition( QSize newSize )
     // correct for screen position
     newPos += screen.topLeft();
 
-    //ensure we are painted before we move
-    if( isVisible() ) paintEvent( 0 );
-
-    //fancy X11 move+resize, reduces visual artifacts
-    XMoveResizeWindow( x11Display(), winId(), newPos.x(), newPos.y(), newSize.width(), newSize.height() );
+    resize( newSize );
+    move( newPos );
 }
 
-void OSDWidget::loadImage( QString &location )
+void
+OSDWidget::paintEvent( QPaintEvent* )
 {
-    QImage image = QImage::QImage();
+    //TODO double buffer? but is slow...
 
-    if ( image.load( location ) )
-        m_image = image;
-    else
-        m_image = QImage::QImage(); //null image
+    bitBlt( this, 0, 0, &m_screenshot );
 
+    QPainter p;
+    QImage image;
+    QFontMetrics metrics = fontMetrics();
+
+    //NOTE currently you must adjust these in determineMetrics() also
+    const uint xmargin = 20;
+    const uint ymargin = 10;
+
+    if( m_drawShadow )
+    {
+        QPixmap pixmap( size() );
+
+        pixmap.fill( Qt::black );
+        pixmap.setMask( pixmap.createHeuristicMask( true ) );
+
+        p.begin( &pixmap );
+        p.setFont( font() );
+        p.setPen( Qt::white );
+        p.drawText( xmargin, ymargin, width(), height(), AlignAuto | WordBreak, m_text );
+        p.end();
+
+        image = ShadowEngine::makeShadow( pixmap, Qt::black/*colorGroup().highlight().dark()*/ );
+    }
+
+    p.begin( this );
+    p.setFont( font() );
+    p.drawImage( 0, 0, image );
+    p.setPen( foregroundColor() );
+    p.drawText( xmargin, ymargin, width(), height(), AlignAuto | WordBreak, m_text );
+    p.setPen( backgroundColor() );
+    p.drawRect( rect() );
+    p.end();
 }
 
-QPixmap OSDWidget::createGradient( QSize size )
+bool
+OSDWidget::event( QEvent *e )
 {
-    amaroK::Color gradient = paletteBackgroundColor();
-
-    QImage image = KImageEffect::gradient( size , gradient, gradient.light(), KImageEffect::PipeCrossGradient, 3 );
-
-    return QPixmap( image );
+    switch( e->type() )
+    {
+        case QEvent::ApplicationPaletteChange:
+            if ( !AmarokConfig::osdUseCustomColors() )
+                unsetColors(); //use new palette's colours
+            return true;
+        default:
+            return QWidget::event( e );
+    }
 }
+
+void
+OSDWidget::mousePressEvent( QMouseEvent* )
+{
+    hide();
+}
+
+void
+OSDWidget::unsetColors()
+{
+    const QColorGroup c = QApplication::palette().active();
+
+    setPaletteForegroundColor( c.highlightedText() );
+    setPaletteBackgroundColor( c.highlight() );
+}
+
+void
+OSDWidget::setScreen( int screen )
+{
+    const int n = QApplication::desktop()->numScreens();
+    m_screen = (screen >= n) ? n-1 : screen;
+    reposition();
+}
+
+
 
 
 //////  OSDPreviewWidget below /////////////////////
@@ -382,13 +224,12 @@ QPixmap OSDWidget::createGradient( QSize size )
 #include <kcursor.h>         //previewWidget
 #include <klocale.h>
 
-OSDPreviewWidget::OSDPreviewWidget( const QString &appName, QWidget *parent, const char *name )
-    : OSDWidget( appName, parent, name )
+OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
+    : OSDWidget( parent, "osdpreview" )
     , m_dragging( false )
 {
-    m_currentText = i18n( "OSD Preview - drag to reposition" );
+    m_text = i18n( "OSD Preview - drag to reposition" );
     m_duration    = 0;
-    m_shadow      = AmarokConfig::osdDrawShadow();
 }
 
 void OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
@@ -478,16 +319,8 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 #include "metabundle.h"
 #include <qregexp.h>
 
-amaroK::OSD*
-amaroK::OSD::instance()
-{
-    static OSD osd;
-    return &osd;
-}
-
-
 void
-amaroK::OSD::showTrack( const MetaBundle &bundle ) //slot
+amaroK::OSD::show( const MetaBundle &bundle ) //slot
 {
     // set text to the value in the config file.
     QString text = AmarokConfig::osdText();
@@ -498,31 +331,35 @@ amaroK::OSD::showTrack( const MetaBundle &bundle ) //slot
     // will not display if bundle.album() is empty.
 
     QString replaceMe = "\\{[^}]*%1[^}]*\\}";
-    QStringList element, identifier;
-
-    QString length, bitrate = QString::null;
+    QStringList elements, identifiers;
+    QString length, bitrate;
 
     if( bundle.length())
-        length = QString ("%1").arg(bundle.prettyLength());
+       length = QString ("%1").arg(bundle.prettyLength());
     if( bundle.bitrate() )
-        bitrate = QString ("%1").arg(bundle.prettyBitrate());
+       bitrate = QString ("%1").arg(bundle.prettyBitrate());
 
     // NOTE: Order is important, the items will be evaluated first. Thus, prettyTitle must be last.
-    element    << bundle.artist() << bundle.album() << bundle.title() << bundle.genre()
-               << bundle.year() << bundle.track()<< length << bitrate << bundle.prettyTitle( bundle.url().filename() );
-    identifier << i18n("%artist") << i18n("%album") << i18n("%title") << i18n("%genre")
-               << i18n("%year") << i18n("%track") << i18n( "%length" ) << i18n( "%bitrate" ) << i18n( "%artist - %title" );
+    elements    << bundle.artist() << bundle.album() << bundle.title() << bundle.genre()
+                << bundle.year() << bundle.track()<< length << bitrate << bundle.prettyTitle();
+
+    identifiers << i18n("%artist") << i18n("%album") << i18n("%title") << i18n("%genre")
+                << i18n("%year") << i18n("%track") << i18n( "%length" ) << i18n( "%bitrate" ) << i18n( "%artist - %title" );
 
     // This loop will go through the two lists and replace each identifier by the appropriate bundle
     // information.
-    for ( uint x = 0; x < identifier.count(); ++x )
+
+    for( QStringList::ConstIterator id = identifiers.begin(), end = identifiers.end(), el = elements.begin(); id != end; ++id, ++el )
     {
-        if ( !element[x].isEmpty() )
-            text.replace( identifier[x], element[x], FALSE );
+        QString element = *el;
+        QString identifier = *id;
+
+        if ( !element.isEmpty() )
+            text.replace( identifier, element, FALSE );
         else
         {
-            text.replace( QRegExp (replaceMe.arg( identifier[x] ) ), element[x] );
-            text.replace( identifier[x], QString::null, FALSE );
+            text.replace( QRegExp (replaceMe.arg( identifier ) ), element );
+            text.replace( identifier, QString::null, FALSE );
         }
     }
 
@@ -540,24 +377,20 @@ amaroK::OSD::showTrack( const MetaBundle &bundle ) //slot
     text.replace( "&amp;", "&" );
     text.replace( "\\n", "\n" );
 
-    m_text = text;
+    m_text = text.stripWhiteSpace();
 
-    if ( AmarokConfig::osdCover() )
-        setImage( bundle );
+    if ( AmarokConfig::osdCover() ) {
+        //avoid showing the generic cover.  we can overwrite this by passing an arg.
+        //get large cover for scaling if big cover needed
+        QString location = CollectionDB::instance()->albumImage( bundle, 0 );
 
-    showTrack();
-}
+        if ( location.find( "nocover" ) != -1 )
+            setImage( QImage() );
+        else
+            setImage( location );
+    }
 
-void
-amaroK::OSD::setImage( const MetaBundle &bundle )
-{
-    //avoid showing the generic cover.  we can overwrite this by passing an arg.
-    //get large cover for scaling if big cover needed
-    QString imageLocation = CollectionDB::instance()->albumImage( bundle, 0 );
-    if ( imageLocation.find( QString("nocover") ) != -1 )
-        imageLocation = QString::null;
-
-    loadImage( imageLocation );
+    OSDWidget::show( m_text );
 }
 
 void
@@ -566,10 +399,10 @@ amaroK::OSD::applySettings()
     setAlignment( (OSDWidget::Alignment)AmarokConfig::osdAlignment() );
     setDuration( AmarokConfig::osdDuration() );
     setEnabled( AmarokConfig::osdEnabled() );
-    setOffset( AmarokConfig::osdXOffset(), AmarokConfig::osdYOffset() );
+    setOffset( AmarokConfig::osdYOffset() );
     setScreen( AmarokConfig::osdScreen() );
-    setShadow( AmarokConfig::osdDrawShadow() );
     setFont( AmarokConfig::osdFont() );
+    setDrawShadow( AmarokConfig::osdDrawShadow() );
 
     if( AmarokConfig::osdUseCustomColors() )
     {
@@ -577,6 +410,104 @@ amaroK::OSD::applySettings()
         setBackgroundColor( AmarokConfig::osdBackgroundColor() );
     }
     else unsetColors();
+}
+
+
+/* Code copied from kshadowengine.cpp
+ *
+ * Copyright (C) 2003 Laur Ivan <laurivan@eircom.net>
+ *
+ * Many thanks to:
+ *  - Bernardo Hung <deciare@gta.igs.net> for the enhanced shadow
+ *    algorithm (currently used)
+ *  - Tim Jansen <tim@tjansen.de> for the API updates and fixes.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License version 2 as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public License
+ * along with this library; see the file COPYING.LIB.  If not, write to
+ * the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+namespace ShadowEngine
+{
+    #define THICKNESS 8
+
+    double decay( QImage&, int, int );
+
+    QImage makeShadow( const QPixmap& textPixmap, const QColor &bgColor )
+    {
+        QImage result;
+
+        const int w   = textPixmap.width();
+        const int h   = textPixmap.height();
+        const int bgr = bgColor.red();
+        const int bgg = bgColor.green();
+        const int bgb = bgColor.blue();
+
+        const int thick = THICKNESS >> 1;
+
+        double alphaShadow;
+
+        // This is the source pixmap
+        QImage img = textPixmap.convertToImage().convertDepth( 32 );
+
+        // Resize the image if necessary
+        if( (result.width() != w) || (result.height() != h) )
+        {
+            result.create( w, h, 32 );
+        }
+
+        result.fill( 0 ); // fill with black
+        result.setAlphaBuffer( true );
+
+        for( int i = thick; i < w - thick; i++) {
+            for( int j = thick; j < h - thick; j++ )
+            {
+                alphaShadow = decay( img, i, j );
+
+                alphaShadow = QMIN( alphaShadow, 120.0 /*maximum opacity*/ );
+
+                // update the shadow's i,j pixel.
+                result.setPixel( i,j, qRgba( bgr, bgg , bgb, (int) alphaShadow) );
+            }
+        }
+
+        return result;
+    }
+
+    #define MULTIPLICATION_FACTOR 8.0
+    // Multiplication factor for pixels directly above, under, or next to the text
+    #define AXIS_FACTOR 2.0
+    // Multiplication factor for pixels diagonal to the text
+    #define DIAGONAL_FACTOR 1.0
+
+    double decay( QImage& source, int i, int j)
+    {
+        if ((i < 1) || (j < 1) || (i > source.width() - 2) || (j > source.height() - 2))
+            return 0;
+
+        double alphaShadow;
+        alphaShadow =(qGray(source.pixel(i-1,j-1)) * DIAGONAL_FACTOR +
+                qGray(source.pixel(i-1,j  )) * AXIS_FACTOR +
+                qGray(source.pixel(i-1,j+1)) * DIAGONAL_FACTOR +
+                qGray(source.pixel(i  ,j-1)) * AXIS_FACTOR +
+                0                         +
+                qGray(source.pixel(i  ,j+1)) * AXIS_FACTOR +
+                qGray(source.pixel(i+1,j-1)) * DIAGONAL_FACTOR +
+                qGray(source.pixel(i+1,j  )) * AXIS_FACTOR +
+                qGray(source.pixel(i+1,j+1)) * DIAGONAL_FACTOR) / MULTIPLICATION_FACTOR;
+
+        return alphaShadow;
+    }
 }
 
 #include "osd.moc"

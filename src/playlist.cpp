@@ -1624,7 +1624,7 @@ Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
         QApplication::clipboard()->setText( text, QClipboard::Clipboard );
         QApplication::clipboard()->setText( text, QClipboard::Selection );
 
-        amaroK::OSD::instance()->show( i18n( "Copied: %1" ).arg( text ) );
+        amaroK::OSD::instance()->OSDWidget::show( i18n( "Copied: %1" ).arg( text ) );
     }
 }
 

@@ -29,9 +29,9 @@ email                : fh@ez.no
 
 void Options5::init()
 {
-    m_pOSDPreview = new OSDPreviewWidget( "amaroK", this ); //must be child!!!
+    m_pOSDPreview = new OSDPreviewWidget( this ); //must be child!!!
     m_pOSDPreview->setAlignment( (OSDWidget::Alignment)AmarokConfig::osdAlignment() );
-    m_pOSDPreview->setOffset( AmarokConfig::osdXOffset(), AmarokConfig::osdYOffset() );
+    m_pOSDPreview->setOffset( AmarokConfig::osdYOffset() );
 
     connect( m_pOSDPreview, SIGNAL(positionChanged()), SLOT(slotPositionChanged()) );
 
@@ -39,13 +39,12 @@ void Options5::init()
     for( int i = 0; i < numScreens; i++ )
         kcfg_OsdScreen->insertItem( QString::number( i ) );
 
-    connect( kcfg_OsdDrawShadow, SIGNAL(toggled(bool)), m_pOSDPreview, SLOT(setShadow(bool)) );
+    connect( kcfg_OsdDrawShadow, SIGNAL(toggled(bool)), m_pOSDPreview, SLOT(setDrawShadow(bool)) );
     connect( kcfg_OsdTextColor, SIGNAL(changed(const QColor&)), m_pOSDPreview, SLOT(setTextColor(const QColor&)) );
     connect( kcfg_OsdBackgroundColor, SIGNAL(changed(const QColor&)), m_pOSDPreview, SLOT(setBackgroundColor(const QColor&)) );
     connect( kcfg_OsdFont, SIGNAL(fontSelected(const QFont&)), m_pOSDPreview, SLOT(setFont(const QFont&)) );
     connect( kcfg_OsdScreen, SIGNAL(activated(int)), m_pOSDPreview, SLOT(setScreen(int)) );
     connect( kcfg_OsdEnabled, SIGNAL(toggled(bool)), m_pOSDPreview, SLOT(setShown(bool)) );
-    connect( kcfg_OsdText, SIGNAL(changed(const QString& )), m_pOSDPreview, SLOT(setText(const QString& )) );
 }
 
 void
@@ -78,10 +77,15 @@ Options5::showEvent( QShowEvent * )
 void
 Options5::useCustomColorsToggled( bool on )
 {
-    if( on )
-    {
-        m_pOSDPreview->setTextColor( kcfg_OsdTextColor->color() );
-        m_pOSDPreview->setBackgroundColor( kcfg_OsdBackgroundColor->color() );
+    if ( on ) {
+        //use base functions so we don't call show() 3 times
+        m_pOSDPreview->OSDWidget::setTextColor( kcfg_OsdTextColor->color() );
+        m_pOSDPreview->OSDWidget::setBackgroundColor( kcfg_OsdBackgroundColor->color() );
     }
     else m_pOSDPreview->unsetColors();
+
+    if ( m_pOSDPreview->isShown() ) {
+        m_pOSDPreview->hide();
+        m_pOSDPreview->show();
+    }
 }
