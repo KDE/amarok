@@ -8,10 +8,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "debug.h"
 #include <kcombobox.h>
 #include <klineedit.h>
 #include <klocale.h>
-#include <kdebug.h>
 #include <kseparator.h>
 #include <qcheckbox.h>
 #include <qlabel.h>
@@ -198,25 +198,24 @@ XineConfigDialog::isDefault() const
 void
 XineConfigDialog::save()
 {
-    xine_cfg_entry_t ent;
+   xine_cfg_entry_t ent;
 
-    for( XineConfigEntry *entry = entrys.first(); entry; entry = entrys.next() )
-    {
-        if( entry->isChanged() &&
-            xine_config_lookup_entry( m_xine, entry->key(), &ent ) )
-        {
-            kdDebug() << "[xine-engine] Apply: " << entry->key() << "\n";
+   for( XineConfigEntry *entry = entrys.first(); entry; entry = entrys.next() )
+   {
+      if( entry->isChanged() && xine_config_lookup_entry( m_xine, entry->key(), &ent ) )
+      {
+         debug() << "Apply: " << entry->key() << "\n";
 
-            ent.num_value = entry->numValue();
+         ent.num_value = entry->numValue();
 
-            if ( entry->stringValue() )
-                ent.str_value = (char*) (const char*)entry->stringValue();
+         if( entry->stringValue() )
+            ent.str_value = (char*) (const char*)entry->stringValue();
 
-            xine_config_update_entry( m_xine, &ent );
+         xine_config_update_entry( m_xine, &ent );
 
-            entry->setUnchanged();
-        }
-    }
+         entry->setUnchanged();
+      }
+   }
 }
 
 #include "xine-config.moc"

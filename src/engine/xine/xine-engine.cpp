@@ -16,7 +16,7 @@
 
 AMAROK_EXPORT_PLUGIN( XineEngine )
 
-#include <kdebug.h>
+#include "debug.h"
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <limits>
@@ -26,23 +26,19 @@ AMAROK_EXPORT_PLUGIN( XineEngine )
 
 
 //define this to use xine in a more standard way
-//#define XINE_SAFE_MODE
+#define XINE_SAFE_MODE
 
 
-#ifdef NDEBUG
-static inline kndbgstream debug() { return kndbgstream(); }
-#else
-static inline kdbgstream  debug() { return kdbgstream( "[xine-engine] ", 0, 0 ); }
-#endif
-
-
-//some logging static globals
+///some logging static globals
 namespace Log
 {
     static uint bufferCount = 0;
     static uint scopeCallCount = 1; //prevent divideByZero
     static uint noSuitableBuffer = 0;
 };
+
+///returns the configuration we will use
+static inline QCString configPath() { return QFile::encodeName( QDir::homeDirPath() + "/.xine/config" ); }
 
 
 XineEngine::XineEngine()
@@ -55,8 +51,9 @@ XineEngine::XineEngine()
 {
     myList->next = myList; //init the buffer list
 
-    addPluginProperty( "StreamingMode",  "NoStreaming" );
-    addPluginProperty( "HasConfigure",   "true" );
+    addPluginProperty( "StreamingMode", "NoStreaming" );
+    addPluginProperty( "HasConfigure", "true" );
+    addPluginProperty( "HasEqualizer", "true" );
 }
 
 XineEngine::~XineEngine()
@@ -69,12 +66,14 @@ XineEngine::~XineEngine()
        xine_stop( m_stream );
     }
 
-    if (m_stream)     xine_close(m_stream);
-    if (m_eventQueue) xine_event_dispose_queue(m_eventQueue);
-    if (m_stream)     xine_dispose(m_stream);
-    if (m_audioPort)  xine_close_audio_driver(m_xine, m_audioPort);
-    if (m_post)       xine_post_dispose(m_xine, m_post);
-    if (m_xine)       xine_exit(m_xine);
+    xine_config_save( m_xine, configPath() );
+
+    if( m_stream )     xine_close( m_stream );
+    if( m_eventQueue ) xine_event_dispose_queue( m_eventQueue );
+    if( m_stream )     xine_dispose( m_stream );
+    if( m_audioPort )  xine_close_audio_driver( m_xine, m_audioPort );
+    if( m_post )       xine_post_dispose( m_xine, m_post );
+    if( m_xine )       xine_exit( m_xine );
 
     debug() << "xine closed\n";
 
@@ -86,74 +85,60 @@ XineEngine::~XineEngine()
 bool
 XineEngine::init()
 {
-    debug() <<
-        "Initialising..\n"
-        "Please report bugs to http://bugs.kde.org\n"
-        "Please note that some bugs can be fixed by using the newest available xine-lib\n"
-        #ifdef XINE_SAFE_MODE
-        "Running in safe-mode\n"
-        #endif
-        "Build stamp: " << __DATE__ << ' ' << __TIME__ << endl;
+   debug() <<
+      "Build stamp: " << __DATE__ << ' ' << __TIME__ << endl <<
+      #ifdef XINE_SAFE_MODE
+      "Running in safe-mode\n"
+      #endif
+      "Please report bugs to http://bugs.kde.org\n"
+      "Please test bugs against the newest available xine-lib\n";
 
-    m_xine = xine_new();
+   m_xine = xine_new();
 
-    if( !m_xine )
-    {
-        KMessageBox::error( 0, i18n("amaroK could not initialise xine.") );
-        return false;
-    }
+   if( !m_xine ) {
+      KMessageBox::error( 0, i18n("amaroK could not initialise xine.") );
+      return false;
+   }
 
-    #ifdef XINE_SAFE_MODE
-    xine_engine_set_param( m_xine, XINE_ENGINE_PARAM_VERBOSITY, 99 );
-    #endif
+   #ifdef XINE_SAFE_MODE
+   xine_engine_set_param( m_xine, XINE_ENGINE_PARAM_VERBOSITY, 99 );
+   #endif
 
-    QString
-    path  = QDir::homeDirPath();
-    path += "/.%1/config";
-    path  = QFile::exists( path.arg( "kaffeine" ) ) ? path.arg( "kaffeine" ) : path.arg( "xine" );
+   xine_config_load( m_xine, configPath() );
 
-    debug() << "Using configuration: " << path << endl;
-    xine_config_load( m_xine, QFile::encodeName( path ) );
+   xine_init( m_xine );
 
-    xine_init( m_xine );
+   m_audioPort = xine_open_audio_driver( m_xine, "auto", NULL );
+   if( !m_audioPort ) {
+      KMessageBox::error( 0, i18n("xine was unable to initialize any audio-drivers.") );
+      return false;
+   }
 
-    m_audioPort = xine_open_audio_driver( m_xine, "auto", NULL );
-    if( !m_audioPort )
-    {
-        KMessageBox::error( 0, i18n("xine was unable to initialize any audio-drivers.") );
-        return false;
-    }
+   m_stream = xine_stream_new( m_xine, m_audioPort, NULL );
+   if( !m_stream ) {
+      KMessageBox::error( 0, i18n("amaroK could not create a new xine-stream.") );
+      return false;
+   }
 
-    m_stream = xine_stream_new( m_xine, m_audioPort, NULL );
-    if( !m_stream )
-    {
-        KMessageBox::error( 0, i18n("amaroK could not create a new xine-stream.") );
-        return false;
-    }
-
-    #ifndef XINE_SAFE_MODE
-    //implemented in xine-scope.h
-    m_post = scope_plugin_new( m_xine, m_audioPort );
-
-    //less buffering, faster seeking.. TODO test
-    xine_set_param( m_stream, XINE_PARAM_METRONOM_PREBUFFER, 6000 );
-    xine_set_param( m_stream, XINE_PARAM_IGNORE_VIDEO, 1 );
-    //xine_trick_mode( m_stream, XINE_TRICK_MODE_SEEK_TO_TIME, 1 );
-    #endif
-
-    xine_event_create_listener_thread( m_eventQueue = xine_event_new_queue( m_stream ),
+   xine_event_create_listener_thread( m_eventQueue = xine_event_new_queue( m_stream ),
                                        &XineEngine::XineEventListener,
                                        (void*)this );
 
-    #ifndef XINE_SAFE_MODE
-    startTimer( 200 ); //prunes the scope
-    #endif
+   #ifndef XINE_SAFE_MODE
+   //implemented in xine-scope.h
+   m_post = scope_plugin_new( m_xine, m_audioPort );
 
-    return true;
+   xine_set_param( m_stream, XINE_PARAM_METRONOM_PREBUFFER, 6000 );
+   xine_set_param( m_stream, XINE_PARAM_IGNORE_VIDEO, 1 );
+
+   startTimer( 200 ); //prunes the scope
+   #endif
+
+   return true;
 }
 
 bool
-XineEngine::load( const KURL &url, bool stream )
+XineEngine::load( const KURL &url, bool isStream )
 {
     if( XINE_VERSION == "1-rc6a" && url.protocol() == "http" ) {
        KMessageBox::sorry( 0, i18n( "Sorry xine 1-rc6a cannot play remote streams, please upgrade to 1-rc7" ) );
@@ -161,7 +146,13 @@ XineEngine::load( const KURL &url, bool stream )
     }
 
 
-    Engine::Base::load( url, stream || url.protocol() == "http" );
+    Engine::Base::load( url, isStream || url.protocol() == "http" );
+
+//     if( m_xfadeLength > 0 && xine_get_status( m_stream ) == XINE_STATUS_PLAY ) {
+//        //TODO not paused
+//        new Fader( m_stream );
+//        m_stream = xine_stream_new( m_xine, m_audioPort, NULL );
+//     }
 
     if( xine_open( m_stream, url.url().local8Bit() ) )
     {
@@ -276,6 +267,40 @@ void
 XineEngine::setVolumeSW( uint vol )
 {
     xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, vol );
+}
+
+void
+XineEngine::setEqualizerActive( bool enable )
+{
+   if( !enable ) {
+      QValueList<int> gains;
+      for( uint x = 0; x < 10; x++ )
+         gains += 0;
+      setEqualizerGains( gains );
+   }
+}
+
+void
+XineEngine::setEqualizerPreamp( int )
+{
+   //not until we have our own software mixer
+}
+
+void
+XineEngine::setEqualizerGains( const QValueList<int> &gains )
+{
+   QValueList<int>::ConstIterator it = gains.begin();
+
+   xine_set_param( m_stream, XINE_PARAM_EQ_30HZ, *it );
+   xine_set_param( m_stream, XINE_PARAM_EQ_60HZ, *++it );
+   xine_set_param( m_stream, XINE_PARAM_EQ_125HZ, *++it );
+   xine_set_param( m_stream, XINE_PARAM_EQ_250HZ, *++it );
+   xine_set_param( m_stream, XINE_PARAM_EQ_500HZ, *++it );
+   xine_set_param( m_stream, XINE_PARAM_EQ_1000HZ, *++it );
+   xine_set_param( m_stream, XINE_PARAM_EQ_2000HZ, *++it );
+   xine_set_param( m_stream, XINE_PARAM_EQ_4000HZ, *++it );
+   xine_set_param( m_stream, XINE_PARAM_EQ_8000HZ, *++it );
+   xine_set_param( m_stream, XINE_PARAM_EQ_16000HZ, *++it );
 }
 
 bool
@@ -523,6 +548,42 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
     } //switch
 
     #undef xe
+}
+
+//////////////////
+/// class Fader
+//////////////////
+
+Fader::Fader( xine_stream_t *stream )
+   : QThread()
+   , m_stream( stream )
+{
+   start();
+}
+
+void
+Fader::run()
+{
+   int volume = xine_get_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL );
+
+   while( volume ) {
+      int time = int(30000.0 * (-log10( volume ) + 2));
+      debug() << volume << ": " << time << "us\n";
+      ::usleep( time );
+
+      /*xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, */--volume/* )*/;
+   }
+
+   debug() << "ready... " << endl;
+   ::usleep( 2 * 1000 * 1000 );
+   debug() << "go\n";
+
+   //xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, 100 );
+
+   xine_close( m_stream );
+   xine_dispose( m_stream );
+
+   delete this;
 }
 
 #include "xine-engine.moc"

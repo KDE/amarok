@@ -5,6 +5,7 @@
 #define XINE_ENGINE_H
 
 #include "engine/enginebase.h"
+#include <qthread.h>
 #include <xine.h>
 
 class XineEngine : public Engine::Base
@@ -13,24 +14,28 @@ Q_OBJECT
 
 public:
     XineEngine();
-    ~XineEngine();
+   ~XineEngine();
 
-    bool init();
-    bool canDecode( const KURL& ) const;
-    bool load( const KURL &url, bool stream );
-    bool play( uint = 0 );
-    void stop();
-    void pause();
-    uint position() const;
-    void seek( uint );
+    virtual bool init();
+    virtual bool canDecode( const KURL& ) const;
+    virtual bool load( const KURL &url, bool stream );
+    virtual bool play( uint = 0 );
+    virtual void stop();
+    virtual void pause();
+    virtual uint position() const;
+    virtual void seek( uint );
 
-    Engine::State state() const;
-    const Engine::Scope &scope();
+    virtual Engine::State state() const;
+    virtual const Engine::Scope &scope();
 
-    amaroK::PluginConfig *configure() const;
+    virtual amaroK::PluginConfig *configure() const;
+
+    virtual void setEqualizerActive( bool );
+    virtual void setEqualizerPreamp( int );
+    virtual void setEqualizerGains( const QValueList<int>& );
 
 protected:
-    void setVolumeSW( uint );
+    virtual void setVolumeSW( uint );
 
 private:
     static  void XineEventListener( void*, const xine_event_t* );
@@ -42,6 +47,14 @@ private:
     xine_audio_port_t  *m_audioPort;
     xine_event_queue_t *m_eventQueue;
     xine_post_t        *m_post;
+};
+
+class Fader : public QThread
+{
+   xine_stream_t *m_stream; /// has to be disposed manually
+public:
+   Fader( xine_stream_t* );
+   virtual void run();
 };
 
 #endif
