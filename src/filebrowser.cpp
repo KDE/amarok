@@ -26,6 +26,7 @@
 #include "k3bexporter.h"
 #include "kbookmarkhandler.h"
 #include "playlist.h"
+#include "playlistloader.h"
 
 #include <qhbox.h>
 #include <qdir.h>
@@ -55,7 +56,10 @@ class MyDirLister : public KDirLister
         MyDirLister( bool delayedMimeTypes ) : KDirLister( delayedMimeTypes ) { }
     protected:
         virtual bool MyDirLister::matchesMimeFilter( const KFileItem *item ) const {
-            return item->isDir() || EngineController::canDecode( item->url().path() );
+            return
+                item->isDir() ||
+                EngineController::canDecode( item->url().path() ) ||
+                PlaylistLoader::isPlaylist( item->url() );
         }
 };
 
