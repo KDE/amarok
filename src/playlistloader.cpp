@@ -301,7 +301,7 @@ PlaylistFile::PlaylistFile( const QString &path )
 {
     QFile file( path );
     if( !file.open( IO_ReadOnly ) ) {
-        m_error = i18n( "amaroK couldn't open the file." );
+        m_error = i18n( "amaroK could not open the file." );
         return;
     }
 
@@ -311,7 +311,7 @@ PlaylistFile::PlaylistFile( const QString &path )
     case M3U: loadM3u( stream ); break;
     case PLS: loadPls( stream ); break;
     case XML:
-        m_error = i18n( "This componenet of amaroK cannot translate XML playlists." );
+        m_error = i18n( "This component of amaroK cannot translate XML playlists." );
         return;
     default:
         m_error = i18n( "amaroK does not support this playlist format." );
@@ -319,7 +319,7 @@ PlaylistFile::PlaylistFile( const QString &path )
     }
 
     if( m_error.isEmpty() && m_bundles.isEmpty() )
-        m_error = i18n( "The playlist didn't contain any references to files." );
+        m_error = i18n( "The playlist did not contain any references to files." );
 }
 
 bool

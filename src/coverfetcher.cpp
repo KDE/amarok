@@ -305,7 +305,7 @@ CoverFetcher::finishedImageFetch( KIO::Job *job ) //SLOT
         case 1001:
             m_iCover++;
             if( m_iCover >= (m_iCoverNbr-1) )
-                showQueryEditor( i18n("Amazon has no more cover for this album. You can redefine the search below:") );
+                showQueryEditor( i18n("Amazon has no more covers for this album. You can redefine the search below:") );
             else
                 query_cover( m_iCover );
             break;
