@@ -92,12 +92,6 @@
                     <property name="flat">
                         <bool>false</bool>
                     </property>
-                    <property name="checkable">
-                        <bool>false</bool>
-                    </property>
-                    <property name="checked">
-                        <bool>false</bool>
-                    </property>
                     <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>

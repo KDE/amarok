@@ -48,12 +48,6 @@
             <property name="flat">
                 <bool>false</bool>
             </property>
-            <property name="checkable">
-                <bool>false</bool>
-            </property>
-            <property name="checked">
-                <bool>false</bool>
-            </property>
             <vbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
