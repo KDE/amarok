@@ -39,7 +39,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     , m_filter( 0 )
     , m_previewJob( 0 )
 {
-    setCaption( i18n("Cover Manager") );
+    setCaption( kapp->makeStdCaption( i18n("Cover Manager") ) );
     
     QVBoxLayout *vbox = new QVBoxLayout( this );
     QSplitter *splitter = new QSplitter( this );
