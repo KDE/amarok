@@ -21,12 +21,12 @@
 
 #include "engineobserver.h"
 
-class QCustomEvent;
-class QSlider;
-class QTimer;
 class KAction;
 class KProgress;
 class KToggleAction;
+class PlaylistSlider;
+class QCustomEvent;
+class QTimer;
 
 namespace amaroK {
 
@@ -62,13 +62,13 @@ private:
 
     static StatusBar* m_self;
 
-    QLabel    *m_pTimeLabel;
-    QLabel    *m_pTitle;
-    QLabel    *m_pTotal;
-    KProgress *m_pProgress;
-    QSlider   *m_pSlider;
-    bool       m_sliderPressed;
-    QTimer    *m_pPauseTimer;
+    QLabel         *m_pTimeLabel;
+    QLabel         *m_pTitle;
+    QLabel         *m_pTotal;
+    KProgress      *m_pProgress;
+    PlaylistSlider *m_pSlider;
+    bool            m_sliderPressed;
+    QTimer         *m_pPauseTimer;
 };
 
 

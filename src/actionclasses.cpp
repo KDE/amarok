@@ -248,7 +248,6 @@ AnalyzerAction::plug( QWidget *w, int index )
 //////////////////////////////////////////////////////////////////////////////////////////
 // VolumeAction
 //////////////////////////////////////////////////////////////////////////////////////////
-#include "qslider.h"
 
 VolumeAction::VolumeAction( KActionCollection *ac )
   : KAction( i18n( "Volume" ), 0, ac, "toolbar_volume" )
@@ -274,9 +273,9 @@ VolumeAction::plug( QWidget *w, int index )
         addContainer( w, id );
         connect( w, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
 
-        delete (QSlider*) m_slider; //just in case, remember, we only support one plugging!
+        delete (PlaylistSlider*) m_slider; //just in case, remember, we only support one plugging!
 
-        m_slider = new QSlider( Qt::Vertical, w, "ToolBarVolume" );
+        m_slider = new PlaylistSlider( Qt::Vertical, w, "ToolBarVolume" );
         //FIXME is there a way to get some sensible height?
         m_slider->setFixedHeight( 35 );
         m_slider->setMaxValue( amaroK::VOLUME_MAX );

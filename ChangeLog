@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.1:
+  ADD: Playlist sliders (volume and position) now move directly when clicked
+       outside of the handle. (BR 83611) 
   ADD: Tagless tracks now go into Collection too, listed as "unknown".
   ADD: Automatic album cover fetching is back and improved.
   ADD: Option for automatically switching to Context when playback is started.

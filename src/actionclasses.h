@@ -8,12 +8,12 @@
 #define AMAROK_ACTIONCLASSES_H
 
 #include "engineobserver.h"
+#include "sliderwidget.h"
+
 #include <kaction.h>
 #include <kactionclasses.h>
 #include <kpopupmenu.h>
 #include <qguardedptr.h>
-
-class QSlider;
 
 class KActionCollection;
 class KHelpMenu;
@@ -88,7 +88,7 @@ namespace amaroK
         private:
             void engineVolumeChanged( int value );
 
-            QGuardedPtr<QSlider> m_slider;
+            QGuardedPtr<PlaylistSlider> m_slider;
     };
 
 

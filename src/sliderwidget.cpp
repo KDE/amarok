@@ -24,7 +24,6 @@
 #include <qpointarray.h>
 #include <qrangecontrol.h>
 #include <qsize.h>
-#include <qwidget.h>
 
 #include <kglobal.h>
 
@@ -148,5 +147,44 @@ void amaroK::Slider::paintEvent( QPaintEvent * )
     p.end();
     bitBlt( this, 0, 0, &pBufPixmap );
 }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// CLASS PlaylistSlider
+//////////////////////////////////////////////////////////////////////////////////////////
+
+amaroK::PlaylistSlider::PlaylistSlider( QSlider::Orientation orientation, QWidget* parent, const char* name )
+    : QSlider( orientation, parent, name )
+{}
+
+
+void amaroK::PlaylistSlider::mousePressEvent( QMouseEvent* e )
+{
+    if ( sliderRect().contains( e->pos() ) )
+        // Clicks on the handle will be processed by QSlider
+        QSlider::mousePressEvent( e );
+    else {
+        // We catch clicks outside of the handle, and reposition directly
+        int newVal;
+        
+        if ( orientation() == Horizontal )
+            newVal = static_cast<int>( (float) e->x() / (float) width() * (float) maxValue() );
+        else
+            newVal = static_cast<int>( (float) e->y() / (float) height() * (float) maxValue() );
+        
+        setValue( newVal );
+        emit sliderMoved( newVal );
+    }
+}
+
+
+void amaroK::PlaylistSlider::wheelEvent( QWheelEvent * e )
+{
+    // TimerSlider generates a sliderMoved event when using wheel. The statusbar handles
+    // the 'scroll' by seeking in the track.
+    QSlider::wheelEvent( e );
+    emit sliderMoved( value() );
+}
+
 
 #include "sliderwidget.moc"

@@ -17,12 +17,12 @@
 #include "app.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
+#include "sliderwidget.h"
 #include "statusbar.h"
 #include "threadweaver.h"
 
 #include <qcolor.h>
 #include <qevent.h>
-#include <qslider.h>
 #include <qtimer.h>
 #include <qtooltip.h> //toggle labels
 
@@ -53,23 +53,6 @@ public:
         AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
     }
 };
-
-
-class TimeSlider : public QSlider
-{
-public:
-    TimeSlider( QSlider::Orientation orientation, QWidget * parent, const char * name = 0 )
-        : QSlider( orientation, parent, name ) {}
-
-    //TimerSlider generates a sliderMoved event when using wheel. The
-    //statusbar handles the 'scroll' by seeking in the track.
-    virtual void wheelEvent( QWheelEvent * e )
-    {
-	QSlider::wheelEvent( e );
-	emit sliderMoved( value() );
-    }
-};
-
 
 
 StatusBar::StatusBar( QWidget *parent, const char *name )
@@ -103,7 +86,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     QToolTip::add( w2, i18n("Double-click to toggle Repeat Playlist Mode") );
 
     // position slider (stretches at 1/4 the rate of the squeezedTextKLabel)
-    addWidget( m_pSlider = new TimeSlider( Qt::Horizontal, this ), 1, true );
+    addWidget( m_pSlider = new PlaylistSlider( Qt::Horizontal, this ), 1, true );
     m_pSlider->setTracking( false );
     connect( m_pSlider, SIGNAL( sliderPressed() ),     SLOT( sliderPressed() ) );
     connect( m_pSlider, SIGNAL( sliderReleased() ),    SLOT( sliderReleased() ) );
