@@ -3,7 +3,6 @@ SCRIPT-WRITING HOWTO
 
 INTRODUCTION
 ------------
-
 Scripting allows to extend amaroK without changing the main codebase. Scripts
 are comparable to plugins, but instead of a dedicated plugin API they use
 amaroK's DCOP interface for communication. This makes it possible to write
@@ -11,9 +10,19 @@ scripts in almost any programming language, like python, ruby or C. Additionally
 amaroK can notify the scripts on special events and make them react accordingly.
 
 
+
+GETTING TO START: THE TEMPLATES
+-------------------------------
+amaroK provides template scripts for several languages in the scripts/templates/
+directory. You can use these scripts as a basis for your own scripts, and extend
+them with the functionality you need. You'll notice that scripting is actually
+quite straightforward; For instance if you know to program a bit in python,
+making your own script won't take you long :)
+
+
+
 CONTROLLING AMAROK WITH DCOP
 ----------------------------
-
 Scripts can control amaroK by calling some of its dcop functions. The easiest
 way to invoke a dcop function is by using the "dcop" command line utility, which
 is part of every KDE distribution. Here is an example for increasing the master
@@ -25,18 +34,20 @@ volume:
 
 NOTIFICATIONS
 -------------
-
-amaroK sends notifications to scripts by writing to each script processes STDIN
-channel. The script should therefore constantly monitor STDIN, and react
+amaroK sends notifications to all running scripts by writing strings to their
+STDIN channel. The script should therefore constantly monitor STDIN, and react
 accordingly to each of the possible events. Scripts may also choose to ignore
 any event they don't have a use for.
 
-These notifications are sent by amaroK:
+The following notifications are sent by amaroK:
 
 
  * configure
 
-       Tells the script to show its configuration dialog.
+       Tells the script to show its configuration dialog. The script must handle
+       the storing and loading of configuration options by itself. When a script
+       is started, amaroK sets its working directory to the folder where all data
+       should be stored.
 
  * engineStateChange: {empty|idle|paused|playing}
 
@@ -44,6 +55,6 @@ These notifications are sent by amaroK:
 
  * trackChange
 
-       Signals the start of a new track.
-
+       Signals the start of a new track. The script may then use DCOP functions
+       to query further information about the track, e.g. metadata and the length.
 
