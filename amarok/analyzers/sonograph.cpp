@@ -49,10 +49,12 @@ void Sonograph::drawAnalyzer(std::vector<float> *s)
 	for (uint y = height() - 1; y && it < s->end(); it++) {
 		if (*it < .005)
 			c = Qt::black;
-		else if (*it > 1.0)
-			c = Qt::red;
-		else
+		else if (*it < .05)
+			c.setHsv(95, 255, 255 - int(*it * 4000.0));
+		else if (*it <= 1.0)
 			c.setHsv(95 - int(*it * 90.0), 255, 255);
+		else
+			c = Qt::red;
 
 		p.setPen(c);
 		p.drawPoint(x, y--);
