@@ -182,6 +182,10 @@ void ContextBrowser::setStyleSheet()
                     .arg( colorGroup().text().name() ).arg( pxSize );
     m_styleSheet += QString( ".song:hover { color: %1; cursor: default; background-color: %2; }" )
                     .arg( colorGroup().base().name() ).arg( colorGroup().highlight().name() );
+    m_styleSheet += QString( "A.song { color: %1; font-size: %2px; text-decoration: none; display: block; }" )
+                    .arg( colorGroup().text().name() ).arg( pxSize );
+    m_styleSheet += QString( "A.song:hover { color: %1; font-size: %2px; text-decoration: none; display: block; }" )
+                    .arg( colorGroup().base().name() ).arg( colorGroup().highlight().name() );
     m_styleSheet += QString( ".album { font-weight: bold; font-size: %1px; text-decoration: none; }" )
                     .arg( pxSize );
     m_styleSheet += QString( ".title { color: %1; font-size: %2px; font-weight: bold; }" )
@@ -193,6 +197,10 @@ void ContextBrowser::setStyleSheet()
     m_styleSheet += QString( ".rbalbum { color: %1; border: solid %2 1px; }" )
                     .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
     m_styleSheet += QString( ".rbalbum:hover { color: %1; cursor: default; background-color: %2; border: solid %3 1px; }" )
+                    .arg( colorGroup().base().name() ).arg( colorGroup().highlight().name() ).arg( colorGroup().text().name() );
+    m_styleSheet += QString( "A.rbalbum { color: %1; font-size: %2px; text-decoration: none; display: block; border: none; }" )
+                    .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
+    m_styleSheet += QString( "A.rbalbum:hover { color: %1; font-size: %2px; text-decoration: none; display: block; border: none; }" )
                     .arg( colorGroup().base().name() ).arg( colorGroup().highlight().name() ).arg( colorGroup().text().name() );
     m_styleSheet += QString( ".rbcontent { border: solid %1 1px; }" )
                     .arg( colorGroup().highlight().name() );
@@ -247,8 +255,8 @@ void ContextBrowser::showHome()
     if ( values.count() )
     {
         for ( uint i = 0; i < values.count(); i = i + 5 )
-            browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:"
-                                    + values[i+1].replace( "'", QCString( "%27" ) ) + "\"'><b>" + values[i]
+            browser->write( QString ( "<tr><td class='song'><a class='song' href=\"file:"
+                                    + values[i+1].replace( "\"", QCString( "%22" ) ) + "\"><b>" + values[i]
                                     + "</b> <i>(" + values[i+2] + ")</i><br>" + values[i+3] + " - " + values[i+4] + "</a></td></tr>" ) );
     }
 
@@ -275,8 +283,8 @@ void ContextBrowser::showHome()
     if ( values.count() )
     {
         for ( uint i = 0; i < values.count(); i = i + 4 )
-            browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:"
-                                    + values[i+1].replace( "'", QCString( "%27" ) ) + "\"'><b>" + values[i]
+            browser->write( QString ( "<tr><td class='song'><a href=\"file:"
+                                    + values[i+1].replace( "\"", QCString( "%22" ) ) + "\"'><b>" + values[i]
                                     + "</b><br>" + values[i+2] + " - " + values[i+3] + "</a></td></tr>" ) );
     }
 
@@ -374,7 +382,7 @@ void ContextBrowser::showCurrentTrack()
         browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
         for ( uint i = 0; i < ( values.count() / 3 ); i++ )
-            browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:" + values[i*3 + 1].replace( "'", QCString( "%27" ) ) + "\"'>" + values[i*3] + " <i>(" + values[i*3 + 2] + ")</i></a></td></tr>" ) );
+            browser->write( QString ( "<tr><td class='song'><a class='song' href=\"file:" + values[i*3 + 1].replace( "\"", QCString( "%22" ) ) + "\">" + values[i*3] + " <i>(" + values[i*3 + 2] + ")</i></a></td></tr>" ) );
 
         values.clear();
         names.clear();
@@ -406,7 +414,7 @@ void ContextBrowser::showCurrentTrack()
             for ( uint i = 0; i < ( values.count() / 3 ); i++ )
             {
                 QString tmp = values[i*3 + 2] == "" ? "" : values[i*3 + 2] + ". ";
-                browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:" + values[i*3 + 1].replace( "'", QCString( "%27" ) ) + "\"'>" + tmp + values[i*3] + "</a></td></tr>" ) );
+                browser->write( QString ( "<tr><td class='song'><a class='song' href=\"file:" + values[i*3 + 1].replace( "\"", QCString( "%22" ) ) + "\">" + tmp + values[i*3] + "</a></td></tr>" ) );
             }
 
             values.clear();
@@ -435,8 +443,8 @@ void ContextBrowser::showCurrentTrack()
 
         for ( uint i = 0; i < ( values.count() / 3 ); i++ )
         {
-            browser->write( QString ( "<tr><td onClick='window.location.href=\"album:%1/%2\"' height='42' valign='top' class='rbalbum'>"
-                                      "<img align='left' hspace='2' width='40' height='40' src='%3'><span class='album'>%4</span><br>%5 Tracks</td>"
+            browser->write( QString ( "<tr><td class='rbalbum'><a href=\"album:%1/%2\"' height='42' valign='top' class='rbalbum'>"
+                                      "<img align='left' hspace='2' width='40' height='40' src='%3'>%4<br>%5 Tracks</a></td>"
                                       "</tr>" )
                             .arg( values[i*3 + 2] )
                             .arg( values[i*3 + 1] )
