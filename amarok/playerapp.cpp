@@ -31,7 +31,7 @@ email                : markey@web.de
 #include "plugin.h"
 #include "pluginmanager.h"
 #include "threadweaver.h"        //restoreSession()
-#include "vis/socketserver.h"    //please leave directory prefix
+#include "socketserver.h"    //please leave directory prefix
 
 #include <kaboutdata.h>          //initCliArgs()
 #include <kaction.h>

@@ -49,7 +49,7 @@ amarokapp_SOURCES = \
         streambrowser.cpp \
         threadweaver.cpp \
         searchbrowser.cpp \
-        vis/socketserver.cpp
+        socketserver.cpp
 
 
 amarokapp_LDADD = \
