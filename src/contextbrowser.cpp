@@ -294,7 +294,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
                 m_db->fetchCover( this, info[0], info[1], false );
             #else
                 if( m_db->getImageForAlbum( info[0], info[1], 0 ) != locate( "data", "amarok/images/nocover.png" ) )
-                    viewImage( m_db->getImageForAlbum( info[0], info[1], 0 ) );
+                    viewImage( info[0], info[1] );
                 else
                 {
                     /* if no cover exists, open a file dialog to add a cover */
@@ -313,7 +313,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
             case SHOW:
                 /* open an image view widget */
-                viewImage( m_db->getImageForAlbum( info[0], info[1], 0 ) );
+                viewImage( info[0], info[1] );
                 break;
 
             case DELETE:
@@ -775,15 +775,16 @@ void ContextBrowser::showCurrentTrack() //SLOT
 // PRIVATE
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void ContextBrowser::viewImage( const QString& path )
+void ContextBrowser::viewImage( const QString& artist, const QString& album )
 {
-    /* if a cover exists, open a widget with the image on click */
+    // Show an image viewer widget
     QWidget *widget = new QWidget( 0, 0, WDestructiveClose );
-    widget->setCaption( kapp->makeStdCaption( i18n( "Cover Viewer" ) ) );
-    QPixmap pixmap( path );
+    widget->setCaption( kapp->makeStdCaption( artist + " - " + album ) );
+    QPixmap pixmap( m_db->getImageForAlbum( artist, album, 0 ) );
     widget->setPaletteBackgroundPixmap( pixmap );
     widget->setMinimumSize( pixmap.size() );
     widget->setFixedSize( pixmap.size() );
+
     widget->show();
 }
 
