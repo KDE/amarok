@@ -189,7 +189,7 @@ DISCUSSING:
 
 TROUBLE:
 
-BT 2004/02/08 (while trying to load playlist):           
+BT 2004/02/08 (crashes when trying to add any .mod file to playlist):           
                       
 [New Thread 1024 (LWP 3926)]
 [New Thread 2049 (LWP 3928)]
