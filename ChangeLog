@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.1:
+  ADD: Progress display for Cover-Manager.
   CHG: Systray animation is now optional.
   CHG: Updated included sqlite to 3.0.7 (stable).
   ADD: Tag editor can operate on multiple files (mass tagging).
