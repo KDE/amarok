@@ -19,15 +19,15 @@ namespace KJSEmbed
 
 namespace ScriptManager
 {
-    
+
     class Manager : public QObject
     {
             Q_OBJECT
 
         signals:
-            void stop( const QString& );    
-            void configure( const QString& );    
-            
+            void stop( const QString& );
+            void configure( const QString& );
+
         public:
             Manager( QObject* );
 
@@ -35,18 +35,18 @@ namespace ScriptManager
             void showConsole();
             void addObject( QObject* object );
 
-            //static    
+            //static
             static Manager *instance() { return s_instance; }
-                        
+
         private slots:
-            void slotEdit( const QString& );             
-            void slotRun( const QString& );             
-            void slotStop( const QString& );             
-            void slotConfigure( const QString& );             
-            
+            void slotEdit( const QString& );
+            void slotRun( const QString& );
+            void slotStop( const QString& );
+            void slotConfigure( const QString& );
+
         private:
             static Manager* s_instance;
-            
+
             KJSEmbed::KJSEmbedPart* m_kjs;
             QStringList m_list;
     };

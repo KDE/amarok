@@ -11,7 +11,6 @@
 #include "enginecontroller.h"
 #include "k3bexporter.h"
 #include "playlistwindow.h"
-#include "scriptmanager.h"
 #include "socketserver.h"       //Vis::Selector::showInstance()
 
 #include <qpixmap.h>
@@ -176,14 +175,6 @@ Menu::slotActivated( int index )
     case ID_SHOW_VIS_SELECTOR:
         Vis::Selector::instance()->show(); //doing it here means we delay creation of the widget
         break;
-    #ifdef HAVE_KJSEMBED
-    case ID_SHOW_SCRIPT_SELECTOR:
-        ScriptManager::Manager::instance()->showSelector();
-        break;
-    case ID_SHOW_SCRIPT_CONSOLE:
-        ScriptManager::Manager::instance()->showConsole();
-        break;
-    #endif
     case ID_SHOW_MENUBAR:
         AmarokConfig::setShowMenuBar( true );
         PlaylistWindow::self()->showMenuBar( true );

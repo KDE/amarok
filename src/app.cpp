@@ -21,7 +21,6 @@ email                : markey@web.de
 #include "app.h"
 #include "config.h"
 #include "configdialog.h"
-#include "collectiondb.h"
 #include "effectwidget.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
@@ -33,7 +32,6 @@ email                : markey@web.de
 #include "playlist.h"
 #include "playlistwindow.h"
 #include "pluginmanager.h"
-#include "scriptmanager.h"
 #include "socketserver.h"
 
 #include "statusbar.h"
@@ -84,19 +82,10 @@ App::App()
         amaroK::config()->sync();
     }
 
-    new CollectionDB();
     m_pGlobalAccel    = new KGlobalAccel( this );
     m_pPlaylistWindow = new PlaylistWindow();
     m_pTray           = new amaroK::TrayIcon( m_pPlaylistWindow );
     (void)              new Vis::SocketServer( this );
-
-    #ifdef HAVE_KJSEMBED
-    //FIXME deactivated due to leaking memory
-//     (void)              new ScriptManager::Manager( this );
-    // Export symbols to KJSEmbed
-//     ScriptManager::Manager::instance()->addObject( this );
-//     ScriptManager::Manager::instance()->addObject( m_pDcopHandler );
-    #endif
 
     m_pPlaylistWindow->init(); //creates the playlist, browsers, etc.
     initGlobalShortcuts();

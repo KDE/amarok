@@ -17,7 +17,7 @@
 using namespace KJSEmbed;
 
 ////////////////////////////////////////////////////////////////////////////////
-// public 
+// public
 ////////////////////////////////////////////////////////////////////////////////
 
 ScriptManager::Manager*
@@ -28,7 +28,7 @@ ScriptManager::Manager::Manager( QObject* object )
         : QObject( object, "ScriptManager" )
 {
     s_instance = this;
-    
+
     //KJSEmbed
     m_kjs = new KJSEmbedPart( this );
     m_kjs->addObject( this );
@@ -38,8 +38,8 @@ ScriptManager::Manager::Manager( QObject* object )
 void
 ScriptManager::Manager::showSelector()
 {
-    kdDebug() << k_funcinfo << endl;  
-    
+    kdDebug() << k_funcinfo << endl;
+
     if ( !Selector::instance ) {
         Selector::instance = new Selector( m_list );
         connect( Selector::instance, SIGNAL( signalEditScript( const QString& ) ),
@@ -51,7 +51,7 @@ ScriptManager::Manager::showSelector()
         connect( Selector::instance, SIGNAL( signalConfigureScript( const QString& ) ),
                 this,   SLOT( slotConfigure( const QString& ) ) );
     }
-                    
+
     Selector::instance->show();
 }
 
@@ -74,10 +74,10 @@ ScriptManager::Manager::addObject( QObject* object )
 void
 ScriptManager::Manager::slotEdit( const QString& path )
 {
-    kdDebug() << k_funcinfo << endl;  
+    kdDebug() << k_funcinfo << endl;
 
     QFile file( path );
-    
+
     if ( file.open( IO_ReadWrite ) ) {
         KTextEdit* editor = new KTextEdit();
         QTextStream stream( &file );
@@ -86,18 +86,18 @@ ScriptManager::Manager::slotEdit( const QString& path )
         editor->resize( 640, 480 );
         editor->show();
     }
-}  
+}
 
 
 void
 ScriptManager::Manager::slotRun( const QString& path )
 {
-    kdDebug() << k_funcinfo << endl;  
+    kdDebug() << k_funcinfo << endl;
 
     KURL url;
     url.setPath( path );
     QDir::setCurrent( url.directory() );
-    
+
     kdDebug() << "Running script: " << path << endl;
     QString script = m_kjs->loadFile( path );
     m_kjs->view()->execute( script );
@@ -107,7 +107,7 @@ ScriptManager::Manager::slotRun( const QString& path )
 void
 ScriptManager::Manager::slotStop( const QString& str )
 {
-    kdDebug() << k_funcinfo << endl;  
+    kdDebug() << k_funcinfo << endl;
 
     emit stop( str );
 }
@@ -116,18 +116,17 @@ ScriptManager::Manager::slotStop( const QString& str )
 void
 ScriptManager::Manager::slotConfigure( const QString& path )
 {
-    kdDebug() << k_funcinfo << endl;  
+    kdDebug() << k_funcinfo << endl;
 
     emit configure( path );
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// private 
+// private
 ////////////////////////////////////////////////////////////////////////////////
 
-  
+
 #include "scriptmanager.moc"
 
 #endif /*HAVE_KJSEMBED*/
-
