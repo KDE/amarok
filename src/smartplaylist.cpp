@@ -227,13 +227,24 @@ void SmartPlaylistView::loadDefaultPlaylists()
         new SmartPlaylist( *it, qb.query(), item );
     }
 
-    /********** 100 Random Tracks **************/
+    /********** Random Tracks **************/
+    item = new SmartPlaylist( i18n( "Random Tracks" ), QString(), this );
+    item->setKey( ++c );
+
+    qb.initSQLDrag();
+    qb.setOptions( QueryBuilder::optRandomize );
+    qb.setLimit( 0, 25 );
+    new SmartPlaylist( "25 Tracks", qb.query(), item );
+
+    qb.initSQLDrag();
+    qb.setOptions( QueryBuilder::optRandomize );
+    qb.setLimit( 0, 50 );
+    new SmartPlaylist( "50 Tracks", qb.query(), item );
+
     qb.initSQLDrag();
     qb.setOptions( QueryBuilder::optRandomize );
     qb.setLimit( 0, 100 );
-
-    item = new SmartPlaylist( i18n( "100 Random Tracks" ), qb.query(), this );
-    item->setKey( ++c );
+    new SmartPlaylist( "100 Tracks", qb.query(), item );
 }
 
 
