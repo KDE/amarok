@@ -1,8 +1,8 @@
 #ifndef _UADE_MAIN_H_
 #define _UADE_MAIN_H_
 
-#include <uademsg.h>
-#include <playlist.h>
+#include "uademsg.h"
+#include "playlist.h"
 
 struct uade_song {
   char playername[PATH_MAX];       /* filename of eagleplayer */

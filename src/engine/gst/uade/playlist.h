@@ -1,7 +1,7 @@
 #ifndef _PLAYLIST_H_
 #define _PLAYLIST_H_
 
-#include <chrarray.h>
+#include "chrarray.h"
 
 struct playlist {
   int valid;
