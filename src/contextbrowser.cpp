@@ -976,8 +976,8 @@ void ContextBrowser::setStyleSheet_Flat( QString& styleSheet )
 
 void ContextBrowser::setStyleSheet_default( QString& styleSheet )
 {
-    //This is the reference style, "inherited" by most of the other stylesheets.
-    //Empty definition must not be removed, they're useful as reference.
+    // "INHERIT" Flat style
+    setStyleSheet_Flat( styleSheet );
 
     //colorscheme/font dependant parameters
     int pxSize = fontMetrics().height() - 4;
