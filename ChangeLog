@@ -10,6 +10,9 @@ VERSION 1.2.2:
     * A line graph equalizer added as a script "graphequalizer."
 
   CHANGES:
+    * The contextbrowser now uses data:-URLs instead of temp image files, so
+      they cannot be left on disk when amaroK terminates unexpectedly, and the
+      Konqueror/Universal sidebar can show them when amaroK is not running.
     * Append suggestions is now Dynamic-mode, icon in statusbar too.
 
   BUGFIXES:

@@ -15,7 +15,6 @@ class QPalette;
 
 class KHTMLPart;
 class KTabBar;
-class KTempFile;
 
 namespace KIO { class Job; }
 
@@ -83,9 +82,6 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         QString       m_lyricAddUrl;
         QString       m_lyricSearchUrl;
         QString       m_HTMLSource;
-        KTempFile    *m_bgGradientImage;
-        KTempFile    *m_headerGradientImage;
-        KTempFile    *m_shadowGradientImage;
         QStringList   m_metadataHistory;
         KURL          m_currentURL;
 
