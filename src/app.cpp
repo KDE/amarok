@@ -51,6 +51,7 @@ email                : markey@web.de
 
 #include <qevent.h>              //genericEventHandler()
 #include <qeventloop.h>          //applySettings()
+#include <qfile.h>
 #include <qobjectlist.h>         //applyColorScheme()
 #include <qpalette.h>            //applyColorScheme()
 #include <qpixmap.h>             //QPixmap::setDefaultOptimization()
@@ -453,7 +454,20 @@ void App::applySettings( bool firstTime )
     } //</Engine>
     
     m_pPlaylistWindow->recreateGUI();
-
+    
+    /* delete unneeded cover images from cache */
+    QString size = QString::number( AmarokConfig::coverPreviewSize() ) + "@";
+    QDir cacheDir = KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) + "albumcovers/cache/";
+    QStringList obsoleteCovers( cacheDir.entryList( "*" ) );
+    for ( QStringList::Iterator it = obsoleteCovers.begin(); it != obsoleteCovers.end(); ++it ) 
+    {
+        if ( !( *it ).startsWith( size  ) && !( *it ).startsWith( "50@" ) )
+        {    
+            QFile file( cacheDir.filePath( *it ) );
+            file.remove();
+        }
+    }
+     
     kdDebug() << "END " << k_funcinfo << endl;
 }
 
