@@ -42,7 +42,6 @@ EngineController::instance()
 {
     //will only be instantiated the first time this function is called
     //will work with the inline directive
-    //TODO there may be issues on older GCC versions where an instance exists in every translation unit
     static EngineController Instance;
 
     if ( !EngineController::s_initialised ) {

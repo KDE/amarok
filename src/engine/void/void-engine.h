@@ -24,7 +24,7 @@ class VoidEngine : public Engine::Base
     virtual bool init() { return true; }
     virtual bool canDecode( const KURL& ) const { return false; }
     virtual uint position() const { return 0; }
-    virtual bool load( const KURL&, bool ) { return false; }
+    virtual bool load( const KURL&, bool );
     virtual bool play( uint ) { return false; }
     virtual void stop() {}
     virtual void pause() {}

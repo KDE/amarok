@@ -16,6 +16,17 @@ copyright            : (C) 2004 by Mark Kretschmann <markey@web.de>
 
 #include "void-engine.h"
 
+#include <klocale.h>
+
 
 AMAROK_EXPORT_PLUGIN( VoidEngine )
+
+
+bool
+VoidEngine::load( const KURL&, bool )
+{
+    emit statusText( i18n( "Error: No engine loaded. Can't start playback!" ) );
+
+    return false;
+}
 
