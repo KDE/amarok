@@ -4,6 +4,7 @@
 begin                : Mar 15 2004
 copyright            : (C) 2004 by Frederik Holljen
                        (C) 2004 by Max Howell
+                       (C) 2004 by Mark Kretschmann
 email                : fh@ez.no
 ***************************************************************************/
 
