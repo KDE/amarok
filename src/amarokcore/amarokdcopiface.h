@@ -18,8 +18,9 @@
 #ifndef AMAROK_DCOPIFACE_H
 #define AMAROK_DCOPIFACE_H
 
-#include <kurl.h>
 #include <dcopobject.h>
+#include <kurl.h>
+#include <qstringlist.h>
 
 ///////////////////////////////////////////////////////////////////////
 // WARNING! Please ask on #amarok before modifying the DCOP interface!
@@ -66,6 +67,9 @@ k_dcop:
    virtual void configEqualizer() = 0;                      ///< Toggle equalizer config dialog.
    virtual void enableOSD(bool enable) = 0;                 ///< Switch OSD display on or off.
    virtual void showOSD() = 0;                              ///< Show the OSD display on the screen.
+
+
+   virtual void transferCliArgs( QStringList args ) = 0;
 };
 
 

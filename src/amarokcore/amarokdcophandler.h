@@ -38,9 +38,9 @@ class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
       virtual void next();
       virtual void prev();
       virtual void pause();
-      virtual void seek(int s);
-      virtual void seekRelative(int s);
-      virtual void enableRandomMode(bool enable);
+      virtual void seek( int s );
+      virtual void seekRelative( int s );
+      virtual void enableRandomMode( bool enable );
       virtual int  trackTotalTime();
       virtual int  trackCurrentTime();
       virtual void scanCollection();
@@ -50,15 +50,17 @@ class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
       virtual bool repeatTrackStatus();
       virtual bool repeatPlaylistStatus();
       virtual bool randomModeStatus();
-      virtual void setVolume(int);
+      virtual void setVolume( int );
       virtual int  getVolume();
       virtual void volumeUp();
       virtual void volumeDown();
       virtual void mute();
       virtual void setEqualizerEnabled( bool active );
       virtual void configEqualizer();
-      virtual void enableOSD(bool enable);
+      virtual void enableOSD( bool enable );
       virtual void showOSD();
+
+      virtual void transferCliArgs( QStringList args );
 };
 
 

@@ -18,6 +18,8 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "amarokdcophandler.h"
+#include "app.h" //transferCliArgs
+#include "debug.h"
 #include "browserbar.h"
 #include "collectiondb.h"
 #include "contextbrowser.h"
@@ -30,9 +32,8 @@
 #include "statusbar.h"
 
 #include <dcopclient.h>
-
-#include <kapplication.h> //kapp pointer
 #include <kactioncollection.h>
+
 
 namespace amaroK
 {
@@ -206,6 +207,38 @@ namespace amaroK
         amaroK::OSD::instance()->forceToggleOSD();
     }
 
+    void DcopPlayerHandler::transferCliArgs( QStringList args )
+    {
+        DEBUG_BLOCK
+
+        //stop startup cursor animation - do not mess with this, it's carefully crafted
+//         debug() << "Startup ID: " << args.first() << endl;
+//         kapp->setStartupId( args.first().local8Bit() );
+//         KStartupInfo::appStarted();
+//         args.pop_front();
+
+        const int argc = args.count() + 1;
+        char **argv = new char*[argc];
+
+        QStringList::ConstIterator it = args.constBegin();
+        for( int i = 1; i < argc; ++i, ++it ) {
+            argv[i] = const_cast<char*>((*it).latin1());
+            debug() << "Extracted: " << argv[i] << endl;
+        }
+
+        // required, loader doesn't add it
+        argv[0] = (char*)"amarokapp";
+
+        // re-initialize KCmdLineArgs with the new arguments
+        App::initCliArgs( argc, argv );
+        App::handleCliArgs();
+
+        //FIXME are we meant to leave this around?
+        //FIXME are we meant to allocate it all on the heap?
+        delete[] argv;
+    }
+
+
 
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopPlaylistHandler
@@ -319,10 +352,10 @@ namespace amaroK
         return score;
     }
 
-    void DcopPlaylistHandler::playMedia(const KURL &url)
+    void DcopPlaylistHandler::playMedia( const KURL &url )
     {
         ContextBrowser* m_contextBrowser=(ContextBrowser*) (PlaylistWindow::self()->browserBar()->browser( "ContextBrowser" ) );
-        m_contextBrowser->openURLRequest(url);
+        m_contextBrowser->openURLRequest( url );
     }
 
     void DcopPlaylistHandler::shortStatusMessage(const QString& msg)
