@@ -8,12 +8,15 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>315</width>
-            <height>146</height>
+            <width>300</width>
+            <height>205</height>
         </rect>
     </property>
     <property name="caption">
         <string>GStreamer Engine Configuration - amaroK</string>
+    </property>
+    <property name="toolTip" stdset="0">
+        <string>Time for smooth fade-out at trackend</string>
     </property>
     <vbox>
         <property name="name">
@@ -138,6 +141,69 @@
                 </widget>
             </hbox>
         </widget>
+        <widget class="Line">
+            <property name="name">
+                <cstring>line1</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout4</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1_2</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>120</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>Fade-out duration:</string>
+                    </property>
+                </widget>
+                <widget class="KIntSpinBox">
+                    <property name="name">
+                        <cstring>kIntSpinBox_fadeout</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="suffix">
+                        <string> msec</string>
+                    </property>
+                    <property name="maxValue">
+                        <number>10000</number>
+                    </property>
+                    <property name="lineStep">
+                        <number>100</number>
+                    </property>
+                    <property name="value">
+                        <number>1800</number>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
         <spacer>
             <property name="name">
                 <cstring>spacer2</cstring>
@@ -151,7 +217,7 @@
             <property name="sizeHint">
                 <size>
                     <width>21</width>
-                    <height>40</height>
+                    <height>70</height>
                 </size>
             </property>
         </spacer>

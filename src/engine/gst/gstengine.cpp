@@ -54,9 +54,6 @@ STREAMBUF_MIN = 50000; // 50kb
 static const int
 STREAMBUF_MAX = STREAMBUF_SIZE - 50000;
 
-GError*
-GstEngine::error_msg;
-
 GstEngine*
 GstEngine::s_instance;
 
@@ -510,7 +507,7 @@ void GstEngine::timerEvent( QTimerEvent* )
    // Are we currently fading?
    if ( m_fadeValue > 0.0 )
    {
-        m_fadeValue -= ( m_xfadeLength ) ?  1.0 / m_xfadeLength * TIMER_INTERVAL : 1.0;
+        m_fadeValue -= ( GstConfig::fadeoutDuration() ) ?  1.0 / GstConfig::fadeoutDuration() * TIMER_INTERVAL : 1.0;
         
         // Fade finished?
         if ( m_fadeValue <= 0.0 ) {
@@ -706,7 +703,7 @@ GstEngine::sendBufferStatus()
 {
     int percent = (int) ( (float) m_streamBufIndex / STREAMBUF_MIN * 100 );    
     
-    if ( percent >= 100 && percent < 115 )
+    if ( percent >= 100 && percent < 120 )
         percent = 100;
     
     if ( percent <= 100 )

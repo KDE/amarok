@@ -33,6 +33,12 @@
             <max>3</max>
             <whatsthis>The priority of the thread for GStreamer, a value between 0 (low) and 3 (high).</whatsthis>
         </entry>
+        <entry key="Fadeout Duration" type="Int">
+            <label>Duration of Fade-out at trackend</label>
+            <default>1800</default>
+            <min>0</min>
+            <max>10000</max>
+        </entry>
     </group>
 
 </kcfg>

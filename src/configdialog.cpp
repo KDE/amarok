@@ -29,6 +29,8 @@ email                : markey@web.de
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
+#include <qradiobutton.h>
+#include <qspinbox.h>
 #include <qtextcodec.h>
 #include <qvbox.h>
 
@@ -64,6 +66,11 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
         m_pluginAmarokName[(*it)->property( "X-KDE-amaroK-name" ).toString()] = (*it)->name();
     }
 
+    // Enable crossfading option when available
+    AmarokConfig::setCrossfade( EngineController::engine()->hasXFade() );
+    opt4->kcfg_Crossfade->setEnabled( EngineController::engine()->hasXFade() );
+    opt4->kcfg_CrossfadeLength->setEnabled( EngineController::engine()->hasXFade() );
+    
     // ID3v1 recoding locales
     QTextCodec *codec;
     for ( int i = 0; ( codec = QTextCodec::codecForIndex( i ) ); i++ )

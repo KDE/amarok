@@ -12,6 +12,7 @@
 #include <kdebug.h>
 #include <klineedit.h>
 #include <klocale.h>
+#include <knuminput.h>
 
 
 GstConfigDialog::GstConfigDialog( GstEngine* engine )
@@ -35,12 +36,15 @@ GstConfigDialog::GstConfigDialog( GstEngine* engine )
     m_view->checkBox_outputParams->setChecked( GstConfig::useCustomOutputParams() );
     m_view->kLineEdit_outputParams->setText( GstConfig::outputParams() );
     
+    m_view->kIntSpinBox_fadeout->setValue( GstConfig::fadeoutDuration() );
+    
     // Connections for modification check
-    connect( m_view->kComboBox_output, SIGNAL( activated( int ) ), this, SIGNAL( settingsChanged() ) );
-    connect( m_view->checkBox_outputDevice, SIGNAL( toggled( bool ) ), this, SIGNAL( settingsChanged() ) );
-    connect( m_view->kLineEdit_outputDevice, SIGNAL( textChanged( const QString& ) ), this, SIGNAL( settingsChanged() ) );
-    connect( m_view->checkBox_outputParams, SIGNAL( toggled( bool ) ), this, SIGNAL( settingsChanged() ) );
-    connect( m_view->kLineEdit_outputParams, SIGNAL( textChanged( const QString& ) ), this, SIGNAL( settingsChanged() ) );
+    connect( m_view->kComboBox_output, SIGNAL( activated( int ) ), SIGNAL( settingsChanged() ) );
+    connect( m_view->checkBox_outputDevice, SIGNAL( toggled( bool ) ), SIGNAL( settingsChanged() ) );
+    connect( m_view->kLineEdit_outputDevice, SIGNAL( textChanged( const QString& ) ), SIGNAL( settingsChanged() ) );
+    connect( m_view->checkBox_outputParams, SIGNAL( toggled( bool ) ), SIGNAL( settingsChanged() ) );
+    connect( m_view->kLineEdit_outputParams, SIGNAL( textChanged( const QString& ) ), SIGNAL( settingsChanged() ) );
+    connect( m_view->kIntSpinBox_fadeout, SIGNAL( valueChanged( int ) ), SIGNAL( settingsChanged() ) );
 }
 
 
@@ -61,7 +65,8 @@ GstConfigDialog::hasChanged() const
            GstConfig::useCustomSoundDevice()  != m_view->checkBox_outputDevice->isChecked() ||
            GstConfig::soundDevice()           != m_view->kLineEdit_outputDevice->text() ||
            GstConfig::useCustomOutputParams() != m_view->checkBox_outputParams->isChecked() ||
-           GstConfig::outputParams()          != m_view->kLineEdit_outputParams->text();
+           GstConfig::outputParams()          != m_view->kLineEdit_outputParams->text() ||
+           GstConfig::fadeoutDuration()       != m_view->kIntSpinBox_fadeout->value();
 }
 
 
@@ -86,6 +91,7 @@ GstConfigDialog::save() //SLOT
     GstConfig::setSoundDevice( m_view->kLineEdit_outputDevice->text() );
     GstConfig::setUseCustomOutputParams( m_view->checkBox_outputParams->isChecked() );
     GstConfig::setOutputParams( m_view->kLineEdit_outputParams->text() );
+    GstConfig::setFadeoutDuration( m_view->kIntSpinBox_fadeout->value() );
 }
 
 
