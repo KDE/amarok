@@ -66,16 +66,8 @@ PlaylistLoader::run()
     {
         const KURL &url = *it;
 
-        // Read directory where this item located, in order to determine whether the item is a file
-        m_dirLister->openURL( url.upURL() );
-
-        while ( !m_dirLister->isFinished() )
-            msleep( 100 );
-
-        if( m_dirLister->findByURL( url )->isDir() ) {
-            recurse( url );
+        if( recurse( url ) )
             continue;
-        }
 
         if( url.isLocalFile() && loadPlaylist( url.path() ) )
             continue;
@@ -162,9 +154,12 @@ PlaylistLoader::createPlaylistItem( const KURL &url, const QString &title, const
     m_pairs.append( Pair(url, item) );
 }
 
-void
-PlaylistLoader::recurse( const KURL &url )
+bool
+PlaylistLoader::recurse( const KURL &url, bool recursing )
 {
+        static bool success;
+        if ( !recursing ) success = false;
+
         typedef QMap<QString, KURL> FileMap;
 
         KURL::List dirs;
@@ -177,6 +172,8 @@ PlaylistLoader::recurse( const KURL &url )
 
         KFileItem* item;
         KFileItemList items = m_dirLister->items();
+
+        success |= !items.isEmpty();
 
         for ( item = items.first(); item; item = items.next() ) {
             if ( item->url().fileName() == "." || item->url().fileName() == ".." )
@@ -197,7 +194,9 @@ PlaylistLoader::recurse( const KURL &url )
         // Recurse folders
         const KURL::List::Iterator end2 = dirs.end();
         for ( KURL::List::Iterator it = dirs.begin(); it != end2; ++it )
-            recurse( *it );
+            recurse( *it, true );
+
+        return success;
 }
 
 #include <kdebug.h>

@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2:
+  FIX: Remote folders are read recursively when dropped on the playlist.
   FIX: Audiocd protocol in filebrowser had empty folders.
   ADD: Cache system for current-track animation in playlist. Reduces
        CPU load when the playlist is visible.

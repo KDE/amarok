@@ -69,7 +69,7 @@ protected:
     bool loadPlaylist( const QString&, Format );
 
 private:
-    void recurse( const KURL& );
+    bool recurse( const KURL&, bool recursing = false );
     PlaylistItem *createPlaylistItem( const KURL& );
     void addBadURL( const KURL &url ) { m_badURLs += url; }
 

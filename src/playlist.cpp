@@ -301,7 +301,7 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
             }
             //else use the normal loader route
         }
-        else if( !QFileInfo( url.path() ).isDir() && EngineController::canDecode( url ) )
+        else if( url.isLocalFile() && !QFileInfo( url.path() ).isDir() && EngineController::canDecode( url ) )
         {
             setSorting( NO_SORT );
             PlaylistItem *item = new PlaylistItem( url, this, after );
