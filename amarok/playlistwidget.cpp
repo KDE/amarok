@@ -497,13 +497,13 @@ void PlaylistWidget::slotTextChanged( const QString &str )
 
     while ( *it )
     {
-        if ( ( *it ) ->text( 0 ).lower().contains( str.lower() ) )
+        if ( ( *it )->text( 0 ).lower().contains( str.lower() ) )
         {
-            ( *it ) ->setVisible( true );
+            ( *it )->setVisible( true );
             pVisibleItem = ( *it );
         }
         else
-            ( *it ) ->setVisible( false );
+            ( *it )->setVisible( false );
 
         --it;
     }
@@ -551,7 +551,7 @@ void PlaylistWidget::slotEraseMarker()
     {
         QRect rect = m_marker;
         m_marker = QRect();
-        viewport() ->repaint( rect, true );
+        viewport()->repaint( rect, true );
     }
 }
 
