@@ -377,9 +377,8 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     //it isn't necessary
     kapp->processEvents();
 
-    //this bit is a bit slow
+    //this can be a bit slow
     QApplication::setOverrideCursor( KCursor::waitCursor() );
-
     QStringList albums;
     if ( item != m_artistView->firstChild() ) {
         albums = m_db->albumListOfArtist( item->text( 0 ), false, false );
@@ -390,20 +389,27 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     }
     else
         albums = m_db->artistAlbumList( false, false );
+    QApplication::restoreOverrideCursor();
 
-
-    progress.setTotalSteps( albums.count() / 2 );
+    progress.setTotalSteps( albums.count() );
 
     //insert the covers first because the list view is soooo paint-happy
     //doing it in the second loop looks really bad, unfortunately
     //this is the slowest step in the bit that we can't process events
+    uint x = 0;
     for( QStringList::ConstIterator it = albums.begin(), end = albums.end(); it != end; ++it ) {
-        //gcc 3.3 can't handle this in one line, so we need to do it long-hand
-        const QString artist = *it; const QString album = *(++it);
-        m_coverItems.append( new CoverViewItem( m_coverView, m_coverView->lastItem(), artist, album ) );
-    }
+        progress.setProgress( x );
 
-    QApplication::restoreOverrideCursor();
+        const QString artist = *it;
+        const QString album = *(++it);
+        m_coverItems.append( new CoverViewItem( m_coverView, m_coverView->lastItem(), artist, album ) );
+
+        if( ++x % 200 == 0 )
+           kapp->processEvents();
+
+        if( progress.wasCancelled() )
+           break;
+    }
 
     //now, load the thumbnails
     for( QIconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
