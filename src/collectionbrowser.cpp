@@ -280,8 +280,6 @@ CollectionView::scan()  //SLOT
 void
 CollectionView::scanMonitor()  //SLOT
 {
-    kdDebug() << k_funcinfo << endl;
-
     if ( !m_isScanning && m_monitor )
     {
         m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
@@ -319,8 +317,6 @@ CollectionView::renderView( )  //SLOT
 void
 CollectionView::scanDone( bool changed ) //SLOT
 {
-    kdDebug() << k_funcinfo << endl;
-
     // we need to reconnect to the db after every scan, since sqlite is not able to keep
     // the tables synced for multiple threads.
     delete m_db;

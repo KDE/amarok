@@ -37,8 +37,8 @@ email                : markey@web.de
 AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConfigSkeleton *config )
         : KConfigDialog( parent, name, config )
 {
-    //we must handle the "Sound Setting" QComboBox manually, because KConfigDialogManager can't
-    //manage dynamic itemLists (at least I don't know how to do it)
+    //we must manage some widgets manually, since KConfigDialogManager can't
+    //handle dynamic parameters (at least I don't know how to do it)
 
     m_opt4 = new Options4( 0, "Playback" );
     m_pSoundSystem = m_opt4->sound_system;
@@ -70,47 +70,63 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     addPage( m_opt4, i18n( "Playback" ), "kmix", i18n( "Configure Playback" ) );
     addPage( new Options5( 0, "OSD" ), i18n( "OSD" ), "tv", i18n( "Configure On-Screen-Display" ) );
 
+    //TODO someone please fix the initial widget size, it's always as large as a soccer ground!
+    //     freaks me out. *freaking out*
     setInitialSize( minimumSizeHint() );
-    //adjustSize();
+    adjustSize();
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// PRIVATE SLOTS
+//////////////////////////////////////////////////////////////////////////////////////////
 
-bool AmarokConfigDialog::hasChanged()
-{
-    return ( m_pSoundSystem->currentText() != AmarokConfig::soundSystem() ||
-             m_pSoundOutput->currentText() != AmarokConfig::soundOutput() ||
-             m_pSoundDevice->text()        != AmarokConfig::soundDevice() );
-}
-
-
-bool AmarokConfigDialog::isDefault()
-{
-    return ( m_pSoundSystem->currentText() == "aRts Engine" );
-}
-
-
-void AmarokConfigDialog::updateWidgetsDefault()
-{
-    m_pSoundSystem->setCurrentText( "aRts Engine" );
-    soundSystemChanged();
-}
-
-
+/**
+ * Update the settings from the dialog.
+ * Example use: User clicks Ok or Apply button in a configure dialog.
+ * REIMPLEMENTED
+ */
 void AmarokConfigDialog::updateSettings()
 {
+    kdDebug() << k_funcinfo << endl;
+    
     AmarokConfig::setSoundSystem( m_pSoundSystem->currentText() );
     if ( !m_pSoundOutput->currentText().isEmpty() )
         AmarokConfig::setSoundOutput( m_pSoundOutput->currentText() );
     AmarokConfig::setSoundDevice( m_pSoundDevice->text() );
 
     emit settingsChanged();
+    updateWidgets();
 }
 
 
+/**
+ * Update the dialog based on the settings.
+ * Example use: Initialisation of dialog.
+ * Example use: User clicks Reset button in a configure dialog.
+ * REIMPLEMENTED
+ */
 void AmarokConfigDialog::updateWidgets()
 {
+    kdDebug() << k_funcinfo << endl;
+    
     m_pSoundSystem->setCurrentText( AmarokConfig::soundSystem() );
     m_pSoundDevice->setText( AmarokConfig::soundDevice() );
+    
+    soundSystemChanged();
+}
+
+
+/**
+ * Update the dialog based on the default settings.
+ * Example use: User clicks Defaults button in a configure dialog.
+ * REIMPLEMENTED
+ */
+void AmarokConfigDialog::updateWidgetsDefault()
+{
+    kdDebug() << k_funcinfo << endl;
+    
+    m_pSoundSystem->setCurrentText( "aRts Engine" );
+    soundSystemChanged();
 }
 
 
@@ -149,5 +165,37 @@ void AmarokConfigDialog::soundSystemChanged()
 
     updateButtons();
 }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// PRIVATE
+//////////////////////////////////////////////////////////////////////////////////////////
+
+/** REIMPLEMENTED */
+bool AmarokConfigDialog::hasChanged()
+{
+    kdDebug() << k_funcinfo << endl;
+    
+    bool changed =
+        m_pSoundSystem->currentText()            != AmarokConfig::soundSystem();
+    
+    if ( m_pSoundOutput->isEnabled() )  
+        changed |= m_pSoundOutput->currentText() != AmarokConfig::soundOutput();
+    
+    if ( m_pSoundDevice->isEnabled() )  
+        changed |= m_pSoundDevice->text()        != AmarokConfig::soundDevice();
+
+    return changed;
+}
+
+
+/** REIMPLEMENTED */
+bool AmarokConfigDialog::isDefault()
+{
+    kdDebug() << k_funcinfo << endl;
+    
+    return ( m_pSoundSystem->currentText() == "aRts Engine" );
+}
+
 
 #include "configdialog.moc"
