@@ -93,20 +93,6 @@ GstEngine::newPad_cb( GstElement*, GstPad* pad, gboolean, gpointer inputPipeline
 
 
 void
-GstEngine::removedPad_cb( GstElement*, GstPad* pad, gpointer inputPipeline ) //static
-{
-    DEBUG_BLOCK
-
-    InputPipeline* input = static_cast<InputPipeline*>( inputPipeline );
-
-    // Disconnect old signal
-    g_signal_handlers_disconnect_by_func( G_OBJECT( input->decodebin ), (void*) GstEngine::newPad_cb, input );
-    // Reconnect signal
-    g_signal_connect( G_OBJECT( input->decodebin ), "new-decoded-pad", G_CALLBACK( GstEngine::newPad_cb ), input );
-}
-
-
-void
 GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer ) //static
 {
     instance()->m_mutexScope.lock();
@@ -1168,7 +1154,6 @@ InputPipeline::InputPipeline()
 
     g_signal_connect( G_OBJECT( decodebin ), "eos", G_CALLBACK( GstEngine::eos_cb ), this );
     g_signal_connect( G_OBJECT( decodebin ), "new-decoded-pad", G_CALLBACK( GstEngine::newPad_cb ), this );
-    g_signal_connect( G_OBJECT( decodebin ), "removed-decoded-pad", G_CALLBACK( GstEngine::removedPad_cb ), this );
     g_signal_connect( G_OBJECT( decodebin ), "found-tag", G_CALLBACK( GstEngine::found_tag_cb ), 0 );
 
     // Start silent

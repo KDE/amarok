@@ -117,7 +117,6 @@ class GstEngine : public Engine::Base
         static void eos_cb( GstElement*, gpointer );
         /** Called when decodebin has generated a new pad */
         static void newPad_cb( GstElement*, GstPad*, gboolean, gpointer );
-        static void removedPad_cb( GstElement*, GstPad*, gpointer );
         /** Duplicates audio data for application side processing */
         static void handoff_cb( GstElement*, GstBuffer*, gpointer );
         static void candecode_handoff_cb( GstElement*, GstBuffer*, gpointer );
