@@ -482,8 +482,7 @@ GstEngine::newStreamData( char* buf, int size )  //SLOT
         kdDebug() << "Gst-Engine: Stream buffer overflow!" << endl;
     }
 
-    int filled = (int) ( (float) m_streamBufIndex / STREAMBUF_MIN * 100 );    
-    if ( filled <= 100 ) emit statusText( i18n( "Buffering.. %1%" ).arg( filled ) );
+    sendBufferStatus();
     
     // Copy data into stream buffer
     memcpy( m_streamBuf + m_streamBufIndex, buf, size );
@@ -574,6 +573,8 @@ GstEngine::newKioData( KIO::Job*, const QByteArray& array )  //SLOT
         kdDebug() << "Gst-Engine: Stream buffer overflow!" << endl;
     }
 
+    sendBufferStatus();
+    
     // Copy data into stream buffer
     memcpy( m_streamBuf + m_streamBufIndex, array.data(), size );
     // Adjust index
@@ -698,6 +699,19 @@ GstEngine::destroyPipeline()
         m_transferJob = 0;
     }
 }
+
+    
+void
+GstEngine::sendBufferStatus()
+{
+    int percent = (int) ( (float) m_streamBufIndex / STREAMBUF_MIN * 100 );    
+    
+    if ( percent >= 100 && percent < 115 )
+        percent = 100;
+    
+    if ( percent <= 100 )
+        emit statusText( i18n( "Buffering.. %1%" ).arg( percent ) );
+}    
 
                   
 #include "gstengine.moc"

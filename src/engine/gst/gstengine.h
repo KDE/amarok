@@ -93,7 +93,7 @@ class GstEngine : public Engine::Base
 
         /** Get a list of available plugins from a specified Class */
         QStringList getPluginList( const QCString& classname ) const; 
-
+        
         /**
          * Creates a GStreamer element and puts it into pipeline. 
          * @param factoryName Name of the element class to create.
@@ -106,6 +106,9 @@ class GstEngine : public Engine::Base
         /** Stops playback, deletes the current pipeline and frees ressources */
         void destroyPipeline();
 
+        /** Beams the streaming buffer status to amaroK */
+        void sendBufferStatus();
+        
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
         /////////////////////////////////////////////////////////////////////////////////////
