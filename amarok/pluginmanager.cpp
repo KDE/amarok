@@ -45,6 +45,9 @@ vector<PluginManager::PluginInfo>
     for ( QStringList::Iterator i = files.begin(); i != files.end(); ++i )
         items.push_back( getInfo( *i ) );
 
+    if ( !items.size() )
+        kdWarning() << k_funcinfo << "No plugins found!\n";
+        
     return items;
 }
 
@@ -67,12 +70,16 @@ QStringList
 PluginManager::PluginInfo
     PluginManager::getInfo( const QString &name )
 {
+    kdDebug() << k_funcinfo << "retrieving PluginInfo for: " << name << endl;
+    
     PluginInfo info;
-    QString path = KGlobal::dirs()->findResource( "appdata", name );
+    QString path = KGlobal::dirs()->findResource( "appdata", name + ".plugin" );
     
-    if ( !QFile::exists( path ) )
+    if ( !QFile::exists( path ) ) {
+        kdWarning() << k_funcinfo << "Plugin not found." << endl;
         return info;
-    
+    }
+        
     KSimpleConfig file( path );
     
     info.filename    = file.readEntry    ( "Filename" );
