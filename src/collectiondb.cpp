@@ -4,6 +4,10 @@
 
 #include "config.h"
 
+#ifdef USE_MYSQL
+#include "app.h"
+#endif
+
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "collectionbrowser.h"    //updateTags()
@@ -50,7 +54,7 @@ CollectionDB::CollectionDB()
     if (m_db)
     {
         if (AmarokConfig::mySqlUser().isEmpty())
-            ((App*)kapp)->slotConfigAmarok(6);
+            pApp->slotConfigAmarok(6);
 
         if (mysql::mysql_real_connect(m_db, AmarokConfig::mySqlHost().latin1(),
                                             AmarokConfig::mySqlUser().latin1(),
