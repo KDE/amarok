@@ -35,6 +35,7 @@ class QCloseEvent;
 class QColor;
 class QListViewItem;
 class QPaintEvent;
+class QPalette;
 class QPoint;
 class QMoveEvent;
 class QSplitter;
@@ -113,7 +114,7 @@ class BrowserWin : public QWidget
         void moveEvent( QMoveEvent * );
         void paintEvent( QPaintEvent * );
         void keyPressEvent( QKeyEvent * );
-
+        void setPaletteRecursively( QWidget* widget, const QPalette &pal );
         // ATTRIBUTES ------
         PlaylistSideBar *m_sideBar;
         KDevFileSelector *m_pBrowserBox;

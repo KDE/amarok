@@ -27,6 +27,7 @@
 #include <qcolor.h>
 #include <qfile.h>
 #include <qlayout.h>
+#include <qobjectlist.h>
 #include <qpixmap.h>
 #include <qpopupmenu.h>
 #include <qsplitter.h>
@@ -370,22 +371,35 @@ void BrowserWin::slotAddLocation()
 
 void BrowserWin::setPalettes( const QColor &fg, const QColor &bg, const QColor &altbg )
 {
-    m_pPlaylistWidget->setPaletteBackgroundColor( bg );
-    m_pPlaylistWidget->setPaletteForegroundColor( fg );
+    QPalette pal( fg, bg );
     
-    m_pStreamBrowser->setPaletteBackgroundColor( bg );
-    m_pStreamBrowser->setPaletteForegroundColor( fg );
+    setPaletteRecursively( m_pPlaylistWidget  , pal );
+    setPaletteRecursively( m_pPlaylistLineEdit, pal );
+    setPaletteRecursively( m_pStreamBrowser   , pal );
+    setPaletteRecursively( m_pFileBrowser     , pal );
+    
     m_pStreamBrowser->setAlternateBackground( altbg );
-
-    m_pPlaylistLineEdit->setPaletteBackgroundColor( bg );
-    m_pPlaylistLineEdit->setPaletteForegroundColor( fg );
-
-/*    m_pFileBrowser->setPaletteBackgroundColor( bg );
-    m_pFileBrowser->setPaletteForegroundColor( fg );*/
     
     update();
     m_pFileBrowser->update();
     m_pPlaylistWidget->triggerUpdate();
+}
+
+
+//Routine for setting palette recursively in a widget and all its childen
+void BrowserWin::setPaletteRecursively( QWidget* widget, const QPalette &pal )
+{
+    widget->setPalette( pal );
+    
+    QObjectList *list = widget->queryList( "QWidget" );
+    QObjectListIterator it( *list );
+    QObject *obj;
+    
+    while ( ( obj = it.current() ) != NULL )
+    {
+        ( (QWidget*) obj )->setPalette( pal );
+        ++it;
+    }        
 }
 
 
