@@ -120,7 +120,7 @@ class PlayerWidget;
 class AmarokSystray : public KSystemTray
 {
    public:
-      AmarokSystray( PlayerWidget * );
+      AmarokSystray( PlayerWidget *, KActionCollection * );
 
    private:
       void wheelEvent( QWheelEvent * );
@@ -170,7 +170,9 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
         int m_IdRandomMode;
         ArtsConfigWidget *m_pPlayObjConfigWidget;
 
-        friend void AmarokSystray::wheelEvent( QWheelEvent * ); //so the tray can use PlayerWidget::wheelEvent()
+        //originally AmarokSystray::wheelEvent was a friend of this class,
+        //but it's seem silly when it's safe to just make this function public
+        void wheelEvent( QWheelEvent *e );
 
     public slots:
         void slotConfigShortcuts();
@@ -203,7 +205,6 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
 
         void paintEvent( QPaintEvent * );
         void mouseReleaseEvent( QMouseEvent *e );
-        void wheelEvent( QWheelEvent *e );
         void mousePressEvent( QMouseEvent *e );
         void queryClose();
         void closeEvent( QCloseEvent *e );

@@ -201,12 +201,9 @@ void AmarokSlider::mousePressEvent( QMouseEvent *e )
 
 // AmarokSystray
 // FIXME Move implementation to separate sourcefile
-AmarokSystray::AmarokSystray( PlayerWidget *child ) : KSystemTray( child )
+AmarokSystray::AmarokSystray( PlayerWidget *child, KActionCollection *ac ) : KSystemTray( child )
 {
     setPixmap( kapp->miniIcon() );
-
-    // Re-construct menu
-    KAction* quitAction = KStdAction::quit( this, SIGNAL( quitSelected() ), actionCollection() );
 
     // berkus: Since it doesn't come to you well, i'll explain it here:
     // We put playlist actions last because: 1) you don't want to accidentally
@@ -216,10 +213,9 @@ AmarokSystray::AmarokSystray( PlayerWidget *child ) : KSystemTray( child )
     contextMenu() ->clear();
     contextMenu() ->insertTitle( kapp->miniIcon(), kapp->caption() );
 
-    contextMenu() ->insertItem( i18n( "&Configure..." ), kapp, SLOT( slotShowOptions() ) );
+    ac->action( "options_configure" )->plug( contextMenu() );
     contextMenu() ->insertItem( i18n( "&Help" ), ( new KHelpMenu( this, KGlobal::instance() ->aboutData() ) ) ->menu() );
-    quitAction->plug( contextMenu() );
-    connect( this, SIGNAL( quitSelected() ), kapp, SLOT( quit() ) );
+    ac->action( "file_quit" )->plug( contextMenu() );
 
     contextMenu() ->insertSeparator();
 
@@ -270,6 +266,14 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_nowPlaying = "";
 
     m_pActionCollection = new KActionCollection( this );
+    KStdAction::aboutApp( pApp, SLOT( slotShowAbout() ), m_pActionCollection );
+    KStdAction::helpContents( pApp, SLOT( slotShowHelp() ), m_pActionCollection );
+    KStdAction::tipOfDay( pApp, SLOT( slotShowTip() ), m_pActionCollection );
+    KStdAction::keyBindings( this, SLOT( slotConfigShortcuts() ), m_pActionCollection );
+    KStdAction::keyBindings( this, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection, "options_configure_global_keybinding" )->setText( i18n( "Configure Global Shortcuts" ) );
+    KStdAction::preferences( pApp, SLOT( slotShowOptions() ), m_pActionCollection );
+    KStdAction::quit( pApp, SLOT( quit() ), m_pActionCollection );
+
 
     m_oldBgPixmap.resize( size() );
 
@@ -391,7 +395,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_pTimeDisplayLabel->setFixedSize( 9 * 12 + 2, 12 + 2 );
 
     // set up system tray
-    m_pTray = new AmarokSystray( this );
+    m_pTray = new AmarokSystray( this, m_pActionCollection );
     m_pTray->show();
     QToolTip::add( m_pTray, i18n( "amaroK media player" ) );
 
@@ -637,16 +641,16 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             m_pPopupMenu = new QPopupMenu( this );
             m_pPopupMenu->setCheckable( true );
 
-            m_pPopupMenu->insertItem( i18n( "About" ), pApp, SLOT( slotShowAbout() ) );
-            m_pPopupMenu->insertItem( i18n( "amaroK Handbook" ), pApp, SLOT( slotShowHelp() ) );
-            m_pPopupMenu->insertItem( i18n( "Tip of the Day" ), pApp, SLOT( slotShowTip() ) );
+            m_pActionCollection->action( "help_about_app" )->plug( m_pPopupMenu );
+            m_pActionCollection->action( "help_contents"  )->plug( m_pPopupMenu );
+            m_pActionCollection->action( "help_show_tip"  )->plug( m_pPopupMenu );
 
             m_pPopupMenu->insertSeparator();
 
-            m_pPopupMenu->insertItem( i18n( "Configure amaroK" ), pApp, SLOT( slotShowOptions() ) );
-            m_pPopupMenu->insertItem( i18n( "Configure Shortcuts" ), this, SLOT( slotConfigShortcuts() ) );
-            m_pPopupMenu->insertItem( i18n( "Configure Global Shortcuts" ),
-                                      this, SLOT( slotConfigGlobalShortcuts() ) );
+
+            m_pActionCollection->action( "options_configure" )->plug( m_pPopupMenu );
+            m_pActionCollection->action( "options_configure_keybinding" )->plug( m_pPopupMenu );
+            m_pActionCollection->action( "options_configure_global_keybinding" )->plug( m_pPopupMenu );
 
             m_pPopupMenu->insertSeparator();
 
@@ -665,7 +669,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             m_pPopupMenu->insertSeparator();
 
             //m_pPopupMenu->insertItem( i18n( "Quit" ), pApp, SLOT( quit() ) );
-            KStdAction::quit( pApp, SLOT( quit() ), m_pActionCollection )->plug( m_pPopupMenu );
+            m_pActionCollection->action( "file_quit" )->plug( m_pPopupMenu );
             //actionCollection()->action( "file_quit" )->plug( m_pPopupMenu );
 
         }
