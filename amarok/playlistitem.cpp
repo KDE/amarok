@@ -91,7 +91,7 @@ QString PlaylistItem::nameForUrl( const KURL &url ) const
     if ( url.protocol() == "file" )
         return url.fileName();
     else
-        return url.url();
+        return url.prettyURL();
 }
 
 
