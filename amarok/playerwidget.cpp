@@ -389,6 +389,7 @@ void PlayerWidget::polish()
 void PlayerWidget::setScroll( QString text, QString bitrate, QString samplerate )
 {
     /* Update tray tooltip */
+    if (QToolTip::textFor(m_pTray) != QString::null) QToolTip::remove(m_pTray);
     QToolTip::add(m_pTray, text);
 
     m_bitrate = bitrate;
