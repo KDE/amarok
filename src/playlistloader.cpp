@@ -5,7 +5,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#ifndef FAST_TRANSLATE
+#ifndef FAST_TRANSLATE 
 //#include "amarokfilelist.h"    //for sorting directories
 #endif
 #include "engine/enginebase.h" //isValidMedia()
@@ -71,20 +71,20 @@
 
 
 PlaylistLoader::PlaylistLoader( const KURL::List &ul, Playlist *lv, PlaylistItem *pi )
-   : m_list( ul )
-   , m_after( pi )
-   , m_first( 0 )
-   , m_listView( lv )
+        : m_list( ul )
+        , m_after( pi )
+        , m_first( 0 )
+        , m_listView( lv )
 {}
 
 
 //this is a private ctor used by ::makePlaylistItem()
 //it can only be used with placeholders
 PlaylistLoader::PlaylistLoader( const KURL::List &ul, PlaylistItem *item )
-   : m_list( ul )
-   , m_after( item )
-   , m_first( item )
-   , m_listView( item->listView() )
+        : m_list( ul )
+        , m_after( item )
+        , m_first( item )
+        , m_listView( item->listView() )
 {}
 
 
@@ -92,8 +92,7 @@ PlaylistLoader::~PlaylistLoader()
 {
     //for GUI access only
 
-    if( NULL != m_first )
-    {
+    if ( NULL != m_first ) {
         kdDebug() << "Unlinking tmpfile: " << m_list.first().path() << endl;
         QFile::remove( m_list.first().path() );
         delete m_first; //FIXME deleting m_first is dangerous as user may have done it for us!
@@ -105,78 +104,70 @@ PlaylistLoader::~PlaylistLoader()
 
 void PlaylistLoader::run()
 {
-       kdDebug() << "[PLSloader] Started..\n";
+    kdDebug() << "[PLSloader] Started..\n";
 
-       m_recursionCount = -1;
-       process( m_list );
+    m_recursionCount = -1;
+    process( m_list );
 
-       QApplication::postEvent( m_listView, new PlaylistLoader::DoneEvent( this ) );
+    QApplication::postEvent( m_listView, new PlaylistLoader::DoneEvent( this ) );
 }
 
 
 void PlaylistLoader::process( const KURL::List &list, const bool validate )
 {
-   struct STATSTRUCT statbuf;
-   ++m_recursionCount;
+    struct STATSTRUCT statbuf;
+    ++m_recursionCount;
 
-   const KURL::List::ConstIterator end = list.end();
-   for( KURL::List::ConstIterator it = list.begin(); it != end; ++it )
-   {
-      QString path = (*it).path();
+    const KURL::List::ConstIterator end = list.end();
+    for ( KURL::List::ConstIterator it = list.begin(); it != end; ++it ) {
+        QString path = ( *it ).path();
 
-      if( validate && (*it).isLocalFile() )
-      {
-         QCString localePath = QFile::encodeName( path );
+        if ( validate && ( *it ).isLocalFile() ) {
+            QCString localePath = QFile::encodeName( path );
 
-         if( LSTAT( localePath, &statbuf ) != 0 ) continue;
+            if ( LSTAT( localePath, &statbuf ) != 0 ) continue;
 
-         if( S_ISDIR( statbuf.st_mode ) )
-         {
-            //some options prevent recursion
-            //FIXME depth check too
-            if( list.count() > 1 && ( !options.recurse || ( !options.symlink && S_ISLNK( statbuf.st_mode ) ) ) ) continue;
+            if ( S_ISDIR( statbuf.st_mode ) ) {
+                //some options prevent recursion
+                //FIXME depth check too
+                if ( list.count() > 1 && ( !options.recurse || ( !options.symlink && S_ISLNK( statbuf.st_mode ) ) ) ) continue;
 #ifdef FAST_TRANSLATE
-            translate( path, localePath );
+                translate( path, localePath );
 #else
-            AmarokFileList files( options.sortSpec );
-            files.setAutoDelete( true );
-            translate( path, files );
-            files.sort();
+                AmarokFileList files( options.sortSpec );
+                files.setAutoDelete( true );
+                translate( path, files );
+                files.sort();
 
-            KURL::List urls;
-            for( KFileItemListIterator it( files ); *it; ++it )
-            {
-                urls << (*it)->url();
-            }
-            process( urls, false ); //false will prevent stating for dir, etc.
+                KURL::List urls;
+                for ( KFileItemListIterator it( files ); *it; ++it ) {
+                    urls << ( *it ) ->url();
+                }
+                process( urls, false ); //false will prevent stating for dir, etc.
 #endif
-            continue;
-         }
-      }
-
-      if( int type = isPlaylist( path ) )
-      {
-         if ( !m_recursionCount )     //prevent processing playlist files in subdirs
-         {
-            if( !(*it).isLocalFile() )
-            {
-                //if the playlist is not local, we need to d/l it, and KIO doesn't work in QThreads. sigh
-                //so this will organise the d/l to occur syncronously and then a new thread spawned :)
-                postDownloadRequest( *it );
+                continue;
             }
-            else
-            {
-                loadLocalPlaylist( path, type );
-            }
-         }
-      }
-      else
-      {
-         if( validate && !isValidMedia( *it ) ) continue; //TODO retain stat info if done above, which does happen
+        }
 
-         postBundle( *it );
-      }
-   }
+        if ( int type = isPlaylist( path ) ) {
+            if ( !m_recursionCount )      //prevent processing playlist files in subdirs
+            {
+                if ( !( *it ).isLocalFile() )
+                {
+                    //if the playlist is not local, we need to d/l it, and KIO doesn't work in QThreads. sigh
+                    //so this will organise the d/l to occur syncronously and then a new thread spawned :)
+                    postDownloadRequest( *it );
+                } else
+                {
+                    loadLocalPlaylist( path, type );
+                }
+            }
+        } else {
+            if ( validate && !isValidMedia( *it ) ) continue; //TODO retain stat info if done above, which does happen
+
+            postBundle( *it );
+        }
+    }
 }
 
 
@@ -191,26 +182,26 @@ void PlaylistLoader::postBundle( const KURL &u )
 {
     QApplication::postEvent( m_listView, new PlaylistLoader::MakeItemEvent( this, u, QString::null, MetaBundle::Undetermined ) );
 
-//    PlaylistItem *item = new PlaylistItem( m_listView, m_after, u, QString::null, MetaBundle::Undetermined ); m_after = item;
+    //    PlaylistItem *item = new PlaylistItem( m_listView, m_after, u, QString::null, MetaBundle::Undetermined ); m_after = item;
 }
 
 inline
 void PlaylistLoader::postBundle( const KURL &u, const QString &s, const int i )
 {
-    QApplication::postEvent( m_listView, new PlaylistLoader::MakeItemEvent( this, u, s ,i ) );
+    QApplication::postEvent( m_listView, new PlaylistLoader::MakeItemEvent( this, u, s , i ) );
 
-//    PlaylistItem *item = new PlaylistItem( m_listView, m_after, u, s, i ); m_after = item;
+    //    PlaylistItem *item = new PlaylistItem( m_listView, m_after, u, s, i ); m_after = item;
 }
 
 
-int PlaylistLoader::isPlaylist( const QString &path ) //static
+int PlaylistLoader::isPlaylist( const QString &path )  //static
 {
-   const QString ext = path.right( 4 ).lower();
+    const QString ext = path.right( 4 ).lower();
 
-        if( ext == ".m3u" ) return 1;
-   else if( ext == ".pls" ) return 2;
-   else if( ext == ".xml" ) return 3;
-   else return 0;
+    if ( ext == ".m3u" ) return 1;
+    else if ( ext == ".pls" ) return 2;
+    else if ( ext == ".xml" ) return 3;
+    else return 0;
 }
 
 
@@ -218,27 +209,24 @@ void PlaylistLoader::loadLocalPlaylist( const QString &path, int type )
 {
     QFile file( path );
 
-    if( file.open( IO_ReadOnly ) )
-    {
+    if ( file.open( IO_ReadOnly ) ) {
         QTextStream stream( &file );
 
-        switch( type )
-
+        switch ( type )
 
         {
-        case 1:
-        {
-            loadM3U( stream, path.left( path.findRev( '/' ) + 1 ) ); //TODO verify that relative playlists work!!
-            break;
-        }
-        case 2:
-            loadPLS( stream );
-            break;
-        case 3:
-            loadXML( stream );
-            break;
-        default:
-            break;
+                case 1: {
+                    loadM3U( stream, path.left( path.findRev( '/' ) + 1 ) ); //TODO verify that relative playlists work!!
+                    break;
+                }
+                case 2:
+                loadPLS( stream );
+                break;
+                case 3:
+                loadXML( stream );
+                break;
+                default:
+                break;
         }
     }
 
@@ -246,31 +234,31 @@ void PlaylistLoader::loadLocalPlaylist( const QString &path, int type )
 }
 
 
-bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissions ) //static
+bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissions )  //static
 {
-   //FIXME determine if the thing at the end of this is a stream! Can arts do this?
-   //      currently we always return true as we can't check
-   //FIXME I don't actually understand what checks can be done, etc.
-   if( url.protocol() == "http" ) return true;
+    //FIXME determine if the thing at the end of this is a stream! Can arts do this?
+    //      currently we always return true as we can't check
+    //FIXME I don't actually understand what checks can be done, etc.
+    if ( url.protocol() == "http" ) return true;
 
-   //TODO  if the playback fails, do some tests and tell the user why - we want to be the best!
-   
-   QString ext;
-   int index = url.fileName().findRev( "." );
-   
-   if ( index > 0 ) {
-       ext = url.fileName().mid( index + 1 ).lower();
-       if ( Playlist::s_extensionCache.contains( ext ) ) {
-          // Look up extension in cache. Not perfect, but it's currently the best compromise.
-          return Playlist::s_extensionCache[ext];
-       }
-   }    
-   bool valid = EngineController::engine()->canDecode( url, mode, permissions );
-   // Cache this result for the next lookup
-   if ( !ext.isEmpty() )
-      Playlist::s_extensionCache.insert( ext, valid ); 
-   
-   return valid;
+    //TODO  if the playback fails, do some tests and tell the user why - we want to be the best!
+
+    QString ext;
+    int index = url.fileName().findRev( "." );
+
+    if ( index > 0 ) {
+        ext = url.fileName().mid( index + 1 ).lower();
+        if ( Playlist::s_extensionCache.contains( ext ) ) {
+            // Look up extension in cache. Not perfect, but it's currently the best compromise.
+            return Playlist::s_extensionCache[ ext ];
+        }
+    }
+    bool valid = EngineController::engine() ->canDecode( url, mode, permissions );
+    // Cache this result for the next lookup
+    if ( !ext.isEmpty() )
+        Playlist::s_extensionCache.insert( ext, valid );
+
+    return valid;
 }
 
 
@@ -280,96 +268,90 @@ void PlaylistLoader::translate( QString &path, const QCString &encodedPath )
 void PlaylistLoader::translate( QString &path, KFileItemList &list )
 #endif
 {
-   #ifdef FAST_TRANSLATE
-   QStringList directories;
-   QStringList files;
-   DIR *d = opendir( encodedPath );
-   #else
-   DIR *d = opendir( QFile::encodeName( path ) );
-   #endif
+#ifdef FAST_TRANSLATE
+    QStringList directories;
+    QStringList files;
+    DIR *d = opendir( encodedPath );
+#else
+    DIR *d = opendir( QFile::encodeName( path ) );
+#endif
 
 
-   if( !path.endsWith( "/" ) ) path += '/';
+    if ( !path.endsWith( "/" ) ) path += '/';
 
-   if( d )
-   {
-      DIRENT *ent;
-      struct STATSTRUCT statbuf;
+    if ( d ) {
+        DIRENT * ent;
+        struct STATSTRUCT statbuf;
 
-      while( (ent = READDIR( d )) )
-      {
-         const QString file = QFile::decodeName( ent->d_name );
-         if( file == "." || file == ".." ) continue;
+        while ( ( ent = READDIR( d ) ) ) {
+            const QString file = QFile::decodeName( ent->d_name );
+            if ( file == "." || file == ".." ) continue;
 
-         const QString  newPath( path+file );
-         const QCString localePath = QFile::encodeName( newPath );
+            const QString newPath( path + file );
+            const QCString localePath = QFile::encodeName( newPath );
 
-         //get file information
-         if( LSTAT( localePath, &statbuf ) == 0 )
-         {
-            //check for these first as they are not mutually exclusive WRT dir/files
-            if( S_ISCHR(  statbuf.st_mode ) ||
-                S_ISBLK(  statbuf.st_mode ) ||
-                S_ISFIFO( statbuf.st_mode ) ||
-                S_ISSOCK( statbuf.st_mode ) ); //then do nothing
+            //get file information
+            if ( LSTAT( localePath, &statbuf ) == 0 ) {
+                //check for these first as they are not mutually exclusive WRT dir/files
+                if ( S_ISCHR( statbuf.st_mode ) ||
+                        S_ISBLK( statbuf.st_mode ) ||
+                        S_ISFIFO( statbuf.st_mode ) ||
+                        S_ISSOCK( statbuf.st_mode ) ); //then do nothing
 
-            else if( S_ISDIR( statbuf.st_mode ) && options.recurse ) //is directory
-            {
-               if( !options.symlink && S_ISLNK( statbuf.st_mode ) ) continue;
-            #ifdef FAST_TRANSLATE
-               directories += newPath;
-            #else
-               translate( newPath, list );
-            #endif
+                else if ( S_ISDIR( statbuf.st_mode ) && options.recurse )  //is directory
+                {
+                    if ( !options.symlink && S_ISLNK( statbuf.st_mode ) ) continue;
+#ifdef FAST_TRANSLATE
+                    directories += newPath;
+#else
+                    translate( newPath, list );
+#endif
+                }
+                else if ( S_ISREG( statbuf.st_mode ) )  //is file
+                {
+                    KURL url; url.setPath( newPath ); //safe way to do it for unix paths
+
+                    if ( isPlaylist( newPath ) )
+                        //QApplication::postEvent( m_listView, new PlaylistFoundEvent( url ) );
+                        ;
+                    else
+                    {
+                        //we save some time and pass the stat'd information
+                        if ( isValidMedia( url, statbuf.st_mode & S_IFMT, statbuf.st_mode & 07777 ) ) {
+#ifdef FAST_TRANSLATE
+                            files += file;
+#else
+                            //true means don't determine mimetype (waste of cycles for sure!)
+                            list.append( new KFileItem( statbuf.st_mode & S_IFMT, statbuf.st_mode & 07777, url, true ) );
+#endif
+
+                        }
+                    }
+                }
+            } //if( LSTAT )
+        } //while
+
+        closedir( d );
+
+#ifdef FAST_TRANSLATE
+        //alpha-sort the files we found, and then post them to the playlist
+        files.sort();
+        const QStringList::ConstIterator end = files.end();
+        for ( QStringList::ConstIterator it = files.begin(); it != end; ++it ) {
+            QString file = path; file += *it;
+            KURL url; url.setPath( file );
+            postBundle( url );
+        }
+
+        {   //translate all sub-directories
+            const QStringList::Iterator end = directories.end();
+            for ( QStringList::Iterator it = directories.begin(); it != end; ++it ) {
+                translate( *it, QFile::encodeName( ( *it ) ) ); //FIXME cache QCStrings from above too
             }
+        }
+#endif
 
-            else if( S_ISREG( statbuf.st_mode ) ) //is file
-            {
-               KURL url; url.setPath( newPath ); //safe way to do it for unix paths
-
-               if( isPlaylist( newPath ) )
-                  //QApplication::postEvent( m_listView, new PlaylistFoundEvent( url ) );
-                  ;
-               else
-               {
-                  //we save some time and pass the stat'd information
-                  if( isValidMedia( url, statbuf.st_mode & S_IFMT, statbuf.st_mode & 07777 ) )
-                  {
-                  #ifdef FAST_TRANSLATE
-                      files += file;
-                  #else
-                      //true means don't determine mimetype (waste of cycles for sure!)
-                      list.append( new KFileItem( statbuf.st_mode & S_IFMT, statbuf.st_mode & 07777, url, true ) );
-                  #endif
-                  }
-               }
-            }
-         } //if( LSTAT )
-      } //while
-
-      closedir( d );
-
-      #ifdef FAST_TRANSLATE
-      //alpha-sort the files we found, and then post them to the playlist
-      files.sort();
-      const QStringList::ConstIterator end = files.end();
-      for( QStringList::ConstIterator it = files.begin(); it != end; ++it )
-      {
-         QString file = path; file += *it;
-         KURL url; url.setPath( file );
-         postBundle( url );
-      }
-
-      {   //translate all sub-directories
-          const QStringList::Iterator end = directories.end();
-          for( QStringList::Iterator it = directories.begin(); it != end; ++it )
-          {
-              translate( *it, QFile::encodeName((*it)) ); //FIXME cache QCStrings from above too
-          }
-      }
-      #endif
-
-   } //if( d )
+    } //if( d )
 }
 
 
@@ -378,20 +360,16 @@ void PlaylistLoader::loadM3U( QTextStream &stream, const QString &dir )
     QString str, title;
     int length = MetaBundle::Undetermined; // = -2
 
-    while( !(str = stream.readLine()).isNull() )
-    {
-        if( str.startsWith( "#EXTINF" ) )
-        {
+    while ( !( str = stream.readLine() ).isNull() ) {
+        if ( str.startsWith( "#EXTINF" ) ) {
             QString extinf = str.section( ':', 1, 1 );
             length = extinf.section( ',', 0, 0 ).toInt();
-            title  = extinf.section( ',', 1, 1 );
+            title = extinf.section( ',', 1, 1 );
 
-            if( length == 0 ) length = MetaBundle::Undetermined;
+            if ( length == 0 ) length = MetaBundle::Undetermined;
         }
-
-        else if( !str.startsWith( "#" ) && !str.isEmpty() )
-        {
-            if( !( str[0] == '/' || str.startsWith( "http://" ) ) )
+        else if ( !str.startsWith( "#" ) && !str.isEmpty() ) {
+            if ( !( str[ 0 ] == '/' || str.startsWith( "http://" ) ) )
                 str.prepend( dir );
 
             KURL url = KURL::fromPathOrURL( str );
@@ -408,24 +386,20 @@ void PlaylistLoader::loadPLS( QTextStream &stream )
 {
     //FIXME algorithm works, but is rather pants!
 
-    for( QString line = stream.readLine(); !line.isNull(); line = stream.readLine() )
-    {
-        if( line.startsWith( "File" ) )
-        {
+    for ( QString line = stream.readLine(); !line.isNull(); line = stream.readLine() ) {
+        if ( line.startsWith( "File" ) ) {
             KURL url = KURL::fromPathOrURL( line.section( "=", -1 ) );
             QString title;
             int length = 0;
 
             line = stream.readLine();
 
-            if( line.startsWith( "Title" ) )
-            {
+            if ( line.startsWith( "Title" ) ) {
                 title = line.section( "=", -1 );
                 line = stream.readLine();
             }
 
-            if( line.startsWith( "Length" ) )
-            {
+            if ( line.startsWith( "Length" ) ) {
                 length = line.section( "=", -1 ).toInt();
             }
 
@@ -437,9 +411,9 @@ void PlaylistLoader::loadPLS( QTextStream &stream )
 #include <qdom.h>
 void PlaylistLoader::loadXML( QTextStream &stream )
 {
-    stream.setCodec( QTextCodec::codecForName("utf8") );
+    stream.setCodec( QTextCodec::codecForName( "utf8" ) );
     QDomDocument d;
-    if( !d.setContent(stream.read()) ) { kdDebug() << "Could not load XML\n"; return; }
+    if ( !d.setContent( stream.read() ) ) { kdDebug() << "Could not load XML\n"; return ; }
 
     QDomNode n = d.namedItem( "playlist" ).firstChild();
 
@@ -447,18 +421,17 @@ void PlaylistLoader::loadXML( QTextStream &stream )
     const QString URL( "url" );
     const QString s = "%1 %2 %3";
 
-    while( !n.isNull() && n.nodeName() == ITEM )
-    {
+    while ( !n.isNull() && n.nodeName() == ITEM ) {
         const QDomElement e = n.toElement();
-        if( e.isNull() ) {
-           kdDebug() << "Element '" << n.nodeName() << "' is null, skipping." << endl;
-           continue;
+        if ( e.isNull() ) {
+            kdDebug() << "Element '" << n.nodeName() << "' is null, skipping." << endl;
+            continue;
         }
 
         //TODO  check this is safe, is it ok to cause paint Events from this thread?
         //TODO  if this is safe you may want to do it all like this
         //FIXME may be non-crash bugs due to non serialised access to m_after
-        m_after = new PlaylistItem( m_listView, m_after, KURL(e.attribute( URL )), n );
+        m_after = new PlaylistItem( m_listView, m_after, KURL( e.attribute( URL ) ), n );
 
         n = n.nextSibling();
     }
@@ -468,7 +441,7 @@ void PlaylistLoader::loadXML( QTextStream &stream )
 PlaylistItem*
 PlaylistLoader::MakeItemEvent::makePlaylistItem( Playlist *pw )
 {
-    PlaylistItem *item = new PlaylistItem( pw, m_thread->m_after, m_url, m_title, m_length );
+    PlaylistItem * item = new PlaylistItem( pw, m_thread->m_after, m_url, m_title, m_length );
     m_thread->m_after = item;
     return item;
 }
@@ -476,7 +449,7 @@ PlaylistLoader::MakeItemEvent::makePlaylistItem( Playlist *pw )
 PlaylistItem*
 PlaylistLoader::DownloadPlaylistEvent::makePlaylistItem( Playlist *lv )
 {
-    PlaylistItem *newItem = MakeItemEvent::makePlaylistItem( lv );
+    PlaylistItem * newItem = MakeItemEvent::makePlaylistItem( lv );
 
     //it is safe to dereference m_thread currently as LoaderThreads are deleted in the main Event Loop
     //and we are blocking the event loop right now!
@@ -495,11 +468,10 @@ PlaylistLoader::DownloadPlaylistEvent::makePlaylistItem( Playlist *lv )
 
     //FIXME this will block user input to the interface AND process the event queue
     QApplication::setOverrideCursor( KCursor::waitCursor() );
-        bool succeeded = KIO::NetAccess::download( m_url, path, reinterpret_cast<QWidget*>(lv) );
+    bool succeeded = KIO::NetAccess::download( m_url, path, reinterpret_cast<QWidget*>( lv ) );
     QApplication::restoreOverrideCursor();
 
-    if( succeeded )
-    {
+    if ( succeeded ) {
         kdDebug() << "[PLSloader] Download was succesful!\n";
 
         //the playlist was successfully downloaded
@@ -517,10 +489,8 @@ PlaylistLoader::DownloadPlaylistEvent::makePlaylistItem( Playlist *lv )
         //FIXME may dereference what has already been deleted!!!! (NOT SAFE!)
         //TODO hide it instead of deleting it and set m_after before hand
         //m_thread->m_after = newItem;
-    }
-    else
-    {
-        KMessageBox::sorry( reinterpret_cast<QWidget*>(lv), i18n( "The playlist, '%1', could not be downloaded." ).arg( m_url.prettyURL() ) );
+    } else {
+        KMessageBox::sorry( reinterpret_cast<QWidget*>( lv ), i18n( "The playlist, '%1', could not be downloaded." ).arg( m_url.prettyURL() ) );
         newItem->setVisible( false ); //FIXME you set m_thread->m_after to this so we can't delete it!
         tmpfile.unlink();
     }
