@@ -41,7 +41,7 @@
 #include <kurl.h>
 #include <kimageeffect.h> // gradient backgroud image
 #include <qimage.h>
-
+#include <qregexp.h>
 
 #define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
 #define escapeHTMLAttr(s) QString(s).replace( "%", "%25" ).replace( "'", "%27" )
@@ -879,9 +879,23 @@ void ContextBrowser::showScanning() {
 
 void ContextBrowser::showLyrics()
 {
+    //remove all matches to the regExp and the song production type.
+    QString replaceMe = "\\([^}]*%1[^}]*\\)";
+    QStringList production;
+    production << i18n( "live" ) << i18n( "acoustic" ) << i18n( "cover" ) << i18n( "mix" )
+               << i18n( "edit" ) << i18n( "medley" );
+    QString title = EngineController::instance()->bundle().title();
+
+    for ( uint x = 0; x < production.count(); ++x )
+    {
+        QRegExp re = replaceMe.arg( production[x] );
+        re.setCaseSensitive( false );
+        title.replace( re, QString::null );
+    }
+
     QString url = QString( "http://lyrc.com.ar/en/tema1en.php?artist=%1&songname=%2" )
                   .arg( EngineController::instance()->bundle().artist() )
-                  .arg( EngineController::instance()->bundle().title() );
+                  .arg( title );
 
     kdDebug() << "Using this url: " << url << endl;
 
