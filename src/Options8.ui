@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>361</width>
-            <height>595</height>
+            <width>445</width>
+            <height>469</height>
         </rect>
     </property>
     <vbox>
@@ -268,7 +268,7 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>140</height>
+                    <height>16</height>
                 </size>
             </property>
         </spacer>
