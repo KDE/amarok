@@ -34,16 +34,16 @@ int main(void)
 
 	// create a noisy signal with two sine waves
 	for (i = 0; i < num; i++)
-		s1[i] = 100.0 * sin(i * 2)
-			+ 50.0 * sin(i * 7)
-			+ 100.0 * rand() / (RAND_MAX + 1.0);
+		s1[i] = 100.0 * rand() / (RAND_MAX + 1.0)
+			+ 100.0 * sin(i * 2)
+			+ 50.0 * sin(i * 7);
 
 	f.copy(s2, s1);
 	f.transform(s2);
 
 	f.copy(s3, s1);
 	f.power2(s3);
-	f.scale(s3, 1.0 / (1 << 17));
+	f.scale(s3, 1.0 / (f.size() * f.size() * 128.0));
 
 	printf("Input\t\tFHT\t\tScaled Power Spectrum\n");
 	for (i = 0; i < num; i++)

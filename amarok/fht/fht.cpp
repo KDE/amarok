@@ -24,8 +24,8 @@
 
 
 /**
-  * Prepare transform for data sets with 2^n numbers, whereby n should
-  * be at least 3. Values of more than 3 need a trigonometry table.
+  * Prepare transform for data sets with @f$2^n@f$ numbers, whereby @f$n@f$
+  * should be at least 3. Values of more than 3 need a trigonometry table.
   * @see makeCasTable()
   */
 FHT::FHT(int n) :
@@ -55,7 +55,7 @@ FHT::~FHT()
 
 
 /**
-  * Create a table of CAS values (CAS ... Cosine And Sine).
+  * Create a table of CAS (cosine and sine) values.
   * Has only to be done in the constructor and saves from
   * calculating the same values over and over while transforming.
   */
@@ -152,8 +152,8 @@ void FHT::power(float *p)
 /**
   * Calculates an FFT power spectrum with doubled values as a
   * result. The values need to be multiplied by 0.5 to be exact.
-  * Note that you only get 2^(n-1) power values for a data set
-  * of 2^1 input values.
+  * Note that you only get @f$2^{n-1}@f$ power values for a data set
+  * of @f$2^n@f$ input values.
   * @see FHT::power()
   */
 void FHT::power2(float *p)
