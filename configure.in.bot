@@ -46,6 +46,17 @@ if test x$PKGCONFIGFOUND != xyes; then
 
 fi
 
+if test x$amarok_warning_mas_notfound = xyes; then
+    echo " =========================="
+    echo " ===  amaroK - WARNING  ========================================================"
+    echo " =========================="
+    echo " ="
+    echo " = mas-config could not be found, this means that MAS-engine"
+    echo " = cannot be built."
+    echo " ="
+
+fi
+
 if test x$have_gst = xno; then
     echo " =========================="
     echo " ===  amaroK - WARNING  ========================================================"
@@ -142,6 +153,10 @@ else
 
     if test x$build_nmm = xyes; then
         echo " =   + NMM-engine (note: unmaintained)"
+    fi
+
+    if test x$build_mas = xyes; then
+        echo " =   + MAS-engine"
     fi
 
     if test x$build_xmmswrapper = xyes; then

@@ -257,6 +257,46 @@ AC_SUBST(CFLAGS_NMM)
 
 
 ###############################################################################
+# BEGIN MAS CHECK
+###############################################################################
+
+AC_ARG_WITH(mas,
+    AC_HELP_STRING([--with-mas],[build amaroK with MAS support [default=without]]),
+    [build_mas=$withval],
+    [build_mas=no]
+)
+
+
+if test "$build_mas" != "no"; then
+
+    AC_PATH_PROG(MAS_CONFIG, mas-config, no)
+
+    if test $MAS_CONFIG = "no"
+    then
+        amarok_warning_mas_notfound=yes
+	echo "amarok_warning_mas_notfound: $amarok_warning_mas_notfound"
+        build_mas=no
+    else
+        AC_DEFINE(HAVE_MAS, 1, [have MAS])
+
+        CFLAGS_MAS=[`$MAS_CONFIG --cflags`]
+        LIBS_MAS=[`$MAS_CONFIG --libs`]
+
+        build_mas=yes
+    fi
+fi
+
+AM_CONDITIONAL(with_mas, test x$build_mas = xyes)
+AC_SUBST(CFLAGS_MAS)
+AC_SUBST(LIBS_MAS)
+
+###############################################################################
+# END MAS CHECK
+###############################################################################
+
+
+
+###############################################################################
 # BEGIN QT OPENGL CHECK
 ###############################################################################
 

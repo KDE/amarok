@@ -21,6 +21,11 @@ if with_xine
     XINE_ENGINE_SUBDIR = xine
 endif
 
+if with_mas
+    MAS_ENGINE_SUBDIR = mas
+endif
+
+
 libengine_la_SOURCES = \
     enginebase.cpp
 
@@ -29,6 +34,6 @@ noinst_HEADERS = enginebase.h
 METASOURCES = \
     AUTO
 
-SUBDIRS = . $(GST_ENGINE_SUBDIR) $(XINE_ENGINE_SUBDIR) $(ARTS_ENGINE_SUBDIR)
+SUBDIRS = . $(GST_ENGINE_SUBDIR) $(XINE_ENGINE_SUBDIR) $(ARTS_ENGINE_SUBDIR) $(MAS_ENGINE_SUBDIR)
 
 
