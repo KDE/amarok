@@ -35,12 +35,7 @@
                 </property>
                 <widget class="QLabel" row="0" column="0">
                     <property name="name">
-                        <cstring>textLabel2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&lt;h3&gt;No cover image found!&lt;/h3&gt;
-If you would like to search again, you can edit the search
-string below and press "OK".</string>
+                        <cstring>textLabel</cstring>
                     </property>
                 </widget>
                 <widget class="KLineEdit" row="1" column="0">

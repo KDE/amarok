@@ -34,6 +34,7 @@ class CoverFetcher : public QObject
         void xmlResult( KIO::Job* job );        
         void imageData( KIO::Job* job, const QByteArray& data );
         void imageResult( KIO::Job* job );        
+        void editSearch();
         void saveCover();
                 
     private:
@@ -42,7 +43,8 @@ class CoverFetcher : public QObject
         QString m_license;
         QString m_xmlDocument;
         QString m_keyword;
-        QString m_album;       
+        QString m_album;
+        QString m_text;   
        
         uchar* m_buffer;
         uint m_bufferIndex;

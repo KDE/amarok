@@ -6,6 +6,7 @@
 #include "collectiondb.h"
 
 #include <qdom.h>
+#include <qlabel.h>
 #include <qvbox.h>
 
 #include <kconfig.h>
@@ -130,47 +131,59 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
-    /* if no cover is found, open the amazon search dialogue */
-    if ( job->error() != 0 ) {
-        
-        AmazonSearch* sdlg = new AmazonSearch();
-        sdlg->searchString->setText( m_keyword );
-        sdlg->setModal( true );
-
-        /* if the "OK" button is pressed, search again using the search string provided in AmazonSearch's lineedit */
-        if ( sdlg->exec() == QDialog::Accepted ) 
-        {    
-            m_keyword = sdlg->searchString->text();
-            getCover( m_keyword, m_album, CoverFetcher::heavy );
-            return;
-        }
-        else
-        {
-            deleteLater();
-            return;
-        }
+    /* if no cover is found, open the amazon search dialogue, else show the cover viewer. */
+    if ( job->error() != 0 ) 
+    {
+        m_text = "<h3>No cover image found!</h3>If you would like to search again, you can edit the search string below and press <b>OK</b>.";
+        editSearch();
     }
-    m_pixmap.loadFromData( m_buffer, m_bufferIndex );
+    else
+    {
+        m_text = "<h3>New Search</h3>Please edit the search string below and press <b>OK</b>.";
+        m_pixmap.loadFromData( m_buffer, m_bufferIndex );
     
-    QVBox* container = new QVBox( 0, 0, WDestructiveClose );
-    container->setCaption( m_keyword + " - amaroK" );
-    connect( this, SIGNAL( destroyed() ), container, SLOT( deleteLater() ) );
+        QVBox* container = new QVBox( 0, 0, WDestructiveClose );
+        container->setCaption( "Cover for:" + m_album + " - amaroK" );
+        connect( this, SIGNAL( destroyed() ), container, SLOT( deleteLater() ) );
     
-    QWidget* widget = new QWidget( container );
-    widget->setPaletteBackgroundPixmap( m_pixmap );
-    widget->setFixedSize( m_pixmap.size() );
+        QWidget* widget = new QWidget( container );
+        widget->setPaletteBackgroundPixmap( m_pixmap );
+        widget->setFixedSize( m_pixmap.size() );
     
-    QHBox* buttons = new QHBox( container );
-    KPushButton* save = new KPushButton( i18n( "Save" ), buttons );
-    KPushButton* cancel = new KPushButton( i18n( "Cancel" ), buttons );
-    connect( cancel, SIGNAL( clicked() ), this, SLOT( deleteLater() ) );
-    connect( save, SIGNAL( clicked() ), this, SLOT( saveCover() ) );
+        QHBox* buttons = new QHBox( container );
+        KPushButton* save = new KPushButton( i18n( "Save" ), buttons );
+        KPushButton* newsearch = new KPushButton( i18n( "New search" ), buttons );
+        KPushButton* cancel = new KPushButton( i18n( "Cancel" ), buttons );
+        connect( cancel, SIGNAL( clicked() ), this, SLOT( deleteLater() ) );
+        connect( newsearch, SIGNAL( clicked() ), this, SLOT( editSearch() ) );
+        connect( save, SIGNAL( clicked() ), this, SLOT( saveCover() ) );
             
-    container->adjustSize();
-    container->setFixedSize( container->size() );
-    container->show();
+        container->adjustSize();
+        container->setFixedSize( container->size() );
+        container->show();
+    }
 }
 
+void 
+CoverFetcher::editSearch() //SLOT
+{
+    AmazonSearch* sdlg = new AmazonSearch();
+    sdlg->textLabel->setText( m_text );
+    sdlg->searchString->setText( m_keyword );
+    sdlg->setModal( true );
+            
+    if ( sdlg->exec() == QDialog::Accepted ) 
+    {    
+        m_keyword = sdlg->searchString->text();
+        getCover( m_keyword, m_album, CoverFetcher::heavy );
+        return;
+    }
+    else
+    {
+        deleteLater();
+        return;
+    }
+}
 
 void 
 CoverFetcher::saveCover() //SLOT
