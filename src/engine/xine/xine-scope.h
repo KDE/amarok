@@ -15,9 +15,7 @@
 #include <xine/audio_out.h>
 
 
-typedef struct metronom_s metronom_t;
 typedef struct my_node_s MyNode;
-
 
 struct my_node_s
 {
