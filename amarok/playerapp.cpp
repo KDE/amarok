@@ -86,7 +86,7 @@ PlayerApp::PlayerApp()
     //we must restart artsd after each version change, so that it picks up any plugin changes
     m_artsNeedsRestart = AmarokConfig::version() != APP_VERSION;
     m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(), m_artsNeedsRestart, SCOPE_SIZE );
-    
+
     readConfig();
 
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
@@ -298,7 +298,7 @@ void PlayerApp::saveConfig()
     AmarokConfig::setBrowserWinSplitter( m_pBrowserWin->m_pSplitter->sizes() );
     AmarokConfig::setPlayerPos         ( m_pPlayerWidget->pos() );
     AmarokConfig::setVersion           ( APP_VERSION );
-    
+
     AmarokConfig::writeConfig();
 
     if ( AmarokConfig::savePlaylist() )
@@ -314,7 +314,7 @@ void PlayerApp::readConfig()
 
     m_pEngine->initMixer     ( AmarokConfig::softwareMixerOnly() );
     m_pEngine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
-    
+
     /*    m_pBrowserWin->m_pBrowserWidget->readDir( AmarokConfig::currentDirectory() );
         m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( AmarokConfig::pathHistory() );*/
 
@@ -333,9 +333,9 @@ void PlayerApp::readConfig()
     m_pOSD->setEnabled( !AmarokConfig::osdEnabled() );      //workaround for reversed config entry
     m_pOSD->setFont   ( AmarokConfig::osdFont() );
     m_pOSD->setColor  ( AmarokConfig::osdColor() );
-    
+
     QValueList<int> splitterList;
-    
+
     //FIXME this is no longer particular relevant, instead record playlistSideBar's savedSize
     //      implement a setConfig() function  <markey> so can we remove it?
     splitterList = AmarokConfig::browserWinSplitter();
@@ -411,47 +411,61 @@ void PlayerApp::receiveStreamMeta( QString title, QString url, QString kbps )
 
 void PlayerApp::setupColors()
 {
-    // we try to be smart: this code figures out contrasting colors for selection and alternate background rows
-    int h, s, v;    
-    QColorGroup group = QApplication::palette().active();
-    QColor bgAlt, highlight;
-    
-    //TODO below is amaroK default
-    //const QColor fg = AmarokConfig::browserFgColor();    
-    const QColor bg = AmarokConfig::browserBgColor();
-    
-    //TODO this is fancy colouring that fits with the window better (providing base is a neutral colour, eg black)
-    //FIXME make fancy/custom/kde-default options in colour select dialog
-    KGlobalSettings::activeTitleColor().hsv( &h, &s, &v );
-    const QColor fg = QColor( h, s, 255, QColor::Hsv );    
-
-
-    bg.hsv( &h, &s, &v );
-    if ( v < 128 )
-        v += 50;
+    if( AmarokConfig::schemeKDE() )
+    {
+        //TODO this sucks a bit, perhaps just iterate over all children calling "unsetPalette"?
+        m_pBrowserWin->setPalettes( QApplication::palette(), KGlobalSettings::alternateBackgroundColor() );
+    }
     else
-        v -= 50;
-    bgAlt.setHsv( h, s, v );
+    {
+        // we try to be smart: this code figures out contrasting colors for selection and alternate background rows
+        int h, s, v;
+        QColorGroup group = QApplication::palette().active();
+        QColor fg, bgAlt, highlight;
+        QColor bg = AmarokConfig::browserBgColor();
 
-    fg.hsv( &h, &s, &v );
-    if ( v < 128 )
-        v += 150;
-    else
-        v -= 150;
-    if ( v < 0 )
-        v = 0;
-    if ( v > 255 )
-        v = 255;
-    highlight.setHsv( h, s, v );
-    
-    group.setColor( QColorGroup::Base, bg );
-    group.setColor( QColorGroup::Background, bg );
-    group.setColor( QColorGroup::Text, fg );//fg );
-    group.setColor( QColorGroup::Highlight, highlight );
-    group.setColor( QColorGroup::HighlightedText, Qt::white );
-    
-    //FIXME disabled QColorGroup looks very bad (eg buttons)
-    m_pBrowserWin->setPalettes( QPalette( group, group, group ), bgAlt );
+        //TODO this isn't what we want yet
+        if( AmarokConfig::schemeAmarok )
+        {
+            //TODO this is fancy colouring that fits with the window better (providing base is a neutral colour, eg black)
+            //FIXME make fancy/custom/kde-default options in colour select dialog
+            KGlobalSettings::activeTitleColor().hsv( &h, &s, &v );
+            fg = QColor( h, s, 255, QColor::Hsv );
+        }
+        else
+        {
+            fg = AmarokConfig::browserFgColor();
+        }
+
+        bg.hsv( &h, &s, &v );
+        if ( v < 128 )
+            v += 50;
+        else
+            v -= 50;
+        bgAlt.setHsv( h, s, v );
+
+        fg.hsv( &h, &s, &v );
+        if ( v < 128 )
+            v += 150;
+        else
+            v -= 150;
+        if ( v < 0 )
+            v = 0;
+        if ( v > 255 )
+            v = 255;
+        highlight.setHsv( h, s, v );
+
+        group.setColor( QColorGroup::Base, bg );
+        group.setColor( QColorGroup::Background, bg.light( 120 ) );
+        group.setColor( QColorGroup::Background, bgAlt );
+        group.setColor( QColorGroup::Text, fg );//fg );
+        group.setColor( QColorGroup::Highlight, highlight );
+        group.setColor( QColorGroup::HighlightedText, Qt::white );
+        group.setColor( QColorGroup::Dark, Qt::darkGray );
+
+        //FIXME QColorGroup member "disabled" looks very bad (eg for buttons)
+        m_pBrowserWin->setPalettes( QPalette( group, group, group ), bgAlt );
+    }
 }
 
 void PlayerApp::insertMedia( const KURL::List &list )
@@ -669,7 +683,7 @@ void PlayerApp::slotMainTimer()
         slotNext();
         return;
     }
-            
+
     // check if track has ended
     if ( m_pEngine->state() == EngineBase::Idle )
     {
@@ -717,7 +731,7 @@ void PlayerApp::slotVisTimer()
         pScopeVector->resize( pScopeVector->size() / 2 );
 
         m_pPlayerWidget->m_pVis->drawAnalyzer( pScopeVector );
-        
+
         delete pScopeVector;
         //FIXME <markey> beat detection code temporarily moved to VIS_PLAN, since it was disabled anyway
     }

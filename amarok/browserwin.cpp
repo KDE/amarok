@@ -495,7 +495,8 @@ static void setPaletteRecursively( QWidget* widget, const QPalette &pal, const Q
     for( QObject *obj = list->first(); obj; obj = list->next() )
     {
         static_cast<QWidget*>(obj)->setPalette( pal );
-        if( obj->inherits( "QLineEdit" ) )
+        //FIXME hack hack hack!
+        if( AmarokConfig::schemeAmarok() && obj->inherits( "QLineEdit" ) )
         {
             QLineEdit *le = dynamic_cast<QLineEdit *>(obj); //slow, but safe
             if( le ) le->setPaletteForegroundColor( Qt::white ); //FIXME don't be hard set!
