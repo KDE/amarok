@@ -109,8 +109,8 @@ void StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged
 
 void StatusBar::slotItemCountChanged(int newCount)
 {
-    changeItem( newCount != 1 ? i18n( "%1 songs" ).arg( newCount )
-                              : i18n( "1 song" ), ID_TOTAL );
+    changeItem( newCount != 1 ? i18n( "%1 tracks" ).arg( newCount )
+                              : i18n( "1 track" ), ID_TOTAL );
 }
 
 void StatusBar::engineTrackPositionChanged( long position )
