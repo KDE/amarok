@@ -137,7 +137,7 @@ QString UniversalAmarok::getCurrentPlaying()
     QCString returnType;
     QByteArray returnData;
     QString result;
-    if(! amarokDCOP->call("amarok", "player", "nowPlaying()", NULL, returnType, returnData) ) return NULL;
+    if(! amarokDCOP->call("amarok", "player", "nowPlaying()", QByteArray(), returnType, returnData) ) return NULL;
     if(returnType!="QString") return NULL;
     QDataStream dataparsing(returnData, IO_ReadOnly);
     dataparsing >> result;
