@@ -1556,6 +1556,8 @@ void Playlist::customEvent( QCustomEvent *e )
         QApplication::restoreOverrideCursor();
         restoreCurrentTrack(); //just in case the track that is playing is not set current
         emit itemCountChanged( childCount() ); // final touch (also helps with default pls)
+        //force redraw of currentTrack marker, play icon, etc.
+        setCurrentTrack( currentTrack() );
         break;
 
 
