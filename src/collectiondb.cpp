@@ -52,7 +52,7 @@ CollectionDB::CollectionDB()
 #ifdef USE_MYSQL
     m_db = mysql::mysql_init(NULL);
 
-    if (m_db)
+    if ( m_db )
     {
         if (AmarokConfig::mySqlUser().isEmpty())
             pApp->slotConfigAmarok(6);
@@ -92,20 +92,24 @@ CollectionDB::CollectionDB()
     // Open database file and check for correctness
     bool failOpen = true;
     QFile file( path );
-    if ( file.open( IO_ReadOnly ) ) {
+    if ( file.open( IO_ReadOnly ) )
+    {
         QString format;
         file.readLine( format, 50 );
-        if ( !format.startsWith( "SQLite format 3" ) ) {
+        if ( !format.startsWith( "SQLite format 3" ) )
+        {
             kdWarning() << "Database versions incompatible. Removing and rebuilding database.\n";
         }
-        else if ( sqlite3_open( path, &m_db ) != SQLITE_OK ) {
+        else if ( sqlite3_open( path, &m_db ) != SQLITE_OK )
+        {
             kdWarning() << "Database file corrupt. Removing and rebuilding database.\n";
             sqlite3_close( m_db );
         }
         else
             failOpen = false;
     }
-    if ( failOpen ) {
+    if ( failOpen )
+    {
         // Remove old db file; create new
         QFile::remove( path );
         sqlite3_open( path, &m_db );
@@ -430,6 +434,7 @@ CollectionDB::albumImage( const uint artist_id, const uint album_id, const uint 
 QString
 CollectionDB::getImageForAlbum( const QString& artist, const QString& album, uint width )
 {
+    kdDebug() << "Looking for local image: " << artist << " - " << album << endl;
     if ( !width ) width = AmarokConfig::coverPreviewSize();
     QString widthKey = QString::number( width ) + "@";
 
