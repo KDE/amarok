@@ -72,7 +72,7 @@ class PlayerApp : public KApplication, public EngineObserver
         KActionCollection *m_pActionCollection;
 
         // STATICS
-        static const int SCOPE_SIZE = 7;
+        static const int SCOPE_SIZE = 9; //NOTE 512
 
     protected: /* for OSD, tray, and dcop */
         void engineStateChanged( EngineBase::EngineState state );

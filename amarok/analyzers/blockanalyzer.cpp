@@ -21,7 +21,7 @@ static float lvlMapper[BlockAnalyzer::MAX_ROWS+1];// = { 0.080, 0.140, 0.200, 0.
 
 
 BlockAnalyzer::BlockAnalyzer( QWidget *parent )
- : Analyzer::Base2D( parent, 20, 7 )
+ : Analyzer::Base2D( parent, 20, 8 )
  , m_dark( WIDTH, HEIGHT )   //QPixmap
  , m_store( MAX_COLUMNS, 0 ) //vector<uint>
  , m_scope( MIN_COLUMNS )    //Scope
