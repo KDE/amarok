@@ -18,7 +18,7 @@ class CollectionDB : public QObject
     Q_OBJECT
     
     public:
-        static const int COVER_SIZE = 40;
+        static const int COVER_SIZE = 60;
         
         CollectionDB();
         ~CollectionDB();
@@ -36,6 +36,7 @@ class CollectionDB : public QObject
         void updateDirStats( QString path, const long datetime );
         void removeSongsInDir( QString path );
         bool isDirInCollection( QString path );
+        bool isFileInCollection( const QString url );
         void removeDirFromCollection( QString path );
 
         /**

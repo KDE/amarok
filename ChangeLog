@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.1:
+  FIX: Show contextual information for songs, even if they are not in the
+       current collection instead of an ugly empty box.
   ADD: GstEngine: Support for custom output plugin parameters. (BR 83949)
   ADD: CoverManager - for downloading and managing album cover images.
   CHG: Refactored engine plugin interface. Each engine can now provide specific

@@ -280,6 +280,19 @@ CollectionDB::isDirInCollection( QString path )
 }
 
 
+bool
+CollectionDB::isFileInCollection( const QString url )
+{
+    QStringList values;
+    QStringList names;
+
+    execSql( QString( "SELECT url FROM tags WHERE url = '%1';" )
+             .arg( escapeString( url ) ), &values, &names );
+
+    return !values.isEmpty();
+}
+
+
 void
 CollectionDB::removeDirFromCollection( QString path )
 {

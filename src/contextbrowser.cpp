@@ -291,6 +291,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     // take care of sql updates (schema changed errors)
     delete m_db;
     m_db = new CollectionDB();
+    
     // Triggers redisplay when new cover image is downloaded
     connect( m_db, SIGNAL( coverFetched() ), this, SLOT( showCurrentTrack() ) );
 
@@ -299,6 +300,14 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     // <Current Track Information>
     browser->write( "<html><div class='menu'><a class='menu' href='show:home'>Home</a>&nbsp;&nbsp;<a class='menu' href='show:context'>Current Track</a></div>");
+    if ( !m_db->isFileInCollection( m_currentTrack->url().path() ) )
+    {
+        browser->write( "<div><br>");
+        browser->write( i18n( "This song is not in your current collection. If you like further contextual information about this song, add it to your collection!" )
+                        + "&nbsp;<a href='show:collectionSetup'>" + i18n( "Click here to change your collection setup." ) + "</a>" );
+        browser->write( "<br><br></div>");
+    }
+
     browser->write( "<div class='rbcontent'>" );
     browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
     browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Currently playing:" ) + "</td></tr>" );
@@ -332,17 +341,22 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                 "WHERE album.id = tags.album AND artist.id = tags.artist AND tags.url = '%1';" )
                       .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names );
 
+        QString imageurl;
         if ( !values.isEmpty() )
-            browser->write( QString ( "<tr><td height='42' valign='top' class='rbcurrent'>"
-                                      "<span class='album'>%1 - %2</span><br>%3<br><br><a class='menu' href='fetchcover:%4 - %5'><img align='left' valign='center' hspace='2' src=\"%6\"></a>"
-                                      "<i>Never played before</i></td>"
-                                      "</tr>" )
-                            .arg( m_currentTrack->artist() )
-                            .arg( m_currentTrack->title() )
-                            .arg( m_currentTrack->album() )
-                            .arg( m_currentTrack->artist() )
-                            .arg( m_currentTrack->album() )
-                            .arg( m_db->getImageForAlbum( values[1], values[0], locate( "data", "amarok/images/sound.png" ) ) ) );
+            imageurl = m_db->getImageForAlbum( values[1], values[0], locate( "data", "amarok/images/sound.png" ) );
+        else
+            imageurl = locate( "data", "amarok/images/sound.png" );
+
+        browser->write( QString ( "<tr><td height='42' valign='top' class='rbcurrent'>"
+                                  "<span class='album'>%1 - %2</span><br>%3<br><br><a class='menu' href='fetchcover:%4 - %5'><img align='left' valign='center' hspace='2' src=\"%6\"></a>"
+                                  "<i>Never played before</i></td>"
+                                  "</tr>" )
+                        .arg( m_currentTrack->artist() )
+                        .arg( m_currentTrack->title() )
+                        .arg( m_currentTrack->album() )
+                        .arg( m_currentTrack->artist() )
+                        .arg( m_currentTrack->album() )
+                        .arg( imageurl ) );
     }
     values.clear();
     names.clear();
