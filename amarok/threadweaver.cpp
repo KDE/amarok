@@ -211,7 +211,7 @@ CollectionReader::doJob() {
     //iterate over all folders
     for ( uint i = 0; i < m_folders.count(); i++ )
         readDir( m_folders[i] );
-    
+        
     //don't post event if no tags have been read
     if ( m_metaList.isEmpty() )
         return false;
@@ -222,6 +222,7 @@ CollectionReader::doJob() {
 void
 CollectionReader::readDir( const QString& path ) {
     QStringList entries;
+    m_dirList << path;
     DIR* d = opendir( path.local8Bit() );
     dirent *ent;
     struct stat statBuf;

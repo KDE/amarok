@@ -131,14 +131,16 @@ public:
     ~CollectionReader();
 
     bool doJob();
-    QPtrList<MetaBundle> list() { return m_metaList; }
-
+    QPtrList<MetaBundle> bundleList() { return m_metaList; }
+    QStringList dirList() { return m_dirList; }
+    
 private:
     void readDir( const QString& path );
     void readTags( const QStringList& entries );
     
     QPtrList<MetaBundle> m_metaList;
     QStringList m_folders;
+    QStringList m_dirList;
     bool m_recursively;
 };
 

@@ -20,6 +20,7 @@
 #include <kapplication.h>
 #include <kconfig.h>
 #include <kdebug.h>
+#include <kdirwatch.h>
 #include <kglobal.h>
 #include <klocale.h>
 #include <kmenubar.h>
@@ -60,6 +61,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         : KListView( parent )
         , m_parent( parent )
         , m_weaver( new ThreadWeaver( this ) )
+        , m_dirWatch( new KDirWatch( this ) )
 {
     kdDebug() << k_funcinfo << endl;
 
@@ -78,9 +80,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     if ( !m_db )
         kdWarning() << k_funcinfo << "Could not open SQLite database\n";
 
-    //optimizations for speeding up SQLite
+    //optimization for speeding up SQLite
     execSql( "PRAGMA default_synchronous = OFF;" );        
-//     execSql( "PRAGMA default_temp_store = MEMORY;" );        
         
     QCString command = "CREATE TABLE tags ("
                        "url varchar(100),"
@@ -101,13 +102,18 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     m_recursively = config->readBoolEntry( "Scan Recursively", true );
     m_monitor = config->readBoolEntry( "Monitor Changes", true );
 
-    connect( this, SIGNAL( tagsReady() ),
-             this, SLOT( renderView() ) );
-    connect( this, SIGNAL( expanded( QListViewItem* ) ),
-             this, SLOT( slotExpanded( QListViewItem* ) ) );
-    connect( this, SIGNAL( collapsed( QListViewItem* ) ),
-             this, SLOT( slotCollapsed( QListViewItem* ) ) );
-
+    if ( m_monitor )
+        m_dirWatch->startScan();
+    
+    connect( this,       SIGNAL( tagsReady() ),
+             this,         SLOT( renderView() ) );
+    connect( this,       SIGNAL( expanded( QListViewItem* ) ),
+             this,         SLOT( slotExpanded( QListViewItem* ) ) );
+    connect( this,       SIGNAL( collapsed( QListViewItem* ) ),
+             this,         SLOT( slotCollapsed( QListViewItem* ) ) );
+    connect( m_dirWatch, SIGNAL( dirty( const QString& ) ),
+             this,         SLOT( dirDirty( const QString& ) ) );
+             
     renderView();
 }
 
@@ -139,6 +145,15 @@ CollectionView::setupDirs()  //SLOT
     m_dirs = result.dirs;
     m_recursively = result.scanRecursively;
     m_monitor = result.monitorChanges;
+
+    //also remove any folders from KDirWatch which the user doesn't want any more
+    for ( uint i = 0; i < result.removedDirs.count(); i++ )
+        m_dirWatch->removeDir( result.removedDirs[i] );
+
+    if ( m_monitor )
+        m_dirWatch->startScan();
+    else
+        m_dirWatch->stopScan();
 }
 
 
@@ -150,6 +165,18 @@ CollectionView::scan()  //SLOT
     execSql( command );
 
     m_weaver->append( new CollectionReader( this, m_dirs, m_recursively ) );
+
+    if ( m_monitor )
+        m_dirWatch->startScan();
+}
+
+
+void
+CollectionView::dirDirty( const QString& path )
+{
+    kdDebug() << k_funcinfo << "Dirty: " << path << endl;
+    
+    m_weaver->append( new CollectionReader( this, path, false ) );
 }
 
 
@@ -257,7 +284,6 @@ CollectionView::actionsMenu( int id )  //SLOT
 }
 
 
-
 void
 CollectionView::customEvent( QCustomEvent *e ) {
     kdDebug() << k_funcinfo << endl;
@@ -268,13 +294,21 @@ CollectionView::customEvent( QCustomEvent *e ) {
         kdDebug() << "********************************\n";
         kdDebug() << "CollectionEvent arrived.\n";
         kdDebug() << "********************************\n";
-        kdDebug() << "Number of records to store in db: " << c->list().count() << endl;
 
+        //CollectionReader provides a list of all subdirs, which we feed into KDirWatch 
+        if ( m_monitor )
+            for ( uint i = 0; i < c->dirList().count(); i++ )
+                if ( !m_dirWatch->contains( c->dirList()[i] ) ) {
+                    m_dirWatch->addDir( c->dirList()[i], true );
+                    kdDebug() << "Adding to dirWatch: " << c->dirList()[i] << endl;
+                }
+                    
         MetaBundle* bundle;
-        
+        kdDebug() << "Number of records to store in db: " << c->bundleList().count() << endl;
         execSql( "BEGIN TRANSACTION;" );
-        for ( uint i = 0; i < c->list().count(); i++ ) {
-            bundle = c->list().at( i );
+        
+        for ( uint i = 0; i < c->bundleList().count(); i++ ) {
+            bundle = c->bundleList().at( i );
             QCString command = "INSERT INTO tags ( url, album, artist, genre, title, year ) VALUES('";
             
             command += bundle->url().path().latin1();

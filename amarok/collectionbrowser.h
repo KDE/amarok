@@ -22,6 +22,7 @@ class QCString;
 class QDragObject;
 class QStringList;
 class QCustomEvent;
+class KDirWatch;
 class KPopupMenu;
 
 class CollectionBrowser: public QVBox 
@@ -75,6 +76,7 @@ class CollectionView : public KListView
         void setupDirs();    
         
         void scan();        
+        void dirDirty( const QString& path );
         
         /**
          * Rebuilds and displays the treeview by querying the database
@@ -102,6 +104,7 @@ class CollectionView : public KListView
     //attributes:
         CollectionBrowser* m_parent;
         ThreadWeaver* m_weaver;
+        KDirWatch* m_dirWatch;
         sqlite* m_db;                
         QStringList m_dirs;
         QString m_category;
