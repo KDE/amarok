@@ -43,6 +43,7 @@
 #include <qstring.h>
 #include <qthread.h>
 #include <qtoolbutton.h>
+#include <qtooltip.h>
 #include <qwidget.h>
 
 #include <kaction.h>
@@ -50,7 +51,9 @@
 #include <kglobalaccel.h>
 #include <kkeydialog.h>
 #include <klistview.h>
+#include <klocale.h>
 #include <kstandarddirs.h>
+#include <ksystemtray.h>
 
 #include <arts/artsgui.h>
 #include <arts/connect.h>
@@ -321,6 +324,12 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name ) : QWidget( paren
     m_pVis->setFixedSize( 168, 50 );
     m_pTimeDisplayLabel->setFixedSize( 9 * 12 + 2, 12 + 2 );
 
+    // set up system tray
+    m_pTray = new KSystemTray(this);
+    m_pTray->setPixmap(pApp->miniIcon());
+    m_pTray->show();
+    QToolTip::add(m_pTray, i18n("amaroK media player"));
+
     initTimeDisplay();
     initScroll();
     timeDisplay( false, 0, 0, 0 );
@@ -379,6 +388,8 @@ void PlayerWidget::polish()
 
 void PlayerWidget::setScroll( QString text, QString bitrate, QString samplerate )
 {
+    /* Update tray tooltip */
+
     m_bitrate = bitrate;
     m_samplerate = samplerate;
     text.prepend( "   ***   " );

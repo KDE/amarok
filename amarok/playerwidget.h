@@ -36,6 +36,7 @@ class QTimerEvent;
 class QToolButton;
 
 class KActionCollection;
+class KSystemTray;
 
 class VisWidget;
 class ArtsConfigWidget;
@@ -163,5 +164,6 @@ class PlayerWidget : public QWidget
         int m_timeDisplayX, m_timeDisplayY, m_timeDisplayW;
         int m_pixmapWidth, m_pixmapHeight, m_scrollWidth;
         int m_sx, m_sy, m_sxAdd;
+	KSystemTray *m_pTray;
 };
 #endif
