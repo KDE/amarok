@@ -237,11 +237,7 @@ CollectionView::renderView( )  //SLOT
     //query database for all records with the specified category
     QString filterToken;
     if ( m_filter != "" )
-        filterToken = QString
-                      ( "AND ( %1.name LIKE '\%%2\%' OR tags.title LIKE '\%%3\%' )" )
-                      .arg( m_category1.lower() )
-                      .arg( m_db->escapeString( m_filter ) )
-                      .arg( m_db->escapeString( m_filter ) );
+        filterToken = "AND ( " + m_category1.lower() + ".name LIKE '%" + m_db->escapeString( m_filter ) + "%' OR tags.title LIKE '%" + m_db->escapeString( m_filter ) + "%' )";
 
     QString command = QString
                       ( "SELECT DISTINCT %1.name FROM tags, %2 WHERE tags.%3=%4.id %5;" )
@@ -295,11 +291,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
     QString filterToken = QString( "" );
     if ( m_filter != "" )
-        filterToken = QString
-                      ( "AND ( %1.name LIKE '\%%2\%' OR tags.title LIKE '\%%3\%' )" )
-                      .arg( m_category1.lower() )
-                      .arg( m_db->escapeString( m_filter ) )
-                      .arg( m_db->escapeString( m_filter ) );
+        filterToken = "AND ( " + m_category1.lower() + ".name LIKE '%" + m_db->escapeString( m_filter ) + "%' OR tags.title LIKE '%" + m_db->escapeString( m_filter ) + "%' )";
 
     if  ( item->depth() == 0 ) {
         QString command;
@@ -314,13 +306,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                       .arg( filterToken );
         }
         else {
-            filterToken = QString
-                          ( "AND ( %1.id = tags.%2 AND %3.name LIKE '\%%4\%' OR tags.title LIKE '\%%5\%' )" )
-                          .arg( m_category1.lower() )
-                          .arg( m_category1.lower() )
-                          .arg( m_category1.lower() )
-                          .arg( m_db->escapeString( m_filter ) )
-                          .arg( m_db->escapeString( m_filter ) );
+            filterToken = "AND ( " + m_category1.lower() + ".id = tags." + m_category1.lower() + " AND " + m_category1.lower() + ".name LIKE '%" + m_db->escapeString( m_filter ) + "%' OR tags.title LIKE '%" + m_db->escapeString( m_filter ) + "%' )";
             QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
 
             command = QString
@@ -536,12 +522,7 @@ CollectionView::listSelected() {
         if ( item->isSelected() ) {
             QString filterToken;
             if ( m_filter != "" )
-                filterToken = QString
-                      ( "AND ( %1.name LIKE '\%%2\%' OR tags.title LIKE '\%%3\%' )" )
-                      .arg( m_category1.lower() )
-                      .arg( m_db->escapeString( m_filter ) )
-                      .arg( m_db->escapeString( m_filter ) );
-
+                filterToken = "AND ( " + m_category1.lower() + ".name LIKE '%" + m_db->escapeString( m_filter ) + "%' OR tags.title LIKE '%" + m_db->escapeString( m_filter ) + "%' )";
 
             //query database for all tracks in our sub-category
             QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
@@ -575,13 +556,7 @@ CollectionView::listSelected() {
             for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
                 if ( child->isSelected() ) {
                     QString filterToken;
-                    filterToken = QString
-                                  ( "AND ( %1.id = tags.%2 AND %3.name LIKE '\%%4\%' OR tags.title LIKE '\%%5\%' )" )
-                                  .arg( m_category1.lower() )
-                                  .arg( m_category1.lower() )
-                                  .arg( m_category1.lower() )
-                                  .arg( m_db->escapeString( m_filter ) )
-                                  .arg( m_db->escapeString( m_filter ) );
+                    filterToken = "AND ( " + m_category1.lower() + ".id = tags." + m_category1.lower() + " AND " + m_category1.lower() + ".name LIKE '%" + m_db->escapeString( m_filter ) + "%' OR tags.title LIKE '%" + m_db->escapeString( m_filter ) + "%' )";
                     QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
                     QString id_sub = QString::number( m_db->getValueID( m_category2.lower(), child->text( 0 ), false ) );
 

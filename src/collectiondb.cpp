@@ -174,8 +174,11 @@ CollectionDB::removeDirFromCollection( QString path )
 
 
 bool
-CollectionDB::execSql( const QString& statement, QStringList* const values, QStringList* const names )
+CollectionDB::execSql( const QString& statement, QStringList* const values, QStringList* const names, const bool debug )
 {
+    if ( debug )
+        kdDebug() << "SQL-query: " << statement << endl;
+
     if ( !m_db ) {
         kdWarning() << k_funcinfo << "SQLite pointer == NULL.\n";
         return false;

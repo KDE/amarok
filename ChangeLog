@@ -3,6 +3,8 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  FIX: Filtering the collection using tokens with number(s) at the beginning
+       or end failed. (BR 81621).
   FIX: FileBrowser didn't remember its current folder (BR 81816).
   ADD: Expand/collapse items by doubleclicking in Collection (BR 81710).
   FIX: Allow OSD still to be shown via shortcut when disabled (BR 80388). 

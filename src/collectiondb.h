@@ -36,7 +36,7 @@ class CollectionDB : public QObject
          * @retval names    will contain all column names, set to NULL if not used
          * @return          true if successful
          */
-        bool execSql( const QString& statement, QStringList* const values = 0, QStringList* const names = 0 );
+        bool execSql( const QString& statement, QStringList* const values = 0, QStringList* const names = 0, const bool debug = false );
 
         /**
          * Returns the rowid of the most recently inserted row
