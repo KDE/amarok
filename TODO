@@ -3,11 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #92 being the highest available (take this one for your next bug and increase here)
+           #93 being the highest available (take this one for your next bug and increase here)
 
                         
 SHORT-TERM (URGENT):
   
+  FIX #92 <markey> Switching to aRts engine breaks volume -->markey.
+
   CHG #90 <markey>We need some fresh artwork, at least some new player buttons before 1.0.
   
   CHG #91 <markey>I'd like to get a new website up before 1.0 release.   
