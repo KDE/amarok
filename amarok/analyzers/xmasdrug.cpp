@@ -78,10 +78,6 @@ void XmasAnalyzer::drawAnalyzer( std::vector<float> *s )
 
    bitBlt( m_pComposePixmap, 0, 0, grid() ); //start with a blank canvas
 
-   QPainter p( m_pSantaPixmap );
-   p.setPen( Qt::red );
-   p.eraseRect( p.window() );
-
    std::vector<float> bands( BAND_COUNT, 0 );
    std::vector<float>::const_iterator it( bands.begin() );
 
@@ -90,8 +86,11 @@ void XmasAnalyzer::drawAnalyzer( std::vector<float> *s )
 
    for ( uint i = 0; i < bands.size(); ++i, ++it )
    {
-      x2 = uint((*it) * 255);
+      x2  = uint((*it) * 255);
       x2 = m_levelToX[ (x2 > 255) ? 255 : x2 ];
+
+      QPainter p( m_pSantaPixmap );
+      p.fillRect( p.window(), QColor(0x40 + (+x2*4), 0x30 + x2, 0xff + (-x2*4)) );
 
       bitBlt( m_pComposePixmap, x2, 0,
               m_pSantaPixmap );
