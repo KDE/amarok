@@ -50,16 +50,16 @@ MetaBundle::MetaBundle( const PlaylistItem *item, TagLib::AudioProperties *ap )
     init( ap );
 }
 
-//Taglig::Tag ctor
+//Taglib::Tag ctor
 MetaBundle::MetaBundle( const KURL &url, TagLib::Tag *tag, TagLib::AudioProperties *ap )
   : m_url( url )
-  , m_title( QString::fromLocal8Bit(TStringToQString( tag->title() ).latin1()).stripWhiteSpace() )
-  , m_artist( QString::fromLocal8Bit(TStringToQString( tag->artist() ).latin1()).stripWhiteSpace() )
-  , m_album( QString::fromLocal8Bit(TStringToQString( tag->album() ).latin1()).stripWhiteSpace() )
-  , m_year(    tag->year() ? QString::number( tag->year() ) : QString() )
-  , m_comment( QString::fromLocal8Bit( TStringToQString( tag->comment() ).latin1() ).stripWhiteSpace() )
+  , m_title(  TStringToQString( tag->title() ).stripWhiteSpace() )
+  , m_artist( TStringToQString( tag->artist() ).stripWhiteSpace() )
+  , m_album(  TStringToQString( tag->album() ).stripWhiteSpace() )
+  , m_year(   tag->year() ? QString::number( tag->year() ) : QString::null )
+  , m_comment( TStringToQString( tag->comment() ).stripWhiteSpace() )
   , m_genre(   TStringToQString( tag->genre() ).stripWhiteSpace() )
-  , m_track(   tag->track() ? QString::number( tag->track() ) : QString() )
+  , m_track(   tag->track() ? QString::number( tag->track() ) : QString::null )
 {
     init( ap );
 }
