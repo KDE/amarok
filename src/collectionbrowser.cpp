@@ -54,6 +54,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     KMenuBar* menu = new KMenuBar( this );
     menu->insertItem( i18n( "Actions" ), m_actionsMenu );
+    menu->insertSeparator();
     menu->insertItem( i18n( "First" ), m_cat1Menu );
     menu->insertItem( i18n( "Second" ), m_cat2Menu );
     menu->insertItem( i18n( "Third" ), m_cat3Menu );
