@@ -280,13 +280,13 @@ GstEngine::position() const
 Engine::State
 GstEngine::state() const
 {
-    if ( ! m_gst_thread )
+    if ( !m_gst_thread )
         return Engine::Empty;
     if ( m_eos )
         return Engine::Idle;
     if ( !m_currentInput )
         return Engine::Empty;
-    if ( ! m_currentInput->thread )
+    if ( !m_currentInput->thread )
         return Engine::Empty;
 
     switch ( gst_element_get_state( m_currentInput->thread ) )
@@ -393,7 +393,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     }
 
     /* link elements */
-    gst_element_link_many( input->src, input->spider, input->volume, input->queue, 0 );
+    gst_element_link_many( input->src, input->spider, input->volume, input->queue, m_gst_adder, 0 );
 
     if ( !gst_element_set_state( input->thread, GST_STATE_READY ) ) {
         delete input;
@@ -446,7 +446,7 @@ GstEngine::play( uint )  //SLOT
         return false;
     }
 
-    gst_element_link( m_currentInput->queue, m_gst_adder );
+//     gst_element_link( m_currentInput->queue, m_gst_adder );
 
     emit stateChanged( Engine::Playing );
     return true;
@@ -557,7 +557,7 @@ void GstEngine::timerEvent( QTimerEvent* )
                     kdDebug() << "[Gst-Engine] Fade-in finished.\n";
                     input->setState( InputPipeline::NO_FADE );
                 }
-                else {
+                else if ( input->thread ) {
                     // Set new value for fadeout volume element
                     double value = 1.0 - input->m_fade;
 //                     kdDebug() << "XFADE_IN: " << value << endl;
@@ -572,7 +572,7 @@ void GstEngine::timerEvent( QTimerEvent* )
                 // Fade finished?
                 if ( input->m_fade < 0.0 )
                     input->prepareToDie();
-                else {
+                else if ( input->thread ) {
                     // Set new value for fadeout volume element
                     double value = 1.0 - log10( ( 1.0 - input->m_fade ) * 9.0 + 1.0 );
 //                     kdDebug() << "FADE_OUT: " << value << endl;
@@ -590,7 +590,7 @@ void GstEngine::timerEvent( QTimerEvent* )
                     kdDebug() << "[Gst-Engine] XFade-in finished.\n";
                     input->setState( InputPipeline::NO_FADE );
                 }
-                else {
+                else if ( input->thread ) {
                     // Set new value for fadeout volume element
                     double value = 1.0 - input->m_fade;
 //                     kdDebug() << "XFADE_IN: " << value << endl;
@@ -605,7 +605,7 @@ void GstEngine::timerEvent( QTimerEvent* )
                 // Fade finished?
                 if ( input->m_fade < 0.0 )
                     input->prepareToDie();
-                else {
+                else if ( input->thread ) {
                     // Set new value for fadeout volume element
                     double value = 1.0 - log10( ( 1.0 - input->m_fade ) * 9.0 + 1.0 );
 //                     kdDebug() << "XFADE_OUT: " << value << endl;
@@ -953,7 +953,11 @@ InputPipeline::InputPipeline()
     if ( !( volume = GstEngine::createElement( "volume", thread ) ) ) { goto error; }
     if ( !( queue = GstEngine::createElement( "queue", thread ) ) ) { goto error; }
 
+    // SmartPointer
     g_object_add_weak_pointer( (GObject*) thread, (gpointer*) &thread );
+
+    gst_element_enable_threadsafe_properties( volume );
+    gst_element_enable_threadsafe_properties( queue );
 
     g_signal_connect( G_OBJECT( spider ), "eos", G_CALLBACK( GstEngine::eos_cb ), thread );
 
@@ -1006,21 +1010,23 @@ void InputPipeline::prepareToDie()
         {
             gst_element_set_state( thread, GST_STATE_PAUSED );
 
-            kdDebug() << k_funcinfo << "Waiting for queue to become empty.\n";
+            kdDebug() << k_funcinfo << "BEGIN Waiting for queue to become empty.\n";
 
             int filled = 1;
             int count = 100;
             while( filled && count ) {
                 gst_element_get( queue, "current-level-buffers", &filled, NULL );
-                ::usleep( 20000 ); // 20 msec
+                ::usleep( 50000 ); // 50 msec
                 count--;
             }
             if ( !count )
                 kdDebug() << k_funcinfo << "Count reached 0\n";
+
+            kdDebug() << k_funcinfo << "END Waiting for queue to become empty.\n";
         }
 
         if ( GstEngine::instance()->m_gst_thread )
-            gst_element_unlink( queue, GstEngine::instance()->m_gst_adder );
+            gst_element_unlink_many( src, spider, volume, queue, GstEngine::instance()->m_gst_adder, 0 );
     }
 
     m_killCounter = 20;

@@ -865,7 +865,7 @@ CollectionDB::getValueID( QString name, QString value, bool autocreate, bool use
     if ( useTempTables )
         name.append( "_temp" );
 
-    QString command = QString( "SELECT id FROM %1 WHERE name LIKE '%2';" )
+    QString command = QString( "SELECT id FROM '%1' WHERE name LIKE '%2';" )
                       .arg( name )
                       .arg( escapeString( value ) );
     execSql( command, &values, &names );
@@ -873,7 +873,7 @@ CollectionDB::getValueID( QString name, QString value, bool autocreate, bool use
     //check if item exists. if not, should we autocreate it?
     if ( values.isEmpty() && autocreate )
     {
-        command = QString( "INSERT INTO %1 ( name ) VALUES ( '%2' );" )
+        command = QString( "INSERT INTO '%1' ( name ) VALUES ( '%2' );" )
                   .arg( name )
                   .arg( escapeString( value ) );
 
@@ -1133,10 +1133,9 @@ CollectionDB::saveCover( const QString& keyword, const QPixmap& pix )
 
     QImage img( pix.convertToImage() );
 
-    QString fileName( QFile::encodeName( keyword ) );
-    fileName.replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ).append( ".png" );
-
-    img.save( m_coverDir.filePath( fileName.lower() ), "PNG");
+    QString fileName( keyword + ".png" );
+    
+    img.save( m_coverDir.filePath( fileName ), "PNG");
 
     emit coverFetched( keyword );
     emit coverFetched();
