@@ -13,7 +13,7 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
-#include "config.h"	// Has USE_MYSQL
+#include "config.h" // Has USE_MYSQL
 
 #include "Options1.h"
 #include "Options2.h"

@@ -411,6 +411,7 @@ OSDPreviewWidget::OSDPreviewWidget( const QString &appName, QWidget *parent, con
 {
     m_currentText = i18n( "OSD Preview - drag to reposition" );
     m_duration    = 0;
+    m_shadow      = AmarokConfig::osdDrawShadow();
 }
 
 void OSDPreviewWidget::mousePressEvent( QMouseEvent *event )

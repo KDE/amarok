@@ -583,7 +583,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             << escapeHTMLAttr( currentTrack.artist() )
             << escapeHTMLAttr( currentTrack.album() )
             << escapeHTMLAttr( m_db->albumImage( currentTrack.artist(), currentTrack.album() ) )
-            << i18n( "Click for information from amazon.com, right-click for menu." ) ) );
+            << i18n( "Click for information from amazon.%1, right-click for menu." ).arg( AmarokConfig::amazonLocale() ) ) );
 
     if ( !values.isEmpty() )
     {
@@ -591,12 +591,16 @@ void ContextBrowser::showCurrentTrack() //SLOT
         firstPlay.setTime_t( values[0].toUInt() );
         QDateTime lastPlay = QDateTime();
         lastPlay.setTime_t( values[1].toUInt() );
+
         const uint playtimes = values[2].toInt();
         const uint score = values[3].toInt();
-        browser->write( QStringx("%1<br>%2<br>%3<br>%4<br>")
+
+        QString scoreBox = "<table><tbody><tr><td><i>"+ QString::number( score ) +"</i></td><td><div class='sbouter'><div class='sbinner' style='width: "+ QString::number( score / 2 )+ "px;'></div></div></td><tr></tbody></table>";
+
+        browser->write( QStringx("%1<br>%2%3<br>%4<br>")
             .args( QStringList()
                 << i18n( "Track played once", "Track played %n times", playtimes )
-                << i18n( "Score: %1" ).arg( score )
+                << scoreBox
                 << i18n( "Last play: %1" ).arg( KGlobal::locale()->formatDateTime( lastPlay, true /* short */ ) )
                 << i18n( "First play: %1" ).arg( KGlobal::locale()->formatDateTime( firstPlay, true /* short */ ) )
                        ) );
