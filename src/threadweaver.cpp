@@ -255,7 +255,9 @@ bool
 CollectionReader::doJob()
 {
     QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Start ) );
-    m_parent->purgeDirCache();
+    
+    if ( !m_incremental )
+        m_parent->purgeDirCache();
 
     QStringList entries;
     //iterate over all folders
