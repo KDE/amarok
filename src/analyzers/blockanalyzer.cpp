@@ -2,6 +2,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
+#define DEBUG_PREFIX "BlockAnalyzer"
+
 #include "blockanalyzer.h"
 #include "debug.h"
 #include <kconfig.h>
@@ -23,7 +25,7 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
         , m_columns( 0 )         //uint
         , m_rows( 0 )            //uint
         , m_y( 0 )               //uint
-        , m_glow( 1, 1 )
+        , m_glow( 1, 1 ) // null qpixmaps are crash victims
         , m_scope( MIN_COLUMNS ) //Scope
         , m_store( 1 << 8, 0 )   //vector<uint>
 {
@@ -69,12 +71,26 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
 
       m_yscale[m_rows] = 0;
 
+      determineStep();
+
       paletteChange( palette() );
    }
    else if( width() > e->oldSize().width() || height() > e->oldSize().height() )
       drawBackground();
 
    analyze( m_scope );
+}
+
+void
+BlockAnalyzer::determineStep()
+{
+    // falltime is dependent on rowcount due to our digital resolution
+    // I calculated the value 30 based on some trial and error
+
+    const double fallTime = 30 * m_rows;
+    m_step = double(m_rows * timeout()) / fallTime;
+
+    debug() << "FallTime: " << fallTime << endl;
 }
 
 void
@@ -120,14 +136,12 @@ BlockAnalyzer::analyze( const Analyzer::Scope &s )
       for( y = 0; m_scope[x] < m_yscale[y]; ++y )
           ;
 
-      //too high is not fatal
-      //higher than stored value means we are falling
-      //fall gradually
-      //m_store is twice size of regular units so falling is slower
-      if( y * 2 > m_store[x] )
-         y = ++m_store[x] / 2 ;
+      // this is opposite to what you'd think, higher than y
+      // means the bar is lower than y (physically)
+      if( (float)y > m_store[x] )
+          y = int(m_store[x] += m_step);
       else
-         m_store[x] = y * 2;
+          m_store[x] = y;
 
       //we start bltting from the top and go down
       //so blt blanks first, then blt glow blocks
@@ -246,8 +260,10 @@ BlockAnalyzer::mousePressEvent( QMouseEvent *e )
 
         const int id = menu.exec( e->globalPos() );
 
-        if ( id != -1 )
+        if( id != -1 ) {
             changeTimeout( id );
+            determineStep();
+        }
     }
     else
         e->ignore();

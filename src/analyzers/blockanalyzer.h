@@ -19,7 +19,7 @@ class BlockAnalyzer : public Analyzer::Base2D
 {
 public:
     BlockAnalyzer( QWidget* );
-    ~BlockAnalyzer();
+   ~BlockAnalyzer();
 
     static const uint HEIGHT      = 2;
     static const uint WIDTH       = 4;
@@ -35,16 +35,19 @@ protected:
     virtual void paletteChange( const QPalette& );
 
     void drawBackground();
+    void determineStep();
 
 private:
     QPixmap* const glow() { return &m_glow; }
 
-    uint m_columns, m_rows;    //current size values
-    uint m_y;                  //y-offset
+    uint m_columns, m_rows;      //number of rows and columns of blocks
+    uint m_y;                    //y-offset from top of widget
     QPixmap m_glow;
-    Scope m_scope;             //so we don't create a vector every frame
-    std::vector<uint> m_store; //store previous values
+    Scope m_scope;               //so we don't create a vector every frame
+    std::vector<float> m_store;  //current bar heights
     std::vector<float> m_yscale;
+
+    float m_step; //rows to fall per frame
 };
 
 #endif
