@@ -411,7 +411,7 @@ Playlist::playNextTrack()
 
     if ( m_stopAfterCurrent )
     {
-        stopAfterCurrent( false ); //toggle the value.
+        m_stopAfterCurrent = false;
         activate( 0 );
         return;
     }
@@ -535,13 +535,6 @@ Playlist::queue( QListViewItem *item )
 
     updateNextPrev();
     #undef item
-}
-
-void
-Playlist::stopAfterCurrent( bool shouldStop )
-{
-    kdDebug() << "[PLAYLIST]: Stopping after current song? ... " << shouldStop << endl;
-    m_stopAfterCurrent = shouldStop;
 }
 
 void
@@ -1722,7 +1715,8 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     if( isCurrent )
     {
        amaroK::actionCollection()->action( "pause" )->plug( &popup );
-       popup.insertItem( SmallIconSet( "player_stop" ), m_stopAfterCurrent ? i18n( "&Keep Playing After Track" ) : i18n( "&Stop Playing After Track" ), STOP_DONE );
+       popup.insertItem( i18n( "&Stop Playing After Track" ), STOP_DONE );
+       popup.setItemChecked( STOP_DONE, m_stopAfterCurrent );
     }
 
     popup.insertSeparator();
@@ -1767,8 +1761,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         break;
 
     case STOP_DONE:
-        // we could change the stopAfterCurrent( bool ) to stopAfterCurrent(), but imho, this is much more readable and intuitive - seb
-        stopAfterCurrent( !m_stopAfterCurrent );
+        m_stopAfterCurrent = !popup.isItemChecked( STOP_DONE );
         break;
 
     case VIEW:
