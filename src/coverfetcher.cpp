@@ -4,7 +4,6 @@
 #include "coverfetcher.h"
 
 #include <qdom.h>
-#include <qpixmap.h>
 #include <qvbox.h>
 
 #include <kdebug.h>
@@ -18,8 +17,16 @@
 CoverFetcher::CoverFetcher( const QString& license, QObject* parent)
     : QObject( parent, "CoverFetcher" )
     , m_license( license )
+    , m_buffer( 0 )
+    , m_bufferIndex( 0 )
 {
     kdDebug() << k_funcinfo << endl;
+}
+
+
+CoverFetcher::~CoverFetcher()
+{
+    delete[] m_buffer;
 }
 
 
@@ -31,10 +38,6 @@ void
 CoverFetcher::getCover( const QString& keyword, QueryMode mode )
 {
     kdDebug() << k_funcinfo << endl;
-    
-    // Initialisations
-    m_xmlDocument = QString();
-    m_image = QByteArray();
     m_keyword = keyword;
         
     QString url = QString( "http://xml.amazon.com/onca/xml3?t=webservices-20&dev-t=%1"
@@ -83,9 +86,10 @@ CoverFetcher::xmlResult( KIO::Job* job ) //SLOT
                           .namedItem( "Details" )
                           .namedItem( "ImageUrlLarge" )
                           .firstChild().toText().nodeValue();
-    
+   
     kdDebug() << "imageUrl: " << imageUrl << endl;
-
+    m_buffer = new uchar[BUFFER_SIZE];
+    
     KIO::TransferJob* imageJob = KIO::get( imageUrl, false, false );
     connect( imageJob, SIGNAL( result( KIO::Job* ) ),
              this,       SLOT( imageResult( KIO::Job* ) ) ); 
@@ -97,12 +101,16 @@ CoverFetcher::xmlResult( KIO::Job* job ) //SLOT
 void 
 CoverFetcher::imageData( KIO::Job*, const QByteArray& data ) //SLOT
 {
-    int oldSize = m_image.size();
-    m_image.resize( m_image.size() + data.size() );
-    
-    //append new data to array
-    for ( uint i = 0; i < data.size(); i++ )
-        m_image[ oldSize + i ] = data[ i ];
+    if ( m_bufferIndex + (uint) data.size() >= BUFFER_SIZE ) {
+        KMessageBox::error( 0, i18n( "CoverFetcher buffer overflow. Image is bigger than <i>%1</i> bytes. Aborting." )
+                               .arg( BUFFER_SIZE ) );
+        deleteLater();
+        return;
+    }
+        
+    //append new chunk of data to buffer
+    memcpy( m_buffer + m_bufferIndex, data.data(), data.size() );
+    m_bufferIndex += data.size();
 }
 
 
@@ -117,13 +125,15 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
         deleteLater();
         return;
     }
+    m_pixmap.loadFromData( m_buffer, m_bufferIndex );
+    
     QVBox* container = new QVBox( 0, 0, WDestructiveClose );
     container->setCaption( m_keyword + " - amaroK" );
     connect( this, SIGNAL( destroyed() ), container, SLOT( deleteLater() ) );
     
     QWidget* widget = new QWidget( container );
-    widget->setPaletteBackgroundPixmap( QPixmap( m_image ) );
-    widget->setFixedSize( QPixmap( m_image ).size() );
+    widget->setPaletteBackgroundPixmap( m_pixmap );
+    widget->setFixedSize( m_pixmap.size() );
     
     QHBox* buttons = new QHBox( container );
     KPushButton* save = new KPushButton( i18n( "Save" ), buttons );
@@ -142,7 +152,7 @@ CoverFetcher::saveCover() //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     
-    emit imageReady( m_keyword, QPixmap( m_image ) );
+    emit imageReady( m_keyword, m_pixmap );
     deleteLater();
 }
 

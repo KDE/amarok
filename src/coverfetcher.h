@@ -4,8 +4,9 @@
 #ifndef AMAROK_COVERFETCHER_H
 #define AMAROK_COVERFETCHER_H
 
-#include <qobject.h>         //baseclass
-#include <qstring.h>         //stack alloc
+#include <qobject.h>     //baseclass
+#include <qpixmap.h>     //baseclass
+#include <qstring.h>     //stack alloc
 
 namespace KIO {
     class Job;
@@ -19,7 +20,8 @@ class CoverFetcher : public QObject
         enum QueryMode { lite, heavy };
         
         CoverFetcher( const QString& license, QObject* parent = 0 );
-    
+        ~CoverFetcher();
+        
         void setLicense( const QString& license ) { m_license = license; }
         void getCover( const QString& keyword, QueryMode mode = lite );
         
@@ -34,10 +36,15 @@ class CoverFetcher : public QObject
         void saveCover();
                 
     private:
+        static const uint BUFFER_SIZE = 2000000; // 2mb
+        
         QString m_license;
         QString m_xmlDocument;
         QString m_keyword;
-        QByteArray m_image;
+        
+        uchar* m_buffer;
+        uint m_bufferIndex;
+        QPixmap m_pixmap;
 };    
     
 
