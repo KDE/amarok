@@ -5,7 +5,7 @@ RootName: @amarok.kde.org/amarok:$SOFTWAREVERSION
 DisplayName: amaroK
 ShortName: amarok
 Maintainer: The amaroK Developers - http://amarok.kde.org
-Packager: Anonymous <anonymous@nowhere.com>
+Packager: Mark Kretschmann <markey@web.de>
 Summary: amaroK is the audio player for KDE.
 SoftwareVersion: 1.0
 
@@ -29,11 +29,13 @@ echo '*' | import
 
 [Prepare]
 # Dependency checking
-require @kde.org/kdelibs 3.2
+requireAtLeastVersion @kde.org/kdelibs 3.2
+requireAtLeastVersion @kde.org/taglib 1.0
 
 [Install]
 # Put your installation script here
 installExe bin/*
+installDesktop "Qt/KDE/AudioVideo" ./share/applications/kde/amarok.desktop
 
 [Uninstall]
 # Usually just the following line is enough to uninstall everything
