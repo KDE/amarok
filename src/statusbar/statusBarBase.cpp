@@ -341,8 +341,10 @@ StatusBar::toggleProgressWindow( bool show ) //slot
 void
 StatusBar::hideMainProgressBar()
 {
-    if( !m_popupProgress->isShown() )
+    if( !m_popupProgress->isShown() ) {
+        m_mainProgressBar->setProgress( 0 );
         progressBox()->hide();
+    }
 }
 
 void
