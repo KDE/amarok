@@ -3,7 +3,7 @@
                            -------------------
   begin                : Fre Nov 15 2002
   copyright            : (C) 2002 by Mark Kretschmann
-  email                :
+  email                : markey@web.de
 ***************************************************************************/
 
 /***************************************************************************
@@ -131,7 +131,6 @@ void PlaylistSideBar::close()
 
    
 
-
 // CLASS BrowserWin =====================================================================
 
 BrowserWin::BrowserWin( QWidget *parent, const char *name )
@@ -193,8 +192,9 @@ BrowserWin::~BrowserWin()
     if( fileBrowser != NULL ) fileBrowser->writeConfig( kapp->sessionConfig(), "filebrowser" );
 }
 
-
-// INIT -------------------------------------------------------------
+/////////////////////////////////////////////////////////////////////////////////////
+// INIT
+/////////////////////////////////////////////////////////////////////////////////////
 
 void BrowserWin::initChildren()
 {
@@ -207,8 +207,8 @@ void BrowserWin::initChildren()
 
     m_pButtonUndo    = new ExpandButton( i18n( "Undo" ), this );
     m_pButtonRedo    = new ExpandButton( i18n( "Redo" ), this );
-    m_pButtonUndo->        setEnabled( false );
-    m_pButtonRedo->        setEnabled( false );
+    m_pButtonUndo      ->  setEnabled  ( false );
+    m_pButtonRedo      ->  setEnabled  ( false );
 
     m_pButtonPlay    = new ExpandButton( i18n( "Play" ), this );
     m_pButtonPause   = new ExpandButton( i18n( "Pause" ), m_pButtonPlay );
@@ -216,7 +216,6 @@ void BrowserWin::initChildren()
     m_pButtonNext    = new ExpandButton( i18n( "Next" ), m_pButtonPlay );
     m_pButtonPrev    = new ExpandButton( i18n( "Previous" ), m_pButtonPlay );
     //</Buttons>
-
     
     { //</FileBrowser>
         KDevFileSelector *w = new KDevFileSelector( m_pSideBar, "FileBrowser" );
@@ -258,120 +257,16 @@ void BrowserWin::initChildren()
     //</Layout>
 }
 
-
-// METHODS -----------------------------------------------------------------
-
-void BrowserWin::closeEvent( QCloseEvent *e )
-{
-    e->accept();
-
-    emit signalHide();
-}
-
-
-void BrowserWin::moveEvent( QMoveEvent * )
-{
-    // FIXME: needed for PlaylistWidget transparency
-    // TODO:  wait for damage extension and new xserver?
-    /*    m_pPlaylistWidget->repaint();
-        m_pPlaylistWidget->viewport()->repaint();*/
-}
-
-
-void BrowserWin::paintEvent( QPaintEvent * )
-{
-    /*    m_pPlaylistWidget->repaint();
-        m_pPlaylistWidget->viewport()->repaint();*/
-}
-
-
-// SLOTS --------------------------------------------------------------------
-
-//<mxcl> MAKE_IT_CLEAN: move to browserWidget
-void BrowserWin::setBrowserURL( const KURL& url )
-{
-//    m_pBrowserLineEdit->setEditURL( url.prettyURL( 1 ) );
-}
-
-
-void BrowserWin::slotBrowserDoubleClicked( QListViewItem* pItem )
-{
-/*    if ( pItem )
-    {
-        FileBrowserItem *pBrowserItem = static_cast<FileBrowserItem *>( pItem );
-        KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, pBrowserItem->url() );
-
-        if ( pBrowserItem->text( 0 ) == ".." )
-        {
-            m_pBrowserWidget->cachedPath = m_pBrowserWidget->m_pDirLister->url().fileName(true);
-            m_pBrowserWidget->readDir( m_pBrowserWidget->m_pDirLister->url().upURL() );
-        }
-
-        else if ( pBrowserItem->isDir() )
-        {
-            m_pBrowserWidget->readDir( fileItem.url() );
-        }
-
-        else m_pPlaylistWidget->insertMedia( fileItem.url() );
-    }*/
-}
-
-
-void BrowserWin::keyPressEvent( QKeyEvent *e )
-{
-  //if the keypress is given to this widget then nothing is in focus
-  //if the keypress was passed here from a childWidget that couldn't handle it then
-  //we should note what is in focus and not send it back!
-
-  //FIXME WARNING! there is a substantial risk of infinite looping here if the event is ignored by child event
-  //               handlers it will be passed back to this function!
-
-  //FIXME, you managed an infinite loop here. Damn (using filebrowserlineedit)
-
-  kdDebug() << "BrowserWin::keyPressEvent()\n";
-
-  switch( e->key() )
-  {
-  case Qt::Key_Up:
-  case Qt::Key_Down:
-  case Qt::Key_Left:
-  case Qt::Key_Right:
-  case Qt::Key_Prior:
-  case Qt::Key_Next:
-//  case Qt::Key_Return:
-//  case Qt::Key_Enter:
-  case Qt::Key_Delete:
-     if( !m_pPlaylistWidget->hasFocus() )
-     {
-        //if hasFocus() then this event came from there, and we don't want to risk an infinite loop!
-        m_pPlaylistWidget->setFocus();
-        QApplication::sendEvent( m_pPlaylistWidget, e );
-     }
-     break;
-/*
-  //removed as risky, although useful
-  default:
-     if( !m_pPlaylistLineEdit->hasFocus() )
-     {
-        //if hasFocus() then this event came from there (99% sure)
-        m_pPlaylistLineEdit->setFocus();
-        QApplication::sendEvent( m_pPlaylistLineEdit, e );
-     }
-*/
-  }
-
-  e->accept(); //consume the event, ALERT! keypresses won't propagate to parent (good thing)
-}
-
+/////////////////////////////////////////////////////////////////////////////////////
+// PUBLIC METHODS
+/////////////////////////////////////////////////////////////////////////////////////
 
 void BrowserWin::slotUpdateFonts()
 {
     QFont font;
 
     if ( pApp->config()->useCustomFonts() )
-    {
-      font = pApp->config()->browserWindowFont();
-    }
+        font = pApp->config()->browserWindowFont();
 
     m_pSideBar->setPageFont( font );
     m_pPlaylistWidget->setFont( font );
@@ -436,5 +331,63 @@ static void setPaletteRecursively( QWidget* widget, const QPalette &pal, const Q
         }
     }        
 }
+
+/////////////////////////////////////////////////////////////////////////////////////
+// PRIVATE METHODS
+/////////////////////////////////////////////////////////////////////////////////////
+
+void BrowserWin::closeEvent( QCloseEvent *e )
+{
+    e->accept();
+    emit signalHide();
+}
+
+
+void BrowserWin::keyPressEvent( QKeyEvent *e )
+{
+  //if the keypress is given to this widget then nothing is in focus
+  //if the keypress was passed here from a childWidget that couldn't handle it then
+  //we should note what is in focus and not send it back!
+
+  //FIXME WARNING! there is a substantial risk of infinite looping here if the event is ignored by child event
+  //               handlers it will be passed back to this function!
+
+  //FIXME, you managed an infinite loop here. Damn (using filebrowserlineedit)
+
+  kdDebug() << "BrowserWin::keyPressEvent()\n";
+
+  switch( e->key() )
+  {
+  case Qt::Key_Up:
+  case Qt::Key_Down:
+  case Qt::Key_Left:
+  case Qt::Key_Right:
+  case Qt::Key_Prior:
+  case Qt::Key_Next:
+//  case Qt::Key_Return:
+//  case Qt::Key_Enter:
+  case Qt::Key_Delete:
+     if( !m_pPlaylistWidget->hasFocus() )
+     {
+        //if hasFocus() then this event came from there, and we don't want to risk an infinite loop!
+        m_pPlaylistWidget->setFocus();
+        QApplication::sendEvent( m_pPlaylistWidget, e );
+     }
+     break;
+/*
+  //removed as risky, although useful
+  default:
+     if( !m_pPlaylistLineEdit->hasFocus() )
+     {
+        //if hasFocus() then this event came from there (99% sure)
+        m_pPlaylistLineEdit->setFocus();
+        QApplication::sendEvent( m_pPlaylistLineEdit, e );
+     }
+*/
+  }
+
+  e->accept(); //consume the event, ALERT! keypresses won't propagate to parent (good thing)
+}
+
 
 #include "browserwin.moc"

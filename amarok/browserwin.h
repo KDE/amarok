@@ -34,9 +34,7 @@ class QHideEvent;
 class QCloseEvent;
 class QColor;
 class QListViewItem;
-class QPaintEvent;
 class QPoint;
-class QMoveEvent;
 class QSplitter;
 class QVBox;
 
@@ -91,11 +89,6 @@ private:
 
 
 
-
-/**
- *@author mark
- */
-
 // CLASS BrowserWin =====================================================================
 
 class BrowserWin : public QWidget
@@ -133,25 +126,22 @@ class BrowserWin : public QWidget
         KLineEdit *m_pPlaylistLineEdit;
     
     public slots:
-        void slotBrowserDoubleClicked( QListViewItem *pItem );
         void slotUpdateFonts();
         void savePlaylist();
 
-    private slots:
-        void setBrowserURL( const KURL& ); //sets browser line edit to KURL
-        void slotAddLocation();
-                
     signals:
         void signalHide();
 
     private:
         void initChildren();
         void closeEvent( QCloseEvent * );
-        void moveEvent( QMoveEvent * );
-        void paintEvent( QPaintEvent * );
         void keyPressEvent( QKeyEvent * );
         
         PlaylistSideBar *m_pSideBar;
+
+    private slots:
+        void slotAddLocation();
+                
 };
 
 #endif
