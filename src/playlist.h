@@ -59,9 +59,6 @@ class Playlist : private KListView, public EngineObserver
     public:
         ~Playlist();
 
-        void insertMedia( const KURL &url ) { appendMedia( url ); } //DEPRECATED
-        void insertMedia( const KURL::List &list ) { appendMedia( list ); } //DEPRECATED
-
         void appendMedia( KURL::List, bool play = false, bool preventDoubles = false );
         void queueMedia( const KURL::List&/*, bool preventDoubles = false*/ );
         bool isEmpty() const { return childCount() == 0; }
@@ -125,7 +122,7 @@ class Playlist : private KListView, public EngineObserver
         void saveUndoState();
         void columnOrderChanged();
         void updateNextPrev();
-        void activate( QListViewItem*, bool = true );
+        void activate( QListViewItem* );
 
     private:
         Playlist( QWidget*, KActionCollection*, const char* = 0 );
@@ -152,7 +149,6 @@ class Playlist : private KListView, public EngineObserver
         void contentsDragEnterEvent( QDragEnterEvent* );
         void contentsDragMoveEvent( QDragMoveEvent* );
         void contentsDragLeaveEvent( QDragLeaveEvent* );
-        void showEvent( QShowEvent* ) { setCurrentTrack( m_currentTrack ); }
         #ifdef PURIST
         //KListView imposes hand cursor so override it
         void contentsMouseMoveEvent( QMouseEvent *e ); { QListView::contentsMouseMoveEvent( e ); }
@@ -171,9 +167,9 @@ class Playlist : private KListView, public EngineObserver
         QListViewItem *m_marker;       //track that has the drag/drop marker under it
 
         //NOTE these container types were carefully chosen
-        QString                    m_lastSearch; //the last search token
-        QPtrList<PlaylistItem>     m_prevTracks; //the previous history
-        QPtrList<PlaylistItem>     m_nextTracks; //the tracks to be played after the current track
+        QString                m_lastSearch; //the last search token
+        QPtrList<PlaylistItem> m_prevTracks; //the previous history
+        QPtrList<PlaylistItem> m_nextTracks; //the tracks to be played after the current track
 
         ThreadWeaver* const m_weaver;
         int           m_firstColumn;
