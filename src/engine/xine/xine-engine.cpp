@@ -215,6 +215,8 @@ XineEngine::scope()
             free( buf );
             xine_list_delete_current( myList );
 
+            if( xine_list_is_empty( myList ) ) break;
+
             //xinelibs are gay, provide no get current list item function
             buf = (audio_buffer_t*)xine_list_prev_content( myList );
         }
@@ -232,7 +234,7 @@ XineEngine::scope()
         diff *= myMetronom->audio_samples;
         diff /= myMetronom->pts_per_smpls;
 
-        debug() << "chosen: " << best_buf->vpts << "| diff: " << best_buf->vpts - current_vpts << "buffer_offset: " << diff << "| list size: " << x << endl;
+        //debug() << "chosen: " << best_buf->vpts << "| diff: " << best_buf->vpts - current_vpts << " buffer_offset: " << diff << "| list size: " << x << endl;
 
 
         if( diff+512 > best_buf->num_frames ) { debug() << "Not enough frames in this buffer!\n"; return &v; }
