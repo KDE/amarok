@@ -145,6 +145,7 @@ class Playlist : private KListView, public EngineObserver
         void writeTag( QListViewItem*, const QString&, int );
         void slotHeaderResized( int, int, int );
         void saveUndoState();
+        void columnOrderChanged();
 
     private:
         PlaylistItem *restoreCurrentTrack();
@@ -196,7 +197,8 @@ class Playlist : private KListView, public EngineObserver
 
         QTimer*       const m_glowTimer;
         ThreadWeaver* const m_weaver;
-
+        int           m_firstColumn;
+        
         KAction *m_undoButton;
         KAction *m_redoButton;
         KAction *m_clearButton;

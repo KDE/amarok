@@ -35,6 +35,7 @@
 #include <kstandarddirs.h>   //KGlobal::dirs()
 #include <kstdaction.h>
 #include <kurldrag.h>
+
 #include <qclipboard.h> //copyToClipboard(), slotMouseButtonPressed()
 #include <qcolor.h>
 #include <qevent.h>
@@ -114,17 +115,20 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     //FIXME what is this connection for?
     //connect( this, SIGNAL( contentsMoving( int, int ) ),
     //         this,   SLOT( slotEraseMarker() ) );
-    connect( this, SIGNAL( doubleClicked( QListViewItem* ) ),
-             this,   SLOT( activate( QListViewItem* ) ) );
-    connect( this, SIGNAL( returnPressed( QListViewItem* ) ),
-             this,   SLOT( activate( QListViewItem* ) ) );
-    connect( this, SIGNAL( mouseButtonPressed( int, QListViewItem*, const QPoint&, int ) ),
-             this,   SLOT( slotMouseButtonPressed( int, QListViewItem*, const QPoint&, int ) ) );
-    connect( this, SIGNAL( itemRenamed( QListViewItem*, const QString&, int ) ),
-             this,   SLOT( writeTag( QListViewItem*, const QString&, int ) ) );
-    connect( this, SIGNAL( aboutToClear() ),
-             this,   SLOT( saveUndoState() ) );
+    connect( this,     SIGNAL( doubleClicked( QListViewItem* ) ),
+             this,       SLOT( activate( QListViewItem* ) ) );
+    connect( this,     SIGNAL( returnPressed( QListViewItem* ) ),
+             this,       SLOT( activate( QListViewItem* ) ) );
+    connect( this,     SIGNAL( mouseButtonPressed( int, QListViewItem*, const QPoint&, int ) ),
+             this,       SLOT( slotMouseButtonPressed( int, QListViewItem*, const QPoint&, int ) ) );
+    connect( this,     SIGNAL( itemRenamed( QListViewItem*, const QString&, int ) ),
+             this,       SLOT( writeTag( QListViewItem*, const QString&, int ) ) );
+    connect( this,     SIGNAL( aboutToClear() ),
+             this,       SLOT( saveUndoState() ) );
+    connect( header(), SIGNAL( indexChange( int, int, int ) ),
+             this,       SLOT( columnOrderChanged() ) );
 
+                          
     //FIXME causes problems with saving playlists
     //connect( header(), SIGNAL(sizeChange( int, int, int )), SLOT(slotHeaderResized( int, int, int )) );
 
@@ -156,8 +160,9 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     engineStateChanged( EngineBase::Empty ); //initialise state of UI
     paletteChange( palette() ); //sets up glowColors
     restoreLayout( KGlobal::config(), "PlaylistColumnsLayout" );
+    columnOrderChanged();
 
-
+    
     header()->installEventFilter( this );
 
 
@@ -873,11 +878,23 @@ void Playlist::setCurrentTrack( PlaylistItem *item )
     m_currentTrack = item;
     m_cachedTrack  = 0; //invalidate cached pointer
 
-    if( item ) item->setHeight( fontMetrics().height() * 2 );
-    if( prev && item != prev ) prev->invalidateHeight();
-
-//    repaintItem( prev );
-//    repaintItem( item );
+    if( item ) {
+        //remove pixmap in all columns
+        for ( int i = 0; i < header()->count(); i++ )
+            item->setPixmap( i, QPixmap() );
+        
+        //display "Play" icon
+        item->setPixmap( m_firstColumn, SmallIcon( "artsbuilderexecute" ) );
+        item->setHeight( fontMetrics().height() * 2 );
+    }
+            
+    if( prev && item != prev ) {
+        //remove pixmap in all columns
+        for ( int i = 0; i < header()->count(); i++ )
+            prev->setPixmap( i, QPixmap() );
+        
+        prev->invalidateHeight();
+    }
 
     m_ac->action( "prev" )->setEnabled( isTrackBefore() );
     m_ac->action( "next" )->setEnabled( isTrackAfter() );
@@ -935,6 +952,22 @@ void Playlist::saveUndoState() //SLOT
 }
 
 
+void Playlist::columnOrderChanged() //SLOT
+{    
+    kdDebug() << k_funcinfo << endl;
+    
+    //determine first visible column
+    for ( m_firstColumn = 0; m_firstColumn < header()->count(); m_firstColumn++ )
+        if ( header()->sectionSize( header()->mapToSection( m_firstColumn ) ) )
+            break;
+
+    //convert to logical column
+    m_firstColumn = header()->mapToSection( m_firstColumn );            
+    //force redraw of item
+    setCurrentTrack( currentTrack() );
+}
+            
+            
 bool Playlist::saveState( QStringList &list )
 {
     //used by undo system, save state of playlist to undo/redo list
@@ -1433,8 +1466,10 @@ bool Playlist::eventFilter( QObject *o, QEvent *e )
             else hideColumn( col );
         }
 
-        return TRUE; // eat event
-
+        //determine first visible column again, since it has changed
+        columnOrderChanged();
+        //eat event
+        return TRUE;
     }
 
     // not in slotMouseButtonPressed because we need to disable normal usage.

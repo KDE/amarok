@@ -17,13 +17,11 @@
 
 #include "amarokconfig.h"
 #include "app.h"
-#include "enginecontroller.h"
 #include "metabundle.h"
 #include "playlistitem.h"
 #include "playlist.h"
 
 #include <qcolor.h>
-#include <qheader.h>
 #include <qlistview.h>
 #include <qpainter.h>
 #include <qpen.h>
@@ -338,15 +336,6 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     //TODO  don't read audioproperties if their columns aren't shown and re-read tags if those columns are then shown
     //if( column == Length && text( Length ).isEmpty() ) listView()->readAudioProperties( this );
 
-    //determine first visible column
-    QHeader* header = listView()->header();
-    int firstCol;
-    for ( firstCol = 0; firstCol < header->count(); firstCol++ )
-        if ( header->sectionSize( header->mapToSection( firstCol ) ) )
-            break;
-    //convert to logical column
-    firstCol = header->mapToSection( firstCol );
-
     //flicker-free drawing
     static QPixmap buffer;
     buffer.resize( width, height() );
@@ -362,25 +351,8 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 
     int playNext = listView()->m_nextTracks.findRef( this ) + 1;
 
-    //FIXME HACK, but I don't know how to restore the height otherwise; calling invalidateHeight inside of
-    //paintCell() slows things down extremely
-    if ( height() != listView()->fontMetrics().height() * 2 )
-        m_cachedHeight = height();
-
     if( this == listView()->currentTrack() )
     {
-        //FIXME really this shouldn't be done in the paint event, it'll be set up to 40 times per second
-
-        EngineBase::EngineState state = EngineController::engine()->state();
-        if( column == firstCol && (state == EngineBase::Playing || state == EngineBase::Paused) )
-            //display "Play" icon
-            setPixmap( column, SmallIcon( "artsbuilderexecute" ) );
-        else
-            //hide "Play" icon
-            setPixmap( column, 0 );
-
-        setHeight( listView()->fontMetrics().height() * 2 );
-
         QColorGroup glowCg = cg; //shallow copy
 
         glowCg.setColor( QColorGroup::Base, glowBase );
@@ -391,14 +363,11 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 
     } else {
 
-        //hide "Play" icon
-        setPixmap( column, 0 );
-        setHeight( m_cachedHeight );
         KListViewItem::paintCell( &painterBuf, cg, column, width, align );
     }
 
     //figure out if we are in the actual physical first column
-    if( playNext && column == firstCol )
+    if( playNext && column == listView()->m_firstColumn )
     {
         QString str = QString::number( playNext );
 
