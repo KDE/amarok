@@ -704,7 +704,7 @@ void Playlist::activate( QListViewItem *lvi, bool rememberTrack ) //SLOT
 
     PlaylistItem* const item = (PlaylistItem*)lvi;
 
-    if( rememberTrack && item != NULL )
+    if( rememberTrack && item )
     {
         m_prevTracks.insert( 0, item ); //is push_back, see QPtrStack docs
 
@@ -714,7 +714,7 @@ void Playlist::activate( QListViewItem *lvi, bool rememberTrack ) //SLOT
     }
 
 
-    if( item != NULL )
+    if( item )
     {
         //if we are playing something from the next tracks list, remove it from the list
         //do it here rather than in setCurrentTrack(), because if playback fails we don't
@@ -791,7 +791,7 @@ void Playlist::engineStateChanged( EngineBase::EngineState state )
 
         //don't leave currentTrack in undefined glow state
         Glow::counter = 63;
-        if ( currentTrack() != NULL )
+        if ( currentTrack() )
         {
             currentTrack()->m_playing = false;
             currentTrack()->invalidateHeight();
