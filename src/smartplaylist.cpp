@@ -129,6 +129,7 @@ void SmartPlaylistView::loadDefaultPlaylists()
     const QStringList artists = CollectionDB::instance()->artistList();
     SmartPlaylist *item;
     QueryBuilder qb;
+    int c = 0;
 
     // album / artist / genre / title / year / comment / track / bitrate / length / samplerate / path
 
@@ -136,11 +137,11 @@ void SmartPlaylistView::loadDefaultPlaylists()
     qb.initSQLDrag();
     qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
 
     item = new SmartPlaylist( i18n( "All Collection" ), qb.query(), this );
     item->setPixmap( 0, SmallIcon("kfm") );
-    item->setKey( 1 );
+    item->setKey( ++c );
 
     /********** Favorite Tracks **************/
     qb.initSQLDrag();
@@ -148,7 +149,7 @@ void SmartPlaylistView::loadDefaultPlaylists()
     qb.setLimit( 0, 15 );
 
     item = new SmartPlaylist( i18n( "Favorite Tracks" ), qb.query(), this );
-    item->setKey( 2 );
+    item->setKey( ++c );
     foreach( artists ) {
         qb.initSQLDrag();
         qb.addMatch( QueryBuilder::tabArtist, *it );
@@ -164,7 +165,7 @@ void SmartPlaylistView::loadDefaultPlaylists()
     qb.setLimit( 0, 15 );
 
     item = new SmartPlaylist( i18n( "Most Played" ), qb.query(), this );
-    item->setKey( 3 );
+    item->setKey( ++c );
     foreach( artists ) {
         qb.initSQLDrag();
         qb.addMatch( QueryBuilder::tabArtist, *it );
@@ -180,7 +181,7 @@ void SmartPlaylistView::loadDefaultPlaylists()
     qb.setLimit( 0, 15 );
 
     item = new SmartPlaylist( i18n( "Newest Tracks" ), qb.query(), this );
-    item->setKey( 4 );
+    item->setKey( ++c );
     foreach( artists ) {
         qb.initSQLDrag();
         qb.addMatch( QueryBuilder::tabArtist, *it );
@@ -196,12 +197,12 @@ void SmartPlaylistView::loadDefaultPlaylists()
     qb.setLimit( 0, 15 );
 
     item = new SmartPlaylist( i18n( "Last Played" ), qb.query(), this );
-    item->setKey( 5 );
+    item->setKey( ++c );
 
     /********** Never Played **************/
     item = new SmartPlaylist( i18n( "Never Played" ), QString(), this );
     item->setDragEnabled( true ); //because we pass QString() in the ctor
-    item->setKey( 6 );
+    item->setKey( ++c );
     item->sqlForUrls =
             "SELECT tags.url "
             "FROM tags, artist "
@@ -210,13 +211,13 @@ void SmartPlaylistView::loadDefaultPlaylists()
 
     /********** Genres **************/
     item = new SmartPlaylist( i18n( "Genres" ), QString(), this );
-    item->setKey( 7 );
+    item->setKey( ++c );
     foreach( genres ) {
         qb.initSQLDrag();
         qb.addMatch( QueryBuilder::tabGenre, *it );
         qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
         qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
-        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
+        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
 
         new SmartPlaylist( *it, qb.query(), item );
     }
@@ -227,7 +228,7 @@ void SmartPlaylistView::loadDefaultPlaylists()
     qb.setLimit( 0, 100 );
 
     item = new SmartPlaylist( i18n( "100 Random Tracks" ), qb.query(), this );
-    item->setKey( 8 );
+    item->setKey( ++c );
 }
 
 
