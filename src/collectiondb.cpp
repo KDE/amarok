@@ -35,6 +35,7 @@
 #include <kurl.h>
 
 #include <time.h>                 //query()
+#include <unistd.h>               //usleep()
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -960,7 +961,7 @@ CollectionDB::createTables( bool temporary )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
-                    
+
     //create indexes
     query( QString( "CREATE INDEX album_idx%1 ON album%2( name );" )
                     .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
@@ -1475,7 +1476,7 @@ QueryBuilder::addFilter( int tables, const QString& filter, int mode )
 #ifdef USE_MYSQL
         }
 #endif
-        
+
         m_where += " ) ";
     }
 
