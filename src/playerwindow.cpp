@@ -722,6 +722,7 @@ void PlayerWidget::setEffectsWindowShown( bool on )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 #include <kiconeffect.h>
+#include <kimageeffect.h>
 NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
     : QToolButton( parent )
     , m_glowIndex( 0 )
@@ -729,30 +730,31 @@ NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
     // Prevent flicker
     setWFlags( Qt::WNoAutoErase );
 
-    //NOTE QImages are not a shared class, QPixmap are
-    //NOTE but KIconEffect converts QPixmaps to QImages internally when you use one of the
-    //     QPixmap varieties of its functions
-    //NOTE As far as I can tell the static functions of KIconEffect are best for our purposes
-    QPixmap pixmap = getPNG( "b_" + icon );
-    QImage  image  = pixmap.convertToImage(), myImage = image;
+    QPixmap pixmap( getPNG( "b_" + icon ) );
+    KIconEffect ie;
 
     // Tint icon blueish for "off" state
-    KIconEffect::colorize( myImage, QColor( 0x3010FF ), 0.5 );
-    m_pixmapOff = myImage;
+    m_pixmapOff = ie.apply( pixmap, KIconEffect::Colorize, 0.5, QColor( 0x30, 0x10, 0xff ), false );
     // Tint gray and make pseudo-transparent for "disabled" state
-    myImage = image;
-    KIconEffect::toGray( myImage, 0.7 );
-    m_pixmapDisabled = myImage;
+    m_pixmapDisabled = ie.apply( pixmap, KIconEffect::ToGray, 0.7, QColor(), true );
 
+    int r = 0x20, g = 0x10, b = 0xff;
+    float percentRed = 0.0;
+    QPixmap temp;
     // Precalculate pixmaps for "on" icon state
-    const double D = 0.8 / NUMPIXMAPS;
-    for ( float f = 0; f < 1; f += D ) {
-        //KIconEffect uses QImage internally
-        myImage = image;
-        KIconEffect::colorize( image, amaroK::ColorScheme::Foreground, f );
+    for ( int i = 0; i < NUMPIXMAPS; i++ ) {
+        QImage img = pixmap.convertToImage();
+        temp = KImageEffect::channelIntensity( img, percentRed, KImageEffect::Red );
+        temp = ie.apply( temp, KIconEffect::Colorize, 1.0, QColor( r, 0x10, 0x30 ), false );
+        temp = ie.apply( temp, KIconEffect::Colorize, 1.0, QColor( r, g, b ), false );
 
-        //add to stack, QPixmap, do by value
-        m_glowPixmaps.append( myImage );
+        // Create new pixmap on the heap and add pointer to list
+        m_glowPixmaps.append( temp );
+
+        percentRed = percentRed + 1.0 / NUMPIXMAPS;
+        r += 14;
+        g += 2;
+        b -= 0;
     }
     // And the the same reversed
     for ( int i = NUMPIXMAPS - 1; i > 0; i-- )

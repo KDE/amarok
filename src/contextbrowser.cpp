@@ -17,7 +17,6 @@
 
 #include <kapplication.h> //kapp->config(), QApplication::setOverrideCursor()
 #include <kconfig.h>      //config object
-#include <kcursor.h>      //waitCursor()
 #include <kdebug.h>
 #include <kfiledialog.h>
 #include <kglobal.h>
@@ -29,15 +28,10 @@
 #include <kurl.h>
 #include <kurlcombobox.h>
 
-#include <qlabel.h>
 #include <qfile.h>
-#include <qpushbutton.h>
-#include <qdatetime.h>
 #include <qimage.h>
-
-#include <dirent.h>
-#include <stdlib.h>
-#include <sys/stat.h>
+#include <qlabel.h>
+#include <qpushbutton.h>
 
 using amaroK::QStringx;
 
