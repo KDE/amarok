@@ -1,0 +1,40 @@
+[Desktop Entry]
+Type=Service
+Name=Xine Engine
+Name[da]=Xine-motor
+Name[de]=Xine Engine
+Name[es]=Motor Xine
+Name[et]=Xine mootor
+Name[fr]=Moteur Xine
+Name[pt]=Motor Xine
+Name[ru]=Xine
+Name[sl]=Pogon Xine
+Name[sv]=Xine-gränssnitt
+Name[ta]=G தாரை பொறி
+Name[uz]=Xine тизими
+Name[xx]=xxXine Enginexx
+X-KDE-Library=libamarok_xine-engine
+Comment=Plugin for amaroK
+Comment[de]=Plugin für amaroK
+Comment[el]=Πρόσθετο για το amaroK
+Comment[es]=Plugin para amaroK
+Comment[et]=AmaroKi plugin
+Comment[fr]=Module pour AmaroK
+Comment[nl]=Plugin voor amaroK
+Comment[pt]='Plugin' para o amaroK
+Comment[pt_BR]=Plug-in para o amaroK
+Comment[ru]=Модуль amaroK
+Comment[sl]=Vstavek za amaroK
+Comment[sv]=Insticksprogram för amaroK
+Comment[ta]=amaroKகான சொருகி
+Comment[uz]=amaroK учун плагин
+Comment[xx]=xxPlugin for amaroKxx
+ServiceTypes=amaroK/Plugin
+
+X-KDE-amaroK-plugintype=engine
+X-KDE-amaroK-authors=Max Howell
+X-KDE-amaroK-email=max.howell@methylblue.com
+X-KDE-amaroK-version=1
+X-KDE-amaroK-framework-version=2
+
+
