@@ -21,7 +21,6 @@
 #include "analyzerbase.h" //declaration here
 
 #include "baranalyzer.h"
-#include "distortanalyzer.h"
 #include "glanalyzer.h"
 #include "glanalyzer2.h"
 #include "glanalyzer3.h"
@@ -32,6 +31,7 @@
 //FIXME is there a better define?
 //#define AMAROK_RELEASE
 #ifndef AMAROK_RELEASE
+    #include "distortanalyzer.h"
     #include "blockanalyzer.h"
     #include "baranalyzer2.h"
 //    #include "spectralshine.h"
