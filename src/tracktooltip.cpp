@@ -16,6 +16,7 @@
 #include "metabundle.h"
 #include "collectiondb.h"
 #include <qtooltip.h>
+#include <qapplication.h>
 
 
 void TrackToolTip::add( QWidget * widget, const MetaBundle & tags )
@@ -32,10 +33,18 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags )
     //NOTE it seems to be necessary to <center> each element indivdually
     tipBuf += "<center><b>amaroK</b></center><table cellpadding='2' cellspacing='2' align='center'><tr>";
 
-    if ( !image.isEmpty() )
-        tipBuf += QString( "<td><table cellpadding='0' cellspacing='0'><tr><td>"
-                           "<img width='80' height='80' src='%1'>"
-                           "</td></tr></table></td>" ).arg( image );
+    if ( !image.isEmpty() && image.find( QString("nocover") ) == -1 )
+    {
+        int imageSize = QApplication::desktop()->width() / 16;
+        tipBuf +=( QString( "<td><table cellpadding='0' cellspacing='0'><tr><td>"
+                           "<img width='%1' height='%2' src='%3'>"
+                           "</td></tr></table></td>" )
+                           .arg( QString::number(imageSize) )
+                           .arg( QString::number(imageSize) )
+                           .arg( image )
+                           );
+                           
+    }
 
     tipBuf += "<td><table cellpadding='0' cellspacing='0'>";
 

@@ -61,7 +61,9 @@ void OSDWidget::renderOSDText( const QString &text , const QString &imageLocatio
     QRect textRect = fontMetrics().boundingRect( 0, 0, max.width(), max.height(), AlignLeft | WordBreak, text );
     
     int showCover = 0;
-    int imageSize = 80;
+    
+    // determine appropriate image size based on size of screen
+    int imageSize = QApplication::desktop()->screen( m_screen )->width() / 16;
     
     // we don't want to show the cover if it is the generic one.
     if ( imageLocation.find( QString("nocover") ) == -1 && m_cover && !imageLocation.isEmpty())
