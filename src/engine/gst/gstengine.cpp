@@ -673,6 +673,7 @@ void
 GstEngine::cleanPipeline()
 {
     if ( m_pipelineFilled ) {
+        gst_element_set_state( m_gst_thread, GST_STATE_NULL );
         gst_object_unref( GST_OBJECT( m_gst_thread ) );
         gst_adapter_clear( m_gst_adapter );
         m_pipelineFilled = false;
