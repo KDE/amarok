@@ -5,10 +5,10 @@ METASOURCES = \
     AUTO
 
 INCLUDES = \
-    -I$(top_builddir)/amarok/amarok/amarokcore \
-    -I$(top_srcdir)/amarok/amarok/engine \
-    -I$(top_srcdir)/amarok/amarok/plugin \
-    -I$(top_srcdir)/amarok/amarok \
+    -I$(top_builddir)/amarok/src/amarokcore \
+    -I$(top_srcdir)/amarok/src/engine \
+    -I$(top_srcdir)/amarok/src/plugin \
+    -I$(top_srcdir)/amarok/src \
     $(all_includes)
 
 libanalyzers_la_SOURCES = \
