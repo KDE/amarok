@@ -1,5 +1,6 @@
-// (c) Pierpaolo Di Panfilo 2004
-// See COPYING file for licensing information
+// (c) 2004 Pierpaolo Di Panfilo
+// (c) 2004 Mark Kretschmann <markey@web.de>
+// License: GPL V2. See COPYING file for information.
 
 #include "collectiondb.h"      //smart playlists
 #include "metabundle.h"        //paintCell()
@@ -108,6 +109,8 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     config->setGroup( "PlaylistBrowser" );
     m_viewMode = (ViewMode)config->readNumEntry( "View", DetailedView );  //restore the view mode
     viewMenu->setItemChecked( m_viewMode, true );
+    m_sortMode = config->readNumEntry( "Sorting", SortAscending );
+    slotViewMenu( m_sortMode );
     QString str = config->readEntry( "Splitter", "[228,121]" );    //default splitter position
     QTextStream stream( &str, IO_ReadOnly );
     stream >> *m_splitter;     //this sets the splitters position
@@ -164,9 +167,10 @@ PlaylistBrowser::~PlaylistBrowser()
 
     KConfig *config = kapp->config();
     config->setGroup( "PlaylistBrowser" );
-
     //save view mode
     config->writeEntry( "View", m_viewMode );
+    // save sorting mode
+    config->writeEntry( "Sorting", m_sortMode );
     //save splitter position
     QString str; QTextStream stream( &str, IO_WriteOnly );
     stream << *m_splitter;
@@ -508,25 +512,28 @@ void PlaylistBrowser::customEvent( QCustomEvent *e )
 }
 
 
-void PlaylistBrowser::slotViewMenu( int view )  //SL0T
+void PlaylistBrowser::slotViewMenu( int id )  //SL0T
 {
-    if( m_viewMode == (ViewMode)view )
+    if( m_viewMode == (ViewMode) id )
         return;
 
-    switch ( view ) {
+    switch ( id ) {
         case Unsorted:
+            m_sortMode = id;
             m_listview->setSorting( -1 );
             viewMenuButton->popupMenu()->setItemChecked( Unsorted, true );
             viewMenuButton->popupMenu()->setItemChecked( SortAscending, false );
             viewMenuButton->popupMenu()->setItemChecked( SortDescending, false );
             return;
         case SortAscending:
+            m_sortMode = id;
             m_listview->setSorting( 0, true );
             viewMenuButton->popupMenu()->setItemChecked( Unsorted, false );
             viewMenuButton->popupMenu()->setItemChecked( SortAscending, true );
             viewMenuButton->popupMenu()->setItemChecked( SortDescending, false );
             return;
         case SortDescending:
+            m_sortMode = id;
             m_listview->setSorting( 0, false );
             viewMenuButton->popupMenu()->setItemChecked( Unsorted, false );
             viewMenuButton->popupMenu()->setItemChecked( SortAscending, false );
@@ -537,8 +544,8 @@ void PlaylistBrowser::slotViewMenu( int view )  //SL0T
     }
 
     viewMenuButton->popupMenu()->setItemChecked( m_viewMode, false );
-    viewMenuButton->popupMenu()->setItemChecked( view, true );
-    m_viewMode = (ViewMode)view;
+    viewMenuButton->popupMenu()->setItemChecked( id, true );
+    m_viewMode = (ViewMode) id;
 
     QListViewItemIterator it( m_listview );
     for( ; it.current(); ++it )
@@ -668,7 +675,6 @@ PlaylistBrowserView::PlaylistBrowserView( QWidget *parent, const char *name )
 {
     addColumn( i18n("Playlists") );
     setSelectionMode( QListView::Extended );
-    setSorting( -1 );  //no sort
     setShowSortIndicator( true );
 
     setDropVisualizer( true );    //the visualizer (a line marker) is drawn when dragging over tracks

@@ -46,7 +46,7 @@ Q_OBJECT
        void openPlaylist();
 
    private slots:
-       void slotViewMenu( int );
+       void slotViewMenu( int id );
        void showContextMenu( QListViewItem*, const QPoint&, int );
        void removeSelectedItems();
        void renameSelectedPlaylist();
@@ -71,6 +71,7 @@ Q_OBJECT
        KActionMenu *viewMenuButton;
        KToolBar *m_toolbar;
        ViewMode m_viewMode;
+       int m_sortMode;
 };
 
 
