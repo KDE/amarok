@@ -4,7 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.1:
-  FIX: Collection encoding broken for non-Latin1. (BR 89747)
+  ADD: Tag editor can operate on multiple files (mass tagging).
+  FIX: Collection encoding broken for non-latin1 characters. (BR 89747)
   ADD: Popup-menu for cover images in Context-Browser.
   FIX: The first track to play is now random for random-mode. (BR 77055)
   FIX: Show systray on startup. (BR 89661)
