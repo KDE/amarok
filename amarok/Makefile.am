@@ -26,6 +26,7 @@ amarokapp_SOURCES = \
         Options5.ui \
         amarokconfigdialog.cpp \
         amarokfilelist.cpp \
+        amarokfileview.cpp \
         amarokmenu.cpp \
         amarokslider.cpp \
         amaroksystray.cpp \
@@ -48,8 +49,7 @@ amarokapp_SOURCES = \
         pluginmanager.cpp \
         streambrowser.cpp \
         threadweaver.cpp
-
-#        vis/socketserver.cpp \
+        vis/socketserver.cpp \
         
 
 amarokapp_LDADD = \
