@@ -6,9 +6,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  <markey> CoverManager's "Show Fullscreen" widget does not work in Baghira, it fills the background with
-           brushed metal. A QLabel with pixmap may work better.
-
   <markey> In the settings dialog the "Apply" button is broken (always enabled).
 
   <mxcl>   Apparently if no .kde exists prior to running amaroK, amaroK borks
