@@ -5,7 +5,7 @@ SECTION 1: Preparation
 
 SECTION 2: Creating and Testing the Tarball
 
- * Run the release_amarok script (use the --up switch); OR
+ * Run the release_amarok script; OR
    Follow the guide lines in appendix A
  * Test the following:
 
@@ -17,7 +17,7 @@ SECTION 2: Creating and Testing the Tarball
 
 SECTION 3: Once Happy with the Tarball
 
- * If you didn't get the script to do it, ftp the tarball to sf.net/incoming
+ * Ftp the tarball to sf.net/incoming
  * Use the admin system at sourceforge to register the release
  * Update the amarok.kde.org front-page before anything else!
  * Update kde-apps.org and freshmeat.net
@@ -25,14 +25,14 @@ SECTION 3: Once Happy with the Tarball
 
      To:  kde-announce@kde.org
      CC:  amarok-devel@lists.sf.net
-     BCC: kde-extra-gear@kde.org, libvisual-devel@lists.sourceforge.net, 
-          kde-multimedia@kde.org, nmm-dev@graphics.cs.uni-sb.de, 
+     BCC: kde-extra-gear@kde.org, libvisual-devel@lists.sourceforge.net,
+          kde-multimedia@kde.org, nmm-dev@graphics.cs.uni-sb.de,
           gstreamer-devel@lists.sourceforge.net,
 --------------------------------------------------------------------------------
 
 SECTION 4: After the Release
 
- If you must change anything about the tarball you need to email binner@kde.org 
+ If you must change anything about the tarball you need to email binner@kde.org
  because otherwise he gets annoyed that the md5 has changed.
  Generally it is not wise to change the tarball, it could annoy the entire
  open-source world!
