@@ -507,10 +507,11 @@ void PlaylistWidget::slotTextChanged( const QString &str )
 {
     QListViewItem * pVisibleItem = NULL;
     QListViewItemIterator it( lastItem() );
+    QString low = str.lower(); // save a couple cycles
 
     while ( *it )
     {
-        if ( ( *it )->text( 0 ).lower().contains( str.lower() ) )
+        if ( ( *it )->text( 0 ).lower().contains( low ) )
         {
             ( *it )->setVisible( true );
             pVisibleItem = ( *it );
