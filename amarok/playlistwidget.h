@@ -47,8 +47,14 @@ class PlayerApp;
 extern PlayerApp *pApp;
 
 
+//FIXME <mxcl> I really want this to be protected inheritance but 1 in 3 people have compile issues:
+//amarok/playerapp.cpp: In member function `void PlayerApp::initBrowserWin()':
+//amarok/playerapp.cpp:479: `QObject' is an inaccessible base of `PlaylistWidget'
+//make: *** [../amarok/amarok/playerapp.o] Fehler 1
+//FIXME 479: connect( m_pBrowserWin->m_pPlaylistWidget, SIGNAL( activated( const KURL&, const Tags * ) ), this, SLOT( play( const KURL&, const Tags * ) ) );
+//FIXME the protected inheritance is necessary as NO other classes can have access to QListViewItems!!
 
-class PlaylistWidget : public KListView
+class PlaylistWidget : public KListView //: protected KListView
 {
     Q_OBJECT
     public:
