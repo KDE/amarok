@@ -38,7 +38,7 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_db( new CollectionDB() )
 {
     EngineController::instance()->attach( this );
-    
+
     setSpacing( 4 );
     setMargin( 5 );
     QWidget::setFont( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );
@@ -478,11 +478,12 @@ void ContextBrowser::showIntroduction()
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
 
-    // <Favorite Tracks Information>
     browser->write( "<html><div>");
-    browser->write( i18n( "Hello amaroK user!" )
-                    + "<br><br>" + i18n( "To use the extended features of amaroK, you need to build a collection." )
-                    + "&nbsp;<a href='show:collectionSetup'>" + i18n( "Click here to create one." ) + "</a>" );
+    browser->write( i18n( "Hello amaroK user!" ) );
+    browser->write( "<br><br>" );
+    browser->write( i18n( "This is the ContextBrowser, it shows you contextual information about the currently playing track."
+                          "However, in order to use this feature of amaroK, you need to build a collection." )
+                    + "&nbsp;<a href='show:collectionSetup'>" + i18n( "Click here to build one." ) + "</a>" );
     browser->write( "</div></html>");
 
     browser->end();
