@@ -102,7 +102,7 @@ class CollectionView : public KListView
         void cat2Menu( int id, bool rerender = true );
         void cat3Menu( int id, bool rerender = true );
         void enableCat3Menu( bool );
-        void doubleClicked( QListViewItem*, const QPoint&, int );
+        void invokeItem( QListViewItem* );
         void rmbPressed( QListViewItem*, const QPoint&, int );
 
         /** Tries to download the cover image from Amazon.com */

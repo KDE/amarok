@@ -244,8 +244,10 @@ CollectionView::CollectionView( CollectionBrowser* parent )
              this,             SLOT( slotExpand( QListViewItem* ) ) );
     connect( this,           SIGNAL( collapsed( QListViewItem* ) ),
              this,             SLOT( slotCollapse( QListViewItem* ) ) );
+    connect( this,           SIGNAL( returnPressed( QListViewItem* ) ),
+             this,             SLOT( invokeItem( QListViewItem* ) ) );
     connect( this,           SIGNAL( doubleClicked( QListViewItem*, const QPoint&, int ) ),
-             this,             SLOT( doubleClicked( QListViewItem*, const QPoint&, int ) ) );
+             this,             SLOT( invokeItem( QListViewItem* ) ) );
     connect( this,           SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,             SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
 
@@ -561,7 +563,7 @@ CollectionView::enableCat3Menu( bool enable )
 
 
 void
-CollectionView::doubleClicked( QListViewItem* item, const QPoint&, int ) //SLOT
+CollectionView::invokeItem( QListViewItem* item ) //SLOT
 {
     if ( !item )
         return;
@@ -728,7 +730,6 @@ CollectionView::customEvent( QCustomEvent *e )
         }
     }
 }
-
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // private
