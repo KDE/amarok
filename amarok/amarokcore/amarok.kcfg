@@ -177,7 +177,7 @@
      </entry>
      <entry key="Osd Background Color" type="Color">
         <label>Background Color for On-Screen Display</label>
-        <default>#2200ff</default>
+        <default>#1500a0</default>
      </entry>
      <entry key="Osd Duration" type="Int">
         <label>How many milliseconds the text should be displayed</label>
