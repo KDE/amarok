@@ -1,3 +1,12 @@
+amarok (1.0.0-2) unstable; urgency=low
+
+  * Make the depends on amarok-gstreamer a bit more tight. Only depend on
+    audiosink, recommend the decoder plugins.
+  * Make the amarok engines depend on amarok itself.
+  * Compile with xmms visualisation support.
+
+ -- Peter Rockai (mornfall) <mornfall@danill.sk>  Wed, 23 Jun 2004 13:58:12 +0200
+
 amarok (1.0.0-1) unstable; urgency=low
 
   * Build official 1.0.0 release.
