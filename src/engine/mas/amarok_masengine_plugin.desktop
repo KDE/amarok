@@ -1,30 +1,28 @@
 [Desktop Entry]
 Type=Service
 Name=MAS Engine
-Name[da]=MAS-motor
-Name[es]=Motor MAS
-Name[et]=MAS mootor
-Name[fr]=Moteur MAS
 Name[pt]=Motor MAS
-Name[ru]=MAS
-Name[sl]=Pogon MAS
-Name[sv]=MAS-gränssnitt
-Name[ta]=MAS  பொறி
-Name[xx]=xxMAS Enginexx
+Name[pt_BR]=Motor MAS
 Comment=Plugin for amaroK
+Comment[cs]=Modul pro amaroK
 Comment[de]=Plugin für amaroK
 Comment[el]=Πρόσθετο για το amaroK
 Comment[es]=Plugin para amaroK
 Comment[et]=AmaroKi plugin
 Comment[fr]=Module pour AmaroK
+Comment[it]=Plugin per amaroK
 Comment[nl]=Plugin voor amaroK
 Comment[pt]='Plugin' para o amaroK
 Comment[pt_BR]=Plug-in para o amaroK
 Comment[ru]=Модуль amaroK
 Comment[sl]=Vstavek za amaroK
+Comment[sr]=Прикључак за amaroK
+Comment[sr@Latn]=Прикључак за amaroK
 Comment[sv]=Insticksprogram för amaroK
 Comment[ta]=amaroKகான சொருகி
+Comment[uz]=amaroK учун плагин
 Comment[xx]=xxPlugin for amaroKxx
+Comment[zh_CN]=amaroK 插件
 
 ServiceTypes=amaroK/Plugin
 X-KDE-Library=libamarok_masengine_plugin
@@ -32,7 +30,7 @@ X-KDE-amaroK-name=MAS Engine
 X-KDE-amaroK-plugintype=engine
 X-KDE-amaroK-authors=Roland Gigler
 X-KDE-amaroK-email=rolandg@web.de
-X-KDE-amaroK-rank=254
+X-KDE-amaroK-rank=100
 X-KDE-amaroK-version=1
 X-KDE-amaroK-framework-version=3
 
