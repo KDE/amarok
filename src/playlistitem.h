@@ -70,7 +70,8 @@ class PlaylistItem : public KListViewItem
         static QString trackName( const KURL &u ) { return u.protocol() == "file" ? u.fileName() : u.prettyURL(); }
 
         const KURL m_url;
-
+        int m_cachedHeight;
+        
         static const uint STRING_STORE_SIZE = 80;
         static QString stringStore[STRING_STORE_SIZE];
         static const QString& attemptStore( const QString& );

@@ -381,7 +381,12 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     painterBuf.setFont( p->font() );
 
     int  playNext = listView()->m_nextTracks.findRef( this ) + 1;
-
+    
+    //HACK, but I don't know how to restore the height otherwise; calling invalidateHeight inside of 
+    //paintCell() slows things down extremely
+    if ( height() != listView()->fontMetrics().height() * 2 )
+        m_cachedHeight = height();
+    
     if( this == listView()->currentTrack() )
     {
         if ( m_playing && column == firstCol )
@@ -403,6 +408,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     else {
         //hide "Play" icon
         setPixmap( column, 0 );
+        setHeight( m_cachedHeight );
         KListViewItem::paintCell( &painterBuf, cg, column, width, align );
     }
         
