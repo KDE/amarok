@@ -78,7 +78,9 @@ MID-TERM:
            relevant to amaroK since we are naughty and don't obey KDE's single click mode
            we should disable the hand cursor since that means "single-click to activate me"
            maybe override KListView::mouseMoveEvent, or is there a better way?
-
+           <markey> I think the hand cursor looks appropriate here. FWIW, the hand is not only in
+           column(0)
+           
     * add: extend keyboard shortcuts [<mxcl> show playlist, also I'd say do this with actions as it's easiest]
 
     * add: "show playlist" to the right click menu, redundant but necessary
