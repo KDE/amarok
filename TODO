@@ -10,19 +10,17 @@ SHORT-TERM (URGENT):
 
     * fix: #68: <tranql> restoring last playlist on startup broken in beta3 (always empty)
 
-    * fix: #67 <mikmak> sometimes the aRts effects-saver writes an empty <effectname> tag. leads to 
+    * fix: #67 <mikmak> sometimes the aRts effects-saver writes an empty <effectname> tag. leads to
                crash on startup when restoring effects
 
     * fix: #66 <Grue_> seems that the latest taglib from cvs is not compatible with amarok
-
-    * fix: #64 <markey> when loading a playlist for the first time after startup, amaroK starts playing
-               the first track automagically
+               <mxcl> can you be more specific?
 
     * fix: #62 < buff> hmm: one question: I have QT installes without OpenGL, aRrts is available and configure is run with
                "--without-gstreamer": after compiling I have an amaroK _without_ aRts and _with_ gstreamer compiled in
                0.9-beta2 btw
-    
-    * fix: #61 <markey> allow removing of playlist items by dragging back into browser. 
+
+    * fix: #61 <markey> allow removing of playlist items by dragging back into browser.
                (RFC: is this still appropriate or would it be misleading?)
 
     * fix: #60 <markey> I'm still getting the occasional crash in PlaylistItem::setText()
@@ -42,6 +40,11 @@ SHORT-TERM (URGENT):
     * fix: #34 playlist: hidden columns can be resized back into sight! -->mxcl
 
 MID-TERM:
+
+    * fix: #64 <markey> when loading a playlist for the first time after startup, amaroK starts playing
+               the first track automagically
+               <mxcl> fixed, but the cause is not fixed. Somewhere it seems a KURL::List with 1 empty KURL is
+               being submitted.
 
     * add: #50 <markey> make amaroK configurable --without-arts -->markey
 
@@ -130,7 +133,7 @@ LONG-TERM:
 
     * add: playlist export (generate text or html document from playlist entries)
 
-    * add: make PlayerWidget shadeable (like XMMS) 
+    * add: make PlayerWidget shadeable (like XMMS)
            <mxcl> doesn't the systray provide this functionality already?
 	   <berkus> no it doesn't, double click the winamp/xmms window and see for yourself
 

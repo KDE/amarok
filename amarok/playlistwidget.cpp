@@ -1118,6 +1118,7 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
     case PlaylistLoader::Done:
 
         //FIXME this doesn't work 100% yet as you can spawn multiple loaders..
+        m_directPlay = false; //just in case
         m_clearButton->setEnabled( true );
         QApplication::restoreOverrideCursor();
         restoreCurrentTrack(); //just in case the track that is playing is not set current
