@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta2:
+  CHG: Handle incremental file scanning in a thread. Now the GUI doesn't
+       get blocked every 30 seconds, anymore.
   ADD: CollectionBrowser now offers two operation modes:
        The classical TreeView and a new FlatView (like the WinAmp Library).
   FIX: Caching of local cover images was broken for non-unique filenames.
