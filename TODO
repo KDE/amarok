@@ -21,6 +21,12 @@ SHORT-TERM (URGENT):
              it with both windows on top, play and playlist. there's other problem - to bring the 
              playlist window on top when you focus the play window. but that can be solved via
              signals.]
+             <mxcl> try it, it's not easy to resolve this with signals, there are too many
+             possible behaviors. It needs to be handled at a lower level, i.e. the WM.
+             <mxcl> also it is _not_ kwin that shows both windows, we force the playlist window to be
+             shown ourselves. kwin_iii handles none of this behavior unless we set WType_Dialog as
+             it was before.
+
 
     * fix: <mxcl> select something in playlist, go to drag from the browser, move mouse over
            playlist, move mouse back to browser and drop, selected item from playlist disappears!
