@@ -1,3 +1,6 @@
+#ifndef _STDINREADER_H_
+#define _STDINREADER_H_
+
 /*
  *   Copyright (C) 2005 by Ian Monroe <ian@monroe.nu>
  *   Released under GPL 2 or later, see COPYING
@@ -31,3 +34,6 @@ Q_OBJECT
     
     
 };
+
+#endif
+
