@@ -8,6 +8,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+          <muesli> Emitted signal "scoreChanged" (CollectionEmitter) doesnt reach Playlist anymore.
+
           <markey> Make CoverManager thumbnail generation threaded.
 
           <mxcl>   When an engine fails to load, the next best engine should be chosen, not the first in the list.
@@ -15,7 +17,7 @@ SHORT-TERM (URGENT):
           <markey> When the KDE color scheme is changed while amaroK is running, all toolbar buttons
                    (those with text) lose their texts.
 
-          <muesli> Take care of KToolbars in Context/Collection for palette changes
+          <muesli> Take care of KToolbars in Context/Collection for palette changes.
 
           <mxcl>   With one track in pls and repeat and random mode on, amaroK crashes at track end.
 
@@ -31,9 +33,6 @@ SHORT-TERM (URGENT):
   ADD 180 <muesli> Show "Artist - Song" for Various Artist folder.
 
   FIX 134 <markey> Ctrl-C in Playlist for copying title doesn't work, because the event gets eaten by another widget.
-
-          <mxcl>   Only show Various Artists when sorting by artist then album, it doesn't make sense in any
-                   other situation! Also can we file it under V please?
 
 MID-TERM:
 

@@ -339,11 +339,12 @@ CollectionView::renderView( )  //SLOT
     QueryBuilder qb;
 
     qb.addReturnValue( m_cat1, QueryBuilder::valName );
-    qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong , m_filter );
+    qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
     qb.sortBy( m_cat1, QueryBuilder::valName );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
 
     if ( m_cat1 == QueryBuilder::tabArtist )
-        qb.setOptions( QueryBuilder::optNoCompilations | QueryBuilder::optRemoveDuplicates );
+        qb.setOptions( QueryBuilder::optNoCompilations );
 
     values = qb.run();
 
@@ -438,7 +439,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     QStringList values;
     QueryBuilder qb;
 
-    qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong , m_filter );
+    qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
 
     switch ( item->depth() )
