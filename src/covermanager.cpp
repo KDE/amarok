@@ -320,9 +320,9 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
         case DELETE: {
 
             QPtrList<CoverViewItem> selectedItems;
-            for ( item = m_coverView->firstItem(); item; item = item->nextItem() )
-                    if ( item->isSelected() )
-                        selectedItems.append( item );
+            for ( QIconViewItem* _item = m_coverView->firstItem(); _item; _item = _item->nextItem() )
+                    if ( _item->isSelected() )
+                        selectedItems.append( static_cast<CoverViewItem*>(_item) );
 
             int button = KMessageBox::warningContinueCancel(
                             this,
@@ -335,14 +335,14 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
             if ( button == KMessageBox::Continue )
             {
                 QStringList artists, albums;
-                for ( item = selectedItems.first(); item; item = selectedItems.next() ) {
-                    artists.append( item->artist() );
-                    albums.append( item->album() );
+                for ( QIconViewItem* _item = selectedItems.first(); _item; _item = selectedItems.next() ) {
+                    artists.append( static_cast<CoverViewItem*>(_item)->artist() );
+                    albums.append( static_cast<CoverViewItem*>(_item)->album() );
                 }
 
                 if ( m_db->removeImageFromAlbum( artists, albums ) )
-                    for ( item = selectedItems.first(); item; item = selectedItems.next() )
-                        item->updateCover( QPixmap() );
+                    for ( QIconViewItem* _item = selectedItems.first(); _item; _item = selectedItems.next() )
+                        static_cast<CoverViewItem*>(_item)->updateCover( QPixmap() );
             }
             break;
         }
