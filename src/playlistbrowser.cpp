@@ -272,6 +272,9 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     }
 
     for( QListViewItem *item = selected.first(); item; item = selected.next() ) {
+
+        if ( isCurrentPlaylist( item ) ) continue;
+
         if( isPlaylist( item ) ) {
             //remove the playlist
             if( item == lastPlaylist ) {
@@ -307,7 +310,7 @@ void PlaylistBrowser::renamePlaylist( QListViewItem* item, const QString& newNam
     #define item static_cast<PlaylistBrowserItem*>(item)
 
     // Current playlist saving
-    if ( item->url().protocol() == "cur" ) {
+    if ( isCurrentPlaylist( item ) ) {
         QString path = KGlobal::dirs()->saveLocation( "data", "amarok/playlists/", true ) + newName + ".m3u";
         Playlist::instance()->saveM3U( path );
         item->setText( 0, i18n( "Current Playlist" ) );
@@ -443,7 +446,7 @@ void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
 
     else if( isPlaylist( item ) )
     {
-        if ( static_cast<PlaylistBrowserItem*>( item )->url().protocol() == "cur" )
+        if ( isCurrentPlaylist( item ) )
             enable_rename = true;
         else {
             enable_remove = true;
@@ -480,14 +483,12 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     KPopupMenu menu( this );
 
     if( isPlaylist( item ) ) {
-        #define item static_cast<PlaylistBrowserItem*>(item)
-        if ( item->url().protocol() == "cur" ) {
+        if ( isCurrentPlaylist( item ) ) {
         //************* Current Playlist menu ***********
             enum Id { SAVE, CLEAR };
 
             menu.insertItem( i18n( "&Save" ), SAVE );
             menu.insertItem( i18n( "&Clear" ), CLEAR );
-//             menu.setAccel( Key_Space, SAVE );
 
             switch( menu.exec( p ) )
             {
@@ -501,6 +502,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         }
         //************* Playlist menu ***********
         else {
+            #define item static_cast<PlaylistBrowserItem*>(item)
             enum Id { LOAD, ADD, SAVE, RESTORE, RENAME, REMOVE, DELETE };
 
             menu.insertItem( i18n( "&Load" ), LOAD );
@@ -543,8 +545,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                     deleteSelectedPlaylists();
                     break;
             }
+            #undef item
         }
-        #undef item
     }
     else {
     //******** track menu ***********
@@ -833,7 +835,10 @@ void PlaylistBrowserView::keyPressEvent( QKeyEvent *e )
 {
     switch( e->key() ) {
          case Key_Space:    //load
-            PlaylistBrowser::instance()->loadPlaylist( currentItem() );
+            if ( isCurrentPlaylist( currentItem() ) )
+                rename( currentItem(), 0 );
+            else
+                PlaylistBrowser::instance()->loadPlaylist( currentItem() );
             break;
 
         case Key_Delete:    //remove
