@@ -271,7 +271,7 @@ void App::restoreSession()
 
     if( !AmarokConfig::resumeTrack().isEmpty() )
     {
-        MetaBundle bundle( KURL(AmarokConfig::resumeTrack()) );
+        MetaBundle bundle( AmarokConfig::resumeTrack() );
 
         EngineBase* const engine = EngineController::engine();
         int vol = engine->volume();
