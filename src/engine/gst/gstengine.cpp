@@ -544,7 +544,8 @@ GstEngine::play( uint offset )  //SLOT
     if ( !m_currentInput ) return false;
 
     // We must pause the queue before changing the state of the input thread, else the scheduler
-    // freaks out. This is due to a bug in the queue element; will be fixed in gst-0.8.10
+    // freaks out. This is due to a bug in the queue element; will likely be fixed in gst-0.8.10.
+    // @see http://bugzilla.gnome.org/show_bug.cgi?id=166250
     gst_element_set_state( m_gst_queue, GST_STATE_PAUSED );
 
     if ( !gst_element_set_state( m_gst_inputThread, GST_STATE_PAUSED ) )
@@ -1176,7 +1177,8 @@ InputPipeline::~InputPipeline()
     if ( gst_element_get_managing_bin( bin ) == GST_BIN( GstEngine::instance()->m_gst_inputThread ) )
     {
         // We must pause the queue before changing the state of the input thread, else the scheduler
-        // freaks out. This is due to a bug in the queue element; will be fixed in gst-0.8.10
+        // freaks out. This is due to a bug in the queue element; will likely be fixed in gst-0.8.10.
+        // @see http://bugzilla.gnome.org/show_bug.cgi?id=166250
         gst_element_set_state( GstEngine::instance()->m_gst_queue, GST_STATE_PAUSED );
 
         if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PAUSED ) )
