@@ -1,5 +1,5 @@
 INCLUDES = \
-	-I$(top_srcdir)/amarok/amarok \
+	-I$(top_srcdir)/amarok/src \
 	$(taglib_includes) \
 	$(all_includes)
 
