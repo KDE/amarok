@@ -244,7 +244,8 @@ Vis::Selector::Selector( QWidget *parent )
     setSorting( 0 );
     setColumnWidthMode( 0, QListView::Maximum );
     QToolTip::add( viewport(), i18n( "Right-click on item for context menu" ) );
-    addColumn( i18n( "Name" ) );
+    addColumn( QString() );
+    addColumn( QString() );
     header()->hide();
 
     connect( this, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
@@ -259,7 +260,7 @@ Vis::Selector::Selector( QWidget *parent )
     QStringList entries = QStringList::split( '\n', str );
 
     for( QStringList::ConstIterator it = entries.begin(); it != entries.end(); ++it )
-        new Item( this, "amarok_xmmswrapper2", *it );
+        new Item( this, "amarok_xmmswrapper2", *it, "xmms" );
 
     vis = popen( "amarok_libvisual --list", "r" );
     str[ fread( (void*)str, sizeof(char), 4096, vis ) ] = '\0';
@@ -268,7 +269,7 @@ Vis::Selector::Selector( QWidget *parent )
     entries = QStringList::split( '\n', str );
 
     for( QStringList::ConstIterator it = entries.begin(); it != entries.end(); ++it )
-        new Item( this, "amarok_libvisual", *it );
+        new Item( this, "amarok_libvisual", *it, "libvisual" );
 
 
     resize( sizeHint() + QSize(20,0) );
