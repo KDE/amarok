@@ -311,6 +311,9 @@ CollectionReader::readTags( const QStringList& entries ) {
     KURL url;
     m_parent->createTables( true );
 
+    QStringList validExtensions;
+    validExtensions << "jpg" << "png" << "gif" << "jpeg";
+
     for ( uint i = 0; i < entries.count(); i++ ) {
         if ( !( i % 20 ) ) //don't post events too often since this blocks amaroK
             QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Progress, i ) );
@@ -340,9 +343,6 @@ CollectionReader::readTags( const QStringList& entries ) {
         } else
         {
             // Add images to the cover database
-            QStringList validExtensions;
-            validExtensions << "jpg" << "png" << "gif" << "jpeg";
-
             if ( validExtensions.contains( url.filename().mid( url.filename().findRev('.')+1 ) ) )
                 m_parent->addImageToPath( url.directory(), url.filename(), true );
         }

@@ -32,7 +32,7 @@
 ContextBrowser::ContextBrowser( const char *name )
         : QVBox( 0, name )
 {
-    sqlInit();
+    m_db = new CollectionDB();
 
     setSpacing( 4 );
     setMargin( 5 );
@@ -91,7 +91,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 
     // take care of sql updates (schema changed errors)
     delete m_db;
-    sqlInit();
+    m_db = new CollectionDB();
 
     browser->begin();
 
@@ -255,12 +255,6 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     browser->end();
 
     m_db->incSongCounter( bundle.url().path() );
-}
-
-
-void ContextBrowser::sqlInit()
-{
-    m_db = new CollectionDB();
 }
 
 

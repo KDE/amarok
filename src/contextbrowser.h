@@ -23,7 +23,6 @@ class ContextBrowser : public QVBox
         ~ContextBrowser();
         
         void showContextForItem( const MetaBundle &bundle );
-        void sqlInit();
 
     public slots:
         void openURLRequest(const KURL &url, const KParts::URLArgs & );
