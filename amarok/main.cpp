@@ -17,12 +17,10 @@
 
 #include "playerapp.h"
 
-#include <qcstring.h>
 #include <kcmdlineargs.h>
 #include <kaboutdata.h>
 #include <klocale.h>
 #include <kuniqueapplication.h>
-#include <kdebug.h>
 #include <kurl.h>
 
 PlayerApp *pApp;
@@ -43,7 +41,7 @@ static KCmdLineOptions options[] =
 
 int main( int argc, char *argv[] )
 {
-    KAboutData aboutData( "amaroK", I18N_NOOP( "amaroK" ),
+    KAboutData aboutData( "amarok", I18N_NOOP( "amaroK" ),
                           APP_VERSION, description, KAboutData::License_GPL,
                           "(c) 2002-2003, Mark Kretschmann and The amaroK Band", 0,
                           "http://amarok.sourceforge.net" );
