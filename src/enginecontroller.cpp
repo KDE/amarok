@@ -122,6 +122,7 @@ void EngineController::play( const MetaBundle &bundle )
         // Detect mimetype of remote file
         KIO::MimetypeJob* job = KIO::mimetype( url, false );
         connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( playRemote( KIO::Job* ) ) );
+        m_bundle = bundle;
         return; //don't do notify
     }
     else if( !m_pEngine->play( url ) )
