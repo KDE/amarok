@@ -5,8 +5,9 @@
 //
 
 #include "browserwin.h"
-#include "playlistloader.h"
 #include "playlistitem.h" //for Tags struct
+#include "playlistloader.h"
+#include "playlistwidget.h"
 
 #include <qapplication.h>
 #include <qtextstream.h>
