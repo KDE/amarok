@@ -350,7 +350,7 @@ CollectionReader::readTags( const QStringList& entries )
             m_parent->execSql( command );
         }
         // Add tag-less tracks to database
-        if ( validMusic.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ) ) ) {
+        else if ( validMusic.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ) ) ) {
             command += m_parent->escapeString( url.path() ) + "','";
             command += m_parent->escapeString( url.directory() ) + "',";
             command += "strftime('%s', 'now'),";
@@ -365,7 +365,7 @@ CollectionReader::readTags( const QStringList& entries )
             m_parent->execSql( command );
         }
         // Add images to the cover database
-        if ( validImages.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ) ) )
+        else if ( validImages.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ) ) )
             m_parent->addImageToPath( url.directory(), url.filename(), true );
     }
     // let's lock the database (will block other threads)
