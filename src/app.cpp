@@ -549,28 +549,6 @@ void App::genericEventHandler( QWidget *source, QEvent *e )
 
         break;
 
-    case QEvent::Wheel:
-    {
-        #define e static_cast<QWheelEvent*>(e)
-        const bool up = e->delta() > 0;
-
-        switch( e->state() )
-        {
-        case ControlButton:
-            if( up ) EngineController::instance()->previous();
-            else     EngineController::instance()->next();
-            break;
-
-        default:
-            EngineController::instance()->increaseVolume( e->delta() / 18 );
-        }
-
-        e->accept();
-        #undef e
-
-        break;
-    }
-
     case QEvent::Close:
 
         //KDE policy states we should hide to tray and not quit() when the

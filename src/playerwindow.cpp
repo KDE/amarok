@@ -423,6 +423,32 @@ bool PlayerWidget::event( QEvent *e )
     switch( e->type() )
     {
     case QEvent::Wheel:
+    {
+        #define e static_cast<QWheelEvent*>(e)
+        const bool up = e->delta() > 0;
+
+        switch( e->state() )
+        {
+        case ControlButton:
+            if( up ) EngineController::instance()->previous();
+            else     EngineController::instance()->next();
+            break;
+
+        default:
+            if( !m_pSlider->frameGeometry().contains( e->pos(), true ) )
+                EngineController::instance()->increaseVolume( e->delta() / 18 );
+            else
+            {
+                EngineBase *engine = EngineController::engine();
+                int seek = engine->position() - (e->delta() / 120 ) * 10000; // 10 seconds
+                engine->seek( seek < 0 ? 0 : seek  );
+            }
+        }
+
+        #undef e
+
+        return TRUE;
+    }
     case QEvent::DragEnter:
     case QEvent::Drop:
     case QEvent::Close:

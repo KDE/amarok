@@ -133,10 +133,6 @@ LONG-TERM:
                    Pro: it's convenient to have several playlists
                    Contra: the playlist is getting cluttered enough as it is!
 
-  ADD              Seeking with mousewheel
-          <muesli> What's seeking with mousewheel? <markey> dunno, but several users requested it
-          <berkus> Seeking the track via mousewheel, wheelUp to seek back, wheelDown to seek further
-
   ADD              Make windows magnetic / sticking together (difficult).
 
   ADD              Playlist export (generate text or html document from playlist entries)
