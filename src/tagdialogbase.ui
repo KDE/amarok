@@ -235,9 +235,6 @@
                     <property name="text">
                         <string>&amp;Fill-in Tags Using MusicBrainz</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+F</string>
-                    </property>
                     <property name="autoDefault">
                         <bool>false</bool>
                     </property>
