@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.1.1:
+  FIX: Disable CD-burning menu for streams. (BR 90336)
   ADD: Open Cover-Manager from Context-Browser popup menu.
   FIX: Made amaroK build with --disable-amazon flag.
   FIX: GStreamer-engine refused to play some mp3 files. (BR 90317)
