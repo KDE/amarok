@@ -17,7 +17,7 @@
 static MyNode     theList;
 static metronom_t theMetronom;
 
-MyNode     *myList     = &theList;
+MyNode* const myList   = &theList;
 metronom_t *myMetronom = &theMetronom;
 int         myChannels = 2;
 
@@ -47,11 +47,17 @@ scope_port_open( xine_audio_port_t *port_gen, xine_stream_t *stream, uint32_t bi
 static void
 scope_port_close( xine_audio_port_t *port_gen, xine_stream_t *stream )
 {
+    MyNode *node;
+    
+    /* ensure the buffers are deleted during the next XineEngine::timerEvent() */   
+    for( node = myList->next; node != myList; node = node->next ) {
+        node->vpts = -1;
+        node->vpts_end = -1;
+    }
+
     port->stream = NULL;
     port->original_port->close( port->original_port, stream );
-
-    myList->next = myList;
-
+    
     _x_post_dec_usage( port );
 }
 

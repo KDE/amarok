@@ -26,7 +26,7 @@ struct my_node_s
 
 extern metronom_t *myMetronom;
 extern int myChannels;
-extern MyNode *myList;
+extern MyNode* const myList;
 
 #ifdef __cplusplus
 extern "C"
