@@ -137,21 +137,15 @@ MetaBundle PlaylistItem::metaBundle()
     //This function isn't called often (on play request), but playlists can contain
     //thousands of items. So favor saving memory over CPU.
 
-    if ( m_url.isLocalFile() ) {
-        TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Accurate );
-        //FIXME hold a small cache of metabundles?
-        //then return by reference
-        MetaBundle bundle( this, f.isNull() ? 0 : f.audioProperties() );
-        //just set it as we just did an accurate pass
-        setText( Length,  bundle.prettyLength()  );
-        setText( Bitrate, bundle.prettyBitrate() );
+    TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Accurate );
+    //FIXME hold a small cache of metabundles?
+    //then return by reference
+    MetaBundle bundle( this, f.isNull() ? 0 : f.audioProperties() );
+    //just set it as we just did an accurate pass
+    setText( Length,  bundle.prettyLength()  );
+    setText( Bitrate, bundle.prettyBitrate() );
 
-        return bundle;
-
-    } else {
-
-        return MetaBundle( this, 0 );
-    }
+    return bundle;
 }
 
 
