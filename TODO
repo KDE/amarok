@@ -3,10 +3,12 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #65 being the highest available (take this one for your next bug and increase here)
+           #66 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+    * fix: #65 <markey> option "Repeat Playlist" not honored when skipping broken track @ end of PL
 
     * fix: #64 <markey> when loading a playlist for the first time after startup, amaroK starts playing
                the first track automagically
