@@ -3,10 +3,12 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #178 being the highest available (take this one for your next bug and increase here)
+           #179 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  ADD 178 <muesli> Detecting old sqlite2 collection.db doesn't work.
 
   ADD 177 <muesli> Option to remove smart playlists.
 
