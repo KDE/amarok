@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.2:
+  CHG: Don't read m3u files recursively when dropping a folder on the
+       playlist. No more doubled entries.
   FIX: Shoutcast radio with GStreamer is improved, no more dropouts when
        starting a stream.
   ADD: The "Similar Artists" feature (using Audioscrobbler) can now be
