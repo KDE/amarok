@@ -674,7 +674,8 @@ Playlist::isTrackAfter() const
     //order is carefully crafted, remember count() is O(n)
     //TODO randomMode will end if everything is in prevTracks
 
-    return !currentTrack() && !isEmpty() ||
+   return !currentTrack() && !isEmpty() ||
+            !m_nextTracks.isEmpty() ||
             currentTrack() && currentTrack()->itemBelow() ||
             childCount() > 1 && ( AmarokConfig::randomMode() || AmarokConfig::repeatPlaylist() );
 }
@@ -1910,6 +1911,8 @@ Playlist::lock()
 void
 Playlist::unlock()
 {
+   Q_ASSERT( m_lockStack > 0 );
+
    m_lockStack--;
 
    if( m_lockStack == 0 ) {
