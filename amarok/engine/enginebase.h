@@ -31,7 +31,8 @@ class EngineBase : public QObject
     
     signals:
         void                         endOfTrack();
-    
+        void                         metaData( QString title, QString url, QString kbps );
+            
     public:
         enum                         EngineState { Empty, Idle, Playing, Paused };
 

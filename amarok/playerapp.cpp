@@ -26,7 +26,6 @@ email                : markey@web.de
 #include "osd.h"
 #include "playerapp.h"
 #include "playerwidget.h"
-#include "titleproxy/titleproxy.h"
 
 #include "amarokconfig.h"
 #include "Options1.h"
@@ -83,7 +82,6 @@ PlayerApp::PlayerApp()
         , m_playRetryCounter( 0 )
         , m_pEffectWidget( NULL )
         , m_bChangingSlider( false )
-        , m_proxyError( false )
 {
     setName( "amaroK" );
     pApp = this; //global
@@ -422,7 +420,6 @@ bool PlayerApp::queryClose()
 }
 
 
-//FIXME use const & QStrings!!
 void PlayerApp::receiveStreamMeta( QString title, QString url, QString kbps )
 {
     //FIXME this could all be compressed into a single setScroll() if the bitrate is used in the else case
@@ -436,7 +433,6 @@ void PlayerApp::receiveStreamMeta( QString title, QString url, QString kbps )
     else
         //FIXME show bitrate? this was how it was before so I am leaving it as is.. <mxcl>
         m_pPlayerWidget->setScroll( QString( "%1 (%2)" ).arg( title ).arg( url ), "--", "--" );
-
 }
 
 
@@ -479,6 +475,9 @@ void PlayerApp::slotPlay() const { m_pBrowserWin->m_pPlaylistWidget->request( Pl
 void PlayerApp::play( const KURL &url, const MetaBundle *tags )
 {
     m_pEngine->open( url );
+    
+    connect( m_pEngine, SIGNAL( metaData         ( QString, QString, QString ) ),
+             this,      SLOT  ( receiveStreamMeta( QString, QString, QString ) ) );
     
     if ( tags )
     {
@@ -541,15 +540,6 @@ void PlayerApp::play( const KURL &url, const MetaBundle *tags )
     //interface consistency
     m_pPlayerWidget->m_pButtonPlay ->setOn  ( true );
     m_pPlayerWidget->m_pButtonPause->setDown( false );
-}
-
-
-void PlayerApp::proxyError()
-{
-/*    m_proxyError = true;
-
-    slotStop; //FIXME play() does this for us (?)
-    slotPlay();*/
 }
 
 

@@ -65,7 +65,9 @@ class ArtsEngine : public EngineBase
 
     private slots:
         void                                     connectPlayObject();
-
+        void                                     proxyError();
+        void                                     receiveStreamMeta( QString title, QString url, QString kbps );
+        
     private:
         void                                     enableScope();
         void                                     disableScope();
@@ -83,6 +85,7 @@ class ArtsEngine : public EngineBase
 //         Amarok::Synth_STEREO_XFADE               m_XFade;
         
        long                                      m_scopeId;
+       bool                                      m_proxyError;
 };
 
 #endif

@@ -17,6 +17,7 @@ email                : markey@web.de
 
 #include "artsengine.h" 
 #include "enginebase.h"
+#include "../titleproxy/titleproxy.h"
 
 #include <string>
 #include <vector>
@@ -50,6 +51,7 @@ ArtsEngine::ArtsEngine( bool& restart )
         : EngineBase()
         , m_pPlayObject( NULL )
         , m_scopeId( 0 )
+        , m_proxyError( false )
 {
     setName( "ArtsEngine" );
     
@@ -324,22 +326,22 @@ void ArtsEngine::open( KURL url )
     if ( m_pPlayObject )
         stop();
 
-/*    if ( m_optTitleStream && !m_proxyError && !url.isLocalFile()  )
+    KDE::PlayObjectFactory factory( m_server );
+    
+    if ( /* m_optTitleStream && */ !m_proxyError && !url.isLocalFile()  )
     {
         TitleProxy *pProxy = new TitleProxy( url );
         m_pPlayObject = factory.createPlayObject( pProxy->proxyUrl(), false );
 
-        connect( m_pPlayObject, SIGNAL( destroyed() ),
-                 pProxy, SLOT( deleteLater() ) );
-        connect( pProxy, SIGNAL( metaData( QString, QString, QString ) ),
-                 this, SLOT( receiveStreamMeta( QString, QString, QString ) ) );
+        connect( pProxy, SIGNAL( metaData         ( QString, QString, QString ) ),
+                 this,   SLOT  ( receiveStreamMeta( QString, QString, QString ) ) );
         connect( pProxy, SIGNAL( error() ), this, SLOT( proxyError() ) );
-    }*/        
+        connect( m_pPlayObject, SIGNAL( destroyed() ), pProxy, SLOT( deleteLater() ) );
+    }        
+    else        
+        m_pPlayObject = factory.createPlayObject( url, false ); //second parameter: create BUS(true/false)
         
-    KDE::PlayObjectFactory factory( m_server );
-    m_pPlayObject = factory.createPlayObject( url, false ); //second parameter:
-                                                                //create BUS(true/false)
-//     m_proxyError = false;
+    m_proxyError = false;
 
     if ( !m_pPlayObject  )
     {
@@ -434,6 +436,17 @@ void ArtsEngine::setVolume( int percent )
 // PRIVATE METHODS
 ////////////////////////////////////////////////////////////////////////////////
 
+void ArtsEngine::disableScope()
+{
+    if ( m_scopeId )
+    {
+        m_scope.stop();
+        m_globalEffectStack.remove( m_scopeId );
+        m_scopeId = 0;
+    }
+}
+
+
 void ArtsEngine::enableScope()
 {
     if ( !m_scopeId )
@@ -444,14 +457,16 @@ void ArtsEngine::enableScope()
 }
 
 
-void ArtsEngine::disableScope()
+void ArtsEngine::proxyError()
 {
-    if ( m_scopeId )
-    {
-        m_scope.stop();
-        m_globalEffectStack.remove( m_scopeId );
-        m_scopeId = 0;
-    }
+    m_proxyError = true;
+    play();
+}
+
+
+void ArtsEngine::receiveStreamMeta( QString title, QString url, QString kbps )
+{
+    emit metaData( title, url, kbps );
 }
 
 
