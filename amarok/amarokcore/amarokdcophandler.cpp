@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "amarokconfig.h"
 #include "amarokdcophandler.h"
 #include "engine/enginebase.h"
 #include "playerapp.h"
@@ -41,9 +42,9 @@ void AmarokDcopHandler::play()
 void AmarokDcopHandler::playPause()
 {
     if (isPlaying())
-	pause();
+   pause();
     else
-	play();
+   play();
 }
 
 void AmarokDcopHandler::stop()
@@ -113,5 +114,9 @@ void AmarokDcopHandler::addMediaList(const KURL::List &urls)
    pApp->insertMedia(urls);
 }
 
+void AmarokDcopHandler::enableOSD(bool enable)
+{
+   AmarokConfig::setOsdEnabled(enable);
+}
 
 #include "amarokdcophandler.moc"

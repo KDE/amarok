@@ -44,6 +44,7 @@ class AmarokDcopHandler : public QObject, virtual public AmarokIface
       virtual void addMediaList(const KURL::List &);
       virtual QString nowPlaying();
       virtual bool isPlaying();
+      virtual void enableOSD(bool enable);
 
    private:
       QString m_nowPlaying; /* state for nowPlaying() */
