@@ -136,7 +136,7 @@ void Proxy::accept( int socket )
     m_sockRemote.writeBlock( m_pBuf, index1 );
     
     //This is our new, modified request, containing the correct path to the stream
-    QString request = QString( "GET %1 HTTP/1.1\nIcy-MetaData:1\r\n" )
+    QString request = QString( "GET %1 HTTP/1.1\r\nIcy-MetaData:1\r\n" )
                       .arg( m_url.path( -1 ) );
     
     kdDebug() << "request: " << request << endl;
