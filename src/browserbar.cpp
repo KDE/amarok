@@ -109,6 +109,11 @@ BrowserBar::polish()
     const int index = indexForName( config->readEntry( "CurrentPane" ) );
     const int width = config->readNumEntry( "Width", browser( index )->sizeHint().width() );
 
+    if( M > 250 ) {
+        warning() << "Some browsers are insisting on a silly minimum size! " << M << endl;
+        M = 250;
+    }
+
     m_browserBox->setMinimumWidth( M );
     m_browserBox->resize( width, height() );
 
