@@ -3,10 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #105 being the highest available (take this one for your next bug and increase here)
+           #106 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  ADD: #105 <markey> Make ArtsEngine depend not only on kdemultimedia-devel, but also on kdemultimedia,
+                     since arts itself contains these crappy decoders and ppl come complain about bad sound.
 
   CHG #102 <muesli> make sure collectionbrowser gets updated after scanning. keep secondary
            database connection open while scanning, only.
