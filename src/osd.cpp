@@ -104,7 +104,7 @@ OSDWidget::determineMetrics( const uint M )
     const QSize max = QApplication::desktop()->screen( m_screen )->size() - margin;
 
     // If we don't do that, the boundingRect() might not be suitable for drawText() (Qt issue N67674)
-    m_text.replace( QRegExp(" +\n"), "\n" ); 
+    m_text.replace( QRegExp(" +\n"), "\n" );
 
     // The osd cannot be larger than the screen
     QRect rect = fontMetrics().boundingRect( 0, 0,
@@ -411,16 +411,18 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
 
     // we special case prettyTitle and put it first
     // so that we handle things like streams better
-    tokens << i18n("%artist - %title")
-           << i18n("%artist") << i18n("%album") << i18n("%title")   << i18n("%genre")
-           << i18n("%year")   << i18n("%track") << i18n("%bitrate") << i18n("%length")
-           << i18n("%file")   << i18n("%score");
+    tokens << "%artist - %title"
+           << "%artist" << "%album" << "%title" << "%genre"
+           << "%year" << "%track" << "%bitrate" << "%length"
+           << "%file"
+           << "%score";
 
     tags   << bundle.prettyTitle()
            << bundle.artist() << bundle.album() << bundle.title() << bundle.genre()
            << bundle.year() << bundle.track() << bundle.prettyBitrate()
-           << (bundle.length() > 0 ? bundle.prettyLength() : QString::null) //ignore '-' or '?'
-           << bundle.url().fileName() << QString::number( CollectionDB::instance()->getSongPercentage( bundle.url().path() ) );
+           << (bundle.length() > 0 ? bundle.prettyLength() : QString::null) //ignore '-' and '?'
+           << bundle.url().fileName()
+           << QString::number( CollectionDB::instance()->getSongPercentage( bundle.url().path() ) );
 
     for( QStringList::ConstIterator tok = tokens.begin(), end = tokens.end(), tag = tags.begin(); tok != end; ++tok, ++tag )
     {

@@ -24,7 +24,9 @@ email                : fh@ez.no
 *****************************************************************************/
 
 #include "amarokconfig.h"
-#include "configdialog.h"
+#include <klocale.h>
+#include "qstringx.h"
+#include <qtooltip.h>
 
 
 void Options5::init()
@@ -45,6 +47,31 @@ void Options5::init()
     connect( kcfg_OsdFont, SIGNAL(fontSelected(const QFont&)), m_pOSDPreview, SLOT(setFont(const QFont&)) );
     connect( kcfg_OsdScreen, SIGNAL(activated(int)), m_pOSDPreview, SLOT(setScreen(int)) );
     connect( kcfg_OsdEnabled, SIGNAL(toggled(bool)), m_pOSDPreview, SLOT(setShown(bool)) );
+
+    amaroK::QStringx text = i18n(
+            "<h3>Tags Displayed in OSD</h3>"
+            "You can use the following tokens:"
+                "<ul>"
+                "<li>Title - %1"
+                "<li>Album - %2"
+                "<li>Artist - %3"
+                "<li>Genre - %4"
+                "<li>Bitrate - %5"
+                "<li>Year - %6"
+                "<li>Track Length - %7"
+                "<li>Track Number - %8"
+                "<li>Filename - %9"
+                "<li>Score - %10"
+                "</ul>"
+            "If you surround sections of text that contain a token with curly-braces, that section will be hidden if the token is empty, for example:"
+                "<pre>%11</pre>"
+            "Will not show <b>Score: <i>%score</i></b> if the track has no score." );
+
+    QToolTip::add( kcfg_OsdText, text.args( QStringList()
+            // we don't translate these, it is not sensible to do so
+            << "%title" << "%album"  << "%artist" << "%genre" << "%bitrate"
+            << "%year " << "%length" << "%track"  << "%file"  << "%score"
+            << "%title {Score: %score}" ) );
 }
 
 void
