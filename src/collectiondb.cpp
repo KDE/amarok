@@ -40,23 +40,23 @@ CollectionDB::CollectionDB()
     QCString path = ( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" )
                   + "collection.db" ).local8Bit();
 
-    bool failOpen = false;
+    // Open database file and check for correctness
+    bool failOpen = true;
     QFile file( path );
     if ( file.open( IO_ReadOnly ) ) {
         QString format;
         file.readLine( format, 50 );
-        file.close();
         if ( !format.startsWith( "SQLite format 3" ) ) {
             kdWarning() << "Database versions incompatible. Removing and rebuilding database.\n";
-            failOpen = true;
         }
         else if ( sqlite3_open( path, &m_db ) != SQLITE_OK ) {
             kdWarning() << "Database file corrupt. Removing and rebuilding database.\n";
-            failOpen = true;
+            sqlite3_close( m_db );
         }
+        else
+            failOpen = false;
     }
     if ( failOpen ) {
-        file.close();
         // Remove old db file; create new
         QFile::remove( path );
         sqlite3_open( path, &m_db );
