@@ -150,7 +150,7 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
 
     if ( error != SQLITE_DONE ) {
         kdWarning() << k_funcinfo << "sqlite_step error.\n";
-        return "error";
+        return false;
     }
 
     return true;
@@ -440,7 +440,9 @@ CollectionView::renderView( )  //SLOT
 
     QStringList values;
     QStringList names;
-    m_db->execSql( command, &values, &names );
+
+    while ( !m_db->execSql( command, &values, &names ) )
+    {}
 
     QPixmap pixmap = iconForCat( m_category1 );
 
