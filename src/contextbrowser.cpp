@@ -817,7 +817,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                     << escapeHTMLAttr( values[ i ] ) // album.name
                     << i18n( "Click for information from amazon.com, right-click for menu." )
                     << escapeHTMLAttr( m_db->albumImage( currentTrack.artist(), values[ i ], 50 ) )
-                    << i18n( "Single", "%n Tracks", m_db->albumSongCount( QString::number(artist_id), values[ i+1 ] ).toInt() )
+                    << i18n( "Single", "%n Tracks",  albumValues.count() / 4 )
                     << QString::number( artist_id )
                     << values[ i+1 ] //album.id
                     << escapeHTML( values[ i ] )
@@ -950,9 +950,9 @@ void ContextBrowser::showLyrics( const QString &hash )
     QString replaceMe = " \\([^}]*%1[^}]*\\)";
     QStringList production;
     production << i18n( "live" ) << i18n( "acoustic" ) << i18n( "cover" ) << i18n( "mix" )
-               << i18n( "edit" ) << i18n( "medley" ) << i18n( "unplugged" )
+               << i18n( "edit" ) << i18n( "medley" ) << i18n( "unplugged" ) << i18n( "bonus" )
                << QString( "live" ) << QString( "acoustic" ) << QString( "cover" ) << QString( "mix" )
-               << QString( "edit" ) << QString( "medley" ) << QString( "unplugged" );
+               << QString( "edit" ) << QString( "medley" ) << QString( "unplugged" ) << QString( "bonus" );
 
     QString title  = EngineController::instance()->bundle().title();
 
