@@ -189,6 +189,7 @@ PlaylistLoader::loadPlaylist( const QString &path, Format type )
             {
                 QString extinf = str.section( ':', 1);
                 length = extinf.section( ',', 0, 0 ).toInt();
+                title = extinf.section( ',', 1 );
 
                 if ( length == 0 ) length = MetaBundle::Undetermined;
             }
