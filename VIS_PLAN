@@ -84,4 +84,4 @@ beat-detection is already done, also it means beat-detection is likely to be bet
 as we will over time offer a really good implementation, and it means that if the user
 has many visuals running, the beat-detection is only done once for all visualisations.
 
-[/Comment by muesli]=======
+[/Comment by muesli]

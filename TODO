@@ -8,11 +8,7 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-    * fix: #22<markey> in filebrowser the column width does not get saved
-
-    * fix: #20<muesli> remove beat detection into own analyzer (project "sun-down") -->muesli
-
-    * fix: #19<muesli> translate "description.png" into english
+    * fix: #19<muesli> the scroller should display the data according to "description.png" 
               (text above the title scroller) -->muesli
               <mxcl> Tags can be accessed by passing the metabundle that is passed to ::play()
               to the setScroll() function as a new parameter -->mxcl or muesli if he fancies it
@@ -24,9 +20,6 @@ SHORT-TERM (URGENT):
               <mxcl> this one is a little dodgy as the length is currently not stored with
               the playlistitem. Maybe best to leave this till next release? Or force
               me to ammend my hack :)
-
-    * fix: #16<muesli> with some songtitles, the quicksearch buffers seem to get
-              inconsistent. same for undo/redo -->muesli
 
     * fix: #12<markey> prevent zombie processes after amarok has exited (proper exit or crashing).
               such zombies can lead to very weird behaviour on next amarok start and eat ressources,

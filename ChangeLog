@@ -4,6 +4,8 @@ amaroK Changelog
 
 
 VERSION 0.8.0:
+  * fix: fixed crash bug in playlist searching
+  * fix: fixed crash bug when removing playlist-items
   * chg: new layout has been adopted
   * add: added accepting files dropped onto systray icon
   * fix: significant reduction in memory consumption for PlaylistItems
