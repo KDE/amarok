@@ -88,12 +88,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
 
 
     // amaroK background pixmap
-    m_oldBgPixmap.resize( size() );
-
-    if ( paletteBackgroundPixmap() )
-        m_oldBgPixmap = *paletteBackgroundPixmap();
-    else
-        m_oldBgPixmap.fill( pApp->m_bgColor );
+    m_oldBgPixmap.resize( 311, 22 );
 
     setPaletteBackgroundPixmap( QPixmap( locate( "data", "amarok/images/player_background.jpg" ) ) );
 
@@ -164,6 +159,8 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_pButtonNext->setFlat( true );
     //</Player Buttons>
 
+    m_oldBgPixmap.fill( m_pButtonPlay->paletteBackgroundColor() );
+
     // MainWindow Layout
     QFont timeFont( "Arial" );
     timeFont.setBold( TRUE );
@@ -212,23 +209,23 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_pSliderVol->move( 294, 18 );
     m_pSliderVol->resize( 12, 79 );
 
-    m_pFrameButtons->move( 0, 119 );
-    m_pFrameButtons->resize( 311, 21 );
+    m_pFrameButtons->move( 0, 118 );
+    m_pFrameButtons->resize( 311, 22 );
     m_pFrameButtons->setPaletteBackgroundPixmap( m_oldBgPixmap );
 
-    m_pButtonPrev->move( 1, 0 );
+    m_pButtonPrev->move( 1, 2 );
     m_pButtonPrev->resize( 61, 20 );
 
-    m_pButtonPlay->move( 63, 0 );
+    m_pButtonPlay->move( 63, 2 );
     m_pButtonPlay->resize( 61, 20 );
 
-    m_pButtonPause->move( 125, 0 );
+    m_pButtonPause->move( 125, 2 );
     m_pButtonPause->resize( 61, 20 );
 
-    m_pButtonStop->move( 187, 0 );
+    m_pButtonStop->move( 187, 2 );
     m_pButtonStop->resize( 61, 20 );
 
-    m_pButtonNext->move( 249, 0 );
+    m_pButtonNext->move( 249, 2 );
     m_pButtonNext->resize( 61, 20 );
 
     // set up system tray
@@ -239,7 +236,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     setFixedSize( 311, 140 ); //y was 130
     initScroll(); //requires m_pFrame to be created
 
-    // initTimeDisplay();
     m_pTimeDisplayLabel->setFixedSize( 9 * 12 + 2, 16 );
     timeDisplay( false, 0, 0, 0 );
 
@@ -393,7 +389,7 @@ void PlayerWidget::timeDisplay( bool remaining, int hours, int minutes, int seco
 
     m_pTimeDisplayLabel->setText( str );
 
-    if (!pApp->m_optTimeDisplayRemaining)
+    if (!remaining)
         m_pTimeSign->setPixmap( *m_pTimePlusPixmap );
     else
         m_pTimeSign->setPixmap( *m_pTimeMinusPixmap );
