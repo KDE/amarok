@@ -30,7 +30,6 @@ email                : markey@web.de
 #include <qhbox.h>
 #include <qpainter.h>
 #include <qpixmap.h>
-#include <qrect.h>
 #include <qstringlist.h>
 #include <qtooltip.h>        //analyzer tooltip
 
@@ -183,6 +182,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
     kdDebug() << "END " << k_funcinfo << endl;
 }
 
+
 PlayerWidget::~PlayerWidget()
 {
     EngineController::instance()->detach( this );
@@ -190,6 +190,7 @@ PlayerWidget::~PlayerWidget()
     AmarokConfig::setPlayerPos( pos() );
     AmarokConfig::setPlaylistWindowEnabled( m_pPlaylistButton->isOn() );
 }
+
 
 // METHODS ----------------------------------------------------------------
 
@@ -327,6 +328,7 @@ void PlayerWidget::engineStateChanged( EngineBase::EngineState state )
     }
 }
 
+
 void PlayerWidget::engineVolumeChanged( int percent )
 {
     if( !m_pVolSlider->sliding() )
@@ -336,6 +338,7 @@ void PlayerWidget::engineVolumeChanged( int percent )
         m_pVolSlider->blockSignals( false );
     }
 }
+
 
 void PlayerWidget::engineNewMetaData( const MetaBundle &bundle, bool )
 {
@@ -389,6 +392,7 @@ void PlayerWidget::slotSliderChanged( int value )
         timeDisplay( value );
     }
 }
+
 
 void PlayerWidget::timeDisplay( int seconds )
 {
@@ -548,6 +552,7 @@ bool PlayerWidget::event( QEvent *e )
     }
 }
 
+
 bool PlayerWidget::eventFilter( QObject *o, QEvent *e )
 {
     //NOTE we only monitor for parent() - which is the PlaylistWindow
@@ -666,7 +671,6 @@ void PlayerWidget::mouseMoveEvent( QMouseEvent *e )
 }
 
 
-
 // SLOTS ---------------------------------------------------------------------
 
 void PlayerWidget::createAnalyzer( int increment )
@@ -681,12 +685,14 @@ void PlayerWidget::createAnalyzer( int increment )
     QToolTip::add( m_pAnalyzer, i18n( "Press 'd' to detach, click for more" ) );
 }
 
+
 void PlayerWidget::startDrag()
 {
     QDragObject *d = new QTextDrag( EngineController::instance()->bundle().prettyTitle(), this );
     d->dragCopy();
     // Qt will delete d for us.
 }
+
 
 void PlayerWidget::setEffectsWindowShown( bool on )
 {
@@ -696,39 +702,45 @@ void PlayerWidget::setEffectsWindowShown( bool on )
 }
 
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// CLASS NavButton
+//////////////////////////////////////////////////////////////////////////////////////////
 
 #include <kiconeffect.h>
 NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
   : QPushButton( parent )
 {
+    QPixmap pixmap( getPNG( "b_" + icon ) );
     QIconSet iconSet;
     KIconEffect ie;
     
-    // Tint icons blueish
-    QPixmap off = ie.apply( getPNG( "b_" + icon ), KIconEffect::Colorize, 0.3, Qt::blue, false );
-    // Tint gray for "on" icon state
-    QPixmap on = ie.apply( off, KIconEffect::ToGray, 0.7, QColor(), false );
-    // Tint gray and make pseudo-transparent for disabled state
-    QPixmap disabled = ie.apply( off, KIconEffect::ToGray, 1.0, QColor(), true );
+    // Tint icon blueish for "off" state
+    QPixmap off = ie.apply( pixmap, KIconEffect::Colorize, 0.3, QColor( 0x30, 0x10, 0xff ), false );
+    // Tint more intense for "on" state
+    QPixmap on = ie.apply( pixmap, KIconEffect::Colorize, 1.0, QColor( 0x30, 0x10, 0xff ), false );
+    // Tint gray and make pseudo-transparent for "disabled" state
+    QPixmap disabled = ie.apply( pixmap, KIconEffect::ToGray, 0.7, QColor(), true );
     
     iconSet.setPixmap( off, QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
     iconSet.setPixmap( on, QIconSet::Automatic, QIconSet::Normal, QIconSet::On  );
     iconSet.setPixmap( disabled, QIconSet::Automatic, QIconSet::Disabled, QIconSet::Off );
     setIconSet( iconSet );
 
-    // System icons
-//    KIconLoader &iconLoader = *KGlobal::iconLoader();
-//    setIconSet( iconLoader.loadIconSet( icon, KIcon::Toolbar, KIcon::SizeSmall ) );
-
+    // Use standard palette, since the modified palette from parent widget makes buttons look weird
+    setPalette( KApplication::palette() );
+    
     setFocusPolicy( QWidget::NoFocus );
     setFlat( true );
     setEnabled( action->isEnabled() );
-
+    
     connect( action, SIGNAL(enabled( bool )), SLOT(setEnabled( bool )) );
     connect( this, SIGNAL(clicked()), action, SLOT(activate()) );
 }
 
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// CLASS IconButton
+//////////////////////////////////////////////////////////////////////////////////////////
 
 IconButton::IconButton( QWidget *parent, const QString &icon, const char *signal )
     : QButton( parent )
