@@ -2,7 +2,9 @@ amaroK ChangeLog
 ================
 (c) 2002-2004 the amaroK authors.
 
+
    
+  * fix: FreeBSD compile fixes, contributed by Markus Brueffer <brueffer@phoenix-systems.de>
   * fix: rewritten configure: checks properly for kdemultimedia presence,
          and adds --without-opengl and --without-gstreamer arguments
 
