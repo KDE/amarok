@@ -183,7 +183,7 @@ void PlaylistLoader::process( KURL::List &list, bool validate )
 
       if( validate && (*it).isLocalFile() )
       {
-         if( LSTAT( path, &statbuf ) != 0 ) continue;
+         if( LSTAT( path.local8Bit(), &statbuf ) != 0 ) continue;
 
          if( S_ISDIR( statbuf.st_mode ) )
          {
@@ -319,7 +319,7 @@ bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissi
 
 void PlaylistLoader::translate( QString &path, KURL::List &list ) //FIXME KURL is pointless, pass a QString
 {
-   DIR *d = opendir( path );
+   DIR *d = opendir( path.local8Bit() );
    if( !path.endsWith( "/" ) ) path += '/';
 
    if( d )
@@ -336,7 +336,7 @@ void PlaylistLoader::translate( QString &path, KURL::List &list ) //FIXME KURL i
          QString newpath = path + ent->d_name;
 
          //get file information
-         if( LSTAT( newpath, &statbuf ) == 0 )
+         if( LSTAT( newpath.local8Bit(), &statbuf ) == 0 )
          {
             if( S_ISCHR(  statbuf.st_mode ) ||
                 S_ISBLK(  statbuf.st_mode ) ||
@@ -551,7 +551,7 @@ Tags *TagReader::readTags( const KURL &url, Tags *tags )
    //TODO use old tags if available
    delete tags;
 
-   TagLib::FileRef f( url.path(), false ); //false = don't read audioproperties
+   TagLib::FileRef f( url.path().local8Bit(), false ); //false = don't read audioproperties
 
    if ( !f.isNull() && f.tag() )
    {

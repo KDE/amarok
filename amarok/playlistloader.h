@@ -8,6 +8,7 @@
 #define PLAYLISTLOADER_H
 
 #include <qthread.h>
+#include <qmutex.h>
 #include <qevent.h>
 #include <kurl.h>      //need KURL::List
 #include <kfileitem.h> //need the enum
