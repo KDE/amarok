@@ -1453,10 +1453,10 @@ Playlist::shuffle() //SLOT
     }
 
     //remove rest
-    while( QListViewItem *first = firstChild() )
+    for( MyIt it( this ); *it; ++it )
     {
-        list.append( first );
-        takeItem( first );
+        list.append( *it );
+        takeItem( *it );
     }
 
     //shuffle the rest
