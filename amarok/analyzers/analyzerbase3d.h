@@ -18,6 +18,10 @@
 #ifndef ANALYZERBASE3D_H
 #define ANALYZERBASE3D_H
 
+#include <config.h>
+
+#ifdef HAVE_QGLWIDGET
+
 #include <qgl.h>
 
 #include <GL/gl.h>
@@ -51,5 +55,7 @@ class AnalyzerBase3d : public QGLWidget, public AnalyzerBase
     private:
 
 };
+
+#endif
 
 #endif

@@ -15,6 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <config.h>
+
+#ifdef HAVE_QGLWIDGET
+
 #include "glanalyzer.h"
 
 #include <math.h>
@@ -159,3 +163,4 @@ void GLAnalyzer::interpolate(std::vector<float> *oldVec)
     }
 }
 #include "glanalyzer.moc"
+#endif

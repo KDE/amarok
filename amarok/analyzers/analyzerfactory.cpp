@@ -56,9 +56,11 @@ AnalyzerBase *AnalyzerBase::AnalyzerFactory::createAnalyzer( QWidget *parent )
     case 6:
         analyzer = new Sonogram( parent );
         break;
+#ifdef HAVE_QGLWIDGET
     case 7:
         analyzer = new GLAnalyzer( parent );
         break;
+#endif
 //   case 8:
 //        analyzer = new SpectralShineAnalyzer( this );
 //        break;

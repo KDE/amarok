@@ -183,3 +183,37 @@ else
   AC_MSG_WARN([No pkg-config found, required for GStreamer])
 #  DO_NOT_COMPILE="$DO_NOT_COMPILE gst"
 fi
+
+AC_MSG_CHECKING(for Qt with OpenGL support)
+AC_CACHE_VAL(ac_cv_kde_qt_has_opengl,
+[
+  AC_LANG_SAVE
+  AC_LANG_CPLUSPLUS
+
+  save_CXXFLAGS="$CXXFLAGS"
+  save_LIBS="$LIBS"
+  save_LDFLAGS="$LDFLAGS"
+
+  CXXFLAGS="$CXXFLAGS -I$qt_incdir $all_includes"
+  LDFLAGS="$LDFLAGS -L$qt_libdir $all_libraries $USER_LDFLAGS $KDE_MT_LDFLAGS"
+  LIBS="$LIBS $LIBQT $KDE_MT_LIBS"
+
+  AC_TRY_LINK([
+  #include <qgl.h>
+  ],
+  [
+   (void)new QGLWidget((QWidget*)0, "qgl");
+  ],
+  ac_cv_kde_qt_has_opengl=yes,
+  ac_cv_kde_qt_has_opengl=no)
+
+  CXXFLAGS="$save_CXXFLAGS"
+  LIBS="$save_LIBS"
+  LDFLAGS="$save_LDFLAGS"
+  AC_LANG_RESTORE
+])
+AC_MSG_RESULT($ac_cv_kde_qt_has_opengl)
+
+if test x$ac_cv_kde_qt_has_opengl = xyes; then
+  AC_DEFINE(HAVE_QGLWIDGET, 1, [have Qt with OpenGL support])
+fi

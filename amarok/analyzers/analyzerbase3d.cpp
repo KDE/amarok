@@ -15,6 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <config.h>
+
+#ifdef HAVE_QGLWIDGET
+
 #include "analyzerbase3d.h"
 
 #include <math.h>
@@ -51,3 +55,4 @@ void AnalyzerBase3d::mousePressEvent( QMouseEvent *e )
 }
 
 #include "analyzerbase3d.moc"
+#endif
