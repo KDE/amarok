@@ -56,6 +56,9 @@
                     <property name="accel">
                         <string>Alt+A</string>
                     </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>If selected, amaroK uses the amaroK standard colors in the playlist.</string>
+                    </property>
                 </widget>
                 <widget class="QRadioButton">
                     <property name="name">
@@ -67,6 +70,9 @@
                     <property name="accel">
                         <string>Alt+K</string>
                     </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>If selected, amaroK uses the KDE standard colors in the playlist.</string>
+                    </property>
                 </widget>
                 <widget class="QRadioButton">
                     <property name="name">
@@ -77,6 +83,9 @@
                     </property>
                     <property name="accel">
                         <string>Alt+C</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>If selected, amaroK uses the user-defined colors in the playlist.</string>
                     </property>
                 </widget>
                 <widget class="QGroupBox">
@@ -125,6 +134,9 @@
                                     <property name="buddy" stdset="0">
                                         <cstring>kcfg_BrowserFgColor</cstring>
                                     </property>
+                                    <property name="whatsThis" stdset="0">
+                                        <string>Selects the color to use as foreground (text) color  in the playlist.</string>
+                                    </property>
                                 </widget>
                                 <widget class="QLabel">
                                     <property name="name">
@@ -149,6 +161,9 @@
                                     </property>
                                     <property name="buddy" stdset="0">
                                         <cstring>kcfg_BrowserBgColor</cstring>
+                                    </property>
+                                    <property name="whatsThis" stdset="0">
+                                        <string>Selects the color to use as background color  in the playlist.</string>
                                     </property>
                                 </widget>
                             </vbox>
@@ -185,6 +200,9 @@
                                     <property name="text">
                                         <string></string>
                                     </property>
+                                    <property name="whatsThis" stdset="0">
+                                        <string>Selects the color to use as foreground (text) color  in the playlist.</string>
+                                    </property>
                                 </widget>
                                 <widget class="KColorButton">
                                     <property name="name">
@@ -215,6 +233,9 @@
                                     </property>
                                     <property name="text">
                                         <string></string>
+                                    </property>
+                                    <property name="whatsThis" stdset="0">
+                                        <string>Selects the color to use as background color  in the playlist.</string>
                                     </property>
                                 </widget>
                             </vbox>

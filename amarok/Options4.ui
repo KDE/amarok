@@ -23,6 +23,9 @@
     <property name="caption">
         <string>Form1</string>
     </property>
+    <property name="whatsThis" stdset="0">
+        <string>Select the sound system to use for playback.</string>
+    </property>
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
@@ -78,6 +81,9 @@
                     <property name="value">
                         <number>0</number>
                     </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Silence between tracks, in milliseconds.</string>
+                    </property>
                 </widget>
                 <widget class="QLabel" row="1" column="0">
                     <property name="name">
@@ -100,6 +106,9 @@
                     <property name="buddy" stdset="0">
                         <cstring>kcfg_TrackDelayLength</cstring>
                     </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Silence between tracks, in milliseconds.</string>
+                    </property>
                 </widget>
                 <widget class="QRadioButton" row="0" column="0">
                     <property name="name">
@@ -114,6 +123,9 @@
                     <property name="checked">
                         <bool>true</bool>
                     </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Enable normal track transition. You may insert a gap of silence between tracks.</string>
+                    </property>
                 </widget>
                 <widget class="QRadioButton" row="2" column="0">
                     <property name="name">
@@ -127,6 +139,9 @@
                     </property>
                     <property name="checked">
                         <bool>false</bool>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Enable crossfading between tracks. This setting also enables fading to or from silence e.g when pressing stop.</string>
                     </property>
                 </widget>
                 <widget class="QLabel" row="3" column="0">
@@ -149,6 +164,9 @@
                     </property>
                     <property name="buddy" stdset="0">
                         <cstring>kcfg_CrossfadeLength</cstring>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The length of the crossfade between tracks in milliseconds.</string>
                     </property>
                 </widget>
                 <widget class="QSpinBox" row="3" column="1">
@@ -180,6 +198,9 @@
                     </property>
                     <property name="value">
                         <number>0</number>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The length of the crossfade between tracks in milliseconds.</string>
                     </property>
                 </widget>
             </grid>
@@ -213,6 +234,9 @@
                     <property name="text">
                         <string>Sound system:</string>
                     </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Select the sound system to use for playback.</string>
+                    </property>
                 </widget>
                 <widget class="QComboBox">
                     <property name="name">
@@ -232,6 +256,9 @@
                             <height>0</height>
                         </size>
                     </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Select the sound system to use for playback.</string>
+                    </property>
                 </widget>
             </hbox>
         </widget>
@@ -246,8 +273,7 @@
                 <string>Alt+R</string>
             </property>
             <property name="whatsThis" stdset="0">
-                <string>&lt;b&gt;Resume playback on start&lt;/b&gt;
-&lt;p&gt;amaroK will resume playback from where you left it the previous session -- just like a tape-player.&lt;/p&gt;</string>
+                <string>If checked, amaroK will resume playback from where you left it the previous session -- just like a tape-player.</string>
             </property>
         </widget>
         <widget class="QCheckBox">
@@ -255,10 +281,13 @@
                 <cstring>kcfg_HardwareMixer</cstring>
             </property>
             <property name="text">
-                <string>Use hardware volume mixer</string>
+                <string>Use &amp;hardware volume mixer</string>
             </property>
             <property name="accel">
-                <string></string>
+                <string>Alt+H</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>If checked, the volume slider sets the master volume on the soundcard which affects the whole system. If not checked, the volume slider only affects the amaroK output.</string>
             </property>
         </widget>
         <widget class="QCheckBox">
@@ -266,10 +295,13 @@
                 <cstring>kcfg_TitleStreaming</cstring>
             </property>
             <property name="text">
-                <string>Display Shoutcast metadata (title streaming)</string>
+                <string>Display Shoutcast &amp;metadata (title streaming)</string>
             </property>
             <property name="accel">
-                <string></string>
+                <string>Alt+M</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>If checked, amaroK displays metadata also for shoutcast streams.</string>
             </property>
         </widget>
         <widget class="QCheckBox">
@@ -277,7 +309,13 @@
                 <cstring>kcfg_RememberEffects</cstring>
             </property>
             <property name="text">
-                <string>Remember effects</string>
+                <string>Remember &amp;effects</string>
+            </property>
+            <property name="accel">
+                <string>Alt+E</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>If checked, amaroK remembers the audio effects set through the effects window between sessions.</string>
             </property>
         </widget>
     </vbox>

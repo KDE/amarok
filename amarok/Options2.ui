@@ -40,6 +40,9 @@
             <property name="checked">
                 <bool>false</bool>
             </property>
+            <property name="whatsThis" stdset="0">
+                <string>Check to enable custom fonts.</string>
+            </property>
         </widget>
         <widget class="QButtonGroup">
             <property name="name">
@@ -107,6 +110,9 @@
                                     <property name="alignment">
                                         <set>AlignTop|AlignLeft</set>
                                     </property>
+                                    <property name="whatsThis" stdset="0">
+                                        <string>The font to use in the player window.</string>
+                                    </property>
                                 </widget>
                             </grid>
                         </widget>
@@ -130,6 +136,9 @@
                             </property>
                             <property name="sampleText">
                                 <string></string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The font to use in the player window.</string>
                             </property>
                         </widget>
                     </vbox>
@@ -158,6 +167,9 @@
                             <property name="alignment">
                                 <set>AlignTop|AlignLeft</set>
                             </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The font to use in the player window title scroller.</string>
+                            </property>
                         </widget>
                         <widget class="KFontRequester">
                             <property name="name">
@@ -179,6 +191,9 @@
                             </property>
                             <property name="sampleText">
                                 <string></string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The font to use in the player window title scroller.</string>
                             </property>
                         </widget>
                     </vbox>
@@ -204,6 +219,9 @@
                             <property name="text">
                                 <string>Playlist-window font:</string>
                             </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The font to use in the playlist window.</string>
+                            </property>
                         </widget>
                         <widget class="KFontRequester">
                             <property name="name">
@@ -225,6 +243,9 @@
                             </property>
                             <property name="sampleText">
                                 <string></string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The font to use in the playlist window.</string>
                             </property>
                         </widget>
                     </vbox>

@@ -29,6 +29,9 @@
             <property name="accel">
                 <string>Alt+U</string>
             </property>
+            <property name="whatsThis" stdset="0">
+                <string>Check to enable the On-Screen-Display. The OSD briefly displays track data when a new track is played.</string>
+            </property>
         </widget>
         <widget class="QButtonGroup">
             <property name="name">
@@ -54,6 +57,9 @@
                     <property name="text">
                         <string>font:</string>
                     </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The font to use for the On-Screen Display.</string>
+                    </property>
                 </widget>
                 <widget class="KFontRequester">
                     <property name="name">
@@ -64,6 +70,9 @@
                             <pointsize>20</pointsize>
                         </font>
                     </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The font to use for the On-Screen Display.</string>
+                    </property>
                 </widget>
                 <widget class="QLabel">
                     <property name="name">
@@ -71,6 +80,9 @@
                     </property>
                     <property name="text">
                         <string>text color:</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The color of the OSD text.</string>
                     </property>
                 </widget>
                 <widget class="KColorButton">
@@ -87,6 +99,9 @@
                             <blue>0</blue>
                         </color>
                     </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The color of the OSD text.</string>
+                    </property>
                 </widget>
                 <widget class="QLabel">
                     <property name="name">
@@ -94,6 +109,9 @@
                     </property>
                     <property name="text">
                         <string>background color:</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The color of the OSD background.</string>
                     </property>
                 </widget>
                 <widget class="KColorButton">
@@ -110,6 +128,9 @@
                             <blue>0</blue>
                         </color>
                     </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The color of the OSD background.</string>
+                    </property>
                 </widget>
                 <widget class="QLabel">
                     <property name="name">
@@ -118,6 +139,9 @@
                     <property name="text">
                         <string>duration:</string>
                     </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The time in milliseconds to show the OSD. The value must be between 500 ms and 10000 ms.</string>
+                    </property>
                 </widget>
                 <widget class="KIntSpinBox">
                     <property name="name">
@@ -125,6 +149,9 @@
                     </property>
                     <property name="suffix">
                         <string> ms</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The time in milliseconds to show the OSD. The value must be between 500 ms and 10000 ms.</string>
                     </property>
                 </widget>
                 <widget class="QLayoutWidget">
@@ -142,6 +169,9 @@
                             <property name="text">
                                 <string>Alignment:</string>
                             </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The alignment of the OSD relative to the screen corners.</string>
+                            </property>
                         </widget>
                         <widget class="QLabel">
                             <property name="name">
@@ -149,6 +179,9 @@
                             </property>
                             <property name="text">
                                 <string>Screen:</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The screen that the should display the OSD.</string>
                             </property>
                         </widget>
                     </hbox>
@@ -195,6 +228,9 @@
                             <property name="name">
                                 <cstring>kcfg_OsdScreen</cstring>
                             </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The screen that the should display the OSD.</string>
+                            </property>
                         </widget>
                     </hbox>
                 </widget>
@@ -213,6 +249,9 @@
                             <property name="text">
                                 <string>x-offset:</string>
                             </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The X position of the OSD relative to the chosen screen and OSD alignment. If Left alignment is chosen the X offset is the space between the leftmost part of the OSD and the left border of the screen. If Right alignment is chosen the X offset is the space between the rightmost part of the OSD and the right border of the screen.</string>
+                            </property>
                         </widget>
                         <widget class="QLabel">
                             <property name="name">
@@ -220,6 +259,9 @@
                             </property>
                             <property name="text">
                                 <string>y-offset:</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The Y position of the OSD relative to the chosen screen and  OSD alignment. If Top alignment is chosen the Y offset is the space between the upper part of the OSD and the top  of the screen. If Bottom alignment is chosen the Y offset is the space between the bottom part of the OSD and the bottom of the screen.</string>
                             </property>
                         </widget>
                     </hbox>
@@ -239,6 +281,9 @@
                             <property name="minValue">
                                 <number>0</number>
                             </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The X position of the OSD relative to the chosen screen and OSD alignment. If Left alignment is chosen the X offset is the space between the leftmost part of the OSD and the left border of the screen. If Right alignment is chosen the X offset is the space between the rightmost part of the OSD and the right border of the screen.</string>
+                            </property>
                         </widget>
                         <widget class="KIntNumInput">
                             <property name="name">
@@ -246,6 +291,9 @@
                             </property>
                             <property name="minValue">
                                 <number>0</number>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The Y position of the OSD relative to the chosen screen and  OSD alignment. If Top alignment is chosen the Y offset is the space between the upper part of the OSD and the top  of the screen. If Bottom alignment is chosen the Y offset is the space between the bottom part of the OSD and the bottom of the screen.</string>
                             </property>
                         </widget>
                     </hbox>
@@ -304,6 +352,9 @@
                             </property>
                             <property name="toggleButton">
                                 <bool>true</bool>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Preview the On-Screen Display. You may drag the OSD around and position it where you would like it to be displayed.</string>
                             </property>
                         </widget>
                     </hbox>
