@@ -1533,12 +1533,14 @@ Playlist::shuffle() //SLOT
         return;
     }
 
-    //remove
-    for( MyIt it( this ); *it; ++it ) {
-        debug() << (*it)->exactText( 0 ) << endl;
+    // shuffle only VISIBLE entries
+    for( MyIt it( this ); *it; ++it )
         list.append( *it );
-        takeItem( *it );
-    }
+
+    // we do it in two steps because the iterator doesn't seem
+    // to like it when we do takeItem and ++it in the same loop
+    for( QListViewItem *item = list.first(); item; item = list.next() )
+        takeItem( item );
 
     //shuffle
     KRandomSequence( (long)KApplication::random() ).randomize( &list );
