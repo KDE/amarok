@@ -34,13 +34,16 @@ FirstRunWizard::init()
     cancelButton()->setFixedWidth( cancelButton()->width() );
 
     //would be better as a KConfigXT key now
-    if ( amaroK::config()->readEntry( "XMLFile", QString::null ) != "amarokui.rc" )
+    if ( amaroK::config()->readEntry( "XMLFile", QString::null ) != "amarokui.rc" ) {
         option_xmms->setChecked( true );
-    else
+        picture_modePreview->setPixmap( getPNG( "wizard_xmms" ) );
+    }
+    else {
         option_compact->setChecked( true );
+        picture_modePreview->setPixmap( getPNG( "wizard_compact" ) );
+    }
+    picture_modePreview->adjustSize();
 
-//     option_xmms->setPixmap( getPNG( "wizard_xmms" ) );
-//     option_compact->setPixmap( getPNG( "wizard_compact" ) );
     picture1->setPixmap( getJPG( "amarok_rocks" ) );
     picture4->setPixmap( *picture1->pixmap() );
 
@@ -65,6 +68,15 @@ FirstRunWizard::invokeHandbook() //SLOT
 {
     // Show handbook
     kapp->invokeHelp( QString::null, QString::null, 0 );
+}
+
+void
+FirstRunWizard::xmmsModeToggled( bool on ) //SLOT
+{
+    if ( on )
+        picture_modePreview->setPixmap( getPNG( "wizard_xmms" ) );
+    else
+        picture_modePreview->setPixmap( getPNG( "wizard_compact" ) );
 }
 
 FirstRunWizard::Interface
