@@ -21,7 +21,11 @@
 #include <qpixmap.h>
 #include <qwidget.h>
 
-#include <kactioncollection.h>
+#if QT_VERSION >= 0x030200
+  #include <kactioncollection.h>
+#else
+  #include <kaction.h>
+#endif
 
 class BrowserWidget;
 class ExpandButton;
