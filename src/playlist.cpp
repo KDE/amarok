@@ -1139,7 +1139,9 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
         break;
 
     case VIEW:
-        showTrackInfo( item->url() );
+        if ( !showTrackInfo( item->url() ) )
+            //fallback when no meta info available for this URL
+            showTrackInfo( item );
         break;
 
     case EDIT:
@@ -1185,13 +1187,29 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
 }
 
 
-void Playlist::showTrackInfo( const KURL& url ) //STATIC
+bool Playlist::showTrackInfo( const KURL& url ) //STATIC
+{
+    KFileMetaInfo info( url, QString::null, KFileMetaInfo::Everything );
+    if ( info.isEmpty() ) return false;
+    
+    MetaBundle mb( url, info );  
+    showTrackInfoDlg( mb );
+    
+    return true;
+}
+
+
+void Playlist::showTrackInfo( PlaylistItem* item ) //STATIC
+{
+    MetaBundle mb = item->metaBundle();
+    showTrackInfoDlg( mb );
+}
+
+
+void Playlist::showTrackInfoDlg( const MetaBundle& mb ) //STATIC
 {
     QString str  = "<html><body><table width=\"100%\" border=\"1\">";
     QString body = "<tr><td>%1</td><td>%2</td></tr>";
-
-    KFileMetaInfo info( url, QString::null, KFileMetaInfo::Everything );
-    MetaBundle mb( url, info );  
 
     str += body.arg( i18n( "Title" ),      mb.title() );
     str += body.arg( i18n( "Artist" ),     mb.artist() );
@@ -1205,7 +1223,6 @@ void Playlist::showTrackInfo( const KURL& url ) //STATIC
     str += body.arg( i18n( "Location" ),   mb.url().path() );
 
     str.append( "</table></body></html>" );
-
     KMessageBox::information( 0, str, i18n( "Meta Information" )  );
 }
 

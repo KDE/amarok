@@ -108,7 +108,8 @@ class Playlist : private KListView, public EngineObserver
         //static
         static const int NO_SORT = 200;
         static QString defaultPlaylistPath();
-        static void showTrackInfo( const KURL& url );
+        static bool showTrackInfo( const KURL& url );
+        static void showTrackInfo( PlaylistItem* item );
 
         //enums, typedefs and friends
         enum RequestType { Prev = -1, Current = 0, Next = 1 };
@@ -162,6 +163,9 @@ class Playlist : private KListView, public EngineObserver
         //engine observer functions
         void engineNewMetaData( const MetaBundle&, bool );
         void engineStateChanged( EngineBase::EngineState );
+
+// STATIC        
+        static void showTrackInfoDlg( const MetaBundle& bundle );
 
 // REIMPLEMENTED ------
         void contentsDropEvent( QDropEvent* );
