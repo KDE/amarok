@@ -2,9 +2,9 @@
 <!DOCTYPE kcfg SYSTEM "http://www.kde.org/standards/kcfg/1.0/kcfg.dtd">
 <!-- Author: Mark Kretschmann, markey@web.de -->
 <kcfg>
-    
+
     <kcfgfile name="amarokrc"/>
-    
+
     <group name="Gst-Engine">
         <entry key="Sound Output" type="String">
             <label>Sound output method to use</label>
@@ -33,9 +33,15 @@
             <max>3</max>
             <whatsthis>The priority of the thread for GStreamer, a value between 0 (low) and 3 (high).</whatsthis>
         </entry>
+        <entry key="Fadein Duration" type="Int">
+            <label>Duration of Fade-in when starting a track</label>
+            <default>2000</default>
+            <min>0</min>
+            <max>10000</max>
+        </entry>
         <entry key="Fadeout Duration" type="Int">
             <label>Duration of Fade-out at trackend</label>
-            <default>1800</default>
+            <default>2000</default>
             <min>0</min>
             <max>10000</max>
         </entry>

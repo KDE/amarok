@@ -23,8 +23,11 @@ email                : markey@web.de
 
 #include <vector>
 
+#include <qguardedptr.h>
 #include <qmutex.h>
+#include <qptrlist.h>
 #include <qstringlist.h>
+
 #include <kio/jobclasses.h>
 
 #include <gst/gst.h>
@@ -35,9 +38,12 @@ using std::vector;
 class QTimerEvent;
 class KURL;
 
+class InputPipeline;
+
 class GstEngine : public Engine::Base
 {
         friend class GstConfigDialog;
+        friend class InputPipeline;
 
         Q_OBJECT
 
@@ -76,9 +82,19 @@ class GstEngine : public Engine::Base
         void kioFinished();
         void newKioData( KIO::Job*, const QByteArray& array );
         void errorNoOutput();
+        void configChanged();
 
     private:
         static GstEngine* instance() { return s_instance; }
+
+        /**
+         * Creates a GStreamer element and puts it into pipeline.
+         * @param factoryName Name of the element class to create.
+         * @param bin Container into which the element is put.
+         * @param name Identifier for the element.
+         * @return Pointer to the created element, or NULL for failure.
+         */
+        static GstElement* createElement( const QCString& factoryName, GstElement* bin = 0, const QCString& name = 0 );
 
         QStringList getOutputsList() { return getPluginList( "Sink/Audio" ); }
 
@@ -95,17 +111,14 @@ class GstEngine : public Engine::Base
         /** Get a list of available plugins from a specified Class */
         QStringList getPluginList( const QCString& classname ) const;
 
-        /**
-         * Creates a GStreamer element and puts it into pipeline.
-         * @param factoryName Name of the element class to create.
-         * @param bin Container into which the element is put.
-         * @param name Identifier for the element.
-         * @return Pointer to the created element, or NULL for failure.
-         */
-        GstElement* createElement( const QCString& factoryName, GstElement* bin = 0, const QCString& name = 0 ) const;
+        /** Construct the output pipeline */
+        bool createPipeline();
 
-        /** Stops playback, deletes the current pipeline and frees ressources */
+        /** Stops playback, destroys all input pipelines, destroys output pipeline, and frees ressources */
         void destroyPipeline();
+
+        /** Deletes the current input pipeline and frees ressources */
+        void destroyInput( InputPipeline* input );
 
         /** Beams the streaming buffer status to amaroK */
         void sendBufferStatus();
@@ -113,19 +126,21 @@ class GstEngine : public Engine::Base
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
         /////////////////////////////////////////////////////////////////////////////////////
-        static const int TIMER_INTERVAL = 100; //msec
+        static const int TIMER_INTERVAL = 70; //msec
         static GError* error_msg;
         static GstEngine* s_instance;
 
+        // Output pipeline
         GstElement* m_gst_thread;
-        GstElement* m_gst_src;
-        GstElement* m_gst_audiosink;
-        GstElement* m_gst_spider;
+        GstElement* m_gst_adder;
         GstElement* m_gst_identity;
         GstElement* m_gst_volume;
-        GstElement* m_gst_volumeFade;
-        GstElement* m_gst_audioconvert;
         GstElement* m_gst_audioscale;
+        GstElement* m_gst_audioconvert;
+        GstElement* m_gst_audiosink;
+
+        QPtrList<InputPipeline> m_inputs;
+        QGuardedPtr<InputPipeline> m_currentInput;
 
         GstAdapter* m_gst_adapter;
 
@@ -140,6 +155,33 @@ class GstEngine : public Engine::Base
         bool m_pipelineFilled;
         bool m_shutdown;
         mutable bool m_canDecodeSuccess;
+};
+
+
+// NOTE: This class must derive from QObject in order to work with QGuardedPtr!
+class InputPipeline : public QObject
+{
+    public:
+        enum State { PLAYING, FADE_IN, FADE_OUT, XFADE_IN, XFADE_OUT };
+
+        InputPipeline();
+        ~InputPipeline();
+
+        State state() { return m_state; }
+        void setState( State newState );
+
+        float fade() { return m_fade; }
+        void setFade( float newFade) { m_fade = newFade; }
+
+        State m_state;
+        float m_fade;
+        bool m_error;
+
+        GstElement* thread;
+        GstElement* src;
+        GstElement* spider;
+        GstElement* volume;
+        GstElement* queue;
 };
 
 
