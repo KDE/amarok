@@ -120,7 +120,6 @@ MetaBundle::init( const KFileMetaInfo& info )
 {
     if( info.isValid() )
     {
-        m_title      = info.item( "Title" ).string();
         m_artist     = info.item( "Artist" ).string();
         m_album      = info.item( "Album" ).string();
         m_year       = info.item( "Year" ).string();
@@ -130,6 +129,16 @@ MetaBundle::init( const KFileMetaInfo& info )
         m_bitrate    = info.item( "Bitrate" ).value().toInt();
         m_length     = info.item( "Length" ).value().toInt();
         m_sampleRate = info.item( "Sample Rate" ).value().toInt();
+
+        /*
+         * For title, check if it is valid. If not, use prettyTitle.
+         * See bug#83650.
+         */
+        KFileMetaInfoItem item = info.item( "Title" );
+        if( item.isValid() )
+            m_title = item.string();
+        else
+            m_title = prettyTitle( m_url.fileName() );
     }
     else m_bitrate = m_length = m_sampleRate = Undetermined;
 }
