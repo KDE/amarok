@@ -360,6 +360,11 @@ namespace amaroK
         Playlist::instance()->saveXML( Playlist::defaultPlaylistPath() );
     }
 
+    void DcopPlaylistHandler::playByIndex(int index)
+    {
+        Playlist::instance()->activate( index );
+    }
+
     void DcopPlaylistHandler::togglePlaylist()
     {
         PlaylistWindow::self()->showHide();

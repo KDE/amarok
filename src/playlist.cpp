@@ -508,6 +508,15 @@ Playlist::playNextTrack()
         setCurrentTrack( item );
 }
 
+void 
+Playlist::activate(int index)
+{
+  QListViewItem * item = itemAtIndex(index);
+
+  if (item)
+    activate(item);
+}
+
 void
 Playlist::playPrevTrack()
 {
