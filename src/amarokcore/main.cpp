@@ -62,6 +62,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Scott Wheeler", I18N_NOOP( "TagLib & ktrm code" ), "wheeler@kde.org" );
     aboutData.addCredit( "Seb Ruiz", I18N_NOOP( "OSD improvements, patches, testing" ), "seb100@optusnet.com.au" );
     aboutData.addCredit( "Stefan 'MacroMolecularMooModeler' Bogner", I18N_NOOP( "Loadsa stuff" ), "bochi@online.ms" );
+    aboutData.addCredit( "Stefan Siegel", I18N_NOOP( "Patches, Bugfixes" ), "kde@sdas.de" );
     aboutData.addCredit( "Whitehawk Stormchaser", I18N_NOOP( "Tester, patches" ), "zerokode@gmx.net" );
 
     KApplication::disableAutoDcopRegistration();
