@@ -6,6 +6,11 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  <markey> amaroK fails to download any stream playlist from http://dir.xiph.org. Part of the problem is
+           PlaylistLoader::isPlaylistFile(const KURL&), which only looks at the filename's extension. This
+           fails for URLs like http://dir.xiph.org/listen.php?pid=669641&file=listen.m3u, because the filename
+           is "listen.php". So it must look at the whole url instead.
+
   <markey> OSD doesn't show on top of other widgets with Fluxbox and other window managers.
 
   <markey> Make the "Add Playlist" button in the Playlist-Browser show a Enter-Location dialog, just like
