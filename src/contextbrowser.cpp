@@ -188,11 +188,14 @@ void ContextBrowser::openURLRequest( const KURL &url )
         {
             /* if no cover exists, open a file dialog to add a cover */
             KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select cover image file - amaroK" ) );
-            QImage img( file.directory() + "/" + file.fileName() );
-            QString filename( QFile::encodeName( info[0] + " - " + info[1] ) );
-            filename.replace( " ", "_" ).append( ".png" );
-            img.save( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() )+"/albumcovers/"+filename.lower(), "PNG" );
-            ContextBrowser::showCurrentTrack();
+            if ( !file.isEmpty() )
+            {
+                QImage img( file.directory() + "/" + file.fileName() );
+                QString filename( QFile::encodeName( info[0] + " - " + info[1] ) );
+                filename.replace( " ", "_" ).append( ".png" );
+                img.save( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() )+"/albumcovers/"+filename.lower(), "PNG" );
+                ContextBrowser::showCurrentTrack();
+	    }
         }
      }
 #endif

@@ -64,12 +64,16 @@ AmazonSearch::~AmazonSearch()
 void AmazonSearch::openFile()
 {
     KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select cover image file - amaroK" ) );
-    const QPixmap& pixmap( file.directory() + "/" + file.fileName() );
-    
-    if( !pixmap.isNull() )
+
+    if ( !file.isEmpty() )
     {
-        emit imageReady( pixmap );
-        close();
+        const QPixmap& pixmap( file.directory() + "/" + file.fileName() );
+    
+        if( !pixmap.isNull() )
+        {
+            emit imageReady( pixmap );
+            close();
+        }
     }
 }
 

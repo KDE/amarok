@@ -306,9 +306,12 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
         {
             /* This opens a file-open-dialog and copies the selected image to albumcovers, scaled and unscaled. */
             KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select cover image file - amaroK" ) );
-            QImage img( file.directory() + "/" + file.fileName() );
-            img.save( item->albumPath(), "PNG" );
-            item->updateCover( img.smoothScale( 60, 60 ) );
+	    if ( !file.isEmpty() )
+            {
+                QImage img( file.directory() + "/" + file.fileName() );
+                img.save( item->albumPath(), "PNG" );
+                item->updateCover( img.smoothScale( 60, 60 ) );
+	    }
             break;
         }
 
