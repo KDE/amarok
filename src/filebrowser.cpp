@@ -20,10 +20,11 @@
    the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 */
-
+#include "app.h"
 #include "amarokconfig.h"
 #include "filebrowser.h"
 #include "kbookmarkhandler.h"
+#include "playlist.h"
 
 #include <qhbox.h>
 #include <qdir.h>
@@ -79,9 +80,12 @@ FileBrowser::FileBrowser( const char * name )
     cmbPath->setURLs( config->readListEntry( "Dir History" ) );
     cmbPath->lineEdit()->setText( currentLocation );
     setFocusProxy( cmbPath ); //so the dirOperator is focussed when we get focus events
-
+  
     dir = new KDirOperator( KURL( currentLocation ), this );
     connect( dir, SIGNAL(urlEntered( const KURL& )), SLOT(dirUrlEntered( const KURL& )) );
+    ((KActionMenu *)dir->actionCollection()->action("popupMenu"))->popupMenu ()->insertItem(i18n("Make Playlist"),this,SLOT(makePlaylist()));
+    ((KActionMenu *)dir->actionCollection()->action("popupMenu"))->popupMenu ()->insertItem(i18n("Add to Playlist"),this,SLOT(addToPlaylist()));
+ 
     dir->setEnableDirHighlighting( true );
     dir->setMode( KFile::Mode((int)KFile::Files | (int)KFile::Directory) ); //allow selection of multiple files + dirs
     dir->setOnlyDoubleClickSelectsFiles( true ); //amaroK type settings
@@ -256,6 +260,26 @@ inline void FileBrowser::slotViewChanged( KFileView *view )
     }
 }
 
+inline void FileBrowser::makePlaylist()
+{
+       
+      pApp->actionCollection()->action( "playlist_clear" )->activate();
+      KFileItemListIterator selected( * dir->selectedItems() );
+      KURL::List list;
+      for ( ; selected.current(); ++selected ) {
+       list.append( (*selected)->url());
+      }
+     pApp->playlist()->appendMedia( list, true, true );
+}
+inline void FileBrowser::addToPlaylist()
+{
+    KFileItemListIterator selected( * dir->selectedItems() );
+      KURL::List list;
+      for ( ; selected.current(); ++selected ) {
+       list.append( (*selected)->url());
+      }
+     pApp->playlist()->appendMedia( list, false, true );
+}
 
 inline void FileBrowser::activateThis( const KFileItem *item )
 {
