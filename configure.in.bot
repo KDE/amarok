@@ -109,6 +109,7 @@ if test x$included_sqlite = xno; then
 fi
 
 if test x$no_engine = xyes; then
+    all_tests=bad
     echo " =================================="
     echo " ===  AMAROK WILL NOT BE BUILT  ================================================"
     echo " =================================="
@@ -121,6 +122,7 @@ if test x$no_engine = xyes; then
 fi
 
 if test x$no_amarok = xyes; then
+    all_tests=bad
     echo " =================================="
     echo " ===  AMAROK WILL NOT BE BUILT  ================================================"
     echo " =================================="

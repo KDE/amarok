@@ -518,7 +518,6 @@ fi
 if test x$have_kdemm != xyes -a x$have_gst != xyes -a x$build_nmm != xyes -a x$build_xine != xyes; then
 
     DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
-    all_tests=bad
     no_engine=yes
 
 fi
