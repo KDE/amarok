@@ -6,8 +6,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  <markey> When starting with empty playlist, "Current Track" and "Lyrics" is enabled. Huh?
-
   <mxcl>   Changing the title track to "" does such things as I cannot figure out, it appears to work, but
            perhaps the collection isn't updated, or maybe the tag, or both. Can't tell.
 
