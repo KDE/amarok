@@ -3,6 +3,9 @@ amaroK ChangeLog
 (C) 2002-2005 the amaroK authors.
 
 
+VERSION 1.2.1:
+
+
 VERSION 1.2:
   ADD: "Repeat Track" status is reflected by an icon in the playlist.
   ADD: New icons from tightcode for statusbar and repeatTrack.
