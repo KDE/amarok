@@ -1486,7 +1486,7 @@ DbConnection::DbConnection()
     if ( m_db )
     {
         if (AmarokConfig::mySqlUser().isEmpty())
-            pApp->slotConfigAmarok(6);
+            pApp->slotConfigAmarok(5);
 
         if (mysql::mysql_real_connect(m_db, AmarokConfig::mySqlHost().latin1(),
                                             AmarokConfig::mySqlUser().latin1(),
