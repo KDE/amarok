@@ -5,7 +5,7 @@
 #define LIBVISUAL_H
 
 #include <libvisual/libvisual.h>
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 
 static int tryConnect();
