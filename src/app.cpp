@@ -65,7 +65,7 @@ App::App()
 
     m_pGlobalAccel    = new KGlobalAccel( this );
     m_pPlaylistWindow = new PlaylistWindow();
-    m_pDcopHandler    = new amaroK::DcopHandler( this );
+    m_pDcopHandler    = new amaroK::DcopHandler();
     m_pOSD            = new amaroK::OSD();
     m_pTray           = new amaroK::TrayIcon( m_pPlaylistWindow );
     (void)              new Vis::SocketServer( this );
@@ -125,6 +125,7 @@ App::~App()
     delete m_pPlayerWindow;   //sets some XT keys
     delete m_pPlaylistWindow; //sets some XT keys
     delete m_pOSD;
+    delete m_pDcopHandler;
 
     AmarokConfig::setVersion( APP_VERSION );
     AmarokConfig::writeConfig();
@@ -555,7 +556,7 @@ void App::genericEventHandler( QWidget *source, QEvent *e )
     {
         #define e static_cast<QWheelEvent*>(e)
         const bool up = e->delta() > 0;
-        
+
         switch( e->state() )
         {
         case ControlButton:
