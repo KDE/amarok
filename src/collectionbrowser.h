@@ -110,9 +110,6 @@ class CollectionView : public KListView
         int idForCat( const QString& cat ) const;
         QPixmap iconForCat( const QString& cat ) const;
         
-        /**  Enables all items in a menu. */
-        void enableAllItems( KPopupMenu* const menu );
-        
     //attributes:
         //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.
         static const int DATABASE_VERSION = 5;

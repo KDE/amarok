@@ -68,8 +68,8 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_cat2Menu ->insertItem( "Genre", m_view, SLOT( cat2Menu( int ) ), 0, IdGenre );
     m_cat2Menu ->insertItem( "Year", m_view, SLOT( cat2Menu( int ) ), 0, IdYear );
 
-    m_cat1Menu->setItemChecked( m_view->idForCat( m_view->m_category1 ), true );
-    m_cat2Menu->setItemChecked( m_view->idForCat( m_view->m_category2 ), true );
+    m_view->cat1Menu( m_view->idForCat( m_view->m_category1 ) );
+    m_view->cat2Menu( m_view->idForCat( m_view->m_category2 ) );
 
     connect( m_searchEdit, SIGNAL( returnPressed() ),
              this,           SLOT( slotSetFilter() ) );
@@ -408,11 +408,11 @@ void
 CollectionView::cat1Menu( int id )  //SLOT
 {
     m_parent->m_cat1Menu->setItemChecked( idForCat( m_category1 ), false ); //uncheck old item
+    m_parent->m_cat2Menu->setItemEnabled( idForCat( m_category1 ), true );  //enable old item
     m_category1 = catForId( id );
     setColumnText( 0, m_category1 );
     m_parent->m_cat1Menu->setItemChecked( idForCat( m_category1 ), true );
     
-    enableAllItems( m_parent->m_cat2Menu );
     //prevent choosing the same category in both menus
     m_parent->m_cat2Menu->setItemEnabled( id , false );
     
@@ -424,22 +424,14 @@ void
 CollectionView::cat2Menu( int id )  //SLOT
 {
     m_parent->m_cat2Menu->setItemChecked( idForCat( m_category2 ), false ); //uncheck old item
+    m_parent->m_cat1Menu->setItemEnabled( idForCat( m_category2 ), true );  //enable old item
     m_category2 = catForId( id );
     m_parent->m_cat2Menu->setItemChecked( idForCat( m_category2 ), true );
     
-    enableAllItems( m_parent->m_cat1Menu );
     //prevent choosing the same category in both menus
     m_parent->m_cat1Menu->setItemEnabled( id , false );
 
     renderView();
-}
-
-
-void
-CollectionView::enableAllItems( KPopupMenu* const menu )
-{
-    for ( uint index = 0; index < menu->count(); index++ )
-        menu->setItemEnabled( menu->idAt( index ), true );
 }
 
 
