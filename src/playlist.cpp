@@ -616,7 +616,7 @@ void Playlist::deleteSelectedFiles() //SLOT
     //NOTE we assume that currentItem is the main target
     int count  = selectedItems().count();
     int button = KMessageBox::warningContinueCancel( this,
-                    i18n( "<p>You have selected %1 to be <b>irreversibly</b> deleted." ).
+                    i18n( "<p>You have selected '%1' to be <b>irreversibly</b> deleted." ).
                         arg( count > 1 ?
                             i18n("<u>%1 files</u>").arg( count ) :
                             static_cast<PlaylistItem*>(currentItem())->url().prettyURL() ),
