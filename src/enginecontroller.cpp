@@ -35,6 +35,25 @@ email                : fh@ez.no
 
 ExtensionCache EngineController::s_extensionCache;
 
+class DummyEngine : public EngineBase
+{
+    //Does nothing, just here to prevent crashes on startup
+    //and in case no engines are found
+
+    virtual bool init() { return true; }
+    virtual bool canDecode( const KURL& ) const { return false; }
+    virtual uint position() const { return 0; }
+    virtual bool load( const KURL&, bool ) { return false; }
+    virtual bool play( uint ) { return false; }
+    virtual void stop() {}
+    virtual void pause() {}
+    virtual void setVolumeSW( uint ) {}
+    virtual void seek( uint ) {}
+
+    virtual Engine::State state() const { return Engine::Empty; }
+
+public: DummyEngine() : EngineBase() {}
+};
 
 static EngineBase*
 dummyEngine()
@@ -43,27 +62,7 @@ dummyEngine()
     //for instance (and thus help output isn't clouded by
     //Plugin::Plugin debug ouput)
 
-    static
-    class DummyEngine : public EngineBase
-    {
-        //Does nothing, just here to prevent crashes on startup
-        //and in case no engines are found
-
-        virtual bool init() { return true; }
-        virtual bool canDecode( const KURL& ) const { return false; }
-        virtual uint position() const { return 0; }
-        virtual bool load( const KURL&, bool ) { return false; }
-        virtual bool play( uint ) { return false; }
-        virtual void stop() {}
-        virtual void pause() {}
-        virtual void setVolumeSW( uint ) {}
-        virtual void seek( uint ) {}
-
-        virtual Engine::State state() const { return Engine::Empty; }
-
-    public: DummyEngine() : EngineBase() {}
-
-    } dummyEngine;
+    static DummyEngine dummyEngine;
 
     return &dummyEngine;
 }
