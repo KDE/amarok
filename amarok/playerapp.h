@@ -26,7 +26,7 @@
 #include <kurl.h>
 #include <vector>
 
-#define APP_VERSION "0.8.4"
+#define APP_VERSION "0.9-CVS"
 
 class QColor;
 class QListView;
