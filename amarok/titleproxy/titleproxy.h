@@ -29,26 +29,29 @@ class QString;
  * @brief: Proxy for decoding Shoutcast metadata.
  */
 
-class TitleProxy : public QObject
+namespace TitleProxy
+{
+
+struct metaPacket
+{
+    QString streamName;
+    QString streamGenre;
+    QString streamUrl;
+    QString bitRate;
+    QString title;
+    QString url;
+};
+
+class Proxy : public QObject
 {
         Q_OBJECT
 
     public:
-        TitleProxy( KURL url );
-        ~TitleProxy();
+        Proxy( KURL url );
+        ~Proxy();
 
         KURL proxyUrl();
 
-        // ATTRIBUTES ------
-        struct metaPacket {
-            QString streamName;
-            QString streamGenre;
-            QString streamUrl;
-            QString bitRate;
-            QString title;
-            QString url;
-        };
-        
     signals:
         void error();
         void metaData( const TitleProxy::metaPacket& );
@@ -86,4 +89,7 @@ class TitleProxy : public QObject
         KExtendedSocket m_sockPassive;
         KExtendedSocket *m_pSockProxy;
 };
+
+}
+
 #endif

@@ -23,6 +23,7 @@
 #include "playlistloader.h"
 #include "playlistwidget.h"
 #include "threadweaver.h"
+#include "titleproxy/titleproxy.h"
 
 #include <qclipboard.h> //copyToClipboard()
 #include <qcolor.h>
@@ -49,7 +50,6 @@
 #include <kcursor.h>
 
 
-static const int NO_SORT = 200;
 
 PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ const char *name )
     : KListView( parent, name )
@@ -77,6 +77,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
     setAcceptDrops( true );
     setSelectionMode( QListView::Extended );
     setAllColumnsShowFocus( true );
+    setDefaultRenameAction( QListView::Reject ); //FIXME Qt says this is the default anyway!
     //    setStaticBackground( true );
     //    m_rootPixmap.setFadeEffect( 0.5, Qt::black );
     //    m_rootPixmap.start();
@@ -358,9 +359,9 @@ void PlaylistWidget::shuffle() //SLOT
     //TODO offer this out as an action in a custom kactioncollection?
 
     setSorting( NO_SORT );
-    
+
     QPtrList<QListViewItem> list;
-    
+
     while( QListViewItem *first = firstChild() )
     {
         list.append( first );
@@ -380,17 +381,29 @@ void PlaylistWidget::shuffle() //SLOT
 
 void PlaylistWidget::clear() //SLOT
 {
-    emit aboutToClear(); //will cause an saveUndoState()
+    emit aboutToClear(); //will saveUndoState()
 
     setCurrentTrack( NULL );
-    m_weaver->cancel(); //stop tag reading (very important!)
-
-    kapp->processEvents(); //FIXME FIXME FIXME!!!
-
     recentPtrs.clear();
     searchTokens.clear();
     searchPtrs.clear();
-    KListView::clear();
+
+    //TODO make it possible to tell when it is safe to not delay deletion
+    //TODO you'll have to do the same as below for removeSelected() too.
+    m_weaver->cancel(); //cancel all jobs in this weaver, no new events will be sent
+
+    //now we have to ensure we don't delete the items before any events the weaver sent
+    //have been processed, so we stick them in a QPtrList and delete it later
+    QPtrList<QListViewItem> *list = new QPtrList<QListViewItem>;
+    list->setAutoDelete( true );
+    for( QListViewItemIterator it( this ); it.current(); ++it )
+    {
+        //takeItem( it.current() );
+        it.current()->setVisible( false );
+        list->append( it.current() );
+    }
+    QApplication::postEvent( this, new QCustomEvent( QCustomEvent::Type(4000), list ) );
+    //KListView::clear(); dont do this any more we post the ptrs to our own function
 }
 
 
@@ -417,7 +430,7 @@ void PlaylistWidget::removeSelectedItems() //SLOT
     QPtrList<PlaylistItem> list;
 
     setSelected( currentItem(), true );     //remove currentItem, no matter if selected or not
-        
+
     for( QListViewItemIterator it( this, QListViewItemIterator::Selected ); it.current(); ++it )
         if( it.current() != m_currentTrack )
             list.append( (PlaylistItem *)it.current() );
@@ -1068,6 +1081,13 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
         #define e static_cast<TagWriter*>(e)
         e->updatePlaylistItem();
         #undef e
+        break;
+
+    case 4000: //dustbinEvent
+
+        //this is a list of all the listItems from a clear operation
+        kdDebug() << "Deleting " << static_cast<QPtrList<QListViewItem>*>(e->data())->count() << " items\n";
+        delete (QPtrList<QListViewItem>*)e->data();
         break;
 
     default: ;

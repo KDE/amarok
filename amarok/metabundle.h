@@ -17,7 +17,7 @@
 #ifndef METABUNDLE_H
 #define METABUNDLE_H
 
-#include "playlistitem.h"
+#include "playlistitem.h" //FIXME dependency
 
 #include <qstring.h>
 #include <kurl.h>
@@ -26,6 +26,11 @@
 #include <taglib/tstring.h>
 #include <taglib/audioproperties.h>
 
+
+/*
+ * This class is not very complete, it fits our needs as they stand currently
+ * If it doesn't work for you in some way, extend it sensibly :)
+ */
 
 //TODO cache prettyLength for bundles
 //TODO is it feasible to just use a TagLib::AudioProperties structure?
@@ -45,7 +50,7 @@ public:
     //And have ability to determine bitrate etc from the strings, slow but infrequently called so ok
     MetaBundle( const PlaylistItem *item, TagLib::AudioProperties *ap )
       : m_url(     item->url() )
-      , m_title(   item->text( 1 ) )
+      , m_title(   item->title() ) //because you override text()
       , m_artist(  item->text( 2 ) )
       , m_album(   item->text( 3 ) )
       , m_year(    item->text( 4 ) )
@@ -79,7 +84,7 @@ public:
 
     MetaBundle() : m_bitrate( -2 ), m_length( -2 ), m_sampleRate( -2 ) {}
 
-    int length()     const { return m_length; }
+    int length()     const { return m_length > 0 ? m_length : 0; }
     int bitrate()    const { return m_bitrate; }
     int sampleRate() const { return m_sampleRate; }
 
@@ -87,9 +92,9 @@ public:
     QString prettyURL()     const { return m_url.prettyURL(); }
     QString prettyBitrate() const { return prettyBitrate( m_bitrate ); }
     QString prettyLength()  const { return prettyLength( m_length ); }
-    QString prettySampleRate() const { return QString( "%1 Hz" ).arg( m_sampleRate ); }
+    QString prettySampleRate() const { return prettyGeneric( i18n( "SampleRate", "%1 Hz" ), m_sampleRate ); }
 
-    static QString prettyBitrate( int );
+    static QString prettyBitrate( int i ) { return prettyGeneric( i18n( "Bitrate", "%1 kpbs" ), i ); }
     static QString prettyLength( int );
 
 
@@ -108,6 +113,8 @@ private:
     int m_length;
     int m_sampleRate;
 
+    static QString prettyGeneric( const QString&, int );
+
     void init( TagLib::AudioProperties *ap )
     {
         if( ap )
@@ -123,9 +130,11 @@ private:
 inline QString
 MetaBundle::prettyTitle() const
 {
-    if( m_title.isEmpty() ) return m_url.fileName().section( '.', 0, 0 );
+    QString s = m_artist;
+    if( !s.isEmpty() ) s += " - ";
+    s += m_title;
 
-    return QString( "%1 - %2" ).arg( m_artist, m_title );
+    return s.isEmpty() ? m_url.fileName().section( '.', 0, 0 ) : s;
 }
 
 inline QString
@@ -153,9 +162,9 @@ MetaBundle::prettyLength( int length ) //static
 }
 
 inline QString
-MetaBundle::prettyBitrate( int bitrate )
+MetaBundle::prettyGeneric( const QString &s, int i )
 {
-    return ( bitrate > 0 ) ? i18n( "Bitrate = %1", "%1 kbps" ).arg( bitrate ) : ( bitrate == -2 ) ? QString() : "?";
+    return ( i > 0 ) ? s.arg( i ) : ( i == -2 ) ? QString() : "?";
 }
 
 #endif

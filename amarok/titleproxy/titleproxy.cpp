@@ -1,5 +1,5 @@
 /***************************************************************************
-                      titleproxy.cpp  -  description
+                      Proxy.cpp  -  description
                          -------------------
 begin                : Nov 20 14:35:18 CEST 2003
 copyright            : (C) 2003 by Mark Kretschmann
@@ -14,7 +14,7 @@ email                : markey@web.de
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
+
 #include <titleproxy.h>
 
 #include <kdebug.h>
@@ -46,7 +46,9 @@ email                : markey@web.de
 // 9. Write mp3 data to proxyserver
 //10. Goto 7
 
-TitleProxy::TitleProxy(KURL url) : QObject(),
+using namespace TitleProxy;
+
+Proxy::Proxy(KURL url) : QObject(),
         m_url(url),
         m_initSuccess(false),
         m_metaInt(0),
@@ -66,11 +68,11 @@ TitleProxy::TitleProxy(KURL url) : QObject(),
 
     int connectResult = m_sockRemote.connect();
     kdDebug() << k_funcinfo << "sock.connect() result: " << connectResult << endl;
-    if ( connectResult != 0 ) {        
+    if ( connectResult != 0 ) {
         emit error();
         return;
     }
-        
+
     int listenResult = -1;
     unsigned int i = 0;
     for(i = MIN_PROXYPORT; i <= MAX_PROXYPORT; i++)
@@ -101,7 +103,7 @@ TitleProxy::TitleProxy(KURL url) : QObject(),
 }
 
 
-TitleProxy::~TitleProxy()
+Proxy::~Proxy()
 {
     //kdDebug() << k_funcinfo << "Called" << endl;
     delete[] m_pBuf;
@@ -109,7 +111,7 @@ TitleProxy::~TitleProxy()
 }
 
 
-KURL TitleProxy::proxyUrl()
+KURL Proxy::proxyUrl()
 {
     if(m_initSuccess)
     {
@@ -125,7 +127,7 @@ KURL TitleProxy::proxyUrl()
 }
 
 
-void TitleProxy::accept()
+void Proxy::accept()
 {
     m_sockPassive.accept( m_pSockProxy );
     m_sockPassive.close();                        // don't take another connection
@@ -148,7 +150,7 @@ void TitleProxy::accept()
 }
 
 
-void TitleProxy::readRemote()
+void Proxy::readRemote()
 {
     Q_LONG index = 0;
     Q_LONG bytesWrite = 0;
@@ -197,7 +199,7 @@ void TitleProxy::readRemote()
 }
 
 
-void TitleProxy::processHeader(Q_LONG &index, Q_LONG bytesRead)
+void Proxy::processHeader(Q_LONG &index, Q_LONG bytesRead)
 {
     while ( index < bytesRead )
     {
@@ -209,7 +211,7 @@ void TitleProxy::processHeader(Q_LONG &index, Q_LONG bytesRead)
                   "Got shoutcast header: '" << m_headerStr << "'" << endl;*/
             /*
             TODO: emit error including helpful error message on headers like this:
-             
+
             ICY 401 Service Unavailable
             icy-notice1:<BR>SHOUTcast Distributed Network Audio Server/Linux v1.9.2<BR>
             icy-notice2:The resource requested is currently unavailable<BR>
@@ -229,7 +231,7 @@ void TitleProxy::processHeader(Q_LONG &index, Q_LONG bytesRead)
                 m_streamUrl.prepend("http://");
             m_pSockProxy->writeBlock(m_headerStr.latin1(), m_headerStr.length());
             m_headerFinished = true;
-            
+
             if ( !m_metaInt )
                 emit error();
             break;
@@ -240,25 +242,25 @@ void TitleProxy::processHeader(Q_LONG &index, Q_LONG bytesRead)
 }
 
 
-void TitleProxy::transmitData(const QString &data)
+void Proxy::transmitData(const QString &data)
 {
     /*kdDebug() << k_funcinfo <<
       "received new metadata: '" << data << "'" << endl;*/
-    
+
     metaPacket packet;
-    
+
     packet.title       = extractStr( data, "StreamTitle" );
     packet.url         = extractStr( data, "StreamUrl" );
     packet.bitRate     = m_bitRate;
     packet.streamGenre = m_streamGenre;
-    packet.streamName  = m_streamName;         
-    packet.streamUrl   = m_streamUrl;        
-    
+    packet.streamName  = m_streamName;
+    packet.streamUrl   = m_streamUrl;
+
     emit metaData( packet );
 }
 
 
-QString TitleProxy::extractStr(const QString &str, const QString &key)
+QString Proxy::extractStr(const QString &str, const QString &key)
 {
     int index = str.find(key, 0, true);
     if(index == -1)
@@ -275,6 +277,4 @@ QString TitleProxy::extractStr(const QString &str, const QString &key)
     }
 }
 
-
 #include "titleproxy.moc"
-

@@ -22,8 +22,6 @@
 #include <config.h>
 #endif
 
-#include "titleproxy/titleproxy.h"    //metaData()
-
 #include <kuniqueapplication.h>
 #include <kurl.h>
 #include <vector>
@@ -47,7 +45,7 @@ class MetaBundle;
 class OSDWidget;
 class PlayerWidget;
 class PlaylistItem;
-
+namespace TitleProxy { class metaPacket; }
 
 class PlayerApp : public KUniqueApplication
 {
@@ -108,7 +106,7 @@ class PlayerApp : public KUniqueApplication
     private slots:
         void applySettings();
         void proxyError();
-        
+
     signals:
         //void sigScope( std::vector<float> *s );
         //void sigPlay();

@@ -71,7 +71,7 @@ void GLAnalyzer::initializeGL()
         GLfloat shininess [] = { 100.0 };
 
         init();
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);// Set clear color to black
+        glClearColor( (float)(32/255), (float)(32/255), (float)(80/255), 1.0f);// Set clear color to black
         // Set the shading model
         glShadeModel(GL_SMOOTH);
 

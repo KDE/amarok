@@ -18,7 +18,7 @@ email                : markey@web.de
 #ifndef AMAROK_ARTSENGINE_H
 #define AMAROK_ARTSENGINE_H
 
-#include "../amarokarts/amarokarts.h"
+#include "../amarokarts/amarokarts.h" //FIXME relative dirs are evil apparently
 #include "enginebase.h"
 
 #include <vector>
@@ -43,7 +43,7 @@ namespace KDE { class PlayObject; };
 class ArtsEngine : public EngineBase
 {
     Q_OBJECT
-    
+
     public:
                                                  ArtsEngine( bool& restart, int scopeSize );
                                                  ~ArtsEngine();
@@ -55,15 +55,15 @@ class ArtsEngine : public EngineBase
         bool                                     isStream() const;
 
         std::vector<float>*                      scope();
-        
-        QStringList                              availableEffects() const;        
+
+        QStringList                              availableEffects() const;
         std::vector<long>                        activeEffects() const;
         QString                                  effectNameForId( long id ) const;
-        bool                                     effectConfigurable( long id ) const;        
+        bool                                     effectConfigurable( long id ) const;
         long                                     createEffect( const QString& name );
         void                                     removeEffect( long id );
         void                                     configureEffect( long id );
-        
+
     public slots:
         bool                                     open( const KURL& );
         void                                     play();
@@ -79,31 +79,31 @@ class ArtsEngine : public EngineBase
 
         void                                     loadEffects();
         void                                     saveEffects();
-        
+
         class ArtsConfigWidget : public QWidget
         {
             public:
                                                  ArtsConfigWidget( Arts::Object object );
                                                  ~ArtsConfigWidget();
-            
+
                 ArtsConfigWidget*                *m_pPointer;
-                
+
             private:
                 Arts::Widget                     m_gui;
                 KArtsWidget                      *m_pArtsWidget;
         };
-                    
+
         struct EffectContainer
         {
             Arts::StereoEffect*                  effect;
             ArtsConfigWidget*                    widget;
         };
-        
+
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
         /////////////////////////////////////////////////////////////////////////////////////
         static const int                         ARTS_TIMER;
-        
+
         KArtsDispatcher*                         m_pArtsDispatcher;
         KDE::PlayObject*                         m_pPlayObject;
         KDE::PlayObject*                         m_pPlayObjectXfade;
@@ -114,16 +114,16 @@ class ArtsEngine : public EngineBase
         Arts::Synth_AMAN_PLAY                    m_amanPlay;
         Amarok::RawScope                         m_scope;
         Amarok::Synth_STEREO_XFADE               m_xfade;
-               
+
         long                                     m_scopeId;
         int                                      m_scopeSize;
         long                                     m_volumeId;
         QMap<long, EffectContainer>              m_effectMap;
-        
+
         bool                                     m_xfadeFadeout;
         float                                    m_xfadeValue;
         QString                                  m_xfadeCurrent;
-            
+
     private slots:
         void                                     connectPlayObject();
 };

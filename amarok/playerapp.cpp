@@ -498,7 +498,7 @@ void PlayerApp::play( const MetaBundle &bundle )
 
     if ( AmarokConfig::titleStreaming() && !m_proxyError && !url.isLocalFile() )
     {
-        TitleProxy *pProxy = new TitleProxy( url );
+        TitleProxy::Proxy *pProxy = new TitleProxy::Proxy( url );
         success = m_pEngine->open( pProxy->proxyUrl() );
 
         connect( m_pEngine, SIGNAL( endOfTrack  () ),
@@ -521,8 +521,7 @@ void PlayerApp::play( const MetaBundle &bundle )
     m_pPlayerWidget->setScroll( bundle );
     m_pOSD->showOSD( bundle );
 
-    if( m_pEngine->isStream() ) m_length = 0;
-    else m_length = bundle.length() * 1000;
+    m_length = bundle.length() * 1000;
 
     // update image tooltip
     PlaylistToolTip::add( m_pPlayerWidget->m_pFrame, bundle );
@@ -572,7 +571,7 @@ void PlayerApp::slotStop()
 
     m_length = 0;
     m_pPlayerWidget->defaultScroll          ();
-    m_pPlayerWidget->timeDisplay            ( false, 0, 0, 0 );
+    m_pPlayerWidget->timeDisplay            ( 0 );
     m_pPlayerWidget->m_pSlider->setValue    ( 0 );
     m_pPlayerWidget->m_pSlider->setMaxValue ( 0 );
     m_pPlayerWidget->m_pButtonPlay->setOn   ( false );
@@ -622,15 +621,7 @@ void PlayerApp::slotSliderChanged( int value )
     {
         value /= 1000;    // ms -> sec
 
-        if ( AmarokConfig::timeDisplayRemaining() )
-        {
-            value = m_length / 1000 - value;
-            m_pPlayerWidget->timeDisplay( true, value / 60 / 60 % 60, value / 60 % 60, value % 60 );
-        }
-        else
-        {
-            m_pPlayerWidget->timeDisplay( false, value / 60 / 60 % 60, value / 60 % 60, value % 60 );
-        }
+        m_pPlayerWidget->timeDisplay( value );
     }
 }
 
@@ -655,17 +646,7 @@ void PlayerApp::slotMainTimer()
     // <Draw TimeDisplay>
     if ( m_pPlayerWidget->isVisible() )
     {
-        int seconds;
-        if ( AmarokConfig::timeDisplayRemaining() && !m_pEngine->isStream() )
-        {
-            seconds = ( m_length - m_pEngine->position() ) / 1000;
-            m_pPlayerWidget->timeDisplay( true, seconds / 60 / 60 % 60, seconds / 60 % 60, seconds % 60 );
-        }
-        else
-        {
-            seconds = m_pEngine->position() / 1000;
-            m_pPlayerWidget->timeDisplay( false, seconds / 60 / 60 % 60, seconds / 60 % 60, seconds % 60 );
-        }
+        m_pPlayerWidget->timeDisplay( m_pEngine->position() / 1000 );
     }
     // </Draw TimeDisplay>
 

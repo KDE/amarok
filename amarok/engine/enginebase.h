@@ -28,7 +28,7 @@ class QStringList;
 class EngineBase : public QObject
 {
     Q_OBJECT
-    
+
     signals:
         void                         endOfTrack();
             
@@ -47,16 +47,16 @@ class EngineBase : public QObject
         //@return time position in ms
         virtual long                 position() const                                  = 0;
         virtual EngineState          state() const                                     = 0;
-        
+
         //@return true if media is loaded, system is ready to play
-                bool                 loaded() { return state() != Empty; }  
-        
+                bool                 loaded() { return state() != Empty; }
+
         //@return volume in range 0 to 99
         inline  int                  volume() const { return m_volume; }
-         
+
         //@return true if using hardware mixer
                 bool                 isMixerHardware() const { return m_mixerHW != -1; }
-        
+
         virtual bool                 isStream() const                                  = 0;
 
         //@return pointer to result of FFT calculation. must be deleted after use.
@@ -82,9 +82,9 @@ class EngineBase : public QObject
         //@param percent set volume in range 0 to 99
         virtual void                 setVolume( int percent )                          = 0;
                 void                 setXfadeLength( int ms );
-        
+
         QStringList                  listEngines();
-        
+
         //@param system name of multimedia framework
         //@param restart signals sound deamon must be restarted due to plugin installation. applies only to arts
         //@param scopeSize size of vector the scope delivers, exponent to base 2

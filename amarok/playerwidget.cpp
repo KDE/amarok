@@ -233,7 +233,8 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
 
     m_pTimeDisplayLabel->setFixedSize( 9 * 12 + 2, 16 );
     m_pTimeDisplayLabelBuf = new QPixmap( m_pTimeDisplayLabel->size() );    // FIXME flickerfixer hack
-    timeDisplay( false, 0, 0, 0 );
+    m_pTimeDisplayLabelBuf->fill( backgroundColor() );
+    //timeDisplay( 0 );
 
     // connect vistimer
     connect( m_visTimer, SIGNAL( timeout() ), pApp, SLOT( slotVisTimer() ) );
@@ -416,31 +417,23 @@ void PlayerWidget::drawScroll()
 }
 
 
-void PlayerWidget::timeDisplay( bool remaining, int hours, int minutes, int seconds )
+void PlayerWidget::timeDisplay( int seconds )
 {
-    m_remaining = remaining;
-    m_hours = hours;
-    m_minutes = minutes;
-    m_seconds = seconds;
+    int songLength = pApp->trackLength() / 1000;
+    m_remaining = AmarokConfig::timeDisplayRemaining() && !pApp->m_pEngine->isStream() && songLength > 0;
 
-    timeDisplay();
-}
+    if( m_remaining ) seconds = songLength - seconds;
 
+    m_hours   = seconds /60/60%60;
+    m_minutes = seconds /60%60;
+    m_seconds = seconds %60;
 
-void PlayerWidget::timeDisplay()
-{
-    QString str;
-
-    if ( m_hours < 10 ) str += "0";
-    str += QString::number( m_hours );
-    str += ":";
-
-    if ( m_minutes < 10 ) str += "0";
-    str += QString::number( m_minutes );
-    str += ":";
-
-    if ( m_seconds < 10 ) str += "0";
-    str += QString::number( m_seconds );
+    QString
+    str  = zeroPad( m_hours );
+    str += ':';
+    str += zeroPad( m_minutes );
+    str += ':';
+    str += zeroPad( m_seconds );
 
     QFont timeFont( "Arial" );
     timeFont.setBold( TRUE );
@@ -489,7 +482,7 @@ void PlayerWidget::paintEvent( QPaintEvent * )
 
     drawScroll();    // necessary for pause mode
 
-    timeDisplay( m_remaining, m_hours, m_minutes, m_seconds );
+    bitBlt( m_pTimeDisplayLabel, 0, 0, m_pTimeDisplayLabelBuf );
 }
 
 
@@ -583,7 +576,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
         if ( rect.contains( e->pos() ) )
         {
             AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
-            timeDisplay();
+            repaint( true );
         }
         else
             startDrag();

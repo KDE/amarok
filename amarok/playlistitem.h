@@ -44,6 +44,7 @@ class PlaylistItem : public KListViewItem
 
         MetaBundle metaBundle();
         const QString trackName() const { return text( 0 ); }
+        const QString title() const { return KListViewItem::text( 1 ); }
         const KURL &url() const { return m_url; }
 
         //FIXME move to PlaylistWidget?

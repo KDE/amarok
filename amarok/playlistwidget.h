@@ -19,7 +19,6 @@
 #define PLAYLISTWIDGET_H
 
 #include "browserwin.h"  //friend
-#include "titleproxy/titleproxy.h"    //handleStreamMeta()
 
 #include <qstringlist.h> //stack allocated
 #include <qptrlist.h>    //stack allocated
@@ -47,6 +46,7 @@ class MetaBundle;
 class PlaylistBrowser;
 class PlaylistLoader;
 class ThreadWeaver;
+namespace TitleProxy { class metaPacket; }
 
 
 /*
@@ -94,6 +94,8 @@ class PlaylistWidget : private KListView
         //made public for convenience
         void setFont( const QFont &f ) { KListView::setFont( f ); }
         void setColors( const QPalette &p, const QColor &c ) { setPalette( p ); setAlternateBackground( c ); }
+
+        static const int NO_SORT = 200;
 
         enum RequestType { Prev = -1, Current = 0, Next = 1 };
         enum ColumnType  { Trackname = 0,

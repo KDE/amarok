@@ -31,6 +31,7 @@
 #include <kdiroperator.h>
 #include <kaction.h>
 
+#include "filebrowser.h"
 #include "kbookmarkhandler.h"
 #include "kbookmarkhandler.moc"
 

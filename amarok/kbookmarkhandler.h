@@ -22,11 +22,11 @@
 
 #include <kbookmarkmanager.h>
 #include <kbookmarkmenu.h>
-#include "filebrowser.h"
 
 class QTextStream;
 class KPopupMenu;
 class KActionMenu;
+class KDevFileSelector;
 
 class KBookmarkHandler : public QObject, public KBookmarkOwner
 {

@@ -16,11 +16,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 }
 
 PlaylistBrowser::~PlaylistBrowser()
-{
-
-
-}
-
+{}
 
 PlaylistBrowser::Item::Item( QIconView *parent, const KURL &u )
    : KIconViewItem( parent )
@@ -32,21 +28,22 @@ PlaylistBrowser::Item::Item( QIconView *parent, const KURL &u )
     setPixmap( DesktopIcon( "midi" ) );
 }
 
-
-void PlaylistBrowser::newPlaylist( const KURL::List &urls )
+void
+PlaylistBrowser::newPlaylist( const KURL::List &urls )
 {
     KURL url = urls.first();
     new PlaylistBrowser::Item( this, url );
 }
 
 
-QDragObject *PlaylistBrowser::dragObject()
+QDragObject*
+PlaylistBrowser::dragObject()
 {
     return new KURLDrag( currentItem()->url(), this );
 }
 
-
-void PlaylistBrowser::customEvent( QEvent *e )
+void
+PlaylistBrowser::customEvent( QEvent *e )
 {}
 
 #include "playlistbrowser.moc"

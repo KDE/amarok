@@ -9,7 +9,7 @@
 #include "threadweaver.h"
 
 #include <kdebug.h>
-#include <qapplication.h>
+#include <kapplication.h>
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
 #include <taglib/tstring.h>
