@@ -723,7 +723,7 @@ void GstEngine::timerEvent( QTimerEvent* )
                 else {
                     // Set new value for fadeout volume element
                     const double value = 1.0 - log10( input->m_fade * 9.0 + 1.0 );
-//                     kdDebug() << "XFADE_IN: " << value << endl;
+//                     kdDebug() << "FADE_IN: " << value << endl;
                     gst_element_set( input->volume, "volume", value, NULL );
                 }
                 break;
