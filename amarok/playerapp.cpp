@@ -335,9 +335,6 @@ void PlayerApp::initEngine()
     // feed engine to controller
     EngineController::instance()->setEngine( engine );
     engine->init( m_artsNeedsRestart, SCOPE_SIZE, AmarokConfig::rememberEffects() );
-
-    //called from AmarokPopup
-    connect( this, SIGNAL( configureDecoder() ), EngineController::instance()->engine(), SLOT( configureDecoder() ) );
 }
 
 

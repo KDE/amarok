@@ -28,7 +28,7 @@ amaroK::Menu::Menu( QWidget *parent )
     insertSeparator();
 
     insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( showEffectWidget() ) );
-    insertItem( i18n( "Configure &Decoder..." ), pApp, SIGNAL( configureDecoder() ), 0, ID_CONF_DECODER );
+    insertItem( i18n( "Configure &Decoder..." ), ID_CONF_DECODER );
 
     insertSeparator();
 
@@ -73,6 +73,9 @@ amaroK::Menu::exec( const QPoint &p, int indexAtPoint ) //NOTE non virtual! :(
         break;
     case ID_RANDOM_MODE:
         AmarokConfig::setRandomMode( !isItemChecked(ID_RANDOM_MODE) );
+        break;
+    case ID_CONF_DECODER:
+        EngineController::instance()->engine()->configureDecoder();
         break;
     }
 
