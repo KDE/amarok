@@ -1020,8 +1020,9 @@ Playlist::contentsDropEvent( QDropEvent *e )
         Debug::list() << text << subtype;
 
         if ( subtype == "amarok-sql" )
-            debug() << "YAY some amarok-sql!\n";
-        else goto url;
+            debug() << "YAY some amarok-sql! But we're not implemented yet.. bug muesli!\n";
+
+        goto url;
     }
     else if( KURLDrag::canDecode( e ) ) {
     url:
