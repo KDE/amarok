@@ -212,7 +212,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool /*trackCh
     // Add stream metadata history item to list
     if ( !m_metadataHistory.last().contains( bundle.prettyTitle() ) ) {
         const QString timeString = QTime::currentTime().toString( "hh:mm" );
-        m_metadataHistory << QString( "<td valign='top'><i>" + timeString + "</i></td><td>" + escapeHTML( bundle.prettyTitle() ) + "</td>" );
+        m_metadataHistory << QString( "<td valign='top'><i>" + timeString + "</i>&nbsp;</td><td>" + escapeHTML( bundle.prettyTitle() ) + "</td>" );
     }
 
     switch( m_db->isEmpty() || !m_db->isValid() ) {
