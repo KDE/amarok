@@ -5,9 +5,6 @@
       xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
       http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
 <include>qdir.h</include>
-<!--  <include>kapplication.h</include>
-<include>kglobalsettings.h</include>
-<include>config.h</include> -->
 
 <kcfgfile name="amarokrc"/>
 
@@ -211,7 +208,7 @@
     <entry key="Osd Text" type="String">
         <label>The OSD text to show</label>
         <whatsthis>Customise the OSD display text.</whatsthis>
-        <default>{%artist - }%title {(%length)}\n{%album}</default>
+        <default>%artist - %title {(%length)}\n%album</default>
     </entry>
     <entry key="Osd Font" type="Font">
         <label>Font for On-Screen Display</label>
@@ -311,7 +308,7 @@
     <entry key="Recode Encoding" type="Int">
         <label>Recode encoding</label>
         <whatsthis>The charset with which to decode the above string data.</whatsthis>
-	<default>59</default>
+        <default>0</default>
     </entry>
 </group>
 
@@ -384,30 +381,28 @@
 
 <group name="MySql">
     <entry key="MySqlHost" type="String">
-            <label>Host</label>
-            <whatsthis>The host MySql server is running on</whatsthis>
-            <default>localhost</default>
-        </entry>
-        <entry key="MySqlPort" type="Int">
-            <label>Port</label>
-            <whatsthis>The port MySql server is listening</whatsthis>
-            <default>3306</default>
-        </entry>
-        <entry key="MySqlDbName" type="String">
-            <label>Database name</label>
-            <whatsthis>The database's name</whatsthis>
-            <default>amarok</default>
-        </entry>
-        <entry key="MySqlUser" type="String">
-            <label>User</label>
-            <whatsthis>The user's name to use for connecting MySql</whatsthis>
-            <default/>
-        </entry>
-        <entry key="MySqlPassword" type="Password">
-            <label>Password</label>
-            <whatsthis>The user's password</whatsthis>
-            <default/>
-        </entry>
+        <label>Host</label>
+        <whatsthis>The host MySql server is running on</whatsthis>
+        <default>localhost</default>
+    </entry>
+    <entry key="MySqlPort" type="Int">
+        <label>Port</label>
+        <whatsthis>The port MySql server is listening</whatsthis>
+        <default>3306</default>
+    </entry>
+    <entry key="MySqlDbName" type="String">
+        <label>Database name</label>
+        <whatsthis>The database's name</whatsthis>
+        <default>amarok</default>
+    </entry>
+    <entry key="MySqlUser" type="String">
+        <label>User</label>
+        <whatsthis>The user's name to use for connecting MySql</whatsthis>
+    </entry>
+    <entry key="MySqlPassword" type="Password">
+        <label>Password</label>
+        <whatsthis>The user's password</whatsthis>
+    </entry>
 </group>
 
 <group name="Scrobbler">
