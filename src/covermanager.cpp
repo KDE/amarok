@@ -260,6 +260,7 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
                                                               values[ allAlbums ? i+1 : i ] );
                     coverItem->updateCover( QPixmap( imgPath ) );
                 }
+                else coverItem->updateCover( QPixmap() );
             }
         }
 
