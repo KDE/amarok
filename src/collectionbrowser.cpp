@@ -756,7 +756,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         
         menu.insertItem( i18n( "Make Playlist" ), this, SLOT( makePlaylist() ) );
         
-        if ( m_category2 == "None" || item->depth() == 2 )
+        if ( ( item->depth() && m_category2 == "None" ) || item->depth() == 2 )
             menu.insertItem( i18n( "Track Information" ), this, SLOT( showTrackInfo() ) );
         
         menu.exec( point );

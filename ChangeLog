@@ -3,6 +3,8 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
   
+  FIX: Invoking "Track Information" in Collection Browser sometimes crashed
+       the application (BR 80266).
   FIX: In CollectionBrowser's folder setup dialog pressing cancel did not abort
        (BR 80451). Thanks to Michael Pyne <pynm0001@comcast.net> for patch.
   ADD: Option for selecting sound output system (OSS/Alsa). Currently only
