@@ -2,13 +2,6 @@
 //Licensed as described in the COPYING accompanying this distribution
 //
 
-namespace std
-{
-    #include <stdlib.h>
-    #include <unistd.h>
-    #include <execinfo.h>
-}
-
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "crashhandler.h"
@@ -18,6 +11,13 @@ namespace std
 #include <klocale.h>
 #include <qfile.h>
 #include <qtextstream.h>
+
+namespace std
+{
+    #include <stdlib.h>
+    #include <unistd.h>
+    #include <execinfo.h>
+}
 
 namespace amaroK
 {
