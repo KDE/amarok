@@ -151,6 +151,16 @@ void AmarokSystray::wheelEvent( QWheelEvent *e )
 }
 
 
+
+void AmarokSystray::mousePressEvent( QMouseEvent *e )
+{
+  if( e->button() == MidButton )
+    static_cast<PlayerApp *>(kapp)->slotPause();
+  else
+    KSystemTray::mousePressEvent( e );
+}
+
+
 // CLASS PlayerWidget ------------------------------------------------------------
 
 PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
@@ -556,22 +566,17 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             m_pPopupMenu->insertSeparator();
 
             m_pPopupMenu->insertItem( i18n( "Effects" ), pApp, SLOT( slotConfigEffects() ) );
-            m_IdConfPlayObject = m_pPopupMenu->insertItem( i18n( "Configure PlayObject" ),
-                                 this, SLOT( slotConfigPlayObject() ) );
+            m_IdConfPlayObject = m_pPopupMenu->insertItem( i18n( "Configure PlayObject" ), this, SLOT( slotConfigPlayObject() ) );
 
             m_pPopupMenu->insertSeparator();
 
-            m_IdRepeatTrack = m_pPopupMenu->insertItem( i18n( "Repeat Track" ),
-                              pApp, SLOT( slotSetRepeatTrack() ) );
-            m_IdRepeatPlaylist = m_pPopupMenu->insertItem( i18n( "Repeat Playlist" ),
-                                 pApp, SLOT( slotSetRepeatPlaylist() ) );
+            m_IdRepeatTrack = m_pPopupMenu->insertItem( i18n( "Repeat Track" ), pApp, SLOT( slotSetRepeatTrack() ) );
+            m_IdRepeatPlaylist = m_pPopupMenu->insertItem( i18n( "Repeat Playlist" ), pApp, SLOT( slotSetRepeatPlaylist() ) );
             m_IdRandomMode = m_pPopupMenu->insertItem( i18n( "Random Mode" ), pApp, SLOT( slotSetRandomMode() ) );
 
             m_pPopupMenu->insertSeparator();
 
-            //m_pPopupMenu->insertItem( i18n( "Quit" ), pApp, SLOT( quit() ) );
             m_pActionCollection->action( "file_quit" )->plug( m_pPopupMenu );
-            //actionCollection()->action( "file_quit" )->plug( m_pPopupMenu );
         }
 
         m_pPopupMenu->setItemChecked( m_IdRepeatTrack, pApp->m_optRepeatTrack );

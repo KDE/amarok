@@ -89,6 +89,7 @@ class AmarokSystray : public KSystemTray
       AmarokSystray( PlayerWidget *, KActionCollection * );
 
    private:
+      void mousePressEvent( QMouseEvent * );
       void wheelEvent( QWheelEvent * );
       void showEvent( QShowEvent * ) {} //Don't add me a Quit button automagically
 };
