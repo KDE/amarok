@@ -893,7 +893,13 @@ void ScrobblerSubmitter::announceSubmit(
                       .arg( item->title() ).arg( tracks - 1 );
         }
 
-        message += i18n( ", 1 track still in queue", ", %n tracks still in queue", m_submitQueue.count() );
+        if ( m_submitQueue.count() > 0 )
+        {
+            message +=
+                i18n(
+                    ", 1 track still in queue", ", %n tracks still in queue",
+                    m_submitQueue.count() );
+        }
     }
     else
     {
