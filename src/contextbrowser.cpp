@@ -146,8 +146,8 @@ void ContextBrowser::render()
             showHome();
         if ( m_url.path() == "context" )
             showCurrentTrack();
+           //FIXME
 //         if ( m_url.path() == "collectionSetup" )
-            ; //FIXME
     }
 }
 
