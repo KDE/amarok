@@ -50,6 +50,7 @@ ContextBrowser::ContextBrowser( const char *name )
    : QVBox( 0, name )
    , m_db( new CollectionDB )
    , m_gradientImage( 0 )
+   , m_shadowGradientImage( 0 )
    , m_albumGradientImage( 0 )
 {
     EngineController::instance()->attach( this );
@@ -87,6 +88,8 @@ ContextBrowser::~ContextBrowser()
 
     if( m_gradientImage )
       m_gradientImage->unlink();
+    if( m_shadowGradientImage )
+      m_shadowGradientImage->unlink();
     if( m_albumGradientImage )
       m_albumGradientImage->unlink();
 
@@ -610,7 +613,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
            "</th>"
           "</tr>"
          "</table>"
-         "<table width='100%'>"
+         "<table class='table-body' width='100%'>"
           "<tr>"
            "<td width='20%'>"
             "<a class='menu' href='fetchcover:%8 @@@ %9'>"
@@ -715,7 +718,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                   "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
                    "<tr><th>" + i18n( "Suggested Songs" ) + "</th></tr>"
                   "</table>"
-                  "<table width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+                  "<table class='table-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
 
             for ( uint i = 0; i < values.count(); i += 4 )
@@ -757,7 +760,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
              "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
                 "<tr><th>" + i18n( "Favorite Tracks By %1" ).arg( artistName ) + "</th></tr>"
              "</table>"
-             "<table width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+             "<table class='table-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
         for ( uint i = 0; i < values.count(); i += 3 )
             browser->write(
@@ -851,12 +854,12 @@ void ContextBrowser::showCurrentTrack() //SLOT
                  "<td>"
                   "<div class='album-header' onClick=\"toggleAlbumTracks('IDA%1')\">"
                    "<table width='100%' style='background-color: transparent;' border='0' cellspacing='0' cellpadding='0'>"
-                    "<tr><td>"
-                     "<a href='fetchcover:%2 @@@ %3'><img width='50' align='left' vspace='2' hspace='2' title='%4' src='%5'/></a>"
-                     "<div style='float:right;'>%6</div>"
+                    "<tr>"
+                     "<td width='1'><a href='fetchcover:%2 @@@ %3'><img width='50' align='left' vspace='2' hspace='2' title='%4' src='%5'/></a></td>"
+                     "<td valign='middle' align='left'><div style='float:right;'>%6</div>"
                      "<a href='album:%7 @@@ %8'><b>%9</b></a>"
-                     "<br><i>%10</i>"
-                    "</td></tr>"
+                     "<br><i>%10</i></td>"
+                    "</tr>"
                    "</table>"
                   "</div>"
                   "<div class='album-contents' style='display:%11;' id='IDA%12'>" )
@@ -914,17 +917,22 @@ void ContextBrowser::setStyleSheet()
 
     //writing temp gradient image
     m_gradientImage = new KTempFile( locateLocal( "tmp", "gradient" ), ".png", 0600 );
-    QImage image = KImageEffect::gradient( QSize( 600, 1 ), gradient, gradient.light(), KImageEffect::PipeCrossGradient, 3 );
+    QImage image = KImageEffect::gradient( QSize( 600, 1 ), gradient, gradient.light(), KImageEffect::PipeCrossGradient );
     image.save( m_gradientImage->file(), "PNG" );
     m_gradientImage->close();
+    //writing temp song gradient image (only an 'upper linear shadow')
+    m_shadowGradientImage = new KTempFile( locateLocal( "tmp", "gradient_shadow" ), ".png", 0600 );
+    QImage imageS = KImageEffect::unbalancedGradient( QSize( 1, 10 ), colorGroup().base(), Qt::gray, KImageEffect::VerticalGradient, 100, -100 );
+    imageS.save( m_shadowGradientImage->file(), "PNG" );
+    m_shadowGradientImage->close();
     //writing temp album gradient image (album-header height is less than 60 px)
     m_albumGradientImage = new KTempFile( locateLocal( "tmp", "gradient_album" ), ".png", 0600 );
-    QImage imageHig = KImageEffect::gradient( QSize( 1, 15 ), gradient, gradient.light(), KImageEffect::VerticalGradient, 3 );
-    QImage imageLow = KImageEffect::gradient( QSize( 1, 30 ), gradient.light(), gradient, KImageEffect::VerticalGradient, 3 );
+    QImage imageHig = KImageEffect::unbalancedGradient( QSize( 1, 10 ), gradient.light(), gradient, KImageEffect::VerticalGradient, 100, -100 );
+    QImage imageLow = KImageEffect::unbalancedGradient( QSize( 1, 14 ), gradient.light(), Qt::gray, KImageEffect::VerticalGradient, 100, 80 );
     QImage imageV( 1, 60, 32 );
     imageV.fill( gradient.light().pixel() );
-    bitBlt( &imageV, 0, 0, &imageHig, 0,0, imageHig.width(), imageHig.height() );
-    bitBlt( &imageV, 0,40, &imageLow, 0,0, imageLow.width(), imageLow.height() );
+    bitBlt( &imageV, 0, 0, &imageHig, 0, 0, 1, 10 );
+    bitBlt( &imageV, 0, 46, &imageLow, 0, 0, 1, 14 );
     imageV.save( m_albumGradientImage->file(), "PNG" );
     m_albumGradientImage->close();
 
@@ -956,8 +964,9 @@ void ContextBrowser::setStyleSheet()
     m_styleSheet += QString( ".rbcontent a { text-decoration: none; }" );
     m_styleSheet += QString( ".rbcontent .song a { display: block; padding: 1px 2px; }" );
     m_styleSheet += QString( ".rbcontent .song a:hover { color: %1; background-color: %1; }" ).arg( fg ).arg( bg );
+    m_styleSheet += QString( ".table-body { background-image: url( %1 ); background-repeat: repeat-x; }" ).arg( m_shadowGradientImage->name() );
     m_styleSheet += QString( ".album-header { background-image: url( %1 ); background-repeat: repeat-x; }" ).arg( m_albumGradientImage->name() );
-    m_styleSheet += QString( ".album-header:hover { background-image: none; background-color: %1; cursor: pointer; }" ).arg( bg );
+    m_styleSheet += QString( ".album-header:hover { background-image: url( %1 ); cursor: pointer; }" ).arg( m_shadowGradientImage->name() );
     m_styleSheet += QString( ".album-contents { background-color: %1; border-bottom: solid %2 1px; border-top: solid %3 1px; }" ).arg( colorGroup().base().name() ).arg( bg ).arg( bg );
 
     //boxes used to display score (sb: score box)
