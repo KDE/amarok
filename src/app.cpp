@@ -374,7 +374,7 @@ void App::applySettings( bool firstTime )
             //KWin::setSystemTrayWindowFor( m_pTray->winId(), m_pPlayerWindow->winId() );
 
             delete m_pTray; m_pTray = new amaroK::TrayIcon( m_pPlayerWindow );
-            
+
         }
 
         QFont font = m_pPlayerWindow->font();
@@ -385,7 +385,7 @@ void App::applySettings( bool firstTime )
         m_pPlayerWindow->setModifiedPalette(); //do last for efficiency, forces scroller update
         m_pPlayerWindow->update();
         amaroK::config()->writeEntry( "XMLFile", "amarokui_xmms.rc" );
-        
+
     } else if( m_pPlayerWindow ) {
 
         delete m_pTray; m_pTray = new amaroK::TrayIcon( m_pPlaylistWindow );
@@ -401,7 +401,7 @@ void App::applySettings( bool firstTime )
         //forgive user-stupidity
         if( !AmarokConfig::showTrayIcon() )
            playlistWindow()->show();
-        
+
         amaroK::config()->writeEntry( "XMLFile", "amarokui.rc" );
     }
 
@@ -451,23 +451,26 @@ void App::applySettings( bool firstTime )
 
         engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
         engine->setVolume( AmarokConfig::masterVolume() );
+
+        // Broadcast current engine state; needed for SysTray
+        EngineController::instance()->reInit();
     } //</Engine>
-    
+
     m_pPlaylistWindow->recreateGUI();
-    
+
     /* delete unneeded cover images from cache */
     QString size = QString::number( AmarokConfig::coverPreviewSize() ) + "@";
     QDir cacheDir = KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) + "albumcovers/cache/";
     QStringList obsoleteCovers( cacheDir.entryList( "*" ) );
-    for ( QStringList::Iterator it = obsoleteCovers.begin(); it != obsoleteCovers.end(); ++it ) 
+    for ( QStringList::Iterator it = obsoleteCovers.begin(); it != obsoleteCovers.end(); ++it )
     {
         if ( !( *it ).startsWith( size  ) && !( *it ).startsWith( "50@" ) )
-        {    
+        {
             QFile file( cacheDir.filePath( *it ) );
             file.remove();
         }
     }
-     
+
     kdDebug() << "END " << k_funcinfo << endl;
 }
 

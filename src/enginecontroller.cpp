@@ -199,6 +199,13 @@ bool EngineController::canDecode( const KURL &url ) //static
 }
 
 
+void EngineController::reInit()
+{
+    slotStateChanged( m_engine->state() );
+    slotNewMetaData( m_bundle );
+}
+
+
 bool EngineController::isStream() const
 {
     return m_engine->isStream();
