@@ -204,20 +204,6 @@ DO-NOT-IMPLEMENT:
 
 BACKTRACE/DEBUG
 
-<markey> I'm always getting this BT at startup:
-
-#0  0x4106ef37 in QPixmap::convertToImage() const () from /usr/lib/./libqt-mt.so.3
-#1  0x080eec43 in NavButton (this=0x83f83b0, parent=0x82fc7c0, icon=@0xbfffed80, action=0x8283868)
-    at /home/mark/mysource/kdecvs/kdeextragear-1/amarok/src/playerwindow.cpp:823
-#2  0x080eb13f in PlayerWidget (this=0x83e9c18, parent=0x825b110, name=0x81ac07b "PlayerWindow", enablePlaylist=true)
-    at /home/mark/mysource/kdecvs/kdeextragear-1/amarok/src/playerwindow.cpp:125
-#3  0x0808c656 in App::applySettings(bool) (this=0xbffff090, firstTime=true)
-    at /home/mark/mysource/kdecvs/kdeextragear-1/amarok/src/app.cpp:371
-#4  0x080898e4 in App (this=0xbffff090) at /home/mark/mysource/kdecvs/kdeextragear-1/amarok/src/app.cpp:110
-#5  0x08144bee in main (argc=1, argv=0xbffff1f4)
-    at /home/mark/mysource/kdecvs/kdeextragear-1/amarok/src/amarokcore/main.cpp:66
-#6  0x41cac4f2 in __libc_start_main () from /lib/libc.so.6
-
 
 From coolo:
 
