@@ -15,6 +15,7 @@
 #include "debug.h"
 #include "enginebase.h"       //to get the scope
 #include "enginecontroller.h" //to get the engine
+#include "statusbar.h"
 #include <klocale.h>
 #include <kpopupmenu.h>       //Vis::Selector
 #include <kprocess.h>         //Vis::Selector
@@ -260,25 +261,22 @@ Vis::Selector::rightButton( QListViewItem* qitem, const QPoint& pos, int )
 void
 Vis::Selector::viewportPaintEvent( QPaintEvent *e )
 {
-    QListView::viewportPaintEvent( e );
-
     if( childCount() == 0 ) {
 
         //TODO the right message if amarok_libvisual is present but libvisual isn't
-
-        QPainter p( viewport() );
-        QSimpleRichText t( i18n(
+        hide();
+        amaroK::StatusBar::instance()->longMessage( i18n(
                 "<div align=center>"
-                  "<h3>No Visualizations Found</h3>"
-                  "Please install libvisual and recompile."
-                "</div>" ), font() );
-
-        t.setWidth( width() - 50 );
-
-        p.setBrush( colorGroup().background() );
-        p.drawRect( 15, 15, t.width() + 20, t.height() + 20 );
-        t.draw( &p, 20, 20, QRect(), colorGroup() );
+                "<h3>No Visualizations Found</h3>"
+                "Possible reasons:"
+                "<ul>"
+                "<li>You didn't install libvisual;</li>"
+                "<li>You didn't install any libvisual plugin.</li>"
+                "</ul>"
+                 "Please check these possibilities and restart amaroK."
+                "</div>" ) );
     }
+    else { QListView::viewportPaintEvent( e ); }
 }
 
 
