@@ -153,7 +153,9 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         addColumn( m_category1 );
         m_recursively = config->readBoolEntry( "Scan Recursively", true );
         m_monitor = config->readBoolEntry( "Monitor Changes", false );
+        
         m_amazonLicense = config->readEntry( "Amazon License Key" );
+        m_coverFetcher->setLicense( m_amazonLicense );
     //</read config>
 
     //<open database>
@@ -186,17 +188,19 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 
     //</open database>
 
-    connect( m_insertdb, SIGNAL( scanDone( bool ) ),
-             this,         SLOT( scanDone( bool ) ) );
-    connect( this,       SIGNAL( expanded( QListViewItem* ) ),
-             this,         SLOT( slotExpand( QListViewItem* ) ) );
-    connect( this,       SIGNAL( collapsed( QListViewItem* ) ),
-             this,         SLOT( slotCollapse( QListViewItem* ) ) );
-    connect( this,       SIGNAL( doubleClicked( QListViewItem*, const QPoint&, int ) ),
-             this,         SLOT( doubleClicked( QListViewItem*, const QPoint&, int ) ) );
-    connect( this,       SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
-             this,         SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
-
+    connect( m_insertdb,     SIGNAL( scanDone( bool ) ),
+             this,             SLOT( scanDone( bool ) ) );
+    connect( this,           SIGNAL( expanded( QListViewItem* ) ),
+             this,             SLOT( slotExpand( QListViewItem* ) ) );
+    connect( this,           SIGNAL( collapsed( QListViewItem* ) ),
+             this,             SLOT( slotCollapse( QListViewItem* ) ) );
+    connect( this,           SIGNAL( doubleClicked( QListViewItem*, const QPoint&, int ) ),
+             this,             SLOT( doubleClicked( QListViewItem*, const QPoint&, int ) ) );
+    connect( this,           SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
+             this,             SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
+    connect( m_coverFetcher, SIGNAL( imageReady( QPixmap ) ),
+             this,             SLOT( gotCover( QPixmap ) ) );
+             
     renderView();
     startTimer( MONITOR_INTERVAL );         
 }
@@ -429,11 +433,12 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         menu.insertItem( i18n( "Make Playlist" ), this, SLOT( makePlaylist() ) );
         menu.insertItem( i18n( "Add to Playlist" ), this, SLOT( addToPlaylist() ) );
-        menu.insertItem( i18n( "Fetch Cover Image" ), this, SLOT( fetchCover() ) );
         
-        if ( ( item->depth() && m_category2 == i18n( "None" ) ) || item->depth() == 2 )
+        if ( ( item->depth() && m_category2 == i18n( "None" ) ) || item->depth() == 2 ) {
             menu.insertItem( i18n( "Track Information" ), this, SLOT( showTrackInfo() ) );
-
+            menu.insertItem( i18n( "Fetch Cover Image" ), this, SLOT( fetchCover() ) );
+        }
+            
         menu.exec( point );
     }
 }
@@ -457,7 +462,37 @@ CollectionView::addToPlaylist() //SLOT
 void
 CollectionView::fetchCover() //SLOT
 {
-    m_coverFetcher->getCover( "Genesis - We can't dance" );
+    Item* item = static_cast<Item*>( currentItem() );
+    if ( !item ) return;
+
+    if ( m_category2 == i18n( "None" ) || item->depth() == 2 ) {
+        QString command = QString
+                          ( "SELECT DISTINCT artist.name, album.name FROM tags, artist, album, genre, year "
+                            "WHERE artist.id = tags.artist AND album.id = tags.album AND genre.id = tags.genre AND year.id = tags.year AND tags.url = '%1';" )
+                            .arg( m_db->escapeString( item->url().path() ) );
+
+        QStringList values;
+        QStringList names;
+        m_db->execSql( command, &values, &names );
+        if ( values.isEmpty() ) return;
+    
+        QString key = values[0] + " - " + values[1];
+        kdDebug() << "keyword: " << key << endl;
+        m_coverFetcher->getCover( key );
+    }
+}
+
+
+void
+CollectionView::gotCover( QPixmap image ) //SLOT
+{
+    kdDebug() << k_funcinfo << endl;
+    
+    QWidget* widget = new QWidget( 0, 0, WDestructiveClose );
+    widget->setPaletteBackgroundPixmap( image );
+    widget->resize( image.size() );
+        
+    widget->show();
 }
 
 

@@ -22,13 +22,19 @@ class CoverFetcher : public QObject
         void setLicense( const QString license ) { m_license = license; }
         void getCover( const QString& keyword );
         
+    signals:
+        void imageReady( QPixmap image );        
+        
     private slots:
-        void slotData( KIO::Job* job, const QByteArray& data );
-        void slotResult( KIO::Job* job );        
+        void xmlData( KIO::Job* job, const QByteArray& data );
+        void xmlResult( KIO::Job* job );        
+        void imageData( KIO::Job* job, const QByteArray& data );
+        void imageResult( KIO::Job* job );        
         
     private:
         QString m_license;
-        QString m_resultStr;
+        QString m_xmlDocument;
+        QByteArray m_image;
 };    
     
 

@@ -100,9 +100,10 @@ class CollectionView : public KListView
         void makePlaylist();
         /** Adds all selected tracks to current playlist */
         void addToPlaylist();
-        /** Shows dialog with information on selected track */
-        void fetchCover();
         /** Tries to download the cover image from Amazon.com */
+        void fetchCover();
+        void gotCover( QPixmap image );
+        /** Shows dialog with information on selected track */
         void showTrackInfo();
                 
     private:
