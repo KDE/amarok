@@ -133,7 +133,7 @@ GstEngine::shutdown_cb() //static
 /////////////////////////////////////////////////////////////////////////////////////
 
 GstEngine::GstEngine()
-        : Engine::Base( Engine::Signal, true )
+        : Engine::Base( /*StreamingMode*/ Engine::Signal, /*hasConfigure*/ true )
         , m_gst_thread( 0 )
         , m_streamBuf( new char[STREAMBUF_SIZE] )
         , m_transferJob( 0 )

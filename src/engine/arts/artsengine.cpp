@@ -63,7 +63,7 @@ AMAROK_EXPORT_PLUGIN( ArtsEngine )
 
 
 ArtsEngine::ArtsEngine()
-        : EngineBase( Engine::Socket, true, true )
+        : EngineBase( /*StreamingMode*/ Engine::Socket, /*hasConfigure*/ false, /*hasXFade*/ true )
         , m_pArtsDispatcher( new KArtsDispatcher( this ) )
         , m_pPlayObject( 0 )
         , m_pPlayObjectXfade( 0 )
