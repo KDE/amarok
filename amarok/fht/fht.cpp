@@ -158,7 +158,7 @@ void FHT::logSpectrum(float *out, float *p)
 		else {
 			float base = p[k - 1];
 			float step = (p[j] - base) / (j - (k - 1));
-			for (float corr = 0; k < j; k++, corr += step)
+			for (float corr = 0; k <= j; k++, corr += step)
 				*out++ = base + corr;
 		}
 	}
