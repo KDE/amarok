@@ -43,7 +43,8 @@ private:
     void process( const KURL::List &, bool = true );
 
     void postDownloadRequest( const KURL& );
-    void postBundle( const KURL&, MetaBundle* = 0 );
+    void postBundle( const KURL& );
+    void postBundle( const KURL&, const QString&, const int );
 
     bool isValidMedia( const KURL &, mode_t = KFileItem::Unknown, mode_t = KFileItem::Unknown ) const;
 #ifdef FAST_TRANSLATE
@@ -75,11 +76,12 @@ public:
     class SomeUrlEvent: public QCustomEvent
     {
     public:
-       SomeUrlEvent( PlaylistLoader *pl, const KURL &u, MetaBundle* const mb )
+       SomeUrlEvent( PlaylistLoader *pl, const KURL &u, const QString &s, int i )
          : QCustomEvent( SomeUrl )
          , m_thread( pl )
          , m_url( u )
-         , m_tags( mb )
+         , m_title( s )
+         , m_length ( i )
          , m_kio( false ) {}
 
        //TODO attempt to more clearly define the downloading version of this event
@@ -87,18 +89,19 @@ public:
          : QCustomEvent( SomeUrl )
          , m_thread( pl )
          , m_url( u )
-         , m_tags( 0 )
+         , m_length( 0 )
          , m_kio( true ) {}
 
        ~SomeUrlEvent();
 
        //const KURL &url() const { return m_url; }
-       PlaylistItem *makePlaylistItem( QListView *lv );
+       PlaylistItem *makePlaylistItem( QListView* );
 
     private:
        PlaylistLoader* const m_thread;
        const KURL m_url;
-       MetaBundle* const m_tags;
+       QString    m_title;
+       int        m_length;
        const bool m_kio;
     };
 
@@ -148,7 +151,7 @@ public:
    {
    public:
       friend class ThreadWeaver;
-      enum JobType { TagReader = 3000, TagWriter, PLStats };
+      enum JobType { TagReader = 3000, AudioPropertiesReader, TagWriter, PLStats };
 
       Job( QObject *obj, JobType type )
         : QCustomEvent( type )
@@ -200,26 +203,20 @@ private:
     MetaBundle* m_tags;
 };
 
-/*
-//TODO do this with MINIMUM of code, preferable make a tagreading class and two wrappers for general use
+
 class AudioPropertiesReader : public ThreadWeaver::Job
 {
 public:
-    TagReader( QObject*, PlaylistItem* );
-    ~TagReader();
-
+    AudioPropertiesReader( QObject*, PlaylistItem* );
     bool doJob();
-    static MetaBundle* readTags( const KURL& );
-
     void bindTags();
-    void addSearchTokens( QStringList&, QPtrList<QListViewItem>& );
-
 private:
     PlaylistItem* const m_item;
-    const KURL  m_url;
-    MetaBundle* m_tags;
+    const KURL m_url;
+    QString    m_length;
+    QString    m_bitRate;
 };
-*/
+
 
 class TagWriter : public ThreadWeaver::Job
 {

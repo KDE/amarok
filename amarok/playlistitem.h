@@ -27,16 +27,20 @@ class QListViewItem;
 class QPainter;
 class QString;
 class MetaBundle;
+class PlaylistWidget;
 
 class PlaylistItem : public KListViewItem
 {
     public:
-        PlaylistItem( QListView*, QListViewItem*, const KURL&, const MetaBundle* = 0 );
+        //FIXME change it so it only accepts PlaylistWidget
+        PlaylistItem( QListView*, QListViewItem*, const KURL&, const QString& = "", const int length = 0 );
         ~PlaylistItem();
 
-        void setMeta( const MetaBundle& );
+        QString text( int column ) const;
+        void setText( const MetaBundle& );
         void setText( int, const QString& );
-        void writeTag( const QString&, int );
+
+        PlaylistWidget *listView() const { return (PlaylistWidget *)KListViewItem::listView(); }
 
         MetaBundle metaBundle();
         const QString trackName() const { return text( 0 ); }

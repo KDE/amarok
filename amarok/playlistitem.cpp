@@ -18,7 +18,7 @@
 #include "metabundle.h"
 #include "playerapp.h"
 #include "playlistitem.h"
-#include "playlistwidget.h" //dtor
+#include "playlistwidget.h" //this class is tied to PlaylistWidget
 
 #include "amarokconfig.h"
 
@@ -38,31 +38,24 @@
 PlaylistItem *PlaylistItem::GlowItem  = 0;
 
 
-PlaylistItem::PlaylistItem( QListView* lv, QListViewItem *lvi, const KURL &u, const MetaBundle *t )
-      : KListViewItem( lv, lvi, ( u.protocol() == "file" ) ? u.fileName() : u.prettyURL() )
+PlaylistItem::PlaylistItem( QListView* parent, QListViewItem *lvi, const KURL &u, const QString &title, const int length )
+      : KListViewItem( parent, lvi, ( u.protocol() == "file" ) ? u.fileName() : u.prettyURL() )
       , m_url( u )
 {
     setDragEnabled( true );
     setDropEnabled( true );
 
+    setText( 1, title );
     setText( 8, u.directory().section( '/', -1 ) );
-
-    if( t ) setMeta( *t );
+    setText( 9, MetaBundle::prettyLength( length ) );
 }
 
 
 PlaylistItem::~PlaylistItem()
 {
-    if ( listView() )
+    if( listView() && listView()->currentTrack() == this )
     {
-        PlaylistWidget *parentView = static_cast<PlaylistWidget *>( listView() );
-
-        if( parentView->currentTrack() == this )
-        {
-            //FIXME requires friendship
-            //FIXME friendship requires rebuilding world when we modify playlistitem.h!
-            parentView->setCurrentTrack( NULL );
-        }
+        listView()->setCurrentTrack( NULL );
     }
 }
 
@@ -82,24 +75,28 @@ MetaBundle PlaylistItem::metaBundle()
 
     //FIXME hold a small cache of metabundles?
     //then return by reference
-    MetaBundle bundle( text( 1 ),
-                       text( 2 ),
-                       text( 3 ),
-                       text( 4 ),
-                       text( 5 ),
-                       text( 6 ),
-                       text( 7 ),
-                       ( f.isNull() ) ? 0 : f.audioProperties() );
+    MetaBundle bundle( this, f.isNull() ? 0 : f.audioProperties() );
 
     //just set it as we just did an accurate pass
     setText(  9, bundle.prettyLength()  );
-    setText( 10, bundle.prettyBitRate() );
+    setText( 10, bundle.prettyBitrate() );
 
     return bundle;
 }
 
 
-void PlaylistItem::setMeta( const MetaBundle &bundle )
+QString PlaylistItem::text( int column ) const
+{
+    if( column == 1 && listView()->columnWidth( 0 ) == 0 && KListViewItem::text( 1 ).isEmpty() )
+    {
+            return KListViewItem::text( 0 );
+    }
+
+    return KListViewItem::text( column );
+}
+
+
+void PlaylistItem::setText( const MetaBundle &bundle )
 {
     setText( 1,  bundle.m_title );
     setText( 2,  bundle.m_artist );
@@ -109,7 +106,7 @@ void PlaylistItem::setMeta( const MetaBundle &bundle )
     setText( 6,  bundle.m_genre );
     setText( 7,  bundle.m_track );
     setText( 9,  bundle.prettyLength() );
-    setText( 10, bundle.prettyBitRate() );
+    setText( 10, bundle.prettyBitrate() );
 }
 
 
@@ -119,9 +116,12 @@ void PlaylistItem::setText( int column, const QString &newText )
     case 1:
     case 9:
     case 10:
-        //FIXME apparently if you don't set something it hangs the UI!s
-        if( newText.isEmpty() ) { KListViewItem::setText( column, text( column ) ); break; }
-        //else kdDebug() << newText << endl;
+        if( newText.isEmpty() )
+        {
+            //if you don't setText() it crashes amaroK!
+            KListViewItem::setText( column, text( column ) );
+            break;
+        }
     default:
         KListViewItem::setText( column, newText );
     }

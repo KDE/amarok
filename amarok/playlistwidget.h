@@ -111,7 +111,7 @@ class PlaylistWidget : private KListView
         friend bool BrowserWin::eventFilter( QObject*, QEvent* );
 
     signals:
-        void playRequest( const KURL&, const MetaBundle& );
+        void playRequest( const MetaBundle& );
         void aboutToClear();
 
     public slots:
@@ -145,6 +145,7 @@ class PlaylistWidget : private KListView
         void insertMediaInternal( const KURL::List&, QListViewItem* );
         bool saveState( QStringList& );
         void switchState( QStringList&, QStringList& );
+        void readAudioProperties( PlaylistItem* );
 
 // REIMPLEMENTED ------
         void contentsDropEvent( QDropEvent* );

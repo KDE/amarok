@@ -245,7 +245,7 @@ void PlayerApp::restoreSession()
             MetaBundle *bundle = TagReader::readTags( AmarokConfig::resumeTrack(), true );
 
             //TODO make a static syncronous readTags function
-            play( AmarokConfig::resumeTrack(), *bundle );
+            play( *bundle );
 
             if ( seconds > 0 )
                 m_pEngine->seek( seconds * 1000 );
@@ -379,18 +379,8 @@ void PlayerApp::receiveStreamMeta( TitleProxy::metaPacket packet )
     kdDebug() << "bitRate    : " << packet.bitRate     << endl;
     kdDebug() << "title      : " << packet.title       << endl;
     kdDebug() << "url        : " << packet.url         << endl;
-    
-    //FIXME this could all be compressed into a single setScroll() if the bitrate is used in the else case
-    if ( packet.url.isEmpty() )
-    {
-        QString text = m_playingURL.prettyURL();
-        if ( text.isEmpty() ) text = i18n( "stream" );
 
-        m_pPlayerWidget->setScroll( QString( "%1 (%2)" ).arg( packet.title ).arg( text ), packet.bitRate + "kbps", "--" );
-    }
-    else
-        //FIXME show bitrate? this was how it was before so I am leaving it as is.. <mxcl>
-        m_pPlayerWidget->setScroll( QString( "%1 (%2)" ).arg( packet.title ).arg( packet.url ), "--", "--" );
+    m_pPlayerWidget->setScroll( packet );
 }
 
 
@@ -508,8 +498,10 @@ void PlayerApp::slotPlay() { emit orderCurrentTrack(); }
 void PlayerApp::slotNext() { emit orderNextTrack(); }
 
 
-void PlayerApp::play( const KURL &url, const MetaBundle &tags )
+void PlayerApp::play( const MetaBundle &bundle )
 {
+    const KURL &url = bundle.m_url;
+
     if ( AmarokConfig::titleStreaming() && !url.isLocalFile() )
     {
         TitleProxy *pProxy = new TitleProxy( url );
@@ -520,56 +512,19 @@ void PlayerApp::play( const KURL &url, const MetaBundle &tags )
         connect( m_pEngine, SIGNAL( endOfTrack       () ),
                  pProxy,    SLOT  ( deleteLater      () ) );
     }
-    else    
+    else
         m_pEngine->open( url );
 
-    if( !(tags.m_length == 0 && tags.m_bitrate == 0 && tags.m_sampleRate == 0) )
-    {
-        m_length = tags.m_length * 1000;      // sec -> ms
-        QString text, bps, Hz, length;
 
-        if( tags.m_title.isEmpty() )
-        {
-            text = url.fileName();
-        }
-        else
-        {
-            //TODO <berkus> user tunable title format!
-            text = tags.m_artist;
-            if( text != "" ) text += " - ";
-            text += tags.m_title;
-        }
+    m_pPlayerWidget->setScroll( bundle );
+    m_pOSD->showOSD( bundle );
 
-        bps  = QString::number( tags.m_bitrate );
-        bps += "kbps";
-        Hz   = QString::number( tags.m_sampleRate );
-        Hz  += "Hz";
-
-        // length to string
-        if ( floor( tags.m_length / 60 ) < 10 ) length += "0";
-        length += QString::number( floor( tags.m_length / 60 ) );
-        length += ":";
-        if ( tags.m_length % 60 < 10 ) length += "0";
-        length += QString::number( tags.m_length % 60 );
-
-        m_pPlayerWidget->setScroll( text, bps, Hz, length ); //FIXME get end function to add units!
-
-        // OSD message
-        m_pOSD->showOSD( text + " - " + length );
-    }
-    else
-    {
-        m_length = 0;
-
-        if ( m_pEngine->isStream() )
-            m_pPlayerWidget->setScroll( i18n( "Stream from: %1" ).arg( url.prettyURL() ), "?", "--" );
-        else
-            m_pPlayerWidget->setScroll( url.fileName() );
-    }
+    if( m_pEngine->isStream() ) m_length = 0;
+    else m_length = bundle.length() * 1000;
 
     // update image tooltip
-    PlaylistToolTip::add( m_pPlayerWidget->m_pFrame, url, tags );
-    
+    PlaylistToolTip::add( m_pPlayerWidget->m_pFrame, bundle );
+
     kdDebug() << "[play()] Playing " << url.prettyURL() << endl;
     m_pEngine->play();
 
@@ -609,7 +564,7 @@ void PlayerApp::slotStop()
     m_pEngine->stop();
 
     m_length = 0;
-    m_pPlayerWidget->setScroll              ();
+    m_pPlayerWidget->defaultScroll          ();
     m_pPlayerWidget->timeDisplay            ( false, 0, 0, 0 );
     m_pPlayerWidget->m_pSlider->setValue    ( 0 );
     m_pPlayerWidget->m_pSlider->setMaxValue ( 0 );

@@ -23,8 +23,10 @@ email                : markey@web.de
 #include "analyzers/analyzerbase.h"
 #include "browserwin.h"    //for action collection only
 #include "effectwidget.h"  //in the popupmenu
+#include "metabundle.h"    //setScroll()
 #include "playerapp.h"
 #include "playerwidget.h"
+#include "titleproxy/titleproxy.h"    //setScroll()
 
 #include <qbitmap.h>
 #include <qevent.h>
@@ -271,7 +273,7 @@ void PlayerWidget::initScroll()
     m_pComposePixmap = new QPixmap( m_pFrame->width(), m_pixmapHeight );
     m_pScrollPixmap = new QPixmap( m_pixmapWidth, m_pixmapHeight );
     m_pScrollMask = new QBitmap( m_pixmapWidth, m_pixmapHeight );
-    setScroll();
+    defaultScroll();
 
     m_sx = m_sy = 0;
     m_sxAdd = 1;
@@ -284,26 +286,62 @@ void PlayerWidget::polish()
 }
 
 
-void PlayerWidget::setScroll( QString text, const QString &bitrate, const QString &sampleRate, const QString &length )
+void PlayerWidget::defaultScroll()
 {
-    //Update tray tooltip
-    if ( QToolTip::textFor( m_pTray ) != QString::null ) QToolTip::remove( m_pTray );
-    if ( text.isEmpty() )
+    QString blank;
+
+    m_bitrate = m_samplerate = blank;
+
+    setScroll( i18n( "Welcome to amaroK" ) );
+
+    QToolTip::remove( m_pTray );
+    QToolTip::add( m_pTray, i18n( "amaroK - Media Player" ) );
+    m_pDcopHandler->setNowPlaying( blank );
+}
+
+#include "engine/enginebase.h"
+void PlayerWidget::setScroll( const MetaBundle &bundle )
+{
+    QString text;
+
+    if( pApp->m_pEngine->isStream() ) //TODO this information should be with the bundle (?)
     {
-        QToolTip::add( m_pTray, i18n( "amaroK - Media Player" ) );
-        m_pDcopHandler->setNowPlaying( text ); //text = ""
-        m_bitrate = m_samplerate = text; //text = "" - better to not create a temporary QString
-        text = i18n( "Welcome to amaroK" );
+        text = QString( "Stream from: %1" ).arg( bundle.prettyURL() );
+
+        m_length     = "--";
+        m_samplerate = "--";
+        m_bitrate    = "--";
     }
     else
     {
-        QToolTip::add( m_pTray, text );
-        m_pDcopHandler->setNowPlaying( text );
-        m_bitrate = bitrate;
-        m_samplerate = sampleRate;
-        m_length = length;
+        text = bundle.prettyTitle();
+
+        m_bitrate    = bundle.prettyBitrate();
+        m_samplerate = bundle.prettySampleRate();
+        m_length     = bundle.prettyLength();
     }
 
+    setScroll( text );
+}
+
+
+void PlayerWidget::setScroll( const TitleProxy::metaPacket &packet )
+{
+    setScroll( QString( "%1 - %2" ).arg( packet.streamName, packet.title ) );
+
+    m_bitrate    = packet.bitRate + " kpbs";
+    m_samplerate = "--";
+    m_length     = "--";
+}
+
+
+void PlayerWidget::setScroll( const QString &s )
+{
+    QToolTip::remove( m_pTray );
+    QToolTip::add( m_pTray, s );
+    m_pDcopHandler->setNowPlaying( s );
+
+    QString text = s;
     text.prepend( " | " );
 
     m_pScrollMask->fill( Qt::color0 );

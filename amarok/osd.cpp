@@ -12,6 +12,7 @@
   email:     muesli@chareit.net
 */
 
+#include "metabundle.h"
 #include "osd.h"
 
 #include <qtimer.h>
@@ -29,7 +30,7 @@ OSDWidget::OSDWidget() : QWidget(NULL, "osd",
 {
   // Currently fixed to the top border of desktop, full width
   // This should be configurable, already on my TODO
-  
+
   move( 10, 40 );
   resize( 0, 0 );
   setFocusPolicy( NoFocus );
@@ -42,27 +43,27 @@ OSDWidget::OSDWidget() : QWidget(NULL, "osd",
 void OSDWidget::paintOSD( const QString &text )
 {
   this->text = text;
-  // Drawing process itself    
+  // Drawing process itself
   QPainter paint;
   QColor bg( 0, 0, 0 );
   QColor fg( 255, 255, 255 );
-    
+
   QFontMetrics *fm = new QFontMetrics( font );
-      
+
   // Get desktop dimensions
   QWidget *d = QApplication::desktop();
-      
+
   QRect fmRect = fm->boundingRect( 0, 0, d->width(), d->height(), AlignLeft | WordBreak, this->text );
   fmRect.addCoords( 0, 0, fmRect.width() + 2, fmRect.height() + 2);
-  
+
   resize( fmRect.size() );
   //    QPixmap *buffer = new QPixmap( fmRect.width(), fmRect.height() );
   QPixmap buffer = QPixmap( fmRect.size() );
-      
+
   // Draw the OnScreenMessage
   QPainter paintBuffer( &buffer );
   paintBuffer.setFont( font );
-    
+
   // Draw the border around the text
   paintBuffer.setPen( black );
 /*  paintBuffer.drawText( 0, 0, width()-1, height()-1, AlignLeft | WordBreak, this->text );
@@ -70,12 +71,12 @@ void OSDWidget::paintOSD( const QString &text )
   paintBuffer.drawText( 0, 2, width()-1, height()-1, AlignLeft | WordBreak, this->text );
   paintBuffer.drawText( 2, 2, width()-1, height()-1, AlignLeft | WordBreak, this->text );*/
   paintBuffer.drawText( 3, 3, width()-1, height()-1, AlignLeft | WordBreak, this->text );
-      
+
   // Draw the text
   paintBuffer.setPen( color );
   paintBuffer.drawText( 1, 1, width()-1, height()-1, AlignLeft | WordBreak, this->text );
   paintBuffer.end();
-      
+
   // Masking for transparency
   QBitmap bm( fmRect.size() );
   paint.begin( &bm );
@@ -89,9 +90,9 @@ void OSDWidget::paintOSD( const QString &text )
 //  paint.drawText( 0, 2, width()-1, height()-1, AlignLeft | WordBreak, this->text );
 //  paint.drawText( 2, 2, width()-1, height()-1, AlignLeft | WordBreak, this->text );
   paint.end();
-    
+
   delete fm;
-      
+
   // Let's make it real, flush the buffers
   osdBuffer = buffer;
   // Repaint the QWidget and get it on top
@@ -99,23 +100,25 @@ void OSDWidget::paintOSD( const QString &text )
   //    qApp->syncX();
   QWidget::show();
   raise();
-  
+
   // let it disappear via a QTimer
   timer->start( 5000, TRUE );
   timerMin->start( 150, TRUE );
 }
 
-void OSDWidget::showOSD( const QString &text )
+void OSDWidget::showOSD( const MetaBundle &bundle )
 {
   if ( isEnabled() )
   {
     // Strip HTML tags, expand basic HTML entities
+    QString text = QString( "%1 - %2" ).arg( bundle.prettyTitle(), bundle.prettyLength() );
+
     QString plaintext = text.copy();
     plaintext.replace( QRegExp( "</?(?:font|a|b|i)\\b[^>]*>" ), QString( "" ) );
     plaintext.replace( QRegExp( "&lt;" ), QString( "<" ) );
     plaintext.replace( QRegExp( "&gt;" ), QString( ">" ) );
     plaintext.replace( QRegExp( "&amp;" ), QString( "&" ) );
-      
+
     if ( timerMin->isActive() )
       textBuffer.append( plaintext );
     else

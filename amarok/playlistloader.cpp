@@ -164,7 +164,7 @@ void PlaylistLoader::process( const KURL::List &list, bool validate )
          }
       }
 
-      if( int type = isPlaylist( path.lower() ) )
+      if( int type = isPlaylist( path ) )
       {
          if ( !m_recursionCount )     //prevent processing playlist files in subdirs
          {
@@ -198,10 +198,17 @@ void PlaylistLoader::postDownloadRequest( const KURL &u )
 }
 
 inline
-void PlaylistLoader::postBundle( const KURL &u, MetaBundle *mb )
+void PlaylistLoader::postBundle( const KURL &u )
 {
-    QApplication::postEvent( m_listView, new PlaylistLoader::SomeUrlEvent( this, u, mb ) );
+    QApplication::postEvent( m_listView, new PlaylistLoader::SomeUrlEvent( this, u, QString(), MetaBundle::Undetermined ) );
 }
+
+inline
+void PlaylistLoader::postBundle( const KURL &u, const QString &s, const int i )
+{
+    QApplication::postEvent( m_listView, new PlaylistLoader::SomeUrlEvent( this, u, s ,i ) );
+}
+
 
 inline
 int PlaylistLoader::isPlaylist( const QString &path ) const
@@ -309,13 +316,14 @@ void PlaylistLoader::translate( QString &path, KFileItemList &list )
 
             else if( S_ISREG( statbuf.st_mode ) )  //file
             {
-               KURL url; url.setPath( newPath ); //safe way to do it for unix paths
+               if( isPlaylist( newPath ) ) continue; //Markey says don't process playlists in subdirs
 
+               KURL url; url.setPath( newPath ); //safe way to do it for unix paths
                //we save some time and pass the stat'd information
                if( isValidMedia( url, statbuf.st_mode & S_IFMT, statbuf.st_mode & 07777 ) )
                {
                #ifdef FAST_TRANSLATE
-                  postBundle( url, 0 );
+                  postBundle( url );
                #else
                   //true means don't determine mimetype (waste of cycles for sure!)
                   list.append( new KFileItem( statbuf.st_mode & S_IFMT, statbuf.st_mode & 07777, url, true ) );
@@ -354,9 +362,10 @@ KURL::List PlaylistLoader::loadM3u( QTextStream &stream, const QString &dir )
             KURL url = KURL::fromPathOrURL( str );
             urls.append( url );
 
-            postBundle( url, ( length != 0 ) ? new MetaBundle( title, length ) : 0 );
+            postBundle( url, title, length );
 
             length = 0;
+            title = QString();
         }
     }
 
@@ -375,7 +384,6 @@ void PlaylistLoader::loadPls( QTextStream &stream )
             KURL url = KURL::fromPathOrURL( line.section( "=", -1 ) );
             QString title;
             int length = 0;
-            MetaBundle *tags = 0;
 
             line = stream.readLine();
 
@@ -390,12 +398,7 @@ void PlaylistLoader::loadPls( QTextStream &stream )
                 length = line.section( "=", -1 ).toInt();
             }
 
-            if( title != "" || length > 0 )
-            {
-                tags = new MetaBundle( title, length );
-            }
-
-            postBundle( url, tags );
+            postBundle( url, title, length );
         }
     }
 }
@@ -404,9 +407,7 @@ void PlaylistLoader::loadPls( QTextStream &stream )
 
 
 PlaylistLoader::SomeUrlEvent::~SomeUrlEvent()
-{
-   delete m_tags;
-}
+{}
 
 
 PlaylistItem *PlaylistLoader::SomeUrlEvent::makePlaylistItem( QListView *lv )
@@ -416,7 +417,7 @@ PlaylistItem *PlaylistLoader::SomeUrlEvent::makePlaylistItem( QListView *lv )
    //Construct a PlaylistItem and update the after pointer
    //Providing access is limited to the GUI thread, writes to m_after are serialised
 
-   PlaylistItem *newItem = new PlaylistItem( lv, m_thread->m_after, m_url, m_tags );
+   PlaylistItem *newItem = new PlaylistItem( lv, m_thread->m_after, m_url, m_title, m_length );
 
    if( m_kio )
    {
@@ -501,8 +502,6 @@ ThreadWeaver::remove( Job* const job )
     //TODO this is no good when you say need to remove a job that will act on a playlistitem etc.
     //maybe above is void* and you make operator== pure virtual?
 
-    Q_ASSERT( "ThreadWeaver::remove() called, this is NOT YET SAFE!\n" );
-
     bool b;
 
     mutex.lock();
@@ -517,10 +516,6 @@ ThreadWeaver::remove( Job* const job )
 void
 ThreadWeaver::cancel()
 {
-    //TODO you need to be able to only remove jobs of a certain type frankly.
-
-    Q_ASSERT( "ThreadWeaver::cancel() called, this is NOT YET SAFE!\n" );
-
     m_Q.setAutoDelete( true );
     mutex.lock();
     m_Q.clear();
@@ -548,6 +543,8 @@ ThreadWeaver::run()
         mutex.unlock();
 
         if( job->doJob() )
+            //FIXME this causes crashes when you cancel() currently
+            //easiest option is to use a bool meaning stop!
             job->postJob(); //Qt will delete the job for us
         else
             delete job;     //we need to delete the job
@@ -589,25 +586,10 @@ TagReader::doJob()
 MetaBundle*
 TagReader::readTags( const KURL &url, bool readAudioProps ) //STATIC
 {
-   //audioproperties are read on demand (TODO make this so!)
-   //TODO read only the audioproperties that are visible
-   TagLib::FileRef f( url.path().local8Bit(), readAudioProps );
+   //audioproperties are read on demand
+   TagLib::FileRef f( url.path().local8Bit(), readAudioProps ); //this is the slow step
 
-   if( !f.isNull() )
-   {
-      //it is my impression from looking at the source that tag() never returns 0
-      const TagLib::Tag *tag = f.tag();
-
-      return new MetaBundle( TStringToQString( tag->title() ).stripWhiteSpace(),
-                       TStringToQString( tag->artist() ).stripWhiteSpace(),
-                       TStringToQString( tag->album() ).stripWhiteSpace(),
-                       ( tag->year() == 0 ) ? QString() : QString::number( tag->year() ),
-                       TStringToQString( tag->comment() ).stripWhiteSpace(),
-                       TStringToQString( tag->genre() ).stripWhiteSpace(),
-                       ( tag->track() == 0 ) ? QString() : QString::number( tag->track() ),
-                       f.audioProperties() );
-   }
-   else return 0;
+   return f.isNull()? 0 : new MetaBundle( url, f.tag() );
 }
 
 void
@@ -617,7 +599,7 @@ TagReader::bindTags()
    //we're a friend of PlaylistItem
    if( m_tags )
    {
-       m_item->setMeta( *m_tags );
+       m_item->setText( *m_tags );
    }
 }
 
@@ -642,6 +624,38 @@ TagReader::addSearchTokens( QStringList &tokens, QPtrList<QListViewItem> &ptrs )
 }
 
 
+AudioPropertiesReader::AudioPropertiesReader( QObject *o, PlaylistItem *pi )
+   : Job( o, Job::AudioPropertiesReader )
+   , m_item( pi )
+   , m_url( pi->url() )
+{
+    //TODO derive this from TagReader?
+}
+
+bool
+AudioPropertiesReader::doJob()
+{
+    //This is a quick scan
+    //A more accurate scan is done when the track is played, and those properties are recorded with the track
+   TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Fast );
+
+    if( f.tag() )
+    {
+        TagLib::AudioProperties *ap = f.audioProperties();
+        m_length  = MetaBundle::prettyLength( ap->length() );
+        m_bitRate = MetaBundle::prettyBitrate( ap->bitrate() );
+        return true;
+    }
+    else return false;
+}
+
+void
+AudioPropertiesReader::bindTags()
+{
+    //TODO do in playlistItem class
+    m_item->setText(  9, m_length );
+    m_item->setText( 10, m_bitRate );
+}
 
 
 //TODO deepcopy?

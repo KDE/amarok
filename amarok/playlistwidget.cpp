@@ -120,8 +120,8 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
 
 
     //IMPORTANT CONNECTS!
-    connect( this, SIGNAL( playRequest( const KURL&, const MetaBundle& ) ),
-             pApp,   SLOT( play( const KURL&, const MetaBundle& ) ) );
+    connect( this, SIGNAL( playRequest( const MetaBundle& ) ),
+             pApp,   SLOT( play( const MetaBundle& ) ) );
 
     connect( pApp, SIGNAL( orderPreviousTrack() ),
              this,   SLOT( handleOrderPrev() ) );
@@ -314,16 +314,13 @@ void PlaylistWidget::saveM3u( const QString &fileName ) const
                 {
                     QString length = item->text( 9 );
 
-                    if( length.isEmpty() ); //do nothing
+                    if( length.isEmpty() || length == "?" ); //do nothing
                     else if( length == "-" ) length += '1';
                     else
                     {
                         //TODO if you ever decide to store length as an int in the playlistItem, scrap this!
                         int m = length.section( ':', 0, 0 ).toInt();
                         int s = length.section( ':', 1, 1 ).toInt();
-
-                        kdDebug() << m << endl;
-                        kdDebug() << s << endl;
 
                         length.setNum( m * 60 + s );
                     }
@@ -506,7 +503,7 @@ void PlaylistWidget::activate( QListViewItem *item ) //SLOT
     {
         #define item static_cast<PlaylistItem *>(item)
         m_cachedTrack = item;
-        emit playRequest( item->url(), item->metaBundle() );
+        emit playRequest( item->metaBundle() );
         #undef item
     }
 }
@@ -755,27 +752,28 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
 
 void PlaylistWidget::showTrackInfo( PlaylistItem *pItem ) const //SLOT
 {
-    QString str( "<html><body><table border=\"1\">" );
+    QString str  = "<html><body><table border=\"1\">";
+    QString body = "<tr><td>%1</td><td>%2</td></tr>";
 
     if( AmarokConfig::showMetaInfo() )
     {
          MetaBundle mb = pItem->metaBundle();
 
-         str += QString( "<tr><td>%1</td><td>%2</td></tr>" ).arg( i18n( "Title" ),  mb.m_title );
-         str += QString( "<tr><td>%1</td><td>%2</td></tr>" ).arg( i18n( "Artist" ), mb.m_artist );
-         str += QString( "<tr><td>%1</td><td>%2</td></tr>" ).arg( i18n( "Album" ), mb.m_album );
-         str += QString( "<tr><td>%1</td><td>%2</td></tr>" ).arg( i18n( "Genre" ), mb.m_genre );
-         str += QString( "<tr><td>%1</td><td>%2</td></tr>" ).arg( i18n( "Year" ), mb.m_year );
-         str += QString( "<tr><td>%1</td><td>%2</td></tr>" ).arg( i18n( "Comment" ), mb.m_comment );
-         str += QString( "<tr><td>%1</td><td>%2</td></tr>" ).arg( i18n( "Length" ), QString::number( mb.m_length ) );
-         str += QString( "<tr><td>%1</td><td>%2kbps</td></tr>" ).arg( i18n( "Bitrate" ), QString::number( mb.m_bitrate ) );
-         str += QString( "<tr><td>%1</td><td>%2Hz</td></tr>" ).arg( i18n( "Samplerate" ), QString::number( mb.m_sampleRate ) );
+         str += body.arg( i18n( "Title" ),  mb.m_title );
+         str += body.arg( i18n( "Artist" ), mb.m_artist );
+         str += body.arg( i18n( "Album" ),  mb.m_album );
+         str += body.arg( i18n( "Genre" ),  mb.m_genre );
+         str += body.arg( i18n( "Year" ),   mb.m_year );
+         str += body.arg( i18n( "Comment" ),mb.m_comment );
+         str += body.arg( i18n( "Length" ), mb.prettyLength() );
+         str += body.arg( i18n( "Bitrate" ),mb.prettyBitrate() );
+         str += body.arg( i18n( "Samplerate" ), mb.prettySampleRate() );
     }
     else
     {
         //FIXME this is wrong, see above if statement
-        str += QString( "<tr><td>%1</td><td>%2</td></tr>" ).arg( i18n( "Stream" ), pItem->url().prettyURL() );
-        str += QString( "<tr><td>%1</td><td>%2</td></tr>" ).arg( i18n( "Title" ),  pItem->text( 0 ) );
+        str += body.arg( i18n( "Stream" ), pItem->url().prettyURL() );
+        str += body.arg( i18n( "Title" ),  pItem->text( 0 ) );
     }
 
     str.append( "</table></body></html>" );
@@ -861,6 +859,12 @@ void PlaylistWidget::writeTag( QListViewItem *lvi, const QString &tag, int col )
     QListViewItem *below = lvi->itemBelow();
     //FIXME will result in nesting of this function?
     if( below && below->isSelected() ) { rename( below, col ); }
+}
+
+
+void PlaylistWidget::readAudioProperties( PlaylistItem *pi )
+{
+    m_weaver->append( new AudioPropertiesReader( this, pi ) );
 }
 
 
@@ -953,7 +957,7 @@ bool PlaylistWidget::eventFilter( QObject *o, QEvent *e )
         popup.insertTitle( i18n( "Available Columns" ) );
 
         //<mxcl> don't include Trackname yet as you can end up with "invisible" tracks
-        for( int i = 1; i < columns(); ++i ) //columns() references a property
+        for( int i = 0; i < columns(); ++i ) //columns() references a property
         {
             popup.insertItem( columnText( i ), i, i );
             popup.setItemChecked( i, columnWidth( i ) != 0 );
@@ -1035,6 +1039,13 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
         #undef e
         break;
 
+    case ThreadWeaver::Job::AudioPropertiesReader:
+
+        #define e static_cast<AudioPropertiesReader*>(e)
+        e->bindTags();
+        #undef e
+        break;
+
     case ThreadWeaver::Job::TagWriter:
 
         #define e static_cast<TagWriter*>(e)
@@ -1045,6 +1056,5 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
     default: ;
     }
 }
-
 
 #include "playlistwidget.moc"

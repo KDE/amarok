@@ -15,6 +15,8 @@
 #ifndef OSD_H
 #define OSD_H
 
+#include <qwidget.h> //baseclass
+
 #include <qtimer.h>
 #include <qpainter.h>
 #include <qapplication.h>
@@ -24,12 +26,14 @@
 #include <qstyle.h>
 #include <qregexp.h>
 
+class MetaBundle;
+
 class OSDWidget : public QWidget
 {
     Q_OBJECT
       public:
         OSDWidget();
-        void showOSD(const QString &text);
+        void showOSD(const MetaBundle&);
         void setFont(QFont newfont);
         void setColor(QColor newcolor);
       protected slots:

@@ -13,11 +13,13 @@
 */
 
 #include "playlisttooltip.h"
+#include "metabundle.h" //moved from header to stop a compile dependency
 #include <qapplication.h>
 #include <qpainter.h>
 #include <stdlib.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <kurl.h>
 
 
 PlaylistToolTip::PlaylistToolTip( QWidget * parent )
@@ -25,13 +27,18 @@ PlaylistToolTip::PlaylistToolTip( QWidget * parent )
 {
 }
 
-void PlaylistToolTip::add( QWidget * widget, const KURL url, const MetaBundle & tags )
+void PlaylistToolTip::add( QWidget * widget, const MetaBundle & tags )
 {
-    QString tipBuf =  "<center><table style='font-face: Arial; font-size: 8px;'><tr><td width='70'>Title: </td><td align='left'>" + tags.m_title + "</td></tr>" +
-                      "<tr><td width='70'>Artist: </td><td align='left'>" + tags.m_artist + "</td></tr>" +
-                      "<tr><td width='70'>Length: </td><td align='left'>" + QString::number( tags.m_length ) + "</td></tr>" +
-                      "<tr><td width='70'>Bitrate: </td><td align='left'>" + QString::number( tags.m_bitrate ) + "</td></tr>" +
-                      "<tr><td width='70'>Samplerate: </td><td align='left'>" + QString::number( tags.m_sampleRate ) + "<br></td></tr></table>";
+    const KURL &url = tags.m_url;
+
+    QString s = "<tr><td width='70'>%1:</td><td align='left'>%2</td></tr>";
+    QString tipBuf = "<center><table style='font-face: Arial; font-size: 8px;'>";
+    tipBuf += s.arg( i18n( "Title" ),  tags.m_title );
+    tipBuf += s.arg( i18n( "Artist" ), tags.m_artist );
+    tipBuf += s.arg( i18n( "Length" ), tags.prettyLength() );
+    tipBuf += s.arg( i18n( "Bitrate" ), tags.prettyBitrate() );
+    tipBuf += s.arg( i18n( "Samplerate" ), tags.prettySampleRate() ) + "<br>";
+    tipBuf += "</table>";
 
     int rowcnt = 0;
     QString curAlign;
@@ -59,7 +66,7 @@ void PlaylistToolTip::add( QWidget * widget, const KURL url, const MetaBundle & 
                     tipBuf += "</tr><tr>";
                 }
             }
-            
+
         }
     }
 
@@ -67,5 +74,5 @@ void PlaylistToolTip::add( QWidget * widget, const KURL url, const MetaBundle & 
         tipBuf += "</tr></table>";
     tipBuf += "</center>";
 
-    QToolTip::add( widget, tipBuf );    
+    QToolTip::add( widget, tipBuf );
 }

@@ -12,15 +12,15 @@
   email:     chris@chris.de
 */
 
-#include <qwidget.h>
 #include <qtooltip.h>
-#include <kurl.h>
-#include "metabundle.h"
+
+class MetaBundle;
+class QWidget;
 
 class PlaylistToolTip : public QToolTip
 {
     public:
         PlaylistToolTip( QWidget * parent );
-        static void add( QWidget * widget, const KURL url, const MetaBundle & tags );
-    
+        static void add( QWidget * widget, const MetaBundle & tags );
+
 };

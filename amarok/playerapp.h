@@ -90,7 +90,7 @@ class PlayerApp : public KUniqueApplication
         void slotPrev();
         void slotNext();
         void slotPlay();
-        void play( const KURL&, const MetaBundle& );
+        void play( const MetaBundle& );
         void slotPause();
         void slotStop();
         void slotSliderPressed();

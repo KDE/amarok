@@ -51,6 +51,9 @@ class AmarokSlider;
 class AmarokSystray;
 class PlayerWidget;
 
+class MetaBundle;
+class TitleProxy::metaPacket;
+
 class PlayerWidget : public QWidget
 {
         Q_OBJECT
@@ -59,7 +62,9 @@ class PlayerWidget : public QWidget
         PlayerWidget( QWidget *parent = 0, const char *name = 0 );
         ~PlayerWidget();
 
-        void setScroll( QString = "", const QString& = "?", const QString& = "?", const QString& = "00:00" );
+        void setScroll( const MetaBundle& );
+        void setScroll( const TitleProxy::metaPacket& );
+        void defaultScroll();
         void drawScroll();
         void timeDisplay();
         void timeDisplay( bool remaining, int hours, int minutes, int seconds );
@@ -91,8 +96,7 @@ class PlayerWidget : public QWidget
         QGuardedPtr<ArtsConfigWidget> m_pPlayObjConfigWidget;
 
         void wheelEvent( QWheelEvent *e ); //systray requires access
-	
-	void startDrag();
+        void startDrag();
 
     public slots:
         void createVis();
@@ -105,6 +109,7 @@ class PlayerWidget : public QWidget
 
     private:
         void initScroll();
+        void setScroll( const QString& );
         void polish();
 
         void paintEvent( QPaintEvent *e );
