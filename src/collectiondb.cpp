@@ -582,7 +582,7 @@ CollectionDB::scanModifiedDirs( bool recursively )
     }
 
     if ( !folders.isEmpty() )
-        m_weaver->append( new CollectionReader( this, PlaylistBrowser::instance(), folders, recursively, false ) );
+        m_weaver->append( new CollectionReader( this, PlaylistBrowser::instance(), folders, recursively, true ) );
     else
         emit scanDone( false );
 }
