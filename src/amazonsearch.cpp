@@ -20,7 +20,7 @@
 #include <qwhatsthis.h>
 #include <qimage.h>
 #include <qpixmap.h>
-
+#include <qcombobox.h>
 
 AmazonSearch::AmazonSearch( QWidget* parent, const char* name, bool modal, WFlags fl )
     : QDialog( parent, name, modal, fl )
@@ -33,7 +33,9 @@ AmazonSearch::AmazonSearch( QWidget* parent, const char* name, bool modal, WFlag
     fileButton = new QPushButton( this, "fileButton" );
     cancelButton = new QPushButton( i18n( "Cancel" ), this, "cancelButton" );
     okButton = new QPushButton( i18n( "OK" ), this, "okButton" );
-    spacer3 = new QSpacerItem( 140, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
+    spacer3 = new QSpacerItem( 16, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
+    searchSite = new QComboBox( FALSE, this, "searchSite" );
+
        
     cancelButton->setAutoDefault( FALSE );
     fileButton->setAutoDefault( FALSE );
@@ -43,14 +45,23 @@ AmazonSearch::AmazonSearch( QWidget* parent, const char* name, bool modal, WFlag
     AmazonSearchLayout->setResizeMode( QLayout::Fixed );
     
     AmazonSearchLayout->addMultiCellWidget( searchString, 1, 1, 0, 3 );
-    AmazonSearchLayout->addWidget( cancelButton, 2, 3 );
-    AmazonSearchLayout->addWidget( okButton, 2, 2 );
-    AmazonSearchLayout->addItem( spacer3, 2, 0 );
-    AmazonSearchLayout->addWidget( fileButton, 2, 1 );
-    AmazonSearchLayout->addMultiCellWidget( textLabel, 0, 0, 0, 3 );
+    AmazonSearchLayout->addWidget( searchSite, 2, 1 );
+    AmazonSearchLayout->addItem( spacer3, 2, 2 );
+    AmazonSearchLayout->addWidget( fileButton, 2, 3 );
+    AmazonSearchLayout->addWidget( okButton, 2, 4 );
+    AmazonSearchLayout->addWidget( cancelButton, 2, 5 );
+    AmazonSearchLayout->addMultiCellWidget( searchString, 1, 1, 0, 5 );
+    AmazonSearchLayout->addMultiCellWidget( textLabel, 0, 0, 0, 5 );
+
     resize( QSize(363, 92).expandedTo(minimumSizeHint()) );
     clearWState( WState_Polished );
-    
+   
+    searchSite->clear();
+    searchSite->insertItem( i18n( "Amazon USA" ) );
+    searchSite->insertItem( i18n( "Amazon EU" ) );
+    cancelButton->setText( i18n( "Cancel" ) );
+    okButton->setText( i18n( "OK" ) );
+
     connect( okButton, SIGNAL( clicked() ), this, SLOT( accept() ) );
     connect( cancelButton, SIGNAL( clicked() ), this, SLOT( close() ) );
     connect( fileButton, SIGNAL( clicked() ), this, SLOT( openFile() ) );
@@ -72,5 +83,3 @@ void AmazonSearch::openFile()
         close();
     }
 }
-
-#include "amazonsearch.moc"

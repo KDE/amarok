@@ -56,6 +56,7 @@ class CoverFetcher : public QObject
         QPixmap m_pixmap;
         bool m_noedit;
         bool m_albumonly;
+        int m_searchsite;
 };    
     
 

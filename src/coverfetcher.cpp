@@ -58,13 +58,26 @@ CoverFetcher::getCover( const QString& artist, const QString& album, const QStri
     delete m_buffer;
     m_bufferIndex = 0;
     m_xmlDocument = "";
+    QString url;
+
+    if( m_searchsite == 1 )
+    {
+        url = QString( "http://xml-eu.amazon.com/onca/xml3?t=webservices-20&dev-t=%1"
+                       "&KeywordSearch=%2&mode=music&type=%3&page=1&f=xml" )
+                      .arg( m_license )
+                      .arg( m_keyword )
+                      .arg( mode == lite ? "lite" : "heavy" );
+    }
+    else
+    {
+        url = QString( "http://xml.amazon.com/onca/xml3?t=webservices-20&dev-t=%1"
+                       "&KeywordSearch=%2&mode=music&type=%3&page=1&f=xml" )
+                      .arg( m_license )
+                      .arg( m_keyword )
+                      .arg( mode == lite ? "lite" : "heavy" );
+    }
 
 
-    QString url = QString( "http://xml.amazon.com/onca/xml3?t=webservices-20&dev-t=%1"
-                           "&KeywordSearch=%2&mode=music&type=%3&page=1&f=xml" )
-                           .arg( m_license )
-                           .arg( m_keyword )
-                           .arg( mode == lite ? "lite" : "heavy" );
 
     kdDebug() << "Using this url: " << url << endl;
 
@@ -236,10 +249,11 @@ CoverFetcher::editSearch() //SLOT
     sdlg->searchString->setText( m_saveas );
     sdlg->setModal( true );
     connect( sdlg, SIGNAL( imageReady( QPixmap ) ), this, SLOT( saveCover( QPixmap ) ) );
-    
+    int site( sdlg->searchSite->currentItem() ) ;
     if ( sdlg->exec() == QDialog::Accepted )
     {
         m_album = sdlg->searchString->text();
+        m_searchsite = sdlg->searchSite->currentItem();
         getCover( m_album, m_album, m_saveas, CoverFetcher::heavy );
         return;
     }
