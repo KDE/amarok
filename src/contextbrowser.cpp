@@ -22,6 +22,8 @@
 #endif
 
 #include <qdatetime.h>
+#include <qimage.h>
+#include <qregexp.h>
 
 #include <kapplication.h> //kapp
 #include <kdebug.h>
@@ -34,14 +36,11 @@
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
 #include <krun.h>
+#include <ktabbar.h>
 #include <kstandarddirs.h> //locate file
 #include <ktempfile.h>
-#include <ktoolbar.h>
-#include <ktoolbarbutton.h> //ctor
 #include <kurl.h>
 #include <kimageeffect.h> // gradient backgroud image
-#include <qimage.h>
-#include <qregexp.h>
 
 #define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
 #define escapeHTMLAttr(s) QString(s).replace( "%", "%25" ).replace( "'", "%27" )
@@ -58,19 +57,15 @@ ContextBrowser::ContextBrowser( const char *name )
 {
     EngineController::instance()->attach( this );
 
-    m_toolbar = new KToolBar( this );
-    m_toolbar->setMovingEnabled( false );
-    m_toolbar->setFlat( true );
-    m_toolbar->setIconSize( 16 );
-    m_toolbar->setIconText( KToolBar::IconTextRight );
-    m_toolbar->insertButton( "gohome", Home, SIGNAL( clicked() ), this, SLOT( showHome() ), true, i18n("Home") );
-    m_toolbar->insertButton( "today", CurrentTrack, SIGNAL( clicked() ), this, SLOT( showCurrentTrack() ), true, i18n("Current Track") );
-    m_toolbar->insertButton( "document", Lyrics, SIGNAL( clicked() ), this, SLOT( showLyrics() ), true, i18n("Lyrics") );
+    m_tabBar = new KTabBar( this );
+    connect( m_tabBar, SIGNAL( selected( int ) ), SLOT( tabChanged( int ) ) );
+    m_tabHome    = m_tabBar->addTab( new QTab( SmallIconSet( "gohome" ), i18n( "Home" ) ) );
+    m_tabCurrent = m_tabBar->addTab( new QTab( SmallIconSet( "today" ), i18n( "Current Track" ) ) );
+    m_tabLyrics  = m_tabBar->addTab( new QTab( SmallIconSet( "document" ), i18n( "Lyrics" ) ) );
 
     browser = new KHTMLPart( this );
     browser->setDNDEnabled( true );
 
-    setSpacing( 4 );
     setMargin( 5 );
     setFocusProxy( browser->view() ); //so focus is given to a sensible widget when the tab is opened
 
@@ -229,14 +224,14 @@ void ContextBrowser::engineStateChanged( Engine::State state ) {
     switch( state ) {
         case Engine::Empty:
             m_metadataHistory.clear();
-            m_toolbar->getButton( CurrentTrack )->setEnabled( false );
-            m_toolbar->getButton( Lyrics )->setEnabled( false );
+            m_tabBar->setTabEnabled( m_tabCurrent, false );
+            m_tabBar->setTabEnabled( m_tabLyrics, false );
             showHome();
             break;
         case Engine::Playing:
             m_metadataHistory.clear();
-            m_toolbar->getButton( CurrentTrack )->setEnabled( true );
-            m_toolbar->getButton( Lyrics )->setEnabled( true );
+            m_tabBar->setTabEnabled( m_tabCurrent, true );
+            m_tabBar->setTabEnabled( m_tabLyrics, true );
             break;
         default:
             ;
@@ -253,6 +248,19 @@ void ContextBrowser::paletteChange( const QPalette& pal ) {
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
+
+void ContextBrowser::tabChanged( int id )
+{
+    if ( id == m_tabHome )
+        showHome();
+
+    if ( id == m_tabCurrent )
+        showCurrentTrack();
+
+    if ( id == m_tabLyrics )
+        showLyrics();
+}
+
 
 void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& point )
 {

@@ -8,13 +8,15 @@
 #include <qvbox.h>
 
 class CollectionDB;
-class KHTMLPart;
-class KTempFile;
-class KToolBar;
-class MetaBundle;
-class QPalette;
-class Scrobbler;
 class Color;
+class MetaBundle;
+class Scrobbler;
+
+class QPalette;
+
+class KHTMLPart;
+class KTabBar;
+class KTempFile;
 
 namespace KIO { class Job; }
 
@@ -39,6 +41,7 @@ class ContextBrowser : public QVBox, public EngineObserver
         void paletteChange( const QPalette& );
 
     private slots:
+        void tabChanged( int );
         void slotContextMenu( const QString& urlString, const QPoint& point );
         void showHome();
         void showCurrentTrack();
@@ -56,12 +59,14 @@ class ContextBrowser : public QVBox, public EngineObserver
         void showIntroduction();
         void showScanning();
 
-        enum ToolBarID { Home, Lyrics, CurrentTrack };
-
         KHTMLPart    *browser;
-        KToolBar     *m_toolbar;
+        KTabBar      *m_tabBar;
         CollectionDB *m_db;
         Scrobbler    *m_scrobbler;
+
+        int           m_tabHome;
+        int           m_tabCurrent;
+        int           m_tabLyrics;
 
         QString       m_styleSheet;
         bool          m_emptyDB;
