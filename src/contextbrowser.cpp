@@ -362,7 +362,7 @@ void ContextBrowser::saveHtmlData()
     QTextStream stream( &exportedDocument );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << m_HTMLSource // the pure html data..
-        .replace("<html>",QString("<html><head><style type=\"text/css\">%1</style></head>").arg(m_styleSheet) ); // and the stylesheet code
+        .replace("<html>", QString("<html><head><style type='text/css'>%1</style></head>").arg( m_styleSheet ) ); // and the stylesheet code
     exportedDocument.close();
 }
 
@@ -602,7 +602,7 @@ void ContextBrowser::showHome() //SLOT
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
-    qb.setLimit( 0, 10 );
+    qb.setLimit( 0, 30 );
     QStringList fave = qb.run();
 
     qb.clear();
@@ -636,8 +636,9 @@ void ContextBrowser::showHome() //SLOT
                     "<span id='favorites_box-header-title' class='box-header-title'>"
                     + i18n( "Your Favorite Tracks" ) +
                     "</span>"
-                "</div>"
-                "<div id='favorites_box-body' class='box-body'>"
+                "</div><iframe name='ftframe' frameborder='0' marginheight='0' marginwidth='0' height='204' width='100%'></iframe>"
+                "<script language='JavaScript'>var w=frames['ftframe'].document; w.open();"
+                "w.writeln(\"<html><head><style type='text/css'>" + m_styleSheet + "</style></head><div id='favorites_box-body' class='box-body'>"
                        );
 
     for( uint i = 0; i < fave.count(); i = i + 5 )
@@ -645,7 +646,7 @@ void ContextBrowser::showHome() //SLOT
         m_HTMLSource.append(
                     "<div class='" + QString( (i % 10) ? "box-row-alt" : "box-row" ) + "'>"
                         "<div class='song'>"
-                            "<a href=\"file:" + fave[i+1].replace( '"', QCString( "%22" ) ) + "\">"
+                            "<a href='file:" + fave[i+1].replace( '"', QCString( "%22" ) ) + "'>"
                             "<span class='song-title'>" + fave[i] + "</span> "
                             "<span class='song-score'>(" + i18n( "Score: %1" ).arg( fave[i+2] ) + ")</span><br />"
                             "<span class='song-artist'>" + fave[i+3] + "</span>"
@@ -664,7 +665,7 @@ void ContextBrowser::showHome() //SLOT
                            );
     }
     m_HTMLSource.append(
-                "</div>"
+                "</div></html>\");w.close();</script>"
             "</div>"
 
     // </Favorite Tracks Information>
@@ -756,6 +757,9 @@ void ContextBrowser::showHome() //SLOT
     m_homePage->end();
     m_dirtyHomePage = false;
     saveHtmlData(); // Send html code to file
+
+    connect( m_homePage->findFrame( "ftframe" )->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
+             this,                                                     SLOT( openURLRequest( const KURL & ) ) );
 }
 
 
