@@ -75,20 +75,7 @@ GstEngine::eos_cb( GstElement*, GstElement* )
 void
 GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
 {
-    // 2 channels is default, if we cannot determine the value from gst
-    int channels = 2;
-
-    // TODO deactivated due to leaking mem
-//     GstCaps* caps = gst_pad_get_caps( gst_element_get_pad( instance()->m_gst_spider, "src_0" ) );
-// 
-//     for ( int i = 0; i < gst_caps_get_size( caps ); i++ ) {
-//         GstStructure* structure = gst_caps_get_structure( caps, i );
-// 
-//         if ( gst_structure_has_field( structure, "channels" ) )
-//             gst_structure_get_int( structure, "channels", &channels );
-//     }
-//     gst_caps_free( caps );
-
+    // Push buffer into adapter, where it's chopped into chunks
     if ( GST_IS_BUFFER( buf ) ) {
         gst_buffer_ref( buf );
         gst_adapter_push( instance()->m_gst_adapter, buf );
