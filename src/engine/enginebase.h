@@ -168,12 +168,14 @@ namespace Engine
         /** Set new crossfade length (msec) */
         void setXfadeLength( int value ) { m_xfadeLength = value; }
 
+        /** Determine whether the engine has an equalizer */
+        bool hasEqualizer() const { return m_hasEqualizer; }
         /** Set whether equalizer is active */
         virtual void setEqualizerActive( bool ) {};
-        /** Set equalizer preamp value */
-        virtual void setEqualizerPreamp( float ) {};
-        /** Set equalizer band gains, 10 floats */
-        virtual void setEqualizerGains( std::vector<float>* ) {};
+        /** Set equalizer preamp value, range 0-100 */
+        virtual void setEqualizerPreamp( int ) {};
+        /** Set equalizer band gains, 10 values, range 0-100 */
+        virtual void setEqualizerGains( const std::vector<int>& ) {};
 
     protected:
         Base( StreamingMode = NoStreaming, bool hasConfigure = false, bool hasXFade = false, Effects* = 0, bool hasEqualizer = false );

@@ -555,7 +555,7 @@ GstEngine::setEqualizerActive( bool active ) //SLOT
 
 
 void
-GstEngine::setEqualizerPreamp( float preamp ) //SLOT
+GstEngine::setEqualizerPreamp( int preamp ) //SLOT
 {
     if ( !m_pipelineFilled ) return;
 
@@ -564,14 +564,14 @@ GstEngine::setEqualizerPreamp( float preamp ) //SLOT
 
 
 void
-GstEngine::setEqualizerGains( std::vector<float>* gains ) //SLOT
+GstEngine::setEqualizerGains( const std::vector<int>& gains ) //SLOT
 {
     if ( !m_pipelineFilled ) return;
 
-    m_equalizerGains.resize( gains->size() );
+    m_equalizerGains.resize( gains.size() );
 
-    for ( int i = 0; i < gains->size(); i++ )
-        m_equalizerGains[i] = gains->at( i );
+    for ( int i = 0; i < gains.size(); i++ )
+        m_equalizerGains[i] = gains[i];
 
     gst_element_set( m_gst_equalizer, "gain", &m_equalizerGains, NULL );
 }

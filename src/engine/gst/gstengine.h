@@ -72,10 +72,10 @@ class GstEngine : public Engine::Base
 
         /** Set whether equalizer is active */
         void setEqualizerActive( bool );
-        /** Set equalizer preamp value */
-        void setEqualizerPreamp( float );
-        /** Set equalizer band gains, 10 floats */
-        void setEqualizerGains( std::vector<float>* );
+        /** Set equalizer preamp value, range 0-100 */
+        void setEqualizerPreamp( int );
+        /** Set equalizer band gains, 10 values, range 0-100 */
+        void setEqualizerGains( const std::vector<int>& );
 
     protected:
         void setVolumeSW( uint percent );
@@ -167,7 +167,7 @@ class GstEngine : public Engine::Base
 
         bool m_pipelineFilled;
         float m_fadeValue;
-        vector<float> m_equalizerGains;
+        vector<int> m_equalizerGains;
 
         bool m_shutdown;
         mutable bool m_canDecodeSuccess;

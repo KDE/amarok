@@ -180,6 +180,21 @@
         <whatsthis>Enable/Disable shoutcast metadata fetching. If set, amaroK displays metadata also for shoutcast streams.</whatsthis>
         <default>true</default>
     </entry>
+    <entry key="Use Equalizer" type="Bool">
+        <label>Enables the equalizer plugin</label>
+        <whatsthis>When enabled, an equalizer plugin filters the audio stream.</whatsthis>
+        <default>false</default>
+    </entry>
+    <entry key="Equalizer Preamp" type="Int">
+        <label>Preamp value for equalizer</label>
+        <default>0</default>
+        <min>0</min>
+        <max>100</max>
+    </entry>
+    <entry key="Equalizer Gains" type="IntList">
+        <label>Band gains for equalizer, 10 values, Range 0-100</label>
+        <default>50, 50, 50, 50, 50, 50, 50, 50, 50, 50</default>
+    </entry>
 </group>
 
 <group name="OSD">

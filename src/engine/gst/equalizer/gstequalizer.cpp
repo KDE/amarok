@@ -67,7 +67,7 @@ gst_equalizer_class_init ( GstEqualizerClass * klass )
     gobject_class = G_OBJECT_CLASS( klass );
 
     g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_ACTIVE, g_param_spec_boolean ("active", "active", "active", false, (GParamFlags)G_PARAM_READWRITE));
-    g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_PREAMP, g_param_spec_int ("preamp", "preamp", "preamp", 0.0, 1.0, 0.0, (GParamFlags)G_PARAM_READWRITE));
+    g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_PREAMP, g_param_spec_int ("preamp", "preamp", "preamp", 0, 100, 0, (GParamFlags)G_PARAM_READWRITE));
     g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_GAIN, g_param_spec_pointer ("gain", "gain", "gain", (GParamFlags)G_PARAM_WRITABLE));
 
     gobject_class->set_property = gst_equalizer_set_property;
@@ -153,7 +153,7 @@ gst_equalizer_set_property ( GObject * object, guint prop_id, const GValue * val
     g_return_if_fail ( GST_IS_EQUALIZER ( object ) );
 
     GstEqualizer* obj = GST_EQUALIZER ( object );
-    std::vector<float>* gains;
+    std::vector<int>* gains;
 
     switch ( prop_id )
     {
@@ -163,14 +163,14 @@ gst_equalizer_set_property ( GObject * object, guint prop_id, const GValue * val
 
         case ARG_PREAMP:
             for ( int chan = 0; chan < EQ_CHANNELS; chan++ )
-                obj->preamp[chan] = g_value_get_float (value);
+                obj->preamp[chan] = g_value_get_int(value) * 0.01;
             break;
 
         case ARG_GAIN:
-            gains = (std::vector<float>*) g_value_get_pointer (value);
+            gains = (std::vector<int>*) g_value_get_pointer(value);
             for ( int band = 0; band < BAND_NUM; band++ )
                 for ( int chan = 0; chan < EQ_CHANNELS; chan++ )
-                    obj->gain[band][chan] = gains->at( band );
+                    obj->gain[band][chan] = (float)gains->at( band ) * 0.012 - 0.2;
             break;
 
         default:
@@ -195,7 +195,7 @@ gst_equalizer_get_property ( GObject * object, guint prop_id, GValue * value, GP
             break;
 
         case ARG_PREAMP:
-            g_value_set_float (value, obj->preamp[0]);
+            g_value_set_int(value, obj->preamp[0] * 100);
             break;
 
         default:
