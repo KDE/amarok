@@ -63,7 +63,6 @@ DocPath=amarok/index.html
 Terminal=false
 Categories=Qt;KDE;AudioVideo;
 Actions=Enqueue;
-X-KDE-StartupNotify=false
 
 [Desktop Action Enqueue]
 Exec=amarok -e %U
