@@ -581,12 +581,16 @@ TagReader::TagReaderEvent::addSearchTokens( QStringList &tokens, QPtrList<QListV
 {
     //for GUI access only
     //we need to add this item to the search-index
-    QString
-    s  = m_tags->m_artist;
-    s += ' ';
-    s += m_tags->m_title;
-    s += ' ';
-    s += m_item->trackName();
+
+    QString s = m_item->trackName();
+
+    if( m_tags )
+    {
+        s += ' ';
+        s += m_tags->m_artist;
+        s += ' ';
+        s += m_tags->m_title;
+    }
 
     tokens.append( s );
     ptrs.append( m_item );
