@@ -96,6 +96,9 @@ XineEngine::init( bool&, int, bool )
         return;
     }
 
+    //less buffering, faster seeking.. TODO test
+    xine_set_param( m_stream, XINE_PARAM_METRONOM_PREBUFFER, 6000 );
+
     m_eventQueue = xine_event_new_queue( m_stream );
     xine_event_create_listener_thread( m_eventQueue, &XineEngine::XineEventListener, (void*)this );
 
@@ -124,6 +127,8 @@ XineEngine::init( bool&, int, bool )
     post_plugin->output_ids[0] = NULL;
 
     m_post = &post_plugin->xine_post;
+
+    post_class->dispose( post_class );
 }
 
 void
@@ -183,15 +188,57 @@ XineEngine::state() const
 std::vector<float>*
 XineEngine::scope()
 {
-    extern short myBuffer[4096];
-    extern int myIndex;
-    extern int myEnd;
+    extern xine_list_t *myList;
+    extern int myChannels;
 
     std::vector<float> &v = *(new std::vector<float>( 512 ));
 
-    for( uint x = 0; x < 512; ++x )
+    if( xine_list_is_empty( myList ) ) return &v;
+
+
+    int64_t current_vpts = m_xine->clock->get_current_time( m_xine->clock );//m_stream->metronom->audio_vpts;
+
+    audio_buffer_t *best_buf = 0;
+    audio_buffer_t *last_buf = (audio_buffer_t*)xine_list_last_content( myList );
+    audio_buffer_t *buf      = (audio_buffer_t*)xine_list_first_content( myList );
+
+    //uint x = 0;
+
+    while( buf )
     {
-        v[x] = double( (myIndex < myEnd) ? myBuffer[myIndex++] : 0 )/double(2<<15);
+        int vd = buf->vpts;
+
+        if( buf->vpts < current_vpts )
+        {
+            free( buf->mem );
+            free( buf );
+            xine_list_delete_current( myList );
+        }
+        else if( !best_buf || buf->vpts < best_buf->vpts ) best_buf = buf;
+
+        //++x;
+
+        if( buf == last_buf ) break;
+
+        buf = (audio_buffer_t*)xine_list_next_content( myList );
+    }
+
+    //debug() << "chosen: " << best_buf->vpts << "| now: " << current_vpts << "| list size: " << x << endl;
+
+    if( best_buf )
+    {
+            int16_t *data16 = best_buf->mem;
+
+            //TODO we assume there are enough buffers. There may not be...
+
+            for( int a, c, i = 0; i < 512; ++i, data16 += myChannels )
+            {
+                for( a = 0, c = 0; c < myChannels; ++c ) a += data16[c];
+
+                v[i] = (double)a / (1<<15);
+            }
+
+            return &v;
     }
 
     return &v;

@@ -6,19 +6,21 @@
 
 /*TODO determine how to compile -std=c99*/
 #define inline
-
+/* this define ABSOLUTELY ESSENTIAL for memcopy() to work in put_buffer() */
+#define METRONOM_INTERNAL
 #include <xine/xineutils.h>
 #include <xine/post.h>
 
-#define NUMSAMPLES 4096
 #define MAXCHANNELS  6
 
 
 typedef struct post_plugin_scope_s post_plugin_scope_t;
 typedef struct post_class_scope_s post_class_scope_t;
 
-short  myBuffer[NUMSAMPLES];
-int    myIndex = 0, myEnd = 0;
+
+xine_list_t *myList;
+int          myChannels;
+
 
 
 struct post_class_scope_s
@@ -32,9 +34,9 @@ struct post_plugin_scope_s
 {
     post_plugin_t post;
 
-    audio_buffer_t buf;   /* dummy buffer just to hold a copy of audio data */
-
     int channels;
+
+    metronom_t *metronom;
 };
 
 
@@ -44,7 +46,7 @@ scope_port_open(xine_audio_port_t *port_gen, xine_stream_t *stream, uint32_t bit
   post_audio_port_t   *port = (post_audio_port_t *)port_gen;
   post_plugin_scope_t *this = (post_plugin_scope_t *)port->post;
 
-  printf( "port_open!\n" );
+  printf( "[xine-engine] post-plugin port_open()\n" );
 
   _x_post_rewire(&this->post);
   _x_post_inc_usage(port);
@@ -57,20 +59,37 @@ scope_port_open(xine_audio_port_t *port_gen, xine_stream_t *stream, uint32_t bit
   this->channels = _x_ao_mode2channels(mode);
   if( this->channels > MAXCHANNELS ) this->channels = MAXCHANNELS;
 
+  this->metronom->set_master(this->metronom, stream->metronom);
+
+
+  myChannels = this->channels;
+
+
   return port->original_port->open(port->original_port, stream, bits, rate, mode );
 }
 
 static void
 scope_port_close(xine_audio_port_t *port_gen, xine_stream_t *stream )
 {
-    post_audio_port_t    *port = (post_audio_port_t *)port_gen;
+    post_audio_port_t   *port = (post_audio_port_t *)port_gen;
     post_plugin_scope_t *this = (post_plugin_scope_t *)port->post;
 
-    printf( "port_close!\n" );
+    printf( "[xine-engine] post-plugin port_close()\n" );
 
     port->stream = NULL;
 
     port->original_port->close(port->original_port, stream );
+
+    this->metronom->set_master(this->metronom, NULL);
+
+
+    audio_buffer_t *buf;
+    for( buf = xine_list_first_content( myList ); buf; buf = xine_list_next_content( myList ) )
+    {
+        free( buf->mem );
+        free( buf );
+        xine_list_delete_current( myList );
+    }
 
     _x_post_dec_usage(port);
 }
@@ -81,59 +100,28 @@ scope_port_put_buffer (xine_audio_port_t *port_gen, audio_buffer_t *buf, xine_st
     post_audio_port_t   *port = (post_audio_port_t *)port_gen;
     post_plugin_scope_t *this = (post_plugin_scope_t *)port->post;
 
-    int i, offset = 0;
 
-    /* make a copy of buf data for private use */
-    if( this->buf.mem_size < buf->mem_size )
-    {
-        this->buf.mem = (int16_t*)realloc(this->buf.mem, buf->mem_size);
-        this->buf.mem_size = buf->mem_size;
-    }
+    if( buf->num_frames < 512 || (port->bits == 8) ) { printf( "doh" ); return; }
 
-    memcpy( this->buf.mem, buf->mem, buf->num_frames * this->channels * ((port->bits == 8)?1:2) ); /*TODO bitshift instead of branch*/
-    this->buf.num_frames = buf->num_frames;
+
+    audio_buffer_t *new_buf = malloc( sizeof(audio_buffer_t) );
+
+    memcpy( new_buf, buf, sizeof(audio_buffer_t) );
+
+    /* MY GOD! Why do I have to do this!?
+     * You see if I don't the metronom doesn't make the timestamps accurate! */
+    memcpy( this->metronom, stream->metronom, sizeof( metronom_t ) );
+
+    new_buf->mem  = malloc( buf->num_frames * this->channels * 2 );
+    new_buf->vpts = this->metronom->got_audio_samples( this->metronom, buf->vpts, buf->num_frames );
+
+    memcpy( new_buf->mem, buf->mem, buf->num_frames * this->channels * 2 );
+
+    xine_list_append_content( myList, new_buf );
+
 
     /* pass data to original port TODO is this necessary? */
-    port->original_port->put_buffer(port->original_port, buf, stream );
-
-    /* we must not use original data anymore, it should have already being moved
-    * to the fifo of free audio buffers. just use our private copy instead.
-    */
-    buf = &this->buf;
-
-    /*try to ensure we don't lose samples, but don't get silly!*/
-    if( myEnd != NUMSAMPLES && myIndex < myEnd )
-    {
-        int x;
-
-        /*printf( "unused buffers: %d\n", myEnd - myIndex );*/
-        for( x = myIndex; x < myEnd; ++x, ++offset )
-            myBuffer[offset] = myBuffer[x];
-    }
-    /*else printf( "all buffers used\n" );*/
-
-    if( port->bits == 8 )
-    {
-        int c;
-        int8_t *data8 = (int8_t *)buf->mem;
-
-        /* scale 8 bit data to 16 bits and convert to signed as well */
-        for( i = offset; i < buf->num_frames + offset && i < NUMSAMPLES; ++i, data8 += this->channels )
-            for( myBuffer[i] = 0, c = 0; c < this->channels; ++c )
-                myBuffer[i] += ((int16_t)data8[c] << 8) - 0x8000;
-
-    } else {
-
-        int c;
-        int16_t *data16 = buf->mem;
-
-        for( i = offset; i < buf->num_frames + offset && i < NUMSAMPLES; ++i, data16 += this->channels )
-            for( myBuffer[i] = 0, c = 0; c < this->channels; ++c )
-                myBuffer[i] += data16[c];
-    }
-
-    myIndex = 0;
-    myEnd = i;
+    port->original_port->put_buffer( port->original_port, buf, stream );
 }
 
 static void
@@ -143,7 +131,11 @@ scope_dispose(post_plugin_t *this_gen)
 
     if( _x_post_dispose( this_gen ) )
     {
-        if( this->buf.mem ) free( this->buf.mem );
+        this->metronom->exit( this->metronom );
+
+        /*list items were free'd in close_port*/
+        xine_list_free( myList );
+
         free( this );
     }
 }
@@ -155,14 +147,15 @@ scope_open_plugin( post_class_t *class_gen, int inputs, xine_audio_port_t **audi
     /*this function passes back a structure with pointers to all
     //the above functions*/
 
-  printf( "open_plugin\n" );
-
+  post_class_scope_t  *class = (post_class_scope_t *)class_gen;
   post_plugin_scope_t *this  = (post_plugin_scope_t *)xine_xmalloc(sizeof(post_plugin_scope_t)); /*fills structure with zeros too*/
-  post_in_t            *input;
-  post_out_t           *output;
-  post_audio_port_t    *port;
+  post_in_t           *input;
+  post_out_t          *output;
+  post_audio_port_t   *port;
 
   _x_post_init( &this->post, 1, 0 );
+
+  this->metronom = _x_metronom_init( 0, 1, class->xine );
 
   port = _x_post_intercept_audio_port( &this->post, audio_target[0], &input, &output );
   port->new_port.open       = scope_port_open;
@@ -172,6 +165,10 @@ scope_open_plugin( post_class_t *class_gen, int inputs, xine_audio_port_t **audi
   this->post.xine_post.audio_input[0] = &port->new_port;
 
   this->post.dispose = scope_dispose;
+
+
+  myList = xine_list_new();
+
 
   return &this->post;
 }
@@ -192,8 +189,6 @@ scope_class_dispose( post_class_t *class_gen )
 post_class_t*
 scope_init_plugin( xine_t *xine )
 {
-    printf( "init_plugin\n" );
-
     post_class_scope_t *class = (post_class_scope_t *)malloc(sizeof(post_class_scope_t));
 
     if (!class) return NULL;
