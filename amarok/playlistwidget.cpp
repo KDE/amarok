@@ -695,15 +695,19 @@ void PlaylistWidget::slotTextChanged( const QString &str )
     else
         b = false;
 
-    lastSearch = str;
+    lastSearch = str.lower();
+    QStringList tokens = QStringList::split( " ", lastSearch );
 
     if (b)
     {
         pVisibleItem = firstChild();
         while ( pVisibleItem )
         {
-            if ( !pVisibleItem->text(0).lower().contains( str.lower() ) )
-                pVisibleItem->setVisible( false );
+            for ( int y = 0; y < tokens.count(); ++y )
+            {
+                if ( !pVisibleItem->text(0).lower().contains( tokens[y] ) )
+                    pVisibleItem->setVisible( false );
+            }
 
             // iterate
             pVisibleItem = pVisibleItem -> itemBelow();
@@ -714,10 +718,12 @@ void PlaylistWidget::slotTextChanged( const QString &str )
         {
             pVisibleItem = searchPtrs.at( x );
 
-            if ( !(*it).lower().contains( str.lower() ) )
-                pVisibleItem->setVisible( false );
-            else
-                pVisibleItem->setVisible( true );
+            pVisibleItem->setVisible( true );
+            for ( int y = 0; y < tokens.count(); ++y )
+            {
+                if ( !(*it).lower().contains( tokens[y] ) )
+                    pVisibleItem->setVisible( false );
+            }
 
             x++;
         }
