@@ -120,23 +120,30 @@ void OSDWidget::renderOSDText( const QString &text )
     delete titleFm;
 
     osdBuffer = buffer;
-    // Repaint the QWidget and get it on top
+
     setMask( bm );
     rePosition();
 }
 
-void OSDWidget::showOSD( const QString &text )
+void OSDWidget::showOSD( const QString &text, bool preemptive )
 {
     if ( isEnabled() )
     {
-        if ( timerMin->isActive() )
-            textBuffer.append( text );
+        if ( preemptive == false && timerMin->isActive() )
+        {
+            textBuffer.append( text ); // queue
+        }
         else
         {
             if ( timer->isActive() ) timer->stop();
             renderOSDText( text );
-            raise();
-            QWidget::show();
+            if( !isVisible() )
+            {
+                raise();
+                QWidget::show();
+            }
+            else
+                repaint();
 
             // let it disappear via a QTimer
             if( m_duration ) // if duration is 0 stay forever
@@ -160,7 +167,7 @@ void OSDWidget::setFont(QFont newfont)
     if( isVisible() )
     {
         renderOSDText( m_currentText );
-        repaint(); // triggers double repaint
+        repaint();
     }
 }
 
@@ -215,8 +222,7 @@ void OSDWidget::minReached()
     {
         renderOSDText( textBuffer[0] );
         textBuffer.remove( textBuffer.at( 0 ) );
-        raise();
-        QWidget::show();
+        repaint();
 
         if( m_duration ) // if duration is 0 stay forever
         {
@@ -229,7 +235,6 @@ void OSDWidget::minReached()
 //SLOT
 void OSDWidget::removeOSD()
 {
-    // hide() and show() prevents flickering
     hide();
 }
 

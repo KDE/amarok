@@ -46,7 +46,7 @@ class OSDWidget : public QWidget
         void setScreen(uint screen);
 
       public slots:
-        void showOSD(const QString&);
+        void showOSD(const QString&, bool preemptive=false );
         void removeOSD();
 
       protected slots:

@@ -955,7 +955,7 @@ void PlayerApp::slotShowOSD()
 
 void PlayerApp::slotShowVolumeOSD()
 {
-    m_pOSD->showOSD( i18n("Volume %1%").arg( m_pEngine->volume() ) );
+    m_pOSD->showOSD( i18n("Volume %1%").arg( m_pEngine->volume() ), true );
 }
 
 void PlayerApp::slotIncreaseVolume()
