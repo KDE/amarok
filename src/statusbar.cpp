@@ -131,6 +131,7 @@ void StatusBar::engineStateChanged( EngineBase::EngineState state )
         case EngineBase::Empty:
             m_pTimeLabel->clear();
             m_pTitle->clear();
+            m_pSlider->setMaxValue( 0 );
             break;
 
         case EngineBase::Paused:
