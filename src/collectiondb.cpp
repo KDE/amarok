@@ -91,8 +91,8 @@ CollectionDB::escapeString( QString string )
 bool
 CollectionDB::isDbValid()
 {
-    if ( ( !execSql( "SELECT COUNT( url ) FROM tags LIMIT 0, 1;", 0, 0, true ) ) ||
-         ( !execSql( "SELECT COUNT( url ) FROM statistics LIMIT 0, 1;", 0, 0, true ) ) )
+    if ( ( !execSql( "SELECT COUNT( url ) FROM tags LIMIT 0, 1;" ) ) ||
+         ( !execSql( "SELECT COUNT( url ) FROM statistics LIMIT 0, 1;" ) ) )
         return false;
     else
         return true;
@@ -104,7 +104,7 @@ CollectionDB::isEmpty()
 {
     QStringList values;
 
-    if ( execSql( "SELECT COUNT( url ) FROM tags LIMIT 0, 1;", &values, 0, true ) )
+    if ( execSql( "SELECT COUNT( url ) FROM tags LIMIT 0, 1;", &values ) )
         return ( values[0] == "0" );
     else
         return true;

@@ -236,30 +236,23 @@ void ContextBrowser::engineNewMetaData( const MetaBundle &bundle, bool /*trackCh
     delete m_currentTrack;
     m_currentTrack = new MetaBundle( bundle );
 
-/*    if ( m_db->isEmpty() || !m_db->isDbValid() )
+    if ( m_db->isEmpty() || !m_db->isDbValid() )
         showIntroduction();
-    if ( EngineController::instance()->isStream() )
-        showCurrentStream();
-    else*/
-
+    else
+        if ( EngineController::instance()->isStream() )
+            showCurrentStream();
+        else
+            showCurrentTrack();
 }
 
 
 void ContextBrowser::engineStateChanged( Engine::State state )
 {
-    if ( m_db->isEmpty() || !m_db->isDbValid() )
-    {
-        showIntroduction();
-        return;
-    }
-
     switch( state )
     {
         case Engine::Playing:
             if ( EngineController::instance()->isStream() )
                 showCurrentStream();
-            else
-                showCurrentTrack();
             break;
         case Engine::Empty:
             showHome();
