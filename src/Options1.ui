@@ -339,10 +339,10 @@
                                         <string>Alt+3</string>
                                     </property>
                                     <property name="toolTip" stdset="0">
-                                        <string>XXX</string>
+                                        <string></string>
                                     </property>
                                     <property name="whatsThis" stdset="0">
-                                        <string>XXX</string>
+                                        <string>Decode ID3v1 tags (used by some MP3 files) using the character set specified below.</string>
                                     </property>
                                 </widget>
                                 <widget class="QCheckBox">
@@ -351,6 +351,9 @@
                                     </property>
                                     <property name="text">
                                         <string>&amp;Shoutcast metadata</string>
+                                    </property>
+                                    <property name="whatsThis" stdset="0">
+                                        <string>Decode the title and artist information of Shoutcast music streams using the character set specified below.</string>
                                     </property>
                                 </widget>
                             </vbox>
