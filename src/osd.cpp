@@ -12,24 +12,19 @@ the Free Software Foundation; either version 2 of the License, or
   email:     chris@chris.de; seb100@optusnet.com.au
 */
 
-#include "amarokconfig.h"   //previewWidget
-#include "collectiondb.h"   //for albumCover location
-#include "colorgenerator.h" //for gradient
+#include "amarokconfig.h"    //previewWidget
+#include "collectiondb.h"    //for albumCover location
+#include "colorgenerator.h"  //for gradient
 #include "osd.h"
 
 #include <qapplication.h>
 #include <qbitmap.h>
-#include <qimage.h>
 #include <qpainter.h>
-#include <qwidget.h>
 
-#include <kdebug.h>
 #include <kimageeffect.h>    //gradient backgroud image
 #include <kglobalsettings.h> //unsetColors()
-#include <kstandarddirs.h> //locate file
-#include <ktempfile.h>
 
-#include <X11/Xlib.h> //reposition()
+#include <X11/Xlib.h>        //reposition()
 
 
 OSDWidget::OSDWidget( const QString &appName, QWidget *parent, const char *name )
@@ -97,14 +92,11 @@ void OSDWidget::renderOSDText( const QString &text )
 
     // Draw backing rectangle
     bufferPainter.setPen( Qt::black );
-    createGradient( textRect.size() );
 
     QBrush brush;
-    brush.setPixmap( m_gradient->name() );
+    brush.setPixmap( createGradient( textRect.size() ) );
     bufferPainter.setBrush( brush );
     bufferPainter.drawRoundRect( textRect, 1500 / textRect.width(), 1500 / textRect.height() );
-    m_gradient->close();
-    m_gradient->unlink();
     bufferPainter.setFont( font() );
 
     const uint w = textRect.width()  - 1;
@@ -385,18 +377,16 @@ void OSDWidget::loadImage( QString &location )
 
 }
 
-void OSDWidget::createGradient( QSize size )
+QPixmap OSDWidget::createGradient( QSize size )
 {
     amaroK::Color gradient = colorGroup().highlight();
 
     if ( AmarokConfig::osdUseCustomColors() )
         gradient = backgroundColor();
 
-    //writing temp gradient image
-    m_gradient = new KTempFile( locateLocal( "tmp", "osdgradient" ), ".png", 0600 );
     QImage image = KImageEffect::gradient( size , gradient, gradient.light(), KImageEffect::PipeCrossGradient, 3 );
-    image.save( m_gradient->file(), "PNG" );
-    m_gradient->close();
+
+    return QPixmap( image );
 }
 
 

@@ -15,17 +15,15 @@
 #ifndef AMAROK_OSD_H
 #define AMAROK_OSD_H
 
+#include <qimage.h>
 #include <qpixmap.h> //stack allocated
 #include <qtimer.h>  //stack allocated
-#include <qwidget.h> //baseclass
-#include <qimage.h>
 #include <qvaluelist.h>
+#include <qwidget.h> //baseclass
 
 
 class QStringList;
-class QTimer;
 class MetaBundle;
-class KTempFile;
 
 class OSDWidget : public QWidget
 {
@@ -69,7 +67,7 @@ class OSDWidget : public QWidget
         void reposition( QSize newSize = QSize() );
 
         void loadImage( QString &location );
-        void createGradient( QSize size );
+        QPixmap createGradient( QSize size );
 
         /* called after most set*() calls to update the OSD */
         void refresh();
@@ -85,7 +83,6 @@ class OSDWidget : public QWidget
         QValueList<QImage> imageBuffer;
         QString     m_currentText;
         QImage      m_image;
-        KTempFile  *m_gradient;
         bool        m_useImage;
         bool        m_shadow;
         bool        m_cover;
