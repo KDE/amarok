@@ -177,6 +177,7 @@ MetaBundle::prettyTitle() const
 {
     //NOTE this gets regressed often, please be careful!
     //NOTE whatever you do, handle the stream case, streams have no artist but have an excellent title
+    //NOTE doesn't work for resume playback
 
     QString s = m_artist;
     if( !s.isEmpty() ) s += " - ";

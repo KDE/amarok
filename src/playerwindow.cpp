@@ -29,6 +29,7 @@ email                : markey@web.de
 #include <qevent.h>          //various events
 #include <qfont.h>
 #include <qhbox.h>
+#include <qlabel.h>
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qstringlist.h>
@@ -385,24 +386,25 @@ void PlayerWidget::timeDisplay( int ms )
 }
 
 
-static QColor comodulate( QColor deviant )
+static inline QColor comodulate( int hue, QColor target )
 {
     ///this function is only used by determineAmarokColors()
-
-    int h,h2,s,v;
-    KGlobalSettings::highlightColor().getHsv( h, s, v );
-    deviant.getHsv( h2, s, v );
-    return QColor( h, s, v, QColor::Hsv );
+    int ignore, s, v;
+    target.getHsv( &ignore, &s, &v );
+    return QColor( hue, s, v, QColor::Hsv );
 }
 
 void PlayerWidget::determineAmarokColors() //static
 {
+    int hue, s, v;
+    KGlobalSettings::highlightColor().getHsv( hue, s, v );
+
     using namespace amaroK::ColorScheme;
 
-    Base       = comodulate( amaroK::blue );
     Text       = Qt::white;
-    Background = comodulate( 0x002090 );
-    Foreground = comodulate( 0x80A0FF );
+    Base       = comodulate( hue, amaroK::blue );
+    Background = comodulate( hue, 0x002090 );
+    Foreground = comodulate( hue, 0x80A0FF );
 }
 
 void PlayerWidget::setModifiedPalette()
@@ -720,7 +722,6 @@ void PlayerWidget::setEffectsWindowShown( bool on )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 #include <kiconeffect.h>
-#include <kimageeffect.h>
 NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
     : QToolButton( parent )
     , m_glowIndex( 0 )
@@ -728,35 +729,34 @@ NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
     // Prevent flicker
     setWFlags( Qt::WNoAutoErase );
 
-    QPixmap pixmap( getPNG( "b_" + icon ) );
-    KIconEffect ie;
+    //NOTE QImages are not a shared class, QPixmap are
+    //NOTE but KIconEffect converts QPixmaps to QImages internally when you use one of the
+    //     QPixmap varieties of its functions
+    //NOTE As far as I can tell the static functions of KIconEffect are best for our purposes
+    QPixmap pixmap = getPNG( "b_" + icon );
+    QImage  image  = pixmap.convertToImage(), myImage = image;
 
     // Tint icon blueish for "off" state
-    m_pixmapOff = ie.apply( pixmap, KIconEffect::Colorize, 0.5, QColor( 0x30, 0x10, 0xff ), false );
+    KIconEffect::colorize( myImage, QColor( 0x3010FF ), 0.5 );
+    m_pixmapOff = myImage;
     // Tint gray and make pseudo-transparent for "disabled" state
-    m_pixmapDisabled = ie.apply( pixmap, KIconEffect::ToGray, 0.7, QColor(), true );
+    myImage = image;
+    KIconEffect::toGray( myImage, 0.7 );
+    m_pixmapDisabled = myImage;
 
-    int r = 0x20, g = 0x10, b = 0xff;
-    float percentRed = 0.0;
-    QPixmap temp;
     // Precalculate pixmaps for "on" icon state
-    for ( int i = 0; i < NUMPIXMAPS; i++ ) {
-        QImage img = pixmap.convertToImage();
-        temp = KImageEffect::channelIntensity( img, percentRed, KImageEffect::Red );
-        temp = ie.apply( temp, KIconEffect::Colorize, 1.0, QColor( r, 0x10, 0x30 ), false );
-        temp = ie.apply( temp, KIconEffect::Colorize, 1.0, QColor( r, g, b ), false );
+    const double D = 0.8 / NUMPIXMAPS;
+    for ( float f = 0; f < 1; f += D ) {
+        //KIconEffect uses QImage internally
+        myImage = image;
+        KIconEffect::colorize( image, amaroK::ColorScheme::Foreground, f );
 
-        // Create new pixmap on the heap and add pointer to list
-        m_glowPixmaps.append( new QPixmap( temp ) );
-
-        percentRed = percentRed + 1.0 / NUMPIXMAPS;
-        r += 14;
-        g += 2;
-        b -= 0;
+        //add to stack, QPixmap, do by value
+        m_glowPixmaps.append( myImage );
     }
     // And the the same reversed
     for ( int i = NUMPIXMAPS - 1; i > 0; i-- )
-        m_glowPixmaps.append( m_glowPixmaps.at( i ) );
+        m_glowPixmaps.append( m_glowPixmaps[i] );
 
     // This is just for initialization
     QIconSet iconSet;
@@ -764,9 +764,6 @@ NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
     iconSet.setPixmap( pixmap, QIconSet::Automatic, QIconSet::Normal, QIconSet::On );
     iconSet.setPixmap( pixmap, QIconSet::Automatic, QIconSet::Disabled, QIconSet::Off );
     setIconSet( iconSet );
-
-    // Use standard palette, since the modified palette from parent widget makes buttons look weird
-    //setPalette( KApplication::palette() );
 
     setFocusPolicy( QWidget::NoFocus );
     setEnabled( action->isEnabled() );
@@ -797,7 +794,7 @@ void NavButton::drawButtonLabel( QPainter* p )
     if ( !isEnabled() )
         p->drawPixmap( x, y, m_pixmapDisabled );
     else if ( isOn() )
-        p->drawPixmap( x + 2, y + 1, *m_glowPixmaps.at( m_glowIndex ) );
+        p->drawPixmap( x + 2, y + 1, m_glowPixmaps[m_glowIndex] );
     else
         p->drawPixmap( x, y, m_pixmapOff );
 }

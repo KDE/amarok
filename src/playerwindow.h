@@ -18,16 +18,12 @@
 #ifndef PLAYERWIDGET_H
 #define PLAYERWIDGET_H
 
-#include <qlabel.h>      //stack allocated
 #include <qpixmap.h>     //stack allocated
-#include <qptrlist.h>    //stack allocated
 #include <qtoolbutton.h> //baseclass
+#include <qvaluevector.h>//stack allocated
 #include <qwidget.h>     //baseclass
 
-#include <vector>
-
-#include "fht.h"         //stack allocated
-#include "engineobserver.h"
+#include "engineobserver.h" //baseclass
 
 namespace amaroK { class Slider; }
 class KAction;
@@ -36,6 +32,7 @@ class PlayerWidget;
 class QBitmap;
 class QButton;
 class QHBox;
+class QLabel;
 class QString;
 class QStringList;
 class QTimerEvent;
@@ -51,12 +48,12 @@ protected:
     void drawButtonLabel( QPainter* );
 
     static const int GLOW_INTERVAL = 35;
-    static const int NUMPIXMAPS = 16;
+    static const int NUMPIXMAPS    = 16;
 
     QPixmap m_pixmapOff;
     QPixmap m_pixmapDisabled;
 
-    QPtrList<QPixmap> m_glowPixmaps;
+    QValueVector<QPixmap> m_glowPixmaps;
     int m_glowIndex;
 };
 
