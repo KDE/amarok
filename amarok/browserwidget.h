@@ -57,6 +57,7 @@ class BrowserWidget : public KListView
         void contentsDropEvent( QDropEvent* e );
         void contentsDragMoveEvent( QDragMoveEvent* e );
         void focusInEvent( QFocusEvent *e );
+        QDragObject *BrowserWidget::dragObject();
 
 // ATTRIBUTES ------
         int m_Count;

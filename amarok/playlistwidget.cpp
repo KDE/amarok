@@ -148,49 +148,41 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
     }
     else
     {
-        m_dropRecursionCounter = 0;
+       KURL::List urlList;
 
-        if ( pApp->m_optDropMode == "Recursively" )
-            m_dropRecursively = true;
-        else
-            m_dropRecursively = false;
+       if ( KURLDrag::decode( e, urlList ) || urlList.isEmpty() )
+       {
+          kdDebug() << "dropped item KURL parsed ok" << endl;
 
-        KURL::List urlList;
+          m_dropRecursionCounter = 0;
+          if ( pApp->m_optDropMode == "Recursively" )
+             m_dropRecursively = true;
+          else
+             m_dropRecursively = false;
 
-        if ( e->source() != pApp->m_pBrowserWin->m_pBrowserWidget )                       // dragging from outside amarok
-        {
-            kdDebug() << "dropped item from outside amaroK" << endl;
+          //FIXME reimplement the ask recusive popup
 
-            if ( !KURLDrag::decode( e, urlList ) || urlList.isEmpty() )
-                return ;
+          m_pDropCurrentItem = (PlaylistItem*)after;
 
-            kdDebug() << "dropped item KURL parsed ok" << endl;
+          playlistDrop( urlList );
+       }
+       else
+          return; //so it doesn't writeUndo, FIXME better solution exists
+    }
 
-            m_pDropCurrentItem = static_cast<PlaylistItem*>( after );
-            playlistDrop( urlList );
-        }
-        else
-        {
-        //wrongly assumes will be file:/ from browserwidget
-            PlaylistItem *srcItem, *newItem;
-            m_pDropCurrentItem = static_cast<PlaylistItem*>( after );
+    if ( !pApp->m_playingURL.isEmpty() )
+       pApp->restorePlaylistSelection( pApp->m_playingURL );
 
-            srcItem = static_cast<PlaylistItem*>( pApp->m_pBrowserWin->m_pBrowserWidget->firstChild() );
+    writeUndo();
+
+/*
+//FIXME this needs to be reimplemented
+
             bool containsDirs = false;
 
-            while ( srcItem != NULL )
-            {
-                newItem = static_cast<PlaylistItem*>( srcItem->nextSibling() );
+            if ( srcItem->isDir() )
+               containsDirs = true;
 
-                if ( srcItem->isSelected() )
-                {
-                    urlList.append( srcItem->url() );
-
-                    if ( srcItem->isDir() )
-                        containsDirs = true;
-                }
-                srcItem = newItem;
-            }
             if ( containsDirs && pApp->m_optDropMode == "Ask" )
             {
                 QPopupMenu popup( this );
@@ -198,15 +190,9 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
                 popup.exec( mapToGlobal( QPoint( e->pos().x() - 120, e->pos().y() - 20 ) ) );
             }
 
-            playlistDrop( urlList );
-        }
-    }
+*/
 
-    // highlight currently played track, if any
-    if ( !pApp->m_playingURL.isEmpty() )
-       pApp->restorePlaylistSelection( pApp->m_playingURL );
 
-    writeUndo();
 }
 
 
@@ -227,7 +213,7 @@ void PlaylistWidget::playlistDrop( KURL::List urlList )
             if ( fileItem->isLink() && !pApp->m_optFollowSymlinks && m_dropRecursionCounter >= 2 )
                 continue;
 
-            if ( m_dropRecursionCounter >= 50 )        //no infinite loops, please
+            if ( m_dropRecursionCounter >= 50 )        //no infinite loops, please //FIXME log inodes instead, or can QDir do this for us?
                 continue;
 
             if ( !m_dropRecursively && m_dropRecursionCounter >= 2 )

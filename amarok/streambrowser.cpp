@@ -58,7 +58,7 @@ StreamBrowser::StreamBrowser( QWidget *parent, char *name )
         vbox = new QVBoxLayout(this, 5);
         vbox->add(view);
 
-        setCaption(i18n("StreamBrowser"));
+        setCaption(i18n("_drag_ streams to playlist"));
         resize(600, 300);
 
         m_query = "<?xml version=\"1.0\"><query class=\"metasound\" type=\"connection\">0.1</query>\n";

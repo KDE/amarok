@@ -42,6 +42,7 @@
 #include <kmimetype.h>
 #include <kpopupmenu.h>
 #include <kurl.h>
+#include <kurldrag.h>
 
 
 BrowserWidget::BrowserWidget( QWidget *parent, const char *name )
@@ -49,12 +50,12 @@ BrowserWidget::BrowserWidget( QWidget *parent, const char *name )
      m_pDirLister( new KDirLister() ),
      m_Count( 0 )
 {
-    //setName( "BrowserWidget" );
     setFocusPolicy( QWidget::ClickFocus );
 
     addColumn( i18n( "Filebrowser" ) );
     setFullWidth( true );
     setAcceptDrops( true );
+    setDragEnabled( true ); //NEW
 
     connect( header(), SIGNAL( clicked( int ) ), this, SLOT( slotHeaderClicked( int ) ) );
 
@@ -80,6 +81,18 @@ void BrowserWidget::readDir( KURL url )
 void BrowserWidget::contentsDragMoveEvent( QDragMoveEvent* e)
 {
     e->acceptAction();
+}
+
+
+QDragObject *BrowserWidget::dragObject()
+{
+  KURL::List::List list;
+
+  for( PlaylistItem *item = (PlaylistItem *)firstChild(); item != NULL; item = (PlaylistItem *)item->nextSibling() )
+    if( item->isSelected() )
+      list.append( item->url() );
+
+  return new KURLDrag( list, this, "FileBrowserDragObject" );
 }
 
 
