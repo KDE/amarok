@@ -1,5 +1,7 @@
 # YOU WILL PROBABLY NEED TO EDIT THIS SCRIPT!
+echo
+echo "****************"
 
-
-g++ -I/usr/lib/qt3/include -L/usr/lib/qt3/lib -lqt-mt vis.cpp barscope.cpp -o amK_barscope
+#g++ -g `sdl-config --libs` base.cpp sdl.cpp bouncyvis.cpp -o amK_scope
+g++ -g `sdl-config --libs` all.cpp -o amK_scope
 
