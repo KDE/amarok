@@ -119,7 +119,7 @@ GstEngine::candecode_handoff_cb( GstElement*, GstBuffer*, gpointer ) //static
 void
 GstEngine::found_tag_cb( GstElement*, GstElement*, GstTagList* taglist, gpointer ) //static
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     char* string;
     Engine::SimpleMetaBundle bundle;
@@ -227,7 +227,7 @@ GstEngine::GstEngine()
 
 GstEngine::~GstEngine()
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
     debug() << "bytes left in gst_adapter: " << gst_adapter_available( m_gst_adapter ) << endl;
 
     if ( m_pipelineFilled ) {
@@ -256,7 +256,7 @@ GstEngine::~GstEngine()
 bool
 GstEngine::init()
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     s_instance = this;
 
@@ -439,7 +439,7 @@ GstEngine::configure() const
 bool
 GstEngine::load( const KURL& url, bool stream )  //SLOT
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     Engine::Base::load( url, stream );
     debug() << "Loading url: " << url.url() << endl;
@@ -505,7 +505,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
 bool
 GstEngine::play( uint offset )  //SLOT
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     if ( !m_currentInput ) return false;
 
@@ -541,7 +541,7 @@ GstEngine::play( uint offset )  //SLOT
 void
 GstEngine::stop()  //SLOT
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     emit stateChanged( Engine::Empty );
 
@@ -558,7 +558,7 @@ GstEngine::stop()  //SLOT
 void
 GstEngine::pause()  //SLOT
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     if ( !m_currentInput ) return;
 
@@ -758,7 +758,7 @@ void GstEngine::timerEvent( QTimerEvent* )
 void
 GstEngine::handleOutputError()  //SLOT
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     QString text = "[GStreamer Error] ";
     text += m_gst_error;
@@ -782,7 +782,7 @@ GstEngine::handleOutputError()  //SLOT
 void
 GstEngine::handleInputError()  //SLOT
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     QString text = "[GStreamer Error] ";
     text += m_gst_error;
@@ -812,7 +812,7 @@ GstEngine::handleInputError()  //SLOT
 void
 GstEngine::endOfStreamReached()  //SLOT
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     InputPipeline* input;
 
@@ -971,7 +971,7 @@ GstEngine::getPluginList( const QCString& classname ) const
 bool
 GstEngine::createPipeline()
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     if ( m_pipelineFilled )
         destroyPipeline();
@@ -1054,7 +1054,7 @@ GstEngine::createPipeline()
 void
 GstEngine::destroyPipeline()
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     m_fadeValue = 0.0;
 
@@ -1087,7 +1087,7 @@ GstEngine::destroyPipeline()
 void
 GstEngine::destroyInput( InputPipeline* input )
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     if ( input ) {
         debug() << "Destroying input pipeline.\n";
@@ -1126,7 +1126,7 @@ InputPipeline::InputPipeline()
     , m_error( false )
     , m_eos( false )
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     QString binName;
 
@@ -1152,7 +1152,7 @@ error:
 
 InputPipeline::~InputPipeline()
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     if ( GstEngine::instance()->m_currentInput == this )
         GstEngine::instance()->m_currentInput = 0;
