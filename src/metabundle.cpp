@@ -253,5 +253,7 @@ MetaBundle::genreList()    //static
     for( TagLib::StringList::ConstIterator it = genres.begin(); it != genres.end(); ++it)
         list.append( TStringToQString((*it)) );
     
+    list.sort();
+    
     return list;
 }
