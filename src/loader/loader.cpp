@@ -90,7 +90,10 @@ main( int argc, char *argv[] )
     if ( isRunning ) {
         QStringList dcop_args;
         dcop_args << "dcop" << "amarok" << "player" << "transferCliArgs" << "[";
+
+        // We transmit our DESKTOP_STARTUP_ID, so amarokapp can stop the startup animation
         dcop_args += std::getenv( "DESKTOP_STARTUP_ID" ); //will be interptreted as latin1
+
         dcop_args += args;
         dcop_args += "]";
 
@@ -104,9 +107,6 @@ main( int argc, char *argv[] )
     else {
         // no amarokapp is running, start one, show
         // a splashscreen and pass it the arguments
-
-        // we transmit the startup_id, so amarokapp can stop the startup animation
-        //FIXME QCString str( ::getenv( "DESKTOP_STARTUP_ID" ) );
 
         return Loader( args ).exec();
     }
