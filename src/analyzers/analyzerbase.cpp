@@ -94,8 +94,7 @@ template<class W> void
 Analyzer::Base<W>::drawFrame()
 {
     EngineBase *engine = EngineController::engine();
-    if ( !engine ) return;
-    
+
     switch( engine->state() )
     {
     case Engine::Playing:
@@ -103,10 +102,12 @@ Analyzer::Base<W>::drawFrame()
         const Engine::Scope &thescope = engine->scope();
         static Analyzer::Scope scope( 512 );
 
-        for( uint x = 0; x < thescope.size(); ++x ) scope[x] = double(thescope[x]) / double(2<<15);
+        for( uint x = 0; x < thescope.size(); ++x ) scope[x] = double(thescope[x]) / double(1<<15);
 
         transform( scope );
         analyze( scope );
+
+        scope.resize( 512 );
 
         break;
     }
