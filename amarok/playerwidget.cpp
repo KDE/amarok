@@ -19,7 +19,6 @@ email                : markey@web.de
 #include "amarokdcophandler.h" //FIXME
 #include "amarokmenu.h"
 #include "amarokslider.h"
-#include "amaroksystray.h"
 #include "analyzerbase.h"
 #include "metabundle.h"      //setScroll()
 #include "playerapp.h"
@@ -75,8 +74,6 @@ placeWidget( W *w, const QRect &r )
 PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     : QWidget( parent, name )
     , m_pAnimTimer( new QTimer( this ) )
-    , m_pDcopHandler( new AmarokDcopHandler ) //FIXME move to playerapp!
-    , m_pTray( 0 )
     , m_pAnalyzer( 0 )
     , m_scrollBuffer( 291, 16 )
     , m_plusPixmap( getPNG( "time_plus" ) )
@@ -164,8 +161,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_pDescription->setPixmap( getPNG( "description" ) );
     m_pVolSign    ->setPixmap( getPNG( "vol_speaker" ) );
 
-    m_pTray = new AmarokSystray( this, pApp->actionCollection() ); //show/hide is handled by KConfig XT
-
     defaultScroll();
 
     //Yagami mode!
@@ -184,12 +179,7 @@ PlayerWidget::~PlayerWidget()
 void PlayerWidget::defaultScroll()
 {
     m_rateString = QString::null;
-
     setScroll( i18n( "Welcome to amaroK" ) );
-
-    QToolTip::remove( m_pTray );
-    QToolTip::add( m_pTray, i18n( "amaroK - Audio Player" ) );
-    m_pDcopHandler->setNowPlaying( QString::null );
 }
 
 
@@ -240,9 +230,6 @@ static const char* const not_close_xpm[]={
     QPixmap separator( const_cast< const char** >(not_close_xpm) );
 
     const QString s = list.first();
-    QToolTip::remove( m_pTray );
-    QToolTip::add( m_pTray, s );
-    m_pDcopHandler->setNowPlaying( s );
 
     //WARNING! don't pass an empty StringList to this function!
 
@@ -584,7 +571,7 @@ void PlayerWidget::startDrag()
 {
     //TODO allow minimum drag distance
 
-    QDragObject *d = new QTextDrag( m_pDcopHandler->nowPlaying(), this );
+    QDragObject *d = new QTextDrag( pApp->dcopHandler()->nowPlaying(), this );
     d->dragCopy();
     // do NOT delete d.
 }

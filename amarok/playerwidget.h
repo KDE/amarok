@@ -26,9 +26,7 @@
 #include "fht.h"         //stack allocated
 #include "engineobserver.h"
 
-class AmarokDcopHandler;
 class AmarokSlider;
-class AmarokSystray;
 class ArtsConfigWidget;
 class KHelpMenu;
 class MetaBundle;
@@ -71,8 +69,6 @@ class PlayerWidget : public QWidget, public EngineObserver
     public:
         PlayerWidget( QWidget* =0, const char* =0 );
         ~PlayerWidget();
-
-        friend class PlayerApp; //playerApp is fairly tied to this class
 
         void defaultScroll();
         void timeDisplay( int );
@@ -121,8 +117,6 @@ class PlayerWidget : public QWidget, public EngineObserver
         QTimer    *m_pAnimTimer;
         QString m_rateString;
 
-        AmarokDcopHandler *m_pDcopHandler; //TODO move to playerapp
-        AmarokSystray     *m_pTray;
         QWidget           *m_pAnalyzer;
 
         QPixmap m_scrollTextPixmap;

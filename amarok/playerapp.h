@@ -26,6 +26,7 @@
 
 #include <kapplication.h>          //baseclass
 #include <kurl.h>                  //needed for KURL::List (nested)
+#include "engine/engineobserver.h"
 
 #define APP_VERSION "0.9.1-CVS"
 
@@ -35,6 +36,9 @@ class MetaBundle;
 class OSDWidget;
 class PlayerWidget;
 class PlaylistItem;
+class AmarokDcopHandler;
+class AmarokSystray;
+
 
 class QColor;
 class QCString;
@@ -48,7 +52,7 @@ class KActionCollection;
 class KGlobalAccel;
 
 
-class PlayerApp : public KApplication
+class PlayerApp : public KApplication, public EngineObserver
 {
         Q_OBJECT
 
@@ -60,6 +64,7 @@ class PlayerApp : public KApplication
         void setupColors();
         void insertMedia( const KURL::List& );
         static void initCliArgs( int argc, char *argv[] );
+        AmarokDcopHandler *dcopHandler() const { return m_pDcopHandler; }
 
         KActionCollection *actionCollection() { return m_pActionCollection; }
 
@@ -67,15 +72,12 @@ class PlayerApp : public KApplication
         static const int     SCOPE_SIZE  = 7;
 
         // ATTRIBUTES
-        KGlobalAccel *m_pGlobalAccel;
 
-        PlayerWidget *m_pPlayerWidget;
         BrowserWin   *m_pBrowserWin;
 
-        QColor m_optBrowserBgAltColor;
-        QColor m_optBrowserSelColor;
-
-        bool m_artsNeedsRestart;
+    protected: /* for OSD, tray, and dcop */
+        void engineStateChanged( EngineBase::EngineState state );
+        void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
 
     public slots:
         void slotPlaylistShowHide();
@@ -114,11 +116,17 @@ class PlayerApp : public KApplication
         void setupScrolltext();
 
         // ATTRIBUTES ------
+        KGlobalAccel *m_pGlobalAccel;
+        PlayerWidget *m_pPlayerWidget;
+        AmarokDcopHandler *m_pDcopHandler;
+        AmarokSystray *m_pTray;
+
         long      m_length;
         OSDWidget *m_pOSD;
         int       m_sockfd;
         QString   m_textForOSD;
         bool      m_showBrowserWin;
+        bool m_artsNeedsRestart;
         KActionCollection *m_pActionCollection;
 };
 

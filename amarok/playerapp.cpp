@@ -31,6 +31,7 @@ email                : markey@web.de
 #include "playlisttooltip.h"
 #include "enginecontroller.h"
 #include "vis/socketserver.h"    //please leave directory prefix
+#include "amaroksystray.h"
 
 #include <kaboutdata.h>          //initCliArgs()
 #include <kaction.h>
@@ -66,6 +67,8 @@ email                : markey@web.de
 PlayerApp::PlayerApp()
         : KApplication()
         , m_pGlobalAccel( new KGlobalAccel( this ) )
+        , m_pDcopHandler( new AmarokDcopHandler )
+        , m_pTray( 0 )
         , m_pOSD( new OSDWidget( "amaroK" ) )
         , m_sockfd( -1 )
         , m_showBrowserWin( false )
@@ -112,6 +115,9 @@ PlayerApp::PlayerApp()
     QPixmap::setDefaultOptimization( QPixmap::BestOptim );
 
     EngineController::instance()->attach( m_pPlayerWidget );
+    EngineController::instance()->attach( this );
+    m_pTray = new AmarokSystray( m_pPlayerWidget, actionCollection() ); //show/hide is handled by KConfig XT
+
 
     applySettings();  //will create the engine
 
@@ -473,7 +479,7 @@ void PlayerApp::applySettings()
     m_pPlayerWidget->update(); //FIXME doesn't update the scroller, we require the metaBundle to do that, wait for my metaBundle modifications..
 
     //TODO delete when not in use
-    reinterpret_cast<QWidget*>(m_pPlayerWidget->m_pTray)->setShown( AmarokConfig::showTrayIcon() );
+    m_pTray->setShown( AmarokConfig::showTrayIcon() );
 
     setupColors();
 }
@@ -718,6 +724,32 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
     }
     */
     return FALSE;
+}
+
+
+void PlayerApp::engineStateChanged( EngineBase::EngineState state )
+{
+    switch( state )
+    {
+        case EngineBase::Empty:
+        case EngineBase::Idle:
+            m_pDcopHandler->setNowPlaying( QString::null );
+            QToolTip::remove( m_pTray );
+            QToolTip::add( m_pTray, i18n( "amaroK - Audio Player" ) );
+            break;
+    }
+}
+
+
+void PlayerApp::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
+{
+    if( trackChanged )
+    {
+        slotShowOSD( bundle );
+    }
+    m_pDcopHandler->setNowPlaying( bundle.prettyTitle() );
+    QToolTip::remove( m_pTray );
+    QToolTip::add( m_pTray, bundle.prettyTitle() );
 }
 
 
