@@ -806,7 +806,6 @@ CoverViewItem::CoverViewItem( QIconView *parent, QIconViewItem *after, QString a
 
 void CoverViewItem::loadCover()
 {
-    // m_coverImagePath = CollectionDB().getImageForAlbum( m_artist, m_album ); 
     m_hasCover = QFile::exists( m_coverImagePath );
 
     if( m_hasCover ) {
@@ -900,6 +899,8 @@ void CoverViewItem::dropped( QDropEvent *e, const QValueList<QIconDragItem> & )
        QImage img;
        QImageDrag::decode( e, img );
        CollectionDB().setImageForAlbum( artist(), album(), QString(), img ); 
+       m_coverImagePath = CollectionDB().getImageForAlbum( m_artist, m_album, 0 ); 
+       m_hasCover = QFile::exists( m_coverImagePath );
        loadCover();
     }
 }
