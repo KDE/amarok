@@ -10,6 +10,9 @@ SHORT-TERM (URGENT):
 
   FIX 130 <markey> Regression: transferring CLI commands from loader somehow broken. Can't start my streams
                    by clicking on link.
+                   
+                   Update: the "-caption" parameter is responsible for the problem. It's in our .desktop file,
+                   but amaroK can't parse it.
 
   FIX 129 <markey> Copy trackname to clipboard (ctrl-c) appears broken.
 
