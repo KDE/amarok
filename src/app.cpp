@@ -68,7 +68,10 @@ App::App()
 
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
-    if ( amaroK::config()->readBoolEntry( "First Run", true ) ) {
+    //needs to be created before the wizard
+    m_pDcopHandler    = new amaroK::DcopHandler();
+
+    if ( amaroK::config()->readBoolEntry( "First Run", true ) || args->isSet( "wizard" ) ) {
         //stop the splashscreen first, socket server is a temporary on purpose!
         LoaderServer server( 0 );
         firstRunWizard();
@@ -78,7 +81,6 @@ App::App()
 
     m_pGlobalAccel    = new KGlobalAccel( this );
     m_pPlaylistWindow = new PlaylistWindow();
-    m_pDcopHandler    = new amaroK::DcopHandler();
     m_pTray           = new amaroK::TrayIcon( m_pPlaylistWindow );
     (void)              new Vis::SocketServer( this );
 
@@ -222,6 +224,7 @@ void App::initCliArgs( int argc, char *argv[] ) //static
             { ":", I18N_NOOP("Additional options:"), 0 },
             { "e", 0, 0 },
             { "enqueue", I18N_NOOP( "Enqueue Files/URLs" ), 0 },
+            { "wizard", I18N_NOOP( "Run First-run Wizard" ), 0 },
             { 0, 0, 0 }
         };
 
