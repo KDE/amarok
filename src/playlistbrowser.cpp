@@ -196,6 +196,7 @@ void PlaylistBrowser::loadPlaylists()
         QString str, file;
         int tracks=0, length=0;
         QDateTime lastModified;
+        KURL auxKURL;
 
         while ( !( str = stream.readLine() ).isNull() ) {
             if ( str.startsWith( "File=" ) ) {
@@ -217,7 +218,8 @@ void PlaylistBrowser::loadPlaylists()
                             renameButton->setEnabled( true );
                             deleteButton->setEnabled( true );
                         }
-                        lastPlaylist = new PlaylistBrowserItem( m_listview, lastPlaylist, KURL( file ), tracks, length );
+                        auxKURL.setPath(file);
+                        lastPlaylist = new PlaylistBrowserItem( m_listview, lastPlaylist, auxKURL, tracks, length );
                     }
                 }
 
@@ -283,7 +285,9 @@ void PlaylistBrowser::addPlaylist( QString path, bool force )
             renameButton->setEnabled( true );
             deleteButton->setEnabled( true );
         }
-        lastPlaylist = new PlaylistBrowserItem( m_listview, lastPlaylist, KURL( path ) );
+        KURL auxKURL;
+        auxKURL.setPath(path);
+        lastPlaylist = new PlaylistBrowserItem( m_listview, lastPlaylist, auxKURL );
     }
 }
 
