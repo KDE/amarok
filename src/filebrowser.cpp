@@ -248,7 +248,7 @@ bool FileBrowser::eventFilter( QObject*, QEvent *e )
 
     case QEvent::FocusOut:
         m_filterEdit->setPaletteForegroundColor( palette().color( QPalette::Disabled, QColorGroup::Text ) );
-        m_filterEdit->setText( i18n("Filter your files...") );
+        m_filterEdit->setText( i18n("Filter here..") );
         m_timer->stop();
         return FALSE;
 
