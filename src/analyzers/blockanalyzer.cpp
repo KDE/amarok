@@ -26,6 +26,8 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
    , m_columns( 0 )            //uint
    , m_rows( 0 )               //uint
 {
+    changeTimeout( amaroK::config( "General" )->readEntry( "Timeout", 9 ) );
+
     setMinimumSize( MIN_COLUMNS*(WIDTH+1) -1, MIN_ROWS*(HEIGHT+1) -1 ); //-1 is padding, no drawing takes place there
     setMaximumWidth( MAX_COLUMNS*(WIDTH+1) -1 );
 }
