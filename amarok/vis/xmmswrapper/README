@@ -1,0 +1,6 @@
+22-March-2004
+
+  Status is limited, no makefiles, no configurability.
+  To build edit build.sh and run it, change hardcoded paths as required in the script and source.
+  If amaroK is running it'll connect to the socket and start running.
+  NOTE: currently, closing the x-window doesn't kill the instance

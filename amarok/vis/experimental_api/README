@@ -1,0 +1,43 @@
+vis.* will form the basis for the c++ library that can be used to create plugins. The idea is you derive from
+this class and you can get audio data and send back image data if amarowK requests it.
+
+It is desirable to have a c api too, and a higher level qt class (derived from amK::Vis) and then we ship all
+three with amK to give vis developers choice.
+
+NOTES
+  * no build system yet, :-) edit build.sh to build the binary
+
+TODO
+  * It would be good to have a standard right-click menu, but how do you do this without imposing a qt
+    limitation on plugins?
+  * make an example that creates an SDL window and paints with SDL magic.
+  * make amK::Vis into libamK_vis.so
+  * merge below with VIS_PLAN
+  * SIMPLE configuration api, not many functions. Learn from the xmms mess.
+  * SIMPLE configuration UI system, preferably force the developers to create a QtDesigner UI file and small
+    cpp file to handle saving changes too.
+  * learn from other mediaplayers! Winamp's api sucks. Xmms's is mostly good.
+
+IMPORTANT
+
+We can either make a class to derive from like above, or a vis-viewer binary which loads plugins.
+
+The viewer would be a separate binary that can work with or without a UI, without it would be able to transmit
+image data back through the socket to amaroK so amaroK can have visualisations in the player window (or
+elsewhere). With the UI it would allow us to wrap a Qt interface around the visualisations with nice menus and
+dialogs etc.
+
+The alternative is just having amaroK ask the vis to give it the image data back and having an optional
+"vis window" built into amaroK that offers the same functionality described above, and variable sized
+visualisation etc.
+
+The big issue with the pluggable one is that the visuals don't work standalone and it adds maintainance
+overhead. Frankly I can't decide which method is better. Separate binaries is easier and how I always
+envisaged it, but that's not reason enough to go that way.
+
+FULLSCREEN MODE
+
+amaroK asks the vis to go fullscreen. This now depends on the toolkit used by the vis. OR we can control
+going to fullscreen and have the image data come back through the socket. Not sure how feasible that is. OR
+we can make sure there is a decent SDL and openGL implementation of our vis api that knows how to go
+fullscreen, then most people will use those implementations.
