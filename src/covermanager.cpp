@@ -356,10 +356,14 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     //NOTE we MUST show the dialog, otherwise the closeEvents get processed
     // in the processEvents() calls below, GRUMBLE! Qt sux0rs
     progress.show();
+    progress.repaint();  //ensures the dialog isn't blank
 
     //this is an extra processEvent call for the sake of init() and aesthetics
     //it isn't necessary
     kapp->processEvents();
+
+    //this bit is a bit slow
+    QApplication::setOverrideCursor( KCursor::waitCursor() );
 
     QStringList albums;
     if ( item != m_artistView->firstChild() ) {
@@ -372,11 +376,15 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     else
         albums = m_db->artistAlbumList( false, false );
 
+
     progress.setTotalSteps( albums.count() / 2 );
 
     //insert the covers first because the list view is soooo paint-happy
+    //this is the slowest step in the bit that we can't process events
     for( QStringList::ConstIterator it = albums.begin(), end = albums.end(); it != end; ++it )
         new CoverViewItem( m_coverView, m_coverView->lastItem(), *it, *++it );
+
+    QApplication::restoreOverrideCursor();
 
     //now, load the thumbnails
     for( QIconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
