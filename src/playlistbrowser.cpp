@@ -487,7 +487,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
             menu.insertItem( i18n( "&Save" ), SAVE );
             menu.insertItem( i18n( "&Clear" ), CLEAR );
-            menu.setAccel( Key_Space, SAVE );
+//             menu.setAccel( Key_Space, SAVE );
 
             switch( menu.exec( p ) )
             {
