@@ -3,13 +3,16 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #117 being the highest available (take this one for your next bug and increase here)
+           #118 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
 
-  FIX 114 <muesli> ContextBrowser needs to be repainted on Color-Scheme changes.
+  FIX 117 <markey> Focus markers on PlayerWindow buttons look weird. Better use NoFocus.
 
+  FIX 114 <muesli> ContextBrowser needs to be repainted on Color-Scheme changes.
+          <markey> Color scheme is _always_ broken, not only when changing @ runtime.
+  
   FIX 110 <dato>   [Don't sure if it's a bug or a "still not implemented". Written here as a reminder.]
                    Changing the Spectrum Size of toolbar's analyzer does not work. It's fixed at 128.
 
