@@ -1,0 +1,20 @@
+Please do the following:
+
+1.  Checkout a fresh copy of amarok, its docs and po; cd into the root
+2.  Update APP_VERSION in amarok/src/amarok.h
+3.  Update the version in amarok/amarok.lsm
+4.  find -name CVS -o -name .cvsignore -exec rm {} \;
+5.  export WANT_AUTOMAKE=1.6
+6.  make -f Makefile.cvs
+7.  rm -rf autom4te.cache config.h config.log
+8.  pushd amarok; mv README TODO INSTALL ChangeLog AUTHORS ..; popd
+9.  mv ../kdeextragear-1 ../amarok-VERSION
+10. tar cjf ../amarok-VERSION.tar.bz2 ../amarok-VERSION
+11. test for default configure, --enable-final, separate build directory
+12. get some other people to test
+
+13. upload to ftp://upload.sf.net/incoming
+14. release via sourceforge
+15. wait for berkus to appear (can take days) and get him to update kde-apps.org
+16. send a release email to kde-announce
+17. drink a few pints, have some fun on #amarok
