@@ -514,8 +514,8 @@ void EngineController::slotStreamMetaData( const MetaBundle &bundle ) //SLOT
         m_lastMetadata.pop_front();
 
     m_lastMetadata << bundle;
-    m_bundle = bundle;
 
+    m_bundle = bundle;
     newMetaDataNotify( m_bundle, false /* not a new track */ );
 }
 
@@ -523,7 +523,7 @@ void EngineController::slotEngineMetaData( const Engine::SimpleMetaBundle &simpl
 {
     if( m_engine->isStream() )
     {
-        MetaBundle bundle;
+        MetaBundle bundle = m_bundle;
         bundle.setArtist( simpleBundle.artist );
         bundle.setTitle( simpleBundle.title );
         bundle.setComment( simpleBundle.comment );
