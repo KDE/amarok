@@ -36,11 +36,9 @@
 CollectionBrowser::CollectionBrowser( const char* name )
     : QVBox( 0, name )
 {
-    QHBox * hbox = new QHBox( this );
-
-    m_actionsMenu = new KPopupMenu( hbox );
-    m_cat1Menu = new KPopupMenu( hbox );
-    m_cat2Menu = new KPopupMenu( hbox );
+    m_actionsMenu = new KPopupMenu( this );
+    m_cat1Menu = new KPopupMenu( this );
+    m_cat2Menu = new KPopupMenu( this );
 
     KMenuBar* menu = new KMenuBar( this );
     menu->insertItem( i18n( "Actions" ), m_actionsMenu );
@@ -54,6 +52,8 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_searchEdit = new KLineEdit( hbox2 );
 
     m_view = new CollectionView( this );
+
+    setFocusProxy( m_view ); //default object to get focus
 
     m_actionsMenu->insertItem( i18n( "Configure Folders" ), m_view, SLOT( setupDirs() ) );
     m_actionsMenu->insertItem( i18n( "Start Scan" ), m_view, SLOT( scan() ) );
@@ -170,7 +170,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         execSql( "CREATE INDEX artist ON tags( artist );" );
         execSql( "CREATE INDEX genre ON tags( genre );" );
         execSql( "CREATE INDEX year ON tags( year );" );
-        
+
         execSql( "CREATE INDEX album_idx ON album( album );" );
         execSql( "CREATE INDEX artist_idx ON artist( artist );" );
         execSql( "CREATE INDEX genre_idx ON genre( genre );" );
@@ -423,7 +423,7 @@ uint CollectionView::getValueID( QString name, QString value, bool autocreate )
 
     return values[0].toUInt();
 }
-        
+
 
 QPixmap
 CollectionView::iconForCat( const QString& cat ) const
