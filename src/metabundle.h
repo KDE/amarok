@@ -61,6 +61,9 @@ public:
     /** For PlaylistItems */
     MetaBundle( const PlaylistItem *item );
 
+    bool operator==( const MetaBundle& bundle );
+
+
     /** Test for an empty metabundle */
     bool isEmpty() const { return m_url.isEmpty(); }
 

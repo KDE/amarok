@@ -19,6 +19,7 @@
 #include <qguardedptr.h>
 #include <qmap.h>
 #include <qobject.h>
+#include <qvaluelist.h>
 
 typedef QMap<QString, bool>  ExtensionCache;
 
@@ -100,8 +101,11 @@ private:
     static ExtensionCache s_extensionCache;
     static amaroK::Plugin *loadEngine( const QString &engineName );
 
+    typedef QValueList<MetaBundle> BundleList;
+
     EngineBase*     m_engine;
     MetaBundle      m_bundle;
+    BundleList      m_lastMetadata;
     long            m_delayTime;
     int             m_muteVolume;
     bool            m_xFadeThisTrack;

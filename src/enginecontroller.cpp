@@ -290,6 +290,7 @@ void EngineController::play( const MetaBundle &bundle )
     debug() << "Loading URL: " << url.url() << endl;
     // Destroy stale StreamProvider
     delete m_stream;
+    m_lastMetadata.clear();
 
     //TODO bummer why'd I do it this way? it should _not_ be in play!
     //let amaroK know that the previous track is no longer playing
@@ -466,20 +467,32 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
 
 void EngineController::slotStreamMetaData( const MetaBundle &bundle ) //SLOT
 {
+    // Prevent spamming by ignoring repeated identical data (some servers repeat it every 10 seconds)
+    if ( m_lastMetadata.contains( bundle ) )
+        return;
+
+    // We compare the new item with the last two items, because mth.house currently cycles
+    // two messages alternating, which gets very annoying
+    if ( m_lastMetadata.count() == 2 )
+        m_lastMetadata.pop_front();
+
+    m_lastMetadata << bundle;
     m_bundle = bundle;
+
     newMetaDataNotify( m_bundle, false /* not a new track */ );
 }
 
-void EngineController::slotEngineMetaData( const Engine::SimpleMetaBundle &bundle ) //SLOT
+void EngineController::slotEngineMetaData( const Engine::SimpleMetaBundle &simpleBundle ) //SLOT
 {
     if( m_engine->isStream() )
     {
-        m_bundle.setArtist( bundle.artist );
-        m_bundle.setTitle( bundle.title );
-        m_bundle.setComment( bundle.comment );
-        m_bundle.setAlbum( bundle.album );
+        MetaBundle bundle;
+        bundle.setArtist( simpleBundle.artist );
+        bundle.setTitle( simpleBundle.title );
+        bundle.setComment( simpleBundle.comment );
+        bundle.setAlbum( simpleBundle.album );
 
-        newMetaDataNotify( m_bundle, false /* not a new track */ );
+        slotStreamMetaData( bundle );
     }
 }
 
