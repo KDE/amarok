@@ -2158,7 +2158,7 @@ QueryBuilder::addReturnValue( int table, int value )
     if ( !m_values.isEmpty() && m_values != "DISTINCT " ) m_values += ",";
     if ( table & tabStats && value & valScore ) m_values += "round(";
 
-    if ( value == tabDummy )
+    if ( value == valDummy )
         m_values += "''";
     else
     {
@@ -2172,13 +2172,23 @@ QueryBuilder::addReturnValue( int table, int value )
     m_returnValues++;
 }
 
+void
+QueryBuilder::addReturnFunctionValue( int function, int table, int value)
+{
+    if ( !m_values.isEmpty() && m_values != "DISTINCT " ) m_values += ",";
+    m_values += functionName( function ) + "(";
+    m_values += tableName( table ) + ".";
+    m_values += valueName( value )+ ")";
+    
+    m_linkTables |= table;
+    m_returnValues++;
+}
 
 uint
 QueryBuilder::countReturnValues()
 {
     return m_returnValues;
 }
-
 
 void
 QueryBuilder::addURLFilters( const QStringList& filter )
@@ -2426,6 +2436,16 @@ QueryBuilder::sortBy( int table, int value, bool descending )
     m_linkTables |= table;
 }
 
+void
+QueryBuilder::groupBy( int table, int value )
+{
+    if ( !m_group.isEmpty() ) m_group += ",";
+    m_group += tableName( table ) + ".";
+    m_group += valueName( value );
+
+    m_linkTables |= table;
+}
+
 
 void
 QueryBuilder::setLimit( int startPos, int length )
@@ -2461,6 +2481,7 @@ QueryBuilder::buildQuery()
 
         m_query = "SELECT " + m_values + " FROM " + m_tables + " " + m_join + " WHERE 1 " + m_where;
         if ( !m_sort.isEmpty() ) m_query += " ORDER BY " + m_sort;
+        if ( !m_group.isEmpty() ) m_query += " GROUP BY " + m_group;
         m_query += m_limit;
     }
 }
@@ -2484,6 +2505,7 @@ QueryBuilder::clear()
     m_join = "";
     m_where = "";
     m_sort = "";
+    m_group = "";
     m_limit = "";
 
     m_linkTables = 0;
@@ -2533,6 +2555,20 @@ QueryBuilder::valueName( int value )
     if ( value & valYearID )      values += "year";
 
     return values;
+}
+
+QString
+QueryBuilder::functionName( int value )
+{
+    QString function;
+
+    if ( value & funcCount )     function += "Count";
+    if ( value & funcMax )       function += "Max";
+    if ( value & funcMin )       function += "Min";
+    if ( value & funcAvg )       function += "Avg";
+    if ( value & funcSum )       function += "Sum";
+
+    return function;
 }
 
 

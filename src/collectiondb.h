@@ -358,12 +358,14 @@ class QueryBuilder
                                valBitrate = 128, valLength = 256, valSamplerate = 512, valPlayCounter = 1024,
                                valCreateDate = 2048, valAccessDate = 4096, valPercentage = 8192, valArtistID = 16384, valAlbumID = 32768,
                                valYearID = 65536, valGenreID = 131072, valDummy = 0 };
+        enum qBuilderFunctions  { funcCount = 1, funcMax = 2, funcMin = 4, funcAvg = 8, funcSum = 16 };
 
         enum qBuilderFilter  { modeNormal = 0, modeFuzzy = 1 };
 
         QueryBuilder();
 
         void addReturnValue( int table, int value );
+        void addReturnFunctionValue( int function, int table, int value);
         uint countReturnValues();
 
         void addURLFilters( const QStringList& filter );
@@ -381,6 +383,7 @@ class QueryBuilder
 
         void setOptions( int options );
         void sortBy( int table, int value, bool descending = false );
+        void groupBy( int table, int value );
         void setLimit( int startPos, int length );
 
         void initSQLDrag();
@@ -393,6 +396,7 @@ class QueryBuilder
     private:
         QString tableName( int table );
         QString valueName( int value );
+        QString functionName( int value );
 
         void linkTables( int tables );
 
@@ -402,6 +406,7 @@ class QueryBuilder
         QString m_join;
         QString m_where;
         QString m_sort;
+        QString m_group;
         QString m_limit;
 
         int m_linkTables;
