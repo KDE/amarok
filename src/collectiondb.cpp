@@ -220,7 +220,7 @@ CollectionDB::isEmpty()
 {
     query( "SELECT COUNT( url ) FROM tags LIMIT 0, 1;" );
 
-    return m_values.isEmpty() ? true : m_values[0] == "0";
+    return m_values.isEmpty() ? true : m_values.first() == "0";
 }
 
 
@@ -231,7 +231,7 @@ CollectionDB::albumSongCount( const QString artist_id, const QString album_id )
                     .arg( album_id )
                     .arg( artist_id ) );
 
-    return m_values[0];
+    return m_values.first();
 }
 
 
@@ -252,7 +252,7 @@ CollectionDB::getPathForAlbum( const QString artist, const QString album )
                     .arg( escapeString( album ) )
                     .arg( escapeString( artist ) ) );
 
-    return m_values[0];
+    return m_values.first();
 }
 
 
@@ -263,7 +263,7 @@ CollectionDB::getPathForAlbum( const uint artist_id, const uint album_id )
                     .arg( album_id )
                     .arg( artist_id ) );
 
-    return m_values[0];
+    return m_values.first();
 }
 
 
@@ -338,7 +338,7 @@ CollectionDB::getImageForAlbum( const uint artist_id, const uint album_id, const
                     "WHERE artist.id = %1 AND album.id = %2;" )
                     .arg( artist_id ).arg( album_id ) );
 
-    return getImageForAlbum( m_values[0], m_values[1], width );
+    return getImageForAlbum( m_values.first(), m_values[1], width );
 }
 
 
@@ -372,7 +372,7 @@ CollectionDB::getImageForPath( const QString path, const uint width )
 
     if ( !m_values.isEmpty() )
     {
-        QString image( m_values[0] );
+        QString image( m_values.first() );
         for ( uint i = 0; i < m_values.count(); i++ )
             if ( m_values[i].contains( "front", false ) )
                 image = m_values[i];
@@ -407,7 +407,7 @@ CollectionDB::removeImageFromAlbum( const uint artist_id, const uint album_id )
                     .arg( artist_id ) );
 
     if ( !m_values.isEmpty() )
-        return removeImageFromAlbum( m_values[0], m_values[1] );
+        return removeImageFromAlbum( m_values.first(), m_values[1] );
     else
         return false;
 }
@@ -523,7 +523,7 @@ CollectionDB::addSongPercentage( const QString url, const int percentage )
     if ( !m_values.isEmpty() )
     {
         // entry exists, increment playcounter and update accesstime
-        score = ( ( m_values[2].toDouble() * m_values[0].toInt() ) + percentage ) / ( m_values[0].toInt() + 1 );
+        score = ( ( m_values[2].toDouble() * m_values.first().toInt() ) + percentage ) / ( m_values.first().toInt() + 1 );
 
         query( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
                         "VALUES ( '%1', '%2', strftime('%s', 'now'), %3, %4 );" )
@@ -554,7 +554,7 @@ CollectionDB::getSongPercentage( const QString url )
                                          .arg( escapeString( url ) ) );
 
     if( values.count() )
-        return values[0].toInt();
+        return values.first().toInt();
 
     return 0;
 }
@@ -1029,7 +1029,7 @@ CollectionDB::IDFromValue( QString name, QString value, bool autocreate, bool us
         return id;
     }
 
-    return m_values.isEmpty() ? 0 : m_values[0].toUInt();
+    return m_values.isEmpty() ? 0 : m_values.first().toUInt();
 }
 
 
@@ -1041,7 +1041,7 @@ CollectionDB::valueFromID( QString table, uint id )
                     .arg( id ) );
 
 
-    return m_values.isEmpty() ? 0 : m_values[0];
+    return m_values.isEmpty() ? 0 : m_values.first();
 }
 
 
