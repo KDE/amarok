@@ -14,8 +14,6 @@ SHORT-TERM (URGENT):
                    device" is one of the top user complaints. This FAQ should be put into a promiment
                    place, perhaps also in README.
 
-          <muesli> Update score column in playlist after recalculating percentage (done, speed-test)
-
           <markey> Check TagLib autoconf and makefile stuff. I have a feeling the problem with picking
                    up old versions could be on our side.
 
