@@ -35,6 +35,8 @@ public:
     void  seek( long );
     void  setVolume( int );
 
+    StreamingMode streamingMode() { return Socket; }
+
 private:
     static  void XineEventListener(void* p, const xine_event_t*);
     virtual void customEvent( QCustomEvent* );
