@@ -27,7 +27,7 @@ AMAROK_EXPORT_PLUGIN( XineEngine )
 #define this this_
 //need access to port_ticket
 #define XINE_ENGINE_INTERNAL
-    #include <xine/xine_internal.h> //for port_ticket from struct xine_t
+    #include <xine/xine_internal.h>
     #include <xine/post.h>
 #undef this
 
@@ -104,7 +104,7 @@ XineEngine::~XineEngine()
 }
 
 bool
-XineEngine::init( bool&, int, bool )
+XineEngine::init()
 {
     debug() << "Welcome to xine-engine! 9 out of 10 cats prefer xine!\n"
                "Please report bugs to amarok-devel@lists.sourceforge.net\n";
@@ -125,7 +125,7 @@ XineEngine::init( bool&, int, bool )
     path += "/.%1/config";
     path  = QFile::exists( path.arg( "kaffeine" ) ) ? path.arg( "kaffeine" ) : path.arg( "xine" );
 
-    xine_config_load( m_xine, path.local8Bit() );
+    xine_config_load( m_xine, QFile::encodeName( path ) );
 
     xine_init( m_xine );
 
@@ -145,6 +145,8 @@ XineEngine::init( bool&, int, bool )
 
     //less buffering, faster seeking.. TODO test
     xine_set_param( m_stream, XINE_PARAM_METRONOM_PREBUFFER, 6000 );
+    //xine_trick_mode( m_stream, XINE_TRICK_MODE_SEEK_TO_TIME, 1 );
+
 
     m_eventQueue = xine_event_new_queue( m_stream );
     xine_event_create_listener_thread( m_eventQueue, &XineEngine::XineEventListener, (void*)this );
@@ -178,50 +180,40 @@ XineEngine::init( bool&, int, bool )
     post_class->dispose( post_class );
 
 
-    QTimer *timer = new QTimer( this );
-    connect( timer, SIGNAL(timeout()), SLOT(pruneScopeBuffers()) );
-    timer->start( 200 );
-
+    startTimer( 200 ); //prunes the scope
 
     return true;
 }
 
-void
-XineEngine::play( const KURL &url, bool )
+bool
+XineEngine::load( const KURL &url, bool stream )
 {
-    m_url = url;
-
-    debug() << "Playing: " << url.prettyURL() << endl;
+    Engine::Base::load( url, stream );
 
     xine_close( m_stream );
 
-    if( xine_open( m_stream, url.url().local8Bit() ) )
+    return xine_open( m_stream, url.url().local8Bit() );
+}
+
+bool
+XineEngine::play( uint offset )
+{
+    if( xine_play( m_stream, 0, offset ) )
     {
         xine_post_out_t *source = xine_get_audio_source( m_stream );
         xine_post_in_t  *target = (xine_post_in_t*)xine_post_input( m_post, const_cast<char*>("audio in") );
 
         xine_post_wire( source, target );
 
-        if( xine_play( m_stream, 0, 0 ) ) return;
+        emit stateChanged( Engine::Playing );
+
+        return true;
     }
 
-    //we should get a ui message from the event listener
-    emit stopped();
-}
+    emit stateChanged( Engine::Empty );
 
-void
-XineEngine::play()
-{
-    if( xine_get_status( m_stream ) == XINE_STATUS_PLAY && !xine_get_param( m_stream, XINE_PARAM_SPEED ) )
-    {
-        xine_set_param(m_stream, XINE_PARAM_SPEED, XINE_SPEED_NORMAL);
-        return;
-    }
-
-    if( xine_play( m_stream, 0, 0 ) ) return;
-
-    //we should get a ui message from the event listener
-    emit stopped();
+    //Xine will show a message via EventListener if there were problems
+    return false;
 }
 
 void
@@ -230,33 +222,40 @@ XineEngine::stop()
     emptyMyList();
 
     xine_stop( m_stream );
-    emit stopped();
+    emit stateChanged( Engine::Empty );
 }
 
 void
 XineEngine::pause()
 {
-    xine_set_param(m_stream, XINE_PARAM_SPEED, XINE_SPEED_PAUSE);
+    if( xine_get_param( m_stream, XINE_PARAM_SPEED ) )
+    {
+        xine_set_param( m_stream, XINE_PARAM_SPEED, XINE_SPEED_PAUSE );
+        emit stateChanged( Engine::Paused );
+
+    } else {
+
+        xine_set_param( m_stream, XINE_PARAM_SPEED, XINE_SPEED_NORMAL );
+        emit stateChanged( Engine::Playing );
+    }
 }
 
-EngineBase::EngineState
+Engine::State
 XineEngine::state() const
 {
     switch( xine_get_status( m_stream ) )
     {
-    case XINE_STATUS_PLAY: return xine_get_param(m_stream, XINE_PARAM_SPEED) ? EngineBase::Playing : EngineBase::Paused;
-    case XINE_STATUS_IDLE: return EngineBase::Idle;
+    case XINE_STATUS_PLAY: return xine_get_param(m_stream, XINE_PARAM_SPEED) ? Engine::Playing : Engine::Paused;
+    case XINE_STATUS_IDLE: return Engine::Idle;
     case XINE_STATUS_STOP:
-    default:               return EngineBase::Empty;
+    default:               return Engine::Empty;
     }
 }
 
-std::vector<float>*
+const Engine::Scope&
 XineEngine::scope()
 {
-    std::vector<float> &v = *(new std::vector<float>( 512 ));
-
-    if( xine_get_status( m_stream ) != XINE_STATUS_PLAY ) return &v;
+    if( xine_get_status( m_stream ) != XINE_STATUS_PLAY ) return m_scope;
 
     current_vpts = xine_get_current_vpts( m_stream );//m_xine->clock->get_current_time( m_xine->clock );
     audio_buffer_t *best_buf = 0;
@@ -324,31 +323,28 @@ XineEngine::scope()
             data16 += diff * myChannels;
 
             for( int a, c, i = 0; i < 512; ++i, data16 += myChannels )
-            {
-                for( a = 0, c = 0; c < myChannels; ++c ) a += data16[c];
-
-                v[i] = (double)a / (1<<15);
-            }
+                for( m_scope[i] = 0, c = 0; c < myChannels; ++c )
+                    m_scope[i] += data16[c];
         }
         else { Log::buffTooSmall++; }
     }
     else { Log::buffNotFound++; }
 
-    return &v;
+    return m_scope;
 }
 
 void
-XineEngine::pruneScopeBuffers()
+XineEngine::timerEvent( QTimerEvent* )
 {
     //if scope() isn't called regularly the audio buffer list
     //is never emptied. This is a hacky solution, the better solution
     //is to prune the list inside the post_plugin put_buffer() function
     //which I will do eventually
 
-    delete scope();
+    scope();
 }
 
-long
+uint
 XineEngine::position() const
 {
     int pos;
@@ -361,36 +357,27 @@ XineEngine::position() const
 }
 
 void
-XineEngine::seek( long ms )
+XineEngine::seek( uint ms )
 {
-    xine_play( m_stream, 0, ms );
-}
-
-bool
-XineEngine::initMixer( bool hardware )
-{
-    //ensure that software mixer volume is back to normal
-    if( hardware ) xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, 100 );
-
-    m_mixerHW = hardware ? 0 : -1;
-    return hardware;
+    xine_play( m_stream, 0, (int)ms );
 }
 
 void
-XineEngine::setVolume( int vol )
+XineEngine::setVolumeSW( uint vol )
 {
-    xine_set_param( m_stream, isMixerHardware() ? XINE_PARAM_AUDIO_VOLUME : XINE_PARAM_AUDIO_AMP_LEVEL, vol );
-    m_volume = vol;
+    xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, vol );
 }
 
 bool
-XineEngine::canDecode( const KURL &url, mode_t, mode_t )
+XineEngine::canDecode( const KURL &url )
 {
+    static QStringList list = QStringList::split( ' ', xine_get_file_extensions( m_xine ) );
+
     //TODO proper mimetype checking
 
     const QString path = url.path();
     const QString ext  = path.mid( path.findRev( '.' ) + 1 );
-    return QStringList::split( ' ', xine_get_file_extensions( m_xine ) ).contains( ext ) && ext != "txt";
+    return ext != "txt" && list.contains( ext );
 }
 
 void
@@ -400,12 +387,19 @@ XineEngine::customEvent( QCustomEvent *e )
     {
     case 3000:
         emptyMyList();
-        emit endOfTrack();
+        emit trackEnded();
         break;
 
     case 3001:
         #define message static_cast<QString*>(e->data())
         KMessageBox::error( 0, (*message).arg( m_url.prettyURL() ) );
+        delete message;
+        #undef message
+        break;
+
+    case 3002:
+        #define message static_cast<QString*>(e->data())
+        emit statusText( *message );
         delete message;
         #undef message
         break;

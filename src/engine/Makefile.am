@@ -24,12 +24,11 @@ endif
 libengine_la_SOURCES = \
     enginebase.cpp
 
-noinst_HEADERS = \
-    enginebase.h
+noinst_HEADERS = enginebase.h
 
 METASOURCES = \
     AUTO
 
-SUBDIRS = . $(GST_ENGINE_SUBDIR)
+SUBDIRS = . $(GST_ENGINE_SUBDIR) $(XINE_ENGINE_SUBDIR)
 
 
