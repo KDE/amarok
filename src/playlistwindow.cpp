@@ -267,7 +267,7 @@ PlaylistWindow::init()
     //TODO use KStdAction or KMainWindow
     m_settingsMenu->insertItem( i18n( "Hide Menubar" ), ID_SHOW_MENUBAR );
     m_settingsMenu->insertItem( i18n( "Hide Toolbar" ), ID_SHOW_TOOLBAR );
-    m_settingsMenu->insertItem( AmarokConfig::showPlayerWindow() ? i18n("Hide Player Window") : i18n("Show Player Window"), ID_SHOW_PLAYERWINDOW );
+    m_settingsMenu->insertItem( AmarokConfig::showPlayerWindow() ? i18n("Hide Player &Window") : i18n("Show Player &Window"), ID_SHOW_PLAYERWINDOW );
     m_settingsMenu->insertSeparator();
     //this should be only a context menu option and use next-queue graphics with an infinity symbol or something
     actionCollection()->action("repeat_track")->plug( m_settingsMenu );
@@ -674,7 +674,7 @@ void PlaylistWindow::slotMenuActivated( int index )
         break;
     case ID_SHOW_PLAYERWINDOW:
         AmarokConfig::setShowPlayerWindow( !AmarokConfig::showPlayerWindow() );
-        m_settingsMenu->changeItem( index, AmarokConfig::showPlayerWindow() ? i18n("Hide Player Window") : i18n("Show Player Window") );
+        m_settingsMenu->changeItem( index, AmarokConfig::showPlayerWindow() ? i18n("Hide Player &Window") : i18n("Show Player &Window") );
         QTimer::singleShot( 0, kapp, SLOT( applySettings() ) );
         break;
     }
