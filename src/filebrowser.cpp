@@ -26,9 +26,19 @@
 #include "enginecontroller.h"
 #include "filebrowser.h"
 #include "k3bexporter.h"
+#include "kbookmarkhandler.h"
+#include "playlist.h"
+#include "playlistloader.h"
+
+#include <qdir.h>
+#include <qhbox.h>
+#include <qlabel.h>
+#include <qsimplerichtext.h>
+#include <qtimer.h>
+#include <qtooltip.h>
+
 #include <kaction.h>
 #include <kapplication.h>
-#include "kbookmarkhandler.h"
 #include <kdiroperator.h>
 #include <kiconloader.h>
 #include <klistview.h>
@@ -38,13 +48,6 @@
 #include <ktoolbarbutton.h>  ///@see ctor
 #include <kurlcombobox.h>
 #include <kurlcompletion.h>
-#include "playlist.h"
-#include "playlistloader.h"
-#include <qdir.h>
-#include <qhbox.h>
-#include <qlabel.h>
-#include <qtimer.h>
-#include <qtooltip.h>
 
 
 //TODO wait for lister to finish, if there are no files shown, but there are
@@ -374,11 +377,19 @@ public:
             QString text = m_text;
 
             if ( text.isEmpty() ) {
-                r.addCoords( 20, 20, -20, -20 );
+                //TODO Perhaps it's time to put this in some header, as we use it in three places now
+                QSimpleRichText t( i18n(
+                        "<div align=center>"
+                            "Enter a search term above, you can use globbing wildcards like * and ?"
+                        "</div>" ), QApplication::font() );
+
+                const int wd3 = r.width() / 3;
+                t.setWidth( wd3 );
+                const int y = (r.height() - t.height()) / 2;
+
                 p.setBrush( colorGroup().background() );
-                p.drawRoundRect( r, 5, 5 );
-                r.addCoords( 5, 5, -5, -5 );
-                text = i18n("Enter a search term above, you can use globbing wildcards like * and ?");
+                p.drawRoundRect( wd3-15, y-15, t.width()+30, t.height()+30, 5, 5 );
+                t.draw( &p, wd3, y, QRect( 0, 0, r.width(), r.height() ), colorGroup() );
             }
             else
                 p.setPen( palette().color( QPalette::Disabled, QColorGroup::Text ) );
