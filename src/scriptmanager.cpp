@@ -2,11 +2,11 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // See COPYING file for licensing information.
 
+
+#define DEBUG_PREFIX "ScriptManager"
 #include "debug.h"
 #include "scriptmanager.h"
 #include "scriptmanagerbase.h"
-
-#include <qcheckbox.h>
 
 #include <kapplication.h>
 #include <kfiledialog.h>
@@ -136,7 +136,7 @@ ScriptManager::slotEditScript()
 void
 ScriptManager::slotRunScript()
 {
-    DEBUG_FUNC_INFO
+    DEBUG_BEGIN
 
     if ( !m_base->directoryListView->selectedItem() ) return ;
 
@@ -149,14 +149,16 @@ ScriptManager::slotRunScript()
     KURL url = m_scripts[name].url;
 
     li->setPixmap( 0, SmallIcon( "player_play" ) );
-    QDir::setCurrent( url.directory() );
-    kdDebug() << "Running script: " << url.path() << endl;
+    debug() << "Running script: " << url.path() << endl;
 
     KProcess* script = new KProcess( this );
     *script << url.path();
+    script->setWorkingDirectory( url.directory() );
     script->start( KProcess::NotifyOnExit, KProcess::Stdin );
     m_scripts[name].process = script;
     connect( script, SIGNAL( processExited( KProcess* ) ), SLOT( scriptFinished( KProcess* ) ) );
+
+    DEBUG_END
 }
 
 
@@ -183,7 +185,7 @@ ScriptManager::slotStopScript()
 void
 ScriptManager::slotConfigureScript()
 {
-    DEBUG_FUNC_INFO
+    DEBUG_BEGIN
 
     if ( !m_base->directoryListView->selectedItem() ) return;
 
@@ -196,7 +198,9 @@ ScriptManager::slotConfigureScript()
     QString command( "configure\n" );
     m_scripts[name].process->writeStdin( command.latin1(), command.length() );
 
-    kdDebug() << "Starting script configuration." << endl;
+    debug() << "Starting script configuration." << endl;
+
+    DEBUG_END
 }
 
 
