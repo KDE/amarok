@@ -231,6 +231,11 @@
         <whatsthis>Draws a shadow around the OSD-text.</whatsthis>
         <default>true</default>
     </entry>
+    <entry key="Osd Use Fake Translucency" type="Bool">
+        <label>Fake-translucency Toggle</label>
+        <whatsthis>Make the background of the OSD use fake-translucency.</whatsthis>
+        <default>false</default>
+    </entry>
     <entry key="Osd Use Custom Colors" type="Bool">
         <label>Whether to use custom colors for the OSD</label>
         <whatsthis>You can use custom colors for the OSD if you set this true.</whatsthis>

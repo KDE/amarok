@@ -46,20 +46,19 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     kapp->setTopWidget( this );
 }
 
-class OSDGrabber : public QWidget
-{
-public:
-    OSDGrabber( const QRect &r, const QColor &color ) : QWidget( 0, 0 ) {
-        move( 0, 0 );
-        screen = QPixmap::grabWindow( winId(), r.x(), r.y(), r.width(), r.height() );
-        KPixmapEffect::fade( screen, 0.80, color );
-    }
-    KPixmap screen;
-};
-
 void
 OSDWidget::show() //virtual
 {
+    class Grabber : public QWidget {
+    public:
+        Grabber( const QRect &r, const QColor &color ) : QWidget( 0, 0 ) {
+            move( 0, 0 );
+            screen = QPixmap::grabWindow( winId(), r.x(), r.y(), r.width(), r.height() );
+            KPixmapEffect::fade( screen, 0.80, color );
+        }
+        KPixmap screen;
+    };
+
     if ( !isEnabled() )
         return;
 
@@ -72,8 +71,7 @@ OSDWidget::show() //virtual
     //TODO handle case when already shown properly
     if( !isShown() ) {
         // obtain snapshot of the screen where we are about to appear
-        QRect rect( pos(), size() );
-        OSDGrabber g( rect, backgroundColor() );
+        Grabber g( newGeometry, backgroundColor() );
         m_screenshot = g.screen;
 
         QWidget::show();
@@ -88,15 +86,18 @@ OSDWidget::show() //virtual
 void
 OSDWidget::determineMetrics()
 {
-    // Set a sensible maximum size, don't cover the whole desktop or cross the screen
-    QSize max = QApplication::desktop()->screen( m_screen )->size() - QSize( MARGIN * 2 + 20, 100 );
+    static const uint HMARGIN = 20;
+    static const uint VMARGIN = 10;
+
+    // determine a sensible maximum size, don't cover the whole desktop or cross the screen
+    const QSize margin( (HMARGIN + MARGIN) * 2, (VMARGIN + MARGIN) * 2 );
+    const QSize max = QApplication::desktop()->screen( m_screen )->size() - margin;
 
     // The osd cannot be larger than the screen
     QRect rect = fontMetrics().boundingRect( 0, 0, max.width(), max.height(), AlignLeft | WordBreak, m_text );
 
-    rect.addCoords( -20, -10, 20, 10 );
-
     // size and move us
+    rect.addCoords( -20, -10, 20, 10 );
     reposition( rect.size() );
 }
 
@@ -145,15 +146,22 @@ OSDWidget::paintEvent( QPaintEvent* )
 {
     //TODO double buffer? but is slow...
 
-    bitBlt( this, 0, 0, &m_screenshot );
+    if( AmarokConfig::osdUseFakeTranslucency() )
+       bitBlt( this, 0, 0, &m_screenshot );
 
     QPainter p;
     QImage image;
+    QRect rect = this->rect();
     QFontMetrics metrics = fontMetrics();
+    Qt::AlignmentFlags align;
 
-    //NOTE currently you must adjust these in determineMetrics() also
-    const uint xmargin = 20;
-    const uint ymargin = 10;
+    switch( m_alignment ) {
+        case Left:  align = Qt::AlignLeft; break;
+        case Right: align = Qt::AlignRight; break;
+        default:    align = Qt::AlignHCenter; break;
+    }
+
+    rect.addCoords( 20, 10, -20, -10 );
 
     if( m_drawShadow )
     {
@@ -165,7 +173,7 @@ OSDWidget::paintEvent( QPaintEvent* )
         p.begin( &pixmap );
         p.setFont( font() );
         p.setPen( Qt::white );
-        p.drawText( xmargin, ymargin, width(), height(), AlignAuto | WordBreak, m_text );
+        p.drawText( rect, align | WordBreak, m_text );
         p.end();
 
         image = ShadowEngine::makeShadow( pixmap, Qt::black/*colorGroup().highlight().dark()*/ );
@@ -175,9 +183,9 @@ OSDWidget::paintEvent( QPaintEvent* )
     p.setFont( font() );
     p.drawImage( 0, 0, image );
     p.setPen( foregroundColor() );
-    p.drawText( xmargin, ymargin, width(), height(), AlignAuto | WordBreak, m_text );
+    p.drawText( rect, align | WordBreak, m_text );
     p.setPen( backgroundColor() );
-    p.drawRect( rect() );
+    p.drawRect( this->rect() );
     p.end();
 }
 
