@@ -56,7 +56,7 @@ void Sonogram::drawAnalyzer(std::vector<float> *s)
                         p.drawPoint(x, y--);
                 }
         } else {
-                p.setPen(QColor(0x1F, 0x20, 0x50));
+                p.setPen(backgroundColor());
                 p.drawLine(width() - 1, 0, width() - 1, height() - 1);
         }
 }
