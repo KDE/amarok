@@ -85,7 +85,7 @@ void DistortAnalyzer::drawAnalyzer( std::vector<float> *s )
         std::vector<float> sNew( width() );
         interpolate( s, sNew );
 
-        // HORIZONTAL:
+        // VERTICAL:
                 
         it = sNew.begin();
         it1 = sNew.end();
@@ -98,14 +98,14 @@ void DistortAnalyzer::drawAnalyzer( std::vector<float> *s )
             pixIndex %= NUM_PIXMAPS;    // for safety
             
             sinIndex = static_cast<int>( (*it) * SINVEC_SIZE ) % SINVEC_SIZE;
-            bitBlt( m_pComposePixmap1, x, 0, m_srcPixmaps[ pixIndex ], x,
-                    static_cast<int>( m_sinVector[sinIndex] * 20 ), 1, height(), Qt::CopyROP );
+            bitBlt( m_pComposePixmap1, x, 0,
+                    m_srcPixmaps[ pixIndex ], x, (int)( m_sinVector[sinIndex] * 20 ) - 20 , 1, height() );
 
             ++it;
            --it1;
         }
 
-        // VERTICAL:
+        // HORIZONTAL:
         
         it = sNew.begin();
 

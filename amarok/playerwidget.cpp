@@ -697,8 +697,8 @@ void PlayerWidget::createVis()
         goto firstcase;
     }
 
-    m_pVis->setFixedSize( 168, 50 );
-    m_pVis->move( 113, 40 );
+    m_pVis->setFixedSize( 168, 80 );
+    m_pVis->move( 113, 20 );
 //    m_pLay6->addWidget( m_pVis );
     connect( m_pVis, SIGNAL( clicked() ), this, SLOT( createVis() ) );
 
