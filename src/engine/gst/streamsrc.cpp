@@ -50,6 +50,8 @@ static void gst_streamsrc_set_property ( GObject * object, guint prop_id,
 static void gst_streamsrc_get_property ( GObject * object, guint prop_id,
         GValue * value, GParamSpec * pspec );
 
+static GstElementStateReturn gst_streamsrc_change_state (GstElement* element);
+
 static GstData *gst_streamsrc_get ( GstPad * pad );
 
 
@@ -72,8 +74,9 @@ gst_streamsrc_class_init ( GstStreamSrcClass * klass )
 {
     kdDebug() << k_funcinfo << endl;
 
-    GObjectClass * gobject_class;
-    gobject_class = G_OBJECT_CLASS ( klass );
+    GObjectClass* gobject_class;
+    GstElementClass* gstelement_class = GST_ELEMENT_CLASS( klass );
+    gobject_class = G_OBJECT_CLASS( klass );
 
     g_object_class_install_property ( G_OBJECT_CLASS ( klass ), ARG_BLOCKSIZE,
                                       g_param_spec_ulong ( "blocksize", "Block size",
@@ -100,6 +103,8 @@ gst_streamsrc_class_init ( GstStreamSrcClass * klass )
 
     gobject_class->set_property = gst_streamsrc_set_property;
     gobject_class->get_property = gst_streamsrc_get_property;
+
+    gstelement_class->change_state = gst_streamsrc_change_state;
 }
 
 
@@ -183,9 +188,37 @@ gst_streamsrc_get_property ( GObject * object, guint prop_id, GValue * value, GP
 }
 
 
-static GstData*
-gst_streamsrc_get ( GstPad * pad )
+static GstElementStateReturn
+gst_streamsrc_change_state (GstElement * element)
 {
+  kdDebug() << k_funcinfo << endl;
+
+  GstStreamSrc *src = GST_STREAMSRC (element);
+
+  switch (GST_STATE_TRANSITION (element)) {
+    case GST_STATE_NULL_TO_READY:
+      break;
+    case GST_STATE_READY_TO_NULL:
+      break;
+    case GST_STATE_READY_TO_PAUSED:
+      break;
+    case GST_STATE_PAUSED_TO_READY:
+      break;
+    default:
+      break;
+  }
+
+  if (GST_ELEMENT_CLASS (parent_class)->change_state)
+    return GST_ELEMENT_CLASS (parent_class)->change_state (element);
+
+  return GST_STATE_SUCCESS;
+}
+
+
+static GstData*
+gst_streamsrc_get ( GstPad* pad )
+{
+    g_return_val_if_fail( pad != NULL, NULL );
     GstStreamSrc* src = GST_STREAMSRC ( GST_OBJECT_PARENT ( pad ) );
 
     if ( src->stopped )
@@ -204,8 +237,9 @@ gst_streamsrc_get ( GstPad * pad )
             return GST_DATA( gst_event_new( GST_EVENT_EOS ) );
         }
     }
-    // Return when buffer is not filled
-    else if ( !src->playing && *src->streamBufIndex < src->buffer_min )
+    // Return filler-event when buffer index is below minimum level
+    else if ( ( !src->playing && *src->streamBufIndex < src->buffer_min ) ||
+              (  src->playing && *src->streamBufIndex < src->blocksize ) )
         return GST_DATA( gst_event_new( GST_EVENT_FILLER ) );
 
     src->playing = true;
