@@ -97,3 +97,59 @@ POFILES = AUTO" > $dest/Makefile.am
     `rm -rf kde-i18n`
 end
 
+print
+
+# Remove CVS relevant files
+`find -name "CVS" -exec rm -rf {} \; 2> /dev/null`
+`find -name ".cvsignore" -exec rm {} \;`
+
+`pushd amarok`
+
+# Move some important files to the root folder
+`mv amarok.lsm ..`
+`mv AUTHORS ..`
+`mv ChangeLog ..`
+`mv COPYING ..`
+`mv INSTALL ..`
+`mv README ..`
+`mv TODO ..`
+
+`pushd src`
+`cat amarok.h | sed -e "s/APP_VERSION \".*\"/APP_VERSION \"#{version}"\"/ | tee amarok.h > /dev/null`
+`popd`
+
+`rm -rf debian`
+
+`popd` # kdeextragear-1
+`print`
+
+`find -name "*" -exec touch {} \;`
+
+`make -f Makefile.cvs`
+
+`rm -rf autom4te.cache`
+`rm stamp-h.in`
+
+`mv * ..`
+`popd # amaroK-foo`
+`rm -rf kdeextragear-1`
+`popd # root`
+`tar -cf #{folder}.tar #{folder}`
+`bzip2 #{folder}.tar`
+`rm -rf #{folder}`
+
+
+`export UNSERMAKE=#{oldmake}`
+
+
+print
+print "====================================================="
+print "Congratulations :) amaroK $version tarball generated."
+print "Now follow the steps in the RELEASE_HOWTO, from"
+print "SECTION 3 onwards."
+print
+print "Then drink a few pints and have some fun on #amarok"
+print
+print "MD5 checksum: " + `md5sum #{folder}.tar.bz2`
+print
+print
