@@ -8,7 +8,7 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-	  <mxcl>   With one track in pls and repeat and random mode on, amaroK crashes at track end
+          <mxcl>   With one track in pls and repeat and random mode on, amaroK crashes at track end.
 
           <mxcl>   You can't stream with gstreamer unless title-streaming is enabled.
 
