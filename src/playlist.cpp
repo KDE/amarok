@@ -315,13 +315,7 @@ Playlist::insertMedia( KURL::List list, int options )
                 }
             }
         } else {
-            PlaylistItem *item = currentTrack();
-
-            //insert after the current track. enables the click-n-reaction feeling
-            if ( item )
-                after = item;
-            else
-                after = lastItem();
+            after = currentTrack();   //insert after the current track. enables the click-n-reaction feeling
 
             // wait until Playlist loader has finished its process, then go to customEvent() to start the queue process.
             m_queueList = list;
