@@ -291,6 +291,7 @@ GstEngine::state() const
     if ( !m_currentInput )
         return Engine::Empty;
 
+
     switch ( gst_element_get_state( m_gst_inputThread ) )
     {
         case GST_STATE_NULL:
@@ -454,6 +455,9 @@ void
 GstEngine::stop()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
+    m_eos = false;
+    emit stateChanged( Engine::Empty );
+
     if ( !m_currentInput ) return;
 
     // When engine is in pause mode, don't fade but destroy right away
@@ -464,8 +468,6 @@ GstEngine::stop()  //SLOT
     }
     else
         m_currentInput->setState( InputPipeline::FADE_OUT );
-
-    emit stateChanged( Engine::Empty );
 }
 
 
