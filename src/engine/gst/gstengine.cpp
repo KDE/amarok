@@ -857,7 +857,6 @@ GstEngine::createPipeline()
     gst_element_set( m_gst_queue, "max-size-buffers", 100, NULL );
 
     g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), m_gst_outputThread );
-    g_signal_connect ( G_OBJECT( m_gst_inputThread ), "error", G_CALLBACK ( error_cb ), m_gst_inputThread );
     g_signal_connect ( G_OBJECT( m_gst_outputThread ), "error", G_CALLBACK ( error_cb ), m_gst_outputThread );
 
     /* link elements */
