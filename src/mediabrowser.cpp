@@ -108,10 +108,10 @@ MediaDeviceList::MediaDeviceList( MediaDeviceView* parent )
     setAcceptDrops( true );
 
     addColumn( i18n( "Artist" ) );
-    renderView();
+    renderView( 0 );
     
     connect( this, SIGNAL( expanded( QListViewItem* ) ),
-             this,   SLOT( slotExpand( QListViewItem* ) ) );
+             this,   SLOT( renderView( QListViewItem* ) ) );
 
     connect( this, SIGNAL( collapsed( QListViewItem* ) ),
              this,   SLOT( slotCollapse( QListViewItem* ) ) );
@@ -123,27 +123,37 @@ MediaDeviceList::~MediaDeviceList()
 
 
 void
-MediaDeviceList::renderView()
+MediaDeviceList::renderView( QListViewItem* parent )  //SLOT
 {
-    clear();
-//    renderNode( 0, KURL( "ipod:/Artists/" ) );
+    if ( parent == 0 )
+        clear();
 
     KIconLoader iconLoader;
     QPixmap pixmap = iconLoader.loadIcon( "usbpendrive_unmount", KIcon::Toolbar, KIcon::SizeSmall );
 
     QStringList items;
-    items = m_parent->m_device->items( 0 );
+    items = m_parent->m_device->items( parent );
 
-    for ( uint i = 0; i < items.count(); ++i )
+    bool track = ( parent && parent->parent() );
+    for ( uint i = 0; i < items.count(); track ? i+=2 : ++i )
     {
         MediaItem* item;
-        item = new MediaItem( this );
-        item->setExpandable( true );
+        if ( !parent )
+            item = new MediaItem( this );
+        else
+            item = new MediaItem( parent );
+
+        item->setExpandable( !track );
         item->setDragEnabled( true );
         item->setDropEnabled( true );
-//        item->setUrl( "ipod:" + fi->url().path() );
         item->setText( 0, items[ i ] );
         item->setPixmap( 0, pixmap );
+        
+        QStringList path = QStringList::split( ':', items[ i + 1 ] );
+        path[2] = path[2].lower();
+
+        if ( track )
+            item->setUrl( QString( "/mnt/ipod/" ) + path.join( "/" ) );
     }
 }
 
@@ -151,6 +161,7 @@ MediaDeviceList::renderView()
 void
 MediaDeviceList::renderNode( QListViewItem* parent, const KURL& url )  //SLOT
 {
+//    renderNode( 0, KURL( "ipod:/Artists/" ) );
     KDirLister dl;
     dl.setAutoErrorHandlingEnabled( false, 0 );
     dl.openURL( url, false, true );
@@ -178,21 +189,6 @@ MediaDeviceList::renderNode( QListViewItem* parent, const KURL& url )  //SLOT
         item->setText( 0, fi->text() );
         item->setPixmap( 0, pixmap );
     }
-}
-
-
-void
-MediaDeviceList::slotExpand( QListViewItem* item )  //SLOT
-{
-    kdDebug() << k_funcinfo << endl;
-    if ( !item ) return;
-
-    QString url( "ipod:/Artists/" );
-    if ( item->parent() ) url += escapeIPod( item->parent()->text( 0 ) ) + "/";
-    url += escapeIPod( item->text( 0 ) );
-
-    kdDebug() << "[MediaBrowser] " << url << endl;
-    renderNode( item, KURL( url ) );
 }
 
 
@@ -358,7 +354,38 @@ QStringList
 MediaDevice::items( QListViewItem* item )
 {
     QStringList items;
-    m_ipod->getArtists( items );
+    
+    if ( !item )
+        m_ipod->getArtists( items );
+    else
+    {
+        if ( !item->parent() )  // second level
+        {
+            Artist* artist;
+            artist = m_ipod->getArtistByName( item->text( 0 ) );
+    
+            if ( artist )
+                for ( ArtistIterator it( *artist ); it.current(); ++it )
+                    items << it.currentKey();
+        }
+        else
+        {
+            TrackList* album;
+            album = m_ipod->getAlbum( item->parent()->text( 0 ), item->text( 0 ) );
+    
+            if ( album )
+            {
+                TrackList::Iterator it = album->getTrackIDs();
+
+                while ( it.hasNext() )
+                {
+                    TrackMetadata* track = m_ipod->getTrackByID( it.next() );
+                    items << track->getTitle();
+                    items << track->getPath();
+                }
+            }
+        }
+    }
 
     return items;
 }
@@ -397,7 +424,7 @@ void
 MediaDevice::fileTransferred( KIO::Job *job, const KURL &from, const KURL &to, bool dir, bool renamed )  //SLOT
 {
     m_parent->m_progress->setProgress( m_parent->m_progress->value() + 1 );
-    m_parent->m_deviceList->renderView();
+    m_parent->m_deviceList->renderView( 0 );
 }
 
 

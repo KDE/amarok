@@ -69,11 +69,9 @@ class MediaDeviceList : public KListView
         MediaDeviceList( MediaDeviceView* parent );
         ~MediaDeviceList();
 
-        void renderView();
-
     private slots:
-        void slotExpand( QListViewItem* );
         void slotCollapse( QListViewItem* );
+        void renderView( QListViewItem* parent );
         void renderNode( QListViewItem* parent, const KURL& url );
 
     private:
