@@ -48,7 +48,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     , m_cat1Menu( new KPopupMenu( this ) )
     , m_cat2Menu( new KPopupMenu( this ) )
     , m_cat3Menu( new KPopupMenu( this ) )
-	 , m_sortMenu( new KPopupMenu( this ) )
+    , m_sortMenu( new KPopupMenu( this ) )
     , m_timer( new QTimer( this ) )
 {
     setSpacing( 4 );
@@ -75,33 +75,39 @@ CollectionBrowser::CollectionBrowser( const char* name )
         QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter collection" ) );
     } //</Search LineEdit>
 
-    KActionCollection* ac = new KActionCollection( this );
-    m_scanAction = new KAction( i18n("Start Scan"), "reload", 0, this, SLOT( scan() ), ac, "Start Scan" );
-    m_configureAction = new KAction( i18n("Configure Folders"), "configure", 0, this, SLOT( setupDirs() ), ac, "Configure" );
+    m_view = new CollectionView( this );
 
-    KActionMenu* tagfilterMenuButton = new KActionMenu( i18n("Tag Filter"), "filter", ac );
+    KActionCollection* ac = new KActionCollection( this );
+    m_scanAction = new KAction( i18n( "Start Scan" ), "reload", 0, this, SLOT( scan() ), ac, "Start Scan" );
+    m_configureAction = new KAction( i18n( "Configure Folders" ), "configure", 0, this, SLOT( setupDirs() ), ac, "Configure" );
+    m_treeViewAction = new KAction( i18n( "Tree View" ), "view_tree", 0, m_view, SLOT( setTreeMode() ), ac, "Tree View" );
+    m_flatViewAction = new KAction( i18n( "Flat View" ), "view_detailed", 0, m_view, SLOT( setFlatMode() ), ac, "Flat View" );
+
+    KActionMenu* tagfilterMenuButton = new KActionMenu( i18n( "Tag Filter" ), "filter", ac );
     tagfilterMenuButton->setDelayed( false );
     m_categoryMenu = tagfilterMenuButton->popupMenu();
 
-    m_view = new CollectionView( this );
-
-    connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
-
-    toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the open button to have text on right
+    toolbar->setIconText( KToolBar::IconTextRight, false );
     m_scanAction->plug( toolbar );
-
+    toolbar->insertLineSeparator();
+    
+    toolbar->setIconText( KToolBar::IconOnly, false );
+    m_treeViewAction->plug( toolbar );
+    m_flatViewAction->plug( toolbar );
+    toolbar->insertLineSeparator();
+    
+    toolbar->setIconText( KToolBar::IconTextRight, false );
+    tagfilterMenuButton->plug( toolbar );
     toolbar->insertLineSeparator();
 
-    tagfilterMenuButton->plug( toolbar );
-
-    toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
+    toolbar->setIconText( KToolBar::IconOnly, false );
     m_configureAction->plug( toolbar );
 
     m_categoryMenu->insertItem( i18n( "&First Level" ), m_cat1Menu );
     m_categoryMenu->insertItem( i18n( "&Second Level"), m_cat2Menu );
     m_categoryMenu->insertItem( i18n( "&Third Level" ), m_cat3Menu );
-	 m_categoryMenu ->insertSeparator();
-	 m_categoryMenu->insertItem( i18n( "&Sort Results" ), m_sortMenu );
+    m_categoryMenu ->insertSeparator();
+    m_categoryMenu->insertItem( i18n( "&Sort Results" ), m_sortMenu );
 
     m_cat1Menu ->insertItem( i18n( "&Album" ), m_view, SLOT( cat1Menu( int ) ), 0, IdAlbum );
     m_cat1Menu ->insertItem( i18n( "A&rtist"), m_view, SLOT( cat1Menu( int ) ), 0, IdArtist );
@@ -122,14 +128,16 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_cat3Menu ->insertItem( i18n( "&Genre" ), m_view, SLOT( cat3Menu( int ) ), 0, IdGenre );
     m_cat3Menu ->insertItem( i18n( "&Year" ), m_view, SLOT( cat3Menu( int ) ), 0, IdYear );
 
-	 m_sortMenu ->insertItem( i18n( "By &Track Tag" ) , m_view, SLOT( sortMenu( int ) ), 0, IdTracktag );
-	 m_sortMenu ->insertItem( i18n( "By &Filename" ) , m_view, SLOT( sortMenu( int ) ), 0, IdFilename );
+    m_sortMenu ->insertItem( i18n( "By &Track Tag" ) , m_view, SLOT( setSortMode( int ) ), 0, CollectionView::sortTracktag );
+    m_sortMenu ->insertItem( i18n( "By &Filename" ) , m_view, SLOT( setSortMode( int ) ), 0, CollectionView::sortFilename );
 
     m_view->cat1Menu( m_view->m_cat1, false );
     m_view->cat2Menu( m_view->m_cat2, false );
-    m_view->cat3Menu( m_view->m_cat3, true );
-	 m_view->sortMenu( m_view->m_sort );
+    m_view->cat3Menu( m_view->m_cat3, false );
+    m_view->setSortMode( m_view->m_sortMode, false );
+    m_view->setViewMode( m_view->m_viewMode );
 
+    connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
 
@@ -202,7 +210,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         m_cat1 = config->readNumEntry( "Category1", CollectionBrowser::IdArtist );
         m_cat2 = config->readNumEntry( "Category2", CollectionBrowser::IdAlbum );
         m_cat3 = config->readNumEntry( "Category3", CollectionBrowser::IdNone );
-		  m_sort = config->readNumEntry( "SortCriteria", CollectionBrowser::IdTracktag );
+        m_sortMode = config->readNumEntry( "SortCriteria", sortTracktag );
+        m_viewMode = config->readNumEntry( "ViewMode", modeTreeView );
 
         addColumn( captionForCategory( m_cat1 ) );
     //</READ CONFIG>
@@ -272,7 +281,8 @@ CollectionView::~CollectionView() {
     config->writeEntry( "Category1", m_cat1 );
     config->writeEntry( "Category2", m_cat2 );
     config->writeEntry( "Category3", m_cat3 );
-	 config->writeEntry( "SortCriteria", m_sort );
+    config->writeEntry( "SortCriteria", m_sortMode );
+    config->writeEntry( "ViewMode", m_viewMode );
     config->writeEntry( "Database Version", DATABASE_VERSION );
     config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
 }
@@ -344,8 +354,9 @@ CollectionView::renderView( )  //SLOT
 
     //we use this list to show the bits the user was looking at again
     QStringList currentItemPath;
-    for( QListViewItem *item = currentItem(); item; item = item->parent() )
-        currentItemPath.prepend( item->text( 0 ) );
+    if ( m_viewMode == modeTreeView )
+        for( QListViewItem *item = currentItem(); item; item = item->parent() )
+            currentItemPath.prepend( item->text( 0 ) );
 
     clear();
     QPixmap pixmap = iconForCategory( m_cat1 );
@@ -354,70 +365,116 @@ CollectionView::renderView( )  //SLOT
     QStringList values;
     QueryBuilder qb;
 
-    qb.addReturnValue( m_cat1, QueryBuilder::valName );
-    qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
-    qb.sortBy( m_cat1, QueryBuilder::valName );
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
-
-    if ( m_cat1 == QueryBuilder::tabArtist )
-        qb.setOptions( QueryBuilder::optNoCompilations );
-
-    values = qb.run();
-
-    for ( int i = values.count() - 1; i >= 0; --i )
+    // MODE FLATVIEW
+    if ( m_viewMode == modeFlatView )
     {
-        if ( values[i].stripWhiteSpace().isEmpty() )
-            values[i] = i18n( "Unknown" );
+        if ( m_filter.length() < 3 ) return;
 
-        KListViewItem* item = new KListViewItem( this );
-        item->setExpandable( true );
-        item->setDragEnabled( true );
-        item->setDropEnabled( false );
-        item->setText( 0, values[ i ] );
-        item->setPixmap( 0, pixmap );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+        qb.addReturnValue( m_cat1, QueryBuilder::valName );
+        if ( m_cat2 != CollectionBrowser::IdNone ) qb.addReturnValue( m_cat2, QueryBuilder::valName );
+        if ( m_cat3 != CollectionBrowser::IdNone ) qb.addReturnValue( m_cat3, QueryBuilder::valName );
+
+        qb.sortBy( m_cat1, QueryBuilder::valName );
+        if ( m_cat2 != CollectionBrowser::IdNone ) qb.sortBy( m_cat2, QueryBuilder::valName );
+        if ( m_cat3 != CollectionBrowser::IdNone ) qb.sortBy( m_cat3, QueryBuilder::valName );
+        
+        qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
+        qb.setOptions( QueryBuilder::optRemoveDuplicates );
+
+        values = qb.run();
+    
+        //add items to the view
+        for ( int i = values.count() - qb.countReturnValues(); i >= 0; i -= qb.countReturnValues() )
+        {
+            if ( values[i].stripWhiteSpace().isEmpty() )
+                values[i] = i18n( "Unknown" );
+    
+            Item* item = new Item( this );
+            item->setDragEnabled( true );
+            item->setDropEnabled( false );
+
+            item->setUrl( values[ i ] );
+            for ( uint j = 1; j < qb.countReturnValues(); j++ )
+                item->setText( j - 1, values[ i + j ] );
+        }
     }
 
-    if ( m_cat1 == QueryBuilder::tabArtist )
+    // MODE TREEVIEW
+    if ( m_viewMode == modeTreeView )
     {
-        qb.clear();
         qb.addReturnValue( m_cat1, QueryBuilder::valName );
-        qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong , m_filter );
-        qb.setOptions( QueryBuilder::optOnlyCompilations | QueryBuilder::optRemoveDuplicates );
-        qb.setLimit( 0, 1 );
+        qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
+        qb.sortBy( m_cat1, QueryBuilder::valName );
+        qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    
+        if ( m_cat1 == QueryBuilder::tabArtist )
+            qb.setOptions( QueryBuilder::optNoCompilations );
+    
         values = qb.run();
-
-        if ( values.count() )
+    
+        //add items to the view
+        for ( int i = values.count() - 1; i >= 0; --i )
         {
+            if ( values[i].stripWhiteSpace().isEmpty() )
+                values[i] = i18n( "Unknown" );
+    
             KListViewItem* item = new KListViewItem( this );
             item->setExpandable( true );
             item->setDragEnabled( true );
             item->setDropEnabled( false );
-            item->setText( 0, i18n( "Various Artists" ) );
+            item->setText( 0, values[ i ] );
             item->setPixmap( 0, pixmap );
         }
-    }
-
-    //open up tree that contains the previous currentItem
-    QListViewItem *item = firstChild();
-    for( QStringList::ConstIterator it = currentItemPath.begin(); item && it != currentItemPath.end(); ) {
-        if ( item->text( 0 ) == *it ) {
-            if ( ++it == currentItemPath.end() )
-                break;
-            if ( !item->isExpandable() )
-                break;
-            item->setOpen( true );
-            item = item->firstChild();
+    
+        //check if we need to add a Various Artists node
+        if ( m_cat1 == QueryBuilder::tabArtist )
+        {
+            qb.clear();
+            qb.addReturnValue( m_cat1, QueryBuilder::valName );
+            qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong , m_filter );
+            qb.setOptions( QueryBuilder::optOnlyCompilations | QueryBuilder::optRemoveDuplicates );
+            qb.setLimit( 0, 1 );
+            values = qb.run();
+    
+            if ( values.count() )
+            {
+                KListViewItem* item = new KListViewItem( this );
+                item->setExpandable( true );
+                item->setDragEnabled( true );
+                item->setDropEnabled( false );
+                item->setText( 0, i18n( "Various Artists" ) );
+                item->setPixmap( 0, pixmap );
+            }
         }
-        else
-            item = item->nextSibling();
+    
+        //open up tree that contains the previous currentItem
+        QListViewItem *item = firstChild();
+        for( QStringList::ConstIterator it = currentItemPath.begin(); item && it != currentItemPath.end(); )
+        {
+            if ( item->text( 0 ) == *it )
+            {
+                if ( ++it == currentItemPath.end() )
+                    break;
+                if ( !item->isExpandable() )
+                    break;
+                item->setOpen( true );
+                item = item->firstChild();
+            }
+            else
+                item = item->nextSibling();
+        }
+
+        //ensure the previous currentItem is set current and visible
+        if ( item )
+        {
+            item->setSelected( true );
+            setCurrentItem( item );
+            ensureItemVisible( item );
+        }
     }
 
-    //ensure the previous currentItem is set current and visible
-    if ( item ) {
-        item->setSelected( true );
-        setCurrentItem( item );
-        ensureItemVisible( item );
-    }
 }
 
 
@@ -491,7 +548,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             {
                 qb.addReturnValue( m_cat2, QueryBuilder::valTitle );
                 qb.addReturnValue( m_cat2, QueryBuilder::valURL );
-                qb.sortBy( m_cat2, m_telltrack );
+                qb.sortBy( m_cat2, m_qbSortBy );
                 qb.sortBy( m_cat2, QueryBuilder::valTitle );
             }
             else
@@ -516,7 +573,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             {
                 qb.addReturnValue( m_cat3, QueryBuilder::valTitle );
                 qb.addReturnValue( m_cat3, QueryBuilder::valURL );
-                qb.sortBy( m_cat3, m_telltrack );
+                qb.sortBy( m_cat3, m_qbSortBy );
                 qb.sortBy( m_cat3, QueryBuilder::valTitle );
             }
             else
@@ -540,7 +597,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-            qb.sortBy( QueryBuilder::tabSong, m_telltrack );
+            qb.sortBy( QueryBuilder::tabSong, m_qbSortBy );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
 
             category = CollectionBrowser::IdNone;
@@ -586,19 +643,25 @@ CollectionView::slotCollapse( QListViewItem* item )  //SLOT
     }
 }
 
+
 void
-CollectionView::sortMenu( int id )
+CollectionView::setSortMode( int mode, bool rerender )
 {
-	 m_parent->m_sortMenu->setItemChecked( m_sort, false ); //uncheck old item
-    m_parent->m_sortMenu->setItemEnabled( m_sort, true );  //enable old item
-	 m_sort = id;
-	 m_parent->m_sortMenu->setItemChecked( m_sort, true );
+    m_parent->m_sortMenu->setItemChecked( m_sortMode, false ); //uncheck old item
+    m_parent->m_sortMenu->setItemEnabled( m_sortMode, true );  //enable old item
+    m_sortMode = mode;
+    m_parent->m_sortMenu->setItemChecked( m_sortMode, true );
 
-	 if ( m_sort == CollectionBrowser::IdTracktag) m_telltrack = QueryBuilder::valTrack;
-	 else if ( m_sort == CollectionBrowser::IdFilename) m_telltrack = QueryBuilder::valURL;
+    if ( m_sortMode == sortTracktag )
+        m_qbSortBy = QueryBuilder::valTrack;
+    else
+    if ( m_sortMode == sortFilename )
+        m_qbSortBy = QueryBuilder::valURL;
 
-	 renderView();
+    if ( rerender )
+        renderView();
 }
+
 
 void
 CollectionView::cat1Menu( int id, bool rerender )  //SLOT
@@ -784,6 +847,26 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
 
 void
+CollectionView::setViewMode( int mode, bool rerender )
+{
+    if ( mode == modeTreeView )
+    {
+        m_parent->m_treeViewAction->setEnabled( false );
+        m_parent->m_flatViewAction->setEnabled( true );
+    }
+    else
+    {
+        m_parent->m_treeViewAction->setEnabled( true );
+        m_parent->m_flatViewAction->setEnabled( false );
+    }
+
+    m_viewMode = mode;
+    if ( rerender )
+        renderView();
+}
+
+
+void
 CollectionView::fetchCover() //SLOT
 {
     #ifdef AMAZON_SUPPORT
@@ -898,7 +981,8 @@ CollectionView::cacheItem( QListViewItem* item )
 
 
 KURL::List
-CollectionView::listSelected() {
+CollectionView::listSelected()
+{
     //Here we determine the URLs of all selected items. We use two passes, one for the parent items,
     //and another one for the children.
 
@@ -906,6 +990,15 @@ CollectionView::listSelected() {
     QListViewItem* item;
     QStringList values;
     QueryBuilder qb;
+
+    if ( m_viewMode == modeFlatView )
+    {
+        for ( item = firstChild(); item; item = item->nextSibling() )
+            if ( item->isSelected() )
+                list << static_cast<Item*>( item ) ->url();
+
+        return list;
+    }
 
     //first pass: parents
     for ( item = firstChild(); item; item = item->nextSibling() )
@@ -925,7 +1018,7 @@ CollectionView::listSelected() {
             if ( !sampler ) qb.sortBy( m_cat1, QueryBuilder::valName );
             if ( m_cat2 != QueryBuilder::tabSong ) qb.sortBy( m_cat2, QueryBuilder::valName );
             if ( m_cat3 != QueryBuilder::tabSong ) qb.sortBy( m_cat3, QueryBuilder::valName );
-            qb.sortBy( QueryBuilder::tabSong, m_telltrack );
+            qb.sortBy( QueryBuilder::tabSong, m_qbSortBy );
 
             qb.setOptions( QueryBuilder::optRemoveDuplicates );
             values = qb.run();
@@ -966,7 +1059,7 @@ CollectionView::listSelected() {
                     if ( !sampler ) qb.sortBy( m_cat1, QueryBuilder::valName );
                     qb.sortBy( m_cat2, QueryBuilder::valName );
                     if ( m_cat3 != QueryBuilder::tabSong ) qb.sortBy( m_cat3, QueryBuilder::valName );
-                    qb.sortBy( QueryBuilder::tabSong, m_telltrack );
+                    qb.sortBy( QueryBuilder::tabSong, m_qbSortBy );
 
                     qb.setOptions( QueryBuilder::optRemoveDuplicates );
                     values = qb.run();
@@ -998,7 +1091,6 @@ CollectionView::listSelected() {
                             list << static_cast<Item*>( grandChild2 ) ->url();
     }
     else {
-
         for ( item = firstChild(); item; item = item->nextSibling() )
             for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
                 for ( QListViewItem* grandChild = child->firstChild(); grandChild; grandChild = grandChild->nextSibling() )
@@ -1020,7 +1112,7 @@ CollectionView::listSelected() {
                         if ( !sampler ) qb.sortBy( m_cat1, QueryBuilder::valName );
                         qb.sortBy( m_cat2, QueryBuilder::valName );
                         qb.sortBy( m_cat3, QueryBuilder::valName );
-                        qb.sortBy( QueryBuilder::tabSong, m_telltrack );
+                        qb.sortBy( QueryBuilder::tabSong, m_qbSortBy );
 
                         qb.setOptions( QueryBuilder::optRemoveDuplicates );
                         values = qb.run();

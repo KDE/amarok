@@ -47,16 +47,17 @@ class CollectionBrowser: public QVBox
     private:
         //attributes:
         enum CatMenuId { IdAlbum = 1, IdArtist = 2, IdGenre = 4, IdYear = 8 , IdScan = 16, IdNone = 32 };
-		  enum sortCritId { IdTracktag = 1, IdFilename = 2 };
 
         KAction* m_configureAction;
         KAction* m_scanAction;
+        KAction* m_treeViewAction;
+        KAction* m_flatViewAction;
 
         KPopupMenu* m_categoryMenu;
         KPopupMenu* m_cat1Menu;
         KPopupMenu* m_cat2Menu;
         KPopupMenu* m_cat3Menu;
-		  KPopupMenu* m_sortMenu;
+        KPopupMenu* m_sortMenu;
         KLineEdit* m_searchEdit;
         CollectionView* m_view;
         QTimer* m_timer;
@@ -69,6 +70,9 @@ class CollectionView : public KListView
     friend class CollectionBrowser;
 
     public:
+        enum SortMode  { sortTracktag, sortFilename };
+        enum ViewMode  { modeTreeView, modeFlatView };
+
         class Item : public KListViewItem {
             public:
                 Item( QListView* parent )
@@ -93,6 +97,15 @@ class CollectionView : public KListView
         QString filter() { return m_filter; }
         Item* currentItem() { return static_cast<Item*>( KListView::currentItem() ); }
 
+    public slots:
+        void setSortMode( int mode, bool rerender = true );
+        void setTreeMode() { setViewMode( modeTreeView ); };
+        void setFlatMode() { setViewMode( modeFlatView ); };
+        
+        void cat1Menu( int id, bool rerender = true );
+        void cat2Menu( int id, bool rerender = true );
+        void cat3Menu( int id, bool rerender = true );
+    
     private slots:
         void setupDirs();
         void scan();
@@ -102,10 +115,6 @@ class CollectionView : public KListView
         void cacheItem( QListViewItem* item );
         void slotExpand( QListViewItem* );
         void slotCollapse( QListViewItem* );
-        void cat1Menu( int id, bool rerender = true );
-        void cat2Menu( int id, bool rerender = true );
-        void cat3Menu( int id, bool rerender = true );
-		  void sortMenu( int id );
         void enableCat3Menu( bool );
         void invokeItem( QListViewItem* );
         void rmbPressed( QListViewItem*, const QPoint&, int );
@@ -122,6 +131,7 @@ class CollectionView : public KListView
         void customEvent( QCustomEvent* e );
 
     private:
+        void setViewMode( int mode, bool rerender = true );
         void startDrag();
         KURL::List listSelected();
 
@@ -135,15 +145,16 @@ class CollectionView : public KListView
         static CollectionDB* m_db;
         static CollectionDB* m_insertdb;
         static CollectionView* m_instance;
-		  
-		  QueryBuilder::qBuilderValues m_telltrack;
+
+        QueryBuilder::qBuilderValues m_qbSortBy;
 
         CollectionBrowser* m_parent;
         QString m_filter;
         int m_cat1;
         int m_cat2;
         int m_cat3;
-		  int m_sort;
+        int m_sortMode;
+        int m_viewMode;
 
         bool m_isScanning;
         QHBox* m_progressBox;
