@@ -170,7 +170,7 @@ gst_equalizer_set_property ( GObject * object, guint prop_id, const GValue * val
             gains = (std::vector<int>*) g_value_get_pointer(value);
             for ( int band = 0; band < BAND_NUM; band++ )
                 for ( int chan = 0; chan < EQ_CHANNELS; chan++ )
-                    obj->gain[band][chan] = (float)gains->at( band ) * 0.012 - 0.2;
+                    obj->gain[band][chan] = (float)(*gains)[band] * 0.012 - 0.2;
             break;
 
         default:
