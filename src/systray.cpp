@@ -6,9 +6,9 @@
 // Copyright: like rest of amaroK
 //
 
-#include "systray.h"
 #include "app.h"
 #include "enginecontroller.h"
+#include "systray.h"
 
 #include <qevent.h>
 #include <kaction.h>
@@ -66,6 +66,10 @@ amaroK::TrayIcon::event( QEvent *e )
         return TRUE;
     }
     case QEvent::Wheel:
+        EngineController::instance()->setVolume( EngineController::engine()->volume() +
+                                                 static_cast<QWheelEvent*>(e)->delta() / 18 );
+        return TRUE;
+    
     case QEvent::DragEnter:
         //ignore() doesn't pass the event to parent unless
         //the parent isVisible() and the active window!
