@@ -25,11 +25,9 @@
 #include <klocale.h>
 #include <qstring.h>
 #include <qwidget.h>
-#include <khtml_part.h>
 #include <kglobal.h>
 #include <kstandarddirs.h>
 #include <qlayout.h>
-#include <qvbox.h>
 #include <qtimer.h>
 #include <dcopclient.h>
 #include <kmessagebox.h>
@@ -40,18 +38,56 @@
 #include <ktoolbar.h>
 #include <kapplication.h>
 #include <qslider.h>
-
+#include <kdebug.h>
+#include <kurldrag.h>
+#include <khtmlview.h>
 
 #define HTML_FILE KGlobal::dirs()->saveLocation( "data", "amarok/", true ) + "contextbrowser.html"
+
+amarokWidget::amarokWidget( QWidget * parent, const char * name, WFlags f )
+                 : QVBox(parent, name, f)
+{
+    setAcceptDrops(true);
+}
+void amarokWidget::dragEnterEvent(QDragEnterEvent* event)
+{
+    event->accept( KURLDrag::canDecode(event) );
+}
+
+void amarokWidget::dropEvent(QDropEvent* event)
+{
+    KURL::List urlList;
+    if( KURLDrag::decode(event, urlList) )
+    {
+        KURL::List::iterator it;
+        for (it = urlList.begin(); it != urlList.end(); ++it )
+            emit emitURL(*it);
+    }
+}
+
+htmlWidget::htmlWidget()
+    : KHTMLPart()
+{
+}
+
+htmlWidget::~htmlWidget()
+{
+}
+bool htmlWidget::event(QEvent* event)
+{
+kdDebug() << "Evento ricevuto su htmlWidget:" << event->type() << endl;
+}
 
 
 UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widgetParent, QString &desktopName, const char* name):
                    KonqSidebarPlugin(inst,parent,widgetParent,desktopName,name)
 {
-    widget=new QVBox(widgetParent);
-    widget->show();
-    widget->resize(380,300);
-    browser = new KHTMLPart( widget );
+    widget=new amarokWidget(widgetParent);
+    widget->resize(580,300);
+htmlWidget *mainBrowser=new htmlWidget();
+    browser = new KHTMLPart(widget, "widget-browser", mainBrowser);
+//browser=new KHTMLPart(widget);
+kdDebug() << "parentPart() << " << browser->parentPart() << endl;
     browser->setDNDEnabled( true );
     updateBrowser(HTML_FILE);
     amarokDCOP=new DCOPClient();
@@ -75,8 +111,11 @@ UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widget
     QTimer *t = new QTimer( this );
     connect( t, SIGNAL(timeout()), SLOT(updateStatus() ) );
     t->start( 2000, FALSE );
+kdDebug() << "Connecting widget signal" << endl;
+    connect( widget, SIGNAL(emitURL( const KURL &)), this, SLOT(openURLRequest( const KURL &) ) );
         connect( browser->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
              this,                          SLOT( openURLRequest( const KURL & ) ) );
+    widget->show();
 }
 
 
@@ -162,10 +201,11 @@ QString UniversalAmarok::getCurrentPlaying()
 void UniversalAmarok::openURLRequest( const KURL &url )
 {
    checkForAmarok();
+   kdDebug() << "Catched url request: " << url << endl;
    QByteArray data;
    QDataStream arg(data, IO_WriteOnly);
    arg << url;
-   amarokDCOP->send("amarok", "player", "playMedia(KURL)", data);
+   amarokDCOP->send("amarok", "playlist", "playMedia(KURL)", data);
 }
 
 

@@ -20,21 +20,47 @@
 #ifndef KONQUERORSIDEBAR_H
 #define KONQUERORSIDEBAR_H
 
+#include <khtml_part.h>
 #include <konqsidebarplugin.h>
 #include <dcopclient.h> 
 #include <qslider.h>
-
-
+#include <qvbox.h>
+#include <khtmlview.h>
+#include <kurl.h>
 /**
 @author Marco Gulino
 */
 
-class KHTMLPart;
-class QVBox;
 class universalamarokwidget;
 class DCOPClient;
 class QFileInfo;
 class QDateTime;
+
+class amarokWidget : public QVBox
+{
+Q_OBJECT
+public:
+    amarokWidget( QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+
+protected:
+    virtual void dragEnterEvent ( QDragEnterEvent * );
+    virtual void dropEvent(QDropEvent*);
+
+signals:
+    void emitURL( const KURL &);
+};
+
+class htmlWidget : public KHTMLPart
+{
+Q_OBJECT
+public:
+    htmlWidget();
+    ~htmlWidget();
+    virtual bool event ( QEvent * );
+signals:
+    void emitURL( const KURL &);
+};
+
 class UniversalAmarok : public KonqSidebarPlugin
 {
 Q_OBJECT
@@ -49,7 +75,7 @@ public:
     QString getCurrentPlaying();
 
 private:
-   QVBox* widget;
+   amarokWidget* widget;
    KHTMLPart* browser;
    QString amarokPlaying;
    DCOPClient* amarokDCOP;
@@ -67,7 +93,7 @@ public slots:
     void sendNext() { checkForAmarok(); amarokDCOP->send("amarok", "player", "next()", ""); }
     void sendMute() { checkForAmarok(); amarokDCOP->send("amarok", "player", "mute()", ""); }
     void volChanged(int vol);
-    void openURLRequest( const KURL &url );
+    void openURLRequest( const KURL & );
     void checkForAmarok();
 };
 
