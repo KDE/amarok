@@ -25,6 +25,7 @@ class KAction;
 class KProgress;
 class KToggleAction;
 class QCustomEvent;
+class QPushButton;
 class QTimer;
 
 namespace amaroK {
@@ -39,7 +40,7 @@ public:
     StatusBar( QWidget *parent = 0, const char *name = 0 );
     ~StatusBar();
 
-    static StatusBar* self() { return m_self; }
+    static StatusBar* instance() { return m_instance; }
 
 public slots:
     /** update total song count */
@@ -53,11 +54,12 @@ protected: /* reimpl from engineobserver */
 private slots:
     void slotPauseTimer();
     void drawTimeDisplay( int position );
-
+    void stopPlaylistLoader();
+    
 private:
     virtual void customEvent( QCustomEvent* e );
 
-    static StatusBar* m_self;
+    static StatusBar* m_instance;
 
     QLabel         *m_pTimeLabel;
     QLabel         *m_pTitle;
@@ -66,6 +68,7 @@ private:
     amaroK::Slider *m_pSlider;
     bool            m_sliderPressed;
     QTimer         *m_pPauseTimer;
+    QPushButton    *m_stopPlaylist;
 };
 
 

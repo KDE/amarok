@@ -217,8 +217,8 @@ public:
            QString m_path;
    };
    
-    CollectionReader( CollectionDB* parent, QObject* statusBar, QObject* playlistBrowser,
-                                 const QStringList& folders, bool recursively, bool incremental );
+    CollectionReader( CollectionDB* parent, QObject* playlistBrowser, const QStringList& folders,
+                      bool recursively, bool incremental );
 
     static void stop() { m_stop = true; }       
     bool doJob();
@@ -230,7 +230,6 @@ private:
     static bool m_stop;
     
     CollectionDB* m_parent;
-    QObject* m_statusBar;
     QObject* m_playlistBrowser;
     QStringList m_folders;
     bool m_recursively;

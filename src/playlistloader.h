@@ -37,7 +37,8 @@ public:
 
     static bool isValidMedia( const KURL &, mode_t = KFileItem::Unknown, mode_t = KFileItem::Unknown );
     static inline int isPlaylist( const QString & );
-
+    static void stop() { m_stop = true; }
+    
 private:
     PlaylistLoader( const KURL::List&, PlaylistItem* ); //private constructor for placeholder
 
@@ -58,6 +59,8 @@ private:
     void loadPLS( QTextStream & );
     void loadXML( QTextStream & );
 
+    static bool m_stop;
+    
     KURL::List      m_list;
     PlaylistItem   *m_after;  //accessed by GUI thread _only_
     PlaylistItem   *m_first;
@@ -127,6 +130,21 @@ public:
        PlaylistLoader *m_thread;
     };
 
+    class ProgressEvent : public QCustomEvent
+    {
+        public:
+            enum State { Start = -1, Stop = -2, Total = -3, Progress = -4 };
+    
+            ProgressEvent( int state, int value = -1 )
+            : QCustomEvent( 60000 )
+            , m_state( state )
+            , m_value( value ) {}
+            int state() { return m_state; }
+            int value() { return m_value; }
+        private:
+            int m_state;
+            int m_value;
+    };
 
     friend class MakeItemEvent; //for access to m_after
     friend class DownloadPlaylistEvent; //for access to placeHolder ctor

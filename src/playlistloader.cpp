@@ -9,11 +9,12 @@
 //#include "amarokfilelist.h"    //for sorting directories
 #endif
 #include "engine/enginebase.h" //isValidMedia()
+#include "enginecontroller.h"
 #include "metabundle.h"
+#include "playlist.h"      //we're tied to this class
 #include "playlistitem.h"
 #include "playlistloader.h"
-#include "playlist.h"    //we're tied to this class
-#include "enginecontroller.h"
+#include "statusbar.h"     //for progressbar updating
 
 #include <qapplication.h>  //postEvent()
 #include <qtextstream.h>   //loadM3U(),loadPLS()
@@ -70,6 +71,8 @@
 //TODO reimplement ask recursive in Playlist::insertMedia()
 
 
+bool PlaylistLoader::m_stop;
+
 PlaylistLoader::PlaylistLoader( const KURL::List &ul, QObject *receiver, PlaylistItem *pi )
    : m_list( ul )
    , m_after( pi )
@@ -117,10 +120,15 @@ PlaylistLoader::~PlaylistLoader()
 void PlaylistLoader::run()
 {
     kdDebug() << "[PLSloader] Started..\n";
+    
+    m_stop = false;
+    QApplication::postEvent( amaroK::StatusBar::instance(), new ProgressEvent( ProgressEvent::Start ) );
+    QApplication::postEvent( amaroK::StatusBar::instance(), new ProgressEvent( ProgressEvent::Total, m_list.count() ) );
 
     m_recursionCount = -1;
     process( m_list );
 
+    QApplication::postEvent( amaroK::StatusBar::instance(), new ProgressEvent( ProgressEvent::Stop ) );
     QApplication::postEvent( m_receiver, new PlaylistLoader::DoneEvent( this ) );
 }
 
@@ -129,9 +137,15 @@ void PlaylistLoader::process( const KURL::List &list, const bool validate )
 {
     struct STATSTRUCT statbuf;
     ++m_recursionCount;
-
+    
+    int count = 0;
     const KURL::List::ConstIterator end = list.end();
-    for ( KURL::List::ConstIterator it = list.begin(); it != end; ++it ) {
+    
+    for ( KURL::List::ConstIterator it = list.begin(); it != end && !m_stop; ++it, count++ ) {
+        
+        if ( !( count % 10 ) ) // Don't post events too often since this blocks amaroK
+            QApplication::postEvent( amaroK::StatusBar::instance(), new ProgressEvent( ProgressEvent::Progress, count ) );
+            
         QString path = ( *it ).path();
 
         if ( validate && ( *it ).isLocalFile() ) {

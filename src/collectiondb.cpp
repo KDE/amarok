@@ -3,14 +3,13 @@
 // See COPYING file for licensing information.
 
 #include "amazonsetup.h"
+#include "collectionbrowser.h"    //updateTags()
 #include "collectiondb.h"
 #include "coverfetcher.h"
-#include "sqlite/sqlite.h"
-#include "statusbar.h"
-#include "collectionbrowser.h"    //updateTags()
-#include "playlistbrowser.h"
-#include "threadweaver.h"
 #include "metabundle.h"    //updateTags()
+#include "playlistbrowser.h"
+#include "sqlite/sqlite.h"
+#include "threadweaver.h"
 
 #include <kapplication.h>
 #include <kconfig.h>
@@ -498,8 +497,7 @@ CollectionDB::scan( const QStringList& folders, bool recursively )
     kdDebug() << k_funcinfo << endl;
 
     if ( !folders.isEmpty() )
-        m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), PlaylistBrowser::instance(),
-                                         folders, recursively, false ) );
+        m_weaver->append( new CollectionReader( this, PlaylistBrowser::instance(), folders, recursively, false ) );
     else
         emit scanDone( false );
 }
@@ -584,8 +582,7 @@ CollectionDB::scanModifiedDirs( bool recursively )
     }
 
     if ( !folders.isEmpty() )
-        m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), PlaylistBrowser::instance(),
-                                         folders, recursively, false ) );
+        m_weaver->append( new CollectionReader( this, PlaylistBrowser::instance(), folders, recursively, false ) );
     else
         emit scanDone( false );
 }
@@ -812,8 +809,7 @@ CollectionDB::dirDirty( const QString& path )
 {
     kdDebug() << k_funcinfo << "Dirty: " << path << endl;
 
-    m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), PlaylistBrowser::instance(),
-                                     path, false, true ) );
+    m_weaver->append( new CollectionReader( this, PlaylistBrowser::instance(), path, false, true ) );
 }
 
 

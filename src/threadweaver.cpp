@@ -229,11 +229,10 @@ void SearchModule::searchDir( QString path )
 
 bool CollectionReader::m_stop;
 
-CollectionReader::CollectionReader( CollectionDB* parent, QObject* statusBar, QObject *playlistBrowser,
+CollectionReader::CollectionReader( CollectionDB* parent, QObject *playlistBrowser,
                                     const QStringList& folders, bool recursively, bool incremental )
         : Job( parent, Job::CollectionReader )
         , m_parent( parent )
-        , m_statusBar( statusBar )
         , m_playlistBrowser( playlistBrowser )
         , m_folders( folders )
         , m_recursively( recursively )
@@ -245,7 +244,6 @@ CollectionReader::doJob()
 {
     m_stop = false;
     
-    QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Start ) );
     QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Start ) );
 
     if ( !m_incremental )
@@ -257,11 +255,9 @@ CollectionReader::doJob()
         readDir( m_folders[ i ], entries );
 
     if ( !entries.empty() ) {
-        QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Total, entries.count() ) );
         QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Total, entries.count() ) );
         readTags( entries );
     }
-    QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Stop ) );
     QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Stop ) );
 
     return !entries.empty();
@@ -341,7 +337,6 @@ CollectionReader::readTags( const QStringList& entries )
         if ( m_stop ) return;
         
         if ( !( i % 20 ) ) { //don't post events too often since this blocks amaroK
-            QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Progress, i ) );
             QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Progress, i ) );
         }
            

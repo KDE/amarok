@@ -17,26 +17,25 @@
 #include "app.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
+#include "playlistloader.h"
 #include "sliderwidget.h"
 #include "statusbar.h"
 #include "threadweaver.h"
 
 #include <qcolor.h>
 #include <qevent.h>
+#include <qpushbutton.h>
 #include <qtimer.h>
 #include <qtooltip.h> //toggle labels
 
 #include <kactionclasses.h>
 #include <kdebug.h>
 #include <kglobalsettings.h>
+#include <kiconloader.h>
 #include <kprogress.h>
 #include <ksqueezedtextlabel.h>
-#include <ksqueezedtextlabel.h>
-
 
 using namespace amaroK;
-
-StatusBar* StatusBar::m_self = 0;
 
 
 class TimeLabel : public QLabel
@@ -55,6 +54,8 @@ public:
 };
 
 
+StatusBar* StatusBar::m_instance = 0;
+
 StatusBar::StatusBar( QWidget *parent, const char *name )
     : KStatusBar( parent, name )
     , m_sliderPressed( false )
@@ -63,15 +64,17 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     //NOTE we don't use KStatusBar::insertItem() mainly because we have
     //no control over the heights of the labels
 
-    m_self = this; //static member
+    m_instance = this; //static member
 
     // attach
     EngineController::instance()->attach( this );
 
     // title label
     addWidget( m_pTitle = new KSqueezedTextLabel( this ), 4 ); //TODO may look nicer without the gray border
-
+   
     // progress
+    addWidget( m_stopPlaylist = new QPushButton( SmallIcon( "cancel" ), QString::null, this ), 0, true );
+    connect( m_stopPlaylist, SIGNAL( clicked() ), this, SLOT( stopPlaylistLoader() ) );
     addWidget( m_pProgress = new KProgress( this ), 0, true );
     m_pProgress->hide();
 
@@ -96,6 +99,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     // make all widgets as high as the time display
     const int h = m_pTimeLabel->height();
     m_pTitle->setFixedHeight( h );
+    m_stopPlaylist->setFixedHeight( h );
     m_pProgress->setFixedHeight( h );
     m_pTotal->setFixedHeight( h );
     w1->setFixedHeight( h );
@@ -161,7 +165,7 @@ void StatusBar::engineTrackPositionChanged( long position )
     m_pSlider->setValue( position );
 }
 
-void StatusBar::drawTimeDisplay( int seconds )
+void StatusBar::drawTimeDisplay( int seconds ) //SLOT
 {
     const uint trackLength = EngineController::instance()->bundle().length();
     if( AmarokConfig::timeDisplayRemaining() && trackLength > 0 ) seconds = trackLength - seconds;
@@ -174,27 +178,35 @@ void StatusBar::drawTimeDisplay( int seconds )
     m_pTimeLabel->setText( s );
 }
 
+void StatusBar::stopPlaylistLoader() //SLOT
+{
+    PlaylistLoader::stop();
+}
+
 void StatusBar::customEvent( QCustomEvent *e )
 {
-    CollectionReader::ProgressEvent* p = (CollectionReader::ProgressEvent*)e;
-
+    PlaylistLoader::ProgressEvent* p = dynamic_cast<PlaylistLoader::ProgressEvent*>( e );
+    if ( !p ) return;
+    
     switch ( p->state() ) {
-    case CollectionReader::ProgressEvent::Start:
+    case PlaylistLoader::ProgressEvent::Start:
         m_pProgress->setProgress( 0 );
+        m_stopPlaylist->show();
         m_pProgress->show();
         if( isHidden() ) show();
         break;
 
-    case CollectionReader::ProgressEvent::Stop:
-        QTimer::singleShot( 2000, m_pProgress, SLOT(hide()) );
+    case PlaylistLoader::ProgressEvent::Stop:
+        QTimer::singleShot( 2000, m_stopPlaylist, SLOT( hide() ) );
+        QTimer::singleShot( 2000, m_pProgress, SLOT( hide() ) );
         if( !AmarokConfig::showStatusBar() ) QTimer::singleShot( 2000, this, SLOT(hide()) );
         break;
 
-    case CollectionReader::ProgressEvent::Total:
+    case PlaylistLoader::ProgressEvent::Total:
         m_pProgress->setTotalSteps( p->value() );
         break;
 
-    case CollectionReader::ProgressEvent::Progress:
+    case PlaylistLoader::ProgressEvent::Progress:
         m_pProgress->setProgress( p->value() );
     }
 }
