@@ -229,7 +229,7 @@ void App::initEngine()
                 "./configure --prefix=`kde-config --prefix` && su -c \"make install\"</pre>"
                 "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net." ) );
 
-            KApplication::exit( 1 );
+            ::exit( EXIT_SUCCESS );
         }
 
         AmarokConfig::setSoundSystem( PluginManager::getService( plugin )->name() );
