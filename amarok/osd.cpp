@@ -31,11 +31,6 @@ OSDWidget::OSDWidget()
               WStyle_Tool | WRepaintNoErase | WX11BypassWM)
     , m_duration( 5000 )
 {
-    // Currently fixed to the top border of desktop, full width
-    // This should be configurable, already on my TODO
-
-    move( 10, 40 );
-    resize( 0, 0 );
     setFocusPolicy( NoFocus );
     timer = new QTimer( this );
     timerMin = new QTimer( this );
@@ -115,6 +110,11 @@ void OSDWidget::showOSD( const MetaBundle &bundle )
 {
     if ( isEnabled() )
     {
+        // Currently fixed to the top border of desktop, full width
+        // This should be configurable, already on my TODO
+        move( 10, 40 );
+        resize( 0, 0 );
+
         // Strip HTML tags, expand basic HTML entities
         QString text = QString( "%1 - %2" ).arg( bundle.prettyTitle(), bundle.prettyLength() );
 
