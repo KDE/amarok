@@ -170,8 +170,19 @@ void BrowserWidget::slotCompleted()
         new PlaylistItem( this, ".." );
 
     clearSelection();
-    setCurrentItem( firstChild() );
-    setSelected( firstChild(), true );
+
+    if ( !cachedPath.isEmpty() )
+    {
+        //FIXME why is slotCompleted() called twice after a directory change? cachedPath (normally) needs to be emptied after this calls
+        setCurrentItem( findItem( cachedPath, 0, Qt::ExactMatch ) );
+        setSelected( findItem( cachedPath, 0, Qt::ExactMatch ), true );
+        ensureItemVisible( findItem( cachedPath, 0, Qt::ExactMatch ) );
+    } else
+    {
+        setCurrentItem( firstChild() );
+        setSelected( firstChild(), true );
+    }
+
     triggerUpdate();
 
     emit directoryChanged( m_pDirLister->url() );

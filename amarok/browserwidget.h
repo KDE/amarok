@@ -43,6 +43,7 @@ class BrowserWidget : public KListView
 
 // ATTRIBUTES ------
         KDirLister *m_pDirLister;
+        QString cachedPath;
 
     public slots:
         void slotCompleted();

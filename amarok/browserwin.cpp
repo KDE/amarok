@@ -262,6 +262,7 @@ void BrowserWin::slotBrowserDoubleClicked( QListViewItem* pItem )
 
         if ( pPlayItem->text( 0 ) == ".." )
         {
+            m_pBrowserWidget->cachedPath = m_pBrowserWidget->m_pDirLister->url().fileName(true);
             m_pBrowserWidget->readDir( m_pBrowserWidget->m_pDirLister->url().upURL() );
         }
 
