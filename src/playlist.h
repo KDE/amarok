@@ -1,5 +1,5 @@
 /***************************************************************************
-                        playlistwidget.h  -  description
+                        Playlist.h  -  description
                             -------------------
     begin                : Don Dez 5 2002
     copyright            : (C) 2002 by Mark Kretschmann
@@ -15,8 +15,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef PLAYLISTWIDGET_H
-#define PLAYLISTWIDGET_H
+#ifndef AMAROK_PLAYLIST_H
+#define AMAROK_PLAYLIST_H
 
 #include "playlistwindow.h"  //friend
 #include "engineobserver.h" //baseclass
@@ -58,26 +58,26 @@ class ThreadWeaver;
 /*
  * @authors Mark Kretschmann && Max Howell
  *
- * PlaylistWidget inherits KListView privately and thus is no longer a ListView
- * Instead it is a part of BrowserWin and they interact in harmony. The change
+ * Playlist inherits KListView privately and thus is no longer a ListView
+ * Instead it is a part of PlaylistWindow and they interact in harmony. The change
  * was necessary as it is too dangerous to allow public access to PlaylistItems
  * due to the multi-threading environment.
  *
  * Unfortunately, since QObject is now inaccessible you have to connect slots
- * via one of BrowserWin's friend members or in PlaylistWidget
+ * via one of PlaylistWindow's friend members or in Playlist
  *
  * If you want to add new playlist type functionality you should implement it
- * inside this class or inside BrowserWin.
+ * inside this class or inside PlaylistWindow.
  *
  */
 
 
-class PlaylistWidget : private KListView, public EngineObserver
+class Playlist : private KListView, public EngineObserver
 {
     Q_OBJECT
     public:
-        PlaylistWidget( QWidget*, KActionCollection*, const char* = 0 );
-        ~PlaylistWidget();
+        Playlist( QWidget*, KActionCollection*, const char* = 0 );
+        ~Playlist();
 
         void insertMedia( const KURL::List&, bool directPlay = false );
         bool isEmpty() const { return childCount() == 0; }
@@ -105,8 +105,8 @@ class PlaylistWidget : private KListView, public EngineObserver
 
         friend class PlaylistItem;
         friend class PlaylistLoader;
-        friend BrowserWin::BrowserWin( QWidget*, const char* );   //setting up connections etc.
-        friend bool BrowserWin::eventFilter( QObject*, QEvent* ); //for convenience we handle some playlist events here
+        friend PlaylistWindow::PlaylistWindow( QWidget*, const char* );   //setting up connections etc.
+        friend bool PlaylistWindow::eventFilter( QObject*, QEvent* ); //for convenience we handle some playlist events here
 
     signals:
         void aboutToClear();
@@ -116,7 +116,7 @@ class PlaylistWidget : private KListView, public EngineObserver
         void insertMedia( const KURL &u ) { insertMedia( KURL::List(u), false ); }
         void handleOrderPrev(); //DEPRECATE
         void handleOrderCurrent(); //DEPRECATE
-        void handleOrder( PlaylistWidget::RequestType = Next ); //DEPRECATE
+        void handleOrder( Playlist::RequestType = Next ); //DEPRECATE
         void clear();
         void shuffle();
         void removeSelectedItems();
@@ -198,4 +198,8 @@ class PlaylistWidget : private KListView, public EngineObserver
         KActionCollection* const m_ac;
 };
 
-#endif
+
+#endif //AMAROK_PLAYLIST_H
+
+
+

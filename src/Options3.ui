@@ -132,7 +132,7 @@
                                         <number>32</number>
                                     </property>
                                     <property name="buddy" stdset="0">
-                                        <cstring>kcfg_BrowserFgColor</cstring>
+                                        <cstring>kcfg_PlaylistWindowFgColor</cstring>
                                     </property>
                                     <property name="whatsThis" stdset="0">
                                         <string>Selects the color to use as foreground (text) color  in the playlist.</string>
@@ -160,7 +160,7 @@
                                         <number>32</number>
                                     </property>
                                     <property name="buddy" stdset="0">
-                                        <cstring>kcfg_BrowserBgColor</cstring>
+                                        <cstring>kcfg_PlaylistWindowBgColor</cstring>
                                     </property>
                                     <property name="whatsThis" stdset="0">
                                         <string>Selects the color to use as background color  in the playlist.</string>
@@ -178,7 +178,7 @@
                                 </property>
                                 <widget class="KColorButton">
                                     <property name="name">
-                                        <cstring>kcfg_BrowserFgColor</cstring>
+                                        <cstring>kcfg_PlaylistWindowFgColor</cstring>
                                     </property>
                                     <property name="enabled">
                                         <bool>false</bool>
@@ -206,7 +206,7 @@
                                 </widget>
                                 <widget class="KColorButton">
                                     <property name="name">
-                                        <cstring>kcfg_BrowserBgColor</cstring>
+                                        <cstring>kcfg_PlaylistWindowBgColor</cstring>
                                     </property>
                                     <property name="enabled">
                                         <bool>false</bool>
@@ -256,13 +256,13 @@
     <connection>
         <sender>kcfg_SchemeCustom</sender>
         <signal>toggled(bool)</signal>
-        <receiver>kcfg_BrowserBgColor</receiver>
+        <receiver>kcfg_PlaylistWindowBgColor</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
     <connection>
         <sender>kcfg_SchemeCustom</sender>
         <signal>toggled(bool)</signal>
-        <receiver>kcfg_BrowserFgColor</receiver>
+        <receiver>kcfg_PlaylistWindowFgColor</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
     <connection>

@@ -52,7 +52,7 @@
 
 
 
-BrowserWin::BrowserWin( QWidget *parent, const char *name )
+PlaylistWindow::PlaylistWindow( QWidget *parent, const char *name )
    : QWidget( parent, name, Qt::WType_TopLevel | Qt::WNoAutoErase )
    , KXMLGUIClient()
 {
@@ -99,7 +99,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     m_browsers = new BrowserBar( this );
     m_toolbar  = new KToolBar( this, "playlist_toolbar" );
     m_lineEdit = new KLineEdit( m_browsers->container() );
-    m_playlist = new PlaylistWidget( m_browsers->container(), ac );
+    m_playlist = new Playlist( m_browsers->container(), ac );
 
     QToolTip::add( m_lineEdit, i18n( "Enter filter string" ) );
 
@@ -165,7 +165,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 
 ///////// public interface
 
-void BrowserWin::createGUI()
+void PlaylistWindow::createGUI()
 {
     setUpdatesEnabled( false );
 
@@ -209,7 +209,7 @@ void BrowserWin::createGUI()
 }
 
 
-void BrowserWin::insertMedia( const KURL::List &list, bool clearList, bool directPlay )
+void PlaylistWindow::insertMedia( const KURL::List &list, bool clearList, bool directPlay )
 {
     if( clearList ) m_playlist->clear(); //FIXME clear currently is not 100% bug free, it might not work as expected
 
@@ -217,19 +217,19 @@ void BrowserWin::insertMedia( const KURL::List &list, bool clearList, bool direc
 }
 
 
-void BrowserWin::restoreSessionPlaylist()
+void PlaylistWindow::restoreSessionPlaylist()
 {
     insertMedia( m_playlist->defaultPlaylistPath() );
 }
 
 
-bool BrowserWin::isAnotherTrack() const
+bool PlaylistWindow::isAnotherTrack() const
 {
     return m_playlist->isTrackAfter();
 }
 
 
-void BrowserWin::setColors( const QPalette &pal, const QColor &bgAlt )
+void PlaylistWindow::setColors( const QPalette &pal, const QColor &bgAlt )
 {
     //TODO optimise bearing in mind ownPalette property and unsetPalette()
 
@@ -272,18 +272,18 @@ void BrowserWin::setColors( const QPalette &pal, const QColor &bgAlt )
 }
 
 
-void BrowserWin::setFont( const QFont &newFont )
+void PlaylistWindow::setFont( const QFont &newFont )
 {
     m_browsers->setFont( newFont );
     m_playlist->setFont( newFont );
 }
 
 
-void BrowserWin::saveConfig()
+void PlaylistWindow::saveConfig()
 {}
 
 
-bool BrowserWin::eventFilter( QObject *o, QEvent *e )
+bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 {
     //here we filter some events for the Playlist Search LineEdit and the Playlist
     //this makes life easier since we have more useful functions available from this class
@@ -363,7 +363,7 @@ bool BrowserWin::eventFilter( QObject *o, QEvent *e )
 }
 
 
-void BrowserWin::savePlaylist() const //SLOT
+void PlaylistWindow::savePlaylist() const //SLOT
 {
     QWidget *fb = m_browsers->page( "FileBrowser" );
     QString path = fb ? static_cast<FileBrowser *>(fb)->location() : "~";
@@ -377,7 +377,7 @@ void BrowserWin::savePlaylist() const //SLOT
 }
 
 
-void BrowserWin::slotAddLocation() //SLOT
+void PlaylistWindow::slotAddLocation() //SLOT
 {
     KURLRequesterDlg dlg( QString::null, 0, 0 );
     dlg.setCaption( kapp->makeStdCaption( i18n( "Enter File, URL or Directory" ) ) );

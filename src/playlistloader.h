@@ -19,7 +19,7 @@ class QListViewItem;
 class QWidget;
 class QTextStream;
 class PlaylistItem;
-class PlaylistWidget;
+class Playlist;
 
 //TODO this is a temporary measure until the new FileBrowser is a bit more finished
 //I'm doing it because I miss fast directory entry, but simply omit the definition
@@ -29,7 +29,7 @@ class PlaylistWidget;
 class PlaylistLoader : public QThread
 {
 public:
-    PlaylistLoader( const KURL::List&, PlaylistWidget*, PlaylistItem* );
+    PlaylistLoader( const KURL::List&, Playlist*, PlaylistItem* );
     ~PlaylistLoader();
 
     void setOptions( bool b1, bool b2, int i ) { options.recurse = b1; options.playFirstItem = b2; options.sortSpec = i; }
@@ -60,7 +60,7 @@ private:
     KURL::List      m_list;
     PlaylistItem   *m_after;  //accessed by GUI thread _only_
     PlaylistItem   *m_first;
-    PlaylistWidget *m_listView;
+    Playlist *m_listView;
     int             m_recursionCount;
 
 public:
@@ -84,7 +84,7 @@ public:
          , m_title( s )
          , m_length( i )
        {}
-       virtual PlaylistItem *makePlaylistItem( PlaylistWidget* );
+       virtual PlaylistItem *makePlaylistItem( Playlist* );
        bool playMe() { bool b = m_thread->options.playFirstItem; if( b ) m_thread->options.playFirstItem = false; return b; }
     protected:
        PlaylistLoader* const m_thread;
@@ -99,7 +99,7 @@ public:
         DownloadPlaylistEvent( PlaylistLoader *pl, const KURL &u )
           : MakeItemEvent( pl, u, "Retrieving Playlist..", -2 )
         {}
-        PlaylistItem *makePlaylistItem( PlaylistWidget* );
+        PlaylistItem *makePlaylistItem( Playlist* );
     };
 
     class PlaylistFoundEvent : public QCustomEvent

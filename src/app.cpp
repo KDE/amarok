@@ -73,7 +73,7 @@ PlayerApp::PlayerApp()
         , m_pTray( 0 )
         , m_pOSD( new amaroK::OSD() )
         , m_sockfd( -1 )
-        , m_showBrowserWin( false )
+        , m_showPlaylistWindow( false )
 {
     //TODO readConfig and applySettings first
     //     reason-> create Engine earlier, so we can restore session asap to get playlist loaded by
@@ -85,11 +85,11 @@ PlayerApp::PlayerApp()
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
     new Vis::SocketServer( this );
-    initBrowserWin(); //must go first as it creates the action collection
+    initPlaylistWindow(); //must go first as it creates the action collection
     initPlayerWidget();
 
     //we monitor for close, hide and show events
-    m_pBrowserWin  ->installEventFilter( this );
+    m_pPlaylistWindow  ->installEventFilter( this );
     m_pPlayerWidget->installEventFilter( this );
 
     readConfig();
@@ -109,7 +109,7 @@ PlayerApp::PlayerApp()
     if( args->count() == 0 || args->isSet( "enqueue" ) ) restoreSession(); //resume playback + load prev PLS
 
     //TODO remember if we were in tray last exit, if so don't show!
-    m_pPlayerWidget->show(); //BrowserWin will sponaneously show if appropriate
+    m_pPlayerWidget->show(); //PlaylistWindow will sponaneously show if appropriate
 
     //process some events so that the UI appears and things feel more responsive
     kapp->processEvents();
@@ -151,7 +151,7 @@ PlayerApp::~PlayerApp()
     saveConfig();
 
     delete m_pPlayerWidget;
-    delete m_pBrowserWin;
+    delete m_pPlaylistWindow;
     delete m_pOSD;
     // delete EngineController
     PluginManager::unload( engine );
@@ -173,7 +173,7 @@ void PlayerApp::handleCliArgs()
         kdDebug() << "List size: " << list.count() << endl;
 
         //add to the playlist with the correct arguments ( bool clear, bool play )
-        m_pBrowserWin->insertMedia( list, notEnqueue, notEnqueue || args->isSet( "play" ) );
+        m_pPlaylistWindow->insertMedia( list, notEnqueue, notEnqueue || args->isSet( "play" ) );
     }
     //we shouldn't let the user specify two of these since it is pointless!
     //so we prioritise, pause > stop > play > next > prev
@@ -359,10 +359,10 @@ void PlayerApp::initIpc()
 }
 
 
-void PlayerApp::initBrowserWin()
+void PlayerApp::initPlaylistWindow()
 {
-    m_pBrowserWin     = new BrowserWin( 0, "BrowserWin" );
-    m_pPlaylistWidget = m_pBrowserWin->playlist();
+    m_pPlaylistWindow     = new PlaylistWindow( 0, "PlaylistWindow" );
+    m_pPlaylist = m_pPlaylistWindow->playlist();
 }
 
 
@@ -384,7 +384,7 @@ void PlayerApp::restoreSession()
 
     //load previous playlist
     if ( AmarokConfig::savePlaylist() )
-        m_pBrowserWin->restoreSessionPlaylist();
+        m_pPlaylistWindow->restoreSessionPlaylist();
 
     if ( AmarokConfig::resumePlayback() && !AmarokConfig::resumeTrack().isEmpty() )
     {
@@ -437,8 +437,8 @@ void PlayerApp::applySettings()
     m_pOSD->setOffset( AmarokConfig::osdXOffset(), AmarokConfig::osdYOffset() );
 
     m_pPlayerWidget->createAnalyzer( false );
-    m_pBrowserWin->setFont( AmarokConfig::useCustomFonts() ?
-                            AmarokConfig::browserWindowFont() : QApplication::font() );
+    m_pPlaylistWindow->setFont( AmarokConfig::useCustomFonts() ?
+                            AmarokConfig::playlistWindowFont() : QApplication::font() );
 
     QFont font = m_pPlayerWidget->font();
     font.setFamily( AmarokConfig::useCustomFonts() ?
@@ -457,13 +457,13 @@ void PlayerApp::applySettings()
 
 void PlayerApp::saveConfig()
 {
-    AmarokConfig::setBrowserWinPos     ( m_pBrowserWin->pos() );
-    AmarokConfig::setBrowserWinSize    ( m_pBrowserWin->size() );
-    AmarokConfig::setBrowserWinEnabled ( m_showBrowserWin );
+    AmarokConfig::setPlaylistWindowPos     ( m_pPlaylistWindow->pos() );
+    AmarokConfig::setPlaylistWindowSize    ( m_pPlaylistWindow->size() );
+    AmarokConfig::setPlaylistWindowEnabled ( m_showPlaylistWindow );
     AmarokConfig::setMasterVolume      ( EngineController::instance()->engine()->volume() );
     AmarokConfig::setPlayerPos         ( m_pPlayerWidget->pos() );
     AmarokConfig::setVersion           ( APP_VERSION );
-    m_pBrowserWin->saveConfig();
+    m_pPlaylistWindow->saveConfig();
 
     AmarokConfig::writeConfig();
 }
@@ -481,11 +481,11 @@ void PlayerApp::readConfig()
     AmarokConfig::setHardwareMixer( engine->initMixer( AmarokConfig::hardwareMixer() ) );
 
     m_pPlayerWidget->move  ( AmarokConfig::playerPos() );
-    m_pBrowserWin  ->move  ( AmarokConfig::browserWinPos() );
-    m_pBrowserWin  ->resize( AmarokConfig::browserWinSize() );
+    m_pPlaylistWindow  ->move  ( AmarokConfig::playlistWindowPos() );
+    m_pPlaylistWindow  ->resize( AmarokConfig::playlistWindowSize() );
 
-    m_showBrowserWin = AmarokConfig::browserWinEnabled();
-    m_pPlayerWidget->setPlaylistShown( m_showBrowserWin );
+    m_showPlaylistWindow = AmarokConfig::playlistWindowEnabled();
+    m_pPlayerWidget->setPlaylistShown( m_showPlaylistWindow );
 
     // Actions ==========
     m_pGlobalAccel->insert( "add", i18n( "Add Location" ), 0, KKey("WIN+a"), 0,
@@ -515,7 +515,7 @@ void PlayerApp::readConfig()
 
     //FIXME use a global actionCollection (perhaps even at global scope)
     actionCollection()->readShortcutSettings( QString::null, kapp->config() );
-    m_pBrowserWin->actionCollection()->readShortcutSettings( QString::null, kapp->config() );
+    m_pPlaylistWindow->actionCollection()->readShortcutSettings( QString::null, kapp->config() );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
@@ -534,7 +534,7 @@ void PlayerApp::setupColors()
         QColorGroup group = QApplication::palette().active();
         group.setColor( QColorGroup::BrightText, group.highlight() ); //GlowColor
         group.setColor( QColorGroup::Midlight, group.mid() ); //column separator
-        m_pBrowserWin->setColors( QPalette( group, group, group ), KGlobalSettings::alternateBackgroundColor() );
+        m_pPlaylistWindow->setColors( QPalette( group, group, group ), KGlobalSettings::alternateBackgroundColor() );
 
     }
     else if( AmarokConfig::schemeAmarok() )
@@ -550,7 +550,7 @@ void PlayerApp::setupColors()
         //bgAlt.setRgb( 83, 86, 112 );
 
         /*PLEASE don't do this, it makes lots of widget ugly
-         *instead customise BrowserWin::setColors();
+         *instead customise PlaylistWindow::setColors();
          */
         //group.setColor( QColorGroup::Foreground, Qt::white );
         
@@ -573,15 +573,15 @@ void PlayerApp::setupColors()
         group.setColor( QColorGroup::Midlight, QColor( h, s/3, (int)(v * 1.2), QColor::Hsv ) ); //column separator in playlist
 
         //FIXME QColorGroup member "disabled" looks very bad (eg for buttons)
-        m_pBrowserWin->setColors( QPalette( group, group, group ), bgAlt );
+        m_pPlaylistWindow->setColors( QPalette( group, group, group ), bgAlt );
 
     }
     else
     {
         // we try to be smart: this code figures out contrasting colors for selection and alternate background rows
         QColorGroup group = QApplication::palette().active();
-        const QColor fg( AmarokConfig::browserFgColor() );
-        const QColor bg( AmarokConfig::browserBgColor() );
+        const QColor fg( AmarokConfig::playlistWindowFgColor() );
+        const QColor bg( AmarokConfig::playlistWindowBgColor() );
         QColor bgAlt, highlight;
         int h, s, v;
 
@@ -612,14 +612,14 @@ void PlayerApp::setupColors()
         group.setColor( QColorGroup::BrightText, QColor( 0xff, 0x40, 0x40 ) ); //GlowColor
 
         //FIXME QColorGroup member "disabled" looks very bad (eg for buttons)
-        m_pBrowserWin->setColors( QPalette( group, group, group ), bgAlt );
+        m_pPlaylistWindow->setColors( QPalette( group, group, group ), bgAlt );
     }
 }
 
 
 void PlayerApp::insertMedia( const KURL::List &list )
 {
-    m_pBrowserWin->insertMedia( list );
+    m_pPlaylistWindow->insertMedia( list );
 }
 
 
@@ -630,25 +630,25 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
     //as most of this stuff is cleverly crafted and has purpose! Comments aren't always thorough as
     //it tough explaining what is going on! Thanks.
 
-    if( e->type() == QEvent::Close && o == m_pBrowserWin && m_pPlayerWidget->isShown() )
+    if( e->type() == QEvent::Close && o == m_pPlaylistWindow && m_pPlayerWidget->isShown() )
     {
-        m_pPlayerWidget->setPlaylistShown( m_showBrowserWin = false );
+        m_pPlayerWidget->setPlaylistShown( m_showPlaylistWindow = false );
     }
     else if( e->type() == QEvent::Hide && o == m_pPlayerWidget )
     {
         //if the event is not spontaneous then amaroK was responsible for the event
         //we should therefore hide the playlist as well
         //the only spontaneous hide events we care about are iconification and shading
-        if( AmarokConfig::hidePlaylistWindow() && !e->spontaneous() ) m_pBrowserWin->hide();
+        if( AmarokConfig::hidePlaylistWindow() && !e->spontaneous() ) m_pPlaylistWindow->hide();
         else if( AmarokConfig::hidePlaylistWindow() )
         {
             KWin::WindowInfo info = KWin::windowInfo( m_pPlayerWidget->winId() );
 
             if( !info.valid() ); //do nothing
             else if( info.isMinimized() )
-                KWin::iconifyWindow( m_pBrowserWin->winId(), false );
+                KWin::iconifyWindow( m_pPlaylistWindow->winId(), false );
             else if( info.state() & NET::Shaded )
-                m_pBrowserWin->hide();
+                m_pPlaylistWindow->hide();
         }
     }
     else if( e->type() == QEvent::Show && o == m_pPlayerWidget )
@@ -656,22 +656,22 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
         //TODO this is broke again if playlist is minimized
         //when fixing you have to make sure that changing desktop doesn't un minimise the playlist
 
-        if( AmarokConfig::hidePlaylistWindow() && m_showBrowserWin && e->spontaneous()/*)
+        if( AmarokConfig::hidePlaylistWindow() && m_showPlaylistWindow && e->spontaneous()/*)
         {
             //this is to battle a kwin bug that affects xinerama users
             //FIXME I commented this out for now because spontaneous show events are sent to widgets
             //when you switch desktops, so this would cause the playlist to deiconify when switching desktop!
-            //KWin::deIconifyWindow( m_pBrowserWin->winId(), false );
-            m_pBrowserWin->show();
+            //KWin::deIconifyWindow( m_pPlaylistWindow->winId(), false );
+            m_pPlaylistWindow->show();
             eatActivateEvent = true;
         }
-        else if( */ || m_showBrowserWin )
+        else if( */ || m_showPlaylistWindow )
         {
             //if minimized the taskbar entry for browserwin is shown
-            m_pBrowserWin->show();
+            m_pPlaylistWindow->show();
         }
 
-        if( m_pBrowserWin->isShown() )
+        if( m_pPlaylistWindow->isShown() )
         {
             //slotPlaylistHideShow() can make it so the PL is shown but the button is off.
             //this is intentional behavior BTW
@@ -686,7 +686,7 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
     //a future developer has more wisdom than me. IMO if we can get the systray to do it, that'll be enough
     else if( e->type() == QEvent::WindowActivate )
     {
-        (o == m_pPlayerWidget ? (QWidget*)m_pBrowserWin : (QWidget*)m_pPlayerWidget)->raise();
+        (o == m_pPlayerWidget ? (QWidget*)m_pPlaylistWindow : (QWidget*)m_pPlayerWidget)->raise();
     }
     */
     return FALSE;
@@ -727,13 +727,13 @@ void PlayerApp::slotPlaylistShowHide()
     //show/hide the playlist global shortcut slot
     //bahavior depends on state of the PlayerWidget and various minimization states
 
-    KWin::WindowInfo info = KWin::windowInfo( m_pBrowserWin->winId() );
+    KWin::WindowInfo info = KWin::windowInfo( m_pPlaylistWindow->winId() );
     bool isMinimized = info.valid() && info.isMinimized();
 
-    if( !m_pBrowserWin->isShown() )
+    if( !m_pPlaylistWindow->isShown() )
     {
         if( isMinimized ) KWin::deIconifyWindow( info.win() );
-        m_pBrowserWin->setShown( m_showBrowserWin = true );
+        m_pPlaylistWindow->setShown( m_showPlaylistWindow = true );
     }
     else if( isMinimized ) KWin::deIconifyWindow( info.win() );
     else
@@ -742,12 +742,12 @@ void PlayerApp::slotPlaylistShowHide()
         if( info2.valid() && info2.isMinimized() ) KWin::iconifyWindow( info.win() );
         else
         {
-            m_pBrowserWin->setShown( m_showBrowserWin = false );
+            m_pPlaylistWindow->setShown( m_showPlaylistWindow = false );
         }
     }
 
     // make sure playerwidget button is in sync
-    m_pPlayerWidget->setPlaylistShown( m_showBrowserWin );
+    m_pPlayerWidget->setPlaylistShown( m_showPlaylistWindow );
 }
 
 
@@ -813,7 +813,7 @@ void PlayerApp::slotDecreaseVolume()
 
 void PlayerApp::slotConfigShortcuts()
 {
-    KKeyDialog::configure( actionCollection(), m_pBrowserWin );
+    KKeyDialog::configure( actionCollection(), m_pPlaylistWindow );
 }
 
 void PlayerApp::slotConfigGlobalShortcuts()
@@ -824,12 +824,12 @@ void PlayerApp::slotConfigGlobalShortcuts()
 #include <kedittoolbar.h>
 void PlayerApp::slotConfigToolBars()
 {
-    KEditToolbar dialog( m_pBrowserWin->actionCollection() );
+    KEditToolbar dialog( m_pPlaylistWindow->actionCollection() );
 
     if( dialog.exec() )
     {
-        m_pBrowserWin->reloadXML();
-        m_pBrowserWin->createGUI();
+        m_pPlaylistWindow->reloadXML();
+        m_pPlaylistWindow->createGUI();
     }
 }
 

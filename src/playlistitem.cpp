@@ -18,7 +18,7 @@
 #include "metabundle.h"
 #include "app.h"
 #include "playlistitem.h"
-#include "playlist.h" //this class is tied to PlaylistWidget
+#include "playlist.h"
 
 #include "amarokconfig.h"
 
@@ -69,7 +69,7 @@ QString PlaylistItem::stringStore[STRING_STORE_SIZE];
 
 
 
-PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KURL &u, const QString &title, const int length )
+PlaylistItem::PlaylistItem( Playlist* parent, QListViewItem *lvi, const KURL &u, const QString &title, const int length )
   : KListViewItem( parent, lvi, trackName( u ) )
 #ifdef CORRUPT_FILE
   , corruptFile( FALSE ) //our friend threadweaver will take care of this flag
@@ -84,7 +84,7 @@ PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KU
 }
 
 
-PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KURL &u, const QDomNode &n )
+PlaylistItem::PlaylistItem( Playlist* parent, QListViewItem *lvi, const KURL &u, const QDomNode &n )
       : KListViewItem( parent, lvi, trackName( u ) )
       , m_url( u )
 {

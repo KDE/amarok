@@ -16,19 +16,19 @@ class QDomNode;
 class QListViewItem;
 class QPainter;
 class MetaBundle;
-class PlaylistWidget;
+class Playlist;
 
 class PlaylistItem : public KListViewItem
 {
     public:
-        PlaylistItem( PlaylistWidget*, QListViewItem*, const KURL&, const QString& = "", const int length = 0 );
-        PlaylistItem( PlaylistWidget*, QListViewItem*, const KURL&, const QDomNode& );
+        PlaylistItem( Playlist*, QListViewItem*, const KURL&, const QString& = "", const int length = 0 );
+        PlaylistItem( Playlist*, QListViewItem*, const KURL&, const QDomNode& );
 
         QString exactText( int col ) const { return KListViewItem::text( col ); }
         void setText( const MetaBundle& );
         void setText( int, const QString& );
 
-        PlaylistWidget *listView() const { return (PlaylistWidget*)KListViewItem::listView(); }
+        Playlist *listView() const { return (Playlist*)KListViewItem::listView(); }
         PlaylistItem *nextSibling() const { return (PlaylistItem*)KListViewItem::nextSibling(); }
 
         MetaBundle metaBundle();

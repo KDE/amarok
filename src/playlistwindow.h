@@ -27,7 +27,7 @@ class KLineEdit;
 class KActionCollection;
 class KToolBar;
 class PlaylistLoader;
-class PlaylistWidget;
+class Playlist;
 class QColor;
 class QCloseEvent;
 class QCustomEvent;
@@ -40,12 +40,12 @@ class QPushButton;
 class QSplitter;
 class QString;
 
-class BrowserWin : public QWidget, public KXMLGUIClient
+class PlaylistWindow : public QWidget, public KXMLGUIClient
 {
         Q_OBJECT
 
     public:
-        BrowserWin( QWidget* = 0, const char* = 0 );
+        PlaylistWindow( QWidget* = 0, const char* = 0 );
 
         //convenience functions
         void insertMedia( const QString& );
@@ -60,7 +60,7 @@ class BrowserWin : public QWidget, public KXMLGUIClient
 
         void createGUI(); //should be private but PlayerApp::slowConfigToolbars requires it
 
-        PlaylistWidget *playlist() const { return m_playlist; }
+        Playlist *playlist() const { return m_playlist; }
 
         virtual bool eventFilter( QObject*, QEvent* );
 
@@ -70,20 +70,20 @@ class BrowserWin : public QWidget, public KXMLGUIClient
 
     private:
         BrowserBar     *m_browsers;
-        PlaylistWidget *m_playlist;
+        Playlist *m_playlist;
         KLineEdit      *m_lineEdit;
         KToolBar       *m_toolbar;
 };
 
 
 inline
-void BrowserWin::insertMedia( const QString &path )
+void PlaylistWindow::insertMedia( const QString &path )
 {
     insertMedia( KURL::fromPathOrURL( path ) );
 }
 
 inline
-void BrowserWin::insertMedia( const KURL &url )
+void PlaylistWindow::insertMedia( const KURL &url )
 {
     if( !url.isEmpty() )
     {

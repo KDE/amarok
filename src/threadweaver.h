@@ -42,7 +42,7 @@ class QWidget;
 //
 //  cancel() will prevent any further Jobs being dispatched and will clear the queue. However almost
 //  certainly some Jobs will already be in Qt's event queue on there way to the target. The user has to ensure
-//  this situation is safe. See PlaylistWidget::clear() for a good solution.
+//  this situation is safe. See Playlist::clear() for a good solution.
 //
 //  halt() will permanantly stop the thread, it should be used in conjunction with Qthread::wait() when the
 //  program is exiting.

@@ -5,8 +5,8 @@
 
  * NOTES
  *
- * The BrowserWin handles some PlaylistWidget events. Thanks!
- * This class has a QOBJECT but it's private so you can only connect via BrowserWin::BrowserWin
+ * The PlaylistWindow handles some Playlist events. Thanks!
+ * This class has a QOBJECT but it's private so you can only connect via PlaylistWindow::PlaylistWindow
  * Mostly it's sensible to implement playlist functionality in this class
  * TODO Obtaining information about the playlist is currently hard, we need the playlist to be globally
  *      available and have some more useful public functions
@@ -51,7 +51,7 @@
 
 
 
-PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const char *name )
+Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     : KListView( parent, name )
 #ifdef PLAYLIST_BROWSER
     , m_browser( new PlaylistBrowser( "PlaylistBrowser" ) )
@@ -182,7 +182,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const ch
 }
 
 
-PlaylistWidget::~PlaylistWidget()
+Playlist::~Playlist()
 {
    saveLayout( KGlobal::config(), "PlaylistColumnsLayout" );
 
@@ -206,17 +206,17 @@ PlaylistWidget::~PlaylistWidget()
 
 //PUBLIC INTERFACE ===================================================
 
-//QWidget *PlaylistWidget::browser() const { return m_browser; }
-void PlaylistWidget::showCurrentTrack() { ensureItemVisible( currentTrack() ); } //SLOT
+//QWidget *Playlist::browser() const { return m_browser; }
+void Playlist::showCurrentTrack() { ensureItemVisible( currentTrack() ); } //SLOT
 
 
-QString PlaylistWidget::defaultPlaylistPath() //static
+QString Playlist::defaultPlaylistPath() //static
 {
     return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "current.xml";
 }
 
 
-void PlaylistWidget::insertMedia( const KURL::List &list, bool directPlay )
+void Playlist::insertMedia( const KURL::List &list, bool directPlay )
 {
     if( !list.isEmpty() )
     {
@@ -226,11 +226,11 @@ void PlaylistWidget::insertMedia( const KURL::List &list, bool directPlay )
 }
 
 
-void PlaylistWidget::handleOrderPrev()    { handleOrder( Prev ); }    //SLOT
-void PlaylistWidget::handleOrderCurrent() { handleOrder( Current ); } //SLOT
+void Playlist::handleOrderPrev()    { handleOrder( Prev ); }    //SLOT
+void Playlist::handleOrderCurrent() { handleOrder( Current ); } //SLOT
 
 
-void PlaylistWidget::handleOrder( RequestType request ) //SLOT
+void Playlist::handleOrder( RequestType request ) //SLOT
 {
     //NOTE PLEASE only modify this function with EXTREME care!
     //     most modifications ever have caused regressions you WILL not expect!
@@ -355,7 +355,7 @@ void PlaylistWidget::handleOrder( RequestType request ) //SLOT
 }
 
 
-void PlaylistWidget::saveM3U( const QString &path ) const
+void Playlist::saveM3U( const QString &path ) const
 {
     QFile file( path );
 
@@ -381,7 +381,7 @@ void PlaylistWidget::saveM3U( const QString &path ) const
 }
 
 
-void PlaylistWidget::saveXML( const QString &path ) const
+void Playlist::saveXML( const QString &path ) const
 {
     //TODO save nextTrack queue
     QFile file( path );
@@ -422,7 +422,7 @@ void PlaylistWidget::saveXML( const QString &path ) const
 }
 
 
-void PlaylistWidget::shuffle() //SLOT
+void Playlist::shuffle() //SLOT
 {
     QPtrList<QListViewItem> list;
     KRandomSequence seq( (long)KApplication::random() );
@@ -464,7 +464,7 @@ void PlaylistWidget::shuffle() //SLOT
 }
 
 
-void PlaylistWidget::clear() //SLOT
+void Playlist::clear() //SLOT
 {
     emit aboutToClear(); //will saveUndoState()
 
@@ -490,7 +490,7 @@ void PlaylistWidget::clear() //SLOT
 }
 
 
-bool PlaylistWidget::isTrackAfter() const
+bool Playlist::isTrackAfter() const
 {
     return !isEmpty() && (
            AmarokConfig::repeatPlaylist() ||
@@ -498,7 +498,7 @@ bool PlaylistWidget::isTrackAfter() const
            m_currentTrack && m_currentTrack->itemBelow() );
 }
 
-bool PlaylistWidget::isTrackBefore() const
+bool Playlist::isTrackBefore() const
 {
     return !isEmpty() && (
            AmarokConfig::repeatPlaylist() ||
@@ -508,7 +508,7 @@ bool PlaylistWidget::isTrackBefore() const
 
 
 
-void PlaylistWidget::removeSelectedItems() //SLOT
+void Playlist::removeSelectedItems() //SLOT
 {
     setSelected( currentItem(), true );     //remove currentItem, no matter if selected or not
 
@@ -540,7 +540,7 @@ void PlaylistWidget::removeSelectedItems() //SLOT
 }
 
 /*
-void PlaylistWidget::summary( QPopupMenu &popup ) const
+void Playlist::summary( QPopupMenu &popup ) const
 {
     QStringList summary( currentTrack()->text( 0 ) );
 
@@ -558,7 +558,7 @@ void PlaylistWidget::summary( QPopupMenu &popup ) const
 
 // PRIVATE METHODS ===============================================
 
-void PlaylistWidget::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool directPlay )
+void Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool directPlay )
 {
    //we don't check list.isEmpty(), this is a private function so we shouldn't have to
     PlaylistLoader *loader = new PlaylistLoader( list, this, after );
@@ -578,7 +578,7 @@ void PlaylistWidget::insertMediaInternal( const KURL::List &list, PlaylistItem *
 }
 
 
-void PlaylistWidget::removeItem( PlaylistItem *item )
+void Playlist::removeItem( PlaylistItem *item )
 {
     //this function ensures we don't have dangling pointers to items that are about to be removed
     //for some reason using QListView::takeItem() and QListViewItem::takeItem() was ineffective
@@ -622,7 +622,7 @@ void PlaylistWidget::removeItem( PlaylistItem *item )
 }
 
 
-void PlaylistWidget::refreshNextTracks( int from )
+void Playlist::refreshNextTracks( int from )
 {
     // This function scans the m_nextTracks list starting from the 'from'
     // position and from there on updates the progressive numbering on related
@@ -640,7 +640,7 @@ void PlaylistWidget::refreshNextTracks( int from )
 }
 
 
-void PlaylistWidget::activate( QListViewItem *lvi, bool rememberTrack ) //SLOT
+void Playlist::activate( QListViewItem *lvi, bool rememberTrack ) //SLOT
 {
     //ATTENTION!
     //_All_ requests for playing items should come through here, thanks!
@@ -685,7 +685,7 @@ void PlaylistWidget::activate( QListViewItem *lvi, bool rememberTrack ) //SLOT
 }
 
 
-void PlaylistWidget::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
+void Playlist::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
 {
     if( m_currentTrack && !trackChanged )
     {
@@ -705,7 +705,7 @@ void PlaylistWidget::engineNewMetaData( const MetaBundle &bundle, bool trackChan
 }
 
 
-void PlaylistWidget::engineStateChanged( EngineBase::EngineState state )
+void Playlist::engineStateChanged( EngineBase::EngineState state )
 {
     //TODO define states in the ui.rc file and override setEnabled() for prev and next so they auto check
     //     isTrackBefore/After (you could make them engineObservers but that's more overhead)
@@ -724,7 +724,7 @@ void PlaylistWidget::engineStateChanged( EngineBase::EngineState state )
         break;
 
     case EngineBase::Empty:
-        //TODO do this with setState() in BrowserWin?
+        //TODO do this with setState() in PlaylistWindow?
         m_ac->action( "pause" )->setEnabled( false );
         m_ac->action( "stop" )->setEnabled( false );
         m_ac->action( "prev" )->setEnabled( false );
@@ -745,7 +745,7 @@ void PlaylistWidget::engineStateChanged( EngineBase::EngineState state )
 }
 
 
-void PlaylistWidget::setCurrentTrack( PlaylistItem *item )
+void Playlist::setCurrentTrack( PlaylistItem *item )
 {
     //item has been verified to be the currently playing track, let's paint it red!
 
@@ -795,7 +795,7 @@ void PlaylistWidget::setCurrentTrack( PlaylistItem *item )
 }
 
 
-PlaylistItem *PlaylistWidget::restoreCurrentTrack()
+PlaylistItem *Playlist::restoreCurrentTrack()
 {
     const KURL &url = EngineController::instance()->playingURL();
 
@@ -815,7 +815,7 @@ PlaylistItem *PlaylistWidget::restoreCurrentTrack()
 }
 
 
-void PlaylistWidget::setSorting( int col, bool b )
+void Playlist::setSorting( int col, bool b )
 {
     saveUndoState();
 
@@ -823,7 +823,7 @@ void PlaylistWidget::setSorting( int col, bool b )
 }
 
 
-void PlaylistWidget::setColumnWidth( int col, int width )
+void Playlist::setColumnWidth( int col, int width )
 {
     KListView::setColumnWidth( col, width );
 
@@ -834,7 +834,7 @@ void PlaylistWidget::setColumnWidth( int col, int width )
 }
 
 
-void PlaylistWidget::saveUndoState() //SLOT
+void Playlist::saveUndoState() //SLOT
 {
    if( saveState( m_undoList ) )
    {
@@ -846,7 +846,7 @@ void PlaylistWidget::saveUndoState() //SLOT
 }
 
 
-bool PlaylistWidget::saveState( QStringList &list )
+bool Playlist::saveState( QStringList &list )
 {
     //used by undo system, save state of playlist to undo/redo list
 
@@ -878,10 +878,10 @@ bool PlaylistWidget::saveState( QStringList &list )
 }
 
 
-void PlaylistWidget::undo() { switchState( m_undoList, m_redoList ); } //SLOT
-void PlaylistWidget::redo() { switchState( m_redoList, m_undoList ); } //SLOT
+void Playlist::undo() { switchState( m_undoList, m_redoList ); } //SLOT
+void Playlist::redo() { switchState( m_redoList, m_undoList ); } //SLOT
 
-void PlaylistWidget::switchState( QStringList &loadFromMe, QStringList &saveToMe )
+void Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
 {
     //switch to a previously saved state, remember current state
     KURL url; url.setPath( loadFromMe.last() );
@@ -904,7 +904,7 @@ void PlaylistWidget::switchState( QStringList &loadFromMe, QStringList &saveToMe
 }
 
 
-void PlaylistWidget::copyToClipboard( const QListViewItem *item ) const //SLOT
+void Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
 {
     if( !item ) item = currentTrack();
 
@@ -918,7 +918,7 @@ void PlaylistWidget::copyToClipboard( const QListViewItem *item ) const //SLOT
 }
 
 
-void PlaylistWidget::slotMouseButtonPressed( int button, QListViewItem *after, const QPoint &p, int col ) //SLOT
+void Playlist::slotMouseButtonPressed( int button, QListViewItem *after, const QPoint &p, int col ) //SLOT
 {
     switch( button )
     {
@@ -943,7 +943,7 @@ void PlaylistWidget::slotMouseButtonPressed( int button, QListViewItem *after, c
 }
 
 
-void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLOT
+void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLOT
 {
     #define item static_cast<PlaylistItem*>(item)
 
@@ -1042,7 +1042,7 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
 }
 
 
-void PlaylistWidget::showTrackInfo( PlaylistItem *pItem ) const //SLOT
+void Playlist::showTrackInfo( PlaylistItem *pItem ) const //SLOT
 {
     QString str  = "<html><body><table width=\"100%\" border=\"1\">";
     QString body = "<tr><td>%1</td><td>%2</td></tr>";
@@ -1078,7 +1078,7 @@ void PlaylistWidget::showTrackInfo( PlaylistItem *pItem ) const //SLOT
 }
 
 
-void PlaylistWidget::slotGlowTimer() //SLOT
+void Playlist::slotGlowTimer() //SLOT
 {
     if( m_glowCount > 120 || m_glowCount < 90 ) m_glowAdd = -m_glowAdd;
 
@@ -1101,7 +1101,7 @@ void PlaylistWidget::slotGlowTimer() //SLOT
 }
 
 
-void PlaylistWidget::slotTextChanged( const QString &query ) //SLOT
+void Playlist::slotTextChanged( const QString &query ) //SLOT
 {
     //TODO allow a slight delay before searching
     //TODO if we provided the lineEdit m_lastSearch would be unecessary
@@ -1133,7 +1133,7 @@ void PlaylistWidget::slotTextChanged( const QString &query ) //SLOT
 }
 
 
-void PlaylistWidget::slotEraseMarker() //SLOT
+void Playlist::slotEraseMarker() //SLOT
 {
     if( m_marker )
     {
@@ -1144,7 +1144,7 @@ void PlaylistWidget::slotEraseMarker() //SLOT
 }
 
 
-void PlaylistWidget::writeTag( QListViewItem *lvi, const QString &tag, int col ) //SLOT
+void Playlist::writeTag( QListViewItem *lvi, const QString &tag, int col ) //SLOT
 {
     m_weaver->append( new TagWriter( this, (PlaylistItem *)lvi, tag, col ), true );
 
@@ -1154,7 +1154,7 @@ void PlaylistWidget::writeTag( QListViewItem *lvi, const QString &tag, int col )
 }
 
 
-void PlaylistWidget::readAudioProperties( PlaylistItem *pi )
+void Playlist::readAudioProperties( PlaylistItem *pi )
 {
     m_weaver->append( new AudioPropertiesReader( this, pi ) );
 }
@@ -1163,13 +1163,13 @@ void PlaylistWidget::readAudioProperties( PlaylistItem *pi )
 
 // PRIVATE EVENTS =======================================================
 
-void PlaylistWidget::contentsDragEnterEvent( QDragEnterEvent *e )
+void Playlist::contentsDragEnterEvent( QDragEnterEvent *e )
 {
     e->accept( e->source() == viewport() || KURLDrag::canDecode( e ) );
 }
 
 
-void PlaylistWidget::contentsDragMoveEvent( QDragMoveEvent* e )
+void Playlist::contentsDragMoveEvent( QDragMoveEvent* e )
 {
     slotEraseMarker();
 
@@ -1197,13 +1197,13 @@ void PlaylistWidget::contentsDragMoveEvent( QDragMoveEvent* e )
 }
 
 
-void PlaylistWidget::contentsDragLeaveEvent( QDragLeaveEvent* )
+void Playlist::contentsDragLeaveEvent( QDragLeaveEvent* )
 {
     slotEraseMarker();
 }
 
 
-void PlaylistWidget::contentsDropEvent( QDropEvent *e )
+void Playlist::contentsDropEvent( QDropEvent *e )
 {
     //NOTE parent is always 0 currently, but we support it in case we start using trees
     QListViewItem *parent = 0;
@@ -1233,7 +1233,7 @@ void PlaylistWidget::contentsDropEvent( QDropEvent *e )
 }
 
 
-QDragObject* PlaylistWidget::dragObject()
+QDragObject* Playlist::dragObject()
 {
     KURL::List list;
 
@@ -1244,7 +1244,7 @@ QDragObject* PlaylistWidget::dragObject()
 }
 
 
-void PlaylistWidget::viewportPaintEvent( QPaintEvent *e )
+void Playlist::viewportPaintEvent( QPaintEvent *e )
 {
     KListView::viewportPaintEvent( e );
 
@@ -1256,7 +1256,7 @@ void PlaylistWidget::viewportPaintEvent( QPaintEvent *e )
 }
 
 
-bool PlaylistWidget::eventFilter( QObject *o, QEvent *e )
+bool Playlist::eventFilter( QObject *o, QEvent *e )
 {
     #define me static_cast<QMouseEvent*>(e)
 
@@ -1318,7 +1318,7 @@ bool PlaylistWidget::eventFilter( QObject *o, QEvent *e )
 }
 
 
-void PlaylistWidget::customEvent( QCustomEvent *e )
+void Playlist::customEvent( QCustomEvent *e )
 {
     //the threads send their results here for completion that is GUI-safe
 

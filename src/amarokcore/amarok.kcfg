@@ -20,12 +20,12 @@
         <default code="true">QPoint(0,0)</default>
         <whatsthis>The position of the amaroK main window when amaroK is started.</whatsthis>
      </entry>
-     <entry key="Browser Win Pos" type="Point">
+     <entry key="Playlist Window Pos" type="Point">
         <label>Position of playlist window</label>
         <default code="true">QPoint(0,0)</default>
         <whatsthis>The position of the playlist window when amaroK is started.</whatsthis>
      </entry>
-     <entry key="Browser Win Size" type="Size">
+     <entry key="Playlist Window Size" type="Size">
         <label>Size of playlist window</label>
         <default code="true">QSize(600,450)</default>
         <whatsthis>The size of the playlist window when amaroK is started.</whatsthis>
@@ -85,7 +85,7 @@
         <default>true</default>
         <whatsthis>If set, amaroK takes appropriate action to hide the playlist when the player window is hidden. If not set, the player window and the playlist hide totally independent of each other.</whatsthis>
      </entry>
-     <entry key="BrowserWin Enabled" type="Bool">
+     <entry key="Playlist Window Enabled" type="Bool">
         <label>Whether the playlist window is visible</label>
         <default>true</default>
         <whatsthis>Enable/Disable the playlist window. Equal to clicking the PL button in the player window.</whatsthis>
@@ -105,7 +105,7 @@
         <default>true</default>
         <whatsthis>If set, amaroK remembers the audio effects set through the effects window.</whatsthis>
      </entry>
-     <entry key="BrowserWin Splitter" type="IntList">
+     <entry key="Playlist Window Splitter" type="IntList">
         <label>Playlist window splitter positions</label>
         <default>70,140</default>
         <whatsthis>Currently unused</whatsthis>
@@ -232,7 +232,7 @@
         <default>false</default>
         <whatsthis>Enabled/Disables custom fonts.</whatsthis>
      </entry>
-     <entry key="Browser Window Font" type="Font">
+     <entry key="Playlist Window Font" type="Font">
         <label>Font in playlist window</label>
         <default code="true">QFont("Helvetica",9)</default>
 	<whatsthis>The font to use in the playlist window.</whatsthis>
@@ -265,12 +265,12 @@
         <default>false</default>
         <whatsthis>If set, amaroK uses the user-defined colors in the playlist.</whatsthis>
      </entry>
-     <entry key="Browser Fg Color" type="Color">
+     <entry key="Playlist Window Fg Color" type="Color">
         <label>Playlist window foreground color</label>
         <default>#80a0ff</default>
 	<whatsthis>The color to use as foreground color in the playlist. The color is specified in RGB, a comma separated list containing three integers between 0 and 255.</whatsthis>
      </entry>
-     <entry key="Browser Bg Color" type="Color">
+     <entry key="Playlist Window Bg Color" type="Color">
         <label>Playlist window background color</label>
         <default>#000000</default>
 	<whatsthis>The color to use as background color in the playlist. The color is specified in RGB, a comma separated list containing three integers between 0 and 255.</whatsthis>

@@ -225,7 +225,7 @@
                         </widget>
                         <widget class="KFontRequester">
                             <property name="name">
-                                <cstring>kcfg_BrowserWindowFont</cstring>
+                                <cstring>kcfg_PlaylistWindowFont</cstring>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>

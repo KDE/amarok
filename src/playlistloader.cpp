@@ -67,10 +67,10 @@
 //     directory if you don't want its contents?
 //     you can always open the dir and select the files. Stupid option and PITA to implement.
 //     <markey> non-recursive adding should get replaced by "add all media files in current directory"
-//TODO reimplement ask recursive in PlaylistWidget::insertMedia()
+//TODO reimplement ask recursive in Playlist::insertMedia()
 
 
-PlaylistLoader::PlaylistLoader( const KURL::List &ul, PlaylistWidget *lv, PlaylistItem *pi )
+PlaylistLoader::PlaylistLoader( const KURL::List &ul, Playlist *lv, PlaylistItem *pi )
    : m_list( ul )
    , m_after( pi )
    , m_first( 0 )
@@ -449,7 +449,7 @@ void PlaylistLoader::loadXML( QTextStream &stream )
 
 
 PlaylistItem*
-PlaylistLoader::MakeItemEvent::makePlaylistItem( PlaylistWidget *pw )
+PlaylistLoader::MakeItemEvent::makePlaylistItem( Playlist *pw )
 {
     PlaylistItem *item = new PlaylistItem( pw, m_thread->m_after, m_url, m_title, m_length );
     m_thread->m_after = item;
@@ -457,7 +457,7 @@ PlaylistLoader::MakeItemEvent::makePlaylistItem( PlaylistWidget *pw )
 }
 
 PlaylistItem*
-PlaylistLoader::DownloadPlaylistEvent::makePlaylistItem( PlaylistWidget *lv )
+PlaylistLoader::DownloadPlaylistEvent::makePlaylistItem( Playlist *lv )
 {
     PlaylistItem *newItem = MakeItemEvent::makePlaylistItem( lv );
 

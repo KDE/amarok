@@ -37,10 +37,10 @@ namespace amaroK
     class DcopHandler;
 }
 
-class BrowserWin;
+class PlaylistWindow;
 class MetaBundle;
 class PlayerWidget;
-class PlaylistWidget;
+class Playlist;
 
 class QColor;
 class QCString;
@@ -66,7 +66,7 @@ class PlayerApp : public KApplication, public EngineObserver
         KActionCollection *actionCollection() { return m_pActionCollection; }
         const KActionCollection *actionCollection() const { return m_pActionCollection; }
 
-        PlaylistWidget *playlist() const { return m_pPlaylistWidget; }
+        Playlist *playlist() const { return m_pPlaylist; }
 
         // ATTRIBUTES
         KActionCollection *m_pActionCollection;
@@ -96,7 +96,7 @@ class PlayerApp : public KApplication, public EngineObserver
 
     private:
         void handleCliArgs();
-        void initBrowserWin();
+        void initPlaylistWindow();
         void initColors();
         void initConfigDialog();
         void initEngine();
@@ -112,15 +112,15 @@ class PlayerApp : public KApplication, public EngineObserver
         // ATTRIBUTES ------
         KGlobalAccel        *m_pGlobalAccel;
         PlayerWidget        *m_pPlayerWidget;
-        BrowserWin          *m_pBrowserWin;
-        PlaylistWidget      *m_pPlaylistWidget;
+        PlaylistWindow          *m_pPlaylistWindow;
+        Playlist      *m_pPlaylist;
         amaroK::DcopHandler *m_pDcopHandler;
         amaroK::TrayIcon    *m_pTray;
         amaroK::OSD         *m_pOSD;
 
         long      m_length; //DEPRECATE
         int       m_sockfd;
-        bool      m_showBrowserWin;
+        bool      m_showPlaylistWindow;
         bool      m_artsNeedsRestart; //DEPRECATE
 };
 
