@@ -15,29 +15,24 @@
 #include <math.h>
 #include <qpainter.h>
 #include <qpixmap.h>
+#include <qvaluevector.h>
 
-#undef BAND_COUNT
-#undef ROOF_HOLD_TIME
-#undef ROOF_VELOCITY_REDUCTION_FACTOR
-#undef MAX_AMPLITUDE
-
-#define BAND_COUNT 31
-#define ROOF_HOLD_TIME 48
-#define ROOF_VELOCITY_REDUCTION_FACTOR 32
-#define MAX_AMPLITUDE 1.1
-
-
-
-BarAnalyzer::BarAnalyzer( QWidget *parent, const char *name ) :
-   AnalyzerBase( 8, parent, name ),
-   m_pSrcPixmap( 0 ),
-   m_pComposePixmap( 0 ),
-   m_roofPixmap( 4, 1 )
+BarAnalyzer::BarAnalyzer( QWidget *parent, const char *name )
+    : AnalyzerBase( 8, parent, name )
+    , m_pSrcPixmap( 0 )
+    , m_pComposePixmap( 0 )
+    , m_roofPixmap( 4, 1 )
 {}
 
 
 BarAnalyzer::~BarAnalyzer()
 {
+    for ( int i = 0; i < NUM_ROOFS; i++ )
+        delete m_roofPixmaps[i];
+
+    for ( int i = 0; i < BAND_COUNT; i++ )
+        delete m_roofMem[i];
+                
     delete m_pSrcPixmap;
     delete m_pComposePixmap;
 }
@@ -58,7 +53,18 @@ void BarAnalyzer::init()
     m_pSrcPixmap = new QPixmap( height()*4, height() );
     m_pComposePixmap = new QPixmap( width(), height() );
 
+    //FIXME obsolete
     m_roofPixmap.fill( QColor( 0xff, 0x50, 0x70 ) );
+    
+    for ( int i = 0; i < BAND_COUNT; i++ )
+        m_roofMem[i] = new QValueVector<int>();
+    
+    QColor col( 0xff, 0x50, 0x70 );
+    for ( int i = 0; i < NUM_ROOFS; i++ )
+    {
+        m_roofPixmaps[i] = new QPixmap( 4, 1 );
+        m_roofPixmaps[i]->fill( col.dark( i + 100 + i * 5  ) );
+    }
 
     QPainter p( m_pSrcPixmap );
     p.setBackgroundColor( Qt::black );
@@ -126,13 +132,19 @@ void BarAnalyzer::drawAnalyzer( std::vector<float> *s )
         //remember where we are
         barVector[i] = y2;
 
+        if ( m_roofMem[i]->size() > NUM_ROOFS )
+            m_roofMem[i]->erase( m_roofMem[i]->begin() );
+        
+        //blt last n roofs, a.k.a motion blur
+        for ( int c = 0; c < m_roofMem[i]->size(); c++ )
+            bitBlt( m_pComposePixmap, x, m_roofMem[i]->at( c ), m_roofPixmaps[ NUM_ROOFS - 1 - c ] );
+        
         //blt the coloured bar
         bitBlt( m_pComposePixmap, x, height() - y2,
                 m_pSrcPixmap, y2 * 4, height() - y2, 4, y2, Qt::CopyROP );
-        //blt the roof bar
-        bitBlt( m_pComposePixmap, x, height() - roofVector[i] - 2, &m_roofPixmap );
-
-
+        
+        m_roofMem[i]->push_back( height() - roofVector[i] - 2 );
+        
         //set roof parameters for the NEXT draw
         if ( roofVelocityVector[i] != 0 )
         {

@@ -16,6 +16,19 @@
 
 #include "analyzerbase.h"
 
+#include <qvaluevector.h>
+
+#undef BAND_COUNT
+#undef ROOF_HOLD_TIME
+#undef ROOF_VELOCITY_REDUCTION_FACTOR
+#undef MAX_AMPLITUDE
+#undef NUM_ROOFS
+
+#define BAND_COUNT 31
+#define ROOF_HOLD_TIME 48
+#define ROOF_VELOCITY_REDUCTION_FACTOR 32
+#define MAX_AMPLITUDE 1.1
+#define NUM_ROOFS 16
 
 /**
 @author Mark Kretschmann && Max Howell
@@ -35,8 +48,12 @@ class BarAnalyzer : public AnalyzerBase
     protected:
         QPixmap *m_pSrcPixmap;
         QPixmap *m_pComposePixmap;
-        QPixmap  m_roofPixmap;
+        QPixmap* m_roofPixmaps[ NUM_ROOFS ];
+        QValueVector<int>* m_roofMem[ BAND_COUNT ];
 
+        //FIXME
+        QPixmap m_roofPixmap;
+                
         uint m_lvlMapper[256];
 };
 
