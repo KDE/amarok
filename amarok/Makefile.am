@@ -58,6 +58,8 @@ amarokapp_SOURCES = \
 
 amarokapp_LDADD = \
         $(top_builddir)/amarok/amarok/amarokcore/libamarokcore.a \
+        $(top_builddir)/amarok/amarok/engine/libengine.a \
+        $(top_builddir)/amarok/amarok/plugin/libplugin.a \
         $(top_builddir)/amarok/amarok/titleproxy/libtitleproxy.a \
         $(top_builddir)/amarok/amarok/analyzers/libanalyzers.a \
         $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) \
