@@ -15,7 +15,3 @@ EXTRA_DIST = \
 AUTOMAKE_OPTIONS = \
     foreign
 
-bin_SCRIPTS = \
-    release_amarok
-
-
