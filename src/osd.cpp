@@ -83,14 +83,17 @@ void OSDWidget::renderOSDText( const QString &text )
     bufferPainter.setPen( Qt::black );
     bufferPainter.setBrush( backgroundColor() );
     bufferPainter.drawRoundRect( textRect, 1500 / textRect.width(), 1500 / textRect.height() );
+    bufferPainter.setFont( font() );
 
     const uint w = width()  - 1;
     const uint h = height() - 1;
 
     // Draw the text shadow
-    bufferPainter.setFont( font() );
-    bufferPainter.setPen( backgroundColor().dark( 175 ) );
-    bufferPainter.drawText( 13, titleFm.height() + 1, w, h, AlignLeft | WordBreak, text );
+    if ( m_shadow )
+    {
+        bufferPainter.setPen( backgroundColor().dark( 175 ) );
+        bufferPainter.drawText( 13, titleFm.height() + 1, w, h, AlignLeft | WordBreak, text );
+    }
 
     // Draw the text
     bufferPainter.setPen( foregroundColor() );
@@ -156,6 +159,12 @@ void OSDWidget::setDuration(int ms)
 void OSDWidget::setFont(QFont newFont)
 {
     QWidget::setFont( newFont );
+    refresh();
+}
+
+void OSDWidget::setShadow(bool shadow)
+{
+    m_shadow = shadow;
     refresh();
 }
 

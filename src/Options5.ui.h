@@ -137,3 +137,7 @@ void Options5::useCustomColorsToggled( bool on )
 }
 
 
+void Options5::drawShadowToggled( bool on )
+{
+    m_pOSDPreview->setShadow( on );
+}

@@ -40,6 +40,7 @@ class OSDWidget : public QWidget
         OSDWidget(const QString &appName, QWidget *parent = 0, const char *name = "osd");
         void setDuration(int ms);
         void setFont(QFont newfont);
+        void setShadow(bool shadow);
         void setTextColor(QColor newcolor);
         void setBackgroundColor(QColor newColor);
         void setOffset(int x, int y);
@@ -77,6 +78,7 @@ class OSDWidget : public QWidget
         QPixmap     osdBuffer;
         QStringList textBuffer;
         QString     m_currentText;
+        bool        m_shadow;
 
         QPoint m_offset;
         Position m_position;

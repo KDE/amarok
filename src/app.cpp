@@ -368,6 +368,7 @@ void App::applySettings()
 
     m_pOSD->setEnabled( AmarokConfig::osdEnabled() );
     m_pOSD->setFont( AmarokConfig::osdFont() );
+    m_pOSD->setShadow( AmarokConfig::osdDrawShadow() );
     if( AmarokConfig::osdUseCustomColors() )
     {
         m_pOSD->setTextColor( AmarokConfig::osdTextColor() );

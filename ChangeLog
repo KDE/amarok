@@ -3,6 +3,7 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  ADD: Added a switch to toggle OSD's text-shadow. (BR 82011).
   ADD: More detailed track information dialog for Collection Browser.
   FIX: Track length was always 0 for certain filetypes (e.g. mod, wav) (BR 82673).
   FIX: Gst engine refusing to add certain filetypes to the playlist, when

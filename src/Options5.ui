@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>408</width>
-            <height>386</height>
+            <height>411</height>
         </rect>
     </property>
     <property name="caption">
@@ -78,24 +78,43 @@
                     <property name="flat">
                         <bool>true</bool>
                     </property>
-                    <grid>
+                    <vbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="KFontRequester" row="0" column="0">
-                            <property name="name">
-                                <cstring>kcfg_OsdFont</cstring>
-                            </property>
-                            <property name="font">
-                                <font>
-                                    <pointsize>20</pointsize>
-                                </font>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>The font to use for the On-Screen Display.</string>
-                            </property>
-                        </widget>
-                    </grid>
+                        <property name="spacing">
+                            <number>2</number>
+                        </property>
+						<grid>
+							<property name="name">
+								<cstring>unnamed</cstring>
+							</property>
+							<widget class="KFontRequester" row="0" column="0">
+								<property name="name">
+									<cstring>kcfg_OsdFont</cstring>
+								</property>
+								<property name="font">
+									<font>
+										<pointsize>20</pointsize>
+									</font>
+								</property>
+								<property name="whatsThis" stdset="0">
+									<string>The font to use for the On-Screen Display.</string>
+								</property>
+							</widget>
+						</grid>
+						<widget class="QCheckBox">
+							<property name="name">
+								<cstring>kcfg_OsdDrawShadow</cstring>
+							</property>
+							<property name="text">
+								<string>Draw &amp;shadow</string>
+							</property>
+							<property name="accel">
+								<string>Alt+S</string>
+							</property>
+						</widget>
+					</vbox>
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
@@ -535,6 +554,12 @@
         <receiver>Options5</receiver>
         <slot>yOffsetChanged(int)</slot>
     </connection>
+    <connection>
+        <sender>kcfg_OsdDrawShadow</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>Options5</receiver>
+        <slot>drawShadowToggled(bool)</slot>
+    </connection>
 </connections>
 <includes>
     <include location="global" impldecl="in implementation">qapplication.h</include>
@@ -556,6 +581,7 @@
     <slot access="protected">osdPositionChanged( int screen, OSDWidget::Position alignment, int xOffset, int yOffset )</slot>
     <slot access="protected">osdEnabledChange( bool on )</slot>
     <slot access="protected">useCustomColorsToggled( bool on )</slot>
+    <slot>drawShadowToggled( bool on )</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>

@@ -193,6 +193,11 @@
         <default code="true">QFont("Arial",20)</default>
 	<whatsthis>The font to use for the On-Screen Display.</whatsthis>
      </entry>
+     <entry key="Osd Draw Shadow" type="Bool">
+        <label>Draw a shadow around the text.</label>
+        <default>true</default>
+	<whatsthis>Draws a shadow around the OSD-text.</whatsthis>
+     </entry>
      <entry key="Osd Use Custom Colors" type="Bool">
         <label>Whether to use custom colors for the OSD</label>
         <default>false</default>
