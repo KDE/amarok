@@ -12,3 +12,6 @@ Add your ideas here:
 "The next generation media player"
 "Manage your music"
 "The audio manager"
+"Music management center"
+"The music manager with style"
+
