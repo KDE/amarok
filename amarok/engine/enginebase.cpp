@@ -18,6 +18,7 @@ email                : markey@web.de
 #include "artsengine.h"
 #include "enginebase.h"
 #include "gstengine.h"
+#include "nmm_engine.h"
 
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -43,7 +44,7 @@ bool EngineBase::initMixerHW()
     if ( ( m_mixerHW = ::open( "/dev/mixer", O_RDWR ) ) < 0 )
         return false;  //failed
     else
-    {        
+    {
         int devmask, recmask, i_recsrc, stereodevs;
         if ( ioctl( m_mixerHW, SOUND_MIXER_READ_DEVMASK, &devmask )       == -1 ) return false;
         if ( ioctl( m_mixerHW, SOUND_MIXER_READ_RECMASK, &recmask )       == -1 ) return false;
@@ -51,7 +52,7 @@ bool EngineBase::initMixerHW()
         if ( ioctl( m_mixerHW, SOUND_MIXER_READ_STEREODEVS, &stereodevs ) == -1 ) return false;
         if ( !devmask )                                                           return false;
     }
-    
+
     return true;
 }
 
@@ -88,14 +89,22 @@ void EngineBase::setXfadeLength( int ms )
 EngineBase* EngineBase::createEngine( QString system, bool& restart, int scopeSize, bool restoreEffects = true )
 {
     m_restoreEffects = restoreEffects;
-    
+
+    //TODO capitalise the engine names in the right places, this causes an issue with the configdialog engine
+    //selector however
+
     if ( system == "arts" )
         return new ArtsEngine( restart, scopeSize );
-    
-#ifdef HAVE_GSTREAMER    
+
+#ifdef HAVE_GSTREAMER
     if ( system == "gstreamer" )
         return new GstEngine( scopeSize );
-#endif           
+#endif
+
+#ifdef HAVE_NMM
+    if ( system == "NMM" )
+        return new NmmEngine();
+#endif
 
     //fallthru, needs fixing when we stop depending on aRts
     return new ArtsEngine( restart, scopeSize );
@@ -105,13 +114,17 @@ EngineBase* EngineBase::createEngine( QString system, bool& restart, int scopeSi
 QStringList EngineBase::listEngines()
 {
     QStringList list;
-    
+
     list.append( "arts" );
-    
+
 #ifdef HAVE_GSTREAMER
     list.append( "gstreamer" );
 #endif
-    
+
+#ifdef HAVE_NMM
+    list.append( "NMM" );
+#endif
+
     return list;
 }
 

@@ -1,5 +1,5 @@
 ###############################################################################
-# BEGIN KDEMULTIMEDIA CHECK 
+# BEGIN KDEMULTIMEDIA CHECK
 ###############################################################################
 
 KDE_CHECK_HEADER(arts/artsmodules.h, amarok_error_nokdemm=no, amarok_error_nokdemm=yes)
@@ -11,13 +11,13 @@ fi
 
 
 ###############################################################################
-# END KDEMULTIMEDIA CHECK 
+# END KDEMULTIMEDIA CHECK
 ###############################################################################
 
 
 
 ###############################################################################
-# BEGIN TAGLIB CHECK 
+# BEGIN TAGLIB CHECK
 ###############################################################################
 
 TAGLIB_REQ_VERSION="0.95";
@@ -45,13 +45,13 @@ AC_SUBST(taglib_includes)
 AC_SUBST(taglib_libs)
 
 ###############################################################################
-# END TAGLIB CHECK 
+# END TAGLIB CHECK
 ###############################################################################
 
 
 
 ###############################################################################
-# BEGIN GSTREAMER CHECK 
+# BEGIN GSTREAMER CHECK
 ###############################################################################
 
 #<pkg-config>
@@ -66,10 +66,17 @@ AC_DEFUN(KDE_PKG_CHECK_MODULES, [
   fi
 
   if test "$PKG_CONFIG" = "no" ; then
-     echo "*** The pkg-config script could not be found. Make sure it is"
-     echo "*** in your path, or set the PKG_CONFIG environment variable"
-     echo "*** to the full path to pkg-config."
-     echo "*** Or see http://www.freedesktop.org/software/pkgconfig to get pkg-config."
+     #echo "*** The pkg-config script could not be found. Make sure it is"
+     #echo "*** in your path, or set the PKG_CONFIG environment variable"
+     #echo "*** to the full path to pkg-config."
+     #echo "*** Or see http://www.freedesktop.org/software/pkgconfig to get pkg-config."
+
+     echo "************************************************************************"
+     echo "amaroK can build an optional GStreamer audio-engine, however you do not"
+     echo "have pkg-config installed which is required to detect your GStreamer"
+     echo "installation. If you want to build the GStreamer audio-engine you should"
+     echo "download pkg-config from http://www.freedesktop.org/software/pkgconfig"
+     echo "************************************************************************"
   else
      PKG_CONFIG_MIN_VERSION=0.9.0
      if $PKG_CONFIG --atleast-pkgconfig-version $PKG_CONFIG_MIN_VERSION; then
@@ -89,7 +96,7 @@ AC_DEFUN(KDE_PKG_CHECK_MODULES, [
         else
             $1_CFLAGS=""
             $1_LIBS=""
-            ## If we have a custom action on failure, don't print errors, but 
+            ## If we have a custom action on failure, don't print errors, but
             ## do set a variable so people can do so.
             $1_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "$2"`
             ifelse([$4], ,echo $$1_PKG_ERRORS,)
@@ -102,7 +109,6 @@ AC_DEFUN(KDE_PKG_CHECK_MODULES, [
         echo "*** See http://www.freedesktop.org/software/pkgconfig"
      fi
   fi
-
   if test $succeeded = yes; then
      ifelse([$3], , :, [$3])
   else
@@ -122,13 +128,13 @@ if test "$build_gstreamer" != "no"; then
     # check for pkg-config
     AC_ARG_VAR(PKGCONFIGFOUND, [Path to pkg-config])
     AC_CHECK_PROG(PKGCONFIGFOUND, pkg-config,[yes])
-    
+
     if test "$PKGCONFIGFOUND" = "yes" ; then
     # check for GStreamer
     dnl Now we're ready to ask for gstreamer libs and cflags
     dnl And we can also ask for the right version of gstreamer
     HAVE_GST=no
-    
+
     dnl start with 0.6
     GST_MAJORMINOR=0.6
     GST_REQ=0.6.0
@@ -137,7 +143,7 @@ if test "$build_gstreamer" != "no"; then
         gstreamer-control-$GST_MAJORMINOR >= $GST_REQ \
         gstreamer-libs-$GST_MAJORMINOR >= $GST_REQ,
         HAVE_GST=yes,HAVE_GST=no)
-    
+
     dnl fail back to 0.7
     if test "x$HAVE_GST" = "xno"; then
         GST_MAJORMINOR=0.7
@@ -147,35 +153,86 @@ if test "$build_gstreamer" != "no"; then
         gstreamer-libs-$GST_MAJORMINOR >= $GST_REQ,
         HAVE_GST=yes,HAVE_GST=no)
     fi
-    
+
     dnl Give error if we don't have gstreamer
     if test "x$HAVE_GST" = "xno"; then
         LIB_GST=""
         CFLAGS_GST=""
     #    DO_NOT_COMPILE="$DO_NOT_COMPILE gst"
-        AC_MSG_WARN([GStreamer version >= $GST_REQ required.])
+        AC_MSG_WARN([GStreamer version >= $GST_REQ required to build the optional amaroK GStreamer engine])
     else
         LIB_GST=$GST_LIBS
         CFLAGS_GST=$GST_CFLAGS
         AC_SUBST(LIB_GST)
         AC_SUBST(CFLAGS_GST)
-        AC_MSG_NOTICE([GStreamer version >= $GST_REQ found.])
+        AC_MSG_NOTICE([GStreamer version >= $GST_REQ found. amaroK GStreamer audio-engine will be built])
         AC_DEFINE(HAVE_GSTREAMER, 1, [have GStreamer])
     fi
     else
-    AC_MSG_WARN([No pkg-config found, required for GStreamer])
+    AC_MSG_WARN([No pkg-config found, required to build optional amaroK GStreamer engine])
     #  DO_NOT_COMPILE="$DO_NOT_COMPILE gst"
     fi
 fi
-    
+
 ###############################################################################
-# END GSTREAMER CHECK 
+# END GSTREAMER CHECK
 ###############################################################################
 
 
 
 ###############################################################################
-# BEGIN QT OPENGL CHECK 
+# BEGIN NMM CHECK
+###############################################################################
+
+AC_ARG_WITH(nmm,
+    AC_HELP_STRING([--with-nmm],[build the amaroK NMM-engine [default=no]]),
+    [build_nmm=$withval],
+    [build_nmm=no]
+)
+
+AC_ARG_WITH(nmm,
+    AC_HELP_STRING([--with-nmm-includes],[where the libraries for NMM are installed [default=/usr/local/include]]),
+    [nmm_cflags=$withval],
+    [nmm_cflags=/usr/local/include]
+)
+
+
+if test "$build_nmm" != "no"; then
+
+  #currently NMM libs must by in LD_PATH
+
+  echo "*****************************************************"
+  echo "*** amaroK will be built with the NMM-engine, please"
+  echo "*** ensure that the NMM libraries are in LD_PATH, or"
+  echo "*** run: ./configure --with-nmm=no"
+  echo "*****************************************************"
+
+  CFLAGS_NMM="-I$nmm_cflags"
+  LIB_NMM="-lnmmbase -lnmmaudio -lnmmmpegread -lnmmmpegaudiodec -lnmmfile -lnmmoggvorbis"
+  AC_DEFINE(HAVE_NMM, 1, [have NMM])
+  have_nmm=true
+
+else
+
+  #no warning, what's the point?
+  CFLAGS_NMM=""
+  LIB_NMM=""
+  have_nmm=false
+
+fi
+
+AM_CONDITIONAL(link_lib_NMM, test x$have_nmm = xtrue)
+AC_SUBST(LIB_NMM)
+AC_SUBST(CFLAGS_NMM)
+
+###############################################################################
+# END NMM CHECK
+###############################################################################
+
+
+
+###############################################################################
+# BEGIN QT OPENGL CHECK
 ###############################################################################
 
 AC_ARG_WITH(opengl,
@@ -190,15 +247,15 @@ if test "$build_opengl" != "no"; then
     [
     AC_LANG_SAVE
     AC_LANG_CPLUSPLUS
-    
+
     save_CXXFLAGS="$CXXFLAGS"
     save_LIBS="$LIBS"
     save_LDFLAGS="$LDFLAGS"
-    
+
     CXXFLAGS="$CXXFLAGS -I$qt_incdir $all_includes"
     LDFLAGS="$LDFLAGS -L$qt_libdir $all_libraries $USER_LDFLAGS $KDE_MT_LDFLAGS"
     LIBS="$LIBS $LIBQT $KDE_MT_LIBS"
-    
+
     AC_TRY_LINK([
     #include <qgl.h>
     ],
@@ -207,25 +264,25 @@ if test "$build_opengl" != "no"; then
     ],
     ac_cv_kde_qt_has_opengl=yes,
     ac_cv_kde_qt_has_opengl=no)
-    
+
     CXXFLAGS="$save_CXXFLAGS"
     LIBS="$save_LIBS"
     LDFLAGS="$save_LDFLAGS"
     AC_LANG_RESTORE
     ])
     AC_MSG_RESULT($ac_cv_kde_qt_has_opengl)
-    
+
     if test x$ac_cv_kde_qt_has_opengl = xyes; then
     AC_DEFINE(HAVE_QGLWIDGET, 1, [have Qt with OpenGL support])
     gl_libs="-lGL"
     else
     gl_libs=""
     fi
-    
+
     AC_SUBST(gl_libs)
 fi
-    
+
 ###############################################################################
-# END QT OPENGL CHECK 
+# END QT OPENGL CHECK
 ###############################################################################
 
