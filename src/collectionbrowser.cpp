@@ -77,10 +77,16 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_view = new CollectionView( this );
 
     m_configureAction = new KAction( i18n( "Configure Folders" ), "configure", 0, this, SLOT( setupDirs() ), ac, "Configure" );
-    m_treeViewAction = new KAction( i18n( "Tree View" ), "view_tree", 0, m_view, SLOT( setTreeMode() ), ac, "Tree View" );
-    m_flatViewAction = new KAction( i18n( "Flat View" ), "view_detailed", 0, m_view, SLOT( setFlatMode() ), ac, "Flat View" );
+    m_treeViewAction = new KRadioAction( i18n( "Tree View" ), "view_tree", 0, m_view, SLOT( setTreeMode() ), ac, "Tree View" );
+    m_flatViewAction = new KRadioAction( i18n( "Flat View" ), "view_detailed", 0, m_view, SLOT( setFlatMode() ), ac, "Flat View" );
+    m_treeViewAction->setExclusiveGroup("view mode");
+    m_flatViewAction->setExclusiveGroup("view mode");
+    if(m_view->m_viewMode == CollectionView::modeTreeView)
+        m_treeViewAction->setChecked(true);
+    else
+        m_flatViewAction->setChecked(true);
 
-
+    
     KActionMenu* tagfilterMenuButton = new KActionMenu( i18n( "Group By" ), "filter", ac );
     tagfilterMenuButton->setDelayed( false );
     m_categoryMenu = tagfilterMenuButton->popupMenu();
@@ -809,9 +815,6 @@ CollectionView::setViewMode( int mode, bool rerender )
 
     if ( mode == modeTreeView )
     {
-        m_parent->m_treeViewAction->setEnabled( false );
-        m_parent->m_flatViewAction->setEnabled( true );
-
         QString headerText = captionForCategory( m_cat1 );
         if ( m_cat2 != CollectionBrowser::IdNone )
             headerText += " / " + captionForCategory( m_cat2 );
@@ -826,9 +829,6 @@ CollectionView::setViewMode( int mode, bool rerender )
     }
     else
     {
-        m_parent->m_treeViewAction->setEnabled( true );
-        m_parent->m_flatViewAction->setEnabled( false );
-
         addColumn( i18n( "Title" ) );
         addColumn( captionForCategory( m_cat1 ) );
         if( m_cat2 != CollectionBrowser::IdNone ) addColumn( captionForCategory( m_cat2 ) );

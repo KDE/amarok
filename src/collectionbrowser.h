@@ -24,6 +24,7 @@ class QPoint;
 class QStringList;
 
 class KAction;
+class KRadioAction;
 class KPopupMenu;
 class KProgress;
 
@@ -49,8 +50,8 @@ class CollectionBrowser: public QVBox
 
         KAction* m_configureAction;
         KAction* m_scanAction;
-        KAction* m_treeViewAction;
-        KAction* m_flatViewAction;
+        KRadioAction* m_treeViewAction;
+        KRadioAction* m_flatViewAction;
 
         KPopupMenu* m_categoryMenu;
         KPopupMenu* m_cat1Menu;
