@@ -8,6 +8,9 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+          <markey> When the KDE color scheme is changed while amaroK is running, all toolbar buttons
+                   (those with text) lose their texts.
+
           <muesli> Take care of KToolbars in Context/Collection for palette changes
 
           <markey> The splash screen needs to be updated for 1.1.1.
