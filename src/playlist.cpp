@@ -241,10 +241,10 @@ void Playlist::insertMedia( KURL::List list, bool directPlay, bool preventDouble
             PlaylistItem *tItem = (PlaylistItem *)it.current();
             if ( list.contains( tItem->url() ) )
             {
-                list.remove( tItem->url() );
-
-                if ( directPlay )
+                if ( directPlay && tItem->url() == list.last() )
                     activate ( tItem );
+
+                list.remove( tItem->url() );
             }
         }
 
