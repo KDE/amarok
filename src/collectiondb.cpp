@@ -524,7 +524,7 @@ CollectionDB::getMetaBundleForUrl( const QString url, MetaBundle *bundle )
 void
 CollectionDB::addAudioproperties( const MetaBundle& bundle )
 {
-    query( QString( "REPLACE INTO tags ( bitrate, length, samplerate ) WHERE url = '%1' VALUES ( '%2', '%3', '%4' );" )
+    query( QString( "REPLACE INTO tags ( url, bitrate, length, samplerate ) VALUES ( '%1', '%2', '%3', '%4' );" )
                     .arg( escapeString( bundle.url().path() ) )
                     .arg( bundle.bitrate() )
                     .arg( bundle.length() )
