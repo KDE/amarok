@@ -313,7 +313,7 @@ CollectionDB::removeImageFromAlbum( const QStringList artists, const QStringList
                 urls += KURL( m_cacheDir.filePath( scaledList[ i ] ) );
 
         // remove large, original images
-        QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/" ) );
+        QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
         if ( largeCoverDir.exists( key.lower() ) )
             urls += KURL( largeCoverDir.filePath( key.lower() ) );
 
