@@ -150,7 +150,7 @@ void FHT::logSpectrum(float *out, float *p)
 		}
 	}
 	semiLogSpectrum(p);
-	*out++ = *p;
+	*out++ = *p = 0;
 	for (k = i = 1, r = m_log; i < n; i++) {
 		j = *r++;
 		if (i == j)
