@@ -4,10 +4,13 @@
 
 void AmarokNavButton::drawButton( QPainter *p )
 {
-    QRect sz( p->window() );
-    p->fillRect( sz, Qt::black );
+    QRect r( rect() );
+    p->fillRect( r, Qt::black );
     p->setPen( QColor( 0x80, 0xa0, 0xff ) );
-    p->drawRoundRect( sz.left() + 2, sz.top() + 2, sz.right() - 2, sz.bottom() - 2 );
+    p->drawRoundRect( r.left() + 3, 
+                      r.top() + 1,
+                      r.right() - 3,
+                      r.bottom() - 3 );
     drawButtonLabel(p);
 }
 
