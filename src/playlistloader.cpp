@@ -424,11 +424,9 @@ void PlaylistLoader::loadPLS( QTextStream &stream )
 void PlaylistLoader::loadXML( QTextStream &stream )
 {
     QDomDocument d;
-    if( !d.setContent(stream.device()) ) { kdDebug() << "Could not load XML\n"; return; }
+    if( !d.setContent(stream.read()) ) { kdDebug() << "Could not load XML\n"; return; }
 
-    QDomNode
-    n = d.namedItem( "playlist" );
-    n = n.firstChild();
+    QDomNode n = d.namedItem( "playlist" ).firstChild();
 
     const QString ITEM( "item" ); //so we don't construct the QStrings all the time
     const QString URL( "url" );
@@ -436,7 +434,11 @@ void PlaylistLoader::loadXML( QTextStream &stream )
 
     while( !n.isNull() && n.nodeName() == ITEM )
     {
-        const QDomElement e = n.toElement(); if( e.isNull() ) continue;
+        const QDomElement e = n.toElement();
+        if( e.isNull() ) {
+           kdDebug() << "Element '" << n.nodeName() << "' is null, skipping." << endl;
+           continue;
+        }
 
         //TODO  check this is safe, is it ok to cause paint Events from this thread?
         //TODO  if this is safe you may want to do it all like this
