@@ -99,6 +99,9 @@ const MetaBundle *PlaylistItem::metaBundle() const
 
 void PlaylistItem::setMeta( const MetaBundle &bundle )
 {
+    int m_hours, m_minutes, m_seconds;
+    QString str;
+    
     if( !bundle.m_title.isEmpty() ) setText( 1, bundle.m_title ); //can be set by playlists, so the check is worthwhile
     setText( 2, bundle.m_artist );
     setText( 3, bundle.m_album );
@@ -106,7 +109,18 @@ void PlaylistItem::setMeta( const MetaBundle &bundle )
     setText( 5, bundle.m_comment );
     setText( 6, bundle.m_genre );
     setText( 7, bundle.m_directory );
-    setText( 8, QString::number( bundle.m_length ) );
+    
+    m_minutes = bundle.m_length / 60 % 60;
+    m_seconds = bundle.m_length % 60;
+    
+    if ( m_minutes < 10 ) str += "0";
+    str += QString::number( m_minutes );
+    str += ":";
+
+    if ( m_seconds < 10 ) str += "0";
+    str += QString::number( m_seconds );
+
+    setText( 8, str );
     setText( 9, QString::number( bundle.m_bitrate ) + "kbps" );
 }
 
