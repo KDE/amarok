@@ -92,6 +92,15 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer ) //static
 
 
 void
+GstEngine::candecode_handoff_cb( GstElement*, GstBuffer*, gpointer ) //static
+{
+    kdDebug() <<  k_funcinfo << endl;
+
+    instance()->m_canDecodeSuccess = true;
+}
+
+
+void
 GstEngine::error_cb( GstElement* /*element*/, GstElement* /*source*/, GError* error, gchar* debug, gpointer /*data*/ ) //static
 {
     kdDebug() << k_funcinfo << endl;
@@ -205,37 +214,34 @@ GstEngine::init()
 bool
 GstEngine::canDecode( const KURL &url ) const
 {
-    if ( GstConfig::soundOutput().isEmpty() ) {
-        QTimer::singleShot( 0, instance(), SLOT( errorNoOutput() ) );
-        return false;
-    }
-    bool success = false;
-    GstElement *pipeline, *filesrc, *spider, *audioconvert, *audioscale, *audiosink;
+    int count = 0;
+    m_canDecodeSuccess = false;
+    GstElement *pipeline, *filesrc, *spider, *fakesink;
 
     if ( !( pipeline = createElement( "pipeline" ) ) ) return false;
     if ( !( filesrc = createElement( "filesrc", pipeline ) ) ) return false;
     if ( !( spider = createElement( "spider", pipeline ) ) ) return false;
-    if ( !( audioconvert = createElement( "audioconvert", pipeline ) ) ) return false;
-    if ( !( audioscale = createElement( "audioscale", pipeline ) ) ) return false;
-    if ( !( audiosink = createElement( GstConfig::soundOutput().latin1(), pipeline ) ) ) return false;
+    if ( !( fakesink = createElement( "fakesink", pipeline ) ) ) return false;
 
-    /* setting device property for AudioSink*/
-    if ( GstConfig::useCustomSoundDevice() && !GstConfig::soundDevice().isEmpty() )
-        g_object_set( G_OBJECT ( audiosink ), "device", GstConfig::soundDevice().latin1(), NULL );
+    GstCaps* filtercaps = gst_caps_new_simple( "audio/x-raw-int", NULL );
+
+    gst_element_link( filesrc, spider );
+    gst_element_link_filtered( spider, fakesink, filtercaps );
 
     g_object_set( G_OBJECT( filesrc ), "location", (const char*) QFile::encodeName( url.path() ), NULL );
+    g_object_set( G_OBJECT( fakesink ), "signal_handoffs", true, NULL );
+    g_signal_connect( G_OBJECT( fakesink ), "handoff", G_CALLBACK( candecode_handoff_cb ), pipeline );
 
-    gst_element_link_many( filesrc, spider, audioconvert, audioscale, audiosink, NULL );
     gst_element_set_state( pipeline, GST_STATE_PLAYING );
 
-    // Try to iterate over the bin, if it works gst can decode our file
-    if ( gst_bin_iterate ( GST_BIN ( pipeline ) ) )
-        success = true;
+    // Try to iterate over the bin until handoff gets triggered
+    while ( gst_bin_iterate( GST_BIN( pipeline ) ) && !m_canDecodeSuccess && count < 1000 )
+        count++;
 
     gst_element_set_state( pipeline, GST_STATE_NULL );
     gst_object_unref( GST_OBJECT( pipeline ) );
 
-    return success;
+    return m_canDecodeSuccess;
 }
 
 
