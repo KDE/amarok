@@ -14,12 +14,13 @@ INCLUDES = \
         $(all_includes)
 
 amarokapp_SOURCES = \
-        playlistwidget.cpp playlisttooltip.cpp playlistloader.cpp playlistitem.cpp playlistbrowser.cpp \
+        playlistwidget.cpp playlisttooltip.cpp playlistloader.cpp playlistitem.cpp \
         browserwin.cpp streambrowser.cpp expandbutton.cpp \
         filebrowser.cpp kbookmarkhandler.cpp amarokfilelist.cpp \
         playerwidget.cpp osd.cpp effectwidget.cpp amarokslider.cpp amaroksystray.cpp \
         Options1.ui Options2.ui Options3.ui Options4.ui Options5.ui \
-        playerapp.cpp fht.cpp amarokconfigdialog.cpp threadweaver.cpp
+        playerapp.cpp fht.cpp amarokconfigdialog.cpp threadweaver.cpp \
+        playlistsidebar.cpp playlistbrowser.cpp
 
 amarokapp_LDADD = \
         $(top_builddir)/amarok/amarok/amarokcore/libamarokcore.a \

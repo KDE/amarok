@@ -29,6 +29,7 @@
 #include <qpainter.h>
 #include <qpen.h>    //glowTimer()
 #include <qpoint.h>
+#include <qpushbutton.h>
 #include <qrect.h>
 #include <qstringlist.h>
 #include <qtimer.h>
