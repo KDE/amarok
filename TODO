@@ -4,6 +4,9 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
+    * fix: <grue> with focus-follows-mouse, both player window and playlist
+      rise to foreground when you point on the player
+
     * add: <mxcl> combo for file/directory browser that remembers what you've entered (like open dialog)
 
     * fix: <mxcl> session management (broke again!)
