@@ -38,6 +38,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>    //showCoverMenu()
 #include <kmultipledrag.h>
+#include <kio/netaccess.h>
 #include <kpopupmenu.h>    //showCoverMenu()
 #include <kprogress.h>
 #include <kpushbutton.h>
@@ -414,8 +415,8 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
         #ifdef AMAZON_SUPPORT
         menu.insertItem( SmallIconSet( "www" ), i18n( "&Fetch Selected Covers" ), FETCH );
         #endif
+        menu.insertItem( SmallIconSet("folder_image"), i18n("Set &Custom Cover for Selected Albums"), CUSTOM );
         menu.insertItem( SmallIconSet("editdelete"), i18n("&Unset Selected Covers"), DELETE );
-
     }
     else {
         menu.insertItem( SmallIconSet("viewmag"), i18n("&Show Fullsize"), SHOW );
@@ -447,25 +448,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
 
         case CUSTOM:
         {
-            QString startPath = ":homedir";
-            QString artist_id; artist_id.setNum( CollectionDB::instance()->artistID( item->artist() ) );
-            QString album_id; album_id.setNum( CollectionDB::instance()->albumID( item->album() ) );
-            QStringList values = CollectionDB::instance()->albumTracks( artist_id, album_id );
-
-            if ( !values.isEmpty() ) {
-                KURL url;
-                url.setPath( values.first() );
-                startPath = url.directory();
-            }
-
-            /* This opens a file-open-dialog and copies the selected image to albumcovers, scaled and unscaled. */
-            KURL file = KFileDialog::getImageOpenURL( startPath, this, i18n( "Select Cover Image File" ) );
-
-            if ( !file.isEmpty() ) {
-                qApp->processEvents();    //it may takes a while so process pending events
-                CollectionDB::instance()->setAlbumImage( item->artist(), item->album(), file );
-                item->loadCover();
-            }
+            setCustomSelectedCovers();
             break;
         }
 
@@ -649,6 +632,34 @@ void CoverManager::loadCover( const QString &artist, const QString &album )
     }
 }
 
+void CoverManager::setCustomSelectedCovers()
+{
+    //function assumes something is selected
+    QPtrList<CoverViewItem> selected = selectedItems();
+    CoverViewItem* first = selected.getFirst();
+    
+    QString artist_id; artist_id.setNum( CollectionDB::instance()->artistID( first->artist() ) );
+    QString album_id; album_id.setNum( CollectionDB::instance()->albumID( first->album() ) );
+    QStringList values = CollectionDB::instance()->albumTracks( artist_id, album_id );
+
+    QString startPath = ":homedir";
+    if ( !values.isEmpty() ) {
+        KURL url;
+        url.setPath( values.first() );
+        startPath = url.directory();
+    }
+    KURL file = KFileDialog::getImageOpenURL( startPath, this, i18n( "Select Cover Image File" ) );
+    if ( !file.isEmpty() ) {
+        qApp->processEvents();    //it may takes a while so process pending events
+        QString tmpFile;
+        QImage image = CollectionDB::fetchImage(file, tmpFile);        
+        for ( CoverViewItem* item = selected.first(); item; item = selected.next() ) {
+            CollectionDB::instance()->setAlbumImage( item->artist(), item->album(), image );
+            item->loadCover();
+        }
+        KIO::NetAccess::removeTempFile( tmpFile );
+    }
+}
 
 void CoverManager::fetchSelectedCovers()
 {

@@ -614,24 +614,28 @@ CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, 
     }
 }
 
-
-bool
-CollectionDB::setAlbumImage( const QString& artist, const QString& album, const KURL& url )
+QImage 
+CollectionDB::fetchImage(const KURL& url, QString &tmpFile)
 {
     if(url.protocol() != "file")
     {
         QString tmpFile;
         KIO::NetAccess::download( url, tmpFile, 0); //TODO set 0 to the window, though it probably doesn't really matter
-        QImage tmp(tmpFile);
-        bool success = setAlbumImage( artist, album, tmp );
-        KIO::NetAccess::removeTempFile( tmpFile );
-        return success;
+        return QImage(tmpFile);
     }
     else 
     {
-        QImage img( url.path() );
-        return setAlbumImage( artist, album, img );
+        return QImage( url.path() );
     }
+    
+}
+bool
+CollectionDB::setAlbumImage( const QString& artist, const QString& album, const KURL& url )
+{
+    QString tmpFile;
+    bool success = setAlbumImage( artist, album, fetchImage(url, tmpFile) );
+    KIO::NetAccess::removeTempFile( tmpFile ); //only removes file if it was created with NetAccess
+    return success;
 }
 
 

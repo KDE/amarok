@@ -241,6 +241,10 @@ class CollectionDB : public QObject, public EngineObserver
         QStringList albumTracks( const QString &artist_id, const QString &album_id );
 
         //cover management methods
+        /** Returns the image from a given URL, network-transparently. 
+         * You must run KIO::NetAccess::removeTempFile( tmpFile ) when you are finished using the image;
+         **/
+        static QImage fetchImage(const KURL& url, QString &tmpFile);
         /** Saves images located on the user's filesystem */
         bool setAlbumImage( const QString& artist, const QString& album, const KURL& url );
         /** Saves images obtained from CoverFetcher */

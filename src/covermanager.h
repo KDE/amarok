@@ -57,6 +57,7 @@ class CoverManager : public QSplitter
         enum Locale { International=0, France, Germany, UK };
 
         void loadCover( const QString &, const QString & );
+        void setCustomSelectedCovers();
         void fetchSelectedCovers();
         void deleteSelectedCovers();
         QPtrList<CoverViewItem> selectedItems();
