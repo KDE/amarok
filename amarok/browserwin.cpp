@@ -29,6 +29,7 @@
 #include <qlayout.h>
 #include <qobjectlist.h>   //setPaletteRecursively()
 #include <qpalette.h>      //setPalettes()
+#include <qpopupmenu.h>    //BrowserWin ctor
 #include <qsplitter.h>     //m_splitter
 #include <qtooltip.h>      //QToolTip::add()
 #include <qvbox.h>         //contains the playlist
@@ -43,6 +44,8 @@
 #include <klineedit.h>     //m_lineEdit
 #include <klocale.h>
 #include <kstandarddirs.h> //KGlobal::dirs()
+#include <ktoolbar.h>
+#include <ktoolbarbutton.h>
 #include <kurldrag.h>      //eventFilter()
 #include <kurlrequester.h>    //slotAddLocation()
 #include <kurlrequesterdlg.h> //slotAddLocation()
@@ -87,10 +90,49 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     clearButton->setIconSet( SmallIconSet( "locationbar_erase" ) );
     connect( clearButton, SIGNAL( clicked() ), m_lineEdit, SLOT( clear() ) );
     */
-
+    
+    //ToolBar
+        QPopupMenu* actions_popup = new QPopupMenu( this );
+        actions_popup->insertItem( KGlobal::iconLoader()->loadIconSet( "clear_left", KIcon::NoGroup, KIcon::SizeSmall ),
+                                   "Clear" );
+        actions_popup->insertItem( KGlobal::iconLoader()->loadIconSet( "rebuild",    KIcon::NoGroup, KIcon::SizeSmall ), 
+                                   "Shuffle", m_playlist, SLOT( shuffle() ) );
+        actions_popup->insertItem( KGlobal::iconLoader()->loadIconSet( "filesaveas", KIcon::NoGroup, KIcon::SizeSmall ),
+                                   "Save Playlist", m_playlist, SLOT( savePlaylist() ) );
+        
+        QPopupMenu* play_popup = new QPopupMenu( this );
+        play_popup->insertItem( KGlobal::iconLoader()->loadIconSet( "player_fwd",    KIcon::NoGroup, KIcon::SizeSmall ),
+                                "Next", pApp, SLOT( slotNext() ) );
+        play_popup->insertItem( KGlobal::iconLoader()->loadIconSet( "player_stop",   KIcon::NoGroup, KIcon::SizeSmall ),
+                                "Stop", pApp, SLOT( slotStop() ) );
+        play_popup->insertItem( KGlobal::iconLoader()->loadIconSet( "player_pause",  KIcon::NoGroup, KIcon::SizeSmall ),
+                                "Pause", pApp, SLOT( slotPause() ) );
+        play_popup->insertItem( KGlobal::iconLoader()->loadIconSet( "player_rew",    KIcon::NoGroup, KIcon::SizeSmall ),
+                                "Previous", pApp, SLOT( slotPrev() ) );
+        
+        KToolBar* toolbar = new KToolBar( this );
+        toolbar->setIconText( KToolBar::IconTextBottom );
+        
+        toolbar->insertButton( "fileopen",    id_addItem,         true, "Add item" );
+        connect( toolbar->getButton( id_addItem ), SIGNAL( clicked() ), this, SLOT( slotAddLocation() ) );
+        
+        toolbar->insertButton( "midi",        id_playlistActions, true, "Playlist actions" );
+        toolbar->getButton( id_playlistActions )->setDelayedPopup( actions_popup );
+        
+        toolbar->insertButton( "undo",        id_undo,            true, "Undo" );
+        connect( toolbar->getButton( id_undo ), SIGNAL( clicked() ), m_playlist, SLOT( undo() ) );
+        toolbar->insertButton( "redo",        id_redo,            true, "Redo" );
+        connect( toolbar->getButton( id_undo ), SIGNAL( clicked() ), m_playlist, SLOT( redo() ) );
+        
+        toolbar->insertButton( "player_play", id_play,            true, "Play" );
+        connect( toolbar->getButton( id_play ), SIGNAL( clicked() ), pApp, SLOT( slotPlay() ) );
+        toolbar->getButton( id_play )->setDelayedPopup( play_popup );
+    //ToolBar    
+        
     QBoxLayout *layV = new QVBoxLayout( this );
+    layV->addWidget( toolbar );
     layV->addWidget( m_splitter );
-
+    
     QVBox *box = new QVBox( m_splitter );
 
     QHBox *boxH = new QHBox( box );

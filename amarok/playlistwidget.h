@@ -125,6 +125,8 @@ class PlaylistWidget : private KListView
         void copyToClipboard( const QListViewItem* = 0 ) const;
         void showCurrentTrack();
         void setCurrentTrack( const KURL& );
+        void undo();
+        void redo();
 
     private slots:
         void slotGlowTimer();
@@ -136,8 +138,6 @@ class PlaylistWidget : private KListView
         void writeTag( QListViewItem*, const QString&, int );
         void handleStreamMeta( const MetaBundle& );
 
-        void undo();
-        void redo();
         void saveUndoState();
 
     private:
