@@ -173,7 +173,7 @@ PlaylistLoader::loadPlaylist( const QString &path, Format type )
         {
             if ( str.startsWith( "#EXTINF" ) )
             {
-                QString extinf = str.section( ':', 1, 1 );
+                QString extinf = str.section( ':', 1);
                 length = extinf.section( ',', 0, 0 ).toInt();
                 title = extinf.section( ',', 1 );
 
@@ -182,7 +182,7 @@ PlaylistLoader::loadPlaylist( const QString &path, Format type )
             else if ( !str.startsWith( "#" ) && !str.isEmpty() )
             {
 
-                if ( !( str[ 0 ] == '/' || str.contains( ':' ) ) )
+                if ( !( str[ 0 ] == '/' || str.contains( "://" ) ) )
                     str.prepend( dir );
 
                 postItem( KURL::fromPathOrURL( str ), title, length );
