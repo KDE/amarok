@@ -858,7 +858,7 @@ void App::pruneCoverImages()
                 "amaroK has had to delete some of the images that you downloaded from Amazon. "
                 "Amazon's licensing policy require us to remove content within 90 days of its download. "
                 "You can read more about Amazon's policies "
-                "<a href='http://www.amazon.com/webservices'>here</a>."
+                "<a href='http://www.amazon.com/webservices'>here</a>. "
                 "Please note that this only affects covers downloaded using the Cover Manager's fetch covers feature and the covers downloaded using the context menu in the Context browser, not manually added covers." ) );
 #endif
 }

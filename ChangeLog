@@ -4,7 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2.1:
-
+  ADD: "Set Custom Cover" can fetch remote images (BR 90499)
 
 VERSION 1.2:
   ADD: "Repeat Track" status is reflected by an icon in the playlist.

@@ -1,6 +1,7 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // (c) 2004 Sami Nieminen <sami.nieminen@iki.fi>
+// (c) 2005 Ian Monroe <ian@monroe.nu>
 // See COPYING file for licensing information.
 
 #define DEBUG_PREFIX "CollectionDB"
@@ -35,6 +36,7 @@
 #include <kmdcodec.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
+#include <kio/netaccess.h>
 
 #include <math.h>                 //DbConnection::sqlite_power()
 #include <time.h>                 //query()
@@ -616,8 +618,20 @@ CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, 
 bool
 CollectionDB::setAlbumImage( const QString& artist, const QString& album, const KURL& url )
 {
-    QImage img( url.path() );
-    return setAlbumImage( artist, album, img );
+    if(url.protocol() != "file")
+    {
+        QString tmpFile;
+        KIO::NetAccess::download( url, tmpFile, 0); //TODO set 0 to the window, though it probably doesn't really matter
+        QImage tmp(tmpFile);
+        bool success = setAlbumImage( artist, album, tmp );
+        KIO::NetAccess::removeTempFile( tmpFile );
+        return success;
+    }
+    else 
+    {
+        QImage img( url.path() );
+        return setAlbumImage( artist, album, img );
+    }
 }
 
 
@@ -1858,6 +1872,7 @@ void SqliteConnection::sqlite_power(sqlite3_context *context, int argc, sqlite3_
 MySqlConnection::MySqlConnection( MySqlConfig* config )
     : DbConnection( config )
 {
+    debug() << k_funcinfo << endl;
     m_db = mysql::mysql_init(NULL);
 
     if (m_db)
@@ -1889,12 +1904,12 @@ MySqlConnection::MySqlConnection( MySqlConfig* config )
                 if ( !mysql::mysql_query(
                         m_db,
                         QString( "CREATE DATABASE " + config->database() ).latin1() ) )
-                    error() << "Failed to create database " << config->database() << "\n";
+		debug() << "Failed to create database " << config->database() << "\n";
             }
         }
     }
     else
-        error() << "Failed to allocate/initialize MySql struct\n";
+		debug() << "Failed to allocate/initialize MySql struct\n";
 }
 
 
