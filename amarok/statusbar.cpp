@@ -117,16 +117,19 @@ void amaroK::StatusBar::customEvent( QCustomEvent *e )
         CollectionReader::ProgressEvent* p =
             static_cast<CollectionReader::ProgressEvent*>( e );        
         
-        if ( p->totalSteps() < 0 && p->progress() < 0 ) {
-            m_progress->hide();
-        }
-        else if ( p->totalSteps() > 0 ) {
-            m_progress->setTotalSteps( p->totalSteps() );
-            m_progress->setProgress( 0 );
-            m_progress->show();
-        }
-        else if ( p->progress() > 0 ) {
-            m_progress->setProgress( p->progress() );
+        switch ( p->state() ) {
+            case CollectionReader::ProgressEvent::Start:
+                m_progress->setProgress( 0 );
+                m_progress->show();
+                break;
+            case CollectionReader::ProgressEvent::Stop:
+                m_progress->hide();
+                break;
+            case CollectionReader::ProgressEvent::Total:
+                m_progress->setTotalSteps( p->value() );
+                break;
+            case CollectionReader::ProgressEvent::Progress:
+                m_progress->setProgress( p->value() );
         }
     }
 }

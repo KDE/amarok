@@ -210,6 +210,8 @@ CollectionReader::~CollectionReader()
 
 bool
 CollectionReader::doJob() {
+    QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Start ) );
+    
     QStringList entries;
     //iterate over all folders
     for ( uint i = 0; i < m_folders.count(); i++ )
@@ -218,9 +220,9 @@ CollectionReader::doJob() {
     if ( entries.empty() )
         return false;        
         
-    QApplication::postEvent( m_statusBar, new ProgressEvent( -1, entries.count() ) );
+    QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Total, entries.count() ) );
     readTags( entries );
-    QApplication::postEvent( m_statusBar, new ProgressEvent( -1 ) );
+    QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Stop ) );
     
     //don't post event if no tags have been read
     if ( m_metaList.isEmpty() )
@@ -262,7 +264,7 @@ CollectionReader::readTags( const QStringList& entries ) {
     KURL url;
         
     for ( uint i = 0; i < entries.count(); i++ ) {   
-        QApplication::postEvent( m_statusBar, new ProgressEvent( i ) );
+        QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Progress, i ) );
         url.setPath( entries[i] );
         
         if ( url.isValid() && url.isLocalFile() ) {        

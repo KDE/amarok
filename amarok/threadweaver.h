@@ -131,15 +131,17 @@ public:
    class ProgressEvent : public QCustomEvent
    {
        public:
-           ProgressEvent( int progress, int totalSteps = -1 ) 
+           enum State { Start = -1, Stop = -2, Total = -3, Progress = -4 };
+           
+           ProgressEvent( int state, int value = -1 ) 
            : QCustomEvent( ProgressEventType )
-           , m_progress( progress )
-           , m_totalSteps( totalSteps ) {}
-           int totalSteps() { return m_totalSteps; }
-           int progress() { return m_progress; }
+           , m_state( state )
+           , m_value( value ) {}
+           int state() { return m_state; }
+           int value() { return m_value; }
        private:
-           int m_progress;
-           int m_totalSteps;
+           int m_state;
+           int m_value;
    };
     
     CollectionReader( QObject* parent, QObject* statusBar, const QStringList& folders, bool recursively );
