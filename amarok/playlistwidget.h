@@ -104,7 +104,7 @@ class PlaylistWidget : public KListView
         
         void loadM3u( QTextStream &stream, PlaylistItem *destItem, QString dir );
         void loadPls( QTextStream &stream, PlaylistItem *destItem, QString dir );
-        bool loadPlaylist_( KURL url, QListViewItem *destination );
+//        bool loadPlaylist_( KURL url, QListViewItem *destination );
 
 // ATTRIBUTES ------
         KDirLister *m_pDirLister;

@@ -66,6 +66,7 @@ class PlayerApp : public KUniqueApplication
         bool playObjectConfigurable();
         bool isPlaying() { return m_bIsPlaying; }
         void setupColors();
+        bool restorePlaylistSelection(const KURL& url);
 
         // ATTRIBUTES ------
         KGlobalAccel *m_pGlobalAccel;
@@ -112,6 +113,8 @@ class PlayerApp : public KUniqueApplication
         int m_Volume;
         bool m_bSliderIsPressed;
 
+        KURL m_playingURL; ///< The URL of the currently playing item
+        
         // <aRts>
         KDE::PlayObject *m_pPlayObject;
         KDE::PlayObject *m_pPlayObjectXFade;
@@ -177,7 +180,7 @@ class PlayerApp : public KUniqueApplication
         void saveConfig();
         void readConfig();
 
-        void getTrackLength();
+        void setupTrackLength();
         void setupScrolltext();
         void startXFade();
         void stopXFade();

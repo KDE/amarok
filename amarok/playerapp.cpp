@@ -94,6 +94,7 @@ PlayerApp::PlayerApp() :
         m_bgColor( Qt::black ),
         m_fgColor( QColor( 0x80, 0xa0, 0xff ) ),
         m_DelayTime( 0 ),
+        m_playingURL( KURL() ),
         m_pPlayObject( NULL ),
         m_pPlayObjectXFade( NULL ),
         m_pArtsDispatcher( NULL ),
@@ -126,8 +127,6 @@ PlayerApp::PlayerApp() :
 
     readConfig();
 
-//    connect( this, SIGNAL( sigplay() ), this, SLOT( slotPlay() ) );
-
     connect( m_pPlayerWidget, SIGNAL( sigAboutToHide() ), this, SLOT( slotHide() ) );
     connect( m_pPlayerWidget, SIGNAL( sigAboutToShow() ), this, SLOT( slotShow() ) );
 
@@ -146,74 +145,75 @@ PlayerApp::PlayerApp() :
                                                   ( "data", kapp->instanceName() + "/" ) + "current.m3u", 0 );
     m_pBrowserWin->m_pPlaylistWidget->writeUndo();
 
-
     //restore previous track selection and playback time
     m_pConfig->setGroup( "Session" );
     KURL url = m_pConfig->readEntry( "Track" );
 
+    kdDebug() << "Trying to restore pl item for " << url << endl;
+    if( !restorePlaylistSelection(url) )
+    {
+        kdDebug() << "Couldn't restore pl item" << endl;
+        //if we didn't find the item, add it to the playlist
+        PlaylistItem *item = new PlaylistItem( m_pBrowserWin->m_pPlaylistWidget, url );
+        //set current and play (if enabled)
+        m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( item );
+        kdDebug() << "Added playlist item for " << url << endl;
+    }
+
+    if ( m_optResumePlayback )
+    {
+        slotPlay();
+   
+        //see if we also saved the time
+        int seconds = m_pConfig->readNumEntry( "Time", 0 );
+        if ( seconds > 0 && m_pPlayObject && !m_pPlayObject->isNull() )
+        {
+            //FIXME I just copied this code, do I need all these properties?
+            Arts::poTime time;
+            time.ms = 0;
+            time.seconds = seconds;
+            time.custom = 0;
+            time.customUnit = std::string();
+   
+            m_pPlayObject->seek( time );
+        }
+    }
+    
+    KTipDialog::showTip( "amarok/data/startupTip.txt", false );
+}
+
+
+/**
+ @short   Find and select item in playlist given its URL.
+ @return  true if item was found in playlist and selected, false otherwise.
+*/
+bool PlayerApp::restorePlaylistSelection(const KURL& url)
+{
+    kdDebug() << "[restorePlaylistSelection] For URL " << url << endl;
     if ( !url.isEmpty() ) /* && url.isValid() amaroK should decide the validity of the url */
     {
         //FIXME I have no idea if this will work with streaming, check before you commit!
 
-        if ( isFileValid( url ) )
+        //if ( !url.path().startsWith("file:") || isFileValid( url ) ) FIXME do we _really_ need this check?
         {
-            //first check if this item is already in the playlist
+            kdDebug() << "[restorePlaylistSelection] file is valid, going on" << endl;
             PlaylistItem * item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->firstChild() );
             while ( item && item->url() != url )
             {
+               kdDebug() << "[restorePlaylistSelection] searching in " << item->url() << endl;
                item = static_cast<PlaylistItem*>( item->nextSibling() );
             }
             if ( item == NULL )
             {
-               //if we didn't find the item, add it to the playlist
-               item = new PlaylistItem( m_pBrowserWin->m_pPlaylistWidget, url );
+               return false;
             }
 
-            //set current and play
+            //set current
             m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( item );
-
-            if ( m_optResumePlayback )
-            {
-               slotPlay();
-
-               //see if we also saved the time
-               int seconds = m_pConfig->readNumEntry( "Time", 0 );
-               if ( seconds > 0 && m_pPlayObject && !m_pPlayObject->isNull() )
-               {
-                   //FIXME I just copied this code, do I need all these properties?
-                   Arts::poTime time;
-                   time.ms = 0;
-                   time.seconds = seconds;
-                   time.custom = 0;
-                   time.customUnit = std::string();
-
-                   m_pPlayObject->seek( time );
-               }
-            }
+            return true;
         }
     }
-
-    /*
-        KURL currentlyPlaying = m_pConfig->readEntry( "CurrentSelection" );
-
-    kdDebug(DA_COMMON) << "Attempting to select: " << currentlyPlaying.path() << endl;
-
-    for ( PlaylistItem * item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->firstChild() );
-            item;
-            item = static_cast<PlaylistItem*>( item->nextSibling() ) )
-    {
-        if ( item->url() == currentlyPlaying )
-        {
-            //FIXME: should think about making this all one call
-            m_pBrowserWin->m_pPlaylistWidget->setCurrentItem( item );
-            m_pBrowserWin->m_pPlaylistWidget->ensureItemVisible( item );
-            m_pBrowserWin->m_pPlaylistWidget->slotGlowTimer();
-            break;
-        }
-    }
-    */
-
-    KTipDialog::showTip( "amarok/data/startupTip.txt", false );
+    return false;
 }
 
 
@@ -812,7 +812,7 @@ bool PlayerApp::queryClose()
 }
 
 
-void PlayerApp::getTrackLength()
+void PlayerApp::setupTrackLength()
 {
     if ( m_pPlayObject != NULL )
     {
@@ -1103,6 +1103,9 @@ void PlayerApp::slotPlay()
         m_pPlayerWidget->m_pSlider->setMaxValue( 0 );
         m_pPlayerWidget->setScroll( i18n( "Stream from: " ) + item->text( 0 ), "--", "--" );
     }
+    
+    kdDebug() << "[slotPlay] Playing item " << item->text(0) << " for " << item->url() << endl;
+    m_playingURL = item->url();
 
     m_pPlayerWidget->m_pSlider->setValue( 0 );
     m_pPlayerWidget->m_pSlider->setMinValue( 0 );
@@ -1159,6 +1162,7 @@ void PlayerApp::slotStopCurrent()
 
         delete m_pPlayObject;
         m_pPlayObject = NULL;
+        //m_playingURL = KURL(); <berkus> this doesn't work for some reason and i'm not sure if it ever could, but seems almost okay for now
     }
 
     m_bIsPlaying = false;
@@ -1370,7 +1374,7 @@ void PlayerApp::slotMainTimer()
 
     if ( ( m_length == 0 ) && ( !m_pPlayObject->stream() ) )
     {
-        getTrackLength();
+        setupTrackLength();
         setupScrolltext();
     }
 

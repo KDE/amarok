@@ -200,6 +200,11 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
             playlistDrop( urlList );
         }
     }
+    
+    // highlight currently played track, if any
+    if ( !pApp->m_playingURL.isEmpty() )
+       pApp->restorePlaylistSelection( pApp->m_playingURL );
+
     writeUndo();
 }
 
@@ -381,6 +386,10 @@ bool PlaylistWidget::loadPlaylist( KURL url, QListViewItem *destination )
             loadPls( stream, pCurr, dir );        
     }
     file.close();
+
+    // Mark currently playing song in playlist, if its there    
+    if ( success && !pApp->m_playingURL.isEmpty() )
+       pApp->restorePlaylistSelection( pApp->m_playingURL );
             
     KIO::NetAccess::removeTempFile( tmpFile );
     return success;
