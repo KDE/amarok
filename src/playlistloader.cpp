@@ -472,7 +472,7 @@ PlaylistLoader::DownloadPlaylistEvent::makePlaylistItem( Playlist *lv )
     QApplication::restoreOverrideCursor();
 
     if ( succeeded ) {
-        kdDebug() << "[PLSloader] Download was succesful!\n";
+        kdDebug() << "[PLSloader] Download was successful!\n";
 
         //the playlist was successfully downloaded
         //KIO::NetAccess created a tempfile, it will be deleted in the new thread's dtor
