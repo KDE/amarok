@@ -12,7 +12,7 @@
 #include <sys/mman.h>
 
 #define DEFAULT_BLOCKSIZE 4096
-#define MAPFILE_PATH "/home/mark/mapfile"
+#define MAPFILE_PATH "/home/mark/mapfile\000"
 
 
 GST_DEBUG_CATEGORY_STATIC ( gst_uade_debug );
@@ -150,6 +150,17 @@ gst_uade_init ( GstUade* gstuade )
         kdWarning() << "uade.c/uade: couldn't mmap file: " << MAPFILE_PATH << endl;
         uade_exit( -1 );
     }
+    gstuade->uade_struct->masterpid = getpid();
+    int uadepid = fork();
+    if ( !uadepid ) {
+        char *newargv[] = {"/usr/local/bin/uade", "--xmms-slave", MAPFILE_PATH, 0};
+        execv( newargv[0], newargv );
+        kdWarning() << "uade: shit fuck. couldn't exec uade exe. not found probably\n";
+        abort();
+    }
+    while ( gstuade->uade_struct->uade_inited_boolean == 0 ) {
+        sleep( 1 );
+    }
 }
 
 
@@ -177,14 +188,12 @@ gst_uade_set_property ( GObject * object, guint prop_id, const GValue * value,
             src->timeout = g_value_get_uint64 ( value );
             break;
 
-            default:
-            G_OBJECT_WARN_INVALID_PROPERTY_ID ( object, prop_id, pspec );
-            break;
-            
             case ARG_LOCATION:
-            src->uade_struct->playername[0] = 0;
-            strcpy( src->uade_struct->modulename, g_value_get_string( value ) );
-            src->uade_struct->scorename[0] = 0;
+            kdDebug() << "ARG_LOCATION\n";
+            
+            strcpy( src->uade_struct->playername, g_value_get_string( value ) );
+            src->uade_struct->modulename[0] = 0;
+            strcpy( src->uade_struct->scorename, g_value_get_string( value ) );
             src->uade_struct->set_subsong = 0;
             src->uade_struct->subsong = 0;
             src->uade_struct->dontwritebit = 0;
@@ -192,22 +201,12 @@ gst_uade_set_property ( GObject * object, guint prop_id, const GValue * value,
             src->uade_struct->plugin_pause_boolean = 0;
             src->uade_struct->sbuf_writeoffset = 0;
             src->uade_struct->sbuf_readoffset = 0;
-            src->uade_struct->loadnewsongboolean = 1;
             src->uade_struct->touaemsgtype = UADE_PLAYERNAME;
-            
-            src->uade_struct->masterpid = getpid();
-            int uadepid = fork();
-            
-            if ( !uadepid ) {
-                execl( "/usr/local/bin/uade", "--xmms-slave", MAPFILE_PATH, 0 );
-                kdWarning() << "uade: shit fuck. couldn't exec uade exe. not found probably\n";
-                abort();
-            }
-            while ( src->uade_struct->uade_inited_boolean == 0 ) {
-                sleep( 1 );
-            }
-            
+            src->uade_struct->loadnewsongboolean = 1;
             break;
+    
+            default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID ( object, prop_id, pspec );
     }
 }
 
