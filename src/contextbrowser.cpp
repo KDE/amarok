@@ -325,7 +325,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     case DELETE:
     {
         const int button = KMessageBox::warningContinueCancel( this,
-            i18n( "This cover will be permanantly deleted" ),
+            i18n( "This cover will be permanently deleted" ),
             QString::null,
             i18n("&Delete") );
 
