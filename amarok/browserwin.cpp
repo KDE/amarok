@@ -190,8 +190,8 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
              m_pButtonRedo, SLOT( setEnabled( bool ) ) );
     connect( m_pPlaylistWidget, SIGNAL( cleared() ),
              m_pPlaylistLineEdit, SLOT( clear() ) );
-    connect( m_pPlaylistWidget, SIGNAL( clicked( QListViewItem * ) ),
-             m_pSideBar, SLOT( close() ) );
+    //connect( m_pPlaylistWidget, SIGNAL( clicked( QListViewItem * ) ),
+    //        m_pSideBar, SLOT( close() ) );
           
 
     connect( m_pButtonClear, SIGNAL( clicked() ),
