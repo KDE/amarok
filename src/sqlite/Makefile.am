@@ -8,7 +8,7 @@ KDE_CFLAGS = \
     -w
 
 libsqlite_la_LDFLAGS = \
-    -lpthread
+    $(LIBPTHREAD)
   
 libsqlite_la_SOURCES = \
     attach.c \
