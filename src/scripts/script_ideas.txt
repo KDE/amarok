@@ -1,12 +1,19 @@
 SCRIPT IDEAS
 ============
-This is a list of possible dcop scripts for amaroK
+This is a list of possible dcop scripts for amaroK. Add your ideas here.
 
 
-* Alarm, starts music at given time
+* Alarm
+  Starts music at given time.
 
-* Publish info about the song im now listening ( title, cover...)
+* Publish
+  Generates info about the current track (title, cover...) for a website.
 
-* Playlist to HTML converter
+* Playlist2HTML
+  Generates a nice HTML chart from the playlist, like Winamp does.
+
+* Speech Announcer
+  Announces trackchanges with text-to-speech software. Accessibility aid for the blind.
+  Implementation detail: Requires communication amaroK -> Script.
 
 
