@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>339</width>
-            <height>408</height>
+            <width>428</width>
+            <height>392</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -20,11 +20,11 @@
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
-    <grid>
+    <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QGroupBox" row="0" column="0">
+        <widget class="QGroupBox">
             <property name="name">
                 <cstring>groupBox1</cstring>
             </property>
@@ -144,7 +144,7 @@
                 </spacer>
             </grid>
         </widget>
-        <widget class="QGroupBox" row="1" column="0">
+        <widget class="QGroupBox">
             <property name="name">
                 <cstring>groupBox2</cstring>
             </property>
@@ -241,14 +241,31 @@
                 </widget>
             </vbox>
         </widget>
-    </grid>
+        <spacer>
+            <property name="name">
+                <cstring>spacer5</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>81</height>
+                </size>
+            </property>
+        </spacer>
+    </vbox>
 </widget>
 <connections>
     <connection>
         <sender>kcfg_ShowTrayIcon</sender>
         <signal>toggled( bool )</signal>
         <receiver>kcfg_AnimateTrayIcon</receiver>
-        <slot>setEnabled( bool )</slot>
+        <slot>setEnabled(bool)</slot>
     </connection>
 </connections>
 <layoutdefaults spacing="6" margin="11"/>
