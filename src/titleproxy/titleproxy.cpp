@@ -137,7 +137,7 @@ void Proxy::accept( int socket )
     
     //This is our new, modified request, containing the correct path to the stream
     QString request = QString( "GET %1 HTTP/1.1\r\nIcy-MetaData:1\r\n" )
-                      .arg( m_url.path( -1 ) );
+                      .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) );
     
     kdDebug() << "request: " << request << endl;
     
@@ -237,6 +237,11 @@ void Proxy::transmitData( const QString &data )
 {
     kdDebug() << k_funcinfo << " received new metadata: '" << data << "'" << endl;
 
+    //prevent metadata spam by ignoring repeated identical data
+    //(some servers repeat it every 10 seconds)
+    if ( data == m_lastMetadata ) return;
+    m_lastMetadata = data;
+        
     MetaBundle bundle( extractStr( data, "StreamTitle" ),
                        extractStr( data, "StreamUrl" ),
                        m_bitRate,

@@ -68,11 +68,12 @@ namespace TitleProxy
             bool            m_headerFinished;
             QString         m_headerStr;
             int             m_usedPort;
+            QString         m_lastMetadata;
 
             QString         m_streamName;
             QString         m_streamGenre;
             QString         m_streamUrl;
-
+            
             char            *m_pBuf;
 
             QSocket m_sockRemote;
