@@ -3,7 +3,9 @@
 //
 
 #include "amarok.h"
+#include "amarokconfig.h"
 #include "crashhandler.h"
+#include "debug.h"
 #include <kapplication.h>
 #include <kdialog.h>
 #include <klocale.h>
@@ -33,6 +35,8 @@ namespace amaroK
     void
     Crash::crashHandler( int /*signal*/ )
     {
+        DEBUG_FUNC_INFO
+
         switch( CrashHandlerWidget().exec() )
         {
         case QDialog::Accepted: {
@@ -42,6 +46,7 @@ namespace amaroK
             QString path = amaroK::saveLocation() + "backtrace";
             QString body =
                     "Please enter a BRIEF DESCRIPTION describing the crash's cause. Thanks!\n\n"
+                    "Engine       %1\n"
                     "Build date:  " __DATE__ "\n"
                     "GCC version: " __VERSION__; //assuming we're using GCC
 
@@ -73,10 +78,10 @@ namespace amaroK
                     /*cc*/          QString(),
                     /*bcc*/         QString(),
                     /*subject*/     "amaroK " APP_VERSION " Crash Backtrace",
-                    /*body*/        body,
+                    /*body*/        body.arg( AmarokConfig::soundSystem() ),
                     /*messageFile*/ QString(),
                     /*attachURLs*/  QStringList( path ),
-                    /*startupID*/   "" );
+                    /*startup_id*/  "" );
             }
         }
 
@@ -88,6 +93,8 @@ namespace amaroK
 
 amaroK::CrashHandlerWidget::CrashHandlerWidget()
 {
+    DEBUG_FUNC_INFO
+
     QBoxLayout *layout = new QHBoxLayout( this, 18, 12 );
 
     {

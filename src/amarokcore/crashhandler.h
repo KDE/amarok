@@ -12,6 +12,9 @@ namespace amaroK
     /**
      * @author Max Howell
      * @short The amaroK crash-handler
+     *
+     * I'm not entirely sure why this had to be inside a class, but it
+     * wouldn't work otherwise *shrug*
      */
     class Crash
     {
