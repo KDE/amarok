@@ -9,7 +9,7 @@ VERSION 1.2.2:
       will show the tags that are common to all of them. (BR 100423)
     * A line graph equalizer added as a script "graphequalizer."
     * Dynamic playlist mode which removes-once-played, whilst appending a
-      song to the end of the playlist. (BR 99305)
+      suggested song to the end of the playlist. (BR 99305)
     * New DCOP call player: setEqualizer(preamp, the 10 eq settings)
 
   BUGFIXES:

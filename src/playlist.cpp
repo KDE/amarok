@@ -392,11 +392,15 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
 }
 
 void
-Playlist::addRandomTracks( uint songCount )
+Playlist::addSuggestedTracks( PlaylistItem *item, uint songCount )
 {
+    QStringList suggestions = CollectionDB::instance()->similarArtists( item->artist(), 16 );
+
     QueryBuilder qb;
     qb.setOptions( QueryBuilder::optRandomize | QueryBuilder::optRemoveDuplicates );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+
+    qb.addMatches( QueryBuilder::tabArtist, suggestions ); //suggestions
 
     qb.setLimit( 0, songCount );
     QStringList url = qb.run();
@@ -450,7 +454,7 @@ Playlist::playNextTrack( bool forceNext )
     {
         uint songCount = 1;
         songCount = 20 - childCount();
-        addRandomTracks( songCount );
+        addSuggestedTracks( item, songCount );
     }
 
     if( isEmpty() )
@@ -538,7 +542,7 @@ Playlist::playNextTrack( bool forceNext )
                         PlaylistItem *first = firstChild();
                         removeItem( first ); //first visible item
                         delete first;
-                        addRandomTracks( 1 );
+                        addSuggestedTracks( item, 1 );
                     }
             }
 
