@@ -83,9 +83,9 @@ XineConfigEntry::XineConfigEntry( QWidget *parent, amaroK::PluginConfig *pluginC
         ;
     }
 
-    QToolTip::add( w, QString::fromUtf8( entry->help ) );
+    QToolTip::add( w, QString( entry->help ) );
 
-    QLabel* description = new QLabel( QString::fromUtf8( entry->description ) + ':', parent );
+    QLabel* description = new QLabel( QString( entry->description ) + ':', parent );
     description->setAlignment( QLabel::WordBreak | QLabel::AlignVCenter );
 
     grid->addWidget( w, row, 1 );
