@@ -3,6 +3,7 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  ADD: song count on playlist statusbar
   ADD: support for XMMS visualization plugins
   ADD: Collection Browser - a database powered music collection manager
   ADD: Playlist toolbar is now configurable
