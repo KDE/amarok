@@ -108,6 +108,7 @@ class TagWriter : public ThreadWeaver::Job
 { //TODO make this do all tags at once when you split playlist.cpp up
 public:
     TagWriter( PlaylistItem*, const QString &oldTag, const QString &newTag, const int, const bool updateView = true );
+   ~TagWriter();
     bool doJob();
     void completeJob();
 private:
@@ -170,6 +171,7 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     , m_editOldTag( 0 )
     , m_ac( ac ) //REMOVE
     , m_columnFraction( 13, 0 )
+    , m_lockStack( 0 )
 {
     s_instance = this;
 
@@ -811,6 +813,8 @@ Playlist::appendMedia( const KURL &url )
 void
 Playlist::clear() //SLOT
 {
+    if( isLocked() ) return;
+
     emit aboutToClear(); //will saveUndoState()
 
     setCurrentTrack( 0 );
@@ -1321,15 +1325,11 @@ Playlist::customEvent( QCustomEvent *e )
     switch( e->type() )
     {
     case PlaylistLoader::JobStartedEvent:
-        m_clearButton->setEnabled( false );
-        m_undoButton->setEnabled( false );
-        m_redoButton->setEnabled( false );
+        lock(); // prevent user removing items as this could be bad
         break;
 
     case PlaylistLoader::JobFinishedEvent: {
-        m_clearButton->setEnabled( true );
-        m_undoButton->setEnabled( !m_undoList.isEmpty() );
-        m_redoButton->setEnabled( !m_redoList.isEmpty() );
+        unlock();
 
         refreshNextTracks( 0 );
 
@@ -1532,6 +1532,8 @@ Playlist::shuffle() //SLOT
 void
 Playlist::removeSelectedItems() //SLOT
 {
+    if( isLocked() ) return;
+
     setSelected( currentItem(), true );     //remove currentItem, no matter if selected or not
 
     //assemble a list of what needs removing
@@ -1560,6 +1562,8 @@ Playlist::removeSelectedItems() //SLOT
 void
 Playlist::deleteSelectedFiles() //SLOT
 {
+    if( isLocked() ) return;
+
     KURL::List urls;
 
     //assemble a list of what needs removing
@@ -1648,8 +1652,8 @@ Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
     }
 }
 
-void Playlist::undo() { switchState( m_undoList, m_redoList ); } //SLOT
-void Playlist::redo() { switchState( m_redoList, m_undoList ); } //SLOT
+void Playlist::undo() { if( !isLocked() ) switchState( m_undoList, m_redoList ); } //SLOT
+void Playlist::redo() { if( !isLocked() ) switchState( m_redoList, m_undoList ); } //SLOT
 
 void
 Playlist::updateMetaData( const MetaBundle &mb ) //SLOT
@@ -1686,7 +1690,6 @@ Playlist::setFilter( const QString &query ) //SLOT
 
     //to me it seems sensible to do this, BUT if it seems annoying to you, remove it
     showCurrentTrack();
-    clearSelection(); //we do this because QListView selects inbetween visible items, this is a non ideal solution
     triggerUpdate();
 }
 
@@ -1706,7 +1709,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 {
     #define item static_cast<PlaylistItem*>(item)
 
-    enum { PLAY, PLAY_NEXT, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, REMOVE,
+    enum { PLAY, PLAY_NEXT, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, REMOVE, DELETE,
         BURN_MENU, BURN_SELECTION_DATA, BURN_SELECTION_AUDIO, BURN_ALBUM_DATA, BURN_ALBUM_AUDIO,
         BURN_ARTIST_DATA, BURN_ARTIST_AUDIO };
 
@@ -1777,10 +1780,10 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     popup.insertSeparator();
 
-    popup.insertItem( SmallIconSet( "edittrash" ), i18n( "&Remove From Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete );
+    popup.insertItem( SmallIconSet( "edittrash" ), i18n( "&Remove From Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete, REMOVE );
     popup.insertItem( SmallIconSet( "editdelete" ), itemCount == 1
         ? i18n("&Delete File")
-        : i18n("&Delete Selected Files"), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete );
+        : i18n("&Delete Selected Files"), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete, DELETE );
 
     popup.insertSeparator();
 
@@ -1790,6 +1793,8 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.setItemEnabled( EDIT, canRename ); //only enable for columns that have editable tags
     popup.setItemEnabled( FILL_DOWN, canRename && itemCount > 1 );
     popup.setItemEnabled( BURN_MENU, item->url().isLocalFile() && K3bExporter::isAvailable() );
+    popup.setItemEnabled( REMOVE, !isLocked() ); // can't remove things when playlist is locked,
+    popup.setItemEnabled( DELETE, !isLocked() ); // that's the whole point
 
 
     switch( popup.exec( p ) )
@@ -1890,6 +1895,30 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 /// Misc Private Methods
 ////////////////////////////////////////////////////////////////////////////////
 
+void
+Playlist::lock()
+{
+   if( m_lockStack == 0 ) {
+      m_clearButton->setEnabled( false );
+      m_undoButton->setEnabled( false );
+      m_redoButton->setEnabled( false );
+   }
+
+   m_lockStack++;
+}
+
+void
+Playlist::unlock()
+{
+   m_lockStack--;
+
+   if( m_lockStack == 0 ) {
+      m_clearButton->setEnabled( true );
+      m_undoButton->setEnabled( !m_undoList.isEmpty() );
+      m_redoButton->setEnabled( !m_redoList.isEmpty() );
+   }
+}
+
 int
 Playlist::mapToLogicalColumn( int physical )
 {
@@ -1905,6 +1934,10 @@ Playlist::mapToLogicalColumn( int physical )
 void
 Playlist::removeItem( PlaylistItem *item )
 {
+    // NOTE we don't check isLocked() here as it is assumed that if you call this function you
+    // really want to remove the item, there is no way the user can reach here without passing
+    // a lock() check, (currently...)
+
     //this function ensures we don't have dangling pointers to items that are about to be removed
     //for some reason using QListView::takeItem() and QListViewItem::takeItem() was ineffective
     //NOTE we don't delete item for you! You must call delete item yourself :)
@@ -2128,7 +2161,7 @@ Playlist::writeTag( QListViewItem *lvi, const QString &newTag, int column ) //SL
            continue;
 
         const QString &oldTag = item == lvi ? m_editOldTag : item->exactText(column);
-        if( oldTag != newTag && !(oldTag.isEmpty() && newTag.isEmpty()))  //write the new tag only if it's changed
+        if( oldTag != newTag && !(oldTag.isEmpty() && newTag.isEmpty()) )  //write the new tag only if it's changed
         {
             if ( column == PlaylistItem::Score )
                 // update score in database, only
@@ -2148,11 +2181,19 @@ Playlist::writeTag( QListViewItem *lvi, const QString &newTag, int column ) //SL
 
 void Playlist::showTagDialog( QPtrList<QListViewItem> items )
 {
+    // despite being modal, the user can still modify the playlist
+    // in a dangerous fashion, eg dcop clear() will get processed by
+    // the TagDialog exec() loop. So we must lock the playlist
+    Playlist::lock();
+
     if ( items.count() == 1 ) {
         PlaylistItem *item = static_cast<PlaylistItem*>( items.first() );
 
         if ( QFile::exists( item->url().path() ) )
-            (new TagDialog( MetaBundle( item ), item, instance() ))->show();
+            //NOTE we are modal because, eg, user clears playlist while
+            //this dialog is shown, then the dialog operates on the playlistitem
+            //TODO not perfect as dcop clear works for instance
+            TagDialog( MetaBundle( item ), item, instance() ).exec();
         else
             KMessageBox::sorry( this, i18n( "This file does not exist:" ) + " " + item->url().path() );
     }
@@ -2162,8 +2203,10 @@ void Playlist::showTagDialog( QPtrList<QListViewItem> items )
         for( QListViewItem *item = items.first(); item; item = items.next() )
             urls << static_cast<PlaylistItem*>( item )->url();
 
-        (new TagDialog( urls, instance() ))->show();
+        TagDialog( urls, instance() ).exec();
     }
+
+    Playlist::unlock();
 }
 
 
@@ -2294,7 +2337,14 @@ TagWriter::TagWriter( PlaylistItem *item, const QString &oldTag, const QString &
         , m_tagType( col )
         , m_updateView( updateView )
 {
+    Playlist::instance()->lock();
+
     item->setText( col, i18n( "Writing tag..." ) );
+}
+
+TagWriter::~TagWriter()
+{
+    Playlist::instance()->unlock();
 }
 
 bool

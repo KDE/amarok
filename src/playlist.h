@@ -95,6 +95,13 @@ class Playlist : private KListView, public EngineObserver
         /** Converts physical PlaylistItem column position to logical */
         int mapToLogicalColumn( int physical );
 
+
+        /// Call this to prevent items being removed from the playlist, it is mostly for internal use only
+        void lock();
+
+        /// You must call this for everytime you called lock() or the playlist will remain locked!
+        void unlock();
+
         //static
         static const int NO_SORT = 200;
         static QString defaultPlaylistPath();
@@ -213,6 +220,12 @@ class Playlist : private KListView, public EngineObserver
         KURL::List   m_queueList;
         bool         m_stopAfterCurrent;
         bool         m_showHelp;
+
+        /// Check for locked status
+        bool isLocked() const { return m_lockStack > 0; }
+
+        /// stack counter for PLaylist::lock() and unlock()
+        int m_lockStack;
 
         //text before inline editing ( the new tag is written only if it's changed )
         QString m_editOldTag;
