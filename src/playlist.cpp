@@ -715,8 +715,8 @@ Playlist::updateNextPrev()
     amaroK::actionCollection()->action( "play" )->setEnabled( !isEmpty() );
     amaroK::actionCollection()->action( "prev" )->setEnabled( isTrackBefore() );
     amaroK::actionCollection()->action( "next" )->setEnabled( isTrackAfter() );
+    amaroK::actionCollection()->action( "playlist_clear" )->setEnabled( !isEmpty() );
 }
-
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -852,6 +852,7 @@ Playlist::clear() //SLOT
     KListView::clear();
 
     emit itemCountChanged( childCount(), m_totalLength, 0, 0 );
+    updateNextPrev();
 }
 
 void
