@@ -427,13 +427,13 @@ CollectionView::renderView( )  //SLOT
     QString filterToken = QString( "" );
     if ( m_filter != "" )
         filterToken = QString
-                      ( "AND ( %1 = %2 OR title LIKE '\%%3\%' )" )
+                      ( "AND ( %1.name LIKE '\%%2\%' OR tags.title LIKE '\%%3\%' )" )
                       .arg( m_category1.lower() )
-                      .arg( m_db->getValueID( m_category1.lower(), QString( "%" ).append( m_filter ).append( "%" ), false ) )
+		      .arg( m_db->escapeString( m_filter ) )
                       .arg( m_db->escapeString( m_filter ) );
 
     QString command = QString
-                      ( "SELECT DISTINCT %1.name FROM tags, %2 WHERE %3.id = tags.%4 %5;" )
+                      ( "SELECT DISTINCT %1.name FROM tags, %2 WHERE tags.%3=%4.id %5" )
                       .arg( m_category1.lower() )
                       .arg( m_category1.lower() )
                       .arg( m_category1.lower() )
