@@ -65,7 +65,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
         button       = new KToolBarButton( "locationbar_erase", 0, hbox );
         m_searchEdit = new KLineEdit( hbox, "filter_edit" );
         m_searchEdit->setPaletteForegroundColor( colorGroup().mid() );
-        m_searchEdit->setText( i18n( "Filter here.." ) );
+        m_searchEdit->setText( i18n( "Filter here..." ) );
         m_searchEdit->installEventFilter( this );
 
         hbox->setMargin( 1 );
@@ -184,7 +184,7 @@ bool CollectionBrowser::eventFilter( QObject *o, QEvent *e )
             case QEvent::FocusOut:
                 if( m_view->filter().isEmpty() ) {
                     m_searchEdit->setPaletteForegroundColor( colorGroup().mid() );
-                    m_searchEdit->setText( i18n("Filter here..") );
+                    m_searchEdit->setText( i18n("Filter here...") );
                     m_timer->stop();
                     return FALSE;
                 }
