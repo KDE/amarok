@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta2:
+  ADD: DCOP call to raise the equalizer configuration dialog.
   ADD: Konqueror sidebar to view playing info and control amarok
   ADD: DCOP call to clear the playlist. (BR 90149)
   ADD: DCOP call to enable/disable the equalizer.

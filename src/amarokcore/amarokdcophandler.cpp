@@ -24,6 +24,7 @@
 #include "playlistwindow.h"
 #include "osd.h"
 #include "collectiondb.h"
+#include "equalizersetup.h"
 
 #include <dcopclient.h>
 
@@ -241,10 +242,15 @@ namespace amaroK
 
     void DcopHandler::setEqualizerEnabled( bool active )
     {
-    EngineController::engine()->setEqualizerEnabled( active );
-    AmarokConfig::setEqualizerEnabled( active );
+        EngineController::engine()->setEqualizerEnabled( active );
+        AmarokConfig::setEqualizerEnabled( active );
     }
 
+    void DcopHandler::configEqualizer()
+    {
+        EqualizerSetup::instance()->raise();
+    }
+    
     void DcopHandler::enableOSD(bool enable)
     {
         amaroK::OSD::instance()->setEnabled(enable);
