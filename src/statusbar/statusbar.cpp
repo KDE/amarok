@@ -100,6 +100,7 @@ StatusBar::engineStateChanged( Engine::State state )
         m_slider->setEnabled( false );
         m_slider->setMaxValue( 0 );
         m_timeLabel->setEnabled( false ); //must be done after the setValue() above, due to a signal connection
+        setMainText( QString::null );
         break;
 
     case Engine::Paused:
