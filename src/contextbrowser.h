@@ -22,14 +22,19 @@ class ContextBrowser : public QVBox
         ContextBrowser( const char *name );
         ~ContextBrowser();
         
-        void showContextForItem( const MetaBundle &bundle );
+        void showContextForItem( const KURL &url );
 
     public slots:
         void openURLRequest(const KURL &url, const KParts::URLArgs & );
 
     private:
+        void showHome();
+        void showCurrentTrack();
+
         KHTMLPart *browser;
+        MetaBundle *m_currentTrack;
         CollectionDB *m_db;
+        QString m_styleSheet;
 };
 
 #endif /* AMAROK_CONTEXTBROWSER_H */

@@ -717,7 +717,7 @@ void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
         m_pOSD->showTrack( bundle );
     
     m_pDcopHandler->setNowPlaying( bundle.prettyTitle() );
-    m_pPlaylistWindow->m_contextBrowser->showContextForItem( bundle );
+    m_pPlaylistWindow->m_contextBrowser->showContextForItem( bundle.url() );
     PlaylistToolTip::add( m_pTray, bundle );
 }
 

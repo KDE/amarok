@@ -166,6 +166,12 @@ CollectionView::CollectionView( CollectionBrowser* parent )
             scanMonitor();
         }
 
+        if ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
+        {
+            m_db->dropStatsTable();
+            m_db->createStatsTable();
+        }
+
     //</open database>
 
     connect( m_insertdb, SIGNAL( scanDone( bool ) ),
@@ -195,6 +201,7 @@ CollectionView::~CollectionView() {
     config->writeEntry( "Scan Recursively", m_recursively );
     config->writeEntry( "Monitor Changes", m_monitor );
     config->writeEntry( "Database Version", DATABASE_VERSION );
+    config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
 
     delete m_db;
 }

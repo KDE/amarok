@@ -118,7 +118,7 @@ CollectionDB::incSongCounter( const QString url )
     } else
     {
         // entry didnt exist yet, create a new one
-        execSql( QString( "INSERT INTO statistics ( url, accessdate, playcounter ) VALUES ( '%1', strftime('%s', 'now'), 1 );" )
+        execSql( QString( "INSERT INTO statistics ( url, createdate, accessdate, playcounter ) VALUES ( '%1', strftime('%s', 'now'), strftime('%s', 'now'), 1 );" )
                 .arg( escapeString( url ) ) );
     }
 }
@@ -249,6 +249,7 @@ CollectionDB::createTables( bool temporary )
     execSql( QString( "CREATE %1 TABLE tags%2 ("
                         "url VARCHAR(100),"
                         "dir VARCHAR(100),"
+                        "createdate INTEGER,"
                         "album INTEGER,"
                         "artist INTEGER,"
                         "genre INTEGER,"
@@ -315,12 +316,6 @@ CollectionDB::createTables( bool temporary )
         execSql( QString( "CREATE TABLE directories ("
                             "dir VARCHAR(100) UNIQUE,"
                             "changedate INTEGER );" ) );
-
-        // create music statistics database
-        execSql( QString( "CREATE TABLE statistics ("
-                            "url VARCHAR(100) UNIQUE,"
-                            "accessdate INTEGER,"
-                            "playcounter INTEGER );" ) );
     }
 }
 
@@ -348,6 +343,29 @@ CollectionDB::moveTempTables()
     execSql( "INSERT INTO genre SELECT * FROM genre_temp;" );
     execSql( "INSERT INTO year SELECT * FROM year_temp;" );
     execSql( "INSERT INTO images SELECT * FROM images_temp;" );
+}
+
+
+void
+CollectionDB::createStatsTable()
+{
+    kdDebug() << k_funcinfo << endl;
+    
+    // create music statistics database
+    execSql( QString( "CREATE TABLE statistics ("
+                      "url VARCHAR(100) UNIQUE,"
+                      "createdate INTEGER,"
+                      "accessdate INTEGER,"
+                      "playcounter INTEGER );" ) );
+}
+
+
+void
+CollectionDB::dropStatsTable()
+{
+    kdDebug() << k_funcinfo << endl;
+    
+    execSql( "DROP TABLE statistics;" );
 }
 
 

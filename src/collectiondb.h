@@ -48,6 +48,8 @@ class CollectionDB : public QObject
         void createTables( const bool temporary = false );
         void dropTables( const bool temporary = false );
         void moveTempTables();
+        void createStatsTable();
+        void dropStatsTable();
 
         void purgeDirCache();
         void scanModifiedDirs( bool recursively );

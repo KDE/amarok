@@ -3,6 +3,7 @@
 
 
 #include "contextbrowser.h"
+#include "threadweaver.h"
 #include "collectiondb.h"
 #include "metabundle.h"
 #include "sqlite/sqlite.h"
@@ -31,6 +32,7 @@
 
 ContextBrowser::ContextBrowser( const char *name )
         : QVBox( 0, name )
+        , m_currentTrack( 0 )
 {
     m_db = new CollectionDB();
 
@@ -41,10 +43,33 @@ ContextBrowser::ContextBrowser( const char *name )
     hb1->setSpacing( 4 );
 
     browser = new KHTMLPart( hb1 );
-    browser->begin();
-    browser->write( "<html></html>" );
-    browser->end();
-
+    m_styleSheet =  QString( "div { color: %1; font-size: 8px; text-decoration: none; }" )
+                    .arg( colorGroup().text().name() );
+    m_styleSheet += QString( "td { color: %1; font-size: 8px; text-decoration: none; }" )
+                    .arg( colorGroup().text().name() );
+    m_styleSheet += QString( ".menu { color: %1; font-weight: bold; }" )
+                    .arg( colorGroup().text().name() );
+    m_styleSheet += QString( ".song { color: %1; font-size: 8px; text-decoration: none; }" )
+                    .arg( colorGroup().text().name() );
+    m_styleSheet += QString( ".song:hover { color: %1; cursor: default; background-color: %2; }" )
+                    .arg( colorGroup().base().name() ).arg( colorGroup().highlight().name() );
+    m_styleSheet += QString( ".album { font-weight: bold; font-size: 8px; text-decoration: none; }" );
+    m_styleSheet += QString( ".title { color: %1; font-size: 11px; font-weight: bold; }" )
+                    .arg( colorGroup().text().name() );
+    m_styleSheet += QString( ".head { color: %1; font-size: 10px; font-weight: bold; background-color: %2; }" )
+                    .arg( colorGroup().base().name() ).arg( colorGroup().highlight().name() );
+    m_styleSheet += QString( ".rbcurrent { color: %1; border: solid %2 1px; }" )
+                    .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
+    m_styleSheet += QString( ".rbalbum { color: %1; border: solid %2 1px; }" )
+                    .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
+    m_styleSheet += QString( ".rbalbum:hover { color: %1; cursor: default; background-color: %2; border: solid %3 1px; }" )
+                    .arg( colorGroup().base().name() ).arg( colorGroup().highlight().name() ).arg( colorGroup().text().name() );
+    m_styleSheet += QString( ".rbcontent { border: solid %1 1px; }" )
+                    .arg( colorGroup().highlight().name() );
+    m_styleSheet += QString( ".rbcontent:hover { border: solid %1 1px; }" )
+                    .arg( colorGroup().text().name() );
+    showHome();
+    
     connect( browser->browserExtension(),
              SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ), this,
              SLOT( openURLRequest(const KURL &, const KParts::URLArgs & ) ) );
@@ -81,10 +106,28 @@ void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
 
     if ( url.protocol() == "file" )
         pApp->insertMedia( url, true, true );
+
+    if ( url.protocol() == "show" )
+    {
+        if ( url.path() == "home" )
+            showHome();
+        if ( url.path() == "context" )
+            showCurrentTrack();
+    }
 }
 
 
-void ContextBrowser::showContextForItem( const MetaBundle &bundle )
+void ContextBrowser::showContextForItem( const KURL &url )
+{
+    m_currentTrack = TagReader::readTags( url, true );
+    showCurrentTrack();
+
+    // increase song counter
+    m_db->incSongCounter( m_currentTrack->url().path() );
+}
+
+
+void ContextBrowser::showHome()
 {
     QStringList values;
     QStringList names;
@@ -94,36 +137,88 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     m_db = new CollectionDB();
 
     browser->begin();
+    browser->setUserStyleSheet( m_styleSheet );
 
-    QString styleSheet;
-    styleSheet =  QString( "div { color: %1; font-size: 8px; text-decoration: none; }" )
-                  .arg( colorGroup().text().name() );
-    styleSheet += QString( "td { color: %1; font-size: 8px; text-decoration: none; }" )
-                  .arg( colorGroup().text().name() );
-    styleSheet += QString( ".song { color: %1; font-size: 8px; text-decoration: none; }" )
-                  .arg( colorGroup().text().name() );
-    styleSheet += QString( ".song:hover { color: %1; cursor: default; font-weight: bold; background-color: %2; }" )
-                  .arg( colorGroup().base().name() ).arg( colorGroup().highlight().name() );
-    styleSheet += QString( ".album { font-weight: bold; font-size: 8px; text-decoration: none; }" );
-    styleSheet += QString( ".title { color: %1; font-size: 11px; font-weight: bold; }" )
-                  .arg( colorGroup().text().name() );
-    styleSheet += QString( ".head { color: %1; font-size: 10px; font-weight: bold; background-color: %2; }" )
-                  .arg( colorGroup().base().name() ).arg( colorGroup().highlight().name() );
-    styleSheet += QString( ".rbcurrent { color: %1; border: solid %2 1px; }" )
-                  .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
-    styleSheet += QString( ".rbalbum { color: %1; border: solid %2 1px; }" )
-                  .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
-    styleSheet += QString( ".rbalbum:hover { color: %1; cursor: default; background-color: %2; border: solid %3 1px; }" )
-                  .arg( colorGroup().base().name() ).arg( colorGroup().highlight().name() ).arg( colorGroup().text().name() );
-    styleSheet += QString( ".rbcontent { border: solid %1 1px; }" )
-                  .arg( colorGroup().highlight().name() );
-    styleSheet += QString( ".rbcontent:hover { border: solid %1 1px; }" )
-                  .arg( colorGroup().text().name() );
+    // <Favorite Tracks Information>
+    browser->write( "<html><div class='menu'><a class='menu' href='show:home'>Home</a>&nbsp;&nbsp;<a class='menu' href='show:context'>Current Track</a></div>");
+    browser->write( "<div class='rbcontent'>" );
+    browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
+    browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Your Favorite Tracks:" ) + "</td></tr>" );
+    browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
+    browser->write( "</table>" );
+    browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-    browser->setUserStyleSheet( styleSheet );
+    m_db->execSql( QString( "SELECT tags.title, tags.url, statistics.playcounter, artist.name, album.name "
+                            "FROM tags, artist, album, statistics "
+                            "WHERE artist.id = tags.artist AND album.id = tags.album AND statistics.url = tags.url "
+                            "ORDER BY statistics.playcounter DESC "
+                            "LIMIT 0,10;" ), &values, &names );
+
+    if ( values.count() )
+    {
+        for ( uint i = 0; i < values.count(); i = i + 5 )
+            browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:"
+                                    + values[i+1].replace( "'", QCString( "%27" ) ) + "\"'><b>" + values[i]
+                                    + "</b> <i>(" + values[i+2] + ")</i><br>" + values[i+3] + " - " + values[i+4] + "</a></td></tr>" ) );
+    }
+
+    values.clear();
+    names.clear();
+
+    browser->write( "</table></div>" );
+    // </Favorite Tracks Information>
+
+    // <Recent Tracks Information>
+    browser->write( "<br><div class='rbcontent'>" );
+    browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
+    browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Newest Tracks:" ) + "</td></tr>" );
+    browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
+    browser->write( "</table>" );
+    browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+
+    m_db->execSql( QString( "SELECT tags.title, tags.url, artist.name, album.name "
+                            "FROM tags, artist, album "
+                            "WHERE artist.id = tags.artist AND album.id = tags.album "
+                            "ORDER BY tags.createdate DESC "
+                            "LIMIT 0,10;" ), &values, &names );
+
+    if ( values.count() )
+    {
+        for ( uint i = 0; i < values.count(); i = i + 4 )
+            browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:"
+                                    + values[i+1].replace( "'", QCString( "%27" ) ) + "\"'><b>" + values[i]
+                                    + "</b><br>" + values[i+3] + " - " + values[i+4] + "</a></td></tr>" ) );
+    }
+
+    values.clear();
+    names.clear();
+
+    browser->write( "</table></div>" );
+    // </Recent Tracks Information>
+    
+    browser->write( "<br></html>" );
+    browser->end();
+}
+
+
+void ContextBrowser::showCurrentTrack()
+{
+    QStringList values;
+    QStringList names;
+
+    if ( !m_currentTrack )
+        return;
+
+    // take care of sql updates (schema changed errors)
+    delete m_db;
+    m_db = new CollectionDB();
+
+    browser->begin();
+    browser->setUserStyleSheet( m_styleSheet );
 
     // <Current Track Information>
-    browser->write( "<html><div class='rbcontent'>" );
+    browser->write( "<html><div class='menu'><a class='menu' href='show:home'>Home</a>&nbsp;&nbsp;<a class='menu' href='show:context'>Current Track</a></div>");
+    browser->write( "<div class='rbcontent'>" );
     browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
     browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Currently playing:" ) + "</td></tr>" );
     browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
@@ -133,7 +228,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     m_db->execSql( QString( "SELECT album.id, artist.id, datetime( datetime(statistics.accessdate, 'unixepoch'), 'localtime' ), statistics.playcounter "
                             "FROM album, tags, artist, statistics "
                             "WHERE album.id = tags.album AND artist.id = tags.artist AND statistics.url = tags.url AND tags.url = '%1';" )
-                   .arg( m_db->escapeString( bundle.url().path() ) ), &values, &names );
+                   .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names );
 
     if ( !values.count() )
     {
@@ -146,10 +241,10 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
                               "<span class='album'>%1 - %2</span><br><br><img align='left' valign='center' hspace='2' width='40' height='40' src='%3'>"
                               "%4<br>Last play: %5<br>Total plays: %6</td>"
                               "</tr>" )
-                    .arg( bundle.artist() )
-                    .arg( bundle.title() )
+                    .arg( m_currentTrack->artist() )
+                    .arg( m_currentTrack->title() )
                     .arg( m_db->getImageForAlbum( values[1], values[0], locate( "data", "amarok/images/sound.png" ) ) )
-                    .arg( bundle.album() )
+                    .arg( m_currentTrack->album() )
                     .arg( values[2] )
                     .arg( values[3] ) );
 
@@ -165,7 +260,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
                             "WHERE tags.artist = artist.id AND artist.name LIKE '%1' AND statistics.url = tags.url "
                             "ORDER BY statistics.playcounter DESC "
                             "LIMIT 0,5;" )
-                   .arg( m_db->escapeString( bundle.artist() ) ), &values, &names );
+                   .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names );
 
     if ( values.count() )
     {
@@ -192,8 +287,8 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
                             "WHERE tags.album = album.id AND album.name LIKE '%1' AND "
                                   "tags.artist = artist.id AND artist.name LIKE '%2' "
                             "ORDER BY tags.track;" )
-                   .arg( m_db->escapeString( bundle.album() ) )
-                   .arg( m_db->escapeString( bundle.artist() ) ), &values, &names );
+                   .arg( m_db->escapeString( m_currentTrack->album() ) )
+                   .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names );
 
     if ( values.count() )
     {
@@ -222,7 +317,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
                             "FROM album, tags, artist "
                             "WHERE album.id = tags.album AND tags.artist = artist.id AND artist.name LIKE '%1' "
                             "ORDER BY album.name;" )
-                   .arg( m_db->escapeString( bundle.artist() ) ), &values, &names );
+                   .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names );
 
     if ( values.count() )
     {
@@ -253,8 +348,6 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     
     browser->write( "<br></html>" );
     browser->end();
-
-    m_db->incSongCounter( bundle.url().path() );
 }
 
 

@@ -3,6 +3,8 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  ADD: ContextBrowser now also shows your overall-favorites and the newest tracks
+       in your collection. Therefor I had to reset the statistics, sorry.
   FIX: Decode %-encoded characters in filenames, like %2f for a slash. (BR 74576).
   CHG: Songs you click in ContextBrowser will now directly start to play and won't
        be added to the playlist, if they already are there.

@@ -331,11 +331,12 @@ CollectionReader::readTags( const QStringList& entries )
             MetaBundle* bundle = new MetaBundle( url, f.tag(), 0 );
 
             QString command = "INSERT INTO tags_temp "
-                                "( url, dir, album, artist, genre, title, year, comment, track ) "
+                                "( url, dir, createdate, album, artist, genre, title, year, comment, track ) "
                                 "VALUES('";
 
             command += m_parent->escapeString( bundle->url().path() ) + "','";
             command += m_parent->escapeString( bundle->url().directory() ) + "',";
+            command += "strftime('%s', 'now'),";
             command += m_parent->escapeString( QString::number( m_parent->getValueID( "album", bundle->album(), true, !m_incremental ) ) ) + ",";
             command += m_parent->escapeString( QString::number( m_parent->getValueID( "artist", bundle->artist(), true, !m_incremental ) ) ) + ",";
             command += m_parent->escapeString( QString::number( m_parent->getValueID( "genre", bundle->genre(), true, !m_incremental ) ) ) + ",'";
