@@ -104,24 +104,25 @@ BrowserBar::BrowserBar( QWidget *parent )
     m_overlapButton = new TinyButton( m_browserHolder, const_cast< const char** >(not_close_xpm), i18n( "Overlap" ) );
     m_overlapButton->setToggleButton( true );
     connect( m_overlapButton, SIGNAL( toggled( bool ) ), SLOT( toggleOverlap( bool ) ) );
+    m_overlapButton->hide();
 
-    QPushButton *closeButton = new TinyButton( m_browserHolder, style().stylePixmap( QStyle::SP_TitleBarCloseButton ), i18n( "Close" ) );
-    connect( closeButton, SIGNAL( clicked() ), SLOT( closeCurrentBrowser() ) );
+    //QPushButton *closeButton = new TinyButton( m_browserHolder, style().stylePixmap( QStyle::SP_TitleBarCloseButton ), i18n( "Close" ) );
+    //connect( closeButton, SIGNAL( clicked() ), SLOT( closeCurrentBrowser() ) );
 
-    const QSize buttonSize = closeButton->pixmap()->size();
-    closeButton->setFixedSize( buttonSize );
-    m_overlapButton->setFixedSize( buttonSize );
+    //const QSize buttonSize = closeButton->pixmap()->size();
+    //closeButton->setFixedSize( buttonSize );
+    //m_overlapButton->setFixedSize( buttonSize );
 
     QVBoxLayout *mainLayout = new QVBoxLayout( m_browserHolder, 0 );
-    QHBoxLayout *tinyLayout = new QHBoxLayout();
+    //QHBoxLayout *tinyLayout = new QHBoxLayout();
 #ifdef BROWSER_BAR_LEFT
-    tinyLayout->setAlignment( Qt::AlignRight );
-    tinyLayout->addWidget( m_overlapButton );
-    tinyLayout->addWidget( closeButton );
+    //tinyLayout->setAlignment( Qt::AlignRight );
+    //tinyLayout->addWidget( m_overlapButton );
+    //tinyLayout->addWidget( closeButton );
 #else
-    tinyLayout->setAlignment( Qt::AlignLeft );
-    tinyLayout->addWidget( closeButton );
-    tinyLayout->addWidget( m_overlapButton );
+    //tinyLayout->setAlignment( Qt::AlignLeft );
+    //tinyLayout->addWidget( closeButton );
+    //tinyLayout->addWidget( m_overlapButton );
 #endif
     //mainLayout->addLayout( tinyLayout );
 
