@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #147 being the highest available (take this one for your next bug and increase here)
+           #148 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
@@ -128,6 +128,10 @@ MID-TERM:
                    basically just a shortcut for going up to the parent directory, and then dragging
                    the directory. imagine you're in the root directory of some filesystem, and want to add all
                    files in it.. currently you'd have to select all files manually.
+                   
+  ADD 147 <leinir> Add untagged files to the collection under "Unknown artist" and "Unknown album",
+                   and make the title equal the file name. Avoid not having files in the collection
+                   so they get lost on the filesystem.
 
 
 LONG-TERM:
