@@ -73,7 +73,7 @@ scope_port_put_buffer( xine_audio_port_t *port_gen, audio_buffer_t *buf, xine_st
        printf( "You dare tempt me with 8 bits?!\n" ); return; }
     if( buf->stream == 0 ) {
        port->original_port->put_buffer( port->original_port, buf, stream );
-       printf( "stream == 0! what does that mean?!\n" ); return; }
+       /*printf( "stream == 0! what does that mean?!\n" );*/ return; }
 
     /* I keep my own metronom because xine wouldn't for some reason */
     memcpy( &this->metronom, stream->metronom, sizeof(metronom_t) );
