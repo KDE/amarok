@@ -61,6 +61,8 @@ class PlayerApp : public KUniqueApplication
         bool queryClose();
         void restore();
         bool playObjectConfigurable();
+	
+	bool isPlaying() { return m_bIsPlaying; }
 
         // ATTRIBUTES ------
         KGlobalAccel *m_pGlobalAccel;

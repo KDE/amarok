@@ -160,6 +160,7 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
        void prev();
        void pause();
        QString nowPlaying();
+       bool isPlaying();
 
     signals:
         void sigMinimized();

@@ -35,6 +35,7 @@ k_dcop:
    virtual void pause() = 0;
 
    virtual QString nowPlaying() = 0;
+   virtual bool isPlaying() = 0;
 };
 
 #endif

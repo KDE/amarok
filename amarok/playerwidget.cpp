@@ -765,5 +765,10 @@ QString PlayerWidget::nowPlaying()
     return m_nowPlaying;
 }
 
+bool PlayerWidget::isPlaying()
+{
+    return pApp->isPlaying();
+}
+
 
 #include "playerwidget.moc"
