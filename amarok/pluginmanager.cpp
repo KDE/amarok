@@ -61,7 +61,7 @@ Plugin*
     //get the library loader instance
     KLibLoader *loader = KLibLoader::self();
     //try to load the specified library
-    KLibrary *lib = loader->library( service->library().latin1() );
+    KLibrary *lib = loader->globalLibrary( service->library().latin1() );
 
     if ( !lib ) {
         kdWarning() << k_funcinfo << "lib == NULL\n";
@@ -104,7 +104,7 @@ void
     if ( it != m_store.end() ) {
         delete (*it).plugin;
         KLibLoader *loader = KLibLoader::self();
-        loader->unloadLibrary( (*it).service->library().latin1() );
+//         loader->unloadLibrary( (*it).service->library().latin1() );
         
         m_store.erase( it );
     }

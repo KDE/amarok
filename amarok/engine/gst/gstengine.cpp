@@ -27,10 +27,7 @@ email                : markey@web.de
 #include <kdebug.h>
 #include <kurl.h>
 
-extern "C"
-{
 #include <gst/gst.h>
-}
 
 
 AMAROK_EXPORT_PLUGIN( GstEngine )
@@ -106,8 +103,7 @@ GstEngine::GstEngine()
         : EngineBase()
         , m_pThread( NULL )
         , mScope( 0 )
-{
-}
+{}
 
 
 GstEngine::~GstEngine()
@@ -126,6 +122,11 @@ void GstEngine::init( bool&, int scopeSize, bool )
     pGstEngine = this;
     gst_init( NULL, NULL );
     
+    /* create a new thread to hold the elements */
+    // needs to be called after creating the other elements! otherwise crash
+    kdDebug() << k_funcinfo << "BEFORE gst_thread_new ( thread );\n";
+    m_pThread              = gst_thread_new          ( "thread" );
+    
     /* create a disk reader */
     kdDebug() << k_funcinfo << "BEFORE gst_element_factory_make( filesrc, disk_source );\n";
     m_pFilesrc             = gst_element_factory_make( "filesrc", "disk_source" );
@@ -136,11 +137,6 @@ void GstEngine::init( bool&, int scopeSize, bool )
     m_pAudiosink           = gst_element_factory_make( "osssink", "play_audio" );
     GstElement *pIdentity  = gst_element_factory_make( "identity", "rawscope" );
 
-    /* create a new thread to hold the elements */
-    // needs to be called after creating the other elements! otherwise crash
-    kdDebug() << k_funcinfo << "BEFORE gst_thread_new ( thread );\n";
-    m_pThread              = gst_thread_new          ( "thread" );
-    
     g_signal_connect ( G_OBJECT( m_pAudiosink ), "handoff",
                        G_CALLBACK( handoff_cb ), m_pThread );
 
