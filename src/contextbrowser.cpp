@@ -778,31 +778,49 @@ void ContextBrowser::viewImage( const QString& artist, const QString& album )
 
 namespace amaroK {
 class Color : public QColor {
-    static const uint CONTRAST = 100;
+    static const int CONTRAST = 130;
+    static const int SATURATION_TARGET = 30;
 public:
     Color( const QColor &c )
         : QColor( c )
     {
-        int h,s,v,d;
+        int h,s1,s,v;
+        getHsv( &h, &s1, &v );
 
-        getHsv( &h, &s, &v );
+        kdDebug() << "first: s:" << s1 << " v:" << v << endl;
 
         //we want the new colour to be low saturation
-        d = QMAX( 0, s - 25 );
-        s = 25;
+        //TODO what if s is less than SATURATION_TARGET to start with
+        s = s1 - CONTRAST;
 
-        //if there is any remaining contrast adjustment required
-        //we should adjust the value, in an intelligent direction
-        if( d < CONTRAST ) {
-           const int remainingContrast = CONTRAST - d;
+        if ( s < SATURATION_TARGET ) {
+            int remainingContrast = SATURATION_TARGET - s;
+            s = SATURATION_TARGET;
 
-           if( (255 - v) > remainingContrast )
-              v += remainingContrast;
-            else
-               v -= remainingContrast;
+
+            //we only add to the value to avoid the dreaded "grey-gradient"
+            v += remainingContrast;
+
+//          if( (255 - v) > remainingContrast )
+//              v += remainingContrast;
+//          else
+//              v -= remainingContrast;
+
+            if ( v > 255 ) {
+                int error = v - 255;
+                kdDebug() << error << endl;
+
+                //don't overly saturate this, trust me
+                if( s1 + error < 128 )
+                   s = s1 + error;
+
+                v = 255;
+            }
         }
 
         setHsv( h, s, v );
+
+        kdDebug() << "after: s:" << s << " v:" << v << endl;
     }
 };
 }

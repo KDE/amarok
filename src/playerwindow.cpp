@@ -408,9 +408,21 @@ void PlayerWidget::determineAmarokColors() //static
     using namespace amaroK::ColorScheme;
 
     Text       = Qt::white;
-    Base       = comodulate( hue, amaroK::blue );
     Background = comodulate( hue, 0x002090 );
     Foreground = comodulate( hue, 0x80A0FF );
+
+    //ensure the base colour does not conflict with the window decoration colour
+    //however generally it is nice to leave the other colours with the highlight hue
+    //because the scheme is then "complimentary"
+    //TODO schemes that have totally different active/inactive decoration colours need to be catered for too!
+    if ( AmarokConfig::schemeKDE() ) {
+        int h;
+        KGlobalSettings::activeTitleColor().getHsv( &h, &s, &v );
+        if( QABS( hue - h ) > 120 )
+           hue = h;
+    }
+
+    Base = comodulate( hue, amaroK::blue );
 }
 
 void PlayerWidget::setModifiedPalette()
