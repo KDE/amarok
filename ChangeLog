@@ -5,7 +5,8 @@ amaroK Changelog
 
   * fix: make loading playlist not block UI
   * fix: on startup load playlist after UI is shown
-  * fix: timedisplay also works for streams
+  * change: make software-mixing default
+  * fix: make timedisplay also work for streams
   * fix: volume slider adjusting
   * fix: when dropping tracks to PL, order will stay the same as in FileBrowser
   * add: FileBrowser sortable by clicking on header
