@@ -147,13 +147,13 @@ void BrowserWin::initChildren()
     QObject *pSeparator = m_pJanusWidget->child( 0, "KSeparator" );
     if ( pHeader )     static_cast<QWidget*>( pSeparator )->hide();
             
-    QVBox *pBrowserBox = m_pJanusWidget->addVBoxPage( QString( "Filebrowser" ), QString::null,
+    QVBox *pBrowserBox = m_pJanusWidget->addVBoxPage( QString( i18n( "files" ) ), QString::null,
                          KGlobal::iconLoader()->loadIcon( "hdd_unmount", KIcon::NoGroup,
                          KIcon::SizeMedium ) );
-    QVBox *pStreamBox =  m_pJanusWidget->addVBoxPage( QString( "Streambrowser" ), QString::null,
+    QVBox *pStreamBox =  m_pJanusWidget->addVBoxPage( QString( i18n( "streams" ) ), QString::null,
                          KGlobal::iconLoader()->loadIcon( "network", KIcon::NoGroup,
                          KIcon::SizeMedium ) );
-    QVBox *pVirtualBox = m_pJanusWidget->addVBoxPage( QString( "Virtual Folders" ), QString::null,
+    QVBox *pVirtualBox = m_pJanusWidget->addVBoxPage( QString( i18n( "media" ) ), QString::null,
                          KGlobal::iconLoader()->loadIcon( "folder_sound", KIcon::NoGroup,
                          KIcon::SizeMedium ) );
 
