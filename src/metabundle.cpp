@@ -80,11 +80,10 @@ MetaBundle::MetaBundle( const PlaylistItem *item )
         , m_isValidMedia( true )
 {
     if( m_url.protocol() == "file" )
-    {
         readTags( TagLib::AudioProperties::Accurate );
-    }
-    else { //is Stream
 
+    else {
+        // is a stream
         //FIXME not correct handling, say is ftp://file
         m_bitrate    = item->exactText( 10 ).left( 3 ).toInt();
         m_sampleRate = Undetermined;
@@ -150,38 +149,47 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
     if( m_url.protocol() != "file" )
         return;
 
-    TagLib::FileRef f( QFile::encodeName( m_url.path() ), true, readStyle );
+    const QString path = m_url.path();
+    TagLib::FileRef fileref;
+    TagLib::Tag *tag = 0;
 
-    if( !f.isNull() && f.tag() )
+    if( AmarokConfig::recodeID3v1Tags() && path.endsWith( ".mp3", false ) )
     {
-        TagLib::Tag *tag = 0;
+        TagLib::MPEG::File *mpeg = new TagLib::MPEG::File( QFile::encodeName( path ), true, readStyle );
+        fileref = TagLib::FileRef( mpeg );
 
-        if( AmarokConfig::recodeID3v1Tags() && m_url.path().endsWith( ".mp3", false ) ) {
+        if( mpeg->isValid() )
             // we prefer ID3v1 over ID3v2 if recoding tags because
             // apparently this is what people who ignore ID3 standards want
-            TagLib::MPEG::File &mp3 = (TagLib::MPEG::File&)f;
-            tag = mp3.ID3v1Tag() ? (TagLib::Tag*)mp3.ID3v1Tag() : (TagLib::Tag*)mp3.ID3v2Tag();
-        }
-        else
-            tag = f.tag();
+            tag = mpeg->ID3v1Tag() ? (TagLib::Tag*)mpeg->ID3v1Tag() : (TagLib::Tag*)mpeg->ID3v2Tag();
+    }
 
-        #define bing( x ) TStringToQString( x ).stripWhiteSpace()
-        m_title   = bing( tag->title() );
-        m_artist  = bing( tag->artist() );
-        m_album   = bing( tag->album() );
-        m_comment = bing( tag->comment() );
-        m_genre   = bing( tag->genre() );
+    else {
+        fileref = TagLib::FileRef( QFile::encodeName( path ), true, readStyle );
+
+        if( !fileref.isNull() )
+            tag = fileref.tag();
+    }
+
+    if( !fileref.isNull() && tag ) {
+        #define strip( x ) TStringToQString( x ).stripWhiteSpace()
+        m_title   = strip( tag->title() );
+        m_artist  = strip( tag->artist() );
+        m_album   = strip( tag->album() );
+        m_comment = strip( tag->comment() );
+        m_genre   = strip( tag->genre() );
         m_year    = tag->year() ? QString::number( tag->year() ) : QString();
         m_track   = tag->track() ? QString::number( tag->track() ) : QString();
-        #undef bing
-
-        init( f.audioProperties() );
+        #undef strip
 
         m_isValidMedia = true;
+
+        init( fileref.audioProperties() );
     }
-/*FIXME disabled for beta4 as it's simpler to not got 100 bug reports
-        else if( KMimeType::findByUrl( m_url )->is( "audio" ) )
-        init( KFileMetaInfo( m_url, QString::null, KFileMetaInfo::Everything ) );*/
+
+    //FIXME disabled for beta4 as it's simpler to not got 100 bug reports
+    //else if( KMimeType::findByUrl( m_url )->is( "audio" ) )
+    //    init( KFileMetaInfo( m_url, QString::null, KFileMetaInfo::Everything ) );
 }
 
 QString
