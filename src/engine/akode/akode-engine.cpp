@@ -1,6 +1,12 @@
-// Copyright (C) 2005 Max Howell <max.howell@methylblue.com>
-// Licensed as described in the COPYING file found in the root of this distribution
-//
+/***************************************************************************
+ *   Copyright (C) 2005 Max Howell <max.howell@methylblue.com>             *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #include <akode-engine.h>
 #include <akode/decoder.h>
@@ -43,7 +49,8 @@ AkodeEngine::AkodeEngine()
 
 AkodeEngine::~AkodeEngine()
 {
-    m_player->close();
+    if( m_player )
+        m_player->close();
 }
 
 bool
@@ -66,6 +73,7 @@ AkodeEngine::load( const KURL &url, bool isStream )
 bool
 AkodeEngine::play( uint offset )
 {
+    //m_player->decoder()->seek( offset );
     m_player->play();
 
     return true;
@@ -93,8 +101,6 @@ AkodeEngine::position() const
 void
 AkodeEngine::stop()
 {
-    //emit stateChanged( Engine::Empty );
-
     m_player->stop();
     m_player->unload();
 }
@@ -110,8 +116,6 @@ AkodeEngine::pause()
     default:
         return;
     }
-
-  //  emit stateChanged( state() );
 }
 
 void
@@ -132,10 +136,11 @@ AkodeEngine::state() const
     switch( m_player->state() )
     {
         case aKode::Player::Open:
-        case aKode::Player::Closed:  return Engine::Empty; break;
-        case aKode::Player::Loaded:  return Engine::Idle; break;
-        case aKode::Player::Playing: return Engine::Playing; break;
-        case aKode::Player::Paused:  return Engine::Paused; break;
+        case aKode::Player::Closed:  return Engine::Empty;
+        default:
+        case aKode::Player::Loaded:  return Engine::Idle;
+        case aKode::Player::Playing: return Engine::Playing;
+        case aKode::Player::Paused:  return Engine::Paused;
     }
 }
 
