@@ -4,6 +4,8 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
+    * playmode checks in popup menu set incorrectly upon loading??
+
     * fix: berkus: make sure the expandbutton doesn't fire events when
            it has had its stack expanded (behaviour a-la Winamp Classic)
 
