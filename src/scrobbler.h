@@ -127,6 +127,8 @@ class ScrobblerSubmitter : public QObject
         SubmitItem* dequeueItem();
         void enqueueJob( KIO::Job* /* job */ );
         void finishJob( KIO::Job* /* job */ );
+        void announceSubmit(
+            SubmitItem* /* item */, int /* tracks */, bool /* success */ ) const;
         void saveSubmitQueue();
         void readSubmitQueue();
         QString m_submitResultBuffer;

@@ -371,7 +371,6 @@ ScrobblerSubmitter::ScrobblerSubmitter() :
 
 ScrobblerSubmitter::~ScrobblerSubmitter()
 {
-    // TODO: store ongoing submits too (finishJob)
     saveSubmitQueue();
     
     m_ongoingSubmits.setAutoDelete( TRUE );
@@ -478,12 +477,14 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
             // If scrobbling is enabled but can't submit for some reason,
             // enqueue item.
             enqueueItem( item );
+            announceSubmit( item, 1, false );
         }
         return;
     }
     else if ( m_challenge.isEmpty() )
     {
         enqueueItem( item );
+        announceSubmit( item, 1, false );
         handshake();
         return;
     }
@@ -868,8 +869,18 @@ SubmitItem* ScrobblerSubmitter::dequeueItem()
  */
 void ScrobblerSubmitter::enqueueJob( KIO::Job* job )
 {
-    while ( m_ongoingSubmits.take( job ) != 0 );
+    SubmitItem *lastItem = NULL;
+    SubmitItem *item = NULL;
+    int counter = 0;
+    while ( ( item = m_ongoingSubmits.take( job ) ) != 0 )
+    {
+        counter++;
+        lastItem = item;
+        enqueueItem( item );
+    }
     m_submitQueue.first();
+    
+    announceSubmit( lastItem, counter, false );
 }
 
 
@@ -879,42 +890,96 @@ void ScrobblerSubmitter::enqueueJob( KIO::Job* job )
  */
 void ScrobblerSubmitter::finishJob( KIO::Job* job )
 {
-    SubmitItem* item;
+    SubmitItem *firstItem = NULL;
+    SubmitItem *item = NULL;
     int counter = 0;
-    QString firstTitle;
     while ( ( item = m_ongoingSubmits.take( job ) ) != 0 )
     {
         counter++;
-        if ( firstTitle == QString::null )
+        if ( firstItem == NULL )
         {
-            firstTitle = item->title();
+            firstItem = item;
+        }
+        else
+        {
+            delete item;
         }
         m_submitQueue.remove( item );
-        delete item;
     }
     m_submitQueue.first();
     
+    announceSubmit( firstItem, counter, true );
+    delete firstItem;
+}
+
+
+/**
+ * Announces on StatusBar if the submit was successful or not.
+ *
+ * @param item One of the items
+ * @param tracks Amount of tracks that were submitted
+ * @param success Indicates if the submission was successful or not
+ */
+void ScrobblerSubmitter::announceSubmit(
+    SubmitItem *item, int tracks, bool success ) const
+{
     QString message;
-    if ( counter == 1 )
+    if ( success )
     {
-        message =
-            QString( "'%1' submitted to Audioscrobbler" ).arg( firstTitle );
+        if ( tracks == 1 )
+        {
+            message = QString( "'%1' submitted" ).arg( item->title() );
+        }
+        else if ( tracks == 2 )
+        {
+            message =
+                QString( "'%1' (and one other track) submitted" )
+                    .arg( item->title() );
+        }
+        else
+        {
+            message =
+                QString( "'%1' (and %2 other tracks) submitted" )
+                    .arg( item->title() ).arg( tracks - 1 );
+        }
+        if ( m_submitQueue.count() == 1 )
+        {
+            message += QString( ", 1 track still in queue" );
+        }
+        else if ( m_submitQueue.count() > 1 )
+        {
+            message +=
+                QString( ", %1 tracks still in queue" ).arg( m_submitQueue.count() );
+        }
     }
     else
     {
-        message =
-            QString(
-                "'%1'... (total of %2 tracks) submitted to Audioscrobbler" )
-                .arg( firstTitle ).arg( counter );
-    }
-    if ( m_submitQueue.count() == 1 )
-    {
-        message += QString( ", 1 track still in queue" );
-    }
-    else if ( m_submitQueue.count() > 1 )
-    {
-        message +=
-            QString( ", %1 tracks still in queue" ).arg( m_submitQueue.count() );
+        if ( tracks == 1 )
+        {
+            message =
+                QString( "Failed to submit '%1'" ).arg( item->title() );
+        }
+        else if ( tracks == 2)
+        {
+            message =
+                QString( "Failed to submit '%1' (and one other track)" )
+                .arg( item->title() );
+        }
+        else
+        {
+            message =
+                QString( "Failed to submit '%1' (and %2 other tracks)" )
+                .arg( item->title() ).arg( tracks - 1 );
+        }
+        if ( m_submitQueue.count() == 1 )
+        {
+            message += QString( ", 1 track queued" );
+        }
+        else if ( m_submitQueue.count() > 1 )
+        {
+            message +=
+                QString( ", %1 tracks queued" ).arg( m_submitQueue.count() );
+        }
     }
     
     amaroK::StatusBar::instance()->messageTemporary( message );
@@ -983,6 +1048,8 @@ void ScrobblerSubmitter::readSubmitQueue()
     {
         enqueueItem( new SubmitItem( n.toElement() ) );
     }
+    
+    m_submitQueue.first();
 }
 
 
