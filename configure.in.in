@@ -506,22 +506,25 @@ AM_CONDITIONAL(with_libvisual, test x$build_libvisual = xyes)
 
 
 ###############################################################################
-# BEGIN MUSICBRAINZ CHECK
+# BEGIN TUNEPIMP CHECK
 ###############################################################################
 
 KDE_CHECK_HEADER(tunepimp/tp_c.h,
     [
-      AC_DEFINE(HAVE_MUSICBRAINZ, 1, [have MusicBrainz])
-      LIB_MUSICBRAINZ="-ltunepimp"
+      AC_DEFINE(HAVE_TUNEPIMP, 1, [have TunePimp])
+      LIB_TUNEPIMP="-ltunepimp"
+      have_tunepimp=yes
     ],
     [
-      LIB_MUSICBRAINZ=""
+      AC_DEFINE(HAVE_TUNEPIMP, 0, [have TunePimp])
+      LIB_TUNEPIMP=""
+      have_tunepimp=no
     ])
 
-AC_SUBST(LIB_MUSICBRAINZ)
+AC_SUBST(LIB_TUNEPIMP)
 
 ###############################################################################
-# END MUSICBRAINZ CHECK
+# END TUNEPIMP CHECK
 ###############################################################################
 
 

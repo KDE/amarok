@@ -33,7 +33,7 @@
 #include <qobject.h>
 #include <qfile.h>
 
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
 
 #include <tunepimp/tp_c.h>
 
@@ -291,28 +291,28 @@ public:
 #endif
 KTRMResult::KTRMResult()
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     d = new KTRMResultPrivate;
 #endif
 }
 
 KTRMResult::KTRMResult(const KTRMResult &result)
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     d = new KTRMResultPrivate(*result.d);
 #endif
 }
 
 KTRMResult::~KTRMResult()
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     delete d;
 #endif
 }
 
 QString KTRMResult::title() const
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     return d->title;
 #else
     return QString::null;
@@ -321,7 +321,7 @@ QString KTRMResult::title() const
 
 QString KTRMResult::artist() const
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     return d->artist;
 #else
     return QString::null;
@@ -330,7 +330,7 @@ QString KTRMResult::artist() const
 
 QString KTRMResult::album() const
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     return d->album;
 #else
     return QString::null;
@@ -339,7 +339,7 @@ QString KTRMResult::album() const
 
 int KTRMResult::track() const
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     return d->track;
 #else
     return 0;
@@ -348,7 +348,7 @@ int KTRMResult::track() const
 
 int KTRMResult::year() const
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     return d->year;
 #else
     return 0;
@@ -357,7 +357,7 @@ int KTRMResult::year() const
 
 bool KTRMResult::operator<(const KTRMResult &r) const
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     return r.d->relevance < d->relevance;
 #else
     return false;
@@ -366,7 +366,7 @@ bool KTRMResult::operator<(const KTRMResult &r) const
 
 bool KTRMResult::operator>(const KTRMResult &r) const
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     return r.d->relevance > d->relevance;
 #else
     return true;
@@ -375,14 +375,14 @@ bool KTRMResult::operator>(const KTRMResult &r) const
 
 bool KTRMResult::isEmpty() const
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     return d->title.isEmpty() && d->artist.isEmpty() && d->album.isEmpty() &&
         d->track == 0 && d->year == 0;
 #else
     return true;
 #endif
 }
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
 ////////////////////////////////////////////////////////////////////////////////
 // KTRMLookup implementation
 ////////////////////////////////////////////////////////////////////////////////
@@ -405,7 +405,7 @@ public:
 KTRMLookup::KTRMLookup(const QString &file, bool autoDelete)
     : QObject()
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     d = new KTRMLookupPrivate;
     d->file = file;
     d->autoDelete = autoDelete;
@@ -415,7 +415,7 @@ KTRMLookup::KTRMLookup(const QString &file, bool autoDelete)
 
 KTRMLookup::~KTRMLookup()
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     KTRMRequestHandler::instance()->endLookup(this);
     delete d;
 #endif
@@ -423,7 +423,7 @@ KTRMLookup::~KTRMLookup()
 
 QString KTRMLookup::file() const
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     return d->file;
 #else
     return QString::null;
@@ -432,7 +432,7 @@ QString KTRMLookup::file() const
 
 int KTRMLookup::fileId() const
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     return d->fileId;
 #else
     return -1;
@@ -441,7 +441,7 @@ int KTRMLookup::fileId() const
 
 void KTRMLookup::recognized()
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     kdDebug() << k_funcinfo << d->file << endl;
 
     d->results.clear();
@@ -468,7 +468,7 @@ void KTRMLookup::recognized()
 
 void KTRMLookup::unrecognized()
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     kdDebug() << k_funcinfo << d->file << endl;
     d->results.clear();
     finished();
@@ -477,7 +477,7 @@ void KTRMLookup::unrecognized()
 
 void KTRMLookup::collision()
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     kdDebug() << k_funcinfo << d->file << endl;
 
     track_t track = tp_GetTrack(KTRMRequestHandler::instance()->tunePimp(), d->fileId);
@@ -541,7 +541,7 @@ void KTRMLookup::collision()
 
 void KTRMLookup::error()
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     kdDebug() << k_funcinfo << d->file << endl;
 
     d->results.clear();
@@ -551,7 +551,7 @@ void KTRMLookup::error()
 
 KTRMResultList KTRMLookup::results() const
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     return d->results;
 #else
     return KTRMResultList();
@@ -565,9 +565,9 @@ KTRMResultList KTRMLookup::results() const
 void KTRMLookup::finished()
 
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     emit sigResult( results() );
-    
+
     if(d->autoDelete)
         delete this;
 #endif

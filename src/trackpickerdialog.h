@@ -18,7 +18,7 @@
 
 #include <config.h>
 
-#if HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
 
 #include <kdialogbase.h>
 
@@ -46,6 +46,6 @@ private:
     TrackPickerDialogBase *m_base;
 };
 
-#endif // HAVE_MUSICBRAINZ
+#endif // HAVE_TUNEPIMP
 
 #endif

@@ -139,7 +139,7 @@ TagDialog::checkModified() //SLOT
 void
 TagDialog::musicbrainzQuery() //SLOT
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     kdDebug() << k_funcinfo << endl;
 
     m_mbTrack = m_bundle.url().path();
@@ -155,7 +155,7 @@ TagDialog::musicbrainzQuery() //SLOT
 void
 TagDialog::queryDone( KTRMResultList results ) //SLOT
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
 
     if ( !results.isEmpty() )
     {
@@ -175,7 +175,7 @@ TagDialog::queryDone( KTRMResultList results ) //SLOT
 void
 TagDialog::fillSelected( KTRMResult selected ) //SLOT
 {
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     kdDebug() << k_funcinfo << endl;
 
 
@@ -272,7 +272,7 @@ void TagDialog::init()
         pushButton_next->hide();
     }
 
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     connect( pushButton_musicbrainz, SIGNAL(clicked()), SLOT(musicbrainzQuery()) );
 #else
     QToolTip::add( pushButton_musicbrainz, i18n("Please install MusicBrainz to enable this functionality") );
@@ -328,7 +328,7 @@ void TagDialog::readTags()
 
     pushButton_ok->setEnabled( storedTags.count() > 0 );
 
-#ifdef HAVE_MUSICBRAINZ
+#if HAVE_TUNEPIMP
     pushButton_musicbrainz->setEnabled( m_bundle.url().isLocalFile() );
 #else
     pushButton_musicbrainz->setEnabled( false );

@@ -4,6 +4,9 @@ amaroK ChangeLog
 
 
 VERSION 1.2.2:
+  FIX: amaroK could fail to build if the whole kdeextragear-1 module was
+       compiled, due to a conflict with K3B on the MusicBrainz check.
+       (BR 100906)
   ADD: A line graph equalizer added as a script "graphequalizer."
   ADD: Initial support for dynamic playlist which removes-once-played, whilst
        appending a similar song to the end of the playlist. (BR 99305)
@@ -16,6 +19,34 @@ VERSION 1.2.2:
        full metadata support. (BR 89821)
   FIX: GStreamer-engine now uses the "decodebin" autoplugger, which fixes
        the lag issues that some users had during crossfading. (BR 99570)
+
+
+
+**** <PROPOSAL FOR NEW CHANGELOG FORMAT> ****
+
+VERSION 1.2.2:
+  FEATURES:
+    * A line graph equalizer added as a script "graphequalizer."
+    * Initial support for dynamic playlist which removes-once-played, whilst
+      appending a similar song to the end of the playlist. (BR 99305)
+    * New DCOP call player: setEqualizer(preamp, the 10 eq settings)
+
+  BUGFIXES:
+    * amaroK could fail to build if the whole kdeextragear-1 module was
+      compiled, due to a conflict with K3B on the MusicBrainz check.
+      (BR 100906)
+    * Images shown on OSD where incorrect for action notifications.
+    * The handbook translations were not built when amaroK was installed from
+      the tarball. I've written a new release script in Ruby, which can
+      handle the new structure of kde-i18n. (BR 100498)
+    * GStreamer-engine can now play vorbis radio streams properly, with
+      full metadata support. (BR 89821)
+    * GStreamer-engine now uses the "decodebin" autoplugger, which fixes
+      the lag issues that some users had during crossfading. (BR 99570)
+
+**** </PROPOSAL FOR NEW CHANGELOG FORMAT> ****
+
+
 
 VERSION 1.2.1:
   FIX: Made the Tag-Editor only operate on visible items. (BR 100268)

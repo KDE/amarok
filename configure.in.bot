@@ -192,6 +192,10 @@ else
         echo " =   + Konqueror Sidebar"
     fi
 
+    if test x$have_tunepimp = xyes; then
+        echo " =   + MusicBrainz support"
+    fi
+
     echo " ="
 fi
 

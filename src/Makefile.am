@@ -109,7 +109,7 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/ipod/itunesdb/libitunesdb.la \
     $(top_builddir)/amarok/src/statusbar/libstatusbar.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) \
-    $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(LIB_MUSICBRAINZ) \
+    $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(LIB_TUNEPIMP) \
     $(mysql_libs)
 
 amarokapp_LDFLAGS = \
