@@ -271,10 +271,17 @@ namespace amaroK
         EngineController::engine()->setEqualizerEnabled( active );
         AmarokConfig::setEqualizerEnabled( active );
     }
-
+	bool DcopPlayerHandler::equalizerEnabled()
+	{
+		if(EngineController::hasEngineProperty( "HasEqualizer" ))
+			return AmarokConfig::equalizerEnabled();
+		else
+			return false;
+	}
     void DcopPlayerHandler::configEqualizer()
     {
-        EqualizerSetup::instance()->raise();
+        if(EngineController::hasEngineProperty( "HasEqualizer" ))
+        	EqualizerSetup::instance()->raise();
     }
 
     void DcopPlayerHandler::enableOSD(bool enable)

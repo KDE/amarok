@@ -82,6 +82,7 @@ k_dcop:
    virtual void volumeDown() = 0;                           ///< Decrease volume by a reasonable step.
    virtual void mute() = 0;                                 ///< Toggle mute.
    virtual void setEqualizerEnabled( bool active ) = 0;     ///< Toggle equalizer.
+   virtual bool equalizerEnabled() = 0;
    virtual void configEqualizer() = 0;                      ///< Toggle equalizer config dialog.
    virtual void enableOSD(bool enable) = 0;                 ///< Switch OSD display on or off.
    virtual void showOSD() = 0;                              ///< Show the OSD display on the screen.
