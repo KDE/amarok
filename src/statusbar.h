@@ -68,7 +68,7 @@ private slots:
 private:
     virtual void customEvent( QCustomEvent* e );
 
-    static const int TEMP_MESSAGE_DURATION = 4000; //msec
+    static const int TEMP_MESSAGE_DURATION = 5000; //msec
     static StatusBar* s_instance;
 
     QLabel         *m_pTimeLabel;
