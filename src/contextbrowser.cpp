@@ -450,7 +450,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                             .arg( values[i + 2] ) // album.id
                             .arg( values[i + 1] ) // artist.name
                             .arg( values[i + 0] ) // album.name
-                            .arg( m_db->getImageForAlbum( values[i + 3], values[i + 2], locate( "data", "amarok/images/sound.png" ) ) )
+                            .arg( m_db->getImageForAlbum( values[i + 3], values[i + 2], locate( "data", "amarok/images/sound.png" ), 40 ) )
                             .arg( values[i + 0] ) // album.name
                             .arg( m_db->albumSongCount( values[i + 3], values[i + 2] ) ) );
         }

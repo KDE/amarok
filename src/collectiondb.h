@@ -28,10 +28,13 @@ class CollectionDB : public QObject
         QString albumSongCount( const QString artist_id, const QString album_id );
         void addImageToPath( const QString path, const QString image, bool temporary );
         QString getPathForAlbum( const QString artist_id, const QString album_id );
-        QString getImageForAlbum( const QString artist_id, const QString album_id, const QString defaultImage );
+        QString getImageForAlbum( const QString artist_id, const QString album_id, const QString defaultImage, const uint width = COVER_SIZE );
         QString getImageForPath( const QString path, const QString defaultImage, const uint width = COVER_SIZE );
+
         QStringList artistList();
         QStringList albumList();
+
+        bool getMetaBundleForUrl( const QString url, MetaBundle *bundle );
         void incSongCounter( const QString url );
         void updateDirStats( QString path, const long datetime );
         void removeSongsInDir( QString path );

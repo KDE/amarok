@@ -129,7 +129,7 @@ CollectionDB::getPathForAlbum( const QString artist_id, const QString album_id )
 
 
 QString
-CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id, const QString defaultImage )
+CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id, const QString defaultImage, const uint width )
 {
     QStringList values;
     execSql( QString( "SELECT DISTINCT artist.name, album.name FROM artist, album "
@@ -138,6 +138,7 @@ CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id,
     
     QString key = values[0] + " - " + values[1] + ".png";
     key.replace( "/", "_" );
+    key.replace( "'", "_" );
     kdDebug() << "Looking for cover image: " << m_coverDir.filePath( key ) << endl;
     
     if ( m_coverDir.exists( key ) )
@@ -146,7 +147,7 @@ CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id,
     KURL url;
     url.setPath( getPathForAlbum( artist_id, album_id ) );
 
-    return getImageForPath( url.directory(), defaultImage );
+    return getImageForPath( url.directory(), defaultImage, width );
 }
 
 
@@ -214,6 +215,34 @@ CollectionDB::albumList()
                   "ORDER BY name", &values, &names );
     
     return values;
+}
+
+        
+bool
+CollectionDB::getMetaBundleForUrl( const QString url, MetaBundle *bundle )
+{
+    QStringList values, names;
+
+    execSql( QString( "SELECT album.name, artist.name, genre.name, tags.title, year.name, tags.comment, tags.track, tags.createdate, tags.dir "
+                      "FROM tags, album, artist, genre, year "
+                      "WHERE album.id = tags.album AND artist.id = tags.artist AND genre.id = tags.genre AND year.id = tags.year AND url = '%1';" )
+                  .arg( escapeString( url ) ), &values, &names );
+
+    if ( values.count() )
+    {
+        bundle->m_album = values[0];
+        bundle->m_artist = values[1];
+        bundle->m_genre = values[2];
+        bundle->m_title = values[3];
+        bundle->m_year = values[4];
+        bundle->m_comment = values[5];
+        bundle->m_track = values[5];
+        bundle->m_url = url;
+        
+        return true;
+    }
+
+    return false;
 }
 
 
