@@ -331,8 +331,7 @@ void PlayerApp::initIpc()
     }
     sockaddr_un local;
     local.sun_family = AF_UNIX;
-    QCString path( ::getenv( "HOME" ) );
-    path += "/.kde/share/apps/amarok/.loader_socket";
+    QCString path = ::locate( "socket", QString( "amarok/.loader_socket" ) ).local8Bit();
     ::strcpy( &local.sun_path[0], path );
     ::unlink( path );
 

@@ -22,11 +22,7 @@ Vis::Base::Base( /*const string &name,*/ DataType dt, bool notify, uint fps )
   , m_left( 512, 0 )
   , m_right( 512, 0 )
 {
-    //TODO get path using "kde-config --type data"
-
-    std::string
-    path  = getenv( "HOME" );
-    path += "/.kde/share/apps/amarok/visualization_socket";
+    std::string path = ::locate( "socket", QString( "amarok/visualization_socket" ) ).local8Bit();
 
     if( openConnection( path ) ) //do exception on failure
     {
@@ -176,6 +172,6 @@ timedelta(void)
 
     std::cout << "d: " << difference << " ";
 
-	/* CLK_TCK=100 */
+   /* CLK_TCK=100 */
     return (double)1000000 * (double)difference/double(CLK_TCK);
 }

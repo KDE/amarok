@@ -17,7 +17,7 @@
 #include "xmmswrapper.h"
 
 #include <iostream>
-#include <list> 
+#include <list>
 //#include <string> in header
 #include <vector>
 
@@ -27,6 +27,13 @@
 //TODO keep socket open
 
 #include "fft.c"
+
+
+// This increases our little wrapper a lot, but unless Max implements
+// auto search for proper place of visualization_socket, I'll do it KDE way.
+//    -- berkus
+#include <qstring.h>
+#include <kstandarddirs.h>
 
 
 GtkWidget dummy;
@@ -96,10 +103,7 @@ main( int argc, char** argv ) {
     } else plugin = argv[ 0 ];
 
 
-    socketpath = getenv( "HOME" );
-    socketpath += "/.kde/share/apps/amarok"; //TODO get this with "kconfig --type data"
-    socketpath += "/visualization_socket";
-
+    socketpath = ::locate( "socket", QString( "amarok/visualization_socket" ) ).local8Bit();
 
     gtk_init( &argc, &argv ); //xmms plugins require this
     gdk_rgb_init();
@@ -296,12 +300,12 @@ static void calc_freq( gint16 *dest, gint16 *src ) {
             static fft_state *state = NULL;
             gfloat tmp_out[257];
             gint i;
-     
+
             if(!state)
                     state = fft_init();
-     
+
             fft_perform(src,tmp_out,state);
-     
+
             for(i = 0; i < 256; i++)
                     dest[i] = ((gint)sqrt(tmp_out[i + 1])) >> 8;
     */
@@ -312,7 +316,7 @@ static void calc_mono_freq( gint16 dest[ 2 ][ 256 ], gint16 src[ 2 ][ 512 ], gin
     /* FIXME
             gint i;
             gint16 *d, *sl, *sr, tmp[512];
-     
+
             if(nch == 1)
                     calc_freq(dest[0], src[0]);
             else
@@ -334,7 +338,7 @@ static void calc_stereo_freq( gint16 dest[ 2 ][ 256 ], gint16 src[ 2 ][ 512 ], g
     /*
     FIXME
             calc_freq(dest[0], src[0]);
-     
+
             if(nch == 2)
                     calc_freq(dest[1], src[1]);
             else

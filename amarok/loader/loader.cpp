@@ -28,6 +28,8 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 
+#include <kinstance.h>
+#include <kstandarddirs.h>
 
 Loader::Loader( int& argc, char** argv )
     : QApplication( argc, argv )
@@ -36,6 +38,10 @@ Loader::Loader( int& argc, char** argv )
     , m_pProc( NULL )
     , m_pOsd ( NULL )
 {
+    // create KInstance
+    m_kinst = new KInstance("amarokloader");
+    Q_ASSERT(m_kinst);
+    
     m_sockfd = tryConnect();
 
     //determine whether an amaroK instance is already running (LoaderServer)
@@ -47,11 +53,11 @@ Loader::Loader( int& argc, char** argv )
             showSplash();
 
         m_pProc = new QProcess( this );
-        
+
         QString path = argv[0];
         path.replace( "amarok", "amarokapp" );   //FIXME!!! don't replace in path
         m_pProc->addArgument( path );
-        
+
         //hand arguments through to amaroK
         for ( int i = 1; i < m_argc; i++ )
             m_pProc->addArgument( m_argv[i] );
@@ -76,11 +82,11 @@ Loader::Loader( int& argc, char** argv )
 
         //put all arguments into one string
         QCString str;
-        
+
         //we transmit the startup_id, so amarokapp can stop the startup animation
         str.append( getenv( "DESKTOP_STARTUP_ID" ) );
         str.append( "|" );
-                
+
         for ( int i = 0; i < m_argc; i++ ) {
             str.append( m_argv[i] );
             str.append( "|" );    //"|" cannot occur in unix filenames, so we use it as a separator
@@ -155,8 +161,7 @@ int Loader::tryConnect()
     }
     sockaddr_un local;
     local.sun_family = AF_UNIX;
-    QCString path( ::getenv( "HOME" ) );
-    path += "/.kde/share/apps/amarok/.loader_socket";
+    QCString path = ::locate( "socket", QString( "amarok/.loader_socket" ), m_kinst ).local8Bit();
     ::strcpy( &local.sun_path[0], path );
 
     int len = sizeof( local );
