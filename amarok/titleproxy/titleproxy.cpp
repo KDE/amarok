@@ -30,8 +30,21 @@ email                :
 #define PROXYPORT 6666     //FIXME port should not be hardcoded. what to do if it's in use?
 #define BUFSIZE 5000
 
-// Some info on the protocol can be found at:
+// Some info on the shoutcast metadata protocol can be found at:
 // http://www.smackfu.com/stuff/programming/shoutcast.html
+
+// Proxy Concept:
+// 1. Connect to streamserver
+// 2. Listen on localhost, let aRts connect to proxyserver
+// 3. Read HTTP GET request from proxyserver (sent by aRts)
+// 4. Modify GET request by adding Icy-MetaData:1 token
+// 5. Write request to streamserver
+// 6. Read MetaInt token from streamserver (==metadata offset)
+// 
+// 7. Read stream data (mp3 + metadata) from streamserver
+// 8. Filter out metadata, send to app
+// 9. Write mp3 data to proxyserver
+//10. Goto 7
 
 
 TitleProxy::TitleProxy( KURL url ) :
