@@ -42,6 +42,7 @@ class TagDialog : public TagDialogBase
     private:
         void init();
         void readTags();
+        void readMultipleTracks();
         void setMultipleTracksMode();
         bool hasChanged();
         void storeTags();

@@ -278,8 +278,10 @@ void TagDialog::init()
     QToolTip::add( pushButton_musicbrainz, i18n("Please install MusicBrainz to enable this functionality") );
 #endif
 
-    if( m_urlList.count() )    //editing multiple tracks
+    if( m_urlList.count() ) {   //editing multiple tracks
         setMultipleTracksMode();
+        readMultipleTracks();
+    }
     else
         readTags();
 
@@ -367,6 +369,55 @@ TagDialog::setMultipleTracksMode()
 }
 
 
+void
+TagDialog::readMultipleTracks()
+{
+    //Check which fields are the same for all selected tracks
+    const KURL::List::ConstIterator end = m_urlList.end();
+    KURL::List::ConstIterator it = m_urlList.begin();
+    MetaBundle first( *it );
+    bool artist=true, album=true, genre=true, comment=true, year=true;
+    
+    for ( ; it != end; ++it ) {
+        if( !(*it).isLocalFile() ) {
+            // If we have a non local file, don't even lose more time comparing, just leave
+            artist=false; album=false; genre=false; comment=false, year=false;
+            break; 
+        }
+        MetaBundle mb( *it );
+        if ( artist && mb.artist()!=first.artist() ) { artist=false; };
+        if ( album && mb.album()!=first.album() ) { album=false; };
+        if ( genre && mb.genre()!=first.genre() ) { genre=false; };
+        if ( comment && mb.comment()!=first.comment() ) { comment=false; };
+        if ( year && mb.year()!=first.year() ) { year=false; };
+        
+        if (!artist && !album && !genre && !comment && !year)
+            break;
+    }
+    // Set them in the dialog and in m_bundle ( so we don't break hasChanged() )
+    if (artist) {
+        kComboBox_artist->setCurrentText( first.artist() );
+        m_bundle.setArtist( first.artist() );
+    }
+    if (album) {
+        kComboBox_album->setCurrentText( first.album() );
+        m_bundle.setAlbum( first.album() );
+    }
+    if (genre) {
+        kComboBox_genre->setCurrentText( first.genre() );
+        m_bundle.setGenre( first.genre() );
+    }
+    if (comment) {
+        kLineEdit_comment->setText( first.comment() );
+        m_bundle.setComment( first.comment() );
+    }
+    if (year) {
+        kIntSpinBox_year->setValue( first.year().toInt() );
+        m_bundle.setYear( first.year() );
+    }
+    checkModified();
+}
+
 inline bool
 equalString( const QString &a, const QString &b )
 {
@@ -377,13 +428,15 @@ bool
 TagDialog::hasChanged()
 {
     bool modified = false;
-    modified |= !equalString( kLineEdit_title->text(), m_bundle.title() );
     modified |= !equalString( kComboBox_artist->lineEdit()->text(), m_bundle.artist() );
     modified |= !equalString( kComboBox_album->lineEdit()->text(), m_bundle.album() );
     modified |= !equalString( kComboBox_genre->lineEdit()->text(), m_bundle.genre() );
-    modified |= kIntSpinBox_track->value() != m_bundle.track().toInt();
     modified |= kIntSpinBox_year->value()  != m_bundle.year().toInt();
     modified |= !equalString( kLineEdit_comment->text(), m_bundle.comment() );
+    if (!m_urlList.count()) { //ignore these on MultipleTracksMode
+        modified |= !equalString( kLineEdit_title->text(), m_bundle.title() );
+        modified |= kIntSpinBox_track->value() != m_bundle.track().toInt();
+    }
 
     return modified;
 }
