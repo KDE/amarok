@@ -374,17 +374,10 @@ namespace amaroK
         Playlist::instance()->shuffle();
     }
 
-    QString DcopPlaylistHandler::currentPlaylist()
+    QString DcopPlaylistHandler::saveCurrentPlaylist()
     {
         Playlist::instance()->saveXML( Playlist::defaultPlaylistPath() );
-        QFile file( Playlist::defaultPlaylistPath() );
-        file.open( IO_ReadOnly );
-        return file.readAll();
-    }
-
-    void DcopPlaylistHandler::saveCurrentPlaylist() //deprecated
-    {
-        Playlist::instance()->saveXML( Playlist::defaultPlaylistPath() );
+        return Playlist::defaultPlaylistPath();
     }
 
     void DcopPlaylistHandler::playByIndex(int index)
