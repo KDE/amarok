@@ -3,10 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #46 being the highest available (take this one for your next bug and increase here)
+           #47 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+    * fix: #46 <markey> After removing a track with the delete key, the playlist loses keyboard focus.
+               The next track should be marked automatically, so that you can press delete again
 
     * add: #45 <markey> we should get a "contribute stream" function into streambrowser before release!
                that would sooooo much enhance it :)
