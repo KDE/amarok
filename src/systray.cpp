@@ -146,6 +146,7 @@ amaroK::TrayIcon::engineStateChanged( Engine::State state )
 
     case Engine::Playing:
         overlay = &playOverlay;
+        paintIcon( mergeLevel, true );
         break;
 
     default: // idle/stopped case
