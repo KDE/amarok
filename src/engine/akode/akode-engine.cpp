@@ -11,6 +11,7 @@
 #include <akode-engine.h>
 #include <akode/decoder.h>
 #include <akode/player.h>
+#include <klocale.h>
 #include <qapplication.h>
 
 AMAROK_EXPORT_PLUGIN( AkodeEngine )
@@ -36,7 +37,9 @@ namespace amaroK
 
         /// Called when a decoder encounters a fatal error
         virtual void errorEvent()
-        {}
+        {
+            QApplication::postEvent( m_engine, new QCustomEvent( 3002 ) );
+        }
 
     public:
         Manager( AkodeEngine *engine ) : m_engine( engine ) {}
@@ -76,6 +79,7 @@ AkodeEngine::load( const KURL &url, bool isStream )
 bool
 AkodeEngine::play( uint /*offset*/ )
 {
+    //FIXME this seemed to crash amaroK
     //m_player->decoder()->seek( offset );
     m_player->play();
 
@@ -87,7 +91,7 @@ AkodeEngine::canDecode( const KURL &url ) const
 {
     const QString ext = url.path().right( 4 ).lower();
 
-    return ext == ".mp3"/* || ext == ".ogg"*/;
+    return ext == ".mp3" || ext == ".ogg" || ext == ".wav" || ext ==".mpc" || ext == "flac";
 }
 
 uint
@@ -112,12 +116,9 @@ void
 AkodeEngine::pause()
 {
     switch( m_player->state() ) {
-    case aKode::Player::Playing:
-        m_player->pause(); break;
-    case aKode::Player::Paused:
-        m_player->play(); break;
-    default:
-        return;
+        case aKode::Player::Playing: m_player->pause(); break;
+        case aKode::Player::Paused: m_player->play(); break;
+        default: ;
     }
 }
 
@@ -153,8 +154,10 @@ AkodeEngine::event( QEvent *e )
     switch( e->type() )
     {
     case QEvent::Timer:
-        if( m_player->decoder() && m_player->decoder()->eof() )
+        if( m_player->decoder() && m_player->decoder()->eof() ) {
+            m_player->stop();
             emit trackEnded();
+        }
         break;
 
     case 3000:
@@ -162,7 +165,12 @@ AkodeEngine::event( QEvent *e )
         break;
 
     case 3001:
+        m_player->stop();
         emit trackEnded();
+        break;
+
+    case 3002:
+        emit infoMessage( i18n("Unable to decode <i>%1</i>").arg( m_url.prettyURL()) );
         break;
 
     default:
