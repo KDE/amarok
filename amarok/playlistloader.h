@@ -106,9 +106,8 @@ public:
    void append( PlaylistItem * );
    void remove( PlaylistItem * );
    void cancel();
-   void halt() { if( running() ) m_bool = false; } //thread-safe shutdown
+   void halt() { m_bool = false; } //thread-safe, permanant shutdown
 
-   //FIXME rename dumbarse!
    class TagReaderEvent : public QCustomEvent
    {
    public:
@@ -125,6 +124,14 @@ public:
       PlaylistItem* const m_item;
       MetaBundle* const m_tags;
    };
+   
+   //does nothing this one, just used by playlistWidget to find out when tagReader has finished
+   class TagReaderDoneEvent : public QCustomEvent
+   {
+   public:
+      TagReaderDoneEvent() : QCustomEvent( 65435 ) {}
+   };
+
 
 private:
    virtual void run();

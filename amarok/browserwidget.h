@@ -25,7 +25,7 @@ extern PlayerApp *pApp;
 
 class QWidget;
 class QDropEvent;
-class QDragMoveEvent;
+class QDragEnterEvent;
 class QKeyEvent;
 class QListView;
 class QListViewItem;
@@ -81,7 +81,7 @@ class BrowserWidget : public KListView
 
     private:
         void contentsDropEvent( QDropEvent* e );
-        void contentsDragMoveEvent( QDragMoveEvent* e );
+        void contentsDragEnterEvent( QDragEnterEvent* e );
         void keyPressEvent( QKeyEvent *e );
         QDragObject *dragObject();
 };

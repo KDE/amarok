@@ -73,13 +73,17 @@ void BrowserWidget::readDir( const KURL &url )
 }
 
 
-void BrowserWidget::contentsDragMoveEvent( QDragMoveEvent* e)
+void BrowserWidget::contentsDragEnterEvent( QDragEnterEvent* e)
 {
     //FIXME, I guess we need to derive our own mimetype and do this properly at some point
     //       and only accept drags from the playlist
     if( e->source() && QString( e->source()->parent()->name() ) == "PlaylistWidget" )
     {
-        e->acceptAction();
+        e->accept();
+    }
+    else
+    {
+        e->ignore();
     }
 }
 

@@ -25,8 +25,9 @@
 
 #include "playlistitem.h" //friend
 
-class QDragLeaveEvent;
+class QDragEnterEvent;
 class QDragMoveEvent;
+class QDragLeaveEvent;
 class QKeyEvent;
 class QDropEvent;
 class QFocusEvent;
@@ -52,7 +53,7 @@ extern PlayerApp *pApp;
 //amarok/playerapp.cpp:479: `QObject' is an inaccessible base of `PlaylistWidget'
 //make: *** [../amarok/amarok/playerapp.o] Fehler 1
 //FIXME 479: connect( m_pBrowserWin->m_pPlaylistWidget, SIGNAL( activated( const KURL&, const MetaBundle * ) ), this, SLOT( play( const KURL&, const MetaBundle * ) ) );
-//FIXME the protected inheritance is necessary as NO other classes can have access to QListViewItems!!
+//FIXME the protected/private inheritance is necessary as NO other classes can have access to QListViewItems!!
 
 class PlaylistWidget : public KListView //: protected KListView
 {
@@ -114,7 +115,8 @@ class PlaylistWidget : public KListView //: protected KListView
         void setCurrentTrack( QListViewItem * );
         void showTrackInfo( const PlaylistItem * );
 
-        void contentsDropEvent( QDropEvent* );
+        void contentsDropEvent( QDropEvent* );        
+        void contentsDragEnterEvent( QDragEnterEvent* );
         void contentsDragMoveEvent( QDragMoveEvent* );
         void contentsDragLeaveEvent( QDragLeaveEvent* );
         void keyPressEvent( QKeyEvent* );

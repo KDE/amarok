@@ -65,7 +65,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
     setShowSortIndicator( true );
     setDropVisualizer( false );      // we handle the drawing for ourselves
     setDropVisualizerWidth( 3 );
-    setItemsRenameable( true );
+    //setItemsRenameable( true ); //TODO enable inline tag editing
     setSorting( 200 );
     setAcceptDrops( true );
     setSelectionMode( QListView::Extended );
@@ -154,7 +154,6 @@ void PlaylistWidget::insertMedia( const KURL::List &list, PlaylistItem *after )
       setSorting( 200 ); //disable sorting or will not be inserted where we expect
 
       startLoader( list, after );
-      QApplication::setOverrideCursor( KCursor::workingCursor() );
    }
 }
 
@@ -267,10 +266,13 @@ void PlaylistWidget::saveM3u( QString fileName )
 
 // EVENTS =======================================================
 
+void PlaylistWidget::contentsDragEnterEvent( QDragEnterEvent* e )
+{
+    e->accept();
+}
+
 void PlaylistWidget::contentsDragMoveEvent( QDragMoveEvent* e )
 {
-    e->acceptAction();
-
     QListViewItem *parent;
     QListViewItem *after;
     findDrop( e->pos(), parent, after );
@@ -299,8 +301,9 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
     //FIXME perhaps we should drop where the marker was rather than drop point is as if there
     //is an inconsistency we should give the user at least visual coherency
 
-    //FIXME do we need to accept this event?
-
+    //just in case
+    e->acceptAction();
+    
     QListViewItem *parent, *after;
     findDrop( e->pos(), parent, after );
 
@@ -314,7 +317,7 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
     {
        KURL::List urlList;
 
-       if ( KURLDrag::decode( e, urlList ) || urlList.isEmpty() )
+       if ( KURLDrag::decode( e, urlList ) )
        {
 /*
           if ( pApp->m_optDropMode == "Ask" )
@@ -362,7 +365,7 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
    case 65433: //LoaderDoneEvent
 
       static_cast<PlaylistLoader::LoaderDoneEvent*>(e)->dispose();
-      QApplication::restoreOverrideCursor();
+      if( !m_tagReader->running() ) unsetCursor();
       restoreCurrentTrack();
       break;
 
@@ -371,8 +374,12 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
       static_cast<TagReader::TagReaderEvent*>(e)->bindTags();
       break;
 
+   case 65435: //TagReaderDoneEvent
+   
+      unsetCursor();
+      break;
+      
    default: ;
-
    }
 }
 
@@ -430,16 +437,18 @@ void PlaylistWidget::keyPressEvent( QKeyEvent *e )
 
 void PlaylistWidget::startLoader( const KURL::List &list, PlaylistItem *after )
 {
-   //FIXME lastItem() has to go through entire list to find lastItem! Not scalable!
-   if( after == 0 ) after = static_cast<PlaylistItem *>(lastItem());
-   PlaylistLoader *loader = new PlaylistLoader( list, this, after );
-
-   //FIXME remove meta option if that is the way things go
-   if( loader ) {
-      loader->setOptions( ( pApp->m_optDropMode == "Recursively" ), pApp->m_optFollowSymlinks );
-      loader->start();
-   } else
-      kdDebug() << "[loader] Unable to create loader-thread!\n";
+    //FIXME lastItem() has to go through entire list to find lastItem! Not scalable!
+    if( after == 0 ) after = static_cast<PlaylistItem *>(lastItem());
+    PlaylistLoader *loader = new PlaylistLoader( list, this, after );
+    
+    //FIXME remove meta option if that is the way things go
+    if( loader )
+    {
+        setCursor( KCursor::workingCursor() );
+        loader->setOptions( ( pApp->m_optDropMode == "Recursively" ), pApp->m_optFollowSymlinks );
+        loader->start();
+    }
+    else kdDebug() << "[loader] Unable to create loader-thread!\n";
 }
 
 

@@ -480,6 +480,8 @@ PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
 
 //TODO read threading notes in Qt assistant to check you haven't made some silly error
 
+#include <kcursor.h>
+
 void TagReader::append( PlaylistItem *item )
 {
    //for GUI access only
@@ -495,7 +497,11 @@ void TagReader::append( PlaylistItem *item )
       m_Q.push_back( bundle );
       mutex.unlock();
 
-      if( !running() ) start( QThread::LowestPriority );
+      if( !running() )
+      {
+          start( QThread::LowestPriority );
+          m_parent->setCursor( KCursor::workingCursor() );
+      }
    }
 }
 
@@ -510,14 +516,14 @@ void TagReader::run()
     while( m_bool )
     {
         mutex.lock();
-        if( m_Q.empty() ) { mutex.unlock(); break; }
+        if( m_Q.empty() ) { mutex.unlock(); break; } //point of loop exit is here
         Bundle bundle( m_Q.front() );
         mutex.unlock();
 
-        tags = readTags( bundle.url );
+        tags = readTags( bundle.url ); //rate-limiting step
 
-        //we need to check the item is still there, if the playlistItem was removed, it will no longer be in
-        //the queue
+        //we need to check the item is still there
+        //if the playlistItem was removed it will no longer be in the queue
         mutex.lock();
         if( ( !m_Q.empty() ) && m_Q.front() == bundle )
         {
@@ -527,6 +533,7 @@ void TagReader::run()
         mutex.unlock();
     }
 
+    QApplication::postEvent( m_parent, new TagReaderDoneEvent() );
     kdDebug() << "[reader] Done!\n";
 }
 

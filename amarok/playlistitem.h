@@ -18,10 +18,8 @@
 #ifndef PLAYLISTITEM_H
 #define PLAYLISTITEM_H
 
-#include <klistview.h>
-#include <kurl.h> //KURL::List
-
-#include "playlistloader.h" //friendships
+#include <klistview.h> //baseclass
+#include <kurl.h>      //KURL::List
 
 class QColor;
 class QColorGroup;
@@ -48,9 +46,6 @@ class PlaylistItem : public KListViewItem
         const QString length( uint = 0 ) const; //Return track length as mm:ss
         const KURL    &url() const { return m_url; }
         
-        friend void TagReader::append( PlaylistItem * );
-        friend void TagReader::TagReaderEvent::bindTags();
-
         //save memory, use a single static to represent these properties
         static QColor GlowColor;
         static PlaylistItem *GlowItem;
