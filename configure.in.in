@@ -157,9 +157,9 @@ if test "$build_gstreamer" != "no"; then
             AC_DEFINE(HAVE_GSTREAMER, 1, [have GStreamer])
         fi
     fi
-        
-    AM_CONDITIONAL(with_gst, [test x$have_gst = xyes])
 fi
+
+AM_CONDITIONAL(with_gst, [test x$have_gst = xyes])
 
 ###############################################################################
 # END GSTREAMER CHECK
