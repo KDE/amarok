@@ -351,13 +351,29 @@ CollectionDB::albumListOfArtist( const QString artist, bool withUnknown, bool wi
     QStringList values;
     QStringList names;
 
-    execSql( "SELECT DISTINCT album.name FROM album, artist, tags WHERE 1 "
-             "AND tags.album = album.id AND tags.artist = artist.id "
+    execSql( "SELECT DISTINCT album.name FROM album, artist, tags WHERE "
+             "tags.album = album.id AND tags.artist = artist.id "
              "AND artist.name = '" + escapeString( artist ) + "' " +
              ( withUnknown ? QString() : "AND album.name <> 'Unknown' " ) +
              ( withCompilations ? QString() : "AND tags.sampler = 0 " ) +
-             "ORDER BY lower( album.name );", &values, &names, true );
+             "ORDER BY lower( album.name );", &values, &names );
 
+    return values;
+}
+
+
+QStringList
+CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
+{
+    QStringList values;
+    QStringList names;
+
+    execSql( "SELECT DISTINCT artist.name, album.name FROM album, artist, tags WHERE "
+             "tags.album = album.id AND tags.artist = artist.id " +
+             ( withUnknown ? QString() : "AND album.name <> 'Unknown' AND artist.name <> 'Unknown' " ) +
+             ( withCompilations ? QString() : "AND tags.sampler = 0 " ) +
+             "ORDER BY lower( album.name );", &values, &names );
+    
     return values;
 }
 
@@ -370,7 +386,7 @@ CollectionDB::getMetaBundleForUrl( const QString url, MetaBundle *bundle )
     execSql( QString( "SELECT album.name, artist.name, genre.name, tags.title, year.name, tags.comment, tags.track, tags.createdate, tags.dir "
                       "FROM tags, album, artist, genre, year "
                       "WHERE album.id = tags.album AND artist.id = tags.artist AND genre.id = tags.genre AND year.id = tags.year AND url = '%1';" )
-                  .arg( escapeString( url ) ), &values, &names );
+                .arg( escapeString( url ) ), &values, &names );
 
     if ( values.count() )
     {

@@ -546,7 +546,7 @@ VERSION 0.5.1:
   amaroK uses much less CPU now than it used to. This was mainly achieved by
     using a new FFT-analyzer module, which I took from Noatuns "Winskin"-plugin,
     and modified slightly to my needs. Also some other optimizations were made,
-    which        improved the standby performance, when no song is playing. I'm still
+    which improved the standby performance, when no song is playing. I'm still
     not satisfied with overall performance, tho, but it seems that most of the
     load is produced by the aRts code itself, so this will rather be difficult
     to improve.
@@ -570,7 +570,7 @@ VERSION 0.15:
   fixed tons of bugs in aRts playing code. i think i got it right now.
   fixed loading and saving of playlists. can cope with all protocols now.
   fixed a bug in EffectWidget.cpp, that gave a compile error on some systems.
-  Converting QString into std::string was not donecorrectly. Thanks to
+  Converting QString into std::string was not done correctly. Thanks to
     Whitehawk Stormchaser for that one :)
   changed project name to "amaroK" and built new project-file
 

@@ -1,4 +1,4 @@
-// (c) Christian Muehlhaeuser 2004
+// (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // See COPYING file for licensing information
 
 

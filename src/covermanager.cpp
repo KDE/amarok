@@ -239,21 +239,12 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     m_coverItems.clear();
 
     QStringList values;
-    QStringList names;
 
     bool allAlbums = (item == m_artistView->firstChild());
-    QString command;
-    if( allAlbums ) {
-        command = "SELECT DISTINCT artist.name, album.name FROM album, artist, tags "
-                  "WHERE tags.sampler = 0 AND album.name <> 'Unknown' AND tags.album = album.id AND tags.artist = artist.id ORDER BY album.name;";
-
-    } else {
-        QString id = QString::number( m_db->getValueID( "artist", item->text(0) ) );
-        command = "SELECT DISTINCT album.name, '' FROM album, tags "
-                  "WHERE tags.sampler = 0 AND album.name <> 'Unknown' AND tags.album = album.id AND tags.artist = " + id + " ORDER BY album.name;";
-    }
-
-    m_db->execSql(command, &values, &names);
+    if( allAlbums )
+        values = m_db->artistAlbumList( false, false );
+    else
+        values = m_db->albumListOfArtist( item->text( 0 ), false, false );
 
     if( !values.isEmpty() ) {
 

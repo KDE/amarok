@@ -41,6 +41,7 @@ class CollectionDB : public QObject
         QStringList artistList( bool withUnknown = true, bool withCompilations = true );
         QStringList albumList( bool withUnknown = true, bool withCompilations = true );
         QStringList albumListOfArtist( const QString artist, bool withUnknown = true, bool withCompilations = true );
+        QStringList artistAlbumList( bool withUnknown = true, bool withCompilations = true );
 
         bool getMetaBundleForUrl( const QString url, MetaBundle *bundle );
         float addSongPercentage( const QString url, const int percentage );
