@@ -2,32 +2,30 @@
 // (c) 2004 Stefan Bogner <bochi@online.ms>
 // See COPYING file for licensing information.
 
-#include "amarokconfig.h"
-#include "coverfetcher.h"
 #include "amazonsearch.h"
 #include "collectiondb.h"
+#include "coverfetcher.h"
 
+#include <qcombobox.h>
 #include <qdom.h>
 #include <qlabel.h>
-#include <qcombobox.h>
 #include <qvbox.h>
 
-#include <kconfig.h>
+#include <kapplication.h>
 #include <kdebug.h>
+#include <kinputdialog.h>  
 #include <kio/job.h>
 #include <kio/jobclasses.h>
+#include <klineedit.h> 
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kpushbutton.h>   
-#include <kinputdialog.h>  
-#include <klineedit.h> 
 
 
 CoverFetcher::CoverFetcher( const QString& license, QObject* parent)
     : QObject( parent, "CoverFetcher" )
     , m_license( license )
     , m_buffer( 0 )
-    , m_bufferIndex( 0 )
 {
     kdDebug() << k_funcinfo << endl;
 }
@@ -46,17 +44,17 @@ CoverFetcher::~CoverFetcher()
 void
 CoverFetcher::getCover( const QString& keyword, const QString& album, QueryMode mode, bool noedit, int size )
 {
-    /* reset all values (if search isn't started as new CoverFetcher) */
-    delete m_buffer;
-    m_bufferIndex = 0;
-    m_xmlDocument = "";
-    
     kdDebug() << k_funcinfo << endl;
     m_keyword = keyword;
     m_album = album;
     m_noedit = noedit;
     m_size = size;
         
+    /* reset all values (if search isn't started as new CoverFetcher) */
+    delete m_buffer;
+    m_bufferIndex = 0;
+    m_xmlDocument = "";
+    
     QString url = QString( "http://xml.amazon.com/onca/xml3?t=webservices-20&dev-t=%1"
                            "&KeywordSearch=%2&mode=music&type=%3&page=1&f=xml" )
                            .arg( m_license )
@@ -88,8 +86,6 @@ CoverFetcher::xmlData( KIO::Job*, const QByteArray& data ) //SLOT
 void 
 CoverFetcher::xmlResult( KIO::Job* job ) //SLOT
 {
-    kdDebug() << k_funcinfo << endl;
-
     if ( !job->error() == 0 ) {
         kdWarning() << "KIO error! errno: " << job->error() << endl;
         deleteLater();
@@ -191,7 +187,7 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
             {   
                 QVBox* container = new QVBox( 0, 0, WDestructiveClose );
                 /* we show m_album here, since it's always the filename on save */
-                container->setCaption( m_album + " - amaroK" );
+                container->setCaption( kapp->makeStdCaption( m_album ) );
                 connect( this, SIGNAL( destroyed() ), container, SLOT( deleteLater() ) );
     
                 QWidget* widget = new QWidget( container );

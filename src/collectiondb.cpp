@@ -825,6 +825,7 @@ CollectionDB::saveCover( const QString& keyword, const QPixmap& pix )
     fileName.replace( "/", "_" ).append( ".png" );
     
     img.save( m_coverDir.filePath( "large/"+fileName ), "PNG");
+    
     img.smoothScale( COVER_SIZE, COVER_SIZE )
        .save( m_coverDir.filePath( fileName ), "PNG" );
 

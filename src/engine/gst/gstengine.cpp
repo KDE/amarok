@@ -74,6 +74,8 @@ GstEngine::eos_cb( GstElement*, GstElement* )
 void
 GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
 {
+    instance()->m_scopeBufIndex = 0;
+    
     int channels = 2;  //2 == default, if we cannot determine the value from gst
     GstCaps* caps = gst_pad_get_caps( gst_element_get_pad( instance()->m_gst_spider, "src_0" ) );
 
@@ -270,7 +272,9 @@ GstEngine::state() const
 const Engine::Scope&
 GstEngine::scope()
 {
-    interpolate( m_scopeBuf, m_scope );
+    for ( int i = 0; i < 512; i++ )
+        m_scope[i] = m_scopeBuf[i];
+    
     m_scopeBufIndex = 0;
 
     return m_scope;
