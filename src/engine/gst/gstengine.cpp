@@ -28,7 +28,6 @@ email                : markey@web.de
 #include <qtimer.h>
 
 #include <kapplication.h>
-#include <kconfigdialog.h>
 #include <kdebug.h>
 #include <kio/job.h>
 #include <klocale.h>
@@ -594,17 +593,12 @@ GstEngine::kioFinished()  //SLOT
 
 
 void
-GstEngine::errorNoOutput() const //SLOT
+GstEngine::errorNoOutput() //SLOT
 {
     KMessageBox::error( 0, i18n( "<p>Please select an <u>output plugin</u> in the engine settings dialog.</p>" ) );
     
     // Show engine settings dialog
-    KConfigDialog* dialog = KConfigDialog::exists( "settings" );
-    
-    //FIXME Switching to engine page does not work
-    dialog->showPage( 5 );
-    
-    dialog->show();
+    showEngineConfigDialog();
 }
 
 

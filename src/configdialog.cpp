@@ -48,6 +48,8 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
         , m_enginePage( 0 )
         , m_changedExternal( false )
 {
+    setWFlags( WDestructiveClose );
+
     Options2 *opt2 = new Options2( 0, "Fonts" );
     Options4 *opt4 = new Options4( 0, "Playback" );
     Options5 *opt5 = new Options5( 0, "OSD" );

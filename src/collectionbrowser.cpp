@@ -258,23 +258,29 @@ CollectionView::~CollectionView() {
 void
 CollectionView::setupDirs()  //SLOT
 {
-    DirectoryList list( m_dirs, m_recursively, m_monitor, parentWidget() );
-    DirectoryList::Result result = list.exec();
+//    DirectoryList list( m_dirs, m_recursively, m_monitor, parentWidget() );
+//    DirectoryList::Result result = list.exec();
 
-    // Check to see if Cancel was pressed
-    if ( result.status == QDialog::Rejected )
-        return;
+    CollectionSetup::s_dirs = m_dirs;
 
-    m_dirs = result.dirs;
-    m_recursively = result.scanRecursively;
-    m_monitor = result.monitorChanges;
+    KDialogBase dialog( this, 0, false, i18n("Configure Collection") );
+    CollectionSetup *setup = new CollectionSetup( &dialog );
+    dialog.setMainWidget( setup );
+    dialog.showButtonApply( false );
 
-    /* Write this here so we can check it in slotCheckFolders() -- cartman */
-    KConfig* const config = amaroK::config( "Collection Browser" );
-    config->writeEntry( "Folders", m_dirs );
-    config->sync();
+    if ( dialog.exec() != QDialog::Rejected )
+    {
+        m_dirs = setup->dirs();
+        m_recursively = setup->recursive();
+        m_monitor = setup->monitor();
 
-    scan();
+        /* Write this here so we can check it in slotCheckFolders() -- cartman */
+        KConfig* const config = amaroK::config( "Collection Browser" );
+        config->writeEntry( "Folders", m_dirs );
+        config->sync();
+
+        scan();
+    }
 }
 
 

@@ -46,12 +46,12 @@ amarokapp_SOURCES = \
     coverfetcher.cpp \
     covermanager.cpp \
     directorylist.cpp \
-    directorylistbase.ui \
     effectwidget.cpp \
     enginecontroller.cpp \
     engineobserver.cpp \
     fht.cpp \
     filebrowser.cpp \
+    firstrunwizard.ui \
     kbookmarkhandler.cpp \
     ktrm.cpp \
     metabundle.cpp \
@@ -75,8 +75,8 @@ amarokapp_SOURCES = \
     tagdialog.cpp \
     tagdialogbase.ui \
     threadweaver.cpp \
-    tracktooltip.cpp \
-    welcomebrowser.cpp
+    tracktooltip.cpp
+
 
 amarokapp_LDADD = \
     $(top_builddir)/amarok/src/amarokcore/libamarokcore.la \

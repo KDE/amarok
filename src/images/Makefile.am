@@ -23,7 +23,5 @@ images_DATA = \
     sound80.png \
     time_minus.png \
     time_plus.png \
-    vol_speaker.png
-
-    
-    
+    vol_speaker.png \
+    amarok_rocks.jpg

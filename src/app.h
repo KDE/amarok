@@ -20,20 +20,15 @@
 
 #include "engineobserver.h" //baseclass
 #include <kapplication.h>   //baseclass
-#include <kurl.h>           //needed for KURL::List (nested)
-
-class KActionCollection;
-class KConfig;
-class KGlobalAccel;
-class QColor;
-class QCString;
-class QEvent;
 
 namespace amaroK {
     class TrayIcon;
     class DcopHandler;
 }
 
+class KActionCollection;
+class KConfig;
+class KGlobalAccel;
 class MetaBundle;
 class PlayerWidget;
 class Playlist;
@@ -64,14 +59,13 @@ class App : public KApplication, public EngineObserver
         void engineVolumeChanged( int );
 
     public slots:
-        void slotConfigAmarok();
+        void slotConfigAmarok( int page = 0 );
         void slotConfigShortcuts();
         void slotConfigGlobalShortcuts();
         void slotConfigToolBars();
         void slotConfigEffects( bool = true );
-        void firstrunWizard();
-        void invokeHandbook();
-        
+        void firstRunWizard();
+
     private slots:
         void applySettings( bool firstTime = false );
 

@@ -75,7 +75,7 @@ class GstEngine : public Engine::Base
         void endOfStreamReached();
         void kioFinished();
         void newKioData( KIO::Job*, const QByteArray& array );
-        void errorNoOutput() const;
+        void errorNoOutput();
         
     private:
         static GstEngine* instance() { return s_instance; }

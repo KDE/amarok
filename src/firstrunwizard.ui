@@ -1,0 +1,323 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>FirstRunWizard</class>
+<widget class="QWizard">
+    <property name="name">
+        <cstring>FirstRunWizard</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>520</width>
+            <height>418</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>amaroK - First-run Wizard</string>
+    </property>
+    <widget class="QWidget">
+        <property name="name">
+            <cstring>WizardPage</cstring>
+        </property>
+        <attribute name="title">
+            <string>[0] Introduction</string>
+        </attribute>
+        <grid>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <widget class="KActiveLabel" row="0" column="0" rowspan="2" colspan="1">
+                <property name="name">
+                    <cstring>text1</cstring>
+                </property>
+                <property name="text">
+                    <string>&lt;h1&gt;Welcome!&lt;/h1&gt;
+&lt;p&gt;There are many media players around these days, this is true. But what's missing from most players is an interface that doesn't get in your way. How many buttons do you have to press when simply adding media to the playlist? amaroK tries to be a little different, providing a simple drag-and-drop interface that makes playlist handling really easy.&lt;/p&gt;
+&lt;p align="right"&gt;&lt;i&gt;"amaroK is seriously super!"&lt;/i&gt; - Uncle Rodney&lt;/p&gt;
+&lt;h2&gt;First-run Wizard&lt;/h2&gt;
+&lt;p&gt;This wizard will help you setup amaroK in three easy steps. Click &lt;i&gt;Next&lt;/i&gt; to begin, or if you don't like wizards, click &lt;i&gt;Skip&lt;/i&gt;.&lt;/p&gt;</string>
+                </property>
+            </widget>
+            <spacer row="1" column="1">
+                <property name="name">
+                    <cstring>spacer3_2</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>20</width>
+                        <height>141</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QLabel" row="0" column="1">
+                <property name="name">
+                    <cstring>picture1</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>4</hsizetype>
+                        <vsizetype>4</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="frameShape">
+                    <enum>Box</enum>
+                </property>
+                <property name="scaledContents">
+                    <bool>false</bool>
+                </property>
+            </widget>
+        </grid>
+    </widget>
+    <widget class="QWidget">
+        <property name="name">
+            <cstring>WizardPage</cstring>
+        </property>
+        <attribute name="title">
+            <string>[1] Interface</string>
+        </attribute>
+        <grid>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <widget class="KActiveLabel" row="0" column="0">
+                <property name="name">
+                    <cstring>text2</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>5</hsizetype>
+                        <vsizetype>4</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="resizePolicy">
+                    <enum>Manual</enum>
+                </property>
+                <property name="text">
+                    <string>&lt;p&gt;With amaroK you can use the interface with which you are most comfortable. The choices are listed below. You can change this at a later time using the amaroK configuration dialog.&lt;/p&gt;</string>
+                </property>
+                <property name="wrapPolicy">
+                    <enum>AtWordBoundary</enum>
+                </property>
+            </widget>
+            <widget class="QButtonGroup" row="1" column="0" rowspan="1" colspan="2">
+                <property name="name">
+                    <cstring>group1</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>5</hsizetype>
+                        <vsizetype>5</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="frameShape">
+                    <enum>NoFrame</enum>
+                </property>
+                <property name="title">
+                    <string></string>
+                </property>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QRadioButton">
+                        <property name="name">
+                            <cstring>option_xmms</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>1</hsizetype>
+                                <vsizetype>5</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="text">
+                            <string>Separate player-window and playlist-window (similar to XMMS)</string>
+                        </property>
+                        <property name="checked">
+                            <bool>true</bool>
+                        </property>
+                    </widget>
+                    <widget class="QRadioButton">
+                        <property name="name">
+                            <cstring>radioInterface3</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>1</hsizetype>
+                                <vsizetype>5</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="text">
+                            <string>Playlist-window with toolbar at bottom (similar to JuK)</string>
+                        </property>
+                    </widget>
+                </vbox>
+            </widget>
+            <spacer row="0" column="1">
+                <property name="name">
+                    <cstring>spacer4</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>71</width>
+                        <height>20</height>
+                    </size>
+                </property>
+            </spacer>
+        </grid>
+    </widget>
+    <widget class="QWidget">
+        <property name="name">
+            <cstring>WizardPage</cstring>
+        </property>
+        <attribute name="title">
+            <string>[2] Collection</string>
+        </attribute>
+        <hbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <widget class="KActiveLabel">
+                <property name="name">
+                    <cstring>text3</cstring>
+                </property>
+                <property name="lineWidth">
+                    <number>1</number>
+                </property>
+                <property name="text">
+                    <string>&lt;p&gt;Your &lt;b&gt;Collection&lt;/b&gt; is a database of media, with which you can quickly and easily find your music using queries based on the media's tags.&lt;/p&gt;
+&lt;p&gt;Select which folders to search for media on the right. If you choose to &lt;i&gt;Monitor Changes&lt;/i&gt;, amaroK will be notified when changes are made to the contents of these folders and will update the Collection accordingly.&lt;/p&gt;
+&lt;p&gt;You can change the configuration of the Collection at a future time from the &lt;i&gt;Actions&lt;/i&gt; menu in the Collection-browser.&lt;/p&gt;</string>
+                </property>
+            </widget>
+        </hbox>
+    </widget>
+    <widget class="QWidget">
+        <property name="name">
+            <cstring>WizardPage</cstring>
+        </property>
+        <attribute name="title">
+            <string>[3] Finish</string>
+        </attribute>
+        <grid>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <widget class="QLabel" row="0" column="1">
+                <property name="name">
+                    <cstring>picture4</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>4</hsizetype>
+                        <vsizetype>4</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="frameShape">
+                    <enum>Box</enum>
+                </property>
+                <property name="scaledContents">
+                    <bool>false</bool>
+                </property>
+            </widget>
+            <spacer row="1" column="1">
+                <property name="name">
+                    <cstring>spacer3</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>21</width>
+                        <height>217</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="KActiveLabel" row="0" column="0" rowspan="2" colspan="1">
+                <property name="name">
+                    <cstring>text4</cstring>
+                </property>
+                <property name="sizePolicy">
+                    <sizepolicy>
+                        <hsizetype>7</hsizetype>
+                        <vsizetype>7</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                    </sizepolicy>
+                </property>
+                <property name="maximumSize">
+                    <size>
+                        <width>32767</width>
+                        <height>32767</height>
+                    </size>
+                </property>
+                <property name="text">
+                    <string>&lt;h1&gt;Congratulations!&lt;/h1&gt;
+&lt;p&gt;amaroK is ready for use! When you click finish amaroK will appear and begin scanning your the folders in your collection.&lt;/p&gt;
+&lt;p&gt;amaroK's Playlist-window will show your &lt;b&gt;Collection&lt;/b&gt; on the left and the &lt;b&gt;Playlist&lt;/b&gt; on the right. Drag and drop music from the Collection to the Playlist and press &lt;b&gt;Play&lt;/b&gt;.&lt;/p&gt;
+&lt;p&gt;If you want more help or a tutorial, please check out the &lt;a href="help:/amarok"&gt;amaroK handbook&lt;/a&gt;. We hope you enjoly using amaroK.&lt;/p&gt;
+&lt;p align="right"&gt;The amaroK developers&lt;/p&gt;</string>
+                </property>
+            </widget>
+        </grid>
+    </widget>
+</widget>
+<customwidgets>
+</customwidgets>
+<tabstops>
+    <tabstop>option_xmms</tabstop>
+</tabstops>
+<includes>
+    <include location="local" impldecl="in implementation">firstrunwizard.ui.h</include>
+</includes>
+<forwards>
+    <forward>class CollectionSetup;</forward>
+</forwards>
+<variables>
+    <variable access="public">enum Interface { XMMS, Compact };</variable>
+    <variable access="private">CollectionSetup *m_folderSetup;</variable>
+</variables>
+<slots>
+    <slot access="private" specifier="non virtual">invokeHandbook()</slot>
+</slots>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+    <function access="protected">showPage( QWidget * w )</function>
+    <function specifier="non virtual" returnType="FirstRunWizard::Interface">interface()</function>
+    <function specifier="non virtual">writeCollectionConfig()</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kactivelabel.h</includehint>
+    <includehint>kactivelabel.h</includehint>
+    <includehint>kactivelabel.h</includehint>
+    <includehint>kactivelabel.h</includehint>
+</includehints>
+</UI>

@@ -18,6 +18,9 @@
 // * Generally at this time, emitting stateChanged( Engine::Idle ) is not necessary
 // * You must return Idle from state() when the track has finished playback but you are still loaded
 //   or track transitions will not occur
+// * Basically, reimplement everything virtual and ensure you emit stateChanged() correctly,
+//   try not to block in any function that is called by amaroK, try to keep the user informed
+//   with statusText()s
 
 
 namespace Engine
@@ -43,6 +46,9 @@ namespace Engine
 
         /** Signals a change in the engine's state. */
         void stateChanged( Engine::State );
+
+        /** Shows amaroK config dialog at specified page */
+        void showConfigDialog( int );
 
     public:
         virtual ~Base();
@@ -149,6 +155,9 @@ namespace Engine
 
     protected:
         Base( StreamingMode = NoStreaming, bool hasConfigure = false, bool hasXFade = false, Effects* = 0 );
+
+        /** shows the amaroK configuration dialog at the engine page */
+        void showEngineConfigDialog() { emit showConfigDialog( 4 ); }
 
         virtual void setVolumeSW( uint percent ) = 0;
         void setVolumeHW( uint percent );

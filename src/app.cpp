@@ -24,6 +24,7 @@ email                : markey@web.de
 #include "effectwidget.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
+#include "firstrunwizard.h"
 #include "metabundle.h"
 #include "osd.h"
 #include "playerwindow.h"
@@ -37,7 +38,6 @@ email                : markey@web.de
 #include "systray.h"
 #include "tracktooltip.h"        //engineNewMetaData()
 
-#include <kactivelabel.h>        //firstrunWizard()
 #include <kcmdlineargs.h>        //initCliArgs()
 #include <kdebug.h>
 #include <kedittoolbar.h>        //slotConfigToolbars()
@@ -64,9 +64,15 @@ App::App()
         , m_pPlayerWindow( 0 ) //will be created in applySettings()
 {
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
-    const bool bRestoreSession = args->count() == 0 || args->isSet( "enqueue" );
+    const bool restoreSession = args->count() == 0 || args->isSet( "enqueue" );
 
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
+
+    if ( amaroK::config()->readBoolEntry( "First Run", true ) ) {
+        //stop the splashscreen first, socket server is a temporary on purpose!
+        LoaderServer( 0 );
+        firstRunWizard();
+    }
 
     m_pGlobalAccel    = new KGlobalAccel( this );
     m_pPlaylistWindow = new PlaylistWindow();
@@ -86,24 +92,15 @@ App::App()
     initGlobalShortcuts();
 
     //load previous playlist in separate thread
-    if( bRestoreSession && AmarokConfig::savePlaylist() ) Playlist::instance()->restoreSession();
+    if ( restoreSession && AmarokConfig::savePlaylist() )
+        Playlist::instance()->restoreSession();
 
     //create engine, show PlayerWindow, show TrayIcon etc.
     applySettings( true );
 
-    // Create KConfigDialog
-    KConfigDialog* dialog = new AmarokConfigDialog( m_pPlaylistWindow, "settings", AmarokConfig::self() );
-    connect( dialog, SIGNAL(settingsChanged()), SLOT(applySettings()) );
-
     //initializes Unix domain socket for loader communication, and hides the splash
     //do here so splash is hidden just after amaroK's windows appear
     (void) new LoaderServer( this );
-
-    // Invoke first-run wizard if needed
-    if ( config()->readBoolEntry( "First Run", true ) ) {
-        firstrunWizard();
-        config()->writeEntry( "First Run", false );
-    }
 
     //after this point only analyzer and temporary pixmaps will be created
     QPixmap::setDefaultOptimization( QPixmap::BestOptim );
@@ -115,11 +112,9 @@ App::App()
     //set a default interface
     engineStateChanged( Engine::Empty );
 
-    if( AmarokConfig::resumePlayback() && bRestoreSession && !args->isSet( "stop" ) )
-    {
+    if ( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
         //restore session as long as the user didn't specify media to play etc.
         //do this after applySettings() so OSD displays correctly
-
         EngineController::instance()->restoreSession();
     }
 
@@ -667,9 +662,20 @@ void App::slotConfigEffects( bool show )
 }
 
 
-void App::slotConfigAmarok()
+void App::slotConfigAmarok( int page )
 {
-    KConfigDialog::showDialog( "settings" );
+    KConfigDialog* dialog = KConfigDialog::exists( "settings" );
+
+    if( !dialog )
+    {
+        //KConfigDialog didn't find an instance of this dialog, so lets create it :
+        dialog = new AmarokConfigDialog( m_pPlaylistWindow, "settings", AmarokConfig::self() );
+
+        connect( dialog, SIGNAL(settingsChanged()), SLOT(applySettings()) );
+    }
+
+    dialog->showPage( page );
+    dialog->show();
 }
 
 void App::slotConfigShortcuts()
@@ -697,38 +703,40 @@ void App::slotConfigToolBars()
 }
 
 
-void App::firstrunWizard() //SLOT
+void App::firstRunWizard()
 {
-    amaroK::StatusBar::instance()->message( i18n( "Invoking first-run wizard.." ), 3000 );
-    processEvents();
+    //show firstRunWizard
+    FirstRunWizard wizard;
 
-    // Load wizard ui file dynamically and generate widget
-    QWizard* wizard = (QWizard*) QWidgetFactory::create( locate( "data","amarok/data/firstrun_wizard.ui" ) );
+    if( wizard.exec() != QDialog::Rejected )
+    {
+        switch( wizard.interface() )
+        {
+        case FirstRunWizard::XMMS:
+            amaroK::config()->writeEntry( "XMLFile", "amarokui_xmms.rc" );
+            AmarokConfig::setShowPlayerWindow( true );
+            AmarokConfig::setShowStatusBar( false );
+            break;
 
-    // Connection for invoking amaroK handbook
-    KActiveLabel* label = (KActiveLabel*) wizard->child( "lblText4" );
-    // By default KActiveLabel opens konq when clicking link. Let's prevent this
-    label->disconnect( SIGNAL( linkClicked( const QString& ) ), label, SLOT( openLink( const QString& ) ) );
-    connect( label, SIGNAL( linkClicked( const QString& ) ), SLOT( invokeHandbook() ) );
+        case FirstRunWizard::Compact:
+            amaroK::config()->writeEntry( "XMLFile", "amarokui.rc" );
+            AmarokConfig::setShowPlayerWindow( false );
+            AmarokConfig::setShowStatusBar( true );
+            break;
+        }
 
-    wizard->exec();
-    delete wizard;
+        wizard.writeCollectionConfig();
+
+        //TODO perform a scan
+        //     since we do this before amaroK "exists" the scan thingy needs to be ok with that
+        //     or we need to let collection browser know it needs to scan now,
+        //     suggestion = write a key to its config and then recognise that in browser init and
+        //     then delete the key afterwards
+    }
+
+    amaroK::config()->writeEntry( "First Run", false );
 }
 
-
-void App::invokeHandbook() //SLOT
-{
-    // Show handbook
-    invokeHelp( QString::null, QString::null, 0 );
-}
-
-
-//globally available actionCollection and playlist retrieval functions
-
-KActionCollection *amaroK::actionCollection()
-{
-    return pApp->playlistWindow()->actionCollection();
-}
 
 QWidget *App::mainWindow() const
 {
@@ -738,6 +746,11 @@ QWidget *App::mainWindow() const
 
 namespace amaroK
 {
+    KActionCollection *actionCollection()
+    {
+        return pApp->playlistWindow()->actionCollection();
+    }
+
     KConfig *config( const QString &group )
     {
         //Slightly more useful config() that allows setting the group simultaneously

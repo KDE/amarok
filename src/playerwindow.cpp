@@ -42,10 +42,20 @@ email                : markey@web.de
 
 
 //simple function for fetching amarok images
-static inline QPixmap getPNG( const QString &filename )
+namespace amaroK
 {
-    return QPixmap( locate( "data", QString( "amarok/images/%1.png" ).arg( filename ) ), "PNG" );
+    QPixmap getPNG( const QString &filename )
+    {
+        return QPixmap( locate( "data", QString( "amarok/images/%1.png" ).arg( filename ) ), "PNG" );
+    }
+
+    QPixmap getJPG( const QString &filename )
+    {
+        return QPixmap( locate( "data", QString( "amarok/images/%1.jpg" ).arg( filename ) ), "JPEG" );
+    }
 }
+
+using amaroK::getPNG;
 
 
 //fairly pointless template which was designed to make the ctor clearer,

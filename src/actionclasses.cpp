@@ -4,13 +4,13 @@
 #include "actionclasses.h"
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "app.h"                //slotConfigEffects
 #include "config.h"             //HAVE_XMMS definition
 #include "enginecontroller.h"
 #include "scriptmanager.h"
 #include "socketserver.h"       //Vis::Selector::showInstance()
 
 #include <kaction.h>
+#include <kapplication.h>
 #include <khelpmenu.h>
 #include <kiconloader.h>
 #include <klocale.h>
@@ -93,12 +93,12 @@ Menu::Menu()
     insertItem( i18n( "&JavaScript Console" ), ID_SHOW_SCRIPT_CONSOLE );
 
     insertSeparator();
-    
-    insertItem( i18n( "First-Run Wizard (testing)" ), pApp, SLOT( firstrunWizard() ) );
-    
+
+    insertItem( i18n( "First-run Wizard" ), kapp, SLOT( firstRunWizard() ) );
+
     insertSeparator();
-    
-    insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( slotConfigEffects() ), 0, ID_SHOW_EFFECTS );
+
+    insertItem( i18n( "Configure &Effects..." ), kapp, SLOT( slotConfigEffects() ), 0, ID_SHOW_EFFECTS );
     setItemEnabled( ID_SHOW_EFFECTS, EngineController::engine()->hasEffects() );
     safePlug( ac, KStdAction::name(KStdAction::ConfigureToolbars), this );
     safePlug( ac, KStdAction::name(KStdAction::KeyBindings), this );

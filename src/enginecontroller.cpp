@@ -17,7 +17,6 @@ email                : fh@ez.no
  *                                                                         *
  ***************************************************************************/
 
-#include "amarok.h"
 #include "amarokconfig.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
@@ -27,6 +26,7 @@ email                : fh@ez.no
 
 #include <qtimer.h>
 
+#include <kapplication.h>
 #include <kdebug.h>
 #include <kio/global.h>
 #include <kio/job.h>
@@ -147,6 +147,7 @@ EngineBase *EngineController::loadEngine() //static
         connect( engine, SIGNAL(stateChanged( Engine::State )), instance(), SLOT(slotStateChanged( Engine::State )) );
         connect( engine, SIGNAL(trackEnded()), instance(), SLOT(slotTrackEnded()) );
         connect( engine, SIGNAL(statusText( const QString& )), instance(), SIGNAL(statusText( const QString& )) );
+        connect( engine, SIGNAL(showConfigDialog( int )), kapp, SLOT(slotConfigAmarok( int )) );
 
         //NOTE engine settings are set in App::applySettings()
 
@@ -233,7 +234,7 @@ void EngineController::play( const MetaBundle &bundle )
     const KURL &url = bundle.url();
     // Destroy stale StreamProvider
     delete m_stream;
-    
+
     if ( m_engine->streamingMode() != Engine::NoStreaming && url.protocol() == "http" ) {
         m_bundle = bundle;
         m_xFadeThisTrack = false;

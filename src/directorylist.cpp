@@ -3,6 +3,7 @@
                             -------------------
    begin                : Tue Feb 4 2003
    copyright            : (C) 2003 by Scott Wheeler
+                          (C) 2004 Max Howell
    email                : wheeler@kde.org
 ***************************************************************************/
 
@@ -15,106 +16,86 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <kfiledialog.h>
-#include <klocale.h>
-#include <klistview.h>
-#include <kpushbutton.h>
-
-#include <qcheckbox.h>
-
-#include "directorylistbase.h"
 #include "directorylist.h"
+#include <kfileitem.h>
+#include <klocale.h>
+#include <qlabel.h>
+#include <qlistview.h>
 
-////////////////////////////////////////////////////////////////////////////////
-// public methods
-////////////////////////////////////////////////////////////////////////////////
+QStringList CollectionSetup::s_dirs;
+QCheckBox  *CollectionSetup::s_recursive = 0;
+QCheckBox  *CollectionSetup::s_monitor = 0;
 
-DirectoryList::DirectoryList( const QStringList &directories, bool scanRecursively, bool monitorChanges,
-                              QWidget *parent, const char *name )
-    : KDialogBase( parent, name, true, i18n( "Collection Folders List" ), Ok | Cancel, Ok, true )
-    , m_dirList( directories )
-    , m_scanRecursively( scanRecursively )
-    , m_monitorChanges( monitorChanges )
+using Collection::Item;
+
+
+CollectionSetup::CollectionSetup( QWidget *parent )
+    : QVBox( parent )
 {
-    m_base = new DirectoryListBase( this );
+    (new QLabel( i18n(
+        "These folders will be scanned for "
+        "media to make up your collection."), this ))->setAlignment( Qt::WordBreak );
 
-    setMainWidget( m_base );
+    m_view = new QListView( this );
 
-    m_base->directoryListView->setFullWidth( true );
+    m_view->addColumn( QString::null );
+    m_view->setRootIsDecorated( true );
+    reinterpret_cast<QWidget*>(m_view->header())->hide();
+    m_view->setResizeMode( QListView::LastColumn );
+    new Item( m_view );
 
-    connect( m_base->addDirectoryButton, SIGNAL( clicked() ),
-             SLOT( slotAddDirectory() ) );
-    connect( m_base->removeDirectoryButton, SIGNAL( clicked() ),
-             SLOT( slotRemoveDirectory() ) );
+    s_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
+    s_monitor   = new QCheckBox( i18n("&Monitor changes"), this );
 
-    QStringList::ConstIterator it = directories.begin();
-    for ( ; it != directories.end(); ++it )
-        new KListViewItem( m_base->directoryListView, *it );
+    s_recursive->setChecked( true );
+    s_monitor->setChecked( true );
 
-    m_base->scanRecursivelyCheckBox->setChecked( scanRecursively );
-    m_base->monitorChangesCheckBox->setChecked( monitorChanges );
-
-    QSize sz = sizeHint();
-    setMinimumSize( kMax( 350, sz.width() ), kMax( 250, sz.height() ) );
-    resize( sizeHint() );
+    setSpacing( 6 );
 }
 
 
-DirectoryList::~DirectoryList()
-{}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// public slots
-////////////////////////////////////////////////////////////////////////////////
-
-DirectoryList::Result DirectoryList::exec()
+QStringList
+CollectionSetup::dirs() const
 {
-    m_result.status = static_cast<DialogCode>( KDialogBase::exec() );
-    m_result.scanRecursively = m_base->scanRecursivelyCheckBox->isChecked();
-    m_result.monitorChanges = m_base->monitorChangesCheckBox->isChecked();
-    m_result.dirs = m_dirList;
-    return m_result;
+    QStringList list;
+
+    for( QListViewItem *item = m_view->firstChild(); item; item = item->itemBelow() )
+    {
+        #define item static_cast<Item*>(item)
+        if( !item->isOn() || item->isDisabled() )
+           continue;
+
+        list += item->fullPath();
+        #undef item
+    }
+
+    return list;
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
-// private slots
-////////////////////////////////////////////////////////////////////////////////
-
-void DirectoryList::slotAddDirectory()
+inline QString
+Item::fullPath() const
 {
-//TODO use the directory selector, go on!
-//  KURL url = KDirSelectDialog::selectDirectory( QString::null, true, parentWidget(), i18n( "Select Folder" ) );
+    QString path;
 
-    KFileDialog dia( QString::null, QString::null, parentWidget(), 0, true );
-    dia.setMode( KFile::Directory | KFile::ExistingOnly );
-    dia.setCaption( i18n( "Select Folder" ) );
-    dia.exec();
+    for( const QListViewItem *item = this; item != listView()->firstChild(); item = item->parent() )
+    {
+        path.prepend( item->text( 0 ) );
+        path.prepend( '/' );
+    }
 
-    QString dir = dia.selectedURL().path();
+    return path;
+}
 
-    if ( !dir.isEmpty() && m_dirList.find( dir ) == m_dirList.end() ) {
-        m_dirList.append( dir );
-        new KListViewItem( m_base->directoryListView, dir );
-        m_result.addedDirs.append( dir );
+inline void
+Item::newItems( const KFileItemList &list )
+{
+    for( KFileItemListIterator it( list ); *it; ++it )
+    {
+        Item *item = new Item( this, (*it)->url() );
+
+        item->setOn( CollectionSetup::recursive() && isOn() || CollectionSetup::s_dirs.contains( item->fullPath() ) );
+        item->setPixmap( 0, (*it)->pixmap( KIcon::SizeSmall ) );
     }
 }
 
-
-void DirectoryList::slotRemoveDirectory()
-{
-    if ( !m_base->directoryListView->selectedItem() )
-        return ;
-
-    QString dir = m_base->directoryListView->selectedItem() ->text( 0 );
-    m_dirList.remove( dir );
-    m_result.removedDirs.append( dir );
-    delete m_base->directoryListView->selectedItem();
-}
-
-
 #include "directorylist.moc"
-
-
-
