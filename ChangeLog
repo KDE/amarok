@@ -4,7 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta3:
-  FIX: Configure check was missing for the Konqsidebar
+  FIX: Configure check was missing for the Konqueror Sidebar
        (depends on KDEBASE).
   FIX: Browser splitter was drawn incorrectly with some styles. (BR 95333)
   ADD: DCOP call for relative seek. Patch by Andreas Pfaller. (BR 84989)
