@@ -98,10 +98,12 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer ) //static
     if ( available > SCOPEBUF_SIZE )
         gst_adapter_flush( instance()->m_gst_adapter, available - 30000 );
 
-    gst_buffer_ref( buf );
-
-    // Push buffer into adapter, where it's chopped into chunks
-    gst_adapter_push( instance()->m_gst_adapter, buf );
+    // TODO On some systems buf is always 0. Why?
+    if ( buf ) {
+        gst_buffer_ref( buf );
+        // Push buffer into adapter, where it's chopped into chunks
+        gst_adapter_push( instance()->m_gst_adapter, buf );
+    }
 
     instance()->m_mutexScope.unlock();
 }
@@ -402,11 +404,11 @@ GstEngine::scope()
     GstFormat fmt = GST_FORMAT_TIME;
     gint64 sinkStamp = 0; // Must be initalised to 0
     gst_element_query( m_gst_audiosink, GST_QUERY_POSITION, &fmt, &sinkStamp );
-    double factor = (double) ( lastStamp - sinkStamp ) / ( lastStamp - firstStamp );
 
     guint available = gst_adapter_available( m_gst_adapter );
     gint16* data = (gint16*) gst_adapter_peek( m_gst_adapter, available );
 
+    double factor = (double) ( lastStamp - sinkStamp ) / ( lastStamp - firstStamp );
     int offset = available - static_cast<int>( factor * (double) available );
     offset /= channels;
     offset *= channels;
@@ -432,21 +434,6 @@ GstEngine::scope()
     m_mutexScope.unlock();
     return m_scope;
 }
-
-
-
-//     if ( data )
-//     {
-//         for ( ulong i = 0; i < 512; i++, data += channels ) {
-//             long temp = 0;
-//
-//             for ( int chan = 0; chan < channels; chan++ ) {
-//                 // Add all channels together so we effectively get a mono scope
-//                 temp += data[chan];
-//             }
-//             m_scope[i] = temp / channels;
-//         }
-//     }
 
 
 amaroK::PluginConfig*
@@ -1050,8 +1037,8 @@ GstEngine::createPipeline()
     // More buffers means less dropouts and higher latency
     gst_element_set( m_gst_queue, "max-size-buffers", 50, NULL );
 
-    g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), 0 );
-    g_signal_connect ( G_OBJECT( m_gst_outputThread ), "error", G_CALLBACK ( outputError_cb ), 0 );
+    g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), NULL );
+    g_signal_connect ( G_OBJECT( m_gst_outputThread ), "error", G_CALLBACK ( outputError_cb ), NULL );
 
     /* link elements */
     gst_element_link_many( m_gst_adder, m_gst_queue, m_gst_equalizer, m_gst_identity, m_gst_volume, m_gst_audiosink, NULL );
