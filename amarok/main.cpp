@@ -48,13 +48,15 @@ int main( int argc, char *argv[] )
                           "(c) 2002-2003, Mark Kretschmann and The amaroK Band", 0,
                           "http://amarok.sourceforge.net", "" );
 
-    aboutData.addAuthor( "Mark Kretschmann", "Developer, Maintainer", "markey@web.de" );
+    aboutData.addAuthor( "Mark Kretschmann", "Project founder, developer, maintainer", "markey@web.de" );
+    aboutData.addAuthor( "Max Howell", "Developer", "max.howell@methylblue.com" );
+    aboutData.addAuthor( "Stanislav Karchebny", "Patches, improvements, visualizations, cleanups, i18n",
+                         "berk@inbox.ru" );
+    
     aboutData.addCredit( "Markus A. Rykalski", "Graphics", "exxult@exxult.de" );
     aboutData.addCredit( "Roman Becker", "Graphics", "roman@formmorf.de", "http://www.formmorf.de" );
     aboutData.addCredit( "Jarkko Lehti", "Tester, Irc channel operator", "grue@iki.fi" );
     aboutData.addCredit( "Whitehawk Stormchaser", "Tester, Patches", "zerokode@gmx.net" );
-    aboutData.addCredit( "Stanislav Karchebny", "Patches, improvements, visualizations, cleanups, i18n", "berk@inbox.ru" );
-    aboutData.addCredit( "Max Howell", "Developer", "max.howell@methylblue.com" );
     aboutData.addCredit( "The Noatun Authors", "Code Inspiration", 0, "http://noatun.kde.org" );
 
     KCmdLineArgs::init( argc, argv, &aboutData );
