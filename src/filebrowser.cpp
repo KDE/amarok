@@ -76,8 +76,8 @@ public:
 //BEGIN Constructor/destructor
 
 FileBrowser::FileBrowser( const char * name )
-    : QVBox( 0, name )
-    , m_timer( new QTimer( this ) )
+        : QVBox( 0, name )
+        , m_timer( new QTimer( this ) )
 {
     setSpacing( 4 );
     setMargin( 5 );
@@ -427,7 +427,7 @@ SearchPane::SearchPane( FileBrowser *parent )
         container->setBackgroundMode( Qt::PaletteBase );
 
         m_listView->setFrameStyle( QFrame::NoFrame );
-
+        connect( m_listView, SIGNAL(executed( QListViewItem* )), SLOT(activate( QListViewItem* )) );
     }
 
     KPushButton *button = new KPushButton( KGuiItem( i18n("Perform Search..."), "find" ), this );
@@ -495,6 +495,12 @@ SearchPane::_searchComplete()
         m_dirs.pop_front();
         m_lister->openURL( url );
     }
+}
+
+void
+SearchPane::activate( QListViewItem *item )
+{
+    Playlist::instance()->insertMedia( static_cast<KURLView::Item*>(item)->m_url, Playlist::DirectPlay );
 }
 
 #include "filebrowser.moc"

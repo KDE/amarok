@@ -108,6 +108,7 @@ private:
 class KDirLister;
 class KListView;
 class QLineEdit;
+class QListViewItem;
 
 ///@author Max Howell
 ///@short Widget for recursive searching of current FileBrowser location
@@ -125,6 +126,7 @@ private slots:
     void searchMatches( const KFileItemList& );
     void searchComplete();
     void _searchComplete();
+    void activate( QListViewItem* );
 
 private:
     KURL searchURL() const { return static_cast<FileBrowser*>(parentWidget())->url(); }
