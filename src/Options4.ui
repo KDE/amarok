@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>516</width>
-            <height>733</height>
+            <width>389</width>
+            <height>352</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -96,7 +96,7 @@
                             </property>
                             <property name="minimumSize">
                                 <size>
-                                    <width>120</width>
+                                    <width>160</width>
                                     <height>0</height>
                                 </size>
                             </property>
@@ -130,7 +130,7 @@
                             </property>
                             <property name="minimumSize">
                                 <size>
-                                    <width>120</width>
+                                    <width>160</width>
                                     <height>0</height>
                                 </size>
                             </property>
@@ -231,7 +231,7 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>71</width>
+                            <width>70</width>
                             <height>20</height>
                         </size>
                     </property>
@@ -268,7 +268,7 @@
                             </property>
                             <property name="minimumSize">
                                 <size>
-                                    <width>128</width>
+                                    <width>180</width>
                                     <height>0</height>
                                 </size>
                             </property>
@@ -321,7 +321,7 @@
                             </property>
                             <property name="minimumSize">
                                 <size>
-                                    <width>128</width>
+                                    <width>180</width>
                                     <height>0</height>
                                 </size>
                             </property>
@@ -349,7 +349,7 @@
                             </property>
                             <property name="minimumSize">
                                 <size>
-                                    <width>128</width>
+                                    <width>180</width>
                                     <height>0</height>
                                 </size>
                             </property>
@@ -421,7 +421,7 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>121</width>
+                            <width>70</width>
                             <height>20</height>
                         </size>
                     </property>
@@ -494,23 +494,6 @@
                 </widget>
             </vbox>
         </widget>
-        <spacer>
-            <property name="name">
-                <cstring>spacer6</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>31</width>
-                    <height>181</height>
-                </size>
-            </property>
-        </spacer>
     </vbox>
 </widget>
 <connections>

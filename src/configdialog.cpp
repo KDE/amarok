@@ -70,10 +70,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     addPage( m_opt4, i18n( "Playback" ), "kmix", i18n( "Configure Playback" ) );
     addPage( new Options5( 0, "OSD" ), i18n( "OSD" ), "tv", i18n( "Configure On-Screen-Display" ) );
 
-    //TODO someone please fix the initial widget size, it's always as large as a soccer ground!
-    //     freaks me out. *freaking out*
     setInitialSize( minimumSizeHint() );
-    adjustSize();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
