@@ -197,9 +197,12 @@ void AmarokConfigDialog::updateSettings()
         emit settingsChanged();
         soundSystemChanged();
     }
-    //can't use kconfigxt for the style comboxbox's since we need the string, not the index
-    AmarokConfig::setContextBrowserStyleSheet( m_opt2->styleComboBox->currentText() );
-    ContextBrowser::instance()->setStyleSheet();
+
+    if ( m_opt2->styleComboBox->currentText() != AmarokConfig::contextBrowserStyleSheet() ) {
+        //can't use kconfigxt for the style comboxbox's since we need the string, not the index
+        AmarokConfig::setContextBrowserStyleSheet( m_opt2->styleComboBox->currentText() );
+        ContextBrowser::instance()->setStyleSheet();
+    }
 }
 
 
