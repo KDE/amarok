@@ -136,6 +136,13 @@ App::App()
     // Trigger collection scan if folder setup was changed by wizard
     if ( oldCollectionFolders != AmarokConfig::collectionFolders() )
         CollectionDB::instance()->startScan();
+    // If database version is updated, the collection needs to be rescanned.
+    // Works also if the collection is empty for some other reason
+    // (e.g. deleted collection.db)
+    else if ( CollectionDB::instance()->isEmpty() )
+    {
+        CollectionDB::instance()->startScan();
+    }
 
     handleCliArgs();
 }
