@@ -3,10 +3,12 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #70 being the highest available (take this one for your next bug and increase here)
+           #71 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+    * fix: #70 <markey> when sending stream URL to amaroK, it does not always start to play it (seems random)
 
     * fix: #66 <Grue_> seems that the latest taglib from cvs is not compatible with amarok
                <mxcl> can you be more specific? WORKSFORME
