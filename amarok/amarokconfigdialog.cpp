@@ -15,7 +15,6 @@ email                : markey@web.de
 
 #include "amarokconfig.h"
 #include "amarokconfigdialog.h"
-#include "engine/enginebase.h"
 #include "Options1.h"
 #include "Options2.h"
 #include "Options3.h"
@@ -25,6 +24,7 @@ email                : markey@web.de
 #include "pluginmanager.h"
 
 #include <qcombobox.h>
+#include <qradiobutton.h>
 
 #include <kconfigdialog.h>
 #include <klocale.h>
@@ -45,9 +45,8 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
         list << (*it)->name();
 
     m_pSoundSystem->insertStringList( list );
-
     m_pSoundSystem->setCurrentText  ( AmarokConfig::soundSystem() );
-
+   
     // add screens
     connect( m_pSoundSystem, SIGNAL( activated( int ) ), this, SLOT( settingsChangedSlot() ) );
 

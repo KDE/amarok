@@ -89,6 +89,12 @@ class EngineBase : public QObject, public amaroK::Plugin {
         virtual bool isStream() const = 0;
 
         /**
+         * Determines whether the engine supports crossfading.
+         * @return True if crossfading is supported.
+         */
+        virtual bool supportsXFade() const { return false; }
+        
+        /**
          * Fetches the current audio sample buffer.
          * @return Pointer to result of FFT calculation. Must be deleted after use.
          */

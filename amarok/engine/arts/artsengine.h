@@ -71,7 +71,8 @@ class ArtsEngine : public EngineBase
         void                                     configureEffect( long id );
        
         bool                                     decoderConfigurable();
- 
+        bool                                     supportsXFade() const     { return true; }
+         
     public slots:
         const QObject*                           play( const KURL& );
         void                                     play();

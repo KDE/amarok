@@ -225,6 +225,7 @@ void EngineController::slotMainTimer()
     }
     // Crossfading
     else if ( ( AmarokConfig::crossfade() ) &&
+              ( m_pEngine->supportsXFade() ) &&
               ( !m_pEngine->isStream() ) &&
               ( m_length ) &&
               ( m_length > m_pEngine->position() ) &&
