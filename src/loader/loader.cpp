@@ -173,11 +173,9 @@ Loader::timerEvent( QTimerEvent* )
 {
     if( m_proc->isRunning() )
     {
-        if( ++m_counter == (30000 / INTERVAL) ) {
-            // 30 seconds have passed
-            std::cerr << "amaroK: [Loader] Timed out waiting for amaroK!\n";
-            QApplication::exit( 2 );
-        }
+         if( ++m_counter == (30000 / INTERVAL) )
+             // 30 seconds have passed
+             std::cerr << "amaroK: [Loader] amaroK is taking a long time to load! Perhaps something has gone wrong?\n";
 
         while( m_proc->canReadLineStdout() )
             if( m_proc->readLineStdout() == "STARTUP" )
