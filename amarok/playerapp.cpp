@@ -47,7 +47,7 @@ email                :
 
 //FIXME remove these dependencies, we can implement saveConfig across objects and use a save() signal
 //      a little less neat, but boy would that help with compile times
-#include "playlistwidget.h"  
+#include "playlistwidget.h"
 
 
 #include <arts/artsflow.h>
@@ -111,7 +111,7 @@ PlayerApp::PlayerApp()
 
     readConfig();
     initMixer();          //initMixer() depends on a config value, so it must be executed after readConfig()
-    
+
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
     connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
     m_pMainTimer->start( MAIN_TIMER );
@@ -325,12 +325,12 @@ void PlayerApp::initArts()
                             i18n( "Fatal Error" ) );
         ::exit( 1 );
     }
-            
+
     m_XFade.percentage( m_XFadeValue );
     m_XFade.start();
 
     m_scope = Arts::DynamicCast( m_Server.createObject( "Arts::StereoFFTScope" ) );
-       
+
     m_globalEffectStack = Arts::DynamicCast( m_Server.createObject( "Arts::StereoEffectStack" ) );
     m_globalEffectStack.start();
 
@@ -475,7 +475,7 @@ void PlayerApp::initBrowserWin()
     //make sure playlist is linked to playback
     connect( m_pBrowserWin->m_pPlaylistWidget, SIGNAL( activated( const KURL&, const MetaBundle* ) ),
              this, SLOT( play( const KURL&, const MetaBundle* ) ) );
- 
+
     kdDebug() << "end PlayerApp::initBrowserWin()" << endl;
 }
 
@@ -721,7 +721,7 @@ void PlayerApp::receiveStreamMeta( QString title, QString url, QString kbps )
     {
         QString text = m_pBrowserWin->m_pPlaylistWidget->currentTrackName();
         if ( text.isEmpty() ) text = i18n( "stream" );
-        
+
         m_pPlayerWidget->setScroll( QString( "%1 (%2)" ).arg( title ).arg( text ), kbps + "kbps", "--" );
     }
     else
@@ -739,7 +739,7 @@ void PlayerApp::startXFade()
         stopXFade();
 
     m_XFadeRunning = true;
-   
+
     m_pPlayObjectXFade = m_pPlayObject;
     m_pPlayObject = NULL;
 }
@@ -805,10 +805,10 @@ void PlayerApp::slotPlay() const { m_pBrowserWin->m_pPlaylistWidget->request( Pl
 void PlayerApp::play( const KURL &url, const MetaBundle *tags )
 {
     if ( m_optXFade && m_bIsPlaying && url != m_playingURL )
-        startXFade();    
-    
+        startXFade();
+
     else if ( m_pPlayObject != NULL )
-        slotStopCurrent();        
+        slotStopCurrent();
 
     KDE::PlayObjectFactory factory( m_Server );
 
@@ -828,7 +828,7 @@ void PlayerApp::play( const KURL &url, const MetaBundle *tags )
         m_pPlayObject = factory.createPlayObject( url, false ); //second parameter:
                                                                 //create BUS(true/false)
     }
-    
+
     m_proxyError = false;
 
     if ( m_pPlayObject == NULL )
@@ -855,14 +855,14 @@ void PlayerApp::play( const KURL &url, const MetaBundle *tags )
     if ( tags )
     {
        QString text, bps, Hz;
-       
+
        if( tags->m_title.isEmpty() )
        {
           text = url.fileName();
-       }       
+       }
        else
        {
-          //TODO <berkus> user tunable title format!          
+          //TODO <berkus> user tunable title format!
           text = tags->m_artist;
           if( text != "" ) text += " - ";
           text += tags->m_title;
@@ -870,12 +870,12 @@ void PlayerApp::play( const KURL &url, const MetaBundle *tags )
 
        //FIXME add this back
        //text.append( " (" + tags->length() + ")" );
-       
+
        bps  = QString::number( tags->m_bitrate );
        bps += "kbps";
        Hz   = QString::number( tags->m_sampleRate );
        Hz  += "Hz";
-       
+
        m_pPlayerWidget->setScroll( text, bps, Hz ); //FIXME get end function to add units!
     }
     else
@@ -884,7 +884,7 @@ void PlayerApp::play( const KURL &url, const MetaBundle *tags )
     }
 
 
-    kdDebug() << "[play()] Playing " << url.prettyURL() << endl;    
+    kdDebug() << "[play()] Playing " << url.prettyURL() << endl;
     m_pPlayObject->play();
     m_bIsPlaying = true;
 
@@ -925,7 +925,7 @@ void PlayerApp::slotConnectPlayObj()
             else
                 m_XFade.percentage( m_XFadeValue = 1.0 );
         }
-                                
+
         Arts::connect( m_pPlayObject->object(), "left", m_XFade, ( m_XFadeCurrent + "_l" ).latin1() );
         Arts::connect( m_pPlayObject->object(), "right", m_XFade, ( m_XFadeCurrent + "_r" ).latin1() );
     }
@@ -936,7 +936,7 @@ void PlayerApp::proxyError()
 {
     m_proxyError = true;
 
-    slotStopCurrent(); //FIXME play() does this for us (?) 
+    slotStopCurrent(); //FIXME play() does this for us (?)
     slotPlay();
 }
 
@@ -982,12 +982,12 @@ void PlayerApp::slotStopCurrent()
 
      m_bIsPlaying = false;
      m_length = 0;
-     
+
      //FIXME would be nice to do this in slotStop at some point (when we no longer delay determination of length)
      m_pPlayerWidget->m_pSlider->setValue( 0 );
      m_pPlayerWidget->m_pSlider->setMinValue( 0 ); //FIXME disable it and setvalue(0) instead (?)
      m_pPlayerWidget->m_pSlider->setMaxValue( 0 );
-     m_pPlayerWidget->timeDisplay( false, 0, 0, 0 );     
+     m_pPlayerWidget->timeDisplay( false, 0, 0, 0 );
 }
 
 
@@ -1081,7 +1081,7 @@ void PlayerApp::slotMainTimer()
 
        m_length = timeO.seconds;
        m_pPlayerWidget->m_pSlider->setMaxValue( static_cast<int>( m_length ) );
-       
+
        kdDebug() << "length: " << m_length << endl;
     }
 
@@ -1116,7 +1116,7 @@ void PlayerApp::slotMainTimer()
 
     // <Crossfading>
     if ( ( !m_XFadeRunning ) && //this logic order is probably most efficient
-         ( m_optXFade ) &&         
+         ( m_optXFade ) &&
          ( !m_optRepeatTrack ) &&
          ( !m_pPlayObject->stream() ) &&
          ( m_length ) &&
@@ -1210,6 +1210,44 @@ void PlayerApp::slotVisTimer()
         {
             std::vector<float> *pScopeVector = m_scope.scope();
             m_pPlayerWidget->m_pVis->drawAnalyzer( pScopeVector );
+
+            // Muesli's Beat Detection - A Night's Oddysee
+            m_beatCounter++;
+            if (m_beatCounter > 7)
+            {
+                m_beatCounter = 0;
+                m_lastPeak = 0;
+            }
+
+            // shift old elements
+            for ( uint x = 62; x > 0; --x ) m_beatEnergy[x] = m_beatEnergy[x - 1];
+
+            // get current energy value
+            m_beatEnergy[0] = 0;
+            for ( uint x = 0; x < pScopeVector->size(); ++x )
+            {
+                m_beatEnergy[0] += pScopeVector->at(x);
+            }
+
+            // compare to all elements and get averages
+            float beatAvg = 0;
+            float beatVariance = 0;
+            float beatMood;
+            for ( uint x = 0; x < 62; ++x )  beatAvg += (m_beatEnergy[x] / 63);
+            for ( uint x = 0; x < 62; ++x )  beatVariance += (pow((m_beatEnergy[x] - beatAvg), 2) / 63);
+            beatMood = (-0.0025714 * beatVariance) + 1.5142857;
+
+            // do we have a beat? let's dance!
+            if ( m_beatEnergy[0] > (beatAvg * beatMood))
+            {
+                if (m_beatEnergy[0] > m_lastPeak)
+                {
+                    m_beatCounter = 0;
+                    kdDebug() << "*CLAP* last peak: " << m_lastPeak << " - average energy: " << beatAvg << " - current peak: " << m_beatEnergy[0] << endl;
+                    m_lastPeak = m_beatEnergy[0];
+                }
+            }
+
             delete pScopeVector;
         }
         else
