@@ -203,54 +203,6 @@ DO-NOT-IMPLEMENT:
 
 BACKTRACE/DEBUG
 
-Freeze when stopping stream with gst:
-
-amarok: '
-amarok: [StreamProvider] Received new metadata: StreamTitle='Brandy - Afrodisiac';StreamUrl='';
-amarok: [Gst-Engine] Fade-in finished.
-amarok: [virtual void GstEngine::stop()]
-amarok: [virtual amaroK::StreamProvider::~StreamProvider()]
-amarok: [void GstEngine::destroyInput(InputPipeline*)]
-amarok: [Gst-Engine] Destroying input pipeline.
-amarok: BEGIN [InputPipeline::~InputPipeline()]
-amarok: Destroying input bin.
-
-Program received signal SIGINT, Interrupt.
-[Switching to Thread 1024 (LWP 3694)]
-0x41c1b881 in nanosleep () from /lib/libc.so.6
-(gdb) bt
-#0  0x41c1b881 in nanosleep () from /lib/libc.so.6
-#1  0x419c3e98 in __pthread_timedsuspend_new () from /lib/libpthread.so.0
-#2  0x419c0389 in pthread_cond_timedwait_relative () from /lib/libpthread.so.0
-#3  0x420c381f in g_cond_timed_wait_posix_impl (cond=0x8539ea8, entered_mutex=0x0, abs_time=0x419cfac0)
-    at gthread-posix.c:229
-#4  0x4218851c in gst_thread_catch (thread=0x8539b58) at gstthread.c:399
-#5  0x42188830 in gst_thread_change_state (element=0x8539b58) at gstthread.c:426
-#6  0x421614b9 in gst_element_set_state_func (element=0x8539b58, state=GST_STATE_PAUSED) at gstelement.c:2786
-#7  0x421533d2 in gst_bin_set_state (element=0x8539b58, state=GST_STATE_PAUSED) at gstbin.c:893
-#8  0x42161165 in gst_element_set_state (element=0x8539b58, state=GST_STATE_PAUSED) at gstelement.c:2732
-#9  0x4212efd7 in ~InputPipeline (this=0x8297d70) at src/engine/gst/gstengine.cpp:1070
-#10 0x421300ef in QPtrList<InputPipeline>::deleteItem(void*) (this=0x84967bc, d=0x8297d70)
-    at /usr/lib/qt3/include/qptrlist.h:150
-#11 0x412c15fb in QGList::remove(void*) () from /usr/lib/./libqt-mt.so.3
-#12 0x4212faad in QPtrList<InputPipeline>::remove(InputPipeline const*) (this=0x84967bc, d=0x8297d70)
-    at /usr/lib/qt3/include/qptrlist.h:85
-#13 0x4212e4e2 in GstEngine::destroyInput(InputPipeline*) (this=0x8496710, input=0x8297d70)
-    at src/engine/gst/gstengine.cpp:1002
-#14 0x4212ca15 in GstEngine::timerEvent(QTimerEvent*) (this=0x8496710) at src/engine/gst/gstengine.cpp:667
-#15 0x410162af in QObject::event(QEvent*) () from /usr/lib/./libqt-mt.so.3
-#16 0x40fbe205 in QApplication::internalNotify(QObject*, QEvent*) () from /usr/lib/./libqt-mt.so.3
-#17 0x40fbd5f5 in QApplication::notify(QObject*, QEvent*) () from /usr/lib/./libqt-mt.so.3
-#18 0x40bb143c in KApplication::notify(QObject*, QEvent*) () from /opt/kde3/lib/libkdecore.so.4
-#19 0x40fab85b in QEventLoop::activateTimers() () from /usr/lib/./libqt-mt.so.3
-#20 0x40f669da in QEventLoop::processEvents(unsigned) () from /usr/lib/./libqt-mt.so.3
-#21 0x40fd0096 in QEventLoop::enterLoop() () from /usr/lib/./libqt-mt.so.3
-#22 0x40fcff38 in QEventLoop::exec() () from /usr/lib/./libqt-mt.so.3
-#23 0x40fbe451 in QApplication::exec() () from /usr/lib/./libqt-mt.so.3
-#24 0x0812043c in main (argc=1, argv=0xbffff284) at src/amarokcore/main.cpp:66
-#25 0x41b954f2 in __libc_start_main () from /lib/libc.so.6
-
-
 
 From Lauri on FreeBSD:
 
