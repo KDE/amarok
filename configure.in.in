@@ -1,7 +1,3 @@
-TAGLIB_TAGLIB_H=yes;
-TAGLIB_REQ_VERSION="0.95";
-TAGLIB_CONFIG="taglib-config";
-
 dnl -- check for the artsgui library
 AC_DEFUN(AC_PATH_LIBARTSGUI,
 [
@@ -39,47 +35,43 @@ for tag_dir in $taglib_bindirs; do
                 if test=`eval $tag_try 2> /dev/null`; then taglib_bindir=$tag_dir; break; else echo "tried $tag_dir" >&AC_FD_CC ; fi
 done
 
-AC_DEFUN(VERSION_TO_NUMBER,
-[`$1 | awk 'BEGIN { FS = "."; } { printf "%d",  ([$]1* 1000 + [$]2) * 1000 + [$]3;}'`])
- 
-if test -x "$taglib_bindir/$TAGLIB_CONFIG"; then
-	vers=VERSION_TO_NUMBER($taglib_bindir/$TAGLIB_CONFIG --version);
-	if test "$vers" -ge VERSION_TO_NUMBER(echo $TAGLIB_REQ_VERSION); then
-		TAGLIB_VERSION_OK="yes"
-	else
-		TAGLIB_VERSION_OK="no"
-	fi
-else
-	TAGLIB_VERSION_OK="missing"
-fi
-
 if test "$ac_artsgui_libraries" = NO; 
 then
         AC_MSG_RESULT([not found.  amaroK build will be disabled.])
 else
 	AC_MSG_RESULT([found in $ac_artsgui_libraries])
-	
-	dnl check for taglib if bundled...
-	if test -d "taglib/"; then
-		AC_MSG_CHECKING(for TagLib);
-		AC_MSG_RESULT(bundled);
-	else
-		KDE_CHECK_HEADER(taglib/taglib.h,TAGLIB_TAGLIB_H=yes,TAGLIB_TAGLIB_H=no)
-		if test "$TAGLIB_TAGLIB_H" = "no"; then
-			AC_MSG_RESULT([Missing TagLib includes... amaroK will not be compiled])
-			DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
-		else
-			AC_SUBST(TAGLIB_REQ_VERSION)
-			AC_MSG_CHECKING(for taglib-config >= $TAGLIB_REQ_VERSION)
-			if test "$TAGLIB_VERSION_OK" = "no"; then 
-				AC_MSG_RESULT(found old... Please check http://ktown.kde.org/~wheeler/taglib/ for newer version);
-				DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
-			elif test "$TAGLIB_VERSION_OK" = "missing"; then
-				AC_MSG_RESULT(not found... Please check http://ktown.kde.org/~wheeler/taglib/ for TagLib package)
-				DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
-			else
-				AC_MSG_RESULT(good);
-			fi
-		fi
-	fi
 fi
+
+dnl ---------- TAGLIB CHECK ----------
+
+AC_DEFUN(VERSION_TO_NUMBER, [`$1 | awk 'BEGIN { FS = "."; } { printf "%d",  ([$]1* 1000 + [$]2) * 1000 + [$]3;}'`])
+
+AC_DEFUN(AC_HAVE_TAGLIB,
+[
+	AC_DEFINE(HAVE_TAGLIB, 1, [have TagLib])
+	taglib_includes=[`$TAGLIB_CONFIG --cflags`]
+	taglib_libs=[`$TAGLIB_CONFIG --libs`]
+	taglib_version=[`$TAGLIB_CONFIG --version`]
+	have_taglib=true
+])
+
+AC_DEFUN(AC_NO_TAGLIB,
+[
+	AC_DEFINE(HAVE_TAGLIB, 0, [don't have TagLib])
+	taglib_includes=""
+	taglib_libs=""
+	taglib_version=""
+	have_taglib=false
+])
+
+AC_PATH_PROG(TAGLIB_CONFIG, taglib-config, no)
+if test "x$TAGLIB_CONFIG" = "xno" ; then
+	AC_NO_TAGLIB
+else
+	AC_HAVE_TAGLIB
+fi
+
+AC_SUBST(taglib_includes)
+AC_SUBST(taglib_libs)
+
+dnl ---------- END TAGLIB CHECK ----------

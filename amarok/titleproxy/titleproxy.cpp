@@ -235,3 +235,5 @@ QString TitleProxy::extractStr( QString str, QString key )
         return str.mid( index, indexEnd - index );
     }
 }
+
+#include "titleproxy.moc"
