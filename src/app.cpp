@@ -140,7 +140,7 @@ App::App()
 
 App::~App()
 {
-    DEBUG_FUNC_INFO
+    DEBUG_BEGIN
 
     // Hiding the OSD before exit prevents crash
     amaroK::OSD::instance()->hide();
@@ -170,6 +170,8 @@ App::~App()
 
     //need to unload the engine before the kapplication is destroyed
     PluginManager::unload( engine );
+
+    DEBUG_END
 }
 
 

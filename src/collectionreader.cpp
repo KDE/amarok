@@ -26,7 +26,7 @@
 namespace amaroK
 {
     QString
-    saveLocation( const QString &directory = QString::null )
+    saveLocation( const QString &directory )
     {
         return KGlobal::dirs()->saveLocation( "data", QString("amarok/") + directory, true );
     }
@@ -39,7 +39,7 @@ CollectionReader::CollectionReader( CollectionDB* parent, const QStringList& fol
     , m_recursively( AmarokConfig::scanRecursively() )
     , m_importPlaylists( AmarokConfig::importPlaylists() )
     , m_incremental( false )
-    , log( QFile::encodeName( amaroK::saveLocation() + "collection_scan.log" ) )
+    , log( QFile::encodeName( amaroK::saveLocation( QString::null ) + "collection_scan.log" ) )
 {
     setDescription( i18n( "Building collection" ) );
 }
