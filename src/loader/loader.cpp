@@ -307,7 +307,15 @@ void Loader::timerEvent( QTimerEvent* )
         ::send( m_sockfd, "STARTUP", 8, 0 );
         doExit();
     } else if ( delay >= 30 * 1000 ) {
-        std::cout << "[amaroK loader] timed out trying to contact to amaroK.\n";
+        std::cout << "[amaroK loader] timed out trying to contact amaroK.\n";
+
+        //NOTE these are untranslated.. nasty.
+
+        QMessageBox::critical( 0, "amaroK",
+            "amaroK could not be started, try typing \"amarok\" at "
+            "a command prompt, perhaps the output can help.",
+            QMessageBox::Ok, QMessageBox::NoButton );
+
         doExit();
     }
 }
