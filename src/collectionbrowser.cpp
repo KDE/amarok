@@ -49,7 +49,6 @@ CollectionBrowser::CollectionBrowser( const char* name )
     , m_cat1Menu( new KPopupMenu( this ) )
     , m_cat2Menu( new KPopupMenu( this ) )
     , m_cat3Menu( new KPopupMenu( this ) )
-    , m_view( new CollectionView( this ) )
     , m_timer( new QTimer( this ) )
 {
     setSpacing( 4 );
@@ -73,6 +72,8 @@ CollectionBrowser::CollectionBrowser( const char* name )
         QToolTip::add( button, i18n( "Clear filter" ) );
         QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter collection" ) );
     } //</Search LineEdit>
+
+    m_view = new CollectionView( this );
 
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
 
@@ -222,7 +223,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     //</OPEN DATABASE>
 
     //<PROGRESS BAR>
-        m_progressBox = new QHBox( m_parent  );
+        m_progressBox = new QHBox( m_parent );
         QPushButton* button = new QPushButton( SmallIcon( "button_cancel" ), i18n( "Abort" ), m_progressBox );
         connect( button, SIGNAL( clicked() ), m_insertdb, SLOT( stopScan() ) );
         m_progress = new KProgress( m_progressBox );
