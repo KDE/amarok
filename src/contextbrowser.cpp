@@ -82,9 +82,9 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsPage->setDNDEnabled( true );
 
     //aesthetics - no double frame
-    m_homePage->view()->setFrameStyle( QFrame::NoFrame );
-    m_currentTrackPage->view()->setFrameStyle( QFrame::NoFrame );
-    m_lyricsPage->view()->setFrameStyle( QFrame::NoFrame );
+//     m_homePage->view()->setFrameStyle( QFrame::NoFrame );
+//     m_currentTrackPage->view()->setFrameStyle( QFrame::NoFrame );
+//     m_lyricsPage->view()->setFrameStyle( QFrame::NoFrame );
 
     addTab( m_homePage->view(),  SmallIconSet( "gohome" ), i18n( "Home" ) );
     addTab( m_currentTrackPage->view(), SmallIconSet( "today" ), i18n( "Current Track" ) );
@@ -476,7 +476,6 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
             startPath = url.directory();
         }
 
-        /* This opens a file-open-dialog and copies the selected image to albumcovers, scaled and unscaled. */
         KURL file = KFileDialog::getImageOpenURL( startPath, this, i18n( "Select Cover Image File" ) );
         if ( !file.isEmpty() ) {
             CollectionDB::instance()->setAlbumImage( artist, album, file );
