@@ -358,10 +358,10 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     layV->addWidget( m_splitter );
 
     QVBox *box = new QVBox( m_splitter );
-    
+
     QHBox *boxH = new QHBox( box );
     m_lineEdit = new KLineEdit( boxH );
-    
+
     m_playlist = new PlaylistWidget( box );
     m_splitter->setResizeMode( m_sideBar, QSplitter::FollowSizeHint );
     m_splitter->setResizeMode( box,       QSplitter::Auto );
@@ -407,7 +407,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     //</FileBrowser>
 
     //</PlaylistBrowser>
-        m_sideBar->addPage( m_playlist->browser(), i18n( "Playlist Browser" ), "midi" );
+    //    m_sideBar->addPage( m_playlist->browser(), i18n( "Playlist Browser" ), "midi" );
     //</PlaylistBrowser>
 
     { //<StreamBrowser>

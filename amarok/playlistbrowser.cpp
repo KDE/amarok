@@ -1,6 +1,8 @@
 // (c) Max Howell 2004
 // See COPYING file for licensing information
 
+#if 0
+
 #include "playlistbrowser.h"
 #include "metabundle.h"   //prettyLength()
 #include "threadweaver.h" //PLStats Job
@@ -145,3 +147,5 @@ PlaylistBrowser::findCoverArt( const KURL &url ) //static
 }
 
 #include "playlistbrowser.moc"
+
+#endif

@@ -49,7 +49,7 @@
 
 PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ const char *name )
     : KListView( parent, name )
-    , m_browser( new PlaylistBrowser( "PlaylistBrowser" ) )
+    , m_browser( /*new PlaylistBrowser( "PlaylistBrowser" )*/ 0 )
     , m_GlowTimer( new QTimer( this ) )
     , m_GlowCount( 100 )
     , m_GlowAdd( 5 )
@@ -461,6 +461,8 @@ void PlaylistWidget::removeSelectedItems() //SLOT
                 if( QListViewItem *tmp = item->nextSibling() )
                     tmp->setSelected( true );
         }
+        else if( m_nextTrack == item ) m_nextTrack = 0;
+        else if( m_cachedTrack == item ) m_cachedTrack = 0;
 
         //keep search system and recent buffer synchronised
         int x = searchPtrs.find( item );
@@ -531,7 +533,7 @@ void PlaylistWidget::insertMediaInternal( const KURL::List &list, QListViewItem 
 void PlaylistWidget::activate( QListViewItem *item ) //SLOT
 {
     //lets ask the engine to play something
-    if( PlaylistItem* playItem = static_cast<PlaylistItem*>( item ) )
+    if( PlaylistItem* const playItem = static_cast<PlaylistItem*>( item ) )
     {
         kdDebug() << "[playlist] Requesting playback for: " << item->text( 0 ) << endl;
 
