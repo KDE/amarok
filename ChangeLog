@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2.1:
+  FIX: update DB when updating tags (BR 99593)
   ADD: New DCOP function "trackPlayCounter". (BR 99575)
   ADD: .ram playlist support with code from Kaffeine. (BR 96101)
   FIX: amaroK can now determine the correct track-length even for formats

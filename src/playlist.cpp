@@ -2445,11 +2445,11 @@ TagWriter::completeJob()
         m_item->setText( m_tagType, m_oldTagString.isEmpty() ? " " : m_oldTagString );
         amaroK::StatusBar::instance()->longMessage( i18n(
                 "Sorry, the tag for %1 could not be changed." ).arg( m_item->url().fileName() ) );
-        CollectionDB::instance()->updateURL( m_item->url().path(), m_updateView );
         break;
 
     case false:
         m_item->setText( m_tagType, m_newTagString.isEmpty() ? " " : m_newTagString );
+        CollectionDB::instance()->updateURL( m_item->url().path(), m_updateView );
     }
 }
 
