@@ -45,9 +45,6 @@ SHORT-TERM (URGENT):
 
           <mxcl>   With one track in pls and repeat and random mode on, amaroK crashes at track end.
 
-          <markey> Check TagLib autoconf and makefile stuff. I have a feeling the problem with picking
-                   up old versions could be on our side.
-
           <mxcl>   You can't add or drag albums from the context browser anymore
 
           <markey> "Handbook" and "About" menu entries are disabled (greyed out) for some people.
