@@ -63,7 +63,7 @@ public:
     QString prettyLength()  const { return prettyLength( m_length ); }
     QString prettySampleRate() const { return prettyGeneric( i18n( "SampleRate", "%1 Hz" ), m_sampleRate ); }
 
-    static QString prettyBitrate( int i ) { return prettyGeneric( i18n( "Bitrate", "%1 kbps" ), i ); }
+    static /*inline */QString prettyBitrate( int );
     static QString prettyLength( int );
 
 private:
@@ -80,7 +80,7 @@ private:
     int m_length;
     int m_sampleRate;
 
-    static QString prettyGeneric( const QString&, int );
+    static /*inline */QString prettyGeneric( const QString&, int );
 
     void init( TagLib::AudioProperties *ap = 0 );
 };

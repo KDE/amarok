@@ -79,8 +79,8 @@ PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KU
     setDragEnabled( true );
 
     KListViewItem::setText( 1, title );
-    KListViewItem::setText( 8, u.directory().section( '/', -1 ) );
-    setText( 9, MetaBundle::prettyLength( length ) );
+    setText( Directory, u.directory().section( '/', -1 ) ); //try for stringStore
+    setText( Length, MetaBundle::prettyLength( length ) );
 
     setTokens();
 }
@@ -92,16 +92,29 @@ PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KU
 {
     setDragEnabled( true );
 
-    //TODO try to speed this up, searching for the text this way isn't best, would be nice
-    //     to have a small hash table that can be created when loading xml and sestroyed after (if cheap in terms of code to do)
-    //     and then iterate over the nodes via nextSibling()
+    const uint ncol = parent->columns();
 
-    //NOTE we use base versions to speed this up
-
-    for( int x = 1; x < parent->columns(); ++x )
+    //NOTE we use base versions to speed this up (this function is called 100s of times during startup)
+    for( int x = 1; x < ncol; ++x )
     {
         const QString text = n.namedItem( parent->columnText( x ) ).toElement().text();
-        KListViewItem::setText( x, attemptStore( text ) );
+
+        //FIXME this is duplication of setText()
+        //TODO  it would be neat to have all store columns adjacent and at top end so you can use
+        //      a simple bit of logic to discern which ones to store
+        //TODO  may be better to just be able to use setText(), problem is the setTokens calls
+        //FIXME use the MetaBundle implicitly shared bitrate and track # strings
+        switch( x ) {
+        case Artist:
+        case Album:
+        case Genre:
+        case Year:
+        case Directory:
+            KListViewItem::setText( x, attemptStore( text ) );
+            continue;
+        default:
+            KListViewItem::setText( x, text );
+        }
     }
 
     setTokens();
@@ -130,8 +143,8 @@ MetaBundle PlaylistItem::metaBundle()
         //then return by reference
         MetaBundle bundle( this, f.isNull() ? 0 : f.audioProperties() );
         //just set it as we just did an accurate pass
-        setText(  9, bundle.prettyLength()  );
-        setText( 10, bundle.prettyBitrate() );
+        setText( Length,  bundle.prettyLength()  );
+        setText( Bitrate, bundle.prettyBitrate() );
 
         return bundle;
 
@@ -189,50 +202,61 @@ void PlaylistItem::setText( const MetaBundle &bundle )
 
 void PlaylistItem::setText( int column, const QString &newText )
 {
+    //NOTE prettyBitrate() is special and the returned string should not be modified
+    //     as it is implicately shared for the common values in class MetaBundle
+    //NOTE track() may also be special
+
     switch( column ) {
-    case 2: //artist
-    case 3: //album
-    case 6: //genre
-    case 7: //track # //TODO replace with year?
-    case 8: //directory
+    case Artist:
+    case Album:
+    case Genre:
+    case Year: //TODO check this doesn't hog the store
+    case Directory:
+
         //these are good candidates for the stringStore
         //NOTE title is not a good candidate, it probably will never repeat in the playlist
-
         KListViewItem::setText( column, attemptStore( newText ) );
         break;
 
-    case 1:
-    case 9:
-    case 10:
-        if( newText.isEmpty() )
-        {
-            //FIXME this is an awful hack, do something about it
+    case Length:
+        //TODO consider making this a dynamically generated string
+        KListViewItem::setText( Length, newText.isEmpty() ? newText : newText + ' ' ); //padding makes it neater
+        break;
 
-            //don't overwrite old text with nothing
-            //we do this because there are several stages to setting text when items are inserted into the
-            //playlist, and not all of them have text set.
-            //we only need to do this for columns 1, 9 and 10 currently
-
-            //FIXME removing a tag with inline edit doesn't get updated here, but
-            //      you've hacked TagWriter so it sets a space as the new text
-            //FIXME that needs fixing because it means the scrolling title has a space! dang.
-
-            //NOTE if you don't setText() it crashes amaroK!
-            KListViewItem::setText( column, KListViewItem::text( column ) );
-
-            break;
-        }
-
-        //else FALL THROUGH
+//     case 1:
+//     case 9:
+//     case 10:
+//         if( newText.isEmpty() )
+//         {
+//             //FIXME this is an awful hack, do something about it
+//
+//             //don't overwrite old text with nothing
+//             //we do this because there are several stages to setting text when items are inserted into the
+//             //playlist, and not all of them have text set.
+//             //we only need to do this for columns 1, 9 and 10 currently
+//
+//             //FIXME removing a tag with inline edit doesn't get updated here, but
+//             //      you've hacked TagWriter so it sets a space as the new text
+//             //FIXME that needs fixing because it means the scrolling title has a space! dang.
+//
+//             //NOTE if you don't setText() it crashes amaroK!
+//             KListViewItem::setText( column, KListViewItem::text( column ) );
+//
+//             break;
+//         }
+//
+//         //else FALL THROUGH
 
     default:
-        KListViewItem::setText( column, (column > 8) ? newText + ' ' : newText );
+        KListViewItem::setText( column, newText );
+        break;
     }
 
+    //FIXME this can be done multiple times, eg setText(MetaBundle&)
     switch( column ) {
-    case 0:
-    case 1:
-    case 2:
+    case TrackName:
+    case Title:
+    case Artist:
         setTokens();
         break;
     default:
@@ -403,7 +427,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 }
 
 
-const QString &PlaylistItem::attemptStore( const QString &candidate )
+const QString &PlaylistItem::attemptStore( const QString &candidate ) //static
 {
     //principal is to cause collisions at reasonable rate to reduce memory
     //consumption while not using such a big store that it is mostly filled with empty QStrings

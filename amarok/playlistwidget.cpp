@@ -110,7 +110,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const ch
     setRenameable( 7 );
     setColumnAlignment(  7, Qt::AlignCenter ); //track
     setColumnAlignment(  9, Qt::AlignRight ); //length
-    setColumnAlignment( 10, Qt::AlignRight ); //bitrate
+    setColumnAlignment( 10, Qt::AlignCenter ); //bitrate
 
 
     connect( this, SIGNAL( contentsMoving( int, int ) ),

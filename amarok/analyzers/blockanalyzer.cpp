@@ -51,7 +51,7 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
 
     m_scope.resize( m_columns );
 
-    if( e->oldSize().height() != height() )
+    if( e->oldSize().height() != height() ) //this block speeds up window resizes vastly
     {
         //NOTE height should only be set once! but it tends to get set many times when Qt is setting up
         //     the layout of the toolBar, what a waste of cycles!
@@ -63,7 +63,7 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
         }
         lvlMapper[m_rows] = 0;
 
-        //for( uint x = 0; x <= m_rows; ++x ) kdDebug() << x << ": " << lvlMapper[x] << "\n";
+        //for( uint x = 0; x <= m_rows; ++x ) kdDebug() << x << ": " << lheight should not actually change, ever, but due to KToolBar being crap, it doesvlMapper[x] << "\n";
 
 
         QColor darkColor( backgroundColor().dark( 125 ) );
@@ -140,6 +140,9 @@ BlockAnalyzer::analyze( const Scope &s )
 
         //NOTE actually, tests show that all the cpu being used is for the FHT, these blts are insiginificant
         //     still it would be trivial to only blt changes, so do that.
+
+        //FIXME less blits is better, so store the whole bar as one pixmap and blt however much you need
+        //FIXME the background pixmap should be the all the dark squares
 
         //we start bltting from the top and go down
         //so blt blanks first, then blt glow blocks

@@ -15,6 +15,14 @@
  */
 
 
+ //FIXME these aren't i18n'd
+ //the point here is to force sharing of these strings returned from prettyBitrate()
+static const QString bitrateStore[9] = { "?", "32 kbps", "64 kbps", "96 kbps", "128 kbps", "160 kbps", "192 kbps", "224 kbps", "256 kbps" };
+
+//TODO consider the worth of this extension; use trackStore.ref( i )
+//static const QString trackStore = "0123456789";
+
+
 //TODO one without audioProps please
 //TODO have ability to determine bitrate etc from the strings, slow but infrequently called so ok
 //TODO cache prettyLength for bundles
@@ -26,7 +34,7 @@ MetaBundle::MetaBundle( const QString& title,
                         const QString& url,
                         const int      bitrate,
                         const QString& genre,
-                        const QString& streamName,
+                        const QString& /*streamName*/,
                         const QString& streamUrl )
   : m_url       ( streamUrl )
   , m_title     ( url + title )
@@ -117,9 +125,15 @@ MetaBundle::prettyLength( int length ) //static
 }
 
 QString
+MetaBundle::prettyBitrate( int i )
+{
+    return ( i % 32 == 0 && i < 257 ) ? bitrateStore[ i /32 ] : prettyGeneric( i18n( "Bitrate", "%1 kbps" ), i );
+}
+
+QString
 MetaBundle::prettyGeneric( const QString &s, int i ) //static
 {
     //TODO ensure this inlines
 
-    return ( i > 0 ) ? s.arg( i ) : ( i == Undetermined ) ? QString() : "?";
+    return ( i > 0 ) ? s.arg( i ) : ( i == Undetermined ) ? QString::null : "?";
 }
