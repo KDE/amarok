@@ -25,7 +25,8 @@ SHORT-TERM (URGENT):
 
           <markey> "Handbook" and "About" menu entries are disabled (greyed out) for some people.
                    For the life of me I can't reproduce this, even with KDE 3.3.
-
+	<madpenguin8>After merge of Head into make_it_cool the About amaroK entry works again, but now Report Bug is disabled. 
+	
   ADD 180 <muesli> Show "Artist - Song" for Various Artist folder.
 
   FIX 161 <markey> Configure prints "Good - your configure finished. Start make now" even when amaroK
