@@ -259,7 +259,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         menu.insertTitle( i18n( "Cover Image" ) );
 
         menu.insertItem( SmallIcon( "viewmag" ), i18n( "&Show Fullsize" ), SHOW );
-        menu.insertItem( i18n( "&Fetch From amazon.com" ), FETCH );
+        menu.insertItem( SmallIcon( "www" ), i18n( "&Fetch From amazon.com" ), FETCH );
         menu.insertItem( SmallIcon("folder_image"), i18n( "Add &Custom Cover" ), CUSTOM );
         menu.insertSeparator();
 
