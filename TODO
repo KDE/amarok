@@ -11,10 +11,6 @@ SHORT-TERM (URGENT):
   <mxcl>   Just before we load any engine plugin, write to a file, and it we don't succeed the next time
            amaroK starts show a big warning saying "Gah!" and load a different one.
 
-  <mxcl>   Handle the case where user drops a directory and there is a playlist file that duplicates what is
-           in the directories above it and you end up with duplicate URLs all over the place.
-           <markey> Many users have an m3u in the _same_ directory as the files are.
-
   <markey> In the settings dialog the "Apply" button is broken (always enabled).
            Update: This is now fixed except if you build with MySQL support. Reason is the MySQL password
            KConfigXT entry. Fix this properly for 1.2.1.
