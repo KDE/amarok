@@ -326,12 +326,4 @@
     </entry>
 </group>
 
-<group name="CoverFetcher">
-    <entry key="Cover Size" type="Int">
-        <label>Cover size to be used for fetching covers from amazon</label>
-        <default>2</default>
-        <whatsthis>Cover size to be used for fetching covers from amazon.</whatsthis>
-    </entry>
-</group>
-
 </kcfg>
