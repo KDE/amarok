@@ -324,7 +324,7 @@ void SmartPlaylistView::makePlaylist( QListViewItem *item ) //SLOT
     if( !item )
         return;
 
-//    Playlist::instance()->insertMedia( static_cast<SmartPlaylist*>(item)->urls(), Playlist::Clear );
+    Playlist::instance()->insertMediaSql( static_cast<SmartPlaylist*>(item)->sqlForTags, Playlist::Clear );
 }
 
 

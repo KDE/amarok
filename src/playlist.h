@@ -69,9 +69,15 @@ class Playlist : private KListView, public EngineObserver
         static const int Unique     = 16;    /// don't insert anything already in the playlist
 
         /** Add media to the playlist
-         *  @param options you can OR these together, see the enum,
+         *  @param options you can OR these together, see the enum
          */
         void insertMedia( KURL::List, int options = Append );
+
+        /** Add media to the playlist, using SqlLoader
+         *  @param sql     Sql program to execute
+         *  @param options you can OR these together, see the enum
+         */
+        void insertMediaSql( const QString& sql, int options = Append );
 
         bool isEmpty() const { return childCount() == 0; }
         bool isTrackBefore() const;

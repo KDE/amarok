@@ -379,6 +379,18 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
     }
 }
 
+void
+Playlist::insertMediaSql( const QString& sql, int options )
+{
+    // TODO Implement more options
+
+    if ( options & Replace )
+        clear();
+
+    setSorting( NO_SORT );
+    ThreadWeaver::instance()->queueJob( new SqlLoader( sql, 0 ) );
+}
+
 QString
 Playlist::defaultPlaylistPath() //static
 {
