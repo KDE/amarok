@@ -17,12 +17,7 @@ SHORT-TERM (URGENT):
                      distros offer them as a sperate package.
                      
   FIX #101 <mxcl> we need to update the tooltip for 1.0, especially the drag back to FileBrowser bit
-
-  FIX #99 <markey> With KDE color scheme some widgets inside of the browsers become black,
-          when color scheme is switched at runtime.
-          <mxcl> switch the KControl colour scheme? Or amaroK config color scheme?
-          <markey> The latter.
-          
+         
   ADD #97 <mxcl> if you hold CTRL when dropping to pl it has a plus sign but drops at cursor, but shift drops
                  at bottom of pl, but has no icon on drag cursor.
 
