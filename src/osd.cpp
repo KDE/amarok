@@ -316,47 +316,51 @@ void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent * /*event*/ )
 
 void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 {
-    //TODO make 100 into percentage of screen size
+    //TODO make snapZone into percentage of screen size
     //TODO consider using QWidget y() property?
     //TODO do slick move on and then disappear
 
     if ( m_dragging && this == mouseGrabber() )
     {
-        const QRect screenRect  = QApplication::desktop() ->screenGeometry( m_screen );
-        const uint  hcenter     = screenRect.width() / 2;
+        const QRect screen  = QApplication::desktop() ->screenGeometry( m_screen );
+        const uint  hcenter     = screen.width() / 2;
         const uint  eGlobalPosX = e->globalPos().x();
+        const uint  snapZone    = screen.width() / 16;
 
         QPoint newPos = e->globalPos() - m_dragOffset;
-        int maxY = screenRect.height()-height()-MARGIN;
+        int maxY = screen.height()-height()-MARGIN;
         if( newPos.y() < MARGIN ) newPos.ry() = MARGIN;
         if( newPos.y() > maxY ) newPos.ry() = maxY;
 
-        if( eGlobalPosX < (hcenter-100) )
+        QPoint destination( MARGIN, newPos.y() );
+
+        if( eGlobalPosX < (hcenter-snapZone) )
         {
             m_alignment = Left;
-            move( MARGIN, newPos.y() );
         }
-        else if( eGlobalPosX > (hcenter+100) )
+        else if( eGlobalPosX > (hcenter+snapZone) )
         {
             m_alignment = Right;
-            move( screenRect.width() - MARGIN - width(), newPos.y() );
+            destination.rx() = screen.width() - MARGIN - width();
         }
         else
         {
             const uint eGlobalPosY = e->globalPos().y();
-            const uint vcenter     = screenRect.height()/2;
+            const uint vcenter     = screen.height()/2;
 
-            if( eGlobalPosY >= (vcenter-100) && eGlobalPosY <= (vcenter+100) )
+            destination.rx() = hcenter - width()/2;
+
+            if( eGlobalPosY >= (vcenter-snapZone) && eGlobalPosY <= (vcenter+snapZone) )
             {
                 m_alignment = Center;
-                move( hcenter - width()/2, vcenter - height()/2 );
-
-            } else {
-
-                m_alignment = Middle;
-                move( hcenter - (width()/2), newPos.y() );
+                destination.ry() = vcenter - height()/2;
             }
+            else m_alignment = Middle;
         }
+
+        destination += screen.topLeft();
+
+        move( destination );
     }
 }
 
