@@ -55,8 +55,8 @@ CollectionBrowser::CollectionBrowser( const char* name )
     setMargin( 5 );
 
     KMenuBar* menu = new KMenuBar( this );
-    menu->insertItem( i18n( "Actions" ), m_actionsMenu );
-    menu->insertItem( i18n( "Tag Filter" ), m_categoryMenu );
+    menu->insertItem( i18n( "&Actions" ), m_actionsMenu );
+    menu->insertItem( i18n( "&Tag Filter" ), m_categoryMenu );
 
     { //<Search LineEdit>
         QHBox *hbox; KToolBarButton *button;
@@ -84,35 +84,35 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
 
-    m_actionsMenu->insertItem( i18n( "Configure Collection Folders..." ), m_view, SLOT( setupDirs() ) );
-    m_actionsMenu->insertItem( i18n( "Cover Manager" ), this, SLOT(openCoverManager()) );
+    m_actionsMenu->insertItem( i18n( "&Configure Collection Folders..." ), m_view, SLOT( setupDirs() ) );
+    m_actionsMenu->insertItem( i18n( "Cover &Manager" ), this, SLOT(openCoverManager()) );
     m_actionsMenu->insertSeparator();
-    m_actionsMenu->insertItem( i18n( "Start Scan" ), m_view, SLOT( scan() ), 0, IdScan );
+    m_actionsMenu->insertItem( i18n( "&Start Scan" ), m_view, SLOT( scan() ), 0, IdScan );
 
     connect( m_actionsMenu, SIGNAL( aboutToShow() ), SLOT( slotCheckFolders() ) );
 
-    m_categoryMenu->insertItem( i18n( "First Level" ), m_cat1Menu );
-    m_categoryMenu->insertItem( i18n( "Second Level"), m_cat2Menu );
-    m_categoryMenu->insertItem( i18n( "Third Level" ), m_cat3Menu );
+    m_categoryMenu->insertItem( i18n( "&First Level" ), m_cat1Menu );
+    m_categoryMenu->insertItem( i18n( "&Second Level"), m_cat2Menu );
+    m_categoryMenu->insertItem( i18n( "&Third Level" ), m_cat3Menu );
 
-    m_cat1Menu ->insertItem( i18n( "Album" ), m_view, SLOT( cat1Menu( int ) ), 0, IdAlbum );
-    m_cat1Menu ->insertItem( i18n( "Artist"), m_view, SLOT( cat1Menu( int ) ), 0, IdArtist );
-    m_cat1Menu ->insertItem( i18n( "Genre" ), m_view, SLOT( cat1Menu( int ) ), 0, IdGenre );
-    m_cat1Menu ->insertItem( i18n( "Year" ), m_view, SLOT( cat1Menu( int ) ), 0, IdYear );
+    m_cat1Menu ->insertItem( i18n( "&Album" ), m_view, SLOT( cat1Menu( int ) ), 0, IdAlbum );
+    m_cat1Menu ->insertItem( i18n( "A&rtist"), m_view, SLOT( cat1Menu( int ) ), 0, IdArtist );
+    m_cat1Menu ->insertItem( i18n( "&Genre" ), m_view, SLOT( cat1Menu( int ) ), 0, IdGenre );
+    m_cat1Menu ->insertItem( i18n( "&Year" ), m_view, SLOT( cat1Menu( int ) ), 0, IdYear );
 
-    m_cat2Menu ->insertItem( i18n( "None" ), m_view, SLOT( cat2Menu( int ) ), 0, IdNone );
+    m_cat2Menu ->insertItem( i18n( "&None" ), m_view, SLOT( cat2Menu( int ) ), 0, IdNone );
     m_cat2Menu ->insertSeparator();
-    m_cat2Menu ->insertItem( i18n( "Album" ), m_view, SLOT( cat2Menu( int ) ), 0, IdAlbum );
-    m_cat2Menu ->insertItem( i18n( "Artist" ), m_view, SLOT( cat2Menu( int ) ), 0, IdArtist );
-    m_cat2Menu ->insertItem( i18n( "Genre" ), m_view, SLOT( cat2Menu( int ) ), 0, IdGenre );
-    m_cat2Menu ->insertItem( i18n( "Year" ), m_view, SLOT( cat2Menu( int ) ), 0, IdYear );
+    m_cat2Menu ->insertItem( i18n( "&Album" ), m_view, SLOT( cat2Menu( int ) ), 0, IdAlbum );
+    m_cat2Menu ->insertItem( i18n( "A&rtist" ), m_view, SLOT( cat2Menu( int ) ), 0, IdArtist );
+    m_cat2Menu ->insertItem( i18n( "&Genre" ), m_view, SLOT( cat2Menu( int ) ), 0, IdGenre );
+    m_cat2Menu ->insertItem( i18n( "&Year" ), m_view, SLOT( cat2Menu( int ) ), 0, IdYear );
 
-    m_cat3Menu ->insertItem( i18n( "None" ), m_view, SLOT( cat3Menu( int ) ), 0, IdNone );
+    m_cat3Menu ->insertItem( i18n( "&None" ), m_view, SLOT( cat3Menu( int ) ), 0, IdNone );
     m_cat3Menu ->insertSeparator();
-    m_cat3Menu ->insertItem( i18n( "Album" ), m_view, SLOT( cat3Menu( int ) ), 0, IdAlbum );
-    m_cat3Menu ->insertItem( i18n( "Artist" ), m_view, SLOT( cat3Menu( int ) ), 0, IdArtist );
-    m_cat3Menu ->insertItem( i18n( "Genre" ), m_view, SLOT( cat3Menu( int ) ), 0, IdGenre );
-    m_cat3Menu ->insertItem( i18n( "Year" ), m_view, SLOT( cat3Menu( int ) ), 0, IdYear );
+    m_cat3Menu ->insertItem( i18n( "A&lbum" ), m_view, SLOT( cat3Menu( int ) ), 0, IdAlbum );
+    m_cat3Menu ->insertItem( i18n( "A&rtist" ), m_view, SLOT( cat3Menu( int ) ), 0, IdArtist );
+    m_cat3Menu ->insertItem( i18n( "&Genre" ), m_view, SLOT( cat3Menu( int ) ), 0, IdGenre );
+    m_cat3Menu ->insertItem( i18n( "&Year" ), m_view, SLOT( cat3Menu( int ) ), 0, IdYear );
 
     m_view->cat1Menu( m_view->idForCat( m_view->m_category1 ), false );
     m_view->cat2Menu( m_view->idForCat( m_view->m_category2 ), false );
