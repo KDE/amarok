@@ -100,12 +100,14 @@ class PlayerWidget : public QWidget
 
         void wheelEvent( QWheelEvent *e ); //systray requires access
 
+        void createVis();
+
     public slots:
         void slotConfigShortcuts();
         void slotConfigGlobalShortcuts();
         void slotConfigPlayObject();
         void slotUpdateTrayIcon( bool visible );
-        void createVis();
+        void nextVis();
         void slotReportBug();
 
     signals:

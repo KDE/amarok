@@ -585,11 +585,15 @@ void PlayerWidget::moveEvent( QMoveEvent * )
 
 // SLOTS ---------------------------------------------------------------------
 
+void PlayerWidget::nextVis()
+{
+    pApp->config()->setCurrentAnalyzer( pApp->config()->currentAnalyzer() + 1 );
+    createVis();
+}
+
 void PlayerWidget::createVis()
 {
     delete m_pVis;
-
-    pApp->config()->setCurrentAnalyzer( pApp->config()->currentAnalyzer() + 1 );
 
     //bit wierd this switch, but it fits our substandard methods ;-)
     switch( pApp->config()->currentAnalyzer() )
@@ -635,7 +639,7 @@ void PlayerWidget::createVis()
         m_pVis->move( 119, 45 );
     }
 
-    connect( m_pVis, SIGNAL( clicked() ), this, SLOT( createVis() ) );
+    connect( m_pVis, SIGNAL( clicked() ), this, SLOT( nextVis() ) );
 
     m_visTimer->start( m_pVis->timeout() );
     m_pVis->show();
