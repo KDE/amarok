@@ -4,6 +4,9 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
+    * fix: filebrowser: type a path, press enter and it cd's to a directory
+           one level above from what you typed.
+	   
     * fix: playobject config GUI seems totally b0rked on 3.2
     
     * fix: <mxcl> GroupBoxes can't have check boxes with Qt 3.1, so before next release do
