@@ -65,8 +65,8 @@ class PlayerApp : public KUniqueApplication
 
         bool queryClose();
         bool playObjectConfigurable();
-        bool isPlaying() { return m_bIsPlaying; }
-        int  trackLength() { return m_length; }
+        bool isPlaying() const;
+        int  trackLength() const { return m_length; }
         void setupColors();
         bool restorePlaylistSelection(const KURL& url);
         void insertMedia( const KURL::List& );
@@ -82,7 +82,7 @@ class PlayerApp : public KUniqueApplication
         QColor m_optBrowserBgAltColor;
         QColor m_optBrowserSelColor;
 
-        bool m_bSliderIsPressed;
+        bool m_sliderIsPressed;
         bool m_artsNeedsRestart;
 
         KURL m_playingURL; ///< The URL of the currently playing item
@@ -136,8 +136,6 @@ class PlayerApp : public KUniqueApplication
         long m_length;
         int m_playRetryCounter;
         EffectWidget *m_pEffectWidget;
-        bool m_bIsPlaying;
-        bool m_bChangingSlider;
         FHT *m_pFht;
         OSDWidget *m_pOSD;
                 

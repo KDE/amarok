@@ -68,13 +68,13 @@ email                : markey@web.de
 PlayerApp::PlayerApp()
         : KUniqueApplication( true, true, false )
         , m_pGlobalAccel( new KGlobalAccel( this ) )
+        , m_sliderIsPressed( false )
         , m_playingURL( KURL() )
         , m_pMainTimer( new QTimer( this ) )
         , m_pAnimTimer( new QTimer( this ) )
         , m_length( 0 )
         , m_playRetryCounter( 0 )
         , m_pEffectWidget( NULL )
-        , m_bChangingSlider( false )
         , m_pFht( new FHT( SCOPE_SIZE ) )
         , m_pOSD( new OSDWidget() )
 {
@@ -198,15 +198,7 @@ void PlayerApp::initPlayerWidget()
     kdDebug() << "begin PlayerApp::initPlayerWidget()" << endl;
 
     m_pPlayerWidget = new PlayerWidget( 0, "PlayerWidget" );
-    //    setCentralWidget(m_pPlayerWidget);
 
-    m_bSliderIsPressed = false;
-
-    m_pPlayerWidget->m_pSlider->setMinValue   ( 0 );
-    m_pPlayerWidget->m_pSlider->setMaxValue   ( 0 );
-    m_pPlayerWidget->m_pSlider->setValue      ( 0 );
-
-    m_pPlayerWidget->m_pSliderVol->setMinValue( 0 );
     m_pPlayerWidget->m_pSliderVol->setMaxValue( VOLUME_MAX );
 
     //could fancy formatting be the true purpose of life?
@@ -290,6 +282,12 @@ void PlayerApp::restoreSession()
 /////////////////////////////////////////////////////////////////////////////////////
 // METHODS
 /////////////////////////////////////////////////////////////////////////////////////
+
+bool PlayerApp::isPlaying() const
+{
+    return m_pEngine->loaded();
+}
+
 
 void PlayerApp::saveConfig()
 {
@@ -564,9 +562,13 @@ void PlayerApp::slotStop()
 {
     m_pEngine->stop();
 
-    m_pPlayerWidget->m_pButtonPlay->setOn( false );
+    m_length = 0;
+    m_pPlayerWidget->setScroll              ();
+    m_pPlayerWidget->timeDisplay            ( false, 0, 0, 0 );
+    m_pPlayerWidget->m_pSlider->setValue    ( 0 );
+    m_pPlayerWidget->m_pSlider->setMaxValue ( 0 );
+    m_pPlayerWidget->m_pButtonPlay->setOn   ( false );
     m_pPlayerWidget->m_pButtonPause->setDown( false );
-    m_pPlayerWidget->setScroll();
 }
 
 
@@ -591,7 +593,7 @@ bool PlayerApp::playObjectConfigurable()
 
 void PlayerApp::slotSliderPressed()
 {
-    m_bSliderIsPressed = true;
+    m_sliderIsPressed = true;
 }
 
 
@@ -602,13 +604,13 @@ void PlayerApp::slotSliderReleased()
         m_pEngine->seek( m_pPlayerWidget->m_pSlider->value() );
     }
 
-    m_bSliderIsPressed = false;
+    m_sliderIsPressed = false;
 }
 
 
 void PlayerApp::slotSliderChanged( int value )
 {
-    if ( m_bSliderIsPressed )
+    if ( m_sliderIsPressed )
     {
         value /= 1000;    // ms -> sec
 
@@ -637,7 +639,7 @@ void PlayerApp::slotVolumeChanged( int value )
 
 void PlayerApp::slotMainTimer()
 {
-    if ( m_bSliderIsPressed || ( m_pEngine->state() == EngineBase::Empty ) )
+    if ( m_sliderIsPressed || ( m_pEngine->state() == EngineBase::Empty ) )
         return;
 
     m_pPlayerWidget->m_pSlider->setValue( m_pEngine->position() );
