@@ -141,7 +141,7 @@ int sqlite3RunVacuum(char **pzErrMsg, sqlite *db){
   **
   ** An optimisation would be to use a non-journaled pager.
   */
-  zSql = sqlite3MPrintf("ATTACH '%s' AS vacuum_db;", zTemp);
+  zSql = sqlite3MPrintf("ATTACH '%q' AS vacuum_db;", zTemp);
   if( !zSql ){
     rc = SQLITE_NOMEM;
     goto end_of_vacuum;

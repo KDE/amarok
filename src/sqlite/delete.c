@@ -24,11 +24,10 @@
 Table *sqlite3SrcListLookup(Parse *pParse, SrcList *pSrc){
   Table *pTab = 0;
   int i;
-  for(i=0; i<pSrc->nSrc; i++){
-    const char *zTab = pSrc->a[i].zName;
-    const char *zDb = pSrc->a[i].zDatabase;
-    pTab = sqlite3LocateTable(pParse, zTab, zDb);
-    pSrc->a[i].pTab = pTab;
+  struct SrcList_item *pItem;
+  for(i=0, pItem=pSrc->a; i<pSrc->nSrc; i++, pItem++){
+    pTab = sqlite3LocateTable(pParse, pItem->zName, pItem->zDatabase);
+    pItem->pTab = pTab;
   }
   return pTab;
 }

@@ -621,12 +621,12 @@ case OP_Return: {
 ** Exit immediately.  All open cursors, Lists, Sorts, etc are closed
 ** automatically.
 **
-** P1 is the result code returned by sqlite3_exec().  For a normal
-** halt, this should be SQLITE_OK (0).  For errors, it can be some
-** other value.  If P1!=0 then P2 will determine whether or not to
-** rollback the current transaction.  Do not rollback if P2==OE_Fail.
-** Do the rollback if P2==OE_Rollback.  If P2==OE_Abort, then back
-** out all changes that have occurred during this execution of the
+** P1 is the result code returned by sqlite3_exec(), sqlite3_reset(),
+** or sqlite3_finalize().  For a normal halt, this should be SQLITE_OK (0).
+** For errors, it can be some other value.  If P1!=0 then P2 will determine
+** whether or not to rollback the current transaction.  Do not rollback
+** if P2==OE_Fail. Do the rollback if P2==OE_Rollback.  If P2==OE_Abort,
+** then back out all changes that have occurred during this execution of the
 ** VDBE, but do not rollback the transaction. 
 **
 ** There is an implied "Halt 0 0 0" instruction inserted at the very end of
@@ -634,17 +634,21 @@ case OP_Return: {
 ** is the same as executing Halt.
 */
 case OP_Halt: {
-  p->magic = VDBE_MAGIC_HALT;
   p->pTos = pTos;
-  if( pOp->p1!=SQLITE_OK ){
-    p->rc = pOp->p1;
-    p->errorAction = pOp->p2;
+  p->rc = pOp->p1;
+  p->pc = pc;
+  p->errorAction = pOp->p2;
+  if( pOp->p3 ){
     sqlite3SetString(&p->zErrMsg, pOp->p3, (char*)0);
-    return SQLITE_ERROR;
-  }else{
-    p->rc = SQLITE_OK;
-    return SQLITE_DONE;
   }
+  rc = sqlite3VdbeHalt(p);
+  if( rc==SQLITE_BUSY ){
+    p->rc = SQLITE_BUSY;
+    return SQLITE_BUSY;
+  }else if( rc!=SQLITE_OK ){
+    p->rc = rc;
+  }
+  return p->rc ? SQLITE_ERROR : SQLITE_DONE;
 }
 
 /* Opcode: Integer P1 * P3
@@ -908,42 +912,10 @@ case OP_Callback: {
   return SQLITE_ROW;
 }
 
-/* Opcode: Concat8 P1 P2 P3
-**
-** P3 points to a nul terminated UTF-8 string. When it is executed for
-** the first time, P3 is converted to the native database encoding and
-** the opcode replaced with Concat (see Concat for details of processing).
-*/
-case OP_Concat8: {
-  pOp->opcode = OP_Concat;
-
-  if( db->enc!=SQLITE_UTF8 && pOp->p3 ){
-    Mem tmp;
-    tmp.flags = MEM_Null;
-    sqlite3VdbeMemSetStr(&tmp, pOp->p3, -1, SQLITE_UTF8, SQLITE_STATIC);
-    if( SQLITE_OK!=sqlite3VdbeChangeEncoding(&tmp, db->enc) ||
-        SQLITE_OK!=sqlite3VdbeMemDynamicify(&tmp) 
-    ){
-      goto no_mem;
-    }
-    assert( tmp.flags|MEM_Dyn );
-    assert( !tmp.xDel );
-    pOp->p3type = P3_DYNAMIC;
-    pOp->p3 = tmp.z;
-    /* Don't call sqlite3VdbeMemRelease() on &tmp, the dynamic allocation
-    ** is cleaned up when the vdbe is deleted. 
-    */
-  }
-
-  /* If it wasn't already, P3 has been converted to the database text
-  ** encoding. Fall through to OP_Concat to process this instruction.
-  */
-}
-
 /* Opcode: Concat P1 P2 *
 **
-** Look at the first P1 elements of the stack.  Append them all 
-** together with the lowest element first.  The original P1 elements
+** Look at the first P1+2 elements of the stack.  Append them all 
+** together with the lowest element first.  The original P1+2 elements
 ** are popped from the stack if P2==0 and retained if P2==1.  If
 ** any element of the stack is NULL, then the result is NULL.
 **
@@ -958,7 +930,7 @@ case OP_Concat: {
   Mem *pTerm;
 
   /* Loop through the stack elements to see how long the result will be. */
-  nField = pOp->p1;
+  nField = pOp->p1 + 2;
   pTerm = &pTos[1-nField];
   nByte = 0;
   for(i=0; i<nField; i++, pTerm++){
@@ -2150,6 +2122,8 @@ case OP_Statement: {
 ** Set the database auto-commit flag to P1 (1 or 0). If P2 is true, roll
 ** back any currently active btree transactions. If there are any active
 ** VMs (apart from this one), then the COMMIT or ROLLBACK statement fails.
+**
+** This instruction causes the VM to halt.
 */
 case OP_AutoCommit: {
   u8 i = pOp->p1;
@@ -2158,7 +2132,7 @@ case OP_AutoCommit: {
   assert( i==1 || i==0 );
   assert( i==1 || rollback==0 );
 
-  assert( db->activeVdbeCnt>0 );
+  assert( db->activeVdbeCnt>0 );  /* At least this one VM is active */
 
   if( db->activeVdbeCnt>1 && i && !db->autoCommit ){
     /* If this instruction implements a COMMIT or ROLLBACK, other VMs are
@@ -2170,10 +2144,17 @@ case OP_AutoCommit: {
     rc = SQLITE_ERROR;
   }else if( i!=db->autoCommit ){
     db->autoCommit = i;
-    p->autoCommitOn |= i;
     if( pOp->p2 ){
+      assert( i==1 );
       sqlite3RollbackAll(db);
+    }else if( sqlite3VdbeHalt(p)==SQLITE_BUSY ){
+      p->pTos = pTos;
+      p->pc = pc;
+      db->autoCommit = 1-i;
+      p->rc = SQLITE_BUSY;
+      return SQLITE_BUSY;
     }
+    return SQLITE_DONE;
   }else{
     sqlite3SetString(&p->zErrMsg,
         (!i)?"cannot start a transaction within a transaction":(
@@ -4483,7 +4464,7 @@ vdbe_halt:
   }else{
     rc = SQLITE_DONE;
   }
-  p->magic = VDBE_MAGIC_HALT;
+  sqlite3VdbeHalt(p);
   p->pTos = pTos;
   return rc;
 

@@ -146,7 +146,7 @@ QString
 CollectionDB::getImageForAlbum( const QString artist, const QString album, const uint width )
 {
     QString widthKey = QString::number( width ) + "@";
-    
+
     if( artist.isEmpty() && album.isEmpty() )
     {
         if( m_cacheDir.exists( widthKey + "nocover.png" ) )
@@ -162,7 +162,7 @@ CollectionDB::getImageForAlbum( const QString artist, const QString album, const
     {
         QString key( QFile::encodeName( artist + " - " + album ) );
         key.replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ).append( ".png" );
-    
+
         if ( m_cacheDir.exists( widthKey + key.lower() ) )
             return m_cacheDir.filePath( widthKey + key.lower() );
         else
@@ -320,8 +320,8 @@ CollectionDB::artistList( bool withUnknown, bool withCompilations )
     QStringList values;
     QStringList names;
 
-    execSql( "SELECT DISTINCT artist.name FROM artist, tags WHERE 1 " + 
-             ( withUnknown ? QString() : "AND artist.name <> 'Unknown' " ) + 
+    execSql( "SELECT DISTINCT artist.name FROM artist, tags WHERE 1 " +
+             ( withUnknown ? QString() : "AND artist.name <> 'Unknown' " ) +
              ( withCompilations ? QString() : "AND tags.artist = artist.id AND tags.sampler = 0 " ) +
              "ORDER BY lower( artist.name );", &values, &names );
 
@@ -335,8 +335,8 @@ CollectionDB::albumList( bool withUnknown, bool withCompilations )
     QStringList values;
     QStringList names;
 
-    execSql( "SELECT DISTINCT album.name FROM album, tags WHERE 1 " + 
-             ( withUnknown ? QString() : "AND album.name <> 'Unknown' " ) + 
+    execSql( "SELECT DISTINCT album.name FROM album, tags WHERE 1 " +
+             ( withUnknown ? QString() : "AND album.name <> 'Unknown' " ) +
              ( withCompilations ? QString() : "AND tags.album = album.id AND tags.sampler = 0 " ) +
              "ORDER BY lower( album.name );", &values, &names );
 
@@ -372,7 +372,7 @@ CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
              ( withUnknown ? QString() : "AND album.name <> 'Unknown' AND artist.name <> 'Unknown' " ) +
              ( withCompilations ? QString() : "AND tags.sampler = 0 " ) +
              "ORDER BY lower( album.name );", &values, &names );
-    
+
     return values;
 }
 
@@ -416,8 +416,8 @@ CollectionDB::addSongPercentage( const QString url, const int percentage )
     if ( values.count() )
     {
         // entry exists, increment playcounter and update accesstime
-        float score = ( ( values[2].toDouble() * values[0].toInt() ) + percentage ) / ( values[0].toInt() + 1 ); 
- 
+        float score = ( ( values[2].toDouble() * values[0].toInt() ) + percentage ) / ( values[0].toInt() + 1 );
+
         execSql( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
                           "VALUES ( '%1', '%2', strftime('%s', 'now'), %3, %4 );" )
                     .arg( escapeString( url ) )
@@ -547,12 +547,14 @@ CollectionDB::removeDirFromCollection( QString path )
 bool
 CollectionDB::execSql( const QString& statement, QStringList* const values, QStringList* const names, const bool debug )
 {
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
+
     if ( debug )
-        kdDebug() << "SQL-query: " << statement << endl;
+        kdDebug() << "[CollectionDB] SQL-query: " << statement << endl;
 
     if ( !m_db )
     {
-        kdWarning() << k_funcinfo << "SQLite pointer == NULL.\n";
+        kdError() << k_funcinfo << "[CollectionDB] SQLite pointer == NULL.\n";
         return false;
     }
 
@@ -564,9 +566,9 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
 
     if ( error != SQLITE_OK )
     {
-        kdWarning() << k_funcinfo << "sqlite_compile error:\n";
-        kdWarning() << sqlite3_errmsg( m_db ) << endl;
-        kdWarning() << "on query: " << statement << endl;
+        kdError() << k_funcinfo << "[CollectionDB] sqlite3_compile error:\n";
+        kdError() << sqlite3_errmsg( m_db ) << endl;
+        kdError() << "on query: " << statement << endl;
 
         return false;
     }
@@ -576,6 +578,10 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
     while ( true )
     {
         error = sqlite3_step( stmt );
+
+        if ( error == SQLITE_BUSY )
+            kdDebug() << "[CollectionDB] sqlite3_step: BUSY\n";
+
         if ( error == SQLITE_DONE || error == SQLITE_ERROR )
             break;
 
@@ -591,11 +597,12 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
 
     if ( error != SQLITE_DONE )
     {
-        kdWarning() << k_funcinfo << "sqlite_step error.\n";
-        kdWarning() << sqlite3_errmsg( m_db ) << endl;
+        kdError() << k_funcinfo << "sqlite_step error.\n";
+        kdError() << sqlite3_errmsg( m_db ) << endl;
         return false;
     }
 
+    kdDebug() << "END " << k_funcinfo << endl;
     return true;
 }
 

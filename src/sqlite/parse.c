@@ -84,7 +84,6 @@ struct AttachKey { int type;  Token key; };
 **    YYERRORSYMBOL      is the code number of the error symbol.  If not
 **                       defined, then do no error processing.
 */
-/*  */
 #define YYCODETYPE unsigned char
 #define YYNOCODE 220
 #define YYACTIONTYPE unsigned short int

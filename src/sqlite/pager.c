@@ -1308,7 +1308,7 @@ static int pager_stmt_playback(Pager *pPager){
 end_stmt_playback:
   if( rc!=SQLITE_OK ){
     pPager->errMask |= PAGER_ERR_CORRUPT;
-    rc = SQLITE_CORRUPT;
+    rc = SQLITE_CORRUPT;  /* bkpt-CORRUPT */
   }else{
     pPager->journalOff = szJ;
     /* pager_reload_cache(pPager); */
@@ -2798,10 +2798,7 @@ int sqlite3pager_commit(Pager *pPager){
   /* Jump here if anything goes wrong during the commit process.
   */
 commit_abort:
-  rc = sqlite3pager_rollback(pPager);
-  if( rc==SQLITE_OK ){
-    rc = SQLITE_FULL;
-  }
+  sqlite3pager_rollback(pPager);
   return rc;
 }
 
@@ -2882,7 +2879,7 @@ int sqlite3pager_rollback(Pager *pPager){
     rc = pager_playback(pPager);
   }
   if( rc!=SQLITE_OK ){
-    rc = SQLITE_CORRUPT;
+    rc = SQLITE_CORRUPT;  /* bkpt-CORRUPT */
     pPager->errMask |= PAGER_ERR_CORRUPT;
   }
   pPager->dbSize = -1;

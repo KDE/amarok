@@ -220,6 +220,20 @@ Expr *sqlite3Expr(int op, Expr *pLeft, Expr *pRight, Token *pToken){
 }
 
 /*
+** Join two expressions using an AND operator.  If either expression is
+** NULL, then just return the other expression.
+*/
+Expr *sqlite3ExprAnd(Expr *pLeft, Expr *pRight){
+  if( pLeft==0 ){
+    return pRight;
+  }else if( pRight==0 ){
+    return pLeft;
+  }else{
+    return sqlite3Expr(TK_AND, pLeft, pRight, 0);
+  }
+}
+
+/*
 ** Set the Expr.span field of the given expression to span all
 ** text between the two given tokens.
 */
@@ -1147,8 +1161,9 @@ void sqlite3ExprCode(Parse *pParse, Expr *pExpr){
     case TK_RSHIFT:   op = OP_ShiftRight; break;
     case TK_REM:      op = OP_Remainder;  break;
     case TK_FLOAT:    op = OP_Real;       break;
-    case TK_STRING:   op = OP_String8;     break;
+    case TK_STRING:   op = OP_String8;    break;
     case TK_BLOB:     op = OP_HexBlob;    break;
+    case TK_CONCAT:   op = OP_Concat;     break;
     default: op = 0; break;
   }
   switch( pExpr->op ){
@@ -1209,16 +1224,11 @@ void sqlite3ExprCode(Parse *pParse, Expr *pExpr){
     case TK_BITOR:
     case TK_SLASH:
     case TK_LSHIFT:
-    case TK_RSHIFT: {
-      sqlite3ExprCode(pParse, pExpr->pLeft);
-      sqlite3ExprCode(pParse, pExpr->pRight);
-      sqlite3VdbeAddOp(v, op, 0, 0);
-      break;
-    }
+    case TK_RSHIFT: 
     case TK_CONCAT: {
       sqlite3ExprCode(pParse, pExpr->pLeft);
       sqlite3ExprCode(pParse, pExpr->pRight);
-      sqlite3VdbeAddOp(v, OP_Concat8, 2, 0);
+      sqlite3VdbeAddOp(v, op, 0, 0);
       break;
     }
     case TK_UMINUS: {

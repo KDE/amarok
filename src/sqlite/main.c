@@ -407,7 +407,7 @@ static int nocaseCollatingFunc(
   int nKey2, const void *pKey2
 ){
   int r = sqlite3StrNICmp(
-      (const char *)pKey1, (const char *)pKey2, (nKey1>nKey2)?nKey1:nKey2);
+      (const char *)pKey1, (const char *)pKey2, (nKey1<nKey2)?nKey1:nKey2);
   if( 0==r ){
     r = nKey1-nKey2;
   }
@@ -521,7 +521,6 @@ void sqlite3RollbackAll(sqlite *db){
     }
   }
   sqlite3ResetInternalSchema(db, 0);
-  /* sqlite3RollbackInternalChanges(db); */
 }
 
 /*
@@ -579,8 +578,8 @@ static int sqliteDefaultBusyCallback(
   static const short int totals[] =
      { 0, 1, 3,  8, 18, 33, 53, 78, 103, 128, 178, 228, 287};
 # define NDELAY (sizeof(delays)/sizeof(delays[0]))
-  int timeout = (int)Timeout;
-  int delay, prior;
+  ptr timeout = (ptr)Timeout;
+  ptr delay, prior;
 
   if( count <= NDELAY ){
     delay = delays[count-1];
@@ -650,7 +649,7 @@ void sqlite3_progress_handler(
 */
 int sqlite3_busy_timeout(sqlite3 *db, int ms){
   if( ms>0 ){
-    sqlite3_busy_handler(db, sqliteDefaultBusyCallback, (void*)ms);
+    sqlite3_busy_handler(db, sqliteDefaultBusyCallback, (void*)(ptr)ms);
   }else{
     sqlite3_busy_handler(db, 0, 0);
   }
@@ -987,7 +986,7 @@ int sqlite3_prepare(
     ** Make a copy of that part of the SQL string since zSQL is const
     ** and we must pass a zero terminated string to the trace function
     ** The copy is unnecessary if the tail pointer is pointing at the
-    ** beginnig or end of the SQL string.
+    ** beginning or end of the SQL string.
     */
     if( sParse.zTail && sParse.zTail!=zSql && *sParse.zTail ){
       char *tmpSql = sqliteStrNDup(zSql, sParse.zTail - zSql);

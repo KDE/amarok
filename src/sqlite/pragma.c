@@ -114,10 +114,13 @@ static int changeTempStorage(Parse *pParse, const char *zStorageType){
 /*
 ** Generate code to return a single integer value.
 */
-static void returnSingleInt(Vdbe *v, const char *zLabel, int value){
+static void returnSingleInt(Parse *pParse, const char *zLabel, int value){
+  Vdbe *v = sqlite3GetVdbe(pParse);
   sqlite3VdbeAddOp(v, OP_Integer, value, 0);
-  sqlite3VdbeSetNumCols(v, 1);
-  sqlite3VdbeSetColName(v, 0, zLabel, P3_STATIC);
+  if( pParse->explain==0 ){
+    sqlite3VdbeSetNumCols(v, 1);
+    sqlite3VdbeSetColName(v, 0, zLabel, P3_STATIC);
+  }
   sqlite3VdbeAddOp(v, OP_Callback, 1, 0);
 }
 
@@ -149,7 +152,8 @@ static int flagPragma(Parse *pParse, const char *zLeft, const char *zRight){
       if( zRight==0 ){
         v = sqlite3GetVdbe(pParse);
         if( v ){
-          returnSingleInt(v, aPragma[i].zName, (db->flags&aPragma[i].mask)!=0);
+          returnSingleInt(pParse,
+               aPragma[i].zName, (db->flags&aPragma[i].mask)!=0);
         }
       }else if( getBoolean(zRight) ){
         db->flags |= aPragma[i].mask;
@@ -277,7 +281,7 @@ void sqlite3Pragma(
     Btree *pBt = pDb->pBt;
     if( !zRight ){
       int size = pBt ? sqlite3BtreeGetPageSize(pBt) : 0;
-      returnSingleInt(v, "page_size", size);
+      returnSingleInt(pParse, "page_size", size);
     }else{
       sqlite3BtreeSetPageSize(pBt, atoi(zRight), 0);
     }
@@ -300,7 +304,7 @@ void sqlite3Pragma(
   if( sqlite3StrICmp(zLeft,"cache_size")==0 ){
     if( sqlite3ReadSchema(pParse) ) goto pragma_out;
     if( !zRight ){
-      returnSingleInt(v, "cache_size", pDb->cache_size);
+      returnSingleInt(pParse, "cache_size", pDb->cache_size);
     }else{
       int size = atoi(zRight);
       if( size<0 ) size = -size;
@@ -322,7 +326,7 @@ void sqlite3Pragma(
   */
   if( sqlite3StrICmp(zLeft, "temp_store")==0 ){
     if( !zRight ){
-      returnSingleInt(v, "temp_store", db->temp_store);
+      returnSingleInt(pParse, "temp_store", db->temp_store);
     }else{
       changeTempStorage(pParse, zRight);
     }
@@ -340,7 +344,7 @@ void sqlite3Pragma(
   if( sqlite3StrICmp(zLeft,"synchronous")==0 ){
     if( sqlite3ReadSchema(pParse) ) goto pragma_out;
     if( !zRight ){
-      returnSingleInt(v, "synchronous", pDb->safety_level-1);
+      returnSingleInt(pParse, "synchronous", pDb->safety_level-1);
     }else{
       if( !db->autoCommit ){
         sqlite3ErrorMsg(pParse, 
@@ -577,7 +581,7 @@ void sqlite3Pragma(
          sqlite3MPrintf("*** in database %s ***\n", db->aDb[i].zName),
          P3_DYNAMIC);
       sqlite3VdbeAddOp(v, OP_Pull, 1, 0);
-      sqlite3VdbeAddOp(v, OP_Concat8, 2, 1);
+      sqlite3VdbeAddOp(v, OP_Concat, 0, 1);
       sqlite3VdbeAddOp(v, OP_Callback, 1, 0);
 
       /* Make sure all the indices are constructed correctly.
@@ -602,7 +606,7 @@ void sqlite3Pragma(
             { OP_Recno,       1,  0,  0},
             { OP_String8,     0,  0,  " missing from index "},
             { OP_String8,     0,  0,  0},    /* 4 */
-            { OP_Concat8,     4,  0,  0},
+            { OP_Concat,      2,  0,  0},
             { OP_Callback,    1,  0,  0},
           };
           sqlite3GenerateIndexKey(v, pIdx, 1);
@@ -626,7 +630,7 @@ void sqlite3Pragma(
              { OP_MemIncr,      0,  0,  0},
              { OP_String8,      0,  0,  "wrong # of entries in index "},
              { OP_String8,      0,  0,  0},  /* 10 */
-             { OP_Concat8,      2,  0,  0},
+             { OP_Concat,       0,  0,  0},
              { OP_Callback,     1,  0,  0},
           };
           if( pIdx->tnum==0 ) continue;

@@ -272,7 +272,7 @@ void sqlite3Update(
     }else{
       sqlite3VdbeAddOp(v, OP_Recno, iCur, 0);
     }
-    for(i=0; i<pTab->nCol; i++){
+    for(i=0; i<pTab->nCol; i++){ /* TODO: Factor out this loop as common code */
       if( i==pTab->iPKey ){
         sqlite3VdbeAddOp(v, OP_String8, 0, 0);
         continue;
