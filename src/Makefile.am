@@ -11,8 +11,6 @@ endif
 
 bin_PROGRAMS = amarokapp
 
-KDE_OPTIONS = nofinal
-
 SUBDIRS = \
     amarokcore \
     $(SQLITE_SUBDIR) \
