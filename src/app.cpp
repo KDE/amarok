@@ -384,33 +384,7 @@ void App::applySettings()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
-    if ( AmarokConfig::soundSystem() != PluginManager::getService( EngineController::engine() )->name() ) {
-        PluginManager::unload( EngineController::engine() );
-        initEngine();
-        AmarokConfig::setHardwareMixer( EngineController::engine()->initMixer( AmarokConfig::hardwareMixer() ) );
-        kdDebug() << k_funcinfo << " AmarokConfig::soundSystem() == " << AmarokConfig::soundSystem() << endl;
-    }
-
-    EngineController *const controller = EngineController::instance();
-    EngineBase *const engine = controller->engine();
-
-    if ( AmarokConfig::hardwareMixer() != engine->isMixerHardware() )
-        AmarokConfig::setHardwareMixer( engine->initMixer( AmarokConfig::hardwareMixer() ) );
-
-    controller->setVolume( AmarokConfig::masterVolume() ); //FIXME this shouldn't be here!
-    engine->setRestoreEffects( AmarokConfig::rememberEffects() );
-    engine->setSoundOutput( AmarokConfig::soundOutput() );
-    engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
-    
-    m_pOSD->setEnabled( AmarokConfig::osdEnabled() );
-    m_pOSD->setFont( AmarokConfig::osdFont() );
-    m_pOSD->setTextColor( AmarokConfig::osdTextColor() );
-    m_pOSD->setBackgroundColor( AmarokConfig::osdBackgroundColor() );
-    m_pOSD->setDuration( AmarokConfig::osdDuration() );
-    m_pOSD->setPosition( (OSDWidget::Position)AmarokConfig::osdAlignment() );
-    m_pOSD->setScreen( AmarokConfig::osdScreen() );
-    m_pOSD->setOffset( AmarokConfig::osdXOffset(), AmarokConfig::osdYOffset() );
-
+    // Player Window
     if( AmarokConfig::showPlayerWindow() )
     {
         if( !m_pPlayerWidget )
@@ -445,8 +419,36 @@ void App::applySettings()
         delete m_pPlayerWidget;
         m_pPlayerWidget = 0;
     }
+    
+    // Engine
+    if ( AmarokConfig::soundSystem() != PluginManager::getService( EngineController::engine() )->name() ) {
+        PluginManager::unload( EngineController::engine() );
+        initEngine();
+        AmarokConfig::setHardwareMixer( EngineController::engine()->initMixer( AmarokConfig::hardwareMixer() ) );
+        kdDebug() << k_funcinfo << " AmarokConfig::soundSystem() == " << AmarokConfig::soundSystem() << endl;
+    }
+    EngineController *const controller = EngineController::instance();
+    EngineBase *const engine = controller->engine();
 
+    if ( AmarokConfig::hardwareMixer() != engine->isMixerHardware() )
+        AmarokConfig::setHardwareMixer( engine->initMixer( AmarokConfig::hardwareMixer() ) );
 
+    controller->setVolume( AmarokConfig::masterVolume() ); //FIXME this shouldn't be here!
+    engine->setRestoreEffects( AmarokConfig::rememberEffects() );
+    engine->setSoundOutput( AmarokConfig::soundOutput() );
+    engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
+    
+    // OSD
+    m_pOSD->setEnabled( AmarokConfig::osdEnabled() );
+    m_pOSD->setFont( AmarokConfig::osdFont() );
+    m_pOSD->setTextColor( AmarokConfig::osdTextColor() );
+    m_pOSD->setBackgroundColor( AmarokConfig::osdBackgroundColor() );
+    m_pOSD->setDuration( AmarokConfig::osdDuration() );
+    m_pOSD->setPosition( (OSDWidget::Position)AmarokConfig::osdAlignment() );
+    m_pOSD->setScreen( AmarokConfig::osdScreen() );
+    m_pOSD->setOffset( AmarokConfig::osdXOffset(), AmarokConfig::osdYOffset() );
+
+    // Fonts
     const QFont font = AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font();
     m_pPlaylistWindow->setFont( font );
 
