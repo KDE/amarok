@@ -14,6 +14,8 @@ VERSION HEAD:
   * fix: made metainfo reading algorithm faster
   * change: switched to TagLib for metainfo reading
   * add: button "play" in PlayerWidget.cpp is now a toggleButton
+  * add: tray icon
+  * fix: playlist window is optionally hideable with main widget when iconified to tray
 
 VERSION 0.6.0:
   * Release :)
