@@ -16,6 +16,7 @@
 #include <qcstring.h>
 #include <qdragobject.h>
 #include <qptrlist.h>
+#include <qpushbutton.h>
 #include <qtimer.h>
 #include <qtooltip.h>       //QToolTip::add()
 
@@ -27,7 +28,6 @@
 #include <kmenubar.h>
 #include <kpopupmenu.h>
 #include <kprogress.h>
-#include <kpushbutton.h>
 #include <ktoolbarbutton.h> //ctor
 #include <kurldrag.h>       //dragObject()
 
@@ -256,7 +256,9 @@ CollectionView::scan()  //SLOT
         m_insertdb->scan( m_dirs, m_recursively );
     
         m_progressBox = new QHBox( m_parent  );
-        KPushButton* button = new KPushButton( i18n( "Abort Scan" ), m_progressBox );
+        KIconLoader loader;
+        QPushButton* button = new QPushButton( loader.loadIconSet( "button_cancel", KIcon::NoGroup ),
+                                               i18n( "Abort Scan" ), m_progressBox );
         connect( button, SIGNAL( clicked() ), m_insertdb, SLOT( stopScan() ) );
         m_progress = new KProgress( m_progressBox );
         m_progressBox->show();
