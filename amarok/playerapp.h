@@ -42,6 +42,7 @@ class QString;
 class QTimer;
 
 class KConfig;
+class KURL;
 
 class BrowserWin;
 class EffectWidget;
@@ -176,6 +177,7 @@ class PlayerApp : public KUniqueApplication
         bool initScope();
         void initBrowserWin();
         void initColors();
+        void restoreSession();
 
         void saveConfig();
         void readConfig();
