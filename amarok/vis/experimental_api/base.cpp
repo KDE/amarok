@@ -15,7 +15,7 @@ using Vis::Scope;
 using std::string;
 
 
-Vis::Base::Base( const string &name, DataType dt, bool notify, uint fps )
+Vis::Base::Base( /*const string &name,*/ DataType dt, bool notify, uint fps )
   : m_dataType( dt )
   , m_sleepTime( (fps == 0) ? 0 : (1000*1000)/fps ) //TODO adjust depending on how long vis takes to do it's stuff
   , m_sockFD( -1 )
@@ -31,9 +31,21 @@ Vis::Base::Base( const string &name, DataType dt, bool notify, uint fps )
     if( openConnection( path ) ) //do exception on failure
     {
         //register ourselves
-        std::string msg = "REG"; msg += name;
-        send( msg.c_str(), msg.length() );
+//        std::string msg = "REG"; msg += name;
+//        send( msg.c_str(), msg.length() );
+
+        std::cout << "\n"
+                  << "  ********************************************\n"
+                  << "  **     amaroK Visualisation Framework     **\n"
+                  << "  **                                        **\n"
+                  << "  **    If visualizations appear strange,   **\n"
+                  << "  **  crash or are buggy, please tell us at **\n"
+                  << "  **   amarok-devel@lists.sourceforge.net   **\n"
+                  << "  **                                        **\n"
+                  << "  ********************************************\n"
+                  << "\n";
     }
+    else std::cout << "Could not connect to the amaroK Visualization Server..\n";
 }
 
 bool
@@ -130,6 +142,8 @@ Vis::Implementation<S>::exec()
 
         ::usleep( m_sleepTime );
     }
+
+    closeConnection();
 
     return go; //return something meaningful!
 }

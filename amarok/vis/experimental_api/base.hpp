@@ -40,6 +40,10 @@ enum DataType { PCM = 0, FFT = 1 };
 //TODO instead make it so the template derives this and the derived class impliments a templated exec()
 //not actually in base.. (is this wise? <-- less code bloat and a solid abstract base class asre the advantages)
 
+
+//TODO pass the data as well as the screen to the render function as this makes life easier for writers
+
+
 template<class S> class Implementation;
 
 class Base
@@ -56,6 +60,10 @@ public:
     float right( uint x ) const { return m_right[x]; }
 
     bool send( const void *data, int nbytes ); //FIXME make protected
+
+
+    static const uint PCM_DATA_SIZE = 512; //FIXME better name
+    static const uint MAX_FHT_SIZE  = 9;   //FIXME better name
 
 protected:
 
