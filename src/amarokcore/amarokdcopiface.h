@@ -43,6 +43,8 @@ k_dcop:
    virtual void addMedia(const KURL &) = 0;                 ///< Add audio media specified by the url.
    virtual void addMediaList(const KURL::List &) = 0;       ///< Add some audio media specified by the url.
 
+   virtual void clearPlaylist() = 0;                        ///< Clears the playlist.
+
    /* These two methods return raw time in seconds, this is useful for apps like mediacontrol, which calculate
       track lengths and positions in seconds. DO NOT TOUCH! */
    virtual int  trackTotalTime() = 0;                       ///< Return track length in seconds.
@@ -78,7 +80,7 @@ k_dcop:
    virtual void showOSD() = 0;                              ///< Show the OSD display on the screen.
 
    virtual void togglePlaylist() = 0;                       ///< Toggle the Playlist-window
-   virtual int score() = 0;                       ///<Return the score of the currently playing track.
+   virtual int score() = 0;                                ///<Return the score of the currently playing track.
 };
 
 #endif

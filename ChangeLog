@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta2:
+  ADD: DCOP call to clear the playlist. (BR 90149)
   ADD: DCOP call to enable/disable the equalizer.
   ADD: DCOP call to return the score of the currently playing track.
   ADD: Audioscrobbler submit queue stored in disk. Tracks that are listened

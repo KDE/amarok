@@ -44,6 +44,7 @@ class DcopHandler : public QObject, virtual public AmarokIface
       virtual int  trackCurrentTime();
       virtual void addMedia(const KURL &);
       virtual void addMediaList(const KURL::List &);
+      virtual void clearPlaylist();
       virtual QString nowPlaying();
       virtual QString artist();
       virtual QString title();

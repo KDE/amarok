@@ -209,6 +209,11 @@ namespace amaroK
         Playlist::instance()->insertMedia(urls);
     }
 
+    void DcopHandler::clearPlaylist()
+    {
+        Playlist::instance()->clear();
+    }
+
     void DcopHandler::setVolume(int volume)
     {
         EngineController::instance()->setVolume(volume);
@@ -239,7 +244,7 @@ namespace amaroK
     EngineController::engine()->setEqualizerEnabled( active );
     AmarokConfig::setEqualizerEnabled( active );
     }
-     
+
     void DcopHandler::enableOSD(bool enable)
     {
         amaroK::OSD::instance()->setEnabled(enable);
@@ -255,7 +260,7 @@ namespace amaroK
     {
         PlaylistWindow::self()->showHide();
     }
-    
+
     int DcopHandler::score()
     {
         const MetaBundle &bundle = EngineController::instance()->bundle();
