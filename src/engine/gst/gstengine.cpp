@@ -398,7 +398,7 @@ GstEngine::stop()  //SLOT
     /* stop the thread */
     gst_element_set_state ( m_thread, GST_STATE_NULL );
 
-    delete m_transferJob;
+    m_transferJob->kill();
     m_transferJob = 0;
     
     emit stopped();
@@ -497,7 +497,7 @@ GstEngine::newKioData( KIO::Job*, const QByteArray& array )  //SLOT
     
     if ( m_streamBufIndex >= STREAMBUF_MAX ) {
         kdDebug() << "Gst-Engine: SUSPENDING kio transfer.\n";
-        m_transferJob->suspend();
+        if ( m_transferJob ) m_transferJob->suspend();
     }
             
     if ( m_streamBufIndex + size >= STREAMBUF_SIZE ) {
