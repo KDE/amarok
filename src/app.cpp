@@ -454,7 +454,7 @@ void App::applySettings( bool firstTime )
                 QFile( cacheDir.filePath( *it ) ).remove();
     }
 
-    if ( !firstTime )
+    //if ( !firstTime )
         // Bizarrely and ironically calling this causes crashes for
         // some people! FIXME
         //AmarokConfig::writeConfig();
