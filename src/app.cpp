@@ -301,34 +301,7 @@ void App::initEngine()
         plugin = PluginManager::createFromQuery( "[X-KDE-amaroK-plugintype] == 'engine'" );
 
         if ( !plugin )
-        {
-            class DummyEngine : public EngineBase
-            {
-                virtual void init( bool&, int, bool ) {}
-                virtual bool initMixer( bool ) { return false; }
-                virtual bool canDecode( const KURL&, mode_t, mode_t ) { return false; }
-                virtual long length() const { return 0; }
-                virtual long position() const { return 0; }
-                virtual EngineState state() const { return EngineBase::Empty; }
-                virtual bool isStream() const { return false; }
-                virtual const QObject* play( const KURL& ) { return 0; }
-                virtual void play() {}
-                virtual void stop() {}
-                virtual void pause() {}
-
-                virtual void seek( long ) {}
-                virtual void setVolume( int ) {}
-            };
-
-            //TODO the kdFatal() command crashes amaroK for some reason
-            //TODO decide whether or not to keep the dummy engine
-            //kdFatal() << k_funcinfo << "No engine plugin found. Aborting.\n";
-
-            EngineController::setEngine( new DummyEngine() );
-            AmarokConfig::setSoundSystem( "Dummy Engine" );
-
-            return;
-        }
+            kdFatal() << k_funcinfo << "No engine plugin found. Aborting.\n";
 
         AmarokConfig::setSoundSystem( PluginManager::getService( plugin )->name() );
         kdDebug() << k_funcinfo << "setting soundSystem to: " << AmarokConfig::soundSystem() << endl;
@@ -505,12 +478,8 @@ void App::readConfig()
     m_artsNeedsRestart = AmarokConfig::version() != APP_VERSION;
 
     initEngine();
-
     EngineController* const ec = EngineController::instance();
-    EngineBase* const engine = ec->engine();
-
-    AmarokConfig::setHardwareMixer( engine->initMixer( AmarokConfig::hardwareMixer() ) );
-    ec->setVolume( AmarokConfig::masterVolume() );
+    AmarokConfig::setHardwareMixer( ec->engine()->initMixer( AmarokConfig::hardwareMixer() ) );
 
     m_pPlaylistWindow->move( AmarokConfig::playlistWindowPos() );
     m_pPlaylistWindow->resize( AmarokConfig::playlistWindowSize() );
