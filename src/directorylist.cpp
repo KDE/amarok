@@ -31,7 +31,7 @@
 
 DirectoryList::DirectoryList( const QStringList &directories, bool scanRecursively, bool monitorChanges,
                               QWidget *parent, const char *name )
-    : KDialogBase( parent, name, true, i18n( "Folder List" ), Ok | Cancel, Ok, true )
+    : KDialogBase( parent, name, true, i18n( "Collection Folders List" ), Ok | Cancel, Ok, true )
     , m_dirList( directories )
     , m_scanRecursively( scanRecursively )
     , m_monitorChanges( monitorChanges )
