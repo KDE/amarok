@@ -154,12 +154,12 @@ CoverManager::CoverManager()
 
     QString locale = AmarokConfig::amazonLocale();
 
-    if ( locale == "com" ) m_currentLocale = International;
+    if ( locale == "us" || locale == "com" ) m_currentLocale = International;
     else if ( locale == "fr" ) m_currentLocale = France;
     else if ( locale == "de" ) m_currentLocale = Germany;
-    else if ( locale == "co.uk" ) m_currentLocale = UK;
+    else if ( locale == "uk" ) m_currentLocale = UK;
     else m_currentLocale = -1;
-    m_amazonLocaleMenu->setItemChecked( m_currentLocale , true );
+    m_amazonLocaleMenu->setItemChecked( m_currentLocale, true );
 
     //fetch missing covers button
     m_fetchButton = new KPushButton( KGuiItem( i18n("Fetch Missing Covers"), "cdrom_unmount" ), coverWidget );
@@ -607,7 +607,7 @@ void CoverManager::changeLocale( int id ) //SLOT
     switch ( id )
     {
         case International:
-            AmarokConfig::setAmazonLocale( "com" );
+            AmarokConfig::setAmazonLocale( "us" );
             break;
         case France:
             AmarokConfig::setAmazonLocale( "fr" );
@@ -616,7 +616,7 @@ void CoverManager::changeLocale( int id ) //SLOT
             AmarokConfig::setAmazonLocale( "de" );
             break;
         case UK:
-            AmarokConfig::setAmazonLocale( "co.uk" );
+            AmarokConfig::setAmazonLocale( "uk" );
             break;
     }
     m_amazonLocaleMenu->setItemChecked( m_currentLocale, false );
