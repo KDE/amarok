@@ -326,7 +326,7 @@
                                                 </size>
                                             </property>
                                             <property name="text">
-                                                <string>&amp;Foreground:</string>
+                                                <string>Fo&amp;reground:</string>
                                             </property>
                                             <property name="textFormat">
                                                 <enum>AutoText</enum>
@@ -523,6 +523,9 @@
                             <property name="name">
                                 <cstring>styleComboBox</cstring>
                             </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Select the style of the Context Browser.</string>
+                            </property>
                         </widget>
                         <widget class="QPushButton">
                             <property name="name">
@@ -530,6 +533,9 @@
                             </property>
                             <property name="text">
                                 <string>Install New Style</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Select and install a new Context Browser style.</string>
                             </property>
                         </widget>
                     </hbox>
