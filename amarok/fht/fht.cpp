@@ -136,6 +136,18 @@ void FHT::transform8(float *p)
 
 
 /**
+  * Fourier spectrum.
+  */
+void FHT::spectrum(float *p)
+{
+	power2(p);
+	for (int i = 0; i < (m_num / 2); i++) {
+		*p++ = (float)sqrt(*p * .5);
+	}
+}
+
+
+/**
   * Calculates a mathematically correct FFT power spectrum.
   * If further scaling is applied later, use power2 instead
   * and factor the 0.5 in the final scaling factor.

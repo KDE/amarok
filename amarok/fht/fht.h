@@ -37,6 +37,7 @@ public:
 	inline int	size() const { return m_num; }
 	void		transform8(float *);
 	void		transform(float *);
+	void		spectrum(float *);
 	void		power(float *);
 	void		power2(float *);
 	float		*copy(float *, float *);

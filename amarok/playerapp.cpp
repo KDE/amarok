@@ -695,7 +695,8 @@ void PlayerApp::slotVisTimer()
         {
             std::vector<float> *pScopeVector = m_pEngine->scope();
             float *front = static_cast<float*>( &pScopeVector->front() );
-            m_pFht->power( front );
+            m_pFht->spectrum( front );
+            m_pFht->scale( front, 1.0 / 32 );
             pScopeVector->resize( pScopeVector->size() / 2 );
                         
             m_pPlayerWidget->m_pVis->drawAnalyzer( pScopeVector );
