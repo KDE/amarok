@@ -64,8 +64,7 @@ class CollectionView : public KListView
                     : KListViewItem( parent ) {};
                 void setUrl( const KURL& url ) { m_url = url; }
                 const KURL& url() const { return m_url; }
-            private:
-                int compare( QListViewItem*, int, bool ) const;
+
             //attributes:
                 KURL m_url;
         };

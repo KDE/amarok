@@ -128,6 +128,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     setShowSortIndicator( true );
     setFullWidth( true );
     setAcceptDrops( false );
+    setSorting( -1 );
 
     //<read config>
         KConfig* config = KGlobal::config();
@@ -240,12 +241,13 @@ CollectionView::renderView( )  //SLOT
         filterToken = "AND ( " + m_category1.lower() + ".name LIKE '%" + m_db->escapeString( m_filter ) + "%' OR tags.title LIKE '%" + m_db->escapeString( m_filter ) + "%' )";
 
     QString command = QString
-                      ( "SELECT DISTINCT %1.name FROM tags, %2 WHERE tags.%3=%4.id %5;" )
+                      ( "SELECT DISTINCT %1.name FROM tags, %2 WHERE tags.%3=%4.id %5 ORDER BY %6.name DESC;" )
                       .arg( m_category1.lower() )
                       .arg( m_category1.lower() )
                       .arg( m_category1.lower() )
                       .arg( m_category1.lower() )
-                      .arg( filterToken );
+                      .arg( filterToken )
+                      .arg( m_category1.lower() );
 
     QStringList values;
     QStringList names;
@@ -299,7 +301,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
 
             command = QString
-                      ( "SELECT DISTINCT tags.title, tags.url FROM tags, %1 WHERE tags.%2=%3 %4 ORDER BY tags.track;" )
+                      ( "SELECT DISTINCT tags.title, tags.url FROM tags, %1 WHERE tags.%2=%3 %4 ORDER BY tags.track DESC, tags.url DESC;" )
                       .arg( m_category1.lower() )
                       .arg( m_category1.lower() )
                       .arg( id )
@@ -310,7 +312,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
 
             command = QString
-                      ( "SELECT DISTINCT %1.name, '0' FROM tags, %2, %3 WHERE tags.%4=%5.id AND tags.%6=%7 %8 ORDER BY tags.track;" )
+                      ( "SELECT DISTINCT %1.name, '0' FROM tags, %2, %3 WHERE tags.%4=%5.id AND tags.%6=%7 %8 ORDER BY %9.name DESC;" )
                       .arg( m_category2.lower() )
                       .arg( m_category2.lower() )
                       .arg( m_category1.lower() )
@@ -318,7 +320,8 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                       .arg( m_category2.lower() )
                       .arg( m_category1.lower() )
                       .arg( id )
-                      .arg( filterToken );
+                      .arg( filterToken )
+                      .arg( m_category2.lower() );
         }
 
         QStringList values;
@@ -343,7 +346,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         QString id_sub = QString::number( m_db->getValueID( m_category2.lower(), item->text( 0 ), false ) );
 
         QString command = QString
-                          ( "SELECT tags.title, tags.url FROM tags, %1 WHERE tags.%2 = %3 AND tags.%4 = %5 AND tags.%6 = %7.id %8 ORDER BY tags.track;" )
+                          ( "SELECT tags.title, tags.url FROM tags, %1 WHERE tags.%2 = %3 AND tags.%4 = %5 AND tags.%6 = %7.id %8 ORDER BY tags.track DESC, tags.url DESC;" )
                           .arg( m_category1.lower() )
                           .arg( m_category1.lower() )
                           .arg( id )
@@ -527,7 +530,7 @@ CollectionView::listSelected() {
             //query database for all tracks in our sub-category
             QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
             QString command = QString
-                              ( "SELECT DISTINCT tags.url FROM tags, %1 WHERE tags.%2=%3 %4" )
+                              ( "SELECT DISTINCT tags.url FROM tags, %1 WHERE tags.%2=%3 %4 ORDER BY tags.dir, tags.track, tags.url;" )
                               .arg( m_category1.lower() )
                               .arg( m_category1.lower() )
                               .arg( id )
@@ -561,7 +564,7 @@ CollectionView::listSelected() {
                     QString id_sub = QString::number( m_db->getValueID( m_category2.lower(), child->text( 0 ), false ) );
 
                     QString command = QString
-                              ( "SELECT DISTINCT tags.url FROM tags, %1 WHERE tags.%2=%3 AND tags.%4=%5 %6 ORDER BY tags.track;" )
+                              ( "SELECT DISTINCT tags.url FROM tags, %1 WHERE tags.%2=%3 AND tags.%4=%5 %6 ORDER BY tags.track, tags.url;" )
                               .arg( m_category1.lower() )
                               .arg( m_category2.lower() )
                               .arg( id_sub )
@@ -636,24 +639,6 @@ CollectionView::iconForCat( const QString& cat ) const
 
     KIconLoader iconLoader;
     return iconLoader.loadIcon( icon, KIcon::Toolbar, KIcon::SizeSmall );
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// class Item
-//////////////////////////////////////////////////////////////////////////////////////////
-
-int
-CollectionView::Item::compare( QListViewItem* item, int col, bool ascending ) const
-{
-    //We overload compare() just to prevent the listView from sorting our items.
-
-    if ( item->depth() == 1 && ( (CollectionView*) listView() )->m_category2 == i18n( "None" ) )
-        return 0;
-    if ( item->depth() == 2 )
-        return 0;
-
-    return KListViewItem::compare( item, col, ascending );
 }
 
 
