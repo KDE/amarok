@@ -3,6 +3,7 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+VERSION 1.0-beta1:
   ADD: Search Browser - search stuff on your hdd / in your collection
   ADD: song count on playlist statusbar
   ADD: support for XMMS visualization plugins
