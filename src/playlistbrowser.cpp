@@ -489,6 +489,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
 PlaylistBrowserView::PlaylistBrowserView( QWidget *parent, const char *name )
     : KListView( parent, name )
+    , m_marker( 0 )
 {
     addColumn( "Playlists" );
     setSelectionMode( QListView::Extended );
