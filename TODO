@@ -16,9 +16,6 @@ SHORT-TERM (URGENT):
   FIX 160 <markey> When feeding tracks to a running instance via cli (or mouseclick in konq), playback
                    doesn't start automatically.
 
-  FIX 159 <markey> When the first-run wizard is shown at startup, amarok registers as amarok-2, making
-                   dcop calls fail. It's probably due to a timeout from KDE, since this happens in App ctor.
-
   FIX 156 <markey> Fix suppression of compile warnings for sqlite etc. -w -Wall is the problem.
 
   FIX 155 <muesli> When deleting a cover, remove the (various) scaled versions, too.
