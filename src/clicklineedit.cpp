@@ -64,8 +64,8 @@ void ClickLineEdit::drawContents( QPainter *p )
         QPen tmp = p->pen();
         p->setPen( gray );
         QRect cr = contentsRect();
-        // Add one pixel margin on the left side
-        cr.setLeft( cr.left() + 1 );
+        // Add two pixel margin on the left side
+        cr.setLeft( cr.left() + 2 );
         p->drawText( cr, AlignAuto | AlignVCenter, mClickMessage );
         p->setPen( tmp );
     }
