@@ -1064,7 +1064,9 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
 
     for( KURL::List::ConstIterator it = urls.begin(), end = urls.end(), last = urls.fromLast(); it != end; ++it )
     {
-        paths += (*it).protocol() == "file" ? (*it).path() : QString();
+        // non file stuff won't exist in the db, but we still need to
+        // re-insert it into the list we return, just with no tags assigned
+        paths += (*it).protocol() == "file" ? (*it).path() : (*it).url();
 
         if( paths.count() == 50 || it == last )
         {
@@ -1119,7 +1121,7 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
 
                 // if we get here, we didn't find an entry
                 warning() << "No bundle recovered for: " << *it << endl;
-                b.setPath( *it );
+                b.setUrl( KURL::fromPathOrURL(*it) );
                 bundles += b;
 
             success: ;

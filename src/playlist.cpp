@@ -375,7 +375,7 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
 {
     if ( !list.isEmpty() ) {
         setSorting( NO_SORT );
-        ThreadWeaver::instance()->queueJob( new PlaylistLoader( list, after, directPlay ) );
+        ThreadWeaver::instance()->queueJob( new UrlLoader( list, after, directPlay ) );
     }
 }
 
@@ -390,7 +390,7 @@ Playlist::restoreSession()
 {
     KURL url;
     url.setPath( amaroK::saveLocation() + "current.xml" );
-    ThreadWeaver::instance()->queueJob( new PlaylistLoader( url, 0 ) );
+    ThreadWeaver::instance()->queueJob( new UrlLoader( url, 0 ) );
 }
 
 
@@ -834,16 +834,10 @@ Playlist::clear() //SLOT
 
     ThreadWeaver::instance()->abortAllJobsNamed( "TagWriter" );
 
-    //now we have to ensure we don't delete the items before any events the weaver sent
-    //have been processed, so we stick them in a QPtrList and delete it later
-    QPtrList<QListViewItem> *list = new QPtrList<QListViewItem>;
-    list->setAutoDelete( true );
-    while( QListViewItem *item = firstChild() )
-    {
-        takeItem( item );
-        list->append( item );
-    }
-    QApplication::postEvent( this, new QCustomEvent( QCustomEvent::Type(4000), list ) );
+    // something to bear in mind, if there is any event in the loop
+    // that depends on a PlaylistItem, we are about to crash amaroK
+    // never unlock() the Playlist until it is safe!
+    KListView::clear();
 
     emit itemCountChanged( childCount(), m_totalLength, 0, 0 );
 }
@@ -1333,11 +1327,11 @@ Playlist::customEvent( QCustomEvent *e )
 {
     switch( e->type() )
     {
-    case PlaylistLoader::JobStartedEvent:
+    case ThreadWeaver::Job::JobStartedEvent:
         lock(); // prevent user removing items as this could be bad
         break;
 
-    case PlaylistLoader::JobFinishedEvent: {
+    case ThreadWeaver::Job::JobFinishedEvent: {
         unlock();
 
         refreshNextTracks( 0 );
@@ -1374,11 +1368,6 @@ Playlist::customEvent( QCustomEvent *e )
         //setCurrentTrack( currentTrack() );
 
         break; }
-
-    case 4000:
-        //this is a list of all the listItems from a clear operation
-        delete (QPtrList<QListViewItem>*)e->data();
-        break;
 
     default:
          ;
@@ -1548,18 +1537,15 @@ Playlist::removeSelectedItems() //SLOT
     //assemble a list of what needs removing
     //calling removeItem() iteratively is more efficient if they are in _reverse_ order, hence the prepend()
     QPtrList<QListViewItem> list;
-    for( MyIterator it( this, MyIt::Selected );
-         it.current();
-         list.prepend( it.current() ), ++it );
+    for( MyIterator it( this, MyIt::Selected ); *it; list.prepend( *it ), ++it );
 
     if( list.isEmpty() ) return;
     saveUndoState();
 
-    //remove the items, unless the weaver is running, in which case it is safest to just hide them
+    //remove the items
     for( QListViewItem *item = list.first(); item; item = list.next() )
     {
         removeItem( (PlaylistItem*)item );
-
         delete item;
     }
 

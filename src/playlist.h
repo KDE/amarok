@@ -111,7 +111,7 @@ class Playlist : private KListView, public EngineObserver
         enum RequestType { Prev = -1, Current = 0, Next = 1 };
 
         friend class PlaylistItem;
-        friend class PlaylistLoader;
+        friend class UrlLoader;
         friend void PlaylistWindow::init(); //setting up connections etc.
         friend bool PlaylistWindow::eventFilter( QObject*, QEvent* ); //for convenience we handle some playlist events here
 

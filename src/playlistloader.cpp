@@ -6,7 +6,7 @@
 ///For pls and m3u specifications see:
 ///http://forums.winamp.com/showthread.php?s=dbec47f3a05d10a3a77959f17926d39c&threadid=65772
 
-#define DEBUG_PREFIX "PlaylistLoader"
+#define DEBUG_PREFIX "UrlLoader"
 
 #include "amarok.h"
 #include "collectiondb.h"
@@ -32,11 +32,11 @@ typedef QValueList<QDomNode> NodeList;
 //TODO directories from inside playlists
 
 
-PlaylistLoader::PlaylistLoader( const KURL::List &urls, QListViewItem *after, bool playFirstUrl )
-        : ThreadWeaver::DependentJob( Playlist::instance(), "PlaylistLoader" )
+UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFirstUrl )
+        : ThreadWeaver::DependentJob( Playlist::instance(), "UrlLoader" )
         , m_markerListViewItem( new PlaylistItem( Playlist::instance(), after ) )
         , m_playFirstUrl( playFirstUrl )
-        , m_block( "PlaylistLoader" )
+        , m_block( "UrlLoader" )
 {
     DEBUG_BLOCK
 
@@ -47,18 +47,23 @@ PlaylistLoader::PlaylistLoader( const KURL::List &urls, QListViewItem *after, bo
     amaroK::StatusBar::instance()->newProgressOperation( this )
             .setDescription( m_description )
             .setStatus( i18n("Preparing") )
+            .setAbortSlot( this, SLOT(abort()) )
             .setTotalSteps( 100 );
 
     m_markerListViewItem->setText( 0, "IF YOU CAN SEE THIS THERE IS A BUG" );
 
-    foreachType( KURL::List, urls )
-    {
+    foreachType( KURL::List, urls ) {
         const KURL &url = *it;
 
-        if( PlaylistFile::isPlaylistFile( url ) && !url.isLocalFile() ) {
-            new RemotePlaylistFetcher( url, after, dependent() );
-            continue;
+        if( url.protocol() == "file" ) {
+            if( QFileInfo( url.path() ).isDir() )
+                m_URLs += recurse( url );
+            else
+                m_URLs += url;
         }
+
+        else if( PlaylistFile::isPlaylistFile( url ) )
+            new RemotePlaylistFetcher( url, after, dependent() );
 
         else if( url.protocol() == "fetchcover" )
             continue;
@@ -80,15 +85,19 @@ PlaylistLoader::PlaylistLoader( const KURL::List &urls, QListViewItem *after, bo
                 m_URLs += url;
            }
         }
-        else if( !url.isLocalFile() || QFileInfo( url.path() ).isDir() )
-            // we must check if it's a directory before we call recurse() on it
-            m_URLs += recurse( url );
+
         else
-            m_URLs += url;
+            // recurse only works on directories, else it swallows the URL
+            // this check is very slow if the file is not obviously a directory,
+            //  so only do it on non-local stuff
+            if( KFileItem( KFileItem::Unknown, KFileItem::Unknown, url ).isDir() )
+                m_URLs += recurse( url );
+            else
+                m_URLs += url;
     }
 }
 
-PlaylistLoader::~PlaylistLoader()
+UrlLoader::~UrlLoader()
 {
     delete m_markerListViewItem;
 }
@@ -100,7 +109,8 @@ public:
     TagsEvent( const BundleList &bees ) : QCustomEvent( 1000 ), bundles( bees ) {
         for( BundleList::Iterator it = bundles.begin(), end = bundles.end(); it != end; ++it )
             /// @see MetaBundle for explanation of length < 0
-            if( (*it).length() <= 0 ) (*it).readTags( TagLib::AudioProperties::Fast );
+            if( (*it).length() <= 0 )
+                (*it).readTags( TagLib::AudioProperties::Fast );
     }
 
     NodeList nodes;
@@ -108,7 +118,7 @@ public:
 };
 
 bool
-PlaylistLoader::doJob()
+UrlLoader::doJob()
 {
     setProgressTotalSteps( m_URLs.count() );
 
@@ -149,7 +159,7 @@ PlaylistLoader::doJob()
 }
 
 void
-PlaylistLoader::customEvent( QCustomEvent *e )
+UrlLoader::customEvent( QCustomEvent *e )
 {
     #define e static_cast<TagsEvent*>(e)
     switch( e->type() ) {
@@ -206,7 +216,7 @@ PlaylistLoader::customEvent( QCustomEvent *e )
 }
 
 void
-PlaylistLoader::completeJob()
+UrlLoader::completeJob()
 {
     KURL::List &list = m_badURLs;
 
@@ -225,7 +235,7 @@ PlaylistLoader::completeJob()
 
 #include <qeventloop.h>
 KURL::List
-PlaylistLoader::recurse( const KURL &url )
+UrlLoader::recurse( const KURL &url )
 {
     typedef QMap<QString, KURL> FileMap;
 
@@ -234,7 +244,7 @@ PlaylistLoader::recurse( const KURL &url )
     lister.setAutoErrorHandlingEnabled( false, 0 );
     lister.openURL( url );
 
-    while( !lister.isFinished() )
+    while( !lister.isFinished() && !isAborted() )
         kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
 
     KFileItemList items = lister.items(); //returns QPtrList, so we MUST only do it once!
@@ -252,7 +262,7 @@ PlaylistLoader::recurse( const KURL &url )
 }
 
 void
-PlaylistLoader::loadXml( const KURL &url )
+UrlLoader::loadXml( const KURL &url )
 {
     QFile file( url.path() );
     if( !file.open( IO_ReadOnly ) ) {
@@ -397,12 +407,14 @@ RemotePlaylistFetcher::RemotePlaylistFetcher( const KURL &source, QListViewItem 
         : QObject( playlist )
         , m_source( source )
         , m_after( after )
+        , m_temp( 0 )
 {
-    //We keep the extension so the PlaylistLoader knows what file type it is
+    //We keep the extension so the UrlLoader knows what file type it is
     QString path = source.path();
-    KTempFile tempfile( QString::null /*use default prefix*/, path.mid( path.findRev( '.' ) ) );
+    m_temp = new KTempFile( QString::null /*use default prefix*/, path.mid( path.findRev( '.' ) ) );
+    m_temp->setAutoDelete( true );
 
-    m_destination.setPath( tempfile.name() );
+    m_destination.setPath( m_temp->name() );
 
     KIO::Job *job = KIO::file_copy( m_source, m_destination,
             -1,      /* permissions, this means "do what you think" */
@@ -415,8 +427,11 @@ RemotePlaylistFetcher::RemotePlaylistFetcher( const KURL &source, QListViewItem 
 
     connect( job, SIGNAL(result( KIO::Job* )), SLOT(result( KIO::Job* )) );
     connect( playlist, SIGNAL(aboutToClear()), SLOT(abort()) );
+}
 
-    //TODO delete the tempfile
+RemotePlaylistFetcher::~RemotePlaylistFetcher()
+{
+    delete m_temp;
 }
 
 void
@@ -428,7 +443,7 @@ RemotePlaylistFetcher::result( KIO::Job *job )
     debug() << "Playlist was downloaded successfully\n";
 
     const KURL url = static_cast<KIO::FileCopyJob*>(job)->destURL();
-    ThreadWeaver::instance()->queueJob( new PlaylistLoader( url, m_after ) );
+    ThreadWeaver::instance()->queueJob( new UrlLoader( url, m_after ) );
 
     deleteLater();
 }
@@ -438,11 +453,9 @@ RemotePlaylistFetcher::result( KIO::Job *job )
 /// @class SqlLoader
 
 SqlLoader::SqlLoader( const QString &sql, QListViewItem *after )
-    : PlaylistLoader( KURL::List(), after, false )
-    , m_sql( sql )
-{
-    setDescription( i18n("Populating playlist") );
-}
+        : UrlLoader( KURL::List(), after, false )
+        , m_sql( sql )
+{}
 
 bool
 SqlLoader::doJob()

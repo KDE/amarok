@@ -3,8 +3,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#ifndef PLAYLISTLOADER_H
-#define PLAYLISTLOADER_H
+#ifndef UrlLoader_H
+#define UrlLoader_H
 
 #include "debug.h"        //stack allocated
 #include <kurl.h>         //KURL::List
@@ -37,7 +37,7 @@ public:
     enum Format { M3U, PLS, XML, Unknown, NotPlaylist = Unknown };
 
     /// the bundles from this playlist, they only contain
-    /// the information that can be extracted from  the playlists
+    /// the information that can be extracted from the playlists
     BundleList &bundles() { return m_bundles; }
 
     ///@return true if couldn't load the playlist's contents
@@ -78,13 +78,15 @@ PlaylistFile::format( const QString &fileName )
  * @author Mark Kretschmann
  * @short Populates the Playlist-view with URLs
  *
- * Will load playlists, remote and local, and tags (if local or in db)
+ * + Load playlists, remote and local
+ * + List directories, remote and local
+ * + Read tags, from file:/// and from DB
  */
-class PlaylistLoader : public ThreadWeaver::DependentJob
+class UrlLoader : public ThreadWeaver::DependentJob
 {
 public:
-    PlaylistLoader( const KURL::List&, QListViewItem*, bool playFirstUrl = false );
-   ~PlaylistLoader();
+    UrlLoader( const KURL::List&, QListViewItem*, bool playFirstUrl = false );
+   ~UrlLoader();
 
     static const uint OPTIMUM_BUNDLE_COUNT = 50;
 
@@ -107,8 +109,8 @@ private:
     Debug::Block  m_block;
 
 protected:
-    PlaylistLoader( const PlaylistLoader& ); //undefined
-    PlaylistLoader &operator=( const PlaylistLoader& ); //undefined
+    UrlLoader( const UrlLoader& ); //undefined
+    UrlLoader &operator=( const UrlLoader& ); //undefined
 };
 
 
@@ -119,7 +121,7 @@ protected:
  *
  * The format of the query must be in a set order, see doJob()
  */
-class SqlLoader : public PlaylistLoader
+class SqlLoader : public UrlLoader
 {
     const QString m_sql;
 
@@ -142,9 +144,11 @@ class RemotePlaylistFetcher : public QObject
     const KURL m_source;
     KURL m_destination;
     QListViewItem *m_after;
+    class KTempFile *m_temp;
 
 public:
     RemotePlaylistFetcher( const KURL &source, QListViewItem *after, QObject *playlist );
+   ~RemotePlaylistFetcher();
 
 private slots:
     void result( KIO::Job* );
