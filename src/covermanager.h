@@ -50,6 +50,7 @@ Q_OBJECT
         void slotSetFilter();
         void slotSetFilterTimeout();
         void changeView( int id );
+        void changeLocale( int id );
         //cover fetching
         void fetchMissingCovers();
         void fetchCoversLoop();
@@ -60,6 +61,7 @@ Q_OBJECT
 
     private:
         enum View { AllAlbums=0, AlbumsWithCover, AlbumsWithoutCover };
+        enum Locale { International=0, France, Germany, UK };
 
         void show();
         void loadCover( const QString &, const QString & );
@@ -70,22 +72,28 @@ Q_OBJECT
 
         CollectionDB *m_db;
 
-        KListView *m_artistView;
-        CoverView *m_coverView;
-        QHBox *m_searchBox;
-        ClickLineEdit *m_searchEdit;
-        QToolButton *m_viewButton;
-        KPopupMenu *m_viewMenu;
-        KPushButton *m_fetchButton;
-        //status bar widgets
-        QLabel *m_statusLabel;
-        QHBox *m_progressBox;
-        KProgress *m_progress;
+        KListView      *m_artistView;
+        CoverView      *m_coverView;
+        QHBox          *m_searchBox;
+        ClickLineEdit  *m_searchEdit;
+        KPushButton    *m_fetchButton;
+        KPopupMenu     *m_amazonLocaleMenu;
+        KPopupMenu     *m_viewMenu;
+        QToolButton    *m_amazonLocaleButton;
+        QToolButton    *m_viewButton;
+        int             m_currentLocale;
+        int             m_currentView;
 
-        QTimer *m_timer;    //search filter timer
+        //status bar widgets
+        QLabel         *m_statusLabel;
+        QHBox          *m_progressBox;
+        KProgress      *m_progress;
+
+        QTimer         *m_timer;              //search filter timer
         QPtrList<QIconViewItem> m_coverItems; //used for filtering
-        QString m_filter;
-        int m_currentView;
+        QString         m_filter;
+
+
 
         //used for the thumbnail loading
         QStringList m_loadAlbums;

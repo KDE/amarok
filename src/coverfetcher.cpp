@@ -2,6 +2,7 @@
 // (c) 2004 Stefan Bogner <bochi@online.ms>
 // See COPYING file for licensing information.
 
+#include "amarokconfig.h"
 #include "amazonsearch.h"
 #include "collectiondb.h"
 #include "coverfetcher.h"
@@ -45,6 +46,14 @@ CoverFetcher::~CoverFetcher()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
+CoverFetcher::setLocale( const QString& locale )
+{
+    m_locale = locale;
+    AmarokConfig::setAmazonLocale( locale );
+    kdDebug() << "Setting Locale: " << locale << endl;
+}
+
+void
 CoverFetcher::getCover( const QString& artist, const QString& album, const QString& saveas, QueryMode mode, bool noedit, int size, bool albumonly )
 {
     kdDebug() << k_funcinfo << endl;
@@ -67,8 +76,9 @@ CoverFetcher::getCover( const QString& artist, const QString& album, const QStri
     m_bufferIndex = 0;
     m_xmlDocument = "";
 
-    QString url = QString( "http://xml.amazon.com/onca/xml3?t=webservices-20&dev-t=%1"
-                           "&KeywordSearch=%2&mode=music&type=%3&page=1&f=xml" )
+    QString url = QString( "http://xml.amazon.%1/onca/xml3?t=webservices-20&dev-t=%2"
+                           "&KeywordSearch=%3&mode=music&type=%4&page=1&f=xml" )
+                           .arg( m_locale )
                            .arg( m_license )
                            .arg( m_keyword )
                            .arg( mode == lite ? "lite" : "heavy" );

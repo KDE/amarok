@@ -6,6 +6,7 @@
 #include "amarokconfig.h"
 #include "clicklineedit.h"
 #include "collectiondb.h"
+#include "coverfetcher.h"
 #include "covermanager.h"
 
 #include <qfile.h>
@@ -133,6 +134,33 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     m_viewButton->setPopupDelay( 0 );
 
     #ifdef AMAZON_SUPPORT
+    m_amazonLocaleButton = new QToolButton( coverWidget );
+    m_amazonLocaleButton->setText( i18n("Amazon Locale") );
+    m_amazonLocaleButton->setAutoRaise( true );
+    m_amazonLocaleButton->setPaletteBackgroundColor( colorGroup().background() );
+    hbox->addWidget( m_amazonLocaleButton );
+    hbox->addStretch();
+    // amazon locale menu
+    m_amazonLocaleMenu = new KPopupMenu( m_amazonLocaleButton );
+    m_amazonLocaleMenu->insertItem( i18n("International"), International );
+    m_amazonLocaleMenu->insertItem( i18n("France"), France );
+    m_amazonLocaleMenu->insertItem( i18n("Germany"), Germany );
+    m_amazonLocaleMenu->insertItem( i18n("United Kingdom"), UK );
+    connect( m_amazonLocaleMenu, SIGNAL( activated(int) ), SLOT( changeLocale(int) ) );
+    m_amazonLocaleButton->setPopup( m_amazonLocaleMenu );
+    m_amazonLocaleButton->setPopupDelay( 0 );
+
+    QString locale = AmarokConfig::amazonLocale();
+
+    if ( locale == "com" ) m_currentLocale = International;
+    else if ( locale == "fr" ) m_currentLocale = France;
+    else if ( locale == "de" ) m_currentLocale = Germany;
+    else if ( locale == "co.uk" ) m_currentLocale = UK;
+    else m_currentLocale = -1;
+    kdDebug() << "Amazon Locale: " << locale << endl;
+    kdDebug() << "Amazon Current Locale: " << m_currentLocale << endl;
+    m_amazonLocaleMenu->setItemChecked( m_currentLocale , true );
+
     //fetch missing covers button
     m_fetchButton = new KPushButton( KGuiItem( i18n("Fetch Missing Covers"), "cdrom_unmount" ), coverWidget );
     hbox->addWidget( m_fetchButton );
@@ -574,6 +602,31 @@ void CoverManager::changeView( int id  ) //SLOT
 
     m_coverView->arrangeItemsInGrid();
     m_currentView = id;
+}
+
+void CoverManager::changeLocale( int id ) //SLOT
+{
+    if ( m_currentLocale == id ) return;
+
+    CoverFetcher* fetcher;
+    switch ( id )
+    {
+        case International:
+            fetcher->setLocale( QString( "com" ) );
+            break;
+        case France:
+            fetcher->setLocale( QString( "fr" ) );
+            break;
+        case Germany:
+            fetcher->setLocale( QString( "de" ) );
+            break;
+        case UK:
+            fetcher->setLocale( QString( "co.uk" ) );
+            break;
+    }
+    m_amazonLocaleMenu->setItemChecked( m_currentLocale, false );
+    m_amazonLocaleMenu->setItemChecked( id, true );
+    m_currentLocale = id;
 }
 
 
