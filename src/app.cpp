@@ -63,7 +63,7 @@ App::App()
     m_pGlobalAccel    = new KGlobalAccel( this );
     m_pPlaylistWindow = new PlaylistWindow();
     m_pDcopHandler    = new amaroK::DcopHandler();
-    m_pOSD            = amaroK::OSD::instance(); //create's the OSD
+    m_pOSD            = amaroK::OSD::instance(); //creates the OSD
     m_pTray           = new amaroK::TrayIcon( m_pPlaylistWindow );
     (void)              new Vis::SocketServer( this );
 
@@ -216,17 +216,15 @@ void App::initEngine()
 
         if ( !plugin )
         {
-            //FIXME this isn't perfect
-
             KMessageBox::error( m_pPlaylistWindow, i18n(
-                "amaroK could not find any sound-engine plugins; your amaroK installation is probably broken."
-                "If you installed from source then it is likely amaroK is not installed under the KDE prefix, "
-                "please rebuild amaroK using ./configure --prefix=`kde-config --prefix` as described in the README file."
-                "For more help please join us at #amarok on irc.freenode.net." ) );
+                "<p>amaroK could not find any sound-engine plugins. "
+                "It is likely that amaroK is installed under the wrong prefix, please fix your installation using:"
+                "<pre>cd /path/to/amarok/source-code/<br>"
+                "su -c \"make uninstall\"<br>"
+                "./configure --prefix=`kde-config --prefix` && su -c \"make install\"</pre>"
+                "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net." ) );
 
             KApplication::exit( 1 );
-
-            return;
         }
 
         AmarokConfig::setSoundSystem( PluginManager::getService( plugin )->name() );

@@ -82,7 +82,7 @@ ArtsEngine::ArtsEngine( )
 ArtsEngine::~ ArtsEngine()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
-    
+
     m_pConnectTimer->stop();
     killTimers();
     delete m_pPlayObject;
@@ -96,7 +96,7 @@ ArtsEngine::~ ArtsEngine()
     m_effectStack       = Arts::StereoEffectStack::null();
     m_globalEffectStack = Arts::StereoEffectStack::null();
     m_amanPlay          = Arts::Synth_AMAN_PLAY::null();
-    
+
     kdDebug() << "END " << k_funcinfo << endl;
 }
 
@@ -104,7 +104,7 @@ ArtsEngine::~ ArtsEngine()
 void ArtsEngine::init( bool& restart, int scopeSize, bool restoreEffects )
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
-   
+
     m_scopeSize = 1 << scopeSize;
     m_restoreEffects = restoreEffects;
     m_mixerHW = -1;   //initialize
@@ -210,9 +210,11 @@ void ArtsEngine::init( bool& restart, int scopeSize, bool restoreEffects )
 
         if ( m_xfade.isNull() ) {
             KMessageBox::error( 0,
-                                i18n( "Cannot find libamarokarts. Probably amaroK was installed with the "
-                                      "wrong prefix. Please install again using: ./configure "
-                                      "--prefix=`kde-config --prefix`" ),
+                                i18n( "<p>There was an error loading libamarokarts. First try:"
+                                      "<pre>killall -9 artsd && amarok</pre>"
+                                      "If that doesn't work then amaroK was probably installed with the wrong prefix; "
+                                      "please re-configure amaroK using:"
+                                      "<pre>./configure --prefix=`kde-config --prefix` && su -c \"make install\"</pre>" ),
                                 i18n( "Fatal Error" ) );
             ::exit( 1 );
         }
@@ -246,7 +248,7 @@ void ArtsEngine::init( bool& restart, int scopeSize, bool restoreEffects )
     if ( m_restoreEffects ) loadEffects();
     startTimer( ARTS_TIMER );
     connect( m_pConnectTimer, SIGNAL( timeout() ), this, SLOT( connectTimeout() ) );
-    
+
     kdDebug() << "END " << k_funcinfo << endl;
 }
 
@@ -262,7 +264,7 @@ bool ArtsEngine::initMixer( bool hardware )
         }
         closeMixerHW();
     }
-    
+
     if ( hardware )
         hardware = initMixerHW();
     else
@@ -311,7 +313,7 @@ EngineBase::EngineState ArtsEngine::state() const
     {
         if ( m_pPlayObject->object().isNull() )
             return Playing;
-        
+
         switch ( m_pPlayObject->state() )
         {
             case Arts::posPaused:
@@ -322,7 +324,7 @@ EngineBase::EngineState ArtsEngine::state() const
                 return Idle;
         }
     }
-    
+
     return EngineBase::Empty;
 }
 
@@ -358,17 +360,17 @@ void ArtsEngine::play( const KURL& url )
     else
     {
         connect( m_pPlayObject, SIGNAL( destroyed() ), this, SIGNAL( stopped() ) );
-        
-        if ( m_pPlayObject->object().isNull() ) {            
+
+        if ( m_pPlayObject->object().isNull() ) {
             kdDebug() << k_funcinfo << " m_pPlayObject->object().isNull()" << endl;
-            
+
             connect( m_pPlayObject, SIGNAL( playObjectCreated() ), this, SLOT( connectPlayObject() ) );
             m_pConnectTimer->start( TIMEOUT, true );
         }
         else {
             connectPlayObject();
         }
-                
+
         play();
     }
 }
@@ -376,19 +378,18 @@ void ArtsEngine::play( const KURL& url )
 
 void ArtsEngine::connectPlayObject() //SLOT
 {
-    kdDebug() << k_funcinfo << endl;
     m_pConnectTimer->stop();
-        
+
     if ( m_pPlayObject && !m_pPlayObject->isNull() && !m_pPlayObject->object().isNull() )
     {
         m_pPlayObject->object()._node()->start();
 
         //switch xfade channels
         m_xfadeCurrent = ( m_xfadeCurrent == "invalue1" ) ? "invalue2" : "invalue1";
-    
+
         if ( m_xfadeValue == 0.0 )
             m_xfadeValue = 1.0;
-        
+
         Arts::connect( m_pPlayObject->object(), "left", m_xfade, ( m_xfadeCurrent + "_l" ).latin1() );
         Arts::connect( m_pPlayObject->object(), "right", m_xfade, ( m_xfadeCurrent + "_r" ).latin1() );
     }
@@ -396,10 +397,10 @@ void ArtsEngine::connectPlayObject() //SLOT
 
 //SLOT
 void ArtsEngine::connectTimeout()
-{        
+{
     kdWarning() << "[ArtsEngine::connectTimeout()] Cannot initialize PlayObject! Skipping this track." << endl;
     m_pConnectTimer->stop();
-    
+
     delete m_pPlayObject;
     m_pPlayObject = NULL;
 }
@@ -412,7 +413,7 @@ void ArtsEngine::play()
         m_pPlayObject->play();
     }
 }
-        
+
 
 void ArtsEngine::stop()
 {
@@ -423,7 +424,7 @@ void ArtsEngine::stop()
 
     if ( m_xfadeValue == 0.0 )
         m_xfadeValue = 1.0;
-   
+
     m_xfadeFadeout = true;
     startXfade();
 }
@@ -529,9 +530,9 @@ bool ArtsEngine::effectConfigurable( long id ) const
 long ArtsEngine::createEffect( const QString& name )
 {
     const long error = 0;
-    
+
     if ( name.isEmpty() )
-        return error;    
+        return error;
 
     Arts::StereoEffect* pFX = new Arts::StereoEffect;
     *pFX = Arts::DynamicCast( m_server.createObject( std::string( name.ascii() ) ) );
@@ -577,7 +578,7 @@ void ArtsEngine::removeEffect( long id )
 void ArtsEngine::configureEffect( long id )
 {
     if ( !m_effectMap[id].widget )
-    {    
+    {
         m_effectMap[id].widget = new ArtsConfigWidget( *m_effectMap[id].effect );
         m_effectMap[id].widget->show();
     }
@@ -591,11 +592,11 @@ bool ArtsEngine::decoderConfigurable()
         Arts::TraderQuery query;
         query.supports( "Interface", "Arts::GuiFactory" );
         query.supports( "CanCreate", m_pPlayObject->object()._interfaceName() );
-    
+
         std::vector<Arts::TraderOffer> *queryResults = query.query();
         bool yes = queryResults->size();
         delete queryResults;
-    
+
         return yes;
     }
     return false;
@@ -605,7 +606,7 @@ bool ArtsEngine::decoderConfigurable()
 void ArtsEngine::configureDecoder() //slot
 {
     //this method shows a GUI for an aRts CODEC. currently only working with markey's modplug_artsplugin
-    
+
     if ( m_pPlayObject && !m_pDecoderConfigWidget )
     {
         m_pDecoderConfigWidget = new ArtsConfigWidget( m_pPlayObject->object() );
