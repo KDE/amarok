@@ -150,7 +150,7 @@ BrowserBar::BrowserBar( QWidget *parent )
 
 BrowserBar::~BrowserBar()
 {
-    KConfig* const config = amaroK::config( "PlaylistSideBar" );
+    KConfig* const config = amaroK::config( "BrowserBar" );
 
     config->writeEntry( "Stay", m_overlapButton->isOn() );
     config->writeEntry( "CurrentPane", m_currentIndex != -1 ? currentBrowser()->name() : QString::null );
@@ -297,7 +297,7 @@ BrowserBar::addBrowser( QWidget *widget, const QString &title, const QString& ic
 
     m_browsers.push_back( widget );
 
-    KConfig* const config = amaroK::config( "PlaylistSideBar" );
+    KConfig* const config = amaroK::config( "BrowserBar" );
     widget->setBaseSize( config->readNumEntry( name, widget->sizeHint().width() ), DEFAULT_HEIGHT );
     m_overlapButton->setOn( /*config->readBoolEntry( "Stay", true )*/true );
     if( config->readEntry( "CurrentPane" ) == name ) showHideBrowser( id );
