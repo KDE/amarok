@@ -207,53 +207,6 @@ DO-NOT-IMPLEMENT:
 
 BACKTRACE/DEBUG
 
-BT after collection scan:
-
-#0  0x410b3682 in malloc_consolidate () from /usr/lib/./libqt-mt.so.3
-#1  0x410b2385 in mALLOc () from /usr/lib/./libqt-mt.so.3
-#2  0x410b1ac8 in malloc () from /usr/lib/./libqt-mt.so.3
-#3  0x413c11ad in QGArray::resize(unsigned, QGArray::Optimization) () from /usr/lib/./libqt-mt.so.3
-#4  0x413c11de in QGArray::resize(unsigned) () from /usr/lib/./libqt-mt.so.3
-#5  0x40e97f41 in KStyle::drawComplexControl(QStyle::ComplexControl, QPainter*, QWidget const*, QRect const&, QColorGroup const&, unsigned, unsigned, unsigned, QStyleOption const&) const () from /opt/kde3/lib/libkdefx.so.4
-#6  0x41e1bf10 in PlastikStyle::drawComplexControl(QStyle::ComplexControl, QPainter*, QWidget const*, QRect const&, QColorGroup const&, unsigned, unsigned, unsigned, QStyleOption const&) const () from /opt/kde3/lib/kde3/plugins/styles/plastik.so
-#7  0x411f49d9 in QListViewItem::paintBranches(QPainter*, QColorGroup const&, int, int, int) ()
-   from /usr/lib/./libqt-mt.so.3
-#8  0x411f6313 in QListView::drawContentsOffset(QPainter*, int, int, int, int, int, int) () from /usr/lib/./libqt-mt.so.3
-#9  0x4122abba in QScrollView::viewportPaintEvent(QPaintEvent*) () from /usr/lib/./libqt-mt.so.3
-#10 0x40a3c5d2 in KListView::viewportPaintEvent(QPaintEvent*) () from /opt/kde3/lib/libkdeui.so.4
-#11 0x4122a5f3 in QScrollView::eventFilter(QObject*, QEvent*) () from /usr/lib/./libqt-mt.so.3
-#12 0x411f92a8 in QListView::eventFilter(QObject*, QEvent*) () from /usr/lib/./libqt-mt.so.3
-#13 0x4111803e in QObject::activate_filters(QEvent*) () from /usr/lib/./libqt-mt.so.3
-#14 0x41117f61 in QObject::event(QEvent*) () from /usr/lib/./libqt-mt.so.3
-#15 0x4114f61c in QWidget::event(QEvent*) () from /usr/lib/./libqt-mt.so.3
-#16 0x410bf915 in QApplication::internalNotify(QObject*, QEvent*) () from /usr/lib/./libqt-mt.so.3
-#17 0x410bed05 in QApplication::notify(QObject*, QEvent*) () from /usr/lib/./libqt-mt.so.3
-#18 0x40c86ab6 in KApplication::notify(QObject*, QEvent*) () from /opt/kde3/lib/libkdecore.so.4
-#19 0x41087dd2 in QWidget::repaint(int, int, int, int, bool) () from /usr/lib/./libqt-mt.so.3
-#20 0x4115088b in QWidget::repaint(bool) () from /usr/lib/./libqt-mt.so.3
-#21 0x411f83c4 in QListView::updateContents() () from /usr/lib/./libqt-mt.so.3
-#22 0x4145d317 in QListView::qt_invoke(int, QUObject*) () from /usr/lib/./libqt-mt.so.3
-#23 0x40a40393 in KListView::qt_invoke(int, QUObject*) () from /opt/kde3/lib/libkdeui.so.4
-#24 0x08098baf in CollectionView::qt_invoke(int, QUObject*) (this=0x8358bb0, _id=70, _o=0xbfffeb50)
-    at /home/mark/mysource/kdecvs/kdeextragear-1/amarok/src/collectionbrowser.moc:296
-#25 0x4111a710 in QObject::activate_signal(QConnectionList*, QUObject*) () from /usr/lib/./libqt-mt.so.3
-#26 0x4111a544 in QObject::activate_signal(int) () from /usr/lib/./libqt-mt.so.3
-#27 0x4144c2bb in QTimer::timeout() () from /usr/lib/./libqt-mt.so.3
-#28 0x4113bce2 in QTimer::event(QEvent*) () from /usr/lib/./libqt-mt.so.3
-#29 0x410bf915 in QApplication::internalNotify(QObject*, QEvent*) () from /usr/lib/./libqt-mt.so.3
-#30 0x410bed05 in QApplication::notify(QObject*, QEvent*) () from /usr/lib/./libqt-mt.so.3
-#31 0x40c86ab6 in KApplication::notify(QObject*, QEvent*) () from /opt/kde3/lib/libkdecore.so.4
-#32 0x410ace9b in QEventLoop::activateTimers() () from /usr/lib/./libqt-mt.so.3
-#33 0x4106784a in QEventLoop::processEvents(unsigned) () from /usr/lib/./libqt-mt.so.3
-#34 0x410d19c6 in QEventLoop::enterLoop() () from /usr/lib/./libqt-mt.so.3
-#35 0x410d1868 in QEventLoop::exec() () from /usr/lib/./libqt-mt.so.3
-#36 0x410bfb61 in QApplication::exec() () from /usr/lib/./libqt-mt.so.3
----Type <return> to continue, or q <return> to quit---
-#37 0x08123d81 in main (argc=1, argv=0xbffff274)
-    at /home/mark/mysource/kdecvs/kdeextragear-1/amarok/src/amarokcore/main.cpp:67
-#38 0x41cac4f2 in __libc_start_main () from /lib/libc.so.6
-
-
 
 From coolo:
 
