@@ -19,13 +19,12 @@
 #define PLAYLISTITEM_H
 
 #include <klistview.h> //baseclass
-#include <kurl.h>      //KURL::List
+#include <kurl.h>      //stack allocated
 
 class QColor;
 class QColorGroup;
 class QListViewItem;
 class QPainter;
-class QRect;
 class QString;
 class MetaBundle;
 
@@ -42,14 +41,12 @@ class PlaylistItem : public KListViewItem
         const MetaBundle *metaBundle() const;
         void setMeta( const MetaBundle& );
         void writeTag( const QString&, int );
-        
+
         const QString trackName() const { return text( 0 ); }
         const QString length( uint = 0 ) const; //Return track length as mm:ss
         const KURL    &url() const { return m_url; }
-        
-        
-        //save memory, use a single static to represent these properties
-        static QColor GlowColor;
+
+        //FIXME move to PlaylistWidget?
         static PlaylistItem *GlowItem;
 
     private:

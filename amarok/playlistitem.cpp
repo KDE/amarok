@@ -15,9 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "metabundle.h"
 #include "playerapp.h"
 #include "playlistitem.h"
-#include "metabundle.h"
+#include "playlistwidget.h" //dtor
 
 #include "amarokconfig.h"
 
@@ -34,7 +35,6 @@
 
 
 //statics
-QColor PlaylistItem::GlowColor = Qt::white;
 PlaylistItem *PlaylistItem::GlowItem  = 0;
 
 //no reason to make this a member function
@@ -49,24 +49,25 @@ PlaylistItem::PlaylistItem( QListView* lv, QListViewItem *lvi, const KURL &u, co
 {
     setDragEnabled( true );
     setDropEnabled( true );
-    
+
     setText( 8, u.directory().section( '/', -1 ) );
-    
+
     if( t ) setMeta( *t );
 }
 
 
-#include "playlistwidget.h"
 PlaylistItem::~PlaylistItem()
 {
-    //FIXME this is hacky but necessary, it would be nice to tidy it up somewhat
-    
     if ( listView() )
     {
         PlaylistWidget *parentView = static_cast<PlaylistWidget *>( listView() );
-    
+
         if( parentView->currentTrack() == this )
+        {
+            //FIXME requires friendship
+            //FIXME friendship requires rebuilding world when we modify playlistitem.h!
             parentView->setCurrentTrack( NULL );
+        }
     }
 }
 
@@ -80,11 +81,11 @@ const MetaBundle *PlaylistItem::metaBundle() const
 {
     //FIXME only do once!
     TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Fast );
-    
+
     return new MetaBundle( text( 1 ),
                            text( 2 ),
                            text( 3 ),
-                           text( 4 ), 
+                           text( 4 ),
                            text( 5 ),
                            text( 6 ),
                            text( 7 ),
@@ -94,8 +95,8 @@ const MetaBundle *PlaylistItem::metaBundle() const
 
 void PlaylistItem::setMeta( const MetaBundle &bundle )
 {
-    QString str;
-    
+    QString length( "-" );
+
     if( !bundle.m_title.isEmpty() ) setText( 1, bundle.m_title ); //can be already set by playlist files
     setText( 2, bundle.m_artist );
     setText( 3, bundle.m_album );
@@ -103,21 +104,18 @@ void PlaylistItem::setMeta( const MetaBundle &bundle )
     setText( 5, bundle.m_comment );
     setText( 6, bundle.m_genre );
     setText( 7, bundle.m_track );
-    
+
     if( bundle.m_length != -1 )
     {
-        int m_minutes, m_seconds;    
-    
-        m_minutes = bundle.m_length / 60 % 60;
-        m_seconds = bundle.m_length % 60;
-    
-        str += QString::number( m_minutes ); //don't zeroPad, instead we rightAlign the column
-        str += ":";
-        str += zeroPad( m_seconds );
+        int min = bundle.m_length / 60 % 60;
+        int sec = bundle.m_length % 60;
+
+        length  = QString::number( min ); //don't zeroPad, instead we rightAlign the column
+        length += QChar( ':' );
+        length += zeroPad( sec );
     }
-    else str = "-";
-    
-    setText( 9, str );
+
+    setText(  9, length );
     setText( 10, QString::number( bundle.m_bitrate ) + "kbps" );
 }
 
@@ -128,12 +126,12 @@ void PlaylistItem::setMeta( const MetaBundle &bundle )
 void PlaylistItem::writeTag( const QString &newtag, int col )
 {
     TagLib::FileRef f( m_url.path().local8Bit(), false );
-    
+
     if( !f.isNull() )
     {
         TagLib::Tag *t = f.tag(); //it is my impression from looking at the source that tag() never returns 0
         TagLib::String s = QStringToTString( newtag );
-    
+
         switch( col ) {
         case 1:
             t->setTitle( s );
@@ -162,7 +160,7 @@ void PlaylistItem::writeTag( const QString &newtag, int col )
         default:
             return;
         }
-        
+
         f.save();
     }
 }
@@ -170,16 +168,17 @@ void PlaylistItem::writeTag( const QString &newtag, int col )
 
 void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
 {
-    QColorGroup newCg = cg;
-    
+    static const QColor GlowColor( 0xff, 0x40, 0x40 );
+
+    QColorGroup newCg = cg; //shallow copy
+
     if ( this == PlaylistItem::GlowItem ) //static member
-        newCg.setColor( QColorGroup::Text, PlaylistItem::GlowColor );
+        newCg.setColor( QColorGroup::Text, GlowColor );
 
-    KListViewItem::paintCell( p, newCg, column, width, align );   
+    KListViewItem::paintCell( p, newCg, column, width, align );
 
-    { //draw column separator line
-        QPen linePen( Qt::darkGray, 0, Qt::DotLine );
-        p->setPen( linePen );
+    {   //draw column separator line
+        p->setPen( QPen( Qt::darkGray, 0, Qt::DotLine ) );
         p->drawLine( width - 1, 0, width - 1, height() - 1 );
     }
 }
@@ -193,7 +192,7 @@ const QString PlaylistItem::length( uint se ) const
    int s = se;
    int m = s / 60;
    int h = m / 60;
-   
+
    if ( h )
       return QString("%1:%2:%3").arg(h).arg(zeroPad(m % 60)).arg(zeroPad(s % 60));
    else

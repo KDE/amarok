@@ -75,8 +75,8 @@ class PlaylistWidget : public KListView //: private KListView
         PlaylistWidget( QWidget *parent=0, const char *name=0 );
         ~PlaylistWidget();
 
-        enum RequestType { Prev, Current, Next };        
-        
+        enum RequestType { Prev, Current, Next };
+
         bool request( RequestType = Next, bool = true );
         KURL currentTrackURL() const { return currentTrack() ? m_pCurrentTrack->url() : KURL(); }
         QString currentTrackName() const { return currentTrack() ? currentTrack()->text( 0 ) : QString(); }
@@ -91,15 +91,13 @@ class PlaylistWidget : public KListView //: private KListView
         void setFont( const QFont &font ) { KListView::setFont( font ); }
         bool hasFocus() const { return KListView::hasFocus(); }
         void setFocus() { KListView::setFocus(); }
-        void setPaletteBackgroundColor( const QColor &c ) { KListView::setPaletteBackgroundColor( c ); }
-        void setPaletteForegroundColor( const QColor &c ) { KListView::setPaletteForegroundColor( c ); }
         void triggerUpdate() { KListView::triggerUpdate(); }
 
         friend PlaylistItem::~PlaylistItem();
-       
+
 // ATTRIBUTES ------
         //KRootPixmap m_rootPixmap;
-        
+
     public slots:
         void clear( bool = true );
         void shuffle();
@@ -124,14 +122,14 @@ class PlaylistWidget : public KListView //: private KListView
         void sigRedoState( bool );
 
     private:
-        void insertMedia( const KURL::List &, PlaylistItem * );        
-        
+        void insertMedia( const KURL::List &, PlaylistItem * );
+
         PlaylistItem *restoreCurrentTrack();
-        PlaylistItem *currentTrack() const { return m_pCurrentTrack; }        
+        PlaylistItem *currentTrack() const { return m_pCurrentTrack; }
         void setCurrentTrack( PlaylistItem * );
         void showTrackInfo( const PlaylistItem * );
 
-        void contentsDropEvent( QDropEvent* );        
+        void contentsDropEvent( QDropEvent* );
         void contentsDragEnterEvent( QDragEnterEvent* );
         void contentsDragMoveEvent( QDragMoveEvent* );
         void contentsDragLeaveEvent( QDragLeaveEvent* );
@@ -147,12 +145,12 @@ class PlaylistWidget : public KListView //: private KListView
         bool canRedo();
 
         void startLoader( const KURL::List &, PlaylistItem * );
-        
+
         void setSorting( int, bool=true );
 
 // ATTRIBUTES ------
 
-        QTimer* m_GlowTimer;
+        QTimer* m_GlowTimer; //FIXME allocate on stack
         int m_GlowCount;
         int m_GlowAdd;
         QColor m_GlowColor;
