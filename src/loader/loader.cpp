@@ -139,8 +139,13 @@ Loader::Loader( int& argc, char** argv )
         //periodically check for amaroK startup completion
         startTimer( TIMER_INTERVAL );
     }
-    else doExit();
-    //TODO else the user just typed amarok with no arguments, I spose we should raise amaroK?
+    else {
+
+        //amarok is running, but no arguments were passed
+        //we need to show and raise amaroK
+
+        doExit();
+    }
 }
 
 

@@ -6,6 +6,7 @@
 #include "amarokconfig.h"
 #include "clicklineedit.h"
 #include "colorgenerator.h"
+#include "debug.h"
 #include "k3bexporter.h"
 #include "metabundle.h"
 #include "playlist.h"      //appendMedia()
@@ -198,7 +199,7 @@ MediaDeviceList::renderNode( QListViewItem* parent, const KURL& url )  //SLOT
 void
 MediaDeviceList::slotCollapse( QListViewItem* item )  //SLOT
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     QListViewItem* child = item->firstChild();
     QListViewItem* childTmp;
@@ -313,7 +314,7 @@ MediaDeviceList::rmbPressed( QListViewItem* item, const QPoint& point, int ) //S
 
         switch ( item->depth() )
         {
-            case 0: 
+            case 0:
                 menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n( "Burn All Tracks by This Artist" ), BURN_ARTIST );
                 menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
                 break;
@@ -437,7 +438,7 @@ MediaDevice::addURL( const KURL& url )
         m_transferURLs << url;
         m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_transferList->childCount() ) );
     } else
-        amaroK::StatusBar::instance()->message( i18n( "Track already exists on iPod: " + url.path().local8Bit() ) );
+        amaroK::StatusBar::instance()->longMessage( i18n( "Track already exists on iPod: " + url.path().local8Bit() ) );
 }
 
 

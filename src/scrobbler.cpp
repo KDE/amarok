@@ -353,7 +353,6 @@ int SubmitQueue::compareItems( QPtrCollection::Item item1, QPtrCollection::Item 
 // CLASS ScrobblerSubmitter
 ////////////////////////////////////////////////////////////////////////////////
 
-
 QString ScrobblerSubmitter::PROTOCOL_VERSION = "1.1";
 QString ScrobblerSubmitter::CLIENT_ID = "ark";
 QString ScrobblerSubmitter::CLIENT_VERSION = "0.1";
@@ -491,7 +490,7 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
     else
         enqueueItem( item );
 
-    QString data = QString::null;
+    QString data;
     uint currentTime = QDateTime::currentDateTime().toTime_t();
     // Audioscrobbler accepts max 10 tracks on one submit.
     SubmitItem* items[10];
@@ -532,18 +531,15 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
             QDateTime playStartTime = QDateTime();
             playStartTime.setTime_t( itemFromQueue->playStartTime() );
 
+            const QString count = QString::number( submitCounter );
+
             data +=
-                "a[" + QString::number( submitCounter ) + "]=" +
-                KURL::encode_string_no_slash( itemFromQueue->artist(), 106 /*utf-8*/ ) +
-                "&t[" + QString::number( submitCounter ) + "]=" +
-                KURL::encode_string_no_slash( itemFromQueue->title(), 106 /*utf-8*/ ) +
-                "&b[" + QString::number( submitCounter ) + "]=" +
-                KURL::encode_string_no_slash( itemFromQueue->album(), 106 /*utf-8*/ ) +
-                "&m[" + QString::number( submitCounter ) + "]=" +
-                "&l[" + QString::number( submitCounter ) + "]=" +
-                QString::number( itemFromQueue->length() ) +
-                "&i[" + QString::number( submitCounter ) + "]=" + KURL::encode_string_no_slash(
-                    playStartTime.toString( "yyyy-MM-dd hh:mm:ss" ) );
+                "a["  + count + "]=" + KURL::encode_string_no_slash( itemFromQueue->artist(), 106 /*utf-8*/ ) +
+                "&t[" + count + "]=" + KURL::encode_string_no_slash( itemFromQueue->title(), 106 /*utf-8*/ ) +
+                "&b[" + count + "]=" + KURL::encode_string_no_slash( itemFromQueue->album(), 106 /*utf-8*/ ) +
+                "&m[" + count + "]=" +
+                "&l[" + count + "]=" + QString::number( itemFromQueue->length() ) +
+                "&i[" + count + "]=" + KURL::encode_string_no_slash( playStartTime.toString( "yyyy-MM-dd hh:mm:ss" ) );
         }
     }
 
@@ -870,53 +866,43 @@ void ScrobblerSubmitter::finishJob( KIO::Job* job )
 void ScrobblerSubmitter::announceSubmit(
     SubmitItem *item, int tracks, bool success ) const
 {
-    QString message;
+    QString _long, _short;
+
     if ( success )
     {
         if ( tracks == 1 )
-        {
-            message = i18n( "'%1' submitted" ).arg( item->title() );
-        }
-        else if ( tracks == 2 )
-        {
-            message = i18n( "'%1' (and one other track) submitted" )
-                      .arg( item->title() );
-        }
+            _short = i18n( "'%1' submitted to Audioscrobbler" ).arg( item->title() );
         else
         {
-            message = i18n( "'%1' (and %2 other tracks) submitted" )
-                      .arg( item->title() ).arg( tracks - 1 );
-        }
+            _short = i18n( "Several tracks submitted to Audioscrobbler" );
 
-        if ( m_submitQueue.count() > 0 )
-        {
-            message +=
-                i18n(
-                    ", 1 track still in queue", ", %n tracks still in queue",
-                    m_submitQueue.count() );
+            _long = "<p>";
+            _long  = i18n( "'%1' and one other track submitted",
+                           "'%1' and %n other tracks submitted", tracks-1 )
+                            .arg( item->title() ).arg( tracks - 1 );
         }
     }
     else
     {
         if ( tracks == 1 )
-        {
-            message = i18n( "Failed to submit '%1'" ).arg( item->title() );
-        }
-        else if ( tracks == 2)
-        {
-            message = i18n( "Failed to submit '%1' (and one other track)" )
-                      .arg( item->title() );
-        }
+            _short = i18n( "Failed to submit '%1'" ).arg( item->title() );
         else
         {
-            message = i18n( "Failed to submit '%1' (and %2 other tracks)" )
-                      .arg( item->title() ).arg( tracks - 1 );
+            _short = i18n( "Failed to submit several tracks to Audioscrobbler" );
+            _long  = "<p>";
+            _long  = i18n( "Failed to submit '%1' and one other track",
+                           "Failed to submit '%1' and %n other tracks", tracks-1 )
+                      .arg( item->title() );
         }
-
-        message += i18n( ", 1 track queued", ", %n tracks queued", m_submitQueue.count() );
     }
 
-    amaroK::StatusBar::instance()->messageTemporary( message );
+    if ( m_submitQueue.count() > 0 )
+    {
+        _long += "<p>";
+        _long += i18n( "One track still in queue", "%n tracks still in queue", m_submitQueue.count() );
+    }
+
+    amaroK::StatusBar::instance()->shortLongMessage( _short, _long );
 }
 
 
@@ -954,7 +940,7 @@ void ScrobblerSubmitter::saveSubmitQueue()
 
 void ScrobblerSubmitter::readSubmitQueue()
 {
-    m_savePath = KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "submit.xml";
+    m_savePath = amaroK::saveLocation() + "submit.xml";
     QFile file( m_savePath );
 
     if ( !file.open( IO_ReadOnly ) )

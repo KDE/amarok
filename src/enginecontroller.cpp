@@ -72,11 +72,24 @@ EngineBase *EngineController::loadEngine() //static
     Engine::Base   *engine = instance()->m_engine;
     amaroK::Plugin *plugin = loadEngine( AmarokConfig::soundSystem() );
 
-    connect( (EngineBase*)plugin, SIGNAL(stateChanged( Engine::State )), instance(), SLOT(slotStateChanged( Engine::State )) );
-    connect( (EngineBase*)plugin, SIGNAL(trackEnded()), instance(), SLOT(slotTrackEnded()) );
-    connect( (EngineBase*)plugin, SIGNAL(statusText( const QString& )), instance(), SIGNAL(statusText( const QString& )) );
-    connect( (EngineBase*)plugin, SIGNAL(metaData( const Engine::SimpleMetaBundle& )), instance(), SLOT(slotEngineMetaData( const Engine::SimpleMetaBundle& )) );
-    connect( (EngineBase*)plugin, SIGNAL(showConfigDialog( const QCString& )), kapp, SLOT(slotConfigAmarok( const QCString& )) );
+    {
+        QObject *bar = amaroK::StatusBar::instance();
+        QObject *eng = (EngineBase*)plugin;
+        QObject *ins = instance();
+
+        connect( eng, SIGNAL(stateChanged( Engine::State )),
+                        ins, SLOT(slotStateChanged( Engine::State )) );
+        connect( eng, SIGNAL(trackEnded()),
+                        ins, SLOT(slotTrackEnded()) );
+        connect( eng, SIGNAL(statusText( const QString& )),
+                        bar, SLOT(shortMessage( const QString& )) );
+        connect( eng, SIGNAL(infoMessage( const QString& )),
+                        bar, SLOT(longMessage( const QString& )) );
+        connect( eng, SIGNAL(metaData( const Engine::SimpleMetaBundle& )),
+                        ins, SLOT(slotEngineMetaData( const Engine::SimpleMetaBundle& )) );
+        connect( eng, SIGNAL(showConfigDialog( const QCString& )),
+                        kapp, SLOT(slotConfigAmarok( const QCString& )) );
+    }
 
     if( static_cast<EngineBase*>(plugin)->init() )
     {
@@ -111,9 +124,10 @@ EngineBase *EngineController::loadEngine() //static
 
         QString oldEngine = PluginManager::getService( engine )->property( "X-KDE-amaroK-name" ).toString();
 
-        KMessageBox::error( 0,
+        StatusBar::instance()->longMessage(
             i18n( "amaroK could not initialize the '%1', instead we will revert to the '%2'" )
-                .arg( AmarokConfig::soundSystem(), oldEngine ) );
+                .arg( AmarokConfig::soundSystem(), oldEngine ),
+            KDE::StatusBar::Error );
 
         AmarokConfig::setSoundSystem( PluginManager::getService( engine )->property( "X-KDE-amaroK-name" ).toString() );
 
@@ -170,7 +184,7 @@ amaroK::Plugin *EngineController::loadEngine( const QString &engineName )
 
        AmarokConfig::setSoundSystem( PluginManager::getService( plugin )->property( "X-KDE-amaroK-name" ).toString() );
 
-       StatusBar::instance()->message( i18n( "Sorry, the requested engine could not be loaded" ) );
+       StatusBar::instance()->longMessage( i18n( "Sorry, the requested engine could not be loaded" ), KDE::StatusBar::Sorry );
    }
 
    return plugin;
@@ -200,18 +214,14 @@ bool EngineController::canDecode( const KURL &url ) //static
 
     const bool valid = engine()->canDecode( url );
 
-
-//FIXME this function must be thread-safe
-//     if ( !valid && ext == "mp3" )
-//         //FIXME is AmarokConfig::soundSystem() translated?
-//         //TODO use a key that contains this engine name? ie xineEngineCannotPlayMP3
-//         KMessageBox::information( 0,
-//            i18n( "<p>The %1 claims it <b>cannot</b> play MP3s."
-//                  "<p>You may want to choose a different engine from the <i>Configure Dialog</i>, or examine "
-//                  "the installation of the multimedia-framework that the current engine uses. "
-//                  "<p>You may find useful information in the <i>FAQ</i> section of the <i>amaroK HandBook</i>." )
-//                .arg( AmarokConfig::soundSystem() ),
-//            i18n( "Multimedia Framework Cannot Play MP3s" ), "engineCannotPlayMp3Warning" );
+    //we special case this as otherwise users hate us
+    if ( !valid && ext == "mp3" )
+        amaroK::StatusBar::instance()->longMessageThreadSafe(
+           i18n( "<p>The %1 claims it <b>cannot</b> play MP3 files."
+                 "<p>You may want to choose a different engine from the <i>Configure Dialog</i>, or examine "
+                 "the installation of the multimedia-framework that the current engine uses. "
+                 "<p>You may find useful information in the <i>FAQ</i> section of the <i>amaroK HandBook</i>." )
+            .arg( AmarokConfig::soundSystem() ) );
 
     // Cache this result for the next lookup
     if ( !ext.isEmpty() )
@@ -287,7 +297,7 @@ void EngineController::play( const MetaBundle &bundle )
         // Detect mimetype of remote file
         KIO::MimetypeJob* job = KIO::mimetype( url, false );
         connect( job, SIGNAL(result( KIO::Job* )), SLOT(playRemote( KIO::Job* )) );
-        StatusBar::instance()->message( i18n("Connecting to stream source...") );
+        StatusBar::instance()->shortMessage( i18n("Connecting to stream source...") );
         return; //don't do notify
     }
 
@@ -414,8 +424,6 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
 
     const bool isStream = mimetype.isEmpty() || mimetype == "text/html" ||
                           url.host().endsWith( "last.fm" ); // HACK last.fm uses the mimetype audio/x-mp3
-
-    StatusBar::instance()->clear();
 
     if ( isStream && m_engine->pluginProperty( "StreamingMode" ) != "NoStreaming" )
     {

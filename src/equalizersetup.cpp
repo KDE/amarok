@@ -29,6 +29,7 @@
 #include <qvbox.h>
 
 #include <kapplication.h>
+#include <kdebug.h>
 #include <klocale.h>
 
 

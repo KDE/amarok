@@ -19,9 +19,9 @@ email                : markey@web.de
 #include "amarokconfig.h"
 #include "amarokdcophandler.h"
 #include "app.h"
-#include "collectionbrowser.h"
 #include "config.h"
 #include "configdialog.h"
+#include "collectionbrowser.h"
 #include "effectwidget.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
@@ -455,7 +455,7 @@ void App::applySettings( bool firstTime )
 
     /* delete unneeded cover images from cache */
     QString size = QString::number( AmarokConfig::coverPreviewSize() ) + '@';
-    QDir cacheDir = KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "albumcovers/cache/";
+    QDir cacheDir = amaroK::saveLocation( "albumcovers/cache/" );
     QStringList obsoleteCovers = cacheDir.entryList( "*" );
     for( QStringList::Iterator it = obsoleteCovers.begin(); it != obsoleteCovers.end(); ++it )
         if ( !( *it ).startsWith( size  ) && !( *it ).startsWith( "50@" ) )
@@ -471,22 +471,7 @@ void App::applyColorScheme()
 
     if( AmarokConfig::schemeKDE() )
     {
-        QObjectList* const list = m_pPlaylistWindow->queryList( "QWidget" );
-        list->prepend( m_pPlaylistWindow );
-
-        kdDebug() << "Discovered " << list->count() << " widgets in PlaylistWindow\n";
-
-        for( QObject *o = list->first(); o; o = list->next() ) {
-            //We have to unset the palette due to PlaylistWindow::setColors() setting
-            //some widgets' palettes, and thus they won't propagate the changes
-
-            static_cast<QWidget*>(o)->unsetPalette();
-
-            if ( o->inherits( "KListView" ) )
-                static_cast<KListView*>(o)->setAlternateBackground( KGlobalSettings::alternateBackgroundColor() );
-        }
-
-        delete list;
+        m_pPlaylistWindow->setColors( QApplication::palette(), KGlobalSettings::alternateBackgroundColor() );
 
         PlayerWidget::determineAmarokColors();
     }
@@ -824,8 +809,8 @@ void App::pruneCoverImages()
 
     const int MAX_DAYS = 90;
 
-    QDir covers( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/" ) );
-    QDir coverCache( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/cache/" ) );
+    QDir covers( amaroK::saveLocation( "albumcovers/" ) );
+    QDir coverCache( amaroK::saveLocation( "albumcovers/cache/" ) );
 
     QFileInfoList list( *covers.entryInfoList( QDir::Files ) );
     QFileInfoList listCache( *coverCache.entryInfoList( QDir::Files ) );

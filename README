@@ -40,6 +40,12 @@ recommended
       (multimedia framework)
       http://gstreamer.net
 
+      OR
+
+    * xine 1.0.0
+      (multimedia framework)
+      http://xine.sourceforge.net
+
 optional
     * aRts 1.2 + KDE-Multimedia 3.2
       (multimedia framework)
@@ -52,10 +58,6 @@ optional
     * NMM 0.4.4
       (multimedia framework)
       http://www.networkmultimedia.org
-
-    * xine 1.0.0
-      (multimedia framework)
-      http://xine.sourceforge.net
 
     * KDE-Base 3.2
       (needed for Konqueror Sidebar)

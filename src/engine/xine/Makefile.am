@@ -6,7 +6,7 @@ INCLUDES = -I$(top_srcdir)/amarok/src $(CFLAGS_XINE) $(all_includes)
 libamarok_xine_engine_la_LIBADD = \
     $(top_builddir)/amarok/src/engine/libengine.la \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
-    $(LIB_KDECORE) $(LIB_KDEUI) \
+    -lkdeui -lkdecore \
     $(LIBS_XINE)
 
 libamarok_xine_engine_la_SOURCES = xine-scope.c xine-engine.cpp xine-config.cpp

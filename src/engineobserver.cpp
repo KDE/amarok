@@ -21,12 +21,20 @@ email                : fh@ez.no
 #include <kdebug.h>
 
 EngineObserver::EngineObserver()
+    : m_subject( 0 )
+{}
+
+EngineObserver::EngineObserver( EngineSubject *s )
+    : m_subject( s )
 {
-    // autoadd to subject in constructor?
+   m_subject->attach( this );
 }
 
 EngineObserver::~EngineObserver()
-{}
+{
+    if ( m_subject )
+        m_subject->detach( this );
+}
 
 
 EngineSubject::EngineSubject()

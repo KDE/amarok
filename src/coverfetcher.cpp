@@ -5,6 +5,7 @@
 
 #include "amarokconfig.h"
 #include "coverfetcher.h"
+#include "statusbar.h"
 
 #include <qdom.h>
 #include <qhbox.h>
@@ -111,6 +112,8 @@ CoverFetcher::startFetch()
 
     KIO::TransferJob* job = KIO::get( url, false, false );
 
+    amaroK::StatusBar::instance()->newProgressOperation( job );
+
     connect( job, SIGNAL(result( KIO::Job* )), SLOT(finishedXmlFetch( KIO::Job* )) );
     connect( job, SIGNAL(data( KIO::Job*, const QByteArray& )), SLOT(receivedXmlData( KIO::Job*, const QByteArray& )) );
 }
@@ -160,6 +163,8 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
     KIO::TransferJob* imageJob = KIO::get( m_imageURL, false, false );
     connect( imageJob, SIGNAL(result( KIO::Job* )), SLOT(finishedImageFetch( KIO::Job* )) );
     connect( imageJob, SIGNAL(data( KIO::Job*, const QByteArray& )), SLOT(receivedImageData( KIO::Job*, const QByteArray& )) );
+
+    amaroK::StatusBar::instance()->newProgressOperation( imageJob );
 }
 
 

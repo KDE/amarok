@@ -164,12 +164,14 @@ PlaylistWindow::PlaylistWindow()
     ac->readShortcutSettings( QString::null, kapp->config() );
 
 
-    //if first run let KWin place us
-    if( AmarokConfig::playlistWindowPos() != QPoint(-1,-1) )
+    //if first ever run let KWin place us
+    if ( AmarokConfig::playlistWindowPos() != QPoint(-1,-1) )
         move( AmarokConfig::playlistWindowPos() );
 
-    // On first run, the default value from PlaylistWindowSize is used
-    resize( AmarokConfig::playlistWindowSize() );
+    // On first ever run, use sizeHint
+    // TODO sizeHint is stupid currently
+    //if ( AmarokConfig::playlistWindowSize() != QSize(-1,-1) )
+        resize( AmarokConfig::playlistWindowSize() );
 }
 
 PlaylistWindow::~PlaylistWindow()
@@ -211,7 +213,7 @@ PlaylistWindow::init()
 
     m_playlist  = new Playlist( m_browsers->container(), actionCollection() );
     m_toolbar   = new amaroK::ToolBar( m_browsers->container(), "playlist_toolbar" );
-    m_statusbar = new amaroK::StatusBar( this );
+    QWidget *m_statusbar = new amaroK::StatusBar( this );
 
     connect( m_lineEdit, SIGNAL(textChanged( const QString& )), m_playlist, SLOT(setFilter( const QString& )) );
 
@@ -312,7 +314,6 @@ PlaylistWindow::init()
 
     //The volume slider later becomes our FocusProxy, so all wheelEvents get redirected to it
     m_toolbar->setFocusPolicy( QWidget::WheelFocus );
-    m_statusbar->setShown( AmarokConfig::showStatusBar() );
     m_playlist->setMargin( 2 );
     m_playlist->installEventFilter( this ); //we intercept keyEvents
 
@@ -418,60 +419,15 @@ void PlaylistWindow::createGUI()
 
 void PlaylistWindow::setColors( const QPalette &pal, const QColor &bgAlt )
 {
-    //NOTE We are only called for amaroK colours or custom colours
+    setPalette( pal ); //this updates all children's palettes recursively (thanks Qt!)
 
-    //TODO optimise bearing in mind ownPalette property and unsetPalette()
-    //TODO this doesn't work well with the select your own colours options. SIGH. Is it worth the trouble?
-
-    //this updates all children's palettes recursively (thanks Qt!)
-    setPalette( pal );
-
-    QObjectList* const list = queryList( "QWidget" );
-
-    //now we need to search for KListViews so we can set the alternative colours
-    //also amaroK's colour scheme has a few issues
-    for( QObject *obj = list->first(); obj; obj = list->next() )
-    {
-        #define widget static_cast<QWidget*>(obj)
-
-        if( obj->inherits("KListView") )
-        {
-            static_cast<KListView*>(obj)->setAlternateBackground( bgAlt );
-        }
-//         else if( obj->inherits("QLabel") ) {
-//             QColorGroup cg = pal.active();
-//             cg.setColor( QColorGroup::Foreground, cg.text() );
-//             widget->setPalette( QPalette(cg, cg, cg) );
-//         }
-//         else if( obj->inherits("KToolBarButton") || obj->inherits("QToolBar") )
-//         {
-//             QColorGroup cg = pal.active();
-//             cg.setColor( QColorGroup::Button, cg.background() );
-//             cg.setColor( QColorGroup::ButtonText, cg.text() );
-//             widget->setPalette( QPalette(cg, cg, cg) );
-//         }
-//         else if( obj->isA("QSplitterHandle") || qstrcmp( obj->name(), "divider" ) == 0 )
-//         {
-//             widget->setPalette( QApplication::palette() );
-//         }
-//         else if ( qstrcmp( obj->name(), "filter_edit" ) == 0 )
-//         {
-//             //FIXME this is hack for our greyed out text search box thingies (eg FileBrowser)
-//             QEvent e( QEvent::FocusOut );
-//             kapp->sendEvent( obj, &e );
-//         }
-
-        #undef widget
-    }
-
+    QObjectList* const list = queryList( "KListView" );
+    for( QObject *o = list->first(); o; o = list->next() )
+        static_cast<KListView*>(o)->setAlternateBackground( bgAlt );
     delete list; //heap allocated!
 
     //TODO perhaps this should be a global member of some singleton (I mean bgAlt not just the filebrowser bgAlt!)
     FileBrowser::altBgColor = bgAlt;
-
-    // set the filter-lineEdit to initial state
-    QEvent e( QEvent::FocusOut );
-    eventFilter( m_lineEdit, &e );
 }
 
 

@@ -58,9 +58,8 @@ CollectionDB* CollectionDB::instance()
 
 
 CollectionDB::CollectionDB()
-        : m_isScanning( false )
-        , m_cacheDir( KGlobal::dirs()->saveLocation( "data", "amarok/" ) )
-        , m_coverDir( KGlobal::dirs()->saveLocation( "data", "amarok/" ) )
+        : m_cacheDir( amaroK::saveLocation() )
+        , m_coverDir( amaroK::saveLocation() )
 {
     kdDebug() << k_funcinfo << endl;
 
@@ -95,7 +94,7 @@ CollectionDB::CollectionDB()
 CollectionDB::~CollectionDB()
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     destroy();
 
 //     This crashes so it's done at the end of ctor.
@@ -146,7 +145,7 @@ CollectionDB::query( const QString& statement, DbConnection *conn )
     {
         dbConn = m_dbConnPool->getDbConnection();
     }
-    
+
     QStringList values = dbConn->query( statement );
 
     if ( conn == NULL )
@@ -186,7 +185,7 @@ CollectionDB::insert( const QString& statement, DbConnection *conn )
     {
         dbConn = m_dbConnPool->getDbConnection();
     }
-    
+
     int id = dbConn->insert( statement );
 
     if ( conn == NULL )
@@ -633,7 +632,7 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage
     // remove existing album covers
     removeAlbumImage( artist, album );
 
-    QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", "amarok/albumcovers/large/" ) );
+    QDir largeCoverDir( amaroK::saveLocation( "albumcovers/large/" ) );
     QCString key = md5sum( artist, album );
 
     // Save Amazon product page URL as embedded string, for later retreival
@@ -649,7 +648,7 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
 {
     QCString widthKey = makeWidthKey( width );
     QCString tagKey = md5sum( trackInformation.url().path(), trackInformation.artist() ); //what's more unique than the file name?
-    QDir tagCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/tagcover/" ) );
+    QDir tagCoverDir( amaroK::saveLocation( "albumcovers/tagcover/" ) );
 
     //FIXME: the cashed versions will never be refreshed
     if ( tagCoverDir.exists( widthKey + tagKey ) )
@@ -720,7 +719,7 @@ CollectionDB::findImageByArtistAlbum( const QString &artist, const QString &albu
         else
         {
             // we need to create a scaled version of this cover
-            QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
+            QDir largeCoverDir( amaroK::saveLocation( "albumcovers/large/" ) );
             if ( largeCoverDir.exists( key ) )
                 if ( width > 1 )
                 {
@@ -833,7 +832,7 @@ CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
             QFile::remove( m_cacheDir.filePath( scaledList[ i ] ) );
 
     // remove large, original image
-    QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
+    QDir largeCoverDir( amaroK::saveLocation( "albumcovers/large/" ) );
 
     if ( largeCoverDir.exists( key ) && QFile::remove( largeCoverDir.filePath( key ) ) ) {
         emit coverRemoved( artist, album );
@@ -1401,39 +1400,26 @@ CollectionDB::fetchCover( QWidget* parent, const QString& artist, const QString&
 void
 CollectionDB::scanMonitor()  //SLOT
 {
-    if ( !m_isScanning )
-        scanModifiedDirs( AmarokConfig::scanRecursively(), AmarokConfig::importPlaylists() );
+    scanModifiedDirs();
 }
 
 
 void
 CollectionDB::startScan()  //SLOT
 {
-    kdDebug() << k_funcinfo << endl;
-
-    if ( !m_isScanning )
-    {
-        if ( AmarokConfig::collectionFolders().isEmpty() )
-        {
-            dropTables();
-            createTables();
-        }
-        else
-        {
-            scan( AmarokConfig::collectionFolders(), AmarokConfig::scanRecursively(),
-                AmarokConfig::importPlaylists() );
-
-            amaroK::StatusBar::instance()->message( i18n( "Building Collection..." ) );
-        }
+    if ( AmarokConfig::collectionFolders().isEmpty() ) {
+        dropTables();
+        createTables();
     }
+    else
+        scan( AmarokConfig::collectionFolders() );
 }
 
 
 void
 CollectionDB::stopScan() //SLOT
 {
-    CollectionReader::stop();
-    m_isScanning = false;
+    ThreadWeaver::instance()->abortAllJobsNamed( "CollectionReader" );
 }
 
 
@@ -1446,7 +1432,7 @@ CollectionDB::dirDirty( const QString& path )
 {
     kdDebug() << k_funcinfo << "Dirty: " << path << endl;
 
-    ThreadWeaver::instance()->queueJob( new CollectionReader( this, PlaylistBrowser::instance(), path, false, false, true ) );
+    ThreadWeaver::instance()->queueJob( new CollectionReader( this, path ) );
 }
 
 
@@ -1527,47 +1513,32 @@ CollectionDB::destroy()
 
 
 void
-CollectionDB::scan( const QStringList& folders, bool recursively, bool importPlaylists )
+CollectionDB::scan( const QStringList& folders )
 {
-    kdDebug() << k_funcinfo << endl;
+    if( !folders.isEmpty() && PlaylistBrowser::instance() ) {
+          emit scanStarted();
 
-    if ( !folders.isEmpty() )
-    {
-        m_isScanning = true;
-        emit scanStarted();
-
-        ThreadWeaver::instance()->onlyOneJob( new CollectionReader( this, PlaylistBrowser::instance(), folders, recursively, importPlaylists, false ) );
+        ThreadWeaver::instance()->onlyOneJob( new CollectionReader( this, folders ) );
     }
 }
 
 
 void
-CollectionDB::scanModifiedDirs( bool recursively, bool importPlaylists )
+CollectionDB::scanModifiedDirs()
 {
-    kdDebug() << k_funcinfo << endl;
-
-    m_isScanning = true;
-    emit scanStarted();
-
-    ThreadWeaver::instance()->onlyOneJob( new CollectionReader( this, PlaylistBrowser::instance(), QStringList(),
-                                            recursively, importPlaylists, true ) );
+    //we check if a job is pending because we don't want to abort incremental collection readings
+    if ( !ThreadWeaver::instance()->isJobPending( "CollectionReader" ) && PlaylistBrowser::instance() ) {
+        emit scanStarted();
+        ThreadWeaver::instance()->onlyOneJob( new IncrementalCollectionReader( this ) );
+    }
 }
 
 
 void
 CollectionDB::customEvent( QCustomEvent *e )
 {
-//    kdDebug() << k_funcinfo << endl;
-    CollectionReader::ProgressEvent* p = dynamic_cast<CollectionReader::ProgressEvent*>( e );
-
-    if ( p )
-        switch ( p->state() )
-        {
-            case CollectionReader::ProgressEvent::Stop:
-                emit scanDone( p->value() > 0 );
-                m_isScanning = false;
-                break;
-        }
+    if ( e->type() == CollectionReader::JobFinishedEvent )
+        emit scanDone( static_cast<ThreadWeaver::Job*>(e)->wasSuccessful() );
 }
 
 
@@ -1593,8 +1564,7 @@ DbConnection::~DbConnection()
 SqliteConnection::SqliteConnection( SqliteConfig* config )
     : DbConnection( config )
 {
-    QCString path = ( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" )
-                  + "collection.db" ).local8Bit();
+    const QCString path = (amaroK::saveLocation()+"collection.db").local8Bit();
 
     // Open database file and check for correctness
     m_initialized = false;
@@ -1699,7 +1669,7 @@ QStringList SqliteConnection::query( const QString& statement )
             values = QStringList();
         }
     }
-    
+
     return values;
 }
 
@@ -1832,7 +1802,7 @@ MySqlConnection::~MySqlConnection()
 QStringList MySqlConnection::query( const QString& statement )
 {
     QStringList values;
-    
+
     if ( !mysql::mysql_query( m_db, statement.utf8() ) )
     {
         mysql::MYSQL_RES* result;
@@ -1863,7 +1833,7 @@ QStringList MySqlConnection::query( const QString& statement )
         kdDebug() << "MYSQL QUERY FAILED: " << mysql::mysql_error( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
         values = QStringList();
     }
-    
+
     return values;
 }
 
@@ -1917,7 +1887,7 @@ DbConnectionPool::DbConnectionPool() : m_semaphore( POOL_SIZE )
     else
 #endif
         m_dbConnType = DbConnection::sqlite;
-        
+
     m_semaphore += POOL_SIZE;
     DbConnection *dbConn;
 
@@ -1941,7 +1911,7 @@ DbConnectionPool::DbConnectionPool() : m_semaphore( POOL_SIZE )
 #ifdef USE_MYSQL
     }
 #endif
-    
+
     enqueue( dbConn );
     m_semaphore--;
     kdDebug() << "available db connections: " << m_semaphore.available() << endl;
@@ -1965,14 +1935,14 @@ void DbConnectionPool::createDbConnections()
     for ( int i = 0; i < POOL_SIZE - 1; i++ )
     {
         DbConnection *dbConn;
-        
+
 #ifdef USE_MYSQL
         if ( m_dbConnType == DbConnection::mysql )
             dbConn = new MySqlConnection( static_cast<MySqlConfig*> ( m_dbConfig ) );
         else
 #endif
             dbConn = new SqliteConnection( static_cast<SqliteConfig*> ( m_dbConfig ) );
-        
+
         enqueue( dbConn );
         m_semaphore--;
     }

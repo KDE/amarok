@@ -4,18 +4,26 @@
 
 // the asserts we use in this module prevent crashes, so best to abort the application if they fail
 #define QT_FATAL_ASSERT
+#define DEBUG_PREFIX "ThreadWeaver"
 
+#include "debug.h"
 #include <kcursor.h>
 #include <kdebug.h>
 #include <qapplication.h>
+#include "statusbar.h"
 #include "threadweaver.h"
 
+class ProgressEvent : public QCustomEvent {
+public:
+    ProgressEvent( int progress )
+        : QCustomEvent( 24788 )
+        , progress( progress )
+    {}
 
-#ifdef NDEBUG
-   static inline kndbgstream threadweaver_debug() { return kndbgstream(); }
-#else
-   static inline kdbgstream threadweaver_debug() { return kdbgstream( "[ThreadWeaver] ", 0, 0 ); }
-#endif
+    int progress;
+};
+
+using amaroK::StatusBar;
 
 
 // if you need to make more than one queue for a jobtype ask max to ammend the api
@@ -32,7 +40,7 @@ ThreadWeaver::ThreadWeaver()
 
 ThreadWeaver::~ThreadWeaver()
 {
-    threadweaver_debug() << k_funcinfo << endl;
+    debug() << k_funcinfo << endl;
 
     //TODO abort and wait on all running threads
     //will dependent threads be ok here?
@@ -54,7 +62,7 @@ ThreadWeaver::queueJob( Job *job )
     const QCString name = job->name();
     Thread *thread = findThread( name );
 
-    threadweaver_debug() << "Queuing: " << name << endl;
+    debug() << "Queuing: " << name << endl;
 
     if ( !thread ) {
         thread = new Thread( job->name() );
@@ -117,6 +125,12 @@ ThreadWeaver::abortAllJobsNamed( const QCString &name )
     return count;
 }
 
+bool
+ThreadWeaver::isJobPending( const QCString &name )
+{
+    return findThread( name ) != 0;
+}
+
 void
 ThreadWeaver::dispose( Thread *thread )
 {
@@ -145,13 +159,13 @@ ThreadWeaver::registerDependent( QObject *dependent, const char *name )
 void
 ThreadWeaver::dependentAboutToBeDestroyed()
 {
-    threadweaver_debug() << k_funcinfo << ": " <<  sender()->name() << " destroyed\n";
+    debug() << k_funcinfo << ": " <<  sender()->name() << " destroyed\n";
 }
 
 void
 ThreadWeaver::customEvent( QCustomEvent *e )
 {
-    threadweaver_debug() << k_funcinfo << endl;
+    debug() << k_funcinfo << endl;
 
     switch( e->type() )
     {
@@ -173,8 +187,17 @@ ThreadWeaver::customEvent( QCustomEvent *e )
             thread->runJob( 0 );
         }
         else
-            threadweaver_debug() << "Thread was deleted while processing this job: " << QCString(job->name()) << endl;
+            warning() << "Thread was deleted while processing this job: " << QCString(job->name()) << endl;
+
+        break;
     }
+
+    case OverrideCursorEvent:
+        // we have to do this for the PlaylistLoader case, as Qt uses the same
+        // function for drag and drop operations.
+        QApplication::setOverrideCursor( KCursor::workingCursor() );
+        break;
+
     default:
         ;
     }
@@ -185,14 +208,14 @@ ThreadWeaver::Thread::Thread( const char *_name )
     : QThread()
     , name( _name )
 {
-    threadweaver_debug() << "Thread::Thread: " << QCString(_name) << endl;
+    debug() << "Thread::Thread: " << QCString(_name) << endl;
 
-    QApplication::setOverrideCursor( KCursor::workingCursor() );
+    QApplication::postEvent( ThreadWeaver::instance(), new QCustomEvent( ThreadWeaver::OverrideCursorEvent ) );
 }
 
 ThreadWeaver::Thread::~Thread()
 {
-    threadweaver_debug() << "Thread::~Thread: " << QCString(name) << endl;
+    debug() << "Thread::~Thread: " << QCString(name) << endl;
 
     //if we were aborted, this has already occurred
     ThreadWeaver::instance()->m_threads.remove( this );
@@ -234,11 +257,11 @@ ThreadWeaver::Thread::run()
 
     Job *job = runningJob;
 
-    threadweaver_debug() << "Running Job: " << QCString(job->name()) << endl;
+    debug() << "Running Job: " << QCString(job->name()) << endl;
 
     job->m_aborted |= !job->doJob();
 
-    threadweaver_debug() << "Job Done: " << QCString(job->name()) << ". Aborted? " << job->m_aborted << endl;
+    debug() << "Job Done: " << QCString(job->name()) << ". Aborted? " << job->m_aborted << endl;
 
     QApplication::postEvent( ThreadWeaver::instance(), job );
 }
@@ -256,20 +279,81 @@ ThreadWeaver::Thread::abortAllJobs()
 }
 
 
+/// @class ThreadWeaver::Job
+
 ThreadWeaver::Job::Job( const char *name )
     : QCustomEvent( ThreadWeaver::JobEvent )
     , m_name( name )
-    , m_aborted( false )
     , m_thread( 0 )
+    , m_percentDone( 0 )
+    , m_progressDone( 0 )
+    , m_totalSteps( 0 )
 {
-    threadweaver_debug() << "Job::Job: " << QCString(m_name) << endl;
+    debug() << "Job::Job: " << QCString(m_name) << endl;
 }
 
 
 ThreadWeaver::Job::~Job()
 {
-    threadweaver_debug() << "Job::~Job: " << QCString(m_name) << endl;
+    debug() << "Job::~Job: " << QCString(m_name) << endl;
 }
+
+void
+ThreadWeaver::Job::setProgressTotalSteps( uint steps )
+{
+    m_totalSteps = steps;
+
+    QApplication::postEvent( this, new ProgressEvent( -1 ) );
+}
+
+void
+ThreadWeaver::Job::setProgress( uint steps )
+{
+    m_progressDone = steps;
+
+    int newPercent = int( (100 * steps) / m_totalSteps);
+
+    if ( newPercent > m_percentDone ) {
+        m_percentDone = newPercent;
+        QApplication::postEvent( this, new ProgressEvent( newPercent ) );
+    }
+}
+
+void
+ThreadWeaver::Job::setStatus( const QString &status )
+{
+    AMAROK_NOTIMPLEMENTED
+}
+
+void
+ThreadWeaver::Job::incrementProgress()
+{
+    setProgress( m_progressDone + 1 );
+}
+
+void
+ThreadWeaver::Job::customEvent( QCustomEvent *e )
+{
+    int progress = static_cast<ProgressEvent*>(e)->progress;
+
+    switch( progress )
+    {
+    case -2:
+//        StatusBar::instance()->setProgressStatus( this, m_status );
+        break;
+
+    case -1:
+        StatusBar::instance()->newProgressOperation( this )
+                .setDescription( m_description )
+                .setAbortSlot( this, SLOT(abort()) )
+                .setTotalSteps( 100 );
+        break;
+
+    default:
+        StatusBar::instance()->setProgress( this, progress );
+    }
+}
+
 
 
 ThreadWeaver::DependentJob::DependentJob( QObject *dependent, const char *name )
@@ -277,12 +361,14 @@ ThreadWeaver::DependentJob::DependentJob( QObject *dependent, const char *name )
     , m_dependent( dependent )
 {
     ThreadWeaver::instance()->registerDependent( dependent, name );
+
+    QApplication::postEvent( dependent, new QCustomEvent( JobStartedEvent ) );
 }
 
 void
 ThreadWeaver::DependentJob::completeJob()
 {
-    //syncronous
+    //syncronous, so we don't get deleted twice
     QApplication::sendEvent( m_dependent, this );
 }
 

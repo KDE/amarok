@@ -11,9 +11,12 @@
  *      available and have some more useful public functions
  */
 
+#define DEBUG_PREFIX "Playlist"
+
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "collectiondb.h"
+#include "debug.h"
 #include "enginecontroller.h"
 #include "k3bexporter.h"
 #include "metabundle.h"
@@ -40,7 +43,6 @@
 #include <kaction.h>
 #include <kapplication.h>
 #include <kcursor.h>         //setOverrideCursor()
-#include <kdebug.h>
 #include <kglobalsettings.h> //rename()
 #include <kiconloader.h>     //slotShowContextMenu()
 #include <kio/job.h>         //deleteSelectedFiles()
@@ -101,7 +103,7 @@ typedef MyIterator MyIt;
  */
 
 class TagWriter : public ThreadWeaver::Job
-{
+{ //TODO make this do all tags at once when you split playlist.cpp up
 public:
     TagWriter( PlaylistItem*, const QString &oldTag, const QString &newTag, const int, const bool updateView = true );
     bool doJob();
@@ -158,7 +160,7 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     , m_totalLength( 0 )
     , m_selectCounter( 0 )
     , m_selectLength( 0 )
-    , m_undoDir( KGlobal::dirs()->saveLocation( "data", "amarok/undo/", true ) )
+    , m_undoDir( amaroK::saveLocation( "undo/" ) )
     , m_undoCounter( 0 )
     , m_stopAfterCurrent( false )
     , m_editOldTag( 0 )
@@ -363,23 +365,19 @@ void
 Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool directPlay )
 {
     //TODO queue these in the threadweaver?
-    if( list.count() == 1 )
-    {
+    if ( list.count() == 1 ) {
         const KURL &url = list.front();
-        if( PlaylistLoader::isPlaylist( url ) )
-        {
-            if( !url.isLocalFile() )
-            {
+        if ( PlaylistLoader::isPlaylist( url ) ) {
+            if ( !url.isLocalFile() ) {
                 PlaylistLoader::downloadPlaylist( url, this, after, directPlay );
                 return;
             }
         }
     }
 
-    if( !list.isEmpty() )
-    {
+    if ( !list.isEmpty() ) {
         setSorting( NO_SORT );
-        ThreadWeaver::instance()->queueJob( new PlaylistLoader( list, after, directPlay ) );
+        ThreadWeaver::instance()->queueJob( new PlaylistLoader( this, list, after, directPlay ) );
     }
 
     return;
@@ -388,23 +386,15 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
 QString
 Playlist::defaultPlaylistPath() //static
 {
-    return KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "current.xml";
+    return amaroK::saveLocation() + "current.xml";
 }
 
 void
 Playlist::restoreSession()
 {
-    const QStringList list = m_undoDir.entryList( "*.xml", QDir::Files | QDir::Readable, QDir::Time );
-
-    QString
-    path  = KGlobal::dirs()->saveLocation( "data", "amarok/" );
-    path += /*list.count() ? list.last() :*/ "current.xml"; //FIXME
-
-    kdDebug() << "Session Playlist: " << path << endl;
-
     KURL url;
-    url.setPath( path );
-    ThreadWeaver::instance()->queueJob( new PlaylistLoader( url, 0 ) );
+    url.setPath( amaroK::saveLocation() + "current.xml" );
+    ThreadWeaver::instance()->queueJob( new PlaylistLoader( this, url, 0 ) );
 }
 
 
@@ -706,19 +696,6 @@ Playlist::isTrackBefore() const
                ||
                AmarokConfig::randomMode() && childCount() > 1
            );
-}
-
-bool
-Playlist::containsUrl( const KURL& url )
-{
-    for ( QListViewItemIterator it( this ); it.current(); ++it )
-    {
-        PlaylistItem* item = static_cast<PlaylistItem*>( *it );
-        if ( item->url() == url )
-            return true;
-    }
-
-    return false;
 }
 
 void
@@ -1299,28 +1276,16 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 void
 Playlist::customEvent( QCustomEvent *e )
 {
-    static PlaylistItem* afterItem;
-    static bool directPlay;
-
-    PlaylistItem* item;
-
     //the threads send their results here for completion that is GUI-safe
     switch( e->type() )
     {
-    case PlaylistLoader::Started:
-        #define e static_cast<PlaylistLoader::StartedEvent*>(e)
-        afterItem = new PlaylistItem( this, e->afterItem );
-        directPlay = e->directPlay;
-        #undef e
-
+    case PlaylistLoader::JobStartedEvent:
         m_clearButton->setEnabled( false );
         m_undoButton->setEnabled( false );
         m_redoButton->setEnabled( false );
         break;
 
-    case PlaylistLoader::Done: {
-        delete afterItem;
-
+    case PlaylistLoader::JobFinishedEvent: {
         m_clearButton->setEnabled( true );
         m_undoButton->setEnabled( !m_undoList.isEmpty() );
         m_redoButton->setEnabled( !m_redoList.isEmpty() );
@@ -1353,75 +1318,53 @@ Playlist::customEvent( QCustomEvent *e )
 
         //force redraw of currentTrack marker, play icon, etc.
         //setCurrentTrack( currentTrack() );
-        {
-            KURL::List &list = static_cast<PlaylistLoader::DoneEvent*>(e)->badURLs();
 
-            //if ( !list.isEmpty() ) {
-            //    amaroK::StatusBar::instance()->message( i18n("Some URLs could not be loaded.") );
+        break; }
 
-            //    for( KURL::List::ConstIterator it = list.begin(); it != list.end(); ++it )
-            //        kdDebug() << *it << endl;
-            //}
-        }
-        break;
-    }
-
-    case PlaylistLoader::Item:
+    case PlaylistLoader::Item: {
         #define e static_cast<PlaylistLoader::ItemEvent*>(e)
-        item = new PlaylistItem( e->bundle.url(), afterItem, e->bundle );
+        PlaylistItem *item = new PlaylistItem( e->bundle, e->beforeThisItem );
+
+        if ( e->playThisUrl )
+            activate( item );
         #undef e
-        if ( directPlay ) {
+        break; }
+
+    case PlaylistLoader::DomItem: {
+        #define e static_cast<PlaylistLoader::DomItemEvent*>(e)
+        PlaylistItem *item = new PlaylistItem( e->url, e->beforeThisItem, e->node );
+        QString indexStr   = e->node.toElement().attribute( "queue_index" );
+        int queueIndex     = -1;
+
+        if ( !indexStr.isEmpty() )
+            queueIndex = indexStr.toInt();
+
+        if ( queueIndex == 0 )
+            setCurrentTrack( item );
+        else if ( queueIndex > 0 ) {
+            int count = m_nextTracks.count();
+            if ( count < queueIndex )
+                for ( int i = 0; i < queueIndex - count; i++ )
+                    // Append foo values and replace with correct values
+                    // later.
+                    m_nextTracks.append( item );
+
+            m_nextTracks.replace( queueIndex - 1, item );
+        }
+
+        if ( e->playThisUrl )
             activate( item );
-            directPlay = false;
-        }
-        break;
 
-    case PlaylistLoader::DomItem:
-        {
-            #define e static_cast<PlaylistLoader::DomItemEvent*>(e)
-            item = new PlaylistItem( e->url, afterItem, e->node );
-            QString indexStr = e->node.toElement().attribute( "queue_index" );
-            #undef e
-            int queueIndex = -1;
-            if ( !indexStr.isEmpty() )
-            {
-                queueIndex = indexStr.toInt();
-            }
-            if ( queueIndex == 0 )
-            {
-                setCurrentTrack( item );
-            }
-            else if ( queueIndex > 0 )
-            {
-                int count = m_nextTracks.count();
-                if ( count < queueIndex )
-                {
-                    for ( int i = 0; i < queueIndex - count; i++ )
-                    {
-                        // Append foo values and replace with correct values
-                        // later.
-                        m_nextTracks.append( item );
-                    }
-                }
-                m_nextTracks.replace( queueIndex - 1, item );
-            }
-        }
-        if ( directPlay ) {
-            activate( item );
-            directPlay = false;
-        }
-        break;
+        break; }
+        #undef e
 
-    case 4000: //dustbinEvent
-
+    case 4000:
         //this is a list of all the listItems from a clear operation
-        #define list static_cast<QPtrList<QListViewItem>*>(e->data())
-        delete list;
-        #undef list
+        delete (QPtrList<QListViewItem>*)e->data();
         break;
 
     default:
-        ;
+         ;
     }
 
     updateNextPrev();
@@ -1455,7 +1398,6 @@ Playlist::saveM3U( const QString &path ) const
             stream << (url.protocol() == "file" ? url.path() : url.url());
             stream << "\n";
         }
-        file.close();
     }
 }
 
@@ -1505,7 +1447,6 @@ Playlist::saveXML( const QString &path )
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << newdoc.toString();
-    file.close();
 }
 
 void
@@ -1627,7 +1568,12 @@ Playlist::deleteSelectedFiles() //SLOT
     {
         // TODO We need to check which files have been deleted successfully
         KIO::DeleteJob* job = KIO::del( urls );
-        connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( removeSelectedItems() ) );
+        connect( job, SIGNAL(result( KIO::Job* )), SLOT(removeSelectedItems()) );
+
+        job->setAutoErrorHandlingEnabled( false );
+
+        amaroK::StatusBar::instance()->newProgressOperation( job )
+                .setDescription( i18n("Deleting files") );
     }
 }
 
@@ -2210,6 +2156,7 @@ void Playlist::showTagDialog( QPtrList<QListViewItem> items )
 #include <kdialog.h>
 #include <kpushbutton.h>
 #include <qgroupbox.h>
+#include <qlabel.h>
 #include <qlayout.h>
 #include <qprocess.h>
 void
@@ -2395,7 +2342,7 @@ TagWriter::completeJob()
 {
     if ( m_failed ) {
         m_item->setText( m_tagType, m_oldTagString.isEmpty() ? " " : m_oldTagString );
-        amaroK::StatusBar::instance()->message( i18n( "The tag could not be changed." ) );
+        amaroK::StatusBar::instance()->longMessage( i18n( "The tag could not be changed." ) );
     }
     m_item->setText( m_tagType, m_newTagString.isEmpty() ? " " : m_newTagString );
 }

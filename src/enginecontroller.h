@@ -1,12 +1,11 @@
 /***************************************************************************
-                      enginecontroller.h  -  Wraps engine and adds some functionality
-                         -------------------
-begin                : Mar 15 2004
-copyright            : (C) 2004 by Frederik Holljen
+  enginecontroller.h : Wraps engine and adds some functionality
+
+  begin              : Mar 15 2004
+  copyright          : (C) 2004 by Frederik Holljen <fh@ez.no>
                        (C) 2004 by Max Howell
                        (C) 2004 by Mark Kretschmann
-email                : fh@ez.no
-***************************************************************************/
+ ***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -63,7 +62,7 @@ public:
     void endSession();
 
     void currentTrackMetaDataChanged( const MetaBundle& bundle ) { m_bundle = bundle; newMetaDataNotify( bundle, false /* no track change */ ); }
-    
+
     //xx000, xx100, xx200, so at most will be 200ms delay before time displays are updated
     static const int MAIN_TIMER = 300;
 

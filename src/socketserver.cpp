@@ -5,6 +5,7 @@
 #include "config.h"           //XMMS_CONFIG_DIR
 
 #include "app.h"
+#include "debug.h"
 #include "enginebase.h"       //to get the scope
 #include "enginecontroller.h" //to get the engine
 #include "fht.h"              //processing the scope
@@ -14,7 +15,6 @@
 #include <qheader.h>          //Vis::Selector ctor
 #include <qtooltip.h>         //Vis::Selector ctor
 
-#include <kdebug.h>
 #include <klocale.h>
 #include <kpopupmenu.h>       //Vis::Selector
 #include <kprocess.h>         //Vis::Selector
@@ -95,7 +95,7 @@ LoaderServer::LoaderServer( QObject* parent )
 void
 LoaderServer::newConnection( int sockfd )
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     char buf[1000];
     const int nbytes = ::recv( sockfd, buf, sizeof(buf), 0 );

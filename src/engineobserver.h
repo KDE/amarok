@@ -20,6 +20,7 @@ email                : fh@ez.no
 
 #include "enginebase.h"
 
+class EngineSubject;
 class MetaBundle;
 
 /**
@@ -31,12 +32,16 @@ class EngineObserver
 {
 public:
     EngineObserver();
+    EngineObserver( EngineSubject* );
     virtual ~EngineObserver();
     virtual void engineStateChanged( Engine::State /*state*/ ) {}
     virtual void engineNewMetaData( const MetaBundle &/*bundle*/, bool /*trackChanged*/ ) {}
     virtual void engineTrackEnded( int /*finalPosition*/, int /*trackLength*/ ) {}
     virtual void engineVolumeChanged( int /*percent*/ ) {}
     virtual void engineTrackPositionChanged( long /*position*/ ) {}
+
+private:
+    EngineSubject *m_subject;
 };
 
 #include <qptrlist.h>

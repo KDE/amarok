@@ -172,7 +172,7 @@ bool
 XineEngine::load( const KURL &url, bool isStream )
 {
     if( XINE_VERSION == "1-rc6a" && url.protocol() == "http" ) {
-       KMessageBox::sorry( 0, i18n( "Sorry xine 1-rc6a cannot play remote streams, please upgrade to 1-rc7" ) );
+       emit infoMessage( i18n("Sorry xine 1-rc6a cannot play remote streams, please upgrade to 1-rc7") );
        return false;
     }
 
@@ -457,7 +457,7 @@ XineEngine::customEvent( QCustomEvent *e )
 
     case 3001:
         #define message static_cast<QString*>(e->data())
-        KMessageBox::error( 0, (*message).arg( m_url.prettyURL() ) );
+        emit infoMessage( (*message).arg( m_url.prettyURL() ) );
         delete message;
         break;
 
@@ -606,6 +606,10 @@ Fader::Fader( XineEngine *engine )
 
         xine_set_param( m_decrease, XINE_PARAM_AUDIO_AMP_LEVEL, 100 );
         xine_set_param( m_increase, XINE_PARAM_AUDIO_AMP_LEVEL, 0 );
+    }
+    else {
+        s_fader = 0;
+        deleteLater();
     }
 }
 

@@ -287,8 +287,8 @@ class CollectionDB : public QObject, public EngineObserver
         //general management methods
         void createStatsTable();
         void dropStatsTable();
-        void scan( const QStringList& folders, bool recursively, bool importPlaylists );
-        void scanModifiedDirs( bool recursively, bool importPlaylists );
+        void scan( const QStringList& folders );
+        void scanModifiedDirs();
 
         QCString makeWidthKey( uint width );
         QString artistValue( uint id );
@@ -308,7 +308,6 @@ class CollectionDB : public QObject, public EngineObserver
 
         DbConnectionPool *m_dbConnPool;
 
-        bool m_isScanning;
         bool m_monitor;
         QDir m_cacheDir;
         QDir m_coverDir;

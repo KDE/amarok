@@ -8,6 +8,7 @@
 #include "collectiondb.h"
 #include "coverfetcher.h"
 #include "covermanager.h"
+#include "debug.h"
 
 #include <qfile.h>
 #include <qfontmetrics.h>    //paintItem()
@@ -31,7 +32,6 @@
 #include <kapplication.h>
 #include <kconfig.h>
 #include <kcursor.h>
-#include <kdebug.h>
 #include <kfiledialog.h>
 #include <kiconloader.h>
 #include <klistview.h>
@@ -647,7 +647,7 @@ void CoverManager::coverRemoved( const QString &artist, const QString &album ) /
 
 void CoverManager::coverFetcherError()
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     m_coverErrors++;
     updateStatusBar();

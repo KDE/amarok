@@ -74,7 +74,6 @@ class Playlist : private KListView, public EngineObserver
         bool isEmpty() const { return childCount() == 0; }
         bool isTrackBefore() const;
         bool isTrackAfter() const;
-        bool containsUrl( const KURL& );
 
         /// called during initialisation
         void restoreSession();

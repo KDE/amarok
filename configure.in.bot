@@ -165,7 +165,7 @@ else
     fi
 
     if test x$build_nmm = xyes; then
-        echo " =   + NMM-engine (note: unmaintained)"
+        echo " =   + NMM-engine"
     fi
 
     if test x$build_mas = xyes; then

@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "universalamarok.h"
 
 #include <qlabel.h>
@@ -26,22 +27,23 @@
 #include <qwidget.h>
 #include <khtml_part.h>
 #include <kglobal.h>
-#include <kstandarddirs.h> 
+#include <kstandarddirs.h>
 #include <qlayout.h>
 #include <qvbox.h>
 #include <qtimer.h>
-#include <dcopclient.h> 
-#include <kmessagebox.h> 
-#include <kpushbutton.h> 
-#include <kiconloader.h> 
-#include <qdatetime.h> 
-#include <qfileinfo.h> 
-#include <ktoolbar.h> 
+#include <dcopclient.h>
+#include <kmessagebox.h>
+#include <kpushbutton.h>
+#include <kiconloader.h>
+#include <qdatetime.h>
+#include <qfileinfo.h>
+#include <ktoolbar.h>
 #include <kapplication.h>
 #include <qslider.h>
 
 
-#define HTML_FILE KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "contextbrowser.html"
+#define HTML_FILE KGlobal::dirs()->saveLocation( "data", "amarok/", true ) + "contextbrowser.html"
+
 
 UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widgetParent, QString &desktopName, const char* name):
                    KonqSidebarPlugin(inst,parent,widgetParent,desktopName,name)
@@ -61,13 +63,14 @@ UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widget
     toolBar->insertButton("player_pause",0,SIGNAL(clicked() ),this, SLOT(sendPause() ) );
     toolBar->insertButton("player_stop",0,SIGNAL(clicked() ),this, SLOT(sendStop() ) );
     toolBar->insertButton("player_end",0,SIGNAL(clicked() ),this, SLOT(sendNext() ) );
+
     toolBar->insertSeparator();
     toolBar->insertButton("arts",0,SIGNAL(clicked() ),this, SLOT(sendMute() ) );
-    
+
     vol_slider=new QSlider(0,100,1,0,Qt::Vertical, toolBar,"volume");
     connect(vol_slider, SIGNAL( valueChanged(int) ), this, SLOT(volChanged(int ) ) );
     toolBar->insertWidget(1,2, vol_slider);
-    
+
     fileInfo = new QFileInfo(HTML_FILE);
     QTimer *t = new QTimer( this );
     connect( t, SIGNAL(timeout()), SLOT(updateStatus() ) );
@@ -94,12 +97,12 @@ extern "C"
     }
 };
 
-extern "C" 
+extern "C"
 {
-    bool add_konqsidebar_universalamarok(QString* fn, QString* param, QMap<QString,QString> *map) 
+    bool add_konqsidebar_universalamarok(QString* fn, QString* param, QMap<QString,QString> *map)
         {
         Q_UNUSED(param);
-                
+
         map->insert ("Type", "Link");
         map->insert ("URL", "");
         map->insert ("Icon", "amarok");

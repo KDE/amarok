@@ -22,20 +22,20 @@
 
 
 /**
-* @class ThreadWeaver
-* @author Max Howell <max.howell@methylblue.com>
-* @short ThreadWeaver is designed to encourage you to use threads and to make their use easy.
-*
-* You create Jobs on the heap and ThreadWeaver allows you to easily queue them,
-* abort them, ensure only one runs at once, ensure that bad data is never acted
-* on and even cleans up for you should the class that wants the Job's results
-* get deleted while a thread is running.
-*
-* You also will (soon) get thread-safe error handling and thread-safe progress
-* reporting.
-*
-* This is a typical use:
-*
+ * @class ThreadWeaver
+ * @author Max Howell <max.howell@methylblue.com>
+ * @short ThreadWeaver is designed to encourage you to use threads and to make their use easy.
+ *
+ * You create Jobs on the heap and ThreadWeaver allows you to easily queue them,
+ * abort them, ensure only one runs at once, ensure that bad data is never acted
+ * on and even cleans up for you should the class that wants the Job's results
+ * get deleted while a thread is running.
+ *
+ * You also will (soon) get thread-safe error handling and thread-safe progress
+ * reporting.
+ *
+ * This is a typical use:
+ *
     class MyJob : public ThreadWeaver::Job
     {
     public:
@@ -57,13 +57,24 @@
         ThreadWeaver::instance()->queueJob( new MyJob( this ) );
     }
 
-*
-* That's it! The queue is fifo, the ThreadWeaver takes ownership of the Job,
-* and the Weaver calls Job::completeJob() on completion which you reimplement
-* to do whatever you need done.
-*
-* @see ThreadWeaver::Job
-*/
+ *
+ * That's it! The queue is fifo, there's one queue per job-type, the
+ * ThreadWeaver takes ownership of the Job, and the Weaver calls
+ * Job::completeJob() on completion which you reimplement to do whatever you
+ * need done.
+ *
+ * @see ThreadWeaver::Job
+ * @see ThreadWeaver::DependentJob
+ */
+
+
+/// This class is because moc "is really good", NOT IN MY OPINION! (no nested Q_OBJECT classes)
+class JobBase : public QObject {
+Q_OBJECT
+protected:    JobBase() : QObject(), m_aborted( false ) {}
+public slots: void abort() { m_aborted = true; }
+protected:    bool m_aborted;
+};
 
 class ThreadWeaver : public QObject
 {
@@ -72,8 +83,6 @@ class ThreadWeaver : public QObject
 public:
     class Job;
     typedef QValueList<Job*> JobList;
-
-    enum EventType { JobEvent = 2000, JobStartedEvent = JobEvent, JobFinishedEvent, DeleteThreadEvent };
 
     static ThreadWeaver *instance();
 
@@ -121,12 +130,19 @@ public:
      */
     int abortAllJobsNamed( const QCString &name );
 
+    /**
+     * @return true if a Job with name is queued or is running
+     */
+    bool isJobPending( const QCString &name );
+
 private slots:
     void dependentAboutToBeDestroyed();
 
 private:
     ThreadWeaver();
    ~ThreadWeaver();
+
+    enum EventType { DeleteThreadEvent = 2000, JobEvent, OverrideCursorEvent };
 
     virtual void customEvent( QCustomEvent* );
 
@@ -138,7 +154,6 @@ private:
     {
     public:
         Thread( const char* );
-        ~Thread();
 
         virtual void run();
 
@@ -159,7 +174,12 @@ private:
         DISABLE_GENERATED_MEMBER_FUNCTIONS( Thread );
 
     private:
+        //private so I don't break something in the distant future
+        ~Thread();
+
+        //we can delete threads here only
         friend void ThreadWeaver::customEvent( QCustomEvent* );
+
     };
 
 
@@ -186,7 +206,7 @@ public:
      * volatile data members in the GUI-thread.
      */
 
-    class Job : public QCustomEvent
+    class Job : public JobBase, public QCustomEvent
     {
         friend class ThreadWeaver;
         friend class ThreadWeaver::Thread;
@@ -198,6 +218,12 @@ public:
          */
         Job( const char *name );
        ~Job();
+
+        /**
+         * These are used by @class DependentJob, but are made available for
+         * your use should you need them.
+         */
+       enum EventType { JobFinishedEvent = ThreadWeaver::JobEvent, JobStartedEvent };
 
         const char *name() const { return m_name; }
 
@@ -212,10 +238,47 @@ public:
          */
         bool isAborted() const { return m_aborted; }
 
+        ///convenience function
+        bool wasSuccessful() const { return !m_aborted; }
+
         /**
          * Calls QThread::msleep( int )
          */
         void msleep( int ms ) { m_thread->msleep( ms ); }
+
+        /**
+         * You should set @param description if you set progress information
+         * do this in the ctor, or it won't have an effect
+         */
+        void setDescription( const QString &description ) { m_description = description; }
+
+        /**
+         * If you set progress information, you should set this too, changing it when appropriate
+         */
+        void setStatus( const QString &status );
+
+        /**
+         * This shows the progressBar too, the user will be able to abort
+         * the thread
+         */
+        void setProgressTotalSteps( uint steps );
+
+        /**
+         * Does a thread-safe update of the progressBar
+         */
+        void setProgress( uint progress );
+
+        /**
+         * Convenience function, increments the progress by 1
+         */
+        void incrementProgress();
+
+        /**
+         * Sometimes you want to hide the progressBar etc. generally you
+         * should show one, but perhaps you are a reimplemented class
+         * that doesn't want one?
+         */
+        //void setVisible( bool );
 
     protected:
         /**
@@ -232,10 +295,19 @@ public:
          */
         virtual void completeJob() = 0;
 
+        /// be sure to call the base function in your reimplementation
+        virtual void customEvent( QCustomEvent* );
+
     private:
         char const * const m_name;
-        bool m_aborted;
         Thread *m_thread;
+
+        protected: //FIXME
+        uint m_percentDone;
+        uint m_progressDone;
+        uint m_totalSteps;
+
+        QString m_description;
 
     protected:
         DISABLE_GENERATED_MEMBER_FUNCTIONS( Job )
@@ -251,6 +323,10 @@ public:
      *
      * completeJob() is reimplemented to send a JobFinishedEvent to the
      * dependent. Of course, you can still reimplement it yourself.
+     *
+     * The dependent will receive a JobStartedEvent just after the creation of
+     * the Job (not after it has started unfortunately), and a JobFinishedEvent
+     * after the Job has finished.
      *
      * The dependent is a QGuardedPtr, so you can reference the pointer returned
      * from dependent() safely provided you always test for 0 first. However
@@ -284,7 +360,6 @@ public:
 
 private:
     friend DependentJob::DependentJob( QObject*, const char* );
-    friend Thread::~Thread();
 
     void registerDependent( QObject*, const char* );
 

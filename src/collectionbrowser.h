@@ -18,7 +18,6 @@ class CollectionDB;
 class sqlite;
 
 class QCString;
-class QCustomEvent;
 class QDragObject;
 class QPixmap;
 class QPoint;
@@ -106,7 +105,7 @@ class CollectionView : public KListView
 
     private slots:
         void setupDirs();
-        
+
         void scanStarted();
         void scanDone( bool changed = true );
 
@@ -121,10 +120,6 @@ class CollectionView : public KListView
         void fetchCover();
         /** Shows dialog with information on selected track */
         void showTrackInfo();
-
-    protected:
-        /** Processes progress events from CollectionReader */
-        void customEvent( QCustomEvent* e );
 
     private:
         void setViewMode( int mode, bool rerender = true );
@@ -143,10 +138,6 @@ class CollectionView : public KListView
         int m_cat2;
         int m_cat3;
         int m_viewMode;
-
-        bool m_isScanning;
-        QHBox* m_progressBox;
-        KProgress* m_progress;
 
         QStringList m_cacheItem;
 };

@@ -53,8 +53,15 @@ namespace Engine
         /** Emitted when end of current track is reached. */
         void trackEnded();
 
-        /** Transmits status message. */
+        /** Transmits status message, the message disappears after ~2s. */
         void statusText( const QString& );
+
+        /**
+         * Shows a long message in a non-invasive manner, you should prefer
+         * this over KMessageBoxes, but do use KMessageBox when you must
+         * interupt the user or the message is very important.
+         */
+        void infoMessage( const QString& );
 
         /** Transmits metadata package. */
         void metaData( const Engine::SimpleMetaBundle& );

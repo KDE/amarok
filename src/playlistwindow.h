@@ -39,7 +39,6 @@ class QTimer;
 
 class KMenuBar;
 class KPopupMenu;
-class KStatusBar;
 
 
 class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserver
@@ -93,7 +92,6 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
         Playlist      *m_playlist;
         KPopupMenu    *m_searchMenu;
         ClickLineEdit *m_lineEdit;
-        KStatusBar    *m_statusbar;
         ToolBar       *m_toolbar;
         QTimer        *m_timer;  //search filter timer
 

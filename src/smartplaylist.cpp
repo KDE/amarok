@@ -1,7 +1,7 @@
 // (c) Pierpaolo Di Panfilo 2004
 // See COPYING file for licensing information
 
-#include "collectionbrowser.h"
+#include "amarok.h"
 #include "collectiondb.h"
 #include "k3bexporter.h"
 #include "playlist.h"
@@ -295,7 +295,7 @@ KURL::List SmartPlaylistView::loadSmartPlaylist( QListViewItem *item )
 QString SmartPlaylistView::customPlaylistsFile()
 {
     //returns the file used to store custom smart playlists
-    return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "smartplaylists";
+    return amaroK::saveLocation() + "smartplaylists";
 }
 
 

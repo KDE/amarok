@@ -7,10 +7,10 @@
 #define PLAYLISTLOADER_H
 
 #include <kurl.h>         //KURL::List
-#include "metabundle.h"   //TagsEvent
-#include <qdom.h>         //stack alloc
+#include "metabundle.h"   //stack allocated
+#include <qdom.h>         //stack allocated
 #include <qevent.h>       //baseclass
-#include "threadweaver.h"
+#include "threadweaver.h" //baseclass
 
 
 class CollectionDB;
@@ -18,75 +18,52 @@ class QListView;
 class QListViewItem;
 class KDirLister;
 
-class PlaylistLoader : public ThreadWeaver::Job
+class PlaylistLoader : public ThreadWeaver::DependentJob
 {
 public:
-    PlaylistLoader( const KURL::List&, QListViewItem*, bool playFirstUrl = false );
+    PlaylistLoader( QObject *dependent, const KURL::List&, QListViewItem*, bool playFirstUrl = false );
    ~PlaylistLoader();
 
     enum Format { M3U, PLS, XML, UNKNOWN };
-    enum EventType { Started = 1010, Done, Item, DomItem };
+    enum EventType { Item = 3000, DomItem };
 
-    static void stop() { s_stop = true; }
     static void downloadPlaylist( const KURL&, QListView*, QListViewItem*, bool directPlay = false );
     static bool isPlaylist( const KURL& );        //inlined
     static Format playlistType( const QString& ); //inlined
 
-    class StartedEvent : public QCustomEvent
-    {
+    class ItemEvent : public QCustomEvent {
     public:
-        StartedEvent( QListViewItem* item, bool _directPlay )
-            : QCustomEvent( Started )
-            , afterItem( item )
-            , directPlay( _directPlay )
-        {}
-
-        QListViewItem* const afterItem;
-        bool directPlay;
-    };
-
-    class ItemEvent : public QCustomEvent
-    {
-    public:
-        ItemEvent( const MetaBundle &bundle )
+        ItemEvent( const MetaBundle &bundle, QListViewItem *item, bool play = false )
             : QCustomEvent( Item )
             , bundle( bundle )
+            , beforeThisItem( item )
+            , playThisUrl( play )
         {}
 
         MetaBundle bundle;
+        QListViewItem *beforeThisItem;
+        bool playThisUrl;
     };
 
-    class DomItemEvent : public QCustomEvent
-    {
+    class DomItemEvent : public QCustomEvent {
     public:
-        DomItemEvent( const KURL& _url, const QDomNode& _node )
+        DomItemEvent( const KURL &u, const QDomNode &n, QListViewItem *item, bool play = false )
             : QCustomEvent( DomItem )
-            , url( _url )
-            , node( _node )
+            , url( u )
+            , node( n )
+            , beforeThisItem( item )
+            , playThisUrl( play )
         {}
 
         KURL url;
         QDomNode node;
+        QListViewItem *beforeThisItem;
+        bool playThisUrl;
     };
-
-    class DoneEvent : public QCustomEvent
-    {
-        KURL::List      m_badURLs;
-
-    public:
-        DoneEvent( PlaylistLoader *loader )
-            : QCustomEvent( Done )
-            , m_badURLs( loader->m_badURLs )
-        {}
-
-        KURL::List &badURLs() { return m_badURLs; }
-    };
-
-    friend class DoneEvent;
 
 protected:
     virtual bool doJob();
-    virtual void completeJob() {}
+    virtual void completeJob();
 
     virtual void postItem( const KURL&, const QString&, const uint );
 
@@ -99,16 +76,15 @@ private:
     void addBadURL( const KURL &url ) { m_badURLs += url; }
 
 private:
-    static bool s_stop;
-
     const KURL::List m_URLs;
-          KURL::List m_badURLs;
 
+    KURL::List m_badURLs;
     KURL::List m_fileURLs;
 
-    QListViewItem *m_afterItem;
+    KDirLister *m_dirLister;
+
+    class PlaylistItem *m_markerListViewItem;
     bool m_playFirstUrl;
-    KDirLister* m_dirLister;
 
 protected:
     PlaylistLoader( const PlaylistLoader& ); //undefined

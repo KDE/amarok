@@ -9,6 +9,7 @@
 #include "collectionbrowser.h"
 #include "collectiondb.h"
 #include "collectionreader.h"
+#include "debug.h"
 #include "directorylist.h"
 #include "k3bexporter.h"
 #include "metabundle.h"
@@ -29,11 +30,10 @@
 #include <kactioncollection.h>
 #include <kapplication.h>   //kapp
 #include <kconfig.h>
-#include <kdebug.h>
+#include <kdialogbase.h>
 #include <kiconloader.h>    //renderView()
 #include <klocale.h>
 #include <kpopupmenu.h>
-#include <kprogress.h>
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h> //ctor
 #include <kurldrag.h>       //dragObject()
@@ -184,9 +184,8 @@ CollectionView* CollectionView::m_instance = 0;
 CollectionView::CollectionView( CollectionBrowser* parent )
         : KListView( parent )
         , m_parent( parent )
-        , m_isScanning( false )
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
     m_instance = this;
 
     setSelectionMode( QListView::Extended );
@@ -203,14 +202,6 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         m_viewMode = config->readNumEntry( "ViewMode", modeTreeView );
     //</READ CONFIG>
 
-    //<PROGRESS BAR>
-        m_progressBox = new QHBox( m_parent );
-        QPushButton* button = new QPushButton( SmallIconSet( "button_cancel" ), i18n( "Abort" ), m_progressBox );
-        connect( button, SIGNAL( clicked() ), CollectionDB::instance(), SLOT( stopScan() ) );
-        m_progress = new KProgress( m_progressBox );
-        m_progress->setFixedHeight( button->sizeHint().height() );
-        m_progressBox->hide();
-    //<PROGRESS BAR>
 
     connect( CollectionDB::instance(), SIGNAL( scanStarted() ),
              this,                      SLOT( scanStarted() ) );
@@ -233,7 +224,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 
 
 CollectionView::~CollectionView() {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     KConfig* const config = amaroK::config( "Collection Browser" );
     config->writeEntry( "Category1", m_cat1 );
@@ -276,7 +267,7 @@ CollectionView::setupDirs()  //SLOT
 void
 CollectionView::renderView( )  //SLOT
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     //we use this list to show the bits the user was looking at again
     QStringList currentItemPath;
@@ -340,17 +331,23 @@ CollectionView::renderView( )  //SLOT
         values = qb.run();
 
         //add items to the view
-        for ( int i = values.count() - 1; i >= 0; --i )
+        for ( QStringList::Iterator it = values.fromLast(), begin = values.begin(); true; --it )
         {
-            if ( values[i].stripWhiteSpace().isEmpty() )
-                values[i] = i18n( "Unknown" );
+            if ( (*it).stripWhiteSpace().isEmpty() )
+                (*it) = i18n( "Unknown" );
+
+            //if ( (*it).startsWith( "the ", false ) )
+            //    (*it) = (*it).mid( 4 );
 
             KListViewItem* item = new KListViewItem( this );
             item->setExpandable( true );
             item->setDragEnabled( true );
             item->setDropEnabled( false );
-            item->setText( 0, values[ i ] );
+            item->setText( 0, *it );
             item->setPixmap( 0, pixmap );
+
+            if ( it == begin )
+                break;
         }
 
         //check if we need to add a Various Artists node
@@ -365,7 +362,7 @@ CollectionView::renderView( )  //SLOT
 
             if ( values.count() )
             {
-                KListViewItem* item = new KListViewItem( this );
+                KListViewItem* item = new KListViewItem( this, lastItem() );
                 item->setExpandable( true );
                 item->setDragEnabled( true );
                 item->setDropEnabled( false );
@@ -407,7 +404,6 @@ void
 CollectionView::scanStarted() // SLOT
 {
     m_parent->m_scanAction->setEnabled( false );
-    m_isScanning = true;
 }
 
 
@@ -448,17 +444,13 @@ CollectionView::scanDone( bool changed ) //SLOT
         }
     }
     m_parent->m_scanAction->setEnabled( !AmarokConfig::monitorChanges() );
-    m_isScanning = false;
-
-    amaroK::StatusBar::instance()->clear();
-    m_progressBox->hide();
 }
 
 
 void
 CollectionView::slotExpand( QListViewItem* item )  //SLOT
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
     if ( !item ) return;
 
     int category;
@@ -561,7 +553,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 void
 CollectionView::slotCollapse( QListViewItem* item )  //SLOT
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     QListViewItem* child = item->firstChild();
     QListViewItem* childTmp;
@@ -823,7 +815,7 @@ CollectionView::setViewMode( int mode, bool rerender )
             headerText += " / " + captionForCategory( m_cat3 );
 
         addColumn( headerText );
-        setResizeMode( QListView::NoColumn );
+        setResizeMode( QListView::LastColumn );
         setRootIsDecorated( true );
         setFullWidth( true );
     }
@@ -881,33 +873,6 @@ CollectionView::showTrackInfo() //SLOT
     }
 }
 
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// protected
-//////////////////////////////////////////////////////////////////////////////////////////
-
-void
-CollectionView::customEvent( QCustomEvent *e )
-{
-    CollectionReader::ProgressEvent* p = dynamic_cast<CollectionReader::ProgressEvent*>( e );
-
-    if ( p )
-        switch ( p->state() )
-        {
-            case CollectionReader::ProgressEvent::Start:
-                // dispaly progress bar
-                m_progress->setProgress( 0 );
-                m_progressBox->show();
-                break;
-
-            case CollectionReader::ProgressEvent::Total:
-                m_progress->setTotalSteps( p->value() );
-                break;
-
-            case CollectionReader::ProgressEvent::Progress:
-                m_progress->setProgress( p->value() );
-        }
-}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // private

@@ -3,8 +3,9 @@
 
 #include "config.h"        //for AMAZON_SUPPORT
 
+#include "amarok.h"
 #include "amarokconfig.h"
-#include "collectionbrowser.h"
+#include "collectionbrowser.h" //FIXME for setupDirs()
 #include "collectiondb.h"
 #include "colorgenerator.h"
 #include "contextbrowser.h"
@@ -259,7 +260,7 @@ void ContextBrowser::renderView()
     m_dirtyHomePage = true;
     m_dirtyCurrentTrackPage = true;
     m_dirtyLyricsPage = true;
-    
+
     // TODO: Show CurrentTrack or Lyric tab if they were selected
     if ( CollectionDB::instance()->isEmpty() )
     {
@@ -328,7 +329,7 @@ void ContextBrowser::engineStateChanged( Engine::State state )
 
 void ContextBrowser::saveHtmlData()
 {
-    QFile exportedDocument(KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "contextbrowser.html");
+    QFile exportedDocument( amaroK::saveLocation() + "contextbrowser.html" );
     exportedDocument.open(IO_WriteOnly);
     QTextStream stream( &exportedDocument );
     stream << m_HTMLSource // the pure html data..
@@ -505,7 +506,7 @@ verboseTimeSince( const QDateTime &datetime )
                 minutes += QABS(now.minute() - time.minute());
 
                 if( minutes < 90 )
-                    return i18n( "Within the last minute", "%n minutes ago", minutes );
+                    return i18n( "Within the last minute", "%n minutes ago", minutes == 0 ? 1 : minutes );
                 else
                     return i18n( "Within the last hour", "%n hours ago", now.hour() - time.hour() );
             }
@@ -1165,10 +1166,11 @@ void ContextBrowser::setStyleSheet()
     kdDebug() << k_funcinfo << endl;
 
     QString themeName = AmarokConfig::contextBrowserStyleSheet().latin1();
-    if ( QFile::exists( KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "themes/" + themeName + "/stylesheet.css" ) )
+    if ( QFile::exists( amaroK::saveLocation( "themes/" + themeName + '/' ) + "stylesheet.css" ) )
         setStyleSheet_ExternalStyle( m_styleSheet, themeName );
     else
         setStyleSheet_Default( m_styleSheet );
+
     m_homePage->setUserStyleSheet( m_styleSheet );
     m_currentTrackPage->setUserStyleSheet( m_styleSheet );
     m_lyricsPage->setUserStyleSheet( m_styleSheet );
@@ -1310,7 +1312,7 @@ void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& 
             .arg( AmarokConfig::schemeAmarok() ? fg : gradientColor.name() )
             .arg( fontFamily );
 
-    QString CSSLocation = KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "themes/" + themeName + "/";
+    QString CSSLocation = amaroK::saveLocation( "themes/" + themeName + '/' );
 
     QFile ExternalCSS( CSSLocation + "stylesheet.css" );
     if ( !ExternalCSS.open( IO_ReadOnly ) )

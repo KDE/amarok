@@ -78,6 +78,11 @@ namespace amaroK
         OverrideCursor( Qt::CursorShape cursor = Qt::WaitCursor );
        ~OverrideCursor();
     };
+
+    /** For saving files to ~/.kde/share/apps/amarok/directory
+     * @param directory will be created if not existing, you MUST end the string with '/'
+     */
+    QString saveLocation( const QString &directory = QString::null ); //defined in collectionreader.cpp
 }
 
 #define APP_VERSION "1.2-CVS"

@@ -103,9 +103,9 @@ PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi )
     setText( Directory, u.directory().section( '/', -1 ) );
 }
 
-PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi, const MetaBundle& bundle )
-      : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( u ) )
-      , m_url( u )
+PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
+      : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( bundle.url() ) )
+      , m_url( bundle.url() )
 {
     setDragEnabled( true );
 

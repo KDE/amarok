@@ -180,7 +180,7 @@ PlaylistBrowser::~PlaylistBrowser()
 QString PlaylistBrowser::playlistCacheFile()
 {
     //returns the playlists stats cache file
-    return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "playlistbrowser_save";
+    return amaroK::saveLocation() + "playlistbrowser_save";
 }
 
 
@@ -229,16 +229,17 @@ void PlaylistBrowser::loadPlaylists()
         KURL src;
         src.setPath( locate( "data","amarok/data/Cool-Streams.m3u" ) );
 
-        QString folder = KGlobal::dirs()->saveLocation( "data", "amarok/playlists", false );
-        QFileInfo info( folder );
-        if ( !info.isDir() ) QFile::remove( folder );
+        // we used to use a playlists file, this conflicts with our new system
+        const QString folder = amaroK::saveLocation() + "playlists";
+        if ( !QFileInfo( folder ).isDir() )
+            QFile::remove( folder );
 
-        KURL dst;
-        dst.setPath( KGlobal::dirs()->saveLocation( "data", "amarok/playlists/", true ) + "Cool-Streams.m3u" );
+        KURL destination;
+        destination.setPath( amaroK::saveLocation( "playlists/" ) + "Cool-Streams.m3u" );
 
-        if( src.hasPath() && dst.hasPath() )
-            if ( KIO::NetAccess::file_copy( src, dst ) )
-                addPlaylist( dst.path() );
+        if( src.hasPath() && destination.hasPath() )
+            if ( KIO::NetAccess::file_copy( src, destination ) )
+                addPlaylist( destination.path() );
     }
 }
 
@@ -1017,26 +1018,20 @@ class PlaylistReader : public PlaylistLoader
 {
 public:
     PlaylistReader( QObject *recipient, const QString &path )
-        : PlaylistLoader( KURL::List(), 0, 0 )
-        , m_recipient( recipient )
+        : PlaylistLoader( recipient, KURL::List(), 0 )
         , m_path( path )
     {}
 
-    virtual bool doJob()
-    {
+    virtual bool doJob() {
         loadPlaylist( m_path );
-        QApplication::postEvent( m_recipient, new DoneEvent( this ) );
-
         return true;
     }
 
-    virtual void postItem( const KURL &url, const QString &title, const uint length )
-    {
-        QApplication::postEvent( m_recipient, new ItemEvent( url, title, length ) );
+    virtual void postItem( const KURL &url, const QString &title, const uint length ) {
+        QApplication::postEvent( dependent(), new ItemEvent( url, title, length ) );
     }
 
-    class ItemEvent : public QCustomEvent
-    {
+    class ItemEvent : public QCustomEvent {
     public:
         ItemEvent( const KURL &url, const QString &title, const uint length )
             : QCustomEvent( PlaylistLoader::Item )
@@ -1051,7 +1046,6 @@ public:
     };
 
 private:
-    QObject* const m_recipient;
     const QString m_path;
 };
 
@@ -1193,7 +1187,7 @@ void PlaylistBrowserItem::customEvent( QCustomEvent *e )
 {
     switch( e->type() )
     {
-        case PlaylistLoader::Item:  {
+        case PlaylistReader::Item:  {
             #define e static_cast<PlaylistReader::ItemEvent*>(e)
             TrackItemInfo *info = new TrackItemInfo( e->url, e->title, e->length );
             m_trackList.append( info );
@@ -1204,7 +1198,7 @@ void PlaylistBrowserItem::customEvent( QCustomEvent *e )
             break;
        }
 
-        case PlaylistLoader::Done: {
+        case PlaylistReader::JobFinishedEvent: {
 
             //the tracks dropped on the playlist while it wasn't loaded are added to the track list
             if( tmp_droppedTracks.count() ) {

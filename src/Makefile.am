@@ -22,7 +22,9 @@ SUBDIRS = \
     images \
     loader \
     vis \
-    $(KONQSIDEBAR_SUBDIR)
+    $(KONQSIDEBAR_SUBDIR) \
+    statusbar
+
 
 INCLUDES = \
     -I$(top_builddir)/amarok/src/amarokcore \
@@ -30,6 +32,7 @@ INCLUDES = \
     -I$(top_srcdir)/amarok/src/analyzers \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/plugin \
+    -I$(top_srcdir)/amarok/src/statusbar \
     -I$(kde_includes)/arts \
     $(taglib_includes) \
     $(sqlite_includes) \
@@ -84,7 +87,6 @@ amarokapp_SOURCES = \
     smartplaylist.cpp \
     smartplaylisteditor.cpp \
     socketserver.cpp \
-    statusbar.cpp \
     streamprovider.cpp \
     systray.cpp \
     tagdialog.cpp \
@@ -100,6 +102,7 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     $(top_builddir)/amarok/src/ipod/libipod.la \
     $(top_builddir)/amarok/src/ipod/itunesdb/libitunesdb.la \
+    $(top_builddir)/amarok/src/statusbar/libstatusbar.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) \
     $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(LIB_MUSICBRAINZ) \
     $(mysql_libs)

@@ -144,9 +144,9 @@ Menu::helpMenu( QWidget *parent ) //STATIC
 {
     extern KAboutData aboutData;
 
-//    if ( s_helpMenu == 0 )
-//        s_helpMenu = new KHelpMenu( parent, &aboutData, amaroK::actionCollection() );
-//    return s_helpMenu->menu();
+    if ( s_helpMenu == 0 )
+        s_helpMenu = new KHelpMenu( parent, &aboutData, amaroK::actionCollection() );
+    return s_helpMenu->menu();
 
     return (new KHelpMenu( parent, &aboutData, amaroK::actionCollection() ))->menu();
 }

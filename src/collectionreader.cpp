@@ -2,12 +2,11 @@
 // See COPYING file that comes with this distribution
 //
 
+#include "amarokconfig.h"
 #include "collectiondb.h"
-#include "collectionbrowser.h"
 #include "collectionreader.h"
 #include <dirent.h>    //stat
 #include <errno.h>
-#include <fstream>
 #include <iostream>
 #include <kapplication.h>
 #include <kdebug.h>
@@ -15,98 +14,122 @@
 #include <klocale.h>
 #include <kstandarddirs.h>
 #include <metabundle.h>
+#include "playlistbrowser.h"
 #include <sys/types.h> //stat
 #include <sys/stat.h>  //stat
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
 #include <unistd.h>    //stat
 
-bool CollectionReader::m_stop;
-
-CollectionReader::CollectionReader( CollectionDB* parent, QObject *playlistBrowser,
-                                    const QStringList& folders, bool recursively, bool importPlaylists, bool incremental )
-        : DependentJob( parent, "CollectionReader" )
-        , m_parent( parent )
-        , m_playlistBrowser( playlistBrowser )
-        , m_folders( folders )
-        , m_recursively( recursively )
-        , m_importPlaylists( importPlaylists )
-        , m_incremental( incremental )
+namespace amaroK
 {
-    m_staticDbConnection = CollectionDB::instance()->getStaticDbConnection();
+    QString
+    saveLocation( const QString &directory = QString::null )
+    {
+        return KGlobal::dirs()->saveLocation( "data", QString("amarok/") + directory, true );
+    }
+}
+
+CollectionReader::CollectionReader( CollectionDB* parent, const QStringList& folders )
+    : DependentJob( parent, "CollectionReader" )
+    , m_db( CollectionDB::instance()->getStaticDbConnection() )
+    , m_folders( folders )
+    , m_recursively( AmarokConfig::scanRecursively() )
+    , m_importPlaylists( AmarokConfig::importPlaylists() )
+    , m_incremental( false )
+    , log( QFile::encodeName( amaroK::saveLocation() + "collection_scan.log" ) )
+{
+    setDescription( i18n( "Building collection" ) );
 }
 
 
 CollectionReader::~CollectionReader()
 {
-    CollectionDB::instance()->returnStaticDbConnection( m_staticDbConnection );
+    CollectionDB::instance()->returnStaticDbConnection( m_db );
 }
 
+
+
+IncrementalCollectionReader::IncrementalCollectionReader( CollectionDB *parent )
+    : CollectionReader( parent, QStringList() )
+{
+    m_recursively     = false;
+    m_importPlaylists = false;
+    m_incremental     = true;
+
+    setDescription( i18n( "Updating collection" ) );
+}
+
+
+#define foreach( x ) \
+    for( QStringList::ConstIterator it = x.begin(), end = x.end(); it != end; ++it )
+
+bool
+IncrementalCollectionReader::doJob()
+{
+    /**
+     * Incremental here means only scan directories that has been modified since the last scan
+     */
+
+    struct stat statBuf;
+    const QStringList values = CollectionDB::instance()->query( "SELECT dir, changedate FROM directories;" );
+
+    foreach( values ) {
+        const QString folder = *it;
+        const QString mtime  = *++it;
+
+        if ( stat( QFile::encodeName( folder ), &statBuf ) == 0 ) {
+            if ( QString::number( (long)statBuf.st_mtime ) != mtime ) {
+                m_folders << folder;
+                kdDebug() << "Collection dir changed: " << folder << endl;
+            }
+        }
+        else {
+            // this folder has been removed
+            m_folders << folder;
+            kdDebug() << "Collection dir removed: " << folder << endl;
+        }
+    }
+
+    return CollectionReader::doJob();
+}
 
 bool
 CollectionReader::doJob()
 {
-    m_stop = false;
+    log << "Collection Scan Log\n";
+    log << "===================\n";
+    log << i18n( "Report this file if amaroK crashes when building the Collection." ).local8Bit();
+    log << "\n\n\n";
 
-    if ( m_incremental )
-    {
-        QStringList values;
-        struct stat statBuf;
-
-        values = CollectionDB::instance()->query( "SELECT dir, changedate FROM directories;" );
-
-        for ( uint i = 0; i < values.count(); i += 2 )
-        {
-            if ( stat( QFile::encodeName( values[i] ), &statBuf ) == 0 )
-            {
-                if ( QString::number( (long)statBuf.st_mtime ) != values[i + 1] )
-                {
-                    m_folders << values[i];
-                    kdDebug() << "Collection dir changed: " << values[i] << endl;
-                }
-            }
-            else
-            {
-                // this folder has been removed
-                m_folders << values[i];
-                kdDebug() << "Collection dir removed: " << values[i] << endl;
-            }
-        }
-    }
-
-    const QString logPath = KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "collection_scan.log";
-    std::ofstream log(  QFile::encodeName( logPath ) );
-    log << "Collection Scan logfile\n";
-    log << "=======================\n";
-    log << i18n( "Last processed file is at the bottom. Report this file in case of crashes while building the Collection.\n\n\n" ).local8Bit();
-
-
-    if ( !m_folders.empty() )
-    {
+    if ( !m_folders.empty() ) {
         // we need to create the temp tables before readDir gets called ( for the dir stats )
-        CollectionDB::instance()->createTables( m_staticDbConnection );
-        QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Start ) );
+        CollectionDB::instance()->createTables( m_db );
+        setProgressTotalSteps( 100 );
     }
 
-    //iterate over all folders
+
     QStringList entries;
-    for ( uint i = 0; i < m_folders.count(); i++ )
-    {
-        QString dir = m_folders[ i ];
-        if ( !dir.isEmpty() )
-        {
-            if ( !dir.endsWith( "/" ) ) dir += '/';
-            readDir( dir, entries );
-        }
+    foreach( m_folders ) {
+        if( (*it).isEmpty() )
+            //apparently somewhere empty strings get into the mix
+            //which results in a full-system scan! Which we can't allow
+            continue;
+
+        QString dir = *it;
+        if ( !dir.endsWith( "/" ) )
+            dir += '/';
+
+        setStatus( i18n("Reading directory structure") );
+        readDir( dir, entries );
     }
 
-    if ( !entries.empty() )
-    {
-        QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Total, entries.count() ) );
-        readTags( entries, log );
+    if ( !entries.empty() ) {
+        setStatus( i18n("Reading metadata") );
+        setProgressTotalSteps( entries.count() );
+        readTags( entries );
     }
 
-    QApplication::postEvent( CollectionDB::instance(), new ProgressEvent( ProgressEvent::Stop, entries.count() ) );
     log.close();
 
     return !entries.empty();
@@ -116,71 +139,75 @@ CollectionReader::doJob()
 void
 CollectionReader::readDir( const QString& dir, QStringList& entries )
 {
+    QCString dir8Bit = QFile::encodeName( dir );
+
     if ( m_processedDirs.contains( dir ) ) {
-        kdDebug() << "[CollectionReader] Already scanned: " << dir << endl;
+        kdDebug() << "[CollectionReader] Skipping, already scanned: " << dir << endl;
         return;
     }
 
     m_processedDirs << dir;
-    struct stat statBuf;
 
+    struct stat statBuf;
     //update dir statistics for rescanning purposes
-    if ( stat( QFile::encodeName( dir ), &statBuf ) == 0 )
-        CollectionDB::instance()->updateDirStats( dir, ( long ) statBuf.st_mtime, !m_incremental ? m_staticDbConnection : NULL );
-    else
-    {
-        if ( m_incremental )
-        {
+    if ( stat( dir8Bit, &statBuf ) == 0 )
+        CollectionDB::instance()->updateDirStats( dir, (long)statBuf.st_mtime, !m_incremental ? m_db : 0 );
+    else {
+        if ( m_incremental ) {
             CollectionDB::instance()->removeSongsInDir( dir );
             CollectionDB::instance()->removeDirFromCollection( dir );
         }
         return;
     }
 
-    DIR * d = opendir( QFile::encodeName( dir ) );
-    dirent *ent;
 
-    if (d == NULL)
-    {
-        if (errno == EACCES)
-            kdWarning() << "[CollectionReader] Skipping non-readable dir " << dir << endl;
+    DIR *d = opendir( dir8Bit );
+    if( d == NULL ) {
+        if( errno == EACCES )
+            kdWarning() << "[CollectionReader] Skipping, no access permissions: " << dir << endl;
         return;
     }
 
-    while ( ( ent = readdir( d ) ) )
+
+    for( dirent *ent; (ent = readdir( d )); )
     {
+        if( isAborted() )
+            return;
+
         QCString entry = ent->d_name;
 
         if ( entry == "." || entry == ".." )
             continue;
-        entry.prepend( QFile::encodeName( dir ) );
 
-        if ( stat( entry, &statBuf ) == 0 )
-        {
-            if ( S_ISDIR( statBuf.st_mode ) )
-            {
-                if ( m_recursively )
-                {
-                    // Check for symlink recursion
-                    QFileInfo info( entry );
-                    if ( info.isSymLink() && m_processedDirs.contains( info.readLink() ) ) {
-                        kdWarning() << "[CollectionReader] Skipping recursive symlink.\n";
-                        continue;
-                    }
-                    if ( !m_incremental || !CollectionDB::instance()->isDirInCollection( entry ) )
-                        // we MUST add a '/' after the dirname
-                        readDir( QFile::decodeName( entry ) + '/', entries );
+        entry.prepend( dir8Bit );
+
+        if ( stat( entry, &statBuf ) != 0 )
+            continue;
+
+        if ( S_ISDIR( statBuf.st_mode ) ) {
+            if ( m_recursively ) {
+                // Check for symlink recursion
+                QFileInfo info( entry );
+                if ( info.isSymLink() && m_processedDirs.contains( info.readLink() ) ) {
+                    kdWarning() << "[CollectionReader] Skipping, recursive symlink: " << dir << endl;
+                    continue;
                 }
+                if ( !m_incremental || !CollectionDB::instance()->isDirInCollection( entry ) )
+                    // we MUST add a '/' after the dirname
+                    readDir( QFile::decodeName( entry ) + '/', entries );
             }
-            else if ( S_ISREG( statBuf.st_mode ) )
-            {
-                //if a playlist is found it will send a PlaylistFoundEvent to PlaylistBrowser
-                QString file = QString::fromLocal8Bit( entry );
+        }
+        else if ( S_ISREG( statBuf.st_mode ) ) {
+            //if a playlist is found it will send a PlaylistFoundEvent to PlaylistBrowser
+            QString file = QFile::decodeName( entry );
+
+            if( m_importPlaylists ) {
                 QString ext = file.right( 4 ).lower();
-                if( m_importPlaylists && (ext == ".m3u" || ext == ".pls") )
-                    QApplication::postEvent( m_playlistBrowser, new PlaylistFoundEvent( file ) );
-                entries <<  file ;
+                if ( ext == ".m3u" || ext == ".pls" )
+                    QApplication::postEvent( PlaylistBrowser::instance(), new PlaylistFoundEvent( file ) );
             }
+
+            entries << file;
         }
     }
 
@@ -188,83 +215,90 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
 }
 
 
+static inline QString extension( const QString &filename ) { return filename.mid( filename.findRev( '.' ) + 1 ).lower(); }
+static inline QString directory( const QString &filename ) { return filename.section( '/', 0, -2 ); }
+
 void
-CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
+CollectionReader::readTags( const QStringList& entries )
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
     typedef QPair<QString, QString> CoverBundle;
-    QValueList<CoverBundle> cbl;
-    QStringList images;
-    KURL url;
 
     QStringList validImages, validMusic;
     validImages << "jpg" << "png" << "gif" << "jpeg";
     validMusic  << "mp3" << "ogg" << "wav" << "flac";
 
-    for ( uint i = 0; i < entries.count(); i++ )
+    foreach( entries )
     {
         // Check if we shall abort the scan
-        if ( m_stop ) return;
+        if( isAborted() )
+           return;
 
-        if ( !( i % 20 ) ) //don't post events too often since this blocks amaroK
-            QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Progress, i ) );
+        incrementProgress();
 
-        url.setPath( entries[ i ] );
+        KURL url; url.setPath( *it );
+        QValueList<CoverBundle> covers;
+        QStringList images;
+        const QString ext = extension( *it );
+        const QString dir = directory( *it );
 
         // Append path to logfile
         log << url.path().local8Bit() << "\n";
         log.flush();
 
         TagLib::FileRef f( QFile::encodeName( url.path() ), false );  //false == don't read audioprops
-        if ( !f.isNull() )
-        {
+        if ( !f.isNull() ) {
             MetaBundle bundle( url, f.tag(), 0 );
-            CollectionDB::instance()->addSong( &bundle, m_incremental, m_staticDbConnection );
+            CollectionDB::instance()->addSong( &bundle, m_incremental, m_db );
 
-            if ( !cbl.contains( CoverBundle( bundle.artist(), bundle.album() ) ) )
-                cbl.append( CoverBundle( bundle.artist(), bundle.album() ) );
+            if ( !covers.contains( CoverBundle( bundle.artist(), bundle.album() ) ) )
+                covers.append( CoverBundle( bundle.artist(), bundle.album() ) );
         }
         // Add tag-less tracks to database
+
+        else if ( validMusic.contains( ext ) ) {
+            MetaBundle bundle; bundle.setUrl( url );
+            CollectionDB::instance()->addSong( &bundle, m_incremental, m_db );
+
+            CoverBundle cover( bundle.artist(), bundle.album() );
+            if ( !covers.contains( cover ) )
+                covers += cover;
+        }
+
         else if ( validMusic.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ).lower() ) )
         {
-            MetaBundle bundle;
-            bundle.setUrl( url.path() );
-            CollectionDB::instance()->addSong( &bundle, m_incremental, m_staticDbConnection );
+            MetaBundle bundle; bundle.setUrl( url.path() );
+            CollectionDB::instance()->addSong( &bundle, m_incremental, m_db );
 
-            if ( !cbl.contains( CoverBundle( bundle.artist(), bundle.album() ) ) )
-                cbl.append( CoverBundle( bundle.artist(), bundle.album() ) );
+            CoverBundle cover( bundle.artist(), bundle.album() );
+            if ( !covers.contains( cover ) )
+                covers += cover;
         }
         // Add images to the cover database
-        else if ( validImages.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ).lower() ) )
+        else if ( validImages.contains( ext ) )
             images << url.path();
 
         // Update Compilation-flag, when this is the last loop-run or we're going to switch to another dir in the next run
-        if ( ( i + 1 ) == entries.count() || url.path().section( '/', 0, -2 ) != entries[ i + 1 ].section( '/', 0, -2 ) )
+        if ( it == entries.fromLast() || dir != directory( *++QStringList::ConstIterator( it ) ) )
         {
             // we entered the next directory
-            for ( uint j = 0; j < images.count(); j++ )
-                CollectionDB::instance()->addImageToAlbum( images[ j ], cbl, m_staticDbConnection );
+            foreach( images )
+                CollectionDB::instance()->addImageToAlbum( *it, covers, m_db );
 
-            cbl.clear();
-            images.clear();
-            CollectionDB::instance()->checkCompilations( url.path().section( '/', 0, -2 ), !m_incremental, m_staticDbConnection );
+            CollectionDB::instance()->checkCompilations( dir,  !m_incremental, m_db );
         }
     }
 
-    // clear tables
     if ( !m_incremental )
         CollectionDB::instance()->clearTables();
     else
-    {
-        // remove old entries from database, only
-        for ( uint i = 0; i < m_folders.count(); i++ )
-            CollectionDB::instance()->removeSongsInDir( m_folders[ i ] );
-    }
+        foreach( m_folders )
+            CollectionDB::instance()->removeSongsInDir( *it );
 
     // rename tables
-    CollectionDB::instance()->moveTempTables( m_staticDbConnection );
-    CollectionDB::instance()->dropTables( m_staticDbConnection );
+    CollectionDB::instance()->moveTempTables( m_db );
+    CollectionDB::instance()->dropTables( m_db );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }

@@ -36,7 +36,6 @@
 
 namespace amaroK
 {
-
     DcopHandler::DcopHandler()
         : DCOPObject( "player" )
     {
@@ -62,18 +61,15 @@ namespace amaroK
         EngineController::instance() ->stop();
     }
 
-
     void DcopHandler::next()
     {
         EngineController::instance() ->next();
     }
 
-
     void DcopHandler::prev()
     {
         EngineController::instance() ->previous();
     }
-
 
     void DcopHandler::pause()
     {
@@ -82,28 +78,23 @@ namespace amaroK
 
     bool DcopHandler::isPlaying()
     {
-	kdWarning() << k_funcinfo << " is DEPRECATED!" << endl;
+        kdWarning() << k_funcinfo << " is DEPRECATED!" << endl;
         return EngineController::engine()->state() == Engine::Playing;
     }
 
     int  DcopHandler::status()
     {
-	// <0 - error, 0 - stopped, 1 - paused, 2 - playing
-	int ret = -1;
-	switch( EngineController::engine()->state() )
-	{
-	    case Engine::Playing:
-		ret = 2;
-		break;
-	    case Engine::Paused:
-		ret = 1;
-		break;
-	    case Engine::Empty:
-	    case Engine::Idle:
-		ret = 0;
-		break;
-	}
-	return ret;
+        // <0 - error, 0 - stopped, 1 - paused, 2 - playing
+        switch( EngineController::engine()->state() )
+        {
+        case Engine::Playing:
+            return 2;
+        case Engine::Paused:
+            return 1;
+        case Engine::Empty:
+        case Engine::Idle:
+            return 0;
+        }
     }
 
     bool DcopHandler::repeatTrackStatus()

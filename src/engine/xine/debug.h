@@ -19,6 +19,9 @@
 
    static inline kdbgstream debug() { return kdbgstream( _DEBUG_PREFIX, 0, 0 ); }
 
+   //amaroK::notImplemented();
+   //amaroK::deprecated();
+
    #undef _DEBUG_PREFIX
 #endif
 

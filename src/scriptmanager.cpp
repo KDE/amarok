@@ -2,13 +2,13 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // See COPYING file for licensing information.
 
+#include "debug.h"
 #include "scriptmanager.h"
 #include "scriptmanagerbase.h"
 
 #include <qcheckbox.h>
 
 #include <kapplication.h>
-#include <kdebug.h>
 #include <kfiledialog.h>
 #include <kiconloader.h>
 #include <klistview.h>
@@ -111,7 +111,7 @@ ScriptManager::slotRemoveScript()
 void
 ScriptManager::slotEditScript()
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     if ( !m_base->directoryListView->selectedItem() ) return ;
 
@@ -135,7 +135,7 @@ ScriptManager::slotEditScript()
 void
 ScriptManager::slotRunScript()
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     if ( !m_base->directoryListView->selectedItem() ) return ;
 
@@ -178,7 +178,7 @@ ScriptManager::slotStopScript()
 void
 ScriptManager::slotConfigureScript()
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     if ( !m_base->directoryListView->selectedItem() ) return ;
 
@@ -198,7 +198,7 @@ ScriptManager::slotConfigureScript()
 void
 ScriptManager::scriptFinished() //SLOT
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     ScriptMap::ConstIterator it;
     for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
