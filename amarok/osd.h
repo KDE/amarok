@@ -37,9 +37,9 @@ class OSDWidget : public QWidget
       public slots:
         void showOSD(const MetaBundle&);
         void showSplash(const QString& imagePath);
+        void removeOSD();
       
       protected slots:
-        void removeOSD();
         void minReached();
 //        void dblClick();
       

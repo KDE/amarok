@@ -96,6 +96,8 @@ PlayerApp::PlayerApp()
     applySettings();  //will create the engine
     restoreSession(); //resume playback
     //TODO remember if we were in tray last exit, if so don't show!
+    
+    m_pOSD->removeOSD();
     m_pPlayerWidget->show(); //BrowserWin will sponaneously show if appropriate
 
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
