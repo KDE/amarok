@@ -496,7 +496,10 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
         //TODO if we have artist information we can show the following stuff too! cool :)
 
-        return;
+        if ( currentTrack.artist().isEmpty() )
+            return;
+
+        kdDebug() << currentTrack.artist() << endl;
     }
 
 
