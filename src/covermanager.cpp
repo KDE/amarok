@@ -506,17 +506,17 @@ void CoverManager::updateCounter()
     for( QIconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
         totalCounter++;
         if( !((CoverViewItem*)item)->hasCover() )
-            missingCounter++;    //counter for albums without albums
+            missingCounter++;    //counter for albums without cover
     }
 
-    QString text = QString::number( totalCounter );
+    QString text;
     if( !m_filter.isEmpty() )
-        text += i18n(" results for ") + "\"" + m_filter + "\"";
+        text = i18n( "1 result for %1", "%n results for %1", totalCounter ).arg( m_filter );
     else if( m_artistView->selectedItem() )
-        text += i18n(" albums by ") + m_artistView->selectedItem()->text(0);
+        text = i18n( "1 album by %1", "%n albums by %1", totalCounter ).arg( m_artistView->selectedItem()->text(0) );
 
     if( missingCounter )
-        text += i18n(" - ( <b>%3</b> without cover )" ).arg( missingCounter );
+        text += i18n(" - ( <b>%1</b> without cover )" ).arg( missingCounter );
 
     m_counterLabel->setText( text );
     #ifdef AMAZON_SUPPORT
