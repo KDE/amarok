@@ -34,8 +34,6 @@ MID-TERM:
 
   ADD 127 <mxcl>   Connect PlayerWindow navigation buttons to KAction enabled states
 
-  ADD 113 <markey> We must reduce dependency on app.h. Change a single line there -> recompile world :/
-
   ADD 112 <markey> A facility to abort CollectionBrowser's scanning.
 
   ADD 104 <mxcl>   Perhaps a nice idea: when you drag playlistItems to a branch in the collection browser
