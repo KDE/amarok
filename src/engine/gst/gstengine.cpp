@@ -66,22 +66,15 @@ GstEngine::s_instance;
 /////////////////////////////////////////////////////////////////////////////////////
 
 void
-GstEngine::eos_cb( GstElement* element, GstElement* ) //static
+GstEngine::eos_cb( GstElement* /*element*/, gpointer inputPipeline ) //static
 {
     kdDebug() << k_funcinfo << endl;
 
     // Ignore eos when gst error was raised
     if ( !instance()->m_gst_error.isEmpty() ) return;
 
-    InputPipeline* input;
-
-    // Determine which input pipeline emitted the eos
-    for ( uint i = 0; i < instance()->m_inputs.count(); i++ ) {
-        input = instance()->m_inputs.at( i );
-
-        if ( input->spider == element )
-            input->m_eos = true;
-    }
+    InputPipeline* input = static_cast<InputPipeline*>( inputPipeline );
+    input->m_eos = true;
 
     //this is the Qt equivalent to an idle function: delay the call until all events are finished,
     //otherwise gst will crash horribly
@@ -170,22 +163,15 @@ GstEngine::outputError_cb( GstElement* /*element*/, GstElement* /*domain*/, GErr
 
 
 void
-GstEngine::inputError_cb( GstElement* element, GstElement* /*domain*/, GError* error, gchar* debug, gpointer /*data*/ ) //static
+GstEngine::inputError_cb( GstElement* /*element*/, GstElement* /*domain*/, GError* error, gchar* debug, gpointer inputPipeline ) //static
 {
     kdDebug() << k_funcinfo << endl;
 
     instance()->m_gst_error = QString::fromAscii( error->message );
     instance()->m_gst_debug = QString::fromAscii( debug );
 
-    InputPipeline* input;
-
-    // Determine which input pipeline emitted the eos
-    for ( uint i = 0; i < instance()->m_inputs.count(); i++ ) {
-        input = instance()->m_inputs.at( i );
-
-        if ( input->bin == element )
-            input->m_error = true;
-    }
+    InputPipeline* input = static_cast<InputPipeline*>( inputPipeline );
+    input->m_error = true;
 
     // Process error message in application thread
     QTimer::singleShot( 0, instance(), SLOT( handleInputError() ) );
@@ -538,7 +524,7 @@ GstEngine::play( uint offset )  //SLOT
         return false;
     }
 
-    g_signal_connect( G_OBJECT( m_currentInput->bin ), "error", G_CALLBACK ( inputError_cb ), 0 );
+    g_signal_connect( G_OBJECT( m_currentInput->bin ), "error", G_CALLBACK ( inputError_cb ), m_currentInput );
 
     // If "Resume playback on start" is enabled, we must seek to the last position
     seek( offset );
@@ -1141,7 +1127,7 @@ InputPipeline::InputPipeline()
     if ( !( audioscale = GstEngine::createElement( "audioscale", bin ) ) ) { goto error; }
     if ( !( volume = GstEngine::createElement( "volume", bin ) ) ) { goto error; }
 
-    g_signal_connect( G_OBJECT( spider ), "eos", G_CALLBACK( GstEngine::eos_cb ), bin );
+    g_signal_connect( G_OBJECT( spider ), "eos", G_CALLBACK( GstEngine::eos_cb ), this );
 //     g_signal_connect( G_OBJECT( spider ), "found-tag", G_CALLBACK( GstEngine::found_tag_cb ), bin );
 
     // Start silent

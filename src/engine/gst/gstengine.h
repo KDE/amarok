@@ -104,7 +104,7 @@ class GstEngine : public Engine::Base
         QStringList getOutputsList() { return getPluginList( "Sink/Audio" ); }
 
         /** Called at end of track */
-        static void eos_cb( GstElement*, GstElement* );
+        static void eos_cb( GstElement*, gpointer );
         /** Duplicates audio data for application side processing */
         static void handoff_cb( GstElement*, GstBuffer*, gpointer );
         static void candecode_handoff_cb( GstElement*, GstBuffer*, gpointer );
