@@ -60,9 +60,9 @@
 PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) :
         KListView( parent, name ),
         m_rootPixmap( viewport() ),
+        m_GlowTimer( new QTimer( this ) ),
         m_GlowCount( 100 ),
         m_GlowAdd( 5 ),
-        m_GlowTimer( new QTimer( this ) ),
         m_undoCounter( 0 )
 {
     kdDebug() << "PlaylistWidget::PlaylistWidget()" << endl;

@@ -1490,7 +1490,7 @@ void PlayerApp::slotVisTimer()
             {
                 double dt = double(t) / 200 ;
                 std::vector<float> v( 31 );
-                for( int i = 0; i < v.size(); ++i )
+                for( uint i = 0; i < v.size(); ++i )
                     v[i] = dt * (sin( M_PI + (i * M_PI) / v.size() ) + 1.0);
                 m_pPlayerWidget->m_pVis->drawAnalyzer( &v );
             }
