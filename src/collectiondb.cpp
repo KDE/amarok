@@ -137,10 +137,7 @@ CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id,
     kdDebug() << "Looking for cover image: " << m_coverDir.filePath( key ) << endl;
     
     if ( m_coverDir.exists( key ) )
-        return QString( "width='%1' height='%2' src='%3' ")
-                        .arg( COVER_SIZE )
-                        .arg( COVER_SIZE )
-                        .arg( m_coverDir.filePath( key ) );
+        return m_coverDir.filePath( key );
     
     KURL url;
     url.setPath( getPathForAlbum( artist_id, album_id ) );
@@ -153,7 +150,7 @@ QString
 CollectionDB::getImageForPath( const QString path, const QString defaultImage, const uint width )
 {
     if ( path.isEmpty() )
-        return QString( "src='%1' ").arg( defaultImage );
+        return defaultImage;
 
     QStringList values;
     QStringList names;
@@ -182,14 +179,11 @@ CollectionDB::getImageForPath( const QString path, const QString defaultImage, c
         if( pix.convertFromImage( img.smoothScale( width, width ) ) )
         {
             pix.save( m_cacheDir.absPath() + "/" + escapedPath, "PNG" );
-            return QString( "width='%1' height='%2' src='%3' ")
-                            .arg( COVER_SIZE )
-                            .arg( COVER_SIZE )
-                            .arg( m_cacheDir.absPath() + "/" + escapedPath );
+            return m_cacheDir.absPath() + "/" + escapedPath;
         }
     }
 
-    return QString( "src='%1' ").arg( defaultImage );
+    return defaultImage;
 }
 
 
@@ -743,8 +737,8 @@ CollectionDB::saveCover( const QString& keyword, const QPixmap& pix )
     
     QImage img( pix.convertToImage() );
     
-    img.smoothScale( COVER_SIZE, COVER_SIZE );
-    img.save( m_coverDir.filePath( keyword + ".png" ), "PNG" );
+    img.smoothScale( COVER_SIZE, COVER_SIZE )
+       .save( m_coverDir.filePath( keyword + ".png" ), "PNG" );
 
     emit coverFetched();
 }

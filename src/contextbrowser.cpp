@@ -295,7 +295,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     if ( !values.isEmpty() )
         browser->write( QString ( "<tr><td height='42' valign='top' class='rbcurrent'>"
-                                  "<span class='album'>%1 - %2</span><br>%3<br><br><a class='menu' href='fetchcover:%4 - %5'><img align='left' valign='center' hspace='2' %6></a>"
+                                  "<span class='album'>%1 - %2</span><br>%3<br><br><a class='menu' href='fetchcover:%4 - %5'><img align='left' valign='center' hspace='2' src='%6'></a>"
                                   "<i>First play: %7<br>Last play: %8<br>Total plays: %9</i></td>"
                                   "</tr>" )
                         .arg( m_currentTrack->artist() )
@@ -316,7 +316,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
         if ( !values.isEmpty() )
             browser->write( QString ( "<tr><td height='42' valign='top' class='rbcurrent'>"
-                                      "<span class='album'>%1 - %2</span><br>%3<br><br><a class='menu' href='fetchcover:%4 - %5'><img align='left' valign='center' hspace='2' %6></a>"
+                                      "<span class='album'>%1 - %2</span><br>%3<br><br><a class='menu' href='fetchcover:%4 - %5'><img align='left' valign='center' hspace='2' src='%6'></a>"
                                       "<i>Never played before</i></td>"
                                       "</tr>" )
                             .arg( m_currentTrack->artist() )
@@ -412,7 +412,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         for ( uint i = 0; i < values.count(); i += 4 )
         {
             browser->write( QString ( "<tr><td onClick='window.location.href=\"album:%1/%2\"' height='42' valign='top' class='rbalbum'>"
-                                      "<a class='menu' href='fetchcover:%3 - %4'><img align='left' hspace='2' %5></a><span class='album'>%6</span><br>%7 Tracks</td>"
+                                      "<a class='menu' href='fetchcover:%3 - %4'><img align='left' hspace='2' src='%5'></a><span class='album'>%6</span><br>%7 Tracks</td>"
                                       "</tr>" )
                             .arg( values[i + 3] ) // artist.id
                             .arg( values[i + 2] ) // album.id
