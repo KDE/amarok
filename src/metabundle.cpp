@@ -42,7 +42,7 @@ MetaBundle::MetaBundle( const QString& title,
                         const QString& /*streamName*/,
                         const QString& streamUrl )
   : m_url       ( streamUrl )
-  , m_title     ( url + title )
+  , m_title     ( url + QString( " -- " ) + title )
   , m_genre     ( genre )
   , m_bitrate   ( bitrate )
   , m_length    ( Undetermined )
