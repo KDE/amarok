@@ -370,9 +370,11 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
 
       if( PlaylistItem *item = static_cast<PlaylistLoader::LoaderEvent*>(e)->makePlaylistItem( this ) ) //this is thread-safe
       {
+         //if returns true we need to load tags and register this item
+         
          if( pApp->config()->showMetaInfo() ) m_tagReader->append( item );
 
-         //nonlocal downloads can fail
+         //nonlocal downloads can fail <-- <mxcl> what did I mean?!
          searchTokens.append( item->text( 0 ) );
          searchPtrs.append( item );
       }
@@ -660,14 +662,9 @@ void PlaylistWidget::showTrackInfo( const PlaylistItem *pItem )
 }
 
 
-void PlaylistWidget::clear( bool full )
+void PlaylistWidget::clear( bool saveState )
 {
-    if( m_tagReader->running() )
-    {
-       m_tagReader->cancel(); //will clear the work queue
-    }
-    
-    if( full ) // FIXME <berkus> whats that for?
+    if( saveState )
     {
        writeUndo();
     }
@@ -709,6 +706,8 @@ void PlaylistWidget::slotGlowTimer()
 
 void PlaylistWidget::slotReturnPressed()
 {
+    //TODO please move to keyPressEvent if possible
+
     //FIXME: this can be done for 3.1 (looping e.g.), too.
     //       i'm just too lazy now, but i want to have this
     //       feature in the release for Qt >=3.2 at least

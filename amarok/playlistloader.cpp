@@ -18,13 +18,16 @@
 #include <kapplication.h>
 #include <kurl.h>
 #include <kdebug.h>
-#include <ktempfile.h>
-#include <kio/netaccess.h>
-#include <kfileitem.h> //process()
+#include <ktempfile.h>     //makePlaylistItem()
+#include <kio/netaccess.h> //makePlaylistItem()
+#include <kfileitem.h>     //process()
+#include <kcursor.h>       //makePlaylistItem()
+#include <kmessagebox.h>   //makePlaylistItem()
+#include <klocale.h>       //makePlaylistItem()
 
 //file stat
-#include <dirent.h>
-#include <sys/stat.h>
+#include <dirent.h>        //process()
+#include <sys/stat.h>      //process()
 
 //some GNU systems don't support big files for some reason
 #ifndef __USE_LARGEFILE64 //see dirent.h
@@ -42,6 +45,7 @@
 #endif
 
 //taglib
+#include <taglib/tstring.h>
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
 
@@ -52,119 +56,6 @@
 //URGENT
 //TODO store threads in a stack that can be emptied on premature program exit, or use one thread and a KURL::List stack
 //TODO don't delete m_first, it may already have been removed! either make it unremovable or do something more intelligent
-
-//TODO check these crashes are fixed. I think they are as I am now using const iterators that do not call detachinternal()
-//TODO ideally we want to do a deep copy of these as the QStrings are shallow copies and thus we have not got a isolated
-//     data set to work with in this thread. However that is nasty resource wise. We only read the KURL::List so technically,
-//     to my knowledge, this is a safe method.
-/*
-20:23 < Markey> |[New Thread 1024 (LWP 4629)]
-20:23 < Markey> |[New Thread 2049 (LWP 4630)]
-20:23 < Markey> |[New Thread 7170 (LWP 4686)]
-20:23 < Markey> |0x420bb449 in wait4 () from /lib/libc.so.6
-20:23 < Markey> |#0  0x420bb449 in wait4 () from /lib/libc.so.6
-20:23 < Markey> |#1  0x42137fd0 in __DTOR_END__ () from
-                /lib/libc.so.6
-20:23 < Markey> |#2  0x41ee0a73 in waitpid () from
-                /lib/libpthread.so.0
-20:23 < Markey> |#3  0x41405f6d in
-                KCrash::defaultCrashHandler(int) ()
-20:23 < Markey> |   from /opt/kde3/lib/libkdecore.so.4
-20:23 < Markey> |#4  0x41ede11b in pthread_sighandler () from
-                /lib/libpthread.so.0
-20:23 < Markey> |#5  <signal handler called>
-20:23 < Markey> |#6  0x080711d3 in
-                QValueListIterator<KURL>::operator++(int)
-                (this=0x82b8660)
-20:23 < Markey> |    at /usr/lib/qt3/include/qvaluelist.h:121
-20:23 < Markey> |#7  0x0807110a in QValueListPrivate
-                (this=0x8279728, _p=@0x82b8660)
-20:23 < Markey> |    at /usr/lib/qt3/include/qvaluelist.h:272
-20:23 < Markey> |#8  0x08070e47 in
-                QValueList<KURL>::detachInternal()
-                (this=0x82c059c)
-20:23 < Markey> |    at /usr/lib/qt3/include/qvaluelist.h:629
-20:23 < Markey> |#9  0x08070bb3 in QValueList<KURL>::detach()
-                (this=0x82c059c)
-20:23 < Markey> |    at /usr/lib/qt3/include/qvaluelist.h:561
-20:23 < Markey> |#10 0x08089831 in QValueList<KURL>::begin()
-                (this=0x82c059c)
-20:23 < Markey> |    at /usr/lib/qt3/include/qvaluelist.h:473
-20:23 < Markey> |#11 0x080883b0 in
-                PlaylistLoader::process(KURL::List&, bool)
-                (this=0x82c0590,
-20:23 < Markey> |    list=@0x82c059c, bTranslate=true) at
-                amarok/playlistloader.cpp:148
-20:23 < Markey> |#12 0x0808833a in PlaylistLoader::run()
-                (this=0x82c0590)
-20:24 < Markey> |    at amarok/playlistloader.cpp:113
-20:24 < Markey> |#13 0x417643a5 in
-                QThreadInstance::start(void*) ()
-20:24 < Markey> |   from /usr/lib/qt3/lib/libqt-mt.so.3
-20:24 < Markey> |#14 0x41edb1b0 in pthread_start_thread () from
-                /lib/libpthread.so.0
-
-[New Thread 16384 (LWP 1601)]
-[New Thread 32769 (LWP 1602)]
-[New Thread 16386 (LWP 1603)]
-0x412b8ab6 in waitpid () from /lib/i686/libpthread.so.0
-#0  0x412b8ab6 in waitpid () from /lib/i686/libpthread.so.0
-#1  0x4291a010 in KCrash::defaultCrashHandler(int) ()
-   from /opt/kde3/lib/libkdecore.so.4
-#2  0x412b796c in __pthread_sighandler () from /lib/i686/libpthread.so.0
-#3  <signal handler called>
-#4  0x42605612 in QString::operator=(QString const&) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#5  0x4291fab6 in KURL::operator=(KURL const&) ()
-   from /opt/kde3/lib/libkdecore.so.4
-#6  0x4291c743 in KURL::KURL(KURL const&) () from /opt/kde3/lib/libkdecore.so.4
-#7  0x0806e352 in QValueListPrivate<KURL>::insert(QValueListIterator<KURL>, KURL const&) (this=0x80be0a8, it={node = 0x81c9c50}, x=@0x0) at qvaluelist.h:289
-#8  0x0806e850 in QValueListPrivate (this=0x80be0a8, _p=@0x405b7cbc)
-    at qvaluelist.h:272
-#9  0x0806e5b5 in QValueList<KURL>::detachInternal() (this=0x81c9c9c)
-    at qvaluelist.h:629
-#10 0x080886da in QValueList<KURL>::begin() (this=0x81c9c9c)
-    at qvaluelist.h:473
-#11 0x08086af1 in PlaylistLoader::process(KURL::List&, bool) (this=0x81c9c90,
-    list=@0x81c9c9c, validate=true) at playlistloader.cpp:150
-#12 0x08086a90 in PlaylistLoader::run() (this=0x81c9c90)
-    at playlistloader.cpp:122
-#13 0x422ce4a5 in QThreadInstance::start(void*) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#14 0x412b1f60 in pthread_start_thread () from /lib/i686/libpthread.so.0
-#15 0x410f7327 in clone () from /lib/i686/libc.so.6
-
-[New Thread 16384 (LWP 7839)]
-[New Thread 32769 (LWP 7841)]
-[New Thread 16386 (LWP 7842)]
-0x41ff9ab6 in waitpid () from /lib/i686/libpthread.so.0
-#0  0x41ff9ab6 in waitpid () from /lib/i686/libpthread.so.0
-#1  0x41484ba2 in KCrash::defaultCrashHandler(int) (sig=11) at kcrash.cpp:246
-#2  0x41ff896c in __pthread_sighandler () from /lib/i686/libpthread.so.0
-#3  <signal handler called>
-#4  0x41b8b842 in QString::operator=(QString const&) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#5  0x41489cfa in KURL::operator=(KURL const&) (this=0x81e4850, _u=@0x80e3908)
-    at kurl.cpp:913
-#6  0x41486b67 in KURL (this=0x81e4850, _u=@0x80e3908) at kurl.cpp:454
-#7  0x08070452 in QValueListPrivate<KURL>::insert(QValueListIterator<KURL>, KURL const&) (this=0x81fb988, it={node = 0x80d97c0}, x=@0x21) at qvaluelist.h:289
-#8  0x08070760 in QValueListPrivate (this=0x81fb988, _p=@0x427e1cac)
-    at qvaluelist.h:272
-#9  0x08070585 in QValueList<KURL>::detachInternal() (this=0x81decf4)
-    at qvaluelist.h:629
-#10 0x0808a6ea in QValueList<KURL>::begin() (this=0x81decf4)
-    at qvaluelist.h:473
-#11 0x08088747 in PlaylistLoader::process(KURL::List&, bool) (this=0x81dece8, 
-    list=@0x81decf4, validate=true) at playlistloader.cpp:190
-#12 0x080886d7 in PlaylistLoader::run() (this=0x81dece8)
-    at playlistloader.cpp:179
-#13 0x418546d5 in QThreadInstance::start(void*) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#14 0x41ff2f60 in pthread_start_thread () from /lib/i686/libpthread.so.0
-#15 0x4225c327 in clone () from /lib/i686/libc.so.6
-
-
-*/
 
 //LESS IMPORTANT
 //TODO add non-local directories as items with a [+] next to, you open them by clicking the plus!! --maybe not
@@ -196,6 +87,8 @@ PlaylistLoader::PlaylistLoader( const KURL::List &ul, QWidget *w, PlaylistItem *
 
 PlaylistLoader::~PlaylistLoader()
 {
+    //call from GUI thread only
+    
     if( NULL != m_first )
     {
         KIO::NetAccess::removeTempFile( m_first->url().path() );
@@ -294,6 +187,8 @@ int PlaylistLoader::isPlaylist( const QString &path )
 
 void PlaylistLoader::loadLocalPlaylist( const QString &path, int type )
 {
+   kdDebug() << "[loader] playlist: " << path << endl;
+   
    QFile file( path );
 
       if ( file.open( IO_ReadOnly ) )
@@ -319,16 +214,19 @@ void PlaylistLoader::loadLocalPlaylist( const QString &path, int type )
 
 bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissions )
 {
-   QString ext = url.path().right( 4 ).lower();
-
+   //FIXME determine if the thing at the end of this is a stream! Can arts do this?
+   //      currently we always return true as we can't check
+   //FIXME I don't actually understand what checks can be done, etc.
+   if( url.protocol() == "http" ) return true;   
+   
+   QString ext = url.path().right( 4 ).lower();   
    //listed in order of liklihood of encounter to avoid logic checks
    bool b = ( ext == ".mp3" || ext == ".ogg" || ext == ".m3u" || ext == ".pls" || ext == ".mod" ||  ext == ".wav" );
 
-   if( !b && url.protocol() != "http" )
+   if( !b && !(b = pApp->m_pEngine->canDecode( url )) )
    {
-       if ( !( b = pApp->m_pEngine->canDecode( url ) ) )
-           kdDebug() << "Rejected URL: " << url.prettyURL() << endl;
-    }
+       kdDebug() << "Rejected URL: " << url.prettyURL() << endl;
+   }
 
     return b;
 }
@@ -413,85 +311,98 @@ void PlaylistLoader::loadM3u( QTextStream &stream, const QString &dir )
 
 void PlaylistLoader::loadPls( QTextStream &stream )
 {
-    QString line, title;
-    KURL url;
-    uint length = 0;
-    bool posted = true;
-
     //FIXME algorithm works, but is rather pants!
 
-    while ( !( line = stream.readLine() ).isNull() )
+    for( QString line = stream.readLine(); !line.isNull(); line = stream.readLine() )
     {
         if( line.startsWith( "File" ) )
         {
-           if( !posted )
-           {
-              MetaBundle *tags = 0;
+            KURL url = KURL::fromPathOrURL( line.section( "=", -1 ) );
+            QString title;
+            int length = 0;
+            MetaBundle *tags = 0;
+                        
+            line = stream.readLine();
+            
+            if( line.startsWith( "Title" ) )
+            {
+                title = line.section( "=", -1 );
+                line = stream.readLine();
+            }
+    
+            if( line.startsWith( "Length" ) )
+            {
+                length = line.section( "=", -1 ).toInt();
+            }
+    
+            if( title != "" || length > 0 )
+            {
+                tags = new MetaBundle( title, length );
+            }
 
-              if( length > 0 || title != "" )
-              {
-                 tags = new MetaBundle( title, length );
-              }
-
-              QApplication::postEvent( m_parent, new LoaderEvent( this, url, tags ) );
-           }
-
-           url = line.section( "=", -1 );
-           posted = false;
-           title  = "";
-           length = 0;
-        }
-
-        else if( line.startsWith( "Title" ) )
-        {
-           title = line.section( "=", -1 );
-        }
-
-        else if( line.startsWith( "Length" ) )
-        {
-           length = line.section( "=", -1 ).toInt();
+            QApplication::postEvent( m_parent, new LoaderEvent( this, url, tags ) );
         }
     }
 }
 
 
+
 PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
 {
+   //This function is NOT thread-safe!!
+
    //Construct a PlaylistItem and update the after pointer
-   //This function is only called by the GUI thread and thus access to m_after is serialised
+   //If only called by the GUI thread, access to m_after is serialised
+   
+   //NOTE only return a playlistitem if you want it to be registered in the playlist
+   // ie. don't return placeholders, only items that can be played!
+   // so, currently, if kio is required return 0!
    
    PlaylistItem *newItem = new PlaylistItem( lv, m_thread->m_after, m_url, m_tags );
 
    if( m_kio )
    {
+       //it is safe to dereference m_thread currently as LoaderThreads are deleted in the main Event Loop
+       //and we are blocking the event loop right now!
+       //however KIO::NetAccess processes the event loop, so we need to dereference now in case the thread is deleted
+       QWidget *playlistWidget = m_thread->m_parent;
+   
+      //KIO::NetAccess will make it's own tempfile
+      //but we need to add .pls/.m3u extension or the Loader will fail
       QString path = m_url.filename();
       int i = path.findRev( '.' );
       //FIXME KTempFile should default to the suffix "tmp", not "", thus allowing you to have no prefix
       //      if you so desire. Bad design needs you to fix it!
       KTempFile tmpfile( QString::null, path.right( i ) ); //default prefix
       path = tmpfile.name();
-
+    
       kdDebug() << "[loader] KIO::download - " << path << endl;
 
-      //FIXME this seems to block the ui
-      //      <markey> err, I was wrong. it _does_ really block the UI when it gets stuck.
-      //      <mxcl> to fix this we need to do more work with signals and slots on KIO::NetAccess
-
-      //FIXME <markey> NetAccess::download will create tempfile automagically, if given an empty string
-      //      <mxcl> true, but "amarok4857895.tmp" looked bad in the playlist, so I used KTempFile
+      QApplication::setOverrideCursor( KCursor::waitCursor() );
+         //FIXME this will block user input to the interface
+         bool succeeded = KIO::NetAccess::download( m_url, path, m_thread->m_parent );
+      QApplication::restoreOverrideCursor();
       
-      //we delete the tempfile in the new thread's dtor
-      if( KIO::NetAccess::download( m_url, path, m_thread->m_parent ) ) //should be thread-safe as we are only reading it no?
+      if( succeeded )
       {
-         //we set true to ensure the place-holder (newItem) is deleted after processing
-         PlaylistLoader *loader = new PlaylistLoader( KURL::List( KURL( path ) ), lv, newItem, true );
+         //the playlist was successfully downloaded
+         //KIO::NetAccess created a tempfile, it will be deleted in the new thread's dtor
+         KURL url; url.setPath( path ); //required way to set unix paths
+         const KURL::List list( url );
+         
+         PlaylistLoader *loader = new PlaylistLoader( list, lv, newItem, true ); //true = delete newItem in dtor
          loader->start();
+
+         //FIXME may dereference what has already been deleted!!!! (NOT SAFE!)
+         //m_thread->m_after = newItem;
       }
       else
       {
-        delete newItem;
-        return 0;
+         KMessageBox::sorry( playlistWidget, i18n( "The playlist could not be downloaded." ) );
+         delete newItem; //we created this in this function, it's safe to delete!
       }
+      
+      return 0; //we don't want this item to be registered with the playlistWidget
    }
 
    m_thread->m_after = newItem;
@@ -512,7 +423,7 @@ void TagReader::append( PlaylistItem *item )
    //for GUI access only
    //we're a friend of PlaylistItem
 
-   //FIXME as far as I can tell, taglib requires the files to be local and file:/ as it doesn't accept KURLs
+   //FIXME as far as I can tell, taglib requires the files to be file:/ as it doesn't accept KURLs
    if( item->url().protocol() == "file" )
    {
       //QDeepCopy<QString> url = item->url().path();
