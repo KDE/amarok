@@ -76,6 +76,8 @@ class CollectionView : public KListView
         ~CollectionView();
 
         static CollectionView* instance() { return m_instance; }
+        /** Rebuilds and displays the treeview by querying the database. */
+        void renderView();
         void setFilter( QString filter ) { m_filter = filter; }
         QString filter() { return m_filter; }
         Item* currentItem() { return static_cast<Item*>( KListView::currentItem() ); }
@@ -83,10 +85,7 @@ class CollectionView : public KListView
     private slots:
         void setupDirs();
         void scan();
-        void scanMonitor();
-
-        /** Rebuilds and displays the treeview by querying the database. */
-        void renderView();
+        void scanMonitor();        
         void scanDone( bool changed = true );
 
         void slotExpand( QListViewItem* );

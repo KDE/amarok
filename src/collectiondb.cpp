@@ -7,6 +7,7 @@
 #include "coverfetcher.h"
 #include "sqlite/sqlite.h"
 #include "statusbar.h"
+#include "collectionbrowser.h"    //updateTags()
 #include "playlistbrowser.h"
 #include "threadweaver.h"
 #include "metabundle.h"    //updateTags()
@@ -523,7 +524,8 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle )
     
     execSql( command, &values, &names );
     
-    kdDebug() << command << endl;
+    CollectionView::instance()->renderView();
+    
 }
 
 
@@ -547,7 +549,8 @@ CollectionDB::updateTag( const QString &url, const QString &field, const QString
     
     execSql( command, &values, &names );
     
-    kdDebug()<<command<<endl;
+    CollectionView::instance()->renderView();
+    
 }
 
 
