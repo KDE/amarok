@@ -3,7 +3,7 @@
 #EXTINF:-1,Bassdrive [Drum 'n Base]
 http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=354239&file=filename.pls
 
-#EXTINF:-1,Digitally Imported [Techno/House/Trance]
+#EXTINF:-1,Digitally Imported [House/Trance]
 http://shoutcast.com/sbin/shoutcast-playlist.pls?rn=374&file=filename.pls
 
 #EXTINF:-1,Frequence 3 [Pop]
@@ -24,6 +24,9 @@ http://shoutcast.com/sbin/shoutcast-playlist.pls?rn=1750&file=filename.pls
 #EXTINF:-1,Philosomatika [Goa]
 http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=9411&file=filename.pls
 
+#EXTINF:-1,Proton Radio [Dance/Electronic]
+http://protonradio.com/proton.m3u
+
 #EXTINF:-1,Pure DJ [House]
 http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=833&file=filename.pls
 
@@ -31,5 +34,5 @@ http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=833&file=filename.pls
 http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=2671&file=filename.pls
 
 #EXTINF:-1,X T C Radio [Techno/Trance]
-http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=3419&file=filename.pls
+http://stream.xtcradio.com:8069/listen.pls
 
