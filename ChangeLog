@@ -4,7 +4,6 @@ amaroK ChangeLog
 
 
   FIX: ContextBrowser's URLRequests need to be escaped.
-  FIX: Even though OSD was disabled, it was sometimes showing up.
   FIX: Always show OSD (if enabled) on volume changes.
   FIX: Filtering the collection using tokens with number(s) at the beginning
        or end failed. (BR 81621).
