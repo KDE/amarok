@@ -476,6 +476,49 @@ void ContextBrowser::showHome() //SLOT
     browser->end();
 }
 
+static QString
+verboseTimeSince( const QDateTime &datetime )
+{
+    const QDate date = datetime.date();
+    const QDate now  = QDate::currentDate();
+    if( date > now )
+        return /*i18n*/( "The future" );
+
+    if( date.year() == now.year() ) {
+        if( date.month() == now.month() ) {
+            if( date.day() == now.day() ) {
+                //the date is today, let's get more resolution
+                const QTime time = datetime.time();
+                const QTime now  = QTime::currentTime();
+                if( time > now )
+                    return /*i18n*/( "The future" );
+
+                int
+                minutes  = now.hour() - time.hour();
+                minutes *= 60;
+                minutes += QABS(now.minute() - time.minute());
+
+                if( minutes < 90 )
+                    return i18n( "Within the last minute", "%n minutes ago", minutes );
+                else
+                    return i18n( "Within the last hour", "%n hours ago", now.hour() - time.hour() );
+            }
+            else if( date.day() < now.day() ) {
+                //the month is the same but not the day
+                const int days = now.day() - date.day();
+
+                if( days < 7 )
+                    return i18n( "Yesterday", "%n days ago", days );
+                else
+                    return i18n( "Last week", "%n weeks ago", days );
+            }
+        }
+        else
+            return i18n( "Last month", "%n months ago", now.month() - date.month() );
+    }
+    else
+        return i18n( "Last year", "%n years ago", now.year() - date.year() );
+}
 
 void ContextBrowser::showCurrentTrack() //SLOT
 {
@@ -616,18 +659,25 @@ void ContextBrowser::showCurrentTrack() //SLOT
         const uint playtimes = values[2].toInt();
         const uint score = values[3].toInt();
 
-        QString scoreBox = "<table border='0' cellspacing='0' cellpadding='0'><tr><td nowrap>"
-                + QString::number( score ) +
-                "&nbsp;</td><td title='Score'><div class='sbouter'><div class='sbinner' style='width: "
-                + QString::number( score / 2 ) +
-                "px;'></div></div></td></tr></table>";
+        QString scoreBox =
+            "<table border='0' cellspacing='0' cellpadding='0'>"
+             "<tr>"
+              "<td nowrap>" + QString::number( score ) + "&nbsp;</td>"
+              "<td title='Score'>"
+               "<div class='sbouter'>"
+                "<div class='sbinner' style='width: "+ QString::number( score / 2 ) + "px;'></div>"
+               "</div>"
+              "</td>"
+             "</tr>"
+            "</table>";
 
-        browser->write( QStringx("%1<br>%2%3<br>%4<br>")
-            .args( QStringList()
-                << i18n( "Track played once", "Track played %n times", playtimes )
-                << scoreBox
-                << i18n( "Last play: %1" ).arg( KGlobal::locale()->formatDateTime( lastPlay, true /* short */ ) )
-                << i18n( "First play: %1" ).arg( KGlobal::locale()->formatDateTime( firstPlay, true /* short */ ) ) ) );
+        //SAFE   = .arg( x, y )
+        //UNSAFE = .arg( x ).arg( y )
+        browser->write( QString("%1<br>%2%3<br>%4<br>")
+            .arg( i18n( "Track played once", "Track played %n times", playtimes ),
+                  scoreBox,
+                  i18n( "Last Played: %1" ).arg( verboseTimeSince( lastPlay ) ),
+                  i18n( "First Played: %1" ).arg( verboseTimeSince( firstPlay ) ) ) );
    }
    else
         browser->write( "" + i18n( "Never played before" )  + "" );
