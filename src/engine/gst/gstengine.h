@@ -91,7 +91,6 @@ class GstEngine : public Engine::Base
         GstElement*                              createElement( const QCString& factoryName, GstElement* bin = 0, const QCString& name = 0 );
         void                                     stopNow();
         void                                     cleanPipeline();
-        void                                     interpolate( const Engine::Scope& inVec, Engine::Scope& outVec );
         
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES

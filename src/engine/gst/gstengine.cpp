@@ -20,7 +20,7 @@ email                : markey@web.de
 #include "gstengine.h"
 #include "streamsrc.h"
 
-#include <math.h>           //interpolate()
+#include <math.h>
 #include <vector>
 
 #include <qfile.h>
@@ -45,7 +45,7 @@ AMAROK_EXPORT_PLUGIN( GstEngine )
 // static
 /////////////////////////////////////////////////////////////////////////////////////
 
-static const int
+static const uint
 SCOPEBUF_SIZE = 30000;
 
 static const int
@@ -176,7 +176,6 @@ GstEngine::init()
     }
                       
     m_gst_adapter = gst_adapter_new();
-    connect( this, SIGNAL( sigScopeData( GstBuffer* ) ), SLOT( slotScopeData( GstBuffer* ) ) );
     startTimer( TIMER_INTERVAL );
 
     kdDebug() << "END " << k_funcinfo << endl;
@@ -677,23 +676,6 @@ GstEngine::cleanPipeline()
         gst_object_unref( GST_OBJECT( m_gst_thread ) );
         m_pipelineFilled = false;
     }
-}
-
-
-void
-GstEngine::interpolate( const Engine::Scope& inVec, Engine::Scope& outVec )
-{
-/*    double pos = 0.0;
-    const double step = (double) m_scopeBufIndex / outVec.size();
-
-    for ( uint i = 0; i < outVec.size(); ++i, pos += step ) {
-        unsigned long index = (unsigned long) pos;
-
-        if ( index >= m_scopeBufIndex )
-            index = m_scopeBufIndex - 1;
-
-        outVec[i] = inVec[index];
-    }*/
 }
 
                   
