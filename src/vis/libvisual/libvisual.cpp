@@ -271,6 +271,11 @@ namespace SDL
                 break;
 
             case SDL_MOUSEBUTTONDOWN:
+                if (event.button.button == SDL_BUTTON_RIGHT)
+                {
+                    SDL::toggleFullScreen();
+                    break;
+		}
                 visual_event_queue_add_mousebutton (vevent, event.button.button, VISUAL_MOUSE_DOWN, 0, 0);
                 break;
 
