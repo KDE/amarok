@@ -1,0 +1,384 @@
+
+
+body {
+    margin: 8px;
+    font-size: AMAROK_FONTSIZEpx;
+    color: AMAROK_TEXTCOLOR;
+    background-color: AMAROK_GRADIENTCOLOR;
+    font-family: AMAROK_FONTFAMILY;
+  }
+
+
+a {
+    font-size: AMAROK_FONTSIZEpx;
+    color: AMAROK_TEXTCOLOR;
+  }
+
+
+.song a {
+    display: block;
+    padding: 1px 2px;
+    font-weight: normal;
+    text-decoration: none;
+  }
+
+
+.song a:hover {
+    color: AMAROK_FGCOLOR;
+    background-color: AMAROK_BGCOLOR;
+  }
+
+
+.button {
+    width: 100%;
+  }
+
+
+.song-album {
+  }
+
+
+.song-artist {
+  }
+
+
+.song-score {
+  }
+
+
+.song-time {
+  }
+
+
+.song-title {
+  }
+
+
+.album-body {
+    background-color: AMAROK_BASECOLOR;
+    border-bottom: solid AMAROK_BGCOLOR 1px;
+    border-top: solid AMAROK_BGCOLOR 1px;
+  }
+
+
+.album-header {
+  }
+
+
+.album-header:hover {
+    color: AMAROK_FGCOLOR;
+    background-color: AMAROK_BGCOLOR;
+    cursor: pointer;
+  }
+
+
+.album-header:hover a {
+    color: AMAROK_FGCOLOR;
+  }
+
+
+.album-image {
+    padding-right: 4px;
+  }
+
+
+.album-info {
+    float:right;
+    padding-right: 4px;
+    font-size: AMAROK_FONTSIZEpx;
+  }
+
+
+.album-song {
+  }
+
+
+.album-song a {
+    display: block;
+    padding: 1px 2px;
+    font-weight: normal;
+    text-decoration: none;
+  }
+
+
+.album-song a:hover {
+    color: AMAROK_FGCOLOR;
+    background-color: AMAROK_BGCOLOR;
+  }
+
+
+.album-song-time {
+  }
+
+
+.album-song-title {
+  }
+
+
+.album-song-trackno {
+  }
+
+
+.album-title {
+    font-weight: bold;
+  }
+
+
+.album-year {
+  }
+
+
+.box {
+    border: solid AMAROK_TEXTCOLOR 1px;
+    text-align: left;
+    margin-bottom: 10px;
+  }
+
+
+.box a {
+    text-decoration: none;
+  }
+
+
+.box-body {
+    padding: 2px;
+    background-color: AMAROK_BASECOLOR;
+    font-size:AMAROK_FONTSIZEpx;
+  }
+
+
+.box-header {
+    color: AMAROK_FGCOLOR;
+    background-color: AMAROK_BGCOLOR;
+    font-size: AMAROK_FONTSIZE+2px;
+    font-weight: bold;
+    padding: 1px 0.5em;
+    border-bottom: 1px solid AMAROK_TEXTCOLOR;
+  }
+
+
+.box-header-title {
+  }
+
+
+.box-row {
+  }
+
+
+.box-row-alt {
+  }
+
+
+.sbinner {
+    height: 8px;
+    background-color: AMAROK_BGCOLOR;
+    border: solid AMAROK_FGCOLOR 1px;
+  }
+
+
+.sbouter {
+    width: 52px;
+    height: 10px;
+    background-color: AMAROK_DARKBASECOLOR;
+    border: solid AMAROK_BGCOLOR 1px;
+  }
+
+
+.sbtext {
+    padding: 0px 4px;
+    border-left: solid AMAROK_DARKBASECOLOR 1px;
+  }
+
+
+.scoreBox {
+  }
+
+
+.song {
+  }
+
+
+.song-separator {
+  }
+
+
+#lyrics_box {
+  }
+
+
+#lyrics_box-body {
+  }
+
+
+#lyrics_box-header {
+  }
+
+
+#lyrics_box-header-title {
+  }
+
+
+#lyrics_box_addlyrics {
+  }
+
+
+#favorites_box {
+  }
+
+
+#favorites_box-body {
+  }
+
+
+#favorites_box-header {
+  }
+
+
+#favorites_box-header-title {
+  }
+
+
+#least_box {
+  }
+
+
+#least_box-body {
+  }
+
+
+#least_box-header {
+  }
+
+
+#least_box-header-title {
+  }
+
+
+#newest_box {
+  }
+
+
+#newest_box-body {
+  }
+
+
+#newest_box-header {
+  }
+
+
+#newest_box-header-title {
+  }
+
+
+#T_FT {
+  }
+
+
+#T_SS {
+  }
+
+
+#albums_box {
+  }
+
+
+#albums_box-body {
+  }
+
+
+#albums_box-header {
+  }
+
+
+#albums_box-header-title {
+  }
+
+
+#current_box {
+  }
+
+
+#current_box-header {
+  }
+
+
+#current_box-header-album {
+    font-weight: normal;
+  }
+
+
+#current_box-header-artist {
+  }
+
+
+#current_box-header-separator {
+  }
+
+
+#current_box-header-songname {
+  }
+
+
+#current_box-information-td {
+    text-align: right;
+    vertical-align: bottom;
+    padding: 3px;
+  }
+
+
+#current_box-largecover-a {
+  }
+
+
+#current_box-largecover-image {
+    padding: 4px;
+    vertical-align: bottom;
+  }
+
+
+#current_box-largecover-td {
+    text-align: left;
+    width: 100px;
+    padding: 0;
+    vertical-align: bottom;
+  }
+
+
+#current_box-table {
+  }
+
+
+#favoritesby-header {
+  }
+
+
+#favoritesby_box {
+  }
+
+
+#favoritesby_box-header-title {
+  }
+
+
+#musicbrainz-a {
+  }
+
+
+#musicbrainz-div {
+  }
+
+
+#musicbrainz-image {
+  }
+
+
+#suggested_box {
+  }
+
+
+#suggested_box-header {
+  }
+
+
+#suggested_box-header-title {
+  }
