@@ -54,10 +54,6 @@ IncrementalCollectionReader::IncrementalCollectionReader( CollectionDB *parent )
     setDescription( i18n( "Updating collection" ) );
 }
 
-
-#define foreach( x ) \
-    for( QStringList::ConstIterator it = x.begin(), end = x.end(); it != end; ++it )
-
 bool
 IncrementalCollectionReader::doJob()
 {

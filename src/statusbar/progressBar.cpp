@@ -73,7 +73,7 @@ ProgressBar&
 ProgressBar::setAbortSlot( QObject *receiver, const char *slot )
 {
     connect( m_abort, SIGNAL(clicked()), receiver, slot );
-    connect( m_abort, SIGNAL(clicked()), m_abort, SLOT(hide()) );
+    connect( m_abort, SIGNAL(clicked()), this, SLOT(hide()) );
     m_abort->show();
 
     parentWidget()->adjustSize();
@@ -84,9 +84,24 @@ ProgressBar::setAbortSlot( QObject *receiver, const char *slot )
 void
 ProgressBar::setDone()
 {
+    if ( !m_done ) {
+        m_done = true;
+        m_abort->setEnabled( false );
+        setStatus( i18n("Done") );
+    }
+    else
+        // then we we're aborted
+        setStatus( i18n("Aborted") );
+}
+
+void
+ProgressBar::hide()
+{
+    //NOTE naughty
+
     m_done = true;
     m_abort->setEnabled( false );
-    setStatus( i18n("Done") );
+    setStatus( i18n("Aborting...") );
 }
 
 }

@@ -150,9 +150,9 @@ private:
     ThreadWeaver();
    ~ThreadWeaver();
 
-    enum EventType { DeleteThreadEvent = 2000, JobEvent, OverrideCursorEvent };
+    enum EventType { JobEvent = 2000, OverrideCursorEvent };
 
-    virtual void customEvent( QCustomEvent* );
+    virtual bool event( QEvent* );
 
 
     /**
@@ -175,7 +175,7 @@ private:
         ~Thread();
 
         //we can delete threads here only
-        friend void ThreadWeaver::customEvent( QCustomEvent* );
+        friend bool ThreadWeaver::event( QEvent* );
 
     protected:
         DISABLE_GENERATED_MEMBER_FUNCTIONS_3( Thread )
@@ -205,6 +205,13 @@ public:
      *
      * Be sensible and pass data members to the Job, rather than operate on
      * volatile data members in the GUI-thread.
+     *
+     * Things can change while you are in a separate thread. Stuff in the GUI
+     * thread may not be there anymore by the time you finish the job. @see
+     * ThreadWeaver::dependentJob for a solution.
+     *
+     * Do your cleanup in the destructor not completeJob(), as completeJob()
+     * doesn't have to be called.
      */
 
     class Job : public JobBase, public QCustomEvent
@@ -309,6 +316,7 @@ public:
         uint m_totalSteps;
 
         QString m_description;
+        QString m_status;
 
     protected:
         DISABLE_GENERATED_MEMBER_FUNCTIONS_4( Job )
@@ -322,8 +330,9 @@ public:
      * This Job type is dependent on a QObject instance, if that instance is
      * deleted, this Job will be aborted and safely deleted.
      *
-     * completeJob() is reimplemented to send a JobFinishedEvent to the
-     * dependent. Of course, you can still reimplement it yourself.
+     * ThreadWeaver::DependentJob (and Job, the baseclass) isa QCustomEvent,
+     * and completeJob() is reimplemented to send the job to the dependent.
+     * Of course you can still reimplement completeJob() yourself.
      *
      * The dependent will receive a JobStartedEvent just after the creation of
      * the Job (not after it has started unfortunately), and a JobFinishedEvent

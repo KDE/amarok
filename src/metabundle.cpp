@@ -2,13 +2,15 @@
 //Copyright:  See COPYING file that comes with this distribution
 //
 
+#define DEBUG_PREFIX "MetaBundle"
+
 #include "collectiondb.h"
+#include "debug.h"
 #include "metabundle.h"
 #include "playlistitem.h"
 
 #include <qfile.h>
 
-#include <kdebug.h>
 #include <kfilemetainfo.h>
 
 #include <taglib/audioproperties.h>
@@ -39,6 +41,9 @@ MetaBundle::MetaBundle( const KURL &u, bool readAudioProperties, CollectionDB* c
         MetaBundle bundle;
         if ( db->getMetaBundleForUrl( u.path(), &bundle ) )
         {
+            //FIXME why don't we pass this to the above function?
+            //      please comment your work!!!!
+
             m_title   = bundle.title();
             m_artist  = bundle.artist();
             m_album   = bundle.album();
@@ -50,6 +55,8 @@ MetaBundle::MetaBundle( const KURL &u, bool readAudioProperties, CollectionDB* c
             // If it's in Collection but no audioproperties available, read them and store
             if ( !bundle.length() && readAudioProperties )
             {
+                debug() << bundle.url() << " has no audioproperties in the database\n";
+
                 // Generate a seperate MetaBundle for the audio properties. The Collection got
                 // advanced tag-guessing for songs with empty tags, so we better stick with its MetaBundle.
                 bundle = MetaBundle( u );

@@ -110,7 +110,7 @@ amaroK::CrashHandlerWidget::CrashHandlerWidget()
 
     layout = new QVBoxLayout( layout, 6 );
 
-    layout->add( new QLabel( i18n(
+    layout->add( new QLabel( /*i18n*/(
             "<p>" "amaroK has crashed! We're terribly sorry about this :("
             "<p>" "However you now have an opportunity to help us fix this crash so that it doesn't "
                   "happen again! Click <b>Send Email</b> and amaroK will prepare an email that you "

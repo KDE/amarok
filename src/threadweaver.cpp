@@ -12,37 +12,24 @@
 #include "statusbar.h"
 #include "threadweaver.h"
 
-class ProgressEvent : public QCustomEvent {
-public:
-    ProgressEvent( int progress )
-        : QCustomEvent( 24788 )
-        , progress( progress )
-    {}
-
-    const int progress;
-};
 
 using amaroK::StatusBar;
 
 
-// if you need to make more than one queue for a jobtype ask max to ammend the api
-// TODO how to handle shutdown
-//      detailed error handling
-//      allow setting of priority?
-// NOTE for stuff that must be done on job finish whatever results do in job's dtor
-// TODO check QGuradedPtr is thread-safe ish
-// TODO run a separate thread to wait on aborting threads
-
-
 ThreadWeaver::ThreadWeaver()
-{}
+{
+    startTimer( 5 * 60 * 1000 ); // prunes the thread pool every 5 minutes
+}
 
 ThreadWeaver::~ThreadWeaver()
 {
-    DEBUG_FUNC_INFO
+    Debug::Block block( __PRETTY_FUNCTION__ );
 
-    //TODO abort and wait on all running threads
-    //will dependent threads be ok here?
+    for( ThreadList::Iterator it = m_threads.begin(), end = m_threads.end(); it != end; ++it ) {
+        debugstream d = debug() << "Waiting on thread...";
+        (*it)->wait();
+        d << "finished\n";
+    }
 }
 
 uint
@@ -136,20 +123,20 @@ ThreadWeaver::gimmeThread()
     return thread;
 }
 
-void
-ThreadWeaver::customEvent( QCustomEvent *e )
+bool
+ThreadWeaver::event( QEvent *e )
 {
     switch( e->type() )
     {
-    case DeleteThreadEvent:
-        delete (Thread*)e->data();
-        break;
-
     case JobEvent: {
         Job *job = (Job*)e;
         debugstream d = debug() << "Job ";
         const QCString name = job->name();
         Thread *thread = job->m_thread;
+
+        thread->m_job = 0;
+
+        QApplication::restoreOverrideCursor();
 
         if ( !job->isAborted() ) {
             d << "completed";
@@ -166,16 +153,22 @@ ThreadWeaver::customEvent( QCustomEvent *e )
         for( JobList::ConstIterator it = m_jobs.begin(), end = m_jobs.end(); it != end; ++it )
             if ( name == (*it)->name() ) {
                 thread->runJob( (*it) );
-                return;
+                break;
             }
-
-        // if execution reaches here, then there are no jobs of this type left
-        // to process. We need to arrange for the disposal of the thread.
-
-        debug() << "Threads in pool: " << m_threads.count() << endl;
 
         break;
     }
+
+    case QEvent::Timer:
+        debug() << "Threads in pool: " << m_threads.count() << endl;
+
+//         for( ThreadList::Iterator it = m_threads.begin(), end = m_threads.end(); it != end; ++it )
+//             if ( (*it)->readyForTrash() ) {
+//                 m_threads.remove( it );
+//                 delete *it;
+//                 break; // only delete 1 thread every 5 minutes
+//             }
+        break;
 
     case OverrideCursorEvent:
         // we have to do this for the PlaylistLoader case, as Qt uses the same
@@ -184,36 +177,40 @@ ThreadWeaver::customEvent( QCustomEvent *e )
         break;
 
     default:
-        ;
+        return false;
     }
+
+    return true;
 }
 
+
+
+/// @class ThreadWeaver::Thread
 
 ThreadWeaver::Thread::Thread()
     : QThread()
-{
-    QApplication::postEvent( ThreadWeaver::instance(), new QCustomEvent( ThreadWeaver::OverrideCursorEvent ) );
-}
+{}
 
 ThreadWeaver::Thread::~Thread()
 {
-    DEBUG_FUNC_INFO
-
     Q_ASSERT( finished() );
-
-    QApplication::restoreOverrideCursor();
 }
 
 void
 ThreadWeaver::Thread::runJob( Job *job )
 {
+    job->m_thread = this;
+
     if ( job->isAborted() )
         QApplication::postEvent( ThreadWeaver::instance(), job );
 
     else {
         m_job = job;
-        m_job->m_thread = this;
         start( Thread::IdlePriority ); //will wait() first if necessary
+
+        QApplication::postEvent(
+                ThreadWeaver::instance(),
+                new QCustomEvent( ThreadWeaver::OverrideCursorEvent ) );
     }
 }
 
@@ -226,8 +223,24 @@ ThreadWeaver::Thread::run()
 
     QApplication::postEvent( ThreadWeaver::instance(), m_job );
 
-    m_job = 0;
+    // almost always the thread doesn't finish until after the
+    // above event is already finished processing
 }
+
+
+
+/// @class ProgressEvent
+/// @short Used by ThreadWeaver::Job internally
+
+class ProgressEvent : public QCustomEvent {
+public:
+    ProgressEvent( int progress )
+            : QCustomEvent( 40000 )
+            , progress( progress ) {}
+
+    const int progress;
+};
+
 
 
 /// @class ThreadWeaver::Job
@@ -239,9 +252,7 @@ ThreadWeaver::Job::Job( const char *name )
     , m_percentDone( 0 )
     , m_progressDone( 0 )
     , m_totalSteps( 1 ) // no divide by zero
-{
-    debug() << "Job created: " << QCString( name ) << endl;
-}
+{}
 
 ThreadWeaver::Job::~Job()
 {}
@@ -266,16 +277,18 @@ ThreadWeaver::Job::setProgress( uint steps )
 
     uint newPercent = uint( (100 * steps) / m_totalSteps);
 
-    if ( newPercent > m_percentDone ) {
+    if ( newPercent != m_percentDone ) {
         m_percentDone = newPercent;
         QApplication::postEvent( this, new ProgressEvent( newPercent ) );
     }
 }
 
 void
-ThreadWeaver::Job::setStatus( const QString& )
+ThreadWeaver::Job::setStatus( const QString &status )
 {
-    AMAROK_NOTIMPLEMENTED
+    m_status = status;
+
+    QApplication::postEvent( this, new ProgressEvent( -2 ) );
 }
 
 void
@@ -292,7 +305,7 @@ ThreadWeaver::Job::customEvent( QCustomEvent *e )
     switch( progress )
     {
     case -2:
-//        StatusBar::instance()->setProgressStatus( this, m_status );
+        StatusBar::instance()->setProgressStatus( this, m_status );
         break;
 
     case -1:

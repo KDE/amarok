@@ -106,9 +106,13 @@ namespace amaroK
     {
         return fileName.section( '/', 0, -2 );
     }
-
 }
 
+/// Use this to const-iterate over QStringLists, if you like
+#define foreach( x ) \
+    for( QStringList::ConstIterator it = x.begin(), end = x.end(); it != end; ++it )
+
+/// Update this when necessary
 #define APP_VERSION "1.2-CVS"
 
 #endif

@@ -55,6 +55,8 @@ namespace KDE
         ProgressBar( QWidget *parent, QLabel *label );
        ~ProgressBar();
 
+        virtual void hide();
+
         QLabel *m_label;
         QString m_description;
         bool    m_done;

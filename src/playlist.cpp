@@ -1308,43 +1308,6 @@ Playlist::customEvent( QCustomEvent *e )
 
         break; }
 
-    case PlaylistLoader::Item: {
-        #define e static_cast<PlaylistLoader::ItemEvent*>(e)
-        PlaylistItem *item = new PlaylistItem( e->bundle, e->beforeThisItem );
-
-        if ( e->playThisUrl )
-            activate( item );
-        #undef e
-        break; }
-
-    case PlaylistLoader::DomItem: {
-        #define e static_cast<PlaylistLoader::DomItemEvent*>(e)
-        PlaylistItem *item = new PlaylistItem( e->url, e->beforeThisItem, e->node );
-        QString indexStr   = e->node.toElement().attribute( "queue_index" );
-        int queueIndex     = -1;
-
-        if ( !indexStr.isEmpty() )
-            queueIndex = indexStr.toInt();
-
-        if ( queueIndex == 0 )
-            setCurrentTrack( item );
-        else if ( queueIndex > 0 ) {
-            int count = m_nextTracks.count();
-            if ( count < queueIndex )
-                for ( int i = 0; i < queueIndex - count; i++ )
-                    // Append foo values and replace with correct values
-                    // later.
-                    m_nextTracks.append( item );
-
-            m_nextTracks.replace( queueIndex - 1, item );
-        }
-
-        if ( e->playThisUrl )
-            activate( item );
-
-        break; }
-        #undef e
-
     case 4000:
         //this is a list of all the listItems from a clear operation
         delete (QPtrList<QListViewItem>*)e->data();

@@ -17,6 +17,7 @@ class CollectionDB;
 class QListView;
 class QListViewItem;
 class KDirLister;
+class PlaylistItem;
 
 class PlaylistLoader : public ThreadWeaver::DependentJob
 {
@@ -30,56 +31,25 @@ public:
     static bool isPlaylist( const KURL& );        //inlined
     static Format playlistType( const QString& ); //inlined
 
-    class ItemEvent : public QCustomEvent {
-    public:
-        ItemEvent( const MetaBundle &bundle, QListViewItem *item, bool play = false )
-            : QCustomEvent( Item )
-            , bundle( bundle )
-            , beforeThisItem( item )
-            , playThisUrl( play )
-        {}
-
-        MetaBundle bundle;
-        QListViewItem *beforeThisItem;
-        bool playThisUrl;
-    };
-
-    class DomItemEvent : public QCustomEvent {
-    public:
-        DomItemEvent( const KURL &u, const QDomNode &n, QListViewItem *item, bool play = false )
-            : QCustomEvent( DomItem )
-            , url( u )
-            , node( n )
-            , beforeThisItem( item )
-            , playThisUrl( play )
-        {}
-
-        KURL url;
-        QDomNode node;
-        QListViewItem *beforeThisItem;
-        bool playThisUrl;
-    };
-
 protected:
     virtual bool doJob();
     virtual void completeJob();
-
-    virtual void postItem( const KURL&, const QString&, const uint );
+    virtual void customEvent( QCustomEvent* );
+    virtual void postItem( const KURL&, const QString &title, const uint length );
 
     bool loadPlaylist( const QString& ); //inlined
     bool loadPlaylist( const QString&, Format );
 
 private:
     bool recurse( const KURL&, bool recursing = false );
-    void postItem( const KURL& );
 
 private:
     KURL::List m_badURLs;
-    KURL::List m_fileURLs;
+    KURL::List m_URLs;
 
-    KDirLister *m_dirLister;
+    KDirLister   *m_dirLister;
+    PlaylistItem *m_markerListViewItem;
 
-    class PlaylistItem *m_markerListViewItem;
     bool m_playFirstUrl;
 
 protected:
@@ -88,18 +58,22 @@ protected:
 };
 
 
+
 class RemotePlaylistFetcher : public QObject {
     Q_OBJECT
 
     const KURL m_source;
     KURL m_destination;
+    QListViewItem *m_after;
 
 public:
-    RemotePlaylistFetcher( QObject *parent, const KURL &source );
+    RemotePlaylistFetcher( const KURL &source, QListViewItem *after, QObject *playlist );
 
 private slots:
     void result( KIO::Job* );
+    void abort() { delete this; }
 };
+
 
 
 inline bool

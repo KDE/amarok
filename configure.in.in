@@ -501,6 +501,7 @@ fi
 ###############################################################################
 # BEGIN LIBEXECINFO CHECK
 ###############################################################################
+### used for non glibc systems in crashhandler.cpp
 
 LIB_EXECINFO=""
 KDE_CHECK_HEADER(execinfo.h,

@@ -100,7 +100,7 @@ PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi )
 {
     setDragEnabled( true );
 
-    setText( Directory, u.directory().section( '/', -1 ) );
+    //setText( Directory, u.directory().section( '/', -1 ) );
 }
 
 PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
