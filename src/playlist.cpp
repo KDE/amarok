@@ -1667,15 +1667,16 @@ Playlist::setFilter( const QString &query ) //SLOT
     const QString loweredQuery = query.lower();
     const QStringList terms = QStringList::split( ' ', loweredQuery );
     MyIt it( this, loweredQuery.startsWith( m_lastSearch ) ? MyIt::Visible : MyIt::All );
+    int y;
 
     for( ;*it; ++it ) {
         bool visible = true;
 
-        for( uint x = 0; x < terms.count(); ++x ) {
-            visible = false;
-            for( int y = 0; !visible && y < columns(); ++y )
-                if ( columnWidth( y ) )
-                    visible = (*it)->exactText( y ).lower().contains( terms[x] );
+        for( uint x = 0; visible && x < terms.count(); ++x ) {
+            for( y = 0; y < columns(); ++y )
+                if ( columnWidth( y ) && (*it)->exactText( y ).lower().contains( terms[x] ) )
+                    break;
+            visible = ( y < columns() );
         }
 
         (*it)->setVisible( visible );
