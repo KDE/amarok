@@ -356,7 +356,7 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
                 title = url.fileName();
                 if ( url.fileName().find( '-' ) > 0 )
                 {
-                    if ( artist.isEmpty() ) artist = url.fileName().left( url.fileName().find( '-' ) - 1 ).stripWhiteSpace();
+                    if ( artist.isEmpty() ) artist = url.fileName().left( url.fileName().find( '-' ) ).stripWhiteSpace();
                     title = url.fileName().mid( url.fileName().find( '-' ) + 1 );
                     title = title.left( title.findRev( '.' ) ).stripWhiteSpace();
                 }
@@ -383,7 +383,7 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
             QString title = url.fileName();
             if ( url.fileName().find( '-' ) > 0 )
             {
-                artist = url.fileName().left( url.fileName().find( '-' ) - 1 ).stripWhiteSpace();
+                artist = url.fileName().left( url.fileName().find( '-' ) ).stripWhiteSpace();
                 title = url.fileName().mid( url.fileName().find( '-' ) + 1 );
                 title = title.left( title.findRev( '.' ) ).stripWhiteSpace();
             }
