@@ -87,7 +87,7 @@ AC_SUBST(arts_libs)
 # BEGIN TAGLIB CHECK
 ###############################################################################
 
-TAGLIB_REQ_VERSION="0.95";
+TAGLIB_REQ_VERSION="1.1";
 AC_DEFUN([VERSION_TO_NUMBER], [`$1 | awk 'BEGIN { FS = "."; } { printf "%d",  ([$]1* 1000 + [$]2) * 1000 + [$]3;}'`])
 
 AC_PATH_PROG(TAGLIB_CONFIG, taglib-config, no)
