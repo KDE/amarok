@@ -1,5 +1,6 @@
-// Copyright (C) 2003 Max Howell <max.howell@methylblue.com>
-// For licensing information see akode-engine.h
+// Copyright (C) 2005 Max Howell <max.howell@methylblue.com>
+// Licensed as described in the COPYING file found in the root of this distribution
+//
 
 #include <akode-engine.h>
 #include <akode/decoder.h>
@@ -24,7 +25,7 @@ namespace amaroK
         /// Called when a decoder reaches end of file
         virtual void eofEvent()
         {
-            QApplication::postEvent( m_engine, new QCustomEvent( 3000 ) );
+            QApplication::postEvent( m_engine, new QCustomEvent( 3001) );
         }
 
         /// Called when a decoder encounters a fatal error

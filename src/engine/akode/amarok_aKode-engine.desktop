@@ -3,7 +3,7 @@ Type=Service
 Name=aKode Engine
 ServiceTypes=amaroK/Plugin
 X-KDE-Library=libamarok_aKode-engine
-Comment=Audio-engine plugin for amaroK
+Comment=aKode audio-engine for amaroK
 
 X-KDE-amaroK-plugintype=engine
 X-KDE-amaroK-name=akode-engine
