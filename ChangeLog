@@ -11,6 +11,7 @@ VERSION 1.1-beta2:
        playlist-browser.
   ADD: Detecting Sampler/VA discs in CollectionBrowser (shown as
        "Various Artists"). (BR 81683)
+  ADD: Configuration GUI for xine-engine.
   ADD: Next and previous track buttons for Tag-Editor.
   ADD: Player-window adapts to current color scheme.
   ADD: Crossfading and fade-in/out function for GStreamer-Engine.
