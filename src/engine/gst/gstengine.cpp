@@ -18,9 +18,10 @@ email                : markey@web.de
 #include "enginebase.h"
 #include "gstengine.h"
 
-#include <math.h>       //interpolate()
+#include <math.h>           //interpolate()
 #include <vector>
 
+#include <qmessagebox.h>    //fillPipeline() 
 #include <qobject.h>
 #include <qstring.h>
 #include <qstringlist.h>
@@ -157,7 +158,7 @@ GstEngine::init( bool&, int scopeSize, bool )
     
 //     g_module_open( "libgstreamer-0.8.so", (GModuleFlags) 0 );
     gst_init( NULL, NULL );
-    fillPipeline();
+    fillPipeline( true );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
@@ -183,6 +184,8 @@ GstEngine::initMixer( bool hardware )
 bool
 GstEngine::canDecode( const KURL &url, mode_t, mode_t )
 {
+    if ( !m_pipelineFilled ) return false;
+    
     GstElement *pipeline, *filesrc, *typefind;
     m_typefindResult = false;
 
@@ -216,6 +219,8 @@ GstEngine::canDecode( const KURL &url, mode_t, mode_t )
 long
 GstEngine::position() const
 {
+    if ( !m_pipelineFilled ) return 0;
+    
     GstFormat fmt = GST_FORMAT_TIME;
     //value will hold the current time position in nanoseconds
     gint64 value;
@@ -228,6 +233,8 @@ GstEngine::position() const
 EngineBase::EngineState 
 GstEngine::state() const
 {
+    if ( !m_pipelineFilled ) return Empty;
+    
     switch ( gst_element_get_state( GST_ELEMENT( m_pThread ) ) )
     {
         case GST_STATE_NULL:
@@ -273,7 +280,8 @@ GstEngine::play( const KURL& url ) //SLOT
 {
     stop();
     fillPipeline();
-    
+    if ( !m_pipelineFilled ) return 0;
+        
     //load track into filesrc
     g_object_set( G_OBJECT( m_pFilesrc ), "location", url.path().latin1(), NULL );
     play();
@@ -286,6 +294,7 @@ void
 GstEngine::play() //SLOT
 {
     kdDebug() << k_funcinfo << endl;
+    if ( !m_pipelineFilled ) return;
     
     gst_element_set_state( GST_ELEMENT( m_pThread ), GST_STATE_READY );
     /* start playing */
@@ -297,6 +306,7 @@ void
 GstEngine::stop() //SLOT
 {
     kdDebug() << k_funcinfo << endl;
+    if ( !m_pipelineFilled ) return;
     
     /* stop the thread */
     gst_element_set_state (GST_ELEMENT( m_pThread ), GST_STATE_NULL );
@@ -307,6 +317,7 @@ void
 GstEngine::pause() //SLOT
 {
     kdDebug() << k_funcinfo << endl;
+    if ( !m_pipelineFilled ) return;
     
     gst_element_set_state( GST_ELEMENT( m_pThread ), GST_STATE_PAUSED );
 }
@@ -315,6 +326,8 @@ GstEngine::pause() //SLOT
 void 
 GstEngine::seek( long ms ) //SLOT
 {
+    if ( !m_pipelineFilled ) return;
+    
     if ( ms > 0 )
     {
         GstEvent *event = gst_event_new_seek( (GstSeekType) ( GST_FORMAT_TIME |
@@ -334,10 +347,12 @@ GstEngine::setVolume( int percent ) //SLOT
     
     if ( isMixerHardware() ) {
         EngineBase::setVolumeHW( percent );
-        g_object_set( G_OBJECT( m_pVolume ), "volume", 1.0, NULL );
+        if ( m_pipelineFilled )
+            g_object_set( G_OBJECT( m_pVolume ), "volume", 1.0, NULL );
     }
     else {
-        g_object_set( G_OBJECT( m_pVolume ), "volume", (double) percent / 100.0, NULL );
+        if ( m_pipelineFilled )
+            g_object_set( G_OBJECT( m_pVolume ), "volume", (double) percent / 100.0, NULL );
     }
     
 }
@@ -348,25 +363,37 @@ GstEngine::setVolume( int percent ) //SLOT
 /////////////////////////////////////////////////////////////////////////////////////
 
 void
-GstEngine::fillPipeline()
+GstEngine::fillPipeline( bool init )
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
     
     if ( m_pipelineFilled )
         cleanPipeline();
-        
-    /* create a new thread to hold the elements */
-    m_pThread              = gst_thread_new          ( "thread" );
     
+    kdDebug() << "Sound output method: " << m_soundOutput << endl;    
+    if ( m_soundOutput == "OSS" )
+        m_pAudiosink = gst_element_factory_make( "osssink", "play_audio" );
+    else    
+        m_pAudiosink = gst_element_factory_make( "alsasink", "play_audio" );
+    
+    if ( !m_pAudiosink ) {
+        if ( init )
+            QMessageBox::warning( 0, 0, "The selected sound output is not supported on your system.\n"
+                                        "Please choose a different setting in the configuration dialog.",
+                                        QMessageBox::Ok, QMessageBox::NoButton ); 
+        return;
+    }
     /* create a disk reader */
     m_pFilesrc   = gst_element_factory_make( "filesrc", "disk_source" );
     m_pSpider    = gst_element_factory_make( "spider", "spider" );
     /* and an audio sink */
     
-    m_pAudiosink = gst_element_factory_make( "osssink", "play_audio" );
     m_pIdentity  = gst_element_factory_make( "identity", "rawscope" );
     m_pVolume    = gst_element_factory_make( "volume", "volume" );
-    
+
+    /* create a new thread to hold the elements */
+    m_pThread              = gst_thread_new          ( "thread" );
+        
     g_signal_connect ( G_OBJECT( m_pIdentity ), "handoff",
                        G_CALLBACK( handoff_cb ), m_pThread );
     

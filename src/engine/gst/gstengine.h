@@ -49,16 +49,6 @@ class GstEngine : public EngineBase
         EngineBase::EngineState                  state() const;
         bool                                     isStream() const;
         std::vector<float>*                      scope();
-        
-        QStringList                              availableEffects() const            { return QStringList(); }
-        std::vector<long>                        activeEffects() const               { return std::vector<long>(); }
-        QString                                  effectNameForId( long ) const       { return QString(); }
-        bool                                     effectConfigurable( long ) const    { return false; }
-        long                                     createEffect( const QString& )      { return 0; }
-        void                                     removeEffect( long )                {}
-        void                                     configureEffect( long )             {}
-        
-        bool                                     decoderConfigurable()               { return false; }
 
     public slots:
         const QObject*                           play( const KURL& );
@@ -67,14 +57,13 @@ class GstEngine : public EngineBase
         void                                     pause();
         void                                     seek( long ms );
         void                                     setVolume( int percent );
-        void                                     configureDecoder() {};                                                   
 
     private:
         static void                              eos_cb( GstElement*, GstElement* );
         static void                              handoff_cb( GstElement*, GstBuffer*, gpointer );
         static void                              typefindFound_cb( GstElement*, GstCaps*, GstElement* );
 
-        void                                     fillPipeline();
+        void                                     fillPipeline( bool init = false );
         void                                     cleanPipeline();
         void                                     interpolate( const vector<float>& inVec, vector<float>& outVec );
         /////////////////////////////////////////////////////////////////////////////////////

@@ -122,7 +122,8 @@ class EngineBase : public QObject, public amaroK::Plugin {
          */
         virtual void setVolume( int percent ) = 0;
         virtual void setXfadeLength( int ms );
-
+        virtual void setSoundOutput( const QString& output ) { m_soundOutput = output; }
+        
     public slots:
         virtual void configureDecoder() {}
 
@@ -137,7 +138,8 @@ class EngineBase : public QObject, public amaroK::Plugin {
         int m_volume;
         int m_xfadeLength;
         bool m_restoreEffects;
-
+        QString m_soundOutput;
+        
         EngineBase( const EngineBase& ); //disable
         const EngineBase &operator=( const EngineBase& ); //disable
 };

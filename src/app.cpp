@@ -415,7 +415,6 @@ void PlayerApp::applySettings()
         PluginManager::unload( EngineController::engine() );
         initEngine();
         AmarokConfig::setHardwareMixer( EngineController::engine()->initMixer( AmarokConfig::hardwareMixer() ) );
-
         kdDebug() << k_funcinfo << " AmarokConfig::soundSystem() == " << AmarokConfig::soundSystem() << endl;
     }
 
@@ -424,6 +423,7 @@ void PlayerApp::applySettings()
 
     EngineController::instance()->setVolume( AmarokConfig::masterVolume() );
     EngineController::engine()->setRestoreEffects( AmarokConfig::rememberEffects() );
+    EngineController::engine()->setSoundOutput( AmarokConfig::soundOutput() );
     EngineController::engine()->setXfadeLength( AmarokConfig::crossfade() ?
                                                 AmarokConfig::crossfadeLength() : 0 );
 
@@ -479,7 +479,6 @@ void PlayerApp::readConfig()
     initEngine();
     EngineBase *engine = EngineController::instance()->engine();
     AmarokConfig::setHardwareMixer( engine->initMixer( AmarokConfig::hardwareMixer() ) );
-    EngineController::instance()->setVolume( AmarokConfig::masterVolume() );
 
     m_pPlayerWidget->move  ( AmarokConfig::playerPos() );
     m_pBrowserWin  ->move  ( AmarokConfig::browserWinPos() );

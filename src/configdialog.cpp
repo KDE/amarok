@@ -24,7 +24,6 @@ email                : markey@web.de
 #include "pluginmanager.h"
 
 #include <qcombobox.h>
-#include <qradiobutton.h>
 
 #include <kconfigdialog.h>
 #include <klocale.h>
@@ -38,51 +37,56 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     Options4* pOpt4 = new Options4( 0,"Playback" );
     m_pSoundSystem = pOpt4->sound_system;
     m_pSoundOutput = pOpt4->sound_output;
-    QStringList list;
-
+    
     // Sound System
+    QStringList systems;
     KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'engine'" );
 
     for( KTrader::OfferList::ConstIterator it = offers.begin(); it != offers.end(); ++it )
-        list << (*it)->name();
+        systems << (*it)->name();
 
-    m_pSoundSystem->insertStringList( list );
+    m_pSoundSystem->insertStringList( systems );
     m_pSoundSystem->setCurrentText  ( AmarokConfig::soundSystem() );
 
     // Sound Output    
-    list.clear();
-    list << "OSS";
-    list << "Alsa";
-    m_pSoundOutput->insertStringList( list );
+    QStringList outputs;
+    outputs << "Alsa";
+    outputs << "OSS";
+    m_pSoundOutput->insertStringList( outputs );
+    m_pSoundOutput->setCurrentText  ( AmarokConfig::soundOutput() );
        
-    // add screens
     connect( m_pSoundSystem, SIGNAL( activated( int ) ), this, SLOT( settingsChangedSlot() ) );
+    connect( m_pSoundOutput, SIGNAL( activated( int ) ), this, SLOT( settingsChangedSlot() ) );
 
+    // add pages
     addPage( new Options1( 0,"General" ),  i18n("General"),  "misc",   i18n("Configure General Options") );
     addPage( new Options2( 0,"Fonts" ),    i18n("Fonts"),    "fonts",  i18n("Configure Fonts") );
     addPage( new Options3( 0,"Colors" ),   i18n("Colors"),   "colors", i18n("Configure Colors") );
     addPage( pOpt4,                        i18n("Playback"), "kmix",   i18n("Configure Playback") );
     addPage( new Options5( 0,"OSD" ),      i18n("OSD" ),     "tv",     i18n("Configure On-Screen-Display") );
 
-    setInitialSize( QSize( 460, 390 ) );
+    setInitialSize( QSize( 440, 390 ) );
 }
 
 
 bool AmarokConfigDialog::hasChanged()
 {
-    return ( m_pSoundSystem->currentText() != AmarokConfig::soundSystem() );
+    return ( m_pSoundSystem->currentText() != AmarokConfig::soundSystem() ) ||
+           ( m_pSoundOutput->currentText() != AmarokConfig::soundOutput() );
 }
 
 
 bool AmarokConfigDialog::isDefault()
 {
-    return ( m_pSoundSystem->currentText() == "arts" );
+    return ( m_pSoundSystem->currentText() == "aRts Engine" ) &&
+           ( m_pSoundOutput->currentText() == "Alsa" );   
 }
 
 
 void AmarokConfigDialog::updateSettings()
 {
     AmarokConfig::setSoundSystem( m_pSoundSystem->currentText() );
+    AmarokConfig::setSoundOutput( m_pSoundOutput->currentText() );
     emit settingsChanged();
 }
 

@@ -150,6 +150,11 @@
         <default>aRts Engine</default>
         <whatsthis>Select the sound system used to play media. amaroK currently support "aRts", "GStreamer" and "NMM", however their availability depends on the configuration used at compile time.</whatsthis>
      </entry>
+     <entry key="Sound Output" type="String">
+        <label>Sound output method to use</label>
+        <default>Alsa</default>
+        <whatsthis>Select the sound output system. amaroK currently support "Alsa" and "OSS", however their availability depends on the system configuration.</whatsthis>
+     </entry>
      <entry key="Title Streaming" type="Bool">
         <label>Read titles of shoutcast streams</label>
         <default>true</default>
