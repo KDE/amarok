@@ -6,6 +6,7 @@ amaroK ChangeLog
   ADD: support for XMMS visualization plugins
   ADD: Collection Browser - a database powered music collection manager
   ADD: Playlist toolbar is now configurable
+  ADD: toolbar analyzer in playlist window
   ADD: use XML playlists internally within amaroK so tags don't have to be
        loaded/reloaded all the time. Makes undo/redo much quicker.
   FIX: non latin1 locale issues with loading directories and tags (thanks Leo Zhu)
