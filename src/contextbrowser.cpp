@@ -653,10 +653,10 @@ void ContextBrowser::showCurrentTrack() //SLOT
             token += " artist.name = '" + m_db->escapeString( m_relatedArtists[i] ) + "' ";
         }
 
-        values = m_db->query( QString( "SELECT tags.title, tags.url, round( statistics.percentage + 0.4 ), artist.name "
-                                       "FROM tags, artist, statistics "
-                                       "WHERE tags.artist = artist.id AND ( %1 ) AND statistics.url = tags.url "
-                                       "ORDER BY statistics.percentage DESC "
+        values = m_db->query( QString( "SELECT tags.title, tags.url, artist.name "
+                                       "FROM tags, artist "
+                                       "WHERE tags.artist = artist.id AND ( %1 ) "
+                                       "ORDER BY random() "
                                        "LIMIT 0,5;" )
                               .arg( token ) );
 
@@ -667,9 +667,9 @@ void ContextBrowser::showCurrentTrack() //SLOT
             browser->write( "</table>" );
             browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-            for ( uint i = 0; i < values.count(); i += 4 )
+            for ( uint i = 0; i < values.count(); i += 3 )
                 browser->write( QString ( "<tr><td class='song'><a href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">"
-                                          + values[i + 3] + " - " + values[i] + " <i>(" + i18n( "Score:" ) + " " + values[i + 2] + ")</i></a></td></tr>" ) );
+                                          + values[i + 2] + " - " + values[i] + "</i></a></td></tr>" ) );
 
             browser->write( "</table></div>" );
         }
