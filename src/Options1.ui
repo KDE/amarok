@@ -51,17 +51,6 @@
                 </widget>
                 <widget class="QCheckBox">
                     <property name="name">
-                        <cstring>kcfg_ShowMetaInfo</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Show &amp;metadata in playlist</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Check to enable metadata display, like ID3 tags, in the playlist.</string>
-                    </property>
-                </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
                         <cstring>kcfg_HidePlaylistWindow</cstring>
                     </property>
                     <property name="text">

@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.1.1:
+  REM: Unsupported option "Show Metadata in Playlist".
   ADD: Menubar (optional).
   FIX: GStreamer-engine now resumes playback at correct position.
   ADD: iCandy for Context-Browser: Background gradient and toolbar.

@@ -60,11 +60,6 @@
         <default>false</default>
         <whatsthis>If set, amaroK plays the tracks in the playlist in random order.</whatsthis>
     </entry>
-    <entry key="Show Meta Info" type="Bool">
-        <label>Whether to show track metadata</label>
-        <default>true</default>
-        <whatsthis>Enable/Disable metadata display like ID3 tags in the playlist.</whatsthis>
-    </entry>
     <entry key="Show Tray Icon" type="Bool">
         <label>Whether to show icon in system tray</label>
         <default>true</default>
