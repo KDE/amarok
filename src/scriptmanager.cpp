@@ -39,6 +39,7 @@
 #include <kpushbutton.h>
 #include <krun.h>
 #include <kstandarddirs.h>
+#include <ktar.h>
 #include <ktextedit.h>
 
 
@@ -132,9 +133,26 @@ ScriptManager::slotCurrentChanged( QListViewItem* item )
 void
 ScriptManager::slotInstallScript()
 {
-    AMAROK_NOTIMPLEMENTED
+    Debug::Block b( __PRETTY_FUNCTION__ );
 
-    KMessageBox::sorry( 0, i18n( "This function is not yet implemented." ) );
+    KFileDialog dia( QString::null, "*.tar *.tar.bz2 *.tar.gz|" + i18n( "Script packages (*.tar, *.tar.bz2, *.tar.gz)" ), 0, 0, true );
+    kapp->setTopWidget( &dia );
+    dia.setCaption( kapp->makeStdCaption( i18n( "Select Script Package" ) ) );
+    dia.setMode( KFile::File | KFile::ExistingOnly );
+    if ( !dia.exec() ) return;
+
+    KTar archive( dia.selectedURL().path() );
+
+    if ( !archive.open( IO_ReadOnly ) ) {
+        KMessageBox::sorry( 0, i18n( "Could not read this package." ) );
+        return;
+    }
+
+    const QString destination = amaroK::saveLocation( "scripts/" );
+    const KArchiveDirectory* archiveDir = archive.directory();
+    archiveDir->copyTo( destination );
+
+    KMessageBox::information( 0, i18n( "Script successfully installed." ) );
 }
 
 
@@ -189,7 +207,7 @@ ScriptManager::slotRunScript()
     KURL url = m_scripts[name].url;
     KProcess* script = new KProcess( this );
     *script << url.path();
-    script->setWorkingDirectory( amaroK::saveLocation( "scripts/" ) );
+    script->setWorkingDirectory( amaroK::saveLocation( "scripts-data/" ) );
 
     if ( !script->start( KProcess::NotifyOnExit, KProcess::Stdin ) ) {
         KMessageBox::sorry( 0, i18n( "<p>Could not start the script <i>%1</i>.</p>"
