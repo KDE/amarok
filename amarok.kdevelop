@@ -43,8 +43,8 @@
     <run>
       <mainprogram>/opt/kde3/bin/amarok</mainprogram>
       <programargs/>
-      <terminal>true</terminal>
-      <autocompile>true</autocompile>
+      <terminal>false</terminal>
+      <autocompile>false</autocompile>
       <envvars/>
       <directoryradio>custom</directoryradio>
       <customdirectory>/opt/kde3/bin/</customdirectory>

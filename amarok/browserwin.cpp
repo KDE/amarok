@@ -19,6 +19,7 @@
 #include "amarokmenu.h" //see toolbar construction
 #include "browserwin.h"
 #include "browserbar.h"
+#include "collectionbrowser.h"
 #include "filebrowser.h"
 #include "playerapp.h"
 #include "playlistwidget.h"
@@ -157,6 +158,10 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     //</PlaylistBrowser>
         //m_browsers->addPage( m_playlist->browser(), i18n( "Playlist Browser" ), "midi" );
     //</PlaylistBrowser>
+
+    //<CollectionBrowser>
+        m_browsers->addPage( new CollectionBrowser( "CollectionBrowser" ), i18n( "Collection Browser" ), "contents" );
+    //</CollectionBrowser>
 
     { //<StreamBrowser>
         QVBox   *vb = new QVBox( 0, "StreamBrowser" );

@@ -31,6 +31,7 @@ amarokapp_SOURCES = \
         amaroksystray.cpp \
         browserbar.cpp \
         browserwin.cpp \
+        collectionbrowser.cpp \
         effectwidget.cpp \
         fht.cpp \
         filebrowser.cpp \
