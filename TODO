@@ -13,10 +13,6 @@ SHORT-TERM:
     
     * fix: writePathEntry is a KDE 3.1.3 function, which is perhaps too recent for the 0.7.1 release
 
-    * fix: <mxcl>when you clear and undo it loses selection and then stops, need a search
-            for current item in playlist function
-           <berkus> no matter what you do, when you undo it, it loses all tracks
-
     * fix: <mxcl>pause vis/anim timers when hide/show main widget as a courtesy to our users
 
     * fix: <mxcl>dialog boxes show behind the playlist (KDE 3.1), with no amarok.rc, playlist

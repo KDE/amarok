@@ -3,6 +3,8 @@ amaroK Changelog
 (c) 2002, 2003 by Mark Kretschmann and the amaroK team. GPL License.
 
 
+  * fix: should keep track of currently played item no matter what you do to the playlist,
+         has a nice side effect of remembering the last played song, too. <berkus>
   * fix: write undo for Shuffle <berkus>
   * fix: the expandbutton doesn't fire events when it has had its stack expanded
          (behaviour a-la Winamp Classic) <berkus>
