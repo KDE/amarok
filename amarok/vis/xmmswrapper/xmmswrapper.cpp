@@ -264,6 +264,8 @@ XmmsWrapper::XmmsWrapper( const std::string &plugin )
 
     if ( m_vis->init ) { std::cout << "[amK] init()\n"; m_vis->init(); }
     if ( m_vis->playback_start ) { std::cout << "[amK] start()\n"; m_vis->playback_start(); }
+    
+    if ( m_vis->configure ) { std::cout << "[amK] configure()\n"; m_vis->configure(); }
 }
 
 
