@@ -11,21 +11,27 @@
  *                                                                         *
  ***************************************************************************/
 
-/////////////////////////////////////////////////////////////////////////////
-///    CLASS Party
-////////////////////////////////////////////////////////////////////////////
-
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "party.h"
 #include "smartplaylist.h"
 
+#include <qbuttongroup.h>
+#include <qfile.h>
 #include <qlabel.h>
+#include <qlistbox.h>
+#include <qradiobutton.h>
 #include <qvbox.h>
+#include <qvgroupbox.h>
 
+#include <kactionselector.h>
 #include <klocale.h>
 
-Party::Party( QString defaultName, QWidget *parent, const char *name )
+/////////////////////////////////////////////////////////////////////////////
+///    CLASS Party
+////////////////////////////////////////////////////////////////////////////
+
+Party::Party( QString /*defaultName*/, QWidget *parent, const char *name )
     : KDialogBase( parent, name, true, i18n("Start a Party"), Ok|Cancel)
 {
     makeVBoxMainWidget();

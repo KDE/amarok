@@ -14,16 +14,19 @@
 #ifndef AMAROK_PARTY_H
 #define AMAROK_PARTY_H
 
-#include <kactionselector.h>
+#include <qcheckbox.h>
+
 #include <kdialogbase.h>    //baseclass
 #include <knuminput.h>      //kintspinbox
 
-#include <qbuttongroup.h>
-#include <qcheckbox.h>
-#include <qhbox.h>
-#include <qlistbox.h>
-#include <qradiobutton.h>
-#include <qvgroupbox.h>
+class QButtonGroup;
+class QHBox;
+class QListBox;
+class QRadioButton;
+class QVGroupBox;
+
+class KActionSelector;
+
 
 class Party : public KDialogBase
 {

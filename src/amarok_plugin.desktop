@@ -58,7 +58,10 @@ Type=int
 Type=int
 
 # Version of the framework this plugin is compatible with.
-# Must be bumped after making incompatible changes.
+# Must be bumped after making binary incompatible changes.
 [PropertyDef::X-KDE-amaroK-framework-version]
 Type=int
 
+# If true, amaroK will show a warning dialog about the experimental nature of this plugin.
+[PropertyDef::X-KDE-amaroK-experimental]
+Type=bool
