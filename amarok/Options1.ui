@@ -87,10 +87,10 @@
                         <cstring>kcfg_SavePlaylist</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Save current playlist on exit</string>
+                        <string>&amp;Remember current playlist on exit</string>
                     </property>
                     <property name="accel">
-                        <string>Alt+S</string>
+                        <string>Alt+R</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, amaroK saves the current playlist on quit and restores it when restarted.</string>
