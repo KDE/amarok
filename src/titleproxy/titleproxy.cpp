@@ -126,17 +126,23 @@ void Proxy::accept( int socket )
     
     m_sockProxy.setSocket( socket );
 
-    m_sockProxy.waitForMore( 2000 );
+    m_sockProxy.waitForMore( 5000 );
     int bytesRead = m_sockProxy.readBlock( m_pBuf, BUFSIZE );
     kdDebug() << k_funcinfo << "m_sockProxy bytesRead = " << bytesRead << endl;
     
     QCString str( m_pBuf, bytesRead );
-    int index = str.find( "\n", str.find( "GET / HTTP/1.1" ) ) + 1;
-    m_sockRemote.writeBlock( m_pBuf, index );
-
-    QCString icyStr( "Icy-MetaData:1\r\n" );
-    m_sockRemote.writeBlock( icyStr, icyStr.length() );
-    m_sockRemote.writeBlock( m_pBuf + index, bytesRead - index );
+    int index1 = str.find( "GET / HTTP/1.1" );
+    int index2 = str.find( "\n", index1 ) + 1;
+    m_sockRemote.writeBlock( m_pBuf, index1 );
+    
+    //This is our new, modified request, containing the correct path to the stream
+    QString request = QString( "GET %1 HTTP/1.1\nIcy-MetaData:1\r\n" )
+                      .arg( m_url.path( 1 ) );
+    
+    kdDebug() << "request: " << request << endl;
+    
+    m_sockRemote.writeBlock( request.latin1(), request.length() );
+    m_sockRemote.writeBlock( m_pBuf + index2, bytesRead - index2 );
     
     connect( &m_sockRemote, SIGNAL( readyRead() ), this, SLOT( readRemote() ) );
     
