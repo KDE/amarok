@@ -25,7 +25,7 @@ VERSION 1.1-beta2:
   FIX: Various fixes for certain Artist/Album names, which had problems
        with cover support.
   FIX: Sorting the collection is now case-insensitive. (BR 84141)
-  CHG: Don't follow symlinks anymore, while scanning the collection.
+  CHG: Symlink infinite recursion check for collection scan.
   FIX: Show all accessible cover images in the tooltip. (BR 87283)
   FIX: Clicking an album in the ContextBrowser adds items in the correct
        order, now. (BR 87733)
