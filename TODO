@@ -6,6 +6,9 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+          <mxcl>   We should make regular backups of the user's statistics tables, we'll get so many angry
+                   users if they start to lose stats.
+
           <muesli> Enabling "stop playing after current track" and enqueueing a song at the same time confuses amarok.
 
           <mxcl>   If you inline set the title tag to "", prettyTitle gets inserted as the title tag.
