@@ -143,9 +143,9 @@ splitting amaroK into the following packages:
 
 amaroK is modular and wil be fully functional without 2, 3 and 4.
 
-amaroK ships with two binaries: amarok and amarokapp. The amarok is a wrapper
-designed to speed up command line argument passing. amarokapp is the real
-amaroK.
+amaroK ships with two binaries: amarok and amarokapp. The amarok binary is a
+wrapper designed to speed up command line argument passing. amarokapp is the
+real amaroK.
 
 
 --------------------------------------------------------------------------------
