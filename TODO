@@ -3,10 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #106 being the highest available (take this one for your next bug and increase here)
+           #107 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  CHG: #106 <muesli> Don't let users select the same value for category1 _and_ category2 in the
+                     collection.
 
   ADD: #105 <markey> Make ArtsEngine depend not only on kdemultimedia-devel, but also on kdemultimedia,
                      since arts itself contains these crappy decoders and ppl come complain about bad sound.

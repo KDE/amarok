@@ -327,7 +327,6 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         m_db->execSql( "PRAGMA default_synchronous = OFF;" );
         m_db->execSql( "PRAGMA default_cache_size = 4000;" );
 
-        m_insertdb = new CollectionDB( path );
         m_db->createTables();
     //</open database>
 
@@ -403,6 +402,10 @@ CollectionView::setupDirs()  //SLOT
 void
 CollectionView::scan()  //SLOT
 {
+    const QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
+                        + "collection.db" ).local8Bit();
+    m_insertdb = new CollectionDB( path );
+
     m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), m_dirs, m_recursively ) );
 
     if ( m_monitor )
@@ -671,6 +674,7 @@ CollectionView::customEvent( QCustomEvent *e )
         const QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
                               + "collection.db" ).local8Bit();
         delete m_db;
+        delete m_insertdb;
         m_db = new CollectionDB( path );
 
         emit tagsReady();
