@@ -10,7 +10,6 @@
 class CollectionDB;
 class Color;
 class MetaBundle;
-class Scrobbler;
 
 class QPalette;
 
@@ -52,8 +51,6 @@ class ContextBrowser : public QVBox, public EngineObserver
         void lyricsResult( KIO::Job* job );
         void coverFetched( const QString& keyword );
 
-        void relatedArtistsFetched( QStringList& artists );
-
     private:
         void setStyleSheet();
         void showIntroduction();
@@ -62,7 +59,6 @@ class ContextBrowser : public QVBox, public EngineObserver
         KHTMLPart    *browser;
         KTabBar      *m_tabBar;
         CollectionDB *m_db;
-        Scrobbler    *m_scrobbler;
 
         int           m_tabHome;
         int           m_tabCurrent;
@@ -73,7 +69,6 @@ class ContextBrowser : public QVBox, public EngineObserver
         QString       m_lyrics;
         QStringList   m_lyricSuggestions;
         QStringList   m_lyricHashes;
-        QStringList   m_relatedArtists;
         QString       m_HTMLSource;
         KTempFile    *m_gradientImage;
         QStringList   m_metadataHistory;

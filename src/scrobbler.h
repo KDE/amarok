@@ -22,7 +22,7 @@ class Scrobbler : public QObject
         void relatedArtists( QString artist );
 
     signals:
-        void relatedArtistsFetched( QStringList& artists );
+        void relatedArtistsFetched( const QString& artist, const QStringList& suggestions );
 
     private slots:
         void audioScrobblerRelatedArtistData( KIO::Job* job, const QByteArray& data );
@@ -30,6 +30,7 @@ class Scrobbler : public QObject
 
     private:
         QString m_buffer;
+        QString m_artist;
 
 };
 

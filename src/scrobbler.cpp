@@ -40,6 +40,7 @@ Scrobbler::relatedArtists( QString artist )
     kdDebug() << "Using this url: " << url << endl;
 
     m_buffer = "";
+    m_artist = artist;
 
     KIO::TransferJob* job = KIO::get( url, false, false );
     connect( job, SIGNAL( result( KIO::Job* ) ),
@@ -62,7 +63,7 @@ void
 Scrobbler::audioScrobblerRelatedArtistResult( KIO::Job* job ) //SLOT
 {
     int x = 0;
-    QStringList artists;
+    QStringList suggestions;
 
     if ( !job->error() == 0 )
     {
@@ -84,14 +85,14 @@ Scrobbler::audioScrobblerRelatedArtistResult( KIO::Job* job ) //SLOT
         artist = KURL::decode_string( artist.mid( 0, artist.find( "\" title" ) ) );
 
         //kdDebug() << artist << endl;
-        if ( !artist.isEmpty() ) artists << artist;
+        if ( !artist.isEmpty() ) suggestions << artist;
 
         m_buffer = m_buffer.mid( m_buffer.find( "</td>" ) );
 
     }
 
-    if ( artists.count() > 0 )
-        emit relatedArtistsFetched( artists );
+    if ( suggestions.count() > 0 )
+        emit relatedArtistsFetched( m_artist, suggestions );
 }
 
 

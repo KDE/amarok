@@ -23,6 +23,7 @@ namespace mysql
 
 class CollectionEmitter;
 class MetaBundle;
+class Scrobbler;
 class ThreadWeaver;
 
 class CollectionDB : public QObject
@@ -45,20 +46,22 @@ class CollectionDB : public QObject
         //table management methods
         bool isValid();
         bool isEmpty();
+
         void createTables( const bool temporary = false );
         void dropTables( const bool temporary = false );
-        void moveTempTables();
         void createStatsTable();
         void dropStatsTable();
+        void moveTempTables();
 
         //general management methods
         void scan( const QStringList& folders, bool recursively, bool importPlaylists );
         void scanModifiedDirs( bool recursively, bool importPlaylists );
+        
         bool isDirInCollection( QString path );
         bool isFileInCollection( const QString &url  );
         void removeDirFromCollection( QString path );
-        void updateDirStats( QString path, const long datetime );
         void removeSongsInDir( QString path );
+        void updateDirStats( QString path, const long datetime );
         void purgeDirCache();
 
         //song methods
@@ -66,12 +69,16 @@ class CollectionDB : public QObject
         bool getMetaBundleForUrl( const QString& url , MetaBundle* bundle );
         void addAudioproperties( const MetaBundle& bundle );
 
+        void updateTags( const QString &url, const MetaBundle &bundle, const bool updateView = true );
+        void updateURL( const QString &url, const bool updateView = true );
+
+        //statistics methods
         int addSongPercentage( const QString &url , const int percentage );
         int getSongPercentage( const QString &url  );
         void setSongPercentage( const QString &url , int percentage );
 
-        void updateTags( const QString &url, const MetaBundle &bundle, const bool updateView = true );
-        void updateURL( const QString &url, const bool updateView = true );
+        //artist methods
+        QStringList relatedArtists( const QString &artist, uint count );
 
         //album methods
         void checkCompilations( const QString &path );
@@ -129,6 +136,7 @@ class CollectionDB : public QObject
         void dirDirty( const QString& path );
         void saveCover( const QString& keyword, const QString& url, const QImage& image );
         void fetcherError();
+        void relatedArtistsFetched( const QString& artist, const QStringList& suggestions );
 
     private:
         void customEvent( QCustomEvent* );
@@ -137,11 +145,13 @@ class CollectionDB : public QObject
         QString valueFromID( QString table, uint id );
 
         static CollectionEmitter* s_emitter;
+
 #ifdef USE_MYSQL
         mysql::MYSQL* m_db;
 #else
         sqlite3* m_db;
 #endif
+
         ThreadWeaver* m_weaver;
         bool m_monitor;
         QDir m_cacheDir;

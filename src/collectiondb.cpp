@@ -16,6 +16,7 @@
 #include "enginecontroller.h"
 #include "metabundle.h"           //updateTags()
 #include "playlistbrowser.h"
+#include "scrobbler.h"
 #include "threadweaver.h"
 
 #include <qfile.h>
@@ -813,6 +814,24 @@ CollectionDB::isFileInCollection( const QString &url  )
     return !m_values.isEmpty();
 }
 
+        
+QStringList
+CollectionDB::relatedArtists( const QString &artist, uint count )
+{
+    Scrobbler *sc = new Scrobbler();
+    
+    query( QString( "SELECT suggestion FROM related_artists WHERE artist = '%1';" ).arg( escapeString( artist ) ) );
+    if ( m_values.isEmpty() )
+    {
+        connect( sc,   SIGNAL( relatedArtistsFetched( const QString&, const QStringList& ) ),
+                 this,   SLOT( relatedArtistsFetched( const QString&, const QStringList& ) ) );
+    
+        sc->relatedArtists( artist );
+    }
+    
+    return m_values;
+}
+
 
 void
 CollectionDB::checkCompilations( const QString &path )
@@ -933,6 +952,17 @@ CollectionDB::createTables( bool temporary )
 
     if ( !temporary )
     {
+        // create directory statistics database
+        query( QString( "CREATE TABLE directories ("
+                        "dir VARCHAR(255) UNIQUE,"
+                        "changedate INTEGER );" ) );
+
+        // create related artists cache
+        query( QString( "CREATE TABLE related_artists ("
+                        "artist VARCHAR(255),"
+                        "suggestion VARCHAR(255),"
+                        "changedate INTEGER );" ) );
+
         query( "CREATE INDEX url_tag ON tags( url );" );
         query( "CREATE INDEX album_tag ON tags( album );" );
         query( "CREATE INDEX artist_tag ON tags( artist );" );
@@ -943,10 +973,8 @@ CollectionDB::createTables( bool temporary )
         query( "CREATE INDEX images_album ON images( album );" );
         query( "CREATE INDEX images_artist ON images( artist );" );
 
-        // create directory statistics database
-        query( QString( "CREATE TABLE directories ("
-                        "dir VARCHAR(255) UNIQUE,"
-                        "changedate INTEGER );" ) );
+        query( "CREATE INDEX directories_dir ON directories( dir );" );
+        query( "CREATE INDEX related_artists_artist ON related_artists( artist );" );
     }
 }
 
@@ -1308,6 +1336,21 @@ CollectionDB::fetcherError()
 {
     //this is called when there is an error with a coverfetcher
     emit s_emitter->coverFetcherError();
+}
+
+
+void
+CollectionDB::relatedArtistsFetched( const QString& artist, const QStringList& suggestions )
+{
+    kdDebug() << "Suggestions retrieved" << endl;
+
+    query( QString( "DELETE FROM related_artists WHERE artist = '%1';" ).arg( escapeString( artist ) ) );
+    for ( uint i = 0; i < suggestions.count(); i++ )
+    {
+        query( QString( "INSERT INTO related_artists ( artist, suggestion, changedate ) VALUES ( '%1', '%2', 0 );" )
+                  .arg( escapeString( artist ) )
+                  .arg( escapeString( suggestions[ i ] ) ) );
+    }
 }
 
 
