@@ -621,11 +621,11 @@ void ContextBrowser::showHome() //SLOT
         if ( !least[i+3].isEmpty() )
             m_HTMLSource.append(
                                 "<span class='song-separator'> - </span>"
-                                "<span class='song-album'>" + least[i+3] + "</span><br />"
+                                "<span class='song-album'>" + least[i+3] + "</span>"
                                );
 
         m_HTMLSource.append(
-                            "<span class='song-time'>" + i18n( "Last Played: %1" ).arg( verboseTimeSince( lastPlay ) ) + "</span>"
+                            "<br /><span class='song-time'>" + i18n( "Last Played: %1" ).arg( verboseTimeSince( lastPlay ) ) + "</span>"
                             "</a>"
                         "</div>"
                     "</div>"

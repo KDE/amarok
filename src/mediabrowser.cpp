@@ -46,8 +46,9 @@ MediaDevice *MediaDevice::s_instance = 0;
 
 bool MediaBrowser::isAvailable() //static
 {
-    return !KStandardDirs::findExe( "gnupod_addsong.pl" ).isNull()
-           || !KStandardDirs::findExe( "gnupod_addsong" ).isNull();
+    return true;
+//    return !KStandardDirs::findExe( "gnupod_addsong.pl" ).isNull()
+//           || !KStandardDirs::findExe( "gnupod_addsong" ).isNull();
 }
 
 
@@ -559,7 +560,6 @@ MediaDevice::deleteFiles( const KURL::List& urls )
 
     if ( button == KMessageBox::Continue )
     {
-        m_ipod->ensureConsistency();
         m_ipod->lock( true );
         deleteFromIPod( 0 );
 
@@ -587,6 +587,8 @@ MediaDevice::deleteFromIPod( MediaItem* item )
     {
         if ( fi->isSelected() )
         {
+            m_ipod->ensureConsistency();
+
             switch ( fi->depth() )
             {
                 case 0:
@@ -643,7 +645,6 @@ MediaDevice::fileExists( const MetaBundle& bundle )
 
     TrackList* album;
 
-    kdDebug() << "lala: " << bundle.artist() << " - " << bundle.album() << endl;
     album = m_ipod->getAlbum( bundle.artist(), bundle.album() );
     if ( album )
     {
@@ -651,7 +652,6 @@ MediaDevice::fileExists( const MetaBundle& bundle )
         while ( it.hasNext() )
         {
             TrackMetadata* track = m_ipod->getTrackByID( it.next() );
-            kdDebug() << "lala: " << track->getArtist() << " - " << track->getTitle() << endl;
             if ( track->getTitle() == bundle.title() )
                 return true;
         }
