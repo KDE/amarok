@@ -154,6 +154,7 @@ namespace Glow
     inline void reset()
     {
         counter = 0;
+        timer.stop();
     }
 }
 
@@ -725,6 +726,10 @@ Playlist::updateNextPrev()
     amaroK::actionCollection()->action( "prev" )->setEnabled( isTrackBefore() );
     amaroK::actionCollection()->action( "next" )->setEnabled( isTrackAfter() );
     amaroK::actionCollection()->action( "playlist_clear" )->setEnabled( !isEmpty() );
+
+    if( m_currentTrack )
+        // ensure currentTrack is shown at correct height
+        m_currentTrack->setup();
 }
 
 
@@ -766,10 +771,9 @@ Playlist::engineStateChanged( Engine::State state )
 
         Glow::startTimer();
 
-        if ( m_currentTrack )
-        {
+        if( m_currentTrack ) {
             //display "Play" icon
-            m_currentTrack->setPixmap( m_firstColumn, locate( "data", QString( "amarok/images/currenttrack_play.png" ) ) );
+            m_currentTrack->setPixmap( m_firstColumn, amaroK::getPNG( "currenttrack_play" ) );
             PlaylistItem::setPixmapChanged();
         }
         break;
@@ -779,13 +783,14 @@ Playlist::engineStateChanged( Engine::State state )
         amaroK::actionCollection()->action( "stop" )->setEnabled( true );
         amaroK::actionCollection()->action( "playlist_show" )->setEnabled( true );
 
-        Glow::startTimer();
+        Glow::reset();
 
-        if ( m_currentTrack )
-        {
+        if( m_currentTrack ) {
             //display "Pause" icon
-            m_currentTrack->setPixmap( m_firstColumn, locate( "data", QString( "amarok/images/currenttrack_pause.png" ) ) );
+            m_currentTrack->setPixmap( m_firstColumn, amaroK::getPNG( "currenttrack_pause" ) );
             PlaylistItem::setPixmapChanged();
+
+            //slotGlowTimer(); //update glow state
         }
         break;
 
@@ -811,10 +816,8 @@ Playlist::engineStateChanged( Engine::State state )
             slotGlowTimer();
         }
 
-        //FALL THROUGH
-
-    default:
-        Glow::timer.stop();
+    case Engine::Idle:
+        ;
     }
 }
 
@@ -1282,8 +1285,9 @@ Playlist::eventFilter( QObject *o, QEvent *e )
             popup.setItemChecked( i, columnWidth( i ) != 0 );
         }
 
-        popup.insertSeparator();
-        popup.insertItem( i18n("&Add Custom Column..."), CUSTOM ); //TODO
+        //TODO for 1.2.1
+        //popup.insertSeparator();
+        //popup.insertItem( i18n("&Add Custom Column..."), CUSTOM ); //TODO
 
         //do last so it doesn't get the first id
         popup.insertTitle( i18n( "Playlist Columns" ), /*id*/ -1, /*index*/ 1 );

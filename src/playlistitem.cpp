@@ -89,50 +89,33 @@ QString PlaylistItem::stringStore[STRING_STORE_SIZE];
 
 
 PlaylistItem::PlaylistItem( QListView *listview, QListViewItem *item )
-    : KListViewItem( listview, item )
+        : KListViewItem( listview, item )
 {
     setVisible( false );
 }
 
-PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi )
-      : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( u ) )
-      , m_url( u )
-      , m_missing( false )
-{
-    setDragEnabled( true );
-
-    //setText( Directory, u.directory().section( '/', -1 ) );
-}
-
 PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
-      : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( bundle.url() ) )
-      , m_url( bundle.url() )
-      , m_missing( false )
+        : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( bundle.url() ) )
+        , m_url( bundle.url() )
+        , m_missing( false )
 {
     setDragEnabled( true );
 
     setText( bundle );
 }
 
-PlaylistItem::PlaylistItem( QDomNode n, QListViewItem *lvi )
-      : KListViewItem( lvi->listView(), lvi->itemAbove() )
-      , m_url( n.toElement().attribute( "url" ) )
-      , m_missing( false )
+PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
+        : KListViewItem( item->listView(), item->itemAbove() )
+        , m_url( node.toElement().attribute( "url" ) )
+        , m_missing( false )
 {
-    setText( TrackName, trackName( m_url ) );
     setDragEnabled( true );
-    const uint ncol = listView()->columns();
+    KListViewItem::setText( TrackName, trackName( m_url ) );
 
     //NOTE we use base versions to speed this up (this function is called 100s of times during startup)
-    for( uint x = 1; x < ncol; ++x )
-    {
-        const QString text = n.namedItem( columnName( x ) ).toElement().text();
+    for( uint x = 1, n = listView()->columns(); x < n; ++x ) {
+        const QString text = node.namedItem( columnName( x ) ).toElement().text();
 
-        //FIXME this is duplication of setText()
-        //TODO  it would be neat to have all store columns adjacent and at top end so you can use
-        //      a simple bit of logic to discern which ones to store
-        //FIXME use the MetaBundle implicitly shared bitrate and track # strings
-        //setText( x, text );
         switch( x ) {
         case Artist:
         case Album:
@@ -141,10 +124,10 @@ PlaylistItem::PlaylistItem( QDomNode n, QListViewItem *lvi )
         case Directory:
             KListViewItem::setText( x, attemptStore( text ) );
             continue;
-        case Score: {
-            const int score = CollectionDB::instance()->getSongPercentage( m_url.path() );
-            KListViewItem::setText( x, QString::number( score ) );
-            continue; }
+        case Score:
+            KListViewItem::setText( x,
+                    QString::number( CollectionDB::instance()->getSongPercentage( m_url.path() ) ) );
+            continue;
         default:
             KListViewItem::setText( x, text );
         }
@@ -379,6 +362,10 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         }
 
         p->drawPixmap( 0, 0, paintCache[column].map[colorKey] );
+
+        if( AmarokConfig::repeatTrack() && column == listView()->m_firstColumn )
+            //TODO paint inside cache, but currently I don't want to break anything
+            p->drawPixmap( width - 19, (height() - 16) / 2, SmallIcon( "repeat_one" ) );
     }
     else {
         QColorGroup _cg = cg;
@@ -435,7 +422,7 @@ void PlaylistItem::setup()
 {
     KListViewItem::setup();
 
-    if ( this == listView()->currentTrack() )
+    if( this == listView()->currentTrack() )
         setHeight( listView()->fontMetrics().height() * 2 );
 }
 

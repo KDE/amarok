@@ -51,10 +51,7 @@ class PlaylistItem : public KListViewItem
         static QColor glowBase;
 
     public:
-        //used by PlaylistLoader
-        PlaylistItem( QListView*, QListViewItem* );
-
-        PlaylistItem( const KURL&, QListViewItem* );
+        PlaylistItem( QListView*, QListViewItem* ); //used by PlaylistLoader
         PlaylistItem( const MetaBundle&, QListViewItem* );
         PlaylistItem( QDomNode, QListViewItem* );
 
