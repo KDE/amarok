@@ -46,6 +46,7 @@
 #include <kiconloader.h>    //ClearFilter button
 #include <klineedit.h>      //m_lineEdit
 #include <klocale.h>
+#include <kmenubar.h>
 #include <kpopupmenu.h>
 #include <kstandarddirs.h>    //Welcome Tab, locate welcome.html
 #include <ktoolbar.h>
@@ -160,6 +161,8 @@ PlaylistWindow::PlaylistWindow()
 
 PlaylistWindow::~PlaylistWindow()
 {
+    amaroK::config( "PlaylistWindow" )->writeEntry( "showMenuBar", m_menubar->isShown() );
+
     AmarokConfig::setPlaylistWindowPos( pos() );  //TODO de XT?
     AmarokConfig::setPlaylistWindowSize( size() ); //TODO de XT?
 }
@@ -176,14 +179,13 @@ PlaylistWindow::init()
 
     m_browsers = new BrowserBar( this );
 
-
     { //<Search LineEdit>
         QHBox *box; KToolBarButton *button;
         KToolBarButton *searchButton;
 
-        box               = new QHBox( m_browsers->container() );
-        button           = new KToolBarButton( "locationbar_erase", 1, box );
-        m_lineEdit      = new KLineEdit( box );
+        box          = new QHBox( m_browsers->container() );
+        button       = new KToolBarButton( "locationbar_erase", 1, box );
+        m_lineEdit   = new KLineEdit( box );
         searchButton = new KToolBarButton( SmallIcon("find"), 0, box);
 
         box->setMargin( 4 );
@@ -213,13 +215,86 @@ PlaylistWindow::init()
         QToolTip::add( m_lineEdit, i18n( "Enter space-separated terms to filter playlist" ) );
     } //</Search LineEdit>
 
-
+    m_playlist  = new Playlist( m_browsers->container(), actionCollection() );
     m_toolbar   = new amaroK::ToolBar( this, "playlist_toolbar" );
     m_statusbar = new amaroK::StatusBar( this );
-    m_playlist  = new Playlist( m_browsers->container(), actionCollection() );
+
+
+    m_menubar = new KMenuBar( this );
+    //m_menubar->setShown( amaroK::config( "PlaylistWindow" )->readBoolEntry( "showMenuBar", true ) );
+
+    //BEGIN Play menu
+    KPopupMenu *fileMenu = new KPopupMenu( m_menubar );
+    fileMenu->insertItem( SmallIcon("fileopen"), i18n("Play Media...") );
+    fileMenu->insertItem( SmallIcon("cdaudio_unmount"),i18n("Play Audio CD") );
+    fileMenu->insertSeparator();
+    actionCollection()->action("prev")->plug( fileMenu );
+    actionCollection()->action("play_pause")->plug( fileMenu );
+    actionCollection()->action("stop")->plug( fileMenu );
+    actionCollection()->action("next")->plug( fileMenu );
+    fileMenu->insertSeparator();
+    actionCollection()->action(KStdAction::name(KStdAction::Quit))->plug( fileMenu );
+    //END Play menu
+
+    //BEGIN Playlist menu
+    KPopupMenu *playlistMenu = new KPopupMenu( m_menubar );
+    actionCollection()->action("playlist_add")->plug( playlistMenu );
+    actionCollection()->action("playlist_save")->plug( playlistMenu );
+    playlistMenu->insertSeparator();
+    actionCollection()->action("playlist_undo")->plug( playlistMenu );
+    actionCollection()->action("playlist_redo")->plug( playlistMenu );
+    playlistMenu->insertSeparator();
+    actionCollection()->action("playlist_clear")->plug( playlistMenu );
+    actionCollection()->action("playlist_shuffle")->plug( playlistMenu );
+    actionCollection()->action("playlist_show")->plug( playlistMenu );
+    //this one has no real context with regard to the menu
+    //actionCollection()->action("playlist_copy")->plug( playlistMenu );
+    playlistMenu->insertSeparator();
+    actionCollection()->action("playlist_remove_duplicates")->plug( playlistMenu );
+    actionCollection()->action("playlist_select_all")->plug( playlistMenu );
+    //END Playlist menu
+
+    //BEGIN Window menu
+    KPopupMenu *toolsMenu = new KPopupMenu( m_menubar );
+    toolsMenu->insertItem( i18n("&Player-window") );
+    toolsMenu->insertItem( i18n("&Cover Manager..."), amaroK::Menu::ID_SHOW_COVER_MANAGER );
+    toolsMenu->insertItem( i18n("&First-run Wizard..."), amaroK::Menu::ID_SHOW_WIZARD );
+    toolsMenu->insertItem( i18n("&Visualizations..."), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
+    connect( toolsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
+    //END
+
+    //BEGIN Settings menu
+    m_settingsMenu = new KPopupMenu( m_menubar );
+    //TODO use KStdAction or KMainWindow
+    m_settingsMenu->insertItem( "Hide Menubar", ID_SHOW_MENUBAR );
+    m_settingsMenu->insertItem( "Hide Toolbar", ID_SHOW_TOOLBAR );
+    m_settingsMenu->insertSeparator();
+    //this should be only a context menu option and use next-queue graphics with an infinity symbol or something
+    actionCollection()->action("repeat_track")->plug( m_settingsMenu );
+    actionCollection()->action("repeat_playlist")->plug( m_settingsMenu );
+    actionCollection()->action("random_mode")->plug( m_settingsMenu );
+    m_settingsMenu->insertSeparator();
+    m_settingsMenu->insertItem( i18n( "Configure &Effects..." ), kapp, SLOT( slotConfigEffects() ), 0, amaroK::Menu::ID_SHOW_EFFECTS );
+    actionCollection()->action("options_configure_globals")->plug( m_settingsMenu );
+    actionCollection()->action(KStdAction::name(KStdAction::KeyBindings))->plug( m_settingsMenu );
+    actionCollection()->action(KStdAction::name(KStdAction::ConfigureToolbars))->plug( m_settingsMenu );
+    actionCollection()->action(KStdAction::name(KStdAction::Preferences))->plug( m_settingsMenu );
+
+    m_settingsMenu->setAccel( CTRL+Key_M, ID_SHOW_MENUBAR );
+    m_settingsMenu->setItemEnabled( amaroK::Menu::ID_SHOW_EFFECTS, EngineController::engine()->hasEffects() );
+
+    connect( m_settingsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
+    //END Settings menu
+
+    m_menubar->insertItem( "&Play", fileMenu );
+    m_menubar->insertItem( "&Playlist", playlistMenu );
+    m_menubar->insertItem( "&Windows", toolsMenu );
+    m_menubar->insertItem( "&Settings", m_settingsMenu );
+    m_menubar->insertItem( "&Help",  amaroK::Menu::helpMenu() );
 
 
     QBoxLayout *layV = new QVBoxLayout( this );
+    layV->addWidget( m_menubar );
     layV->addWidget( m_browsers, 1 );
     layV->addWidget( m_toolbar );
     layV->addWidget( m_statusbar );
@@ -253,10 +328,8 @@ PlaylistWindow::init()
     //</Browsers>
 
 
-    connect( m_playlist, SIGNAL(itemCountChanged( int, int )),
-             m_statusbar,  SLOT(slotItemCountChanged( int, int )) );
-    connect( m_playlist, SIGNAL(aboutToClear()),
-             m_lineEdit,   SLOT(clear()) );
+    connect( m_playlist, SIGNAL(itemCountChanged( int, int )), m_statusbar, SLOT(slotItemCountChanged( int, int )) );
+    connect( m_playlist, SIGNAL(aboutToClear()), m_lineEdit, SLOT(clear()) );
     connect( m_lineEdit, SIGNAL(textChanged( const QString& )), SLOT(slotSetFilterTimeout()) );
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
 }
@@ -366,6 +439,7 @@ void PlaylistWindow::setColors( const QPalette &pal, const QColor &bgAlt )
         {
             QColorGroup cg = pal.active();
             cg.setColor( QColorGroup::Button, cg.background() );
+            cg.setColor( QColorGroup::ButtonText, cg.text() );
             widget->setPalette( QPalette(cg, cg, cg) );
         }
         else if( obj->inherits("QMenuBar") || obj->isA("QSplitterHandle") )
@@ -581,6 +655,24 @@ void PlaylistWindow::setSearchField( int field )
     m_searchMenu->setItemChecked( field, true );
     m_lineEdit->clear();
     m_searchField = field;
+}
+
+void PlaylistWindow::slotMenuActivated( int index )
+{
+    switch( index )
+    {
+    default:
+        //saves duplicating the code and header requirements
+        amaroK::Menu::instance()->slotActivated( index );
+        break;
+    case ID_SHOW_MENUBAR:
+        m_menubar->setShown( !m_menubar->isShown() );
+        break;
+    case ID_SHOW_TOOLBAR:
+        m_toolbar->setShown( !m_toolbar->isShown() );
+        m_settingsMenu->changeItem( index, m_toolbar->isShown() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
+        break;
+    }
 }
 
 

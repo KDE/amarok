@@ -136,7 +136,7 @@ Menu::Menu()
     #endif
 }
 
-KPopupMenu*
+Menu*
 Menu::instance()
 {
     static Menu menu;
@@ -163,16 +163,13 @@ Menu::slotAboutToShow()
 void
 Menu::slotActivated( int index )
 {
-    CoverManager *coverManager;
-
     switch( index )
     {
     case ID_SHOW_VIS_SELECTOR:
         Vis::Selector::instance()->show(); //doing it here means we delay creation of the widget
         break;
     case ID_SHOW_COVER_MANAGER:
-        coverManager = new CoverManager();
-        coverManager->show();
+        (new CoverManager())->show();
         break;
     case ID_SHOW_WIZARD:
         pApp->firstRunWizard();
@@ -214,14 +211,27 @@ PlayPauseAction::~PlayPauseAction()
 void
 PlayPauseAction::engineStateChanged( Engine::State state )
 {
-    switch( state )
-    {
+    QString text;
+
+    switch( state ) {
     case Engine::Playing:
         setIcon( "player_pause" );
+        text = i18n( "Pause" );
         break;
-    default:
+    case Engine::Paused:
+    case Engine::Empty:
         setIcon( "player_play" );
+        text = i18n( "Play" );
         break;
+    case Engine::Idle:
+        return;
+    }
+
+    //update menu texts for this special action
+    for( int x = 0; x < containerCount(); ++x ) {
+        QWidget *w = container( x );
+        if( w->inherits( "QPopupMenu" ) )
+           static_cast<QPopupMenu*>(w)->changeItem( itemId( x ), text );
     }
 }
 

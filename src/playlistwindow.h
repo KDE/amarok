@@ -34,6 +34,7 @@ class BrowserBar;
 class ContextBrowser;
 class CollectionBrowser;
 class KLineEdit;
+class KMenuBar;
 class KPopupMenu;
 class KStatusBar;
 class Playlist;
@@ -70,6 +71,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
         void slotSetFilter();
         void slotSetFilterTimeout();
         void setSearchField( int );
+        void slotMenuActivated( int );
 
     protected:
         virtual void closeEvent( QCloseEvent* );
@@ -78,6 +80,10 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
     private:
         template <class B> void addBrowser( const char*, const QString&, const QString& );
 
+        enum MenuId { ID_SHOW_MENUBAR = 2000, ID_SHOW_TOOLBAR };
+
+        KMenuBar *m_menubar;
+        KPopupMenu *m_settingsMenu;
         BrowserBar *m_browsers;
         Playlist   *m_playlist;
         KPopupMenu *m_searchMenu;

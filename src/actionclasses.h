@@ -23,18 +23,10 @@ namespace amaroK
 {
     class Menu : public KPopupMenu
     {
-            Q_OBJECT
-
+        Q_OBJECT
         public:
-            static KPopupMenu *instance();
+            static Menu *instance();
             static KPopupMenu *helpMenu( QWidget *parent = 0 );
-
-        private slots:
-            void slotAboutToShow();
-            void slotActivated( int index );
-
-        private:
-            Menu();
 
             enum MenuIds {
                 ID_CONF_DECODER,
@@ -45,6 +37,15 @@ namespace amaroK
                 ID_SHOW_EFFECTS,
                 ID_SHOW_WIZARD
             };
+
+        public slots:
+            void slotActivated( int index );
+
+        private slots:
+            void slotAboutToShow();
+
+        private:
+            Menu();
 
             static KHelpMenu  *s_helpMenu;
     };
