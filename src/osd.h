@@ -52,10 +52,11 @@ class OSDWidget : public QWidget
         void setBackgroundColor(const QColor &color ) { setPaletteBackgroundColor( color ); }
         void setOffset( int y ) { m_y = y; }
         void setAlignment( Alignment alignment ) { m_alignment = alignment; }
-        void setImage( const QImage &image ) { m_image = image; }
+        void setImage( const QImage &image ) { m_cover = image; }
         void setScreen( int screen );
         void setText( const QString &text ) { m_text = text; }
         void setDrawShadow( bool b ) { m_drawShadow = b; }
+        void setTranslucency( bool b ) { m_translucency = b; }
 
     protected:
         /** determine new size and position */
@@ -82,8 +83,10 @@ class OSDWidget : public QWidget
         int         m_screen;
         uint        m_y;
         bool        m_drawShadow;
+        bool        m_translucency;
         QString     m_text;
-        QImage      m_image;
+        QImage      m_cover;
+        QPixmap     m_scaledCover;
         KPixmap     m_screenshot;
 };
 

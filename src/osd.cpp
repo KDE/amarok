@@ -49,31 +49,33 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
 void
 OSDWidget::show() //virtual
 {
-    if ( !isEnabled() )
+    if ( !isEnabled() || m_text.isEmpty() )
         return;
 
     const QRect oldGeometry = QRect( pos(), size() );
     const QRect newGeometry = determineMetrics();
 
-    if( !isShown() || !newGeometry.intersects( oldGeometry ) )
-    {
+    if( !m_translucency ) {
+        setGeometry( newGeometry );
+        if( !isShown() )
+            QWidget::show();
+        else
+            paintEvent( 0 );
+    }
+
+    if( !isShown() || !newGeometry.intersects( oldGeometry ) ) {
         m_screenshot = QPixmap::grabWindow( qt_xrootwin(), newGeometry.x(), newGeometry.y(), newGeometry.width(), newGeometry.height() );
-        KPixmapEffect::fade( m_screenshot, 0.80, backgroundColor() );
 
         setGeometry( newGeometry );
 
         QWidget::show();
     }
+
     else {
         const QRect unite = oldGeometry.unite( newGeometry );
         QPoint p;
 
-        debug() << endl << oldGeometry << endl;
-        debug() << newGeometry << endl;
-        debug() << unite << endl;
-
         KPixmap pix = QPixmap::grabWindow( qt_xrootwin(), unite.x(), unite.y(), unite.width(), unite.height() );
-        KPixmapEffect::fade( pix, 0.80, backgroundColor() );
 
         p = oldGeometry.topLeft() - unite.topLeft();
         bitBlt( &pix, p, &m_screenshot );
@@ -100,19 +102,19 @@ OSDWidget::determineMetrics()
 
     // determine a sensible maximum size, don't cover the whole desktop or cross the screen
     const QSize margin( (HMARGIN + MARGIN) * 2, (VMARGIN + MARGIN) * 2 ); //margins
-    const QSize image = m_image.isNull() ? QSize( 0, 0 ) : QSize( 80, 80 ); //80x80 is minimum image size
+    const QSize image = m_cover.isNull() ? QSize( 0, 0 ) : QSize( 80, 80 ); //80x80 is minimum image size
     const QSize max = QApplication::desktop()->screen( m_screen )->size() - margin;
 
     // The osd cannot be larger than the screen
     QSize text = max - image;
     QRect rect = fontMetrics().boundingRect( 0, 0, text.width(), text.height(), AlignLeft | WordBreak, m_text );
 
-    if( !m_image.isNull() ) {
+    if( !m_cover.isNull() ) {
         const int availableWidth = max.width() - rect.width(); //WILL be >= 80
 
         int imageMetric;
         imageMetric = QMIN( availableWidth, rect.height() );
-        imageMetric = QMIN( imageMetric, m_image.width() );
+        imageMetric = QMIN( imageMetric, m_cover.width() );
 
         const int widthIncludingImage = rect.width()
                 + imageMetric
@@ -120,7 +122,7 @@ OSDWidget::determineMetrics()
 
         rect.setWidth( QMIN( widthIncludingImage, max.width() ) );
 
-        m_image = m_image.smoothScale( imageMetric, imageMetric );
+        m_scaledCover = m_cover.smoothScale( imageMetric, imageMetric );
     }
 
     // size and move us
@@ -173,14 +175,23 @@ OSDWidget::paintEvent( QPaintEvent* )
 {
     //TODO double buffer? but is slow...
 
-    if( !AmarokConfig::osdUseFakeTranslucency() )
-       m_screenshot.fill( backgroundColor() );
+    const uint xround = (20 * 200) / width();
+    const uint yround = (20 * 200) / height();
 
-    bitBlt( this, 0, 0, &m_screenshot );
+    debug() << xround << endl;
+    debug() << yround << endl;
 
+    {   /// apply the mask
+        static QBitmap mask;
 
-    //else
-    //    fill background with plain colour
+        mask.resize( size() );
+        mask.fill( Qt::black );
+
+        QPainter p( &mask );
+        p.setBrush( Qt::white );
+        p.drawRoundRect( rect(), xround, yround );
+        setMask( mask );
+    }
 
     QPainter p;
     QRect rect = this->rect();
@@ -216,8 +227,8 @@ OSDWidget::paintEvent( QPaintEvent* )
         p.setPen( Qt::white );
         p.setBrush( Qt::white );
 
-        if( !m_image.isNull() )
-            r.rLeft() += m_image.width() + 10;
+        if( !m_cover.isNull() )
+            r.rLeft() += m_cover.width() + 10;
 
         p.drawText( r, align | WordBreak, m_text );
         p.end();
@@ -225,20 +236,37 @@ OSDWidget::paintEvent( QPaintEvent* )
         shadow = ShadowEngine::makeShadow( pixmap, shadowColor );
     }
 
-    p.begin( this );
-    p.drawImage( 0, 0, shadow );
 
-    if( !m_image.isNull() ) {
-        p.drawImage( 20, 10, m_image );
-        p.setPen( shadowColor );
-        p.drawRect( QRect(QPoint(19,9), m_image.size() + QSize(2,2)) );
-        rect.rLeft() += m_image.width() + 10;
+    KPixmap background;
+
+    if( m_translucency ) {
+        background = m_screenshot;
+        KPixmapEffect::fade( background, 0.80, backgroundColor() );
+    }
+    else
+        background.fill( backgroundColor() );
+
+
+
+    p.begin( this );
+    p.drawPixmap( 0, 0, background );
+    p.setPen( backgroundColor().dark() );
+    p.drawRoundRect( this->rect(), xround, yround );
+
+    //    p.drawImage( 0, 0, shadow );
+
+    if( !m_cover.isNull() ) {
+        p.drawPixmap( 20, 10, m_scaledCover );
+        if( !m_scaledCover.hasAlpha() ) {
+            // don't draw a border for eg, the amaroK icon
+            p.setPen( shadowColor );
+            p.drawRect( QRect(QPoint(19,9), m_scaledCover.size() + QSize(2,2)) );
+        }
+        rect.rLeft() += m_scaledCover.width() + 10;
     }
 
     p.setPen( foregroundColor() );
     p.drawText( rect, align | WordBreak, m_text );
-    p.setPen( backgroundColor().dark() );
-    p.drawRect( this->rect() );
     p.end();
 }
 
@@ -284,15 +312,23 @@ OSDWidget::setScreen( int screen )
 
 //////  OSDPreviewWidget below /////////////////////
 
-#include <kcursor.h>         //previewWidget
+#include <kcursor.h>
+#include <kiconloader.h>
 #include <klocale.h>
 
+namespace amaroK
+{
+    QImage icon() { return QImage( KIconLoader().iconPath( "amarok", -KIcon::SizeHuge ) ); }
+}
+
 OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
-    : OSDWidget( parent, "osdpreview" )
-    , m_dragging( false )
+        : OSDWidget( parent, "osdpreview" )
+        , m_dragging( false )
 {
     m_text = i18n( "OSD Preview - drag to reposition" );
-    m_duration    = 0;
+    m_duration = 0;
+    m_cover = amaroK::icon();
+    m_translucency = false; //doesn't work well when you move it about etc.
 }
 
 void OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
@@ -428,7 +464,7 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
         QString location = CollectionDB::instance()->albumImage( bundle, 0 );
 
         if ( location.find( "nocover" ) != -1 )
-            setImage( QImage() );
+            setImage( amaroK::icon() );
         else
             setImage( location );
     }
@@ -448,6 +484,7 @@ amaroK::OSD::applySettings()
     setScreen( AmarokConfig::osdScreen() );
     setFont( AmarokConfig::osdFont() );
     setDrawShadow( AmarokConfig::osdDrawShadow() );
+    setTranslucency( AmarokConfig::osdUseFakeTranslucency() );
 
     if( AmarokConfig::osdUseCustomColors() )
     {
