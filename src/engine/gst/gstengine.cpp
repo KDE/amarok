@@ -412,7 +412,8 @@ GstEngine::scope()
     int offset = available - static_cast<int>( factor * (double) available );
     offset /= channels;
     offset *= channels;
-    offset = MIN( offset, available - SCOPE_VALUES * channels );
+    if ( offset < 0 ) offset *= -1;
+    offset = QMIN( offset, available - SCOPE_VALUES * channels );
 
     for ( ulong i = 0; i < SCOPE_VALUES; i++, data += channels ) {
         long temp = 0;
