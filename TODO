@@ -6,6 +6,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  <muesli> Renaming tagless files doesn't update the Collection properly.
+
   <markey> Try to make amarokapp _not_ link to libengine. It's nonsense really, but currently needed
            cause the linker complains about unresolved symbols.
 

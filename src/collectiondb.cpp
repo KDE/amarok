@@ -747,7 +747,7 @@ QString
 CollectionDB::albumImage( const QString &artist, const QString &album, uint width )
 {
     // we aren't going to need a 1x1 size image. this is just a quick hack to be able to show full size images.
-    if ( width == 1) width = AmarokConfig::coverPreviewSize();
+    if ( width == 1 ) width = AmarokConfig::coverPreviewSize();
     return findImageByArtistAlbum( artist, album, width );
 }
 
@@ -756,7 +756,7 @@ QString
 CollectionDB::albumImage( MetaBundle trackInformation, uint width )
 {
     // we aren't going to need a 1x1 size image. this is just a quick hack to be able to show full size images.
-    if ( width == 1) width = AmarokConfig::coverPreviewSize();
+    if ( width == 1 ) width = AmarokConfig::coverPreviewSize();
 
     QString path = findImageByMetabundle( trackInformation, width );
     if ( path.isNull() )
