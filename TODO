@@ -3,11 +3,14 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #154 being the highest available (take this one for your next bug and increase here)
+           #155 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
  
+  FIX 154 <markey> When track-length is 0 (e.g. stream), disable position slider, but make it show the
+                   current position.
+
   FIX 153 <markey> PlaylistLoader appears to accept any filetype into the playlist, ignoring canDecode().
 
   FIX 150 <gjehle> Is it a known bug that amarok has problems with streamtitles where there's a >> ' << in the name ?
