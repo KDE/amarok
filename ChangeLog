@@ -7,6 +7,17 @@ VERSION 1.1-beta2:
   ADD: IMMS-like rating system for songs.
   FIX: aRts-engine has been ported to the new engine interface and is
        available again.
+  FIX: Try to autodetect Sampler-Discs and show them properly in the
+       Contextbrowser. (BR 87182)
+  FIX: Multiple items can now be selected in the CoverManager.
+       Thanks John Hughes (BR 87584)
+  FIX: Various fixes for certain Artist/Album names, which had problems
+       with cover support.
+  FIX: Sorting the collection is now case-insensitive. (BR 84141)
+  CHG: Don't follow symlinks anymore, while scanning the collection.
+  FIX: Show all accessible cover images in the tooltip. (BR 87283)
+  FIX: Clicking an album in the ContextBrowser adds items in the correct
+       order, now. (BR 87733)
 
 VERSION 1.1-beta1:
   ADD: Wizard for configuring amaroK on first startup.
