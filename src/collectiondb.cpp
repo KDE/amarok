@@ -608,7 +608,7 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
         //iterate over columns
         for ( int i = 0; i < number; i++ )
         {
-            if ( values ) *values << QString( (const char*)sqlite3_column_text( stmt, i ) );
+            if ( values ) *values << QString::fromUtf8( (const char*) sqlite3_column_text( stmt, i ) );
             if ( names )  *names  << QString( sqlite3_column_name( stmt, i ) );
         }
     }
