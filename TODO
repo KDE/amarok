@@ -8,7 +8,9 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-          <mxcl> when an engine fails to load, the next best engine should be chosen, not the first in the list
+          <markey> Make CoverManager thumbnail generation threaded.
+
+          <mxcl>   When an engine fails to load, the next best engine should be chosen, not the first in the list.
 
           <markey> When the KDE color scheme is changed while amaroK is running, all toolbar buttons
                    (those with text) lose their texts.
@@ -16,10 +18,6 @@ SHORT-TERM (URGENT):
           <muesli> Take care of KToolbars in Context/Collection for palette changes
 
           <mxcl>   With one track in pls and repeat and random mode on, amaroK crashes at track end.
-
-  ADD     <markey> We must add a FAQ about dmix software mixing and its setup. "amaroK blocks the sound
-                   device" is one of the top user complaints. This FAQ should be put into a promiment
-                   place, perhaps also in README.
 
           <markey> Check TagLib autoconf and makefile stuff. I have a feeling the problem with picking
                    up old versions could be on our side.
@@ -32,8 +30,7 @@ SHORT-TERM (URGENT):
 
   ADD 180 <muesli> Show "Artist - Song" for Various Artist folder.
 
-  FIX 134 <markey> Ctrl-C in Playlist (and other Ctrl shortcuts) for copying title doesn't work, because the
-                   event gets eaten by another widget.
+  FIX 134 <markey> Ctrl-C in Playlist for copying title doesn't work, because the event gets eaten by another widget.
 
           <mxcl>   Only show Various Artists when sorting by artist then album, it doesn't make sense in any
                    other situation! Also can we file it under V please?
@@ -47,17 +44,9 @@ MID-TERM:
                    Apparently this makes it possible to make the tray KDE and GNOME compatible.
                    Update: Apparently with KDELIBS 3.3 the systray icon works as expected. Needs confirmation.
 
-          <mxcl>   Context Browser doesn't update images when you fetch them using the Cover Manager.
-
-  CHG 173 <markey> Move ui files into seperate folder, and compile as lib. Currently, when you change one
-                   file, you need to rebuild the world --> suckage
-
   ADD 148 <markey> AudioCD support for gst engine (cdparanoia ! *sink). -->markey
 
   ADD 143 <mxcl>   DCOP interface for ContextBrowser
-
-  CHG 141 <markey> For critical errors, use warning dialogs instead of stderr output. (many distros build
-                   with NDEBUG, and users are prone to missing debug messages).
 
   FIX 121 <markey> We should cut down on unnecessary/redundant debug output/warnings (noise).
 
@@ -65,10 +54,6 @@ MID-TERM:
                    since arts itself contains these crappy decoders and ppl come complain about bad sound.
                    Update: Would be even better to detect the mpeglib arts-plugins directly, since some
                    distros offer them as a separate package.
-
-  FIX 131 <mxcl>   Grue reports with aRtsengine, amarok *, only loads 15-17 entries in dir with ~100,
-                   media type is unimportant (happened for oggs, mp3s and flacs, mixed and otherwise)
-                   Nobody else can replicate typically.
 
   ADD 127 <mxcl>   Connect PlayerWindow navigation buttons to KAction enabled states
 
@@ -136,8 +121,6 @@ MID-TERM:
 
 
 LONG-TERM:
-
-  ADD  93 <markey> New engine: using ALSA (maybe OSS, too) and XMMS plugins for decoding.
 
   ADD  32 <markey> Icecast metadata support (uses UDP channel) -->markey
 
