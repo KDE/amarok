@@ -919,7 +919,6 @@ void PlayerApp::stopXFade()
     if ( m_pPlayObjectXFade != NULL )
     {
         m_pPlayObjectXFade->halt();
-        m_pPlayObjectXFade->object()._node() ->stop();
 
         delete m_pPlayObjectXFade;
         m_pPlayObjectXFade = NULL;
@@ -1082,7 +1081,6 @@ void PlayerApp::slotStop()
     if ( m_pPlayObject != NULL )
     {
         m_pPlayObject->halt();
-        m_pPlayObject->object()._node() ->stop();
 
         delete m_pPlayObject;
         m_pPlayObject = NULL;
