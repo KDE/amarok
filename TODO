@@ -7,7 +7,7 @@ TODO-list for amaroK
 SHORT-TERM (URGENT):
 
   <mxcl>   Inline editing of tags frequently crashes, muesli is this due to that bug from before?
-	   muesli: "Only" for the current song. No other crashes experienced here, anyways.
+   muesli: "Only" for the current song. No other crashes experienced here, anyways.
 
   <mxcl>   CollectionBrowser Toolbar is too wide for some users' usage patterns.
 
