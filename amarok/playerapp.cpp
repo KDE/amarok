@@ -68,7 +68,7 @@ email                : markey@web.de
 PlayerApp::PlayerApp()
         : KApplication()
         , m_pGlobalAccel( new KGlobalAccel( this ) )
-        , m_pDcopHandler( new AmarokDcopHandler )
+        , m_pDcopHandler( new amaroK::DcopHandler )
         , m_pTray( 0 )
         , m_pOSD( new amaroK::OSD() )
         , m_pActionCollection( new KActionCollection( 0, this ) )
@@ -288,7 +288,7 @@ void PlayerApp::initCliArgs( int argc, char *argv[] ) //static
     aboutData.addAuthor( "Mark \"it's good, but it's not irssi\" Kretschmann", "project founder, developer, maintainer", "markey@web.de" );
     aboutData.addAuthor( "Max \"sleep? there's no time!\" Howell", "developer, knight of the regression round-table",
                          "max.howell@methylblue.com", "http://www.methyblue.com" );
-    aboutData.addAuthor( "Stanislav \"did someone say DCOP?\" Karchebny", "patches, improvements, visualizations, cleanups, i18n",
+    aboutData.addAuthor( "Stanislav \"did someone say DCOP?\" Karchebny", "developer, DCOP, improvements, cleanups, i18n",
                          "berk@upnet.ru" );
 
     aboutData.addCredit( "Adam Pigg", "analyzers, patches", "adam@piggz.fsnet.co.uk" );
