@@ -3,10 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #34 being the highest available (take this one for your next bug and increase here)
+           #36 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+    * fix: #35 playlist: when you sort stuff, ensure currenttrack is visible afterwards -->mxcl
+    * fix: #34 playlist: hidden columns can be resized back into sight! -->mxcl
 
     * fix: #33<markey> invoking handbook broken. problem seems to be the name: amaroK vs. amarok
 
