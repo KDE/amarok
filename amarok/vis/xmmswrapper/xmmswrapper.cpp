@@ -23,7 +23,7 @@
 
 
 #include "fft.c"
-#include "fullscreen.c"
+// #include "fullscreen.c"
 
 
 GtkWidget dummy;                  //required by msa visplugin
