@@ -33,9 +33,10 @@ tblhead = """<table class="%s" width="100%%" cellpadding="5px" cellspacing="2">
         %s</table>"""
 
 actions = """<table><tr>\n
-		<td>%s</td>\n
-                <td><img width='9' height='8' src='vol_speaker.png'></td>\n
-           	<td>%s</td>\n
-                <td width='16'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Time:<td>\n
-		<td id='countdown'>%s</td>\n
+		<td width="100">%s</td>\n
+                <td width="9"><img border="0" width='9' height='8' src='vol_speaker.png'></td>\n
+           	<td width="120">%s</td>
+		<td width="40"></td>
+                <td width='16'>Time:<td>\n
+		<td id='countdown'>%s</td>
 	     </tr></table>\n """

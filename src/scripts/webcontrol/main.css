@@ -130,6 +130,7 @@ table.volume {
 td.volumeset {
 	border: 1pt solid #BBBBBB; 
 	background-color: #749ce8;
+	height: 15px;
 }
 
 td.volumeunset {
@@ -137,6 +138,7 @@ td.volumeunset {
 	border-bottom: 1pt solid #888888; 
 	border-left: 1pt solid #BBBBBB; 
 	border-right: 1pt solid #AAAAAA; 
+	height: 15px;
 }
 
 img {

@@ -111,16 +111,16 @@ class Playlist:
     def _createVolume(self, vol_val, reqid, sesid):
         """Return a HTML volume seletor."""
         
-        volume = '<table width="100" class="volume">'
+        volume = '<table width="100%" class="volume">'
         volume += "<tr>";
 
         for i in range(1,vol_val+1):
             volume += """<td class='volumeset'>
-            <a href='?action=setvolume&value=""" + str(i*10) + reqid + sesid + "'>&nbsp;</a></td>"
+            <a href='?action=setvolume&value=""" + str(i*10) + reqid + sesid + "'></a></td>"
 
         for i in range(vol_val+1, 11):
             volume += """<td class='volumeunset'>
-            <a href='?action=setvolume&value=""" + str(i*10) + reqid + sesid + "'>&nbsp;</a></td>"
+            <a href='?action=setvolume&value=""" + str(i*10) + reqid + sesid + "'></a></td>"
 
         volume += "</tr></table>"
         return volume
