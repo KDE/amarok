@@ -164,19 +164,36 @@ ScriptManager::slotUninstallScript()
 
     QString name = m_base->directoryListView->currentItem()->text( 0 );
 
-    if ( KMessageBox::warningYesNo( 0, i18n( "Are you sure you want to uninstall the script %1?" ).arg( name ) ) == KMessageBox::No )
+    if ( KMessageBox::warningYesNo( 0, i18n( "Are you sure you want to uninstall the script '%1'?" ).arg( name ) ) == KMessageBox::No )
         return;
 
-    QDir dir( m_scripts[name].url.directory() );
+    const QString directory = m_scripts[name].url.directory();
+    QDir dir( directory );
     QStringList files = dir.entryList();
 
     // Remove all files
+    bool rmSuccess = false;
     QStringList::Iterator it;
     for ( it = files.begin(); it != files.end(); ++it )
-        dir.remove( *it );
+        rmSuccess |= dir.remove( *it );
+
+    if ( !rmSuccess ) {
+        KMessageBox::sorry( 0, i18n( "Could not uninstall this script. The ScriptManager can only uninstall scripts that were installed as packages." ) );
+        return;
+    }
 
     // Remove directory as well
-    dir.rmdir( m_scripts[name].url.directory() );
+    dir.rmdir( directory );
+
+    // Remove all scripts from internal list that were in the uninstalled directory
+    ScriptMap::Iterator itScripts;
+    for ( itScripts = m_scripts.begin(); itScripts != m_scripts.end(); ++itScripts ) {
+        if ( itScripts.data().url.directory() == directory ) {
+            delete itScripts.data().li;
+            delete itScripts.data().process;
+            m_scripts.erase( itScripts );
+        }
+    }
 }
 
 
@@ -248,10 +265,8 @@ ScriptManager::slotStopScript()
     QString name = li->text( 0 );
 
     // Kill script process
-    if ( m_scripts[name].process ) {
-        delete m_scripts[name].process;
-        m_scripts[name].process = 0;
-    }
+    delete m_scripts[name].process;
+    m_scripts[name].process = 0;
 
     li->setPixmap( 0, SmallIcon( "stop" ) );
 }
