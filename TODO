@@ -208,6 +208,184 @@ DO-NOT-IMPLEMENT:
 BACKTRACE/DEBUG
 
 
+From coolo:
+
+#0  0x414119a2 in QListViewItem::sortChildItems (this=0x83d08d8, column=1, ascending=true)
+    at widgets/qlistview.cpp:1418
+#1  0x41412335 in QListViewItem::enforceSortOrder (this=0x83d08d8) at widgets/qlistview.cpp:1719
+#2  0x4141eae8 in QListView::firstChild (this=0x8397ec8) at widgets/qlistview.cpp:5872
+#3  0x41423e67 in QListViewItemIterator (this=0xbfffe260, lv=0x8397ec8, iteratorFlags=1)
+    at widgets/qlistview.cpp:7452
+#4  0x080e8035 in MyIterator (this=0xbfffe260, view=0x8397ec8, flags=1)
+    at /home/coolo/prod/kdeextragear-1/amarok/src/playlist.cpp:67
+#5  0x080e06f0 in Playlist::playNextTrack (this=0x8397ec8)
+    at /home/coolo/prod/kdeextragear-1/amarok/src/playlist.cpp:366
+#6  0x080e0b05 in Playlist::playCurrentTrack (this=0x8397ec8)
+    at /home/coolo/prod/kdeextragear-1/amarok/src/playlist.cpp:440
+#7  0x080e6cb0 in Playlist::qt_invoke (this=0x8397ec8, _id=119, _o=0xbfffe360) at playlist.moc:218
+#8  0x4132a7c3 in QObject::activate_signal (this=0x81be4a0, clist=0x83d96b8, o=0xbfffe360)
+    at kernel/qobject.cpp:2357
+#9  0x4132a662 in QObject::activate_signal (this=0x81be4a0, signal=3) at kernel/qobject.cpp:2326
+#10 0x080c7a0c in EngineController::orderCurrent (this=0x81be4a0) at enginecontroller.moc:174
+#11 0x080c6d9e in EngineController::play (this=0x81be4a0)
+    at /home/coolo/prod/kdeextragear-1/amarok/src/enginecontroller.cpp:237
+#12 0x080c7b08 in EngineController::qt_invoke (this=0x81be4a0, _id=4, _o=0xbfffe470) at enginecontroller.moc:194
+#13 0x4132a7c3 in QObject::activate_signal (this=0x83754c8, clist=0x836ea00, o=0xbfffe470)
+    at kernel/qobject.cpp:2357
+#14 0x4132a662 in QObject::activate_signal (this=0x83754c8, signal=2) at kernel/qobject.cpp:2326
+#15 0x40b2e7b2 in KAction::activated (this=0x83754c8) at kaction.moc:157
+#16 0x40b2e16f in KAction::slotActivated (this=0x83754c8) at /home/coolo/prod/kdelibs/kdeui/kaction.cpp:1073
+#17 0x40b2eab6 in KAction::qt_invoke (this=0x83754c8, _id=14, _o=0xbfffe580) at kaction.moc:181
+#18 0x4132a7c3 in QObject::activate_signal (this=0x8391598, clist=0x83a9958, o=0xbfffe580)
+    at kernel/qobject.cpp:2357
+#19 0x41680ffc in QSignal::signal (this=0x8391598, t0=@0x83915c0) at .moc/debug-shared-mt/moc_qsignal.cpp:100
+#20 0x41347f73 in QSignal::activate (this=0x8391598) at kernel/qsignal.cpp:212
+#21 0x4143f8c6 in QPopupMenu::mouseReleaseEvent (this=0x83670e8, e=0xbfffe990) at widgets/qpopupmenu.cpp:1690
+#22 0x41362a5f in QWidget::event (this=0x83670e8, e=0xbfffe990) at kernel/qwidget.cpp:4673
+#23 0x412c7a6f in QApplication::internalNotify (this=0xbfffee20, receiver=0x83670e8, e=0xbfffe990)
+    at kernel/qapplication.cpp:2635
+#24 0x412c7225 in QApplication::notify (this=0xbfffee20, receiver=0x83670e8, e=0xbfffe990)
+    at kernel/qapplication.cpp:2421
+#25 0x40de8962 in KApplication::notify (this=0xbfffee20, receiver=0x83670e8, event=0xbfffe990)
+    at /home/coolo/prod/kdelibs/kdecore/kapplication.cpp:518
+#26 0x4125d4d1 in QApplication::sendSpontaneousEvent (receiver=0x83670e8, event=0xbfffe990) at qapplication.h:494
+---Type <return> to continue, or q <return> to quit---
+#27 0x41256252 in QETWidget::translateMouseEvent (this=0x83670e8, event=0xbfffed20)
+    at kernel/qapplication_x11.cpp:4230
+#28 0x41254133 in QApplication::x11ProcessEvent (this=0xbfffee20, event=0xbfffed20)
+    at kernel/qapplication_x11.cpp:3439
+#29 0x4126e748 in QEventLoop::processEvents (this=0x8313298, flags=4) at kernel/qeventloop_x11.cpp:192
+#30 0x412dbc8a in QEventLoop::enterLoop (this=0x8313298) at kernel/qeventloop.cpp:198
+#31 0x412dbba6 in QEventLoop::exec (this=0x8313298) at kernel/qeventloop.cpp:145
+#32 0x412c7bef in QApplication::exec (this=0xbfffee20) at kernel/qapplication.cpp:2758
+#33 0x08122ee0 in main (argc=1, argv=0xbfffefb4)
+    at /home/coolo/prod/kdeextragear-1/amarok/src/amarokcore/main.cpp:66
+
+amarok: [void ContextBrowser::setStyleSheet()]
+amarok: Initial Color Properties: s:255 v:128
+amarok: Final Colour Properties: s:125 v:128
+amarok: KMultiTabBarTab::updateState(): setting text to an empty QString***************
+amarok:     Time: 46.16s
+amarok:   Init: CollectionBrowser
+amarok: [CollectionView::CollectionView(CollectionBrowser*)]
+amarok: [browserBar] Initialisation statistics:
+amarok:   Init: ContextBrowser
+amarok: [ContextBrowser::ContextBrowser(const char*)]
+amarok: [void ContextBrowser::setStyleSheet()]
+amarok: Initial Color Properties: s:255 v:128
+amarok: Final Colour Properties: s:125 v:128
+amarok: [void CollectionView::renderView()]
+khtml (xml):  using compatibility parseMode
+==13315== Invalid read of size 1
+==13315==    at 0x76D08A75: memcpy (in /lib/tls/libc.so.6)
+==13315==    by 0x815D168: balance_nonroot (btree.c:3277)
+==13315==    by 0x815D9E9: balance (btree.c:3477)
+==13315==    by 0x815DE58: sqlite3BtreeInsert (btree.c:3582)
+==13315==    by 0x81838B9: sqlite3VdbeExec (vdbe.c:3026)
+==13315==    by 0x814D8E3: sqlite3_step (vdbeapi.c:183)
+==13315==    by 0x80A3877: CollectionDB::execSql(QString const&, QStringList*, QStringList*, bool) (collectiondb.cpp:606)
+==13315==    by 0x80A7205: CollectionDB::retrieveFirstLevel(QString, QString, QString, QString, QStringList*, QStringList*) (collectiondb.cpp:1027)
+==13315==    by 0x809A476: CollectionView::renderView() (collectionbrowser.cpp:384)
+==13315==    by 0x809B6C8: CollectionView::cat3Menu(int, bool) (collectionbrowser.cpp:583)
+==13315==    by 0x809851A: CollectionBrowser::CollectionBrowser(char const*) (collectionbrowser.cpp:129)
+==13315==    by 0x80FB42F: void PlaylistWindow::addBrowser<CollectionBrowser>(char const*, QString const&, QString const&) (playlistwindow.cpp:104)
+==13315==    by 0x80F994A: PlaylistWindow::init() (playlistwindow.cpp:319)
+==13315==    by 0x808DB58: App::App() (app.cpp:99)
+==13315==  Address 0x77A235B0 is 4 bytes before a block of size 1016 alloc'd
+==13315==    at 0x7501E8B4: malloc (vg_replace_malloc.c:105)
+==13315==    by 0x814BC8A: sqlite3MallocRaw (util.c:294)
+==13315==    by 0x815DC3F: sqlite3BtreeInsert (btree.c:3557)
+==13315==    by 0x81838B9: sqlite3VdbeExec (vdbe.c:3026)
+==13315==    by 0x814D8E3: sqlite3_step (vdbeapi.c:183)
+==13315==    by 0x80A3877: CollectionDB::execSql(QString const&, QStringList*, QStringList*, bool) (collectiondb.cpp:606)
+==13315==    by 0x80A7205: CollectionDB::retrieveFirstLevel(QString, QString, QString, QString, QStringList*, QStringList*) (collectiondb.cpp:1027)
+==13315==    by 0x809A476: CollectionView::renderView() (collectionbrowser.cpp:384)
+==13315==    by 0x809B6C8: CollectionView::cat3Menu(int, bool) (collectionbrowser.cpp:583)
+==13315==    by 0x809851A: CollectionBrowser::CollectionBrowser(char const*) (collectionbrowser.cpp:129)
+==13315==    by 0x80FB42F: void PlaylistWindow::addBrowser<CollectionBrowser>(char const*, QString const&, QString const&) (playlistwindow.cpp:104)
+==13315==    by 0x80F994A: PlaylistWindow::init() (playlistwindow.cpp:319)
+==13315==    by 0x808DB58: App::App() (app.cpp:99)
+==13315==    by 0x8122ECD: main (main.cpp:64)
+==13315==
+==13315== Invalid read of size 2
+==13315==    at 0x76D08A7A: memcpy (in /lib/tls/libc.so.6)
+==13315==    by 0x815D168: balance_nonroot (btree.c:3277)
+==13315==    by 0x815D9E9: balance (btree.c:3477)
+==13315==    by 0x815DE58: sqlite3BtreeInsert (btree.c:3582)
+==13315==    by 0x81838B9: sqlite3VdbeExec (vdbe.c:3026)
+==13315==    by 0x814D8E3: sqlite3_step (vdbeapi.c:183)
+==13315==    by 0x80A3877: CollectionDB::execSql(QString const&, QStringList*, QStringList*, bool) (collectiondb.cpp:606)
+==13315==    by 0x80A7205: CollectionDB::retrieveFirstLevel(QString, QString, QString, QString, QStringList*, QStringList*) (collectiondb.cpp:1027)
+==13315==    by 0x809A476: CollectionView::renderView() (collectionbrowser.cpp:384)
+==13315==    by 0x809B6C8: CollectionView::cat3Menu(int, bool) (collectionbrowser.cpp:583)
+==13315==    by 0x809851A: CollectionBrowser::CollectionBrowser(char const*) (collectionbrowser.cpp:129)
+==13315==    by 0x80FB42F: void PlaylistWindow::addBrowser<CollectionBrowser>(char const*, QString const&, QString const&) (playlistwindow.cpp:104)
+==13315==    by 0x80F994A: PlaylistWindow::init() (playlistwindow.cpp:319)
+==13315==    by 0x808DB58: App::App() (app.cpp:99)
+==13315==  Address 0x77A235B1 is 3 bytes before a block of size 1016 alloc'd
+==13315==    at 0x7501E8B4: malloc (vg_replace_malloc.c:105)
+==13315==    by 0x814BC8A: sqlite3MallocRaw (util.c:294)
+==13315==    by 0x815DC3F: sqlite3BtreeInsert (btree.c:3557)
+==13315==    by 0x81838B9: sqlite3VdbeExec (vdbe.c:3026)
+==13315==    by 0x814D8E3: sqlite3_step (vdbeapi.c:183)
+==13315==    by 0x80A3877: CollectionDB::execSql(QString const&, QStringList*, QStringList*, bool) (collectiondb.cpp:606)
+==13315==    by 0x80A7205: CollectionDB::retrieveFirstLevel(QString, QString, QString, QString, QStringList*, QStringList*) (collectiondb.cpp:1027)
+==13315==    by 0x809A476: CollectionView::renderView() (collectionbrowser.cpp:384)
+==13315==    by 0x809B6C8: CollectionView::cat3Menu(int, bool) (collectionbrowser.cpp:583)
+==13315==    by 0x809851A: CollectionBrowser::CollectionBrowser(char const*) (collectionbrowser.cpp:129)
+==13315==    by 0x80FB42F: void PlaylistWindow::addBrowser<CollectionBrowser>(char const*, QString const&, QString const&) (playlistwindow.cpp:104)
+==13315==    by 0x80F994A: PlaylistWindow::init() (playlistwindow.cpp:319)
+==13315==    by 0x808DB58: App::App() (app.cpp:99)
+==13315==    by 0x8122ECD: main (main.cpp:64)
+==13315==
+==13315== Invalid read of size 4
+==13315==    at 0x76D08A7C: memcpy (in /lib/tls/libc.so.6)
+==13315==    by 0x815D168: balance_nonroot (btree.c:3277)
+==13315==    by 0x815D9E9: balance (btree.c:3477)
+==13315==    by 0x815DE58: sqlite3BtreeInsert (btree.c:3582)
+==13315==    by 0x81838B9: sqlite3VdbeExec (vdbe.c:3026)
+==13315==    by 0x814D8E3: sqlite3_step (vdbeapi.c:183)
+==13315==    by 0x80A3877: CollectionDB::execSql(QString const&, QStringList*, QStringList*, bool) (collectiondb.cpp:606)
+==13315==    by 0x80A7205: CollectionDB::retrieveFirstLevel(QString, QString, QString, QString, QStringList*, QStringList*) (collectiondb.cpp:1027)
+==13315==    by 0x809A476: CollectionView::renderView() (collectionbrowser.cpp:384)
+==13315==    by 0x809B6C8: CollectionView::cat3Menu(int, bool) (collectionbrowser.cpp:583)
+==13315==    by 0x809851A: CollectionBrowser::CollectionBrowser(char const*) (collectionbrowser.cpp:129)
+==13315==    by 0x80FB42F: void PlaylistWindow::addBrowser<CollectionBrowser>(char const*, QString const&, QString const&) (playlistwindow.cpp:104)
+==13315==    by 0x80F994A: PlaylistWindow::init() (playlistwindow.cpp:319)
+==13315==    by 0x808DB58: App::App() (app.cpp:99)
+==13315==  Address 0x77A235B3 is 1 bytes before a block of size 1016 alloc'd
+==13315==    at 0x7501E8B4: malloc (vg_replace_malloc.c:105)
+==13315==    by 0x814BC8A: sqlite3MallocRaw (util.c:294)
+==13315==    by 0x815DC3F: sqlite3BtreeInsert (btree.c:3557)
+==13315==    by 0x81838B9: sqlite3VdbeExec (vdbe.c:3026)
+==13315==    by 0x814D8E3: sqlite3_step (vdbeapi.c:183)
+==13315==    by 0x80A3877: CollectionDB::execSql(QString const&, QStringList*, QStringList*, bool) (collectiondb.cpp:606)
+==13315==    by 0x80A7205: CollectionDB::retrieveFirstLevel(QString, QString, QString, QString, QStringList*, QStringList*) (collectiondb.cpp:1027)
+==13315==    by 0x809A476: CollectionView::renderView() (collectionbrowser.cpp:384)
+==13315==    by 0x809B6C8: CollectionView::cat3Menu(int, bool) (collectionbrowser.cpp:583)
+==13315==    by 0x809851A: CollectionBrowser::CollectionBrowser(char const*) (collectionbrowser.cpp:129)
+==13315==    by 0x80FB42F: void PlaylistWindow::addBrowser<CollectionBrowser>(char const*, QString const&, QString const&) (playlistwindow.cpp:104)
+==13315==    by 0x80F994A: PlaylistWindow::init() (playlistwindow.cpp:319)
+==13315==    by 0x808DB58: App::App() (app.cpp:99)
+==13315==    by 0x8122ECD: main (main.cpp:64)
+amarok: KMultiTabBarTab::updateState(): setting text to an empty QString***************
+amarok:     Time: 39.74s
+amarok:   Init: PlaylistBrowser
+==13315== warning: Valgrind's pthread_attr_setinheritsched does nothing
+==13315==          your program may misbehave as a result
+==13315== warning: Valgrind's pthread_attr_destroy does nothing
+==13315==          your program may misbehave as a result
+amarok: [void ContextBrowser::setStyleSheet()]
+amarok: Initial Color Properties: s:255 v:128
+amarok: Final Colour Properties: s:125 v:128
+amarok: KMultiTabBarTab::updateState(): setting text to an empty QString***************
+amarok:     Time: 44.79s
+amarok:   Init: CollectionBrowser
+amarok: [CollectionView::CollectionView(CollectionBrowser*)]
+
+
+
+
 From Lauri on FreeBSD:
 
 Program received signal SIGSEGV, Segmentation fault.
