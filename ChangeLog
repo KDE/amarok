@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 
 VERSION 0.9-beta2:
+  * add: option to turn off analyzers
   * add: splash-screen shown during program startup (optional)
   * fix: made stream playback with TitleProxy more stable (by using an unbuffered socket)
   * add: show stream metadata in on-screen-display
