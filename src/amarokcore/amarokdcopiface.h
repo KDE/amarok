@@ -47,7 +47,7 @@ k_dcop:
 
    virtual bool isPlaying() = 0;                            ///< Return true if something is playing now.
 
-   /* Compatibility method (use by mediacontrol as well). DO NOT TOUCH! */
+   /* Compatibility method (used by mediacontrol as well). DO NOT TOUCH! */
    virtual QString nowPlaying() = 0;                        ///< The title of now playing media.
 
    /* New player API */
@@ -60,6 +60,8 @@ k_dcop:
    virtual QString year() = 0;                              ///< Return the year of the currently playing track.
    virtual QString comment() = 0;                           ///< Return the comment of the currently playing track.
    virtual QString bitrate() = 0;                           ///< Return the bitrate of the currently playing track (XX kbps).
+
+   virtual QString encodedURL() = 0;                        ///< Return the encoded URL of the currently playing track.
 
    virtual void setVolume(int volume) = 0;                  ///< Set volume in range 0-100%.
    virtual void volumeUp() = 0;                             ///< Increase volume by a reasonable step.

@@ -135,6 +135,11 @@ namespace amaroK
     }
 
 // Ok, that should be enough, have fun :-)
+
+    QString DcopHandler::encodedURL()
+    {
+        return EngineController::instance()->bundle().url().url();
+    }
     
     int DcopHandler::trackTotalTime()
     {
