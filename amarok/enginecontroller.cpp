@@ -112,7 +112,11 @@ void EngineController::play( const MetaBundle &bundle )
         }
     }
     else
+    {
+        const bool b = m_pEngine->state() != EngineBase::Playing;
         m_pEngine->play( url );
+        if( b ) stateChangedNotify( EngineBase::Playing );
+    }
 
     m_proxyError = false;
 
