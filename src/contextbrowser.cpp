@@ -63,7 +63,7 @@ ContextBrowser::ContextBrowser( const char *name )
     toolbar->setEnableContextMenu( false );
 
     KActionCollection* ac = new KActionCollection( this );
-    KAction* homeAction = new KAction( i18n( "Home" ), "reload", 0, this, SLOT( showHome() ), ac, "Home" );
+    KAction* homeAction = new KAction( i18n( "Home" ), "gohome", 0, this, SLOT( showHome() ), ac, "Home" );
     KAction* trackAction = new KAction( i18n( "Current Track" ), "today", 0, this, SLOT( showCurrentTrack() ), ac, "Current Track" );
 
     toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the open button to have text on right
