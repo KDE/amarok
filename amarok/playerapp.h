@@ -27,7 +27,7 @@
 #include <kurl.h>                  //needed for KURL::List (nested)
 #include <qserversocket.h>         //baseclass
 
-#define APP_VERSION "0.9.1-CVS"
+#define APP_VERSION "1.0-CVS"
 
 
 namespace amaroK
