@@ -16,7 +16,6 @@ email                : markey@web.de
  ***************************************************************************/
 
 #include "amarokbutton.h"
-#include "amaroknavbutton.h"
 #include "amarokslider.h"
 #include "amaroksystray.h"
 #include "browserwin.h"
@@ -118,7 +117,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     //<Player Buttons>
     QIconSet iconSet;
 
-    m_pButtonPrev = new AmarokNavButton( m_pFrameButtons );
+    m_pButtonPrev = new QPushButton( m_pFrameButtons );
     iconSet.setPixmap( locate( "data", "amarok/images/b_prev.png" ),
                        QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
     iconSet.setPixmap( locate( "data", "amarok/images/b_prev_down.png" ),
@@ -127,7 +126,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_pButtonPrev->setFocusPolicy( QWidget::NoFocus );
     m_pButtonPrev->setFlat( true );
 
-    m_pButtonPlay = new AmarokNavButton( m_pFrameButtons );
+    m_pButtonPlay = new QPushButton( m_pFrameButtons );
     iconSet.setPixmap( locate( "data", "amarok/images/b_play.png" ),
                        QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
     iconSet.setPixmap( locate( "data", "amarok/images/b_play_down.png" ),
@@ -137,7 +136,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_pButtonPlay->setToggleButton( true );
     m_pButtonPlay->setFlat( true );
 
-    m_pButtonPause = new AmarokNavButton( m_pFrameButtons );
+    m_pButtonPause = new QPushButton( m_pFrameButtons );
     iconSet.setPixmap( locate( "data", "amarok/images/b_pause.png" ),
                        QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
     iconSet.setPixmap( locate( "data", "amarok/images/b_pause_down.png" ),
@@ -146,7 +145,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_pButtonPause->setFocusPolicy( QWidget::NoFocus );
     m_pButtonPause->setFlat( true );
 
-    m_pButtonStop = new AmarokNavButton( m_pFrameButtons );
+    m_pButtonStop = new QPushButton( m_pFrameButtons );
     iconSet.setPixmap( locate( "data", "amarok/images/b_stop.png" ),
                        QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
     iconSet.setPixmap( locate( "data", "amarok/images/b_stop_down.png" ),
@@ -155,7 +154,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_pButtonStop->setFocusPolicy( QWidget::NoFocus );
     m_pButtonStop->setFlat( true );
 
-    m_pButtonNext = new AmarokNavButton( m_pFrameButtons );
+    m_pButtonNext = new QPushButton( m_pFrameButtons );
     iconSet.setPixmap( locate( "data", "amarok/images/b_next.png" ),
                        QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
     iconSet.setPixmap( locate( "data", "amarok/images/b_next_down.png" ),
@@ -164,7 +163,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_pButtonNext->setFocusPolicy( QWidget::NoFocus );
     m_pButtonNext->setFlat( true );
     //</Player Buttons>
-
+                                                       
     // redesign
     m_pTimeDisplayLabel = new QLabel( this );
     QFont timeFont( "Arial" );
