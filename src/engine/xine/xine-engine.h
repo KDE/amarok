@@ -1,5 +1,12 @@
-//Copyright: (C) 2004 Max Howell, <max.howell@methylblue.com>
-//License:   See xine-engine.cpp
+/***************************************************************************
+ *   Copyright (C) 2004,5 Max Howell <max.howell@methylblue.com>           *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #ifndef XINE_ENGINE_H
 #define XINE_ENGINE_H

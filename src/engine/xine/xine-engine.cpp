@@ -1,7 +1,6 @@
-//Copyright: (C) 2004 Max Howell, <max.howell@methylblue.com>
-//Copyright: (C) 2003-2004 J. Kofler, <kaffeine@gmx.net>
-
 /***************************************************************************
+ *   Copyright (C) 2004,5 Max Howell <max.howell@methylblue.com>           *
+ *             (C) 2003,4 J. Kofler <kaffeine@gmx.net>                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -53,12 +52,12 @@ static inline QCString configPath() { return QFile::encodeName( QDir::homeDirPat
 
 
 XineEngine::XineEngine()
-  : EngineBase()
-  , m_xine( 0 )
-  , m_stream( 0 )
-  , m_audioPort( 0 )
-  , m_eventQueue( 0 )
-  , m_post( 0 )
+        : EngineBase()
+        , m_xine( 0 )
+        , m_stream( 0 )
+        , m_audioPort( 0 )
+        , m_eventQueue( 0 )
+        , m_post( 0 )
 {
     addPluginProperty( "StreamingMode", "NoStreaming" );
     addPluginProperty( "HasConfigure", "true" );
@@ -68,13 +67,24 @@ XineEngine::XineEngine()
 
 XineEngine::~XineEngine()
 {
-    if( m_stream && xine_get_status( m_stream ) == XINE_STATUS_PLAY ) {
-       for( int v = xine_get_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL ) - 1; v >= 0; v-- ) {
-          xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, v );
-          ::usleep( int(13000 * (-log10( v + 1 ) + 2)) );
-       }
-       xine_stop( m_stream );
-    }
+//     if( m_stream && xine_get_status( m_stream ) == XINE_STATUS_PLAY )
+//     {
+//         const int volume = xine_get_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL );
+//         const double D = 300000 * std::pow( (double)volume, -0.4951 );
+//
+//         debug() << "Sleeping: " << D << ", " << volume << endl;
+//
+//         for( int v = volume - 1; v >= 1; v-- ) {
+//             xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, v );
+//
+//             const int sleep = int(D * (-log10( v + 1 ) + 2));
+//
+//             ::usleep( sleep );
+//
+//             debug() << v << ": " << sleep << "us\n";
+//         }
+//         xine_stop( m_stream );
+//     }
 
     xine_config_save( m_xine, configPath() );
 
@@ -95,7 +105,7 @@ XineEngine::~XineEngine()
 bool
 XineEngine::init()
 {
-   debug() << "xine-engine; bringing joy to small mexican gerbils a few weeks at a time.\n";
+   debug() << "'Bringing joy to small mexican gerbils, a few weeks at a time.'\n";
 
    m_xine = xine_new();
 
@@ -127,11 +137,12 @@ XineEngine::makeNewStream()
 {
    {
       ///this block is so we don't crash if we fail to allocate a thingy
-      xine_stream_t      *stream;
-      xine_audio_port_t  *port;
+      xine_stream_t     *stream;
+      xine_audio_port_t *port;
 
       port = xine_open_audio_driver( m_xine, "auto", NULL );
       if( !port ) {
+         //TODO make engine method that is the same but parents the dialog for us
          KMessageBox::error( 0, i18n("xine was unable to initialize any audio-drivers.") );
          return false;
       }
@@ -172,36 +183,35 @@ static Fader *s_fader = 0;
 bool
 XineEngine::load( const KURL &url, bool isStream )
 {
-    if( XINE_VERSION == "1-rc6a" && url.protocol() == "http" ) {
-       emit infoMessage( i18n("Sorry xine 1-rc6a cannot play remote streams, please upgrade to 1-rc7") );
-       return false;
-    }
+   if( XINE_VERSION == "1-rc6a" && url.protocol() == "http" ) {
+      emit infoMessage( i18n("Sorry xine 1-rc6a cannot play remote streams, please upgrade to 1-rc7") );
+      return false;
+   }
 
+   Engine::Base::load( url, isStream || url.protocol() == "http" );
 
-    Engine::Base::load( url, isStream || url.protocol() == "http" );
+//     if( false && m_xfadeLength > 0 && xine_get_status( m_stream ) == XINE_STATUS_PLAY )
+//     {
+//        s_fader = new Fader( this );
+//     }
 
-    if( false && m_xfadeLength > 0 && xine_get_status( m_stream ) == XINE_STATUS_PLAY )
-    {
-       s_fader = new Fader( this );
-    }
+   if( xine_open( m_stream, QFile::encodeName( url.url() ) ) )
+   {
+      #ifndef XINE_SAFE_MODE
+      //we must ensure the scope is pruned of old buffers
+      timerEvent( 0 );
 
-    if( xine_open( m_stream, QFile::encodeName( url.url() ) ) )
-    {
-       #ifndef XINE_SAFE_MODE
-       //we must ensure the scope is pruned of old buffers
-       timerEvent( 0 );
+      xine_post_out_t *source = xine_get_audio_source( m_stream );
+      xine_post_in_t  *target = (xine_post_in_t*)xine_post_input( m_post, const_cast<char*>("audio in") );
+      xine_post_wire( source, target );
+      #endif
 
-       xine_post_out_t *source = xine_get_audio_source( m_stream );
-       xine_post_in_t  *target = (xine_post_in_t*)xine_post_input( m_post, const_cast<char*>("audio in") );
-       xine_post_wire( source, target );
-       #endif
+      return true;
+   }
 
-       return true;
-    }
+   //s_fader will delete itself
 
-    //s_fader will delete itself
-
-    return false;
+   return false;
 }
 
 bool
@@ -481,8 +491,6 @@ XineEngine::customEvent( QCustomEvent *e )
         bundle.artist  = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_ARTIST ) );
         bundle.album   = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_ALBUM ) );
         bundle.comment = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_COMMENT ) );
-
-        Debug::list() << bundle.title + " title" << bundle.artist + " artist" << bundle.album + " album" << bundle.comment + " comment";
 
         emit metaData( bundle );
     }
