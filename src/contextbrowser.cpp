@@ -310,7 +310,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         enum menuIds { APPEND, ASNEXT, MAKE };
 
         KPopupMenu menu( this );
-        menu.insertTitle( i18n( "Track/Album" ) );
+        menu.insertTitle( i18n( "Track / Album" ) );
         menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "Append to playlist" ), APPEND );
         //menu.setItemEnabled( APPEND );
         menu.insertItem( SmallIcon( "next" ), i18n( "Queue after current track" ), ASNEXT );
