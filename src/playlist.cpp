@@ -708,6 +708,19 @@ Playlist::isTrackBefore() const
            );
 }
 
+bool
+Playlist::containsUrl( const KURL& url )
+{
+    for ( QListViewItemIterator it( this ); it.current(); ++it )
+    {
+        PlaylistItem* item = static_cast<PlaylistItem*>( *it );
+        if ( item->url() == url )
+            return true;
+    }
+    
+    return false;
+}
+
 void
 Playlist::updateNextPrev()
 {

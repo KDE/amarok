@@ -236,13 +236,22 @@ void Scrobbler::appendSimilar( SubmitItem* item ) const
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.addMatches( QueryBuilder::tabArtist, suggestions );
-    qb.setLimit( 0, 2 );
+    qb.setLimit( 0, 10 );
     QStringList values = qb.run();
     QStringList urls;
 
     for ( uint i = 0; i < values.count(); i = i + 2 )
     {
-        urls.append( values[i] );
+        if ( !Playlist::instance()->containsUrl( values[i] ) )
+        {
+            // Only append song if it's not on playlist yet.
+            urls.append( values[i] );
+        }
+        if ( urls.count() == 2 )
+        {
+            // Don't append more than two songs.
+            break;
+        }
     }
     Playlist::instance()->insertMedia( KURL::List( urls ) );
 }
