@@ -22,7 +22,7 @@ email                : markey@web.de
 #include "browserwin.h"
 #include "effectwidget.h"
 #include "engine/enginebase.h"
-#include "fht/fht.cpp"
+#include "fht.h"
 #include "metabundle.h" //play( const KURL& )
 #include "osd.h"
 #include "playerapp.h"
