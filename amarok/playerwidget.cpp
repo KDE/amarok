@@ -28,7 +28,7 @@ email                : markey@web.de
 //#include "analyzers/baranalyzer2.h"
 #include "analyzers/distortanalyzer.h"
 #include "analyzers/turbine.h"
-#include "analyzers/spectralshine.h"
+//#include "analyzers/spectralshine.h"
 #include "analyzers/xmasdrug.h"
 #include "amarokdcophandler.h"
 
@@ -677,9 +677,10 @@ void PlayerWidget::createVis()
     case 2:
         m_pVis = new TurbineAnalyzer( this );
         break;
+/*    // bitch's ditched for this release
     case 3:
         m_pVis = new SpectralShineAnalyzer( this );
-        break;
+        break;*/
     case 4:
         m_pVis = new XmasAnalyzer( this );
         break;
