@@ -24,7 +24,8 @@
 
 static inline const TagLib::String LocaleAwareTString( const QString &s )
 {
-    return TagLib::String( s.local8Bit().data(), TagLib::String::Latin1 );
+    // return TagLib::String( s.local8Bit().data(), TagLib::String::Latin1 );
+    return QStringToTString( s );
 }
 
 
