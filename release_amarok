@@ -83,7 +83,7 @@ if [ $doi18n = "yes" ]; then
         fi
         echo "Copying $lang's $name documentation over... "
         cp -R $docdirname doc/$lang
-        cat doc/$lang/Makefile.am | sed -e "s/AUTO/$name/" > doc/$lang/Makefile.am.nw
+        cat doc/$lang/Makefile.am | sed -e "s/AUTO/amarok/" > doc/$lang/Makefile.am.nw
         mv doc/$lang/Makefile.am.nw doc/$lang/Makefile.am
         echo "$lang documentation included." >> $log
     done
