@@ -168,7 +168,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 
         //optimization for speeding up SQLite
         m_db->execSql( "PRAGMA default_synchronous = OFF;" );
-        m_db->execSql( "PRAGMA default_cache_size = 4000;" );
+        // m_db->execSql( "PRAGMA default_cache_size = 4000;" ); default is 2000, that should be enough.
 
         //remove database file if version is incompatible
         if ( ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION ) || ( !m_db->isDbValid() ) )
