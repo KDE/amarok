@@ -461,7 +461,7 @@ bool PlayerApp::initMixerHW()
 bool PlayerApp::initScope()
 {
     kdDebug() << "begin PlayerApp::initScope()" << endl;
-    
+
     m_scope = Arts::DynamicCast( m_Server.createObject( "Arts::StereoFFTScope" ) );
 
     if ( m_scope.isNull() )
@@ -469,7 +469,7 @@ bool PlayerApp::initScope()
         kdDebug() << "m_scope.isNull()!" << endl;
         return false;
     }
-    else 
+    else
     {
         kdDebug() << "end PlayerApp::initScope()" << endl;
         return true;
@@ -738,6 +738,10 @@ void PlayerApp::setupTrackLength()
         m_length = timeO.seconds;
         m_pPlayerWidget->m_pSlider->setMaxValue( static_cast<int>( timeO.seconds ) );
     }
+    else
+    {
+       m_length = 0;
+    }
 }
 
 
@@ -862,7 +866,7 @@ void PlayerApp::setupColors()
 
     m_pBrowserWin->m_pBrowserWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
     m_pBrowserWin->m_pPlaylistWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
-    
+
     //HACK Traverse childrenlist of KJanusWidget in order to find members which are not exposed in API
     QObject *pIconBox = m_pBrowserWin->m_pJanusWidget->child( 0, "KListBox" );
     if ( pIconBox )
@@ -870,13 +874,13 @@ void PlayerApp::setupColors()
         static_cast<QWidget*>( pIconBox )->setPaletteBackgroundColor( m_optBrowserBgColor );
         static_cast<QWidget*>( pIconBox )->setPaletteForegroundColor( m_optBrowserFgColor );
     }
-             
+
     m_pBrowserWin->m_pBrowserLineEdit->setPaletteBackgroundColor( m_optBrowserBgColor );
     m_pBrowserWin->m_pBrowserLineEdit->setPaletteForegroundColor( m_optBrowserFgColor );
 
     m_pBrowserWin->m_pPlaylistLineEdit->setPaletteBackgroundColor( m_optBrowserBgColor );
     m_pBrowserWin->m_pPlaylistLineEdit->setPaletteForegroundColor( m_optBrowserFgColor );
-   
+
     m_pBrowserWin->update();
     m_pBrowserWin->m_pBrowserWidget->triggerUpdate();
     m_pBrowserWin->m_pPlaylistWidget->triggerUpdate();
@@ -964,7 +968,7 @@ void PlayerApp::slotPlay()
 
     m_pPlayerWidget->m_pButtonPlay->setOn( true ); //interface consistency
     KDE::PlayObjectFactory factory( m_Server );
-    
+
     if ( m_optTitleStream && !m_proxyError )
     {
         TitleProxy *pProxy = new TitleProxy( item->url() );
@@ -1040,7 +1044,7 @@ void PlayerApp::slotConnectPlayObj()
 void PlayerApp::proxyError()
 {
     m_proxyError = true;
-    
+
     slotStopCurrent();
     slotPlay();
 }
@@ -1279,7 +1283,7 @@ void PlayerApp::slotMainTimer()
         enableScope();
     else
         disableScope();
-                
+
     Arts::poTime timeC( m_pPlayObject->currentTime() );
     m_pPlayerWidget->m_pSlider->setValue( static_cast<int>( timeC.seconds ) );
 
@@ -1361,7 +1365,7 @@ void PlayerApp::enableScope()
     {
         m_scope.start();
         m_scopeId = m_globalEffectStack.insertBottom( m_scope, "Analyzer" );
-    }            
+    }
 }
 
 
@@ -1372,7 +1376,7 @@ void PlayerApp::disableScope()
         m_scope.stop();
         m_globalEffectStack.remove( m_scopeId );
         m_scopeId = 0;
-    }            
+    }
 }
 
 

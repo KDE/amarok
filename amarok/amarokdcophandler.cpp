@@ -1,13 +1,14 @@
 #include "playerapp.h"
+#include "playerwidget.h"
 #include "amarokdcophandler.h"
 
 #include <dcopclient.h>
 
+#include <kdebug.h>
 
 AmarokDcopHandler::AmarokDcopHandler()
    : DCOPObject( "player" )
    , m_nowPlaying( "" )
-   , m_trackTotalTime( 0 )
 {
     // Register with DCOP
     if ( !kapp->dcopClient()->isRegistered() )
@@ -61,23 +62,29 @@ bool AmarokDcopHandler::isPlaying()
     return pApp->isPlaying();
 }
 
-void AmarokDcopHandler::setTrackTotalTime( int t )
-{
-   m_trackTotalTime = t;
-}
-
 int AmarokDcopHandler::trackTotalTime()
 {
-   return m_trackTotalTime;
+   return pApp->trackLength();
 }
 
-void AmarokDcopHandler::seek(int ms)
+void AmarokDcopHandler::seek(int s)
 {
+   if ( (s > 0) && pApp->m_pPlayObject && !pApp->m_pPlayObject->isNull() )
+   {
+      Arts::poTime time;
+      time.ms = 0;
+      time.seconds = s;
+      time.custom = 0;
+      time.customUnit = std::string();
+
+      pApp->m_pPlayObject->seek( time );
+      kdDebug() << "[DcopHandler] Seeking to " << s << endl;
+   }
 }
 
 int AmarokDcopHandler::trackCurrentTime()
 {
-   return 0;
+   return pApp->m_pPlayerWidget->m_pSlider->value(); // WEIRD! [otoh, it works =)]
 }
 
 void AmarokDcopHandler::addMedia(const KURL &url)

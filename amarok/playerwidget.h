@@ -25,8 +25,6 @@
 
 #include <ksystemtray.h>
 
-#include "amarokdcopiface.h"
-
 class QBitmap;
 class QBoxLayout;
 class QFrame;

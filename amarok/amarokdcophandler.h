@@ -11,7 +11,7 @@ class AmarokDcopHandler : public QObject, virtual public AmarokIface
    public:
       AmarokDcopHandler();
       void setNowPlaying( const QString & );
-      void setTrackTotalTime( int );
+//      void setTrackTotalTime( int );
 
    public /* DCOP */ slots:
       virtual void play();
@@ -19,7 +19,7 @@ class AmarokDcopHandler : public QObject, virtual public AmarokIface
       virtual void next();
       virtual void prev();
       virtual void pause();
-      virtual void seek(int ms);
+      virtual void seek(int s);
       virtual int  trackTotalTime();
       virtual int  trackCurrentTime();
       virtual void addMedia(const KURL &);
@@ -29,7 +29,7 @@ class AmarokDcopHandler : public QObject, virtual public AmarokIface
 
    private:
       QString m_nowPlaying; /* state for nowPlaying() */
-      int m_trackTotalTime;
+//      int m_trackTotalTime;
 };
 
 #endif

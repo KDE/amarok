@@ -65,6 +65,7 @@ class PlayerApp : public KUniqueApplication
         bool queryClose();
         bool playObjectConfigurable();
         bool isPlaying() { return m_bIsPlaying; }
+        int  trackLength() { return m_length; }
         void setupColors();
         bool restorePlaylistSelection(const KURL& url);
 
@@ -162,7 +163,7 @@ class PlayerApp : public KUniqueApplication
     private slots:
         void receiveStreamMeta( QString title, QString url, QString kbps );
         void proxyError();
-        
+
     signals:
         void sigScope( std::vector<float> *s );
         void sigPlay();
@@ -188,7 +189,7 @@ class PlayerApp : public KUniqueApplication
 
         void enableScope();
         void disableScope();
-        
+
         // ATTRIBUTES ------
         KArtsDispatcher *m_pArtsDispatcher;
         bool m_usingMixerHW;
@@ -203,7 +204,7 @@ class PlayerApp : public KUniqueApplication
         bool m_bIsPlaying;
         bool m_bChangingSlider;
         bool m_proxyError;
-        
+
         bool m_XFadeRunning;
         float m_XFadeValue;
         QString m_XFadeCurrent;

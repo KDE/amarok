@@ -2,6 +2,9 @@ amaroK Changelog
 ==================
 (c) 2002, 2003 by Mark Kretschmann and the amaroK team. GPL License.
 
+  * add: added long-awaited DCOP methods for manipulating the playback. This also adds
+         integration with kdeaddons/kicker-applets/mediacontrol.
+  * chg: moved DCOP handler to a separate class/file
   * add: threaded playlist insertion
   * fix: remoived bugs and waste code keyhandling in browser*, it mostly works as expected
          now with various keypresses going to the correct places
