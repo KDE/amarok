@@ -122,7 +122,9 @@ PlaylistWidget::~PlaylistWidget()
 
 void PlaylistWidget::insertMedia( const QString &path )
 {
-   insertMedia( KURL( path ) );
+   KURL url;
+   url.setPath( path );
+   insertMedia( url );
 }
 
 void PlaylistWidget::insertMedia( const KURL &url )

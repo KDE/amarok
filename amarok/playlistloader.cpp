@@ -278,7 +278,7 @@ void PlaylistLoader::loadLocalPlaylist( const QString &path, int type )
 
 bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissions )
 {
-   QString ext = url.path().right( 4 ).lower(); //FIXME 4 tmps
+   QString ext = url.path().right( 4 ).lower();
 
    //listed in order of liklihood of encounter to avoid logic checks
    bool b = ( ext == ".mp3" || ext == ".ogg" || ext == ".m3u" || ext == ".pls" || ext == ".mod" ||  ext == ".wav" );
@@ -341,7 +341,7 @@ void PlaylistLoader::translate( QString &path, KURL::List &list )
 
             else if( S_ISREG( statbuf.st_mode ) )  //file
             {
-               KURL url( newpath );
+               KURL url; url.setPath( newpath ); //apparently this is the safe way to do it for unix paths
 
                //we save some time and pass the stat'd information
                if( isValidMedia( url, statbuf.st_mode & S_IFMT, statbuf.st_mode & 07777 ) )
