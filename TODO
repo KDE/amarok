@@ -37,6 +37,10 @@ SHORT-TERM (URGENT):
 
 MID-TERM:
 
+  CHG     <markey> Make CollectionDB a singleton. Why do we create a fucking object for each db access?
+                   This SUCKS. Also, you can't connect to CollectionDB signals currently, cause there are
+                   many instances.
+
   CHG 173 <markey> Move ui files into seperate folder, and compile as lib. Currently, when you change one
                    file, you need to rebuild the world --> suckage
 
