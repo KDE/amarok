@@ -1,42 +1,21 @@
-/***************************************************************************
-                          metabundle.h  -  description
-                             -------------------
-    copyright            : (C) 2003 by Max Howell
-    email                : max.howell@methylblue.com
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+//Maintainer: Max Howell <max.howell@methylblue.com>, (C) 2004
+//Copyright:  See COPYING file that comes with this distribution
+//
 
 #ifndef METABUNDLE_H
 #define METABUNDLE_H
 
-#include "playlistitem.h" //FIXME dependency
+#include <kurl.h>    //inline functions
+#include <klocale.h> //inline functions
 
-#include <qstring.h>
-#include <kurl.h>
-#include <klocale.h>
+class PlaylistItem;
 
-//taglib includes
-#include <tag.h>
-#include <tstring.h>
-#include <audioproperties.h>
-
+namespace TagLib { class AudioProperties; class Tag; }
 
 /*
  * This class is not very complete, it fits our needs as they stand currently
  * If it doesn't work for you in some way, extend it sensibly :)
  */
-
-//TODO cache prettyLength for bundles
-//TODO is it feasible to just use a TagLib::AudioProperties structure?
-
 
 class MetaBundle
 {
@@ -47,57 +26,24 @@ public:
     static const int Irrelevant   = -1;
     static const int Unavailable  =  0;
 
-    MetaBundle( const KURL &u ) //Minimal ctor, try not to use this!
-      : m_url( u )
-    {
-        init();
-    }
+    //Shouldn't be used if possible!
+    MetaBundle( const KURL &u ) : m_url( u ) { init(); }
 
-    //ctor used by TitleProxy
-    MetaBundle(     const QString& title,
-                    const QString& url,
-                    const int&     bitrate,
-                    const QString& genre,
-                    const QString& streamName,
-                    const QString& streamUrl )
+    //TitleProxy:
+    MetaBundle( const QString& title,
+                const QString& url,
+                const int      bitrate,
+                const QString& genre,
+                const QString& streamName,
+                const QString& streamUrl );
 
-      : m_url       ( streamUrl )
-      , m_title     ( url + title )
-      , m_genre     ( genre )
-      , m_bitrate   ( bitrate )
-      , m_length    ( Undetermined )
-      , m_sampleRate( Undetermined )
-    {}
+    //PlaylistItems:
+    MetaBundle( const PlaylistItem *item, TagLib::AudioProperties *ap = 0 );
 
-    //TODO one without audioProps please
-    //And have ability to determine bitrate etc from the strings, slow but infrequently called so ok
-    MetaBundle( const PlaylistItem *item, TagLib::AudioProperties *ap )
-      : m_url(     item->url() )
-      , m_title(   item->title() ) //because you override text()
-      , m_artist(  item->exactText( 2 ) )
-      , m_album(   item->exactText( 3 ) )
-      , m_year(    item->exactText( 4 ) )
-      , m_comment( item->exactText( 5 ) )
-      , m_genre(   item->exactText( 6 ) )
-      , m_track(   item->exactText( 7 ) )
-    {
-        init( ap );
-    }
+    //From tags:
+    MetaBundle( const KURL &url, TagLib::Tag *tag, TagLib::AudioProperties *ap = 0 );
 
-    MetaBundle( const KURL &url, TagLib::Tag *tag, TagLib::AudioProperties *ap = 0 )
-      : m_url( url )
-      , m_title(   TStringToQString( tag->title() ).stripWhiteSpace() )
-      , m_artist(  TStringToQString( tag->artist() ).stripWhiteSpace() )
-      , m_album(   TStringToQString( tag->album() ).stripWhiteSpace() )
-      , m_year(    tag->year() ? QString::number( tag->year() ) : QString() )
-      , m_comment( TStringToQString( tag->comment() ).stripWhiteSpace() )
-      , m_genre(   TStringToQString( tag->genre() ).stripWhiteSpace() )
-      , m_track(   tag->track() ? QString::number( tag->track() ) : QString() )
-    {
-        init( ap );
-    }
 
-// ATTRIBUTES ------
     int length()     const { return m_length > 0 ? m_length : 0; }
     int bitrate()    const { return m_bitrate; }
     int sampleRate() const { return m_sampleRate; }
@@ -111,7 +57,7 @@ public:
     const QString &genre()   const { return m_genre; }
     const QString &track()   const { return m_track; }
 
-    QString prettyTitle() const;
+    QString prettyTitle()   const;
     QString prettyURL()     const { return m_url.prettyURL(); }
     QString prettyBitrate() const { return prettyBitrate( m_bitrate ); }
     QString prettyLength()  const { return prettyLength( m_length ); }
@@ -136,63 +82,7 @@ private:
 
     static QString prettyGeneric( const QString&, int );
 
-    void init( TagLib::AudioProperties *ap = 0 )
-    {
-        if( ap )
-        {
-            m_bitrate    = ap->bitrate();
-            m_length     = ap->length();
-            m_sampleRate = ap->sampleRate();
-        }
-        else m_bitrate = m_length = m_sampleRate = Undetermined;
-    }
+    void init( TagLib::AudioProperties *ap = 0 );
 };
-
-
-inline QString
-MetaBundle::prettyTitle() const
-{
-    QString s = m_artist;
-    if( !s.isEmpty() ) s += " - ";
-    s += m_title;
-
-    if( s.isEmpty() )
-    {
-        //remove file extension and tidy
-        s = m_url.fileName().left( s.findRev( '.' ) ).replace( '_', ' ' );
-    }
-
-    return s;
-}
-
-inline QString
-MetaBundle::prettyLength( int length ) //static
-{
-    //TODO don't inline! (code bloat)
-
-    QString s;
-
-    if( length > 0 )
-    {
-        //we don't do hours, people aren't interested in them
-        int min = length / 60;
-        int sec = length % 60;
-
-        //don't zeroPad the minutes
-        s.setNum( min ).append( ':' );
-        if( sec < 10 ) s += '0';
-        s += QString::number( sec );
-    }
-    else if( length == Unavailable ) s = '?';
-    else if( length == Irrelevant  ) s = '-';
-
-    return s;
-}
-
-inline QString
-MetaBundle::prettyGeneric( const QString &s, int i ) //static
-{
-    return ( i > 0 ) ? s.arg( i ) : ( i == Undetermined ) ? QString() : "?";
-}
 
 #endif

@@ -15,6 +15,12 @@
 #include <taglib/tstring.h>
 
 
+static inline const TagLib::String LocaleAwareTString( const QString &s )
+{
+    return TagLib::String( s.local8Bit().data(), TagLib::String::Latin1 );
+}
+
+
 ThreadWeaver::ThreadWeaver( QWidget *w )
   : m_parent( w )
   , m_bool( true )
@@ -250,13 +256,13 @@ TagWriter::TagWriter( QObject *o, PlaylistItem *pi, const QString &s, const int 
 bool
 TagWriter::doJob()
 {
-    const KURL url = m_item->url(); //FIXME safe?
+    const KURL url = m_item->url();
     TagLib::FileRef f( url.path().local8Bit(), false );
 
     if( !f.isNull() )
     {
         TagLib::Tag *t = f.tag();
-        TagLib::String s = QStringToTString( m_tagString );
+        const TagLib::String s = LocaleAwareTString( m_tagString );
 
         switch( m_tagType ) {
         case 1:
@@ -287,10 +293,11 @@ TagWriter::doJob()
             return false;
         }
 
-        f.save();
+        f.save(); //FIXME this doesn't always work, but! it returns void. Great huh?
     }
 
-    //FIXME can TagLib::Tag::save() not fail?
+    //TODO can solve by reading tags now. Sucks or what?
+
     return true;
 }
 

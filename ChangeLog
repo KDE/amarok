@@ -2,12 +2,13 @@ amaroK ChangeLog
 ================
 (c) 2002-2004 the amaroK authors.
 
+  FIX: non latin1 locale issues with loading directories and tags (thanks Leo Zhu)
   ADD: clicking shuffle will sort the playlist by the nextQueue first, and
        randomise the rest
   ADD: Play Next can now handle several songs through a queue. The queue can be
-       manipulated by using the context menu or by CTRL+right clicking. 
+       manipulated by using the context menu or by CTRL+right clicking.
   ADD: much improved gstreamer engine, now working with visualizations
-  CHG: GstEngine requires gstreamer-0.8 
+  CHG: GstEngine requires gstreamer-0.8
   FIX: Show move pointer instead of hand when moving preview OSD.
   ADD: sorting by artist subsorts by album and track, sorting by album subsorts
        by track, enjoy!
@@ -44,9 +45,9 @@ VERSION 0.9-beta3:
   FIX: show correct track-length when playing .mod or .sid with aRts-engine
   ADD: loader application, starts and controls amaroK. it reduces the lag when handing
        command line arguments to amaroK and makes the splash load faster
-  ADD: playlist items, which couldn't be opened / read (for some reason) will be marked 
+  ADD: playlist items, which couldn't be opened / read (for some reason) will be marked
        with a grey background color
-  ADD: pasting clipboard selection into playlist with MidButton, X11-style  
+  ADD: pasting clipboard selection into playlist with MidButton, X11-style
   CHG: refined on-screen-display with more polished look
   FIX: skipping broken/non-existant tracks
   CHG: If the current song is paused, the Play Button will resume, not restart it.

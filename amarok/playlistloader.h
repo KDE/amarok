@@ -48,7 +48,7 @@ private:
     void postBundle( const KURL&, const QString&, const int );
 
 #ifdef FAST_TRANSLATE
-    void translate( QString & ); //recursively gets urls from a directory
+    void translate( QString&, const QCString& ); //recursively gets urls from a directory
 #else
     void translate( QString &, KFileItemList & ); //turns a directory into a KURL::List
 #endif

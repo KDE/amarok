@@ -118,13 +118,16 @@ void PlaylistLoader::process( const KURL::List &list, const bool validate )
    struct STATSTRUCT statbuf;
    ++m_recursionCount;
 
-   for( KURL::List::ConstIterator it = list.begin(); it != list.end(); ++it )
+   const KURL::List::ConstIterator end = list.end();
+   for( KURL::List::ConstIterator it = list.begin(); it != end; ++it )
    {
       QString path = (*it).path();
 
       if( validate && (*it).isLocalFile() )
       {
-         if( LSTAT( path.local8Bit(), &statbuf ) != 0 ) continue;
+         QCString localePath = path.local8Bit();
+
+         if( LSTAT( localePath, &statbuf ) != 0 ) continue;
 
          if( S_ISDIR( statbuf.st_mode ) )
          {
@@ -132,7 +135,7 @@ void PlaylistLoader::process( const KURL::List &list, const bool validate )
             //FIXME depth check too
             if( list.count() > 1 && ( !options.recurse || ( !options.symlink && S_ISLNK( statbuf.st_mode ) ) ) ) continue;
 #ifdef FAST_TRANSLATE
-            translate( path );
+            translate( path, localePath );
 #else
             AmarokFileList files( options.sortSpec );
             files.setAutoDelete( true );
@@ -255,7 +258,7 @@ bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissi
 
 
 #ifdef FAST_TRANSLATE
-void PlaylistLoader::translate( QString &path )
+void PlaylistLoader::translate( QString &path, const QCString &encodedPath )
 #else
 void PlaylistLoader::translate( QString &path, KFileItemList &list )
 #endif
@@ -263,9 +266,12 @@ void PlaylistLoader::translate( QString &path, KFileItemList &list )
    #ifdef FAST_TRANSLATE
    QStringList directories;
    QStringList files;
+   DIR *d = opendir( encodedPath );
+   #else
+   DIR *d = opendir( path.local8Bit() );
    #endif
 
-   DIR *d = opendir( path.local8Bit() );
+
    if( !path.endsWith( "/" ) ) path += '/';
 
    if( d )
@@ -273,16 +279,16 @@ void PlaylistLoader::translate( QString &path, KFileItemList &list )
       DIRENT *ent;
       struct STATSTRUCT statbuf;
 
-      while( ( ent = READDIR( d ) ) )
+      while( (ent = READDIR( d )) )
       {
-         QString file( ent->d_name );
-
+         const QString file = QString::fromLocal8Bit( ent->d_name );
          if( file == "." || file == ".." ) continue;
 
-         QString newPath = path + file;
+         const QString  newPath( path+file );
+         const QCString localePath = newPath.local8Bit();
 
          //get file information
-         if( LSTAT( newPath.local8Bit(), &statbuf ) == 0 )
+         if( LSTAT( localePath, &statbuf ) == 0 )
          {
             //check for these first as they are not mutually exclusive WRT dir/files
             if( S_ISCHR(  statbuf.st_mode ) ||
@@ -290,7 +296,7 @@ void PlaylistLoader::translate( QString &path, KFileItemList &list )
                 S_ISFIFO( statbuf.st_mode ) ||
                 S_ISSOCK( statbuf.st_mode ) ); //then do nothing
 
-            else if( S_ISDIR( statbuf.st_mode ) && options.recurse )  //directory
+            else if( S_ISDIR( statbuf.st_mode ) && options.recurse ) //is directory
             {
                if( !options.symlink && S_ISLNK( statbuf.st_mode ) ) continue;
             #ifdef FAST_TRANSLATE
@@ -300,16 +306,15 @@ void PlaylistLoader::translate( QString &path, KFileItemList &list )
             #endif
             }
 
-            else if( S_ISREG( statbuf.st_mode ) )  //file
+            else if( S_ISREG( statbuf.st_mode ) ) //is file
             {
-               KURL url; url.setPath( newPath );     //safe way to do it for unix paths
+               KURL url; url.setPath( newPath ); //safe way to do it for unix paths
 
                if( isPlaylist( newPath ) )
                   //QApplication::postEvent( m_listView, new PlaylistFoundEvent( url ) );
                   ;
                else
                {
-
                   //we save some time and pass the stat'd information
                   if( isValidMedia( url, statbuf.st_mode & S_IFMT, statbuf.st_mode & 07777 ) )
                   {
@@ -330,16 +335,21 @@ void PlaylistLoader::translate( QString &path, KFileItemList &list )
       #ifdef FAST_TRANSLATE
       //alpha-sort the files we found, and then post them to the playlist
       files.sort();
-      for( QStringList::Iterator it = files.begin(); it != files.end(); ++it )
+      const QStringList::ConstIterator end = files.end();
+      for( QStringList::ConstIterator it = files.begin(); it != end; ++it )
       {
-         (*it).prepend( path );
-         KURL url;
-         url.setPath( *it );
+         QString file = path; file += *it;
+         KURL url; url.setPath( file );
          postBundle( url );
       }
 
-      //translate all sub-directories
-      for( QStringList::Iterator it = directories.begin(); it != directories.end(); ++it ) translate( *it );
+      {   //translate all sub-directories
+          const QStringList::Iterator end = directories.end();
+          for( QStringList::Iterator it = directories.begin(); it != end; ++it )
+          {
+              translate( *it, (*it).local8Bit() ); //FIXME cache QCStrings from above too
+          }
+      }
       #endif
 
    } //if( d )

@@ -37,6 +37,7 @@ amarokapp_SOURCES = \
         fht.cpp \
         filebrowser.cpp \
         kbookmarkhandler.cpp \
+	metabundle.cpp \
         osd.cpp \
         playerapp.cpp \
         playerwidget.cpp \
