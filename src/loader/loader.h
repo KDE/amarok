@@ -44,6 +44,8 @@ class Loader : public QApplication
         QCString socketPath( SocketType type = loader );
 
 // ATTRIBUTES ------
+        static const int TIMER_INTERVAL = 50;
+        static const int TIMEOUT = 60;
 
         int        m_sockfd;
         OSDWidget *m_pOsd;

@@ -35,9 +35,6 @@
 #include <sys/un.h>
 
 
-#define TIMEOUT 50
-
-
 Loader::Loader( int& argc, char** argv )
         : QApplication( argc, argv )
         , m_pOsd ( 0 )
@@ -137,7 +134,7 @@ Loader::Loader( int& argc, char** argv )
         if ( !QApplication::isSessionRestored() && splashEnabled() ) showSplash();
 
         //periodically check for amaroK startup completion
-        startTimer( TIMEOUT );
+        startTimer( TIMER_INTERVAL );
     }
     else doExit();
     //TODO else the user just typed amarok with no arguments, I spose we should raise amaroK?
@@ -297,7 +294,7 @@ void Loader::timerEvent( QTimerEvent* )
 {
     static uint delay;
 
-    delay += TIMEOUT;
+    delay += TIMER_INTERVAL;
     m_sockfd = tryConnect();
 
     if ( m_sockfd != -1 ) {
@@ -306,7 +303,7 @@ void Loader::timerEvent( QTimerEvent* )
         std::cout << "[amaroK loader] startup successful.\n";
         ::send( m_sockfd, "STARTUP", 8, 0 );
         doExit();
-    } else if ( delay >= 30 * 1000 ) {
+    } else if ( delay >= TIMEOUT * 1000 ) {
         std::cout << "[amaroK loader] timed out trying to contact amaroK.\n";
 
         //NOTE these are untranslated.. nasty.
