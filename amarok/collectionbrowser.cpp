@@ -13,6 +13,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
 {
     setSelectionMode( QIconView::Extended );
     setItemsMovable( false );
+//     setGridX( 140 );
     
     for ( int i = 0; i < 100; i++ ) {
         QIconViewItem* item =  new QIconViewItem( this );

@@ -17,12 +17,22 @@ class CollectionBrowser : public KIconView
         ~CollectionBrowser();
         
     private:
-
+    
+/*    class Item : public KIconViewItem
+    {
+        public:
+            Item( QIconView*, const KURL&, const KURL::List&, const uint );
+            const KURL& url() const { return m_url; }
+        private:
+            QString metaString() const;
+    
+            const KURL m_url;
+            int m_numberTracks;
+            QString m_length;
+            QRect m_bounds;
+    };*/
 };
 
 
-
-
 #endif /* AMAROK_COLLECTIONBROWSER_H */
-
 

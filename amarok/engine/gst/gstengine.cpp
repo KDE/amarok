@@ -24,6 +24,7 @@ email                : markey@web.de
 #include <qobject.h>
 #include <qstring.h>
 #include <qstringlist.h>
+#include <qtimer.h>
 
 #include <kdebug.h>
 #include <kurl.h>
@@ -52,18 +53,9 @@ GstEngine::eos_cb( GstElement*, GstElement* )
 {
     kdDebug() << k_funcinfo << endl;
 
-    g_idle_add( (GSourceFunc) GstEngine::eos_handler, (gpointer) 0 );
-    //     pObject->emit endOfTrack();
-}
-
-bool
-GstEngine::eos_handler( gpointer )
-{
-    kdDebug() << k_funcinfo << endl;
-    
-    pObject->stop();
-    //false == deactivate idle handler
-    return false;
+    //this is the Qt equivalent to an idle function: delay the call until all events are finished, 
+    //otherwise gst will crash horribly
+    QTimer::singleShot( 0, pObject, SLOT( stop() ) );
 }
 
 
@@ -281,7 +273,7 @@ GstEngine::scope()
 /////////////////////////////////////////////////////////////////////////////////////
 
 const QObject* 
-GstEngine::play( const KURL& url )
+GstEngine::play( const KURL& url ) //SLOT
 {
     stop();
     fillPipeline();
@@ -295,7 +287,7 @@ GstEngine::play( const KURL& url )
 
 
 void 
-GstEngine::play()
+GstEngine::play() //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     
@@ -305,7 +297,7 @@ GstEngine::play()
 
 
 void 
-GstEngine::stop()
+GstEngine::stop() //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     
@@ -315,7 +307,7 @@ GstEngine::stop()
 
 
 void 
-GstEngine::pause()
+GstEngine::pause() //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     
@@ -324,7 +316,7 @@ GstEngine::pause()
 
 
 void 
-GstEngine::seek( long ms )
+GstEngine::seek( long ms ) //SLOT
 {
     if ( ms > 0 )
     {
@@ -339,7 +331,7 @@ GstEngine::seek( long ms )
 
 
 void 
-GstEngine::setVolume( int percent )
+GstEngine::setVolume( int percent ) //SLOT
 {
     m_volume = percent;
     
@@ -367,7 +359,7 @@ GstEngine::fillPipeline()
     /* create a new thread to hold the elements */
     kdDebug() << k_funcinfo << "BEFORE gst_thread_new ( thread );\n";
     m_pThread              = gst_thread_new          ( "thread" );
-   
+    
     /* create a disk reader */
     kdDebug() << k_funcinfo << "BEFORE gst_element_factory_make( filesrc, disk_source );\n";
     m_pFilesrc   = gst_element_factory_make( "filesrc", "disk_source" );
