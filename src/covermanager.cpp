@@ -49,11 +49,12 @@
 #include <kurldrag.h>
 
 
+static QString artistToSelectInInitFunction;
 CoverManager* instance = 0;
 
 
-CoverManager::CoverManager( QWidget *parent, const char *name )
-    : QWidget( parent, name, WDestructiveClose )
+CoverManager::CoverManager()
+    : QWidget( 0, "TheCoverManager", WDestructiveClose )
     , m_timer( new QTimer( this ) )    //search filter timer
     , m_fetchCounter( 0 )
     , m_fetchingCovers( 0 )
@@ -213,6 +214,8 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     QSize winSize = config->readSizeEntry( "Window Size", new QSize( 610, 380 ) );    //default size
     resize( winSize );
 
+    show();
+
     QTimer::singleShot( 0, this, SLOT(init()) );
 }
 
@@ -232,7 +235,17 @@ CoverManager::~CoverManager()
 
 void CoverManager::init()
 {
-    m_artistView->setSelected( m_artistView->firstChild(), true );
+    QListViewItem *item = 0;
+
+    if ( !artistToSelectInInitFunction.isEmpty() )
+        for ( item = m_artistView->firstChild(); item; item = item->nextSibling() )
+            if ( item->text( 0 ) == artistToSelectInInitFunction )
+                break;
+
+    if ( item == 0 )
+        item = m_artistView->firstChild();
+
+    m_artistView->setSelected( item, true );
 }
 
 
@@ -292,12 +305,13 @@ void CoverManager::fetchCoversLoop() //SLOT
 }
 
 
-void CoverManager::showOnce()
+void CoverManager::showOnce( const QString &artist )
 {
-    if ( !instance )
-        (new CoverManager())->show();
-    else
-    {
+    if ( !instance ) {
+        artistToSelectInInitFunction = artist;
+        new CoverManager(); //shows itself
+    }
+    else {
         instance->setActiveWindow();
         instance->raise();
     }
@@ -380,13 +394,10 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     progress.setTotalSteps( albums.count() / 2 );
 
     //insert the covers first because the list view is soooo paint-happy
+    //doing it in the second loop looks really bad, unfortunately
     //this is the slowest step in the bit that we can't process events
     for( QStringList::ConstIterator it = albums.begin(), end = albums.end(); it != end; ++it )
-    {
-        QString artist = *it;
-        QString album  = *++it;
-        m_coverItems.append( new CoverViewItem( m_coverView, m_coverView->lastItem(), artist, album ) );
-    }
+        m_coverItems.append( new CoverViewItem( m_coverView, m_coverView->lastItem(), *it, *(++it) ) );
 
     QApplication::restoreOverrideCursor();
 

@@ -386,7 +386,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
                 QImage img( file.directory() + '/' + file.fileName() );
                 QString filename( QFile::encodeName( info[0] + " - " + info[1] ) );
                 filename.replace( ' ', '_' ).append( ".png" );
-                img.save( KGlobal::dirs()->saveLocation( "data", "amarok/albumcovers/"+filename.lower(), "PNG" );
+                img.save( KGlobal::dirs()->saveLocation( "data", "amarok/albumcovers/" ) + filename.lower(), "PNG" );
                 showCurrentTrack();
             }
         }
@@ -409,7 +409,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     }
 
     case MANAGER:
-        CoverManager::showOnce();
+        CoverManager::showOnce( info[0] );
         break;
     }
 }

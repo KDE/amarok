@@ -32,10 +32,10 @@ class CoverManager : public QWidget
 Q_OBJECT
 
     public:
-        CoverManager( QWidget *parent=0, const char *name=0 );
+        CoverManager();
        ~CoverManager();
 
-        static void showOnce();
+        static void showOnce( const QString &artist = QString::null );
         static void viewCover( const QString& artist, const QString& album, QWidget *parent=0 );
 
     private slots:
