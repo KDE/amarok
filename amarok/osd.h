@@ -27,30 +27,31 @@ class MetaBundle;
 class OSDWidget : public QWidget
 {
     Q_OBJECT
-      
+
       public:
         OSDWidget();
         void setDuration(int ms);
         void setFont(QFont newfont);
         void setColor(QColor newcolor);
-      
+
       public slots:
         void showOSD(const MetaBundle&);
+        void showOSD(const QString&);
         void showSplash(const QString& imagePath);
         void removeOSD();
-      
+
       protected slots:
         void minReached();
 //        void dblClick();
-      
+
       protected:
         void paintOSD(const QString &text);
         void paintEvent(QPaintEvent*);
 //        void mouseDoubleClickEvent(QMouseEvent *e);
         void mousePressEvent( QMouseEvent* );
-        
-        static const int SPLASH_DURATION = 6000; 
-        
+
+        static const int SPLASH_DURATION = 6000;
+
         int         m_duration;
         QString     text;
         QTimer      *timer;

@@ -55,7 +55,7 @@ void OSDWidget::paintOSD( const QString &text )
     /* AlignAuto = we want to align Arabic to the right, don't we? */
     QRect fmRect = fm->boundingRect( 0, 0, d->width(), d->height(), AlignAuto | WordBreak, this->text );
 
-    QFont titleFont("Arial", 12);
+    QFont titleFont("Arial", 12, QFont::Bold);
     QFontMetrics *titleFm = new QFontMetrics( titleFont );
 
     fmRect.addCoords( 0, 0, 20, titleFm->height() );
@@ -73,7 +73,7 @@ void OSDWidget::paintOSD( const QString &text )
 
     paintBuffer.setFont( titleFont );
     paintBuffer.setPen( color );
-    paintBuffer.drawText( 1, 3, width()-1, height()-1, AlignLeft, "amaroK" );
+    paintBuffer.drawText( 10, 3, width()-1, height()-1, AlignLeft, "amaroK" );
 
     paintBuffer.setFont( font );
 
@@ -83,11 +83,11 @@ void OSDWidget::paintOSD( const QString &text )
       paintBuffer.drawText( 2, 0, width()-1, height()-1, AlignLeft | WordBreak, this->text );
       paintBuffer.drawText( 0, 2, width()-1, height()-1, AlignLeft | WordBreak, this->text );
       paintBuffer.drawText( 2, 2, width()-1, height()-1, AlignLeft | WordBreak, this->text );*/
-    paintBuffer.drawText( 3, titleFm->height() + 3, width()-1, height()-1, AlignLeft | WordBreak, this->text );
+    paintBuffer.drawText( 13, titleFm->height() + 3, width()-1, height()-1, AlignLeft | WordBreak, this->text );
 
     // Draw the text
     paintBuffer.setPen( color );
-    paintBuffer.drawText( 1, titleFm->height() + 1, width()-1, height()-1, AlignLeft | WordBreak, this->text );
+    paintBuffer.drawText( 10, titleFm->height() + 1, width()-1, height()-1, AlignLeft | WordBreak, this->text );
     paintBuffer.end();
 
     // Masking for transparency
@@ -128,11 +128,6 @@ void OSDWidget::showOSD( const MetaBundle &bundle )
 {
     if ( isEnabled() )
     {
-        // Currently fixed to the top border of desktop, full width
-        // This should be configurable, already on my TODO
-        move( 10, 40 );
-        resize( 0, 0 );
-
         // Strip HTML tags, expand basic HTML entities
         QString text = QString( "%1 - %2" ).arg( bundle.prettyTitle(), bundle.prettyLength() );
 
@@ -142,12 +137,25 @@ void OSDWidget::showOSD( const MetaBundle &bundle )
         plaintext.replace( QRegExp( "&gt;" ), QString( ">" ) );
         plaintext.replace( QRegExp( "&amp;" ), QString( "&" ) );
 
+        showOSD( plaintext );
+    }
+}
+
+void OSDWidget::showOSD( const QString &text )
+{
+    if ( isEnabled() )
+    {
+        // Currently fixed to the top border of desktop, full width
+        // This should be configurable, already on my TODO
+        move( 10, 40 );
+        resize( 0, 0 );
+
         if ( timerMin->isActive() )
-            textBuffer.append( plaintext );
+            textBuffer.append( text );
         else
         {
             if ( timer->isActive() ) timer->stop();
-            paintOSD( plaintext );
+            paintOSD( text );
         }
     }
 }
