@@ -34,8 +34,6 @@ SHORT-TERM (URGENT):
           <markey> Running on GNOME, amaroK's windows do not show the app icon, but instead a blank icon.
                    Uraeus says amaroK is the only KDE app with this problem.
 
-          <mxcl>   When an engine fails to load, the next best engine should be chosen, not the first in the list.
-
           <markey> When the KDE color scheme is changed while amaroK is running, all toolbar buttons
                    (those with text) lose their texts.
 
