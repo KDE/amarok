@@ -614,7 +614,7 @@ CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, 
     }
 }
 
-QImage 
+QImage
 CollectionDB::fetchImage(const KURL& url, QString &tmpFile)
 {
     if(url.protocol() != "file")
@@ -623,11 +623,11 @@ CollectionDB::fetchImage(const KURL& url, QString &tmpFile)
         KIO::NetAccess::download( url, tmpFile, 0); //TODO set 0 to the window, though it probably doesn't really matter
         return QImage(tmpFile);
     }
-    else 
+    else
     {
         return QImage( url.path() );
     }
-    
+
 }
 bool
 CollectionDB::setAlbumImage( const QString& artist, const QString& album, const KURL& url )
@@ -1683,13 +1683,11 @@ CollectionDB::customEvent( QCustomEvent *e )
 
 DbConnection::DbConnection( DbConfig* config )
     : m_config( config )
-{
-}
+{}
 
 
 DbConnection::~DbConnection()
-{
-}
+{}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -1927,13 +1925,13 @@ MySqlConnection::MySqlConnection( MySqlConfig* config )
                 else
                     { setMysqlError(); }
             }
-            else 
+            else
                 setMysqlError();
 
         }
     }
     else
-		error() << "Failed to allocate/initialize MySql struct\n";
+        error() << "Failed to allocate/initialize MySql struct\n";
 }
 
 
@@ -1987,14 +1985,16 @@ int MySqlConnection::insert( const QString& statement )
     mysql::mysql_query( m_db, statement.utf8() );
     return mysql::mysql_insert_id( m_db );
 }
-#endif
 
-void 
-MySqlConnection::setMysqlError() 
+
+void
+MySqlConnection::setMysqlError()
 {
     m_error = i18n("MySQL reported the following error:<br>") + mysql::mysql_error(m_db)
             + i18n("<p>You can configure MySQL in the Collection section under Settings->Configure amaroK</p>");
 }
+#endif
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS SqliteConfig
