@@ -98,14 +98,12 @@ void OSDWidget::renderOSDText( const QString &text )
 
     // Draw backing rectangle
     bufferPainter.setPen( Qt::black );
-//     bufferPainter.setBrush( backgroundColor() );
     createGradient( textRect.size() );
 
     QBrush brush;
     brush.setPixmap( m_gradient->name() );
     bufferPainter.setBrush( brush );
     bufferPainter.drawRoundRect( textRect, 1500 / textRect.width(), 1500 / textRect.height() );
-//     createGradient( textRect.size() );
     bufferPainter.setFont( font() );
 
     const uint w = textRect.width()  - 1;
@@ -397,7 +395,6 @@ void OSDWidget::createGradient( QSize size )
     m_gradient->close();
 
     kdDebug() << "Gradient for osd: " << m_gradient->name() << endl;
-//     setPaletteBackgroundPixmap( QPixmap( m_gradient->name() ) );
 }
 
 
