@@ -79,7 +79,8 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
         , m_pDcopHandler( new AmarokDcopHandler )
 {
     setCaption( "amaroK" );
-
+    setPaletteForegroundColor( 0x80a0ff );
+    
     //actions
     KStdAction::keyBindings( this, SLOT( slotConfigShortcuts() ), m_pActionCollection );
     KStdAction::keyBindings( this, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection,
