@@ -170,6 +170,7 @@ class GstEngine : public Engine::Base
         GstElement* m_gst_equalizer;
         GstElement* m_gst_identity;
         GstElement* m_gst_volume;
+        GstElement* m_gst_audioscale;
         GstElement* m_gst_audiosink;
 
         QString m_gst_error;

@@ -35,6 +35,22 @@ GstElementDetails gst_equalizer_details =
                           (gchar*) "Parametric Equalizer",
                           (gchar*) "Mark Kretschmann <markey@web.de>" );
 
+GstStaticPadTemplate sink_template = 
+    GST_STATIC_PAD_TEMPLATE ( (gchar*) "sink",
+    			       GST_PAD_SINK,
+			       GST_PAD_ALWAYS,
+			       GST_STATIC_CAPS (
+			                         "audio/x-raw-int" )
+			    );
+
+GstStaticPadTemplate src_template = 
+    GST_STATIC_PAD_TEMPLATE (  (gchar*) "src",
+    			       GST_PAD_SRC,
+			       GST_PAD_ALWAYS,
+			       GST_STATIC_CAPS (
+			                         "audio/x-raw-int" )
+			    );
+
 // static guint gst_equalizer_signals[ LAST_SIGNAL ] = { 0 };
 
 #define _do_init(bla) \
@@ -80,8 +96,8 @@ gst_equalizer_init ( GstEqualizer* obj )
 {
     kdDebug() << k_funcinfo << endl;
 
-    obj->srcpad = gst_pad_new ( "src", GST_PAD_SRC );
-    obj->sinkpad = gst_pad_new ( "sink", GST_PAD_SINK );
+    obj->srcpad = gst_pad_new_from_template ( gst_static_pad_template_get( &src_template),  "src" );
+    obj->sinkpad = gst_pad_new_from_template ( gst_static_pad_template_get( &sink_template),  "sink" );
 
     gst_element_add_pad ( GST_ELEMENT ( obj ), obj->srcpad );
     gst_element_add_pad ( GST_ELEMENT ( obj ), obj->sinkpad );
@@ -116,8 +132,8 @@ gst_equalizer_link (GstPad* pad, const GstCaps* caps)
     * number of channels. */
     mime = gst_structure_get_name (structure);
     if (strcmp (mime, "audio/x-raw-int") != 0) {
-        GST_WARNING ("Wrong mimetype %s provided, we only support %s",
-                    mime, "audio/x-raw-int");
+        GST_WARNING ("Wrong mimetype %s provided on pad %s, we only support %s",
+                    mime, (pad == obj->srcpad) ? "SRC" : "SINK",  "audio/x-raw-int");
         return GST_PAD_LINK_REFUSED;
     }
 
