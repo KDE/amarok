@@ -29,6 +29,7 @@ email                : markey@web.de
 
 using std::vector;
 
+class QTimerEvent;
 class KURL;
 
 class GstEngine : public EngineBase
@@ -59,6 +60,9 @@ class GstEngine : public EngineBase
         void                                     setVolume( int percent );
         void                                     newStreamData( char* data, int size );
 
+    protected:
+        void                                     timerEvent( QTimerEvent* );
+        
     private slots:
         void                                     handleError();
         void                                     stopAtEnd();
@@ -81,21 +85,24 @@ class GstEngine : public EngineBase
         GstElement*                              createElement( GstElement* bin, const QCString& factoryName, const QCString& name );
         void                                     cleanPipeline();
         void                                     interpolate( const vector<float>& inVec, vector<float>& outVec );
+    
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
         /////////////////////////////////////////////////////////////////////////////////////
+        static const int                         TIMER_INTERVAL = 100; //msec
         static GError*                           error_msg;
         static GstEngine*                        s_instance;
         
-        GstElement*                              m_thread;
-        GstElement*                              m_srcelement;
-        GstElement*                              m_audiosink;
-        GstElement*                              m_spider;
-        GstElement*                              m_uadesrc;
-        GstElement*                              m_identity;
-        GstElement*                              m_volumeElement;
-        GstElement*                              m_audioconvert;
-        GstElement*                              m_audioscale;
+        GstElement*                              m_gst_thread;
+        GstElement*                              m_gst_src;
+        GstElement*                              m_gst_audiosink;
+        GstElement*                              m_gst_spider;
+        GstElement*                              m_gst_uadesrc;
+        GstElement*                              m_gst_identity;
+        GstElement*                              m_gst_volume;
+        GstElement*                              m_gst_volumeFade;
+        GstElement*                              m_gst_audioconvert;
+        GstElement*                              m_gst_audioscale;
 
         vector<float>                            m_scopeBuf;
         uint                                     m_scopeBufIndex;
@@ -105,6 +112,8 @@ class GstEngine : public EngineBase
         int                                      m_streamBufIndex;
         bool                                     m_streamBufStop;
         KIO::TransferJob*                        m_transferJob;
+        
+        float                                    m_fadeValue;
         
         bool                                     m_pipelineFilled;
 };

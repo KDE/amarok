@@ -20,7 +20,6 @@ email                : markey@web.de
 #include "enginebase.h"
 #include "engineobserver.h"
 
-#include <assert.h>
 #include <math.h>            //setVolume(), timerEvent()
 #include <string>
 #include <vector>
@@ -353,11 +352,10 @@ void ArtsEngine::play( const KURL& url, bool stream )
 
     if ( !m_pPlayObject || m_pPlayObject->isNull() ) {
         connectTimeout();
-        emit stopped();
     }
     else
     {
-        connect( m_pPlayObject, SIGNAL( destroyed() ), this, SIGNAL( stopped() ) );
+//         connect( m_pPlayObject, SIGNAL( destroyed() ), this, SIGNAL( stopped() ) );
 
         if ( m_pPlayObject->object().isNull() ) {
             kdDebug() << k_funcinfo << " m_pPlayObject->object().isNull()" << endl;
@@ -425,6 +423,7 @@ void ArtsEngine::stop()
 
     m_xfadeFadeout = true;
     startXfade();
+    emit stopped();
 }
 
 
@@ -668,7 +667,6 @@ void ArtsEngine::loadEffects()
     kdDebug() << k_funcinfo << endl;
 
     QDomDocument doc;
-    assert( kapp );
     QFile file( kapp->dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "arts-effects.xml" );
 
     if ( !file.open( IO_ReadOnly ) )
@@ -791,7 +789,6 @@ void ArtsEngine::saveEffects()
         removeEffect( it.key() );
     }
 
-    assert( kapp );
     QString path = kapp->dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "arts-effects.xml";
     QFile::remove( path );
     QFile file( path );
@@ -806,7 +803,6 @@ void ArtsEngine::saveEffects()
 ArtsEngine::ArtsConfigWidget::ArtsConfigWidget( Arts::Object object )
         : QWidget( 0, 0, Qt::WType_TopLevel | Qt::WDestructiveClose )
 {
-    assert( kapp );
     setCaption( kapp->makeStdCaption( QString( object._interfaceName().c_str() ) ) );
 
     Arts::GenericGuiFactory factory;

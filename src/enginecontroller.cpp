@@ -194,7 +194,6 @@ void EngineController::stop()
 {
     m_bundle = MetaBundle();
     m_pEngine->stop();
-    stateChangedNotify( m_pEngine->state() );
 }
 
 
@@ -254,6 +253,7 @@ EngineBase *EngineController::loadEngine() //static
 
     m_pEngine->init( restartArts, amaroK::SCOPE_SIZE, AmarokConfig::rememberEffects() );
     connect( m_pEngine, SIGNAL( endOfTrack() ), instance(), SLOT( slotEndOfTrack() ) );
+    connect( m_pEngine, SIGNAL( stopped() ), instance(), SLOT( slotStopped() ) );
 
     instance()->m_pEngine = m_pEngine;
 
@@ -339,6 +339,12 @@ void EngineController::slotEndOfTrack()
     }
     else
         next();
+}
+
+
+void EngineController::slotStopped()
+{
+    stateChangedNotify( EngineBase::Empty );
 }
 
 

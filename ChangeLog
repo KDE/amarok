@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.1:
+  ADD: Fadeouts for GStreamer-Engine.
   ADD: New Playlist Browser, organizes multiple playlists, and offers smart
        playlist functionality.
   ADD: Support for redirected streams and streams with no specified port.

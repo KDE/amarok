@@ -74,6 +74,7 @@ private slots:
     void playRemote( KIO::Job* );
     void slotMainTimer();
     void slotEndOfTrack();
+    void slotStopped();
     void newMetaData( const MetaBundle & );
 
 private:
