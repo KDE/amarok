@@ -121,6 +121,11 @@ void PlaylistItem::setText( int column, const QString &newText )
             //FIXME removing a tag with inline edit doesn't get updated here, but
             //      you've hacked TagWriter so it sets a space as the new text
             //FIXME that needs fixing because it means the scrolling title has a space! dang.
+            
+            //NOTE if you don't setText() it crashes amaroK!
+            //<markey> HOTFIX re-inserted this to prevent big crash!
+            KListViewItem::setText( column, text( column ) );
+            
             break;
         }
         //else do default -->
