@@ -1,9 +1,9 @@
 /***************************************************************************
-                         loader.cpp  -  loader application for amaroK
-                            -------------------
-   begin                : 2004/02/19
-   copyright            : (C) 2004 by Mark Kretschmann
-   email                : markey@web.de
+                        loader.cpp  -  loader application for amaroK
+                           -------------------
+  begin                : 2004/02/19
+  copyright            : (C) 2004 by Mark Kretschmann
+  email                : markey@web.de
 ***************************************************************************/
 
 /***************************************************************************
@@ -43,24 +43,23 @@ Loader::Loader( int& argc, char** argv )
         , m_pOsd ( 0 )
 {
     m_sockfd = tryConnect( true );
-    
-    
+
+
     //determine whether an amaroK instance is already running (LoaderServer)
-    if ( m_sockfd == -1 )
-    {
+    if ( m_sockfd == -1 ) {
         //no, amaroK is not running -> start new instance, show splash
         std::cout << "[amaroK loader] amaroK not running. Trying to start it..\n";
 
         QStringList args( "amarokapp" );
-        for( int i = 1; i < argc; i++ ) args << argv[i]; //start at 1 to avoid appName
+        for ( int i = 1; i < argc; i++ ) args << argv[ i ]; //start at 1 to avoid appName
 
         QProcess proc( args );
-        connect( &proc, SIGNAL(processExited()), SLOT(doExit()) );
+        connect( &proc, SIGNAL( processExited() ), SLOT( doExit() ) );
         proc.setCommunication( QProcess::Stdout );
         proc.start();
 
         //show splash after starting process so we don't cause a delay
-        if( splashEnabled() ) showSplash();
+        if ( splashEnabled() ) showSplash();
 
         //periodically check for amaroK startup completion
         startTimer( TIMEOUT );
@@ -74,31 +73,27 @@ Loader::Loader( int& argc, char** argv )
         //we transmit the startup_id, so amarokapp can stop the startup animation
         QCString str( ::getenv( "DESKTOP_STARTUP_ID" ) );
 
-    for ( int i = 0; i < argc; i++ )
-    {
-        QString( tmp ) = argv[ i ];
-        QFileInfo fi = tmp;
-        QUrl url = tmp;
+        for ( int i = 0; i < argc; i++ ) {
+            QString( tmp ) = argv[ i ];
+            QFileInfo fi = tmp;
+            QUrl url = tmp;
 
-       // This is for the -e bug, the cwd is put in front of files/relative directories.	
-            if ( fi.exists() && url.isLocalFile() && str[0] != '/' )
-	    {
-                    long size;
-                    char *buf;
-                    char *ptr;
-                    size = pathconf(".", _PC_PATH_MAX);
-                    if ((buf = (char *)malloc((size_t)size)) != NULL)
-                    ptr = getcwd(buf, (size_t)size);
-
-                    str += '|'; 
-                    str += ptr;
-                    str += '/';
-                    str += argv[ i ];
-                } else {
-                    str += '|'; 
-                    str += argv[ i ];
-                } 
+            //put cwd in front of files/relative directories
+            if ( fi.exists() && url.isLocalFile() && str[ 0 ] != '/' ) {
+                size_t size = ::pathconf( ".", _PC_PATH_MAX );
+                char* buf = new char[size];
+                QCString cwd = ::getcwd( buf, size );
+                delete buf;
+                    
+                str += '|';
+                str += cwd;
+                str += '/';
+                str += argv[ i ];
+            } else {
+                str += '|';
+                str += argv[ i ];
             }
+        }
         ::send( m_sockfd, str, str.length() + 1, 0 ); //+1 = /0 termination
 
         doExit();
@@ -119,8 +114,7 @@ bool Loader::splashEnabled() const
 
     QFile file( path ); //close() is called in the dtor
 
-    if( file.open( IO_ReadOnly ) )
-    {
+    if ( file.open( IO_ReadOnly ) ) {
         QString line;
 
         while ( file.readLine( line, 2000 ) != -1 )
@@ -138,12 +132,12 @@ bool Loader::splashEnabled() const
 void Loader::showSplash()
 {
     //get KDE prefix from kde-config
-    QProcess proc( QString("kde-config") ); //"--install data" doesn't work! should do..
+    QProcess proc( QString( "kde-config" ) ); //"--install data" doesn't work! should do..
     proc.addArgument( "--prefix" );
     proc.start();
 
     //wait until process has finished
-    while( proc.isRunning() ) ::usleep( 100 );
+    while ( proc.isRunning() ) ::usleep( 100 );
 
     //read output from kde-config
     QString path = proc.readStdout();
@@ -176,8 +170,7 @@ int Loader::tryConnect( bool verbose )
 
     // find out current user home dir
     // (code bits from kdelibs/kinit/lnusertemp.c)
-    if( path.isEmpty() )
-    {
+    if ( path.isEmpty() ) {
         int uid = getuid();
         QCString home_dir = getenv( "HOME" );
         QCString kde_home = uid ? getenv( "KDEHOME" ) : getenv( "KDEROOTHOME" );
@@ -200,13 +193,13 @@ int Loader::tryConnect( bool verbose )
                 qFatal( "Aborting. Home directory path too long!" );
 
             path = home_dir;
-            kde_home = kde_home.mid(1);
+            kde_home = kde_home.mid( 1 );
         }
         path += kde_home;
         path += "/socket-";
 
-        char hostname[100];
-        if ( gethostname( &hostname[0], 100 ) != 0 )
+        char hostname[ 100 ];
+        if ( gethostname( &hostname[ 0 ], 100 ) != 0 )
             qFatal( "Aborting. Could not determine hostname." );
 
         path += hostname;
@@ -226,7 +219,7 @@ int Loader::tryConnect( bool verbose )
     if ( verbose )
         std::cerr << "[amaroK loader] connecting to " << path << '\n';
 
-    if ( ::connect( fd, (sockaddr*)&local, sizeof(local) ) == -1 ) {
+    if ( ::connect( fd, ( sockaddr* ) & local, sizeof( local ) ) == -1 ) {
         ::close ( fd );
         return -1;
     }
@@ -252,19 +245,16 @@ void Loader::timerEvent( QTimerEvent* )
 {
     static uint delay;
 
-    delay   += TIMEOUT;
+    delay += TIMEOUT;
     m_sockfd = tryConnect();
 
-    if( m_sockfd != -1 )
-    {
+    if ( m_sockfd != -1 ) {
         killTimers();
 
         std::cout << "[amaroK loader] startup successful.\n";
         ::send( m_sockfd, "STARTUP", 8, 0 );
         doExit();
-    }
-    else if( delay >= 30*1000 )
-    {
+    } else if ( delay >= 30 * 1000 ) {
         std::cout << "[amaroK loader] timed out trying to contact to amaroK.\n";
         doExit();
     }
