@@ -521,6 +521,8 @@ void App::readConfig()
                             this, SLOT( slotAddLocation() ), true, true );
     m_pGlobalAccel->insert( "show", i18n( "Show/Hide the Playlist" ), 0, KKey("WIN+p"), 0,
                             this, SLOT( slotPlaylistShowHide() ), true, true );
+    m_pGlobalAccel->insert( "play_pause", i18n( "Play/Pause" ), 0, KKey("WIN+l"), 0,
+                            ec, SLOT( playPause() ), true, true );
     m_pGlobalAccel->insert( "play", i18n( "Play" ), 0, KKey("WIN+x"), 0,
                             ec, SLOT( play() ), true, true );
     m_pGlobalAccel->insert( "pause", i18n( "Pause" ), 0, KKey("WIN+c"), 0,

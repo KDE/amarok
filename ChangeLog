@@ -2,8 +2,10 @@ amaroK ChangeLog
 ================
 (c) 2002-2004 the amaroK authors.
 
-
-  CHG: Small player-window is now optional.
+ 
+  ADD: Global shortcut for play/pause action, as requested by multimedia-keyboard
+       users (BR 79541).
+  CHG: Small player-window can be switched off now.
   FIX: CollectionBrowser out of order after scanning.
   FIX: TitleProxy partly rewritten. Should be more compatible with many streams
        and not be able to freeze the app any longer.
