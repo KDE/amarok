@@ -217,15 +217,15 @@ class AmarokSystray : public KSystemTray
 
          contextMenu()->insertSeparator();
 
-         contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunback.png" )), "(&Z) Prev", kapp, SLOT( slotPrev() ) );
+         contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunback.png" )), i18n("[&Z] Prev"), kapp, SLOT( slotPrev() ) );
 
-         contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunplay.png" )), "(&X) Play", kapp, SLOT( slotPlay() ) );
+         contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunplay.png" )), i18n("[&X] Play"), kapp, SLOT( slotPlay() ) );
 
-         contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunpause.png" )), "(&C) Pause", kapp, SLOT( slotPause() ) );
+         contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunpause.png" )), i18n("[&C] Pause"), kapp, SLOT( slotPause() ) );
 
-         contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunstop.png" )), "(&V) Stop", kapp, SLOT( slotStop() ) );
+         contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunstop.png" )), i18n("[&V] Stop"), kapp, SLOT( slotStop() ) );
 
-         contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunforward.png" )), "(&B) Next", kapp, SLOT( slotNext() ) );
+         contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunforward.png" )), i18n("[&B] Next"), kapp, SLOT( slotNext() ) );
 
          // don't love them just yet
          setAcceptDrops(false);
@@ -341,7 +341,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name ) : QWidget( paren
     lay->addItem( new QSpacerItem( 0, 5 ) );
     QBoxLayout* lay2 = new QHBoxLayout( lay );
     lay2->addWidget( m_pSlider );
-    lay2->addWidget( m_pSliderVol );
+    lay3->addWidget( m_pSliderVol );
 
     lay->addWidget( m_pFrameButtons );
     QBoxLayout *layButtons = new QHBoxLayout( m_pFrameButtons );
@@ -364,7 +364,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name ) : QWidget( paren
 
     // set up system tray
     m_pTray = new AmarokSystray( this );
-//    m_pTray->setPixmap( pApp->miniIcon() );
     m_pTray->show();
     QToolTip::add( m_pTray, i18n( "amaroK media player" ) );
 
