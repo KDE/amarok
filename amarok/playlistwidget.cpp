@@ -236,20 +236,31 @@ void PlaylistWidget::handleOrder( RequestType rt ) //SLOT
       break;
 
    case Next:
-      if( AmarokConfig::repeatTrack() ) break;
-      else if( AmarokConfig::randomMode() && childCount() > 3 ) //FIXME is childCount O(1)?
-      {
-         do
-         { item = (PlaylistItem *)itemAtIndex( KApplication::random() % childCount() ); }
-         while( item == currentTrack() ); // try not to play same track twice in a row
-      }
+      if( AmarokConfig::repeatTrack() )
+          break;
       else
-      {
-         item = (PlaylistItem*)item->itemBelow();
+          if( AmarokConfig::randomMode() && childCount() > 3 ) //FIXME is childCount O(1)?
+          {
+              int x;
+              do
+              {
+                  item = (PlaylistItem *)itemAtIndex( KApplication::random() % childCount() );
+                  x = recentPtrs.find( item );
+              }
+              while( x >= 0 ); // try not to play the same tracks two often
 
-         if( item == NULL && AmarokConfig::repeatPlaylist() )
-            item = (PlaylistItem*)firstChild();
-      }
+              // add current item to the recently played list, and make sure this list doesn't get too large
+              recentPtrs.append( item );
+              while ( recentPtrs.count() > ( childCount() / 2 ) )
+                  recentPtrs.remove( recentPtrs.at( 0 ) );
+          }
+          else
+          {
+              item = (PlaylistItem*)item->itemBelow();
+
+              if( item == NULL && AmarokConfig::repeatPlaylist() )
+                  item = (PlaylistItem*)firstChild();
+          }
       break;
 
    case Current:
