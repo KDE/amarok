@@ -3,6 +3,8 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+VERSION 0.9:
+  * fix: fixed several stability issues concerning stream-playback
   * add: whatsthis for all configurable options.
   * fix: amaroK registering with dcop as "amarok-PID". it's back to just "amarok" now.
   * fix: OSD not updating correctly when changing volume
