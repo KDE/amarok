@@ -164,6 +164,7 @@ PlayerApp::~PlayerApp()
 
     delete m_pEffectWidget;
     delete m_pPlayerWidget; //is parent of browserWin (and thus deletes it)
+    delete m_pOSD;
 
     m_XFade             = Amarok::Synth_STEREO_XFADE::null();
     m_scope             = Arts::StereoFFTScope::null();
