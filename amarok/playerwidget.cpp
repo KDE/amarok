@@ -22,6 +22,8 @@
 #include "playlistwidget.h"
 #include "effectwidget.h"
 
+#include "debugareas.h"
+
 #include <qbitmap.h>
 #include <qclipboard.h>
 #include <qevent.h>
@@ -205,23 +207,26 @@ AmarokSystray::AmarokSystray( PlayerWidget *child ) : KSystemTray( child )
     // Re-construct menu
     KAction* quitAction = KStdAction::quit(this, SIGNAL(quitSelected()), actionCollection());
 
-    //actions first, then other stuff, quit last
+    // berkus: Since it doesn't come to you well, i'll explain it here:
+    // We put playlist actions last because: 1) you don't want to accidentally
+    // switch amaroK off by pushing rmb on tray icon and then suddenly lmb on the
+    // bottom item. 2) if you do like in case 1) the most frequent operation is to 
+    // change to next track, so it must be at bottom. [usability]
     contextMenu()->clear();
     contextMenu()->insertTitle(kapp->miniIcon(), kapp->caption());
-
-    contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunback.png" )), "(&Z) Prev", kapp, SLOT( slotPrev() ) );
-    contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunplay.png" )), "(&X) Play", kapp, SLOT( slotPlay() ) );
-    contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunpause.png" )), "(&C) Pause", kapp, SLOT( slotPause() ) );
-    contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunstop.png" )), "(&V) Stop", kapp, SLOT( slotStop() ) );
-    contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunforward.png" )), "(&B) Next", kapp, SLOT( slotNext() ) );
-
-    contextMenu()->insertSeparator();
 
     contextMenu()->insertItem(i18n("&Configure..."), kapp, SLOT(slotShowOptions()));
     contextMenu()->insertItem(i18n("&Help"), (new KHelpMenu(this, KGlobal::instance()->aboutData()))->menu());
     quitAction->plug(contextMenu());
     connect(this, SIGNAL(quitSelected()), child, SLOT(close()));
 
+    contextMenu()->insertSeparator();
+
+    contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunback.png" )), i18n("[&Z] Prev"), kapp, SLOT( slotPrev() ) );
+    contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunplay.png" )), i18n("[&X] Play"), kapp, SLOT( slotPlay() ) );
+    contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunpause.png" )), i18n("[&C] Pause"), kapp, SLOT( slotPause() ) );
+    contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunstop.png" )), i18n("[&V] Stop"), kapp, SLOT( slotStop() ) );
+    contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunforward.png" )), i18n("[&B] Next"), kapp, SLOT( slotNext() ) );
 
     // don't love them just yet
     setAcceptDrops(false);
@@ -229,22 +234,22 @@ AmarokSystray::AmarokSystray( PlayerWidget *child ) : KSystemTray( child )
 
 void AmarokSystray::wheelEvent( QWheelEvent *e )
 {
-        if(e->orientation() == Horizontal)
-          return;
-
-        switch( e->state() ) {
-        case ShiftButton:
-          static_cast<PlayerApp *>(kapp)->m_pPlayerWidget->wheelEvent( e );
-          break;
-        default:
-          if(e->delta() > 0)
+   if(e->orientation() == Horizontal)
+      return;
+   
+   switch( e->state() ) {
+      case ShiftButton:
+         static_cast<PlayerApp *>(kapp)->m_pPlayerWidget->wheelEvent( e );
+         break;
+      default:
+         if(e->delta() > 0)
             static_cast<PlayerApp *>(kapp)->slotNext();
-          else
+         else
             static_cast<PlayerApp *>(kapp)->slotPrev();
-          break;
-        }
-
-        e->accept();
+         break;
+   }
+   
+   e->accept();
 }
 
 // CLASS PlayerWidget ------------------------------------------------------------
