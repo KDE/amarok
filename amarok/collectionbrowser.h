@@ -21,15 +21,21 @@ class ThreadWeaver;
 class QCString;
 class QStringList;
 class QCustomEvent;
+class KComboBox;
 class KDirLister;
 
 
 class CollectionBrowser: public QVBox 
 {
-    friend class Browser;
+    Q_OBJECT
+    friend class CollectionView;
     
     public:
         CollectionBrowser( const char* name );
+    
+    private:
+    //attributes:
+        KComboBox* m_comboBox;
 };
 
 
@@ -42,12 +48,15 @@ class CollectionView : public KIconView
         CollectionView( CollectionBrowser* parent );
         ~CollectionView();
         
+    signals:
+        void tagsReady();    
+        
     private slots:
         void setupDirs();    
         void scan();        
-    
-    private:
         void renderView();
+            
+    private:
         void readDir( const KURL& url );
         void dumpDb();
         void customEvent( QCustomEvent* );
@@ -67,7 +76,8 @@ class CollectionView : public KIconView
         KDirLister* m_dirLister;
         sqlite* m_db;                
         QStringList m_dirs;
-        
+        QString m_category;
+                
 /*    class Item : public KIconViewItem
     {
         public:

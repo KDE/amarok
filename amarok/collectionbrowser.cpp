@@ -12,16 +12,17 @@
 #include "threadweaver.h"
 
 #include <sqlite.h>
-#include <unistd.h>
 
 #include <qcstring.h>
 #include <qptrlist.h>
 #include <qpushbutton.h>
 
 #include <kapplication.h>
+#include <kcombobox.h>
 #include <kdebug.h>
 #include <kdirlister.h>
 #include <kglobal.h>
+#include <klocale.h>
 #include <kstandarddirs.h>
 #include <kurldrag.h>    //dragObject()
 
@@ -30,14 +31,24 @@ CollectionBrowser::CollectionBrowser( const char* name )
     : QVBox( 0, name )
 {
     QHBox* hbox = new QHBox( this );
-    QPushButton* button  = new QPushButton( "Select Folders", hbox );
-    QPushButton* button1 = new QPushButton( "Scan", hbox );
-        
+    QPushButton* button  = new QPushButton( i18n( "Folders" ), hbox );
+    QPushButton* button1 = new QPushButton( i18n( "Scan" ), hbox );
+    
+    m_comboBox = new KComboBox( this );    
+    m_comboBox->insertItem( "Album" );
+    m_comboBox->insertItem( "Artist" );
+    m_comboBox->insertItem( "Genre" );
+    m_comboBox->insertItem( "Year" );
+    
     CollectionView* view = new CollectionView( this );
 
-    connect( button,  SIGNAL( clicked() ), view, SLOT( setupDirs() ) );
-    connect( button1, SIGNAL( clicked() ), view, SLOT( scan() ) );
-}
+    connect( button,     SIGNAL( clicked() ),
+             view,         SLOT( setupDirs() ) );
+    connect( button1,    SIGNAL( clicked() ),
+             view,         SLOT( scan() ) );
+    connect( m_comboBox, SIGNAL( activated( int ) ),
+             view,         SLOT( renderView() ) );
+}  
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +63,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 {
     kdDebug() << k_funcinfo << endl;
  
-    setGridX( 100 );
+    setGridX( 150 );
     setGridY(  35 );
                
     setSelectionMode( QIconView::Extended );
@@ -60,21 +71,32 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 
     QCString path = ( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" )
                       + "collection.db" ).latin1(); 
-    //remove old db 
-    ::unlink( path );
+    
     m_db = sqlite_open( path, 0, 0 );
     
     if ( !m_db )
         kdWarning() << k_funcinfo << "Could not open SQLite database\n";
     
-    QCString command = "create table tags ( url varchar(100), title varchar(100), artist varchar(100) );";
+    QCString command = "create table tags ( url varchar(100),"
+                                           "album varchar(100),"
+                                           "artist varchar(100),"
+                                           "genre varchar(100),"
+                                           "title varchar(100),"
+                                           "year varchar(4) );";
+    
     execSql( command, 0, 0 );
 
     KConfig* config = KGlobal::config();
     config->setGroup( "Collection Browser" );
     m_dirs = config->readListEntry( "Folders" );
-
-    scan();
+    QString cat = config->readEntry( "Category" );
+    
+    for ( int i = 0; i < m_parent->m_comboBox->count(); i++ )
+        if ( m_parent->m_comboBox->text( i ) == cat )
+            m_parent->m_comboBox->setCurrentItem( i );
+    
+    connect( this, SIGNAL( tagsReady() ),
+             this,   SLOT( renderView() ) );
 }
 
 
@@ -85,6 +107,7 @@ CollectionView::~CollectionView()
     KConfig* config = KGlobal::config();
     config->setGroup( "Collection Browser" );
     config->writeEntry( "Folders", m_dirs );
+    config->writeEntry( "Category", m_category );
     
     delete m_dirLister;
     sqlite_close( m_db );
@@ -108,13 +131,15 @@ CollectionView::setupDirs() //SLOT
 void 
 CollectionView::scan() //SLOT
 {
+    //remove all records
+    QCString command = "delete from tags;";
+    execSql( command, 0, 0 );
+    
     for ( uint i = 0; i < m_dirs.count(); i ++ ) {
         KURL url;   
         url.setPath( m_dirs[i] );
         readDir( url );                
     }
-    
-    renderView();
 }
 
 
@@ -124,8 +149,13 @@ CollectionView::renderView() //SLOT
     kdDebug() << k_funcinfo << endl;
     
     clear();
+
+    //query database for all records with the specified category
+    m_category = m_parent->m_comboBox->currentText();
+    QCString command = "select ";
+    command += m_category.lower().latin1();
+    command += " from tags;";
     
-    QCString command = "select artist from tags;";
     QStringList values;
     QStringList names;
     
@@ -172,17 +202,26 @@ CollectionView::customEvent( QCustomEvent *e )
             bundle = c->list().at( i );
 //             kdDebug() << bundle->artist() << endl;
             
-            QCString command = "insert into tags( url, artist ) values ('";
+            QCString command = "insert into tags( url, album, artist, genre, title, year ) values ('";
             command += bundle->url().path().latin1();
             command +=         "','";
+            command += bundle->album().latin1();
+            command +=         "','";
             command += bundle->artist().latin1();
+            command +=         "','";
+            command += bundle->genre().latin1();
+            command +=         "','";
+            command += bundle->title().latin1();
+            command +=         "','";
+            command += bundle->year().latin1();
             command +=         "');";
             
             execSql( command, 0, 0 );
             delete bundle;
         }
     }
-    dumpDb();
+    
+    emit tagsReady();
 }
 
 
@@ -206,7 +245,7 @@ CollectionView::execSql( const QCString& statement,
                                      QStringList* const values,
                                      QStringList* const names )
 {
-    kdDebug() << k_funcinfo << endl;
+//     kdDebug() << k_funcinfo << endl;
     
     if ( !m_db ) {
         kdWarning() << k_funcinfo << "SQLite pointer == NULL.\n";
