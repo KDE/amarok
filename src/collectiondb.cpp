@@ -148,7 +148,9 @@ CollectionDB::getImageForAlbum( const QString artist, const QString album, const
 {
     QString widthKey = QString::number( width ) + "@";
     QString key( QFile::encodeName( artist + " - " + album ) );
-    key.replace( " ", "_" ).append( ".png" );
+    key.replace( " ", "_" ).replace( "?", "" ).append( ".png" );
+    
+    kdDebug() << "KEEEEEEEEEEEEEEY: " << key.lower() << endl;
     
     if ( m_cacheDir.exists( widthKey + key.lower() ) )
         return m_cacheDir.filePath( widthKey + key.lower() );
@@ -257,7 +259,7 @@ CollectionDB::removeImageFromAlbum( const QString artist, const QString album )
 {
     QString widthKey = "*@";
     QString key( QFile::encodeName( artist + " - " + album ) );
-    key.replace( " ", "_" ).append( ".png" );
+    key.replace( " ", "_" ).replace( "?", "" ).append( ".png" );
     
     // remove scaled versions of images
     QStringList scaledList = m_cacheDir.entryList( widthKey + key.lower() );
@@ -960,7 +962,7 @@ CollectionDB::saveCover( const QString& keyword, const QPixmap& pix )
     QImage img( pix.convertToImage() );
     
     QString fileName( QFile::encodeName( keyword ) );
-    fileName.replace( " ", "_" ).append( ".png" );
+    fileName.replace( " ", "_" ).replace( "?", "" ).append( ".png" );
     
     img.save( m_coverDir.filePath( fileName.lower() ), "PNG");
     
