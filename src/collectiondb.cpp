@@ -1928,9 +1928,9 @@ DbConnectionPool::DbConnectionPool() : m_semaphore( POOL_SIZE )
             new MySqlConfig(
                 AmarokConfig::mySqlHost(),
                 AmarokConfig::mySqlPort(),
+                AmarokConfig::mySqlDbName(),
                 AmarokConfig::mySqlUser(),
-                AmarokConfig::mySqlPassword(),
-                AmarokConfig::mySqlDbName());
+                AmarokConfig::mySqlPassword() );
         dbConn = new MySqlConnection( static_cast<MySqlConfig*> ( m_dbConfig ) );
     }
     else
