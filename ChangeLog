@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.2.3:
   FEATURES:
+    * Graphequalizer script can now enable and disable the equalizer.
     * New DCOP call "player: equalizerEnabled" returns whether or not 
       the equalizer is enabled.
     * OSD notification for mute.
@@ -27,7 +28,7 @@ VERSION 1.2.3:
   BUGFIXES:
     * 'Show Toolbar' remembers its settings between sessions. (BR 98662)
     * When doing Musicbrainz lookup from the Context browser, search for the
-      real track, not the whole album
+      real track, not the whole album.
     * Memleak when a radio stream stalled. (BR 102047)
     * The Collection Scan finally checks for the right file modification time.
     * Adding a compilation disc from ContextBrowser was broken.
