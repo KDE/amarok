@@ -135,7 +135,7 @@ void GLAnalyzer::drawScope()
 void GLAnalyzer::paintGL()
 {
         glMatrixMode( GL_MODELVIEW );
-#if 1
+#if 0
         glClear( GL_COLOR_BUFFER_BIT |  GL_DEPTH_BUFFER_BIT );
 #else
         glDisable( GL_DEPTH_TEST );
