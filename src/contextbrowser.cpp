@@ -253,7 +253,7 @@ void ContextBrowser::slotContextMenu( const QString& url, const QPoint& point )
 {
     if ( url.startsWith( "fetchcover:" ) )
     {
-        QStringList info = QStringList::split( " @@@ ", url );
+        QStringList info = QStringList::split( " @@@ ", QString( url ).remove( "fetchcover:" ) );
         enum menuIds { SHOW, FETCH, DELETE };
 
         KPopupMenu menu( this );
