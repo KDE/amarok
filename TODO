@@ -178,6 +178,40 @@ DUMPED:
 
 BACKTRACES/VALGRIND/DEFECTS:
 
+2003/01/08
+<markey>  got this crash today while clicking around on player widget:
+
+[New Thread 1024 (LWP 5554)]
+[New Thread 2049 (LWP 5557)]
+0x420fc449 in wait4 () from /lib/libc.so.6
+#0  0x420fc449 in wait4 () from /lib/libc.so.6
+#1  0x42178fd0 in __DTOR_END__ () from /lib/libc.so.6
+#2  0x41f20a73 in waitpid () from /lib/libpthread.so.0
+#3  0x41419798 in KCrash::defaultCrashHandler(int) ()
+   from /opt/kde3/lib/libkdecore.so.4
+#4  0x41f1e11b in pthread_sighandler () from /lib/libpthread.so.0
+#5  <signal handler called>
+#6  0x41c5a2e4 in av_ () from /usr/lib/qt3/lib/libqt-mt.so.3
+#7  0x417b1345 in QApplication::internalNotify(QObject*, QEvent*) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#8  0x417b0735 in QApplication::notify(QObject*, QEvent*) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#9  0x413aa933 in KApplication::notify(QObject*, QEvent*) ()
+   from /opt/kde3/lib/libkdecore.so.4
+#10 0x41748d4e in QETWidget::translateMouseEvent(_XEvent const*) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#11 0x4174676f in QApplication::x11ProcessEvent(_XEvent*) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#12 0x4175bc07 in QEventLoop::processEvents(unsigned) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#13 0x417c4516 in QEventLoop::enterLoop() ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#14 0x417c43b8 in QEventLoop::exec() () from /usr/lib/qt3/lib/libqt-mt.so.3
+#15 0x417b1591 in QApplication::exec() () from /usr/lib/qt3/lib/libqt-mt.so.3
+#16 0x08061f34 in ?? ()
+#17 0x420764f2 in __libc_start_main () from /lib/libc.so.6
+
+
 12.19.03:
 valgrind --logfile=amarok12_19_03valgrind.log --trace-children=yes /opt/kde3/bin/amarok
 
