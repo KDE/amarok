@@ -162,7 +162,7 @@
     </entry>
     <entry key="Crossfade Length" type="Int">
         <label>Length of crossfade, in milliseconds</label>
-        <default>2200</default>
+        <default>2000</default>
         <whatsthis>The length of the crossfade between tracks in milliseconds.</whatsthis>
     </entry>
     <entry key="Sound System" type="String">
