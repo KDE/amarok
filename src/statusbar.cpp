@@ -247,24 +247,22 @@ inline void StatusBar::slotPauseTimer() //slot
 
 /********** ToggleLabel ****************/
 
-ToggleLabel::ToggleLabel( const QString &text, KStatusBar* const bar, const KToggleAction* const action ) :
-    QLabel( text, bar )
-    , m_State( false )
+ToggleLabel::ToggleLabel( const QString &text, KStatusBar* const bar, KToggleAction* const action )
+    : QLabel( text, bar )
+    , m_state( false )
+    , m_action( action )
 {
     setFixedSize( sizeHint() );
 
     bar->addWidget( this, 0, true );
-    connect( this,   SIGNAL(toggled( bool )), action, SLOT(setChecked( bool )) );
-    connect( action, SIGNAL(toggled( bool )), this,   SLOT(setChecked( bool )) );
+    connect( action, SIGNAL(toggled( bool )), SLOT(setChecked( bool )) );
 
     setChecked( action->isChecked() );
 }
 
 void ToggleLabel::mouseDoubleClickEvent( QMouseEvent */*e*/ )
 {
-    setChecked( !m_State );
-
-    emit toggled( m_State );
+    m_action->activate();
 }
 
 void ToggleLabel::setChecked( bool on )
@@ -277,7 +275,7 @@ void ToggleLabel::setChecked( bool on )
     else
         setPaletteForegroundColor( colorGroup().mid() );
 
-    m_State = on;
+    m_state = on;
 }
 
 #include "statusbar.moc"

@@ -130,6 +130,7 @@ class Playlist : private KListView, public EngineObserver
         void slotHeaderResized( int, int, int );
         void saveUndoState();
         void columnOrderChanged();
+        void updateNextPrev();
 
     private:
         PlaylistItem *restoreCurrentTrack();
@@ -140,7 +141,6 @@ class Playlist : private KListView, public EngineObserver
         void switchState( QStringList&, QStringList& );
         void removeItem( PlaylistItem* );
         void refreshNextTracks( int=-1 );
-        void updateNextPrev();
 
         //engine observer functions
         void engineNewMetaData( const MetaBundle&, bool );

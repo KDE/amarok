@@ -27,6 +27,7 @@
 #include "engineobserver.h"
 
 namespace amaroK { class Slider; }
+class KAction;
 class MetaBundle;
 class PlayerWidget;
 class QBitmap;
@@ -38,7 +39,7 @@ class QStringList;
 
 class NavButton : public QPushButton //no QOBJECT macro - why bother?
 {
-public: NavButton( QWidget*, const QString&, QObject*, const char* );
+public: NavButton( QWidget*, const QString&, KAction* );
 };
 
 class IconButton : public QButton

@@ -207,6 +207,7 @@ Vis::SocketNotifier::request( int sockfd ) //slot
 
             delete scope;
         }
+        #if 0 //TODO renenable as required
         else if( result == "FFT" )
         {
             FHT fht( 9 ); //data set size 512
@@ -237,6 +238,7 @@ Vis::SocketNotifier::request( int sockfd ) //slot
 
             delete scope;
         }
+        #endif
 
     } else {
 

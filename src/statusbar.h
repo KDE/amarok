@@ -24,6 +24,7 @@
 class QCustomEvent;
 class QSlider;
 class QTimer;
+class KAction;
 class KProgress;
 class KToggleAction;
 
@@ -75,7 +76,7 @@ class ToggleLabel : public QLabel
 {
     Q_OBJECT
 public:
-    ToggleLabel( const QString&, KStatusBar* const, const KToggleAction* const );
+    ToggleLabel( const QString&, KStatusBar* const, KToggleAction* const );
 
 protected:
     virtual void mouseDoubleClickEvent ( QMouseEvent* );
@@ -83,11 +84,9 @@ protected:
 public slots:
     void setChecked( bool );
 
-signals:
-    void toggled( bool state );
-
 private:
-    bool m_State;
+    bool     m_state;
+    KAction *m_action;
 };
 
 } //namespace amaroK

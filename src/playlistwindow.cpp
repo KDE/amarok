@@ -186,9 +186,9 @@ PlaylistWindow::init()
         } //</StreamBrowser>
 
         if( AmarokConfig::showWelcomeTab() )
-        //<WelcomePage>
+        {
             m_browsers->addBrowser( new WelcomeBrowser( this, "WelcomePage" ), i18n( "Welcome" ), "help" );
-        //</WelcomePage>
+        }
 
         connect( m_browsers, SIGNAL(  activated( const KURL& )),
                  m_playlist,   SLOT(appendMedia( const KURL& )) );
@@ -505,14 +505,14 @@ void PlaylistWindow::welcomeURL( const KURL &url )
     bool b;
     QString xml;
 
-    if( url == QString( "amarok://default_mode" ) )
+    if( url == QString( "amarok://compact_mode" ) )
     {
         //this is the same as amarokui.rc, but we name it separately to ensure it
         //loads the original and not the user-modified scheme
         xml = "amarokui.rc";
         b = false;
     }
-    else if( url == QString("amarok://amaamp_mode") )
+    else if( url == QString("amarok://xmms_mode") )
     {
         xml = "amarokui_xmms.rc";
         b = true;

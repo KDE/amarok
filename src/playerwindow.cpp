@@ -25,22 +25,20 @@ email                : markey@web.de
 #include "sliderwidget.h"
 #include "tracktooltip.h"    //setScroll()
 
-#include <qevent.h>         //various events
+#include <qevent.h>          //various events
 #include <qfont.h>
 #include <qhbox.h>
 #include <qpainter.h>
 #include <qpixmap.h>
-#include <qpopupmenu.h>
 #include <qrect.h>
 #include <qstringlist.h>
-#include <qtooltip.h>
+#include <qtooltip.h>        //analyzer tooltip
 
 #include <kdebug.h>
 #include <klocale.h>
-#include <kmessagebox.h>
 #include <kstandarddirs.h>
 #include <kurldrag.h>
-#include <kwin.h>           //eventFilter()
+#include <kwin.h>            //eventFilter()
 
 
 //simple function for fetching amarok images
@@ -99,30 +97,19 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
 
     { //<NavButtons>
         //NOTE we use a layout for the buttons so resizing will be possible
-        //TODO Plastik paints the small spaces inbetween buttons with ButtonColor and
-        //     not backgroundColor. Report as bug.
-
         m_pFrameButtons = createWidget<QHBox>( QRect(0, 118, 311, 22), this );
 
-        // In case you are wondering, the PLAY and PAUSE buttons are created here!
+        KActionCollection *ac = pApp->actionCollection();
 
         //FIXME change the names of the icons to reflect kde names so we can fall back to them if necessary
-                         new NavButton( m_pFrameButtons, "prev", ec, SLOT( previous() ) );
-        m_pButtonPlay  = new NavButton( m_pFrameButtons, "play", ec, SLOT( play()) );
-        m_pButtonPause = new NavButton( m_pFrameButtons, "pause", ec, SLOT( pause()) );
-                         new NavButton( m_pFrameButtons, "stop", ec, SLOT( stop() ) );
-                         new NavButton( m_pFrameButtons, "next", ec, SLOT( next() ) );
-
-//                          new NavButton( m_pFrameButtons, "player_start", ec, SLOT( previous()  ) );
-//         m_pButtonPlay  = new NavButton( m_pFrameButtons, "player_play", ec, SLOT(play()) );
-//         m_pButtonPause = new NavButton( m_pFrameButtons, "player_pause", ec, SLOT(pause()) );
-//                          new NavButton( m_pFrameButtons, "player_stop", ec, SLOT( stop()  ) );
-//                          new NavButton( m_pFrameButtons, "player_end", ec, SLOT( next()  ) );
+                         new NavButton( m_pFrameButtons, "prev", ac->action( "prev" ) );
+        m_pButtonPlay  = new NavButton( m_pFrameButtons, "play", ac->action( "play" ) );
+        m_pButtonPause = new NavButton( m_pFrameButtons, "pause", ac->action( "pause" ) );
+                         new NavButton( m_pFrameButtons, "stop", ac->action( "stop" ) );
+                         new NavButton( m_pFrameButtons, "next", ac->action( "next" ) );
 
         m_pButtonPlay->setToggleButton( true );
         m_pButtonPause->setToggleButton( true );
-
-        //m_pButtonPlay->setFocus();
     } //</NavButtons>
 
     { //<Sliders>
@@ -182,9 +169,8 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
 
 
     //set interface to correct state
-    const EngineBase::EngineState state = engine->state();
-    engineStateChanged( state );
-    if( state == EngineBase::Playing ) engineNewMetaData( ec->bundle(), true );
+    engineStateChanged( engine->state() );
+    if( engine->state() == EngineBase::Playing ) engineNewMetaData( ec->bundle(), true );
     createAnalyzer( 0 );
     show();
 
@@ -363,8 +349,9 @@ void PlayerWidget::engineNewMetaData( const MetaBundle &bundle, bool )
         m_rateString += Hz;
     }
 
-    QStringList list;
-    list << bundle.prettyTitle() << bundle.album() << bundle.prettyLength();
+    QStringList list( bundle.prettyTitle() );
+    list << bundle.album();
+    if( bundle.length() ) list << bundle.prettyLength();
     setScroll( list );
 
     //update image tooltip
@@ -442,18 +429,14 @@ bool PlayerWidget::event( QEvent *e )
     case 6/*QEvent::KeyPress*/:
         if (static_cast<QKeyEvent*>(e)->key() == Qt::Key_D && m_pAnalyzer->inherits("QGLWidget"))
         {
-            if (m_pAnalyzer->parent() == 0)
-            {
-                m_pAnalyzer->reparent(this, QPoint(119,4), true);
-                m_pAnalyzer->setGeometry( 119,40, 168,56 );
-                m_pAnalyzer->removeEventFilter( this );
-            }
-            else
+            if (m_pAnalyzer->parent() != 0)
             {
                 m_pAnalyzer->reparent(0, QPoint(50,50), true);
                 m_pAnalyzer->setCaption( kapp->makeStdCaption( i18n("Analyzer") ) );
                 m_pAnalyzer->installEventFilter( this );
+                QToolTip::remove( m_pAnalyzer );
             }
+            else createAnalyzer( 0 );
 
             return TRUE; //eat event
         }
@@ -695,7 +678,7 @@ void PlayerWidget::createAnalyzer( int increment )
     m_pAnalyzer = Analyzer::Factory::createAnalyzer( this );
     m_pAnalyzer->setGeometry( 119,40, 168,56 );
     m_pAnalyzer->show();
-    QToolTip::add( m_pAnalyzer, i18n( "Click for more analyzers" ) );
+    QToolTip::add( m_pAnalyzer, i18n( "Press 'd' to detach, click for more" ) );
 }
 
 void PlayerWidget::startDrag()
@@ -713,8 +696,9 @@ void PlayerWidget::setEffectsWindowShown( bool on )
 }
 
 
+
 #include <kiconeffect.h>
-NavButton::NavButton( QWidget *parent, const QString &icon, QObject *receiver, const char *slot )
+NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
   : QPushButton( parent )
 {
     QString up = "b_"; up += icon;
@@ -736,10 +720,11 @@ NavButton::NavButton( QWidget *parent, const QString &icon, QObject *receiver, c
 
     setFocusPolicy( QWidget::NoFocus );
     setFlat( true );
+    setEnabled( action->isEnabled() );
 
-    connect( this, SIGNAL( clicked() ), receiver, slot );
+    connect( action, SIGNAL(enabled( bool )), SLOT(setEnabled( bool )) );
+    connect( this, SIGNAL(clicked()), action, SLOT(activate()) );
 }
-
 
 
 

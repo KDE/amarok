@@ -19,7 +19,6 @@ class WelcomeBrowser : public QVBox
 
     public:
         WelcomeBrowser(  QObject* parent, const char *name );
-        ~WelcomeBrowser();
 
     protected:
         void paletteChange( const QPalette& );
@@ -27,7 +26,7 @@ class WelcomeBrowser : public QVBox
     private:
         void setStyleSheet();
         void showPage();
-        
+
         KHTMLPart *browser;
         QString m_styleSheet;
 };

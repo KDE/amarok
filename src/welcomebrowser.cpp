@@ -8,11 +8,8 @@
 #include "welcomebrowser.h"
 
 #include <khtml_part.h>
-#include <kconfig.h>      //config object
 #include <kdebug.h>
 #include <klocale.h>
-#include <kglobal.h>
-#include <kstandarddirs.h>
 
 
 WelcomeBrowser::WelcomeBrowser( QObject* parent, const char *name )
@@ -25,10 +22,6 @@ WelcomeBrowser::WelcomeBrowser( QObject* parent, const char *name )
     connect( browser->browserExtension(), SIGNAL(openURLRequest( const KURL&, const KParts::URLArgs&) ),
              parent,                      SLOT(welcomeURL( const KURL& )) );
 }
-
-
-WelcomeBrowser::~WelcomeBrowser()
-{}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -57,7 +50,7 @@ void WelcomeBrowser::setStyleSheet()
 
     m_styleSheet =  QString( "div { color: %1; font-size: %2px; text-decoration: none; }" )
                     .arg( colorGroup().text().name() ).arg( pxSize );
-                    
+
     m_styleSheet +=  QString( "a { color: %1; font-size: %2px; }" )
                     .arg( colorGroup().highlight().name() ).arg( pxSize );
 
@@ -80,8 +73,8 @@ void WelcomeBrowser::showPage()
                           "<div class='title'>" + i18n( "Customise your amaroK" ) + "</div>"
                           "<div>" + i18n( "amaroK has two main modes of operation. It can look and act a little like XMMS and other Winamp clones [SCREENIE], or it can have a single window with a statusbar to keep you up to date with the track progress. You can switch between them using the following links:" ) +
                           "<ul>"
-                          "<li><A href='amarok://amaamp_mode'>" + i18n( "Switch to XMMS-mode" ) + "</A>"
-                          "<li><A href='amarok://default_mode'>" + i18n( "Switch to amaroK-mode" ) + "</A>"
+                          "<li><A href='amarok://xmms_mode'>" + i18n( "Switch to XMMS-mode" ) + "</A>"
+                          "<li><A href='amarok://compact_mode'>" + i18n( "Switch to Compact-mode" ) + "</A>"
                           "</ul>"
                           "</div><br>"
                           "<div class='title'>" + i18n( "Using amaroK" ) + "</div>"
@@ -97,7 +90,7 @@ void WelcomeBrowser::showPage()
                           "<div style='text-align:center'>" + i18n( "To remove this tab from the BrowserBar," ) + " <A href='amarok://remove_tab'>" + i18n( "click here" ) + "</A>.</div>"
                           "</body></html>";
 
-    browser->write( welcomeText );  
+    browser->write( welcomeText );
     browser->end();
 }
 

@@ -135,6 +135,11 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     new KAction( i18n( "S&huffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
     new KAction( i18n( "&Goto Current" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
 
+
+    //ensure we update action enabled states when repeat Playlist is toggled
+    connect( ac->action( "repeat_playlist" ), SIGNAL(toggled( bool )), SLOT(updateNextPrev()) );
+
+
     m_clearButton->setIcon( "view_remove" );
     m_undoButton->setEnabled( false );
     m_redoButton->setEnabled( false );
@@ -293,13 +298,10 @@ void Playlist::handleOrder( RequestType request ) //SLOT
     {
     case Prev:
 
-        //FIXME since 1.172 changes prevTracks is never empty so repeatPlaylist
-        //      backwards never occurs
-
         //FIXME pre 1.172 we didn't need to store the currentTrack in the prevTracks list,
         //      which made the code simpler
 
-        if ( m_prevTracks.count() < 2 )
+        if ( !AmarokConfig::randomMode() || m_prevTracks.count() < 2 )
         {
             item = (PlaylistItem *)item->itemAbove();
             if( !item && AmarokConfig::repeatPlaylist() ) item = lastItem();
@@ -313,7 +315,7 @@ void Playlist::handleOrder( RequestType request ) //SLOT
             }
         }
 
-        activate( item, false ); //don't append this to the prevTrack stack, that _would_ be daft!
+        activate( item, false ); //don't append this to the prevTrack stack - that _would_ be daft!
         return;
 
     case Current:
@@ -342,7 +344,7 @@ void Playlist::handleOrder( RequestType request ) //SLOT
 
                 uint x = 0;
                 uint rnd = KApplication::random() % visCount;
-                kdDebug() << rnd << endl;
+
                 for ( QListViewItemIterator it( this, QListViewItemIterator::Visible ); it.current() && x <= rnd; ++it )
                 {
                     if ( rnd == x )
@@ -770,8 +772,6 @@ void Playlist::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
 {
     if( m_currentTrack && !trackChanged )
     {
-        kdDebug() << "newMetaData, track is same: " << !trackChanged << endl;
-
         //if the track hasn't changed then we should update the meta data for the item
         m_currentTrack->setText( bundle );
 
@@ -899,6 +899,10 @@ void Playlist::setCurrentTrack( PlaylistItem *item )
 PlaylistItem *Playlist::restoreCurrentTrack()
 {
     const KURL &url = EngineController::instance()->playingURL();
+
+    kdDebug() << url << endl;
+
+    if( m_currentTrack ) kdDebug() << m_currentTrack->url() << endl;
 
     if( !(m_currentTrack && m_currentTrack->url() == url) )
     {
