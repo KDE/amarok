@@ -185,3 +185,45 @@ DISCUSSING:
 
 TROUBLE:
 
+BT 2004/03/02 while starting a stream:
+
+[New Thread 1024 (LWP 4736)]
+[New Thread 2049 (LWP 4738)]
+[New Thread 38914 (LWP 4839)]
+0x422fc449 in wait4 () from /lib/libc.so.6
+#0  0x422fc449 in wait4 () from /lib/libc.so.6
+#1  0x42378fd0 in __DTOR_END__ () from /lib/libc.so.6
+#2  0x41e59a73 in waitpid () from /lib/libpthread.so.0
+#3  0x41220a3d in KCrash::defaultCrashHandler(int) ()
+   from /opt/kde3/lib/libkdecore.so.4
+#4  0x41e5711b in pthread_sighandler () from /lib/libpthread.so.0
+#5  <signal handler called>
+#6  0x4189bcc4 in QGListIteratorList::notifyClear(bool) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#7  0x4189a897 in QGList::clear() () from /usr/lib/qt3/lib/libqt-mt.so.3
+#8  0x416dd80d in QPtrList<QListViewPrivate::DrawableItem>::~QPtrList() ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#9  0x416c9640 in QListViewItem::takeItem(QListViewItem*) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#10 0x416c8db5 in QListViewItem::~QListViewItem() ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#11 0x40fb8e7a in KListViewItem::~KListViewItem() ()
+   from /opt/kde3/lib/libkdeui.so.4
+#12 0x080898e5 in ~PlaylistItem (this=0x4110dcc4) at amarok/playlistitem.cpp:60
+#13 0x08086bec in ~PlaylistLoader (this=0x82d78c8)
+    at amarok/playlistloader.cpp:97
+#14 0x08089019 in ~DoneEvent (this=0x81d8768) at amarok/playlistloader.h:119
+#15 0x41598bcd in QApplication::sendPostedEvents(QObject*, int) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#16 0x41598a68 in QApplication::sendPostedEvents() ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#17 0x4154105e in QEventLoop::processEvents(unsigned) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#18 0x415a9c26 in QEventLoop::enterLoop() ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#19 0x415a9ac8 in QEventLoop::exec() () from /usr/lib/qt3/lib/libqt-mt.so.3
+#20 0x41598071 in QApplication::exec() () from /usr/lib/qt3/lib/libqt-mt.so.3
+#21 0x080bb469 in main (argc=1, argv=0xbffff304)
+    at amarok/amarokcore/main.cpp:30
+#22 0x422764f2 in __libc_start_main () from /lib/libc.so.6
+
