@@ -194,6 +194,7 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
     }
     else
     {
+        m_pixmap.loadFromData( m_buffer, m_bufferIndex );
         saveCover();
     }
 }
