@@ -10,7 +10,7 @@ VERSION 0.9-beta1:
          tag can replace it. If no title tag is found the trackname stays.
   * chg: Pressing "back" in Random Mode now works as expected and walks backwards
          through the list of recently played songs.
-  * add: TitleProxy searches for a free local port (added by Stefan Gehn)
+  * add: TitleProxy searches for a free local port (contributed by Stefan Gehn)
   * chg: Random Mode now stores the recently played songs in a buffer, which prevents
          playing the same songs too often.
   * add: "Play Next" context menu option
@@ -24,6 +24,7 @@ VERSION 0.9-beta1:
   * add: setting to make playlist colours the KDE defaults
   * add: support for tag-editing directly in playlist
   * chg: replaced old FileBrowser with the comfortable fileselector from KDevelop
+  * chg: analyzers now powered by a new, more flexible FFT routine
   * add: hide/show selected playlist columns
   * chg: upgrade streambrowser to kderadiostation 0.5
   * fix: many streams not loading from browser and AddItem dialog
