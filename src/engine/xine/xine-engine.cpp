@@ -16,6 +16,9 @@
 
 AMAROK_EXPORT_PLUGIN( XineEngine )
 
+#define DEBUG_PREFIX "xine-engine"
+#define indent xine_indent
+
 #include "debug.h"
 #include <klocale.h>
 #include <kmessagebox.h>
@@ -466,6 +469,20 @@ XineEngine::customEvent( QCustomEvent *e )
         #undef message
         break;
 
+    case 3003: { //meta info has changed
+
+        Engine::SimpleMetaBundle bundle;
+
+        bundle.title   = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_TITLE ) );
+        bundle.artist  = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_ARTIST ) );
+        bundle.album   = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_ALBUM ) );
+        bundle.comment = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_COMMENT ) );
+
+        Debug::list() << bundle.title + " title" << bundle.artist + " artist" << bundle.album + " album" << bundle.comment + " comment";
+
+        emit metaData( bundle );
+    }
+
     default:
         ;
     }
@@ -480,6 +497,14 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
 
     switch( xineEvent->type )
     {
+    case XINE_EVENT_UI_SET_TITLE:
+
+        debug() << "XINE_EVENT_UI_SET_TITLE\n";
+
+        QApplication::postEvent( xe, new QCustomEvent( 3003 ) );
+
+        break;
+
     case XINE_EVENT_UI_PLAYBACK_FINISHED:
 
         //emit signal from GUI thread
@@ -495,7 +520,10 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
         msg = msg.arg( QString( pd->description ) )
                  .arg( KGlobal::locale()->formatNumber( pd->percent, 0 ) );
 
-        QApplication::postEvent( xe, new QCustomEvent(QEvent::Type(3002), new QString(msg)) );
+        QCustomEvent *e = new QCustomEvent( 3002 );
+        e->setData( new QString( msg ) );
+
+        QApplication::postEvent( xe, e );
 
         break;
     }
@@ -708,6 +736,13 @@ Fader::run()
     QThread::sleep( 5 );
 
     deleteLater();
+}
+
+
+namespace Debug
+{
+    #undef xine_indent
+    QCString xine_indent;
 }
 
 #include "xine-engine.moc"

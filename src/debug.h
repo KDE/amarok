@@ -142,7 +142,7 @@ namespace Debug
             const double duration = (double) (finish - m_start) / CLOCKS_PER_SEC;
 
             DEBUG_UNINDENT
-            kdDebug() << indent << "END  : " << m_label << " - Took " << duration << "s\n";
+            kdDebug() << indent << "END__: " << m_label << " - Took " << duration << "s\n";
         }
     };
 
@@ -220,7 +220,7 @@ namespace Debug
     {
         friend ListStream list();
 
-        ListStream( const char *header = "List" ) : Block( header ), d( 0, 0 ) {}
+        ListStream( const char *header = "List" ) : Block( header ), d( kdDebug() ) {}
 
         DebugStream d;
 
