@@ -4,7 +4,7 @@
 # Config dialog for alarm script
 # (c) 2005 Mark Kretschmann <markey@web.de>
 #
-# Depends on: PyQt
+# Depends on: Python 2.2, PyQt
 ############################################################################
 #
 # This program is free software; you can redistribute it and/or modify
