@@ -126,6 +126,8 @@ scope_class_open_plugin( post_class_t *class, int inputs, xine_audio_port_t **au
 
   this->dispose = scope_dispose;
 
+  myList.next = &myList; /*init the buffer list*/
+
   return this;
 }
 

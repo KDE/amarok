@@ -65,11 +65,7 @@ XineEngine::XineEngine()
   , m_audioPort( 0 )
   , m_eventQueue( 0 )
   , m_post( 0 )
-{
-    QTimer *timer = new QTimer( this );
-    connect( timer, SIGNAL(timeout()), SLOT(pruneScopeBuffers()) );
-    timer->start( 200 );
-}
+{}
 
 XineEngine::~XineEngine()
 {
@@ -163,6 +159,12 @@ XineEngine::init( bool&, int, bool )
     m_post = &post_plugin->xine_post;
 
     post_class->dispose( post_class );
+
+
+    QTimer *timer = new QTimer( this );
+    connect( timer, SIGNAL(timeout()), SLOT(pruneScopeBuffers()) );
+    timer->start( 200 );
+
 
     return true;
 }
