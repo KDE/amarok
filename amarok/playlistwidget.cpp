@@ -679,7 +679,15 @@ void PlaylistWidget::slotReturnPressed()
     
     QListViewItemIterator it( this, QListViewItemIterator::Visible );
     if ( it.current() )
+    {
         activate( it.current() );
+        
+        //FIXME: ugly dependency
+        KLineEdit *le = pApp->m_pBrowserWin->m_pPlaylistLineEdit;
+        le->setText( "" );
+        
+        ensureItemVisible( it.current() );
+    }
         
     #endif // QT_VERSION
 }
@@ -705,7 +713,8 @@ void PlaylistWidget::slotTextChanged( const QString &str )
         while ( pVisibleItem )
         {
             for ( uint y = 0; y < tokens.count(); ++y )
-            {
+            {    
+
                 if ( !pVisibleItem->text(0).lower().contains( tokens[y] ) )
                     pVisibleItem->setVisible( false );
             }
