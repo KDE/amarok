@@ -75,11 +75,7 @@ GstEngine::eos_cb( GstElement*, GstElement* )
 void
 GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
 {
-    // Push buffer into adapter, where it's chopped into chunks
-    if ( GST_IS_BUFFER( buf ) ) {
-        gst_buffer_ref( buf );
-        gst_adapter_push( instance()->m_gst_adapter, buf );
-    }
+    emit instance()->sigScopeData( gst_buffer_copy( buf ) );
 }
 
 
@@ -185,6 +181,7 @@ GstEngine::init()
     m_gst_adapter = gst_adapter_new();
     startTimer( TIMER_INTERVAL );
     connect( this, SIGNAL( sigGstError( GError*, gchar* ) ), SLOT( handleGstError( GError*, gchar* ) ) );
+    connect( this, SIGNAL( sigScopeData( GstBuffer* ) ), SLOT( handleScopeData( GstBuffer* ) ) );
 
     kdDebug() << "END " << k_funcinfo << endl;
     return true;
@@ -680,6 +677,15 @@ GstEngine::cleanPipeline()
         gst_adapter_clear( m_gst_adapter );
         m_pipelineFilled = false;
     }
+}
+
+
+void
+GstEngine::handleScopeData( GstBuffer* buf ) //SLOT
+{
+    // Push buffer into adapter, where it's chopped into chunks
+    if ( GST_IS_BUFFER( buf ) )
+        gst_adapter_push( m_gst_adapter, buf );
 }
 
                   

@@ -42,7 +42,8 @@ class GstEngine : public Engine::Base
 
     signals:
         void sigGstError( GError*, gchar* );
-    
+        void sigScopeData( GstBuffer* );
+        
     public:
         GstEngine();
         ~GstEngine();
@@ -74,7 +75,8 @@ class GstEngine : public Engine::Base
         void kioFinished();
         void newKioData( KIO::Job*, const QByteArray& array );
         void errorNoOutput() const;
-
+        void handleScopeData( GstBuffer* buf );
+        
     private:
         static GstEngine* instance() { return s_instance; }
 
