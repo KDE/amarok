@@ -233,10 +233,10 @@ GstEngine::position() const
 
     GstFormat fmt = GST_FORMAT_TIME;
     //value will hold the current time position in nanoseconds
-    gint64 value;
+    gint64 value = 0;
     gst_element_query( m_spider, GST_QUERY_POSITION, &fmt, &value );
-
-    return ( long ) ( value / GST_MSECOND ); // ns -> ms
+   
+    return static_cast<long>( ( value / GST_MSECOND ) ); // nanosec -> msec
 }
 
 
