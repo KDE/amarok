@@ -246,9 +246,15 @@ PlaylistWindow::init()
     m_toolsMenu->insertItem( i18n("&First-Run Wizard..."), amaroK::Menu::ID_SHOW_WIZARD );
     m_toolsMenu->insertItem( i18n("&Visualizations..."), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
     m_toolsMenu->insertItem( i18n("&Equalizer..."), kapp, SLOT( slotConfigEqualizer() ), 0, amaroK::Menu::ID_CONFIGURE_EQUALIZER );
-    #ifndef HAVE_XMMS
+
     m_toolsMenu->setItemEnabled( amaroK::Menu::ID_SHOW_VIS_SELECTOR, false );
+    #ifdef HAVE_XMMS
+    m_toolsMenu->setItemEnabled( amaroK::Menu::ID_SHOW_VIS_SELECTOR, true );
     #endif
+    #ifdef HAVE_LIBVISUAL
+    m_toolsMenu->setItemEnabled( amaroK::Menu::ID_SHOW_VIS_SELECTOR, true );
+    #endif
+
     connect( m_toolsMenu, SIGNAL( aboutToShow() ), SLOT( toolsMenuAboutToShow() ) );
     connect( m_toolsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
     //END

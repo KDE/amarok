@@ -129,8 +129,12 @@ Menu::Menu()
     setItemEnabled( ID_SHOW_SCRIPT_CONSOLE, false );
     #endif
 
-    #ifndef HAVE_XMMS
     setItemEnabled( ID_SHOW_VIS_SELECTOR, false );
+    #ifdef HAVE_XMMS
+    setItemEnabled( ID_SHOW_VIS_SELECTOR, true );
+    #endif
+    #ifdef HAVE_LIBVISUAL
+    setItemEnabled( ID_SHOW_VIS_SELECTOR, true );
     #endif
 }
 

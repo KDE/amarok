@@ -6,6 +6,12 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+          <muesli> When the album tag is empty, the Current Song's caption bar in Contextbrowser gets to small.
+
+          <muesli> Enabling "stop playing after current track" and enqueueing a song at the same time confuses amarok.
+
+          <muesli> Last song in playlist gets repeated infinitely, even without random / repeat enabled.
+
           <mxcl>   If you inline set the title tag to "", prettyTitle gets inserted as the title tag.
 
           <muesli> Same for storing / looking for a compilation-cover on the local hdd.
