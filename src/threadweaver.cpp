@@ -212,8 +212,13 @@ CollectionReader::doJob()
     //iterate over all folders
     for ( uint i = 0; i < m_folders.count(); i++ )
     {
-        m_processedDirs = QStringList();
-        readDir( m_folders[ i ], entries );
+        //m_processedDirs.clear();
+        QString dir = m_folders[ i ];
+
+        if ( !dir.endsWith( "/" ) )
+            dir += '/';
+
+        readDir( dir, entries );
     }
 
     if ( !entries.empty() ) {
@@ -229,6 +234,9 @@ void
 CollectionReader::readDir( const QString& dir, QStringList& entries )
 {
     //TODO use a KDirLister, this will prevent infinite recursive directory trees being a problem
+
+    if ( m_processedDirs.contains( dir ) )
+        return;
 
     m_processedDirs << dir;
     struct stat statBuf;
@@ -262,7 +270,7 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
 
         if ( entry == "." || entry == ".." )
             continue;
-        entry.prepend( QFile::encodeName( dir.endsWith( "/" ) ? dir : dir + "/" ) );
+        entry.prepend( QFile::encodeName( dir ) );
 
         if ( stat( entry, &statBuf ) == 0 )
         {
