@@ -103,15 +103,16 @@ OSDWidget::determineMetrics( const uint M )
     const QSize max = QApplication::desktop()->screen( m_screen )->size() - margin;
 
     // The osd cannot be larger than the screen
-    QSize text = max - image;
-    QRect rect = fontMetrics().boundingRect( 0, 0, text.width(), text.height(), AlignCenter | WordBreak, m_text );
+    QRect rect = fontMetrics().boundingRect( 0, 0,
+            max.width() - image.width(), max.height(),
+            AlignCenter | WordBreak, m_text );
 
     if( !m_cover.isNull() ) {
         const int availableWidth = max.width() - rect.width() - M; //WILL be >= (minImageSize.width() - M)
 
         m_scaledCover = m_cover.smoothScale(
-                QMIN( rect.height(), m_cover.height() ),
                 QMIN( availableWidth, m_cover.width() ),
+                QMIN( rect.height(), m_cover.height() ),
                 QImage::ScaleMin ); //this will force us to be with our bounds
 
         const int widthIncludingImage = rect.width()
