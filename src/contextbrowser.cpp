@@ -207,7 +207,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool /*trackCh
     // Add stream metadata history item to list
     if ( !m_metadataHistory.last().contains( bundle.prettyTitle() ) ) {
         const QString timeString = QTime::currentTime().toString( "hh:mm" );
-        m_metadataHistory << QString( "<td valign='top'><i>" + timeString + "</i>&nbsp;</td><td align='left'>" + escapeHTML( bundle.prettyTitle() ) + "</td>" );
+        m_metadataHistory << QString( "<td valign='top'>" + timeString + "&nbsp;</td><td align='left'>" + escapeHTML( bundle.prettyTitle() ) + "</td>" );
     }
 
     switch( m_db->isEmpty() || !m_db->isValid() ) {
@@ -408,7 +408,7 @@ void ContextBrowser::showHome() //SLOT
              "<td class='song'>"
               "<a href='file:" + fave[i+1].replace( '"', QCString("%22") ) + "'>"
                "<b>" + fave[i] + "</b> "
-               "<i>(" + i18n("Score: %1").arg( fave[i+2] ) + ")</i><br>" +
+               "(" + i18n("Score: %1").arg( fave[i+2] ) + ")<br>" +
                fave[i+3] + " - " + fave[i+4] +
               "</a>"
              "</td>"
@@ -479,7 +479,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                   "<b>%2</b>"
                   "<br/>"
                   "<br/>"
-                  "<i>%3</i>"
+                  "%3"
                   "<br/>"
                   "<br/>"
                   "%4"
@@ -553,9 +553,9 @@ void ContextBrowser::showCurrentTrack() //SLOT
             "<a title='%1' href='musicbrainz:%2 @@@ %3'>"
              "<img src='%4' style='float: right; width: 38px; height: 22px;' />"
             "</a>"
-            "<b>%5</b> - <b><i>%6</i></b>"
+            "<b>%5</b> - <b>%6</b>"
             "<br/>"
-            "<i>%7</i>"
+            "%7"
            "</th>"
           "</tr>"
          "</table>"
@@ -590,7 +590,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         const uint playtimes = values[2].toInt();
         const uint score = values[3].toInt();
 
-        QString scoreBox = "<table><tbody><tr><td><i>"+ QString::number( score ) +"</i></td><td title='Score'><div class='sbouter'><div class='sbinner' style='width: "+ QString::number( score / 2 )+ "px;'></div></div></td></tr></tbody></table>";
+        QString scoreBox = "<table><tbody><tr><td>"+ QString::number( score ) +"</td><td title='Score'><div class='sbouter'><div class='sbinner' style='width: "+ QString::number( score / 2 )+ "px;'></div></div></td></tr></tbody></table>";
 
         browser->write( QStringx("%1<br>%2%3<br>%4<br>")
             .args( QStringList()
@@ -601,7 +601,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                        ) );
    }
    else
-        browser->write( "<i>" + i18n( "Never played before" )  + "</i>" );
+        browser->write( "" + i18n( "Never played before" )  + "" );
 
     browser->write(
            "</td>"
@@ -678,7 +678,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             "<br>"
             "<div class='rbcontent'>"
              "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-                "<tr><th>" + i18n( "Favorite Tracks By <i>%1</i>" ).arg( artistName ) + "</th></tr>"
+                "<tr><th>" + i18n( "Favorite Tracks By %1" ).arg( artistName ) + "</th></tr>"
              "</table>"
              "<table width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
@@ -689,7 +689,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 "<a href='file:" + values[i + 1].replace( '"', QCString("%22") ) + "'>" + values[i] +
                 "</a>"
                "</td>"
-               "<td class='sbtext' width='1'><i>" + values[i + 2] + "</i></td>"
+               "<td class='sbtext' width='1'>" + values[i + 2] + "</td>"
                "<td width='1' title='Score'>"
                 "<div class='sbouter'>"
                  "<div class='sbinner' style='width: " + QString::number( values[i + 2].toInt() / 2 ) + "px;'></div>"
@@ -725,7 +725,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             "<br>"
             "<div class='rbcontent'>"
              "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-              "<tr><th>&nbsp;" + i18n( "Albums By <i>%1</i>" ).arg( artistName ) + "</th></tr>"
+              "<tr><th>&nbsp;" + i18n( "Albums By %1" ).arg( artistName ) + "</th></tr>"
              "</table>"
              "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
 
@@ -750,7 +750,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                   "<div class='album-header' onClick=\"toggleAlbumTracks('IDA%1')\">"
                    "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
                     "<tr><td>"
-                     "<a href='fetchcover:%2 @@@ %3'><img align='left' vspace='2' hspace='2' title='%4' src='%5'/></a></div>"
+                     "<a href='fetchcover:%2 @@@ %3'><img width='50' align='left' vspace='2' hspace='2' title='%4' src='%5'/></a></div>"
                      "<div style='float:right;'>%6</div>"
                      "<a href='album:%7 @@@ %8'><b>%9</b></a>"
                     "</td></tr>"
@@ -778,7 +778,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 "ORDER BY tags.track;" ) );
             if ( !albumValues.isEmpty() ) {
                 for ( uint j = 0; j < albumValues.count(); j += 3 ) {
-                QString tmp = albumValues[j + 2].stripWhiteSpace().isEmpty() ? "" : "<i>" + albumValues[j + 2] + ".</i> ";
+                QString tmp = albumValues[j + 2].stripWhiteSpace().isEmpty() ? "" : "" + albumValues[j + 2] + ". ";
                     browser->write(
                         "<div class='song'>"
                          "<a href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">" + tmp + albumValues[j] + "</a>"
