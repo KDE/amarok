@@ -1273,8 +1273,8 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     styleSheet += QString( ".album-song-title { } " );
     styleSheet += QString( ".album-song-time { } " );
 
-    styleSheet += QString( ".button { margin: 2px; padding: 2px; display: block; border: 1px solid %1; background-color: %2; }" ).arg( bg ).arg( fg );
-    styleSheet += QString( ".button:hover { border: 1px solid %1; background-color: %2; color: %3; }" ).arg( bg ).arg( bg ).arg( fg );
+    styleSheet += QString( ".button { margin: 2px; padding: 2px; display: block; border: 1px solid %1; background-color: %2; }" ).arg( text ).arg( colorGroup().base().name() );
+    styleSheet += QString( ".button:hover { border: 1px solid %1; background-color: %2; color: %3; }" ).arg( text ).arg( bg ).arg( colorGroup().base().name() );
 
     //boxes used to display score (sb: score box)
     styleSheet += QString( ".sbtext { padding: 0px 4px; border-left: solid %1 1px; }" ).arg( colorGroup().base().dark( 120 ).name() );
