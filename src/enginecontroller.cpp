@@ -372,6 +372,28 @@ void EngineController::playPause() //SLOT
 }
 
 
+void EngineController::seekRelative( int ms ) //SLOT
+{
+  if( m_engine->state() == Engine::Playing )
+  {
+    int newPos = m_engine->position() + ms;
+    seek( newPos <= 0 ? 1 : newPos );
+  }
+}
+
+
+void EngineController::seekForward( int ms )
+{
+    seekRelative( ms );
+}
+
+
+void EngineController::seekBackward( int ms )
+{
+    seekRelative( -ms );
+}
+
+
 int EngineController::increaseVolume( int ticks ) //SLOT
 {
     return setVolume( m_engine->volume() + ticks );

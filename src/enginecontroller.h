@@ -72,6 +72,9 @@ public slots:
     void playPause(); //pauses if playing, plays if paused or stopped
 
     void seek( int ms ) { engine()->seek( ms ); }
+    void seekRelative( int ms );
+    void seekForward( int ms = 10000 );
+    void seekBackward( int ms = 10000 );
 
     int increaseVolume( int ticks = 100/25 );
     int decreaseVolume( int ticks = 100/25 );

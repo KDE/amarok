@@ -305,6 +305,10 @@ void App::initGlobalShortcuts()
                             ec, SLOT( increaseVolume() ), true, true );
     m_pGlobalAccel->insert( "voldn", i18n( "Decrease Volume" ), 0, KKey("WIN+KP_Subtract"), 0,
                             ec, SLOT( decreaseVolume() ), true, true );
+    m_pGlobalAccel->insert( "seekforward", i18n( "Seek Forward" ), 0, KKey("WIN+Shift+KP_Add"), 0,
+                            ec, SLOT( seekForward() ), true, true );
+    m_pGlobalAccel->insert( "seekbackward", i18n( "Seek Backward" ), 0, KKey("WIN+Shift+KP_Subtract"), 0,
+                            ec, SLOT( seekBackward() ), true, true );
     m_pGlobalAccel->insert( "playlist_add", i18n( "Add Media..." ), 0, KKey("WIN+a"), 0,
                             m_pPlaylistWindow, SLOT( slotAddLocation() ), true, true );
     m_pGlobalAccel->insert( "show", i18n( "Toggle Playlist Window" ), 0, KKey("WIN+p"), 0,
@@ -657,8 +661,7 @@ bool amaroK::genericEventHandler( QWidget *recipient, QEvent *e )
         }
         case Qt::ShiftButton:
         {
-            int seek = EngineController::engine()->position() + ( e->delta() / 120 ) * 10000; // 10 seconds
-            EngineController::engine()->seek( seek < 0 ? 0 : seek );
+            EngineController::instance()->seekRelative( ( e->delta() / 120 ) * 10000 ); // 10 seconds
             break;
         }
         default:

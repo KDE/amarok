@@ -225,13 +225,7 @@ namespace amaroK
 
     void DcopPlayerHandler::seekRelative(int s)
     {
-        EngineBase* const engine = EngineController::engine();
-        if ( engine->state() != Engine::Empty ) {
-            int newpos = s * 1000 + engine->position();
-            if ( newpos < 0 )
-                newpos = 0;
-            engine->seek ( newpos );
-        }
+        EngineController::instance() ->seekRelative( s * 1000 );
     }
 
     void DcopPlayerHandler::enableRandomMode(bool enable)
