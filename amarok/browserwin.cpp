@@ -92,6 +92,9 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
     connect( m_pPlaylistWidget, SIGNAL( sigRedoState( bool ) ),
              m_pButtonRedo, SLOT( setEnabled( bool ) ) );
 
+    connect( m_pPlaylistWidget, SIGNAL( cleared() ),
+             m_pPlaylistLineEdit, SLOT( clear() ) );
+
     connect( m_pButtonShuffle, SIGNAL( clicked() ),
              this, SLOT( slotShufflePlaylist() ) );
 
@@ -116,10 +119,8 @@ void BrowserWin::initChildren()
     m_pButtonSave = new ExpandButton( i18n("Save Playlist"), m_pButtonClear );
 
     m_pButtonUndo = new ExpandButton( i18n("Undo"), this );
-    QToolTip::add( m_pButtonUndo, i18n("Keep button pressed for sub-menu") );
 
     m_pButtonRedo = new ExpandButton( i18n("Redo"), this );
-    QToolTip::add( m_pButtonRedo, i18n("Keep button pressed for sub-menu") );
 
     m_pButtonPlay = new ExpandButton( i18n("Play"), this );
     QToolTip::add( m_pButtonPlay, i18n("Keep button pressed for sub-menu") );

@@ -174,8 +174,10 @@ int PlayerApp::newInstance()
 
     if ( !playlistUrl.isEmpty() )             //playlist
     {
-        slotClearPlaylist();
+        m_pBrowserWin->m_pPlaylistWidget->clear();
         m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( KCmdLineArgs::makeURL( playlistUrl ).path(), 0 );
+        m_pBrowserWin->m_pPlaylistWidget->writeUndo();
+
     }
 
     if ( args->count() > 0 )
@@ -191,10 +193,11 @@ int PlayerApp::newInstance()
                         m_pBrowserWin->m_pPlaylistWidget->addItem( ( PlaylistItem* ) 1, args->url( i ) );
                 }
             }
+            m_pBrowserWin->m_pPlaylistWidget->writeUndo();
         }
         else                              //URLs
         {
-            slotClearPlaylist();
+            m_pBrowserWin->m_pPlaylistWidget->clear();
 
             for ( int i = 0; i < args->count(); i++ )
             {
@@ -204,6 +207,7 @@ int PlayerApp::newInstance()
                         m_pBrowserWin->m_pPlaylistWidget->addItem( 0, args->url( i ) );
                 }
             }
+            m_pBrowserWin->m_pPlaylistWidget->writeUndo();
             slotPlay();
         }
     }
@@ -531,10 +535,10 @@ void PlayerApp::initBrowserWin()
              this, SLOT( slotClearPlaylistAsk() ) );
 
     connect( m_pBrowserWin->m_pButtonUndo, SIGNAL( clicked() ),
-             this, SLOT( slotUndoPlaylist() ) );
+             m_pBrowserWin->m_pPlaylistWidget, SLOT( doUndo() ) );
 
     connect( m_pBrowserWin->m_pButtonRedo, SIGNAL( clicked() ),
-             this, SLOT( slotRedoPlaylist() ) );
+             m_pBrowserWin->m_pPlaylistWidget, SLOT( doRedo() ) );
 
     connect( m_pBrowserWin->m_pButtonPlay, SIGNAL( clicked() ),
              this, SLOT( slotPlay() ) );
@@ -685,9 +689,10 @@ void PlayerApp::readConfig()
         m_pBrowserWin->show();
     }
 
-    slotClearPlaylist();
+    m_pBrowserWin->m_pPlaylistWidget->clear();
     m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( kapp->dirs()->saveLocation(
             "data", kapp->instanceName() + "/" ) + "current.m3u", 0 );
+    m_pBrowserWin->m_pPlaylistWidget->writeUndo();
 
     KURL currentlyPlaying = m_pConfig->readEntry( "CurrentSelection" );
 
@@ -1107,14 +1112,6 @@ void PlayerApp::slotSavePlaylist()
 }
 
 
-void PlayerApp::slotClearPlaylist()
-{
-    m_pBrowserWin->m_pPlaylistWidget->clear();
-    m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( NULL );
-    m_pBrowserWin->m_pPlaylistLineEdit->clear();
-}
-
-
 void PlayerApp::slotClearPlaylistAsk()
 {
     if ( m_optConfirmClear )
@@ -1123,21 +1120,8 @@ void PlayerApp::slotClearPlaylistAsk()
             return ;
     }
 
-    slotClearPlaylist();
-}
-
-
-void PlayerApp::slotUndoPlaylist()
-{
-//    kdDebug(DA_COMMON) << "PlayerApp::slotUndoPlaylist()" << endl;
-    m_pBrowserWin->m_pPlaylistWidget->doUndo();
-}
-
-
-void PlayerApp::slotRedoPlaylist()
-{
-//    kdDebug(DA_COMMON) << "PlayerApp::slotRedoPlaylist()" << endl;
-    m_pBrowserWin->m_pPlaylistWidget->doRedo();
+    m_pBrowserWin->m_pPlaylistWidget->clear();
+    m_pBrowserWin->m_pPlaylistWidget->writeUndo();
 }
 
 

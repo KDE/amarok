@@ -67,20 +67,22 @@ class PlaylistWidget : public KListView
         void writeUndo();
         bool canUndo();
         bool canRedo();
-        void doUndo();
-        void doRedo();
 
 // ATTRIBUTES ------
         KRootPixmap m_rootPixmap;
 
     public slots:
+        void clear();
         void slotGlowTimer();
         void slotSetRecursive();
         void slotTextChanged( const QString &str );
         void slotHeaderClicked( int section );
         void slotEraseMarker();
+        void doUndo();
+        void doRedo();
 
     signals:
+        void cleared();
         void signalJump();
         void signalPlay();
         void sigUndoState( bool );

@@ -351,15 +351,6 @@ PlaylistItem* PlaylistWidget::addItem( PlaylistItem *after, KURL url )
 
 bool PlaylistWidget::loadPlaylist( KURL url, QListViewItem *destination )
 {
-    bool success = loadPlaylist_( url, destination );
-    writeUndo();
-
-    return success;
-}
-
-
-bool PlaylistWidget::loadPlaylist_( KURL url, QListViewItem *destination )
-{
     bool success = false;
     QString tmpFile;
     PlaylistItem *pCurr = static_cast<PlaylistItem*>( destination );
@@ -448,6 +439,15 @@ void PlaylistWidget::saveM3u( QString fileName )
 
 
 // SLOTS ----------------------------------------------
+
+void PlaylistWidget::clear()
+{
+    KListView::clear();
+    setCurrentTrack( NULL );
+
+    emit cleared();
+}
+
 
 void PlaylistWidget::slotGlowTimer()
 {
@@ -617,7 +617,7 @@ void PlaylistWidget::doUndo()
         m_undoList.pop_back();
 
         clear();
-        loadPlaylist_( m_undoList.last(), 0 );
+        loadPlaylist( m_undoList.last(), 0 );
     }
 
     emit sigUndoState( canUndo() );
@@ -633,7 +633,7 @@ void PlaylistWidget::doRedo()
         m_redoList.pop_back();
 
         clear();
-        loadPlaylist_( m_undoList.last(), 0 );
+        loadPlaylist( m_undoList.last(), 0 );
     }
 
     emit sigUndoState( canUndo() );
