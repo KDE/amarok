@@ -1031,7 +1031,7 @@ void Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
 
 void Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
 {
-    if( !item ) item = hasFocus() ? currentItem() : currentTrack();
+    if( !item ) item = currentTrack();
 
     if( item )
     {
