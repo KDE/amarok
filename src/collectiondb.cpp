@@ -2179,7 +2179,7 @@ QueryBuilder::addReturnFunctionValue( int function, int table, int value)
     m_values += functionName( function ) + "(";
     m_values += tableName( table ) + ".";
     m_values += valueName( value )+ ")";
-    
+
     m_linkTables |= table;
     m_returnValues++;
 }

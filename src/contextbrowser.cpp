@@ -581,8 +581,11 @@ void ContextBrowser::showHome() //SLOT
     // Do we have to rebuild the page?
     if ( !m_dirtyHomePage ) return;
 
-    QueryBuilder qb;
+    m_homePage->begin();
+    m_HTMLSource="";
+    m_homePage->setUserStyleSheet( m_styleSheet );
 
+    QueryBuilder qb;
     qb.clear();
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
@@ -592,29 +595,6 @@ void ContextBrowser::showHome() //SLOT
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
     qb.setLimit( 0, 10 );
     QStringList fave = qb.run();
-
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
-    qb.setLimit( 0, 5 );
-    QStringList recent = qb.run();
-
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
-    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
-    qb.setLimit( 0, 5 );
-    QStringList least = qb.run();
-
-    m_homePage->begin();
-    m_HTMLSource="";
-    m_homePage->setUserStyleSheet( m_styleSheet );
 
     // <Favorite Tracks Information>
     m_HTMLSource.append(
@@ -627,6 +607,15 @@ void ContextBrowser::showHome() //SLOT
                 "</div>"
                 "<div id='favorites_box-body' class='box-body'>"
                        );
+
+    if ( fave.count() == 0 )
+    {
+        m_HTMLSource.append(
+                    "<div class='info'><p>" +
+                    i18n( "A list of your favorite tracks will appear here, once you've played a few of your songs." ) +
+                    "</p></div>"
+                           );
+    }
 
     for( uint i = 0; i < fave.count(); i = i + 5 )
     {
@@ -651,6 +640,7 @@ void ContextBrowser::showHome() //SLOT
                     "</div>"
                            );
     }
+
     m_HTMLSource.append(
                 "</div>"
             "</div>"
@@ -658,7 +648,6 @@ void ContextBrowser::showHome() //SLOT
     // </Favorite Tracks Information>
 
     // <Recent Tracks Information>
-
             "<div id='newest_box' class='box'>"
                 "<div id='newest_box-header' class='box-header'>"
                     "<span id='newest_box-header-title' class='box-header-title'>"
@@ -666,6 +655,15 @@ void ContextBrowser::showHome() //SLOT
                     "</span>"
                 "</div>"
                 "<div id='newest_box-body' class='box-body'>" );
+
+    qb.clear();
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
+    qb.setLimit( 0, 5 );
+    QStringList recent = qb.run();
 
     for( uint i = 0; i < recent.count(); i = i + 4 )
     {
@@ -705,6 +703,25 @@ void ContextBrowser::showHome() //SLOT
                     "</span>"
                 "</div>"
                 "<div id='least_box-body' class='box-body'>" );
+
+    qb.clear();
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
+    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
+    qb.setLimit( 0, 5 );
+    QStringList least = qb.run();
+
+    if ( least.count() == 0 )
+    {
+        m_HTMLSource.append(
+                    "<div class='info'><p>" +
+                    i18n( "A list of songs, which you didn't play for a long time, will show up here." ) +
+                    "</p></div>"
+                           );
+    }
 
     QDateTime lastPlay = QDateTime();
     for( uint i = 0; i < least.count(); i = i + 5 )
@@ -959,13 +976,14 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 "</span>"
             "</div>"
             "<div id='notindb_box-body' class='box-body'>"
-                "<p>"
+                "<div class='info'><p>"
                 + i18n( "If you would like to see contextual information about this track,"
                         " you should add it to your Collection." ) +
-                "</p>"
-                "<a href='show:collectionSetup' class='button'>"
+                "</p></div>"
+                "<div align='center'>"
+                "<input type='button' onClick='window.location.href=\"show:collectionSetup\";' value='"
                 + i18n( "Change Collection Setup" ) +
-                "</a>"
+                "'></div><br />"
             "</div>"
         "</div>"
                            );
@@ -985,11 +1003,11 @@ void ContextBrowser::showCurrentTrack() //SLOT
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
         qb.addMatches( QueryBuilder::tabArtist, relArtists );
         qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valScore, true );
-        qb.setLimit( 0, 5 );
+        qb.setLimit( 0, 10 );
         values = qb.run();
 
         // not enough items returned, let's fill the list with score-less tracks
-        if ( values.count() < 8 * qb.countReturnValues() )
+        if ( values.count() < 15 * qb.countReturnValues() )
         {
             qb.clear();
             qb.exclusiveFilter( QueryBuilder::tabSong, QueryBuilder::tabStats, QueryBuilder::valURL );
@@ -998,7 +1016,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
             qb.addMatches( QueryBuilder::tabArtist, relArtists );
             qb.setOptions( QueryBuilder::optRandomize );
-            qb.setLimit( 0, 8 - values.count() / 4 );
+            qb.setLimit( 0, 15 - values.count() / 4 );
 
             QStringList sl;
             sl = qb.run();
@@ -1060,7 +1078,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
     qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
-    qb.setLimit( 0, 5 );
+    qb.setLimit( 0, 10 );
     values = qb.run();
 
     if ( !values.isEmpty() )
@@ -1407,6 +1425,8 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
 
     //text attributes
     styleSheet += QString( "a { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
+    styleSheet += QString( ".info { display: block; margin-left: 4px; font-weight: normal; }" );
+
     styleSheet += QString( ".song a { display: block; padding: 1px 2px; font-weight: normal; text-decoration: none; }" );
     styleSheet += QString( ".song a:hover { color: %1; background-color: %2; }" ).arg( fg ).arg( bg );
     styleSheet += QString( ".song-title { font-weight: bold; }" );
@@ -1454,7 +1474,7 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     styleSheet += QString( ".album-song-title { } " );
     styleSheet += QString( ".album-song-time { } " );
 
-    styleSheet += QString( ".button { margin: 2px; padding: 2px; display: block; border: 1px solid %1; background-color: %2; }" ).arg( text ).arg( colorGroup().base().name() );
+    styleSheet += QString( ".button { text-align: center; margin: 2px; padding: 2px; display: block; border: 1px solid %1; background-color: %2; }" ).arg( text ).arg( colorGroup().base().name() );
     styleSheet += QString( ".button:hover { border: 1px solid %1; background-color: %2; color: %3; }" ).arg( text ).arg( bg ).arg( colorGroup().base().name() );
 
     //boxes used to display score (sb: score box)
@@ -1540,13 +1560,16 @@ void ContextBrowser::showIntroduction()
                     "</span>"
                 "</div>"
                 "<div id='introduction_box-body' class='box-body'>"
-                    "<p>" +
+                    "<div class='info'><p>" +
                     i18n( "This is the Context Browser: "
-                          "it shows you contextual information about the currently playing track."
+                          "it shows you contextual information about the currently playing track. "
                           "In order to use this feature of amaroK, you need to build a Collection."
                         ) +
-                    "</p>"
-                    "<a href='show:collectionSetup' class='button'>" + i18n( "Build Collection..." ) + "</a>"
+                    "</p></div>"
+                    "<div align='center'>"
+                    "<input type='button' onClick='window.location.href=\"show:collectionSetup\";' value='" +
+                    i18n( "Build Collection..." ) +
+                    "'></div><br />"
                 "</div>"
             "</div>"
             "</html>"
@@ -1581,7 +1604,7 @@ void ContextBrowser::showScanning()
                     "</span>"
                 "</div>"
                 "<div id='building_box-body' class='box-body'>"
-                    "<p>" + i18n( "Building Collection Database..." ) + "</p>"
+                    "<div class='info'><p>" + i18n( "Please be patient while amaroK scans your music collection. You can watch the progress of this activity in the statusbar!" ) + "</p></div>"
                 "</div>"
             "</div>"
             "</html>"
