@@ -22,6 +22,23 @@
 
 
 
+
+#define FFT_BUFFER_SIZE_LOG 9
+#define FFT_BUFFER_SIZE (1 << FFT_BUFFER_SIZE_LOG)
+
+/* sound sample - should be an signed 16 bit value */
+typedef short int sound_sample;
+
+typedef struct _struct_fft_state fft_state;
+fft_state *fft_init (void);
+void fft_perform (const sound_sample *input, float *output, fft_state *state);
+void fft_close (fft_state *state);
+
+#include "fft.c" //FIXME tmp
+
+
+
+
 class XmmsWrapper
 {
     VisPlugin *m_vis;
@@ -29,8 +46,6 @@ class XmmsWrapper
 public:
     XmmsWrapper( const std::string& );
     ~XmmsWrapper();
-
-    void loadVis( const std::string& );
 
     bool renderPCM() const { return vis()->render_pcm  && vis()->num_pcm_chs_wanted > 0; }
     bool renderFFT() const { return vis()->render_freq && vis()->num_freq_chs_wanted > 0; }
@@ -42,19 +57,49 @@ public:
 int tryConnect();
 
 
-std::string path; //global
+std::string socketpath; //global
 
 
 int
 main( int argc, char** argv )
 {
-    path  = getenv( "HOME" );
-    path += "/.kde/share/apps/amarok"; //TODO get this with "kconfig --type data"
-    path += "/visualization_socket";
+/*
+    if( argc == 1 )
+    {
+        //scan plugins
+
+
+        char *filename, *ext;
+        DIR *dir;
+        struct dirent *ent;
+        struct stat statbuf;
+
+        dir = opendir(dirname);
+        if (!dir)
+                return;
+
+        while( (ent = readdir( path )) != NULL )
+        {
+                filename = g_strdup_printf("%s/%s", dirname, ent->d_name);
+                if (!stat(filename, &statbuf) && S_ISREG(statbuf.st_mode) &&
+                    (ext = strrchr(ent->d_name, '.')) != NULL)
+                        if (!strcmp(ext, SHARED_LIB_EXT))
+                                add_plugin(filename);
+                g_free(filename);
+        }
+        closedir(dir);
+    }
+*/
+
+
+
+    socketpath  = getenv( "HOME" );
+    socketpath += "/.kde/share/apps/amarok"; //TODO get this with "kconfig --type data"
+    socketpath += "/visualization_socket";
 
     gtk_init( &argc, &argv ); //xmms plugins require this
 
-    XmmsWrapper wrap( "libogl_scope.so" );
+    XmmsWrapper wrap( argc > 1 ? argv[1] : "" );
 
     int    sockfd;
     int    nbytes = 0;
@@ -75,7 +120,6 @@ main( int argc, char** argv )
             close( sockfd );
 
             wrap.vis()->render_pcm( pcm_data );
-            continue;
 /*
             if (wrap.vis()->num_pcm_chs_wanted == 1)
             {
@@ -92,17 +136,35 @@ main( int argc, char** argv )
 */
         }
 
-        else if( wrap.renderFFT() ) //NOTE xmms has no else
+        if( wrap.renderFFT() ) //NOTE xmms has no else
         {
             gint16 fft_data[2][256];
             memset( fft_data, 0, 512 );
 
+/*
             send( sockfd, "FFT", 4, 0 );
             nbytes = recv( sockfd, fft_data[0], 256, 0 );
             close( sockfd );
+*/
+        gint16 pcm_data[2][512];
+        memset( pcm_data, 0, 1024 );
+
+        send( sockfd, "PCM", 4, 0 );
+        nbytes = recv( sockfd, pcm_data[0], 512, 0 );
+        close( sockfd );
+
+        static fft_state *state = NULL;
+        gfloat tmp_out[257];
+        gint i;
+
+        if( !state ) state = fft_init();
+
+        fft_perform( pcm_data[0], tmp_out, state );
+
+        for(i = 0; i < 256; i++) fft_data[0][i] = ((gint)sqrt(tmp_out[i + 1])) >> 8;
+
 
             wrap.vis()->render_freq( fft_data );
-            continue;
 /*
             if (wrap.vis()->num_freq_chs_wanted == 1)
             {
@@ -132,7 +194,7 @@ tryConnect()
 
         struct sockaddr_un local;
 
-        strcpy( &local.sun_path[0], path.c_str() );
+        strcpy( &local.sun_path[0], socketpath.c_str() );
         local.sun_family = AF_UNIX;
 
         if( connect( fd, (struct sockaddr*) &local, sizeof( local ) ) == -1 )
@@ -146,28 +208,23 @@ tryConnect()
 }
 
 
-
-
-void vis_disable_plugin( VisPlugin *vp ) {} //seems to be a requirement
+void vis_disable_plugin( VisPlugin *vp ) {} //seems to be a required function (see loadVis() )
 
 extern "C"
 {
     //bloody ogl_scope requires this block of functions
-    //xmms/util.h
-    gboolean xmms_check_realtime_priority(void) {}
-
     //libxmms/xmmsctrl.h
-    gint xmms_connect_to_session(gint session) {}
+    gint xmms_connect_to_session(gint session) { return 0; }
     void xmms_remote_playlist(gint session, gchar ** list, gint num, gboolean enqueue) {}
-    gint xmms_remote_get_version(gint session) {}
+    gint xmms_remote_get_version(gint session) { return 0; }
     void xmms_remote_playlist_add(gint session, GList * list) {}
     void xmms_remote_playlist_delete(gint session, gint pos) {}
     void xmms_remote_play(gint session) {}
     void xmms_remote_pause(gint session) {}
     void xmms_remote_stop(gint session) {}
-    gboolean xmms_remote_is_playing(gint session) {}
-    gboolean xmms_remote_is_paused(gint session) {}
-    gint xmms_remote_get_playlist_pos(gint session) {}
+    gboolean xmms_remote_is_playing(gint session) { return false; }
+    gboolean xmms_remote_is_paused(gint session) { return false; }
+    gint xmms_remote_get_playlist_pos(gint session) { return 0; }
     void xmms_remote_set_playlist_pos(gint session, gint pos) {}
     gint xmms_remote_get_playlist_length(gint session) {}
     void xmms_remote_playlist_clear(gint session) {}
@@ -223,40 +280,83 @@ extern "C"
     void        xmms_cfg_free(ConfigFile * cfg) {}
     ConfigFile *xmms_cfg_open_default_file(void) { return 0; }
     gboolean    xmms_cfg_write_default_file(ConfigFile * cfg) { return false; }
-
     gboolean xmms_cfg_read_string(ConfigFile * cfg, gchar * section, gchar * key, gchar ** value) { return false; }
     gboolean xmms_cfg_read_int(ConfigFile * cfg, gchar * section, gchar * key, gint * value) { return false; }
     gboolean xmms_cfg_read_boolean(ConfigFile * cfg, gchar * section, gchar * key, gboolean * value) { return false; }
     gboolean xmms_cfg_read_float(ConfigFile * cfg, gchar * section, gchar * key, gfloat * value) { return false; }
     gboolean xmms_cfg_read_double(ConfigFile * cfg, gchar * section, gchar * key, gdouble * value) { return false; }
-
     void xmms_cfg_write_string(ConfigFile * cfg, gchar * section, gchar * key, gchar * value) {}
     void xmms_cfg_write_int(ConfigFile * cfg, gchar * section, gchar * key, gint value) {}
     void xmms_cfg_write_boolean(ConfigFile * cfg, gchar * section, gchar * key, gboolean value) {}
     void xmms_cfg_write_float(ConfigFile * cfg, gchar * section, gchar * key, gfloat value) {}
     void xmms_cfg_write_double(ConfigFile * cfg, gchar * section, gchar * key, gdouble value) {}
-
     void xmms_cfg_remove_key(ConfigFile * cfg, gchar * section, gchar * key) {}
+
+
+    //libxmms/util.h
+    GtkWidget *xmms_show_message(gchar * title, gchar * text, gchar * button_text, gboolean modal, GtkSignalFunc button_action, gpointer action_data) {}
+    gboolean   xmms_check_realtime_priority(void) { return false; }
+    void       xmms_usleep(gint usec) { usleep( usec ); }
+
+
+}
+
+#include <gdk/gdkx.h> //Display Struct
+
+extern "C" {
+    //xmms/fullscreen.h
+    gboolean xmms_fullscreen_available(Display *) { return false; }
+    gboolean xmms_fullscreen_init(GtkWidget *win) { return false; }
+    gboolean xmms_fullscreen_enter(GtkWidget *win, gint *w, gint *h) { return false; }
+    void     xmms_fullscreen_leave(GtkWidget *win) {}
+    gboolean xmms_fullscreen_in(GtkWidget *win) { return false; }
+    gboolean xmms_fullscreen_mark(GtkWidget *win) { return false; }
+    void     xmms_fullscreen_unmark(GtkWidget *win) {}
+    void     xmms_fullscreen_cleanup(GtkWidget *win) {}
+    GSList  *xmms_fullscreen_modelist(GtkWidget *win) { return 0; }
+    void     xmms_fullscreen_modelist_free(GSList *modes) {}
+
+
+    //xmms/util.h
+    gchar *find_file_recursively(const char *dirname, const char *file) {}
+    void del_directory(const char *dirname) {}
+    GdkImage *create_dblsize_image(GdkImage * img) {}
+    char *read_ini_string(const char *filename, const char *section, const char *key) {}
+    char *read_ini_string_no_comment(const char *filename, const char *section, const char *key) {}
+    GArray *read_ini_array(const gchar * filename, const gchar * section, const gchar * key) {}
+    GArray *string_to_garray(const gchar * str) {}
+    void glist_movedown(GList * list) {}
+    void glist_moveup(GList * list) {}
+    void util_item_factory_popup(GtkItemFactory * ifactory, guint x, guint y, guint mouse_button, guint32 time) {}
+    void util_item_factory_popup_with_data(GtkItemFactory * ifactory, gpointer data, GtkDestroyNotify destroy, guint x, guint y, guint mouse_button, guint32 time) {}
+    GtkWidget *util_create_add_url_window(gchar *caption, GtkSignalFunc ok_func, GtkSignalFunc enqueue_func) {}
+    GtkWidget *util_create_filebrowser(gboolean clear_pl_on_ok) {}
+    gboolean util_filebrowser_is_dir(GtkFileSelection * filesel) {}
+    GdkFont *util_font_load(gchar *name) {}
+    void util_set_cursor(GtkWidget *window) {}
+    void util_dump_menu_rc(void) {}
+    void util_read_menu_rc(void) {}
 }
 
 
 
 
-XmmsWrapper::XmmsWrapper( const std::string &visPath )
+XmmsWrapper::XmmsWrapper( const std::string &plugin )
 {
-    loadVis( visPath );
-}
+    std::string path = plugin;
 
+    //const char *filename = "/usr/lib/xmms/Visualization/libbscope.so";
+    //const char *filename = "/usr/lib/xmms/Visualization/libfinespectrum.so";
+    //const char *filename = "/usr/lib/xmms/Visualization/libogl_spectrum.so";
+    //const char *filename = "/usr/lib/xmms/Visualization/libsanalyzer.so";
+    //const char *filename = "/usr/lib/xmms/Visualization/liblava.so";
+    //const char *filename = "/usr/lib/xmms/Visualization/libbumpscope.so";
+    //const char *filename = "/usr/lib/xmms/Visualization/libbezier.so";
 
-XmmsWrapper::~XmmsWrapper()
-{
-    dlclose( m_vis );
-}
+    if( path.empty() ) path = "libblursk.so";
 
+    path.insert( 0, "/usr/lib/xmms/Visualization/" );
 
-void
-XmmsWrapper::loadVis( const std::string &path )
-{
     std::cout << "[amK] loading xmms plugin: " << path << '\n';
 
   /*{
@@ -283,20 +383,13 @@ XmmsWrapper::loadVis( const std::string &path )
         closedir(dir);
     }*/
 
-    //const char *filename = "/usr/lib/xmms/Visualization/libbscope.so";
-    //const char *filename = "/usr/lib/xmms/Visualization/libfinespectrum.so";
-    //const char *filename = "/usr/lib/xmms/Visualization/libogl_spectrum.so";
-    //const char *filename = "/usr/lib/xmms/Visualization/libsanalyzer.so";
-    //const char *filename = "/usr/lib/xmms/Visualization/liblava.so";
-    const char *filename = "/usr/lib/xmms/Visualization/libbumpscope.so";
-
     {
         //add plugin
 
         void *h;
         void *(*gpi) (void);
 
-        if ((h = dlopen( filename, RTLD_NOW )) == NULL)
+        if ((h = dlopen( path.c_str(), RTLD_NOW )) == NULL)
         {
                 std::cout << dlerror() << "\n";
                 return;
@@ -306,7 +399,7 @@ XmmsWrapper::loadVis( const std::string &path )
         {
                 VisPlugin *p = (VisPlugin*)gpi();
                 p->handle = h;
-                p->filename = strdup(filename);
+                p->filename = strdup( path.c_str() );
                 p->xmms_session = 0;//ctrlsocket_get_session_id(); //FIXME
                 p->disable_plugin = vis_disable_plugin; //FIXME what is this symbol?
 
@@ -320,6 +413,12 @@ XmmsWrapper::loadVis( const std::string &path )
 }
 
 
+XmmsWrapper::~XmmsWrapper()
+{
+    dlclose( m_vis );
+
+    std::cout << "[amK] ~\n";
+}
 
 
 
