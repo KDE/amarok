@@ -433,9 +433,15 @@ void PlaylistWindow::engineStateChanged( EngineBase::EngineState state )
             m_lastBrowser = m_browsers->currentIndex();
             m_browsers->showBrowser( context );
             break;
-                            
+        
         case EngineBase::Empty:
             m_browsers->showBrowser( m_lastBrowser );
+            break;
+        
+        case EngineBase::Idle:
+            break;
+        
+        case EngineBase::Paused:
             break;
     }
 }
