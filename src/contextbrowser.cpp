@@ -88,14 +88,14 @@ ContextBrowser::~ContextBrowser()
     if( m_loaded ) return;
     QTime t;
     t.start();
-    
+
     if ( m_db->isEmpty() || !m_db->isDbValid() )
         showIntroduction();
     else
         showHome();
     kdDebug()<<"END show"<<endl;
     qDebug( "Context show elapsed: %d ms", t.elapsed() );
-    
+
     m_loaded = true;
 }*/
 
@@ -160,14 +160,14 @@ void ContextBrowser::openURLRequest( const KURL &url )
     }
 
 #ifdef AMAZON_SUPPORT
-    
+
     /* fetch covers from amazon on click */
     if ( m_url.protocol() == "fetchcover" ) m_db->fetchCover( this, info[0], info[1], false );
 
 #else
-    if ( m_url.protocol() == "fetchcover" ) 
+    if ( m_url.protocol() == "fetchcover" )
     {
-        if( m_db->getImageForAlbum( info[0], info[1], locate( "data", "amarok/images/sound.png" ), 0 ) != locate( "data", "amarok/images/sound.png" ) ) 
+        if( m_db->getImageForAlbum( info[0], info[1], locate( "data", "amarok/images/sound.png" ), 0 ) != locate( "data", "amarok/images/sound.png" ) )
         {
             /* if a cover exists, open a widget with the image on click */
             QWidget *widget = new QWidget( 0, 0, WDestructiveClose );
@@ -176,8 +176,8 @@ void ContextBrowser::openURLRequest( const KURL &url )
             widget->setPaletteBackgroundPixmap( pixmap );
             widget->setMinimumSize( pixmap.size() );
             widget->setFixedSize( pixmap.size() );
-            widget->show(); 
-        }    
+            widget->show();
+        }
         else
         {
             /* if no cover exists, open a file dialog to add a cover */
@@ -189,7 +189,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
             ContextBrowser::showCurrentTrack();
         }
      }
-#endif            
+#endif
     /* open konqueror with musicbrainz search result for artist-album */
     if ( url.protocol() == "musicbrainz" )
     {
@@ -265,7 +265,8 @@ void ContextBrowser::showHome() //SLOT
     browser->setUserStyleSheet( m_styleSheet );
 
     // <Favorite Tracks Information>
-    browser->write( "<html><div class='menu'><a class='menu' href='show:home'>" + i18n( "Home" ) + "</a>&nbsp;&nbsp;<a class='menu' href='show:context'>" + i18n( "Current Track" ) + "</a></div>");
+    browser->write( "<html><div class='menu'><a class='menu' href='show:home'>" + i18n( "Home" ) + "</a>&nbsp;&nbsp;<a class='menu' href='show:context'>"
+                    + i18n( "Current Track" ) + "</a></div>");
     browser->write( "<div class='rbcontent'>" );
     browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
     browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Your Favorite Tracks:" ) + "</td></tr>" );
@@ -340,7 +341,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     // take care of sql updates (schema changed errors)
     delete m_db;
     m_db = new CollectionDB();
-    
+
     // Triggers redisplay when new cover image is downloaded
     connect( m_db, SIGNAL( coverFetched() ), this, SLOT( showCurrentTrack() ) );
 
@@ -348,7 +349,8 @@ void ContextBrowser::showCurrentTrack() //SLOT
     browser->setUserStyleSheet( m_styleSheet );
 
     // <Current Track Information>
-    browser->write( "<html><div class='menu'><a class='menu' href='show:home'>" + i18n( "Home" ) + "</a>&nbsp;&nbsp;<a class='menu' href='show:context'>" + i18n( "Current Track" ) + "</a></div>");
+    browser->write( "<html><div class='menu'><a class='menu' href='show:home'>" + i18n( "Home" ) + "</a>&nbsp;&nbsp;<a class='menu' href='show:context'>"
+                    + i18n( "Current Track" ) + "</a></div>");
     if ( !m_db->isFileInCollection( m_currentTrack->url().path() ) )
     {
         browser->write( "<div><br>");
@@ -376,8 +378,10 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                     "<a href='musicbrainz:%4 @@@ %5'><img src='%6'></a></td></tr></table>"
                                     "<table width='100%'><tr><td width='20%'><a class='menu' href='fetchcover:%7 @@@ %8'>"
                                     "<img hspace='2' src='%9'></a></td>"
-                                    "<td valign='bottom' align='right' width='80%'><i>Track played %10 times<br>Last play: %11<br>First play: %12</i></td>"
-                                    "</tr>" )
+                                    "<td valign='bottom' align='right' width='80%'>"
+                                    "<i>" + i18n( "Track played %10 times" ) + "<br>" +
+                                    i18n( "Last play: %11" ) + "<br>" +
+                                    i18n( "First play: %12") + "</i></td></tr>" )
                          .args( QStringList()
                                 << escapeHTML( m_currentTrack->artist() )
                                 << escapeHTML( m_currentTrack->title() )
@@ -388,7 +392,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                 << escapeHTMLAttr( m_currentTrack->artist() )
                                 << escapeHTMLAttr( m_currentTrack->album() )
                                 << escapeHTMLAttr( m_db->getImageForAlbum( values[1], values[0], locate( "data", "amarok/images/sound80.png" ) ) )
-                                << values[4] 
+                                << values[4]
                                 << values[2].left( values[2].length() - 3 )
                                 << values[3].left( values[3].length() - 3 )
                                 )
@@ -412,7 +416,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                         "<img src='%6'></a></td></tr></table> <table width='100%'><tr><td width='20%'>"
                                         "<a class='menu' href='fetchcover:%6 @@@ %7'><img align='left' valign='center' hspace='2' src='%8'></a>"
                                         "</td><td width='80%' valign='bottom' align='right'>"
-                                        "<i>Never played before</i></td>"
+                                        "<i>" + i18n( "Never played before" )  + "</i></td>"
                                         "</tr>" )
                              .args( QStringList()
                                     << escapeHTML( m_currentTrack->artist() )
@@ -451,7 +455,8 @@ void ContextBrowser::showCurrentTrack() //SLOT
         browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
         for ( uint i = 0; i < values.count(); i += 3 )
-            browser->write( QString ( "<tr><td class='song'><a class='song' href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">" + values[i] + " <i>(played " + values[i + 2] + " times)</i></a></td></tr>" ) );
+            browser->write( QString ( "<tr><td class='song'><a class='song' href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">"
+                                      + values[i] + " <i>" + i18n( "(played once)", "(played %n times)", values[i + 2].toULong() ) + "</i></a></td></tr>" ) );
 
         values.clear();
         names.clear();

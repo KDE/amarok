@@ -68,10 +68,10 @@ PluginManager::createFromQuery( const QString &constraint )
     KTrader::OfferList offers = query( constraint );
 
     if ( offers.isEmpty() ) {
-        kdWarning() << k_funcinfo << "No matching plugin found.\n";                                          
+        kdWarning() << k_funcinfo << "No matching plugin found.\n";
         return 0;
     }
-     
+
     // Select plugin with highest rank
     int rank = 0;
     uint current = 0;
@@ -79,8 +79,8 @@ PluginManager::createFromQuery( const QString &constraint )
         if ( offers[i]->property( "X-KDE-amaroK-rank" ).toInt() > rank )
             current = i;
     }
-               
-    return createFromService( offers[current] );    
+
+    return createFromService( offers[current] );
 }
 
 
@@ -165,18 +165,18 @@ PluginManager::showAbout( const QString &constraint )
 {
     KTrader::OfferList offers = query( constraint );
     KService::Ptr s = offers.front();
-    
+
     const QString body = "<tr><td>%1</td><td>%2</td></tr>";
-    
+
     QString str  = "<html><body><table width=\"100%\" border=\"1\">";
-    
-    str += body.arg( "Name",                s->name() );
-    str += body.arg( "Library",             s->library() );
-    str += body.arg( "Authors",             s->property( "X-KDE-amaroK-authors" ).toStringList().join( "\n" ) );
-    str += body.arg( "Email",               s->property( "X-KDE-amaroK-email" ).toStringList().join( "\n" ) );
-    str += body.arg( "Version",             s->property( "X-KDE-amaroK-version" ).toString() );
-    str += body.arg( "Framework Version",   s->property( "X-KDE-amaroK-framework-version" ).toString() );
-    
+
+    str += body.arg( i18n( "Name" ),                s->name() );
+    str += body.arg( i18n( "Library" ),             s->library() );
+    str += body.arg( i18n( "Authors" ),             s->property( "X-KDE-amaroK-authors" ).toStringList().join( "\n" ) );
+    str += body.arg( i18n( "Email" ),               s->property( "X-KDE-amaroK-email" ).toStringList().join( "\n" ) );
+    str += body.arg( i18n( "Version" ),             s->property( "X-KDE-amaroK-version" ).toString() );
+    str += body.arg( i18n( "Framework Version" ),   s->property( "X-KDE-amaroK-framework-version" ).toString() );
+
     str += "</table></body></html>";
 
     KMessageBox::information( 0, str, i18n( "Plugin Information" ) );
