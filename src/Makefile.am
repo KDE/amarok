@@ -51,6 +51,7 @@ amarokapp_SOURCES = \
     k3bexporter.cpp \
     kbookmarkhandler.cpp \
     ktrm.cpp \
+    mediabrowser.cpp \
     metabundle.cpp \
     osd.cpp \
     playerwindow.cpp \

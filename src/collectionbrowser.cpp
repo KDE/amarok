@@ -560,8 +560,10 @@ CollectionView::slotCollapse( QListViewItem* item )  //SLOT
 
     QListViewItem* child = item->firstChild();
     QListViewItem* childTmp;
+
     //delete all children
-    while ( child ) {
+    while ( child )
+    {
         childTmp = child;
         child = child->nextSibling();
         delete childTmp;
@@ -888,7 +890,8 @@ CollectionView::customEvent( QCustomEvent *e )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
-CollectionView::startDrag() {
+CollectionView::startDrag()
+{
     KURLDrag* d = new KURLDrag( listSelected(), this );
     d->dragCopy();
 }
