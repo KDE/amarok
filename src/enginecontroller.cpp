@@ -258,6 +258,9 @@ void EngineController::play( const MetaBundle &bundle )
 
     if( m_engine->load( url ) )
     {
+        //disable crossfading if we're going to play the next track of the same album
+        bool dontCrossfade = ( bundle.track().toInt() == m_bundle.track().toInt() + 1 ) && ( bundle.album() == m_bundle.album() );
+        
         //assign bundle now so that it is available when the engine
         //emits stateChanged( Playing )
         m_bundle = bundle;
@@ -265,9 +268,10 @@ void EngineController::play( const MetaBundle &bundle )
         if( m_engine->play() )
         {
             m_xFadeThisTrack = AmarokConfig::crossfade() &&
-                m_engine->hasXFade() &&
-                !m_engine->isStream() &&
-                m_bundle.length()*1000 - AmarokConfig::crossfadeLength()*2 > 0;
+                              !dontCrossfade &&  
+                               m_engine->hasXFade() &&
+                              !m_engine->isStream() &&
+                               m_bundle.length()*1000 - AmarokConfig::crossfadeLength()*2 > 0;
 
             newMetaDataNotify( bundle, true /* track change */ );
         }
