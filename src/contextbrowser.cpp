@@ -16,7 +16,9 @@
 #include "playlistitem.h"  //statistics stuff
 #include "qstringx.h"
 #include "scrobbler.h"
+#ifndef USE_MYSQL
 #include "sqlite/sqlite3.h"
+#endif
 
 #include <qdatetime.h>
 

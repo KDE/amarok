@@ -366,12 +366,7 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
 
             command += m_parent->escapeString( bundle.url().path() ) + "','";
             command += m_parent->escapeString( bundle.url().directory() ) + "',";
-#ifdef USE_MYSQL
-            //TODO: maybe this could be used for sqlite too?
             command += "'" + QString::number(QDateTime::currentDateTime().toTime_t()) + "',";
-#else
-            command += "strftime('%s', 'now'),";
-#endif
             command += m_parent->escapeString( QString::number( m_parent->albumID( bundle.album().isEmpty() ? i18n( "Unknown" ) : bundle.album(), true, !m_incremental ) ) ) + ",";
             command += m_parent->escapeString( QString::number( m_parent->artistID( artist.isEmpty() ? i18n( "Unknown" ) : artist, true, !m_incremental ) ) ) + ",";
             command += m_parent->escapeString( QString::number( m_parent->genreID( bundle.genre().isEmpty() ? i18n( "Unknown" ) : bundle.genre(), true, !m_incremental ) ) ) + ",'";
@@ -399,12 +394,7 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
 
             command += m_parent->escapeString( url.path() ) + "','";
             command += m_parent->escapeString( url.directory() ) + "',";
-#ifdef USE_MYSQL
-            //TODO: maybe this could be used for sqlite too?
             command += "'" + QString::number(QDateTime::currentDateTime().toTime_t()) + "',";
-#else
-            command += "strftime('%s', 'now'),";
-#endif
             command += m_parent->escapeString( QString::number( m_parent->albumID( i18n( "Unknown" ), true, !m_incremental ) ) ) + ",";
             command += m_parent->escapeString( QString::number( m_parent->artistID( artist.isEmpty() ? "Unknown" : artist, true, !m_incremental ) ) ) + ",";
             command += m_parent->escapeString( QString::number( m_parent->genreID( i18n( "Unknown" ), true, !m_incremental ) ) ) + ",'";
@@ -423,7 +413,7 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
     }
     // let's lock the database (will block other threads)
 #ifdef USE_MYSQL
-//    m_parent->execSql( "START TRANSACTION;" );
+//    m_parent->query( "START TRANSACTION;" );
 #else
 //    m_parent->query( "BEGIN TRANSACTION;" );
 #endif
@@ -446,7 +436,7 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
     // remove temp tables and unlock database
     m_parent->dropTables( true );
 #ifdef USE_MYSQL
-//    m_parent->execSql( "COMMIT;" );
+//    m_parent->query( "COMMIT;" );
 #else
 //    m_parent->query( "END TRANSACTION;" );
 #endif

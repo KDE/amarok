@@ -147,17 +147,17 @@ CollectionDB::query( const QString& statement, QStringList& names, bool debug )
     if ( debug )
         kdDebug() << "query-start: " << statement << endl;
 
+    if ( !m_db )
+    {
+        kdError() << k_funcinfo << "[CollectionDB] Database pointer == NULL.\n";
+        return QStringList();
+    }
+
     QStringList values;
 
     clock_t start = clock();
 
 #ifdef USE_MYSQL
-    if ( !m_db )
-    {
-        kdError() << k_funcinfo << "[CollectionDB] MySql pointer == NULL.\n";
-        return QStringList();
-    }
-
     if (!mysql::mysql_query(m_db, statement.utf8()))
     {
         mysql::MYSQL_RES* result;
@@ -193,12 +193,6 @@ CollectionDB::query( const QString& statement, QStringList& names, bool debug )
         return QStringList();
     }
 #else
-    if ( !m_db )
-    {
-        kdError() << k_funcinfo << "[CollectionDB] SQLite pointer == NULL.\n";
-        return QStringList();
-    }
-
     int error;
     const char* tail;
     sqlite3_stmt* stmt;
@@ -278,21 +272,15 @@ CollectionDB::query( const QString& statement, QStringList& names, bool debug )
 int
 CollectionDB::sqlInsertID()
 {
-#ifdef USE_MYSQL
     if ( !m_db )
     {
-        kdWarning() << k_funcinfo << "MySql pointer == NULL.\n";
+        kdWarning() << k_funcinfo << "Database pointer == NULL.\n";
         return -1;
     }
 
+#ifdef USE_MYSQL
     return mysql::mysql_insert_id(m_db);
 #else
-    if ( !m_db )
-    {
-        kdWarning() << k_funcinfo << "SQLite pointer == NULL.\n";
-        return -1;
-    }
-
     return sqlite3_last_insert_rowid( m_db );
 #endif
 }
@@ -683,20 +671,12 @@ CollectionDB::addSongPercentage( const QString &url , const int percentage )
         score = ( ( m_values[2].toDouble() * m_values.first().toInt() ) + percentage ) / ( m_values.first().toInt() + 1 );
 
         query( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
-#ifdef USE_MYSQL
                         "VALUES ( '%1', %2, %3, %4, %5 );" )
                         .arg( escapeString( url ) )
                         .arg( m_values[1] )
-                        .arg( QDateTime::currentDateTime().toTime_t() ) //TODO: maybe this could be used for sqlite too?
+                        .arg( QDateTime::currentDateTime().toTime_t() )
                         .arg( score )
                         .arg( m_values[0] + " + 1" ) );
-#else
-                        "VALUES ( '%1', '%2', strftime('%s', 'now'), %3, %4 );" )
-                        .arg( escapeString( url ) )
-                        .arg( m_values[1] )
-                        .arg( score )
-                        .arg( m_values[0] + " + 1" ) );
-#endif
     }
     else
     {
@@ -704,17 +684,11 @@ CollectionDB::addSongPercentage( const QString &url , const int percentage )
         score = ( ( 50 + percentage ) / 2 );
 
         query( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
-#ifdef USE_MYSQL
                         "VALUES ( '%1', %2, %3, %4, 1 );" )
                         .arg( escapeString( url ) )
-                        .arg( QDateTime::currentDateTime().toTime_t() ) //TODO: maybe this could be used for sqlite too?
+                        .arg( QDateTime::currentDateTime().toTime_t() )
                         .arg( QDateTime::currentDateTime().toTime_t() )
                         .arg( score ) );
-#else
-                        "VALUES ( '%1', strftime('%s', 'now'), strftime('%s', 'now'), %2, 1 );" )
-                        .arg( escapeString( url ) )
-                        .arg( score ) );
-#endif
     }
 
     int iscore = getSongPercentage( url );
@@ -760,17 +734,11 @@ CollectionDB::setSongPercentage( const QString &url , int percentage )
     else
     {
         query( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
-#ifdef USE_MYSQL
                         "VALUES ( '%1', %2, %3, %4, 0 );" )
                         .arg( escapeString( url ) )
-                        .arg( QDateTime::currentDateTime().toTime_t() ) //TODO: maybe this could be used for sqlite too?
+                        .arg( QDateTime::currentDateTime().toTime_t() )
                         .arg( QDateTime::currentDateTime().toTime_t() )
                         .arg( percentage ) );
-#else
-                        "VALUES ( '%1', strftime('%s', 'now'), strftime('%s', 'now'), %2, 0 );" )
-                        .arg( escapeString( url ) )
-                        .arg( percentage ) );
-#endif
     }
 
     emit s_emitter->scoreChanged( url, percentage );
@@ -861,6 +829,12 @@ CollectionDB::removeDirFromCollection( QString path )
 }
 
 
+#ifdef USE_MYSQL
+#define AUTO_INCREMENT "AUTO_INCREMENT"
+#else
+#define AUTO_INCREMENT ""
+#endif
+
 void
 CollectionDB::createTables( bool temporary )
 {
@@ -877,62 +851,38 @@ CollectionDB::createTables( bool temporary )
                     "title VARCHAR(255),"
                     "year INTEGER,"
                     "comment VARCHAR(255),"
-#ifdef USE_MYSQL
                     "track NUMERIC(4),"
-#else
-                    "track NUMBER(4),"
-#endif
                     "bitrate INTEGER,"
                     "length INTEGER,"
                     "samplerate INTEGER,"
-#ifdef USE_MYSQL
                     "sampler BOOL );" )
-#else
-                    "sampler BOOLEAN );" )
-#endif
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     //create album table
     query( QString( "CREATE %1 TABLE album%2 ("
-#ifdef USE_MYSQL
-                    "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-#else
-                    "id INTEGER PRIMARY KEY,"
-#endif
+                    "id INTEGER PRIMARY KEY " AUTO_INCREMENT ","
                     "name VARCHAR(255) );" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     //create artist table
     query( QString( "CREATE %1 TABLE artist%2 ("
-#ifdef USE_MYSQL
-                    "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-#else
-                    "id INTEGER PRIMARY KEY,"
-#endif
+                    "id INTEGER PRIMARY KEY " AUTO_INCREMENT ","
                     "name VARCHAR(255) );" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     //create genre table
     query( QString( "CREATE %1 TABLE genre%2 ("
-#ifdef USE_MYSQL
-                    "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-#else
-                    "id INTEGER PRIMARY KEY,"
-#endif
+                    "id INTEGER PRIMARY KEY " AUTO_INCREMENT ","
                     "name VARCHAR(255) );" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     //create year table
     query( QString( "CREATE %1 TABLE year%2 ("
-#ifdef USE_MYSQL
-                    "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-#else
-                    "id INTEGER PRIMARY KEY,"
-#endif
+                    "id INTEGER PRIMARY KEY " AUTO_INCREMENT ","
                     "name VARCHAR(4) );" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
