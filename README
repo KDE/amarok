@@ -1,5 +1,6 @@
 amaroK README
 =============
+
 amaroK - a new media player for KDE
 
 There are many media players around these days, true. What's missing from most
@@ -21,6 +22,9 @@ drop interface, that really makes playlist handling easy.
     - nice GUI, integrates into the KDE look, but with a unique touch
 
     
+This file was last updated with relevance to amaroK 1.0-beta1 
+
+
 --------------------------------------------------------------------------------
 DEPENDENCIES
 ============   
@@ -49,7 +53,11 @@ optional
       http://www.networkmultimedia.org
 
     * XMMS 1.2 + XMMS visualization plugins    
-      http://xmms.org        
+      http://xmms.org
+      
+
+Please note, if you obtain these dependencies via a packaging system, you must
+also install the devel versions of these packages!
   
         
 --------------------------------------------------------------------------------
@@ -73,8 +81,30 @@ compile failure. See the file INSTALL for more information.
 
 
 --------------------------------------------------------------------------------
+MINI-FAQ
+========
+
+Q: Why can't amaroK play MP3s?
+A: It can! Chances are you're using Fedora/RedHat linux, they don't ship with
+   MP3 decoders by default (due to patenting issues). Solution:
+   
+       ALT-F2, gg:redhat mp3 decoder howto, ENTER
+       
+Q: The amaroK analyzers are really unresponsive!
+A: You are probably using the aRts engine, either use the GST or NMM engines, or
+   reduce the size of your aRts buffer in kcontrol, sound system. The lower the
+   buffer the more responsive the visuals. Yes this is a bug! Please help us fix
+   it!
+   
+Q: There are no visualizations in the visualizations dialog.
+A: You probably don't have xmms-config installed, reconfigure and build after
+   installing the appropriate xmms-devel package.
+   
+Q: I've found a bug / I've got a great idea for amaroK!
+A: Please report it at http://bugs.kde.org.
+
+--------------------------------------------------------------------------------
 
 WWW:  http://amarok.sf.net
 IRC:  irc.freenode.net, #amarok
 MAIL: amarok-devel@lists.sourceforge.net
-
