@@ -40,7 +40,7 @@ class KArtsWidget;
 class KURL;
 
 
-namespace KDE { class PlayObject; };
+namespace KDE { class PlayObject; }
 
 
 class ArtsEngine : public EngineBase
