@@ -72,6 +72,7 @@ class ContextBrowser : public QVBox, public EngineObserver
         QString       m_lyrics;
         QStringList   m_lyricSuggestions;
         QStringList   m_lyricHashes;
+        QString       m_lyricUrl;
         QString       m_HTMLSource;
         KTempFile    *m_bgGradientImage;
         KTempFile    *m_headerGradientImage;

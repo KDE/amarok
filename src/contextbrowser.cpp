@@ -204,6 +204,12 @@ void ContextBrowser::openURLRequest( const KURL &url )
         const QString url = "http://www.musicbrainz.org/taglookup.html?artist=%1&album=%2";
         kapp->invokeBrowser( url.arg( artist, album ) );
     }
+
+    if ( url.protocol() == "lyricspage" )
+    {
+        const QString url = "http://lyrc.com.ar/en/add/add.php?%1";
+        kapp->invokeBrowser( url.arg( m_lyricUrl ) );
+    }
 }
 
 
@@ -1277,6 +1283,10 @@ void ContextBrowser::showLyrics( const QString &hash )
     kdDebug() << "Using this url: " << url << endl;
 
     m_lyrics = QString::null;
+    m_lyricUrl = url;
+    m_lyricUrl.replace( QString("http://lyrc.com.ar/en/tema1en.php?"), QString::null );
+    m_lyricUrl.replace( QString("artist"), QString("grupo") );
+    m_lyricUrl.replace( QString("songname"), QString("tema") );
 
     KIO::TransferJob* job = KIO::get( url, false, false );
 
@@ -1321,7 +1331,11 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
         showLyricSuggestions();
     }
     else
+    {
         m_lyrics = i18n( "Lyrics not found." );
+        m_lyrics += QString( "<p><a href='lyricspage:" + m_lyricUrl + "'>" + i18n("Add Lyrics") + "</a></p>" );
+    }
+
 
     browser->begin();
     m_HTMLSource="";
@@ -1336,7 +1350,7 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
                     "</span>"
                 "</div>"
                 "<div id='lyrics_box-body' class='box-body'>"
-                + m_lyrics +
+                    + m_lyrics +
                 "</div>"
             "</div>"
             "</html>"
@@ -1368,9 +1382,11 @@ ContextBrowser::showLyricSuggestions()
 
     for ( uint i=0; i < m_lyricHashes.count() - 1; ++i )
     {
-        m_lyrics += QString( "<a href='show:suggestLyric-%1'>").arg( m_lyricHashes[i] );
+        m_lyrics += QString( "<a href='show:suggestLyric-%1'>" ).arg( m_lyricHashes[i] );
         m_lyrics += QString( "%1</a><br>" ).arg( m_lyricSuggestions[i] );
     }
+    m_lyrics += QString( "<p><a href='lyricspage:" + m_lyricUrl + "'>" + i18n("Add Lyrics") + "</a></p>" );
+
 
 }
 
