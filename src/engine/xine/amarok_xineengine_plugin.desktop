@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Service
+Name=xine Engine
+ServiceTypes=amaroK/Plugin
+
+X-KDE-amaroK-plugintype=engine
+X-KDE-amaroK-name=xine-engine
+X-KDE-amaroK-authors=Max Howell
+X-KDE-amaroK-email=max.howell@methylblue.com
+X-KDE-amaroK-rank=0
+X-KDE-amaroK-version=1
+X-KDE-amaroK-framework-version=2
