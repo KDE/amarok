@@ -52,7 +52,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     QVBox *browserBox = new QVBox( m_splitter );   
     //<Toolbar>
     m_ac = new KActionCollection( this );
-    KAction *open = new KAction( "Add playlist", "fileopen", 0, this, SLOT( openPlaylist() ), m_ac, "Open" );
+    KAction *open = new KAction( i18n("Add playlist"), "fileopen", 0, this, SLOT( openPlaylist() ), m_ac, "Open" );
     renameButton = new KAction( "Rename", "editclear", 0, this, SLOT( renameSelectedPlaylist() ), m_ac, "Rename" );
     removeButton = new KAction( "Remove", "edittrash", 0, this, SLOT( removeSelectedItems() ), m_ac, "Remove" );
     deleteButton = new KAction( "Delete", "editdelete", 0, this, SLOT( deleteSelectedPlaylists() ), m_ac, "Delete" );
@@ -193,7 +193,7 @@ void PlaylistBrowser::openPlaylist() //SLOT
 {
     // open a file selector to add playlists to the playlist browser
     QStringList files;
-    files = KFileDialog::getOpenFileNames( QString::null, "*.m3u *.pls|Playlist Files", this, "Add Playlists" );
+    files = KFileDialog::getOpenFileNames( QString::null, "*.m3u *.pls|Playlist Files", this, i18n("Add Playlists") );
    
     const QStringList::ConstIterator end  = files.constEnd();
     for( QStringList::ConstIterator it = files.constBegin(); it != end; ++it )   
@@ -551,7 +551,7 @@ PlaylistBrowserView::PlaylistBrowserView( QWidget *parent, const char *name )
     : KListView( parent, name )
     , m_marker( 0 )
 {
-    addColumn( "Playlists" );
+    addColumn( i18n("Playlists") );
     setSelectionMode( QListView::Extended );
     setSorting( -1 );  //no sort
     
@@ -1182,7 +1182,7 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
     else 
     {     //playlist loaded
         // draw the number of tracks and the total length of the playlist
-        info += QString("%1 Tracks").arg( m_trackCount );
+        info += i18n("%1 Tracks").arg( m_trackCount );
         if( m_length )
             info += QString(" - [%2]").arg( MetaBundle::prettyTime( m_length ) );   
     }
@@ -1239,7 +1239,7 @@ TrackItemInfo::TrackItemInfo( const KURL &u, const QString &t, const int l )
 SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
    : KListView( parent, name )
 {
-    addColumn("Smart Playlists");
+    addColumn(i18n("Smart Playlists"));
     setSelectionMode(QListView::Single);
     setSorting( -1 ); //no sort
     setFullWidth( true );
