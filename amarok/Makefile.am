@@ -57,17 +57,15 @@ amarokapp_SOURCES = \
         threadweaver.cpp
 
 amarokapp_LDADD = \
-        $(top_builddir)/amarok/amarok/amarokcore/libamarokcore.a \
-        $(top_builddir)/amarok/amarok/titleproxy/libtitleproxy.a \
-        $(top_builddir)/amarok/amarok/analyzers/libanalyzers.a \
-        $(top_builddir)/amarok/amarok/engine/libengine.a \
-        $(top_builddir)/amarok/amarok/plugin/libplugin.a \
+        $(top_builddir)/amarok/amarok/amarokcore/libamarokcore.la \
+        $(top_builddir)/amarok/amarok/titleproxy/libtitleproxy.la \
+        $(top_builddir)/amarok/amarok/analyzers/libanalyzers.la \
+        $(top_builddir)/amarok/amarok/engine/libengine.la \
+        $(top_builddir)/amarok/amarok/plugin/libplugin.la \
         $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) \
         $(taglib_libs) $(gl_libs) $(LIB_SQLITE)
 
-amarokapp_LDFLAGS = \
-    $(all_libraries) \
-    $(KDE_RPATH)
+amarokapp_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
 METASOURCES = \
     AUTO

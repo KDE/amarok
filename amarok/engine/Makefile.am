@@ -1,4 +1,4 @@
-noinst_LIBRARIES = libengine.a
+noinst_LTLIBRARIES = libengine.la
 
 INCLUDES = \
     -I$(top_srcdir)/amarok/amarok/plugin \
@@ -17,7 +17,7 @@ if with_nmm
     NMMENGINE_BUILD = nmm
 endif
 
-libengine_a_SOURCES = \
+libengine_la_SOURCES = \
     enginebase.cpp
 
 noinst_HEADERS = \

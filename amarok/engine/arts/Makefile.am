@@ -11,8 +11,8 @@ INCLUDES = \
 
 libamarok_artsengine_plugin_la_LIBADD = \
     $(top_builddir)/amarok/amarok/amarokarts/libamarokarts.la \
-    $(top_builddir)/amarok/amarok/engine/libengine.a \
-    $(top_builddir)/amarok/amarok/plugin/libplugin.a \
+    $(top_builddir)/amarok/amarok/engine/libengine.la \
+    $(top_builddir)/amarok/amarok/plugin/libplugin.la \
     $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) \
     $(arts_libs)
 

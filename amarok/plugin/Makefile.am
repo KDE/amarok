@@ -1,10 +1,10 @@
-noinst_LIBRARIES = \
-    libplugin.a
+noinst_LTLIBRARIES = \
+	libplugin.la
 
 INCLUDES = \
     $(all_includes)
 
-libplugin_a_SOURCES = \
+libplugin_la_SOURCES = \
     plugin.cpp
 
 noinst_HEADERS = \
@@ -12,5 +12,3 @@ noinst_HEADERS = \
 
 METASOURCES = \
     AUTO
-
-

@@ -4,14 +4,14 @@ INCLUDES = \
     -I$(top_srcdir)/amarok/amarok/plugin \
     $(all_includes)
 
-noinst_LIBRARIES = \
-    libamarokcore.a
+noinst_LTLIBRARIES = \
+    libamarokcore.la
 
 noinst_HEADERS = \
     amarokconfig.h \
     amarokdcophandler.h
 
-libamarokcore_a_SOURCES = \
+libamarokcore_la_SOURCES = \
     main.cpp \
     amarokdcopiface.skel \
     amarokdcophandler.cpp \

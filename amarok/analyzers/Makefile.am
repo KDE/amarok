@@ -1,5 +1,5 @@
-noinst_LIBRARIES = \
-    libanalyzers.a
+noinst_LTLIBRARIES = \
+    libanalyzers.la
 
 METASOURCES = \
     AUTO
@@ -11,7 +11,7 @@ INCLUDES = \
     -I$(top_srcdir)/amarok/amarok \
     $(all_includes)
 
-libanalyzers_a_SOURCES = \
+libanalyzers_la_SOURCES = \
     analyzerbase.cpp \
     analyzerfactory.cpp \
     baranalyzer.cpp \

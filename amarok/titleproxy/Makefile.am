@@ -5,8 +5,8 @@ INCLUDES = \
 
 METASOURCES = AUTO
 
-noinst_LIBRARIES =  libtitleproxy.a
+noinst_LTLIBRARIES =  libtitleproxy.la
 
-libtitleproxy_a_SOURCES =  titleproxy.cpp
+libtitleproxy_la_SOURCES =  titleproxy.cpp
 
 noinst_HEADERS =  titleproxy.h
