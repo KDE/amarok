@@ -20,12 +20,10 @@
 #include "playlistloader.h"
 #include "sliderwidget.h"
 #include "statusbar.h"
-#include "threadweaver.h"
 
 #include <qapplication.h> //startProgress() etc.
-#include <qcolor.h>
-#include <qcursor.h>
 #include <qhbox.h>
+#include <qlayout.h>
 #include <qtimer.h>
 #include <qtoolbutton.h>
 #include <qtooltip.h> //toggle labels
@@ -38,7 +36,7 @@
 #include <klocale.h>
 #include <kpopupmenu.h>
 #include <kprogress.h>
-#include <ksqueezedtextlabel.h>
+#include <ksqueezedtextlabel.h> //main label
 
 using namespace amaroK;
 
@@ -58,9 +56,9 @@ public:
             AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
 
         if ( e->button() == Qt::RightButton ) {
-            enum Items { NORMAL, REMAIN, LENGTH };
+            enum { NORMAL, REMAIN, LENGTH };
 
-            KPopupMenu menu( this );
+            KPopupMenu menu;
             menu.setCheckable( true );
             menu.insertTitle( i18n( "Time Display" ) );
             menu.insertItem( i18n( "Normal" ), NORMAL );
@@ -69,9 +67,8 @@ public:
             menu.setItemChecked( NORMAL, !AmarokConfig::timeDisplayRemaining() );
             menu.setItemChecked( REMAIN, AmarokConfig::timeDisplayRemaining() );
             menu.setItemEnabled( LENGTH, false );
-            int result = menu.exec( QCursor::pos() );
 
-            switch ( result ) {
+            switch ( menu.exec( e->globalPos() ) {
                 case NORMAL:
                     AmarokConfig::setTimeDisplayRemaining( false );
                     break;
@@ -131,18 +128,19 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     addWidget( m_pTimeLabel = new TimeLabel( this ), 0, true );
 
     // make all widgets as high as the time display
-    const int h = m_pTimeLabel->height();
-    m_pTitle->setFixedHeight( h );
+    // TODO often the slider is bigger
+    const int h = m_pTimeLabel->height() + 3;
     m_pProgressBox->setFixedHeight( h );
-    m_pTotal->setFixedHeight( h );
-    w1->setFixedHeight( h );
-    w2->setFixedHeight( h );
-    m_pSlider->setFixedHeight( h );
-    m_pSlider->setMaximumWidth( 200 ); //hack to force statusbar to stay at reasonable width when showing tmp messages
+      m_pTimeLabel->setFixedHeight( h );
+         m_pSlider->setFixedHeight( h );
+          m_pTitle->setFixedHeight( h );
+          m_pTotal->setFixedHeight( h );
+                w1->setFixedHeight( h );
+                w2->setFixedHeight( h );
 
     // set up us the bomb
     engineStateChanged( Engine::Empty );
-    slotItemCountChanged( 0 );
+    //slotItemCountChanged( 0 );
 
     // for great justice!
     connect( m_pPauseTimer, SIGNAL(timeout()), SLOT(slotPauseTimer()) );

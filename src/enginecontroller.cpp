@@ -153,6 +153,10 @@ EngineBase *EngineController::loadEngine() //static
     } else {
 
         //init failed - fall back to currently loaded engine
+        //TODO avoid two levels of message dialogs, eg
+        //       gst-engine says "argh you haven't run gst-register"
+        //       then the following message is shown
+
         KMessageBox::error( 0, i18n( "The new engine could not be loaded." ) );
         if( engine != dummyEngine() )
            AmarokConfig::setSoundSystem( PluginManager::getService( engine )->property( "X-KDE-amaroK-name" ).toString() );

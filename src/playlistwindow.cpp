@@ -196,6 +196,7 @@ PlaylistWindow::init()
     layV->addWidget( m_browsers, 1 );
     layV->addWidget( m_toolbar );
     layV->addWidget( m_statusbar );
+    layV->setSpacing( 2 );
 
     //The volume slider later becomes our FocusProxy, so all wheelEvents get redirected to it
     m_toolbar->setFocusPolicy( QWidget::WheelFocus );
