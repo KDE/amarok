@@ -87,20 +87,19 @@ MetaBundle::init( TagLib::AudioProperties *ap )
 QString
 MetaBundle::prettyTitle() const
 {
-    QString s = m_title;
+    QString s = m_title, fileName = m_url.fileName();
 
-    if( s.isEmpty() )
+    if( s.isEmpty() || s == fileName ) // no title tag
     {
         //derive a prettyTitle from the filename
 
         //remove file extension and tidy
-        s = m_url.fileName();
+        s = fileName;
         s = s.left( s.findRev( '.' ) ).replace( '_', ' ' );
 
     } else if( !m_artist.isEmpty() ) {
 
-        s += " - ";
-        s += m_artist;
+        s = m_artist + " - " + s;
     }
 
     return s;
