@@ -555,7 +555,8 @@ void App::genericEventHandler( QWidget *source, QEvent *e )
     {
         #define e static_cast<QWheelEvent*>(e)
         const bool up = e->delta() > 0;
-
+        int seek;
+        
         switch( e->state() )
         {
         case ControlButton:
@@ -566,13 +567,12 @@ void App::genericEventHandler( QWidget *source, QEvent *e )
             break;
 
         case ShiftButton:
-            EngineController::instance()->increaseVolume( e->delta() / 18 );
+            seek = EngineController::engine()->position() + ( e->delta() / 120 ) * 10000; // 10 seconds
+            EngineController::engine()->seek( seek < 0 ? 0 : seek );
             break;
 
         default:
-            EngineBase *engine = EngineController::engine();
-            int seek = engine->position() + ( e->delta() / 120 ) * 10000; // 10 seconds
-            engine->seek( seek < 0 ? 0 : seek );
+            EngineController::instance()->increaseVolume( e->delta() / 18 );
         }
 
         e->accept();
