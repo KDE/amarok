@@ -30,6 +30,9 @@ struct _GstStreamSrc
     /* pads */
     GstPad *srcpad;
 
+    bool stopped;
+    
+    // Properties
     glong blocksize; /* bytes per read */
     guint64 timeout;  /* read timeout, in nanoseconds */
 

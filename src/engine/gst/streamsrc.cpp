@@ -105,9 +105,11 @@ gst_streamsrc_init ( GstStreamSrc * streamsrc )
     gst_pad_set_get_function ( streamsrc->srcpad, gst_streamsrc_get );
     gst_element_add_pad ( GST_ELEMENT ( streamsrc ), streamsrc->srcpad );
 
+    streamsrc->stopped = false;
+    
+    // Properties
     streamsrc->blocksize = DEFAULT_BLOCKSIZE;
     streamsrc->timeout = 0;
-    streamsrc->streamBufIndex = 0;
 }
 
 
@@ -169,6 +171,9 @@ gst_streamsrc_get ( GstPad * pad )
 {
     GstStreamSrc* src = GST_STREAMSRC ( GST_OBJECT_PARENT ( pad ) );
     
+    if ( src->stopped )
+        return GST_DATA( gst_event_new( GST_EVENT_EMPTY ) );
+    
     // Signal KIO to resume transfer when buffer reaches our low limit
     if ( *src->streamBufIndex < BUFFER_RESUME ) 
         g_signal_emit ( G_OBJECT( src ), gst_streamsrc_signals[SIGNAL_KIO_RESUME], 0 );
@@ -177,6 +182,7 @@ gst_streamsrc_get ( GstPad * pad )
         // Send EOS event when buffer is empty
         if ( *src->streamBufIndex == 0 ) {
             kdDebug() << "Streamsrc EOS\n";
+            src->stopped = true;
             return GST_DATA( gst_event_new( GST_EVENT_EOS ) );
         }
     }
