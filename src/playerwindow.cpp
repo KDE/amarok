@@ -68,6 +68,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
     , m_plusPixmap( getPNG( "time_plus" ) )
     , m_minusPixmap( getPNG( "time_minus" ) )
     , m_pAnalyzer( 0 )
+    , m_detachedGLWidget (false)
 {
     //the createWidget template function is used here
     //createWidget just creates a widget which has it's geometry set too
@@ -106,18 +107,11 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
 
         // In case you are wondering, the PLAY and PAUSE buttons are created here!
 
-        //FIXME change the names of the icons to reflect kde names so we can fall back to them if necessary
-                         new NavButton( m_pFrameButtons, "prev", ec, SLOT( previous() ) );
-        m_pButtonPlay  = new NavButton( m_pFrameButtons, "play", ec, SLOT( play()) );
-        m_pButtonPause = new NavButton( m_pFrameButtons, "pause", ec, SLOT( pause()) );
-                         new NavButton( m_pFrameButtons, "stop", ec, SLOT( stop() ) );
-                         new NavButton( m_pFrameButtons, "next", ec, SLOT( next() ) );
-                         
-//                          new NavButton( m_pFrameButtons, "player_start", ec, SLOT( previous()  ) );
-//         m_pButtonPlay  = new NavButton( m_pFrameButtons, "player_play", ec, SLOT(play()) );
-//         m_pButtonPause = new NavButton( m_pFrameButtons, "player_pause", ec, SLOT(pause()) );
-//                          new NavButton( m_pFrameButtons, "player_stop", ec, SLOT( stop()  ) );
-//                          new NavButton( m_pFrameButtons, "player_end", ec, SLOT( next()  ) );
+                         new NavButton( m_pFrameButtons, "player_start", ec, SLOT( previous()  ) );
+        m_pButtonPlay  = new NavButton( m_pFrameButtons, "player_play", ec, SLOT(play()) );
+        m_pButtonPause = new NavButton( m_pFrameButtons, "player_pause", ec, SLOT(pause()) );
+                         new NavButton( m_pFrameButtons, "player_stop", ec, SLOT( stop()  ) );
+                         new NavButton( m_pFrameButtons, "player_end", ec, SLOT( next()  ) );
 
         m_pButtonPlay->setToggleButton( true );
         m_pButtonPause->setToggleButton( true );
@@ -435,11 +429,12 @@ bool PlayerWidget::event( QEvent *e )
     case QEvent::DragEnter:
     case QEvent::Drop:
     case QEvent::Close:
-
+    
+    
         pApp->genericEventHandler( this, e );
         return TRUE; //we handled it
-
-//     case QEvent::KeyPress:
+     
+//     case QEvent::KeyPress:       
 //     {
 //         EngineController* const controller = EngineController::instance();
 //
@@ -453,13 +448,15 @@ bool PlayerWidget::event( QEvent *e )
 //             break;
 //         case Key_Up:
 //             controller->increaseVolume();
+//              
 //             break;
 //         case Key_Down:
 //             controller->decreaseVolume();
+//               m_pAnalyzer->reparent((QWidget*)this, (0,0), true);
 //             break;
 //         default:
 //             return QWidget::event( e ); //QWidget has its own keyhandler in event
-//         }
+//        }
 //
 //         return TRUE;
 //     }
@@ -522,11 +519,34 @@ bool PlayerWidget::event( QEvent *e )
         }
 
         return FALSE;
-
+        break;
+        
+    //Detatch/reattach the analyser widget when 'd' is pressed
+    case 6: //6 == KeyPress, but the enum isnt working for me!?
+        if (static_cast<QKeyEvent*>(e)->text() == "d")
+        {
+            if (m_pAnalyzer->inherits("QGLWidget"))
+            {
+                if (m_detachedGLWidget)
+                {
+                    m_pAnalyzer->reparent(this, QPoint(119,4), true);
+                    m_pAnalyzer->setGeometry( 119,40, 168,56 );                
+                    m_detachedGLWidget = false;
+                }
+                else
+                {    
+                    m_pAnalyzer->reparent(0, QPoint(50,50), true);
+                    m_detachedGLWidget = true;
+                }
+            }
+        }
+        return TRUE;
+    //End detatch anlyser
+    
     case QEvent::Hide:
 
         m_pAnimTimer->stop();
-
+        
         if( AmarokConfig::hidePlaylistWindow() )
         {
             //this prevents the PlaylistButton being set to off (see the eventFilter)
@@ -686,7 +706,7 @@ void PlayerWidget::createAnalyzer( int increment )
     m_pAnalyzer = Analyzer::Factory::createAnalyzer( this );
     m_pAnalyzer->setGeometry( 119,40, 168,56 );
     m_pAnalyzer->show();
-
+    m_detachedGLWidget = false;
     QToolTip::add( m_pAnalyzer, i18n( "Click for more analyzers" ) );
 }
 
@@ -705,26 +725,21 @@ void PlayerWidget::setEffectsWindowShown( bool on )
 }
 
 
-// #include <kiconloader.h>
+
+#include <kiconloader.h>
 NavButton::NavButton( QWidget *parent, const QString &icon, QObject *receiver, const char *slot )
   : QPushButton( parent )
 {
-    QString up = QString( "b_%1" ).arg( icon );
-//     QString down = QString( "b_%1_down" ).arg( icon );
-    QIconSet iconSet;
-    iconSet.setPixmap( getPNG( up   ), QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
-//     iconSet.setPixmap( getPNG( down ), QIconSet::Automatic, QIconSet::Normal, QIconSet::On  );
-    setIconSet( iconSet );
+    KIconLoader &iconLoader = *KGlobal::iconLoader();
+    setIconSet( iconLoader.loadIconSet( icon, KIcon::Toolbar, KIcon::SizeSmall ) );
 
-    // System icons        
-//    KIconLoader &iconLoader = *KGlobal::iconLoader();
-//    setIconSet( iconLoader.loadIconSet( icon, KIcon::Toolbar, KIcon::SizeSmall ) );
-    
-    setFocusPolicy( QWidget::NoFocus );
     setFlat( true );
+    setFocusPolicy( NoFocus ); //commanded by Markey and his kin
 
     connect( this, SIGNAL( clicked() ), receiver, slot );
 }
+
+
 
 
 IconButton::IconButton( QWidget *parent, const QString &icon, const char *signal )
@@ -738,11 +753,9 @@ IconButton::IconButton( QWidget *parent, const QString &icon, const char *signal
     setFocusPolicy( NoFocus ); //we have no way to show focus on these widgets currently
 }
 
-
 void IconButton::drawButton( QPainter *p )
 {
     p->drawPixmap( 0, 0, (isOn()||isDown()) ? m_down : m_up );
 }
-
 
 #include "playerwindow.moc"
