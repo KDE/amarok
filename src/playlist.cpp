@@ -975,12 +975,9 @@ Playlist::paletteChange( const QPalette &p )
         b = fg.blue();
     }
 
-    Glow::counter = 63; //ensure color is set
-
     KListView::paletteChange( p );
 
     // repaint currentTrack marker
-    Glow::reset();
     slotGlowTimer();
 }
 
