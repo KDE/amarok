@@ -29,17 +29,17 @@
 SmartPlaylistBox::SmartPlaylistBox( QWidget *parent, const char *name )
     : QVBox( parent, name )
 {
-    SmartPlaylistView *smartListView = new SmartPlaylistView( this );
-
-    KActionCollection *ac = new KActionCollection( this );
-    KAction *createSmartPlayist = new KAction( i18n("Create Smart-playlist"), "filenew", 0, smartListView, SLOT( createCustomPlaylist() ), ac, "Create Smart-playlist" );
-    KAction *remove = new KAction( i18n("Remove"), "edittrash", 0, smartListView, SLOT( removeSelectedPlaylists() ), ac, "Remove" );
-
     KToolBar *toolbar = new KToolBar( this );
     toolbar->setMovingEnabled(false);
     toolbar->setFlat(true);
     toolbar->setIconSize( 16 );
     toolbar->setEnableContextMenu( false );
+
+    SmartPlaylistView *smartListView = new SmartPlaylistView( this );
+
+    KActionCollection *ac = new KActionCollection( this );
+    KAction *createSmartPlayist = new KAction( i18n("Create Smart-playlist"), "filenew", 0, smartListView, SLOT( createCustomPlaylist() ), ac, "Create Smart-playlist" );
+    KAction *remove = new KAction( i18n("Remove"), "edittrash", 0, smartListView, SLOT( removeSelectedPlaylists() ), ac, "Remove" );
 
     toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the "create smart-playlist" button to have text on right
     createSmartPlayist->plug( toolbar );
