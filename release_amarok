@@ -11,8 +11,9 @@
 
 
 version=`kdialog --inputbox "amaroK version: "`
-cvsroot=`kdialog --inputbox "CVS root directory: "`
+username=`kdialog --inputbox "CVS username: "`
 
+cvsroot=":pserver:$username@cvs.kde.org:/home/kde"
 folder="amarok-$version"
 doi18n="yes"
 log="/dev/null"
