@@ -1,5 +1,7 @@
 #include "playerapp.h"
+#include "browserwin.h"
 #include "playerwidget.h"
+#include "playlistwidget.h"
 #include "amarokdcophandler.h"
 
 #include <dcopclient.h>
@@ -78,21 +80,24 @@ void AmarokDcopHandler::seek(int s)
       time.customUnit = std::string();
 
       pApp->m_pPlayObject->seek( time );
-      kdDebug() << "[DcopHandler] Seeking to " << s << endl;
    }
 }
 
 int AmarokDcopHandler::trackCurrentTime()
 {
-   return pApp->m_pPlayerWidget->m_pSlider->value(); // WEIRD! [otoh, it works =)]
+   return pApp->m_pPlayerWidget->m_pSlider->value();
 }
 
 void AmarokDcopHandler::addMedia(const KURL &url)
 {
+   pApp->m_pBrowserWin->m_pPlaylistWidget->insertMedia(url);
 }
 
 void AmarokDcopHandler::addMediaList(const KURL::List &urls)
 {
+   KURL::List::ConstIterator it;
+   for ( it = urls.begin(); it != urls.end(); it++ )
+      addMedia( (*it) );
 }
 
 
