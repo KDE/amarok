@@ -1,7 +1,7 @@
 plugin_LTLIBRARIES = \
     libgstkio.la
 
-#location where plug-in will be installed
+## location where plug-in will be installed
 plugindir = \
     $(libdir)/gstreamer-@GST_MAJORMINOR@
 ##    /usr/local/lib/gstreamer-@GST_MAJORMINOR@
@@ -11,8 +11,8 @@ INCLUDES = \
     $(all_includes)
 
 libgstkio_la_SOURCES = \
-##    gstkiosrc.cpp \
-##    kioreceiver.cpp
+    gstkiosrc.cpp \
+    kioreceiver.cpp
 
 libgstkio_la_LDFLAGS = \
     -module \
@@ -25,12 +25,10 @@ libgstkio_la_LIBADD = \
     $(LIB_KIO) \
     $(LIB_KDECORE)
 
-## libgstkio_la_CXXFLAGS = \
-##    $(GST_CFLAGS)
-
  METASOURCES = \
     AUTO
    
     
 
-        
+   
+     

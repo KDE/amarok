@@ -1,5 +1,7 @@
-SUBDIRS = \
-    kio 
+## SUBDIRS = \
+##    kio 
+
+    
 
     
     
