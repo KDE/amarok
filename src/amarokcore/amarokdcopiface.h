@@ -35,7 +35,7 @@ k_dcop:
    virtual void seek(int s) = 0;                            ///< Seek track to seconds position.
    virtual void addMedia(const KURL &) = 0;                 ///< Add audio media specified by the url.
    virtual void addMediaList(const KURL::List &) = 0;       ///< Add some audio media specified by the url.
-   virtual QString PrettyTitle() = 0;			    ///< Return the artist/title of the currently playing track
+   virtual QString nowPlaying() = 0;			    ///< Return the artist/title of the currently playing track
    virtual QString Artist() = 0;			    ///< Return the artist of the currently playing track
    virtual QString Title() = 0;		                    ///< Return the title of the currently playing track
    virtual QString Album() = 0;		        	    ///< Return the album of the currently playing track

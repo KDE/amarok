@@ -78,7 +78,7 @@ namespace amaroK
 
 // Now for the DCOP id3 output stuff
    
-    QString DcopHandler::PrettyTitle()
+    QString DcopHandler::nowPlaying()
     {
         return EngineController::instance()->bundle().prettyTitle();
     }
