@@ -72,7 +72,7 @@ App::App()
     m_pDcopHandler    = new amaroK::DcopHandler();
 
     // Remember old folder setup, so we can detect changes after the wizard was used
-    const QStringList oldCollectionFolders = amaroK::config( "Collection Browser" )->readListEntry( "Folders" );
+    const QStringList oldCollectionFolders = AmarokConfig::collectionFolders();
 
     if ( amaroK::config()->readBoolEntry( "First Run", true ) || args->isSet( "wizard" ) ) {
         //stop the splashscreen first, socket server is a temporary on purpose!
@@ -129,7 +129,7 @@ App::App()
     pruneCoverImages();
 
     // Trigger collection scan if folder setup was changed by wizard
-    if ( amaroK::config( "Collection Browser" )->readListEntry( "Folders" ) != oldCollectionFolders )
+    if ( oldCollectionFolders != AmarokConfig::collectionFolders() )
         emit sigScanCollection();
 
     handleCliArgs();
@@ -806,12 +806,12 @@ void App::firstRunWizard()
             break;
         }
 
-        const QStringList oldCollectionFolders = amaroK::config( "Collection Browser" )->readListEntry( "Folders" );
+        const QStringList oldCollectionFolders = AmarokConfig::collectionFolders();
         wizard.writeCollectionConfig();
 
         // If wizard is invoked at runtime, rescan collection if folder setup has changed
         if ( !amaroK::config()->readBoolEntry( "First Run", true ) &&
-             oldCollectionFolders != amaroK::config( "Collection Browser" )->readListEntry( "Folders" ) )
+             oldCollectionFolders != AmarokConfig::collectionFolders() )
             emit sigScanCollection();
     }
 }

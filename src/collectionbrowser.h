@@ -131,11 +131,8 @@ class CollectionView : public KListView
 
         CollectionBrowser* m_parent;
         QString m_filter;
-        QStringList m_dirs;
         QString m_category1;
         QString m_category2;
-        bool m_recursively;
-        bool m_monitor;
         bool m_isScanning;
         QHBox* m_progressBox;
         KProgress* m_progress;

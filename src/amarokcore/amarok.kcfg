@@ -326,4 +326,18 @@
     </entry>
 </group>
 
+<group name="Collection">
+    <entry key="Scan Recursively" type="Bool">
+        <label>Whether Collections folders are scanned recursively</label>
+        <default>true</default>
+    </entry>
+    <entry key="Monitor Changes" type="Bool">
+        <label>Whether Collection folders are rescanned on change</label>
+        <default>true</default>
+    </entry>
+    <entry key="Collection Folders" type="StringList">
+        <label>List of folders in the Collection</label>
+    </entry>
+</group>
+
 </kcfg>

@@ -72,7 +72,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     } //</Search LineEdit>
 
     timer = new QTimer( this );
-    connect( timer, SIGNAL( timeout() ), this, SLOT( slotSetFilter() ) );
+    connect( timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
 
     m_view = new CollectionView( this );
     //m_view->setMargin( 2 );
@@ -82,8 +82,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_actionsMenu->insertSeparator();
     m_actionsMenu->insertItem( i18n( "Start Scan" ), m_view, SLOT( scan() ), 0, IdScan );
 
-    connect( m_actionsMenu, SIGNAL( aboutToShow() ),
-             this, SLOT( slotCheckFolders() ) );
+    connect( m_actionsMenu, SIGNAL( aboutToShow() ), SLOT( slotCheckFolders() ) );
 
     m_cat1Menu ->insertItem( i18n( "Album" ), m_view, SLOT( cat1Menu( int ) ), 0, IdAlbum );
     m_cat1Menu ->insertItem( i18n( "Artist"), m_view, SLOT( cat1Menu( int ) ), 0, IdArtist );
@@ -128,10 +127,7 @@ CollectionBrowser::slotSetFilter() //SLOT
 void
 CollectionBrowser::slotCheckFolders() // SLOT
 {
-    KConfig* config = amaroK::config( "Collection Browser" );
-    QStringList m_dirs = config->readListEntry( "Folders" );
-
-    m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, !m_dirs.isEmpty() );
+    m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, !AmarokConfig::collectionFolders().isEmpty() );
 }
 
 void
@@ -179,13 +175,9 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 
     //<READ CONFIG>
         KConfig* config = amaroK::config( "Collection Browser" );
-
-        m_dirs = config->readListEntry( "Folders" );
         m_category1 = config->readEntry( "Category1", i18n( "Artist" ) );
         m_category2 = config->readEntry( "Category2", i18n( "None" ) );
         addColumn( m_category1 );
-        m_recursively = config->readBoolEntry( "Scan Recursively", true );
-        m_monitor = config->readBoolEntry( "Monitor Changes", true );
     //</READ CONFIG>
 
     //<OPEN DATABASE>
@@ -244,8 +236,6 @@ CollectionView::~CollectionView() {
     KConfig* const config = amaroK::config( "Collection Browser" );
     config->writeEntry( "Category1", m_category1 );
     config->writeEntry( "Category2", m_category2 );
-    config->writeEntry( "Scan Recursively", m_recursively );
-    config->writeEntry( "Monitor Changes", m_monitor );
     config->writeEntry( "Database Version", DATABASE_VERSION );
     config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
 
@@ -267,12 +257,7 @@ CollectionView::setupDirs()  //SLOT
 
     if ( dialog.exec() != QDialog::Rejected )
     {
-        const bool rescan = ( m_dirs != setup->dirs() );
-
-        m_dirs = setup->dirs();
-        m_recursively = setup->recursive();
-        m_monitor = setup->monitor();
-
+        const bool rescan = ( AmarokConfig::collectionFolders() != setup->dirs() );
         setup->writeConfig();
 
         if ( rescan )
@@ -286,7 +271,7 @@ CollectionView::scan()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
-    if ( m_dirs.isEmpty() )
+    if ( AmarokConfig::collectionFolders().isEmpty() )
     {
         m_insertdb->dropTables();
         this->clear();
@@ -294,7 +279,7 @@ CollectionView::scan()  //SLOT
     else if ( !m_isScanning )
     {
         m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
-        m_insertdb->scan( m_dirs, m_recursively );
+        m_insertdb->scan( AmarokConfig::collectionFolders(), AmarokConfig::scanRecursively() );
     }
 }
 
@@ -302,10 +287,10 @@ CollectionView::scan()  //SLOT
 void
 CollectionView::scanMonitor()  //SLOT
 {
-    if ( !m_isScanning && m_monitor )
+    if ( !m_isScanning && AmarokConfig::monitorChanges() )
     {
         m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
-        m_insertdb->scanModifiedDirs( m_recursively );
+        m_insertdb->scanModifiedDirs( AmarokConfig::scanRecursively() );
     }
 }
 
@@ -560,7 +545,7 @@ CollectionView::showTrackInfo() //SLOT
 void
 CollectionView::timerEvent( QTimerEvent* )
 {
-    if ( m_monitor )
+    if ( AmarokConfig::monitorChanges() )
         scanMonitor();
 }
 

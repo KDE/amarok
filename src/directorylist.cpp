@@ -16,11 +16,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "amarokconfig.h"
 #include "directorylist.h"
 
 #include <qlabel.h>
 
-#include <kapplication.h>   //config()
 #include <kfileitem.h>
 #include <klocale.h>
 
@@ -43,12 +43,10 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
     m_monitor   = new QCheckBox( i18n("&Monitor changes"), this );
 
-    KConfig *config = kapp->config();
-    config->setGroup( "Collection Browser" );
     // Read config values
-    m_dirs = config->readPathListEntry( "Folders" );
-    m_recursive->setChecked( config->readBoolEntry( "Scan Recursively" ) );
-    m_monitor->setChecked( config->readBoolEntry( "Monitor Changes" ) );
+    m_dirs = AmarokConfig::collectionFolders();
+    m_recursive->setChecked( AmarokConfig::scanRecursively() );
+    m_monitor->setChecked( AmarokConfig::monitorChanges() );
 
     m_view->addColumn( QString::null );
     m_view->setRootIsDecorated( true );
@@ -63,14 +61,9 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 void
 CollectionSetup::writeConfig()
 {
-    KConfig *config = kapp->config();
-    config->setGroup( "Collection Browser" );
-
-    config->writeEntry( "Folders", m_dirs );
-    config->writeEntry( "Scan Recursively", recursive() );
-    config->writeEntry( "Monitor Changes", monitor() );
-
-    config->sync();
+    AmarokConfig::setCollectionFolders( m_dirs );
+    AmarokConfig::setScanRecursively( recursive() );
+    AmarokConfig::setMonitorChanges( monitor() );
 }
 
 
