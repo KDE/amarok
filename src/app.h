@@ -26,7 +26,7 @@
 #include <kapplication.h>   //baseclass
 #include <kurl.h>           //needed for KURL::List (nested)
 
-#define APP_VERSION "1.0-CVS"
+#define APP_VERSION "1.1-CVS"
 
 
 class KActionCollection;
