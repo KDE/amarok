@@ -510,9 +510,9 @@ void PlaylistWidget::slotSetRecursive()
 
 void PlaylistWidget::slotReturnPressed()
 {
-    QListViewItemIterator it( this, QListViewItemIterator::Visible );
+/*    QListViewItemIterator it( this, QListViewItemIterator::Visible );
     if ( it.current() )
-        pApp->slotItemDoubleClicked( it.current() );
+        pApp->slotItemDoubleClicked( it.current() );*/
 }
 
 
