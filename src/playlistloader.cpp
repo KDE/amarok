@@ -182,6 +182,7 @@ PlaylistLoader::loadPlaylist( const QString &path, Format type )
     {
     case M3U:
     {
+        const QString dir = path.left( path.findRev( '/' ) + 1 );
         QString str, title;
         int length = MetaBundle::Undetermined; // = -2
 
@@ -197,8 +198,8 @@ PlaylistLoader::loadPlaylist( const QString &path, Format type )
             }
             else if ( !str.startsWith( "#" ) && !str.isEmpty() )
             {
-                QString dir = "moo"; //FIXME
-                if ( !( str[ 0 ] == '/' || str.startsWith( "http://" ) ) )
+
+                if ( !( str[ 0 ] == '/' || str.startsWith( "http://" ) ) ) //FIXME how about ftp etc?
                     str.prepend( dir );
 
                 createPlaylistItem( KURL::fromPathOrURL( str ), title, length );
