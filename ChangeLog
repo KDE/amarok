@@ -3,6 +3,9 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+VERSION 1.1:
+
+
 VERSION 1.1-beta2:
   ADD: K3B integration for burning CDs. (BR 88052)
   ADD: Third category for Collection-Browser. (BR 83609)
