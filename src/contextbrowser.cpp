@@ -1059,6 +1059,18 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     styleSheet += QString( ".sbinner { height: 8px; background-color: %1; border: solid %2 1px; }" ).arg( bg ).arg( fg );
     styleSheet += QString( ".albuminfo { float:right; padding-right:4px; font-size: %1px }" ).arg( pxSize );
     styleSheet += QString( ".default { font-size: %1px }" ).arg( pxSize );
+
+    // IN DEVELOPMENT(contact xatax for info): using these classes/id's while taking amarok over to the new div based layout
+    styleSheet += QString( ".devel-box { border: solid %1 1px; text-align: left; }" ).arg( bg );
+    styleSheet += QString( ".devel-box-header { color: %1; background-color: %2; background-image: url( %4 ); background-repeat: repeat-x; font-size: %3px; font-weight: bold; padding: 1px 0.5em; border-bottom: 1px solid #000; }" )
+            .arg( fg )
+            .arg( bg )
+            .arg( pxSize + 2 )
+            .arg( m_headerGradientImage->name() );
+    styleSheet += QString( ".devel-box-body { padding: 2px; background-color: %1; background-image: url( %2 ); background-repeat: repeat-x; font-size:%3}" )
+            .arg( colorGroup().base().name() )
+            .arg( m_shadowGradientImage->name() )
+            .arg( pxSize );
 }
 
 void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& themeName )
@@ -1101,14 +1113,26 @@ void ContextBrowser::showIntroduction()
     m_HTMLSource="";
     browser->setUserStyleSheet( m_styleSheet );
 
-    m_HTMLSource.append( "<html><div><h2>");
-    m_HTMLSource.append( i18n( "Hello amaroK user!" ) );
-    m_HTMLSource.append( "</h2><br><br>" );
-    m_HTMLSource.append( i18n( "This is the Context Browser: it shows you contextual information about the currently playing track."
-                          "In order to use this feature of amaroK, you need to build a collection." ) );
-    m_HTMLSource.append( "&nbsp;<a href='show:collectionSetup'>" );
-    m_HTMLSource.append( i18n( "Click here to build one..." ) );
-    m_HTMLSource.append( "</a></div></html>");
+    m_HTMLSource.append(
+            "<html>"
+            "<div id='introduction_box' class='devel-box'>"
+                "<div id='introduction_box-header' class='devel-box-header'>"
+                    "<span id='introduction_box-header-title' class='devel-box-header-title'>"
+                    + i18n( "Hello amaroK user!" ) +
+                    "</span>"
+                "</div>"
+                "<div id='introduction_box-body' class='devel-box-body'>"
+                    "<p>" +
+                    i18n(
+                    "This is the Context Browser: it shows you contextual information about the currently playing track."
+                    "In order to use this feature of amaroK, you need to build a collection."
+                        )
+                    + "&nbsp;<a href='show:collectionSetup'>" + i18n( "Click here to build one..." ) + "</a>"
+                    "</p>"
+                "</div>"
+            "</div>"
+            "</html>"
+                       );
 
     browser->write( m_HTMLSource );
     browser->end();
@@ -1122,9 +1146,20 @@ void ContextBrowser::showScanning()
     m_HTMLSource="";
     browser->setUserStyleSheet( m_styleSheet );
 
-    m_HTMLSource.append( "<html><p>");
-    m_HTMLSource.append( i18n( "Building Collection Database.." ) );
-    m_HTMLSource.append( "</p></html>");
+    m_HTMLSource.append(
+            "<html>"
+            "<div id='building_box' class='devel-box'>"
+                "<div id='building_box-header' class='devel-box-header'>"
+                    "<span id='building_box-header-title' class='devel-box-header-title'>"
+                    + i18n( "Building Collection Database.." ) +
+                    "</span>"
+                "</div>"
+                "<div id='building_box-body' class='devel-box-body'>"
+                    "<p>" + i18n( "Building Collection Database.." ) + "</p>"
+                "</div>"
+            "</div>"
+            "</html>"
+                       );
 
     browser->write( m_HTMLSource );
     browser->end();
@@ -1221,9 +1256,20 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
     m_HTMLSource="";
     browser->setUserStyleSheet( m_styleSheet );
 
-    m_HTMLSource.append( "<html><div class='box'><div class='box-header'>"+ i18n( "Lyrics" ) +"</div><div class='box-body'>" );
-    m_HTMLSource.append( m_lyrics );
-    m_HTMLSource.append( "</div></div></html>" );
+    m_HTMLSource.append(
+            "<html>"
+            "<div id='lyrics_box' class='devel-box'>"
+                "<div id='lyrics_box-header' class='devel-box-header'>"
+                    "<span id='lyrics_box-header-title' class='devel-box-header-title'>"
+                    + i18n( "Lyrics" ) +
+                    "</span>"
+                "</div>"
+                "<div id='lyrics_box-body' class='devel-box-body'>"
+                + m_lyrics +
+                "</div>"
+            "</div>"
+            "</html>"
+                       );
     browser->write( m_HTMLSource );
     browser->end();
     saveHtmlData(); // Send html code to file
