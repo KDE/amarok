@@ -82,7 +82,7 @@ private:
     KURL m_playingURL;
     bool m_proxyError;
     QTimer *m_pMainTimer;
-    long m_length;
+    long m_length; ///< Current track length in milliseconds
     long m_delayTime;
 };
 
