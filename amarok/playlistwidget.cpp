@@ -62,9 +62,9 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
 
     //name has to set here as we _depend_ on the name in a few classes
     setName( "PlaylistWidget" );
-    setFocusPolicy( QWidget::ClickFocus );
+    //setFocusPolicy( QWidget::ClickFocus ); //users will expect to tab to this widget, although it's quicker to tab to the lineedit and push "key-down"
     setShowSortIndicator( true );
-    setDropVisualizer( false );      // we handle the drawing for ourselves
+    setDropVisualizer( false );      //we handle the drawing for ourselves
     setDropVisualizerWidth( 3 );
     setItemsRenameable( true );
     setSorting( 200 );
@@ -371,7 +371,7 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
        }
     }
 
-    restoreCurrentTrack();
+    //restoreCurrentTrack(); //why do this here?
 }
 
 
@@ -379,6 +379,17 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
 {
    switch( e->type() )
    {
+   case 65431: //set the overrideCursor
+   
+      //FIXME This is done here rather than startLoader()
+      //because Qt DnD sets the overrideCursor and then when it
+      //restores the cursor it removes the waitCursor we set!
+      //Qt4 may fix this (?) (if we're lucky)
+      //FIXME report to Trolltech?
+      
+      QApplication::setOverrideCursor( KCursor::workingCursor() );
+      break;
+     
    case 65432: //LoaderEvent
 
       if( PlaylistItem *item = static_cast<PlaylistLoader::LoaderEvent*>(e)->makePlaylistItem( this ) ) //this is thread-safe
@@ -396,7 +407,7 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
    case 65433: //LoaderDoneEvent
        
        static_cast<PlaylistLoader::LoaderDoneEvent*>(e)->dispose();
-       if( !m_tagReader->running() ) unsetCursor(); //FIXME you forgot the 200ms delay in tagReader::start()
+       QApplication::restoreOverrideCursor();
        restoreCurrentTrack();
        break;
    
@@ -407,7 +418,8 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
 
    case 65435: //TagReaderDoneEvent
    
-      unsetCursor();
+      //unsetCursor();
+      QApplication::restoreOverrideCursor();
       break;
       
    default: ;
@@ -422,8 +434,7 @@ void PlaylistWidget::viewportPaintEvent( QPaintEvent *e )
     if ( m_marker.isValid() && e->rect().intersects( m_marker ) )
     {
         QPainter painter( viewport() );
-        QBrush brush( QBrush::Dense4Pattern );
-        brush.setColor( Qt::red );
+        QBrush brush( Qt::red, QBrush::Dense4Pattern );
 
         // This is where we actually draw the drop-visualizer
         painter.fillRect( m_marker, brush );
@@ -504,7 +515,8 @@ void PlaylistWidget::startLoader( const KURL::List &list, PlaylistItem *after )
     
     if( loader )
     {
-        setCursor( KCursor::workingCursor() );
+        QApplication::postEvent( this, new QCustomEvent( 65431 ) ); //see customEvent for explanation    
+    
         loader->setOptions( ( AmarokConfig::dropMode() == AmarokConfig::EnumDropMode::Recursively ), AmarokConfig::followSymlinks(), AmarokConfig::browserSortingSpec() );
         loader->start();
     }
