@@ -18,10 +18,11 @@ email                :
 #ifndef TITLEPROXY_H
 #define TITLEPROXY_H
 
-#include <kextendedsocket.h>
 #include <kurl.h>
 
 #include <qobject.h>
+#include <qserversocket.h>    //baseclass
+#include <qsocket.h>          //stack allocated
 
 class QString;
 class MetaBundle;
@@ -49,8 +50,8 @@ namespace TitleProxy
 
         private slots:
             void readRemote();
-            void processHeader( Q_LONG &index, Q_LONG bytesRead );
-            void accept();
+            bool processHeader( Q_LONG &index, Q_LONG bytesRead );
+            void accept( int socket );
 
         private:
             void transmitData( const QString &data );
@@ -74,10 +75,27 @@ namespace TitleProxy
 
             char            *m_pBuf;
 
-            KExtendedSocket m_sockRemote;
-            KExtendedSocket m_sockPassive;
-            KExtendedSocket *m_pSockProxy;
+            QSocket m_sockRemote;
+            QSocket m_sockProxy;
     };
-}
+
+
+    class Server : public QServerSocket
+    {
+        Q_OBJECT
+        
+        public:   
+            Server( Q_UINT16 port, QObject* parent )
+            : QServerSocket( port, 1, parent ) {};
+        
+        signals:
+            void connected( int socket );
+            
+        private:
+            void newConnection( int socket ) { emit connected( socket ); } 
+    };
+
+
+} //namespace TitleProxy
 
 #endif

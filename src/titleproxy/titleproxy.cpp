@@ -1,6 +1,6 @@
 /***************************************************************************
-                      Proxy.cpp  -  description
-                         -------------------
+                     Proxy.cpp  -  description
+                        -------------------
 begin                : Nov 20 14:35:18 CEST 2003
 copyright            : (C) 2003 by Mark Kretschmann
 email                : markey@web.de
@@ -18,8 +18,8 @@ email                : markey@web.de
 #include "metabundle.h"
 #include "titleproxy.h"
 
+#include <kapplication.h>
 #include <kdebug.h>
-#include <kextsock.h>
 #include <kurl.h>
 
 #include <qobject.h>
@@ -45,115 +45,102 @@ using namespace TitleProxy;
 
 static const uint MIN_PROXYPORT = 6666;
 static const uint MAX_PROXYPORT = 7777;
-static const int  IN_BUFSIZE    = (8192 * 4);
-static const int  BUFSIZE       = 8192;
+static const int BUFSIZE = 16384;
 
 
-Proxy::Proxy(KURL url) 
-    : QObject()
-    , m_url(url)
-    , m_initSuccess(false)
-    , m_metaInt(0)
-    , m_byteCount(0)
-    , m_metaLen(0)
-    , m_headerFinished(false)
-    , m_usedPort(0)
-    , m_pBuf(0)
-    , m_pSockProxy(0)
+Proxy::Proxy( KURL url )
+        : QObject()
+        , m_url( url )
+        , m_initSuccess( false )
+        , m_metaInt( 0 )
+        , m_byteCount( 0 )
+        , m_metaLen( 0 )
+        , m_headerFinished( false )
+        , m_usedPort( 0 )
+        , m_pBuf( 0 )
 {
-    connect( this, SIGNAL( error() ), this, SLOT( deleteLater() ) );    //delete yourself in case of error 
-    
+    connect( this, SIGNAL( error() ), this, SLOT( deleteLater() ) );    //delete yourself in case of error
+
     kdDebug() << k_funcinfo << endl;
-    
-    //socket must not be buffered! buffered socket will lead to connection problems (getting stuck)
-    m_sockRemote.setSocketFlags( KExtendedSocket::inetSocket |
-                                 KExtendedSocket::streamSocket );
-    m_sockRemote.setAddress(url.host(), url.port());
-    
-    //FIXME this call blocks the whole app. replace with non-blocking call sometime
-    m_sockRemote.setTimeout(3);
 
-    int connectResult = m_sockRemote.connect();
-    kdDebug() << k_funcinfo << "sock.connect() result: " << connectResult << endl;
-    if ( connectResult != 0 ) {
+    //FIXME this needs a timeout check    
+    m_sockRemote.connectToHost( url.host(), url.port() );
+    while ( m_sockRemote.state() != QSocket::Connected )
+        kapp->processEvents();
+    
+    kdDebug() << k_funcinfo << "sock.connectToHost() state: " << m_sockRemote.state() << endl;
+    
+    if ( m_sockRemote.state() != QSocket::Connected ) {
         emit error();
-        return;
+        return ;
     }
 
-    int listenResult = -1;
     uint i;
-    for(i = MIN_PROXYPORT; i <= MAX_PROXYPORT; i++)
-    {
-        m_sockPassive.setPort(i);
-        m_sockPassive.setHost("localhost");
-        m_sockPassive.setSocketFlags(KExtendedSocket::passiveSocket);
-        listenResult = m_sockPassive.listen();
+    Server* server;
+    for ( i = MIN_PROXYPORT; i <= MAX_PROXYPORT; i++ ) {
+        server = new Server( i, this );
         kdDebug() << k_funcinfo <<
-                     "Trying to bind to port " << i << ", listen() result: " << listenResult << endl;
-        if(listenResult == 0)                     // found a free port
+        "Trying to bind to port: " << i << endl;
+        if ( server->ok() )     // found a free port
             break;
-        m_sockPassive.reset();
-
+        delete server;
     }
-
-    kdDebug() << k_funcinfo << "final listen() result: " << listenResult << endl;
-    if ( listenResult != 0 ) {
+    
+    if ( i > MAX_PROXYPORT ) {
         emit error();
-        return;
+        return ;
     }
-    m_usedPort = i;
-
+    
     m_pBuf = new char[ BUFSIZE ];
-
-    connect( &m_sockPassive, SIGNAL( readyAccept() ), this, SLOT( accept() ) );
+    m_usedPort = i;
     m_initSuccess = true;
+    connect( server, SIGNAL( connected( int ) ), this, SLOT( accept( int ) ) );
 }
 
 
 Proxy::~Proxy()
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     delete[] m_pBuf;
-    delete m_pSockProxy;
 }
 
 
 KURL Proxy::proxyUrl()
 {
-    if(m_initSuccess)
-    {
+    if ( m_initSuccess ) {
         KURL url;
-        url.setPort(m_usedPort);
-        url.setHost("localhost");
-        url.setProtocol("http");
+        url.setPort( m_usedPort );
+        url.setHost( "localhost" );
+        url.setProtocol( "http" );
         return url;
 
-    }
-    else
+    } else
         return m_url;
 }
 
 
-void Proxy::accept()
+void Proxy::accept( int socket )
 {
-    m_sockPassive.accept( m_pSockProxy );
-    m_sockPassive.close();                        // don't take another connection
-//     m_pSockProxy->setSocketFlags( KExtendedSocket::inetSocket );
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    
+    m_sockProxy.setSocket( socket );
 
-    int bytesRead = m_pSockProxy->readBlock( m_pBuf, BUFSIZE );
-    m_pSockProxy->setBlockingMode( false );
-
-    QString str = QString::fromAscii( m_pBuf, bytesRead );
+    m_sockProxy.waitForMore( 2000 );
+    int bytesRead = m_sockProxy.readBlock( m_pBuf, BUFSIZE );
+    kdDebug() << k_funcinfo << "m_sockProxy bytesRead = " << bytesRead << endl;
+    
+    QCString str( m_pBuf, bytesRead );
     int index = str.find( "\n", str.find( "GET / HTTP/1.1" ) ) + 1;
-
-    m_sockRemote.enableRead( true );
-    connect( &m_sockRemote, SIGNAL( readyRead() ), this, SLOT( readRemote() ) );
     m_sockRemote.writeBlock( m_pBuf, index );
 
-    QString icyStr( "Icy-MetaData:1\r\n" );
-    m_sockRemote.writeBlock( icyStr.latin1(), icyStr.length() );
+    QCString icyStr( "Icy-MetaData:1\r\n" );
+    m_sockRemote.writeBlock( icyStr, icyStr.length() );
     m_sockRemote.writeBlock( m_pBuf + index, bytesRead - index );
+    
+    connect( &m_sockRemote, SIGNAL( readyRead() ), this, SLOT( readRemote() ) );
+    
+    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 
@@ -162,55 +149,47 @@ void Proxy::readRemote()
     Q_LONG index = 0;
     Q_LONG bytesWrite = 0;
     Q_LONG bytesRead = m_sockRemote.readBlock( m_pBuf, BUFSIZE );
-
-    if(!m_headerFinished)
-        processHeader(index, bytesRead);
+    if ( bytesRead == -1 ) { emit error(); return; }
+    
+    if ( !m_headerFinished )
+        if ( !processHeader( index, bytesRead ) ) return;
 
     //This is the main loop which processes the stream data
-    while ( index < bytesRead )
-    {
-        if ( m_metaInt && ( m_byteCount == m_metaInt ) )
-        {
+    while ( index < bytesRead ) {
+        if ( m_metaInt && ( m_byteCount == m_metaInt ) ) {
             m_byteCount = 0;
             m_metaLen = m_pBuf[ index++ ] << 4;
-
         }
-        else if ( m_metaLen )
-        {
+        else if ( m_metaLen ) {
             m_metaData.append( m_pBuf[ index++ ] );
             --m_metaLen;
 
-            if ( !m_metaLen )
-            {
+            if ( !m_metaLen ) {
                 transmitData( m_metaData );
                 m_metaData = "";
-
             }
         }
-        else
-        {
+        else {
             bytesWrite = bytesRead - index;
 
             if ( bytesWrite > m_metaInt - m_byteCount )
                 bytesWrite = m_metaInt - m_byteCount;
 
-            m_pSockProxy->writeBlock( m_pBuf + index, bytesWrite );
-
+            bytesWrite = m_sockProxy.writeBlock( m_pBuf + index, bytesWrite );
+            if ( bytesWrite == -1 ) { emit error(); return; }
+            
             index += bytesWrite;
             m_byteCount += bytesWrite;
-
         }
     }
 }
 
 
-void Proxy::processHeader(Q_LONG &index, Q_LONG bytesRead)
+bool Proxy::processHeader( Q_LONG &index, Q_LONG bytesRead )
 {
-    while ( index < bytesRead )
-    {
+    while ( index < bytesRead ) {
         m_headerStr.append( m_pBuf[ index++ ] );
-        if ( m_headerStr.endsWith( "\r\n\r\n" ) )
-        {
+        if ( m_headerStr.endsWith( "\r\n\r\n" ) ) {
 
             /*kdDebug() << k_funcinfo <<
                   "Got shoutcast header: '" << m_headerStr << "'" << endl;*/
@@ -222,32 +201,33 @@ void Proxy::processHeader(Q_LONG &index, Q_LONG bytesRead)
             icy-notice2:The resource requested is currently unavailable<BR>
             */
             m_metaInt = m_headerStr.section( "icy-metaint:", 1, 1,
-                                             QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0)
+                                             QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 )
                         .toInt();
             m_bitRate = m_headerStr.section( "icy-br:", 1, 1,
-                                             QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0).toInt();
+                                             QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 ).toInt();
             m_streamName = m_headerStr.section( "icy-name:", 1, 1,
-                                                QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0);
+                                                QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 );
             m_streamGenre = m_headerStr.section( "icy-genre:", 1, 1,
-                                                 QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0);
+                                                 QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 );
             m_streamUrl = m_headerStr.section( "icy-url:", 1, 1,
-                                               QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0);
-            if(m_streamUrl.startsWith("www.", true))
-                m_streamUrl.prepend("http://");
-            m_pSockProxy->writeBlock(m_headerStr.latin1(), m_headerStr.length());
+                                               QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 );
+            if ( m_streamUrl.startsWith( "www.", true ) )
+                m_streamUrl.prepend( "http://" );
+            m_sockProxy.writeBlock( m_headerStr.latin1(), m_headerStr.length() );
             m_headerFinished = true;
 
-            if ( !m_metaInt )
+            if ( !m_metaInt ) {
                 emit error();
-            break;
-
+                return false;
+            }
+            return true;
         }
-
     }
+    return false;
 }
 
 
-void Proxy::transmitData(const QString &data)
+void Proxy::transmitData( const QString &data )
 {
     kdDebug() << k_funcinfo << " received new metadata: '" << data << "'" << endl;
 
@@ -257,21 +237,18 @@ void Proxy::transmitData(const QString &data)
                        m_streamGenre,
                        m_streamName,
                        m_streamUrl );
-                           
+
     emit metaData( bundle );
 }
 
 
-QString Proxy::extractStr(const QString &str, const QString &key)
+QString Proxy::extractStr( const QString &str, const QString &key )
 {
-    int index = str.find(key, 0, true);
-    if(index == -1)
-    {
+    int index = str.find( key, 0, true );
+    if ( index == -1 ) {
         return QString::null;
 
-    }
-    else
-    {
+    } else {
         index = str.find( "'", index ) + 1;
         int indexEnd = str.find( "'", index );
         return str.mid( index, indexEnd - index );
