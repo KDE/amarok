@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.2:
+  ADD: Metadata history for streams in Context-Browser. (BR 89839)
+  ADD: Command line option --engine.
   ADD: OSD text is now configurable, and it displays the album cover.
   FIX: Remote folders are read recursively when dropped on the playlist.
   FIX: Audiocd protocol in filebrowser had empty folders.

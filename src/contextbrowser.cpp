@@ -18,6 +18,8 @@
 #include "scrobbler.h"
 #include "sqlite/sqlite3.h"
 
+#include <qdatetime.h>
+
 #include <kapplication.h> //kapp
 #include <kdebug.h>
 #include <kfiledialog.h>
@@ -36,6 +38,10 @@
 #include <kurl.h>
 #include <kimageeffect.h> // gradient backgroud image
 #include <qimage.h>
+
+
+#define escapeHTML(s)     QString(s).replace( "<", "&lt;" ).replace( ">", "&gt;" )
+#define escapeHTMLAttr(s) QString(s).replace( "%", "%25" ).replace( "'", "%27" )
 
 
 using amaroK::QStringx;
@@ -200,8 +206,14 @@ void ContextBrowser::metaDataEdited( const MetaBundle &bundle ) {
 // PROTECTED
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void ContextBrowser::engineNewMetaData( const MetaBundle&, bool /*trackChanged*/ ) {
+void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool /*trackChanged*/ ) {
     m_relatedArtists.clear();
+
+    // Add stream metadata history item to list
+    if ( !m_metadataHistory.last().contains( bundle.prettyTitle() ) ) {
+        const QString timeString = QTime::currentTime().toString( "hh:mm" );
+        m_metadataHistory << QString( "<td valign='top'><i>" + timeString + "</i></td><td>" + escapeHTML( bundle.prettyTitle() ) + "</td>" );
+    }
 
     switch( m_db->isEmpty() || !m_db->isValid() ) {
         case true:  showIntroduction();
@@ -213,11 +225,13 @@ void ContextBrowser::engineNewMetaData( const MetaBundle&, bool /*trackChanged*/
 void ContextBrowser::engineStateChanged( Engine::State state ) {
     switch( state ) {
     case Engine::Empty:
+        m_metadataHistory.clear();
         m_toolbar->getButton( CurrentTrack )->setEnabled( false );
         m_toolbar->getButton( Lyrics )->setEnabled( false );
         showHome();
         break;
     case Engine::Playing:
+        m_metadataHistory.clear();
         m_toolbar->getButton( CurrentTrack )->setEnabled( true );
         m_toolbar->getButton( Lyrics )->setEnabled( true );
         break;
@@ -430,9 +444,6 @@ void ContextBrowser::showHome() //SLOT
 
 void ContextBrowser::showCurrentTrack() //SLOT
 {
-    #define escapeHTML(s)     QString(s).replace( "<", "&lt;" ).replace( ">", "&gt;" )
-    #define escapeHTMLAttr(s) QString(s).replace( "%", "%25" ).replace( "'", "%27" )
-
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
 
     browser->begin();
@@ -463,9 +474,32 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
         browser->write(
               "</table>"
-             "</div>"
-            "</html>" );
+             "</div>" );
 
+        if ( !m_metadataHistory.isEmpty() ) {
+            browser->write(
+                    "<br/>"
+                    "<div class='rbcontent'>"
+                    "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+                    "<tr><th>&nbsp;" + i18n( "Metadata History" ) + "</th></tr>"
+                    "</table>"
+                    "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+
+            QStringList::const_iterator it;
+            for ( it = m_metadataHistory.begin(); it != m_metadataHistory.end(); ++it ) {
+                browser->write( QStringx(
+                    "<tr>"
+                        "%1"
+                    "</tr>" )
+                    .arg( *it ) );
+            }
+
+            browser->write(
+                "</table>"
+                "</div>" );
+        }
+
+        browser->write("</html>" );
         browser->end();
 
         //TODO if we have artist information we can show the following stuff too! cool :)

@@ -67,6 +67,7 @@ class ContextBrowser : public QVBox, public EngineObserver
         QStringList   m_relatedArtists;
         QString       m_HTMLSource;
         KTempFile    *m_gradientImage;
+        QStringList   m_metadataHistory;
 };
 
 #endif /* AMAROK_CONTEXTBROWSER_H */
