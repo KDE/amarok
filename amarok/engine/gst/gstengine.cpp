@@ -59,7 +59,7 @@ void GstEngine::handoff_cb( GstElement *identity, GstBuffer *buf, GstElement *pi
         {
             for ( ; pGstEngine->mCurrent < pGstEngine->mScopeEnd && i < GST_BUFFER_SIZE( buf ); ++pGstEngine->mCurrent, ++i )
             {
-                *pGstEngine->mCurrent = data[ i ];
+                *pGstEngine->mCurrent = (float) data[ i ] / 256.0;
             }
             
             if ( pGstEngine->mCurrent >= pGstEngine->mScopeEnd )
@@ -118,12 +118,12 @@ void GstEngine::init( bool&, int scopeSize, bool )
 {
     m_mixerHW = -1;            //initialize 
     buffer( 1 << scopeSize );
-
     pGstEngine = this;
+    
+//     g_module_open( "libgstreamer-0.8.so", (GModuleFlags) 0 );
     gst_init( NULL, NULL );
     
     /* create a new thread to hold the elements */
-    // needs to be called after creating the other elements! otherwise crash
     kdDebug() << k_funcinfo << "BEFORE gst_thread_new ( thread );\n";
     m_pThread              = gst_thread_new          ( "thread" );
     
@@ -135,22 +135,22 @@ void GstEngine::init( bool&, int scopeSize, bool )
     
     kdDebug() << k_funcinfo << "BEFORE gst_element_factory_make( osssink, play_audio );\n";
     m_pAudiosink           = gst_element_factory_make( "osssink", "play_audio" );
-//     GstElement *pIdentity  = gst_element_factory_make( "identity", "rawscope" );
+    GstElement *pIdentity  = gst_element_factory_make( "identity", "rawscope" );
 
 //     g_signal_connect ( G_OBJECT( m_pAudiosink ), "handoff",
 //                        G_CALLBACK( handoff_cb ), m_pThread );
 
-//     g_signal_connect ( G_OBJECT( pIdentity ), "handoff",
-//                        G_CALLBACK( handoff_cb ), m_pThread );
+    g_signal_connect ( G_OBJECT( pIdentity ), "handoff",
+                       G_CALLBACK( handoff_cb ), m_pThread );
 
     g_signal_connect ( G_OBJECT( m_pAudiosink ), "eos",
                        G_CALLBACK( eos_cb ), m_pThread );
 
     /* add objects to the main pipeline */
-    gst_bin_add_many( GST_BIN( m_pThread ), m_pFilesrc, spider, /*pIdentity,*/ m_pAudiosink, NULL );
+    gst_bin_add_many( GST_BIN( m_pThread ), m_pFilesrc, spider, pIdentity, m_pAudiosink, NULL );
     /* link src to sink */
     
-    gst_element_link_many( m_pFilesrc, spider, /*pIdentity,*/ m_pAudiosink, NULL );
+    gst_element_link_many( m_pFilesrc, spider, pIdentity, m_pAudiosink, NULL );
 }
 
 
@@ -226,7 +226,7 @@ EngineBase::EngineState GstEngine::state() const
         case GST_STATE_NULL:
             return Empty;
         case GST_STATE_READY:
-            return Idle;
+            return Playing;
         case GST_STATE_PLAYING:
             return Playing;
         case GST_STATE_PAUSED:
