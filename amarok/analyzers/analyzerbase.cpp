@@ -43,7 +43,7 @@ Analyzer::Base<W>::Base( QWidget *parent, uint timeout, uint size )
   , m_height( 0 )
   , m_fht( size )
 {}
-#include <kdebug.h>
+
 template<class W> bool
 Analyzer::Base<W>::event( QEvent *e )
 {
@@ -176,7 +176,7 @@ Analyzer::Base2D::polish()
 
 #ifdef HAVE_QGLWIDGET
 Analyzer::Base3D::Base3D( QWidget *parent, uint timeout, uint scopeSize )
-   : Base<DUMMY>( parent, timeout, scopeSize )
+   : Base<QGLWidget>( parent, timeout, scopeSize )
 {
     connect( &m_timer, SIGNAL( timeout() ), SLOT( draw() ) );
 }

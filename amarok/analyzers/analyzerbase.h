@@ -33,9 +33,8 @@
 #include <qgl.h>     //baseclass
 #include <GL/gl.h>  //included for convenience
 #include <GL/glu.h> //included for convenience
-typedef QGLWidget DUMMY;
 #else
-typedef QWidget DUMMY;
+#define QGLWidget QWidget
 #endif
 
 class QEvent;
@@ -102,25 +101,25 @@ private:
 
 
 
-//this mess is because moc generates an entry for this class despite the #if block
+//This mess is because moc generates an entry for this class despite the #if block
 //1. the Q_OBJECT macro must be exposed
 //2. we have to define the class
 //3. we have to declare a ctor (to satisfy the inheritance)
 //4. the slot must also by visible (!)
-//5. the DUMMY may not be necessary provided you include <qgl.h>, but I wasn't certain if this would cause
-//   link failure, so it's there to be sure.
 //TODO find out how to stop moc generating a metaobject for this class
-class Base3D : public Base<DUMMY>
+class Base3D : public Base<QGLWidget>
 {
 Q_OBJECT
-private slots:
-    void draw() { drawFrame(); }
 #ifdef HAVE_QGLWIDGET
 protected:
     Base3D( QWidget*, uint, uint = 7 );
+private slots:
+    void draw() { drawFrame(); }
 #else
 protected:
-    Base3D( QWidget *w, uint i1, uint i2 ) : Base<DUMMY>( w, i1, i2 ) {}
+    Base3D( QWidget *w, uint i1, uint i2 ) : Base<QGLWidget>( w, i1, i2 ) {}
+private slots:
+    void draw() {}
 #endif
 };
 

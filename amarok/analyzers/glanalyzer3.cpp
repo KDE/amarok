@@ -33,8 +33,12 @@ class Ball
     public:
 	Ball() : x( drand48() - drand48() ), y( 1 - 2.0 * drand48() ),
 	    z( drand48() ), vx( 0.0 ), vy( 0.0 ), vz( 0.0 ),
-	    mass( 0.01 + drand48()/10.0 ),
-	    color( (float[3]) { 0.0, drand48()*0.5, 0.7 + drand48() * 0.3 } ) {};
+	    mass( 0.01 + drand48()/10.0 )
+	    //,color( (float[3]) { 0.0, drand48()*0.5, 0.7 + drand48() * 0.3 } )
+	{
+		//this is because GCC < 3.3 can't compile the above line, we aren't sure why though
+		color[0] = 0.0; color[1] = drand48()*0.5; color[2] = 0.7 + drand48() * 0.3;
+	};
 
 	float x, y, z, vx, vy, vz, mass;
 	float color[3];
@@ -79,7 +83,7 @@ class Paddle
 	     glVertex3f( x, 1.0f, 1.0 );
 	    glEnd();
 	}
-    
+
 	void bounce( Ball * ball )
 	{
 	    if ( onLeft && ball->x < x )
@@ -96,14 +100,14 @@ class Paddle
 		ball->vz = (drand48() - drand48()) * 0.9;
 		ball->x = x;
 	    }
-	} 
-	
+	}
+
 	void impulse( float strength )
 	{
 	    if ( (onLeft && strength > vx) || (!onLeft && strength < vx) )
 		vx += strength;
 	}
-    
+
     private:
 	bool onLeft;
 	float mass, X, x, vx;
@@ -112,7 +116,7 @@ class Paddle
 
 GLAnalyzer3::GLAnalyzer3( QWidget *parent ):
 Analyzer::Base3D(parent, 15)
-{    
+{
     //initialize openGL context before managing GL calls
     makeCurrent();
     loadTexture( locate("data","amarok/data/ball.png"), ballTexture );
@@ -151,7 +155,7 @@ void GLAnalyzer3::initializeGL()
 
     // Disable depth test (all is drawn 'z-sorted')
     glDisable( GL_DEPTH_TEST );
-    
+
     // Set blending function (Alpha addition)
     glBlendFunc( GL_SRC_ALPHA, GL_ONE );
 
@@ -166,7 +170,7 @@ void GLAnalyzer3::resizeGL( int w, int h )
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
     glFrustum( -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 4.5f );
-    
+
     // Get the aspect ratio of the screen to draw 'circular' particles
     float ratio = (float)w / (float)h;
     if ( ratio >= 1.0 ) {
@@ -224,7 +228,7 @@ void GLAnalyzer3::paintGL()
     // Compute the dT since the last call to paintGL and update timings
     timeval tv;
     gettimeofday( &tv, NULL );
-    double currentTime = (double)tv.tv_sec + (double)tv.tv_usec/1000000.0; 
+    double currentTime = (double)tv.tv_sec + (double)tv.tv_usec/1000000.0;
     show.dT = currentTime - show.timeStamp;
     show.timeStamp = currentTime;
     if ( show.dT > 0.1 )
@@ -233,7 +237,7 @@ void GLAnalyzer3::paintGL()
     if ( show.colorK > 3.0 )
 	show.colorK -= 3.0;
     show.gridScrollK += show.dT;
-    
+
     // Switch to MODEL matrix and clear screen
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
@@ -310,7 +314,7 @@ void GLAnalyzer3::paintGL()
     }
     glDisable( GL_BLEND );
     glDisable( GL_TEXTURE_2D );
-    
+
     // Update physics of paddles
     leftPaddle->updatePhysics( show.dT );
     rightPaddle->updatePhysics( show.dT );
@@ -413,14 +417,14 @@ void GLAnalyzer3::drawScrollGrid( float scroll, float color[4] )
     glVertex3f( 1.0f, 1.0f, -1.0f );
      glColor4fv( backColor );	// central points
     glTexCoord2f( 0.0f, 0.0f );
-    glVertex3f( -1.0f, 0.0f, -3.0f );    
+    glVertex3f( -1.0f, 0.0f, -3.0f );
     glTexCoord2f( 1.0f, 0.0f );
     glVertex3f( 1.0f, 0.0f, -3.0f );
      glColor4fv( color );	// bottom face
     glTexCoord2f( 0.0f, 1.0f );
     glVertex3f( -1.0f, -1.0f, -1.0f );
     glTexCoord2f( 1.0f, 1.0f );
-    glVertex3f( 1.0f, -1.0f, -1.0f );        
+    glVertex3f( 1.0f, -1.0f, -1.0f );
     glEnd();
     glDisable( GL_BLEND );
     glDisable( GL_TEXTURE_2D );
