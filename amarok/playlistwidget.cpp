@@ -881,7 +881,7 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
         {
             //if is Queued, remove the item
             m_nextTracks.at( queueIndex ); //set current item
-            m_nextTracks.remove();
+            m_nextTracks.remove(); //NOTE!! gets repainted due to the deselect above
         }
         else m_nextTracks.append( item ); //else append it on the end of the list
 
@@ -1156,10 +1156,11 @@ void PlaylistWidget::viewportPaintEvent( QPaintEvent *e )
 
 bool PlaylistWidget::eventFilter( QObject *o, QEvent *e )
 {
+    #define me static_cast<QMouseEvent*>(e)
+
     //we only filter the header currently, but the base class has eventFilters in place too
 
-    if( o == header() && e->type() == QEvent::MouseButtonPress &&
-        static_cast<QMouseEvent *>(e)->button() == Qt::RightButton )
+    if( o == header() && e->type() == QEvent::MouseButtonPress && me->button() == Qt::RightButton )
     {
         //currently the only use for this filter is to get mouse clicks on the header()
         KPopupMenu popup;
@@ -1185,45 +1186,33 @@ bool PlaylistWidget::eventFilter( QObject *o, QEvent *e )
 
     }
     // not in slotMouseButtonPressed because we need to disable normal usage.
-    else if( o == viewport() && e->type() == QEvent::MouseButtonPress
-             && static_cast<QMouseEvent*>(e)->button() == RightButton )
+    else if( o == viewport() && e->type() == QEvent::MouseButtonPress &&
+             me->button() == RightButton && me->state() == Qt::ControlButton )
     {
-        // if ctrl pressed, queue/dequeue
-        Window root;
-        Window child;
-        int root_x, root_y, win_x, win_y;
-        uint keybstate;
-        XQueryPointer( qt_xdisplay(), qt_xrootwin(), &root, &child,
-                       &root_x, &root_y, &win_x, &win_y, &keybstate );
-        bool ctrlPressed = keybstate & ControlMask;
-        if( ctrlPressed )
+        const QPoint p = me->pos();
+        PlaylistItem *item = static_cast<PlaylistItem*>(itemAt(p) );
+        if( item )
         {
-            QPoint p = static_cast<QMouseEvent*>(e)->pos();
-            PlaylistItem *item = static_cast<PlaylistItem*>(itemAt(p) );
-            const int queueIndex = m_nextTracks.findRef( item );
-            if( item )
-            {
-                item->setSelected( false ); //for prettiness
-                if( queueIndex!= -1 )
-                {
-                    //if is Queued, remove the item
-                    m_nextTracks.at( queueIndex ); //set current item
-                    m_nextTracks.remove();
-                }
-                else m_nextTracks.append( item );
-                repaintItem( item );
-                refreshNextTracks();
-            }
-            return TRUE;
-        }
-        else
-            return KListView::eventFilter( o, e );
-    }
-    else {
+            item->setSelected( false ); //for prettiness
 
-        //allow the header to process this
-        return KListView::eventFilter( o, e );
+            if( m_nextTracks.findRef( item ) != -1 ) //will set list's current item
+            {
+                //if is Queued, remove the item
+                m_nextTracks.remove();
+                item->repaint();
+            }
+            else m_nextTracks.append( item );
+
+            refreshNextTracks();
+        }
+
+        return TRUE; //yum!
     }
+
+    //allow the header to process this
+    return KListView::eventFilter( o, e );
+
+    #undef me
 }
 
 

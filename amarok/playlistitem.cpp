@@ -318,16 +318,16 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         QString str = QString::number( playNext );
 
         //draw the symbol's outline
-        const uint fw = p->fontMetrics().width( str ) + 4; //TODO adjust xw based on this width
-        const uint xw = 16; //keep this even
-        const uint yh = height() - 2;
+              uint fw = p->fontMetrics().width( str ) + 2;
+        const uint w  = 16; //keep this even
+        const uint h  = height() - 2;
 
         p->setBrush( cg.highlight() );
         p->setPen( cg.highlight().dark() ); //TODO blend with background color
-        p->drawEllipse( width - xw, 1, xw, yh );
-        p->drawRect( width - xw/2, 1, xw/2, yh );
+        p->drawEllipse( width - fw - w/2, 1, w, h );
+        p->drawRect( width - fw, 1, fw, h );
         p->setPen( cg.highlight() );
-        p->drawLine( width - xw/2, 2, width - xw/2, yh - 1 );
+        p->drawLine( width - fw, 2, width - fw, h - 1 );
 
         //draw the shadowed inner text
         //NOTE we can't set an arbituary font size or family, these settings are already optional
@@ -335,10 +335,12 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         //const QFont smallFont( "Arial", (playNext > 9) ? 9 : 12 );
         //p->setFont( smallFont );
         //TODO the shadow is hard to do well when using a dark font color
+        //TODO it also looks cluttered for small font sizes
         //p->setPen( cg.highlightedText().dark() );
-        //p->drawText( width - xw + 2, 3, xw, yh-1, Qt::AlignCenter, str );
+        //p->drawText( width - w + 2, 3, w, h-1, Qt::AlignCenter, str );
+        fw += 2; //add some more padding
         p->setPen( cg.highlightedText() );
-        p->drawText( width - fw, 2, fw, yh-1, Qt::AlignCenter, str );
+        p->drawText( width - fw, 2, fw, h-1, Qt::AlignCenter, str );
     }
 
     if( !isSelected() && !hideSeparator )
