@@ -146,7 +146,12 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     } //<TimeLabel>
 
     m_pButtonEq = placeWidget( new IconButton( this, "eq" ), QRect(34,85, 28,13) );
+    connect( m_pButtonEq, SIGNAL( released() ),
+             this, SIGNAL( effectsWindowActivated() ) );
     m_pButtonPl = placeWidget( new IconButton( this, "pl" ), QRect( 5,85, 28,13) );
+    connect( m_pButtonPl, SIGNAL( toggled( bool ) ),
+             this, SIGNAL( playlistToggled( bool ) ) );
+
 
     m_pDescription = wrapper<QLabel>( QRect(4,6, 130,10), this );
     m_pTimeSign    = wrapper<QLabel>( QRect(6,40, 10,10), this, 0, Qt::WRepaintNoErase );
@@ -321,6 +326,23 @@ void PlayerWidget::drawScroll()
     }
 
     bitBlt( m_pScrollFrame, 0, 0, buffer );
+}
+
+// passive set. No signals are emited when using this toggle.
+void PlayerWidget::setPlaylistShown( bool on )
+{
+    m_pButtonPl->blockSignals( true );
+    m_pButtonPl->setOn( on );
+    m_pButtonPl->blockSignals( false );
+}
+
+
+// passive set. No signals are emited when using this toggle.
+void PlayerWidget::setEffectsWindowShown( bool on )
+{
+    m_pButtonEq->blockSignals( true );
+    m_pButtonEq->setOn( on );
+    m_pButtonEq->blockSignals( false );
 }
 
 
