@@ -118,13 +118,13 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     // signals and slots connections
     connect( m_listview, SIGNAL( rightButtonPressed( QListViewItem *, const QPoint &, int ) ),
-           this, SLOT( showContextMenu( QListViewItem *, const QPoint &, int ) ) );
+             this,         SLOT( showContextMenu( QListViewItem *, const QPoint &, int ) ) );
     connect( m_listview, SIGNAL( doubleClicked( QListViewItem *) ),
-           this, SLOT( slotDoubleClicked( QListViewItem * ) ) );
+             this,         SLOT( slotDoubleClicked( QListViewItem * ) ) );
     connect( m_listview, SIGNAL( itemRenamed( QListViewItem*, const QString&, int ) ),
-           this, SLOT( renamePlaylist( QListViewItem*, const QString&, int ) ) );
+             this,         SLOT( renamePlaylist( QListViewItem*, const QString&, int ) ) );
     connect( m_listview, SIGNAL( currentChanged( QListViewItem * ) ),
-            this, SLOT( currentItemChanged( QListViewItem * ) ) );
+             this,         SLOT( currentItemChanged( QListViewItem * ) ) );
 
     setMinimumWidth( m_toolbar->sizeHint().width() );
 
@@ -353,6 +353,7 @@ void PlaylistBrowser::renamePlaylist( QListViewItem* item, const QString& newNam
     // Current playlist saving
     if ( isCurrentPlaylist( item ) ) {
         QString path = KGlobal::dirs()->saveLocation( "data", "amarok/playlists/", true ) + newName + ".m3u";
+        kdDebug() << "[PlaylistBrowser] Saving Current-Playlist to: " << path << endl;
         Playlist::instance()->saveM3U( path );
         item->setText( 0, i18n( "Current Playlist" ) );
         addPlaylist( path );

@@ -8,6 +8,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+          <markey> LibVisual windows are missing a caption with the current plugin name.
+
           <mxcl>   Can we have a compile option not to prune images when you clear the collection?
                    I hate redownloading all my covers
 
