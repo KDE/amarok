@@ -36,6 +36,11 @@ const MetaBundle MetaBundle::null;
 MetaBundle::MetaBundle( const KURL &u, bool readAudioProperties, CollectionDB* const db )
   : m_url( u )
 {
+    if( m_url.isLocalFile() && !QFile::exists( m_url.path() ) ) {
+        init( 0 );
+        return;
+    }
+
     if ( db )
     {
         MetaBundle bundle;
