@@ -44,7 +44,7 @@ namespace amaroK {
 class Divider : public QWidget
 {
 public:
-    Divider( QWidget *w ) : QWidget( w ) { styleChange( style() ); }
+    Divider( QWidget *w ) : QWidget( w, "divider" ) { styleChange( style() ); }
 
     virtual void paintEvent( QPaintEvent* )
     {
@@ -80,7 +80,7 @@ extern KConfig *config( const QString& );
 BrowserBar::BrowserBar( QWidget *parent )
   : QWidget( parent, "BrowserBar" )
   , m_playlist( new QVBox( this ) )
-  , m_divider( new amaroK::Divider( parent ) ) //FIXME why parent?
+  , m_divider( new amaroK::Divider( this ) )
   , m_tabBar( new KMultiTabBar( KMultiTabBar::Vertical, this ) )
   , m_browserHolder( new amaroK::Drawer( this ) )
   , m_currentIndex( -1 )

@@ -449,7 +449,7 @@ void PlaylistWindow::setColors( const QPalette &pal, const QColor &bgAlt )
             cg.setColor( QColorGroup::ButtonText, cg.text() );
             widget->setPalette( QPalette(cg, cg, cg) );
         }
-        else if( obj->inherits("QMenuBar") || obj->isA("QSplitterHandle") )
+        else if( obj->isA("QSplitterHandle") || qstrcmp( obj->name(), "divider" ) == 0 )
         {
             widget->setPalette( QApplication::palette() );
         }
