@@ -23,9 +23,6 @@
 
 namespace amaroK {
     class TrayIcon;
-    class DcopPlayerHandler;
-    class DcopPlaylistHandler;
-    class DcopCollectionHandler;
 }
 
 class KActionCollection;
@@ -83,10 +80,6 @@ class App : public KApplication, public EngineObserver
         PlayerWidget        *m_pPlayerWindow;
         PlaylistWindow      *m_pPlaylistWindow;
         amaroK::TrayIcon    *m_pTray;
-
-        amaroK::DcopPlayerHandler     *m_pDcopPlayerHandler;
-        amaroK::DcopPlaylistHandler   *m_pDcopPlaylistHandler;
-        amaroK::DcopCollectionHandler *m_pDcopCollectionHandler;
 };
 
 #define pApp static_cast<App*>(kapp)
