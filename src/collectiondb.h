@@ -5,11 +5,12 @@
 #ifndef AMAROK_COLLECTIONDB_H
 #define AMAROK_COLLECTIONDB_H
 
-#include <amarokconfig.h>
+#include "amarokconfig.h"
+#include "sqlite/sqlite3.h"
+
+#include <qdir.h>            //stack allocated
 #include <qobject.h>         //baseclass
 #include <qstringlist.h>     //stack allocated
-#include <qdir.h>            //stack allocated
-#include "sqlite/sqlite3.h"
 
 class CollectionEmitter;
 class MetaBundle;
