@@ -46,21 +46,22 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     kapp->setTopWidget( this );
 }
 
+class OSDGrabber : public QWidget
+{
+public:
+    OSDGrabber( const QRect &r, const QColor &color ) : QWidget( 0, 0 ) {
+        move( 0, 0 );
+        screen = QPixmap::grabWindow( winId(), r.x(), r.y(), r.width(), r.height() );
+        KPixmapEffect::fade( screen, 0.80, color );
+    }
+    KPixmap screen;
+};
+
 void
 OSDWidget::show() //virtual
 {
     if ( !isEnabled() )
         return;
-
-    class Grabber : public QWidget {
-    public:
-        Grabber( const QRect &r, const QColor &color ) : QWidget( 0, 0 ) {
-            move( 0, 0 );
-            screen = QPixmap::grabWindow( winId(), r.x(), r.y(), r.width(), r.height() );
-            KPixmapEffect::fade( screen, 0.80, color );
-        }
-        KPixmap screen;
-    };
 
     const QRect oldGeometry = QRect( pos(), size() );
 
@@ -71,7 +72,8 @@ OSDWidget::show() //virtual
     //TODO handle case when already shown properly
     if( !isShown() ) {
         // obtain snapshot of the screen where we are about to appear
-        Grabber g( QRect(pos(), size()), backgroundColor() );
+        QRect rect( pos(), size() );
+        OSDGrabber g( rect, backgroundColor() );
         m_screenshot = g.screen;
 
         QWidget::show();
