@@ -84,11 +84,12 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
 
 
 void
-GstEngine::error_cb( GstElement* /*element*/, GstElement* /*source*/, GError* /*error*/, gchar* /*debug*/, gpointer /*data*/ )
+GstEngine::error_cb( GstElement* /*element*/, GstElement* /*source*/, GError* error, gchar* debug, gpointer /*data*/ )
 {
     kdDebug() << k_funcinfo << endl;
 
-    QTimer::singleShot( 0, instance(), SLOT( handleError() ) );
+    // Process error message in application thread
+    emit instance()->sigGstError( error, debug );
 }
 
 
@@ -168,6 +169,7 @@ GstEngine::init()
                       
     m_gst_adapter = gst_adapter_new();
     startTimer( TIMER_INTERVAL );
+    connect( this, SIGNAL( sigGstError( GError*, gchar* ) ), SLOT( handleGstError( GError*, gchar* ) ) );
 
     kdDebug() << "END " << k_funcinfo << endl;
     return true;
@@ -295,7 +297,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
 {
     stopNow();
     Engine::Base::load( url, stream );
-    kdDebug() << "Gst-Engine: url.url() == " << url.url() << endl;
+    kdDebug() << "[Gst-Engine] loading url: " << url.url() << endl;
     
     if ( GstConfig::soundOutput().isEmpty() ) {
         errorNoOutput();
@@ -308,40 +310,38 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     kdDebug() << "CustomOutputParams: " << ( GstConfig::useCustomOutputParams() ? "true" : "false" ) << endl;
     kdDebug() << "Output Params: " << GstConfig::outputParams() << endl;
     
-    QCString output;
-    
     /* create a new pipeline (thread) to hold the elements */
-    if ( !( m_gst_thread = createElement( "thread" ) ) ) { goto error; }
+    if ( !( m_gst_thread = createElement( "thread" ) ) ) { return false; }
     g_object_set( G_OBJECT( m_gst_thread ), "priority", GstConfig::threadPriority(), NULL );
     
     // Let gst construct the output element from a string
-    output  = GstConfig::soundOutput().latin1();
+    QCString output  = GstConfig::soundOutput().latin1();
     if ( GstConfig::useCustomOutputParams() ) {
         output += " ";
         output += GstConfig::outputParams().latin1();
     }
     GError* err;
-    if ( !( m_gst_audiosink = gst_parse_launch( output, &err ) ) ) { goto error; }
+    if ( !( m_gst_audiosink = gst_parse_launch( output, &err ) ) ) { return false; }
     gst_bin_add( GST_BIN( m_gst_thread ), m_gst_audiosink );
     
     /* setting device property for AudioSink*/
     if ( GstConfig::useCustomSoundDevice() && !GstConfig::soundDevice().isEmpty() )
         g_object_set( G_OBJECT ( m_gst_audiosink ), "device", GstConfig::soundDevice().latin1(), NULL );
     
-    if ( !( m_gst_identity = createElement( "identity", m_gst_thread ) ) ) { goto error; }
-    if ( !( m_gst_volume = createElement( "volume", m_gst_thread ) ) ) { goto error; }
-    if ( !( m_gst_volumeFade = createElement( "volume", m_gst_thread ) ) ) { goto error; }
-    if ( !( m_gst_audioconvert = createElement( "audioconvert", m_gst_thread, "audioconvert" ) ) ) { goto error; }
-    if ( !( m_gst_audioscale = createElement( "audioscale", m_gst_thread ) ) ) { goto error; }
+    if ( !( m_gst_identity = createElement( "identity", m_gst_thread ) ) ) { return false; }
+    if ( !( m_gst_volume = createElement( "volume", m_gst_thread ) ) ) { return false; }
+    if ( !( m_gst_volumeFade = createElement( "volume", m_gst_thread ) ) ) { return false; }
+    if ( !( m_gst_audioconvert = createElement( "audioconvert", m_gst_thread, "audioconvert" ) ) ) { return false; }
+    if ( !( m_gst_audioscale = createElement( "audioscale", m_gst_thread ) ) ) { return false; }
 
     g_object_set( G_OBJECT( m_gst_volumeFade ), "volume", 1.0, NULL );
     g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), m_gst_thread );
     g_signal_connect( G_OBJECT( m_gst_audiosink ), "eos", G_CALLBACK( eos_cb ), m_gst_thread );
-//     g_signal_connect ( G_OBJECT( m_thread ), "error", G_CALLBACK ( error_cb ), m_thread );
+    g_signal_connect ( G_OBJECT( m_gst_thread ), "error", G_CALLBACK ( error_cb ), m_gst_thread );
 
     if ( url.isLocalFile() ) {
         // Use gst's filesrc element for local files, cause it's less overhead than KIO
-        if ( !( m_gst_src = createElement( "filesrc", m_gst_thread ) ) ) { goto error; }
+        if ( !( m_gst_src = createElement( "filesrc", m_gst_thread ) ) ) { return false; }
         // Set file path
         g_object_set( G_OBJECT( m_gst_src ), "location", static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
     }
@@ -352,7 +352,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         g_signal_connect( G_OBJECT( m_gst_src ), "kio_resume", G_CALLBACK( kio_resume_cb ), m_gst_thread );
     }
     
-    if ( !( m_gst_spider = createElement( "spider", m_gst_thread ) ) ) { goto error; }
+    if ( !( m_gst_spider = createElement( "spider", m_gst_thread ) ) ) { return false; }
     
     /* link elements */
     gst_element_link_many( m_gst_src, m_gst_spider, m_gst_volumeFade, m_gst_identity, m_gst_volume, m_gst_audioscale, m_gst_audioconvert, m_gst_audiosink, 0 );
@@ -374,11 +374,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
                               this,   SLOT( kioFinished() ) );
         }
     }
-    emit stateChanged( Engine::Idle );
     return true;
-
-error:
-    return false;
 }
 
 
@@ -410,7 +406,7 @@ GstEngine::stop()  //SLOT
     else
         // Fading --> stop playback
         stopNow();        
-    
+        
     emit stateChanged( Engine::Empty );
 }
                 
@@ -510,9 +506,11 @@ void GstEngine::timerEvent( QTimerEvent* )
 /////////////////////////////////////////////////////////////////////////////////////
 
 void
-GstEngine::handleError()  //SLOT
+GstEngine::handleGstError( GError* error, gchar* debugmsg )  //SLOT
 {
-    kdDebug() << "Error message: " << static_cast<const char*>( error_msg->message ) << endl;
+    kdError() << "[GStreamer Error] " << endl;
+    kdError() << error->message << endl;
+    kdError() << debugmsg << endl;
 }
 
 

@@ -229,6 +229,8 @@ StreamProvider::connectError() //SLOT
         kdError() << "StreamProvider error: Unable to connect to this stream server. Can't play the stream!\n";
 
         emit sigError();
+        //Commit suicide
+        deleteLater();
     }
 }
 

@@ -24,6 +24,8 @@ email                : fh@ez.no
 #include "pluginmanager.h"
 #include "streamprovider.h"
 
+#include <qtimer.h>
+
 #include <kdebug.h>
 #include <kio/global.h>
 #include <kio/job.h>
@@ -57,14 +59,15 @@ public: DummyEngine() : EngineBase() {}
 
 
 EngineController::EngineController()
-    : m_pEngine( &dummyEngine )
-    , m_pMainTimer( new QTimer( this ) )
+    : m_engine( &dummyEngine )
+    , m_mainTimer( new QTimer( this ) )
     , m_delayTime( 0 )
     , m_muteVolume( 0 )
     , m_xFadeThisTrack( false )
+    , m_timer( new QTimer( this ) )
     , m_stream( 0 )
 {
-    connect( &m_timer, SIGNAL( timeout() ), SLOT( slotMainTimer() ) );
+    connect( m_timer, SIGNAL( timeout() ), SLOT( slotMainTimer() ) );
 }
 
 
@@ -82,7 +85,7 @@ void EngineController::playPause()
 {
     //this is used by the TrayIcon, PlayPauseAction and DCOP
 
-    if( m_pEngine->state() == Engine::Playing )
+    if( m_engine->state() == Engine::Playing )
     {
         pause();
     }
@@ -91,23 +94,23 @@ void EngineController::playPause()
 
 void EngineController::play()
 {
-    if ( m_pEngine->state() == Engine::Paused )
+    if ( m_engine->state() == Engine::Paused )
     {
-        m_pEngine->pause();
+        m_engine->pause();
     }
     else emit orderCurrent();
 }
 
 void EngineController::pause()
 {
-    if ( m_pEngine->loaded() )
-        m_pEngine->pause();
+    if ( m_engine->loaded() )
+        m_engine->pause();
 }
 
 void EngineController::stop()
 {
-    if ( m_pEngine->loaded() )
-        m_pEngine->stop();
+    if ( m_engine->loaded() )
+        m_engine->stop();
 }
 
 
@@ -116,25 +119,23 @@ void EngineController::play( const MetaBundle &bundle )
     const KURL &url = bundle.url();
 
     if ( url.protocol() == "http" ) {
+        m_bundle = bundle;
         // Detect mimetype of remote file
         KIO::MimetypeJob* job = KIO::mimetype( url, false );
         connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( playRemote( KIO::Job* ) ) );
-        m_bundle = bundle;
         return; //don't do notify
     }
-    else if( !m_pEngine->play( url ) )
+    else if( !m_engine->play( url ) )
     {
         //NOTE it is up to the engine to present a graphical error message
-
-        return; //don't do notify
+        return;
     }
     else
     {
         //non stream is now playing
-
         m_xFadeThisTrack = AmarokConfig::crossfade() &&
-                           m_pEngine->hasXFade() &&
-                           !m_pEngine->isStream() &&
+                           m_engine->hasXFade() &&
+                           !m_engine->isStream() &&
                            m_bundle.length()*1000 - AmarokConfig::crossfadeLength()*2 > 0;
     }
 
@@ -155,25 +156,24 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
 
     if ( isStream &&
          AmarokConfig::titleStreaming() &&
-         m_pEngine->streamingMode() != Engine::NoStreaming )
+         m_engine->streamingMode() != Engine::NoStreaming )
     {
         delete m_stream;
-        m_stream = new amaroK::StreamProvider( url, m_pEngine->streamingMode() );
+        m_stream = new amaroK::StreamProvider( url, m_engine->streamingMode() );
 
-        if ( !m_stream->initSuccess() || !m_pEngine->play( m_stream->proxyUrl(), isStream ) ) {
+        if ( !m_stream->initSuccess() || !m_engine->play( m_stream->proxyUrl(), isStream ) ) {
             delete m_stream;
-            m_stream = 0;
             goto failure;
         }
 
         connect( m_stream,   SIGNAL( metaData( const MetaBundle& ) ),
                  this,         SLOT( slotNewMetaData( const MetaBundle& ) ) );
         connect( m_stream,   SIGNAL( streamData( char*, int ) ),
-                 m_pEngine,    SLOT( newStreamData( char*, int ) ) );
+                 m_engine,     SLOT( newStreamData( char*, int ) ) );
         connect( m_stream,   SIGNAL( sigError() ),
                  this,       SIGNAL( orderNext() ) );
     }
-    else if( !m_pEngine->play( url, isStream ) )
+    else if( !m_engine->play( url, isStream ) )
     {
         failure:
             m_bundle = MetaBundle();
@@ -189,7 +189,7 @@ EngineBase *EngineController::loadEngine() //static
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
-    EngineBase *engine = instance()->m_pEngine;
+    EngineBase *engine = instance()->m_engine;
 
     //now load new engine
     const QString query    = "[X-KDE-amaroK-plugintype] == 'engine' and [X-KDE-amaroK-name] == '%1'";
@@ -238,7 +238,7 @@ EngineBase *EngineController::loadEngine() //static
         extensionCache().clear();
 
         //assign new engine, unload old one. Order is thread-safe!
-        instance()->m_pEngine = static_cast<EngineBase*>(plugin);
+        instance()->m_engine = static_cast<EngineBase*>(plugin);
         if( engine != &dummyEngine ) PluginManager::unload( engine );
 
         engine = static_cast<EngineBase*>(plugin);
@@ -267,29 +267,29 @@ int EngineController::setVolume( int percent )
     if( percent < 0 ) percent = 0;
     if( percent > 100 ) percent = 100;
 
-    if( (uint)percent != m_pEngine->volume() )
+    if( (uint)percent != m_engine->volume() )
     {
-        m_pEngine->setVolume( (uint)percent );
+        m_engine->setVolume( (uint)percent );
 
-        percent = m_pEngine->volume();
+        percent = m_engine->volume();
         AmarokConfig::setMasterVolume( percent );
         volumeChangedNotify( percent );
         return percent;
     }
 
-    return m_pEngine->volume();
+    return m_engine->volume();
 }
 
 
 int EngineController::increaseVolume( int ticks )
 {
-    return setVolume( m_pEngine->volume() + ticks );
+    return setVolume( m_engine->volume() + ticks );
 }
 
 
 int EngineController::decreaseVolume( int ticks )
 {
-    return setVolume( m_pEngine->volume() - ticks );
+    return setVolume( m_engine->volume() - ticks );
 }
 
 
@@ -297,7 +297,7 @@ void EngineController::mute()
 {
     if( m_muteVolume == 0 )
     {
-        m_muteVolume = m_pEngine->volume();
+        m_muteVolume = m_engine->volume();
         setVolume( 0 );
     }
     else
@@ -321,7 +321,7 @@ void EngineController::slotNewMetaData( const MetaBundle &bundle )
 
 void EngineController::slotMainTimer()
 {
-    const uint position = m_pEngine->position();
+    const uint position = m_engine->position();
 
     trackPositionChangedNotify( position );
 
@@ -350,20 +350,18 @@ void EngineController::slotStateChanged( Engine::State newState )
     case Engine::Empty:
 
         m_bundle = MetaBundle();
-
         delete m_stream;
-        m_stream = 0;
 
         //FALL THROUGH...
 
     case Engine::Paused:
 
-        m_timer.stop();
+        m_timer->stop();
         break;
 
     case Engine::Playing:
 
-        m_timer.start( MAIN_TIMER );
+        m_timer->start( MAIN_TIMER );
         break;
 
     default:
@@ -407,7 +405,7 @@ void EngineController::restoreSession()
     {
         const KURL url = AmarokConfig::resumeTrack();
 
-        if ( m_pEngine->load( url ) && m_pEngine->play( AmarokConfig::resumeTime()*1000 ) )
+        if ( m_engine->load( url ) && m_engine->play( AmarokConfig::resumeTime()*1000 ) )
             newMetaDataNotify( m_bundle = MetaBundle( url ), true );
     }
 }

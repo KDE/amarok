@@ -22,11 +22,14 @@ email                : fh@ez.no
 
 #include "engineobserver.h" // move me // where to sir?
 #include "metabundle.h"
+
+#include <qguardedptr.h>
 #include <qmap.h>
 #include <qobject.h>
-#include <qtimer.h>
 
 typedef QMap<QString, bool>  ExtensionCache;
+
+class QTimer;
 
 namespace amaroK { class StreamProvider; }
 namespace KIO { class Job; }
@@ -44,7 +47,7 @@ public:
     // plugins have their own static space, so calling instance from a plugin won't do any good.
     // you'll only get a new (empty) instance.
     static EngineController *instance();
-    static EngineBase       *engine() { return instance()->m_pEngine; }
+    static EngineBase       *engine() { return instance()->m_engine; }
     static EngineBase       *loadEngine();
     static bool              canDecode( const KURL& );
     static ExtensionCache   &extensionCache() { return s_extensionCache; }
@@ -94,15 +97,15 @@ private:
     //xx000, xx100, xx200, so at most will be 200ms delay before time displays are updated
     static const int MAIN_TIMER = 300;
 
-    EngineBase*     m_pEngine;
+    EngineBase*     m_engine;
     MetaBundle      m_bundle;
-    QTimer*         m_pMainTimer;
+    QTimer*         m_mainTimer;
     long            m_delayTime;
     int             m_muteVolume;
     bool            m_xFadeThisTrack;
-    QTimer          m_timer;
+    QTimer*         m_timer;
 
-    amaroK::StreamProvider* m_stream;
+    QGuardedPtr<amaroK::StreamProvider> m_stream;
 };
 
 

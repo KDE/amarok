@@ -40,6 +40,9 @@ class GstEngine : public Engine::Base
 
         Q_OBJECT
 
+    signals:
+        void sigGstError( GError*, gchar* );
+    
     public:
         GstEngine();
         ~GstEngine();
@@ -66,7 +69,7 @@ class GstEngine : public Engine::Base
         void timerEvent( QTimerEvent* );
 
     private slots:
-        void handleError();
+        void handleGstError( GError*, gchar* );
         void stopAtEnd();
         void kioFinished();
         void newKioData( KIO::Job*, const QByteArray& array );
