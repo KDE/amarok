@@ -989,24 +989,30 @@ void ContextBrowser::setStyleSheet_default( QString& styleSheet )
     amaroK::Color gradientColor = bgColor;
 
     //writing temp background gradient image
-    if ( m_bgGradientImage )
+    if ( m_bgGradientImage ) {
+        m_bgGradientImage->unlink();
         delete m_bgGradientImage;
+    }
     m_bgGradientImage = new KTempFile( locateLocal( "tmp", "gradient" ), ".png", 0600 );
     QImage image = KImageEffect::gradient( QSize( 600, 1 ), gradientColor, gradientColor.light(), KImageEffect::PipeCrossGradient );
     image.save( m_bgGradientImage->file(), "PNG" );
     m_bgGradientImage->close();
 
     //writing temp top shining gradient
-    if ( m_headerGradientImage )
+    if ( m_headerGradientImage ) {
+        m_headerGradientImage->unlink();
         delete m_headerGradientImage;
+    }
     m_headerGradientImage = new KTempFile( locateLocal( "tmp", "gradient_header" ), ".png", 0600 );
     QImage imageH = KImageEffect::unbalancedGradient( QSize( 1, 10 ), bgColor, gradientColor.light(), KImageEffect::VerticalGradient, 100, -100 );
     imageH.copy( 0, 1, 1, 9 ).save( m_headerGradientImage->file(), "PNG" );
     m_headerGradientImage->close();
 
     //writing temp gradient image (only an 'upper linear shadow')
-    if ( m_shadowGradientImage )
+    if ( m_shadowGradientImage ) {
+        m_shadowGradientImage->unlink();
         delete m_shadowGradientImage;
+    }
     m_shadowGradientImage = new KTempFile( locateLocal( "tmp", "gradient_shadow" ), ".png", 0600 );
     QImage imageS = KImageEffect::unbalancedGradient( QSize( 1, 10 ), baseColor, Qt::gray, KImageEffect::VerticalGradient, 100, -100 );
     imageS.save( m_shadowGradientImage->file(), "PNG" );
