@@ -38,6 +38,7 @@
 #include <kstandarddirs.h>   //KGlobal::dirs()
 #include <kstdaction.h>
 #include <kstringhandler.h>  //::showContextMenu()
+#include <kglobalsettings.h>    //startEditTag()
 #include <kurldrag.h>
 
 #include <qclipboard.h>      //copyToClipboard(), slotMouseButtonPressed()
@@ -916,8 +917,6 @@ void Playlist::setCurrentTrack( PlaylistItem *item )
 
         //display "Play" icon
         item->setPixmap( m_firstColumn, SmallIcon( "artsbuilderexecute" ) );
-        item->setHeight( fontMetrics().height() * 2 );
-
         item->setSelected( false ); //looks bad painting selected and glowing
     }
 
@@ -1230,21 +1229,16 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
 void Playlist::startEditTag( QListViewItem *item, int column )
 {
     KLineEdit *edit = renameLineEdit();
-
-    QStringList values;
-    QStringList names;
     CollectionDB *db = new CollectionDB();
-
+    
     switch( column )
     {
         case PlaylistItem::Artist:
-            db->execSql( "SELECT name FROM artist;", &values, &names );
-            edit->completionObject()->setItems( values );
+            edit->completionObject()->setItems( db->artistList() );
             break;
 
         case PlaylistItem::Album:
-            db->execSql( "SELECT name FROM album;", &values, &names );
-            edit->completionObject()->setItems( values );
+            edit->completionObject()->setItems( db->albumList() );
             break;
 
         case PlaylistItem::Genre:
@@ -1255,15 +1249,13 @@ void Playlist::startEditTag( QListViewItem *item, int column )
             edit->completionObject()->clear();
             break;
     }
-
-    values.clear();
-    names.clear();
+    
     delete db;
-
+    edit->completionObject()->setCompletionMode( KGlobalSettings::CompletionPopupAuto );
+    
     m_editText = ((PlaylistItem *)item)->exactText( column );
 
     rename( item, column );
-
 }
 
 

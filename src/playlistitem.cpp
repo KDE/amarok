@@ -379,6 +379,15 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 }
 
 
+void PlaylistItem::setup()
+{
+    KListViewItem::setup();
+    
+    if( this == listView()->currentTrack() )
+        setHeight( listView()->fontMetrics().height() * 2 );
+}
+
+
 const QString &PlaylistItem::attemptStore( const QString &candidate ) //static
 {
     //principal is to cause collisions at reasonable rate to reduce memory

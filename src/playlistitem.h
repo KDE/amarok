@@ -55,13 +55,12 @@ class PlaylistItem : public KListViewItem
                        Length = 9,
                        Bitrate = 10 };
 
-        void setHeight( int i ) { KListViewItem::setHeight( i ); }
-
     private:
         QString text( int column ) const;
         int     compare( QListViewItem*, int, bool ) const;
         void    paintCell( QPainter*, const QColorGroup&, int, int, int );
-
+        void    setup();
+        
         static QString trackName( const KURL &u ) { return u.protocol() == "file" ? u.fileName() : u.prettyURL(); }
 
         const KURL m_url;
