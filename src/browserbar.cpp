@@ -322,6 +322,24 @@ BrowserBar::removeBrowser( const QCString &name )
         }
 }
 
+
+/** Show browser by name */
+void
+BrowserBar::showBrowser( const QCString& name )
+{
+    int index = 0;
+
+    for( BrowserIterator it = m_browsers.constBegin(), end = m_browsers.constEnd(); it != end; ++it )
+    {
+        if ( (*it)->name() == name ) {
+            showBrowser( index );
+            return;
+        }
+        ++index;
+    }
+}
+
+
 void
 BrowserBar::showHideBrowser( int index )
 {

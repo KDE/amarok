@@ -50,12 +50,13 @@ public:
     void     addBrowser( QWidget*, const QString&, const QString& );
     void     removeBrowser( const QCString& );
     int      currentIndex() { return m_currentIndex; }
-    
+
 protected:
     bool eventFilter( QObject*, QEvent* );
     bool event( QEvent* );
 
 public slots:
+    void showBrowser( const QCString& name );
     void showBrowser( int index ) { if ( index != currentIndex() ) showHideBrowser( index ); }
     void showHideBrowser( int );
     void autoCloseBrowsers();
