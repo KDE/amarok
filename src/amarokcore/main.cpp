@@ -23,7 +23,7 @@
 KAboutData aboutData( "amarok",
     I18N_NOOP( "amaroK" ), APP_VERSION,
     I18N_NOOP( "The audio player for KDE" ), KAboutData::License_GPL,
-    I18N_NOOP( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2004, The amaroK Development Squad" ),
+    I18N_NOOP( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2005, The amaroK Development Squad" ),
     I18N_NOOP( "IRC:\nserver: irc.freenode.net / channel: #amarok\n\nFeedback:\namarok-devel@lists.sourceforge.net" ),
     I18N_NOOP( "http://amarok.kde.org" ) );
 
