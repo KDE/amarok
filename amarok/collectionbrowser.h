@@ -106,6 +106,9 @@ class CollectionView : public KListView
     private:
         void customEvent( QCustomEvent* );
         void startDrag();
+        
+        uint getValueID( QString name, QString value, bool autocreate = true );
+        
         QString catForId( int id ) const;
         int idForCat( const QString& cat ) const;
         QPixmap iconForCat( const QString& cat ) const;
@@ -119,10 +122,16 @@ class CollectionView : public KListView
          * @return          true if successful
          */
         bool execSql( const QString& statement, QStringList* const values = 0, QStringList* const names = 0 );
+        
+        /**
+         * Returns the rowid of the most recently inserted row
+         * @return          int rowid
+         */
+        int sqlInsertID();
             
     //attributes:
         //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.
-        static const int DATABASE_VERSION = 2;
+        static const int DATABASE_VERSION = 3;
         
         CollectionBrowser* m_parent;
         ThreadWeaver* m_weaver;

@@ -133,18 +133,48 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         execSql( "PRAGMA default_synchronous = OFF;" );
         execSql( "PRAGMA default_cache_size = 4000;" );
 
-        QCString command = "CREATE TABLE tags ("
-                        "url varchar(100),"
-                        "dir varchar(100),"
-                        "album varchar(100),"
-                        "artist varchar(100),"
-                        "genre varchar(100),"
-                        "title varchar(100),"
-                        "year varchar(4),"
-                        "comment varchar(100),"
-                        "track number(4) );";
+        //create tag table
+        execSql( "CREATE TABLE tags ("
+                 "url VARCHAR(100),"
+                 "dir VARCHAR(100),"
+                 "album INTEGER,"
+                 "artist INTEGER,"
+                 "genre INTEGER,"
+                 "title VARCHAR(100),"
+                 "year INTEGER,"
+                 "comment VARCHAR(100),"
+                 "track NUMBER(4) );" );
 
-        execSql( command );
+        //create album table
+        execSql( "CREATE TABLE album ("
+                 "id INTEGER PRIMARY KEY,"
+                 "name varchar(100) );" );
+
+        //create artist table
+        execSql( "CREATE TABLE artist ("
+                 "id INTEGER PRIMARY KEY,"
+                 "name varchar(100) );" );
+
+        //create genre table
+        execSql( "CREATE TABLE genre ("
+                 "id INTEGER PRIMARY KEY,"
+                 "name varchar(100) );" );
+
+        //create year table
+        execSql( "CREATE TABLE year ("
+                 "id INTEGER PRIMARY KEY,"
+                 "name varchar(100) );" );
+
+        //create indices
+        execSql( "CREATE INDEX album ON tags( album );" );
+        execSql( "CREATE INDEX artist ON tags( artist );" );
+        execSql( "CREATE INDEX genre ON tags( genre );" );
+        execSql( "CREATE INDEX year ON tags( year );" );
+        
+        execSql( "CREATE INDEX album_idx ON album( album );" );
+        execSql( "CREATE INDEX artist_idx ON artist( artist );" );
+        execSql( "CREATE INDEX genre_idx ON genre( genre );" );
+        execSql( "CREATE INDEX year_idx ON year( year );" );
     //</open database>
 
     connect( this,       SIGNAL( tagsReady() ),
@@ -252,14 +282,18 @@ CollectionView::renderView( )  //SLOT
     QString filterToken = QString( "" );
     if ( m_filter != "" )
         filterToken = QString
-                      ( "WHERE title LIKE '\%%1\%' OR artist LIKE '\%%2\%'" )
-                      .arg( escapeString( m_filter ) )
+                      ( "AND ( artist = %1 OR title LIKE '\%%2\%' )" )
+                      .arg( getValueID( "artist", QString( "\%" ).append( m_filter ).append( "\%" ), false ) )
                       .arg( escapeString( m_filter ) );
 
     QString command = QString
-                      ( "SELECT DISTINCT %1 FROM tags %2;" )
+                      ( "SELECT DISTINCT %1.name FROM tags, %2 WHERE %3.id = tags.%4 %5;" )
+                      .arg( m_category1.lower() )
+                      .arg( m_category1.lower() )
+                      .arg( m_category1.lower() )
                       .arg( m_category1.lower() )
                       .arg( filterToken );
+
     QStringList values;
     QStringList names;
     execSql( command, &values, &names );
@@ -286,23 +320,37 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     if ( !item ) return ;
 
     kdDebug() << "item depth: " << item->depth() << endl;
+
+    QString filterToken = QString( "" );
+    if ( m_filter != "" )
+        filterToken = QString
+                      ( "AND ( artist = %1 OR title LIKE '\%%2\%' )" )
+                      .arg( getValueID( "artist", QString( "\%" ).append( m_filter ).append( "\%" ), false ) )
+                      .arg( escapeString( m_filter ) );
+
     if  ( item->depth() == 0 ) {
         //Filter for category 1:
+        QString id = QString::number( getValueID( m_category1.lower(), item->text( 0 ), false ) );
 
         QString command;
         if ( m_category2 == "None" ) {
             command = QString
-                      ( "SELECT DISTINCT title,url FROM tags WHERE %1 = '%2' ORDER BY track;" )
+                      ( "SELECT DISTINCT title,url FROM tags WHERE %1 = %2 %3 ORDER BY track;" )
                       .arg( m_category1.lower() )
-                      .arg( escapeString( item->text( 0 ) ) );
+                      .arg( id )
+                      .arg( filterToken );
         }
         else {
-            QString cat = m_category2.lower().append( "," ).append( m_category2.lower() );
+            QString cat = m_category2.lower();
             command = QString
-                      ( "SELECT DISTINCT %1 FROM tags WHERE %2 = '%3';" )
+                      ( "SELECT DISTINCT %1.name, '0' FROM tags, %2 WHERE %3.id = tags.%4 AND %5 = %6 %7;" )
+                      .arg( cat )
+                      .arg( cat )
+                      .arg( cat )
                       .arg( cat )
                       .arg( m_category1.lower() )
-                      .arg( escapeString( item->text( 0 ) ) );
+                      .arg( id )
+                      .arg( filterToken );
         }
 
         QStringList values;
@@ -325,12 +373,17 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     }
     else {
         //Filter for category 2:
+        QString id = QString::number( getValueID( m_category1.lower(), item->parent()->text( 0 ), false ) );
+        QString id_sub = QString::number( getValueID( m_category2.lower(), item->text( 0 ), false ) );
+
         QString command = QString
-                          ( "SELECT title,url FROM tags WHERE %1 = '%2' AND %3 = '%4' ORDER BY track;" )
-                         .arg( m_category1.lower() )
-                         .arg( escapeString( item->parent()->text( 0 ) ) )
-                         .arg( m_category2.lower() )
-                         .arg( escapeString( item->text( 0 ) ) );
+                      ( "SELECT title,url FROM tags WHERE %1 = %2 AND %3 = %4 %5 ORDER BY track;" )
+                      .arg( m_category1.lower() )
+                      .arg( id )
+                      .arg( m_category2.lower() )
+                      .arg( id_sub )
+                      .arg( filterToken );
+
         QStringList values;
         QStringList names;
         execSql( command, &values, &names );
@@ -345,6 +398,33 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     }
 }
 
+
+uint CollectionView::getValueID( QString name, QString value, bool autocreate )
+{
+    QStringList values;
+    QStringList names;
+
+    QString command = QString( "SELECT id FROM %1 WHERE name LIKE '%2';" )
+                      .arg( name )
+                      .arg( escapeString( value ) );
+    execSql( command, &values, &names );
+    kdDebug() << "sql returned: " << values[0] << endl;
+
+    //check if item exists. if not, should we autocreate it?
+    if ( values.isEmpty() && autocreate )
+    {
+        command = QString( "INSERT INTO %1 ( name ) VALUES ( '%2' );" )
+                  .arg( name )
+                  .arg( escapeString( value ) );
+
+        execSql( command );
+        int id = sqlInsertID();
+        return id;
+    }
+
+    return values[0].toUInt();
+}
+        
 
 QPixmap
 CollectionView::iconForCat( const QString& cat ) const
@@ -467,15 +547,15 @@ CollectionView::customEvent( QCustomEvent *e ) {
             command += "','";
             command += escapeString( bundle->url().directory() );
             command += "','";
-            command += escapeString( bundle->album() );
+            command += escapeString( QString::number( getValueID( "album", bundle->album() ) ) );
             command += "','";
-            command += escapeString( bundle->artist() );
+            command += escapeString( QString::number( getValueID( "artist", bundle->artist() ) ) );
             command += "','";
-            command += escapeString( bundle->genre() );
+            command += escapeString( QString::number( getValueID( "genre", bundle->genre() ) ) );
             command += "','";
             command += escapeString( bundle->title() );
             command += "','";
-            command += escapeString( bundle->year() );
+            command += escapeString( QString::number( getValueID( "year", bundle->year() ) ) );
             command += "','";
             command += escapeString( bundle->comment() );
             command += "','";
@@ -546,6 +626,17 @@ CollectionView::execSql( const QString& statement,
 }
 
 
+int CollectionView::sqlInsertID()
+{
+    if ( !m_db ) {
+        kdWarning() << k_funcinfo << "SQLite pointer == NULL.\n";
+        return -1;
+    }
+
+    return sqlite_last_insert_rowid( m_db );
+}
+
+
 void
 CollectionView::startDrag() {
     //Here we determine the URLs of all selected items. We use two passes, one for the parent items,
@@ -554,14 +645,24 @@ CollectionView::startDrag() {
     KURL::List list;
     QListViewItem* item;
 
+    QString filterToken = QString( "" );
+    if ( m_filter != "" )
+        filterToken = QString
+                      ( "AND ( artist = %1 OR title LIKE '\%%2\%' )" )
+                      .arg( getValueID( "artist", QString( "\%" ).append( m_filter ).append( "\%" ), false ) )
+                      .arg( escapeString( m_filter ) );
+
     //first pass: parents
     for ( item = firstChild(); item; item = item->nextSibling() )
         if ( item->isSelected() ) {
             //query database for all tracks in our sub-category
+            QString id = QString::number( getValueID( m_category1.lower(), item->text( 0 ), false ) );
             QString command = QString
-                              ( "SELECT url FROM tags WHERE %1 = '%2' ORDER BY track;" )
+                              ( "SELECT url FROM tags WHERE %1 = %2 %3 ORDER BY track;" )
                               .arg( m_category1.lower() )
-                              .arg( escapeString( item->text( 0 ) ) );
+                              .arg( id )
+                              .arg( filterToken );
+
             QStringList values;
             QStringList names;
             execSql( command, &values, &names );
@@ -585,13 +686,18 @@ CollectionView::startDrag() {
             for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
                 if ( child->isSelected() ) {
                     //query database for all tracks in our sub-category
+                    QString id = QString::number( getValueID( m_category1.lower(), item->text( 0 ), false ) );
+                    QString id_sub = QString::number( getValueID( m_category2.lower(), child->text( 0 ), false ) );
+
                     QString command = QString
-                                      ( "SELECT DISTINCT url FROM tags WHERE %1 = '%2' AND %3 = '%4' "
+                                      ( "SELECT DISTINCT url FROM tags WHERE %1 = %2 AND %3 = %4 %5"
                                         "ORDER BY track;" )
                                       .arg( m_category1.lower() )
-                                      .arg( escapeString( item->text( 0 ) ) )
+                                      .arg( id )
                                       .arg( m_category2.lower() )
-                                      .arg( escapeString( child->text( 0 ) ) );
+                                      .arg( id_sub )
+                                      .arg( filterToken );
+
                     QStringList values;
                     QStringList names;
                     execSql( command, &values, &names );
@@ -637,8 +743,8 @@ CollectionView::showTrackInfo() //slot
 
     if ( m_category2 == "None" || item->depth() == 2 ) {
         QString command = QString
-                          ( "SELECT DISTINCT artist, album, genre, year, comment FROM tags "
-                            "WHERE url = '%1';" )
+                          ( "SELECT DISTINCT artist.name, album.name, genre.name, year.name, comment FROM tags, artist, album, genre, year "
+                            "WHERE artist.id = tags.artist AND album.id = tags.album AND genre.id = tags.genre AND year.id = tags.year AND tags.url = '%1';" )
                             .arg( escapeString( item->url().path() ) );
 
         QStringList values;
