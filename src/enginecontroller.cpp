@@ -170,8 +170,8 @@ bool EngineController::canDecode( const KURL &url ) //static
     //TODO a KFileItem version?
 
     // Accept non-local files, since we can't test them for validity at this point
-    if ( !url.isLocalFile() ) return true;
-
+    // Ignore protocols "fetchcover" and "musicbrainz", they're not local but we dont really want them in the playlist :)
+    if ( !url.isLocalFile() && url.protocol() != "fetchcover" && url.protocol() != "musicbrainz" ) return true;
     const QString fileName = url.fileName();
     const QString ext = fileName.mid( fileName.findRev( '.' ) + 1 ).lower();
 
