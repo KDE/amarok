@@ -665,6 +665,10 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
 
             m_pPopupMenu->insertItem( i18n( "Quit" ), pApp, SLOT( quit() ) );
         }
+        
+        m_pPopupMenu->setItemChecked( m_IdRepeatTrack, pApp->m_optRepeatTrack );
+        m_pPopupMenu->setItemChecked( m_IdRepeatPlaylist, pApp->m_optRepeatPlaylist );
+        m_pPopupMenu->setItemChecked( m_IdRandomMode, pApp->m_optRandomMode );
 
         if ( playObjectConfigurable() )
             m_pPopupMenu->setItemEnabled( m_IdConfPlayObject, true );
