@@ -604,7 +604,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                     "<tr>"
                                      "<td width='20%'>"
                                       "<a class='menu' href='fetchcover:%8 @@@ %9'>"
-                                       "<img hspace='2' src='%10'>"
+                                       "<img align='left' valign='center' hspace='2' src='%10'>"
                                       "</a>"
                                      "</td>"
                                      "<td valign='bottom' align='right' width='80%'>"
@@ -804,7 +804,7 @@ void ContextBrowser::setStyleSheet()
     m_styleSheet  = QString( "body { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
     m_styleSheet += QString( "body a { color: %1; }" ).arg( text );
 
-    m_styleSheet += QString( ".menu { margin: 0.2em 0.8em; font-weight: bold; }" );
+    m_styleSheet += QString( ".menu { margin: 0.4em 0.0em; font-weight: bold; }" );
 
     //used in the currentlyPlaying block
     //m_styleSheet += QString( ".album { font-weight: bold; }" );
