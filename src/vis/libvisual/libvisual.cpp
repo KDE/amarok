@@ -1,19 +1,31 @@
-//Maintainer: Max Howell <max.howell@methylblue.com>, (C) 2004
+/***************************************************************************
+ *   Copyright (C) 2004, 2005 Max Howell <max.howell@methylblue.com>       *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
+extern "C"
+{
+    #include <sys/types.h>  //this must be _before_ sys/socket on freebsd
+    #include <sys/socket.h>
+    #include <sys/un.h>
+    #include <unistd.h>
+}
+
+#include <cstdlib>
+#include <cstring>
 #include <iostream>
 #include "libvisual.h"
-#include <stdlib.h>
-#include <sys/types.h>  //this must be _before_ sys/socket on freebsd
-#include <sys/socket.h>
-#include <sys/stat.h>
-#include <sys/un.h>
-#include <unistd.h>
 
 
 int
 main( int argc, char** argv )
 {
-    if( argc <= 1 || strcmp( argv[1], "--list" ) == 0 )
+    if( argc <= 1 || std::strcmp( argv[1], "--list" ) == 0 )
     {
         visual_init( &argc, &argv );
 
@@ -44,11 +56,11 @@ main( int argc, char** argv )
 
     //register fd/pid combo with amaroK
     {
-        pid_t pid = getpid();
+        pid_t pid = ::getpid();
         char  buf[32] = "REG";
         *(pid_t*)&buf[4] = pid;
 
-        send( sockfd, buf, 4 + sizeof(pid_t), 0 );
+        ::send( sockfd, buf, 4 + sizeof(pid_t), 0 );
     }
 
     //init
@@ -75,26 +87,26 @@ main( int argc, char** argv )
         FD_ZERO( &fds );
         FD_SET( sockfd, &fds );
 
-        select( sockfd+1, &fds, NULL, NULL, &tv );
+        ::select( sockfd+1, &fds, NULL, NULL, &tv );
 
-        if( FD_ISSET( sockfd, &fds) )
-        {
+        if( FD_ISSET( sockfd, &fds) ) {
             //amaroK sent us some data
 
             char command[16];
-            recv( sockfd, command, 16, 0 );
+            ::recv( sockfd, command, 16, 0 );
 
-            if( strcmp( command, "fullscreen" ) == 0 ) SDL::toggleFullscreen();
+            if( std::strcmp( command, "fullscreen" ) == 0 )
+                SDL::toggleFullScreen();
         }
 
         //request pcm data
-        send( sockfd, "PCM", 4, 0 );
-        nbytes = recv( sockfd, Vis::pcm_data, 512 * sizeof( int16_t ), 0 );
+        ::send( sockfd, "PCM", 4, 0 );
+        nbytes = ::recv( sockfd, Vis::pcm_data, 512 * sizeof( int16_t ), 0 );
 
         render_time = LibVisual::render();
     }
 
-    close( sockfd );
+    ::close( sockfd );
 
     return 0;
 }
@@ -102,24 +114,23 @@ main( int argc, char** argv )
 static int
 tryConnect( const char *path )
 {
-    const int fd = socket( AF_UNIX, SOCK_STREAM, 0 );
+    const int fd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
 
     if( fd != -1 )
     {
         struct sockaddr_un local;
 
-        strcpy( &local.sun_path[ 0 ], path );
+        std::strcpy( &local.sun_path[ 0 ], path );
         local.sun_family = AF_UNIX;
 
         std::cout << "[amK] Connecting to: " << path << '\n';
 
         if( connect( fd, (struct sockaddr*)&local, sizeof(local) ) == -1 )
         {
-            close( fd );
+            ::close( fd );
 
             std::cerr << "[amK] Could not connect\n";
-
-            exit( -1 );
+            std::exit( -1 );
         }
     }
 
@@ -177,7 +188,7 @@ namespace SDL
             if( videoinfo == NULL )
             {
                 std::cerr << "CRITICAL: Could not get video info\n";
-                exit( -2 );
+                std::exit( -2 );
             }
 
             int
@@ -220,7 +231,12 @@ namespace SDL
                 //PLUGIN CONTROLS
                 case SDLK_F11:
                 case SDLK_TAB:
-                    SDL::toggleFullscreen();
+                    SDL::toggleFullScreen();
+                    break;
+
+                case SDLK_ESCAPE:
+                    if( SDL::isFullScreen() )
+                        SDL::toggleFullScreen();
                     break;
 
                 case SDLK_LEFT:
@@ -347,7 +363,7 @@ namespace LibVisual
 
         std::cout << "[amK] Libvisual version " << visual_get_version() << '\n';
         std::cout << "[amK] bpp: " << video->bpp << std::endl;
-        std::cout << "      GL: "  << (pluginIsGL ? "true\n" : "false\n");
+        std::cout << "[amK]  GL: "  << (pluginIsGL ? "true\n" : "false\n");
     }
 
     static uint

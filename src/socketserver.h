@@ -1,6 +1,12 @@
-// Maintainer: Max Howell <max.howell@methylblue.com>, (C) 2004
-// Copyright: See COPYING file that comes with this distribution
-//
+/***************************************************************************
+ *   Copyright (C) 2004,5 Max Howell <max.howell@methylblue.com>           *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #ifndef VIS_SOCKETSERVER_H
 #define VIS_SOCKETSERVER_H
@@ -58,6 +64,8 @@ namespace Vis
         friend class Item;
         Selector( QWidget *parent=0 );
         SocketServer *m_server;
+
+        virtual void viewportPaintEvent( QPaintEvent* );
 
     public:
         static Selector* instance();

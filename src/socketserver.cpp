@@ -1,11 +1,17 @@
-// Maintainer: Max Howell <max.howell@methylblue.com>, (C) 2004
-// Copyright: See COPYING file that comes with this distribution
-
+/***************************************************************************
+ *   Copyright (C) 2004,5 Max Howell <max.howell@methylblue.com>           *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #define DEBUG_PREFIX "SocketServer"
 
 #include "app.h"
-#include "config.h"           //XMMS_CONFIG_DIR
+#include "amarok.h"
 #include "debug.h"
 #include "enginebase.h"       //to get the scope
 #include "enginecontroller.h" //to get the engine
@@ -152,7 +158,7 @@ Vis::Selector::Selector( QWidget *parent )
         : QListView( parent, "Vis::Selector::instance", Qt::WType_Dialog )
         , m_server( new SocketServer( this ) )
 {
-    debug() << m_server->path() << endl;
+    amaroK::OverrideCursor waitcursor;
 
     setCaption( kapp->makeStdCaption( i18n( "Visualizations" ) ) );
 
@@ -187,7 +193,6 @@ Vis::Selector::Selector( QWidget *parent )
     for( QStringList::ConstIterator it = entries.begin(); it != entries.end(); ++it )
         new Item( this, "amarok_libvisual", *it, "libvisual" );
 
-
     resize( sizeHint() + QSize(20,0) );
 }
 
@@ -215,26 +220,57 @@ Vis::Selector::mapPID( int pid, int sockfd )
 }
 
 void
-Vis::Selector::rightButton( QListViewItem* item, const QPoint& pos, int )
+Vis::Selector::rightButton( QListViewItem* qitem, const QPoint& pos, int )
 {
     //TODO if the vis is not running it cannot be configured and you shouldn't show the popupmenu!
 
-    if( !item ) return;
+    if( !qitem )
+        return;
+
+    Item *item = (Item*)qitem;
 
     KPopupMenu menu( this );
     menu.insertItem( i18n( "Configure" ), 0 );
-    //menu.insertItem( i18n( "Fullscreen" ), 1 );
+    menu.insertItem( i18n( "Fullscreen" ), 1 );
 
-    switch( menu.exec( pos ) )
-    {
-    case 0:
-        ::send( static_cast<Item*>(item)->m_sockfd, "configure", 10, 0 );
-        break;
-    case 1:
-        ::send( static_cast<Item*>(item)->m_sockfd, "fullscreen", 11, 0 );
-        break;
-    default:
-        break;
+    if( item->m_proc && item->m_proc->isRunning() )
+        // xmms has no fullscreen, libvisual no configure
+        menu.setItemEnabled( item->text( 1 ) == "xmms" ? 1 : 0, false );
+    else {
+        menu.setItemEnabled( 0, false );
+        menu.setItemEnabled( 1, false );
+    }
+
+    switch( menu.exec( pos ) ) {
+        case 0: ::send( item->m_sockfd, "configure", 10, 0 ); break;
+        case 1: ::send( item->m_sockfd, "fullscreen", 11, 0 ); break;
+        default: break;
+    }
+}
+
+#include <qpainter.h>
+#include <qsimplerichtext.h>
+void
+Vis::Selector::viewportPaintEvent( QPaintEvent *e )
+{
+    QListView::viewportPaintEvent( e );
+
+    if( childCount() == 0 ) {
+
+        //TODO the right message if amarok_libvisual is present but libvisual isn't
+
+//         QPainter p( viewport() );
+//         QSimpleRichText t( i1_8n(
+//                 "<div align=center>"
+//                   "<h3>No Visualizations Found!</h3>"
+//                   "Please install libvisual and recompile."
+//                 "</div>" ), font() );
+//
+//         t.setWidth( width() - 50 );
+//
+//         p.setBrush( colorGroup().background() );
+//         p.drawRect( 15, 15, t.width() + 20, t.height() + 20 );
+//         t.draw( &p, 20, 20, QRect(), colorGroup() );
     }
 }
 

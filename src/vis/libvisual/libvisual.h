@@ -1,14 +1,22 @@
-//Maintainer: Max Howell <max.howell@methylblue.com>, (C) 2004
-//Copyright:  See COPYING file that comes with this distribution
+/***************************************************************************
+ *   Copyright (C) 2004, 2005 Max Howell <max.howell@methylblue.com>       *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #ifndef LIBVISUAL_H
 #define LIBVISUAL_H
 
-#include <libvisual/libvisual.h>
-#include <SDL.h>
+extern "C"
+{
+    #include <libvisual/libvisual.h>
+    #include <SDL.h>
+}
 
-
-static int tryConnect( const char *path );
 
 namespace SDL
 {
@@ -22,8 +30,14 @@ namespace SDL
     static inline void   lock() { if( SDL_MUSTLOCK( screen ) == SDL_TRUE ) SDL_LockSurface( screen ); }
     static inline void unlock() { if( SDL_MUSTLOCK( screen ) == SDL_TRUE ) SDL_UnlockSurface( screen ); }
 
+    static inline bool
+    isFullScreen()
+    {
+        return (screen->flags & SDL_FULLSCREEN) > 0;
+    }
+
     static inline void
-    toggleFullscreen()
+    toggleFullScreen()
     {
         SDL_WM_ToggleFullScreen( screen );
         SDL_ShowCursor( (screen->flags & SDL_FULLSCREEN) > 0 ? SDL_DISABLE : SDL_ENABLE );
@@ -68,5 +82,7 @@ namespace LibVisual
 }
 
 namespace Vis = LibVisual;
+
+static int tryConnect( const char *path );
 
 #endif
