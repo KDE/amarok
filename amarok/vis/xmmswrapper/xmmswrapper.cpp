@@ -29,6 +29,14 @@
 #include "fft.c"
 
 
+
+GtkWidget dummy;
+GtkWidget *equalizerwin = &dummy; //required by msa visplugin
+GtkWidget *playlistwin  = &dummy; //required by msa visplugin
+GtkWidget *mainwin      = &dummy; //required by msa visplugin
+
+
+
 int  tryConnect();
 void vis_disable_plugin( VisPlugin *vp ) {} //seems to be a required function (see loadVis() )
 

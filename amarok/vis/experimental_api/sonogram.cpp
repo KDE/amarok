@@ -11,10 +11,8 @@
 using namespace amaroK::Vis;
 
 //from http://www.cs.rit.edu/~ncs/color/t_convert.html
-static void HSVtoRGB( int &_r, int &_g, int &_b, int _h, int _s, int _v ) //values of 0-255, bar h = 0-360
+static void HSVtoRGB( int &_r, int &_g, int &_b, float h, float s, float v ) //values of 0-255, bar h = 0-360
 {
-        float h = _h, s = (float)_s/255, v = (float)_v/255;
-
         float R,G,B;
         float *r = &R, *g = &G, *b = &B;
 
@@ -85,7 +83,7 @@ private:
 void
 Sonogram::render( SDL_Surface *screen )
 {
-    static float max = 0, min = 100;
+
 
     std::copy( left().begin(), left().end(), m_data.begin() );
 
@@ -106,13 +104,14 @@ Sonogram::render( SDL_Surface *screen )
     {
         float f = m_data[255 - y];
 
-        if( f > max ) { max = f; std::cout << "max: " << f << std::endl; }
-        if( f < min ) { min = f; std::cout << "min: " << f << std::endl; }
+//        static float max = 0, min = 100;
+//        if( f > max ) { max = f; std::cout << "max: " << f << std::endl; }
+//        if( f < min ) { min = f; std::cout << "min: " << f << std::endl; }
 
         if( f < .005 ) { r = g = b = 0; }
-        else if( f < .05 ) { HSVtoRGB( r, g, b, 95, 255, int(f * 4000.0) ); }
-        else if( f < 1.0 ) { HSVtoRGB( r, g, b, 95 - int(f * 90.0), 255, 255 ); }
-        else               { r = 255; g = b = 0; }
+        else if( f < .05 ) { HSVtoRGB( r, g, b, 95, 0.6+f*0.2, f*16.0 ); }
+        else if( f < 1.0 ) { HSVtoRGB( r, g, b, 95 - f*90.0, 0.8, 0.8 ); }
+        else               { HSVtoRGB( r, g, b, 5, 0.8, 0.9 ); }
 
         drawPixel( screen, x, y, r, g, b );
     }

@@ -25,6 +25,8 @@ amaroK::Vis::Base<T>::Base( DataType dt, bool receiveNotification, uint fps )
   , m_left( 512, 0 )
   , m_right( 512, 0 )
 {
+    std::cout << "Sleeping every " << m_sleepTime / 1000 << "ms\n";
+
     path  = getenv( "HOME" );
     path += "/.kde/share/apps/amarok/visualization_socket";
 }
