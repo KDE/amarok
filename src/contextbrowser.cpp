@@ -495,25 +495,23 @@ void ContextBrowser::showHome() //SLOT
                                     + "</b> <i>(" + i18n( "Score:" ) + " " + values[i+2] + ")</i><br>" + values[i+3] + " - " + values[i+4] + "</a></td></tr>" ) );
     }
 
-    values.clear();
-
     browser->write( "</table></div><br>" );
     // </Favorite Tracks Information>
 
     // <Recent Tracks Information>
     browser->write( "<div class='rbcontent'>"
-                     "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-                      "<tr><th>" + i18n( "Your Newest Tracks" ) + "</th></tr>"
-                     "</table>"
-                     "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+                    "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+                    "<tr><th>" + i18n( "Your Newest Tracks" ) + "</th></tr>"
+                    "</table>"
+                    "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-    m_db->query( "SELECT tags.title, tags.url, artist.name, album.name "
-                 "FROM tags, artist, album "
-                 "WHERE artist.id = tags.artist AND album.id = tags.album "
-                 "ORDER BY tags.createdate DESC "
-                 "LIMIT 0,10;" );
+    values = m_db->query( "SELECT tags.title, tags.url, artist.name, album.name "
+                          "FROM tags, artist, album "
+                          "WHERE artist.id = tags.artist AND album.id = tags.album "
+                          "ORDER BY tags.createdate DESC "
+                          "LIMIT 0,10;" );
 
-    if ( values.count() )
+    if ( !values.isEmpty() )
     {
         for ( uint i = 0; i < values.count(); i = i + 4 )
             browser->write( QString ( "<tr><td class='song'><a href=\"file:"
