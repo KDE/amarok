@@ -128,8 +128,8 @@ void AnalyzerBase::interpolate( std::vector<float> *oldVec, std::vector<float> &
         if ( indexRight >= oldVec->size() )
             indexRight = oldVec->size() - 1;
 
-        newVec[i] = oldVec->at( indexLeft ) * ( 1.0 - error ) +
-                    oldVec->at( indexRight ) * error;
+        newVec[i] = (*oldVec)[indexLeft] * ( 1.0 - error ) +
+                    (*oldVec)[indexRight] * error;
     }
 }
 
