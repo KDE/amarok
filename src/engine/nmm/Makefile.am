@@ -2,13 +2,13 @@ kde_module_LTLIBRARIES = \
     libamarok_nmmengine_plugin.la
 
 INCLUDES = \
-    -I$(top_srcdir)/amarok/amarok \
+    -I$(top_srcdir)/amarok/src \
     $(CFLAGS_NMM) \
     $(all_includes)
 
 libamarok_nmmengine_plugin_la_LIBADD = \
-    $(top_builddir)/amarok/amarok/engine/libengine.la \
-    $(top_builddir)/amarok/amarok/plugin/libplugin.la \
+    $(top_builddir)/amarok/src/engine/libengine.la \
+    $(top_builddir)/amarok/src/plugin/libplugin.la \
     $(LIB_KDECORE) \
     -lnmmbase -lnmmfile -lnmmaudio -lnmmmpegread -lnmmmpegaudiodec -lnmmoggvorbis
 
