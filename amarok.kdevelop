@@ -41,9 +41,9 @@
       <cxxflags>\s-O0 -g3 -Wall</cxxflags>
     </compiler>
     <run>
-      <mainprogram>amarok/amarok</mainprogram>
+      <mainprogram>amarok/amarokapp</mainprogram>
       <programargs/>
-      <terminal>true</terminal>
+      <terminal>false</terminal>
       <autocompile>true</autocompile>
       <envvars/>
       <directoryradio>build</directoryradio>
@@ -83,7 +83,7 @@
     </groups>
     <tree>
       <hidenonprojectfiles>false</hidenonprojectfiles>
-      <hidepatterns>*.o,*.lo,CVS</hidepatterns>
+      <hidepatterns>*.o,*.lo,CVS,*~,*.moc,*.log,Makefile.*</hidepatterns>
       <showvcsfields>true</showvcsfields>
     </tree>
   </kdevfileview>

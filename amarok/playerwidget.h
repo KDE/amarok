@@ -18,7 +18,6 @@
 #ifndef PLAYERWIDGET_H
 #define PLAYERWIDGET_H
 
-#include <qguardedptr.h> //stack allocated
 #include <qlabel.h>      //stack allocated
 #include <qpixmap.h>     //stack allocated
 #include <qpushbutton.h> //baseclass
@@ -37,6 +36,8 @@ class PlayerApp;
 class PlayerWidget;
 class QBitmap;
 class QButton;
+class QDragEnterEvent;
+class QDropEvent;
 class QHBox;
 class QMouseEvent;
 class QPaintEvent;
@@ -85,9 +86,6 @@ class PlayerWidget : public QWidget
 
     public slots:
         void createAnalyzer( int = 0 );
-        void slotConfigShortcuts();       //TODO move to playerapp
-        void slotConfigGlobalShortcuts(); //TODO move all generic stuff to playerapp
-
         void setScroll( const MetaBundle& );
         void drawScroll();
 
@@ -96,9 +94,11 @@ class PlayerWidget : public QWidget
 
     private:
         void setScroll( const QStringList& );
-        void paintEvent( QPaintEvent *e );
-        void mousePressEvent( QMouseEvent *e );
-        void closeEvent( QCloseEvent *e );
+        void paintEvent( QPaintEvent* );
+        void mousePressEvent( QMouseEvent* );
+        void closeEvent( QCloseEvent* );
+        void dragEnterEvent( QDragEnterEvent* );
+        void dropEvent( QDropEvent* );
 
         static const int SCROLL_RATE = 1;
         static const int VOLUME_MAX  = 100;

@@ -96,9 +96,8 @@ void AmarokSystray::dragEnterEvent( QDragEnterEvent *e )
 
 void AmarokSystray::dropEvent( QDropEvent *e )
 {
-   KURL::List list;
-   if( KURLDrag::decode(e, list) )
-      pApp->insertMedia(list);
+    //send the event to the parent PlayerWidget, it'll handle it with much wisdom
+    QApplication::sendEvent( parentWidget(), e );
 }
 
 

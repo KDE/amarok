@@ -39,14 +39,14 @@ email                : markey@web.de
 
 #include <kaction.h>
 #include <kdebug.h>
-#include <kglobalaccel.h>
+#include <qevent.h> //various events
 #include <khelpmenu.h>
-#include <kkeydialog.h>
 #include <klocale.h>
 #include <kstandarddirs.h>
 #include <ksystemtray.h>
 #include <kmessagebox.h>
-
+#include <kurldrag.h>
+//#include <kwin.h> Yagami mode, most cool, try it!
 
 inline QPixmap getPNG( const QString &filename ) { return QPixmap( locate( "data", QString( "amarok/images/" ) + filename ), "PNG" ); }
 
@@ -64,6 +64,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
 {
     setCaption( "amaroK" );
     setFixedSize( 311, 140 );
+    setAcceptDrops( true );
     //TODO set using derived QColorGroup..
     setPaletteForegroundColor( Qt::white ); //0x80a0ff
     setPaletteBackgroundColor( QColor( 32, 32, 80 ) );
@@ -75,12 +76,12 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
 
     //actions
     //FIXME declare these in PlayerApp.cpp and have global action collection
-    KStdAction::keyBindings( this, SLOT( slotConfigShortcuts() ), m_pActionCollection );
-    KStdAction::keyBindings( this, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection,
-                             "options_configure_global_keybinding"
-                           )->setText( i18n( "Configure Global Shortcuts..." ) );
+    KStdAction::keyBindings( pApp, SLOT( slotConfigShortcuts() ), m_pActionCollection );
     KStdAction::preferences( pApp, SLOT( slotShowOptions() ), m_pActionCollection );
     KStdAction::quit( kapp, SLOT( quit() ), m_pActionCollection );
+    KAction *action = KStdAction::keyBindings( pApp, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection,
+                                               "options_configure_global_keybinding" );
+    action->setText( i18n( "Configure Global Shortcuts..." ) );
 
     { //<NavButtons>
         //NOTE we use a layout for the buttons so resizing will be possible
@@ -149,6 +150,11 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_pTray = new AmarokSystray( this, m_pActionCollection ); //show/hide is handled by KConfig XT
 
     defaultScroll();
+
+    //Yagami mode!
+    //KWin::setState( winId(), NET::KeepBelow | NET::SkipTaskbar | NET::SkipPager );
+    //KWin::setType( winId(), NET::Override );
+    //KWin::setOnAllDesktops( winId(), true );
 }
 
 
@@ -192,7 +198,8 @@ void PlayerWidget::setScroll( const MetaBundle &bundle )
 
 void PlayerWidget::setScroll( const QStringList &list )
 {
-/*
+//#define MAX_KNOWS_BEST
+#ifdef  MAX_KNOWS_BEST
 static const char* const not_close_xpm[]={
 "5 5 2 1",
 "# c #80a0ff",
@@ -202,7 +209,7 @@ static const char* const not_close_xpm[]={
 "#...#",
 "#...#",
 "#####"};
-*/
+#else
 static const char* const not_close_xpm[]={
 "4 4 1 1",
 "# c #80a0ff",
@@ -210,7 +217,7 @@ static const char* const not_close_xpm[]={
 "####",
 "####",
 "####"};
-
+#endif
     //TODO make me pretty!
 
     QPixmap separator( const_cast< const char** >(not_close_xpm) );
@@ -244,7 +251,11 @@ static const char* const not_close_xpm[]={
     QFontMetrics fm( font );
     const uint separatorWidth = 21;
     const uint baseline = font.pixelSize(); //the font actually extends below its pixelHeight
+    #ifdef MAX_KNOWS_BEST
+    const uint separatorYPos = baseline - fm.boundingRect( "x" ).height();
+    #else
     const uint separatorYPos = baseline - fm.boundingRect( "x" ).height() + 1;
+    #endif
     m_scrollTextPixmap.resize( fm.width( text ) + list2.count() * separatorWidth, m_pScrollFrame->height() );
     m_scrollTextPixmap.fill( backgroundColor() );
     QPainter p( &m_scrollTextPixmap );
@@ -453,6 +464,22 @@ void PlayerWidget::closeEvent( QCloseEvent *e )
 }
 
 
+void PlayerWidget::dragEnterEvent( QDragEnterEvent *e )
+{
+   e->accept( KURLDrag::canDecode( e ) );
+}
+
+
+void PlayerWidget::dropEvent( QDropEvent *e )
+{
+    KURL::List list;
+    if( KURLDrag::decode( e, list ) )
+    {
+        pApp->insertMedia( list );
+    }
+    else e->ignore();
+}
+
 // SLOTS ---------------------------------------------------------------------
 
 void PlayerWidget::createAnalyzer( int increment )
@@ -466,23 +493,6 @@ void PlayerWidget::createAnalyzer( int increment )
     m_pAnalyzer->show();
 }
 
-#include "browserwin.h" //FIXME bah!
-void PlayerWidget::slotConfigShortcuts() //FIXME move to pApp
-{
-    KKeyDialog keyDialog( true );
-
-    keyDialog.insert( m_pActionCollection, i18n( "Player Window" ) );
-    keyDialog.insert( pApp->m_pBrowserWin->m_pActionCollection, i18n( "Playlist Window" ) );
-
-    keyDialog.configure();
-}
-
-
-void PlayerWidget::slotConfigGlobalShortcuts() //FIXME move to pApp
-{
-    KKeyDialog::configure( pApp->m_pGlobalAccel, true, 0, true );
-}
-
 
 void PlayerWidget::startDrag()
 {
@@ -492,6 +502,8 @@ void PlayerWidget::startDrag()
     d->dragCopy();
     // do NOT delete d.
 }
+
+
 
 
 NavButton::NavButton( QWidget *parent, const QString &icon, QObject *receiver, const char *slot )
@@ -510,6 +522,7 @@ NavButton::NavButton( QWidget *parent, const QString &icon, QObject *receiver, c
 
     connect( this, SIGNAL( clicked() ), receiver, slot );
 }
+
 
 
 

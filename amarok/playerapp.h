@@ -62,7 +62,7 @@ class PlayerApp : public KApplication
         void insertMedia( const KURL::List& );
         bool decoderConfigurable();
         static void initCliArgs( int argc, char *argv[] );
-        
+
         // STATICS
         static const int     ANIM_TIMER  = 30;
         static const int     MAIN_TIMER  = 150;
@@ -103,6 +103,8 @@ class PlayerApp : public KApplication
         void slotIncreaseVolume();
         void slotDecreaseVolume();
         void setOsdEnabled(bool enable);
+        void slotConfigShortcuts();
+        void slotConfigGlobalShortcuts();
 
     private slots:
         void handleLoaderArgs( const QCString& args );
@@ -118,7 +120,7 @@ class PlayerApp : public KApplication
         void orderNextTrack();
         void currentTrack( const KURL& );
         void deleteProxy();
-        
+
     private:
         void handleCliArgs();
         void initBrowserWin();
@@ -133,7 +135,7 @@ class PlayerApp : public KApplication
         void restoreSession();
         void saveConfig();
         bool eventFilter( QObject*, QEvent* );
-        
+
         void setupScrolltext();
 
         // ATTRIBUTES ------

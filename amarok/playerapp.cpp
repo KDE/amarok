@@ -36,6 +36,7 @@ email                : markey@web.de
 #include <kconfig.h>
 #include <kdebug.h>
 #include <kglobalaccel.h>
+#include <kkeydialog.h>          //slotConfigShortcuts()
 #include <klocale.h>
 #include <kmessagebox.h>         //applySettings()
 #include <kshortcut.h>
@@ -620,16 +621,17 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
 
         //if the event is not spontaneous then amaroK was responsible for the event
         //we should therefore hide the playlist as well
-        //the only spontaneous hide event we care about is minimization
+        //the only spontaneous hide events we care about are iconification and shading
         if( AmarokConfig::hidePlaylistWindow() && !e->spontaneous() ) m_pBrowserWin->hide();
         else if( AmarokConfig::hidePlaylistWindow() )
         {
-            //check to see if we've been minimized
             KWin::WindowInfo info = KWin::windowInfo( m_pPlayerWidget->winId() );
 
-            // minimize not hide when playerwidget is minimized
-            if( info.valid() && info.isMinimized() )
+            if( !info.valid() ); //do nothing
+            else if( info.isMinimized() )
                 KWin::iconifyWindow( m_pBrowserWin->winId(), false );
+            else if( info.state() & NET::Shaded )
+                m_pBrowserWin->hide();
         }
     }
     else if( e->type() == QEvent::Show && o == m_pPlayerWidget )
@@ -693,7 +695,7 @@ void PlayerApp::play( const MetaBundle &bundle )
     const KURL &url = bundle.m_url;
     m_playingURL = url;
     emit currentTrack( url );
-    
+
     if ( AmarokConfig::titleStreaming() &&
          !m_proxyError &&
          !url.isLocalFile() &&
@@ -984,6 +986,22 @@ void PlayerApp::slotDecreaseVolume()
     m_pPlayerWidget->m_pDcopHandler->volumeDown();
     slotShowVolumeOSD();
 }
+
+void PlayerApp::slotConfigShortcuts()
+{
+    KKeyDialog keyDialog( true );
+
+    keyDialog.insert( m_pPlayerWidget->m_pActionCollection, i18n( "Player Window" ) );
+    keyDialog.insert( m_pBrowserWin->m_pActionCollection, i18n( "Playlist Window" ) );
+
+    keyDialog.configure();
+}
+
+void PlayerApp::slotConfigGlobalShortcuts()
+{
+    KKeyDialog::configure( m_pGlobalAccel, true, 0, true );
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS LoaderServer
