@@ -32,6 +32,7 @@ public:
     GLAnalyzer2(QWidget *);
     ~GLAnalyzer2();
     void analyze( const Scope & );
+    void paused();
 
 protected:
     void initializeGL();

@@ -94,9 +94,14 @@ void GLAnalyzer2::resizeGL( int w, int h )
     show.timeStamp = (float)tv.tv_sec + (float)tv.tv_usec/1000000.0;
 }
 
+void GLAnalyzer2::paused()
+{
+    analyze( Scope() );
+}
+
 void GLAnalyzer2::analyze( const Scope &s )
 {
-    bool haveNoData = false; //FIXME!
+    bool haveNoData = s.empty();
 
     // if we're going into pause mode, clear timers.
     if ( !show.paused && haveNoData )
