@@ -62,7 +62,6 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
     , m_redoButton( new QPushButton( i18n( "&Redo" ), 0 ) )
     , m_undoDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) )
     , m_undoCounter( 0 )
-    , m_directPlay( false )
 {
     kdDebug() << "PlaylistWidget::PlaylistWidget()\n";
 
@@ -198,12 +197,10 @@ void PlaylistWidget::showCurrentTrack() { ensureItemVisible( currentTrack() ); }
 
 void PlaylistWidget::insertMedia( const KURL::List &list, bool directPlay )
 {
-    m_directPlay = directPlay;
-
     if( !list.isEmpty() )
     {
         //FIXME lastItem() scales badly!
-        insertMediaInternal( list, lastItem() );
+        insertMediaInternal( list, lastItem(), directPlay );
     }
 }
 
@@ -495,7 +492,7 @@ void PlaylistWidget::summary( QPopupMenu &popup ) const
 
 // PRIVATE METHODS ===============================================
 
-void PlaylistWidget::insertMediaInternal( const KURL::List &list, QListViewItem *after )
+void PlaylistWidget::insertMediaInternal( const KURL::List &list, QListViewItem *after, bool directPlay )
 {
    //we don't check list.isEmpty(), this is a private function so we shouldn't have to
     PlaylistLoader *loader = new PlaylistLoader( list, this, after );
@@ -507,7 +504,7 @@ void PlaylistWidget::insertMediaInternal( const KURL::List &list, QListViewItem 
         QApplication::postEvent( this, new QCustomEvent( PlaylistLoader::Started ) ); //see customEvent for explanation
 
         loader->setOptions( AmarokConfig::directoriesRecursively(),
-                            AmarokConfig::followSymlinks(),
+                            directPlay,
                             AmarokConfig::browserSortingSpec() );
         loader->start();
     }
@@ -1092,7 +1089,7 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
         #define e static_cast<PlaylistLoader::MakeItemEvent*>(e)
         if( PlaylistItem *item = e->makePlaylistItem( this ) )
         {
-            if( m_directPlay ) { activate( item ); m_directPlay = false; }
+            if( e->playMe() ) activate( item );
 
             if( AmarokConfig::showMetaInfo() )
                 m_weaver->append( new TagReader( this, item ) );
@@ -1115,7 +1112,6 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
     case PlaylistLoader::Done:
 
         //FIXME this doesn't work 100% yet as you can spawn multiple loaders..
-        m_directPlay = false; //just in case
         m_clearButton->setEnabled( true );
         QApplication::restoreOverrideCursor();
         restoreCurrentTrack(); //just in case the track that is playing is not set current

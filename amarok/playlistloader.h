@@ -32,7 +32,7 @@ public:
     PlaylistLoader( const KURL::List&, PlaylistWidget*, QListViewItem* );
     ~PlaylistLoader();
 
-    void setOptions( bool b1, bool b2, int i ) { options.recurse = b1; options.symlink = b2; options.sortSpec = i; }
+    void setOptions( bool b1, bool b2, int i ) { options.recurse = b1; options.playFirstItem = b2; options.sortSpec = i; }
 
     static bool isValidMedia( const KURL &, mode_t = KFileItem::Unknown, mode_t = KFileItem::Unknown );
     static inline int isPlaylist( const QString & );
@@ -64,7 +64,9 @@ private:
 
 public:
     struct Options {
+        Options() : recurse( true ), playFirstItem( false ), symlink( true ), sortSpec( 0 ) {} //options suitable for m3u files
         bool recurse;
+        bool playFirstItem;
         bool symlink;
         int  sortSpec;
     } options;
@@ -82,6 +84,7 @@ public:
          , m_length( i )
        {}
        virtual PlaylistItem *makePlaylistItem( PlaylistWidget* );
+       bool playMe() { bool b = m_thread->options.playFirstItem; if( b ) m_thread->options.playFirstItem = false; return b; }
     protected:
        PlaylistLoader* const m_thread;
        const KURL m_url;

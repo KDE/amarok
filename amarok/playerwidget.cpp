@@ -364,6 +364,7 @@ void PlayerWidget::wheelEvent( QWheelEvent *e )
     default:
 
         pApp->slotVolumeChanged( AmarokConfig::masterVolume() + e->delta() / 18 );
+        pApp->slotShowVolumeOSD();
     }
 }
 

@@ -145,7 +145,7 @@ class PlaylistWidget : private KListView
         PlaylistItem *currentTrack() const { return m_currentTrack; }
         void setCurrentTrack( PlaylistItem* );
         void showTrackInfo( PlaylistItem* ) const;
-        void insertMediaInternal( const KURL::List&, QListViewItem* );
+        void insertMediaInternal( const KURL::List&, QListViewItem*, bool = false );
         bool saveState( QStringList& );
         void switchState( QStringList&, QStringList& );
         void readAudioProperties( PlaylistItem* );
@@ -188,8 +188,6 @@ class PlaylistWidget : private KListView
         QStringList  m_undoList;
         QStringList  m_redoList;
         uint         m_undoCounter;
-
-        bool m_directPlay;
 };
 
 #endif

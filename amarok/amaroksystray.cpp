@@ -69,8 +69,8 @@ void AmarokSystray::wheelEvent( QWheelEvent *e )
     //NOTE for some reason ignore() doesn't pass the event to parent unless
     //the parent isVisible() and the active window!
 
+    //send the event to the parent PlayerWidget, it'll handle it with much wisdom
     QApplication::sendEvent( parentWidget(), e );
-    pApp->slotShowVolumeOSD();
 }
 
 

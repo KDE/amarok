@@ -716,7 +716,7 @@ void PlayerApp::play( const MetaBundle &bundle )
 
     m_proxyError = false;
 
-    //TODO replace currentTrack with this, and in PlaylistWidget do a compare type function to see if there is any new data
+    //TODO replace currentTrack signal with this, and in PlaylistWidget do a compare type function to see if there is any new data
     emit metaData( bundle );
     //when TagLib can't get us the track length, we ask the engine as fallback
     m_determineLength = ( m_pEngine->isStream() || bundle.length() ) ? false : true;
@@ -961,7 +961,7 @@ void PlayerApp::slotShowOSD()
 
 void PlayerApp::slotShowVolumeOSD()
 {
-    m_pOSD->showOSD( QString("Volume %1%").arg( m_pEngine->volume() ) );
+    m_pOSD->showOSD( i18n("Volume %1%").arg( m_pEngine->volume() ) );
 }
 
 void PlayerApp::slotIncreaseVolume()

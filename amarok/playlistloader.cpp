@@ -415,9 +415,9 @@ void PlaylistLoader::loadPls( QTextStream &stream )
 
 
 PlaylistItem*
-PlaylistLoader::MakeItemEvent::makePlaylistItem( PlaylistWidget *lv )
+PlaylistLoader::MakeItemEvent::makePlaylistItem( PlaylistWidget *pw )
 {
-    PlaylistItem *item = new PlaylistItem( lv, m_thread->m_after, m_url, m_title, m_length );
+    PlaylistItem *item = new PlaylistItem( pw, m_thread->m_after, m_url, m_title, m_length );
     m_thread->m_after = item;
     return item;
 }
@@ -429,7 +429,7 @@ PlaylistLoader::DownloadPlaylistEvent::makePlaylistItem( PlaylistWidget *lv )
 
     //it is safe to dereference m_thread currently as LoaderThreads are deleted in the main Event Loop
     //and we are blocking the event loop right now!
-    //however KIO::NetAccess processes the event loop, so we need to dereference now in case the thread is deleted
+    //however KIO::NetAccess processes the event loop, so do any m_thread dereferencing before the KIO call
 
     //KIO::NetAccess can make it's own tempfile
     //but we need to add .pls/.m3u extension or the Loader will fail
@@ -440,9 +440,9 @@ PlaylistLoader::DownloadPlaylistEvent::makePlaylistItem( PlaylistWidget *lv )
     KTempFile tmpfile( QString::null, path.right( i ) ); //default prefix
     path = tmpfile.name();
 
-    kdDebug() << "[PLSloader] Downloading: " << path << endl;
+    kdDebug() << "[PLSloader] Trying to download: " << m_url.prettyURL() << endl;
 
-    //FIXME this will block user input to the interface and process the event queue
+    //FIXME this will block user input to the interface AND process the event queue
     QApplication::setOverrideCursor( KCursor::waitCursor() );
         bool succeeded = KIO::NetAccess::download( m_url, path, pApp->m_pBrowserWin );
     QApplication::restoreOverrideCursor();
@@ -454,8 +454,12 @@ PlaylistLoader::DownloadPlaylistEvent::makePlaylistItem( PlaylistWidget *lv )
         KURL url; url.setPath( path ); //required way to set unix paths
         const KURL::List list( url );
 
-        //FIXME set options?
-        PlaylistLoader *loader = new PlaylistLoader( list, newItem ); //the item is treated as a placeholder with this ctor
+        //the item is treated as a placeholder with this ctor
+        PlaylistLoader *loader = new PlaylistLoader( list, newItem );
+        //pass on the playFirstItem flag to te next loader and stop it being used here
+        loader->options.playFirstItem = m_thread->options.playFirstItem;
+        m_thread->options.playFirstItem = false;
+
         loader->start();
 
         //FIXME may dereference what has already been deleted!!!! (NOT SAFE!)
@@ -465,7 +469,7 @@ PlaylistLoader::DownloadPlaylistEvent::makePlaylistItem( PlaylistWidget *lv )
     else
     {
         KMessageBox::sorry( pApp->m_pBrowserWin, i18n( "The playlist, '%1', could not be downloaded." ).arg( m_url.prettyURL() ) );
-        delete newItem; //we created this in this function, thus it's safe to delete!
+        newItem->setVisible( false ); //FIXME you set m_thread->m_after to this so we can't delete it!
         tmpfile.unlink();
     }
 
