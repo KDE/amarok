@@ -1,0 +1,25 @@
+<html>
+<p>
+<strong>
+Welcome to amaroK!
+</strong>
+</p>
+<p>
+Some short information about the user interface:
+</p>
+<p>
+Use Drag-and-Drop to transfer files from the filebrowser to the playlist. To 
+remove files, just drag them back from the playlist into the filebrowser. 
+</p>
+<p>
+There are submenus under the buttons in the playlist window. Just keep the 
+buttons pushed down to reveal more functions!
+</p>
+<p>
+Click on the player window with the right mouse Button to display the options 
+menu.
+</p>
+<p>
+Have fun :)
+</p>
+</html>

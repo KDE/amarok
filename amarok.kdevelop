@@ -1,0 +1,150 @@
+<!DOCTYPE kdevelop>
+<kdevelop>
+  <general>
+    <author>Mark Kretschmann</author>
+    <email>markey@web.de</email>
+    <projectmanagement>KDevKDEAutoProject</projectmanagement>
+    <primarylanguage>C++</primarylanguage>
+    <keywords>
+      <keyword>KDE</keyword>
+      <keyword>Qt</keyword>
+    </keywords>
+    <projectdirectory>.</projectdirectory>
+    <absoluteprojectpath>false</absoluteprojectpath>
+    <version/>
+    <description/>
+    <ignoreparts/>
+  </general>
+  <kdevautoproject>
+    <general>
+      <mainprogram>amarok</mainprogram>
+      <useconfiguration>default</useconfiguration>
+      <activetarget>amarok/amarokarts/libamarokarts.la</activetarget>
+    </general>
+    <configure>
+      <configargs>\s--build=i386-linux --host=i386-linux --target=i386-linux\s</configargs>
+    </configure>
+    <make>
+      <abortonerror>false</abortonerror>
+      <numberofjobs>1</numberofjobs>
+      <dontact>false</dontact>
+      <makebin/>
+      <envvars>
+        <envvar value="1" name="WANT_AUTOCONF_2_5" />
+        <envvar value="1" name="WANT_AUTOMAKE_1_6" />
+      </envvars>
+    </make>
+    <compiler>
+      <cflags/>
+      <cxxflags>\s-O0 -g3 -Wall</cxxflags>
+    </compiler>
+    <run>
+      <mainprogram>amarok/amarok</mainprogram>
+      <programargs/>
+      <terminal>true</terminal>
+      <autocompile>true</autocompile>
+      <envvars/>
+    </run>
+    <configurations>
+      <default>
+        <configargs>--prefix `kde-config --prefix`</configargs>
+        <builddir/>
+        <topsourcedir/>
+        <cppflags/>
+        <ldflags/>
+        <ccompiler>GccOptions</ccompiler>
+        <cxxcompiler>GppOptions</cxxcompiler>
+        <f77compiler>G77Options</f77compiler>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
+        <cxxflags/>
+        <f77flags/>
+      </default>
+    </configurations>
+  </kdevautoproject>
+  <kdevfileview>
+    <groups>
+      <group pattern="*.h,*.hh,*.hxx,*.hpp,*.H" name="Headers" />
+      <group pattern="*.cpp,*.c,*.cc,*.C,*.cxx,*.ec,*.ecpp,*.lxx,*.l++,*.ll,*.l" name="Sources" />
+      <group pattern="*.kdevdlg,*.ui,*.rc,*.dlg" name="User Interface" />
+      <group pattern="*.po" name="Translations" />
+      <group pattern="AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO,NEWS" name="GNU" />
+      <group pattern="*" name="Others" />
+    </groups>
+    <tree>
+      <hidenonprojectfiles>false</hidenonprojectfiles>
+      <hidepatterns>*.o,*.lo,CVS</hidepatterns>
+    </tree>
+  </kdevfileview>
+  <kdevdoctreeview>
+    <ignoretocs>
+      <toc>gtk</toc>
+      <toc>gnustep</toc>
+      <toc>python</toc>
+      <toc>php</toc>
+      <toc>perl</toc>
+    </ignoretocs>
+    <projectdoc>
+      <userdocDir>/home/mark/mysource/gideon/amarok-0.5.2-gideon/html/</userdocDir>
+      <apidocDir>/home/mark/mysource/gideon/amarok-0.5.2-gideon/html/</apidocDir>
+    </projectdoc>
+  </kdevdoctreeview>
+  <kdevdebugger>
+    <general>
+      <dbgshell>libtool</dbgshell>
+      <programargs/>
+      <gdbpath/>
+      <breakonloadinglibs>true</breakonloadinglibs>
+      <separatetty>false</separatetty>
+      <floatingtoolbar>false</floatingtoolbar>
+      <runappinappdirectory>true</runappinappdirectory>
+    </general>
+    <display>
+      <staticmembers>false</staticmembers>
+      <demanglenames>true</demanglenames>
+    </display>
+  </kdevdebugger>
+  <kdevfilecreate>
+    <filetypes/>
+    <useglobaltypes/>
+  </kdevfilecreate>
+  <cppsupportpart>
+    <filetemplates>
+      <choosefiles>false</choosefiles>
+      <interfaceURL/>
+      <implementationURL/>
+      <interfacesuffix>.h</interfacesuffix>
+      <implementationsuffix>.cpp</implementationsuffix>
+      <lowercasefilenames>true</lowercasefilenames>
+    </filetemplates>
+  </cppsupportpart>
+  <kdevcppsupport>
+    <codecompletion>
+      <includeGlobalFunctions>true</includeGlobalFunctions>
+      <includeTypes>true</includeTypes>
+      <includeEnums>true</includeEnums>
+      <includeTypedefs>false</includeTypedefs>
+      <automaticCodeCompletion>true</automaticCodeCompletion>
+      <automaticArgumentsHint>true</automaticArgumentsHint>
+      <codeCompletionDelay>250</codeCompletionDelay>
+      <argumentsHintDelay>400</argumentsHintDelay>
+    </codecompletion>
+  </kdevcppsupport>
+  <kdevclassview>
+    <folderhierarchy>true</folderhierarchy>
+    <depthoffolders>2</depthoffolders>
+  </kdevclassview>
+  <kdevcvs>
+    <cvsoptions>-f</cvsoptions>
+    <commitoptions></commitoptions>
+    <addoptions></addoptions>
+    <logoptions></logoptions>
+    <updateoptions>-dP</updateoptions>
+    <removeoptions>-f</removeoptions>
+    <revertoptions>-C -d -P</revertoptions>
+    <diffoptions>-u3 -p</diffoptions>
+    <rshoptions></rshoptions>
+  </kdevcvs>
+</kdevelop>

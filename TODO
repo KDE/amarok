@@ -1,0 +1,89 @@
+TODO-list for amaroK
+======================
+
+
+SHORT-TERM:
+
+    * fix: app freezing when renaming the file that's currently playing
+
+    * fix: sample looping @ end of track or pause
+
+    * fix: go to the last played track on startup
+
+    * fix: some URLs seem not to work (redirection), e.g.:
+      http://robotron.ton.tut.fi:80
+
+    * fix: crash when pressing buttons several times too fast
+
+    * fix: "help" menu item
+
+    * add: display warning when artsd is run w/o realtime
+
+    * add: extend keyboard shortcuts
+
+    * add: documentation
+
+
+
+MID-TERM:
+
+    * add: background "transparency" for playlist window
+
+    * add: better cleanup at program exit; delete all new'ed objects ( calling DTORS )
+
+    * add: title streaming
+
+    * change: ability to get currently playing title to clipboard, or writing info in some file or
+      some other easy way to get this info..
+
+    * change: let timedisplay also count with streams
+
+    * add: dcop interface (maybe by using KMediaPlayer)
+
+    * fix: try to make title-scrolling smoother / debug scrolling code
+
+    * add: show play button pressed down while playing
+
+    * add: function "add current dir"
+
+    * add: playlist-only mode (stakker's idea)
+
+    * add: seeking with mousewheel
+
+    * add: make windows magnetic / sticking together
+
+    * add: option to show dirs sorted alphabetically
+
+    * add: make blinking currenttrack optional
+
+    * add: display type of media next to bitrate
+
+    * add: think about I18N.
+
+    * fix: find solution for dropping items to the first position. maybe an empty line
+      at the top or bottom?
+
+    * change: select tracks on mouseup, not mousedown
+
+    * fix: if you click on the image, and then you drag off of it, and then release it
+      somewhere way out of amarok, then the action still executes
+
+
+
+LONG-TERM:
+
+    * display some information about current track in browserwin
+
+    * support for compressed archives / tarballs
+
+    * add visualisations
+
+    * add more scope-modes
+
+    * add bookmarks for filebrowser
+
+    * add bookmarks (inside of tracks) and nifty bookmark browser
+
+    * add pitch-slider (?)
+
+    * add crossfading

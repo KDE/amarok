@@ -1,0 +1,11 @@
+#include <artsflow.idl>
+
+module Amarok
+{
+
+interface WinSkinFFT : Arts::StereoEffect
+{
+        sequence<float> scope();
+};
+
+};
