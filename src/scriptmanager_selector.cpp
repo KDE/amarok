@@ -35,25 +35,16 @@ ScriptManager::Selector::Selector( const QStringList &directories, QWidget *pare
     setMainWidget( m_base );
     m_base->directoryListView->setFullWidth( true );
 
-    connect( m_base->addDirectoryButton, SIGNAL( clicked() ),
-             SLOT( slotAddDirectory() ) );
-    connect( m_base->removeDirectoryButton, SIGNAL( clicked() ),
-             SLOT( slotRemoveDirectory() ) );
-    connect( m_base->editButton, SIGNAL( clicked() ),
-             SLOT( slotEditScript() ) );
-    connect( m_base->runButton, SIGNAL( clicked() ),
-             SLOT( slotRunScript() ) );
-    connect( m_base->stopButton, SIGNAL( clicked() ),
-             SLOT( slotStopScript() ) );
-    connect( m_base->configureScriptButton, SIGNAL( clicked() ),
-             SLOT( slotConfigureScript() ) );
+    connect( m_base->addDirectoryButton, SIGNAL( clicked() ), SLOT( slotAddDirectory() ) );
+    connect( m_base->removeDirectoryButton, SIGNAL( clicked() ), SLOT( slotRemoveDirectory() ) );
+    connect( m_base->editButton, SIGNAL( clicked() ), SLOT( slotEditScript() ) );
+    connect( m_base->runButton, SIGNAL( clicked() ), SLOT( slotRunScript() ) );
+    connect( m_base->stopButton, SIGNAL( clicked() ), SLOT( slotStopScript() ) );
+    connect( m_base->configureScriptButton, SIGNAL( clicked() ), SLOT( slotConfigureScript() ) );
 
     QStringList::ConstIterator it = directories.begin();
     for ( ; it != directories.end(); ++it )
         new KListViewItem( m_base->directoryListView, *it );
-
-    //     m_base->scanRecursivelyCheckBox->setChecked( scanRecursively );
-    //     m_base->monitorChangesCheckBox->setChecked( monitorChanges );
 
     QSize sz = sizeHint();
     setMinimumSize( kMax( 350, sz.width() ), kMax( 250, sz.height() ) );

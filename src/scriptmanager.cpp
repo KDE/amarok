@@ -31,9 +31,7 @@ ScriptManager::Manager::Manager( QObject* object )
 
 void
 ScriptManager::Manager::addObject( QObject* object )
-{
-//     m_kjs->addObject( object );
-}
+{}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -48,14 +46,10 @@ ScriptManager::Manager::showSelector() //SLOT
     if ( !Selector::instance )
     {
         Selector::instance = new Selector( m_list );
-        connect( Selector::instance, SIGNAL( signalEditScript( const QString& ) ),
-                this,   SLOT( slotEdit( const QString& ) ) );
-        connect( Selector::instance, SIGNAL( signalRunScript( const QString& ) ),
-                this,   SLOT( slotRun( const QString& ) ) );
-        connect( Selector::instance, SIGNAL( signalStopScript( const QString& ) ),
-                this,   SLOT( slotStop( const QString& ) ) );
-        connect( Selector::instance, SIGNAL( signalConfigureScript( const QString& ) ),
-                this,   SLOT( slotConfigure( const QString& ) ) );
+        connect( Selector::instance, SIGNAL( signalEditScript( const QString& ) ), SLOT( slotEdit( const QString& ) ) );
+        connect( Selector::instance, SIGNAL( signalRunScript( const QString& ) ), SLOT( slotRun( const QString& ) ) );
+        connect( Selector::instance, SIGNAL( signalStopScript( const QString& ) ), SLOT( slotStop( const QString& ) ) );
+        connect( Selector::instance, SIGNAL( signalConfigureScript( const QString& ) ), SLOT( slotConfigure( const QString& ) ) );
     }
 
     Selector::instance->show();
