@@ -4,14 +4,33 @@ Sun, 11 Apr 2004 17:06:00 +0200.
 
 It was downloaded from http://amarok.kde.org/
 
-Upstream Author: the amaroK developers
+Upstream Authors:
+	Christian Muehlhaeuser <chris@chris.de>
+	Frederik Holljen <fh@ez.no>
+	Mark Kretschmann <markey@web.de>
+	Max Howell <max.howell@methylblue.com>
+	Mike Diehl <madpenguin8@yahoo.com>
+	Roman Becker <roman@formmorf.de>
+	Stanislav Karchebny <berk@inbox.ru>
 
 Copyright:
-
-This software is copyright 
 (c) 2002-2003, Mark Kretschmann
 (c) 2003-2004, the amaroK developers
-You are free to distribute this software under the terms of
-the GNU General Public License.
-On Debian GNU/Linux systems, the complete text of the GNU General
+
+   This package is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; version 2 dated June, 1991.
+
+   This package is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this package; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+   02111-1307, USA.
+
+
+On Debian systems, the complete text of the GNU General
 Public License can be found in /usr/share/common-licenses/GPL file.
