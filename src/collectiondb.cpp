@@ -1290,7 +1290,7 @@ CollectionDB::retrieveThirdLevelURLs( QString itemText1, QString itemText2, QStr
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
-CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString& album, bool edit ) //SLOT
+CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString& album, bool noedit ) //SLOT
 {
     #ifdef AMAZON_SUPPORT
     /* Static license Key. Thanks muesli ;-) */
@@ -1302,7 +1302,7 @@ CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString&
     connect( fetcher, SIGNAL( imageReady( const QString&, const QString&, const QImage& ) ),
              this,      SLOT( saveCover( const QString&, const QString&, const QImage& ) ) );
     connect( fetcher, SIGNAL( error() ), this, SLOT( fetcherError() ) );
-    fetcher->getCover( artist, album, keyword, CoverFetcher::heavy, edit, 2, false );
+    fetcher->getCover( artist, album, keyword, CoverFetcher::heavy, noedit, 2, false );
     #endif
 }
 

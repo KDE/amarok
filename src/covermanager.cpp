@@ -509,6 +509,8 @@ void CoverManager::coverFetched( const QString &key )
 
 void CoverManager::coverFetcherError()
 {
+    kdDebug() << k_funcinfo << endl;
+
     m_coverErrors++;
     updateStatusBar();
 }
@@ -553,7 +555,7 @@ void CoverManager::fetchSelectedCovers()
         m_db->fetchCover( this, selected.first()->artist(), selected.first()->album(), false );
     else
         for ( CoverViewItem* item = selected.first(); item; item = selected.next() )
-                m_fetchCovers += item->artist() + " @@@ " + item->album();
+            m_fetchCovers += item->artist() + " @@@ " + item->album();
 
     m_fetchingCovers += selected.count();
 
@@ -716,11 +718,6 @@ CoverViewItem::CoverViewItem( QIconView *parent, QIconViewItem *after, QString a
     calcRect();
 
     kdDebug() << coverImagePath() << endl;
-}
-
-
-CoverViewItem::~CoverViewItem()
-{
 }
 
 

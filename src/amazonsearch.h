@@ -4,44 +4,28 @@
 #ifndef AMAZONSEARCH_H
 #define AMAZONSEARCH_H
 
-#include <qvariant.h>
-#include <qpixmap.h>
 #include <qdialog.h>
+#include <qimage.h>
 
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
-class QSpacerItem;
-class KLineEdit;
-class QPushButton;
 class QLabel;
+class KLineEdit;
 
 class AmazonSearch : public QDialog
 {
     Q_OBJECT
 
+signals:
+    void imageReady( const QImage& image );
+
 public:
     AmazonSearch( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~AmazonSearch();
 
-    KLineEdit* searchString;
-    QPushButton* cancelButton;
-    QPushButton* okButton;
-    QPushButton* fileButton;
-    QLabel* textLabel;
+    QLabel* m_textLabel;
+    KLineEdit* m_searchString;
 
-signals:
-        void imageReady( QPixmap image );        
+private slots:
+    void openFile();
 
-public slots:
-    virtual void openFile();
-
-protected:
-    QGridLayout* AmazonSearchLayout;
-    QSpacerItem* spacer3;
-
-private:
-    
 };
 
 #endif // AMAZONSEARCH_H

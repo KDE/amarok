@@ -62,7 +62,6 @@ CoverFetcher::getCover( const QString& artist, const QString& album, const QStri
     m_bufferIndex = 0;
     m_xmlDocument = "";
 
-
     QString url = QString( "http://xml.amazon.com/onca/xml3?t=webservices-20&dev-t=%1"
                            "&KeywordSearch=%2&mode=music&type=%3&page=1&f=xml" )
                            .arg( m_license )
@@ -95,7 +94,7 @@ void
 CoverFetcher::xmlResult( KIO::Job* job ) //SLOT
 {
     if ( !job->error() == 0 ) {
-        kdWarning() << "KIO error! errno: " << job->error() << endl;
+        kdWarning() << "[CoverFetcher] KIO error! errno: " << job->error() << endl;
         emit error();
         deleteLater();
         return;
@@ -172,16 +171,22 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
        If there's no (large) cover is found, try the next smaller image (medium) etc. If no covers, open editSearch.
        If we fetch all covers (covermanager), do not show any errors/previews, just save (m_noedit).  */
 
-    if ( job->error() != 0 )
+    if ( job->error() )
     {
-        if ( !m_albumonly ) getCover( m_album, m_album, m_saveas, CoverFetcher::heavy, m_noedit, 1, true );
-        else if ( !m_noedit )
-        {
+        if ( !m_albumonly )
+            getCover( m_album, m_album, m_saveas, CoverFetcher::heavy, m_noedit, 1, true );
+
+        else if ( !m_noedit ) {
             m_text = i18n( "<h3>No cover image found.</h3>"
                            "If you would like to search again, you can edit the search string below and press <b>OK</b>." );
             editSearch();
         }
-        else return;
+        else {
+            kdDebug() << "[CoverFetcher] Image not found in amazon.com database.\n";
+            emit error();
+            deleteLater();
+            return;
+        }
     }
     else
     {
@@ -233,7 +238,12 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
         }
         else
         {
-            m_image.loadFromData( m_buffer, m_bufferIndex );
+            if ( !m_image.loadFromData( m_buffer, m_bufferIndex ) ) {
+                kdDebug() << "[CoverFetcher] Image is invalid." << endl;
+                emit error();
+                deleteLater();
+                return;
+            }
             saveCover();
         }
     }
@@ -243,19 +253,20 @@ void
 CoverFetcher::editSearch() //SLOT
 {
     AmazonSearch* sdlg = new AmazonSearch();
-    sdlg->textLabel->setText( m_text );
-    sdlg->searchString->setText( m_saveas );
+    sdlg->m_textLabel->setText( m_text );
+    sdlg->m_searchString->setText( m_saveas );
     sdlg->setModal( true );
-    connect( sdlg, SIGNAL( imageReady( QImage ) ), this, SLOT( saveCover( QImage ) ) );
+    connect( sdlg, SIGNAL( imageReady( const QImage& ) ), this, SLOT( saveCover( const QImage& ) ) );
 
     if ( sdlg->exec() == QDialog::Accepted )
     {
-        m_album = sdlg->searchString->text();
+        m_album = sdlg->m_searchString->text();
         getCover( m_album, m_album, m_saveas, CoverFetcher::heavy );
         return;
     }
     else
     {
+        emit error();
         deleteLater();
         return;
     }
