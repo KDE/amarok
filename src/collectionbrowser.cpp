@@ -48,6 +48,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     , m_cat1Menu( new KPopupMenu( this ) )
     , m_cat2Menu( new KPopupMenu( this ) )
     , m_cat3Menu( new KPopupMenu( this ) )
+	 , m_sortMenu( new KPopupMenu( this ) )
     , m_timer( new QTimer( this ) )
 {
     setSpacing( 4 );
@@ -99,6 +100,8 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_categoryMenu->insertItem( i18n( "&First Level" ), m_cat1Menu );
     m_categoryMenu->insertItem( i18n( "&Second Level"), m_cat2Menu );
     m_categoryMenu->insertItem( i18n( "&Third Level" ), m_cat3Menu );
+	 m_categoryMenu ->insertSeparator();
+	 m_categoryMenu->insertItem( i18n( "&Sort Results" ), m_sortMenu );
 
     m_cat1Menu ->insertItem( i18n( "&Album" ), m_view, SLOT( cat1Menu( int ) ), 0, IdAlbum );
     m_cat1Menu ->insertItem( i18n( "A&rtist"), m_view, SLOT( cat1Menu( int ) ), 0, IdArtist );
@@ -118,10 +121,14 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_cat3Menu ->insertItem( i18n( "A&rtist" ), m_view, SLOT( cat3Menu( int ) ), 0, IdArtist );
     m_cat3Menu ->insertItem( i18n( "&Genre" ), m_view, SLOT( cat3Menu( int ) ), 0, IdGenre );
     m_cat3Menu ->insertItem( i18n( "&Year" ), m_view, SLOT( cat3Menu( int ) ), 0, IdYear );
+	 
+	 m_sortMenu ->insertItem( i18n( "By &Track Tag" ) , m_view, SLOT( sortMenu( int ) ), 0, IdTracktag );
+	 m_sortMenu ->insertItem( i18n( "By &Filename" ) , m_view, SLOT( sortMenu( int ) ), 0, IdFilename );
 
     m_view->cat1Menu( m_view->m_cat1, false );
     m_view->cat2Menu( m_view->m_cat2, false );
     m_view->cat3Menu( m_view->m_cat3, true );
+	 m_view->sortMenu( m_view->m_sort );
 
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
@@ -196,6 +203,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         m_cat1 = config->readNumEntry( "Category1", CollectionBrowser::IdArtist );
         m_cat2 = config->readNumEntry( "Category2", CollectionBrowser::IdAlbum );
         m_cat3 = config->readNumEntry( "Category3", CollectionBrowser::IdNone );
+		  m_sort = config->readNumEntry( "SortCriteria", CollectionBrowser::IdTracktag );
 
         addColumn( captionForCategory( m_cat1 ) );
     //</READ CONFIG>
@@ -265,6 +273,7 @@ CollectionView::~CollectionView() {
     config->writeEntry( "Category1", m_cat1 );
     config->writeEntry( "Category2", m_cat2 );
     config->writeEntry( "Category3", m_cat3 );
+	 config->writeEntry( "SortCriteria", m_sort );
     config->writeEntry( "Database Version", DATABASE_VERSION );
     config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
 }
@@ -456,7 +465,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             {
                 qb.addReturnValue( m_cat2, QueryBuilder::valTitle );
                 qb.addReturnValue( m_cat2, QueryBuilder::valURL );
-                qb.sortBy( m_cat2, QueryBuilder::valTrack );
+                qb.sortBy( m_cat2, m_telltrack );
                 qb.sortBy( m_cat2, QueryBuilder::valTitle );
             }
             else
@@ -481,7 +490,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             {
                 qb.addReturnValue( m_cat3, QueryBuilder::valTitle );
                 qb.addReturnValue( m_cat3, QueryBuilder::valURL );
-                qb.sortBy( m_cat3, QueryBuilder::valTrack );
+                qb.sortBy( m_cat3, m_telltrack );
                 qb.sortBy( m_cat3, QueryBuilder::valTitle );
             }
             else
@@ -505,7 +514,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+            qb.sortBy( QueryBuilder::tabSong, m_telltrack );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
 
             category = CollectionBrowser::IdNone;
@@ -551,6 +560,19 @@ CollectionView::slotCollapse( QListViewItem* item )  //SLOT
     }
 }
 
+void
+CollectionView::sortMenu( int id )
+{
+	 m_parent->m_sortMenu->setItemChecked( m_sort, false ); //uncheck old item
+    m_parent->m_sortMenu->setItemEnabled( m_sort, true );  //enable old item
+	 m_sort = id;	
+	 m_parent->m_sortMenu->setItemChecked( m_sort, true );
+	 
+	 if ( m_sort == CollectionBrowser::IdTracktag) m_telltrack = QueryBuilder::valTrack;
+	 else if ( m_sort == CollectionBrowser::IdFilename) m_telltrack = QueryBuilder::valURL;
+	  
+	 renderView();
+}
 
 void
 CollectionView::cat1Menu( int id, bool rerender )  //SLOT
@@ -877,7 +899,7 @@ CollectionView::listSelected() {
             if ( !sampler ) qb.sortBy( m_cat1, QueryBuilder::valName );
             if ( m_cat2 != QueryBuilder::tabSong ) qb.sortBy( m_cat2, QueryBuilder::valName );
             if ( m_cat3 != QueryBuilder::tabSong ) qb.sortBy( m_cat3, QueryBuilder::valName );
-            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+            qb.sortBy( QueryBuilder::tabSong, m_telltrack );
 
             qb.setOptions( QueryBuilder::optRemoveDuplicates );
             values = qb.run();
@@ -918,7 +940,7 @@ CollectionView::listSelected() {
                     if ( !sampler ) qb.sortBy( m_cat1, QueryBuilder::valName );
                     qb.sortBy( m_cat2, QueryBuilder::valName );
                     if ( m_cat3 != QueryBuilder::tabSong ) qb.sortBy( m_cat3, QueryBuilder::valName );
-                    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+                    qb.sortBy( QueryBuilder::tabSong, m_telltrack );
 
                     qb.setOptions( QueryBuilder::optRemoveDuplicates );
                     values = qb.run();
@@ -972,7 +994,7 @@ CollectionView::listSelected() {
                         if ( !sampler ) qb.sortBy( m_cat1, QueryBuilder::valName );
                         qb.sortBy( m_cat2, QueryBuilder::valName );
                         qb.sortBy( m_cat3, QueryBuilder::valName );
-                        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+                        qb.sortBy( QueryBuilder::tabSong, m_telltrack );
 
                         qb.setOptions( QueryBuilder::optRemoveDuplicates );
                         values = qb.run();

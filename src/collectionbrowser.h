@@ -11,6 +11,8 @@
 #include <qstringlist.h>     //stack allocated
 #include <kurl.h>            //stack allocated
 
+#include "collectiondb.h" 
+
 class ClickLineEdit;
 class CollectionDB;
 class sqlite;
@@ -45,6 +47,7 @@ class CollectionBrowser: public QVBox
     private:
         //attributes:
         enum CatMenuId { IdAlbum = 1, IdArtist = 2, IdGenre = 4, IdYear = 8 , IdScan = 16, IdNone = 32 };
+		  enum sortCritId { IdTracktag = 1, IdFilename = 2 };
 
         KAction* m_configureAction;
         KAction* m_scanAction;
@@ -53,6 +56,7 @@ class CollectionBrowser: public QVBox
         KPopupMenu* m_cat1Menu;
         KPopupMenu* m_cat2Menu;
         KPopupMenu* m_cat3Menu;
+		  KPopupMenu* m_sortMenu;
         KLineEdit* m_searchEdit;
         CollectionView* m_view;
         QTimer* m_timer;
@@ -101,6 +105,7 @@ class CollectionView : public KListView
         void cat1Menu( int id, bool rerender = true );
         void cat2Menu( int id, bool rerender = true );
         void cat3Menu( int id, bool rerender = true );
+		  void sortMenu( int id );
         void enableCat3Menu( bool );
         void invokeItem( QListViewItem* );
         void rmbPressed( QListViewItem*, const QPoint&, int );
@@ -130,12 +135,15 @@ class CollectionView : public KListView
         static CollectionDB* m_db;
         static CollectionDB* m_insertdb;
         static CollectionView* m_instance;
+		  
+		  QueryBuilder::qBuilderValues m_telltrack;
 
         CollectionBrowser* m_parent;
         QString m_filter;
         int m_cat1;
         int m_cat2;
         int m_cat3;
+		  int m_sort;
 
         bool m_isScanning;
         QHBox* m_progressBox;
