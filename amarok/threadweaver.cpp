@@ -264,7 +264,9 @@ CollectionReader::readTags( const QStringList& entries ) {
     KURL url;
         
     for ( uint i = 0; i < entries.count(); i++ ) {   
-        QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Progress, i ) );
+        if ( !( i % 20 ) ) //don't post events too often since this blocks amaroK
+            QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Progress, i ) );
+        
         url.setPath( entries[i] );
         
         if ( url.isValid() && url.isLocalFile() ) {        

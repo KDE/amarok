@@ -375,7 +375,7 @@ CollectionView::customEvent( QCustomEvent *e ) {
             execSql( command.local8Bit() );
             delete bundle;
             //grant event loop some time for breathing
-            if ( i % 10 ) kapp->processEvents();
+            if ( !(i % 10) ) kapp->processEvents();
         }
         execSql( "END TRANSACTION;" );
         
