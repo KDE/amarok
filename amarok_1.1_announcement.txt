@@ -6,7 +6,7 @@ plugable, engine-independent audio capabilities is coming to a computer near you
 
 amaroK is the first KDE application to use the GStreamer Multimedia Framework without any dependency on external bindings. amaroK can also integrate with xine so you have the freedom of choosing your own flavour. With version 1.1-beta1 there are many exciting changes that make using amaroK even more fun. Here are some of the features that you will simply love :
 
-- Fully Integrated with KDE : Play from your Samba share with smb:/ , or use the fish KIOSlave to play from a remote host.
+- Fully Integrated with KDE : Play from your Samba share with smb:/, or use the fish KIOSlave to play from a remote host.
 - Simple and Elegant : Collection-based system where you can choose songs from a variety of criteria, including artist, most played, never played, etc.
 - Stream Support : Listening to online radio has never been easier. Just load the playlist file and it starts playing.
 - Engine Independence : Ability to use GStreamer or xine. (There is also aRts engine but it is not ported to the new engine architecture yet).
