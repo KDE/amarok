@@ -117,6 +117,7 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
     }
     QVBox* container = new QVBox( 0, 0, WDestructiveClose );
     container->setCaption( m_keyword + " - amaroK" );
+    connect( this, SIGNAL( destroyed() ), container, SLOT( deleteLater() ) );
     
     QWidget* widget = new QWidget( container );
     widget->setPaletteBackgroundPixmap( QPixmap( m_image ) );
@@ -126,9 +127,7 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
     KPushButton* save = new KPushButton( i18n( "Save" ), buttons );
     KPushButton* cancel = new KPushButton( i18n( "Cancel" ), buttons );
     connect( cancel, SIGNAL( clicked() ), this, SLOT( deleteLater() ) );
-    connect( save, SIGNAL( clicked() ), this, SLOT( deleteLater() ) );
     connect( save, SIGNAL( clicked() ), this, SLOT( saveCover() ) );
-    connect( this, SIGNAL( destroyed() ), container, SLOT( deleteLater() ) );
             
     container->adjustSize();
     container->setFixedSize( container->size() );
@@ -142,6 +141,7 @@ CoverFetcher::saveCover() //SLOT
     kdDebug() << k_funcinfo << endl;
     
     emit imageReady( m_keyword, QPixmap( m_image ) );
+    deleteLater();
 }
 
 
