@@ -78,6 +78,9 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     if ( !m_db )
         kdWarning() << k_funcinfo << "Could not open SQLite database\n";
 
+    //optimization for speeding up SQLite
+    execSql( "PRAGMA synchronous=OFF;" );        
+        
     QCString command = "create table tags ( url varchar(100),"
                        "album varchar(100),"
                        "artist varchar(100),"
@@ -85,7 +88,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
                        "title varchar(100),"
                        "year varchar(4) );";
 
-    execSql( command, 0, 0 );
+    execSql( command );
 
     KConfig* config = KGlobal::config();
     config->setGroup( "Collection Browser" );
@@ -139,7 +142,7 @@ CollectionView::scan()  //SLOT
 {
     //remove all records
     QCString command = "delete from tags;";
-    execSql( command, 0, 0 );
+    execSql( command );
 
     m_weaver->append( new CollectionReader( this, m_dirs, m_recursively ) );
 }
@@ -263,8 +266,9 @@ CollectionView::customEvent( QCustomEvent *e ) {
         kdDebug() << "Number of bundles: " << c->list().count() << endl;
 
         MetaBundle* bundle;
-
         kdDebug() << "Number of records to store in db: " << c->list().count() << endl;
+        
+        execSql( "BEGIN TRANSACTION;" );
         for ( uint i = 0; i < c->list().count(); i++ ) {
             bundle = c->list().at( i );
             QCString command = "insert into tags( url, album, artist, genre, title, year ) values ('";
@@ -282,12 +286,13 @@ CollectionView::customEvent( QCustomEvent *e ) {
             command += bundle->year().latin1();
             command += "');";
 
-            execSql( command, 0, 0 );
+            execSql( command );
             delete bundle;
             //grant event loop some time for breathing
             if ( i % 10 ) kapp->processEvents();
         }
-
+        execSql( "END TRANSACTION;" );
+        
         emit tagsReady();
     }
 }

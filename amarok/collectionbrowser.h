@@ -97,7 +97,7 @@ class CollectionView : public KListView
          * @retval names    will contain all column names, set to NULL if not used
          * @return          true if successful
          */
-        bool execSql( const QCString& statement, QStringList* const values, QStringList* const names );
+        bool execSql( const QCString& statement, QStringList* const values = 0, QStringList* const names = 0 );
             
     //attributes:
         CollectionBrowser* m_parent;
