@@ -25,12 +25,15 @@ ScriptManager* ScriptManager::s_instance = 0;
 
 
 ScriptManager::ScriptManager( QWidget *parent, const char *name )
-        : KDialogBase( parent, name, true, 0, Ok | Cancel, Ok, true )
+        : KDialogBase( parent, name, false, 0, 0, Ok, false )
         , m_base( new ScriptManagerBase( this ) )
 {
+    kdDebug() << k_funcinfo << endl;
+
+    s_instance = this;
+
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n( "Script Manager" ) ) );
-    setModal( false );
 
     setMainWidget( m_base );
     m_base->directoryListView->setFullWidth( true );
@@ -54,6 +57,8 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
 
 ScriptManager::~ScriptManager()
 {
+    kdDebug() << k_funcinfo << endl;
+
     s_instance = 0;
 }
 
