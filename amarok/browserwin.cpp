@@ -65,9 +65,11 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
     setCaption( kapp->makeStdCaption( i18n( "Playlist" ) ) );
     setAcceptDrops( true );
 
+    initChildren();
+    
     m_pActionCollection = new KActionCollection( this );
-    KStdAction::undo( this, SLOT( m_pPlaylistWidget->doUndo() ), m_pActionCollection );
-    KStdAction::redo( this, SLOT( m_pPlaylistWidget->doRedo() ), m_pActionCollection );
+    KStdAction::undo( m_pPlaylistWidget, SLOT( doUndo() ), m_pActionCollection );
+    KStdAction::redo( m_pPlaylistWidget, SLOT( doRedo() ), m_pActionCollection );
     KStdAction::prior( this, SLOT( slotKeyPageUp() ), m_pActionCollection );
     KStdAction::next( this, SLOT( slotKeyPageDown() ), m_pActionCollection );
     
@@ -80,8 +82,6 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
     new KAction( "Remove item", ALT + Key_Delete,
                  this, SLOT( slotKeyDelete() ), m_pActionCollection, "delete" );
     
-    initChildren();
-
     connect( m_pBrowserWidget, SIGNAL( doubleClicked( QListViewItem* ) ),
              this, SLOT( slotBrowserDoubleClicked( QListViewItem* ) ) );
 
