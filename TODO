@@ -2,11 +2,14 @@ TODO-list for amaroK
 ======================
 <nick>  == reported by
 -->nick == assigned to
-#x      == sequential bug number,
-           #183 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+          <mxcl>   PlaylistLoader takes forever to load my new media directory, I think i can help a little,
+                   I promise not to make the class awful again like last time!
+
+          <mxcl>   Collection scan cannot be cancelled
 
           <markey> Running on GNOME, amaroK's windows do not show the app icon, but instead a blank icon.
                    Uraeus says amaroK is the only KDE app with this problem.
