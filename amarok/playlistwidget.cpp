@@ -57,13 +57,13 @@
 
 // CLASS PlaylistWidget --------------------------------------------------------
 
-PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) :
-        KListView( parent, name ),
-        m_rootPixmap( viewport() ),
-        m_GlowTimer( new QTimer( this ) ),
-        m_GlowCount( 100 ),
-        m_GlowAdd( 5 ),
-        m_undoCounter( 0 )
+PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
+    : KListView( parent, name )
+    , m_rootPixmap( viewport() )
+    , m_GlowTimer( new QTimer( this ) )
+    , m_GlowCount( 100 )
+    , m_GlowAdd( 5 )
+    , m_undoCounter( 0 )
 {
     kdDebug() << "PlaylistWidget::PlaylistWidget()" << endl;
 
@@ -373,7 +373,7 @@ bool PlaylistWidget::loadPlaylist( KURL url, QListViewItem *destination )
     QString tmpFile;
     PlaylistItem *pCurr = static_cast<PlaylistItem*>( destination );
 
-    if ( url.url().endsWith( ".m3u", false ) || url.url().endsWith( ".pls", false ) )
+    if ( url.url().lower().endsWith( ".m3u" ) || url.url().lower().endsWith( ".pls" ) )
     {
         if ( url.isLocalFile() )
             tmpFile = url.path();
