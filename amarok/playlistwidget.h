@@ -19,26 +19,26 @@
 #define PLAYLISTWIDGET_H
 
 #include <qdir.h>
+#include <qstringlist.h>
 #include <klistview.h>
 //#include <krootpixmap.h>
 #include <kurl.h>
 
 #include "playlistitem.h" //friend
 
+class QColor;
+class QCustomEvent;
 class QDragEnterEvent;
-class QDragMoveEvent;
 class QDragLeaveEvent;
-class QKeyEvent;
+class QDragMoveEvent;
 class QDropEvent;
 class QFocusEvent;
-class QPaintEvent;
-class QCustomEvent;
+class QKeyEvent;
 class QListViewItem;
+class QPaintEvent;
 class QPoint;
 class QRect;
 class QString;
-class QStringList;
-class QColor;
 class QTimer;
 
 class MetaBundle;
