@@ -92,7 +92,7 @@ PlaylistWidget::~PlaylistWidget()
 void PlaylistWidget::contentsDragMoveEvent( QDragMoveEvent* e )
 {
     e->acceptAction();
-    m_pMarkerItem = static_cast<PlaylistItem*>( itemAt( e->pos() ) );
+    m_pMarkerItem = static_cast<PlaylistItem*>( itemAt( contentsToViewport( e->pos() ) ) );
 
     if ( m_pMarkerItem != m_pMarkerItemPrev )
     {
@@ -133,7 +133,7 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
             return ;
 
         setUpdatesEnabled( false );
-        m_pDropCurrentItem = static_cast<PlaylistItem*>( itemAt( e->pos() ) );
+        m_pDropCurrentItem = static_cast<PlaylistItem*>( itemAt( contentsToViewport( e->pos() ) ) );
         playlistDrop( urlList );
     }
     else
@@ -172,7 +172,7 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
 
         setUpdatesEnabled( false );
 
-        m_pDropCurrentItem = static_cast<PlaylistItem*>( itemAt( e->pos() ) );
+        m_pDropCurrentItem = static_cast<PlaylistItem*>( itemAt( contentsToViewport( e->pos() ) ) );
 
         if ( !m_pDropCurrentItem )
             m_pDropCurrentItem = ( PlaylistItem* ) 1;
