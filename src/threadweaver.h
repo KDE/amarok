@@ -84,10 +84,12 @@ protected:    bool m_aborted;
 class ThreadWeaver : public QObject
 {
     class Thread;
+    friend class Thread;
     typedef QValueList<Thread*> ThreadList;
 
 public:
     class Job;
+    friend class Job;
     typedef QValueList<Job*> JobList;
 
     static ThreadWeaver *instance();

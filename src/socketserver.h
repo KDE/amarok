@@ -61,6 +61,7 @@ namespace Vis
     class Selector : public QListView
     {
         Q_OBJECT
+        class Item;
         friend class Item;
         Selector( QWidget *parent=0 );
         SocketServer *m_server;
