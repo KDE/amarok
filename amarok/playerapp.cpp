@@ -847,8 +847,8 @@ void PlayerApp::setupScrolltext()
             str.append( convertDigit( totSeconds ) + ")" );
 
             m_pPlayerWidget->setScroll( str,
-                                        QString::number(item->bitrate()),
-                                        QString::number(item->samplerate()) );
+                                        QString::number(item->bitrate()) + "kbps",
+                                        QString::number(item->samplerate()) + "Hz" );
         }
         else
         {
