@@ -894,11 +894,19 @@ CollectionView::fetchCover() //SLOT
 void
 CollectionView::showTrackInfo() //SLOT
 {
-    Item* item = static_cast<Item*>( currentItem() );
-    if ( !item ) return;
-
-    if ( !item->isExpandable() ) {
+    QPtrList<QListViewItem> items = selectedItems();
+    if ( items.count() == 1 ) {
+        Item* item = static_cast<Item*>( items.first() );
+        if ( !item ) return;
         TagDialog* dialog = new TagDialog( item->url() );
+        dialog->show();
+    }
+    else {
+        //edit multiple tracks in tag dialog
+        KURL::List urls;
+        for( Item* item = static_cast<Item*>( items.first() ); item; item = static_cast<Item*>( items.next() ) )
+            urls << item->url();
+        TagDialog* dialog = new TagDialog( urls, instance() );
         dialog->show();
     }
 }
