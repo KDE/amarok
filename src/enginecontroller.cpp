@@ -125,9 +125,9 @@ void EngineController::play( const MetaBundle &bundle )
     kdDebug() << "[engine] Playing: " << url.filename() << endl;
 
     if ( url.protocol() == "http" ) {
-        // Detect filesize of remote file
-        KIO::StatJob* statjob = KIO::stat( url, false );
-        connect( statjob, SIGNAL( result( KIO::Job* ) ), this, SLOT( playRemote( KIO::Job* ) ) );
+        // Detect mimetype of remote file
+        KIO::MimetypeJob* job = KIO::mimetype( url, false );
+        connect( job, SIGNAL( result( KIO::Job* ) ), this, SLOT( playRemote( KIO::Job* ) ) );
         return;
     }
                         
@@ -140,18 +140,11 @@ void EngineController::play( const MetaBundle &bundle )
 
 void EngineController::playRemote( KIO::Job* job ) //SLOT
 {
-    KIO::StatJob* statjob = (KIO::StatJob*) job;
-    const KURL &url = m_bundle.url();
+    const QString mimetype = static_cast<KIO::MimetypeJob*>( job )->mimetype();
+    kdDebug() << "DETECTED MIMETYPE: " << mimetype << endl;
     
-    long size = 0;
-    // find size entry in UDS entry list
-    for ( uint i = 0; i < statjob->statResult().size(); i++ )
-        if ( statjob->statResult()[i].m_uds == KIO::UDS_SIZE ) {
-            size = statjob->statResult()[i].m_long;
-            break;
-    }                
-    kdDebug() << "FILESIZE (remote) detected: " << size << endl;
-    const bool stream = ( size == 0 );               
+    const KURL &url = m_bundle.url();
+    const bool stream = mimetype.isEmpty() || mimetype == "text/html";               
          
     if ( stream &&
          AmarokConfig::titleStreaming() &&
