@@ -512,6 +512,10 @@ TagSelect::TagSelect( KTRMResultList results, QWidget* parent )
 //     KTRMResultList results = *resAd;
     int cellheight = 0;
     int headerheight = 0;
+    int scrollheight = 0;
+// Add this to cellheight since height() seems to come up a little short
+    int cellpadding = 2;
+    int padding = 8;
     resultTable->insertRows( 0,results.size() );
 
     //Get rid of the row headers and margin
@@ -532,12 +536,17 @@ TagSelect::TagSelect( KTRMResultList results, QWidget* parent )
         //resultTable->setColumnStretchable(j,true);
     }
     resultTable->setColumnStretchable( 4,true );
-
-
+    resultTable->setHScrollBarMode(QScrollView::AlwaysOn);
+//    resultTable->setVScrollBarMode(QScrollView::AlwaysOn);
+    
+    
     if( results.size() > 0 ) cellheight = resultTable->item(0,0)->sizeHint().height();
     headerheight = resultTable->horizontalHeader()->height();
-    resultTable->setMaximumHeight( cellheight * (results.size()+1) + headerheight );
+    scrollheight = resultTable->horizontalScrollBar()->height();
+    resultTable->setMaximumHeight( (cellheight + cellpadding) * (results.size()) 
+                                    + headerheight + scrollheight + padding );
     adjustSize();
+    
     connect(buttonOk, SIGNAL ( clicked() ), SLOT( accept() ) );
     connect(buttonCancel, SIGNAL ( clicked() ), SLOT( reject() ) );
     connect(this, SIGNAL( sigSelectionMade( KTRMResult ) ), parent, SLOT( fillSelected( KTRMResult ) ) );
