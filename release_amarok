@@ -10,6 +10,31 @@
 #       * Extract doc translations from CVS
 
 
+# Usage
+#    Print usage and exit script
+Usage () {
+    echo "Usage: --up for automatic upload to sourceforge."
+    return 1
+}
+
+
+# Process arguments
+while [ -n "$1" ]
+do
+    case "$1" in
+    --up) upload=true
+          break
+          ;;
+    --)   break
+          ;;
+    -*)   Usage
+          ;;
+    *)    break
+          ;;
+    esac
+    shift
+done
+
 version=`kdialog --inputbox "amaroK version: "`
 username=`kdialog --inputbox "CVS username: "`
 
@@ -17,6 +42,10 @@ cvsroot=":pserver:$username@cvs.kde.org:/home/kde"
 folder="amarok-$version"
 doi18n="yes"
 log="/dev/null"
+
+# Remove old folder, if exists
+rm -rf $folder 2> /dev/null
+rm -rf $folder.tar.bz2 2> /dev/null
 
 mkdir $folder
 pushd $folder
@@ -117,6 +146,14 @@ popd # root
 tar -cf $folder.tar $folder
 bzip2 $folder.tar
 rm -rf $folder
+
+if $upload = "true"; then
+    echo
+    echo "Uploading file to sourceforge.."
+    echo
+
+    scp $folder.tar.bz2 $username@shell.sf.net:snapshots/
+fi
 
 echo
 echo "====================================================="
