@@ -362,6 +362,8 @@ void PlayerWidget::engineNewMetaData( const MetaBundle &bundle, bool )
 void PlayerWidget::engineTrackPositionChanged( long position )
 {
     m_pSlider->setValue( position );
+
+    if( !m_pSlider->isEnabled() ) timeDisplay( position );
 }
 
 

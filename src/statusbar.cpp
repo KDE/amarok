@@ -197,6 +197,8 @@ void StatusBar::slotItemCountChanged(int newCount)
 void StatusBar::engineTrackPositionChanged( long position )
 {
     m_pSlider->setValue( position );
+
+    if( !m_pSlider->isEnabled() ) drawTimeDisplay( position );
 }
 
 void StatusBar::drawTimeDisplay( int ms ) //SLOT
