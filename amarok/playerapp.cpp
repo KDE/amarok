@@ -563,8 +563,10 @@ void PlayerApp::initBrowserWin()
     connect( m_pBrowserWin->m_pPlaylistWidget, SIGNAL( doubleClicked( QListViewItem* ) ),
              this, SLOT( slotItemDoubleClicked( QListViewItem* ) ) );
 
-    connect( m_pBrowserWin, SIGNAL( signalHide() ),
-             this, SLOT( slotPlaylistIsHidden() ) );
+    // disabled signalHide() connect, since with KDE 3.1.92 it gets emitted when virtual desktops
+    // are switched  (which is prolly broken behaviour)
+//     connect( m_pBrowserWin, SIGNAL( signalHide() ),
+//              this, SLOT( slotPlaylistIsHidden() ) );
 
     //TEST
     kdDebug(DA_COMMON) << "end PlayerApp::initBrowserWin()" << endl;
@@ -1464,6 +1466,8 @@ void PlayerApp::slotPlaylistToggle( bool b )
 
 void PlayerApp::slotPlaylistIsHidden()
 {
+    kdDebug(DA_COMMON) << "void PlayerApp::slotPlaylistIsHidden()" << endl;
+    
     m_pPlayerWidget->m_pButtonPl->setOn( false );
 }
 
@@ -1585,9 +1589,11 @@ void PlayerApp::slotWidgetRestored()
     if ( m_optHidePlaylistWindow && !m_pBrowserWin->isMinimized() )
     {
         if ( m_pPlayerWidget->m_pButtonPl->isOn() )
+        {
             //do this always; there are strange circumstances when this is necessary - trust me :)
             m_pBrowserWin->show();
-
+        }
+            
         //we need to raise the playlist when the browserWindow is raised
         //if both widgets are obscured by other window, you want both widgets to be raised
         m_pBrowserWin->raise();
