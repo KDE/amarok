@@ -6,6 +6,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+          <mxcl>   If you inline set the title tag to "", prettyTitle gets inserted as the title tag.
+
           <muesli> Same for storing / looking for a compilation-cover on the local hdd.
 
           <muesli> When we're searching a cover for a compilation, cut off the artist's name, it doesn't help.
