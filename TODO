@@ -4,7 +4,8 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
-    * <berkus> in ui dialogs font labels need to resize vertically dynamically adopting the font size
+    * <berkus> in ui dialogs font labels need to resize vertically
+      dynamically adopting the font size
 
     * fix: opening hidden directories is impossible in filebrowser
 
