@@ -52,6 +52,7 @@ private:
 
     bool    m_userCanEditQuery;
     QString m_userQuery; /// the query from the query edit dialog
+    QByteArray m_xmlRaw;
     QString m_xml;
     QImage  m_image;
     QString m_amazonURL;

@@ -129,11 +129,11 @@ CoverFetcher::startFetch()
         mibenum = 106;  // utf-8
     }
     QString url;
-    url = "http://xml.amazon." + tld 
-        + "/onca/xml3?t=webservices-20&dev-t=" + LICENSE 
-        + "&KeywordSearch=" + KURL::encode_string_no_slash( query, mibenum ) 
-        + "&mode=" + musicMode 
-        + "&type=heavy&locale=" + AmarokConfig::amazonLocale() 
+    url = "http://xml.amazon." + tld
+        + "/onca/xml3?t=webservices-20&dev-t=" + LICENSE
+        + "&KeywordSearch=" + KURL::encode_string_no_slash( query, mibenum )
+        + "&mode=" + musicMode
+        + "&type=heavy&locale=" + AmarokConfig::amazonLocale()
         + "&page=1&f=xml";
     debug() << url << endl;
 
@@ -203,8 +203,11 @@ CoverFetcher::attemptAnotherFetch()
 void
 CoverFetcher::receivedXmlData( KIO::Job*, const QByteArray& data ) //SLOT
 {
-    // Append new chunk of string
-    m_xml += QString::fromUtf8( data );
+    // Append new chunk of data
+    // there's no + operator for QByteArray, so we have to do it the hard way
+    int xmlSize = m_xmlRaw.size();
+    m_xmlRaw.resize( m_xmlRaw.size() + data.size() );
+    memcpy( m_xmlRaw.data()+xmlSize, data.data(), data.size() );
 }
 
 void
@@ -212,6 +215,7 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
 {
     DEBUG_BLOCK
 
+    m_xml = QString::fromUtf8( m_xmlRaw, m_xmlRaw.size() );
     if( job && job->error() ) {
         finishWithError( i18n("There was an error communicating with Amazon."), job );
         return;
