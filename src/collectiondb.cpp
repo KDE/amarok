@@ -416,7 +416,8 @@ CollectionDB::addSongPercentage( const QString url, const int percentage )
     if ( values.count() )
     {
         // entry exists, increment playcounter and update accesstime
-        float score = ( ( percentage * values[0].toInt() ) + values[2].toDouble() ) / ( values[0].toInt() + 1 );
+        float score = ( ( values[2].toDouble() * values[0].toInt() ) + percentage ) / ( values[0].toInt() + 1 ); 
+ 
         execSql( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
                           "VALUES ( '%1', '%2', strftime('%s', 'now'), %3, %4 );" )
                     .arg( escapeString( url ) )
