@@ -58,19 +58,18 @@ MID-TERM:
 
     * add: display type of media next to bitrate
 
-    * add: think about I18N. (berkus: started in playerapp)
-
-    * fix: find solution for dropping items to the first position. maybe an empty line
-      at the top or bottom? (should be unneeded with the guide line - see below)
-
     * change: select tracks on mouseup, not mousedown
 
 
 LONG-TERM:
 
+    * fix: polish and finish i18n() stuff
+
     * add: adjustable gap between tracks, making recording easier
 
     * add: red line marker as drop indicator
+    * fix: find solution for dropping items to the first position. maybe an empty line
+      at the top or bottom? (should be unneeded with the guide line)
 
     * add: < berkus> add smooth fade outs on stop
 
@@ -96,5 +95,3 @@ LONG-TERM:
 
 IDEAS:
 
-    * all toplevel widgets (windows) we create should display the amarok icon, not just an X.
-      is there a way to do that automagically?
