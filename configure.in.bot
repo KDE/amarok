@@ -20,7 +20,7 @@ if test x$amarok_error_taglibold = xyes; then
     echo " ========================"
     echo " ="
     echo " = amaroK cannot be built because your TagLib version is too old. Please"
-    echo " = obtain the latest version from: http://ktown.kde.org/~wheeler/taglib/"
+    echo " = obtain the version $TAGLIB_REQ_VERSION from: http://ktown.kde.org/~wheeler/taglib/"
     echo " ="
 fi
 
