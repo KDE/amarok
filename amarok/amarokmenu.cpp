@@ -11,6 +11,9 @@
 #include <klocale.h>
 
 
+//TODO get kde-admin to rename this file amarokactions.cpp!
+
+
 using namespace amaroK;
 
 
@@ -92,6 +95,8 @@ Menu::slotActivated( int index )
 
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h>
+
+//there is KActionMenu, but it doesn't work very well, hence we made our own
 
 MenuAction::MenuAction( KActionCollection *ac )
   : KAction( i18n( "amaroK Menu" ), 0, ac, "amarok_menu" )
@@ -176,9 +181,10 @@ AnalyzerAction::plug( QWidget *w, int index )
         connect( w, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
 
         QWidget *block = new BlockAnalyzer( w );
-        block->setBackgroundColor( w->backgroundColor().dark( 110 ) );
+        //block->setBackgroundColor( w->backgroundColor().dark( 110 ) );
 
         bar->insertWidget( id, 0, block, index );
+        bar->setItemAutoSized( id, true );
 
         return containerCount() - 1;
     }
@@ -186,10 +192,11 @@ AnalyzerAction::plug( QWidget *w, int index )
 }
 
 
+
 RandomAction::RandomAction( KActionCollection *ac ) :
     KToggleAction( i18n( "Random &Mode" ), 0, ac, "random_mode" )
 {
-    setChecked( AmarokConfig::randomMode() );
+    KToggleAction::setChecked( AmarokConfig::randomMode() );
 }
 
 void RandomAction::setChecked( bool on )
@@ -202,7 +209,7 @@ void RandomAction::setChecked( bool on )
 RepeatTrackAction::RepeatTrackAction( KActionCollection *ac ) :
     KToggleAction( i18n( "Repeat &Track" ), 0, ac, "repeat_track" )
 {
-    setChecked( AmarokConfig::repeatTrack() );
+    KToggleAction::setChecked( AmarokConfig::repeatTrack() );
 }
 
 void RepeatTrackAction::setChecked( bool on )
@@ -215,7 +222,7 @@ void RepeatTrackAction::setChecked( bool on )
 RepeatPlaylistAction::RepeatPlaylistAction( KActionCollection *ac ) :
     KToggleAction( i18n( "Repeat &Playlist" ), 0, ac, "repeat_playlist" )
 {
-    setChecked( AmarokConfig::repeatPlaylist() );
+    KToggleAction::setChecked( AmarokConfig::repeatPlaylist() );
 }
 
 void RepeatPlaylistAction::setChecked( bool on )

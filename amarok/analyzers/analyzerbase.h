@@ -26,7 +26,7 @@
 
 class QEvent;
 class QPaintEvent;
-
+class QResizeEvent;
 
 namespace Analyzer {
 
@@ -80,10 +80,12 @@ protected:
     QPixmap  *canvas() { return &m_canvas; }
     void eraseCanvas() { bitBlt( canvas(), 0, 0, background() ); }
 
-private:
-    void polish();
     void paintEvent( QPaintEvent* ) { if( !m_canvas.isNull() ) bitBlt( this, 0, 0, canvas() ); }
+    void resizeEvent( QResizeEvent* );
 
+    void polish();
+
+private:
     QPixmap m_background;
     QPixmap m_canvas;
 };

@@ -44,7 +44,6 @@ class MenuAction : public KAction
 {
 public:
     MenuAction( KActionCollection* );
-
     virtual int plug( QWidget*, int index = -1 );
 };
 
@@ -53,7 +52,6 @@ class PlayPauseAction : public KAction, public EngineObserver
 {
 public:
     PlayPauseAction( KActionCollection* );
-
     virtual void engineStateChanged( EngineBase::EngineState );
 };
 
@@ -62,7 +60,6 @@ class AnalyzerAction : public KAction
 {
 public:
     AnalyzerAction( KActionCollection* );
-
     virtual int plug( QWidget *, int index = -1 );
 };
 
@@ -74,12 +71,14 @@ public:
     virtual void setChecked( bool on );
 };
 
+
 class RepeatTrackAction : public KToggleAction
 {
 public:
     RepeatTrackAction( KActionCollection *ac );
     virtual void setChecked( bool on );
 };
+
 
 class RepeatPlaylistAction : public KToggleAction
 {

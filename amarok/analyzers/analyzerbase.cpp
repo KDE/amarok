@@ -55,9 +55,11 @@ Analyzer::Base<W>::event( QEvent *e )
     case QEvent::Hide:
         m_timer.stop();
         break;
+
     case QEvent::Show:
         m_timer.start( timeout() );
         break;
+
     default:
         break;
     }
@@ -150,10 +152,18 @@ Analyzer::Base2D::Base2D( QWidget *parent, uint timeout, uint scopeSize )
 void
 Analyzer::Base2D::polish()
 {
+    //TODO is there much point in this anymore?
+
     //we use polish for initialzing (instead of ctor)
     //because we need to know the widget's final size
     QWidget::polish();
 
+    init(); //virtual
+}
+
+void
+Analyzer::Base2D::resizeEvent( QResizeEvent *e )
+{
     m_height = QWidget::height();
     m_background.resize( size() );
     m_canvas.resize( size() );
@@ -163,19 +173,17 @@ Analyzer::Base2D::polish()
     p.setPen( QColor( 0x20, 0x20, 0x50 ) );
 
     for( uint x = 0, w = m_background.width(), h = m_background.height()-1;
-         x < w; x += 3 ) p.drawLine( x, 0, x, h );
+        x < w; x += 3 ) p.drawLine( x, 0, x, h );
     for( uint y = 0, w = m_background.width()-1 , h = m_background.height();
-         y < h; y += 3 ) p.drawLine( 0, y, w, y );
+        y < h; y += 3 ) p.drawLine( 0, y, w, y );
     #else
     m_background.fill( backgroundColor() );
     #endif
 
     eraseCanvas(); //this is necessary
 
-    init(); //virtual
+    QWidget::resizeEvent( e );
 }
-
-
 
 #ifdef HAVE_QGLWIDGET
 Analyzer::Base3D::Base3D( QWidget *parent, uint timeout, uint scopeSize )
