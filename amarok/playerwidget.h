@@ -65,9 +65,6 @@ class PlayerWidget : public QWidget
         void timeDisplay( bool remaining, int hours, int minutes, int seconds );
         const KPopupMenu *helpMenu() const { return m_helpMenu->menu(); }
 
-        void show();
-        void hide();
-
         // ATTRIBUTES ------
         KActionCollection *m_pActionCollection;
 
@@ -102,11 +99,7 @@ class PlayerWidget : public QWidget
         void slotConfigPlayObject();
         void slotUpdateTrayIcon( bool visible );
         void nextVis();
-        void slotReportBug();
-
-    signals:
-        void sigAboutToHide();
-        void sigAboutToShow();
+        //void slotReportBug();
 
     private:
         void initScroll();

@@ -81,7 +81,7 @@ public:
     }
 
 protected:
-    KFileView* createView( QWidget*, KFile::FileView ); 
+    KFileView* createView( QWidget*, KFile::FileView );
 
 protected slots:
     virtual void activatedMenu (const KFileItem *fi, const QPoint &pos);
@@ -106,8 +106,9 @@ public:
     void setupToolbar();
     KDevDirOperator *dirOperator(){ return dir; }
     KActionCollection *actionCollection() { return mActionCollection; };
+    QString location() const;
     static QColor altBgColor;
-    
+
 public slots:
     void slotFilterChange(const QString&);
     void setDir(KURL);

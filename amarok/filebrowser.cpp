@@ -5,16 +5,16 @@
    Copyright (C) 2001 Christoph Cullmann <cullmann@kde.org>
    Copyright (C) 2001 Joseph Wenninger <jowenn@kde.org>
    Copyright (C) 2001 Anders Lund <anders.lund@lund.tdcadsl.dk>
- 
+
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
    License version 2 as published by the Free Software Foundation.
- 
+
    This library is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Library General Public License for more details.
- 
+
    You should have received a copy of the GNU Library General Public License
    along with this library; see the file COPYING.LIB.  If not, write to
    the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
@@ -131,7 +131,7 @@ KDevFileSelector::KDevFileSelector( QWidget * parent, const char * name )
     dir = new KDevDirOperator( QString::null, this, "operator" );
     dir->setView( KFile::Detail );
     dir->setMode( KFile::Files );
-    
+
     KActionCollection *coll = dir->actionCollection();
     // some shortcuts of diroperator that clashes with KDev
     coll->action( "delete" )->setShortcut( KShortcut( ALT + Key_Delete ) );
@@ -217,6 +217,12 @@ KDevFileSelector::~KDevFileSelector()
 
 //BEGIN Public Methods
 
+QString KDevFileSelector::location() const
+{
+    return cmbPath->currentText();
+}
+
+
 void KDevFileSelector::readConfig()
 {
     // set up the toolbar
@@ -227,11 +233,11 @@ void KDevFileSelector::readConfig()
 
     // if we restore history
     if ( AmarokConfig::restoreLocation() || kapp->isRestored() )
-    {    
+    {
         if ( ! AmarokConfig::location().isEmpty() )
             setDir( AmarokConfig::location() );
     }
-            
+
     // else is automatic, as cmpPath->setURL is called when a location is entered.
 
     filter->setMaxCount( AmarokConfig::filterHistoryLen() );
@@ -487,7 +493,7 @@ KURL KDevFileSelector::activeDocumentUrl( )
 {
     /*    KTextEditor::Document* doc = dynamic_cast<KTextEditor::Document*>( partController->activePart() );
         if( doc )
-    	return doc->url();*/
+            return doc->url();*/
 
     return KURL();
 }
@@ -522,12 +528,12 @@ void KDevDirOperator::activatedMenu( const KFileItem *fi, const QPoint & pos )
 KFileView* KDevDirOperator::createView( QWidget *parent, KFile::FileView view )
 {
     kdDebug() << "[KDevDirOperator::createView()]" << endl;
-    
+
     KFileView *pView = KDirOperator::createView( parent, view );
-    
+
     if ( dynamic_cast<QObject*>( pView )->inherits( "KListView" ) )
         dynamic_cast<KListView*>( pView )->setAlternateBackground( KDevFileSelector::altBgColor );
-    
+
     return pView;
 }
 

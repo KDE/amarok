@@ -81,8 +81,10 @@ PlaylistItem::~PlaylistItem()
 MetaBundle PlaylistItem::metaBundle() const
 {
     //FIXME only do once!
-    //FIXME these column now exist, check them first?
-    TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Fast );
+    //Here we do an accurate scan before every bundle is requested because:
+    //1) they are only ever requested individually
+    //2) we REQUIRE this data to get the song length right!
+    TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Accurate );
 
     //FIXME hold a small cache of metabundles?
     //then return by reference

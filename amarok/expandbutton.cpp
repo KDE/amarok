@@ -38,34 +38,37 @@
 #include <kglobal.h>
 
 
-ExpandButton::ExpandButton( const QString &text, QWidget *parent )
+ExpandButton::ExpandButton( const QString &text, QWidget *parent, QObject *receiver, const char *slot )
     : QPushButton( text, parent )
     , m_animFlag( ANIM_IDLE )
     , m_expanded( false )
 {
     setName( "ExpandButton" );
     setFocusPolicy( QWidget::NoFocus );
-
-    m_ButtonList = QPtrList<ExpandButton>();
-    connect( this, SIGNAL( pressed() ), this, SLOT( slotDelayExpand() ) );
-
     setFlat( true );
+
+    //m_ButtonList = QPtrList<ExpandButton>(); disabled because it will already be initialised in this way on construction
+    connect( this, SIGNAL( pressed() ), this,     SLOT( slotDelayExpand() ) );
+    connect( this, SIGNAL( clicked() ), receiver, slot );
 }
 
 
-ExpandButton::ExpandButton( const QString &text, ExpandButton *parent )
+ExpandButton::ExpandButton( const QString &text, ExpandButton *parent, QObject *receiver, const char *slot )
     : QPushButton( text, parent->parentWidget() )
     , m_animFlag( ANIM_IDLE )
     , m_expanded( false )
 {
-    setName( "expandButton_child" );
+    setName( "ExpandButton_child" );
     setFocusPolicy( QWidget::NoFocus );
 
     parent->m_ButtonList.append( this );
     hide();
 
+    //FIXME inefficient
     if ( QToolTip::textFor( parent ) != QString::null ) QToolTip::remove( parent );
     QToolTip::add( parent, i18n( "Keep button pressed for sub-menu" ) );
+
+    connect( this, SIGNAL( clicked() ), receiver, slot );
 }
 
 

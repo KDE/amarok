@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "amarokconfig.h"
 #include "browserwin.h"
 #include "expandbutton.h"
 #include "filebrowser.h"
@@ -22,40 +23,58 @@
 #include "playlistwidget.h"
 #include "streambrowser.h"
 
-#include "amarokconfig.h"
-
-#include <qcolor.h>   //setPalettes()
-#include <qpalette.h> //setPalettes()
-#include <qfile.h>
-#include <qlayout.h>
-#include <qpixmap.h>
-#include <qsplitter.h>
-#include <qstring.h>
-#include <qtooltip.h>
-#include <qvbox.h>
-#include <qwidget.h>
-#include <qsignalmapper.h> //PlaylistSideBar
-#include <qobjectlist.h>   //setPaletteRecursively()
+//PlaylistSideBar includes
 #include <qpainter.h>      //PlaylistSideBar::TinyButton
+#include <qpixmap.h>       //TinyButtons
+#include <qsignalmapper.h> //m_mapper
 #include <qstyle.h>        //PlaylistSideBar::PlaylistSideBar
+#include <qtimer.h>        //autoClose()
 
-#include <kaction.h>
-#include <kapplication.h>
+#include <kiconloader.h>   //multiTabBar icons
+#include <kmultitabbar.h>  //m_multiTabBar
+
+//BrowserWin includes
+#include <qcolor.h>        //setPalettes()
+#include <qevent.h>        //eventFilter()
+#include <qlayout.h>
+#include <qobjectlist.h>   //setPaletteRecursively()
+#include <qpalette.h>      //setPalettes()
+#include <qsplitter.h>     //m_splitter
+#include <qtooltip.h>      //QToolTip::add()
+#include <qvbox.h>         //contains the playlist
+
+#include <kaction.h>       //m_actionCollection
+#include <kapplication.h>  //kapp
+#include <kcursor.h>       //customEvent()
 #include <kdebug.h>
 #include <kglobal.h>
-#include <kglobalsettings.h>
-#include <kiconloader.h>
+#include <kfiledialog.h>   //savePlaylist()
+#include <klineedit.h>     //m_lineEdit
 #include <klocale.h>
-#include <klineedit.h>
-#include <klistview.h>
-#include <kmultitabbar.h>
-#include <kstandarddirs.h>
-#include <kurl.h>
+#include <kstandarddirs.h> //KGlobal::dirs()
+#include <kurldrag.h>      //eventFilter()
+#include <kurlrequester.h>    //slotAddLocation()
+#include <kurlrequesterdlg.h> //slotAddLocation()
 
 
-static void setPaletteRecursively( QWidget*, const QPalette&, const QColor& );
+//Routine for setting palette recursively in a widget and all its childen
+//NOTE I didn't make this a member as there was no need and we may like to move it at some point
+static void setPaletteRecursively( QWidget* widget, const QPalette &pal, const QColor& bgAlt )
+{
+    QObjectList *list = widget->queryList( "QWidget" );
+    list->append( widget );
 
+    for( QObject *obj = list->first(); obj; obj = list->next() )
+    {
+        static_cast<QWidget*>(obj)->setPalette( pal );
 
+        if( obj->inherits( "KListView" ) )
+        {
+            KListView *lv = dynamic_cast<KListView *>(obj); //slow, but safe
+            if( lv ) lv->setAlternateBackground( bgAlt );
+        }
+    }
+}
 
 
 //<mxcl>
@@ -65,7 +84,6 @@ static void setPaletteRecursively( QWidget*, const QPalette&, const QColor& );
 
 /**
  * A mini-button usually placed in the dockpanel.
- * @internal
  *
  * @author Max Judin, Max Howell.
 */
@@ -133,6 +151,8 @@ void PlaylistSideBar::TinyButton::leaveEvent( QEvent * )
 //NOTE I use the baseSize().width() property to remember page widths as it
 //an otherwise unused property and this saves memory
 
+//NOTE you can obtain pointers to the widgets you insert with addPage() using: page( "name" );
+
 PlaylistSideBar::PlaylistSideBar( QWidget *parent )
     : QHBox( parent )
     , m_multiTabBar( new KMultiTabBar( KMultiTabBar::Vertical, this ) )
@@ -166,6 +186,10 @@ PlaylistSideBar::PlaylistSideBar( QWidget *parent )
     tinyLayout->addWidget( closeButton );
     mainLayout->addLayout( tinyLayout );
 
+    //set it to a default state of closed();
+    m_pageHolder->hide();
+    setMaximumWidth( m_multiTabBar->sizeHint().width() );
+
     KConfig *config = kapp->config();
     config->setGroup( "PlaylistSideBar" );
     m_stayButton->setOn( config->readBoolEntry( "Stay", true ) );
@@ -178,26 +202,25 @@ PlaylistSideBar::~PlaylistSideBar()
     KConfig *config = kapp->config();
     config->setGroup( "PlaylistSideBar" );
     config->writeEntry( "Stay", m_stayButton->isOn() );
+    config->writeEntry( "CurrentPane", m_pages.current() ? m_pages.current()->name() : "" );
 
     for( QPtrList<QWidget>::ConstIterator it = m_pages.constBegin(); *it; ++it )
         config->writeEntry( (*it)->name(), (*it)->baseSize().width() );
 }
 
-void PlaylistSideBar::addPage( QWidget *widget, const QString& icon, bool show )
+void PlaylistSideBar::addPage( QWidget *widget, const QString &title, const QString& icon )
 {
     //hi, this function is ugly - blame the monstrosity that is KMultiTabBar
 
-    widget->reparent( m_pageHolder, 0, QPoint() ); //FIXME
-    m_pageHolder->layout()->add( widget );
-
-    //we need to get next available id this way
-    //currently it's the only way to do it coz KMultiTabBar sux0rs
+    //determine next available id
     int id = m_multiTabBar->tabs()->count();
-    //we exlusively use widget name to force adoption of sensible, unique widget names for the
-    //purposes of this class
     QString name( widget->name() );
 
-    m_multiTabBar->appendTab( KGlobal::iconLoader()->loadIcon( icon, KIcon::NoGroup, KIcon::SizeSmall ), id, name );
+    widget->reparent( m_pageHolder, QPoint(), false );
+    m_pageHolder->layout()->add( widget );
+    widget->hide();
+
+    m_multiTabBar->appendTab( KGlobal::iconLoader()->loadIcon( icon, KIcon::NoGroup, KIcon::SizeSmall ), id, title );
     QWidget *tab = m_multiTabBar->tab( id );
     tab->setFocusPolicy( QWidget::NoFocus ); //FIXME currently if you tab to these widgets, they respond to no input!
 
@@ -213,17 +236,17 @@ void PlaylistSideBar::addPage( QWidget *widget, const QString& icon, bool show )
         //we need some kind of sensible behavior that doesn't require much code
         int index = m_pages.at();
         m_pages.append( widget );
-        m_pages.at( index ); //restore "current"
+        //FIXME this sucks plenty!
+        if( index == -1 ) { m_pages.last(); m_pages.next(); }
+        else m_pages.at( index ); //restore "current"
     }
 
-    widget->hide();
-    if( show ) showHidePage( id );
+    if( config->readEntry( "CurrentPane" ) == name )
+        showHidePage( id );
 }
 
 void PlaylistSideBar::showHidePage( int replaceIndex )
 {
-    setUpdatesEnabled( false );
-
     int currentIndex = m_pages.at(); //doesn't set "current"
     QWidget *current = m_pages.current();
     QWidget *replace = m_pages.at( replaceIndex ); //sets "current" to replaceIndex
@@ -246,8 +269,6 @@ void PlaylistSideBar::showHidePage( int replaceIndex )
         else           { m_pages.last(); m_pages.next(); //quickly sets "current" to NULL
                          replace->hide(); m_pageHolder->hide(); setMaximumWidth( m_multiTabBar->width() ); }
     }
-
-    setUpdatesEnabled( true );
 }
 
 QSize PlaylistSideBar::sizeHint() const
@@ -274,7 +295,7 @@ QWidget *PlaylistSideBar::page( const QString &widgetName )
     return 0;
 }
 
-void PlaylistSideBar::setPageFont( const QFont &font )
+void PlaylistSideBar::setFont( const QFont &font )
 {
     //Hi! are you here because this function doesn't work?
     //Please consider not changing the fonts for the browsers as they require a
@@ -296,215 +317,155 @@ inline void PlaylistSideBar::close() //SLOT
 
 inline void PlaylistSideBar::autoClosePages() //SLOT
 {
-    if( !m_stayButton->isOn() ) close();
+    if( !m_stayButton->isOn() )
+    {
+        QTimer::singleShot( QApplication::doubleClickInterval(), this, SLOT( close() ) );
+    }
 }
+
 
 
 
 // CLASS BrowserWin =====================================================================
 
 BrowserWin::BrowserWin( QWidget *parent, const char *name )
-    : QWidget( parent, name, Qt::WType_TopLevel | Qt::WPaintUnclipped )
-    , m_pActionCollection( new KActionCollection( this ) )
-    , m_pSplitter( new QSplitter( this ) )
-    , m_pSideBar( new PlaylistSideBar( m_pSplitter ) )
+   : QWidget( parent, name, Qt::WType_TopLevel | Qt::WPaintUnclipped )
+   , m_pActionCollection( new KActionCollection( this ) )
+   , m_splitter( new QSplitter( this ) )
+   , m_sideBar( new PlaylistSideBar( m_splitter ) )
+   , m_playlist( 0 )
+   , m_lineEdit( 0 )
 {
     setCaption( kapp->makeStdCaption( i18n( "Playlist" ) ) );
-    setAcceptDrops( true );
-    m_pSplitter->setResizeMode( m_pSideBar, QSplitter::FollowSizeHint );
-    m_pSideBar ->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
 
-    initChildren();
+    //TODO pass it an engine pointer and it'll connect up various signals
+    //this is cool because Qt is cool and not compile check is neccessary!
 
-    KStdAction::undo( m_pPlaylistWidget, SLOT( doUndo() ), m_pActionCollection );
-    KStdAction::redo( m_pPlaylistWidget, SLOT( doRedo() ), m_pActionCollection );
-    KStdAction::copy( m_pPlaylistWidget, SLOT( copyAction() ), m_pActionCollection );
+    /*
+    QToolButton *clearButton = new QToolButton( this );
+    //KApplication::reverseLayout() ? "clear_left" : "locationbar_erase"
+    clearButton->setIconSet( SmallIconSet( "locationbar_erase" ) );
+    connect( clearButton, SIGNAL( clicked() ), m_lineEdit, SLOT( clear() ) );
+    */
 
-    connect( m_pPlaylistWidget, SIGNAL( sigUndoState( bool ) ),
-             m_pButtonUndo, SLOT( setEnabled( bool ) ) );
-    connect( m_pPlaylistWidget, SIGNAL( sigRedoState( bool ) ),
-             m_pButtonRedo, SLOT( setEnabled( bool ) ) );
-    connect( m_pPlaylistWidget, SIGNAL( cleared() ),
-             m_pPlaylistLineEdit, SLOT( clear() ) );
-    connect( m_pPlaylistLineEdit, SIGNAL( clicked() ),
-             m_pSideBar, SLOT( autoClosePages() ) );
-    connect( m_pPlaylistWidget, SIGNAL( clicked( QListViewItem * ) ),
-             m_pSideBar, SLOT( autoClosePages() ) );
+    QBoxLayout *layV = new QVBoxLayout( this );
+    layV->addWidget( m_splitter );
+
+    QVBox *box = new QVBox( m_splitter );
+    m_lineEdit = new KLineEdit( box );
+    m_playlist = new PlaylistWidget( box );
+    m_splitter->setResizeMode( m_sideBar, QSplitter::FollowSizeHint );
+    m_splitter->setResizeMode( box,       QSplitter::Auto );
+    m_sideBar->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
 
 
-    connect( m_pButtonClear, SIGNAL( clicked() ),
-             m_pPlaylistWidget, SLOT( clear() ) );
+    {
+        ExpandButton *add =
+        new ExpandButton( i18n( "&Add Item..." ), this, this, SLOT( slotAddLocation() ) );
 
-    //FIXME <mxcl> MAKE_IT_CLEAN: kaction-ify
-    connect( m_pButtonShuffle,  SIGNAL( clicked() ),
-             m_pPlaylistWidget, SLOT( shuffle() ) );
+        ExpandButton *play =
+        new ExpandButton( i18n( "&Play" ),    this, pApp, SLOT( slotPlay() ) );
+        new ExpandButton( i18n( "Pause" ),    play, pApp, SLOT( slotPause() ) );
+        new ExpandButton( i18n( "Stop" ),     play, pApp, SLOT( slotStop() ) );
+        new ExpandButton( i18n( "Next" ),     play, pApp, SLOT( slotNext() ) );
+        new ExpandButton( i18n( "Previous" ), play, pApp, SLOT( slotPrev() ) );
 
-    //moved from playerapp
-    connect( m_pButtonAdd, SIGNAL( clicked() ),
-             this, SLOT( slotAddLocation() ) );
+        ExpandButton *clear =
+        new ExpandButton( i18n( "&Clear" ), this, m_playlist, SLOT( clear() ) );
+        new ExpandButton( i18n( "Shuffle" ), clear, m_playlist, SLOT( shuffle() ) );
+        new ExpandButton( i18n( "Save Playlist..." ), clear, this, SLOT( savePlaylist() ) );
 
-    connect( m_pButtonSave, SIGNAL( clicked() ),
-             this, SLOT( savePlaylist() ) );
+        m_playlist->m_undoButton->reparent( this, QPoint(), false );
+        m_playlist->m_redoButton->reparent( this, QPoint(), false );
 
-    connect( m_pButtonUndo, SIGNAL( clicked() ),
-             m_pPlaylistWidget, SLOT( doUndo() ) );
+        QBoxLayout *layH = new QHBoxLayout( layV );
+        layH->addWidget( add );
+        layH->addWidget( clear );
+        layH->addWidget( m_playlist->m_undoButton );
+        layH->addWidget( m_playlist->m_redoButton );
+        layH->addWidget( play );
+    }
 
-    connect( m_pButtonRedo, SIGNAL( clicked() ),
-             m_pPlaylistWidget, SLOT( doRedo() ) );
+    //</FileBrowser>
+        m_sideBar->addPage( new KDevFileSelector( 0, "FileBrowser" ), i18n( "File Browser" ), "hdd_unmount" );
+    //</FileBrowser>
+
+    { //<StreamBrowser>
+        QVBox   *vb = new QVBox( 0, "StreamBrowser" );
+        QWidget *b  = new QPushButton( "&Fetch Stream Information", vb );
+        QObject *sb = new StreamBrowser( vb );
+        connect( b, SIGNAL( clicked() ), sb, SLOT( slotUpdateStations() ) );
+        connect( b, SIGNAL( clicked() ),  b, SLOT( deleteLater() ) );
+        m_sideBar->addPage( vb, i18n( "Stream Browser" ), "network" );
+    } //</StreamBrowser>
+
+
+    //load previous playlist
+    insertMedia( defaultPlaylistPath() );
+
+    //we intercept keyEvents to the playlist
+    m_playlist->installEventFilter( this );
+    //we intercept keyEvents to the lineEdit
+    m_lineEdit->installEventFilter( this );
+
+
+    connect( m_playlist,   SIGNAL( aboutToClear() ),
+             m_lineEdit,     SLOT( clear() ) );
+    //FIXME you need to detect focus out from the sideBar and connect to that..
+    connect( m_playlist,   SIGNAL( clicked( QListViewItem * ) ),
+             m_sideBar,      SLOT( autoClosePages() ) );
+    connect( m_lineEdit,   SIGNAL( textChanged( const QString& ) ),
+             m_playlist,     SLOT( slotTextChanged( const QString& ) ) );
+
+    //TODO KStdAction::copy( m_playlist, SLOT( copyAction() ), m_actionCollection );
+
+    QToolTip::add( m_lineEdit, i18n( "Enter filter string" ) );
 }
 
 
 BrowserWin::~BrowserWin()
 {
-}
+    //TODO save at regular intervals, (use the QWidget built in timer as they have less overhead)
 
-/////////////////////////////////////////////////////////////////////////////////////
-// INIT
-/////////////////////////////////////////////////////////////////////////////////////
-
-void BrowserWin::initChildren()
-{
-    //<Buttons>
-    m_pButtonAdd     = new ExpandButton( i18n( "Add Item" ), this );
-
-    m_pButtonClear   = new ExpandButton( i18n( "Clear" ), this );
-    m_pButtonShuffle = new ExpandButton( i18n( "Shuffle" ), m_pButtonClear );
-    m_pButtonSave    = new ExpandButton( i18n( "Save Playlist" ), m_pButtonClear );
-
-    m_pButtonUndo    = new ExpandButton( i18n( "Undo" ), this );
-    m_pButtonRedo    = new ExpandButton( i18n( "Redo" ), this );
-    m_pButtonUndo      ->  setEnabled  ( false );
-    m_pButtonRedo      ->  setEnabled  ( false );
-
-    m_pButtonPlay    = new ExpandButton( i18n( "Play" ), this );
-    m_pButtonPause   = new ExpandButton( i18n( "Pause" ), m_pButtonPlay );
-    m_pButtonStop    = new ExpandButton( i18n( "Stop" ), m_pButtonPlay );
-    m_pButtonNext    = new ExpandButton( i18n( "Next" ), m_pButtonPlay );
-    m_pButtonPrev    = new ExpandButton( i18n( "Previous" ), m_pButtonPlay );
-    //</Buttons>
-
-    { //</FileBrowser>
-        KDevFileSelector *w = new KDevFileSelector( m_pSideBar, "FileBrowser" );
-        m_pSideBar->addPage( w, "hdd_unmount", true );
-    } //</FileBrowser>
-
-    { //<StreamBrowser>
-        QVBox   *vb = new QVBox( m_pSideBar, "StreamBrowser" );
-        QWidget *b  = new QPushButton( "&Fetch Stream Information", vb );
-        QObject *sb = new StreamBrowser( vb, "KDERadioStation" );
-        connect( b, SIGNAL( clicked() ), sb, SLOT( slotUpdateStations() ) );
-        connect( b, SIGNAL( clicked() ),  b, SLOT( hide() ) );
-        m_pSideBar->addPage( vb, "network" );
-    } //</StreamBrowser>
-
-    { //<Playlist>
-        QVBox *vb = new QVBox( m_pSplitter );
-        m_pPlaylistLineEdit = new KLineEdit( vb );
-        m_pPlaylistWidget   = new PlaylistWidget( vb );
-        connect( m_pPlaylistLineEdit, SIGNAL( textChanged( const QString& ) ),
-                m_pPlaylistWidget, SLOT( slotTextChanged( const QString& ) ) );
-        connect( m_pPlaylistLineEdit, SIGNAL( returnPressed() ),
-                m_pPlaylistWidget, SLOT( slotReturnPressed() ) );
-        m_pSplitter->setResizeMode( vb, QSplitter::Auto );
-        QToolTip::add( m_pPlaylistLineEdit, i18n( "Enter filter string" ) );
-    } //</Playlist>
-
-    //<Layout>
-    QBoxLayout *layV = new QVBoxLayout( this );
-    layV->addWidget( m_pSplitter );
-
-    QBoxLayout *layH = new QHBoxLayout( layV );
-    layH->addWidget( m_pButtonAdd );
-    layH->addWidget( m_pButtonClear );
-    layH->addWidget( m_pButtonUndo );
-    layH->addWidget( m_pButtonRedo );
-    layH->addWidget( m_pButtonPlay );
-    //</Layout>
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-// PUBLIC METHODS
-/////////////////////////////////////////////////////////////////////////////////////
-
-void BrowserWin::slotUpdateFonts()
-{
-    QFont font;
-
-    if ( AmarokConfig::useCustomFonts() )
-        font = AmarokConfig::browserWindowFont();
-
-    m_pSideBar->setPageFont( font );
-    m_pPlaylistWidget->setFont( font );
+    if( AmarokConfig::savePlaylist() )
+        m_playlist->saveM3u( defaultPlaylistPath() );
 }
 
 
-#include <kfiledialog.h>
-#include <kurlrequester.h>
-#include <kurlrequesterdlg.h>
 
-void BrowserWin::savePlaylist()
+///////// public interface
+
+void BrowserWin::insertMedia( const KURL::List &list, bool b )
 {
-    //we call this so the Filebrowser writes the current path into AmarokConfig
-    saveConfig();
-
-    QString path = KFileDialog::getSaveFileName( AmarokConfig::location(), "*.m3u" );
-
-    if ( !path.isEmpty() )
-    {
-        // <berkus> FIXME: 3.2 KFileDialog has a [x] Append file extension automagically, so we should obey the user choice
-        if ( path.right( 4 ) != ".m3u" )
-            path += ".m3u";
-
-        m_pPlaylistWidget->saveM3u( path );
-    }
+    if( b ) m_playlist->clear();
+    m_playlist->insertMedia( list );
 }
 
 
-void BrowserWin::slotAddLocation()
+bool BrowserWin::isAnotherTrack() const
 {
-    KURLRequesterDlg dlg( QString::null, 0, 0 );
-    dlg.setCaption( kapp->makeStdCaption( i18n( "Enter file or URL" ) ) );
-    dlg.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
-    dlg.exec();
-
-    m_pPlaylistWidget->insertMedia( dlg.selectedURL() );
+    return m_playlist->isAnotherTrack();
 }
 
 
-void BrowserWin::setPalettes( const QPalette &pal, const QColor &bgAlt )
+void BrowserWin::setColors( const QPalette &pal, const QColor &bgAlt )
 {
-    setPaletteRecursively( m_pPlaylistWidget,   pal, bgAlt );
-    setPaletteRecursively( m_pPlaylistLineEdit, pal, bgAlt );
-    setPaletteRecursively( m_pSideBar,          pal, bgAlt );
-    
+    m_lineEdit->setPalette( pal );
+    m_playlist->setColors( pal, bgAlt ); //due to private inheritance nasty
+    setPaletteRecursively( m_sideBar, pal, bgAlt );
+
+    //update()
+    //m_playlist->triggerUpdate();
+
+    //TODO perhaps this should be a global member of some singleton (I mean bgAlt not just the filebrowser bgAlt!)
     KDevFileSelector::altBgColor = bgAlt;
-    
-    update();
-    m_pPlaylistWidget->triggerUpdate();
 }
 
 
-//Routine for setting palette recursively in a widget and all its childen
-static void setPaletteRecursively( QWidget* widget, const QPalette &pal, const QColor& bgAlt )
+void BrowserWin::setFont( const QFont &newFont )
 {
-    QObjectList *list = widget->queryList( "QWidget" );
-    list->append( widget );
-
-    for( QObject *obj = list->first(); obj; obj = list->next() )
-    {
-        static_cast<QWidget*>(obj)->setPalette( pal );
-        //FIXME hack hack hack!
-        if( AmarokConfig::schemeAmarok() && obj->inherits( "QLineEdit" ) )
-        {
-            QLineEdit *le = dynamic_cast<QLineEdit *>(obj); //slow, but safe
-            if( le ) le->setPaletteForegroundColor( Qt::white ); //FIXME don't be hard set!
-        }
-        else if( obj->inherits( "KListView" ) )
-        {
-            KListView *lv = dynamic_cast<KListView *>(obj); //slow, but safe
-            if( lv ) lv->setAlternateBackground( bgAlt );
-        }
-    }
+    m_sideBar ->setFont( newFont );
+    m_playlist->setFont( newFont );
 }
 
 
@@ -512,67 +473,106 @@ void BrowserWin::saveConfig()
 {
     //FIXME sucks a little to get ptr this way
     //FIXME instead force the widgets to derive from SideBarWidget or something
-    // this method is good as it saves duplicate pointer to the fileBrowser
-    KDevFileSelector *fileBrowser = (KDevFileSelector *)m_pSideBar->page( "FileBrowser" );
+    // this method is good as it saves having duplicate pointers to the fileBrowser
+    KDevFileSelector *fileBrowser = (KDevFileSelector *)m_sideBar->page( "FileBrowser" );
     fileBrowser->writeConfig();
 }
 
-/////////////////////////////////////////////////////////////////////////////////////
-// PRIVATE METHODS
-/////////////////////////////////////////////////////////////////////////////////////
 
-void BrowserWin::closeEvent( QCloseEvent *e )
+inline
+QString BrowserWin::defaultPlaylistPath() const
 {
-    e->accept();
-    emit signalHide();
+    return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "current.m3u";
 }
 
 
-void BrowserWin::keyPressEvent( QKeyEvent *e )
+
+//////// private interface
+
+bool BrowserWin::eventFilter( QObject *o, QEvent *e )
 {
-  //if the keypress is given to this widget then nothing is in focus
-  //if the keypress was passed here from a childWidget that couldn't handle it then
-  //we should note what is in focus and not send it back!
+    //filters events for a few of the widgets we are parent to
+    //this makes life easier since we have more useful functions available from here
 
-  //FIXME WARNING! there is a substantial risk of infinite looping here if the event is ignored by child event
-  //               handlers it will be passed back to this function!
+    switch( e->type() )
+    {
+    case QEvent::KeyPress:
+        #define e static_cast<QKeyEvent*>(e)
+        if( o == m_lineEdit )
+        {
+            //FIXME inefficient to always construct this
+            QListViewItemIterator it( m_playlist, QListViewItemIterator::Visible );
+            if( 0 == it.current() ) return FALSE;
 
-  //FIXME, you managed an infinite loop here. Damn (using filebrowserlineedit)
+            switch( e->key() )
+            {
+            case Key_Down:
+                m_playlist->setFocus();
+                m_playlist->setCurrentItem( it.current() );
+                it.current()->setSelected( true ); //FIXME why doesn't it do this for us?
+                return TRUE;
 
-  kdDebug() << "BrowserWin::keyPressEvent()\n";
+            case Key_Return:
+            case Key_Enter:
+                m_lineEdit->clear();
+                m_playlist->activate( it.current() );
+                m_playlist->ensureItemVisible( it.current() );
+                return TRUE;
 
-  switch( e->key() )
-  {
-  case Qt::Key_Up:
-  case Qt::Key_Down:
-  case Qt::Key_Left:
-  case Qt::Key_Right:
-  case Qt::Key_Prior:
-  case Qt::Key_Next:
-//  case Qt::Key_Return:
-//  case Qt::Key_Enter:
-  case Qt::Key_Delete:
-     if( !m_pPlaylistWidget->hasFocus() )
-     {
-        //if hasFocus() then this event came from there, and we don't want to risk an infinite loop!
-        m_pPlaylistWidget->setFocus();
-        QApplication::sendEvent( m_pPlaylistWidget, e );
-     }
-     break;
-/*
-  //removed as risky, although useful
-  default:
-     if( !m_pPlaylistLineEdit->hasFocus() )
-     {
-        //if hasFocus() then this event came from there (99% sure)
-        m_pPlaylistLineEdit->setFocus();
-        QApplication::sendEvent( m_pPlaylistLineEdit, e );
-     }
-*/
-  }
+            default:
+                return FALSE;
+            }
+        }
 
-  e->accept(); //consume the event, ALERT! keypresses won't propagate to parent (good thing)
+        if( e->key() == Key_Up && m_playlist->currentItem()->itemAbove() == 0 )
+        {
+            m_playlist->currentItem()->setSelected( false );
+            m_lineEdit->setFocus();
+            return TRUE;
+        }
+
+        if( e->key() == Key_Delete )
+        {
+            m_playlist->removeSelectedItems();
+            return TRUE;
+        }
+
+        if( ( e->key() >= Key_0 && e->key() <= Key_Z ) || e->key() == Key_Backspace )
+        {
+            m_lineEdit->setFocus();
+            QApplication::sendEvent( m_lineEdit, e );
+            return TRUE;
+        }
+        #undef e
+
+    default:
+        return FALSE;
+    }
 }
 
+
+void BrowserWin::savePlaylist() const //SLOT
+{
+    QWidget *fb = m_sideBar->page( "FileBrowser" );
+    QString path = fb ? static_cast<KDevFileSelector *>(fb)->location() : "~";
+
+    path = KFileDialog::getSaveFileName( path, "*.m3u" );
+
+    if( !path.isEmpty() )
+    {
+        m_playlist->saveM3u( path );
+    }
+}
+
+
+void BrowserWin::slotAddLocation() //SLOT
+{
+    KURLRequesterDlg dlg( QString::null, 0, 0 );
+    dlg.setCaption( kapp->makeStdCaption( i18n( "Enter file or URL" ) ) );
+    dlg.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
+    dlg.exec();
+
+    insertMedia( dlg.selectedURL() );
+}
 
 #include "browserwin.moc"

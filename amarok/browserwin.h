@@ -54,8 +54,8 @@ public:
     PlaylistSideBar( QWidget *parent );
     ~PlaylistSideBar();
 
-    void setPageFont( const QFont& );
-    void addPage( QWidget*, const QString&, bool = false );
+    void setFont( const QFont& );
+    void addPage( QWidget*, const QString&, const QString& );
     QWidget *page( const QString& );
     virtual QSize sizeHint() const;
 
@@ -97,20 +97,24 @@ private:
 
 // CLASS BrowserWin =====================================================================
 
-#include <qwidget.h> //baseclass
+#include <qwidget.h>     //baseclass
+#include <kurl.h>        //KUL::List
 
 class ExpandButton;
-class PlaylistWidget;
+class PlaylistLoader;
 class PlaylistSideBar;
-
-class QCloseEvent;
-class QKeyEvent;
-class QColor;
-class QPalette;
-class QSplitter;
-
+class PlaylistWidget;
 class KLineEdit;
-class KActionCollection; //FIXME do we need #include <kaction.h>?
+class KActionCollection;
+class QColor;
+class QCloseEvent;
+class QCustomEvent;
+class QFont;
+class QListViewItem;
+class QPalette;
+class QPushButton;
+class QSplitter;
+class QString;
 
 class BrowserWin : public QWidget
 {
@@ -120,50 +124,48 @@ class BrowserWin : public QWidget
         BrowserWin( QWidget* = 0, const char* = 0 );
         ~BrowserWin();
 
-        void setPalettes( const QPalette&, const QColor& );
+        //convenience functions
+        void insertMedia( const QString&, bool = false );
+        void insertMedia( const KURL&, bool = false );
+        void insertMedia( const KURL::List&, bool = false );
+        bool isAnotherTrack() const;
+
+        void setFont( const QFont& );
+        void setColors( const QPalette&, const QColor& );
         void saveConfig();
-        
-// ATTRIBUTES ------
+
         KActionCollection *m_pActionCollection;
 
-        ExpandButton *m_pButtonAdd;
-
-        ExpandButton *m_pButtonClear;
-        ExpandButton *m_pButtonShuffle;
-        ExpandButton *m_pButtonSave;
-
-        ExpandButton *m_pButtonUndo;
-
-        ExpandButton *m_pButtonRedo;
-
-        ExpandButton *m_pButtonPlay;
-        ExpandButton *m_pButtonPause;
-        ExpandButton *m_pButtonStop;
-        ExpandButton *m_pButtonNext;
-        ExpandButton *m_pButtonPrev;
-
-        PlaylistWidget *m_pPlaylistWidget;
-
-        QSplitter *m_pSplitter;
-        KLineEdit *m_pPlaylistLineEdit;
-
-    public slots:
-        void slotUpdateFonts();
-        void savePlaylist();
-
-    signals:
-        void signalHide();
-
-    private:
-        void initChildren();
-        void closeEvent( QCloseEvent* );
-        void keyPressEvent( QKeyEvent* );
-
-        PlaylistSideBar *m_pSideBar;
-
     private slots:
+        void savePlaylist() const;
         void slotAddLocation();
 
+    private:
+        bool    eventFilter( QObject*, QEvent* );
+        QString defaultPlaylistPath() const; //inline convenience function
+
+        QSplitter       *m_splitter;
+        PlaylistSideBar *m_sideBar;
+        PlaylistWidget  *m_playlist;
+        KLineEdit       *m_lineEdit;
 };
+
+
+inline
+void BrowserWin::insertMedia( const QString &path, bool b )
+{
+    KURL url;
+    url.setPath( path );
+    insertMedia( KURL::List( url ), b );
+}
+
+inline
+void BrowserWin::insertMedia( const KURL &url, bool b )
+{
+    if( !url.isEmpty() )
+    {
+        insertMedia( KURL::List( url ), b );
+    }
+}
 
 #endif

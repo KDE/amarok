@@ -32,6 +32,7 @@ email                : markey@web.de
 
 #include <vector>
 #include <string>
+#include <math.h> //play(), visTimer()
 
 #include <kaction.h>
 #include <kapp.h>
@@ -48,11 +49,6 @@ email                : markey@web.de
 #include <kurl.h>
 #include <kconfigdialog.h>
 
-//FIXME remove these dependencies, we can implement saveConfig across objects and use a save() signal
-//      a little less neat, but boy would that help with compile times
-#include "playlistwidget.h"
-
-#include <qcombobox.h>
 #include <qdir.h>
 #include <qpoint.h>
 #include <qsize.h>
@@ -82,9 +78,15 @@ PlayerApp::PlayerApp()
 
     initPlayerWidget();
     initBrowserWin();
-    
+
+    //we monitor for close, hide and show events
+    m_pPlayerWidget->installEventFilter( this );
+    m_pBrowserWin  ->installEventFilter( this );
+    m_pPlayerWidget->show(); //browserWin gets shown automatically if buttonPl isOn()
+
     readConfig();
-    
+
+    //TODO can we create this on demand only? it would save a whole bunch of memory
     KConfigDialog *dialog = new AmarokConfigDialog( m_pPlayerWidget, "settings", AmarokConfig::self() );
     connect( dialog, SIGNAL( settingsChanged() ), this, SLOT( applySettings() ) );
 
@@ -94,20 +96,10 @@ PlayerApp::PlayerApp()
     connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
     m_pMainTimer->start( MAIN_TIMER );
 
-    m_pPlayerWidget->show(); //browserwin will be shown automatically if the playlistButton is setOn( true )
+    restoreSession();
+    m_pAnimTimer->start( ANIM_TIMER ); //do after restoreSession() - looks better
 
     kapp->processEvents();
-
-    //restore last playlist
-    //<mxcl> At some point it'd be nice to start loading of the playlist before we initialise arts so
-    //       the playlist seems to be loaded when the browserWindow appears
-    //TODO   now it's threaded, it's more feasable to load it early
-    m_pBrowserWin->m_pPlaylistWidget->insertMedia( kapp->dirs()->saveLocation
-            ( "data", kapp->instanceName() + "/" ) + "current.m3u" );
-
-    restoreSession();
-
-    m_pAnimTimer->start( ANIM_TIMER ); //do it after restoreSession() avoid some visual nastys
 
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
 }
@@ -120,11 +112,10 @@ PlayerApp::~PlayerApp()
     //Save current item info in dtor rather than saveConfig() as it is only relevant on exit
     //and we may in the future start to use read and saveConfig() in other situations
     //    kapp->config()->setGroup( "Session" );
-    KURL url( m_pEngine->loaded() ?  m_playingURL : m_pBrowserWin->m_pPlaylistWidget->currentTrackURL() );
 
-    if ( !url.isEmpty() )
+    if( !m_playingURL.isEmpty() )
     {
-        AmarokConfig::setResumeTrack( url.url() );
+        AmarokConfig::setResumeTrack( m_playingURL.url() );
 
         if ( m_pEngine->state() != EngineBase::Empty )
             AmarokConfig::setResumeTime( m_pEngine->position() / 1000 );
@@ -154,7 +145,8 @@ int PlayerApp::newInstance()
 
     if ( !playlistUrl.isEmpty() )             //playlist
     {
-        m_pBrowserWin->m_pPlaylistWidget->insertMedia( KURL::List( KCmdLineArgs::makeURL( playlistUrl ) ), true );
+        //FIXME should we remove the playlist option now we figure that out dynamically?
+        m_pBrowserWin->insertMedia( KCmdLineArgs::makeURL( playlistUrl ), true );
     }
 
     if ( args->count() > 0 )
@@ -166,15 +158,11 @@ int PlayerApp::newInstance()
             list << args->url( i );
         }
 
-        bool b = !args->isSet( "e" ); //b = (not enqueue?)
+        bool b = !args->isSet( "e" ); //b = not enqueue
 
-        m_pBrowserWin->m_pPlaylistWidget->insertMedia( list, b );
+        m_pBrowserWin->insertMedia( list, b );
 
-        if ( b )
-        {
-            //FIXME why specify the play flag if we aren't going to be strict?
-            slotPlay();
-        }
+        //TODO play first inserted track automatically?
     }
 
     if ( args->isSet( "r" ) )                 //rewind
@@ -239,22 +227,6 @@ void PlayerApp::initBrowserWin()
 
     m_pBrowserWin = new BrowserWin( m_pPlayerWidget, "BrowserWin" );
 
-    connect( (QPushButton *)m_pBrowserWin->m_pButtonPlay,   SIGNAL( clicked() ),
-             this,                                          SLOT  ( slotPlay() ) );
-    connect( (QPushButton *)m_pBrowserWin->m_pButtonPause,  SIGNAL( clicked() ),
-             this,                                          SLOT  ( slotPause() ) );
-    connect( (QPushButton *)m_pBrowserWin->m_pButtonStop,   SIGNAL( clicked() ),
-             this,                                          SLOT  ( slotStop() ) );
-    connect( (QPushButton *)m_pBrowserWin->m_pButtonNext,   SIGNAL( clicked() ),
-             this,                                          SLOT  ( slotNext() ) );
-    connect( (QPushButton *)m_pBrowserWin->m_pButtonPrev,   SIGNAL( clicked() ),
-             this,                                          SLOT  ( slotPrev() ) );
-    connect( m_pBrowserWin,                                 SIGNAL( signalHide() ),
-             this,                                          SLOT  ( slotPlaylistIsHidden() ) );
-    //make sure playlist is linked to playback
-    connect( m_pBrowserWin->m_pPlaylistWidget,              SIGNAL( activated( const KURL&, const MetaBundle& ) ),
-             this,                                          SLOT  ( play( const KURL&, const MetaBundle& ) ) );
-
     kdDebug() << "end PlayerApp::initBrowserWin()" << endl;
 }
 
@@ -271,6 +243,7 @@ void PlayerApp::restoreSession()
 
         if ( seconds >= 0 )
         {
+            //TODO make a static syncronous readTags function
             play( AmarokConfig::resumeTrack(), MetaBundle() );
 
             if ( seconds > 0 )
@@ -292,24 +265,25 @@ void PlayerApp::applySettings()
                                               m_artsNeedsRestart,
                                               SCOPE_SIZE,
                                               AmarokConfig::rememberEffects() );
-        
-        m_pEngine->setVolume( AmarokConfig::masterVolume() );                                          
-                                              
+
+        m_pEngine->setVolume( AmarokConfig::masterVolume() );
+
         kdDebug() << "[PlayerApp::applySettings()] AmarokConfig::soundSystem() == " << AmarokConfig::soundSystem() << endl;
     }
 
     if ( AmarokConfig::hardwareMixer() != m_pEngine->isMixerHardware() )
         AmarokConfig::setHardwareMixer( m_pEngine->initMixer( AmarokConfig::hardwareMixer() ) );
-            
-    m_pEngine->setRestoreEffects( AmarokConfig::rememberEffects() );    
+
+    m_pEngine->setRestoreEffects( AmarokConfig::rememberEffects() );
     m_pEngine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
 
     m_pOSD->setEnabled( AmarokConfig::osdEnabled() );
     m_pOSD->setFont   ( AmarokConfig::osdFont() );
     m_pOSD->setColor  ( AmarokConfig::osdColor() );
 
-    m_pBrowserWin  ->slotUpdateFonts();
     m_pPlayerWidget->createVis();
+    m_pBrowserWin->setFont( AmarokConfig::useCustomFonts() ?
+                            AmarokConfig::browserWindowFont() : QApplication::font() );
 
     setupColors();
 }
@@ -326,18 +300,16 @@ void PlayerApp::saveConfig()
     AmarokConfig::setBrowserWinPos     ( m_pBrowserWin->pos() );
     AmarokConfig::setBrowserWinSize    ( m_pBrowserWin->size() );
     AmarokConfig::setBrowserWinEnabled ( m_pPlayerWidget->m_pButtonPl->isOn() );
-    AmarokConfig::setBrowserWinSplitter( m_pBrowserWin->m_pSplitter->sizes() );
     AmarokConfig::setMasterVolume      ( m_pEngine->volume() );
+
+
+
     AmarokConfig::setPlayerPos         ( m_pPlayerWidget->pos() );
     AmarokConfig::setVersion           ( APP_VERSION );
-    
-    m_pBrowserWin->saveConfig();
-    
-    AmarokConfig::writeConfig();
 
-    if ( AmarokConfig::savePlaylist() )
-        m_pBrowserWin->m_pPlaylistWidget->saveM3u( kapp->dirs()->saveLocation(
-                    "data", kapp->instanceName() + "/" ) + "current.m3u" );
+    m_pBrowserWin->saveConfig();
+
+    AmarokConfig::writeConfig();
 }
 
 
@@ -347,31 +319,21 @@ void PlayerApp::readConfig()
 
     //we must restart artsd after each version change, so that it picks up any plugin changes
     m_artsNeedsRestart = AmarokConfig::version() != APP_VERSION;
-    
+
     m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(),
                                           m_artsNeedsRestart,
                                           SCOPE_SIZE,
                                           AmarokConfig::rememberEffects() );
-        
-    m_pPlayerWidget->m_pSliderVol->setValue( VOLUME_MAX - AmarokConfig::masterVolume() );
+
+
     AmarokConfig::setHardwareMixer( m_pEngine->initMixer( AmarokConfig::hardwareMixer() ) );
+    m_pPlayerWidget->m_pSliderVol->setValue( VOLUME_MAX - AmarokConfig::masterVolume() );
 
     m_pPlayerWidget->move  ( AmarokConfig::playerPos() );
     m_pBrowserWin  ->move  ( AmarokConfig::browserWinPos() );
     m_pBrowserWin  ->resize( AmarokConfig::browserWinSize() );
 
     m_pPlayerWidget->m_pButtonPl->setOn( AmarokConfig::browserWinEnabled() );
-
-    //FIXME this is no longer particular relevant, instead record playlistSideBar's savedSize
-    //      implement a setConfig() function  <markey> so can we remove it?
-    QValueList<int> splitterList = AmarokConfig::browserWinSplitter();
-    if ( splitterList.count() != 2 )
-    {
-        splitterList.clear();
-        splitterList.append( 70 );
-        splitterList.append( 140 );
-    }
-    m_pBrowserWin->m_pSplitter->setSizes( splitterList );
 
     m_pPlayerWidget->slotUpdateTrayIcon( AmarokConfig::showTrayIcon() );
 
@@ -392,7 +354,7 @@ void PlayerApp::readConfig()
                             this, SLOT( slotPrev() ), true, true );
 
     // FIXME <berkus> this needs some other way of handling with KConfig XT?!?
-    //<mxcl> doesn't need to be XT'd as it's not for configDialogs
+    //<mxcl> doesn't need to be XT'd as it's not for configDialogs and doesn't need global access
     m_pGlobalAccel->setConfigGroup( "Shortcuts" );
     m_pGlobalAccel->readSettings( kapp->config() );
     m_pGlobalAccel->updateConnections();
@@ -410,7 +372,7 @@ void PlayerApp::receiveStreamMeta( QString title, QString url, QString kbps )
     //FIXME this could all be compressed into a single setScroll() if the bitrate is used in the else case
     if ( url.isEmpty() )
     {
-        QString text = m_pBrowserWin->m_pPlaylistWidget->currentTrackName();
+        QString text = m_playingURL.prettyURL();
         if ( text.isEmpty() ) text = i18n( "stream" );
 
         m_pPlayerWidget->setScroll( QString( "%1 (%2)" ).arg( title ).arg( text ), kbps + "kbps", "--" );
@@ -431,7 +393,7 @@ void PlayerApp::setupColors()
     if( AmarokConfig::schemeKDE() )
     {
         //TODO this sucks a bit, perhaps just iterate over all children calling "unsetPalette"?
-        m_pBrowserWin->setPalettes( QApplication::palette(), KGlobalSettings::alternateBackgroundColor() );
+        m_pBrowserWin->setColors( QApplication::palette(), KGlobalSettings::alternateBackgroundColor() );
 
     } else if( AmarokConfig::schemeAmarok() ) {
 
@@ -460,7 +422,7 @@ void PlayerApp::setupColors()
         group.setColor( QColorGroup::Mid,      Qt::blue );
 
         //FIXME QColorGroup member "disabled" looks very bad (eg for buttons)
-        m_pBrowserWin->setPalettes( QPalette( group, group, group ), bgAlt );
+        m_pBrowserWin->setColors( QPalette( group, group, group ), bgAlt );
 
     } else {
         // we try to be smart: this code figures out contrasting colors for selection and alternate background rows
@@ -496,13 +458,33 @@ void PlayerApp::setupColors()
         group.setColor( QColorGroup::Dark, Qt::darkGray );
 
         //FIXME QColorGroup member "disabled" looks very bad (eg for buttons)
-        m_pBrowserWin->setPalettes( QPalette( group, group, group ), bgAlt );
+        m_pBrowserWin->setColors( QPalette( group, group, group ), bgAlt );
     }
 }
 
+
 void PlayerApp::insertMedia( const KURL::List &list )
 {
-    m_pBrowserWin->m_pPlaylistWidget->insertMedia( list );
+    m_pBrowserWin->insertMedia( list );
+}
+
+
+bool PlayerApp::eventFilter( QObject *o, QEvent *e )
+{
+    if( o == m_pBrowserWin && e->type() == QEvent::Close )
+    {
+        m_pPlayerWidget->m_pButtonPl->setOn( false );
+    }
+    else if( o == m_pPlayerWidget && e->type() == QEvent::Hide )
+    {
+        m_pBrowserWin->hide();
+    }
+    else if( o == m_pPlayerWidget && e->type() == QEvent::Show )
+    {
+        m_pBrowserWin->show();
+    }
+
+    return FALSE;
 }
 
 
@@ -510,12 +492,10 @@ void PlayerApp::insertMedia( const KURL::List &list )
 
 //these functions ask the playlist to change the track, if it can change track it notifies us again via a SIGNAL
 //the SIGNAL is connected to ::play() below
-void PlayerApp::slotPrev() const { m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Prev, m_pEngine->loaded() ); }
-void PlayerApp::slotNext() const { m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Next, m_pEngine->loaded() ); }
-void PlayerApp::slotPlay() const { m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Current ); }
+void PlayerApp::slotPrev() { emit orderPreviousTrack(); }
+void PlayerApp::slotPlay() { emit orderCurrentTrack(); }
+void PlayerApp::slotNext() { emit orderNextTrack(); }
 
-
-#include <math.h> //FIXME: I put it here so we remember it's only used by this function and the one somewhere below
 
 void PlayerApp::play( const KURL &url, const MetaBundle &tags )
 {
@@ -579,6 +559,8 @@ void PlayerApp::play( const KURL &url, const MetaBundle &tags )
     //interface consistency
     m_pPlayerWidget->m_pButtonPlay ->setOn  ( true );
     m_pPlayerWidget->m_pButtonPause->setDown( false );
+
+    emit currentTrack( url );
 }
 
 
@@ -712,7 +694,7 @@ void PlayerApp::slotMainTimer()
         slotNext();
         return;
     }
-    
+
     // check if track has ended
     if ( m_pEngine->state() == EngineBase::Idle )
     {
@@ -726,7 +708,9 @@ void PlayerApp::slotMainTimer()
                 slotNext();
             }
         }
-        else if( !m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Next, true ) )
+        else if( m_pBrowserWin->isAnotherTrack() )
+            slotNext();
+        else
             slotStop();
     }
 }
@@ -734,6 +718,8 @@ void PlayerApp::slotMainTimer()
 
 void PlayerApp::slotAnimTimer()
 {
+    //FIXME move animation timer to playerWidget
+
     if ( m_pPlayerWidget->isVisible() && !m_pPlayerWidget->m_pButtonPause->isDown() )
     {
         m_pPlayerWidget->drawScroll();
@@ -743,6 +729,8 @@ void PlayerApp::slotAnimTimer()
 
 void PlayerApp::slotVisTimer()
 {
+    //FIXME move to playerWidget
+
     static int t = 1;
 
     if ( m_pPlayerWidget->isVisible() && !m_pPlayerWidget->m_pButtonPause->isDown() )
@@ -791,45 +779,17 @@ void PlayerApp::slotVisTimer()
 }
 
 
-// FIXME <berkus> unify this and the one below
-void PlayerApp::slotPlaylistShowHide()
-{
-    if ( m_pBrowserWin->isHidden() )
-    {
-        m_pPlayerWidget->m_pButtonPl->setOn(true);
-        m_pBrowserWin->show();
-    }
-    else
-    {
-        m_pPlayerWidget->m_pButtonPl->setOn(false);
-        m_pBrowserWin->hide();
-    }
-}
-
-
 void PlayerApp::slotPlaylistToggle( bool b )
 {
-    if ( b )
-    {
-        m_pBrowserWin->show();
-    }
-    else
-    {
-        m_pBrowserWin->hide();
-    }
-}
-
-
-void PlayerApp::slotPlaylistIsHidden()
-{
-    //only called via playlist::closeEvent() - NOT hideEvent()
-
-    m_pPlayerWidget->m_pButtonPl->setOn( false );
+    if( b ) m_pBrowserWin->show();
+    else m_pBrowserWin->hide();
 }
 
 
 void PlayerApp::slotEq( bool b )
 {
+    //FIXME this is no longer needed?
+
     if ( b )
     {
         KMessageBox::sorry( 0, i18n( "Equalizer is not yet implemented." ) );
@@ -845,30 +805,6 @@ void PlayerApp::slotConfigEffects()
         m_pEffectWidget = new EffectWidget();
 
     m_pEffectWidget->show();
-}
-
-
-void PlayerApp::slotHide()
-{
-    //FIXME: as browserWin is now a child widget of playerWidget, it should, technically hide browserWin
-    //       for us when we hide playerWidget, find out why it doesn't! We shouldn't have to map out this
-    //       functionality!
-
-    //But conveniently this allows us to keep the hidePlaylistWindowWithMainWidget option
-    //But I think this option should be removed and amaroK's behavior should be to hide everything
-
-    // <berkus> imo the reason it doesn't hide is that we pass some wrong flags upong creation of browserwin
-    // (maybe toplevel is redundant or something)
-
-    if ( AmarokConfig::hidePlaylistWindow() )
-        m_pBrowserWin->hide();
-}
-
-
-void PlayerApp::slotShow()
-{
-    if ( m_pPlayerWidget->m_pButtonPl->isOn() )
-        m_pBrowserWin->show();
 }
 
 

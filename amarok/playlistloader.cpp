@@ -12,10 +12,11 @@
 #include "playlistloader.h"
 
 #include <qapplication.h>  //postEvent()
-#include <qtextstream.h>   //loadM3U() loadPLS()
+#include <qtextstream.h>   //loadM3U(),loadPLS()
 #include <qfile.h>         //~PlaylistLoader()
 
 #include <kapplication.h>
+#include <kcursor.h>       //TagReader::append()
 #include <kurl.h>
 #include <kdebug.h>
 #include <ktempfile.h>     //makePlaylistItem()
@@ -75,23 +76,38 @@
 //     <markey> non-recursive adding should get replaced by "add all media files in current directory"
 //TODO reimplement ask recursive in PlaylistWidget::insertMedia()
 //TODO make translate work like process(), ie process isn't called afterwards AND it posts its own events whenever a valid file is found
+//     <-- you'd have to do it one dir at a time
 
 
-PlaylistLoader::PlaylistLoader( const KURL::List &ul, QWidget *w, PlaylistItem *pi, bool b )
+class PlayerApp;
+extern PlayerApp *pApp;
+
+
+PlaylistLoader::PlaylistLoader( const KURL::List &ul, QListView *lv, QListViewItem *lvi )
    : m_list( ul )
-   , m_parent( w )
-   , m_after( pi )
-   , m_first( b ? pi : 0 )
+   , m_after( lvi )
+   , m_first( 0 )
+   , m_listView( lv )
+{}
+
+
+//this is a private ctor used by ::makePlaylistItem()
+//it can only be used with placeholders
+PlaylistLoader::PlaylistLoader( const KURL::List &ul, QListViewItem *lvi )
+   : m_list( ul )
+   , m_after( lvi )
+   , m_first( lvi )
+   , m_listView( lvi->listView() )
 {}
 
 
 PlaylistLoader::~PlaylistLoader()
 {
-    //call from GUI thread only
+    //for GUI access only
 
     if( NULL != m_first )
     {
-        kdDebug() << "Removing: " << m_list.first().path() << endl;
+        kdDebug() << "Unlinking tmpfile: " << m_list.first().path() << endl;
         QFile::remove( m_list.first().path() );
         delete m_first; //FIXME deleting m_first is dangerous as user may have done it for us!
     }
@@ -107,7 +123,7 @@ void PlaylistLoader::run()
        m_recursionCount = -1;
        process( m_list );
 
-       QApplication::postEvent( m_parent, new LoaderDoneEvent( this ) );
+       QApplication::postEvent( m_listView, new LoaderDoneEvent( this ) );
 }
 
 
@@ -154,7 +170,7 @@ void PlaylistLoader::process( const KURL::List &list, bool validate )
             {
                 //if the playlist is not local, we need to d/l it, and KIO doesn't work in QThreads. sigh
                 //so this will organise the d/l to occur syncronously and then a new thread spawned :)
-                QApplication::postEvent( m_parent, new LoaderEvent( this, *it ) );
+                postDownloadRequest( *it );
             }
             else
             {
@@ -166,22 +182,32 @@ void PlaylistLoader::process( const KURL::List &list, bool validate )
       {
          if( validate && !isValidMedia( *it ) ) continue; //TODO retain stat info if done above, which does happen
 
-         //don't use the 2 parameter ctor of LoaderEvent
-         QApplication::postEvent( m_parent, new LoaderEvent( this, *it, 0 ) );
+         postBundle( *it );
       }
    }
 }
 
 
 inline
-int PlaylistLoader::isPlaylist( const QString &path )
+void PlaylistLoader::postDownloadRequest( const KURL &u )
 {
-   //TODO case insensitive endsWith exists in Qt3.2
+    QApplication::postEvent( m_listView, new LoaderEvent( this, u ) );
+}
+
+inline
+void PlaylistLoader::postBundle( const KURL &u, MetaBundle *mb )
+{
+    QApplication::postEvent( m_listView, new LoaderEvent( this, u, mb ) );
+}
+
+inline
+int PlaylistLoader::isPlaylist( const QString &path ) const
+{
    //TODO investigate faster methods
    //TODO try to achieve retVal optimisation
 
-        if( path.endsWith( ".m3u" ) ) return 1;
-   else if( path.endsWith( ".pls" ) ) return 2;
+        if( path.endsWith( ".m3u", false ) ) return 1;
+   else if( path.endsWith( ".pls", false ) ) return 2;
    else return 0;
 }
 
@@ -213,7 +239,7 @@ void PlaylistLoader::loadLocalPlaylist( const QString &path, int type )
 }
 
 
-bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissions )
+bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissions ) const
 {
    //FIXME determine if the thing at the end of this is a stream! Can arts do this?
    //      currently we always return true as we can't check
@@ -302,7 +328,7 @@ void PlaylistLoader::loadM3u( QTextStream &stream, const QString &dir )
             if ( !( str[0] == '/' || str.startsWith( "http://" ) ) )
                 str.prepend( dir );
 
-            QApplication::postEvent( m_parent, new LoaderEvent( this, KURL::fromPathOrURL( str ), ( length != 0 ) ? new MetaBundle( title, length ) : 0 ) );
+            postBundle( KURL::fromPathOrURL( str ), ( length != 0 ) ? new MetaBundle( title, length ) : 0 );
 
             length = 0;
         }
@@ -341,24 +367,26 @@ void PlaylistLoader::loadPls( QTextStream &stream )
                 tags = new MetaBundle( title, length );
             }
 
-            QApplication::postEvent( m_parent, new LoaderEvent( this, url, tags ) );
+            postBundle( url, tags );
         }
     }
 }
 
 
-PlaylistLoader::LoaderEvent::~LoaderEvent() { delete m_tags; }
+
+
+PlaylistLoader::LoaderEvent::~LoaderEvent()
+{
+   delete m_tags;
+}
+
 
 PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
 {
-   //This function is NOT thread-safe!!
+   //This function must be called from the GUI!
 
    //Construct a PlaylistItem and update the after pointer
-   //If only called by the GUI thread, access to m_after is serialised
-
-   //NOTE only return a playlistitem if you want it to be registered in the playlist
-   // ie. don't return placeholders, only items that can be played!
-   // so, currently, if kio is required return 0!
+   //Providing access is limited to the GUI thread, writes to m_after are serialised
 
    PlaylistItem *newItem = new PlaylistItem( lv, m_thread->m_after, m_url, m_tags );
 
@@ -367,9 +395,8 @@ PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
        //it is safe to dereference m_thread currently as LoaderThreads are deleted in the main Event Loop
        //and we are blocking the event loop right now!
        //however KIO::NetAccess processes the event loop, so we need to dereference now in case the thread is deleted
-       QWidget *playlistWidget = m_thread->m_parent;
 
-      //KIO::NetAccess will make it's own tempfile
+      //KIO::NetAccess can make it's own tempfile
       //but we need to add .pls/.m3u extension or the Loader will fail
       QString path = m_url.filename();
       int i = path.findRev( '.' );
@@ -380,9 +407,9 @@ PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
 
       kdDebug() << "[loader] KIO::download - " << path << endl;
 
+      //FIXME this will block user input to the interface and process the event queue
       QApplication::setOverrideCursor( KCursor::waitCursor() );
-         //FIXME this will block user input to the interface
-         bool succeeded = KIO::NetAccess::download( m_url, path, m_thread->m_parent );
+         bool succeeded = KIO::NetAccess::download( m_url, path, lv );
       QApplication::restoreOverrideCursor();
 
       if( succeeded )
@@ -392,41 +419,41 @@ PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
          KURL url; url.setPath( path ); //required way to set unix paths
          const KURL::List list( url );
 
-         PlaylistLoader *loader = new PlaylistLoader( list, lv, newItem, true ); //true = delete newItem in dtor
+         //FIXME set options?
+         PlaylistLoader *loader = new PlaylistLoader( list, newItem ); //the item is treated as a placeholder with this ctor
          loader->start();
 
          //FIXME may dereference what has already been deleted!!!! (NOT SAFE!)
+         //TODO hide it instead of deleting it and set m_after before hand
          //m_thread->m_after = newItem;
       }
       else
       {
-         KMessageBox::sorry( playlistWidget, i18n( "The playlist could not be downloaded." ) );
-         delete newItem; //we created this in this function, it's safe to delete!
+         KMessageBox::sorry( lv, i18n( "The playlist, '%1', could not be downloaded." ).arg( m_url.prettyURL() ) );
+         delete newItem; //we created this in this function, thus it's safe to delete!
          tmpfile.unlink();
       }
 
-      return 0; //we don't want this item to be registered with the playlistWidget
+      //we return 0 because we don't want the Playlist to register this item or try to read its tags
+      return 0;
    }
-
-   m_thread->m_after = newItem;
-
-   return newItem;
+   else
+   {
+      m_thread->m_after = newItem;
+      return newItem;
+   }
 }
 
 
 
 // TagReader ===============
 
-//TODO read threading notes in Qt assistant to check you haven't made some silly error
-
-#include <kcursor.h>
-
 void TagReader::append( PlaylistItem *item )
 {
    //for GUI access only
    //we're a friend of PlaylistItem
 
-   //FIXME as far as I can tell, taglib requires the files to be file:/ as it doesn't accept KURLs
+   //TODO taglib isn't network transparent
    if( item->url().protocol() == "file" )
    {
       //QDeepCopy<QString> url = item->url().path();
@@ -445,12 +472,14 @@ void TagReader::append( PlaylistItem *item )
    }
 }
 
+
 void TagReader::run()
 {
     MetaBundle *tags;
 
     msleep( 200 ); //this is an attempt to encourage the queue to be filled with more than 1 item before we
                    //start processing, and thus prevent unecessary stopping and starting of the thread
+
     kdDebug() << "[reader] Started..\n";
 
     while( m_bool )
@@ -465,16 +494,17 @@ void TagReader::run()
         //we need to check the item is still there
         //if the playlistItem was removed it will no longer be in the queue
         mutex.lock();
-        if( ( !m_Q.empty() ) && m_Q.front() == bundle )
+        if( !m_Q.empty() && m_Q.front() == bundle )
         {
             QApplication::postEvent( m_parent, new TagReaderEvent( bundle.item, tags ) );
             m_Q.pop_front();
         }
         mutex.unlock();
     }
-
-    QApplication::postEvent( m_parent, new TagReaderDoneEvent() );
     kdDebug() << "[reader] Done!\n";
+
+
+    QApplication::postEvent( m_parent, new QCustomEvent( TagReader::Done ) );
 }
 
 

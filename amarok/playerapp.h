@@ -33,6 +33,7 @@ class QListView;
 class QListViewItem;
 class QString;
 class QTimer;
+class QEvent;
 
 class KGlobalAccel;
 
@@ -51,30 +52,29 @@ class PlayerApp : public KUniqueApplication
 
     public:
         PlayerApp();
-        virtual ~PlayerApp();
+        ~PlayerApp();
 
-        virtual int newInstance();
+        int newInstance();
 
         bool playObjectConfigurable();
         bool isPlaying() const;
         int  trackLength() const { return m_length; }
         void setupColors();
-        bool restorePlaylistSelection(const KURL& url);
         void insertMedia( const KURL::List& );
 
-        // STATICS 
+        // STATICS
         static const int     ANIM_TIMER  = 30;
         static const int     MAIN_TIMER  = 150;
         static const int     SCOPE_SIZE  = 7;
         static const int     VOLUME_MAX  = 100;
-        
+
         // ATTRIBUTES
         static EngineBase *m_pEngine;
 
         KGlobalAccel *m_pGlobalAccel;
 
         PlayerWidget *m_pPlayerWidget;
-        BrowserWin *m_pBrowserWin;
+        BrowserWin   *m_pBrowserWin;
 
         QColor m_optBrowserBgAltColor;
         QColor m_optBrowserSelColor;
@@ -83,11 +83,11 @@ class PlayerApp : public KUniqueApplication
         bool m_artsNeedsRestart;
 
         KURL m_playingURL; ///< The URL of the currently playing item
-      
+
     public slots:
-        void slotPrev() const;
-        void slotNext() const;
-        void slotPlay() const;
+        void slotPrev();
+        void slotNext();
+        void slotPlay();
         void play( const KURL&, const MetaBundle& );
         void slotPause();
         void slotStop();
@@ -99,22 +99,21 @@ class PlayerApp : public KUniqueApplication
         void slotAnimTimer();
         void slotVisTimer();
         void slotPlaylistToggle( bool b );
-        void slotPlaylistIsHidden();
-        void slotPlaylistShowHide();
         void slotEq( bool b );
         void slotConfigEffects();
-        void slotHide();
-        void slotShow();
         void slotShowOptions();
-        
+
     private slots:
         void applySettings();
         void receiveStreamMeta( QString title, QString url, QString kbps );
 
     signals:
-        void sigScope( std::vector<float> *s );
-        void sigPlay();
-        /*         void sigUpdateFonts(); */
+        //void sigScope( std::vector<float> *s );
+        //void sigPlay();
+        void orderPreviousTrack();
+        void orderCurrentTrack();
+        void orderNextTrack();
+        void currentTrack( const KURL& );
 
     private:
         void initBrowserWin();
@@ -126,6 +125,7 @@ class PlayerApp : public KUniqueApplication
         void readConfig();
         void restoreSession();
         void saveConfig();
+        bool eventFilter( QObject*, QEvent* );
 
         void setupScrolltext();
 
@@ -140,7 +140,7 @@ class PlayerApp : public KUniqueApplication
         OSDWidget *m_pOSD;
 };
 
-        
+
 #endif                                            // AMAROK_PLAYERAPP_H
 
 extern PlayerApp* pApp;

@@ -653,30 +653,11 @@ void PlayerWidget::slotUpdateTrayIcon( bool visible )
     }
 }
 
-
+/*
 void PlayerWidget::slotReportBug()
 {
     KBugReport report;
     report.exec();
 }
-
-
-void PlayerWidget::show()
-{
-    //this is done in show() rather than showEvent() because
-    //we need to show() the playlist first or it will steal focus
-    emit sigAboutToShow();
-
-    QWidget::show();
-}
-
-
-void PlayerWidget::hide()
-{
-    emit sigAboutToHide();
-
-    QWidget::hide();
-}
-
-
+*/
 #include "playerwidget.moc"

@@ -18,12 +18,12 @@
 #ifndef PLAYLISTWIDGET_H
 #define PLAYLISTWIDGET_H
 
-#include <qdir.h>
-#include <qstringlist.h>    // <markey> forward declaration of QStringList does not work with some compilers
-#include <klistview.h>
-#include <kurl.h>
-
-#include "playlistitem.h" //friend
+#include "browserwin.h"  //friend
+#include <qstringlist.h> //stack allocated
+#include <qptrlist.h>    //stack allocated
+#include <klistview.h>   //baseclass
+#include <kurl.h>        //KURL::List
+#include <qdir.h>        //stack allocated
 
 class QColor;
 class QCustomEvent;
@@ -44,124 +44,127 @@ class QEvent;
 class MetaBundle;
 class TagReader;
 
-#define COL_TRACKNAME 0
-#define COL_TITLE   1
-#define COL_ARTIST  2
-#define COL_ALBUM   3
-#define COL_YEAR    4
-#define COL_COMMENT 5
-#define COL_GENRE   6
-#define COL_TRACK   7
-#define COL_DIR     8
-#define COL_LENGTH  9
-#define COL_BITRATE 10
+
+/*
+ * @author Mark Kretschmann && Max Howell
+ *
+ * PlaylistWidget inherits KListView privately and thus is no longer a ListView
+ * Instead it is a part of BrowserWin and they interact in harmony. The change
+ * was necessary as it is too dangerous to allow public access to PlaylistItems
+ * due to the multi-threading environment.
+ *
+ * Unfortunately, since QObject is now inaccessible you have to connect slots
+ * via one of BrowserWin's friend members or in PlaylistWidget
+ *
+ * If you want to add new playlist type functionality you should implement it
+ * inside this class or inside BrowserWin.
+ *
+ */
 
 
-//FIXME <mxcl> I would very much like to make this inherit KListView privately as it scares me having multiple threads and public access!
-//amarok/playerapp.cpp: In member function `void PlayerApp::initBrowserWin()':
-//amarok/playerapp.cpp:479: `QObject' is an inaccessible base of `PlaylistWidget'
-//make: *** [../amarok/amarok/playerapp.o] Fehler 1
-//FIXME 479: connect( m_pBrowserWin->m_pPlaylistWidget, SIGNAL( activated( const KURL&, const MetaBundle * ) ), this, SLOT( play( const KURL&, const MetaBundle * ) ) );
-//FIXME the protected/private inheritance is necessary as NO other classes can have access to QListViewItems!!
-
-class PlaylistWidget : public KListView //: private KListView
+class PlaylistWidget : private KListView
 {
     Q_OBJECT
     public:
-        PlaylistWidget( QWidget *parent=0, const char *name=0 );
+        PlaylistWidget( QWidget* = 0, const char* = 0 );
         ~PlaylistWidget();
 
-        enum RequestType { Prev, Current, Next };
+        void insertMedia( const KURL::List& );
+        void saveM3u( const QString& ) const;
+        bool isEmpty() const { return childCount() == 0; }
+        bool isAnotherTrack() const;
 
-        bool request( RequestType = Next, bool = true );
-        KURL currentTrackURL() const { return currentTrack() ? m_pCurrentTrack->url() : KURL(); }
-        QString currentTrackName() const { return currentTrack() ? currentTrack()->text( 0 ) : QString(); }
+        //made public for convenience
+        void setFont( const QFont &f ) { KListView::setFont( f ); }
+        void setColors( const QPalette &p, const QColor &c ) { setPalette( p ); setAlternateBackground( c ); }
 
-        void insertMedia( const QString & );
-        void insertMedia( const KURL & );
-        void insertMedia( const KURL::List &, bool=false );
+        enum RequestType { Prev = -1, Current = 0, Next = 1 };
+        enum ColumnType  { Trackname = 0,
+                           Title = 1,
+                           Artist = 2,
+                           Album = 3,
+                           Year = 4,
+                           Comment = 5,
+                           Genre = 6,
+                           Track = 7,
+                           Directory = 8,
+                           Length = 9,
+                           Bitrate = 10 };
 
-        void saveM3u( QString fileName );
+        friend class PlaylistItem; //NOTE only needed in dtor, but saves compilation dependency on header
+        friend BrowserWin::BrowserWin( QWidget*, const char* );
+        friend bool BrowserWin::eventFilter( QObject*, QEvent* );
 
-    //TEMPORARY re-public
-        void setFont( const QFont &font ) { KListView::setFont( font ); }
-        bool hasFocus() const { return KListView::hasFocus(); }
-        void setFocus() { KListView::setFocus(); }
-        void triggerUpdate() { KListView::triggerUpdate(); }
-
-        friend PlaylistItem::~PlaylistItem();
-
-// ATTRIBUTES ------
-        //KRootPixmap m_rootPixmap;
+    signals:
+        void playRequest( const KURL&, const MetaBundle& );
+        void aboutToClear();
 
     public slots:
-        void clear( bool = true );
+        void handleOrderPrev();
+        void handleOrderCurrent();
+        void handleOrder( PlaylistWidget::RequestType = Next );
+        void clear();
         void shuffle();
         void removeSelectedItems();
-        void doUndo();
-        void doRedo();
-        void copyAction( QListViewItem* = 0 );
+        void copyToClipboard( const QListViewItem* = 0 ) const;
 
     private slots:
         void slotGlowTimer();
+        void slotTextChanged( const QString& );
         void slotEraseMarker();
-        void slotTextChanged( const QString & );
-        void slotReturnPressed();
-        void showContextMenu( QListViewItem *, const QPoint &, int );
-        void activate( QListViewItem * );
-        void writeTag( QListViewItem *, const QString &, int );
 
-    signals:
-        void activated( const KURL&, const MetaBundle& );
-        void cleared();
-        void sigUndoState( bool );
-        void sigRedoState( bool );
+        void showContextMenu( QListViewItem*, const QPoint&, int );
+        void activate( QListViewItem* );
+        void setCurrentTrack( const KURL& );
+        void writeTag( QListViewItem*, const QString&, int );
+
+        void undo();
+        void redo();
+        void saveUndoState();
 
     private:
-        void insertMedia( const KURL::List &, PlaylistItem * );
-
         PlaylistItem *restoreCurrentTrack();
-        PlaylistItem *currentTrack() const { return m_pCurrentTrack; }
-        void setCurrentTrack( PlaylistItem * );
-        void showTrackInfo( const PlaylistItem * );
+        PlaylistItem *currentTrack() const { return m_currentTrack; }
+        void setCurrentTrack( PlaylistItem* );
+        void showTrackInfo( const PlaylistItem* ) const;
+        void insertMediaInternal( const KURL::List&, QListViewItem* );
+        bool saveState( QStringList& );
+        void switchState( QStringList&, QStringList& );
 
+// REIMPLEMENTED ------
         void contentsDropEvent( QDropEvent* );
         void contentsDragEnterEvent( QDragEnterEvent* );
         void contentsDragMoveEvent( QDragMoveEvent* );
         void contentsDragLeaveEvent( QDragLeaveEvent* );
-        void keyPressEvent( QKeyEvent* );
         void viewportPaintEvent( QPaintEvent* );
-        void customEvent( QCustomEvent * );
-        bool eventFilter( QObject *, QEvent * );
-
-        bool saveState( QStringList& );
-        void writeUndo();
-        void initUndo();
-        bool canUndo();
-        bool canRedo();
-
-        void startLoader( const KURL::List &, PlaylistItem * );
-
+        void customEvent( QCustomEvent* );
+        bool eventFilter( QObject*, QEvent* );
         void setSorting( int, bool=true );
 
 // ATTRIBUTES ------
-
-        QTimer* m_GlowTimer; //FIXME allocate on stack
+        QTimer* const m_GlowTimer; //FIXME allocate on stack
         int m_GlowCount;
         int m_GlowAdd;
         QColor m_GlowColor;
-        PlaylistItem *m_pCurrentTrack;
-        QRect m_marker;
 
-        QDir m_undoDir;
-        QStringList m_undoList;
-        QStringList m_redoList;
-        uint m_undoCounter;
+        PlaylistItem  *m_currentTrack; //this track is playing
+        //mutable //TODO not supported by gcc 2.9.5
+        PlaylistItem  *m_cachedTrack;  //we expect this to be activated next
+        PlaylistItem  *m_nextTrack;    //the track to be played after the current track
+        QListViewItem *m_marker;
 
         QStringList searchTokens;
         QPtrList<QListViewItem> searchPtrs;
         QString lastSearch;
 
-        TagReader *m_tagReader;
+        TagReader* const m_tagReader;
+
+        QPushButton *m_undoButton;
+        QPushButton *m_redoButton;
+
+        QDir         m_undoDir;
+        QStringList  m_undoList;
+        QStringList  m_redoList;
+        uint         m_undoCounter;
 };
 #endif

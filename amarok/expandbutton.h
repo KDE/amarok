@@ -32,8 +32,8 @@ class ExpandButton : public QPushButton
     Q_OBJECT
 
     public:
-        ExpandButton( const QString &text, QWidget *parent=0 );
-        ExpandButton( const QString &text, ExpandButton *parent=0 );
+        ExpandButton( const QString&, QWidget * = 0, QObject* = 0, const char* = 0 );
+        ExpandButton( const QString&, ExpandButton * = 0, QObject* = 0, const char* = 0 );
 
         ~ExpandButton();
 
@@ -59,7 +59,7 @@ class ExpandButton : public QPushButton
         int m_animHeight;
         float m_animAdd, m_animSpeed;
 
-        QTimer *m_pTimer;
+        QTimer  *m_pTimer;
         QPixmap *m_pSavePixmap;
         QPixmap *m_pComposePixmap;
         QPixmap *m_pBlitMap1;

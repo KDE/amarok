@@ -2,12 +2,12 @@ amaroK ChangeLog
 ================
 (c) 2002-2004 the amaroK authors.
 
-
+  * add: "Play Next" context menu option
   * add: selected aRts-effects will be remembered on next program start, including settings
   * fix: sort numerical playlist columns in correct order
   * add: logarithmic fading algorithm makes crossfading smoother
   * add: Select a series of tracks, start inline tag-editing a tag and amaroK will prompt you to
-         edit that tag for all tracks one-by-one
+         edit that tag for all tracks one-by-one. Also available: fill-down.
   * add: improved crossfading: will fade out smoothly when the stop button is pressed 
   * fix: O(n) behavior for playlist scrolling fixed
   * add: setting to make playlist colours the KDE defaults
