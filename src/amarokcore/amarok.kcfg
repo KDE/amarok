@@ -20,17 +20,14 @@
     <entry key="Player Pos" type="Point">
         <label>Position of player window</label>
         <whatsthis>The position of the amaroK main window when amaroK is started.</whatsthis>
-        <default code="true">QPoint(-1,-1)</default>
     </entry>
     <entry key="Playlist Window Pos" type="Point">
         <label>Position of playlist window</label>
         <whatsthis>The position of the playlist window when amaroK is started.</whatsthis>
-        <default code="true">QPoint(-1,-1)</default>
     </entry>
     <entry key="Playlist Window Size" type="Size">
         <label>Size of playlist window</label>
         <whatsthis>The size of the playlist window when amaroK is started.</whatsthis>
-        <default code="true">QSize(600,450)</default>
     </entry>
     <entry key="Save Playlist" type="Bool">
         <label>Whether to save playlist on quit</label>
@@ -80,7 +77,7 @@
     <entry key="Show Player Window" type="Bool">
         <label>Whether to show player window</label>
         <whatsthis>Makes amaroK more like XMMS and other Winamp clones with separate player and playlist windows.</whatsthis>
-        <default>true</default>
+        <default>false</default>
     </entry>
     <entry key="Cover Preview Size" type="Int">
         <label>Size of the cover previews in Contextbrowser and Covermanager</label>
@@ -292,17 +289,14 @@
     <entry key="Playlist Window Font" type="Font">
         <label>Font in playlist window</label>
         <whatsthis>The font to use in the playlist window.</whatsthis>
-        <default code="true">QFont("Helvetica",9)</default>
     </entry>
     <entry key="Player Widget Font" type="Font">
         <label>Font in player window</label>
         <whatsthis>The font to use in the player window.</whatsthis>
-        <default code="true">QFont("Helvetica",9)</default>
     </entry>
     <entry key="Context Browser Font" type="Font">
         <label>Font in context browser</label>
         <whatsthis>The font to use in the context browser.</whatsthis>
-        <default code="true">QFont("Helvetica",9)</default>
     </entry>
     <entry key="Recode ID3v1 Tags" type="Bool">
         <label>Recode ID3v1 tags</label>
@@ -358,12 +352,10 @@
     <entry key="Resume Track" type="Path">
         <label>Track URL to resume upon startup</label>
         <whatsthis>Internal: URL of the track to resume on startup.</whatsthis>
-        <default></default>
     </entry>
     <entry key="Resume Time" type="Int">
         <label>Time to resume at, in milliseconds</label>
         <whatsthis>Internal: Playback position in the track to resume on startup.</whatsthis>
-        <default>-1</default>
     </entry>
 </group>
 

@@ -152,16 +152,15 @@ PlaylistWindow::PlaylistWindow()
     new amaroK::AppendSuggestionsAction( ac );
     new amaroK::VolumeAction( ac );
 
-    if ( K3bExporter::isAvailable() )
+    if( K3bExporter::isAvailable() )
         new amaroK::BurnMenuAction( ac );
 
-    //if first ever run let KWin place us
-    if ( AmarokConfig::playlistWindowPos() != QPoint(-1,-1) )
-        move( AmarokConfig::playlistWindowPos() );
-
-    // On first ever run, use sizeHint
-    if ( AmarokConfig::playlistWindowSize() != QSize(-1,-1) )
+    if( !AmarokConfig::playlistWindowPos().isNull() ) {
+        // if first ever run, use sizeHint(), and let
+        // KWin place us otherwise use the stored values
         resize( AmarokConfig::playlistWindowSize() );
+        move( AmarokConfig::playlistWindowPos() );
+    }
 }
 
 PlaylistWindow::~PlaylistWindow()
