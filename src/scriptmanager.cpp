@@ -32,6 +32,7 @@
 #include <kiconloader.h>
 #include <klistview.h>
 #include <klocale.h>
+#include <kmessagebox.h>
 #include <kprocess.h>
 #include <kpushbutton.h>
 #include <krun.h>
@@ -135,17 +136,22 @@ ScriptManager::slotEditScript()
     QString name = m_base->directoryListView->selectedItem()->text( 0 );
     QFile file( m_scripts[name].url.path() );
 
-    if ( file.open( IO_ReadWrite ) ){
-        KTextEdit* editor = new KTextEdit();
-        kapp->setTopWidget( editor );
-        editor->setCaption( kapp->makeStdCaption( i18n( "Edit Script" ) ) );
-
-        QTextStream stream( &file );
-        editor->setText( stream.read() );
-        editor->setTextFormat( QTextEdit::PlainText );
-        editor->resize( 640, 480 );
-        editor->show();
+    if ( file.isWritable() )
+        file.open( IO_ReadWrite );
+    else {
+        KMessageBox::information( 0, i18n( "File is not writable, opening in read-only mode." ) );
+        file.open( IO_ReadOnly );
     }
+
+    KTextEdit* editor = new KTextEdit();
+    kapp->setTopWidget( editor );
+    editor->setCaption( kapp->makeStdCaption( i18n( "Edit Script" ) ) );
+
+    QTextStream stream( &file );
+    editor->setText( stream.read() );
+    editor->setTextFormat( QTextEdit::PlainText );
+    editor->resize( 640, 480 );
+    editor->show();
 }
 
 
