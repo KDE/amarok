@@ -21,6 +21,7 @@
 #include <kfiledialog.h>
 #include <kglobal.h>
 #include <khtml_part.h>
+#include <kiconloader.h>
 #include <klineedit.h>
 #include <klocale.h>
 #include <kpopupmenu.h>
@@ -254,20 +255,22 @@ void ContextBrowser::slotContextMenu( const QString& url, const QPoint& point )
     kdDebug() << "Node Name: " << node.nodeName() << endl;
     kdDebug() << "url: " << url << endl;
 
-    if ( node.nodeName() == "img" ) {
-        enum menuIds { FETCH, VIEW, DELETE };
+    if ( node.nodeName() == "img" )
+    {
+        QStringList info = QStringList::split( " @@@ ", url );
+        enum menuIds { SHOW, FETCH, DELETE };
 
         KPopupMenu menu( this );
         menu.insertTitle( i18n( "Cover Image" ) );
-        menu.insertItem( i18n( "Fetch from Amazon" ), FETCH );
+        menu.insertItem( SmallIcon( "viewmag" ), i18n( "Show fullsize" ), SHOW );
+        menu.setItemEnabled( SHOW, !m_db->getImageForAlbum( info[0], info[1], 0 ).contains( "nocover" ) );
+        menu.insertItem( SmallIcon( "www" ), i18n( "Fetch from amazon.com" ), FETCH );
     #ifndef AMAZON_SUPPORT
         menu.setItemEnabled( FETCH, false );
     #endif
-        menu.insertItem( i18n( "View Full-Sized" ), VIEW );
-        menu.insertItem( i18n( "Delete" ), DELETE );
+        menu.insertSeparator();
+        menu.insertItem( SmallIcon( "editdelete" ), i18n("Delete"), DELETE );
         int id = menu.exec( point );
-
-        QStringList info = QStringList::split( " @@@ ", url );
 
         switch ( id )
         {
@@ -294,7 +297,7 @@ void ContextBrowser::slotContextMenu( const QString& url, const QPoint& point )
             #endif
                 break;
 
-            case VIEW:
+            case SHOW:
                 /* open an image view widget */
                 viewImage( m_db->getImageForAlbum( info[0], info[1], 0 ) );
                 break;
