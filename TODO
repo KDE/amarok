@@ -39,6 +39,8 @@ SHORT-TERM (URGENT):
 
 MID-TERM:
 
+    * fix: amaroK packages seem to have a bug: parts of taglib actually get installed, like taglib-config
+
     * chg: instead of show file info why not use standard KDE properties? This has much more power
            than anything we could whip up and with taglib installed shows meta info and allows
            editing of it.
