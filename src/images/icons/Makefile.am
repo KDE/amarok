@@ -1,1 +1,1 @@
-KDE_ICON=auto
+KDE_ICON = AUTO

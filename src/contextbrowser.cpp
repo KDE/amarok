@@ -479,7 +479,7 @@ verboseTimeSince( const QDateTime &datetime )
         else if( days < 7 )
             return i18n( "Yesterday", "%n days ago", days );
         else
-            return i18n( "Last week", "%n weeks ago", days % 7 );
+            return i18n( "Last week", "%n weeks ago", days / 7 );
     }
 
     return i18n( "Last year", "%n years ago", now.year() - date.year() );
