@@ -18,26 +18,6 @@
 
 class PlaylistItem;
 
-
-class TagSelect : public TagSelectDialog
-{
-    Q_OBJECT
-
-    signals:
-        void sigSelectionMade( KTRMResult );
-
-    public:
-        TagSelect( KTRMResultList results, QWidget* parent = 0);
-
-    private:
-        KTRMResultList m_results;
-
-    private slots:
-        void accept();
-        void reject();
-};
-
-
 class TagDialog : public TagDialogBase
 {
     Q_OBJECT

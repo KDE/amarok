@@ -8,6 +8,7 @@
 #include "playlist.h"
 #include "playlistitem.h"
 #include "tagdialog.h"
+#include "trackpickerdialog.h"
 
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
@@ -158,8 +159,7 @@ TagDialog::queryDone( KTRMResultList results ) //SLOT
 
     if ( !results.isEmpty() )
     {
-        TagSelect* t = new TagSelect(results, this);
-//        t->adjustSize();
+        TrackPickerDialog* t = new TrackPickerDialog(m_bundle.url().filename(),results,this);
         t->show();
     }
     else
@@ -494,80 +494,6 @@ TagDialog::writeTag( MetaBundle mb, bool updateCB )
         return result;
     }
     else return false;
-}
-
-
-#include <qtable.h>
-#include <qstringx.h>
-
-TagSelect::TagSelect( KTRMResultList results, QWidget* parent )
-    : TagSelectDialog( parent )
-    , m_results( results )
-{
-    DEBUG_BLOCK
-
-    kapp->setTopWidget( this );
-    setCaption( kapp->makeStdCaption( i18n("MusicBrainz Results") ) );
-
-//     KTRMResultList results = *resAd;
-    int cellheight = 0;
-    int headerheight = 0;
-    int scrollheight = 0;
-// Add this to cellheight since height() seems to come up a little short
-    int cellpadding = 2;
-    int padding = 8;
-    resultTable->insertRows( 0,results.size() );
-
-    //Get rid of the row headers and margin
-    resultTable->verticalHeader()->hide();
-    resultTable->setLeftMargin( 0 );
-
-    for( uint i = 0; i < results.size(); i++ ) {
-
-        if ( !results[i].title().isEmpty() )   resultTable->setText( i,0,results[i].title() );
-        if ( !results[i].artist().isEmpty() )  resultTable->setText( i,1,results[i].artist() );
-        if ( !results[i].album().isEmpty() )   resultTable->setText( i,2,results[i].album() );
-        if ( results[i].track() != 0 )         resultTable->setText( i,3, QString::number(results[i].track(),10) );
-        if ( results[i].year() != 0 )          resultTable->setText( i, 4, QString::number(results[i].year(),10) );
-        resultTable->setRowStretchable( i,true );
-    }
-    for( int j = 0; j < 5; j++ ) {
-        resultTable->adjustColumn( j );
-        //resultTable->setColumnStretchable(j,true);
-    }
-    resultTable->setColumnStretchable( 4,true );
-    resultTable->setHScrollBarMode(QScrollView::AlwaysOn);
-//    resultTable->setVScrollBarMode(QScrollView::AlwaysOn);
-    
-    
-    if( results.size() > 0 ) cellheight = resultTable->item(0,0)->sizeHint().height();
-    headerheight = resultTable->horizontalHeader()->height();
-    scrollheight = resultTable->horizontalScrollBar()->height();
-    resultTable->setMaximumHeight( (cellheight + cellpadding) * (results.size()) 
-                                    + headerheight + scrollheight + padding );
-    adjustSize();
-    
-    connect(buttonOk, SIGNAL ( clicked() ), SLOT( accept() ) );
-    connect(buttonCancel, SIGNAL ( clicked() ), SLOT( reject() ) );
-    connect(this, SIGNAL( sigSelectionMade( KTRMResult ) ), parent, SLOT( fillSelected( KTRMResult ) ) );
-    connect(resultTable, SIGNAL ( doubleClicked ( int, int, int, const QPoint& ) ), SLOT( accept() ) );
-}
-
-void
-TagSelect::accept()
-{
-    DEBUG_BLOCK
-
-    KTRMResult selection = m_results[resultTable->currentRow()];
-    emit sigSelectionMade( selection );
-
-    QDialog::accept();
-}
-
-void
-TagSelect::reject()
-{
-    QDialog::reject();
 }
 
 
