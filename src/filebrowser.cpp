@@ -91,7 +91,12 @@ FileBrowser::FileBrowser( const char * name )
     { //mainToolbar
         toolbar = new KToolBar( this );
         toolbar->setIconSize( 16 );
-        toolbar->setMovingEnabled( false ); //removes the frame
+
+        // these properties remove the ugly frame and stop weird things
+        // happening to some people's toolbars, don't remove them!
+        toolbar->setMovingEnabled( false );
+        toolbar->setFlat( true );
+        toolbar->setEnableContextMenu( false );
     }
 
     { //Filter LineEdit
