@@ -2,9 +2,11 @@ amaroK Changelog
 ==================
 (c) 2002-2004 by Mark Kretschmann and the amaroK team. GPL License.
 
+
 VERSION 0.8.2:
   * chg: search tokens can now be entered in random order
          ("Presley Elvis" will find "Elvis Presley")
+  * fix: qt 3.1 compile issues
 
 VERSION 0.8.1:
   * fix: compilation problem with KDE < 3.1.3
