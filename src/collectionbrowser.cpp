@@ -175,24 +175,23 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         {
             m_db->dropTables();
             m_db->createTables();
-            m_insertdb = new CollectionDB();
-            scan();
-        } else
-        {
-            m_insertdb = new CollectionDB();
-            scanMonitor();
         }
-
         if ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
         {
             m_db->dropStatsTable();
             m_db->createStatsTable();
         }
 
+        m_insertdb = new CollectionDB();
+        connect( m_insertdb,     SIGNAL( scanDone( bool ) ),
+                 this,             SLOT( scanDone( bool ) ) );
+
+        if ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION )
+            scan();
+        else
+            scanMonitor();
     //</open database>
 
-    connect( m_insertdb,     SIGNAL( scanDone( bool ) ),
-             this,             SLOT( scanDone( bool ) ) );
     connect( this,           SIGNAL( expanded( QListViewItem* ) ),
              this,             SLOT( slotExpand( QListViewItem* ) ) );
     connect( this,           SIGNAL( collapsed( QListViewItem* ) ),
@@ -281,7 +280,7 @@ CollectionView::scanMonitor()  //SLOT
 {
     if ( !m_isScanning && m_monitor )
     {
-//        m_isScanning = true;
+        m_isScanning = true;
         m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
         m_insertdb->scanModifiedDirs( m_recursively );
     }
