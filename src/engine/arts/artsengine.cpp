@@ -357,7 +357,7 @@ void ArtsEngine::play( const KURL& url )
     }
     else
     {
-        connect( m_pPlayObject, SIGNAL( destroyed ), this, SLOT( stopped() ) );
+        connect( m_pPlayObject, SIGNAL( destroyed() ), this, SIGNAL( stopped() ) );
         
         if ( m_pPlayObject->object().isNull() ) {            
             kdDebug() << k_funcinfo << " m_pPlayObject->object().isNull()" << endl;
