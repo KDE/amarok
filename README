@@ -130,6 +130,16 @@ A: Happily! Your best course of action is to let us know what you plan to do bef
 
 --------------------------------------------------------------------------------
 
+CONTRIBUTING
+------------
+
+If you wish to contribute to amaroK, you should build it from CVS and subscribe
+to the amarok-devel mailing list. The IRC channel is  also  a  place  where
+it's  nice  to  be, since you can talk to other developers much easier, and
+get instant notification of commits to the CVS.
+
+--------------------------------------------------------------------------------
+
 WWW : http://amarok.sf.net
 IRC : irc.freenode.net, #amarok
 MAIL: amarok-devel@lists.sourceforge.net
