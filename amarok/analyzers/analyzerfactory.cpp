@@ -24,7 +24,7 @@
 #include "distortanalyzer.h"
 #include "glanalyzer.h"
 #include "glanalyzer2.h"
-#include "blowanalyzer.h"
+// #include "blowanalyzer.h"
 #include "sonogram.h"
 #include "turbine.h"
 
@@ -64,9 +64,9 @@ AnalyzerBase *AnalyzerBase::AnalyzerFactory::createAnalyzer( QWidget *parent )
     case 5:
         analyzer = new GLAnalyzer2( parent );
         break;
-    case 6:
+/*    case 6:
         analyzer = new BlowAnalyzer( parent );
-        break;
+        break;*/
 #endif
 #ifndef AMAROK_RELEASE
     case 7:

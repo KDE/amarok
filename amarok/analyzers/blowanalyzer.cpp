@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include <config.h>
-#ifdef HAVE_QGLWIDGET
+#ifdef HAVE_QGLWIDGET_DISABLED
 
 #include "blowanalyzer.h"
 
