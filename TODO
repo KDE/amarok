@@ -3,10 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #61 being the highest available (take this one for your next bug and increase here)
+           #62 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+    * fix: #61 <markey> allow removing of playlist items by dragging back into browser. 
+               (RFC: is this still appropriate or would it be misleading?)
 
     * fix: #60 <markey> I'm still getting the occasional crash in PlaylistItem::setText()
 
