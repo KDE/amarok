@@ -40,6 +40,7 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags )
     tipBuf += "<td><table cellpadding='0' cellspacing='0'>"; //style='font-face: Arial; font-size: 8px;'
     tipBuf += tr.arg( i18n( "Title" ),  tags.title() );
     tipBuf += tr.arg( i18n( "Artist" ), tags.artist() );
+    tipBuf += tr.arg( i18n( "Album" ), tags.album() );
     tipBuf += tr.arg( i18n( "Length" ), tags.prettyLength() );
     tipBuf += tr.arg( i18n( "Bitrate" ), tags.prettyBitrate() );
     tipBuf += tr.arg( i18n( "Samplerate" ), tags.prettySampleRate() );
