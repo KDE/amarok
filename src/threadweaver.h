@@ -83,7 +83,7 @@ public:
    {
    public:
       friend class ThreadWeaver;
-      enum JobType { GenericJob = 3000, TagReader, PLStats, CollectionReader, SearchModule };
+      enum JobType { GenericJob = 3000, TagReader, CollectionReader, SearchModule };
 
       Job( QObject *, JobType = GenericJob );
       virtual ~Job() {}

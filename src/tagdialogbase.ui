@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>TagDialogBase</class>
 <widget class="KDialog">
     <property name="name">
@@ -8,218 +8,18 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>370</width>
-            <height>392</height>
+            <width>387</width>
+            <height>417</height>
         </rect>
     </property>
     <property name="caption">
         <string>Meta Information - amaroK</string>
     </property>
-    <vbox>
+    <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout1</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>90</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Title</string>
-                    </property>
-                </widget>
-                <widget class="KLineEdit">
-                    <property name="name">
-                        <cstring>kLineEdit_title</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>250</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout2</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1_2</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>90</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Artist</string>
-                    </property>
-                </widget>
-                <widget class="KLineEdit">
-                    <property name="name">
-                        <cstring>kLineEdit_artist</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>250</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout3</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1_3</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>90</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Album</string>
-                    </property>
-                </widget>
-                <widget class="KLineEdit">
-                    <property name="name">
-                        <cstring>kLineEdit_album</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>250</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout14</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1_4</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>90</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Genre</string>
-                    </property>
-                </widget>
-                <widget class="KComboBox">
-                    <property name="name">
-                        <cstring>kComboBox_genre</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>7</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>250</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="editable">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout14</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1_6_6</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>90</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Track</string>
-                    </property>
-                </widget>
-                <widget class="KIntSpinBox">
-                    <property name="name">
-                        <cstring>kIntSpinBox_track</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>7</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>250</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="maxValue">
-                        <number>3000</number>
-                    </property>
-                    <property name="value">
-                        <number>0</number>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget">
+        <widget class="QLayoutWidget" row="5" column="0">
             <property name="name">
                 <cstring>layout13</cstring>
             </property>
@@ -268,7 +68,7 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QLayoutWidget">
+        <widget class="QLayoutWidget" row="6" column="0">
             <property name="name">
                 <cstring>layout6</cstring>
             </property>
@@ -303,7 +103,7 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QLayoutWidget">
+        <widget class="QLayoutWidget" row="7" column="0">
             <property name="name">
                 <cstring>layout12</cstring>
             </property>
@@ -341,7 +141,7 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QLayoutWidget">
+        <widget class="QLayoutWidget" row="8" column="0">
             <property name="name">
                 <cstring>layout6_3</cstring>
             </property>
@@ -379,7 +179,7 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QLayoutWidget">
+        <widget class="QLayoutWidget" row="9" column="0">
             <property name="name">
                 <cstring>layout6_4</cstring>
             </property>
@@ -417,7 +217,7 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QLayoutWidget">
+        <widget class="QLayoutWidget" row="10" column="0">
             <property name="name">
                 <cstring>layout6_5</cstring>
             </property>
@@ -458,7 +258,7 @@
                 </widget>
             </hbox>
         </widget>
-        <spacer>
+        <spacer row="11" column="0">
             <property name="name">
                 <cstring>spacer2</cstring>
             </property>
@@ -475,7 +275,154 @@
                 </size>
             </property>
         </spacer>
-        <widget class="QLayoutWidget">
+        <widget class="QLayoutWidget" row="3" column="0">
+            <property name="name">
+                <cstring>layout14</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1_4</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>90</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>Genre</string>
+                    </property>
+                </widget>
+                <widget class="KComboBox">
+                    <property name="name">
+                        <cstring>kComboBox_genre</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>250</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="editable">
+                        <bool>true</bool>
+                    </property>
+                    <property name="autoCompletion">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget" row="4" column="0">
+            <property name="name">
+                <cstring>layout14</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1_6_6</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>90</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>Track</string>
+                    </property>
+                </widget>
+                <widget class="KIntSpinBox">
+                    <property name="name">
+                        <cstring>kIntSpinBox_track</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>250</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="maxValue">
+                        <number>3000</number>
+                    </property>
+                    <property name="value">
+                        <number>0</number>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget" row="1" column="0">
+            <property name="name">
+                <cstring>layout14_2</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1_2</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>90</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>Artist</string>
+                    </property>
+                </widget>
+                <widget class="KComboBox">
+                    <property name="name">
+                        <cstring>kComboBox_artist</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>250</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="editable">
+                        <bool>true</bool>
+                    </property>
+                    <property name="autoCompletion">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget" row="12" column="0">
             <property name="name">
                 <cstring>layout11</cstring>
             </property>
@@ -559,21 +506,124 @@
                 </widget>
             </hbox>
         </widget>
-    </vbox>
+        <widget class="QLayoutWidget" row="0" column="0">
+            <property name="name">
+                <cstring>layout1</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>90</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>Title</string>
+                    </property>
+                </widget>
+                <widget class="KLineEdit">
+                    <property name="name">
+                        <cstring>kLineEdit_title</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>250</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget" row="2" column="0">
+            <property name="name">
+                <cstring>layout14_3</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1_3</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>90</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>Album</string>
+                    </property>
+                </widget>
+                <widget class="KComboBox">
+                    <property name="name">
+                        <cstring>kComboBox_album</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>250</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="editable">
+                        <bool>true</bool>
+                    </property>
+                    <property name="autoCompletion">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </grid>
 </widget>
-<customwidgets>
-</customwidgets>
+<tabstops>
+    <tabstop>kLineEdit_title</tabstop>
+    <tabstop>kComboBox_artist</tabstop>
+    <tabstop>kComboBox_album</tabstop>
+    <tabstop>kComboBox_genre</tabstop>
+    <tabstop>kIntSpinBox_track</tabstop>
+    <tabstop>kIntSpinBox_year</tabstop>
+    <tabstop>kLineEdit_comment</tabstop>
+    <tabstop>kLineEdit_length</tabstop>
+    <tabstop>kLineEdit_bitrate</tabstop>
+    <tabstop>kLineEdit_samplerate</tabstop>
+    <tabstop>kLineEdit_location</tabstop>
+    <tabstop>pushButton_musicbrainz</tabstop>
+    <tabstop>pushButton_ok</tabstop>
+    <tabstop>pushButton_cancel</tabstop>
+</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>kdialog.h</includehint>
+    <includehint>knuminput.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>kcombobox.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
-    <includehint>klineedit.h</includehint>
+    <includehint>kcombobox.h</includehint>
     <includehint>klineedit.h</includehint>
 </includehints>
 </UI>

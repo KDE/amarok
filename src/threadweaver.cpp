@@ -435,37 +435,50 @@ TagWriter::doJob()
     if ( !f.isNull() ) {
         TagLib::Tag * t = f.tag();
         const TagLib::String s = LocaleAwareTString( m_tagString );
+        QString field;
 
         switch ( m_tagType ) {
         case PlaylistItem::Title:
             t->setTitle( s );
+            field = "title";
             break;
         case PlaylistItem::Artist:
             t->setArtist( s );
+            field = "artist";
             break;
         case PlaylistItem::Album:
             t->setAlbum( s );
+            field = "album";
             break;
         case PlaylistItem::Year:
             t->setYear( m_tagString.toInt() );
+            field = "year";
             break;
         case PlaylistItem::Comment:
             //FIXME how does this work for vorbis files?
             //Are we likely to overwrite some other comments?
             //Vorbis can have multiple comment fields..
             t->setComment( s );
+            field = "comment";
             break;
         case PlaylistItem::Genre:
             t->setGenre( s );
+            field = "genre";
             break;
         case PlaylistItem::Track:
             t->setTrack( m_tagString.toInt() );
+            field = "track";
             break;
         default:
             return false;
         }
 
         f.save(); //FIXME this doesn't always work, but! it returns void. Great huh?
+        
+        //update the collection db
+        CollectionDB *db = new CollectionDB();
+        db->updateTag( url.path(), field, m_tagString );
+        delete db;
     }
 
     //TODO can solve by reading tags now. Sucks or what?

@@ -9,6 +9,7 @@
 #include "statusbar.h"
 #include "playlistbrowser.h"
 #include "threadweaver.h"
+#include "metabundle.h"    //updateTags()
 
 #include <kapplication.h>
 #include <kconfig.h>
@@ -185,6 +186,32 @@ CollectionDB::getImageForPath( const QString path, const QString defaultImage, c
     }
 
     return defaultImage;
+}
+
+
+QStringList
+CollectionDB::artistList()
+{
+    QStringList values;
+    QStringList names;
+
+    execSql( "SELECT name FROM artist "
+                  "ORDER BY name", &values, &names );
+    
+    return values;
+}
+
+
+QStringList
+CollectionDB::albumList()
+{
+    QStringList values;
+    QStringList names;
+
+    execSql( "SELECT name FROM album "
+                  "ORDER BY name", &values, &names );
+    
+    return values;
 }
 
 
@@ -474,6 +501,53 @@ CollectionDB::scan( const QStringList& folders, bool recursively )
                                          folders, recursively, false ) );
     else
         emit scanDone( false );
+}
+
+
+void
+CollectionDB::updateTags( const QString &url, const MetaBundle &bundle )
+{
+    QStringList values;
+    QStringList names;
+    
+    QString command = "UPDATE tags SET ";
+    command += "title = '" + escapeString( bundle.title() ) + "', "; 
+    command += "artist = " + escapeString( QString::number( getValueID( "artist", bundle.artist(), true ) ) ) + ", ";
+    command += "album = " + escapeString( QString::number( getValueID( "album", bundle.album(), true ) ) ) + ", ";
+    command += "genre = " + escapeString( QString::number( getValueID( "genre", bundle.genre(), true ) ) ) + ", ";
+    command += "year = " + escapeString( QString::number( getValueID( "year", bundle.year(), true ) ) ) + ", ";
+    if( !bundle.track().isEmpty() )
+        command += "track = " + escapeString( bundle.track() ) + ", ";
+    command += "comment = '" + escapeString( bundle.comment() ) + "' ";
+    command += "WHERE url = '" + escapeString( url ) + "';";
+    
+    execSql( command, &values, &names );
+    
+    kdDebug() << command << endl;
+}
+
+
+void
+CollectionDB::updateTag( const QString &url, const QString &field, const QString &newTag )
+{
+    QStringList values;
+    QStringList names;
+    QStringList idFields;
+    idFields << "artist" << "album" << "genre" << "year";
+    
+    QString command = "UPDATE tags "
+                                   "SET " + field + " = ";
+    
+    if( idFields.contains( field ) )
+        command += escapeString( QString::number( getValueID( field, newTag, true ) ) ) + " ";
+    else
+        command += "'" + escapeString( newTag ) + "' ";
+        
+    command += "WHERE url = '" + escapeString(url) + "';";
+    
+    execSql( command, &values, &names );
+    
+    kdDebug()<<command<<endl;
 }
 
 

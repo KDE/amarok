@@ -2,6 +2,7 @@
 // See COPYING file for licensing information.
 
 #include "metabundle.h"
+#include "collectiondb.h"
 #include "playlistitem.h"
 #include "tagdialog.h"
 
@@ -19,6 +20,7 @@
 #include <klineedit.h>
 #include <kmessagebox.h>
 #include <knuminput.h>
+#include <kglobalsettings.h>    //init()
 
 
 TagDialog::TagDialog( const KURL& url, QWidget* parent )
@@ -97,8 +99,8 @@ TagDialog::queryDone( const MusicBrainzQuery::TrackList& tracklist ) //SLOT
     }
                 
     if ( !tracklist[0].name.isEmpty() )     kLineEdit_title->setText( tracklist[0].name );
-    if ( !tracklist[0].artist.isEmpty() )   kLineEdit_artist->setText( tracklist[0].artist );
-    if ( !tracklist[0].album.isEmpty() )    kLineEdit_album->setText( tracklist[0].album );
+    if ( !tracklist[0].artist.isEmpty() )   kComboBox_artist->setCurrentText( tracklist[0].artist );
+    if ( !tracklist[0].album.isEmpty() )    kComboBox_album->setCurrentText( tracklist[0].album );
 #endif
 }
 
@@ -110,13 +112,28 @@ TagDialog::queryDone( const MusicBrainzQuery::TrackList& tracklist ) //SLOT
 void
 TagDialog::init()
 {
-    setWFlags( getWFlags() | Qt::WDestructiveClose );
+    setWFlags( getWFlags() | Qt::WDestructiveClose );    
     
     kLineEdit_title->setText( m_metaBundle.title() );
-    kLineEdit_artist->setText( m_metaBundle.artist() );
-    kLineEdit_album->setText( m_metaBundle.album() );
-    kComboBox_genre->insertStringList( MetaBundle::genreList() );
+    
+    //get artist and album list from collection db
+    CollectionDB *db = new CollectionDB();
+    QStringList artistList = db->artistList();
+    QStringList albumList = db->albumList();
+    delete db;
+    
+    //enable auto-completion for artist, album and genre
+    kComboBox_artist->insertStringList( artistList );
+    kComboBox_artist->completionObject()->insertItems( artistList );
+    kComboBox_artist->setCurrentText( m_metaBundle.artist() );
+    kComboBox_album->insertStringList( albumList );
+    kComboBox_album->completionObject()->insertItems( albumList );
+    kComboBox_album->setCurrentText( m_metaBundle.album() );
+    QStringList genreList = MetaBundle::genreList();
+    kComboBox_genre->insertStringList( genreList );
+    kComboBox_genre->completionObject()->insertItems( genreList );
     kComboBox_genre->setCurrentText( m_metaBundle.genre() );
+    
     kIntSpinBox_track->setValue( m_metaBundle.track().toInt() );
     kIntSpinBox_year->setValue( m_metaBundle.year().toInt() );
     kLineEdit_comment->setText( m_metaBundle.comment() );
@@ -127,8 +144,10 @@ TagDialog::init()
 
     // Connects for modification check
     connect( kLineEdit_title, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
-    connect( kLineEdit_artist, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
-    connect( kLineEdit_album, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
+    connect( kComboBox_artist, SIGNAL( activated( int ) ), this, SLOT( checkModified() ) );
+    connect( kComboBox_artist, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
+    connect( kComboBox_album, SIGNAL( activated( int ) ), this, SLOT( checkModified() ) );
+    connect( kComboBox_album, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
     connect( kComboBox_genre, SIGNAL( activated( int ) ), this, SLOT( checkModified() ) );
     connect( kComboBox_genre, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
     connect( kIntSpinBox_track, SIGNAL( valueChanged( int ) ), this, SLOT( checkModified() ) );
@@ -158,9 +177,9 @@ TagDialog::hasChanged()
     bool modified = false;
     
     modified |= kLineEdit_title->text()        != m_metaBundle.title();
-    modified |= kLineEdit_artist->text()       != m_metaBundle.artist();
-    modified |= kLineEdit_album->text()        != m_metaBundle.album();
-    modified |= kComboBox_genre->currentText() != m_metaBundle.genre();
+    modified |= kComboBox_artist->lineEdit()->text() != m_metaBundle.artist();
+    modified |= kComboBox_album->lineEdit()->text() != m_metaBundle.album();
+    modified |= kComboBox_genre->lineEdit()->text() != m_metaBundle.genre();
     modified |= kIntSpinBox_track->value()     != m_metaBundle.track().toInt();
     modified |= kIntSpinBox_year->value()      != m_metaBundle.year().toInt();
     modified |= kLineEdit_comment->text()      != m_metaBundle.comment();
@@ -184,14 +203,21 @@ TagDialog::writeTag()
     if ( !f.isNull() ) {
         TagLib::Tag * t = f.tag();
         t->setTitle( QStringToTString( kLineEdit_title->text() ) );
-        t->setArtist( QStringToTString( kLineEdit_artist->text() ) );
-        t->setAlbum( QStringToTString( kLineEdit_album->text() ) );
+        t->setArtist( QStringToTString( kComboBox_artist->currentText() ) );
+        t->setAlbum( QStringToTString( kComboBox_album->currentText() ) );
         t->setTrack( kIntSpinBox_track->value() );
         t->setYear( kIntSpinBox_year->value() );
         t->setComment( QStringToTString( kLineEdit_comment->text() ) );
         t->setGenre( QStringToTString( kComboBox_genre->currentText() ) );
         
         f.save();
+        
+         //update the collection db
+        MetaBundle new_metaBundle( m_metaBundle.url(), t );
+        CollectionDB *db = new CollectionDB();
+        db->updateTags( path, new_metaBundle );
+        delete db;
+        
     }
     return true;
 }        
@@ -212,8 +238,8 @@ TagDialog::syncItemText()
     if ( item ) {
         // Reflect changes in PlaylistItem text
         m_playlistItem->setText( PlaylistItem::Title, kLineEdit_title->text() );
-        m_playlistItem->setText( PlaylistItem::Artist, kLineEdit_artist->text() );
-        m_playlistItem->setText( PlaylistItem::Album, kLineEdit_album->text() );
+        m_playlistItem->setText( PlaylistItem::Artist, kComboBox_artist->currentText() );
+        m_playlistItem->setText( PlaylistItem::Album, kComboBox_album->currentText() );
         m_playlistItem->setText( PlaylistItem::Genre, kComboBox_genre->currentText() );
         m_playlistItem->setText( PlaylistItem::Track, kIntSpinBox_track->text() );
         m_playlistItem->setText( PlaylistItem::Year, kIntSpinBox_year->text() );

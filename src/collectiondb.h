@@ -11,6 +11,7 @@
 
 class sqlite;
 class ThreadWeaver;
+class MetaBundle;
 
 class CollectionDB : public QObject
 {
@@ -29,7 +30,8 @@ class CollectionDB : public QObject
         QString getPathForAlbum( const QString artist_id, const QString album_id );
         QString getImageForAlbum( const QString artist_id, const QString album_id, const QString defaultImage );
         QString getImageForPath( const QString path, const QString defaultImage, const uint width = COVER_SIZE );
-        
+        QStringList artistList();
+        QStringList albumList();
         void incSongCounter( const QString url );
         void updateDirStats( QString path, const long datetime );
         void removeSongsInDir( QString path );
@@ -62,7 +64,9 @@ class CollectionDB : public QObject
         void purgeDirCache();
         void scanModifiedDirs( bool recursively );
         void scan( const QStringList& folders, bool recursively );
-      
+        void updateTags( const QString &url, const MetaBundle &bundle );
+        void updateTag( const QString &url, const QString &field, const QString &newTag );
+        
         void retrieveFirstLevel( QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
         void retrieveSecondLevel( QString itemText, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
         void retrieveThirdLevel( QString itemText1, QString itemText2, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
