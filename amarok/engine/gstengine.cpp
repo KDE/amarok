@@ -163,7 +163,7 @@ bool GstEngine::initMixer( bool )
 }
 
 
-bool GstEngine::canDecode( const KURL &url )
+bool GstEngine::canDecode( const KURL &url, mode_t, mode_t )
 {
     GstElement *pipeline, *filesrc, *typefind;
     m_typefindResult = false;

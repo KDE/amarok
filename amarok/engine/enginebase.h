@@ -42,7 +42,8 @@ class EngineBase : public QObject
         //@return true if using hardware mixing
         virtual bool                 initMixer( bool hardware )                        = 0;
         
-        virtual bool                 canDecode( const KURL &url )                      = 0;
+        virtual bool                 canDecode( const KURL &url,
+                                                mode_t mode, mode_t permissions )      = 0;
 
         //@return time position in ms
         virtual long                 position() const                                  = 0;

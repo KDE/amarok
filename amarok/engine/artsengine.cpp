@@ -239,13 +239,9 @@ bool ArtsEngine::initMixer( bool hardware )
 // PUBLIC METHODS
 ////////////////////////////////////////////////////////////////////////////////
 
-bool ArtsEngine::canDecode( const KURL &url )
+bool ArtsEngine::canDecode( const KURL &url, mode_t mode, mode_t permissions )
 {
-    //FIXME KMimetype doesn't seem to like http files, so here we are assuming if
-    //      it's extension is not common, it can't be read. Not perfect
-
-    KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, url, false ); //false = determineMimeType straight away
-    //     KFileItem fileItem( mode, permissions, url, false ); //false = determineMimeType straight away
+    KFileItem fileItem( mode, permissions, url, false ); //false = determineMimeType straight away
     KMimeType::Ptr mimetype = fileItem.determineMimeType();
 
     Arts::TraderQuery query;
@@ -263,7 +259,8 @@ bool ArtsEngine::canDecode( const KURL &url )
 long ArtsEngine::position() const
 {
     if ( m_pPlayObject )
-        return m_pPlayObject->currentTime().seconds * 1000;
+        return m_pPlayObject->currentTime().seconds * 1000 +
+               m_pPlayObject->currentTime().ms;
     else
         return 0;
 }
@@ -429,10 +426,9 @@ void ArtsEngine::seek( long ms )
     if ( m_pPlayObject )
     {
         Arts::poTime time;
-        time.ms = 0;
-        time.seconds = ms / 1000;
-        time.custom = 0;
-        time.customUnit = std::string();
+        time.ms      = ms % 1000;
+        time.seconds = ( ms - time.ms ) / 1000;
+        time.custom  = 0.0;
 
         m_pPlayObject->seek( time );
     }

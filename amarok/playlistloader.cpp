@@ -220,14 +220,14 @@ bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissi
    //FIXME I don't actually understand what checks can be done, etc.
    if( url.protocol() == "http" ) return true;
 
+   //FIXME KMimetype doesn't seem to like http files, so here we are assuming if
+   //      it's extension is not common, it can't be read. Not perfect
+   //      listed in order of liklihood of encounter to avoid logic checks
    QString ext = url.path().right( 4 ).lower();
-   //listed in order of liklihood of encounter to avoid logic checks
    bool b = ( ext == ".mp3" || ext == ".ogg" || ext == ".m3u" || ext == ".pls" || ext == ".mod" ||  ext == ".wav" );
 
-   if( !b && !(b = pApp->m_pEngine->canDecode( url )) )
-   {
+   if( !b && !(b = pApp->m_pEngine->canDecode( url, mode, permissions )) )
        kdDebug() << "Rejected URL: " << url.prettyURL() << endl;
-   }
 
     return b;
 }
