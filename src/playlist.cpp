@@ -833,11 +833,11 @@ void Playlist::setCurrentTrack( PlaylistItem *item )
 
     m_currentTrack = item;
     if( item ) {
-        item->setPixmap( header()->mapToIndex( 0 ), SmallIcon("artsbuilderexecute") );
+        item->setPixmap( header()->mapToSection( 0 ), SmallIcon("artsbuilderexecute") );
         item->setHeight( static_cast<int>( fontMetrics().height() * 1.8 ) );
     }
     if( prev && item != prev ) {
-        prev->setPixmap( 0, QPixmap() );
+        prev->setPixmap( header()->mapToSection( 0 ), QPixmap() );
         prev->invalidateHeight();
     }
     m_cachedTrack  = 0; //invalidate cached pointer
