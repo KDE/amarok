@@ -134,7 +134,7 @@ bool
 PlaylistLoader::doJob()
 {
     typedef QValueList<MetaBundle> BundleList;
-    typedef QPair<MetaBundle, PlaylistItem*> Pair;
+    typedef QPair<KURL, PlaylistItem*> Pair;
     typedef QValueList<Pair> PairList;
     PairList pairs;
 
@@ -142,21 +142,19 @@ PlaylistLoader::doJob()
     setStatus( i18n("Populating playlist") );
 
     //TODO should I only send it local urls?
-    BundleList bundles = CollectionDB::instance()->bundlesByUrls( m_URLs );
 
     // 1st pass create items
-    BundleList::ConstIterator it;
-    BundleList::ConstIterator end = bundles.end();
-
-    for ( it = bundles.begin(); it != end && !isAborted(); ++it ) {
+    for ( KURL::List::ConstIterator it = m_URLs.begin(), end = m_URLs.end(); it != end && !isAborted(); ++it ) {
         incrementProgress();
 
-        const KURL &url = (*it).url();
+        const KURL &url = *it;
 
         if ( isPlaylist( url ) ) {
             if ( !loadPlaylist( url.path() ) )
                 m_badURLs += url;
             continue;
+
+            pairs += Pair( *it, 0 );
         }
 
         if ( EngineController::canDecode( url ) ) {
@@ -172,12 +170,16 @@ PlaylistLoader::doJob()
    setProgress( 0 );
    setStatus( i18n("Filling in tags") );
 
+   BundleList bundles = CollectionDB::instance()->bundlesByUrls( m_URLs );
+
    // 2nd pass, fill in tags
-   for( PairList::ConstIterator it = pairs.begin(), end = pairs.end(); it != end && !isAborted(); ++it ) {
+   BundleList::ConstIterator bundle = bundles.begin();
+   for( PairList::ConstIterator it = pairs.begin(), end = pairs.end(); it != end && !isAborted(); ++it, ++bundle ) {
        incrementProgress();
 
-//        if ( (*it).first.url().isLocalFile() )
-           QApplication::postEvent( this, new TagsEvent( (*it).first, (*it).second ) );
+       if( (*it).second ) {
+          Q_ASSERT( (*it).first == (*bundle).url() );
+          QApplication::postEvent( this, new TagsEvent( *bundle, (*it).second ) ); }
    }
 
     return true;
