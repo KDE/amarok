@@ -95,6 +95,7 @@ namespace amaroK
         case Engine::Idle:
             return 0;
         }
+	return -1;
     }
 
     bool DcopHandler::repeatTrackStatus()
