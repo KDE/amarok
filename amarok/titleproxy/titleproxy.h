@@ -21,30 +21,29 @@ email                :
 #include <kextendedsocket.h>
 #include <kurl.h>
 
-#include <qcstring.h>
 #include <qobject.h>
 
 class QString;
 
 /**
- * @brief: Metadata Streaming.
+ * @brief: Proxy for decoding Shoutcast metadata.
  */
 
 class TitleProxy : public QObject
 {
-    Q_OBJECT
+        Q_OBJECT
 
     public:
         TitleProxy( KURL url );
         ~TitleProxy();
 
         KURL proxyUrl();
-        
+
         // ATTRIBUTES ------
 
     signals:
-        void metaData( QString, QString );    
-    
+        void metaData( QString, QString );
+
     public slots:
 
     private slots:
@@ -54,16 +53,18 @@ class TitleProxy : public QObject
     private:
         void transmitData( QString data );
         QString extractStr( QString str, QString key );
-        
+
         // ATTRIBUTES ------
         KURL m_urlRemote;
         bool m_initSuccess;
         int m_metaInt;
         int m_byteCount;
-                        
-        QByteArray m_bufIn;
-        QByteArray m_bufOut;
-        
+        uint m_metaLen;
+        QString m_metaData;
+
+        char *m_pBufIn;
+        char *m_pBufOut;
+
         KExtendedSocket m_sockLocal;
         KExtendedSocket m_sockRemote;
         KExtendedSocket *m_pSockServer;

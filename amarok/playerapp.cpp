@@ -877,7 +877,17 @@ void PlayerApp::setupScrolltext()
 
 void PlayerApp::receiveStreamMeta( QString title, QString url )
 {
-    m_pPlayerWidget->setScroll( title, "--", "--" );
+    PlaylistItem* item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
+    
+    if ( url.isEmpty() )
+    {    
+        if ( item == NULL )
+            m_pPlayerWidget->setScroll( title + " (stream)", "--", "--" );
+        else 
+            m_pPlayerWidget->setScroll( title + " (" + item->text( 0 ) + ")", "--", "--" );
+    }
+    else
+        m_pPlayerWidget->setScroll( title + " (" + url + ")", "--", "--" );
 }
 
 
