@@ -213,7 +213,7 @@ PlaylistWindow::init()
         addBrowser<CollectionBrowser>( "CollectionBrowser", i18n( "Collection" ), "kfm" );
         addBrowser<ContextBrowser>( "ContextBrowser", i18n( "Context" ), "info" );
         addBrowser<SearchBrowser>( "SearchBrowser", i18n( "Search" ), "find" );
-        addBrowser<PlaylistBrowser>( "PlaylistBrowser", i18n( "Playlists" ), "midi" );
+        addBrowser<PlaylistBrowser>( "PlaylistBrowser", i18n( "Playlists" ), "amarok" );
     //</Browsers>
 
 
