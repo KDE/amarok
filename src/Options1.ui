@@ -20,9 +20,6 @@
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
-    <property name="caption">
-        <string>Form1</string>
-    </property>
     <property name="whatsThis" stdset="0">
         <string>Check to enable splashscreen during amaroK startup.</string>
     </property>
