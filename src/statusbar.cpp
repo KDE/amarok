@@ -24,6 +24,7 @@
 #include <qapplication.h> //startProgress() etc.
 #include <qhbox.h>
 #include <qlayout.h>
+#include <qpainter.h>
 #include <qtimer.h>
 #include <qtoolbutton.h>
 #include <qtooltip.h> //toggle labels
@@ -325,15 +326,15 @@ void ToggleLabel::mouseDoubleClickEvent( QMouseEvent */*e*/ )
 
 void ToggleLabel::setChecked( bool on )
 {
-    //FIXME setting palette is non-ideal as it means when the colors are changed in the control center
-    //      these toggle buttons aren't updated. *shrug* it's not fatal.
-
-    if( on )
-        unsetPalette();
-    else
-        setPaletteForegroundColor( colorGroup().mid() );
-
     m_state = on;
+    update();
 }
+
+void ToggleLabel::drawContents( QPainter* p ) //reimplemented
+{
+    p->setPen( m_state ? colorGroup().text() : colorGroup().mid() );
+    p->drawText( contentsRect(), Qt::AlignAuto | Qt::AlignVCenter, text() );
+}
+
 
 #include "statusbar.moc"

@@ -91,6 +91,7 @@ public:
 
 protected:
     virtual void mouseDoubleClickEvent ( QMouseEvent* );
+    void drawContents( QPainter* p );
 
 public slots:
     void setChecked( bool );

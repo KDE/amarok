@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta3:
+  FIX: RAND and REP buttons appeared always enabled at startup. (BR 95861)
   ADD: Implemented "Append Suggestions" functionality. It means that when
        enabled, amaroK will append a couple of suggested songs to playlist
        when you play a track. This produces a continuous playlist, something
