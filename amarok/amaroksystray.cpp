@@ -22,8 +22,8 @@
 
 AmarokSystray::AmarokSystray( PlayerWidget *playerWidget, KActionCollection *ac ) : KSystemTray( playerWidget )
 {
-    //    setPixmap( KSystemTray::loadIcon("amarok") ); // @since 3.2
-    setPixmap( kapp->miniIcon() ); // 3.1 compatibility for 0.7
+    setPixmap( KSystemTray::loadIcon("amarok") ); // @since 3.2
+    //setPixmap( kapp->miniIcon() ); // 3.1 compatibility for 0.7
 
     // Usability note:
     // Popping up menu item has some implications..
@@ -32,15 +32,9 @@ AmarokSystray::AmarokSystray( PlayerWidget *playerWidget, KActionCollection *ac 
     //  2. you probably don't want to hit "quit" by accident.
     //  3. you may have your menu popping up from bottom, top or side of
     //     the screen - so the relative placement of items may differ.
-    
-    contextMenu()->clear();
-    contextMenu()->insertTitle( kapp->miniIcon(), kapp->caption() );
 
-    ac->action( "options_configure" )->plug( contextMenu() );
-    contextMenu()->insertItem( i18n( "&Help" ), (QPopupMenu *)playerWidget->helpMenu() );
-    ac->action( "file_quit" )->plug( contextMenu() );
-
-    contextMenu()->insertSeparator();
+    //<mxcl> despite the usability concerns, we have to be consistent with the KDE style guide
+    //       hence quit is now placed at the bottom
 
     contextMenu()->insertItem( QIconSet( locate( "data", "amarok/images/b_prev.png" ) ),
                                i18n( "[&Z] Prev" ), kapp, SLOT( slotPrev() ) );
@@ -53,14 +47,22 @@ AmarokSystray::AmarokSystray( PlayerWidget *playerWidget, KActionCollection *ac 
     contextMenu()->insertItem( QIconSet( locate( "data", "amarok/images/b_next.png" ) ),
                                i18n( "[&B] Next" ), kapp, SLOT( slotNext() ) );
 
+    contextMenu()->insertSeparator();
+
+    //FIXME bother with configure?
+    ac->action( "options_configure" )->plug( contextMenu() );
+    //contextMenu()->insertItem( i18n( "&Help" ), (QPopupMenu *)playerWidget->helpMenu() );
+
     setAcceptDrops( true );
+
+    connect( actionCollection()->action( "file_quit" ), SIGNAL( activated() ), kapp, SLOT( quit() ) );
 }
 
 
 void AmarokSystray::wheelEvent( QWheelEvent *e )
 {
     if ( e->orientation() == Horizontal )
-        return ;
+        return;
 
     switch ( e->state() )
     {
@@ -69,13 +71,12 @@ void AmarokSystray::wheelEvent( QWheelEvent *e )
             static_cast<PlayerApp *>( kapp ) ->slotPrev();
         else
             static_cast<PlayerApp *>( kapp ) ->slotNext();
+        e->accept();
         break;
     default:
-        static_cast<PlayerApp *>( kapp ) ->m_pPlayerWidget->wheelEvent( e );
+        static_cast<PlayerApp *>( kapp )->m_pPlayerWidget->wheelEvent( e );
         break;
     }
-
-    e->accept();
 }
 
 
