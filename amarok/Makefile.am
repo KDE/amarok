@@ -20,24 +20,7 @@ amarok_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
 noinst_HEADERS = Options1.h Options2.h Options3.h Options4.h browserwidget.h browserwin.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h configdlg.h amarokbutton.h amarokfilelist.h amarokbutton.h amarokdcopiface.h amarokfilelist.h browserwidget.h browserwin.h configdlg.h debugareas.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h amarokbutton.h amarokdcopiface.h amarokfilelist.h browserwidget.h browserwin.h configdlg.h debugareas.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h
 
-
-
-
-install-data-local:
-	$(mkinstalldirs) $(kde_icondir)/locolor/32x32/apps/
-	$(INSTALL_DATA) $(srcdir)/lo32-app-amarok.png $(kde_icondir)/locolor/32x32/apps/amarok.png
-	$(mkinstalldirs) $(kde_icondir)/locolor/16x16/apps/
-	$(INSTALL_DATA) $(srcdir)/lo16-app-amarok.png $(kde_icondir)/locolor/16x16/apps/amarok.png
-	$(mkinstalldirs) $(kde_icondir)/default.kde/48x48/apps/
-	$(INSTALL_DATA) $(srcdir)/lo48-app-amarok.png $(kde_icondir)/default.kde/48x48/apps/amarok.png
-	$(mkinstalldirs) $(kde_icondir)/default.kde/64x64/apps/
-	$(INSTALL_DATA) $(srcdir)/lo64-app-amarok.png $(kde_icondir)/default.kde/64x64/apps/amarok.png
-
-uninstall-local:
-	-rm -f $(kde_icondir)/default.kde/64x64/apps/amarok.png
-	-rm -f $(kde_icondir)/default.kde/48x48/apps/amarok.png
-	-rm -f $(kde_icondir)/locolor/32x32/apps/amarok.png
-	-rm -f $(kde_icondir)/locolor/16x16/apps/amarok.png
+KDE_ICON = AUTO
 
 rcdir = $(kde_datadir)/amarok
 rc_DATA = amarokui.rc
