@@ -43,8 +43,19 @@ PlaylistLoader::PlaylistLoader( const KURL::List &urls, QListView *parent, QList
     KURL::List::ConstIterator end = m_URLs.end();
 
     for( it = m_URLs.begin(); it != end && !s_stop; ++it )
-        if ( !recurse( *it ) )
-            m_fileURLs.append( *it );
+    {
+        const KURL url = *it;
+
+        if ( url.isLocalFile() )
+        {
+            if ( QFileInfo( url.path() ).isDir() )
+                recurse( url );
+            else
+                m_fileURLs.append( url );
+        }
+        else if ( !recurse( url ) )
+            m_fileURLs.append( url );
+    }
     // END
 
     delete m_dirLister;
