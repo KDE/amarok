@@ -293,6 +293,8 @@ CollectionView::scan()  //SLOT
     }
     else if ( !m_isScanning )
     {
+        m_isScanning = true;
+
         m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
         m_insertdb->scan( AmarokConfig::collectionFolders(), AmarokConfig::scanRecursively(),
                                       AmarokConfig::importPlaylists() );
