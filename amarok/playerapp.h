@@ -34,8 +34,8 @@ namespace amaroK
 {
     class OSD;
     class TrayIcon;
+    class DcopHandler;
 }
-class AmarokDcopHandler;
 
 class BrowserWin;
 class MetaBundle;
@@ -61,7 +61,7 @@ class PlayerApp : public KApplication, public EngineObserver
         void setupColors();
         void insertMedia( const KURL::List& );
         static void initCliArgs( int argc, char *argv[] );
-        AmarokDcopHandler *dcopHandler() const { return m_pDcopHandler; }
+        amaroK::DcopHandler *dcopHandler() const { return m_pDcopHandler; }
 
         KActionCollection *actionCollection() { return m_pActionCollection; }
         const KActionCollection *actionCollection() const { return m_pActionCollection; }
@@ -107,14 +107,14 @@ class PlayerApp : public KApplication, public EngineObserver
         bool eventFilter( QObject*, QEvent* );
 
         // ATTRIBUTES ------
-        KGlobalAccel      *m_pGlobalAccel;
-        PlayerWidget      *m_pPlayerWidget;
-        BrowserWin        *m_pBrowserWin;
-        PlaylistWidget    *m_pPlaylistWidget;
-        AmarokDcopHandler *m_pDcopHandler;
-        amaroK::TrayIcon  *m_pTray;
-        amaroK::OSD       *m_pOSD;
-        KActionCollection *m_pActionCollection;
+        KGlobalAccel        *m_pGlobalAccel;
+        PlayerWidget        *m_pPlayerWidget;
+        BrowserWin          *m_pBrowserWin;
+        PlaylistWidget      *m_pPlaylistWidget;
+        amaroK::DcopHandler *m_pDcopHandler;
+        amaroK::TrayIcon    *m_pTray;
+        amaroK::OSD         *m_pOSD;
+        KActionCollection   *m_pActionCollection;
 
         long      m_length; //DEPRECATE
         int       m_sockfd;
