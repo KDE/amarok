@@ -23,6 +23,7 @@
 
 #include "amarokconfig.h"
 
+#include <qheader.h> //installEventFilter
 #include <qcolor.h>
 #include <qevent.h>
 #include <qfile.h>
@@ -62,7 +63,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
 {
     kdDebug() << "PlaylistWidget::PlaylistWidget()" << endl;
 
-    //FIXME set in browserWin //NO, we can't as we depend on its name in ~PlaylistItem()
+    //name has to set here as we _depend_ on the name in a few classes
     setName( "PlaylistWidget" );
     setFocusPolicy( QWidget::ClickFocus );
     setShowSortIndicator( true );
@@ -94,6 +95,9 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
     connect( this, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this, SLOT( showContextMenu( QListViewItem*, const QPoint& ) ) );
 
+    //install header eventFilter
+    header()->installEventFilter( this );
+             
     m_GlowColor.setRgb( 0xff, 0x40, 0x40 );
 
     connect( m_GlowTimer, SIGNAL( timeout() ), this, SLOT( slotGlowTimer() ) );
@@ -376,7 +380,7 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
    case 65433: //LoaderDoneEvent
        
        static_cast<PlaylistLoader::LoaderDoneEvent*>(e)->dispose();
-       if( !m_tagReader->running() ) unsetCursor();
+       if( !m_tagReader->running() ) unsetCursor(); //FIXME you forgot the 200ms delay in tagReader::start()
        restoreCurrentTrack();
        break;
    
@@ -442,6 +446,35 @@ void PlaylistWidget::keyPressEvent( QKeyEvent *e )
 }
 
 
+bool PlaylistWidget::eventFilter( QObject *o, QEvent *e )
+{
+    if( o == header() && e->type() == QEvent::MouseButtonPress && static_cast<QMouseEvent *>(e)->button() == Qt::RightButton )
+    {
+        //currently the only use for this filter is to get mouse clicks on the header()
+        QPopupMenu popup;
+        popup.setCheckable( true );
+                
+        for( int i = 0; i < columns(); ++i ) //columns() references a property
+        {
+            popup.insertItem( columnText( i ), i, i );
+            popup.setItemChecked( i, columnWidth( i ) != 0 );
+        }
+        
+        int col = popup.exec( static_cast<QMouseEvent *>(e)->globalPos() );
+        
+        if( col != -1 )
+        {
+            if( columnWidth( col ) == 0 ) adjustColumn( col );
+            else hideColumn( col );
+        }
+        
+        return TRUE; // eat event
+        
+    } else {
+        //allow the header to process this
+        return KListView::eventFilter( o, e );
+    }
+}
 
 
 // PRIVATE METHODS ===============================================
@@ -462,7 +495,6 @@ void PlaylistWidget::startLoader( const KURL::List &list, PlaylistItem *after )
 }
 
 
-//inline //gcc sometimes compiles this away so linking fails!
 void PlaylistWidget::setCurrentTrack( PlaylistItem *item )
 {
     PlaylistItem *tmp = PlaylistItem::GlowItem;

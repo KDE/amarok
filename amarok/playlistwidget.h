@@ -40,6 +40,7 @@ class QPoint;
 class QRect;
 class QString;
 class QTimer;
+class QEvent;
 
 class MetaBundle;
 
@@ -124,6 +125,7 @@ class PlaylistWidget : public KListView //: protected KListView
         void keyPressEvent( QKeyEvent* );
         void viewportPaintEvent( QPaintEvent* );
         void customEvent( QCustomEvent * );
+        bool eventFilter( QObject *, QEvent * );
 
         bool saveState( QStringList& );
         void writeUndo();
