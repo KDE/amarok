@@ -94,9 +94,9 @@ class CollectionView : public KListView
     private:
         void customEvent( QCustomEvent* );
         void startDrag();
-        QString catForId( int id );
-        int idForCat( const QString& cat );
-        QPixmap iconForCat( const QString& cat );
+        QString catForId( int id ) const;
+        int idForCat( const QString& cat ) const;
+        QPixmap iconForCat( const QString& cat ) const;
         
         /**
          * Executes an SQL statement on the already opened database

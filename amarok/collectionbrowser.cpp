@@ -100,8 +100,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     //</read config>
     
     //<open database>
-        QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
-                        + "collection.db" ).local8Bit();
+        const QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
+                              + "collection.db" ).local8Bit();
         //remove database file if version is incompatible
         if ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION )
             ::unlink( path );
@@ -312,7 +312,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
 
 QPixmap
-CollectionView::iconForCat( const QString& cat )
+CollectionView::iconForCat( const QString& cat ) const
 {
     QString icon;
     if ( cat == "Album"  ) icon = "cdrom_unmount";
@@ -365,7 +365,7 @@ CollectionView::cat2Menu( int id )  //SLOT
 
 
 QString
-CollectionView::catForId( int id )
+CollectionView::catForId( int id ) const
 {
     switch ( id ) {
         case CollectionBrowser::IdAlbum:
@@ -385,7 +385,7 @@ CollectionView::catForId( int id )
 
 
 int
-CollectionView::idForCat( const QString& cat )
+CollectionView::idForCat( const QString& cat ) const
 {
     if ( cat == "Album"  ) return CollectionBrowser::IdAlbum;
     if ( cat == "Artist" ) return CollectionBrowser::IdArtist;
