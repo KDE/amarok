@@ -103,6 +103,9 @@ class CollectionView : public KListView
         void showTrackInfo();
                 
     private:
+        /** Manages regular folder monitoring scan */
+        void timerEvent( QTimerEvent* e );
+        
         void startDrag();
         KURL::List listSelected();
                

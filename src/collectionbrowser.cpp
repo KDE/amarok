@@ -28,6 +28,9 @@
 #include <kurldrag.h>       //dragObject()
 
 
+static const int
+MONITOR_INTERVAL = 1000 * 30; //ms
+
 CollectionBrowser::CollectionBrowser( const char* name )
     : QVBox( 0, name )
 {
@@ -47,7 +50,6 @@ CollectionBrowser::CollectionBrowser( const char* name )
         QHBox *hbox; QToolButton *button;
 
         hbox         = new QHBox( this );
-//                        new QLabel( i18n( "Search for:" ), hbox );
         button       = new QToolButton( hbox );
         m_searchEdit = new KLineEdit( hbox );
 
@@ -163,9 +165,6 @@ CollectionView::CollectionView( CollectionBrowser* parent )
             scanModifiedDirs();
         }
 
-        if ( m_monitor )
-            m_insertdb->addCollectionToWatcher();
-
     //</open database>
 
     connect( m_insertdb, SIGNAL( scanDone() ),
@@ -180,6 +179,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
              this,         SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
 
     renderView();
+    startTimer( MONITOR_INTERVAL );         
 }
 
 
@@ -231,6 +231,8 @@ CollectionView::scan()  //SLOT
 void
 CollectionView::scanModifiedDirs()  //SLOT
 {
+    kdDebug() << k_funcinfo << endl;
+    
     m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
     m_insertdb->scanModifiedDirs( m_recursively );
 }
@@ -263,7 +265,7 @@ CollectionView::renderView( )  //SLOT
 
 
 void
-CollectionView::scanDone() //slot
+CollectionView::scanDone() //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
@@ -274,9 +276,6 @@ CollectionView::scanDone() //slot
 
     renderView();
     
-    if ( m_monitor )
-        m_insertdb->addCollectionToWatcher();
-
     m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, true );
 }
 
@@ -369,7 +368,7 @@ CollectionView::cat2Menu( int id )  //SLOT
 
 
 void
-CollectionView::doubleClicked( QListViewItem* item, const QPoint& point, int ) //SLOT
+CollectionView::doubleClicked( QListViewItem* item, const QPoint&, int ) //SLOT
 {
     if ( !item )
         return;
@@ -396,7 +395,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
 
 void
-CollectionView::makePlaylist() //slot
+CollectionView::makePlaylist() //SLOT
 {
     pApp->actionCollection()->action( "playlist_clear" )->activate();
     pApp->insertMedia( listSelected() );
@@ -404,14 +403,14 @@ CollectionView::makePlaylist() //slot
 
 
 void
-CollectionView::addToPlaylist() //slot
+CollectionView::addToPlaylist() //SLOT
 {
     pApp->insertMedia( listSelected() );
 }
 
 
 void
-CollectionView::showTrackInfo() //slot
+CollectionView::showTrackInfo() //SLOT
 {
     Item* item = static_cast<Item*>( currentItem() );
     if ( !item ) return;
@@ -454,6 +453,14 @@ CollectionView::showTrackInfo() //slot
 //////////////////////////////////////////////////////////////////////////////////////////
 // private
 //////////////////////////////////////////////////////////////////////////////////////////
+
+void
+CollectionView::timerEvent( QTimerEvent* )
+{
+    if ( m_monitor )
+        scanModifiedDirs();
+}
+
 
 void
 CollectionView::startDrag() {

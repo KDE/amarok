@@ -5,12 +5,11 @@
 #ifndef AMAROK_COLLECTIONDB_H
 #define AMAROK_COLLECTIONDB_H
 
-#include <qobject.h>
+#include <qobject.h>         //baseclass
 #include <qstringlist.h>     //stack allocated
 
 class sqlite;
 class ThreadWeaver;
-class KDirWatch;
 
 class CollectionDB : public QObject
 {
@@ -53,7 +52,6 @@ class CollectionDB : public QObject
         void purgeDirCache();
         void scanModifiedDirs( bool recursively );
         void scan( const QStringList& folders, bool recursively );
-        void addCollectionToWatcher();
       
         void retrieveFirstLevel( QString category, QString filter, QStringList* const values, QStringList* const names );
         void retrieveSecondLevel( QString itemText, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
@@ -73,7 +71,6 @@ class CollectionDB : public QObject
 
         sqlite* m_db;
         ThreadWeaver* m_weaver;
-        KDirWatch* m_dirWatch;
         bool m_monitor;
 };
 

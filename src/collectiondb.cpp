@@ -2,18 +2,17 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // See COPYING file for licensing information.
 
-#include "collectiondb.h"
-#include "threadweaver.h"
-#include "sqlite/sqlite.h"
 #include "app.h"
+#include "collectiondb.h"
+#include "sqlite/sqlite.h"
 #include "statusbar.h"
+#include "threadweaver.h"
 
 #include <kdebug.h>
-#include <kurl.h>
 #include <kglobal.h>
-#include <kstandarddirs.h>
-#include <kdirwatch.h>
 #include <klocale.h>
+#include <kstandarddirs.h>
+#include <kurl.h>
 
 #include <qcstring.h>
 
@@ -26,7 +25,6 @@
 
 CollectionDB::CollectionDB()
         : m_weaver( new ThreadWeaver( this ) )
-        , m_dirWatch( NULL )
 {
     QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
                   + "collection.db" ).local8Bit();
@@ -396,13 +394,10 @@ CollectionDB::scanModifiedDirs( bool recursively )
             removeDirFromCollection( values[i*2] );
             kdDebug() << "Collection dir removed: " << values[i*2] << endl;    
         }
-        
     }
     
     if ( !folders.isEmpty() )
         m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), folders, recursively, true ) );
-    else
-        emit scanDone();
 }
 
 
@@ -453,26 +448,6 @@ CollectionDB::customEvent( QCustomEvent *e )
         kdDebug() << k_funcinfo << endl;
         emit scanDone();
     }
-}
-
-
-void
-CollectionDB::addCollectionToWatcher()
-{
-    QStringList values;
-    QStringList names;
-
-    if ( m_dirWatch )
-        delete m_dirWatch;
-    m_dirWatch = new KDirWatch( this );
-
-    execSql( "SELECT dir FROM directories;", &values, &names );
-    for ( uint i = 0; i < values.count(); i++ )
-        m_dirWatch->addDir( values[i], true );
-
-    connect( m_dirWatch, SIGNAL( dirty( const QString& ) ),
-             this,         SLOT( dirDirty( const QString& ) ) );
-    m_dirWatch->startScan();
 }
 
 
