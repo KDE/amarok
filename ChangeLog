@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.2.2:
   FEATURES:
+    * Visualizations with LibVisual didn't work in some cases. (BR 99627)
     * A line graph equalizer added as a script "graphequalizer."
     * Initial support for dynamic playlist which removes-once-played, whilst
       appending a similar song to the end of the playlist. (BR 99305)
