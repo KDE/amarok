@@ -133,7 +133,7 @@ class CollectionDB : public QObject, public EngineObserver
         void updateDirStats( QString path, const long datetime, DbConnection *conn = NULL );
 
         //song methods
-        bool addSong( MetaBundle* bundle, const bool temporary = false, DbConnection *conn = NULL );
+        bool addSong( MetaBundle* bundle, const bool incremental = false, DbConnection *conn = NULL );
         bool getMetaBundleForUrl( const QString& url , MetaBundle* bundle );
         void addAudioproperties( const MetaBundle& bundle );
 

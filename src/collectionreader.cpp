@@ -124,8 +124,7 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
 
     //update dir statistics for rescanning purposes
     if ( stat( QFile::encodeName( dir ), &statBuf ) == 0 )
-        CollectionDB::instance()->updateDirStats(
-            dir, ( long ) statBuf.st_mtime, !m_incremental ? m_staticDbConnection : NULL );
+        CollectionDB::instance()->updateDirStats( dir, ( long ) statBuf.st_mtime, !m_incremental ? m_staticDbConnection : NULL );
     else
     {
         if ( m_incremental )
@@ -158,7 +157,8 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
         {
             if ( S_ISDIR( statBuf.st_mode ) )
             {
-                if ( m_recursively ) {
+                if ( m_recursively )
+                {
                     // Check for symlink recursion
                     QFileInfo info( entry );
                     if ( info.isSymLink() && m_processedDirs.contains( info.readLink() ) ) {
@@ -218,8 +218,7 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
         if ( !f.isNull() )
         {
             MetaBundle bundle( url, f.tag(), 0 );
-            CollectionDB::instance()->addSong(
-                &bundle, m_incremental, m_staticDbConnection );
+            CollectionDB::instance()->addSong( &bundle, m_incremental, m_staticDbConnection );
 
             if ( !cbl.contains( CoverBundle( bundle.artist(), bundle.album() ) ) )
                 cbl.append( CoverBundle( bundle.artist(), bundle.album() ) );
@@ -229,8 +228,7 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
         {
             MetaBundle bundle;
             bundle.setUrl( url.path() );
-            CollectionDB::instance()->addSong(
-                &bundle, m_incremental, m_staticDbConnection );
+            CollectionDB::instance()->addSong( &bundle, m_incremental, m_staticDbConnection );
 
             if ( !cbl.contains( CoverBundle( bundle.artist(), bundle.album() ) ) )
                 cbl.append( CoverBundle( bundle.artist(), bundle.album() ) );
@@ -244,21 +242,17 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
         {
             // we entered the next directory
             for ( uint j = 0; j < images.count(); j++ )
-                CollectionDB::instance()->addImageToAlbum(
-                    images[ j ], cbl, m_staticDbConnection );
+                CollectionDB::instance()->addImageToAlbum( images[ j ], cbl, m_staticDbConnection );
 
             cbl.clear();
             images.clear();
-            CollectionDB::instance()->checkCompilations(
-                url.path().section( '/', 0, -2 ), m_staticDbConnection );
+            CollectionDB::instance()->checkCompilations( url.path().section( '/', 0, -2 ), m_staticDbConnection );
         }
     }
 
     // clear tables
     if ( !m_incremental )
-    {
         CollectionDB::instance()->clearTables();
-    }
     else
     {
         // remove old entries from database, only
