@@ -33,6 +33,9 @@ class CollectionBrowser: public QVBox
     public:
         CollectionBrowser( const char* name );
         void setupDirs();
+    
+    public slots:
+        void openCoverManager();
 
     private slots:
         void slotSetFilterTimeout();
