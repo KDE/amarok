@@ -259,6 +259,11 @@
         <whatsthis>The screen that should display the OSD. For single-headed environments this setting should be 0.</whatsthis>
         <default>0</default>
     </entry>
+    <entry key="Osd Cover" type="Bool">
+        <label>Whether the album cover should be shown</label>
+        <default>true</default>
+        <whatsthis>If enabled, shows the album cover in the OSD.</whatsthis>
+    </entry>
     <entry key="Osd Alignment" type="Enum">
         <label>Align OSD to</label>
         <whatsthis>The relative position of the OSD. Possible choiced are TopCenter, TopLeft, TopRight, BottomCenter, BottomLeft, BottomRight, and Center.</whatsthis>

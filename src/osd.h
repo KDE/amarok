@@ -39,7 +39,7 @@ class OSDWidget : public QWidget
 
       public slots:
         //TODO rename show, scrap removeOSD, just use hide() <- easier to learn
-        void showOSD( const QString&, bool preemptive = false );
+        void showOSD( const QString&, const QString& = QString::null, bool preemptive = false );
         void removeOSD() { hide(); } //inlined as is convenience function
         void show();
 
@@ -52,13 +52,14 @@ class OSDWidget : public QWidget
         void setAlignment( Alignment );
         void setScreen( int screen );
         void setText( const QString &text ) { m_currentText = text; refresh(); }
+        void setCover ( bool cover ) { m_cover = cover; refresh(); }
 
       protected slots:
         void minReached();
 
       protected:
         /* render text into osdBuffer */
-        void renderOSDText( const QString &text );
+        void renderOSDText( const QString&, const QString& = QString::null );
         void mousePressEvent( QMouseEvent* );
         bool event( QEvent* );
 
@@ -77,7 +78,9 @@ class OSDWidget : public QWidget
         QPixmap     osdBuffer;
         QStringList textBuffer;
         QString     m_currentText;
+        QString     m_currentImage;
         bool        m_shadow;
+        bool        m_cover;
 
         Alignment   m_alignment;
         int         m_screen;
@@ -124,7 +127,7 @@ namespace amaroK
 
         public slots:
             void showTrack( const MetaBundle &bundle );
-            void showTrack() { showOSD( m_text ); }
+            void showTrack() { showOSD( m_text, m_image ); }
 
             //this function is for the showOSD global shortcut, it should always work //FIXME sucks
             void forceShowTrack() { bool b = isEnabled(); setEnabled( true ); showTrack(); setEnabled( b ); }
@@ -133,6 +136,7 @@ namespace amaroK
             OSD() : OSDWidget( "amaroK" ) {}
 
             QString m_text;
+            QString m_image;
     };
 }
 

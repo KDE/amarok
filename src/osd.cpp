@@ -8,16 +8,18 @@ the Free Software Foundation; either version 2 of the License, or
 /*
   osd.cpp  -  Provides an interface to a plain QWidget, which is independent of KDE (bypassed to X11)
   begin:     Fre Sep 26 2003
-  copyright: (C) 2003 by Christian Muehlhaeuser
-  email:     chris@chris.de
+  copyright: (C) 2003 by Christian Muehlhaeuser, 2004 by Seb Ruiz
+  email:     chris@chris.de; seb100@optusnet.com.au
 */
 
 #include "amarokconfig.h" //previewWidget
 #include "osd.h"
+#include "collectiondb.h" //for albumCover location
 
 #include <qapplication.h>
 #include <qbitmap.h>
 #include <qpainter.h>
+#include <qimage.h> 
 
 #include <kdebug.h>
 #include <kglobalsettings.h> //unsetColors()
@@ -44,7 +46,7 @@ OSDWidget::OSDWidget( const QString &appName, QWidget *parent, const char *name 
 }
 
 
-void OSDWidget::renderOSDText( const QString &text )
+void OSDWidget::renderOSDText( const QString &text , const QString &imageLocation )
 {
     static QBitmap mask;
 
@@ -52,17 +54,40 @@ void OSDWidget::renderOSDText( const QString &text )
     QSize max = QApplication::desktop() ->screen( m_screen ) ->size() - QSize( MARGIN*2 + 20, 100 );
     QFont titleFont( "Arial", 12, QFont::Bold );
     QFontMetrics titleFm( titleFont );
-
+    
     // The title cannnot be taller than one line
     QRect titleRect = titleFm.boundingRect( 0, 0, max.width(), titleFm.height(), AlignLeft, m_appName );
     // The osd cannot be larger than the screen
     QRect textRect = fontMetrics().boundingRect( 0, 0, max.width(), max.height(), AlignLeft | WordBreak, text );
-
+    
+    int showCover = 0;
+    int imageSize = 80;
+    
+    // we don't want to show the cover if it is the generic one.
+    if ( imageLocation.find( QString("nocover") ) == -1 && m_cover && !imageLocation.isEmpty())
+        showCover = 1;
+     
     if ( textRect.width() < titleRect.width() )
         textRect.setWidth( titleRect.width() );
 
     //this should still be within the screen bounds
-    textRect.addCoords( 0, 0, 20, titleRect.height() );
+    if ( showCover )
+    {
+        if ( textRect.height() + titleRect.height() < 100 )
+            // we don't want the image to be truncated at the bottom if we only have, for example - one line of text.
+            textRect.setHeight( 100 );
+        else
+            textRect.addCoords( 0, 0, 0, titleRect.height() );
+            
+        // we add pixels to the width because of the image size, and 40 for padding;
+        // 10px before image, 10px after image, 20px after text
+        textRect.addCoords( 0, 0, imageSize + 40, 0);
+    }
+    else
+        // add 20 pixels to the width (so the text isn't on the border), and add the height of the titleRect
+        // so we can see the last line!
+        textRect.addCoords( 0, 0, 20, titleRect.height() );
+
 
     osdBuffer.resize( textRect.size() );
     mask.resize( textRect.size() );
@@ -83,15 +108,39 @@ void OSDWidget::renderOSDText( const QString &text )
     int textPosition = 0;
     //shadow offset.
     int shadowOffset = 0;
+    //image position.
+    int imagePosition = 0;
+    
 
+    // Paint the album cover if existant
+    if ( showCover )
+    {
+        QImage image = QImage::QImage();
+        image.load( imageLocation );
+        image = image.smoothScale( imageSize, imageSize );
+        
+        if ( text.isRightToLeft() )
+        {
+            imagePosition = -10;
+            bufferPainter.drawImage( textRect.width() - imageSize - 10, -imagePosition, image );
+            imagePosition -= imageSize;
+        }
+        else
+        {
+            imagePosition = 10;
+            bufferPainter.drawImage( imagePosition, imagePosition, image );
+            imagePosition += imageSize;
+        }
+    }
+    
     //set text position according to direction.
     if ( text.isRightToLeft() )
     {
-        textPosition = -10;
+        textPosition = imagePosition - 10;
         shadowOffset = -3;
     } else
     {
-        textPosition = 10;
+        textPosition = imagePosition + 10;
         shadowOffset = 3;
     } //text position set
 
@@ -108,7 +157,7 @@ void OSDWidget::renderOSDText( const QString &text )
 
     // Draw the title text
     bufferPainter.setFont( titleFont );
-    bufferPainter.drawText( 10, 3, w, h, AlignLeft, m_appName );
+    bufferPainter.drawText( textPosition, 3, w, h, AlignLeft, m_appName );
 
     // Masking for transparency
     mask.fill( Qt::black );
@@ -126,13 +175,14 @@ void OSDWidget::renderOSDText( const QString &text )
 }
 
 
-void OSDWidget::showOSD( const QString &text, bool preemptive )
+void OSDWidget::showOSD( const QString &text, const QString &image, bool preemptive )
 {
     if ( isEnabled() && !text.isEmpty() )
     {
         if ( preemptive || !timerMin.isActive() )
         {
             m_currentText = text;
+            m_currentImage = image;
             m_dirty = true;
 
             show();
@@ -254,7 +304,7 @@ void OSDWidget::mousePressEvent( QMouseEvent* )
 void OSDWidget::show()
 {
     if ( m_dirty )
-        renderOSDText( m_currentText );
+        renderOSDText( m_currentText, m_currentImage );
 
     QWidget::show();
 
@@ -271,7 +321,7 @@ void OSDWidget::refresh()
     if ( isVisible() )
     {
         //we need to update the buffer
-        renderOSDText( m_currentText );
+        renderOSDText( m_currentText , m_currentImage );
     } else
         m_dirty = true; //ensure we are re-rendered before we are shown
 }
@@ -452,7 +502,6 @@ amaroK::OSD::showTrack( const MetaBundle &bundle ) //slot
     if ( !bundle.album().isEmpty() ) {
         text.replace( "%album", bundle.album() , FALSE );
     } else {
-        //text.replace( "(%album)", QString::null , FALSE );
         text.replace( QRegExp( "\\{[^}]*%album[^}]*\\}" ), QString::null );
         text.replace( "%album", QString::null , FALSE );
     }
@@ -495,7 +544,15 @@ amaroK::OSD::showTrack( const MetaBundle &bundle ) //slot
         text.replace( QRegExp( "\\{[^}]*%year[^}]*\\}" ), QString::null );
         text.replace( "%year", QString::null , FALSE );
     }
-
+    
+    // Lets get the location of the cover image
+    CollectionDB db;
+    QString image = db.albumImage( bundle.artist(), bundle.album() );
+    if ( !image )
+        image = db.getImageForPath( bundle.url().directory() );
+    
+      
+        
     // If we end up replacing many lines with QString::null, we could get blank lines.  lets remove them.
     text.replace( QRegExp( "\n+" ) , "\n" );
 
@@ -509,6 +566,7 @@ amaroK::OSD::showTrack( const MetaBundle &bundle ) //slot
     text.replace( "&amp;", "&" );
 
     m_text = text;
+    m_image = image;
 
     showTrack();
 }
@@ -525,6 +583,7 @@ amaroK::OSD::applySettings()
     setShadow( AmarokConfig::osdDrawShadow() );
     setFont( AmarokConfig::osdFont() );
     setText( AmarokConfig::osdText() );
+    setCover( AmarokConfig::osdCover() );
 
     if( AmarokConfig::osdUseCustomColors() )
     {
