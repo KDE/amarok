@@ -17,7 +17,7 @@ puts( "Enter CVS username: " )
 username = gets.chomp
 puts( "\n " )
 
-name     = "amaroK"
+name     = "amarok"
 $cvsroot = ":pserver:#{username}@cvs.kde.org:/home/kde"
 folder   = "amarok-#{version}"
 doi18n   = "yes"
@@ -68,9 +68,19 @@ if doi18n == "yes"
         end
         docdirname = "kde-i18n/#{lang}/docs/kdeextragear-1/amarok"
         cvsQuiet( "co -P #{docdirname}" )
-        if not FileTest.exists? ( docdirname ) then next end
+        if not FileTest.exists?( docdirname ) then next end
         print "Copying #{lang}'s #{name} documentation over..  "
         `cp -R #{docdirname} doc/#{lang}`
+
+        # we don't want KDE_DOCS = AUTO, cause that makes the
+        # build system assume that the name of the app is the
+        # same as the name of the dir the Makefile.am is in.
+        # Instead, we explicitly pass the name..
+        makefile = File.new( "doc/#{lang}/Makefile.am", File::CREAT | File::RDWR | File::TRUNC )
+        makefile << "KDE_LANG = #{lang}\n"
+        makefile << "KDE_DOCS=#{name}\n"
+        makefile.close
+
         puts( "done.\n" )
     end
 
@@ -91,15 +101,19 @@ if doi18n == "yes"
         `cp #{pofilename} #{dest}`
         puts( "done.\n" )
 
-#         echo "KDE_LANG = $lang
-# SUBDIRS = \$(AUTODIRS)
-# POFILES = AUTO" > $dest/Makefile.am
+        makefile = File.new( "#{dest}/Makefile.am", File::CREAT | File::RDWR | File::TRUNC )
+        makefile << "KDE_LANG = #{lang}\n"
+        makefile << "SUBDIRS  = $(AUTODIRS)\n"
+        makefile << "POFILES  = AUTO\n"
+        makefile.close
 
         $subdirs = true
     end
 
     if $subdirs
-        `echo "SUBDIRS = \$(AUTODIRS)" > po/Makefile.am`
+        makefile = File.new( "po/Makefile.am", File::CREAT | File::RDWR | File::TRUNC )
+        makefile << "SUBDIRS = $(AUTODIRS)\n"
+        makefile.close
     else
         `rm -Rf po`
     end
@@ -107,11 +121,7 @@ if doi18n == "yes"
     `rm -rf kde-i18n`
 end
 
-puts
-
-# TESTING
-exit
-
+puts "\n"
 
 # Remove CVS relevant files
 `find -name "CVS" -exec rm -rf {} \; 2> /dev/null`
@@ -133,6 +143,12 @@ Dir.chdir( "src" )
 Dir.chdir( ".." ) # amarok
 
 `rm -rf debian`
+
+
+# TESTING
+exit
+
+
 
 Dir.chdir( ".." ) # kdeextragear-1
 puts( "\n" )
