@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.1.1:
+  ADD: iCandy for Context-Browser: Background gradient and toolbar.
   CHG: Collection-Browser now has a toolbar instead of menubar.
   FIX: With "Title Streaming" disabled GStreamer could not play streams.
   FIX: Osssink is now the default sink for GStreamer. If sink initialization
