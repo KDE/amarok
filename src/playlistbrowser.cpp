@@ -598,8 +598,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         enum Actions { MAKE, APPEND, QUEUE, REMOVE, INFO };
 
-        menu.insertItem( i18n( "&Make Playlist" ), MAKE );
         menu.insertItem( i18n( "&Append to Playlist" ), APPEND ); //TODO say Append to Playlist
+        menu.insertItem( i18n( "&Make Playlist" ), MAKE );
         menu.insertItem( i18n( "&Queue After Current Track" ), QUEUE );
         menu.insertSeparator();
         menu.insertItem( SmallIcon("edittrash"), i18n( "&Remove" ), REMOVE );

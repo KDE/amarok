@@ -110,8 +110,8 @@ FileBrowser::FileBrowser( const char * name )
     //insert our own actions at front of context menu
     QPopupMenu* const menu = ((KActionMenu *)actionCollection()->action("popupMenu"))->popupMenu();
     menu->clear();
-    menu->insertItem( i18n( "&Make Playlist" ), this, SLOT(makePlaylist()), 0 );
     menu->insertItem( i18n( "&Append to Playlist" ), this, SLOT(addToPlaylist()), 1 );
+    menu->insertItem( i18n( "&Make Playlist" ), this, SLOT(makePlaylist()), 0 );
     menu->insertSeparator();
     //TODO this has no place in the context menu, make it a toolbar button instead
     menu->insertItem( i18n( "&Select All Files" ), this, SLOT(selectAllFiles()) );
