@@ -81,8 +81,7 @@ TagDialog::accept() //SLOT
     pushButton_ok->setEnabled( false ); //visual feedback
     saveTags();
 
-//     NOTE: Can't do this when object is created on the stack
-//     deleteLater();
+    QDialog::accept();
 }
 
 
@@ -197,28 +196,25 @@ TagDialog::queryDone( KTRMResultList results ) //SLOT
 
 void TagDialog::init()
 {
-//     NOTE: WDestructiveClose must not be used when the widget is created on the stack
-//     setWFlags( getWFlags() | Qt::WDestructiveClose );
+    //NOTE We allocate on the stack in Playlist
+    if( parent() != (void*)Playlist::instance() )
+        setWFlags( getWFlags() | Qt::WDestructiveClose );
 
-    //get artist and album list from collection db
-    QStringList artistList, albumList;
-    {
-        artistList = CollectionDB::instance()->artistList();
-        albumList  = CollectionDB::instance()->albumList();
-    }
-
-    //enable auto-completion for artist, album and genre
-    kComboBox_artist->insertStringList( artistList );
-    kComboBox_artist->completionObject()->insertItems( artistList );
+    const QStringList artists = CollectionDB::instance()->artistList();
+    kComboBox_artist->insertStringList( artists );
+    kComboBox_artist->completionObject()->insertItems( artists );
     kComboBox_artist->completionObject()->setIgnoreCase( true );
+    kComboBox_artist->setCompletionMode( KGlobalSettings::CompletionPopup );
 
-    kComboBox_album->insertStringList( albumList );
-    kComboBox_album->completionObject()->insertItems( albumList );
+    const QStringList albums = CollectionDB::instance()->albumList();
+    kComboBox_album->insertStringList( albums );
+    kComboBox_album->completionObject()->insertItems( albums );
     kComboBox_album->completionObject()->setIgnoreCase( true );
+    kComboBox_album->setCompletionMode( KGlobalSettings::CompletionPopup );
 
-    QStringList genreList = MetaBundle::genreList();
-    kComboBox_genre->insertStringList( genreList );
-    kComboBox_genre->completionObject()->insertItems( genreList );
+    const QStringList genres = MetaBundle::genreList();
+    kComboBox_genre->insertStringList( genres );
+    kComboBox_genre->completionObject()->insertItems( genres );
     kComboBox_genre->completionObject()->setIgnoreCase( true );
 
     //looks better to have a blank label than 0
