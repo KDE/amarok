@@ -380,17 +380,19 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
         if( o == m_lineEdit ) //the search lineedit
         {
-            //FIXME inefficient to always construct this
-            QListViewItemIterator it( m_playlist, QListViewItemIterator::Visible );
-            if( 0 == it.current() ) return FALSE;
+            typedef QListViewItemIterator It;
 
             switch( e->key() )
             {
             case Key_Down:
-                m_playlist->setFocus();
-                m_playlist->setCurrentItem( it.current() );
-                it.current()->setSelected( true ); //FIXME why doesn't it do this for us?
-                return TRUE;
+                if( QListViewItem *item = *It( m_playlist, It::Visible ) )
+                {
+                    m_playlist->setFocus();
+                    m_playlist->setCurrentItem( item );
+                    item->setSelected( true );
+                    return TRUE;
+                }
+                return FALSE;
 
             case Key_PageDown:
             case Key_PageUp:
@@ -400,8 +402,12 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
             case Key_Return:
             case Key_Enter:
                 m_lineEdit->clear();
-                m_playlist->activate( it.current() );
-                m_playlist->ensureItemVisible( it.current() );
+                m_playlist->activate( *It( m_playlist, It::Visible ) );
+                m_playlist->showCurrentTrack();
+                return TRUE;
+
+            case Key_Escape:
+                m_lineEdit->clear();
                 return TRUE;
 
             default:
