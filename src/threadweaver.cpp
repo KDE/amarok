@@ -19,6 +19,8 @@
 
 #include <kapplication.h>
 #include <kdebug.h>
+#include <klocale.h>
+#include <kstandarddirs.h>       //KGlobal::dirs()
 
 #include <taglib/tstring.h>
 #include <taglib/fileref.h>
@@ -205,6 +207,15 @@ CollectionReader::doJob()
 
     QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Start ) );
 
+    const QString logPath = KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "collection_scan.log";
+    QFile::remove( logPath );
+    QFile logFile( logPath );
+    logFile.open( IO_WriteOnly );
+    m_log.setDevice( &logFile );
+    m_log << "Collection Scan logfile\n";
+    m_log << "=======================\n";
+    m_log << i18n( "Last processed file is at the bottom. Report this file in case of crashes while building the Collection.\n\n\n" );
+
     if ( !m_incremental )
         m_parent->purgeDirCache();
 
@@ -224,6 +235,10 @@ CollectionReader::doJob()
         QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Total, entries.count() ) );
         readTags( entries );
     }
+
+    m_log.unsetDevice();
+    logFile.close();
+
     QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Stop ) );
 
     return !entries.empty();
@@ -324,6 +339,9 @@ CollectionReader::readTags( const QStringList& entries )
             QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Progress, i ) );
 
         url.setPath( entries[ i ] );
+        // Append path to logfile
+        m_log << url.path() << endl;
+
         TagLib::FileRef f( QFile::encodeName( url.path() ), false );  //false == don't read audioprops
 
         QString command = "INSERT INTO tags_temp "

@@ -11,9 +11,10 @@
 
 #include <qevent.h>       //baseclass
 #include <qmutex.h>       //stack allocated
-#include <qstringlist.h>  //stack allocated
-#include <qthread.h>      //baseclass
 #include <qptrlist.h>     //stack allocated
+#include <qstringlist.h>  //stack allocated
+#include <qtextstream.h>  //stack allocated
+#include <qthread.h>      //baseclass
 
 class MetaBundle;
 class PlaylistItem;
@@ -219,6 +220,7 @@ private:
     bool m_importPlaylists;
     bool m_incremental;
     QStringList m_processedDirs;
+    QTextStream m_log;
 };
 
 
