@@ -1781,7 +1781,8 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 {
     #define item static_cast<PlaylistItem*>(item)
 
-    enum { PLAY, PLAY_NEXT, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, REMOVE, DELETE,
+    enum {
+        PLAY, PLAY_NEXT, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, REMOVE, DELETE,
         BURN_MENU, BURN_SELECTION_DATA, BURN_SELECTION_AUDIO, BURN_ALBUM_DATA, BURN_ALBUM_AUDIO,
         BURN_ARTIST_DATA, BURN_ARTIST_AUDIO };
 
@@ -1790,37 +1791,39 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     const bool canRename   = isRenameable( col );
     const bool isCurrent   = (item == m_currentTrack);
     const bool isPlaying   = EngineController::engine()->state() == Engine::Playing;
-    const int  queueIndex  = m_nextTracks.findRef( item );
-    const bool isQueued    = queueIndex != -1;
-    const uint itemCount   = selectedItems().count();
     const bool trackColumn = col == PlaylistItem::Track;
     const QString tagName  = columnText( col );
     const QString tag      = item->exactText( col );
-    //Markey, sorry for the lengths of these lines! -mxcl
 
-    KPopupMenu popup( this );
+    uint itemCount = 0;
+    for( MyIt it( this, MyIt::Selected ); *it; ++it )
+        itemCount++;
 
+    KPopupMenu popup;
     popup.insertTitle( KStringHandler::rsqueeze( MetaBundle( item ).prettyTitle(), 50 ) );
 
     popup.insertItem( SmallIconSet( "player_play" ), isCurrent && isPlaying
-        ? i18n( "&Restart" )
-        : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
+            ? i18n( "&Restart" )
+            : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
 
-    if ( !isQueued ) {
-        //not in nextTracks queue
-        QString nextText = i18n("&Queue Track" );
+    popup.insertItem( SmallIconSet( "2rightarrow" ), i18n("&Queue Selected Tracks"), PLAY_NEXT );
 
-        const uint nextIndex = m_nextTracks.count() + 1;
-        if ( nextIndex > 1 )
-            nextText += QString( " (%1)" ).arg( nextIndex );
-
-        popup.insertItem( SmallIconSet( "2rightarrow" ), nextText, PLAY_NEXT );
+    if( itemCount == 1 ) {
+        // show a more specific text
+        const int queueIndex = m_nextTracks.findRef( item );
+        if( queueIndex == -1 ) {
+            // this item is not already queued
+            const uint nextIndex = m_nextTracks.count() + 1;
+            if( nextIndex > 1 )
+                popup.changeItem( PLAY_NEXT, i18n( "&Queue Track (%1)" ).arg( nextIndex ) );
+            else
+                popup.changeItem( PLAY_NEXT, i18n( "&Queue Track" ) );
+        }
+        else
+            popup.changeItem( PLAY_NEXT, SmallIconSet( "2leftarrow" ), i18n("&Dequeue (%1)").arg( queueIndex + 1 ) );
     }
-    else
-        popup.insertItem( SmallIconSet( "2leftarrow" ), i18n( "&Dequeue (%1)" ).arg( queueIndex+1 ), PLAY_NEXT );
 
-    if( isCurrent )
-    {
+    if( isCurrent ) {
        amaroK::actionCollection()->action( "pause" )->plug( &popup );
        popup.insertItem( i18n( "&Stop Playing After Track" ), STOP_DONE );
        popup.setItemChecked( STOP_DONE, m_stopAfterCurrent );
@@ -1829,11 +1832,11 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.insertSeparator();
 
     popup.insertItem( SmallIconSet( "edit" ), (itemCount == 1
-        ? i18n( "&Edit Tag '%1'" )
-        : i18n( "&Edit '%1' Tag For Selected Tracks" )).arg( tagName ), 0, 0, Key_F2, EDIT );
+            ? i18n( "&Edit Tag '%1'" )
+            : i18n( "&Edit '%1' Tag For Selected Tracks" )).arg( tagName ), 0, 0, Key_F2, EDIT );
     popup.insertItem( trackColumn
-        ? i18n("&Iteratively Assign Track Numbers")
-        : i18n("Write '%1' For Selected Tracks").arg( KStringHandler::rsqueeze( tag, 30 ) ), FILL_DOWN );
+            ? i18n("&Iteratively Assign Track Numbers")
+            : i18n("Write '%1' For Selected Tracks").arg( KStringHandler::rsqueeze( tag, 30 ) ), FILL_DOWN );
     popup.insertItem( SmallIconSet( "editcopy" ), i18n( "&Copy Meta-String" ), 0, 0, CTRL+Key_C, COPY );
 
     popup.insertSeparator();
@@ -1854,8 +1857,8 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     popup.insertItem( SmallIconSet( "edittrash" ), i18n( "&Remove From Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete, REMOVE );
     popup.insertItem( SmallIconSet( "editdelete" ), itemCount == 1
-        ? i18n("&Delete File")
-        : i18n("&Delete Selected Files"), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete, DELETE );
+            ? i18n("&Delete File")
+            : i18n("&Delete Selected Files"), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete, DELETE );
 
     popup.insertSeparator();
 
@@ -1876,7 +1879,13 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         break;
 
     case PLAY_NEXT:
-        queue( item );
+        if( itemCount > 1 )
+            // we need to dequeue everything that is already queued when
+            // the user is queueing a selection, otherwise it feels wrong
+            m_nextTracks.clear();
+
+        for( MyIt it( this, MyIt::Selected ); *it; ++it )
+            queue( *it );
         break;
 
     case STOP_DONE:
