@@ -140,18 +140,6 @@ namespace Engine
         inline uint volume() const { return m_volume; }
         inline bool hasEffects() const { return m_effects; }
 
-        /**
-         * Determines whether the engine supports crossfading.
-         * @return True if crossfading is supported.
-         */
-        inline bool hasXFade() const { return m_hasXFade; }
-
-        /**
-         * Determines how streaming is handled with this engine.
-         * @return The supported streaming mode.
-         */
-        StreamingMode streamingMode() const { return m_streamingMode; }
-
         Effects& effects() const { return *m_effects; } //WARNING! calling when there are none will crash amaroK!
 
         /**
@@ -171,8 +159,6 @@ namespace Engine
         /** Set new crossfade length (msec) */
         void setXfadeLength( int value ) { m_xfadeLength = value; }
 
-        /** Determine whether the engine has an equalizer */
-        bool hasEqualizer() const { return m_hasEqualizer; }
         /** Set whether equalizer is active */
         virtual void setEqualizerActive( bool ) {};
         /** Set equalizer preamp value, range 0-100 */
@@ -181,7 +167,7 @@ namespace Engine
         virtual void setEqualizerGains( const QValueList<int>& ) {};
 
     protected:
-        Base( StreamingMode = NoStreaming, bool hasConfigure = false, bool hasXFade = false, Effects* = 0, bool hasEqualizer = false );
+        Base( Effects* = 0 );
 
         /** shows the amaroK configuration dialog at the engine page */
         void showEngineConfigDialog() { emit showConfigDialog( 5 ); }
@@ -190,7 +176,6 @@ namespace Engine
         void setVolumeHW( uint percent );
 
         void setEffects( Effects *e ) { m_effects = e; }
-        void setStreamingMode( StreamingMode m ) { m_streamingMode = m; }
 
         Base( const Base& ); //disable copy constructor
         const Base &operator=( const Base& ); //disable copy constructor
@@ -198,10 +183,7 @@ namespace Engine
         int           m_xfadeLength;
 
     private:
-        StreamingMode m_streamingMode;
-        bool          m_hasXFade;
         Effects      *m_effects;
-        bool          m_hasEqualizer;
         int           m_mixer;
 
     protected:

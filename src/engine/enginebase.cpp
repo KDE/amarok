@@ -12,10 +12,8 @@
 #include <unistd.h>
 
 
-Engine::Base::Base( StreamingMode mode, bool hasConfigure, bool hasXFade, Effects *effects, bool /*hasEqualizer*/ )
-    : amaroK::Plugin( hasConfigure )
-    , m_streamingMode( mode )
-    , m_hasXFade( hasXFade )
+Engine::Base::Base( Effects *effects )
+    : amaroK::Plugin()
     , m_effects( effects )
     , m_mixer( -1 )
     , m_volume( 50 )

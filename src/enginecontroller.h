@@ -52,6 +52,8 @@ public:
     static EngineBase       *loadEngine();
     static bool              canDecode( const KURL& );
     static ExtensionCache   &extensionCache() { return s_extensionCache; }
+    static QString           engineProperty( const QString& key ) { return engine()->pluginProperty( key ); }
+    static bool              hasEngineProperty( const QString& key ) { return engine()->hasPluginProperty( key ); }
 
     uint trackLength() const { return m_bundle.length() * 1000; }
     const MetaBundle &bundle() const;

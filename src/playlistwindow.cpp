@@ -256,16 +256,16 @@ PlaylistWindow::init()
     //END Playlist menu
 
     //BEGIN Tools menu
-    KPopupMenu *toolsMenu = new KPopupMenu( m_menubar );
-    toolsMenu->insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n("&Cover Manager..."), amaroK::Menu::ID_SHOW_COVER_MANAGER );
-    toolsMenu->insertItem( i18n("&First-run Wizard..."), amaroK::Menu::ID_SHOW_WIZARD );
-    toolsMenu->insertItem( i18n("&Visualizations..."), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
-    toolsMenu->insertItem( i18n("&Equalizer..."), kapp, SLOT( slotConfigEqualizer() ), 0, amaroK::Menu::ID_CONFIGURE_EQUALIZER );
-//     toolsMenu->setItemEnabled( amaroK::Menu::ID_CONFIGURE_EQUALIZER, EngineController::engine()->hasEqualizer() );
+    m_toolsMenu = new KPopupMenu( m_menubar );
+    m_toolsMenu->insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n("&Cover Manager..."), amaroK::Menu::ID_SHOW_COVER_MANAGER );
+    m_toolsMenu->insertItem( i18n("&First-run Wizard..."), amaroK::Menu::ID_SHOW_WIZARD );
+    m_toolsMenu->insertItem( i18n("&Visualizations..."), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
+    m_toolsMenu->insertItem( i18n("&Equalizer..."), kapp, SLOT( slotConfigEqualizer() ), 0, amaroK::Menu::ID_CONFIGURE_EQUALIZER );
     #ifndef HAVE_XMMS
-    toolsMenu->setItemEnabled( amaroK::Menu::ID_SHOW_VIS_SELECTOR, false );
+    m_toolsMenu->setItemEnabled( amaroK::Menu::ID_SHOW_VIS_SELECTOR, false );
     #endif
-    connect( toolsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
+    connect( m_toolsMenu, SIGNAL( aboutToShow() ), SLOT( toolsMenuAboutToShow() ) );
+    connect( m_toolsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
     //END
 
     //BEGIN Settings menu
@@ -294,7 +294,7 @@ PlaylistWindow::init()
 
     m_menubar->insertItem( i18n( "&Actions" ), actionsMenu );
     m_menubar->insertItem( i18n( "&Playlist" ), playlistMenu );
-    m_menubar->insertItem( i18n( "&Tools" ), toolsMenu );
+    m_menubar->insertItem( i18n( "&Tools" ), m_toolsMenu );
     m_menubar->insertItem( i18n( "&Settings" ), m_settingsMenu );
     m_menubar->insertItem( i18n( "&Help" ), amaroK::Menu::helpMenu() );
 
@@ -715,7 +715,7 @@ void PlaylistWindow::setSearchField( int field )
 }
 
 
-void PlaylistWindow::slotMenuActivated( int index )
+void PlaylistWindow::slotMenuActivated( int index ) //SLOT
 {
     switch( index )
     {
@@ -739,6 +739,12 @@ void PlaylistWindow::slotMenuActivated( int index )
         QTimer::singleShot( 0, kapp, SLOT( applySettings() ) );
         break;
     }
+}
+
+
+void PlaylistWindow::toolsMenuAboutToShow()
+{
+    m_toolsMenu->setItemEnabled( amaroK::Menu::ID_CONFIGURE_EQUALIZER, EngineController::hasEngineProperty( "HasEqualizer" ) );
 }
 
 

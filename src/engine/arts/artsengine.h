@@ -54,7 +54,6 @@ class ArtsEngine : public Engine::Base
         bool                                     init();
 
         bool                                     canDecode( const KURL &url ) const;
-        Engine::StreamingMode                    streamingMode() { return Engine::Socket; }
         uint                                     position() const;
         Engine::State                            state() const;
         const Engine::Scope&                     scope();

@@ -45,7 +45,7 @@ namespace Log
 
 
 XineEngine::XineEngine()
-  : EngineBase( Engine::NoStreaming, true )
+  : EngineBase()
   , m_xine( 0 )
   , m_stream( 0 )
   , m_audioPort( 0 )
@@ -53,6 +53,9 @@ XineEngine::XineEngine()
   , m_post( 0 )
 {
     myList->next = myList; //init the buffer list
+
+    addPluginProperty( "StreamingMode",  "NoStreaming" );
+    addPluginProperty( "HasConfigure",   "true" );
 }
 
 XineEngine::~XineEngine()

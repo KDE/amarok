@@ -13,6 +13,9 @@
          amaroK::Plugin* create_plugin() { return new classname; } \
     }
 
+#include <qmap.h>
+#include <qstring.h>
+
 class QWidget;
 
 namespace amaroK
@@ -24,8 +27,6 @@ namespace amaroK
         public:
             virtual ~Plugin();
 
-            bool hasConfigure() const { return m_hasConfigure; }
-
             /**
              * TODO @param parent you must parent the widget to parent
              * @return the configure widget for your plugin, create it on the heap!
@@ -33,11 +34,15 @@ namespace amaroK
              //TODO rename configureWidget( QWidget *parent )
             virtual PluginConfig* configure() const { return 0; }
 
+            void addPluginProperty( const QString& key, const QString& value );
+            QString pluginProperty( const QString& key );
+            bool hasPluginProperty( const QString& key );
+
         protected:
-            Plugin( bool hasConfigure = false );
+            Plugin();
 
         private:
-            bool m_hasConfigure;
+            QMap<QString, QString> m_properties;
     };
 
 } //namespace amaroK

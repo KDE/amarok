@@ -172,7 +172,7 @@ GstEngine::shutdown_cb() //static
 /////////////////////////////////////////////////////////////////////////////////////
 
 GstEngine::GstEngine()
-        : Engine::Base( /*StreamingMode*/ Engine::Signal, /*hasConfigure*/ true, /*hasXFade*/ true, /*effects*/ 0, /*hasEqualizer*/ true )
+        : Engine::Base()
         , m_currentInput( 0 )
         , m_gst_adapter( 0 )
         , m_streamBuf( new char[STREAMBUF_SIZE] )
@@ -183,6 +183,11 @@ GstEngine::GstEngine()
         , m_eos( false )
 {
     kdDebug() << k_funcinfo << endl;
+
+    addPluginProperty( "StreamingMode",  "Signal" );
+    addPluginProperty( "HasConfigure",   "true" );
+    addPluginProperty( "HasCrossfading", "true" );
+    addPluginProperty( "HasEqualizer",   "true" );
 
     m_inputs.setAutoDelete( true );
 }

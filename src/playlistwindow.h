@@ -75,6 +75,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
         void slotSetFilterTimeout();
         void setSearchField( int );
         void slotMenuActivated( int );
+        void toolsMenuAboutToShow();
 
     protected:
         virtual void closeEvent( QCloseEvent* );
@@ -86,6 +87,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
         enum MenuId { ID_SHOW_MENUBAR = 2000, ID_SHOW_TOOLBAR, ID_SHOW_PLAYERWINDOW };
 
         KMenuBar *m_menubar;
+        KPopupMenu *m_toolsMenu;
         KPopupMenu *m_settingsMenu;
         BrowserBar *m_browsers;
         Playlist   *m_playlist;

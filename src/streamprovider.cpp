@@ -15,7 +15,6 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
-#include "enginebase.h"
 #include "metabundle.h"
 #include "streamprovider.h"
 
@@ -23,7 +22,6 @@ email                : markey@web.de
 #include <kmdcodec.h>
 #include <kprotocolmanager.h>
 
-#include <qstring.h>
 #include <qtimer.h>
 
 
@@ -34,7 +32,7 @@ static const uint MAX_PROXYPORT = 7777;
 static const int BUFSIZE = 16384;
 
 
-StreamProvider::StreamProvider( KURL url, int streamingMode )
+StreamProvider::StreamProvider( KURL url, const QString& streamingMode )
         : QObject()
         , m_url( url )
         , m_streamingMode( streamingMode )
@@ -56,7 +54,7 @@ StreamProvider::StreamProvider( KURL url, int streamingMode )
     connect( &m_sockRemote, SIGNAL( connected() ), this, SLOT( sendRequest() ) );
     connect( &m_sockRemote, SIGNAL( readyRead() ), this, SLOT( readRemote() ) );
 
-    if ( streamingMode == Engine::Socket ) {
+    if ( streamingMode == "Socket" ) {
         uint i;
         StreamProxy* server;
         for ( i = MIN_PROXYPORT; i <= MAX_PROXYPORT; i++ ) {
@@ -111,11 +109,11 @@ StreamProvider::proxyUrl()
 // PRIVATE SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void 
+void
 StreamProvider::accept( int socket ) //SLOT
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     m_sockProxy.setSocket( socket );
     m_sockProxy.waitForMore( KProtocolManager::proxyConnectTimeout() * 1000 );
 
@@ -123,7 +121,7 @@ StreamProvider::accept( int socket ) //SLOT
 }
 
 
-void 
+void
 StreamProvider::connectToHost() //SLOT
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
@@ -143,7 +141,7 @@ StreamProvider::connectToHost() //SLOT
 }
 
 
-void 
+void
 StreamProvider::sendRequest() //SLOT
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
@@ -162,16 +160,16 @@ StreamProvider::sendRequest() //SLOT
                                .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) )
                                .arg( m_url.host() )
                                .arg( m_icyMode ? "Icy-MetaData:1\r\n" : "" )
-                               .arg( auth ? "Authorization: Basic " + authString + "\r\n" : "" ); 
+                               .arg( auth ? "Authorization: Basic " + authString + "\r\n" : "" );
 
-//     kdDebug() << "StreamProvider sending request:\n" << request << endl; 
+//     kdDebug() << "StreamProvider sending request:\n" << request << endl;
     m_sockRemote.writeBlock( request.latin1(), request.length() );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
 
 
-void 
+void
 StreamProvider::readRemote() //SLOT
 {
     m_connectSuccess = true;
@@ -195,7 +193,7 @@ StreamProvider::readRemote() //SLOT
             m_metaData.append( QString::fromAscii( m_pBuf + index, length ) );
             index += length;
             m_metaLen -= length;
-            
+
             if ( m_metaLen == 0 ) {
                 // Transmit metadata string
                 transmitData( m_metaData );
@@ -208,7 +206,7 @@ StreamProvider::readRemote() //SLOT
             if ( m_icyMode && bytesWrite > m_metaInt - m_byteCount )
                 bytesWrite = m_metaInt - m_byteCount;
 
-            if ( m_streamingMode == Engine::Socket )
+            if ( m_streamingMode == "Socket" )
                 bytesWrite = m_sockProxy.writeBlock( m_pBuf + index, bytesWrite );
             else
                 emit streamData( m_pBuf + index, bytesWrite );
@@ -222,7 +220,7 @@ StreamProvider::readRemote() //SLOT
 }
 
 
-void 
+void
 StreamProvider::connectError() //SLOT
 {
     if ( !m_connectSuccess ) {
@@ -237,7 +235,7 @@ StreamProvider::connectError() //SLOT
 // PRIVATE
 //////////////////////////////////////////////////////////////////////////////////////////
 
-bool 
+bool
 StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
 {
     kdDebug() << k_funcinfo << endl;
@@ -266,7 +264,7 @@ StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
 
             if ( m_streamUrl.startsWith( "www.", true ) )
                 m_streamUrl.prepend( "http://" );
-            if ( m_streamingMode == Engine::Socket )
+            if ( m_streamingMode == "Socket" )
                 m_sockProxy.writeBlock( m_headerStr.latin1(), m_headerStr.length() );
 
             m_headerFinished = true;
@@ -283,7 +281,7 @@ StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
 }
 
 
-void 
+void
 StreamProvider::transmitData( const QString &data )
 {
     kdDebug() << "[StreamProvider] Received new metadata: " << data << endl;
@@ -303,7 +301,7 @@ StreamProvider::transmitData( const QString &data )
 }
 
 
-void 
+void
 StreamProvider::error()
 {
     kdDebug() <<  "StreamProvider error: Stream does not support shoutcast metadata. "
@@ -317,19 +315,19 @@ StreamProvider::error()
 }
 
 
-QString 
+QString
 StreamProvider::extractStr( const QString &str, const QString &key )
 {
     int index = str.find( key, 0, true );
-    
+
     if ( index == -1 ) {
         return QString::null;
-    
+
     } else {
-    
+
         // String looks like this:
         // StreamTitle='foobar';StreamUrl='http://shn.mthN.net';
-        
+
         index = str.find( "'", index ) + 1;
         int indexEnd = str.find( "';", index );
         return str.mid( index, indexEnd - index );

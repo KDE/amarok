@@ -156,7 +156,8 @@ Menu::helpMenu( QWidget *parent ) //STATIC
 void
 Menu::slotAboutToShow()
 {
-    setItemEnabled( ID_CONF_DECODER, EngineController::engine()->hasConfigure() );
+    setItemEnabled( ID_CONFIGURE_EQUALIZER, EngineController::hasEngineProperty( "HasEqualizer" ) );
+    setItemEnabled( ID_CONF_DECODER, EngineController::hasEngineProperty( "HasConfigure" ) );
 }
 
 void

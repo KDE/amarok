@@ -54,7 +54,7 @@ AMAROK_EXPORT_PLUGIN( KDEMMEngine )
 using namespace KDE::Multimedia;
 
 KDEMMEngine::KDEMMEngine( )
-        : Engine::Base(/*StreamingMode*/ Engine::NoStreaming, /*hasConfigure*/ false, /*hasXFade*/ false)
+        : Engine::Base()
 //        , m_scopeId( 0 )
 //        , m_xfadeFadeout( false )
 //        , m_xfadeValue( 0.0 )
@@ -64,6 +64,8 @@ KDEMMEngine::KDEMMEngine( )
 {
     kdDebug() << k_funcinfo << endl;
     m_player = new SimplePlayer();
+
+    addPluginProperty( "StreamingMode",  "NoStreaming" );
 }
 
 
@@ -104,7 +106,7 @@ bool KDEMMEngine::canDecode( const KURL &url ) const
     kdDebug() << "  Param: url: " << url << endl;
     //kdDebug() << "  url.protocol()   >" << url.protocol() <<"<"<< endl;
 
-    if (url.protocol() == "http" ) return false; 
+    if (url.protocol() == "http" ) return false;
 
     // TODO determine list of supported MimeTypes/Extensions from KDEMM
     list += QString("audio/x-mp3");
@@ -136,7 +138,7 @@ bool KDEMMEngine::load( const KURL& url, bool stream )
        stop();
    }
     m_url = url;
-    // the KDEMM  SimplePlayer dows the loading in the play method 
+    // the KDEMM  SimplePlayer dows the loading in the play method
 
     m_state = Engine::Idle;
 

@@ -74,9 +74,9 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     }
 
     // Enable crossfading option when available
-    opt4->kcfg_Crossfade->setEnabled( EngineController::engine()->hasXFade() );
-    opt4->kcfg_CrossfadeLength->setEnabled( EngineController::engine()->hasXFade() );
-    opt4->crossfadeLengthLabel->setEnabled( EngineController::engine()->hasXFade() );
+    opt4->kcfg_Crossfade->setEnabled( EngineController::hasEngineProperty( "HasCrossfading" ) );
+    opt4->kcfg_CrossfadeLength->setEnabled( EngineController::hasEngineProperty( "HasCrossfading" ) );
+    opt4->crossfadeLengthLabel->setEnabled( EngineController::hasEngineProperty( "HasCrossfading" ) );
 
     // ID3v1 recoding locales
     QTextCodec *codec;
@@ -201,7 +201,7 @@ void AmarokConfigDialog::soundSystemChanged()
     // will delete the view if implementation is done correctly
     delete m_engineConfig;
 
-    if( EngineController::engine()->hasConfigure() )
+    if( EngineController::hasEngineProperty( "HasConfigure" ) )
     {
         m_engineConfig = EngineController::engine()->configure();
         m_engineConfig->view()->reparent( m_engineConfigFrame, QPoint() );

@@ -259,7 +259,7 @@ void EngineController::play( const MetaBundle &bundle )
     if ( m_timer->isActive() && m_bundle.length() > 0 )
         trackEnded( m_engine->position(), m_bundle.length() * 1000 );
 
-    if ( m_engine->streamingMode() != Engine::NoStreaming && url.protocol() == "http" ) {
+    if ( m_engine->property( "StreamingMode") != "NoStreaming" && url.protocol() == "http" ) {
         m_bundle = bundle;
         m_xFadeThisTrack = false;
         // Detect mimetype of remote file
@@ -279,7 +279,7 @@ void EngineController::play( const MetaBundle &bundle )
         if( m_engine->play() )
         {
             m_xFadeThisTrack = AmarokConfig::crossfade() &&
-                               m_engine->hasXFade() &&
+                               m_engine->hasPluginProperty( "HasCrossfading" ) &&
                               !m_engine->isStream() &&
                                m_bundle.length()*1000 - AmarokConfig::crossfadeLength()*2 > 0;
 
@@ -393,9 +393,9 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
 
     StatusBar::instance()->clear();
 
-    if ( isStream && m_engine->streamingMode() != Engine::NoStreaming )
+    if ( isStream && m_engine->property( "StreamingMode" ) != "NoStreaming" )
     {
-        m_stream = new amaroK::StreamProvider( url, m_engine->streamingMode() );
+        m_stream = new amaroK::StreamProvider( url, m_engine->pluginProperty( "StreamingMode" ) );
 
         if ( !m_stream->initSuccess() || !m_engine->play( m_stream->proxyUrl(), isStream ) ) {
             delete m_stream;

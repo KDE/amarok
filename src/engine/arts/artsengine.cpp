@@ -63,7 +63,7 @@ AMAROK_EXPORT_PLUGIN( ArtsEngine )
 
 
 ArtsEngine::ArtsEngine()
-        : EngineBase( /*StreamingMode*/ Engine::Socket, /*hasConfigure*/ false, /*hasXFade*/ true )
+        : EngineBase()
         , m_pArtsDispatcher( new KArtsDispatcher( this ) )
         , m_pPlayObject( 0 )
         , m_pPlayObjectXfade( 0 )
@@ -75,6 +75,10 @@ ArtsEngine::ArtsEngine()
         , m_pConnectTimer( new QTimer( this ) )
 {
     kdDebug() << k_funcinfo << endl;
+
+    addPluginProperty( "StreamingMode",  "Socket" );
+    addPluginProperty( "HasConfigure",   "true" );
+    addPluginProperty( "HasCrossfading", "true" );
 }
 
 
