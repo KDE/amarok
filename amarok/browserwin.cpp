@@ -370,6 +370,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     /* Here because we need m_playlist initialized. */
     QPushButton *showCurrentTrack = new QPushButton( boxH );
     showCurrentTrack->setPixmap( locate( "data", "amarok/images/ensure_visible.png" ) );
+    QToolTip::add( showCurrentTrack, i18n( "Scroll to currently playing item" ) );
 //    showCurrentTrack->resize(24,24);
     connect( showCurrentTrack, SIGNAL( clicked() ), m_playlist, SLOT(showCurrentTrack()) );
 
