@@ -68,7 +68,11 @@ ContextBrowser::ContextBrowser( const char *name )
                     .arg( colorGroup().highlight().name() );
     m_styleSheet += QString( ".rbcontent:hover { border: solid %1 1px; }" )
                     .arg( colorGroup().text().name() );
-    showHome();
+
+    if ( m_db->isEmpty() )
+        showIntroduction();
+    else
+        showHome();
     
     connect( browser->browserExtension(),
              SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ), this,
@@ -113,6 +117,8 @@ void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
             showHome();
         if ( url.path() == "context" )
             showCurrentTrack();
+        if ( url.path() == "collectionSetup" )
+            pApp->slotConfigCollection();
     }
 }
 
@@ -124,6 +130,20 @@ void ContextBrowser::showContextForItem( const KURL &url )
 
     // increase song counter
     m_db->incSongCounter( m_currentTrack->url().path() );
+}
+
+
+void ContextBrowser::showIntroduction()
+{
+    browser->begin();
+    browser->setUserStyleSheet( m_styleSheet );
+
+    // <Favorite Tracks Information>
+    browser->write( "<html><div>");
+    browser->write( i18n( "Hello amaroK user!" )
+                    + "<br><br>" + i18n( "To use the extended features of amaroK, you need to build a collection!" ) 
+                    + "&nbsp;<a href='show:collectionSetup'>" + i18n( "Click here to create one!" ) + "</a>" );
+    browser->write( "</div></html>");
 }
 
 

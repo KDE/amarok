@@ -32,6 +32,7 @@ class CollectionBrowser: public QVBox
     
     public:
         CollectionBrowser( const char* name );
+        void setupDirs();
 
     private slots:
         void slotSetFilterTimeout();
@@ -54,7 +55,7 @@ class CollectionView : public KListView
 {
     Q_OBJECT
     friend class CollectionBrowser;
-    
+
     public:
         class Item : public KListViewItem {
             public:
@@ -78,9 +79,7 @@ class CollectionView : public KListView
         Item* currentItem() { return static_cast<Item*>( KListView::currentItem() ); }
         
     private slots:
-        /** Shows the folder selection widget. */
         void setupDirs();    
-        
         void scan();
         void scanMonitor();
         

@@ -28,6 +28,7 @@ class ContextBrowser : public QVBox
         void openURLRequest(const KURL &url, const KParts::URLArgs & );
 
     private:
+        void showIntroduction();
         void showHome();
         void showCurrentTrack();
 

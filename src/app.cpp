@@ -20,6 +20,7 @@ email                : markey@web.de
 #include "app.h"
 #include "configdialog.h"
 #include "contextbrowser.h"
+#include "collectionbrowser.h"
 #include "effectwidget.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
@@ -813,6 +814,12 @@ void App::slotDecreaseVolume()
 void App::slotShowVolumeOsd()    //FIXME remove this crap
 {
     m_pOSD->showVolume();
+}
+
+
+void App::slotConfigCollection()
+{
+    m_pPlaylistWindow->m_collectionBrowser->setupDirs();
 }
 
 

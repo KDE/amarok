@@ -47,6 +47,19 @@ CollectionDB::escapeString( QString string )
 }
 
 
+bool
+CollectionDB::isEmpty()
+{
+    QStringList values;
+    QStringList names;
+
+    if ( execSql( "SELECT COUNT( url ) FROM tags;", &values, &names ) )
+        return ( values[0] == "0" ); 
+    else
+        return true;
+}
+
+
 QString
 CollectionDB::albumSongCount( const QString artist_id, const QString album_id )
 {

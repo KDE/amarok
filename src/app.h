@@ -82,6 +82,7 @@ class App : public KApplication, public EngineObserver
     public slots:
         void slotPlaylistShowHide();
         void slotShowOptions();
+        void slotConfigCollection();
         void slotIncreaseVolume();
         void slotDecreaseVolume();
         void slotShowVolumeOsd();

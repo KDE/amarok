@@ -162,7 +162,8 @@ PlaylistWindow::PlaylistWindow( QWidget *parent, const char *name )
     //</PlaylistBrowser>
 
     //<CollectionBrowser>
-        m_browsers->addBrowser( new CollectionBrowser( "CollectionBrowser" ), i18n( "Collection" ), "contents" );
+        m_collectionBrowser = new CollectionBrowser( "CollectionBrowser" );
+        m_browsers->addBrowser( m_collectionBrowser, i18n( "Collection" ), "contents" );
     //</CollectionBrowser>
 
     //<InfoBrowser>

@@ -28,6 +28,7 @@ namespace amaroK {
 }
 class BrowserBar;
 class ContextBrowser;
+class CollectionBrowser;
 class KActionCollection;
 class KLineEdit;
 class KToolBar;
@@ -68,6 +69,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         Playlist *playlist() const { return m_playlist; }
 
         ContextBrowser *m_contextBrowser;
+        CollectionBrowser *m_collectionBrowser;
 
         virtual bool eventFilter( QObject*, QEvent* );
 
