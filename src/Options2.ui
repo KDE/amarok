@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>481</width>
+            <width>324</width>
             <height>326</height>
         </rect>
     </property>
@@ -20,14 +20,17 @@
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
-    <grid>
+    <property name="caption">
+        <string>Options2</string>
+    </property>
+    <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
         <property name="spacing">
             <number>16</number>
         </property>
-        <widget class="QLayoutWidget" row="0" column="0">
+        <widget class="QLayoutWidget">
             <property name="name">
                 <cstring>layout4</cstring>
             </property>
@@ -44,6 +47,9 @@
                     </property>
                     <property name="text">
                         <string>&amp;Use custom fonts</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+U</string>
                     </property>
                     <property name="checked">
                         <bool>false</bool>
@@ -209,43 +215,31 @@
                 </widget>
             </vbox>
         </widget>
-        <spacer row="2" column="0">
+        <widget class="Line">
             <property name="name">
-                <cstring>spacer1</cstring>
+                <cstring>line1</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
             </property>
             <property name="orientation">
-                <enum>Vertical</enum>
+                <enum>Horizontal</enum>
             </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>20</width>
-                    <height>37</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QGroupBox" row="1" column="0">
+        </widget>
+        <widget class="QCheckBox">
             <property name="name">
                 <cstring>kcfg_RecodeID3v1Tags</cstring>
             </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>5</hsizetype>
-                    <vsizetype>5</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="title">
+            <property name="text">
                 <string>Recode ID3v1 Tags</string>
             </property>
-            <property name="checkable">
-                <bool>true</bool>
-            </property>
-            <property name="checked">
-                <bool>false</bool>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout4</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -254,6 +248,9 @@
                 <widget class="QLabel">
                     <property name="name">
                         <cstring>textLabel1_2</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
@@ -274,6 +271,9 @@
                     <property name="name">
                         <cstring>kcfg_TagEncoding</cstring>
                     </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
                     <property name="sizePolicy">
                         <sizepolicy>
                             <hsizetype>5</hsizetype>
@@ -285,11 +285,38 @@
                 </widget>
             </hbox>
         </widget>
-    </grid>
+        <spacer>
+            <property name="name">
+                <cstring>spacer1</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>37</height>
+                </size>
+            </property>
+        </spacer>
+    </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <connections>
+    <connection>
+        <sender>kcfg_RecodeID3v1Tags</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>textLabel1_2</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_RecodeID3v1Tags</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>kcfg_TagEncoding</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
     <connection>
         <sender>kcfg_UseCustomFonts</sender>
         <signal>toggled(bool)</signal>
@@ -298,8 +325,4 @@
     </connection>
 </connections>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kfontrequester.h</includehint>
-    <includehint>kfontrequester.h</includehint>
-</includehints>
 </UI>
