@@ -595,7 +595,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         const uint playtimes = values[2].toInt();
         const uint score = values[3].toInt();
 
-        QString scoreBox = "<table><tbody><tr><td><i>"+ QString::number( score ) +"</i></td><td><div class='sbouter'><div class='sbinner' style='width: "+ QString::number( score / 2 )+ "px;'></div></div></td><tr></tbody></table>";
+        QString scoreBox = "<table><tbody><tr><td><i>"+ QString::number( score ) +"</i></td><td title='Score'><div class='sbouter'><div class='sbinner' style='width: "+ QString::number( score / 2 )+ "px;'></div></div></td><tr></tbody></table>";
 
         browser->write( QStringx("%1<br>%2%3<br>%4<br>")
             .args( QStringList()
@@ -695,7 +695,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 "</a>"
                "</td>"
                "<td class='sbtext' width='1'><i>" + values[i + 2] + "</i></td>"
-               "<td width='1'>"
+               "<td width='1' title='Score'>"
                 "<div class='sbouter'>"
                  "<div class='sbinner' style='width: " + QString::number( values[i + 2].toInt() / 2 ) + "px;'></div>"
                 "</div>"
