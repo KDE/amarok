@@ -103,6 +103,22 @@ A: You probably don't have xmms-config installed, reconfigure and build after
 Q: I've found a bug / I've got a great idea for amaroK!
 A: Please report it at http://bugs.kde.org.
 
+Q: Can I improve amaroK's startup time?
+A: The aRts engine is the slowest to load, using an alternative will help.
+   Prelinking amaroK has spectacular results; however if you have binary openGL
+   drivers (eg Nvidia drivers), you will need to compile amaroK --without-opengl
+   in order to get the amarokapp binary to prelink (the amarok binary is not
+   important here).
+   
+Q: Do you accept patches!
+A: Happily! Your best course of action is to let us know what you plan to do before
+   you do any work so we can discuss it, but don't fret we haven't turned down a
+   patch yet! Discussion is mostly to help you patch the correct bits of amaroK.
+   Then either submit a patch to the mailing list, or commit if you have cvs access.
+   However, please let us know before you commit new features to cvs! If you have a bug
+   fix then just go ahead, this is open source afterall :)
+   
+
 --------------------------------------------------------------------------------
 
 WWW:  http://amarok.sf.net
