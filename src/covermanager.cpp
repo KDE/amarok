@@ -510,10 +510,21 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
 
         case CUSTOM:
         {
+            QString startPath = ":homedir";
+            QString artist_id; artist_id.setNum( CollectionDB::instance()->artistID( item->artist() ) );
+            QString album_id; album_id.setNum( CollectionDB::instance()->albumID( item->album() ) );
+            QStringList values = CollectionDB::instance()->albumTracks( artist_id, album_id );
+
+            if ( !values.isEmpty() ) {
+                KURL url;
+                url.setPath( values.first() );
+                startPath = url.directory();
+            }
+
             /* This opens a file-open-dialog and copies the selected image to albumcovers, scaled and unscaled. */
-            KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select Cover Image File" ) );
-            if ( !file.isEmpty() )
-            {
+            KURL file = KFileDialog::getImageOpenURL( startPath, this, i18n( "Select Cover Image File" ) );
+
+            if ( !file.isEmpty() ) {
                 qApp->processEvents();    //it may takes a while so process pending events
                 CollectionDB::instance()->setAlbumImage( item->artist(), item->album(), file );
                 item->loadCover();
