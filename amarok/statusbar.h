@@ -22,7 +22,7 @@
 #include <kstatusbar.h>
 #include <qlabel.h>
 
-#include "engine/engineobserver.h"
+#include "engineobserver.h"
 
 class QCustomEvent;
 class KProgress;

@@ -14,7 +14,7 @@ INCLUDES = \
 libamarok_gstengine_plugin_la_LIBADD = \
     $(top_builddir)/amarok/amarok/engine/libengine.a \
     $(top_builddir)/amarok/amarok/plugin/libplugin.a \
-    $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) \
+    $(LIB_KDECORE) \
     $(LIB_GST)
 
 libamarok_gstengine_plugin_la_SOURCES = \
@@ -22,6 +22,7 @@ libamarok_gstengine_plugin_la_SOURCES = \
 
 libamarok_gstengine_plugin_la_LDFLAGS = \
     -module \
+    -no-undefined \
     $(KDE_PLUGIN) \
     $(all_libraries) 
 

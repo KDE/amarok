@@ -22,7 +22,7 @@
     #include <config.h>
 #endif
 
-#include "engine/engineobserver.h" //baseclass
+#include "engineobserver.h" //baseclass
 #include <kapplication.h>          //baseclass
 #include <kurl.h>                  //needed for KURL::List (nested)
 #include <qserversocket.h>         //baseclass

@@ -20,7 +20,7 @@ email                : fh@ez.no
 
 #include <qobject.h>
 #include <kurl.h>
-#include "engine/engineobserver.h" // move me
+#include "engineobserver.h" // move me
 
 class EngineBase;
 class MetaBundle;

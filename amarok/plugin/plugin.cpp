@@ -6,4 +6,14 @@
 
 #include <plugin.h>
 
+#include <kdebug.h>
+
+
+amaroK::Plugin::Plugin() 
+{
+    kdDebug() << k_funcinfo << endl;
+}
+
+
+
 

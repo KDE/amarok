@@ -13,7 +13,7 @@ libamarok_artsengine_plugin_la_LIBADD = \
     $(top_builddir)/amarok/amarok/amarokarts/libamarokarts.la \
     $(top_builddir)/amarok/amarok/engine/libengine.a \
     $(top_builddir)/amarok/amarok/plugin/libplugin.a \
-    $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) \
+    $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) \
     $(arts_libs)
 
 libamarok_artsengine_plugin_la_SOURCES = \
@@ -21,6 +21,7 @@ libamarok_artsengine_plugin_la_SOURCES = \
 
 libamarok_artsengine_plugin_la_LDFLAGS = \
     -module \
+    -no-undefined \
     $(KDE_PLUGIN) \
     $(all_libraries) 
 

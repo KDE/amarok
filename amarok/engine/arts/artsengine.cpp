@@ -65,6 +65,7 @@ AMAROK_EXPORT_PLUGIN( ArtsEngine )
 
 ArtsEngine::ArtsEngine( )
         : EngineBase()
+        , m_pArtsDispatcher( new KArtsDispatcher( this ) )
         , m_pPlayObject( 0 )
         , m_pPlayObjectXfade( 0 )
         , m_scopeId( 0 )
@@ -80,20 +81,23 @@ ArtsEngine::ArtsEngine( )
 
 ArtsEngine::~ ArtsEngine()
 {
-    killTimers();
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    
     m_pConnectTimer->stop();
+    killTimers();
     delete m_pPlayObject;
     delete m_pPlayObjectXfade;
-    delete m_pArtsDispatcher;
     saveEffects();
 
+    m_server            = Arts::SoundServerV2::null();
     m_scope             = Amarok::RawScope::null();
     m_xfade             = Amarok::Synth_STEREO_XFADE::null();
     m_volumeControl     = Arts::StereoVolumeControl::null();
     m_effectStack       = Arts::StereoEffectStack::null();
     m_globalEffectStack = Arts::StereoEffectStack::null();
     m_amanPlay          = Arts::Synth_AMAN_PLAY::null();
-    m_server            = Arts::SoundServerV2::null();
+    
+    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 
@@ -131,7 +135,6 @@ void ArtsEngine::init( bool& restart, int scopeSize, bool restoreEffects )
                                      "<p>You may find, however, that playback is fine without increasing the priority of artsd.</p>" ),
                                i18n( "aRts Problem" ), "artsRealtimeAdvice" );
 
-    m_pArtsDispatcher = new KArtsDispatcher();
     m_server = Arts::Reference( "global:Arts_SoundServerV2" );
 
     if ( m_server.isNull() || m_server.error() )
@@ -259,7 +262,7 @@ bool ArtsEngine::initMixer( bool hardware )
         }
         closeMixerHW();
     }
-
+    
     if ( hardware )
         hardware = initMixerHW();
     else
@@ -268,8 +271,6 @@ bool ArtsEngine::initMixer( bool hardware )
         m_volumeControl.start();
         m_volumeId = m_globalEffectStack.insertBottom( m_volumeControl, "Volume Control" );
     }
-
-    setVolume( m_volume );
     return hardware;
 }
 

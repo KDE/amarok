@@ -295,9 +295,9 @@ void PlayerApp::initEngine()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
-    Plugin* plugin = PluginManager::createFromQuery
-                         ( "[X-KDE-amaroK-plugintype] == 'engine' and "
-                           "Name                      == '" + AmarokConfig::soundSystem() + '\'' );
+    amaroK::Plugin* plugin = PluginManager::createFromQuery
+                             ( "[X-KDE-amaroK-plugintype] == 'engine' and "
+                               "Name                      == '" + AmarokConfig::soundSystem() + '\'' );
 
     if ( !plugin ) {
         kdWarning() << k_funcinfo << "Cannot load the specified engine. Trying with another engine..\n";

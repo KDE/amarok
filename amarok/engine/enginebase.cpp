@@ -23,17 +23,19 @@ email                : markey@web.de
 #include <sys/wait.h>
 #include <unistd.h>
 
-#include "qstringlist.h"
+#include <qstringlist.h>
+#include <kdebug.h>
 
 
 EngineBase::EngineBase()
-    : QObject()
-    , Plugin()
+    : amaroK::Plugin()
 {}
 
 
 EngineBase::~EngineBase()
 {
+    kdDebug() << k_funcinfo << endl;
+    
     closeMixerHW();
 }
 

@@ -95,7 +95,6 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
                 //convert uint-16 to float and write into buf
                 temp += (float)( data[i+j] - 32768 ) / 32768.0;
             }
-            
             pObject->m_scopeBuf[pObject->m_scopeBufIndex++] = temp;                
         }
     }
@@ -135,8 +134,12 @@ GstEngine::GstEngine()
 
 GstEngine::~GstEngine()
 {
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    
     stop();
     cleanPipeline();
+
+    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 
@@ -173,8 +176,6 @@ GstEngine::initMixer( bool hardware )
     if ( hardware )
         hardware = initMixerHW();
     
-    setVolume( m_volume );
-
     return hardware;
 }
 

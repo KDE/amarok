@@ -22,8 +22,9 @@ email                : markey@web.de
 #include <ktrader.h>
 
 using namespace std;
+using namespace amaroK;
 
-class Plugin;
+namespace amaroK { class Plugin; }
 class KLibrary;
 
 class PluginManager
@@ -68,7 +69,7 @@ class PluginManager
          * @param service     Pointer to KService  
          * @return            Pointer to Plugin, or NULL if error
          */
-        static Plugin* createFromService( const KService::Ptr service, const QString& constraint );
+        static Plugin* createFromService( const KService::Ptr service );
         
         /**
          * Remove library and delete plugin 
@@ -91,9 +92,10 @@ class PluginManager
                     
     private:
         struct StoreItem {
-            Plugin*   plugin;
+            Plugin* plugin;
+            void* deleteHook;
             KLibrary* library;
-            QString   constraint;
+            KService::Ptr service;
         };
        
         static vector<StoreItem>::iterator lookupPlugin( const Plugin* plugin );

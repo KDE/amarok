@@ -18,12 +18,10 @@ if with_nmm
 endif
 
 libengine_a_SOURCES = \
-    enginebase.cpp \
-    engineobserver.cpp
+    enginebase.cpp
 
 noinst_HEADERS = \
-    enginebase.h \
-    engineobserver.h
+    enginebase.h
 
 METASOURCES = \
     AUTO

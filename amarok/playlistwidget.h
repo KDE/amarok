@@ -19,7 +19,7 @@
 #define PLAYLISTWIDGET_H
 
 #include "browserwin.h"  //friend
-#include "engine/engineobserver.h" //baseclass
+#include "engineobserver.h" //baseclass
 
 #include <qstringlist.h> //stack allocated
 #include <qptrlist.h>    //stack allocated

@@ -33,7 +33,7 @@ class QObject;
 
 class KURL;
 
-class EngineBase : public QObject, public Plugin
+class EngineBase : public QObject, public amaroK::Plugin
 {
     Q_OBJECT
 
@@ -45,9 +45,11 @@ class EngineBase : public QObject, public Plugin
 
                                      EngineBase();
         virtual                      ~EngineBase();
+        
         virtual void                 init( bool& restart,
                                            int   scopeSize,
                                            bool  restoreEffects )                      = 0;
+        
         /**
          * Initialize mixer
          * @param hardware    true for soundcard hardware mixing
@@ -117,7 +119,7 @@ class EngineBase : public QObject, public Plugin
          * @param percent     set volume in range 0 to 100
          */
         virtual void                 setVolume( int percent )                          = 0;
-                void                 setXfadeLength( int ms );
+        virtual void                 setXfadeLength( int ms );
 
     public slots:
         virtual void                 configureDecoder() {}
