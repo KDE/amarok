@@ -305,7 +305,7 @@ GstEngine::play( const KURL& url )  //SLOT
     }
 
     //TODO HACK
-    if ( url.path().contains( "_uade" ) ) {
+    if ( url.path().endsWith( ".smod7" ) ) {
         m_spider = GST_ELEMENT( gst_uade_new() );
         g_object_set( G_OBJECT( m_spider ), "location", (const char*) ( QFile::encodeName( url.path() ) ), NULL );
     }

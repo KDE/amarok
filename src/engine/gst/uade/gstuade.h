@@ -1,4 +1,5 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
+// (c) 2004 Heikki Orsila <heikki.orsila@iki.fi>
 // See COPYING file for licensing information.
 
 

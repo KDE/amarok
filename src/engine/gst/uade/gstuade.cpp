@@ -1,4 +1,5 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
+// (c) 2004 Heikki Orsila <heikki.orsila@iki.fi>
 // See COPYING file for licensing information.
 
 #include "config.h"
@@ -6,6 +7,7 @@
 
 #include <kdebug.h>
 
+#include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
 #include <unistd.h>
@@ -61,25 +63,45 @@ static GstData *gst_uade_get ( GstPad * pad );
 // IMPORTED FROM UADE
 /////////////////////////////////////////////////////////////////////////////////////
 
-uade_msgstruct* uade_mmap_file( const char *filename, int length )
+struct uade_msgstruct *uade_mmap_file( const char *filename )
 {
     void * mmapptr;
-    unlink( filename );
     int fd;
-    fd = open( filename, O_RDWR | O_CREAT );
-    if ( fd < 0 ) {
-        fprintf( stderr, "uade: can not open sharedmem file!\n" );
+    const int length = sizeof( struct uade_msgstruct );
+    int ret;
+    int written;
+
+    unlink( filename );
+    /* race :-) */
+    fd = open( filename, O_RDWR | O_CREAT, 0600 );
+    if ( fd < 0 )
+    {
+        fprintf( stderr, "uade: can not create sharedmem file!\n" );
         return 0;
     }
 
     // Make file big enough to hold our struc
-    char buf[ length ];
-    memset( buf, 0, length );
-    write( fd, buf, length );
+    char buf[ 256 ];
+    memset( buf, 0, sizeof( buf ) );
+    written = 0;
+    while ( written < length )
+    {
+        ret = write( fd, buf, sizeof( buf ) );
+        if ( ret < 0 ) {
+            if ( errno != EINTR ) {
+                perror( "uade: could not initialize shared memory file" );
+                close( fd );
+                return 0;
+            }
+            continue;
+        }
+        written += ret;
+    }
 
     kdDebug() << "mmapfile length: " << length << endl;
-    mmapptr = mmap( 0, length * 2, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0 );
-    if ( mmapptr == MAP_FAILED ) {
+    mmapptr = mmap( 0, length, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0 );
+    if ( mmapptr == MAP_FAILED )
+    {
         fprintf( stderr, "uade: can not mmap sharedmem file!\n" );
         return 0;
     }
@@ -147,17 +169,23 @@ gst_uade_init ( GstUade* gstuade )
     gstuade->timeout = 0;
     gstuade->streamBufIndex = 0;
 
-    gstuade->uade_struct = uade_mmap_file( MAPFILE_PATH, sizeof( struct uade_msgstruct ) );
+    gstuade->uade_struct = uade_mmap_file( MAPFILE_PATH );
     if ( !gstuade->uade_struct ) {
         kdWarning() << "uade.c/uade: couldn't mmap file: " << MAPFILE_PATH << endl;
         uade_exit( -1 );
     }
+    memset( gstuade->uade_struct, 0, sizeof( struct uade_msgstruct ) );
+
     gstuade->uade_struct->masterpid = getpid();
-    
+    gstuade->uade_struct->ntscbit = 0;
+
+    /* score name must be in uade_struct before uade process is executed */
+    strcpy( gstuade->uade_struct->scorename, "/home/mark/srcdir/uade-0.90-pre2/score" );
+
     int uadepid = fork();
     if ( !uadepid ) {
         char * newargv[] = { "/usr/local/bin/uade", "--xmms-slave", MAPFILE_PATH, 0 };
-        execv( newargv[0], newargv );
+        execv( newargv[ 0 ], newargv );
         kdWarning() << "uade: shit fuck. couldn't exec uade exe. not found probably\n";
         abort();
     }
@@ -195,9 +223,17 @@ gst_uade_set_property ( GObject * object, guint prop_id, const GValue * value,
             case ARG_LOCATION:
             kdDebug() << "ARG_LOCATION\n";
 
-            strcpy( src->uade_struct->playername, g_value_get_string( value ) );
-            strcpy( src->uade_struct->modulename, g_value_get_string( value ) );
-            strcpy( src->uade_struct->scorename, g_value_get_string( value ) );
+            /* playername should be determined from 'value' */
+            strcpy( src->uade_struct->playername, "/home/mark/srcdir/uade-0.90-pre2/players/FC1.3" );
+            /* this is where we _would_ copy 'value' */
+            strcpy( src->uade_struct->modulename, "/home/mark/srcdir/uade-0.90-pre2/songs/future_composer/fc13.smod7" );
+            /* this will always be the same */
+            strcpy( src->uade_struct->scorename, "/home/mark/srcdir/uade-0.90-pre2/score" );
+
+            src->uade_struct->songendpossible = -1;
+            src->uade_struct->use_filter = 0;
+
+            src->uade_struct->force_by_default = 1;
             src->uade_struct->set_subsong = 0;
             src->uade_struct->subsong = 0;
             src->uade_struct->dontwritebit = 0;
@@ -207,6 +243,10 @@ gst_uade_set_property ( GObject * object, guint prop_id, const GValue * value,
             src->uade_struct->sbuf_readoffset = 0;
             src->uade_struct->touaemsgtype = UADE_PLAYERNAME;
             src->uade_struct->loadnewsongboolean = 1;
+            /* now one should send SIGHUP to uade process to let it know there
+               is a song to be played. if signal is not sent, then there is
+               on average 1 second delay before the song starts, 2 seconds
+               at most. see src/xmms-slave.c/xms_slave_get_next() */
             break;
 
             default:
@@ -245,28 +285,34 @@ gst_uade_get ( GstPad * pad )
     GstUade * src = GST_GSTUADE ( GST_OBJECT_PARENT ( pad ) );
     GstBuffer* buf = gst_buffer_new_and_alloc( src->blocksize );
     guint8* data = GST_BUFFER_DATA( buf );
-    uade_msgstruct* uade_struct = src->uade_struct;
 
-    int readBytes = src->blocksize;
-    int rbsize = src->blocksize;
+    struct uade_msgstruct *uade_struct = src->uade_struct;
+    int datainbuffer;
+    int read_bytes = 0;
 
-    //     if ( uade_struct->sbuf_readoffset <= uade_struct->sbuf_writeoffset )
-    //         datainbuffer = uade_struct->sbuf_writeoffset - uade_struct->sbuf_readoffset;
-    //     else
-    //         datainbuffer = uade_struct->sbuf_writeoffset + rbsize - uade_struct->sb;
-
-    /*    if ( ( uade_struct->sbuf_readoffset + src->blocksize ) > rbsize ) {
-            int firstsize = rbsize - uade_struct->sbuf_readoffset;
-            memcpy( data, uade_struct->soundbuffer + uade_struct->sbuf_readoffset, firstsize );
-            memcpy( data + firstsize, uade_struct->soundbuffer, src->blocksize - firstsize );
+    while ( read_bytes < src->blocksize ) {
+        if ( uade_struct->sbuf_readoffset <= uade_struct->sbuf_writeoffset ) {
+            datainbuffer = uade_struct->sbuf_writeoffset - uade_struct->sbuf_readoffset;
         } else {
-            memcpy( data, uade_struct->soundbuffer + uade_struct->sbuf_readoffset, src->blocksize );
+            datainbuffer = sizeof( uade_struct->soundbuffer ) - uade_struct->sbuf_readoffset;
         }
-        uade_struct->sbuf_readoffset = ( uade_struct->sbuf_readoffset + src->blocksize ) % rbsize;*/
 
-    memcpy( data, uade_struct->soundbuffer, readBytes );
+        if ( datainbuffer == 0 ) {
+            /* sleep for a while to get more sound data */
+            usleep( 10000 );
+            continue;
+        }
 
-    GST_BUFFER_SIZE ( buf ) = readBytes;
+        if ( datainbuffer > ( src->blocksize - read_bytes ) )
+            datainbuffer = src->blocksize - read_bytes;
+
+        memcpy( data + read_bytes, uade_struct->soundbuffer + uade_struct->sbuf_readoffset, datainbuffer );
+
+        uade_struct->sbuf_readoffset = ( uade_struct->sbuf_readoffset + datainbuffer ) % sizeof( uade_struct->soundbuffer );
+        read_bytes += datainbuffer;
+    }
+
+    GST_BUFFER_SIZE ( buf ) = read_bytes;
     GST_BUFFER_TIMESTAMP ( buf ) = GST_CLOCK_TIME_NONE;
 
     return GST_DATA ( buf );
