@@ -345,7 +345,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         KListViewItem::paintCell( &painterBuf, cg, column, width, align );
 
     //figure out if we are in the actual physical first column
-    if( playNext && listView()->header()->mapToSection( column ) == 0 )
+    if( playNext && listView()->mapToPhysicalColumn( column ) == 0 )
     {
         QString str = QString::number( playNext );
 

@@ -527,7 +527,6 @@ bool Playlist::isTrackBefore() const
 }
 
 
-
 void Playlist::removeSelectedItems() //SLOT
 {
     setSelected( currentItem(), true );     //remove currentItem, no matter if selected or not
@@ -574,6 +573,25 @@ void Playlist::summary( QPopupMenu &popup ) const
 }
 */
 
+int Playlist::mapToLogicalColumn( int physical ) 
+{
+    int logical;    
+
+    //skip hidden columns
+    do logical = header()->mapToSection( physical++ );
+    while ( !header()->sectionSize( logical ) );
+
+    return logical;
+}
+
+
+int Playlist::mapToPhysicalColumn( int logical )
+{
+    int physical = header()->mapToIndex( logical );
+    logical = mapToLogicalColumn( physical );
+    
+    return header()->mapToIndex( logical );
+}
 
 
 // PRIVATE METHODS ===============================================
@@ -833,11 +851,11 @@ void Playlist::setCurrentTrack( PlaylistItem *item )
 
     m_currentTrack = item;
     if( item ) {
-        item->setPixmap( header()->mapToSection( 0 ), SmallIcon("artsbuilderexecute") );
+        item->setPixmap( mapToLogicalColumn( 0 ), SmallIcon("artsbuilderexecute") );
         item->setHeight( static_cast<int>( fontMetrics().height() * 1.8 ) );
     }
     if( prev && item != prev ) {
-        prev->setPixmap( header()->mapToSection( 0 ), QPixmap() );
+        prev->setPixmap( mapToLogicalColumn( 0 ), QPixmap() );
         prev->invalidateHeight();
     }
     m_cachedTrack  = 0; //invalidate cached pointer

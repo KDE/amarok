@@ -89,7 +89,9 @@ class GstEngine : public EngineBase
         uint                                     m_scopeSize;
        
         vector<char>                             m_streamBuf;
-        uint                                     m_streamBufIndex;
+        uint                                     m_streamBufIn;
+        uint                                     m_streamBufOut;
+        bool                                     m_playFlag;
         
         bool                                     m_typefindResult;
         bool                                     m_pipelineFilled;

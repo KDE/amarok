@@ -102,17 +102,20 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
 
 
 void
-GstEngine::handoff_fakesrc_cb( GstElement*, GstBuffer* buf, GstPad /*pad*/, gpointer )
+GstEngine::handoff_fakesrc_cb( GstElement*, GstBuffer* buf, GstPad, gpointer )
 {
     kdDebug() << k_funcinfo << endl;
-    
+//     if ( !GST_IS_BUFFER( buf ) ) return;
+//     buf = gst_buffer_copy_on_write( buf );
+            
     kdDebug() << "buf->size: " << buf->size << endl;
     guint8* data = buf->data;
     
-    for ( int i = 0; i < buf->size && self->m_streamBufIndex < STREAMBUF_SIZE; i++ )
-        data[i] = self->m_streamBuf[i]; 
-
-    self->m_streamBufIndex = 0;
+    for ( int i = 0; i < buf->size; ) {
+        if ( self->m_streamBufOut == STREAMBUF_SIZE )
+            self->m_streamBufOut = 0;
+        data[i] = self->m_streamBuf[self->m_streamBufOut++]; 
+    }
 }
 
 
@@ -141,6 +144,9 @@ GstEngine::typefindFound_cb( GstElement* /*typefind*/, GstCaps* /*caps*/, GstEle
 GstEngine::GstEngine()
         : EngineBase()
         , m_pThread( NULL )
+        , m_scopeBufIndex( 0 )
+        , m_streamBufIn( 0 )
+        , m_streamBufOut( 0 )
         , m_pipelineFilled( false )
 {
     kdDebug() << k_funcinfo << endl;
@@ -170,13 +176,13 @@ GstEngine::init( bool&, int scopeSize, bool )
     self = this;
     m_mixerHW = -1;            //initialize
 
-    m_scopeBufIndex = 0;
     m_scopeBuf.resize( SCOPEBUF_SIZE );
     m_scopeSize = 1 << scopeSize;
 
-    m_streamBufIndex = 0;
     m_streamBuf.resize( STREAMBUF_SIZE );
-   
+    for ( uint i = 0; i < STREAMBUF_SIZE; i++ )
+        m_streamBuf[i] = 0;
+       
     gst_init( NULL, NULL );
 
     kdDebug() << "END " << k_funcinfo << endl;
@@ -249,6 +255,9 @@ EngineBase::EngineState
 GstEngine::state() const
 {
     if ( !m_pipelineFilled ) return Empty;
+        
+    //HACK
+    return Playing;
 
     switch ( gst_element_get_state( GST_ELEMENT( m_pThread ) ) ) {
     case GST_STATE_NULL:
@@ -311,6 +320,9 @@ GstEngine::play( const KURL& url )  //SLOT
         m_pFilesrc = gst_element_factory_make( "fakesrc", "disk_source" );
         g_object_set( G_OBJECT( m_pFilesrc ), "signal-handoffs", true, NULL );
         g_object_set( G_OBJECT( m_pFilesrc ), "sizetype", 2, NULL );
+        g_object_set( G_OBJECT( m_pFilesrc ), "sizemax", 2048, NULL );
+//         g_object_set( G_OBJECT( m_pFilesrc ), "loop-based", true, NULL );
+        g_object_set( G_OBJECT( m_pFilesrc ), "num-buffers", 1000000, NULL );
         g_signal_connect ( G_OBJECT( m_pFilesrc ), "handoff",
                            G_CALLBACK( handoff_fakesrc_cb ), m_pThread );
     }
@@ -334,7 +346,8 @@ GstEngine::play( const KURL& url )  //SLOT
     setVolume( volume() );
     m_pipelineFilled = true;
                 
-    play();
+    if ( url.isLocalFile() ) play();
+    m_playFlag = true;
     return this;
 }
 
@@ -410,11 +423,16 @@ GstEngine::newStreamData( char* buf, int size ) //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
-    for ( uint i = 0; i < size && m_streamBufIndex < STREAMBUF_SIZE; )
-        m_streamBuf[m_streamBufIndex++] = buf[i++]; 
+    for ( uint i = 0; i < size; ) {
+        if ( m_streamBufIn == STREAMBUF_SIZE )
+            m_streamBufIn = 0;
+        m_streamBuf[m_streamBufIn++] = buf[i++]; 
+    }
 
-    if ( m_streamBufIndex >= STREAMBUF_SIZE )
-        kdDebug() << "Error: StreamBuffer overflow!" << endl;
+    if ( m_playFlag && m_streamBufIn > STREAMBUF_SIZE/2 ) {
+        play();
+        m_playFlag = false;
+    }
 }
 
 

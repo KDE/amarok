@@ -96,6 +96,11 @@ class Playlist : private KListView, public EngineObserver
         //made public for convenience
         void setFont( const QFont &f ) { KListView::setFont( f ); }
 
+        /** Converts physical PlaylistItem column position to logical */
+        int mapToLogicalColumn( int physical );
+        /** Converts logical PlaylistItem column position to physical */
+        int mapToPhysicalColumn( int logical );
+        
         //static
         static const int NO_SORT = 200;
         static QString defaultPlaylistPath();
