@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "amarokconfig.h"
+#include "collectiondb.h"
 #include "metabundle.h"
 #include "playlistitem.h"
 #include "playlist.h"
@@ -72,6 +73,9 @@ const QString PlaylistItem::columnName(int col) //static
          break;
       case Bitrate:
          return "Bitrate";
+         break;
+      case Score:
+         return "Score";
          break;
    }
    return "<ERROR>";
@@ -193,6 +197,10 @@ void PlaylistItem::setText( const MetaBundle &bundle )
     setText( Track,   bundle.track() );
     setText( Length,  bundle.prettyLength() );
     setText( Bitrate, bundle.prettyBitrate() );
+    CollectionDB *db = new CollectionDB();
+    float score = db->getSongPercentage( bundle.url().path() );
+    if( score )
+        setText( Score, QString::number( score ) );
 }
 
 
@@ -250,6 +258,7 @@ PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
     {
         case Track:
         case Year:
+        case Score:
             a =    text( col ).toFloat();
             b = i->text( col ).toFloat();
             break;

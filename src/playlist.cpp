@@ -146,6 +146,7 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     addColumn( i18n( "Directory"  ),   0 );
     addColumn( i18n( "Length"     ),  80 );
     addColumn( i18n( "Bitrate"    ),   0 );
+    addColumn( i18n( "Score"      ),   0 );
 
     setRenameable( 0, false ); //TODO allow renaming of the filename
     setRenameable( 1 );
@@ -583,6 +584,21 @@ Playlist::updateNextPrev()
 ////////////////////////////////////////////////////////////////////////////////
 /// EngineObserver Reimplementation
 ////////////////////////////////////////////////////////////////////////////////
+
+void
+Playlist::engineTrackEnded( int finalPosition, int trackLength )
+{
+    CollectionDB *db = new CollectionDB();
+    // sanity check
+    if ( finalPosition > trackLength ) finalPosition = trackLength;
+
+    int pct = ( (double)finalPosition / (double)trackLength ) * 100;
+    kdDebug() << "percentage played: " << pct << endl;
+
+    // increase song counter & calculate new statistics
+    float score = db->addSongPercentage( m_currentTrack->url().path(), pct );
+    if( score ) m_currentTrack->setText( PlaylistItem::Score, QString::number( score ) );
+}
 
 void
 Playlist::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )

@@ -55,7 +55,8 @@ class PlaylistItem : public KListViewItem
                        Track = 7,
                        Directory = 8,
                        Length = 9,
-                       Bitrate = 10 };
+                       Bitrate = 10,
+                       Score = 11 };
 
         // Used for sorting
         bool operator== ( const PlaylistItem & item ) const;

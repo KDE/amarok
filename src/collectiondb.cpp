@@ -340,7 +340,7 @@ CollectionDB::getMetaBundleForUrl( const QString url, MetaBundle *bundle )
 }
 
 
-void
+float
 CollectionDB::addSongPercentage( const QString url, const int percentage )
 {
     QStringList values, names;
@@ -351,12 +351,14 @@ CollectionDB::addSongPercentage( const QString url, const int percentage )
     if ( values.count() )
     {
         // entry exists, increment playcounter and update accesstime
+        float score = ( ( percentage * values[0].toInt() ) + values[2].toDouble() ) / ( values[0].toInt() + 1 );
         execSql( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
                           "VALUES ( '%1', '%2', strftime('%s', 'now'), %3, %4 );" )
                     .arg( escapeString( url ) )
                     .arg( values[1] )
-                    .arg( ( ( percentage * values[0].toInt() ) + values[2].toDouble() ) / ( values[0].toInt() + 1 ) )
+                    .arg( score )
                     .arg( values[0] + " + 1" ) );
+        return score;
     } else
     {
         // entry didnt exist yet, create a new one
@@ -364,7 +366,23 @@ CollectionDB::addSongPercentage( const QString url, const int percentage )
                           "VALUES ( '%1', strftime('%s', 'now'), strftime('%s', 'now'), %2, 1 );" )
                     .arg( escapeString( url ) )
                     .arg( percentage ) );
+        return percentage;
     }
+}
+
+
+float
+CollectionDB::getSongPercentage( const QString url )
+{
+    QStringList values, names;
+
+    execSql( QString( "SELECT percentage FROM statistics WHERE url = '%1';" )
+                .arg( escapeString( url ) ), &values, &names );
+
+    if( values.count() )
+        return values[0].toFloat();
+
+    return 0;
 }
 
 
@@ -441,7 +459,7 @@ CollectionDB::isSamplerAlbum( const QString album )
                     .arg( album_id ) );
         return true;
     }
-    
+
     return false;
 }
 
@@ -806,7 +824,7 @@ void
 CollectionDB::retrieveFirstLevel( QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names )
 {
     QString filterToken;
-    
+
     // apply special user-filter
     if ( filter != "" )
     {
@@ -866,7 +884,7 @@ CollectionDB::retrieveSecondLevel( QString itemText, QString category1, QString 
         command = "SELECT DISTINCT " + category2.lower() + ".name, '0' FROM tags, " + category2.lower()
                 + ", " + category1.lower() + " WHERE tags." + category2.lower() + "=" + category2.lower()
                 + ".id AND tags.";
-                 
+
         if ( itemText == i18n( "Various Artists" ) )
             command += "sampler = 1";
         else
@@ -901,12 +919,12 @@ CollectionDB::retrieveThirdLevel( QString itemText1, QString itemText2, QString 
     command += " WHERE tags." + category2.lower() + " = " + id_sub
             +  " AND tags." + category2.lower() + " = " + category2.lower() + ".id"
             +  " AND tags.";
-              
+
     if ( itemText1 == i18n( "Various Artists" ) )
         command += "sampler = 1 ";
     else
         command += category1.lower() + "=" + id;
-        
+
     if ( filter != "" )
         command += " AND tags." + category1.lower() + " = " + category1.lower() + ".id ";
 
@@ -943,12 +961,12 @@ CollectionDB::retrieveFirstLevelURLs( QString itemText, QString category1, QStri
         command += "AND tags." + category2.lower() + "=" + category2.lower() + ".id ";
 
     command += "AND tags.";
-        
+
     if ( itemText == i18n( "Various Artists" ) )
         command += "sampler = 1 ";
     else
         command += category1.lower() + "=" + id;
-     
+
     command += " " + filterToken + " ORDER BY tags." + sorting + ";";
 
     execSql( command, values, names );
@@ -972,12 +990,12 @@ CollectionDB::retrieveSecondLevelURLs( QString itemText1, QString itemText2, QSt
     QString command = "SELECT DISTINCT tags.url FROM " + category1.lower() + ", tags, " + category2.lower();
     command += " WHERE tags." + category1.lower() + "=" + category1.lower() + ".id AND"
              + " tags." + category2.lower() + "=" + id_sub + " AND tags.";
-              
+
     if ( itemText1 == i18n( "Various Artists" ) )
         command += "sampler = 1 ";
     else
         command += category1.lower() + "=" + id;
-     
+
     command += " " + filterToken + " ORDER BY tags." + sorting + ";";
 
     execSql( command, values, names );

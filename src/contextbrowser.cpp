@@ -203,19 +203,6 @@ void ContextBrowser::openURLRequest( const KURL &url )
 // PROTECTED
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void ContextBrowser::engineTrackEnded( int finalPosition, int trackLength )
-{
-    // sanity check
-    if ( finalPosition > trackLength ) finalPosition = trackLength;
-    
-    int pct = ( (double)finalPosition / (double)trackLength ) * 100;
-    kdDebug() << "percentage played: " << pct << endl;
-
-    // increase song counter & calculate new statistics
-    m_db->addSongPercentage( m_currentTrack->url().path(), pct );
-}
-
-
 void ContextBrowser::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     //prevents segfault when playing streams
@@ -490,7 +477,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                        .arg( m_db->escapeString( m_currentTrack->album() ) )
                        .arg( m_db->escapeString( m_currentTrack->artist() ) )
                        .arg( m_db->escapeString( m_currentTrack->url().directory( true, false ) ) ), &values, &names );
-                      
+
         if ( !values.isEmpty() )
         {
             browser->write( "<br><div class='rbcontent'>" );

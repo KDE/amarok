@@ -30,7 +30,6 @@ class ContextBrowser : public QVBox, public EngineObserver
         void openURLRequest(const KURL &url );
 
     protected:
-        void engineTrackEnded( int finalPosition, int trackLength );
         void engineNewMetaData( const MetaBundle&, bool );
         void engineStateChanged( Engine::State );
         void paletteChange( const QPalette& );
@@ -38,7 +37,7 @@ class ContextBrowser : public QVBox, public EngineObserver
     private slots:
         void showHome();
         void showCurrentTrack();
-    
+
     private:
         void setStyleSheet();
         void showIntroduction();

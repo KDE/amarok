@@ -17,9 +17,9 @@ class MetaBundle;
 class CollectionDB : public QObject
 {
     Q_OBJECT
-    
+
     public:
-               
+
         CollectionDB();
         ~CollectionDB();
 
@@ -42,7 +42,8 @@ class CollectionDB : public QObject
         QStringList albumList();
 
         bool getMetaBundleForUrl( const QString url, MetaBundle *bundle );
-        void addSongPercentage( const QString url, const int percentage );
+        float addSongPercentage( const QString url, const int percentage );
+        float getSongPercentage( const QString url );
         void updateDirStats( QString path, const long datetime );
         void removeSongsInDir( QString path );
         bool isDirInCollection( QString path );
@@ -79,7 +80,7 @@ class CollectionDB : public QObject
         void scan( const QStringList& folders, bool recursively );
         void updateTags( const QString &url, const MetaBundle &bundle );
         void updateTag( const QString &url, const QString &field, const QString &newTag );
-        
+
         void retrieveFirstLevel( QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
         void retrieveSecondLevel( QString itemText, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
         void retrieveThirdLevel( QString itemText1, QString itemText2, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
@@ -88,16 +89,16 @@ class CollectionDB : public QObject
         void retrieveSecondLevelURLs( QString itemText1, QString itemText2, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
 
         QString m_amazonLicense;
-    
+
     signals:
         void scanDone( bool changed );
         void coverFetched( const QString &key );
         void coverFetched();
-        
+
     public slots:
         void fetchCover( QObject* parent, const QString& artist, const QString& album, bool noedit );
         void stopScan();
-                
+
     private slots:
         void dirDirty( const QString& path );
         void saveCover( const QString& keyword, const QPixmap& image );
