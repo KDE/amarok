@@ -14,7 +14,7 @@ bin_PROGRAMS = amarok
 amarok_SOURCES = main.cpp viswidget.cpp playlistwidget.cpp \
 	playlistitem.cpp playerwidget.cpp playerapp.cpp \
 	Options1.ui Options2.ui expandbutton.cpp effectwidget.cpp \
-	browserwin.cpp browserwidget.cpp
+	browserwin.cpp browserwidget.cpp amarokdcopiface.skel
 amarok_LDADD = ./amarokarts/libamarokarts.la -lqtmcop -lkmedia2_idl \
 	-lartsflow -lsoundserver_idl -lartskde -lartsgui -lartsgui_kde \
 	-lartsmodules -ltag $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE)

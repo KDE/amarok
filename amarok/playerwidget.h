@@ -23,6 +23,8 @@
 #include <qpixmap.h>
 #include <qslider.h>
 
+#include "amarokdcopiface.h"
+
 class QBitmap;
 class QFrame;
 class QMouseEvent;
@@ -112,7 +114,7 @@ class AmarokSlider : public QSlider
 
 // CLASS PlayerWidget ------------------------------------------------------------
 
-class PlayerWidget : public QWidget
+class PlayerWidget : public QWidget, virtual public AmarokIface
 {
         Q_OBJECT
 
@@ -161,6 +163,13 @@ class PlayerWidget : public QWidget
 
         virtual void show();
         virtual void hide();
+
+    public /* DCOP */ slots:
+       void play();
+       void stop();
+       void next();
+       void prev();
+       void pause();
 
     signals:
         void sigMinimized();

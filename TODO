@@ -9,7 +9,7 @@ SHORT-TERM:
 
     * fix: app freezing when renaming the file that's currently playing
 
-    * fix: sample looping @ end of track or pause (fixed?)
+    * fix: sample looping @ end of track or pause (fixed?) (berkus: nope, not, just had it when emitted stop() through dcop)
 
     * fix: redirected URLs do not work
 
@@ -42,8 +42,6 @@ MID-TERM:
       some other easy way to get this info..
 
     * change: let timedisplay also count with streams
-
-    * add: dcop interface (maybe by using KMediaPlayer)
 
     * fix: try to make title-scrolling smoother / debug scrolling code
 

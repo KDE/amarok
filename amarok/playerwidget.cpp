@@ -57,6 +57,8 @@
 #include <kpopupmenu.h>
 #include <khelpmenu.h>
 
+#include <dcopclient.h>
+
 #include <arts/artsgui.h>
 #include <arts/connect.h>
 #include <arts/dynamicrequest.h>
@@ -238,7 +240,9 @@ class AmarokSystray : public KSystemTray
 
 // CLASS PlayerWidget ------------------------------------------------------------
 
-PlayerWidget::PlayerWidget( QWidget *parent, const char *name ) : QWidget( parent, name )
+PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
+   : QWidget( parent, name )
+   , DCOPObject("AmarokIface")
 {
     setName( "PlayerWidget " );
     setCaption( "amaroK" );
@@ -375,6 +379,12 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name ) : QWidget( paren
     initTimeDisplay();
     initScroll();
     timeDisplay( false, 0, 0, 0 );
+
+    // Register with DCOP
+    if ( !kapp->dcopClient()->isRegistered() ) {
+        kapp->dcopClient()->registerAs( "amarok" );
+        kapp->dcopClient()->setDefaultObject( objId() );
+    }
 }
 
 
@@ -751,5 +761,31 @@ void PlayerWidget::hide()
     QWidget::hide();
 }
 
+/* DCOP signals - first try at it */
+
+void PlayerWidget::play()
+{
+   pApp->slotPlay();
+}
+
+void PlayerWidget::stop()
+{
+   pApp->slotStop();
+}
+
+void PlayerWidget::next()
+{
+   pApp->slotNext();
+}
+
+void PlayerWidget::prev()
+{
+   pApp->slotPrev();
+}
+
+void PlayerWidget::pause()
+{
+   pApp->slotPause();
+}
 
 #include "playerwidget.moc"
