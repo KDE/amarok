@@ -21,6 +21,8 @@
 #include <kurl.h>
 #include <dcopobject.h>
 
+/* Berkus warning: NEVER EVER MODIFY THIS FILE WITHOUT CONSULTING ME FIRST. FAILURE TO COMPLY TO THIS SIMPLE RULE
+                   WILL RESULT IN IMMEDIATE BAN FROM AMAROK DEVELOPMENT DESPITE ANY PREVIOUS ACHIEVEMENTS. */
 class AmarokIface : virtual public DCOPObject
 {
    K_DCOP
