@@ -139,7 +139,6 @@ CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id,
     QString widthKey = QString::number( width ) + "@";
     QString key( QFile::encodeName( values[0] + " - " + values[1] ) );
     key.replace( " ", "_" ).append( ".png" );
-//     kdDebug() << "Looking for cover image: " << m_coverDir.filePath( widthKey + key.lower() ) << endl;
     
     if ( m_coverDir.exists( widthKey + key.lower() ) )
         return m_coverDir.filePath( widthKey + key.lower() );
@@ -147,16 +146,16 @@ CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id,
     {
         QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
 
-//         kdDebug() << "Looking for cover image: " << largeCoverDir.filePath( key.lower() ) << endl;
         if ( largeCoverDir.exists( key.lower() ) )
-        {
-//             kdDebug() << "Looking for cover image: " << largeCoverDir.filePath( key.lower() ) << endl;
-            QImage img( largeCoverDir.filePath( key.lower() ) );
-            img.smoothScale( width, width )
-               .save( m_coverDir.filePath( widthKey + key.lower() ), "PNG" );
-
-            return m_coverDir.filePath( widthKey + key.lower() );
-        }
+            if ( width > 0 )
+            {
+                QImage img( largeCoverDir.filePath( key.lower() ) );
+                img.smoothScale( width, width ).save( m_coverDir.filePath( widthKey + key.lower() ), "PNG" );
+    
+                return m_coverDir.filePath( widthKey + key.lower() );
+            }
+            else
+                return largeCoverDir.filePath( key.lower() );
     }
     
     KURL url;

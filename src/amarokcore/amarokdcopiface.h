@@ -65,6 +65,7 @@ k_dcop:
    virtual QString bitrate() = 0;                           ///< Return the bitrate of the currently playing track (XX kbps).
 
    virtual QString encodedURL() = 0;                        ///< Return the encoded URL of the currently playing track.
+   virtual QString coverImage() = 0;                        ///< Return the encoded URL of the current track's cover image
 
    virtual void setVolume(int volume) = 0;                  ///< Set volume in range 0-100%.
    virtual int  getVolume() = 0;                            ///< Return volume in range 0-100%.

@@ -21,6 +21,7 @@
 #include "enginecontroller.h"
 #include "playlist.h"
 #include "osd.h"
+#include "collectiondb.h"
 
 #include <dcopclient.h>
 
@@ -164,6 +165,16 @@ namespace amaroK
         return EngineController::instance()->bundle().url().url();
     }
 
+    QString DcopHandler::coverImage()
+    {
+        CollectionDB db;
+        QString image = db.getImageForAlbum( QString::number( db.getValueID( "artist", EngineController::instance()->bundle().artist(), false ) ),
+                                             QString::number( db.getValueID( "album", EngineController::instance()->bundle().album(), false ) ),
+                                             "", 0 );
+
+        return image;
+    }
+    
     int DcopHandler::trackTotalTime()
     {
         return EngineController::instance()->bundle().length();

@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.1:
+  ADD: DCOP call to retrieve current track's cover image. (BR 85364)
+  FIX: Problem with cover-saving for certain artist/album names. (BR 84171)
   FIX: Show contextual information for songs, even if they are not in the
        current collection instead of an ugly empty box.
   ADD: GstEngine: Support for custom output plugin parameters. (BR 83949)

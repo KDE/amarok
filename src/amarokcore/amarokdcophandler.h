@@ -54,6 +54,7 @@ class DcopHandler : public QObject, virtual public AmarokIface
       virtual QString comment();
       virtual QString bitrate();
       virtual QString encodedURL();
+      virtual QString coverImage();
       virtual bool isPlaying();
       virtual int  status();
       virtual void setVolume(int);
