@@ -197,8 +197,8 @@ void StatusBar::customEvent( QCustomEvent *e )
         break;
 
     case PlaylistLoader::ProgressEvent::Stop:
-        QTimer::singleShot( 2000, m_stopPlaylist, SLOT( hide() ) );
-        QTimer::singleShot( 2000, m_pProgress, SLOT( hide() ) );
+        QTimer::singleShot( 1000, m_stopPlaylist, SLOT( hide() ) );
+        QTimer::singleShot( 1000, m_pProgress, SLOT( hide() ) );
         if( !AmarokConfig::showStatusBar() ) QTimer::singleShot( 2000, this, SLOT(hide()) );
         break;
 
