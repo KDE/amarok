@@ -42,15 +42,14 @@ Loader::Loader( int& argc, char** argv )
         : QApplication( argc, argv )
         , m_pOsd ( 0 )
 {
-    if( strcmp( argv[1], "--vis-socket-path" ) == 0 )
+    if( argc > 1 )
     {
-        std::cout << socketPath( Vis ) << '\0';
-        ::exit( 0 );
-    }
+        if( strcmp( argv[1], "--vis-socket-path" ) == 0 )
+        {
+            std::cout << socketPath( Vis ) << '\0';
+            ::exit( 0 );
+        }
 
-
-    if( argc > 0 )
-    {
         //put all arguments into one string
         //we transmit the startup_id, so amarokapp can stop the startup animation
         QCString str( ::getenv( "DESKTOP_STARTUP_ID" ) );
