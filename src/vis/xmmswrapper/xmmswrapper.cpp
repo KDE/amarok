@@ -36,7 +36,7 @@ GtkWidget *mainwin = &dummy;      //required by msa visplugin
 using std::string;
 
 
-int    tryConnect();
+int    tryConnect( const char* );
 string getPlugin( int, char** );
 void   vis_disable_plugin( VisPlugin* ) { exit( 0 ); } //this is called by the plugin when it wants to quit
 
@@ -45,7 +45,7 @@ void   vis_disable_plugin( VisPlugin* ) { exit( 0 ); } //this is called by the p
 int
 main( int argc, char** argv )
 {
-    if( argc > 1 && strcmp( argv[1], "--list" ) == 0 )
+    if( argc <= 1 || strcmp( argv[1], "--list" ) == 0 )
     {
         struct dirent *ent;
         struct stat statbuf;
@@ -80,9 +80,13 @@ main( int argc, char** argv )
 
         std::exit( 0 );
     }
+    else if( argc != 3 ) {
+        std::cout << "usage: xmms_wrapper2 socket_path plugin\n";
+        std::exit( 1 );
+    }
 
     //connect to socket
-    const int sockfd = tryConnect();
+    const int sockfd = tryConnect( argv[1] );
     if( sockfd == -1 ) exit( 1 );
 
 
@@ -156,17 +160,8 @@ main( int argc, char** argv )
 }
 
 int
-tryConnect()
+tryConnect( const char *path )
 {
-    #ifndef MAX_PATH
-    #define MAX_PATH 256
-    #endif
-
-    char path[MAX_PATH];
-    FILE *amarok = popen( "amarok --vis-socket-path", "r" );
-    fread( path, sizeof(char), MAX_PATH, amarok );
-    pclose( amarok );
-
     int fd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
 
     if( fd != -1 )
@@ -193,56 +188,9 @@ tryConnect()
 std::string
 getPlugin( int argc, char **argv )
 {
-    if( argc == 1 )
-    {
-        std::list<string> list;
-
-        //scan plugins
-        string dirname = XMMS_PLUGIN_PATH;
-        dirname.append( "/" );
-        DIR *dir;
-        struct dirent *ent;
-        struct stat statbuf;
-
-        dir = opendir( dirname.c_str() );
-        if ( !dir ) { std::cerr << "Please edit the PLUGIN_PATH in xmmswrapper.cpp\n"; exit( 1 ); }
-
-        while ( (ent = readdir( dir )) )
-        {
-            string filename = ent->d_name;
-            uint index = filename.find_last_of( '.' );
-            if ( index == string::npos ) continue;
-            string extension = filename.substr( index );
-            string fullpath = dirname + filename;
-
-            if ( !stat( fullpath.c_str(), &statbuf )
-                    && S_ISREG( statbuf.st_mode )
-                    && extension == SHARED_LIB_EXT )
-                list.push_back( filename );
-        }
-        closedir( dir );
-
-        std::cout << "Please select a plugin: \n";
-
-        std::vector<string> v( list.size() );
-        std::copy( list.begin(), list.end(), v.begin() );
-
-        for ( uint n = 0; n < v.size(); ++n )
-        {
-            std::cout << n + 1 << ": " << v[ n ] << '\n';
-        }
-
-        char c[8];
-        std::cin >> c;
-        uint selection = atoi( c );
-        if( selection > v.size() ) exit( 1 );
-
-        return v[ selection - 1 ];
-    }
-
     std::string
     plugin  = "lib";
-    plugin += argv[1];
+    plugin += argv[2];
     plugin += ".so";
 
     return plugin;
