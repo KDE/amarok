@@ -20,7 +20,7 @@ ac_artsgui_libraries="$artsgui_libdir"
 
 if test "$ac_artsgui_libraries" = NO; then
         have_artsgui=no
-        DO_NOT_COMPILE="$DO_NOT_COMPILE klatin"
+        DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
 else
         have_artsgui=yes;
 fi
