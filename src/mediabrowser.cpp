@@ -685,11 +685,11 @@ MediaDevice::deleteFromIPod( MediaItem* item )
 
 
 bool
-MediaDevice::fileExists( const MetaBundle& bundle )  
+MediaDevice::fileExists( const MetaBundle& bundle )
 {
     TrackList* album;
 
-    album = m_ipod->getAlbum( bundle.artist(), bundle.album() );
+    album = m_ipod->getAlbum( bundle.artist(), bundle.album().isEmpty() ? i18n( "Unknown" ) : bundle.album() );
     if ( album )
     {
         TrackList::Iterator it = album->getTrackIDs();
@@ -709,7 +709,7 @@ void
 MediaDevice::fileTransferred()  //SLOT
 {
     m_wait = false;
-    m_parent->m_progress->setProgress( m_parent->m_progress->value() + 1 );
+    m_parent->m_progress->setProgress( m_parent->m_progress->progress() + 1 );
 //    m_parent->m_deviceList->renderView( 0 );
 }
 
