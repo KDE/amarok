@@ -54,6 +54,7 @@ protected:
     /// make these virtual if you need to
     bool loadM3u( QTextStream& );
     bool loadPls( QTextStream& );
+    unsigned int loadPls_extractIndex( const QString &str ) const;
     bool loadRealAudioRam( QTextStream& ); 
     QString m_path;
     QString m_error;

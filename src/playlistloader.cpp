@@ -466,10 +466,7 @@ PlaylistFile::loadPls( QTextStream &stream )
         }
         if ((*i).contains(regExp_File)) {
             // Have a "File#=XYZ" line.
-            tmp = (*i).section('=', 0, 0);
-            tmp.remove(0, 4);
-            index = tmp.stripWhiteSpace().toUInt(&ok);
-            Q_ASSERT(ok);
+            index = loadPls_extractIndex(*i);
             if (index > numberOfEntries || index == 0)
                 continue;
             tmp = (*i).section('=', -1).stripWhiteSpace();
@@ -478,10 +475,7 @@ PlaylistFile::loadPls( QTextStream &stream )
         }
         if ((*i).contains(regExp_Title)) {
             // Have a "Title#=XYZ" line.
-            tmp = (*i).section('=', 0, 0);
-            tmp.remove(0, 5);
-            index = tmp.stripWhiteSpace().toUInt(&ok);
-            Q_ASSERT(ok);
+            index = loadPls_extractIndex(*i);
             if (index > numberOfEntries || index == 0)
                 continue;
             tmp = (*i).section('=', -1).stripWhiteSpace();
@@ -490,10 +484,7 @@ PlaylistFile::loadPls( QTextStream &stream )
         }
         if ((*i).contains(regExp_Length)) {
             // Have a "Length#=XYZ" line.
-            tmp = (*i).section('=', 0, 0);
-            tmp.remove(0, 6);
-            index = tmp.stripWhiteSpace().toUInt(&ok);
-            Q_ASSERT(ok);
+            index = loadPls_extractIndex(*i);
             if (index > numberOfEntries || index == 0)
                 continue;
             tmp = (*i).section('=', -1).stripWhiteSpace();
@@ -517,6 +508,22 @@ PlaylistFile::loadPls( QTextStream &stream )
         warning() << ".pls playlist: Unrecognized line: \"" << *i << "\"" << endl;
     }
     return true;
+}
+
+unsigned int
+PlaylistFile::loadPls_extractIndex( const QString &str ) const
+{
+    /* Extract the index number out of a .pls line.
+     * Example:
+     *   loadPls_extractIndex("File2=foobar") == 2
+     */
+    bool ok = false;
+    unsigned int ret;
+    QString tmp(str.section('=', 0, 0));
+    tmp.remove(QRegExp("^\\D*"));
+    ret = tmp.stripWhiteSpace().toUInt(&ok);
+    Q_ASSERT(ok);
+    return ret;
 }
 
 bool
