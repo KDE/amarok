@@ -146,7 +146,7 @@ TagDialog::musicbrainzQuery() //SLOT
     connect( ktrm, SIGNAL( sigResult( KTRMResultList ) ), SLOT( queryDone( KTRMResultList ) ) );
 
     pushButton_musicbrainz->setEnabled( false );
-    pushButton_musicbrainz->setText( i18n( "Generating TRM..." ) );
+    pushButton_musicbrainz->setText( i18n( "Generating audio fingerprint..." ) );
     QApplication::setOverrideCursor( KCursor::workingCursor() );
 #endif
 }
