@@ -35,7 +35,7 @@ public:
     void  seek( long );
     void  setVolume( int );
 
-    StreamingMode streamingMode() { return Socket; }
+    StreamingMode streamingMode() { return NoStreaming; }
 
 private slots:
     void pruneScopeBuffers();
