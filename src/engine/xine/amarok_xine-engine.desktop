@@ -1,18 +1,12 @@
 [Desktop Entry]
 Type=Service
-Name=Xine Engine
-Name[da]=Xine-motor
-Name[de]=Xine Engine
-Name[es]=Motor Xine
-Name[et]=Xine mootor
-Name[fr]=Moteur Xine
-Name[pt]=Motor Xine
-Name[ru]=Xine
-Name[sl]=Pogon Xine
-Name[sv]=Xine-gränssnitt
-Name[ta]=G தாரை பொறி
-Name[uz]=Xine тизими
-Name[xx]=xxXine Enginexx
+Name=xine Engine
+Name[et]=xine mootor
+Name[nl]=xine-engine
+Name[pt]=Motor xine
+Name[pt_BR]=Mecanismo xine
+Name[ru]=Движок xine
+Name[sv]=xine-gränssnitt
 X-KDE-Library=libamarok_xine-engine
 Comment=Plugin for amaroK
 Comment[de]=Plugin für amaroK
