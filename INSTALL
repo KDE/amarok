@@ -19,7 +19,7 @@ For a much faster compile we recommend configuring with --enable-final:
 However it is probably not advisable to compile --enable-final if your computer
 resorts to swap easily.
 
-The GNU Installtion instructions follow.
+The GNU installation instructions follow.
 
 
 Basic Installation
