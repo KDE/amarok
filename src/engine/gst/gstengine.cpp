@@ -384,8 +384,6 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         g_signal_connect( G_OBJECT( input->src ), "kio_resume", G_CALLBACK( kio_resume_cb ), input->bin );
     }
 
-    gst_element_link_many( input->src, input->spider, input->volume, input->bin, 0 );
-
     // Prepare bin for playing
     gst_element_set_state( input->bin, GST_STATE_PAUSED );
 
@@ -433,7 +431,7 @@ GstEngine::play( uint )  //SLOT
     // Put input bin into input thread
     gst_bin_add( GST_BIN( m_gst_inputThread ), m_currentInput->bin );
     // Link elements
-    gst_element_link( m_currentInput->bin, m_gst_adder );
+    gst_element_link_many( m_currentInput->src, m_currentInput->spider, m_currentInput->volume, m_gst_adder, 0 );
 
     if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PLAYING ) )
         kdWarning() << "[Gst-Engine] Could not set input thread to PLAYING.\n";
