@@ -8,9 +8,15 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>445</width>
-            <height>469</height>
+            <width>443</width>
+            <height>509</height>
         </rect>
+    </property>
+    <property name="minimumSize">
+        <size>
+            <width>1</width>
+            <height>1</height>
+        </size>
     </property>
     <vbox>
         <property name="name">
@@ -63,13 +69,12 @@
                     </property>
                     <property name="minimumSize">
                         <size>
-                            <width>1</width>
-                            <height>0</height>
+                            <width>-1</width>
+                            <height>-1</height>
                         </size>
                     </property>
                     <property name="text">
-                        <string>&lt;P&gt;amaroK can send the name of every song you play to Audioscrobbler. The system automatically matches you to people with similar musical tastes, and generates personalised recommendations.
-&lt;P&gt;To learn more &lt;A href='http://www.audioscrobbler.com'&gt;visit the Audioscrobbler homepage&lt;/A&gt;.</string>
+                        <string>amaroK can send the name of every song you play to Audioscrobbler. The system automatically matches you to people with similar musical tastes, and generates personalised recommendations. To learn more about Audioscrobbler, &lt;A href='http://www.audioscrobbler.com'&gt;visit the homepage&lt;/A&gt;.</string>
                     </property>
                 </widget>
             </hbox>
@@ -177,9 +182,12 @@
                 </widget>
             </vbox>
         </widget>
-        <widget class="QLayoutWidget">
+        <widget class="QGroupBox">
             <property name="name">
-                <cstring>layout13</cstring>
+                <cstring>groupBox2</cstring>
+            </property>
+            <property name="title">
+                <string>Track Submission</string>
             </property>
             <grid>
                 <property name="name">
@@ -188,26 +196,7 @@
                 <property name="spacing">
                     <number>12</number>
                 </property>
-                <widget class="QLabel" row="0" column="0" rowspan="2" colspan="1">
-                    <property name="name">
-                        <cstring>infoPixmap</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>4</hsizetype>
-                            <vsizetype>1</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignVCenter</set>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="0" column="1" rowspan="1" colspan="3">
+                <widget class="QLabel" row="0" column="1" rowspan="1" colspan="2">
                     <property name="name">
                         <cstring>textLabel1</cstring>
                     </property>
@@ -252,7 +241,7 @@
                 </sizepolicy>
             </property>
             <property name="text">
-                <string>&lt;p&gt;&lt;br&gt;Why not join the &lt;A href='http://www.audioscrobbler.com:80/group/amaroK+users'&gt;amaroK Audioscrobbler group&lt;/A&gt; and share your musical tastes with other amaroK users?</string>
+                <string>Why not join the &lt;A href='http://www.audioscrobbler.com:80/group/amaroK+users'&gt;amaroK Audioscrobbler group&lt;/A&gt; and share your musical tastes with other amaroK users?</string>
             </property>
         </widget>
         <spacer>
@@ -268,7 +257,7 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>16</height>
+                    <height>140</height>
                 </size>
             </property>
         </spacer>
