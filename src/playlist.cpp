@@ -1031,7 +1031,7 @@ void Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
 
 void Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
 {
-    if( !item ) item = currentTrack();
+    if( !item ) item = hasFocus() ? currentItem() : currentTrack();
 
     if( item )
     {
@@ -1039,7 +1039,7 @@ void Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
         QApplication::clipboard()->setText( item->trackName(), QClipboard::Clipboard );
         QApplication::clipboard()->setText( item->trackName(), QClipboard::Selection );
 
-        amaroK::OSD::instance()->showOSD( QString( "Copied: %1" ).arg( item->trackName() ) );
+        amaroK::OSD::instance()->showOSD( i18n( "Copied: %1" ).arg( item->trackName() ) );
         #undef item
     }
 }
