@@ -402,15 +402,16 @@ GstEngine::scope()
     if ( offset < 0 ) offset *= -1;
     offset = QMIN( offset, available - SCOPE_VALUES*channels*sizeof( gint16 ) );
 
-    for ( long i = 0; i < SCOPE_VALUES; i++, data += channels ) {
-        long temp = 0;
+    if ( offset >= 0 )
+        for ( long i = 0; i < SCOPE_VALUES; i++, data += channels ) {
+            long temp = 0;
 
-        for ( int chan = 0; chan < channels; chan++ ) {
-            // Add all channels together so we effectively get a mono scope
-            temp += data[offset / sizeof( gint16 ) + chan];
+            for ( int chan = 0; chan < channels; chan++ ) {
+                // Add all channels together so we effectively get a mono scope
+                temp += data[offset / sizeof( gint16 ) + chan];
+            }
+            m_scope[i] = temp / channels;
         }
-        m_scope[i] = temp / channels;
-    }
 
 //     debug() << "Timestamp first: " << firstStamp << endl;
 //     debug() << "Timestamp last:  " << lastStamp << endl;
