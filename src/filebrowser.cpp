@@ -21,7 +21,6 @@
    Boston, MA 02111-1307, USA.
 */
 #include "amarokconfig.h"
-#include "enginebase.h"
 #include "enginecontroller.h"
 #include "filebrowser.h"
 #include "kbookmarkhandler.h"
@@ -55,9 +54,8 @@ class MyDirLister : public KDirLister
         MyDirLister( bool delayedMimeTypes ) : KDirLister( delayedMimeTypes ) { }
     protected:
         bool MyDirLister::matchesMimeFilter( const KFileItem *item ) const {
-            EngineBase* const engine = EngineController::engine();
             if( item->isDir() ) return true;
-            return engine->canDecode( item->url().path() );
+            return EngineController::canDecode( item->url().path() );
         }
 
 };
