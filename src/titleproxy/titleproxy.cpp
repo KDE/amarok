@@ -30,7 +30,7 @@ using namespace TitleProxy;
 
 static const uint MIN_PROXYPORT = 6700;
 static const uint MAX_PROXYPORT = 7777;
-static const int TIMEOUT = 6000; //msec
+static const int TIMEOUT = 12000; //msec
 static const int BUFSIZE = 16384;
 
 
