@@ -522,6 +522,9 @@ Playlist::queue( QListViewItem *item )
 void
 Playlist::activate( QListViewItem *item )
 {
+    ///item will be played if possible, the playback may be delayed
+    ///so we start the glow anyway and hope
+
     //All internal requests for playback should come via
     //this function please!
 
@@ -557,6 +560,8 @@ Playlist::activate( QListViewItem *item )
 void
 Playlist::setCurrentTrack( PlaylistItem *item )
 {
+    ///mark item as the current track, it makes it glow and everything
+
     const bool canScroll = !renameLineEdit()->isVisible() && selectedItems().count() < 2; //FIXME O(n)
 
     //if nothing is current and then playback starts, we must show the currentTrack
@@ -613,6 +618,9 @@ Playlist::setCurrentTrack( PlaylistItem *item )
 PlaylistItem*
 Playlist::restoreCurrentTrack()
 {
+    ///It is always possible that the current track has been lost
+    ///eg it was removed and then reinserted, here we check
+
     const KURL &url = EngineController::instance()->playingURL();
 
     if( !(m_currentTrack && m_currentTrack->url() == url) )
@@ -637,6 +645,7 @@ Playlist::restoreCurrentTrack()
 bool
 Playlist::isTrackAfter() const
 {
+    ///Is there a track after the current track?
     //order is carefully crafted, remember count() is O(n)
     //TODO randomMode will end if everything is in prevTracks
 
