@@ -56,29 +56,29 @@ class CollectionDB : public QObject
         void scan( const QStringList& folders, bool recursively, bool importPlaylists );
         void scanModifiedDirs( bool recursively, bool importPlaylists );
         bool isDirInCollection( QString path );
-        bool isFileInCollection( const QString url );
+        bool isFileInCollection( const QString &url  );
         void removeDirFromCollection( QString path );
         void updateDirStats( QString path, const long datetime );
         void removeSongsInDir( QString path );
         void purgeDirCache();
 
         //song methods
-        bool getMetaBundleForUrl( const QString url, MetaBundle *bundle );
+        bool getMetaBundleForUrl( const QString &url , MetaBundle *bundle );
         void addAudioproperties( const MetaBundle& bundle );
-        int addSongPercentage( const QString url, const int percentage );
-        int getSongPercentage( const QString url );
-        void setSongPercentage( const QString url, int percentage );
+        int addSongPercentage( const QString &url , const int percentage );
+        int getSongPercentage( const QString &url  );
+        void setSongPercentage( const QString &url , int percentage );
 
         //album methods
-        bool isSamplerAlbum( const QString album );
-        QString albumSongCount( const QString artist_id, const QString album_id );
+        bool isSamplerAlbum( const QString &album );
+        QString albumSongCount( const QString &artist_id, const QString &album_id );
         QString getPathForAlbum( const uint artist_id, const uint album_id );
-        QString getPathForAlbum( const QString artist, const QString album );
+        QString getPathForAlbum( const QString &artist, const QString &album );
 
         //list methods
         QStringList artistList( bool withUnknown = true, bool withCompilations = true );
         QStringList albumList( bool withUnknown = true, bool withCompilations = true );
-        QStringList albumListOfArtist( const QString artist, bool withUnknown = true, bool withCompilations = true );
+        QStringList albumListOfArtist( const QString &artist, bool withUnknown = true, bool withCompilations = true );
         QStringList artistAlbumList( bool withUnknown = true, bool withCompilations = true );
 
         //cover management methods
@@ -88,10 +88,10 @@ class CollectionDB : public QObject
         bool setAlbumImage( const QString& artist, const QString& album, QImage img, const QString& amazonUrl = QString::null );
 
         QString albumImage( const uint artist_id, const uint album_id, const uint width = 1 );
-        QString albumImage( const QString artist, const QString album, const uint width = 1 );
+        QString albumImage( const QString &artist, const QString &album, const uint width = 1 );
 
         bool removeAlbumImage( const uint artist_id, const uint album_id );
-        bool removeAlbumImage( const QString artist, const QString album );
+        bool removeAlbumImage( const QString &artist, const QString &album );
 
         void addImageToPath( const QString path, const QString image, bool temporary );
         QString getImageForPath( const QString path, uint width = 0 );

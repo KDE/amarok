@@ -308,7 +308,7 @@ CollectionDB::isEmpty()
 
 
 QString
-CollectionDB::albumSongCount( const QString artist_id, const QString album_id )
+CollectionDB::albumSongCount( const QString &artist_id, const QString &album_id )
 {
     query( QString( "SELECT COUNT( url ) FROM tags WHERE album = %1 AND artist = %2;" )
                     .arg( album_id )
@@ -319,7 +319,7 @@ CollectionDB::albumSongCount( const QString artist_id, const QString album_id )
 
 
 QString
-CollectionDB::getPathForAlbum( const QString artist, const QString album )
+CollectionDB::getPathForAlbum( const QString &artist, const QString &album )
 {
     query( QString( "SELECT tags.url FROM tags, album, artist WHERE tags.album = album.id AND album.name = '%1' AND tags.artist = artist.id AND artist.name = '%2' LIMIT 0, 1;" )
                     .arg( escapeString( album ) )
@@ -377,7 +377,7 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage
 
 
 QString
-CollectionDB::albumImage( const QString artist, const QString album, uint width )
+CollectionDB::albumImage( const QString &artist, const QString &album, uint width )
 {
     // we aren't going to need a 1x1 size image. this is just a quick hack to be able to show full size images.
     if ( width == 1) width = AmarokConfig::coverPreviewSize();
@@ -500,7 +500,7 @@ CollectionDB::removeAlbumImage( const uint artist_id, const uint album_id )
 
 
 bool
-CollectionDB::removeAlbumImage( const QString artist, const QString album )
+CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
 {
     QCString widthKey = "*@";
     KMD5 context( artist.lower().local8Bit() + album.lower().local8Bit() );
@@ -550,7 +550,7 @@ CollectionDB::albumList( bool withUnknown, bool withCompilations )
 
 
 QStringList
-CollectionDB::albumListOfArtist( const QString artist, bool withUnknown, bool withCompilations )
+CollectionDB::albumListOfArtist( const QString &artist, bool withUnknown, bool withCompilations )
 {
     return query( "SELECT DISTINCT album.name FROM tags, album, artist WHERE "
                   "tags.album = album.id AND tags.artist = artist.id "
@@ -573,7 +573,7 @@ CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
 
 
 bool
-CollectionDB::getMetaBundleForUrl( const QString url, MetaBundle *bundle )
+CollectionDB::getMetaBundleForUrl( const QString &url , MetaBundle *bundle )
 {
     query( QString( "SELECT album.name, artist.name, genre.name, tags.title, year.name, tags.comment, tags.track, tags.bitrate, tags.length, tags.samplerate "
                     "FROM tags, album, artist, genre, year "
@@ -614,7 +614,7 @@ CollectionDB::addAudioproperties( const MetaBundle& bundle )
 
 
 int
-CollectionDB::addSongPercentage( const QString url, const int percentage )
+CollectionDB::addSongPercentage( const QString &url , const int percentage )
 {
     float score;
 
@@ -668,7 +668,7 @@ CollectionDB::addSongPercentage( const QString url, const int percentage )
 
 
 int
-CollectionDB::getSongPercentage( const QString url )
+CollectionDB::getSongPercentage( const QString &url  )
 {
     QStringList values = query( QString( "SELECT round( percentage + 0.4 ) FROM statistics WHERE url = '%1';" )
                                          .arg( escapeString( url ) ) );
@@ -681,7 +681,7 @@ CollectionDB::getSongPercentage( const QString url )
 
 
 void
-CollectionDB::setSongPercentage( const QString url, int percentage )
+CollectionDB::setSongPercentage( const QString &url , int percentage )
 {
     query( QString( "SELECT playcounter, createdate, accessdate FROM statistics WHERE url = '%1';" )
                     .arg( escapeString( url ) ) );
@@ -758,7 +758,7 @@ CollectionDB::isDirInCollection( QString path )
 
 
 bool
-CollectionDB::isFileInCollection( const QString url )
+CollectionDB::isFileInCollection( const QString &url  )
 {
     query( QString( "SELECT url FROM tags WHERE url = '%1';" )
                     .arg( escapeString( url ) ) );
@@ -768,7 +768,7 @@ CollectionDB::isFileInCollection( const QString url )
 
 
 bool
-CollectionDB::isSamplerAlbum( const QString album )
+CollectionDB::isSamplerAlbum( const QString &album )
 {
     QStringList values_artist;
     QStringList values_dir;
