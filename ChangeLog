@@ -3,6 +3,7 @@ amaroK Changelog
 (c) 2002, 2003 by Mark Kretschmann and the amaroK team. GPL License.
 
 
+  * fix: (partial fix) bitrate/samplerate font overlap at large font sizes
   * change: less staccato loading of widgets
   * change: pause makes the analyser bars fall to zero rather than just vanish
   * add: xfade when starting tracks by doubleclick

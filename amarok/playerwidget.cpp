@@ -499,8 +499,14 @@ void PlayerWidget::paintEvent( QPaintEvent * )
     pF.setFont( font );
 
     pF.setPen( pApp->m_fgColor );
+/*
     pF.drawText( 20, 40, m_bitrate );
     pF.drawText( 70, 40, m_samplerate );
+*/
+    //<mxcl> was above, however this wasn't working for me as at 1280x1024 I have fonts with lots of pixels
+    //<mxcl> we can use QFontMetrics however, we should decide on how to present these datas first!
+    //<mxcl> below is temporary solution
+    pF.drawText( 20, 40, m_bitrate + "  " + m_samplerate );
 }
 
 
