@@ -31,13 +31,13 @@ namespace amaroK
 
 
 amaroK::TrayIcon::TrayIcon( QWidget *playerWidget )
-  : KSystemTray( playerWidget )
-  , EngineObserver( EngineController::instance() )
-  , trackLength( 0 )
-  , mergeLevel( -1 )
-  , overlay( 0 )
-  , blinkTimerID( 0 )
-  , overlayVisible( false )
+        : KSystemTray( playerWidget )
+        , EngineObserver( EngineController::instance() )
+        , trackLength( 0 )
+        , mergeLevel( -1 )
+        , overlay( 0 )
+        , blinkTimerID( 0 )
+        , overlayVisible( false )
 {
     KActionCollection* const ac = amaroK::actionCollection();
 
@@ -52,13 +52,13 @@ amaroK::TrayIcon::TrayIcon( QWidget *playerWidget )
     //seems to be necessary
     KAction *quit = actionCollection()->action( "file_quit" );
     quit->disconnect();
-    connect( quit, SIGNAL( activated() ), kapp, SLOT( quit() ) );
+    connect( quit, SIGNAL(activated()), kapp, SLOT(quit()) );
 
     baseIcon     = KSystemTray::loadIcon( "amarok" );
     playOverlay  = amaroK::loadOverlay( "play" );
     pauseOverlay = amaroK::loadOverlay( "pause" );
-    stopOverlay  = amaroK::loadOverlay( "stop" );
     overlayVisible = false;
+
     //paintIcon();
     setPixmap( baseIcon );
 }
@@ -82,15 +82,6 @@ amaroK::TrayIcon::event( QEvent *e )
         {
             overlayVisible = !overlayVisible;
             paintIcon( mergeLevel, true );
-        }
-
-        // if we're stopped return to default state after the first tick
-        else if ( overlay == &stopOverlay )
-        {
-            killTimer( blinkTimerID );
-            blinkTimerID = 0;
-            overlayVisible = false;
-            paintIcon( -1, true );
         }
 
         return true;
@@ -138,13 +129,12 @@ amaroK::TrayIcon::engineStateChanged( Engine::State state )
         paintIcon( mergeLevel, true ); // repaint the icon
         break;
 
-    default: // idle/stopped case
+    case Engine::Empty:
         overlayVisible = false;
-//         overlay = &stopOverlay;
-//         if( AmarokConfig::animateTrayIcon() )
-//            blinkTimerID = startTimer( 2500 );  // start 'blink' timer
-
         paintIcon( -1, true ); // repaint the icon
+
+    default:
+        ;
     }
 }
 
@@ -234,6 +224,11 @@ amaroK::TrayIcon::blendOverlay( QPixmap &sourcePixmap )
     // get the rectangle where blending will take place
     QPixmap sourceCropped( opW, opH, sourcePixmap.depth() );
     copyBlt( &sourceCropped, 0,0, &sourcePixmap, opX,opY, opW,opH );
+
+    //speculative fix for a bactrace we received
+    //crash was in covertToImage() somewhere in this function
+    if( sourceCropped.isNull() )
+        return setPixmap( sourcePixmap );
 
     // blend the overlay image over the cropped rectangle
     QImage blendedImage = sourceCropped.convertToImage();

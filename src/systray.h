@@ -38,7 +38,7 @@ private:
 
     long trackLength, mergeLevel;
     QPixmap baseIcon, grayedIcon, alternateIcon;
-    QPixmap playOverlay, pauseOverlay, stopOverlay;
+    QPixmap playOverlay, pauseOverlay;
     QPixmap *overlay;   // the current overlay (may be NULL)
     int blinkTimerID;   // timer ID returned by QObject::startTimer()
     bool overlayVisible;// used for blinking / hiding overlay
