@@ -61,8 +61,6 @@ namespace Vis
     class Selector : public QListView
     {
         Q_OBJECT
-        class Item;
-        friend class Item;
         Selector( QWidget *parent=0 );
         SocketServer *m_server;
 
@@ -70,6 +68,8 @@ namespace Vis
 
     public:
         static Selector* instance();
+        class Item;
+        friend class Item;
 
         ///assigns pid/sockfd combo
         void mapPID( int, int );
