@@ -474,7 +474,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
 {
     if ( e->button() == QMouseEvent::RightButton )
     {
-        amaroK::Menu popup( this );
+        amaroK::Menu popup( this, pApp->actionCollection() );
         popup.exec( e->globalPos() );
     }
     else //other buttons
