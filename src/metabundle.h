@@ -141,14 +141,13 @@ protected:
     int m_sampleRate;
 
 private:
-    #ifdef PRETTY_TITLE_CACHE
-    mutable QString m_prettyTitleCache;
-    #endif
-
     bool m_exists;
     bool m_isValidMedia;
 
-    static /*inline */QString prettyGeneric( const QString&, int );
+    static inline QString prettyGeneric( const QString &s, const int i )
+    {
+        return (i > 0) ? s.arg( i ) : (i == Undetermined) ? "?" : QString::null;
+    }
 
     void init( TagLib::AudioProperties *ap = 0 );
     void init( const KFileMetaInfo& info );

@@ -86,7 +86,7 @@ MetaBundle::MetaBundle( const PlaylistItem *item )
         //FIXME not correct handling, say is ftp://file
         m_bitrate    = item->exactText( 10 ).left( 3 ).toInt();
         m_sampleRate = Undetermined;
-        m_length     = Unavailable;
+        m_length     = Irrelevant;
     }
 }
 
@@ -178,16 +178,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
 QString
 MetaBundle::prettyTitle() const
 {
-    #ifdef PRETTY_TITLE_CACHE
-    if( !m_prettyTitleCache.isEmpty() )
-       return m_prettyTitleCache;
-
-    QString &s = m_prettyTitleCache;
-    #else
-    QString s;
-    #endif
-
-    s = m_artist;
+    QString s = m_artist;
 
     //NOTE this gets regressed often, please be careful!
     //     whatever you do, handle the stream case, streams have no artist but have an excellent title
@@ -248,14 +239,6 @@ QString
 MetaBundle::prettyBitrate( int i )
 {
     return ( i % 32 == 0 && i < 257 ) ? bitrateStore[ i /32 ] : prettyGeneric( i18n( "Bitrate", "%1 kbps" ), i );
-}
-
-QString
-MetaBundle::prettyGeneric( const QString &s, int i ) //static
-{
-    //TODO ensure this inlines
-
-    return ( i > 0 ) ? s.arg( i ) : ( i == Undetermined ) ? "?" : QString::null;
 }
 
 QStringList
