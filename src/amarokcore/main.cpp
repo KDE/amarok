@@ -47,7 +47,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Josef Spillner", I18N_NOOP( "KDE RadioStation code" ), "spillner@kde.org" );
     aboutData.addCredit( "Kenneth Wesley Wimer II", I18N_NOOP( "icons" ), "kwwii@bootsplash.org" );
     aboutData.addCredit( "Melchior Franz", I18N_NOOP( "new FFT routine, bugfixes" ), "mfranz@kde.org" );
-    aboutData.addCredit( "Pierpaolo Di Panfilo", I18N_NOOP( "K3B Export Code" ), "" );
+    aboutData.addCredit( "Michael Pyne", I18N_NOOP( "K3B Export Code" ), "michael.pyne@kdemail.net" );
     aboutData.addCredit( "Roland Gigler", I18N_NOOP( "MAS engine" ), "rolandg@web.de" );
     aboutData.addCredit( "Scott Wheeler", I18N_NOOP( "TagLib & KTrm Code" ), "wheeler@kde.org" );
     aboutData.addCredit( "Stefan Bogner", I18N_NOOP( "tester, patches, translation" ), "bochi@online.ms" );
