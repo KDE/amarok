@@ -22,12 +22,10 @@
 amaroK::TrayIcon::TrayIcon( QWidget *playerWidget )
   : KSystemTray( playerWidget ),
   baseIcon( 0 ), grayedIcon( 0 ), alternateIcon( 0 ),
-  playOverlay( 0 ), pauseOverlay( 0 ), stopOverlay( 0 ),
   trackLength( 0 ), trackPercent( -1 ), drawnPercent( -1 )
 {
     KActionCollection* const ac = amaroK::actionCollection();
 
-    paintIcon( 100, OV_none );
     setAcceptDrops( true );
 
     ac->action( "prev"  )->plug( contextMenu() );
@@ -51,6 +49,11 @@ amaroK::TrayIcon::TrayIcon( QWidget *playerWidget )
     quit->disconnect();
     connect( quit, SIGNAL( activated() ), kapp, SLOT( quit() ) );
 
+    playOverlay = loadOverlay( "play" );
+    pauseOverlay = loadOverlay( "pause" );
+    stopOverlay = loadOverlay( "stop" );
+    paintIcon();
+
     // attach to get notified about engine events
     EngineController::instance()->attach( this );
 }
@@ -61,6 +64,9 @@ amaroK::TrayIcon::~TrayIcon( )
     delete baseIcon;
     delete grayedIcon;
     delete alternateIcon;
+    delete playOverlay;
+    delete pauseOverlay;
+    delete stopOverlay;
 }
 
 bool
@@ -96,7 +102,7 @@ amaroK::TrayIcon::engineStateChanged( Engine::State state )
     {
         case Engine::Paused:
             drawnPercent = -1;  //force repaint
-            paintIcon( trackPercent, OV_pause );
+            paintIcon( trackPercent, pauseOverlay );
             break;
 
         case Engine::Playing:
@@ -105,7 +111,7 @@ amaroK::TrayIcon::engineStateChanged( Engine::State state )
 
         default: //if idle/stopped
             drawnPercent = -1;  //force repaint
-            paintIcon( 100, OV_stop );
+            paintIcon( 100, stopOverlay );
             break;
     }
 }
@@ -120,7 +126,7 @@ void
 amaroK::TrayIcon::engineTrackPositionChanged( long position )
 {
     trackPercent = trackLength ? (100 * position) / trackLength : 100;
-    paintIcon( trackPercent, OV_play );
+    paintIcon( trackPercent, playOverlay );
 }
 
 void
@@ -133,18 +139,11 @@ amaroK::TrayIcon::paletteChange( const QPalette & op )
     alternateIcon = 0;
     // force pixmap rebuild and repaint
     drawnPercent = -1;
-    paintIcon( trackPercent, OV_none );
-}
-
-QPixmap *
-amaroK::TrayIcon::loadOverlay( const char * iconName )
-{
-    QPixmap icon( locate( "data", QString( "amarok/images/b_%1.png" ).arg( iconName ) ), "PNG" );
-    return new QPixmap( icon.convertToImage().smoothScale( 12, 12 ) );
+    paintIcon( trackPercent );
 }
 
 void
-amaroK::TrayIcon::paintIcon( int percent, TrayOverlay overlay )
+amaroK::TrayIcon::paintIcon( int percent, QPixmap * overlay )
 {
     // skip redrawing the same pixmap
     if ( percent == drawnPercent )
@@ -199,32 +198,16 @@ amaroK::TrayIcon::paintIcon( int percent, TrayOverlay overlay )
     blendOverlay( &tmpTrayPixmap, overlay );
 }
 
-void
-amaroK::TrayIcon::blendOverlay( QPixmap * sourcePixmap, TrayOverlay overlay )
+QPixmap *
+amaroK::TrayIcon::loadOverlay( const char * iconName )
 {
-    // load and cache overlay pixmaps (on demand)
-    QPixmap * overlayPixmap = 0;
-    switch( overlay )
-    {
-        case OV_play:
-            if ( !playOverlay )
-                playOverlay = loadOverlay( "play" );
-            overlayPixmap = playOverlay;
-            break;
-        case OV_pause:
-            if ( !pauseOverlay )
-                pauseOverlay = loadOverlay( "pause" );
-            overlayPixmap = pauseOverlay;
-            break;
-        case OV_stop:
-            if ( !stopOverlay )
-                stopOverlay = loadOverlay( "stop" );
-            overlayPixmap = stopOverlay;
-            break;
-        default:
-            ;
-    }
+    QPixmap icon( locate( "data", QString( "amarok/images/b_%1.png" ).arg( iconName ) ), "PNG" );
+    return new QPixmap( icon.convertToImage().smoothScale( 12, 12 ) );
+}
 
+void
+amaroK::TrayIcon::blendOverlay( QPixmap * sourcePixmap, QPixmap * overlayPixmap )
+{
     if ( overlayPixmap && !overlayPixmap->isNull() )
     {
         // here comes the tricky part.. no kdefx functions are helping here.. :-(
