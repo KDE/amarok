@@ -4,7 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta4:
-  FIX: CoverManager updates the status display correctly.
+  FIX: CoverManager updates its status display correctly.
   FIX: "isPlaying" DCOP function now works correctly. (BR 90894)
   ADD: Automatic crash report generator, sends backtraces to amaroK HQ.
   ADD: DCOP function "saveCurrentPlaylist". Writes the playlist to
