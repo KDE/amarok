@@ -277,9 +277,9 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
         menu.insertTitle( i18n("Track"), TITLE );
 
-        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIcon( "next" ), i18n( "&Queue After Current Track" ), ASNEXT );
+        menu.insertItem( SmallIcon( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
+        menu.insertItem( SmallIcon( "2rightarrow" ), i18n( "&Queue After Current Track" ), ASNEXT );
 
         if ( url.protocol() == "album" ) {
             QString sql = "select distinct url from tags where artist = '%1' and album = '%2' order by track;";
@@ -364,7 +364,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         }
         break;
     }
-    
+
     case MANAGER:
         CoverManager::showOnce();
         break;
@@ -589,7 +589,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 << i18n( "Track played once", "Track played %n times", playtimes )
                 << i18n( "Score: %1" ).arg( score )
                 << i18n( "Last play: %1" ).arg( KGlobal::locale()->formatDateTime( lastPlay, true /* short */ ) )
-                << i18n( "First play: %1" ).arg( KGlobal::locale()->formatDateTime( firstPlay, true /* short */ ) ) 
+                << i18n( "First play: %1" ).arg( KGlobal::locale()->formatDateTime( firstPlay, true /* short */ ) )
                        ) );
    }
    else

@@ -598,33 +598,33 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         #endif
 
 
-        menu.insertItem( i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( i18n( "&Make Playlist" ), MAKE );
-        menu.insertItem( i18n( "&Queue After Current Track" ), QUEUE );
+        menu.insertItem( SmallIcon( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
+        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
+        menu.insertItem( SmallIcon( "2rightarrow" ), i18n( "&Queue After Current Track" ), QUEUE );
 
         if( category == i18n("Artist") ) {
-            menu.insertItem( i18n("Burn All Tracks by This Artist"), BURN_ARTIST );
+            menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n("Burn All Tracks by This Artist"), BURN_ARTIST );
             menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
         }
         else if( category == i18n("Album") ) {
-            menu.insertItem( i18n("Burn This Album"), BURN_ALBUM );
+            menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n("Burn This Album"), BURN_ALBUM );
             menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() );
         }
         else if( !item->isExpandable() ) {
             menu.insertSeparator();
-            menu.insertItem( i18n("Burn to CD as Data"), BURN_DATACD );
+            menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n("Burn to CD as Data"), BURN_DATACD );
             menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
-            menu.insertItem( i18n("Burn to CD as Audio"), BURN_AUDIOCD );
+            menu.insertItem( SmallIcon( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BURN_AUDIOCD );
             menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
         }
 
         menu.insertSeparator();
 
         #ifdef AMAZON_SUPPORT
-        menu.insertItem( i18n( "&Fetch Cover Images" ), this, SLOT( fetchCover() ), 0, COVER );
+        menu.insertItem( SmallIcon( "www" ), i18n( "&Fetch Cover Images" ), this, SLOT( fetchCover() ), 0, COVER );
         menu.setItemEnabled(COVER, category == i18n("Album") );
         #endif
-        menu.insertItem( i18n( "Edit Meta Information..." ), this, SLOT( showTrackInfo() ), 0, INFO );
+        menu.insertItem( SmallIcon( "info" ), i18n( "View/Edit Meta Information..." ), this, SLOT( showTrackInfo() ), 0, INFO );
 
         menu.setItemEnabled( INFO, !item->isExpandable()  );
 

@@ -574,15 +574,15 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         //************* Current Playlist menu ***********
             enum Id { SAVE, CLEAR, RMDUP, BURN_DATACD, BURN_AUDIOCD };
 
-            menu.insertItem( i18n( "&Save" ), SAVE );
-            menu.insertItem( i18n( "&Clear" ), CLEAR );
+            menu.insertItem( SmallIcon( "filesave" ), i18n( "&Save" ), SAVE );
+            menu.insertItem( SmallIcon( "view_remove" ), i18n( "&Clear" ), CLEAR );
             menu.insertItem( i18n( "Remove Duplicates" ), RMDUP );
 
             menu.insertSeparator();
 
-            menu.insertItem( i18n("Burn to CD as Data"), BURN_DATACD );
+            menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n("Burn to CD as Data"), BURN_DATACD );
             menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
-            menu.insertItem( i18n("Burn to CD as Audio"), BURN_AUDIOCD );
+            menu.insertItem( SmallIcon( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BURN_AUDIOCD );
             menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
 
             switch( menu.exec( p ) )
@@ -608,8 +608,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             #define item static_cast<PlaylistBrowserItem*>(item)
             enum Id { LOAD, ADD, SAVE, RESTORE, RENAME, REMOVE, DELETE };
 
-            menu.insertItem( i18n( "&Load" ), LOAD );
-            menu.insertItem( i18n( "&Append to Playlist" ), ADD );
+            menu.insertItem( SmallIcon( "fileopen" ), i18n( "&Load" ), LOAD );
+            menu.insertItem( SmallIcon( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
             menu.insertSeparator();
             if( item->isModified() ) {
                 menu.insertItem( SmallIcon("filesave"), i18n( "&Save" ), SAVE );
@@ -657,15 +657,15 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         enum Actions { MAKE, APPEND, QUEUE, BURN_DATACD, BURN_AUDIOCD, REMOVE, INFO };
 
-        menu.insertItem( i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( i18n( "&Make Playlist" ), MAKE );
-        menu.insertItem( i18n( "&Queue After Current Track" ), QUEUE );
+        menu.insertItem( SmallIcon( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
+        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
+        menu.insertItem( SmallIcon( "2rightarrow" ), i18n( "&Queue After Current Track" ), QUEUE );
 
         menu.insertSeparator();
 
-        menu.insertItem( i18n("Burn to CD as Data"), BURN_DATACD );
+        menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n("Burn to CD as Data"), BURN_DATACD );
         menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() && item->url().isLocalFile() );
-        menu.insertItem( i18n("Burn to CD as Audio"), BURN_AUDIOCD );
+        menu.insertItem( SmallIcon( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BURN_AUDIOCD );
         menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() && item->url().isLocalFile() );
 
         menu.insertSeparator();

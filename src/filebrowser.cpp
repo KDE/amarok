@@ -126,15 +126,15 @@ FileBrowser::FileBrowser( const char * name )
     //insert our own actions at front of context menu
     QPopupMenu* const menu = ((KActionMenu*)actionCollection()->action("popupMenu"))->popupMenu();
     menu->clear();
-    menu->insertItem( i18n( "&Append to Playlist" ), this, SLOT(addToPlaylist()), 1 );
-    menu->insertItem( i18n( "&Make Playlist" ), this, SLOT(makePlaylist()), 0 );
+    menu->insertItem( SmallIcon( "1downarrow" ), i18n( "&Append to Playlist" ), this, SLOT(addToPlaylist()), 1 );
+    menu->insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Make Playlist" ), this, SLOT(makePlaylist()), 0 );
     menu->insertSeparator();
     //TODO this has no place in the context menu, make it a toolbar button instead
 
     enum { BURN_DATACD = 100, BURN_AUDIOCD };
-    menu->insertItem( i18n("Burn to CD as Data"), this, SLOT( burnDataCd() ), 0, BURN_DATACD );
+    menu->insertItem( SmallIcon( "cdrom_unmount" ), i18n("Burn to CD as Data"), this, SLOT( burnDataCd() ), 0, BURN_DATACD );
     menu->setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
-    menu->insertItem( i18n("Burn to CD as Audio"), this, SLOT( burnAudioCd() ), 0, BURN_AUDIOCD );
+    menu->insertItem( SmallIcon( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), this, SLOT( burnAudioCd() ), 0, BURN_AUDIOCD );
     menu->setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
 
     menu->insertSeparator();
