@@ -202,8 +202,13 @@ void PlayerApp::handleLoaderArgs( const QCString& args )
 {
     //Unfortunately, we must do some ugly string parsing here, since there is (apparently) no way
     //to re-initialize KCmdLineArgs --> FIXME
-
-    KURL::List list( QStringList::split( " ", args ) );
+    
+    QStringList strlist = QStringList::split( " ", args );
+    
+    kdDebug() << "[PlayerApp::handleLoaderArgs] feeding BrowserWin::insertMedia() with this list: \n";
+    kdDebug() << strlist << endl;
+    
+    KURL::List list( strlist );
     bool notEnqueue = !args.contains( "-e" );
 
     //add to the playlist with the correct arguments ( bool clear, bool play )
