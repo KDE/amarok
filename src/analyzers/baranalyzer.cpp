@@ -15,16 +15,18 @@
 
 #include <math.h>     //log10(), etc.
 #include <qpainter.h>
-
+#include <kdebug.h>
 
 BarAnalyzer::BarAnalyzer( QWidget *parent )
     : Analyzer::Base2D( parent, 12, 6 )
     //, m_bands( BAND_COUNT )
-    , barVector( BAND_COUNT, 0 )
-    , roofVector( BAND_COUNT, 50 )
-    , roofVelocityVector( BAND_COUNT, ROOF_VELOCITY_REDUCTION_FACTOR )
+    //, barVector( BAND_COUNT, 0 )
+    //, roofVector( BAND_COUNT, 50 )
+    //, roofVelocityVector( BAND_COUNT, ROOF_VELOCITY_REDUCTION_FACTOR )
 {
     //roof pixmaps don't depend on size() so we do in the ctor
+    bg = parent->paletteBackgroundColor();
+    
     QColor fg( 0xff, 0x50, 0x70 );
     #define bg backgroundColor()
 
@@ -41,6 +43,12 @@ BarAnalyzer::BarAnalyzer( QWidget *parent )
     #undef bg
 }
 
+void BarAnalyzer::resizeEvent( QResizeEvent * e )
+{
+    kdDebug() << "Baranalyzer Resized(" << width() << "x" << height() << ")" << endl;
+    Analyzer::Base2D::resizeEvent( e );
+    this->init();
+}
 
 // METHODS =====================================================
 
@@ -48,7 +56,21 @@ void BarAnalyzer::init()
 {
     const double MAX_AMPLITUDE = 1.0;
     const double F = double(height() - 2) / (log10( 255 ) * MAX_AMPLITUDE );
+    
+    setPaletteBackgroundColor(bg);
+    
+    BAND_COUNT = width() / 5;
+    MAX_DOWN = int(0 -((height() / 50)));
+    MAX_UP = int((height() / 25));
+    
+    kdDebug() << "BAND_COUNT = " << BAND_COUNT << " MAX_UP = " << MAX_UP << "MAX_DOWN = " << MAX_DOWN << endl;
 
+    barVector.resize( BAND_COUNT, 0 );
+    roofVector.resize( BAND_COUNT, height() -5 );
+    roofVelocityVector.resize( BAND_COUNT, ROOF_VELOCITY_REDUCTION_FACTOR );
+    m_roofMem.resize(BAND_COUNT);
+    m_scope.resize(BAND_COUNT);
+    
     //generate a list of values that express amplitudes in range 0-MAX_AMP as ints from 0-height() on log scale
     for ( uint x = 0; x < 256; ++x )
     {
@@ -72,6 +94,7 @@ void BarAnalyzer::init()
         }
     }
 
+    
     setMinimumSize( QSize( BAND_COUNT * COLUMN_WIDTH, 10 ) );
 }
 
@@ -83,7 +106,10 @@ void BarAnalyzer::analyze( const Scope &s )
 
     //Analyzer::interpolate( s, m_bands );
 
-    Scope::const_iterator it( s.begin() );
+    Scope &v = m_scope;
+    Analyzer::interpolate( s, v );
+    
+    Scope::const_iterator it( v.begin() );
     for ( uint i = 0, x = 0, y2; i < BAND_COUNT; ++i, ++it, x+=COLUMN_WIDTH+1 )
     {
         //assign pre[log10]'d value
@@ -98,11 +124,12 @@ void BarAnalyzer::analyze( const Scope &s )
         // 2. shift large upwards with a bias towards last value
         // 3. fall downwards at a constant pace
 
-        if ( change > 2 ) //anything too much greater than 2 gives "jitter"
+        if ( change > MAX_UP ) //anything too much greater than 2 gives "jitter"
            //add some dynamics - makes the value slightly closer to what it was last time
-           y2 = ( barVector[i] * 2 + y2 ) / 3;
-        else if ( change < -1 )
-           y2 = barVector[i] - 1;
+           y2 = ( barVector[i] + MAX_UP );
+           //y2 = ( barVector[i] * 2 + y2 ) / 3;
+        else if ( change < MAX_DOWN )
+           y2 = barVector[i] + MAX_DOWN;
 
 
         if ( (int)y2 > roofVector[i] )

@@ -431,7 +431,7 @@ bool PlayerWidget::event( QEvent *e )
         return TRUE; //we handled it
 
     case 6/*QEvent::KeyPress*/:
-        if (static_cast<QKeyEvent*>(e)->key() == Qt::Key_D && m_pAnalyzer->inherits("QGLWidget"))
+        if (static_cast<QKeyEvent*>(e)->key() == Qt::Key_D/* && (m_pAnalyzer->inherits("QGLWidget")*/)
         {
             if (m_pAnalyzer->parent() != 0)
             {
