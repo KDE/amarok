@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>406</width>
-            <height>282</height>
+            <width>369</width>
+            <height>274</height>
         </rect>
     </property>
     <property name="caption">
@@ -19,17 +19,6 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>informationLabel</cstring>
-            </property>
-            <property name="text">
-                <string>These scripts are currently known to amaroK.</string>
-            </property>
-            <property name="alignment">
-                <set>WordBreak|AlignVCenter</set>
-            </property>
-        </widget>
         <widget class="QLayoutWidget">
             <property name="name">
                 <cstring>layout12</cstring>
@@ -51,7 +40,10 @@
                         </property>
                     </column>
                     <property name="name">
-                        <cstring>directoryListView</cstring>
+                        <cstring>listView</cstring>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>These scripts are currently known to amaroK.</string>
                     </property>
                 </widget>
                 <widget class="QLayoutWidget">
@@ -138,6 +130,28 @@
                     </vbox>
                 </widget>
             </hbox>
+        </widget>
+        <widget class="Line">
+            <property name="name">
+                <cstring>line2</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>checkBox_autoRun</cstring>
+            </property>
+            <property name="text">
+                <string>Auto-run scripts on application startup</string>
+            </property>
         </widget>
     </vbox>
 </widget>

@@ -29,6 +29,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#include <qcheckbox.h>
 #include <qdir.h>
 #include <qfileinfo.h>
 #include <qfont.h>
@@ -64,9 +65,9 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     setCaption( kapp->makeStdCaption( i18n( "Script Manager" ) ) );
 
     setMainWidget( m_base );
-    m_base->directoryListView->setFullWidth( true );
+    m_base->listView->setFullWidth( true );
 
-    connect( m_base->directoryListView, SIGNAL( currentChanged( QListViewItem* ) ), SLOT( slotCurrentChanged( QListViewItem* ) ) );
+    connect( m_base->listView, SIGNAL( currentChanged( QListViewItem* ) ), SLOT( slotCurrentChanged( QListViewItem* ) ) );
 
     connect( m_base->installButton, SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
     connect( m_base->uninstallButton, SIGNAL( clicked() ), SLOT( slotUninstallScript() ) );
@@ -94,6 +95,9 @@ ScriptManager::~ScriptManager()
     for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
         delete it.data().process;
 
+    KConfig* const config = amaroK::config( "ScriptManager" );
+    config->writeEntry( "Auto Run", m_base->checkBox_autoRun->isChecked() );
+
     s_instance = 0;
 }
 
@@ -117,7 +121,17 @@ ScriptManager::findScripts() //SLOT
         if ( QFileInfo( *it ).isExecutable() )
             loadScript( *it );
 
-    slotCurrentChanged( m_base->directoryListView->currentItem() );
+    slotCurrentChanged( m_base->listView->currentItem() );
+
+    // Handle auto-run:
+
+    KConfig* const config = amaroK::config( "ScriptManager" );
+    const bool autoRun = config->readBoolEntry( "Auto Run", false );
+    m_base->checkBox_autoRun->setChecked( autoRun );
+
+    if ( autoRun ) {
+        debug() << "Auto-run not implemented." << endl;
+    }
 }
 
 
@@ -211,7 +225,7 @@ ScriptManager::slotUninstallScript()
 {
     DEBUG_BLOCK
 
-    const QString name = m_base->directoryListView->currentItem()->text( 0 );
+    const QString name = m_base->listView->currentItem()->text( 0 );
 
     if ( KMessageBox::warningYesNo( this, i18n( "Are you sure you want to uninstall the script '%1'?" ).arg( name ) ) == KMessageBox::No )
         return;
@@ -251,7 +265,7 @@ ScriptManager::slotEditScript()
 {
     DEBUG_BLOCK
 
-    const QString name = m_base->directoryListView->currentItem()->text( 0 );
+    const QString name = m_base->listView->currentItem()->text( 0 );
     const QString cmd = "kwrite %1";
 
     KRun::runCommand( cmd.arg( m_scripts[name].url.path() ) );
@@ -263,7 +277,7 @@ ScriptManager::slotRunScript()
 {
     DEBUG_BLOCK
 
-    QListViewItem* li = m_base->directoryListView->currentItem();
+    QListViewItem* li = m_base->listView->currentItem();
     const QString name = li->text( 0 );
 
     KURL url = m_scripts[name].url;
@@ -282,7 +296,7 @@ ScriptManager::slotRunScript()
     debug() << "Running script: " << url.path() << endl;
 
     m_scripts[name].process = script;
-    slotCurrentChanged( m_base->directoryListView->currentItem() );
+    slotCurrentChanged( m_base->listView->currentItem() );
     connect( script, SIGNAL( processExited( KProcess* ) ), SLOT( scriptFinished( KProcess* ) ) );
 }
 
@@ -292,13 +306,13 @@ ScriptManager::slotStopScript()
 {
     DEBUG_BLOCK
 
-    QListViewItem* li = m_base->directoryListView->currentItem();
+    QListViewItem* li = m_base->listView->currentItem();
     const QString name = li->text( 0 );
 
     // Kill script process
     delete m_scripts[name].process;
     m_scripts[name].process = 0;
-    slotCurrentChanged( m_base->directoryListView->currentItem() );
+    slotCurrentChanged( m_base->listView->currentItem() );
 
     li->setPixmap( 0, SmallIcon( "stop" ) );
 }
@@ -309,7 +323,7 @@ ScriptManager::slotConfigureScript()
 {
     DEBUG_BLOCK
 
-    const QString name = m_base->directoryListView->currentItem()->text( 0 );
+    const QString name = m_base->listView->currentItem()->text( 0 );
     if ( !m_scripts[name].process ) return;
 
     const KURL url = m_scripts[name].url;
@@ -327,7 +341,7 @@ ScriptManager::slotAboutScript()
 {
     DEBUG_BLOCK
 
-    const QString name = m_base->directoryListView->currentItem()->text( 0 );
+    const QString name = m_base->listView->currentItem()->text( 0 );
     QFile file( m_scripts[name].url.directory( false ) + "README" );
     debug() << "Path: " << file.name() << endl;
 
@@ -365,7 +379,7 @@ ScriptManager::scriptFinished( KProcess* process ) //SLOT
             delete it.data().process;
             it.data().process = 0;
             it.data().li->setPixmap( 0, SmallIcon( "stop" ) );
-            slotCurrentChanged( m_base->directoryListView->currentItem() );
+            slotCurrentChanged( m_base->listView->currentItem() );
         }
     }
 }
@@ -405,7 +419,7 @@ ScriptManager::loadScript( const QString& path )
         KURL url;
         url.setPath( path );
 
-        KListViewItem* li = new KListViewItem( m_base->directoryListView, url.fileName() );
+        KListViewItem* li = new KListViewItem( m_base->listView, url.fileName() );
         li->setPixmap( 0, SmallIcon( "stop" ) );
 
         ScriptItem item;
@@ -415,7 +429,7 @@ ScriptManager::loadScript( const QString& path )
 
         m_scripts[url.fileName()] = item;
 
-        slotCurrentChanged( m_base->directoryListView->currentItem() );
+        slotCurrentChanged( m_base->listView->currentItem() );
     }
 }
 

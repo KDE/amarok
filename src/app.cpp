@@ -34,6 +34,7 @@ email                : markey@web.de
 #include "playlist.h"
 #include "playlistwindow.h"
 #include "pluginmanager.h"
+#include "scriptmanager.h"
 #include "scrobbler.h"
 #include "statusbar.h"
 #include "systray.h"
@@ -103,6 +104,10 @@ App::App()
 
     //create engine, show PlayerWindow, show TrayIcon etc.
     applySettings( true );
+
+    // Start ScriptManager. Must be created _after_ PlaylistWindow.
+    if ( amaroK::config( "ScriptManager" )->readBoolEntry( "Auto Run" ) )
+        ScriptManager::instance();
 
     //notify loader application that we have started
     std::cout << "STARTUP\n" << std::flush;
