@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>557</width>
-            <height>503</height>
+            <width>408</width>
+            <height>386</height>
         </rect>
     </property>
     <property name="caption">
@@ -60,7 +60,7 @@
                     <cstring>unnamed</cstring>
                 </property>
                 <property name="spacing">
-                    <number>32</number>
+                    <number>12</number>
                 </property>
                 <widget class="QGroupBox">
                     <property name="name">
@@ -468,8 +468,6 @@
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <connections>
     <connection>
         <sender>kcfg_OsdEnabled</sender>
@@ -566,13 +564,4 @@
     <function access="protected">showEvent( QShowEvent * )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>knuminput.h</includehint>
-    <includehint>knuminput.h</includehint>
-    <includehint>knuminput.h</includehint>
-    <includehint>kcombobox.h</includehint>
-    <includehint>knuminput.h</includehint>
-    <includehint>knuminput.h</includehint>
-    <includehint>kcombobox.h</includehint>
-</includehints>
 </UI>
