@@ -12,8 +12,6 @@ SHORT-TERM (URGENT):
                just a weak point in taglib or should we expect this and do something drastic like
                call tag.save() in a separate thread?
     
-    * add: #37 <markey> make browser auto-hide optional  
-
     * fix: #35 <mxcl>restore quick tag loading when users don't have bitrate/length columns
                in playlist -->mxcl
 
@@ -140,8 +138,6 @@ LONG-TERM:
     * add: make windows magnetic / sticking together (difficult)
 
     * add: playlist export (generate text or html document from playlist entries)
-
-    * add: <berkus> add smooth fade outs on stop
 
     * add: make PlayerWidget shadeable (like XMMS) [<mxcl> doesn't the systray provide this functionality
            already?] [<berkus> no it doesn't, double click the winamp/xmms window and see for yourself]

@@ -3,6 +3,7 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  * add: improved crossfading: will fade out smoothly when the stop button is pressed 
   * fix: O(n) behavior for playlist scrolling fixed
   * add: setting to make playlist colours the KDE defaults
   * add: support for tag-editing directly in playlist  
