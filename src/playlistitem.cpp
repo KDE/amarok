@@ -347,10 +347,10 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 
         // Draw the pixmap, if present
 
-        int margin = 1;
+        int leftMargin = 1;
         if ( pixmap( column ) ) {
             paint.drawPixmap( 0, height() / 2 - pixmap( column )->height() / 2, *pixmap( column ) );
-            margin = pixmap( column )->width();
+            leftMargin = pixmap( column )->width();
         }
 
         // Draw the text
@@ -358,7 +358,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         int textHeight = p->fontMetrics().boundingRect( text( 0 ) ).height();
         paint.setPen( glowText );
         const QString _text = KStringHandler::rPixelSqueeze( text( column ), p->fontMetrics(), width - 5 );
-        paint.drawText( margin, height() / 2 - textHeight / 2 - 1, width, height(), align, _text );
+        paint.drawText( leftMargin, height() / 2 - textHeight / 2 - 1, width, height(), align, _text );
 
         paint.end();
         p->drawPixmap( 0, 0, buffer );
