@@ -128,7 +128,7 @@ PlaylistLoader::run()
         amaroK::StatusBar::showProgress( uint(progress) );
 
         // Allow GUI thread some time to breathe
-        msleep( 5 );
+        msleep( 2 );
    }
    // END
 
