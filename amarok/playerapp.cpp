@@ -771,9 +771,9 @@ void PlayerApp::play( const MetaBundle &bundle )
     emit currentTrack( url );
 
     if ( AmarokConfig::titleStreaming() &&
-            !m_proxyError &&
-            !url.isLocalFile() &&
-            !url.path().endsWith( ".ogg" ) )
+         url.protocol() == "http" &&
+         !m_proxyError &&
+         !url.path().endsWith( ".ogg" ) )
     {
         TitleProxy::Proxy *pProxy = new TitleProxy::Proxy( url );
         const QObject* object = m_pEngine->play( pProxy->proxyUrl() );
