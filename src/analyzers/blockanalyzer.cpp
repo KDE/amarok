@@ -48,7 +48,9 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
    //all is explained in analyze()..
    //+1 to counter -1 in maxSizes, trust me we need this!
    m_columns = limit( uint(double(width()+1) / (WIDTH+1)), MAX_COLUMNS, MIN_COLUMNS );
-   m_rows    =  QMAX( uint(double(height()+1) / (HEIGHT+1)), MIN_ROWS );
+
+   uint rows = uint( double(height()+1) / (HEIGHT+1) );
+   m_rows    = QMAX( rows, MIN_ROWS );
 
    kdDebug() << "BLOCK ANALYZER RESIZE: " << m_rows << ", " << m_columns << endl;
 
