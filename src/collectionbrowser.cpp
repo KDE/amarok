@@ -191,10 +191,11 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     //<READ CONFIG>
         KConfig* config = amaroK::config( "Collection Browser" );
         m_category1 = config->readEntry( "Category1", i18n( "Artist" ) );
-        m_category2 = config->readEntry( "Category2", i18n( "None" ) );
+        m_category2 = config->readEntry( "Category2", i18n( "Album" ) );
         m_category3 = config->readEntry( "Category3", i18n( "None" ) );
 
         addColumn( m_category1 );
+        addColumn( m_category2 );
     //</READ CONFIG>
 
     //<OPEN DATABASE>
