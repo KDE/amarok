@@ -144,6 +144,7 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
 
     if ( e->source() == viewport() )
     {
+        setSorting( -1 );
         movableDropEvent( parent, after );
     }
     else

@@ -6,11 +6,6 @@ SHORT-TERM:
 
     * fix: <mxcl> reimplement ask recursively on drop operations to playlist
 
-    * fix: <mxcl> you can't move playlist entries around with sorting on (you need to disable it
-           on drag drop or something) <markey> arrgs.. just noticed that you changed sorting logic
-           on PlaylistWidget rev. 1.36. why? The exact reason for my code was to change sorting from
-           mode into a command (==not active all the time), so d'n'd works..
-
     * fix: <mxcl> GroupBoxes can't have check boxes with Qt 3.1, so before next release do
            some #ifdefs to surround that code and hope nobody gets too pissed about it
 
