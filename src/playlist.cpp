@@ -1241,14 +1241,15 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     if( item == NULL ) return; //technically we should show "Remove" but this is far neater
 
-    const bool canRename  = isRenameable( col );
-    const bool isCurrent  = (item == m_currentTrack);
-    const bool isPlaying  = EngineController::engine()->state() == Engine::Playing;
-    const int  queueIndex = m_nextTracks.findRef( item );
-    const bool isQueued   = queueIndex != -1;
-    const uint itemCount  = selectedItems().count();
-    const QString tag     = columnText( col );
-    const QListViewItem *below = item->itemBelow();
+    const bool canRename   = isRenameable( col );
+    const bool isCurrent   = (item == m_currentTrack);
+    const bool isPlaying   = EngineController::engine()->state() == Engine::Playing;
+    const int  queueIndex  = m_nextTracks.findRef( item );
+    const bool isQueued    = queueIndex != -1;
+    const uint itemCount   = selectedItems().count();
+    const bool trackColumn = col == PlaylistItem::Track;
+    const QString tagName  = columnText( col );
+    const QString tag      = item->exactText( col );
     //Markey, sorry for the lengths of these lines! -mxcl
 
     KPopupMenu popup( this );
@@ -1261,25 +1262,26 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         QString nextText = i18n( "Play as &Next" );
 
         const uint nextIndex = m_nextTracks.count() + 1;
-        if( nextIndex > 1 ) nextText += QString( " (%1)" ).arg( nextIndex );
+        if ( nextIndex > 1 )
+            nextText += QString( " (%1)" ).arg( nextIndex );
 
         popup.insertItem( SmallIcon( "2rightarrow" ), nextText, PLAY_NEXT );
     }
     else popup.insertItem( SmallIcon( "2leftarrow" ), i18n( "&Dequeue (%1)" ).arg( queueIndex+1 ), PLAY_NEXT );
 
     popup.insertSeparator();
-    popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit Tag: '%1'" ).arg( tag ), 0, 0, Key_F2, EDIT );
-    popup.insertItem( i18n( "Spreadsheet-like", "&Fill-down Tag: '%1'" ).arg( tag ), FILL_DOWN );
+    popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit Tag Inline: '%1'" ).arg( tagName ), 0, 0, Key_F2, EDIT );
+    popup.insertItem( trackColumn ? i18n("&Iteratively Assign Track Numbers") : i18n("Write '%1' For Selected Tracks").arg( tag ), FILL_DOWN );
     popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy Meta-string" ), 0, 0, CTRL+Key_C, COPY );
     popup.insertSeparator();
-    popup.insertItem( SmallIcon( "edittrash" ), i18n( "&Remove From Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete );
-    popup.insertItem( SmallIcon( "editdelete" ), i18n("&Delete File", "&Delete Selected Files", itemCount ), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete );
+    popup.insertItem( SmallIcon( "edittrash" ), i18n( "&Remove From Playlist" ), this, SLOT(removeSelectedItems()), Key_Delete );
+    popup.insertItem( SmallIcon( "editdelete" ), i18n("&Delete File", "&Delete Selected Files", itemCount ), this, SLOT(deleteSelectedFiles()), SHIFT+Key_Delete );
     popup.insertSeparator();
-    popup.insertItem( SmallIcon( "info" ), i18n( "&View Meta Information..." ), VIEW ); //TODO rename properties
+    popup.insertItem( SmallIcon( "info" ), i18n( "&View/Edit Meta Information..." ), VIEW ); //TODO rename properties
 
 
     popup.setItemEnabled( EDIT, canRename ); //only enable for columns that have editable tags
-    popup.setItemEnabled( FILL_DOWN, canRename && below && below->isSelected() );
+    popup.setItemEnabled( FILL_DOWN, canRename && itemCount );
 
 
     switch( popup.exec( p ) )
@@ -1318,29 +1320,29 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         //Spreadsheet like fill-down
         {
             QString newTag = item->exactText( col );
-            MyIterator it( item, MyIterator::Visible | MyIterator::Selected );
+            MyIterator it( this, MyIterator::Visible | MyIterator::Selected );
 
-            // special handling for track column
-            uint trackNo = newTag.toInt(); //returns 0 if it is not a number
+            //special handling for track column
+            uint trackNo = (*it)->exactText( PlaylistItem::Track ).toInt(); //returns 0 if it is not a number
 
-            //if it is the track column and there is no track, then we write to the first item too
-            if( !( col == PlaylistItem::Track && newTag.isEmpty() ) ) ++it;
+            //we should start at the next row if we are doing track number
+            //and the first row has a number set
+            if ( trackColumn && trackNo > 0 )
+                ++it;
 
-            //NOTE since this has been changed to use the iterator,
-            //     it now will change all selected item tags, which may be undesirable
-            //     ie not just the ones in the selected block this context menu highlights
-
-            while( *it )
+            for( ; *it; ++it )
             {
-                // special handling for track column
-                if ( col == PlaylistItem::Track )
+                if ( trackColumn )
+                    //special handling for track column
                     newTag = QString::number( ++trackNo );
+
+                else if ( *it == item )
+                    //skip the one we are copying
+                    continue;
 
                 //FIXME fix this hack!
                 if ( static_cast<PlaylistItem*>(*it)->exactText( col ) != i18n("Writing tag...") )
                     m_weaver->append( new TagWriter( this, (PlaylistItem*)*it, newTag, col ), true );
-
-                ++it;
             }
         }
         break;
