@@ -1151,9 +1151,9 @@ CollectionView::captionForCategory( const int cat ) const
 void
 CollectionView::showFlatViewMessage()
 {
-    m_flatViewMessage = new QLabel( i18n( "Enter filter terms to activate." ), viewport() );
-    m_flatViewMessage->setAlignment( Qt::AlignCenter );
-    m_flatViewMessage->setLineWidth( 2 );
+    m_flatViewMessage = new QLabel( i18n( "To activate the Flat-View, enter search terms in the filter widget above." ), viewport() );
+    m_flatViewMessage->setAlignment( Qt::AlignCenter | Qt::WordBreak );
+    m_flatViewMessage->setLineWidth( 1 );
     m_flatViewMessage->setMinimumHeight( 40 );
     m_flatViewMessage->setFrameStyle( QFrame::Box | QFrame::Plain );
     m_flatViewMessage->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
