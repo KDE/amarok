@@ -42,10 +42,13 @@ AMAROK_EXPORT_PLUGIN( GstEngine )
 
 
 static const uint
-SCOPEBUF_SIZE = 260000; // 260kb
+SCOPEBUF_SIZE = 1000000; // 1000kb
 
 static const int
-STREAMBUF_SIZE = 1000000; // 1MB
+SCOPE_VALUES = 512;
+
+static const int
+STREAMBUF_SIZE = 100000; // 1MB
 
 static const uint
 STREAMBUF_MIN = 50000; // 50kb
@@ -93,7 +96,7 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer ) //static
     // Check for buffer overflow
     uint available = gst_adapter_available( instance()->m_gst_adapter );
     if ( available > SCOPEBUF_SIZE )
-        gst_adapter_flush( instance()->m_gst_adapter, available - 10000 );
+        gst_adapter_flush( instance()->m_gst_adapter, available - 30000 );
 
     gst_buffer_ref( buf );
 
@@ -377,31 +380,73 @@ GstEngine::state() const
 const Engine::Scope&
 GstEngine::scope()
 {
+    if ( !gst_adapter_available( m_gst_adapter ) ) return m_scope;
+
     m_mutexScope.lock();
 
-    int channels = 2;
-    uint bytes = 512 * channels * sizeof( gint16 );
+    const int channels = 2;
+    guint64 firstStamp, lastStamp;
+    GstBuffer* buf;
+    GSList* list = m_gst_adapter->buflist;
 
-    gint16* data = (gint16*) gst_adapter_peek( m_gst_adapter, bytes );
+    // Get timestamp from first buffer
+    buf = (GstBuffer*) g_slist_nth_data( list, 0 );
+    firstStamp = GST_BUFFER_TIMESTAMP( buf );
 
-    if ( data )
-    {
-        for ( ulong i = 0; i < 512; i++, data += channels ) {
-            long temp = 0;
+    // Get timestamp from last buffer
+    GSList* last = g_slist_last( list );
+    buf = (GstBuffer*) last->data;
+    lastStamp = GST_BUFFER_TIMESTAMP( buf );
 
-            for ( int chan = 0; chan < channels; chan++ ) {
-                // Add all channels together so we effectively get a mono scope
-                temp += data[chan];
-            }
-            m_scope[i] = temp / channels;
+    // Get current clock time from sink
+    GstFormat fmt = GST_FORMAT_TIME;
+    gint64 sinkStamp = 0; // Must be initalised to 0
+    gst_element_query( m_gst_audiosink, GST_QUERY_POSITION, &fmt, &sinkStamp );
+    double factor = (double) ( lastStamp - sinkStamp ) / ( lastStamp - firstStamp );
+
+    guint available = gst_adapter_available( m_gst_adapter );
+    gint16* data = (gint16*) gst_adapter_peek( m_gst_adapter, available );
+
+    int offset = available - static_cast<int>( factor * (double) available );
+    offset /= channels;
+    offset *= channels;
+    offset = MIN( offset, available - SCOPE_VALUES * channels );
+
+    for ( ulong i = 0; i < SCOPE_VALUES; i++, data += channels ) {
+        long temp = 0;
+
+        for ( int chan = 0; chan < channels; chan++ ) {
+            // Add all channels together so we effectively get a mono scope
+            temp += data[offset / sizeof( gint16 ) + chan];
         }
-
-        gst_adapter_flush( m_gst_adapter, bytes );
+        m_scope[i] = temp / channels;
     }
+
+//     kdDebug() << "[Gst-Engine] Timestamp first: " << firstStamp << endl;
+//     kdDebug() << "[Gst-Engine] Timestamp last:  " << lastStamp << endl;
+//     kdDebug() << "[Gst-Engine] Timestamp sink:  " << sinkStamp << endl;
+//     kdDebug() << "[Gst-Engine] factor: " << factor << endl;
+//     kdDebug() << "[Gst-Engine] offset: " << offset << endl;
+//     kdDebug() << endl;
 
     m_mutexScope.unlock();
     return m_scope;
 }
+
+
+
+//     if ( data )
+//     {
+//         for ( ulong i = 0; i < 512; i++, data += channels ) {
+//             long temp = 0;
+//
+//             for ( int chan = 0; chan < channels; chan++ ) {
+//                 // Add all channels together so we effectively get a mono scope
+//                 temp += data[chan];
+//             }
+//             m_scope[i] = temp / channels;
+//         }
+//     }
 
 
 amaroK::PluginConfig*
