@@ -31,7 +31,7 @@
 #include <kstandarddirs.h>   //KGlobal::dirs()
 #include <kurl.h>
 
-
+#include <unistd.h>
 
 CoverManager::CoverManager( QWidget *parent, const char *name )
     : QWidget( parent, name, WDestructiveClose )
@@ -163,7 +163,11 @@ void CoverManager::fetchMissingCovers()
     for( QIconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
         if( !coverItem->hasCover() )
+        {
             m_db->fetchCover( this, coverItem->artist() + " - " + coverItem->album(), true );
+        }
+    /* sad, but true... sleeping for 1 second after each request raises the amount of found covers... */
+    sleep( 1 );
     }
 }
 
