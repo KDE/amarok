@@ -106,17 +106,17 @@ void PlaylistItem::readMetaInfo()
         m_hasMetaInfo = true;
 
         TagLib::String str( QStringToTString( m_url.path() ) );
-        TagLib::FileRef f( str );
+        TagLib::FileRef f( str.toCString() );
 
         if ( !f.isNull() && f.tag() )
         {
             TagLib::Tag * tag = f.tag();
 
-            m_tagTitle = TStringToQString( tag->title() );
-            m_tagArtist = TStringToQString( tag->artist() );
-            m_tagAlbum = TStringToQString( tag->album() );
+            m_tagTitle = TStringToQString( tag->title().stripWhiteSpace() );
+            m_tagArtist = TStringToQString( tag->artist().stripWhiteSpace() );
+            m_tagAlbum = TStringToQString( tag->album().stripWhiteSpace() );
             m_tagYear = QString::number( tag->year() );
-            m_tagComment = TStringToQString( tag->comment() );
+            m_tagComment = TStringToQString( tag->comment().stripWhiteSpace() );
             m_tagGenre = TStringToQString( tag->genre() );
             m_tagDirectory = QString( url().directory().section( '/', -1 ) );
         }
