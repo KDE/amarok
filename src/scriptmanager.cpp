@@ -42,7 +42,7 @@
 #include <klistview.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <kprocess.h>
+#include <kprocio.h>
 #include <kpushbutton.h>
 #include <krun.h>
 #include <kstandarddirs.h>
@@ -306,11 +306,13 @@ ScriptManager::slotRunScript()
     const QString name = li->text( 0 );
 
     KURL url = m_scripts[name].url;
-    KProcess* script = new KProcess( this );
+    KProcIO* script = new KProcIO();
+    script->setComm( KProcess::Stdin );
+
     *script << url.path();
     script->setWorkingDirectory( amaroK::saveLocation( "scripts-data/" ) );
 
-    if ( !script->start( KProcess::NotifyOnExit, KProcess::Stdin ) ) {
+    if ( !script->start( KProcess::NotifyOnExit ) ) {
         KMessageBox::sorry( 0, i18n( "<p>Could not start the script <i>%1</i>.</p>"
                                      "<p>Please make sure that the file has execute (+x) permissions.</p>" ).arg( name ) );
         delete script;
@@ -354,8 +356,7 @@ ScriptManager::slotConfigureScript()
     const KURL url = m_scripts[name].url;
     QDir::setCurrent( url.directory() );
 
-    QString command( "configure\n" );
-    m_scripts[name].process->writeStdin( command.latin1(), command.length() );
+    m_scripts[name].process->writeStdin( "configure" );
 
     debug() << "Starting script configuration." << endl;
 }
@@ -419,18 +420,12 @@ ScriptManager::notifyScripts( const QString& message )
 {
     DEBUG_BLOCK
 
-    // Append EOL
-    QString msg = message;
-    msg.append( "\n" );
-
-    debug() << "Sending notification: " << msg;
+    debug() << "Sending notification: " << message << endl;
 
     ScriptMap::Iterator it;
     for ( it = m_scripts.begin(); it != m_scripts.end(); ++it ) {
-        KProcess* proc = it.data().process;
-        if ( proc )
-            while ( !proc->writeStdin( msg.latin1(), msg.length() ) )
-                kapp->processEvents( 100 );
+        KProcIO* proc = it.data().process;
+        if ( proc ) proc->writeStdin( message );
     }
 }
 

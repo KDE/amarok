@@ -33,6 +33,7 @@ class ScriptManagerBase;
 class QListViewItem;
 class KArchiveDirectory;
 class KProcess;
+class KProcIO;
 
 
 /**
@@ -94,7 +95,7 @@ class ScriptManager : public KDialogBase, public EngineObserver
 
         struct ScriptItem {
             KURL           url;
-            KProcess*      process;
+            KProcIO*       process;
             QListViewItem* li;
         };
 
