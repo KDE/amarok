@@ -3,6 +3,7 @@
 // See COPYING file for licensing information.
 
 #include "app.h"            //makePlaylist()
+#include "amazonsetup.h"
 #include "collectionbrowser.h"
 #include "coverfetcher.h"
 #include "directorylist.h"
@@ -71,8 +72,9 @@ CollectionBrowser::CollectionBrowser( const char* name )
     //m_view->setMargin( 2 );
 
     m_actionsMenu->insertItem( i18n( "Configure Folders" ), m_view, SLOT( setupDirs() ) );
+    m_actionsMenu->insertItem( i18n( "Configure Cover Download" ), m_view, SLOT( setupCoverFetcher() ) );
+    m_actionsMenu->insertSeparator();
     m_actionsMenu->insertItem( i18n( "Start Scan" ), m_view, SLOT( scan() ), 0, IdScan );
-    m_actionsMenu->insertItem( i18n( "Configure Cover Fetcher" ), m_view, SLOT( setupCoverFetcher() ) );
 
     m_cat1Menu ->insertItem( i18n( "Album" ), m_view, SLOT( cat1Menu( int ) ), 0, IdAlbum );
     m_cat1Menu ->insertItem( i18n( "Artist"), m_view, SLOT( cat1Menu( int ) ), 0, IdArtist );
@@ -248,11 +250,14 @@ CollectionView::setupDirs()  //SLOT
 void
 CollectionView::setupCoverFetcher()  //SLOT
 {
-    m_amazonLicense = KInputDialog::getText( "Enter Amazon Webservice Key",
-                                             "License Key:",
-                                             m_amazonLicense );
+    AmazonDialog* dia = new AmazonDialog();
+    dia->kLineEdit1->setText( m_amazonLicense );
+    int result = dia->exec();
     
-    m_coverFetcher->setLicense( m_amazonLicense );
+    if ( result == QDialog::Accepted ) {
+        m_amazonLicense = dia->kLineEdit1->text();
+        m_coverFetcher->setLicense( m_amazonLicense );
+    }
 }
 
 
@@ -464,22 +469,24 @@ CollectionView::fetchCover() //SLOT
 {
     Item* item = static_cast<Item*>( currentItem() );
     if ( !item ) return;
+    if ( m_category2 != i18n( "None" ) && item->depth() != 2 ) return;
+    //make sure we've got a license key
+    if ( m_amazonLicense.isEmpty() )
+        setupCoverFetcher();        
+        
+    QString command = QString
+                        ( "SELECT DISTINCT artist.name, album.name FROM tags, artist, album, genre, year "
+                        "WHERE artist.id = tags.artist AND album.id = tags.album AND genre.id = tags.genre AND year.id = tags.year AND tags.url = '%1';" )
+                        .arg( m_db->escapeString( item->url().path() ) );
 
-    if ( m_category2 == i18n( "None" ) || item->depth() == 2 ) {
-        QString command = QString
-                          ( "SELECT DISTINCT artist.name, album.name FROM tags, artist, album, genre, year "
-                            "WHERE artist.id = tags.artist AND album.id = tags.album AND genre.id = tags.genre AND year.id = tags.year AND tags.url = '%1';" )
-                            .arg( m_db->escapeString( item->url().path() ) );
+    QStringList values;
+    QStringList names;
+    m_db->execSql( command, &values, &names );
+    if ( values.isEmpty() ) return;
 
-        QStringList values;
-        QStringList names;
-        m_db->execSql( command, &values, &names );
-        if ( values.isEmpty() ) return;
-    
-        QString key = values[0] + " - " + values[1];
-        kdDebug() << "keyword: " << key << endl;
-        m_coverFetcher->getCover( key );
-    }
+    QString key = values[0] + " - " + values[1];
+    kdDebug() << "keyword: " << key << endl;
+    m_coverFetcher->getCover( key );
 }
 
 
