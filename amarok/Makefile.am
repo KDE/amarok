@@ -3,6 +3,7 @@ SUBDIRS = amarokcore amarokarts analyzers titleproxy engine images data loader
 INCLUDES = \
         -I$(kde_includes)/arts \
         -I$(top_builddir)/amarok/amarok/amarokarts \
+        -I$(top_builddir)/amarok/amarok/amarokcore \
         -I$(top_srcdir)/amarok/amarok/amarokcore \
         -I$(top_srcdir)/amarok/amarok/analyzers \
         -I$(top_srcdir)/amarok/amarok/engine \
