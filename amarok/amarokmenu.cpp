@@ -40,8 +40,6 @@ Menu::Menu( QWidget *parent )
 
     setCheckable( true );
 
-    insertTitle( kapp->miniIcon(), "--==A M A R O K==--" );
-    
     safePlug( ac, "repeat_track", this );
     safePlug( ac, "repeat_playlist", this );
     safePlug( ac, "random_mode", this );
