@@ -47,6 +47,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Andreas Mair", I18N_NOOP( "MySQL support" ), "am_ml@linogate.com" );
     aboutData.addCredit( "Dan Leinir Turthra Jensen", I18N_NOOP( "first-run wizard, usability" ), "admin@REMOVEleinir.dk" );
     aboutData.addCredit( "Enrico Ros", I18N_NOOP( "analyzers, king of openGL" ), "eros.kde@email.it" );
+    aboutData.addCredit( "Florian 'da-flow' Egerer", I18N_NOOP( "amaroK application icon 'Blue Wolf'" ), "flo_for_never@gmx.at" );
     aboutData.addCredit( "Jarkko Lehti", I18N_NOOP( "tester, IRC channel operator, whipping" ), "grue@iki.fi" );
     aboutData.addCredit( "Josef Spillner", I18N_NOOP( "KDE RadioStation code" ), "spillner@kde.org" );
     aboutData.addCredit( "Kenneth Wesley Wimer II", I18N_NOOP( "icons" ), "kwwii@bootsplash.org" );
