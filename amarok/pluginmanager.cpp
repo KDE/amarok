@@ -86,7 +86,6 @@ PluginManager::createFromService( const KService::Ptr service )
     //put plugin into store
     StoreItem item;
     item.plugin = plugin;
-    item.deleteHook = lib->symbol( "delete_plugin" );
     item.library = lib;
     item.service = service;
     m_store.push_back( item );
@@ -104,9 +103,7 @@ PluginManager::unload( Plugin* plugin )
     vector<StoreItem>::iterator iter = lookupPlugin( plugin ); 
             
     if ( iter != m_store.end() ) {
-        void (*delete_plugin)() = ( void (*)() ) (*iter).deleteHook;
-        delete_plugin();
-        
+        delete (*iter).plugin;
         kdDebug() << "Unloading library: "<< (*iter).service->library() << endl;
         (*iter).library->unload();
         

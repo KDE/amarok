@@ -15,5 +15,12 @@ amaroK::Plugin::Plugin()
 }
 
 
+amaroK::Plugin::~Plugin() 
+{
+    kdDebug() << k_funcinfo << endl;
+}
+
+
+
 
 

@@ -2,6 +2,9 @@ amaroK ChangeLog
 ================
 (c) 2002-2004 the amaroK authors.
 
+
+  FIX: Defect in plugin framework code, leading to a crash on some systems
+       during engine plugin initialization.
   ADD: Searching the Collection with a filter
   FIX: BrowserWin's QLabels are painted white in amaroK's own color scheme
 

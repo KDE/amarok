@@ -93,7 +93,6 @@ class PluginManager
     private:
         struct StoreItem {
             Plugin* plugin;
-            void* deleteHook;
             KLibrary* library;
             KService::Ptr service;
         };

@@ -300,21 +300,19 @@ void PlayerApp::initEngine()
 
     if ( !plugin ) {
         kdWarning() << k_funcinfo << "Cannot load the specified engine. Trying with another engine..\n";
-
+        
         //when the engine specified in our config does not exist/work, try to invoke _any_ engine plugin
-        plugin = PluginManager::createFromQuery
-                     ( "[X-KDE-amaroK-plugintype] == 'engine'" );
+        plugin = PluginManager::createFromQuery( "[X-KDE-amaroK-plugintype] == 'engine'" );
 
         if ( !plugin )
-            //this will call abort(), but this causes amarok to crash anyway!
             kdFatal() << k_funcinfo << "No engine plugin found. Aborting.\n";
+        
         AmarokConfig::setSoundSystem( PluginManager::getService( plugin )->name() );
         kdDebug() << k_funcinfo << "setting soundSystem to: " << AmarokConfig::soundSystem() << endl;
     }
 
     // feed engine to controller
     EngineController::setEngine( static_cast<EngineBase*>( plugin ) );
-    assert( EngineController::engine() );
     EngineController::engine()->init( m_artsNeedsRestart, SCOPE_SIZE, AmarokConfig::rememberEffects() );
 
     kdDebug() << "END " << k_funcinfo << endl;
