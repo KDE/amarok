@@ -19,6 +19,7 @@
 
 // $Id$
 
+#include "amarok.h"
 #include "kbookmarkhandler.h"
 #include <kbookmarkimporter.h>
 #include <kbookmarkmenu.h>
@@ -29,10 +30,9 @@ KBookmarkHandler::KBookmarkHandler( KDirOperator *parent, KPopupMenu* rootmenu )
         : QObject( parent, "KBookmarkHandler" )
         , KBookmarkOwner()
 {
-    //FIXME amaroK 2.0, use our own directory!
-    const QString file = locate( "data", "kdevfileselector/fsbookmarks.xml" );
+    const QString file = amaroK::saveLocation() + "fileBrowserBookmarks.xml";
 
-    KBookmarkManager *manager = KBookmarkManager::managerForFile( file, false);
+    KBookmarkManager *manager = KBookmarkManager::managerForFile( file, false );
     manager->setUpdate( true );
     manager->setShowNSBookmarks( false );
 
