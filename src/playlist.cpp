@@ -14,25 +14,26 @@
 
 
 #include "amarokconfig.h"
+#include "collectiondb.h"    //startEditTag()
 #include "enginecontroller.h"
 #include "metabundle.h"
+#include "osd.h"
+#include "playlist.h"
 #include "playlistitem.h"
 #include "playlistloader.h"
-#include "playlist.h"
-#include "osd.h"
+#include "tagdialog.h"
 #include "threadweaver.h"
-#include "collectiondb.h"    //startEditTag()
 
-#include <kapplication.h>
 #include <kaction.h>
+#include <kapplication.h>
 #include <kcursor.h>         //setOverrideCursor()
 #include <kdebug.h>
 #include <kiconloader.h>     //slotShowContextMenu()
 #include <kio/job.h>         //deleteSelectedFiles()
 #include <klineedit.h>       //setCurrentTrack()
 #include <klocale.h>
-#include <kpopupmenu.h>
 #include <kmessagebox.h>
+#include <kpopupmenu.h>
 #include <krandomsequence.h> //random Mode
 #include <kstandarddirs.h>   //KGlobal::dirs()
 #include <kstdaction.h>
@@ -1270,23 +1271,8 @@ void Playlist::showTrackInfo( const KURL& url ) //STATIC
 
 void Playlist::showTrackInfo( const MetaBundle& mb ) //STATIC
 {
-    const QString body = "<tr><td>%1</td><td>%2</td></tr>";
-
-    QString
-    str  = "<html><body><table width=\"100%\" border=\"1\">";
-    str += body.arg( i18n( "Title" ),      mb.title() );
-    str += body.arg( i18n( "Artist" ),     mb.artist() );
-    str += body.arg( i18n( "Album" ),      mb.album() );
-    str += body.arg( i18n( "Genre" ),      mb.genre() );
-    str += body.arg( i18n( "Year" ),       mb.year() );
-    str += body.arg( i18n( "Comment" ),    mb.comment() );
-    str += body.arg( i18n( "Length" ),     mb.prettyLength() );
-    str += body.arg( i18n( "Bitrate" ),    mb.prettyBitrate() );
-    str += body.arg( i18n( "Samplerate" ), mb.prettySampleRate() );
-    str += body.arg( i18n( "Location" ),   mb.url().isLocalFile() ? mb.url().path() : mb.url().url() );
-    str += "</table></body></html>";
-
-    KMessageBox::information( instance(), str, i18n( "Meta Information" ) );
+    TagDialog* dialog = new TagDialog( mb, instance() );
+    dialog->show();
 }
 
 

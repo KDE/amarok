@@ -4,7 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.1:
-  ADD: Inline-tag editing auto-completion based on the Collection Database
+  ADD: New meta-info dialog, with editable tags and MusicBrainz support.
+  ADD: Inline-tag editing auto-completion based on the Collection Database.
   ADD: Deleting files physically from playlist context menu. (BR 75208)
   ADD: Fadeouts for GStreamer-Engine.
   ADD: New Playlist Browser, organizes multiple playlists, and offers smart
@@ -13,7 +14,7 @@ VERSION 1.1:
   ADD: KIO support for GStreamer engine. Allows playing media via all
        protocols supported by KIO (ftp, audiocd, fish, etc). 
   ADD: SearchBrowser operation can now be aborted.
-  ADD: XineEngine plugin, audio only
+  ADD: XineEngine plugin, audio only.
   ADD: Progressbar in CollectionBrowser informs about scan progress, and a
        button was added for aborting the scan. (BR 83019)
   ADD: Playlist sliders (volume and position) now move directly when clicked

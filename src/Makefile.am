@@ -8,6 +8,10 @@ if with_included_sqlite
     sqlite_includes = -I$(top_srcdir)/amarok/src/sqlite
 endif
 
+if with_musicbrainz
+    LIB_MUSICBRAINZ = -lmusicbrainz
+endif
+
 bin_PROGRAMS = amarokapp
 
 SUBDIRS = \
@@ -61,6 +65,7 @@ amarokapp_SOURCES = \
     filebrowser.cpp \
     kbookmarkhandler.cpp \
     metabundle.cpp \
+    musicbrainzquery.cpp \
     osd.cpp \
     playerwindow.cpp \
     playlist.cpp \
@@ -78,6 +83,8 @@ amarokapp_SOURCES = \
     statusbar.cpp \
     streambrowser.cpp \
     systray.cpp \
+    tagdialog.cpp \
+    tagdialogbase.ui \
     threadweaver.cpp \
     tracktooltip.cpp \
     welcomebrowser.cpp
@@ -89,7 +96,7 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     $(top_builddir)/amarok/src/titleproxy/libtitleproxy.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) $(LIB_KJSEMBED) \
-    $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL)
+    $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(LIB_MUSICBRAINZ)
 
 amarokapp_LDFLAGS = \
     $(all_libraries) \
