@@ -73,7 +73,7 @@ App::App()
     m_pDcopHandler    = new amaroK::DcopHandler();
     m_pTray           = new amaroK::TrayIcon( m_pPlaylistWindow );
     (void)              new Vis::SocketServer( this );
-    
+
     #ifdef HAVE_KJSEMBED
     //FIXME deactivated due to leaking memory
 //     (void)              new ScriptManager::Manager( this );
@@ -91,19 +91,19 @@ App::App()
     //create engine, show PlayerWindow, show TrayIcon etc.
     applySettings( true );
 
+    // Create KConfigDialog
+    KConfigDialog* dialog = new AmarokConfigDialog( m_pPlaylistWindow, "settings", AmarokConfig::self() );
+    connect( dialog, SIGNAL(settingsChanged()), SLOT(applySettings()) );
+
+    //initializes Unix domain socket for loader communication, and hides the splash
+    //do here so splash is hidden just after amaroK's windows appear
+    (void) new LoaderServer( this );
+
     // Invoke first-run wizard if needed
     if ( config()->readBoolEntry( "First Run", true ) ) {
         firstrunWizard();
         config()->writeEntry( "First Run", false );
     }
-            
-    // Create KConfigDialog
-    KConfigDialog* dialog = new AmarokConfigDialog( m_pPlaylistWindow, "settings", AmarokConfig::self() );
-    connect( dialog, SIGNAL(settingsChanged()), SLOT(applySettings()) );
-    
-    //initializes Unix domain socket for loader communication, and hides the splash
-    //do here so splash is hidden just after amaroK's windows appear
-    (void) new LoaderServer( this );
 
     //after this point only analyzer and temporary pixmaps will be created
     QPixmap::setDefaultOptimization( QPixmap::BestOptim );
@@ -132,7 +132,7 @@ App::~App()
 
     // Hiding the OSD before exit prevents crash
     amaroK::OSD::instance()->hide();
-    
+
     EngineBase* const engine = EngineController::engine();
 
     if( AmarokConfig::resumePlayback() )
@@ -651,7 +651,7 @@ void App::slotConfigEffects( bool show )
     {
         if ( !EngineController::engine()->hasEffects() )
             KMessageBox::sorry( 0, i18n( "Effects are not available with this engine." ) );
-        
+
         else if( !EffectWidget::self )
         {
             //safe even if m_pPlayerWindow is 0
@@ -701,16 +701,16 @@ void App::firstrunWizard() //SLOT
 {
     amaroK::StatusBar::instance()->message( i18n( "Invoking first-run wizard.." ), 3000 );
     processEvents();
-    
+
     // Load wizard ui file dynamically and generate widget
-    QWizard* wizard = (QWizard*) QWidgetFactory::create( locate( "data","amarok/data/firstrun_wizard.ui" ) ); 
-    
+    QWizard* wizard = (QWizard*) QWidgetFactory::create( locate( "data","amarok/data/firstrun_wizard.ui" ) );
+
     // Connection for invoking amaroK handbook
     KActiveLabel* label = (KActiveLabel*) wizard->child( "lblText4" );
     // By default KActiveLabel opens konq when clicking link. Let's prevent this
     label->disconnect( SIGNAL( linkClicked( const QString& ) ), label, SLOT( openLink( const QString& ) ) );
-    connect( label, SIGNAL( linkClicked( const QString& ) ), SLOT( invokeHandbook() ) ); 
-           
+    connect( label, SIGNAL( linkClicked( const QString& ) ), SLOT( invokeHandbook() ) );
+
     wizard->exec();
     delete wizard;
 }
