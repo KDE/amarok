@@ -1,11 +1,11 @@
 kde_kcfg_DATA = \
-    gst-config.kcfg
+    gstconfig.kcfg
 
 noinst_LTLIBRARIES = \
     libgstconfig.la
 
 libgstconfig_la_SOURCES = \
-    gst-config.kcfgc
+    gstconfig.kcfgc
     
 INCLUDES = \
     $(all_includes)

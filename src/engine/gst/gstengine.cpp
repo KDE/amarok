@@ -15,7 +15,7 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
-#include "config/gst-config.h"
+#include "config/gstconfig.h"
 #include "enginebase.h"
 #include "gstengine.h"
 #include "gstuade.h"
