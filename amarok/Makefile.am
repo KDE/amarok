@@ -5,7 +5,7 @@ METASOURCES = AUTO
 
 EXTRA_DIST = browserwidget.h browserwin.h \
 	effectwidget.h expandbutton.h \
-	Options1.ui playerapp.h \
+	Options1.ui Options2.ui playerapp.h \
 	playerwidget.h playlistitem.h \
 	playlistwidget.h viswidget.h
 
@@ -13,7 +13,7 @@ bin_PROGRAMS = amarok
 
 amarok_SOURCES = main.cpp viswidget.cpp playlistwidget.cpp \
 	playlistitem.cpp playerwidget.cpp playerapp.cpp \
-	Options1.ui expandbutton.cpp effectwidget.cpp \
+	Options1.ui Options2.ui expandbutton.cpp effectwidget.cpp \
 	browserwin.cpp browserwidget.cpp
 amarok_LDADD = ./amarokarts/libamarokarts.la -lqtmcop -lkmedia2_idl \
 	-lartsflow -lsoundserver_idl -lartskde -lartsgui -lartsgui_kde \
@@ -21,7 +21,7 @@ amarok_LDADD = ./amarokarts/libamarokarts.la -lqtmcop -lkmedia2_idl \
 # $(LIBSOCKET)
 amarok_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
-noinst_HEADERS = Options1.h browserwidget.h browserwin.h \
+noinst_HEADERS = Options1.h Options2.h browserwidget.h browserwin.h \
 	effectwidget.h expandbutton.h playerapp.h \
 	playerwidget.h playlistitem.h playlistwidget.h\
 	viswidget.h

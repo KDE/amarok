@@ -72,6 +72,10 @@ class PlayerApp : public KUniqueApplication
         QColor m_bgColor;
         QColor m_fgColor;
 
+        QFont m_browserWindowFont;
+        QFont m_playerWidgetFont;
+        QFont m_playerWidgetScrollFont;
+
         // <option attributes>
         bool m_optSavePlaylist;
         bool m_optConfirmClear;
@@ -138,11 +142,15 @@ class PlayerApp : public KUniqueApplication
 
     private slots:
         void saveSessionState();
+        void slotChooseBrowserWindowFont();
+        void slotChoosePlayerWidgetFont();
+        void slotChoosePlayerWidgetScrollFont();
 
     signals:
         void sigScope( std::vector<float> *s );
         void sigPlay();
         void sigShowTrayIcon( bool );
+        void sigUpdateFonts();
 
     private:
         void initArts();

@@ -24,6 +24,7 @@ email                :
 #include "viswidget.h"
 #include "expandbutton.h"
 #include "Options1.h"
+#include "Options2.h"
 #include "effectwidget.h"
 #include "amarokarts/amarokarts.h"
 
@@ -41,6 +42,7 @@ email                :
 #include <kfile.h>
 #include <kfiledialog.h>
 #include <kfileitem.h>
+#include <kfontdialog.h>
 #include <kglobalaccel.h>
 #include <kiconloader.h>
 #include <klineedit.h>
@@ -107,6 +109,10 @@ PlayerApp::PlayerApp() :
     setName( "amarok" );
 
     pApp = this; //global
+
+    m_browserWindowFont = QFont( "Arial", 9 );
+    m_playerWidgetFont = QFont( "Helvetica", 8 );
+    m_playerWidgetScrollFont = QFont( "Helvetica", 10 );
 
     m_pConfig = kapp->config();
     m_pGlobalAccel = new KGlobalAccel( this );
@@ -1482,6 +1488,21 @@ void PlayerApp::slotShowOptions()
     //  frame = pDia->addVBoxPage( QString( "Sound" ) , QString( "Configure sound options" ),
     //                             iconLoader.loadIcon( "sound", KIcon::NoGroup, KIcon::SizeMedium ) );
 
+    frame = pDia->addPage(i18n( "Fonts" ) , i18n( "Configure fonts" ),
+                           iconLoader.loadIcon( "fonts", KIcon::NoGroup, KIcon::SizeMedium ) );
+
+    Options2 *opt2 = new Options2( frame );
+    opt2->labelPlayerWidgetFont->setText("Some text");
+    opt2->labelPlayerWidgetScrollerFont->setText("Some another text");
+    opt2->labelBrowserWindowFont->setText("Some more text");
+
+    connect( opt2->pushPlayerWidgetFont, SIGNAL(clicked()), this, SLOT(slotChoosePlayerWidgetFont()) );
+
+    connect( opt2->pushPlayerWidgetScrollerFont, SIGNAL(clicked()), this, SLOT(slotChoosePlayerWidgetScrollerFont()) );
+
+    connect( opt2->pushBrowserWindowFont, SIGNAL(clicked()), this, SLOT(slotChooseBrowserWindowFont()) );
+
+    
     pDia->resize( 520, 430 );
 
     if ( pDia->exec() == QDialog::Accepted )
@@ -1633,5 +1654,25 @@ void PlayerApp::slotWidgetRestored()
         m_pBrowserWin->show();
 }
 
+void PlayerApp::slotChooseBrowserWindowFont()
+{
+   int result = KFontDialog::getFont(m_browserWindowFont);
+   if ( result == KFontDialog::Accepted )
+      emit sigUpdateFonts();
+}
+
+void PlayerApp::slotChoosePlayerWidgetFont()
+{
+   int result = KFontDialog::getFont(m_playerWidgetFont);
+   if ( result == KFontDialog::Accepted )
+      emit sigUpdateFonts();
+}
+
+void PlayerApp::slotChoosePlayerWidgetScrollFont()
+{
+   int result = KFontDialog::getFont(m_playerWidgetScrollFont);
+   if ( result == KFontDialog::Accepted )
+      emit sigUpdateFonts();
+}
 
 #include "playerapp.moc"

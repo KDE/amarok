@@ -89,7 +89,7 @@ AmarokButton::~AmarokButton()
 {}
 
 
-void AmarokButton::mousePressEvent( QMouseEvent *e )
+void AmarokButton::mousePressEvent( QMouseEvent * )
 {
     m_clicked = true;
 
@@ -243,7 +243,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name ) : QWidget( paren
     setName( "PlayerWidget " );
     setCaption( "amaroK" );
     setIcon( QPixmap( locate( "icon", "locolor/32x32/apps/amarok.png" ) ) );
-    setFixedSize( 310, 165 );
+    setFixedSize( 310, 155 );
     setPaletteForegroundColor( pApp->m_fgColor );
     m_pPopupMenu = NULL;
     m_pPlayObjConfigWidget = NULL;
@@ -340,8 +340,13 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name ) : QWidget( paren
 
     lay->addItem( new QSpacerItem( 0, 5 ) );
     QBoxLayout* lay2 = new QHBoxLayout( lay );
+    lay2->addItem( new QSpacerItem( 1, 0 ) );
     lay2->addWidget( m_pSlider );
+    lay2->addItem( new QSpacerItem( 1, 0 ) );
+
+    lay3->addItem( new QSpacerItem( 1, 0 ) );
     lay3->addWidget( m_pSliderVol );
+    lay3->addItem( new QSpacerItem( 1, 0 ) );
 
     lay->addWidget( m_pFrameButtons );
     QBoxLayout *layButtons = new QHBoxLayout( m_pFrameButtons );
@@ -623,14 +628,14 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
 }
 
 
-void PlayerWidget::closeEvent( QCloseEvent *e )
+void PlayerWidget::closeEvent( QCloseEvent * )
 {
     if ( pApp->queryClose() )
         pApp->quit();
 }
 
 
-void PlayerWidget::moveEvent( QMoveEvent *e )
+void PlayerWidget::moveEvent( QMoveEvent * )
 {
     /*
      ** You can get the frame sizes like so (found in Qt sources while looking for something else):

@@ -90,7 +90,9 @@ class BrowserWin : public QWidget
         void slotKeyEnter();
         void slotKeyDelete();
 
-        signals:
+        void slotUpdateFonts();
+
+    signals:
         void signalHide();
 
     private:

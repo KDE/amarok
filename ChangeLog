@@ -3,6 +3,8 @@ amaroK Changelog
 (c) 2002, 2003 by Mark Kretschmann. GPL License.
 
 
+  * change: moved volume slider to the right, lets see if this is better
+  * add: started a font selection page in settings
   * fix: Stream urls are now properly demangled/unescaped (%20 => space etc)
   * fix: ExpandButton submenu now slightly delayed
   * fix: dropping items into playlist

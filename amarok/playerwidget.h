@@ -52,6 +52,9 @@ class AmarokSystray;
 
 // CLASS AmarokButton ------------------------------------------------------------
 
+/**
+ * @brief: The "fake" button.
+ */
 class AmarokButton : public QLabel
 {
         Q_OBJECT
