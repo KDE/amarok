@@ -1,4 +1,4 @@
-// (c) Max Howell 2004
+// (c) Pierpaolo Di Panfilo 2004
 // See COPYING file for licensing information
 
 #ifndef PLAYLISTBROWSER_H
@@ -19,21 +19,14 @@ class QPixmap;
 class QPoint;
 class QSplitter;
 
+
 class PlaylistBrowser : public QVBox
 {
 Q_OBJECT
+   friend class PlaylistBrowserView;
+   friend class PlaylistBrowserItem;
    friend class SmartPlaylistView;
    
-   class PlaylistListView : public KListView
-    {
-        public:
-            PlaylistListView( QWidget *parent=0, const char *name=0 )
-                : KListView( parent, name) {}
-
-        protected:
-            virtual class QDragObject *dragObject();
-    };
-    
    public:
        PlaylistBrowser( const char* );
        ~PlaylistBrowser();
@@ -44,13 +37,14 @@ Q_OBJECT
        
    public slots:
        void openPlaylist();
-   
+
    private slots:
        void showContextMenu( QListViewItem*, const QPoint&, int );
        void removePlaylist();
        void renamePlaylist();
        void renamePlaylist( QListViewItem*, const QString&, int );
        void loadPlaylist( QListViewItem *item );
+       void currentItemChanged( QListViewItem * );
            
    private:
        void customEvent( QCustomEvent* e );
@@ -58,37 +52,64 @@ Q_OBJECT
        static PlaylistBrowser *s_instance;
        
        QSplitter *m_splitter;
-       PlaylistListView *m_listview;
+       PlaylistBrowserView *m_listview;
+       PlaylistBrowserItem *lastPlaylist;
        SmartPlaylistView *m_smartlistview;
        KActionCollection *m_ac;
+       KAction *removeButton, *renameButton;
        KToolBar *m_toolbar;
 };
 
+
+
+class PlaylistBrowserView : public KListView
+{
+Q_OBJECT
+    public:
+        PlaylistBrowserView( QWidget *parent, const char *name=0 );
+        ~PlaylistBrowserView();
+        
+    protected:
+        virtual void keyPressEvent( QKeyEvent * );
+        virtual class QDragObject *dragObject();
+    
+    private slots:
+        void mousePressed( QListViewItem *, const QPoint &, int );
+};
+
+    
 
 class PlaylistBrowserItem :  public QObject, public KListViewItem
 {
 Q_OBJECT
    public:
-       PlaylistBrowserItem( KListView *, QListViewItem *, const KURL &  );
-       PlaylistBrowserItem( KListViewItem *, KListViewItem *, const KURL&, const QString&, int );
+       PlaylistBrowserItem( KListView *, KListViewItem *, const KURL &  );
+       PlaylistBrowserItem( KListViewItem *, KListViewItem *, const KURL&, const QString& );
        
        bool isPlaylist() { return m_isPlaylist; }
        
        void setUrl( const QString &u ) { m_url = KURL(u); }
        const KURL &url() { return m_url; }
-       int length() { return m_length; } //return length in seconds
+       KURL::List tracks();    
+       //QStringList &titleList() { return m_titleList; }
+       int length() { return m_length; }
     
+       void setOpen( bool );
        void setup();
        void paintCell( QPainter*, const QColorGroup&, int, int, int);
+       
    private:
        void customEvent( QCustomEvent* e );
             
-       KURL m_url;  //playlist path
+       KURL m_url;  //path
+       KURL::List m_list; //tracks' url in playlist
        QString m_title; //track title
+       QStringList m_titleList;    //tracks' title in playlist
        int m_trackn;  //number of tracks
-       int m_length;
+       int m_length;    //total length in seconds
        KListViewItem *lastChild;
        bool m_isPlaylist;
+       bool m_done;
 };
 
 
