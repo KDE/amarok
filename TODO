@@ -8,6 +8,9 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+          <markey> Running on GNOME, amaroK's windows do not show the app icon, but instead a blank icon.
+                   Uraeus says amaroK is the only KDE app with this problem.
+
           <markey> Make CoverManager thumbnail generation threaded.
 
           <mxcl>   When an engine fails to load, the next best engine should be chosen, not the first in the list.
@@ -33,10 +36,6 @@ SHORT-TERM (URGENT):
   FIX 134 <markey> Ctrl-C in Playlist for copying title doesn't work, because the event gets eaten by another widget.
 
 MID-TERM:
-
-  CHG     <markey> Consider following the system tray spec on http://www.freedesktop.org/Standards/systemtray-spec.
-                   Apparently this makes it possible to make the tray KDE and GNOME compatible.
-                   Update: Apparently with KDELIBS 3.3 the systray icon works as expected. Needs confirmation.
 
   ADD 148 <markey> AudioCD support for gst engine (cdparanoia ! *sink). -->markey
 
