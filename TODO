@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #112 being the highest available (take this one for your next bug and increase here)
+           #113 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
@@ -17,6 +17,7 @@ SHORT-TERM (URGENT):
 
   FIX 109 <dato>   Directories with non-ascii chars don't get added to the Collection Browser
                    at scan time. I'll investigate this. --> dato
+          <markey> I thought this was fixed some time ago?
 
   ADD 105 <markey> Make ArtsEngine depend not only on kdemultimedia-devel, but also on kdemultimedia,
                    since arts itself contains these crappy decoders and ppl come complain about bad sound.
@@ -41,7 +42,7 @@ SHORT-TERM (URGENT):
 
 MID-TERM:
 
-  ADD 107 <markey> As-you-type search for Collection Browser.
+  ADD 112 <markey> A facility to abort CollectionBrowser's scanning.
 
   ADD 104 <mxcl>   Perhaps a nice idea: when you drag playlistItems to a branch in the collection browser
                    it prompts to change the track's tags, so drag a track to the "moolaaa" album and that
