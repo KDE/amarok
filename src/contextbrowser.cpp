@@ -572,13 +572,13 @@ void ContextBrowser::showHome() //SLOT
 
     // <Songs least listened Information>
 
-            "<div id='newest_box' class='devel-box'>"
-                "<div id='newest_box-header' class='devel-box-header'>"
-                    "<span id='newest_box-header-title' class='devel-box-header-title'>"
+            "<div id='least_box' class='devel-box'>"
+                "<div id='least_box-header' class='devel-box-header'>"
+                    "<span id='least_box-header-title' class='devel-box-header-title'>"
                     + i18n( "Least listened songs" ) +
                     "</span>"
                 "</div>"
-                "<div id='newest_box-body' class='devel-box-body'>" );
+                "<div id='least_box-body' class='devel-box-body'>" );
 
     QDateTime lastPlay = QDateTime();
     for( uint i = 0; i < least.count(); i = i + 5 )
@@ -599,12 +599,13 @@ void ContextBrowser::showHome() //SLOT
     }
 
     m_HTMLSource.append(
+                "</div>"
             "</div>"
+            "</html>"
                        );
 
     // </Songs least listened Information>
 
-    m_HTMLSource.append( "</html>" );
     browser->write( m_HTMLSource );
     browser->end();
     saveHtmlData(); // Send html code to file
