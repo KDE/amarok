@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>AmazonSearch</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>370</width>
-            <height>140</height>
+            <width>363</width>
+            <height>92</height>
         </rect>
     </property>
     <property name="caption">
@@ -25,123 +25,62 @@
         <property name="resizeMode">
             <enum>Fixed</enum>
         </property>
-        <widget class="QLayoutWidget" row="0" column="0">
+        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="3">
             <property name="name">
-                <cstring>layout5</cstring>
+                <cstring>textLabel</cstring>
             </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLayoutWidget" row="1" column="0">
-                    <property name="name">
-                        <cstring>layout4</cstring>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel" row="0" column="0">
-                            <property name="name">
-                                <cstring>textLabel1</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Cover size:</string>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton" row="0" column="4">
-                            <property name="name">
-                                <cstring>cancelButton</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Cancel</string>
-                            </property>
-                            <property name="autoDefault">
-                                <bool>false</bool>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton" row="0" column="3">
-                            <property name="name">
-                                <cstring>okButton</cstring>
-                            </property>
-                            <property name="text">
-                                <string>OK</string>
-                            </property>
-                        </widget>
-                        <widget class="QComboBox" row="0" column="1">
-                            <item>
-                                <property name="text">
-                                    <string>Small</string>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>Medium</string>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>Large</string>
-                                </property>
-                            </item>
-                            <property name="name">
-                                <cstring>sizeCombo</cstring>
-                            </property>
-                            <property name="currentItem">
-                                <number>2</number>
-                            </property>
-                        </widget>
-                        <spacer row="0" column="2">
-                            <property name="name">
-                                <cstring>spacer3</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>60</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                        </spacer>
-                    </grid>
-                </widget>
-                <widget class="QLayoutWidget" row="0" column="0">
-                    <property name="name">
-                        <cstring>layout6</cstring>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel" row="0" column="0">
-                            <property name="name">
-                                <cstring>textLabel</cstring>
-                            </property>
-                            <property name="text">
-                                <string></string>
-                            </property>
-                        </widget>
-                        <widget class="KLineEdit" row="1" column="0">
-                            <property name="name">
-                                <cstring>searchString</cstring>
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-            </grid>
+            <property name="text">
+                <string></string>
+            </property>
         </widget>
+        <widget class="KLineEdit" row="1" column="0" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>searchString</cstring>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="2">
+            <property name="name">
+                <cstring>cancelButton</cstring>
+            </property>
+            <property name="text">
+                <string>Cancel</string>
+            </property>
+            <property name="autoDefault">
+                <bool>false</bool>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="1">
+            <property name="name">
+                <cstring>okButton</cstring>
+            </property>
+            <property name="text">
+                <string>OK</string>
+            </property>
+        </widget>
+        <spacer row="2" column="0">
+            <property name="name">
+                <cstring>spacer3</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>210</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
     </grid>
 </widget>
 <customwidgets>
 </customwidgets>
 <images>
     <image name="image0">
-        <data format="PNG" length="751">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff61000002b649444154789c75934168146714c77fbbce926f7402df40a433ed0676a81627c6b6bb58d04029bbd422b9884185da53f554166f9e7af3540aed4dbcb4d5431b41a41e5a8827115aba91a6640fad9943162791c837d0c34c719bef1347bf5eb222897df06efff77fbfff8357b1d6f23ff5466f954f7b1b7c5018c63bfb58e9d4f91e975f80672f54d6da57f56bdff636bf695fba5f368f9fb3f1bb6ddbfeecb2fd61d92e6d6eda8f5ed6be6ad8bdb3623f9ffbf2c1bfede37336ae4b2b1c2c8eb0b3172edbdf1ed8056bed9b237d753bb7d64cfff8ab3e21b285dda130c87a4cd0684069e8ddfc8a85c5958e7acc29a006ec3448335ac9203d18891c39d9a079a849ebc014478fb429b235d27b77c77a1b9c013e047639db0d1607f95b6e91ee319ec2f77c10061ae790f50ec88bf417e79939dd6d7db7c817670f53db41608622d02641e0220444f5883511e3873ecd635d040295299633deb9fe079fec2048f3628f5b1a7293d3f25a184780f14914346488f07c8cce49328951bcbec3403ad2ead26ce18314010d071807f337f85e80362ed9c0e04f98f2e50815a086533cc50931a5460a89dc0b3e3055070a455e661446a0feec333b2d5647045560178f71c371f10f42120511e164c4cce198e29ee1d6ed94bc7f9d308c5005744f460be74ffa57aa5b9b2b5a6b47977ab714c523bcf849b03f263e109116059197120de7f187cbe45e4424493aefa99f2979388a50711db7660ae3c68158733db18e98c20c156aa0489204512a8ce3e206b3656b32ef0752de079e3a8005ac361a1caac6a8b5b969b174f56e1e71b4a865ab3dd4464a7f35210fbb3403fe3a7b24bce64ff8bf53e3c9e806cfdd715753528413e19831e94fcd424e7e7d5bbc1f4145a506f69e27dc37b37eb12daff8a17f676b31956def5cd55a0b86c8344bdfee0fdc8f6f2da9a629e558dc60bd7b2c9c8f1afe0d6a98d1c07fa338501c7125e2d20000000049454e44ae426082</data>
+        <data format="PNG" length="757">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff61000002bc49444154789c75934f681c6518c67fbb9d25dfd74e61062acea7bbb083229d36a8bba766b1c88a95580f6250c1f6d4dc5af1949b78f1205eeaade4a2d1832888b6070bb994e660240b46b3e09f1d21e24ceaea2cb830235df37da5a39f97444ab77de1bd3dcfef79df17de8ab596fbd4c31bdb9ceb8f783a9b70f8f451069d808f917c05fcf3bfca5a7baf7ef0838dddf7bb6fff5ab6e6176df464d776cf5fb25f7c6f377777ed73776aef6596d707f6cd33effdf177777ec14675cf0a078b23ece9372ed9ef6ed8556bed23fbfaeadd736bcdece5755e6478e5a01206af1e11349b501a363ebfc895f5c133b9e665a0064c034663daf12fc9f1c8d5788d269d5687f6d163cc9de8528c52b26f7b336b29af02cf0207a6006b3fe78fc92239544c127cd747b810cc5d203a7f99b9f9457aeb2b1405ed951eef022f4c01307ea0cd169ee3230444cd885484a8864febd412024132cc89c73cb1d2e3ec1420fe333b244b4336c908dd9002a054f47f033c85707d8c2ed88a351b7d1e9a020442595d1a94a730c210b8214d0f221f4c09ca0dd146304aa118e6e59d800a503364b771420a93138800e16b1410064091919509851164fd1e0bb362dbd933578103dc4486bef7174210d58fa11a21ed1311c5d786d56b19d9e687848d88ac80a557a2d5b32fc9e5ea5e72456bed00078533fa1db775cb0b9b44b321c97844e425a862057fb2452614a147dc692557811bfb2b54a494353dd6b25df752e9ca1de1b63145429ee6f47fe8e351601c895f5f28db8da21f1e513f5172db012c60f54d0d826a3e4ed233b3fee6f2b52ce4a4a9a5f11af930a1b71d93ab255a47cc8f8b4f051f494f7e438d5bfb37f8571e969a92220cc21963e22fe726aaf1ced5fc64e4884ab26d90ea75d4a39d9db74e79cbf201797d2f98ca5def5cd55a0b69a437180e1e8f53ffb54f7b49cb946a266aea9da5e7c34f545d7e460db36ff80f0d0e54b139cc6fe60000000049454e44ae426082</data>
     </image>
 </images>
 <connections>

@@ -44,7 +44,7 @@ CoverFetcher::~CoverFetcher()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
-CoverFetcher::getCover( const QString& keyword, const QString& album, QueryMode mode, bool noedit )
+CoverFetcher::getCover( const QString& keyword, const QString& album, QueryMode mode, bool noedit, int size )
 {
     /* reset all values (if search isn't started as new CoverFetcher) */
     delete m_buffer;
@@ -55,6 +55,7 @@ CoverFetcher::getCover( const QString& keyword, const QString& album, QueryMode 
     m_keyword = keyword;
     m_album = album;
     m_noedit = noedit;
+    m_size = size;
         
     QString url = QString( "http://xml.amazon.com/onca/xml3?t=webservices-20&dev-t=%1"
                            "&KeywordSearch=%2&mode=music&type=%3&page=1&f=xml" )
@@ -66,7 +67,7 @@ CoverFetcher::getCover( const QString& keyword, const QString& album, QueryMode 
                            
     KIO::TransferJob* job = KIO::get( url, false, false );
     connect( job, SIGNAL( result( KIO::Job* ) ),
-             this,  SLOT( xmlResult( KIO::Job*  ) ) ); 
+             this,  SLOT( xmlResult( KIO::Job* ) ) ); 
     connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
              this,  SLOT( xmlData( KIO::Job*, const QByteArray& ) ) ); 
 }
@@ -99,14 +100,14 @@ CoverFetcher::xmlResult( KIO::Job* job ) //SLOT
     QDomDocument doc;
     doc.setContent( m_xmlDocument );
     
-    if ( AmarokConfig::coverSize() == 0 )
+    if ( m_size == 0 )
     {
         m_url = doc.documentElement()
                    .namedItem( "Details" )
                    .namedItem( "ImageUrlSmall" )
                    .firstChild().toText().nodeValue();
     }
-    else if ( AmarokConfig::coverSize() == 1 )
+    else if ( m_size == 1 )
     {
         m_url = doc.documentElement()
                    .namedItem( "Details" )
@@ -160,7 +161,6 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
         /* if no cover is found, open the amazon search dialogue, else show the cover viewer. */
         if ( job->error() != 0 ) 
         {
-
             m_text = "<h3>No cover image found!</h3>"
             "If you would like to search again, you can edit the search string below and press <b>OK</b>.";
             editSearch();
@@ -169,34 +169,54 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
         {
             m_text = "<h3>New Search</h3>Please edit the search string below and press <b>OK</b>.";
             m_pixmap.loadFromData( m_buffer, m_bufferIndex );
-    
-            QVBox* container = new QVBox( 0, 0, WDestructiveClose );
-            /* we show m_album here, since it's always the filename on save */
-            container->setCaption( m_album + " - amaroK" );
-            connect( this, SIGNAL( destroyed() ), container, SLOT( deleteLater() ) );
-    
-            QWidget* widget = new QWidget( container );
-            widget->setPaletteBackgroundPixmap( m_pixmap );
-            widget->setFixedSize( m_pixmap.size() );
-    
-            QHBox* buttons = new QHBox( container );
-            KPushButton* save = new KPushButton( i18n( "Save" ), buttons );
-            KPushButton* newsearch = new KPushButton( i18n( "New search" ), buttons );
-            KPushButton* cancel = new KPushButton( i18n( "Cancel" ), buttons );
-            connect( cancel, SIGNAL( clicked() ), this, SLOT( deleteLater() ) );
-            connect( newsearch, SIGNAL( clicked() ), this, SLOT( editSearch() ) );
-            connect( save, SIGNAL( clicked() ), this, SLOT( saveCover() ) );
             
-            container->adjustSize();
-            container->setFixedSize( container->size() );
-            container->show();
+            if ( m_pixmap.width() == 1 )
+            {
+                if ( m_size == 2 ) 
+                {
+                    getCover( m_keyword, m_album, CoverFetcher::heavy, false, 1 );
+                }
+                else if ( m_size == 1 )
+                {
+                    getCover( m_keyword, m_album, CoverFetcher::heavy, false, 0 );
+                }
+                else
+                {
+                    m_text = "<h3>Cover found, but without images!</h3>"
+                    "If you would like to search again, you can edit the search string below and press <b>OK</b>.";
+                    editSearch();
+                }
+            }
+            else
+            {   
+                QVBox* container = new QVBox( 0, 0, WDestructiveClose );
+                /* we show m_album here, since it's always the filename on save */
+                container->setCaption( m_album + " - amaroK" );
+                connect( this, SIGNAL( destroyed() ), container, SLOT( deleteLater() ) );
+    
+                QWidget* widget = new QWidget( container );
+                widget->setPaletteBackgroundPixmap( m_pixmap );
+                widget->setFixedSize( m_pixmap.size() );
+    
+                QHBox* buttons = new QHBox( container );
+                KPushButton* save = new KPushButton( i18n( "Save" ), buttons );
+                KPushButton* newsearch = new KPushButton( i18n( "New search" ), buttons );
+                KPushButton* cancel = new KPushButton( i18n( "Cancel" ), buttons );
+                connect( cancel, SIGNAL( clicked() ), this, SLOT( deleteLater() ) );
+                connect( newsearch, SIGNAL( clicked() ), this, SLOT( editSearch() ) );
+                connect( save, SIGNAL( clicked() ), this, SLOT( saveCover() ) );
+            
+                container->adjustSize();
+                container->setFixedSize( container->size() );
+                container->show();
+            }
+          }
         }
-    }
-    else
-    {
-        m_pixmap.loadFromData( m_buffer, m_bufferIndex );
-        saveCover();
-    }
+        else
+        {
+            m_pixmap.loadFromData( m_buffer, m_bufferIndex );
+            saveCover();
+        }
 }
 
 void 
@@ -204,14 +224,12 @@ CoverFetcher::editSearch() //SLOT
 {
     AmazonSearch* sdlg = new AmazonSearch();
     sdlg->textLabel->setText( m_text );
-    sdlg->sizeCombo->setCurrentItem( AmarokConfig::coverSize() );
     sdlg->searchString->setText( m_keyword );
     sdlg->setModal( true );
             
     if ( sdlg->exec() == QDialog::Accepted ) 
     {    
         m_keyword = sdlg->searchString->text();
-        AmarokConfig::setCoverSize( sdlg->sizeCombo->currentItem() );
         getCover( m_keyword, m_album, CoverFetcher::heavy );
         return;
     }
