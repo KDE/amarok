@@ -45,13 +45,13 @@ public:
         readTags( readAudioProperties );
     }
 
-    //TitleProxy:
+    //StreamProvider:
     MetaBundle( const QString& title,
                 const QString& streamUrl,
                 const int      bitrate,
                 const QString& genre,
                 const QString& streamName,
-                const KURL& );
+                const KURL&    url );
 
     //PlaylistItems:
     MetaBundle( const PlaylistItem *item );
@@ -74,14 +74,17 @@ public:
     void setBitrate( int bitrate )       { m_bitrate = bitrate; }
     void setSampleRate( int sampleRate ) { m_sampleRate = sampleRate; }
 
-    const KURL    &url()     const { return m_url; }
-    const QString &title()   const { return m_title; }
-    const QString &artist()  const { return m_artist; }
-    const QString &album()   const { return m_album; }
-    const QString &year()    const { return m_year; }
-    const QString &comment() const { return m_comment; }
-    const QString &genre()   const { return m_genre; }
-    const QString &track()   const { return m_track; }
+    const KURL    &url()        const { return m_url; }
+    const QString &title()      const { return m_title; }
+    const QString &artist()     const { return m_artist; }
+    const QString &album()      const { return m_album; }
+    const QString &year()       const { return m_year; }
+    const QString &comment()    const { return m_comment; }
+    const QString &genre()      const { return m_genre; }
+    const QString &track()      const { return m_track; }
+    const QString &streamName() const { return m_streamName; }
+    const QString &streamUrl()  const { return m_streamUrl; }
+
     void setUrl( QString url ) { m_url = url; }
     void setTitle( QString title ) { m_title = title; }
     void setArtist( QString artist ) { m_artist = artist; }
@@ -113,6 +116,8 @@ private:
     QString m_comment;
     QString m_genre;
     QString m_track;
+    QString m_streamName;
+    QString m_streamUrl;
 
     #ifdef PRETTY_TITLE_CACHE
     mutable QString m_prettyTitleCache;

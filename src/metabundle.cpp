@@ -31,16 +31,17 @@ static const QString bitrateStore[9] = { "?", "32 kbps", "64 kbps", "96 kbps", "
 const MetaBundle MetaBundle::null;
 
 
-//TitleProxy ctor
+//StreamProvider ctor
 MetaBundle::MetaBundle( const QString& title,
                         const QString& streamUrl,
                         const int      bitrate,
                         const QString& genre,
-                        const QString& /*streamName*/,
+                        const QString& streamName,
                         const KURL& url )
   : m_url       ( url )
   , m_genre     ( genre )
-  , m_comment   ( streamUrl )
+  , m_streamName( streamName )
+  , m_streamUrl ( streamUrl )
   , m_bitrate   ( bitrate )
   , m_length    ( Irrelevant )
   , m_sampleRate( Unavailable )
@@ -51,7 +52,7 @@ MetaBundle::MetaBundle( const QString& title,
    }
    else {
       m_title  = title;
-      m_artist = streamUrl; //which is sort of correct..
+      m_artist = streamName; //which is sort of correct..
    }
 }
 

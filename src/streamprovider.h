@@ -96,7 +96,7 @@ namespace amaroK {
              * @param key Key to find.
              * @return The value, QString:null if key not found.
              */
-            QString extractStr( const QString &str, const QString &key );
+            QString extractStr( const QString &str, const QString &key ) const;
 
         //ATTRIBUTES:
             KURL m_url;

@@ -291,7 +291,7 @@ StreamProvider::transmitData( const QString &data )
     m_lastMetadata = data;
 
     MetaBundle bundle( extractStr( data, "StreamTitle" ),
-                       /*extractStr( data, "StreamUrl" )*/m_streamUrl,
+                       m_streamUrl,
                        m_bitRate,
                        m_streamGenre,
                        m_streamName,
@@ -316,7 +316,7 @@ StreamProvider::error()
 
 
 QString
-StreamProvider::extractStr( const QString &str, const QString &key )
+StreamProvider::extractStr( const QString &str, const QString &key ) const
 {
     int index = str.find( key, 0, true );
 

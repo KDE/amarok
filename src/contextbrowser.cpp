@@ -462,14 +462,16 @@ void ContextBrowser::showCurrentTrack() //SLOT
         browser->write( QStringx(
                "<tr>"
                 "<td height='42' valign='top' class='rbcurrent' width='90%'>"
-                 "<span class='stream'><b>%1</b><br/>%2<br/>%3<br/>%4</span>"
+                 "<span class='stream'><b>%1</b><br/><br/>%2<br/>%3<br/>%4<br/>%5<br/>%6</span>"
                 "</td>"
                 "<td valign='top' align='right' width='10%'></td>"
                "</tr>" )
             .args( QStringList()
                 << escapeHTML( currentTrack.prettyTitle() )
+                << escapeHTML( currentTrack.streamName() )
                 << escapeHTML( currentTrack.genre() )
                 << escapeHTML( currentTrack.prettyBitrate() )
+                << escapeHTML( currentTrack.streamUrl() )
                 << escapeHTML( currentTrack.prettyURL() ) ) );
 
         browser->write(
@@ -502,12 +504,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         browser->write("</html>" );
         browser->end();
 
-        //TODO if we have artist information we can show the following stuff too! cool :)
-
-        if ( currentTrack.artist().isEmpty() )
-            return;
-
-        kdDebug() << currentTrack.artist() << endl;
+        return;
     }
 
 
