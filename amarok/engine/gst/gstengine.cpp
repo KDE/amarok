@@ -89,7 +89,7 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, GstElement* )
             //add all channels together so we effectively get a mono scope
             for ( int j = 0; j < channels; j++ ) {             
                 //convert uint-16 to float and write into buf
-                temp += (float)( data[i+j] - 32768 ) / 32768.0 / channels;
+                temp += (float)( data[i+j] - 32768 ) / 32768.0 /* / channels */;
             }
             
             pObject->m_scopeBuf[pObject->m_scopeBufIndex++] = temp;                
@@ -173,8 +173,8 @@ GstEngine::init( bool&, int scopeSize, bool )
     g_signal_connect ( G_OBJECT( pIdentity ), "handoff",
                        G_CALLBACK( handoff_cb ), m_pThread );
     
-    g_signal_connect ( G_OBJECT( m_pAudiosink ), "eos",
-                       G_CALLBACK( eos_cb ), m_pThread );
+//     g_signal_connect ( G_OBJECT( m_pAudiosink ), "eos",
+//                        G_CALLBACK( eos_cb ), m_pThread );
 
     /* add objects to the main pipeline */
     gst_bin_add_many( GST_BIN( m_pThread ), m_pFilesrc, m_pSpider, pIdentity, m_pAudiosink, NULL );
