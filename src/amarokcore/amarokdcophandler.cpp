@@ -17,7 +17,6 @@
 
 #include "amarokconfig.h"
 #include "amarokdcophandler.h"
-#include "app.h"
 #include "engine/enginebase.h"
 #include "enginecontroller.h"
 #include "playlist.h"
@@ -25,6 +24,7 @@
 
 #include <dcopclient.h>
 
+#include <kapplication.h> //kapp pointer
 #include <kdebug.h> // for kdWarning()
 
 namespace amaroK
@@ -78,7 +78,7 @@ namespace amaroK
 	kdWarning() << k_funcinfo << " is DEPRECATED!" << endl;
         return EngineController::engine()->state() == EngineBase::Playing;
     }
-    
+
     int  DcopHandler::status()
     {
 	// <0 - error, 0 - stopped, 1 - paused, 2 - playing
@@ -100,7 +100,7 @@ namespace amaroK
     }
 
 // Now for the DCOP id3 output stuff
-   
+
     QString DcopHandler::nowPlaying()
     {
         return EngineController::instance()->bundle().prettyTitle();
@@ -111,20 +111,20 @@ namespace amaroK
     {
         return EngineController::instance()->bundle().artist();
     }
-    
+
     QString DcopHandler::title()
     {
         return EngineController::instance()->bundle().title();
     }
-    
+
     QString DcopHandler::album()
     {
         return EngineController::instance()->bundle().album();
     }
-    
+
 // Changed DCOP time output to mm:ss, by using MetaBundle::prettyLength ;)
 // prettyLength also adds an "0" when sec < 10
-    
+
     QString DcopHandler::totalTime()
     {
         return MetaBundle::prettyLength( EngineController::instance()->bundle().length() );
@@ -146,7 +146,7 @@ namespace amaroK
     {
         return EngineController::instance()->bundle().year();
     }
-        
+
     QString DcopHandler::comment()
     {
         return EngineController::instance()->bundle().comment();
@@ -163,7 +163,7 @@ namespace amaroK
     {
         return EngineController::instance()->bundle().url().url();
     }
-    
+
     int DcopHandler::trackTotalTime()
     {
         return EngineController::instance()->bundle().length();
@@ -185,12 +185,12 @@ namespace amaroK
 
     void DcopHandler::addMedia(const KURL &url)
     {
-        pApp->playlist()->insertMedia(url);
+        Playlist::instance()->appendMedia(url);
     }
 
     void DcopHandler::addMediaList(const KURL::List &urls)
     {
-        pApp->playlist()->insertMedia(urls);
+        Playlist::instance()->appendMedia(urls);
     }
 
     void DcopHandler::setVolume(int volume)
@@ -210,7 +210,7 @@ namespace amaroK
 
     void DcopHandler::enableOSD(bool enable)
     {
-        pApp->osd()->setEnabled(enable);
+        amaroK::OSD::instance()->setEnabled(enable);
         AmarokConfig::setOsdEnabled(enable);
     }
 
