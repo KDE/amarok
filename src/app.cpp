@@ -73,7 +73,8 @@ App::App()
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
     //needs to be created before the wizard
-    m_pDcopHandler    = new amaroK::DcopHandler();
+    m_pDcopPlayerHandler   = new amaroK::DcopPlayerHandler(); // Must be created first
+    m_pDcopPlaylistHandler = new amaroK::DcopPlaylistHandler();
 
     // Remember old folder setup, so we can detect changes after the wizard was used
     const QStringList oldCollectionFolders = AmarokConfig::collectionFolders();
@@ -165,7 +166,8 @@ App::~App()
 
     delete m_pPlayerWindow;   //sets some XT keys
     delete m_pPlaylistWindow; //sets some XT keys
-    delete m_pDcopHandler;
+    delete m_pDcopPlayerHandler;
+    delete m_pDcopPlaylistHandler;
 
     AmarokConfig::setVersion( APP_VERSION );
     AmarokConfig::writeConfig();

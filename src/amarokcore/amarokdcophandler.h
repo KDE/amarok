@@ -24,12 +24,12 @@
 namespace amaroK
 {
 
-class DcopHandler : public QObject, virtual public AmarokIface
+class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
 {
       Q_OBJECT
 
    public:
-      DcopHandler();
+      DcopPlayerHandler();
 
    public /* DCOP */ slots:
       virtual void play();
@@ -43,26 +43,8 @@ class DcopHandler : public QObject, virtual public AmarokIface
       virtual void enableRandomMode(bool enable);
       virtual int  trackTotalTime();
       virtual int  trackCurrentTime();
-      virtual void addMedia(const KURL &);
-      virtual void addMediaList(const KURL::List &);
       virtual void scanCollection();
-      virtual void clearPlaylist();
-      virtual void shufflePlaylist();
-      virtual void saveCurrentPlaylist();
       virtual QString nowPlaying();
-      virtual QString artist();
-      virtual QString title();
-      virtual QString track();
-      virtual QString album();
-      virtual QString totalTime();
-      virtual QString currentTime();
-      virtual QString genre();
-      virtual QString year();
-      virtual QString comment();
-      virtual QString bitrate();
-      virtual int sampleRate();
-      virtual QString encodedURL();
-      virtual QString coverImage();
       virtual bool isPlaying();
       virtual int  status();
       virtual bool repeatTrackStatus();
@@ -77,11 +59,41 @@ class DcopHandler : public QObject, virtual public AmarokIface
       virtual void configEqualizer();
       virtual void enableOSD(bool enable);
       virtual void showOSD();
+};
+
+
+class DcopPlaylistHandler : public QObject, virtual public AmarokPlaylistInterface
+{
+      Q_OBJECT
+
+   public:
+      DcopPlaylistHandler();
+
+   public /* DCOP */ slots:
+      virtual void addMedia(const KURL &);
+      virtual void addMediaList(const KURL::List &);
+      virtual void clearPlaylist();
+      virtual void shufflePlaylist();
+      virtual void saveCurrentPlaylist();
+      virtual QString artist();
+      virtual QString title();
+      virtual QString track();
+      virtual QString album();
+      virtual QString totalTime();
+      virtual QString currentTime();
+      virtual QString genre();
+      virtual QString year();
+      virtual QString comment();
+      virtual QString bitrate();
+      virtual int sampleRate();
+      virtual QString encodedURL();
+      virtual QString coverImage();
       virtual void togglePlaylist();
       virtual int score ();
       virtual void playMedia(const KURL &);
       virtual void shortStatusMessage(const QString&);
 };
+
 
 } // namespace amaroK
 

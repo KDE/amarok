@@ -23,7 +23,8 @@
 
 namespace amaroK {
     class TrayIcon;
-    class DcopHandler;
+    class DcopPlayerHandler;
+    class DcopPlaylistHandler;
 }
 
 class KActionCollection;
@@ -46,8 +47,7 @@ class App : public KApplication, public EngineObserver
         static void handleCliArgs();
         static void initCliArgs( int argc, char *argv[] );
 
-        amaroK::DcopHandler *dcopHandler() const { return m_pDcopHandler; }
-        PlaylistWindow      *playlistWindow() const { return m_pPlaylistWindow; }
+        PlaylistWindow *playlistWindow() const { return m_pPlaylistWindow; }
 
         // FRIENDS ------
         friend class PlaylistWindow; //requires access to applySettings()
@@ -81,8 +81,10 @@ class App : public KApplication, public EngineObserver
         KGlobalAccel        *m_pGlobalAccel;
         PlayerWidget        *m_pPlayerWindow;
         PlaylistWindow      *m_pPlaylistWindow;
-        amaroK::DcopHandler *m_pDcopHandler;
         amaroK::TrayIcon    *m_pTray;
+
+        amaroK::DcopPlayerHandler   *m_pDcopPlayerHandler;
+        amaroK::DcopPlaylistHandler *m_pDcopPlaylistHandler;
 };
 
 

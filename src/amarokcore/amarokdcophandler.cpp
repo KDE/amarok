@@ -21,7 +21,6 @@
 #include "browserbar.h"
 #include "collectiondb.h"
 #include "contextbrowser.h"
-#include "debug.h"
 #include "engine/enginebase.h"
 #include "enginecontroller.h"
 #include "equalizersetup.h"
@@ -37,52 +36,56 @@
 
 namespace amaroK
 {
-    DcopHandler::DcopHandler()
+/////////////////////////////////////////////////////////////////////////////////////
+// class DcopPlayerHandler
+/////////////////////////////////////////////////////////////////////////////////////
+
+    DcopPlayerHandler::DcopPlayerHandler()
         : DCOPObject( "player" )
     {
         // Register with DCOP
-        if ( !kapp->dcopClient() ->isRegistered() ) {
-            kapp->dcopClient() ->registerAs( "amarok", false );
-            kapp->dcopClient() ->setDefaultObject( objId() );
+        if ( !kapp->dcopClient()->isRegistered() ) {
+            kapp->dcopClient()->registerAs( "amarok", false );
+            kapp->dcopClient()->setDefaultObject( objId() );
         }
     }
 
-    void DcopHandler::play()
+    void DcopPlayerHandler::play()
     {
         EngineController::instance() ->play();
     }
 
-    void DcopHandler::playPause()
+    void DcopPlayerHandler::playPause()
     {
         EngineController::instance() ->playPause();
     }
 
-    void DcopHandler::stop()
+    void DcopPlayerHandler::stop()
     {
         EngineController::instance() ->stop();
     }
 
-    void DcopHandler::next()
+    void DcopPlayerHandler::next()
     {
         EngineController::instance() ->next();
     }
 
-    void DcopHandler::prev()
+    void DcopPlayerHandler::prev()
     {
         EngineController::instance() ->previous();
     }
 
-    void DcopHandler::pause()
+    void DcopPlayerHandler::pause()
     {
         EngineController::instance()->pause();
     }
 
-    bool DcopHandler::isPlaying()
+    bool DcopPlayerHandler::isPlaying()
     {
         return EngineController::engine()->state() == Engine::Playing;
     }
 
-    int  DcopHandler::status()
+    int  DcopPlayerHandler::status()
     {
         // <0 - error, 0 - stopped, 1 - paused, 2 - playing
         switch( EngineController::engine()->state() )
@@ -95,114 +98,47 @@ namespace amaroK
         case Engine::Idle:
             return 0;
         }
-	return -1;
+        return -1;
     }
 
-    bool DcopHandler::repeatTrackStatus()
+    bool DcopPlayerHandler::repeatTrackStatus()
     {
         return AmarokConfig::repeatTrack();
     }
 
-    bool DcopHandler::repeatPlaylistStatus()
+    bool DcopPlayerHandler::repeatPlaylistStatus()
     {
         return AmarokConfig::repeatPlaylist();
     }
 
-    bool DcopHandler::randomModeStatus()
+    bool DcopPlayerHandler::randomModeStatus()
     {
         return AmarokConfig::randomMode();
     }
 
-    QString DcopHandler::nowPlaying()
+    QString DcopPlayerHandler::nowPlaying()
     {
         return EngineController::instance()->bundle().prettyTitle();
     }
 
-    QString DcopHandler::artist()
-    {
-        return EngineController::instance()->bundle().artist();
-    }
-
-    QString DcopHandler::title()
-    {
-        return EngineController::instance()->bundle().title();
-    }
-
-    QString DcopHandler::track()
-    {
-        return EngineController::instance()->bundle().track();
-    }
-
-    QString DcopHandler::album()
-    {
-        return EngineController::instance()->bundle().album();
-    }
-
-    QString DcopHandler::totalTime()
-    {
-        return EngineController::instance()->bundle().prettyLength();
-    }
-
-    QString DcopHandler::currentTime()
-    {
-        return MetaBundle::prettyLength( EngineController::engine() ->position() / 1000 );
-    }
-
-    QString DcopHandler::genre()
-    {
-        return EngineController::instance()->bundle().genre();
-    }
-
-    QString DcopHandler::year()
-    {
-        return EngineController::instance()->bundle().year();
-    }
-
-    QString DcopHandler::comment()
-    {
-        return EngineController::instance()->bundle().comment();
-    }
-
-    QString DcopHandler::bitrate()
-    {
-        return EngineController::instance()->bundle().prettyBitrate();
-    }
-
-    int DcopHandler::sampleRate()
-    {
-        return EngineController::instance()->bundle().sampleRate();
-    }
-
-    QString DcopHandler::encodedURL()
-    {
-        return EngineController::instance()->bundle().url().url();
-    }
-
-    QString DcopHandler::coverImage()
-    {
-        const MetaBundle &bundle = EngineController::instance()->bundle();
-        QString image = CollectionDB::instance()->albumImage( bundle, 0 );
-        return image;
-    }
-
-    int DcopHandler::trackTotalTime()
+    int DcopPlayerHandler::trackTotalTime()
     {
         return EngineController::instance()->bundle().length();
     }
 
-    int DcopHandler::trackCurrentTime()
+    int DcopPlayerHandler::trackCurrentTime()
     {
         return EngineController::engine()->position() / 1000;
     }
 
-    void DcopHandler::seek(int s)
+    void DcopPlayerHandler::seek(int s)
     {
         EngineBase* const engine = EngineController::engine();
         if ( s > 0 && engine->state() != Engine::Empty )
             engine ->seek( s * 1000 );
     }
 
-    void DcopHandler::seekRelative(int s)
+    void DcopPlayerHandler::seekRelative(int s)
     {
         EngineBase* const engine = EngineController::engine();
         if ( engine->state() != Engine::Empty ) {
@@ -213,107 +149,183 @@ namespace amaroK
         }
     }
 
-    void DcopHandler::enableRandomMode(bool enable)
+    void DcopPlayerHandler::enableRandomMode(bool enable)
     {
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( enable );
     }
 
-    void DcopHandler::addMedia(const KURL &url)
-    {
-        Playlist::instance()->appendMedia(url);
-    }
-
-    void DcopHandler::addMediaList(const KURL::List &urls)
-    {
-        Playlist::instance()->insertMedia(urls);
-    }
-
-    void DcopHandler::scanCollection()
+    void DcopPlayerHandler::scanCollection()
     {
         CollectionDB::instance()->startScan();
     }
 
-    void DcopHandler::clearPlaylist()
-    {
-        Playlist::instance()->clear();
-    }
-
-    void DcopHandler::shufflePlaylist()
-    {
-        Playlist::instance()->shuffle();
-    }
-
-    void DcopHandler::saveCurrentPlaylist()
-    {
-        Playlist::instance()->saveXML( Playlist::defaultPlaylistPath() );
-    }
-
-    void DcopHandler::setVolume(int volume)
+    void DcopPlayerHandler::setVolume(int volume)
     {
         EngineController::instance()->setVolume(volume);
     }
 
-    int DcopHandler::getVolume()
+    int DcopPlayerHandler::getVolume()
     {
         return EngineController::engine() ->volume();
     }
 
-    void DcopHandler::volumeUp()
+    void DcopPlayerHandler::volumeUp()
     {
         EngineController::instance()->increaseVolume();
     }
 
-    void DcopHandler::volumeDown()
+    void DcopPlayerHandler::volumeDown()
     {
         EngineController::instance()->decreaseVolume();
     }
 
-    void DcopHandler::mute()
+    void DcopPlayerHandler::mute()
     {
         EngineController::instance()->mute();
     }
 
-    void DcopHandler::setEqualizerEnabled( bool active )
+    void DcopPlayerHandler::setEqualizerEnabled( bool active )
     {
         EngineController::engine()->setEqualizerEnabled( active );
         AmarokConfig::setEqualizerEnabled( active );
     }
 
-    void DcopHandler::configEqualizer()
+    void DcopPlayerHandler::configEqualizer()
     {
         EqualizerSetup::instance()->raise();
     }
 
-    void DcopHandler::enableOSD(bool enable)
+    void DcopPlayerHandler::enableOSD(bool enable)
     {
         amaroK::OSD::instance()->setEnabled( enable );
         AmarokConfig::setOsdEnabled( enable );
     }
 
-    void DcopHandler::showOSD()
+    void DcopPlayerHandler::showOSD()
     {
         amaroK::OSD::instance()->forceToggleOSD();
     }
 
-    void DcopHandler::togglePlaylist()
+
+/////////////////////////////////////////////////////////////////////////////////////
+// class DcopPlaylistHandler
+/////////////////////////////////////////////////////////////////////////////////////
+
+    DcopPlaylistHandler::DcopPlaylistHandler()
+        : DCOPObject( "playlist" )
+    {}
+
+    void DcopPlaylistHandler::addMedia(const KURL &url)
+    {
+        Playlist::instance()->appendMedia(url);
+    }
+
+    void DcopPlaylistHandler::addMediaList(const KURL::List &urls)
+    {
+        Playlist::instance()->insertMedia(urls);
+    }
+
+    void DcopPlaylistHandler::clearPlaylist()
+    {
+        Playlist::instance()->clear();
+    }
+
+    void DcopPlaylistHandler::shufflePlaylist()
+    {
+        Playlist::instance()->shuffle();
+    }
+
+    void DcopPlaylistHandler::saveCurrentPlaylist()
+    {
+        Playlist::instance()->saveXML( Playlist::defaultPlaylistPath() );
+    }
+
+    QString DcopPlaylistHandler::artist()
+    {
+        return EngineController::instance()->bundle().artist();
+    }
+
+    QString DcopPlaylistHandler::title()
+    {
+        return EngineController::instance()->bundle().title();
+    }
+
+    QString DcopPlaylistHandler::track()
+    {
+        return EngineController::instance()->bundle().track();
+    }
+
+    QString DcopPlaylistHandler::album()
+    {
+        return EngineController::instance()->bundle().album();
+    }
+
+    QString DcopPlaylistHandler::totalTime()
+    {
+        return EngineController::instance()->bundle().prettyLength();
+    }
+
+    QString DcopPlaylistHandler::currentTime()
+    {
+        return MetaBundle::prettyLength( EngineController::engine() ->position() / 1000 );
+    }
+
+    QString DcopPlaylistHandler::genre()
+    {
+        return EngineController::instance()->bundle().genre();
+    }
+
+    QString DcopPlaylistHandler::year()
+    {
+        return EngineController::instance()->bundle().year();
+    }
+
+    QString DcopPlaylistHandler::comment()
+    {
+        return EngineController::instance()->bundle().comment();
+    }
+
+    QString DcopPlaylistHandler::bitrate()
+    {
+        return EngineController::instance()->bundle().prettyBitrate();
+    }
+
+    int DcopPlaylistHandler::sampleRate()
+    {
+        return EngineController::instance()->bundle().sampleRate();
+    }
+
+    QString DcopPlaylistHandler::encodedURL()
+    {
+        return EngineController::instance()->bundle().url().url();
+    }
+
+    QString DcopPlaylistHandler::coverImage()
+    {
+        const MetaBundle &bundle = EngineController::instance()->bundle();
+        QString image = CollectionDB::instance()->albumImage( bundle, 0 );
+        return image;
+    }
+
+    void DcopPlaylistHandler::togglePlaylist()
     {
         PlaylistWindow::self()->showHide();
     }
 
-    int DcopHandler::score()
+    int DcopPlaylistHandler::score()
     {
         const MetaBundle &bundle = EngineController::instance()->bundle();
         int score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
         return score;
     }
 
-    void DcopHandler::playMedia(const KURL &url)
+    void DcopPlaylistHandler::playMedia(const KURL &url)
     {
         ContextBrowser* m_contextBrowser=(ContextBrowser*) (PlaylistWindow::self()->browserBar()->browser( "ContextBrowser" ) );
         m_contextBrowser->openURLRequest(url);
     }
 
-    void DcopHandler::shortStatusMessage(const QString& msg)
+    void DcopPlaylistHandler::shortStatusMessage(const QString& msg)
     {
         StatusBar::instance()->shortMessage( msg );
     }
