@@ -68,13 +68,14 @@ scope_port_close(xine_audio_port_t *port_gen, xine_stream_t *stream )
 static void
 scope_port_put_buffer( xine_audio_port_t *port_gen, audio_buffer_t *buf, xine_stream_t *stream )
 {
+    MyNode *new_node;
     post_audio_port_t *port = (post_audio_port_t*)port_gen;
 
     /*FIXME*/
     if( port->bits == 8 ) { printf( "You dare tempt me with 8 bits?!\n" ); return; }
 
     /*first we need to copy this buffer*/
-    MyNode *new_node = malloc( sizeof(MyNode) );
+    new_node = malloc( sizeof(MyNode) );
     memcpy( &new_node->buf, buf, sizeof(audio_buffer_t) );
 
     new_node->buf.mem = malloc( buf->num_frames * myChannels * 2 );
