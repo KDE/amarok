@@ -53,7 +53,7 @@ class CollectionDB : public QObject
         void purgeDirCache();
         void scanModifiedDirs( bool recursively );
         void scan( const QStringList& folders, bool recursively );
-        void addCollectionToWatcher( const QStringList &folders, bool recursively );
+        void addCollectionToWatcher();
       
     signals:
         void scanDone();

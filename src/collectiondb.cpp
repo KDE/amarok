@@ -24,15 +24,11 @@
 
 CollectionDB::CollectionDB()
         : m_weaver( new ThreadWeaver( this ) )
-        , m_dirWatch( new KDirWatch( this ) )
 {
     QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
                   + "collection.db" ).local8Bit();
 
     m_db = sqlite_open( path, 0, 0 );
-
-    connect( m_dirWatch, SIGNAL( dirty( const QString& ) ),
-             this,         SLOT( dirDirty( const QString& ) ) );
 }
 
 
@@ -456,16 +452,22 @@ CollectionDB::customEvent( QCustomEvent *e )
 
 
 void
-CollectionDB::addCollectionToWatcher( const QStringList &folders, bool recursively )
+CollectionDB::addCollectionToWatcher()
 {
-    if ( !folders.empty() )
-    {
-        for ( uint i = 0; i < folders.count(); i++ )
-            if ( !m_dirWatch->contains( folders[i] ) )
-                m_dirWatch->addDir( folders[i], true, recursively );
+    QStringList values;
+    QStringList names;
 
-        m_dirWatch->startScan();
-    }
+    if ( m_dirWatch )
+        delete m_dirWatch;
+    m_dirWatch = new KDirWatch( this );
+
+    execSql( "SELECT dir FROM directories;", &values, &names );
+    for ( uint i = 0; i < values.count(); i++ )
+        m_dirWatch->addDir( values[i], true );
+
+    connect( m_dirWatch, SIGNAL( dirty( const QString& ) ),
+             this,         SLOT( dirDirty( const QString& ) ) );
+    m_dirWatch->startScan();
 }
 
 

@@ -164,7 +164,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         }
 
         if ( m_monitor )
-            m_insertdb->addCollectionToWatcher( m_dirs, m_recursively );
+            m_insertdb->addCollectionToWatcher();
 
     //</open database>
 
@@ -215,9 +215,6 @@ CollectionView::setupDirs()  //SLOT
     m_dirs = result.dirs;
     m_recursively = result.scanRecursively;
     m_monitor = result.monitorChanges;
-
-    if ( m_monitor )
-        m_insertdb->addCollectionToWatcher( m_dirs, m_recursively );
 
     scan();
 }
@@ -284,6 +281,9 @@ CollectionView::scanDone() //slot
     m_db = new CollectionDB();
 
     renderView();
+    
+    if ( m_monitor )
+        m_insertdb->addCollectionToWatcher();
 }
 
 
