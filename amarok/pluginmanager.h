@@ -21,14 +21,13 @@ email                : markey@web.de
 #include <qstring.h>
 #include <qstringlist.h>
 
-
+class Plugin;
 using namespace std;
 
 
 class PluginManager
 {
     public:
-        
         struct PluginInfo {
             QString specfile;
             QString filename;
@@ -43,7 +42,7 @@ class PluginManager
         };
 
         struct StoreItem {
-            void*      pointer;
+            Plugin*    pointer;
             PluginInfo info;
         };
         
@@ -68,20 +67,20 @@ class PluginManager
          * @param pointer pointer to plugin  
          * @return        PluginInfo struc, or empty PluginInfo if not found
          */
-        static PluginInfo                getInfo     ( const void* pointer );
+        static PluginInfo                getInfo     ( const Plugin* pointer );
         
         /**
          * Load and instantiate plugin 
          * @param name    name of plugin without extension (e.g. "artsengine")  
          * @return        pointer to Plugin, or NULL if error
          */
-        static void*                     load        ( const QString& name );
+        static Plugin*                   load        ( const QString& name );
         
         /**
          * Remove library and delete plugin 
          * @param pointer pointer to plugin  
          */
-        static void                      unload      ( void* pointer );
+        static void                      unload      ( Plugin* pointer );
 
     private:
         static vector<StoreItem>         m_store;

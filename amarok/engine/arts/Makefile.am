@@ -1,6 +1,7 @@
 INCLUDES = \
     -I$(top_builddir)/amarok/amarok/amarokarts \
     -I$(top_srcdir)/amarok/amarok/engine \
+    -I$(top_srcdir)/amarok/amarok \
     -I$(kde_includes)/arts \
     $(all_includes)
 

@@ -1,5 +1,6 @@
 INCLUDES = \
     -I$(top_srcdir)/amarok/amarok/engine \
+    -I$(top_srcdir)/amarok/amarok \
     $(CFLAGS_GST) \
     $(all_includes)
 

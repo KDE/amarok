@@ -1,4 +1,5 @@
 INCLUDES = \
+    -I$(top_srcdir)/amarok/amarok \
     $(all_includes)
 
 if with_arts

@@ -18,6 +18,8 @@ email                : markey@web.de
 #ifndef AMAROK_ENGINEBASE_H
 #define AMAROK_ENGINEBASE_H
 
+#include "plugin.h"
+
 #include <vector>
 #include <qobject.h>
 #include <kurl.h>
@@ -29,7 +31,7 @@ email                : markey@web.de
 class QString;
 class QStringList;
 
-class EngineBase : public QObject
+class EngineBase : public QObject, public Plugin
 {
     Q_OBJECT
 

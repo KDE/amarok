@@ -13,6 +13,7 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
+#include "plugin.h"
 #include "pluginmanager.h"
 
 #include <vector>
@@ -94,7 +95,7 @@ PluginManager::PluginInfo
 
 
 PluginManager::PluginInfo
-    PluginManager::getInfo( const void* pointer )
+    PluginManager::getInfo( const Plugin* pointer )
 {
     PluginInfo info;
     
@@ -111,7 +112,7 @@ PluginManager::PluginInfo
 }
 
 
-void*
+Plugin*
     PluginManager::load( const QString& name )
 {
     // get the library loader instance
@@ -134,7 +135,7 @@ void*
 
     void* (*plugInStart)();
     plugInStart = ( void* (*)() ) create;
-    void* pointer = plugInStart();
+    Plugin* pointer = static_cast<Plugin*>( plugInStart() );
     
     //put plugin into store
     StoreItem item;
@@ -142,12 +143,12 @@ void*
     item.info    = getInfo( name );
     m_store.push_back( item );
     
-    return plugInStart();
+    return pointer;
 }
 
 
 void
-    PluginManager::unload( void* pointer )
+    PluginManager::unload( Plugin* pointer )
 {
     vector<StoreItem>::iterator it;
     
@@ -161,7 +162,7 @@ void
         delete (*it).pointer;
         
         KLibLoader *loader = KLibLoader::self();
-        loader->unloadLibrary( QFile::encodeName( (*it).info.filename ) );
+//        loader->unloadLibrary( QFile::encodeName( (*it).info.filename ) );
         m_store.erase( it );
     }
 }
