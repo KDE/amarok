@@ -3,10 +3,25 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #163 being the highest available (take this one for your next bug and increase here)
+           #164 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  FIX 163 <markey> Application crashes on every exit. gdb yielded this:
+                     #0  0x03a00e90 in ?? ()
+                     #1  0x08082afd in __tcf_0 () at src/enginecontroller.h:120
+                     #2  0x41b9a6a1 in exit () from /lib/libc.so.6
+                     #3  0x41b864fa in __libc_start_main () from /lib/libc.so.6
+
+                   EngineController line 120 looks like this:
+                     static EngineController Instance;
+
+                   Last debug output:
+                     amarok: [virtual amaroK::Plugin::~Plugin()]
+                     amarok: [PluginManager] Unloading library: libamarok_gstengine_plugin
+
+                   So maybe there's a problem with destroying the controller.
 
   FIX 162 <markey> Try to achieve Qt 3.2 compatibility for amaroK 1.1.
 
