@@ -392,12 +392,14 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
     // so that we handle things like streams better
     tokens << i18n("%artist - %title")
            << i18n("%artist") << i18n("%album") << i18n("%title")   << i18n("%genre")
-           << i18n("%year")   << i18n("%track") << i18n("%bitrate") << i18n("%length");
+           << i18n("%year")   << i18n("%track") << i18n("%bitrate") << i18n("%length")
+           << i18n("%file");
 
     tags   << bundle.prettyTitle()
            << bundle.artist() << bundle.album() << bundle.title() << bundle.genre()
            << bundle.year() << bundle.track() << bundle.prettyBitrate()
-           << (bundle.length() > 0 ? bundle.prettyLength() : QString::null); //ignore '-' or '?'
+           << (bundle.length() > 0 ? bundle.prettyLength() : QString::null) //ignore '-' or '?'
+           << bundle.url().fileName();
 
     for( QStringList::ConstIterator tok = tokens.begin(), end = tokens.end(), tag = tags.begin(); tok != end; ++tok, ++tag )
     {
