@@ -284,12 +284,12 @@
 <group name="Colors">
     <entry key="Scheme Amarok" type="Bool">
         <label>Whether to use amaroK standard colors in the playlist window</label>
-        <default>true</default>
+        <default>false</default>
         <whatsthis>If set, amaroK uses the amaroK standard colors in the playlist.</whatsthis>
     </entry>
     <entry key="Scheme KDE" type="Bool">
         <label>Whether to use global KDE colors in the playlist window</label>
-        <default>false</default>
+        <default>true</default>
         <whatsthis>If set, amaroK uses the KDE standard colors in the playlist.</whatsthis>
     </entry>
     <entry key="Scheme Custom" type="Bool">
