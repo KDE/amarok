@@ -8,8 +8,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  FIX 117 <markey> Focus markers on PlayerWindow buttons look weird. Better use NoFocus.
-
   FIX 114 <muesli> ContextBrowser needs to be repainted on Color-Scheme changes.
           <markey> Color scheme is _always_ broken, not only when changing @ runtime.
   
