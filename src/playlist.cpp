@@ -505,6 +505,9 @@ Playlist::playPrevTrack()
         m_prevTracks.last();
         m_prevTracks.remove(); //remove the track playing now
         item = m_prevTracks.last();
+
+        // we need to remove this item now, since it will be added in activate() again
+        m_prevTracks.remove();
     }
 
     if ( !item && AmarokConfig::repeatPlaylist() )
