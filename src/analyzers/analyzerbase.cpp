@@ -40,7 +40,7 @@
 //TODO for 2D use setErasePixmap Qt function insetead of m_background
 
 // make the linker happy
-//template Analyzer::Base<QWidget>;
+template class Analyzer::Base<QWidget>;
 
 
 template<class W>

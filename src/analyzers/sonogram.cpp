@@ -37,7 +37,7 @@ void Sonogram::resizeEvent(QResizeEvent *e)
 	canvas()->resize(size());
 	background()->resize(size());
 
-	//resizeForBands(height());
+	resizeForBands(height());
 
 	background()->fill(backgroundColor());
 	bitBlt(canvas(), 0, 0, background());
