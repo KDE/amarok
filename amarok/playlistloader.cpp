@@ -471,8 +471,7 @@ PlaylistLoader::DownloadPlaylistEvent::makePlaylistItem( PlaylistWidget *lv )
     //KIO::NetAccess can make it's own tempfile
     //but we need to add .pls/.m3u extension or the Loader will fail
     QString path = m_url.filename();
-    //FIXME KTempfile doesn't allow no prefix AND requires you to add the '.'! whattapileofcrap!
-    KTempFile tmpfile( QString::null, path.right( path.findRev( '.' ) ) ); //use default suffix
+    KTempFile tmpfile( QString::null, path.mid( path.findRev( '.' ) ) ); //use default prefix
     path = tmpfile.name();
 
     kdDebug() << "[PLSloader] Trying to download: " << m_url.prettyURL() << endl;
