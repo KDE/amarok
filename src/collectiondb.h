@@ -47,6 +47,7 @@ class CollectionDB : public QObject
         void removeSongsInDir( QString path );
         bool isDirInCollection( QString path );
         bool isFileInCollection( const QString url );
+        bool isSamplerAlbum( const QString album );
         void removeDirFromCollection( QString path );
 
         /**

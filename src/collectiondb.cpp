@@ -420,6 +420,34 @@ CollectionDB::isFileInCollection( const QString url )
 }
 
 
+bool
+CollectionDB::isSamplerAlbum( const QString album )
+{
+    QStringList values_artist;
+    QStringList values_dir;
+    QStringList names_artist;
+    QStringList names_dir;
+
+    const uint album_id = getValueID( "album", album, FALSE, TRUE );
+    execSql( QString( "SELECT DISTINCT artist_temp.name FROM artist_temp, tags_temp WHERE tags_temp.artist = artist_temp.id AND tags_temp.album = '%1';" )
+                .arg( album_id ), &values_artist, &names_artist );
+    execSql( QString( "SELECT DISTINCT dir FROM tags_temp WHERE album = '%1';" )
+                .arg( album_id ), &values_dir, &names_dir );
+
+    kdDebug() << values_artist.count() << endl;
+    kdDebug() << values_dir.count() << endl;
+    if ( values_artist.count() > values_dir.count() )
+    {
+
+        execSql( QString( "UPDATE tags_temp SET sampler = 1 WHERE album = '%1';" )
+                    .arg( album_id ) );
+        return true;
+    }
+    
+    return false;
+}
+
+
 void
 CollectionDB::removeDirFromCollection( QString path )
 {
@@ -513,7 +541,8 @@ CollectionDB::createTables( bool temporary )
                         "title VARCHAR(100),"
                         "year INTEGER,"
                         "comment VARCHAR(100),"
-                        "track NUMBER(4) );" )
+                        "track NUMBER(4),"
+                        "sampler BOOLEAN );" )
                         .arg( temporary ? "TEMPORARY" : "" )
                         .arg( temporary ? "_temp" : "" ) );
 
@@ -779,6 +808,8 @@ void
 CollectionDB::retrieveFirstLevel( QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names )
 {
     QString filterToken;
+    
+    // apply special user-filter
     if ( filter != "" )
     {
         filter = escapeString( filter );
@@ -789,7 +820,7 @@ CollectionDB::retrieveFirstLevel( QString category1, QString category2, QString 
         filterToken += "tags.title LIKE '%" + filter + "%' )";
     }
 
-    QString command = "SELECT DISTINCT " + category1.lower() + ".name FROM tags, " + category1.lower();
+    QString command = "SELECT DISTINCT " + category1.lower() + ".name, tags.sampler FROM tags, " + category1.lower();
     if ( category2 != 0 )
         command += ", " + category2.lower();
 
@@ -819,8 +850,14 @@ CollectionDB::retrieveSecondLevel( QString itemText, QString category1, QString 
             filterToken = "AND ( " + category1.lower() + ".name LIKE '%" + filter + "%' OR tags.title LIKE '%" + filter + "%' )";
 
         QString id = QString::number( getValueID( category1.lower(), itemText, false ) );
-        command = "SELECT DISTINCT tags.title, tags.url FROM tags, " + category1.lower() + " WHERE tags."
-                + category1.lower() + "=" + id + " " + filterToken + " ORDER BY tags." + sorting + " DESC;";
+        command = "SELECT DISTINCT tags.title, tags.url FROM tags, " + category1.lower() + " WHERE tags.";
+
+        if ( itemText == i18n( "Various Artists" ) )
+            command += "sampler = 1";
+        else
+            command += category1.lower() + "=" + id;
+
+        command += " " + filterToken + " ORDER BY tags." + sorting + " DESC;";
     }
     else
     {
@@ -830,8 +867,14 @@ CollectionDB::retrieveSecondLevel( QString itemText, QString category1, QString 
         QString id = QString::number( getValueID( category1.lower(), itemText, false ) );
         command = "SELECT DISTINCT " + category2.lower() + ".name, '0' FROM tags, " + category2.lower()
                 + ", " + category1.lower() + " WHERE tags." + category2.lower() + "=" + category2.lower()
-                + ".id AND tags." + category1.lower() + "=" + id + " " + filterToken + " ORDER BY lower("
-                + category2.lower() + ".name) DESC;";
+                + ".id AND tags.";
+                 
+        if ( itemText == i18n( "Various Artists" ) )
+            command += "sampler = 1";
+        else
+            command += category1.lower() + "=" + id;
+
+        command += " " + filterToken + " ORDER BY lower(" + category2.lower() + ".name) DESC;";
     }
 
     execSql( command, values, names );
@@ -853,12 +896,23 @@ CollectionDB::retrieveThirdLevel( QString itemText1, QString itemText2, QString 
     QString id = QString::number( getValueID( category1.lower(), itemText1, false ) );
     QString id_sub = QString::number( getValueID( category2.lower(), itemText2, false ) );
 
-    QString command = "SELECT tags.title, tags.url FROM tags, " + category1.lower() + ", " + category2.lower();
-    command += " WHERE tags." + category1.lower() + " = " + id + " AND tags." + category2.lower() + " = " + id_sub
-             + " AND tags." + category1.lower() + " = " + category1.lower() + ".id "
-             + " AND tags." + category2.lower() + " = " + category2.lower() + ".id "
-             + filterToken
-             + " ORDER BY tags." + sorting + " DESC;";
+    QString command = "SELECT DISTINCT tags.title, tags.url FROM tags, " + category2.lower();
+    if ( itemText1 != i18n( "Various Artists" ) || filter != "" )
+        command += ", " + category1.lower();
+
+    command += " WHERE tags." + category2.lower() + " = " + id_sub
+            +  " AND tags." + category2.lower() + " = " + category2.lower() + ".id"
+            +  " AND tags.";
+              
+    if ( itemText1 == i18n( "Various Artists" ) )
+        command += "sampler = 1 ";
+    else
+        command += category1.lower() + "=" + id;
+        
+    if ( filter != "" )
+        command += " AND tags." + category1.lower() + " = " + category1.lower() + ".id ";
+
+    command += filterToken + " ORDER BY tags." + sorting + " DESC;";
 
     execSql( command, values, names );
 }
@@ -879,7 +933,7 @@ CollectionDB::retrieveFirstLevelURLs( QString itemText, QString category1, QStri
 
     }
 
-    //query database for all tracks in our sub-category
+    //query database for all tracks in our category
     QString sorting = category1.lower() == "album" ? "track" : "title";
     QString id = QString::number( getValueID( category1.lower(), itemText, false ) );
     QString command = "SELECT DISTINCT tags.url FROM tags, " + category1.lower();
@@ -890,7 +944,14 @@ CollectionDB::retrieveFirstLevelURLs( QString itemText, QString category1, QStri
     if ( category2 != 0 )
         command += "AND tags." + category2.lower() + "=" + category2.lower() + ".id ";
 
-    command += "AND tags." + category1.lower() + "=" + id + " " + filterToken + " ORDER BY tags." + sorting + ";";
+    command += "AND tags.";
+        
+    if ( itemText == i18n( "Various Artists" ) )
+        command += "sampler = 1 ";
+    else
+        command += category1.lower() + "=" + id;
+     
+    command += " " + filterToken + " ORDER BY tags." + sorting + ";";
 
     execSql( command, values, names );
 }
@@ -912,8 +973,14 @@ CollectionDB::retrieveSecondLevelURLs( QString itemText1, QString itemText2, QSt
 
     QString command = "SELECT DISTINCT tags.url FROM " + category1.lower() + ", tags, " + category2.lower();
     command += " WHERE tags." + category1.lower() + "=" + category1.lower() + ".id AND"
-             + " tags." + category2.lower() + "=" + id_sub + " AND tags." + category1.lower() + "="
-             + id + " " + filterToken + " ORDER BY tags." + sorting + ";";
+             + " tags." + category2.lower() + "=" + id_sub + " AND tags.";
+              
+    if ( itemText1 == i18n( "Various Artists" ) )
+        command += "sampler = 1 ";
+    else
+        command += category1.lower() + "=" + id;
+     
+    command += " " + filterToken + " ORDER BY tags." + sorting + ";";
 
     execSql( command, values, names );
 }

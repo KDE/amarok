@@ -324,10 +324,20 @@ CollectionView::renderView( )  //SLOT
     //query database for all records with the specified category
     QStringList values;
     QStringList names;
+    bool addedVA = false;
     m_db->retrieveFirstLevel( tableForCat( m_category1 ), tableForCat( m_category2 ), m_filter, &values, &names );
 
-    for ( uint i = 0; i < values.count(); i++ ) {
+    for ( uint i = 0; i < values.count(); i += 2 )
+    {
         if ( values[i].isEmpty() ) continue;
+
+        if ( values[i + 1] == "1" )
+        {
+            if ( addedVA ) continue;
+
+            values[i] = i18n( "Various Artists" );
+            addedVA = TRUE;
+        }
 
         KListViewItem* item = new KListViewItem( this );
         item->setExpandable( true );
@@ -359,16 +369,18 @@ void
 CollectionView::slotExpand( QListViewItem* item )  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
-    if ( !item ) return ;
+    if ( !item ) return;
 
-    if  ( item->depth() == 0 ) {
+    if  ( item->depth() == 0 )
+    {
         QStringList values;
         QStringList names;
         m_db->retrieveSecondLevel( item->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ), m_filter, &values, &names );
 
         QPixmap pixmap = iconForCat( m_category2 );
 
-        for ( uint i = 0; i < values.count(); i += 2 ) {
+        for ( uint i = 0; i < values.count(); i += 2 )
+        {
             Item* child = new Item( item );
             child->setDragEnabled( true );
             child->setDropEnabled( false );
@@ -379,12 +391,14 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             child->setExpandable( m_category2 != i18n( "None" ) );
         }
     }
-    else {
+    else
+    {
         QStringList values;
         QStringList names;
         m_db->retrieveThirdLevel( item->parent()->text( 0 ), item->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ), m_filter, &values, &names );
 
-        for ( uint i = 0; i < values.count(); i += 2 ) {
+        for ( uint i = 0; i < values.count(); i += 2 )
+        {
             Item* child = new Item( item );
             child->setDragEnabled( true );
             child->setDropEnabled( false );

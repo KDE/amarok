@@ -315,24 +315,24 @@ CollectionReader::readTags( const QStringList& entries )
         TagLib::FileRef f( QFile::encodeName( url.path() ), false );  //false == don't read audioprops
 
         QString command = "INSERT INTO tags_temp "
-                            "( url, dir, createdate, album, artist, genre, title, year, comment, track ) "
-                            "VALUES('";
+                            "( url, dir, createdate, album, artist, genre, title, year, comment, track, sampler ) "
+                            "VALUES ('";
 
         if ( !f.isNull() ) {
             MetaBundle bundle( url, f.tag(), 0 );
 
-	    QString artist = bundle.artist();
-	    QString title = bundle.title();
-	    if ( bundle.title().isEmpty() )
-	    {
-		title = url.fileName();
+            QString artist = bundle.artist();
+            QString title = bundle.title();
+            if ( bundle.title().isEmpty() )
+            {
+                title = url.fileName();
                 if ( url.fileName().find( '-' ) > 0 )
                 {
                     if ( artist.isEmpty() ) artist = url.fileName().left( url.fileName().find( '-' ) - 1 ).stripWhiteSpace();
                     title = url.fileName().mid( url.fileName().find( '-' ) + 1 );
-		    title = title.left( title.findRev( '.' ) ).stripWhiteSpace();
+                    title = title.left( title.findRev( '.' ) ).stripWhiteSpace();
                 }
-	    }
+            }
 
             command += m_parent->escapeString( bundle.url().path() ) + "','";
             command += m_parent->escapeString( bundle.url().directory() ) + "',";
@@ -343,7 +343,12 @@ CollectionReader::readTags( const QStringList& entries )
             command += m_parent->escapeString( title.isEmpty() ? url.fileName() : title ) + "','";
             command += m_parent->escapeString( QString::number( m_parent->getValueID( "year", bundle.year().isEmpty() ? i18n( "Unknown" ) : bundle.year(), true, !m_incremental ) ) ) + "','";
             command += m_parent->escapeString( bundle.comment() ) + "','";
-            command += m_parent->escapeString( bundle.track() ) + "');";
+            command += m_parent->escapeString( bundle.track() ) + "',";
+
+            if ( m_parent->isSamplerAlbum( bundle.album() ) )
+                command += "1);";
+            else
+                command += "0);";
 
             m_parent->execSql( command );
         }
