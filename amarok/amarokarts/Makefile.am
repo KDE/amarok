@@ -3,7 +3,7 @@ METASOURCES = AUTO
 
 lib_LTLIBRARIES = libamarokarts.la
 
-libamarokarts_la_LDFLAGS = -avoid-version -version-info 0:0:0
+libamarokarts_la_LDFLAGS = -avoid-version -module -version-info 0:0:0
 libamarokarts_la_SOURCES = winSkinFFT_impl.cpp visQueue.cpp realFFTFilter.cpp realFFT.cpp amarokarts.cc synth_stereo_xfade_impl.cpp
 
 # in case somebody wants to install headers
