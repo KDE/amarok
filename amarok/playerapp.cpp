@@ -1212,7 +1212,7 @@ void PlayerApp::slotAddLocation()
     KURLRequesterDlg dlg( QString::null, 0, 0 );
     dlg.setCaption( makeStdCaption( i18n( "Enter file or URL" ) ) );
     dlg.setIcon( icon() );
-    dlg.urlRequester() ->setMode( KFile::File | KFile::ExistingOnly );
+    dlg.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
     dlg.exec();
 
     KURL url = dlg.selectedURL();

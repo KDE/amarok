@@ -54,6 +54,8 @@
 #include <klocale.h>
 #include <kstandarddirs.h>
 #include <ksystemtray.h>
+#include <kpopupmenu.h>
+#include <khelpmenu.h>
 
 #include <arts/artsgui.h>
 #include <arts/connect.h>
@@ -192,6 +194,48 @@ void AmarokSlider::mousePressEvent( QMouseEvent *e )
 }
 
 
+// AmarokSystray
+// FIXME Move implementation to separate sourcefile
+class AmarokSystray : public KSystemTray
+{
+   public:
+      AmarokSystray(PlayerWidget *child) : KSystemTray(child)
+      {
+         setPixmap(kapp->miniIcon());
+
+         // Re-construct menu
+         KAction* quitAction = KStdAction::quit(this, SIGNAL(quitSelected()), actionCollection());
+
+         contextMenu()->clear();
+         contextMenu()->insertTitle(kapp->miniIcon(), kapp->caption());
+
+         quitAction->plug(contextMenu());
+         connect(this, SIGNAL(quitSelected()), child, SLOT(close()));
+
+         contextMenu()->insertItem(i18n("&Configure..."), kapp, SLOT(slotShowOptions()));
+         contextMenu()->insertItem(i18n("&Help"), (new KHelpMenu(this, KGlobal::instance()->aboutData()))->menu());
+
+         contextMenu()->insertSeparator();
+
+         contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunback.png" )), "(&Z) Prev", kapp, SLOT( slotPrev() ) );
+
+         contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunplay.png" )), "(&X) Play", kapp, SLOT( slotPlay() ) );
+
+         contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunpause.png" )), "(&C) Pause", kapp, SLOT( slotPause() ) );
+
+         contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunstop.png" )), "(&V) Stop", kapp, SLOT( slotStop() ) );
+
+         contextMenu()->insertItem( QIconSet(locate( "data", "amarok/images/hi16-action-noatunforward.png" )), "(&B) Next", kapp, SLOT( slotNext() ) );
+
+         // don't love them just yet
+         setAcceptDrops(false);
+      }
+
+      /* Don't add me a Quit button automagically */
+      void showEvent( QShowEvent * ) {}
+
+};
+
 // CLASS PlayerWidget ------------------------------------------------------------
 
 PlayerWidget::PlayerWidget( QWidget *parent, const char *name ) : QWidget( parent, name )
@@ -319,8 +363,8 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name ) : QWidget( paren
     m_pTimeDisplayLabel->setFixedSize( 9 * 12 + 2, 12 + 2 );
 
     // set up system tray
-    m_pTray = new KSystemTray( this );
-    m_pTray->setPixmap( pApp->miniIcon() );
+    m_pTray = new AmarokSystray( this );
+//    m_pTray->setPixmap( pApp->miniIcon() );
     m_pTray->show();
     QToolTip::add( m_pTray, i18n( "amaroK media player" ) );
 

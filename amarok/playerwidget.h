@@ -44,6 +44,8 @@ class ArtsConfigWidget;
 class PlayerApp;
 extern PlayerApp *pApp;
 
+class AmarokSystray;
+
 /**
  *@author mark
  */
@@ -196,6 +198,6 @@ class PlayerWidget : public QWidget
         int m_sx;
         int m_sy;
         int m_sxAdd;
-        KSystemTray *m_pTray;
+        AmarokSystray *m_pTray;
 };
 #endif
