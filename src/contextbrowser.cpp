@@ -437,8 +437,8 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                 << escapeHTMLAttr( m_currentTrack->album() )
                                 << escapeHTMLAttr( m_db->getImageForAlbum( values[1], values[0] ) )
                                 << values[5]
-                                << values[2].left( values[2].length() - 3 )
                                 << values[3].left( values[3].length() - 3 )
+                                << values[2].left( values[2].length() - 3 )
                                 )
                          );
     else
