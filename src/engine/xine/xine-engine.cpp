@@ -348,14 +348,14 @@ XineEngine::scope()
     if( !m_post || xine_get_status( m_stream ) != XINE_STATUS_PLAY )
        return m_scope;
 
-    MyNode *myList         = scope_plugin_list( m_post );
-    metronom_t *myMetronom = scope_plugin_metronom( m_post );
-    int myChannels         = scope_plugin_channels( m_post );
+    MyNode* const myList         = scope_plugin_list( m_post );
+    metronom_t* const myMetronom = scope_plugin_metronom( m_post );
+    const int myChannels         = scope_plugin_channels( m_post );
 
     //prune the buffer list and update m_currentVpts
     timerEvent( 0 );
 
-    for( int frame = 0; frame < 512; )
+    for( int n, frame = 0; frame < 512; )
     {
         MyNode *best_node = 0;
 
@@ -376,13 +376,16 @@ XineEngine::scope()
         data16  = best_node->mem;
         data16 += diff;
 
-        diff /= myChannels;
+        diff += diff % myChannels; //important correction to ensure we don't overflow the buffer
+        diff /= myChannels;        //use units of frames, not samples
 
-        int
+        //calculate the number of available samples in this buffer
         n  = best_node->num_frames;
         n -= diff;
         n += frame; //clipping for # of frames we need
-        if( n > 512 ) n = 512; //bounds limiting
+
+        if( n > 512 )
+           n = 512; //we don't want more than 512 frames
 
         for( int a, c; frame < n; ++frame, data16 += myChannels ) {
             for( a = c = 0; c < myChannels; ++c )
