@@ -99,6 +99,8 @@ namespace amaroK
             const QCString gdb_batch =
                     "bt\n"
                     "echo \\n\\n\n"
+                    "bt full\n"
+                    "echo \\n\\n\n"
                     "echo ==== (gdb) thread apply all bt ====\\n\n"
                     "thread apply all bt\n";
 
@@ -118,13 +120,13 @@ namespace amaroK
             QString bt = runCommand( gdb );
 
             /// clean up
-            bt.remove( QRegExp("(\\(no debugging symbols found\\)\\.\\.\\.)+\n") );
+            bt.remove( "(no debugging symbols found)..." );
             bt.stripWhiteSpace();
 
             /// analyze usefulness
             const QString fileCommandOutput = runCommand( "file `which amarokapp`" );
 
-            if( fileCommandOutput.findRev( "not stripped", false ) >= 0 )
+            if( fileCommandOutput.findRev( "not stripped", false ) < 0 )
                 subject += " [stripped]";
 
             if( !bt.isEmpty() ) {
@@ -137,7 +139,7 @@ namespace amaroK
                 if( validFrames < 5 )
                     subject += " [short]";
 
-                if( bt.contains( QRegExp("at \\w*\\.cpp:\\d+") ) >= 0 )
+                if( bt.contains( QRegExp("at \\w*\\.cpp:\\d+\n") ) >= 0 )
                     subject += " [good]";
             }
             else
