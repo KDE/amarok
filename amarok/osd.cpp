@@ -128,7 +128,7 @@ void OSDWidget::renderOSDText( const QString &text )
 
 void OSDWidget::showOSD( const QString &text, bool preemptive )
 {
-    if ( isEnabled() )
+    if ( isEnabled() && !text.isEmpty() )
     {
         if ( preemptive == false && timerMin->isActive() )
         {
@@ -361,5 +361,46 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent */*event*/ )
     }
 }
 
+
+
+//////  amK::OSD below /////////////////////
+
+#include "enginecontroller.h"
+#include "metabundle.h"
+#include <qregexp.h>
+
+void
+amK::OSD::showVolume()
+{
+    showOSD( i18n("Volume %1%").arg( EngineController::instance()->engine()->volume() ), true );
+}
+
+void
+amK::OSD::showTrack( const MetaBundle &bundle )
+{
+    // Strip HTML tags, expand basic HTML entities
+    QString text = bundle.prettyTitle();
+
+    if ( bundle.length() )
+    {
+        text += " - ";
+        text += bundle.prettyLength();
+    }
+
+    text.replace( QRegExp( "</?(?:font|a|b|i)\\b[^>]*>" ), "" );
+    text.replace( "&lt;",  "<" );
+    text.replace( "&gt;",  ">" );
+    text.replace( "&amp;", "&" );
+
+    m_text = text;
+
+    showTrack();
+}
+
+void
+amK::OSD::showTrack()
+{
+    showOSD( m_text );
+}
 
 #include "osd.moc"

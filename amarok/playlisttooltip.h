@@ -15,17 +15,12 @@
 #ifndef PLAYlISTTOOLTIP_H
 #define PLAYlISTTOOLTIP_H
 
-#include <qtooltip.h>
-
 class MetaBundle;
 class QWidget;
 
-class PlaylistToolTip : public QToolTip
+namespace PlaylistToolTip
 {
-    public:
-        PlaylistToolTip( QWidget * parent );
-        static void add( QWidget * widget, const MetaBundle & tags );
-
-};
+    void add( QWidget * widget, const MetaBundle & tags );
+}
 
 #endif

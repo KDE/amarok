@@ -77,6 +77,8 @@ class OSDWidget : public QWidget
         int m_screen;
 };
 
+
+
 // do not pollute OSDWidget with this preview stuff
 class OSDPreviewWidget : public OSDWidget
 {
@@ -96,5 +98,26 @@ private:
     bool m_dragging;
     QPoint m_dragOffset;
 };
+
+
+
+namespace amK {
+
+class OSD : public OSDWidget
+{
+Q_OBJECT
+public:
+    OSD() : OSDWidget( "amaroK" ) {}
+
+public slots:
+    void showVolume();
+    void showTrack( const MetaBundle &bundle );
+    void showTrack();
+
+private:
+    QString m_text;
+};
+
+}
 
 #endif

@@ -13,65 +13,71 @@
 */
 
 #include "playlisttooltip.h"
-#include "metabundle.h" //moved from header to stop a compile dependency
-#include <qapplication.h>
-#include <qpainter.h>
-#include <stdlib.h>
+#include "metabundle.h"
 #include <dirent.h>
 #include <sys/stat.h>
 #include <kurl.h>
+#include <qtooltip.h>
 
-
-PlaylistToolTip::PlaylistToolTip( QWidget * parent )
-    : QToolTip( parent )
-{
-}
 
 void PlaylistToolTip::add( QWidget * widget, const MetaBundle & tags )
 {
     const KURL &url = tags.url();
+    const QString tr = "<tr><td width=70>%1:</td><td align=left>%2</td></tr>";
 
-    QString tipBuf = "<center><table style='font-face: Arial; font-size: 8px;'>";
-    QString s = "<tr><td width='70'>%1:</td><td align='left'>%2</td></tr>";
-    tipBuf += s.arg( i18n( "Title" ),  tags.title() );
-    tipBuf += s.arg( i18n( "Artist" ), tags.artist() );
-    tipBuf += s.arg( i18n( "Length" ), tags.prettyLength() );
-    tipBuf += s.arg( i18n( "Bitrate" ), tags.prettyBitrate() );
-    tipBuf += s.arg( i18n( "Samplerate" ), tags.prettySampleRate() ) + "<br>";
+    QString tipBuf;
+
+    tipBuf += "<center><table>"; //style='font-face: Arial; font-size: 8px;'
+    tipBuf += tr.arg( i18n( "Title" ),  tags.title() );
+    tipBuf += tr.arg( i18n( "Artist" ), tags.artist() );
+    tipBuf += tr.arg( i18n( "Length" ), tags.prettyLength() );
+    tipBuf += tr.arg( i18n( "Bitrate" ), tags.prettyBitrate() );
+    tipBuf += tr.arg( i18n( "Samplerate" ), tags.prettySampleRate() );
     tipBuf += "</table>";
 
-    int rowcnt = 0;
-    QString curAlign;
+    QStringList validExtensions;
+    validExtensions << "jpg" << "png" << "gif" << "jpeg";
+
     DIR *d = opendir( url.directory( FALSE, FALSE ).local8Bit() );
     if ( d )
     {
+        const QString td = "<td align=center valign=center><img width=100 src='%1%2'></td>";
+        int rowcnt = 0;
         dirent *ent;
+
         while ( ( ent = readdir( d ) ) )
         {
             QString file( ent->d_name );
 
-            if ( file.contains( ".jpg", FALSE ) || file.contains( ".png", FALSE ) ||
-                 file.contains( ".gif", FALSE ) )
+            if ( validExtensions.contains( file.mid( file.findRev('.')+1 ) ) )
             {
                 // we found an image, let's add it to the tooltip
                 if ( rowcnt == 0 )
-                    tipBuf += "<table><tr>";
+                    tipBuf += "<table><tr><td></td></tr><tr>"; //extra row for spacing
 
-                tipBuf += "<td width='104' align='center'><img width='100' src='" + url.directory( FALSE, FALSE ) + "/" + file + "'></td>";
+                tipBuf += td.arg( url.directory( FALSE, TRUE ), file );
 
-                rowcnt++;
-                if ( rowcnt == 3)
+                if ( ++rowcnt == 3)
                 {
                     rowcnt = 0;
                     tipBuf += "</tr><tr>";
                 }
-            }
 
+                /* TODO this generates a small image of the coverArt
+                QImage img( path );//, ext.local8Bit() );
+                QPixmap pix;
+                if( pix.convertFromImage( img.smoothScale( 64, 64 ) ) )
+                    return pix;
+                */
+            }
         }
+
+        if ( rowcnt > 0 )
+            tipBuf += "</tr></table>";
+
+        closedir( d );
     }
 
-    if ( rowcnt > 0 )
-        tipBuf += "</tr></table>";
     tipBuf += "</center>";
 
     QToolTip::add( widget, tipBuf );

@@ -446,7 +446,7 @@ PlaylistLoader::DownloadPlaylistEvent::makePlaylistItem( PlaylistWidget *lv )
 
     //FIXME this will block user input to the interface AND process the event queue
     QApplication::setOverrideCursor( KCursor::waitCursor() );
-        bool succeeded = KIO::NetAccess::download( m_url, path, pApp->m_pBrowserWin );
+        bool succeeded = KIO::NetAccess::download( m_url, path, reinterpret_cast<QWidget*>(lv) );
     QApplication::restoreOverrideCursor();
 
     if( succeeded )
@@ -469,7 +469,7 @@ PlaylistLoader::DownloadPlaylistEvent::makePlaylistItem( PlaylistWidget *lv )
     }
     else
     {
-        KMessageBox::sorry( pApp->m_pBrowserWin, i18n( "The playlist, '%1', could not be downloaded." ).arg( m_url.prettyURL() ) );
+        KMessageBox::sorry( reinterpret_cast<QWidget*>(lv), i18n( "The playlist, '%1', could not be downloaded." ).arg( m_url.prettyURL() ) );
         newItem->setVisible( false ); //FIXME you set m_thread->m_after to this so we can't delete it!
         tmpfile.unlink();
     }

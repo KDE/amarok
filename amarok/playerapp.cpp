@@ -28,7 +28,7 @@ email                : markey@web.de
 #include "plugin.h"
 #include "pluginmanager.h"
 #include "threadweaver.h"        //restoreSession()
-#include "playlisttooltip.h"
+#include "playlisttooltip.h"     //engineNewMetaData()
 #include "enginecontroller.h"
 #include "vis/socketserver.h"    //please leave directory prefix
 #include "amaroksystray.h"
@@ -58,10 +58,12 @@ email                : markey@web.de
 #include <qserversocket.h>       //initIpc()
 #include <qsocketnotifier.h>     //initIpc()
 #include <qstring.h>
+#include <qtooltip.h>            //adding tooltip to systray
 
 #include <unistd.h>              //initIpc()
 #include <sys/socket.h>          //initIpc()
 #include <sys/un.h>              //initIpc()
+
 
 
 PlayerApp::PlayerApp()
@@ -69,7 +71,7 @@ PlayerApp::PlayerApp()
         , m_pGlobalAccel( new KGlobalAccel( this ) )
         , m_pDcopHandler( new AmarokDcopHandler )
         , m_pTray( 0 )
-        , m_pOSD( new OSDWidget( "amaroK" ) )
+        , m_pOSD( new amK::OSD() )
         , m_sockfd( -1 )
         , m_showBrowserWin( false )
         , m_pActionCollection( new KActionCollection( 0, this ) )
@@ -119,7 +121,7 @@ PlayerApp::PlayerApp()
     m_pTray = new AmarokSystray( m_pPlayerWidget, actionCollection() ); //show/hide is handled by KConfig XT
 
 
-    applySettings();  //will create the engine
+    applySettings();  //will load the engine
 
 
     //restore session as long as the user isn't asking for stuff to be inserted into the playlist etc.
@@ -283,15 +285,16 @@ void PlayerApp::initCliArgs( int argc, char *argv[] ) //static
                                  I18N_NOOP( "http://amarok.sourceforge.net" ) );
 
     aboutData.addAuthor( "Christian Muehlhaeuser", "developer", "chris@chris.de", "http://www.chris.de" );
+    aboutData.addAuthor( "Frederik Holljen", "OSD improvement, 733t code, patches", "fh@ez.no" );
     aboutData.addAuthor( "Mark Kretschmann", "project founder, developer, maintainer", "markey@web.de" );
-    aboutData.addAuthor( "Max Howell", "developer", "max.howell@methylblue.com" );
+    aboutData.addAuthor( "Max Howell", "developer, project-stud", "max.howell@methylblue.com" );
     aboutData.addAuthor( "Stanislav Karchebny", "patches, improvements, visualizations, cleanups, i18n",
                          "berk@upnet.ru" );
 
     aboutData.addCredit( "Adam Pigg", "analyzer, patches", "adam@piggz.fsnet.co.uk" );
     aboutData.addCredit( "Alper Ayazoglu", "graphics: buttons", "cubon@cubon.de", "http://cubon.de" );
     aboutData.addCredit( "Enrico Ros", "analyzer", "eros.kde@email.it" );
-    aboutData.addCredit( "Frederik Holljen", "OSD improvement, patches", "fh@ez.no" );
+
     aboutData.addCredit( "Jarkko Lehti", "tester, IRC channel operator, whipping", "grue@iki.fi" );
     aboutData.addCredit( "Josef Spillner", "KDE RadioStation code", "spillner@kde.org" );
     aboutData.addCredit( "Markus A. Rykalski", "graphics", "exxult@exxult.de" );
@@ -311,7 +314,7 @@ void PlayerApp::initEngine()
 {
     Plugin* plugin = PluginManager::createFromQuery
                          ( "[X-KDE-amaroK-plugintype] == 'engine' and "
-                           "Name                      == '" + AmarokConfig::soundSystem() + "'" );
+                           "Name                      == '" + AmarokConfig::soundSystem() + '\'' );
 
     if ( !plugin ) {
         kdWarning() << k_funcinfo << "Cannot load the specified engine. Trying with another engine..\n";
@@ -385,7 +388,7 @@ void PlayerApp::initBrowserWin()
     m_pBrowserWin = new BrowserWin( 0, "BrowserWin" );
 
     connect( m_pPlayerWidget, SIGNAL( playlistToggled( bool ) ),
-             this,                SLOT  ( slotPlaylistShowHide() ) );
+             this,              SLOT( slotPlaylistShowHide() ) );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
@@ -398,7 +401,7 @@ void PlayerApp::initPlayerWidget()
     m_pPlayerWidget = new PlayerWidget( 0, "PlayerWidget" );
 
     connect( m_pPlayerWidget, SIGNAL( effectsWindowActivated() ),
-             this,            SLOT( showEffectWidget() ) );
+             this,              SLOT( showEffectWidget() ) );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
@@ -459,9 +462,9 @@ void PlayerApp::applySettings()
     engine->setRestoreEffects( AmarokConfig::rememberEffects() );
     engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
 
-    m_pOSD->setEnabled ( AmarokConfig::osdEnabled() );
-    m_pOSD->setFont    ( AmarokConfig::osdFont() );
-    m_pOSD->setTextColor   ( AmarokConfig::osdTextColor() );
+    m_pOSD->setEnabled( AmarokConfig::osdEnabled() );
+    m_pOSD->setFont( AmarokConfig::osdFont() );
+    m_pOSD->setTextColor( AmarokConfig::osdTextColor() );
     m_pOSD->setBackgroundColor( AmarokConfig::osdBackgroundColor() );
     m_pOSD->setDuration( AmarokConfig::osdDuration() );
     m_pOSD->setPosition( (OSDWidget::Position)AmarokConfig::osdAlignment() );
@@ -482,13 +485,6 @@ void PlayerApp::applySettings()
     m_pTray->setShown( AmarokConfig::showTrayIcon() );
 
     setupColors();
-}
-
-
-void PlayerApp::setOsdEnabled(bool enable)
-{
-    AmarokConfig::setOsdEnabled(enable);
-    m_pOSD->setEnabled ( AmarokConfig::osdEnabled() );
 }
 
 
@@ -542,7 +538,7 @@ void PlayerApp::readConfig()
     m_pGlobalAccel->insert( "prev", i18n( "Previous Track" ), 0, KKey("WIN+z"), 0,
                             EngineController::instance(), SLOT( previous() ), true, true );
     m_pGlobalAccel->insert( "osd", i18n( "Show OSD" ), 0, KKey("WIN+o"), 0,
-                            this, SLOT( slotShowOSD() ), true, true );
+                            m_pOSD, SLOT( showTrack() ), true, true );
     m_pGlobalAccel->insert( "volup", i18n( "Increase volume" ), 0, KKey("WIN+KP_Add"), 0,
                             this, SLOT( slotIncreaseVolume() ), true, true );
     m_pGlobalAccel->insert( "voldn", i18n( "Decrease volume" ), 0, KKey("WIN+KP_Subtract"), 0,
@@ -734,7 +730,7 @@ void PlayerApp::engineStateChanged( EngineBase::EngineState state )
         case EngineBase::Empty:
         case EngineBase::Idle:
             m_pDcopHandler->setNowPlaying( QString::null );
-            QToolTip::remove( m_pTray );
+            //QToolTip::remove( m_pTray );
             QToolTip::add( m_pTray, i18n( "amaroK - Audio Player" ) );
             break;
     }
@@ -743,13 +739,16 @@ void PlayerApp::engineStateChanged( EngineBase::EngineState state )
 
 void PlayerApp::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
 {
+    QString prettyTitle = bundle.prettyTitle();
+
     if( trackChanged )
     {
-        slotShowOSD( bundle );
+        m_pOSD->showTrack( bundle );
     }
-    m_pDcopHandler->setNowPlaying( bundle.prettyTitle() );
-    QToolTip::remove( m_pTray );
-    QToolTip::add( m_pTray, bundle.prettyTitle() );
+    m_pDcopHandler->setNowPlaying( prettyTitle );
+    //QToolTip::remove( m_pTray );
+    //QToolTip::add( m_pTray, prettyTitle );
+    PlaylistToolTip::add( m_pTray, bundle );
 }
 
 
@@ -825,48 +824,28 @@ void PlayerApp::slotShowOptions()
     }
 }
 
-
-void PlayerApp::slotShowOSD( const MetaBundle& bundle )
+void PlayerApp::setOsdEnabled( bool enabled ) //SLOT //FIXME this slot sucks
 {
-    // Strip HTML tags, expand basic HTML entities
-    QString text = QString( bundle.prettyTitle() );
-
-    if ( bundle.length() )
-        text += " - " + bundle.prettyLength();
-
-    QString plaintext = text.copy();
-    plaintext.replace( QRegExp( "</?(?:font|a|b|i)\\b[^>]*>" ), QString( "" ) );
-    plaintext.replace( QRegExp( "&lt;" ), QString( "<" ) );
-    plaintext.replace( QRegExp( "&gt;" ), QString( ">" ) );
-    plaintext.replace( QRegExp( "&amp;" ), QString( "&" ) );
-
-    m_textForOSD = plaintext;
-    slotShowOSD();
+    m_pOSD->setEnabled( enabled );
 }
 
-void PlayerApp::slotShowOSD()
+void PlayerApp::slotShowVolumeOSD() //SLOT //FIXME this slot sucks
 {
-    if (!m_textForOSD.isEmpty())
-        m_pOSD->showOSD( m_textForOSD );
-}
-
-void PlayerApp::slotShowVolumeOSD()
-{
-    m_pOSD->showOSD( i18n("Volume %1%").arg( EngineController::instance()->engine()->volume() ), true );
+    m_pOSD->showVolume();
 }
 
 void PlayerApp::slotIncreaseVolume()
 {
     EngineController *controller = EngineController::instance();
     controller->setVolume( controller->engine()->volume() + 100 / 25 );
-    slotShowVolumeOSD();
+    m_pOSD->showVolume();
 }
 
 void PlayerApp::slotDecreaseVolume()
 {
     EngineController *controller = EngineController::instance();
     controller->setVolume( controller->engine()->volume() - 100 / 25 );
-    slotShowVolumeOSD();
+    m_pOSD->showVolume();
 }
 
 void PlayerApp::slotConfigShortcuts()

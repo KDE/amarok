@@ -22,39 +22,31 @@
     #include <config.h>
 #endif
 
-#include <qserversocket.h>         //baseclass
-
+#include "engine/engineobserver.h" //baseclass
 #include <kapplication.h>          //baseclass
 #include <kurl.h>                  //needed for KURL::List (nested)
-#include "engine/engineobserver.h"
+#include <qserversocket.h>         //baseclass
 
 #define APP_VERSION "0.9.1-CVS"
 
-class BrowserWin;
-class EngineBase;
-class MetaBundle;
-class OSDWidget;
-class PlayerWidget;
-class PlaylistItem;
+
+namespace amK { class OSD; }
 class AmarokDcopHandler;
 class AmarokSystray;
-
+class BrowserWin;
+class MetaBundle;
+class PlayerWidget;
 
 class QColor;
 class QCString;
 class QEvent;
-class QListView;
-class QListViewItem;
-class QString;
-class QTimer;
-
 class KActionCollection;
 class KGlobalAccel;
 
 
 class PlayerApp : public KApplication, public EngineObserver
 {
-        Q_OBJECT
+    Q_OBJECT
 
     public:
         PlayerApp();
@@ -67,13 +59,10 @@ class PlayerApp : public KApplication, public EngineObserver
         AmarokDcopHandler *dcopHandler() const { return m_pDcopHandler; }
 
         KActionCollection *actionCollection() { return m_pActionCollection; }
+        const KActionCollection *actionCollection() const { return m_pActionCollection; }
 
         // STATICS
-        static const int     SCOPE_SIZE  = 7;
-
-        // ATTRIBUTES
-
-        BrowserWin   *m_pBrowserWin;
+        static const int SCOPE_SIZE  = 7;
 
     protected: /* for OSD, tray, and dcop */
         void engineStateChanged( EngineBase::EngineState state );
@@ -82,21 +71,18 @@ class PlayerApp : public KApplication, public EngineObserver
     public slots:
         void slotPlaylistShowHide();
         void slotShowOptions();
-        void slotShowOSD();
-        void slotShowVolumeOSD();
         void slotIncreaseVolume();
         void slotDecreaseVolume();
-        void setOsdEnabled(bool enable);
         void slotConfigShortcuts();
         void slotConfigGlobalShortcuts();
+        void setOsdEnabled( bool );
+        void slotShowVolumeOSD();
 
     private slots:
         void handleLoaderArgs( QCString args );
         void applySettings();
         void showEffectWidget();
         void slotEffectWidgetDestroyed();
-        void slotShowOSD( const MetaBundle& );
-
 
     private:
         void handleCliArgs();
@@ -113,21 +99,19 @@ class PlayerApp : public KApplication, public EngineObserver
         void saveConfig();
         bool eventFilter( QObject*, QEvent* );
 
-        void setupScrolltext();
-
         // ATTRIBUTES ------
-        KGlobalAccel *m_pGlobalAccel;
-        PlayerWidget *m_pPlayerWidget;
+        KGlobalAccel      *m_pGlobalAccel;
+        PlayerWidget      *m_pPlayerWidget;
+        BrowserWin        *m_pBrowserWin;
         AmarokDcopHandler *m_pDcopHandler;
-        AmarokSystray *m_pTray;
-
-        long      m_length;
-        OSDWidget *m_pOSD;
-        int       m_sockfd;
-        QString   m_textForOSD;
-        bool      m_showBrowserWin;
-        bool m_artsNeedsRestart;
+        AmarokSystray     *m_pTray;
+        amK::OSD          *m_pOSD;
         KActionCollection *m_pActionCollection;
+
+        long      m_length; //DEPRECATE
+        int       m_sockfd;
+        bool      m_showBrowserWin;
+        bool      m_artsNeedsRestart; //DEPRECATE
 };
 
 
@@ -144,7 +128,6 @@ class LoaderServer : public QServerSocket
     private :
         void newConnection( int socket );
 };
-
 
 #endif                                            // AMAROK_PLAYERAPP_H
 
