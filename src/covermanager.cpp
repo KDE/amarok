@@ -555,7 +555,7 @@ void CoverViewItem::updateCover( const QPixmap &cover )
 QString CoverViewItem::albumPath()
 {
     QString fileName = QString( "%1 - %2.png" ).arg(m_artist).arg(m_album);
-    fileName.replace( "/", "_" );
+    fileName.replace( "/", "_" ).replace( "'", "_" );
     return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) + "albumcovers/large/"+fileName;
 }
 
