@@ -131,7 +131,6 @@ class CollectionView : public KListView
 
         // Reimplemented from KListView
         void viewportPaintEvent( QPaintEvent* );
-        void viewportResizeEvent( QResizeEvent* );
 
     //attributes:
         static CollectionView* m_instance;

@@ -1146,6 +1146,7 @@ CollectionView::viewportPaintEvent( QPaintEvent *e )
     if ( m_viewMode == modeFlatView && childCount() == 0 )
     {
         QPainter p( viewport() );
+
         QSimpleRichText t( i18n(
                 "<div align=center>"
                   "<h3>Flat-View Mode</h3>"
@@ -1153,23 +1154,14 @@ CollectionView::viewportPaintEvent( QPaintEvent *e )
                 "</div>" ), QApplication::font() );
 
         const int wd3 = viewport()->width() / 3;
-
         t.setWidth( wd3 );
 
         const int y = (viewport()->height() - t.height()) / 2;
 
         p.setBrush( colorGroup().background() );
         p.drawRoundRect( wd3-15, y-15, t.width()+30, t.height()+30, 5, 5 );
-        t.draw( &p, wd3, y, QRect(), colorGroup() );
+        t.draw( &p, wd3, y, e->rect(), colorGroup() );
     }
-}
-
-
-void
-CollectionView::viewportResizeEvent( QResizeEvent* )
-{
-    // Needed for correct redraw of the flat-view bubble help
-    triggerUpdate();
 }
 
 
