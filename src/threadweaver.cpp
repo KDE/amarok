@@ -311,11 +311,11 @@ CollectionReader::readTags( const QStringList& entries ) {
             QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Progress, i ) );
         
         url.setPath( entries[i] );
-
-        TagLib::FileRef f( url.path().local8Bit(), false /*== read AudioProps */ );
-        MetaBundle* bundle = f.isNull() ? 0 : new MetaBundle( url, f.tag(), 0 );
+        TagLib::FileRef f( url.path().local8Bit(), false );  //false == don't read audioprops
                 
-        if ( bundle ) {
+        if ( !f.isNull() ) {
+            MetaBundle* bundle = new MetaBundle( url, f.tag(), 0 );
+            
             QString command = "INSERT INTO tags_temp "
                                 "( url, dir, album, artist, genre, title, year, comment, track ) "
                                 "VALUES('";
