@@ -167,6 +167,10 @@ else
         echo " =   + LibVisual Plugin"
     fi
 
+    if test x$enable_mysql = xyes; then
+        echo " =   + MySql support"
+    fi
+
     echo " ="
 fi
 

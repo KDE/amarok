@@ -38,35 +38,43 @@
 CollectionEmitter* CollectionDB::s_emitter = 0;
 
 
-#ifdef __USE_MYSQL
-//TODO: this has to go into Settings dialog
-#define __MYSQL_HOST "localhost"
-#define __MYSQL_PORT 3306
-#define __MYSQL_USER "root"
-#define __MYSQL_PASSWORD "root"
-#define __MYSQL_DB "amarok"
-#endif
-
 CollectionDB::CollectionDB()
         : m_weaver( new ThreadWeaver( this ) )
         , m_cacheDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) )
         , m_coverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) )
 {
-#ifdef __USE_MYSQL
-    mysql::mysql_init(&m_db);
-    if (mysql::mysql_real_connect(&m_db, __MYSQL_HOST, __MYSQL_USER, __MYSQL_PASSWORD, __MYSQL_DB, __MYSQL_PORT, NULL, CLIENT_COMPRESS))
-    {
-        if (!isValid())
-        	createTables();
-    }
-    else
-    {
-        if (mysql::mysql_real_connect(&m_db, __MYSQL_HOST, __MYSQL_USER, __MYSQL_PASSWORD, NULL, __MYSQL_PORT, NULL, CLIENT_COMPRESS))
+#ifdef USE_MYSQL
+    m_db = mysql::mysql_init(NULL);
+		if (m_db)
+		{
+        if (mysql::mysql_real_connect(m_db, AmarokConfig::mySqlHost().latin1(),
+				                                    AmarokConfig::mySqlUser().latin1(),
+																						AmarokConfig::mySqlPassword().latin1(),
+																						AmarokConfig::mySqlDbName().latin1(),
+																						AmarokConfig::mySqlPort(),
+																						NULL, CLIENT_COMPRESS))
         {
-            mysql::mysql_query(&m_db, "CREATE DATABASE " __MYSQL_DB);
-            createTables();
+            if (!isValid())
+        	      createTables();
         }
-    }
+        else
+        {
+            if (mysql::mysql_real_connect(m_db, AmarokConfig::mySqlHost().latin1(),
+						                                    AmarokConfig::mySqlUser().latin1(),
+																								AmarokConfig::mySqlPassword().latin1(),
+																								NULL,
+																								AmarokConfig::mySqlPort(),
+																								NULL, CLIENT_COMPRESS))
+            {
+                if (mysql::mysql_query(m_db, QString("CREATE DATABASE " + AmarokConfig::mySqlDbName()).latin1()))
+                    createTables();
+								else
+								    kdDebug() << "Failed to create database " << AmarokConfig::mySqlDbName() << "\n";
+            }
+        }
+		}
+		else
+		    kdDebug() << "Failed to allocate/initialize MySql struct\n";
 #else
     QCString path = ( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" )
                   + "collection.db" ).local8Bit();
@@ -110,8 +118,8 @@ CollectionDB::CollectionDB()
 
 CollectionDB::~CollectionDB()
 {
-#ifdef __USE_MYSQL
-    mysql::mysql_close( &m_db );
+#ifdef USE_MYSQL
+    if (m_db) mysql::mysql_close( m_db );
 #else
     sqlite3_close( m_db );
 #endif
@@ -142,11 +150,17 @@ CollectionDB::query( const QString& statement, QStringList* const names, bool de
 
     clock_t start = clock();
 
-#ifdef __USE_MYSQL
-    if (!mysql::mysql_query(&m_db, statement.ascii()))
+#ifdef USE_MYSQL
+    if ( !m_db )
+    {
+        kdError() << k_funcinfo << "[CollectionDB] MySql pointer == NULL.\n";
+        return QStringList();
+    }
+
+    if (!mysql::mysql_query(m_db, statement.utf8()))
     {
         mysql::MYSQL_RES* result;
-        if ((result = mysql::mysql_use_result(&m_db)))
+        if ((result = mysql::mysql_use_result(m_db)))
         {
             if (names)
             {
@@ -155,7 +169,7 @@ CollectionDB::query( const QString& statement, QStringList* const names, bool de
                     *names  << QString( field->name );
             }
 
-            int number = mysql::mysql_field_count(&m_db);
+            int number = mysql::mysql_field_count(m_db);
             mysql::MYSQL_ROW row;
             while ((row = mysql::mysql_fetch_row(result)))
             {
@@ -168,17 +182,17 @@ CollectionDB::query( const QString& statement, QStringList* const names, bool de
         }
         else
         {
-            if (mysql::mysql_field_count(&m_db) != 0)
+            if (mysql::mysql_field_count(m_db) != 0)
             {
-                kdDebug() << "MYSQL QUERY FAILED: " << mysql::mysql_error(&m_db) << "\n" << "FAILED QUERY: " << statement << "\n";
-                return false;
+                kdDebug() << "MYSQL QUERY FAILED: " << mysql::mysql_error(m_db) << "\n" << "FAILED QUERY: " << statement << "\n";
+        				return QStringList();
             }
         }
     }
     else
     {
-        kdDebug() << "MYSQL QUERY FAILED: " << mysql::mysql_error(&m_db) << "\n" << "FAILED QUERY: " << statement << "\n";
-        return false;
+        kdDebug() << "MYSQL QUERY FAILED: " << mysql::mysql_error(m_db) << "\n" << "FAILED QUERY: " << statement << "\n";
+        return QStringList();
     }
 #else
     if ( !m_db )
@@ -266,8 +280,14 @@ CollectionDB::query( const QString& statement, QStringList* const names, bool de
 int
 CollectionDB::sqlInsertID()
 {
-#ifdef __USE_MYSQL
-    return mysql::mysql_insert_id(&m_db);
+#ifdef USE_MYSQL
+    if ( !m_db )
+    {
+        kdWarning() << k_funcinfo << "MySql pointer == NULL.\n";
+        return -1;
+    }
+
+    return mysql::mysql_insert_id(m_db);
 #else
     if ( !m_db )
     {
@@ -294,6 +314,7 @@ CollectionDB::isValid()
     QStringList values1 = query( "SELECT COUNT( url ) FROM tags LIMIT 0, 1;" );
     QStringList values2 = query( "SELECT COUNT( url ) FROM statistics LIMIT 0, 1;" );
 
+    //TODO? this returns true if value1 or value2 is not empty. Shouldn't this be and (&&)???
     return !values1.isEmpty() || !values2.isEmpty();
 }
 
@@ -624,7 +645,7 @@ CollectionDB::addSongPercentage( const QString &url , const int percentage )
         score = ( ( m_values[2].toDouble() * m_values.first().toInt() ) + percentage ) / ( m_values.first().toInt() + 1 );
 
         query( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
-#ifdef __USE_MYSQL
+#ifdef USE_MYSQL
                         "VALUES ( '%1', %2, %3, %4, %5 );" )
                         .arg( escapeString( url ) )
                         .arg( m_values[1] )
@@ -645,7 +666,7 @@ CollectionDB::addSongPercentage( const QString &url , const int percentage )
         score = ( ( 50 + percentage ) / 2 );
 
         query( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
-#ifdef __USE_MYSQL
+#ifdef USE_MYSQL
                         "VALUES ( '%1', %2, %3, %4, 1 );" )
                         .arg( escapeString( url ) )
                         .arg( QDateTime::currentDateTime().toTime_t() ) //TODO: maybe this could be used for sqlite too?
@@ -701,7 +722,7 @@ CollectionDB::setSongPercentage( const QString &url , int percentage )
     else
     {
         query( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
-#ifdef __USE_MYSQL
+#ifdef USE_MYSQL
                         "VALUES ( '%1', %2, %3, %4, 0 );" )
                         .arg( escapeString( url ) )
                         .arg( QDateTime::currentDateTime().toTime_t() ) //TODO: maybe this could be used for sqlite too?
@@ -818,7 +839,7 @@ CollectionDB::createTables( bool temporary )
                     "title VARCHAR(255),"
                     "year INTEGER,"
                     "comment VARCHAR(255),"
-#ifdef __USE_MYSQL
+#ifdef USE_MYSQL
                     "track NUMERIC(4),"
 #else
                     "track NUMBER(4),"
@@ -826,7 +847,7 @@ CollectionDB::createTables( bool temporary )
                     "bitrate INTEGER,"
                     "length INTEGER,"
                     "samplerate INTEGER,"
-#ifdef __USE_MYSQL
+#ifdef USE_MYSQL
                     "sampler BOOL );" )
 #else
                     "sampler BOOLEAN );" )
@@ -836,7 +857,7 @@ CollectionDB::createTables( bool temporary )
 
     //create album table
     query( QString( "CREATE %1 TABLE album%2 ("
-#ifdef __USE_MYSQL
+#ifdef USE_MYSQL
                     "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
 #else
                     "id INTEGER PRIMARY KEY,"
@@ -847,7 +868,7 @@ CollectionDB::createTables( bool temporary )
 
     //create artist table
     query( QString( "CREATE %1 TABLE artist%2 ("
-#ifdef __USE_MYSQL
+#ifdef USE_MYSQL
                     "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
 #else
                     "id INTEGER PRIMARY KEY,"
@@ -858,7 +879,7 @@ CollectionDB::createTables( bool temporary )
 
     //create genre table
     query( QString( "CREATE %1 TABLE genre%2 ("
-#ifdef __USE_MYSQL
+#ifdef USE_MYSQL
                     "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
 #else
                     "id INTEGER PRIMARY KEY,"
@@ -869,7 +890,7 @@ CollectionDB::createTables( bool temporary )
 
     //create year table
     query( QString( "CREATE %1 TABLE year%2 ("
-#ifdef __USE_MYSQL
+#ifdef USE_MYSQL
                     "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
 #else
                     "id INTEGER PRIMARY KEY,"

@@ -624,7 +624,11 @@ void ContextBrowser::showCurrentTrack() //SLOT
         values = m_db->query( QString( "SELECT tags.title, tags.url, artist.name "
                                        "FROM tags, artist "
                                        "WHERE tags.artist = artist.id AND ( %1 ) "
+#ifdef USE_MYSQL
+                                       "ORDER BY RAND() "
+#else
                                        "ORDER BY random() "
+#endif
                                        "LIMIT 0,5;" )
                               .arg( token ) );
 

@@ -397,6 +397,32 @@ AC_DEFINE(SQLITE_PTR_SZ, SIZEOF_CHAR_P, [Determine pointer size for SQLite])
 
 
 ###############################################################################
+# BEGIN MYSQL CHECK
+###############################################################################
+
+AC_ARG_ENABLE(mysql,
+    AC_HELP_STRING([--enable-mysql],[build amaroK with MySql support [default=disabled]]),
+    [enable_mysql=$enableval],
+    [enable_mysql=no]
+)
+
+if test "$enable_mysql" = "yes"; then
+    LIB_MYSQL="-lmysqlclient"
+    AC_DEFINE(USE_MYSQL, 1, [MySql database support enabled])
+else
+    LIB_MYSQL = ""
+fi
+
+AM_CONDITIONAL(enable_mysql, test x$enable_mysql = xyes)
+AC_SUBST(LIB_MYSQL)
+
+###############################################################################
+# END MYSQL CHECK
+###############################################################################
+
+
+
+###############################################################################
 # BEGIN XMMS CHECK
 ###############################################################################
 

@@ -4,6 +4,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
+#include "config.h"	// Has USE_MYSQL
+
 #include "collectionbrowser.h"   //CollectionReader::readTags()
 #include "collectiondb.h"        //needed for query()
 #include "metabundle.h"
@@ -364,7 +366,7 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
 
             command += m_parent->escapeString( bundle.url().path() ) + "','";
             command += m_parent->escapeString( bundle.url().directory() ) + "',";
-#ifdef __USE_MYSQL
+#ifdef USE_MYSQL
             //TODO: maybe this could be used for sqlite too?
             command += "'" + QString::number(QDateTime::currentDateTime().toTime_t()) + "',";
 #else
@@ -397,7 +399,7 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
 
             command += m_parent->escapeString( url.path() ) + "','";
             command += m_parent->escapeString( url.directory() ) + "',";
-#ifdef __USE_MYSQL
+#ifdef USE_MYSQL
             //TODO: maybe this could be used for sqlite too?
             command += "'" + QString::number(QDateTime::currentDateTime().toTime_t()) + "',";
 #else
@@ -420,7 +422,7 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
             m_parent->addImageToPath( url.directory(), url.filename(), true );
     }
     // let's lock the database (will block other threads)
-#ifdef __USE_MYSQL
+#ifdef USE_MYSQL
 //    m_parent->execSql( "START TRANSACTION;" );
 #else
 //    m_parent->query( "BEGIN TRANSACTION;" );
@@ -443,7 +445,7 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
 
     // remove temp tables and unlock database
     m_parent->dropTables( true );
-#ifdef __USE_MYSQL
+#ifdef USE_MYSQL
 //    m_parent->execSql( "COMMIT;" );
 #else
 //    m_parent->query( "END TRANSACTION;" );

@@ -13,11 +13,16 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
+#include "config.h"	// Has USE_MYSQL
+
 #include "Options1.h"
 #include "Options2.h"
 #include "Options3.h"
 #include "Options4.h"
 #include "Options5.h"
+#ifdef USE_MYSQL
+#include "Options7.h"
+#endif
 #include "amarokconfig.h"
 #include "configdialog.h"
 #include "enginecontroller.h"
@@ -55,6 +60,9 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     Options4 *opt4 = new Options4( 0, "Playback" );
     Options5 *opt5 = new Options5( 0, "OSD" );
     QVBox    *opt6 = new QVBox;
+#ifdef USE_MYSQL
+    Options7 *opt7 = new Options7( 0, "MySql" );
+#endif
 
     // Sound System
     opt6->setSpacing( 12 );
@@ -93,6 +101,9 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     addPage( opt4, i18n( "Playback" ), "kmix", i18n( "Configure Playback" ) );
     addPage( opt5, i18n( "OSD" ), "tv", i18n( "Configure On-Screen-Display" ) );
     addPage( opt6, i18n( "Engine" ), "amarok", i18n( "Configure Engine" ) );
+#ifdef USE_MYSQL
+    addPage( opt7, i18n( "MySql" ), "connect_creating", i18n( "Configure MySql" ) );
+#endif
 
     connect( m_soundSystem, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
     connect( aboutEngineButton, SIGNAL( clicked() ), this, SLOT( aboutEngine() ) );

@@ -34,6 +34,7 @@ amarokapp_SOURCES = \
     Options3.ui \
     Options4.ui \
     Options5.ui \
+    Options7.ui \
     actionclasses.cpp \
     amarokfilelist.cpp \
     amazonsearch.cpp \
@@ -88,7 +89,7 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/engine/libengine.la \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) \
-    $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(LIB_MUSICBRAINZ)
+    $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(LIB_MUSICBRAINZ) $(LIB_MYSQL)
 
 amarokapp_LDFLAGS = \
     $(all_libraries) \

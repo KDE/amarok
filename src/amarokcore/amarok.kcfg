@@ -375,4 +375,31 @@
     </entry>
 </group>
 
+<group name="MySql">
+    <entry key="MySqlHost" type="String">
+			<label>Host</label>
+			<whatsthis>The host MySql server is running on</whatsthis>
+			<default>localhost</default>
+		</entry>
+		<entry key="MySqlPort" type="Int">
+			<label>Port</label>
+			<whatsthis>The port MySql server is listening</whatsthis>
+			<default>3306</default>
+		</entry>
+		<entry key="MySqlDbName" type="String">
+			<label>Database name</label>
+			<whatsthis>The database's name</whatsthis>
+			<default>amarok</default>
+		</entry>
+		<entry key="MySqlUser" type="String">
+			<label>User</label>
+			<whatsthis>The user's name to use for connecting MySql</whatsthis>
+			<default/>
+		</entry>
+		<entry key="MySqlPassword" type="String">
+			<label>Password</label>
+			<whatsthis>The user's password</whatsthis>
+			<default/>
+		</entry>
+</group>
 </kcfg>

@@ -199,7 +199,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 
     //<OPEN DATABASE>
         //optimization for speeding up SQLite
-#ifdef __USE_MYSQL
+#ifdef USE_MYSQL
 //TODO?
 #else
         m_db->query( "PRAGMA default_synchronous = OFF;" );
