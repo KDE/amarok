@@ -592,6 +592,8 @@ bool PlayerWidget::eventFilter( QObject *o, QEvent *e )
             if( !(info.isMinimized()
             #if KDE_IS_VERSION(3,2,1)
             || info.hasState( NET::Shaded ))
+            #else
+            )
             #endif
             ) break;
         }
@@ -726,13 +728,13 @@ NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
     // Precalculate pixmaps for "on" icon state
     for ( int i = 0; i < NUMPIXMAPS; i++ ) {
         QImage img = pixmap.convertToImage();
-        temp = KImageEffect::channelIntensity( img, percentRed, KImageEffect::Red );  
+        temp = KImageEffect::channelIntensity( img, percentRed, KImageEffect::Red );
         temp = ie.apply( temp, KIconEffect::Colorize, 1.0, QColor( r, 0x10, 0x30 ), false );
         temp = ie.apply( temp, KIconEffect::Colorize, 1.0, QColor( r, g, b ), false );
-      
+
         // Create new pixmap on the heap and add pointer to list
         m_glowPixmaps.append( new QPixmap( temp ) );
-        
+
         percentRed = percentRed + 1.0 / NUMPIXMAPS;
         r += 14;
         g += 2;
@@ -767,7 +769,7 @@ void NavButton::timerEvent( QTimerEvent* )
     if ( isOn() ) {
         m_glowIndex++;
         m_glowIndex %= NUMPIXMAPS * 2 - 1;
-    
+
         // Repaint widget with new pixmap
         update();
     }
