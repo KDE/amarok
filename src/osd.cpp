@@ -59,35 +59,16 @@ void OSDWidget::renderOSDText( const QString &text )
     QRect titleRect = titleFm.boundingRect( 0, 0, max.width(), titleFm.height(), AlignLeft, m_appName );
     // The osd cannot be larger than the screen
     QRect textRect = fontMetrics().boundingRect( 0, 0, max.width(), max.height(), AlignLeft | WordBreak, text );
-    // determine appropriate image size based on size of screen
-//     int minImageSize = QApplication::desktop()->screen( m_screen )->width() / 16;
 
     if ( textRect.width() < titleRect.width() )
         textRect.setWidth( titleRect.width() );
 
-    //dimensions
-//     if ( !m_image.isNull() && m_useImage )
-//     {
-//         if ( textRect.height() + titleRect.height() < (minImageSize + 20) )
-//             textRect.setHeight( minImageSize + 20 );
-//         else
-//             textRect.setBottom( titleRect.height() + textRect.height() );
-//
-//         // we add pixels to the width because of the image size, and 40 for padding;
-//         // 10px before image, 10px after image, 20px after text
-//         textRect.addCoords( 0, 0, minImageSize + 40, 0 );
-//     }
-//     else
-//     {
-        // add 20 pixels to the width (so the text isn't on the border), and add the height of the titleRect
-        // so we can see the last line!
-//     }
     int imageSize = textRect.height() + titleRect.height() - 10;
 
     if ( !m_image.isNull() && m_useImage )
-        textRect.addCoords( 0, 0, imageSize + 20, 0 );
-
-    textRect.addCoords( 0, 0, 20, titleRect.height() + 10 );
+        textRect.addCoords( 0, 0, imageSize + 40, titleRect.height() + 10 );
+    else
+        textRect.addCoords( 0, 0, 20, titleRect.height() );
 
     osdBuffer.resize( textRect.size() );
     mask.resize( textRect.size() );

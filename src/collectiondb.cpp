@@ -434,7 +434,7 @@ CollectionDB::getImageForAlbum( const QString& artist, const QString& album, uin
     {
         QString image( m_values.first() );
         for ( uint i = 0; i < m_values.count(); i++ )
-            if ( m_values[i].contains( "front", false ) || m_values[i].contains( "cover", false ))
+            if ( m_values[i].contains( "front", false ) || m_values[i].contains( "cover", false ) || m_values[i].contains( "folder", false ) )
                 image = m_values[i];
 
         KURL u( image );
@@ -1234,7 +1234,7 @@ QCString
 CollectionDB::md5sum( const QString& artist, const QString& album )
 {
     KMD5 context( artist.lower().local8Bit() + album.lower().local8Bit() );
-//    kdDebug() << "MD5 SUM for " << artist << ", " << album << ": " << context.hexDigest() << endl;
+//     kdDebug() << "MD5 SUM for " << artist << ", " << album << ": " << context.hexDigest() << endl;
     return context.hexDigest();
 }
 
