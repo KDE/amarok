@@ -27,7 +27,6 @@
 //#define AMAROK_WITH_GSTKIOSRC
 #ifdef  AMAROK_WITH_GSTKIOSRC
 
-
 #include "kioreceiver.h"
 
 #include <errno.h>
@@ -57,6 +56,7 @@ extern "C" {
                                            ( gchar* ) "Tim Jansen <tim@tjansen.de>",
                                            ( gchar* ) "(C) 2002",
                                        };
+
 
 #define GST_TYPE_KIOSRC \
   (kiosrc_get_type())
@@ -111,7 +111,7 @@ extern "C" {
 
     GType kiosrc_get_type( void );
 
-    static gboolean plugin_init ( GModule *, GstPlugin * plugin );
+    static gboolean plugin_init ( GstPlugin * plugin );
     static void kiosrc_class_init	( KioSrcClass * klass );
     static void kiosrc_init	( KioSrc * kiosrc );
     static void kiosrc_dispose	( GObject * object );
@@ -121,12 +121,12 @@ extern "C" {
     static void kiosrc_get_property	( GObject * object, guint prop_id,
                                       GValue * value, GParamSpec * pspec );
 
-    static GstBuffer*	kiosrc_get	( GstPad * pad );
+    static GstData* kiosrc_get ( GstPad * pad );
 
     static GstElementStateReturn
     kiosrc_change_state	( GstElement * element );
 
-    static gboolean kiosrc_srcpad_query ( GstPad * pad, GstPadQueryType type,
+    static gboolean kiosrc_srcpad_query ( GstPad * pad, GstQueryType type,
                                           GstFormat * format, gint64 * value );
 
 
@@ -226,9 +226,9 @@ static void kiosrc_dispose( GObject *object ) {
     ref_count--;
     if ( ref_count == 0 ) {
         if ( eventThread )
-            QThread::postEvent( src->receiver, new QuitEvent() );
+            QApplication::postEvent( src->receiver, new QuitEvent() );
         else
-            QThread::postEvent( src->receiver, new CloseFileEvent() );
+            QApplication::postEvent( src->receiver, new CloseFileEvent() );
     }
     g_static_mutex_unlock ( &count_lock );
     delete src->receiver;
@@ -276,7 +276,7 @@ static void kiosrc_set_property( GObject *object, guint prop_id, const GValue *v
 
         if ( ( GST_STATE( src ) == GST_STATE_PAUSED )
                 && ( src->filename != NULL ) ) {
-            QThread::postEvent( src->receiver, new OpenFileEvent( src->filename ) );
+            QApplication::postEvent( src->receiver, new OpenFileEvent( src->filename ) );
         }
         break;
     case ARG_MAXBYTESPERREAD:
@@ -324,7 +324,7 @@ static void kiosrc_get_property( GObject *object, guint prop_id, GValue *value, 
  *
  * Push a new buffer from the kiosrc at the current offset.
  */
-static GstBuffer *kiosrc_get( GstPad *pad ) {
+static GstData *kiosrc_get( GstPad *pad ) {
     KioSrc * src;
     GstBuffer *buf;
     int readbytes;
@@ -339,7 +339,7 @@ static GstBuffer *kiosrc_get( GstPad *pad ) {
     /* deal with EOF state */
     if ( !src->receiver->read( bufferPtr, readbytes ) ) {
         gst_element_set_eos ( GST_ELEMENT ( src ) );
-        return GST_BUFFER ( gst_event_new ( GST_EVENT_EOS ) );
+        return GST_DATA ( gst_event_new ( GST_EVENT_EOS ) );
     }
 
     buf = gst_buffer_new();
@@ -354,7 +354,7 @@ static GstBuffer *kiosrc_get( GstPad *pad ) {
     g_object_notify ( ( GObject* ) src, "offset" );
 
     /* we're done, return the buffer */
-    return buf;
+    return GST_DATA( buf );
 }
 
 
@@ -366,12 +366,12 @@ static GstElementStateReturn kiosrc_change_state( GstElement *element ) {
     switch ( GST_STATE_TRANSITION ( element ) ) {
     case GST_STATE_READY_TO_PAUSED:
         if ( GST_FLAG_IS_SET( element, KIOSRC_OPEN ) ) {
-            QThread::postEvent( src->receiver, new PauseEvent() );
+            QApplication::postEvent( src->receiver, new PauseEvent() );
         }
         break;
     case GST_STATE_PAUSED_TO_READY:
         if ( GST_FLAG_IS_SET( element, KIOSRC_OPEN ) ) {
-            QThread::postEvent( src->receiver, new UnPauseEvent() );
+            QApplication::postEvent( src->receiver, new UnPauseEvent() );
         }
         break;
     case GST_STATE_NULL_TO_READY:
@@ -388,26 +388,32 @@ static GstElementStateReturn kiosrc_change_state( GstElement *element ) {
 }
 
 
-static gboolean plugin_init( GModule *, GstPlugin *plugin ) {
-    GstElementFactory * factory;
-
-    /* create an elementfactory for the aasink element */
-    factory = gst_element_factory_new( "kiosrc", GST_TYPE_KIOSRC,
-                                       &kiosrc_details );
-    g_return_val_if_fail( factory != NULL, FALSE );
-
-    gst_plugin_add_feature ( plugin, GST_PLUGIN_FEATURE ( factory ) );
-
-    return TRUE;
+static gboolean plugin_init( GstPlugin *plugin ) {
+    
+    return gst_element_register (plugin,
+                                 "plugin",
+                                 GST_RANK_NONE,
+                                 GST_TYPE_KIOSRC );
+    
+//    GstElementFactory * factory;
+//
+//    /* create an elementfactory for the aasink element */
+//    factory = gst_element_factory_new( "kiosrc", GST_TYPE_KIOSRC,
+//                                       &kiosrc_details );
+//    g_return_val_if_fail( factory != NULL, FALSE );
+//
+//    gst_plugin_add_feature ( plugin, GST_PLUGIN_FEATURE ( factory ) );
+//
+//    return TRUE;
 }
 
 
-static gboolean kiosrc_srcpad_query( GstPad *pad, GstPadQueryType type,
+static gboolean kiosrc_srcpad_query( GstPad *pad, GstQueryType type,
                                      GstFormat *format, gint64 *value ) {
     KioSrc * src = KIOSRC ( gst_pad_get_parent ( pad ) );
 
     switch ( type ) {
-    case GST_PAD_QUERY_TOTAL: {
+    case GST_QUERY_TOTAL: {
             if ( *format != GST_FORMAT_BYTES ) {
                 return FALSE;
             }
@@ -417,7 +423,7 @@ static gboolean kiosrc_srcpad_query( GstPad *pad, GstPadQueryType type,
             *value = s;
             break;
         }
-    case GST_PAD_QUERY_POSITION:
+    case GST_QUERY_POSITION:
         if ( *format != GST_FORMAT_BYTES ) {
             return FALSE;
         }
@@ -431,12 +437,17 @@ static gboolean kiosrc_srcpad_query( GstPad *pad, GstPadQueryType type,
 }
 
 
-GstPluginDesc plugin_desc = {
-                                0,     /* version major */
-                                4,     /* version minor */
-                                ( gchar* ) "kiosrc",
-                                plugin_init
-                            };
+GST_PLUGIN_DEFINE (
+  0,     /* version major */
+  4,     /* version minor */
+  "plugin",
+  "KIOsrc plugin",
+  plugin_init,
+  "0.1",
+  "LGPL",
+  "GStreamer",
+  "http://gstreamer.net/"
+)
 
                             
 #endif /* AMAROK_WITH_GSTKIOSRC */
