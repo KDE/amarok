@@ -10,8 +10,6 @@ SHORT-TERM (URGENT):
 
   <markey> After rescanning the Collection, ContextBrowser still shows "Rebuilding Collection..."
 
-  <markey> Automatic Collection rebuilding at startup (with increased DATABASE_VERSION) doesn't work at all!
-
   <mxcl>   Handle the case where user drops a directory and there is a playlist file that duplicates what is
            in the directories above it and you end up with duplicate URLs all over the place.
            <markey> Many users have an m3u in the _same_ directory as the files are.
