@@ -22,7 +22,6 @@
 #include <qapplication.h>
 #include <qcstring.h>
 #include <qdragobject.h>
-#include <qfont.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qptrlist.h>
@@ -1152,9 +1151,6 @@ void
 CollectionView::showFlatViewMessage()
 {
     m_flatViewMessage = new QLabel( i18n( "Enter filter items to activate." ), viewport() );
-    QFont font;
-    font.setPointSize( font.pointSize() + 1 );
-    m_flatViewMessage->setFont( font );
     m_flatViewMessage->setAlignment( Qt::AlignCenter );
     m_flatViewMessage->setLineWidth( 2 );
     m_flatViewMessage->setMinimumHeight( 40 );
