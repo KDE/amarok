@@ -24,6 +24,8 @@ SHORT-TERM:
 
 MID-TERM:
 
+    * add: playmode indication button in main widget (repeat track/pl/shuffle), clickable
+
     * add: "undo" button to undo changes in playlist
 
     * fix: honor KDE single/double-click setting in BrowserWin
