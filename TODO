@@ -3,15 +3,15 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #60 being the highest available (take this one for your next bug and increase here)
+           #61 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
 
+    * fix: #60 <markey> I'm still getting the occasional crash in PlaylistItem::setText()
+
     * fix: #59 global shortcuts should be disabled by default, eg CTRL_ALT_C is a KDevelop shortcut, one user
            was shocked to find the music stopped whenever he tried to bring up the class window!
-
-    * fix: #57 <markey> "Configure effects" menu item does nothing
 
     * fix: #56 <markey> providing a non-existant file as command line argument -> instant crash
 
