@@ -294,7 +294,8 @@ void PlayerApp::restoreSession()
 
         if ( seconds >= 0 )
         {
-            play( AmarokConfig::resumeTrack(), MetaBundle() );
+//FIXME <markey> temporarily disabled to fix compile
+//             play( AmarokConfig::resumeTrack(), MetaBundle() );
 
             if ( seconds > 0 )
                 m_pEngine->seek( seconds * 1000 );
