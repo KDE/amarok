@@ -317,13 +317,13 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     //</read config>
 
     //<open database>
-        const QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
-                            + "collection.db" ).local8Bit();
+        m_databasePath = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
+                       + "collection.db" ).local8Bit();
         //remove database file if version is incompatible
         if ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION )
-            ::unlink( path );
+            ::unlink( m_databasePath );
 
-        m_db = new CollectionDB( path );
+        m_db = new CollectionDB( m_databasePath );
         if ( !m_db )
             kdWarning() << k_funcinfo << "Could not open SQLite database\n";
         //optimization for speeding up SQLite
@@ -405,9 +405,7 @@ CollectionView::setupDirs()  //SLOT
 void
 CollectionView::scan()  //SLOT
 {
-    const QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
-                        + "collection.db" ).local8Bit();
-    m_insertdb = new CollectionDB( path );
+    m_insertdb = new CollectionDB( m_databasePath );
 
     m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), m_dirs, m_recursively ) );
 
@@ -674,11 +672,9 @@ CollectionView::customEvent( QCustomEvent *e )
 
         // we need to reconnect to the db after every scan, since sqlite is not able to keep
         // the tables synced for multiple threads.
-        const QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
-                              + "collection.db" ).local8Bit();
         delete m_db;
         delete m_insertdb;
-        m_db = new CollectionDB( path );
+        m_db = new CollectionDB( m_databasePath );
 
         emit tagsReady();
     }
