@@ -756,26 +756,24 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
         for ( uint i = 0; i < values.count(); i += 2 ) {
             QStringList albumValues = m_db->query( QString(
-                "SELECT title, url, track "
-                "FROM tags "
-                "WHERE album = " + values[ i+1 ] +  " AND "
+                "SELECT tags.title, tags.url, tags.track, year.name "
+                "FROM tags, year "
+                "WHERE tags.album = " + values[ i+1 ] +  " AND "
                 "( tags.sampler = 1 OR tags.artist = " + QString::number( artist_id ) +  " ) "
+                "AND year.id = tags.year "
                 "ORDER BY tags.track;" ) );
 
-            QStringList years;
-            for ( uint j=0; j < albumValues.count(); j += 3 )
+            QString albumYear;
+            if ( !albumValues.isEmpty() )
             {
-                KURL url = KURL( albumValues[ j+1 ] );
-                MetaBundle *bundle = new MetaBundle( url );
-                years << bundle->year();
-            }
-            QString albumYear = years.first();
-            for ( uint j=0; j < years.count(); j++ )
-            {
-                if ( years[j] != albumYear )
+                albumYear = albumValues[ 3 ];
+                for ( uint j = 0; j < albumValues.count(); j += 4 )
                 {
-                    albumYear = QString::null;
-                    break;
+                    if ( albumValues[j + 3] != albumYear )
+                    {
+                        albumYear = QString::null;
+                        break;
+                    }
                 }
             }
 
@@ -807,15 +805,15 @@ void ContextBrowser::showCurrentTrack() //SLOT
                     << ( i ? "none" : "block" )
                     << values[ i+1 ] ) );
 
-            if ( !albumValues.isEmpty() ) {
-                for ( uint j = 0; j < albumValues.count(); j += 3 ) {
-                QString tmp = albumValues[j + 2].stripWhiteSpace().isEmpty() ? "" : "" + albumValues[j + 2] + ". ";
+            if ( !albumValues.isEmpty() )
+                for ( uint j = 0; j < albumValues.count(); j += 4 )
+                {
+                    QString tmp = albumValues[j + 2].stripWhiteSpace().isEmpty() ? "" : "" + albumValues[j + 2] + ". ";
                     browser->write(
                         "<div class='song'>"
                          "<a href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">" + tmp + albumValues[j] + "</a>"
                         "</div>" );
                 }
-            }
 
             browser->write(
                   "</div>"
