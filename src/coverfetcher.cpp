@@ -204,7 +204,7 @@ void
 CoverFetcher::receivedXmlData( KIO::Job*, const QByteArray& data ) //SLOT
 {
     // Append new chunk of string
-    m_xml += QString( data );
+    m_xml += QString::fromUtf8( data );
 }
 
 void
