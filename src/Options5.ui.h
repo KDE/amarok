@@ -23,6 +23,7 @@ email                : fh@ez.no
 ** place of a destructor.
 *****************************************************************************/
 
+#include "amarokconfig.h"
 #include "configdialog.h"
 
 
@@ -30,6 +31,8 @@ void Options5::init()
 {
     m_pOSDPreview = new OSDPreviewWidget( "amaroK" );
     m_pOSDPreview->setText( i18n("OSD preview - drag to reposition" ) );
+    m_pOSDPreview->setShadow( AmarokConfig::osdDrawShadow() );
+    
     connect( m_pOSDPreview, SIGNAL( positionChanged( int, OSDWidget::Position, int, int ) ) ,
              SLOT( osdPositionChanged( int, OSDWidget::Position, int, int ) ) );
 

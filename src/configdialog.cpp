@@ -19,7 +19,6 @@ email                : markey@web.de
 #include "Options4.h"
 #include "Options5.h"
 #include "amarokconfig.h"
-#include "app.h"
 #include "configdialog.h"
 #include "enginecontroller.h"
 #include "osd.h"
@@ -104,7 +103,9 @@ void AmarokConfigDialog::updateSettings()
         AmarokConfig::setSoundOutput( m_pSoundOutput->currentText() );
     AmarokConfig::setSoundDevice( m_pSoundDevice->text() );
 
-    pApp->m_pOSD->setOffset( OSDPreviewWidget::m_previewOffset.x(), OSDPreviewWidget::m_previewOffset.y() );
+    AmarokConfig::setOsdAlignment( OSDWidget::Free );
+    AmarokConfig::setOsdXOffset( OSDPreviewWidget::m_previewOffset.x() );
+    AmarokConfig::setOsdYOffset( OSDPreviewWidget::m_previewOffset.y() );
     
     emit settingsChanged();
     updateWidgets();

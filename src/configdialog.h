@@ -16,8 +16,6 @@ email                : markey@web.de
 #ifndef AMAROKCONFIGDIALOG_H
 #define AMAROKCONFIGDIALOG_H
 
-#include "osd.h"
-
 #include <kconfigdialog.h>
 
 class QComboBox;
