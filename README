@@ -90,6 +90,12 @@ A: It can! Chances are you're using Fedora/RedHat linux, they don't ship with
    
        ALT-F2, gg:redhat mp3 decoder howto, ENTER
 
+Q: Can amaroK output directly to OSS/ALSA?
+A: Yes, but not yet. One reason we use aRts/GStreamer and NMM is for codecs.
+   To output directly to ALSA, etc. someone needs to write an amaroK engine
+   plugin that uses libmad and libvorbis to decode directly to alsa. And then
+   call it amaroK_ALSA_engine. :-)
+       
 Q: Where is the Collection Browser?
 A: You need to install sqlite, reconfigure and rebuild. Check your PKG_CONFIG_PATH
    is set correctly if there are problems detecting sqlite!
