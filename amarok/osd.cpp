@@ -109,6 +109,7 @@ void OSDWidget::paintOSD( const QString &text )
     delete fm;
     delete titleFm;
 
+    QWidget::hide();
     // Let's make it real, flush the buffers
     osdBuffer = buffer;
     // Repaint the QWidget and get it on top
