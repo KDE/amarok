@@ -164,7 +164,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     // <Favourite Tracks Information>
     browser->write( "<br><div class='rbcontent'>" );
     browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-    browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Favorite tracks of this artist:" ) + "</td></tr>" );
+    browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Favorite tracks by this artist:" ) + "</td></tr>" );
     browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
     browser->write( "</table>" );
     browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
