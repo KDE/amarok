@@ -607,11 +607,20 @@ Playlist::updateNextPrev()
 void
 Playlist::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
 {
-    if ( m_currentTrack && !trackChanged )
+    if ( m_currentTrack && !trackChanged ) {
+         //if the track hasn't changed then this is a meta-data update
 
-        //if the track hasn't changed then this is a meta-data update
-        m_currentTrack->setText( bundle );
-
+        //this is a hack, I repeat a hack! FIXME FIXME
+        //we do it because often the stream title is from the pls file and is informative
+        //we don't want to lose it when we get the meta data
+        if ( m_currentTrack->exactText( PlaylistItem::Artist ).isEmpty() ) {
+            QString comment = m_currentTrack->exactText( PlaylistItem::Title );
+            m_currentTrack->setText( bundle );
+            m_currentTrack->setText( PlaylistItem::Comment, comment );
+        }
+        else
+            m_currentTrack->setText( bundle );
+    }
     else
         //ensure the currentTrack is set correctly and highlight it
         restoreCurrentTrack();
@@ -1487,7 +1496,8 @@ Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
         QString text = MetaBundle( playlistItem ).prettyTitle();
         // For streams add the streamtitle too
         //TODO make prettyTitle do this
-        if ( playlistItem->url().protocol() == "http" ) text.prepend( playlistItem->title() + " :: " );
+        if ( playlistItem->url().protocol() == "http" )
+            text.prepend( playlistItem->title() + " :: " );
 
         // Copy both to clipboard and X11-selection
         QApplication::clipboard()->setText( text, QClipboard::Clipboard );

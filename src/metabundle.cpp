@@ -8,6 +8,7 @@
 
 #include <qfile.h>
 
+#include <kdebug.h>
 #include <kfilemetainfo.h>
 
 #include <taglib/audioproperties.h>
@@ -38,12 +39,21 @@ MetaBundle::MetaBundle( const QString& title,
                         const QString& /*streamName*/,
                         const KURL& url )
   : m_url       ( url )
-  , m_title     ( streamUrl + QString( " -- " ) + title )
   , m_genre     ( genre )
+  , m_comment   ( streamUrl )
   , m_bitrate   ( bitrate )
   , m_length    ( Irrelevant )
   , m_sampleRate( Unavailable )
-{}
+{
+   if( title.contains( '-' ) ) {
+      m_title  = title.section( '-', 1, 1 ).stripWhiteSpace();
+      m_artist = title.section( '-', 0, 0 ).stripWhiteSpace();
+   }
+   else {
+      m_title  = title;
+      m_artist = streamUrl; //which is sort of correct..
+   }
+}
 
 //PlaylistItem ctor
 MetaBundle::MetaBundle( const PlaylistItem *item )
