@@ -144,8 +144,8 @@ void ContextBrowser::showIntroduction()
     // <Favorite Tracks Information>
     browser->write( "<html><div>");
     browser->write( i18n( "Hello amaroK user!" )
-                    + "<br><br>" + i18n( "To use the extended features of amaroK, you need to build a collection!" ) 
-                    + "&nbsp;<a href='show:collectionSetup'>" + i18n( "Click here to create one!" ) + "</a>" );
+                    + "<br><br>" + i18n( "To use the extended features of amaroK, you need to build a collection." ) 
+                    + "&nbsp;<a href='show:collectionSetup'>" + i18n( "Click here to create one." ) + "</a>" );
     browser->write( "</div></html>");
 }
 
