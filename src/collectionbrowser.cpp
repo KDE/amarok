@@ -1168,7 +1168,7 @@ CollectionView::viewportPaintEvent( QPaintEvent *e )
         const int y = (viewport()->height() - t.height()) / 2;
 
         p.setBrush( colorGroup().background() );
-        p.drawRoundRect( wd3-15, y-15, t.width()+30, t.height()+30, 5, 5 );
+        p.drawRoundRect( wd3-15, y-15, t.width()+30, t.height()+30, (8*200)/(t.width()+30), (8*200)/(t.height()+30) );
         t.draw( &p, wd3, y, QRect( 0, 0, viewport()->width(), viewport()->height() ), colorGroup() );
     }
 }
