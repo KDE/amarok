@@ -324,6 +324,15 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     //TODO  don't read audioproperties if their columns aren't shown and re-read tags if those columns are then shown
     //if( column == Length && text( Length ).isEmpty() ) listView()->readAudioProperties( this );
 
+    //determine first visible column
+    QHeader* header = listView()->header();
+    int firstCol;
+    for ( firstCol = 0; firstCol < header->count(); firstCol++ )
+        if ( header->sectionSize( header->mapToSection( firstCol ) ) )
+            break;
+    //convert to logical column
+    firstCol = header->mapToSection( firstCol );
+                   
     //Allocate buffer pixmap, for flicker-free drawing 
     QPixmap* buffer = new QPixmap( width, height() );
     QPainter painterBuf( buffer, true );
@@ -345,7 +354,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         KListViewItem::paintCell( &painterBuf, cg, column, width, align );
 
     //figure out if we are in the actual physical first column
-    if( playNext && listView()->mapToPhysicalColumn( column ) == 0 )
+    if( playNext && column == firstCol )
     {
         QString str = QString::number( playNext );
 

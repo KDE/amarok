@@ -585,15 +585,6 @@ int Playlist::mapToLogicalColumn( int physical )
 }
 
 
-int Playlist::mapToPhysicalColumn( int logical )
-{
-    int physical = header()->mapToIndex( logical );
-    logical = mapToLogicalColumn( physical );
-    
-    return header()->mapToIndex( logical );
-}
-
-
 // PRIVATE METHODS ===============================================
 
 void Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool directPlay )
@@ -855,7 +846,9 @@ void Playlist::setCurrentTrack( PlaylistItem *item )
         item->setHeight( static_cast<int>( fontMetrics().height() * 1.8 ) );
     }
     if( prev && item != prev ) {
-        prev->setPixmap( mapToLogicalColumn( 0 ), QPixmap() );
+        //remove pixmap in all columns
+        for ( uint i = 0; i < header()->count(); i++ )
+            prev->setPixmap( i, QPixmap() );
         prev->invalidateHeight();
     }
     m_cachedTrack  = 0; //invalidate cached pointer

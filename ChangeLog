@@ -3,6 +3,7 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  FIX: Problem with invisible "Play next" marker in playlist.
   FIX: Don't try to create sql-tables on every startup, but only on
        sql-scheme (DATABASE_VERSION) changes.
   FIX: Display splash screen on correct desktop with Xinerama.

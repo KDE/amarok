@@ -98,8 +98,6 @@ class Playlist : private KListView, public EngineObserver
 
         /** Converts physical PlaylistItem column position to logical */
         int mapToLogicalColumn( int physical );
-        /** Converts logical PlaylistItem column position to physical */
-        int mapToPhysicalColumn( int logical );
         
         //static
         static const int NO_SORT = 200;
