@@ -283,8 +283,8 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
                         continue;
                     }
                     if ( !m_incremental || !m_parent->isDirInCollection( entry ) )
-                        // call ourself recursively for each subdir
-                        readDir( QFile::decodeName( entry ), entries );
+                        // we MUST add a '/' after the dirname
+                        readDir( QFile::decodeName( entry ) + '/', entries );
                 }
             }
             else if ( S_ISREG( statBuf.st_mode ) )
