@@ -978,6 +978,7 @@ Playlist::paletteChange( const QPalette &p )
     KListView::paletteChange( p );
 
     // repaint currentTrack marker
+    Glow::reset();
     slotGlowTimer();
 }
 
