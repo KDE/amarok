@@ -1971,6 +1971,8 @@ Playlist::removeItem( PlaylistItem *item )
 
     int length = item->seconds().toInt();
     if( length > 0 ) m_totalLength -= length;
+    if( m_selectCounter > 0 ) m_selectCounter--;
+    if( m_selectLength > 0 ) m_selectLength -= length;
 
     emit itemCountChanged( childCount()-1, m_totalLength, m_selectCounter, m_selectLength );
 }
