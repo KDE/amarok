@@ -111,12 +111,15 @@ PlaylistLoader::~PlaylistLoader()
 // PROTECTED
 /////////////////////////////////////////////////////////////////////////////////////
 
+typedef QValueList<MetaBundle> BundleList;
+typedef QValueList<PlaylistItem*> ItemList;
+
 class TagsEvent : public QCustomEvent {
 public:
-    TagsEvent( const MetaBundle &b, PlaylistItem *i )
-            : QCustomEvent( 1000 )
+    TagsEvent( const KURL &u, PlaylistItem *i )
+    : QCustomEvent( 1000 )
             , item( i )
-            , bundle( b ) {}
+            , bundle( u, true, CollectionDB::instance() ) {}
 
     TagsEvent( const KURL &u, const QDomNode &n )
             : QCustomEvent( 1001 )
@@ -124,27 +127,34 @@ public:
             , url( u )
             , node( n ) {}
 
+    TagsEvent( const BundleList &b, const ItemList &i )
+            : QCustomEvent( 1002 )
+            , item( 0 )
+            , items( i )
+            , bundles( b ) {}
+
     PlaylistItem* const item;
     MetaBundle bundle;
     KURL url;
     QDomNode node;
+
+    ItemList items;
+    BundleList bundles;
 };
 
 bool
 PlaylistLoader::doJob()
 {
-    typedef QValueList<MetaBundle> BundleList;
-    typedef QPair<KURL, PlaylistItem*> Pair;
-    typedef QValueList<Pair> PairList;
-    PairList pairs;
+    ItemList items;
 
-    setProgressTotalSteps( m_URLs.count() );
+    setProgressTotalSteps( m_URLs.count() * 2 );
     setStatus( i18n("Populating playlist") );
 
     //TODO should I only send it local urls?
 
     // 1st pass create items
-    for ( KURL::List::ConstIterator it = m_URLs.begin(), end = m_URLs.end(); it != end && !isAborted(); ++it ) {
+    KURL::List urls;
+    for( KURL::List::ConstIterator it = m_URLs.begin(), end = m_URLs.end(); it != end && !isAborted(); ++it ) {
         incrementProgress();
 
         const KURL &url = *it;
@@ -152,35 +162,49 @@ PlaylistLoader::doJob()
         if ( isPlaylist( url ) ) {
             if ( !loadPlaylist( url.path() ) )
                 m_badURLs += url;
-            continue;
 
-            pairs += Pair( *it, 0 );
+            continue;
         }
 
         if ( EngineController::canDecode( url ) ) {
-            PlaylistItem *item = new PlaylistItem( url, m_markerListViewItem );
-            pairs += Pair( *it, item );
+            items += new PlaylistItem( url, m_markerListViewItem );
+            urls  += url;
         }
         else
             m_badURLs += url;
-   }
+    }
 
-   // people think things work faster if the statusbar fills up
-   // multiple times weird but true
-   setProgress( 0 );
-   setStatus( i18n("Filling in tags") );
+    // people think things work faster if the statusbar fills up
+    // multiple times weird but true
+    setStatus( i18n("Filling in tags") );
 
-   BundleList bundles = CollectionDB::instance()->bundlesByUrls( m_URLs );
+    BundleList bundles = CollectionDB::instance()->bundlesByUrls( urls );
 
-   // 2nd pass, fill in tags
-   BundleList::ConstIterator bundle = bundles.begin();
-   for( PairList::ConstIterator it = pairs.begin(), end = pairs.end(); it != end && !isAborted(); ++it, ++bundle ) {
-       incrementProgress();
+    debug() << urls.count() << endl;
+    debug() << bundles.count() << endl;
 
-       if( (*it).second ) {
-          Q_ASSERT( (*it).first == (*bundle).url() );
-          QApplication::postEvent( this, new TagsEvent( *bundle, (*it).second ) ); }
-   }
+    Q_ASSERT( bundles.count() == items.count() );
+
+    // 2nd pass, fill in tags
+    {
+        BundleList::ConstIterator bu = bundles.begin();
+        for( ItemList::ConstIterator it = items.begin(), end = items.end(); it != end && !isAborted(); ) {
+            BundleList bundles;
+            ItemList items;
+
+            for( uint x = 0; x < 100 && it != end; ++x, ++it, ++bu )
+            {
+                incrementProgress();
+
+                debug() << (*it)->url() << ": " << (*bu).url() << endl;
+
+                items   += *it;
+                bundles += *bu;
+            }
+
+            QApplication::postEvent( this, new TagsEvent( bundles, items ) );
+        }
+    }
 
     return true;
 }
@@ -194,6 +218,14 @@ PlaylistLoader::customEvent( QCustomEvent *e )
     case 1000:
         e->item->setText( e->bundle );
         break;
+
+    case 1002:
+    {
+        BundleList::ConstIterator bundle = e->bundles.begin();
+        for( ItemList::ConstIterator it = e->items.begin(), end = e->items.end(); it != end; ++it, ++bundle )
+            (*it)->setText( *bundle );
+
+    }   break;
 
     case 1001: {
         PlaylistItem *item = new PlaylistItem( e->url, m_markerListViewItem, e->node );
