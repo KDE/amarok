@@ -211,17 +211,19 @@ void ContextBrowser::collectionScanStarted()
 
 void ContextBrowser::collectionScanDone()
 {
-  // take care of sql updates (schema changed errors)
-  delete m_db;
-  m_db = new CollectionDB();
+    // take care of sql updates (schema changed errors)
+    delete m_db;
+    m_db = new CollectionDB();
 
-  if( CollectionDB().isEmpty() ) {
-        showIntroduction();
-        m_emptyDB = true;
+    if ( CollectionDB().isEmpty() )
+    {
+      showIntroduction();
+      m_emptyDB = true;
     }
-    else if( m_emptyDB ) {
-        showHome();
-        m_emptyDB = false;
+    else if ( m_emptyDB )
+    {
+      showHome();
+      m_emptyDB = false;
     }
 }
 
