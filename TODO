@@ -3,11 +3,14 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #159 being the highest available (take this one for your next bug and increase here)
+           #160 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
- 
+
+  FIX 159 <markey> When the first-run wizard is shown at startup, amarok registers as amarok-2, making
+                   dcop calls fail. It's probably due to a timeout from KDE, since this happens in App ctor.
+
   FIX 157 <markey> Visualization selector freezes the app.
 
   FIX 156 <markey> Fix suppression of compile warnings for sqlite etc. -w -Wall is the problem.
