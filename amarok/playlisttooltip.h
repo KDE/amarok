@@ -12,6 +12,9 @@
   email:     chris@chris.de
 */
 
+#ifndef PLAYlISTTOOLTIP_H
+#define PLAYlISTTOOLTIP_H
+
 #include <qtooltip.h>
 
 class MetaBundle;
@@ -24,3 +27,5 @@ class PlaylistToolTip : public QToolTip
         static void add( QWidget * widget, const MetaBundle & tags );
 
 };
+
+#endif
