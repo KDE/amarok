@@ -768,9 +768,9 @@ void PlaylistWidget::slotGlowTimer()
             QPainter p( viewport() );
             p.setPen( m_GlowColor.light( m_GlowCount ) );
 
-            rect.setTop   ( rect.top()    + 1 );
-            rect.setBottom( rect.bottom() - 1 );
-            rect.setWidth ( contentsWidth()   );    //neccessary to draw on the complete width
+            rect.setTop   ( rect.top()      );
+            rect.setBottom( rect.bottom()   );
+            rect.setWidth ( contentsWidth() );    //neccessary to draw on the complete width
 
             p.drawRect( rect );
         }
