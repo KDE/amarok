@@ -77,19 +77,14 @@ struct _GstEqualizerClass
     /* signals */
 };
 
-static GstPadLinkReturn gst_equalizer_link (GstPad* pad, const GstCaps* caps);
-
-static void gst_equalizer_set_property ( GObject * object, guint prop_id,
-                                         const GValue * value, GParamSpec * pspec );
-
-static void gst_equalizer_get_property ( GObject * object, guint prop_id,
-                                         GValue * value, GParamSpec * pspec );
-
-static void set_filters( GstEqualizer* obj );
-static void gst_equalizer_chain ( GstPad* pad, GstData* data );
-
+GstPadLinkReturn gst_equalizer_link(GstPad* pad, const GstCaps* caps);
+void gst_equalizer_set_property( GObject * object, guint prop_id, const GValue * value, GParamSpec * pspec );
+void gst_equalizer_get_property( GObject * object, guint prop_id, GValue * value, GParamSpec * pspec );
+void set_filters( GstEqualizer* obj );
+void gst_equalizer_chain( GstPad* pad, GstData* data );
 GType gst_equalizer_get_type( void );
-GstEqualizer* gst_equalizer_new ();
+GstEqualizer* gst_equalizer_new();
+
 
 G_END_DECLS
 

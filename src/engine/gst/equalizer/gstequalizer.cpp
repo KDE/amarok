@@ -62,7 +62,7 @@ GST_BOILERPLATE_FULL ( GstEqualizer, gst_equalizer, GstElement, (GTypeFlags) GST
 // INIT
 /////////////////////////////////////////////////////////////////////////////////////
 
-static void
+void
 gst_equalizer_base_init ( gpointer g_class )
 {
     kdDebug() << k_funcinfo << endl;
@@ -72,7 +72,7 @@ gst_equalizer_base_init ( gpointer g_class )
 }
 
 
-static void
+void
 gst_equalizer_class_init ( GstEqualizerClass * klass )
 {
     kdDebug() << k_funcinfo << endl;
@@ -90,7 +90,7 @@ gst_equalizer_class_init ( GstEqualizerClass * klass )
 }
 
 
-static void
+void
 gst_equalizer_init ( GstEqualizer* obj )
 {
     kdDebug() << k_funcinfo << endl;
@@ -117,7 +117,7 @@ gst_equalizer_init ( GstEqualizer* obj )
 // PUBLIC METHODS
 /////////////////////////////////////////////////////////////////////////////////////
 
-static GstPadLinkReturn
+GstPadLinkReturn
 gst_equalizer_link (GstPad* pad, const GstCaps* caps)
 {
     kdDebug() << k_funcinfo << endl;
@@ -162,7 +162,7 @@ gst_equalizer_link (GstPad* pad, const GstCaps* caps)
 }
 
 
-static void
+void
 gst_equalizer_set_property ( GObject * object, guint prop_id, const GValue * value,
                              GParamSpec * pspec )
 {
@@ -197,7 +197,7 @@ gst_equalizer_set_property ( GObject * object, guint prop_id, const GValue * val
 }
 
 
-static void
+void
 gst_equalizer_get_property ( GObject * object, guint prop_id, GValue * value, GParamSpec * pspec )
 {
     /* it's not null if we got it, but it might not be ours */
@@ -222,7 +222,7 @@ gst_equalizer_get_property ( GObject * object, guint prop_id, GValue * value, GP
 }
 
 
-static void
+void
 set_filters( GstEqualizer* obj )
 {
     switch(obj->samplerate)

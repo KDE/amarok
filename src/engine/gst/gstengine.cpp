@@ -215,6 +215,7 @@ GstEngine::GstEngine()
         , m_currentInput( 0 )
         , m_gst_adapter( 0 )
         , m_streamBuf( new char[STREAMBUF_SIZE] )
+        , m_streamBuffering( false )
         , m_transferJob( 0 )
         , m_pipelineFilled( false )
         , m_fadeValue( 0.0 )
@@ -692,8 +693,10 @@ GstEngine::setVolumeSW( uint percent )  //SLOT
 
 void GstEngine::timerEvent( QTimerEvent* )
 {
-    // Fading transition management:
+    // Display stream buffer status
+    sendBufferStatus();
 
+    // Fading transition management:
     QPtrList<InputPipeline> destroyList;
     InputPipeline* input;
 
@@ -1126,10 +1129,7 @@ GstEngine::destroyInput( InputPipeline* input )
 void
 GstEngine::sendBufferStatus()
 {
-    if ( m_streamBuffering )
-    {
-//         debug() << "m_streamBufIndex" << m_streamBufIndex << endl;
-
+    if ( m_streamBuffering ) {
         const int percent = (int) ( (float) m_streamBufIndex / STREAMBUF_MIN * 105.0 );
         emit statusText( i18n( "Buffering.. %1%" ).arg( MIN( percent, 100 ) ) );
     }

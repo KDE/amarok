@@ -42,24 +42,11 @@ static guint gst_streamsrc_signals[ LAST_SIGNAL ] = { 0 };
 GST_BOILERPLATE_FULL ( GstStreamSrc, gst_streamsrc, GstElement, (GTypeFlags) GST_TYPE_ELEMENT, _do_init );
 
 
-// Forward declarations
-
-static void gst_streamsrc_set_property ( GObject * object, guint prop_id,
-        const GValue * value, GParamSpec * pspec );
-
-static void gst_streamsrc_get_property ( GObject * object, guint prop_id,
-        GValue * value, GParamSpec * pspec );
-
-static GstElementStateReturn gst_streamsrc_change_state (GstElement* element);
-
-static GstData *gst_streamsrc_get ( GstPad * pad );
-
-
 /////////////////////////////////////////////////////////////////////////////////////
 // INIT
 /////////////////////////////////////////////////////////////////////////////////////
 
-static void
+void
 gst_streamsrc_base_init ( gpointer g_class )
 {
     kdDebug() << k_funcinfo << endl;
@@ -69,7 +56,7 @@ gst_streamsrc_base_init ( gpointer g_class )
 }
 
 
-static void
+void
 gst_streamsrc_class_init ( GstStreamSrcClass * klass )
 {
     kdDebug() << k_funcinfo << endl;
@@ -77,6 +64,7 @@ gst_streamsrc_class_init ( GstStreamSrcClass * klass )
     GObjectClass* gobject_class;
     GstElementClass* gstelement_class = GST_ELEMENT_CLASS( klass );
     gobject_class = G_OBJECT_CLASS( klass );
+    parent_class = GST_ELEMENT_CLASS( g_type_class_ref( GST_TYPE_ELEMENT ) );
 
     g_object_class_install_property ( G_OBJECT_CLASS ( klass ), ARG_BLOCKSIZE,
                                       g_param_spec_ulong ( "blocksize", "Block size",
@@ -99,12 +87,13 @@ gst_streamsrc_class_init ( GstStreamSrcClass * klass )
 
     gobject_class->set_property = gst_streamsrc_set_property;
     gobject_class->get_property = gst_streamsrc_get_property;
+    gobject_class->dispose      = gst_streamsrc_dispose;
 
     gstelement_class->change_state = gst_streamsrc_change_state;
 }
 
 
-static void
+void
 gst_streamsrc_init ( GstStreamSrc * streamsrc )
 {
     kdDebug() << k_funcinfo << endl;
@@ -123,10 +112,40 @@ gst_streamsrc_init ( GstStreamSrc * streamsrc )
 
 
 /////////////////////////////////////////////////////////////////////////////////////
+// CONSTRUCTOR / DESTRUCTOR
+/////////////////////////////////////////////////////////////////////////////////////
+
+GstStreamSrc*
+gst_streamsrc_new ( char* buf, int* index, bool* stop, bool* buffering )
+{
+    GstStreamSrc * object = GST_STREAMSRC( g_object_new( GST_TYPE_STREAMSRC, NULL ) );
+    gst_object_set_name( (GstObject*) object, "StreamSrc" );
+
+    object->m_buf = buf;
+    object->m_bufIndex = index;
+    object->m_bufStop = stop;
+    object->m_buffering = buffering;
+
+    return object;
+}
+
+
+void
+gst_streamsrc_dispose( GObject *object )
+{
+    kdDebug() << k_funcinfo << endl;
+
+    GstStreamSrc* obj = GST_STREAMSRC( object );
+    *obj->m_buffering = false;
+    G_OBJECT_CLASS( parent_class )->dispose( object );
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC METHODS
 /////////////////////////////////////////////////////////////////////////////////////
 
-static void
+void
 gst_streamsrc_set_property ( GObject * object, guint prop_id, const GValue * value,
                              GParamSpec * pspec )
 {
@@ -152,7 +171,7 @@ gst_streamsrc_set_property ( GObject * object, guint prop_id, const GValue * val
 }
 
 
-static void
+void
 gst_streamsrc_get_property ( GObject * object, guint prop_id, GValue * value, GParamSpec * pspec )
 {
     GstStreamSrc* src;
@@ -176,7 +195,7 @@ gst_streamsrc_get_property ( GObject * object, guint prop_id, GValue * value, GP
 }
 
 
-static GstElementStateReturn
+GstElementStateReturn
 gst_streamsrc_change_state (GstElement * element)
 {
 //   GstStreamSrc *src = GST_STREAMSRC (element);
@@ -201,7 +220,7 @@ gst_streamsrc_change_state (GstElement * element)
 }
 
 
-static GstData*
+GstData*
 gst_streamsrc_get ( GstPad* pad )
 {
     g_return_val_if_fail( pad != NULL, NULL );
@@ -211,7 +230,7 @@ gst_streamsrc_get ( GstPad* pad )
         return GST_DATA( gst_event_new( GST_EVENT_FLUSH ) );
 
     // Signal KIO to resume transfer when buffer reaches our low limit
-    if ( *src->m_bufIndex < src->buffer_resume )
+    if ( *src->m_bufIndex < (int) src->buffer_resume )
         g_signal_emit ( G_OBJECT( src ), gst_streamsrc_signals[SIGNAL_KIO_RESUME], 0 );
 
     if ( *src->m_bufStop && *src->m_bufIndex == 0 ) {
@@ -221,18 +240,15 @@ gst_streamsrc_get ( GstPad* pad )
         gst_element_set_eos( GST_ELEMENT( src ) );
         return GST_DATA( gst_event_new( GST_EVENT_EOS ) );
     }
-    // When buffering, return filler-event when buffer index is below minimum level
-    else if ( *src->m_buffering && *src->m_bufIndex < src->buffer_min )
-        return GST_DATA( gst_event_new( GST_EVENT_FILLER ) );
-
-    // When buffer is empty, return filler-event and start rebuffering
-    else if ( !*src->m_buffering && *src->m_bufIndex == 0 ) {
-        kdDebug() << DEBUG_PREFIX << "Buffer underflow. Rebuffering.\n";
-        *src->m_buffering = true;
-        return GST_DATA( gst_event_new( GST_EVENT_FILLER ) );
+    // When buffering, return empty buffer if buffer index is below minimum level
+    else if ( *src->m_buffering && *src->m_bufIndex < (int) src->buffer_min ) {
+        GstBuffer* const buf = gst_buffer_new_and_alloc( 0 );
+        GST_BUFFER_OFFSET( buf )     = src->curoffset;
+        GST_BUFFER_OFFSET_END( buf ) = src->curoffset;
+        return GST_DATA( buf );
     }
 
-    *src->m_buffering = false;
+    *src->m_buffering = *src->m_bufIndex ? false : true;
     const int readBytes = MIN( *src->m_bufIndex, src->blocksize );
 
     GstBuffer* const buf = gst_buffer_new_and_alloc( readBytes );
@@ -251,20 +267,5 @@ gst_streamsrc_get ( GstPad* pad )
     src->curoffset += readBytes;
 
     return GST_DATA ( buf );
-}
-
-
-GstStreamSrc*
-gst_streamsrc_new ( char* buf, int* index, bool* stop, bool* buffering )
-{
-    GstStreamSrc * object = GST_STREAMSRC( g_object_new( GST_TYPE_STREAMSRC, NULL ) );
-    gst_object_set_name( (GstObject*) object, "StreamSrc" );
-
-    object->m_buf = buf;
-    object->m_bufIndex = index;
-    object->m_bufStop = stop;
-    object->m_buffering = buffering;
-
-    return object;
 }
 

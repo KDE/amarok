@@ -5,7 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.2.3:
   FEATURES:
-    * View/Edit track entry into context menus of ContextBrowser and 
+    * View/Edit track entry into context menus of ContextBrowser and
       CollectionBrowser.
     * You can mark/unmark albums as compilations via CollectionBrowser's
       right-click contextmenu.
@@ -19,6 +19,7 @@ VERSION 1.2.3:
     * DCOP call saveCurrentPlaylist() now returns the path to current.xml.
 
   BUGFIXES:
+    * Memleak when a radio stream stalled. (BR 102047)
     * The Collection Scan finally checks for the right file modification time.
     * Adding a compilation disc from ContextBrowser was broken.
     * GStreamer-engine: Reduced the gap when switching to next track without

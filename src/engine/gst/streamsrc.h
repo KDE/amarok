@@ -55,11 +55,16 @@ struct _GstStreamSrcClass
     void ( *kio_resume ) ( GstElement *element );
 };
 
-GType gst_streamsrc_get_type( void );
+
 GstStreamSrc* gst_streamsrc_new ( char* buf, int* index, bool* stop, bool* buffering );
+void gst_streamsrc_set_property( GObject * object, guint prop_id, const GValue * value, GParamSpec * pspec );
+void gst_streamsrc_get_property( GObject * object, guint prop_id, GValue * value, GParamSpec * pspec );
+GstElementStateReturn gst_streamsrc_change_state(GstElement* element);
+GstData *gst_streamsrc_get( GstPad * pad );
+void gst_streamsrc_dispose( GObject *object );
+
 
 G_END_DECLS
-
 
 #endif /* AMAROK_GST_STREAMSRC_H */
 
