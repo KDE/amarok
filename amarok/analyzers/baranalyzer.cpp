@@ -32,10 +32,10 @@ BarAnalyzer::BarAnalyzer( QWidget *parent )
     double dg = double(bg.green() - fg.green()) / (NUM_ROOFS-1);
     double db = double(bg.blue()  - fg.blue())  / (NUM_ROOFS-1);
 
-    for ( int i = 0; i < NUM_ROOFS; ++i )
+    for ( uint i = 0; i < NUM_ROOFS; ++i )
     {
         m_pixRoof[i].resize( COLUMN_WIDTH, 1 );
-        m_pixRoof[i].fill( QColor( fg.red()+dr*i, fg.green()+dg*i, fg.blue()+db*i ) );
+        m_pixRoof[i].fill( QColor( fg.red()+int(dr*i), fg.green()+int(dg*i), fg.blue()+int(db*i) ) );
     }
 
     #undef bg

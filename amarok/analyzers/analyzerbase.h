@@ -73,7 +73,7 @@ private slots:
     void draw() { drawFrame(); bitBlt( this, 0, 0, canvas() ); }
 
 protected:
-    Base2D( QWidget*, uint, uint = 7 );
+    Base2D( QWidget*, uint timeout, uint scopeSize = 7 );
 
     virtual void init() {}
 

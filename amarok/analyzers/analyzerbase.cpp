@@ -37,11 +37,11 @@
 //can't mod scope in analyze you have to use transform
 
 template<class W>
-Analyzer::Base<W>::Base( QWidget *parent, uint timeout, uint size )
+Analyzer::Base<W>::Base( QWidget *parent, uint timeout, uint scopeSize )
   : W( parent )
   , m_timeout( timeout )
   , m_height( 0 )
-  , m_fht( size )
+  , m_fht( scopeSize )
 {}
 
 template<class W> bool
