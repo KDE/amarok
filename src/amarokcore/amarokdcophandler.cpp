@@ -27,6 +27,7 @@
 #include "equalizersetup.h"
 #include "osd.h"
 #include "playlist.h"
+#include "playlistitem.h"
 #include "statusbar.h"
 
 #include <qfile.h>
@@ -382,7 +383,11 @@ namespace amaroK
 
     void DcopPlaylistHandler::removeCurrentTrack()
     {
-        Playlist::instance()->removeItem( Playlist::instance()->currentTrack() );
+        PlaylistItem* const item = Playlist::instance()->currentTrack();
+        if ( item ) {
+            Playlist::instance()->removeItem( item );
+            delete item;
+        }
     }
 
     void DcopPlaylistHandler::playByIndex(int index)
