@@ -164,11 +164,11 @@ EqualizerCanvasView::currentSettings()
     int step = canvas()->width()/10;
     int i;
     QValueList<int> ret;
-    ret << (m_circleList->first()->y() - 100)*-1;
+    ret << (int)(m_circleList->first()->y() - 100)*-1;
     for(i=1; i<9; i++)
         ret << (getY(i*step) - 100)*-1;
-    ret << (m_circleList->last()->y() - 100)*-1;
-    kdDebug() << "sending " << ret << endl;
+    ret << (int)(m_circleList->last()->y() - 100)*-1;
+//    kdDebug() << "sending " << ret << endl;
     return ret;
 }
 
