@@ -74,7 +74,7 @@ class CollectionDB : public QObject
         void updateURL( const QString &url, const bool updateView = true );
 
         //album methods
-        bool isSamplerAlbum( const QString &album );
+        void checkCompilations( const QString &path );
         QString albumSongCount( const QString &artist_id, const QString &album_id );
         QString getPathForAlbum( const uint artist_id, const uint album_id );
         QString getPathForAlbum( const QString &artist, const QString &album );

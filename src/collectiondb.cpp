@@ -837,30 +837,30 @@ CollectionDB::isFileInCollection( const QString &url  )
 }
 
 
-bool
-CollectionDB::isSamplerAlbum( const QString &album )
+void
+CollectionDB::checkCompilations( const QString &path )
 {
-    QStringList values_artist;
-    QStringList values_dir;
+    QStringList albums;
+    QStringList artists;
+    QStringList dirs;
 
-    if ( album == "Unknown" || album.isEmpty() )
-        return false;
+    albums = query( QString( "SELECT DISTINCT album_temp.name FROM tags_temp, album_temp WHERE tags_temp.dir = '%1' AND album_temp.id = tags_temp.album;" )
+              .arg( escapeString( path ) ) );
 
-    const uint album_id = albumID( album, FALSE, FALSE );
-    values_artist = query( QString( "SELECT DISTINCT artist.name FROM artist, tags WHERE tags.artist = artist.id AND tags.album = '%1';" )
-                                    .arg( album_id ) );
-    values_dir    = query( QString( "SELECT DISTINCT dir FROM tags WHERE album = '%1';" )
-                                    .arg( album_id ) );
-
-    if ( values_artist.count() > values_dir.count() )
+    for ( uint i = 0; i < albums.count(); i++ )
     {
+        const uint album_id = albumID( albums[ i ], FALSE, FALSE );
+        artists = query( QString( "SELECT DISTINCT artist_temp.name FROM tags_temp, artist_temp WHERE tags_temp.album = '%1' AND tags_temp.artist = artist_temp.id;" )
+                            .arg( album_id ) );
+        dirs    = query( QString( "SELECT DISTINCT dir FROM tags_temp WHERE album = '%1';" )
+                            .arg( album_id ) );
 
-        query( QString( "UPDATE tags SET sampler = 1 WHERE album = '%1';" )
-                        .arg( album_id ) );
-        return true;
+        if ( artists.count() > dirs.count() )
+        {
+            query( QString( "UPDATE tags_temp SET sampler = 1 WHERE sampler = 0 AND album = '%1';" )
+                      .arg( album_id ) );
+        }
     }
-
-    return false;
 }
 
 

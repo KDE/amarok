@@ -320,6 +320,7 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
+    QString lastdir;
     KURL url;
     m_parent->createTables( true );
 
@@ -357,14 +358,14 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
         // Add images to the cover database
         else if ( validImages.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ).lower() ) )
             m_parent->addImageToPath( url.directory(), url.filename(), true );
-    }
 
-    // let's lock the database (will block other threads)
-#ifdef USE_MYSQL
-//    m_parent->query( "START TRANSACTION;" );
-#else
-//    m_parent->query( "BEGIN TRANSACTION;" );
-#endif
+        // Update Compilation-flag
+        if ( url.path().section( '/', 0, -2 ) != lastdir || ( i + 1 ) == entries.count() )
+        {
+            if ( !lastdir.isEmpty() ) m_parent->checkCompilations( lastdir );
+            lastdir = url.path().section( '/', 0, -2 );
+        }
+    }
 
     // remove tables and recreate them (quicker than DELETE FROM)
     if ( !m_incremental )
@@ -383,17 +384,6 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
 
     // remove temp tables and unlock database
     m_parent->dropTables( true );
-
-#ifdef USE_MYSQL
-//    m_parent->query( "COMMIT;" );
-#else
-//    m_parent->query( "END TRANSACTION;" );
-#endif
-
-    QStringList albums;
-    albums = m_parent->albumList();
-    for ( uint i = 0; i < albums.count(); i++ )
-        m_parent->isSamplerAlbum( albums[i] );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
