@@ -12,11 +12,6 @@ SHORT-TERM (URGENT):
 
   FIX 153 <markey> PlaylistLoader appears to accept any filetype into the playlist, ignoring canDecode().
 
-  FIX 150 <gjehle> Is it a known bug that amarok has problems with streamtitles where there's a >> ' << in the name ?
-                   Should be: The DJ Formerly Known As Arnie - Can't Usually Notice Tuesdays - LIVE from Almere, The Netherlands
-                   It is:
-                   http://jungletrain.net/ -- The DJ Formerly Known As Arnie - Can
-
   FIX 134 <markey> Ctrl-C as shortcut for copying title just doesn't work. We need to choose another
                    shortcut. How about a global shortcut?
 

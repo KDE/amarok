@@ -286,7 +286,7 @@ StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
 void 
 StreamProvider::transmitData( const QString &data )
 {
-    kdDebug() << k_funcinfo << " received new metadata: '" << data << "'" << endl;
+    kdDebug() << "[StreamProvider] Received new metadata: " << data << endl;
 
     // Prevent spamming by ignoring repeated identical data (some servers repeat it every 10 seconds)
     if ( data == m_lastMetadata ) return;
@@ -327,9 +327,11 @@ StreamProvider::extractStr( const QString &str, const QString &key )
     
     } else {
     
-        //FIXME This breaks when the substring contains '    
+        // String looks like this:
+        // StreamTitle='foobar';StreamUrl='http://shn.mthN.net';
+        
         index = str.find( "'", index ) + 1;
-        int indexEnd = str.find( "'", index );
+        int indexEnd = str.find( "';", index );
         return str.mid( index, indexEnd - index );
 
     }
