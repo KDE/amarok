@@ -85,7 +85,8 @@ amaroK::Slider::mousePressEvent( QMouseEvent *e )
 void
 amaroK::Slider::mouseReleaseEvent( QMouseEvent* )
 {
-    if( !m_outside ) emit sliderReleased( value() );
+    if( !m_outside && QSlider::value() != m_prevValue )
+       emit sliderReleased( value() );
 
     m_sliding = false;
     m_outside = false;
