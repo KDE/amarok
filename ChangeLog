@@ -5,8 +5,9 @@ amaroK ChangeLog
 
   FIX: Defect in plugin framework code, leading to a crash on some systems
        during engine plugin initialization.
-  ADD: Searching the Collection with a filter
-  FIX: BrowserWin's QLabels are painted white in amaroK's own color scheme
+  FIX: Restoring current playlist on startup (BR 79436, BR 79439).
+  ADD: Searching the Collection with a filter.
+  FIX: BrowserWin's QLabels are painted white in amaroK's own color scheme.
 
 VERSION 1.0-beta1:
   ADD: Search Browser - search stuff on your hdd / in your collection
