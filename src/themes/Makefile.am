@@ -1,3 +1,3 @@
-SUBDIRS = default reinhardt
+SUBDIRS = example reinhardt
 
 
