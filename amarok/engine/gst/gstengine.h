@@ -85,6 +85,7 @@ class GstEngine : public EngineBase
         GstElement*                              m_pAudiosink;
         GstElement*                              m_pSpider;
         GstElement*                              m_pFilesrc;
+        GstElement*                              m_pVolume;
 
         vector<float>                            m_scopeBuf;
         int                                      m_scopeBufIndex;

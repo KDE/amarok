@@ -71,7 +71,7 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, GstElement* )
         }
     }
 //     kdDebug() << k_funcinfo << "Channels: " << channels << endl;
-    
+
     if ( GST_IS_BUFFER( buf ) )
     {
 //         kdDebug() << k_funcinfo << "BUFFER_SIZE: " << GST_BUFFER_SIZE( buf ) << endl;
@@ -89,7 +89,7 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, GstElement* )
             //add all channels together so we effectively get a mono scope
             for ( int j = 0; j < channels; j++ ) {             
                 //convert uint-16 to float and write into buf
-                temp += (float)( data[i+j] - 32768 ) / 32768.0 /* / channels */;
+                temp += (float)( data[i+j] - 32768 ) / 32768.0;
             }
             
             pObject->m_scopeBuf[pObject->m_scopeBufIndex++] = temp;                
@@ -169,7 +169,8 @@ GstEngine::init( bool&, int scopeSize, bool )
     kdDebug() << k_funcinfo << "BEFORE gst_element_factory_make( osssink, play_audio );\n";
     m_pAudiosink           = gst_element_factory_make( "osssink", "play_audio" );
     GstElement *pIdentity  = gst_element_factory_make( "identity", "rawscope" );
-
+    m_pVolume              = gst_element_factory_make( "volume", "volume" );
+    
     g_signal_connect ( G_OBJECT( pIdentity ), "handoff",
                        G_CALLBACK( handoff_cb ), m_pThread );
     
@@ -177,10 +178,11 @@ GstEngine::init( bool&, int scopeSize, bool )
 //                        G_CALLBACK( eos_cb ), m_pThread );
 
     /* add objects to the main pipeline */
-    gst_bin_add_many( GST_BIN( m_pThread ), m_pFilesrc, m_pSpider, pIdentity, m_pAudiosink, NULL );
+    gst_bin_add_many( GST_BIN( m_pThread ), m_pFilesrc, m_pSpider, pIdentity,
+                                            m_pAudiosink, m_pVolume, NULL );
     /* link src to sink */
     
-    gst_element_link_many( m_pFilesrc, m_pSpider, pIdentity, m_pAudiosink, NULL );
+    gst_element_link_many( m_pFilesrc, m_pSpider, pIdentity, m_pVolume, m_pAudiosink, NULL );
 }
 
 
@@ -189,14 +191,16 @@ GstEngine::init( bool&, int scopeSize, bool )
 /////////////////////////////////////////////////////////////////////////////////////
 
 bool
-GstEngine::initMixer( bool )
+GstEngine::initMixer( bool hardware )
 {
     closeMixerHW();
-    initMixerHW();
+    
+    if ( hardware )
+        hardware = initMixerHW();
     
     setVolume( m_volume );
 
-    return true;
+    return hardware;
 }
 
 
@@ -335,9 +339,9 @@ GstEngine::seek( long ms )
     if ( ms > 0 )
     {
         GstEvent *event = gst_event_new_seek( (GstSeekType) ( GST_FORMAT_TIME |
-                                              GST_SEEK_METHOD_SET |
-                                              GST_SEEK_FLAG_FLUSH ),
-                                              ms * GST_MSECOND );
+                                                              GST_SEEK_METHOD_SET |
+                                                              GST_SEEK_FLAG_FLUSH ),
+                                                              ms * GST_MSECOND );
 
         gst_element_send_event( m_pAudiosink, event );
     }
@@ -348,7 +352,15 @@ void
 GstEngine::setVolume( int percent )
 {
     m_volume = percent;
-    EngineBase::setVolumeHW( percent );
+    
+    if ( isMixerHardware() ) {
+        EngineBase::setVolumeHW( percent );
+        g_object_set( G_OBJECT( m_pVolume ), "volume", 1.0, NULL );
+    }
+    else {
+        g_object_set( G_OBJECT( m_pVolume ), "volume", (double) percent / 100.0, NULL );
+    }
+    
 }
 
 
