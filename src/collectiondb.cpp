@@ -136,13 +136,29 @@ CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id,
                       "WHERE artist.id = %1 AND album.id = %2;" )
                       .arg( artist_id ).arg( album_id ), &values );
     
+    QString widthKey = QString::number( width ) + "@";
     QString key = values[0] + " - " + values[1] + ".png";
-    key.replace( "/", "_" );
-    key.replace( "'", "_" );
-    kdDebug() << "Looking for cover image: " << m_coverDir.filePath( key ) << endl;
+    key.replace( "/", "_" ).replace( "'", "_" );
+
+    kdDebug() << "Looking for cover image: " << m_coverDir.filePath( widthKey + key ) << endl;
     
-    if ( m_coverDir.exists( key ) )
-        return m_coverDir.filePath( key );
+    if ( m_coverDir.exists( widthKey + key ) )
+        return m_coverDir.filePath( widthKey + key );
+    else
+    {
+        QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
+
+        kdDebug() << "Looking for cover image: " << largeCoverDir.filePath( key ) << endl;
+        if ( largeCoverDir.exists( key ) )
+        {
+            kdDebug() << "Looking for cover image: " << largeCoverDir.filePath( key ) << endl;
+            QImage img( largeCoverDir.filePath( key ) );
+            img.smoothScale( width, width )
+               .save( m_coverDir.filePath( widthKey + key ), "PNG" );
+
+            return m_coverDir.filePath( widthKey + key );
+        }
+    }
     
     KURL url;
     url.setPath( getPathForAlbum( artist_id, album_id ) );
@@ -827,7 +843,7 @@ CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString&
     /* Static license Key. Thanks muesli ;-) */
     QString amazonLicense = "D1URM11J3F2CEH";
     QString keyword = artist + " - " + album;
-    kdDebug() << "Querying amazon with artist: " << artist << "and album " << album << endl;
+    kdDebug() << "Querying amazon with artist: " << artist << " and album " << album << endl;
     
     CoverFetcher* fetcher = new CoverFetcher( amazonLicense, parent );
     connect( fetcher, SIGNAL( imageReady( const QString&, const QPixmap& ) ),
@@ -864,13 +880,10 @@ CollectionDB::saveCover( const QString& keyword, const QPixmap& pix )
     QImage img( pix.convertToImage() );
     
     QString fileName( keyword );
-    fileName.replace( "/", "_" ).append( ".png" );
+    fileName.replace( "/", "_" ).replace( "'", "_" ).append( ".png" );
     
     img.save( m_coverDir.filePath( "large/"+fileName ), "PNG");
     
-    img.smoothScale( COVER_SIZE, COVER_SIZE )
-       .save( m_coverDir.filePath( fileName ), "PNG" );
-
     emit coverFetched( keyword );
 }
 

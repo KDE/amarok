@@ -149,7 +149,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
         }
     }
     
-    QStringList info = QStringList::split( "/", url.path() );
+    QStringList info = QStringList::split( " - ", url.path() );
     m_artist = info[0];
     m_album = info[1];
 
