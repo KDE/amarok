@@ -3,10 +3,12 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #36 being the highest available (take this one for your next bug and increase here)
+           #38 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+    * add: #37 <markey> make browser auto-hide optional  
 
     * fix: #35 <mxcl>restore quick tag loading when users don't have bitrate/length columns
                in playlist -->mxcl
@@ -39,7 +41,7 @@ SHORT-TERM (URGENT):
 
 MID-TERM:
 
-    * fix: amaroK packages seem to have a bug: parts of taglib actually get installed, like taglib-config
+    * fix: #36 <markey>amaroK packages have a bug: parts of taglib actually get installed, e.g. taglib-config
 
     * chg: instead of show file info why not use standard KDE properties? This has much more power
            than anything we could whip up and with taglib installed shows meta info and allows
