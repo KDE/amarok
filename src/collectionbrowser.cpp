@@ -148,10 +148,11 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
         }
     }
     //deallocate vm ressources
-    sqlite_finalize( vm, 0 );
+    sqlite_finalize( vm, &errorStr );
 
     if ( error != SQLITE_DONE ) {
         kdWarning() << k_funcinfo << "sqlite_step error.\n";
+        kdWarning() << errorStr << endl;
         return false;
     }
 
@@ -319,7 +320,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         if ( !m_db )
             kdWarning() << k_funcinfo << "Could not open SQLite database\n";
         //optimization for speeding up SQLite
-        m_db->execSql( "PRAGMA default_synchronous = OFF;" );
+//         m_db->execSql( "PRAGMA default_synchronous = OFF;" );
         m_db->execSql( "PRAGMA default_cache_size = 4000;" );
 
         m_insertdb = new CollectionDB( path );

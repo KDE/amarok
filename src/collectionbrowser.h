@@ -147,7 +147,7 @@ class CollectionView : public KListView
         
     //attributes:
         //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.
-        static const int DATABASE_VERSION = 4;
+        static const int DATABASE_VERSION = 5;
         static CollectionDB* m_db;
         
         CollectionBrowser* m_parent;
