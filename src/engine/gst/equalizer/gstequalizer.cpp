@@ -38,17 +38,17 @@ GstElementDetails gst_equalizer_details =
 
 GstStaticPadTemplate sink_template =
     GST_STATIC_PAD_TEMPLATE ( (gchar*) "sink",
-    			       GST_PAD_SINK,
-			       GST_PAD_ALWAYS,
-			       GST_STATIC_CAPS ( GST_AUDIO_INT_PAD_TEMPLATE_CAPS )
-			    );
+                    GST_PAD_SINK,
+                    GST_PAD_ALWAYS,
+                    GST_STATIC_CAPS ( GST_AUDIO_INT_PAD_TEMPLATE_CAPS )
+                  );
 
 GstStaticPadTemplate src_template =
     GST_STATIC_PAD_TEMPLATE (  (gchar*) "src",
-    			       GST_PAD_SRC,
-			       GST_PAD_ALWAYS,
-			       GST_STATIC_CAPS ( GST_AUDIO_INT_PAD_TEMPLATE_CAPS )
-			    );
+                    GST_PAD_SRC,
+                    GST_PAD_ALWAYS,
+                    GST_STATIC_CAPS ( GST_AUDIO_INT_PAD_TEMPLATE_CAPS )
+                   );
 
 // static guint gst_equalizer_signals[ LAST_SIGNAL ] = { 0 };
 
