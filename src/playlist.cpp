@@ -15,6 +15,7 @@
 #include "amarokconfig.h"
 #include "collectiondb.h"    //startEditTag()
 #include "enginecontroller.h"
+#include "k3bexporter.h"
 #include "metabundle.h"
 #include "osd.h"
 #include "playlist.h"
@@ -1098,6 +1099,38 @@ Playlist::saveXML( const QString &path ) const
 }
 
 void
+Playlist::burnPlaylist( int projectType )
+{
+    KURL::List list;
+
+    QListViewItemIterator it( this );
+    for( ; it.current(); ++it ) {
+        PlaylistItem *item = static_cast<PlaylistItem*>(*it);
+        KURL url = item->url();
+        if( url.isLocalFile() )
+            list << url;
+    }
+
+    K3bExporter::instance()->exportTracks( list, projectType );
+}
+
+void
+Playlist::burnSelectedTracks( int projectType )
+{
+    KURL::List list;
+
+    QListViewItemIterator it( this, QListViewItemIterator::Selected );
+    for( ; it.current(); ++it ) {
+        PlaylistItem *item = static_cast<PlaylistItem*>(*it);
+        KURL url = item->url();
+        if( url.isLocalFile() )
+            list << url;
+    }
+
+    K3bExporter::instance()->exportTracks( list, projectType );
+}
+
+void
 Playlist::shuffle() //SLOT
 {
     QPtrList<QListViewItem> list;
@@ -1305,7 +1338,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 {
     #define item static_cast<PlaylistItem*>(item)
 
-    enum Id { PLAY, PLAY_NEXT, VIEW, EDIT, FILL_DOWN, COPY, REMOVE };
+    enum Id { PLAY, PLAY_NEXT, VIEW, EDIT, FILL_DOWN, COPY, BURN_DATACD, BURN_AUDIOCD, REMOVE };
 
     if( item == NULL ) return; //technically we should show "Remove" but this is far neater
 
@@ -1342,6 +1375,11 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.insertItem( trackColumn ? i18n("&Iteratively Assign Track Numbers") : i18n("Write '%1' for Selected Tracks").arg( KStringHandler::rsqueeze( tag, 30 ) ), FILL_DOWN );
     popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy Meta-string" ), 0, 0, CTRL+Key_C, COPY );
     popup.insertSeparator();
+    if( K3bExporter::isAvailable() ) {
+        popup.insertItem( i18n("Burn to disk as data"), BURN_DATACD );
+        popup.insertItem( i18n("Burn to disk as CD Audio"), BURN_AUDIOCD );
+        popup.insertSeparator();
+    }
     popup.insertItem( SmallIcon( "edittrash" ), i18n( "&Remove From Playlist" ), this, SLOT(removeSelectedItems()), Key_Delete );
     popup.insertItem( SmallIcon( "editdelete" ), i18n("&Delete File", "&Delete Selected Files", itemCount ), this, SLOT(deleteSelectedFiles()), SHIFT+Key_Delete );
     popup.insertSeparator();
@@ -1417,6 +1455,14 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     case COPY:
         copyToClipboard( item );
+        break;
+
+    case BURN_DATACD:
+        burnSelectedTracks( K3bExporter::DataCD );
+        break;
+
+    case BURN_AUDIOCD:
+        burnSelectedTracks( K3bExporter::AudioCD );
         break;
     }
 

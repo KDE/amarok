@@ -7,6 +7,7 @@
 #include "app.h"
 #include "config.h"             //HAVE_XMMS definition
 #include "enginecontroller.h"
+#include "k3bexporter.h"
 #include "playlistwindow.h"
 #include "scriptmanager.h"
 #include "socketserver.h"       //Vis::Selector::showInstance()
@@ -18,6 +19,7 @@
 #include <klocale.h>
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h>
+#include <kurl.h>
 #include <qtooltip.h>
 
 using namespace amaroK;
@@ -323,5 +325,76 @@ RepeatPlaylistAction::RepeatPlaylistAction( KActionCollection *ac ) :
 {
     KToggleAction::setChecked( AmarokConfig::repeatPlaylist() );
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// BurnMenuAction
+//////////////////////////////////////////////////////////////////////////////////////////
+BurnMenuAction::BurnMenuAction( KActionCollection *ac )
+  : KAction( i18n( "Burn" ), 0, ac, "burn_menu" )
+{
+}
+
+int
+BurnMenuAction::plug( QWidget *w, int index )
+{
+    KToolBar *bar = dynamic_cast<KToolBar*>(w);
+
+    if( bar && kapp->authorizeKAction( name() ) )
+    {
+        const int id = KAction::getToolButtonID();
+
+        addContainer( bar, id );
+        connect( bar, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
+
+        bar->insertButton( QString::null, id, true, i18n( "Burn" ), index );
+
+        KToolBarButton* button = bar->getButton( id );
+        button->setPopup( amaroK::BurnMenu::instance() );
+        button->setName( "toolbutton_burn_menu" );
+        button->setIcon( "k3b" );
+
+        return containerCount() - 1;
+    }
+    else return -1;
+}
+
+BurnMenu::BurnMenu()
+{
+    insertItem( i18n("Current Playlist"), CURRENT_PLAYLIST );
+    insertItem( i18n("Selected Tracks"), SELECTED_TRACKS );
+    //TODO add "album" and "all tracks by artist"
+
+    connect( this, SIGNAL( aboutToShow() ),  SLOT( slotAboutToShow() ) );
+    connect( this, SIGNAL( activated(int) ), SLOT( slotActivated(int) ) );
+}
+
+KPopupMenu*
+BurnMenu::instance()
+{
+    static BurnMenu menu;
+    return &menu;
+}
+
+void
+BurnMenu::slotAboutToShow()
+{
+
+}
+
+void
+BurnMenu::slotActivated( int index )
+{
+    switch( index )
+    {
+    case CURRENT_PLAYLIST:
+        K3bExporter::instance()->exportCurrentPlaylist();
+        break;
+
+    case SELECTED_TRACKS:
+        K3bExporter::instance()->exportSelectedTracks();
+        break;
+    }
+}
+
 
 #include "actionclasses.moc"

@@ -22,6 +22,7 @@
 #include "playlistbrowser.h"
 #include "enginecontroller.h" //for actions in ctor
 #include "filebrowser.h"
+#include "k3bexporter.h"
 #include "playlist.h"
 #include "playlistwindow.h"
 #include "searchbrowser.h"
@@ -120,6 +121,7 @@ PlaylistWindow::PlaylistWindow()
     KActionCollection* const ac = actionCollection();
     const EngineController* const ec = EngineController::instance();
     EngineController::instance()->attach( this );
+    ( void ) new K3bExporter();
 
     KStdAction::configureToolbars( kapp, SLOT( slotConfigToolBars() ), ac );
     KStdAction::keyBindings( kapp, SLOT( slotConfigShortcuts() ), ac );
@@ -144,6 +146,9 @@ PlaylistWindow::PlaylistWindow()
     new amaroK::RepeatPlaylistAction( ac );
     new amaroK::RandomAction( ac );
     new amaroK::VolumeAction( ac );
+
+    if( K3bExporter::isAvailable() )
+        new amaroK::BurnMenuAction( ac );
 
     ac->readShortcutSettings( QString::null, kapp->config() );
 
@@ -293,6 +298,7 @@ void PlaylistWindow::createGUI()
 //         << "toolbutton_playlist_clear"
 //         << "toolbutton_playlist_shuffle"
          << "toolbutton_playlist_show"
+         << "toolbutton_burn_menu"
          << "toolbutton_amarok_menu";
 
     m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want some buttons to have text on right

@@ -130,6 +130,35 @@ namespace amaroK
         public:
             RepeatPlaylistAction( KActionCollection *ac );
     };
+
+    class BurnMenu : public KPopupMenu
+    {
+            Q_OBJECT
+
+        public:
+            enum MenuIds {
+                CURRENT_PLAYLIST,
+                SELECTED_TRACKS
+            };
+
+            static KPopupMenu *instance();
+
+        private slots:
+            void slotAboutToShow();
+            void slotActivated( int index );
+
+        private:
+            BurnMenu();
+    };
+
+
+    class BurnMenuAction : public KAction
+    {
+        public:
+            BurnMenuAction( KActionCollection* );
+            virtual int plug( QWidget*, int index = -1 );
+    };
+
 } /* namespace amaroK */
 
 

@@ -72,6 +72,9 @@ class Playlist : private KListView, public EngineObserver
         void saveM3U( const QString& ) const;
         void saveXML( const QString& ) const;
 
+        void burnPlaylist( int projectType=-1 );
+        void burnSelectedTracks( int projectType=-1 );
+
         class QDragObject *dragObject();
 
         //made public for convenience

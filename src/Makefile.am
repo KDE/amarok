@@ -52,6 +52,7 @@ amarokapp_SOURCES = \
     fht.cpp \
     filebrowser.cpp \
     firstrunwizard.ui \
+    k3bexporter.cpp \
     kbookmarkhandler.cpp \
     ktrm.cpp \
     metabundle.cpp \
