@@ -29,7 +29,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
         : KDialogBase( parent, name, false, 0, 0, Ok, false )
         , m_base( new ScriptManagerBase( this ) )
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     s_instance = this;
 
@@ -58,7 +58,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
 
 ScriptManager::~ScriptManager()
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     s_instance = 0;
 }
@@ -160,7 +160,7 @@ ScriptManager::slotRunScript()
 void
 ScriptManager::slotStopScript()
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     if ( !m_base->directoryListView->selectedItem() ) return ;
 

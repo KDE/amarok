@@ -18,6 +18,7 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "amarokdcophandler.h"
+#include "debug.h"
 #include "engine/enginebase.h"
 #include "enginecontroller.h"
 #include "playlist.h"
@@ -31,7 +32,6 @@
 #include <dcopclient.h>
 
 #include <kapplication.h> //kapp pointer
-#include <kdebug.h> // for kdWarning()
 #include <kactioncollection.h>
 
 namespace amaroK
@@ -78,7 +78,7 @@ namespace amaroK
 
     bool DcopHandler::isPlaying()
     {
-        kdWarning() << k_funcinfo << " is DEPRECATED!" << endl;
+        AMAROK_DEPRECATED
         return EngineController::engine()->state() == Engine::Playing;
     }
 
@@ -290,7 +290,7 @@ namespace amaroK
     {
         EqualizerSetup::instance()->raise();
     }
-    
+
     void DcopHandler::enableOSD(bool enable)
     {
         amaroK::OSD::instance()->setEnabled(enable);

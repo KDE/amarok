@@ -3,17 +3,17 @@
 // (c) 2004 Sami Nieminen <sami.nieminen@iki.fi>
 // See COPYING file for licensing information.
 
-#include "config.h"
+#define DEBUG_PREFIX "CollectionDB"
 
 #include "app.h"
-#include <math.h>                 //DbConnection::sqlite_power()
-
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "collectionbrowser.h"    //updateTags()
 #include "collectiondb.h"
 #include "collectionreader.h"
+#include "config.h"
 #include "coverfetcher.h"
+#include "debug.h"
 #include "enginecontroller.h"
 #include "metabundle.h"           //updateTags()
 #include "playlist.h"
@@ -27,7 +27,6 @@
 
 #include <kapplication.h>
 #include <kconfig.h>
-#include <kdebug.h>
 #include <kglobal.h>
 #include <kinputdialog.h>         //setupCoverFetcher()
 #include <kio/job.h>
@@ -37,6 +36,7 @@
 #include <kstandarddirs.h>
 #include <kurl.h>
 
+#include <math.h>                 //DbConnection::sqlite_power()
 #include <time.h>                 //query()
 #include <unistd.h>               //usleep()
 
@@ -61,7 +61,7 @@ CollectionDB::CollectionDB()
         : m_cacheDir( amaroK::saveLocation() )
         , m_coverDir( amaroK::saveLocation() )
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     EngineController::instance()->attach( this );
 
@@ -93,7 +93,7 @@ CollectionDB::CollectionDB()
 
 CollectionDB::~CollectionDB()
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     destroy();
 
@@ -226,7 +226,7 @@ CollectionDB::isValid()
 void
 CollectionDB::createTables( DbConnection *conn )
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     //create tag table
     query( QString( "CREATE %1 TABLE tags%2 ("
@@ -337,7 +337,7 @@ CollectionDB::createTables( DbConnection *conn )
 void
 CollectionDB::dropTables( DbConnection *conn )
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     query( QString( "DROP TABLE tags%1;" ).arg( conn ? "_temp" : "" ), conn );
     query( QString( "DROP TABLE album%1;" ).arg( conn ? "_temp" : "" ), conn );
@@ -356,7 +356,7 @@ CollectionDB::dropTables( DbConnection *conn )
 void
 CollectionDB::clearTables( DbConnection *conn )
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     QString clearCommand = "DELETE FROM";
     if ( m_dbConnPool->getDbConnectionType() == DbConnection::mysql )
@@ -395,7 +395,7 @@ CollectionDB::moveTempTables( DbConnection *conn )
 void
 CollectionDB::createStatsTable()
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     // create music statistics database
     query( QString( "CREATE TABLE statistics ("
@@ -414,7 +414,7 @@ CollectionDB::createStatsTable()
 void
 CollectionDB::dropStatsTable()
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     query( "DROP TABLE statistics;" );
 }

@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <loader.h>
-#include <splash.h>
+#include "loader.h"
+#include "splash.h"
 
 #include <qcstring.h>
 #include <qdir.h>

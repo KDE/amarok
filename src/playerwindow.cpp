@@ -86,8 +86,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     //the createWidget template function is used here
     //createWidget just creates a widget which has it's geometry set too
 
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
-
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
 
@@ -200,8 +198,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     //KWin::setOnAllDesktops( winId(), true );
 
     connect( m_pAnimTimer, SIGNAL( timeout() ), SLOT( drawScroll() ) );
-
-    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 

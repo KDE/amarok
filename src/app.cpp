@@ -22,6 +22,7 @@ email                : markey@web.de
 #include "config.h"
 #include "configdialog.h"
 #include "collectionbrowser.h"
+#include "debug.h"
 #include "effectwidget.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
@@ -41,7 +42,6 @@ email                : markey@web.de
 
 #include <kcmdlineargs.h>        //initCliArgs()
 #include <kcursor.h>             //amaroK::OverrideCursor
-#include <kdebug.h>
 #include <kedittoolbar.h>        //slotConfigToolbars()
 #include <kglobalaccel.h>        //initGlobalShortcuts()
 #include <kglobalsettings.h>     //applyColorScheme()
@@ -136,7 +136,7 @@ App::App()
 
 App::~App()
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     // Hiding the OSD before exit prevents crash
     amaroK::OSD::instance()->hide();
@@ -348,7 +348,7 @@ void App::applySettings( bool firstTime )
 {
     ///Called when the configDialog is closed with OK or Apply
 
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    DEBUG_BEGIN
 
     //determine and apply colors first
     applyColorScheme();
@@ -461,7 +461,7 @@ void App::applySettings( bool firstTime )
         if ( !( *it ).startsWith( size  ) && !( *it ).startsWith( "50@" ) )
             QFile( cacheDir.filePath( *it ) ).remove();
 
-    kdDebug() << "END " << k_funcinfo << endl;
+    DEBUG_END
 }
 
 
@@ -716,7 +716,7 @@ void App::slotConfigEqualizer() //SLOT
 
 void App::slotConfigAmarok( const QCString& page )
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     AmarokConfigDialog* dialog = (AmarokConfigDialog*) KConfigDialog::exists( "settings" );
 

@@ -40,7 +40,7 @@ ThreadWeaver::ThreadWeaver()
 
 ThreadWeaver::~ThreadWeaver()
 {
-    debug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     //TODO abort and wait on all running threads
     //will dependent threads be ok here?
@@ -165,7 +165,7 @@ ThreadWeaver::dependentAboutToBeDestroyed()
 void
 ThreadWeaver::customEvent( QCustomEvent *e )
 {
-    debug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     switch( e->type() )
     {

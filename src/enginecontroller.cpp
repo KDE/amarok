@@ -18,6 +18,7 @@ email                : fh@ez.no
  ***************************************************************************/
 
 #include "amarokconfig.h"
+#include "debug.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
 #include "pluginmanager.h"
@@ -27,7 +28,6 @@ email                : fh@ez.no
 #include <qtimer.h>
 
 #include <kapplication.h>
-#include <kdebug.h>
 #include <kio/global.h>
 #include <kio/job.h>
 #include <kmessagebox.h>
@@ -67,7 +67,7 @@ EngineController::EngineController()
 
 EngineBase *EngineController::loadEngine() //static
 {
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    DEBUG_BEGIN
 
     Engine::Base   *engine = instance()->m_engine;
     amaroK::Plugin *plugin = loadEngine( AmarokConfig::soundSystem() );
@@ -134,7 +134,7 @@ EngineBase *EngineController::loadEngine() //static
         delete plugin;
      }
 
-    kdDebug() << "END " << k_funcinfo << endl;
+    DEBUG_END
 
     return engine;
 }

@@ -53,10 +53,10 @@ using namespace Debug;
 #define DEBUG_FUNC_INFO kdDebug() << k_funcinfo << endl;
 
 /// Use these to introduce and extroduce functions
-#define DEBUG_SECTION_BEGIN kdDebug() << ">> " << __PRETTY_FUNCTION__ << endl;
-#define DEBUG_SECTION_END   kdDebug() << "<< " << __PRETTY_FUNCTION__ << endl;
+#define DEBUG_BEGIN kdDebug() << "BEGIN: " << __PRETTY_FUNCTION__ << endl;
+#define DEBUG_END   kdDebug() << "END: " << __PRETTY_FUNCTION__ << endl;
 
-#define AMAROK_NOTIMPLEMENTED kdDebug() << "NOT-IMPLEMENTED: " << __PRETTY_FUNCTION__ << endl;
-#define AMAROK_DEPRECATED kdDebug() << "DEPRECATED: " << __PRETTY_FUNCTION__ << endl;
+#define AMAROK_NOTIMPLEMENTED kdWarning() << "NOT-IMPLEMENTED: " << __PRETTY_FUNCTION__ << endl;
+#define AMAROK_DEPRECATED kdWarning() << "DEPRECATED: " << __PRETTY_FUNCTION__ << endl;
 
 #endif

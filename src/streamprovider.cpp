@@ -15,14 +15,12 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
-#include "metabundle.h"
-#include "streamprovider.h"
-
-#include <kdebug.h>
+#include "debug.h"
 #include <kmdcodec.h>
 #include <kprotocolmanager.h>
-
+#include "metabundle.h"
 #include <qtimer.h>
+#include "streamprovider.h"
 
 // TODO:
 // Look at LibVorbisfile for ogg comment decoding.
@@ -46,7 +44,7 @@ StreamProvider::StreamProvider( KURL url, const QString& streamingMode )
         , m_usedPort( 0 )
         , m_pBuf( new char[BUFSIZE] )
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     // Don't try to get metdata for ogg streams (different protocol)
     m_icyMode = url.path().endsWith( ".ogg" ) ? false : true;
@@ -62,8 +60,7 @@ StreamProvider::StreamProvider( KURL url, const QString& streamingMode )
         StreamProxy* server;
         for ( i = MIN_PROXYPORT; i <= MAX_PROXYPORT; i++ ) {
             server = new StreamProxy( i, this );
-            kdDebug() << k_funcinfo <<
-            "Trying to bind to port: " << i << endl;
+            kdDebug() << k_funcinfo << "Trying to bind to port: " << i << endl;
             if ( server->ok() )     // found a free port
                 break;
             delete server;
@@ -83,7 +80,7 @@ StreamProvider::StreamProvider( KURL url, const QString& streamingMode )
 
 StreamProvider::~StreamProvider()
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     delete[] m_pBuf;
 }
@@ -115,7 +112,7 @@ StreamProvider::proxyUrl()
 void
 StreamProvider::accept( int socket ) //SLOT
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     m_sockProxy.setSocket( socket );
     m_sockProxy.waitForMore( KProtocolManager::proxyConnectTimeout() * 1000 );
@@ -127,7 +124,7 @@ StreamProvider::accept( int socket ) //SLOT
 void
 StreamProvider::connectToHost() //SLOT
 {
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    DEBUG_BEGIN
 
     { //initialisations
         m_connectSuccess = false;
@@ -140,14 +137,14 @@ StreamProvider::connectToHost() //SLOT
         m_sockRemote.connectToHost( m_url.host(), m_url.port() );
     }
 
-    kdDebug() << "END " << k_funcinfo << endl;
+    DEBUG_END
 }
 
 
 void
 StreamProvider::sendRequest() //SLOT
 {
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    DEBUG_BEGIN
 
     QCString username = m_url.user().utf8();
     QCString password = m_url.pass().utf8();
@@ -168,7 +165,7 @@ StreamProvider::sendRequest() //SLOT
     kdDebug() << "StreamProvider sending request:\n" << request << endl;
     m_sockRemote.writeBlock( request.latin1(), request.length() );
 
-    kdDebug() << "END " << k_funcinfo << endl;
+    DEBUG_END
 }
 
 
@@ -241,7 +238,7 @@ StreamProvider::connectError() //SLOT
 bool
 StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     while ( index < bytesRead ) {
         m_headerStr.append( m_pBuf[ index++ ] );

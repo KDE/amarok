@@ -1,16 +1,18 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // See COPYING file for licensing information
 
-#include "config.h"        //for AMAZON_SUPPORT
+#define DEBUG_PREFIX "ContextBrowser"
 
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "collectionbrowser.h" //FIXME for setupDirs()
 #include "collectiondb.h"
 #include "colorgenerator.h"
+#include "config.h"        //for AMAZON_SUPPORT
 #include "contextbrowser.h"
 #include "coverfetcher.h"
 #include "covermanager.h"
+#include "debug.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
 #include "playlist.h"      //appendMedia()
@@ -23,7 +25,6 @@
 #include <qtextstream.h>  // External CSS reading
 
 #include <kapplication.h> //kapp
-#include <kdebug.h>
 #include <kfiledialog.h>
 #include <kglobal.h>
 #include <khtml_part.h>
@@ -63,8 +64,6 @@ void albumArtistFromUrl( QString url, QString &artist, QString &album )
 
     artist = list.front();
     album  = list.back();
-
-    kdDebug() << "MOO: '" << url << "' -> " << artist << ", " << album << endl;
 }
 
 
@@ -212,7 +211,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
     {
         QImage img( CollectionDB::instance()->albumImage( artist, album, 0 ) );
         const QString amazonUrl = img.text( "amazon-url" );
-        kdDebug() << "[ContextBrowser] Embedded amazon url in cover image: " << amazonUrl << endl;
+        debug() << "Embedded amazon url in cover image: " << amazonUrl << endl;
 
         if ( amazonUrl.isEmpty() )
             KMessageBox::information( this, i18n( "<p>There is no product information available for this image.<p>Right-click on image for menu." ) );
@@ -1163,7 +1162,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
 void ContextBrowser::setStyleSheet()
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     QString themeName = AmarokConfig::contextBrowserStyleSheet().latin1();
     if ( QFile::exists( amaroK::saveLocation( "themes/" + themeName + '/' ) + "stylesheet.css" ) )
@@ -1460,7 +1459,7 @@ void ContextBrowser::showLyrics( const QString &hash )
                 KURL::encode_string_no_slash( title ) );
 
 
-    kdDebug() << "Using this url: " << url << endl;
+    debug() << "Using this url: " << url << endl;
 
     m_lyrics = QString::null;
     m_lyricUrl = QString( "grupo=%1&tema=%2&disco=%3&ano=%4" ).arg(

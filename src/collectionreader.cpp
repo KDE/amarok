@@ -2,18 +2,20 @@
 // See COPYING file that comes with this distribution
 //
 
+#define DEBUG_PREFIX "CollectionReader"
+
 #include "amarokconfig.h"
 #include "collectiondb.h"
 #include "collectionreader.h"
+#include "debug.h"
 #include <dirent.h>    //stat
 #include <errno.h>
 #include <iostream>
 #include <kapplication.h>
-#include <kdebug.h>
 #include <kglobal.h>
 #include <klocale.h>
 #include <kstandarddirs.h>
-#include <metabundle.h>
+#include "metabundle.h"
 #include "playlistbrowser.h"
 #include <sys/types.h> //stat
 #include <sys/stat.h>  //stat
@@ -81,13 +83,13 @@ IncrementalCollectionReader::doJob()
         if ( stat( QFile::encodeName( folder ), &statBuf ) == 0 ) {
             if ( QString::number( (long)statBuf.st_mtime ) != mtime ) {
                 m_folders << folder;
-                kdDebug() << "Collection dir changed: " << folder << endl;
+                debug() << "Collection dir changed: " << folder << endl;
             }
         }
         else {
             // this folder has been removed
             m_folders << folder;
-            kdDebug() << "Collection dir removed: " << folder << endl;
+            debug() << "Collection dir removed: " << folder << endl;
         }
     }
 
@@ -142,7 +144,7 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
     QCString dir8Bit = QFile::encodeName( dir );
 
     if ( m_processedDirs.contains( dir ) ) {
-        kdDebug() << "[CollectionReader] Skipping, already scanned: " << dir << endl;
+        debug() << "Skipping, already scanned: " << dir << endl;
         return;
     }
 
@@ -164,7 +166,7 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
     DIR *d = opendir( dir8Bit );
     if( d == NULL ) {
         if( errno == EACCES )
-            kdWarning() << "[CollectionReader] Skipping, no access permissions: " << dir << endl;
+            warning() << "Skipping, no access permissions: " << dir << endl;
         return;
     }
 
@@ -189,7 +191,7 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
                 // Check for symlink recursion
                 QFileInfo info( entry );
                 if ( info.isSymLink() && m_processedDirs.contains( info.readLink() ) ) {
-                    kdWarning() << "[CollectionReader] Skipping, recursive symlink: " << dir << endl;
+                    warning() << "Skipping, recursive symlink: " << dir << endl;
                     continue;
                 }
                 if ( !m_incremental || !CollectionDB::instance()->isDirInCollection( entry ) )
@@ -221,7 +223,7 @@ static inline QString directory( const QString &filename ) { return filename.sec
 void
 CollectionReader::readTags( const QStringList& entries )
 {
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    DEBUG_BEGIN
 
     typedef QPair<QString, QString> CoverBundle;
 
@@ -300,5 +302,5 @@ CollectionReader::readTags( const QStringList& entries )
     CollectionDB::instance()->moveTempTables( m_db );
     CollectionDB::instance()->dropTables( m_db );
 
-    kdDebug() << "END " << k_funcinfo << endl;
+    DEBUG_END
 }

@@ -30,7 +30,7 @@ email                : markey@web.de
 #include <kio/jobclasses.h>
 
 #include <gst/gst.h>
-#include <adapter.h>
+#include "adapter.h"
 
 using std::vector;
 
