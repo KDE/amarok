@@ -849,6 +849,8 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 void
 CollectionView::setViewMode( int mode, bool rerender )
 {
+    clear();
+
     // remove all columns
     for ( int i = columns() - 1; i >= 0 ; --i )
         removeColumn( i );
@@ -858,19 +860,22 @@ CollectionView::setViewMode( int mode, bool rerender )
         m_parent->m_treeViewAction->setEnabled( false );
         m_parent->m_flatViewAction->setEnabled( true );
 
-        setRootIsDecorated( true );
         addColumn( captionForCategory( m_cat1 ) );
+        setResizeMode( QListView::NoColumn );
+        setRootIsDecorated( true );
     }
     else
     {
         m_parent->m_treeViewAction->setEnabled( true );
         m_parent->m_flatViewAction->setEnabled( false );
 
-        setRootIsDecorated( false );
         addColumn( i18n( "Title" ) );
         addColumn( captionForCategory( m_cat1 ) );
         if ( m_cat2 != CollectionBrowser::IdNone )addColumn( captionForCategory( m_cat2 ) );
         if ( m_cat3 != CollectionBrowser::IdNone )addColumn( captionForCategory( m_cat3 ) );
+
+        setResizeMode( QListView::AllColumns );
+        setRootIsDecorated( false );
     }
 
     m_viewMode = mode;
