@@ -87,9 +87,9 @@ class ArtsEngine : public Engine::Base
         static const int                         ARTS_TIMER = 100;   //ms
         static const int                         TIMEOUT    = 4000;  //ms FIXME make option?
 
-        KArtsDispatcher*                         m_pArtsDispatcher;
-        KDE::PlayObject*                         m_pPlayObject;
-        KDE::PlayObject*                         m_pPlayObjectXfade;
+        KArtsDispatcher*                         m_artsDispatcher;
+        KDE::PlayObject*                         m_playObject;
+        KDE::PlayObject*                         m_playObjectXfade;
         Arts::SoundServerV2                      m_server;
         Arts::StereoEffectStack                  m_globalEffectStack;
         Arts::StereoEffectStack                  m_effectStack;
@@ -107,7 +107,7 @@ class ArtsEngine : public Engine::Base
         float                                    m_xfadeValue;
         QString                                  m_xfadeCurrent;
 //         QGuardedPtr<ArtsConfigWidget>            m_pDecoderConfigWidget;
-        QTimer*                                  m_pConnectTimer;
+        QTimer*                                  m_connectTimer;
 };
 
 

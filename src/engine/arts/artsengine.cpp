@@ -68,15 +68,15 @@ AMAROK_EXPORT_PLUGIN( ArtsEngine )
 
 ArtsEngine::ArtsEngine()
         : EngineBase()
-        , m_pArtsDispatcher( new KArtsDispatcher( this ) )
-        , m_pPlayObject( 0 )
-        , m_pPlayObjectXfade( 0 )
+        , m_artsDispatcher( new KArtsDispatcher( this ) )
+        , m_playObject( 0 )
+        , m_playObjectXfade( 0 )
         , m_scopeId( 0 )
         , m_volumeId( 0 )
         , m_xfadeFadeout( false )
         , m_xfadeValue( 0.0 )
         , m_xfadeCurrent( "invalue2" )
-        , m_pConnectTimer( new QTimer( this ) )
+        , m_connectTimer( new QTimer( this ) )
 {
     DEBUG_BLOCK
 
@@ -89,10 +89,10 @@ ArtsEngine::~ ArtsEngine()
 {
     DEBUG_BLOCK
 
-    m_pConnectTimer->stop();
+    m_connectTimer->stop();
     killTimers();
-    delete m_pPlayObject;
-    delete m_pPlayObjectXfade;
+    delete m_playObject;
+    delete m_playObjectXfade;
 //     saveEffects();
 
     m_server            = Arts::SoundServerV2::null();
@@ -258,7 +258,7 @@ bool ArtsEngine::init()
 
 //     if ( m_restoreEffects ) loadEffects();
     startTimer( ARTS_TIMER );
-    connect( m_pConnectTimer, SIGNAL( timeout() ), this, SLOT( connectTimeout() ) );
+    connect( m_connectTimer, SIGNAL( timeout() ), this, SLOT( connectTimeout() ) );
 
     return true;
 }
@@ -287,8 +287,8 @@ bool ArtsEngine::canDecode( const KURL &url ) const
 
 uint ArtsEngine::position() const
 {
-    if ( m_pPlayObject ) {
-        const Arts::poTime time = m_pPlayObject->currentTime();
+    if ( m_playObject ) {
+        const Arts::poTime time = m_playObject->currentTime();
         return time.seconds * 1000 + time.ms;
     }
 
@@ -298,8 +298,8 @@ uint ArtsEngine::position() const
 
 uint ArtsEngine::length() const
 {
-    if ( m_pPlayObject ) {
-        const Arts::poTime time = m_pPlayObject->overallTime();
+    if ( m_playObject ) {
+        const Arts::poTime time = m_playObject->overallTime();
         return time.seconds * 1000 + time.ms;
     }
 
@@ -309,12 +309,12 @@ uint ArtsEngine::length() const
 
 Engine::State ArtsEngine::state() const
 {
-    if ( m_pPlayObject && !m_pPlayObject->isNull() )
+    if ( m_playObject && !m_playObject->isNull() )
     {
-        if ( m_pPlayObject->object().isNull() )
+        if ( m_playObject->object().isNull() )
             return Engine::Playing;
 
-        switch ( m_pPlayObject->state() )
+        switch ( m_playObject->state() )
         {
             case Arts::posPaused:
                 return Engine::Paused;
@@ -364,20 +364,20 @@ bool ArtsEngine::load( const KURL& url, bool stream )
     startXfade();
 
     KDE::PlayObjectFactory factory( m_server );
-    m_pPlayObject = factory.createPlayObject( url, false ); //second parameter: create BUS(true/false)
+    m_playObject = factory.createPlayObject( url, false ); //second parameter: create BUS(true/false)
 
-    if ( !m_pPlayObject || m_pPlayObject->isNull() ) {
+    if ( !m_playObject || m_playObject->isNull() ) {
         connectTimeout();
     }
     else
     {
-//         connect( m_pPlayObject, SIGNAL( destroyed() ), this, SIGNAL( stopped() ) );
+//         connect( m_playObject, SIGNAL( destroyed() ), this, SIGNAL( stopped() ) );
 
-        if ( m_pPlayObject->object().isNull() ) {
-            debug() << "m_pPlayObject->object().isNull()" << endl;
+        if ( m_playObject->object().isNull() ) {
+            debug() << "m_playObject->object().isNull()" << endl;
 
-            connect( m_pPlayObject, SIGNAL( playObjectCreated() ), this, SLOT( connectPlayObject() ) );
-            m_pConnectTimer->start( TIMEOUT, true );
+            connect( m_playObject, SIGNAL( playObjectCreated() ), this, SLOT( connectPlayObject() ) );
+            m_connectTimer->start( TIMEOUT, true );
         }
         else {
             connectPlayObject();
@@ -392,11 +392,11 @@ bool ArtsEngine::load( const KURL& url, bool stream )
 
 void ArtsEngine::connectPlayObject() //SLOT
 {
-    m_pConnectTimer->stop();
+    m_connectTimer->stop();
 
-    if ( m_pPlayObject && !m_pPlayObject->isNull() && !m_pPlayObject->object().isNull() )
+    if ( m_playObject && !m_playObject->isNull() && !m_playObject->object().isNull() )
     {
-        m_pPlayObject->object()._node()->start();
+        m_playObject->object()._node()->start();
 
         //switch xfade channels
         m_xfadeCurrent = ( m_xfadeCurrent == "invalue1" ) ? "invalue2" : "invalue1";
@@ -404,8 +404,8 @@ void ArtsEngine::connectPlayObject() //SLOT
         if ( m_xfadeValue == 0.0 )
             m_xfadeValue = 1.0;
 
-        Arts::connect( m_pPlayObject->object(), "left", m_xfade, ( m_xfadeCurrent + "_l" ).latin1() );
-        Arts::connect( m_pPlayObject->object(), "right", m_xfade, ( m_xfadeCurrent + "_r" ).latin1() );
+        Arts::connect( m_playObject->object(), "left", m_xfade, ( m_xfadeCurrent + "_l" ).latin1() );
+        Arts::connect( m_playObject->object(), "right", m_xfade, ( m_xfadeCurrent + "_r" ).latin1() );
     }
 }
 
@@ -413,18 +413,18 @@ void ArtsEngine::connectPlayObject() //SLOT
 void ArtsEngine::connectTimeout()
 {
     error() << "Cannot initialize PlayObject! Skipping this track." << endl;
-    m_pConnectTimer->stop();
+    m_connectTimer->stop();
 
-    delete m_pPlayObject;
-    m_pPlayObject = NULL;
+    delete m_playObject;
+    m_playObject = NULL;
 }
 
 
 bool ArtsEngine::play( uint offset )
 {
-    if ( !m_pPlayObject ) return false;
+    if ( !m_playObject ) return false;
 
-    m_pPlayObject->play();
+    m_playObject->play();
 
     // Seek to right position when using "Resume playback at startup"
     if ( offset )
@@ -455,12 +455,12 @@ void ArtsEngine::stop()
 
 void ArtsEngine::pause()
 {
-    if ( !m_pPlayObject ) return;
+    if ( !m_playObject ) return;
 
     if ( state() == Engine::Paused )
-        m_pPlayObject->play();
+        m_playObject->play();
     else
-        m_pPlayObject->pause();
+        m_playObject->pause();
 
     emit stateChanged( state() );
 }
@@ -468,25 +468,25 @@ void ArtsEngine::pause()
 
 void ArtsEngine::seek( uint ms )
 {
-    if ( m_pPlayObject )
+    if ( m_playObject )
     {
         Arts::poTime time;
         time.ms      = ms % 1000;
         time.seconds = ( ms - time.ms ) / 1000;
         time.custom  = 0.0;
 
-        m_pPlayObject->seek( time );
+        m_playObject->seek( time );
     }
 }
 
 
 bool ArtsEngine::decoderConfigurable()
 {
-/*    if ( m_pPlayObject && !m_pPlayObject->object().isNull() && !m_pDecoderConfigWidget )
+/*    if ( m_playObject && !m_playObject->object().isNull() && !m_pDecoderConfigWidget )
     {
         Arts::TraderQuery query;
         query.supports( "Interface", "Arts::GuiFactory" );
-        query.supports( "CanCreate", m_pPlayObject->object()._interfaceName() );
+        query.supports( "CanCreate", m_playObject->object()._interfaceName() );
 
         std::vector<Arts::TraderOffer> *queryResults = query.query();
         bool yes = queryResults->size();
@@ -502,10 +502,10 @@ void ArtsEngine::configureDecoder() //slot
 {
 /*    //this method shows a GUI for an aRts CODEC. currently only working with markey's modplug_artsplugin
 
-    if ( m_pPlayObject && !m_pDecoderConfigWidget )
+    if ( m_playObject && !m_pDecoderConfigWidget )
     {
-        m_pDecoderConfigWidget = new ArtsConfigWidget( m_pPlayObject->object() );
-        connect( m_pPlayObject, SIGNAL( destroyed() ), m_pDecoderConfigWidget, SLOT( deleteLater() ) );
+        m_pDecoderConfigWidget = new ArtsConfigWidget( m_playObject->object() );
+        connect( m_playObject, SIGNAL( destroyed() ), m_pDecoderConfigWidget, SLOT( deleteLater() ) );
 
         m_pDecoderConfigWidget->show();
     }*/
@@ -531,14 +531,14 @@ void ArtsEngine::setVolumeSW( uint percent )
 
 void ArtsEngine::startXfade()
 {
-     if ( m_pPlayObjectXfade )
+     if ( m_playObjectXfade )
     {
-        m_pPlayObjectXfade->halt();
-        delete m_pPlayObjectXfade;
+        m_playObjectXfade->halt();
+        delete m_playObjectXfade;
     }
 
-    m_pPlayObjectXfade = m_pPlayObject;
-    m_pPlayObject = 0;
+    m_playObjectXfade = m_playObject;
+    m_playObject = 0;
 }
 
 
@@ -554,11 +554,11 @@ void ArtsEngine::timerEvent( QTimerEvent* )
         if ( m_xfadeValue <= 0.0 )
         {
             m_xfadeValue = 0.0;
-            if ( m_pPlayObjectXfade )
+            if ( m_playObjectXfade )
             {
-                m_pPlayObjectXfade->halt();
-                delete m_pPlayObjectXfade;
-                m_pPlayObjectXfade = 0;
+                m_playObjectXfade->halt();
+                delete m_playObjectXfade;
+                m_playObjectXfade = 0;
             }
         }
         float value;
