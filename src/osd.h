@@ -69,8 +69,12 @@ class OSDWidget : public QWidget
         virtual void paintEvent( QPaintEvent* );
         virtual bool event( QEvent* );
 
-        /** distance from left/right edges */
+        /** distance from screen edge */
         static const int MARGIN = 15;
+
+        /** padding inside the OSD frame */
+        static const int HPADDING = 20;
+        static const int VPADDING = 10;
 
         int         m_duration;
         QTimer     *m_timer;
@@ -139,9 +143,11 @@ namespace amaroK
         void show( const MetaBundle &bundle );
 
     public slots:
-        // this function is for the showOSD global shortcut,
-        // it should always work //FIXME sucks
-        void forceShowTrack() { bool b = isEnabled(); setEnabled( true ); OSDWidget::show( m_text ); setEnabled( b ); }
+        /**
+         * When user pushs global shortcut or uses DCOP OSD is toggle
+         * even if it is disabled()
+         */
+        void forceToggleOSD();
 
     private:
         OSD() : OSDWidget( 0 ) {}

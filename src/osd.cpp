@@ -90,14 +90,32 @@ OSDWidget::determineMetrics()
     static const uint VMARGIN = 10;
 
     // determine a sensible maximum size, don't cover the whole desktop or cross the screen
-    const QSize margin( (HMARGIN + MARGIN) * 2, (VMARGIN + MARGIN) * 2 );
+    const QSize margin( (HMARGIN + MARGIN) * 2, (VMARGIN + MARGIN) * 2 ); //margins
+    const QSize image = m_image.isNull() ? QSize( 0, 0 ) : QSize( 80, 80 ); //80x80 is minimum image size
     const QSize max = QApplication::desktop()->screen( m_screen )->size() - margin;
 
     // The osd cannot be larger than the screen
-    QRect rect = fontMetrics().boundingRect( 0, 0, max.width(), max.height(), AlignLeft | WordBreak, m_text );
+    QSize text = max - image;
+    QRect rect = fontMetrics().boundingRect( 0, 0, text.width(), text.height(), AlignLeft | WordBreak, m_text );
+
+    if( !m_image.isNull() ) {
+        const int availableWidth = max.width() - rect.width(); //WILL be >= 80
+
+        int imageMetric;
+        imageMetric = QMIN( availableWidth, rect.height() );
+        imageMetric = QMIN( imageMetric, m_image.width() );
+
+        const int widthIncludingImage = rect.width()
+                + imageMetric
+                + VMARGIN; //margin between text + image
+
+        rect.setWidth( QMIN( widthIncludingImage, max.width() ) );
+
+        m_image = m_image.smoothScale( imageMetric, imageMetric );
+    }
 
     // size and move us
-    rect.addCoords( -20, -10, 20, 10 );
+    rect.addCoords( -HMARGIN, -VMARGIN, HMARGIN, VMARGIN );
     reposition( rect.size() );
 }
 
@@ -150,8 +168,8 @@ OSDWidget::paintEvent( QPaintEvent* )
        bitBlt( this, 0, 0, &m_screenshot );
 
     QPainter p;
-    QImage image;
     QRect rect = this->rect();
+    QImage shadow;
     QFontMetrics metrics = fontMetrics();
     Qt::AlignmentFlags align;
 
@@ -165,6 +183,7 @@ OSDWidget::paintEvent( QPaintEvent* )
 
     if( m_drawShadow )
     {
+        QRect r = rect;
         QPixmap pixmap( size() );
 
         pixmap.fill( Qt::black );
@@ -173,16 +192,31 @@ OSDWidget::paintEvent( QPaintEvent* )
         p.begin( &pixmap );
         p.setFont( font() );
         p.setPen( Qt::white );
-        p.drawText( rect, align | WordBreak, m_text );
+        p.setBrush( Qt::white );
+
+        if( !m_image.isNull() ) {
+            p.drawRect( 20, 10, m_image.width(), m_image.height() );
+            r.rLeft() += m_image.width() + 10;
+        }
+
+        p.drawText( r, align | WordBreak, m_text );
         p.end();
 
-        image = ShadowEngine::makeShadow( pixmap, Qt::black/*colorGroup().highlight().dark()*/ );
+        int h,s,v;
+        foregroundColor().getHsv( &h, &s, &v );
+
+        shadow = ShadowEngine::makeShadow( pixmap, h < 128 ? Qt::black : Qt::white );
     }
 
     p.begin( this );
-    p.setFont( font() );
-    p.drawImage( 0, 0, image );
+    p.drawImage( 0, 0, shadow );
     p.setPen( foregroundColor() );
+
+    if( !m_image.isNull() ) {
+        p.drawImage( 20, 10, m_image );
+        rect.rLeft() += m_image.width() + 10;
+    }
+
     p.drawText( rect, align | WordBreak, m_text );
     p.setPen( backgroundColor() );
     p.drawRect( this->rect() );
@@ -422,6 +456,19 @@ amaroK::OSD::applySettings()
     else unsetColors();
 }
 
+void
+amaroK::OSD::forceToggleOSD()
+{
+    if ( !isShown() ) {
+        const bool b = isEnabled();
+        setEnabled( true );
+        OSDWidget::show( m_text );
+        setEnabled( b );
+    }
+    else
+        hide();
+}
+
 
 /* Code copied from kshadowengine.cpp
  *
@@ -449,7 +496,14 @@ amaroK::OSD::applySettings()
 
 namespace ShadowEngine
 {
-    #define THICKNESS 8
+    // Not sure, doesn't work above 10
+    static const int    MULTIPLICATION_FACTOR = 3;
+    // Multiplication factor for pixels directly above, under, or next to the text
+    static const double AXIS_FACTOR = 2.0;
+    // Multiplication factor for pixels diagonal to the text
+    static const double DIAGONAL_FACTOR = 0.1;
+    // Self explanatory
+    static const int    MAX_OPACITY = 200;
 
     double decay( QImage&, int, int );
 
@@ -463,47 +517,32 @@ namespace ShadowEngine
         const int bgg = bgColor.green();
         const int bgb = bgColor.blue();
 
-        const int thick = THICKNESS >> 1;
-
-        double alphaShadow;
+        int alphaShadow;
 
         // This is the source pixmap
         QImage img = textPixmap.convertToImage().convertDepth( 32 );
 
-        // Resize the image if necessary
-        if( (result.width() != w) || (result.height() != h) )
-        {
-            result.create( w, h, 32 );
-        }
-
+        result.create( w, h, 32 );
         result.fill( 0 ); // fill with black
         result.setAlphaBuffer( true );
 
-        for( int i = thick; i < w - thick; i++) {
-            for( int j = thick; j < h - thick; j++ )
+        static const int M = 5;
+        for( int i = M; i < w - M; i++) {
+            for( int j = M; j < h - M; j++ )
             {
-                alphaShadow = decay( img, i, j );
+                alphaShadow = (int) decay( img, i, j );
 
-                alphaShadow = QMIN( alphaShadow, 120.0 /*maximum opacity*/ );
-
-                // update the shadow's i,j pixel.
-                result.setPixel( i,j, qRgba( bgr, bgg , bgb, (int) alphaShadow) );
+                result.setPixel( i,j, qRgba( bgr, bgg , bgb, QMIN( MAX_OPACITY, alphaShadow ) ) );
             }
         }
 
         return result;
     }
 
-    #define MULTIPLICATION_FACTOR 8.0
-    // Multiplication factor for pixels directly above, under, or next to the text
-    #define AXIS_FACTOR 2.0
-    // Multiplication factor for pixels diagonal to the text
-    #define DIAGONAL_FACTOR 1.0
-
-    double decay( QImage& source, int i, int j)
+    double decay( QImage& source, int i, int j )
     {
-        if ((i < 1) || (j < 1) || (i > source.width() - 2) || (j > source.height() - 2))
-            return 0;
+        //if ((i < 1) || (j < 1) || (i > source.width() - 2) || (j > source.height() - 2))
+        //    return 0;
 
         double alphaShadow;
         alphaShadow =(qGray(source.pixel(i-1,j-1)) * DIAGONAL_FACTOR +

@@ -295,7 +295,7 @@ void App::initGlobalShortcuts()
     m_pGlobalAccel->insert( "show", i18n( "Toggle Playlist Window" ), 0, KKey("WIN+p"), 0,
                             m_pPlaylistWindow, SLOT( showHide() ), true, true );
     m_pGlobalAccel->insert( "osd", i18n( "Show OSD" ), 0, KKey("WIN+o"), 0,
-                            amaroK::OSD::instance(), SLOT( forceShowTrack() ), true, true );
+                            amaroK::OSD::instance(), SLOT( forceToggleOSD() ), true, true );
 
     m_pGlobalAccel->setConfigGroup( "Shortcuts" );
     m_pGlobalAccel->readSettings( kapp->config() );
@@ -468,6 +468,9 @@ void App::applySettings( bool firstTime )
     for( QStringList::Iterator it = obsoleteCovers.begin(); it != obsoleteCovers.end(); ++it )
         if ( !( *it ).startsWith( size  ) && !( *it ).startsWith( "50@" ) )
             QFile( cacheDir.filePath( *it ) ).remove();
+
+    // we crash, often, we admit this
+    AmarokConfig::writeConfig();
 
     DEBUG_END
 }

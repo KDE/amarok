@@ -111,14 +111,11 @@ namespace amaroK
         return AmarokConfig::randomMode();
     }
 
-// Now for the DCOP id3 output stuff
-
     QString DcopHandler::nowPlaying()
     {
         return EngineController::instance()->bundle().prettyTitle();
     }
 
-// Added own calls for Artist/Album/Title for flexibility reasons
     QString DcopHandler::artist()
     {
         return EngineController::instance()->bundle().artist();
@@ -139,9 +136,6 @@ namespace amaroK
         return EngineController::instance()->bundle().album();
     }
 
-// Changed DCOP time output to mm:ss, by using MetaBundle::prettyLength ;)
-// prettyLength also adds an "0" when sec < 10
-
     QString DcopHandler::totalTime()
     {
         return EngineController::instance()->bundle().prettyLength();
@@ -151,8 +145,6 @@ namespace amaroK
     {
         return MetaBundle::prettyLength( EngineController::engine() ->position() / 1000 );
     }
-
-// Some additional DCOP id3 tag output, very useful e.g. for annoying IRC-scripts ;)
 
     QString DcopHandler::genre()
     {
@@ -179,8 +171,6 @@ namespace amaroK
         return EngineController::instance()->bundle().sampleRate();
     }
 
-// Ok, that should be enough, have fun :-)
-
     QString DcopHandler::encodedURL()
     {
         return EngineController::instance()->bundle().url().url();
@@ -200,27 +190,24 @@ namespace amaroK
 
     int DcopHandler::trackCurrentTime()
     {
-        return EngineController::engine() ->position() / 1000;
+        return EngineController::engine()->position() / 1000;
     }
 
     void DcopHandler::seek(int s)
     {
         EngineBase* const engine = EngineController::engine();
         if ( s > 0 && engine->state() != Engine::Empty )
-        {
             engine ->seek( s * 1000 );
-        }
     }
 
     void DcopHandler::seekRelative(int s)
     {
         EngineBase* const engine = EngineController::engine();
-        if ( engine->state() != Engine::Empty )
-        {
-         int newpos = s * 1000 + engine->position();
-	 if ( newpos < 0 )
-	     newpos = 0;
-	 engine->seek ( newpos );
+        if ( engine->state() != Engine::Empty ) {
+            int newpos = s * 1000 + engine->position();
+            if ( newpos < 0 )
+                newpos = 0;
+            engine->seek ( newpos );
         }
     }
 
@@ -297,13 +284,13 @@ namespace amaroK
 
     void DcopHandler::enableOSD(bool enable)
     {
-        amaroK::OSD::instance()->setEnabled(enable);
-        AmarokConfig::setOsdEnabled(enable);
+        amaroK::OSD::instance()->setEnabled( enable );
+        AmarokConfig::setOsdEnabled( enable );
     }
 
     void DcopHandler::showOSD()
     {
-        amaroK::OSD::instance()->forceShowTrack();
+        amaroK::OSD::instance()->forceToggleOSD();
     }
 
     void DcopHandler::togglePlaylist()
