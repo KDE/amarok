@@ -103,7 +103,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
 
     // This is used when the collection folders were changed in the first-run wizard
-    connect( kapp, SIGNAL( sigScanCollection() ), SLOT( scan() ) );
+    connect( kapp, SIGNAL( sigScanCollection() ), m_view, SLOT( scan() ) );
 
     setFocusProxy( m_view ); //default object to get focus
     setMinimumWidth( menu->sizeHint().width() + 2 ); //set a reasonable minWidth
