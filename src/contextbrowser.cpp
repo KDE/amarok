@@ -51,7 +51,7 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( browser->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
              this,                          SLOT( openURLRequest( const KURL & ) ) );
 
-    if ( m_db->isEmpty() )
+    if ( m_db->isEmpty() || !m_db->isDbValid() )
         showIntroduction();
     else
         showHome();
@@ -128,7 +128,9 @@ void ContextBrowser::engineNewMetaData( const MetaBundle &bundle, bool /*trackCh
 
     delete m_currentTrack;
     m_currentTrack = new MetaBundle( bundle );
-    showCurrentTrack();
+    
+    if ( !m_db->isEmpty() )
+        showCurrentTrack();
 
     // increase song counter
     m_db->incSongCounter( m_currentTrack->url().path() );
@@ -137,11 +139,15 @@ void ContextBrowser::engineNewMetaData( const MetaBundle &bundle, bool /*trackCh
 
 void ContextBrowser::engineStateChanged( EngineBase::EngineState state )
 {
-    switch( state ) {
-    case EngineBase::Empty:
-        showHome();
-    default:
-        break;
+    if ( m_db->isEmpty() )
+        return;
+
+    switch( state )
+    {
+        case EngineBase::Empty:
+            showHome();
+        default:
+            break;
     }
 }
 

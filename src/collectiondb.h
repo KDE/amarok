@@ -20,6 +20,7 @@ class CollectionDB : public QObject
         CollectionDB();
         ~CollectionDB();
 
+        bool isDbValid();
         bool isEmpty();
         QString albumSongCount( const QString artist_id, const QString album_id );
         void addImageToPath( const QString path, const QString image, bool temporary );

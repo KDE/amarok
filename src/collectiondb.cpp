@@ -55,6 +55,16 @@ CollectionDB::escapeString( QString string )
 
 
 bool
+CollectionDB::isDbValid()
+{
+    if ( ( !execSql( "SELECT COUNT( url ) FROM tags;" ) ) || ( !execSql( "SELECT COUNT( url ) FROM statistics;" ) ) )
+        return false;
+    else
+        return true;
+}
+
+
+bool
 CollectionDB::isEmpty()
 {
     QStringList values;

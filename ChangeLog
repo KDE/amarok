@@ -3,6 +3,7 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  FIX: Check database-sanity on startup and recreate broken tables (BR 83205).
   FIX: CollectionBrowser was broken, when amaroK was running "localized".
   FIX: TitleProxy hogging 100% CPU when unable to connect to server.
   CHG: Bumped GStreamer requirement to 0.8.1.

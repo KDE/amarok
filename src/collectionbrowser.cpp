@@ -171,12 +171,13 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         m_db->execSql( "PRAGMA default_cache_size = 4000;" );
 
         //remove database file if version is incompatible
-        if ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION )
+        if ( ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION ) || ( !m_db->isDbValid() ) )
         {
+            kdDebug() << "Rebuilding database!" << endl;
             m_db->dropTables();
             m_db->createTables();
         }
-        if ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
+        if ( ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION ) || ( !m_db->isDbValid() ) )
         {
             m_db->dropStatsTable();
             m_db->createStatsTable();
