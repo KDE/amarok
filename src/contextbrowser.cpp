@@ -50,6 +50,19 @@
 
 using amaroK::QStringx;
 
+
+/**
+ * Shifts HTML text to the right
+ */
+static inline
+QString shiftText( QString s, uint x )
+{
+    while ( s.length() < x )
+        s = "0" + s;
+
+    return s;
+}
+
 /**
  * Function that must be used when separating contextBrowser escaped urls
  */
@@ -664,7 +677,7 @@ void ContextBrowser::showHome() //SLOT
             ftBox.append(
                                 "</a>"
                             "</td>"
-                            "<td class='sbtext' width='25'>" + fave[i + 2] + "</td>"
+                            "<td class='sbtext' width='1'>" + shiftText( fave[i + 2], 3 ) + "</td>"
                             "<td width='1' title='" + i18n( "Score" ) + "'>"
                                 "<div class='sbouter'>"
                                     "<div class='sbinner' style='width: " + QString::number( fave[i + 2].toInt() / 2 ) + "px;'></div>"
@@ -1106,7 +1119,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                             "<span class='album-song-title'>" + values[i + 1] + "</span>"
                             "</a>"
                         "</td>"
-                        "<td class='sbtext' width='25'>" + values[i + 3] + "</td>"
+                        "<td class='sbtext' width='1'>" + shiftText( values[i + 3], 3 ) + "</td>"
                         "<td width='1' title='" + i18n( "Score" ) + "'>"
                             "<div class='sbouter'>"
                                 "<div class='sbinner' style='width: " + QString::number( values[i + 3].toInt() / 2 ) + "px;'></div>"
@@ -1156,7 +1169,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                         "<span class='album-song-title'>" + values[i] + "</span>"
                         "</a>"
                     "</td>"
-                    "<td class='sbtext' width='25'>" + values[i + 2] + "</td>"
+                    "<td class='sbtext' width='1'>" + shiftText( values[i + 2], 3 ) + "</td>"
                     "<td width='1' title='" + i18n( "Score" ) + "'>"
                         "<div class='sbouter'>"
                             "<div class='sbinner' style='width: " + QString::number( values[i + 2].toInt() / 2 ) + "px;'></div>"
