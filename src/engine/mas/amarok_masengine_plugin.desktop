@@ -1,7 +1,8 @@
 [Desktop Entry]
 Type=Service
 Name=MAS Engine
-Name[de]=MAS-Treiber
+Name[de]=NAS-Treiber
+Name[es]=Motor MAS
 Name[fr]=Moteur MAS
 Name[it]=Motore MAS
 Name[pt]=Motor MAS
