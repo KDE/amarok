@@ -28,7 +28,8 @@ class ContextBrowser : public QTabWidget, public EngineObserver
        ~ContextBrowser();
 
         virtual void setFont( const QFont& );
-	void setStyleSheet();
+        void setStyleSheet();
+
     public slots:
         void openURLRequest(const KURL &url );
         void collectionScanStarted();

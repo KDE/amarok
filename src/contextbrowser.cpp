@@ -281,12 +281,12 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool /*trackCh
     m_dirtyHomePage = true;
     m_dirtyCurrentTrackPage = true;
 
-    // Add stream metadata history item to list
-    if ( !m_metadataHistory.last().contains( bundle.prettyTitle() ) )
+    // Prepend stream metadata history item to list
+    if ( !m_metadataHistory.first().contains( bundle.prettyTitle() ) )
     {
         newMetaData = true;
         const QString timeString = QTime::currentTime().toString( "hh:mm" );
-        m_metadataHistory << QString( "<td valign='top'>" + timeString + "&nbsp;</td><td align='left'>" + escapeHTML( bundle.prettyTitle() ) + "</td>" );
+        m_metadataHistory.prepend( QString( "<td valign='top'>" + timeString + "&nbsp;</td><td align='left'>" + escapeHTML( bundle.prettyTitle() ) + "</td>" ) );
     }
 
     if ( currentPage() != m_currentTrackPage->view() || bundle.url() != m_currentURL || newMetaData )
