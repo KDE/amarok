@@ -102,6 +102,9 @@ class CollectionView : public KListView
         bool execSql( const QCString& statement, QStringList* const values = 0, QStringList* const names = 0 );
             
     //attributes:
+        //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.
+        static const int DATABASE_VERSION = 1;
+        
         CollectionBrowser* m_parent;
         ThreadWeaver* m_weaver;
         KDirWatch* m_dirWatch;

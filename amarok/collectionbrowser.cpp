@@ -12,6 +12,7 @@
 #include "threadweaver.h"
 
 #include <sqlite.h>
+#include <unistd.h>
 
 #include <qcstring.h>
 #include <qdragobject.h>
@@ -72,38 +73,42 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     setFullWidth( true );
     setAcceptDrops( false );
 
-    QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
-                      + "collection.db" ).latin1();
-
-    m_db = sqlite_open( path, 0, 0 );
-
-    if ( !m_db )
-        kdWarning() << k_funcinfo << "Could not open SQLite database\n";
-
-    //optimization for speeding up SQLite
-    execSql( "PRAGMA default_synchronous = OFF;" );        
+    //<read config>
+        KConfig* config = KGlobal::config();
+        config->setGroup( "Collection Browser" );
         
-    QCString command = "CREATE TABLE tags ("
-                       "url varchar(100),"
-                       "album varchar(100),"
-                       "artist varchar(100),"
-                       "genre varchar(100),"
-                       "title varchar(100),"
-                       "year varchar(4) );";
-
-    execSql( command );
-
-    KConfig* config = KGlobal::config();
-    config->setGroup( "Collection Browser" );
-
-    m_dirs = config->readListEntry( "Folders" );
-    m_category = config->readEntry( "Category", "Album" );
-    addColumn( m_category );
-    m_recursively = config->readBoolEntry( "Scan Recursively", true );
-    m_monitor = config->readBoolEntry( "Monitor Changes", true );
-
-    if ( m_monitor )
-        m_dirWatch->startScan();
+        m_dirs = config->readListEntry( "Folders" );
+        m_category = config->readEntry( "Category", "Album" );
+        addColumn( m_category );
+        m_recursively = config->readBoolEntry( "Scan Recursively", true );
+        m_monitor = config->readBoolEntry( "Monitor Changes", true );
+    //</read config>
+    
+    //<open database>
+        QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
+                        + "collection.db" ).latin1();
+        //remove database file if version is incompatible
+        if ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION )
+            ::unlink( path );
+                            
+        m_db = sqlite_open( path, 0, 0 );
+    
+        if ( !m_db )
+            kdWarning() << k_funcinfo << "Could not open SQLite database\n";
+        //optimization for speeding up SQLite
+        execSql( "PRAGMA default_synchronous = OFF;" );        
+            
+        QCString command = "CREATE TABLE tags ("
+                        "url varchar(100),"
+                        "dir varchar(100),"
+                        "album varchar(100),"
+                        "artist varchar(100),"
+                        "genre varchar(100),"
+                        "title varchar(100),"
+                        "year varchar(4) );";
+    
+        execSql( command );
+    //</open database>
     
     connect( this,       SIGNAL( tagsReady() ),
              this,         SLOT( renderView() ) );
@@ -115,6 +120,11 @@ CollectionView::CollectionView( CollectionBrowser* parent )
              this,         SLOT( dirDirty( const QString& ) ) );
              
     renderView();
+    
+    if ( m_monitor ) {
+        m_dirWatch->startScan();
+        scan();
+    }
 }
 
 
@@ -127,6 +137,7 @@ CollectionView::~CollectionView() {
     config->writeEntry( "Category", m_category );
     config->writeEntry( "Scan Recursively", m_recursively );
     config->writeEntry( "Monitor Changes", m_monitor );
+    config->writeEntry( "Database Version", DATABASE_VERSION );
 
     sqlite_close( m_db );
 }
@@ -146,10 +157,10 @@ CollectionView::setupDirs()  //SLOT
     m_recursively = result.scanRecursively;
     m_monitor = result.monitorChanges;
 
-    //also remove any folders from KDirWatch which the user doesn't want any more
-    for ( uint i = 0; i < result.removedDirs.count(); i++ )
-        m_dirWatch->removeDir( result.removedDirs[i] );
-
+    //destroy KDirWatch and create new one, to make it forget all directories
+    delete m_dirWatch;
+    m_dirWatch = new KDirWatch( this );        
+        
     if ( m_monitor )
         m_dirWatch->startScan();
     else
@@ -175,7 +186,13 @@ void
 CollectionView::dirDirty( const QString& path )
 {
     kdDebug() << k_funcinfo << "Dirty: " << path << endl;
-    
+
+    //remove old records with the same dir as our dirty dir, to prevent dupes
+    QCString command = "DELETE FROM tags WHERE dir = '";
+    command += path.latin1();
+    command += "';";
+    execSql( command );
+        
     m_weaver->append( new CollectionReader( this, path, false ) );
 }
 
@@ -309,9 +326,14 @@ CollectionView::customEvent( QCustomEvent *e ) {
         
         for ( uint i = 0; i < c->bundleList().count(); i++ ) {
             bundle = c->bundleList().at( i );
-            QCString command = "INSERT INTO tags ( url, album, artist, genre, title, year ) VALUES('";
+            
+            QCString command = "INSERT INTO tags "
+                               "( url, dir,  album, artist, genre, title, year ) "
+                               "VALUES('";
             
             command += bundle->url().path().latin1();
+            command += "','";
+            command += bundle->url().directory().latin1();
             command += "','";
             command += bundle->album().latin1();
             command += "','";
