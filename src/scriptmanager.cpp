@@ -109,7 +109,14 @@ ScriptManager::Manager::slotConfigure( const QString& path ) //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
-    emit configure( path );
+    KURL url;
+    QString configPath = path;
+    configPath.insert( configPath.findRev( "." ), "-config" );
+    url.setPath( configPath );
+    QDir::setCurrent( url.directory() );
+
+    kdDebug() << "Running config script: " << configPath << endl;
+    KRun* script = new KRun( url );
 }
 
 
