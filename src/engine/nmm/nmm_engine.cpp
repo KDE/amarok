@@ -35,9 +35,9 @@ AMAROK_EXPORT_PLUGIN( NmmEngine )
 
 
 NmmEngine::NmmEngine()
-  : EngineBase()
+  : Engine::Base()
   , m_firstTime( TRUE )
-  , m_state( EngineBase::Empty )
+  , m_state( Engine::Empty )
   , m_lastKnownPosition( 0 )
 {
     //NamedObject::getGlobalInstance().setErrorStream(NULL, NamedObject::ALL_LEVELS);
@@ -60,7 +60,7 @@ NmmEngine::~NmmEngine()
 
 
 
-EngineBase::EngineState
+Engine::State
 NmmEngine::state() const
 {
     //return readfile->isStarted() ? EngineBase::Playing : EngineBase::Paused;
@@ -70,10 +70,10 @@ NmmEngine::state() const
 
 
 
-void
-NmmEngine::play( const KURL& url, bool stream )
+bool
+NmmEngine::load( const KURL& url, bool stream )
 {
-    m_stream = stream;
+    m_isStream = stream;
     if( !url.isLocalFile() ) return 0; //FIXME
 
     stop(); //NOTE essential!!
@@ -152,22 +152,26 @@ NmmEngine::play( const KURL& url, bool stream )
         playback->initOutput();
         playback->activate();
 
-        play();
     }
-    catch( NMM::Exception e ) { std::cerr << e << endl; }
+    catch( NMM::Exception e ) { std::cerr << e << endl; return false; }
 
-    return 0;
+    return true;
 }
 
-void
-NmmEngine::play()
+bool
+NmmEngine::play( uint offset )
 {
-    readfile->start();
-    decode->start();
-    playback->start();
+    if (offset != 0) seek(offset);
+    try {
+        readfile->start();
+        decode->start();
+        playback->start();
+    }
+    catch( NMM::Exception e ) { std::cerr << e << endl; return false; }
 
     //FIXME test for playback first
-    m_state = EngineBase::Playing;
+    m_state = Engine::Playing;
+    return true;
 }
 
 void
@@ -191,13 +195,13 @@ NmmEngine::stop()
             playback->flush();
         }
 
-        m_state = EngineBase::Idle;
+        m_state = Engine::Idle;
     }
     catch( NMM::Exception e )
     {
         std::cerr << e << endl;
 
-        m_state = EngineBase::Empty;
+        m_state = Engine::Empty;
     }
 
     m_lastKnownPosition = 0;
@@ -208,11 +212,11 @@ NmmEngine::pause()
 {
     stop();
 
-    m_state = EngineBase::Paused;
+    m_state = Engine::Paused;
 }
 
 void
-NmmEngine::seek( long ms )
+NmmEngine::seek( uint ms )
 {
     NMM::ISeekable *iseek = readfile->getCheckedInterface<NMM::ISeekable>();
 
@@ -222,7 +226,7 @@ NmmEngine::seek( long ms )
 
 
 
-long
+uint
 NmmEngine::position() const
 {
     return m_lastKnownPosition;
@@ -234,12 +238,21 @@ NmmEngine::initMixer( bool hardware )
 { return true; }
 
 bool
-NmmEngine::canDecode( const KURL &url, mode_t mode, mode_t permissions )
-{ return false; }
+NmmEngine::canDecode( const KURL &url ) const
+{
+    QString filename = url.path();
+
+    if( filename.endsWith( "mp3" ) )
+        return true;
+    else if( filename.endsWith( "ogg" ) )
+        return true;
+    else
+        return false;
+}
 
 
 void
-NmmEngine::setVolume( int percent )
+NmmEngine::setVolumeSW( uint percent )
 {
     m_volume = percent;
     if( playback ) playback->setLineInVolume( 0x5050 * percent / 100 );
@@ -265,7 +278,7 @@ NmmEngine::endTrack()
     //NOTE calling stop() here cause amaroK to crash. Why? Who knows..
     //NMM docs certainly wouldn't be able to tell you!
 
-    m_state = EngineBase::Idle;
+    m_state = Engine::Idle;
 
     return NMM::SUCCESS;
 }

@@ -234,21 +234,22 @@ AC_ARG_WITH(nmm,
     [build_nmm=no]
 )
 
-AC_ARG_WITH(nmm,
-    AC_HELP_STRING([--with-nmm-includes],[path to the NMM includes [default=/usr/local/include]]),
-    [nmm_cflags=$withval],
-    [nmm_cflags=/usr/local/include]
+AC_ARG_WITH(nmm-dir,
+    AC_HELP_STRING([--with-nmm-dir],[path to the NMM [default=/usr/local]]),
+    [nmm_dir="$withval"],
+    [nmm_dir=/usr/local]
 )
 
 if test "$build_nmm" != "no"; then
 
-    #currently NMM libs must by in LD_PATH
-    CFLAGS_NMM="-I$nmm_cflags"
+    CFLAGS_NMM="-I$nmm_dir/include"
+    LDFLAGS_NMM="-L$nmm_dir/lib"
     AC_DEFINE(HAVE_NMM, 1, [have NMM])
 fi
 
 AM_CONDITIONAL(with_nmm, test x$build_nmm = xyes)
 AC_SUBST(CFLAGS_NMM)
+AC_SUBST(LDFLAGS_NMM)
 
 ###############################################################################
 # END NMM CHECK

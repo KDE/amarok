@@ -13,7 +13,7 @@
 
 namespace NMM { class MP3ReadNode; }
 
-class NmmEngine : public EngineBase
+class NmmEngine : public Engine::Base
 {
 Q_OBJECT
 
@@ -21,29 +21,32 @@ public:
     NmmEngine();
     ~NmmEngine();
 
-    bool init( bool&, int, bool ) { return true; }
+    bool init() { return true; }
 
     bool initMixer( bool hardware );
-    bool canDecode( const KURL&, mode_t, mode_t );
-    long position() const;
+    bool canDecode( const KURL& ) const;
+    uint position() const;
 
-    EngineBase::EngineState state() const;
+    Engine::State state() const;
 
 public slots: //FIXME make these slots in enginebase?
-    void  play( const KURL&, bool stream );
-    void  play();
+    bool  load( const KURL&, bool stream );
+    bool  play( uint offset = 0 );
     void  stop();
     void  pause();
 
-    void  seek( long );
-    void  setVolume( int );
+    void  seek( uint );
+//    void  setVolume( int );
+
+protected:
+    void  setVolumeSW( uint percent );
 
 private:
     double m_progress;
     bool   m_firstTime; //FIXME I HATE BOOLS LIKE THESE!
-    long   m_lastKnownPosition;
+    uint   m_lastKnownPosition;
 
-    EngineBase::EngineState m_state;
+    Engine::State m_state;
 
     //these are receivers for progress events
     NMM::Result setProgress( u_int64_t&, u_int64_t& );

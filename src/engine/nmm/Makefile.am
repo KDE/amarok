@@ -18,6 +18,7 @@ libamarok_nmmengine_plugin_la_SOURCES = \
 libamarok_nmmengine_plugin_la_LDFLAGS = \
     -module \
     $(KDE_PLUGIN) \
+    $(LDFLAGS_NMM) \
     $(all_libraries)
 
 METASOURCES = \
