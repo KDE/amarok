@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #32 being the highest available (take this one for your next bug and increase here)
+           #33 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
@@ -38,6 +38,8 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+
+    * add: #32<markey> icecast metadata support (uses UDP channel) -->markey
 
     * add: #28<muesli> add an option "clean playlist on startup"
 
