@@ -1,19 +1,35 @@
 #EXTM3U
-#EXTINF:-1,Digitally Imported
-http://shoutcast.com/sbin/shoutcast-playlist.pls?rn=374&file=filename.pls
-#EXTINF:-1,Nectarine Demoscene Radio
-http://shoutcast.com/sbin/shoutcast-playlist.pls?rn=1750&file=filename.pls
-#EXTINF:-1,X T C Radio
-http://shoutcast.com/sbin/shoutcast-playlist.pls?rn=7873&file=filename.pls
-#EXTINF:-1,Philosomatika
-http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=9411&file=filename.pls
-#EXTINF:-1,mth.House
-http://stream.mth-house.de:8500/listen.pls
-#EXTINF:-1,Pure DJ
-http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=833&file=filename.pls
-#EXTINF:-1,Groove Salad
-http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=801&file=filename.pls
-#EXTINF:-1,Radio Paradise
-http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=2671&file=filename.pls
-#EXTINF:-1,Bassdrive
+
+#EXTINF:-1,Bassdrive [Drum 'n Base]
 http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=354239&file=filename.pls
+
+#EXTINF:-1,Digitally Imported [Techno/House/Trance]
+http://shoutcast.com/sbin/shoutcast-playlist.pls?rn=374&file=filename.pls
+
+#EXTINF:-1,Frequence 3 [Pop]
+http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=2565&file=filename.pls
+
+#EXTINF:-1,Groove Salad [Chill-Out]
+http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=801&file=filename.pls
+
+#EXTINF:-1,Mostly Classical [Classical]
+http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=7264&file=filename.pls
+
+#EXTINF:-1,mth.House [House]
+http://stream.mth-house.de:8500/listen.pls
+
+#EXTINF:-1,Nectarine Demoscene Radio [Computer-Music]
+http://shoutcast.com/sbin/shoutcast-playlist.pls?rn=1750&file=filename.pls
+
+#EXTINF:-1,Philosomatika [Goa]
+http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=9411&file=filename.pls
+
+#EXTINF:-1,Pure DJ [House]
+http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=833&file=filename.pls
+
+#EXTINF:-1,Radio Paradise [Rock/Pop/Alternative]
+http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=2671&file=filename.pls
+
+#EXTINF:-1,X T C Radio [Techno/Trance]
+http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=3419&file=filename.pls
+

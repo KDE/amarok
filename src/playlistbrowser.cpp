@@ -1,8 +1,6 @@
 // (c) Pierpaolo Di Panfilo 2004
 // See COPYING file for licensing information
 
-#include "amarok.h"            //for APP_VERSION
-#include "amarokconfig.h"
 #include "collectiondb.h"      //smart playlists
 #include "metabundle.h"        //paintCell()
 #include "playlist.h"
@@ -119,11 +117,11 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     setMinimumWidth( m_toolbar->sizeHint().width() );
 
-    // Check if user has installed a new version
-    if ( APP_VERSION != AmarokConfig::version() )
-        addPlaylist( locate("data","amarok/data/Cool-Streams.m3u"), false );
+    // Load default streams list
+    addPlaylist( locate("data","amarok/data/Cool-Streams.m3u"), false );
 
-    loadPlaylists();    //load the playlists stats cache
+    //load the playlists stats cache
+    loadPlaylists();
 }
 
 
