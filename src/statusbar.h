@@ -50,9 +50,10 @@ public slots:
     /** update total song count */
     void slotItemCountChanged( int newCount, int newLength );
     void message( const QString& message ); //reimpl. from QStatusBar
-    void message( const QString&, int ms ); //reimpl. from QStatusBar
-    void clear();
-    void engineMessage( const QString &s ) { message( s, 3000 ); } //NOTE leave inlined!
+    void messageTemporary( const QString& message );
+    void restore();
+    void clear(); //reimpl. from QStatusBar
+    void engineMessage( const QString &s ) { messageTemporary( s ); } //NOTE leave inlined!
 
 protected: /* reimpl from engineobserver */
     virtual void engineStateChanged( Engine::State state );
@@ -67,6 +68,7 @@ private slots:
 private:
     virtual void customEvent( QCustomEvent* e );
 
+    static const int TEMP_MESSAGE_DURATION = 4000; //msec
     static StatusBar* s_instance;
 
     QLabel         *m_pTimeLabel;

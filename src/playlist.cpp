@@ -602,7 +602,7 @@ Playlist::engineTrackEnded( int finalPosition, int trackLength )
         if ( finalPosition > trackLength )
             finalPosition = trackLength;
 
-        int pct = ( (double)finalPosition / (double)trackLength ) * 100;
+        int pct = (int) ( ( (double) finalPosition / (double) trackLength ) * 100 );
 
         // increase song counter & calculate new statistics
         float score = db.addSongPercentage( m_currentTrack->url().path(), pct );
@@ -994,7 +994,7 @@ Playlist::customEvent( QCustomEvent *e )
 
             if( !list.isEmpty() )
             {
-                amaroK::StatusBar::instance()->message( i18n("Some URLs could not be loaded."), 4000 );
+                amaroK::StatusBar::instance()->messageTemporary( i18n("Some URLs could not be loaded.") );
 //                 KMessageBox::error( this, i18n("Some URLs could not be loaded.") );//TODO details dialog
 
                 for( KURL::List::ConstIterator it = list.begin(); it != list.end(); ++it )

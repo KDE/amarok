@@ -38,7 +38,6 @@
 #include <kprogress.h>
 #include <ksqueezedtextlabel.h> //main label
 
-
 using namespace amaroK;
 
 
@@ -157,29 +156,34 @@ StatusBar::~StatusBar()
 
 void StatusBar::message( const QString& message ) //SLOT
 {
+    m_oldMessage = m_pTitle->text();
     m_pTitle->setText( message );
-    m_oldMessage = message;
 }
 
 
-void StatusBar::message( const QString& message, int ms ) //SLOT
+void StatusBar::messageTemporary( const QString& message ) //SLOT
 {
     // TODO Show statusbar for messages in case it is hidden
-
-    kdDebug() << "message: " << message << endl;
 
     m_pTitle->setText( message );
 
     // Remove possible old timer
-    disconnect( this, SLOT( clear() ) );
+    disconnect( this, SLOT( restore() ) );
 
-    QTimer::singleShot( ms, this, SLOT( clear() ) );
+    QTimer::singleShot( TEMP_MESSAGE_DURATION, this, SLOT( restore() ) );
+}
+
+
+void StatusBar::restore() //SLOT
+{
+    m_pTitle->setText( m_oldMessage );
 }
 
 
 void StatusBar::clear() //SLOT
 {
-    m_pTitle->setText( m_oldMessage );
+    m_pTitle->clear();
+    m_oldMessage = "";
 }
 
 
