@@ -137,10 +137,6 @@ LONG-TERM:
 
     * add: #25 support for tag editing
 
-    * add: support for multiple audio frameworks (will require switching to an abstract audio engine class.
-           hopefully this will also improve our architecture, and reduce the playerapp dependency hell).
-           alternative frameworks might include gstreamer, and NMM  -->markey
-
     * add: make windows magnetic / sticking together (difficult)
 
     * add: playlist export (generate text or html document from playlist entries)
