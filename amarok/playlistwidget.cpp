@@ -406,7 +406,6 @@ void PlaylistWidget::clear() //SLOT
     emit aboutToClear(); //will saveUndoState()
 
     setCurrentTrack( NULL );
-//    m_tokens.clear();
     m_prevTracks.clear();
     m_nextTracks.clear();
 
@@ -551,9 +550,6 @@ void PlaylistWidget::removeItem( PlaylistItem *item )
         m_nextTracks.remove(); //remove list's listCurrentItem, set listCurrentItem to next item
         refreshNextTracks();   //repaint from current
     }
-
-    //keep search system synchronised
-//    m_tokens.remove( item );
 
     //keep recent buffer synchronised
     m_prevTracks.remove( item ); //removes all items
