@@ -22,10 +22,10 @@
 #include <qapplication.h>
 #include <qcstring.h>
 #include <qdragobject.h>
-#include <qlabel.h>
-#include <qlayout.h>
+#include <qpainter.h>
 #include <qptrlist.h>
 #include <qpushbutton.h>
+#include <qsimplerichtext.h>
 #include <qtimer.h>
 #include <qtooltip.h>       //QToolTip::add()
 
@@ -183,8 +183,6 @@ CollectionView* CollectionView::m_instance = 0;
 CollectionView::CollectionView( CollectionBrowser* parent )
         : KListView( parent )
         , m_parent( parent )
-        , m_flatViewMessage( 0 )
-        , m_flatViewMessageLayout( 0 )
 {
     DEBUG_FUNC_INFO
     m_instance = this;
@@ -286,16 +284,7 @@ CollectionView::renderView()  //SLOT
     // MODE FLATVIEW
     if ( m_viewMode == modeFlatView )
     {
-        if ( m_filter.length() < 3 )
-        {
-            // Superimpose usage help widget if filter is empty
-            if ( !m_flatViewMessage )
-                showFlatViewMessage();
-
-            return;
-        }
-
-        hideFlatViewMessage();
+        if ( m_filter.length() < 3 ) return;
 
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
@@ -330,8 +319,6 @@ CollectionView::renderView()  //SLOT
     // MODE TREEVIEW
     if ( m_viewMode == modeTreeView )
     {
-        hideFlatViewMessage();
-
         qb.addReturnValue( m_cat1, QueryBuilder::valName );
         qb.addFilters( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, QStringList::split( " ", m_filter ) );
         qb.sortBy( m_cat1, QueryBuilder::valName );
@@ -1149,32 +1136,32 @@ CollectionView::captionForCategory( const int cat ) const
 }
 
 
-/** Shows a QLabel with usage information for Flat-View mode */
 void
-CollectionView::showFlatViewMessage()
+CollectionView::viewportPaintEvent( QPaintEvent *e )
 {
-    m_flatViewMessage = new QLabel( i18n( "To activate the Flat-View, enter search terms in the filter widget above." ), viewport() );
-    m_flatViewMessage->setAlignment( Qt::AlignCenter | Qt::WordBreak );
-    m_flatViewMessage->setLineWidth( 1 );
-    m_flatViewMessage->setMinimumHeight( 40 );
-    m_flatViewMessage->setFrameStyle( QFrame::Box | QFrame::Plain );
-    m_flatViewMessage->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
-    m_flatViewMessageLayout = new QVBoxLayout( viewport() );
-    m_flatViewMessageLayout->addWidget( m_flatViewMessage );
-    m_flatViewMessageLayout->addItem( new QSpacerItem( 1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
+    KListView::viewportPaintEvent( e );
 
-    m_flatViewMessage->show();
-}
+    // Superimpose bubble help for Flat-View mode:
 
+    if ( m_viewMode == modeFlatView && childCount() == 0 )
+    {
+        QPainter p( viewport() );
+        QSimpleRichText t( i18n(
+                "<div align=center>"
+                  "<h3>Flat-View Mode</h3>"
+                    "To enable the Flat-View mode, please enter search terms in the filter line above."
+                "</div>" ), QApplication::font() );
 
-/** Removes the usage information label */
-void
-CollectionView::hideFlatViewMessage()
-{
-    delete m_flatViewMessage;
-    delete m_flatViewMessageLayout;
-    m_flatViewMessage = 0;
-    m_flatViewMessageLayout = 0;
+        const int wd3 = viewport()->width() / 3;
+
+        t.setWidth( wd3 );
+
+        const int y = (viewport()->height() - t.height()) / 2;
+
+        p.setBrush( colorGroup().background() );
+        p.drawRoundRect( wd3-15, y-15, t.width()+30, t.height()+30, 5, 5 );
+        t.draw( &p, wd3, y, QRect(), colorGroup() );
+    }
 }
 
 
