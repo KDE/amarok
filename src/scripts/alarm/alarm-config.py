@@ -58,7 +58,7 @@ class Config( QDialog ):
 
         config = ConfigParser()
         config.add_section( "General" )
-        config.set( "General", "alarm time", wakeTime)
+        config.set( "General", "alarmtime", wakeTime)
         config.write( file )
 
         file.close()
