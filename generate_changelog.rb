@@ -7,9 +7,9 @@
 
 
 $input  = File.new( "ChangeLog",  File::RDONLY )
-$changelog = $input.read
 $output = File.new( "ChangeLog.html", File::CREAT | File::RDWR | File::TRUNC )
 
+$changelog = $input.read
 $rx = /BR [0-9]*/
 
 allmatches = $changelog.scan( $rx )
@@ -23,8 +23,11 @@ for bug in allmatches
     $changelog = $changelog.gsub( bug, url )
 end
 
+
+$changelog = $changelog.gsub( /amaroK ChangeLog\n\=*\n/, "<h2>amaroK ChangeLog</h2>" )
+
 # Replace newlines
-$changelog = $changelog.gsub( /\n/, "</BR>" )
+$changelog = $changelog.gsub( "\n", "</BR>\n" )
 
 
 puts $changelog
