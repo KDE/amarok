@@ -43,6 +43,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
         : KConfigDialog( parent, name, config )
         , m_engineConfig( 0 )
         , m_enginePage( 0 )
+        , m_changedExternal( false )
 {
     Options4 *opt4 = new Options4( 0, "Playback" );
     Options5 *opt5 = new Options5( 0, "OSD" );
@@ -73,6 +74,14 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 }
 
 
+void AmarokConfigDialog::triggerChanged()
+{
+    // Activate the "apply" button
+    m_changedExternal = true;
+    settingsChangedSlot();
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // PROTECTED SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -93,6 +102,7 @@ void AmarokConfigDialog::updateSettings()
     
     emit settingsChanged();
     updateWidgets();
+    m_changedExternal = false;
 }
 
 
@@ -138,9 +148,10 @@ bool AmarokConfigDialog::hasChanged()
     if ( m_engineConfig ) engineChanged = m_engineConfig->hasChanged();
                
     return  m_soundSystem->currentText() != m_pluginAmarokName[AmarokConfig::soundSystem()] ||
-            osd->alignment()              != AmarokConfig::osdAlignment() ||
-            osd->y()                      != AmarokConfig::osdYOffset() ||
-            engineChanged;
+            osd->alignment()             != AmarokConfig::osdAlignment() ||
+            osd->y()                     != AmarokConfig::osdYOffset() ||
+            engineChanged ||
+            m_changedExternal;
 }
 
 
