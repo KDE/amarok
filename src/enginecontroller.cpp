@@ -15,12 +15,16 @@ email                : fh@ez.no
  *                                                                         *
  ***************************************************************************/
 
-#include "enginecontroller.h"
-#include "enginebase.h"
 #include "amarokconfig.h"
+#include "app.h"
+#include "enginebase.h"
+#include "enginecontroller.h"
+#include "pluginmanager.h"
 #include "titleproxy.h"
 
 #include <kdebug.h>
+#include <kmessagebox.h>
+
 #include <qtimer.h>
 
 
@@ -57,34 +61,33 @@ EngineController *EngineController::instance()
     return &Instance;
 }
 
+
 EngineController::EngineController()
-
-    //we use the dummy Engine to ensure we always have an engine and don't have to test for
-    //m_pEngine == 0 and amaroK is in a safe state before an engine is loaded on startup
-
-    : m_pEngine( &dummyEngine ) //FIXME better would be a static member or something
+    : m_pEngine( &dummyEngine )
     , m_proxyError( false )
     , m_pMainTimer( new QTimer( this ) )
     , m_delayTime( 0 )
 {
-    m_pEngine->setVolume( AmarokConfig::masterVolume() );
-
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
     m_pMainTimer->start( MAIN_TIMER );
 }
 
+
 EngineController::~EngineController()
 {}
+
 
 void EngineController::previous()
 {
     emit orderPrevious();
 }
 
+
 void EngineController::next()
 {
     emit orderNext();
 }
+
 
 void EngineController::playPause()
 {
@@ -97,6 +100,7 @@ void EngineController::playPause()
     else play();
 }
 
+
 void EngineController::play()
 {
     if ( m_pEngine->state() == EngineBase::Paused )
@@ -107,6 +111,7 @@ void EngineController::play()
     else
         emit orderCurrent(); // keep currenttrack to avoid signal?
 }
+
 
 void EngineController::play( const MetaBundle &bundle )
 {
@@ -145,6 +150,7 @@ void EngineController::play( const MetaBundle &bundle )
     newMetaDataNotify( bundle, true /* track change */ );
 }
 
+
 void EngineController::pause()
 {
     if ( m_pEngine->loaded() )
@@ -157,6 +163,7 @@ void EngineController::pause()
     }
 }
 
+
 void EngineController::stop()
 {
     m_bundle = MetaBundle();
@@ -164,22 +171,60 @@ void EngineController::stop()
     stateChangedNotify( m_pEngine->state() );
 }
 
+
 int EngineController::increaseVolume( int ticks )
 {
     return setVolume( m_pEngine->volume() + ticks );
 }
+
 
 int EngineController::decreaseVolume( int ticks )
 {
     return setVolume( m_pEngine->volume() - ticks );
 }
 
-void EngineController::setEngine( EngineBase *engine )
-{
-    instance()->m_pEngine = engine;
 
-    //NOTE many engine properties are only set in applySettings
+void EngineController::loadEngine()
+{
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    
+    const QString query    = "[X-KDE-amaroK-plugintype] == 'engine' and Name == '%1'";
+    amaroK::Plugin* plugin = PluginManager::createFromQuery( query.arg( AmarokConfig::soundSystem() ) );
+
+    if ( !plugin )
+    {
+        kdWarning() << "Cannot load the: " << AmarokConfig::soundSystem() << " plugin. Trying another engine..\n";
+
+        //try to invoke _any_ engine plugin
+        plugin = PluginManager::createFromQuery( "[X-KDE-amaroK-plugintype] == 'engine'" );
+
+        if ( !plugin )
+        {
+            KMessageBox::error( 0, i18n(
+                "<p>amaroK could not find any sound-engine plugins. "
+                "It is likely that amaroK is installed under the wrong prefix, please fix your installation using:"
+                "<pre>cd /path/to/amarok/source-code/<br>"
+                "su -c \"make uninstall\"<br>"
+                "./configure --prefix=`kde-config --prefix` && su -c \"make install\"</pre>"
+                "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net." ) );
+
+            ::exit( EXIT_SUCCESS );
+        }
+
+        AmarokConfig::setSoundSystem( PluginManager::getService( plugin )->name() );
+        kdDebug() << "Setting soundSystem to: " << AmarokConfig::soundSystem() << endl;
+    }
+
+    m_pEngine = static_cast<EngineBase*>( plugin );
+    bool restartArts = AmarokConfig::version() != APP_VERSION;
+    
+    m_pEngine->init( restartArts, amaroK::SCOPE_SIZE, AmarokConfig::rememberEffects() );
+    connect( m_pEngine, SIGNAL( endOfTrack() ), this, SLOT( slotEndOfTrack() ) ); 
+    
+    kdDebug() << "END " << k_funcinfo << endl;
+    //NOTE App::applySettings() must be called now to ensure mixer settings are set
 }
+
 
 int EngineController::setVolume( int percent )
 {
@@ -198,14 +243,16 @@ int EngineController::setVolume( int percent )
     return m_pEngine->volume();
 }
 
-inline void EngineController::newMetaData( const MetaBundle &bundle )
+
+void EngineController::newMetaData( const MetaBundle &bundle )
 {
     m_bundle = bundle;
 
     newMetaDataNotify( m_bundle, false /* not a new track */ );
 }
 
-inline void EngineController::slotMainTimer()
+
+void EngineController::slotMainTimer()
 {
     if( m_pEngine->state() == EngineBase::Empty ) return;
 
@@ -214,35 +261,34 @@ inline void EngineController::slotMainTimer()
 
     trackPositionChangedNotify( position );
 
-    // check if track has ended or is broken
-    if ( m_pEngine->state() == EngineBase::Idle )
-    {
-        kdDebug() << k_funcinfo << "Idle detected. Skipping track.\n";
-
-        if ( AmarokConfig::trackDelayLength() > 0 ) //this can occur syncronously to XFade and not be fatal
-        {
-            //delay before start of next track, without freezing the app
-            m_delayTime += MAIN_TIMER;
-            if ( m_delayTime >= AmarokConfig::trackDelayLength() )
-            {
-                m_delayTime = 0;
-                next();
-            }
-        }
-        else
-            next();
-    }
     // Crossfading
-    else if ( ( AmarokConfig::crossfade() ) &&
-              ( m_pEngine->supportsXFade() ) &&
-              ( !m_pEngine->isStream() ) &&
-              ( length ) &&
-              ( length - position < (uint)AmarokConfig::crossfadeLength() )  )
+    if ( ( AmarokConfig::crossfade() ) &&
+         ( m_pEngine->supportsXFade() ) &&
+         ( !m_pEngine->isStream() ) &&
+         ( length ) &&
+         ( length - position < (uint)AmarokConfig::crossfadeLength() )  )
     {
         kdDebug() << k_funcinfo << "Crossfading to next track.\n";
         next();
     }
 }
 
+
+void EngineController::slotEndOfTrack()
+{
+    if ( AmarokConfig::trackDelayLength() > 0 ) //this can occur syncronously to XFade and not be fatal
+    {
+        //delay before start of next track, without freezing the app
+        m_delayTime += MAIN_TIMER;
+        if ( m_delayTime >= AmarokConfig::trackDelayLength() )
+        {
+            m_delayTime = 0;
+            next();
+        }
+    }
+    else
+        next();
+}
+    
 
 #include "enginecontroller.moc"

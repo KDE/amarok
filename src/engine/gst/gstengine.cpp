@@ -462,7 +462,7 @@ GstEngine::stopAtEnd()  //SLOT
     /* stop the thread */
     gst_element_set_state ( m_thread, GST_STATE_READY );
 
-    emit stopped();
+    emit endOfTrack();
 }
 
 

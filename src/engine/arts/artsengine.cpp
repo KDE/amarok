@@ -636,10 +636,13 @@ void ArtsEngine::startXfade()
 
 void ArtsEngine::timerEvent( QTimerEvent* )
 {
-    if ( m_xfadeValue > 0.0 )
-    {
+   if( state() == Idle )
+       emit endOfTrack();
+   
+   if ( m_xfadeValue > 0.0 )
+   {
         m_xfadeValue -= ( m_xfadeLength ) ?  1.0 / m_xfadeLength * ARTS_TIMER : 1.0;
-
+        
         if ( m_xfadeValue <= 0.0 )
         {
             m_xfadeValue = 0.0;
@@ -655,7 +658,7 @@ void ArtsEngine::timerEvent( QTimerEvent* )
             value = 1.0 - log10( ( 1.0 - m_xfadeValue ) * 9.0 + 1.0 );
         else
             value = log10( m_xfadeValue * 9.0 + 1.0 );
-
+        
         m_xfade.percentage( ( m_xfadeCurrent == "invalue2" ) ? value : 1.0 - value );
 //         kdDebug() << k_funcinfo << "percentage: " << m_xfade.percentage() << endl;
     }

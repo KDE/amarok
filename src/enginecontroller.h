@@ -41,7 +41,7 @@ public:
     static EngineController *instance();
 
     static EngineBase *engine() { return instance()->m_pEngine; }
-    static void setEngine( EngineBase* );
+    void loadEngine();
     long trackLength() const { return m_bundle.length() * 1000; }
     const MetaBundle &bundle() const { return m_bundle; }
     const KURL &playingURL() const { return m_bundle.url(); }
@@ -66,6 +66,7 @@ signals:
 
 private slots:
     void slotMainTimer();
+    void slotEndOfTrack();
     void newMetaData( const MetaBundle & );
 
 private:

@@ -89,7 +89,6 @@ class App : public KApplication, public EngineObserver
         void applySettings( bool firstTime = false );
 
     private:
-        void initEngine();
         void initGlobalShortcuts();
         void restoreSession();
         void setupColors();

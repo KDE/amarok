@@ -210,52 +210,6 @@ void App::initCliArgs( int argc, char *argv[] ) //static
 }
 
 
-void App::initEngine()
-{
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
-
-    const QString query    = "[X-KDE-amaroK-plugintype] == 'engine' and Name == '%1'";
-    amaroK::Plugin* plugin = PluginManager::createFromQuery( query.arg( AmarokConfig::soundSystem() ) );
-
-    if ( !plugin )
-    {
-        kdWarning() << "Cannot load the: " << AmarokConfig::soundSystem() << " plugin. Trying another engine..\n";
-
-        //try to invoke _any_ engine plugin
-        plugin = PluginManager::createFromQuery( "[X-KDE-amaroK-plugintype] == 'engine'" );
-
-        if ( !plugin )
-        {
-            KMessageBox::error( m_pPlaylistWindow, i18n(
-                "<p>amaroK could not find any sound-engine plugins. "
-                "It is likely that amaroK is installed under the wrong prefix, please fix your installation using:"
-                "<pre>cd /path/to/amarok/source-code/<br>"
-                "su -c \"make uninstall\"<br>"
-                "./configure --prefix=`kde-config --prefix` && su -c \"make install\"</pre>"
-                "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net." ) );
-
-            ::exit( EXIT_SUCCESS );
-        }
-
-        AmarokConfig::setSoundSystem( PluginManager::getService( plugin )->name() );
-        kdDebug() << "Setting soundSystem to: " << AmarokConfig::soundSystem() << endl;
-    }
-
-    // feed engine to controller
-    EngineBase* const engine = (EngineBase*)plugin;
-    bool restartArts = AmarokConfig::version() != APP_VERSION;
-    // Invalidate extension cache
-    Playlist::s_extensionCache.clear();
-    
-    engine->init( restartArts, amaroK::SCOPE_SIZE, AmarokConfig::rememberEffects() );
-    EngineController::setEngine( engine ); //will set engine's volume
-
-    //NOTE applySettings() must be called now to ensure mixer settings are set
-
-    kdDebug() << "END " << k_funcinfo << endl;
-}
-
-
 #include <kaction.h>
 #include <kshortcutlist.h>
 void App::initGlobalShortcuts()
@@ -415,19 +369,18 @@ void App::applySettings( bool firstTime )
         kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
     }
 
-
+    
     { //<Engine>
-        //TODO move loading of engine and initEngine() to engineController; it can handle things better
-
         EngineBase *engine = EngineController::engine();
         const bool b = QCString( engine->name() ) == "Dummy";
 
         if( b || AmarokConfig::soundSystem() != PluginManager::getService( engine )->name() )
         {
             if( !b ) PluginManager::unload( engine );
-
-            initEngine();
+            EngineController::instance()->loadEngine();
             engine = EngineController::engine();
+            // Invalidate extension cache
+            Playlist::s_extensionCache.clear();
 
             AmarokConfig::setHardwareMixer( engine->initMixer( AmarokConfig::hardwareMixer() ) );
         }
