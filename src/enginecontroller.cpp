@@ -34,16 +34,14 @@ ExtensionCache EngineController::s_extensionCache;
 
 
 static
-class DummyEngine : public Engine::Base
+class DummyEngine : public EngineBase
 {
     //Does nothing, just here to prevent crashes on startup
     //and in case no engines are found
 
     virtual bool init() { return true; }
     virtual bool canDecode( const KURL& ) { return false; }
-    virtual uint length() const { return 0; }
     virtual uint position() const { return 0; }
-    virtual bool isStream() const { return false; }
     virtual bool load( const KURL&, bool ) { return false; }
     virtual bool play( uint ) { return false; }
     virtual void stop() {}
@@ -97,21 +95,19 @@ void EngineController::play()
     {
         m_pEngine->pause();
     }
-    else
-        emit orderCurrent(); // keep currenttrack to avoid signal?
+    else emit orderCurrent();
 }
 
 void EngineController::pause()
 {
     if ( m_pEngine->loaded() )
-    {
         m_pEngine->pause();
-    }
 }
 
 void EngineController::stop()
 {
-    m_pEngine->stop();
+    if ( m_pEngine->loaded() )
+        m_pEngine->stop();
 }
 
 
@@ -164,14 +160,11 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
         delete m_stream;
         m_stream = new amaroK::StreamProvider( url, m_pEngine->streamingMode() );
 
-        if ( !m_stream->initSuccess() ) {
+        if ( !m_stream->initSuccess() || !m_pEngine->play( m_stream->proxyUrl(), isStream ) ) {
             delete m_stream;
             m_stream = 0;
-            emit orderNext();
-            return;
+            goto failure;
         }
-
-        m_pEngine->play( m_stream->proxyUrl(), isStream );
 
         connect( m_stream,   SIGNAL( metaData( const MetaBundle& ) ),
                  this,         SLOT( slotNewMetaData( const MetaBundle& ) ) );
@@ -182,7 +175,10 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
     }
     else if( !m_pEngine->play( url, isStream ) )
     {
-        return; //don't notify
+        failure:
+            m_bundle = MetaBundle();
+            next();
+            return; //don't notify
     }
 
     newMetaDataNotify( m_bundle, true /* track change */ );
@@ -236,6 +232,10 @@ EngineBase *EngineController::loadEngine() //static
         //only change things if the init was successful,
         //otherwise leave amaroK with the old engine loaded
 
+        //set amaroK to stopped state
+        self->stop();
+
+        //new engine, new ext cache required
         extensionCache().clear();
 
         //assign new engine, unload old one. Order is thread-safe!
@@ -265,9 +265,8 @@ EngineBase *EngineController::loadEngine() //static
 
 int EngineController::setVolume( int percent )
 {
-    percent = uint(percent);
-    if( percent > 100 ) percent = 100;
     if( percent < 0 ) percent = 0;
+    if( percent > 100 ) percent = 100;
 
     if( (uint)percent != m_pEngine->volume() )
     {
@@ -400,5 +399,18 @@ bool EngineController::canDecode( const KURL &url ) //static
     return valid;
 }
 
+void EngineController::restoreSession()
+{
+    //here we restore the session
+    //however, do note, this is always done, KDE session management is not involved
+
+    if( !AmarokConfig::resumeTrack().isEmpty() )
+    {
+        const KURL url = AmarokConfig::resumeTrack();
+
+        if ( m_pEngine->load( url ) && m_pEngine->play( AmarokConfig::resumeTime()*1000 ) )
+            newMetaDataNotify( m_bundle = MetaBundle( url ), true );
+    }
+}
 
 #include "enginecontroller.moc"

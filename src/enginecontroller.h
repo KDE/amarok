@@ -53,6 +53,8 @@ public:
     const MetaBundle &bundle() const { return m_bundle; }
     const KURL &playingURL() const { return m_bundle.url(); }
 
+    void restoreSession();
+
 public slots:
     void previous();
     void next();
@@ -62,7 +64,7 @@ public slots:
     void stop();
     void playPause(); //pauses if playing, plays if paused or stopped
 
-    void seek( int seconds ) { engine()->seek( seconds * 1000 ); }
+    void seek( int ms ) { engine()->seek( ms ); }
 
     int increaseVolume( int ticks = 100/25 );
     int decreaseVolume( int ticks = 100/25 );
@@ -71,9 +73,9 @@ public slots:
     void mute();
 
 signals:
-    void orderNext();
     void orderPrevious();
     void orderCurrent();
+    void orderNext();
     void statusText( const QString& );
 
 private slots:
@@ -99,7 +101,7 @@ private:
     int             m_muteVolume;
     bool            m_xFadeThisTrack;
     QTimer          m_timer;
-    
+
     amaroK::StreamProvider* m_stream;
 };
 

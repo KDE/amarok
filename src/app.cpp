@@ -104,7 +104,7 @@ App::App()
         //restore session as long as the user didn't specify media to play etc.
         //do this after applySettings() so OSD displays correctly
 
-        restoreSession();
+        EngineController::instance()->restoreSession();
     }
 
     handleCliArgs();
@@ -263,22 +263,36 @@ void App::initGlobalShortcuts()
     }
 }
 
-
-void App::restoreSession()
-{
-    //here we restore the session
-    //however, do note, this is always done, KDE session management is not involved
-
-    if( !AmarokConfig::resumeTrack().isEmpty() )
-    {
-        EngineController::engine()->load( AmarokConfig::resumeTrack() );
-        EngineController::engine()->play( AmarokConfig::resumeTime()*1000 );
-    }
-}
-
 /////////////////////////////////////////////////////////////////////////////////////
 // METHODS
 /////////////////////////////////////////////////////////////////////////////////////
+
+#include <taglib/id3v1tag.h>
+#include <taglib/tbytevector.h>
+#include <qtextcodec.h>
+
+//this class is only used in this module, so I figured I may as well define it
+//here and save creating another header/source file combination
+
+class ID3v1StringHandler : public TagLib::ID3v1::StringHandler
+{
+    QTextCodec *m_codec;
+
+public:
+    ID3v1StringHandler( int codecIndex )
+        : m_codec( QTextCodec::codecForIndex( codecIndex ) ) {}
+
+    virtual TagLib::String parse( const TagLib::ByteVector &data ) const
+    {
+        return QStringToTString( m_codec->toUnicode( data.data(), data.size() ) );
+    }
+
+    virtual TagLib::ByteVector render( const TagLib::String &ts ) const
+    {
+        const QCString qcs = m_codec->fromUnicode( TStringToQString( ts ) );
+        return TagLib::ByteVector( qcs, qcs.length() );
+    }
+};
 
 //SLOT
 void App::applySettings( bool firstTime )
@@ -344,6 +358,9 @@ void App::applySettings( bool firstTime )
     m_pTray->setShown( AmarokConfig::showTrayIcon() );
 
     setupColors();
+
+    if ( AmarokConfig::recodeID3v1Tags() )
+        TagLib::ID3v1::Tag::setStringHandler( new ID3v1StringHandler( AmarokConfig::tagEncoding() ) );
 
 
     //on startup we need to show the window, but only if it wasn't hidden on exit

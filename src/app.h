@@ -75,7 +75,6 @@ class App : public KApplication, public EngineObserver
 
     private:
         void initGlobalShortcuts();
-        void restoreSession();
         void setupColors();
 
         // ATTRIBUTES ------

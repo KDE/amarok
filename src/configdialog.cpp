@@ -29,6 +29,7 @@ email                : markey@web.de
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
+#include <qtextcodec.h>
 #include <qvbox.h>
 
 #include <kdebug.h>
@@ -45,10 +46,12 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
         , m_enginePage( 0 )
         , m_changedExternal( false )
 {
+    Options2 *opt2 = new Options2( 0, "Fonts" );
     Options4 *opt4 = new Options4( 0, "Playback" );
     Options5 *opt5 = new Options5( 0, "OSD" );
 
     //TODO find out when KConfig XT can handle QComboBoxes
+    //    --> it works in KDE 3.3
     m_soundSystem = opt4->sound_system;
 
     // Sound System
@@ -58,16 +61,21 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
         m_soundSystem->insertItem( (*it)->name() );
         // Save name properties in QMap for lookup
         m_pluginName[(*it)->name()] = (*it)->property( "X-KDE-amaroK-name" ).toString();
-        m_pluginAmarokName[(*it)->property( "X-KDE-amaroK-name" ).toString()] = (*it)->name();   
+        m_pluginAmarokName[(*it)->property( "X-KDE-amaroK-name" ).toString()] = (*it)->name();
     }
-        
+
+    // ID3v1 recoding locales
+    QTextCodec *codec;
+    for ( int i = 0; codec = QTextCodec::codecForIndex( i ); i++ )
+        opt2->kcfg_TagEncoding->insertItem( codec->name() );
+
     // add pages
     addPage( new Options1( 0, "General" ), i18n( "General" ), "misc", i18n( "Configure General Options" ) );
-    addPage( new Options2( 0, "Fonts" ), i18n( "Fonts" ), "fonts", i18n( "Configure Fonts" ) );
+    addPage( opt2, i18n( "Fonts" ), "fonts", i18n( "Configure Fonts" ) );
     addPage( new Options3( 0, "Colors" ), i18n( "Colors" ), "colors", i18n( "Configure Colors" ) );
     addPage( opt4, i18n( "Playback" ), "kmix", i18n( "Configure Playback" ) );
     addPage( opt5, i18n( "OSD" ), "tv", i18n( "Configure On-Screen-Display" ) );
-    
+
     connect( m_soundSystem, SIGNAL( activated( int ) ), SLOT( settingsChangedSlot() ) );
     connect( opt4->pushButton_aboutEngine, SIGNAL( clicked() ), this, SLOT( aboutEngine() ) );
     connect( opt5, SIGNAL( settingsChanged() ), SLOT( settingsChangedSlot() ) ); //see options5.ui.h
@@ -94,19 +102,19 @@ void AmarokConfigDialog::triggerChanged()
 void AmarokConfigDialog::updateSettings()
 {
     m_changedExternal = false;
-    
+
     OSDWidget *osd = (OSDWidget*)child( "osdpreview" );
     AmarokConfig::setOsdAlignment( osd->alignment() );
     AmarokConfig::setOsdYOffset( osd->y() );
-    if ( m_engineConfig ) m_engineConfig->save();        
-    
+    if ( m_engineConfig ) m_engineConfig->save();
+
     // When sound system has changed, update engine config page
     if ( m_soundSystem->currentText() != m_pluginAmarokName[AmarokConfig::soundSystem()] ) {
         AmarokConfig::setSoundSystem( m_pluginName[m_soundSystem->currentText()] );
         emit settingsChanged();
         soundSystemChanged();
     }
-    else 
+    else
         emit settingsChanged();
 }
 
@@ -132,7 +140,7 @@ void AmarokConfigDialog::updateWidgets()
 void AmarokConfigDialog::updateWidgetsDefault()
 {
     m_soundSystem->setCurrentItem( 0 );
-    
+
     soundSystemChanged();
 }
 
@@ -145,10 +153,10 @@ void AmarokConfigDialog::updateWidgetsDefault()
 bool AmarokConfigDialog::hasChanged()
 {
     OSDWidget *osd = (OSDWidget*) child( "osdpreview" );
- 
+
     bool engineChanged = false;
     if ( m_engineConfig ) engineChanged = m_engineConfig->hasChanged();
-               
+
     return  m_soundSystem->currentText() != m_pluginAmarokName[AmarokConfig::soundSystem()] ||
             osd->alignment()             != AmarokConfig::osdAlignment() ||
             osd->y()                     != AmarokConfig::osdYOffset() ||
@@ -185,16 +193,16 @@ void AmarokConfigDialog::soundSystemChanged()
     m_enginePage = 0;
     delete m_engineConfig;
     m_engineConfig = 0;
-    
+
     if( EngineController::engine()->hasConfigure() )
     {
-        m_enginePage = addVBoxPage( i18n( "Engine" ), 
+        m_enginePage = addVBoxPage( i18n( "Engine" ),
                                     i18n( "Configure " ) + PluginManager::getService( EngineController::engine() )->name(),
                                     DesktopIcon( "amarok" ) );
-        
+
         m_engineConfig = EngineController::engine()->configure();
-        m_engineConfig->view()->reparent( m_enginePage, QPoint() );                       
-        
+        m_engineConfig->view()->reparent( m_enginePage, QPoint() );
+
         connect( m_engineConfig, SIGNAL( settingsChanged() ), this, SLOT( settingsChangedSlot() ) );
     }
 }

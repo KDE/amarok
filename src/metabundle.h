@@ -29,8 +29,14 @@ public:
     static const int Irrelevant   = -1;
     static const int Unavailable  =  0;
 
-    //these shouldn't be used if possible!
+    /**
+     * Creates an empty MetaBundle
+     */
     MetaBundle() { init(); }
+
+     /**
+     * Creates a MetaBundle for url, tags will be obtained and set
+     */
     MetaBundle( const KURL &u ) : m_url( u ) { readTags(); }
 
     //TitleProxy:
@@ -47,6 +53,10 @@ public:
     //From tags:
     MetaBundle( const KURL &url, TagLib::Tag *tag, TagLib::AudioProperties *ap = 0 );
 
+     /**
+     * Test for an empty metabundle
+     */
+    bool isEmpty() const { return m_url.isEmpty(); }
 
     MetaBundle &readTags( bool audioProperties = true );
 
