@@ -92,7 +92,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         config->setGroup( "Collection Browser" );
         
         m_dirs = config->readListEntry( "Folders" );
-        m_category1 = config->readEntry( "Category1", "Album" );
+        m_category1 = config->readEntry( "Category1", "Artist" );
         m_category2 = config->readEntry( "Category2", "None" );
         addColumn( m_category1 );
         m_recursively = config->readBoolEntry( "Scan Recursively", true );
@@ -209,8 +209,8 @@ CollectionView::dirDirty( const QString& path )
     kdDebug() << k_funcinfo << "Dirty: " << path << endl;
 
     //remove old records with the same dir as our dirty dir, to prevent dupes
-    QCString command = "DELETE FROM tags WHERE dir = '";
-    command += path.local8Bit();
+    QString command = "DELETE FROM tags WHERE dir = '";
+    command += path;
     command += "';";
     execSql( command );
         
@@ -226,8 +226,8 @@ CollectionView::renderView()  //SLOT
     clear();
 
     //query database for all records with the specified category
-    QCString command = "SELECT DISTINCT ";
-    command += m_category1.lower().local8Bit();
+    QString command = "SELECT DISTINCT ";
+    command += m_category1.lower();
     command += " FROM tags;";
     QStringList values;
     QStringList names;
@@ -260,12 +260,12 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         QString cat = ( m_category2 == "None" ) ? "title,url" : m_category2.lower()
                                                                            .append( "," )
                                                                            .append( m_category2.lower() );
-        QCString command = "SELECT DISTINCT ";
-        command += cat.local8Bit();
+        QString command = "SELECT DISTINCT ";
+        command += cat;
         command += " FROM tags WHERE ";
-        command += m_category1.lower().local8Bit();
+        command += m_category1.lower();
         command += " = '";
-        command += item->text( 0 ).local8Bit();
+        command += item->text( 0 );
         command += "';";
         QStringList values;
         QStringList names;
@@ -289,14 +289,14 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     }
     else {
         //Filter for category 2:
-        QCString command = "SELECT title, url FROM tags WHERE ";
-        command += m_category1.lower().local8Bit();
+        QString command = "SELECT title, url FROM tags WHERE ";
+        command += m_category1.lower();
         command += " = '";
-        command += item->parent()->text( 0 ).local8Bit();
+        command += item->parent()->text( 0 );
         command += "' AND ";
-        command += m_category2.lower().local8Bit();
+        command += m_category2.lower();
         command += " = '";
-        command += item->text( 0 ).local8Bit();
+        command += item->text( 0 );
         command += "';";
         QStringList values;
         QStringList names;
@@ -322,7 +322,7 @@ CollectionView::iconForCat( const QString& cat )
     if ( cat == "Album"  ) icon = "cdrom_unmount";
     if ( cat == "Artist" ) icon = "personal";
     if ( cat == "Genre"  ) icon = "kfm";
-    if ( cat == "Year"   ) icon = "juk_time";
+    if ( cat == "Year"   ) icon = "history";
         
     KIconLoader iconLoader;
     return iconLoader.loadIcon( icon, KIcon::Toolbar, KIcon::SizeSmall );
@@ -391,11 +391,13 @@ CollectionView::catForId( int id )
 int
 CollectionView::idForCat( const QString& cat )
 {
-    if ( cat == "None"   ) return CollectionBrowser::IdNone;
     if ( cat == "Album"  ) return CollectionBrowser::IdAlbum;
     if ( cat == "Artist" ) return CollectionBrowser::IdArtist;
     if ( cat == "Genre"  ) return CollectionBrowser::IdGenre;
     if ( cat == "Year"   ) return CollectionBrowser::IdYear;
+
+    //falltrough:
+    return CollectionBrowser::IdNone;
 }
 
 
@@ -465,7 +467,7 @@ CollectionView::customEvent( QCustomEvent *e ) {
             command += tag;
             command += "');";
 
-            execSql( command.local8Bit() );
+            execSql( command );
             delete bundle;
             //grant event loop some time for breathing
             if ( !(i % 10) ) kapp->processEvents();
@@ -478,7 +480,7 @@ CollectionView::customEvent( QCustomEvent *e ) {
 
 
 bool
-CollectionView::execSql( const QCString& statement,
+CollectionView::execSql( const QString& statement,
                          QStringList* const values,
                          QStringList* const names ) {
     //     kdDebug() << k_funcinfo << endl;
@@ -493,7 +495,7 @@ CollectionView::execSql( const QCString& statement,
     char* errorStr;
     int error;
     //compile SQL program to virtual machine
-    error = sqlite_compile( m_db, statement, &tail, &vm, &errorStr );
+    error = sqlite_compile( m_db, statement.local8Bit(), &tail, &vm, &errorStr );
 
     if ( error != SQLITE_OK ) {
         kdWarning() << k_funcinfo << "sqlite_compile error:\n";
@@ -541,10 +543,10 @@ CollectionView::startDrag() {
     for ( item = firstChild(); item; item = item->nextSibling() )
         if ( item->isSelected() ) {
             //query database for all tracks in our sub-category
-            QCString command = "SELECT url FROM tags WHERE ";
-            command += m_category1.lower().local8Bit();
+            QString command = "SELECT url FROM tags WHERE ";
+            command += m_category1.lower();
             command += " = '";
-            command += item->text( 0 ).local8Bit();
+            command += item->text( 0 );
             command += "';";
             QStringList values;
             QStringList names;
@@ -566,14 +568,14 @@ CollectionView::startDrag() {
             for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
                 if ( child->isSelected() ) {
                     //query database for all tracks in our sub-category
-                    QCString command = "SELECT DISTINCT url FROM tags WHERE ";
-                    command += m_category1.lower().local8Bit();
+                    QString command = "SELECT DISTINCT url FROM tags WHERE ";
+                    command += m_category1.lower();
                     command += " = '";
-                    command += item->text( 0 ).local8Bit();
+                    command += item->text( 0 );
                     command += "' AND ";
-                    command += m_category2.lower().local8Bit();
+                    command += m_category2.lower();
                     command += " = '";
-                    command += child->text( 0 ).local8Bit();
+                    command += child->text( 0 );
                     command += "';";
                     QStringList values;
                     QStringList names;
