@@ -16,6 +16,6 @@ AUTOMAKE_OPTIONS = \
     foreign
 
 bin_SCRIPTS = \
-    release_amarok.sh
+    release_amarok
 
 
