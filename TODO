@@ -4,6 +4,12 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
+    * fix: <muesli> clean up the GUI
+
+    * add: <muesli> background chooser
+
+    * add: <muesli> add OSD support (permanent display or just on events like a song switch)
+
     * fix: <grue> with focus-follows-mouse, both player window and playlist
       rise to foreground when you point on the player
 
@@ -39,7 +45,9 @@ SHORT-TERM:
 
 MID-TERM:
 
-    * change: move analyzers into separate dir. make parent pure virtual. 
+    * add: <muesli> reading metadata on the fly (read for displayed playlist-items or onClick)
+
+    * change: move analyzers into separate dir. make parent pure virtual.
 
     * add: "add item"-dialog should support multiple selections
 
@@ -71,7 +79,7 @@ MID-TERM:
     * add: title streaming (mp3PlayObject needs to be patched)
 
     * add: save/load arts effects on close/startup automatically
-    
+
 
 LONG-TERM:
 
