@@ -40,7 +40,7 @@ namespace LibVisual
     static bool        pluginIsGL = false;
     static int16_t     pcm_data[512];
 
-    static void init( int*, char*** );
+    static void init( int&, char**& );
     static uint render();
     static void resize( int, int );
 

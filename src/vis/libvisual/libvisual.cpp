@@ -13,6 +13,34 @@
 int
 main( int argc, char** argv )
 {
+    if( argc > 1 )
+    {
+        if( strcmp( argv[1], "--list" ) == 0 )
+        {
+            visual_init( &argc, &argv );
+
+            #if 0
+            VisList *list = visual_actor_get_list();
+
+            for( VisListEntry *entry = list->head->next; entry != list->tail; entry = entry->next )
+            {
+                VisPluginInfo *info = static_cast<VisActor*>(entry->data)->plugin->ref->info;
+
+                std::cout << info->name << '|' << info->about << std::endl;
+            }
+            #endif
+
+            char *plugin = NULL;
+
+            while( plugin = visual_actor_get_next_by_name( plugin ) )
+                std::cout << plugin << '\n';
+
+            std::exit( 0 );
+        }
+        else Vis::plugin = argv[1];
+    }
+
+
     //connect to socket
     const int sockfd = tryConnect();
 
@@ -27,7 +55,7 @@ main( int argc, char** argv )
 
     //init
     SDL::init();
-    Vis::init( &argc, &argv );
+    Vis::init( argc, argv );
 
 
     //main loop
@@ -231,7 +259,7 @@ namespace SDL
                       visual_bin_switch_actor_by_name( Vis::bin, Vis::plugin );
                     SDL::unlock();
 
-                    std::cout << "[amK] new plugin: " << Vis::plugin << std::endl;
+                    SDL_WM_SetCaption( Vis::plugin, NULL );
 
                     break;
 
@@ -294,15 +322,17 @@ namespace LibVisual
     }
 
     static void
-    init( int *argc, char ***argv )
+    init( int &argc, char **&argv )
     {
         VisVideoDepth depth;
 
-        visual_init( argc, argv );
+        visual_init( &argc, &argv );
 
         bin    = visual_bin_new ();
         depth  = visual_video_depth_enum_from_value( 24 );
-        plugin = visual_actor_get_next_by_name( NULL );
+
+        if( !plugin ) plugin = visual_actor_get_next_by_name( NULL );
+        if( !plugin ) exit( "Actor plugin not found!" );
 
         visual_bin_set_supported_depth( bin, VISUAL_VIDEO_DEPTH_ALL );
 
@@ -336,9 +366,9 @@ namespace LibVisual
         visual_bin_realize( bin );
         visual_bin_sync( bin, FALSE );
 
+        std::cout << "[amK] Libvisual version " << visual_get_version() << '\n';
         std::cout << "[amK] bpp: " << video->bpp << std::endl;
         std::cout << "      GL: "  << (pluginIsGL ? "true\n" : "false\n");
-        std::cout << "      plugin: " << plugin << std::endl;
     }
 
     static uint

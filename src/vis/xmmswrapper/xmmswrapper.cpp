@@ -45,6 +45,42 @@ void   vis_disable_plugin( VisPlugin* ) { exit( 0 ); } //this is called by the p
 int
 main( int argc, char** argv )
 {
+    if( argc > 1 && strcmp( argv[1], "--list" ) == 0 )
+    {
+        struct dirent *ent;
+        struct stat statbuf;
+        string dirname = XMMS_PLUGIN_PATH; //TODO discover this dynamically
+        DIR *dir = opendir( dirname.c_str() );
+        string filename, extension, fullpath;
+
+        dirname += "/";
+
+        while( (ent = readdir( dir )) )
+        {
+            filename = ent->d_name;
+            const uint index = filename.find_last_of( '.' );
+
+            if( index == string::npos ) continue;
+
+            extension = filename.substr( index );
+            fullpath  = dirname;
+            fullpath += filename;
+
+            if( !stat( fullpath.c_str(), &statbuf )
+                    && S_ISREG( statbuf.st_mode )
+                    && extension == SHARED_LIB_EXT )
+            {
+                filename.resize( index );
+                filename.erase( 0, 3 );
+
+                std::cout << filename << '\n';
+            }
+        }
+        closedir( dir );
+
+        std::exit( 0 );
+    }
+
     //connect to socket
     const int sockfd = tryConnect();
     if( sockfd == -1 ) exit( 1 );
