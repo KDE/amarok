@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta3:
+  ADD: DCOP calls for the status of Random Mode, Repeat Playlist, and Repeat Track.
   ADD: DCOP call to return the sample rate. 
   ADD: DCOP call to return the track number.(BR 94825)
   FIX: GStreamer-engine provides better scope synchronisation.
