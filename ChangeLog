@@ -3,7 +3,8 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
-   
+  * chg: transformed "EQ" button into a togglebutton, which can also hide the effect browser
+  * add: new OpenGL analyzer, contributed by Enrico Ros <eros.kde@email.it>
   * fix: FreeBSD compile fixes, contributed by Markus Brueffer <brueffer@phoenix-systems.de>
   * fix: rewritten configure: checks properly for kdemultimedia presence,
          and adds --without-opengl and --without-gstreamer arguments
