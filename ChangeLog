@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.2.1:
+  ADD: Don't inline-edit tags for the whole playlist's selection
+  ADD: Fix "Recode Tags" crash issues
   ADD: "Set Custom Cover" can fetch remote images (BR 90499)
 
 VERSION 1.2:
