@@ -78,7 +78,7 @@ CoverManager::CoverManager()
     m_artistView = new KListView( splitter );
     m_artistView->addColumn(i18n( "Albums By" ));
     m_artistView->setFullWidth( true );
-    m_artistView->setRootIsDecorated( true );
+    //m_artistView->setRootIsDecorated( true );
     m_artistView->setSorting( -1 );    //no sort
     m_artistView->setMinimumWidth( 180 );
     //add 'All Albums' at the top
