@@ -84,7 +84,10 @@ DirectoryList::Result DirectoryList::exec()
 
 void DirectoryList::slotAddDirectory()
 {
-    KFileDialog dia( QString::null, QString::null, 0, 0, true );
+//TODO use the directory selector, go on!
+//  KURL url = KDirSelectDialog::selectDirectory( QString::null, true, parentWidget(), i18n( "Select Folder" ) );
+
+    KFileDialog dia( QString::null, QString::null, parentWidget(), 0, true );
     dia.setMode( KFile::Directory | KFile::ExistingOnly );
     dia.setCaption( i18n( "Select Folder" ) );
     dia.exec();
