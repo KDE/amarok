@@ -16,10 +16,12 @@
 #include "amarokconfig.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
+#include "equalizergraph.h"
 #include "equalizersetup.h"
 
 #include <qcheckbox.h>
 #include <qgroupbox.h>
+#include <qhbox.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qstringlist.h>
@@ -40,10 +42,17 @@ EqualizerSetup::EqualizerSetup()
 
     QBoxLayout* vmainlayout = new QVBoxLayout( this );
 
+    QHBox* topHBox = new QHBox( this );
+    vmainlayout->addWidget( topHBox );
+
     // BEGIN CheckBox Enable Equalizer
-    m_checkBox_enableEqualizer = new QCheckBox( this );
+    m_checkBox_enableEqualizer = new QCheckBox( topHBox );
     m_checkBox_enableEqualizer->setText( i18n( "Enable Equalizer" ) );
-    vmainlayout->addWidget( m_checkBox_enableEqualizer );
+    //END
+
+    // BEGIN Equalizer Graph Widget
+    EqualizerGraph* equalizerGraph = new EqualizerGraph( topHBox );
+    equalizerGraph->setFixedSize( 113, 19 );
     //END
 
     QGroupBox* groupBox_sliders = new QGroupBox( 11, Qt::Horizontal, this );

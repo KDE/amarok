@@ -18,22 +18,22 @@
 #ifndef AMAROK_EQUALIZERGRAPH_H
 #define AMAROK_EQUALIZERGRAPH_H
 
-#include <qwidget.h>    //baseclass
+#include <qwidget.h>     //baseclass
 
 
 class EqualizerGraph : public QWidget
 {
-    Q_OBJECT
-
     public:
-        EqualizerGraph();
+        EqualizerGraph( QWidget* parent );
 
     protected:
-        paintEvent( QPaintEvent* );
-
-    private slots:
+        void paintEvent( QPaintEvent* );
 
     private:
+        static const int NUM_BANDS = 10;
+
+        void init_spline( float* x, float* y, int n, float* y2 );
+        float eval_spline( float xa[], float ya[], float y2a[], int n, float x );
 };
 
 
