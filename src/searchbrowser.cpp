@@ -50,7 +50,7 @@ SearchBrowser::SearchBrowser( const char *name )
     QLabel *label2 = new QLabel( i18n( "where", "&In:" ), hb2 );
     urlEdit = new KURLComboBox( KURLComboBox::Directories, TRUE, hb2 );
     label2->setBuddy( urlEdit );
-    QWidget *searchButton = new QPushButton( i18n( "&Search" ), hb2 );
+    m_searchButton = new QPushButton( i18n( "&Search" ), hb2 );
     urlEdit->setDuplicatesEnabled( false );
     urlEdit->setCompletionObject( new KURLCompletion() );
     urlEdit->setURLs( config->readListEntry( "History" ) );
@@ -77,9 +77,9 @@ SearchBrowser::SearchBrowser( const char *name )
     historyView->setResizeMode( QListView::AllColumns );
     historyView->setAllColumnsShowFocus( true );
 
-    connect( searchEdit,   SIGNAL( returnPressed() ), SLOT( slotStartSearch() ) );
-    connect( urlEdit,      SIGNAL( returnPressed() ), SLOT( slotStartSearch() ) );
-    connect( searchButton, SIGNAL( clicked() ),       SLOT( slotStartSearch() ) );
+    connect( searchEdit,     SIGNAL( returnPressed() ), SLOT( slotStartSearch() ) );
+    connect( urlEdit,        SIGNAL( returnPressed() ), SLOT( slotStartSearch() ) );
+    connect( m_searchButton, SIGNAL( clicked() ),       SLOT( slotStartSearch() ) );
 
     setFocusProxy( searchEdit ); //so focus is given to a sensible widget when the tab is opened
 }
@@ -127,7 +127,10 @@ void SearchBrowser::slotStartSearch()
             item->setText( 2, i18n( "Waiting for other thread" ) );
             item->setText( 3, path );
             historyView->setSelected( item, true );
-
+            // Switch button for cancelling
+            m_searchButton->setText( i18n( "&Abort" ) );
+            disconnect( m_searchButton, SIGNAL( clicked() ), this, SLOT( slotStartSearch() ) );
+            connect( m_searchButton, SIGNAL( clicked() ), this, SLOT( stopSearch() ) );
             m_weaver->append( new SearchModule( this, path, searchEdit->text(), resultView, item ) );
         }
     }
@@ -165,6 +168,9 @@ void SearchBrowser::customEvent( QCustomEvent *e )
             case SearchModule::ProgressEvent::Stop:
                 p->item()->setText( 2, i18n( "Done" ) );
                 QApplication::restoreOverrideCursor();
+                m_searchButton->setText( i18n( "&Search" ) );
+                disconnect( m_searchButton, SIGNAL( clicked() ), this, SLOT( stopSearch() ) );
+                connect( m_searchButton, SIGNAL( clicked() ), this, SLOT( slotStartSearch() ) );
                 break;
 
             case SearchModule::ProgressEvent::Progress:
@@ -184,6 +190,13 @@ void SearchBrowser::customEvent( QCustomEvent *e )
                 resItem->setText( 2, p->curPath() + p->curFile() );
         }
     }
+}
+
+
+void SearchBrowser::stopSearch()
+{
+    // Signal SearchModule job to abort instantly
+    SearchModule::stop();
 }
 
 

@@ -54,6 +54,9 @@ GstEngine::error_msg;
 GstEngine*
 GstEngine::s_instance;
 
+static const QString
+UADE_EXT = ".smod7";
+
 
 void
 GstEngine::eos_cb( GstElement*, GstElement* )
@@ -178,6 +181,9 @@ GstEngine::initMixer( bool hardware )
 bool
 GstEngine::canDecode( const KURL &url, mode_t, mode_t )
 {
+    //TODO HACK
+    if ( url.fileName().endsWith( UADE_EXT ) ) return true;
+    
     bool success = false;
     GstElement *pipeline, *filesrc, *spider, *audioconvert, *audioscale, *audiosink;
 
@@ -275,6 +281,9 @@ GstEngine::scope()
 void
 GstEngine::play( const KURL& url )  //SLOT
 {
+    bool isUade = false;
+    if ( url.fileName().endsWith( UADE_EXT ) ) isUade = true;
+    
     stop();
     if ( m_pipelineFilled ) cleanPipeline();
 
@@ -305,7 +314,7 @@ GstEngine::play( const KURL& url )  //SLOT
     }
 
     //TODO HACK
-    if ( url.path().endsWith( ".smod7" ) ) {
+    if ( isUade ) {
         m_spider = GST_ELEMENT( gst_uade_new() );
         g_object_set( G_OBJECT( m_spider ), "location", (const char*) ( QFile::encodeName( url.path() ) ), NULL );
     }

@@ -38,7 +38,14 @@ GstElementDetails gst_uade_details =
                           ( gchar* ) "Codec/Decoder/Audio",
                           ( gchar* ) "Module decoder based on UADE engine",
                           ( gchar* ) "Mark Kretschmann <markey@web.de>" );
-
+                          
+static GstStaticPadTemplate gstuade_src_template =
+    GST_STATIC_PAD_TEMPLATE ("gstuade_src",
+    GST_PAD_SRC,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ( "audio/x-raw-int" )
+    );
+                          
 static guint gst_uade_signals[ LAST_SIGNAL ] = { 0 };
 
 #define _do_init(bla) \
@@ -51,12 +58,10 @@ GST_BOILERPLATE_FULL ( GstUade, gst_uade, GstElement, ( GTypeFlags ) GST_TYPE_EL
 static void gst_uade_set_property ( GObject * object, guint prop_id,
                                     const GValue * value, GParamSpec * pspec );
 
-
 static void gst_uade_get_property ( GObject * object, guint prop_id,
                                     GValue * value, GParamSpec * pspec );
 
-
-static GstData *gst_uade_get ( GstPad * pad );
+static void gst_uade_chain ( GstPad*, GstData* );
 
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -160,11 +165,12 @@ gst_uade_class_init ( GstUadeClass * klass )
 static void
 gst_uade_init ( GstUade* gstuade )
 {
-    gstuade->srcpad = gst_pad_new ( "src", GST_PAD_SRC );
-
-    gst_pad_set_get_function ( gstuade->srcpad, gst_uade_get );
+//     gstuade->srcpad = gst_pad_new ( "sink", GST_PAD_SINK );
+    gstuade->srcpad = gst_pad_new_from_template (gst_static_pad_template_get (&gstuade_src_template), "src");
+    
     gst_element_add_pad ( GST_ELEMENT ( gstuade ), gstuade->srcpad );
-
+    gst_pad_set_chain_function ( gstuade->srcpad, gst_uade_chain );
+    
     gstuade->blocksize = DEFAULT_BLOCKSIZE;
     gstuade->timeout = 0;
     gstuade->streamBufIndex = 0;
@@ -226,7 +232,7 @@ gst_uade_set_property ( GObject * object, guint prop_id, const GValue * value,
             /* playername should be determined from 'value' */
             strcpy( src->uade_struct->playername, "/home/mark/srcdir/uade-0.90-pre2/players/FC1.3" );
             /* this is where we _would_ copy 'value' */
-            strcpy( src->uade_struct->modulename, "/home/mark/srcdir/uade-0.90-pre2/songs/future_composer/fc13.smod7" );
+            strcpy( src->uade_struct->modulename, g_value_get_string( value ) );
             /* this will always be the same */
             strcpy( src->uade_struct->scorename, "/home/mark/srcdir/uade-0.90-pre2/score" );
 
@@ -279,13 +285,42 @@ gst_uade_get_property ( GObject * object, guint prop_id, GValue * value, GParamS
 }
 
 
-static GstData*
-gst_uade_get ( GstPad * pad )
+static GstElementStateReturn
+gst_uade_change_state ( GstElement * element )
 {
-    GstUade * src = GST_GSTUADE ( GST_OBJECT_PARENT ( pad ) );
-    GstBuffer* buf = gst_buffer_new_and_alloc( src->blocksize );
-    guint8* data = GST_BUFFER_DATA( buf );
+    GstUade* gstuade = GST_GSTUADE ( element );
 
+    switch ( GST_STATE_TRANSITION ( element ) ) {
+            case GST_STATE_NULL_TO_READY:
+            break;
+            case GST_STATE_READY_TO_PAUSED:
+            break;
+            case GST_STATE_PAUSED_TO_PLAYING:
+            break;
+            case GST_STATE_PLAYING_TO_PAUSED:
+            break;
+            case GST_STATE_PAUSED_TO_READY:
+            break;
+            case GST_STATE_READY_TO_NULL:
+            break;
+            default:
+            break;
+    }
+
+    if ( GST_ELEMENT_CLASS ( parent_class ) ->change_state )
+        return GST_ELEMENT_CLASS ( parent_class ) ->change_state ( element );
+
+    return GST_STATE_SUCCESS;
+}
+
+
+static void
+gst_uade_chain ( GstPad* pad, GstData* data )
+{
+   
+    GstUade* src = GST_GSTUADE ( gst_pad_get_parent( pad ) );
+    GstBuffer* buf = GST_BUFFER( data );
+    
     struct uade_msgstruct *uade_struct = src->uade_struct;
     int datainbuffer;
     int read_bytes = 0;
@@ -312,10 +347,11 @@ gst_uade_get ( GstPad * pad )
         read_bytes += datainbuffer;
     }
 
+    kdDebug() << "read_bytes == " << read_bytes << endl;
     GST_BUFFER_SIZE ( buf ) = read_bytes;
     GST_BUFFER_TIMESTAMP ( buf ) = GST_CLOCK_TIME_NONE;
 
-    return GST_DATA ( buf );
+    gst_pad_push ( src->srcpad, GST_DATA( buf ) );
 }
 
 

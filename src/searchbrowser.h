@@ -8,10 +8,11 @@
 #include <qvbox.h>
 #include <klistview.h>
 
-class ThreadWeaver;
-class QCustomEvent;
-class KURLComboBox;
 class KLineEdit;
+class KURLComboBox;
+class QCustomEvent;
+class QPushButton;
+class ThreadWeaver;
 
 class SearchBrowser : public QVBox
 {
@@ -33,6 +34,9 @@ class SearchBrowser : public QVBox
     public slots:
         void slotStartSearch();
 
+    private slots:
+        void stopSearch();
+        
     private:
         void customEvent( QCustomEvent* );
 
@@ -42,6 +46,7 @@ class SearchBrowser : public QVBox
         KLineEdit *searchEdit;
         KURLComboBox *urlEdit;
         class QSplitter *splitter;
+        QPushButton* m_searchButton;
 };
 
 #endif /* AMAROK_SEARCHBROWSER_H */

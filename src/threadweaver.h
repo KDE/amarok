@@ -165,13 +165,15 @@ public:
     };
 
     SearchModule( QObject* parent, const QString path, const QString token, KListView* resultView, KListViewItem* historyItem );
-    ~SearchModule();
 
+    static void stop() { m_stop = true; }
     bool doJob();
     QStringList resultList() { return m_resultList; }
 private:
     void searchDir( QString path );
-
+    
+    static bool m_stop;
+    
     uint resultCount;
     QObject *m_parent;
     QString m_path;

@@ -24,7 +24,6 @@
 #include <taglib/tag.h>
 
 
-
 static inline const TagLib::String LocaleAwareTString( const QString &s )
 {
     // return TagLib::String( s.local8Bit().data(), TagLib::String::Latin1 );
@@ -172,8 +171,11 @@ TagReader::bindTags()
 // CLASS SearchPath
 //////////////////////////////////////////////////////////////////////////////////////////
 
+bool SearchModule::m_stop;
+
 SearchModule::SearchModule( QObject* parent, QString path, QString token, KListView* resultView, KListViewItem* historyItem )
         : Job( parent, Job::SearchModule )
+        , resultCount( 0 )
         , m_parent( parent )
         , m_path( path )
         , m_token( token )
@@ -181,12 +183,9 @@ SearchModule::SearchModule( QObject* parent, QString path, QString token, KListV
         , m_historyItem( historyItem )
 {}
 
-SearchModule::~SearchModule()
-{}
-
 bool SearchModule::doJob()
 {
-    resultCount = 0;
+    m_stop = false;
 
     QApplication::postEvent( m_parent, new ProgressEvent( ProgressEvent::Start, m_historyItem ) );
     searchDir( m_path );
@@ -201,6 +200,9 @@ void SearchModule::searchDir( QString path )
     if ( d ) {
         dirent * ent;
         while ( ( ent = readdir( d ) ) ) {
+            // Check if we shall abort
+            if ( m_stop ) return;
+            
             QString file( ent->d_name );
 
             if ( file != "." && file != ".." ) {

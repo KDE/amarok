@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.1:
+  ADD: SearchBrowser operation can now be aborted.
   ADD: XineEngine plugin, audio only
   ADD: Progressbar in CollectionBrowser informs about scan progress, and a
        button was added for aborting the scan. (BR 83019)
