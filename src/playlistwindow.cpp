@@ -577,7 +577,7 @@ void PlaylistWindow::slotAddLocation( bool directPlay ) //SLOT
 {
     KURLRequesterDlg dialog( QString::null, this, 0 );
     dialog.setCaption( kapp->makeStdCaption( i18n( "Enter File, URL or Directory" ) ) );
-    dialog.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
+    dialog.urlRequester()->setMode( KFile::File | KFile::Directory | KFile::ExistingOnly );
     dialog.exec();
 
     if( !dialog.selectedURL().isEmpty() ) {
