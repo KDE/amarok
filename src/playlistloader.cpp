@@ -469,7 +469,7 @@ PlaylistFile::loadPls( QTextStream &stream )
             index = loadPls_extractIndex(*i);
             if (index > numberOfEntries || index == 0)
                 continue;
-            tmp = (*i).section('=', -1).stripWhiteSpace();
+            tmp = (*i).section('=', 1).stripWhiteSpace();
             m_bundles[index - 1].setUrl(KURL::fromPathOrURL(tmp));
             continue;
         }
@@ -478,7 +478,7 @@ PlaylistFile::loadPls( QTextStream &stream )
             index = loadPls_extractIndex(*i);
             if (index > numberOfEntries || index == 0)
                 continue;
-            tmp = (*i).section('=', -1).stripWhiteSpace();
+            tmp = (*i).section('=', 1).stripWhiteSpace();
             m_bundles[index - 1].setTitle(tmp);
             continue;
         }
@@ -487,7 +487,7 @@ PlaylistFile::loadPls( QTextStream &stream )
             index = loadPls_extractIndex(*i);
             if (index > numberOfEntries || index == 0)
                 continue;
-            tmp = (*i).section('=', -1).stripWhiteSpace();
+            tmp = (*i).section('=', 1).stripWhiteSpace();
             m_bundles[index - 1].setLength(tmp.toInt(&ok));
             Q_ASSERT(ok);
             continue;
@@ -498,7 +498,7 @@ PlaylistFile::loadPls( QTextStream &stream )
         }
         if ((*i).contains(regExp_Version)) {
             // Have the "Version=#" line.
-            tmp = (*i).section('=', -1).stripWhiteSpace();
+            tmp = (*i).section('=', 1).stripWhiteSpace();
             // We only support Version=2
             if (tmp.toUInt(&ok) != 2)
                 warning() << ".pls playlist: Unsupported version." << endl;
