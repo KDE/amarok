@@ -192,6 +192,18 @@ DO-NOT-IMPLEMENT:
 
 BACKTRACE/DEBUG
 
+When playing vorbis streams, after new track has started:
+
+amarok: [static void GstEngine::found_tag_cb(GstElement*, GstElement*, GstTagList*, void*)]
+INFO  (0x8582548 - 305938:20:50.888636000) GST_ELEMENT_PADS( 7985) gstelement.c(1121):gst_element_add_pad:<oggdemux0> addingpad 'serial_951087702'
+INFO  (0x8582548 - 305938:20:51.074880000)       GST_EVENT( 7985) gstevent.c(171):gst_event_new: creating new event type 12:0x84c94b8
+INFO  (0x8582548 - 305938:20:51.075259000)        GST_PADS( 7985) gstpad.c(3953):gst_pad_event_default_dispatch:<sink_ident:sink> Sending event 0x84c94b8 to all internally linked pads
+INFO  (0x8582548 - 305938:20:51.075768000)        GST_PADS( 7985) gstpad.c(3953):gst_pad_event_default_dispatch:<oggdemux0:sink> Sending event 0x84c94b8 to all internally linked pads
+INFO  (0x8582548 - 305938:20:51.076188000)        GST_PADS( 7985) gstpad.c(3953):gst_pad_event_default_dispatch:<vorbisdec0:sink> Sending event 0x84c94b8 to all internally linked pads
+INFO  (0x8582548 - 305938:20:51.076575000)        GST_PADS( 7985) gstpad.c(3953):gst_pad_event_default_dispatch:<src_0:sink>
+
+
+
 From Arpu, on switching to gst-engine:
 
 amarok: [GstConfigDialog::GstConfigDialog(const GstEngine*)]
