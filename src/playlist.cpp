@@ -2084,8 +2084,8 @@ Playlist::slotSelectionChanged() //SLOT
             m_selectLength += length;
     }
 
-    kdDebug() << "[playlist] Selection changed, updating statusbar" << endl;
-    emit itemCountChanged( childCount(), m_totalLength, m_selectCounter, m_selectLength );
+    if ( m_selectCounter > 1 )
+        emit itemCountChanged( childCount(), m_totalLength, m_selectCounter, m_selectLength );
 }
 
 void
