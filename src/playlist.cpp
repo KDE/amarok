@@ -2301,10 +2301,8 @@ TagWriter::doJob()
 
         if( f.save() )
         {
-           // Update the collection db.
-           // Hopefully this does not cause concurreny issues with sqlite3, as we had in BR 87169.
-            if( m_updateView )
-               CollectionDB::instance()->updateURL( path, m_updateView );
+            // Update the collection db.
+            CollectionDB::instance()->updateURL( path, m_updateView );
 
            m_failed = false;
         }
