@@ -17,9 +17,6 @@ SHORT-TERM (URGENT):
   ADD #97 <mxcl> if you hold CTRL when dropping to pl it has a plus sign but drops at cursor, but shift drops
                  at bottom of pl, but has no icon on drag cursor.
 
-  CHG #95 <muesli> Add some kind of index caching system to collection browser and
-      create the database indices _after_ scanning -->muesli
-
   CHG #90 <markey> We need some fresh artwork, at least some new player buttons before 1.0.
 
   CHG #91 <markey> I'd like to get a new website up before 1.0 release.

@@ -82,9 +82,198 @@ CollectionBrowser::CollectionBrowser( const char* name )
 void
 CollectionBrowser::slotSetFilter() //slot
 {
-    kdDebug() << "setting filter: " << m_searchEdit->text() << endl;
     m_view->setFilter( m_searchEdit->text() );
     m_view->renderView();
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// CLASS CollectionDB
+//////////////////////////////////////////////////////////////////////////////////////////
+
+
+CollectionDB::CollectionDB( const QCString path )
+{
+    m_db = sqlite_open( path, 0, 0 );
+}
+
+
+CollectionDB::~CollectionDB()
+{
+    sqlite_close( m_db );
+}
+
+
+QString
+CollectionDB::escapeString( QString string ) //static
+{
+    string.replace( "'", "''" );
+    return string;
+}
+
+
+bool   
+CollectionDB::execSql( const QString& statement, QStringList* const values, QStringList* const names ) //static
+{
+    //     kdDebug() << k_funcinfo << endl;
+
+    if ( !m_db ) {
+        kdWarning() << k_funcinfo << "SQLite pointer == NULL.\n";
+        return false;
+    }
+
+    const char* tail;
+    sqlite_vm* vm;
+    char* errorStr;
+    int error;
+    //compile SQL program to virtual machine
+    error = sqlite_compile( m_db, statement.local8Bit(), &tail, &vm, &errorStr );
+
+    if ( error != SQLITE_OK ) {
+        kdWarning() << k_funcinfo << "sqlite_compile error:\n";
+        kdWarning() << errorStr << endl;
+        sqlite_freemem( errorStr );
+        return false;
+    }
+
+    int number;
+    const char** value;
+    const char** colName;
+    //execute virtual machine by iterating over rows
+    while ( true ) {
+        error = sqlite_step( vm, &number, &value, &colName );
+
+        if ( error == SQLITE_DONE || error == SQLITE_ERROR )
+            break;
+        //iterate over columns
+        for ( int i = 0; values && names && i < number; i++ ) {
+            *values << QString::fromLocal8Bit( value [i] );
+            *names << QString::fromLocal8Bit( colName[i] );
+        }
+    }
+    //deallocate vm ressources
+    sqlite_finalize( vm, 0 );
+
+    if ( error != SQLITE_DONE ) {
+        kdWarning() << k_funcinfo << "sqlite_step error.\n";
+        return "error";
+    }
+
+    return true;
+}
+
+
+int CollectionDB::sqlInsertID()
+{
+    if ( !m_db ) {
+        kdWarning() << k_funcinfo << "SQLite pointer == NULL.\n";
+        return -1;
+    }
+
+    return sqlite_last_insert_rowid( m_db );
+}
+
+
+void
+CollectionDB::createTables( bool temporary )
+{
+        //create tag table
+        execSql( QString( "CREATE %1 TABLE tags%2 ("
+                          "url VARCHAR(100),"
+                          "dir VARCHAR(100),"
+                          "album INTEGER,"
+                          "artist INTEGER,"
+                          "genre INTEGER,"
+                          "title VARCHAR(100),"
+                          "year INTEGER,"
+                          "comment VARCHAR(100),"
+                          "track NUMBER(4) );" )
+                          .arg( temporary ? "TEMPORARY" : "" )
+                          .arg( temporary ? "_temp" : "" ) );
+
+        //create album table
+        execSql( QString( "CREATE %1 TABLE album%2 ("
+                          "id INTEGER PRIMARY KEY,"
+                          "name varchar(100) );" )
+                          .arg( temporary ? "TEMPORARY" : "" )
+                          .arg( temporary ? "_temp" : "" ) );
+
+        //create artist table
+        execSql( QString( "CREATE %1 TABLE artist%2 ("
+                          "id INTEGER PRIMARY KEY,"
+                          "name varchar(100) );" )
+                          .arg( temporary ? "TEMPORARY" : "" )
+                          .arg( temporary ? "_temp" : "" ) );
+
+        //create genre table
+        execSql( QString( "CREATE %1 TABLE genre%2 ("
+                          "id INTEGER PRIMARY KEY,"
+                          "name varchar(100) );" )
+                          .arg( temporary ? "TEMPORARY" : "" )
+                          .arg( temporary ? "_temp" : "" ) );
+
+        //create year table
+        execSql( QString( "CREATE %1 TABLE year%2 ("
+                          "id INTEGER PRIMARY KEY,"
+                          "name varchar(100) );" )
+                          .arg( temporary ? "TEMPORARY" : "" )
+                          .arg( temporary ? "_temp" : "" ) );
+
+        //create indexes
+        execSql( QString( "CREATE INDEX album_idx%1 ON album%2( name );" )
+                 .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
+        execSql( QString( "CREATE INDEX artist_idx%1 ON artist%2( name );" )
+                 .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
+        execSql( QString( "CREATE INDEX genre_idx%1 ON genre%2( name );" )
+                 .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
+        execSql( QString( "CREATE INDEX year_idx%1 ON year%2( name );" )
+                 .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
+
+        if ( !temporary )
+        {
+            execSql( "CREATE INDEX album ON tags( album );" );
+            execSql( "CREATE INDEX artist ON tags( artist );" );
+            execSql( "CREATE INDEX genre ON tags( genre );" );
+            execSql( "CREATE INDEX year ON tags( year );" );
+        }
+}
+
+
+void
+CollectionDB::dropTables( bool temporary )
+{
+    execSql( QString( "DROP TABLE tags%1;" ).arg( temporary ? "_temp" : "" ) );
+    execSql( QString( "DROP TABLE album%1;" ).arg( temporary ? "_temp" : "" ) );
+    execSql( QString( "DROP TABLE artist%1;" ).arg( temporary ? "_temp" : "" ) );
+    execSql( QString( "DROP TABLE genre%1;" ).arg( temporary ? "_temp" : "" ) );
+    execSql( QString( "DROP TABLE year%1;" ).arg( temporary ? "_temp" : "" ) );
+}
+
+
+uint
+CollectionDB::getValueID( QString name, QString value, bool autocreate )
+{
+    QStringList values;
+    QStringList names;
+
+    QString command = QString( "SELECT id FROM %1 WHERE name LIKE '%2';" )
+                      .arg( name )
+                      .arg( escapeString( value ) );
+    execSql( command, &values, &names );
+
+    //check if item exists. if not, should we autocreate it?
+    if ( values.isEmpty() && autocreate )
+    {
+        command = QString( "INSERT INTO %1 ( name ) VALUES ( '%2' );" )
+                  .arg( name )
+                  .arg( escapeString( value ) );
+
+        execSql( command );
+        int id = sqlInsertID();
+        return id;
+    }
+
+    return values[0].toUInt();
 }
 
 
@@ -92,7 +281,8 @@ CollectionBrowser::slotSetFilter() //slot
 // CLASS CollectionView
 //////////////////////////////////////////////////////////////////////////////////////////
 
-sqlite* CollectionView::m_db;
+CollectionDB* CollectionView::m_db;
+CollectionDB* CollectionView::m_insertdb;
 
 CollectionView::CollectionView( CollectionBrowser* parent )
         : KListView( parent )
@@ -123,56 +313,20 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 
     //<open database>
         const QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
-                              + "collection.db" ).local8Bit();
+                            + "collection.db" ).local8Bit();
         //remove database file if version is incompatible
         if ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION )
             ::unlink( path );
 
-        m_db = sqlite_open( path, 0, 0 );
-
+        m_db = new CollectionDB( path );
         if ( !m_db )
             kdWarning() << k_funcinfo << "Could not open SQLite database\n";
         //optimization for speeding up SQLite
-        execSql( "PRAGMA default_synchronous = OFF;" );
-        execSql( "PRAGMA default_cache_size = 4000;" );
+        m_db->execSql( "PRAGMA default_synchronous = OFF;" );
+        m_db->execSql( "PRAGMA default_cache_size = 4000;" );
 
-        //create tag table
-        execSql( "CREATE TABLE tags ("
-                 "url VARCHAR(100),"
-                 "dir VARCHAR(100),"
-                 "album INTEGER,"
-                 "artist INTEGER,"
-                 "genre INTEGER,"
-                 "title VARCHAR(100),"
-                 "year INTEGER,"
-                 "comment VARCHAR(100),"
-                 "track NUMBER(4) );" );
-
-        //create album table
-        execSql( "CREATE TABLE album ("
-                 "id INTEGER PRIMARY KEY,"
-                 "name varchar(100) );" );
-
-        //create artist table
-        execSql( "CREATE TABLE artist ("
-                 "id INTEGER PRIMARY KEY,"
-                 "name varchar(100) );" );
-
-        //create genre table
-        execSql( "CREATE TABLE genre ("
-                 "id INTEGER PRIMARY KEY,"
-                 "name varchar(100) );" );
-
-        //create year table
-        execSql( "CREATE TABLE year ("
-                 "id INTEGER PRIMARY KEY,"
-                 "name varchar(100) );" );
-
-        //create indexes
-        execSql( "CREATE INDEX album_idx ON album( album );" );
-        execSql( "CREATE INDEX artist_idx ON artist( artist );" );
-        execSql( "CREATE INDEX genre_idx ON genre( genre );" );
-        execSql( "CREATE INDEX year_idx ON year( year );" );
+        m_insertdb = new CollectionDB( path );
+        m_db->createTables();
     //</open database>
 
     connect( this,       SIGNAL( tagsReady() ),
@@ -207,7 +361,7 @@ CollectionView::~CollectionView() {
     config->writeEntry( "Monitor Changes", m_monitor );
     config->writeEntry( "Database Version", DATABASE_VERSION );
 
-    sqlite_close( m_db );
+    delete m_db;
 }
 
 
@@ -243,19 +397,6 @@ CollectionView::setupDirs()  //SLOT
 void
 CollectionView::scan()  //SLOT
 {
-    //drop indexes
-    execSql( "DROP INDEX album;" );
-    execSql( "DROP INDEX artist;" );
-    execSql( "DROP INDEX genre;" );
-    execSql( "DROP INDEX year;" );
-
-    //remove all records
-    execSql( "DELETE FROM tags;" );
-    execSql( "DELETE FROM album;" );
-    execSql( "DELETE FROM artist;" );
-    execSql( "DELETE FROM genre;" );
-    execSql( "DELETE FROM year;" );
-
     m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), m_dirs, m_recursively ) );
 
     if ( m_monitor )
@@ -271,8 +412,8 @@ CollectionView::dirDirty( const QString& path )
     //remove old records with the same dir as our dirty dir, to prevent dupes
     QString command = QString
                       ( "DELETE FROM tags WHERE dir = '%1';" )
-                      .arg( escapeString( path ) );
-    execSql( command );
+                      .arg( m_db->escapeString( path ) );
+    m_db->execSql( command );
 
     m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), path, false ) );
 }
@@ -291,8 +432,8 @@ CollectionView::renderView( )  //SLOT
         filterToken = QString
                       ( "AND ( %1 = %2 OR title LIKE '\%%3\%' )" )
                       .arg( m_category1.lower() )
-                      .arg( getValueID( m_category1.lower(), QString( "%" ).append( m_filter ).append( "%" ), false ) )
-                      .arg( escapeString( m_filter ) );
+                      .arg( m_db->getValueID( m_category1.lower(), QString( "%" ).append( m_filter ).append( "%" ), false ) )
+                      .arg( m_db->escapeString( m_filter ) );
 
     QString command = QString
                       ( "SELECT DISTINCT %1.name FROM tags, %2 WHERE %3.id = tags.%4 %5;" )
@@ -304,7 +445,7 @@ CollectionView::renderView( )  //SLOT
 
     QStringList values;
     QStringList names;
-    execSql( command, &values, &names );
+    m_db->execSql( command, &values, &names );
 
     QPixmap pixmap = iconForCat( m_category1 );
 
@@ -333,12 +474,12 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     if ( m_filter != "" )
         filterToken = QString
                       ( "AND ( artist = %1 OR title LIKE '\%%2\%' )" )
-                      .arg( getValueID( "artist", QString( "\%" ).append( m_filter ).append( "\%" ), false ) )
-                      .arg( escapeString( m_filter ) );
+                      .arg( m_db->getValueID( "artist", QString( "\%" ).append( m_filter ).append( "\%" ), false ) )
+                      .arg( m_db->escapeString( m_filter ) );
 
     if  ( item->depth() == 0 ) {
         //Filter for category 1:
-        QString id = QString::number( getValueID( m_category1.lower(), item->text( 0 ), false ) );
+        QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
 
         QString command;
         if ( m_category2 == "None" ) {
@@ -363,7 +504,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
         QStringList values;
         QStringList names;
-        execSql( command, &values, &names );
+        m_db->execSql( command, &values, &names );
 
         QPixmap pixmap = iconForCat( m_category2 );
 
@@ -381,8 +522,8 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     }
     else {
         //Filter for category 2:
-        QString id = QString::number( getValueID( m_category1.lower(), item->parent()->text( 0 ), false ) );
-        QString id_sub = QString::number( getValueID( m_category2.lower(), item->text( 0 ), false ) );
+        QString id = QString::number( m_db->getValueID( m_category1.lower(), item->parent()->text( 0 ), false ) );
+        QString id_sub = QString::number( m_db->getValueID( m_category2.lower(), item->text( 0 ), false ) );
 
         QString command = QString
                       ( "SELECT title,url FROM tags WHERE %1 = %2 AND %3 = %4 %5 ORDER BY track;" )
@@ -394,7 +535,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
         QStringList values;
         QStringList names;
-        execSql( command, &values, &names );
+        m_db->execSql( command, &values, &names );
 
         for ( uint i = 0; i < values.count(); i += 2 ) {
             Item* child = new Item( item );
@@ -404,32 +545,6 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             child->setUrl( values[ i + 1 ] );
         }
     }
-}
-
-
-uint CollectionView::getValueID( QString name, QString value, bool autocreate )
-{
-    QStringList values;
-    QStringList names;
-
-    QString command = QString( "SELECT id FROM %1 WHERE name LIKE '%2';" )
-                      .arg( name )
-                      .arg( escapeString( value ) );
-    execSql( command, &values, &names );
-
-    //check if item exists. if not, should we autocreate it?
-    if ( values.isEmpty() && autocreate )
-    {
-        command = QString( "INSERT INTO %1 ( name ) VALUES ( '%2' );" )
-                  .arg( name )
-                  .arg( escapeString( value ) );
-
-        execSql( command );
-        int id = sqlInsertID();
-        return id;
-    }
-
-    return values[0].toUInt();
 }
 
 
@@ -539,68 +654,6 @@ CollectionView::customEvent( QCustomEvent *e )
 }
 
 
-bool   
-CollectionView::execSql( const QString& statement, QStringList* const values, QStringList* const names ) //static
-{
-    //     kdDebug() << k_funcinfo << endl;
-
-    if ( !m_db ) {
-        kdWarning() << k_funcinfo << "SQLite pointer == NULL.\n";
-        return false;
-    }
-
-    const char* tail;
-    sqlite_vm* vm;
-    char* errorStr;
-    int error;
-    //compile SQL program to virtual machine
-    error = sqlite_compile( m_db, statement.local8Bit(), &tail, &vm, &errorStr );
-
-    if ( error != SQLITE_OK ) {
-        kdWarning() << k_funcinfo << "sqlite_compile error:\n";
-        kdWarning() << errorStr << endl;
-        sqlite_freemem( errorStr );
-        return false;
-    }
-
-    int number;
-    const char** value;
-    const char** colName;
-    //execute virtual machine by iterating over rows
-    while ( true ) {
-        error = sqlite_step( vm, &number, &value, &colName );
-
-        if ( error == SQLITE_DONE || error == SQLITE_ERROR )
-            break;
-        //iterate over columns
-        for ( int i = 0; values && names && i < number; i++ ) {
-            *values << QString::fromLocal8Bit( value [i] );
-            *names << QString::fromLocal8Bit( colName[i] );
-        }
-    }
-    //deallocate vm ressources
-    sqlite_finalize( vm, 0 );
-
-    if ( error != SQLITE_DONE ) {
-        kdWarning() << k_funcinfo << "sqlite_step error.\n";
-        return "error";
-    }
-
-    return true;
-}
-
-
-int CollectionView::sqlInsertID()
-{
-    if ( !m_db ) {
-        kdWarning() << k_funcinfo << "SQLite pointer == NULL.\n";
-        return -1;
-    }
-
-    return sqlite_last_insert_rowid( m_db );
-}
-
-
 void
 CollectionView::startDrag() {
     //Here we determine the URLs of all selected items. We use two passes, one for the parent items,
@@ -613,14 +666,14 @@ CollectionView::startDrag() {
     if ( m_filter != "" )
         filterToken = QString
                       ( "AND ( artist = %1 OR title LIKE '\%%2\%' )" )
-                      .arg( getValueID( "artist", QString( "\%" ).append( m_filter ).append( "\%" ), false ) )
-                      .arg( escapeString( m_filter ) );
+                      .arg( m_db->getValueID( "artist", QString( "\%" ).append( m_filter ).append( "\%" ), false ) )
+                      .arg( m_db->escapeString( m_filter ) );
 
     //first pass: parents
     for ( item = firstChild(); item; item = item->nextSibling() )
         if ( item->isSelected() ) {
             //query database for all tracks in our sub-category
-            QString id = QString::number( getValueID( m_category1.lower(), item->text( 0 ), false ) );
+            QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
             QString command = QString
                               ( "SELECT url FROM tags WHERE %1 = %2 %3 ORDER BY track;" )
                               .arg( m_category1.lower() )
@@ -629,7 +682,7 @@ CollectionView::startDrag() {
 
             QStringList values;
             QStringList names;
-            execSql( command, &values, &names );
+            m_db->execSql( command, &values, &names );
 
             for ( uint i = 0; i < values.count(); i++ ) {
                 KURL tmp;
@@ -650,8 +703,8 @@ CollectionView::startDrag() {
             for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
                 if ( child->isSelected() ) {
                     //query database for all tracks in our sub-category
-                    QString id = QString::number( getValueID( m_category1.lower(), item->text( 0 ), false ) );
-                    QString id_sub = QString::number( getValueID( m_category2.lower(), child->text( 0 ), false ) );
+                    QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
+                    QString id_sub = QString::number( m_db->getValueID( m_category2.lower(), child->text( 0 ), false ) );
 
                     QString command = QString
                                       ( "SELECT DISTINCT url FROM tags WHERE %1 = %2 AND %3 = %4 %5"
@@ -664,7 +717,7 @@ CollectionView::startDrag() {
 
                     QStringList values;
                     QStringList names;
-                    execSql( command, &values, &names );
+                    m_db->execSql( command, &values, &names );
 
                     for ( uint i = 0; i < values.count(); i++ ) {
                         KURL tmp;
@@ -709,11 +762,11 @@ CollectionView::showTrackInfo() //slot
         QString command = QString
                           ( "SELECT DISTINCT artist.name, album.name, genre.name, year.name, comment FROM tags, artist, album, genre, year "
                             "WHERE artist.id = tags.artist AND album.id = tags.album AND genre.id = tags.genre AND year.id = tags.year AND tags.url = '%1';" )
-                            .arg( escapeString( item->url().path() ) );
+                            .arg( m_db->escapeString( item->url().path() ) );
 
         QStringList values;
         QStringList names;
-        execSql( command, &values, &names );
+        m_db->execSql( command, &values, &names );
         if ( values.isEmpty() ) return;
 
         QString str  = "<html><body><table width=\"100%\" border=\"1\">";
@@ -737,14 +790,6 @@ CollectionView::showTrackInfo() //slot
         box.setTextFormat( Qt::RichText );
         box.exec();
     }
-}
-
-
-QString
-CollectionView::escapeString( QString string ) //static
-{
-    string.replace( "'", "''" );
-    return string;
 }
 
 

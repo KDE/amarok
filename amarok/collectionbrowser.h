@@ -52,6 +52,39 @@ class CollectionBrowser: public QVBox
 };
 
 
+class CollectionDB : public QObject
+{
+    Q_OBJECT
+    
+    public:
+        CollectionDB( QCString path );
+        ~CollectionDB();
+    
+        /**
+         * Executes an SQL statement on the already opened database
+         * @param statement SQL program to execute. Only one SQL statement is allowed.
+         * @retval values   will contain the queried data, set to NULL if not used
+         * @retval names    will contain all column names, set to NULL if not used
+         * @return          true if successful
+         */
+        bool execSql( const QString& statement, QStringList* const values = 0, QStringList* const names = 0 );
+
+        /**
+         * Returns the rowid of the most recently inserted row
+         * @return          int rowid
+         */
+        int sqlInsertID();
+        QString escapeString( QString string );
+
+        uint getValueID( QString name, QString value, bool autocreate = true );
+        void createTables( const bool temporary = false );
+        void dropTables( const bool temporary = false );
+      
+    private:
+        sqlite* m_db;
+};
+
+
 class CollectionView : public KListView
 {
     Q_OBJECT
@@ -80,17 +113,7 @@ class CollectionView : public KListView
         QString filter() { return m_filter; }
         Item* currentItem() { return static_cast<Item*>( KListView::currentItem() ); }
         
-        /**
-         * Executes an SQL statement on the already opened database
-         * @param statement SQL program to execute. Only one SQL statement is allowed.
-         * @retval values   will contain the queried data, set to NULL if not used
-         * @retval names    will contain all column names, set to NULL if not used
-         * @return          true if successful
-         */
-        static bool execSql( const QString& statement, QStringList* const values = 0, QStringList* const names = 0 );
-        
-        static QString escapeString( QString string );
-        static uint getValueID( QString name, QString value, bool autocreate = true );
+        static CollectionDB* m_insertdb;
         
     signals:
         void tagsReady();    
@@ -124,16 +147,10 @@ class CollectionView : public KListView
         int idForCat( const QString& cat ) const;
         QPixmap iconForCat( const QString& cat ) const;
         
-        /**
-         * Returns the rowid of the most recently inserted row
-         * @return          int rowid
-         */
-        static int sqlInsertID();
-            
     //attributes:
         //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.
         static const int DATABASE_VERSION = 4;
-        static sqlite* m_db;                
+        static CollectionDB* m_db;
         
         CollectionBrowser* m_parent;
         ThreadWeaver* m_weaver;
