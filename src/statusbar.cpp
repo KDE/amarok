@@ -151,7 +151,7 @@ void StatusBar::engineStateChanged( EngineBase::EngineState state )
 void StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     m_pTitle->setText( QString( "%1  (%2)" ).arg( bundle.prettyTitle(), bundle.prettyLength() ) );
-    m_pSlider->setMaxValue( bundle.length() * 1000 );
+    m_pSlider->setMaxValue( bundle.length() );
 }
 
 void StatusBar::slotItemCountChanged(int newCount)
@@ -161,9 +161,10 @@ void StatusBar::slotItemCountChanged(int newCount)
 
 void StatusBar::engineTrackPositionChanged( long position )
 {
-    if ( !m_sliderPressed ) {
-        drawTimeDisplay( position / 1000 );
-        // adjust position slider
+    if ( !m_sliderPressed )
+    {
+        position /= 1000; //we deal in seconds
+        drawTimeDisplay( position );
         m_pSlider->setValue( position );
     }
 }
@@ -214,7 +215,8 @@ inline void StatusBar::sliderReleased()
 {
     m_sliderPressed = false;
 
-    EngineController::engine()->seek( m_pSlider->value() );
+    //we have a maximum resolution of 1 second, since we can only display that accuracy in the statusbar anyway
+    EngineController::engine()->seek( m_pSlider->value() * 1000 );
 }
 
 inline void StatusBar::sliderMoved( int value )
