@@ -129,8 +129,6 @@ MID-TERM:
 
 LONG-TERM:
 
-  ADD  32 <markey> Icecast metadata support (uses UDP channel) -->markey
-
   CHG  21 <markey> Use more accurate interpolation for analyzers (cubic or spline)
 
   ADD              Tabbed playlists.
