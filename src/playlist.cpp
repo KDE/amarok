@@ -934,8 +934,6 @@ Playlist::columnOrderChanged() //SLOT
 void
 Playlist::paletteChange( const QPalette &p )
 {
-    DEBUG_FUNC_INFO
-
     using namespace Glow;
 
     QColor fg;
@@ -977,9 +975,8 @@ Playlist::paletteChange( const QPalette &p )
 
     KListView::paletteChange( p );
 
-    // repaint currentTrack marker
-    Glow::reset();
-    slotGlowTimer();
+    counter = 0; // reset the counter or apparently the text lacks contrast
+    slotGlowTimer(); // repaint currentTrack marker
 }
 
 void
