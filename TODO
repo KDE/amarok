@@ -3,11 +3,15 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #38 being the highest available (take this one for your next bug and increase here)
+           #39 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
 
+    * fix: #38 <mxcl> saving edited-tags sometimes hangs the ui because it takes ages! Is this
+               just a weak point in taglib or should we expect this and do something drastic like
+               call tag.save() in a separate thread?
+    
     * add: #37 <markey> make browser auto-hide optional  
 
     * fix: #35 <mxcl>restore quick tag loading when users don't have bitrate/length columns
