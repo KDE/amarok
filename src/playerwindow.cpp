@@ -58,7 +58,7 @@ createWidget( const QRect &r, QWidget *parent, const char *name = 0, Qt::WFlags 
 }
 
 
-PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
+PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlaylist )
     : QWidget( parent, name, Qt::WType_TopLevel )
     , m_pAnimTimer( new QTimer( this ) )
     , m_scrollBuffer( 291, 16 )
@@ -156,7 +156,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
 
     m_pPlaylistButton = new IconButton( this, "pl", SIGNAL(playlistToggled( bool )) );
     m_pPlaylistButton->setGeometry( 5,85, 28,13 );
-    m_pPlaylistButton->setOn( parent->isShown() );
+    m_pPlaylistButton->setOn( parent->isShown() || enablePlaylist );
 
 
     m_pDescription = createWidget<QLabel>( QRect(4,6, 130,10), this );
@@ -171,7 +171,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
     engineStateChanged( engine->state() );
     if( engine->state() == EngineBase::Playing ) engineNewMetaData( ec->bundle(), true );
     createAnalyzer( 0 );
-    show();
 
 
     //Yagami mode!
@@ -713,14 +712,14 @@ NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
     QPixmap pixmap( getPNG( "b_" + icon ) );
     QIconSet iconSet;
     KIconEffect ie;
-    
+
     // Tint icon blueish for "off" state
     QPixmap off = ie.apply( pixmap, KIconEffect::Colorize, 0.5, QColor( 0x30, 0x10, 0xff ), false );
     // Tint more intense for "on" state
     QPixmap on = ie.apply( pixmap, KIconEffect::Colorize, 1.0, QColor( 0x80, 0x30, 0xff ), false );
     // Tint gray and make pseudo-transparent for "disabled" state
     QPixmap disabled = ie.apply( pixmap, KIconEffect::ToGray, 0.7, QColor(), true );
-    
+
     iconSet.setPixmap( off, QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
     iconSet.setPixmap( on, QIconSet::Automatic, QIconSet::Normal, QIconSet::On  );
     iconSet.setPixmap( disabled, QIconSet::Automatic, QIconSet::Disabled, QIconSet::Off );
@@ -728,11 +727,11 @@ NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
 
     // Use standard palette, since the modified palette from parent widget makes buttons look weird
     setPalette( KApplication::palette() );
-    
+
     setFocusPolicy( QWidget::NoFocus );
     setFlat( true );
     setEnabled( action->isEnabled() );
-    
+
     connect( action, SIGNAL(enabled( bool )), SLOT(setEnabled( bool )) );
     connect( this, SIGNAL(clicked()), action, SLOT(activate()) );
 }

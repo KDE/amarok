@@ -74,7 +74,7 @@ App::App()
     if( bRestoreSession && AmarokConfig::savePlaylist() ) playlist()->restoreSession();
 
     //create engine, show PlayerWindow, show TrayIcon etc.
-    applySettings();
+    applySettings( true );
 
     //initializes Unix domain socket for loader communication, and hides the splash
     //do here so splash is hidden just after amaroK's windows appear
@@ -118,6 +118,8 @@ App::~App()
     }
 
     engine->stop(); //don't call EngineController::stop() - it's slow
+
+    amaroK::config()->writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
 
     delete m_pPlayerWindow;   //sets some XT keys
     delete m_pPlaylistWindow; //sets some XT keys
@@ -319,8 +321,11 @@ void App::restoreSession()
 /////////////////////////////////////////////////////////////////////////////////////
 
 //SLOT
-void App::applySettings()
+void App::applySettings( bool firstTime )
 {
+    //FIXME it is possible to achieve a state where you have all windows hidden and no way to get them back
+    //      eg hide systray while amarok is hidden (dumb, but possible)
+
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
     if( AmarokConfig::showPlayerWindow() )
@@ -331,9 +336,12 @@ void App::applySettings()
             //it is the focus for hideWithMainWindow behaviour etc.
             //it gets the hailed "amaroK" caption
             m_pPlaylistWindow->setCaption( kapp->makeStdCaption( i18n("Playlist") ) );
-            m_pPlaylistWindow->setShown( AmarokConfig::playlistWindowEnabled() );
 
-            m_pPlayerWindow = new PlayerWidget( m_pPlaylistWindow, "PlayerWindow", Qt::WType_Dialog );
+            m_pPlayerWindow = new PlayerWidget( m_pPlaylistWindow, "PlayerWindow", firstTime && AmarokConfig::playlistWindowEnabled() );
+
+            //don't show PlayerWindow on firstTime, that is done below
+            //we need to explicately set the PL button if it's the first time
+            if( !firstTime ) m_pPlayerWindow->show();
 
             connect( m_pPlayerWindow, SIGNAL(effectsWindowToggled( bool )), SLOT(slotConfigEffects( bool )) );
             connect( m_pPlayerWindow, SIGNAL(playlistToggled( bool )), m_pPlaylistWindow, SLOT(showHide()) );
@@ -390,13 +398,13 @@ void App::applySettings()
     setupColors();
 
 
-    //FIXME this is not ideal
-    //it is possible to achieve a state where you have all windows hidden and no way to get them back
-    //eg hide systray while amarok is hidden (dumb, but possible)
-    //also this is currently the way that the playlistWindow is initially shown at startup
-    playlistWindow()->show(); //TODO remember docked in tray state
-    //takes longer but feels shorter. Crazy eh? :)
-    kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
+    if( firstTime && !amaroK::config()->readBoolEntry( "HiddenOnExit", false ) )
+    {
+        mainWindow()->show();
+
+        //takes longer but feels shorter. Crazy eh? :)
+        kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
+    }
 
 
     { //<Engine>
@@ -710,6 +718,12 @@ KActionCollection *App::actionCollection() const
 Playlist *App::playlist() const
 {
     return m_pPlaylistWindow->playlist();
+}
+
+QWidget *App::mainWindow() const
+{
+    //mainWindow varies, honest!
+    return AmarokConfig::showPlayerWindow() ? (QWidget*)m_pPlayerWindow : (QWidget*)m_pPlaylistWindow;
 }
 
 namespace amaroK

@@ -68,7 +68,7 @@ class App : public KApplication, public EngineObserver
         Playlist            *playlist() const;
         amaroK::DcopHandler *dcopHandler() const { return m_pDcopHandler; }
         amaroK::OSD         *osd() const { return m_pOSD; }
-        QWidget             *mainWindow() const { return (QWidget*)m_pPlaylistWindow; }
+        QWidget             *mainWindow() const;
         PlaylistWindow      *playlistWindow() const { return m_pPlaylistWindow; }
 
         // FRIENDS ------
@@ -94,7 +94,7 @@ class App : public KApplication, public EngineObserver
         void slotConfigEffects( bool = true );
 
     private slots:
-        void applySettings();
+        void applySettings( bool firstTime = false );
 
     private:
         void initEngine();

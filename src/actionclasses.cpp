@@ -14,6 +14,7 @@
 #include <klocale.h>
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h>
+#include <qtooltip.h>
 
 using namespace amaroK;
 
@@ -255,6 +256,7 @@ VolumeAction::plug( QWidget *w, int index )
         m_slider->setFixedHeight( 35 );
         m_slider->setMaxValue( amaroK::VOLUME_MAX );
         m_slider->setValue( amaroK::VOLUME_MAX - AmarokConfig::masterVolume() );
+        QToolTip::add( m_slider, i18n( "Volume Control" ) );
         connect( m_slider, SIGNAL(valueChanged( int )), SLOT(sliderMoved( int )) );
         connect( bar, SIGNAL(wheelMoved( int )), SLOT(wheelMoved( int )) );
 

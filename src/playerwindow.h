@@ -61,7 +61,7 @@ class PlayerWidget : public QWidget, public EngineObserver
         Q_OBJECT
 
     public:
-        PlayerWidget( QWidget* = 0, const char* = 0, Qt::WFlags = 0 );
+        PlayerWidget( QWidget* = 0, const char* = 0, bool enablePlaylist = false );
         ~PlayerWidget();
 
         void timeDisplay( int );
