@@ -247,4 +247,25 @@ BACKTRACE
 12:49 <tim> #26 0x080ace1f in main (argc=-512, argv=0xfffffe00) at main.cpp:30
 
 
+////////////////
+
+
+21:03 < jeroenvrp_the_re> #0  0x412d2348 in open () from /lib/i686/libpthread.so.0
+21:03 < jeroenvrp_the_re> #1  0x408b7ed8 in __JCR_LIST__ () from /opt/kde3/lib/libkdecore.so.4
+21:03 < jeroenvrp_the_re> #2  0x408870d5 in mkstemps () from /opt/kde3/lib/libkdecore.so.4
+21:03 < jeroenvrp_the_re> #3  0x407f4809 in KTempFile::create(QString const&, QString const&, int) () from
+                          /opt/kde3/lib/libkdecore.so.4
+21:03 < jeroenvrp_the_re> #4  0x407fa24f in KSaveFile::KSaveFile(QString const&, int) () from /opt/kde3/lib/libkdecore.so.4
+21:03 < jeroenvrp_the_re> #5  0x40786eba in KConfigINIBackEnd::writeConfigFile(QString, bool, bool) () from
+                          /opt/kde3/lib/libkdecore.so.4
+21:03 < jeroenvrp_the_re> #6  0x407861ff in KConfigINIBackEnd::sync(bool) () from /opt/kde3/lib/libkdecore.so.4
+21:03 < jeroenvrp_the_re> #7  0x40780730 in KConfigBase::sync() () from /opt/kde3/lib/libkdecore.so.4
+21:03 < jeroenvrp_the_re> #8  0x418fddb9 in ArtsEngine::init(bool&, int, bool) () from
+                          /opt/kde3/lib/kde3/libamarok_artsengine_plugin.so
+21:03 < jeroenvrp_the_re> #9  0x08087569 in PlayerApp::initEngine() ()
+21:03 < jeroenvrp_the_re> #10 0x0808a5bc in PlayerApp::readConfig() ()
+21:03 < jeroenvrp_the_re> #11 0x0808545a in PlayerApp::PlayerApp() ()
+21:03 < jeroenvrp_the_re> #12 0x080c0ceb in main ()
+
+
 
