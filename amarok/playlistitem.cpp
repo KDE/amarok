@@ -52,16 +52,16 @@ PlaylistItem::PlaylistItem( QListView* parent, const KURL &url ) :
 }
 
 
-PlaylistItem::PlaylistItem( QListView* parent, QListViewItem *after, const KURL &url, Tags *tags ) :
-        KListViewItem( parent, after ),
-        m_hasMetaInfo( true ),
-        m_url( url ),
-        m_tags( tags )
+PlaylistItem::PlaylistItem( QListView* parent, QListViewItem *after, const KURL &url, Tags *tags )
+      : KListViewItem( parent, after )
+      , m_hasMetaInfo( (tags != NULL ) )
+      , m_url( url )
+      , m_tags( tags )
 {
     init();
 
     setText( 0, nameForUrl( url ) );
-    if( m_tags ) setMetaTitle();
+    if( m_hasMetaInfo ) setMetaTitle();
 }
 
 
