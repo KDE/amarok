@@ -38,6 +38,7 @@
 #include <qfileinfo.h> 
 #include <ktoolbar.h> 
 #include <kapplication.h>
+#include <qslider.h>
 
 
 #define HTML_FILE KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "contextbrowser.html"
@@ -54,11 +55,18 @@ UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widget
     amarokDCOP=new DCOPClient();
     amarokDCOP->attach();
     KToolBar* toolBar=new KToolBar(widget, "PlayerControls");
+    toolBar->setMaximumHeight(48);
     toolBar->insertButton("player_start",0,SIGNAL(clicked() ),this, SLOT(sendPrev() ) );
     toolBar->insertButton("player_play",0,SIGNAL(clicked() ),this, SLOT(sendPlay() ) );
     toolBar->insertButton("player_pause",0,SIGNAL(clicked() ),this, SLOT(sendPause() ) );
     toolBar->insertButton("player_stop",0,SIGNAL(clicked() ),this, SLOT(sendStop() ) );
     toolBar->insertButton("player_end",0,SIGNAL(clicked() ),this, SLOT(sendNext() ) );
+    toolBar->insertSeparator();
+    toolBar->insertButton("arts",0,SIGNAL(clicked() ),this, SLOT(sendMute() ) );
+    
+    vol_slider=new QSlider(0,100,1,0,Qt::Vertical, toolBar,"volume");
+    connect(vol_slider, SIGNAL( valueChanged(int) ), this, SLOT(volChanged(int ) ) );
+    toolBar->insertWidget(1,2, vol_slider);
     
     fileInfo = new QFileInfo(HTML_FILE);
     QTimer *t = new QTimer( this );
@@ -167,4 +175,13 @@ void UniversalAmarok::checkForAmarok()
     QString amarokSVC;
     int pid;
     KApplication::kdeinitExecWait("amarok");
+}
+
+void UniversalAmarok::volChanged(int vol)
+{
+    checkForAmarok();
+    QByteArray data;
+    QDataStream arg(data, IO_WriteOnly);
+    arg << 100-vol;
+    amarokDCOP->send("amarok", "player", "setVolume(int)", data );
 }

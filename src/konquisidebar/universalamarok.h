@@ -22,6 +22,8 @@
 
 #include <konqsidebarplugin.h>
 #include <dcopclient.h> 
+#include <qslider.h>
+
 
 /**
 @author Marco Gulino
@@ -53,6 +55,7 @@ private:
    DCOPClient* amarokDCOP;
    QFileInfo* fileInfo;
    QDateTime fileDT;
+   QSlider* vol_slider;
    
 public slots:
     void updateBrowser(const QString&);
@@ -62,6 +65,8 @@ public slots:
     void sendPause() { checkForAmarok(); amarokDCOP->send("amarok", "player", "pause()", ""); }
     void sendStop() { checkForAmarok(); amarokDCOP->send("amarok", "player", "stop()", ""); }
     void sendNext() { checkForAmarok(); amarokDCOP->send("amarok", "player", "next()", ""); }
+    void sendMute() { checkForAmarok(); amarokDCOP->send("amarok", "player", "mute()", ""); }
+    void volChanged(int vol);
     void openURLRequest( const KURL &url );
     void checkForAmarok();
 };
