@@ -140,8 +140,8 @@ class GstEngine : public Engine::Base
         GstElement* m_gst_audioconvert;
         GstElement* m_gst_audiosink;
 
-        GError* m_gst_error;
-        gchar* m_gst_debug;
+        QString m_gst_error;
+        QString m_gst_debug;
 
         QPtrList<InputPipeline> m_inputs;
         InputPipeline* m_currentInput;

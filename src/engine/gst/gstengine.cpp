@@ -66,6 +66,9 @@ GstEngine::eos_cb( GstElement* element, GstElement* ) //static
 {
     kdDebug() << k_funcinfo << endl;
 
+    // Ignore eos when gst error was raised
+    if ( !instance()->m_gst_error.isEmpty() ) return;
+
     InputPipeline* input;
 
     // Determine which input pipeline emitted the eos
@@ -115,8 +118,8 @@ GstEngine::error_cb( GstElement* /*element*/, GstElement* /*source*/, GError* er
 {
     kdDebug() << k_funcinfo << endl;
 
-    instance()->m_gst_error = error;
-    instance()->m_gst_debug = debug;
+    instance()->m_gst_error = QString::fromAscii( error->message );
+    instance()->m_gst_debug = QString::fromAscii( debug );
 
     // Process error message in application thread
     QTimer::singleShot( 0, instance(), SLOT( handleGstError() ) );
@@ -636,20 +639,21 @@ void
 GstEngine::handleGstError()  //SLOT
 {
     QString text = "[GStreamer Error] ";
+    text += m_gst_error;
 
-    if ( m_gst_error && m_gst_error->message )
-        text += QString( m_gst_error->message );
-
-    if ( m_gst_debug ) {
-        text += " * ";
+    if ( !m_gst_debug.isEmpty() ) {
+        text += " ** ";
         text += m_gst_debug;
     }
+
+    m_gst_error = QString();
 
     // Stop playback and rebuild output pipeline
     createPipeline();
 
     kdError() << text << endl;
     emit statusText( text );
+    emit trackEnded();
 }
 
 
