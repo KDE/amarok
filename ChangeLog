@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta1:
+  ADD: Full support for Audioscrobbler, including submission of tracks.
   FIX: Arts engine resumes from position when session is restored.
   ADD: Vorbis stream metadata support (GStreamer-engine). (BR 82378)
   ADD: Cover image and lyric fetchers include filters for common
