@@ -24,6 +24,8 @@ email                : markey@web.de
 
 #include <kdebug.h>
 #include <klibloader.h>
+#include <klocale.h>
+#include <kmessagebox.h>
 
 using namespace std;
 using namespace amaroK;
@@ -76,7 +78,10 @@ PluginManager::createFromService( const KService::Ptr service )
     KLibrary *lib = loader->globalLibrary( QFile::encodeName( service->library() ) );
 
     if ( !lib ) {
-        kdWarning() << k_funcinfo << "lib == NULL\n";
+        KMessageBox::error( 0, i18n( "<p>KLibLoader could not load the plugin:<br/><i>%1</i></p>"
+                                     "<p>Error message:<br/><i>%2</i></p>" )
+                               .arg( service->library() )
+                               .arg( loader->lastErrorMessage() ) );
         return 0;
     }
     //look up address of init function and cast it to pointer-to-function
