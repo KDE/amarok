@@ -24,6 +24,7 @@
 
 CollectionDB::CollectionDB()
         : m_weaver( new ThreadWeaver( this ) )
+        , m_dirWatch( NULL )
 {
     QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
                   + "collection.db" ).local8Bit();

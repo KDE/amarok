@@ -113,6 +113,8 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
 GstCaps*
 GstEngine::fixate_cb( GstPad *pad, const GstCaps *ccaps, gpointer data )
 {
+    kdDebug() << k_funcinfo << endl;
+    
     return gst_caps_copy( gst_static_caps_get( &src_caps ) );
 }
 
