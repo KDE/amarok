@@ -279,7 +279,7 @@ Playlist::insertMedia( KURL::List list, int options )
     {
         KURL::List addMe = list;
         KURL::List::Iterator jt;
-        
+
 //         add any songs not in the playlist to it.
         for( MyIt it( this, 0 ); *it; ++it ) {
             jt = addMe.find( (*it)->url() );
@@ -290,11 +290,11 @@ Playlist::insertMedia( KURL::List list, int options )
         }
         after = lastItem();
         insertMediaInternal( addMe, after, directPlay );
-        
+
         // find the songs and queue them.
         for (MyIt it( this, 0 ); *it; ++it ) {
             jt = list.find( (*it)->url() );
-            
+
             if ( jt != list.end() )
             {
                 queue( *it );
@@ -303,7 +303,7 @@ Playlist::insertMedia( KURL::List list, int options )
         }
         refreshNextTracks();
         return;
-        
+
     }
 
     else
@@ -400,7 +400,7 @@ Playlist::playNextTrack()
             item = m_nextTracks.first();
             m_nextTracks.remove();
         }
-        
+
         else if( AmarokConfig::randomMode() )
         {
             QValueVector<PlaylistItem*> tracks;
@@ -492,12 +492,12 @@ void
 Playlist::queue( QListViewItem *item )
 {
     #define item static_cast<PlaylistItem*>(item)
-    
+
     const int  queueIndex  = m_nextTracks.findRef( item );
-    const bool isQueued    = queueIndex != -1;    
+    const bool isQueued    = queueIndex != -1;
 
     item->setSelected( false ); //for prettiness
-    
+
     if( isQueued )
     {
         //remove the item, this is better way than remove( item )
@@ -654,6 +654,9 @@ Playlist::isTrackBefore() const
 void
 Playlist::updateNextPrev()
 {
+    if ( !childCount() )
+        m_ac->action( "play" )->setEnabled( false );
+
     m_ac->action( "prev" )->setEnabled( isTrackBefore() );
     m_ac->action( "next" )->setEnabled( isTrackAfter() );
 }
