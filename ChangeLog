@@ -3,6 +3,7 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  FIX: Always show OSD (if enabled) on volume changes.
   FIX: Filtering the collection using tokens with number(s) at the beginning
        or end failed. (BR 81621).
   FIX: FileBrowser didn't remember its current folder (BR 81816).
