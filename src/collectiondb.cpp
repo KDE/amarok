@@ -1542,12 +1542,10 @@ CollectionDB::dirDirty( const QString& path )
 void
 CollectionDB::coverFetcherResult( CoverFetcher *fetcher )
 {
-    if( fetcher->wasError() )
+    if( fetcher->wasError() ) {
         error() << fetcher->errors() << endl;
-
-    if( fetcher->image().isNull() )
-        // it is possible for there to be errors and still an image was found
         emit coverFetcherError( fetcher->errors().front() );
+    }
 
     else {
         setAlbumImage( fetcher->artist(), fetcher->album(), fetcher->image(), fetcher->amazonURL() );

@@ -10,8 +10,6 @@ SHORT-TERM (URGENT):
 
   <markey> Automatic Collection rebuilding at startup (with increased DATABASE_VERSION) doesn't work at all!
 
-  <markey> New regression: Pressing "Cancel" in the CoverFetcher dialog actually saves the image.
-
   <markey> Playback is not started automatically when you click on a stream in Konqueror.
 
   <mxcl>   Handle the case where user drops a directory and there is a playlist file that duplicates what is
@@ -50,8 +48,6 @@ SHORT-TERM (URGENT):
 
   <markey> When the KDE color scheme is changed while amaroK is running, all toolbar buttons (those with text)
            lose their texts.
-
-  <muesli> Take care of KToolbars in Context/Collection for palette changes.
 
   <mxcl>   With one track in pls and repeat and random mode on, amaroK crashes at track end.
 

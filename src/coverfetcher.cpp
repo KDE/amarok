@@ -36,6 +36,7 @@ CoverFetcher::CoverFetcher( QWidget *parent, QString artist, QString album )
         , m_buffer( 0 )
         , m_bufferIndex( 0 )
         , m_size( 2 )
+        , m_success( true )
 {
     DEBUG_FUNC_INFO
 
@@ -275,12 +276,11 @@ CoverFetcher::finishedImageFetch( KIO::Job *job ) //SLOT
         attemptAnotherFetch();
     }
 
-    else if( m_userCanEditQuery ) {
+    else if( m_userCanEditQuery )
         //yay! image found :)
         //lets see if the user wants it
-
         showCover();
-    }
+
     else
         //image loaded successfully yay!
         finish();
@@ -339,8 +339,7 @@ CoverFetcher::getUserQuery( QString explanation )
         startFetch();
         break;
     default:
-        m_errors << i18n( "Aborted." );
-        finish();
+        finishWithError( i18n( "Aborted." ) );
         break;
     }
 }
@@ -351,7 +350,7 @@ CoverFetcher::showCover()
     class CoverFoundDialog : public KDialog
     {
     public:
-        CoverFoundDialog( QWidget *parent, const QString &caption, const QImage &cover, const QString &productname )
+        CoverFoundDialog( QWidget *parent, const QImage &cover, const QString &productname )
                 : KDialog( parent )
         {
             (new QVBoxLayout( this ))->setAutoAdd( true );
@@ -371,7 +370,7 @@ CoverFetcher::showCover()
 
             save->setDefault( true );
             this->setFixedSize( sizeHint() );
-            this->setCaption( caption );
+            this->setCaption( i18n("Cover Found") );
 
             connect( save,      SIGNAL(clicked()), SLOT(accept()) );
             connect( newsearch, SIGNAL(clicked()), SLOT(accept()) );
@@ -390,7 +389,7 @@ CoverFetcher::showCover()
         }
     };
 
-    CoverFoundDialog dialog( (QWidget*)parent(), m_album, m_image, m_currentCoverName );
+    CoverFoundDialog dialog( (QWidget*)parent(), m_image, m_currentCoverName );
 
     switch( dialog.exec() )
     {
@@ -404,8 +403,7 @@ CoverFetcher::showCover()
         attemptAnotherFetch();
         break;
     default:
-        m_errors << i18n( "Aborted." );
-        finish();
+        finishWithError( i18n( "Aborted." ) );
         break;
     }
 }
@@ -426,6 +424,7 @@ CoverFetcher::finishWithError( const QString &message, KIO::Job *job )
         warning() << message << " KIO::error(): " << job->errorText() << endl;
 
     m_errors += message;
+    m_success = false;
 
     emit result( this );
 

@@ -33,7 +33,7 @@ public:
     QString amazonURL() const { return m_amazonURL; }
     QImage image() const { return m_image; }
 
-    bool wasError() const { return !m_errors.isEmpty(); }
+    bool wasError() const { return !m_success; }
     QStringList errors() const { return m_errors; }
 
 signals:
@@ -64,6 +64,8 @@ private:
     QStringList m_coverNames;
     QString     m_currentCoverName;
     QStringList m_errors;
+
+    bool m_success;
 
 private:
     /// The fetch was successful!
