@@ -846,6 +846,7 @@ CollectionView::listSelected() {
     for ( item = firstChild(); item; item = item->nextSibling() )
         if ( item->isSelected() )
         {
+            qb.clear();
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
             qb.addMatch( m_cat1, item->text( 0 ) );
             qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
