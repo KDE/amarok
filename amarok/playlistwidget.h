@@ -48,7 +48,7 @@ extern PlayerApp *pApp;
 
 
 
-class PlaylistWidget : protected KListView
+class PlaylistWidget : public KListView
 {
     Q_OBJECT
     public:
