@@ -1,4 +1,5 @@
 /* This file is part of the KDE project
+   Copyright (C) 2004 Mark Kretschmann <markey@web.de>
    Copyright (C) 2003 Alexander Dymo <cloudtemple@mksat.net>
    Copyright (C) 2003 Roberto Raggi <roberto@kdevelop.org>
    Copyright (C) 2001 Christoph Cullmann <cullmann@kde.org>
@@ -133,7 +134,7 @@ KDevFileSelector::KDevFileSelector( QWidget * parent, const char * name )
     cmbPath->listBox()->installEventFilter( this );
 
     dir = new KDevDirOperator( QString::null, this, "operator" );
-    dir->setView(KFile::/*Simple*/Detail);
+    setView(KFile::/*Simple*/Detail);
 
     KActionCollection *coll = dir->actionCollection();
     // some shortcuts of diroperator that clashes with KDev
@@ -188,10 +189,6 @@ KDevFileSelector::KDevFileSelector( QWidget * parent, const char * name )
     connect(dir, SIGNAL(finishedLoading()),
             this, SLOT(dirFinishedLoading()) );
 
-    // enable dir sync button if current doc has a valid URL
-//     connect ( partController, SIGNAL(activePartChanged(KParts::Part*) ),
-//               this, SLOT(viewChanged() ) );
-
     // Connect the bookmark handler
     connect( bookmarkHandler, SIGNAL( openURL( const QString& )),
              this, SLOT( setDir( const QString& ) ) );
@@ -214,20 +211,22 @@ KDevFileSelector::KDevFileSelector( QWidget * parent, const char * name )
         ( btnFilter,
                 i18n("<p>This button clears the name filter when toggled off, or "
                      "reapplies the last filter used when toggled on.") );
+
+    readConfig( kapp->sessionConfig(), "filebrowser" );
 }
 
 KDevFileSelector::~KDevFileSelector()
 {
-// 	writeConfig( m_part->instance()->config(), "fileselector" );
+    writeConfig( kapp->sessionConfig(), "fileselector" );
 }
-//END Constroctor/Destrctor
+//END Constructor/Destructor
 
 //BEGIN Public Methods
 
 void KDevFileSelector::readConfig(KConfig *config, const QString & name)
 {
     dir->readConfig(config, name + ":dir");
-    dir->setView( KFile::Default );
+    setView( KFile::Default );
 
     config->setGroup( name );
 
@@ -259,15 +258,6 @@ void KDevFileSelector::readConfig(KConfig *config, const QString & name)
     slotFilterChange( flt );
 
     autoSyncEvents = config->readNumEntry( "AutoSyncEvents", 0 );
-    // connect events as needed
-    /// @todo - solve startup problem: no need to set location for each doc opened!
-//     if ( autoSyncEvents & DocumentChanged )
-//         connect( partController, SIGNAL( viewChanged() ), this, SLOT( autoSync() ) );
-
-//     if ( autoSyncEvents & DocumentOpened )
-//         connect( partController, SIGNAL( partAdded(KParts::Part*) ),
-//                  this, SLOT( autoSync(KParts::Part*) ) );
-
 }
 
 void KDevFileSelector::initialDirChangeHack()
@@ -333,6 +323,7 @@ void KDevFileSelector::writeConfig(KConfig *config, const QString & name)
 void KDevFileSelector::setView(KFile::FileView view)
 {
     dir->setView(view);
+    dir->view()->setSelectionMode( KFile::Extended );
 }
 
 //END Public Methods
@@ -436,30 +427,7 @@ void KDevFileSelector::autoSync()
     }
 }
 
-void KDevFileSelector::autoSync( KParts::Part *part )
-{
-/*    KTextEditor::Document* doc = dynamic_cast<KTextEditor::Document*>( part );
-    if( !doc )
-	return;
-    
-    // as above, but using document url.
-    kdDebug()<<"KDevFileSelector::autoSync( KTextEditor::Document )"<<endl;
-    KURL u ( doc->url() );
-    if ( u.isEmpty() )
-    {
-        waitingUrl = QString::null;
-        return;
-    }
-    if ( isVisible() )
-    {
-        setDir( u.directory() );
-        waitingUrl = QString::null;
-    }
-    else
-    {
-        waitingUrl = u.directory();
-    }*/
-}
+
 /// \FIXME crash on shutdown
 void KDevFileSelector::setActiveDocumentDir()
 {
@@ -679,7 +647,7 @@ KFSConfigPage::KFSConfigPage( QWidget *parent, const char *name, KDevFileSelecto
 
 void KFSConfigPage::apply()
 {
-/*    AmarokConfig *config = pApp->config();
+    KConfig *config = kapp->sessionConfig();
     config->setGroup( "fileselector" );
     // toolbar
     QStringList l;
@@ -705,17 +673,6 @@ void KFSConfigPage::apply()
     if ( cbSyncShow->isChecked() )
         s |= KDevFileSelector::GotVisible;
     fileSelector->autoSyncEvents = s;
-    // reset connections
-//     disconnect( fileSelector->partController, 0, fileSelector, SLOT( autoSync() ) );
-//     disconnect( fileSelector->partController, 0,
-//                 fileSelector, SLOT( autoSync( KParts::Part *) ) );
-//     if ( s & KDevFileSelector::DocumentChanged )
-//         connect( fileSelector->partController, SIGNAL( viewChanged() ),
-//                  fileSelector, SLOT( autoSync() ) );
-//     if ( s & KDevFileSelector::DocumentOpened )
-//         connect( fileSelector->partController,
-//                  SIGNAL( partAdded(KParts::Part *) ),
-//                  fileSelector, SLOT( autoSync(KParts::Part *) ) );
 
     // histories
     fileSelector->cmbPath->setMaxItems( sbPathHistLength->value() );
@@ -723,7 +680,7 @@ void KFSConfigPage::apply()
     // session - theese are read/written directly to the app config,
     //           as they are not needed during operation.
     config->writeEntry( "restore location", cbSesLocation->isChecked() );
-    config->writeEntry( "restore last filter", cbSesFilter->isChecked() );*/
+    config->writeEntry( "restore last filter", cbSesFilter->isChecked() );
 }
 
 void KFSConfigPage::reload()
@@ -771,51 +728,6 @@ void KFSConfigPage::init()
     // session
     cbSesLocation->setChecked( true );
     cbSesFilter->setChecked( true );
-
-    
-
-/*    
-    KConfig *config = fileSelector->m_part->instance()->config();
-    config->setGroup( "fileselector" );
-    // toolbar
-    QStringList l = config->readListEntry( "toolbar actions", ',' );
-    if ( l.isEmpty() ) // default toolbar
-        l << "up" << "back" << "forward" << "home" <<
-        "short view" << "detailed view" <<
-        "bookmarks" << "sync_dir";
-
-    // actions from diroperator + two of our own
-    QStringList allActions;
-    allActions << "up" << "back" << "forward" << "home" <<
-    "reload" << "mkdir" << "delete" <<
-    "short view" << "detailed view" <<
-    "bookmarks" << "sync_dir";
-    QRegExp re("&(?=[^&])");
-    KAction *ac;
-    QListBox *lb;
-    for ( QStringList::Iterator it=allActions.begin(); it != allActions.end(); ++it )
-    {
-        lb = l.contains( *it ) ? acSel->selectedListBox() : acSel->availableListBox();
-        if ( *it == "bookmarks" || *it == "sync_dir" )
-            ac = fileSelector->actionCollection()->action( (*it).latin1() );
-        else
-            ac = fileSelector->dirOperator()->actionCollection()->action( (*it).latin1() );
-        if ( ac )
-            new ActionLBItem( lb, SmallIcon( ac->icon() ), ac->text().replace( re, "" ), *it );
-    }
-
-    // sync
-    int s = fileSelector->autoSyncEvents;
-    cbSyncActive->setChecked( s & KDevFileSelector::DocumentChanged );
-    cbSyncOpen->setChecked( s & KDevFileSelector::DocumentOpened );
-    cbSyncShow->setChecked( s & KDevFileSelector::GotVisible );
-    // histories
-    sbPathHistLength->setValue( fileSelector->cmbPath->maxItems() );
-    sbFilterHistLength->setValue( fileSelector->filter->maxCount() );
-    // session
-    cbSesLocation->setChecked( config->readBoolEntry( "restore location", true ) );
-    cbSesFilter->setChecked( config->readBoolEntry( "restore last filter", true ) );
-*/
 }
 
 void KFSConfigPage::slotChanged()
@@ -849,4 +761,5 @@ void KDevDirOperator::activatedMenu( const KFileItem *fi, const QPoint & pos )
 
 //END KDevDirOperator
 
-// #include "filebrowser.moc"
+
+#include "filebrowser.moc"

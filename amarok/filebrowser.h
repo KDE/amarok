@@ -1,4 +1,5 @@
 /* This file is part of the KDE project
+   Copyright (C) 2004 Mark Kretschmann <markey@web.de>
    Copyright (C) 2003 Roberto Raggi <roberto@kdevelop.org>
    Copyright (C) 2001 Christoph Cullmann <cullmann@kde.org>
    Copyright (C) 2001 Joseph Wenninger <jowenn@kde.org>
@@ -29,9 +30,6 @@
 #include <qframe.h>
 #include <kdiroperator.h>
 
-class KDevMainWindow;
-class KDevPartController;
-class FileSelectorPart;
 class KActionCollection;
 class KActionSelector;
 class KDirOperator;
@@ -40,16 +38,6 @@ class KHistoryCombo;
 
 class PlayerApp;
 extern PlayerApp *pApp;
-
-namespace KParts
-{
-    class Part;
-}
-
-namespace KTextEditor
-{
-    class Document;
-}
 
 /*
     The KDev file selector presents a directory view, in which the default action is
@@ -134,7 +122,6 @@ private slots:
     void viewChanged();
     void btnFilterClick();
     void autoSync();
-    void autoSync( KParts::Part * );
 
 protected:
     void focusInEvent( QFocusEvent * );

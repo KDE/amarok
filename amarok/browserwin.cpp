@@ -175,13 +175,15 @@ void BrowserWin::initChildren()
     m_pMultiTabBar->tab( STREAMBOX_ID   )->setState( false );
     connect( m_pMultiTabBar->tab( BROWSERBOX_ID ), SIGNAL( clicked() ), this, SLOT( buttonBrowserClicked() ) );
     connect( m_pMultiTabBar->tab( STREAMBOX_ID ), SIGNAL( clicked() ), this, SLOT( buttonStreamClicked() ) );
-    //<MultTabBar>
+    //</MultTabBar>
     
     //<StreamBrowser>
     m_pStreamBox        = new QVBox( boxMTB );
     QPushButton *button = new QPushButton( "&Fetch Stream Information", m_pStreamBox );
     m_pStreamBrowser    = new StreamBrowser( m_pStreamBox, "StreamBrowser" );
+
     m_pStreamBox->hide();    
+    
     connect( button, SIGNAL( clicked() ), m_pStreamBrowser, SLOT( slotUpdateStations() ) );
     connect( button, SIGNAL( clicked() ), button, SLOT( hide() ) );
     //</StreamBrowser>
