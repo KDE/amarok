@@ -22,6 +22,7 @@ SUBDIRS = \
     images \
     loader \
     scripts \
+    themes \
     vis \
     $(KONQSIDEBAR_SUBDIR) \
     statusbar
