@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>370</width>
+            <width>381</width>
             <height>379</height>
         </rect>
     </property>
@@ -19,9 +19,6 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
-    </property>
-    <property name="whatsThis" stdset="0">
-        <string>Some playback options.</string>
     </property>
     <vbox>
         <property name="name">
@@ -47,19 +44,22 @@
                 <string>&lt;b&gt;Transition Behavior&lt;/b&gt;
 &lt;p&gt;During playback, when amaroK transitions between tracks, it can either proceed to the next track instantly (with configurable gap), or crossfade (with configurable fade period).&lt;/p&gt;</string>
             </property>
-            <hbox>
+            <vbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout4</cstring>
+                        <cstring>layout3</cstring>
                     </property>
-                    <grid>
+                    <vbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QRadioButton" row="0" column="0">
+                        <property name="spacing">
+                            <number>0</number>
+                        </property>
+                        <widget class="QRadioButton">
                             <property name="name">
                                 <cstring>radioButtonNormalPlayback</cstring>
                             </property>
@@ -72,73 +72,87 @@
                             <property name="toolTip" stdset="0">
                                 <string>Enable normal track transition. You may insert a gap of silence between tracks.</string>
                             </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Enable normal track transition. You may insert a gap of silence between tracks.</string>
-                            </property>
                         </widget>
-                        <widget class="QLabel" row="1" column="0">
+                        <widget class="QLayoutWidget">
                             <property name="name">
-                                <cstring>trackDelayLengthLabel</cstring>
+                                <cstring>layout2</cstring>
                             </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>1</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="text">
-                                <string>Insert &amp;gap:</string>
-                            </property>
-                            <property name="indent">
-                                <number>32</number>
-                            </property>
-                            <property name="buddy" stdset="0">
-                                <cstring>kcfg_TrackDelayLength</cstring>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Silence between tracks, in milliseconds.</string>
-                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>trackDelayLengthLabel</cstring>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>1</hsizetype>
+                                            <vsizetype>5</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                    <property name="text">
+                                        <string>Insert &amp;gap:</string>
+                                    </property>
+                                    <property name="indent">
+                                        <number>18</number>
+                                    </property>
+                                    <property name="buddy" stdset="0">
+                                        <cstring>kcfg_TrackDelayLength</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QSpinBox">
+                                    <property name="name">
+                                        <cstring>kcfg_TrackDelayLength</cstring>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>3</hsizetype>
+                                            <vsizetype>0</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                    <property name="minimumSize">
+                                        <size>
+                                            <width>160</width>
+                                            <height>0</height>
+                                        </size>
+                                    </property>
+                                    <property name="suffix">
+                                        <string> ms</string>
+                                    </property>
+                                    <property name="maxValue">
+                                        <number>10000</number>
+                                    </property>
+                                    <property name="lineStep">
+                                        <number>100</number>
+                                    </property>
+                                    <property name="value">
+                                        <number>0</number>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>Silence between tracks, in milliseconds.</string>
+                                    </property>
+                                </widget>
+                            </hbox>
                         </widget>
-                        <widget class="QSpinBox" row="1" column="1">
-                            <property name="name">
-                                <cstring>kcfg_TrackDelayLength</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>7</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>160</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="suffix">
-                                <string> ms</string>
-                            </property>
-                            <property name="maxValue">
-                                <number>10000</number>
-                            </property>
-                            <property name="lineStep">
-                                <number>100</number>
-                            </property>
-                            <property name="value">
-                                <number>0</number>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>Silence between tracks, in milliseconds.</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Silence between tracks, in milliseconds.</string>
-                            </property>
-                        </widget>
-                        <widget class="QRadioButton" row="2" column="0">
+                    </vbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout5</cstring>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="spacing">
+                            <number>0</number>
+                        </property>
+                        <widget class="QRadioButton">
                             <property name="name">
                                 <cstring>kcfg_Crossfade</cstring>
                             </property>
@@ -151,78 +165,85 @@
                             <property name="toolTip" stdset="0">
                                 <string>Enable crossfading between tracks. This setting also enables fading to or from silence e.g when pressing stop.</string>
                             </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Enable crossfading between tracks. This setting also enables fading to or from silence e.g when pressing stop.</string>
-                            </property>
                         </widget>
-                        <widget class="QLabel" row="3" column="0">
+                        <widget class="QLayoutWidget">
                             <property name="name">
-                                <cstring>crossfadeLengthLabel</cstring>
+                                <cstring>layout4</cstring>
                             </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>1</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="text">
-                                <string>Crossover &amp;period:</string>
-                            </property>
-                            <property name="indent">
-                                <number>32</number>
-                            </property>
-                            <property name="buddy" stdset="0">
-                                <cstring>kcfg_CrossfadeLength</cstring>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>The length of the crossfade between tracks in milliseconds.</string>
-                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>crossfadeLengthLabel</cstring>
+                                    </property>
+                                    <property name="enabled">
+                                        <bool>false</bool>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>1</hsizetype>
+                                            <vsizetype>5</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                    <property name="text">
+                                        <string>Crossover &amp;period:</string>
+                                    </property>
+                                    <property name="indent">
+                                        <number>18</number>
+                                    </property>
+                                    <property name="buddy" stdset="0">
+                                        <cstring>kcfg_CrossfadeLength</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QSpinBox">
+                                    <property name="name">
+                                        <cstring>kcfg_CrossfadeLength</cstring>
+                                    </property>
+                                    <property name="enabled">
+                                        <bool>false</bool>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>3</hsizetype>
+                                            <vsizetype>0</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                    <property name="minimumSize">
+                                        <size>
+                                            <width>160</width>
+                                            <height>0</height>
+                                        </size>
+                                    </property>
+                                    <property name="suffix">
+                                        <string> ms</string>
+                                    </property>
+                                    <property name="maxValue">
+                                        <number>99999999</number>
+                                    </property>
+                                    <property name="minValue">
+                                        <number>100</number>
+                                    </property>
+                                    <property name="lineStep">
+                                        <number>100</number>
+                                    </property>
+                                    <property name="value">
+                                        <number>100</number>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>The length of the crossfade between tracks, in milliseconds.</string>
+                                    </property>
+                                </widget>
+                            </hbox>
                         </widget>
-                        <widget class="QSpinBox" row="3" column="1">
-                            <property name="name">
-                                <cstring>kcfg_CrossfadeLength</cstring>
-                            </property>
-                            <property name="enabled">
-                                <bool>false</bool>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>7</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>160</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="suffix">
-                                <string> ms</string>
-                            </property>
-                            <property name="maxValue">
-                                <number>99999999</number>
-                            </property>
-                            <property name="lineStep">
-                                <number>100</number>
-                            </property>
-                            <property name="value">
-                                <number>0</number>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>The length of the crossfade between tracks, in milliseconds.</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>The length of the crossfade between tracks, in milliseconds.</string>
-                            </property>
-                        </widget>
-                    </grid>
+                    </vbox>
                 </widget>
-            </hbox>
+            </vbox>
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
@@ -242,22 +263,16 @@
                     <property name="toolTip" stdset="0">
                         <string>If checked, amaroK will&lt;br&gt;resume playback from where you left it the previous session -- just like a tape-player.</string>
                     </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>If checked, amaroK will resume playback from where you left it the previous session -- just like a tape-player.</string>
-                    </property>
                 </widget>
                 <widget class="QCheckBox">
                     <property name="name">
                         <cstring>kcfg_HardwareMixer</cstring>
                     </property>
                     <property name="text">
-                        <string>Use &amp;hardware volume mixer</string>
+                        <string>&amp;Use hardware volume mixer</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>If checked, the volume slider&lt;br&gt;sets the master volume on the soundcard which affects the whole system. If not checked, the volume slider only affects the amaroK output.</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>If checked, the volume slider sets the master volume on the soundcard which affects the whole system. If not checked, the volume slider only affects the amaroK output.</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox">
@@ -265,13 +280,10 @@
                         <cstring>kcfg_RememberEffects</cstring>
                     </property>
                     <property name="text">
-                        <string>Remember &amp;effects</string>
+                        <string>Remem&amp;ber effects</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>If checked, amaroK remembers&lt;br&gt;the audio effects set through the effects window between sessions.</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>If checked, amaroK remembers the audio effects set through the effects window between sessions.</string>
                     </property>
                 </widget>
             </vbox>
@@ -306,6 +318,18 @@
         <sender>kcfg_Crossfade</sender>
         <signal>toggled(bool)</signal>
         <receiver>kcfg_CrossfadeLength</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>radioButtonNormalPlayback</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>trackDelayLengthLabel</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_Crossfade</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>crossfadeLengthLabel</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
 </connections>
