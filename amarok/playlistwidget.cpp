@@ -92,6 +92,11 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
 
 PlaylistWidget::~PlaylistWidget()
 {
+   kdDebug() << "Shutting down TagReader Thread..\n";
+   m_tagReader->halt();
+   m_tagReader->wait();
+   kdDebug() << "Shutdown complete..\n";
+
    delete m_tagReader;
 }
 
@@ -279,7 +284,7 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
 
       if( PlaylistItem *item = static_cast<PlaylistLoader::LoaderEvent*>(e)->makePlaylistItem( this ) ) //this is thread-safe
       {
-         m_tagReader->append( item );
+         if( pApp->m_optReadMetaInfo ) m_tagReader->append( item );
 
          //nonlocal downloads can fail
          searchTokens.append( item->text( 0 ) );

@@ -23,12 +23,7 @@
 #include <tag.h>
 
 
-#if KDE_IS_VERSION(3,1,92)
-  //FIXME including playerapp.h sucks, we MUST MUST MUST make a separate header for options!
-  #include "browserwin.h"
-  #include <playerapp.h>
-  extern PlayerApp *pApp;
-#endif
+
 
 
 ///// ctor and dtor are basic and in header
@@ -39,7 +34,6 @@
  */
 
 //URGENT
-//TODO ensure that thread still lives until last event it sends is processed since we depend on it (stupidly)
 //TODO store threads in a stack that can be emptied on premature program exit
 //TODO get setCurrentTrack to insert an item if it's not found, document that it is done after all thread
 //     operations are complete
@@ -116,7 +110,7 @@
 #8  0x0806e850 in QValueListPrivate (this=0x80be0a8, _p=@0x405b7cbc)
     at qvaluelist.h:272
 #9  0x0806e5b5 in QValueList<KURL>::detachInternal() (this=0x81c9c9c)
-    at qvaluelist.h:629
+    at qvaluelist.h:629kdDebug() << "Shutting down TagReader Thread..\n";
 #10 0x080886da in QValueList<KURL>::begin() (this=0x81c9c9c)
     at qvaluelist.h:473
 #11 0x08086af1 in PlaylistLoader::process(KURL::List&, bool) (this=0x81c9c90, 
@@ -170,13 +164,13 @@ void PlaylistLoader::run()
  #define SCANDIR scandir
  #define READDIR readdir
  #define STATSTRUCT stat
- #define LSTAT lstat
+ #define LSTAT stat
 #else
  #define DIRENT dirent64
  #define SCANDIR scandir64
  #define READDIR readdir64
  #define STATSTRUCT stat64
- #define LSTAT lstat64
+ #define LSTAT stat64
 #endif
 
 void PlaylistLoader::process( KURL::List &list, bool validate )
@@ -193,7 +187,8 @@ void PlaylistLoader::process( KURL::List &list, bool validate )
 
          if( S_ISDIR( statbuf.st_mode ) )
          {
-            if( !options.recurse || ( !options.symlink && S_ISLNK( statbuf.st_mode ) && list.count() > 1 ) ) continue; //FIXME depth check too
+            //some options prevent recursion
+            if( list.count() > 1 && ( !options.recurse || ( !options.symlink && S_ISLNK( statbuf.st_mode ) ) ) ) continue; //FIXME depth check too
 
             KURL::List list2;
             translate( path, list2 );
@@ -294,8 +289,7 @@ void PlaylistLoader::loadLocalPlaylist( const QString &path, int type )
 
 bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissions )
 {
-   QString ext = url.path().right( 4 );
-   ext = ext.lower(); //this order as less to lower
+   QString ext = url.path().right( 4 ).lower(); //FIXME 4 tmps
 
    //listed in order of liklihood of encounter to avoid logic checks
    bool b = ( ext == ".mp3" || ext == ".ogg" || ext == ".m3u" || ext == ".pls" || ext == ".mod" ||  ext == ".wav" );
@@ -345,21 +339,18 @@ void PlaylistLoader::translate( QString &path, KURL::List &list ) //FIXME KURL i
          //get file information
          if( LSTAT( newpath, &statbuf ) == 0 )
          {
-            if( ( S_ISLNK( statbuf.st_mode ) && S_ISDIR( statbuf.st_mode ) && !options.symlink ) ||
-               S_ISCHR(  statbuf.st_mode ) ||
-               S_ISBLK(  statbuf.st_mode ) ||
-               S_ISFIFO( statbuf.st_mode ) ||
-               S_ISSOCK( statbuf.st_mode ) )
-            {
-               continue;
-            }
+            if( S_ISCHR(  statbuf.st_mode ) ||
+                S_ISBLK(  statbuf.st_mode ) ||
+                S_ISFIFO( statbuf.st_mode ) ||
+                S_ISSOCK( statbuf.st_mode ) ); //then do nothing
 
-            if( S_ISDIR( statbuf.st_mode ) )  //directory
+            else if( S_ISDIR( statbuf.st_mode ) && options.recurse )  //directory
             {
+               if( !options.symlink && S_ISLNK( statbuf.st_mode ) ) continue;
                translate( newpath, list );
             }
 
-            if( S_ISREG( statbuf.st_mode ) )  //file
+            else if( S_ISREG( statbuf.st_mode ) )  //file
             {
                KURL url( newpath );
 
@@ -467,7 +458,7 @@ PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
       //FIXME this seems to block the ui
 
       #if KDE_IS_VERSION(3,1,92)
-      if( KIO::NetAccess::download( m_url, path, pApp->m_pBrowserWin ) )
+      if( KIO::NetAccess::download( m_url, path, m_thread->m_parent ) ) //should be thread-safe as we are only reading it no?
       #else
       if( KIO::NetAccess::download( m_url, path ) )
       #endif
@@ -505,10 +496,6 @@ PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
 //TODO consider just using the Taglib::Tag itself? -- how would you copy playlist info?
 //TODO it seems taglib returns a load of blank tags for all mp3s (? -- test this), this means we always have a tag object even though some tracks have nothing in them! Try to stop this
 
-#include <qdeepcopy.h>
-#include <qwaitcondition.h>
-static QWaitCondition items_appended;
-
 void TagReader::append( PlaylistItem *item )
 {
    //for GUI access only
@@ -524,26 +511,22 @@ void TagReader::append( PlaylistItem *item )
       m_Q.push_back( bundle );
       mutex.unlock();
 
-      items_appended.wakeOne();
+      if( !running() ) start( QThread::LowestPriority );
    }
 }
 
 void TagReader::run()
 {
-   for( ; ; )
-   {
-      bool b = true;
-      Tags *tags;
-
-      items_appended.wait();
-
-      msleep( 30 ); //this is an attempt to encourage the queue to be filled with more than 1 item before we
+   Tags *tags;
+   
+   msleep( 100 ); //this is an attempt to encourage the queue to be filled with more than 1 item before we
                     //start processing, and thus prevent unecessary stopping and starting of the thread
 
-      while( b )
+      while( m_bool )
       {
          mutex.lock();
-         Bundle bundle( m_Q.front() );
+	 if( m_Q.empty() ) { mutex.unlock(); break; }
+	 Bundle bundle( m_Q.front() );
          mutex.unlock();
 
          tags = readTags( bundle.url, bundle.tags );
@@ -556,12 +539,10 @@ void TagReader::run()
             QApplication::postEvent( m_parent, new TagReaderEvent( bundle.item, tags ) );
             m_Q.pop_front();
          }
-         b = !m_Q.empty();
          mutex.unlock();
       }
 
       kdDebug() << "[tagReader] done!\n";
-   }
 }
 
 Tags *TagReader::readTags( const KURL &url, Tags *tags )
@@ -601,6 +582,7 @@ void TagReader::cancel()
 
 void TagReader::remove( PlaylistItem *pi )
 {
+   //FIXME if an event was just sent for any of these items then amaroK will crash (when they are deleted)
    //FIXME slow, but works
    //thread safe removal of above item, called when above item no longer needs tags, ie is about to be deleted
 

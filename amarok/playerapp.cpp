@@ -621,7 +621,8 @@ void PlayerApp::readConfig()
     m_optSavePlaylist = m_pConfig->readBoolEntry( "Save Playlist", true );
     m_optConfirmClear = m_pConfig->readBoolEntry( "Confirm Clear", false );
     m_optConfirmExit = m_pConfig->readBoolEntry( "Confirm Exit", false );
-    m_optFollowSymlinks = m_pConfig->readBoolEntry( "Follow Symlinks", false );
+
+    m_optFollowSymlinks = m_pConfig->readBoolEntry( "FollowSymlinks", true ); //FIXME at some point add the space again if you like
     m_optDropMode = m_pConfig->readEntry( "Drop Mode", "Recursively" );
     m_optTimeDisplayRemaining = m_pConfig->readBoolEntry( "Time Display Remaining", false );
     m_optRepeatTrack = m_pConfig->readBoolEntry( "Repeat Track", false );

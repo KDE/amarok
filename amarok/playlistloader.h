@@ -96,11 +96,12 @@ private:
 class TagReader : public QThread
 {
 public:
-   TagReader( QWidget *w ) : m_parent( w ) { start(); }
+   TagReader( QWidget *w ) : m_parent( w ), m_bool( true ) {}
 
    void append( PlaylistItem * );
    void remove( PlaylistItem * );
    void cancel();
+   void halt() { if( running() ) m_bool = false; } //thread-safe shutdown
 
    class TagReaderEvent : public QCustomEvent
    {
@@ -134,6 +135,7 @@ private:
    QWidget *m_parent;
    std::deque<Bundle> m_Q;
    QMutex mutex;
+   bool m_bool;
 };
 
 #endif
