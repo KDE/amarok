@@ -48,7 +48,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     QHBox * hbox2 = new QHBox( this );
     hbox2->setSpacing( 4 );
     hbox2->setMargin( 4 );
-    QLabel * label1 = new QLabel( "Search for:", hbox2 );
+    new QLabel( "Search for:", hbox2 );
     m_searchEdit = new KLineEdit( hbox2 );
 
     m_view = new CollectionView( this );
@@ -90,7 +90,6 @@ CollectionBrowser::slotSetFilter() //slot
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionDB
 //////////////////////////////////////////////////////////////////////////////////////////
-
 
 CollectionDB::CollectionDB( const QCString path )
 {
@@ -163,7 +162,8 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
 }
 
 
-int CollectionDB::sqlInsertID()
+int
+CollectionDB::sqlInsertID()
 {
     if ( !m_db ) {
         kdWarning() << k_funcinfo << "SQLite pointer == NULL.\n";

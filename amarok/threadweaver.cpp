@@ -301,7 +301,8 @@ CollectionReader::readDir( const QString& dir, QStringList& entries ) {
 void
 CollectionReader::readTags( const QStringList& entries ) {
     KURL url;
-    CollectionView::m_insertdb->createTables( true );
+    CollectionDB* const insertdb = CollectionView::m_insertdb;
+    insertdb->createTables( true );
         
     for ( uint i = 0; i < entries.count(); i++ ) {   
         if ( !( i % 20 ) ) //don't post events too often since this blocks amaroK
@@ -311,53 +312,52 @@ CollectionReader::readTags( const QStringList& entries ) {
 
         TagLib::FileRef f( url.path().local8Bit(), false /*== read AudioProps */ );
         MetaBundle* bundle = f.isNull() ? 0 : new MetaBundle( url, f.tag(), 0 );
-        
+                
         if ( bundle ) {
             QString command = "INSERT INTO tags_temp "
                                 "( url, dir, album, artist, genre, title, year, comment, track ) "
                                 "VALUES('";
-   
-            command += CollectionView::m_insertdb->escapeString( bundle->url().path() );
+                                
+            command += insertdb->escapeString( bundle->url().path() );
             command += "','";
-            command += CollectionView::m_insertdb->escapeString( bundle->url().directory() );
+            command += insertdb->escapeString( bundle->url().directory() );
             command += "',";
-            command += CollectionView::m_insertdb->escapeString( QString::number( CollectionView::m_insertdb->getValueID( "album_temp", bundle->album() ) ) );
+            command += insertdb->escapeString( QString::number( insertdb->getValueID( "album_temp", bundle->album() ) ) );
             command += ",";
-            command += CollectionView::m_insertdb->escapeString( QString::number( CollectionView::m_insertdb->getValueID( "artist_temp", bundle->artist() ) ) );
+            command += insertdb->escapeString( QString::number( insertdb->getValueID( "artist_temp", bundle->artist() ) ) );
             command += ",";
-            command += CollectionView::m_insertdb->escapeString( QString::number( CollectionView::m_insertdb->getValueID( "genre_temp", bundle->genre() ) ) );
+            command += insertdb->escapeString( QString::number( insertdb->getValueID( "genre_temp", bundle->genre() ) ) );
             command += ",'";
-            command += CollectionView::m_insertdb->escapeString( bundle->title() );
+            command += insertdb->escapeString( bundle->title() );
             command += "','";
-            command += CollectionView::m_insertdb->escapeString( QString::number( CollectionView::m_insertdb->getValueID( "year_temp", bundle->year() ) ) );
+            command += insertdb->escapeString( QString::number( insertdb->getValueID( "year_temp", bundle->year() ) ) );
             command += "','";
-            command += CollectionView::m_insertdb->escapeString( bundle->comment() );
+            command += insertdb->escapeString( bundle->comment() );
             command += "','";
-            command += CollectionView::m_insertdb->escapeString( bundle->track() );
+            command += insertdb->escapeString( bundle->track() );
             command += "');";
     
-            CollectionView::m_insertdb->execSql( command );
+            insertdb->execSql( command );
             delete bundle;
         }
     }
-    
     // let's lock the database (will block other threads)
-    CollectionView::m_insertdb->execSql( "BEGIN TRANSACTION;" );
+    insertdb->execSql( "BEGIN TRANSACTION;" );
     // remove tables and recreate them (quicker than DELETE FROM)
-    CollectionView::m_insertdb->dropTables();
-    CollectionView::m_insertdb->createTables();
+    insertdb->dropTables();
+    insertdb->createTables();
 
     // rename tables
-    CollectionView::m_insertdb->execSql( "INSERT INTO tags SELECT * FROM tags_temp;" );
-    CollectionView::m_insertdb->execSql( "INSERT INTO album SELECT * FROM album_temp;" );
-    CollectionView::m_insertdb->execSql( "INSERT INTO artist SELECT * FROM artist_temp;" );
-    CollectionView::m_insertdb->execSql( "INSERT INTO genre SELECT * FROM genre_temp;" );
-    CollectionView::m_insertdb->execSql( "INSERT INTO year SELECT * FROM year_temp;" );
+    insertdb->execSql( "INSERT INTO tags SELECT * FROM tags_temp;" );
+    insertdb->execSql( "INSERT INTO album SELECT * FROM album_temp;" );
+    insertdb->execSql( "INSERT INTO artist SELECT * FROM artist_temp;" );
+    insertdb->execSql( "INSERT INTO genre SELECT * FROM genre_temp;" );
+    insertdb->execSql( "INSERT INTO year SELECT * FROM year_temp;" );
 
     // remove temp tables
-    CollectionView::m_insertdb->dropTables( true );
+    insertdb->dropTables( true );
     // unlock database
-    CollectionView::m_insertdb->execSql( "END TRANSACTION;" );
+    insertdb->execSql( "END TRANSACTION;" );
 }
 
 
