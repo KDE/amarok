@@ -15,9 +15,6 @@ SHORT-TERM (URGENT):
 
     * fix: #33<markey> invoking handbook broken. problem seems to be the name: amaroK vs. amarok
 
-    * fix: #31<markey> when you add a pls/m3u with stream addresses, why do many server entries just
-              vanish from playlist instantly
-    
     * add: #30<markey> kdemultimedia configure check
 
     * add: #29<muesli> configure script should fail, if taglib check failed
