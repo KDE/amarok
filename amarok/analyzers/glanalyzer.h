@@ -20,7 +20,7 @@
 
 #include <config.h>
 
-#ifdef HAVE_QGLWIDGET
+#ifdef HAVE_QGLWIDGETNOWAY
 
 #include "analyzerbase3d.h"
 #include <qgl.h>

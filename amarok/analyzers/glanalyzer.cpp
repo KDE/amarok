@@ -17,7 +17,7 @@
 
 #include <config.h>
 
-#ifdef HAVE_QGLWIDGET
+#ifdef HAVE_QGLWIDGETNOWAY
 
 #include "glanalyzer.h"
 

@@ -26,6 +26,8 @@
 #include <kurl.h>
 #include <vector>
 
+#include "titleproxy/titleproxy.h"
+
 #define APP_VERSION "0.8.4"
 
 class QColor;
@@ -105,7 +107,7 @@ class PlayerApp : public KUniqueApplication
 
     private slots:
         void applySettings();
-        void receiveStreamMeta( QString title, QString url, QString kbps );
+        void receiveStreamMeta( TitleProxy::metaPacket );
 
     signals:
         //void sigScope( std::vector<float> *s );

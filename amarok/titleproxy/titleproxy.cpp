@@ -156,7 +156,7 @@ void TitleProxy::readRemote()
     //This is the main loop which processes the stream data
     while ( index < bytesRead )
     {
-        if ( m_byteCount == m_metaInt )
+        if ( m_metaInt && ( m_byteCount == m_metaInt ) )
         {
             m_byteCount = 0;
             m_metaLen = m_pBuf[ index++ ] << 4;
@@ -225,8 +225,6 @@ void TitleProxy::processHeader(Q_LONG &index, Q_LONG bytesRead)
                 m_streamUrl.prepend("http://");
             m_pSockProxy->writeBlock(m_headerStr.latin1(), m_headerStr.length());
             m_headerFinished = true;
-            if(!m_metaInt)
-                emit error();
             break;
 
         }
@@ -237,21 +235,19 @@ void TitleProxy::processHeader(Q_LONG &index, Q_LONG bytesRead)
 
 void TitleProxy::transmitData(const QString &data)
 {
-
     /*kdDebug() << k_funcinfo <<
       "received new metadata: '" << data << "'" << endl;*/
-    QString title = extractStr(data, "StreamTitle");
-    QString url = extractStr(data, "StreamUrl");
     
-    emit metaData( title, url, m_bitRate );
+    metaPacket packet;
     
-/*    emit metaData(
-        m_streamName,
-        m_streamGenre,
-        m_streamUrl,
-        m_bitRate,
-        title,
-        url);*/
+    packet.title       = extractStr( data, "StreamTitle" );
+    packet.url         = extractStr( data, "StreamUrl" );
+    packet.bitRate     = m_bitRate;
+    packet.streamGenre = m_streamGenre;
+    packet.streamName  = m_streamName;         
+    packet.streamUrl   = m_streamUrl;        
+    
+    emit metaData( packet );
 }
 
 

@@ -130,7 +130,6 @@ class ArtsEngine : public EngineBase
     private slots:
         void                                     connectPlayObject();
         void                                     proxyError();
-        void                                     receiveStreamMeta( QString title, QString url, QString kbps );
 };
 
 

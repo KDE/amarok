@@ -18,7 +18,6 @@ email                : markey@web.de
 #include "../amarokarts/amarokarts.h"
 #include "artsengine.h"
 #include "enginebase.h"
-#include "../titleproxy/titleproxy.h"
 
 #include <string>
 #include <vector>
@@ -207,7 +206,8 @@ ArtsEngine::~ ArtsEngine()
 {
     delete m_pPlayObject;
     delete m_pPlayObjectXfade;
-
+    emit endOfTrack();
+    
     saveEffects();
         
     m_scope             = Amarok::RawScope::null();
@@ -313,28 +313,11 @@ std::vector<float>* ArtsEngine::scope()
 
 void ArtsEngine::open( KURL url )
 {
-    if ( !m_proxyError )
-    {
-        m_xfadeFadeout = false;
-        startXfade();
-    }
+    m_xfadeFadeout = false;
+    startXfade();
         
     KDE::PlayObjectFactory factory( m_server );
-
-    if ( /* m_optTitleStream && */ !m_proxyError && !url.isLocalFile()  )
-    {
-        TitleProxy *pProxy = new TitleProxy( url );
-        m_pPlayObject = factory.createPlayObject( pProxy->proxyUrl(), false );
-
-        connect( pProxy, SIGNAL( metaData         ( QString, QString, QString ) ),
-                 this,   SLOT  ( receiveStreamMeta( QString, QString, QString ) ) );
-        connect( pProxy, SIGNAL( error() ), this, SLOT( proxyError() ) );
-        connect( m_pPlayObject, SIGNAL( destroyed() ), pProxy, SLOT( deleteLater() ) );
-    }
-    else
-        m_pPlayObject = factory.createPlayObject( url, false ); //second parameter: create BUS(true/false)
-
-    m_proxyError = false;
+    m_pPlayObject = factory.createPlayObject( url, false ); //second parameter: create BUS(true/false)
 
     if ( !m_pPlayObject  )
     {
@@ -566,12 +549,6 @@ void ArtsEngine::proxyError()
 }
 
 
-void ArtsEngine::receiveStreamMeta( QString title, QString url, QString kbps )
-{
-    emit metaData( title, url, kbps );
-}
-
-
 void ArtsEngine::startXfade()
 {
     //switch xfade channels
@@ -584,6 +561,7 @@ void ArtsEngine::startXfade()
     {
         m_pPlayObjectXfade->halt();
         delete m_pPlayObjectXfade;
+        emit endOfTrack();
     }
             
     m_pPlayObjectXfade = m_pPlayObject;
@@ -606,6 +584,7 @@ void ArtsEngine::timerEvent( QTimerEvent* )
                 m_pPlayObjectXfade->halt();
                 delete m_pPlayObjectXfade;
                 m_pPlayObjectXfade = 0;
+                emit endOfTrack();
             }
         }
         float value;

@@ -30,6 +30,7 @@ email                : markey@web.de
 #include "playerapp.h"
 #include "playerwidget.h"
 #include "playlistloader.h" //restoreSession()
+#include "titleproxy/titleproxy.h"
 
 #include <vector>
 #include <string>
@@ -373,19 +374,27 @@ void PlayerApp::readConfig()
 }
 
 
-void PlayerApp::receiveStreamMeta( QString title, QString url, QString kbps )
+void PlayerApp::receiveStreamMeta( TitleProxy::metaPacket packet )
 {
+    kdDebug() << "metaPacket:: " << endl;
+    kdDebug() << "streamName : " << packet.streamName  << endl;
+    kdDebug() << "streamGenre: " << packet.streamGenre << endl;
+    kdDebug() << "streamUrl  : " << packet.streamUrl   << endl;
+    kdDebug() << "bitRate    : " << packet.bitRate     << endl;
+    kdDebug() << "title      : " << packet.title       << endl;
+    kdDebug() << "url        : " << packet.url         << endl;
+    
     //FIXME this could all be compressed into a single setScroll() if the bitrate is used in the else case
-    if ( url.isEmpty() )
+    if ( packet.url.isEmpty() )
     {
         QString text = m_playingURL.prettyURL();
         if ( text.isEmpty() ) text = i18n( "stream" );
 
-        m_pPlayerWidget->setScroll( QString( "%1 (%2)" ).arg( title ).arg( text ), kbps + "kbps", "--" );
+        m_pPlayerWidget->setScroll( QString( "%1 (%2)" ).arg( packet.title ).arg( text ), packet.bitRate + "kbps", "--" );
     }
     else
         //FIXME show bitrate? this was how it was before so I am leaving it as is.. <mxcl>
-        m_pPlayerWidget->setScroll( QString( "%1 (%2)" ).arg( title ).arg( url ), "--", "--" );
+        m_pPlayerWidget->setScroll( QString( "%1 (%2)" ).arg( packet.title ).arg( packet.url ), "--", "--" );
 }
 
 
@@ -505,10 +514,18 @@ void PlayerApp::slotNext() { emit orderNextTrack(); }
 
 void PlayerApp::play( const KURL &url, const MetaBundle &tags )
 {
-    m_pEngine->open( url );
+    if ( AmarokConfig::titleStreaming() && !url.isLocalFile() )
+    {
+        TitleProxy *pProxy = new TitleProxy( url );
+        m_pEngine->open( pProxy->proxyUrl() );
 
-    connect( m_pEngine, SIGNAL( metaData         ( QString, QString, QString ) ),
-             this,      SLOT  ( receiveStreamMeta( QString, QString, QString ) ) );
+        connect( pProxy,    SIGNAL( metaData         ( TitleProxy::metaPacket ) ),
+                 this,      SLOT  ( receiveStreamMeta( TitleProxy::metaPacket ) ) );
+        connect( m_pEngine, SIGNAL( endOfTrack       () ),
+                 pProxy,    SLOT  ( deleteLater      () ) );
+    }
+    else    
+        m_pEngine->open( url );
 
     if( !(tags.m_length == 0 && tags.m_bitrate == 0 && tags.m_sampleRate == 0) )
     {

@@ -40,10 +40,17 @@ class TitleProxy : public QObject
         KURL proxyUrl();
 
         // ATTRIBUTES ------
-
+        struct metaPacket {
+            QString streamName;
+            QString streamGenre;
+            QString streamUrl;
+            QString bitRate;
+            QString title;
+            QString url;
+        };
+        
     signals:
-        void metaData( QString, QString, QString );
-        void error();
+        void metaData( TitleProxy::metaPacket );
 
     public slots:
 

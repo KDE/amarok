@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #44 being the highest available (take this one for your next bug and increase here)
+           #45 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
@@ -48,6 +48,8 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+
+    * fix: #44 <markey> use kdWarning() instead of kdDebug() where appropriate
 
     * add: #39 <markey> add playlist column for media-type (mp3, ogg, mod, etc)
 

@@ -56,7 +56,7 @@ AnalyzerBase *AnalyzerBase::AnalyzerFactory::createAnalyzer( QWidget *parent )
     case 6:
         analyzer = new Sonogram( parent );
         break;
-#ifdef HAVE_QGLWIDGET
+#ifdef HAVE_QGLWIDGETNOWAY
     case 7:
         analyzer = new GLAnalyzer( parent );
         break;
