@@ -45,9 +45,15 @@ PlaylistLoader::run()
 {
     m_markey->setVisible( false );
 
+    float increment, progress;
+    PlaylistItem* item = 0;
+    bool needSecondPass = false;
     amaroK::StatusBar::startProgress();
     QApplication::postEvent( Playlist::instance(), new QCustomEvent( Started ) );
 
+    //BEGIN first pass
+    increment = 100.0 / m_URLs.count();
+    progress = 0;
     const KURL::List::ConstIterator end = m_URLs.end();
 
     for( KURL::List::ConstIterator it = m_URLs.begin(); it != end && !s_stop; ++it )
@@ -62,7 +68,7 @@ PlaylistLoader::run()
 
             if( loadPlaylist( path ) ) continue;
 
-            if( EngineController::canDecode( url ) ) createPlaylistItem( url );
+            if( EngineController::canDecode( url ) ) item = createPlaylistItem( url );
 
             else addBadURL( url );
         }
@@ -70,39 +76,48 @@ PlaylistLoader::run()
         {
             //TODO
         }
-        else if( EngineController::canDecode( url ) ) createPlaylistItem( url );
+        else if( EngineController::canDecode( url ) ) item = createPlaylistItem( url );
         else addBadURL( url );
-    }
 
-    delete m_markey;
-
-
-    //TODO dialog for failed entries
-
-    const float increment = 100.0 / m_pairs.count();
-    const List::ConstIterator end2 = m_pairs.end();
-    float progress = 0;
-    for( List::ConstIterator it = m_pairs.begin(); it != end2 && !s_stop; ++it )
-    {
-        if ( (*it).first.isLocalFile() )
-        {
-            if ( (*it).second->inCollection() )
-            {
-                if ( !(*it).second->hasAudioproperties() )
-                {
-                    // Store audioproperties in database if not yet stored
-                    TagsEvent* e = new TagsEvent( (*it).first, (*it).second );
-                    m_db->addAudioproperties( e->bundle );
-                    QApplication::postEvent( Playlist::instance(), e );
-                }
-            }
-            else
-                QApplication::postEvent( Playlist::instance(), new TagsEvent( (*it).first, (*it).second ) );
-        }
-
+        if ( item ) needSecondPass |= !item->inCollection() || !item->hasAudioproperties();
         progress += increment;
         amaroK::StatusBar::showProgress( uint(progress) );
     }
+    //END first pass
+
+    //TODO dialog for failed entries
+
+    delete m_markey;
+
+    //BEGIN second pass
+    if ( needSecondPass )
+    {
+        increment = 100.0 / m_pairs.count();
+        progress = 0;
+        const List::ConstIterator end2 = m_pairs.end();
+        for( List::ConstIterator it = m_pairs.begin(); it != end2 && !s_stop; ++it )
+        {
+            if ( (*it).first.isLocalFile() )
+            {
+                if ( (*it).second->inCollection() )
+                {
+                    if ( !(*it).second->hasAudioproperties() )
+                    {
+                        // Store audioproperties in database if not yet stored
+                        TagsEvent* e = new TagsEvent( (*it).first, (*it).second );
+                        m_db->addAudioproperties( e->bundle );
+                        QApplication::postEvent( Playlist::instance(), e );
+                    }
+                }
+                else
+                    QApplication::postEvent( Playlist::instance(), new TagsEvent( (*it).first, (*it).second ) );
+            }
+
+            progress += increment;
+            amaroK::StatusBar::showProgress( uint(progress) );
+        }
+    }
+    //END second pass
 
     amaroK::StatusBar::stopProgress();
     QApplication::postEvent( Playlist::instance(), new DoneEvent( this ) );
