@@ -83,7 +83,7 @@ ExpandButton::~ExpandButton()
 
 void ExpandButton::mouseReleaseEvent( QMouseEvent *e )
 {
-    if ( m_animFlag == ANIM_EXPAND or m_animFlag == ANIM_SHOW )
+    if ( m_animFlag == ANIM_EXPAND || m_animFlag == ANIM_SHOW )
     {
         m_animFlag = ANIM_SHRINK;
         m_animAdd = 0;
