@@ -23,6 +23,8 @@
 #include "engineobserver.h" //baseclass
 #include "statusBarBase.h"  //baseclass
 
+#include <qvaluestack.h>
+
 class QTimer;
 
 namespace amaroK
@@ -71,7 +73,7 @@ namespace amaroK
         void sendMessages();
     private:
         MessageQueue();
-        QValueList<QString> m_messages;
+        QValueStack<QString> m_messages;
         bool m_queueMessages;
     };
 

@@ -240,7 +240,7 @@ void
 MessageQueue::addMessage(const QString& message)
 {
     if(m_queueMessages)
-        m_messages.prepend(message);
+        m_messages.push(message);
     else
         StatusBar::instance()->longMessage(message);
 }
@@ -248,14 +248,11 @@ MessageQueue::addMessage(const QString& message)
 void
 MessageQueue::sendMessages()
 {
-    m_queueMessages = false;
-    QValueList<QString>::iterator it = m_messages.begin();
-    while(!m_messages.empty())
-    {
-        StatusBar::instance()->longMessage(*it);
-        *it = m_messages.remove(*it);
-
-    }
+     m_queueMessages = false;
+     while(! m_messages.isEmpty())
+     {
+        StatusBar::instance()->longMessage(m_messages.pop());
+     }
 }
 
 } //namespace amaroK

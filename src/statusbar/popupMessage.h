@@ -24,6 +24,8 @@
 #ifndef KDE_POPUPMESSAGE_H
 #define KDE_POPUPMESSAGE_H
 
+ 
+#include <kactivelabel.h>
 #include <kpushbutton.h>
 #include "overlayWidget.h"
 
@@ -50,6 +52,7 @@ namespace KDE
             QVBoxLayout *vbox;
             QHBoxLayout *hbox;
             QLabel *label;
+            KActiveLabel *alabel;
 
             vbox  = new QVBoxLayout( this, 9 /*margin*/, 6 /*spacing*/ );
 
@@ -59,10 +62,11 @@ namespace KDE
             label->setPixmap( QMessageBox::standardIcon( QMessageBox::Information ) );
             hbox->add( label );
 
-            label = new QLabel( this, "label" );
-            label->setTextFormat( Qt::RichText );
-            label->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
-            hbox->add( label );
+            alabel = new KActiveLabel( this, "label" );
+            alabel->setTextFormat( Qt::RichText );
+            alabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+            alabel->setPalette( QToolTip::palette() );
+            hbox->add( alabel );
 
             hbox = new QHBoxLayout( vbox );
             hbox->addItem( new QSpacerItem( 4, 4, QSizePolicy::Expanding, QSizePolicy::Preferred ) );
@@ -73,7 +77,7 @@ namespace KDE
 
         void setText( const QString &text )
         {
-            static_cast<QLabel*>(child( "label" ))->setText( text );
+            static_cast<KActiveLabel*>(child( "label" ))->setText( text );
             adjustSize();
         }
 
