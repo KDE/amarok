@@ -45,6 +45,7 @@ MID-TERM:
 
   CHG     <markey> Consider following the system tray spec on http://www.freedesktop.org/Standards/systemtray-spec.
                    Apparently this makes it possible to make the tray KDE and GNOME compatible.
+                   Update: Apparently with KDELIBS 3.3 the systray icon works as expected. Needs confirmation.
 
           <mxcl>   Context Browser doesn't update images when you fetch them using the Cover Manager.
 
