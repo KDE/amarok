@@ -3,10 +3,12 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #49 being the highest available (take this one for your next bug and increase here)
+           #50 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+    * fix: #49 <markey> sonogram looks regressed to me today. where are the colors?
 
     * fix: #48 <markey> why disable turbine? we likes it!
 
