@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta3:
+  ADD: Implemented "Play Media..." functionality.
   FIX: Playlist-Browser was appending to playlist when clicking "Load".
        Now it replaces the current playlist again, as intended.
   ADD: Profile for KDELIRC (Remote Controls). Patch by Dirk Ziegelmeier

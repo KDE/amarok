@@ -136,6 +136,8 @@ PlaylistWindow::PlaylistWindow()
     KStdAction::open( this, SLOT(slotAddLocation()), ac, "playlist_add" )->setText( i18n("&Add Media...") );
     KStdAction::save( this, SLOT(savePlaylist()), ac, "playlist_save" )->setText( i18n("&Save Playlist As...") );
     KStdAction::showMenubar( this, SLOT(slotToggleMenu()), ac );
+
+    new KAction( i18n("Play Media..."), "fileopen", 0, this, SLOT(slotPlayMedia()), ac, "playlist_playmedia" );
     new KAction( i18n("Play Audio CD"), "cdaudio_unmount", 0, this, SLOT(playAudioCD()), ac, "play_audiocd" );
     new KAction( i18n("Scripts..."), "pencil", 0, this, SLOT(showScriptSelector()), ac, "script_manager" );
 
@@ -220,7 +222,7 @@ PlaylistWindow::init()
 
     //BEGIN Actions menu
     KPopupMenu *actionsMenu = new KPopupMenu( m_menubar );
-    actionsMenu->insertItem( SmallIconSet("fileopen"), i18n("Play Media...") );
+    actionCollection()->action("playlist_playmedia")->plug( actionsMenu );
     actionCollection()->action("play_audiocd")->plug( actionsMenu );
     actionsMenu->insertSeparator();
     actionCollection()->action("prev")->plug( actionsMenu );
@@ -640,7 +642,14 @@ void PlaylistWindow::savePlaylist() const //SLOT
 }
 
 
-void PlaylistWindow::slotAddLocation() //SLOT
+void PlaylistWindow::slotPlayMedia() //SLOT
+{
+    // Request location and immediately start playback
+    slotAddLocation( true );
+}
+
+
+void PlaylistWindow::slotAddLocation( bool directPlay ) //SLOT
 {
     KURLRequesterDlg dlg( QString::null, 0, 0 );
     kapp->setTopWidget( &dlg );
@@ -648,8 +657,11 @@ void PlaylistWindow::slotAddLocation() //SLOT
     dlg.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
     dlg.exec();
 
+    bool options = Playlist::Append;
+    if ( directPlay ) options |= Playlist::DirectPlay;
+
     if ( !dlg.selectedURL().isEmpty() )
-        m_playlist->appendMedia( dlg.selectedURL() );
+        m_playlist->insertMedia( dlg.selectedURL(), options );
 }
 
 
