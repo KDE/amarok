@@ -11,7 +11,8 @@ SHORT-TERM (URGENT):
     * fix: #12<markey> prevent zombie processes after amarok has exited (proper exit or crashing). 
               such zombies can lead to very weird behaviour on next amarok start and eat ressources,
               and the user has no chance of noticing what's wrong.
-              is it possible to catch crash signals and do some cleanup? 
+              is it possible to catch crash signals and do some cleanup?
+	      <mxcl> I just read that KApplication tries to prevent zombies, so something is amiss
 
     * fix: #11<markey> bitrate display often shows bogus values (especially with VBR, it seems)
               <mxcl> currently taglib is scanning files in Fast mode and on demand, the code is in
@@ -24,8 +25,7 @@ SHORT-TERM (URGENT):
              * Setting WType_Dialog on playlist doesn't help, because then playlist always
                obscures the playwidget.
 
-    * fix: <mxcl> GroupBoxes can't have check boxes with Qt 3.1, so before next release do
-           some #ifdefs to surround that code and hope nobody gets too pissed about it -->mxcl
+    * chg: <mxcl> make the color and font groupboxes checkable again for next version (requires qt 3.2)
 
 
 MID-TERM:
