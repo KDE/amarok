@@ -3,11 +3,15 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number, 
-           #13 being the highest available (take this one for your next bug and increase here)
+           #15 being the highest available (take this one for your next bug and increase here)
 
                       
 SHORT-TERM (URGENT):
 
+    * fix: #14 concerning drag'n'drop to playlist: playlist files (.m3u/.pls) should only get added to
+               playlist when you directly drag them, but not when they are in a subfolder, since it's
+               quite confusing when you add several dirs recursively, and forget about some playlist files
+    
     * chg: #13<mxcl> use QApplication::setPalette to adjust application colours, as it propagates
               changes to all widgets and will hopefully deal with the selection colour issues in
               the browser/janus widgets
