@@ -278,9 +278,9 @@ GstEngine::scope()
             // Add all channels together so we effectively get a mono scope
             temp += data[chan];
         }
-        m_scope[i] = temp;
+        m_scope[i] = temp / channels;
     }
-    
+        
     uint available = gst_adapter_available( m_gst_adapter ); 
     
     // Check for buffer overflow
@@ -369,9 +369,12 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     
     /* link elements */
     gst_element_link_many( m_gst_src, m_gst_spider, m_gst_volumeFade, m_gst_identity, m_gst_volume, m_gst_audioscale, m_gst_audioconvert, m_gst_audiosink, 0 );
-
-    gst_element_set_state( m_gst_thread, GST_STATE_READY );
     m_pipelineFilled = true;
+    
+    if ( !gst_element_set_state( m_gst_thread, GST_STATE_READY ) ) {
+        stopNow();
+        return false;
+    }
     setVolume( m_volume );
     
     if ( !url.isLocalFile()  ) {
@@ -398,8 +401,9 @@ GstEngine::play( uint )  //SLOT
     if ( !m_pipelineFilled ) return false;
 
     /* start playing */
-    gst_element_set_state( m_gst_thread, GST_STATE_PLAYING );
-    
+    if ( !gst_element_set_state( m_gst_thread, GST_STATE_PLAYING ) )
+        return false;
+        
     emit stateChanged( Engine::Playing );
     return true;
 }
@@ -524,6 +528,9 @@ GstEngine::handleGstError( GError* error, gchar* debugmsg )  //SLOT
     kdError() << "[GStreamer Error] " << endl;
     kdError() << error->message << endl;
     kdError() << debugmsg << endl;
+
+    // Skip to next track
+    stopAtEnd();
 }
 
 
