@@ -1,9 +1,18 @@
 TODO-list for amaroK
 ======================
+<nick>  == reported by
+-->nick == assigned to
 
 
 SHORT-TERM:
 
+    * fix: when starting amarok from the console, I don't see the debug output any more
+           (app is detaching from console)
+
+    * fix: app freezing when trying to play remote file -->markey
+    
+    * fix: cannot enter remote directories in filebrowser any more
+    
     * fix: select something in playlist, go to drag from the browser, move mouse over playlist,
            move mouse back to browser and drop, selected item from playlist disappears! I know
            what to do about this. <mxcl>

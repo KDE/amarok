@@ -55,7 +55,8 @@ BrowserWidget::BrowserWidget( QWidget *parent, const char *name )
     setFullWidth( true );
     setAcceptDrops( true );
     setDragEnabled( true ); //NEW
-
+    setHScrollBarMode( QListView::AlwaysOn );
+    
     connect( header(), SIGNAL( clicked( int ) ), this, SLOT( slotHeaderClicked( int ) ) );
 
     m_pDirLister->setAutoUpdate( true );

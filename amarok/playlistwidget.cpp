@@ -373,34 +373,37 @@ bool PlaylistWidget::loadPlaylist( KURL url, QListViewItem *destination )
     QString tmpFile;
     PlaylistItem *pCurr = static_cast<PlaylistItem*>( destination );
 
-    if ( url.isLocalFile() )
-        tmpFile = url.path();
-    else
-#if KDE_IS_VERSION(3,1,92)
-        KIO::NetAccess::download( url, tmpFile, this );
-#else
-        KIO::NetAccess::download( url, tmpFile );
-#endif
-
-    QFile file( tmpFile );
-
-    if ( success = file.open( IO_ReadOnly ) )
+    if ( url.url().endsWith( ".m3u", false ) || url.url().endsWith( ".pls", false ) )
     {
-        QTextStream stream( &file );
-        QString dir = ( url.protocol() == "file" ) ? url.directory( false ) : url.url( 1 );
-
-        if ( url.path().lower().endsWith( ".m3u" ) )
-            loadM3u( stream, pCurr, dir );
+        if ( url.isLocalFile() )
+            tmpFile = url.path();
         else
-            loadPls( stream, pCurr, dir );
+    #if KDE_IS_VERSION(3,1,92)
+            KIO::NetAccess::download( url, tmpFile, this );
+    #else
+            KIO::NetAccess::download( url, tmpFile );
+    #endif
+    
+        QFile file( tmpFile );
+    
+        if ( success = file.open( IO_ReadOnly ) )
+        {
+            QTextStream stream( &file );
+            QString dir = ( url.protocol() == "file" ) ? url.directory( false ) : url.url( 1 );
+    
+            if ( url.path().lower().endsWith( ".m3u" ) )
+                loadM3u( stream, pCurr, dir );
+            else
+                loadPls( stream, pCurr, dir );
+        }
+        file.close();
+    
+        // Mark currently playing song in playlist, if its there
+        if ( success && !pApp->m_playingURL.isEmpty() )
+        pApp->restorePlaylistSelection( pApp->m_playingURL );
+    
+        KIO::NetAccess::removeTempFile( tmpFile );
     }
-    file.close();
-
-    // Mark currently playing song in playlist, if its there
-    if ( success && !pApp->m_playingURL.isEmpty() )
-       pApp->restorePlaylistSelection( pApp->m_playingURL );
-
-    KIO::NetAccess::removeTempFile( tmpFile );
     return success;
 }
 

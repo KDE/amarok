@@ -56,7 +56,7 @@ class TitleProxy : public QObject
         QString extractStr( QString str, QString key );
 
         // ATTRIBUTES ------
-        KURL m_urlRemote;
+        KURL m_url;
         bool m_initSuccess;
         int m_metaInt;
         QString m_bitRate;
@@ -70,6 +70,6 @@ class TitleProxy : public QObject
 
         KExtendedSocket m_sockRemote;
         KExtendedSocket m_sockPassive;
-        KExtendedSocket *m_pSockServer;
+        KExtendedSocket *m_pSockProxy;
 };
 #endif
