@@ -19,6 +19,7 @@
 
 #define DEBUG_PREFIX "StatusBar"
 
+#include "amarok.h"
 #include "debug.h"
 #include <kio/job.h>
 #include <kiconloader.h>
@@ -148,6 +149,8 @@ StatusBar::polish()
             static_cast<QLabel*>(o)->setIndent( 4 );
     }
 
+    h -= 2; // it's too big usually
+
     for ( QObject * o = list->first(); o; o = list->next() )
         static_cast<QWidget*>(o)->setFixedHeight( h );
 
@@ -195,10 +198,8 @@ StatusBar::setMainText( const QString &text )
 {
     m_mainText = text;
 
-    if( !SingleShotPool::isActive( this, SLOT(resetMainText()) ) )
-        // if we're showing a shortMessage, resetMainText() will be
-        // called within 5 seconds
-        m_mainTextLabel->setText( text );
+    // it may not be appropriate for us to set the mainText yet
+    resetMainText();
 }
 
 void
@@ -213,7 +214,10 @@ StatusBar::shortMessage( const QString &text )
 void
 StatusBar::resetMainText()
 {
-    // don't reset if we are supposed to be showing stuff
+    if( sender() )
+        debug() << sender()->name() << endl;
+
+    // don't reset if we are showing a shortMessage
     if( SingleShotPool::isActive( this, SLOT(resetMainText()) ) )
         return;
 
@@ -225,8 +229,16 @@ StatusBar::resetMainText()
     else {
         m_mainTextLabel->setPaletteBackgroundColor( m_mainTextLabel->paletteBackgroundColor().dark( 110 ) );
 
-        if( m_progressMap.count() == 1 )
-            m_mainTextLabel->setText( (*m_progressMap.begin())->description() + "..." );
+        ProgressBar *bar = 0;
+        uint count = 0;
+        foreachType( ProgressMap, m_progressMap )
+            if( !(*it)->m_done ) {
+                bar = *it;
+                count++;
+            }
+
+        if( count == 1 )
+            m_mainTextLabel->setText( bar->description() + "..." );
         else
             m_mainTextLabel->setText( i18n("Multiple background-tasks running") );
     }
@@ -273,7 +285,7 @@ StatusBar::longMessageThreadSafe( const QString &text, int /*type*/ )
 void
 StatusBar::customEvent( QCustomEvent *e )
 {
-    QString * s = static_cast<QString*>( e->data() );
+    QString *s = static_cast<QString*>( e->data() );
     longMessage( *s );
     delete s;
 }
@@ -297,7 +309,12 @@ StatusBar::newProgressOperation( QObject *owner )
     if ( m_progressMap.contains( owner ) )
         return *m_progressMap[owner];
 
-    QLabel * label = new QLabel( m_popupProgress );
+    if( allDone() )
+        // if we're allDone then we need to remove the old progressBars before
+        // we start anything new or the total progress will not be accurate
+        pruneProgressBars();
+
+    QLabel *label = new QLabel( m_popupProgress );
     m_progressMap.insert( owner, new ProgressBar( m_popupProgress, label ) );
 
     connect( owner, SIGNAL(destroyed( QObject* )), SLOT(endProgressOperation( QObject* )) );
@@ -315,7 +332,7 @@ StatusBar::newProgressOperation( QObject *owner )
 ProgressBar&
 StatusBar::newProgressOperation( KIO::Job *job )
 {
-    ProgressBar & bar = newProgressOperation( ( QObject* ) job );
+    ProgressBar & bar = newProgressOperation( (QObject*)job );
     bar.setTotalSteps( 100 );
 
     connect( job, SIGNAL(result( KIO::Job* )), SLOT(endProgressOperation()) );
@@ -328,13 +345,13 @@ StatusBar::newProgressOperation( KIO::Job *job )
 void
 StatusBar::endProgressOperation()
 {
-    QObject * owner = ( QObject* ) sender(); //HACK deconsting it
+    QObject *owner = (QObject*)sender(); //HACK deconsting it
     KIO::Job *job = dynamic_cast<KIO::Job*>( owner );
 
     //FIXME doesn't seem to work for KIO::DeleteJob, it has it's own error handler and returns no error too
     // if you try to delete http urls for instance <- KDE SUCKS!
 
-    if ( job && job->error() )
+    if( job && job->error() )
         longMessage( job->errorString(), Error );
 
     endProgressOperation( owner );
@@ -353,7 +370,7 @@ StatusBar::endProgressOperation( QObject *owner )
 
     m_progressMap[owner]->setDone();
 
-    if ( allDone() && !m_popupProgress->isShown() ) {
+    if( allDone() && !m_popupProgress->isShown() ) {
         cancelButton()->setEnabled( false );
         SingleShotPool::startTimer( 2000, this, SLOT(hideMainProgressBar()) );
     }
@@ -367,33 +384,18 @@ StatusBar::abortAllProgressOperations() //slot
     for( ProgressMap::Iterator it = m_progressMap.begin(), end = m_progressMap.end(); it != end; ++it )
         (*it)->m_abort->animateClick();
 
+    m_mainTextLabel->setText( i18n("Aborting all jobs...") );
+
     cancelButton()->setEnabled( false );
 }
 
 void
 StatusBar::toggleProgressWindow( bool show ) //slot
 {
-    //TODO delete old progressBars
-
-    //TODO a foreach for this
-    for ( ProgressMap::Iterator it = m_progressMap.begin(), end = m_progressMap.end(); it != end; ) {
-        if ( ( *it ) ->m_done == true ) {
-
-            delete (*it)->m_label;
-            delete (*it)->m_abort;
-            delete (*it);
-
-            ProgressMap::Iterator jt = it;
-            ++it;
-            m_progressMap.erase( jt );
-        } else
-            ++it;
-    }
-
     m_popupProgress->adjustSize(); //FIXME shouldn't be needed, adding bars doesn't seem to do this
     m_popupProgress->setShown( show );
 
-    if ( !show && m_progressMap.isEmpty() )
+    if( !show )
         SingleShotPool::startTimer( 2000, this, SLOT(hideMainProgressBar()) );
 }
 
@@ -409,16 +411,12 @@ StatusBar::hideMainProgressBar()
 {
     if( allDone() && !m_popupProgress->isShown() )
     {
+        pruneProgressBars();
+
         resetMainText();
 
-        //TODO the follow check is prolly redundant, remove after 1.2
-        //we need to update the contents of the progressMap so we can test if it is empty
-        toggleProgressWindow( false );
-
-        if( m_progressMap.isEmpty() ) {
-            m_mainProgressBar->setProgress( 0 );
-            progressBox()->hide();
-        }
+        m_mainProgressBar->setProgress( 0 );
+        progressBox()->hide();
     }
 }
 
@@ -463,7 +461,7 @@ void
 StatusBar::incrementProgress( const QObject *owner )
 {
     if ( !m_progressMap.contains( owner ) )
-        return ;
+        return;
 
     m_progressMap[owner]->setProgress( m_progressMap[ owner ] ->progress() + 1 );
 
@@ -476,14 +474,12 @@ StatusBar::updateTotalProgress()
     uint totalSteps = 0;
     uint progress = 0;
 
-    for( ProgressMap::ConstIterator it = m_progressMap.begin(), end = m_progressMap.end(); it != end; ++it ) {
-        if ( !(*it)->m_done ) {
-            totalSteps += (*it)->totalSteps();
-            progress += (*it)->progress();
-        }
+    foreachType( ProgressMap, m_progressMap ) {
+        totalSteps += (*it)->totalSteps();
+        progress += (*it)->progress();
     }
 
-    if ( totalSteps == 0 && progress == 0 )
+    if( totalSteps == 0 && progress == 0 )
         return;
 
     m_mainProgressBar->setTotalSteps( totalSteps );
@@ -498,6 +494,25 @@ StatusBar::updateProgressAppearance()
     resetMainText();
 
     updateTotalProgress();
+}
+
+void
+StatusBar::pruneProgressBars()
+{
+    ProgressMap::Iterator it = m_progressMap.begin();
+    const ProgressMap::Iterator end = m_progressMap.end();
+    while( it != end )
+        if( (*it)->m_done == true ) {
+            delete (*it)->m_label;
+            delete (*it)->m_abort;
+            delete (*it);
+
+            ProgressMap::Iterator jt = it;
+            ++it;
+            m_progressMap.erase( jt );
+        }
+        else
+            ++it;
 }
 
 } //namespace KDE

@@ -20,6 +20,7 @@
 
 #include "amarok.h"
 #include "amarokcore/amarokconfig.h"
+#include "debug.h"
 #include "enginecontroller.h"
 #include <klocale.h>
 #include "metabundle.h"
@@ -38,21 +39,6 @@ namespace amaroK {
 
 
 StatusBar* StatusBar::s_instance = 0;
-
-
-class PositionBox : public QFrame {
-public:
-    PositionBox( QWidget *parent, const char *name ) : QFrame( parent, name ) {
-        setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
-    }
-    virtual QSize sizeHint() const {
-        //reduce height a bit, so it isn't silly, only by the size of the frame though
-        return QSize( StatusBar::instance() ->width() / 4, QFrame::sizeHint().height() );
-    }
-    virtual QSize minimumSizeHint() const {
-        return sizeHint();
-    }
-};
 
 
 StatusBar::StatusBar( QWidget *parent, const char *name )
@@ -102,6 +88,8 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 void
 StatusBar::engineStateChanged( Engine::State state )
 {
+    m_pauseTimer->stop();
+
     switch ( state ) {
     case Engine::Empty:
         m_slider->setEnabled( false );
@@ -116,9 +104,9 @@ StatusBar::engineStateChanged( Engine::State state )
         break;
 
     case Engine::Playing:
+        DEBUG_LINE_INFO
         resetMainText(); // if we were paused, this is necessary
         m_timeLabel->setEnabled( true );
-        m_pauseTimer->stop();
         break;
 
     case Engine::Idle:

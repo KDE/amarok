@@ -44,7 +44,9 @@ ProgressBar::ProgressBar( QWidget *parent, QLabel *label )
 }
 
 ProgressBar::~ProgressBar()
-{}
+{
+    DEBUG_FUNC_INFO
+}
 
 ProgressBar&
 ProgressBar::setDescription( const QString &text )
@@ -84,7 +86,7 @@ ProgressBar::setAbortSlot( QObject *receiver, const char *slot )
 void
 ProgressBar::setDone()
 {
-    if ( !m_done ) {
+    if( !m_done ) {
         m_done = true;
         m_abort->setEnabled( false );
         setStatus( i18n("Done") );
