@@ -228,6 +228,10 @@ UrlLoader::completeJob()
                 i18n("These URLs could not be loaded into the playlist: " ) );
     }
 
+    // delete now or the playlist count in the statusbar will be wrong
+    delete m_markerListViewItem;
+    m_markerListViewItem = 0;
+
     //syncronous, ie not using eventLoop
     QApplication::sendEvent( dependent(), this );
 }
