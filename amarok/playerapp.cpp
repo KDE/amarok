@@ -294,7 +294,11 @@ void PlayerApp::applySettings()
 
 bool PlayerApp::isPlaying() const
 {
-    return m_pEngine->loaded();
+    //this method can get called by PlaylistWidget::restoreCurrentTrack() before engine is initialised
+    if ( m_pEngine )
+        return m_pEngine->loaded();
+    else
+        return false;
 }
 
 

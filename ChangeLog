@@ -3,6 +3,7 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  * add: display warning when artsd is not running with realtime priority
   * add: Audioproperties are loaded as you scroll the playlist and get saved to playlist files
   * add: If trackname column is hidden, the title column will show the trackname until a title
          tag can replace it. If no title tag is found the trackname stays.

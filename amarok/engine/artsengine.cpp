@@ -85,20 +85,27 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
         }
     }
 
-    m_pArtsDispatcher = new KArtsDispatcher();
+    KConfig config( "kcmartsrc" );
+    config.setGroup( "Arts" );
 
+    bool realtime = config.readBoolEntry( "StartRealtime", true );
+    
+    if ( !realtime )
+        KMessageBox::sorry( 0, i18n( "artsd is not running with realtime priority! "
+                                     "this will lead to problems (dropouts) in the audio playback. "
+                                     "Please make sure that $KDEDIR/bin/artswrapper is set suid, "
+                                     "activate realtime and restart aRts." ) );
+        
+    m_pArtsDispatcher = new KArtsDispatcher();
     m_server = Arts::Reference( "global:Arts_SoundServerV2" );
+    
     if ( m_server.isNull() || m_server.error() )
     {
         kdDebug() << "aRtsd not running.. trying to start" << endl;
         // aRts seems not to be running, let's try to run it
         // First, let's read the configuration as in kcmarts
-        KConfig config( "kcmartsrc" );
         QCString cmdline;
-
-        config.setGroup( "Arts" );
-
-        bool rt = config.readBoolEntry( "StartRealtime", false );
+        
         bool x11Comm = config.readBoolEntry( "X11GlobalComm", false );
 
         // put the value of x11Comm into .mcoprc
@@ -116,7 +123,7 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
         cmdline = QFile::encodeName( KStandardDirs::findExe( QString::fromLatin1( "kdeinit_wrapper" ) ) );
         cmdline += " ";
 
-        if ( rt )
+        if ( realtime )
             cmdline += QFile::encodeName( KStandardDirs::findExe(
                                               QString::fromLatin1( "artswrapper" ) ) );
         else

@@ -102,8 +102,6 @@ MID-TERM:
 
     * add: <berkus> playmode indication button in main widget (repeat track/pl/shuffle), clickable
 
-    * add: display warning when artsd is run w/o realtime
-
     * add: background pseudo-transparency for playlist window (<markey>I don't like that any more-too hackish)
 
     * add: function for adding all files in current dir to playlist.
