@@ -23,6 +23,7 @@
 #include <khtml_part.h>
 #include <klineedit.h>
 #include <klocale.h>
+#include <kpopupmenu.h>
 #include <krun.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
@@ -57,6 +58,8 @@ ContextBrowser::ContextBrowser( const char *name )
 
     connect( browser->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
              this,                          SLOT( openURLRequest( const KURL & ) ) );
+    connect( browser,                     SIGNAL( popupMenu( const QString&, const QPoint& ) ),
+             this,                          SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
 
     if ( m_db->isEmpty() || !m_db->isDbValid() ) {
         showIntroduction();
@@ -99,27 +102,7 @@ void ContextBrowser::setFont( const QFont &newFont ) //virtual
 void ContextBrowser::openURLRequest( const KURL &url )
 {
     m_url = url;
-
     QStringList info = QStringList::split( " @@@ ", url.path() );
-
-    if ( url.protocol() == "album" )
-    {
-        QStringList values;
-        QStringList names;
-
-        m_db->execSql( QString( "SELECT DISTINCT url FROM tags WHERE artist = %1 AND album = %2 ORDER BY track;" )
-                       .arg( info[0] )
-                       .arg( info[1] ), &values, &names );
-
-        for ( uint i = 0; i < values.count(); i++ )
-        {
-            if ( values[i].isEmpty() ) continue;
-
-            KURL tmp;
-            tmp.setPath( values[i] );
-            Playlist::instance()->appendMedia( tmp, false, true );
-        }
-    }
 
     if ( url.protocol() == "file" )
         Playlist::instance()->appendMedia( url, true, true );
@@ -274,6 +257,49 @@ void ContextBrowser::paletteChange( const QPalette& pal )
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
+
+void ContextBrowser::slotContextMenu( const QString& url, const QPoint& point )
+{
+    kdDebug() << k_funcinfo << endl;
+
+    DOM::Node node = browser->nodeUnderMouse();
+    kdDebug() << "Node Name: " << node.nodeName() << endl;
+
+    if ( node.nodeName() == "img" ) {
+        enum menuIds { FETCH, DELETE };
+
+        KPopupMenu menu( this );
+        menu.insertTitle( "Cover Image" );
+        menu.insertItem( "Fetch Image from Amazon" );
+        menu.insertItem( "Delete Image" );
+        int id = menu.exec( point );
+
+        QStringList names, values;
+        QStringList info = QStringList::split( " @@@ ", node.nodeValue().string() );
+
+        switch ( id )
+        {
+            case FETCH:
+                m_db->execSql( QString( "SELECT DISTINCT url FROM tags WHERE artist = %1 AND album = %2 ORDER BY track;" )
+                            .arg( info[0] )
+                            .arg( info[1] ), &values, &names );
+
+                for ( uint i = 0; i < values.count(); i++ )
+                {
+                    if ( values[i].isEmpty() ) continue;
+
+                    KURL tmp;
+                    tmp.setPath( values[i] );
+                    Playlist::instance()->appendMedia( tmp, false, true );
+                }
+                break;
+
+            case DELETE:
+                break;
+        }
+    }
+}
+
 
 void ContextBrowser::showHome() //SLOT
 {

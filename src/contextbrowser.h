@@ -11,10 +11,10 @@
 #include <kparts/browserextension.h>
 #include <kurl.h>
 
-class KHTMLPart;
-class QPalette;
-class MetaBundle;
 class CollectionDB;
+class MetaBundle;
+class QPalette;
+class KHTMLPart;
 
 class ContextBrowser : public QVBox, public EngineObserver
 {
@@ -37,6 +37,7 @@ class ContextBrowser : public QVBox, public EngineObserver
         void paletteChange( const QPalette& );
 
     private slots:
+        void slotContextMenu( const QString& url, const QPoint& point );
         void showHome();
         void showCurrentTrack();
 
