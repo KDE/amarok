@@ -24,8 +24,8 @@
 
 int main(void)
 {
-	fht f(5);  // 2^5 input values  =>  2^4 spectrum values
-	int num = f.getwidth(), i;
+	FHT f(5);  // 2^5 input values  =>  2^4 spectrum values
+	int num = f.size(), i;
 	
 	double *s1 = new double[num];	// start values
 	double *s2 = new double[num];	// Hartley coefficients

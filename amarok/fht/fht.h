@@ -18,18 +18,19 @@
 //
 // $Id$
 
-class fht {
-	void		makecastable();
-	int		exp2;
-	int		num;
-	double		*buf;
-	double		*tab;
+class FHT {
+	int		m_exp2;
+	int		m_num;
+	double		*m_buf;
+	double		*m_tab;
+
+	void		makeCasTable();
 
 public:
-	fht(int exp);
-	~fht();
-	inline int	getexp() const { return exp2; }
-	inline int	getwidth() const { return num; }
+	FHT(int);
+	~FHT();
+	inline int	sizeExp() const { return m_exp2; }
+	inline int	size() const { return m_num; }
 	void 		__transform(double *, int, int);
 	inline void	transform8(double *);
 	void		transform(double *);
