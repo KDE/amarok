@@ -5,9 +5,11 @@ graphequalizer_PROGRAMS = graphequalizer
 INCLUDES = \
         $(all_includes)
 
+# eqdialog.ui.h removed because of automake turning it into just '.h' for some reason
+# and then complaining about its inexistence
+
 graphequalizer_SOURCES = \
         equalizercanvasview.cpp \
-        eqdialog.ui.h \
         eqdialog.ui \
         stdinreader.h \
         main.cpp

@@ -28,15 +28,26 @@ void
 EqualizerCanvasView::init()
 {
     
-    QCanvasLine* line = new QCanvasLine(this->canvas());
-    line->setPoints(0,100,400,100);
-    line->setPen(QPen(m_pen));
-    line->setBrush(QBrush(Qt::black));
-    EqualizerCircle* circleLeft = new EqualizerCircle(0,100,this->canvas(),NULL,line,m_circleList);
-    EqualizerCircle* circleRight =  new EqualizerCircle(400,100,this->canvas(),line,NULL,m_circleList);
+//     QCanvasLine* line = new QCanvasLine(this->canvas());
+//     line->setPoints(0,100,400,100);
+//     line->setPen(QPen(m_pen));
+//     line->setBrush(QBrush(Qt::black));
+    QCanvasLine* lineLeft = makeLine(QPoint(0,canvas()->height()/2)
+                ,QPoint(canvas()->width()/2,canvas()->height()/2));
+    QCanvasLine* lineRight= makeLine(QPoint(canvas()->width()/2,canvas()->height()/2)
+                ,QPoint(canvas()->width(),canvas()->height()/2));
+    EqualizerCircle* circleMid = new EqualizerCircle(canvas()->width()/2
+              ,canvas()->height()/2
+              ,canvas()
+              ,lineLeft
+              ,lineRight
+              ,m_circleList);
+    EqualizerCircle* circleLeft = new EqualizerCircle(0,100,this->canvas(),NULL,lineLeft,m_circleList);
+    EqualizerCircle* circleRight =  new EqualizerCircle(400,100,this->canvas(),lineRight,NULL,m_circleList);
     circleLeft->show();
     circleRight->show();
-    line->show();
+    circleMid->show();
+//    line->show();
     this->canvas()->update();
 }
 
