@@ -103,22 +103,29 @@ void PlaylistItem::readMetaInfo()
 {
     if ( m_url.protocol() == "file" )
     {
-        m_hasMetaInfo = true;
-
         TagLib::String str( QStringToTString( m_url.path() ) );
         TagLib::FileRef f( str.toCString() );
 
         if ( !f.isNull() && f.tag() )
         {
+    	    m_hasMetaInfo = true;
             TagLib::Tag * tag = f.tag();
 
-            m_tagTitle = TStringToQString( tag->title().stripWhiteSpace() );
-            m_tagArtist = TStringToQString( tag->artist().stripWhiteSpace() );
-            m_tagAlbum = TStringToQString( tag->album().stripWhiteSpace() );
+            m_tagTitle = TStringToQString( tag->title() ).stripWhiteSpace();
+            m_tagArtist = TStringToQString( tag->artist() ).stripWhiteSpace();
+            m_tagAlbum = TStringToQString( tag->album() ).stripWhiteSpace();
+            m_tagGenre = TStringToQString( tag->genre() ).stripWhiteSpace();
+            m_tagComment = TStringToQString( tag->comment() ).stripWhiteSpace();
             m_tagYear = QString::number( tag->year() );
-            m_tagComment = TStringToQString( tag->comment().stripWhiteSpace() );
-            m_tagGenre = TStringToQString( tag->genre() );
+	    m_tagTrack = QString::number( tag->track() );
             m_tagDirectory = QString( url().directory().section( '/', -1 ) );
+	    
+	    if ( f.audioProperties() )
+	    {
+		m_tagBitrate = f.audioProperties()->bitrate();
+		m_tagSeconds = f.audioProperties()->length();
+		m_tagSamplerate = f.audioProperties()->sampleRate();
+	    }
         }
     }
 }

@@ -818,26 +818,25 @@ void PlayerApp::setupScrolltext()
 
     if ( item != NULL )
     {
-        KFileMetaInfo metaInfo( item->url().path(), QString::null, KFileMetaInfo::Everything );
-
-        if ( metaInfo.isValid() && !metaInfo.isEmpty() )
+        if ( item->hasMetaInfo() )
         {
             QString str, strNum;
-            if ( metaInfo.item( "Artist" ).string() == "---" ||
-                    metaInfo.item( "Title" ).string() == "---" )
+            if ( item->artist() == "---" ||
+                    item->title() == "---" )
             {
                 str.append( item->text( 0 ) + " (" );
             }
             else
             {
-                str.append( metaInfo.item( "Artist" ).string() + " - " );
-                str.append( metaInfo.item( "Title" ).string() + " (" );
+                str.append( item->artist() + " - " );
+                str.append( item->title() + " (" );
             }
 
+	    int length = item->seconds() ? item->seconds() : m_length;
             int totSeconds, totMinutes, totHours;
-            totSeconds = ( m_length % 60 );
-            totMinutes = ( m_length / 60 % 60 );
-            totHours = ( m_length / 60 / 60 % 60 );
+            totSeconds = ( length % 60 );
+            totMinutes = ( length / 60 % 60 );
+            totHours = ( length / 60 / 60 % 60 );
             if ( totHours )
             {
                 strNum.setNum( totHours );
@@ -848,8 +847,8 @@ void PlayerApp::setupScrolltext()
             str.append( convertDigit( totSeconds ) + ")" );
 
             m_pPlayerWidget->setScroll( str,
-                                        metaInfo.item( "Bitrate" ).string(),
-                                        metaInfo.item( "Sample Rate" ).string() );
+                                        QString::number(item->bitrate()),
+                                        QString::number(item->samplerate()) );
         }
         else
         {
