@@ -172,7 +172,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &, int column, int 
     if ( listView() && QString( listView()->name() ) == "PlaylistWidget" &&
          isAlternate() )
     {
-        pPainterBuf.setBackgroundColor( pApp->m_optBrowserBgColor.light( 200 ) );
+        pPainterBuf.setBackgroundColor( pApp->m_optBrowserBgAltColor );
     }
     else
     {
@@ -190,7 +190,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &, int column, int 
 
     if ( isSelected() )
     {
-        pPainterBuf.fillRect( 0, 0, width, height(), pApp->m_optBrowserFgColor.dark( 290 ) );
+        pPainterBuf.fillRect( 0, 0, width, height(), pApp->m_optBrowserSelColor );
     }
     else
     {

@@ -64,6 +64,7 @@ class PlayerApp : public KUniqueApplication
         void restore();
         bool playObjectConfigurable();
         bool isPlaying() { return m_bIsPlaying; }
+        void setupColors();
 
         // ATTRIBUTES ------
         KGlobalAccel *m_pGlobalAccel;
@@ -95,6 +96,8 @@ class PlayerApp : public KUniqueApplication
         QFont m_optPlayerWidgetScrollFont;
         QColor m_optBrowserFgColor;
         QColor m_optBrowserBgColor;
+        QColor m_optBrowserBgAltColor;
+        QColor m_optBrowserSelColor;
         bool   m_optBrowserUseCustomColors;
         unsigned int m_optUndoLevels;
         unsigned int m_optVisCurrent;

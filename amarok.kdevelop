@@ -75,11 +75,12 @@
       <group pattern="*.po" name="Translations" />
       <group pattern="AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO,NEWS" name="GNU" />
       <group pattern="*" name="Others" />
+      <hidenonprojectfiles>false</hidenonprojectfiles>
     </groups>
     <tree>
       <hidenonprojectfiles>false</hidenonprojectfiles>
       <hidepatterns></hidepatterns>
-      <showvcsfields>false</showvcsfields>
+      <showvcsfields>true</showvcsfields>
     </tree>
   </kdevfileview>
   <kdevdoctreeview>

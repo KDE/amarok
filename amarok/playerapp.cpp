@@ -678,9 +678,7 @@ void PlayerApp::readConfig()
     m_optBrowserUseCustomColors = m_pConfig->readBoolEntry( "BrowserUseCustomColors", false );
     m_optBrowserFgColor = m_pConfig->readColorEntry( "BrowserFgColor", &defaultColor );
     m_optBrowserBgColor = m_pConfig->readColorEntry( "BrowserBgColor", &black );
-    m_pBrowserWin->m_pBrowserWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
-    m_pBrowserWin->m_pPlaylistWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
-    m_pBrowserWin->update();
+    setupColors();
 
     m_optUndoLevels = m_pConfig->readUnsignedNumEntry( "Undo Levels", 30 );
     m_optSoftwareMixerOnly = m_pConfig->readBoolEntry( "Software Mixer Only", false );
@@ -875,6 +873,44 @@ void PlayerApp::stopXFade()
         delete m_pPlayObjectXFade;
         m_pPlayObjectXFade = NULL;
     }
+}
+
+
+void PlayerApp::setupColors()
+{
+    // we try to be smart: this code figures out contrasting colors for selection and alternate background rows
+    int h, s, v;
+
+    m_optBrowserBgColor.hsv( &h, &s, &v );
+    if ( v < 128 )
+        v += 35;
+    else
+        v -= 35;
+    m_optBrowserBgAltColor.setHsv( h, s, v );
+    
+    m_optBrowserFgColor.hsv( &h, &s, &v );
+    if ( v < 128 )
+        v += 150;
+    else
+        v -= 150;
+    if ( v < 0 )
+        v = 0;
+    if ( v > 255 )
+        v = 255;
+    m_optBrowserSelColor.setHsv( h, s, v );
+
+    m_pBrowserWin->m_pBrowserWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
+    m_pBrowserWin->m_pPlaylistWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
+
+    m_pBrowserWin->m_pBrowserLineEdit->setPaletteBackgroundColor( m_optBrowserBgColor );
+    m_pBrowserWin->m_pBrowserLineEdit->setPaletteForegroundColor( m_optBrowserFgColor );
+    
+    m_pBrowserWin->m_pPlaylistLineEdit->setPaletteBackgroundColor( m_optBrowserBgColor );
+    m_pBrowserWin->m_pPlaylistLineEdit->setPaletteForegroundColor( m_optBrowserFgColor );
+    
+    m_pBrowserWin->update();
+    m_pBrowserWin->m_pBrowserWidget->triggerUpdate();
+    m_pBrowserWin->m_pPlaylistWidget->triggerUpdate();
 }
 
 
