@@ -93,7 +93,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     QTextCodec *codec;
     for ( int i = 0; ( codec = QTextCodec::codecForIndex( i ) ); i++ )
         opt2->kcfg_TagEncoding->insertItem( codec->name() );
-    
+
     // add pages
     addPage( new Options1( 0, "General" ), i18n( "General" ), "misc", i18n( "Configure General Options" ) );
     addPage( opt2, i18n( "Fonts" ), "fonts", i18n( "Configure Fonts" ) );
@@ -109,6 +109,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     connect( m_soundSystem, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
     connect( aboutEngineButton, SIGNAL( clicked() ), this, SLOT( aboutEngine() ) );
     connect( opt5, SIGNAL( settingsChanged() ), SLOT( updateButtons() ) ); //see options5.ui.h
+    connect( opt8->createProfileButton, SIGNAL( clicked() ), SLOT( createProfileClicked() ) );
 }
 
 AmarokConfigDialog::~AmarokConfigDialog()
