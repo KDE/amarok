@@ -29,8 +29,6 @@ libamarok_gstengine_plugin_la_SOURCES = \
     streamsrc.cpp
     
 libamarok_gstengine_plugin_la_LDFLAGS = \
-    -module \
-    -no-undefined \
     $(KDE_PLUGIN) \
     $(all_libraries) 
 
@@ -39,5 +37,3 @@ METASOURCES = \
 
 kde_services_DATA = \
     amarok_gstengine_plugin.desktop
-
-  

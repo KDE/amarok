@@ -2,7 +2,6 @@
 // See COPYING file for licensing information.
 
 #include "config/gstconfig.h"
-#include "enginecontroller.h"
 #include "gstconfigdialog.h"
 #include "gstengine.h"
 
