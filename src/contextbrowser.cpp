@@ -57,30 +57,58 @@ ContextBrowser::~ContextBrowser()
 
 void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
 {
-    kdDebug() << url.path().latin1() << endl;
-    pApp->insertMedia( url );
+    if ( url.protocol() == "album" )
+    {
+        QStringList info = QStringList::split( "/", url.path() );
+        QStringList values;
+        QStringList names;
+
+        m_db->execSql( QString( "SELECT DISTINCT url FROM tags WHERE artist = %1 AND album = %2 ORDER BY track;" )
+                       .arg( info[0] )
+                       .arg( info[1] ), &values, &names );
+
+        for ( uint i = 0; i < values.count(); i++ )
+        {
+            if ( values[i].isEmpty() ) continue;
+
+            KURL tmp;
+            tmp.setPath( values[i] );
+            pApp->insertMedia( tmp );
+        }
+    }
+
+    if ( url.protocol() == "file" )
+        pApp->insertMedia( url );
 }
 
 
 void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 {
     browser->begin();
-    browser->write( QString( "<html><div style='font-size: 11px; font-weight: bold;'>Info for %1<br><br></div>" )
+    QString styleSheet( "a,td { color:black; font-size:8px; text-decoration:none; }"
+                        "td:hover { color:black; background-color:#cccccc; }"
+                        ".title { font-size: 11px; font-weight: bold; }"
+                        ".head { font-size: 10px; font-weight: bold; }" );
+
+    browser->setUserStyleSheet( styleSheet );
+
+    browser->write( QString( "<html><div class='title'>Info for %1<br></div>" )
                     .arg( bundle.artist() ) );
 
     QStringList values;
     QStringList names;
 
-    browser->write( "<div style='font-size: 10px; font-weight: bold;'>Other titles:</div><div style='font-size: 8px;'>" );
+    browser->write( "<div class='head'>Other titles:</div>" );
+    browser->write( "<table border='0' cellspacing='2' cellpadding='1'>" );
 
-    m_db->execSql( QString( "SELECT tags.title, tags.url FROM tags, artist WHERE tags.artist = artist.id AND artist.name LIKE '%1';" )
+    m_db->execSql( QString( "SELECT tags.title, tags.url FROM tags, artist WHERE tags.artist = artist.id AND artist.name LIKE '%1' ORDER BY random();" )
                    .arg( bundle.artist() ), &values, &names );
 
-    for ( uint i = 0; i < values.count() && i < 10; i++ )
+    for ( uint i = 0; i < ( values.count() / 2 ) && i < 10; i++ )
     {
         if ( values[i].isEmpty() ) continue;
         
-        browser->write( QString ( "<a href=\"file:%1\">%2</a><br>" )
+        browser->write( QString ( "<tr><td><a href=\"file:%1\">%2</a></td></tr>" )
                         .arg( values[i*2 + 1] )
                         .arg( values[i*2] ) );
     }
@@ -88,20 +116,24 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     values.clear();
     names.clear();
 
-    browser->write( "<div style='font-size: 10px; font-weight: bold;'><br>Other albums:</div><div style='font-size: 8px;'>" );
+    browser->write( "</table><div class='head'><br>Other albums:</div>" );
+    browser->write( "<table border='0' cellspacing='2' cellpadding='1'>" );
 
-    m_db->execSql( QString( "SELECT DISTINCT album.name FROM album, tags, artist WHERE album.id = tags.album AND tags.artist = artist.id AND artist.name LIKE '%1';" )
+    m_db->execSql( QString( "SELECT DISTINCT album.name, album.id, artist.id FROM album, tags, artist WHERE album.id = tags.album AND tags.artist = artist.id AND artist.name LIKE '%1' ORDER BY random();" )
                    .arg( bundle.artist() ), &values, &names );
 
-    for ( uint i = 0; i < values.count() && i < 10; i++ )
+    for ( uint i = 0; i < ( values.count() / 3 ) && i < 5; i++ )
     {
         if ( values[i].isEmpty() ) continue;
         
-        browser->write( QString ( "%1<br>" )
-                        .arg( values[i] ) );
+        browser->write( QString ( "<tr><td><a href=\"album:%1/%2\">%3</td><td width='40' align='right'>%4</td></tr>" )
+                        .arg( values[i*3 + 2] )
+                        .arg( values[i*3 + 1] )
+                        .arg( values[i*3] )
+                        .arg( m_db->albumSongCount( values[i*3 + 2], values[i*3 + 1] ) ) );
     }
 
-    browser->write( "<br></div>" );
+    browser->write( "</table><br>" );
     
     const KURL &url = bundle.url();
     QString tipBuf;

@@ -17,7 +17,9 @@ class CollectionDB : public QObject
     public:
         CollectionDB( QCString path );
         ~CollectionDB();
-    
+
+        QString albumSongCount( const QString artist_id, const QString album_id );
+
         /**
          * Executes an SQL statement on the already opened database
          * @param statement SQL program to execute. Only one SQL statement is allowed.

@@ -26,15 +26,29 @@ CollectionDB::~CollectionDB()
 
 
 QString
-CollectionDB::escapeString( QString string ) //static
+CollectionDB::escapeString( QString string )
 {
     string.replace( "'", "''" );
     return string;
 }
 
 
+QString
+CollectionDB::albumSongCount( const QString artist_id, const QString album_id )
+{
+    QStringList values;
+    QStringList names;
+
+    execSql( QString( "SELECT COUNT( url ) FROM tags WHERE album = %1 AND artist = %2;" )
+             .arg( album_id )
+             .arg( artist_id ), &values, &names );
+
+    return values[0];
+}
+
+
 bool
-CollectionDB::execSql( const QString& statement, QStringList* const values, QStringList* const names ) //static
+CollectionDB::execSql( const QString& statement, QStringList* const values, QStringList* const names )
 {
     //kdDebug() << "execSql(): " << statement << endl;
 
