@@ -3,6 +3,7 @@
 #ifndef AMAROK_H
 #define AMAROK_H
 
+#include <qcolor.h>
 #include <qstring.h>
 
 class KActionCollection;
@@ -15,6 +16,18 @@ namespace amaroK
     const int VOLUME_MAX = 100;
     const int SCOPE_SIZE = 9; //= 2**9 = 512
     const int blue       = 0x202050;
+
+    namespace ColorScheme
+    {
+        ///eg. base of the amaroK Player-window
+        extern QColor Base; //amaroK::blue
+        ///eg. text in the amaroK Player-window
+        extern QColor Text; //Qt::white
+        ///eg. backing for filled part of slider widgets in the amaroK Player-window
+        extern QColor Background; //brighter blue
+        ///eg. outline of slider widgets in Player-window
+        extern QColor Foreground; //lighter blue
+    }
 
     /**
      * A convenience function to return the kapp KConfig object with a group pre-set
@@ -39,6 +52,16 @@ namespace amaroK
      * @return The function returns true if the event was handled
      */
     bool genericEventHandler( QWidget *recipient, QEvent *e ); //defined in app.cpp
+
+    /**
+     * obtain an amaroK PNG image as a QPixmap
+     */
+    QPixmap getPNG( const QString& /*fileName*/ ); //defined in app.cpp
+
+    /**
+     * obtain an amaroK JPG image as a QPixmap
+     */
+    QPixmap getJPG( const QString& /*fileName*/ ); //defined in app.cpp
 }
 
 

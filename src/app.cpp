@@ -59,12 +59,41 @@ email                : markey@web.de
 #include <qwidgetfactory.h>      //firstrunWizard()
 #include <qwizard.h>             //firstrunWizard()
 
+namespace amaroK
+{
+    static QColor
+    fubucate( QColor deviant )
+    {
+        int h,h2,s,v;
+        KGlobalSettings::highlightColor().getHsv( h, s, v );
+        deviant.getHsv( h2, s, v );
+        return QColor( h, s, v, QColor::Hsv );
+    }
+
+    namespace ColorScheme
+    {
+        QColor Base; //amaroK::blue
+        QColor Text; //Qt::white
+        QColor Background; //brighter blue
+        QColor Foreground; //lighter blue
+    }
+}
+
 App::App()
         : KApplication()
         , m_pPlayerWindow( 0 ) //will be created in applySettings()
 {
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
-    bool restoreSession = args->count() == 0 || args->isSet( "enqueue" );
+    bool restoreSession = args->count() == 0 || args->isSet( "append" )  || args->isSet( "enqueue" );
+
+    {
+        using namespace amaroK::ColorScheme;
+
+        Base = fubucate( amaroK::blue );
+        Text = Qt::white;
+        Background = fubucate( 0x002090 );
+        Foreground = fubucate( 0x80A0FF );
+    }
 
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
@@ -75,7 +104,6 @@ App::App()
         //stop the splashscreen first, socket server is a temporary on purpose!
         LoaderServer server( 0 );
         firstRunWizard();
-        restoreSession = false;
         amaroK::config()->writeEntry( "First Run", false );
     }
 
@@ -441,8 +469,6 @@ void App::applySettings( bool firstTime )
 
 void App::setupColors()
 {
-    //TODO move to PlaylistWindow?
-
     if( AmarokConfig::schemeKDE() )
     {
         QObject* const browserBar = m_pPlaylistWindow->child( "BrowserBar" );

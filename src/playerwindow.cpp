@@ -25,6 +25,7 @@ email                : markey@web.de
 #include "sliderwidget.h"
 #include "tracktooltip.h"    //setScroll()
 
+#include <qaccel.h>          //our quit shortcut in the ctor
 #include <qevent.h>          //various events
 #include <qfont.h>
 #include <qhbox.h>
@@ -69,6 +70,7 @@ createWidget( const QRect &r, QWidget *parent, const char *name = 0, Qt::WFlags 
 }
 
 
+
 PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlaylist )
     : QWidget( parent, name, Qt::WType_TopLevel )
     , m_pAnimTimer( new QTimer( this ) )
@@ -93,17 +95,15 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     //setFocusPolicy( NoFocus );
     setCaption( "amaroK" );
     setAcceptDrops( true );
-    setPaletteForegroundColor( Qt::white ); //0x80a0ff
+    //setPaletteForegroundColor( Qt::white );
     //setPaletteBackgroundColor( amaroK::blue );
+    setPaletteForegroundColor( amaroK::ColorScheme::Text );
+    setPaletteBackgroundColor( amaroK::ColorScheme::Base );
 
-    {
-        int h,h2,s,v;
-        KGlobalSettings::highlightColor().getHsv( h, s, v );
-        QColor amKblu( amaroK::blue );
-        amKblu.getHsv( h2, s, v );
-        setPaletteBackgroundColor( QColor( h, s, v, QColor::Hsv) );
-    }
-
+    //another quit shortcut because the other window has all the accels
+    QAccel *accel = new QAccel( this );
+    accel->insertItem( CTRL + Key_Q );
+    connect( accel, SIGNAL(activated( int )), kapp, SLOT(quit()) );
 
     QFont font;
     font.setBold( true );
@@ -268,7 +268,8 @@ void PlayerWidget::setScroll( const QStringList &list )
     {
         p.drawText( x, baseline, *it );
         x += fm.width( *it );
-        p.drawPixmap( x + 8, separatorYPos, separator );
+        //p.drawPixmap( x, separatorYPos, separator );
+        p.fillRect( x + 8, separatorYPos, 4, 4, amaroK::ColorScheme::Foreground );
         x += separatorWidth;
     }
 

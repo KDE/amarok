@@ -57,7 +57,6 @@ BoomAnalyzer::changeF_peakSpeed( int newValue )
     F_peakSpeed = (double)newValue / 1000;
 }
 
-
 void
 BoomAnalyzer::init()
 {
@@ -147,11 +146,11 @@ BoomAnalyzer::analyze( const Scope &scope )
 
         y = height() - uint(bar_height[i]);
         bitBlt( canvas(), x+1, y, &barPixmap, 0, y );
-        p.setPen( 0x80a0ff );
+        p.setPen( amaroK::ColorScheme::Foreground );
         p.drawRect( x, y, COLUMN_WIDTH, height() - y );
 
         y = height() - uint(peak_height[i]);
-        p.setPen( Qt::white );
+        p.setPen( amaroK::ColorScheme::Text );
         p.drawLine( x, y, x+COLUMN_WIDTH-1, y );
     }
 }

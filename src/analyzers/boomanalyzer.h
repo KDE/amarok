@@ -36,8 +36,17 @@ private:
     std::vector<float> peak_speed;
 
     QPixmap barPixmap;
-
-    //static float log_table[256];
 };
+
+namespace amaroK
+{
+    namespace ColorScheme
+    {
+        extern QColor Base;
+        extern QColor Text;
+        extern QColor Background;
+        extern QColor Foreground;
+    }
+}
 
 #endif
