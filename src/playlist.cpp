@@ -468,7 +468,7 @@ void Playlist::saveXML( const QString &path ) const
 
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
-    stream << "<?xml version=\"1.0\" encoding=\"utf8\"?>\n";
+    stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << newdoc.toString();
     file.close();
 }
