@@ -6,9 +6,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  <markey> "50 random tracks" Smart-Playlist is broken. I can't drag it into the playlist, and on double-click
-           I'm getting "SQLite misuse" errors.
-
   <mxcl>   With retrieve similar artists amaroK hangs just after song-change. Disabling this feature removes
            the hang. This is annoying me so much now I've disabled the feature. I use sqlite.
 
