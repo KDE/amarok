@@ -24,9 +24,14 @@
  *                    other doesnt.
  */
 
+#ifdef  AMAROK_WITH_GSTKIOSRC
+ 
+ 
 #include "kioreceiver.h"
-#include <kio/scheduler.h>
+
 #include <string.h>
+#include <kio/scheduler.h>
+
 
 void KioReceiver::customEvent( QCustomEvent *e )
 {
@@ -327,5 +332,8 @@ void KioReceiver::slotTotalSize( KIO::Job *, KIO::filesize_t size )
     m_fileSize = size;
 }
 
+
 #include "kioreceiver.moc"
+
+#endif /* AMAROK_WITH_GSTKIOSRC */
 

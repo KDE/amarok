@@ -4,8 +4,11 @@
 
 #include "collectionbrowser.h"
 
+#include <qsqldatabase.h>
+
 #include <kdebug.h>
 #include <kurldrag.h>    //dragObject()
+
 
 
 CollectionBrowser::CollectionBrowser( const char* name )
@@ -15,6 +18,15 @@ CollectionBrowser::CollectionBrowser( const char* name )
     setItemsMovable( false );
 //     setGridX( 140 );
     
+    m_pDb = QSqlDatabase::addDatabase( "QSQLITE" );
+    m_pDb->setDatabaseName( "collection.db" );
+    m_pDb->setUserName    ( "mark" );
+    m_pDb->setPassword    ( "test" );
+    m_pDb->setHostName    ( "localhost" );
+
+    if ( !m_pDb->open() )
+        kdWarning() << k_funcinfo << "Could not open collection database.\n";
+        
     for ( int i = 0; i < 100; i++ ) {
         QIconViewItem* item =  new QIconViewItem( this );
         item->setText( "Album" );
@@ -23,7 +35,9 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
 
 CollectionBrowser::~CollectionBrowser()
-{}
+{
+    m_pDb->close();
+}
 
 
 // QDragObject*

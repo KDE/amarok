@@ -1,3 +1,6 @@
+SUBDIRS = \
+    gst-plugins
+
 kde_module_LTLIBRARIES = \
     libamarok_gstengine_plugin.la
 

@@ -7,6 +7,8 @@
 
 #include <kiconview.h>
 
+class QSqlDatabase;
+
 
 class CollectionBrowser : public KIconView
 {
@@ -17,7 +19,10 @@ class CollectionBrowser : public KIconView
         ~CollectionBrowser();
         
     private:
-    
+
+    //attributes:
+        QSqlDatabase* m_pDb;
+        
 /*    class Item : public KIconViewItem
     {
         public:

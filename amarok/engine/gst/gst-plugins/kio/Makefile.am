@@ -1,16 +1,34 @@
-# location where plug-in will be installed
-plugindir= $(libdir)/gstreamer-@GST_MAJORMINOR@
+plugin_LTLIBRARIES = \
+    libgstkio.la
 
-# change libgstplugin.la to something more suitable
-plugin_LTLIBRARIES = libgstkio.la
+#location where plug-in will be installed
+plugindir = \
+    $(libdir)/gstreamer-@GST_MAJORMINOR@
+    
+INCLUDES = \
+    $(CFLAGS_GST) \
+    $(all_includes)
 
-# sources used to compile this plug-in
-libgstkio_la_SOURCES = gstkiosrc.cc
+libgstkio_la_SOURCES = \
+    gstkiosrc.cpp \
+    kioreceiver.cpp
 
-# flags used to compile this plugin
-# we use the GST_LIBS flags because we might be using plug-in libs
-libgstkio_la_CFLAGS = $(GST_LIBS_CFLAGS)
-libgstkio_la_LDFLAGS = $(GST_LIBS_LIBS)
+libgstkio_la_LDFLAGS = \
+    -module \
+    -avoid-version \
+    $(all_libraries) 
 
-# headers we need but don't want installed
-noinst_HEADERS = gstkio.h
+libgstkio_la_LIBADD = \
+    $(LIB_QT) \
+    $(LIB_KIO) \
+    $(LIB_GST)
+
+AM_CXXFLAGS = \
+    $(CFLAGS_GST) 
+
+ METASOURCES = \
+    AUTO
+   
+    
+
+        

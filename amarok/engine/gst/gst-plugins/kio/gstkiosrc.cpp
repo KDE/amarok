@@ -4,6 +4,7 @@
 *                    2000 Wim Taymans <wtay@chello.be>
 *                    2001 Bastien Nocera <hadess@hadess.net>
 *                    2002 Tim Jansen <tim@tjansen.de>
+*                    2004 Mark Kretschmann <markey@web.de>
 *
 *
 * This library is free software; you can redistribute it and/or
@@ -21,6 +22,11 @@
 * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 * Boston, MA 02111-1307, USA.
 */
+
+//uncomment to activate code
+//#define AMAROK_WITH_GSTKIOSRC
+#ifdef  AMAROK_WITH_GSTKIOSRC
+
 
 #include "kioreceiver.h"
 
@@ -432,4 +438,6 @@ GstPluginDesc plugin_desc = {
                                 plugin_init
                             };
 
+                            
+#endif /* AMAROK_WITH_GSTKIOSRC */
 
