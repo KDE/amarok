@@ -78,10 +78,16 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer ) //static
 {
     instance()->m_mutexScope.lock();
     
+    // Check for buffer overflow
+    uint available = gst_adapter_available( instance()->m_gst_adapter ); 
+    if ( available > SCOPEBUF_SIZE )    
+        gst_adapter_flush( instance()->m_gst_adapter, available - 10000 );
+    
     gst_buffer_ref( buf );
+    
     // Push buffer into adapter, where it's chopped into chunks
     gst_adapter_push( instance()->m_gst_adapter, buf );
-
+    
     instance()->m_mutexScope.unlock();
 }
 
@@ -291,13 +297,8 @@ GstEngine::scope()
             }
             m_scope[i] = temp / channels;
         }
-            
-        // Check for buffer overflow
-        uint available = gst_adapter_available( m_gst_adapter ); 
-        if ( available > SCOPEBUF_SIZE )    
-            gst_adapter_flush( m_gst_adapter, available - 10000 );
-        else
-            gst_adapter_flush( m_gst_adapter, bytes );
+       
+        gst_adapter_flush( m_gst_adapter, bytes );
     }
                 
     m_mutexScope.unlock();
@@ -502,11 +503,11 @@ GstEngine::setVolumeSW( uint percent )  //SLOT
 
 void GstEngine::timerEvent( QTimerEvent* )
 {
-   // In this timer-event we handle the volume fading transition
-   
-   // Are we currently fading?
-   if ( m_fadeValue > 0.0 )
-   {
+    // Volume fading:
+    
+    if ( m_fadeValue > 0.0 )
+    // Are we currently fading?
+    {
         m_fadeValue -= ( GstConfig::fadeoutDuration() ) ?  1.0 / GstConfig::fadeoutDuration() * TIMER_INTERVAL : 1.0;
         
         // Fade finished?
