@@ -6,6 +6,9 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+          <mxcl>   loadEngine can call statusbar::message() at the void-engine stage and crash because
+                   the statusbar is not yet created.
+
           <mxcl>   PlaylistLoader takes forever to load my new media directory, I think i can help a little,
                    I promise not to make the class awful again like last time!
 

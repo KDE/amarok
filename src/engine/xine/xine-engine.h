@@ -30,9 +30,8 @@ public:
 
     virtual amaroK::PluginConfig *configure() const;
 
-    virtual void setEqualizerActive( bool );
-    virtual void setEqualizerPreamp( int );
-    virtual void setEqualizerGains( const QValueList<int>& );
+    virtual void setEqualizerEnabled( bool );
+    virtual void setEqualizerParameters( int preamp, const QValueList<int>& );
 
 protected:
     virtual void setVolumeSW( uint );

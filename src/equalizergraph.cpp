@@ -30,7 +30,7 @@ EqualizerGraph::EqualizerGraph( QWidget* parent )
     , m_backgroundPixmap( new QPixmap() )
     , m_composePixmap( new QPixmap() )
 {
-    drawBackground();
+    setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 }
 
 
@@ -51,6 +51,11 @@ EqualizerGraph::resizeEvent( QResizeEvent* )
     drawBackground();
 }
 
+QSize
+EqualizerGraph::sizeHint() const
+{
+   return QSize( 113, 19 );
+}
 
 void
 EqualizerGraph::paintEvent( QPaintEvent* )
@@ -59,7 +64,7 @@ EqualizerGraph::paintEvent( QPaintEvent* )
 
     QPainter p( m_composePixmap );
 
-    QColor color( kapp->palette().active().highlight() );
+    QColor color( colorGroup().highlight() );
     int h, s, v;
     color.getHsv( &h, &s, &v );
 
@@ -69,7 +74,7 @@ EqualizerGraph::paintEvent( QPaintEvent* )
     float gains[NUM_BANDS];
 
     for ( int count = 0; count < NUM_BANDS; count++ )
-        gains[count] = (float) ( ( *AmarokConfig::equalizerGains().at( count ) ) - 50 ) * 0.3;
+        gains[count] = 0.15 * AmarokConfig::equalizerGains()[ count ];
 
     init_spline( x, gains, NUM_BANDS, yf );
 
@@ -115,15 +120,15 @@ EqualizerGraph::drawBackground()
     m_backgroundPixmap->resize( size() );
     m_composePixmap->resize( size() );
 
-    m_backgroundPixmap->fill( kapp->palette().active().background() );
+    m_backgroundPixmap->fill( colorGroup().background().dark( 105 ) );
     QPainter p( m_backgroundPixmap );
 
     // Draw frame
-    p.setPen( kapp->palette().active().highlight() );
+    p.setPen( colorGroup().shadow() );
     p.drawRect( 0, 0, width() - 1, height() - 1 );
 
     // Draw middle line
-    QPen pen( kapp->palette().active().shadow(), 0, Qt::DotLine);
+    QPen pen( colorGroup().dark(), 0, Qt::DotLine);
     p.setPen( pen );
     p.drawLine( 0, height() / 2 - 1, width() - 1, height() / 2 - 1 );
 }

@@ -51,7 +51,6 @@ class App : public KApplication, public EngineObserver
         static void initCliArgs( int argc, char *argv[] );
 
         amaroK::DcopHandler *dcopHandler() const { return m_pDcopHandler; }
-        QWidget             *mainWindow() const;
         PlaylistWindow      *playlistWindow() const { return m_pPlaylistWindow; }
 
         // FRIENDS ------

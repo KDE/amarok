@@ -53,11 +53,12 @@ email                : markey@web.de
 AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConfigSkeleton *config )
         : KConfigDialog( parent, name, config )
         , m_engineConfig( 0 )
+        , m_opt4( 0 )
 {
     setWFlags( WDestructiveClose );
 
     Options2 *opt2 = new Options2( 0, "Fonts" );
-    Options4 *opt4 = new Options4( 0, "Playback" );
+            m_opt4 = new Options4( 0, "Playback" );
     Options5 *opt5 = new Options5( 0, "OSD" );
     QVBox    *opt6 = new QVBox;
 #ifdef USE_MYSQL
@@ -71,8 +72,9 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     groupBox            = new QGroupBox( 2, Qt::Horizontal, i18n("Sound System"), opt6 );
     m_engineConfigFrame = new QGroupBox( 1, Qt::Horizontal, opt6 );
     m_soundSystem       = new QComboBox( false, groupBox );
-    QToolTip::add( m_soundSystem, i18n("Click to select the sound system to use for playback.") );
     aboutEngineButton   = new QPushButton( i18n("About"), groupBox );
+
+    QToolTip::add( m_soundSystem, i18n("Click to select the sound system to use for playback.") );
     QToolTip::add( aboutEngineButton, i18n("Click to get the plugin information.") );
 
     KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'engine'" );
@@ -84,11 +86,6 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
         m_pluginAmarokName[(*it)->property( "X-KDE-amaroK-name" ).toString()] = (*it)->name();
     }
 
-    // Enable crossfading option when available
-    opt4->kcfg_Crossfade->setEnabled( EngineController::hasEngineProperty( "HasCrossfading" ) );
-    opt4->kcfg_CrossfadeLength->setEnabled( EngineController::hasEngineProperty( "HasCrossfading" ) );
-    opt4->crossfadeLengthLabel->setEnabled( EngineController::hasEngineProperty( "HasCrossfading" ) );
-
     // ID3v1 recoding locales
     QTextCodec *codec;
     for ( int i = 0; ( codec = QTextCodec::codecForIndex( i ) ); i++ )
@@ -98,7 +95,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     addPage( new Options1( 0, "General" ), i18n( "General" ), "misc", i18n( "Configure General Options" ) );
     addPage( opt2, i18n( "Fonts" ), "fonts", i18n( "Configure Fonts" ) );
     addPage( new Options3( 0, "Colors" ), i18n( "Colors" ), "colors", i18n( "Configure Colors" ) );
-    addPage( opt4, i18n( "Playback" ), "kmix", i18n( "Configure Playback" ) );
+    addPage( m_opt4, i18n( "Playback" ), "kmix", i18n( "Configure Playback" ) );
     addPage( opt5, i18n( "OSD" ), "tv", i18n( "Configure On-Screen-Display" ) );
     addPage( opt6, i18n( "Engine" ), "amarok", i18n( "Configure Engine" ) );
 #ifdef USE_MYSQL
@@ -229,6 +226,13 @@ void AmarokConfigDialog::soundSystemChanged()
         m_engineConfig = 0;
         m_engineConfigFrame->hide();
     }
+
+    const bool hasCrossfade = EngineController::hasEngineProperty( "HasCrossfade" );
+    // Enable crossfading option when available
+    m_opt4->kcfg_Crossfade->setEnabled( hasCrossfade );
+    m_opt4->kcfg_CrossfadeLength->setEnabled( hasCrossfade );
+    m_opt4->crossfadeLengthLabel->setEnabled( hasCrossfade );
+
 }
 
 #include "configdialog.moc"

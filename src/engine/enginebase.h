@@ -159,12 +159,18 @@ namespace Engine
         /** Set new crossfade length (msec) */
         void setXfadeLength( int value ) { m_xfadeLength = value; }
 
-        /** Set whether equalizer is active */
-        virtual void setEqualizerActive( bool ) {};
-        /** Set equalizer preamp value, range 0-100 */
-        virtual void setEqualizerPreamp( int ) {};
-        /** Set equalizer band gains, 10 values, range 0-100 */
-        virtual void setEqualizerGains( const QValueList<int>& ) {};
+        /** Set whether equalizer is enabled
+          * You don't need to cache the parameters, setEqualizerParameters is called straight after this
+          * function, _always_.
+          */
+        virtual void setEqualizerEnabled( bool ) {};
+
+        /** Set equalizer parameters, all in range -100..100, where 0 = no adjustment
+          * @param preamp the preamplification value
+          * @param bandGains a list of 10 integers, ascending in frequency, the exact frequencies you amplify
+          *                  are not too-important at this time
+          */
+        virtual void setEqualizerParameters( int /*preamp*/, const QValueList<int> &/*bandGains*/ ) {};
 
     protected:
         Base( Effects* = 0 );

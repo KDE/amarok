@@ -63,6 +63,12 @@ namespace amaroK
      * obtain an amaroK JPG image as a QPixmap
      */
     QPixmap getJPG( const QString& /*fileName*/ ); //defined in app.cpp
+
+     /**
+     * The mainWindow is the playlistWindow
+     */
+    QWidget*
+    mainWindow(); //defined in app.cpp
 }
 
 

@@ -53,6 +53,7 @@ class AmarokConfigDialog : public KConfigDialog
         QComboBox* m_soundSystem;
         amaroK::PluginConfig *m_engineConfig;
         QGroupBox            *m_engineConfigFrame;
+        class Options4       *m_opt4;
 
         QMap<QString, QString> m_pluginName;
         QMap<QString, QString> m_pluginAmarokName;

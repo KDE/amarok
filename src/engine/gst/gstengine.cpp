@@ -184,10 +184,10 @@ GstEngine::GstEngine()
 {
     kdDebug() << k_funcinfo << endl;
 
-    addPluginProperty( "StreamingMode",  "Signal" );
-    addPluginProperty( "HasConfigure",   "true" );
-    addPluginProperty( "HasCrossfading", "true" );
-    addPluginProperty( "HasEqualizer",   "true" );
+    addPluginProperty( "StreamingMode", "Signal" );
+    addPluginProperty( "HasConfigure",  "true" );
+    addPluginProperty( "HasCrossfade",  "true" );
+    addPluginProperty( "HasEqualizer",  "true" );
 
     m_inputs.setAutoDelete( true );
 }

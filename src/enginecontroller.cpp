@@ -281,7 +281,7 @@ void EngineController::play( const MetaBundle &bundle )
         if( m_engine->play() )
         {
             m_xFadeThisTrack = AmarokConfig::crossfade() &&
-                               m_engine->hasPluginProperty( "HasCrossfading" ) &&
+                               m_engine->hasPluginProperty( "HasCrossfade" ) &&
                               !m_engine->isStream() &&
                                m_bundle.length()*1000 - AmarokConfig::crossfadeLength()*2 > 0;
 

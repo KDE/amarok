@@ -270,24 +270,18 @@ XineEngine::setVolumeSW( uint vol )
 }
 
 void
-XineEngine::setEqualizerActive( bool enable )
+XineEngine::setEqualizerEnabled( bool enable )
 {
    if( !enable ) {
       QValueList<int> gains;
       for( uint x = 0; x < 10; x++ )
          gains += 0;
-      setEqualizerGains( gains );
+      setEqualizerParameters( 0, gains );
    }
 }
 
 void
-XineEngine::setEqualizerPreamp( int )
-{
-   //not until we have our own software mixer
-}
-
-void
-XineEngine::setEqualizerGains( const QValueList<int> &gains )
+XineEngine::setEqualizerParameters( int /*preamp*/, const QValueList<int> &gains )
 {
    QValueList<int>::ConstIterator it = gains.begin();
 

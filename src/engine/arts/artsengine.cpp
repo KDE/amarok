@@ -76,8 +76,8 @@ ArtsEngine::ArtsEngine()
 {
     kdDebug() << k_funcinfo << endl;
 
-    addPluginProperty( "StreamingMode",  "Socket" );
-    addPluginProperty( "HasCrossfading", "true" );
+    addPluginProperty( "StreamingMode", "Socket" );
+    addPluginProperty( "HasCrossfade",  "true" );
 }
 
 
@@ -131,11 +131,12 @@ bool ArtsEngine::init()
     bool realtime = config.readBoolEntry( "StartRealtime", true );
 
     if ( !realtime )
-        KMessageBox::information( 0, i18n( "<p>artsd is not running with <b>realtime priority</b> which may cause audio playback to \"skip\" and stutter.<p>"
-                                     "<p>To use realtime priority, open the KDE Control Center and enable \"Run with highest possible priority\", under <i>Sound System</i> in the <i>Sound & Multimedia</i> branch. "
-                                     "Some people may also have to check that \"$KDEDIR/bin/artswrapper\" is <b>set suid</b> (chmod +s).</p>"
-                                     "<p>You may find, however, that playback is fine without increasing the priority of artsd.</p>" ),
-                               i18n( "aRts Problem" ), "artsRealtimeAdvice" );
+        KMessageBox::information( 0, i18n(
+            "<p>artsd is not running with <b>realtime priority</b> which may cause audio playback to \"skip\" and stutter.<p>"
+            "<p>To use realtime priority, open the KDE Control Center and enable \"Run with highest possible priority\", under <i>Sound System</i> in the <i>Sound & Multimedia</i> branch. "
+            "Some people may also have to check that \"$KDEDIR/bin/artswrapper\" is <b>set suid</b> (chmod +s).</p>"
+            "<p>You may find, however, that playback is fine without increasing the priority of artsd.</p>" ),
+            i18n( "aRts Problem" ), "artsRealtimeAdvice" );
 
     m_server = Arts::Reference( "global:Arts_SoundServerV2" );
 

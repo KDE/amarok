@@ -43,11 +43,10 @@ XineConfigEntry::XineConfigEntry( QWidget *parent, amaroK::PluginConfig *pluginC
     }
     case XINE_CONFIG_TYPE_ENUM:
     {
-        KComboBox *box = new KComboBox( parent );
-        w = box;
+        w = new KComboBox( parent );
         for( int i = 0; entry->enum_values[i]; ++i )
-            box->insertItem( entry->enum_values[i] );
-        box->setCurrentItem( m_numValue );
+            ((KComboBox*)w)->insertItem( entry->enum_values[i] );
+        ((KComboBox*)w)->setCurrentItem( m_numValue );
         connect( w, SIGNAL(activated( int )), this, SLOT(slotNumChanged( int )) );
         connect( w, SIGNAL(activated( int )), pluginConfig, SIGNAL(viewChanged()) );
         break;
@@ -62,10 +61,9 @@ XineConfigEntry::XineConfigEntry( QWidget *parent, amaroK::PluginConfig *pluginC
     }
     case XINE_CONFIG_TYPE_RANGE:
     {
-        QSpinBox *box = new QSpinBox( parent );
-        w = box;
-        box->setValue( m_numValue );
-        box->setRange( entry->range_min, entry->range_max );
+        w = new QSpinBox( parent );
+        ((QSpinBox*)w)->setValue( m_numValue );
+        ((QSpinBox*)w)->setRange( entry->range_min, entry->range_max );
         connect( w, SIGNAL(valueChanged( int )), this, SLOT(slotNumChanged( int )) );
         connect( w, SIGNAL(valueChanged( int )), pluginConfig, SIGNAL(viewChanged()) );
         break;
@@ -73,13 +71,12 @@ XineConfigEntry::XineConfigEntry( QWidget *parent, amaroK::PluginConfig *pluginC
     case XINE_CONFIG_TYPE_BOOL:
     {
         QCheckBox *box = new QCheckBox( QString( entry->description ), parent );
-        w = box;
         box->setChecked( m_numValue );
-        connect( w, SIGNAL(toggled( bool )), this, SLOT(slotBoolChanged( bool )) );
-        connect( w, SIGNAL(toggled( bool )), pluginConfig, SIGNAL(viewChanged()) );
+        connect( box, SIGNAL(toggled( bool )), this, SLOT(slotBoolChanged( bool )) );
+        connect( box, SIGNAL(toggled( bool )), pluginConfig, SIGNAL(viewChanged()) );
 
-        QToolTip::add( w, QString( entry->help ) );
-        grid->addMultiCellWidget( w, row, row, 0, 1 );
+        QToolTip::add( box, QString( entry->help ) );
+        grid->addMultiCellWidget( box, row, row, 0, 1 );
 
         return; //we don't do the other stuff
     }

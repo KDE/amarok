@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "amarok.h"
 #include "amarokconfig.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
@@ -35,53 +36,46 @@ EqualizerSetup* EqualizerSetup::s_instance = 0;
 
 
 EqualizerSetup::EqualizerSetup()
+        : QVBox( amaroK::mainWindow(), 0, Qt::WType_Dialog | Qt::WDestructiveClose )
 {
     s_instance = this;
-    setCaption( kapp->makeStdCaption( i18n( "Equalizer Settings" ) ) );
-    setWFlags( Qt::WType_TopLevel | Qt::WDestructiveClose );
 
-    QBoxLayout* vmainlayout = new QVBoxLayout( this );
-
-    QHBox* topHBox = new QHBox( this );
-    vmainlayout->addWidget( topHBox );
-
-    // BEGIN CheckBox Enable Equalizer
-    m_checkBox_enableEqualizer = new QCheckBox( topHBox );
-    m_checkBox_enableEqualizer->setText( i18n( "Enable Equalizer" ) );
-    //END
+    setCaption( kapp->makeStdCaption( i18n( "Equalizer" ) ) );
+    setMargin( 8 );
+    setSpacing( 8 );
 
     // BEGIN Equalizer Graph Widget
-    m_equalizerGraph = new EqualizerGraph( topHBox );
-    m_equalizerGraph->setFixedSize( 113, 19 );
+    m_equalizerGraph = new EqualizerGraph( new QHBox( this ) );
     //END
 
-    QGroupBox* groupBox_sliders = new QGroupBox( 11, Qt::Horizontal, this );
-    groupBox_sliders->setEnabled( false );
-    vmainlayout->addWidget( groupBox_sliders );
-    connect( m_checkBox_enableEqualizer, SIGNAL( toggled( bool ) ), SLOT( activateEqualizer( bool ) ) );
-    connect( m_checkBox_enableEqualizer, SIGNAL( toggled( bool ) ), groupBox_sliders, SLOT( setEnabled( bool ) ) );
-    m_checkBox_enableEqualizer->setChecked( AmarokConfig::useEqualizer() );
+    QGroupBox* groupBox_sliders = new QGroupBox( 11, Qt::Horizontal, i18n("Enable Equalizer"), this );
+    connect( groupBox_sliders, SIGNAL( toggled( bool ) ), SLOT( enableEqualizer( bool ) ) );
+    groupBox_sliders->setCheckable( true );
+    groupBox_sliders->setChecked( AmarokConfig::equalizerEnabled() );
+    groupBox_sliders->setInsideMargin( 8 );
 
     // BEGIN Preamp slider
-    QVBox* vBox_preamp = new QVBox( groupBox_sliders );
-    m_slider_preamp = new Slider( Qt::Vertical, vBox_preamp, 100 );
+    QVBox* box = new QVBox( groupBox_sliders );
+    m_slider_preamp = new Slider( Qt::Vertical, box, 100 );
+    m_slider_preamp->setMinValue( -100 );
     m_slider_preamp->setValue( AmarokConfig::equalizerPreamp() );
-    connect( m_slider_preamp, SIGNAL( valueChanged( int ) ), SLOT( preampChanged() ) );
-    QLabel* label = new QLabel( i18n( "Pre-Amp" ), vBox_preamp );
+    connect( m_slider_preamp, SIGNAL( valueChanged( int ) ), SLOT( parametersChanged() ) );
+    new QLabel( i18n("Pre-amp"), box );
     // END
 
     // BEGIN Band Sliders
-    QStringList bandLabels;
-    bandLabels << "60" << "170" << "310" << "600" << "1k" << "3k" << "6k"
-               << "12k" << "14k" << "16k";
-
+    const char *bandLabels[] = { "60", "170", "310", "600", "1k", "3k", "6k", "12k", "14k", "16k" };
     for ( int i = 0; i < 10; i++ ) {
-        QVBox* vBox = new QVBox( groupBox_sliders );
-        Slider* slider = new Slider( Qt::Vertical, vBox, 100 );
-        m_bandSliders.append( slider );
+        QVBox  *box    = new QVBox( groupBox_sliders );
+        Slider *slider = new Slider( Qt::Vertical, box );
+                         new QLabel( bandLabels[i], box );
+
         slider->setValue( *AmarokConfig::equalizerGains().at( i ) );
-        connect( slider, SIGNAL( valueChanged( int ) ), SLOT( bandChanged() ) );
-        QLabel* label = new QLabel( bandLabels[i], vBox );
+        slider->setMinValue( -100 );
+        slider->setMaxValue( +100 );
+        m_bandSliders.append( slider );
+
+        connect( slider, SIGNAL( valueChanged( int ) ), SLOT( parametersChanged() ) );
     }
     // END
 }
@@ -98,35 +92,30 @@ EqualizerSetup::~EqualizerSetup()
 /////////////////////////////////////////////////////////////////////////////////////
 
 void
-EqualizerSetup::activateEqualizer( bool active ) //SLOT
+EqualizerSetup::enableEqualizer( bool active ) //SLOT
 {
-    EngineController::engine()->setEqualizerActive( active );
-    AmarokConfig::setUseEqualizer( active );
+    EngineController::engine()->setEqualizerEnabled( active );
+    AmarokConfig::setEqualizerEnabled( active );
+
+    if( active )
+       //this way the developer of the eq doesn't have to cache the eq values
+       parametersChanged();
 }
 
 
 void
-EqualizerSetup::preampChanged() //SLOT
-{
-    EngineController::engine()->setEqualizerPreamp( m_slider_preamp->value() );
-    AmarokConfig::setEqualizerPreamp( m_slider_preamp->value() );
-}
-
-
-void
-EqualizerSetup::bandChanged() //SLOT
+EqualizerSetup::parametersChanged() //SLOT
 {
     QValueList<int> gains;
-
     for ( uint i = 0; i < m_bandSliders.count(); i++ )
-        gains.push_back( m_bandSliders.at( i )->value() );
+        gains += m_bandSliders.at( i )->value();
 
-    EngineController::engine()->setEqualizerGains( gains );
+    AmarokConfig::setEqualizerPreamp( m_slider_preamp->value() );
     AmarokConfig::setEqualizerGains( gains );
+
+    EngineController::engine()->setEqualizerParameters( m_slider_preamp->value(), gains );
 
     m_equalizerGraph->update();
 }
 
-
 #include "equalizersetup.moc"
-

@@ -32,6 +32,7 @@ class EqualizerGraph : public QWidget
     protected:
         void resizeEvent( QResizeEvent* );
         void paintEvent( QPaintEvent* );
+        QSize sizeHint() const;
 
     private:
         static const int NUM_BANDS = 10;

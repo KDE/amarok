@@ -19,13 +19,14 @@
 #include "sliderwidget.h"
 
 #include <qptrlist.h>           //stack alloc
+#include <qvbox.h>
 
 using namespace amaroK;
 
 class EqualizerGraph;
 class QCheckBox;
 
-class EqualizerSetup : public QWidget
+class EqualizerSetup : public QVBox
 {
     Q_OBJECT
 
@@ -33,17 +34,15 @@ class EqualizerSetup : public QWidget
         static EqualizerSetup* instance() { return s_instance ? s_instance : new EqualizerSetup(); }
 
         EqualizerSetup();
-        ~EqualizerSetup();
+       ~EqualizerSetup();
 
     private slots:
-        void activateEqualizer( bool );
-        void preampChanged();
-        void bandChanged();
+        void enableEqualizer( bool );
+        void parametersChanged();
 
     private:
         static EqualizerSetup* s_instance;
 
-        QCheckBox* m_checkBox_enableEqualizer;
         Slider* m_slider_preamp;
         EqualizerGraph* m_equalizerGraph;
 
