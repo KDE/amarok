@@ -133,6 +133,10 @@ PlayerApp::PlayerApp() :
 
     m_pPlayerWidget->show();
 
+    m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( kapp->dirs()->saveLocation(
+                                      "data", kapp->instanceName() + "/" ) + "current.m3u", 0 );
+    m_pBrowserWin->m_pPlaylistWidget->writeUndo();
+    
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
 }
 
@@ -731,11 +735,6 @@ void PlayerApp::readConfig()
         m_pBrowserWin->show();
     }
 
-    m_pBrowserWin->m_pPlaylistWidget->clear();
-    m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( kapp->dirs()->saveLocation(
-            "data", kapp->instanceName() + "/" ) + "current.m3u", 0 );
-    m_pBrowserWin->m_pPlaylistWidget->writeUndo();
-
     m_pPlayerWidget->slotUpdateTrayIcon( m_optShowTrayIcon );
 
     // Read playlist columns layout
@@ -904,9 +903,9 @@ void PlayerApp::setupColors()
 
     m_optBrowserBgColor.hsv( &h, &s, &v );
     if ( v < 128 )
-        v += 35;
+        v += 50;
     else
-        v -= 35;
+        v -= 50;
     m_optBrowserBgAltColor.setHsv( h, s, v );
     
     m_optBrowserFgColor.hsv( &h, &s, &v );
