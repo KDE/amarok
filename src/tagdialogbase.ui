@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>393</width>
-            <height>364</height>
+            <width>370</width>
+            <height>366</height>
         </rect>
     </property>
     <property name="caption">
@@ -126,7 +126,7 @@
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout4</cstring>
+                <cstring>layout14</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -146,9 +146,17 @@
                         <string>Genre</string>
                     </property>
                 </widget>
-                <widget class="KLineEdit">
+                <widget class="KComboBox">
                     <property name="name">
-                        <cstring>kLineEdit_genre</cstring>
+                        <cstring>kComboBox_genre</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
                     </property>
                     <property name="minimumSize">
                         <size>
@@ -156,12 +164,15 @@
                             <height>0</height>
                         </size>
                     </property>
+                    <property name="editable">
+                        <bool>true</bool>
+                    </property>
                 </widget>
             </hbox>
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout5</cstring>
+                <cstring>layout13</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -181,15 +192,29 @@
                         <string>Year</string>
                     </property>
                 </widget>
-                <widget class="KLineEdit">
+                <widget class="KIntSpinBox">
                     <property name="name">
-                        <cstring>kLineEdit_year</cstring>
+                        <cstring>kIntSpinBox_year</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
                     </property>
                     <property name="minimumSize">
                         <size>
                             <width>250</width>
                             <height>0</height>
                         </size>
+                    </property>
+                    <property name="maxValue">
+                        <number>3000</number>
+                    </property>
+                    <property name="value">
+                        <number>0</number>
                     </property>
                 </widget>
             </hbox>
@@ -231,7 +256,7 @@
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout6_2</cstring>
+                <cstring>layout15</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -251,9 +276,20 @@
                         <string>Length</string>
                     </property>
                 </widget>
-                <widget class="KLineEdit">
+                <widget class="KTimeWidget">
                     <property name="name">
-                        <cstring>kLineEdit_length</cstring>
+                        <cstring>kTimeWidget_length</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
                     </property>
                     <property name="minimumSize">
                         <size>
@@ -296,6 +332,9 @@
                             <height>0</height>
                         </size>
                     </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
+                    </property>
                 </widget>
             </hbox>
         </widget>
@@ -330,6 +369,9 @@
                             <width>250</width>
                             <height>0</height>
                         </size>
+                    </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
                     </property>
                 </widget>
             </hbox>
@@ -366,6 +408,9 @@
                             <height>0</height>
                         </size>
                     </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
+                    </property>
                 </widget>
             </hbox>
         </widget>
@@ -399,7 +444,16 @@
                         <cstring>pushButton_musicbrainz</cstring>
                     </property>
                     <property name="text">
-                        <string>MusicBrainz</string>
+                        <string>&amp;MusicBrainz TRM</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+M</string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>false</bool>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Detect metadata from fingerprint. Requires the "trm" utility.</string>
                     </property>
                 </widget>
                 <spacer>
@@ -414,7 +468,7 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>141</width>
+                            <width>74</width>
                             <height>21</height>
                         </size>
                     </property>
@@ -424,18 +478,33 @@
                         <cstring>pushButton_ok</cstring>
                     </property>
                     <property name="text">
-                        <string>OK</string>
+                        <string>&amp;Save</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+S</string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>false</bool>
                     </property>
                 </widget>
                 <widget class="QPushButton">
                     <property name="name">
                         <cstring>pushButton_cancel</cstring>
                     </property>
+                    <property name="autoMask">
+                        <bool>false</bool>
+                    </property>
                     <property name="text">
-                        <string>Cancel</string>
+                        <string>&amp;Cancel</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+C</string>
                     </property>
                     <property name="default">
                         <bool>true</bool>
+                    </property>
+                    <property name="flat">
+                        <bool>false</bool>
                     </property>
                 </widget>
             </hbox>
@@ -446,13 +515,13 @@
 </customwidgets>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>kdialog.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
-    <includehint>klineedit.h</includehint>
-    <includehint>klineedit.h</includehint>
+    <includehint>ktimewidget.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>

@@ -132,24 +132,6 @@ class MusicBrainzQuery : public QObject, public MusicBrainz
         bool m_tracks; //if only tracks should be extracted
 };
 
-/**
- *
- */
-
-class MusicBrainzFileQuery : public MusicBrainzQuery
-{
-        Q_OBJECT
-
-    public:
-        MusicBrainzFileQuery( const KURL &file );
-
-    public slots:
-        void slotDone( const MusicBrainzQuery::TrackList &result );
-
-    private:
-        KURL m_file;
-};
-
 
 #endif /*HAVE_MUSICBRAINZ*/
 

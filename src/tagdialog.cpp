@@ -4,11 +4,20 @@
 #include "metabundle.h"
 #include "tagdialog.h"
 
+#include <taglib/fileref.h>
+#include <taglib/tag.h>
+#include <taglib/tstring.h>
+
+#include <qfile.h>
 #include <qpushbutton.h>
 
+#include <kcombobox.h>
 #include <kdebug.h>
 #include <kglobal.h>
 #include <klineedit.h>
+#include <kmessagebox.h>
+#include <knuminput.h>
+#include <ktimewidget.h>
 
 
 TagDialog::TagDialog( const MetaBundle& mb, QWidget* parent )
@@ -18,14 +27,19 @@ TagDialog::TagDialog( const MetaBundle& mb, QWidget* parent )
     kLineEdit_title->setText( mb.title() );
     kLineEdit_artist->setText( mb.artist() );
     kLineEdit_album->setText( mb.album() );
-    kLineEdit_genre->setText( mb.genre() );
-    kLineEdit_year->setText( mb.year() );
+    kComboBox_genre->insertStringList( MetaBundle::genreList() );
+    kComboBox_genre->setCurrentText( mb.genre() );
+    kIntSpinBox_year->setValue( mb.year().toInt() );
     kLineEdit_comment->setText( mb.comment() );
-    kLineEdit_length->setText( mb.prettyLength() );
+    QTime length; length.addSecs( mb.length() );
+    kTimeWidget_length->setTime( length );
     kLineEdit_bitrate->setText( mb.prettyBitrate() );
     kLineEdit_samplerate->setText( mb.prettySampleRate() );
     kLineEdit_location->setText( mb.url().isLocalFile() ? mb.url().path() : mb.url().url() );
 
+    // Remember original button text
+    m_buttonMbText = pushButton_musicbrainz->text();
+    
     connect( pushButton_cancel, SIGNAL( clicked() ), this, SLOT( deleteLater() ) );
     connect( pushButton_ok, SIGNAL( clicked() ), this, SLOT( okPressed() ) );
     
@@ -35,6 +49,8 @@ TagDialog::TagDialog( const MetaBundle& mb, QWidget* parent )
 #ifndef HAVE_MUSICBRAINZ
     pushButton_musicbrainz->setEnabled( false );
 #endif
+    
+    adjustSize();
 }
 
 
@@ -47,6 +63,22 @@ TagDialog::okPressed() //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     
+    TagLib::FileRef f( QFile::encodeName( m_metaBundle.url().path() ), false );
+
+    if ( !f.isNull() ) {
+        TagLib::Tag * t = f.tag();
+
+        t->setTitle( QStringToTString( kLineEdit_title->text() ) );
+        t->setArtist( QStringToTString( kLineEdit_artist->text() ) );
+        t->setAlbum( QStringToTString( kLineEdit_album->text() ) );
+        t->setYear( kIntSpinBox_year->value() );
+        t->setComment( QStringToTString( kLineEdit_comment->text() ) );
+        t->setGenre( QStringToTString( kComboBox_genre->currentText() ) );
+        t->setTrack( m_metaBundle.track().toInt() );
+        
+        f.save();
+    }
+            
     deleteLater();
 }
 
@@ -74,14 +106,25 @@ TagDialog::queryDone( const MusicBrainzQuery::TrackList& tracklist ) //SLOT
     kdDebug() << k_funcinfo << endl;
     
     pushButton_musicbrainz->setEnabled( true );
-    pushButton_musicbrainz->setText( i18n( "MusicBrainz" ) );
-    
-    kLineEdit_title->setText( tracklist[0].name );
-    kLineEdit_artist->setText( tracklist[0].artist );
-    kLineEdit_album->setText( tracklist[0].album );
-    kLineEdit_length->setText( tracklist[0].duration );
+    pushButton_musicbrainz->setText( m_buttonMbText );
+
+    if ( tracklist.isEmpty() ) {
+        KMessageBox::sorry( this, i18n( "Track was not found in MusicBrainz database." ) );
+        return;
+    }
+                
+    if ( !tracklist[0].name.isEmpty() )     kLineEdit_title->setText( tracklist[0].name );
+    if ( !tracklist[0].artist.isEmpty() )   kLineEdit_artist->setText( tracklist[0].artist );
+    if ( !tracklist[0].album.isEmpty() )    kLineEdit_album->setText( tracklist[0].album );
+    QTime length; length.addSecs( tracklist[0].duration.toInt() );
+    if ( !tracklist[0].duration.isEmpty() ) kTimeWidget_length->setTime( length );
 }
 #endif
+
+
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE
+////////////////////////////////////////////////////////////////////////////////
 
 
 #include "tagdialog.moc"

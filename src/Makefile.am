@@ -92,7 +92,7 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     $(top_builddir)/amarok/src/titleproxy/libtitleproxy.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) $(LIB_KJSEMBED) \
-    $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(LIB_MUSICBRAINZ)
+    $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(MUSICBRAINZ_LIBS)
 
 amarokapp_LDFLAGS = \
     $(all_libraries) \

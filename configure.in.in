@@ -122,7 +122,6 @@ AC_SUBST(taglib_libs)
 # BEGIN GSTREAMER CHECK
 ###############################################################################
 
-
 AC_ARG_WITH(gstreamer,
     AC_HELP_STRING([--without-gstreamer],[build amaroK without GStreamer [default=no]]),
     [build_gstreamer=$withval],
@@ -384,10 +383,9 @@ fi
 # BEGIN MUSICBRAINZ CHECK
 ###############################################################################
 
-KDE_CHECK_HEADER(musicbrainz/musicbrainz.h, have_musicbrainz=yes, have_musicbrainz=no)
+KDE_PKG_CHECK_MODULES(MUSICBRAINZ, libmusicbrainz >= 2.1, have_musicbrainz=yes, have_musicbrainz=no)
 
 if test x$have_musicbrainz = xyes; then
-    AC_SUBST(LIB_MUSICBRAINZ, "-lmusicbrainz")
     AC_DEFINE(HAVE_MUSICBRAINZ, 1, [have MusicBrainz])
 fi
 

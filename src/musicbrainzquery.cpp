@@ -27,7 +27,6 @@
 
 #include <kapplication.h>
 #include <kdebug.h>
-#include <kdeversion.h>
 #include <klocale.h>
 #include <kmainwindow.h>
 #include <kprocess.h>
@@ -282,9 +281,6 @@ void MusicBrainzQuery::slotTrmData( KProcess *, char *buffer, int bufferLength )
 
 void MusicBrainzQuery::slotTrmGenerationFinished( KProcess *process )
 {
-#if KDE_VERSION < KDE_MAKE_VERSION(3,1,90)
-    delete process;
-#endif
     Q_UNUSED( process );
 
     m_arguments.clear();
@@ -297,61 +293,6 @@ void MusicBrainzQuery::slotTrmGenerationFinished( KProcess *process )
         slotQuery();
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// MusicBrainzFileQuery
-////////////////////////////////////////////////////////////////////////////////
-
-MusicBrainzFileQuery::MusicBrainzFileQuery( const KURL &file ) :
-        MusicBrainzQuery( MusicBrainzQuery::File, file.path() ),
-        m_file( file )
-{
-    connect( this, SIGNAL( signalDone( const MusicBrainzQuery::TrackList & ) ),
-             this, SLOT( slotDone( const MusicBrainzQuery::TrackList & ) ) );
-
-    KMainWindow *w = static_cast<KMainWindow *>( kapp->mainWidget() );
-    connect( this, SIGNAL( signalStatusMsg( const QString &, int ) ),
-             w->statusBar(), SLOT( message( const QString &, int ) ) );
-
-    start();
-}
-
-void MusicBrainzFileQuery::slotDone( const MusicBrainzQuery::TrackList &result )
-{
-    KMainWindow * w = static_cast<KMainWindow *>( kapp->mainWidget() );
-
-    if ( result.isEmpty() ) {
-        w->statusBar() ->message( i18n( "No matches found." ), 2000 );
-        return ;
-    }
-
-    /*    TrackPickerDialog *trackPicker =
-            new TrackPickerDialog(m_file.absFilePath(), result, w);
-     
-        if(trackPicker->exec() != QDialog::Accepted) {
-            w->statusBar()->message(i18n("Canceled."), 2000);
-            return;
-        }
-     
-        MusicBrainzQuery::Track track = trackPicker->selectedTrack();
-     
-        if(!track.name.isEmpty())
-            m_file.tag()->setTitle(track.name);
-        if(!track.artist.isEmpty())
-            m_file.tag()->setArtist(track.artist);
-        if(!track.album.isEmpty())
-            m_file.tag()->setAlbum(track.album);
-        if(track.number)
-            m_file.tag()->setTrack(track.number);
-     
-        m_file.tag()->save();*/ 
-    //     CollectionList::instance()->slotRefreshItem(m_file.absFilePath());
-
-    w->statusBar() ->message( i18n( "Done." ), 2000 );
-
-    deleteLater();
-}
-
-
 #include "musicbrainzquery.moc"
 
-#endif
+#endif /*HAVE_MUSICBRAINZ*/

@@ -32,6 +32,7 @@ class TagDialog : public TagDialogBase
     
     private:
         MetaBundle m_metaBundle;
+        QString m_buttonMbText;
 };
 
 
