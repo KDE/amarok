@@ -512,25 +512,25 @@ void ContextBrowser::showHome() //SLOT
     // <Favorite Tracks Information>
     m_HTMLSource.append(
             "<html>"
-            "<div id='favorites_box' class='devel-box'>"
-                "<div id='favorites_box-header' class='devel-box-header'>"
-                    "<span id='favorites_box-header-title' class='devel-box-header-title'>"
+            "<div id='favorites_box' class='box'>"
+                "<div id='favorites_box-header' class='box-header'>"
+                    "<span id='favorites_box-header-title' class='box-header-title'>"
                     + i18n( "Your Favorite Tracks" ) +
                     "</span>"
                 "</div>"
-                "<div id='favorites_box-body' class='devel-box-body'>"
+                "<div id='favorites_box-body' class='box-body'>"
                        );
 
     for( uint i = 0; i < fave.count(); i = i + 5 )
         m_HTMLSource.append(
-                    "<div class='" + QString( (i % 10) ? "devel-box-row-alt" : "devel-box-row" ) + "'>"
-                        "<div class='devel-song'>"
+                    "<div class='" + QString( (i % 10) ? "box-row-alt" : "box-row" ) + "'>"
+                        "<div class='song'>"
                             "<a href=\"file:" + fave[i+1].replace( '"', QCString( "%22" ) ) + "\">"
-                            "<span class='devel-song-title'>" + fave[i] + "</span> "
-                            "<span class='devel-song-score'>(" + i18n( "Score: %1" ).arg( fave[i+2] ) + ")</span><br />"
-                            "<span class='devel-song-artist'>" + fave[i+3] + "</span>"
+                            "<span class='song-title'>" + fave[i] + "</span> "
+                            "<span class='song-score'>(" + i18n( "Score: %1" ).arg( fave[i+2] ) + ")</span><br />"
+                            "<span class='song-artist'>" + fave[i+3] + "</span>"
                             " - "
-                            "<span class='devel-song-album'>"+ fave[i+4] +"</span>"
+                            "<span class='song-album'>"+ fave[i+4] +"</span>"
                             "</a>"
                         "</div>"
                     "</div>"
@@ -543,23 +543,23 @@ void ContextBrowser::showHome() //SLOT
 
     // <Recent Tracks Information>
 
-            "<div id='newest_box' class='devel-box'>"
-                "<div id='newest_box-header' class='devel-box-header'>"
-                    "<span id='newest_box-header-title' class='devel-box-header-title'>"
+            "<div id='newest_box' class='box'>"
+                "<div id='newest_box-header' class='box-header'>"
+                    "<span id='newest_box-header-title' class='box-header-title'>"
                     + i18n( "Your Newest Tracks" ) +
                     "</span>"
                 "</div>"
-                "<div id='newest_box-body' class='devel-box-body'>" );
+                "<div id='newest_box-body' class='box-body'>" );
 
     for( uint i = 0; i < recent.count(); i = i + 4 )
         m_HTMLSource.append(
-                    "<div class='" + QString( (i % 8) ? "devel-box-row-alt" : "devel-box-row" ) + "'>"
-                        "<div class='devel-song'>"
+                    "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
+                        "<div class='song'>"
                             "<a href=\"file:" + recent[i+1].replace( '"', QCString( "%22" ) ) + "\">"
-                            "<span class='devel-song-title'>" + recent[i] + "</span><br />"
-                            "<span class='devel-song-artist'>" + recent[i+2] + "</span>"
+                            "<span class='song-title'>" + recent[i] + "</span><br />"
+                            "<span class='song-artist'>" + recent[i+2] + "</span>"
                             " - "
-                            "<span class='devel-song-album'>" + recent[i+3] + "</span>"
+                            "<span class='song-album'>" + recent[i+3] + "</span>"
                             "</a>"
                         "</div>"
                     "</div>" );
@@ -572,27 +572,27 @@ void ContextBrowser::showHome() //SLOT
 
     // <Songs least listened Information>
 
-            "<div id='least_box' class='devel-box'>"
-                "<div id='least_box-header' class='devel-box-header'>"
-                    "<span id='least_box-header-title' class='devel-box-header-title'>"
+            "<div id='least_box' class='box'>"
+                "<div id='least_box-header' class='box-header'>"
+                    "<span id='least_box-header-title' class='box-header-title'>"
                     + i18n( "Least listened songs" ) +
                     "</span>"
                 "</div>"
-                "<div id='least_box-body' class='devel-box-body'>" );
+                "<div id='least_box-body' class='box-body'>" );
 
     QDateTime lastPlay = QDateTime();
     for( uint i = 0; i < least.count(); i = i + 5 )
     {
         lastPlay.setTime_t( least[i+4].toUInt() );
         m_HTMLSource.append(
-                    "<div class='" + QString( (i % 8) ? "devel-box-row-alt" : "devel-box-row" ) + "'>"
-                        "<div class='devel-song'>"
+                    "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
+                        "<div class='song'>"
                             "<a href=\"file:" + least[i+1].replace( '"', QCString( "%22" ) ) + "\">"
-                            "<span class='devel-song-title'>" + least[i] + "</span><br />"
-                            "<span class='devel-song-artist'>" + least[i+2] + "</span>"
+                            "<span class='song-title'>" + least[i] + "</span><br />"
+                            "<span class='song-artist'>" + least[i+2] + "</span>"
                             " - "
-                            "<span class='devel-song-album'>" + least[i+3] + "</span><br />"
-                            "<span class='devel-song-time'>" + i18n( "Last Played: %1" ).arg( verboseTimeSince( lastPlay ) ) + "</span>"
+                            "<span class='song-album'>" + least[i+3] + "</span><br />"
+                            "<span class='song-time'>" + i18n( "Last Played: %1" ).arg( verboseTimeSince( lastPlay ) ) + "</span>"
                             "</a>"
                         "</div>"
                     "</div>" );
@@ -645,28 +645,28 @@ void ContextBrowser::showCurrentTrack() //SLOT
     if ( EngineController::engine()->isStream() )
     {
         m_HTMLSource.append( QStringx(
-             "<div class='box'>"
-              "<div class='box-header'>%1</div>"
-              "<table class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>"
-               "<tr class='box-row'>"
-                "<td height='42' valign='top' width='90%'>"
-                 "<b>%2</b>"
-                 "<br>"
-                 "<br>"
-                 "%3"
-                 "<br>"
-                 "<br>"
-                 "%4"
-                 "<br>"
-                 "%5"
-                 "<br>"
-                 "%6"
-                 "<br>"
-                 "%7"
-                "</td>"
-               "</tr>"
-              "</table>"
-             "</div>" )
+                "<div class='box'>"
+                    "<div class='box-header'>%1</div>"
+                    "<table class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>"
+                        "<tr class='box-row'>"
+                            "<td height='42' valign='top' width='90%'>"
+                                "<b>%2</b>"
+                                "<br>"
+                                "<br>"
+                                "%3"
+                                "<br>"
+                                "<br>"
+                                "%4"
+                                "<br>"
+                                "%5"
+                                "<br>"
+                                "%6"
+                                "<br>"
+                                "%7"
+                            "</td>"
+                        "</tr>"
+                    "</table>"
+                "</div>" )
             .args( QStringList()
                 << i18n( "Stream Details" )
                 << escapeHTML( currentTrack.prettyTitle() )
@@ -679,7 +679,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
         if ( m_metadataHistory.count() > 2 )
         {
             m_HTMLSource.append(
-                "<br>"
                 "<div class='box'>"
                  "<div class='box-header'>" + i18n( "Metadata History" ) + "</div>"
                  "<table class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
@@ -716,21 +715,27 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     //making 2 tables is most probably not the cleanest way to do it, but it works.
     m_HTMLSource.append( QStringx(
-        "<div class='box'>"
-         "<div class='box-header' style='font-weight: normal;'>"
-          "<b>%1</b> - <b>%2</b><br>%3&nbsp;"
-         "</div>"
-         "<table class='box-body' width='100%'>"
-          "<tr class='box-row'>"
-           "<td width='1' style='margin: 0.4em 0.0em;'>"
-            "<a href='fetchcover:%4 @@@ %5'>"
-             "<img align='left' hspace='2' src='%6' title='%7'>"
-            "</a>"
-           "</td>"
-           "<td valign='bottom' align='right'>"
-            "<a title='%8' href='musicbrainz:%9 @@@ %10'>"
-             "<img src='%11' style='float: right; width: 38px; height: 22px;'/>"
-            "</a>")
+        "<div id='current_box' class='box'>"
+            "<div id='current_box-header' class='box-header'>"
+                "<span id='current_box-header-songname' class'box-header-title'>%1</span> "
+                "<span id='current_box-header-separator' class'box-header-title'>-</span> "
+                "<span id='current_box-header-artist' class'box-header-title'>%2</span>"
+                "<br />"
+                "<span id='current_box-header-album' class'box-header-title'>%3</span>"
+            "</div>"
+            "<table id='current_box-table' class='box-body' width='100%'>"
+                "<tr>"
+                    "<td id='current_box-largecover-td'>"
+                        "<a id='current_box-largecover-a' href='fetchcover:%4 @@@ %5'>"
+                            "<img id='current_box-largecover-image' hspace='2' src='%6' title='%7'>"
+                        "</a>"
+                    "</td>"
+                    "<td id='current_box-information-td' align='right'>"
+                        "<a id='current_box-musicbrainz-a' title='%8' href='musicbrainz:%9 @@@ %10'>"
+                            "<img id='current_box-musicbrainz-image' src='%11' />"
+                        "</a>"
+                        "<br />"
+                                 )
         .args( QStringList()
             << escapeHTML( currentTrack.title() )
             << escapeHTML( currentTrack.artist() )
@@ -755,22 +760,27 @@ void ContextBrowser::showCurrentTrack() //SLOT
         const uint score = values[3].toInt();
 
         const QString scoreBox =
-            "<table border='0' cellspacing='0' cellpadding='0'>"
-             "<tr>"
-              "<td nowrap>%1&nbsp;</td>"
-              "<td title='Score'>"
-               "<div class='sbouter'>"
-                "<div class='sbinner' style='width: %2px;'></div>"
-               "</div>"
-              "</td>"
-             "</tr>"
-            "</table>";
+                "<table class='scoreBox' border='0' cellspacing='0' cellpadding='0' title='" + i18n("Score") + " %2'>"
+                    "<tr>"
+                        "<td nowrap>%1&nbsp;</td>"
+                            "<td>"
+                            "<div class='sbouter'>"
+                                "<div class='sbinner' style='width: %3px;'></div>"
+                            "</div>"
+                        "</td>"
+                    "</tr>"
+                "</table>";
 
         //SAFE   = .arg( x, y )
         //UNSAFE = .arg( x ).arg( y )
-        m_HTMLSource.append( QString("<br>%1<br>%2%3<br>%4<br>")
+        m_HTMLSource.append( QString(
+                "<span>%1</span><br />"
+                "%2"
+                "<span>%3</span><br />"
+                "<span>%4</span>"
+                                    )
             .arg( i18n( "Track played once", "Track played %n times", playtimes ),
-                  scoreBox.arg( score ).arg( score / 2 ),
+                  scoreBox.arg( score ).arg( score ).arg( score / 2 ),
                   i18n( "Last Played: %1" ).arg( verboseTimeSince( lastPlay ) ),
                   i18n( "First Played: %1" ).arg( verboseTimeSince( firstPlay ) ) ) );
    }
@@ -778,18 +788,20 @@ void ContextBrowser::showCurrentTrack() //SLOT
         m_HTMLSource.append( i18n( "Never played before" ) );
 
     m_HTMLSource.append(
-           "</td>"
-          "</tr>"
-         "</table>"
+                    "</td>"
+                "</tr>"
+            "</table>"
         "</div>" );
     // </Current Track Information>
 
     if ( !m_db->isFileInCollection( currentTrack.url().path() ) )
     {
-        m_HTMLSource.append( "<div class='warning'>"
-                         + i18n("If you would like to see contextual information about this track, you should add it to your Collection.") +
-                         "&nbsp;<a href='show:collectionSetup'>" + i18n( "Click here to change your Collection setup" ) + "</a>."
-                        "</div>" );
+        m_HTMLSource.append(
+                "<div class='warning'>"
+                    + i18n("If you would like to see contextual information about this track, you should add it to your Collection.") +
+                    "&nbsp;<a href='show:collectionSetup'>" + i18n( "Click here to change your Collection setup" ) + "</a>."
+                "</div>"
+                           );
     }
 
     // <Suggested Songs>
@@ -834,7 +846,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
         if ( !values.isEmpty() )
         {
             m_HTMLSource.append(
-                "<br>"
                 "<div class='box'>"
                  "<div class='box-header' onClick=\"toggleBlock('T_SS')\" style='cursor: pointer;'>"
                   + i18n( "Suggested Songs" ) +
@@ -874,7 +885,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
     if ( !values.isEmpty() )
     {
         m_HTMLSource.append(
-            "<br>"
             "<div class='box'>"
              "<div class='box-header' onClick=\"toggleBlock('T_FT')\" style='cursor: pointer;'>"
               + i18n( "Favorite Tracks By %1" ).arg( artistName ) +
@@ -912,7 +922,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
     {
         // write the script to toggle blocks visibility
         m_HTMLSource.append(
-            "<br>"
             "<div class='box'>"
              "<div class='box-header'>" + i18n( "Albums By %1" ).arg( artistName ) + "</div>"
              "<table class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
@@ -1075,14 +1084,19 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
 
     //text attributes
     styleSheet += QString( "a { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
-    styleSheet += QString( ".song a { display: block; padding: 1px 2px; }" );
+    styleSheet += QString( ".song a { display: block; padding: 1px 2px; font-weight: normal; text-decoration: none; }" );
     styleSheet += QString( ".song a:hover { color: %1; background-color: %2; }" ).arg( fg ).arg( bg );
+    styleSheet += QString( ".song-title { font-weight: bold; }" );
+    styleSheet += QString( ".song-score { }" );
+    styleSheet += QString( ".song-artist { }" );
+    styleSheet += QString( ".song-album { }" );
+    styleSheet += QString( ".song-time { } " );
     styleSheet += QString( ".warning { font-size: %1px; color: %2; font-weight: bold; padding: 1em 0.5em 2em 0.5em; }" )
             .arg( pxSize )
             .arg( bg );
 
     //box: the base container for every block (border hilighted on hover, 'A' without underlining)
-    styleSheet += QString( ".box { border: solid %1 1px; text-align: left; }" ).arg( bg );
+    styleSheet += QString( ".box { border: solid %1 1px; text-align: left; margin-bottom: 10px; }" ).arg( bg );
     styleSheet += QString( ".box a { text-decoration: none; }" );
     styleSheet += QString( ".box:hover { border: solid %1 1px; }" ).arg( text );
 
@@ -1117,24 +1131,10 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     styleSheet += QString( ".albuminfo { float:right; padding-right:4px; font-size: %1px }" ).arg( pxSize );
     styleSheet += QString( ".default { font-size: %1px }" ).arg( pxSize );
 
-    // IN DEVELOPMENT(contact xatax for info): using these classes/id's while taking amarok over to the new div based layout
-    styleSheet += QString( ".devel-box { border: solid %1 1px; text-align: left; margin-bottom: 10px; }" ).arg( bg );
-    styleSheet += QString( ".devel-box-header { color: %1; background-color: %2; background-image: url( %4 ); background-repeat: repeat-x; font-size: %3px; font-weight: bold; padding: 1px 0.5em; border-bottom: 1px solid #000; }" )
-            .arg( fg )
-            .arg( bg )
-            .arg( pxSize + 2 )
-            .arg( m_headerGradientImage->name() );
-    styleSheet += QString( ".devel-box-body { padding: 2px; background-color: %1; background-image: url( %2 ); background-repeat: repeat-x; font-size:%3px; }" )
-            .arg( colorGroup().base().name() )
-            .arg( m_shadowGradientImage->name() )
-            .arg( pxSize );
-    styleSheet += QString( ".devel-song a { display: block; padding: 1px 2px; font-weight: normal; text-decoration: none; }" );
-    styleSheet += QString( ".devel-song a:hover { color: %1; background-color: %2; }" ).arg( fg ).arg( bg );
-    styleSheet += QString( ".devel-song-title { font-weight: bold; }" );
-    styleSheet += QString( ".devel-song-score { }" );
-    styleSheet += QString( ".devel-song-artist { }" );
-    styleSheet += QString( ".devel-song-album { }" );
-    styleSheet += QString( ".devel-song-time { }" );
+    styleSheet += QString( "#current_box-header-album { font-weight: normal; }" );
+    styleSheet += QString( "#current_box-information-td { text-align: right; }" );
+    styleSheet += QString( "#current_box-largecover-td { text-align: left; width: 100px; padding: 2px; }" );
+    styleSheet += QString( "#current_box-musicbrainz-image { width: 38px; height: 22px; }" );
 }
 
 void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& themeName )
@@ -1179,13 +1179,13 @@ void ContextBrowser::showIntroduction()
 
     m_HTMLSource.append(
             "<html>"
-            "<div id='introduction_box' class='devel-box'>"
-                "<div id='introduction_box-header' class='devel-box-header'>"
-                    "<span id='introduction_box-header-title' class='devel-box-header-title'>"
+            "<div id='introduction_box' class='box'>"
+                "<div id='introduction_box-header' class='box-header'>"
+                    "<span id='introduction_box-header-title' class='box-header-title'>"
                     + i18n( "Hello amaroK user!" ) +
                     "</span>"
                 "</div>"
-                "<div id='introduction_box-body' class='devel-box-body'>"
+                "<div id='introduction_box-body' class='box-body'>"
                     "<p>" +
                     i18n(
                     "This is the Context Browser: it shows you contextual information about the currently playing track."
@@ -1212,13 +1212,13 @@ void ContextBrowser::showScanning()
 
     m_HTMLSource.append(
             "<html>"
-            "<div id='building_box' class='devel-box'>"
-                "<div id='building_box-header' class='devel-box-header'>"
-                    "<span id='building_box-header-title' class='devel-box-header-title'>"
+            "<div id='building_box' class='box'>"
+                "<div id='building_box-header' class='box-header'>"
+                    "<span id='building_box-header-title' class='box-header-title'>"
                     + i18n( "Building Collection Database..." ) +
                     "</span>"
                 "</div>"
-                "<div id='building_box-body' class='devel-box-body'>"
+                "<div id='building_box-body' class='box-body'>"
                     "<p>" + i18n( "Building Collection Database..." ) + "</p>"
                 "</div>"
             "</div>"
@@ -1322,13 +1322,13 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
 
     m_HTMLSource.append(
             "<html>"
-            "<div id='lyrics_box' class='devel-box'>"
-                "<div id='lyrics_box-header' class='devel-box-header'>"
-                    "<span id='lyrics_box-header-title' class='devel-box-header-title'>"
+            "<div id='lyrics_box' class='box'>"
+                "<div id='lyrics_box-header' class='box-header'>"
+                    "<span id='lyrics_box-header-title' class='box-header-title'>"
                     + i18n( "Lyrics" ) +
                     "</span>"
                 "</div>"
-                "<div id='lyrics_box-body' class='devel-box-body'>"
+                "<div id='lyrics_box-body' class='box-body'>"
                 + m_lyrics +
                 "</div>"
             "</div>"
