@@ -1,7 +1,6 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // See COPYING file for licensing information
 
-
 #include "config.h"        //for AMAZON_SUPPORT
 
 #include "amarokconfig.h"

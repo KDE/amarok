@@ -2293,53 +2293,46 @@ TagWriter::doJob()
     //TagLib::ID3v2::FrameFactory::instance()->setDefaultTextEncoding( TagLib::String::UTF8 );
     TagLib::FileRef f( QFile::encodeName( path ), false );
 
-    if ( !f.isNull() ) {
+    if ( !f.isNull() )
+    {
         TagLib::Tag *t = f.tag();
-        QString field;
 
-        switch ( m_tagType ) {
-        case PlaylistItem::Title:
-            t->setTitle( QStringToTString( m_newTagString ));
-            field = "title";
-            break;
-        case PlaylistItem::Artist:
-            t->setArtist( QStringToTString( m_newTagString ) );
-            field = "artist";
-            break;
-        case PlaylistItem::Album:
-            t->setAlbum( QStringToTString( m_newTagString ) );
-            field = "album";
-            break;
-        case PlaylistItem::Year:
-            t->setYear( m_newTagString.toInt() );
-            field = "year";
-            break;
-        case PlaylistItem::Comment:
-            //FIXME how does this work for vorbis files?
-            //Are we likely to overwrite some other comments?
-            //Vorbis can have multiple comment fields..
-            t->setComment( QStringToTString( m_newTagString ) );
-            field = "comment";
-            break;
-        case PlaylistItem::Genre:
-            t->setGenre( QStringToTString( m_newTagString ) );
-            field = "genre";
-            break;
-        case PlaylistItem::Track:
-            t->setTrack( m_newTagString.toInt() );
-            field = "track";
-            break;
-
-        default:
-            return true;
+        switch ( m_tagType )
+        {
+            case PlaylistItem::Title:
+                t->setTitle( QStringToTString( m_newTagString ));
+                break;
+            case PlaylistItem::Artist:
+                t->setArtist( QStringToTString( m_newTagString ) );
+                break;
+            case PlaylistItem::Album:
+                t->setAlbum( QStringToTString( m_newTagString ) );
+                break;
+            case PlaylistItem::Year:
+                t->setYear( m_newTagString.toInt() );
+                break;
+            case PlaylistItem::Comment:
+                //FIXME how does this work for vorbis files?
+                //Are we likely to overwrite some other comments?
+                //Vorbis can have multiple comment fields..
+                t->setComment( QStringToTString( m_newTagString ) );
+                break;
+            case PlaylistItem::Genre:
+                t->setGenre( QStringToTString( m_newTagString ) );
+                break;
+            case PlaylistItem::Track:
+                t->setTrack( m_newTagString.toInt() );
+                break;
+    
+            default:
+                return true;
         }
 
         if( f.save() )
         {
             // Update the collection db.
             CollectionDB::instance()->updateURL( path, m_updateView );
-
-           m_failed = false;
+            m_failed = false;
         }
     }
 
