@@ -64,7 +64,7 @@ App::App()
         , m_pPlayerWindow( 0 ) //will be created in applySettings()
 {
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
-    const bool restoreSession = args->count() == 0 || args->isSet( "enqueue" );
+    bool restoreSession = args->count() == 0 || args->isSet( "enqueue" );
 
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
@@ -72,6 +72,7 @@ App::App()
         //stop the splashscreen first, socket server is a temporary on purpose!
         LoaderServer server( 0 );
         firstRunWizard();
+        restoreSession = false;
         amaroK::config()->writeEntry( "First Run", false );
     }
 
