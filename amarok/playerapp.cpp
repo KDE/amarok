@@ -554,6 +554,7 @@ void PlayerApp::setupColors()
         //bgAlt.setRgb( 83, 86, 112 );
 
         group.setColor( QColorGroup::Text, Qt::white );
+        group.setColor( QColorGroup::Foreground, Qt::white );
         group.setColor( QColorGroup::Base, bg );
         group.setColor( QColorGroup::Background, bg.dark( 115 ) );
 
@@ -605,6 +606,7 @@ void PlayerApp::setupColors()
         group.setColor( QColorGroup::Base, bg );
         group.setColor( QColorGroup::Background, bg.dark( 115 ) );
         group.setColor( QColorGroup::Text, fg );
+        group.setColor( QColorGroup::Foreground, fg );
         group.setColor( QColorGroup::Highlight, highlight );
         group.setColor( QColorGroup::HighlightedText, Qt::white );
         group.setColor( QColorGroup::Dark, Qt::darkGray );
