@@ -1,8 +1,9 @@
 #!/usr/bin/env python
+# -*- coding: Latin-1 -*-
 
 """
- This scripts starts a smal http-server that serves the current-playlist as
- HTML. Start it and point ypur browser to http://localhost:4773
+ This scripts starts a small http-server that serves the current-playlist as
+ HTML. Start it and point your browser to http://localhost:4773/
 
  Author: André Kelpe fs111 at web dot de
  License: GPL
@@ -20,7 +21,7 @@ from xml.dom import minidom
 PLAYLIST = "%s/.kde/share/apps/amarok/current.xml"%(user.home)
 
 # the fields to be shown via http
-FIELDS = ("Artist", "Title", "Album", "TrackNo", "Length", "Score")
+FIELDS = ("Artist", "Title", "Album", "TrackNo", "Length", "Genre",  "Score" )
 
 # the port number to listen to
 PORT = 4773
@@ -37,11 +38,14 @@ class Track(object):
             setattr(self, key,value)
 
 
-    def toRow(self):
+    def toRow(self, style=''):
         """Returns the a html-table-row with member values of this class"""
         tmp = ['<td>%s</td>'%(i) for i in [getattr(self,f) for f in \
                 self.__slots__ ]]
-        return '<tr>%s</tr>'%(''.join(tmp))        
+        tr_style = ''        
+        if style:
+            tr_style='class="%s"'%(style)
+        return '<tr %s>%s</tr>'%(tr_style, ''.join(tmp))        
 
 
 
@@ -80,17 +84,30 @@ class Playlist:
         self.code=""" <html>\n
                     <head>
                     <style>
-                    body
-                    {
+                    body {
                         font-size:10pt;
-                        padding-left:5%%;
+                        margin-left:5%%;
+                        margin-right5%%;
                         background-color: #9cb2cd;
                         color: white;
-                    }
+                        }
+                     table{border:1px white;}   
+                    .tr_one { background-color:#394062; }
+                    .tr_two { background-color:#202050;}
+                    a:link { color:#074876; border:0px; text-decoration:none; }
+                    a:visited { color:#074876; text-decoration:none; text-decoration:none; }
+
+                    a:active { color:#074876; text-decoration:none; text-decoration:none; } 
+                    a:hover { text-decoration:none; text-decoration:none; background-color:#074876;
+                            color:white; }
                     </style>
                     
                     </head> 
-                    <title>AmaroK playlist</title>\n <body>\n %s </body>\n
+                    <title>AmaroK playlist</title>\n <body>
+                    <div style="text-align:center;font-size:16pt;" >current
+                    <a href="http://amarok.kde.org" title="visit amarok hompage">amarok</a>
+                    playlist of %s</div>
+                    \n %s </body>\n
                 </html>\n
               """
         self.encoding = "ISO-8859-15"
@@ -102,7 +119,7 @@ class Playlist:
     def toHtml(self):
         """Returns a html representation of the whole Playlist"""
         if self.firstRun:
-            self.fullPage = self.code%(self._createTable()).encode(self.encoding)
+            self.fullPage = self.code%(os.environ['LOGNAME'],(self._createTable()).encode(self.encoding))
             self.firstRun = 0
         else:    
             newmtime = self._getMtime()    
@@ -142,15 +159,25 @@ class Playlist:
     def _createTable(self):
         """Returns the HTML-Table"""
 
-        tbl = """<table cellspacing="2">
-        <colgroup> <col width="150"> <col width="330"> <col width="150">
-        <col width="10"> <col width="30"> <col width="10"> </colgroup>
+        tbl = """<table cellpadding="5px" cellspacing="2">
+        <!--<colgroup> <col width="150"> <col width="330"> <col width="150">
+        <col width="10"> <col width="30"> <col width="10"> </colgroup>-->
         %s%s</table>"""
-        rows = [track.toRow() for track in self.tracks]
+        rows = self._createRows() 
         thead = "".join(['<th>%s</th>'%(i) for i in FIELDS])
         return tbl  %(thead,"".join(rows))            
 
-
+    def _createRows(self):
+        """Returns the table rows"""
+        retval = []
+        i = 1
+        for track in self.tracks:
+            style = 'tr_one'
+            if i %2 == 0:
+                style = 'tr_two'
+            retval.append(track.toRow(style=style))
+            i = i+1
+        return retval 
 
 
 def main():
