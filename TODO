@@ -3,11 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number, 
-           #11 being the highest available (take this one for your next bug and increase here)
+           #12 being the highest available (take this one for your next bug and increase here)
 
                       
 SHORT-TERM (URGENT):
 
+    * fix: #11<markey> bitrate display often shows bogus values (especially with VBR, it seems)
+    
     * reg: #9<berkus> file sorting is regressed. Should add in the same order as shown in 
              filebrowser, now doesn't sort until you press the column heading.
 
