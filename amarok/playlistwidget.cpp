@@ -270,12 +270,14 @@ void PlaylistWidget::handleOrder( RequestType request ) //SLOT
             {
                 //TODO this isn't terribly efficient AT ALL!
 
-                item = m_prevTracks.top();
-
-                for( const uint count = childCount();
-                     m_prevTracks.contains( item );
-                     item = (PlaylistItem *)itemAtIndex( KApplication::random() % count ) )
-                {}
+		const uint count = childCount();
+                item = (PlaylistItem *)itemAtIndex( KApplication::random() % count );
+		
+                while( m_prevTracks.contains( item ) )
+		{
+                     item = (PlaylistItem *)itemAtIndex( KApplication::random() % count );
+		    kdDebug() << "[DBG] pick[2] item " << item << endl;
+		}
             }
             else if( item )
             {
@@ -606,6 +608,8 @@ void PlaylistWidget::activate( QListViewItem *lvi, bool rememberTrack ) //SLOT
 
         //when the engine calls newMetaDataNotify we are expecting it
         m_cachedTrack = item;
+
+	kdDebug() << "[DBG] item=" << item << endl;
 
         //tell the engine to play the new track
         EngineController::instance()->play( item->metaBundle() );
