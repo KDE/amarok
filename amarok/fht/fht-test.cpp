@@ -23,20 +23,24 @@
 #include <stdlib.h>
 #include "fht.h"
 
+inline float sind(float d) { return sin(d *  M_PI / 180); }
+
 int main(void)
 {
 	FHT f(5);  // 2^5 input values  =>  2^4 spectrum values
-	int num = f.size(), i;
+	int num = f.size();
 
 	float *s1 = new float[num];	// start values
 	float *s2 = new float[num];	// Hartley coefficients
 	float *s3 = new float[num];	// Fourier power spectrum
 
 	// create a noisy signal with two sine waves
-	for (i = 0; i < num; i++)
-		s1[i] = 100.0 * rand() / (RAND_MAX + 1.0)
-			+ 100.0 * sin(i * 2)
-			+ 50.0 * sin(i * 7);
+	for (int i = 0; i < num; i++) {
+		float p = 360.0 * i / num;
+		s1[i] = 140.0 * rand() / (RAND_MAX + 1.0) - 70.0
+			+ 100.0 * sind(p)
+			+ 50.0 * sind(5 * p);
+	}
 
 	f.copy(s2, s1);
 	f.transform(s2);
@@ -46,11 +50,11 @@ int main(void)
 	f.scale(s3, 1.0 / (f.size() * f.size() * 128.0));
 
 	printf("Input\t\tFHT\t\tScaled Power Spectrum\n");
-	for (i = 0; i < num; i++)
+	for (int i = 0; i < num; i++)
 		if (i < num / 2) {
 			printf("%f\t%f\t%f\t", s1[i], s2[i], s3[i]);
 			for (int j = 0; j < s3[i]; j++)
-				putchar('*');
+				putchar('#');
 			putchar('\n');
 		} else
 			printf("%f\t%f\n", s1[i], s2[i]);
