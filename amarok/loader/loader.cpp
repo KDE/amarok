@@ -72,3 +72,17 @@ void Loader::loaded()
 
 
 #include "loader.moc"
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// TODO
+////////////////////////////////////////////////////////////////////////////////
+
+//* IPC. When amaroK is already loaded, find the instance and send the command args to it, without 
+//  loading a new instance (much faster). This way we can also get rid of KUniqueApplication
+//* For a challenge, make this work without Qt! This would reduce loading time even more, especially 
+//  when Qt is not already in memory
+//* Eventually rename loader to "amarok", and amaroK to "amarok-app"
+
