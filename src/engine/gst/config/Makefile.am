@@ -2,6 +2,7 @@ noinst_LTLIBRARIES = \
     libgstconfig.la
 
 libgstconfig_la_SOURCES = \
+    dummy.cpp \
     gstconfig.kcfgc
     
 INCLUDES = \
