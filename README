@@ -1,1 +1,31 @@
+amaroK README
+=============
+
+amaroK - a new media player for KDE
+
+There are many media players around these days, true. What's missing from most
+players is a user interface, that doesn't get in the way of the user. How many
+buttons do you have to press for simply adding some new tracks to the
+playlist? amaroK tries to be a little different, providing a simple drag and drop
+interface, that really makes playlist handling easy.
+
+
+    - fresh playlist concept, very fast to use, with drag and drop
+
+    - plays all formats supported by aRts, including mp3, ogg, audio CDs,
+      streams
+
+    - audio effects, like reverb and compressor
+
+    - compatible with the .m3u and .pls formats for playlists
+
+    - nice GUI, integrates into the KDE look, but with a unique touch
+
+
+
+
+Project Site:   http://amarok.sf.net
+
+Irc Channel:    irc.freenode.net: #amarok
+
 
