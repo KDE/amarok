@@ -1,7 +1,7 @@
 //Maintainer: Max Howell <max.howell@methylblue.com>, (C) 2004
 //Copyright:  See COPYING file that comes with this distribution
 
-#include "config.h"
+#include <config.h>
 
 #include <gtk/gtk.h>         //gtk_init(), gtk_rgb_init()
 #include <xmms/configfile.h> //visplugins use this stuff, see extern "C" block
@@ -115,17 +115,18 @@ main( int argc, char** argv )
     return 0;
 }
 
-#include <qstring.h>
-#include <kinstance.h>
-#include <kstandarddirs.h>
-
 int
 tryConnect()
 {
     //TODO remove qt and kde isms
+    #ifndef MAX_PATH
+    #define MAX_PATH 256
+    #endif
 
-    const KInstance instance( "xmmswrapper" );
-    const QString socketpath = locateLocal( "socket", "amarok.visualization_socket", &instance );
+    char path[MAX_PATH];
+    FILE *amarok = popen( "amarok --vis-socket-path", "r" );
+    fread( path, sizeof(char), MAX_PATH, amarok );
+    pclose( amarok );
 
     int fd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
 
@@ -133,17 +134,17 @@ tryConnect()
     {
         struct sockaddr_un local;
 
-        strcpy( &local.sun_path[ 0 ], socketpath.local8Bit() );
+        strcpy( &local.sun_path[ 0 ], path );
         local.sun_family = AF_UNIX;
 
-        std::cout << "[amK] Connecting to: " << socketpath.local8Bit() << '\n';
+        std::cout << "[amK] Connecting to: " << path << '\n';
 
         if( ::connect( fd, ( struct sockaddr* ) & local, sizeof( local ) ) == -1 )
         {
             ::close( fd );
             fd = -1;
 
-            std::cerr << "[amK] tryConnect() failed\n";
+            std::cerr << "[amK] Could not connect to the socket\n";
         }
     }
 

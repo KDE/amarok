@@ -148,6 +148,10 @@ else
         echo " =   + XMMS Visualization Wrapper"
     fi
 
+    if test x$build_libvisual = xyes; then
+        echo " =   + LibVisual Plugin"
+    fi
+
     echo " ="
 fi
 

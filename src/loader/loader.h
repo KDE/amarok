@@ -39,6 +39,10 @@ class Loader : public QApplication
         int  tryConnect( bool verbose = false );
         void timerEvent( QTimerEvent* );
 
+        enum SocketType { loader, Vis };
+
+        QCString socketPath( SocketType type = loader );
+
 // ATTRIBUTES ------
 
         int        m_sockfd;
