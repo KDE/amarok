@@ -821,7 +821,7 @@ CollectionDB::checkCompilations( const QString &path )
     {
         if ( albums[ i ] == i18n( "Unknown" ) || albums[ i ].isEmpty() ) continue;
 
-        const uint album_id = albumID( albums[ i ], FALSE, FALSE );
+        const uint album_id = albumID( albums[ i ], FALSE, TRUE );
         artists = query( QString( "SELECT DISTINCT artist_temp.name FROM tags_temp, artist_temp WHERE tags_temp.album = '%1' AND tags_temp.artist = artist_temp.id;" )
                             .arg( album_id ) );
         dirs    = query( QString( "SELECT DISTINCT dir FROM tags_temp WHERE album = '%1';" )
