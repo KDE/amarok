@@ -4,7 +4,9 @@ amaroK ChangeLog
 
 
 VERSION 1.1-beta2:
-  ADD: Crossfading and fade-in for GStreamer-Engine.
+  ADD: Next and previous track buttons for Tag-Editor.
+  ADD: Player-window adapts to current color scheme.
+  ADD: Crossfading and fade-in/out function for GStreamer-Engine.
   ADD: Genre and Favorite Tracks by Artist smart playlist in the
        Playlist-Browser.
   FIX: Don't crossfade, if we're playing the very next tack of the same
