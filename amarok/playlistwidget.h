@@ -155,7 +155,7 @@ class PlaylistWidget : private KListView, public EngineObserver
         void contentsDragEnterEvent( QDragEnterEvent* );
         void contentsDragMoveEvent( QDragMoveEvent* );
         void contentsDragLeaveEvent( QDragLeaveEvent* );
-        void contentsMouseMoveEvent( QMouseEvent *e );// { QListView::contentsMouseMoveEvent( e ); } //KListView imposes hand cursor so override it
+        //void contentsMouseMoveEvent( QMouseEvent *e ); { QListView::contentsMouseMoveEvent( e ); } //KListView imposes hand cursor so override it
         void viewportPaintEvent( QPaintEvent* );
         void customEvent( QCustomEvent* );
         bool eventFilter( QObject*, QEvent* );
