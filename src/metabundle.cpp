@@ -14,6 +14,8 @@
 #include <taglib/tstring.h>
 #include <taglib/audioproperties.h>
 
+#include <id3v1genres.h>    //used to load genre list
+
 /*
  * This class is not very complete, it fits our needs as they stand currently
  * If it doesn't work for you in some way, extend it sensibly :)
@@ -240,4 +242,16 @@ MetaBundle::prettyGeneric( const QString &s, int i ) //static
     //TODO ensure this inlines
 
     return ( i > 0 ) ? s.arg( i ) : ( i == Undetermined ) ? "?" : QString::null;
+}
+
+QStringList
+MetaBundle::genreList()    //static
+{
+    QStringList list;
+    
+    TagLib::StringList genres = TagLib::ID3v1::genreList();
+    for( TagLib::StringList::ConstIterator it = genres.begin(); it != genres.end(); ++it)
+        list.append( TStringToQString((*it)) );
+    
+    return list;
 }

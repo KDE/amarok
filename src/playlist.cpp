@@ -21,6 +21,7 @@
 #include "playlist.h"
 #include "osd.h"
 #include "threadweaver.h"
+#include "collectiondb.h"    //startEditTag()
 
 #include <kapplication.h>
 #include <kaction.h>
@@ -64,6 +65,7 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     , m_clearButton( 0 )
     , m_undoDir( KGlobal::dirs()->saveLocation( "data", "amarok/undo/", true ) )
     , m_undoCounter( 0 )
+    , m_editText( 0 )
     , m_ac( ac ) //we use this so we don't have to include app.h
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
@@ -1197,7 +1199,7 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
         break;
 
     case EDIT:
-        rename( item, col );
+        startEditTag( item, col );
         break;
 
     case FILL_DOWN:
@@ -1236,6 +1238,46 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
     }
 
     #undef item
+}
+
+
+void Playlist::startEditTag( QListViewItem *item, int column )
+{
+    KLineEdit *edit = renameLineEdit();
+    
+    QStringList values;
+    QStringList names;
+    CollectionDB *db = new CollectionDB();
+    
+    switch( column )
+    {
+        case PlaylistItem::Artist: 
+            db->execSql( "SELECT name FROM artist;", &values, &names );
+            edit->completionObject()->setItems( values );
+            break;
+            
+        case PlaylistItem::Album:
+            db->execSql( "SELECT name FROM album;", &values, &names );
+            edit->completionObject()->setItems( values );
+            break;
+            
+        case PlaylistItem::Genre:
+            edit->completionObject()->setItems( MetaBundle::genreList() );
+            break;
+            
+        default:
+            edit->completionObject()->clear();
+            break;
+    }
+
+    values.clear();
+    names.clear();
+    delete db;
+    
+    m_editText = ((PlaylistItem *)item)->exactText( column );
+    kdDebug() << "isempty "<< m_editText.isEmpty()<<endl;
+    rename( item, column );
+
 }
 
 
@@ -1396,10 +1438,8 @@ void Playlist::slotEraseMarker() //SLOT
 
 void Playlist::writeTag( QListViewItem *lvi, const QString &tag, int col ) //SLOT
 {
-    //TODO we need a way to tell if the text after the rename was the same
-    //     at this point the text is already changed grrr..
-
-    m_weaver->append( new TagWriter( this, (PlaylistItem *)lvi, tag, col ), true );
+    if( m_editText != tag && !(m_editText.isEmpty() && tag.isEmpty()) )    //write the new tag only if it's changed
+        m_weaver->append( new TagWriter( this, (PlaylistItem *)lvi, tag, col ), true );
 
     QListViewItem *below = lvi->itemBelow();
     //FIXME will result in nesting of this function?
@@ -1597,13 +1637,6 @@ void Playlist::customEvent( QCustomEvent *e )
 
             emit itemCountChanged( childCount() );
         }
-        #undef e
-        break;
-
-    case PlaylistLoader::PlaylistFound:
-
-        #define e static_cast<PlaylistLoader::PlaylistFoundEvent*>(e)
-        //m_weaver->append( new PLStats( m_browser, e->url(), e->contents() ) );
         #undef e
         break;
 

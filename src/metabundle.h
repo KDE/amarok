@@ -75,6 +75,7 @@ public:
     static QString prettyTime( int, bool showHours = true );
     static QString zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1" ).arg( i ) : QString::number( i ); }
     static QString prettyTitle( QString );
+    static QStringList genreList();
 
 private:
     KURL    m_url;

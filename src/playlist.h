@@ -145,7 +145,8 @@ class Playlist : private KListView, public EngineObserver
         void switchState( QStringList&, QStringList& );
         void removeItem( PlaylistItem* );
         void refreshNextTracks( int=-1 );
-
+        void startEditTag( QListViewItem *, int );    //start inline tag editing with auto-completion
+        
         //engine observer functions
         void engineNewMetaData( const MetaBundle&, bool );
         void engineStateChanged( EngineBase::EngineState );
@@ -193,6 +194,9 @@ class Playlist : private KListView, public EngineObserver
         QStringList  m_redoList;
         uint         m_undoCounter;
 
+        //text before inline editing ( the new tag is written only if it's changed )
+        QString m_editText;
+        
         KActionCollection* const m_ac;
 };
 
