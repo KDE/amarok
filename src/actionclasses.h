@@ -34,12 +34,11 @@ namespace amaroK
             void slotActivated( int index );
 
         private:
-            Menu( QWidget *parent );
+            Menu();
 
             static const int ID_CONF_DECODER = 103;
             static const int ID_SHOW_VIS_SELECTOR = 104;
             static KHelpMenu  *s_helpMenu;
-            static KPopupMenu *s_menu;
     };
 
 

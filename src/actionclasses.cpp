@@ -17,8 +17,7 @@
 
 using namespace amaroK;
 
-KHelpMenu  *Menu::s_helpMenu = 0;
-KPopupMenu *Menu::s_menu = 0;
+KHelpMenu *Menu::s_helpMenu = 0;
 
 
 static void
@@ -70,49 +69,49 @@ MenuAction::plug( QWidget *w, int index )
     else return -1;
 }
 
-KPopupMenu*
-Menu::instance() //STATIC
+Menu::Menu()
 {
-    if( !s_menu )
-    {
-        KActionCollection *ac = pApp->actionCollection();
+    KActionCollection *ac = pApp->actionCollection();
 
-        s_menu = new KPopupMenu;
-        s_menu->setCheckable( true );
+    setCheckable( true );
 
-        safePlug( ac, "repeat_track", s_menu );
-        safePlug( ac, "repeat_playlist", s_menu );
-        safePlug( ac, "random_mode", s_menu );
+    safePlug( ac, "repeat_track", this );
+    safePlug( ac, "repeat_playlist", this );
+    safePlug( ac, "random_mode", this );
 
-        s_menu->insertSeparator();
+    insertSeparator();
 
-        s_menu->insertItem( i18n( "&Visualizations..." ), ID_SHOW_VIS_SELECTOR );
+    insertItem( i18n( "&Visualizations..." ), ID_SHOW_VIS_SELECTOR );
 
-        s_menu->insertSeparator();
+    insertSeparator();
 
-        s_menu->insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( slotConfigEffects() ) );
-        s_menu->insertItem( i18n( "Configure &Decoder..." ), ID_CONF_DECODER );
+    insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( slotConfigEffects() ) );
+    insertItem( i18n( "Configure &Decoder..." ), ID_CONF_DECODER );
 
-        s_menu->insertSeparator();
+    insertSeparator();
 
-        safePlug( ac, KStdAction::name(KStdAction::ConfigureToolbars), s_menu );
-        safePlug( ac, KStdAction::name(KStdAction::KeyBindings), s_menu );
-        safePlug( ac, "options_configure_globals", s_menu ); //we created this one
-        safePlug( ac, KStdAction::name(KStdAction::Preferences), s_menu );
+    safePlug( ac, KStdAction::name(KStdAction::ConfigureToolbars), this );
+    safePlug( ac, KStdAction::name(KStdAction::KeyBindings), this );
+    safePlug( ac, "options_configure_globals", this ); //we created this one
+    safePlug( ac, KStdAction::name(KStdAction::Preferences), this );
 
-        s_menu->insertSeparator();
+    insertSeparator();
 
-        s_menu->insertItem( SmallIcon("help"), i18n( "&Help" ), helpMenu( s_menu ) );
+    insertItem( SmallIcon("help"), i18n( "&Help" ), helpMenu( this ) );
 
-        s_menu->insertSeparator();
+    insertSeparator();
 
-        safePlug( ac, KStdAction::name(KStdAction::Quit), s_menu );
+    safePlug( ac, KStdAction::name(KStdAction::Quit), this );
 
-        connect( s_menu, SIGNAL( aboutToShow() ),  s_menu, SLOT( slotAboutToShow() ) );
-        connect( s_menu, SIGNAL( activated(int) ), s_menu, SLOT( slotActivated(int) ) );
-    }
+    connect( this, SIGNAL( aboutToShow() ),  SLOT( slotAboutToShow() ) );
+    connect( this, SIGNAL( activated(int) ), SLOT( slotActivated(int) ) );
+}
 
-    return s_menu;
+KPopupMenu*
+Menu::instance()
+{
+    static Menu menu;
+    return &menu;
 }
 
 KPopupMenu*

@@ -8,8 +8,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  FIX 125 <markey> Visualizations broken --> nothing happens after clicking menu item.
-
   FIX 124 <muesli> Make CollectionBrowser independent of i18n.
 
   FIX 123 <muesli> Pick the proper fonts and colors for both, Welcome- and ContextBrowser.
