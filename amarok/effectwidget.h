@@ -23,7 +23,9 @@
 #include <kdialogbase.h>
 
 class QGroupBox;
+class QHideEvent;
 class QPushButton;
+class QWidget;
 
 class KComboBox;
 
@@ -55,16 +57,21 @@ class EffectWidget : public KDialogBase
     Q_OBJECT
 
     public:
-        EffectWidget();
+        EffectWidget( QWidget* parent = 0 );
         ~EffectWidget();
 
-    public slots:
+    signals:
+        void sigHide( bool shown );
+        
+    private slots:
         void slotButtonTop();
         void slotButtonBotConf();
         void slotButtonBotRem();
         void slotItemClicked( QListViewItem *pCurrentItem );
 
     private:
+        void hideEvent( QHideEvent* );
+
 // ATTRIBUTES ------
         KComboBox   *m_pComboBox;
         QListView *m_pListView;

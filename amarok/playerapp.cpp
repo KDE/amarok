@@ -72,7 +72,6 @@ PlayerApp::PlayerApp()
         , m_length( 0 )
         , m_playRetryCounter( 0 )
         , m_delayTime( 0 )
-        , m_pEffectWidget( NULL )
         , m_pFht( new FHT( SCOPE_SIZE ) )
         , m_pOSD( new OSDWidget() )
         , m_proxyError( false )
@@ -82,17 +81,31 @@ PlayerApp::PlayerApp()
 
     initPlayerWidget();
     initBrowserWin();
-
+    
     //we monitor for close, hide and show events
-    m_pPlayerWidget->installEventFilter( this );
     m_pBrowserWin  ->installEventFilter( this );
+    m_pPlayerWidget->installEventFilter( this );
 
     readConfig();
 
-    //TODO can we create this on demand only? it would save a whole bunch of memory
-    KConfigDialog *dialog = new AmarokConfigDialog( m_pPlayerWidget, "settings", AmarokConfig::self() );
-    connect( dialog, SIGNAL( settingsChanged() ), this, SLOT( applySettings() ) );
-
+    { //<AmarokConfigDialog>
+        //TODO can we create this on demand only? it would save a whole bunch of memory
+        KConfigDialog *dialog = new AmarokConfigDialog( m_pPlayerWidget, "settings", AmarokConfig::self() );
+        
+        connect( dialog, SIGNAL( settingsChanged() ), this, SLOT( applySettings() ) );
+    } //</AmarokConfigDialog>
+    
+    { //<EffectConfigWidget>
+        EffectWidget *pEffectWidget = new EffectWidget(); //gets destroyed with PlayerWidget
+        
+        connect( m_pPlayerWidget->m_pButtonEq, SIGNAL( toggled  ( bool ) ),
+                 pEffectWidget,                SLOT  ( setShown ( bool ) ) );
+        connect( pEffectWidget,                SIGNAL( sigHide  ( bool ) ),
+                 m_pPlayerWidget->m_pButtonEq, SLOT  ( setOn    ( bool ) ) );
+        connect( m_pPlayerWidget,              SIGNAL( destroyed() ),
+                 pEffectWidget,                SLOT  ( deleteLater() ) );
+    } //</EffectConfigWidget>
+                                             
     applySettings();
     m_pPlayerWidget->show(); //browserWin gets shown automatically if buttonPl isOn()
 
@@ -133,7 +146,6 @@ PlayerApp::~PlayerApp()
 
     saveConfig();
 
-    delete m_pEffectWidget;
     delete m_pFht;
     delete m_pPlayerWidget; //is parent of browserWin (and thus deletes it)
     delete m_pOSD;
@@ -212,10 +224,6 @@ void PlayerApp::initPlayerWidget()
              this,                               SLOT  ( slotStop() ) );
     connect( m_pPlayerWidget->m_pButtonNext,     SIGNAL( clicked() ),
              this,                               SLOT  ( slotNext() ) );
-    connect( m_pPlayerWidget->m_pButtonPl,       SIGNAL( toggled( bool ) ),
-             this,                               SLOT  ( slotPlaylistToggle( bool ) ) );
-    connect( m_pPlayerWidget->m_pButtonEq,       SIGNAL( clicked() ),
-             this,                               SLOT  ( slotConfigEffects() ) );
 
     kdDebug() << "end PlayerApp::initPlayerWidget()" << endl;
 }
@@ -227,6 +235,9 @@ void PlayerApp::initBrowserWin()
 
     m_pBrowserWin = new BrowserWin( m_pPlayerWidget, "BrowserWin" );
 
+    connect( m_pPlayerWidget->m_pButtonPl,       SIGNAL( toggled( bool ) ),
+             m_pBrowserWin,                      SLOT  ( setShown( bool ) ) );
+    
     kdDebug() << "end PlayerApp::initBrowserWin()" << endl;
 }
 
@@ -745,23 +756,6 @@ void PlayerApp::slotVisTimer()
 
         ++t;
     }
-}
-
-
-void PlayerApp::slotPlaylistToggle( bool b )
-{
-    if( b ) m_pBrowserWin->show();
-    else m_pBrowserWin->hide();
-}
-
-
-void PlayerApp::slotConfigEffects()
-{
-    // we never destroy the EffectWidget, just hide it, since destroying would delete the EffectListItems
-    if ( m_pEffectWidget == NULL )
-        m_pEffectWidget = new EffectWidget();
-
-    m_pEffectWidget->show();
 }
 
 

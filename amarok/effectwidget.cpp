@@ -18,7 +18,6 @@
 #include "effectwidget.h"
 #include "engine/enginebase.h"
 #include "playerapp.h"
-//#include "playerwidget.h"
 
 #include <string>
 #include <vector>
@@ -75,8 +74,8 @@ void EffectListItem::configure()
 static const int BUTTON_WIDTH = 30;
 
 
-EffectWidget::EffectWidget()
-        : KDialogBase( 0, "EffectWidget", false, kapp->makeStdCaption( i18n("Effects") ) )
+EffectWidget::EffectWidget( QWidget* parent )
+        : KDialogBase( parent, "EffectWidget", false, kapp->makeStdCaption( i18n("Effects") ) )
 {
     showButtonApply( false );
     showButtonCancel( false );
@@ -131,7 +130,7 @@ EffectWidget::EffectWidget()
 
     { //fill listview with restored effect entries
         std::vector<long> vec = pApp->m_pEngine->activeEffects();
-        for ( int i = 0; i < vec.size(); i++ )
+        for ( uint i = 0; i < vec.size(); i++ )
                 new EffectListItem( m_pListView, pApp->m_pEngine->effectNameForId( vec[i] ), vec[i] );
     }
                 
@@ -142,8 +141,15 @@ EffectWidget::EffectWidget()
 EffectWidget::~EffectWidget()
 {}
 
+////////////////////////////////////////////////////////////////////////////////
+// PRIVATE METHODS
+////////////////////////////////////////////////////////////////////////////////
 
-// SLOTS ----------------------------------------------------------------------------
+void EffectWidget::hideEvent( QHideEvent* )
+{
+    emit sigHide( false );
+}
+
 
 void EffectWidget::slotButtonTop()
 {

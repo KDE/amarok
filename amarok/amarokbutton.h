@@ -36,12 +36,12 @@ class AmarokButton : public QLabel
         AmarokButton( QWidget *parent, QString activePixmap, QString inactivePixmap, bool toggleButton );
         ~AmarokButton();
 
-        void setOn( bool enable );
         bool isOn();
 
         // ATTRIBUTES ------
 
     public slots:
+        void setOn( bool enable );
 
     signals:
         void clicked();

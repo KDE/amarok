@@ -191,7 +191,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_pButtonPl = new AmarokButton( this, locate( "data", "amarok/images/pl_inactive2.png" ),
                                     locate( "data", "amarok/images/pl_active2.png" ), true );
     m_pButtonEq = new AmarokButton( this, locate( "data", "amarok/images/eq_inactive2.png" ),
-                                    locate( "data", "amarok/images/eq_active2.png" ), false );
+                                    locate( "data", "amarok/images/eq_active2.png" ), true );
 
     m_pButtonEq->move( 5, 85 );
     m_pButtonEq->resize( 28, 13 );

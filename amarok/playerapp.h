@@ -38,7 +38,6 @@ class QEvent;
 class KGlobalAccel;
 
 class BrowserWin;
-class EffectWidget;
 class EngineBase;
 class FHT;
 class MetaBundle;
@@ -99,8 +98,6 @@ class PlayerApp : public KUniqueApplication
         void slotMainTimer();
         void slotAnimTimer();
         void slotVisTimer();
-        void slotPlaylistToggle( bool b );
-        void slotConfigEffects();
         void slotShowOptions();
 
     private slots:
@@ -136,7 +133,6 @@ class PlayerApp : public KUniqueApplication
         long m_length;
         int m_playRetryCounter;
         int m_delayTime;
-        EffectWidget *m_pEffectWidget;
         FHT *m_pFht;
         OSDWidget *m_pOSD;
         bool m_proxyError;
