@@ -29,6 +29,7 @@ email                : markey@web.de
 #include "playlistwindow.h"
 #include "plugin.h"
 #include "pluginmanager.h"
+#include "scriptmanager.h"
 #include "socketserver.h"
 #include "systray.h"
 #include "tracktooltip.h"        //engineNewMetaData()
@@ -66,6 +67,10 @@ App::App()
     m_pOSD            = amaroK::OSD::instance(); //creates the OSD
     m_pTray           = new amaroK::TrayIcon( m_pPlaylistWindow );
     (void)              new Vis::SocketServer( this );
+    m_scripter        = new ScriptManager::Manager( this );
+    
+    m_scripter->addObject( this );
+    m_scripter->addObject( m_pDcopHandler );
 
     m_pPlaylistWindow->init(); //creates the playlist, browsers, etc.
     initGlobalShortcuts();

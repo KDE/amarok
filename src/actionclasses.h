@@ -36,8 +36,13 @@ namespace amaroK
         private:
             Menu();
 
-            static const int ID_CONF_DECODER = 103;
-            static const int ID_SHOW_VIS_SELECTOR = 104;
+            enum MenuIds {
+                ID_CONF_DECODER,
+                ID_SHOW_VIS_SELECTOR,
+                ID_SHOW_SCRIPT_SELECTOR,
+                ID_SHOW_SCRIPT_CONSOLE
+            };
+
             static KHelpMenu  *s_helpMenu;
     };
 

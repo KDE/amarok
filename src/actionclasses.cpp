@@ -10,7 +10,8 @@
 #include "app.h"                //actionCollection() and a SLOT
 #include "enginecontroller.h"
 #include "playlistwindow.h"     //need amaroK::ToolBar
-#include "socketserver.h"       //Vis::Selector::showInstance()
+#include "scriptmanager.h"
+#include "socketserver.h"       //Vis::Selector::showInstance(
 
 #include <kaction.h>
 #include <khelpmenu.h>
@@ -89,7 +90,12 @@ Menu::Menu()
     insertItem( i18n( "&Visualizations..." ), ID_SHOW_VIS_SELECTOR );
 
     insertSeparator();
+   
+    insertItem( i18n( "&Scripts..." ), ID_SHOW_SCRIPT_SELECTOR );
+    insertItem( i18n( "&JavaScript Console" ), ID_SHOW_SCRIPT_CONSOLE );
 
+    insertSeparator();
+    
     insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( slotConfigEffects() ) );
     insertItem( i18n( "Configure &Decoder..." ), ID_CONF_DECODER );
 
@@ -150,6 +156,12 @@ Menu::slotActivated( int index )
         break;
     case ID_SHOW_VIS_SELECTOR:
         Vis::Selector::instance()->show(); //doing it here means we delay creation of the widget
+        break;
+    case ID_SHOW_SCRIPT_SELECTOR:
+        ScriptManager::Manager::showSelector();
+        break;
+    case ID_SHOW_SCRIPT_CONSOLE:
+        ScriptManager::Manager::showConsole();
         break;
     }
 }

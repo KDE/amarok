@@ -63,6 +63,9 @@ amarokapp_SOURCES = \
     playlistloader.cpp \
     playlistwindow.cpp \
     pluginmanager.cpp \
+    scriptmanager.cpp \
+    scriptmanager_selector.cpp \
+    scriptmanagerbase.ui \
     searchbrowser.cpp \
     sliderwidget.cpp \
     socketserver.cpp \
@@ -81,9 +84,11 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/sqlite/libsqlite.la \
     $(top_builddir)/amarok/src/titleproxy/libtitleproxy.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) \
-    $(taglib_libs) $(gl_libs)
+    $(taglib_libs) $(gl_libs) -lkjsembed 
 
-amarokapp_LDFLAGS = $(all_libraries) $(KDE_RPATH)
+amarokapp_LDFLAGS = \
+    $(all_libraries) \
+    $(KDE_RPATH)
 
 METASOURCES = \
     AUTO
