@@ -68,12 +68,6 @@ MID-TERM:
 
     * fix: redirected URLs do not work (? - we need some testcase)
 
-    * fix: <mxcl> reimplement ask recursively on drop operations to playlist
-           <markey> replace with "add all media in current directory".
-           basically just a shortcut for going up to the parent directory, and then dragging
-           the directory. imagine you're in the root directory of some filesystem, and want to add all
-           files in it.. currently you'd have to select all files manually
-
     * fix: <mxcl>KListView sets the hand cursor on column(0) of the playlist. This is not
            relevant to amaroK since we are naughty and don't obey KDE's single click mode
            we should disable the hand cursor since that means "single-click to activate me"
@@ -108,9 +102,12 @@ MID-TERM:
 
     * add: display warning when artsd is run w/o realtime
 
-    * add: background pseudo-transparency for playlist window
+    * add: background pseudo-transparency for playlist window (<markey>I don't like that any more-too hackish)
 
-    * add: function for adding all files in current dir to playlist
+    * add: function for adding all files in current dir to playlist.
+           basically just a shortcut for going up to the parent directory, and then dragging
+           the directory. imagine you're in the root directory of some filesystem, and want to add all
+           files in it.. currently you'd have to select all files manually
 
     * add: seeking with mousewheel
 
