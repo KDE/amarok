@@ -16,11 +16,11 @@ email                : markey@web.de
 #ifndef AMAROKCONFIGDIALOG_H
 #define AMAROKCONFIGDIALOG_H
 
+#include "osd.h"
+
 #include <kconfigdialog.h>
 
 class QComboBox;
-class OSDWidget;
-class Options5;
 
 class AmarokConfigDialog : public KConfigDialog
 {
@@ -32,8 +32,6 @@ class AmarokConfigDialog : public KConfigDialog
         // ATTRIBUTES ------
     private:
         QComboBox* m_pSoundSystem;
-        Options5* m_pOpt5;
-        OSDWidget *m_pOsdPreview;
 
     private:
         bool hasChanged();
@@ -41,7 +39,6 @@ class AmarokConfigDialog : public KConfigDialog
 
     private slots:
         void updateSettings();
-        void previewOsd();
 };
 
 

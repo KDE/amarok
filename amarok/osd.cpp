@@ -22,6 +22,8 @@
 #include <qregexp.h>
 #include <qtimer.h>
 
+#include <kcursor.h>
+
 OSDWidget::OSDWidget( const QString &appName )
     : QWidget(NULL, "osd",
               WType_TopLevel | WStyle_StaysOnTop |
@@ -45,6 +47,7 @@ OSDWidget::OSDWidget( const QString &appName )
 
 void OSDWidget::renderOSDText( const QString &text )
 {
+    m_currentText = text;
     QPainter paint;
     QColor bg( 0, 0, 0 );
     QColor fg( 255, 255, 255 );
@@ -130,8 +133,11 @@ void OSDWidget::showOSD( const QString &text )
             QWidget::show();
 
             // let it disappear via a QTimer
-            timer->start( m_duration, TRUE );
-            timerMin->start( 150, TRUE );
+            if( m_duration ) // if duration is 0 stay forever
+            {
+                timer->start( m_duration, TRUE );
+                timerMin->start( 150, TRUE );
+            }
         }
     }
 }
@@ -145,17 +151,32 @@ void OSDWidget::setDuration(int ms)
 void OSDWidget::setFont(QFont newfont)
 {
     font = newfont;
+    if( isVisible() )
+    {
+        renderOSDText( m_currentText );
+        repaint(); // triggers double repaint
+    }
 }
 
 
 void OSDWidget::setTextColor(QColor newcolor)
 {
     m_textColor = newcolor;
+    if( isVisible() )
+    {
+        renderOSDText( m_currentText );
+        repaint();
+    }
 }
 
 void OSDWidget::setBackgroundColor(QColor newColor)
 {
     m_bgColor = newColor;
+    if( isVisible() )
+    {
+        renderOSDText( m_currentText );
+        repaint();
+    }
 }
 
 
@@ -163,11 +184,13 @@ void OSDWidget::setOffset(int x, int y) // QPoint?
 {
     m_offset.setX( x );
     m_offset.setY( y );
+    if( isVisible() ) rePosition();
 }
 
 void OSDWidget::setPosition(Position pos)
 {
     m_position = pos;
+    if( isVisible() ) rePosition();
 }
 
 void OSDWidget::setScreen(uint screen)
@@ -175,6 +198,7 @@ void OSDWidget::setScreen(uint screen)
     m_screen = screen;
     if( m_screen >= QApplication::desktop()->numScreens() )
         m_screen = QApplication::desktop()->numScreens() - 1;
+    if( isVisible() ) rePosition();
 }
 
 
@@ -188,9 +212,11 @@ void OSDWidget::minReached()
         raise();
         QWidget::show();
 
-        // let it disappear via a QTimer
-        timer->start( m_duration, TRUE );
-        timerMin->start( 150, TRUE );
+        if( m_duration ) // if duration is 0 stay forever
+        {
+            timer->start( m_duration, TRUE );
+            timerMin->start( 150, TRUE );
+        }
     }
 }
 
@@ -250,5 +276,73 @@ void OSDWidget::rePosition()
     // TODO: check for sanity?
     if( newX != x() || newY != y() ) move( newX, newY );
 }
+
+
+//////  OSDPreviewWidget below /////////////////////
+
+OSDPreviewWidget::OSDPreviewWidget( const QString &appName ) : OSDWidget( appName )
+{
+    m_dragging = false;
+    setDuration( 0 );
+}
+
+void OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
+{
+    m_dragOffset = QCursor::pos() - QPoint( x(), y() );
+    if( event->button() == LeftButton && !m_dragging ) {
+        grabMouse( KCursor::handCursor() );
+        m_dragging = true;
+    }
+}
+
+void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent */*event*/ )
+{
+    if( m_dragging )
+    {
+        m_dragging = false;
+        releaseMouse();
+
+        // compute current Position && offset
+        QDesktopWidget *desktop = QApplication::desktop();
+        int currentScreen = desktop->screenNumber( QPoint( x(), y() ) );
+        Position pos = Center;
+        if( currentScreen != -1 )
+        {
+            QRect screenRect = desktop->screenGeometry( currentScreen );
+            // figure out what quadrant we are in and the offset in that quadrant
+            int xoffset = 0, yoffset = 0;
+            bool left = false;
+            if( x() < screenRect.width() / 2 + screenRect.x() ) // left
+            {
+                left = true;
+                xoffset = x() - screenRect.x();
+            }
+            else
+            {
+                xoffset = screenRect.x() + screenRect.width() - x() - width();
+            }
+            if( y() < screenRect.height() / 2 + screenRect.y() ) // top
+            {
+                yoffset = y() - screenRect.y();
+                pos = left ? TopLeft : TopRight;
+            }
+            else
+            {
+                yoffset = screenRect.y() + screenRect.height() - y() - height();
+                pos = left ? BottomLeft : BottomRight;
+            }
+            emit positionChanged( currentScreen, pos, xoffset, yoffset );
+        }
+    }
+}
+
+void OSDPreviewWidget::mouseMoveEvent( QMouseEvent */*event*/ )
+{
+    if( m_dragging && this == mouseGrabber() )
+    {
+        move( QCursor::pos() - m_dragOffset );
+    }
+}
+
 
 #include "osd.moc"

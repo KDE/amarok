@@ -70,10 +70,31 @@ class OSDWidget : public QWidget
         QColor      m_bgColor;
         QPixmap     osdBuffer;
         QStringList textBuffer;
+        QString     m_currentText;
 
         QPoint m_offset;
         Position m_position;
         int m_screen;
+};
+
+// do not pollute OSDWidget with this preview stuff
+class OSDPreviewWidget : public OSDWidget
+{
+    Q_OBJECT
+public:
+    OSDPreviewWidget( const QString &appName );
+
+signals:
+    void positionChanged( int screen, OSDWidget::Position alignment, int XOffset, int YOffset );
+
+protected:
+    void mousePressEvent( QMouseEvent * );
+    void mouseReleaseEvent( QMouseEvent * );
+    void mouseMoveEvent( QMouseEvent * );
+
+private:
+    bool m_dragging;
+    QPoint m_dragOffset;
 };
 
 #endif
