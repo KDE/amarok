@@ -122,9 +122,6 @@ MID-TERM:
     * chg: pre 1.0, plan, cleanup and future-proof settings file keys. Will almost certainly
            mean that people will lose their settings, oh well, best to do it for the 1.0 release.
 
-    * chg: ability to get currently playing title to clipboard, or writing
-           info in some file or some other easy way to get this info..
-
     * chg: select tracks on mouseup, not mousedown (does this make sense?)
                       
 
