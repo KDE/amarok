@@ -47,6 +47,8 @@ class ContextBrowser : public QVBox, public EngineObserver
         CollectionDB *m_db;
         QString m_styleSheet;
         KURL m_url;
+        QString m_artist;
+        QString m_album;
 };
 
 #endif /* AMAROK_CONTEXTBROWSER_H */

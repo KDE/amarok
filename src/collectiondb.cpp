@@ -822,18 +822,18 @@ CollectionDB::retrieveSecondLevelURLs( QString itemText1, QString itemText2, QSt
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
-CollectionDB::fetchCover( QObject* parent, const QString& key, bool edit ) //SLOT
+CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString& album, bool edit ) //SLOT
 {
     /* Static license Key. Thanks muesli ;-) */
     QString amazonLicense = "D1URM11J3F2CEH";
     
-    kdDebug() << "Querying amazon with keyword: " << key << endl;
+    kdDebug() << "Querying amazon with artist: " << artist << "and album " << album << endl;
     
     CoverFetcher* fetcher = new CoverFetcher( amazonLicense, parent );
     connect( fetcher, SIGNAL( imageReady( const QString&, const QPixmap& ) ),
              this,      SLOT( saveCover( const QString&, const QPixmap& ) ) );
     
-    fetcher->getCover( key, key, CoverFetcher::heavy, edit );
+    fetcher->getCover( artist, album, CoverFetcher::heavy, edit );
 }
 
 

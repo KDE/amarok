@@ -42,23 +42,28 @@ CoverFetcher::~CoverFetcher()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
-CoverFetcher::getCover( const QString& keyword, const QString& album, QueryMode mode, bool noedit, int size )
+CoverFetcher::getCover( const QString& artist, const QString& album, QueryMode mode, bool noedit, int size, bool albumonly )
 {
     kdDebug() << k_funcinfo << endl;
-    m_keyword = keyword;
+    m_artist = artist;
     m_album = album;
+    if ( artist == album ) m_keyword = album;
+    else m_keyword = artist + " - " + album;
+    if ( !m_saveas ) m_saveas = artist + " - " + album;
     m_noedit = noedit;
     m_size = size;
+    m_albumonly = albumonly;
         
     /* reset all values (if search isn't started as new CoverFetcher) */
     delete m_buffer;
     m_bufferIndex = 0;
     m_xmlDocument = "";
     
+
     QString url = QString( "http://xml.amazon.com/onca/xml3?t=webservices-20&dev-t=%1"
                            "&KeywordSearch=%2&mode=music&type=%3&page=1&f=xml" )
                            .arg( m_license )
-                           .arg( keyword )
+                           .arg( m_keyword )
                            .arg( mode == lite ? "lite" : "heavy" );
                            
     kdDebug() << "Using this url: " << url << endl;
@@ -157,9 +162,16 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
         /* if no cover is found, open the amazon search dialogue, else show the cover viewer. */
         if ( job->error() != 0 ) 
         {
-            m_text = "<h3>No cover image found!</h3>"
-            "If you would like to search again, you can edit the search string below and press <b>OK</b>.";
-            editSearch();
+            if ( !m_albumonly )
+            {
+                getCover( m_album, m_album, CoverFetcher::heavy, false, 1, true );
+            }
+            else
+            {
+                m_text = "<h3>No cover image found!</h3>"
+                "If you would like to search again, you can edit the search string below and press <b>OK</b>.";
+                editSearch();
+            }
         }
         else
         {
@@ -170,11 +182,25 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
             {
                 if ( m_size == 2 ) 
                 {
-                    getCover( m_keyword, m_album, CoverFetcher::heavy, false, 1 );
+                    if ( m_albumonly )
+                    {
+                        getCover( m_album, m_album, CoverFetcher::heavy, false, 1 );
+                    }
+                    else
+                    {
+                        getCover( m_artist, m_album, CoverFetcher::heavy, false, 1 );
+                    }
                 }
                 else if ( m_size == 1 )
                 {
-                    getCover( m_keyword, m_album, CoverFetcher::heavy, false, 0 );
+                    if ( m_albumonly )
+                    {
+                        getCover( m_album, m_album, CoverFetcher::heavy, false, 0 );
+                    }
+                    else
+                    {
+                        getCover( m_artist, m_album, CoverFetcher::heavy, false, 0 );
+                    }
                 }
                 else
                 {
@@ -220,13 +246,13 @@ CoverFetcher::editSearch() //SLOT
 {
     AmazonSearch* sdlg = new AmazonSearch();
     sdlg->textLabel->setText( m_text );
-    sdlg->searchString->setText( m_keyword );
+    sdlg->searchString->setText( m_saveas );
     sdlg->setModal( true );
             
     if ( sdlg->exec() == QDialog::Accepted ) 
     {    
-        m_keyword = sdlg->searchString->text();
-        getCover( m_keyword, m_album, CoverFetcher::heavy );
+        m_album = sdlg->searchString->text();
+        getCover( m_album, m_album, CoverFetcher::heavy );
         return;
     }
     else
@@ -241,7 +267,7 @@ CoverFetcher::saveCover() //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     
-    emit imageReady( m_album, m_pixmap );
+    emit imageReady( m_saveas, m_pixmap );
     deleteLater();
 }
 

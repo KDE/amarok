@@ -150,7 +150,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
     }
 
     if ( m_url.protocol() == "fetchcover" )
-        m_db->fetchCover( this, m_url.path(), false );
+        m_db->fetchCover( this, m_currentTrack->artist(), m_currentTrack->album(), false );
 }
 
 

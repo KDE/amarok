@@ -496,9 +496,10 @@ CollectionView::fetchCover() //SLOT
         QStringList names;
         m_db->execSql( command, &values, &names );
         if ( values.isEmpty() ) continue;
-        QString key = values[0] + " - " + values[1];
+        QString artist = values[0];
+        QString album = values[1];
 
-        m_db->fetchCover( this, key, false );
+        m_db->fetchCover( this, artist, album, false );
     }
 }
 

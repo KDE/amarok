@@ -169,7 +169,7 @@ void CoverManager::fetchMissingCoversLoop() //SLOT
     if ( m_currentItem ) 
     {
         if( !m_currentItem->hasCover() )
-            m_db->fetchCover( this, m_currentItem->artist() + " - " + m_currentItem->album(), true );
+            m_db->fetchCover( this, m_currentItem->artist(), m_currentItem->album(), true );
     
         m_currentItem = static_cast<CoverViewItem*>( m_currentItem->nextItem() );
         
@@ -300,7 +300,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
             break;
                     
         case FETCH:
-            m_db->fetchCover( this, item->artist() + " - " + item->album(), false );
+            m_db->fetchCover( this, item->artist(), item->album(), false );
             break;
             
         case DELETE: {
@@ -342,7 +342,7 @@ void CoverManager::coverItemDoubleClicked( QIconViewItem *item ) //SLOT
         
     }
     else
-        m_db->fetchCover( this, item->artist() + " - " + item->album(), false );
+        m_db->fetchCover( this, item->artist(), item->album(), false );
     
     #undef item
 }
