@@ -2,6 +2,7 @@
 // See COPYING file for licensing information
 
 
+#include "playlist.h"
 #include "searchbrowser.h"
 
 #include <kapplication.h> //kapp->config(), QApplication::setOverrideCursor()
@@ -75,7 +76,7 @@ SearchBrowser::SearchBrowser( const char *name )
     resultView->setResizeMode( QListView::AllColumns );
     resultView->setSelectionMode( QListView::Extended );
     resultView->setAllColumnsShowFocus( true );
-    
+
     historyView->setDragEnabled( TRUE );
     historyView->addColumn( i18n( "Search" ) );
     historyView->addColumn( i18n( "Results" ) );
@@ -85,12 +86,14 @@ SearchBrowser::SearchBrowser( const char *name )
     historyView->setSelectionMode( QListView::Extended );
     historyView->setSorting( -1 );
     historyView->setAllColumnsShowFocus( true );
-    
-    connect( searchEdit,     SIGNAL( returnPressed() ), SLOT( slotStartSearch() ) );
-    connect( urlEdit,        SIGNAL( returnPressed() ), SLOT( slotStartSearch() ) );
-    connect( m_searchButton, SIGNAL( clicked() ),       SLOT( slotStartSearch() ) );
-    connect( historyView, SIGNAL( selectionChanged() ), SLOT( historySelectionChanged() ) );    
-             
+
+    connect( searchEdit,     SIGNAL( returnPressed() ),    SLOT( slotStartSearch() ) );
+    connect( urlEdit,        SIGNAL( returnPressed() ),    SLOT( slotStartSearch() ) );
+    connect( m_searchButton, SIGNAL( clicked() ),          SLOT( slotStartSearch() ) );
+    connect( resultView,     SIGNAL( doubleClicked( QListViewItem *, const QPoint &, int ) ),
+             SLOT( slotDoubleClicked( QListViewItem *, const QPoint &, int ) ) );
+    connect( historyView,    SIGNAL( selectionChanged() ), SLOT( historySelectionChanged() ) );
+
     setFocusProxy( searchEdit ); //so focus is given to a sensible widget when the tab is opened
 }
 
@@ -130,7 +133,7 @@ void SearchBrowser::slotStartSearch()
         kdDebug() << path << endl;
         if ( !searchEdit->text().isEmpty() )
         {
-            // Create a new item for the HistoryView and pass it to the searching thread 
+            // Create a new item for the HistoryView and pass it to the searching thread
             HistoryListView::Item *historyItem = new HistoryListView::Item( historyView, searchEdit->text() );
             historyItem->setText( 1, "0" );
             historyItem->setText( 2, i18n( "Waiting for other thread" ) );
@@ -138,7 +141,7 @@ void SearchBrowser::slotStartSearch()
             historyView->setCurrentItem( historyItem );
             historyView->selectAll( false );
             historyView->setSelected( historyItem, true );
-            
+
             // Switch button for cancelling
             m_searchButton->setText( i18n( "&Abort" ) );
             disconnect( m_searchButton, SIGNAL( clicked() ), this, SLOT( slotStartSearch() ) );
@@ -167,12 +170,12 @@ QDragObject *SearchBrowser::SearchListView::dragObject()
 QDragObject *SearchBrowser::HistoryListView::dragObject()
 {
     KURL::List list;
-    
+
     QListViewItemIterator it( this, QListViewItemIterator::Selected );
     for( ; it.current(); ++it ) {
         list += static_cast<HistoryListView::Item*>( it.current() )->urlList();
     }
-    
+
     return new KURLDrag( list, viewport() );
 }
 
@@ -180,13 +183,13 @@ QDragObject *SearchBrowser::HistoryListView::dragObject()
 void SearchBrowser::showResults( KURL::List list )
 {
     resultView->clear();
-    
+
     const KURL::List::ConstIterator end = list.end();
     for ( KURL::List::ConstIterator it = list.begin(); it != end; ++it ) {
         QString path = (*it).path();
         QString fileName = path.right( path.length() - path.findRev( '/' ) - 1 );
         QString dirPath = path.left( path.findRev( '/' )+1 );
-        
+
         KListViewItem *resItem = new KListViewItem( resultView, fileName );
         resItem->setText( 1, dirPath );
         resItem->setText( 2, path );
@@ -228,7 +231,7 @@ void SearchBrowser::customEvent( QCustomEvent *e )
                 p->item()->setText( 1, QString::number( p->count() ) );
                 p->item()->setText( 2, curToken );
                 static_cast<HistoryListView::Item*>(p->item())->addUrl( KURL( p->curPath()+p->curFile() ) );
-                
+
                 if( p->item()->isSelected() ) { //add this result to the listview only if it is the current history item
                     KListViewItem *resItem = new KListViewItem( p->resultView(), p->curFile() );
                     resItem->setText( 1, p->curPath() );
@@ -246,16 +249,24 @@ void SearchBrowser::stopSearch()
 }
 
 
+void SearchBrowser::slotDoubleClicked( QListViewItem *item, const QPoint &, int )
+{
+    KURL::List list;
+    list << KURL( item->text(2) );
+    Playlist::instance()->appendMedia( list, true );
+}
+
+
 void SearchBrowser::historySelectionChanged()
 {
     KURL::List list;
-    
+
     historyView->setSelected( historyView->currentItem(), true );
     QListViewItemIterator it( historyView, QListViewItemIterator::Selected );
     for(  ; it.current(); ++it ) {
         list += static_cast<HistoryListView::Item*>(*it)->urlList();
     }
-    
+
     showResults( list );
 }
 

@@ -52,7 +52,7 @@ Q_OBJECT
        void renameSelectedPlaylist();
        void deleteSelectedPlaylists();
        void renamePlaylist( QListViewItem*, const QString&, int );
-       void loadPlaylist( QListViewItem *item );
+       void slotDoubleClicked( QListViewItem *item );
        void currentItemChanged( QListViewItem * );
 
    private:

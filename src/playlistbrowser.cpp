@@ -111,7 +111,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     connect( m_listview, SIGNAL( rightButtonPressed( QListViewItem *, const QPoint &, int ) ),
            this, SLOT( showContextMenu( QListViewItem *, const QPoint &, int ) ) );
     connect( m_listview, SIGNAL( doubleClicked( QListViewItem *) ),
-           this, SLOT( loadPlaylist( QListViewItem * ) ) );
+           this, SLOT( slotDoubleClicked( QListViewItem * ) ) );
     connect( m_listview, SIGNAL( itemRenamed( QListViewItem*, const QString&, int ) ),
            this, SLOT( renamePlaylist( QListViewItem*, const QString&, int ) ) );
     connect( m_listview, SIGNAL( currentChanged( QListViewItem * ) ),
@@ -234,7 +234,7 @@ void PlaylistBrowser::openPlaylist() //SLOT
 }
 
 
-void PlaylistBrowser::loadPlaylist( QListViewItem *item ) //SLOT
+void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
 {
     if( !item ) return;
 
@@ -245,6 +245,10 @@ void PlaylistBrowser::loadPlaylist( QListViewItem *item ) //SLOT
         pls->clear();
         pls->appendMedia( item->tracksURL() );
         #undef item
+    } else {
+        KURL::List list;
+        list << static_cast<PlaylistTrackItem *>(item)->url();
+        Playlist::instance()->appendMedia( list, true );
     }
 }
 
@@ -568,7 +572,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             switch( menu.exec( p ) )
             {
                 case LOAD:
-                    loadPlaylist( item );
+                    slotDoubleClicked( item );
                     break;
                 case ADD:
                     Playlist::instance()->appendMedia( item->tracksURL() );
@@ -882,7 +886,7 @@ void PlaylistBrowserView::keyPressEvent( QKeyEvent *e )
             if ( isCurrentPlaylist( currentItem() ) )
                 rename( currentItem(), 0 );
             else
-                PlaylistBrowser::instance()->loadPlaylist( currentItem() );
+                PlaylistBrowser::instance()->slotDoubleClicked( currentItem() );
             break;
 
         case Key_Delete:    //remove
