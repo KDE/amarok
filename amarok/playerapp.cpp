@@ -1211,43 +1211,54 @@ void PlayerApp::slotVisTimer()
             std::vector<float> *pScopeVector = m_scope.scope();
             m_pPlayerWidget->m_pVis->drawAnalyzer( pScopeVector );
 
+/*
             // Muesli's Beat Detection - A Night's Oddysee
-            m_beatCounter++;
-            if (m_beatCounter > 7)
-            {
-                m_beatCounter = 0;
-                m_lastPeak = 0;
-            }
-
             // shift old elements
-            for ( uint x = 62; x > 0; --x ) m_beatEnergy[x] = m_beatEnergy[x - 1];
+            for ( uint x = 0; x < 18; ++x )
+                for ( uint y = 42; y > 0; --y ) m_beatEnergy[x][y] = m_beatEnergy[x][y - 1];
 
-            // get current energy value
-            m_beatEnergy[0] = 0;
-            for ( uint x = 0; x < pScopeVector->size(); ++x )
+            // get current energy values
+            for ( uint x = 0; x < pScopeVector->size(); ++x ) m_beatEnergy[x][0] = pScopeVector->at(x);
+
+            // compare to old elements and get averages
+            double beatAvg[18];
+//            double beatVariance[18];
+//            double beatMood[18];
+            
+            for ( uint x = 0; x < 18; ++x )
             {
-                m_beatEnergy[0] += pScopeVector->at(x);
+                beatAvg[x] = 0;
+                for ( uint y = 1; y < 44; ++y )  beatAvg[x] += m_beatEnergy[x][y];
+                
+                beatAvg[x] = beatAvg[x] / 43;
             }
-
-            // compare to all elements and get averages
-            float beatAvg = 0;
-            float beatVariance = 0;
-            float beatMood;
-            for ( uint x = 0; x < 62; ++x )  beatAvg += (m_beatEnergy[x] / 63);
-            for ( uint x = 0; x < 62; ++x )  beatVariance += (pow((m_beatEnergy[x] - beatAvg), 2) / 63);
-            beatMood = (-0.0025714 * beatVariance) + 1.5142857;
+*/                
+/*            for ( uint x = 0; x < 18; ++x )
+            {
+                beatVariance[x] = 0;
+                for ( uint y = 0; y < 42; ++y )  beatVariance[x] += (pow((m_beatEnergy[x][y] - beatAvg[x]), 2) / 43);
+            }
+                
+            for ( uint x = 0; x < 18; ++x )
+                beatMood[x] = (-0.0025714 * beatVariance[x]) + 1.5142857;
+*/
 
             // do we have a beat? let's dance!
-            if ( m_beatEnergy[0] > (beatAvg * beatMood))
+/*            int total_hits = 0;
+            for ( uint x = 0; x < 18; ++x )
             {
-                if (m_beatEnergy[0] > m_lastPeak)
+                double factor = cos( x * 4 ) * 18;
+                factor = beatAvg[x] * factor;
+                
+                if ( m_beatEnergy[x][0] > factor )
                 {
-                    m_beatCounter = 0;
-                    kdDebug() << "*CLAP* last peak: " << m_lastPeak << " - average energy: " << beatAvg << " - current peak: " << m_beatEnergy[0] << endl;
-                    m_lastPeak = m_beatEnergy[0];
+                    total_hits++;
+                    kdDebug() << "*CLAP* factor: " << factor << " - x: " << x << " - average energy: " << beatAvg[x] << " - current peak: " << m_beatEnergy[x][0] << endl;
                 }
             }
 
+            if ( total_hits > 3 ) kdDebug() << "***CLAPCLAPCLAP***" << endl;
+*/
             delete pScopeVector;
         }
         else

@@ -671,7 +671,7 @@ void PlaylistWidget::slotGlowTimer()
 
 void PlaylistWidget::slotTextChanged( const QString &str )
 {
-    QListViewItem * pVisibleItem = NULL;
+    QListViewItem *pVisibleItem = NULL;
     unsigned int x = 0;
     bool b;
 
@@ -687,8 +687,8 @@ void PlaylistWidget::slotTextChanged( const QString &str )
         pVisibleItem = firstChild();
         while ( pVisibleItem )
         {
-            if ( !pVisibleItem -> text(0).lower().contains( str.lower() ) )
-                pVisibleItem -> setVisible( false );
+            if ( !pVisibleItem->text(0).lower().contains( str.lower() ) )
+                pVisibleItem->setVisible( false );
 
             // iterate
             pVisibleItem = pVisibleItem -> itemBelow();
@@ -700,21 +700,15 @@ void PlaylistWidget::slotTextChanged( const QString &str )
             pVisibleItem = searchPtrs.at( x );
 
             if ( !(*it).lower().contains( str.lower() ) )
-                pVisibleItem -> setVisible( false );
+                pVisibleItem->setVisible( false );
             else
-                pVisibleItem -> setVisible( true );
+                pVisibleItem->setVisible( true );
 
             x++;
         }
 
     clearSelection();
     triggerUpdate();
-
-    /* if ( pVisibleItem )
-    {
-        setCurrentItem( pVisibleItem );
-        setSelected( pVisibleItem, true );
-    }*/
 }
 
 
@@ -768,15 +762,15 @@ void PlaylistWidget::removeSelectedItems()
     
     for( QListViewItem *item = firstChild(); item; item = item->nextSibling() )
         if( item->isSelected() && item != m_pCurrentTrack ) list.append( static_cast<PlaylistItem *>(item) );
-            
+
     //currenTrack must be last to ensure the item after it won't be removed
     //we select the item after currentTrack so it's played when currentTrack finishes
-    if( m_pCurrentTrack->isSelected() ) list.append( m_pCurrentTrack );
-    if( !list.isEmpty() ) writeUndo();
+    if ( m_pCurrentTrack != NULL && m_pCurrentTrack->isSelected() ) list.append( m_pCurrentTrack );
+    if ( !list.isEmpty() ) writeUndo();
 
     for ( PlaylistItem *item = list.first(); item; item = list.next() )
     {
-        if( m_pCurrentTrack == item )
+        if ( m_pCurrentTrack == item )
         {
             m_pCurrentTrack = NULL;
             //now we select the next item if available so playback will continue from there next iteration
@@ -786,20 +780,22 @@ void PlaylistWidget::removeSelectedItems()
         }        
         
         //keep search system synchronised
-        if( int x = searchPtrs.find( item ) >= 0 )
+        int x = searchPtrs.find( item );
+        if ( x >= 0 )
         {
             searchTokens.remove( searchTokens.at( x ) );
             searchPtrs.remove( searchPtrs.at( x ) );
         }
 
         //if tagreader is running don't let tags be read for this item and delete later
-        if( m_tagReader->running() )
+        if ( m_tagReader->running() )
         {
             //FIXME make a customEvent to deleteLater(), can't use QObject::deleteLater() as we don't inherit QObject!
             item->setVisible( false ); //will be removed next time playlist is cleared        
             m_tagReader->remove( item );
         }
-        else { delete item; }
+        else
+            delete item;
     }
 }
 
