@@ -37,10 +37,10 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 #include <klocale.h>
-#include <kmdcodec.h> // for dataUrlFromImage()
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
 #include <kstandarddirs.h> //locate file
+#include <ktempfile.h>
 #include <kurl.h>
 
 #define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
@@ -78,6 +78,9 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_dirtyCurrentTrackPage( true )
         , m_dirtyLyricsPage( true )
         , m_emptyDB( CollectionDB::instance()->isEmpty() )
+        , m_bgGradientImage( 0 )
+        , m_headerGradientImage( 0 )
+        , m_shadowGradientImage( 0 )
         , m_suggestionsOpen( true )
         , m_favouritesOpen( true )
 {
@@ -139,7 +142,11 @@ ContextBrowser::ContextBrowser( const char *name )
 
 
 ContextBrowser::~ContextBrowser()
-{}
+{
+    delete m_bgGradientImage;
+    delete m_headerGradientImage;
+    delete m_shadowGradientImage;
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -1426,14 +1433,6 @@ void ContextBrowser::setStyleSheet()
     m_lyricsPage->setUserStyleSheet( m_styleSheet );
 }
 
-static QString dataUrlFromImage( const QImage &img )
-{
-    QByteArray ba;
-    QBuffer buffer( ba );
-    buffer.open( IO_WriteOnly );
-    img.save( &buffer, "PNG" ); // writes image into ba in PNG format
-    return QString("data:image/png;base64,%1").arg( KCodecs::base64Encode( ba ) );
-}
 
 void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
 {
@@ -1447,14 +1446,29 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     const QColor bgColor = colorGroup().highlight();
     const amaroK::Color gradientColor = bgColor;
 
+    delete m_bgGradientImage;
+    delete m_headerGradientImage;
+    delete m_shadowGradientImage;
+
+    m_bgGradientImage = new KTempFile( locateLocal( "tmp", "gradient" ), ".png", 0600 );
     QImage image = KImageEffect::gradient( QSize( 600, 1 ), gradientColor, gradientColor.light( 130 ), KImageEffect::PipeCrossGradient );
-    QString bgGradientImage = dataUrlFromImage( image );
+    image.save( m_bgGradientImage->file(), "PNG" );
+    m_bgGradientImage->close();
 
+    m_headerGradientImage = new KTempFile( locateLocal( "tmp", "gradient_header" ), ".png", 0600 );
     QImage imageH = KImageEffect::unbalancedGradient( QSize( 1, 10 ), bgColor, gradientColor.light( 130 ), KImageEffect::VerticalGradient, 100, -100 );
-    QString headerGradientImage = dataUrlFromImage( imageH );
+    imageH.copy( 0, 1, 1, 9 ).save( m_headerGradientImage->file(), "PNG" );
+    m_headerGradientImage->close();
 
+    m_shadowGradientImage = new KTempFile( locateLocal( "tmp", "gradient_shadow" ), ".png", 0600 );
     QImage imageS = KImageEffect::unbalancedGradient( QSize( 1, 10 ), baseColor, Qt::gray, KImageEffect::VerticalGradient, 100, -100 );
-    QString shadowGradientImage = dataUrlFromImage( imageS );
+    imageS.save( m_shadowGradientImage->file(), "PNG" );
+    m_shadowGradientImage->close();
+
+    //unlink the files for us on deletion
+    m_bgGradientImage->setAutoDelete( true );
+    m_headerGradientImage->setAutoDelete( true );
+    m_shadowGradientImage->setAutoDelete( true );
 
     //we have to set the color for body due to a KHTML bug
     //KHTML sets the base color but not the text color
@@ -1462,7 +1476,7 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
             .arg( pxSize )
             .arg( text )
             .arg( AmarokConfig::schemeAmarok() ? fg : gradientColor.name() )
-            .arg( bgGradientImage )
+            .arg( m_bgGradientImage->name() )
             .arg( fontFamily );
 
     //text attributes
@@ -1484,11 +1498,11 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
             .arg( fg )
             .arg( bg )
             .arg( pxSize + 2 )
-            .arg( headerGradientImage );
+            .arg( m_headerGradientImage->name() );
 
     styleSheet += QString( ".box-body { padding: 2px; background-color: %1; background-image: url( %2 ); background-repeat: repeat-x; font-size:%3px; }" )
             .arg( colorGroup().base().name() )
-            .arg( shadowGradientImage )
+            .arg( m_shadowGradientImage->name() )
             .arg( pxSize );
 
     //"Albums by ..." related styles
