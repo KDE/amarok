@@ -115,7 +115,7 @@ PlayerApp::PlayerApp()
 
     connect( this, SIGNAL( metaData( const MetaBundle& ) ), this, SLOT( slotShowOSD( const MetaBundle& ) ) );
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
-   
+
     handleCliArgs( KCmdLineArgs::parsedArgs() );
 }
 
@@ -282,7 +282,8 @@ void PlayerApp::initBrowserWin()
     m_pBrowserWin = new BrowserWin( m_pPlayerWidget, "BrowserWin" );
 
     connect( m_pPlayerWidget->m_pButtonPl, SIGNAL( toggled( bool ) ),
-             this,                         SLOT  ( slotPlaylistShowHide( ) ) );
+             //m_pBrowserWin,                SLOT  ( setShown( bool ) ) );
+             this,                SLOT  ( slotPlaylistShowHide() ) );
 
     kdDebug() << "end PlayerApp::initBrowserWin()" << endl;
 }
@@ -534,12 +535,15 @@ void PlayerApp::insertMedia( const KURL::List &list )
 
 bool PlayerApp::eventFilter( QObject *o, QEvent *e )
 {
-    //put the o == test last as these events are fairly rare
-    //TODO is using a switch better here?
+    //Hi! Welcome to one of amaroK's less clear functions!
+    //Please don't change anything in here without talking to mxcl or Larson[H] on amaroK
+    //as most of this stuff is cleverly crafted and has purpose! Comments aren't always thorough as
+    //it tough explaining what is going on! Thanks.
 
-    if( e->type() == QEvent::Close && o == m_pBrowserWin )
+    if( e->type() == QEvent::Close && o == m_pBrowserWin && m_pPlayerWidget->isShown() )
     {
         m_pPlayerWidget->m_pButtonPl->setOn( false );
+        return TRUE; //so we don't end up in infinite loop!
     }
     else if( e->type() == QEvent::Hide && o == m_pPlayerWidget )
     {
@@ -562,16 +566,33 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
     else if( e->type() == QEvent::Show && o == m_pPlayerWidget )
     {
         m_pAnimTimer->start( ANIM_TIMER );
+
+        //TODO this is broke again if playlist is minimized
+        //when fixing you have to make sure that changing desktop doesn't un minimise the playlist
+
         if( AmarokConfig::hidePlaylistWindow() && m_pPlayerWidget->m_pButtonPl->isOn() && e->spontaneous())
         {
-            // deIconify and show the browserwin when we come from a minimized state
-            KWin::deIconifyWindow( m_pBrowserWin->winId(), false );
+            //this is to battle a kwin bug that affects xinerama users
+            //FIXME I commented this out for now because spontaneous show events are sent to widgets
+            //when you switch desktops, so this would cause the playlist to deiconify when switching desktop!
+            //KWin::deIconifyWindow( m_pBrowserWin->winId(), false );
             m_pBrowserWin->show();
         }
         else if( m_pPlayerWidget->m_pButtonPl->isOn() )
         {
-            // make sure browserwin or at least (if minimized) the taskbar entry for browserwin is shown
+            //if minimized the taskbar entry for browserwin is shown
             m_pBrowserWin->show();
+        }
+
+        if( m_pBrowserWin->isShown() )
+        {
+            //slotPlaylistHideShow() can make it so the PL is shown but the button is off.
+            //this is intentional behavior BTW
+            //FIXME it would be nice not to have to set this as it us unclean(TM)
+            IconButton *w = m_pPlayerWidget->m_pButtonPl;
+            w->blockSignals( true );
+            w->setOn( true );
+            w->blockSignals( false );
         }
     }
 
@@ -685,9 +706,31 @@ void PlayerApp::slotStop()
 
 void PlayerApp::slotPlaylistShowHide()
 {
-    m_pBrowserWin->setShown( m_pBrowserWin->isHidden() );
-    // rise the playlist if is set to shown from an iconified state
-    if( m_pBrowserWin->isShown() ) KWin::deIconifyWindow( m_pBrowserWin->winId() );
+    //show/hide the playlist global shortcut slot
+    //bahavior depends on state of the PlayerWidget and various minimization states
+
+    KWin::WindowInfo info = KWin::windowInfo( m_pBrowserWin->winId() );
+    bool isMinimized = info.valid() && info.isMinimized();
+
+    if( !m_pBrowserWin->isShown() )
+    {
+        if( isMinimized ) KWin::deIconifyWindow( info.win() );
+        m_pBrowserWin->setShown( true );
+    }
+    else if( isMinimized ) KWin::deIconifyWindow( info.win() );
+    else
+    {
+        KWin::WindowInfo info2 = KWin::windowInfo( m_pPlayerWidget->winId() );
+        if( info2.valid() && info2.isMinimized() ) KWin::iconifyWindow( info.win() );
+        else m_pBrowserWin->setShown( false );
+    }
+
+    //only do if shown so that it doesn't affect expected layout after restore from systray
+    if( m_pPlayerWidget->isShown() ) m_pPlayerWidget->m_pButtonPl->setOn( m_pBrowserWin->isShown() );
+
+
+
+
 }
 
 
@@ -871,7 +914,7 @@ void LoaderServer::newConnection( int sockfd )
         buf[nbytes] = '\000';
         QCString result( buf );
         kdDebug() << result << endl;
-        
+
         emit loaderArgs( result );
     }
 
