@@ -11,6 +11,8 @@
 #include "base.hpp"
 
 
+using amaroK::Vis::Scope;
+
 //TODO get path using "kde-config --type data"
 std::string path;
 
@@ -82,13 +84,13 @@ amaroK::Vis::Base<T>::exec()
 }
 
 
-template<class T> std::vector<int16>*
+template<class T> Scope*
 amaroK::Vis::Base<T>::fetchPCM()
 {
     const int nch = 1; //no of channels?
     int nbytes;
 
-    int16 sink[512];
+    float sink[512];
 
     if( m_socketFD != -1 )
     {
@@ -104,7 +106,7 @@ amaroK::Vis::Base<T>::fetchPCM()
     return &m_left;
 }
 
-template<class T> std::vector<int16>*
+template<class T> Scope*
 amaroK::Vis::Base<T>::fetchFFT()
 {
     return &m_left;

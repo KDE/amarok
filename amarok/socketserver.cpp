@@ -73,7 +73,7 @@ Vis::SocketServer::SocketServer( QObject *parent )
 void
 Vis::SocketServer::newConnection( int sockfd )
 {
-    static int max = 0;
+    static bool b = true;
 
     char buf[16];
     int nbytes = recv( sockfd, buf, sizeof(buf) - 1, 0 );
@@ -85,46 +85,57 @@ Vis::SocketServer::newConnection( int sockfd )
 
         if( result == "PCM" )
         {
+            static int max = 0;
+
             std::vector<float> *scope = EngineController::instance()->engine()->scope(); //FIXME hacked to give 512 values
 
-            int16_t *data = new int16_t[512]; //we want ideally 2x512, but maybe we can make the first int the scope size or something
-            //bettter would be allowing the visualisations some choice perhaps (or this is just inefficent.. shrug)
+            if( b ) { kdDebug() << "scope size: " << scope->size() << endl; b = false; }
+            if( scope->empty() ) kdDebug() << "empty scope!\n";
+            if( scope->size() < 512 ) kdDebug() << "scope too small!\n";
 
-            for( uint x = 0; x < scope->size(); ++x )
-            {
-                data[x] = (int16_t)((*scope)[x] * (1<<15));
+            float data[512]; for( uint x = 0; x < 512; ++x ) data[x] = (*scope)[x];
 
-                if( data[x] > max ) { max = (int)data[x]; kdDebug() << "max value: " << max << endl; }
-            }
+            ::send( sockfd, data, 512*sizeof(float), 0 ); //FIXME we should give concrete numbers of values
 
-            ::send( sockfd, data, 512*sizeof(int16_t), 0 );
-
-            delete data;
             delete scope;
         }
         else if( result == "FFT" )
         {
-            FHT fht( 8 );
+            static int max = 0;
+            static float fmax = 0;
+
+            FHT fht( 9 ); //data set size 512
 
             std::vector<float> *scope = EngineController::instance()->engine()->scope(); //FIXME hacked to give 512 values
 
-            int16_t *data = new int16_t[256];
+            if( b ) { kdDebug() << "scope size: " << scope->size() << endl; b = false; }
 
-            scope->resize( 256 ); //why do we do this?
+            {
+                static float max = -100;
+                static float min = 100;
+
+                bool b = false;
+
+                for( uint x = 0; x < scope->size(); ++x )
+                {
+                    float val = (*scope)[x];
+                    if( val > max ) { max = val; b = true; }
+                    if( val < min ) { min = val; b = true; }
+                }
+
+                if( b ) kdDebug() << "max: " << max << ", min: " << min << endl;
+
+            }
 
             float *front = static_cast<float*>( &scope->front() );
 
-            fht.power( front );
-            fht.scale( front, 1.0 / 64 );
+        fht.spectrum( front );
+        fht.scale( front, 1.0 / 64 );
 
-            for( uint x = 0; x < scope->size(); ++x )
-            {
-                data[x] = (int16_t)((*scope)[x] * (1<<15));
-            }
+            //only half the samples from the fft are useful
 
-            ::send( sockfd, data, 256*sizeof(int16_t), 0 );
+            ::send( sockfd, scope, 256*sizeof(float), 0 );
 
-            delete data;
             delete scope;
         }
     }

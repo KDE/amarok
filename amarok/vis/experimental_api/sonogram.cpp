@@ -10,46 +10,111 @@
 
 using namespace amaroK::Vis;
 
+//from http://www.cs.rit.edu/~ncs/color/t_convert.html
+static void HSVtoRGB( int &_r, int &_g, int &_b, int _h, int _s, int _v ) //values of 0-255, bar h = 0-360
+{
+        float h = _h, s = (float)_s/255, v = (float)_v/255;
+
+        float R,G,B;
+        float *r = &R, *g = &G, *b = &B;
+
+        int i;
+        float f, p, q, t;
+        if( s == 0 ) {
+                // achromatic (grey)
+                *r = *g = *b = v;
+                return;
+        }
+        h /= 60;                        // sector 0 to 5
+        i = floor( h );
+        f = h - i;                      // factorial part of h
+        p = v * ( 1 - s );
+        q = v * ( 1 - s * f );
+        t = v * ( 1 - s * ( 1 - f ) );
+        switch( i ) {
+                case 0:
+                        *r = v;
+                        *g = t;
+                        *b = p;
+                        break;
+                case 1:
+                        *r = q;
+                        *g = v;
+                        *b = p;
+                        break;
+                case 2:
+                        *r = p;
+                        *g = v;
+                        *b = t;
+                        break;
+                case 3:
+                        *r = p;
+                        *g = q;
+                        *b = v;
+                        break;
+                case 4:
+                        *r = t;
+                        *g = p;
+                        *b = v;
+                        break;
+                default:                // case 5:
+                        *r = v;
+                        *g = p;
+                        *b = q;
+                        break;
+        }
+
+        _r = 255*R; _g = 255*G; _b = 255*B;
+
+        //std::cout << _r << std::endl;
+}
 
 class Sonogram : public SDL::Basic
 {
 public:
-    Sonogram() : Basic( SDL_HWSURFACE, PCM, false, 30 ), m_fht( 8 ), m_data( 256, 0 ) {}
+    Sonogram() : Basic( 0/*SDL_HWSURFACE*/, PCM, false, 100 ), m_fht( 9 ), m_data( 512, 0 ) {}
 
     virtual void render( SDL_Surface* );
 
 private:
-    FHT m_fht;
-    std::vector<float> m_data;
+    FHT   m_fht;
+    Scope m_data;
 };
 
 
 void
 Sonogram::render( SDL_Surface *screen )
 {
-    for( uint x = 0; x < 256; ++x ) m_data[x] = (float)left( x ) / (1 << 15);
+    static float max = 0, min = 100;
+
+    std::copy( left().begin(), left().end(), m_data.begin() );
+
+    //for( uint x=0; x<200; x+=20) std::cout << m_data[x] << " " << left( x ) << std::endl;
 
     float *front = static_cast<float*>(&m_data.front());
     m_fht.power(front);
     m_fht.scale(front, 1.0 / 64);
 
-    int x = width() - 1;
-    int r = 0, g = 0, b = 0;
+    int r, g, b;
     const int h = height() - 1;
+    const int x = width()  - 1;
 
     //lock surface
     if( SDL_MUSTLOCK(screen) && SDL_LockSurface(screen) < 0 ) return;
 
-    std::vector<float>::const_iterator it  = m_data.begin();
-    std::vector<float>::const_iterator end = m_data.end();
-
-    for( int y = h; y && it < end; ++it )
+    for( int y = 0; y < 256; ++y )
     {
-        if( *it < .005 );
-        else if( *it < .05 ) { r = 255; g = 20;  b = 20;  }// c.setHsv(95, 255, 255 - int(*it * 4000.0));
-        else if( *it < 1.0 ) { r = 20;  g = 255; b = 20;  }// c.setHsv(95 - int(*it * 90.0), 255, 255);
-        else                 { r = 20;  g = 20;  b = 255; }
-        drawPixel( screen, x, y-- , r, g, b );
+        float f = m_data[255 - y];
+
+        if( f > max ) { max = f; std::cout << "max: " << f << std::endl; }
+        if( f < min ) { min = f; std::cout << "min: " << f << std::endl; }
+
+        if( f < .005 ) { r = g = b = 0; }
+        else if( f < .05 ) { HSVtoRGB( r, g, b, 95, 255, int(f * 4000.0) ); }
+        else if( f < 1.0 ) { HSVtoRGB( r, g, b, 95 - int(f * 90.0), 255, 255 ); }
+        else               { r = 255; g = b = 0; }
+
+        drawPixel( screen, x, y, r, g, b );
     }
 
     //unlock, blit and flip
@@ -58,7 +123,7 @@ Sonogram::render( SDL_Surface *screen )
     SDL_Rect rect( SDL::Rect(1, 0, x, height()) );
     SDL_BlitSurface( screen, &rect, screen, NULL );
 
-    //SDL_Flip(screen);
+    SDL_Flip(screen);
 }
 
 int main()

@@ -13,6 +13,7 @@ namespace amaroK {
 namespace Vis {
 
 typedef int16_t int16;
+typedef std::vector<float> Scope;
 
 enum DataType { PCM = 0, FFT = 1 };
 
@@ -22,6 +23,12 @@ enum DataType { PCM = 0, FFT = 1 };
 //maybe make it possible to select render via pointer or render with no parameters
 //maybe do that via another subclassing operation, or just make a virtual function that get's called
 //and the vis class can do what it likes
+
+//TODO implement some debug macros/functions, like a debugOnce() type function that uses a static bool to stop itself repeatedly outputting values
+
+//TODO replace use of float with ScopeData or much simpler typedef (?)
+
+//TODO users will want mutable versions of left() and right()
 
 //because you want to handle features like fps at this level, _not_ beyond if poss as otherwise you'll get
 //shoddy implementations later on down the road
@@ -33,11 +40,11 @@ template <class T> class Base
 public:
     //virtual ~Base() {}
 
-    const std::vector<int16> &left()  const { return m_left; }
-    const std::vector<int16> &right() const { return m_right; }
+    const Scope &left()  const { return m_left; }
+    const Scope &right() const { return m_right; }
 
-    int16 left( uint x )  const { return m_left[x]; }
-    int16 right( uint x ) const { return m_right[x]; }
+    float left( uint x )  const { return m_left[x]; }
+    float right( uint x ) const { return m_right[x]; }
 
     virtual int exec();
 
@@ -45,8 +52,8 @@ protected:
 
     virtual void render( T * ) = 0;
 
-    std::vector<int16> *fetchPCM(); //assigns m_data and returns pointer
-    std::vector<int16> *fetchFFT(); //assigns m_data and returns pointer
+    Scope *fetchPCM(); //assigns m_data and returns pointer
+    Scope *fetchFFT(); //assigns m_data and returns pointer
 
     Base( DataType = FFT, bool receiveNotification = FALSE, uint fps = 0 );
     Base( const Base& );
@@ -67,8 +74,8 @@ protected:
     T       *m_t;
 
 private:
-    std::vector<int16> m_left; //2 channels in stereo mode //put at the end, packs better in memory
-    std::vector<int16> m_right;
+    Scope m_left; //2 channels in stereo mode //put at the end, packs better in memory
+    Scope m_right;
 };
 
 }
