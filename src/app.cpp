@@ -224,8 +224,10 @@ void App::initEngine()
             //FIXME this isn't perfect
 
             KMessageBox::error( m_pPlaylistWindow, i18n(
-                "amaroK could not find any sound-engine plugins; it is likely your amaroK installation is"
-                "broken. The application will now exit. For help join us at #amarok on irc.freenode.net." ) );
+                "amaroK could not find any sound-engine plugins; your amaroK installation is probably broken."
+                "If you installed from source then it is likely amaroK is not installed under the KDE prefix, "
+                "please rebuild amaroK using ./configure --prefix=`kde-config --prefix` as described in the README file."
+                "For more help please join us at #amarok on irc.freenode.net." ) );
 
             KApplication::exit( 1 );
 
@@ -380,7 +382,7 @@ void App::applySettings()
     m_pOSD->setScreen( AmarokConfig::osdScreen() );
     m_pOSD->setOffset( AmarokConfig::osdXOffset(), AmarokConfig::osdYOffset() );
     m_pOSD->setHorizontalAutoCenter( AmarokConfig::osdHorizontalAutoCenter() );
-    
+
     playlistWindow()->setFont( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );
     reinterpret_cast<QWidget*>(playlistWindow()->statusBar())->setShown( AmarokConfig::showStatusBar() );
 
