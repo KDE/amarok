@@ -683,9 +683,13 @@ KURL::List SmartPlaylistView::loadSmartPlaylist( QueryType queryType )
                                             "WHERE url NOT IN(SELECT url FROM statistics)" ), &values, &names );
     
    
-    if ( values.count() )
-        for ( uint i = 0; i < values.count(); i = i++ ) 
-            list += KURL( values[i].replace( "\"", QCString( "%22" ) ) );
+    if ( !values.isEmpty() )
+    {
+        const QString escapedQuote = "%22";
+    
+        for ( uint i = 0; i < values.count(); ++i ) 
+            list += KURL( values[i].replace( '\"', escapedQuote ) );
+    }
        
     values.clear();
     names.clear();
