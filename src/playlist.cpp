@@ -365,10 +365,9 @@ Playlist::insertMedia( KURL::List list, int options )
         return;
 
     }
-
     else
-       //we do this by default, even if we were passed some stupid flag combination
-       after = lastItem();
+        //we do this by default, even if we were passed some stupid flag combination
+        after = lastItem();
 
     insertMediaInternal( list, after, directPlay );
 }
@@ -378,6 +377,12 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
 {
     if ( !list.isEmpty() ) {
         setSorting( NO_SORT );
+
+        // prevent association with something that is about to be deleted
+        // TODO improve the playlist with a list of items that are volatile or something
+        while( after && after->exactText( 0 ) == "MARKERITEM" )
+            after = (PlaylistItem*)after->itemAbove();
+
         ThreadWeaver::instance()->queueJob( new UrlLoader( list, after, directPlay ) );
     }
     else
@@ -1348,15 +1353,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 void
 Playlist::customEvent( QCustomEvent *e )
 {
-    switch( e->type() )
-    {
-    case ThreadWeaver::Job::JobStartedEvent:
-        lock(); // prevent user removing items as this could be bad
-        break;
-
-    case ThreadWeaver::Job::JobFinishedEvent: {
-        unlock();
-
+    if( e->type() == (int)UrlLoader::JobFinishedEvent ) {
         refreshNextTracks( 0 );
 
         // Disable help if playlist is populated
@@ -1390,10 +1387,6 @@ Playlist::customEvent( QCustomEvent *e )
         //force redraw of currentTrack marker, play icon, etc.
         //setCurrentTrack( currentTrack() );
 
-        break; }
-
-    default:
-         ;
     }
 
     updateNextPrev();

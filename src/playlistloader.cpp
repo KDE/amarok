@@ -40,6 +40,8 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
 {
     DEBUG_BLOCK
 
+    Playlist::instance()->lock(); // prevent user removing items as this could be bad
+
     amaroK::OverrideCursor cursor;
 
     setDescription( i18n("Populating playlist") );
@@ -50,7 +52,7 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
             .setAbortSlot( this, SLOT(abort()) )
             .setTotalSteps( 100 );
 
-    m_markerListViewItem->setText( 0, "IF YOU CAN SEE THIS THERE IS A BUG" );
+    m_markerListViewItem->setText( 0, "MARKERITEM" );
 
     foreachType( KURL::List, urls ) {
         const KURL &url = *it;
@@ -105,6 +107,8 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
 
 UrlLoader::~UrlLoader()
 {
+    Playlist::instance()->unlock();
+
     delete m_markerListViewItem;
 }
 
