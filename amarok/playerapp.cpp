@@ -802,6 +802,8 @@ void PlayerApp::slotNext() const { m_pBrowserWin->m_pPlaylistWidget->request( Pl
 void PlayerApp::slotPlay() const { m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Current ); }
 
 
+#include <math.h> //FIXME: I put it here so we remember it's only used by this function and the one somewhere below
+
 void PlayerApp::play( const KURL &url, const MetaBundle *tags )
 {
     if ( m_optXFade && m_bIsPlaying && url != m_playingURL )
@@ -854,7 +856,7 @@ void PlayerApp::play( const KURL &url, const MetaBundle *tags )
 
     if ( tags )
     {
-       QString text, bps, Hz;
+       QString text, bps, Hz, length;
 
        if( tags->m_title.isEmpty() )
        {
@@ -875,8 +877,15 @@ void PlayerApp::play( const KURL &url, const MetaBundle *tags )
        bps += "kbps";
        Hz   = QString::number( tags->m_sampleRate );
        Hz  += "Hz";
+       
+       // length to string
+       if ( floor( tags->m_length / 60 ) < 10 ) length += "0";
+       length += QString::number( floor( tags->m_length / 60 ) );
+       length += ":";
+       if ( tags->m_length % 60 < 10 ) length += "0";
+       length += QString::number( tags->m_length % 60 );
 
-       m_pPlayerWidget->setScroll( text, bps, Hz ); //FIXME get end function to add units!
+       m_pPlayerWidget->setScroll( text, bps, Hz, length ); //FIXME get end function to add units!
     }
     else
     {
@@ -1197,8 +1206,6 @@ void PlayerApp::slotAnimTimer()
     }
 }
 
-
-#include <math.h> //I put it here so we remember it's only used by this function
 
 void PlayerApp::slotVisTimer()
 {

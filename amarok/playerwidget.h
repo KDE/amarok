@@ -64,7 +64,7 @@ class PlayerWidget : public QWidget
         PlayerWidget( QWidget *parent = 0, const char *name = 0 );
         ~PlayerWidget();
 
-        void setScroll( QString = "", const QString& = "?", const QString& = "?" );
+        void setScroll( QString = "", const QString& = "?", const QString& = "?", const QString& = "00:00" );
         void drawScroll();
         void timeDisplay( bool remaining, int hours, int minutes, int seconds );
         const KPopupMenu *helpMenu() const { return m_helpMenu->menu(); }
@@ -123,7 +123,7 @@ class PlayerWidget : public QWidget
         void moveEvent( QMoveEvent *e );
 
         // ATTRIBUTES ------
-        QString m_bitrate, m_samplerate;
+        QString m_bitrate, m_samplerate, m_length;
         QTimer *scrollTimer;
         QTimer *m_visTimer;
         QBoxLayout *m_pLay6;

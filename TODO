@@ -8,18 +8,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-    * fix: #19<muesli> the scroller should display the data according to "description.png" 
-              (text above the title scroller) -->muesli
-              <mxcl> Tags can be accessed by passing the metabundle that is passed to ::play()
-              to the setScroll() function as a new parameter -->mxcl or muesli if he fancies it
-
     * chk: #18<muesli> check how different color-sets behave with our layout
               (esp. buttons on the bottom)
-
-    * fix: #17<muesli> add song length to the right of the title-scroller -->muesli
-              <mxcl> this one is a little dodgy as the length is currently not stored with
-              the playlistitem. Maybe best to leave this till next release? Or force
-              me to ammend my hack :)
 
     * fix: #12<markey> prevent zombie processes after amarok has exited (proper exit or crashing).
               such zombies can lead to very weird behaviour on next amarok start and eat ressources,

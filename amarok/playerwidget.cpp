@@ -258,7 +258,7 @@ void PlayerWidget::initScroll()
     //int frameHeight = QFontMetrics( font ).height() + 5;
     int frameHeight = 16;
 
-    m_pFrame->setFixedSize( 286, frameHeight );
+    m_pFrame->setFixedSize( 246, frameHeight );
     //    m_pFrame->setFixedSize( 252, frameHeight );
     m_pFrame->move( 3, 14 );
     //m_pFrame->setFont( font );
@@ -285,7 +285,7 @@ void PlayerWidget::polish()
 }
 
 
-void PlayerWidget::setScroll( QString text, const QString &bitrate, const QString &sampleRate )
+void PlayerWidget::setScroll( QString text, const QString &bitrate, const QString &sampleRate, const QString &length )
 {
     //Update tray tooltip
     if ( QToolTip::textFor( m_pTray ) != QString::null ) QToolTip::remove( m_pTray );
@@ -303,6 +303,7 @@ void PlayerWidget::setScroll( QString text, const QString &bitrate, const QStrin
         m_pDcopHandler->setNowPlaying( text );
         m_bitrate = bitrate;
         m_samplerate = sampleRate;
+        m_length = length;
     }
 
     text.prepend( " | " );
@@ -428,6 +429,12 @@ void PlayerWidget::paintEvent( QPaintEvent * )
     if( !(m_bitrate.isEmpty() || m_samplerate.isEmpty() ) ) str += " / ";
     str += m_samplerate;
     pF.drawText( 6, 68, str );
+
+    //draw the song length, right to the title-scroller
+    font.setBold( TRUE );
+    font.setPixelSize( 11 );
+    pF.setFont( font );
+    pF.drawText( 248, 27, " - " + m_length );
 
     drawScroll();    // necessary for pause mode
 
