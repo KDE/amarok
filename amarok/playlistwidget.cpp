@@ -62,6 +62,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
     , m_redoButton( new QPushButton( i18n( "&Redo" ), 0 ) )
     , m_undoDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) )
     , m_undoCounter( 0 )
+    , m_directPlay( false )
 {
     kdDebug() << "PlaylistWidget::PlaylistWidget()\n";
 
@@ -212,7 +213,7 @@ void PlaylistWidget::showCurrentTrack() { ensureItemVisible( currentTrack() ); }
 
 void PlaylistWidget::insertMedia( const KURL::List &list, bool directPlay )
 {
-    this->directPlay = directPlay;
+    m_directPlay = directPlay;
 
     if( !list.isEmpty() )
     {
@@ -1092,7 +1093,7 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
         #define e static_cast<PlaylistLoader::MakeItemEvent*>(e)
         if( PlaylistItem *item = e->makePlaylistItem( this ) )
         {
-            if( directPlay ) { activate( item ); directPlay = false; }
+            if( m_directPlay ) { activate( item ); m_directPlay = false; }
 
             if( AmarokConfig::showMetaInfo() )
                 m_weaver->append( new TagReader( this, item ) );

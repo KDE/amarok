@@ -190,7 +190,7 @@ class PlaylistWidget : private KListView
         QStringList  m_redoList;
         uint         m_undoCounter;
 
-        bool directPlay;
+        bool m_directPlay;
 };
 
 #endif
