@@ -274,7 +274,7 @@ if test "$build_mas" != "no"; then
     if test $MAS_CONFIG = "no"
     then
         amarok_warning_mas_notfound=yes
-	echo "amarok_warning_mas_notfound: $amarok_warning_mas_notfound"
+    echo "amarok_warning_mas_notfound: $amarok_warning_mas_notfound"
         build_mas=no
     else
         AC_DEFINE(HAVE_MAS, 1, [have MAS])
@@ -538,7 +538,8 @@ fi
 # BEGIN DO_NOT_COMPILE CHECK
 ###############################################################################
 
-if test x$have_kdemm != xyes -a x$have_gst != xyes -a x$build_nmm != xyes; then
+if test x$have_kdemm != xyes -a x$have_gst != xyes -a x$build_nmm != xyes -a x$build_xine != xyes; then
+
     DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
     no_engine=yes
 fi
