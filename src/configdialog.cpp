@@ -70,6 +70,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     AmarokConfig::setCrossfade( EngineController::engine()->hasXFade() );
     opt4->kcfg_Crossfade->setEnabled( EngineController::engine()->hasXFade() );
     opt4->kcfg_CrossfadeLength->setEnabled( EngineController::engine()->hasXFade() );
+    opt4->crossfadeLengthLabel->setEnabled( EngineController::engine()->hasXFade() );
     
     // ID3v1 recoding locales
     QTextCodec *codec;
