@@ -178,11 +178,12 @@ export UNSERMAKE=$oldmake
 echo
 echo "====================================================="
 echo "Congratulations :) amaroK $version tarball generated."
-echo "Now drink a few pints, have some fun on #amarok"
+echo "Now follow the steps in the RELEASE_HOWTO, from"
+echo "SECTION 3 onwards."
+echo
+echo "Then drink a few pints and have some fun on #amarok"
 echo
 echo MD5 checksum:
 md5sum $folder.tar.bz2
 echo
 echo
-
-

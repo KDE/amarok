@@ -1,31 +1,55 @@
-1.  Check the README file is still relevant
+SECTION 1: Preparation
 
-Please do the following, or run release_amarok:
+ * Check the README file is still relevant
+--------------------------------------------------------------------------------
 
-2.  Checkout a fresh copy of amarok, its docs and po; cd into the root
-3.  Update APP_VERSION in amarok/src/amarok.h
-4.  Update the version in amarok/amarok.lsm
-5.  find -name CVS -o -name .cvsignore -exec rm {} \;
-6.  export WANT_AUTOMAKE=1.6
-7.  make -f Makefile.cvs
-8.  rm -rf autom4te.cache config.h config.log
-9.  pushd amarok; mv README TODO INSTALL ChangeLog AUTHORS ..; popd
-10. mv ../kdeextragear-1 ../amarok-VERSION
-11. tar cjf ../amarok-VERSION.tar.bz2 ../amarok-VERSION
-12. Test for default configure, --enable-final, separate build directory
-13. Get some other people to test
+SECTION 2: Creating and Testing the Tarball
 
-Once HAPPY with the tarball:
+ * Run the release_amarok script (use the --up switch); OR
+   Follow the guide lines in appendix A
+ * Test the following:
 
-13. Upload to ftp://upload.sf.net/incoming
-14. Release via sourceforge
-15. Update kde-apps.org, freshmeat, amarok.kde.org
-16. Send a release email to kde-announce, libvisual-devel, kde-multimedia, etc.
-17. Drink a few pints, have some fun on #amarok
+     $ ./configure && make
+     $ ./configure --enable-final --disable-debug && make
 
-If you must change anything about the tarball you need to email
-binner@kde.org in case the md5sum changing would break Konstruct.
+ * Check it works OK without any amarok files in ~/.kde
+--------------------------------------------------------------------------------
 
-TODO
-    MD5sum procedure
-    create a dist Makefile target?
+SECTION 3: Once Happy with the Tarball
+
+ * If you didn't get the script to do it, ftp the tarball to sf.net/incoming
+ * Use the admin system at sourceforge to register the release
+ * Update the amarok.kde.org front-page before anything else!
+ * Update kde-apps.org and freshmeat.net
+ * Send a witty, intelligent and diligently crafted email to the following:
+
+     To:  kde-announce@kde.org
+     CC:  amarok-devel@lists.sf.net
+     BCC: kde-extra-gear@kde.org, libvisual-devel@lists.sourceforge.net, 
+          kde-multimedia@kde.org, nmm-dev@graphics.cs.uni-sb.de, 
+          gstreamer-devel@lists.sourceforge.net,
+--------------------------------------------------------------------------------
+
+SECTION 4: After the Release
+
+ If you must change anything about the tarball you need to email binner@kde.org 
+ because otherwise he gets annoyed that the md5 has changed.
+ Generally it is not wise to change the tarball, it could annoy the entire
+ open-source world!
+--------------------------------------------------------------------------------
+
+APPENDIX A
+
+This is what the release_amarok script does:
+
+ 1. Checkout a fresh copy of amarok, its docs and po; cd into the root
+ 2. Update APP_VERSION in amarok/src/amarok.h
+ 3. Update the version in amarok/amarok.lsm
+ 4. $ cvs-clean; OR
+    $ `find -name CVS -o -name .cvsignore -exec rm {} \;`
+ 5. $ export WANT_AUTOMAKE=1.6
+ 6. $ make -f Makefile.cvs
+ 7. $ rm -rf autom4te.cache config.h config.log
+ 8. $ pushd amarok; mv README TODO INSTALL ChangeLog AUTHORS ..; popd
+ 9. $ mv ../kdeextragear-1 ../amarok-VERSION
+10. $ tar cjf ../amarok-VERSION.tar.bz2 ../amarok-VERSION
