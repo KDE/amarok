@@ -86,7 +86,7 @@ using Debug::DebugStream;
 #define DEBUG_FUNC_INFO kdDebug() << Debug::indent << k_funcinfo << endl;
 
 /// Convenience macro for making a standard Debug::Block
-#define DEBUG_BLOCK Debug::Block uniquelyNamedStackAllocatedStandardBlock( __FUNCTION__ );
+#define DEBUG_BLOCK Debug::Block uniquelyNamedStackAllocatedStandardBlock( __PRETTY_FUNCTION__ );
 
 #define DEBUG_INDENT Debug::indent += "  ";
 #define DEBUG_UNINDENT Debug::indent.truncate( Debug::indent.length() - 2 );
