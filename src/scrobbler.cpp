@@ -783,6 +783,7 @@ void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
     else
     {
         kdWarning() << "[AudioScrobbler] Unknown submit response" << endl;
+        enqueueJob( job );
     }
 }
 
