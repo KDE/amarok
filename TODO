@@ -6,6 +6,9 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+          <mxcl>   Should be able to open collection browser by right clicking on stuff in contextB,
+                   so show the artist or album that is right clicked.
+
           <muesli> Add a flatview for the CollectionBrowser.
 
           <muesli> Run the incremental filescan inside the thread. GUI blocking is bad.
