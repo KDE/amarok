@@ -518,10 +518,16 @@
                             <property name="text">
                                 <string>Select a style:</string>
                             </property>
+                            <property name="toolTip" stdset="0">
+                                <string></string>
+                            </property>
                         </widget>
                         <widget class="KComboBox">
                             <property name="name">
                                 <cstring>styleComboBox</cstring>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Select the style of the Context Browser.</string>
                             </property>
                             <property name="whatsThis" stdset="0">
                                 <string>Select the style of the Context Browser.</string>
@@ -533,6 +539,9 @@
                             </property>
                             <property name="text">
                                 <string>Install New Style</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Click to install a new Context Browser style.&lt;br&gt;Tip: More styles can be found on &lt;a href='http://kde-look.org'&gt;http://kde-look.org&lt;/a&gt;</string>
                             </property>
                             <property name="whatsThis" stdset="0">
                                 <string>Select and install a new Context Browser style.</string>
@@ -592,12 +601,4 @@
     <function access="private" specifier="non virtual">updateStyleComboBox()</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kfontrequester.h</includehint>
-    <includehint>kfontrequester.h</includehint>
-    <includehint>kfontrequester.h</includehint>
-    <includehint>kcolorbutton.h</includehint>
-    <includehint>kcolorbutton.h</includehint>
-    <includehint>kcombobox.h</includehint>
-</includehints>
 </UI>
