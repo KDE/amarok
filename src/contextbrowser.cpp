@@ -27,6 +27,7 @@
 #include <qlabel.h>
 #include <qpushbutton.h>
 #include <qdatetime.h>
+#include <qimage.h>
 
 #include <dirent.h>
 #include <stdlib.h>
@@ -152,9 +153,25 @@ void ContextBrowser::openURLRequest( const KURL &url )
             if( o ) static_cast<CollectionBrowser*>(o)->setupDirs();
         }
     }
+
+#ifdef AMAZON
     
-    if ( m_url.protocol() == "fetchcover" )
-        m_db->fetchCover( this, info[0], info[1], false );
+    /* fetch covers from amazon on click */
+    if ( m_url.protocol() == "fetchcover" ) m_db->fetchCover( this, info[0], info[1], false );
+
+#else
+    
+    /* open a widget with the image on click */
+    /* TODO bug: 2nd window opens when clicking on a cover from "Albums by Artist". I'm too lame to figure out why. */
+    QWidget *widget = new QWidget( 0, 0, WDestructiveClose );
+    widget->setCaption( "Cover Viewer - amaroK" );
+    QPixmap pixmap( m_db->getImageForAlbum( info[0], info[1], locate( "data", "amarok/images/sound.png" ), 0 ) );
+    widget->setPaletteBackgroundPixmap( pixmap );
+    widget->setMinimumSize( pixmap.size() );
+    widget->setFixedSize( pixmap.size() );
+    widget->show();
+    
+#endif
 }
 
 
@@ -217,8 +234,9 @@ void ContextBrowser::showHome() //SLOT
     delete m_db;
     m_db = new CollectionDB();
     // Triggers redisplay when new cover image is downloaded
+    #ifdef AMAZON
     connect( m_db, SIGNAL( coverFetched(const QString&) ), this, SLOT( showCurrentTrack() ) );
-
+    #endif
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
 
@@ -465,7 +483,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                     << values[i + 2].replace( "\"", "%22" ) // album.id
                                     << escapeHTMLAttr( values[i + 1] ) // artist.name
                                     << escapeHTMLAttr( values[i + 0] ) // album.name
-                                    << escapeHTMLAttr( m_db->getImageForAlbum( values[i + 1], values[i + 0], locate( "data", "amarok/images/sound.png" ), 40 ) )
+                                    << escapeHTMLAttr( m_db->getImageForAlbum( values[i + 1], values[i + 0], locate( "data", "amarok/images/sound.png" ) ) )
                                     << escapeHTML( values[i + 0] ) // album.name
                                     << m_db->albumSongCount( values[i + 3], values[i + 2] )
                                     )

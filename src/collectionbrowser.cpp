@@ -454,7 +454,11 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
     if ( item ) {
         KPopupMenu menu( this );
 
+        #ifdef AMAZON
         enum Actions { MAKE, APPEND, QUEUE, COVER, INFO };
+        #else
+        enum Actions { MAKE, APPEND, QUEUE, INFO };
+        #endif
 
         menu.insertItem( i18n( "&Make Playlist" ), MAKE );
         menu.insertItem( i18n( "&Append to the Playlist" ), APPEND );
@@ -462,7 +466,9 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         menu.insertSeparator();
 
+        #ifdef AMAZON
         menu.insertItem( i18n( "&Fetch Cover Images" ), this, SLOT( fetchCover() ), 0, COVER );
+        #endif
         menu.insertItem( i18n( "Edit Meta Information..." ), this, SLOT( showTrackInfo() ), 0, INFO );
 
         menu.setItemEnabled( INFO, ( item->depth() && m_category2 == i18n( "None" ) ) || item->depth() == 2 );
@@ -484,6 +490,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 void
 CollectionView::fetchCover() //SLOT
 {
+    #ifdef AMAZON
     Item* item = static_cast<Item*>( currentItem() );
     if ( !item ) return;
     if ( m_category2 != i18n( "None" ) && item->depth() != 2 ) return;
@@ -504,8 +511,8 @@ CollectionView::fetchCover() //SLOT
 
         m_db->fetchCover( this, artist, album, false );
     }
+    #endif
 }
-
 
 void
 CollectionView::showTrackInfo() //SLOT

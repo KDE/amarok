@@ -39,12 +39,13 @@ CollectionDB::CollectionDB()
 
     m_db = sqlite_open( path, 0, 0 );
 
+#ifdef AMAZON
     // create image cache dir, if it doesn't exist.
     if( !m_cacheDir.exists( "cache", false ) )
         m_cacheDir.mkdir( "cache", false );
     m_cacheDir.cd( "cache" );
-
-    // create cover cache dir, if it doesn't exist.
+#endif
+    // create cover dir, if it doesn't exist.
     if( !m_coverDir.exists( "albumcovers", false ) )
         m_coverDir.mkdir( "albumcovers", false );
     m_coverDir.cd( "albumcovers" );
@@ -201,9 +202,10 @@ CollectionDB::getImageForPath( const QString path, const QString defaultImage, c
     escapedPath.replace( "/", "_" );
     escapedPath.replace( "'", "_" );
 
+#ifdef AMAZON
     if ( m_cacheDir.exists( escapedPath ) )
         return m_cacheDir.absPath() + "/" + escapedPath;
-
+#endif
     execSql( QString( "SELECT name FROM images WHERE path = '%1';" )
              .arg( escapeString( path ) ), &values, &names );
 
@@ -224,6 +226,7 @@ CollectionDB::getImageForPath( const QString path, const QString defaultImage, c
                 return m_cacheDir.absPath() + "/" + escapedPath;
             }
         } else
+      
             return path + "/" + image;
     }
 
@@ -863,6 +866,7 @@ CollectionDB::retrieveSecondLevelURLs( QString itemText1, QString itemText2, QSt
 void
 CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString& album, bool edit ) //SLOT
 {
+    #ifdef AMAZON
     /* Static license Key. Thanks muesli ;-) */
     QString amazonLicense = "D1URM11J3F2CEH";
     QString keyword = artist + " - " + album;
@@ -873,6 +877,7 @@ CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString&
              this,      SLOT( saveCover( const QString&, const QPixmap& ) ) );
 
     fetcher->getCover( artist, album, keyword, CoverFetcher::heavy, edit, 2, false );
+    #endif
 }
 
 
