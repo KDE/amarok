@@ -1,12 +1,19 @@
 if with_arts
-    AMAROKARTS_BUILD = amarokarts
+    AMAROKARTS_SUBDIR = amarokarts
+endif
+
+if with_included_sqlite
+    SQLITE_SUBDIR = sqlite
+    LIB_SQLITE_LOCAL = $(top_builddir)/amarok/src/sqlite/libsqlite.la    
+    sqlite_includes = -I$(top_srcdir)/amarok/src/sqlite
 endif
 
 bin_PROGRAMS = amarokapp
 
 SUBDIRS = \
     amarokcore \
-    $(AMAROKARTS_BUILD) \
+    $(AMAROKARTS_SUBDIR) \
+    $(SQLITE_SUBDIR) \
     analyzers \
     data \
     plugin \
@@ -26,12 +33,8 @@ INCLUDES = \
     -I$(top_srcdir)/amarok/src/titleproxy \
     -I$(kde_includes)/arts \
     $(taglib_includes) \
+    $(sqlite_includes) \
     $(all_includes)
-
-if with_included_sqlite
-    SUBDIRS += sqlite
-    INCLUDES += -I$(top_srcdir)/amarok/src/sqlite
-endif
 
 amarokapp_SOURCES = \
     Options1.ui \
@@ -83,17 +86,10 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/amarokcore/libamarokcore.la \
     $(top_builddir)/amarok/src/analyzers/libanalyzers.la \
     $(top_builddir)/amarok/src/engine/libengine.la \
-    $(top_builddir)/amarok/src/plugin/libplugin.la
-
-### Is the order important?
-### Preserving, just in case (Dato, 2004-07-01)
-if with_included_sqlite
-    amarokapp_LDADD += $(top_builddir)/amarok/src/sqlite/libsqlite.la
-endif
-
-amarokapp_LDADD += $(top_builddir)/amarok/src/titleproxy/libtitleproxy.la \
-    $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) \
-    $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_KJSEMBED) 
+    $(top_builddir)/amarok/src/plugin/libplugin.la \
+    $(top_builddir)/amarok/src/titleproxy/libtitleproxy.la \
+    $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) $(LIB_KJSEMBED) \
+    $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) 
 
 amarokapp_LDFLAGS = \
     $(all_libraries) \
@@ -107,6 +103,7 @@ KDE_ICON = \
 
 rcdir = \
     $(kde_datadir)/amarok
+
 rc_DATA = \
     amarokui.rc \
     amarokui_xmms.rc \
@@ -114,6 +111,7 @@ rc_DATA = \
 
 configdir = \
     $(kde_confdir)
+
 config_DATA = \
     amarokrc
 
