@@ -3,10 +3,14 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #43 being the highest available (take this one for your next bug and increase here)
+           #44 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+    * fix: #43 <markey> since we rely on TagLib now for length-detection, we cannot determine the length
+               of .mod (etc.) files. either: 1) extend TagLib or 2) resurrect aRts length detection as 
+               backup
 
     * fix: #42 with restore track on startup and crossfade volume starts at max and then crossfades
                from 0 so you get a noticeable "blip" sound.
@@ -33,11 +37,9 @@ SHORT-TERM (URGENT):
     * add: #29<muesli> configure script should fail, if taglib check failed
               <markey> would be comfy to have a special flag for release which deactivates the check
 
-    * fix: #11<markey> bitrate display often shows bogus values (especially with VBR, it seems)
-              <mxcl> currently taglib is scanning files in Fast mode and on demand, the code is in
-              PlaylistItem::metaBundle(). If it's still doing it wrong we should consider setting it
-              to Accurate. <markey> wheels is already working on the problem
-
+    * fix: #11 <markey> TagLib delivers incorrect length for VBR mp3 files w/o XING header
+               (there is no known method to determine that quickly. muesli once claimed he knows one (?))
+    
     * fix: #7<mxcl> originally reported all this, <berkus> summarized
              * The playwidget and playlistwidget should display as single entry on taskbar.
              * Clicking on either or on tray icon should bring both up/down.
