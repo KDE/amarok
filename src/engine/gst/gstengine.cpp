@@ -200,6 +200,11 @@ GstEngine::init()
 bool
 GstEngine::canDecode( const KURL &url )
 {
+    if ( GstConfig::soundOutput().isEmpty() ) {
+        errorNoOutput();
+        return false;
+    }    
+    
     //TODO HACK
     if ( url.fileName().endsWith( UADE_EXT ) ) return true;
     
@@ -298,6 +303,11 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     Engine::Base::load( url, stream );
     kdDebug() << "Gst-Engine: url.url() == " << url.url() << endl;
     
+    if ( GstConfig::soundOutput().isEmpty() ) {
+        errorNoOutput();
+        return false;
+    }    
+   
     bool isUade = false;
     if ( url.fileName().endsWith( UADE_EXT ) ) isUade = true;
 
@@ -669,6 +679,15 @@ GstEngine::interpolate( const Engine::Scope& inVec, Engine::Scope& outVec )
 }
 
 
+void
+GstEngine::errorNoOutput() const
+{
+    KMessageBox::error( 0,
+        i18n( "<h3>No sound output selected!</h3>"
+              "<p>Please select an <i>output plugin</i> in the engine settings dialog.</p>" ) );
+}
+                  
+                  
 #include "gstengine.moc"
 
 
