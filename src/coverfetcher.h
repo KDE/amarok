@@ -16,14 +16,16 @@ class CoverFetcher : public QObject
     Q_OBJECT
     
     public:
+        enum QueryMode { lite, heavy };
+        
         CoverFetcher( QObject* parent = 0 );
         ~CoverFetcher();
     
         void setLicense( const QString license ) { m_license = license; }
-        void getCover( const QString& keyword );
+        void getCover( const QString& keyword, QueryMode mode = lite );
         
     signals:
-        void imageReady( QPixmap image );        
+        void imageReady( const QPixmap& image );        
         
     private slots:
         void xmlData( KIO::Job* job, const QByteArray& data );

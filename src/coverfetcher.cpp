@@ -1,9 +1,9 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // See COPYING file for licensing information.
 
-
 #include "coverfetcher.h"
 
+#include <qdom.h>
 #include <qpixmap.h>
 
 #include <kdebug.h>
@@ -27,7 +27,7 @@ CoverFetcher::~CoverFetcher()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
-CoverFetcher::getCover( const QString& keyword )
+CoverFetcher::getCover( const QString& keyword, QueryMode mode )
 {
     kdDebug() << k_funcinfo << endl;
     
@@ -36,10 +36,11 @@ CoverFetcher::getCover( const QString& keyword )
     m_image = QByteArray();
     
     QString url = QString( "http://xml.amazon.com/onca/xml3?t=webservices-20&dev-t=%1"
-                           "&KeywordSearch=%2&mode=music&type=lite&page=1&f=xml" )
+                           "&KeywordSearch=%2&mode=music&type=%3&page=1&f=xml" )
                            .arg( m_license )
-                           .arg( keyword );
-    
+                           .arg( keyword )
+                           .arg( mode == lite ? "lite" : "heavy" );
+                           
     kdDebug() << "Using this url: " << url << endl;
                            
     KIO::TransferJob* job = KIO::get( url, false, false );
@@ -72,11 +73,14 @@ CoverFetcher::xmlResult( KIO::Job* job ) //SLOT
     }
     kdDebug() << m_xmlDocument << endl;
 
-    int index1 = m_xmlDocument.find( "ImageUrlMedium" );
-        index1 = m_xmlDocument.find( ">", index1 ) + 1;
-    int index2 = m_xmlDocument.find( "<", index1 );
-
-    QString imageUrl = m_xmlDocument.mid( index1, index2 - index1 );
+    QDomDocument doc;
+    doc.setContent( m_xmlDocument );
+    
+    QString imageUrl = doc.documentElement()
+                          .namedItem( "Details" )
+                          .namedItem( "ImageUrlMedium" )
+                          .firstChild().toText().nodeValue();
+    
     kdDebug() << "imageUrl: " << imageUrl << endl;
 
     KIO::TransferJob* imageJob = KIO::get( imageUrl, false, false );
@@ -93,6 +97,7 @@ CoverFetcher::imageData( KIO::Job*, const QByteArray& data ) //SLOT
     int oldSize = m_image.size();
     m_image.resize( m_image.size() + data.size() );
     
+    //append new data to array
     for ( uint i = 0; i < data.size(); i++ )
         m_image[ oldSize + i ] = data[ i ];
 }

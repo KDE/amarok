@@ -102,7 +102,7 @@ class CollectionView : public KListView
         void addToPlaylist();
         /** Tries to download the cover image from Amazon.com */
         void fetchCover();
-        void gotCover( QPixmap image );
+        void gotCover( const QPixmap& image );
         /** Shows dialog with information on selected track */
         void showTrackInfo();
                 

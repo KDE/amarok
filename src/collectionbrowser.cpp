@@ -200,8 +200,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
              this,             SLOT( doubleClicked( QListViewItem*, const QPoint&, int ) ) );
     connect( this,           SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,             SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
-    connect( m_coverFetcher, SIGNAL( imageReady( QPixmap ) ),
-             this,             SLOT( gotCover( QPixmap ) ) );
+    connect( m_coverFetcher, SIGNAL( imageReady( const QPixmap& ) ),
+             this,             SLOT( gotCover( const QPixmap& ) ) );
              
     renderView();
     startTimer( MONITOR_INTERVAL );         
@@ -491,7 +491,7 @@ CollectionView::fetchCover() //SLOT
 
 
 void
-CollectionView::gotCover( QPixmap image ) //SLOT
+CollectionView::gotCover( const QPixmap& image ) //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     
