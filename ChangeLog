@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2.2:
+  FIX: Images shown on OSD where incorrect for action notifications.
   FIX: The handbook translations were not built when amaroK was installed from
        the tarball. I've written a new release script in Ruby, which can
        handle the new structure of kde-i18n. (BR 100498)
