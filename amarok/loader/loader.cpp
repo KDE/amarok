@@ -56,7 +56,7 @@ Loader::Loader( int& argc, char** argv )
         
         connect( m_pProc, SIGNAL( readyReadStdout() ), this, SLOT( stdoutActive() ) );
         connect( m_pProc, SIGNAL( processExited() ),   this, SLOT( doExit() ) );
-        m_pProc->setCommunication( QProcess::Stdout );
+        m_pProc->setCommunication( QProcess::Stdin || QProcess::Stdout );
         m_pProc->start();
         
         //wait until LoaderServer starts (== amaroK is up and running)
@@ -64,6 +64,8 @@ Loader::Loader( int& argc, char** argv )
             processEvents();
             ::usleep( 200 * 1000 );    //== 200ms                    
         }
+        QCString str = "STARTUP";
+        ::send( m_sockfd, str, str.length(), 0 );
         std::cout << "[amaroK loader] amaroK startup successful.\n";
     }
     else {

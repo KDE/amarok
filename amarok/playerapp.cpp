@@ -928,7 +928,8 @@ void LoaderServer::newConnection( int sockfd )
         QCString result( buf );
         kdDebug() << result << endl;
 
-        emit loaderArgs( result );
+        if ( !result.contains( "STARTUP" ) )
+            emit loaderArgs( result );
     }
 
     ::close( sockfd );
