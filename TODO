@@ -11,6 +11,8 @@ SHORT-TERM (URGENT):
     * <my_thibaut> if you specify a dir in the collection browser, next time you start amarok, if the
                    dir does not exist anymore, amarok crashes
 
+    * <my_thibaut> collectionbrowser crash when the directories (not only the files) contain non-ascii chars
+                  
     * fix: #82 about dialog makes toolbar go crazy
 
 MID-TERM:
