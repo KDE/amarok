@@ -203,6 +203,7 @@ CoverManager::CoverManager()
 
     #ifdef AMAZON_SUPPORT
     connect( CollectionDB::instance(), SIGNAL(coverFetched( const QString&, const QString& )), SLOT(coverFetched( const QString&, const QString& )) );
+    connect( CollectionDB::instance(), SIGNAL(coverRemoved( const QString&, const QString& )), SLOT(coverRemoved( const QString&, const QString& )) );
     connect( CollectionDB::instance(), SIGNAL(coverFetcherError( const QString& )), SLOT(coverFetcherError()) );
     #endif
 
@@ -614,10 +615,18 @@ void CoverManager::changeLocale( int id ) //SLOT
 }
 
 
-void CoverManager::coverFetched( const QString &artist, const QString &album )
+void CoverManager::coverFetched( const QString &artist, const QString &album ) //SLOT
 {
     loadCover( artist, album );
     m_coversFetched++;
+    updateStatusBar();
+}
+
+
+void CoverManager::coverRemoved( const QString &artist, const QString &album ) //SLOT
+{
+    loadCover( artist, album );
+    m_coversFetched--;
     updateStatusBar();
 }
 
@@ -693,7 +702,7 @@ void CoverManager::deleteSelectedCovers()
         for ( CoverViewItem* item = selected.first(); item; item = selected.next() ) {
             qApp->processEvents();
             if ( CollectionDB::instance()->removeAlbumImage( item->artist(), item->album() ) )    //delete selected cover
-                  item->loadCover();    //show the nocover icon
+                  coverRemoved( item->artist(), item->album() );
         }
     }
 }

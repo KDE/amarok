@@ -56,6 +56,7 @@ Q_OBJECT
         void fetchMissingCovers();
         void fetchCoversLoop();
         void coverFetched( const QString&, const QString& );
+        void coverRemoved( const QString&, const QString& );
         void coverFetcherError();
         void stopFetching();
         void updateStatusBar();
@@ -112,7 +113,7 @@ Q_OBJECT
 
     protected:
         QDragObject *dragObject();
-    
+
     private:
 };
 

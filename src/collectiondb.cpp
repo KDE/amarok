@@ -843,8 +843,11 @@ CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
 
     // remove large, original image
     QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
-    if ( largeCoverDir.exists( key ) )
-        return QFile::remove( largeCoverDir.filePath( key ) );
+
+    if ( largeCoverDir.exists( key ) && QFile::remove( largeCoverDir.filePath( key ) ) ) {
+        emit coverRemoved( artist, album );
+        return true;
+    }
 
     return false;
 }

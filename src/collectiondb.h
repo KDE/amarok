@@ -82,6 +82,7 @@ class CollectionDB : public QObject, public EngineObserver
         void scoreChanged( const QString &url, int score );
 
         void coverFetched( const QString &artist, const QString &album );
+        void coverRemoved( const QString &artist, const QString &album );
         void coverFetcherError( const QString &error );
 
         void similarArtistsFetched( const QString &artist );

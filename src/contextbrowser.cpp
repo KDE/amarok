@@ -97,9 +97,11 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( CollectionDB::instance(), SIGNAL( scanStarted() ), SLOT( collectionScanStarted() ) );
     connect( CollectionDB::instance(), SIGNAL( scanDone( bool ) ), SLOT( collectionScanDone() ) );
     connect( CollectionDB::instance(), SIGNAL( coverFetched( const QString&, const QString& ) ),
-             this,                      SLOT( coverFetched( const QString&, const QString& ) ) );
+             this,                       SLOT( coverFetched( const QString&, const QString& ) ) );
+    connect( CollectionDB::instance(), SIGNAL( coverRemoved( const QString&, const QString& ) ),
+             this,                       SLOT( showCurrentTrack() ) );
     connect( CollectionDB::instance(), SIGNAL( similarArtistsFetched( const QString& ) ),
-             this,                      SLOT( similarArtistsFetched( const QString& ) ) );
+             this,                       SLOT( similarArtistsFetched( const QString& ) ) );
 
     //the stylesheet will be set up and home will be shown later due to engine signals and doodaa
     //if we call it here setStyleSheet is called 3 times during startup!!
