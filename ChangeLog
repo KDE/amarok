@@ -2,8 +2,11 @@ amaroK ChangeLog
 ================
 (c) 2002-2004 the amaroK authors.
 
-  ADD: Allow the current GL analy(s/z)er to be detached/re-atached from the main window with the 'd' key
-  FIX: Filtering the collection now searches the second category, too. (BR 81681).
+
+  CHG: New icons for player buttons, by Roman Becker <roman@formmorf.de>.
+  ADD: Allow the current GL analyzer to be detached/attached from the
+       main window with the 'd' key.
+  FIX: Filtering the collection now searches the second category, too (BR 81681).
   FIX: Filter in playlist was only working for the first argument.
   ADD: Option for auto centering the OSD horizontally.
   CHG: Collection-Monitor now processes removed dirs in a thread.
