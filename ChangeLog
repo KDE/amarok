@@ -4,7 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta3:
-  ADD: DCOP call for relative seek. Patch by Andreas Pfaller.
+  ADD: DCOP call for relative seek. Patch by Andreas Pfaller. (BR 84989)
   CHG: Bumped TagLib dependency to 1.3.1. (1.3 is too damn buggy)
   FIX: CTRL-M can show the menubar again after hiding. (BR 94139)
   ADD: Support for last.fm streams.
