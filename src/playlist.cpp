@@ -1086,7 +1086,15 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
     //Markey, sorry for the lengths of these lines! -mxcl
 
     KPopupMenu popup( this );
-    popup.insertTitle( item->metaBundle().prettyTitle() );
+    
+    QString title = item->metaBundle().prettyTitle();
+    // Prevent absurdly wide menu (titles can get very long in some cases)
+    const uint maxLength = 50;
+    if ( title.length() > maxLength ) {
+        title.truncate( maxLength );
+        title += "...";
+    }
+    popup.insertTitle( title );
     popup.insertItem( SmallIcon( "player_play" ), isCurrent && isPlaying ? i18n( "&Restart" ) : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
 
     if( !isQueued ) //not in nextTracks queue
