@@ -26,8 +26,6 @@ SHORT-TERM (URGENT):
           <mxcl>   loadEngine can call statusbar::message() at the void-engine stage and crash because
                    the statusbar is not yet created.
 
-          <mxcl>   Collection scan cannot be cancelled
-
           <markey> Running on GNOME, amaroK's windows do not show the app icon, but instead a blank icon.
                    Uraeus says amaroK is the only KDE app with this problem.
 
