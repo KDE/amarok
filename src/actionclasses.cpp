@@ -7,6 +7,7 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "app.h"
+#include "collectiondb.h"
 #include "covermanager.h"
 #include "enginecontroller.h"
 #include "k3bexporter.h"
@@ -99,6 +100,11 @@ Menu::Menu()
     insertItem( i18n( "&Visualizations" ), ID_SHOW_VIS_SELECTOR );
     insertItem( i18n( "E&qualizer" ), kapp, SLOT( slotConfigEqualizer() ), 0, ID_CONFIGURE_EQUALIZER );
     safePlug( ac, "script_manager", this );
+
+    insertSeparator();
+
+    insertItem( i18n("&Rescan Collection"), ID_RESCAN_COLLECTION );
+
     insertSeparator();
 
     safePlug( ac, KStdAction::name(KStdAction::ShowMenubar), this );
@@ -173,6 +179,9 @@ Menu::slotActivated( int index )
         break;
     case ID_SHOW_VIS_SELECTOR:
         Vis::Selector::instance()->show(); //doing it here means we delay creation of the widget
+        break;
+    case ID_RESCAN_COLLECTION:
+        CollectionDB::instance()->startScan();
         break;
     }
 }

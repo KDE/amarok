@@ -66,7 +66,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         virtual QSize sizeHint() const;
 
     private:
-        enum MenuId { ID_SHOW_TOOLBAR = 2000, ID_SHOW_PLAYERWINDOW, ID_RESCAN_COLLECTION };
+        enum MenuId { ID_SHOW_TOOLBAR = 2000, ID_SHOW_PLAYERWINDOW };
 
         KMenuBar      *m_menubar;
         KPopupMenu    *m_toolsMenu;

@@ -34,7 +34,8 @@ namespace amaroK
                 ID_SHOW_COVER_MANAGER,
                 ID_SHOW_EFFECTS,
                 ID_CONFIGURE_EQUALIZER,
-                ID_SHOW_WIZARD
+                ID_SHOW_WIZARD,
+                ID_RESCAN_COLLECTION
             };
 
         public slots:
