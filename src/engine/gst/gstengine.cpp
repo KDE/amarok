@@ -62,9 +62,19 @@ GstEngine::s_instance;
 /////////////////////////////////////////////////////////////////////////////////////
 
 void
-GstEngine::eos_cb( GstElement*, GstElement* ) //static
+GstEngine::eos_cb( GstElement* element, GstElement* ) //static
 {
     kdDebug() << k_funcinfo << endl;
+
+    InputPipeline* input;
+
+    // Determine which input pipeline emitted the eos
+    for ( uint i = 0; i < instance()->m_inputs.count(); i++ ) {
+        input = instance()->m_inputs.at( i );
+
+        if ( input->spider == element )
+            input->m_eos = true;
+    }
 
     //this is the Qt equivalent to an idle function: delay the call until all events are finished,
     //otherwise gst will crash horribly
@@ -611,13 +621,18 @@ GstEngine::endOfStreamReached()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
-    if ( m_currentInput )
-        destroyInput( m_currentInput );
+    InputPipeline* input;
 
-    // Stop fading
-    m_fadeValue = 0.0;
-
-    emit trackEnded();
+    // Iterate over all input pipelines
+    for ( uint i = 0; i < m_inputs.count(); i++ ) {
+        input = m_inputs.at( i );
+        if ( input->m_eos ) {
+            kdDebug() << "eosElement found, destroying.\n";
+            if ( input->state() == InputPipeline::PLAYING )
+                emit trackEnded();
+            destroyInput( input );
+        }
+    }
 }
 
 
@@ -884,6 +899,7 @@ InputPipeline::InputPipeline()
     : QObject()
     , m_fade( 0.0 )
     , m_error( false )
+    , m_eos( false )
 {
     kdDebug() << k_funcinfo << endl;
 

@@ -175,7 +175,9 @@ class InputPipeline : public QObject
 
         State m_state;
         float m_fade;
+
         bool m_error;
+        bool m_eos;
 
         GstElement* thread;
         GstElement* src;
