@@ -61,7 +61,9 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     //load artists from the collection db
     QStringList values;
     QStringList names;
-    m_db->execSql("SELECT name FROM artist ORDER BY name;", &values, &names);
+    m_db->execSql( "SELECT DISTINCT artist.name FROM tags, artist, album "
+                   "WHERE artist.name <> 'Unknown' AND album.name <> 'Unknown' AND artist.id=tags.artist AND album.id=tags.album "
+                   "ORDER BY artist.name;", &values, &names );
 
     if( !values.isEmpty() ) {
         for( uint i=0; i < values.count(); i++ )  {
@@ -201,7 +203,7 @@ void CoverManager::expandeItem( QListViewItem *item ) //SLOT
         id = QString::number( m_db->getValueID( "artist", item->text(0) ) );
 
     m_db->execSql("SELECT DISTINCT album.name FROM album, artist, tags "
-                            "WHERE tags.album=album.id AND tags.artist="+id+" "
+                            "WHERE album.name <> 'Unknown' AND tags.album=album.id AND tags.artist="+id+" "
                             "ORDER BY album.name;"
                             , &values, &names );
 
@@ -242,13 +244,13 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     bool allAlbums = (item == m_artistView->firstChild());
     QString command;
     if( allAlbums ) {
-        command = "select DISTINCT artist.name, album.name FROM album,artist,tags "
-                             "where tags.album=album.id AND tags.artist=artist.id ORDER BY album.name;";
+        command = "SELECT DISTINCT artist.name, album.name FROM album,artist,tags "
+                             "WHERE album.name <> 'Unknown' AND tags.album=album.id AND tags.artist=artist.id ORDER BY album.name;";
 
     } else {
         QString id = QString::number( m_db->getValueID( "artist", item->text(0) ) );
-        command = "select DISTINCT album.name, '' FROM album,tags "
-                             "where tags.album=album.id AND tags.artist="+id+" ORDER BY album.name;";
+        command = "SELECT DISTINCT album.name, '' FROM album,tags "
+                             "WHERE album.name <> 'Unknown' AND tags.album=album.id AND tags.artist="+id+" ORDER BY album.name;";
     }
 
     m_db->execSql(command, &values, &names);
