@@ -71,7 +71,7 @@ class GstEngine : public Engine::Base
 
     private slots:
         void handleGstError( GError*, gchar* );
-        void stopAtEnd();
+        void endOfStreamReached();
         void kioFinished();
         void newKioData( KIO::Job*, const QByteArray& array );
         void errorNoOutput() const;

@@ -69,7 +69,7 @@ GstEngine::eos_cb( GstElement*, GstElement* ) //static
 
     //this is the Qt equivalent to an idle function: delay the call until all events are finished,
     //otherwise gst will crash horribly
-    QTimer::singleShot( 0, instance(), SLOT( stopAtEnd() ) );
+    QTimer::singleShot( 0, instance(), SLOT( endOfStreamReached() ) );
 }
 
 
@@ -529,22 +529,20 @@ GstEngine::handleGstError( GError* error, gchar* debugmsg )  //SLOT
     kdError() << error->message << endl;
     kdError() << debugmsg << endl;
 
-    // Skip to next track
-    stopAtEnd();
+    emit statusText( "[GStreamer Error] " + QString( error->message ) );
 }
 
 
 void
-GstEngine::stopAtEnd()  //SLOT
+GstEngine::endOfStreamReached()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
-    if ( !m_pipelineFilled ) return ;
-
+    
+    if ( m_pipelineFilled )
+        gst_element_set_state( m_gst_thread, GST_STATE_READY );
+    
     // Stop fading
     m_fadeValue = 0.0;
-    
-    cleanPipeline();
-    m_transferJob = 0;
     
     emit trackEnded();
 }
