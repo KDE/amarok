@@ -24,28 +24,30 @@ Q_OBJECT
 
 public:
     Selector();
-    
-    static QWidget* instance();
+
+    static Selector* instance();
     static Selector* m_instance;
-    
+
+    void mapPID( int, int ); //assigns pid/sockfd combo
+
     class Item : public QCheckListItem //TODO use stack allocated KProcess
     {
     public:
-        Item( QListView *parent, const QString &text ) 
+        Item( QListView *parent, const QString &text )
           : QCheckListItem( parent, text, QCheckListItem::CheckBox )
+          , m_proc( 0 )
+          , m_sockfd( -1 )
         {}
         ~Item();
-        
+
         virtual void stateChange( bool state );
-        
+
         KProcess *m_proc;
+        int       m_sockfd;
     };
 
-signals:
-    void configureVis( const QString& );    
-    
 private slots:
-    void rightButton( QListViewItem*, const QPoint&, int );       
+    void rightButton( QListViewItem*, const QPoint&, int );
 
 public slots:
     void processExited( KProcess* );
@@ -65,17 +67,13 @@ public:
 private slots:
     void request( int );
 
-public slots:
-    void invokeConfig( const QString& );    
-    
 private:
     static bool m_ignoreState;
 
     int m_sockfd;
-    QString m_configVis;
 };
 
-        
+
 } //namespace VIS
 
 #endif

@@ -14,7 +14,7 @@
 
 #include <kdebug.h>
 #include <klocale.h>
-#include <kpopupmenu.h>       //Vis::Selector  
+#include <kpopupmenu.h>       //Vis::Selector
 #include <kprocess.h>         //Vis::Selector
 #include <kstandarddirs.h>
 
@@ -96,28 +96,31 @@ Vis::SocketServer::request( int sockfd )
 {
     std::vector<float> *scope = EngineController::engine()->scope();
 
-    char buf[32]; //TODO docs should state requests can only be 32bytes at most
-    int nbytes = recv( sockfd, buf, sizeof(buf) - 1, 0 );
+    char buf[16]; //TODO docs should state request commands can only be 4 bytes
+    int nbytes = recv( sockfd, buf, 16, 0 );
 
     if( nbytes > 0 )
     {
-        buf[nbytes] = '\000';
+        //buf[nbytes] = '\000';
         QString result( buf );
 
-        if( result == "PCM" )
+        if( result == "REG" )
+        {
+            pid_t *pid = (pid_t*)(buf + 4);
+
+            kdDebug() << "Registration pid: " << *pid << endl;
+
+            Vis::Selector::instance()->mapPID( *pid, sockfd );
+        }
+        else if( result == "PCM" )
         {
             if( scope->empty() ) kdDebug() << "empty scope!\n";
             if( scope->size() < 512 ) kdDebug() << "scope too small!\n";
 
             float data[512]; for( uint x = 0; x < 512; ++x ) data[x] = (*scope)[x];
 
-            if ( m_configVis.isEmpty() )
-                ::send( sockfd, data, 512*sizeof(float), 0 );
-            else {
-                ::send( sockfd, "CONFIG", 7, 0 );
-                m_configVis = "";
-            }
-                
+            ::send( sockfd, data, 512*sizeof(float), 0 );
+
             delete scope;
         }
         else if( result == "FFT" )
@@ -146,30 +149,18 @@ Vis::SocketServer::request( int sockfd )
             fht.scale( front, 1.0 / 64 );
 
             //only half the samples from the fft are useful
-            if ( m_configVis.isEmpty() )
-                ::send( sockfd, scope, 256*sizeof(float), 0 );
-            else {
-                ::send( sockfd, "CONFIG", 7, 0 );
-                m_configVis = "";
-            }
+            ::send( sockfd, scope, 256*sizeof(float), 0 );
 
             delete scope;
         }
-        else if( result.startsWith( "REG", false ) )
-        {
-        }
 
     } else {
-        kdDebug() << "[Vis::Server] recv() error, closing socket" << endl;
+
+        kdDebug() << "[Vis::Server] receive error, closing socket: " << sockfd << endl;
         ::close( sockfd );
     }
 }
 
-void
-Vis::SocketServer::invokeConfig( const QString& name ) //SLOT
-{
-    m_configVis = name;    
-}
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -178,17 +169,12 @@ Vis::SocketServer::invokeConfig( const QString& name ) //SLOT
 
 Vis::Selector* Vis::Selector::m_instance = 0;
 
-QWidget*
+Vis::Selector*
 Vis::Selector::instance()
 {
-    if ( !m_instance ) {
-        m_instance =  new Selector();
-        
-        connect( m_instance,           SIGNAL( configureVis( const QString& ) ),
-                 SocketServer::m_self,   SLOT( invokeConfig( const QString& ) ) );
-    }
-        
-    return (QWidget*) m_instance;
+    if ( !m_instance ) m_instance =  new Selector();
+
+    return m_instance;
 }
 
 Vis::Selector::Selector()
@@ -197,7 +183,7 @@ Vis::Selector::Selector()
     //TODO we will have to update the status of the visualisation window using the socket
     //     it should know which processes are requesting data from it
     //FIXME problem, you can have more than one of each vis running!
-    //      solution (for now) data starve multiple registrants <markey> Is there really a need for 
+    //      solution (for now) data starve multiple registrants <markey> Is there really a need for
     //      running multiple instances of the _same_ vis? Methinks that's a gimmick.
     //      <mxcl> yeah I agree, but it can happen as the vis binaries can be executed externally to
     //      amaroK so we have to cater for the eventuality. Data starving causes them to exit.
@@ -215,11 +201,11 @@ Vis::Selector::Selector()
 
     connect( this, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,   SLOT( rightButton       ( QListViewItem*, const QPoint&, int ) ) );
-        
+
     QDir dir( XMMS_PLUGIN_PATH );
     const QFileInfoList *list = dir.entryInfoList();
     QFileInfo *fi;
-    
+
     for ( QFileInfoListIterator it( *list ); ( fi = *it ); ++it )
         if ( fi->isFile() && fi->extension() == "so" )
             new Selector::Item( this, fi->fileName() );
@@ -232,21 +218,40 @@ Vis::Selector::processExited( KProcess *proc )
     {
         if( item->m_proc == proc ) item->setOn( false ); //will delete m_proc via stateChange( bool )
     }
-    
-    kdDebug() << "done\n";
+}
+
+void
+Vis::Selector::mapPID( int pid, int sockfd )
+{
+    //TODO if we don't find the PID, request process plugin so we can assign the correct checkitem
+
+    for( Item *item = (Item*)firstChild(); item; item = (Item*)item->nextSibling() )
+    {
+        if( item->m_proc && item->m_proc->pid() == pid ) { item->m_sockfd = sockfd; return; }
+    }
+
+    kdDebug() << "No matching pid in the Vis::Selector!\n";
 }
 
 void
 Vis::Selector::rightButton( QListViewItem* item, const QPoint& pos, int )
 {
     if ( !item ) return;
-    
+
     KPopupMenu menu( this );
-    menu.insertItem( "Configure" );
-    
-    if ( menu.exec( pos ) != -1 ) {
-        kdDebug() << "Configure vis: " << item->text( 0 ) << "\n";
-        emit configureVis( item->text( 0 ) );
+    menu.insertItem( "Configure", 0 );
+    menu.insertItem( "Fullscreen", 1 );
+
+    switch( menu.exec( pos ) )
+    {
+    case 0:
+        ::send( static_cast<Item*>(item)->m_sockfd, "configure", 10, 0 );
+        break;
+    case 1:
+        ::send( static_cast<Item*>(item)->m_sockfd, "fullscreen", 11, 0 );
+        break;
+    default:
+        break;
     }
 }
 
@@ -281,14 +286,14 @@ Vis::Selector::Item::stateChange( bool ) //SLOT
         kdWarning() << "[Vis::Selector] Could not start amarok_xmmswrapper!\n";
 
     case Off:
-        kdDebug() << "[Vis::Selector] Stopping XMMS visualization\n";        
-            
+        kdDebug() << "[Vis::Selector] Stopping XMMS visualization\n";
+
         //m_proc->kill(); no point, will be done by delete, and crashes amaroK in some cases
         delete m_proc;
         m_proc = 0;
-        
+
         break;
-    
+
     default:
         break;
     }

@@ -1,7 +1,6 @@
 //Maintainer: Max Howell <max.howell@methylblue.com>, (C) 2004
 //Copyright:  See COPYING file that comes with this distribution
 
-
 #include "config.h"
 
 #include <dirent.h>
@@ -20,44 +19,140 @@
 #include <list>
 #include <vector>
 
-#include <qstring.h>
-
-#include <kdebug.h>
-#include <kinstance.h>
-#include <kstandarddirs.h>
-
 #define SHARED_LIB_EXT ".so"
 
-//TODO keep socket open
 
 #include "fft.c"
+#include "fullscreen.c"
 
 
-GtkWidget dummy;
+GtkWidget dummy;                  //required by msa visplugin
 GtkWidget *equalizerwin = &dummy; //required by msa visplugin
-GtkWidget *playlistwin = &dummy; //required by msa visplugin
-GtkWidget *mainwin = &dummy; //required by msa visplugin
+GtkWidget *playlistwin = &dummy;  //required by msa visplugin
+GtkWidget *mainwin = &dummy;      //required by msa visplugin
 
 
-int tryConnect();
-void vis_disable_plugin( VisPlugin *vp ) { exit( 0 ); } //this is called by the plugin when it wants to quit
+using std::string;
 
-QString socketpath; //global
-KInstance *inst;
+
+int    tryConnect();
+string getPlugin( int, char** );
+void   vis_disable_plugin( VisPlugin* ) { exit( 0 ); } //this is called by the plugin when it wants to quit
+
+
 
 int
 main( int argc, char** argv )
 {
-    //TODO fork after connection?
+    //connect to socket
+    const int sockfd = tryConnect();
+    if( sockfd == -1 ) exit( 1 );
 
-    inst = new KInstance( "xmmswrapper" );
-    std::string plugin;
 
-    if ( argc == 1 ) {
-        std::list<std::string> list;
+    //register fd/pid combo with amaroK
+    pid_t pid = getpid();
+    send( sockfd, "REG", 4, 0 );
+    send( sockfd, &pid, sizeof(pid_t), 0 );
+
+
+    //start gtk
+    gtk_init( &argc, &argv ); //xmms plugins require this
+    gdk_rgb_init();
+
+
+    //load plugin
+    XmmsWrapper wrap( getPlugin( argc, argv ) );
+
+
+    //main loop
+    // 1. we sleep for a bit, listening for messages from amaroK
+    // 2. render a frame
+    // 3. do a gtk_event_loop iteration
+
+    float   float_data[ 512 ];
+    timeval tv;
+    fd_set  fds;
+    int     nbytes = 0;
+
+    while( nbytes != -1 )
+    {
+        gtk_main_iteration_do( FALSE );
+
+        //set the time to wait, we have to do this everytime on linux
+        tv.tv_sec  = 0;
+        tv.tv_usec = 16*1000; //60Hz
+
+        //get select to watch the right file descriptor
+        FD_ZERO( &fds );
+        FD_SET( sockfd, &fds );
+
+        select( sockfd+1, &fds, NULL, NULL, &tv );
+
+        if( FD_ISSET( sockfd, &fds) )
+        {
+            char c[16];
+            recv( sockfd, c, 16, 0 );
+            std::string command( c );
+
+            if( command == "fullscreen" );
+            if( command == "configure" ) wrap.configure();
+        }
+
+        ::send( sockfd, "PCM", 4, 0 );
+        nbytes = ::recv( sockfd, float_data, 512 * sizeof( float ), 0 );
+
+        wrap.render( float_data );
+    }
+
+    ::close( sockfd );
+
+    return 0;
+}
+
+#include <qstring.h>
+#include <kinstance.h>
+#include <kstandarddirs.h>
+
+int
+tryConnect()
+{
+    //TODO remove qt and kde isms
+
+    const KInstance instance( "xmmswrapper" );
+    const QString socketpath = locateLocal( "socket", "amarok.visualization_socket", &instance );
+
+    int fd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
+
+    if( fd != -1 )
+    {
+        struct sockaddr_un local;
+
+        strcpy( &local.sun_path[ 0 ], socketpath.local8Bit() );
+        local.sun_family = AF_UNIX;
+
+        std::cout << "[amK] Connecting to: " << socketpath.local8Bit() << '\n';
+
+        if( ::connect( fd, ( struct sockaddr* ) & local, sizeof( local ) ) == -1 )
+        {
+            ::close( fd );
+            fd = -1;
+
+            std::cerr << "[amK] tryConnect() failed\n";
+        }
+    }
+
+    return fd;
+}
+
+std::string
+getPlugin( int argc, char **argv )
+{
+    if( argc == 1 )
+    {
+        std::list<string> list;
 
         //scan plugins
-        std::string dirname = XMMS_PLUGIN_PATH;
+        string dirname = XMMS_PLUGIN_PATH;
         dirname.append( "/" );
         DIR *dir;
         struct dirent *ent;
@@ -66,12 +161,13 @@ main( int argc, char** argv )
         dir = opendir( dirname.c_str() );
         if ( !dir ) { std::cerr << "Please edit the PLUGIN_PATH in xmmswrapper.cpp\n"; exit( 1 ); }
 
-        while ( ent = readdir( dir ) ) {
-            std::string filename = ent->d_name;
-            int index = filename.find_last_of( '.' );
-            if ( index == std::string::npos ) continue;
-            std::string extension = filename.substr( index );
-            std::string fullpath = dirname + filename;
+        while ( (ent = readdir( dir )) )
+        {
+            string filename = ent->d_name;
+            uint index = filename.find_last_of( '.' );
+            if ( index == string::npos ) continue;
+            string extension = filename.substr( index );
+            string fullpath = dirname + filename;
 
             if ( !stat( fullpath.c_str(), &statbuf )
                     && S_ISREG( statbuf.st_mode )
@@ -82,172 +178,36 @@ main( int argc, char** argv )
 
         std::cout << "Please select a plugin: \n";
 
-        std::vector<std::string> v( list.size() );
+        std::vector<string> v( list.size() );
         std::copy( list.begin(), list.end(), v.begin() );
 
-        for ( uint n = 0; n < v.size(); ++n ) {
+        for ( uint n = 0; n < v.size(); ++n )
+        {
             std::cout << n + 1 << ": " << v[ n ] << '\n';
         }
-        char c[ 10 ];
+
+        char c[8];
         std::cin >> c;
         uint selection = atoi( c );
-        if ( selection > v.size() ) return 1;
+        if( selection > v.size() ) exit( 1 );
 
-        plugin = v[ selection - 1 ];
-    } else
-        plugin = argv[ 1 ];
-
-    socketpath = ::locateLocal( "socket", "amarok.visualization_socket", inst );
-
-    gtk_init( &argc, &argv ); //xmms plugins require this
-    gdk_rgb_init();
-
-    XmmsWrapper wrap( plugin );
-
-    int sockfd;
-    int nbytes = 0;
-    const int nch = 1; //no of channels?
-
-    sockfd = tryConnect();
-
-    while ( sockfd != -1 ) {
-        gtk_main_iteration_do( FALSE );
-
-        usleep( 16 * 1000 );
-
-        if ( wrap.renderPCM() ) {
-            float float_data[ 512 ];
-            gint16 pcm_data[ 2 ][ 512 ];
-            memset( pcm_data, 0, 1024 );
-
-            send( sockfd, "PCM", 4, 0 );
-            nbytes = recv( sockfd, float_data, 512 * sizeof( float ), 0 );
-
-            char strbuf[10];
-            qstrncpy( strbuf, (char*) float_data, 10 );
-            if ( QString( strbuf ).startsWith( "CONFIG" ) ) {
-                kdDebug() << k_funcinfo << "Received Configure signal.\n";
-                wrap.configure();
-            }
-
-            //NOTE we times by 1<<14 rather than 1<<15 (maximum value of signed 16bit)
-            //     this is because values of pcm data tend to range 0-2 (although there
-            //     is no theoretical maximum.
-            //NOTE actually the maximum value is signed 16 bit, just like on a CD
-
-            for ( uint x = 0; x < 512; ++x ) {
-                pcm_data[ 0 ][ x ] = gint16( float_data[ x ] * ( 1 << 14 ) );
-            }
-
-            wrap.vis() ->render_pcm( pcm_data );
-            /*
-                        if (wrap.vis()->num_pcm_chs_wanted == 1)
-                        {
-                            gint16 mono_pcm[2][512];
-                            calc_mono_pcm(mono_pcm, pcm_data, nch);
-                            wrap.vis()->render_pcm( mono_pcm );
-                        }
-                        else //nch == 2
-                        {
-                            gint16 stereo_pcm[2][512];
-                            calc_stereo_pcm(stereo_pcm, pcm_data, nch);
-                            wrap.vis()->render_pcm( stereo_pcm );
-                        }
-            */
-        }
-
-        if ( wrap.renderFFT() )   //NOTE xmms has no else
-        {
-            //TODO check float and gfloat are the same thing!
-            //TODO do second channel as mirror for the moment
-
-            float float_data[ 512 ];
-            gint16 pcm_data[ 2 ][ 512 ];
-            gint16 fft_data[ 2 ][ 256 ];
-            memset( fft_data, 0, 512 );
-
-            send( sockfd, "PCM", 4, 0 );
-            nbytes = recv( sockfd, float_data, 512 * sizeof( float ), 0 );
-
-            char strbuf[10];
-            qstrncpy( strbuf, (char*) float_data, 10 );
-            if ( QString( strbuf ).startsWith( "CONFIG" ) ) {
-                kdDebug() << k_funcinfo << "Received Configure signal.\n";
-                wrap.configure();
-            }
-
-            for ( uint x = 0; x < 512; ++x ) {
-                pcm_data[ 0 ][ x ] = gint16( float_data[ x ] * ( 1 << 14 ) );
-            }
-
-            static fft_state *state = NULL;
-            gfloat tmp_out[ 257 ];
-
-            if ( !state ) state = fft_init();
-
-            fft_perform( pcm_data[ 0 ], tmp_out, state );
-
-            for ( uint i = 0; i < 256; i++ ) {
-                fft_data[ 0 ][ i ] = fft_data[ 1 ][ i ] = ( ( gint ) sqrt( tmp_out[ i + 1 ] ) ) >> 8;
-            }
-
-            wrap.vis() ->render_freq( fft_data );
-            /*
-                        if (wrap.vis()->num_freq_chs_wanted == 1)
-                        {
-                            gint16 mono_freq[2][256];
-                            calc_mono_freq(mono_freq, pcm_data, nch);
-                            wrap.vis()->render_freq(mono_freq);
-                        }
-                        else
-                        {
-                            gint16 stereo_freq[2][256];
-                            calc_stereo_freq(stereo_freq, pcm_data, nch);
-                            wrap.vis()->render_freq(stereo_freq);
-                        }
-            */
-        }
+        return v[ selection - 1 ];
     }
 
-    close( sockfd );
+    return argv[ 1 ];
 }
 
-int
-tryConnect()
-{
-    //try to connect to the LoaderServer
-    int fd = socket( AF_UNIX, SOCK_STREAM, 0 );
-
-    if ( fd != -1 ) {
-
-        struct sockaddr_un local;
-
-        strcpy( &local.sun_path[ 0 ], socketpath.local8Bit() );
-        local.sun_family = AF_UNIX;
-
-        std::cout << "[amK] Connecting to " << socketpath.local8Bit() << '\n';
-
-        if ( connect( fd, ( struct sockaddr* ) & local, sizeof( local ) ) == -1 ) {
-            close ( fd );
-            fd = -1;
-
-            std::cerr << "[amK] tryConnect() failed\n";
-        }
-    }
-
-    return fd;
-}
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // CLASS XmmsWrapper
 /////////////////////////////////////////////////////////////////////////////////////////
 
-XmmsWrapper::XmmsWrapper( const std::string &plugin )
+XmmsWrapper::XmmsWrapper( const string &plugin )
 {
     std::cout << "[amK] loading xmms plugin: " << plugin << '\n';
 
-    std::string
+    string
     path = XMMS_PLUGIN_PATH;
     path += "/";
     path += plugin;
@@ -257,12 +217,14 @@ XmmsWrapper::XmmsWrapper( const std::string &plugin )
         void *h;
         void *( *gpi ) ( void );
 
-        if ( ( h = dlopen( path.c_str(), RTLD_NOW ) ) == NULL ) {
+        if( ( h = dlopen( path.c_str(), RTLD_NOW ) ) == NULL )
+        {
             std::cout << dlerror() << "\n";
             return ;
         }
 
-        if ( ( gpi = ( void * ( * ) () ) dlsym( h, "get_vplugin_info" ) ) != NULL ) {
+        if( ( gpi = ( void * ( * ) () ) dlsym( h, "get_vplugin_info" ) ) != NULL )
+        {
             VisPlugin * p = ( VisPlugin* ) gpi();
             p->handle = h;
             p->filename = strdup( path.c_str() );
@@ -270,7 +232,8 @@ XmmsWrapper::XmmsWrapper( const std::string &plugin )
             p->disable_plugin = vis_disable_plugin; //FIXME what is this symbol?
 
             m_vis = p;
-        } else { dlclose( h ); return ; }
+        }
+        else { dlclose( h ); return ; }
 
     } //</load plugin>
 
@@ -296,8 +259,77 @@ void XmmsWrapper::configure()
 }
 
 
-//NOTE as yet, these functions are a little mysterious to me
+void XmmsWrapper::render( float *float_data )
+{
+    gint16 pcm_data[ 2 ][ 512 ];
 
+    for ( uint x = 0; x < 512; ++x )
+    {
+        //NOTE we times by 1<<14 rather than 1<<15 (maximum value of signed 16bit)
+        //     this is because values of pcm data tend to range 0-2 (although there
+        //     is no theoretical maximum.
+        //NOTE actually the maximum value is signed 16 bit, just like on a CD
+
+        pcm_data[ 0 ][ x ] = pcm_data[ 1 ][ x ] = gint16( float_data[ x ] * ( 1 << 14 ) );
+    }
+
+
+    if( renderPCM() )
+    {
+       vis()->render_pcm( pcm_data );
+
+        /*
+        if (wrap.vis()->num_pcm_chs_wanted == 1)
+        {
+            gint16 mono_pcm[2][512];
+            calc_mono_pcm(mono_pcm, pcm_data, nch);
+            wrap.vis()->render_pcm( mono_pcm );
+        }
+        else //nch == 2
+        {
+            gint16 stereo_pcm[2][512];
+            calc_stereo_pcm(stereo_pcm, pcm_data, nch);
+            wrap.vis()->render_pcm( stereo_pcm );
+        }
+        */
+    }
+
+    if( renderFFT() )   //NOTE some vis's may render both data types
+    {
+        gint16 fft_data[ 2 ][ 256 ];
+
+        static fft_state *state = NULL;
+        gfloat tmp_out[ 257 ];
+
+        if ( !state ) state = fft_init();
+
+        fft_perform( pcm_data[ 0 ], tmp_out, state );
+
+        for ( uint i = 0; i < 256; i++ )
+        {
+            fft_data[ 0 ][ i ] = fft_data[ 1 ][ i ] = ( ( gint ) sqrt( tmp_out[ i + 1 ] ) ) >> 8;
+        }
+
+        vis() ->render_freq( fft_data );
+        /*
+        if (wrap.vis()->num_freq_chs_wanted == 1)
+        {
+            gint16 mono_freq[2][256];
+            calc_mono_freq(mono_freq, pcm_data, nch);
+            wrap.vis()->render_freq(mono_freq);
+        }
+        else
+        {
+            gint16 stereo_freq[2][256];
+            calc_stereo_freq(stereo_freq, pcm_data, nch);
+            wrap.vis()->render_freq(stereo_freq);
+        }
+        */
+    }
+}
+
+//NOTE as yet, these functions are a little mysterious to me
+/*
 static void calc_stereo_pcm( gint16 dest[ 2 ][ 512 ], gint16 src[ 2 ][ 512 ], gint nch )
 {
     memcpy( dest[ 0 ], src[ 0 ], 512 * sizeof( gint16 ) );
@@ -327,7 +359,7 @@ static void calc_mono_pcm( gint16 dest[ 2 ][ 512 ], gint16 src[ 2 ][ 512 ], gint
 
 static void calc_freq( gint16 *dest, gint16 *src )
 {
-    /* FIXME
+
             static fft_state *state = NULL;
             gfloat tmp_out[257];
             gint i;
@@ -339,13 +371,11 @@ static void calc_freq( gint16 *dest, gint16 *src )
 
             for(i = 0; i < 256; i++)
                     dest[i] = ((gint)sqrt(tmp_out[i + 1])) >> 8;
-    */
 }
 
 
 static void calc_mono_freq( gint16 dest[ 2 ][ 256 ], gint16 src[ 2 ][ 512 ], gint nch )
 {
-    /* FIXME
             gint i;
             gint16 *d, *sl, *sr, tmp[512];
 
@@ -362,21 +392,16 @@ static void calc_mono_freq( gint16 dest[ 2 ][ 256 ], gint16 src[ 2 ][ 512 ], gin
                     }
                     calc_freq(dest[0], tmp);
             }
-    */
 }
 
 
 static void calc_stereo_freq( gint16 dest[ 2 ][ 256 ], gint16 src[ 2 ][ 512 ], gint nch )
 {
-    /*
-    FIXME
             calc_freq(dest[0], src[0]);
 
             if(nch == 2)
                     calc_freq(dest[1], src[1]);
             else
                     memcpy(dest[1], dest[0], 256 * sizeof(gint16));
-    */
 }
-
-
+*/
