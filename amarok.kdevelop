@@ -11,8 +11,8 @@
     </keywords>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <version/>
-    <description/>
+    <version></version>
+    <description></description>
     <ignoreparts/>
     <secondaryLanguages/>
   </general>
@@ -41,13 +41,13 @@
       <cxxflags>\s-O0 -g3 -Wall</cxxflags>
     </compiler>
     <run>
-      <mainprogram>amarok/amarok</mainprogram>
-      <programargs/>
+      <mainprogram>/opt/kde3/bin/amarok</mainprogram>
+      <programargs></programargs>
       <terminal>true</terminal>
       <autocompile>true</autocompile>
       <envvars/>
-      <directoryradio>build</directoryradio>
-      <customdirectory>/</customdirectory>
+      <directoryradio>custom</directoryradio>
+      <customdirectory>/opt/kde3/bin/</customdirectory>
       <runarguments>
         <amarok/>
       </runarguments>
@@ -79,7 +79,6 @@
       <group pattern="*.po" name="Translations" />
       <group pattern="AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO,NEWS" name="GNU" />
       <group pattern="*" name="Others" />
-      <hidenonprojectfiles>false</hidenonprojectfiles>
     </groups>
     <tree>
       <hidenonprojectfiles>false</hidenonprojectfiles>
@@ -107,15 +106,15 @@
   <kdevdebugger>
     <general>
       <dbgshell>/usr/bin/libtool</dbgshell>
-      <programargs/>
-      <gdbpath/>
+      <programargs></programargs>
+      <gdbpath></gdbpath>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
       <runappinappdirectory>true</runappinappdirectory>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
     </general>
     <display>
       <staticmembers>false</staticmembers>

@@ -28,22 +28,28 @@ using namespace std;
 class PluginManager
 {
     public:
-        struct PluginInfo {
-            QString specfile;
-            QString filename;
-            QString author;
-            QString license;
-            QString type;
-            QString site;
-            QString email;
-            QString name;
-            QString comment;
-            QStringList require;
-        };
-
+        class PluginInfo {
+            public:        
+                bool isEmpty() const;
+                void dump() const;
+            //attributes:        
+                QString filename;
+                QString author;
+                QString license;
+                QString type;
+                QString site;
+                QString email;
+                QString name;
+                QString comment;
+                int     version; 
+                int     api_version;
+                QStringList require;
+            };
+        
         struct StoreItem {
-            Plugin*    pointer;
-            PluginInfo info;
+            //attributes:
+                Plugin*    pointer;
+                PluginInfo info;
         };
         
         static vector<PluginInfo>        available   ();

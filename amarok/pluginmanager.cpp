@@ -68,17 +68,12 @@ PluginManager::PluginInfo
     PluginManager::getInfo( const QString &name )
 {
     PluginInfo info;
-    QString path = ( name[0] == '/' ) ? name : KGlobal::dirs()->findResource( "appdata", name );
+    QString path = KGlobal::dirs()->findResource( "appdata", name );
     
     if ( !QFile::exists( path ) )
         return info;
     
     KSimpleConfig file( path );
-    
-    if ( name.find('/') >= 0 )
-        info.specfile = KURL( name ).fileName();
-    else
-        info.specfile = name;
     
     info.filename    = file.readEntry    ( "Filename" );
     info.author      = file.readEntry    ( "Author" );
@@ -89,6 +84,11 @@ PluginManager::PluginInfo
     info.comment     = file.readEntry    ( "Comment" );
     info.require     = file.readListEntry( "Require" );
     info.license     = file.readEntry    ( "License" );
+    info.version     = file.readNumEntry ( "Version" );
+    info.api_version = file.readNumEntry ( "ApiVersion" );
+
+    kdDebug() << k_funcinfo << endl;
+    info.dump();    
     
     return info;
 }
@@ -99,15 +99,20 @@ PluginManager::PluginInfo
 {
     PluginInfo info;
     
-    if ( !pointer )
+    if ( !pointer ) {
+        kdWarning() << k_funcinfo << "pointer == NULL\n";   
         return info;
-
+    }
+        
     //search plugin in store
     for ( vector<StoreItem>::iterator it = m_store.begin(); it != m_store.end(); ++it ) {
         if ( (*it).pointer == pointer )
             info = (*it).info;
     }
                 
+    kdDebug() << k_funcinfo << endl;
+    info.dump();    
+    
     return info;
 }
 
@@ -143,6 +148,9 @@ Plugin*
     item.info    = getInfo( name );
     m_store.push_back( item );
     
+    kdDebug() << k_funcinfo << endl;
+    item.info.dump();    
+    
     return pointer;
 }
 
@@ -162,8 +170,47 @@ void
         delete (*it).pointer;
         
         KLibLoader *loader = KLibLoader::self();
-//        loader->unloadLibrary( QFile::encodeName( (*it).info.filename ) );
+        loader->unloadLibrary( QFile::encodeName( (*it).info.filename ) );
         m_store.erase( it );
     }
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+// CLASS PluginInfo
+////////////////////////////////////////////////////////////////////////////////
+
+bool
+    PluginManager::PluginInfo::isEmpty() const
+{
+    if ( filename.isEmpty() )
+        return true;
+    
+    return false;
+}
+
+
+void
+    PluginManager::PluginInfo::dump() const
+{
+    kdDebug() << endl;
+    kdDebug() << "PLUGININFO DUMP:\n";
+    
+    kdDebug() << "filename   : " <<    filename << endl;
+    kdDebug() << "author     : " <<      author << endl;
+    kdDebug() << "license    : " <<     license << endl;
+    kdDebug() << "type       : " <<        type << endl;
+    kdDebug() << "site       : " <<        site << endl;
+    kdDebug() << "email      : " <<       email << endl;
+    kdDebug() << "name       : " <<        name << endl;
+    kdDebug() << "comment    : " <<     comment << endl;
+    kdDebug() << "version    : " <<     version << endl;
+    kdDebug() << "api_version: " << api_version << endl;
+
+    if ( isEmpty() )
+        kdDebug() << "isEmpty() == true\n";
+    
+    kdDebug() << endl;
+}
+
 
