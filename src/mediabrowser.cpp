@@ -407,12 +407,13 @@ MediaDevice::MediaDevice( MediaDeviceView* parent )
     s_instance = this;
 
     m_ipod = new IPod::IPod();
-    m_ipod->open( "/mnt/ipod/" );
+    m_ipod->open( "/mnt/ipod" );
 }
 
 
 MediaDevice::~MediaDevice()
 {
+    m_ipod->close();
     delete m_ipod;
 }
 
@@ -543,8 +544,25 @@ MediaDevice::transferFiles()  //SLOT
 
 
 void
-MediaDevice::deleteFiles( const KURL::List& files )
+MediaDevice::deleteFiles( const KURL::List& urls )
 {
+    //NOTE we assume that currentItem is the main target
+    int count  = urls.count();
+    int button = KMessageBox::warningContinueCancel( m_parent->m_parent,
+                    i18n( "<p>You have selected %1 to be <b>irreversibly</b> deleted." )
+                        .arg( i18n( "1 file", "%n files", count ) ),
+                    QString::null,
+                    i18n("&Delete") );
+
+    kdDebug() << urls.first().path() << endl;
+    if ( button == KMessageBox::Continue )
+    {
+        KURL::List::ConstIterator it = urls.begin();
+        for ( ; it != urls.end(); ++it )
+            QFile::remove( (*it).path() );
+
+        syncIPod();
+    }
 }
 
 
@@ -582,13 +600,33 @@ MediaDevice::fileTransferred( KIO::Job *job, const KURL &from, const KURL &to, b
 void
 MediaDevice::fileTransferFinished( KIO::Job *job )  //SLOT
 {
-    m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_transferList->childCount() ) );
     m_parent->m_transferList->clear();
     m_transferURLs.clear();
-    
+    m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_transferList->childCount() ) );
+
     // sync ipod, now
-    KIO::get( "ipod:/Utilities/Synchronize?really=OK", false, false );
+    syncIPod();
+
     m_parent->m_progress->hide();
+}
+
+
+void
+MediaDevice::syncIPod()  //SLOT
+{
+    kdDebug() << "[MediaBrowser] Syncing IPod!" << endl;
+
+    KIO::get( "ipod:/Utilities/Synchronize?really=OK", false, false );
+//    m_ipod->writeItunesDB();
+    if( !m_ipod->getItunesDBError().isEmpty() )
+        kdDebug() << "Sync failed: " + m_ipod->getItunesDBError() << endl;
+
+    m_ipod->close();
+    m_ipod->open( "/mnt/ipod" );
+    if( !m_ipod->getItunesDBError().isEmpty() )
+        kdDebug() << "Sync failed: " + m_ipod->getItunesDBError() << endl;
+    
+    m_parent->m_deviceList->renderView( 0 );
 }
 
 

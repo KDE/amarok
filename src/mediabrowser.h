@@ -128,11 +128,12 @@ class MediaDevice : public QObject
 
     public slots:
         void transferFiles();
-        void deleteFiles( const KURL::List& files );
+        void deleteFiles( const KURL::List& urls );
         
     private slots:
         void fileTransferred( KIO::Job *job, const KURL &from, const KURL &to, bool dir, bool renamed );
         void fileTransferFinished( KIO::Job *job );
+        void syncIPod();
 
     private:
         bool fileExists( const MetaBundle& bundle );
