@@ -65,7 +65,10 @@ CollectionDB::CollectionDB()
                                             NULL, CLIENT_COMPRESS))
         {
             if (!isValid())
+            {
                 createTables();
+                createStatsTable();
+            }
         }
         else
         {
@@ -77,7 +80,10 @@ CollectionDB::CollectionDB()
                                                 NULL, CLIENT_COMPRESS))
             {
                 if (mysql::mysql_query(m_db, QString("CREATE DATABASE " + AmarokConfig::mySqlDbName()).latin1()))
+                {
                     createTables();
+                    createStatsTable();
+                }
                 else
                     kdDebug() << "Failed to create database " << AmarokConfig::mySqlDbName() << "\n";
             }
