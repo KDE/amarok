@@ -4,7 +4,24 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
-    * fix: <muesli> clean up the GUI
+    * fix: <mxcl> GroupBoxes can't have check boxes with Qt 3.1, so before next release do some #ifdefs to surround that code and hope nobody gets too pissed about it
+    * fix: writePathEntry is a KDE 3.1.3 function, which is perhaps too recent for the 0.7.1 release
+
+    * fix: <mxcl>when you clear and undo it loses selection and then stops, need a search for current item in playlist function
+
+    * fix: <mxcl>pause vis/anim timers when hide/show main widget as a courtesy to our users
+
+    * add: history to add dialog, or implement better system for adding urls etc.
+
+    * add: <mxcl> more KTips, better KTips, somehow use the "Did you know" tip dialog (eg kmail, gideon, etc.)
+
+    * fix: <mxcl>dialog boxes show behind the playlist (KDE 3.1), with no amarok.rc, playlist covers main widget on first start!
+
+    * add: a "hide playlist when main widget is not active" option (?? comments please: )
+
+    * add: "show playlist" to the right click menu, redundant but necessary
+
+    * fix: <muesli> clean up the GUI [mxcl wants to help, we should perhaps branch amaroK while we work]
 
     * add: <muesli> background chooser
 
@@ -12,8 +29,6 @@ SHORT-TERM:
 
     * fix: <grue> with focus-follows-mouse, both player window and playlist
       rise to foreground when you point on the player <mxcl> should now be fixed, please check
-
-    * fix: <mxcl> session management (broke again!)
 
     * fix: <grue> when adding files from commandline they get sorted in reversed order
 
@@ -30,7 +45,7 @@ SHORT-TERM:
 
     * fix: redirected URLs do not work
 
-    * add: extend keyboard shortcuts
+    * add: extend keyboard shortcuts [<mxcl> show playlist, also I'd say do this with actions as it's easiest]
 
     * add: extend documentation
 
