@@ -25,6 +25,9 @@ FIELDS = ("Artist", "Title", "Album", "TrackNo", "Length", "Score")
 # the port number to listen to
 PORT = 4773
 
+
+PLIST = None
+
 class Track(object):
     """Class that holds the information of one track in the current playlist"""
     __slots__ = FIELDS
@@ -48,7 +51,8 @@ class RequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     our server."""
 
     def __init__(self, request, client_address, server):
-        self.playlist = Playlist()
+#        print "DEBUG: init called"
+#        self.playlist = Playlist()
         SimpleHTTPServer.SimpleHTTPRequestHandler.__init__(self, \
                 request, client_address, server)
 
@@ -60,7 +64,7 @@ class RequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         self.send_response(200)
         self.send_header("content-type","text/html")
         self.end_headers()
-        self.wfile.write(self.playlist.toHtml())
+        self.wfile.write(PLIST.toHtml())
 
 
 
@@ -151,7 +155,8 @@ class Playlist:
 
 def main():
     """main is the starting-point for our script."""
-
+    global PLIST
+    PLIST = Playlist()
     srv = BaseHTTPServer.HTTPServer(('',PORT),RequestHandler)
     srv.serve_forever()
 
