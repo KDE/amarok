@@ -62,6 +62,8 @@ static const int BUFFER_RESUME = BUFFER_MIN + 100000;
 static void
 gst_streamsrc_base_init ( gpointer g_class )
 {
+    kdDebug() << k_funcinfo << endl;
+    
     GstElementClass * gstelement_class = GST_ELEMENT_CLASS ( g_class );
     gst_element_class_set_details ( gstelement_class, &gst_streamsrc_details );
 }
@@ -70,8 +72,9 @@ gst_streamsrc_base_init ( gpointer g_class )
 static void
 gst_streamsrc_class_init ( GstStreamSrcClass * klass )
 {
+    kdDebug() << k_funcinfo << endl;
+    
     GObjectClass * gobject_class;
-
     gobject_class = G_OBJECT_CLASS ( klass );
 
     g_object_class_install_property ( G_OBJECT_CLASS ( klass ), ARG_BLOCKSIZE,
@@ -100,6 +103,8 @@ gst_streamsrc_class_init ( GstStreamSrcClass * klass )
 static void
 gst_streamsrc_init ( GstStreamSrc * streamsrc )
 {
+    kdDebug() << k_funcinfo << endl;
+    
     streamsrc->srcpad = gst_pad_new ( "src", GST_PAD_SRC );
 
     gst_pad_set_get_function ( streamsrc->srcpad, gst_streamsrc_get );
@@ -188,7 +193,7 @@ gst_streamsrc_get ( GstPad * pad )
     }
     // Return when buffer is not filled
     else if ( *src->streamBufIndex < BUFFER_MIN ) 
-        return GST_DATA( gst_event_new( GST_EVENT_DISCONTINUOUS ) );
+        return GST_DATA( gst_event_new( GST_EVENT_EMPTY ) );
             
     GstBuffer* buf = gst_buffer_new_and_alloc( src->blocksize );
     guint8* data = GST_BUFFER_DATA( buf );
