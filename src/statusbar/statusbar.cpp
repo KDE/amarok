@@ -102,8 +102,6 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 void
 StatusBar::engineStateChanged( Engine::State state )
 {
-    DEBUG_BLOCK
-
     m_pauseTimer->stop();
 
     switch ( state ) {
