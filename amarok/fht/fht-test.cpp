@@ -26,19 +26,20 @@ int main(void)
 {
 	FHT f(5);  // 2^5 input values  =>  2^4 spectrum values
 	int num = f.size(), i;
-	
+
 	float *s1 = new float[num];	// start values
 	float *s2 = new float[num];	// Hartley coefficients
 	float *s3 = new float[num];	// Fourier power spectrum
 
 	for (i = 0; i < num; i++)
-		s1[i] = 100.0 * rand() / (RAND_MAX + 1.0);
-	
+		s1[i] = 100.0 * rand() / (RAND_MAX + 1.0) - 50.0;
+
 	f.copy(s2, s1);
 	f.transform(s2);
 
 	f.copy(s3, s1);
-	f.power(s3);
+	f.power2(s3);
+	//f.scale(s3, 1.0 / 4096);
 
 	printf("Input\t\tFHT\t\tPower\n");
 	for (i = 0; i < num; i++)
@@ -46,7 +47,7 @@ int main(void)
 			printf("%f\t%f\t%f\n", s1[i], s2[i], s3[i]);
 		else
 			printf("%f\t%f\n", s1[i], s2[i]);
-	
+
 	delete[] s1;
 	delete[] s2;
 	delete[] s3;

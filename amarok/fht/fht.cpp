@@ -67,7 +67,7 @@ void FHT::makeCasTable(void)
 	for (costab = m_tab, sintab = m_tab + m_num / 2 + 1, ul = 0; ul < m_num; ul++) {
 		d = M_PI * ul / ndiv2;
 		*costab = *sintab = cos(d);
-		
+
 		costab += 2, sintab += 2;
 		if (sintab > m_tab + m_num * 2)
 			sintab = m_tab + 1;
@@ -87,7 +87,7 @@ float* FHT::clear(float *d)
 }
 
 
-inline void FHT::scale(float *p, float d)
+void FHT::scale(float *p, float d)
 {
 	for (int i = 0; i < m_num; i++)
 		*p++ *= d;
@@ -137,13 +137,13 @@ inline void FHT::transform8(float *p)
 
 /**
   * Calculates a mathematically correct FFT power spectrum.
-  * If further scaling is applied later, use _power instead
+  * If further scaling is applied later, use power2 instead
   * and factor the 0.5 in the final scaling factor.
-  * @see FHT::_power()
+  * @see FHT::power2()
   */
 void FHT::power(float *p)
 {
-	_power(p);
+	power2(p);
 	for (int i = 0; i < (m_num / 2); i++)
 		*p++ *= .5;
 }
@@ -156,7 +156,7 @@ void FHT::power(float *p)
   * of 2^1 values.
   * @see FHT::power()
   */
-void FHT::_power(float *p)
+void FHT::power2(float *p)
 {
 	int i;
 	float *q;

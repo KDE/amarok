@@ -38,10 +38,10 @@ public:
 	inline void	transform8(float *);
 	void		transform(float *);
 	void		power(float *);
-	void		_power(float *);
+	void		power2(float *);
 	float		*copy(float *, float *);
 	float		*clear(float *);
-	inline void	scale(float *, float);
+	void		scale(float *, float);
 };
 
 #endif
