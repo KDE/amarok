@@ -68,7 +68,7 @@ public:
             menu.setItemChecked( REMAIN, AmarokConfig::timeDisplayRemaining() );
             menu.setItemEnabled( LENGTH, false );
 
-            switch ( menu.exec( e->globalPos() ) {
+            switch ( menu.exec( e->globalPos() ) ) {
                 case NORMAL:
                     AmarokConfig::setTimeDisplayRemaining( false );
                     break;
