@@ -158,13 +158,13 @@ void OSDWidget::setShadow( bool shadow )
     refresh();
 }
 
-void OSDWidget::setTextColor( QColor newColor )
+void OSDWidget::setTextColor( const QColor &newColor )
 {
     setPaletteForegroundColor( newColor );
     refresh();
 }
 
-void OSDWidget::setBackgroundColor( QColor newColor )
+void OSDWidget::setBackgroundColor( const QColor &newColor )
 {
     setPaletteBackgroundColor( newColor );
     refresh();
@@ -208,7 +208,7 @@ bool OSDWidget::event( QEvent *e )
         return TRUE;
 
     case QEvent::ApplicationPaletteChange:
-        if ( ownPalette() )
+        if ( !AmarokConfig::osdUseCustomColors() ) //FIXME not portable!
             unsetColors();
         return TRUE;
 

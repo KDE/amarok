@@ -35,8 +35,8 @@ class OSDWidget : public QWidget
         void setDuration(int ms);
         void setFont(QFont newfont);
         void setShadow(bool shadow);
-        void setTextColor(QColor newcolor);
-        void setBackgroundColor(QColor newColor);
+        void setTextColor(const QColor &newcolor);
+        void setBackgroundColor(const QColor &newColor);
         void setOffset( int x, int y );
         void setAlignment(Alignment);
         void setScreen(uint screen);
