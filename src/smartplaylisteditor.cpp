@@ -34,9 +34,9 @@ SmartPlaylistEditor::SmartPlaylistEditor( QString defaultName, QWidget *parent, 
     makeVBoxMainWidget();
 
     m_fields.clear();
-    m_fields << "Artist" << "Album" << "Genre" << "Title" << "Track #" << "Year"
-             << "Comment" << "Play Counter" << "Score" << "First Play" << "Last Play"
-             << "Modified Date";
+    m_fields << i18n("Artist") << i18n("Album") << i18n("Genre") << i18n("Title") << i18n("Track #") << i18n("Year")
+             << i18n("Comment") << i18n("Play Counter") << i18n("Score") << i18n("First Play") << i18n("Last Play")
+             << i18n("Modified Date");
 
     m_dbFields.clear();
     m_dbFields << "artist.name" << "album.name" << "genre.name" << "tags.title"
@@ -73,8 +73,7 @@ SmartPlaylistEditor::SmartPlaylistEditor( QString defaultName, QWidget *parent, 
     orderBox->setSpacing( 5 );
     //fields combo
     m_orderCombo = new KComboBox( orderBox );
-    for ( QStringList::ConstIterator it = m_fields.begin(); it != m_fields.end(); ++it )
-        m_orderCombo->insertItem( i18n( (*it).utf8() ) );
+    m_orderCombo->insertStringList( m_fields );
     m_orderCombo->insertItem( i18n("Random") );
     //order type
     m_orderTypeCombo = new KComboBox( orderBox );
@@ -256,8 +255,7 @@ CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent )
     setSpacing( 5 );
 
     m_fieldCombo = new KComboBox( this );
-    for ( QStringList::ConstIterator it = m_fields.begin(); it != m_fields.end(); ++it )
-        m_fieldCombo->insertItem( i18n( (*it).utf8() ) );
+    m_fieldCombo->insertStringList( m_fields );
 
     m_criteriaCombo = new KComboBox( this );
 
