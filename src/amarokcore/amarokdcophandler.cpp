@@ -170,9 +170,8 @@ namespace amaroK
 
     QString DcopHandler::coverImage()
     {
-        CollectionDB db;
         const MetaBundle &bundle = EngineController::instance()->bundle();
-        QString image = db.albumImage( bundle.artist(), bundle.album(), 0 );
+        QString image = CollectionDB().albumImage( bundle.artist(), bundle.album(), 0 );
         return image;
     }
 
