@@ -30,7 +30,9 @@ struct _GstStreamSrc
     /* pads */
     GstPad *srcpad;
 
+    bool playing;
     bool stopped;
+    long curoffset;
     
     // Properties
     glong blocksize; /* bytes per read */

@@ -110,7 +110,9 @@ gst_streamsrc_init ( GstStreamSrc * streamsrc )
     gst_pad_set_get_function ( streamsrc->srcpad, gst_streamsrc_get );
     gst_element_add_pad ( GST_ELEMENT ( streamsrc ), streamsrc->srcpad );
 
+    streamsrc->playing = false;
     streamsrc->stopped = false;
+    streamsrc->curoffset = 0;
     
     // Properties
     streamsrc->blocksize = DEFAULT_BLOCKSIZE;
@@ -188,20 +190,23 @@ gst_streamsrc_get ( GstPad * pad )
         if ( *src->streamBufIndex == 0 ) {
             kdDebug() << "Streamsrc EOS\n";
             src->stopped = true;
+            gst_element_set_eos (GST_ELEMENT( src ) );
             return GST_DATA( gst_event_new( GST_EVENT_EOS ) );
         }
     }
     // Return when buffer is not filled
-    else if ( *src->streamBufIndex < BUFFER_MIN ) 
+    else if ( !src->playing && *src->streamBufIndex < BUFFER_MIN ) 
         return GST_DATA( gst_event_new( GST_EVENT_FILLER ) );
-            
+     
+    src->playing = true;              
+    
     GstBuffer* buf = gst_buffer_new_and_alloc( src->blocksize );
     guint8* data = GST_BUFFER_DATA( buf );
     int readBytes = *src->streamBufIndex;
     
     if ( *src->streamBufIndex > src->blocksize )
         readBytes = src->blocksize;
-        
+               
     // Copy stream buffer content into gst buffer
     memcpy( data, src->streamBuf, readBytes );
     // Move stream buffer content to beginning
@@ -211,7 +216,10 @@ gst_streamsrc_get ( GstPad * pad )
     *src->streamBufIndex -= readBytes;
         
     GST_BUFFER_SIZE ( buf ) = readBytes;
-    GST_BUFFER_TIMESTAMP ( buf ) = GST_CLOCK_TIME_NONE;
+    GST_BUFFER_MAXSIZE ( buf ) = readBytes;
+    GST_BUFFER_OFFSET ( buf ) = src->curoffset;
+    GST_BUFFER_OFFSET_END ( buf ) = src->curoffset + readBytes;
+    src->curoffset += readBytes;
     
     return GST_DATA ( buf );
 }
