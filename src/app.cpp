@@ -267,6 +267,7 @@ void App::initCliArgs( int argc, char *argv[] ) //static
 
     aboutData.addCredit( "Adam Pigg", "analyzers, patches", "adam@piggz.fsnet.co.uk" );
     aboutData.addCredit( "Alper Ayazoglu", "graphics: buttons", "cubon@cubon.de", "http://cubon.de" );
+    aboutData.addCredit( "Danny Allen", "splash screen", "dannya40uk@yahoo.co.uk" );
     aboutData.addCredit( "Enrico Ros", "analyzers, king of openGL", "eros.kde@email.it" );
     aboutData.addCredit( "Jarkko Lehti", "tester, IRC channel operator, whipping", "grue@iki.fi" );
     aboutData.addCredit( "Josef Spillner", "KDE RadioStation code", "spillner@kde.org" );
