@@ -54,10 +54,9 @@ void OSDWidget::renderOSDText( const QString &text )
     QFontMetrics titleFm( titleFont );
 
     // The title cannnot be taller than one line
-    // AlignAuto = align Arabic to the right, etc.
-    QRect titleRect = titleFm.boundingRect( 0, 0, max.width(), titleFm.height(), AlignAuto, m_appName );
+    QRect titleRect = titleFm.boundingRect( 0, 0, max.width(), titleFm.height(), AlignLeft, m_appName );
     // The osd cannot be larger than the screen
-    QRect textRect = fontMetrics().boundingRect( 0, 0, max.width(), max.height(), AlignAuto | WordBreak, text );
+    QRect textRect = fontMetrics().boundingRect( 0, 0, max.width(), max.height(), AlignLeft | WordBreak, text );
 
     if ( textRect.width() < titleRect.width() )
         textRect.setWidth( titleRect.width() );
@@ -80,16 +79,29 @@ void OSDWidget::renderOSDText( const QString &text )
 
     const uint w = textRect.width()  - 1;
     const uint h = textRect.height() - 1;
-
+    //text position in Rect.
+    int textPosition = 0;
+    //shadow offset.
+    int shadowOffset = 0;
+    
+    //set text position according to direction.
+    if(text.isRightToLeft()){
+        textPosition = -10;
+        shadowOffset = -3;
+    }else{
+        textPosition = 10;
+        shadowOffset = 3;       
+    }//text position set.
+        
     // Draw the text shadow
     if ( m_shadow ) {
         bufferPainter.setPen( backgroundColor().dark( 175 ) );
-        bufferPainter.drawText( 13, titleFm.height() + 1, w, h, AlignLeft | WordBreak, text );
+        bufferPainter.drawText( textPosition+shadowOffset, titleFm.height() + 1, w, h, AlignAuto | WordBreak, text );        
     }
 
     // Draw the text
     bufferPainter.setPen( foregroundColor() );
-    bufferPainter.drawText( 10, titleFm.height() - 1, w, h, AlignLeft | WordBreak, text );
+    bufferPainter.drawText( textPosition, titleFm.height() - 1, w, h, AlignAuto | WordBreak, text );
 
     // Draw the title text
     bufferPainter.setFont( titleFont );
