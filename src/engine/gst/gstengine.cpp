@@ -243,8 +243,8 @@ GstEngine::canDecode( const KURL &url ) const
     gst_element_link( filesrc, spider );
     gst_element_link_filtered( spider, fakesink, filtercaps );
 
-    g_object_set( G_OBJECT( filesrc ), "location", (const char*) QFile::encodeName( url.path() ), NULL );
-    g_object_set( G_OBJECT( fakesink ), "signal_handoffs", true, NULL );
+    gst_element_set( filesrc, "location", (const char*) QFile::encodeName( url.path() ), NULL );
+    gst_element_set( fakesink, "signal_handoffs", true, NULL );
     g_signal_connect( G_OBJECT( fakesink ), "handoff", G_CALLBACK( candecode_handoff_cb ), pipeline );
 
     gst_element_set_state( pipeline, GST_STATE_PLAYING );
@@ -377,12 +377,12 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         // Use gst's filesrc element for local files, cause it's less overhead than KIO
         if ( !( input->src = createElement( "filesrc", input->thread ) ) ) { delete input; return false; }
         // Set file path
-        g_object_set( G_OBJECT( input->src ), "location", static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
+        gst_element_set( input->src, "location", static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
     }
     else {
         // Create our custom streamsrc element, which transports data into the pipeline
         input->src = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex, &m_streamBufStop ) );
-        g_object_set( G_OBJECT( input->src ), "buffer_min", STREAMBUF_MIN, NULL );
+        gst_element_set( input->src, "buffer_min", STREAMBUF_MIN, NULL );
         gst_bin_add ( GST_BIN ( input->thread ), input->src );
         g_signal_connect( G_OBJECT( input->src ), "kio_resume", G_CALLBACK( kio_resume_cb ), input->thread );
     }
@@ -515,7 +515,7 @@ GstEngine::setVolumeSW( uint percent )  //SLOT
 {
     if ( !m_pipelineFilled ) return;
 
-    g_object_set( G_OBJECT( m_gst_volume ), "volume", (double) percent * 0.01, NULL );
+    gst_element_set( m_gst_volume, "volume", (double) percent * 0.01, NULL );
 }
 
 
@@ -549,7 +549,7 @@ void GstEngine::timerEvent( QTimerEvent* )
                     // Set new value for fadeout volume element
                     double value = 1.0 - input->m_fade;
 //                     kdDebug() << "XFADE_IN: " << value << endl;
-                    g_object_set( G_OBJECT( input->volume ), "volume", value, NULL );
+                    gst_element_set( input->volume, "volume", value, NULL );
                 }
                 break;
 
@@ -565,14 +565,14 @@ void GstEngine::timerEvent( QTimerEvent* )
                         kdDebug() << "[Gst-Engine] Fade-out finished.\n";
                     }
                     // Wait until queue is empty
-                    g_object_get( G_OBJECT( input->queue ), "current-level-buffers", &count, NULL );
+                    gst_element_get( input->queue, "current-level-buffers", &count, NULL );
                     if ( !count ) destroyInput( input );
                 }
                 else {
                     // Set new value for fadeout volume element
                     double value = 1.0 - log10( ( 1.0 - input->m_fade ) * 9.0 + 1.0 );
 //                     kdDebug() << "FADE_OUT: " << value << endl;
-                    g_object_set( G_OBJECT( input->volume ), "volume", value, NULL );
+                    gst_element_set( input->volume, "volume", value, NULL );
                 }
                 break;
 
@@ -590,7 +590,7 @@ void GstEngine::timerEvent( QTimerEvent* )
                     // Set new value for fadeout volume element
                     double value = 1.0 - input->m_fade;
 //                     kdDebug() << "XFADE_IN: " << value << endl;
-                    g_object_set( G_OBJECT( input->volume ), "volume", value, NULL );
+                    gst_element_set( input->volume, "volume", value, NULL );
                 }
                 break;
 
@@ -606,14 +606,14 @@ void GstEngine::timerEvent( QTimerEvent* )
                         kdDebug() << "[Gst-Engine] XFade-out finished.\n";
                     }
                     // Wait until queue is empty
-                    g_object_get( G_OBJECT( input->queue ), "current-level-buffers", &count, NULL );
+                    gst_element_get( input->queue, "current-level-buffers", &count, NULL );
                     if ( !count ) destroyInput( input );
                 }
                 else {
                     // Set new value for fadeout volume element
                     double value = 1.0 - log10( ( 1.0 - input->m_fade ) * 9.0 + 1.0 );
 //                     kdDebug() << "XFADE_OUT: " << value << endl;
-                    g_object_set( G_OBJECT( input->volume ), "volume", value, NULL );
+                    gst_element_set( input->volume, "volume", value, NULL );
                 }
                 break;
         }
@@ -803,7 +803,7 @@ GstEngine::createPipeline()
 
     /* create a new pipeline (thread) to hold the elements */
     if ( !( m_gst_thread = createElement( "thread" ) ) ) { return false; }
-    g_object_set( G_OBJECT( m_gst_thread ), "priority", GstConfig::threadPriority(), NULL );
+    gst_element_set( m_gst_thread, "priority", GstConfig::threadPriority(), NULL );
 
     // Let gst construct the output element from a string
     QCString output  = GstConfig::soundOutput().latin1();
@@ -817,7 +817,7 @@ GstEngine::createPipeline()
 
     /* setting device property for AudioSink*/
     if ( GstConfig::useCustomSoundDevice() && !GstConfig::soundDevice().isEmpty() )
-        g_object_set( G_OBJECT ( m_gst_audiosink ), "device", GstConfig::soundDevice().latin1(), NULL );
+        gst_element_set( m_gst_audiosink, "device", GstConfig::soundDevice().latin1(), NULL );
 
     if ( !( m_gst_adder = createElement( "adder", m_gst_thread ) ) ) { return false; }
     if ( !( m_gst_identity = createElement( "identity", m_gst_thread ) ) ) { return false; }
@@ -861,7 +861,9 @@ GstEngine::destroyPipeline()
         kdDebug() << "[Gst-Engine] Destroying output pipeline.\n";
 
         // Destroy the pipeline
-        gst_element_set_state( m_gst_thread, GST_STATE_NULL );
+        if ( gst_element_get_state( m_gst_thread ) != GST_STATE_NULL )
+            gst_element_set_state( m_gst_thread, GST_STATE_NULL );
+
         gst_object_unref( GST_OBJECT( m_gst_thread ) );
         m_pipelineFilled = false;
     }
@@ -887,7 +889,9 @@ GstEngine::destroyInput( InputPipeline* input )
 
         if ( m_pipelineFilled && m_inputs.isEmpty() ) {
             kdDebug() << "Inputs now empty. Stopping output pipeline.\n";
-            gst_element_set_state( m_gst_thread, GST_STATE_READY );
+
+            if ( gst_element_get_state( m_gst_thread ) != GST_STATE_READY )
+                gst_element_set_state( m_gst_thread, GST_STATE_READY );
         }
     }
 
@@ -934,13 +938,13 @@ InputPipeline::InputPipeline()
     g_signal_connect( G_OBJECT( spider ), "eos", G_CALLBACK( GstEngine::eos_cb ), thread );
 
     // Set thread priority for less dropouts
-    g_object_set( G_OBJECT( thread ), "priority", GstConfig::threadPriority(), NULL );
+    gst_element_set( thread, "priority", GstConfig::threadPriority(), NULL );
 
     // More buffers means less dropouts and higher latency
-    g_object_set( G_OBJECT( queue ), "max-size-buffers", 500, NULL );
+    gst_element_set( queue, "max-size-buffers", 500, NULL );
 
     // Start silent
-    g_object_set( G_OBJECT( volume ), "volume", 0.0, NULL );
+    gst_element_set( volume, "volume", 0.0, NULL );
 
     return;
 
@@ -953,14 +957,23 @@ InputPipeline::~InputPipeline()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
-    if ( !m_error )
+    if ( GST_IS_THREAD( thread ) )
     {
-        if ( GstEngine::instance()->m_pipelineFilled )
-            gst_element_unlink( queue, GstEngine::instance()->m_gst_adder );
+//         gst_element_send_event( thread, gst_event_new( GST_EVENT_INTERRUPT ) );
+
+        gst_element_set_state( thread, GST_STATE_READY );
+
+        // Wait until queue is empty
+        int filled = 1;
+        while( filled ) {
+            gst_element_get( queue, "current-level-buffers", &filled, NULL );
+            ::usleep( 10000 ); // 10 msec
+        }
 
         if ( gst_element_get_state( thread ) != GST_STATE_NULL )
             gst_element_set_state( thread, GST_STATE_NULL );
 
+        kdDebug() << "Unreffing input thread.\n";
         gst_object_unref( GST_OBJECT( thread ) );
     }
 
@@ -976,7 +989,7 @@ InputPipeline::setState( State newState )
     switch ( newState )
     {
         case NO_FADE:
-            g_object_set( G_OBJECT( volume ), "volume", 1.0, NULL );
+            gst_element_set( volume, "volume", 1.0, NULL );
             m_fade = 0.0;
             break;
 
