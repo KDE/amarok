@@ -24,10 +24,9 @@
  *                    other doesnt.
  */
 
-#ifdef  AMAROK_WITH_GSTKIOSRC
- 
- 
 #include "kioreceiver.h"
+
+#ifdef  AMAROK_WITH_GSTKIOSRC
 
 #include <string.h>
 #include <kio/scheduler.h>

@@ -23,6 +23,10 @@
  * doesnt.
  */
 
+//uncomment to activate code
+//#define AMAROK_WITH_GSTKIOSRC
+ 
+
 #ifndef GST_KIORECEIVER_H
 #define GST_KIORECEIVER_H
 

@@ -3,7 +3,8 @@ plugin_LTLIBRARIES = \
 
 #location where plug-in will be installed
 plugindir = \
-    $(libdir)/gstreamer-@GST_MAJORMINOR@
+    /usr/local/lib/gstreamer-@GST_MAJORMINOR@
+#    $(libdir)/gstreamer-@GST_MAJORMINOR@
     
 INCLUDES = \
     $(CFLAGS_GST) \
@@ -16,6 +17,7 @@ libgstkio_la_SOURCES = \
 libgstkio_la_LDFLAGS = \
     -module \
     -avoid-version \
+    -no-undefined \
     $(all_libraries) 
 
 libgstkio_la_LIBADD = \

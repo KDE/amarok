@@ -23,11 +23,9 @@
 * Boston, MA 02111-1307, USA.
 */
 
-//uncomment to activate code
-//#define AMAROK_WITH_GSTKIOSRC
-#ifdef  AMAROK_WITH_GSTKIOSRC
-
 #include "kioreceiver.h"
+
+#ifdef  AMAROK_WITH_GSTKIOSRC
 
 #include <errno.h>
 #include <fcntl.h>
@@ -46,16 +44,15 @@ extern "C" {
 
 #include <gst/gst.h>
 
-    extern GstPluginDesc plugin_desc;
 
-    GstElementDetails kiosrc_details = {
-                                           ( gchar* ) "Kio Source",
-                                           ( gchar* ) "Source/File",
-                                           ( gchar* ) "Read from any Kio file",
-                                           ( gchar* ) "0.1.0",
-                                           ( gchar* ) "Tim Jansen <tim@tjansen.de>",
-                                           ( gchar* ) "(C) 2002",
-                                       };
+    //     extern GstPluginDesc plugin_desc;
+
+    GstElementDetails kiosrc_details =
+        { ( gchar* ) "Kio Source",
+          ( gchar* ) "Source/File",
+          ( gchar* ) "Read from any Kio file",
+          ( gchar* ) "Tim Jansen <tim@tjansen.de>, Mark Kretschmann <markey@web.de>",
+        };
 
 
 #define GST_TYPE_KIOSRC \
@@ -389,22 +386,21 @@ static GstElementStateReturn kiosrc_change_state( GstElement *element ) {
 
 
 static gboolean plugin_init( GstPlugin *plugin ) {
-    
-    return gst_element_register (plugin,
-                                 "plugin",
-                                 GST_RANK_NONE,
-                                 GST_TYPE_KIOSRC );
-    
-//    GstElementFactory * factory;
-//
-//    /* create an elementfactory for the aasink element */
-//    factory = gst_element_factory_new( "kiosrc", GST_TYPE_KIOSRC,
-//                                       &kiosrc_details );
-//    g_return_val_if_fail( factory != NULL, FALSE );
-//
-//    gst_plugin_add_feature ( plugin, GST_PLUGIN_FEATURE ( factory ) );
-//
-//    return TRUE;
+
+    return gst_element_register ( plugin,
+                                  "kiosrc",
+                                  GST_RANK_NONE,
+                                  GST_TYPE_KIOSRC );
+
+/*    GstElementFactory * factory;
+
+    factory = gst_element_factory_new( "kiosrc", GST_TYPE_KIOSRC,
+                                        &kiosrc_details );
+    g_return_val_if_fail( factory != NULL, FALSE );
+
+    gst_plugin_add_feature ( plugin, GST_PLUGIN_FEATURE ( factory ) );
+
+    return TRUE;*/
 }
 
 
@@ -437,18 +433,20 @@ static gboolean kiosrc_srcpad_query( GstPad *pad, GstQueryType type,
 }
 
 
-GST_PLUGIN_DEFINE (
-  0,     /* version major */
-  4,     /* version minor */
-  "plugin",
-  "KIOsrc plugin",
-  plugin_init,
-  "0.1",
-  "LGPL",
-  "GStreamer",
-  "http://gstreamer.net/"
-)
+extern "C" {
+    GST_PLUGIN_DEFINE (
+        GST_VERSION_MAJOR,     /* version major */
+        GST_VERSION_MINOR,     /* version minor */
+        ( gchar* ) "kio",
+        ( gchar* ) "KIOsrc plugin",
+        plugin_init,
+        ( gchar* ) "0.1",
+        ( gchar* ) "LGPL",
+        ( gchar* ) "GStreamer",
+        ( gchar* ) "http://gstreamer.net/"
+    )
+}
 
-                            
+
 #endif /* AMAROK_WITH_GSTKIOSRC */
 
