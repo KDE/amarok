@@ -1,3 +1,5 @@
+SUBDIRS = icons
+
 imagesdir = \
     $(kde_datadir)/amarok/images
 
@@ -32,8 +34,3 @@ images_DATA = \
     vol_speaker.png \
     wizard_compact.png \
     wizard_xmms.png
-
-KDE_ICON = \
-    AUTO
-
-
