@@ -636,9 +636,9 @@ void ContextBrowser::showHome() //SLOT
                     "<span id='favorites_box-header-title' class='box-header-title'>"
                     + i18n( "Your Favorite Tracks" ) +
                     "</span>"
-                "</div><iframe name='ftframe' topmargin='0' leftmargin='0' frameborder='0' marginheight='0' marginwidth='0' height='204' width='100%'></iframe>"
-                "<script language='JavaScript'>var w=frames['ftframe'].document; w.open();"
-                "w.writeln(\"<html><style type='text/css'>body { margin-left:0px; margin-right:0px; margin-top:0px; margin-bottom:0px }</style><div id='favorites_box-body' class='box-body'>"
+                "</div>"
+                "<div style='height: 204px; width: 100%; overflow: auto;'>"
+                  "<div id='favourites_box-body' class='box-body'>"
                        );
 
     for( uint i = 0; i < fave.count(); i = i + 5 )
@@ -667,7 +667,8 @@ void ContextBrowser::showHome() //SLOT
                            );
     }
     m_HTMLSource.append(
-                "</div></html>\");w.close();</script>"
+                "</div>"
+              "</div>"
             "</div>"
 
     // </Favorite Tracks Information>
@@ -759,10 +760,6 @@ void ContextBrowser::showHome() //SLOT
     m_homePage->end();
     m_dirtyHomePage = false;
     saveHtmlData(); // Send html code to file
-
-    m_homePage->findFrame( "ftframe" )->setUserStyleSheet( m_styleSheet );
-    connect( m_homePage->findFrame( "ftframe" )->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
-             this,                                                     SLOT( openURLRequest( const KURL & ) ) );
 }
 
 
