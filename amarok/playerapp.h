@@ -22,6 +22,9 @@
 #include <config.h>
 #endif
 
+#define APP_VERSION "0.6.0-PRE5"
+
+
 #include "amarokarts/amarokarts.h"
 
 #include <kglobalaccel.h>

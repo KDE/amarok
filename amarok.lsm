@@ -1,13 +1,13 @@
 Begin3
-Title:          Amarok 
-Version:        0.1
+Title:          amarok 
+Version:        0.6.0
 Entered-date:   
-Description:    
-Keywords:        
+Description:    media player for KDE
+Keywords:       player multimedia kde mp3 ogg audio music arts 
 Author:         Mark Kretschmann <markey@web.de> 
 Maintained-by:  Mark Kretschmann <markey@web.de> 
 Primary-site:   	        
-Home-page:      http:// 
+Home-page:      http://amarok.sf.net 
 Original-site:  
 Platforms:       Linux and other Unices
 Copying-policy: GNU Public License

@@ -4,6 +4,9 @@ amaroK Changelog
 
 
 VERSION 0.6.0-PRE5:
+  * fixed: defined new APP_VERSION macro, since the old approach did not work
+    with CVS
+  * changed: put amarok into KDE CVS (KDENONBETA)
   * added: applied Stormchaser's button patch. the AmarokButtons now work
     in a more standard conform way. Thanks Stormchaser, blessed be :)
 

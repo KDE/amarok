@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+
 #include "playerapp.h"
 
 #include <qcstring.h>
@@ -28,9 +29,7 @@
 
 PlayerApp *pApp;
 
-
-static const char *description =
-I18N_NOOP("A media player for KDE");
+static const char *description = I18N_NOOP( "A media player for KDE" );
 
 static KCmdLineOptions options[] =
 {
@@ -46,8 +45,8 @@ static KCmdLineOptions options[] =
 
 int main(int argc, char *argv[])
 {
-	KAboutData aboutData( "amaroK", I18N_NOOP("amaroK"),
-		VERSION, description, KAboutData::License_GPL,
+	KAboutData aboutData( "amarok", I18N_NOOP( "amaroK" ),
+		APP_VERSION, description, KAboutData::License_GPL,
 		"(c) 2002-2003, Mark Kretschmann", 0, "http://amarok.sourceforge.net", "");
 
     aboutData.addAuthor( "Mark Kretschmann", "Developer, Maintainer", "markey@web.de" );

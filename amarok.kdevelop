@@ -11,8 +11,8 @@
     </keywords>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <version/>
-    <description/>
+    <version></version>
+    <description></description>
     <ignoreparts/>
   </general>
   <kdevautoproject>
@@ -28,7 +28,7 @@
       <abortonerror>false</abortonerror>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin/>
+      <makebin></makebin>
       <envvars>
         <envvar value="1" name="WANT_AUTOCONF_2_5" />
         <envvar value="1" name="WANT_AUTOMAKE_1_6" />
@@ -40,7 +40,7 @@
     </compiler>
     <run>
       <mainprogram>amarok/amarok</mainprogram>
-      <programargs/>
+      <programargs></programargs>
       <terminal>true</terminal>
       <autocompile>true</autocompile>
       <envvars/>
@@ -94,8 +94,8 @@
   <kdevdebugger>
     <general>
       <dbgshell>libtool</dbgshell>
-      <programargs/>
-      <gdbpath/>
+      <programargs></programargs>
+      <gdbpath></gdbpath>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
@@ -113,8 +113,8 @@
   <cppsupportpart>
     <filetemplates>
       <choosefiles>false</choosefiles>
-      <interfaceURL/>
-      <implementationURL/>
+      <interfaceURL></interfaceURL>
+      <implementationURL></implementationURL>
       <interfacesuffix>.h</interfacesuffix>
       <implementationsuffix>.cpp</implementationsuffix>
       <lowercasefilenames>true</lowercasefilenames>

@@ -231,7 +231,7 @@ void PlayerApp::initArts()
 
     m_pConfig->setGroup( "" );
 
-    if ( m_pConfig->readEntry( "Version" ) != VERSION )
+    if ( m_pConfig->readEntry( "Version" ) != APP_VERSION )
     {
         QCString kill_cmdline;
         kill_cmdline = "killall artsd";
@@ -619,7 +619,7 @@ QString PlayerApp::convertDigit( const long &digit )
 void PlayerApp::saveConfig()
 {
     m_pConfig->setGroup( "" );
-    m_pConfig->writeEntry ( "Version", VERSION );
+    m_pConfig->writeEntry ( "Version", APP_VERSION );
 
     m_pConfig->setGroup( "General Options" );
 
