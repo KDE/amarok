@@ -137,15 +137,19 @@ MetaBundle PlaylistItem::metaBundle()
     //This function isn't called often (on play request), but playlists can contain
     //thousands of items. So favor saving memory over CPU.
 
-    TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Accurate );
-    //FIXME hold a small cache of metabundles?
-    //then return by reference
-    MetaBundle bundle( this, f.isNull() ? 0 : f.audioProperties() );
-    //just set it as we just did an accurate pass
-    setText( Length,  bundle.prettyLength()  );
-    setText( Bitrate, bundle.prettyBitrate() );
+    if ( m_url.isLocalFile() ) {
+        TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Accurate );
+        //FIXME hold a small cache of metabundles?
+        //then return by reference
+        MetaBundle bundle( this, f.isNull() ? 0 : f.audioProperties() );
+        //just set it as we just did an accurate pass
+        setText( Length,  bundle.prettyLength()  );
+        setText( Bitrate, bundle.prettyBitrate() );
 
-    return bundle;
+        return bundle;
+
+    } else
+        return MetaBundle( this, 0 );
 }
 
 
@@ -161,6 +165,7 @@ QString PlaylistItem::text( int column ) const
 
     return KListViewItem::text( column );
 }
+
 
 QString
 PlaylistItem::seconds() const
