@@ -282,7 +282,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_pButtonPl = new AmarokButton( this, locate( "data", "amarok/images/pl_active.png" ),
                                     locate( "data", "amarok/images/pl_inactive.png" ), true );
     m_pButtonEq = new AmarokButton( this, locate( "data", "amarok/images/eq_active.png" ),
-                                    locate( "data", "amarok/images/eq_inactive.png" ), true );
+                                    locate( "data", "amarok/images/eq_inactive.png" ), false );
     lay4->addWidget( m_pButtonPl );
     lay4->addItem( new QSpacerItem( 0, 1 ) );
     lay4->addWidget( m_pButtonEq );

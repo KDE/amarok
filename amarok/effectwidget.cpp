@@ -19,8 +19,8 @@
 #include "playerapp.h"
 #include "playerwidget.h"
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include <qcstring.h>
 #include <qframe.h>
@@ -57,7 +57,7 @@
 // CLASS EffectListItem --------------------------------------------------------
 
 EffectListItem::EffectListItem( QListView *parent, const QString &label ) :
-QListViewItem( parent, label )
+        QListViewItem( parent, label )
 {
     m_pFX = new Arts::StereoEffect;
     *m_pFX = Arts::DynamicCast( pApp->m_Server.createObject( std::string( label.ascii() ) ) );
@@ -74,7 +74,6 @@ QListViewItem( parent, label )
 }
 
 
-
 EffectListItem::~EffectListItem()
 {
     m_pFX->stop();
@@ -84,10 +83,10 @@ EffectListItem::~EffectListItem()
 }
 
 
-
 // CLASS EffectConfigWidget --------------------------------------------------------
 
-ArtsConfigWidget::ArtsConfigWidget( Arts::Object object, QWidget *parent ) : QWidget( parent, 0, Qt::WType_TopLevel | Qt::WDestructiveClose )
+ArtsConfigWidget::ArtsConfigWidget( Arts::Object object, QWidget *parent )
+        : QWidget( parent, 0, Qt::WType_TopLevel | Qt::WDestructiveClose )
 {
     setCaption( kapp->makeStdCaption( QString( object._interfaceName().c_str() ) ) );
 
@@ -110,13 +109,11 @@ ArtsConfigWidget::ArtsConfigWidget( Arts::Object object, QWidget *parent ) : QWi
 }
 
 
-
 ArtsConfigWidget::~ArtsConfigWidget()
 {
     delete m_pArtsWidget;
     m_gui = Arts::Widget::null();
 }
-
 
 
 // METHODS -------------------------------------------------------------------------
@@ -126,7 +123,6 @@ void EffectListItem::configure()
     ArtsConfigWidget *pWidget = new ArtsConfigWidget( *m_pFX, pApp->m_pPlayerWidget );
     pWidget->show();
 }
-
 
 
 bool EffectListItem::configurable() const
@@ -143,14 +139,13 @@ bool EffectListItem::configurable() const
 }
 
 
-
 // CLASS EffectWidget -----------------------------------------------------------
 
-EffectWidget::EffectWidget( QWidget *parent, const char *name ) : KDialogBase( parent, name, false )
+#define BUTTON_WIDTH 30
+
+EffectWidget::EffectWidget()
+        : KDialogBase( 0, "EffectWidget", false, kapp->makeStdCaption( i18n("Effects") ) )
 {
-    setName( "EffectWidget" );
-    setWFlags( Qt::WType_TopLevel );
-    setCaption( kapp->makeStdCaption( i18n("Effects") ) );
     showButtonApply( false );
     showButtonCancel( false );
     setButtonText( Ok, i18n("Close") );
@@ -160,19 +155,17 @@ EffectWidget::EffectWidget( QWidget *parent, const char *name ) : KDialogBase( p
     KIconLoader iconLoader;
 
     m_pGroupBoxTop = new QGroupBox( 2, Qt::Horizontal, i18n("Available Effects"), pFrame );
-    m_pGroupBoxTop->setInsideSpacing( KDialog::spacingHint() );
     m_pGroupBoxBot = new QGroupBox( 2, Qt::Horizontal, i18n("Active Effects"), pFrame );
 
     pFrame->setStretchFactor( m_pGroupBoxTop, 1 );
     pFrame->setStretchFactor( m_pGroupBoxBot, 10 );
 
     m_pComboBox = new KComboBox( m_pGroupBoxTop );
-    m_pComboBox->setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum, 9, 9 ) ) ;
     m_pComboBox->insertStrList( queryEffects() );
 
     m_pButtonTopDown = new QPushButton( iconLoader.loadIconSet( "down", KIcon::Toolbar, KIcon::SizeSmall ),
-        0, m_pGroupBoxTop );
-    m_pButtonTopDown->setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum, 1, 1 ) );
+                                        0, m_pGroupBoxTop );
+    m_pButtonTopDown->setMaximumWidth ( BUTTON_WIDTH );
     QToolTip::add( m_pButtonTopDown, i18n("Add") );
     connect( m_pButtonTopDown, SIGNAL( clicked() ), this, SLOT( slotButtonTop() ) );
 
@@ -181,38 +174,35 @@ EffectWidget::EffectWidget( QWidget *parent, const char *name ) : KDialogBase( p
     m_pListView->addColumn( "void" );
     m_pListView->setSorting( -1 );
     connect( m_pListView, SIGNAL( clicked( QListViewItem * ) ),
-        this, SLOT( slotItemClicked( QListViewItem * ) ) );
+             this, SLOT( slotItemClicked( QListViewItem * ) ) );
 
     QFrame *pContainerBotButtons = new QFrame( m_pGroupBoxBot );
 
     m_pButtonBotConf = new QPushButton( iconLoader.loadIconSet( "configure", KIcon::Toolbar, KIcon::SizeSmall ),
-        0, pContainerBotButtons );
-    m_pButtonBotConf->resize( m_pButtonBotConf->minimumSize() );
-    m_pButtonBotConf->setEnabled( false );
+                                        0, pContainerBotButtons );
+    m_pButtonBotConf->setMaximumWidth ( BUTTON_WIDTH );
+    m_pButtonBotConf->setEnabled      ( false );
     QToolTip::add( m_pButtonBotConf, i18n( "Configure" ) );
     connect( m_pButtonBotConf, SIGNAL( clicked() ), this, SLOT( slotButtonBotConf() ) );
 
     m_pButtonBotRem = new QPushButton( iconLoader.loadIconSet( "remove", KIcon::Toolbar, KIcon::SizeSmall ),
-        0, pContainerBotButtons );
-    m_pButtonBotRem->resize( m_pButtonBotRem->minimumSize() );
+                                       0, pContainerBotButtons );
+    m_pButtonBotRem->setMaximumWidth ( BUTTON_WIDTH );
     QToolTip::add( m_pButtonBotRem, i18n("Remove") );
     connect( m_pButtonBotRem, SIGNAL( clicked() ), this, SLOT( slotButtonBotRem() ) );
 
     QBoxLayout *pLayoutBotButtons = new QVBoxLayout( pContainerBotButtons );
     pLayoutBotButtons->setResizeMode( QLayout::FreeResize );
-    pLayoutBotButtons->addWidget( m_pButtonBotConf );
-    pLayoutBotButtons->addWidget( m_pButtonBotRem );
-    pLayoutBotButtons->addItem( new QSpacerItem( 0, 10 ) );
+    pLayoutBotButtons->addWidget    ( m_pButtonBotConf );
+    pLayoutBotButtons->addWidget    ( m_pButtonBotRem );
+    pLayoutBotButtons->addItem      ( new QSpacerItem( 0, 10 ) );
 
     resize( 300, 400 );
 }
 
 
-
 EffectWidget::~EffectWidget()
-{
-}
-
+{}
 
 
 // METHODS ------------------------------------------------------------------------
@@ -236,14 +226,12 @@ QStrList EffectWidget::queryEffects() const
 }
 
 
-
 // SLOTS ----------------------------------------------------------------------------
 
 void EffectWidget::slotButtonTop()
 {
     new EffectListItem( m_pListView, m_pComboBox->currentText() );
 }
-
 
 
 void EffectWidget::slotButtonBotConf()
@@ -253,14 +241,11 @@ void EffectWidget::slotButtonBotConf()
 }
 
 
-
 void EffectWidget::slotButtonBotRem()
 {
     delete m_pListView->currentItem();
-
     m_pButtonBotConf->setEnabled( false );
 }
-
 
 
 void EffectWidget::slotItemClicked( QListViewItem *pCurrentItem )

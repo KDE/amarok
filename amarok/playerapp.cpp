@@ -416,8 +416,8 @@ void PlayerApp::initPlayerWidget()
     connect( m_pPlayerWidget->m_pButtonPl, SIGNAL( toggled( bool ) ),
              this, SLOT( slotPlaylistToggle( bool ) ) );
 
-    connect( m_pPlayerWidget->m_pButtonEq, SIGNAL( toggled( bool ) ),
-             this, SLOT( slotEq( bool ) ) );
+    connect( m_pPlayerWidget->m_pButtonEq, SIGNAL( clicked() ),
+             this, SLOT( slotConfigEffects() ) );
 
     connect( m_pPlayerWidget->m_pButtonLogo, SIGNAL( clicked() ),
              this, SLOT( slotShowAbout() ) );
@@ -1595,9 +1595,7 @@ void PlayerApp::slotConfigEffects()
 {
     // we never destroy the EffectWidget, just hide it, since destroying would delete the EffectListItems
     if ( m_pEffectWidget == NULL )
-    {
-        m_pEffectWidget = new EffectWidget( m_pPlayerWidget );
-    }
+        m_pEffectWidget = new EffectWidget();
 
     m_pEffectWidget->show();
 }

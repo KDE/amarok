@@ -84,7 +84,7 @@ class EffectWidget : public KDialogBase
     Q_OBJECT
 
     public:
-        EffectWidget( QWidget *parent = 0, const char *name = 0 );
+        EffectWidget();
         ~EffectWidget();
 
     public slots:
