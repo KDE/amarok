@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #54 being the highest available (take this one for your next bug and increase here)
+           #55 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
@@ -15,8 +15,6 @@ SHORT-TERM (URGENT):
                 QPainter::begin: Cannot paint null pixmap
                 QPainter::setPen: Will be reset by begin()
                 QPainter::setFont: Will be reset by begin()
-
-    * fix: #51 <markey> undo/redo broken (at least sometimes) 
 
     * fix: #49 <mxcl> we force arial on users, but arial only supports latin characters! we must detect the
                need for another font, or make it configurable (preferably we should detect this, it may be that
@@ -57,11 +55,9 @@ MID-TERM:
 
     * add: #39 <markey> add playlist column for media-type (mp3, ogg, mod, etc)
 
-    * fix: #36 <markey>amaroK packages have a bug: parts of taglib actually get installed, e.g. taglib-config
-
     * chg: instead of show file info why not use standard KDE properties? This has much more power
            than anything we could whip up and with taglib installed shows meta info and allows
-           editing of it.
+           editing of it. <markey> this is already available in the FileBrowser: right-click -> "Properties"
 
     * add: tabbed playlists.
            For: it's convenient to have several playlists
@@ -74,7 +70,7 @@ MID-TERM:
 
     * add: <mxcl> option: don't crossfade for sequential tracks on same album. Comments? -->mxcl
            Of course, there would still be the up to 150ms gap, but we can fix that some other
-           time..
+           time.. <markey> please clarify: is this the same as BR #75388 ?
 
     * fix: add dirs to combo history when user adds a track from that dir to the playlist
 
@@ -82,8 +78,6 @@ MID-TERM:
            relevant to amaroK since we are naughty and don't obey KDE's single click mode
            we should disable the hand cursor since that means "single-click to activate me"
            maybe override KListView::mouseMoveEvent, or is there a better way?
-
-    * fix: pause vis/anim timers when hide/show main widget as a courtesy to our users -->mxcl
 
     * add: extend keyboard shortcuts [<mxcl> show playlist, also I'd say do this with actions as it's easiest]
 
@@ -110,8 +104,6 @@ MID-TERM:
 
     * add: <berkus> playmode indication button in main widget (repeat track/pl/shuffle), clickable
 
-    * add: background pseudo-transparency for playlist window (<markey>I don't like that any more-too hackish)
-
     * add: function for adding all files in current dir to playlist.
            basically just a shortcut for going up to the parent directory, and then dragging
            the directory. imagine you're in the root directory of some filesystem, and want to add all
@@ -119,8 +111,6 @@ MID-TERM:
 
     * add: seeking with mousewheel
            <muesli> what's seeking with mousewheel? <markey> dunno, but several users requested it
-
-    * add: make blinking currentTrack optional
 
     * add: display type of media next to bitrate
 
@@ -165,6 +155,10 @@ LONG-TERM:
 
 
 IDEAS:
+
+    * #54<markey> For reducing startup time, we could try not to link to the audio frameworks (aRts, Gst..),
+         but instead open the libraries at runtime with dlopen(). I reckon this could be a substantial
+         saving (maybe also in memory), since these libs are quite huge.
 
     * #12<markey> prevent zombie processes after amarok has exited (proper exit or crashing).
          such zombies can lead to very weird behaviour on next amarok start and eat ressources,
