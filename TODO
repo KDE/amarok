@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #93 being the highest available (take this one for your next bug and increase here)
+           #94 being the highest available (take this one for your next bug and increase here)
 
                         
 SHORT-TERM (URGENT):
@@ -108,6 +108,8 @@ MID-TERM:
 
 LONG-TERM:
   
+  ADD #93<markey> New engine: using ALSA (maybe OSS, too) and XMMS plugins for decoding. 
+
   ADD #32<markey> icecast metadata support (uses UDP channel) -->markey
 
   CHG #21<markey> Use more accurate interpolation for analyzers (cubic or spline)
