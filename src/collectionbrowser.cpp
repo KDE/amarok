@@ -198,7 +198,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         m_cat3 = config->readNumEntry( "Category3", CollectionBrowser::IdNone );
         m_viewMode = config->readNumEntry( "ViewMode", modeTreeView );
     //</READ CONFIG>
-
+	 KActionCollection* ac = new KActionCollection( this );
+     KStdAction::selectAll( this, SLOT( selectAll() ), ac, "collectionview_select_all" );
 
     connect( CollectionDB::instance(), SIGNAL( scanStarted() ),
              this,                      SLOT( scanStarted() ) );
