@@ -376,8 +376,9 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
                 leftMargin = pixmap( column )->width();
             }
 
-            if( align != Qt::AlignCenter )
-               align = Qt::AlignVCenter;
+            // Adjust vertical alignment (why do we have to do this?)
+            align &= ( Qt::AlignAuto | Qt::AlignLeft | Qt::AlignRight | Qt::AlignHCenter | Qt::AlignJustify );
+            align |= Qt::AlignVCenter;
 
             // Draw the text
             paint.setPen( glowText );
