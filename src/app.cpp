@@ -273,12 +273,13 @@ void App::restoreSession()
     {
         MetaBundle bundle( KURL(AmarokConfig::resumeTrack()) );
 
-        EngineController* const ec = EngineController::instance();
+        EngineBase* const engine = EngineController::engine();
+        int vol = engine->volume();
 
-        ec->mute();
-        ec->play( bundle );
-        ec->engine()->seek( AmarokConfig::resumeTime() * 1000 );
-        ec->mute();
+        engine->setVolume( 0 );
+        EngineController::instance()->play( bundle );
+        engine->seek( AmarokConfig::resumeTime() * 1000 );
+        engine->setVolume( vol );
     }
 }
 

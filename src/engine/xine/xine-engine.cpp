@@ -113,7 +113,6 @@ XineEngine::play()
 void
 XineEngine::stop()
 {
-    /*if( xine_get_status(xineStream) == XINE_STATUS_PLAY ) */
     xine_stop( xineStream );
 }
 
@@ -150,10 +149,7 @@ XineEngine::position() const
 void
 XineEngine::seek( long ms )
 {
-    if( xine_get_status( xineStream ) == XINE_STATUS_PLAY )
-    {
-        xine_play( xineStream, 0, ms );
-    }
+    xine_play( xineStream, 0, ms );
 }
 
 bool
@@ -170,6 +166,7 @@ void
 XineEngine::setVolume( int vol )
 {
     xine_set_param( xineStream, isMixerHardware() ? XINE_PARAM_AUDIO_VOLUME : XINE_PARAM_AUDIO_AMP_LEVEL, vol );
+    m_volume = vol;
 }
 
 bool
@@ -297,7 +294,7 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
                 message += ((char *) data + data->parameters);
                 message += "</i>";
             }
-            else message += i18n("No additional information is available.");
+            else message += i18n("Sorry, no additional information is available.");
 
             QApplication::postEvent( xe, new QCustomEvent(QEvent::Type(3001), new QString(message)) );
         }

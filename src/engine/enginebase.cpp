@@ -30,6 +30,9 @@ email                : markey@web.de
 EngineBase::EngineBase()
     : amaroK::Plugin()
     , m_mixerHW( -1 )
+    , m_volume( 50 )
+    , m_xfadeLength( 0 )
+    , m_restoreEffects( false )
     , m_defaultSoundDevice( true )
 {}
 
