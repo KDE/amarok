@@ -286,7 +286,7 @@ PlaylistWindow::init()
     connect( m_settingsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
     //END Settings menu
 
-    m_menubar->insertItem( i18n( "&Play" ), fileMenu );
+    m_menubar->insertItem( i18n( "&Location" ), fileMenu );
     m_menubar->insertItem( i18n( "&Playlist" ), playlistMenu );
     m_menubar->insertItem( i18n( "&Tools" ), toolsMenu );
     m_menubar->insertItem( i18n( "&Settings" ), m_settingsMenu );
