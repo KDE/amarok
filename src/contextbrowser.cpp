@@ -81,6 +81,8 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_bgGradientImage( 0 )
         , m_headerGradientImage( 0 )
         , m_shadowGradientImage( 0 )
+        , m_suggestionsOpen( true )
+        , m_favouritesOpen( true )
 {
     s_instance = this;
 
@@ -245,6 +247,12 @@ void ContextBrowser::openURLRequest( const KURL &url )
     if ( url.protocol() == "externalurl" )
     {
         kapp->invokeBrowser( url.url().replace("externalurl:", "http:") );
+    }
+
+    if ( url.protocol() == "togglebox" )
+    {
+        if ( url.path() == "ss" ) m_suggestionsOpen ^= true;
+        if ( url.path() == "ft" ) m_favouritesOpen ^= true;
     }
 }
 
@@ -996,7 +1004,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         {
             m_HTMLSource.append(
             "<div id='suggested_box' class='box'>"
-                "<div id='suggested_box-header' class='box-header' onClick=\"toggleBlock('T_SS')\" style='cursor: pointer;'>"
+                "<div id='suggested_box-header' class='box-header' onClick=\"toggleBlock('T_SS'); window.location.href='togglebox:ss';\" style='cursor: pointer;'>"
                     "<span id='suggested_box-header-title' class='box-header-title'>"
                     + i18n( "Suggested Songs" ) +
                     "</span>"
@@ -1026,6 +1034,9 @@ void ContextBrowser::showCurrentTrack() //SLOT
             m_HTMLSource.append(
                  "</table>"
                 "</div>" );
+
+            if ( !m_suggestionsOpen )
+                m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_SS');</script>" );
         }
     }
     // </Suggested Songs>
@@ -1043,7 +1054,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     {
         m_HTMLSource.append(
         "<div id='favoritesby_box' class='box'>"
-            "<div id='favoritesby-header' class='box-header' onClick=\"toggleBlock('T_FT')\" style='cursor: pointer;'>"
+            "<div id='favoritesby-header' class='box-header' onClick=\"toggleBlock('T_FT'); window.location.href='togglebox:ft';\" style='cursor: pointer;'>"
                 "<span id='favoritesby_box-header-title' class='box-header-title'>"
                 + i18n( "Favorite Tracks By %1" ).arg( artistName ) +
                 "</span>"
@@ -1071,6 +1082,10 @@ void ContextBrowser::showCurrentTrack() //SLOT
             "</table>"
             "</div>"
                            );
+
+        if ( !m_favouritesOpen )
+            m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_FT');</script>" );
+
     }
     // </Favourite Tracks Information>
 
