@@ -97,6 +97,7 @@ class PlayerApp : public KApplication
         void slotVolumeChanged( int value );
         void slotMainTimer();
         void slotShowOptions();
+        void slotShowOSD();
 
     private slots:
         void handleLoaderArgs( const QCString& args );
@@ -104,7 +105,8 @@ class PlayerApp : public KApplication
         void loaderMessage();
         void proxyError();
         void showEffectWidget();
-        
+        void prepareTextForOSD( const MetaBundle& );
+
     signals:
         void metaData( const MetaBundle& );
         void orderPreviousTrack();
@@ -139,20 +141,21 @@ class PlayerApp : public KApplication
         OSDWidget *m_pOSD;
         bool      m_proxyError;
         int       m_sockfd;
+        QString   m_textForOSD;
 };
 
 
 class LoaderServer : public QServerSocket
 {
     Q_OBJECT
-    
+
     public:
         LoaderServer( QObject* parent );
-        
+
     signals:
         void loaderArgs( const QCString& );
-    
-    private :   
+
+    private :
         void newConnection( int socket );
 };
 

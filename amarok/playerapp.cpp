@@ -51,6 +51,7 @@ email                : markey@web.de
 #include <qsocketnotifier.h> //initIpc()
 #include <qstring.h>
 #include <qtimer.h>
+#include <qregexp.h>
 
 #include <unistd.h>       //initIpc()
 #include <sys/socket.h>   //initIpc()
@@ -91,10 +92,10 @@ PlayerApp::PlayerApp()
 
     readConfig();
     initIpc();   //initializes Unix domain socket for loader communication, will also hide the splash
-    
+
     //after this point only analyzer pixmaps will be created
     QPixmap::setDefaultOptimization( QPixmap::BestOptim );
-    
+
     applySettings();  //will create the engine
 
     //restore session as long as the user isn't asking for stuff to be inserted into the playlist etc.
@@ -102,7 +103,7 @@ PlayerApp::PlayerApp()
     if( args->count() == 0 || args->isSet( "enqueue" ) ) restoreSession(); //resume playback + load prev PLS
 
     //TODO remember if we were in tray last exit, if so don't show!
-    
+
     m_pPlayerWidget->show(); //BrowserWin will sponaneously show if appropriate
 
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
@@ -113,8 +114,9 @@ PlayerApp::PlayerApp()
     m_pMainTimer->start( MAIN_TIMER );
 
     connect( this, SIGNAL( metaData( const MetaBundle& ) ), m_pOSD, SLOT( showOSD( const MetaBundle& ) ) );
+    connect( this, SIGNAL( metaData( const MetaBundle& ) ), this, SLOT( prepareTextForOSD( const MetaBundle& ) ) );
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
-   
+
     handleCliArgs( KCmdLineArgs::parsedArgs() );
 }
 
@@ -206,7 +208,7 @@ void PlayerApp::handleLoaderArgs( const QCString& args )
     KURL::List list;
     bool notEnqueue = !data.contains( "-e" );
     QString str;
-        
+
     for ( int i = 0;; ++i ) {
         str = data.section( " ", i, i );
         if ( str.isEmpty() )
@@ -268,7 +270,7 @@ void PlayerApp::initIpc()
 
     LoaderServer* server = new LoaderServer( this );
     server->setSocket( m_sockfd );
-    
+
     connect( server, SIGNAL( loaderArgs( const QCString& ) ),
              this,   SLOT( handleLoaderArgs( const QCString& ) ) );
 }
@@ -416,20 +418,22 @@ void PlayerApp::readConfig()
     m_pPlayerWidget->m_pButtonPl->setOn( AmarokConfig::browserWinEnabled() );
 
     // Actions ==========
-    m_pGlobalAccel->insert( "add", i18n( "Add Location" ), 0, CTRL + ALT + Key_A, 0,
+    m_pGlobalAccel->insert( "add", i18n( "Add Location" ), 0, KKey("WIN+a"), 0,
                             this, SLOT( slotAddLocation() ), true, true );
-    m_pGlobalAccel->insert( "show", i18n( "Show/Hide the Playlist" ), 0, CTRL + ALT + Key_H, 0,
+    m_pGlobalAccel->insert( "show", i18n( "Show/Hide the Playlist" ), 0, KKey("WIN+p"), 0,
                             this, SLOT( slotPlaylistShowHide() ), true, true );
-    m_pGlobalAccel->insert( "play", i18n( "Play" ), 0, CTRL + ALT + Key_P, 0,
+    m_pGlobalAccel->insert( "play", i18n( "Play" ), 0, KKey("WIN+x"), 0,
                             this, SLOT( slotPlay() ), true, true );
-    m_pGlobalAccel->insert( "pause", i18n( "Pause" ), 0, CTRL + ALT + Key_C, 0,
+    m_pGlobalAccel->insert( "pause", i18n( "Pause" ), 0, KKey("WIN+c"), 0,
                             this, SLOT( slotPause() ), true, true );
-    m_pGlobalAccel->insert( "stop", i18n( "Stop" ), 0, CTRL + ALT + Key_S, 0,
+    m_pGlobalAccel->insert( "stop", i18n( "Stop" ), 0, KKey("WIN+v"), 0,
                             this, SLOT( slotStop() ), true, true );
-    m_pGlobalAccel->insert( "next", i18n( "Next Track" ), 0, CTRL + ALT + Key_B, 0,
+    m_pGlobalAccel->insert( "next", i18n( "Next Track" ), 0, KKey("WIN+b"), 0,
                             this, SLOT( slotNext() ), true, true );
-    m_pGlobalAccel->insert( "prev", i18n( "Previous Track" ), 0, CTRL + ALT + Key_Z, 0,
+    m_pGlobalAccel->insert( "prev", i18n( "Previous Track" ), 0, KKey("WIN+z"), 0,
                             this, SLOT( slotPrev() ), true, true );
+    m_pGlobalAccel->insert( "osd", i18n( "Show OSD" ), 0, KKey("WIN+o"), 0,
+                            this, SLOT( slotShowOSD() ), true, true );
 
     m_pGlobalAccel->setConfigGroup( "Shortcuts" );
     m_pGlobalAccel->readSettings( kapp->config() );
@@ -818,6 +822,27 @@ void PlayerApp::slotShowOptions()
     }
 }
 
+// going to remove OSDWidget::showOSD(const MetaBundle&)
+void PlayerApp::prepareTextForOSD( const MetaBundle& bundle )
+{
+   // Strip HTML tags, expand basic HTML entities
+   QString text = QString( "%1 - %2" ).arg( bundle.prettyTitle(), bundle.prettyLength() );
+
+   QString plaintext = text.copy();
+   plaintext.replace( QRegExp( "</?(?:font|a|b|i)\\b[^>]*>" ), QString( "" ) );
+   plaintext.replace( QRegExp( "&lt;" ), QString( "<" ) );
+   plaintext.replace( QRegExp( "&gt;" ), QString( ">" ) );
+   plaintext.replace( QRegExp( "&amp;" ), QString( "&" ) );
+
+   m_textForOSD = plaintext;
+}
+
+void PlayerApp::slotShowOSD()
+{
+   if (!m_textForOSD.isEmpty())
+      m_pOSD->showOSD( m_textForOSD );
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS LoaderServer
@@ -840,9 +865,9 @@ void LoaderServer::newConnection( int sockfd )
     else
     {
         buf[nbytes] = '\000';
-        QCString result( buf ); 
+        QCString result( buf );
         kdDebug() << result << endl;
-        
+
         emit loaderArgs( result );
     }
 
