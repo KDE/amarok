@@ -47,6 +47,7 @@ class CollectionView : public KIconView
         void scan();        
     
     private:
+        void renderView();
         void readDir( const KURL& url );
         void dumpDb();
         void customEvent( QCustomEvent* );

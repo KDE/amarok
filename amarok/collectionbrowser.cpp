@@ -12,6 +12,7 @@
 #include "threadweaver.h"
 
 #include <sqlite.h>
+#include <unistd.h>
 
 #include <qcstring.h>
 #include <qptrlist.h>
@@ -40,7 +41,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
-// CLASS Browser
+// CLASS CollectionView
 //////////////////////////////////////////////////////////////////////////////////////////
 
 CollectionView::CollectionView( CollectionBrowser* parent )
@@ -50,18 +51,23 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     , m_dirLister( new KDirLister() )
 {
     kdDebug() << k_funcinfo << endl;
-        
+ 
+    setGridX( 100 );
+    setGridY(  35 );
+               
     setSelectionMode( QIconView::Extended );
     setItemsMovable( false );
 
-    m_db = sqlite_open( ( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" )
-                          + "collection.db" ).latin1(),
-                        0, 0 );
+    QCString path = ( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" )
+                      + "collection.db" ).latin1(); 
+    //remove old db 
+    ::unlink( path );
+    m_db = sqlite_open( path, 0, 0 );
     
     if ( !m_db )
         kdWarning() << k_funcinfo << "Could not open SQLite database\n";
     
-    QCString command = "create table tags ( title varchar(100), artist varchar(100) );";
+    QCString command = "create table tags ( url varchar(100), title varchar(100), artist varchar(100) );";
     execSql( command, 0, 0 );
 
     KConfig* config = KGlobal::config();
@@ -107,6 +113,30 @@ CollectionView::scan() //SLOT
         url.setPath( m_dirs[i] );
         readDir( url );                
     }
+    
+    renderView();
+}
+
+
+void 
+CollectionView::renderView() //SLOT
+{
+    kdDebug() << k_funcinfo << endl;
+    
+    clear();
+    
+    QCString command = "select artist from tags;";
+    QStringList values;
+    QStringList names;
+    
+    execSql( command, &values, &names );
+    
+    for ( uint i = 0; i < values.count(); i++ ) {
+        KIconViewItem* item = new KIconViewItem( this );    
+        item->setText( values[i] );
+    }    
+        
+    kdDebug() << values << endl;
 }
 
 
@@ -142,7 +172,9 @@ CollectionView::customEvent( QCustomEvent *e )
             bundle = c->list().at( i );
 //             kdDebug() << bundle->artist() << endl;
             
-            QCString command = "insert into tags( artist ) values ('";
+            QCString command = "insert into tags( url, artist ) values ('";
+            command += bundle->url().path().latin1();
+            command +=         "','";
             command += bundle->artist().latin1();
             command +=         "');";
             
