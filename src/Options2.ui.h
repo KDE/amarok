@@ -33,7 +33,7 @@ void Options2::init()
 
 void Options2::installPushButton_clicked()
 {//this code is basically a slotInstallScript
-    KFileDialog dia( QString::null, "*.tar *.tar.bz2 *.tar.gz|" + i18n( "Script Packages (*.tar, *.tar.bz2, *.tar.gz)" ), 0, 0, true );
+    KFileDialog dia( QString::null, "*.tar *.tar.bz2 *.tar.gz|" + i18n( "Style Packages (*.tar, *.tar.bz2, *.tar.gz)" ), 0, 0, true );
     kapp->setTopWidget( &dia );
     dia.setCaption( kapp->makeStdCaption( i18n( "Select Style Package" ) ) );
     dia.setMode( KFile::File | KFile::ExistingOnly );
