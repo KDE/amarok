@@ -665,6 +665,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     }
 
     // <Favourite Tracks Information>
+    QString artistName = currentTrack.artist().isEmpty() ? i18n("This Artist") : escapeHTML( currentTrack.artist() );
     values = m_db->query( QString( "SELECT tags.title, tags.url, round( statistics.percentage + 0.4 ) "
                                    "FROM tags, statistics "
                                    "WHERE tags.artist = %1 AND statistics.url = tags.url "
@@ -677,7 +678,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             "<br>"
             "<div class='rbcontent'>"
              "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-              "<tr><th>" + i18n( "Favorite Tracks By This Artist" ) + "</th></tr>"
+                "<tr><th>" + i18n( "Favorite Tracks By <i>%1</i>" ).arg( artistName ) + "</th></tr>"
              "</table>"
              "<table width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
@@ -724,9 +725,9 @@ void ContextBrowser::showCurrentTrack() //SLOT
             "<br>"
             "<div class='rbcontent'>"
              "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-              "<tr><th>&nbsp;" + i18n( "Albums By This Artist" ) + "</th></tr>"
+              "<tr><th>&nbsp;" + i18n( "Albums By <i>%1</i>" ).arg( artistName ) + "</th></tr>"
              "</table>"
-             "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+             "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
 
         // place current album first
         int vectorPlace = 0;
@@ -745,22 +746,23 @@ void ContextBrowser::showCurrentTrack() //SLOT
         for ( uint i = 0; i < values.count(); i += 2 ) {
             browser->write( QStringx (
                 "<tr>"
-                 "<td height='42' width='1' valign='top'>"
-                  "<a href='fetchcover:%1 @@@ %2'><img align='left' title='%3' src='%4'></a><br>"
-                 "</td>"
-                 "<td valign='top'>"
-                  "<div>"
-                   "<div class='album-header' onClick=\"toggleAlbumTracks('IDA%5')\">"
-                    "<div style='float:right;'>%6</div>"
-                    "<a href='album:%7 @@@ %8'><b>%9</b></a>"
-                   "</div>"
-                   "<div class='album-contents' style='display:%10;' id='IDA%11'>" )
+                 "<td>"
+                  "<div class='album-header' onClick=\"toggleAlbumTracks('IDA%1')\">"
+                   "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+                    "<tr><td>"
+                     "<a href='fetchcover:%2 @@@ %3'><img align='left' vspace='2' hspace='2' title='%4' src='%5'/></a></div>"
+                     "<div style='float:right;'>%6</div>"
+                     "<a href='album:%7 @@@ %8'><b>%9</b></a>"
+                    "</td></tr>"
+                   "</table>"
+                  "</div>"
+                  "<div class='album-contents' style='display:%10;' id='IDA%11'>" )
                 .args( QStringList()
+                    << values[ i+1 ]
                     << escapeHTMLAttr( currentTrack.artist() ) // artist name
                     << escapeHTMLAttr( values[ i ] ) // album.name
                     << i18n( "Click for information from amazon.com, right-click for menu." )
                     << escapeHTMLAttr( m_db->albumImage( currentTrack.artist(), values[ i ], 50 ) )
-                    << values[ i+1 ]
                     << i18n( "Single", "%n Tracks", m_db->albumSongCount( QString::number(artist_id), values[ i+1 ] ).toInt() )
                     << QString::number( artist_id )
                     << values[ i+1 ] //album.id
@@ -785,7 +787,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
             }
 
             browser->write(
-                   "</div>"
                   "</div>"
                  "</td>"
                 "</tr>" );
@@ -845,9 +846,9 @@ void ContextBrowser::setStyleSheet() {
     m_styleSheet += QString( ".rbcontent a { text-decoration: none; }" );
     m_styleSheet += QString( ".rbcontent .song a { display: block; padding: 1px 2px; }" );
     m_styleSheet += QString( ".rbcontent .song a:hover { color: %1; background-color: %1; }" ).arg( fg ).arg( bg );
-    m_styleSheet += QString( ".album-header { color: %1; background-color: %2; padding: 1px 0.5em; }" ).arg( fg ).arg( bg );
-    m_styleSheet += QString( ".album-header:hover { background-color: %1; cursor: n-resize; }" ).arg( colorGroup().highlight().light( 120 ).name() );
-    m_styleSheet += QString( ".album-contents { background-color: %1; border: solid %2 1px; padding: 1px 0.5em; }" ).arg( colorGroup().base().name() ).arg( bg );
+    m_styleSheet += QString( ".album-header { background-color: %1; }" ).arg( colorGroup().base().name() );
+    m_styleSheet += QString( ".album-header:hover { background-color: %1; cursor: pointer; }" ).arg( colorGroup().highlight().light( 120 ).name() );
+    m_styleSheet += QString( ".album-contents { background-color: %1; border-bottom: solid %2 1px; border-top: solid %3 1px; }" ).arg( colorGroup().base().name() ).arg( bg ).arg( bg );
 
     //boxes used to display score (sb: score box)
     m_styleSheet += QString( ".sbtext { padding: 0px 4px; border-left: solid %1 1px; }" ).arg( colorGroup().base().dark( 120 ).name() );
