@@ -3,6 +3,8 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  FIX: don't allow user to get into a situation where there is no Menu
+  ADD: using Welcome-page power-links you can switch between XMMS and amaroK mode
   CHG: New icons and splash screen, by Roman Becker <roman@formmorf.de>.
   ADD: Allow the current GL analyzer to be detached/attached from the
        main window with the 'd' key.
@@ -41,7 +43,7 @@ VERSION 1.0-beta4:
        or end failed. (BR 81621).
   FIX: FileBrowser didn't remember its current folder (BR 81816).
   ADD: Expand/collapse items by doubleclicking in Collection (BR 81710).
-  FIX: Allow OSD still to be shown via shortcut when disabled (BR 80388). 
+  FIX: Allow OSD still to be shown via shortcut when disabled (BR 80388).
   FIX: Collection: live-monitoring dirs for changes works again.
   FIX: Changing volume by mousewheel on systray icon works again.
   ADD: Collection automatically rescans itself on startup.
@@ -86,10 +88,10 @@ VERSION 1.0-beta3:
        used with GStreamer engine.
   CHG: Extended and updated handbook, thanks to Mike Diehl <madpenguin8@yahoo.com>.
   ADD: Context menu item "Make Playlist" in Collection Browser generates new
-       playlists on the fly, without the need for drag-and-drop.  
+       playlists on the fly, without the need for drag-and-drop.
   CHG: Renamed several files and folders in the source code tree, resulting in
-       improved code accessibility. 
- 
+       improved code accessibility.
+
 VERSION 1.0-beta2:
   FIX: Crash on AMD64 due to assumption about pointer size.
   CHG: SQLite library sourcecode now included with amaroK.

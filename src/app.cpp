@@ -100,16 +100,11 @@ App::App()
     }
 
     handleCliArgs();
-
-    kdDebug() << "volume: " << EngineController::engine()->volume() << endl;
-    kdDebug() << "volume: " << AmarokConfig::masterVolume() << endl;
 }
 
 App::~App()
 {
     kdDebug() << k_funcinfo << endl;
-    kdDebug() << "volume: " << EngineController::engine()->volume() << endl;
-    kdDebug() << "volume: " << AmarokConfig::masterVolume() << endl;
 
     EngineBase* const engine = EngineController::engine();
 
@@ -350,7 +345,6 @@ void App::applySettings()
             //KWin::setSystemTrayWindowFor( m_pTray->winId(), m_pPlayerWindow->winId() );
 
             delete m_pTray; m_pTray = new amaroK::TrayIcon( m_pPlayerWindow );
-
         }
 
         QFont font = m_pPlayerWindow->font();
@@ -364,7 +358,14 @@ void App::applySettings()
         delete m_pPlayerWindow; m_pPlayerWindow = 0;
 
         m_pPlaylistWindow->setCaption( "amaroK" );
-        //m_pPlaylistWindow->show(); //must be shown
+        //m_pPlaylistWindow->show(); //must be shown //we do below now
+
+        //ensure that at least one Menu is plugged into an accessible UI element
+        if( !actionCollection()->action( "amarok_menu" )->isPlugged() )
+        {
+            playlistWindow()->reloadXML();
+            playlistWindow()->createGUI();
+        }
     }
 
 
@@ -383,10 +384,11 @@ void App::applySettings()
     m_pOSD->setOffset( AmarokConfig::osdXOffset(), AmarokConfig::osdYOffset() );
     m_pOSD->setHorizontalAutoCenter( AmarokConfig::osdHorizontalAutoCenter() );
 
+
     playlistWindow()->setFont( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );
     reinterpret_cast<QWidget*>(playlistWindow()->statusBar())->setShown( AmarokConfig::showStatusBar() );
 
-    m_pTray->setShown( AmarokConfig::showTrayIcon() ); //TODO delete when not in use
+    m_pTray->setShown( AmarokConfig::showTrayIcon() );
 
     setupColors();
 
@@ -395,7 +397,7 @@ void App::applySettings()
     //it is possible to achieve a state where you have all windows hidden and no way to get them back
     //eg hide systray while amarok is hidden (dumb, but possible)
     //also this is currently the way that the playlistWindow is initially shown at startup
-    m_pPlaylistWindow->show(); //TODO remember docked in tray state
+    playlistWindow()->show(); //TODO remember docked in tray state
     //takes longer but feels shorter. Crazy eh? :)
     kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
 
@@ -425,9 +427,6 @@ void App::applySettings()
          engine->setVolume( AmarokConfig::masterVolume() );
         //TODO deprecate/improve
         engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
-
-    kdDebug() << "volume: " << engine->volume() << endl;
-    kdDebug() << "volume: " << AmarokConfig::masterVolume() << endl;
     } //</Engine>
 
     kdDebug() << "END " << k_funcinfo << endl;
@@ -691,14 +690,15 @@ void App::slotConfigGlobalShortcuts()
 
 void App::slotConfigToolBars()
 {
-    KEditToolbar dialog( m_pPlaylistWindow->actionCollection(), QString::null, true, mainWindow() );
+    PlaylistWindow* const pw = playlistWindow();
+    KEditToolbar dialog( pw->actionCollection(), pw->xmlFile(), true, pw );
 
     dialog.showButtonApply( false );
 
     if( dialog.exec() )
     {
-        m_pPlaylistWindow->reloadXML();
-        m_pPlaylistWindow->createGUI();
+        playlistWindow()->reloadXML();
+        playlistWindow()->createGUI();
     }
 }
 

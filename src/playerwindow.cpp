@@ -68,7 +68,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
     , m_plusPixmap( getPNG( "time_plus" ) )
     , m_minusPixmap( getPNG( "time_minus" ) )
     , m_pAnalyzer( 0 )
-    , m_detachedGLWidget (false)
 {
     //the createWidget template function is used here
     //createWidget just creates a widget which has it's geometry set too
@@ -113,13 +112,13 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
         m_pButtonPause = new NavButton( m_pFrameButtons, "pause", ec, SLOT( pause()) );
                          new NavButton( m_pFrameButtons, "stop", ec, SLOT( stop() ) );
                          new NavButton( m_pFrameButtons, "next", ec, SLOT( next() ) );
-                         
+
 //                          new NavButton( m_pFrameButtons, "player_start", ec, SLOT( previous()  ) );
 //         m_pButtonPlay  = new NavButton( m_pFrameButtons, "player_play", ec, SLOT(play()) );
 //         m_pButtonPause = new NavButton( m_pFrameButtons, "player_pause", ec, SLOT(pause()) );
 //                          new NavButton( m_pFrameButtons, "player_stop", ec, SLOT( stop()  ) );
 //                          new NavButton( m_pFrameButtons, "player_end", ec, SLOT( next()  ) );
-                         
+
         m_pButtonPlay->setToggleButton( true );
         m_pButtonPause->setToggleButton( true );
 
@@ -436,37 +435,9 @@ bool PlayerWidget::event( QEvent *e )
     case QEvent::DragEnter:
     case QEvent::Drop:
     case QEvent::Close:
-    
-    
+
         pApp->genericEventHandler( this, e );
         return TRUE; //we handled it
-     
-//     case QEvent::KeyPress:       
-//     {
-//         EngineController* const controller = EngineController::instance();
-//
-//         switch( static_cast<QKeyEvent*>(e)->key() )
-//         {
-//         case Key_Left:
-//             controller->previous(); //TODO scan backwards
-//             break;
-//         case Key_Right:
-//             controller->next(); //TODO scan forwards
-//             break;
-//         case Key_Up:
-//             controller->increaseVolume();
-//              
-//             break;
-//         case Key_Down:
-//             controller->decreaseVolume();
-//               m_pAnalyzer->reparent((QWidget*)this, (0,0), true);
-//             break;
-//         default:
-//             return QWidget::event( e ); //QWidget has its own keyhandler in event
-//        }
-//
-//         return TRUE;
-//     }
 
     case QEvent::Show:
 
@@ -526,34 +497,31 @@ bool PlayerWidget::event( QEvent *e )
         }
 
         return FALSE;
-        break;
-        
-    //Detatch/reattach the analyser widget when 'd' is pressed
-    case 6: //6 == KeyPress, but the enum isnt working for me!?
-        if (static_cast<QKeyEvent*>(e)->text() == "d")
+
+    case 6/*QEvent::KeyPress*/:
+        if (static_cast<QKeyEvent*>(e)->key() == Qt::Key_D && m_pAnalyzer->inherits("QGLWidget"))
         {
-            if (m_pAnalyzer->inherits("QGLWidget"))
+            if (m_pAnalyzer->parent() == 0)
             {
-                if (m_detachedGLWidget)
-                {
-                    m_pAnalyzer->reparent(this, QPoint(119,4), true);
-                    m_pAnalyzer->setGeometry( 119,40, 168,56 );                
-                    m_detachedGLWidget = false;
-                }
-                else
-                {    
-                    m_pAnalyzer->reparent(0, QPoint(50,50), true);
-                    m_detachedGLWidget = true;
-                }
+                m_pAnalyzer->reparent(this, QPoint(119,4), true);
+                m_pAnalyzer->setGeometry( 119,40, 168,56 );
+                m_pAnalyzer->removeEventFilter( this );
             }
+            else
+            {
+                m_pAnalyzer->reparent(0, QPoint(50,50), true);
+                m_pAnalyzer->setCaption( kapp->makeStdCaption( i18n("Analyzer") ) );
+                m_pAnalyzer->installEventFilter( this );
+            }
+
+            return TRUE; //eat event
         }
-        return TRUE;
-    //End detatch anlyser
-    
+        return FALSE; //don't eat event
+
     case QEvent::Hide:
 
         m_pAnimTimer->stop();
-        
+
         if( AmarokConfig::hidePlaylistWindow() )
         {
             //this prevents the PlaylistButton being set to off (see the eventFilter)
@@ -596,9 +564,19 @@ bool PlayerWidget::event( QEvent *e )
     }
 }
 
-bool PlayerWidget::eventFilter( QObject*, QEvent *e )
+bool PlayerWidget::eventFilter( QObject *o, QEvent *e )
 {
     //NOTE we only monitor for parent() - which is the PlaylistWindow
+
+    if( o == m_pAnalyzer )
+    {
+        if( e->type() == QEvent::Close )
+        {
+            QKeyEvent ke( /*QEvent::KeyPress*/QEvent::Type(6), Qt::Key_D, 0, 0 );
+            event( &ke );
+        }
+        return FALSE;
+    }
 
     switch( e->type() )
     {
@@ -667,8 +645,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
 {
     if ( e->button() == QMouseEvent::RightButton )
     {
-        amaroK::Menu popup( this );
-        popup.exec( e->globalPos() );
+        amaroK::Menu::instance()->exec( e->globalPos() );
     }
     else if ( m_pAnalyzer->geometry().contains( e->pos() ) )
     {
@@ -713,7 +690,6 @@ void PlayerWidget::createAnalyzer( int increment )
     m_pAnalyzer = Analyzer::Factory::createAnalyzer( this );
     m_pAnalyzer->setGeometry( 119,40, 168,56 );
     m_pAnalyzer->show();
-    m_detachedGLWidget = false;
     QToolTip::add( m_pAnalyzer, i18n( "Click for more analyzers" ) );
 }
 
@@ -736,26 +712,25 @@ void PlayerWidget::setEffectsWindowShown( bool on )
 NavButton::NavButton( QWidget *parent, const QString &icon, QObject *receiver, const char *slot )
   : QPushButton( parent )
 {
-    QString up = QString( "b_%1" ).arg( icon );
-//     QString down = QString( "b_%1_down" ).arg( icon );
+    QString up = "b_"; up += icon;
+
     QIconSet iconSet;
     KIconEffect ie;
     // Tint icons blueish
     QPixmap upPix   = ie.apply( getPNG( up ), KIconEffect::Colorize, 0.3, Qt::blue, false );
     // Fade gamma value for "on" icon state
     QPixmap downPix = ie.apply( upPix, KIconEffect::ToGray, 0.7, QColor(), false );
-    
+
     iconSet.setPixmap( upPix,   QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
     iconSet.setPixmap( downPix, QIconSet::Automatic, QIconSet::Normal, QIconSet::On  );
     setIconSet( iconSet );
 
-    // System icons        
+    // System icons
 //    KIconLoader &iconLoader = *KGlobal::iconLoader();
 //    setIconSet( iconLoader.loadIconSet( icon, KIcon::Toolbar, KIcon::SizeSmall ) );
-    
+
     setFocusPolicy( QWidget::NoFocus );
     setFlat( true );
-    setFocusPolicy( NoFocus ); //commanded by Markey and his kin
 
     connect( this, SIGNAL( clicked() ), receiver, slot );
 }

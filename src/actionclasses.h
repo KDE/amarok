@@ -11,6 +11,7 @@
 #include <kaction.h>
 #include <kactionclasses.h>
 #include <kpopupmenu.h>
+#include <qguardedptr.h>
 
 class QSlider;
 
@@ -25,11 +26,7 @@ namespace amaroK
             Q_OBJECT
 
         public:
-            static const int ID_CONF_DECODER = 103;
-            static const int ID_SHOW_VIS_SELECTOR = 104;
-
-            Menu( QWidget *parent );
-
+            static KPopupMenu *instance();
             static KPopupMenu *helpMenu( QWidget *parent = 0 );
 
         private slots:
@@ -37,7 +34,12 @@ namespace amaroK
             void slotActivated( int index );
 
         private:
-            static KHelpMenu *HelpMenu;
+            Menu( QWidget *parent );
+
+            static const int ID_CONF_DECODER = 103;
+            static const int ID_SHOW_VIS_SELECTOR = 104;
+            static KHelpMenu  *s_helpMenu;
+            static KPopupMenu *s_menu;
     };
 
 
@@ -69,9 +71,10 @@ namespace amaroK
     class VolumeAction : public KAction, public EngineObserver
     {
             Q_OBJECT
-        
+
         public:
             VolumeAction( KActionCollection* );
+            ~VolumeAction();
             virtual int plug( QWidget *, int index = -1 );
 
         private slots:
@@ -81,7 +84,7 @@ namespace amaroK
         private:
             void engineVolumeChanged( int value );
 
-            QSlider* m_slider;
+            QGuardedPtr<QSlider> m_slider;
     };
 
 

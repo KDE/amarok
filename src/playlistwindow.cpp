@@ -149,10 +149,11 @@ PlaylistWindow::init()
     layV->addWidget( m_toolbar );
     layV->addWidget( m_statusbar );
 
+    //The volume slider later becomes our FocusProxy, so all wheelEvents get redirected to it
+    m_toolbar->setFocusPolicy( QWidget::WheelFocus );
     m_statusbar->setShown( AmarokConfig::showStatusBar() );
     m_playlist->setMargin( 2 );
     m_playlist->installEventFilter( this ); //we intercept keyEvents
-
 
     //<XMLGUI>
         KConfig* const config = kapp->config();
@@ -217,7 +218,17 @@ void PlaylistWindow::createGUI()
 {
     setUpdatesEnabled( false );
 
-    m_toolbar->clear(); //is necessary
+    m_toolbar->clear();
+
+    //KActions don't unplug themselves when the widget that is plugged is deleted!
+    //we need to unplug to detect if the menu is plugged in App::applySettings()
+    //TODO report to bugs.kde.org
+    //we unplug after clear as otherwise it crashes! dunno why..
+    KActionPtrList actions = actionCollection()->actions();
+    for( KActionPtrList::Iterator it = actions.begin(), end = actions.end(); it != end; ++it )
+    {
+        (*it)->unplug( m_toolbar );
+    }
 
     KXMLGUIBuilder builder( this );
     KXMLGUIFactory factory( &builder, this );
@@ -243,18 +254,30 @@ void PlaylistWindow::createGUI()
     const QStringList::ConstIterator last = list.fromLast();
     for( QStringList::ConstIterator it = list.constBegin(); it != end; ++it )
     {
-        if( it == last ) m_toolbar->setIconText( KToolBar::TextOnly, false );
-
         KToolBarButton* const button = (KToolBarButton*)m_toolbar->child( (*it).latin1() );
-        if( button ) {
+
+        if( it == last )
+        {
+            m_toolbar->setIconText( KToolBar::TextOnly, false );
+
+            //if the user has no PlayerWindow, he MUST have the menu action plugged
+            //NOTE this is not saved to the local XMLFile, which is what the user will want
+            if( !AmarokConfig::showPlayerWindow() && !button )
+            {
+                //due to ingenious code design, it will be plugged with
+                //correct text formatting too! /me hugs me-self
+                actionCollection()->action( "amarok_menu" )->plug( m_toolbar );
+            }
+        }
+
+        if( button )
+        {
             button->modeChange();
             button->setFocusPolicy( QWidget::NoFocus );
         }
     }
 
     m_toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
-    //The volume slider later becomes our FocusProxy, so all wheelEvents get redirected to it
-    m_toolbar->setFocusPolicy( QWidget::WheelFocus );
 
     conserveMemory();
 
@@ -303,12 +326,11 @@ void PlaylistWindow::setColors( const QPalette &pal, const QColor &bgAlt )
 }
 
 
-void PlaylistWindow::setFont( const QFont &newFont )
+void PlaylistWindow::setFont( const QFont &font )
 {
-    m_browsers->setFont( newFont );
-    m_playlist->setFont( newFont );
+    m_browsers->setFont( font );
+    m_playlist->setFont( font );
 }
-
 
 
 bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )

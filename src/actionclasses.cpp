@@ -9,15 +9,16 @@
 #include "socketserver.h"       //Vis::Selector::showInstance()
 
 #include <kaction.h>
-#include <kapplication.h>
 #include <khelpmenu.h>
 #include <kiconloader.h>
 #include <klocale.h>
-
+#include <ktoolbar.h>
+#include <ktoolbarbutton.h>
 
 using namespace amaroK;
 
-KHelpMenu *Menu::HelpMenu = 0;
+KHelpMenu  *Menu::s_helpMenu = 0;
+KPopupMenu *Menu::s_menu = 0;
 
 
 static void
@@ -31,52 +32,98 @@ safePlug( KActionCollection *ac, const char *name, QWidget *w )
 }
 
 
-Menu::Menu( QWidget *parent )
-  : KPopupMenu( parent )
+//////////////////////////////////////////////////////////////////////////////////////////
+// MenuAction && Menu
+// KActionMenu doesn't work very well, so we derived our own
+//////////////////////////////////////////////////////////////////////////////////////////
+
+MenuAction::MenuAction( KActionCollection *ac )
+  : KAction( i18n( "amaroK Menu" ), 0, ac, "amarok_menu" )
 {
-    KActionCollection *ac = pApp->actionCollection();
+    setShortcutConfigurable ( false ); //FIXME disabled as it doesn't work, should use QCursor::pos()
+}
 
-    setCheckable( true );
+int
+MenuAction::plug( QWidget *w, int index )
+{
+    KToolBar *bar = dynamic_cast<KToolBar*>(w);
 
-    safePlug( ac, "repeat_track", this );
-    safePlug( ac, "repeat_playlist", this );
-    safePlug( ac, "random_mode", this );
+    if( bar && kapp->authorizeKAction( name() ) )
+    {
+        const int id = KAction::getToolButtonID();
 
-    insertSeparator();
+        addContainer( bar, id );
+        connect( bar, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
 
-    insertItem( i18n( "&Visualizations..." ), ID_SHOW_VIS_SELECTOR );
+        //TODO create menu on demand
+        //TODO create menu above and aligned within window
+        //TODO make the arrow point upwards!
+        bar->insertButton( QString::null, id, true, i18n( "Menu" ), index );
+        bar->alignItemRight( id );
 
-    insertSeparator();
+        KToolBarButton* button = bar->getButton( id );
+        button->setPopup( amaroK::Menu::instance() );
+        button->setName( "toolbutton_amarok_menu" );
 
-    insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( slotConfigEffects() ) );
-    insertItem( i18n( "Configure &Decoder..." ), ID_CONF_DECODER );
+        return containerCount() - 1;
+    }
+    else return -1;
+}
 
-    insertSeparator();
+KPopupMenu*
+Menu::instance() //STATIC
+{
+    if( !s_menu )
+    {
+        KActionCollection *ac = pApp->actionCollection();
 
-    safePlug( ac, KStdAction::name(KStdAction::ConfigureToolbars), this );
-    safePlug( ac, KStdAction::name(KStdAction::KeyBindings), this );
-    safePlug( ac, "options_configure_globals", this ); //we created this one
-    safePlug( ac, KStdAction::name(KStdAction::Preferences), this );
+        s_menu = new KPopupMenu;
+        s_menu->setCheckable( true );
 
-    insertSeparator();
+        safePlug( ac, "repeat_track", s_menu );
+        safePlug( ac, "repeat_playlist", s_menu );
+        safePlug( ac, "random_mode", s_menu );
 
-    insertItem( SmallIcon("help"), i18n( "&Help" ), helpMenu( parent ) );
+        s_menu->insertSeparator();
 
-    insertSeparator();
+        s_menu->insertItem( i18n( "&Visualizations..." ), ID_SHOW_VIS_SELECTOR );
 
-    safePlug( ac, KStdAction::name(KStdAction::Quit), this );
+        s_menu->insertSeparator();
 
-    connect( this, SIGNAL( aboutToShow() ), SLOT( slotAboutToShow() ) );
-    connect( this, SIGNAL( activated(int) ), SLOT( slotActivated(int) ) );
+        s_menu->insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( slotConfigEffects() ) );
+        s_menu->insertItem( i18n( "Configure &Decoder..." ), ID_CONF_DECODER );
+
+        s_menu->insertSeparator();
+
+        safePlug( ac, KStdAction::name(KStdAction::ConfigureToolbars), s_menu );
+        safePlug( ac, KStdAction::name(KStdAction::KeyBindings), s_menu );
+        safePlug( ac, "options_configure_globals", s_menu ); //we created this one
+        safePlug( ac, KStdAction::name(KStdAction::Preferences), s_menu );
+
+        s_menu->insertSeparator();
+
+        s_menu->insertItem( SmallIcon("help"), i18n( "&Help" ), helpMenu( s_menu ) );
+
+        s_menu->insertSeparator();
+
+        safePlug( ac, KStdAction::name(KStdAction::Quit), s_menu );
+
+        connect( s_menu, SIGNAL( aboutToShow() ),  s_menu, SLOT( slotAboutToShow() ) );
+        connect( s_menu, SIGNAL( activated(int) ), s_menu, SLOT( slotActivated(int) ) );
+    }
+
+    return s_menu;
 }
 
 KPopupMenu*
 Menu::helpMenu( QWidget *parent ) //STATIC
 {
-    if( HelpMenu == 0 )
-        HelpMenu = new KHelpMenu( parent, KGlobal::instance()->aboutData(), pApp->actionCollection() );
+    extern KAboutData aboutData;
 
-    return HelpMenu->menu();
+    if( s_helpMenu == 0 )
+        s_helpMenu = new KHelpMenu( parent, &aboutData, pApp->actionCollection() );
+
+    return s_helpMenu->menu();
 }
 
 void
@@ -99,57 +146,17 @@ Menu::slotActivated( int index )
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-// MenuAction
-//////////////////////////////////////////////////////////////////////////////////////////
-#include <ktoolbar.h>
-#include <ktoolbarbutton.h>
-
-//there is KActionMenu, but it doesn't work very well, hence we made our own
-
-MenuAction::MenuAction( KActionCollection *ac )
-  : KAction( i18n( "amaroK Menu" ), 0, ac, "amarok_menu" )
-{
-    setShortcutConfigurable ( false ); //FIXME disabled as it doesn't work, should use QCursor::pos()
-}
-
-int
-MenuAction::plug( QWidget *w, int index )
-{
-    KToolBar *bar = dynamic_cast<KToolBar*>(w);
-
-    if( bar && kapp->authorizeKAction( name() ) )
-    {
-        const int id = KAction::getToolButtonID();
-
-        addContainer( w, id );
-        connect( w, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
-
-        //TODO create menu on demand
-        //TODO create menu above and aligned within window
-        //TODO make the arrow point upwards!
-        bar->insertButton( QString::null, id, true, i18n( "Menu" ), index );
-        bar->alignItemRight( id );
-
-        KToolBarButton* button = bar->getButton( id );
-        button->setPopup( new amaroK::Menu( 0 ) ); //do not parent to the toolbar! Causes the about dialog to
-                                                   //cause the toolbar to increase it's height when opened. Odd.
-        button->setName( "toolbutton_amarok_menu" );
-
-        return containerCount() - 1;
-    }
-    else return -1;
-}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PlayPauseAction
 //////////////////////////////////////////////////////////////////////////////////////////
+
 PlayPauseAction::PlayPauseAction( KActionCollection *ac )
   : KAction( i18n( "Play/Pause" ), 0, ac, "play_pause" )
 {
     EngineController* const ec = EngineController::instance();
 
-    engineStateChanged( ec->engine() ? ec->engine()->state() : EngineBase::Empty );
+    engineStateChanged( EngineController::engine()->state() );
 
     ec->attach( this );
     connect( this, SIGNAL( activated() ), ec, SLOT( playPause() ) );
@@ -220,7 +227,16 @@ AnalyzerAction::plug( QWidget *w, int index )
 
 VolumeAction::VolumeAction( KActionCollection *ac )
   : KAction( i18n( "Volume" ), 0, ac, "toolbar_volume" )
-{}
+  , m_slider( 0 ) //is QGuardedPtr
+{
+    //NOTE we only support one plugging currently
+    EngineController::instance()->attach( this );
+}
+
+VolumeAction::~VolumeAction()
+{
+    EngineController::instance()->detach( this );
+}
 
 int
 VolumeAction::plug( QWidget *w, int index )
@@ -229,23 +245,19 @@ VolumeAction::plug( QWidget *w, int index )
 
     if( bar && kapp->authorizeKAction( name() ) )
     {
-        //FIXME not ideal, but plugging twice in one session can happen
-        EngineController::instance()->detach( this );
-        EngineController::instance()->attach( this );
-
         const int id = KAction::getToolButtonID();
         addContainer( w, id );
         connect( w, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
+
+        delete (QSlider*) m_slider; //just in case, remember, we only support one plugging!
 
         m_slider = new QSlider( Qt::Vertical, w, "ToolBarVolume" );
         //FIXME is there a way to get some sensible height?
         m_slider->setFixedHeight( 35 );
         m_slider->setMaxValue( amaroK::VOLUME_MAX );
         m_slider->setValue( amaroK::VOLUME_MAX - AmarokConfig::masterVolume() );
-        connect( m_slider, SIGNAL( valueChanged( int ) ),
-                 this,       SLOT( sliderMoved( int ) ) );
-        connect( bar,      SIGNAL( wheelMoved( int ) ),
-                 this,       SLOT( wheelMoved( int ) ) );
+        connect( m_slider, SIGNAL(valueChanged( int )), SLOT(sliderMoved( int )) );
+        connect( bar, SIGNAL(wheelMoved( int )), SLOT(wheelMoved( int )) );
 
         bar->insertWidget( id, 0, m_slider, index );
 
@@ -257,7 +269,7 @@ VolumeAction::plug( QWidget *w, int index )
 void
 VolumeAction::engineVolumeChanged( int value )
 {
-    m_slider->setValue( amaroK::VOLUME_MAX - value );
+    if( m_slider ) m_slider->setValue( amaroK::VOLUME_MAX - value );
 }
 
 void
@@ -269,7 +281,7 @@ VolumeAction::sliderMoved( int value ) //SLOT
 void
 VolumeAction::wheelMoved( int delta ) //SLOT
 {
-    m_slider->setValue( m_slider->value() - delta / 18 );
+    if( m_slider ) m_slider->setValue( m_slider->value() - delta / 18 );
 }
 
 

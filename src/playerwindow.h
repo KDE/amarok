@@ -126,7 +126,6 @@ class PlayerWidget : public QWidget, public EngineObserver
         amaroK::Slider *m_pVolSlider;
         QPushButton    *m_pButtonPlay;
         QPushButton    *m_pButtonPause;
-        bool            m_detachedGLWidget; //Set to true when the current gl analyser is detached from the main window
 };
 
 #endif
