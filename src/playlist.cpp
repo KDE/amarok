@@ -771,6 +771,8 @@ Playlist::contentsDragEnterEvent( QDragEnterEvent *e )
 void
 Playlist::contentsDragMoveEvent( QDragMoveEvent* e )
 {
+    if( !e->isAccepted() ) return;
+
     //TODO decide, use this or what was here before? still have to include the Xlib header..
     const bool ctrlPressed= KApplication::keyboardModifiers() & ControlMask;
 
