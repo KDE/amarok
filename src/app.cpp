@@ -138,12 +138,11 @@ App::~App()
 
     engine->stop(); //don't call slotStop(), it's slow
 
-    delete m_pPlayerWidget;   //sets some XT keys
+    saveConfig();
     delete m_pPlaylistWindow; //sets some XT keys
     delete m_pOSD;
-
-    saveConfig();
-
+    AmarokConfig::writeConfig();
+    
     // delete EngineController
     PluginManager::unload( engine );
 }
@@ -466,8 +465,6 @@ void App::saveConfig()
     AmarokConfig::setVersion( APP_VERSION );
     AmarokConfig::setPlaylistWindowEnabled( m_showPlaylistWindow ); //TODO should be set when toggled no?
     if ( m_pPlayerWidget ) AmarokConfig::setPlayerPos( m_pPlayerWidget->pos() );
-
-    AmarokConfig::writeConfig();
 }
 
 
