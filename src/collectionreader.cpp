@@ -93,9 +93,11 @@ CollectionReader::doJob()
     for ( uint i = 0; i < m_folders.count(); i++ )
     {
         QString dir = m_folders[ i ];
-        if ( !dir.endsWith( "/" ) ) dir += '/';
-
-        readDir( dir, entries );
+        if ( !dir.isEmpty() )
+        {
+            if ( !dir.endsWith( "/" ) ) dir += '/';
+            readDir( dir, entries );
+        }
     }
 
     if ( !entries.empty() )
