@@ -3,14 +3,17 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #131 being the highest available (take this one for your next bug and increase here)
+           #133 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
 
+  FIX 132 <mxcl>   GSTengine, pick a bad audio sink in playback config and it crashes, default sink is one
+                   nobody has. Needs fixing or we should disable the code.
+
   FIX 130 <markey> Regression: transferring CLI commands from loader somehow broken. Can't start my streams
                    by clicking on link.
-                   
+
                    Update: the "-caption" parameter is responsible for the problem. It's in our .desktop file,
                    but amaroK can't parse it.
 
