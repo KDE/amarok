@@ -163,34 +163,32 @@ void ContextBrowser::openURLRequest( const KURL &url )
     if ( m_url.protocol() == "fetchcover" ) m_db->fetchCover( this, info[0], info[1], false );
 
 #else
-    
-    
-    if( m_db->getImageForAlbum( info[0], info[1], locate( "data", "amarok/images/sound.png" ), 0 ) != locate( "data", "amarok/images/sound.png" ) ) 
+    if ( m_url.protocol() == "fetchcover" ) 
     {
-        /* if a cover exists, open a widget with the image on click */
-        QWidget *widget = new QWidget( 0, 0, WDestructiveClose );
-        widget->setCaption( "Cover Viewer - amaroK" );
-        QPixmap pixmap( m_db->getImageForAlbum( info[0], info[1], locate( "data", "amarok/images/sound.png" ), 0 ) );
-        widget->setPaletteBackgroundPixmap( pixmap );
-        widget->setMinimumSize( pixmap.size() );
-        widget->setFixedSize( pixmap.size() );
-        widget->show(); 
-    }
-    else
-    {
-        /* if no cover exists, open a file dialog to add a cover */
-        KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select cover image file - amaroK" ) );
-        QImage img( file.directory() + "/" + file.fileName() );
-        QString filename( QFile::encodeName( info[0] + " - " + info[1] ) );
-        filename.replace( " ", "_" ).append( ".png" );
-        img.save( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() )+"/albumcovers/large/"+filename.lower(), "PNG" );
-        ContextBrowser::showCurrentTrack();
-    }
-            
-    
-#endif
+        if( m_db->getImageForAlbum( info[0], info[1], locate( "data", "amarok/images/sound.png" ), 0 ) != locate( "data", "amarok/images/sound.png" ) ) 
+        {
+            /* if a cover exists, open a widget with the image on click */
+            QWidget *widget = new QWidget( 0, 0, WDestructiveClose );
+            widget->setCaption( "Cover Viewer - amaroK" );
+            QPixmap pixmap( m_db->getImageForAlbum( info[0], info[1], locate( "data", "amarok/images/sound.png" ), 0 ) );
+            widget->setPaletteBackgroundPixmap( pixmap );
+            widget->setMinimumSize( pixmap.size() );
+            widget->setFixedSize( pixmap.size() );
+            widget->show(); 
+        }    
+        else
+        {
+            /* if no cover exists, open a file dialog to add a cover */
+            KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select cover image file - amaroK" ) );
+            QImage img( file.directory() + "/" + file.fileName() );
+            QString filename( QFile::encodeName( info[0] + " - " + info[1] ) );
+            filename.replace( " ", "_" ).append( ".png" );
+            img.save( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() )+"/albumcovers/large/"+filename.lower(), "PNG" );
+            ContextBrowser::showCurrentTrack();
+        }
+     }
+#endif            
 }
-
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PROTECTED
