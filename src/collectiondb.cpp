@@ -327,7 +327,8 @@ void
 CollectionDB::scan( const QStringList& folders, bool recursively )
 {
     purgeDirCache();
-    m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), folders, recursively, false ) );
+    if ( !folders.isEmpty() )
+        m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), folders, recursively, false ) );
 }
 
 
