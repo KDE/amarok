@@ -1088,7 +1088,7 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
 
     KPopupMenu popup( this );
 
-    popup.insertTitle( KStringHandler::rsqueeze( item->metaBundle().prettyTitle(), 30 ) );
+    popup.insertTitle( KStringHandler::rsqueeze( item->metaBundle().prettyTitle(), 50 ) );
     popup.insertItem( SmallIcon( "player_play" ), isCurrent && isPlaying ? i18n( "&Restart" ) : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
 
     if( !isQueued ) //not in nextTracks queue
