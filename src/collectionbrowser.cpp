@@ -417,7 +417,11 @@ CollectionView::scanDone( bool changed ) //SLOT
 {
     if ( changed )
     {
-        renderView();
+      // take care of sql updates (schema changed errors)
+      delete m_db;
+      m_db = new CollectionDB();
+
+      renderView();
 
         //restore cached item
         if ( !m_cacheItem.isEmpty() )
