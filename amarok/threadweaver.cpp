@@ -8,8 +8,12 @@
 #include "playlistitem.h"
 #include "threadweaver.h"
 
-#include <kdebug.h>
+#include <dirent.h>
+#include <sys/stat.h>
+
 #include <kapplication.h>
+#include <kdebug.h>
+
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
 #include <taglib/tstring.h>
@@ -193,21 +197,65 @@ TagReader::addSearchTokens( QStringList &tokens, QPtrList<QListViewItem> &ptrs )
 // CLASS CollectionReader
 //////////////////////////////////////////////////////////////////////////////////////////
 
-CollectionReader::CollectionReader( QObject* o, const QStringList& list )
+CollectionReader::CollectionReader( QObject* o, const QStringList& folders, bool recursively )
    : Job( o, Job::CollectionReader )
-   , m_itemList( list )
+   , m_folders( folders )
+   , m_recursively( recursively )
 {}
 
 CollectionReader::~CollectionReader()
 {}
 
 bool
-CollectionReader::doJob()
-{
+CollectionReader::doJob() {
+    //iterate over all folders
+    for ( uint i = 0; i < m_folders.count(); i++ )
+        readDir( m_folders[i] );
+    
+    //don't post event if no tags have been read
+    if ( m_metaList.isEmpty() )
+        return false;
+        
+    return true;
+}
+
+void
+CollectionReader::readDir( const QString& path ) {
+    QStringList entries;
+    DIR* d = opendir( path.local8Bit() );
+    dirent *ent;
+    struct stat statBuf;
+
+    while ( ent = readdir( d ) ) {
+        QString entry = ent->d_name;
+        
+        if ( entry == "." || entry == ".." )
+            continue;
+        entry.prepend( path.endsWith( "/" ) ? path : path + "/" );
+        
+//         kdDebug() << entry << endl;
+        stat( entry.local8Bit(), &statBuf );
+
+        if ( S_ISDIR( statBuf.st_mode ) ) {
+            if ( m_recursively )
+                //call ourself recursively for each subdir
+                readDir( entry );
+        }
+        else if ( S_ISREG( statBuf.st_mode ) )
+            entries << entry;
+    }
+    closedir( d );
+
+    if ( !entries.isEmpty() )
+        readTags( entries );
+}
+
+void
+CollectionReader::readTags( const QStringList& entries ) {
     KURL url;
         
-    for ( int i = 0; i < m_itemList.count(); i++ ) {   
-        url.setPath( m_itemList[i] );
+    for ( uint i = 0; i < entries.count(); i++ ) {   
+        url.setPath( entries[i] );
         
         if ( url.isValid() && url.isLocalFile() ) {        
             TagLib::FileRef f( url.path().local8Bit(), false /*== read AudioProps */ );
@@ -217,10 +265,6 @@ CollectionReader::doJob()
                 m_metaList.append( bundle );
         }
     }
-    if ( m_metaList.isEmpty() )
-        return false;
-        
-    return true;
 }
 
 

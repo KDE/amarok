@@ -127,15 +127,19 @@ private:
 class CollectionReader : public ThreadWeaver::Job
 {
 public:
-    CollectionReader( QObject*, const QStringList& list );
+    CollectionReader( QObject*, const QStringList& folders, bool recursively );
     ~CollectionReader();
 
     bool doJob();
     QPtrList<MetaBundle> list() { return m_metaList; }
 
 private:
+    void readDir( const QString& path );
+    void readTags( const QStringList& entries );
+    
     QPtrList<MetaBundle> m_metaList;
-    QStringList m_itemList;
+    QStringList m_folders;
+    bool m_recursively;
 };
 
 

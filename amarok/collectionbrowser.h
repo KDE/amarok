@@ -22,7 +22,6 @@ class QCString;
 class QDragObject;
 class QStringList;
 class QCustomEvent;
-class KDirLister;
 class KPopupMenu;
 
 class CollectionBrowser: public QVBox 
@@ -87,7 +86,6 @@ class CollectionView : public KListView
         void actionsMenu( int );
         
     private:
-        void readDir( const KURL& url );
         void dumpDb();
         void customEvent( QCustomEvent* );
         void startDrag();

@@ -12,8 +12,6 @@
 #include "threadweaver.h"
 
 #include <sqlite.h>
-#include <dirent.h>
-#include <sys/stat.h>
 
 #include <qcstring.h>
 #include <qdragobject.h>
@@ -143,11 +141,7 @@ CollectionView::scan()  //SLOT
     QCString command = "delete from tags;";
     execSql( command, 0, 0 );
 
-    for ( uint i = 0; i < m_dirs.count(); i ++ ) {
-        KURL url;
-        url.setPath( m_dirs[ i ] );
-        readDir( url );
-    }
+    m_weaver->append( new CollectionReader( this, m_dirs, m_recursively ) );
 }
 
 
@@ -209,7 +203,7 @@ CollectionView::slotExpanded( QListViewItem* item )  //SLOT
         child->setUrl( values[ i + 1 ] );
     }
 
-    kdDebug() << values << endl;
+//     kdDebug() << values << endl;
 }
 
 
@@ -255,46 +249,6 @@ CollectionView::actionsMenu( int id )  //SLOT
 }
 
 
-void
-CollectionView::readDir( const KURL& url ) {
-    kdDebug() << k_funcinfo << endl;
-
-    QStringList list;
-    QString path = url.path();
-    if ( !path.endsWith( "/" ) )
-        path += "/";
-    
-    DIR* d = opendir( path.local8Bit() );
-    dirent *ent;
-    struct stat statBuf;
-
-    while ( ent = readdir( d ) ) {
-        QString entry = ent->d_name;
-        
-        if ( entry == "." || entry == ".." )
-            continue;
-        entry.prepend( path );
-        
-//         kdDebug() << entry << endl;
-        stat( entry.local8Bit(), &statBuf );
-
-        if ( S_ISDIR( statBuf.st_mode ) ) {
-            if ( m_recursively ) {
-                KURL subdir;
-                subdir.setPath( entry );
-                //call this method recursively for each subdir
-                readDir( subdir );
-            }
-        }
-        else if ( S_ISREG( statBuf.st_mode ) )
-            list << entry;
-    }
-    closedir( d );
-
-    if ( !list.isEmpty() )
-        m_weaver->append( new CollectionReader( this, list ) );
-}
-
 
 void
 CollectionView::customEvent( QCustomEvent *e ) {
@@ -306,16 +260,14 @@ CollectionView::customEvent( QCustomEvent *e ) {
         kdDebug() << "********************************\n";
         kdDebug() << "CollectionEvent arrived.\n";
         kdDebug() << "********************************\n";
-
         kdDebug() << "Number of bundles: " << c->list().count() << endl;
 
         MetaBundle* bundle;
 
         for ( uint i = 0; i < c->list().count(); i++ ) {
             bundle = c->list().at( i );
-            //             kdDebug() << bundle->artist() << endl;
-
             QCString command = "insert into tags( url, album, artist, genre, title, year ) values ('";
+            
             command += bundle->url().path().latin1();
             command += "','";
             command += bundle->album().latin1();
