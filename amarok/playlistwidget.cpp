@@ -229,6 +229,9 @@ void PlaylistWidget::handleOrderCurrent() { handleOrder( Current ); } //SLOT
 
 void PlaylistWidget::handleOrder( RequestType request ) //SLOT
 {
+    //NOTE PLEASE only modify this function with EXTREME care!
+    //     most modifications ever have caused regressions you WILL not expect!
+
     if( isEmpty() ) return;
 
     PlaylistItem *item = currentTrack();
@@ -238,6 +241,12 @@ void PlaylistWidget::handleOrder( RequestType request ) //SLOT
     {
     case Prev:
 
+        //FIXME since 1.172 changes prevTracks is never empty so repeatPlaylist
+        //      backwards never occurs
+        
+        //FIXME pre 1.172 we didn't need to store the currentTrack in the prevTracks list,
+        //      which made the code simpler
+    
         if( m_prevTracks.isEmpty() )
         {
             item = (PlaylistItem *)item->itemAbove();
@@ -248,6 +257,7 @@ void PlaylistWidget::handleOrder( RequestType request ) //SLOT
         {
             // if enough songs in buffer, jump to the previous one,
             // otherwise restart the current song
+            //FIXME aah! why restart current song? WHY!!!??!
             if ( m_prevTracks.count() > 1 )
             {
                 item = m_prevTracks.at( 1 );
@@ -262,7 +272,7 @@ void PlaylistWidget::handleOrder( RequestType request ) //SLOT
 
     case Current:
 
-        if( item ) break; //then restart this track
+        if( item ) break; //then restart this track = amaroK behavior for pushing play button
 
         //else FALL THROUGH
 
@@ -1077,33 +1087,29 @@ void PlaylistWidget::slotGlowTimer() //SLOT
 
 void PlaylistWidget::slotTextChanged( const QString &query ) //SLOT
 {
-    const QStringList v = QStringList::split( ' ', query.lower() );
-    const uint vc = v.count();
+    //TODO allow a slight delay before searching
+    //TODO if we provided the lineEdit m_lastSearch would be unecessary
+    
+    const QString loweredQuery = query.lower();
+    const QStringList v = QStringList::split( ' ', loweredQuery );
     QListViewItem *item = 0;
-    QListViewItemIterator it;
+    QListViewItemIterator it( this, loweredQuery.startsWith( m_lastSearch ) ? QListViewItemIterator::Visible : 0 );
     bool b;
 
-    if ( query.lower().startsWith( m_lastSearch ) )
-        it = QListViewItemIterator( this, QListViewItemIterator::Visible );
-    else
-        it = QListViewItemIterator( this );
-    
-    m_lastSearch = query.lower();
-
-    while ( it.current() ) {
-        item = it.current();
-        b = true;
+    while( item = it.current() )
+    {
+        b = query.isEmpty(); //if query is empty skip the loops and show all items
         
-        for( uint x = 0; b && x < vc; ++x )
-            // search in Trackname, Artist, Songtitle, Album
-            if ( !( item->text( 0 ).lower().contains( v[x] ) || item->text( 1 ).lower().contains( v[x] ) ||
-                    item->text( 2 ).lower().contains( v[x] ) || item->text( 3 ).lower().contains( v[x] ) ) )
-                b = false;
+        for( uint x = 0; !b && x < v.count(); ++x ) //v.count() is constant time
+            for( uint y = 0; !b && y < 4; ++y ) // search in Trackname, Artist, Songtitle, Album
+                b = static_cast<PlaylistItem*>(item)->exactText( y ).lower().contains( v[x] );
 
         item->setVisible( b );
         ++it;
     }
 
+    m_lastSearch = loweredQuery;    
+    
     //to me it seems sensible to do this, BUT if it seems annoying to you, remove it
     showCurrentTrack();
     clearSelection(); //we do this because QListView selects inbetween visible items, this is a non ideal solution

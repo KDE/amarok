@@ -171,10 +171,12 @@ Vis::Selector::Selector()
     //FIXME problem, you can have more than one of each vis running!
     //      solution (for now) data starve multiple registrants <markey> Is there really a need for 
     //      running multiple instances of the _same_ vis? Methinks that's a gimmick.
+    //      <mxcl> yeah I agree, but it can happen as the vis binaries can be executed externally to
+    //      amaroK so we have to cater for the eventuality. Data starving causes them to exit.
 
     //TODO for now we keep the widget around as this will keep the checkboxes set as the user expects
     //     it isn't a perfect system, but it will suffice
-    //setWFlags( Qt::WDestructiveClose ); //FIXME these are the defaults no? <markey> No, it's not default.
+    //setWFlags( Qt::WDestructiveClose ); //FIXME reenable when we can
 
     setFullWidth( true );
     setShowSortIndicator( true );
@@ -212,7 +214,7 @@ Vis::Selector::Item::~Item()
 void
 Vis::Selector::Item::stateChange( bool ) //SLOT
 {
-    //TODO was !m_ignoreState sillyness here, why!?
+    //TODO was !m_ignoreState stuff here, why!?
 
     switch( state() ) {
     case On:
