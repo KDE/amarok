@@ -1478,7 +1478,7 @@ void ContextBrowser::showLyrics( const QString &hash )
     KIO::TransferJob* job = KIO::get( url, false, false );
 
     amaroK::StatusBar::instance()->newProgressOperation( job )
-            .setDescription( "Fetching Lyrics" ); //TODO i18n this
+            .setDescription( i18n( "Fetching Lyrics" ) );
 
     connect( job, SIGNAL( result( KIO::Job* ) ),
              this,  SLOT( lyricsResult( KIO::Job* ) ) );
