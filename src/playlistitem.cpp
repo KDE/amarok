@@ -392,6 +392,9 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     else
         KListViewItem::paintCell( p, cg, column, width, align );
 
+
+    // Here we draw the "Play as next" symbol:
+
     //figure out if we are in the actual physical first column
     if( playNext && column == listView()->m_firstColumn )
     {
