@@ -29,6 +29,15 @@ namespace Engine
 
     class Effects;
 
+    /**
+     * You should return:
+     * Playing when playing,
+     * Paused when paused
+     * Idle when you still have a URL loaded (ie you have not been told to stop())
+     * Empty when you have been told to stop(), or an error occured and you stopped yourself
+     *
+     * It is vital to be Idle just after the track has ended!
+     */
     enum State { Empty, Idle, Playing, Paused };
     enum StreamingMode { Socket, Signal, NoStreaming };
 
@@ -101,7 +110,10 @@ namespace Engine
         /** Pauses playback */
         virtual void pause() = 0;
 
-        /** Get current engine status. */
+        /**
+         * Get current engine status.
+         * @return the correct State as described at the enum
+         */
         virtual State state() const = 0;
 
         /** Get Time position (msec). */
