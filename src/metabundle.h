@@ -8,6 +8,7 @@
 #include <kurl.h>    //inline functions
 #include <klocale.h> //inline functions
 
+class CollectionDB;
 class PlaylistItem;
 class KFileMetaInfo;
 
@@ -39,7 +40,7 @@ public:
     /**
      * Creates a MetaBundle for url, tags will be obtained and set
      */
-    MetaBundle( const KURL &u, bool readAudioProperties = true, bool fromDB = false );
+    MetaBundle( const KURL &u, bool readAudioProperties = true, CollectionDB* const db = 0 );
 
     //StreamProvider:
     MetaBundle( const QString& title,

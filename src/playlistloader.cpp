@@ -138,7 +138,7 @@ PlaylistLoader::run()
 void
 PlaylistLoader::postItem( const KURL &url, const QString &title, const uint length )
 {
-    MetaBundle bundle( url, true, true );
+    MetaBundle bundle( url, true, m_db );
 
     bundle.setTitle( title );
     bundle.setLength( length );
@@ -296,7 +296,7 @@ PlaylistLoader::recurse( const KURL &url, bool recursing )
 void
 PlaylistLoader::postItem( const KURL &url )
 {
-    MetaBundle bundle( url, true, true );
+    MetaBundle bundle( url, true, m_db );
     QApplication::postEvent( Playlist::instance(), new ItemEvent( bundle ) );
 }
 

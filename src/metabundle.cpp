@@ -31,14 +31,13 @@ static const QString bitrateStore[9] = { "?", "32 kbps", "64 kbps", "96 kbps", "
 const MetaBundle MetaBundle::null;
 
 
-MetaBundle::MetaBundle( const KURL &u, bool readAudioProperties, bool fromDB )
+MetaBundle::MetaBundle( const KURL &u, bool readAudioProperties, CollectionDB* const db )
   : m_url( u )
 {
-    if ( fromDB )
+    if ( db )
     {
         MetaBundle bundle;
-        CollectionDB db;
-        if ( db.getMetaBundleForUrl( u.path(), &bundle ) )
+        if ( db->getMetaBundleForUrl( u.path(), &bundle ) )
         {
             m_title   = bundle.title();
             m_artist  = bundle.artist();
@@ -54,7 +53,7 @@ MetaBundle::MetaBundle( const KURL &u, bool readAudioProperties, bool fromDB )
                 // Generate a seperate MetaBundle for the audio properties. The Collection got
                 // advanced tag-guessing for songs with empty tags, so we better stick with its MetaBundle.
                 bundle = MetaBundle( u );
-                db.addAudioproperties( bundle );
+                db->addAudioproperties( bundle );
             }
 
             m_bitrate = bundle.bitrate();
