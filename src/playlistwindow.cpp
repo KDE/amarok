@@ -246,6 +246,8 @@ PlaylistWindow::init()
     m_toolsMenu->insertItem( i18n("&First-Run Wizard..."), amaroK::Menu::ID_SHOW_WIZARD );
     m_toolsMenu->insertItem( i18n("&Visualizations..."), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
     m_toolsMenu->insertItem( i18n("&Equalizer..."), kapp, SLOT( slotConfigEqualizer() ), 0, amaroK::Menu::ID_CONFIGURE_EQUALIZER );
+    m_toolsMenu->insertSeparator();
+    m_toolsMenu->insertItem( i18n("&Rescan Collection"), ID_RESCAN_COLLECTION );
 
     m_toolsMenu->setItemEnabled( amaroK::Menu::ID_SHOW_VIS_SELECTOR, false );
     #ifdef HAVE_XMMS
@@ -668,6 +670,10 @@ void PlaylistWindow::slotMenuActivated( int index ) //SLOT
         AmarokConfig::setShowPlayerWindow( !AmarokConfig::showPlayerWindow() );
         m_settingsMenu->changeItem( index, AmarokConfig::showPlayerWindow() ? i18n("Hide Player &Window") : i18n("Show Player &Window") );
         QTimer::singleShot( 0, kapp, SLOT( applySettings() ) );
+        break;
+    case ID_RESCAN_COLLECTION:
+        CollectionBrowser* collectionBrowser = (CollectionBrowser*) browserBar()->browser( "CollectionBrowser" );
+        collectionBrowser->scan();
         break;
     }
 }
