@@ -511,6 +511,9 @@ CollectionDB::isSamplerAlbum( const QString album )
     QStringList names_artist;
     QStringList names_dir;
 
+    if ( album == "Unknown" || album == "" )
+        return false;
+
     const uint album_id = getValueID( "album", album, FALSE, FALSE );
     execSql( QString( "SELECT DISTINCT artist.name FROM artist, tags WHERE tags.artist = artist.id AND tags.album = '%1';" )
                 .arg( album_id ), &values_artist, &names_artist );
