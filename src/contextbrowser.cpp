@@ -9,6 +9,7 @@
 #include "collectiondb.h"
 #include "contextbrowser.h"
 #include "coverfetcher.h"
+#include "covermanager.h"
 #include "enginecontroller.h"
 #include "k3bexporter.h"
 #include "metabundle.h"
@@ -281,7 +282,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     if ( url.protocol() == "fetchcover" )
     {
         QStringList info = QStringList::split( " @@@ ", url.path() );
-        enum menuIds { SHOW, FETCH, DELETE };
+        enum menuIds { SHOW, FETCH, DELETE, MANAGER };
 
         KPopupMenu menu( this );
         menu.insertTitle( i18n( "Cover Image" ) );
@@ -292,11 +293,19 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         menu.setItemEnabled( FETCH, false );
     #endif
         menu.insertSeparator();
+        menu.insertItem( /*SmallIcon( "www" ),*/ i18n( "Open Cover-Manager" ), MANAGER );
         menu.insertItem( SmallIcon( "editdelete" ), i18n("Delete Image File"), DELETE );
         int id = menu.exec( point );
 
+        CoverManager *coverManager; // Forward declaration
+
         switch ( id )
         {
+            case SHOW:
+                /* open an image view widget */
+                viewImage( info[0], info[1] );
+                break;
+
             case FETCH:
             #ifdef AMAZON_SUPPORT
                 /* fetch covers from amazon on click */
@@ -320,9 +329,9 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
             #endif
                 break;
 
-            case SHOW:
-                /* open an image view widget */
-                viewImage( info[0], info[1] );
+            case MANAGER:
+                coverManager = new CoverManager();
+                coverManager->show();
                 break;
 
             case DELETE:
@@ -348,7 +357,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         //menu.setItemEnabled( APPEND );
         menu.insertItem( SmallIcon( "next" ), i18n( "&Queue After Current Track" ), ASNEXT );
         menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
-        
+
         switch ( menu.exec( point ) )
         {
             case APPEND:
@@ -375,7 +384,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Append To Playlist" ), APPEND );
         menu.insertItem( SmallIcon( "next" ), i18n( "&Queue After Current Track" ), ASNEXT );
         menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
-                 
+
         int id = menu.exec( point );
 
         QStringList list = QStringList::split( " @@@ ", url.path() );
