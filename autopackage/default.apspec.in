@@ -1,0 +1,40 @@
+# -*-shell-script-*-
+
+[Meta]
+RootName: @amarok.kde.org/amarok:$SOFTWAREVERSION
+DisplayName: amaroK
+ShortName: amarok
+Maintainer: The amaroK Developers - http://amarok.kde.org
+Packager: Anonymous <anonymous@nowhere.com>
+Summary: amaroK is the audio player for KDE.
+SoftwareVersion: 1.0
+
+# Only uncomment InterfaceVersion if your package exposes interfaces to other software,
+# for instance if it includes DSOs or python/perl modules
+# InterfaceVersion: 0.0
+
+PackageVersion: 1
+
+[Description]
+Put long & detailed description here.
+
+[BuildPrepare]
+prepareBuild
+
+[BuildUnprepare]
+unprepareBuild
+
+[Imports]
+echo '*' | import
+
+[Prepare]
+# Dependency checking
+require @whatever.you/need 1.0
+
+[Install]
+# Put your installation script here
+installExe bin/*
+
+[Uninstall]
+# Usually just the following line is enough to uninstall everything
+uninstallFromLog
