@@ -172,7 +172,7 @@ PlaylistWindow::PlaylistWindow( QWidget *parent, const char *name )
     
     { //<StreamBrowser>
         QVBox   *vb = new QVBox( 0, "StreamBrowser" );
-        QWidget *b  = new QPushButton( "&Fetch Stream Information", vb );
+        QWidget *b  = new QPushButton( i18n( "&Fetch Stream Information" ), vb );
         QWidget *sb = new StreamBrowser( vb );
         vb->setSpacing( 3 );
         vb->setMargin( 5 );
