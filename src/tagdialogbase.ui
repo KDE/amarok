@@ -239,7 +239,7 @@
                         <bool>false</bool>
                     </property>
                     <property name="toolTip" stdset="0">
-                        <string>Detect metadata from fingerprint. Requires the "trm" utility.</string>
+                        <string>Detect metadata from fingerprint.</string>
                     </property>
                 </widget>
                 <widget class="QLabel" row="11" column="0">
