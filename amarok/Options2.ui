@@ -29,7 +29,7 @@
         </property>
         <widget class="QButtonGroup">
             <property name="name">
-                <cstring>chkBoxUseCustomFonts</cstring>
+                <cstring>ChkBoxUseCustomFonts</cstring>
             </property>
             <property name="sizePolicy">
                 <sizepolicy>
@@ -68,7 +68,7 @@
                         </property>
                         <widget class="QPushButton" row="1" column="1">
                             <property name="name">
-                                <cstring>kcfg_playerWidgetFont</cstring>
+                                <cstring>kcfg_PlayerWidgetFont</cstring>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
@@ -131,7 +131,7 @@
                         </property>
                         <widget class="QPushButton" row="1" column="1">
                             <property name="name">
-                                <cstring>kcfg_playerWidgetScrollFont</cstring>
+                                <cstring>kcfg_PlayerWidgetScrollFont</cstring>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
@@ -222,7 +222,7 @@
                         </widget>
                         <widget class="QPushButton" row="1" column="1">
                             <property name="name">
-                                <cstring>kcfg_browserWindowFont</cstring>
+                                <cstring>kcfg_BrowserWindowFont</cstring>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>

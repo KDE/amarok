@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>330</width>
-            <height>291</height>
+            <height>293</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -50,7 +50,7 @@
                 </property>
                 <widget class="QSpinBox" row="1" column="1">
                     <property name="name">
-                        <cstring>kcfg_trackDelayLength</cstring>
+                        <cstring>kcfg_TrackDelayLength</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
@@ -117,7 +117,7 @@
                 </widget>
                 <widget class="QRadioButton" row="2" column="0">
                     <property name="name">
-                        <cstring>radioButtonCrossfadePlayback</cstring>
+                        <cstring>kcfg_Crossfade</cstring>
                     </property>
                     <property name="text">
                         <string>&amp;Crossfade</string>
@@ -156,7 +156,7 @@
                 </widget>
                 <widget class="QSpinBox" row="3" column="1">
                     <property name="name">
-                        <cstring>kcfg_crossfadeLength</cstring>
+                        <cstring>kcfg_CrossfadeLength</cstring>
                     </property>
                     <property name="enabled">
                         <bool>false</bool>
@@ -222,7 +222,7 @@
                 </widget>
                 <widget class="QComboBox">
                     <property name="name">
-                        <cstring>kcfg_soundSystem</cstring>
+                        <cstring>kcfg_SoundSystem</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
@@ -243,7 +243,7 @@
         </widget>
         <widget class="QCheckBox">
             <property name="name">
-                <cstring>kcfg_resumePlayback</cstring>
+                <cstring>kcfg_ResumePlayback</cstring>
             </property>
             <property name="text">
                 <string>&amp;Resume playback on start</string>
@@ -258,7 +258,7 @@
         </widget>
         <widget class="QCheckBox">
             <property name="name">
-                <cstring>kcfg_softwareMixerOnly</cstring>
+                <cstring>kcfg_SoftwareMixerOnly</cstring>
             </property>
             <property name="text">
                 <string>Use only software &amp;mixer (requires restart)</string>
@@ -269,7 +269,7 @@
         </widget>
         <widget class="QCheckBox">
             <property name="name">
-                <cstring>kcfg_titleStreaming</cstring>
+                <cstring>kcfg_TitleStreaming</cstring>
             </property>
             <property name="text">
                 <string>Display Shoutcast/Icecast metadata</string>

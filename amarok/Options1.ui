@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>341</width>
-            <height>320</height>
+            <height>324</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -54,7 +54,7 @@
                 </property>
                 <widget class="QCheckBox" row="3" column="0" rowspan="1" colspan="2">
                     <property name="name">
-                        <cstring>kcfg_hidePlaylist</cstring>
+                        <cstring>kcfg_HidePlaylistWindow</cstring>
                     </property>
                     <property name="text">
                         <string>&amp;Hide playlist with main window</string>
@@ -65,7 +65,7 @@
                 </widget>
                 <widget class="QCheckBox" row="2" column="0" rowspan="1" colspan="2">
                     <property name="name">
-                        <cstring>kcfg_showTrayIcon</cstring>
+                        <cstring>kcfg_ShowTrayIcon</cstring>
                     </property>
                     <property name="text">
                         <string>Show &amp;tray icon</string>
@@ -76,7 +76,7 @@
                 </widget>
                 <widget class="QCheckBox" row="1" column="0" rowspan="1" colspan="2">
                     <property name="name">
-                        <cstring>kcfg_showMetaInfo</cstring>
+                        <cstring>kcfg_ShowMetaInfo</cstring>
                     </property>
                     <property name="text">
                         <string>Show &amp;metadata in playlist</string>
@@ -87,7 +87,7 @@
                 </widget>
                 <widget class="QCheckBox" row="0" column="0" rowspan="1" colspan="2">
                     <property name="name">
-                        <cstring>kcfg_savePlaylist</cstring>
+                        <cstring>kcfg_SavePlaylist</cstring>
                     </property>
                     <property name="text">
                         <string>&amp;Save current playlist on exit</string>
@@ -119,7 +119,7 @@
                 </property>
                 <widget class="QCheckBox" row="1" column="0" rowspan="1" colspan="2">
                     <property name="name">
-                        <cstring>kcfg_confirmExit</cstring>
+                        <cstring>kcfg_ConfirmExit</cstring>
                     </property>
                     <property name="text">
                         <string>Confirm e&amp;xiting the program</string>
@@ -156,7 +156,7 @@
                         </property>
                     </item>
                     <property name="name">
-                        <cstring>kcfg_dropMode</cstring>
+                        <cstring>kcfg_DropMode</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
@@ -169,7 +169,7 @@
                 </widget>
                 <widget class="QCheckBox" row="0" column="0" rowspan="1" colspan="2">
                     <property name="name">
-                        <cstring>kcfg_confirmClear</cstring>
+                        <cstring>ConfirmClear</cstring>
                     </property>
                     <property name="text">
                         <string>Confirm &amp;clearing the playlist</string>

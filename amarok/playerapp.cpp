@@ -820,19 +820,20 @@ void PlayerApp::slotEq( bool b )
 
 void PlayerApp::slotShowOptions()
 {
-   if( KConfigDialog::showDialog("settings") )
-     return;
-
-   KConfigDialog *dialog = new KConfigDialog( m_pPlayerWidget, "settings", AmarokConfig::self() );
-
-   dialog->addPage( new Options1(0,"General"),  i18n("General"),  "misc",   i18n("Configure general options") );
-   dialog->addPage( new Options2(0,"Fonts"),    i18n("Fonts"),    "fonts",  i18n("Configure fonts") );
-   dialog->addPage( new Options3(0,"Colors"),   i18n("Colors"),   "colors", i18n("Configure Colors") );
-   dialog->addPage( new Options4(0,"Playback"), i18n("Playback"), "kmix",   i18n("Configure playback") );
-
-   connect( dialog, SIGNAL( settingsChanged() ), this, SLOT( readConfig() ) );
-
-   dialog->show();
+    if( KConfigDialog::showDialog("settings") )
+        return;
+    
+    KConfigDialog *dialog = new KConfigDialog( m_pPlayerWidget, "settings", AmarokConfig::self() );
+    
+    dialog->addPage( new Options1(0,"General"),  i18n("General"),  "misc",   i18n("Configure general options") );
+    dialog->addPage( new Options2(0,"Fonts"),    i18n("Fonts"),    "fonts",  i18n("Configure fonts") );
+    dialog->addPage( new Options3(0,"Colors"),   i18n("Colors"),   "colors", i18n("Configure Colors") );
+    dialog->addPage( new Options4(0,"Playback"), i18n("Playback"), "kmix",   i18n("Configure playback") );
+    
+    connect( dialog, SIGNAL( settingsChanged() ), this, SLOT( readConfig() ) );
+    
+    dialog->setInitialSize( QSize( 480, 430 ) );        
+    dialog->show();
 }
 
 
