@@ -93,7 +93,7 @@ CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id 
 bool
 CollectionDB::execSql( const QString& statement, QStringList* const values, QStringList* const names )
 {
-    kdDebug() << "execSql(): " << statement << endl;
+    //kdDebug() << "execSql(): " << statement << endl;
 
     if ( !m_db ) {
         kdWarning() << k_funcinfo << "SQLite pointer == NULL.\n";
