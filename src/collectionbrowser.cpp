@@ -183,7 +183,6 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     setItemsMovable( false );
     setShowSortIndicator( true );
     setAcceptDrops( false );
-    setSorting( -1 );
 
     //<READ CONFIG>
         KConfig* config = amaroK::config( "Collection Browser" );
@@ -824,6 +823,7 @@ CollectionView::setViewMode( int mode, bool rerender )
         setResizeMode( QListView::LastColumn );
         setRootIsDecorated( true );
         setFullWidth( true );
+        setSorting( -1 ); //disables sorting
     }
     else
     {
@@ -832,11 +832,12 @@ CollectionView::setViewMode( int mode, bool rerender )
 
         addColumn( i18n( "Title" ) );
         addColumn( captionForCategory( m_cat1 ) );
-        if ( m_cat2 != CollectionBrowser::IdNone )addColumn( captionForCategory( m_cat2 ) );
-        if ( m_cat3 != CollectionBrowser::IdNone )addColumn( captionForCategory( m_cat3 ) );
+        if( m_cat2 != CollectionBrowser::IdNone ) addColumn( captionForCategory( m_cat2 ) );
+        if( m_cat3 != CollectionBrowser::IdNone ) addColumn( captionForCategory( m_cat3 ) );
 
         setResizeMode( QListView::AllColumns );
         setRootIsDecorated( false );
+        setSorting( 0 );
     }
 
     m_viewMode = mode;
