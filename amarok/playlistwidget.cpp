@@ -511,22 +511,33 @@ void PlaylistWidget::removeItem( PlaylistItem *item )
     //FIXME there must be a way to do this without requiring notification from the item dtor!
     //NOTE  orginally this was in ~PlaylistItem(), but that caused crashes due to clear() *shrug*
 
-    //items already removed by takeItem() will crash if you call nextSibling() on them
+    //NOTE items already removed by takeItem() will crash if you call nextSibling() on them
     //taken items return 0 from listView()
-    //FIXME is this check needed ?
-    //<mxcl> yes, we used to get crashes without it
-    if( item->listView() )
+
+    //FIXME if you remove a series of items including the currentTrack and all the nextTracks
+    //      then no new nextTrack will be selected and the playlist will resume from the begging
+    //      next time
+
+    if( item == m_currentTrack )
     {
-        if( item == m_currentTrack ) setCurrentTrack( 0 );
-        else if( item == m_cachedTrack ) m_cachedTrack = 0;
+        setCurrentTrack( 0 );
+
+        //ensure the playlist doesn't start at the beginning after the track that's playing ends
+        if( m_nextTracks.isEmpty() )
+        {
+            PlaylistItem *nextItem = item->nextSibling();
+            m_nextTracks.append( nextItem );
+            repaintItem( nextItem );
+        }
     }
 
+    if( item == m_cachedTrack ) m_cachedTrack = 0;
+
     //keep m_nextTracks queue synchronised
-    int queueIndex = m_nextTracks.findRef( item );
-    if( queueIndex != -1 )
+    if( m_nextTracks.findRef( item ) != -1 ) //sets List Current Item
     {
-        m_nextTracks.remove();
-        refreshNextTracks( queueIndex );
+        m_nextTracks.remove(); //remove list's listCurrentItem, set listCurrentItem to next item
+        refreshNextTracks();   //repaint from current
     }
 
     //keep search system synchronised
@@ -584,7 +595,7 @@ void PlaylistWidget::activate( QListViewItem *item ) //SLOT
         EngineController::instance()->play( playItem->metaBundle() );
     }
     else // NULL, stop the player
-        EngineController::instance()->stop();
+        EngineController::instance()->stop(); //FIXME this may cause premature stopping with crossfading..
 }
 
 
