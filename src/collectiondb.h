@@ -9,8 +9,8 @@
 #include <qobject.h>         //baseclass
 #include <qstringlist.h>     //stack allocated
 #include <qdir.h>            //stack allocated
+#include "sqlite/sqlite3.h"
 
-class sqlite;
 class ThreadWeaver;
 class MetaBundle;
 
@@ -108,7 +108,7 @@ class CollectionDB : public QObject
     private:
         void customEvent( QCustomEvent* );
 
-        sqlite* m_db;
+        sqlite3* m_db;
         ThreadWeaver* m_weaver;
         bool m_monitor;
         QDir m_cacheDir;

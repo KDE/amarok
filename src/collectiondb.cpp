@@ -9,7 +9,6 @@
 #include "coverfetcher.h"
 #include "metabundle.h"    //updateTags()
 #include "playlistbrowser.h"
-#include "sqlite/sqlite.h"
 #include "threadweaver.h"
 
 #include <kapplication.h>
@@ -40,7 +39,7 @@ CollectionDB::CollectionDB()
     QCString path = ( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" )
                   + "collection.db" ).local8Bit();
 
-    m_db = sqlite_open( path, 0, 0 );
+    sqlite3_open( path, &m_db );
 
     // create cover dir, if it doesn't exist.
     if( !m_coverDir.exists( "albumcovers", false ) )
@@ -57,7 +56,7 @@ CollectionDB::CollectionDB()
 
 CollectionDB::~CollectionDB()
 {
-    sqlite_close( m_db );
+    sqlite3_close( m_db );
 }
 
 
@@ -553,41 +552,47 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
     }
 
     const char* tail;
-    sqlite_vm* vm;
-    char* errorStr;
+    sqlite3_stmt* stmt;
     int error;
     //compile SQL program to virtual machine
-    error = sqlite_compile( m_db, statement.local8Bit(), &tail, &vm, &errorStr );
+    error = sqlite3_prepare( m_db, statement.local8Bit(), statement.length(), &stmt, &tail );
+//    error = sqlite3_compile( m_db, statement.local8Bit(), &tail, &vm, &errorStr );
 
     if ( error != SQLITE_OK ) {
         kdWarning() << k_funcinfo << "sqlite_compile error:\n";
-        kdWarning() << errorStr << endl;
+        kdWarning() << sqlite3_errmsg( m_db ) << endl;
         kdWarning() << "on query: " << statement << endl;
 
-        sqlite_freemem( errorStr );
         return false;
     }
 
-    int number;
-    const char** value;
-    const char** colName;
+    int number = sqlite3_column_count( stmt );
     //execute virtual machine by iterating over rows
-    while ( true ) {
-        error = sqlite_step( vm, &number, &value, &colName );
+    while ( true )
+    {
+        error = sqlite3_step( stmt );
         if ( error == SQLITE_DONE || error == SQLITE_ERROR )
             break;
+
         //iterate over columns
-        for ( int i = 0; i < number; i++ ) {
-            if ( values ) *values << QString::fromLocal8Bit( value [i] );
-            if ( names ) *names << QString::fromLocal8Bit( colName[i] );
+        for ( int i = 0; i < number; i++ )
+        {
+            if ( values ) *values << QString( (const char*)sqlite3_column_text( stmt, i ) );
+            
+/*            if ( sqlite3_column_type( stmt, i ) == 1 )
+                *values << QString::number( sqlite3_column_int( stmt, i ) );*/
+
+//            *names << QString::fromAscii( (const char *)sqlite3_column_text( stmt, i ) );
+//            if ( values ) *values << QString::fromLocal8Bit( value [i] );
+//            if ( names ) *names << QString::fromLocal8Bit( colName[i] );
         }
     }
     //deallocate vm ressources
-    sqlite_finalize( vm, &errorStr );
+    sqlite3_finalize( stmt );
 
     if ( error != SQLITE_DONE ) {
         kdWarning() << k_funcinfo << "sqlite_step error.\n";
-        kdWarning() << errorStr << endl;
+        kdWarning() << sqlite3_errmsg( m_db ) << endl;
         return false;
     }
 
@@ -598,12 +603,13 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
 int
 CollectionDB::sqlInsertID()
 {
-    if ( !m_db ) {
+    if ( !m_db )
+    {
         kdWarning() << k_funcinfo << "SQLite pointer == NULL.\n";
         return -1;
     }
 
-    return sqlite_last_insert_rowid( m_db );
+    return sqlite3_last_insert_rowid( m_db );
 }
 
 

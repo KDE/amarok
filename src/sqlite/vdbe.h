@@ -65,11 +65,24 @@ typedef struct VdbeOpList VdbeOpList;
 #define P3_DYNAMIC  (-1)  /* Pointer to a string obtained from sqliteMalloc() */
 #define P3_STATIC   (-2)  /* Pointer to a static string */
 #define P3_POINTER  (-3)  /* P3 is a pointer to some structure or object */
+#define P3_COLLSEQ  (-4)  /* P3 is a pointer to a CollSeq structure */
+#define P3_FUNCDEF  (-5)  /* P3 is a pointer to a FuncDef structure */
+#define P3_KEYINFO  (-6)  /* P3 is a pointer to a KeyInfo structure */
+#define P3_VDBEFUNC (-7)  /* P3 is a pointer to a VdbeFunc structure */
+
+/* When adding a P3 argument using P3_KEYINFO, a copy of the KeyInfo structure
+** is made.  That copy is freed when the Vdbe is finalized.  But if the
+** argument is P3_KEYINFO_HANDOFF, the passed in pointer is used.  It still
+** gets freed when the Vdbe is finalized so it still should be obtained
+** from a single sqliteMalloc().  But no copy is made and the calling
+** function should *not* try to free the KeyInfo.
+*/
+#define P3_KEYINFO_HANDOFF (-7)
 
 /*
 ** The following macro converts a relative address in the p2 field
 ** of a VdbeOp structure into a negative number so that 
-** sqliteVdbeAddOpList() knows that the address is relative.  Calling
+** sqlite3VdbeAddOpList() knows that the address is relative.  Calling
 ** the macro again restores the address.
 */
 #define ADDR(X)  (-1-(X))
@@ -84,29 +97,35 @@ typedef struct VdbeOpList VdbeOpList;
 ** Prototypes for the VDBE interface.  See comments on the implementation
 ** for a description of what each of these routines does.
 */
-Vdbe *sqliteVdbeCreate(sqlite*);
-void sqliteVdbeCreateCallback(Vdbe*, int*);
-int sqliteVdbeAddOp(Vdbe*,int,int,int);
-int sqliteVdbeOp3(Vdbe*,int,int,int,const char *zP3,int);
-int sqliteVdbeCode(Vdbe*,...);
-int sqliteVdbeAddOpList(Vdbe*, int nOp, VdbeOpList const *aOp);
-void sqliteVdbeChangeP1(Vdbe*, int addr, int P1);
-void sqliteVdbeChangeP2(Vdbe*, int addr, int P2);
-void sqliteVdbeChangeP3(Vdbe*, int addr, const char *zP1, int N);
-void sqliteVdbeDequoteP3(Vdbe*, int addr);
-int sqliteVdbeFindOp(Vdbe*, int, int);
-VdbeOp *sqliteVdbeGetOp(Vdbe*, int);
-int sqliteVdbeMakeLabel(Vdbe*);
-void sqliteVdbeDelete(Vdbe*);
-void sqliteVdbeMakeReady(Vdbe*,int,int);
-int sqliteVdbeExec(Vdbe*);
-int sqliteVdbeList(Vdbe*);
-int sqliteVdbeFinalize(Vdbe*,char**);
-void sqliteVdbeResolveLabel(Vdbe*, int);
-int sqliteVdbeCurrentAddr(Vdbe*);
-void sqliteVdbeTrace(Vdbe*,FILE*);
-void sqliteVdbeCompressSpace(Vdbe*,int);
-int sqliteVdbeReset(Vdbe*,char **);
+Vdbe *sqlite3VdbeCreate(sqlite*);
+void sqlite3VdbeCreateCallback(Vdbe*, int*);
+int sqlite3VdbeAddOp(Vdbe*,int,int,int);
+int sqlite3VdbeOp3(Vdbe*,int,int,int,const char *zP3,int);
+int sqlite3VdbeAddOpList(Vdbe*, int nOp, VdbeOpList const *aOp);
+void sqlite3VdbeChangeP1(Vdbe*, int addr, int P1);
+void sqlite3VdbeChangeP2(Vdbe*, int addr, int P2);
+void sqlite3VdbeChangeP3(Vdbe*, int addr, const char *zP1, int N);
+void sqlite3VdbeDequoteP3(Vdbe*, int addr);
+int sqlite3VdbeFindOp(Vdbe*, int, int, int);
+VdbeOp *sqlite3VdbeGetOp(Vdbe*, int);
+int sqlite3VdbeMakeLabel(Vdbe*);
+void sqlite3VdbeDelete(Vdbe*);
+void sqlite3VdbeMakeReady(Vdbe*,int,int,int,int);
+int sqlite3VdbeFinalize(Vdbe*);
+void sqlite3VdbeResolveLabel(Vdbe*, int);
+int sqlite3VdbeCurrentAddr(Vdbe*);
+void sqlite3VdbeTrace(Vdbe*,FILE*);
+int sqlite3VdbeReset(Vdbe*);
 int sqliteVdbeSetVariables(Vdbe*,int,const char**);
+void sqlite3VdbeSetNumCols(Vdbe*,int);
+int sqlite3VdbeSetColName(Vdbe*, int, const char *, int);
+void sqlite3VdbeCountChanges(Vdbe*);
+
+#ifndef NDEBUG
+  void sqlite3VdbeComment(Vdbe*, const char*, ...);
+# define VdbeComment(X)  sqlite3VdbeComment X
+#else
+# define VdbeComment(X)
+#endif
 
 #endif

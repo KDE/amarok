@@ -208,7 +208,8 @@ static int vxprintf(
   etByte flag_alternateform; /* True if "#" flag is present */
   etByte flag_zeropad;       /* True if field width constant starts with zero */
   etByte flag_long;          /* True if "l" flag is present */
-  unsigned long longvalue;   /* Value for integer types */
+  etByte flag_longlong;      /* True if the "ll" flag is present */
+  UINT64_TYPE longvalue;     /* Value for integer types */
   LONGDOUBLE_TYPE realvalue; /* Value for real types */
   et_info *infop;            /* Pointer to the appropriate info structure */
   char buf[etBUFSIZE];       /* Conversion buffer */
@@ -227,6 +228,7 @@ static int vxprintf(
   int nsd;                   /* Number of significant digits returned */
 #endif
 
+  func(arg,"",0);
   count = length = 0;
   bufpt = 0;
   for(; (c=(*fmt))!=0; ++fmt){
@@ -299,8 +301,14 @@ static int vxprintf(
     if( c=='l' ){
       flag_long = 1;
       c = *++fmt;
+      if( c=='l' ){
+        flag_longlong = 1;
+        c = *++fmt;
+      }else{
+        flag_longlong = 0;
+      }
     }else{
-      flag_long = 0;
+      flag_long = flag_longlong = 0;
     }
     /* Fetch the info entry for the field */
     infop = 0;
@@ -326,6 +334,8 @@ static int vxprintf(
     **   flag_zeropad                TRUE if the width began with 0.
     **   flag_long                   TRUE if the letter 'l' (ell) prefixed
     **                               the conversion character.
+    **   flag_longlong               TRUE if the letter 'll' (ell ell) prefixed
+    **                               the conversion character.
     **   flag_blanksign              TRUE if a ' ' is present.
     **   width                       The specified field width.  This is
     **                               always non-negative.  Zero is the default.
@@ -336,25 +346,27 @@ static int vxprintf(
     */
     switch( xtype ){
       case etRADIX:
-        if( flag_long )  longvalue = va_arg(ap,long);
-        else             longvalue = va_arg(ap,int);
-#if 1
-        /* For the format %#x, the value zero is printed "0" not "0x0".
-        ** I think this is stupid. */
-        if( longvalue==0 ) flag_alternateform = 0;
-#else
-        /* More sensible: turn off the prefix for octal (to prevent "00"),
-        ** but leave the prefix for hex. */
-        if( longvalue==0 && infop->base==8 ) flag_alternateform = 0;
-#endif
         if( infop->flags & FLAG_SIGNED ){
-          if( *(long*)&longvalue<0 ){
-            longvalue = -*(long*)&longvalue;
+          i64 v;
+          if( flag_longlong )   v = va_arg(ap,i64);
+          else if( flag_long )  v = va_arg(ap,long int);
+          else                  v = va_arg(ap,int);
+          if( v<0 ){
+            longvalue = -v;
             prefix = '-';
-          }else if( flag_plussign )  prefix = '+';
-          else if( flag_blanksign )  prefix = ' ';
-          else                       prefix = 0;
-        }else                        prefix = 0;
+          }else{
+            longvalue = v;
+            if( flag_plussign )        prefix = '+';
+            else if( flag_blanksign )  prefix = ' ';
+            else                       prefix = 0;
+          }
+        }else{
+          if( flag_longlong )   longvalue = va_arg(ap,u64);
+          else if( flag_long )  longvalue = va_arg(ap,unsigned long int);
+          else                  longvalue = va_arg(ap,unsigned int);
+          prefix = 0;
+        }
+        if( longvalue==0 ) flag_alternateform = 0;
         if( flag_zeropad && precision<width-(prefix!=0) ){
           precision = width-(prefix!=0);
         }
@@ -673,9 +685,11 @@ static void mout(void *arg, const char *zNewText, int nNewChar){
       }
     }
   }
-  if( pM->zText && nNewChar>0 ){
-    memcpy(&pM->zText[pM->nChar], zNewText, nNewChar);
-    pM->nChar += nNewChar;
+  if( pM->zText ){
+    if( nNewChar>0 ){
+      memcpy(&pM->zText[pM->nChar], zNewText, nNewChar);
+      pM->nChar += nNewChar;
+    }
     pM->zText[pM->nChar] = 0;
   }
 }
@@ -701,7 +715,9 @@ static char *base_vprintf(
   if( xRealloc ){
     if( sM.zText==sM.zBase ){
       sM.zText = xRealloc(0, sM.nChar+1);
-      memcpy(sM.zText, sM.zBase, sM.nChar+1);
+      if( sM.zText ){
+        memcpy(sM.zText, sM.zBase, sM.nChar+1);
+      }
     }else if( sM.nAlloc>sM.nChar+10 ){
       sM.zText = xRealloc(sM.zText, sM.nChar+1);
     }
@@ -720,7 +736,7 @@ static void *printf_realloc(void *old, int size){
 ** Print into memory obtained from sqliteMalloc().  Use the internal
 ** %-conversion extensions.
 */
-char *sqliteVMPrintf(const char *zFormat, va_list ap){
+char *sqlite3VMPrintf(const char *zFormat, va_list ap){
   char zBase[1000];
   return base_vprintf(printf_realloc, 1, zBase, sizeof(zBase), zFormat, ap);
 }
@@ -729,7 +745,7 @@ char *sqliteVMPrintf(const char *zFormat, va_list ap){
 ** Print into memory obtained from sqliteMalloc().  Use the internal
 ** %-conversion extensions.
 */
-char *sqliteMPrintf(const char *zFormat, ...){
+char *sqlite3MPrintf(const char *zFormat, ...){
   va_list ap;
   char *z;
   char zBase[1000];
@@ -743,7 +759,7 @@ char *sqliteMPrintf(const char *zFormat, ...){
 ** Print into memory obtained from malloc().  Do not use the internal
 ** %-conversion extensions.  This routine is for use by external users.
 */
-char *sqlite_mprintf(const char *zFormat, ...){
+char *sqlite3_mprintf(const char *zFormat, ...){
   va_list ap;
   char *z;
   char zBuf[200];
@@ -755,21 +771,21 @@ char *sqlite_mprintf(const char *zFormat, ...){
   return z;
 }
 
-/* This is the varargs version of sqlite_mprintf.  
+/* This is the varargs version of sqlite3_mprintf.  
 */
-char *sqlite_vmprintf(const char *zFormat, va_list ap){
+char *sqlite3_vmprintf(const char *zFormat, va_list ap){
   char zBuf[200];
   return base_vprintf((void*(*)(void*,int))realloc, 0,
                       zBuf, sizeof(zBuf), zFormat, ap);
 }
 
 /*
-** sqlite_snprintf() works like snprintf() except that it ignores the
+** sqlite3_snprintf() works like snprintf() except that it ignores the
 ** current locale settings.  This is important for SQLite because we
 ** are not able to use a "," as the decimal point in place of "." as
 ** specified by some locales.
 */
-char *sqlite_snprintf(int n, char *zBuf, const char *zFormat, ...){
+char *sqlite3_snprintf(int n, char *zBuf, const char *zFormat, ...){
   char *z;
   va_list ap;
 
@@ -779,77 +795,19 @@ char *sqlite_snprintf(int n, char *zBuf, const char *zFormat, ...){
   return z;
 }
 
+#if defined(SQLITE_TEST) || defined(SQLITE_DEBUG)
 /*
-** The following four routines implement the varargs versions of the
-** sqlite_exec() and sqlite_get_table() interfaces.  See the sqlite.h
-** header files for a more detailed description of how these interfaces
-** work.
-**
-** These routines are all just simple wrappers.
+** A version of printf() that understands %lld.  Used for debugging.
+** The printf() built into some versions of windows does not understand %lld
+** and segfaults if you give it a long long int.
 */
-int sqlite_exec_printf(
-  sqlite *db,                   /* An open database */
-  const char *sqlFormat,        /* printf-style format string for the SQL */
-  sqlite_callback xCallback,    /* Callback function */
-  void *pArg,                   /* 1st argument to callback function */
-  char **errmsg,                /* Error msg written here */
-  ...                           /* Arguments to the format string. */
-){
+void sqlite3DebugPrintf(const char *zFormat, ...){
   va_list ap;
-  int rc;
-
-  va_start(ap, errmsg);
-  rc = sqlite_exec_vprintf(db, sqlFormat, xCallback, pArg, errmsg, ap);
+  char zBuf[500];
+  va_start(ap, zFormat);
+  base_vprintf(0, 0, zBuf, sizeof(zBuf), zFormat, ap);
   va_end(ap);
-  return rc;
+  fprintf(stdout,"%s", zBuf);
+  fflush(stdout);
 }
-int sqlite_exec_vprintf(
-  sqlite *db,                   /* An open database */
-  const char *sqlFormat,        /* printf-style format string for the SQL */
-  sqlite_callback xCallback,    /* Callback function */
-  void *pArg,                   /* 1st argument to callback function */
-  char **errmsg,                /* Error msg written here */
-  va_list ap                    /* Arguments to the format string. */
-){
-  char *zSql;
-  int rc;
-
-  zSql = sqlite_vmprintf(sqlFormat, ap);
-  rc = sqlite_exec(db, zSql, xCallback, pArg, errmsg);
-  free(zSql);
-  return rc;
-}
-int sqlite_get_table_printf(
-  sqlite *db,            /* An open database */
-  const char *sqlFormat, /* printf-style format string for the SQL */
-  char ***resultp,       /* Result written to a char *[]  that this points to */
-  int *nrow,             /* Number of result rows written here */
-  int *ncol,             /* Number of result columns written here */
-  char **errmsg,         /* Error msg written here */
-  ...                    /* Arguments to the format string */
-){
-  va_list ap;
-  int rc;
-
-  va_start(ap, errmsg);
-  rc = sqlite_get_table_vprintf(db, sqlFormat, resultp, nrow, ncol, errmsg, ap);
-  va_end(ap);
-  return rc;
-}
-int sqlite_get_table_vprintf(
-  sqlite *db,            /* An open database */
-  const char *sqlFormat, /* printf-style format string for the SQL */
-  char ***resultp,       /* Result written to a char *[]  that this points to */
-  int *nrow,             /* Number of result rows written here */
-  int *ncolumn,          /* Number of result columns written here */
-  char **errmsg,         /* Error msg written here */
-  va_list ap             /* Arguments to the format string */
-){
-  char *zSql;
-  int rc;
-
-  zSql = sqlite_vmprintf(sqlFormat, ap);
-  rc = sqlite_get_table(db, zSql, resultp, nrow, ncolumn, errmsg);
-  free(zSql);
-  return rc;
-}
+#endif

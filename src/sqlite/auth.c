@@ -9,7 +9,7 @@
 **    May you share freely, never taking more than you give.
 **
 *************************************************************************
-** This file contains code used to implement the sqlite_set_authorizer()
+** This file contains code used to implement the sqlite3_set_authorizer()
 ** API.  This facility is an optional feature of the library.  Embedded
 ** systems that do not need this facility may omit it by recompiling
 ** the library with -DSQLITE_OMIT_AUTHORIZATION=1
@@ -33,7 +33,6 @@
 ** is a copy of the 3rd argument to this routine.  The second argument
 ** to the auth function is one of these constants:
 **
-**       SQLITE_COPY
 **       SQLITE_CREATE_INDEX
 **       SQLITE_CREATE_TABLE
 **       SQLITE_CREATE_TEMP_INDEX
@@ -62,7 +61,7 @@
 ** the table and the column that are being accessed.  The auth function
 ** should return either SQLITE_OK, SQLITE_DENY, or SQLITE_IGNORE.  If
 ** SQLITE_OK is returned, it means that access is allowed.  SQLITE_DENY
-** means that the SQL statement will never-run - the sqlite_exec() call
+** means that the SQL statement will never-run - the sqlite3_exec() call
 ** will return with an error.  SQLITE_IGNORE means that the SQL statement
 ** should run but attempts to read the specified column will return NULL
 ** and attempts to write the column will be ignored.
@@ -70,7 +69,7 @@
 ** Setting the auth function to NULL disables this hook.  The default
 ** setting of the auth function is NULL.
 */
-int sqlite_set_authorizer(
+int sqlite3_set_authorizer(
   sqlite *db,
   int (*xAuth)(void*,int,const char*,const char*,const char*,const char*),
   void *pArg
@@ -85,7 +84,7 @@ int sqlite_set_authorizer(
 ** user-supplied authorization function returned an illegal value.
 */
 static void sqliteAuthBadReturnCode(Parse *pParse, int rc){
-  sqliteErrorMsg(pParse, "illegal return value (%d) from the "
+  sqlite3ErrorMsg(pParse, "illegal return value (%d) from the "
     "authorization function - should be SQLITE_OK, SQLITE_IGNORE, "
     "or SQLITE_DENY", rc);
   pParse->rc = SQLITE_MISUSE;
@@ -100,7 +99,7 @@ static void sqliteAuthBadReturnCode(Parse *pParse, int rc){
 ** instruction into a TK_NULL.  If the auth function returns SQLITE_DENY,
 ** then generate an error.
 */
-void sqliteAuthRead(
+void sqlite3AuthRead(
   Parse *pParse,        /* The parser context */
   Expr *pExpr,          /* The expression to check authorization on */
   SrcList *pTabList     /* All table that pExpr might refer to */
@@ -147,10 +146,10 @@ void sqliteAuthRead(
     pExpr->op = TK_NULL;
   }else if( rc==SQLITE_DENY ){
     if( db->nDb>2 || pExpr->iDb!=0 ){
-      sqliteErrorMsg(pParse, "access to %s.%s.%s is prohibited", 
+      sqlite3ErrorMsg(pParse, "access to %s.%s.%s is prohibited", 
          zDBase, pTab->zName, zCol);
     }else{
-      sqliteErrorMsg(pParse, "access to %s.%s is prohibited", pTab->zName,zCol);
+      sqlite3ErrorMsg(pParse, "access to %s.%s is prohibited",pTab->zName,zCol);
     }
     pParse->rc = SQLITE_AUTH;
   }else if( rc!=SQLITE_OK ){
@@ -164,7 +163,7 @@ void sqliteAuthRead(
 ** is returned, then the error count and error message in pParse are
 ** modified appropriately.
 */
-int sqliteAuthCheck(
+int sqlite3AuthCheck(
   Parse *pParse,
   int code,
   const char *zArg1,
@@ -174,12 +173,17 @@ int sqliteAuthCheck(
   sqlite *db = pParse->db;
   int rc;
 
+  /* Don't do any authorization checks if the database is initialising. */
+  if( db->init.busy ){
+    return SQLITE_OK;
+  }
+
   if( db->xAuth==0 ){
     return SQLITE_OK;
   }
   rc = db->xAuth(db->pAuthArg, code, zArg1, zArg2, zArg3, pParse->zAuthContext);
   if( rc==SQLITE_DENY ){
-    sqliteErrorMsg(pParse, "not authorized");
+    sqlite3ErrorMsg(pParse, "not authorized");
     pParse->rc = SQLITE_AUTH;
   }else if( rc!=SQLITE_OK && rc!=SQLITE_IGNORE ){
     rc = SQLITE_DENY;
@@ -193,7 +197,7 @@ int sqliteAuthCheck(
 ** zArg3 argument to authorization callbacks will be zContext until
 ** popped.  Or if pParse==0, this routine is a no-op.
 */
-void sqliteAuthContextPush(
+void sqlite3AuthContextPush(
   Parse *pParse,
   AuthContext *pContext, 
   const char *zContext
@@ -207,9 +211,9 @@ void sqliteAuthContextPush(
 
 /*
 ** Pop an authorization context that was previously pushed
-** by sqliteAuthContextPush
+** by sqlite3AuthContextPush
 */
-void sqliteAuthContextPop(AuthContext *pContext){
+void sqlite3AuthContextPop(AuthContext *pContext){
   if( pContext->pParse ){
     pContext->pParse->zAuthContext = pContext->zAuthContext;
     pContext->pParse = 0;

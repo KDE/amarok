@@ -14,9 +14,7 @@ libsqlite_la_SOURCES = \
     attach.c \
     auth.c \
     btree.c \
-    btree_rb.c \
     build.c \
-    copy.c \
     date.c \
     delete.c \
     encode.c \
@@ -24,9 +22,13 @@ libsqlite_la_SOURCES = \
     func.c \
     hash.c \
     insert.c \
+    legacy.c \
     main.c \
     opcodes.c \
-    os.c \
+    os_mac.c \
+    os_test.c \
+    os_unix.c \
+    os_win.c \
     pager.c \
     parse.c \
     pragma.c \
@@ -38,12 +40,12 @@ libsqlite_la_SOURCES = \
     tokenize.c \
     trigger.c \
     update.c \
+    utf.c \
     util.c \
     vacuum.c \
     vdbe.c \
+    vdbeapi.c \
     vdbeaux.c \
+    vdbemem.c \
     where.c
-    
-    
 
-    

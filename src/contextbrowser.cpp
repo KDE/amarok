@@ -13,7 +13,7 @@
 #include "metabundle.h"
 #include "playlist.h"     //appendMedia()
 #include "qstringx.h"
-#include "sqlite/sqlite.h"
+#include "sqlite/sqlite3.h"
 
 #include <kapplication.h> //kapp->config(), QApplication::setOverrideCursor()
 #include <kconfig.h>      //config object
@@ -395,7 +395,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                     "<table width='100%'><tr><td width='20%'><a class='menu' href='fetchcover:%7 @@@ %8'>"
                                     "<img hspace='2' src='%9'></a></td>"
                                     "<td valign='bottom' align='right' width='80%'>" +
-                                    i18n( "Track played 1 time", "Track played %n times", values[4].toInt()) + "<br>" +
+                                    i18n( "Track played 1 time", "Track played %n times", values[4].toInt() ) + "<br>" +
                                     "amaroKiness: %11" + "<br>" +
                                     i18n( "Last play: %12" ) + "<br>" +
                                     i18n( "First play: %13") + "</i></td></tr>" )

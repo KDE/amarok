@@ -70,7 +70,7 @@ struct HashElem {
 ** A copy of the key is made for SQLITE_HASH_STRING and SQLITE_HASH_BINARY
 ** if the copyKey parameter to HashInit is 1.  
 */
-#define SQLITE_HASH_INT       1
+/* #define SQLITE_HASH_INT       1 // NOT USED */
 /* #define SQLITE_HASH_POINTER   2 // NOT USED */
 #define SQLITE_HASH_STRING    3
 #define SQLITE_HASH_BINARY    4
@@ -78,10 +78,10 @@ struct HashElem {
 /*
 ** Access routines.  To delete, insert a NULL pointer.
 */
-void sqliteHashInit(Hash*, int keytype, int copyKey);
-void *sqliteHashInsert(Hash*, const void *pKey, int nKey, void *pData);
-void *sqliteHashFind(const Hash*, const void *pKey, int nKey);
-void sqliteHashClear(Hash*);
+void sqlite3HashInit(Hash*, int keytype, int copyKey);
+void *sqlite3HashInsert(Hash*, const void *pKey, int nKey, void *pData);
+void *sqlite3HashFind(const Hash*, const void *pKey, int nKey);
+void sqlite3HashClear(Hash*);
 
 /*
 ** Macros for looping over all elements of a hash table.  The idiom is
