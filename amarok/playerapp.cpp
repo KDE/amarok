@@ -30,6 +30,7 @@ email                : markey@web.de
 #include "threadweaver.h"        //restoreSession()
 #include "playlisttooltip.h"
 #include "enginecontroller.h"
+#include "vis/socketserver.h"    //please leave directory prefix
 
 #include <kaboutdata.h>          //initCliArgs()
 #include <kaction.h>
@@ -128,6 +129,10 @@ PlayerApp::PlayerApp()
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
 
     handleCliArgs();
+
+    #ifdef AMK_NEW_VIS_SYSTEM
+    new Vis::SocketServer( this );
+    #endif
 }
 
 
