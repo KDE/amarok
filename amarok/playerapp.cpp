@@ -58,6 +58,7 @@ email                : markey@web.de
 #include <qvaluelist.h>
 #include <qpushbutton.h> //initPlayerWidget()
 
+#define VOLUME_MAX 99
 #define MAIN_TIMER 150
 #define ANIM_TIMER 30
 
@@ -141,7 +142,6 @@ PlayerApp::~PlayerApp()
     delete m_pEffectWidget;
     delete m_pPlayerWidget; //is parent of browserWin (and thus deletes it)
     delete m_pOSD;
-
     delete m_pEngine;
 }
 
@@ -225,7 +225,7 @@ void PlayerApp::initPlayerWidget()
     m_pPlayerWidget->m_pSlider->setValue( 0 );
 
     m_pPlayerWidget->m_pSliderVol->setMinValue( 0 );
-    m_pPlayerWidget->m_pSliderVol->setMaxValue( 100 );
+    m_pPlayerWidget->m_pSliderVol->setMaxValue( VOLUME_MAX );
 
     connect( m_pPlayerWidget->m_pSlider, SIGNAL( sliderPressed() ),
              this, SLOT( slotSliderPressed() ) );
@@ -733,7 +733,7 @@ void PlayerApp::slotSliderChanged( int value )
 void PlayerApp::slotVolumeChanged( int value )
 {
     m_Volume = value;
-    value = 100 - value;
+    value = VOLUME_MAX - value;
 
     m_pEngine->setVolume( value );
    

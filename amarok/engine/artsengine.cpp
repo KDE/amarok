@@ -233,7 +233,7 @@ bool ArtsEngine::canDecode( const KURL &url )
     query.supports( "MimeType", mimetype->name().latin1() );
     std::vector<Arts::TraderOffer> *offers = query.query();
     
-    bool result = offers->empty();
+    bool result = !offers->empty();
     delete offers;
     
     return result;
