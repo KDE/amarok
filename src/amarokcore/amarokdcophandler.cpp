@@ -320,18 +320,24 @@ namespace amaroK
         //delete[] argv;
     }
 
-    void DcopPlayerHandler::setContextStyle(const QString& msg)
+    QString DcopPlayerHandler::setContextStyle(const QString& msg)
     {
         AmarokConfig::setContextBrowserStyleSheet( msg );
         ContextBrowser::instance()->setStyleSheet();
+
+        if ( QFile::exists( amaroK::saveLocation( "themes/" + msg + '/' ) + "stylesheet.css" ) )
+            return "Context browser theme '"+msg+"' applied.";
+        else
+            return "No such theme '"+msg+"' exists, default theme applied.";
     }
-    void DcopPlayerHandler::setEqualizer(int preamp, int band60, int band170, int band310, 
+
+    void DcopPlayerHandler::setEqualizer(int preamp, int band60, int band170, int band310,
         int band600, int band1k, int band3k, int band6k, int band12k, int band14k, int band16k)
     {
         QValueList<int> gains;
-        gains << band60 << band170 << band310 << band600 << band1k 
+        gains << band60 << band170 << band310 << band600 << band1k
             << band3k << band6k << band12k << band14k << band16k;
-        AmarokConfig::setEqualizerGains( gains ); 
+        AmarokConfig::setEqualizerGains( gains );
         AmarokConfig::setEqualizerPreamp( preamp );
         EngineController::engine()->setEqualizerParameters(preamp, gains);
         if (EqualizerSetup::isInstantiated())
