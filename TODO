@@ -6,6 +6,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  <mxcl>   Apparently if no .kde exists prior to running amaroK, amaroK borks
+
   <muesli> Updating tags doesn't update the Collection anymore.
 
   <mxcl>   Hitting the DEL key in the playlist activates the file-browser delete shortcut, offering to trash
