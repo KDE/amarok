@@ -11,8 +11,10 @@
 class KLineEdit;
 class KListView;
 class KPopupMenu;
+class KProgress;
 class KPushButton;
 
+class QHBox;
 class QLabel;
 class QListViewItem;
 class QPixmap;
@@ -39,23 +41,28 @@ Q_OBJECT
         void collapseItem( QListViewItem * );
         void slotArtistSelected( QListViewItem * );
         void loadThumbnails();
-        void loadCover( const QString & );
+
         void coverItemDoubleClicked( QIconViewItem *item );
         void showCoverMenu( QIconViewItem *item, const QPoint & );
+        //filter
         void slotSetFilter();
         void slotSetFilterTimeout();
         void changeView( int id );
+        //cover fetching
         void fetchMissingCovers();
         void fetchCoversLoop();
+        void coverFetched( const QString & );
+        void coverFetcherError();
+        void stopFetching();
+        void updateStatusBar();
 
     private:
         enum View { AllAlbums=0, AlbumsWithCover, AlbumsWithoutCover };
 
+        void loadCover( const QString & );
         void fetchSelectedCovers();
         void deleteSelectedCovers();
         QPtrList<CoverViewItem> selectedItems();
-
-        void updateCounter();
 
         CollectionDB *m_db;
 
@@ -65,7 +72,10 @@ Q_OBJECT
         QToolButton *m_viewButton;
         KPopupMenu *m_viewMenu;
         KPushButton *m_fetchButton;
-        QLabel *m_counterLabel;
+        //status bar widgets
+        QLabel *m_statusLabel;
+        QHBox *m_progressBox;
+        KProgress *m_progress;
 
         QTimer *m_timer;    //search filter timer
         QPtrList<QIconViewItem> m_coverItems; //used for filtering
@@ -79,6 +89,11 @@ Q_OBJECT
         // Used by fetchCoversLoop() for temporary storage
         QStringList m_fetchCovers;
         uint m_fetchCounter;
+
+        //used to display information about cover fetching in the status bar
+        int m_fetchingCovers;
+        int m_coversFetched;
+        int m_coverErrors;
 };
 
 

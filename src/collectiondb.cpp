@@ -312,33 +312,24 @@ CollectionDB::removeImageFromAlbum( const uint artist_id, const uint album_id )
 
 
 bool
-CollectionDB::removeImageFromAlbum( const QStringList artists, const QStringList albums )
+CollectionDB::removeImageFromAlbum( const QString artist, const QString album )
 {
-    KURL::List urls;
+    QString widthKey = "*@";
+    QString key( QFile::encodeName( artist + " - " + album ) );
+    key.replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ).append( ".png" );
 
-    for ( uint i=0; i < artists.count(); i++ ) {
-        QString widthKey = "*@";
-        QString key( QFile::encodeName( artists[i] + " - " + albums[i] ) );
-        key.replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ).append( ".png" );
+    // remove scaled versions of images
+    QStringList scaledList = m_cacheDir.entryList( widthKey + key.lower() );
+    if ( scaledList.count() > 0 )
+        for ( uint i = 0; i < scaledList.count(); i++ )
+            QFile::remove( m_cacheDir.filePath( scaledList[ i ] ) );
 
-        // remove scaled versions of images
-        QStringList scaledList = m_cacheDir.entryList( widthKey + key.lower() );
-        if ( scaledList.count() > 0 )
-            for ( uint i = 0; i < scaledList.count(); i++ )
-                urls += KURL( m_cacheDir.filePath( scaledList[ i ] ) );
+    // remove large, original image
+    QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
+    if ( largeCoverDir.exists( key.lower() ) )
+        return QFile::remove( largeCoverDir.filePath( key.lower() ) );
 
-        // remove large, original images
-        QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
-        if ( largeCoverDir.exists( key.lower() ) )
-            urls += KURL( largeCoverDir.filePath( key.lower() ) );
-
-    }
-
-    // Delete files
-    for ( uint i = 0; i < urls.count(); i++ )
-        QFile::remove( urls[i].path() );
-
-    return true;
+    return false;
 }
 
 
@@ -1310,7 +1301,7 @@ CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString&
     CoverFetcher* fetcher = new CoverFetcher( amazonLicense, parent );
     connect( fetcher, SIGNAL( imageReady( const QString&, const QString&, const QImage& ) ),
              this,      SLOT( saveCover( const QString&, const QString&, const QImage& ) ) );
-
+    connect( fetcher, SIGNAL( error() ), this, SLOT( fetcherError() ) );
     fetcher->getCover( artist, album, keyword, CoverFetcher::heavy, edit, 2, false );
     #endif
 }
@@ -1346,6 +1337,14 @@ CollectionDB::saveCover( const QString& keyword, const QString& url, const QImag
 
     emit coverFetched( keyword );
     emit coverFetched();
+}
+
+
+void
+CollectionDB::fetcherError()
+{
+    //this is called when there is an error with a coverfetcher
+    emit coverFetcherError();
 }
 
 

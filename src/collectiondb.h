@@ -34,7 +34,7 @@ class CollectionDB : public QObject
         QString getImageForAlbum( const uint artist_id, const uint album_id, const uint width = AmarokConfig::coverPreviewSize() );
         QString getImageForAlbum( const QString artist, const QString album, const uint width = AmarokConfig::coverPreviewSize() );
         bool removeImageFromAlbum( const uint artist_id, const uint album_id );
-        bool removeImageFromAlbum( const QStringList artists, const QStringList albums );
+        bool removeImageFromAlbum( const QString artist, const QString album );
 
         QString getImageForPath( const QString path, uint width = AmarokConfig::coverPreviewSize() );
         void addImageToPath( const QString path, const QString image, bool temporary );
@@ -109,6 +109,7 @@ class CollectionDB : public QObject
         void scanDone( bool changed );
         void coverFetched( const QString &key );
         void coverFetched();
+        void coverFetcherError();
 
     public slots:
         void fetchCover( QObject* parent, const QString& artist, const QString& album, bool noedit );
@@ -117,6 +118,7 @@ class CollectionDB : public QObject
     private slots:
         void dirDirty( const QString& path );
         void saveCover( const QString& keyword, const QString& url, const QImage& image );
+        void fetcherError();
 
     private:
         void customEvent( QCustomEvent* );

@@ -96,6 +96,7 @@ CoverFetcher::xmlResult( KIO::Job* job ) //SLOT
 {
     if ( !job->error() == 0 ) {
         kdWarning() << "KIO error! errno: " << job->error() << endl;
+        emit error();
         deleteLater();
         return;
     }
@@ -147,6 +148,7 @@ void
 CoverFetcher::imageData( KIO::Job*, const QByteArray& data ) //SLOT
 {
     if ( m_bufferIndex + (uint) data.size() >= BUFFER_SIZE ) {
+        emit error();
         KMessageBox::error( 0, i18n( "CoverFetcher buffer overflow. Image is bigger than <i>1</i> byte. Aborting.",
                                      "CoverFetcher buffer overflow. Image is bigger than <i>%n</i> bytes. Aborting.",
                                      BUFFER_SIZE ) );

@@ -29,6 +29,7 @@ class CoverFetcher : public QObject
 
     signals:
         void imageReady( const QString& keyword, const QString& url, const QImage& image );
+        void error();
 
     private slots:
         void xmlData( KIO::Job* job, const QByteArray& data );

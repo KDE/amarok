@@ -8,9 +8,11 @@
 
 #include <qfile.h>
 #include <qfontmetrics.h>    //paintItem()
+#include <qhbox.h>
 #include <qimage.h>
 #include <qlabel.h>
 #include <qlayout.h>
+#include <qobjectlist.h>    //used to delete all cover fetchers
 #include <qpainter.h>    //paintItem()
 #include <qpalette.h>    //paintItem()
 #include <qpixmap.h>
@@ -31,8 +33,11 @@
 #include <klocale.h>
 #include <kmessagebox.h>    //showCoverMenu()
 #include <kpopupmenu.h>    //showCoverMenu()
+#include <kprogress.h>
 #include <kpushbutton.h>
+#include <ksqueezedtextlabel.h> //status label
 #include <kstandarddirs.h>   //KGlobal::dirs()
+#include <kstatusbar.h>
 #include <kurl.h>
 
 
@@ -43,6 +48,9 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     , m_db( new CollectionDB() )
     , m_filter( 0 )
     , m_fetchCounter( 0 )
+    , m_fetchingCovers( 0 )
+    , m_coversFetched( 0 )
+    , m_coverErrors( 0 )
 {
     setCaption( kapp->makeStdCaption( i18n("Cover Manager") ) );
 
@@ -122,13 +130,27 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     m_coverView->setAutoArrange( TRUE );
     m_coverView->setItemsMovable( FALSE );
     m_coverView->setMode( KIconView::Select );
-    viewBox->addWidget( m_coverView );
+    viewBox->addWidget( m_coverView, 4 );
 
-    //counter label
-    m_counterLabel = new QLabel( coverWidget );
-    m_counterLabel->setAlignment( AlignRight | SingleLine );
-    m_counterLabel->setFrameStyle( QFrame::Panel | QFrame::Sunken );
-    viewBox->addWidget( m_counterLabel );
+    //status bar
+    KStatusBar *m_statusBar = new KStatusBar( coverWidget );
+    //status label
+    m_statusBar->addWidget( m_statusLabel = new KSqueezedTextLabel( m_statusBar ), 4 );
+    // fetching progressbar
+    m_statusBar->addWidget( m_progressBox = new QHBox( m_statusBar ), 1, true );
+    m_progress = new KProgress( m_progressBox );
+    m_progress->setCenterIndicator( true );
+    //stop button
+    QToolButton *stopButton = new QToolButton( m_progressBox );
+    stopButton->setIconSet( SmallIcon( "cancel" ) );
+    connect( stopButton, SIGNAL(clicked()), SLOT(stopFetching()) );
+
+    const int h = m_statusLabel->height() + 3;
+    m_statusLabel->setFixedHeight( h );
+    m_progressBox->setFixedHeight( h );
+    m_progressBox->hide();
+
+    viewBox->addWidget( m_statusBar, 0 );
 
 
     // signals and slots connections
@@ -142,7 +164,8 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     #ifdef AMAZON_SUPPORT
-    connect( m_db, SIGNAL( coverFetched(const QString &) ), SLOT( loadCover(const QString &) ) );
+    connect( m_db, SIGNAL( coverFetched(const QString &) ), SLOT( coverFetched(const QString &) ) );
+    connect( m_db, SIGNAL( coverFetcherError() ), SLOT( coverFetcherError() ) );
     #endif
 
     m_currentView = AllAlbums;
@@ -174,12 +197,17 @@ void CoverManager::fetchMissingCovers() //SLOT
 
     for ( QIconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>( item );
-        if( !coverItem->hasCover() )
+        if( !coverItem->hasCover() ) {
             m_fetchCovers += coverItem->artist() + " @@@ " + coverItem->album();
+            m_fetchingCovers++;
+        }
     }
 
     if( !m_fetchCounter )    //loop isn't started yet
         fetchCoversLoop();
+
+    updateStatusBar();
+
     #endif
 }
 
@@ -191,7 +219,6 @@ void CoverManager::fetchCoversLoop() //SLOT
     if( m_fetchCounter < m_fetchCovers.count() ) {
         //get artist and album from keyword
         QStringList values = QStringList::split( " @@@ ", m_fetchCovers[m_fetchCounter] );
-        m_counterLabel->setText( i18n( "Fetching cover for %1 - %2" ).arg(values[0], values[1]) );
         m_db->fetchCover( this, values[0], values[1], true );
         m_fetchCounter++;
 
@@ -275,7 +302,8 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
             if( !album.isEmpty() ) {
                 CoverViewItem *coverItem = new CoverViewItem( m_coverView, m_coverView->lastItem(), artist, album);
                 m_coverItems.append( coverItem );
-                m_loadAlbums += artist + " - " + album; //used for thumbnail loading
+                if( coverItem->hasCover() )
+                    m_loadAlbums += artist + " @@@ " + album; //used for thumbnail loading
             }
         }
 
@@ -289,7 +317,7 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     m_viewMenu->setItemChecked( AllAlbums, true );
     m_currentView = AllAlbums;
 
-    updateCounter();
+    updateStatusBar();
 }
 
 
@@ -417,7 +445,7 @@ void CoverManager::slotSetFilter() //SLOT
     m_coverView->setAutoArrange( true );
 
     m_coverView->arrangeItemsInGrid();
-    updateCounter();
+    updateStatusBar();
 }
 
 
@@ -469,18 +497,53 @@ void CoverManager::changeView( int id  ) //SLOT
 }
 
 
+void CoverManager::coverFetched( const QString &key )
+{
+    QStringList values = QStringList::split( " - ", key );
+    loadCover( values[0] + " @@@ " + values[1] );
+    m_coversFetched++;
+    updateStatusBar();
+}
+
+
+void CoverManager::coverFetcherError()
+{
+    m_coverErrors++;
+    updateStatusBar();
+}
+
+
+void CoverManager::stopFetching()
+{
+    m_fetchCovers.clear();
+    m_fetchCounter = 0;
+
+    //delete all cover fetchers
+    QObjectList* list = queryList( "CoverFetcher" );
+    for( QObject *obj = list->first(); obj; obj = list->next()  )
+        obj->deleteLater();
+
+    delete list;
+
+    m_fetchingCovers = 0;
+    m_coversFetched = 0;
+    m_coverErrors = 0;
+    updateStatusBar();
+}
+
+// PRIVATE
+
 void CoverManager::loadCover( const QString &key )
 {
     for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
-        if( key == coverItem->artist() + " - " + coverItem->album() ) {
+        if( key == coverItem->artist() + " @@@ " + coverItem->album() ) {
             coverItem->loadCover();
             return;
         }
     }
 }
 
-// PRIVATE
 
 void CoverManager::fetchSelectedCovers()
 {
@@ -491,8 +554,12 @@ void CoverManager::fetchSelectedCovers()
         for ( CoverViewItem* item = selected.first(); item; item = selected.next() )
                 m_fetchCovers += item->artist() + " @@@ " + item->album();
 
+    m_fetchingCovers += selected.count();
+
     if( !m_fetchCounter )    //loop isn't started yet
         fetchCoversLoop();
+
+    updateStatusBar();
 }
 
 
@@ -508,15 +575,11 @@ void CoverManager::deleteSelectedCovers()
                             i18n("&Delete Confirmation") );
 
     if ( button == KMessageBox::Continue ) {
-        QStringList artists, albums;
         for ( CoverViewItem* item = selected.first(); item; item = selected.next() ) {
-              artists.append( item->artist() );
-              albums.append( item->album() );
-        }
-
-        if ( m_db->removeImageFromAlbum( artists, albums ) )    //delete selected cover
-              for ( CoverViewItem* item = selected.first(); item; item = selected.next() )
+            qApp->processEvents();
+            if ( m_db->removeImageFromAlbum( item->artist(), item->album() ) )    //delete selected cover
                   item->loadCover();    //show the nocover icon
+        }
     }
 }
 
@@ -532,10 +595,56 @@ QPtrList<CoverViewItem> CoverManager::selectedItems()
 }
 
 
-void CoverManager::updateCounter()
+void CoverManager::updateStatusBar()
 {
     int totalCounter = 0, missingCounter = 0;
 
+    //cover fetching info
+    if( m_fetchingCovers ) {
+        //update the progress bar
+        m_progress->setTotalSteps( m_fetchingCovers );
+        m_progress->setProgress( m_coversFetched + m_coverErrors );
+        if( m_progressBox->isHidden() )
+            m_progressBox->show();
+
+        //update the status text
+        QString text;
+        if( m_coversFetched >= m_progress->totalSteps() ) {
+            //fetching finished
+            text = i18n( "Finished." );
+            if( m_coverErrors )
+                text += i18n( " 1 error", " %n errors", m_coverErrors );
+            //reset counters
+            m_fetchingCovers = 0;
+            m_coversFetched = 0;
+            m_coverErrors = 0;
+            QTimer::singleShot( 2000, this, SLOT( updateStatusBar() ) );
+        }
+
+        if( m_fetchingCovers == 1 ) {
+            CoverViewItem *currentItem =  static_cast<CoverViewItem*>( m_coverView->currentItem() );
+            text = i18n("Fetching cover for ") + currentItem->artist() + " - " + currentItem->album() + "...";
+        }
+        else if( m_fetchingCovers ) {
+            text = i18n( "Fetching 1 cover: ", "Fetching <b>%n</b> covers... : ", m_fetchingCovers );
+            if( m_coversFetched )
+                text += i18n( "1 fetched", "%n fetched", m_coversFetched );
+            if( m_coverErrors ) {
+                if( m_coversFetched ) text += " - ";
+                text += i18n( "1 error", "%n errors", m_coverErrors );
+            }
+            if( m_coversFetched + m_coverErrors == 0 )
+                text += i18n( "Connecting..." );
+        }
+        m_statusLabel->setText( text );
+
+        return;
+    }
+
+    if( m_progressBox->isShown() )
+        m_progressBox->hide();
+
+    //album info
     for( QIconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
         totalCounter++;
         if( !((CoverViewItem*)item)->hasCover() )
@@ -554,7 +663,7 @@ void CoverManager::updateCounter()
     if( missingCounter )
         text += i18n(" - ( <b>%1</b> without cover )" ).arg( missingCounter );
 
-    m_counterLabel->setText( text );
+    m_statusLabel->setText( text );
     #ifdef AMAZON_SUPPORT
     m_fetchButton->setEnabled( missingCounter != 0 );
     #endif
