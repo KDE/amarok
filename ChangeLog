@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.2:
+  ADD: NMM-engine was rewritten and updated for the latest NMM release.
+       Supports audio and video playback.
   ADD: Cover-Manager supports drag-and-drop.
   ADD: Tags are now read from the Collection database if they are already
        stored. This speeds up adding items to the playlist. (BR 90137)
