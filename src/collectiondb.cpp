@@ -74,7 +74,7 @@ CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id,
     values.clear();
     names.clear();
     execSql( QString( "SELECT name FROM images WHERE path = '%1'" )
-             .arg( url.directory() ), &values, &names );
+             .arg( escapeString( url.directory() ) ), &values, &names );
 
     if ( values.isEmpty() )
         return defaultImage;
@@ -90,11 +90,30 @@ CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id,
 }
 
 
+void
+CollectionDB::incSongCounter( const QString url )
+{
+    QStringList values, names;
+    
+    if ( execSql( QString( "SELECT playcounter FROM statistics WHERE url = '%1';" )
+                  .arg( escapeString( url ) ), &values, &names ) )
+    {
+        // entry exists, increment playcounter and update accesstime
+        execSql( QString( "REPLACE INTO statistics ( url, accessdate, playcounter ) VALUES ( '%1', strftime('%s', 'now'), %2 );" )
+                .arg( escapeString( url ) )
+                .arg( values[0] + " + 1" ) );
+    } else
+    {
+        // entry didnt exist yet, create a new one
+        execSql( QString( "INSERT INTO statistics ( url, accessdate, playcounter ) VALUES ( '%1', strftime('%s', 'now'), 1 );" )
+                .arg( escapeString( url ) ) );
+    }
+}
+
+
 bool
 CollectionDB::execSql( const QString& statement, QStringList* const values, QStringList* const names )
 {
-    //kdDebug() << "execSql(): " << statement << endl;
-
     if ( !m_db ) {
         kdWarning() << k_funcinfo << "SQLite pointer == NULL.\n";
         return false;
@@ -110,6 +129,8 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
     if ( error != SQLITE_OK ) {
         kdWarning() << k_funcinfo << "sqlite_compile error:\n";
         kdWarning() << errorStr << endl;
+        kdWarning() << "on query: " << statement << endl;
+
         sqlite_freemem( errorStr );
         return false;
     }
@@ -224,6 +245,12 @@ CollectionDB::createTables( bool temporary )
         execSql( "CREATE INDEX artist_tag ON tags( artist );" );
         execSql( "CREATE INDEX genre_tag ON tags( genre );" );
         execSql( "CREATE INDEX year_tag ON tags( year );" );
+        
+        // create music statistics database
+        execSql( QString( "CREATE TABLE statistics ("
+                            "url VARCHAR(100) UNIQUE,"
+                            "accessdate INTEGER,"
+                            "playcounter INTEGER );" ) );
     }
 }
 

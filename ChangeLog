@@ -3,6 +3,10 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  FIX: Not all SQL queries were "string-escaped".
+  ADD: Added statistics database, which keeps track of how often and when you play
+       a specific song.
+
 VERSION 1.0-beta3:
   ADD: Additional volume slider for playlist window.
   ADD: ContextBrowser shows you images and information to the current song/artist.

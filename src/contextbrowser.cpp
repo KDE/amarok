@@ -116,6 +116,16 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 
     QStringList values;
     QStringList names;
+    
+    if ( m_db->execSql( QString( "SELECT datetime(accessdate, 'unixepoch') FROM statistics WHERE url = '%1';" )
+                        .arg( m_db->escapeString( bundle.url().path() ) ) ), &values, &names )
+    {
+        browser->write( QString( "<div>Last playtime: %1</div>" )
+                        .arg( values[0] ) );
+    }
+
+    values.clear();
+    names.clear();
 
     browser->write( "<div class='head'><br>Other titles on this album:</div>" );
     browser->write( "<div class='rbcontent'>" );
@@ -129,7 +139,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
                    .arg( m_db->escapeString( bundle.album() ) )
                    .arg( m_db->escapeString( bundle.artist() ) ), &values, &names );
 
-    for ( uint i = 0; i < ( values.count() / 3 ) && i < 10; i++ )
+    for ( uint i = 0; i < ( values.count() / 3 ); i++ )
     {
         if ( values[i].isEmpty() ) continue;
         
@@ -169,6 +179,8 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 
     browser->write( "</table><br></html>" );
     browser->end();
+
+    m_db->incSongCounter( bundle.url().path() );
 }
 
 
