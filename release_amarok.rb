@@ -156,7 +156,7 @@ puts "done.\n"
 
 puts "**** Compressing..  "
 `mv * ..`
-Dir.chdir( ".." ) # amaroK-foo`
+Dir.chdir( ".." ) # amaroK-foo
 `rm -rf kdeextragear-1`
 Dir.chdir( ".." ) # root`
 `tar -cf #{folder}.tar #{folder}`
