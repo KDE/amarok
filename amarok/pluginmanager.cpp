@@ -42,9 +42,13 @@ vector<PluginManager::PluginInfo>
     vector<PluginInfo> items;
     QStringList files = KGlobal::dirs()->findAllResources( "appdata", "*.plugin", false, true );
 
-    for ( QStringList::Iterator i = files.begin(); i != files.end(); ++i )
-        items.push_back( getInfo( *i ) );
-
+    for ( QStringList::Iterator i = files.begin(); i != files.end(); ++i ) {
+        //extract filename from URL
+        KURL url;
+        url.setPath( *i );
+        items.push_back( getInfo( url.fileName() ) );
+    }
+        
     if ( !items.size() )
         kdWarning() << k_funcinfo << "No plugins found!\n";
         
@@ -71,10 +75,15 @@ PluginManager::PluginInfo
     PluginManager::getInfo( const QString &name )
 {
     kdDebug() << k_funcinfo << "retrieving PluginInfo for: " << name << endl;
-    
+        
     PluginInfo info;
-    QString path = KGlobal::dirs()->findResource( "appdata", name + ".plugin" );
-    
+    QString filename = name;
+        
+    if ( !name.endsWith( ".plugin" ) )
+        filename += ".plugin";
+        
+    QString path = KGlobal::dirs()->findResource( "appdata", filename );
+        
     if ( !QFile::exists( path ) ) {
         kdWarning() << k_funcinfo << "Plugin not found." << endl;
         return info;
