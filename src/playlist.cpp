@@ -1026,9 +1026,8 @@ Playlist::contentsDropEvent( QDropEvent *e )
         if ( subtype == "amarok-sql" )
         {
             ThreadWeaver::instance()->queueJob( new SqlLoader( data, after ) );
-        }
-
-        goto url;
+        } else
+            goto url;
     }
     else if( KURLDrag::canDecode( e ) ) {
     url:
