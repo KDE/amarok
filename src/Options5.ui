@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>Options5</class>
 <widget class="QWidget">
     <property name="name">
@@ -9,8 +9,11 @@
             <x>0</x>
             <y>0</y>
             <width>354</width>
-            <height>369</height>
+            <height>416</height>
         </rect>
+    </property>
+    <property name="caption">
+        <string>Options5</string>
     </property>
     <vbox>
         <property name="name">
@@ -48,6 +51,9 @@
             </property>
             <property name="checkable">
                 <bool>false</bool>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>&lt;b&gt;Tags Displayed in OSD&lt;/b&gt;&lt;br&gt;Valid Variables:&lt;ul&gt;&lt;li&gt;Title - %track&lt;li&gt;Album - %album&lt;li&gt;Artist - %artist&lt;li&gt; Genre - %genre&lt;li&gt;Bitrate - %bitrate&lt;li&gt;Year - %year&lt;li&gt;Track Length - %length&lt;li&gt;Track Number - %number&lt;/ul&gt;&lt;br&gt;Braces { } can be added around text which includes one of the above variables, and will only be displayed if the track element exists.</string>
             </property>
             <vbox>
                 <property name="name">
@@ -256,6 +262,9 @@
                             <property name="name">
                                 <cstring>kcfg_OsdText</cstring>
                             </property>
+                            <property name="toolTip" stdset="0">
+                                <string>&lt;b&gt;Tags Displayed in OSD&lt;/b&gt;&lt;br&gt;Valid Variables:&lt;ul&gt;&lt;li&gt;Title - %track&lt;li&gt;Album - %album&lt;li&gt;Artist - %artist&lt;li&gt; Genre - %genre&lt;li&gt;Bitrate - %bitrate&lt;li&gt;Year - %year&lt;li&gt;Track Length - %length&lt;li&gt;Track Number - %number&lt;/ul&gt;&lt;br&gt;Braces { } can be added around text which includes one of the above variables, and will only be displayed if the track element exists.</string>
+                            </property>
                             <property name="whatsThis" stdset="0">
                                 <string>The text which should be shown in the OSD</string>
                             </property>
@@ -356,8 +365,6 @@
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <connections>
     <connection>
         <sender>kcfg_OsdEnabled</sender>
@@ -382,7 +389,6 @@
     <include location="global" impldecl="in implementation">qapplication.h</include>
     <include location="global" impldecl="in implementation">qdesktopwidget.h</include>
     <include location="local" impldecl="in declaration">osd.h</include>
-    <include location="local" impldecl="in implementation">Options5.ui.h</include>
 </includes>
 <variables>
     <variable access="private">OSDPreviewWidget *m_pOSDPreview;</variable>
@@ -401,6 +407,11 @@
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>kfontrequester.h</includehint>
+    <includehint>kcolorbutton.h</includehint>
+    <includehint>kcolorbutton.h</includehint>
     <includehint>ktextedit.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>kcombobox.h</includehint>
 </includehints>
 </UI>
