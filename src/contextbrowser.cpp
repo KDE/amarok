@@ -87,6 +87,9 @@ void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
 
 void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 {
+    QStringList values;
+    QStringList names;
+
     // take care of sql updates (schema changed errors)
     delete m_db;
     sqlInit();
@@ -118,32 +121,76 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 
     browser->setUserStyleSheet( styleSheet );
 
-    browser->write( QString::fromLatin1( "<html><div class='title'>" )
-                    + i18n( "Info for %1" ).arg( bundle.artist() )
-                    + QString::fromLatin1("</div>" ) );
+    // <Current Track Information>
+    browser->write( "<html><div class='rbcontent'>" );
+    browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
+    browser->write( "<tr><td class='head'>" + i18n( "Currently playing:" ) + "</td></tr>" );
+    browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
+    browser->write( "</table>" );
+    browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-    QStringList values;
-    QStringList names;
+    m_db->execSql( QString( "SELECT tags.title, album.id, artist.id, album.name, datetime( datetime(statistics.accessdate, 'unixepoch'), 'localtime' ), statistics.playcounter "
+                            "FROM album, tags, artist, statistics "
+                            "WHERE album.id = tags.album AND artist.id = tags.artist AND statistics.url = tags.url AND tags.url = '%1';" )
+                   .arg( m_db->escapeString( bundle.url().path() ) ), &values, &names );
 
-    if ( m_db->execSql( QString( "SELECT datetime( datetime(accessdate, 'unixepoch'), 'localtime' ), playcounter FROM statistics WHERE url = '%1';" )
-                        .arg( m_db->escapeString( bundle.url().path() ) ), &values, &names ) )
+    if ( !values.count() )
     {
-        if ( !values.count() )
-        {
-            values << i18n( "Never" );
-            values << "0";
-        }
-        browser->write( i18n( "<div>Last playtime: <b>%1</b><br>Total plays: <b>%2</b></div>" )
-                        .arg( values[0] )
-                        .arg( values[1] ) );
+        values << i18n( "Never" );
+        values << "0";
+    }
+    browser->write( QString ( "<tr><td height='42' valign='top' class='rbalbum'>"
+                              "<span class='album'>%2</span><br><br><img align='left' valign='center' hspace='2' width='40' height='40' src='%1'>"
+                              "%4<br>Last play: %5<br>Total plays: %3</td>"
+                              "</tr>" )
+                    .arg( m_db->getImageForAlbum( values[2], values[1], locate( "data", "amarok/images/sound.png" ) ) )
+                    .arg( values[0] )
+                    .arg( values[5] )
+                    .arg( values[3] )
+                    .arg( values[4] ) );
+
+    values.clear();
+    names.clear();
+
+    browser->write( "</table>" );
+    browser->write( "</div>" );
+    // </Current Track Information>
+
+    // <Favourite Tracks Information>
+    browser->write( "<br><div class='rbcontent'>" );
+    browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
+    browser->write( "<tr><td class='head'>" + i18n( "Favourite tracks of this artist:" ) + "</td></tr>" );
+    browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
+    browser->write( "</table>" );
+    browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+
+    m_db->execSql( QString( "SELECT tags.title, tags.url, tags.track, statistics.playcounter "
+                            "FROM tags, artist, statistics "
+                            "WHERE tags.artist = artist.id AND artist.name LIKE '%1' AND statistics.url = tags.url "
+                            "ORDER BY statistics.playcounter DESC "
+                            "LIMIT 0,5;" )
+                   .arg( m_db->escapeString( bundle.artist() ) ), &values, &names );
+
+    for ( uint i = 0; i < ( values.count() / 4 ); i++ )
+    {
+        browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:%1\"'>%2%3 <i>(%4)</i></a></td></tr>" )
+                        .arg( values[i*4 + 1] )
+                        .arg( ( values[i*4 + 2] == "" ) ? "" : values[i*4 + 2] + ". " )
+                        .arg( values[i*4] )
+                        .arg( values[i*4 + 3] ) );
     }
 
     values.clear();
     names.clear();
 
+    browser->write( "</table>" );
+    browser->write( "</div>" );
+    // </Favourite Tracks Information>
+
+    // <Other Tracks on this album>
     browser->write( "<br><div class='rbcontent'>" );
     browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-    browser->write( "<tr><td class='head'>" + i18n( "Other titles on this album:" ) + "</td></tr>" );
+    browser->write( "<tr><td class='head'>" + i18n( "Other tracks on this album:" ) + "</td></tr>" );
     browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
     browser->write( "</table>" );
     browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
@@ -169,7 +216,9 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 
     browser->write( "</table>" );
     browser->write( "</div>" );
+    // </Other titles on this album>
 
+    // <Other albums of this artist>
     browser->write( "<br><div class='rbcontent'>" );
     browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
     browser->write( "<tr><td class='head'>" + i18n( "Other albums:" ) + "</td></tr>" );
@@ -179,8 +228,8 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 
     m_db->execSql( QString( "SELECT DISTINCT album.name, album.id, artist.id "
                             "FROM album, tags, artist "
-                            "WHERE album.id = tags.album AND tags.artist = artist.id AND artist.name "
-                            "LIKE '%1' ORDER BY album.name;" )
+                            "WHERE album.id = tags.album AND tags.artist = artist.id AND artist.name LIKE '%1' "
+                            "ORDER BY album.name;" )
                    .arg( m_db->escapeString( bundle.artist() ) ), &values, &names );
 
     for ( uint i = 0; i < ( values.count() / 3 ); i++ )
@@ -199,6 +248,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 
     browser->write( "</table></div><br></html>" );
     browser->end();
+    // </Other albums of this artist>
 
     m_db->incSongCounter( bundle.url().path() );
 }
