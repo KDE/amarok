@@ -1,5 +1,5 @@
 INCLUDES = \
-    -I$(top_srcdir)/amarok/amarok/amarokarts \
+    -I$(top_builddir)/amarok/amarok/amarokarts \
     -I$(kde_includes)/arts \
     $(CFLAGS_GST) \
     $(all_includes)
