@@ -57,6 +57,8 @@ class ArtsEngine : public EngineBase
         std::vector<float>*                      scope();
         
         QStringList                              availableEffects() const;        
+        std::vector<long>                        activeEffects() const;
+        QString                                  effectNameForId( long id ) const;
         bool                                     effectConfigurable( long id ) const;        
         long                                     createEffect( const QString& name );
         void                                     removeEffect( long id );

@@ -48,7 +48,9 @@ class GstEngine : public EngineBase
         bool                                     isStream() const;
         std::vector<float>*                      scope();
         
-        QStringList                              availableEffects() const { return QStringList(); }
+        QStringList                              availableEffects() const            { return QStringList(); }
+        std::vector<long>                        activeEffects() const               { return std::vector<long>(); }
+        QString                                  effectNameForId( long id ) const    { return QString(); }
         bool                                     effectConfigurable( long id ) const { return false; }
         long                                     createEffect( const QString& name ) { return 0; }
         void                                     removeEffect( long id ) {}

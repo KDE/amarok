@@ -198,7 +198,7 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
     Arts::connect( m_xfade, "outvalue_l", m_globalEffectStack, "inleft" );
     Arts::connect( m_xfade, "outvalue_r", m_globalEffectStack, "inright" );
             
-    loadEffects();
+    if ( m_restoreEffects ) loadEffects();
     startTimer( ARTS_TIMER );
 }
 
@@ -442,6 +442,29 @@ QStringList ArtsEngine::availableEffects() const
 }
 
 
+std::vector<long> ArtsEngine::activeEffects() const
+{
+    std::vector<long> vec;
+    QMap<long, EffectContainer>::ConstIterator it;
+    
+    for ( it = m_effectMap.begin(); it != m_effectMap.end(); ++it )
+    {
+        vec.push_back( it.key() );
+    }
+
+    return vec;
+}
+
+
+QString ArtsEngine::effectNameForId( long id ) const
+{
+    const std::string str = (*m_effectMap[id].effect)._interfaceName();
+    QString qstr( str.c_str() );
+    
+    return qstr;
+}
+
+
 bool ArtsEngine::effectConfigurable( long id ) const
 {
     if ( m_effectMap[id].widget )
@@ -463,13 +486,18 @@ long ArtsEngine::createEffect( const QString& name )
 {
     Arts::StereoEffect* pFX = new Arts::StereoEffect;
     *pFX = Arts::DynamicCast( m_server.createObject( std::string( name.ascii() ) ) );
+    
+    if ( (*pFX).isNull() ) {
+        kdDebug() << "[ArtsEngine::createEffect] error: could not create effect." << endl;
+        delete pFX;
+        return 0;
+    }
+    
     pFX->start();
-
     long id = m_effectStack.insertBottom( *pFX, std::string( name.ascii() ) );
     
-    if ( !id )
-    {
-        kdDebug() << "insertBottom failed" << endl;
+    if ( !id ) {
+        kdDebug() << "[ArtsEngine::createEffect] error: insertBottom failed." << endl;
         pFX->stop();
         delete pFX;
         return 0;
@@ -622,26 +650,38 @@ void ArtsEngine::loadEffects()
     
     for ( QDomNode n = docElem.firstChild(); !n.isNull(); n = n.nextSibling() )
     {
-        kdDebug() << "outerloop: " << n.nodeName() << endl;
-        kdDebug() << "effectname: " << n.namedItem( "effectname" ).nodeValue() << endl;
+        QString effect = n.namedItem( "effectname" ).firstChild().toText().nodeValue();
+        kdDebug() << "effectname: " << effect << endl;
         
-        for ( QDomNode nAttr = n.firstChild(); !nAttr.isNull(); nAttr = nAttr.nextSibling() )
+        long id = createEffect( effect );
+        
+        for ( QDomNode nAttr = n.firstChild(); id && !nAttr.isNull(); nAttr = nAttr.nextSibling() )
         {
             if ( nAttr.nodeName() == "attribute" )
             {            
-                QString name  = nAttr.namedItem( "name"  ).nodeValue();
-                QString type  = nAttr.namedItem( "type"  ).nodeValue();
-                QString value = nAttr.namedItem( "value" ).nodeValue();
+                QString name  = nAttr.namedItem( "name"  ).firstChild().toText().nodeValue();
+                QString type  = nAttr.namedItem( "type"  ).firstChild().toText().nodeValue();
+                QString value = nAttr.namedItem( "value" ).firstChild().toText().nodeValue();
                 
                 kdDebug() << "name : " << name  << endl;
                 kdDebug() << "type : " << type  << endl;
                 kdDebug() << "value: " << value << endl;
                 
-    /*            createEffect();    
-                Arts::DynamicRequest req( *it.data().effect );
-                req.method( "_get_" + def.attributes[i].name );
-                Arts::Any result;
-                result.type = def.attributes[i].type;*/
+                Arts::DynamicRequest req( *m_effectMap[id].effect );
+                std::string set( "_set_" );
+                set.append( std::string( name.latin1() ) );
+                req.method( set );
+                
+                Arts::Buffer buf;
+                buf.fromString( std::string( value.latin1() ), "" );
+                
+                Arts::Any param;
+                param.type = std::string( type.latin1() );
+                param.readType( buf );
+                req.param( param );
+                
+                if ( !req.invoke() )
+                    kdDebug() << "DynamicRequest failed." << endl;
             }
         }
     }    

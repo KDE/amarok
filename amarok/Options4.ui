@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>386</width>
-            <height>342</height>
+            <height>344</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -267,6 +267,17 @@
             </property>
             <property name="text">
                 <string>Display Shoutcast metadata (title streaming)</string>
+            </property>
+            <property name="accel">
+                <string></string>
+            </property>
+        </widget>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>kcfg_RememberEffects</cstring>
+            </property>
+            <property name="text">
+                <string>Remember effects</string>
             </property>
         </widget>
     </vbox>

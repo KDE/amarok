@@ -312,13 +312,15 @@ void PlayerApp::applySettings()
     {
         delete m_pEngine;
         AmarokConfig::setSoundSystem( m_pSoundSystem->currentText() );
-        m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(), m_artsNeedsRestart, SCOPE_SIZE );
+        m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(),
+                                              m_artsNeedsRestart, SCOPE_SIZE, AmarokConfig::rememberEffects() );
         kdDebug() << "[PlayerApp::applySettings()] AmarokConfig::soundSystem() == " << AmarokConfig::soundSystem() << endl;
     }
 
     if ( AmarokConfig::hardwareMixer() != m_pEngine->isMixerHardware() )
         AmarokConfig::setHardwareMixer( m_pEngine->initMixer( AmarokConfig::hardwareMixer() ) );
-    
+            
+    m_pEngine->setRestoreEffects( AmarokConfig::rememberEffects() );    
     m_pEngine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
 
     m_pOSD->setEnabled( !AmarokConfig::osdEnabled() );      //workaround for reversed config entry
@@ -364,7 +366,8 @@ void PlayerApp::readConfig()
 
     //we must restart artsd after each version change, so that it picks up any plugin changes
     m_artsNeedsRestart = AmarokConfig::version() != APP_VERSION;
-    m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(), m_artsNeedsRestart, SCOPE_SIZE );
+    m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(),
+                                          m_artsNeedsRestart, SCOPE_SIZE, AmarokConfig::rememberEffects() );
         
     AmarokConfig::setHardwareMixer( m_pEngine->initMixer( AmarokConfig::hardwareMixer() ) );
     m_pPlayerWidget->m_pSliderVol->setValue( VOLUME_MAX - AmarokConfig::masterVolume() );

@@ -145,6 +145,11 @@
         <default>arts</default>
         <whatsthis></whatsthis>
      </entry>
+     <entry key="Remember Effects" type="Bool">
+        <label>Persistant audio effects</label>
+        <default>true</default>
+        <whatsthis></whatsthis>
+     </entry>
      <entry key="Master Volume" type="Int">
         <label>Master volume (range 0-100)</label>
         <default>50</default>

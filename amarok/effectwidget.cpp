@@ -47,22 +47,26 @@
 
 // CLASS EffectListItem --------------------------------------------------------
 
-EffectListItem::EffectListItem( QListView *parent, const QString &label ) :
-        QListViewItem( parent, label )
-{
-    m_Id = pApp->m_pEngine->createEffect( label );
-}
+EffectListItem::EffectListItem( QListView *parent, const QString &label )
+        : QListViewItem( parent, label )
+        , m_id( pApp->m_pEngine->createEffect( label ) )
+        
+{}
+
+
+EffectListItem::EffectListItem( QListView *parent, const QString &label, long id )
+        : QListViewItem( parent, label )
+        , m_id( id )
+{}
 
 
 EffectListItem::~EffectListItem()
-{
-//     pApp->m_pEngine->removeEffect( m_Id );
-}
+{}
 
 
 void EffectListItem::configure()
 {
-    pApp->m_pEngine->configureEffect( m_Id );
+    pApp->m_pEngine->configureEffect( m_id );
 }
 
 
@@ -125,6 +129,12 @@ EffectWidget::EffectWidget()
     pLayoutBotButtons->addWidget    ( m_pButtonBotRem );
     pLayoutBotButtons->addItem      ( new QSpacerItem( 0, 10 ) );
 
+    { //fill listview with restored effect entries
+        std::vector<long> vec = pApp->m_pEngine->activeEffects();
+        for ( int i = 0; i < vec.size(); i++ )
+                new EffectListItem( m_pListView, pApp->m_pEngine->effectNameForId( vec[i] ), vec[i] );
+    }
+                
     resize( 300, 400 );
 }
 
@@ -138,6 +148,7 @@ EffectWidget::~EffectWidget()
 void EffectWidget::slotButtonTop()
 {
     new EffectListItem( m_pListView, m_pComboBox->currentText() );
+    slotItemClicked( m_pListView->currentItem() );
 }
 
 
@@ -152,6 +163,7 @@ void EffectWidget::slotButtonBotConf()
 
 void EffectWidget::slotButtonBotRem()
 {
+    pApp->m_pEngine->removeEffect( static_cast<EffectListItem*>( m_pListView->currentItem() )->m_id );
     delete m_pListView->currentItem();
     
     m_pButtonBotConf->setEnabled( false );
@@ -163,7 +175,7 @@ void EffectWidget::slotItemClicked( QListViewItem *pCurrentItem )
     if ( pCurrentItem )
     {
         EffectListItem *pEffect = static_cast<EffectListItem *>( pCurrentItem );
-        m_pButtonBotConf->setEnabled( pApp->m_pEngine->effectConfigurable( pEffect->m_Id ) );
+        m_pButtonBotConf->setEnabled( pApp->m_pEngine->effectConfigurable( pEffect->m_id ) );
     }
 
     else

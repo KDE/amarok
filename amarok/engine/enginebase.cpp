@@ -27,6 +27,10 @@ email                : markey@web.de
 #include "qstringlist.h"
 
 
+
+bool EngineBase::m_restoreEffects;
+
+
 EngineBase::~EngineBase()
 {
     closeMixerHW();
@@ -77,11 +81,14 @@ void EngineBase::setXfadeLength( int ms )
     m_xfadeLength = ms;
 }
 
+//////////////////////////////////////////////////////////////////////////////
+// STATIC METHODS
+//////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////
-
-EngineBase* EngineBase::createEngine( QString system, bool& restart, int scopeSize )
+EngineBase* EngineBase::createEngine( QString system, bool& restart, int scopeSize, bool restoreEffects = true )
 {
+    m_restoreEffects = restoreEffects;
+    
     if ( system == "arts" )
         return new ArtsEngine( restart, scopeSize );
     

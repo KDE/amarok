@@ -40,13 +40,14 @@ class EffectListItem : public QListViewItem
 {
     public:
         EffectListItem( QListView *parent, const QString &label );
+        EffectListItem( QListView *parent, const QString &label, long id );
         ~EffectListItem();
 
         void configure();
         bool configurable() const;
 
 // ATTRIBUTES ------
-        long m_Id;
+        long m_id;
 };
 
 

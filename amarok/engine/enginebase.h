@@ -63,7 +63,11 @@ class EngineBase : public QObject
         //@return pointer to result of FFT calculation. must be deleted after use.
         virtual std::vector<float>*  scope()                                           = 0;
 
+                void                 setRestoreEffects( bool yes )
+                                     { m_restoreEffects = yes; }
         virtual QStringList          availableEffects() const                          = 0; 
+        virtual std::vector<long>    activeEffects() const                             = 0;
+        virtual QString              effectNameForId( long id ) const                  = 0;
         virtual bool                 effectConfigurable( long id ) const               = 0;        
         virtual long                 createEffect( const QString& name )               = 0;
         virtual void                 removeEffect( long id )                           = 0;
@@ -85,7 +89,8 @@ class EngineBase : public QObject
         //@param system name of multimedia framework
         //@param restart signals sound deamon must be restarted due to plugin installation. applies only to arts
         //@param scopeSize size of vector the scope delivers, exponent to base 2
-        static EngineBase*           createEngine( QString system, bool& restart, int scopeSize );
+        static EngineBase*           createEngine( QString system, bool& restart,
+                                                   int scopeSize, bool restoreEffects );
 
     protected:
         void                         closeMixerHW();
@@ -97,6 +102,7 @@ class EngineBase : public QObject
         int                          m_mixerHW;
         int                          m_volume;
         int                          m_xfadeLength;
+        static bool                  m_restoreEffects;
 };
 
 #endif
