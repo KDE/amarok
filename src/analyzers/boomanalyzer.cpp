@@ -155,3 +155,5 @@ BoomAnalyzer::analyze( const Scope &scope )
         p.drawLine( x, y, x+COLUMN_WIDTH-1, y );
     }
 }
+
+#include "boomanalyzer.moc"
