@@ -131,10 +131,6 @@ PlayerApp::PlayerApp() :
     m_pMainTimer->start( MAIN_TIMER );
     m_pAnimTimer->start( ANIM_TIMER );
 
-    //restore last playlist (before we show the widget too)
-    m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( kapp->dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "current.m3u", 0 );
-    m_pBrowserWin->m_pPlaylistWidget->writeUndo();
-
     //moved out from readConfig() to facilitate "faster" loading
     m_pPlayerWidget->show();
     m_pConfig->setGroup( "General Options" );
@@ -143,6 +139,12 @@ PlayerApp::PlayerApp() :
         m_pPlayerWidget->m_pButtonPl->setOn( true );
         m_pBrowserWin->show();
     }
+
+    //restore last playlist
+    //<mxcl> Really long playlists will stall loading unless we show the widgets first
+    //<mxcl> At some point it'd be nice to start loading of the playlist before we initialise arts so the playlist seems to be loaded when the browserWindow appears
+    m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( kapp->dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "current.m3u", 0 );
+    m_pBrowserWin->m_pPlaylistWidget->writeUndo();
 
     kapp->processEvents();
 
