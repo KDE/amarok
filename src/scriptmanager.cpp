@@ -31,6 +31,7 @@
 
 #include <qdir.h>
 #include <qfileinfo.h>
+#include <qfont.h>
 #include <qtimer.h>
 
 #include <kapplication.h>
@@ -236,6 +237,11 @@ ScriptManager::slotEditScript()
     kapp->setTopWidget( editor );
     editor->setCaption( kapp->makeStdCaption( i18n( "Edit Script" ) ) );
 
+    QFont font( "fixed" );
+    font.setFixedPitch( true );
+    font.setStyleHint( QFont::TypeWriter );
+    editor->setFont( font );
+
     QString name = m_base->directoryListView->currentItem()->text( 0 );
     QFile file( m_scripts[name].url.path() );
 
@@ -335,9 +341,14 @@ ScriptManager::slotAboutScript()
     }
 
     KTextEdit* editor = new KTextEdit();
-    editor->setReadOnly( true );
     kapp->setTopWidget( editor );
     editor->setCaption( kapp->makeStdCaption( i18n( "About %1" ).arg( name ) ) );
+    editor->setReadOnly( true );
+
+    QFont font( "fixed" );
+    font.setFixedPitch( true );
+    font.setStyleHint( QFont::TypeWriter );
+    editor->setFont( font );
 
     QTextStream stream( &file );
     editor->setText( stream.read() );
