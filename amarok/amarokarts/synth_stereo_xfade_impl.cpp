@@ -30,13 +30,12 @@ class Synth_STEREO_XFADE_impl : virtual public Synth_STEREO_XFADE_skel,
     public:
         void percentage( float newValue )
         {
-            m_percentage = newValue;
-            m_factor = ( newValue + 1 ) / 2;
+            m_factor = newValue;
         }
 
         float percentage()
         {
-            return m_percentage;
+            return m_factor;
         }
 
         void calculateBlock( unsigned long samples )
@@ -51,7 +50,6 @@ class Synth_STEREO_XFADE_impl : virtual public Synth_STEREO_XFADE_skel,
         }
 
     private:
-        float m_percentage;
         float m_factor;
 };
 

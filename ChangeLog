@@ -3,6 +3,7 @@ amaroK Changelog
 (c) 2002, 2003 by Mark Kretschmann and the amaroK team. GPL License.
 
 
+  * fix: crossfading aRts module. the fading is now much smoother than before
   * fix: crossfading bug. before the fix amaroK sometimes mixed up the two xfade sources,
          so it sort of faded in reverse (==crap)
   * add: tag reading in separate thread
