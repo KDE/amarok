@@ -41,15 +41,16 @@ int main( int argc, char *argv[] )
 
     aboutData.addCredit( "Adam Pigg", I18N_NOOP( "analyzers, patches" ), "adam@piggz.fsnet.co.uk" );
     aboutData.addCredit( "Adeodato Simó", I18N_NOOP( "patches" ), "asp16@alu.ua.es" );
-    aboutData.addCredit( "Dan Leinir Turthra Jensen", I18N_NOOP( "first-run wizard" ), "admin@REMOVEleinir.dk" );
+    aboutData.addCredit( "Dan Leinir Turthra Jensen", I18N_NOOP( "first-run wizard, usability" ), "admin@REMOVEleinir.dk" );
     aboutData.addCredit( "Enrico Ros", I18N_NOOP( "analyzers, king of openGL" ), "eros.kde@email.it" );
     aboutData.addCredit( "Jarkko Lehti", I18N_NOOP( "tester, IRC channel operator, whipping" ), "grue@iki.fi" );
     aboutData.addCredit( "Josef Spillner", I18N_NOOP( "KDE RadioStation code" ), "spillner@kde.org" );
     aboutData.addCredit( "Kenneth Wesley Wimer II", I18N_NOOP( "icons" ), "kwwii@bootsplash.org" );
     aboutData.addCredit( "Melchior Franz", I18N_NOOP( "new FFT routine, bugfixes" ), "mfranz@kde.org" );
-    aboutData.addCredit( "Michael Pyne", I18N_NOOP( "K3B Export Code" ), "michael.pyne@kdemail.net" );
+    aboutData.addCredit( "Michael Pyne", I18N_NOOP( "K3B export code" ), "michael.pyne@kdemail.net" );
+    aboutData.addCredit( "Nenad Grujicic", I18N_NOOP( "splash screen for 1.1" ), "mchitman@neobee.net" );
     aboutData.addCredit( "Roland Gigler", I18N_NOOP( "MAS engine" ), "rolandg@web.de" );
-    aboutData.addCredit( "Scott Wheeler", I18N_NOOP( "TagLib & KTrm Code" ), "wheeler@kde.org" );
+    aboutData.addCredit( "Scott Wheeler", I18N_NOOP( "TagLib & ktrm code" ), "wheeler@kde.org" );
     aboutData.addCredit( "Stefan Bogner", I18N_NOOP( "tester, patches, translation" ), "bochi@online.ms" );
     aboutData.addCredit( "Whitehawk Stormchaser", I18N_NOOP( "tester, patches" ), "zerokode@gmx.net" );
 

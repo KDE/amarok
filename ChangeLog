@@ -4,7 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.1.1:
-  CHG: New splash screen by Nenad Grujicic <mengelebeatmake@yahoo.com>.
+  CHG: New splash screen by Nenad Grujicic <mchitman@neobee.net>.
   FIX: Crash when fetching 1 missing cover using the fetch button. (BR 90673)
   REM: Unsupported option "Show Metadata in Playlist".
   ADD: Menubar (optional).
