@@ -9,8 +9,6 @@ SHORT-TERM (URGENT):
   <mxcl>   Just before we load any engine plugin, write to a file, and it we don't succeed the next time
            amaroK starts show a big warning saying "Gah!" and load a different one.
 
-  <markey> In CoverManager, the album list on the left side doesn't work. Clicking on it does nothing.
-
   <mxcl>   Handle the case where user drops a directory and there is a playlist file that duplicates what is
            in the directories above it and you end up with duplicate URLs all over the place.
            <markey> Many users have an m3u in the _same_ directory as the files are.
