@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.2.3:
   FEATURES:
+    * OSD notification for mute.
+    * Mute global shortcut, Win+M.
     * Add %comment token for comment display in OSD. (BR 100944)
     * View/Edit track entry into context menus of ContextBrowser and
       CollectionBrowser.

@@ -291,7 +291,6 @@ void App::initGlobalShortcuts()
 {
     EngineController* const ec = EngineController::instance();
 
-
     m_pGlobalAccel->insert( "play", i18n( "Play" ), 0, KKey("WIN+x"), 0,
                             ec, SLOT( play() ), true, true );
     m_pGlobalAccel->insert( "pause", i18n( "Pause" ), 0, KKey("WIN+c"), 0,
@@ -318,6 +317,8 @@ void App::initGlobalShortcuts()
                             m_pPlaylistWindow, SLOT( showHide() ), true, true );
     m_pGlobalAccel->insert( "osd", i18n( "Show OSD" ), 0, KKey("WIN+o"), 0,
                             amaroK::OSD::instance(), SLOT( forceToggleOSD() ), true, true );
+    m_pGlobalAccel->insert( "mute", i18n( "Mute Volume" ), 0, KKey("WIN+m"), 0,
+                            ec, SLOT( mute() ), true, true );
 
     m_pGlobalAccel->setConfigGroup( "Shortcuts" );
     m_pGlobalAccel->readSettings( kapp->config() );
@@ -730,7 +731,7 @@ void App::engineVolumeChanged( int newVolume )
     //get the amarok icon to show in osd if not playing - else show album cover.
     QImage osdImage = QImage::QImage();
     Engine::Playing ? osdImage = QImage::QImage()  :  osdImage = QImage( KIconLoader().iconPath( "amarok", -KIcon::SizeHuge ) );
-    amaroK::OSD::instance()->OSDWidget::show( i18n("Volume: %1%").arg( newVolume ) );
+    amaroK::OSD::instance()->OSDWidget::show( newVolume ? i18n("Volume: %1%").arg( newVolume ) : i18n("Mute") );
 }
 
 void App::slotConfigEffects( bool show ) //SLOT
