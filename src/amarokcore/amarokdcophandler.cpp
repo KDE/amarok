@@ -171,8 +171,8 @@ namespace amaroK
     {
         CollectionDB db;
         const MetaBundle &bundle = EngineController::instance()->bundle();
-        QString image = db.getImageForAlbum( QString::number( db.getValueID( "artist", bundle.artist(), false ) ),
-                                             QString::number( db.getValueID( "album", bundle.album(), false ) ),
+        QString image = db.getImageForAlbum( db.getValueID( "artist", bundle.artist(), false ),
+                                             db.getValueID( "album", bundle.album(), false ),
                                              "", 0 );
         return image;
     }

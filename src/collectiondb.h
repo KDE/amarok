@@ -26,10 +26,15 @@ class CollectionDB : public QObject
         bool isDbValid();
         bool isEmpty();
         QString albumSongCount( const QString artist_id, const QString album_id );
-        void addImageToPath( const QString path, const QString image, bool temporary );
-        QString getPathForAlbum( const QString artist_id, const QString album_id );
-        QString getImageForAlbum( const QString artist_id, const QString album_id, const QString defaultImage, const uint width = COVER_SIZE );
+
+        QString getPathForAlbum( const uint artist_id, const uint album_id );
+        QString getPathForAlbum( const QString artist, const QString album );
+
+        QString getImageForAlbum( const uint artist_id, const uint album_id, const QString defaultImage, const uint width = COVER_SIZE );
+        QString getImageForAlbum( const QString artist, const QString album, const QString defaultImage, const uint width = COVER_SIZE );
+        
         QString getImageForPath( const QString path, const QString defaultImage, const uint width = COVER_SIZE );
+        void addImageToPath( const QString path, const QString image, bool temporary );
 
         QStringList artistList();
         QStringList albumList();

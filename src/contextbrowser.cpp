@@ -323,7 +323,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     browser->write( "</table>" );
     browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-    m_db->execSql( QString( "SELECT album.id, artist.id, datetime( datetime( statistics.createdate, 'unixepoch' ), 'localtime' ), datetime( datetime( statistics.accessdate, 'unixepoch' ), 'localtime' ), statistics.playcounter "
+    m_db->execSql( QString( "SELECT album.name, artist.name, datetime( datetime( statistics.createdate, 'unixepoch' ), 'localtime' ), datetime( datetime( statistics.accessdate, 'unixepoch' ), 'localtime' ), statistics.playcounter "
                             "FROM album, tags, artist, statistics "
                             "WHERE album.id = tags.album AND artist.id = tags.artist AND statistics.url = tags.url AND tags.url = '%1';" )
                    .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names );
@@ -347,7 +347,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                          );
     else
     {
-        m_db->execSql( QString( "SELECT album.id, artist.id "
+        m_db->execSql( QString( "SELECT album.name, artist.name "
                                 "FROM album, tags, artist "
                                 "WHERE album.id = tags.album AND artist.id = tags.artist AND tags.url = '%1';" )
                       .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names );
@@ -465,7 +465,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                     << values[i + 2].replace( "\"", "%22" ) // album.id
                                     << escapeHTMLAttr( values[i + 1] ) // artist.name
                                     << escapeHTMLAttr( values[i + 0] ) // album.name
-                                    << escapeHTMLAttr( m_db->getImageForAlbum( values[i + 3], values[i + 2], locate( "data", "amarok/images/sound.png" ), 40 ) )
+                                    << escapeHTMLAttr( m_db->getImageForAlbum( values[i + 1], values[i + 0], locate( "data", "amarok/images/sound.png" ), 40 ) )
                                     << escapeHTML( values[i + 0] ) // album.name
                                     << m_db->albumSongCount( values[i + 3], values[i + 2] )
                                     )

@@ -115,7 +115,21 @@ CollectionDB::addImageToPath( const QString path, const QString image, bool temp
 
 
 QString
-CollectionDB::getPathForAlbum( const QString artist_id, const QString album_id )
+CollectionDB::getPathForAlbum( const QString artist, const QString album )
+{
+    QStringList values;
+    QStringList names;
+
+    execSql( QString( "SELECT tags.url FROM tags, album, artist WHERE tags.album = album.id AND album.name = '%1' AND tags.artist = artist.id AND artist.name = '%2';" )
+             .arg( album )
+             .arg( artist ), &values, &names );
+
+    return values[0];
+}
+
+
+QString
+CollectionDB::getPathForAlbum( const uint artist_id, const uint album_id )
 {
     QStringList values;
     QStringList names;
@@ -129,15 +143,10 @@ CollectionDB::getPathForAlbum( const QString artist_id, const QString album_id )
 
 
 QString
-CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id, const QString defaultImage, const uint width )
+CollectionDB::getImageForAlbum( const QString artist, const QString album, const QString defaultImage, const uint width )
 {
-    QStringList values;
-    execSql( QString( "SELECT DISTINCT artist.name, album.name FROM artist, album "
-                      "WHERE artist.id = %1 AND album.id = %2;" )
-                      .arg( artist_id ).arg( album_id ), &values );
-    
     QString widthKey = QString::number( width ) + "@";
-    QString key( QFile::encodeName( values[0] + " - " + values[1] ) );
+    QString key( QFile::encodeName( artist + " - " + album ) );
     key.replace( " ", "_" ).append( ".png" );
     
     if ( m_coverDir.exists( widthKey + key.lower() ) )
@@ -159,9 +168,24 @@ CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id,
     }
     
     KURL url;
-    url.setPath( getPathForAlbum( artist_id, album_id ) );
+    url.setPath( getPathForAlbum( artist, album ) );
 
     return getImageForPath( url.directory(), defaultImage, width );
+}
+
+
+QString
+CollectionDB::getImageForAlbum( const uint artist_id, const uint album_id, const QString defaultImage, const uint width )
+{
+    QStringList values;
+    execSql( QString( "SELECT DISTINCT artist.name, album.name FROM artist, album "
+                      "WHERE artist.id = %1 AND album.id = %2;" )
+                      .arg( artist_id ).arg( album_id ), &values );
+
+    if ( !values.isEmpty() )
+        return getImageForAlbum( values[0], values[1], defaultImage, width );
+    else
+        return defaultImage;
 }
 
 
