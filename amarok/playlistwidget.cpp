@@ -31,6 +31,7 @@
 #include <qtimer.h>
 
 #include <kdebug.h>
+#include <kiconloader.h>
 #include <klistview.h>
 #include <klocale.h>
 #include <kpopupmenu.h>
@@ -554,10 +555,10 @@ void PlaylistWidget::activate( QListViewItem *item )
 void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p )
 {
     QPopupMenu popup( this );
-    popup.insertItem( i18n( "&Play track" ), 0 );    
-    popup.insertItem( i18n( "&Show track information" ), 1 );
+    popup.insertItem( SmallIcon("player_play"), i18n( "&Play track" ), 0 );    
+    popup.insertItem( SmallIcon("info"), i18n( "&Show track information" ), 1 );
     popup.insertItem( i18n( "&Copy trackname to clipboard" ), 2 ); //FIXME use KAction
-    popup.insertItem( i18n( "&Remove selected items" ), this, SLOT( removeSelectedItems() ), Key_Delete );
+    popup.insertItem( SmallIcon("editdelete"), i18n( "&Remove selected items" ), this, SLOT( removeSelectedItems() ), Key_Delete );
 
     // only enable when file is selected
     popup.setItemEnabled( 0, ( item != NULL ) );
