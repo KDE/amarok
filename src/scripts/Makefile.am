@@ -1,2 +1,3 @@
-SUBDIRS = alarm
+SUBDIRS = alarm templates
+
 
