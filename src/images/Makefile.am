@@ -12,6 +12,7 @@ images_DATA = \
     b_play.png \
     b_prev.png \
     b_stop.png \
+    babelfish.png \
     bucky.png \
     covermanager.png \
     currenttrack_play.png \
