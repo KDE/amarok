@@ -3,10 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #53 being the highest available (take this one for your next bug and increase here)
+           #54 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+    * fix: #53 <mxcl> if PlayerApp::play() tries to play a file which doesn't exist (which can happen,
+                despite PlaylistLoader checks), amaroK get in a amusing state.
 
     * fix: #52 <markey> got those today, possibly from new PlayerWidget code (app was freezing):
                 QPainter::begin: Cannot paint null pixmap
