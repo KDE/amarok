@@ -6,12 +6,12 @@
 #ifndef AMAROK_COLLECTIONDB_H
 #define AMAROK_COLLECTIONDB_H
 
+#include "config.h"
 #include "engineobserver.h"
-
 #include <qdir.h>            //stack allocated
 #include <qobject.h>         //baseclass
-#include <qptrqueue.h>
-#include <qsemaphore.h>
+#include <qptrqueue.h>       //baseclass
+#include <qsemaphore.h>      //stack allocated
 #include <qstringlist.h>     //stack allocated
 
 #ifdef USE_MYSQL
@@ -31,15 +31,14 @@ class Scrobbler;
 
 
 class DbConfig
-{
-};
+{};
 
 
 class SqliteConfig : public DbConfig
 {
     public:
         SqliteConfig( const QString& /* dbfile */ );
-        
+
         const QString dbFile() const { return m_dbfile; }
     private:
         QString m_dbfile;
@@ -55,7 +54,7 @@ class MySqlConfig : public DbConfig
             const QString& /* database */,
             const QString& /* username */,
             const QString& /* password */);
-        
+
         const QString host() const { return m_host; }
         const int port() const { return m_port; }
         const QString database() const { return m_database; }
@@ -74,7 +73,7 @@ class DbConnection
 {
     public:
         enum DbConnectionType { sqlite = 0, mysql = 1 };
-        
+
         DbConnection( DbConfig* /* config */ );
         virtual ~DbConnection() = 0;
 
@@ -93,14 +92,14 @@ class SqliteConnection : public DbConnection
     public:
         SqliteConnection( SqliteConfig* /* config */ );
         ~SqliteConnection();
-        
+
         QStringList query( const QString& /* statement */ );
         int insert( const QString& /* statement */ );
-    
+
     private:
         static void sqlite_rand(sqlite3_context *context, int /*argc*/, sqlite3_value ** /*argv*/);
         static void sqlite_power(sqlite3_context *context, int argc, sqlite3_value **argv);
-        
+
         sqlite3* m_db;
 };
 
@@ -111,10 +110,10 @@ class MySqlConnection : public DbConnection
     public:
         MySqlConnection( MySqlConfig* /* config */ );
         ~MySqlConnection();
-        
+
         QStringList query( const QString& /* statement */ );
         int insert( const QString& /* statement */ );
-    
+
     private:
         mysql::MYSQL* m_db;
 };
@@ -126,7 +125,7 @@ class DbConnectionPool : QPtrQueue<DbConnection>
     public:
         DbConnectionPool();
         ~DbConnectionPool();
-        
+
         const DbConnection::DbConnectionType getDbConnectionType() const { return m_dbConnType; }
         const DbConfig *getDbConfig() const { return m_dbConfig; }
         void createDbConnections();
@@ -253,7 +252,7 @@ class CollectionDB : public QObject, public EngineObserver
         void addImageToAlbum( const QString& image, QValueList< QPair<QString, QString> > info, DbConnection *conn = NULL );
         QString getImageForAlbum( const QString& artist, const QString& album, uint width = 0 );
         QString notAvailCover( int width = 0 );
-        
+
         void applySettings();
 
     protected:
