@@ -1,4 +1,4 @@
-amarok (1.1.0-2~kalyxo1) unstable; urgency=low
+amarok (1.1.0-2) unstable; urgency=low
 
   * Fix the location of translated amaroK handbook: kde/HTML/$LANG/amarok, not
     kde/HTML/$LANG directly. [debian/patches/proper-otherlang-handbook-path.patch]
