@@ -1,4 +1,4 @@
-// (c) Pierpaolo Di Panfilo 2004
+vi// (c) Pierpaolo Di Panfilo 2004
 // See COPYING file for licensing information
 
 #include "config.h"
@@ -85,7 +85,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
 
     //view tool button
     QToolButton *viewButton = new QToolButton(coverWidget);
-    viewButton->setText("View");
+    viewButton->setText( i18n("View") );
     viewButton->setAutoRaise( true );
     // view menu
     m_viewMenu = new KPopupMenu( viewButton);
