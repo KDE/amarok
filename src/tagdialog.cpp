@@ -21,6 +21,7 @@
 #include <klineedit.h>
 #include <kmessagebox.h>
 #include <knuminput.h>
+#include <krun.h>
 
 
 TagDialog::TagDialog( const KURL& url, QWidget* parent )
@@ -56,6 +57,13 @@ TagDialog::okPressed() //SLOT
                 syncItemText();
        
     deleteLater();
+}
+
+void
+TagDialog::openPressed()
+{
+    // run konqueror with the track's directory
+    KRun::runCommand("kfmclient openURL \""+m_path+"\"", "kfmclient", "konqueror");
 }
 
 
@@ -157,8 +165,19 @@ TagDialog::init()
     // Remember original button text
     m_buttonMbText = pushButton_musicbrainz->text();
     
+        // Remember the path
+    if ( m_metaBundle.url().isLocalFile() )
+    {
+        m_path = m_metaBundle.url().directory();
+    }
+    else
+    {
+        pushButton_open->setEnabled( false );
+    }
+    
     connect( pushButton_cancel, SIGNAL( clicked() ), this, SLOT( deleteLater() ) );
     connect( pushButton_ok, SIGNAL( clicked() ), this, SLOT( okPressed() ) );
+    connect( pushButton_open, SIGNAL( clicked() ), this, SLOT( openPressed() ) );
     pushButton_ok->setEnabled( false );
     
 #ifdef HAVE_MUSICBRAINZ

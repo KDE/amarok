@@ -1,6 +1,6 @@
 <!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>TagDialogBase</class>
-<widget class="KDialog">
+<widget class="QDialog">
     <property name="name">
         <cstring>TagDialogBase</cstring>
     </property>
@@ -8,463 +8,285 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>387</width>
-            <height>417</height>
+            <width>382</width>
+            <height>363</height>
         </rect>
     </property>
     <property name="caption">
         <string>Meta Information - amaroK</string>
     </property>
+    <property name="icon">
+        <pixmap>image0</pixmap>
+    </property>
     <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLayoutWidget" row="5" column="0">
+        <property name="resizeMode">
+            <enum>Fixed</enum>
+        </property>
+        <widget class="QFrame" row="1" column="0">
             <property name="name">
-                <cstring>layout13</cstring>
+                <cstring>frame8</cstring>
             </property>
-            <hbox>
+            <property name="frameShape">
+                <enum>StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Raised</enum>
+            </property>
+            <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel">
+                <widget class="QLayoutWidget" row="0" column="0">
                     <property name="name">
-                        <cstring>textLabel1_5</cstring>
+                        <cstring>layout38</cstring>
                     </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>90</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Year</string>
-                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="KLineEdit" row="0" column="1" rowspan="1" colspan="3">
+                            <property name="name">
+                                <cstring>kLineEdit_title</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>250</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="5" column="0">
+                            <property name="name">
+                                <cstring>textLabel1_6</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>80</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>Comment</string>
+                            </property>
+                        </widget>
+                        <widget class="KIntSpinBox" row="4" column="3">
+                            <property name="name">
+                                <cstring>kIntSpinBox_year</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="maxValue">
+                                <number>3000</number>
+                            </property>
+                            <property name="value">
+                                <number>0</number>
+                            </property>
+                        </widget>
+                        <widget class="KIntSpinBox" row="4" column="1">
+                            <property name="name">
+                                <cstring>kIntSpinBox_track</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="maxValue">
+                                <number>3000</number>
+                            </property>
+                            <property name="value">
+                                <number>0</number>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="4" column="0">
+                            <property name="name">
+                                <cstring>textLabel1_6_6</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>80</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>Track Nr.</string>
+                            </property>
+                        </widget>
+                        <widget class="KComboBox" row="1" column="1" rowspan="1" colspan="3">
+                            <property name="name">
+                                <cstring>kComboBox_artist</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>250</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="editable">
+                                <bool>true</bool>
+                            </property>
+                            <property name="autoCompletion">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="3" column="0">
+                            <property name="name">
+                                <cstring>textLabel1_4</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>80</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>Genre</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="2" column="0">
+                            <property name="name">
+                                <cstring>textLabel1_3</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>80</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>Album</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>textLabel1_2</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>80</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>Artist</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>80</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>Title</string>
+                            </property>
+                        </widget>
+                        <widget class="KLineEdit" row="5" column="1" rowspan="1" colspan="3">
+                            <property name="name">
+                                <cstring>kLineEdit_comment</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>250</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                        </widget>
+                        <widget class="KComboBox" row="3" column="1" rowspan="1" colspan="3">
+                            <property name="name">
+                                <cstring>kComboBox_genre</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>250</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="editable">
+                                <bool>true</bool>
+                            </property>
+                            <property name="autoCompletion">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="KComboBox" row="2" column="1" rowspan="1" colspan="3">
+                            <property name="name">
+                                <cstring>kComboBox_album</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>250</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="editable">
+                                <bool>true</bool>
+                            </property>
+                            <property name="autoCompletion">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="4" column="2">
+                            <property name="name">
+                                <cstring>textLabel1_5</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Year</string>
+                            </property>
+                        </widget>
+                    </grid>
                 </widget>
-                <widget class="KIntSpinBox">
-                    <property name="name">
-                        <cstring>kIntSpinBox_year</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>7</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>250</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="maxValue">
-                        <number>3000</number>
-                    </property>
-                    <property name="value">
-                        <number>0</number>
-                    </property>
-                </widget>
-            </hbox>
+            </grid>
         </widget>
-        <widget class="QLayoutWidget" row="6" column="0">
+        <widget class="QLayoutWidget" row="2" column="0">
             <property name="name">
-                <cstring>layout6</cstring>
+                <cstring>layout16</cstring>
             </property>
-            <hbox>
+            <grid>
                 <property name="name">
-                    <cstring>unnamed</cstring>
+                    <cstring>unnamed_2</cstring>
                 </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1_6</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>90</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Comment</string>
-                    </property>
-                </widget>
-                <widget class="KLineEdit">
-                    <property name="name">
-                        <cstring>kLineEdit_comment</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>250</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget" row="7" column="0">
-            <property name="name">
-                <cstring>layout12</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1_6_2</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>90</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Length</string>
-                    </property>
-                </widget>
-                <widget class="KLineEdit">
-                    <property name="name">
-                        <cstring>kLineEdit_length</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>250</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="readOnly">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget" row="8" column="0">
-            <property name="name">
-                <cstring>layout6_3</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1_6_3</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>90</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Bitrate</string>
-                    </property>
-                </widget>
-                <widget class="KLineEdit">
-                    <property name="name">
-                        <cstring>kLineEdit_bitrate</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>250</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="readOnly">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget" row="9" column="0">
-            <property name="name">
-                <cstring>layout6_4</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1_6_4</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>90</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Samplerate</string>
-                    </property>
-                </widget>
-                <widget class="KLineEdit">
-                    <property name="name">
-                        <cstring>kLineEdit_samplerate</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>250</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="readOnly">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget" row="10" column="0">
-            <property name="name">
-                <cstring>layout6_5</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1_6_5</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>90</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Location</string>
-                    </property>
-                </widget>
-                <widget class="KLineEdit">
-                    <property name="name">
-                        <cstring>kLineEdit_location</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>250</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="readOnly">
-                        <bool>true</bool>
-                    </property>
-                    <property name="enableSqueezedText">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <spacer row="11" column="0">
-            <property name="name">
-                <cstring>spacer2</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>MinimumExpanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>28</width>
-                    <height>28</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QLayoutWidget" row="3" column="0">
-            <property name="name">
-                <cstring>layout14</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1_4</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>90</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Genre</string>
-                    </property>
-                </widget>
-                <widget class="KComboBox">
-                    <property name="name">
-                        <cstring>kComboBox_genre</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>7</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>250</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="editable">
-                        <bool>true</bool>
-                    </property>
-                    <property name="autoCompletion">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget" row="4" column="0">
-            <property name="name">
-                <cstring>layout14</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1_6_6</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>90</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Track</string>
-                    </property>
-                </widget>
-                <widget class="KIntSpinBox">
-                    <property name="name">
-                        <cstring>kIntSpinBox_track</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>7</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>250</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="maxValue">
-                        <number>3000</number>
-                    </property>
-                    <property name="value">
-                        <number>0</number>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget" row="1" column="0">
-            <property name="name">
-                <cstring>layout14_2</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1_2</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>90</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Artist</string>
-                    </property>
-                </widget>
-                <widget class="KComboBox">
-                    <property name="name">
-                        <cstring>kComboBox_artist</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>7</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>250</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="editable">
-                        <bool>true</bool>
-                    </property>
-                    <property name="autoCompletion">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget" row="12" column="0">
-            <property name="name">
-                <cstring>layout11</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>pushButton_musicbrainz</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;MusicBrainz TRM</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+M</string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>false</bool>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Detect metadata from fingerprint. Requires the "trm" utility.</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer1</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>MinimumExpanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>74</width>
-                            <height>21</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
+                <widget class="QPushButton" row="0" column="2">
                     <property name="name">
                         <cstring>pushButton_ok</cstring>
                     </property>
@@ -481,7 +303,7 @@
                         <bool>true</bool>
                     </property>
                 </widget>
-                <widget class="QPushButton">
+                <widget class="QPushButton" row="0" column="3">
                     <property name="name">
                         <cstring>pushButton_cancel</cstring>
                     </property>
@@ -504,126 +326,216 @@
                         <bool>false</bool>
                     </property>
                 </widget>
-            </hbox>
+                <spacer row="0" column="1">
+                    <property name="name">
+                        <cstring>spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>MinimumExpanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>77</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton" row="0" column="0">
+                    <property name="name">
+                        <cstring>pushButton_musicbrainz</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;MusicBrainz TRM</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+M</string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>false</bool>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Detect metadata from fingerprint. Requires the "trm" utility.</string>
+                    </property>
+                </widget>
+            </grid>
         </widget>
-        <widget class="QLayoutWidget" row="0" column="0">
+        <widget class="QFrame" row="0" column="0">
             <property name="name">
-                <cstring>layout1</cstring>
+                <cstring>frame7</cstring>
             </property>
-            <hbox>
+            <property name="frameShape">
+                <enum>StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Raised</enum>
+            </property>
+            <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel">
+                <widget class="QLabel" row="1" column="0">
                     <property name="name">
-                        <cstring>textLabel1</cstring>
+                        <cstring>textLabel1_6_3</cstring>
                     </property>
                     <property name="minimumSize">
                         <size>
-                            <width>90</width>
+                            <width>80</width>
                             <height>0</height>
                         </size>
                     </property>
                     <property name="text">
-                        <string>Title</string>
+                        <string>Bitrate</string>
                     </property>
                 </widget>
-                <widget class="KLineEdit">
+                <widget class="QLabel" row="3" column="0">
                     <property name="name">
-                        <cstring>kLineEdit_title</cstring>
+                        <cstring>textLabel1_6_5</cstring>
                     </property>
                     <property name="minimumSize">
                         <size>
-                            <width>250</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget" row="2" column="0">
-            <property name="name">
-                <cstring>layout14_3</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1_3</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>90</width>
+                            <width>80</width>
                             <height>0</height>
                         </size>
                     </property>
                     <property name="text">
-                        <string>Album</string>
+                        <string>Location</string>
                     </property>
                 </widget>
-                <widget class="KComboBox">
+                <widget class="QLabel" row="0" column="0">
                     <property name="name">
-                        <cstring>kComboBox_album</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>7</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
+                        <cstring>textLabel1_6_2</cstring>
                     </property>
                     <property name="minimumSize">
                         <size>
-                            <width>250</width>
+                            <width>80</width>
                             <height>0</height>
                         </size>
                     </property>
-                    <property name="editable">
+                    <property name="text">
+                        <string>Length</string>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="3" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>kLineEdit_location</cstring>
+                    </property>
+                    <property name="readOnly">
                         <bool>true</bool>
                     </property>
-                    <property name="autoCompletion">
+                    <property name="enableSqueezedText">
                         <bool>true</bool>
                     </property>
                 </widget>
-            </hbox>
+                <widget class="QPushButton" row="3" column="3">
+                    <property name="name">
+                        <cstring>pushButton_open</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="pixmap">
+                        <pixmap>image1</pixmap>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>textLabel1_6_4</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>80</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>Samplerate</string>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="0" column="1">
+                    <property name="name">
+                        <cstring>kLineEdit_length</cstring>
+                    </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="1" column="1">
+                    <property name="name">
+                        <cstring>kLineEdit_bitrate</cstring>
+                    </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="2" column="1">
+                    <property name="name">
+                        <cstring>kLineEdit_samplerate</cstring>
+                    </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="2" rowspan="3" colspan="2">
+                    <property name="name">
+                        <cstring>pixmap_cover</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>45</width>
+                            <height>64</height>
+                        </size>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>45</width>
+                            <height>64</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="pixmap">
+                        <pixmap>image2</pixmap>
+                    </property>
+                    <property name="scaledContents">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </grid>
         </widget>
     </grid>
 </widget>
-<tabstops>
-    <tabstop>kLineEdit_title</tabstop>
-    <tabstop>kComboBox_artist</tabstop>
-    <tabstop>kComboBox_album</tabstop>
-    <tabstop>kComboBox_genre</tabstop>
-    <tabstop>kIntSpinBox_track</tabstop>
-    <tabstop>kIntSpinBox_year</tabstop>
-    <tabstop>kLineEdit_comment</tabstop>
-    <tabstop>kLineEdit_length</tabstop>
-    <tabstop>kLineEdit_bitrate</tabstop>
-    <tabstop>kLineEdit_samplerate</tabstop>
-    <tabstop>kLineEdit_location</tabstop>
-    <tabstop>pushButton_musicbrainz</tabstop>
-    <tabstop>pushButton_ok</tabstop>
-    <tabstop>pushButton_cancel</tabstop>
-</tabstops>
+<customwidgets>
+</customwidgets>
+<images>
+    <image name="image0">
+        <data format="PNG" length="751">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff61000002b649444154789c75934168146714c77fbbce926f7402df40a433ed0676a81627c6b6bb58d04029bbd422b9884185da53f554166f9e7af3540aed4dbcb4d5431b41a41e5a8827115aba91a6640fad9943162791c837d0c34c719bef1347bf5eb222897df06efff77fbfff8357b1d6f23ff5466f954f7b1b7c5018c63bfb58e9d4f91e975f80672f54d6da57f56bdff636bf695fba5f368f9fb3f1bb6ddbfeecb2fd61d92e6d6eda8f5ed6be6ad8bdb3623f9ffbf2c1bfede37336ae4b2b1c2c8eb0b3172edbdf1ed8056bed9b237d753bb7d64cfff8ab3e21b285dda130c87a4cd0684069e8ddfc8a85c5958e7acc29a006ec3448335ac9203d18891c39d9a079a849ebc014478fb429b235d27b77c77a1b9c013e047639db0d1607f95b6e91ee319ec2f77c10061ae790f50ec88bf417e79939dd6d7db7c817670f53db41608622d02641e0220444f5883511e3873ecd635d040295299633deb9fe079fec2048f3628f5b1a7293d3f25a184780f14914346488f07c8cce49328951bcbec3403ad2ead26ce18314010d071807f337f85e80362ed9c0e04f98f2e50815a086533cc50931a5460a89dc0b3e3055070a455e661446a0feec333b2d5647045560178f71c371f10f42120511e164c4cce198e29ee1d6ed94bc7f9d308c5005744f460be74ffa57aa5b9b2b5a6b47977ab714c523bcf849b03f263e109116059197120de7f187cbe45e4424493aefa99f2979388a50711db7660ae3c68158733db18e98c20c156aa0489204512a8ce3e206b3656b32ef0752de079e3a8005ac361a1caac6a8b5b969b174f56e1e71b4a865ab3dd4464a7f35210fbb3403fe3a7b24bce64ff8bf53e3c9e806cfdd715753528413e19831e94fcd424e7e7d5bbc1f4145a506f69e27dc37b37eb12daff8a17f676b31956def5cd55a0b86c8344bdfee0fdc8f6f2da9a629e558dc60bd7b2c9c8f1afe0d6a98d1c07fa338501c7125e2d20000000049454e44ae426082</data>
+    </image>
+    <image name="image1">
+        <data format="PNG" length="680">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff610000026f49444154789c85934f48545114c67fda35ee88c17d5030032d7c60e0482d7237ad6ad12269554130f487b44d114498453452e1d8a6225a6418b888ca76d2265d441858b673c0f00f04cd80832f4abc177cf80ef4e0b5181b30a9becd773eee397cf09d7b1ad8c0c567eb8913301a5c0c46d578b4a7b981ff213fbc9efc0df9e1e5e45fb3aa7b643d19399daaa99f40d3663ee0093c5e4d8cd63811b40611305a33d4d3dca024fc46d4e42311e8145b387fd4a75b81c4a053a94def4e5613a59541d6000d6e8d9ac31ffac4435bcfc4288d8ba5ae959300874714424a81dde0dffafcc380de2306563ee1a77dfcac0fa4985e82c1571665944720b5d42f3dd9ea94cf96492b43a66d3f120a6f26a6a9c43ed9f64c2db7638373c9c7ef49d275e76bf26266f30606faefd5ebb9d9b97add7be3663230b69c740dae268d46a50842d0681656e0fe2414de4261d4d23fd05773599b47c251e6a78a4436227296b1a74522111a9d580002670904161c0402e3af1f0050bc5b841d293a738374b42e505a2c31f46488d2fb511061dbfec3976f7b7b76519d09898d07dbe0f3c44b4acfaf605a0ce313e380075c87ed2769512dc4c47cfa30895b9e4589382220700133677c00667667b9fae510856b85fa8f8bd6c0ad0494ab65727b73989d6932ed3d346aa52106625d6feecc7532323442b62dbb310dce39cad532e204278e625f1176f828173a2406fbc3315f0a9058d04a2331f8bb0dd65ac409e56a19bb62a92c5520846c2e075342034057dfbb64bea421b6a03c882dc7f755e8bdd04a265d0149333d59c250a6e348177819825240a67acaffeba926d31ca49d5b68c0815dcc3ef2cc82a195b378c0128e9073bf002b3e694d656e97ee0000000049454e44ae426082</data>
+    </image>
+    <image name="image2">
+        <data format="PNG" length="5119">89504e470d0a1a0a0000000d494844520000002d0000004008060000008e70fe1e000013c649444154789cc59a6f8c1dd779de7ff7eeb9dcf79077c9197569df4948696f6cb65a4232b4ac9486048c9afc92808103d4865154868a46aa6b246a2bb441031471810256d000715b1430d1a6350db485ed0f86180341d64953acd20a25dbbae10a95ea654c3a978858ceb5b8f239d28e785ef29edde9873373ef25ada2fae3b6032c86973b73e739cf79dee7fd33dbe1031e755de7c0cf010fba1d8e79e54888d4459f900bff831e3f00fe43a7d379e5833eab3d3a1f00ec02f054e978f2f20d0e5c78c52dfb4a7e52d1454116307a2713d93935e4eac9156b8e17fc27e0b73a9dce1fff7f015dd7f510f88d17be131efcfa260fbba899350251c108a0881100c4a47bce1cb37f74f611289678bed3e97cebff29e8baae3fe67638f7ebbfe70e5c2e59d33960d6e40402562c0208e19e05e496eac9c7ede51347f96aa7d3f9d7ef17b4798f801f743b7cf16f7ec3fd64a90c1360697eab84f145f0254e3d793680c171b26208040408d0bff0723821c62ed6756d3a9dcef9f703fa5d335dd7f541267ce3d96fb807b7b679a405ac808c37d157cea3d7377155091114c8fb05d9139f62f88967c8f2020858400c779ffc197bf9f8619eef743abffb7f13f4f9e77fdb3dba719527141069347ce5ebf8cdf350291a4312842a82a0ea212a72648d53bff8658ad513480c00647dfbc3671e672b5fe2e94ea7f3bdf702bafb2e013ff5c277c2c3eb5bfa84460503aa1efbea3974f31c5a291a9902667a1614617ce5121bfff4d3945b175163c180d7f0c08557c999f09b755d2ffe5841d7757d6454f2ccb917fda340720755f22be7715b17d028b3c8882008c4f451a3a67f1bc18fafb3fe8f3e8ddbba88188b184b5985e3bf7b850f01fff0c70a1a78fedc1fb843bed2256202966f6fc06beb804c2f0acdb6b740bd7a346afa4cd2b8df1e73e99bbf8e024aba7e731c1e2b1d271b1bfde0a0ebba7efce2162b17aff947934b08a223e4c63a908391a97b58b1401b9cc9e60499f36b414418bdbcc1e6ef9c239b5e6f65e35ac8817ff063010d3c77fec5f230918556cbb9bf04130fa6f167d304a5016bec1430cdefa64c373ba0aa5cfe9d738cc725622c1a0365c5eae8160fd575fd910f04baaeeb958b5ba1d8baa17f36859420b1641047482fb166c592f7f3298b08b3cf730cb75ad7981634bebec5d6b7cf350bb700bdcb6332e0973f1068e0d90b977ca61a9ac40c43dd042d11c9a03763582481cc244b0c0bf7ec00c2740794c4fce53ff81a7e5c368fb28cb6c3474260adaeebfefb025dd7f502131ebb7c4d7f0a63d108194a1e47d000cb24fb11c65ba0d31d90f47b61b6a07617fcf83a5b2f7e0d2b00016beca14b37d8077ce6fd32fd735ffb4367bc0f393180110a2e23f8e983a74cf640969acf7d412423eb67538d4faf6b8e56e3005b97d671de81b18418283d03e0e7df2fe85fd878c51f4e5f6f212a056334364064b6f5593f9b6a3aefe71459d274d6cf90be5064455a4c96aec9244b4f3042797d13bf7511db2cb0acc2cae816cb755d3ff69e40d7752d6e878736afb90705d00885382496c92d5ae0cc181423c8922036a93fcf2cd26f80b7c1d94845d16932d2ca73f93faf03c9e72d2cac5f097f8e09bf51d7f54fbc17a657365e761d549634a698ca1821a454dd02b562b1c64e5d63aad93c032b147981cd2c799621fd043cef0b5996cddcc508e3ab5b842a608d6dd28d1d7ced553e0c7cb9aeebc3ef16f44397ae6a5fa392780b888ef11aeef15d60ca582e39a029381b692090d90cc9738ad53314ab27c906c3c478bff52370e32dc6af6d25b8246d8fb6c3632f6c86a3c03fafebfacfbc1bd0cb6e5b0fb60033406249d2f6ac7e6e196f5dc34a3ef36969a4b15c203ff36b649ff822834f7c817ced598ac1f10678da19ef3de5954b20a406c2a4e76c6df3f80baf8487807f793fe33f023a048e8dc6e1c3e993909b31362a4167b58598942830cc346a20173b3d5bb1e8c34fa3cb27a6ce3278f8141c3d8b9db3475429b72e1394a98b60c057b07983c75fd80c0f015fadeb7ae51d41d7757dc0573ce62b3d284db324384274d3e06b81fe486d2149a3adddb9c1694a1936df02d60a7991317ce434b27c92bcd1b5f485f178846d2ac3e9730055d81cf3e7cf5f0a0f02bf55d7f503efc4f4a1d2874c238b8a6201ad46109b2aaea9f2dad4dc16796d464c9251241b3096e3d39d81546b8b40b192344e3f9fd62ec18f297d89253d470c84a88408ae52b6c67cec8557c241e073ef047ac5576d37930064682ae8e3acfc4c3572739599011603795f286515c720752dcdca5afeb23c637064956c70a6914886f7255a8e6609a979be0f8a4e041760e30a7f61e4f885baae3f7a3fe8a3a3b1d6cde6345be4678cddd706cf97a149db4240f07138eb5ce6986e8f7c90433e48c18b2231b9080dd3d65874922cd66b3a8f77b4331ab3079cba1ff4a2c67b991613923fb79268196edca3f5e7bc9fa7cc2639654c2384760ea2b1613aa6aa4e96a0585e45fa1962528654efd28e184b20a4aab00254f095421436ae840f0347ef072da35b7eb1655aee67ba79706b876d0dd23600184b40506d00cfdd17dafb0869c17d8bf48769470d783f9e314d2ad29c264d0705e795add7f441b743763fe89edb967ecbb4e0a60dd53df5717b9ed360d236a9878ce97e8ded8e353444489cb73e9d25fb6b8f6989d0d8aba67bb44ae7d2d3f34aff7ed00b5e5d532c363e1c9a8e63ce97a79dc9dc82dafff76d535bf914bc8d2675d27e4f9b5941e35c15d88c1f420c8468f1aaa0a44e5f15ef1555ed96fe7ed0131655ad4d7c08d206e344671dc81c40483636cf3c8d3c560773f7c71494a1b14cafda8cd264ee3edbec50c37414b45d709554e4bca28af9918ce834f42069d0b6b5462f9dadb1332dd3f6843305c89441581dc2304b4114a2241798808bca204bde342dbe8cb47b8bc6e6ac49cbc12ba1528257a82068a8ef011d98f66c5893b676aa48936a8379c0d34e648e31c182a6eb8647416223ce98349e8b908b2092cf801ba06972a78c2ba86f2512d09d80ba8035b6730fe80437c47601c9ae42635fa90abb7701b305290a3d69efc4abb2b6228824e65d54bc8298762ed23ab7a68502c40678930909092861a66d9170e75e79f4b893f7eded7601daf8eafc74f41ea6e76a8fb623c9fa961013b3b949dad686e91095a29f124ea84819f3beef8546723ad372cb385177b3be7dfb7e4dd762b83bfdd46c69ea60ee738fa9efce32a22060023642e992bf9f3896b4ee2b253730e82b4ec1571e313af7bd6d3ca464e6bd03d5c685d239334c8a8c9dfb41df1d0e64a7dd728f4de38277607a3a3e6827ff565003c33c697d74034a85e1b2706a2539c9c921581146a542e51009734d72d6d68389900a68a6aea84362e0c45af6fd7c096fea7a1a8c1de06e967327b1dc4e3ddb84aed344d24e92329a26b5776fc2c9fac278ecf03e439685d38f0aab47d3024aaf8c6e28eac658e371ad44a48da846d3b7fcd4d7a5c9139f3a5d38e04fba4ce831611f13169950e7225d68a69f4610db304debd3cc314c6a664d6ab9ac588a4c283225a8301a2bb609d6e172babef4c278db2151a1f2b3efc906d31ac53b6d989e011691bd538fe47bc0c5aeabdc7e57b97eb95d1e72debd9df5b507f35ab5d3cea49dfc33e71a2d6084d4b4f685930fe7a82a175f515c958087a606d97ccd13b615a184a618c30848913228e0b7155fa5024a638a8d677fe9f8778647f956a7d3b961d4eb03aaba2fc4b00fb85d48d1a68aa6fb1e20b19ccd3be6eb672be49237e302c14a4e96099f3e09eb2f0ba3eb8e0b2f099ffa788a81f55795ad2b0e7646144b25ce354feae7687f089380188bbb314ac167d20e3ff9d4ea7f7bfe73c33f01be02604a5f6628e2d52f1211c9ec446057d10510d4e4b360993b8b6dba6a49031b2ba90fc408830cce3c0ce7c770f1d592723bc70a941ecaab238671049371d30929f407a81124820f01bf9d5c4580673eb7f65fbef4abc7bf0ffced4ea7b303d055d503bef2fd508583ee96db27845b08da761cc10ca119b4cc4b21cd3172065986ed5bb2ac98a6658dca673f9e737c905c607cc331baee7057bf4b5e5d67988fee6ddd960ac4e4492a119cf308c2d3bfb8f65fbff4abc7af02bfd4e974de682daeebbcdb1f34ecf73bfe80affc52b93d7ab3100d6d1d3c56c14ad1b4528d7697b2e998607e41c0b4220b55c92f9f560a2971af8d7057b7c05f67b51841f4b8768e82629787b838cba45ac1d9cf0cfffbb9bf77fc2613fe2eb0c3dc61500ef8e0ad567ac055ae9fb96c4f0cbb0984021998823c738808837c80154b9665e92567bf011c9b541ec1552e65b1e878f613cae6158fab5c1a60aa63ec926d3a75e4fd0296d780268557b0f6a85cffcadf3fb11daaf0052bf636d0abeb7a0fd8ed743ab5f13bdeaaea0157b9035ae9d2e8c668773828f6b6b6697c53096680649a124da3e1f969a820786deae72aa095e2d4a5d2b21a335c0e64c6e3bda3ac52060c55f342b49f810c5175d8be102a7ff74b7f6b7532ba7ef9df884837efe7cb593fab1082b57652d77534f380bdf7078386faec67ce2c6c5c6157230bd608d735e76caed04c46ef69b1600ad8799718af9aea2c34cd6e939a43db20686b83600fafe29a850785d5e5e046d72e6ff9d21fca0e67c78b41f17ab69cbd5e2c173f0476acb5b599037c285461697c6bbcdfaa8f027795cc1295d1b6300e396b8326e188a48993d0045448555984d297a0e0773caa9aa4a23afb09b39ed18a10b235daae5d0cf5f1c37ef1c2372f1cc0f0c470302cc747c67fba726ce50091856250ec5963ef264d577e2968e87bef0faa6a7fe3a58d9db59533875ebc96a2db45a5ac324ef69318daa09b1f9511155f29168b0b6ed6a2352f878861daecd23418e443583e95aa3d017cb9b73ad47de736378bc1f2c0ea8e1e00ba227237cff2b772cddf027cd77b7f205461bff77ebf06b5a10ab2f1e24638fb8400bad74e9ad65f058d925e373440925378b44a8083065ce5004d996cee3aa7da54722dd30acb2766b54d8442fcdec64b1b13223d5ff945551557394b649faa1a9ad7e25d45f7a9ea221151d5458dbae82b6ff4561907e262e331782f6c5e67fafeef1e40952368488026a90c558550b9a97cdaeb85664c20056ef974daa934aea8cf1e636ffddbeb5e444296656f674b599567f9db08b7b37ea63465733768e811d9e783ef85187a1ad510315ffdb75fdd39f388addb600b5159df84b20ab3de31268968a549c33b3a73110da82a655512b4914800a7e92f1128d69a7a23716d75eb6e16dd6d60bb1814af174571b3385294d972560e8ac1ebd2973733c914d8ed12311ab52b4817e80ad2013adfbdf6ddc9dad1b097993414b0225cbeae5cbac27446e7b4d16e486ee1ab241557b59a061bed7416382d6ffb39e1c8a766b3bea89c5e91bbebdf5effdeeab1d5d1cab195abab0faf7e6ff8d1e11f9f583df1fde160f83f8be5e28708811e7ba6dd7e456ba09e9b2475befe8dafbf7deaf1270faebf9ad1cef6d63795b5c1cce6fc4ef30ebcd17402d8683c86e62f14141fda1d7070ecb378f26947941b77fbd451f523c3e5d547567f500c8a323b9cdd2a06c57696656f14cb8593bebc65adbd0bd46d91598b913aa491d5aeaaee5963f7365edad0af3cf54c7fe3d57217860b1865eb86b0bee939350cb33f939803dcfeb4b2516d006b026c97d728b3b3737327f69e5ce3adadadaddf3ff1d88997874787371b5ff62252495f6e5b63ef60994c3322b02b4676158dd6d889a2bb6264d745b72748fd8fffc9f3d5334f7de1d0b97fefbb18e984a85c78398dc00a3cbe01e8ab04cca99b4925cc8d89d58111dce1334d979fa431ccca37d68ec868abcafedd7065f8a7f972fefa201bbc85a0d6d808ecd263afd3e9ecb5ab3456ec44a3de152b775575222213559d58637bc184ddd195d19df2da869efee84979f17ad1cb4deaae2fbc5c706a794c46399d044dd9ae348d6ae700db7e8e3bfa349a9d9a76e162dc9bbff6c9e28df1f5addf3cf1d8892bd972f67adecfdfa6c704d803e8743a35f71d5d0c133132c11045640244311281688d8d8aee9eff57e7ab338feaee40cad876cf65051b37d6d8f2056edb518e4778eff12e31dcdaa0ab4a9082b2781a9513a06d47e2e2173e99bfe9b747ff62b832fc6eb69c95799ebf458f3b9d4e67b7d3e9d4ef041860e1eccf9efdf86edced9aaee9c6ddb8d0a3b750c5aac71e0bf16e344037c6b8b0f9479b935ff91b3f2f97bea744a4bbd4159488df3b46b567e96949f5c66bc4dbcace6d0f3142d7608a33f8c37f19e438ec05d867612fd4bff2b3f9cda3fbcb6f1dee1ffee6e04383f152bef43610ff7740ef05fdc9b36ba66bd88dbb184cb7daad16628c3deeb2002ce89e764dd774bcf79dd1d5adf8d9bff444ef3bd77addb847872ec4bd48c551b6f71d47178754a640f70dd1fe4fa387cfe2e5a78964442a4cd7a0c4faf37fd1de38f9e0ce4ba66bce1dfed0e1f1d2c1a58a8577071860e1f37ffdf32b3dd39b1831b14367d7744dddab7b744ca713f722bd6eafd3899d0e5d188fc775acb6f79efb6b67f66d5e296b65a92b081105fa445310973e46b4c7884bc789f4110c1145ba82ee69fdec69f3dae99f8aff913dfe59f113c5cd3ccbdfa2c7643ed0fe8fa09ffb3bcf2d2d1d58ba2d8b723befe7b7cd7e73db8abd438fbb4b0796eef44cef8eec9349a7db992cc9d26474737467fbb56b779efbaba716b77fe8f66e547601e84cfba73dbde71c63842ef4f76fbff9c5bf52bcb1ba5cfd9ee99a2fe783fce6e1070ebff95e0103746edebcf9a0562a41c37e5ff9035ae9a1f256f9807acdcbed3253d525e7dd41ad74c9ef7821224edd622ef9e2d94f9e3d920d4f2eaf5f1ad79b3744348a01e9d08ec8d0381ca83f7b320b273f6ac7de97dfccb2ecf78be5a2ccb37ca77589772b8b29e8dbb76fef07165435d520951722d6556e7fd382ed57d5beeea81059f495b744f685180c1163fbf6f0eab1d58f60e4505961fd0e1d8cec8a25ae0e6427ebf303e032f087f972eeb27ef696151be811df2bc3edf1bf00af448d4c06f3de9b0000000049454e44ae426082</data>
+    </image>
+</images>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>kdialog.h</includehint>
+    <includehint>klineedit.h</includehint>
     <includehint>knuminput.h</includehint>
-    <includehint>klineedit.h</includehint>
-    <includehint>klineedit.h</includehint>
-    <includehint>klineedit.h</includehint>
-    <includehint>klineedit.h</includehint>
-    <includehint>klineedit.h</includehint>
-    <includehint>kcombobox.h</includehint>
-    <includehint>klineedit.h</includehint>
     <includehint>knuminput.h</includehint>
     <includehint>kcombobox.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>kcombobox.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
 </includehints>
 </UI>

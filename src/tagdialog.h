@@ -34,6 +34,7 @@ class TagDialog : public TagDialogBase
         
     private slots:
         void okPressed();
+        void openPressed();
         void checkModified();
         
         void musicbrainzQuery();
@@ -48,6 +49,7 @@ class TagDialog : public TagDialogBase
         MetaBundle m_metaBundle;
         QListViewItem* m_playlistItem;
         QString m_buttonMbText;
+        QString m_path;
 };
 
 
