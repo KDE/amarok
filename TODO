@@ -6,6 +6,9 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  <mxcl>   Changing the title track to "" does such things as I cannot figure out, it appears to work, but
+           perhaps the collection isn't updated, or maybe the tag, or both. Can't tell.
+
   <mxcl>   On first-ever-run, if amaroK crashes building the sqlite collection, it is impossible to _ever_
            build a collection unless the user's amarokrc file is deleted! This MUST be fixed before 1.2!
 
@@ -19,15 +22,12 @@ SHORT-TERM (URGENT):
   <mxcl>   Hitting the DEL key in the playlist activates the file-browser delete shortcut, offering to trash
            whatever is selected there. Nice!
 
-  <mxcl>   Tabbing in inline-edit mode in playlist visits hidden columns and invisible ones.
+  <mxcl>   Tabbing in inline-edit mode in playlist visits hidden columns and invisible ones. - KDElibs bug
 
   <mxcl>   If you drag and drop the cool-streams playlist without expanding it first, it doesn't work properly
 
   <mxcl>   Playlist with files that exist that gst can't play + repeat-playlist = infinite loop - presumably
            load() and play() return true so the controller doesn't stop the playback
-
-  <mxcl>   Should be able to open collection browser by right clicking on stuff in contextB, so show the
-           artist or album that is right clicked.
 
   <mxcl>   We should make regular backups of the user's statistics tables, we'll get so many angry users if
            they start to lose stats.
@@ -42,8 +42,6 @@ SHORT-TERM (URGENT):
   <markey> When the KDE color scheme is changed while amaroK is running, all toolbar buttons (those with text)
            lose their texts.
 
-  <mxcl>   With one track in pls and repeat and random mode on, amaroK crashes at track end.
-
   <muesli> Show "Artist - Song" for Various Artist folder.
 
   <markey> Ctrl-C in Playlist for copying title doesn't work, because the event gets eaten by another widget.
@@ -51,8 +49,11 @@ SHORT-TERM (URGENT):
 
 MID-TERM:
 
-          <markey> When "Repeat Track" is enabled, turn the play icon in CurrentTrack into a
-                   "recycle" style icon, as feedback.
+  <mxcl>   Should be able to open collection browser by right clicking on stuff in contextB, so show the
+           artist or album that is right clicked.
+
+  <markey> When "Repeat Track" is enabled, turn the play icon in CurrentTrack into a
+           "recycle" style icon, as feedback.
 
   ADD 148 <markey> AudioCD support for gst engine (cdparanoia ! *sink). -->markey
 
