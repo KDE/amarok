@@ -18,9 +18,6 @@ SHORT-TERM (URGENT):
   <muesli> Resuming the playback on startup shows the current track as a normal-sized entry instead of a
            double-height one.
 
-  <markey> Try to make amarokapp _not_ link to libengine. It's nonsense really, but currently needed
-           cause the linker complains about unresolved symbols.
-
   <mxcl>   If you drag and drop the cool-streams playlist without expanding it first, it doesn't work properly
 
   <mxcl>   Playlist with files that exist that gst can't play + repeat-playlist = infinite loop - presumably
