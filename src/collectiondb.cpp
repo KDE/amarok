@@ -642,7 +642,8 @@ CollectionDB::addSong( const MetaBundle& bundle, const bool temporary )
 
     command += escapeString( bundle.url().path() ) + "','";
     command += escapeString( bundle.url().directory() ) + "',";
-    command += "'" + QString::number(QDateTime::currentDateTime().toTime_t()) + "',";
+//    command += "'" + QString::number( QDateTime::currentDateTime().toTime_t() ) + "',";
+    command += "'" + QString::number( QFileInfo( bundle.url().path() ).created().toTime_t() ) + "',";
 
     command += escapeString( QString::number( albumID( bundle.album().isEmpty() ? i18n( "Unknown" ) : bundle.album(), true, !temporary ) ) ) + ",";
     command += escapeString( QString::number( artistID( artist.isEmpty() ? i18n( "Unknown" ) : artist, true, !temporary ) ) ) + ",";
@@ -655,6 +656,7 @@ CollectionDB::addSong( const MetaBundle& bundle, const bool temporary )
     command += artist == i18n( "Various Artists" ) ? "1" : "0";
     command += ", 0);";
 
+    //FIXME: currently there's no way to check if an INSERT query failed or not - always return true atm.
     query( command );
     return true;
 }
