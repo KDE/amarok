@@ -3,10 +3,10 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
-  ADD: OSDPreview now has snap to regions
-  FIX: Newly shown columns can now be resized
-  FIX: BR 82020: next/prev buttons disabled when they shouldn't be
-  ADD: ToolbarAnalyzer remembers it's framerate, allowed fps: {50, 40, 30, 20}
+  ADD: OSDPreview now has snap to regions.
+  FIX: Newly shown columns in playlist can now be resized.
+  FIX: BR 82020: next/prev buttons disabled when they shouldn't be.
+  ADD: ToolbarAnalyzer remembers it's framerate, allowed fps: {50, 40, 30, 20}.
   ADD: Full streaming audio support for GStreamer engine.
   FIX: Don't allow user to get into a situation where there is no Menu.
   ADD: Using Welcome-page power-links you can switch between XMMS and amaroK mode.
@@ -15,7 +15,6 @@ amaroK ChangeLog
        main window with the 'd' key.
   FIX: Filtering the collection now searches the second category, too (BR 81681).
   FIX: Filter in playlist was only working for the first argument.
-  ADD: Option for auto centering the OSD horizontally.
   CHG: Collection-Monitor now processes removed dirs in a thread.
   ADD: Added a switch to toggle OSD's text-shadow. (BR 82011).
   ADD: More detailed track information dialog for Collection Browser.

@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>375</width>
-            <height>441</height>
+            <width>411</width>
+            <height>384</height>
         </rect>
     </property>
     <property name="caption">
@@ -92,7 +92,7 @@
                                 </font>
                             </property>
                             <property name="sampleText">
-                                <string>ABCdef 123</string>
+                                <string></string>
                             </property>
                             <property name="whatsThis" stdset="0">
                                 <string>The font to use for the On-Screen Display.</string>
@@ -187,6 +187,9 @@
                                             <horstretch>1</horstretch>
                                             <verstretch>0</verstretch>
                                         </sizepolicy>
+                                    </property>
+                                    <property name="frameShape">
+                                        <enum>NoFrame</enum>
                                     </property>
                                     <property name="text">
                                         <string>Background color:</string>
@@ -403,10 +406,10 @@
     <slot access="protected">textColorChanged( const QColor &amp; color )</slot>
     <slot access="protected">backgroundColorChanged( const QColor &amp; color )</slot>
     <slot access="protected">screenChanged( int screen )</slot>
+    <slot access="protected">drawShadowToggled( bool on )</slot>
     <slot access="protected">slotPositionChanged()</slot>
     <slot access="protected">osdEnabledChange( bool on )</slot>
     <slot access="protected">useCustomColorsToggled( bool on )</slot>
-    <slot access="protected">drawShadowToggled( bool on )</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
@@ -414,11 +417,4 @@
     <function access="protected">showEvent( QShowEvent * )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kfontrequester.h</includehint>
-    <includehint>kcolorbutton.h</includehint>
-    <includehint>kcolorbutton.h</includehint>
-    <includehint>knuminput.h</includehint>
-    <includehint>kcombobox.h</includehint>
-</includehints>
 </UI>

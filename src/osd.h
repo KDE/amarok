@@ -69,7 +69,7 @@ class OSDWidget : public QWidget
         /* called after most set*() calls to update the OSD */
         void refresh();
 
-        static const int MARGIN = 35;
+        static const int MARGIN = 15;
 
         QString     m_appName;
         int         m_duration;
