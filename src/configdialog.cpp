@@ -93,15 +93,20 @@ void AmarokConfigDialog::triggerChanged()
  */
 void AmarokConfigDialog::updateSettings()
 {
-    AmarokConfig::setSoundSystem( m_pluginName[m_soundSystem->currentText()] );
-    
+    // When sound system has changed, update engine config page
+    if ( m_soundSystem->currentText() != m_pluginAmarokName[AmarokConfig::soundSystem()] ) {
+        AmarokConfig::setSoundSystem( m_pluginName[m_soundSystem->currentText()] );
+        emit settingsChanged();
+        soundSystemChanged();
+    }
+    else 
+        emit settingsChanged();
+        
     OSDWidget *osd = (OSDWidget*)child( "osdpreview" );
     AmarokConfig::setOsdAlignment( osd->alignment() );
     AmarokConfig::setOsdYOffset( osd->y() );
     if ( m_engineConfig ) m_engineConfig->save();        
     
-    emit settingsChanged();
-    updateWidgets();
     m_changedExternal = false;
 }
 
@@ -115,7 +120,6 @@ void AmarokConfigDialog::updateSettings()
 void AmarokConfigDialog::updateWidgets()
 {
     m_soundSystem->setCurrentText( m_pluginAmarokName[AmarokConfig::soundSystem()] );
-    
     soundSystemChanged();
 }
 

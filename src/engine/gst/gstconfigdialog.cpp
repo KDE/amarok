@@ -23,8 +23,12 @@ GstConfigDialog::GstConfigDialog( GstEngine* engine )
     m_view = new GstConfigDialogBase();
             
     // Initialise widgets with current settings
-    m_view->kComboBox_output->insertStringList( m_engine->getOutputsList() );
-    m_view->kComboBox_output->setCurrentText( GstConfig::soundOutput() );
+    const QStringList outputs = m_engine->getOutputsList();
+    m_view->kComboBox_output->insertStringList( outputs );
+    
+    if ( outputs.contains( GstConfig::soundOutput() ) )
+        m_view->kComboBox_output->setCurrentText( GstConfig::soundOutput() );
+    
     m_view->checkBox1->setChecked( GstConfig::customSoundDevice() );
     m_view->kLineEdit_device->setText( GstConfig::soundDevice() );
 
@@ -38,8 +42,6 @@ GstConfigDialog::GstConfigDialog( GstEngine* engine )
 GstConfigDialog::~GstConfigDialog()
 {
     kdDebug() << k_funcinfo << endl;
-    
-    delete m_view;
 }
 
 
