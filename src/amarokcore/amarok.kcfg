@@ -70,6 +70,11 @@
         <default>true</default>
         <whatsthis>Enable/Disable tray icon for amaroK.</whatsthis>
     </entry>
+    <entry key="Animate Tray Icon" type="Bool">
+        <label>Whether to animate the systray icon</label>
+        <default>true</default>
+        <whatsthis>Enable/Disable tray icon animation.</whatsthis>
+    </entry>
     <entry key="Show Player Window" type="Bool">
         <label>Whether to show player window</label>
         <default>true</default>

@@ -8,6 +8,7 @@
 //
 
 #include "amarok.h"
+#include "amarokconfig.h"
 #include "enginecontroller.h"
 #include "systray.h"
 
@@ -146,12 +147,14 @@ amaroK::TrayIcon::engineStateChanged( Engine::State state )
 
     case Engine::Playing:
         overlay = &playOverlay;
-        paintIcon( mergeLevel, true );
+        if( AmarokConfig::animateTrayIcon() ) blinkTimerID = startTimer( 1500 );  // start 'blink' timer
+        else paintIcon( mergeLevel, true ); // repaint the icon
         break;
 
     default: // idle/stopped case
         overlay = &stopOverlay;
-        paintIcon( -1, true );
+        if( AmarokConfig::animateTrayIcon() ) blinkTimerID = startTimer( 2500 );  // start 'blink' timer
+        else paintIcon( -1, true ); // repaint the icon
     }
 }
 

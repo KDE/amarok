@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>Options1</class>
 <widget class="QWidget">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>339</width>
-            <height>402</height>
+            <height>408</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -19,6 +19,9 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>Options1</string>
     </property>
     <property name="whatsThis" stdset="0">
         <string>Check to enable splashscreen during amaroK startup.</string>
@@ -122,26 +125,15 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QCheckBox" row="0" column="0" rowspan="1" colspan="3">
+                <widget class="QLabel" row="4" column="0">
                     <property name="name">
-                        <cstring>kcfg_ShowSplashscreen</cstring>
+                        <cstring>textLabel1</cstring>
                     </property>
                     <property name="text">
-                        <string>Show splash-screen on start&amp;up</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Enable/Disable splashscreen during amaroK startup.</string>
+                        <string>Default size for cover previews</string>
                     </property>
                 </widget>
-                <widget class="QCheckBox" row="2" column="0" rowspan="1" colspan="3">
-                    <property name="name">
-                        <cstring>kcfg_ShowPlayerWindow</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Show player window (like XMMS)</string>
-                    </property>
-                </widget>
-                <widget class="QSpinBox" row="3" column="1">
+                <widget class="QSpinBox" row="4" column="1">
                     <property name="name">
                         <cstring>kcfg_CoverPreviewSize</cstring>
                     </property>
@@ -155,7 +147,7 @@
                         <number>100</number>
                     </property>
                 </widget>
-                <spacer row="3" column="2">
+                <spacer row="4" column="2">
                     <property name="name">
                         <cstring>spacer7</cstring>
                     </property>
@@ -172,6 +164,14 @@
                         </size>
                     </property>
                 </spacer>
+                <widget class="QCheckBox" row="3" column="0" rowspan="1" colspan="3">
+                    <property name="name">
+                        <cstring>kcfg_ShowPlayerWindow</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Show player window (like XMMS)</string>
+                    </property>
+                </widget>
                 <widget class="QCheckBox" row="1" column="0" rowspan="1" colspan="3">
                     <property name="name">
                         <cstring>kcfg_ShowTrayIcon</cstring>
@@ -179,21 +179,58 @@
                     <property name="text">
                         <string>Show &amp;tray icon</string>
                     </property>
+                    <property name="accel">
+                        <string>Alt+T</string>
+                    </property>
                     <property name="whatsThis" stdset="0">
                         <string>Check to enable the amaroK tray icon.</string>
                     </property>
                 </widget>
-                <widget class="QLabel" row="3" column="0">
+                <widget class="QCheckBox" row="2" column="0" rowspan="1" colspan="3">
                     <property name="name">
-                        <cstring>textLabel1</cstring>
+                        <cstring>kcfg_AnimateTrayIcon</cstring>
                     </property>
                     <property name="text">
-                        <string>Default size for cover previews</string>
+                        <string>&amp;Animate tray icon</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+A</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Check to enable the amaroK tray icon.</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="0" column="0" rowspan="1" colspan="3">
+                    <property name="name">
+                        <cstring>kcfg_ShowSplashscreen</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Show splash-screen on start&amp;up</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+U</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Enable/Disable splashscreen during amaroK startup.</string>
                     </property>
                 </widget>
             </grid>
         </widget>
     </grid>
 </widget>
+<connections>
+    <connection>
+        <sender>kcfg_ShowTrayIcon</sender>
+        <signal>stateChanged(1)</signal>
+        <receiver>kcfg_AnimateTrayIcon</receiver>
+        <slot>setHidden(false)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_ShowTrayIcon</sender>
+        <signal>stateChanged(0)</signal>
+        <receiver>kcfg_AnimateTrayIcon</receiver>
+        <slot>setHidden(true)</slot>
+    </connection>
+</connections>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
