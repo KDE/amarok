@@ -154,16 +154,15 @@ CoverManager::CoverManager()
 
     QString locale = AmarokConfig::amazonLocale();
 
-    if ( locale == "us" || locale == "com" )
-    {
+    if ( locale == "fr" )      m_currentLocale = France;
+    else if ( locale == "de" ) m_currentLocale = Germany;
+    else if ( locale == "uk" ) m_currentLocale = UK;
+    else {
         // make sure we handle old config files correctly
         locale = "us";
         m_currentLocale = International;
     }
-    else if ( locale == "fr" ) m_currentLocale = France;
-    else if ( locale == "de" ) m_currentLocale = Germany;
-    else if ( locale == "uk" ) m_currentLocale = UK;
-    else m_currentLocale = -1;
+
     m_amazonLocaleMenu->setItemChecked( m_currentLocale, true );
 
     //fetch missing covers button
