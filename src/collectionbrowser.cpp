@@ -16,6 +16,7 @@
 #include <qdragobject.h>
 #include <qmessagebox.h>
 #include <qptrlist.h>
+#include <qtimer.h>
 
 #include <kactioncollection.h>
 #include <kconfig.h>
@@ -71,11 +72,22 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_view->cat1Menu( m_view->idForCat( m_view->m_category1 ) );
     m_view->cat2Menu( m_view->idForCat( m_view->m_category2 ) );
 
-    connect( m_searchEdit, SIGNAL( returnPressed() ),
-             this,           SLOT( slotSetFilter() ) );
+    timer = new QTimer( this );
+    connect( timer, SIGNAL( timeout() ), this, SLOT( slotSetFilter() ) );
+
+    connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ),
+             this,           SLOT( slotSetFilterTimeout() ) );
 
     setFocusProxy( m_view ); //default object to get focus
     setMinimumWidth( menu->sizeHint().width() + 2 ); //set a reasonable minWidth
+}
+
+
+void
+CollectionBrowser::slotSetFilterTimeout() //slot
+{
+    if ( timer->isActive() ) timer->stop();
+    timer->start( 300, true );
 }
 
 

@@ -36,6 +36,7 @@ class CollectionBrowser: public QVBox
         CollectionBrowser( const char* name );
 
     private slots:
+        void slotSetFilterTimeout();
         void slotSetFilter();
 
     private:
@@ -47,6 +48,7 @@ class CollectionBrowser: public QVBox
         KPopupMenu* m_cat2Menu;
         KLineEdit* m_searchEdit;
         CollectionView* m_view;
+        QTimer* timer;
 };
 
 
