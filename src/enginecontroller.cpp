@@ -75,6 +75,7 @@ EngineBase *EngineController::loadEngine() //static
     connect( (EngineBase*)plugin, SIGNAL(stateChanged( Engine::State )), instance(), SLOT(slotStateChanged( Engine::State )) );
     connect( (EngineBase*)plugin, SIGNAL(trackEnded()), instance(), SLOT(slotTrackEnded()) );
     connect( (EngineBase*)plugin, SIGNAL(statusText( const QString& )), instance(), SIGNAL(statusText( const QString& )) );
+    connect( (EngineBase*)plugin, SIGNAL(metaData( const Engine::SimpleMetaBundle& )), instance(), SLOT(slotEngineMetaData( const Engine::SimpleMetaBundle& )) );
     connect( (EngineBase*)plugin, SIGNAL(showConfigDialog( int )), kapp, SLOT(slotConfigAmarok( int )) );
 
     if( static_cast<EngineBase*>(plugin)->init() )
@@ -427,7 +428,20 @@ void EngineController::slotStreamMetaData( const MetaBundle &bundle ) //SLOT
     if ( AmarokConfig::titleStreaming() )
     {
         m_bundle = bundle;
-        newMetaDataNotify( bundle, false /* not a new track */ );
+        newMetaDataNotify( m_bundle, false /* not a new track */ );
+    }
+}
+
+void EngineController::slotEngineMetaData( const Engine::SimpleMetaBundle &bundle ) //SLOT
+{
+    if ( AmarokConfig::titleStreaming() && m_engine->isStream() )
+    {
+        m_bundle.setArtist( bundle.artist );
+        m_bundle.setTitle( bundle.title );
+        m_bundle.setComment( bundle.comment );
+        m_bundle.setAlbum( bundle.album );
+
+        newMetaDataNotify( m_bundle, false /* not a new track */ );
     }
 }
 

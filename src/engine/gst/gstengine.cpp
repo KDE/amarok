@@ -114,6 +114,43 @@ GstEngine::candecode_handoff_cb( GstElement*, GstBuffer*, gpointer ) //static
 
 
 void
+GstEngine::found_tag_cb( GstElement*, GstElement*, GstTagList* taglist, gpointer ) //static
+{
+    kdDebug() <<  k_funcinfo << endl;
+
+    char* string;
+    Engine::SimpleMetaBundle bundle;
+    bool success = false;
+
+    if ( gst_tag_list_get_string( taglist, GST_TAG_TITLE, &string ) && string ) {
+        kdDebug() << "[Gst-Engine] received tag 'Title': " << QString( string ) << endl;
+        bundle.title = QString( string );
+        success = true;
+    }
+    if ( gst_tag_list_get_string( taglist, GST_TAG_ARTIST, &string ) && string ) {
+        kdDebug() << "[Gst-Engine] received tag 'Artist': " << QString( string ) << endl;
+        bundle.artist = QString( string );
+        success = true;
+    }
+    if ( gst_tag_list_get_string( taglist, GST_TAG_COMMENT, &string ) && string ) {
+        kdDebug() << "[Gst-Engine] received tag 'Comment': " << QString( string ) << endl;
+        bundle.comment = QString( string );
+        success = true;
+    }
+    if ( gst_tag_list_get_string( taglist, GST_TAG_ALBUM, &string ) && string ) {
+        kdDebug() << "[Gst-Engine] received tag 'Album': " << QString( string ) << endl;
+        bundle.album = QString( string );
+        success = true;
+    }
+
+    if ( success ) {
+        instance()->m_metaBundle = bundle;
+        QTimer::singleShot( 0, instance(), SLOT( newMetaData() ) );
+    }
+}
+
+
+void
 GstEngine::outputError_cb( GstElement* /*element*/, GstElement* /*domain*/, GError* error, gchar* debug, gpointer /*data*/ ) //static
 {
     kdDebug() << k_funcinfo << endl;
@@ -801,6 +838,13 @@ GstEngine::newKioData( KIO::Job*, const QByteArray& array )  //SLOT
 
 
 void
+GstEngine::newMetaData()  //SLOT
+{
+    emit instance()->metaData( m_metaBundle );
+}
+
+
+void
 GstEngine::kioFinished()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
@@ -1072,6 +1116,7 @@ InputPipeline::InputPipeline()
     if ( !( volume = GstEngine::createElement( "volume", bin ) ) ) { goto error; }
 
     g_signal_connect( G_OBJECT( spider ), "eos", G_CALLBACK( GstEngine::eos_cb ), bin );
+    g_signal_connect( G_OBJECT( spider ), "found-tag", G_CALLBACK( GstEngine::found_tag_cb ), bin );
 
     // Start silent
     gst_element_set( volume, "volume", 0.0, NULL );

@@ -87,6 +87,7 @@ class GstEngine : public Engine::Base
         void newKioData( KIO::Job*, const QByteArray& array );
         void errorNoOutput();
         void configChanged();
+        void newMetaData();
 
     private:
         static GstEngine* instance() { return s_instance; }
@@ -107,6 +108,7 @@ class GstEngine : public Engine::Base
         /** Duplicates audio data for application side processing */
         static void handoff_cb( GstElement*, GstBuffer*, gpointer );
         static void candecode_handoff_cb( GstElement*, GstBuffer*, gpointer );
+        static void found_tag_cb( GstElement*, GstElement*, GstTagList*, gpointer );
         static void outputError_cb( GstElement*, GstElement*, GError*, gchar*, gpointer );
         static void inputError_cb( GstElement*, GstElement*, GError*, gchar*, gpointer );
         static void kio_resume_cb();
@@ -166,6 +168,7 @@ class GstEngine : public Engine::Base
         bool m_pipelineFilled;
         float m_fadeValue;
         vector<int> m_equalizerGains;
+        Engine::SimpleMetaBundle m_metaBundle;
 
         bool m_shutdown;
         mutable bool m_canDecodeSuccess;

@@ -15,7 +15,6 @@
 
 #include <kurl.h>
 
-
 // DEVELOPMENT NOTES
 // * You must handle your own media, do not rely on amaroK to call stop() before play() etc.
 // * Generally at this time, emitting stateChanged( Engine::Idle ) is not necessary
@@ -30,6 +29,7 @@ namespace Engine
 {
     typedef std::vector<int16_t> Scope;
 
+    class SimpleMetaBundle;
     class Effects;
 
     /**
@@ -55,6 +55,9 @@ namespace Engine
 
         /** Transmits status message. */
         void statusText( const QString& );
+
+        /** Transmits metadata package. */
+        void metaData( const Engine::SimpleMetaBundle& );
 
         /** Signals a change in the engine's state. */
         void stateChanged( Engine::State );
@@ -197,6 +200,16 @@ namespace Engine
         KURL  m_url;
         Scope m_scope;
         bool  m_isStream;
+    };
+
+
+    class SimpleMetaBundle
+    {
+     public:
+        QString title;
+        QString artist;
+        QString album;
+        QString comment;
     };
 
 
