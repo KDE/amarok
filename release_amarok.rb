@@ -74,7 +74,7 @@ if doi18n == "yes"
         # Instead, we explicitly pass the name..
         makefile = File.new( "doc/#{lang}/Makefile.am", File::CREAT | File::RDWR | File::TRUNC )
         makefile << "KDE_LANG = #{lang}\n"
-        makefile << "KDE_DOCS=#{name}\n"
+        makefile << "KDE_DOCS = #{name}\n"
         makefile.close
 
         puts( "done.\n" )
