@@ -11,8 +11,7 @@ drop interface, that really makes playlist handling easy.
 
     * fresh playlist concept, very fast to use, with drag and drop
 
-    * plays all formats supported by aRts, including mp3, ogg, audio CDs,
-      streams
+    * plays all audio formats, including mp3, ogg, audio CDs, streams
 
     * audio effects, like reverb and compressor
 
@@ -29,22 +28,19 @@ DEPENDENCIES
 ============
 
 required
-    * KDELIBS 3.2
+    * kdelibs 3.2
       http://www.kde.org
 
     * TagLib 1.0
       http://freshmeat.net/projects/taglib
 
 recommended
-    * aRts 1.2 + KDEMULTIMEDIA 3.2
-      http://www.kde.org
+    * GStreamer-0.8.1 + Gst-Plugins-0.8.1
+      http://gstreamer.net
 
     * OpenGL accelerated X-Server
 
 optional
-    * GStreamer-0.8.1 + Gst-Plugins-0.8.1
-      http://gstreamer.net
-
     * NMM 0.4.4
       http://www.networkmultimedia.org
 
@@ -53,6 +49,9 @@ optional
 
     * Xine 1.0.0
       http://xine.sourceforge.net
+
+    * aRts 1.2 + kdemultimedia 3.2
+      http://www.kde.org
 
 
 Please note, if you obtain these dependencies via a packaging system, you must
