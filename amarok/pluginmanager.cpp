@@ -68,16 +68,16 @@ Plugin*
         return 0;
     }
 
-    void* create = lib->symbol( "create_plugin" );
+    //look up address of init function and cast it to pointer-to-function
+    Plugin* (*create_plugin)() = ( Plugin* (*)() ) lib->symbol( "create_plugin" );
 
-    if ( !create ) {
-        kdWarning() << k_funcinfo << "create == NULL\n";
+    if ( !create_plugin ) {
+        kdWarning() << k_funcinfo << "create_plugin == NULL\n";
         return 0;
     }
 
-    void* (*plugInStart)();
-    plugInStart = ( void* (*)() ) create;
-    Plugin* plugin = static_cast<Plugin*>( plugInStart() );
+    //create plugin on the heap
+    Plugin* plugin = create_plugin();
     
     //put plugin into store
     StoreItem item;
@@ -93,8 +93,9 @@ Plugin*
 void
     PluginManager::unload( Plugin* plugin )
 {
-    vector<StoreItem>::iterator it;
+    kdDebug() << k_funcinfo << endl;
     
+    vector<StoreItem>::iterator it;
     //determine if store contains this plugin
     for ( it = m_store.begin(); it != m_store.end(); ++it ) {
         if ( (*it).plugin == plugin )
@@ -104,7 +105,7 @@ void
     if ( it != m_store.end() ) {
         delete (*it).plugin;
         KLibLoader *loader = KLibLoader::self();
-//         loader->unloadLibrary( (*it).service->library().latin1() );
+        loader->unloadLibrary( (*it).service->library().latin1() );
         
         m_store.erase( it );
     }
@@ -114,6 +115,8 @@ void
 KService::Ptr
     PluginManager::getService( const Plugin* plugin )
 {
+    kdDebug() << k_funcinfo << endl;
+    
     KService::Ptr service;
     
     if ( !plugin ) {

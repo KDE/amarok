@@ -7,7 +7,6 @@ SUBDIRS = amarokcore $(AMAROKARTS_BUILD) plugin analyzers titleproxy engine imag
 bin_PROGRAMS = amarokapp
 
 INCLUDES = \
-        -I$(kde_includes)/arts \
         -I$(top_builddir)/amarok/amarok/amarokarts \
         -I$(top_builddir)/amarok/amarok/amarokcore \
         -I$(top_srcdir)/amarok/amarok/amarokcore \
@@ -15,6 +14,7 @@ INCLUDES = \
         -I$(top_srcdir)/amarok/amarok/engine \
         -I$(top_srcdir)/amarok/amarok/plugin \
         -I$(top_srcdir)/amarok/amarok/titleproxy \
+        -I$(kde_includes)/arts \
         $(taglib_includes) \
         $(all_includes)
 

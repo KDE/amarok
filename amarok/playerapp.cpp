@@ -310,11 +310,9 @@ void PlayerApp::initCliArgs( int argc, char *argv[] ) //static
 
 void PlayerApp::initEngine()
 {
-    Plugin* plugin;
-    
-    plugin = PluginManager::createFromQuery
-                 ( "[X-KDE-amaroK-plugintype] == 'engine' and "    
-                   "Name                      == '" + AmarokConfig::soundSystem() + "'" );                            
+    Plugin* plugin = PluginManager::createFromQuery
+                         ( "[X-KDE-amaroK-plugintype] == 'engine' and "    
+                           "Name                      == '" + AmarokConfig::soundSystem() + "'" );                            
     
     if ( !plugin ) {
         kdWarning() << k_funcinfo << "Cannot load the specified engine. Trying with another engine..\n";

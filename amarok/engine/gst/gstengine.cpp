@@ -135,7 +135,7 @@ void GstEngine::init( bool&, int scopeSize, bool )
     
     kdDebug() << k_funcinfo << "BEFORE gst_element_factory_make( osssink, play_audio );\n";
     m_pAudiosink           = gst_element_factory_make( "osssink", "play_audio" );
-    GstElement *pIdentity  = gst_element_factory_make( "identity", "rawscope" );
+//     GstElement *pIdentity  = gst_element_factory_make( "identity", "rawscope" );
 
 //     g_signal_connect ( G_OBJECT( m_pAudiosink ), "handoff",
 //                        G_CALLBACK( handoff_cb ), m_pThread );
