@@ -1491,7 +1491,10 @@ QDragObject* Playlist::dragObject()
         PlaylistItem *item = (PlaylistItem*)*it;
         KURL url = item->url();
         list += url;
-        map[ url.path() ] = QString("%1;%2").arg(item->title()).arg(item->seconds());
+        QString key = url.isLocalFile() ? url.path() : url.url();
+        map[ key ] = QString("%1;%2").arg( item->title() ).arg( item->seconds() );
+        kdDebug() << "title: "<< item->title() <<" length: "<< item->seconds() <<endl;
+        kdDebug() << "url " <<item->url() << endl;
     }
     //it returns a KURLDrag with a QMap containing the title and the length of the track
     //this is used by the playlistbrowser to insert tracks in playlists without re-reading tags

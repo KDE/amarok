@@ -310,7 +310,7 @@ void PlaylistBrowser::saveM3U( PlaylistBrowserItem *item )
         {
             stream << "#EXTINF:";
             stream << info->length();
-            stream << ',';
+            stream << ',';         
             stream << info->title();
             stream << '\n';
             stream << (info->url().protocol() == "file" ? info->url().path() : info->url().url());
@@ -795,13 +795,14 @@ void PlaylistBrowserItem::insertTracks( QListViewItem *after, KURL::List list, Q
     uint k = 0;
     const KURL::List::ConstIterator end = list.end();
     for ( KURL::List::ConstIterator it = list.begin(); it != end; ++it,k++ ) {
-    
-        QString str = map[(*it).path()];
+        QString key = (*it).isLocalFile() ? (*it).path() : (*it).url();
+        QString str = map[ key ];
         QString title = str.section(';',0,0);
-        int length = str.section(';',1,1).toInt();
-        m_length += length;
-
+        int length = str.section(';',1,1).toUInt();
+        
         TrackItemInfo *newInfo = new TrackItemInfo( *it, title, length );
+        m_length += newInfo->length();
+        
         if( after ) {
             m_trackList.insert( pos+k, newInfo );
             if( isOpen() )
@@ -1048,6 +1049,23 @@ PlaylistTrackItem::PlaylistTrackItem( QListViewItem *parent, QListViewItem *afte
 const KURL &PlaylistTrackItem::url()
 {
     return m_trackInfo->url();
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////
+//    CLASS TrackItemInfo
+////////////////////////////////////////////////////////////////////////////////
+
+TrackItemInfo::TrackItemInfo( const KURL &u, const QString &t, const int l ) 
+        : m_url( u ) 
+        , m_title( t )
+        , m_length( l )
+{
+    if( m_title.isEmpty() )
+        m_title = MetaBundle::prettyTitle( fileBaseName( m_url.path() ) );
+    
+    if( m_length < 0 )
+        m_length = 0;
 }
 
 

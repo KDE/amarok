@@ -162,8 +162,7 @@ class PlaylistTrackItem : public KListViewItem
 //this class is used to store information (url, title and length) of a playlist track
 class TrackItemInfo {
 public:
-    TrackItemInfo( const KURL &u, const QString &t, const int l ) 
-        : m_url( u ), m_title( t ), m_length( l ) {}
+    TrackItemInfo( const KURL &u, const QString &t, const int l );
     ~TrackItemInfo() {}
     const KURL &url() { return m_url; }
     const QString &title() { return m_title; }
