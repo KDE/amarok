@@ -27,6 +27,7 @@
 #include "kbookmarkhandler.h"
 
 #include <qhbox.h>
+#include <qdir.h>
 #include <qlabel.h>
 #include <qtoolbutton.h>
 #include <qtooltip.h>
@@ -65,15 +66,20 @@ FileBrowser::FileBrowser( const char * name )
     m_toolbar->setIconSize( 16 );
     m_toolbar->setEnableContextMenu( false );
 
+    QString currentLocation = config->readEntry( "Location" );
+    QDir currentDir( currentLocation );
+    if ( !currentDir.exists() )
+        currentLocation = QDir::homeDirPath();
+    
     cmbPath = new KURLComboBox( KURLComboBox::Directories, true, this, "path combo" );
     cmbPath->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ));
     cmbPath->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
     cmbPath->setMaxItems( 9 );
     cmbPath->setURLs( config->readListEntry( "Dir History" ) );
-    cmbPath->lineEdit()->setText( config->readEntry( "Location" ) );
+    cmbPath->lineEdit()->setText( currentLocation );
     setFocusProxy( cmbPath ); //so the dirOperator is focussed when we get focus events
 
-    dir = new KDirOperator( KURL( config->readEntry( "Location" ) ), this );
+    dir = new KDirOperator( KURL( currentLocation ), this );
     connect( dir, SIGNAL(urlEntered( const KURL& )), SLOT(dirUrlEntered( const KURL& )) );
     dir->setEnableDirHighlighting( true );
     dir->setMode( KFile::Mode((int)KFile::Files | (int)KFile::Directory) ); //allow selection of multiple files + dirs
