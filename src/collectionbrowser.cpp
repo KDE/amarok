@@ -256,9 +256,8 @@ CollectionView::scan()  //SLOT
         m_insertdb->scan( m_dirs, m_recursively );
     
         m_progressBox = new QHBox( m_parent  );
-        KIconLoader loader;
-        QPushButton* button = new QPushButton( loader.loadIconSet( "button_cancel", KIcon::NoGroup ),
-                                               i18n( "Abort Scan" ), m_progressBox );
+        QPushButton* button = new QPushButton( SmallIcon( "button_cancel" ),
+                                  i18n( "Abort" ), m_progressBox );
         connect( button, SIGNAL( clicked() ), m_insertdb, SLOT( stopScan() ) );
         m_progress = new KProgress( m_progressBox );
         m_progressBox->show();
