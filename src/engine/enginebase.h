@@ -111,7 +111,7 @@ class EngineBase : public QObject, public amaroK::Plugin {
         virtual void setSoundOutput( const QString& output );
         virtual void setSoundDevice( const QString& device ) { m_soundDevice = device; }
         virtual void setDefaultSoundDevice( bool isDefault ) { m_defaultSoundDevice = isDefault; }
-        
+        virtual void setThreadPriority( int priority ) { m_threadPriority = priority; }
         
     public slots:
         virtual void play( const KURL& ) = 0;
@@ -141,7 +141,8 @@ class EngineBase : public QObject, public amaroK::Plugin {
         bool m_restoreEffects;
         QString m_soundOutput;
         QString m_soundDevice;
-        bool    m_defaultSoundDevice;
+        bool m_defaultSoundDevice;
+        int m_threadPriority;
         
         EngineBase( const EngineBase& ); //disable
         const EngineBase &operator=( const EngineBase& ); //disable

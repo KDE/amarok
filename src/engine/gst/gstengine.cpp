@@ -302,7 +302,7 @@ GstEngine::play( const KURL& url )  //SLOT
 
     /* create a new pipeline (thread) to hold the elements */
     m_thread = gst_thread_new ( "thread" );
-    g_object_set( G_OBJECT( m_thread ), "priority", 2, NULL );
+    g_object_set( G_OBJECT( m_thread ), "priority", m_threadPriority, NULL );
 
     kdDebug() << "Sound output method: " << m_soundOutput << endl;
 

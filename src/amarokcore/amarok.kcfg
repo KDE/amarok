@@ -185,6 +185,13 @@
         <default>true</default>
         <whatsthis>Enable/Disable shoutcast metadata fetching. If set, amaroK displays metadata also for shoutcast streams.</whatsthis>
     </entry>
+    <entry key="Thread Priority" type="Int">
+        <label>Priority of GStreamer pipeline thread</label>
+        <default>2</default>
+        <min>0</min>
+        <max>3</max>
+        <whatsthis>The priority of the thread for GStreamer, a value between 0 (low) and 3 (high).</whatsthis>
+    </entry>
 </group>
 
 <group name="OSD">

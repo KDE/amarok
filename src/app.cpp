@@ -436,6 +436,7 @@ void App::applySettings( bool firstTime )
          engine->setDefaultSoundDevice( !AmarokConfig::customSoundDevice() );
          engine->setRestoreEffects( AmarokConfig::rememberEffects() );
          engine->setVolume( AmarokConfig::masterVolume() );
+         engine->setThreadPriority( AmarokConfig::threadPriority() );
          //TODO deprecate/improve
          engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
     } //</Engine>
