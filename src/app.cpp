@@ -834,13 +834,17 @@ void App::pruneCoverImages()
         list.append( listCache.at( i ) );
 
     // Prune files
-    int count = 0;
+    uint count = 0;
+    uint pruneCount = 0;
     const QDate currentDate = QDate::currentDate();
     for ( uint i = 0; i < list.count(); ++i, ++count )
         if ( list.at( i )->created().date().daysTo( currentDate ) > MAX_DAYS )
+        {
+            pruneCount++;
             QFile::remove( list.at( i )->absFilePath() );
+        }
 
-    kdDebug() << "[App] Pruned " << count << " amazon cover images.\n";
+    kdDebug() << "[App] Pruned " << pruneCount << " of " << count << " amazon cover images.\n";
 }
 
 
