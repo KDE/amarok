@@ -37,7 +37,7 @@ namespace TitleProxy
     {
         Q_OBJECT
         public:
-            Proxy( KURL url );
+            Proxy( KURL url, int streamingMode );
             ~Proxy();
 
             KURL proxyUrl();
@@ -45,13 +45,15 @@ namespace TitleProxy
         signals:
             void error();
             void metaData( const MetaBundle& );
-
+            void streamData( char*, int size );
+            
         public slots:
 
         private slots:
             void readRemote();
             bool processHeader( Q_LONG &index, Q_LONG bytesRead );
             void accept( int socket );
+            void sendRequest();
 
         private:
             void transmitData( const QString &data );
@@ -59,6 +61,7 @@ namespace TitleProxy
 
 // ATTRIBUTES ------
             KURL            m_url;
+            int             m_streamingMode;
             bool            m_initSuccess;
             int             m_metaInt;
             int             m_bitRate;

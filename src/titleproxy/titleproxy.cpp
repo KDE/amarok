@@ -48,9 +48,10 @@ static const uint MAX_PROXYPORT = 7777;
 static const int BUFSIZE = 16384;
 
 
-Proxy::Proxy( KURL url )
+Proxy::Proxy( KURL url, int streamingMode )
         : QObject()
         , m_url( url )
+        , m_streamingMode( streamingMode )
         , m_initSuccess( false )
         , m_metaInt( 0 )
         , m_byteCount( 0 )
@@ -75,26 +76,31 @@ Proxy::Proxy( KURL url )
         return ;
     }
 
-    uint i;
-    Server* server;
-    for ( i = MIN_PROXYPORT; i <= MAX_PROXYPORT; i++ ) {
-        server = new Server( i, this );
-        kdDebug() << k_funcinfo <<
-        "Trying to bind to port: " << i << endl;
-        if ( server->ok() )     // found a free port
-            break;
-        delete server;
-    }
-    
-    if ( i > MAX_PROXYPORT ) {
-        emit error();
-        return ;
-    }
-    
     m_pBuf = new char[ BUFSIZE ];
-    m_usedPort = i;
-    m_initSuccess = true;
-    connect( server, SIGNAL( connected( int ) ), this, SLOT( accept( int ) ) );
+    
+    if ( streamingMode ) {
+        uint i;
+        Server* server;
+        for ( i = MIN_PROXYPORT; i <= MAX_PROXYPORT; i++ ) {
+            server = new Server( i, this );
+            kdDebug() << k_funcinfo <<
+            "Trying to bind to port: " << i << endl;
+            if ( server->ok() )     // found a free port
+                break;
+            delete server;
+        }
+        if ( i > MAX_PROXYPORT ) {
+            emit error();
+            return ;
+        }
+        m_usedPort = i;
+        m_initSuccess = true;
+        connect( server, SIGNAL( connected( int ) ), this, SLOT( accept( int ) ) );
+    }
+    else {    
+        m_initSuccess = true;
+        sendRequest();
+    }
 }
 
 
@@ -129,7 +135,10 @@ void Proxy::accept( int socket )
     m_sockProxy.waitForMore( 5000 );
     int bytesRead = m_sockProxy.readBlock( m_pBuf, BUFSIZE );
     kdDebug() << k_funcinfo << "m_sockProxy bytesRead = " << bytesRead << endl;
-    
+
+    QString artsRequest = QString::fromAscii( m_pBuf, BUFSIZE );
+    kdDebug() << "artsRequest:\n" << artsRequest << endl;
+        
     QCString str( m_pBuf, bytesRead );
     int index1 = str.find( "GET / HTTP/1.1" );
     int index2 = str.find( "\n", index1 ) + 1;
@@ -145,6 +154,29 @@ void Proxy::accept( int socket )
     m_sockRemote.writeBlock( m_pBuf + index2, bytesRead - index2 );
     
     connect( &m_sockRemote, SIGNAL( readyRead() ), this, SLOT( readRemote() ) );
+    
+    kdDebug() << "END " << k_funcinfo << endl;
+}
+
+
+void Proxy::sendRequest()
+{
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
+  
+    QString request = QString( "GET %1 HTTP/1.1\r\n" 
+                               "Icy-MetaData:1\r\n"
+                               "Connection: Keep-Alive\r\n"
+                               "User-Agent: aRts/1.2.2\r\n"
+                               "Accept: audio/x-mp3, video/mpeg, application/ogg\r\n"
+                               "Accept-Encoding: x-gzip, x-deflate, gzip, deflate\r\n"
+                               "Accept-Charset: iso-8859-15, utf-8;q=0.5, *;q=0.5\r\n"
+                               "Accept-Language: de, en\r\n\r\n" )
+                      .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) );
+
+//     Host: localhost:6666
+                              
+    connect( &m_sockRemote, SIGNAL( readyRead() ), this, SLOT( readRemote() ) );
+    m_sockRemote.writeBlock( request.latin1(), request.length() );
     
     kdDebug() << "END " << k_funcinfo << endl;
 }
@@ -181,7 +213,11 @@ void Proxy::readRemote()
             if ( bytesWrite > m_metaInt - m_byteCount )
                 bytesWrite = m_metaInt - m_byteCount;
 
-            bytesWrite = m_sockProxy.writeBlock( m_pBuf + index, bytesWrite );
+            if ( m_streamingMode )
+                bytesWrite = m_sockProxy.writeBlock( m_pBuf + index, bytesWrite );
+            else 
+                emit streamData( m_pBuf + index, bytesWrite );
+            
             if ( bytesWrite == -1 ) { emit error(); return; }
             
             index += bytesWrite;
@@ -197,8 +233,7 @@ bool Proxy::processHeader( Q_LONG &index, Q_LONG bytesRead )
         m_headerStr.append( m_pBuf[ index++ ] );
         if ( m_headerStr.endsWith( "\r\n\r\n" ) ) {
 
-            /*kdDebug() << k_funcinfo <<
-                  "Got shoutcast header: '" << m_headerStr << "'" << endl;*/
+            kdDebug() << k_funcinfo << "Got shoutcast header: '" << m_headerStr << "'" << endl;
             /*
             TODO: emit error including helpful error message on headers like this:
 
@@ -219,7 +254,8 @@ bool Proxy::processHeader( Q_LONG &index, Q_LONG bytesRead )
                                                QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 );
             if ( m_streamUrl.startsWith( "www.", true ) )
                 m_streamUrl.prepend( "http://" );
-            m_sockProxy.writeBlock( m_headerStr.latin1(), m_headerStr.length() );
+            if ( m_streamingMode )
+                m_sockProxy.writeBlock( m_headerStr.latin1(), m_headerStr.length() );
             m_headerFinished = true;
 
             if ( !m_metaInt ) {

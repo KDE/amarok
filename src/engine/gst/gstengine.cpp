@@ -43,8 +43,11 @@ AMAROK_EXPORT_PLUGIN( GstEngine )
 static const int
 SCOPEBUF_SIZE = 40000;
 
+static const int
+STREAMBUF_SIZE = 40000;
+
 GstEngine*
-GstEngine::pObject;
+GstEngine::self;
 
 
 void
@@ -54,7 +57,7 @@ GstEngine::eos_cb( GstElement*, GstElement* )
 
     //this is the Qt equivalent to an idle function: delay the call until all events are finished,
     //otherwise gst will crash horribly
-    QTimer::singleShot( 0, pObject, SLOT( stop() ) );
+    QTimer::singleShot( 0, self, SLOT( stop() ) );
 }
 
 
@@ -62,7 +65,7 @@ void
 GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
 {
     int channels = 2;  //2 == default, if we cannot determine the value from gst
-    GstCaps* caps = gst_pad_get_caps( gst_element_get_pad( pObject->m_pSpider, "src_0" ) );
+    GstCaps* caps = gst_pad_get_caps( gst_element_get_pad( self->m_pSpider, "src_0" ) );
 
     for ( int i = 0; i < gst_caps_get_size( caps ); i++ ) {
         GstStructure* structure = gst_caps_get_structure( caps, i );
@@ -81,8 +84,8 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
 
         //divide length by 2 for casting from 8bit to 16bit, and divide by number of channels
         for ( ulong i = 0; i < GST_BUFFER_SIZE( buf ) / 2 / channels; i += channels ) {
-            if ( pObject->m_scopeBufIndex == pObject->m_scopeBuf.size() ) {
-                pObject->m_scopeBufIndex = 0;
+            if ( self->m_scopeBufIndex == self->m_scopeBuf.size() ) {
+                self->m_scopeBufIndex = 0;
                 kdDebug() << k_funcinfo << "m_scopeBuf overflow!\n";
             }
 
@@ -92,9 +95,24 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
                 //convert uint-16 to float and write into buf
                 temp += ( float ) ( data[ i + j ] - 32768 ) / 32768.0;
             }
-            pObject->m_scopeBuf[ pObject->m_scopeBufIndex++ ] = temp;
+            self->m_scopeBuf[ self->m_scopeBufIndex++ ] = temp;
         }
     }
+}
+
+
+void
+GstEngine::handoff_fakesrc_cb( GstElement*, GstBuffer* buf, GstPad /*pad*/, gpointer )
+{
+    kdDebug() << k_funcinfo << endl;
+    
+    kdDebug() << "buf->size: " << buf->size << endl;
+    guint8* data = buf->data;
+    
+    for ( int i = 0; i < buf->size && self->m_streamBufIndex < STREAMBUF_SIZE; i++ )
+        data[i] = self->m_streamBuf[i]; 
+
+    self->m_streamBufIndex = 0;
 }
 
 
@@ -103,7 +121,7 @@ GstEngine::typefindFound_cb( GstElement* /*typefind*/, GstCaps* /*caps*/, GstEle
 {
     kdDebug() << "GstEngine::typefindFound" << endl;
 
-    pObject->m_typefindResult = true;
+    self->m_typefindResult = true;
 }
 
 //     const GList *elements = gst_registry_pool_feature_list( GST_TYPE_ELEMENT_FACTORY );
@@ -140,69 +158,30 @@ GstEngine::~GstEngine()
 }
 
 
+/////////////////////////////////////////////////////////////////////////////////////
+// PUBLIC METHODS
+/////////////////////////////////////////////////////////////////////////////////////
+
 void
 GstEngine::init( bool&, int scopeSize, bool )
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
-    pObject = this;
+    self = this;
     m_mixerHW = -1;            //initialize
 
     m_scopeBufIndex = 0;
     m_scopeBuf.resize( SCOPEBUF_SIZE );
     m_scopeSize = 1 << scopeSize;
 
+    m_streamBufIndex = 0;
+    m_streamBuf.resize( STREAMBUF_SIZE );
+   
     gst_init( NULL, NULL );
-    fillPipeline( true );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
 
-
-QStringList
-GstEngine::getPluginList( const QCString& classname )
-{
-    GList* pool_registries = NULL;
-    GList* registries = NULL;
-    GList* plugins = NULL;
-    GList* features = NULL;
-    QStringList results;
-
-    pool_registries = gst_registry_pool_list ();
-    registries = pool_registries;
-
-    while ( registries ) {
-        GstRegistry * registry = GST_REGISTRY ( registries->data );
-        plugins = registry->plugins;
-
-        while ( plugins ) {
-            GstPlugin * plugin = GST_PLUGIN ( plugins->data );
-            features = gst_plugin_get_feature_list ( plugin );
-
-            while ( features ) {
-                GstPluginFeature * feature = GST_PLUGIN_FEATURE ( features->data );
-
-                if ( GST_IS_ELEMENT_FACTORY ( feature ) ) {
-                    GstElementFactory * factory = GST_ELEMENT_FACTORY ( feature );
-
-                    if ( g_strrstr ( factory->details.klass, classname ) )
-                        results << g_strdup ( GST_OBJECT_NAME ( factory ) );
-                }
-                features = g_list_next ( features );
-            }
-            plugins = g_list_next ( plugins );
-        }
-        registries = g_list_next ( registries );
-    }
-    g_list_free ( pool_registries );
-    pool_registries = NULL;
-
-    return results;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-// PUBLIC METHODS
-/////////////////////////////////////////////////////////////////////////////////////
 
 bool
 GstEngine::initMixer( bool hardware )
@@ -314,15 +293,49 @@ const QObject*
 GstEngine::play( const KURL& url )  //SLOT
 {
     stop();
-    fillPipeline();
-    if ( !m_pipelineFilled ) return 0;
+    if ( m_pipelineFilled ) cleanPipeline();
 
-    //load track into filesrc
-    g_object_set( G_OBJECT( m_pFilesrc ), "location",
-                  static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
+    kdDebug() << "Sound output method: " << m_soundOutput << endl;
+    
+    /* create a new thread to hold the elements */
+    m_pThread = gst_thread_new ( "thread" );
+    m_pAudiosink = gst_element_factory_make( m_soundOutput.latin1(), "play_audio" );
+    
+    /* create source */
+    if ( url.isLocalFile() ) {
+        m_pFilesrc = gst_element_factory_make( "filesrc", "disk_source" );
+        //load track into filesrc
+        g_object_set( G_OBJECT( m_pFilesrc ), "location",
+                      static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
+    } else {
+        m_pFilesrc = gst_element_factory_make( "fakesrc", "disk_source" );
+        g_object_set( G_OBJECT( m_pFilesrc ), "signal-handoffs", true, NULL );
+        g_object_set( G_OBJECT( m_pFilesrc ), "sizetype", 2, NULL );
+        g_signal_connect ( G_OBJECT( m_pFilesrc ), "handoff",
+                           G_CALLBACK( handoff_fakesrc_cb ), m_pThread );
+    }
+                            
+    m_pSpider = gst_element_factory_make( "spider", "spider" );
+    /* and an audio sink */
+    m_pIdentity = gst_element_factory_make( "identity", "rawscope" );
+    m_pVolume = gst_element_factory_make( "volume", "volume" );
+
+    g_signal_connect ( G_OBJECT( m_pIdentity ), "handoff",
+                       G_CALLBACK( handoff_cb ), m_pThread );
+    g_signal_connect ( G_OBJECT( m_pAudiosink ), "eos",
+                       G_CALLBACK( eos_cb ), m_pThread );
+
+    /* add objects to the main pipeline */
+    gst_bin_add_many( GST_BIN( m_pThread ), m_pFilesrc, m_pSpider, m_pIdentity,
+                      m_pVolume, m_pAudiosink, NULL );
+    /* link src to sink */
+    gst_element_link_many( m_pFilesrc, m_pSpider, m_pIdentity, m_pVolume, m_pAudiosink, NULL );
+    
+    setVolume( volume() );
+    m_pipelineFilled = true;
+                
     play();
-
-    return 0;
+    return this;
 }
 
 
@@ -331,7 +344,7 @@ GstEngine::play()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     if ( !m_pipelineFilled ) return ;
-
+  
     gst_element_set_state( GST_ELEMENT( m_pThread ), GST_STATE_READY );
     /* start playing */
     gst_element_set_state( GST_ELEMENT( m_pThread ), GST_STATE_PLAYING );
@@ -392,49 +405,62 @@ GstEngine::setVolume( int percent )  //SLOT
 
 }
 
+void
+GstEngine::newStreamData( char* buf, int size ) //SLOT
+{
+    kdDebug() << k_funcinfo << endl;
+
+    for ( uint i = 0; i < size && m_streamBufIndex < STREAMBUF_SIZE; )
+        m_streamBuf[m_streamBufIndex++] = buf[i++]; 
+
+    if ( m_streamBufIndex >= STREAMBUF_SIZE )
+        kdDebug() << "Error: StreamBuffer overflow!" << endl;
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE METHODS
 /////////////////////////////////////////////////////////////////////////////////////
 
-void
-GstEngine::fillPipeline( bool init )
+QStringList
+GstEngine::getPluginList( const QCString& classname )
 {
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    GList* pool_registries = NULL;
+    GList* registries = NULL;
+    GList* plugins = NULL;
+    GList* features = NULL;
+    QStringList results;
 
-    if ( m_pipelineFilled )
-        cleanPipeline();
+    pool_registries = gst_registry_pool_list ();
+    registries = pool_registries;
 
-    kdDebug() << "Sound output method: " << m_soundOutput << endl;
-    m_pAudiosink = gst_element_factory_make( m_soundOutput.latin1(), "play_audio" );
+    while ( registries ) {
+        GstRegistry * registry = GST_REGISTRY ( registries->data );
+        plugins = registry->plugins;
 
-    /* create a disk reader */
-    m_pFilesrc = gst_element_factory_make( "filesrc", "disk_source" );
-    m_pSpider = gst_element_factory_make( "spider", "spider" );
-    /* and an audio sink */
+        while ( plugins ) {
+            GstPlugin * plugin = GST_PLUGIN ( plugins->data );
+            features = gst_plugin_get_feature_list ( plugin );
 
-    m_pIdentity = gst_element_factory_make( "identity", "rawscope" );
-    m_pVolume = gst_element_factory_make( "volume", "volume" );
+            while ( features ) {
+                GstPluginFeature * feature = GST_PLUGIN_FEATURE ( features->data );
 
-    /* create a new thread to hold the elements */
-    m_pThread = gst_thread_new ( "thread" );
+                if ( GST_IS_ELEMENT_FACTORY ( feature ) ) {
+                    GstElementFactory * factory = GST_ELEMENT_FACTORY ( feature );
 
-    g_signal_connect ( G_OBJECT( m_pIdentity ), "handoff",
-                       G_CALLBACK( handoff_cb ), m_pThread );
+                    if ( g_strrstr ( factory->details.klass, classname ) )
+                        results << g_strdup ( GST_OBJECT_NAME ( factory ) );
+                }
+                features = g_list_next ( features );
+            }
+            plugins = g_list_next ( plugins );
+        }
+        registries = g_list_next ( registries );
+    }
+    g_list_free ( pool_registries );
+    pool_registries = NULL;
 
-    g_signal_connect ( G_OBJECT( m_pAudiosink ), "eos",
-                       G_CALLBACK( eos_cb ), m_pThread );
-
-    /* add objects to the main pipeline */
-    gst_bin_add_many( GST_BIN( m_pThread ), m_pFilesrc, m_pSpider, m_pIdentity,
-                      m_pVolume, m_pAudiosink, NULL );
-    /* link src to sink */
-    gst_element_link_many( m_pFilesrc, m_pSpider, m_pIdentity, m_pVolume, m_pAudiosink, NULL );
-
-    setVolume( volume() );
-    m_pipelineFilled = true;
-
-    kdDebug() << "END " << k_funcinfo << endl;
+    return results;
 }
 
 

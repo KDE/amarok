@@ -43,6 +43,7 @@ class GstEngine : public EngineBase
                                                                                                   
         bool                                     initMixer( bool hardware );
         bool                                     canDecode( const KURL &url, mode_t mode, mode_t permissions );
+        int                                      streamingMode() { return 0; }
         QStringList                              getOutputsList() { return getPluginList( "Sink/Audio" ); }
 
         long                                     length() const { return 0; }
@@ -58,22 +59,23 @@ class GstEngine : public EngineBase
         void                                     pause();
         void                                     seek( long ms );
         void                                     setVolume( int percent );
+        void                                     newStreamData( char* data, int size );
 
     private:
         static void                              eos_cb( GstElement*, GstElement* );
         static void                              handoff_cb( GstElement*, GstBuffer*, gpointer );
+        static void                              handoff_fakesrc_cb( GstElement*, GstBuffer*, GstPad, gpointer );
         static void                              typefindFound_cb( GstElement*, GstCaps*, GstElement* );
 
         /** Get a list of available plugins from a specified Class */
         QStringList                              getPluginList( const QCString& classname );
         
-        void                                     fillPipeline( bool init = false );
         void                                     cleanPipeline();
         void                                     interpolate( const vector<float>& inVec, vector<float>& outVec );
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
         /////////////////////////////////////////////////////////////////////////////////////
-        static GstEngine*                        pObject;
+        static GstEngine*                        self;
         
         GstElement*                              m_pThread;
         GstElement*                              m_pAudiosink;
@@ -86,6 +88,9 @@ class GstEngine : public EngineBase
         uint                                     m_scopeBufIndex;
         uint                                     m_scopeSize;
        
+        vector<char>                             m_streamBuf;
+        uint                                     m_streamBufIndex;
+        
         bool                                     m_typefindResult;
         bool                                     m_pipelineFilled;
 };

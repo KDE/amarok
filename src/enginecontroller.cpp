@@ -101,19 +101,21 @@ void EngineController::play( const MetaBundle &bundle )
          !m_proxyError &&
          !url.path().endsWith( ".ogg" ) )
     {
-        TitleProxy::Proxy *pProxy = new TitleProxy::Proxy( url );
-        const QObject* object = m_pEngine->play( pProxy->proxyUrl() );
+        TitleProxy::Proxy* proxy = new TitleProxy::Proxy( url, EngineController::engine()->streamingMode() );
+        const QObject* object = m_pEngine->play( proxy->proxyUrl() );
 
-        connect( this,      SIGNAL( deleteProxy () ),
-                 pProxy,      SLOT( deleteLater () ) );
-        connect( pProxy,    SIGNAL( error       () ),
-                 this,        SLOT( proxyError  () ) );
-        connect( pProxy,    SIGNAL( metaData( const MetaBundle& ) ),
-                 this,        SLOT( newMetaData( const MetaBundle& ) ) );
+        connect( this,                     SIGNAL( deleteProxy () ),
+                 proxy,                      SLOT( deleteLater () ) );
+        connect( proxy,                    SIGNAL( error       () ),
+                 this,                       SLOT( proxyError  () ) );
+        connect( proxy,                    SIGNAL( metaData( const MetaBundle& ) ),
+                 this,                       SLOT( newMetaData( const MetaBundle& ) ) );
+        connect( proxy,                    SIGNAL( streamData( char*, int ) ),
+                 EngineController::engine(), SLOT( newStreamData( char*, int ) ) );
         
         if ( object )
-            connect( object,    SIGNAL( destroyed   () ),
-                     pProxy,      SLOT( deleteLater () ) );
+            connect( object, SIGNAL( destroyed () ),
+                     proxy,    SLOT( deleteLater() ) );
         else
             proxyError();
     }
