@@ -13,8 +13,6 @@ SHORT-TERM (URGENT):
 
   FIX 170 <markey> Pasting URLs into playlist with mid-click is broken.
 
-  FIX 169 <markey> Context-Browser ignores streams.
-
   FIX 167 <markey> Adapt Player-Window colors from "Custom color scheme" mode too.
 
   FIX 162 <markey> Try to achieve Qt 3.2 compatibility for amaroK 1.1.

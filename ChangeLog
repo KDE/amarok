@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.1-beta2:
+  ADD: Context-Browser shows information about radio streams.
   ADD: Custom Smart Playlists with built-in editor.
   ADD: Systray icon shows track progress and play status.
   CHG: Imported SQLite3 and ported CollectionDB.

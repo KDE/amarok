@@ -43,6 +43,7 @@ class ContextBrowser : public QVBox, public EngineObserver
         void setStyleSheet();
         void showIntroduction();
         void showScanning();
+        void showCurrentStream();
 
         KHTMLPart *browser;
         MetaBundle *m_currentTrack;

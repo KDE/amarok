@@ -144,6 +144,8 @@ void ContextBrowser::openURLRequest( const KURL &url )
             showHome();
         else if ( m_url.path() == "context" )
             showCurrentTrack();
+        else if ( m_url.path() == "stream" )
+            showCurrentStream();
         else if ( m_url.path() == "collectionSetup" )
         {
             //TODO if we do move the configuration to the main configdialog change this,
@@ -189,7 +191,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
                 filename.replace( " ", "_" ).append( ".png" );
                 img.save( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() )+"/albumcovers/"+filename.lower(), "PNG" );
                 ContextBrowser::showCurrentTrack();
-	    }
+            }
         }
      }
 #endif
@@ -231,15 +233,13 @@ void ContextBrowser::engineTrackEnded( int finalPosition, int trackLength )
 
 void ContextBrowser::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
-    //prevents segfault when playing streams
-    if ( !bundle.url().isLocalFile() )
-        return;
-
     delete m_currentTrack;
     m_currentTrack = new MetaBundle( bundle );
 
     if ( m_db->isEmpty() || !m_db->isDbValid() )
         showIntroduction();
+    else if ( EngineController::instance()->isStream() )
+        showCurrentStream();
     else
         showCurrentTrack();
 }
@@ -254,6 +254,10 @@ void ContextBrowser::engineStateChanged( Engine::State state )
 
     switch( state )
     {
+        case Engine::Playing:
+            if ( EngineController::instance()->isStream() )
+                showCurrentStream();
+            break;
         case Engine::Empty:
             showHome();
         default:
@@ -298,8 +302,13 @@ void ContextBrowser::showHome() //SLOT
     browser->setUserStyleSheet( m_styleSheet );
 
     // <Favorite Tracks Information>
-    browser->write( "<html><div class='menu'><a class='menu' href='show:home'>" + i18n( "Home" ) + "</a>&nbsp;&nbsp;<a class='menu' href='show:context'>"
-                    + i18n( "Current Track" ) + "</a></div>");
+    if ( EngineController::instance()->isStream() )
+        browser->write( "<html><div class='menu'><a class='menu' href='show:home'>" + i18n( "Home" ) + "</a>&nbsp;&nbsp;<a class='menu' href='show:stream'>"
+                        + i18n( "Current Stream" ) + "</a></div>");
+    else
+        browser->write( "<html><div class='menu'><a class='menu' href='show:home'>" + i18n( "Home" ) + "</a>&nbsp;&nbsp;<a class='menu' href='show:context'>"
+                        + i18n( "Current Track" ) + "</a></div>");
+
     browser->write( "<div class='rbcontent'>" );
     browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
     browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Your Favorite Tracks:" ) + "</td></tr>" );
@@ -381,7 +390,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
 
-    // <Current Track Information>
     browser->write( "<html><div class='menu'><a class='menu' href='show:home'>" + i18n( "Home" ) + "</a>&nbsp;&nbsp;<a class='menu' href='show:context'>"
                     + i18n( "Current Track" ) + "</a></div>");
     if ( !m_db->isFileInCollection( m_currentTrack->url().path() ) )
@@ -392,6 +400,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         browser->write( "<br><br></div>");
     }
 
+    // <Current Track Information>
     browser->write( "<div class='rbcontent'>" );
     browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
     browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Currently playing:" ) + "</td></tr>" );
@@ -635,6 +644,67 @@ void ContextBrowser::showScanning()
 
     browser->write( "<html><div>");
     browser->write( i18n( "Building Collection Database.." ) );
+    browser->write( "</div></html>");
+
+    browser->end();
+}
+
+
+void ContextBrowser::showCurrentStream()
+{
+    browser->begin();
+    browser->setUserStyleSheet( m_styleSheet );
+
+    browser->write( "<html><div class='menu'><a class='menu' href='show:home'>" + i18n( "Home" ) + "</a>&nbsp;&nbsp;<a class='menu' href='show:stream'>"
+                    + i18n( "Current Stream" ) + "</a></div>");
+
+    // <Stream Information>
+    browser->write( "<div class='rbcontent'>" );
+    browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
+    browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Playing Stream:" ) + "</td></tr>" );
+    browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
+    browser->write( "</table>" );
+    browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+
+
+    if ( m_currentTrack )
+    {
+        browser->write( QStringx ( "<tr><td height='42' valign='top' class='rbcurrent' width='90%'>"
+                                   "<span class='album'><b>%1 - %2</b></span><br>%3</td><td valign='top' align='right' width='10%'>"
+                                   "</td></tr></table>"
+                                   "<table width='100%'><tr><td width='20%'><a class='menu' href='fetchcover:%7 @@@ %8'>"
+                                   "<img hspace='2' src='%9'></a></td></tr>" )
+                        .args( QStringList()
+                            << escapeHTML( m_currentTrack->artist() )
+                            << escapeHTML( m_currentTrack->title() )
+                            << escapeHTML( m_currentTrack->album() )
+                            << escapeHTMLAttr( m_currentTrack->artist() )
+                            << escapeHTMLAttr( m_currentTrack->album() )
+                            << escapeHTMLAttr( m_db->getImageForAlbum( "stream", "stream" ) )
+                            )
+                        );
+    }
+    else
+    {
+        browser->write( QStringx ( "<tr><td height='42' valign='top' class='rbcurrent' width='90%'>"
+                                   "<span class='album'><b>%1 - %2</b></span><br>%3</td><td valign='top' align='right' width='10%'>"
+                                   "</td></tr></table>"
+                                   "<table width='100%'><tr><td width='20%'><a class='menu' href='fetchcover:%7 @@@ %8'>"
+                                   "<img hspace='2' src='%9'></a></td></tr>" )
+                        .args( QStringList()
+                            << escapeHTML( m_url.path() )
+                            << escapeHTML()
+                            << escapeHTML()
+                            << escapeHTMLAttr()
+                            << escapeHTMLAttr()
+                            << escapeHTMLAttr( m_db->getImageForAlbum( "stream", "stream" ) )
+                            )
+                        );
+    }
+
+    browser->write( "</table></div>" );
+    // </Stream Information>
+
     browser->write( "</div></html>");
 
     browser->end();

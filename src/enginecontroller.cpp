@@ -200,6 +200,12 @@ bool EngineController::canDecode( const KURL &url ) //static
 }
 
 
+bool EngineController::isStream() const
+{
+    return m_engine->isStream();
+}
+
+
 void EngineController::restoreSession()
 {
     //here we restore the session
