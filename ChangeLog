@@ -3,6 +3,9 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+VERSION 1.1.1:
+  FIX: GStreamer-engine refused to play some mp3 files. (BR 90317)
+
 VERSION 1.1:
   FIX: Huge speedup for Context-Browser, makes changing tracks faster.
   ADD: Progress display for Cover-Manager.
