@@ -455,8 +455,8 @@ PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
       kdDebug() << "[loader] KIO::download - " << path << endl;
 
       //FIXME this seems to block the ui
-      //      <markey> KIO::NetAccess never blocks the UI. but sometimes the dialog won't go away
-
+      //      <markey> err, I was wrong. it _does_ really block the UI when it gets stuck.
+      
       //FIXME <markey> NetAccess::download will create tempfile automagically, if given an empty string
       #if KDE_IS_VERSION(3,1,92)
       if( KIO::NetAccess::download( m_url, path, m_thread->m_parent ) ) //should be thread-safe as we are only reading it no?

@@ -14,12 +14,10 @@ SHORT-TERM (URGENT):
              widget. KWin handles this if playlist is WType_Dialog, but this has other problems.
              To see how important dual raise is, raise another window above amarok's windows and
              click the systray icon - only the mainWidget is raised.
-	     [kwin_iii does it ok for me, in reality, it first _hides_ amarok and then re raises
-	     it with both windows on top, play and playlist. there's other problem - to bring the 
-	     playlist window on top when you focus the play window. but that can be solved via
-	     signals.]
-
-    * fix: #6<markey> install correct icons (not the inactive logo version)
+             [kwin_iii does it ok for me, in reality, it first _hides_ amarok and then re raises
+             it with both windows on top, play and playlist. there's other problem - to bring the 
+             playlist window on top when you focus the play window. but that can be solved via
+             signals.]
 
     * fix: <mxcl> select something in playlist, go to drag from the browser, move mouse over
            playlist, move mouse back to browser and drop, selected item from playlist disappears!
