@@ -3,10 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #160 being the highest available (take this one for your next bug and increase here)
+           #161 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  FIX 160 <markey> When feeding tracks to a running instance via cli (or mouseclick in konq), playback
+                   doesn't start automatically.
 
   FIX 159 <markey> When the first-run wizard is shown at startup, amarok registers as amarok-2, making
                    dcop calls fail. It's probably due to a timeout from KDE, since this happens in App ctor.
