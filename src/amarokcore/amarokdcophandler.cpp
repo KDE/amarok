@@ -25,6 +25,8 @@
 
 #include <dcopclient.h>
 
+#include <kdebug.h> // for kdWarning()
+
 namespace amaroK
 {
 
@@ -73,7 +75,28 @@ namespace amaroK
 
     bool DcopHandler::isPlaying()
     {
+	kdWarning() << k_funcinfo << " is DEPRECATED!" << endl;
         return EngineController::engine()->state() == EngineBase::Playing;
+    }
+    
+    int  DcopHandler::status()
+    {
+	// <0 - error, 0 - stopped, 1 - paused, 2 - playing
+	int ret = -1;
+	switch( EngineController::engine()->state() )
+	{
+	    case EngineBase::Playing:
+		ret = 2;
+		break;
+	    case EngineBase::Paused:
+		ret = 1;
+		break;
+	    case EngineBase::Empty:
+	    case EngineBase::Idle:
+		ret = 0;
+		break;
+	}
+	return ret;
     }
 
 // Now for the DCOP id3 output stuff
