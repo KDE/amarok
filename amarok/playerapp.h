@@ -99,15 +99,14 @@ class PlayerApp : public KApplication
         void slotMainTimer();
         void slotShowOptions();
         void slotShowOSD();
-	void slotShowVolumeOSD();
-	void slotIncreaseVolume();
-	void slotDecreaseVolume();
+        void slotShowVolumeOSD();
+        void slotIncreaseVolume();
+        void slotDecreaseVolume();
         void setOsdEnabled(bool enable);
 
     private slots:
         void handleLoaderArgs( const QCString& args );
         void applySettings();
-        void loaderMessage();
         void proxyError();
         void showEffectWidget();
         void slotShowOSD( const MetaBundle& );

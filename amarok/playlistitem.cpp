@@ -68,23 +68,29 @@ PlaylistItem::~PlaylistItem()
 
 MetaBundle PlaylistItem::metaBundle()
 {
-    //TODO this meta prop reading causes off files to skip, so we need to do it a few seconds before the
+    //TODO this meta prop reading causes ogg files to skip, so we need to do it a few seconds before the
     //ogg file starts playing or something
 
     //Do this everytime to save cost of storing int for length/samplerate/bitrate
     //This function isn't called often (on play request), but playlists can contain
     //thousands of items. So favor saving memory over CPU.
-    TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Accurate );
-
-    //FIXME hold a small cache of metabundles?
-    //then return by reference
-    MetaBundle bundle( this, f.isNull() ? 0 : f.audioProperties() );
-
-    //just set it as we just did an accurate pass
-    setText(  9, bundle.prettyLength()  );
-    setText( 10, bundle.prettyBitrate() );
-
-    return bundle;
+    
+    if ( m_url.isLocalFile() ) {
+        TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Accurate );
+        //FIXME hold a small cache of metabundles?
+        //then return by reference
+        MetaBundle bundle( this, f.isNull() ? 0 : f.audioProperties() );
+        //just set it as we just did an accurate pass
+        setText(  9, bundle.prettyLength()  );
+        setText( 10, bundle.prettyBitrate() );
+        
+        return bundle;
+    }
+    else {
+        MetaBundle bundle( this, 0 );
+        
+        return bundle;
+    }        
 }
 
 

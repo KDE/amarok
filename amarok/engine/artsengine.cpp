@@ -66,6 +66,7 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
         , m_xfadeFadeout( false )
         , m_xfadeValue( 0.0 )
         , m_xfadeCurrent( "invalue2" )
+        , m_pConnectTimer( new QTimer( this ) )
 {
     setName( "arts" );  //name is used for RTTI
     m_mixerHW = -1;     //initialize
@@ -207,12 +208,14 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
 
     if ( m_restoreEffects ) loadEffects();
     startTimer( ARTS_TIMER );
+    connect( m_pConnectTimer, SIGNAL( timeout() ), this, SLOT( connectTimeout() ) );
 }
 
 
 ArtsEngine::~ ArtsEngine()
 {
     emit endOfTrack();
+    m_pConnectTimer->stop();
     delete m_pPlayObject;
     delete m_pPlayObjectXfade;
     saveEffects();
@@ -343,24 +346,26 @@ void ArtsEngine::play( const KURL& url )
         connectTimeout();
     else
     {
-        if ( m_pPlayObject->object().isNull() )
-        {            
+        if ( m_pPlayObject->object().isNull() ) {            
             kdDebug() << "[void ArtsEngine::play()] m_pPlayObject->object().isNull()" << endl;
+            
             connect( m_pPlayObject, SIGNAL( playObjectCreated() ), this, SLOT( connectPlayObject() ) );
-            QTimer::singleShot( TIMEOUT, this, SLOT( connectTimeout() ) );
+            m_pConnectTimer->start( TIMEOUT, true );
         }
-        else
+        else {
             connectPlayObject();
-    
+        }
+                
         play();
     }
 }
 
 
-void ArtsEngine::connectPlayObject()
+void ArtsEngine::connectPlayObject() //SLOT
 {
     kdDebug() << "[void ArtsEngine::connectPlayObject()]" << endl;
-    
+    m_pConnectTimer->stop();
+        
     if ( !m_pPlayObject->object().isNull() )
     {
         m_pPlayObject->object()._node()->start();
@@ -374,28 +379,23 @@ void ArtsEngine::connectPlayObject()
         Arts::connect( m_pPlayObject->object(), "left", m_xfade, ( m_xfadeCurrent + "_l" ).latin1() );
         Arts::connect( m_pPlayObject->object(), "right", m_xfade, ( m_xfadeCurrent + "_r" ).latin1() );
     }
-    else
-        //something went wrong, we can't play this track
-        connectTimeout();
 }
 
 //SLOT
 void ArtsEngine::connectTimeout()
 {        
-    if ( m_pPlayObject && !m_pPlayObject->isNull() && m_pPlayObject->object().isNull() )
-    {
-        kdWarning() << "[ArtsEngine::connectTimeout()] Cannot initialize PlayObject! Skipping this track." << endl;
-        
-        emit endOfTrack();
-        delete m_pPlayObject;
-        m_pPlayObject = NULL;
-    }
+    kdWarning() << "[ArtsEngine::connectTimeout()] Cannot initialize PlayObject! Skipping this track." << endl;
+    m_pConnectTimer->stop();
+    
+    delete m_pPlayObject;
+    m_pPlayObject = NULL;
+    emit endOfTrack();
 }
 
 
 void ArtsEngine::play()
 {
-    if ( m_pPlayObject && !m_pPlayObject->isNull() )
+    if ( m_pPlayObject )
     {
         m_pPlayObject->play();
     }
@@ -420,7 +420,7 @@ void ArtsEngine::stop()
 
 void ArtsEngine::pause()
 {
-    if ( m_pPlayObject && !m_pPlayObject->isNull() )
+    if ( m_pPlayObject )
     {
         m_pPlayObject->pause();
     }
@@ -517,13 +517,18 @@ bool ArtsEngine::effectConfigurable( long id ) const
 
 long ArtsEngine::createEffect( const QString& name )
 {
+    const long error = 0;
+    
+    if ( name.isEmpty() )
+        return error;    
+
     Arts::StereoEffect* pFX = new Arts::StereoEffect;
     *pFX = Arts::DynamicCast( m_server.createObject( std::string( name.ascii() ) ) );
 
     if ( (*pFX).isNull() ) {
         kdWarning() << "[ArtsEngine::createEffect] error: could not create effect." << endl;
         delete pFX;
-        return 0;
+        return error;
     }
 
     pFX->start();
@@ -533,7 +538,7 @@ long ArtsEngine::createEffect( const QString& name )
         kdWarning() << "[ArtsEngine::createEffect] error: insertBottom failed." << endl;
         pFX->stop();
         delete pFX;
-        return 0;
+        return error;
     }
 
     EffectContainer container;
@@ -678,7 +683,6 @@ void ArtsEngine::loadEffects()
         kdDebug() << "effectname: " << effect << endl;
 
         long id = createEffect( effect );
-
         for ( QDomNode nAttr = n.firstChild(); id && !nAttr.isNull(); nAttr = nAttr.nextSibling() )
         {
             if ( nAttr.nodeName() == "attribute" )

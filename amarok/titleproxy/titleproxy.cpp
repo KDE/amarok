@@ -69,7 +69,9 @@ Proxy::Proxy(KURL url)
     m_sockRemote.setSocketFlags( KExtendedSocket::inetSocket |
                                  KExtendedSocket::streamSocket );
     m_sockRemote.setAddress(url.host(), url.port());
-    m_sockRemote.setTimeout(8);
+    
+    //FIXME this call blocks the whole app. replace with non-blocking call sometime
+    m_sockRemote.setTimeout(3);
 
     int connectResult = m_sockRemote.connect();
     kdDebug() << k_funcinfo << "sock.connect() result: " << connectResult << endl;

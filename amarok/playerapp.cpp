@@ -293,7 +293,7 @@ void PlayerApp::initIpc()
 {
     int m_sockfd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
     if ( m_sockfd == -1 ) {
-        kdDebug() << "[PlayerApp::initIpc()] socket() error\n";
+        kdWarning() << "[PlayerApp::initIpc()] socket() error\n";
         return;
     }
     sockaddr_un local;
@@ -306,11 +306,11 @@ void PlayerApp::initIpc()
     int len = ::strlen( local.sun_path ) + sizeof( local.sun_family );
 
     if ( ::bind( m_sockfd, (struct sockaddr*) &local, len ) == -1 ) {
-        kdDebug() << "[PlayerApp::initIpc()] bind() error\n";
+        kdWarning() << "[PlayerApp::initIpc()] bind() error\n";
         return;
     }
     if ( ::listen( m_sockfd, 1 ) == -1 ) {
-        kdDebug() << "[PlayerApp::initIpc()] listen() error\n";
+        kdWarning() << "[PlayerApp::initIpc()] listen() error\n";
         return;
     }
 
@@ -424,12 +424,6 @@ void PlayerApp::setOsdEnabled(bool enable)
 {
    AmarokConfig::setOsdEnabled(enable);
    m_pOSD->setEnabled ( AmarokConfig::osdEnabled() );
-}
-
-//SLOT
-void PlayerApp::loaderMessage()
-{
-    kdDebug() << "[PlayerApp::loaderMessage()]\n";
 }
 
 

@@ -31,6 +31,7 @@ email                : markey@web.de
 #include <arts/soundserver.h>
 
 class QStringList;
+class QTimer;
 class QTimerEvent;
 
 class KArtsDispatcher;
@@ -108,7 +109,7 @@ class ArtsEngine : public EngineBase
         // ATTRIBUTES
         /////////////////////////////////////////////////////////////////////////////////////
         static const int                         ARTS_TIMER = 100;   //ms
-        static const int                         TIMEOUT    = 5000;  //ms FIXME make option?
+        static const int                         TIMEOUT    = 3000;  //ms FIXME make option?
 
         KArtsDispatcher*                         m_pArtsDispatcher;
         KDE::PlayObject*                         m_pPlayObject;
@@ -130,6 +131,7 @@ class ArtsEngine : public EngineBase
         float                                    m_xfadeValue;
         QString                                  m_xfadeCurrent;
         QGuardedPtr<ArtsConfigWidget>            m_pDecoderConfigWidget;
+        QTimer*                                  m_pConnectTimer;
 };
 
 
