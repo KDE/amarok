@@ -6,6 +6,8 @@
 #define VIS_SOCKETSERVER_H
 
 //uncomment below to activate this stuff
+//<markey> I don't see why this should be optional at all. It doesn't break anything, so let's remove the #ifdef
+
 //#define AMK_NEW_VIS_SYSTEM
 
 #include <qserversocket.h>
