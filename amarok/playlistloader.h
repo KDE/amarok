@@ -27,8 +27,8 @@ struct Tags;
 class PlaylistLoader : public QThread
 {
 public:
-    PlaylistLoader( const KURL::List &ul, QWidget *w, QListViewItem *lvi, bool b=false ) : m_list( ul ), m_parent( w ), m_after( lvi ), m_first( 0 ) { if( b ) m_first = m_after; }
-    ~PlaylistLoader() { kdDebug() << "[loader] Deleting thread..\n"; delete m_first; }
+    PlaylistLoader( const KURL::List &ul, QWidget *w, QListViewItem *lvi, bool b=false ) : m_list( ul ), m_parent( w ), m_after( lvi ), m_first( b ? m_after : 0 ) {}
+    ~PlaylistLoader() { kdDebug() << "[loader] Done!\n"; delete m_first; } //FIXME deleting m_first is dangerous as user may have done it for us!
 
     struct Options
     {
@@ -63,7 +63,7 @@ public:
     {
     public:
        LoaderDoneEvent( QThread *t ) : QCustomEvent( 65433 ), m_thread( t ) {}
-       QThread *dispose() { if( m_thread->finished() ) { delete m_thread; return 0; } else return m_thread; }
+       void dispose() { if( m_thread->running() ) m_thread->wait(); delete m_thread; } //FIXME will stall UI
 
     private:
        QThread *m_thread;

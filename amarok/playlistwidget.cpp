@@ -92,10 +92,10 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
 
 PlaylistWidget::~PlaylistWidget()
 {
-   kdDebug() << "Shutting down TagReader Thread..\n";
+   kdDebug() << "Shutting down TagReader..\n";
    m_tagReader->halt();
    m_tagReader->wait();
-   kdDebug() << "Shutdown complete..\n";
+   kdDebug() << "TagReader Shutdown complete..\n";
 
    delete m_tagReader;
 }

@@ -214,7 +214,6 @@ void PlaylistLoader::process( KURL::List &list, bool validate )
       {
          if( validate && !isValidMedia( *it ) ) continue; //TODO retain stat info if done above, which does happen
 
-         Tags *meta = 0;
 /*
          if( options.meta )
          {
@@ -239,7 +238,7 @@ void PlaylistLoader::process( KURL::List &list, bool validate )
          }
 */
          //don't use the 2 parameter ctor of LoaderEvent
-         QApplication::postEvent( m_parent, new LoaderEvent( this, *it, meta ) );
+         QApplication::postEvent( m_parent, new LoaderEvent( this, *it, 0 ) );
       }
    }
 }
