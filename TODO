@@ -12,14 +12,8 @@ SHORT-TERM (URGENT):
 
     * fix: #84 <muesli> fix the broken SQLite check (doesnt work @berkus,muesli)
 
-    * fix: #83 <markey> take care of Qt 3.2 compatibility
-               <muesli> works perfectly with Qt 3.2.3, here
-
-    * fix: #82 about dialog makes toolbar go crazy
-
+    
 MID-TERM:
-
-    * fix: #79 GstEngine log volume -->markey
 
     * chg: #78 determine some behavior for the clear/shuffle/etc. buttons when a search is in action
                clear   -> only clear the stuff that was searched for?
