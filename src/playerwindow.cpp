@@ -427,10 +427,11 @@ void PlayerWidget::determineAmarokColors() //static
 
 void PlayerWidget::setModifiedPalette()
 {
-    QColorGroup cg = QApplication::palette().active();
+    QPalette p = QApplication::palette();
+    QColorGroup cg = p.active();
     cg.setColor( QColorGroup::Background, amaroK::ColorScheme::Base );
     cg.setColor( QColorGroup::Foreground, amaroK::ColorScheme::Text );
-    setPalette( QPalette(cg, palette().disabled(), cg) );
+    setPalette( QPalette(cg, p.disabled(), cg) );
 }
 
 void PlayerWidget::applySettings()
@@ -444,9 +445,15 @@ void PlayerWidget::applySettings()
 
     setModifiedPalette();
 
-    //update the scroller if necessary
-    if( EngineController::engine()->state() != Engine::Empty )
-       engineNewMetaData( EngineController::instance()->bundle(), false );
+    //update the scroller
+    switch( EngineController::engine()->state() ) {
+    case Engine::Empty:
+        m_scrollTextPixmap.fill( amaroK::ColorScheme::Base );
+        update();
+        break;
+    default:
+        engineNewMetaData( EngineController::instance()->bundle(), false );
+    }
 }
 
 
