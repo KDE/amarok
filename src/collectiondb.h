@@ -10,13 +10,14 @@
 
 class sqlite;
 class ThreadWeaver;
+class KDirWatch;
 
 class CollectionDB : public QObject
 {
     Q_OBJECT
     
     public:
-        CollectionDB();
+        CollectionDB( bool monitor );
         ~CollectionDB();
 
         QString albumSongCount( const QString artist_id, const QString album_id );
@@ -56,11 +57,16 @@ class CollectionDB : public QObject
     signals:
         void scanDone();
 
+    private slots:
+        void dirDirty( const QString& path );
+
     private:
         void customEvent( QCustomEvent* );
+        void addCollectionToWatcher();
 
         sqlite* m_db;
         ThreadWeaver* m_weaver;
+        KDirWatch* m_dirWatch;
 };
 
 

@@ -23,7 +23,6 @@ class QPixmap;
 class QPoint;
 class QStringList;
 
-class KDirWatch;
 class KPopupMenu;
 
 class CollectionBrowser: public QVBox 
@@ -117,7 +116,6 @@ class CollectionView : public KListView
         static CollectionDB* m_insertdb;
         
         CollectionBrowser* m_parent;
-        KDirWatch* m_dirWatch;
         QString m_filter;
         QStringList m_dirs;
         QString m_category1;

@@ -272,7 +272,6 @@ CollectionReader::doJob() {
 
 void
 CollectionReader::readDir( const QString& dir, QStringList& entries ) {
-    m_dirList <<  dir;
     DIR* d = opendir( QFile::encodeName( dir ) );
     if ( !d ) return;
     dirent *ent;

@@ -12,6 +12,7 @@
 #include <kurl.h>
 #include <kglobal.h>
 #include <kstandarddirs.h>
+#include <kdirwatch.h>
 #include <qcstring.h>
 
 #include <sys/stat.h>
@@ -21,13 +22,23 @@
 // CLASS CollectionDB
 //////////////////////////////////////////////////////////////////////////////////////////
 
-CollectionDB::CollectionDB()
+CollectionDB::CollectionDB( bool monitor )
         : m_weaver( new ThreadWeaver( this ) )
+        , m_dirWatch( new KDirWatch( this ) )
 {
     QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
                   + "collection.db" ).local8Bit();
 
     m_db = sqlite_open( path, 0, 0 );
+    
+    if ( monitor )
+    {
+        connect( m_dirWatch, SIGNAL( dirty( const QString& ) ),
+                this,       SLOT( dirDirty( const QString& ) ) );
+
+        addCollectionToWatcher();
+        m_dirWatch->startScan();
+    }
 }
 
 
@@ -428,9 +439,32 @@ CollectionDB::getValueID( QString name, QString value, bool autocreate, bool use
 
 
 void
+CollectionDB::dirDirty( const QString& path )
+{
+    kdDebug() << k_funcinfo << "Dirty: " << path << endl;
+
+    m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), path, false, true ) );
+}
+
+
+void
 CollectionDB::customEvent( QCustomEvent *e )
 {
+    kdDebug() << k_funcinfo << endl;
     emit scanDone();
+}
+
+
+void
+CollectionDB::addCollectionToWatcher()
+{
+    QStringList values;
+    QStringList names;
+    
+    execSql( "SELECT dir FROM directories;", &values, &names );
+    
+    for ( uint i = 0; i < values.count(); i++ )
+        m_dirWatch->addDir( values[i], true );
 }
 
 

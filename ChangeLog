@@ -3,6 +3,7 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  FIX: Collection: live-monitoring dirs for changes works again.
   FIX: Changing volume by mousewheel on systray icon works again.
   ADD: Collection automatically rescans itself on startup.
   ADD: "Add to Playlist" feature in CollectionBrowser, appends tracks to playlist.

@@ -209,7 +209,6 @@ public:
     ~CollectionReader();
 
     bool doJob();
-    QStringList dirList() { return m_dirList; }
 
 private:
     void readDir( const QString& dir, QStringList& entries );
@@ -218,7 +217,6 @@ private:
     CollectionDB* m_parent;
     QObject* m_statusBar;
     QStringList m_folders;
-    QStringList m_dirList;
     bool m_recursively;
     bool m_incremental;
 };

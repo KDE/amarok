@@ -21,7 +21,6 @@
 #include <kactioncollection.h>
 #include <kconfig.h>
 #include <kdebug.h>
-#include <kdirwatch.h>
 #include <kiconloader.h>    //renderView()
 #include <klocale.h>
 #include <kmenubar.h>
@@ -120,7 +119,6 @@ CollectionDB* CollectionView::m_insertdb;
 CollectionView::CollectionView( CollectionBrowser* parent )
         : KListView( parent )
         , m_parent( parent )
-        , m_dirWatch( new KDirWatch( this ) )
 {
     kdDebug() << k_funcinfo << endl;
 
@@ -144,7 +142,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     //</read config>
 
     //<open database>
-        m_db = new CollectionDB();
+        m_db = new CollectionDB( false );
         if ( !m_db )
             kdWarning() << k_funcinfo << "Could not open SQLite database\n";
 
@@ -157,11 +155,11 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         {
             m_db->dropTables();
             m_db->createTables();
-            m_insertdb = new CollectionDB();
+            m_insertdb = new CollectionDB( m_monitor );
             m_insertdb->scan( m_dirs, m_recursively );
         } else
         {
-            m_insertdb = new CollectionDB();
+            m_insertdb = new CollectionDB( m_monitor );
             m_insertdb->scanModifiedDirs( m_recursively );
         }
 
@@ -213,19 +211,8 @@ CollectionView::setupDirs()  //SLOT
     m_dirs = result.dirs;
     m_recursively = result.scanRecursively;
     m_monitor = result.monitorChanges;
-
-    //we must re-scan everything, when a change was made to the folder list
-    if ( result.addedDirs.count() || result.removedDirs.count() ) {
-        //destroy KDirWatch and create new one, to make it forget all directories
-        delete m_dirWatch;
-        m_dirWatch = new KDirWatch( this );
-        scan();
-    }
-
-    if ( m_monitor )
-        m_dirWatch->startScan();
-    else
-        m_dirWatch->stopScan();
+    
+    scan();
 }
 
 
@@ -476,7 +463,8 @@ CollectionView::scanDone()
     // we need to reconnect to the db after every scan, since sqlite is not able to keep
     // the tables synced for multiple threads.
     delete m_db;
-    m_db = new CollectionDB();
+    m_db = new CollectionDB( false );
+
     renderView();
 }
 
