@@ -59,8 +59,9 @@ protected:
   QPixmap *m_pRoofPixmap;
 
   // ATTRIBUTES:
-  peak_t peakArray[BAND_COUNT];
-  uint barArray[BAND_COUNT];
-
+  std::vector<peak_t> m_peakArray;
+  std::vector<uint> m_barArray;;
+  std::vector<uint> m_lvlMap;
+  
 };
 #endif
