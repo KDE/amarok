@@ -544,15 +544,10 @@ amaroK::OSD::showTrack( const MetaBundle &bundle ) //slot
         text.replace( QRegExp( "\\{[^}]*%year[^}]*\\}" ), QString::null );
         text.replace( "%year", QString::null , FALSE );
     }
-    
+
     // Lets get the location of the cover image
-    CollectionDB db;
-    QString image = db.albumImage( bundle.artist(), bundle.album() );
-    if ( !image )
-        image = db.getImageForPath( bundle.url().directory() );
-    
-      
-        
+    QString image = CollectionDB().albumImage( bundle.artist(), bundle.album() );
+
     // If we end up replacing many lines with QString::null, we could get blank lines.  lets remove them.
     text.replace( QRegExp( "\n+" ) , "\n" );
 
