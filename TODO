@@ -6,6 +6,9 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  <muesli> Resuming the playback on startup shows the current track as a normal-sized entry instead of a
+           double-height one.
+
   <muesli> The images table seems to get dropped on rescanning (therefore we're losing all info about local covers).
 
   <muesli> Renaming tagless files doesn't update the Collection properly.
