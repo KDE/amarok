@@ -113,6 +113,7 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     , m_totalLength( 0 )
     , m_undoDir( KGlobal::dirs()->saveLocation( "data", "amarok/undo/", true ) )
     , m_undoCounter( 0 )
+    , m_stopAfterCurrent( false )
     , m_editOldTag( 0 )
     , m_ac( ac ) //REMOVE
     , m_columnFraction( 13, 0 )
@@ -398,6 +399,13 @@ Playlist::playNextTrack()
 {
     PlaylistItem *item = currentTrack();
 
+    if ( m_stopAfterCurrent )
+    {
+        stopAfterCurrent( false ); //toggle the value.
+        activate( 0 );
+        return;
+    }
+    
     if( !AmarokConfig::repeatTrack() )
     {
         if( !m_nextTracks.isEmpty() )
@@ -517,6 +525,13 @@ Playlist::queue( QListViewItem *item )
 
     updateNextPrev();
     #undef item
+}
+
+void
+Playlist::stopAfterCurrent( bool shouldStop )
+{
+    kdDebug() << "[PLAYLIST]: Stopping after current song? ... " << shouldStop << endl;
+    m_stopAfterCurrent = shouldStop;
 }
 
 void
@@ -1660,7 +1675,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 {
     #define item static_cast<PlaylistItem*>(item)
 
-    enum Id { PLAY, PLAY_NEXT, VIEW, EDIT, FILL_DOWN, COPY, REMOVE,
+    enum Id { PLAY, PLAY_NEXT, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, REMOVE,
               BURN_MENU, BURN_SELECTION_DATA, BURN_SELECTION_AUDIO, BURN_ALBUM_DATA, BURN_ALBUM_AUDIO,
               BURN_ARTIST_DATA, BURN_ARTIST_AUDIO };
 
@@ -1695,7 +1710,10 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         popup.insertItem( SmallIcon( "2leftarrow" ), i18n( "&Dequeue (%1)" ).arg( queueIndex+1 ), PLAY_NEXT );
 
     if( isCurrent )
+    {
        amaroK::actionCollection()->action( "pause" )->plug( &popup );
+       popup.insertItem( SmallIcon( "player_stop" ), m_stopAfterCurrent ? i18n( "&Keep Playing After Track" ) : i18n( "&Stop Playing After Track" ), STOP_DONE );
+    }
 
     popup.insertSeparator();
     popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit '%1' For Selected Tracks" ).arg( tagName ), 0, 0, Key_F2, EDIT );
@@ -1736,6 +1754,11 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     case PLAY_NEXT:
         queue( item );
+        break;
+        
+    case STOP_DONE:
+        // we could change the stopAfterCurrent( bool ) to stopAfterCurrent(), but imho, this is much more readable and intuitive - seb
+        m_stopAfterCurrent ? stopAfterCurrent( false ) : stopAfterCurrent( true );
         break;
 
     case VIEW:

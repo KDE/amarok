@@ -32,6 +32,7 @@ VERSION 1.2-beta1:
   ADD: Shaded current-track marker in playlist.
   ADD: Automatic song lyrics display.
   CHG: Internal SQLite upgraded to 3.0.8.
+  ADD: 'Stop after current song' functionality (BR 88652)
 
 VERSION 1.1.1:
   FIX: Crash when using GStreamer-engine on 64bit. (BR 90869)
