@@ -149,6 +149,7 @@ class PlaylistWidget : private KListView
         bool saveState( QStringList& );
         void switchState( QStringList&, QStringList& );
         void readAudioProperties( PlaylistItem* );
+        void removeItem( PlaylistItem* );
 
 // REIMPLEMENTED ------
         void contentsDropEvent( QDropEvent* );

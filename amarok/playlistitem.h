@@ -31,7 +31,6 @@ class PlaylistItem : public KListViewItem
 {
     public:
         PlaylistItem( PlaylistWidget*, QListViewItem*, const KURL&, const QString& = "", const int length = 0 );
-        ~PlaylistItem();
 
         QString text( int column ) const;
         void setText( const MetaBundle& );
@@ -40,7 +39,7 @@ class PlaylistItem : public KListViewItem
         PlaylistWidget *listView() const { return (PlaylistWidget *)KListViewItem::listView(); }
 
         MetaBundle metaBundle();
-        const QString trackName() const { return text( 0 ); }
+        const QString trackName() const { return KListViewItem::text( 0 ); }
         const QString title() const { return KListViewItem::text( 1 ); }
         const KURL &url() const { return m_url; }
 

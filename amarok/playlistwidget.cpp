@@ -334,7 +334,7 @@ void PlaylistWidget::saveM3u( const QString &fileName ) const
                     stream << length;
                 }
                 stream << ',';
-                stream << item->text( 1 );
+                stream << static_cast<const PlaylistItem*>(item)->title();
                 stream << '\n';
                 stream << url.path();
             }
@@ -392,6 +392,7 @@ void PlaylistWidget::clear() //SLOT
     //now we have to ensure we don't delete the items before any events the weaver sent
     //have been processed, so we stick them in a QPtrList and delete it later
     QPtrList<QListViewItem> *list = new QPtrList<QListViewItem>;
+    list->setAutoDelete( true );
     while( QListViewItem *item = firstChild() ) //FIXME check firstChild() is an efficient function here
     {
         takeItem( item );
@@ -412,65 +413,31 @@ bool PlaylistWidget::isAnotherTrack() const
 
 void PlaylistWidget::removeSelectedItems() //SLOT
 {
-    //two loops because:
-    //1)the code is neater
-    //2)If we remove m_currentTrack we select the next track because when m_currentTrack == NULL
-    //  we play the first selected item. In order to be sure what we select won't be removed by
-    //  this function, we use two loops
-
-    //FIXME set m_nextTrack instead of selection
-    //FIXME if you delete the last track when set current the playlist repeats on track end
-
-    QPtrList<PlaylistItem> list;
-
     setSelected( currentItem(), true );     //remove currentItem, no matter if selected or not
 
-    for( QListViewItemIterator it( this, QListViewItemIterator::Selected ); it.current(); ++it )
-        if( it.current() != m_currentTrack )
-            list.append( (PlaylistItem *)it.current() );
+    //assemble a list of what needs removing
+    //calling removeItem() iteratively is more efficient if they are in _reverse_ order
+    QPtrList<QListViewItem> list;
+    for( QListViewItemIterator it( this, QListViewItemIterator::Selected );
+         it.current();
+         list.prepend( it.current() ), ++it );
 
-    //currenTrack must be last to ensure the item after it won't be removed
-    //we select the item after currentTrack so it's played when currentTrack finishes
-    if ( m_currentTrack != NULL && m_currentTrack->isSelected() ) list.append( m_currentTrack );
-    if ( !list.isEmpty() ) saveUndoState();
+    if( list.isEmpty() ) return;
+    saveUndoState();
 
-    for ( PlaylistItem *item = list.first(); item; item = list.next() )
+    //remove the items, unless the weaver is running, in which case it is safest to just hide them
+    for( QListViewItem *item = list.first(); item; item = list.next() )
     {
-        if ( m_currentTrack == item )
-        {
-            m_currentTrack = NULL;
-            //now we select the next item if available so playback will continue from there next iteration
-            if( pApp->isPlaying() )
-                if( QListViewItem *tmp = item->nextSibling() )
-                    tmp->setSelected( true );
-        }
-        else if( m_nextTrack == item ) m_nextTrack = 0;
-        else if( m_cachedTrack == item ) m_cachedTrack = 0;
-
-        //keep search system and recent buffer synchronised
-        int x = searchPtrs.find( item );
-        if ( x >= 0 )
-        {
-            searchTokens.remove( searchTokens.at( x ) );
-            searchPtrs.remove( searchPtrs.at( x ) );
-        }
-
-        do
-        {
-            x = recentPtrs.find( item );
-            if ( x >= 0 )
-                recentPtrs.remove( recentPtrs.at( x ) );
-        } while ( x >= 0 );
+        removeItem( (PlaylistItem*)item );
 
         //if tagreader is running don't let tags be read for this item and delete later
-        if ( m_weaver->running() )
+        if( m_weaver->running() )
         {
             //FIXME make a customEvent to deleteLater(), can't use QObject::deleteLater() as we don't inherit QObject!
             item->setVisible( false ); //will be removed next time playlist is cleared
             //FIXME m_weaver->remove( item );
         }
-        else
-            delete item;
+        else delete item;
     }
 }
 
@@ -513,10 +480,49 @@ void PlaylistWidget::insertMediaInternal( const KURL::List &list, QListViewItem 
 }
 
 
+void PlaylistWidget::removeItem( PlaylistItem *item )
+{
+    //this function ensures we don't have dangling pointers to items that are about to be removed
+    //for some reason using QListView::takeItem() and QListViewItem::takeItem() was ineffective
+    //FIXME there must be a way to do this without requiring notification from the item dtor!
+    //NOTE  orginally this was in ~PlaylistItem(), but that caused crashes due to clear() *shrug*
+
+    //items already removed by takeItem() will crash if you call nextSibling() on them
+    //taken items return 0 from listView()
+    if( item->listView() )
+    {
+        if( item == m_currentTrack )
+        {
+            //first ensure next track to play is something reasonable
+            //NOTE setting m_nextTrack to NULL is safe
+            m_nextTrack = (PlaylistItem*)item->nextSibling();
+            setCurrentTrack( 0 );
+        }
+        else if( item == m_nextTrack ) m_nextTrack = (PlaylistItem*)item->nextSibling();
+        else if( item == m_cachedTrack ) m_cachedTrack = 0;
+    }
+
+    //keep search system synchronised
+    int x = searchPtrs.findRef( item );
+    if( x >= 0 )
+    {
+        searchTokens.remove( searchTokens.at( x ) );
+        searchPtrs.remove( x );
+    }
+
+    //keep recent buffer synchronised
+    for( x = -2; x != -1; )
+    {
+        x = recentPtrs.findRef( item ); //returns -1 if not found
+        recentPtrs.remove( x ); //safe to pass x < 0
+    }
+}
+
+
 void PlaylistWidget::activate( QListViewItem *item ) //SLOT
 {
     //lets ask the engine to play something
-    if( PlaylistItem* const playItem = static_cast<PlaylistItem*>( item ) )
+    if( PlaylistItem* const playItem = (PlaylistItem*)item )
     {
         kdDebug() << "[playlist] Requesting playback for: " << item->text( 0 ) << endl;
 
@@ -563,8 +569,8 @@ void PlaylistWidget::setCurrentTrack( PlaylistItem *item )
     //FIXME this sucks
     if( m_currentTrack == NULL && item ) item->setSelected( false ); //looks bad paint selected and paint red
 
-    if( AmarokConfig::playlistFollowActive() && m_currentTrack && item &&
-        selectedItems().count() < 2 &&  // do not scroll if more than one item is selected
+    if( item && AmarokConfig::playlistFollowActive() && m_currentTrack &&
+        selectedItems().count() < 2 &&  // do not scroll if more than one item is selected //FIXME O(n)
         renameLineEdit()->isVisible() == false ) // do not scroll if user is doing tag editing
     {
         // if old item in view and the new one isn't do scrolling
@@ -718,8 +724,10 @@ void PlaylistWidget::copyToClipboard( const QListViewItem *item ) const //SLOT
 
     if( item != NULL )
     {
-        QApplication::clipboard()->setText( item->text( 0 ), QClipboard::Clipboard );
-        QApplication::clipboard()->setText( item->text( 0 ), QClipboard::Selection );
+        #define item static_cast<const PlaylistItem*>(item)
+        QApplication::clipboard()->setText( item->trackName(), QClipboard::Clipboard );
+        QApplication::clipboard()->setText( item->trackName(), QClipboard::Selection );
+        #undef item
     }
 }
 
@@ -768,11 +776,7 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
     QPopupMenu popup( this );
     //TODO if paused the play stuff won't do what the user expects
     popup.insertItem( SmallIcon( "player_play" ), isCurrent ? i18n( "&Play (Restart)" ) : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
-    if( !isCurrent && isPlaying )
-    {
-        //FIXME consider allowing people to play the current track next also
-        popup.insertItem( i18n( "&Play Next" ), PLAY_NEXT );
-    }
+    popup.insertItem( i18n( "Play this Track &Next" ), PLAY_NEXT );
     popup.insertItem( SmallIcon( "info" ), i18n( "&View Meta Information..." ), VIEW ); //TODO rename properties
     popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit Tag: '%1'" ).arg( columnText( col ) ), EDIT );
     if( canRename )
@@ -780,7 +784,7 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
         QListViewItem *below = item->itemBelow();
         if( below && below->isSelected() )
         {
-            popup.insertItem( i18n( "Spreadsheet fill down", "&Fill-down" ), FILL_DOWN );
+            popup.insertItem( i18n( "Spreadsheet-style fill down", "&Fill-down" ), FILL_DOWN );
         }
     }
     popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy Trackname" ), 0, 0, CTRL+Key_C, COPY ); //FIXME use KAction
@@ -789,6 +793,7 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
 
     //only enable for columns that have editable tags
     popup.setItemEnabled( EDIT, canRename );
+    popup.setItemEnabled( PLAY_NEXT, !isCurrent && isPlaying ); //FIXME play current track next too?
 
     switch( popup.exec( p ) )
     {
@@ -922,7 +927,10 @@ void PlaylistWidget::slotTextChanged( const QString &str ) //SLOT
         x++;
     }
 
-    clearSelection();
+    //to me it seems sensible to do this, BUT if it seems annoying to you, remove it
+    showCurrentTrack();
+
+    clearSelection(); //why do this?
     triggerUpdate();
 }
 
@@ -1086,8 +1094,6 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
 
     case PlaylistLoader::MakeItem:
 
-        //FIXME directPlay doesn't work for remote playlists due to d/l step!
-
         #define e static_cast<PlaylistLoader::MakeItemEvent*>(e)
         if( PlaylistItem *item = e->makePlaylistItem( this ) )
         {
@@ -1147,11 +1153,14 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
     case 4000: //dustbinEvent
 
         //this is a list of all the listItems from a clear operation
-        kdDebug() << "Deleting " << static_cast<QPtrList<QListViewItem>*>(e->data())->count() << " items\n";
-        delete (QPtrList<QListViewItem>*)e->data();
+        #define list static_cast<QPtrList<QListViewItem>*>(e->data())
+        kdDebug() << "Deleting " << list->count() << " PlaylistItems\n";
+        delete list;
+        #undef list
         break;
 
-    default: ;
+    default:
+        break;
     }
 }
 

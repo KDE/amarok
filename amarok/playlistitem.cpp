@@ -38,25 +38,14 @@
 PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KURL &u, const QString &title, const int length )
       : KListViewItem( parent, lvi, ( u.protocol() == "file" ) ? u.fileName() : u.prettyURL() )
       , m_url( u )
+      , corruptFile( FALSE ) //our friend threadweaver will take care of this flag
 {
     setDragEnabled( true );
-    setDropEnabled( true );
-
-    // our friend threadweaver will take care of this flag
-    corruptFile = FALSE;
+    //setDropEnabled( true );
 
     KListViewItem::setText( 1, title );
     KListViewItem::setText( 8, u.directory().section( '/', -1 ) );
     KListViewItem::setText( 9, MetaBundle::prettyLength( length ) );
-}
-
-
-PlaylistItem::~PlaylistItem()
-{
-    if( listView() && listView()->currentTrack() == this )
-    {
-        listView()->setCurrentTrack( NULL );
-    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
