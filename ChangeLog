@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.1:
+  ADD: As-you-type search for FileBrowser.
   ADD: Seeking with mousewheel in playerwindow.
   REM: Stream-Browser.
   ADD: New meta-info dialog, with editable tags and MusicBrainz support.
