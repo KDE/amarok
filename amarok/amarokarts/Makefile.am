@@ -1,10 +1,13 @@
 INCLUDES = $(all_includes) -I$(kde_includes)/arts
+KDE_OPTIONS = nofinal
 METASOURCES = AUTO
 
 lib_LTLIBRARIES = libamarokarts.la
 
-libamarokarts_la_LDFLAGS = -avoid-version -module -version-info 0:0:0
 libamarokarts_la_SOURCES = winSkinFFT_impl.cpp visQueue.cpp realFFTFilter.cpp realFFT.cpp amarokarts.cc synth_stereo_xfade_impl.cpp
+
+libnoatunarts_la_LDFLAGS = $(all_libraries) -module -avoid-version -no-undefined
+libnoatunarts_la_LIBADD =  -lkmedia2_idl -lsoundserver_idl -lartsflow
 
 # in case somebody wants to install headers
 #include_HEADERS = amarokarts.h
