@@ -59,8 +59,7 @@ class OSDWidget : public QWidget
       protected:
         /* render text into osdBuffer */
         void renderOSDText(const QString &text);
-        void paintEvent(QPaintEvent*);
-        void mousePressEvent( QMouseEvent* );
+        bool event(QEvent*);
         void show();
 
         /* call to reposition a new OSD text or when position attributes change */

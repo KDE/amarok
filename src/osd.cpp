@@ -199,14 +199,26 @@ void OSDWidget::setScreen( uint screen )
 }
 
 
-void OSDWidget::paintEvent( QPaintEvent* )
+bool OSDWidget::event( QEvent *e )
 {
-    bitBlt( this, 0, 0, &osdBuffer );
-}
+    switch( e->type() )
+    {
+    case QEvent::Paint:
+        bitBlt( this, 0, 0, &osdBuffer );
+        return TRUE;
 
-void OSDWidget::mousePressEvent( QMouseEvent* )
-{
-    hide();
+    case QEvent::ApplicationPaletteChange:
+        if ( ownPalette() )
+            unsetColors();
+        return TRUE;
+
+    case QEvent::MouseButtonPress:
+        hide();
+        return TRUE;
+
+    default:
+        return FALSE;
+    }
 }
 
 void OSDWidget::show()
