@@ -183,6 +183,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     setItemsMovable( false );
     setShowSortIndicator( true );
     setAcceptDrops( false );
+    setAllColumnsShowFocus( true );
 
     //<READ CONFIG>
         KConfig* config = amaroK::config( "Collection Browser" );
