@@ -23,7 +23,8 @@ enum {
 enum {
     ARG_0,
     ARG_BLOCKSIZE,
-    ARG_TIMEOUT
+    ARG_TIMEOUT,
+    ARG_BUFFER_MIN
 };
 
 GstElementDetails gst_streamsrc_details =
@@ -49,11 +50,6 @@ static void gst_streamsrc_get_property ( GObject * object, guint prop_id,
 
 static GstData *gst_streamsrc_get ( GstPad * pad );
 
-// Minimum buffer fill until we start playing
-static const int BUFFER_MIN = 50000;
-
-// Resume KIO transfer at this point
-static const int BUFFER_RESUME = BUFFER_MIN + 100000;
 
 /////////////////////////////////////////////////////////////////////////////////////
 // INIT
@@ -81,9 +77,14 @@ gst_streamsrc_class_init ( GstStreamSrcClass * klass )
                                       g_param_spec_ulong ( "blocksize", "Block size",
                                                            "Size in bytes to read per buffer", 1, G_MAXULONG, DEFAULT_BLOCKSIZE,
                                                            ( GParamFlags ) G_PARAM_READWRITE ) );
+    
     g_object_class_install_property ( G_OBJECT_CLASS ( klass ), ARG_TIMEOUT,
                                       g_param_spec_uint64 ( "timeout", "Timeout", "Read timeout in nanoseconds",
                                                             0, G_MAXUINT64, 0, ( GParamFlags ) G_PARAM_READWRITE ) );
+    
+    g_object_class_install_property ( G_OBJECT_CLASS ( klass ), ARG_BUFFER_MIN,
+                                      g_param_spec_uint ( "buffer_min", "Buffer_Min", "Minimum buffer fill until playback starts",
+                                                            0, G_MAXUINT, 50000, ( GParamFlags ) G_PARAM_READWRITE ) );
 
     gst_streamsrc_signals[SIGNAL_TIMEOUT] =
         g_signal_new ( "timeout", G_TYPE_FROM_CLASS ( klass ), G_SIGNAL_RUN_LAST,
@@ -142,6 +143,10 @@ gst_streamsrc_set_property ( GObject * object, guint prop_id, const GValue * val
     case ARG_TIMEOUT:
         src->timeout = g_value_get_uint64 ( value );
         break;
+    case ARG_BUFFER_MIN:
+        src->buffer_min = g_value_get_uint ( value );
+        src->buffer_resume = src->buffer_min + 100000;
+        break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID ( object, prop_id, pspec );
         break;
@@ -166,6 +171,9 @@ gst_streamsrc_get_property ( GObject * object, guint prop_id, GValue * value, GP
     case ARG_TIMEOUT:
         g_value_set_uint64 ( value, src->timeout );
         break;
+    case ARG_BUFFER_MIN:
+        g_value_set_uint ( value, src->buffer_min );
+        break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID ( object, prop_id, pspec );
         break;
@@ -182,7 +190,7 @@ gst_streamsrc_get ( GstPad * pad )
         return GST_DATA( gst_event_new( GST_EVENT_FLUSH ) );
     
     // Signal KIO to resume transfer when buffer reaches our low limit
-    if ( *src->streamBufIndex < BUFFER_RESUME ) 
+    if ( *src->streamBufIndex < src->buffer_resume ) 
         g_signal_emit ( G_OBJECT( src ), gst_streamsrc_signals[SIGNAL_KIO_RESUME], 0 );
     
     if ( *src->streamBufStop ) {
@@ -195,7 +203,7 @@ gst_streamsrc_get ( GstPad * pad )
         }
     }
     // Return when buffer is not filled
-    else if ( !src->playing && *src->streamBufIndex < BUFFER_MIN ) 
+    else if ( !src->playing && *src->streamBufIndex < src->buffer_min ) 
         return GST_DATA( gst_event_new( GST_EVENT_FILLER ) );
      
     src->playing = true;              

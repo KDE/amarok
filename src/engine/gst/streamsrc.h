@@ -35,9 +35,11 @@ struct _GstStreamSrc
     long curoffset;
     
     // Properties
-    glong blocksize; /* bytes per read */
-    guint64 timeout;  /* read timeout, in nanoseconds */
-
+    glong blocksize; /* Bytes per read */
+    guint64 timeout;  /* Read timeout, in nanoseconds */
+    guint buffer_min; /* Minimum buffer fill */
+    guint buffer_resume; /*Resume KIO transfer at this point*/
+    
     // Pointers to member variables of GstEngine
     char* streamBuf;
     int* streamBufIndex;

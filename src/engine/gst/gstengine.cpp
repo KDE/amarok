@@ -48,6 +48,9 @@ SCOPEBUF_SIZE = 260000; // 260kb
 static const int
 STREAMBUF_SIZE = 1000000; // 1MB
 
+static const uint
+STREAMBUF_MIN = 50000; // 50kb
+
 static const int
 STREAMBUF_MAX = STREAMBUF_SIZE - 50000;
 
@@ -373,6 +376,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     else {
         // Create our custom streamsrc element, which transports data into the pipeline
         m_gst_src = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex, &m_streamBufStop ) );
+        g_object_set( G_OBJECT( m_gst_src ), "buffer_min", STREAMBUF_MIN, NULL );
         gst_bin_add ( GST_BIN ( m_gst_thread ), m_gst_src );
         g_signal_connect( G_OBJECT( m_gst_src ), "kio_resume", G_CALLBACK( kio_resume_cb ), m_gst_thread );
     }
@@ -478,6 +482,9 @@ GstEngine::newStreamData( char* buf, int size )  //SLOT
         kdDebug() << "Gst-Engine: Stream buffer overflow!" << endl;
     }
 
+    int filled = (int) ( (float) m_streamBufIndex / STREAMBUF_MIN * 100 );    
+    if ( filled <= 100 ) emit statusText( i18n( "Buffering.. %1%" ).arg( filled ) );
+    
     // Copy data into stream buffer
     memcpy( m_streamBuf + m_streamBufIndex, buf, size );
     // Adjust index
