@@ -170,14 +170,13 @@ PlaylistWindow::init()
 
 
     { //<Search LineEdit>
-        QHBox *hbox; QToolButton *button;
+        QHBox *box; KToolBarButton *button;
 
-        hbox       = new QHBox( m_browsers->container() );
-        button     = new QToolButton( hbox );
-        m_lineEdit = new KLineEdit( hbox );
+        box        = new QHBox( m_browsers->container() );
+        button     = new KToolBarButton( "locationbar_erase", 0, box );
+        m_lineEdit = new KLineEdit( box );
 
-        hbox->setMargin( 4 );
-        button->setIconSet( SmallIconSet( QApplication::reverseLayout() ? "clear_left" : "locationbar_erase" ) );
+        box->setMargin( 4 );
         m_lineEdit->setFrame( QFrame::Sunken );
         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
 
@@ -212,7 +211,7 @@ PlaylistWindow::init()
 
 
     //<Browsers>
-    kdDebug() << "[browserBar] What's this they say? I'm the sexiest man in Milton Keynes.\n";
+        kdDebug() << "[browserBar] Initialisation statistics:\n";
         addBrowser<FileBrowser>( "FileBrowser", i18n( "Files" ), "hdd_unmount" );
         addBrowser<CollectionBrowser>( "CollectionBrowser", i18n( "Collection" ), "kfm" );
         addBrowser<ContextBrowser>( "ContextBrowser", i18n( "Context" ), "info" );
@@ -281,20 +280,14 @@ void PlaylistWindow::createGUI()
     {
         KToolBarButton* const button = (KToolBarButton*)m_toolbar->child( (*it).latin1() );
 
-        if( it == last )
-        {
+        if ( it == last ) {
             //if the user has no PlayerWindow, he MUST have the menu action plugged
             //NOTE this is not saved to the local XMLFile, which is what the user will want
-            if( !AmarokConfig::showPlayerWindow() && !button )
-            {
-                //due to ingenious code design, it will be plugged with
-                //correct text formatting too! /me hugs me-self
+            if ( !AmarokConfig::showPlayerWindow() && !button )
                 actionCollection()->action( "amarok_menu" )->plug( m_toolbar );
-            }
         }
 
-        if( button )
-        {
+        if ( button ) {
             button->modeChange();
             button->setFocusPolicy( QWidget::NoFocus );
         }
@@ -415,8 +408,8 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
             case Key_Return:
             case Key_Enter:
                 m_playlist->activate( *It( m_playlist, It::Visible ) );
-                m_lineEdit->clear();
                 m_playlist->showCurrentTrack();
+                m_lineEdit->clear();
                 return TRUE;
 
             case Key_Escape:
@@ -457,7 +450,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
         break;
     }
 
-    return FALSE;
+    return QWidget::eventFilter( o, e );
 }
 
 void PlaylistWindow::closeEvent( QCloseEvent *e )
