@@ -152,6 +152,9 @@
             <property name="text">
                 <string>Auto-run scripts on application startup</string>
             </property>
+            <property name="toolTip" stdset="0">
+                <string>If enabled, amaroK will automatically restart scripts that were running when you exited the application.</string>
+            </property>
         </widget>
     </vbox>
 </widget>
