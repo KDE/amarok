@@ -163,33 +163,54 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_pButtonNext->setFocusPolicy( QWidget::NoFocus );
     m_pButtonNext->setFlat( true );
     //</Player Buttons>
-                                                       
-    // redesign
-    m_pTimeDisplayLabel = new QLabel( this );
+
+    // MainWindow Layout
     QFont timeFont( "Arial" );
     timeFont.setBold( TRUE );
     timeFont.setPixelSize( 18 );
+
+    m_pTimeDisplayLabel = new QLabel( this );
     m_pTimeDisplayLabel->setFont( timeFont );
     m_pTimeDisplayLabel->setPaletteForegroundColor( QColor( 255, 255, 255 ) );
-    m_pTimeDisplayLabel->move( 5, 36 );
+    m_pTimeDisplayLabel->move( 16, 36 );
 
-    m_pButtonLogo = new AmarokButton( this, locate( "data", "amarok/images/logo_new_active.png" ),
+    m_pTimePlusPixmap   = new QPixmap( locate( "data", "amarok/images/time_plus.png" ) );
+    m_pTimeMinusPixmap  = new QPixmap( locate( "data", "amarok/images/time_minus.png" ) );
+    m_pVolSpeaker       = new QPixmap( locate( "data", "amarok/images/vol_speaker.png" ) );
+    m_pDescriptionImage = new QPixmap( locate( "data", "amarok/images/description.png" ) );
+
+    m_pDescription = new QLabel (this );
+    m_pDescription->move( 4, 5 );
+    m_pDescription->setFixedSize( 130, 10 );
+    m_pDescription->setPixmap( *m_pDescriptionImage );
+
+    m_pTimeSign = new QLabel( this );
+    m_pTimeSign->move( 6, 40 );
+    m_pTimeSign->setFixedSize( 10, 10 );
+
+    m_pVolSign = new QLabel( this );
+    m_pVolSign->move( 295, 7 );
+    m_pVolSign->setFixedSize( 9, 8 );
+    m_pVolSign->setPixmap( *m_pVolSpeaker );
+
+/*    m_pButtonLogo = new AmarokButton( this, locate( "data", "amarok/images/logo_new_active.png" ),
                                       locate( "data", "amarok/images/logo_new_inactive.png" ), false );
-    m_pButtonLogo->move( -100, -100 );
+    m_pButtonLogo->move( -100, -100 );*/
 
     m_pButtonPl = new AmarokButton( this, locate( "data", "amarok/images/pl_inactive2.png" ),
                                     locate( "data", "amarok/images/pl_active2.png" ), true );
     m_pButtonEq = new AmarokButton( this, locate( "data", "amarok/images/eq_inactive2.png" ),
                                     locate( "data", "amarok/images/eq_active2.png" ), false );
-    m_pButtonEq->move( 11, 75 );
+
+    m_pButtonEq->move( 5, 85 );
     m_pButtonEq->resize( 28, 13 );
-    m_pButtonPl->move( 40, 75 );
+    m_pButtonPl->move( 34, 85 );
     m_pButtonPl->resize( 28, 13 );
 
     m_pSlider->move( 4, 103 );
-    m_pSlider->resize( 302, 12 );
-    m_pSliderVol->move( 292, 24 );
-    m_pSliderVol->resize( 12, 76 );
+    m_pSlider->resize( 303, 12 );
+    m_pSliderVol->move( 294, 18 );
+    m_pSliderVol->resize( 12, 79 );
 
     m_pFrameButtons->move( 0, 119 );
     m_pFrameButtons->resize( 311, 21 );
@@ -209,77 +230,22 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
 
     m_pButtonNext->move( 249, 0 );
     m_pButtonNext->resize( 61, 20 );
-/*
-    QBoxLayout* lay = new QVBoxLayout( this );
-    lay->addWidget( m_pFrame );
-
-    QBoxLayout *lay3 = new QHBoxLayout( lay );
-    m_pLay6 = new QVBoxLayout( lay3 );
-    m_pLay6->addItem( new QSpacerItem( 0, 2 ) );
-
-    QBoxLayout *lay7 = new QVBoxLayout( lay3 );
-    QBoxLayout *lay5 = new QHBoxLayout( lay7 );
-
-    m_pButtonLogo = new AmarokButton( this, locate( "data", "amarok/images/logo_new_active.png" ),
-                                      locate( "data", "amarok/images/logo_new_inactive.png" ), false );
-    lay5->addItem( new QSpacerItem( 4, 0 ) );
-    lay5->addWidget( m_pButtonLogo );
-    m_pTimeDisplayLabel = new QLabel( this, 0, Qt::WRepaintNoErase );
-    lay7->addItem( new QSpacerItem( 0, 3 ) );
-    lay7->addWidget( m_pTimeDisplayLabel );
-
-    QBoxLayout *lay4 = new QVBoxLayout( lay5 );
-    m_pButtonPl = new AmarokButton( this, locate( "data", "amarok/images/pl_active.png" ),
-                                    locate( "data", "amarok/images/pl_inactive.png" ), true );
-    m_pButtonEq = new AmarokButton( this, locate( "data", "amarok/images/eq_active.png" ),
-                                    locate( "data", "amarok/images/eq_inactive.png" ), false );
-    lay4->addWidget( m_pButtonPl );
-    lay4->addItem( new QSpacerItem( 0, 1 ) );
-    lay4->addWidget( m_pButtonEq );
-    lay4->addItem( new QSpacerItem( 2, 0 ) );
-
-    lay->addItem( new QSpacerItem( 0, 5 ) );
-    QBoxLayout* lay2 = new QHBoxLayout( lay );
-    lay->addItem( new QSpacerItem( 0, 5 ) );
-    lay2->addItem( new QSpacerItem( 8, 0 ) );
-    lay2->addWidget( m_pSlider );
-    lay2->addItem( new QSpacerItem( 8, 0 ) );
-
-    lay3->addItem( new QSpacerItem( 1, 0 ) );
-    lay3->addWidget( m_pSliderVol );
-    lay3->addItem( new QSpacerItem( 1, 0 ) );
-
-    lay->addWidget( m_pFrameButtons );
-    QBoxLayout *layButtons = new QHBoxLayout( m_pFrameButtons );
-    layButtons->addWidget( m_pButtonPrev );
-    layButtons->addWidget( m_pButtonPlay );
-    layButtons->addWidget( m_pButtonPause );
-    layButtons->addWidget( m_pButtonStop );
-    layButtons->addWidget( m_pButtonNext );
-
-    lay->setResizeMode( QLayout::FreeResize );
-    layButtons->setResizeMode( QLayout::FreeResize );
-    lay2->setResizeMode( QLayout::FreeResize );
-    lay4->setResizeMode( QLayout::FreeResize );
-    lay5->setResizeMode( QLayout::FreeResize );
-    lay7->setResizeMode( QLayout::FreeResize );
-    */
 
     // set up system tray
     m_pTray = new AmarokSystray( this, m_pActionCollection );
     m_pTray->show();
 
     // some sizing details
+    setFixedSize( 311, 140 ); //y was 130
     initScroll(); //requires m_pFrame to be created
-    setFixedSize( 310, 120 + m_pFrame->height() ); //y was 130
 
-    initTimeDisplay();
+    // initTimeDisplay();
     m_pTimeDisplayLabel->setFixedSize( 9 * 12 + 2, 16 );
     timeDisplay( false, 0, 0, 0 );
 
     // connect vistimer
     connect( m_visTimer, SIGNAL( timeout() ), pApp, SLOT( slotVisTimer() ) );
-    connect( m_pButtonLogo, SIGNAL( clicked() ), m_helpMenu, SLOT( aboutApplication() ) );
+//    connect( m_pButtonLogo, SIGNAL( clicked() ), m_helpMenu, SLOT( aboutApplication() ) );
 }
 
 
@@ -299,10 +265,10 @@ void PlayerWidget::initScroll()
     //QFont font( "Helvetica", 10 );
     //font.setStyleHint( QFont::Helvetica );
     //int frameHeight = QFontMetrics( font ).height() + 5;
-//    int frameHeight = fontMetrics().height() + 5;
-    int frameHeight = 19;
+    int frameHeight = 16;
 
-    m_pFrame->setFixedSize( width(), frameHeight );
+    m_pFrame->setFixedSize( 252, frameHeight );
+    m_pFrame->move( 3, 14 );
     //m_pFrame->setFont( font );
 
     m_pixmapWidth  = 2000;
@@ -318,21 +284,6 @@ void PlayerWidget::initScroll()
 
     m_sx = m_sy = 0;
     m_sxAdd = 1;
-}
-
-
-void PlayerWidget::initTimeDisplay()
-{
-    m_timeDisplayX = 190;
-    m_timeDisplayY = 84;
-    m_timeDisplayW = 12;
-
-    m_pTimePixmap = new QPixmap( locate( "data", "amarok/images/numbers_transp.png" ) );
-
-    m_pTimeBgPixmap = new QPixmap( paletteBackgroundPixmap() ->convertToImage()
-                                   .copy( m_timeDisplayX, m_timeDisplayY, 9 * m_timeDisplayW, m_timeDisplayW ) );
-
-    m_pTimeComposePixmap = new QPixmap( m_pTimeBgPixmap->width(), m_pTimeBgPixmap->height() );
 }
 
 
@@ -373,12 +324,10 @@ void PlayerWidget::setScroll( QString text, const QString &bitrate, const QStrin
 
     QFont scrollerFont( "Arial" );
     scrollerFont.setBold( TRUE );
-    scrollerFont.setPixelSize( 14 );
+    scrollerFont.setPixelSize( 11 );
 
     painterPix.setFont( scrollerFont );
     painterMask.setFont( scrollerFont );
-//    painterPix.setFont( m_pFrame->font() );
-//    painterMask.setFont( m_pFrame->font() );
 
     painterPix.eraseRect( 0, 0, m_pixmapWidth, m_pixmapHeight );
     painterPix.drawText( 0, 0, m_pixmapWidth, m_pixmapHeight, Qt::AlignLeft || Qt::AlignVCenter, text );
@@ -430,59 +379,24 @@ void PlayerWidget::drawScroll()
 void PlayerWidget::timeDisplay( bool remaining, int hours, int minutes, int seconds )
 {
     QString str;
-    str += " ";
-    if ( hours < 10 )
-        str += "0";
+
+    if ( hours < 10 ) str += "0";
     str += QString::number( hours );
     str += ":";
-    if ( minutes < 10 )
-        str += "0";
+
+    if ( minutes < 10 ) str += "0";
     str += QString::number( minutes );
     str += ":";
-    if ( seconds < 10 )
-        str += "0";
+
+    if ( seconds < 10 ) str += "0";
     str += QString::number( seconds );
 
     m_pTimeDisplayLabel->setText( str );
 
-/*
-    bitBlt( m_pTimeComposePixmap, 0, 0, m_pTimeBgPixmap );
-
-    int x = 0;
-    int y = 0;
-
-    if ( hours > 60 || hours < 0 )
-        hours = 0;
-    if ( minutes > 60 || minutes < 0 )
-        minutes = 0;
-    if ( seconds > 60 || seconds < 0 )
-        seconds = 0;
-
-    if ( remaining )
-        bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, 11 * m_timeDisplayW, 0, m_timeDisplayW );
+    if (!pApp->m_optTimeDisplayRemaining)
+        m_pTimeSign->setPixmap( *m_pTimePlusPixmap );
     else
-        bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, 12 * m_timeDisplayW, 0, m_timeDisplayW );
-
-    x += m_timeDisplayW;
-
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, hours / 10 * m_timeDisplayW, 0, m_timeDisplayW );
-    x += m_timeDisplayW;
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, hours % 10 * m_timeDisplayW, 0, m_timeDisplayW );
-    x += m_timeDisplayW;
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, 10 * m_timeDisplayW, 0, m_timeDisplayW );
-    x += m_timeDisplayW;
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, minutes / 10 * m_timeDisplayW, 0, m_timeDisplayW );
-    x += m_timeDisplayW;
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, minutes % 10 * m_timeDisplayW, 0, m_timeDisplayW );
-    x += m_timeDisplayW;
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, 10 * m_timeDisplayW, 0, m_timeDisplayW );
-    x += m_timeDisplayW;
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, seconds / 10 * m_timeDisplayW, 0, m_timeDisplayW );
-    x += m_timeDisplayW;
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, seconds % 10 * m_timeDisplayW, 0, m_timeDisplayW );
-
-
-    m_pTimeDisplayLabel->setPixmap( *m_pTimeComposePixmap );*/
+        m_pTimeSign->setPixmap( *m_pTimeMinusPixmap );
 }
 
 
@@ -506,7 +420,7 @@ void PlayerWidget::paintEvent( QPaintEvent * )
     QString str = m_bitrate;
     if( !(m_bitrate.isEmpty() || m_samplerate.isEmpty() ) ) str += " / ";
     str += m_samplerate;
-    pF.drawText( 11, 62, str );
+    pF.drawText( 6, 68, str );
 }
 
 
@@ -689,18 +603,17 @@ void PlayerWidget::createVis()
     }
 
     // we special-case the DistortAnalyzer, since it needs more height. yes, this ugly.. I need whipping
-    if ( pApp->m_optVisCurrent == 1 )
+/*    if ( pApp->m_optVisCurrent == 1 )
     {
         m_pVis->setFixedSize( 168, 80 );
         m_pVis->move( 113, 20 );
     }
     else
-    {        
+    {*/
         m_pVis->setFixedSize( 168, 50 );
-        m_pVis->move( 113, 40 );
-    }
-                
-//    m_pLay6->addWidget( m_pVis );
+        m_pVis->move( 119, 45 );
+//    }
+
     connect( m_pVis, SIGNAL( clicked() ), this, SLOT( createVis() ) );
 
     m_visTimer->start( m_pVis->timeout() );

@@ -82,7 +82,8 @@ class PlayerWidget : public QWidget
         AmarokSlider *m_pSlider;
         AmarokSlider *m_pSliderVol;
         QLabel *m_pTimeDisplayLabel;
-        
+        QLabel *m_pTimeSign;
+
         AmarokButton *m_pButtonPl;
         AmarokButton *m_pButtonEq;
         AmarokButton *m_pButtonLogo;
@@ -111,7 +112,6 @@ class PlayerWidget : public QWidget
 
     private:
         void initScroll();
-        void initTimeDisplay();
         void polish();
 
         void paintEvent( QPaintEvent *e );
@@ -126,21 +126,22 @@ class PlayerWidget : public QWidget
         QTimer *scrollTimer;
         QTimer *m_visTimer;
         QBoxLayout *m_pLay6;
-        
+
         QPixmap m_oldBgPixmap;
         QPixmap *m_pScrollPixmap;
         QPixmap *m_pBgPixmap;
         QPixmap *m_pComposePixmap;
         QBitmap *m_pScrollMask;
-        QPixmap *m_pTimePixmap;
-        QPixmap *m_pTimeBgPixmap;
-        QPixmap *m_pTimeComposePixmap;
+
+        // Signs
+        QPixmap *m_pTimePlusPixmap;
+        QPixmap *m_pTimeMinusPixmap;
+        QPixmap *m_pVolSpeaker;
+        QLabel  *m_pVolSign;
+        QPixmap *m_pDescriptionImage;
+        QLabel  *m_pDescription;
 
         KHelpMenu *m_helpMenu;
-
-        int m_timeDisplayX;
-        int m_timeDisplayY;
-        int m_timeDisplayW;
 
         int m_pixmapWidth;
         int m_pixmapHeight;
