@@ -65,7 +65,7 @@ MasEngine::MasEngine()
 
 {
     DEBUG_FUNC_INFO
-        
+
     addPluginProperty( "StreamingMode",  "NoStreaming" );
     // NOT SUPPORTED
     //addPluginProperty( "HasConfigure",   "true" );
@@ -76,22 +76,20 @@ MasEngine::MasEngine()
 
 MasEngine::~MasEngine()
 {
-    DEBUG_BEGIN
+    DEBUG_BLOCK
 
     if ( m_inited ) stop();
     m_pPlayingTimer->stop();
     killTimers();
-
-    DEBUG_END
 }
 
 
 bool MasEngine::init()
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     if (!masinit() ) {
-        KMessageBox::error( 0, i18n("<h3>amaroK could not initialise MAS.</h3>" 
+        KMessageBox::error( 0, i18n("<h3>amaroK could not initialise MAS.</h3>"
                         "<p>Check for a running mas daemon.</p>") );
         error() << "  connecting to MAS daemon failed. Aborting. " << endl;
         debug() << "  Please restart amarok." << endl;
@@ -113,14 +111,15 @@ bool MasEngine::init()
 
 bool MasEngine::canDecode( const KURL &url ) const
 {
+    DEBUG_BLOCK
+
     QStringList list;
     bool playable;
 
-    DEBUG_BEGIN
     debug() << "  Param: url: " << url << endl;
     //debug() << "  url.protocol()   >" << url.protocol() <<"<"<< endl;
 
-    if (url.protocol() == "http" ) return false; 
+    if (url.protocol() == "http" ) return false;
 
     // TODO determine list of supported MimeTypes/Extensions from MAS
     list += QString("audio/x-mp3");
@@ -133,7 +132,6 @@ bool MasEngine::canDecode( const KURL &url ) const
     if ( !playable )
       warning() << "Mimetype is not playable by MAS (" << url << ")" << endl;
 
-    DEBUG_END
     return playable;
 }  // canDecode
 
@@ -144,7 +142,7 @@ bool MasEngine::load( const KURL& url, bool stream )
     char pbuf[10240];
     int pos = 0;
 
-    DEBUG_BEGIN
+    DEBUG_BLOCK
 
     m_isStream = stream;
     debug() << "  m_url: " << m_url << endl;
@@ -160,7 +158,7 @@ bool MasEngine::load( const KURL& url, bool stream )
         debug() << "  cannot decode!" << endl;
         return false;
     }
-    
+
     if ( m_url == url ) {
        return true;
     } else {
@@ -187,7 +185,6 @@ bool MasEngine::load( const KURL& url, bool stream )
     m_lastKnownPosition = 0;
     m_state = Engine::Idle;
 
-    DEBUG_END
     return true;
 }   // load
 
@@ -197,7 +194,8 @@ bool MasEngine::play( unsigned int offset)
     struct mas_package pkg;
     char pbuf[10240];
 
-    DEBUG_BEGIN
+    DEBUG_BLOCK
+
     debug() << "  param: offset " << offset << endl;
 
     if ( m_state != Engine::Playing ) {
@@ -220,7 +218,7 @@ bool MasEngine::play( unsigned int offset)
     m_state = Engine::Playing;
     emit stateChanged( Engine::Playing );
 
-    DEBUG_END
+
     return true;
 }   // play
 
@@ -239,7 +237,7 @@ uint MasEngine::position() const
 
 void MasEngine::playingTimeout() //SLOT
 {
-    //DEBUG_BEGIN
+    //DEBUG_BLOCK
     m_lastKnownPosition += MAS_TIMER;
 
     // ask MAS if it's still playing
@@ -257,13 +255,12 @@ void MasEngine::playingTimeout() //SLOT
         emit trackEnded();
     }
 
-    //DEBUG_END
 }   // playingTimeout    //SLOT
 
 
 void MasEngine::stop()
 {
-    DEBUG_BEGIN
+    DEBUG_BLOCK
 
     //switch xfade channels
 /*    m_xfadeCurrent = ( m_xfadeCurrent == "invalue1" ) ? "invalue2" : "invalue1";
@@ -280,13 +277,12 @@ void MasEngine::stop()
     m_lastKnownPosition = 0;
 
     //emit stateChanged( m_state );
-    DEBUG_END
 }
 
 
 void MasEngine::pause()
 {
-    DEBUG_BEGIN
+    DEBUG_BLOCK
 
     if(m_state == Engine::Paused) {
         mas_source_play( m_mp1a_source_device );
@@ -306,7 +302,6 @@ void MasEngine::pause()
     }
 
     emit stateChanged( m_state );
-    DEBUG_END
 }   // pause
 
 
@@ -379,7 +374,7 @@ bool MasEngine::masinit()
 {
     int32 err;
 
-    DEBUG_BEGIN
+    DEBUG_BLOCK
     masc_log_verbosity( MAS_VERBLVL_DEBUG );
     masc_log_message( 0, (char*)"amarok/MASengine" );
     masc_log_message( 0, (char*)"tries to plays audio using MAS ;-)");
@@ -575,7 +570,6 @@ bool MasEngine::masinit()
 */
     }
 
-    DEBUG_END
     return true;
 }   // masinit
 
