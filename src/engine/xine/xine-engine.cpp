@@ -38,19 +38,11 @@ extern "C"
     scope_init_plugin( xine_t* );
 }
 
-static inline kndbgstream
-ndebug()
-{
-    return kndbgstream();
-}
-
 static inline kdbgstream
 debug()
 {
     return kdbgstream( "[xine-engine] ", 0, 0 );
 }
-
-#define debug ndebug
 
 
 //some logging static globals
@@ -188,19 +180,15 @@ XineEngine::play()
 
     if( xine_open( m_stream, m_url.url().local8Bit() ) )
     {
-        if( xine_play( m_stream, 0, 0 ) )
-        {
-            xine_post_out_t *source = xine_get_audio_source( m_stream );
-            xine_post_in_t  *target = (xine_post_in_t*)xine_post_input( m_post, const_cast<char*>("audio in") );
+        xine_post_out_t *source = xine_get_audio_source( m_stream );
+        xine_post_in_t  *target = (xine_post_in_t*)xine_post_input( m_post, const_cast<char*>("audio in") );
 
-            xine_post_wire( source, target );
+        xine_post_wire( source, target );
 
-            return;
-        }
+        if( xine_play( m_stream, 0, 0 ) ) return;
     }
 
     //we should get a ui message from the event listener
-    //KMessageBox::sorry( 0, i18n( "<p>m_xine could not open the media at: <i>%1</i>" ).arg( m_url.prettyURL() ) );
     emit stopped();
 }
 
@@ -286,8 +274,6 @@ XineEngine::scope()
 
         if( diff+512 <= (uint)best_buf->num_frames )
         {
-            debug() << "time: " << current_vpts << " vpts: " << best_buf->vpts << " buff_size: " << best_buf->num_frames << " diff: " << diff << " list_size: " << x << endl;
-
             const int16_t *data16 = best_buf->mem;
             data16 += diff*2;
 
@@ -298,9 +284,9 @@ XineEngine::scope()
                 v[i] = (double)a / (1<<15);
             }
         }
-        else { Log::buffTooSmall++; debug() << "Buffer too small, diff: " << diff << "buff_size: " << best_buf->num_frames << endl; }
+        else { Log::buffTooSmall++; }
     }
-    else { Log::buffNotFound++; debug() << "Buffer not found\n"; }
+    else { Log::buffNotFound++; }
 
     return &v;
 }
