@@ -46,6 +46,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Scott Wheeler", "TagLib", "wheeler@kde.org" );
     aboutData.addCredit( "Stefan Bogner", I18N_NOOP( "tester, patches, translation" ), "bochi@online.ms" );
     aboutData.addCredit( "Whitehawk Stormchaser", I18N_NOOP( "tester, patches" ), "zerokode@gmx.net" );
+    aboutData.addCredit( "Pierpaolo Di Panfilo", I18N_NOOP("Playlist browser"), "pippo_dp@libero.it" );
 
 
     KApplication::disableAutoDcopRegistration();
