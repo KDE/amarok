@@ -67,7 +67,7 @@ App::App()
         : KApplication()
         , m_pActionCollection( 0 )
         , m_pGlobalAccel( new KGlobalAccel( this ) )
-        , m_pPlayerWindow( 0 ) //will be created in applySettings()
+        , m_pPlayerWidget( 0 ) //will be created in applySettings()
         , m_pDcopHandler( new amaroK::DcopHandler )
         , m_pTray( 0 )
         , m_pOSD( new amaroK::OSD() )
@@ -90,7 +90,7 @@ App::App()
     (void)              new Vis::SocketServer( this );
 
     //load previous playlist
-    if( bRestoreSession && AmarokConfig::savePlaylist() ) m_pPlaylistwindow->restoreSessionPlaylist();
+    if( bRestoreSession && AmarokConfig::savePlaylist() ) m_pPlaylistWindow->restoreSessionPlaylist();
 
     readConfig();
     initIpc(); //initializes Unix domain socket for loader communication, will also hide the splash
@@ -428,7 +428,7 @@ void App::applySettings()
 
     controller->setVolume( AmarokConfig::masterVolume() ); //FIXME this shouldn't be here!
     engine->setRestoreEffects( AmarokConfig::rememberEffects() );
-    engine()->setSoundOutput( AmarokConfig::soundOutput() );
+    engine->setSoundOutput( AmarokConfig::soundOutput() );
     engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
     
     m_pOSD->setEnabled( AmarokConfig::osdEnabled() );
@@ -476,7 +476,7 @@ void App::applySettings()
     }
 
 
-    const QFont font = AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );
+    const QFont font = AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font();
     m_pPlaylistWindow->setFont( font );
 
     m_pTray->setShown( AmarokConfig::showTrayIcon() ); //TODO delete when not in use
