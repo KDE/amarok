@@ -93,11 +93,14 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the open button to have text on right
     m_scanAction->plug( toolbar );
-    toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
 
     toolbar->insertLineSeparator();
 
     tagfilterMenuButton->plug( toolbar );
+
+    toolbar->insertLineSeparator();
+
+    toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
     m_configureAction->plug( toolbar );
 
     m_categoryMenu->insertItem( i18n( "&First Level" ), m_cat1Menu );
