@@ -681,7 +681,7 @@ void PlayerWidget::createVis()
     case 3:
         m_pVis = new SpectralShineAnalyzer( this );
         break;*/
-    case 4:
+    case 3:
         m_pVis = new XmasAnalyzer( this );
         break;
     default:
