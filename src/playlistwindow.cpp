@@ -326,11 +326,11 @@ void PlaylistWindow::setColors( const QPalette &pal, const QColor &bgAlt )
 }
 
 
-void PlaylistWindow::setFont( const QFont &font )
+void PlaylistWindow::setFont( const QFont &font, const QFont &contextfont )
 {
-    m_browsers->browser( "ContextBrowser" )->setFont( font ); //virtual so works without cast
     //m_browsers->setFont( font );
     m_playlist->setFont( font );
+    m_browsers->browser( "ContextBrowser" )->setFont( contextfont ); //virtual so works without cast
 }
 
 

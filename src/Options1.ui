@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>313</width>
-            <height>344</height>
+            <width>314</width>
+            <height>380</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -20,57 +20,17 @@
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
+    <property name="caption">
+        <string>Options1</string>
+    </property>
     <property name="whatsThis" stdset="0">
         <string>Check to enable splashscreen during amaroK startup.</string>
     </property>
-    <vbox>
+    <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QGroupBox">
-            <property name="name">
-                <cstring>groupBox2</cstring>
-            </property>
-            <property name="title">
-                <string>General Options</string>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_ShowSplashscreen</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Show splash-screen on start&amp;up</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Enable/Disable splashscreen during amaroK startup.</string>
-                    </property>
-                </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_ShowTrayIcon</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Show &amp;tray icon</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Check to enable the amaroK tray icon.</string>
-                    </property>
-                </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_ShowPlayerWindow</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Show player window (like XMMS)</string>
-                    </property>
-                </widget>
-            </vbox>
-        </widget>
-        <widget class="QGroupBox">
+        <widget class="QGroupBox" row="1" column="0">
             <property name="name">
                 <cstring>groupBox1</cstring>
             </property>
@@ -110,6 +70,9 @@
                     <property name="text">
                         <string>&amp;Hide playlist with main window</string>
                     </property>
+                    <property name="accel">
+                        <string>Alt+H</string>
+                    </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, amaroK takes appropriate action to hide the playlist when the player window is hidden. If not checked, the player window and the playlist hide totally independent of each other.</string>
                     </property>
@@ -120,6 +83,9 @@
                     </property>
                     <property name="text">
                         <string>Playlist scrolls with &amp;active song</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+A</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, the playlist scrolls on song change to make the currently playing item visible in the playlist. Measures are taken not to scroll if inappropriate.</string>
@@ -162,7 +128,95 @@
                 </widget>
             </vbox>
         </widget>
-    </vbox>
+        <widget class="QGroupBox" row="0" column="0">
+            <property name="name">
+                <cstring>groupBox2</cstring>
+            </property>
+            <property name="title">
+                <string>General Options</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QCheckBox" row="0" column="0" rowspan="1" colspan="3">
+                    <property name="name">
+                        <cstring>kcfg_ShowSplashscreen</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Show splash-screen on start&amp;up</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+U</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Enable/Disable splashscreen during amaroK startup.</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="2" column="0" rowspan="1" colspan="3">
+                    <property name="name">
+                        <cstring>kcfg_ShowPlayerWindow</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Show player window (like XMMS)</string>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="3" column="1">
+                    <property name="name">
+                        <cstring>kcfg_CoverPreviewSize</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>150</number>
+                    </property>
+                    <property name="minValue">
+                        <number>50</number>
+                    </property>
+                    <property name="value">
+                        <number>100</number>
+                    </property>
+                </widget>
+                <spacer row="3" column="2">
+                    <property name="name">
+                        <cstring>spacer7</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>30</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QCheckBox" row="1" column="0" rowspan="1" colspan="3">
+                    <property name="name">
+                        <cstring>kcfg_ShowTrayIcon</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Show &amp;tray icon</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+T</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Check to enable the amaroK tray icon.</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="3" column="0">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Default size for cover previews</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+    </grid>
 </widget>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

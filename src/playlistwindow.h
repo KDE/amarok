@@ -48,7 +48,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
 
         void init();
 
-        void setFont( const QFont& );
+        void setFont( const QFont&, const QFont& );
         void setColors( const QPalette&, const QColor& );
 
         void createGUI(); //should be private but App::slowConfigToolbars requires it

@@ -5,6 +5,7 @@
 #ifndef AMAROK_COLLECTIONDB_H
 #define AMAROK_COLLECTIONDB_H
 
+#include <amarokconfig.h>
 #include <qobject.h>         //baseclass
 #include <qstringlist.h>     //stack allocated
 #include <qdir.h>            //stack allocated
@@ -18,8 +19,7 @@ class CollectionDB : public QObject
     Q_OBJECT
     
     public:
-        static const int COVER_SIZE = 100;
-        
+               
         CollectionDB();
         ~CollectionDB();
 
@@ -30,10 +30,10 @@ class CollectionDB : public QObject
         QString getPathForAlbum( const uint artist_id, const uint album_id );
         QString getPathForAlbum( const QString artist, const QString album );
 
-        QString getImageForAlbum( const uint artist_id, const uint album_id, const QString defaultImage, const uint width = COVER_SIZE );
-        QString getImageForAlbum( const QString artist, const QString album, const QString defaultImage, const uint width = COVER_SIZE );
+        QString getImageForAlbum( const uint artist_id, const uint album_id, const QString defaultImage, const uint width = AmarokConfig::coverPreviewSize() );
+        QString getImageForAlbum( const QString artist, const QString album, const QString defaultImage, const uint width = AmarokConfig::coverPreviewSize() );
         
-        QString getImageForPath( const QString path, const QString defaultImage, const uint width = COVER_SIZE );
+        QString getImageForPath( const QString path, const QString defaultImage, const uint width = AmarokConfig::coverPreviewSize() );
         void addImageToPath( const QString path, const QString image, bool temporary );
 
         QStringList artistList();

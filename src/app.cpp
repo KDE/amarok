@@ -353,7 +353,7 @@ void App::applySettings( bool firstTime )
 
     amaroK::OSD::instance()->applySettings();
 
-    playlistWindow()->setFont( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );
+    playlistWindow()->setFont( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font(), AmarokConfig::useCustomFonts() ? AmarokConfig::contextBrowserFont() : QApplication::font() );
 
     reinterpret_cast<QWidget*>(playlistWindow()->statusBar())->setShown( AmarokConfig::showStatusBar() );
 

@@ -75,6 +75,11 @@
         <default>true</default>
         <whatsthis>Makes amaroK more like XMMS and other Winamp clones with separate player and playlist windows.</whatsthis>
     </entry>
+    <entry key="Cover Preview Size" type="Int">
+        <label>Size of the cover previews in Contextbrowser and Covermanager</label>
+        <default>100</default>
+        <whatsthis>Size of the cover previews in Contextbrowser and Covermanager</whatsthis>
+    </entry>
     <entry key="Show Status Bar" type="Bool">
         <label>Whether to show the Playlist Statusbar</label>
         <default>false</default>
@@ -263,6 +268,11 @@
         <default code="true">QFont("Helvetica",9)</default>
     <whatsthis>The font to use in the player window.</whatsthis>
     </entry>
+    <entry key="Context Browser Font" type="Font">
+        <label>Font in context browser</label>
+        <default code="true">QFont("Helvetica",9)</default>
+    <whatsthis>The font to use in the context browser.</whatsthis>
+    </entry>
     <entry key="Recode ID3v1 Tags" type="Bool">
         <label>Recode ID3v1 tags</label>
         <default>false</default>
@@ -273,7 +283,6 @@
         <default></default>
     <whatsthis>The charset with which to decode ID3v1 tags.</whatsthis>
     </entry>
-
 </group>
 
 <group name="Colors">

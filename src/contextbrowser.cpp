@@ -105,12 +105,11 @@ ContextBrowser::~ContextBrowser()
 
 void ContextBrowser::setFont( const QFont &newFont ) //virtual
 {
-    if( font() != newFont )
-    {
-        QWidget::setFont( newFont );
-        setStyleSheet();
-        browser->setUserStyleSheet( m_styleSheet );
-    }
+    QWidget::setFont( newFont );
+    setStyleSheet();
+    browser->setUserStyleSheet( m_styleSheet );
+    browser->setStandardFont( newFont.key() );
+    showCurrentTrack();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
