@@ -1215,7 +1215,7 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
     pBuf.setFont( font );
 
     if( m_loading )
-        info = "Loading...";
+        info = i18n( "Loading..." );
     else
     {     //playlist loaded
         // draw the number of tracks and the total length of the playlist

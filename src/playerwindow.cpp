@@ -227,7 +227,7 @@ void PlayerWidget::setScroll( const QStringList &list )
     }
 
     //FIXME empty QString would crash due to NULL Pixmaps
-    if( text.isEmpty() ) text = "Please report this message to amarok-devel@lists.sf.net, thanks!";
+    if( text.isEmpty() ) text = i18n( "Please report this message to amarok-devel@lists.sf.net, thanks!" );
 
     QFont font( m_pScrollFrame->font() );
     QFontMetrics fm( font );

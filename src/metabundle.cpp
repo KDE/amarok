@@ -6,6 +6,8 @@
 #include "metabundle.h"
 #include "playlistitem.h"
 
+#include <qfile.h>
+
 #include <kfilemetainfo.h>
 
 #include <taglib/audioproperties.h>
@@ -56,7 +58,7 @@ MetaBundle::MetaBundle( const PlaylistItem *item )
 {
     if( m_url.isLocalFile() )
     {
-        TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Accurate );
+        TagLib::FileRef f( QFile::encodeName( m_url.path() ), true, TagLib::AudioProperties::Accurate );
 
         if( f.isNull() )
         {
@@ -145,7 +147,7 @@ MetaBundle::readTags( bool readAudioProperties )
 
     if( readAudioProperties || !CollectionDB().getMetaBundleForUrl( m_url.path(), this ) )
     {
-        TagLib::FileRef f( m_url.path().local8Bit(), readAudioProperties, TagLib::AudioProperties::Fast );
+        TagLib::FileRef f( QFile::encodeName( m_url.path() ), readAudioProperties, TagLib::AudioProperties::Fast );
 
         if( !f.isNull() )
         {

@@ -171,8 +171,8 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     connect( &Glow::timer, SIGNAL(timeout()), SLOT(slotGlowTimer()) );
 
 
-                    KStdAction::copy( this, SLOT( copyToClipboard() ), ac, "playlist_copy" );
-                    KStdAction::selectAll( this, SLOT( selectAll() ), ac, "playlist_select_all" );
+    KStdAction::copy( this, SLOT( copyToClipboard() ), ac, "playlist_copy" );
+    KStdAction::selectAll( this, SLOT( selectAll() ), ac, "playlist_select_all" );
     m_clearButton = KStdAction::clear( this, SLOT( clear() ), ac, "playlist_clear" );
     m_undoButton  = KStdAction::undo( this, SLOT( undo() ), ac, "playlist_undo" );
     m_redoButton  = KStdAction::redo( this, SLOT( redo() ), ac, "playlist_redo" );

@@ -43,27 +43,27 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     , m_previewJob( 0 )
 {
     setCaption( kapp->makeStdCaption( i18n("Cover Manager") ) );
-    
+
     QVBoxLayout *vbox = new QVBoxLayout( this );
     QSplitter *splitter = new QSplitter( this );
-    
+
     //artist listview
     m_artistView = new KListView( splitter );
-    m_artistView->addColumn("Albums By");
+    m_artistView->addColumn(i18n( "Albums By" ));
     m_artistView->setFullWidth( true );
     m_artistView->setRootIsDecorated( true );
     m_artistView->setSorting( -1 );    //no sort
     m_artistView->setMinimumWidth( 180 );
-    
-    KListViewItem *item = new KListViewItem( m_artistView, "All Artists" );
+
+    KListViewItem *item = new KListViewItem( m_artistView, i18n( "All Artists" ) );
     item->setExpandable( true );
     item->setPixmap( 0, SmallIcon("personal") );
-    
+
     //load artists from the collection db
     QStringList values;
     QStringList names;
     m_db->execSql("SELECT name FROM artist ORDER BY name;", &values, &names);
-    
+
     if( !values.isEmpty() ) {
         for( uint i=0; i < values.count(); i++ )  {
             item = new KListViewItem( m_artistView, item, values[i] );
@@ -71,18 +71,18 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
             item->setPixmap( 0, SmallIcon("personal") );
         }
     }
-    
-    
+
+
     QWidget *coverWidget = new QWidget( splitter );
     QVBoxLayout *viewBox = new QVBoxLayout( coverWidget );
     viewBox->setMargin(4);
     viewBox->setSpacing(4);
     QHBoxLayout *hbox = new QHBoxLayout( viewBox->layout() );
-    
+
     //search line edit
     m_searchEdit = new KLineEdit( coverWidget );
     m_searchEdit->setPaletteForegroundColor( colorGroup().mid() );
-    m_searchEdit->setText("Search here...");
+    m_searchEdit->setText(i18n( "Search here..." ));
     m_searchEdit->installEventFilter( this );
     m_timer = new QTimer( this );    //search filter timer
 
@@ -99,10 +99,10 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     connect( m_viewMenu, SIGNAL( activated(int) ), SLOT( changeView(int) ) );
     viewButton->setPopup(m_viewMenu);
     viewButton->setPopupDelay(0);
-    
+
     #ifdef AMAZON_SUPPORT
     //fetch missing covers button
-    m_fetchButton = new KPushButton( SmallIconSet("cdrom_unmount"), "Fetch missing covers", coverWidget );
+    m_fetchButton = new KPushButton( SmallIconSet("cdrom_unmount"), i18n( "Fetch missing covers" ), coverWidget );
     connect( m_fetchButton, SIGNAL(clicked()), SLOT(fetchMissingCovers()) );
     #endif
     hbox->addWidget( m_searchEdit );
@@ -120,25 +120,25 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     m_coverView->setAutoArrange( TRUE );
     m_coverView->setItemsMovable( FALSE );
     m_coverView->setMode( KIconView::Select );
-    
+
     //counter label
     m_counterLabel = new QLabel( coverWidget );
     m_counterLabel->setAlignment( AlignRight | SingleLine );
     m_counterLabel->setFrameStyle( QFrame::Panel | QFrame::Sunken );
-    
+
     viewBox->addWidget( m_coverView );
     viewBox->addWidget( m_counterLabel );
-    
+
     vbox->addWidget( splitter );
-    
+
     // signals and slots connections
     connect( m_artistView, SIGNAL( expanded(QListViewItem *) ), SLOT( expandeItem(QListViewItem *) ) );
     connect( m_artistView, SIGNAL( collapsed(QListViewItem *) ), SLOT( collapseItem(QListViewItem *) ) );
     connect( m_artistView, SIGNAL( selectionChanged( QListViewItem * ) ), SLOT( slotArtistSelected( QListViewItem * ) ) );
-    connect( m_coverView, SIGNAL( rightButtonPressed( QIconViewItem *, const QPoint & ) ), 
+    connect( m_coverView, SIGNAL( rightButtonPressed( QIconViewItem *, const QPoint & ) ),
                 SLOT(showCoverMenu(QIconViewItem *, const QPoint &)) );
-    connect( m_coverView, SIGNAL( doubleClicked( QIconViewItem * ) ), 
-                SLOT( coverItemDoubleClicked( QIconViewItem * ) ) );                  
+    connect( m_coverView, SIGNAL( doubleClicked( QIconViewItem * ) ),
+                SLOT( coverItemDoubleClicked( QIconViewItem * ) ) );
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     #ifdef AMAZON_SUPPORT
@@ -146,7 +146,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     #endif
     m_currentView = AllAlbums;
     m_artistView->setSelected( m_artistView->firstChild(), true );
-    
+
     resize(610, 380);
 }
 
@@ -157,10 +157,10 @@ CoverManager::~CoverManager()
     delete m_timer;
     if( m_previewJob )
         m_previewJob->kill();
-        
+
     //TODO save window size
     //save view settings
-    
+
 }
 
 
@@ -176,13 +176,13 @@ void CoverManager::fetchMissingCovers() //SLOT
 void CoverManager::fetchMissingCoversLoop() //SLOT
 {
     #ifdef AMAZON_SUPPORT
-    if ( m_currentItem ) 
+    if ( m_currentItem )
     {
         if( !m_currentItem->hasCover() )
             m_db->fetchCover( this, m_currentItem->artist(), m_currentItem->album(), true );
-    
+
         m_currentItem = static_cast<CoverViewItem*>( m_currentItem->nextItem() );
-        
+
         // Wait 1 second, since amazon caps the number of accesses per client
         QTimer::singleShot( 1000, this, SLOT( fetchMissingCoversLoop() ) );
     }
@@ -193,21 +193,21 @@ void CoverManager::fetchMissingCoversLoop() //SLOT
 void CoverManager::expandeItem( QListViewItem *item ) //SLOT
 {
     if(!item) return;
-    
+
     QStringList values;
     QStringList names;
     QString id;
-    
+
     if( item == m_artistView->firstChild() ) {//All Artists
         id = "artist.id";
     } else
         id = QString::number( m_db->getValueID( "artist", item->text(0) ) );
-    
+
     m_db->execSql("SELECT DISTINCT album.name FROM album, artist, tags "
                             "WHERE tags.album=album.id AND tags.artist="+id+" "
                             "ORDER BY album.name;"
                             , &values, &names );
-     
+
     if( !values.isEmpty() ) {
         KListViewItem *after = 0;
         for( uint i=0; i < values.count(); i++ )  {
@@ -217,7 +217,7 @@ void CoverManager::expandeItem( QListViewItem *item ) //SLOT
             }
         }
     }
-    
+
 }
 
 
@@ -230,7 +230,7 @@ void CoverManager::collapseItem( QListViewItem *item ) //SLOT
         childTmp = child;
         child = child->nextSibling();
         delete childTmp;
-    }       
+    }
 }
 
 
@@ -251,24 +251,24 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     if( allAlbums ) {
         command = "select DISTINCT artist.name, album.name FROM album,artist,tags "
                              "where tags.album=album.id AND tags.artist=artist.id ORDER BY album.name;";
-                              
+
     } else {
         QString id = QString::number( m_db->getValueID( "artist", item->text(0) ) );
         command = "select DISTINCT album.name, '' FROM album,tags "
                              "where tags.album=album.id AND tags.artist="+id+" ORDER BY album.name;";
     }
-    
+
     m_db->execSql(command, &values, &names);
-                
+
     if( !values.isEmpty() ) {
         QPtrList<KFileItem> fileList;
-        
+
         for( uint i=0; i < values.count();  i+=2 )  {
-            if( !values[allAlbums ? i+1 : i].isEmpty() ) {   
-                CoverViewItem *coverItem = new CoverViewItem( m_coverView, m_coverView->lastItem(), 
+            if( !values[allAlbums ? i+1 : i].isEmpty() ) {
+                CoverViewItem *coverItem = new CoverViewItem( m_coverView, m_coverView->lastItem(),
                                                                              allAlbums ? values[i] : item->text(0), values[ allAlbums ? i+1 : i ] );
                 m_coverItems.append( coverItem );
-                
+
                 if( coverItem->hasCover() ) {
                     KURL url( coverItem->albumPath() );
                     KFileItem *file = new KFileItem( url, "image/png", 0 );
@@ -276,17 +276,17 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
                 }
             }
         }
-        
+
         if( fileList.count() ) {
             m_previewJob = new KIO::PreviewJob( fileList, 80, 80, 0, 0, true, true, 0 );
             connect(m_previewJob, SIGNAL( gotPreview(const KFileItem *, const QPixmap &) ),
                 SLOT(slotGotPreview(const KFileItem *, const QPixmap &) ) );
             connect( m_previewJob, SIGNAL( result( KIO::Job* ) ), SLOT( previewJobFinished() ) );
         }
-        
+
         updateCounter();
     }
-    
+
 }
 
 
@@ -295,7 +295,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
     #define item static_cast<CoverViewItem*>(item)
     if( !item ) return;
 
-    #ifdef AMAZON_SUPPORT    
+    #ifdef AMAZON_SUPPORT
     enum Id { SHOW, FETCH, CUSTOM, DELETE };
     #else
     enum Id { SHOW, CUSTOM, DELETE };
@@ -309,23 +309,23 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
     menu.insertItem( SmallIcon("folder_image"), i18n("Add custom cover"), CUSTOM );
     #else
     menu.insertItem( SmallIcon("folder_image"), i18n("Add cover"), CUSTOM );
-    #endif 
+    #endif
     menu.insertSeparator();
     menu.insertItem( SmallIcon("editdelete"), i18n("Delete cover"), DELETE );
     menu.setItemEnabled( DELETE, item->hasCover() );
-        
+
     switch( menu.exec(p) ) {
         case SHOW:
             coverItemDoubleClicked( item );
             break;
-        
-        #ifdef AMAZON_SUPPORT            
+
+        #ifdef AMAZON_SUPPORT
         case FETCH:
             m_db->fetchCover( this, item->artist(), item->album(), false );
             break;
         #endif
-            
-        case CUSTOM: 
+
+        case CUSTOM:
         {
             /* This opens a file-open-dialog and copies the selected image to albumcovers, scaled and unscaled. */
             KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select cover image file - amaroK" ) );
@@ -334,10 +334,10 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
             item->updateCover( img.smoothScale( 60, 60 ) );
             break;
         }
-            
+
         case DELETE: {
-            
-            int button = KMessageBox::warningContinueCancel( this, 
+
+            int button = KMessageBox::warningContinueCancel( this,
                                 i18n("Are you sure you want to delete this cover?" ),
                                 QString::null,
                                 i18n("&Delete Cover") );
@@ -352,7 +352,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
         }
         default: ;
     }
-    
+
     #undef item
 }
 
@@ -361,9 +361,9 @@ void CoverManager::coverItemDoubleClicked( QIconViewItem *item ) //SLOT
 {
     #define item static_cast<CoverViewItem*>(item)
     if( !item ) return;
-    
+
     if( item->hasCover() ) {
-    
+
         QWidget *widget = new QWidget( 0, 0, WDestructiveClose );
         widget->setCaption( item->album() );
         QPixmap coverPix( item->albumPath() );
@@ -371,9 +371,9 @@ void CoverManager::coverItemDoubleClicked( QIconViewItem *item ) //SLOT
         widget->setMinimumSize( coverPix.size() );
         widget->setFixedSize( coverPix.size() );
         widget->show();
-        
+
     }
-    
+
         // !!! TODO Rewrite Cover Manager ;)
     #undef item
 }
@@ -382,7 +382,7 @@ void CoverManager::coverItemDoubleClicked( QIconViewItem *item ) //SLOT
 void CoverManager::slotSetFilter() //SLOT
 {
     m_filter = m_searchEdit->text();
-    
+
     m_coverView->selectAll( false);
     QIconViewItem *item = m_coverView->firstItem();
     while ( item ) {
@@ -390,7 +390,7 @@ void CoverManager::slotSetFilter() //SLOT
         m_coverView->takeItem( item );
         item = tmp;
     }
-    
+
     m_coverView->setAutoArrange( false );
     for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
@@ -398,7 +398,7 @@ void CoverManager::slotSetFilter() //SLOT
             m_coverView->insertItem( item, m_coverView->lastItem() );
     }
     m_coverView->setAutoArrange( true );
-    
+
     m_coverView->arrangeItemsInGrid();
     updateCounter();
 }
@@ -414,7 +414,7 @@ void CoverManager::slotSetFilterTimeout() //SLOT
 void CoverManager::changeView( int id  ) //SLOT
 {
     if( m_currentView == id ) return;
-    
+
     //clear the iconview without deleting items
     m_coverView->selectAll( false);
     QIconViewItem *item = m_coverView->firstItem();
@@ -423,7 +423,7 @@ void CoverManager::changeView( int id  ) //SLOT
         m_coverView->takeItem( item );
         item = tmp;
     }
-    
+
     m_coverView->setAutoArrange(false );
     for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) {
         bool show = false;
@@ -432,18 +432,18 @@ void CoverManager::changeView( int id  ) //SLOT
             if( !coverItem->album().contains( m_filter, FALSE ) && !coverItem->artist().contains( m_filter, FALSE ) )
                 continue;
         }
-        
+
         if( id == AllAlbums )    //show all albums
-            show = true;     
+            show = true;
         else if( id == AlbumsWithCover && coverItem->hasCover() )    //show only albums with cover
             show = true;
         else if( id == AlbumsWithoutCover && !coverItem->hasCover() )   //show only albums without cover
             show = true;
-            
+
         if( show )    m_coverView->insertItem( item, m_coverView->lastItem() );
     }
     m_coverView->setAutoArrange( true );
-    
+
     m_viewMenu->setItemChecked( m_currentView, false );
     m_viewMenu->setItemChecked( id, true );
 
@@ -456,7 +456,7 @@ void CoverManager::slotGotPreview(const KFileItem *item, const QPixmap &pixmap) 
 {
     QString path = item->url().path();
     kdDebug() << "got preview " << path << endl;
-    
+
     for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
         if( coverItem->albumPath() == path )
@@ -477,10 +477,10 @@ void CoverManager::coverFetched( const QString &key )
     for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
         if( key == coverItem->artist() + " - " + coverItem->album() ) {
-            QPtrList<KFileItem> fileList; 
+            QPtrList<KFileItem> fileList;
             KFileItem *file = new KFileItem( KURL( coverItem->albumPath() ), "image/png", 0 );
             fileList.append( file );
-            
+
             KIO::PreviewJob *job = new KIO::PreviewJob( fileList, 80, 80, 0, 0, true, true, 0 );
             connect(job, SIGNAL( gotPreview(const KFileItem *, const QPixmap &) ),
                 SLOT(slotGotPreview(const KFileItem *, const QPixmap &) ) );
@@ -495,7 +495,7 @@ void CoverManager::slotCoverDeleted()
 {
     CoverViewItem *item = static_cast<CoverViewItem*>(m_coverView->currentItem());
     if( !item ) return;
-    
+
     item->updateCover( QPixmap() );
 }
 
@@ -508,16 +508,16 @@ void CoverManager::updateCounter()
         if( !((CoverViewItem*)item)->hasCover() )
             missingCounter++;    //counter for albums without albums
     }
-    
+
     QString text = QString::number( totalCounter );
     if( !m_filter.isEmpty() )
         text += i18n(" results for ") + "\"" + m_filter + "\"";
     else if( m_artistView->selectedItem() )
         text += i18n(" albums by ") + m_artistView->selectedItem()->text(0);
-    
-    if( missingCounter ) 
+
+    if( missingCounter )
         text += i18n(" - ( <b>%3</b> without cover )" ).arg( missingCounter );
-                
+
     m_counterLabel->setText( text );
     #ifdef AMAZON_SUPPORT
     m_fetchButton->setEnabled( missingCounter != 0 );
@@ -536,7 +536,7 @@ bool CoverManager::eventFilter( QObject *o, QEvent *e )
                    m_searchEdit->setPaletteForegroundColor( colorGroup().text() );
                    return FALSE;
                }
-      
+
             case QEvent::FocusOut:
                 if( m_filter.isEmpty() ) {
                     m_searchEdit->setPaletteForegroundColor( colorGroup().mid() );
@@ -544,12 +544,12 @@ bool CoverManager::eventFilter( QObject *o, QEvent *e )
                     m_timer->stop();
                     return FALSE;
                 }
-                
+
             default:
                 return FALSE;
         };
     }
-    
+
     return FALSE;
 }
 
@@ -599,24 +599,24 @@ QString CoverViewItem::albumPath()
 void CoverViewItem::calcRect( const QString& )
 {
     int thumbHeight = 80, thumbWidth=80;
-    
+
     QFontMetrics fm = iconView()->fontMetrics();
     QRect itemPixmapRect( 5, 1, thumbWidth, thumbHeight );
     QRect itemRect = rect();
     itemRect.setWidth( thumbWidth + 10 );
     itemRect.setHeight( thumbHeight + fm.lineSpacing() + 2 );
     QRect itemTextRect( 0, thumbHeight+2, itemRect.width(), fm.lineSpacing() );
-    
+
     setPixmapRect( itemPixmapRect );
     setTextRect( itemTextRect );
     setItemRect( itemRect );
 }
 
- 
+
 void CoverViewItem::paintItem(QPainter* p, const QColorGroup& cg)
 {
     QRect itemRect = rect();
-    
+
     static QPixmap buffer;
     buffer.resize( itemRect.width(), itemRect.height() );
 
@@ -633,9 +633,9 @@ void CoverViewItem::paintItem(QPainter* p, const QColorGroup& cg)
     pBuf.drawRect( 0, 0, itemRect.width(), pixmapRect().height()+2 );
     // draw the cover image
     QPixmap *cover = pixmap();
-    pBuf.drawPixmap( pixmapRect().x() + (pixmapRect().width() - cover->width())/2, 
+    pBuf.drawPixmap( pixmapRect().x() + (pixmapRect().width() - cover->width())/2,
                                        pixmapRect().y() + (pixmapRect().height() - cover->height())/2, *cover );
-    
+
     //justify the album name
     QString str = text();
     QFontMetrics fm = p->fontMetrics();
@@ -654,18 +654,18 @@ void CoverViewItem::paintItem(QPainter* p, const QColorGroup& cg)
     }
     pBuf.setPen( cg.text() );
     pBuf.drawText( textRect(), Qt::AlignCenter, str );
-    
+
     if( isSelected() ) {
        pBuf.setPen( cg.highlight() );
        pBuf.drawRect( pixmapRect() );
        pBuf.drawRect( pixmapRect().left()+1, pixmapRect().top()+1, pixmapRect().width()-2, pixmapRect().height()-2);
        pBuf.drawRect( pixmapRect().left()+2, pixmapRect().top()+2, pixmapRect().width()-4, pixmapRect().height()-4);
     }
-    
+
     pBuf.end();
-    
+
     p->drawPixmap( itemRect, buffer );
 }
- 
- 
+
+
 #include "covermanager.moc"
