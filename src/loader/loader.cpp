@@ -77,7 +77,7 @@ Loader::Loader( int& argc, char** argv )
 
         QStringList sockArgs;
         sockArgs << "--next" << "--previous" << "--stop" << "--pause" << "--play" << "--enqueue";
-        sockArgs << "-f" << "-r" << "-s" << "-p" << "-e";
+        sockArgs << "-caption" << "-f" << "-r" << "-s" << "-p" << "-e";
 
         for ( int i = 0; i < argc; i++ )
         {
