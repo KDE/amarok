@@ -17,7 +17,7 @@ static metronom_t theMetronom;
 
 MyNode     *myList = &theList;
 metronom_t *myMetronom = &theMetronom;
-int         myChannels;
+int         myChannels = 2;
 
 
 /*************************
@@ -40,6 +40,8 @@ scope_port_open( xine_audio_port_t *port_gen, xine_stream_t *stream, uint32_t bi
 
   myChannels = _x_ao_mode2channels( mode );
 
+  memcpy( myMetronom, stream->metronom, sizeof( metronom_t ) );
+
   return port->original_port->open( port->original_port, stream, bits, rate, mode );
 }
 
@@ -60,16 +62,34 @@ static void
 scope_port_put_buffer( xine_audio_port_t *port_gen, audio_buffer_t *buf, xine_stream_t *stream )
 {
     post_audio_port_t *port = (post_audio_port_t*)port_gen;
+    MyNode *new_node;
 
-    /*FIXME*/
-    if( port->bits == 8 ) { printf( "You dare tempt me with 8 bits?!\n" ); return; }
+    /*FIXME both these please*/
+    if( port->bits == 8 ) {
+       printf( "You dare tempt me with 8 bits?!\n" ); return; }
+    if( buf->stream == 0 ) {
+       port->original_port->put_buffer( port->original_port, buf, stream );
+       printf( "stream == 0! what does that mean?!\n" ); return; }
 
-    /*first we need to copy this buffer*/
-    MyNode *new_node = malloc( sizeof(MyNode) );
-    memcpy( &new_node->buf, buf, sizeof(audio_buffer_t) );
+    /* I keep my own metronom because xine wouldn't for some reason */
+    memcpy( myMetronom, stream->metronom, sizeof( metronom_t ) );
 
-    new_node->buf.mem = malloc( buf->num_frames * myChannels * 2 );
-    memcpy( new_node->buf.mem, buf->mem, buf->num_frames * myChannels * 2 );
+    new_node = malloc( sizeof(MyNode) );
+    new_node->vpts = myMetronom->got_audio_samples( myMetronom, buf->vpts, buf->num_frames );
+    new_node->num_frames = buf->num_frames;
+    new_node->mem = malloc( buf->num_frames * myChannels * 2 );
+    memcpy( new_node->mem, buf->mem, buf->num_frames * myChannels * 2 );
+
+    {
+        int64_t
+        K  = myMetronom->pts_per_smpls;
+        K *= myChannels;
+        K *= buf->num_frames;
+        K /= (1<<16);
+        K += new_node->vpts;
+
+        new_node->vpts_end = K;
+    }
 
     /* pass data to original port - TODO is this necessary? */
     port->original_port->put_buffer( port->original_port, buf, stream );

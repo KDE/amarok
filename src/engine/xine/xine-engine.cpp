@@ -51,24 +51,11 @@ debug()
 }
 #endif
 
-static inline void
-emptyMyList()
-{
-    for( MyNode *next, *node = myList->next; node->next != myList; node = next )
-    {
-        next = node->next;
-
-        free( node->buf.mem );
-        free( node );
-    }
-    myList->next = myList;
-}
-
 
 //some logging static globals
 namespace Log
 {
-    static uint listSize = 0;
+    static uint bufferCount = 0;
     static uint scopeCallCount = 1; //prevent divideByZero
     static uint noSuitableBuffer = 0;
 };
@@ -97,7 +84,7 @@ XineEngine::~XineEngine()
     debug() << "xine closed\n";
 
     debug() << "Scope statistics:\n"
-            << "  Average list size: " << double(Log::listSize) / Log::scopeCallCount << endl
+            << "  Average list size: " << Log::bufferCount / Log::scopeCallCount << endl
             << "  Buffer failure:    " << double(Log::noSuitableBuffer*100) / Log::scopeCallCount << "%\n";
 }
 
@@ -105,7 +92,8 @@ bool
 XineEngine::init()
 {
     debug() << "Welcome to xine-engine! 9 out of 10 cats prefer xine!\n"
-               "Please report bugs to amarok-devel@lists.sourceforge.net\n";
+               "Please report bugs to amarok-devel@lists.sourceforge.net\n"
+               "Build stamp: " << __DATE__ << ' ' << __TIME__ << endl;
 
     m_xine = xine_new();
 
@@ -188,7 +176,16 @@ XineEngine::load( const KURL &url, bool stream )
 {
     Engine::Base::load( url, stream || url.protocol() == "http" );
 
-    return xine_open( m_stream, url.url().local8Bit() );
+    if( xine_open( m_stream, url.url().local8Bit() ) )
+    {
+       xine_post_out_t *source = xine_get_audio_source( m_stream );
+       xine_post_in_t  *target = (xine_post_in_t*)xine_post_input( m_post, const_cast<char*>("audio in") );
+       xine_post_wire( source, target );
+
+       return true;
+    }
+
+    return false;
 }
 
 bool
@@ -196,11 +193,6 @@ XineEngine::play( uint offset )
 {
     if( xine_play( m_stream, 0, offset ) )
     {
-        xine_post_out_t *source = xine_get_audio_source( m_stream );
-        xine_post_in_t  *target = (xine_post_in_t*)xine_post_input( m_post, const_cast<char*>("audio in") );
-
-        xine_post_wire( source, target );
-
         emit stateChanged( Engine::Playing );
 
         return true;
@@ -256,74 +248,86 @@ XineEngine::scope()
 {
     if( xine_get_status( m_stream ) != XINE_STATUS_PLAY ) return m_scope;
 
-    int64_t current_vpts = xine_get_current_vpts( m_stream );//m_xine->clock->get_current_time( m_xine->clock );
-    audio_buffer_t *best_buf = 0;
+    ++Log::scopeCallCount;
 
-    //I couldn't persuade xine to keep a metronom for me
-    //so I keep my own, via memcpy
-    memcpy( myMetronom, m_stream->metronom, sizeof( metronom_t ) );
+    //we operate on a subset of the list for thread-safety
+    MyNode * const first_node = myList->next;
+    MyNode const * const last_node  = myList;
 
-    for( MyNode *prev = myList, *node = myList->next; node != myList; node = node->next )
+    //this is the timestamp we want to display
+    int64_t current_vpts = xine_get_current_vpts( m_stream );
+
+    for( MyNode *prev = first_node, *node = first_node->next; node != last_node; node = node->next )
     {
-        audio_buffer_t *buf = &node->buf;
-
-        if( buf->stream != 0 )
+        if( node != first_node /*<-- thread-safety*/ && node->vpts_end < current_vpts )
         {
-            //debug() << "timestamp| pts:" << buf->vpts << " n:" << buf->num_frames << endl;
+           prev->next = node->next;
 
-            buf->vpts = myMetronom->got_audio_samples( myMetronom, buf->vpts, buf->num_frames );
-            buf->stream = 0;
+           free( node->mem );
+           free( node );
+
+           node = prev;
         }
-
-        const int K = (myMetronom->pts_per_smpls * myChannels * buf->num_frames) / (1<<16);
-
-        if( buf->vpts < (current_vpts - K) )
-        {
-            if( prev != myList ) //thread-safety
-            {
-                prev->next = node->next;
-
-                free( buf->mem );
-                free( node );
-
-                node = prev;
-            }
-        }
-        else if( (!best_buf || buf->vpts > best_buf->vpts) && buf->vpts < current_vpts ) best_buf = buf;
-
-        ++Log::listSize;
 
         prev = node;
+
+        ++Log::bufferCount;
     }
 
-    if( best_buf )
+    for( int frame = 0; frame < 512; )
     {
+        MyNode *best_node = 0;
+
+        for( MyNode *node = first_node; node != last_node; node = node->next )
+            if ( node->vpts <= current_vpts && (!best_node || node->vpts > best_node->vpts) )
+                best_node = node;
+
+        if( !best_node || best_node->vpts_end < current_vpts ) {
+//            debug() << "Buffer failure :-( now: " << current_vpts << endl;
+//
+//            kdbgstream d( "  ", 0, 0 );
+//
+//            for( MyNode *node = first_node; node != last_node; node = node->next )
+//                d << (int64_t)node->vpts_end << "-" << (int64_t)node->vpts << ", ";
+//
+//            d << endl;
+
+           ++Log::noSuitableBuffer;
+           break;
+        }
+
         int64_t
         diff  = current_vpts;
-        diff -= best_buf->vpts;
+        diff -= best_node->vpts;
         diff *= 1<<16;
         diff /= myMetronom->pts_per_smpls;
 
         const int16_t*
-        data16  = best_buf->mem;
+        data16  = best_node->mem;
         data16 += diff;
 
         diff /= myChannels;
 
-        int n = best_buf->num_frames - diff;
-        if( n > 512 ) n = 512;
+        int
+        n  = best_node->num_frames;
+        n -= diff;
+        n += frame; //clipping for # of frames we need
+        if( n > 512 ) n = 512; //bounds limiting
+        if( n < 0 ) break; //FIXME
 
-        for( int a, c, i = 0; i < n; ++i, data16 += myChannels ) {
+        for( int a, c; frame < n; ++frame, data16 += myChannels ) {
             for( a = c = 0; c < myChannels; ++c )
                 a += data16[c];
 
             a /= myChannels;
-            m_scope[i] = a;
+            m_scope[frame] = a;
         }
-    }
-    else { ++Log::noSuitableBuffer; }
 
-    ++Log::scopeCallCount;
+        //debug()<< "now: " << current_vpts << " vpts: " << best_buf.vpts << " diff: " << diff << " frame: " << frame << " num_frames: " << best_buf.num_frames << endl;
+
+        current_vpts = best_node->vpts_end;
+        current_vpts++; //FIXME needs to be done for some reason, or you get situations where it uses same buffer again and again
+    }
 
     return m_scope;
 }
@@ -381,7 +385,6 @@ XineEngine::customEvent( QCustomEvent *e )
     switch( e->type() )
     {
     case 3000:
-        emptyMyList();
         emit trackEnded();
         break;
 

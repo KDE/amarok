@@ -11,15 +11,17 @@
 #define METRONOM_INTERNAL
 
 #include <sys/types.h>
-#include <xine/audio_out.h>
-
+#include <xine/metronom.h>
 
 typedef struct my_node_s MyNode;
 
 struct my_node_s
 {
-    MyNode        *next;
-    audio_buffer_t buf;
+    MyNode  *next;
+    int16_t *mem;
+    int      num_frames;
+    int64_t  vpts;
+    int64_t  vpts_end;
 };
 
 
