@@ -3,10 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number, 
-           #9 being the highest available (take this one for your next bug and increase here)
+           #10 being the highest available (take this one for your next bug and increase here)
 
                       
 SHORT-TERM (URGENT):
+
+    * reg: #9<berkus> file sorting is regressed. Should add in the same order as shown in 
+             filebrowser, now doesn't sort until you press the column heading.
 
     * fix: #8<markey> "report bug" uses "amarok" instead of "amaroK" as appname. does it make a diff?
 
