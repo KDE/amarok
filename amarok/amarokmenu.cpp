@@ -11,8 +11,6 @@
 #include <khelpmenu.h>
 #include <klocale.h>
 
-#include <kdebug.h>
-
 
 //TODO get kde-admin to rename this file amarokactions.cpp!
 
@@ -64,7 +62,6 @@ Menu::Menu( QWidget *parent )
 
     insertSeparator();
        
-    kdDebug () << "amarokmenu parent: " << parent << endl;
     insertItem( i18n( "&Help" ), helpMenu( parent ) );
 
     insertSeparator();
@@ -128,9 +125,8 @@ MenuAction::plug( QWidget *w, int index )
         bar->insertButton( QString::null, id, true, i18n( "Menu" ), index );
         bar->alignItemRight( id );
 
-        KToolBarButton *button = bar->getButton( id );
-        // XXX: this creates null-parent menu somewhere early in the startup...
-        button->setPopup( new amaroK::Menu( kapp -> mainWidget () ) );
+        KToolBarButton* button = bar->getButton( id );
+        button->setPopup( new amaroK::Menu( 0 ) );
         button->setName( "toolbutton_amarok_menu" );
 
         return containerCount() - 1;
