@@ -4,6 +4,10 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta2:
+  FIX: Classic amaroK theme looks better
+  ADD: Context Browser has CSS styling
+  FIX: Cover fetching improvements/fixes
+  ADD: last played: yesterday, etc. in ContextBrowser
   FIX: When an engine fails to load, respect the rank while choosing
        the next engine.
   FIX: Big speedup for PlaylistLoader, when adding many items.
