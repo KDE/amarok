@@ -270,8 +270,8 @@ Vis::Selector::viewportPaintEvent( QPaintEvent *e )
                 "<h3>No Visualizations Found</h3>"
                 "Possible reasons:"
                 "<ul>"
-                "<li>You didn't install libvisual;</li>"
-                "<li>You didn't install any libvisual plugin.</li>"
+                "<li>libvisual is not installed</li>"
+                "<li>No libvisual plugins are installed</li>"
                 "</ul>"
                  "Please check these possibilities and restart amaroK."
                 "</div>" ) );
