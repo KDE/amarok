@@ -17,6 +17,7 @@ email                : markey@web.de
 
 #include "enginebase.h"
 #include "gstengine.h"
+#include "streamsrc.cpp"
 
 #include <math.h>           //interpolate()
 #include <vector>
@@ -108,16 +109,6 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
 
 
 void
-GstEngine::handoff_fakesrc_cb( GstElement*, GstBuffer* buf, GstPad, gpointer )
-{
-    kdDebug() << k_funcinfo << endl;
-
-    fakesrc_buf = buf;
-    QTimer::singleShot( 0, self, SLOT( handleFakesrc() ) );
-}
-
-
-void
 GstEngine::typefindFound_cb( GstElement* /*typefind*/, GstCaps* /*caps*/, GstElement* /*pipeline*/ )
 {
     kdDebug() << "GstEngine::typefindFound" << endl;
@@ -152,6 +143,7 @@ GstEngine::GstEngine()
         : EngineBase()
         , m_thread( NULL )
         , m_scopeBufIndex( 0 )
+        , m_streamBuf( new char[STREAMBUF_SIZE] )
         , m_streamBufIn( 0 )
         , m_streamBufOut( 0 )
         , m_pipelineFilled( false )
@@ -166,7 +158,8 @@ GstEngine::~GstEngine()
 
     stop();
     cleanPipeline();
-
+    delete[] m_streamBuf;
+    
     kdDebug() << "END " << k_funcinfo << endl;
 }
 
@@ -186,7 +179,7 @@ GstEngine::init( bool&, int scopeSize, bool )
     m_scopeBuf.resize( SCOPEBUF_SIZE );
     m_scopeSize = 1 << scopeSize;
 
-    m_streamBuf.resize( STREAMBUF_SIZE );
+//     m_streamBuf.resize( STREAMBUF_SIZE );
     for ( uint i = 0; i < STREAMBUF_SIZE; i++ )
         m_streamBuf[ i ] = 0;
 
@@ -327,12 +320,9 @@ GstEngine::play( const KURL& url )             //SLOT
         g_object_set( G_OBJECT( m_filesrc ), "location",
                       static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
     } else {
-        m_filesrc = gst_element_factory_make( "fakesrc", "disk_source" );
-        g_object_set( G_OBJECT( m_filesrc ), "signal-handoffs", true, NULL );
-        g_object_set( G_OBJECT( m_filesrc ), "sizetype", 2, NULL );
+        m_filesrc = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, m_streamBufIn ) );
+//         g_object_set( G_OBJECT( m_filesrc ), "sizetype", 2, NULL );
         //         g_object_set( G_OBJECT( m_filesrc ), "sizemax", 2048, NULL );
-        g_signal_connect ( G_OBJECT( m_filesrc ), "handoff",
-                           G_CALLBACK( handoff_fakesrc_cb ), m_thread );
     }
 
     m_spider = gst_element_factory_make( "spider", "spider" );
@@ -455,22 +445,6 @@ GstEngine::newStreamData( char* buf, int size )            //SLOT
 /////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE SLOTS
 /////////////////////////////////////////////////////////////////////////////////////
-
-void
-GstEngine::handleFakesrc() //SLOT
-{    
-    kdDebug() << k_funcinfo << endl;
-    
-    kdDebug() << "fakesrcbuf->size: " << fakesrc_buf->size << endl;
-    guint8* data = fakesrc_buf->data;
-
-    for ( int i = 0; i < fakesrc_buf->size; ) {
-        if ( m_streamBufOut == STREAMBUF_SIZE )
-            m_streamBufOut = 0;
-        data[ i ] = m_streamBuf[ m_streamBufOut++ ];
-    }
-}
-
     
 void
 GstEngine::handleError() //SLOT

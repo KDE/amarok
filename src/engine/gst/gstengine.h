@@ -61,7 +61,6 @@ class GstEngine : public EngineBase
         void                                     newStreamData( char* data, int size );
 
     private slots:
-        void                                     handleFakesrc();
         void                                     handleError();
         void                                     stopAtEnd();
         
@@ -70,8 +69,7 @@ class GstEngine : public EngineBase
         static void                              eos_cb( GstElement*, GstElement* );
         /** Duplicates audio data for application side processing */
         static void                              handoff_cb( GstElement*, GstBuffer*, gpointer );
-        /** Called when pipeline needs new data from source */
-        static void                              handoff_fakesrc_cb( GstElement*, GstBuffer*, GstPad, gpointer );
+        
         static void                              typefindFound_cb( GstElement*, GstCaps*, GstElement* );
         static void                              error_cb( GstElement*, GstElement*, GError*, gchar*, gpointer );
 
@@ -100,7 +98,7 @@ class GstEngine : public EngineBase
         uint                                     m_scopeBufIndex;
         uint                                     m_scopeSize;
        
-        vector<char>                             m_streamBuf;
+        char*                                    m_streamBuf;
         uint                                     m_streamBufIn;
         uint                                     m_streamBufOut;
         bool                                     m_playFlag;
