@@ -199,6 +199,29 @@ DO-NOT-IMPLEMENT:
 BACKTRACE/DEBUG
 
 
+When starting a stream:
+
+Program received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 1024 (LWP 5939)]
+0x414fab5f in TagLib::FileRef::tag() const () from /usr/lib/./libtag.so.1
+(gdb) bt
+#0  0x414fab5f in TagLib::FileRef::tag() const () from /usr/lib/./libtag.so.1
+#1  0x080ab7c1 in MetaBundle::readTags(bool) ()
+#2  0x080bb2a0 in Playlist::customEvent(QCustomEvent*) ()
+#3  0x40fb429c in QObject::event(QEvent*) () from /usr/lib/./libqt-mt.so.3
+#4  0x40feb8bc in QWidget::event(QEvent*) () from /usr/lib/./libqt-mt.so.3
+#5  0x40946582 in KListView::event(QEvent*) () from /opt/kde3/lib/libkdeui.so.4
+#6  0x40f5c205 in QApplication::internalNotify(QObject*, QEvent*) () from /usr/lib/./libqt-mt.so.3
+#7  0x40f5b5f5 in QApplication::notify(QObject*, QEvent*) () from /usr/lib/./libqt-mt.so.3
+#8  0x40b6543c in KApplication::notify(QObject*, QEvent*) () from /opt/kde3/lib/libkdecore.so.4
+#9  0x40f5cfc8 in QApplication::sendPostedEvents(QObject*, int) () from /usr/lib/./libqt-mt.so.3
+#10 0x40f5ce48 in QApplication::sendPostedEvents() () from /usr/lib/./libqt-mt.so.3
+#11 0x40f04e5b in QEventLoop::processEvents(unsigned) () from /usr/lib/./libqt-mt.so.3
+#12 0x40f6e096 in QEventLoop::enterLoop() () from /usr/lib/./libqt-mt.so.3
+#13 0x40f6df38 in QEventLoop::exec() () from /usr/lib/./libqt-mt.so.3
+#14 0x40f5c451 in QApplication::exec() () from /usr/lib/./libqt-mt.so.3
+#15 0x080dfbe1 in main ()
+#16 0x4196e4f2 in __libc_start_main () from /lib/libc.so.6
 
 
 
