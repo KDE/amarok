@@ -168,8 +168,8 @@ void SearchModule::searchDir( QString path )
 
             QString file( ent->d_name );
 
-            if ( file != ".." ) {
-                DIR * t = opendir( QFile::encodeName( path ) + QFile::encodeName( file ) + "/" );
+            if ( file != "." && file != ".." ) {
+		DIR * t = opendir( QFile::encodeName( path ) + QFile::encodeName( file ) + "/" );
                 if ( t ) {
                     closedir( t );
                     searchDir( path + file + "/" );
