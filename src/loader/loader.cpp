@@ -19,9 +19,13 @@
 #include <splash.h>
 
 #include <qcstring.h>
+#include <qdir.h>
 #include <qfileinfo.h>
+
+#include <qmessagebox.h>
 #include <qprocess.h>
 #include <qstring.h>
+#include <qurl.h>
 
 #include <iostream>
 #include <pwd.h>
@@ -39,7 +43,8 @@ Loader::Loader( int& argc, char** argv )
         , m_pOsd ( 0 )
 {
     m_sockfd = tryConnect( true );
-
+    
+    
     //determine whether an amaroK instance is already running (LoaderServer)
     if ( m_sockfd == -1 )
     {
@@ -67,13 +72,33 @@ Loader::Loader( int& argc, char** argv )
 
         //put all arguments into one string
         //we transmit the startup_id, so amarokapp can stop the startup animation
-        QCString str = ::getenv( "DESKTOP_STARTUP_ID" );
+        QCString str( ::getenv( "DESKTOP_STARTUP_ID" ) );
 
-        for ( int i = 0; i < argc; i++ )
-        {
-            str += '|'; //"|" cannot occur in unix filenames, so we use it as a separator
-            str += argv[ i ];
-        }
+    for ( int i = 0; i < argc; i++ )
+    {
+        QString( tmp ) = argv[ i ];
+        QFileInfo fi = tmp;
+        QUrl url = tmp;
+
+       // This is for the -e bug, the cwd is put in front of files/relative directories.	
+            if ( fi.exists() && url.isLocalFile() && str[0] != '/' )
+	    {
+                    long size;
+                    char *buf;
+                    char *ptr;
+                    size = pathconf(".", _PC_PATH_MAX);
+                    if ((buf = (char *)malloc((size_t)size)) != NULL)
+                    ptr = getcwd(buf, (size_t)size);
+
+                    str += '|'; 
+                    str += ptr;
+                    str += '/';
+                    str += argv[ i ];
+                } else {
+                    str += '|'; 
+                    str += argv[ i ];
+                } 
+            }
         ::send( m_sockfd, str, str.length() + 1, 0 ); //+1 = /0 termination
 
         doExit();
