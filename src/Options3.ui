@@ -136,7 +136,7 @@
                                         </size>
                                     </property>
                                     <property name="text">
-                                        <string>&amp;Foreground</string>
+                                        <string>&amp;Foreground:</string>
                                     </property>
                                     <property name="textFormat">
                                         <enum>AutoText</enum>
@@ -167,7 +167,7 @@
                                         </sizepolicy>
                                     </property>
                                     <property name="text">
-                                        <string>&amp;Background</string>
+                                        <string>&amp;Background:</string>
                                     </property>
                                     <property name="indent">
                                         <number>16</number>

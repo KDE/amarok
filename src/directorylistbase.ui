@@ -89,7 +89,7 @@
                         <cstring>scanRecursivelyCheckBox</cstring>
                     </property>
                     <property name="text">
-                        <string>Scan Recursively</string>
+                        <string>Scan recursively</string>
                     </property>
                     <property name="checked">
                         <bool>true</bool>
@@ -100,7 +100,7 @@
                         <cstring>monitorChangesCheckBox</cstring>
                     </property>
                     <property name="text">
-                        <string>Monitor Changes</string>
+                        <string>Monitor changes</string>
                     </property>
                     <property name="checked">
                         <bool>true</bool>

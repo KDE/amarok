@@ -92,7 +92,7 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     //setDefaultRenameAction( QListView::Reject ); //FIXME Qt says this is the default anyway!
 
     //NOTE order is critical because we can't set indexes or ids
-    addColumn( i18n( "Trackname" ),   0 );
+    addColumn( i18n( "Track Name" ),   0 );
     addColumn( i18n( "Title"     ), 200 ); //displays trackname if no title tag
     addColumn( i18n( "Artist"    ), 100 );
     addColumn( i18n( "Album"     ), 100 );
@@ -1104,7 +1104,7 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
     }
     else popup.insertItem( i18n( "&Dequeue (%1)" ).arg( queueIndex+1 ), PLAY_NEXT );
 
-    popup.insertItem( SmallIcon( "info" ), i18n( "&View Meta Information..." ), VIEW ); //TODO rename properties
+    popup.insertItem( SmallIcon( "info" ), i18n( "&View Meta Information" ), VIEW ); //TODO rename properties
     popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit Tag: '%1'" ).arg( columnText( col ) ), 0, 0, Key_F2, EDIT );
     if( canRename )
     {
@@ -1117,10 +1117,10 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
             //because it fills-down "Writing-Tag..." instead
             //but it's a hack that needs to be improved
 
-            popup.insertItem( i18n( "Spreadsheet-style fill-down", "&Fill-down Tag" ), FILL_DOWN );
+            popup.insertItem( i18n( "Spreadsheet-style fill-down", "&Fill-Down Tag" ), FILL_DOWN );
         }
     }
-    popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy Trackname" ), 0, 0, CTRL+Key_C, COPY );
+    popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy Track Name" ), 0, 0, CTRL+Key_C, COPY );
     popup.insertSeparator();
     popup.insertItem( SmallIcon( "edittrash" ), i18n( "&Remove Selected" ), this, SLOT( removeSelectedItems() ), Key_Delete );
 

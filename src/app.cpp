@@ -259,19 +259,19 @@ void App::initGlobalShortcuts()
                             ec, SLOT( playPause() ), true, true );
     m_pGlobalAccel->insert( "stop", i18n( "Stop" ), 0, KKey("WIN+v"), 0,
                             ec, SLOT( stop() ), true, true );
-    m_pGlobalAccel->insert( "next", i18n( "Next track" ), 0, KKey("WIN+b"), 0,
+    m_pGlobalAccel->insert( "next", i18n( "Next Track" ), 0, KKey("WIN+b"), 0,
                             ec, SLOT( next() ), true, true );
-    m_pGlobalAccel->insert( "prev", i18n( "Previous track" ), 0, KKey("WIN+z"), 0,
+    m_pGlobalAccel->insert( "prev", i18n( "Previous Track" ), 0, KKey("WIN+z"), 0,
                             ec, SLOT( previous() ), true, true );
-    m_pGlobalAccel->insert( "volup", i18n( "Increase volume" ), 0, KKey("WIN+KP_Add"), 0,
+    m_pGlobalAccel->insert( "volup", i18n( "Increase Volume" ), 0, KKey("WIN+KP_Add"), 0,
                             ec, SLOT( increaseVolume() ), true, true );
-    m_pGlobalAccel->insert( "voldn", i18n( "Decrease volume" ), 0, KKey("WIN+KP_Subtract"), 0,
+    m_pGlobalAccel->insert( "voldn", i18n( "Decrease Volume" ), 0, KKey("WIN+KP_Subtract"), 0,
                             ec, SLOT( decreaseVolume() ), true, true );
-    m_pGlobalAccel->insert( "playlist_add", i18n( "Add media" ), 0, KKey("WIN+a"), 0,
+    m_pGlobalAccel->insert( "playlist_add", i18n( "Add Media" ), 0, KKey("WIN+a"), 0,
                             m_pPlaylistWindow, SLOT( slotAddLocation() ), true, true );
-    m_pGlobalAccel->insert( "show", i18n( "Toggle the Playlist Window" ), 0, KKey("WIN+p"), 0,
+    m_pGlobalAccel->insert( "show", i18n( "Toggle Playlist Window" ), 0, KKey("WIN+p"), 0,
                             m_pPlaylistWindow, SLOT( showHide() ), true, true );
-    m_pGlobalAccel->insert( "osd", i18n( "Show the OSD" ), 0, KKey("WIN+o"), 0,
+    m_pGlobalAccel->insert( "osd", i18n( "Show OSD" ), 0, KKey("WIN+o"), 0,
                             m_pOSD, SLOT( forceShowTrack() ), true, true );
 
     m_pGlobalAccel->setConfigGroup( "Shortcuts" );
@@ -552,9 +552,9 @@ void App::genericEventHandler( QWidget *source, QEvent *e )
             //FIXME this isn't a good way to determine if there is a currentTrack, need playlist() function
             const bool b = EngineController::engine()->loaded();
 
-            popup.insertItem( i18n( "&Append to playlist" ), 101 );
-            popup.insertItem( i18n( "Append and &play" ), 102 );
-            if( b ) popup.insertItem( i18n( "&Queue after current track" ), 103 );
+            popup.insertItem( i18n( "&Append to Playlist" ), 101 );
+            popup.insertItem( i18n( "Append && &play" ), 102 );
+            if( b ) popup.insertItem( i18n( "&Queue After Current Track" ), 103 );
             popup.insertSeparator();
             popup.insertItem( i18n( "&Cancel" ), 0 );
 

@@ -64,7 +64,7 @@ SearchBrowser::SearchBrowser( const char *name )
     stream >> *splitter; //this sets the splitters position
 
     resultView->setDragEnabled( TRUE );
-    resultView->addColumn( i18n( "Filename" ) );
+    resultView->addColumn( i18n( "File Name" ) );
     resultView->addColumn( i18n( "Directory" ) );
     resultView->setResizeMode( QListView::AllColumns );
     resultView->setSelectionMode( QListView::Extended );
