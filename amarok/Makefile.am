@@ -1,27 +1,27 @@
-kde_kcfg_DATA = amarok.kcfg
-
-SUBDIRS = images amarokarts analyzers titleproxy data engine
+SUBDIRS = amarokcore images amarokarts analyzers titleproxy data engine
 
 INCLUDES = \
 	-I$(kde_includes)/arts \
 	$(taglib_includes) \
-	$(all_includes)
+	$(all_includes) \
+	-I$(top_builddir)/amarok/amarokcore
 
 bin_PROGRAMS = amarok
 
 amarok_SOURCES = \
-	main.cpp browserwin.cpp streambrowser.cpp playlistwidget.cpp \
+	browserwin.cpp streambrowser.cpp playlistwidget.cpp \
 	playlistitem.cpp playlistloader.cpp expandbutton.cpp effectwidget.cpp \
-	amarokdcopiface.skel amarokdcophandler.cpp amarokbutton.cpp amarokfilelist.cpp \
-	amarokconfig.kcfgc Options1.ui Options2.ui Options3.ui Options4.ui Options5.ui \
+	amarokbutton.cpp amarokfilelist.cpp \
+	Options1.ui Options2.ui Options3.ui Options4.ui Options5.ui \
 	amarokslider.cpp amaroksystray.cpp osd.cpp filebrowser.cpp kactionselector.cpp \
 	kbookmarkhandler.cpp fht.cpp playerapp.cpp playerwidget.cpp
 
 amarok_LDADD = \
-	$(top_builddir)/amarok/amarok/engine/libengine.a \
-	$(top_builddir)/amarok/amarok/titleproxy/libtitleproxy.a \
-	$(top_builddir)/amarok/amarok/analyzers/libanalyzers.a \
-	$(top_builddir)/amarok/amarok/amarokarts/libamarokarts.la \
+	$(top_builddir)/amarok/amarokcore/libamarokcore.a \
+	$(top_builddir)/amarok/engine/libengine.a \
+	$(top_builddir)/amarok/titleproxy/libtitleproxy.a \
+	$(top_builddir)/amarok/analyzers/libanalyzers.a \
+	$(top_builddir)/amarok/amarokarts/libamarokarts.la \
 	-lqtmcop -lkmedia2_idl -lartsflow -lsoundserver_idl -lartskde \
 	-lartsgui -lartsgui_kde -lartsmodules -lGL $(LIB_KUTILS) $(LIB_KFILE) \
 	$(LIB_KDEUI) $(LIB_KDECORE) $(taglib_libs) $(LIB_GST)

@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "../amarokconfig.h"
+#include "amarokconfig.h"
 #include "analyzerbase.h" //declaration here
 #include "baranalyzer.h"
 #include "baranalyzer2.h"
