@@ -396,26 +396,25 @@ TagDialog::readMultipleTracks()
     }
     // Set them in the dialog and in m_bundle ( so we don't break hasChanged() )
     if (artist) {
-        kComboBox_artist->setCurrentText( first.artist() );
         m_bundle.setArtist( first.artist() );
+        kComboBox_artist->setCurrentText( first.artist() );
     }
     if (album) {
-        kComboBox_album->setCurrentText( first.album() );
         m_bundle.setAlbum( first.album() );
+        kComboBox_album->setCurrentText( first.album() );
     }
     if (genre) {
-        kComboBox_genre->setCurrentText( first.genre() );
         m_bundle.setGenre( first.genre() );
+        kComboBox_genre->setCurrentText( first.genre() );
     }
     if (comment) {
-        kLineEdit_comment->setText( first.comment() );
         m_bundle.setComment( first.comment() );
+        kLineEdit_comment->setText( first.comment() );
     }
     if (year) {
-        kIntSpinBox_year->setValue( first.year().toInt() );
         m_bundle.setYear( first.year() );
+        kIntSpinBox_year->setValue( first.year().toInt() );
     }
-    checkModified();
 }
 
 inline bool
