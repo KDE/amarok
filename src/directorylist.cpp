@@ -72,6 +72,7 @@ CollectionSetup::dirs() const
     return list;
 }
 
+
 inline QString
 Item::fullPath() const
 {
@@ -97,5 +98,24 @@ Item::newItems( const KFileItemList &list )
         item->setPixmap( 0, (*it)->pixmap( KIcon::SizeSmall ) );
     }
 }
+
+
+inline void
+Item::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align )
+{
+    bool dirty = isOn();
+
+    // Figure out if a child folder is activated
+    for ( uint i = 0; i < CollectionSetup::s_dirs.count(); i++ )
+        if ( CollectionSetup::s_dirs[i].startsWith( m_url.path() ) )
+            dirty = true;
+
+    // Use a different color if this folder has an activated child folder
+    QColorGroup _cg = cg;
+    if ( dirty ) _cg.setColor( QColorGroup::Text, Qt::blue );
+
+    QCheckListItem::paintCell( p, isDisabled() ? listView()->palette().disabled() : _cg, column, width, align );
+}
+
 
 #include "directorylist.moc"

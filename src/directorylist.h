@@ -102,10 +102,7 @@ public:
            QCheckListItem::activate();
     }
 
-    virtual void paintCell ( QPainter * p, const QColorGroup & cg, int column, int width, int align )
-    {
-        QCheckListItem::paintCell( p, isDisabled() ? listView()->palette().disabled() : cg, column, width, align );
-    }
+    virtual void paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align );
 
 public slots:
     void newItems( const KFileItemList& );
