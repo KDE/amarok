@@ -1,4 +1,4 @@
-// (c) Pierpaolo Di Panfilo 2004
+    // (c) Pierpaolo Di Panfilo 2004
 // See COPYING file for licensing information
 
 #include "config.h"
@@ -367,6 +367,7 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
         return;
 
     m_coverView->clear();
+    m_coverItems.clear();
 
     QProgressDialog progress( this, 0, true );
     progress.setLabelText( i18n("Loading Thumbnails...") );
@@ -384,12 +385,17 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     //this can be a bit slow
     QApplication::setOverrideCursor( KCursor::waitCursor() );
     QStringList albums;
-    if ( item != m_artistView->firstChild() ) {
-        albums = CollectionDB::instance()->albumListOfArtist( item->text( 0 ), false, false );
+    if ( item != m_artistView->firstChild() )
+    {
+        QueryBuilder qb;
 
-        //we need to insert the artist in front of the album for the next section to work
-        for( QStringList::Iterator it = albums.begin(), end = albums.end(); it != end; it += 2 )
-            it = albums.insert( it, item->text( 0 ) );
+        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+        qb.addReturnValue( QueryBuilder::tabAlbum,  QueryBuilder::valName );
+        qb.addMatches( QueryBuilder::tabArtist, item->text( 0 ) );
+        qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+        qb.setOptions( QueryBuilder::optRemoveDuplicates );
+
+        albums = qb.run();
     }
     else {
         //we don't want blank albums, but blank artists are ok
@@ -667,6 +673,8 @@ void CoverManager::loadCover( const QString &artist, const QString &album )
 {
     for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
+        kdDebug() << coverItem->artist() << endl;
+        kdDebug() << coverItem->album() << endl;
         if ( artist == coverItem->artist() && album == coverItem->album() ) {
             coverItem->loadCover();
             return;
