@@ -1,0 +1,13 @@
+TODO for the next engine framework:
+
+ * emit stateChanged() with no parameter and force controller to read the state from
+   EngineBase::state() instead, as this makes things more likely to be consistent
+ * combine load() and play() as it just complicates things for engine development (eg
+   crossfade is a bitch for me due to the separation
+ * setVolumeSW( double ), to give more resolution for setting volume
+ * Make EngineObserver system use engineStateChanged( oldState, newState )
+ * Don't do above function for Play on every track? Is this ever useful?
+ * Would be useful if engineNewMetaData and stateChanged for Play weren't separate?
+ * setVolumeSW uses a log function, volume() doesn't so you get different values back to
+   what you expect. Really we should provide a volumeToLog( int ) function for engines to
+   use internally as some engines may already apply a log function anyway.

@@ -25,6 +25,9 @@ if with_mas
     MAS_ENGINE_SUBDIR = mas
 endif
 
+if with_akode
+    AKODE_ENGINE_SUBDIR = akode
+endif
 
 libengine_la_SOURCES = \
     enginebase.cpp
@@ -34,6 +37,14 @@ noinst_HEADERS = enginebase.h
 METASOURCES = \
     AUTO
 
-SUBDIRS = . void $(GST_ENGINE_SUBDIR) $(XINE_ENGINE_SUBDIR) $(ARTS_ENGINE_SUBDIR) $(MAS_ENGINE_SUBDIR) $(NMM_ENGINE_SUBDIR)
+SUBDIRS = . \
+    void \
+    $(GST_ENGINE_SUBDIR) \
+    $(XINE_ENGINE_SUBDIR) \
+    $(ARTS_ENGINE_SUBDIR) \
+    $(MAS_ENGINE_SUBDIR) \
+    $(NMM_ENGINE_SUBDIR) \
+    $(AKODE_ENGINE_SUBDIR)
+
 
 

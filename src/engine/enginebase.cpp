@@ -13,12 +13,12 @@
 
 
 Engine::Base::Base( Effects *effects )
-    : amaroK::Plugin()
-    , m_effects( effects )
-    , m_mixer( -1 )
-    , m_volume( 50 )
-    , m_scope( 512 )
-    , m_isStream( false )
+        : amaroK::Plugin()
+        , m_effects( effects )
+        , m_mixer( -1 )
+        , m_volume( 50 )
+        , m_scope( 512 )
+        , m_isStream( false )
 {}
 
 Engine::Base::~Base()

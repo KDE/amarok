@@ -47,6 +47,8 @@
  * Basically, reimplement everything virtual and ensure you emit stateChanged() correctly,
  * try not to block in any function that is called by amaroK, try to keep the user informed
  * with emit statusText()
+ *
+ * Only canDecode() needs to be thread-safe. Everything else is only called from the GUI thread.
  */
 
 namespace Engine
@@ -234,9 +236,8 @@ namespace Engine
     };
 
 
-    class SimpleMetaBundle
-    {
-     public:
+    class SimpleMetaBundle {
+    public:
         QString title;
         QString artist;
         QString album;
