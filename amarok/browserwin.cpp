@@ -288,7 +288,10 @@ void BrowserWin::slotBrowserDrop()
         item = item->nextSibling();
 
         if ( item1->isSelected() )
-            delete item1;
+        {
+            PlaylistItem *pItem = static_cast<PlaylistItem*>( item1 );
+            m_pPlaylistWidget->removeItem(pItem);
+        }
     }
 
     m_pPlaylistWidget->writeUndo();

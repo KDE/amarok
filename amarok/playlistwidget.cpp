@@ -352,6 +352,19 @@ PlaylistItem* PlaylistWidget::addItem( PlaylistItem *after, KURL url )
 }
 
 
+void PlaylistWidget::removeItem( PlaylistItem *item )
+{
+    int x;
+    if ((x = searchPtrs.find(item)))
+    {
+        searchTokens.remove(searchTokens.at(x));
+        searchPtrs.remove(searchPtrs.at(x));
+    }
+
+    delete item;
+}
+
+
 bool PlaylistWidget::loadPlaylist( KURL url, QListViewItem *destination )
 {
     bool success = false;

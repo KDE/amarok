@@ -62,6 +62,7 @@ class PlaylistWidget : public KListView
         void unglowItems();
         void triggerSignalPlay();
         PlaylistItem* addItem( PlaylistItem *after, KURL url );
+        void removeItem( PlaylistItem *item );
         void contentsDropEvent( QDropEvent* e);
         bool loadPlaylist( KURL url, QListViewItem *destination );
         void saveM3u( QString fileName );
@@ -101,7 +102,7 @@ class PlaylistWidget : public KListView
         void playlistDrop( KURL::List urlList );
         PlaylistItem* playlistInsertItem( KURL srcUrl, PlaylistItem* dstItem );
         PlaylistItem* playlistInsertDir( KURL srcUrl, PlaylistItem* dstItem );
-        
+
         void loadM3u( QTextStream &stream, PlaylistItem *destItem, QString dir );
         void loadPls( QTextStream &stream, PlaylistItem *destItem, QString dir );
 //        bool loadPlaylist_( KURL url, QListViewItem *destination );
