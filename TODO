@@ -6,6 +6,10 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+          <muesli> Same for storing / looking for a compilation-cover on the local hdd.
+
+          <muesli> When we're searching a cover for a compilation, cut off the artist's name, it doesn't help.
+
           <mxcl>   loadEngine can call statusbar::message() at the void-engine stage and crash because
                    the statusbar is not yet created.
 
