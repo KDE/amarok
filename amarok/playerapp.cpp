@@ -1173,7 +1173,7 @@ void PlayerApp::enableScope()
     if ( !m_scopeId )
     {
         m_scope.start();
-        m_scopeId = m_globalEffectStack.insertBottom( m_scope, "Analyzer" );
+        m_scopeId = m_globalEffectStack.insertTop( m_scope, "Analyzer" );
     }
 }
 
