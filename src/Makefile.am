@@ -106,7 +106,7 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/statusbar/libstatusbar.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) \
     $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(LIB_MUSICBRAINZ) \
-    $(mysql_libs) $(LIB_EXECINFO)
+    $(mysql_libs)
 
 amarokapp_LDFLAGS = \
     $(all_libraries) \
