@@ -529,8 +529,9 @@ void PlaylistWidget::insertMediaInternal( const KURL::List &list, QListViewItem 
 
 void PlaylistWidget::activate( QListViewItem *item ) //SLOT
 {
+    kdDebug() << "[PlaylistWidget::activate()]\n";
+    
     //lets ask the engine to play something
-
     if( item )
     {
         #define item static_cast<PlaylistItem *>(item)

@@ -99,11 +99,12 @@ bool Loader::splashEnabled() const
     QString found;
     
     while ( file.readLine( line, 2000 ) != -1 ) {
-        if ( line.contains( "Show Splashscreen" ) )
-            break;
+        if ( line.contains( "Show Splashscreen" ) && line.contains( "false" ) )
+            return false;
     }
     
-    return !line.contains( "false" );
+    //default:
+    return true; 
 }
 
 

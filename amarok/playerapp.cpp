@@ -824,12 +824,12 @@ void LoaderServer::newConnection( int sockfd )
     int nbytes = recv( sockfd, buf, sizeof(buf) - 1, 0 );
 
     if ( nbytes < 0 )
-        qDebug( "[LoaderServer::newConnection()] recv error" );
+        kdDebug() << "[LoaderServer::newConnection()] recv error\n";
     else
     {
         buf[nbytes] = '\000';
         QCString result( buf ); 
-        qDebug( result );
+        kdDebug() << result << endl;
         
         emit loaderArgs( result );
     }
