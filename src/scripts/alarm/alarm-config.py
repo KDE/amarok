@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 
 ############################################################################
 # Config dialog for alarm script
@@ -70,7 +70,6 @@ def main( args ):
 
     app.connect( app, SIGNAL( "lastWindowClosed()" ), app, SLOT( "quit()" ) )
     app.exec_loop()
-
 
 if __name__ == "__main__":
     main( sys.argv )

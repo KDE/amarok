@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 
 ############################################################################
-# Alarm script
+# Config dialog for alarm script
 # (c) 2005 Mark Kretschmann <markey@web.de>
 #
 # Depends on: PyQt
@@ -17,4 +17,7 @@
 import sys
 import os.path
 from qt import *
+
+
+print "Alarm Script"
 
