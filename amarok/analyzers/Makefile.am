@@ -16,7 +16,8 @@ noinst_HEADERS = \
 	turbine.h \
 	xmasdrug.h \
 	glanalyzer.h \
-	glanalyzer2.h
+	glanalyzer2.h \
+	blowanalyzer.h
 
 libanalyzers_a_SOURCES = \
 	analyzerbase.cpp \
@@ -29,5 +30,5 @@ libanalyzers_a_SOURCES = \
 	xmasdrug.cpp \
 	baranalyzer2.cpp \
 	glanalyzer.cpp \
-	glanalyzer2.cpp
-
+	glanalyzer2.cpp \
+	blowanalyzer.cpp
