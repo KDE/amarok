@@ -1,0 +1,84 @@
+body { margin: 8px; font-size: AMAROK_FONTSIZEpx; color: WindowText; background-color: Window; background-image: url( ./images/background.png ); background-repeat: no-repeat; background-position: fixed;}
+a { font-size: 10px; color: WindowText; }
+.song a { display: block; padding: 1px 2px; }
+.song a:hover { color: HighlightText; background-color: Highlight; }
+.song-title { font-weight: bold; }
+.song-score { font-variant: italic; }
+.song-artist { }
+.song-album { }
+.song-time { }
+.song-place { font-size: 12px; font-weight: 900; }
+.warning { font-size: AMAROK_FONTSIZEpx; color: InfoText; background-color: InfoBackground; font-weight: bold; padding: none; margin-bottom: 1em; }
+.box { border: solid ButtonShadow 1px; text-align: left; margin-bottom: AMAROK_FONTSIZEpx; }
+.box a { text-decoration: none; }
+.box:hover { border: solid ButtonShadow 1px; }
+.box-header { color: ButtonText; background-color: ButtonFace; font-size: AMAROK_FONTSIZEpx; font-weight: bold; padding: 1px 0.5em; border-bottom: 1px solid ButtonShadow; }
+.box-header:hover {}
+.box-body { background-image: url( ./images/transparency.png ); background-color: transparent; }
+.box-body:hover {}
+.box-row {}
+.box-row:hover {}
+.box-row-alt {}
+.box-row-alt:hover {}
+.album-header {}
+.album-header:hover { color: ButtonText; background-color: ButtonFace; cursor: pointer; }
+.album-header:hover a { color: ButtonText; background-color: ButtonFace; cursor: pointer; }
+.album-body { background-color: transparent; border-bottom: 1px solid ButtonShadow; border-top: none; }
+.album-title { font-weight: bold; }
+.album-info { float:right; padding-right:4px; font-size: AMAROK_FONTSIZEpx; }
+.album-year { }
+.album-song a { display: block; padding: 1px 2px; font-weight: normal; text-decoration: none; }
+.album-song a:hover { color: ButtonText; background-color: ButtonFace; }
+.album-song-trackno { text-align: right; width: 2em; display: block; float: left;}
+.album-song-title { }
+.album-song-time { }
+.sbtext { padding: 0px 4px; border-left: solid Highlight 1px; }
+.sbouter { width: 52px; height: 10px; background-color: ThreeDFace; border: solid ThreeDShadow 1px; }
+.sbinner { height: 8px; background-color: Highlight; border: solid ThreeDFace 1px; }
+.default { font-size: AMAROK_FONTSIZEpx }
+
+
+#favorites_box { }
+#favorites_box-header { }
+#favorites_box-header-title { }
+#favorites_box-body { }
+#newest_box { }
+#newest_box-header { }
+#newest_box-header-title { }
+#newest_box-body { }
+#least_box { }
+#least_box-header { }
+#least_box-header-title { }
+#least_box-body { }
+
+#current_box { }
+#current_box-header { }
+#current_box-header-songname { }
+#current_box-header-separator { }
+#current_box-header-artist { }
+#current_box-header-album { font-weight: normal; }
+#current_box-table { }
+#current_box-largecover-td { text-align: left; width: 100px; padding: 2px; }
+#current_box-largecover-a { }
+#current_box-largecover-image { }
+#current_box-information-td { text-align: right; }
+#musicbrainz-a { }
+#musicbrainz-image { width: 38px; height: 22px; }
+#musicbrainz-div { }
+#suggested_box { }
+#suggested_box-header { }
+#suggested_box-header-title { }
+#T_SS { }
+#favoritesby_box { }
+#favoritesby-header { }
+#favoritesby_box-header-title { }
+#T_FT { }
+#albums_box { }
+#albums_box-header { }
+#albums_box-header-title { }
+#albums_box-body { }
+
+#lyrics_box { }
+#lyrics_box-header { }
+#lyrics_box-header-title { }
+#lyrics_box-body { }

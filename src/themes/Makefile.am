@@ -1,3 +1,3 @@
-SUBDIRS = default
+SUBDIRS = default reinhardt
 
 
