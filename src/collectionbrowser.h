@@ -89,7 +89,7 @@ class CollectionView : public KListView
         static CollectionView* instance() { return m_instance; }
         /** Rebuilds and displays the treeview by querying the database. */
         void renderView();
-        void setFilter( QString filter ) { m_filter = filter; }
+        void setFilter( const QString &filter ) { m_filter = filter; }
         QString filter() { return m_filter; }
         Item* currentItem() { return static_cast<Item*>( KListView::currentItem() ); }
 

@@ -121,7 +121,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_cat3Menu ->insertItem( i18n( "A&rtist" ), m_view, SLOT( cat3Menu( int ) ), 0, IdArtist );
     m_cat3Menu ->insertItem( i18n( "&Genre" ), m_view, SLOT( cat3Menu( int ) ), 0, IdGenre );
     m_cat3Menu ->insertItem( i18n( "&Year" ), m_view, SLOT( cat3Menu( int ) ), 0, IdYear );
-	 
+
 	 m_sortMenu ->insertItem( i18n( "By &Track Tag" ) , m_view, SLOT( sortMenu( int ) ), 0, IdTracktag );
 	 m_sortMenu ->insertItem( i18n( "By &Filename" ) , m_view, SLOT( sortMenu( int ) ), 0, IdFilename );
 
@@ -143,14 +143,13 @@ CollectionBrowser::CollectionBrowser( const char* name )
 void
 CollectionBrowser::slotSetFilterTimeout() //SLOT
 {
-    if ( m_timer->isActive() ) m_timer->stop();
-    m_timer->start( 280, true );
+    m_timer->start( 280, true ); //stops the timer for us first
 }
 
 void
 CollectionBrowser::slotSetFilter() //SLOT
 {
-    if ( m_timer->isActive() ) m_timer->stop();
+    m_timer->stop();
 
     m_view->setFilter( m_searchEdit->text() );
     m_view->renderView();
@@ -343,6 +342,11 @@ CollectionView::renderView( )  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
+    //we use this list to show the bits the user was looking at again
+    QStringList currentItemPath;
+    for( QListViewItem *item = currentItem(); item; item = item->parent() )
+        currentItemPath.prepend( item->text( 0 ) );
+
     clear();
     QPixmap pixmap = iconForCategory( m_cat1 );
 
@@ -391,6 +395,29 @@ CollectionView::renderView( )  //SLOT
             item->setText( 0, i18n( "Various Artists" ) );
             item->setPixmap( 0, pixmap );
         }
+    }
+
+    //open up tree that contains the previous currentItem
+    QListViewItem *item = firstChild();
+    for( QStringList::ConstIterator it = currentItemPath.begin(); item && it != currentItemPath.end(); ) {
+        if ( item->text( 0 ) == *it ) {
+            if ( !item->isExpandable() )
+                break;
+            item->setOpen( true );
+            item = item->firstChild();
+            ++it;
+        }
+        else
+            item = item->nextSibling();
+
+        kdDebug() << *it << endl;
+    }
+
+    //ensure the previous currentItem is set current and visible
+    if ( item ) {
+        item->setSelected( true );
+        setCurrentItem( item );
+        ensureItemVisible( item );
     }
 }
 
@@ -565,12 +592,12 @@ CollectionView::sortMenu( int id )
 {
 	 m_parent->m_sortMenu->setItemChecked( m_sort, false ); //uncheck old item
     m_parent->m_sortMenu->setItemEnabled( m_sort, true );  //enable old item
-	 m_sort = id;	
+	 m_sort = id;
 	 m_parent->m_sortMenu->setItemChecked( m_sort, true );
-	 
+
 	 if ( m_sort == CollectionBrowser::IdTracktag) m_telltrack = QueryBuilder::valTrack;
 	 else if ( m_sort == CollectionBrowser::IdFilename) m_telltrack = QueryBuilder::valURL;
-	  
+
 	 renderView();
 }
 
@@ -681,7 +708,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
     if ( item ) {
         KPopupMenu menu( this );
 
-        int cat;
+        int cat = 0;
         if( item->depth() == 0 )
             cat = m_cat1;
         else if( item->depth() == 1 )
