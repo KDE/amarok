@@ -32,7 +32,7 @@ CollectionSetup* CollectionSetup::s_instance;
 
 
 CollectionSetup::CollectionSetup( QWidget *parent )
-    : QVBox( parent )
+    : QVBox( parent, "CollectionSetup" )
 {
     s_instance = this;
 

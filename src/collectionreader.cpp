@@ -166,11 +166,8 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
     }
 
 
-    for( dirent *ent; (ent = readdir( d )); )
+    for( dirent *ent; (ent = readdir( d )) && !isAborted(); )
     {
-        if( isAborted() )
-            return;
-
         QCString entry = ent->d_name;
 
         if ( entry == "." || entry == ".." )
@@ -182,13 +179,15 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
             continue;
 
         if ( S_ISDIR( statBuf.st_mode ) ) {
-            if ( m_recursively ) {
+            if ( m_recursively )
+            {
                 // Check for symlink recursion
                 QFileInfo info( entry );
                 if ( info.isSymLink() && m_processedDirs.contains( info.readLink() ) ) {
                     warning() << "Skipping, recursive symlink: " << dir << endl;
                     continue;
                 }
+
                 if ( !m_incremental || !CollectionDB::instance()->isDirInCollection( entry ) )
                     // we MUST add a '/' after the dirname
                     readDir( QFile::decodeName( entry ) + '/', entries );
@@ -196,9 +195,9 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
         }
         else if ( S_ISREG( statBuf.st_mode ) ) {
             //if a playlist is found it will send a PlaylistFoundEvent to PlaylistBrowser
-            QString file = QFile::decodeName( entry );
+            const QString file = QFile::decodeName( entry );
 
-            if( m_importPlaylists ) {
+            if ( m_importPlaylists ) {
                 QString ext = file.right( 4 ).lower();
                 if ( ext == ".m3u" || ext == ".pls" )
                     QApplication::postEvent( PlaylistBrowser::instance(), new PlaylistFoundEvent( file ) );

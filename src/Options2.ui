@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>366</width>
-            <height>566</height>
+            <width>397</width>
+            <height>511</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -289,97 +289,6 @@
                 </widget>
             </grid>
         </widget>
-        <widget class="QGroupBox" row="2" column="0">
-            <property name="name">
-                <cstring>groupBox5</cstring>
-            </property>
-            <property name="title">
-                <string>Tags</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLayoutWidget" row="0" column="0">
-                    <property name="name">
-                        <cstring>layout10</cstring>
-                    </property>
-                    <vbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QCheckBox">
-                            <property name="name">
-                                <cstring>kcfg_RecodeID3v1Tags</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&amp;Recode ID3v1 tags</string>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>XXX</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>XXX</string>
-                            </property>
-                        </widget>
-                        <widget class="QLayoutWidget">
-                            <property name="name">
-                                <cstring>layout4</cstring>
-                            </property>
-                            <hbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="QLabel">
-                                    <property name="name">
-                                        <cstring>textLabel1_2</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>false</bool>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>4</hsizetype>
-                                            <vsizetype>5</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="text">
-                                        <string>&amp;Charset:</string>
-                                    </property>
-                                    <property name="buddy" stdset="0">
-                                        <cstring>kcfg_TagEncoding</cstring>
-                                    </property>
-                                </widget>
-                                <widget class="QComboBox">
-                                    <property name="name">
-                                        <cstring>kcfg_TagEncoding</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>false</bool>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>5</hsizetype>
-                                            <vsizetype>0</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="toolTip" stdset="0">
-                                        <string>XXX</string>
-                                    </property>
-                                    <property name="whatsThis" stdset="0">
-                                        <string>XXX</string>
-                                    </property>
-                                </widget>
-                            </hbox>
-                        </widget>
-                    </vbox>
-                </widget>
-            </grid>
-        </widget>
         <widget class="QGroupBox" row="0" column="0">
             <property name="name">
                 <cstring>groupBox4</cstring>
@@ -634,19 +543,9 @@
         </spacer>
     </grid>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
-    <connection>
-        <sender>kcfg_RecodeID3v1Tags</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>textLabel1_2</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg_RecodeID3v1Tags</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>kcfg_TagEncoding</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
     <connection>
         <sender>kcfg_UseCustomFonts</sender>
         <signal>toggled(bool)</signal>

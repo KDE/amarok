@@ -1472,8 +1472,12 @@ Playlist::burnSelectedTracks( int projectType )
 void
 Playlist::shuffle() //SLOT
 {
+    //last item is never shuffled
+    debug() << __PRETTY_FUNCTION__ << ": FIX THIS FUNCTION!\n";
+
     QPtrList<QListViewItem> list;
 
+    setFilter( QString() ); //FIXME
     setSorting( NO_SORT );
 
     //if there are nexttracks re-order them
@@ -1490,6 +1494,7 @@ Playlist::shuffle() //SLOT
 
     //remove
     for( MyIt it( this ); *it; ++it ) {
+        debug() << (*it)->exactText( 0 ) << endl;
         list.append( *it );
         takeItem( *it );
     }

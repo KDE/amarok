@@ -421,7 +421,7 @@ void App::applySettings( bool firstTime )
     m_pTray->setShown( AmarokConfig::showTrayIcon() );
 
     if ( AmarokConfig::recodeID3v1Tags() )
-        TagLib::ID3v1::Tag::setStringHandler( new ID3v1StringHandler( AmarokConfig::tagEncoding() ) );
+        TagLib::ID3v1::Tag::setStringHandler( new ID3v1StringHandler( AmarokConfig::recodeEncoding() ) );
 
 
     //on startup we need to show the window, but only if it wasn't hidden on exit

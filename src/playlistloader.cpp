@@ -443,7 +443,6 @@ PlaylistLoader::recurse( const KURL &url, bool recursing )
         const KURL::List::Iterator end2 = dirs.end();
         for ( KURL::List::Iterator it = dirs.begin(); it != end2; ++it )
             recurse( *it, true );
-
         return success;
 }
 

@@ -317,10 +317,14 @@
         <whatsthis>If set, ID3v1 tags will be recoded with the chosen encoding.</whatsthis>
         <default>false</default>
     </entry>
-    <entry key="Tag Encoding" type="Int">
-        <label>Encoding charset</label>
-        <whatsthis>The charset with which to decode ID3v1 tags.</whatsthis>
-        <default></default>
+    <entry key="Recode Shoutcast Metadata" type="Bool">
+        <label>Recode Shoutcast Metadata</label>
+        <whatsthis>If set, Shoutcast metadata will be recoded.</whatsthis>
+        <default>false</default>
+    </entry>
+    <entry key="Recode Encoding" type="Int">
+        <label>Recode encoding</label>
+        <whatsthis>The charset with which to decode the above string data.</whatsthis>
     </entry>
 </group>
 

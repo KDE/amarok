@@ -50,7 +50,6 @@ class AmarokConfigDialog : public KConfigDialog
     private slots:
         void aboutEngine();
         void databaseEngineChanged();
-        void createProfileClicked();
 
     protected:
         bool hasChanged();
@@ -62,6 +61,7 @@ class AmarokConfigDialog : public KConfigDialog
         QComboBox* m_soundSystem;
         amaroK::PluginConfig *m_engineConfig;
         QGroupBox            *m_engineConfigFrame;
+        class Options1       *m_opt1;
         class Options4       *m_opt4;
         class Options7       *m_opt7;
 

@@ -282,7 +282,8 @@ StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
     return false;
 }
 
-
+#include "amarokconfig.h"
+#include <qtextcodec.h>
 void
 StreamProvider::transmitData( const QString &data )
 {
@@ -292,11 +293,18 @@ StreamProvider::transmitData( const QString &data )
     if ( !data.isNull() && data == m_lastMetadata ) return;
     m_lastMetadata = data;
 
-    MetaBundle bundle( extractStr( data, "StreamTitle" ),
+    // because we assumed latin1 earlier this codec conversion works
+    QTextCodec *codec = AmarokConfig::recodeShoutcastMetadata()
+            ? QTextCodec::codecForIndex( AmarokConfig::recodeEncoding() )
+            : QTextCodec::codecForName( "ISO8859-1" ); //Latin1 returns 0
+
+    Q_ASSERT( codec );
+
+    MetaBundle bundle( codec->toUnicode( extractStr( data, "StreamTitle" ).latin1() ),
                        m_streamUrl,
                        m_bitRate,
-                       m_streamGenre,
-                       m_streamName,
+                       codec->toUnicode( m_streamGenre.latin1() ),
+                       codec->toUnicode( m_streamName.latin1() ),
                        m_url );
 
     emit metaData( bundle );
@@ -322,10 +330,10 @@ StreamProvider::extractStr( const QString &str, const QString &key ) const
 {
     int index = str.find( key, 0, true );
 
-    if ( index == -1 ) {
+    if ( index == -1 )
         return QString::null;
 
-    } else {
+    else {
 
         // String looks like this:
         // StreamTitle='foobar';StreamUrl='http://shn.mthN.net';
@@ -333,7 +341,6 @@ StreamProvider::extractStr( const QString &str, const QString &key ) const
         index = str.find( "'", index ) + 1;
         int indexEnd = str.find( "';", index );
         return str.mid( index, indexEnd - index );
-
     }
 }
 

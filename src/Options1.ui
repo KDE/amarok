@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>428</width>
-            <height>392</height>
+            <width>465</width>
+            <height>667</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -19,6 +19,9 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>General</string>
     </property>
     <vbox>
         <property name="name">
@@ -31,11 +34,11 @@
             <property name="title">
                 <string>General Options</string>
             </property>
-            <grid>
+            <vbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QCheckBox" row="0" column="0" rowspan="1" colspan="3">
+                <widget class="QCheckBox">
                     <property name="name">
                         <cstring>kcfg_ShowSplashscreen</cstring>
                     </property>
@@ -49,7 +52,7 @@
                         <string>Check to enable the splashscreen during amaroK startup.</string>
                     </property>
                 </widget>
-                <widget class="QCheckBox" row="1" column="0" rowspan="1" colspan="3">
+                <widget class="QCheckBox">
                     <property name="name">
                         <cstring>kcfg_ShowTrayIcon</cstring>
                     </property>
@@ -63,21 +66,51 @@
                         <string>Check to enable the amaroK system tray icon.</string>
                     </property>
                 </widget>
-                <widget class="QCheckBox" row="2" column="0" rowspan="1" colspan="3">
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>kcfg_AnimateTrayIcon</cstring>
+                        <cstring>layout5</cstring>
                     </property>
-                    <property name="text">
-                        <string>&amp;Animate tray icon</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Check to animate the amaroK system tray icon.</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Check to animate the amaroK system tray icon.</string>
-                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer3_2</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Fixed</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>16</width>
+                                    <height>21</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QCheckBox">
+                            <property name="name">
+                                <cstring>kcfg_AnimateTrayIcon</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Flash tray icon when playing</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Check to animate the amaroK system tray icon.</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Check to animate the amaroK system tray icon.</string>
+                            </property>
+                        </widget>
+                    </hbox>
                 </widget>
-                <widget class="QCheckBox" row="3" column="0" rowspan="1" colspan="3">
+                <widget class="QCheckBox">
                     <property name="name">
                         <cstring>kcfg_ShowPlayerWindow</cstring>
                     </property>
@@ -91,65 +124,75 @@
                         <string>Check to enable a extra player window.</string>
                     </property>
                 </widget>
-                <widget class="QLabel" row="4" column="0">
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>textLabel1</cstring>
+                        <cstring>layout4</cstring>
                     </property>
-                    <property name="text">
-                        <string>Default size for cover previews:</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Size of the cover image in the context viewer in pixels.</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Size of the cover image in the context viewer in pixels.</string>
-                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Default size for cover previews:</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Size of the cover image in the context viewer in pixels.</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Size of the cover image in the context viewer in pixels.</string>
+                            </property>
+                        </widget>
+                        <widget class="QSpinBox">
+                            <property name="name">
+                                <cstring>kcfg_CoverPreviewSize</cstring>
+                            </property>
+                            <property name="maxValue">
+                                <number>150</number>
+                            </property>
+                            <property name="minValue">
+                                <number>50</number>
+                            </property>
+                            <property name="value">
+                                <number>100</number>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Size of the cover images in the context viewer in pixels.</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Size of the cover images in the context viewer in pixels.</string>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer7</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>30</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </hbox>
                 </widget>
-                <widget class="QSpinBox" row="4" column="1">
-                    <property name="name">
-                        <cstring>kcfg_CoverPreviewSize</cstring>
-                    </property>
-                    <property name="maxValue">
-                        <number>150</number>
-                    </property>
-                    <property name="minValue">
-                        <number>50</number>
-                    </property>
-                    <property name="value">
-                        <number>100</number>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Size of the cover images in the context viewer in pixels.</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Size of the cover images in the context viewer in pixels.</string>
-                    </property>
-                </widget>
-                <spacer row="4" column="2">
-                    <property name="name">
-                        <cstring>spacer7</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>30</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-            </grid>
+            </vbox>
         </widget>
         <widget class="QGroupBox">
             <property name="name">
                 <cstring>groupBox2</cstring>
             </property>
             <property name="title">
-                <string>Playlist Options</string>
+                <string>Playlist-window Options</string>
             </property>
             <vbox>
                 <property name="name">
@@ -171,44 +214,16 @@
                 </widget>
                 <widget class="QCheckBox">
                     <property name="name">
-                        <cstring>kcfg_HidePlaylistWindow</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Hide playlist with main window</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>If checked, amaroK takes appropriate action to hide the playlist when the player window is hidden. If not checked, the player window and the playlist hide totally independent of each other.&lt;br&gt;</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>If checked, amaroK takes appropriate action to hide the playlist when the player window is hidden. If not checked, the player window and the playlist hide totally independent of each other.</string>
-                    </property>
-                </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
                         <cstring>kcfg_PlaylistFollowActive</cstring>
                     </property>
                     <property name="text">
-                        <string>Playlist scrolls with &amp;active song</string>
+                        <string>&amp;Keep the active song visible on track changes</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>If checked, the playlist scrolls on song change to make the currently playing item visible in the playlist. Measures are taken not to scroll if inappropriate.&lt;br&gt;</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, the playlist scrolls on song change to make the currently playing item visible in the playlist. Measures are taken not to scroll if inappropriate.</string>
-                    </property>
-                </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_DirectoriesRecursively</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Add &amp;directories recursively</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>If checked, adding a directory to the playlist also adds sub directories, sub-sub directories, etc.&lt;br&gt;</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>If checked, adding a directory to the playlist also adds sub directories, sub-sub directories, etc.</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox">
@@ -230,7 +245,7 @@
                         <cstring>kcfg_AutoShowContextBrowser</cstring>
                     </property>
                     <property name="text">
-                        <string>Auto show context browser</string>
+                        <string>Switch to Context Browser when appropriate</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Switch to the context browser, when playing a track.&lt;br&gt;</string>
@@ -238,6 +253,129 @@
                     <property name="whatsThis" stdset="0">
                         <string>Switch to the context browser, when playing a track.</string>
                     </property>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>groupBox5</cstring>
+            </property>
+            <property name="title">
+                <string>Encodings</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Recode the following 8bit data:</string>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout3</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer3</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Fixed</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>16</width>
+                                    <height>21</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layout2</cstring>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QCheckBox">
+                                    <property name="name">
+                                        <cstring>kcfg_RecodeID3v1Tags</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>&amp;ID3v1 &amp;tags</string>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>XXX</string>
+                                    </property>
+                                    <property name="whatsThis" stdset="0">
+                                        <string>XXX</string>
+                                    </property>
+                                </widget>
+                                <widget class="QCheckBox">
+                                    <property name="name">
+                                        <cstring>kcfg_RecodeShoutcastMetadata</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>&amp;Shoutcast metadata</string>
+                                    </property>
+                                </widget>
+                            </vbox>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout7</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1_3</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Use this character set when recoding:</string>
+                            </property>
+                            <property name="alignment">
+                                <set>AlignVCenter</set>
+                            </property>
+                        </widget>
+                        <widget class="QComboBox">
+                            <property name="name">
+                                <cstring>kcfg_RecodeEncoding</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>true</bool>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>4</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>XXX</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>XXX</string>
+                            </property>
+                        </widget>
+                    </hbox>
                 </widget>
             </vbox>
         </widget>
@@ -254,7 +392,7 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>81</height>
+                    <height>40</height>
                 </size>
             </property>
         </spacer>
@@ -263,7 +401,7 @@
 <connections>
     <connection>
         <sender>kcfg_ShowTrayIcon</sender>
-        <signal>toggled( bool )</signal>
+        <signal>toggled(bool)</signal>
         <receiver>kcfg_AnimateTrayIcon</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
