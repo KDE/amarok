@@ -120,8 +120,8 @@ class PlayerWidget : public QWidget
         QPixmap m_minusPixmap;
 
         //widgets
-        QFrame *m_scrollFrame;
-        QLabel *m_timeLabel;
+        QFrame *m_pScrollFrame;
+        QLabel *m_pTimeLabel;
         QLabel *m_pTimeSign;
         QLabel *m_pVolSign;
         QLabel *m_pDescription;
@@ -135,18 +135,19 @@ class PlayerWidget : public QWidget
 };
 
 
-//these two template functions are here simply to reduce the bloat of the PlayerWidget ctor
+//these two template functions are designed to reduce the amount of code in the PlayerWidget ctor
 //and hopefully will be compiled such that the final binary is smaller too
-template<class W> W *wrapper( const QRect &r, QWidget *parent, const char *name = 0, QWidget::WFlags f = 0 )
+template<class W> inline W*
+wrapper( const QRect &r, QWidget *parent, const char *name = 0, QWidget::WFlags f = 0 )
 {
     W *w = new W( parent, name, f );
     return placeWidget( w, r );
 }
 
-template<class W> W *placeWidget( W *w, const QRect &r )
+template<class W> inline W*
+placeWidget( W *w, const QRect &r )
 {
-    w->move( r.topLeft() );
-    w->resize( r.size() );
+    w->setGeometry( r );
     return w;
 }
 

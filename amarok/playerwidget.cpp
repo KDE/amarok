@@ -119,8 +119,8 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
         font.setPixelSize( 11 );
         int fontHeight = QFontMetrics( font ).height(); //the real height is more like 13px
 
-        m_scrollFrame = wrapper<QFrame>( QRect(6,18, 285,fontHeight), this );
-        m_scrollFrame->setFont( font );
+        m_pScrollFrame = wrapper<QFrame>( QRect(6,18, 285,fontHeight), this );
+        m_pScrollFrame->setFont( font );
 
         m_scrollBuffer.fill( backgroundColor() );
       //</Scroller>
@@ -128,10 +128,10 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
       //<TimeLabel>
         font.setPixelSize( 18 );
 
-        m_timeLabel = wrapper<QLabel>( QRect(16,36, 9*12+2,16), this, 0, Qt::WRepaintNoErase );
-        m_timeLabel->setFont( font );
+        m_pTimeLabel = wrapper<QLabel>( QRect(16,36, 9*12+2,16), this, 0, Qt::WRepaintNoErase );
+        m_pTimeLabel->setFont( font );
 
-        m_timeBuffer.resize( m_timeLabel->size() );
+        m_timeBuffer.resize( m_pTimeLabel->size() );
         m_timeBuffer.fill( backgroundColor() );
     } //<TimeLabel>
 
@@ -185,30 +185,25 @@ void PlayerWidget::setScroll( const MetaBundle &bundle )
     setScroll( text );
 
     //update image tooltip
-    PlaylistToolTip::add( m_scrollFrame, bundle );
+    PlaylistToolTip::add( m_pScrollFrame, bundle );
 }
 
 
 void PlayerWidget::setScroll( const QStringList &list )
 {
-/*static const char* const not_close_xpm[]={
+static const char* const not_close_xpm[]={
 "5 5 2 1",
-"# c white",//#ffeacd",
-". c #80a0ff",
+"# c #80a0ff",
+". c none",
 "#####",
 "#...#",
 "#...#",
 "#...#",
-"#####"};*/
-static const char* const not_close_xpm[]={
-"4 4 1 1",
-"# c #80a0ff",
-"####",
-"####",
-"####",
-"####"};
+"#####"};
 
-    QPixmap square( const_cast< const char** >(not_close_xpm) );
+    //TODO make me pretty!
+
+    QPixmap separator( const_cast< const char** >(not_close_xpm) );
 
     const QString s = list.first();
     QToolTip::remove( m_pTray );
@@ -219,7 +214,6 @@ static const char* const not_close_xpm[]={
 
     QString text;
     QStringList list2( list );
-    //const QString separator = " | ";
 
     for( QStringList::Iterator it = list2.begin();
          it != list2.end(); )
@@ -227,42 +221,34 @@ static const char* const not_close_xpm[]={
         if( (*it).isEmpty() ) it = list2.remove( it );
         else
         {
-            kdDebug() << *it << endl;
             text.append( *it );
-            //text.append( separator );
             ++it;
         }
     }
 
     //FIXME WORKAROUND prevents crash
-    //<mxcl> I neglected fixing it so far as if we are sending a blank string then we're stupid anyway!
     if ( text.isEmpty() )
         text = "FIXME: EMPTY STRING MAKES ME CRASH!";
 
-    QFont font( m_scrollFrame->font() );
+    QFont font( m_pScrollFrame->font() );
     QFontMetrics fm( font );
-    const uint height = font.pixelSize(); //the font actually extends below its pixelHeight
-    m_scrollTextPixmap.resize( fm.width( text ) + list2.count() * 20, m_scrollFrame->height() );
-    //m_scrollTextPixmap.resize( fm.width( text ), m_scrollFrame->height() );
+    const uint separatorWidth = 21;
+    const uint baseline = font.pixelSize(); //the font actually extends below its pixelHeight
+    const uint separatorYPos = baseline - fm.boundingRect( "x" ).height();
+    m_scrollTextPixmap.resize( fm.width( text ) + list2.count() * separatorWidth, m_pScrollFrame->height() );
     m_scrollTextPixmap.fill( backgroundColor() );
     QPainter p( &m_scrollTextPixmap );
     p.setPen( foregroundColor() );
     p.setFont( font );
     uint x = 0;
-    //const QColor separatorColor( Qt::lightGray );
-    const uint   separatorWidth = 20;//fm.width( separator );
 
     for( QStringList::ConstIterator it = list2.constBegin();
          it != list2.end();
          ++it )
     {
-        //p.setPen( foregroundColor() );
-        p.drawText( x, height, *it );
+        p.drawText( x, baseline, *it );
         x += fm.width( *it );
-
-        //p.setPen( separatorColor );
-        //p.drawText( x, height, separator );
-        p.drawPixmap( x + 8, font.pixelSize() / 2, square );
+        p.drawPixmap( x + 8, separatorYPos, separator );
         x += separatorWidth;
     }
 
@@ -288,11 +274,11 @@ void PlayerWidget::drawScroll()
 
     int subs = 0;
     int dx = leftMargin;
-    int phase2 = phase;
+    uint phase2 = phase;
 
-    while( dx < m_scrollFrame->width() )
+    while( dx < m_pScrollFrame->width() )
     {
-        subs = -m_scrollFrame->width() + topMargin;
+        subs = -m_pScrollFrame->width() + topMargin;
         subs += dx + ( w - phase2 );
         if( subs < 0 ) subs = 0;
 
@@ -305,7 +291,7 @@ void PlayerWidget::drawScroll()
         if( phase2 >= w ) phase2 = 0;
     }
 
-    bitBlt( m_scrollFrame, 0, 0, buffer );
+    bitBlt( m_pScrollFrame, 0, 0, buffer );
 }
 
 
@@ -326,9 +312,9 @@ void PlayerWidget::timeDisplay( int seconds )
     m_timeBuffer.fill( backgroundColor() );
     QPainter p( &m_timeBuffer );
     p.setPen( foregroundColor() );
-    p.setFont( m_timeLabel->font() );
+    p.setFont( m_pTimeLabel->font() );
     p.drawText( 0, 16, str ); //FIXME remove padding here and put in the widget placement!
-    bitBlt( m_timeLabel, 0, 0, &m_timeBuffer );
+    bitBlt( m_pTimeLabel, 0, 0, &m_timeBuffer );
 
     m_pTimeSign->setPixmap( remaining ? m_minusPixmap : m_plusPixmap );
 }
@@ -342,8 +328,8 @@ void PlayerWidget::paintEvent( QPaintEvent * )
     //uses widget's font and foregroundColor() - see ctor
     pF.drawText( 6, 68, m_rateString );
 
-    bitBlt( m_scrollFrame, 0, 0, &m_scrollBuffer );
-    bitBlt( m_timeLabel, 0, 0, &m_timeBuffer ); //FIXME have functions that replace these blts that are inlined things like "bltTimeDisplay" etc.
+    bitBlt( m_pScrollFrame, 0, 0, &m_scrollBuffer );
+    bitBlt( m_pTimeLabel, 0, 0, &m_timeBuffer ); //FIXME have functions that replace these blts that are inlined things like "bltTimeDisplay" etc.
 }
 
 
@@ -425,7 +411,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
     else //other buttons
     {
         QRect
-        rect  = m_timeLabel->geometry();
+        rect  = m_pTimeLabel->geometry();
         rect |= m_pTimeSign->geometry();
 
         if ( rect.contains( e->pos() ) )
@@ -473,13 +459,14 @@ void PlayerWidget::createAnalyzer( bool increment )
 
     if ( AmarokConfig::currentAnalyzer() == 1 ) //FIXME
     {
-        m_pAnalyzer->move( QPoint( 119, 30 ) );
-        m_pAnalyzer->resize( QSize( 168, 70 ) );
+        const uint y = m_pScrollFrame->geometry().bottom();
+        const uint h = m_pSlider->geometry().top() - y;
+
+        m_pAnalyzer->setGeometry( 119,y, 168,h );
     }
     else
     {
-        m_pAnalyzer->move( QPoint( 119, 40 ) );
-        m_pAnalyzer->resize( QSize( 168, 56 ) );
+        m_pAnalyzer->setGeometry( 119,40, 168,56 );
     }
     m_pAnalyzer->show();
 }

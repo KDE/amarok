@@ -8,7 +8,6 @@
 
 #include "amaroksystray.h"
 #include "playerapp.h"
-#include "playerwidget.h"
 
 #include <kaction.h>
 #include <kapplication.h>
@@ -70,10 +69,10 @@ AmarokSystray::AmarokSystray( QWidget *playerWidget, KActionCollection *ac ) : K
 
 void AmarokSystray::wheelEvent( QWheelEvent *e )
 {
-    #if (QT_VERSION >= 0x030300)
-    parentWidget()->setWindowState( Qt::WindowActive );
-    #endif
-    e->ignore(); //will pass event to PlayerWidget
+    //NOTE for some reason ignore() doesn't pass the event to parent unless
+    //the parent isVisible() and the active window!
+
+    QApplication::sendEvent( parentWidget(), e );
 }
 
 

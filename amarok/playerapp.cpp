@@ -91,8 +91,10 @@ PlayerApp::PlayerApp()
     //after this point only analyzer pixmaps will be created
     QPixmap::setDefaultOptimization( QPixmap::BestOptim );
 
-    applySettings();
-    m_pPlayerWidget->show(); //browserWin gets shown automatically if buttonPl isOn()
+    applySettings();  //will create the engine
+    restoreSession(); //resume playback
+    //TODO remember if we were in tray last exit, if so don't show!
+    m_pPlayerWidget->show(); //BrowserWin will sponaneously show if appropriate
 
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
     connect( m_pAnimTimer, SIGNAL( timeout() ), m_pPlayerWidget, SLOT( drawScroll() ) );
@@ -100,10 +102,8 @@ PlayerApp::PlayerApp()
     //process some events so that the UI appears and things feel more responsive
     kapp->processEvents();
 
-    //start timers and restore session
+    //start timers
     m_pMainTimer->start( MAIN_TIMER );
-    restoreSession(); //sounds better done here
-    m_pAnimTimer->start( ANIM_TIMER ); //looks better done here
 
     connect( this, SIGNAL( metaData( const MetaBundle& ) ), m_pOSD, SLOT( showOSD( const MetaBundle& ) ) );
 
@@ -119,7 +119,6 @@ PlayerApp::~PlayerApp()
     //I know they won't dissapear because the event Loop isn't updated, but it stops
     //some syncronous updates etc.
     m_pMainTimer->stop();
-    m_pAnimTimer->stop();
 
     m_pPlayerWidget->hide();
     m_pBrowserWin->hide();
@@ -272,7 +271,7 @@ void PlayerApp::applySettings()
 
         kdDebug() << "[PlayerApp::applySettings()] AmarokConfig::soundSystem() == " << AmarokConfig::soundSystem() << endl;
     }
- 
+
     if ( AmarokConfig::hardwareMixer() != m_pEngine->isMixerHardware() )
         AmarokConfig::setHardwareMixer( m_pEngine->initMixer( AmarokConfig::hardwareMixer() ) );
 
@@ -327,7 +326,7 @@ void PlayerApp::readConfig()
     m_artsNeedsRestart = AmarokConfig::version() != APP_VERSION;
 
     initEngine();
-    
+
     AmarokConfig::setHardwareMixer( m_pEngine->initMixer( AmarokConfig::hardwareMixer() ) );
     m_pEngine->setVolume( AmarokConfig::masterVolume() );
     m_pPlayerWidget->m_pVolSlider->setValue( m_pEngine->volume() );
@@ -463,9 +462,11 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
     }
     else if( e->type() == QEvent::Hide && o == m_pPlayerWidget )
     {
-        //if the event is not spontaneous then we did the hide
-        //we can therefore hide the playlist window
+        m_pAnimTimer->stop();
 
+        //if the event is not spontaneous then amaroK was responsible for the event
+        //we should therefore hide the playlist as well
+        //the only spontaneous hide event we care about is minimization
         if( !e->spontaneous() ) m_pBrowserWin->hide();
         else
         {
@@ -475,9 +476,10 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
             if( info.valid() && info.isMinimized() ) m_pBrowserWin->hide();
         }
     }
-    else if( e->type() == QEvent::Show && o == m_pPlayerWidget && m_pPlayerWidget->m_pButtonPl->isOn() )
+    else if( e->type() == QEvent::Show && o == m_pPlayerWidget )
     {
-        m_pBrowserWin->show();
+        m_pAnimTimer->start( ANIM_TIMER );
+        if( m_pPlayerWidget->m_pButtonPl->isOn() ) m_pBrowserWin->show();
     }
 
     return FALSE;
@@ -513,7 +515,7 @@ void PlayerApp::play( const MetaBundle &bundle )
     }
     else
         m_pEngine->open( url );
-       
+
     m_proxyError = false;
 
     emit metaData( bundle );
@@ -676,14 +678,14 @@ void PlayerApp::showEffectWidget()
     if ( !EffectWidget::self )
     {
         EffectWidget::self = new EffectWidget();
-    
+
         connect( EffectWidget::self,           SIGNAL( destroyed() ),
                  m_pPlayerWidget->m_pButtonEq, SLOT  ( setOff   () ) );
         connect( m_pPlayerWidget,              SIGNAL( destroyed() ),
                  EffectWidget::self,           SLOT  ( deleteLater() ) );
-    
+
         EffectWidget::self->show();
-        
+
         if ( EffectWidget::save_geometry.isValid() )
             EffectWidget::self->setGeometry( EffectWidget::save_geometry );
     }
