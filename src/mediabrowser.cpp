@@ -1,6 +1,9 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // See COPYING file for licensing information
 
+
+#define DEBUG_PREFIX "MediaBrowser"
+
 #include "config.h"        //for AMAZON_SUPPORT
 
 #include "amarokconfig.h"
@@ -16,12 +19,13 @@
 #include <qdatetime.h>
 #include <qimage.h>
 #include <qlabel.h>
+#include <qpainter.h>
 #include <qpushbutton.h>
 #include <qregexp.h>
+#include <qsimplerichtext.h>
 #include <qtooltip.h>       //QToolTip::add()
 
 #include <kapplication.h> //kapp
-#include <kdebug.h>
 #include <kdirlister.h>
 #include <kfiledialog.h>
 #include <kglobal.h>
@@ -37,7 +41,6 @@
 #include <ktempfile.h>
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h> //ctor
-#include <kurl.h>
 #include <kurldrag.h>       //dragObject()
 
 #define escapeIPod(s)   QString(s).replace( "/", "%252f" )
@@ -218,7 +221,7 @@ void
 MediaDeviceList::startDrag()
 {
     KURL::List urls = nodeBuildDragList( 0 );
-    kdDebug() << urls.first().path() << endl;
+    debug() << urls.first().path() << endl;
     KURLDrag* d = new KURLDrag( urls, this );
     d->dragCopy();
 }
@@ -267,7 +270,7 @@ MediaDeviceList::nodeBuildDragList( MediaItem* item )
 void
 MediaDeviceList::contentsDragEnterEvent( QDragEnterEvent *e )
 {
-    kdDebug() << "[MediaBrowser] Items dropping?" << endl;
+    debug() << "Items dropping?" << endl;
     e->accept( e->source() != viewport() && KURLDrag::canDecode( e ) );
 }
 
@@ -292,6 +295,35 @@ MediaDeviceList::contentsDragMoveEvent( QDragMoveEvent* /*e*/ )
 {
 //    const QPoint p = contentsToViewport( e->pos() );
 //    QListViewItem *item = itemAt( p );
+}
+
+
+void
+MediaDeviceList::viewportPaintEvent( QPaintEvent *e )
+{
+    KListView::viewportPaintEvent( e );
+
+    // Superimpose bubble help:
+
+    if ( childCount() == 0 )
+    {
+        QPainter p( viewport() );
+
+        QSimpleRichText t( i18n(
+                "<div align=center>"
+                  "<h3>MediaDevice Browser</h3>"
+                  "Drop files here to enqueue them for transfer to your iPod."
+                "</div>" ), QApplication::font() );
+
+        const int wd3 = viewport()->width() / 3;
+        t.setWidth( wd3 );
+
+        const int y = (viewport()->height() - t.height()) / 2;
+
+        p.setBrush( colorGroup().background() );
+        p.drawRoundRect( wd3-15, y-15, t.width()+30, t.height()+30, 5, 5 );
+        t.draw( &p, wd3, y, QRect( 0, 0, viewport()->width(), viewport()->height() ), colorGroup() );
+    }
 }
 
 
@@ -552,7 +584,7 @@ MediaDevice::transferFiles()  //SLOT
             KURL::List::Iterator it = m_transferURLs.begin();
             for ( ; it != m_transferURLs.end(); ++it )
             {
-                kdDebug() << "[MediaBrowser] Transfering: " << (*it).path() << endl;
+                debug() << "Transfering: " << (*it).path() << endl;
                 MetaBundle bundle( *it );
 
                 TrackMetadata track = m_ipod->createNewTrackMetadata();
@@ -572,7 +604,7 @@ MediaDevice::transferFiles()  //SLOT
 
                 if( !track.readFromBundle( bundle ) )
                 {
-                    kdDebug() << "[MediaBrowser] Reading tags failed! File not added!" << endl;
+                    debug() << "Reading tags failed! File not added!" << endl;
                     QFile::remove( trackpath );
                 }
                 else
@@ -580,14 +612,14 @@ MediaDevice::transferFiles()  //SLOT
             }
         }
         else
-            kdDebug() << "[MediaBrowser] iPod inconsistent!" << endl;
+            debug() << "iPod inconsistent!" << endl;
 
         m_ipod->unlock();
         syncIPod();
         fileTransferFinished();
     }
     else
-        kdDebug() << "[MediaBrowser] iPod inconsistent!" << endl;
+        debug() << "iPod inconsistent!" << endl;
 
     m_parent->m_transferButton->setEnabled( true );
 }
@@ -618,7 +650,7 @@ MediaDevice::deleteFiles( const KURL::List& urls )
             syncIPod();
         }
         else
-            kdDebug() << "[MediaBrowser] iPod inconsistent!" << endl;
+            debug() << "iPod inconsistent!" << endl;
     }
 }
 
@@ -729,12 +761,12 @@ MediaDevice::fileTransferFinished()  //SLOT
 void
 MediaDevice::syncIPod()  //SLOT
 {
-    kdDebug() << "[MediaBrowser] Syncing IPod!" << endl;
+    debug() << "Syncing IPod!" << endl;
 
     m_ipod->ensureConsistency();
     m_ipod->writeItunesDB();
     if( !m_ipod->getItunesDBError().isEmpty() )
-        kdDebug() << "Sync failed: " + m_ipod->getItunesDBError() << endl;
+        debug() << "Sync failed: " + m_ipod->getItunesDBError() << endl;
 
     m_ipod->close();
     delete m_ipod;

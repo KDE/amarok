@@ -79,9 +79,12 @@ class MediaDeviceList : public KListView
     private:
         void startDrag();
         KURL::List nodeBuildDragList( MediaItem* item );
+
+        // Reimplemented from KListView
         void contentsDragEnterEvent( QDragEnterEvent* );
         void contentsDropEvent( QDropEvent *e );
         void contentsDragMoveEvent( QDragMoveEvent* e );
+        void viewportPaintEvent( QPaintEvent* );
 
         MediaDeviceView* m_parent;
 };
