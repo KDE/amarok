@@ -9,9 +9,6 @@ SHORT-TERM:
 
     * fix: clicking tray icon to hide does not work (KDE 3.2 Nov 29 HEAD). Either KDE or amaroK
            fault (see #1 also, might be related) #2
-	   
-    * fix: when starting amarok from the console, I don't see the debug output any more
-           (app is detaching from console)
 
     * fix: app freezing when trying to play remote file -->markey
     
@@ -19,14 +16,14 @@ SHORT-TERM:
     
     * fix: <mxcl> select something in playlist, go to drag from the browser, move mouse over
            playlist, move mouse back to browser and drop, selected item from playlist disappears!
-	   I know what to do about this.
+           I know what to do about this.
 
     * fix: <mxcl> reimplement ask recursively on drop operations to playlist
 
     * fix: <mxcl> GroupBoxes can't have check boxes with Qt 3.1, so before next release do
            some #ifdefs to surround that code and hope nobody gets too pissed about it
 
-    * fix: playobject config GUI seems totally b0rked on 3.2
+    * fix: playobject config GUI seems totally b0rked on 3.2 -->markey
 
     * fix: writePathEntry is a KDE 3.1.3 function, which is perhaps too recent for the 0.7.1 release
 
@@ -34,9 +31,9 @@ SHORT-TERM:
 
     * fix: <mxcl> dialog boxes show behind the playlist (KDE 3.1), with no amarok.rc, playlist
       #1    covers main widget on first start! <markey> that sometimes also happens with 3.2
-	    [<berkus> playlist covers main widget almost all the time, until you click on 
-	    main widget directly. probably a weird combo of kwin focus stealing prevention plus
-	    our own playlist widget flags]
+            [<berkus> playlist covers main widget almost all the time, until you click on 
+            main widget directly. probably a weird combo of kwin focus stealing prevention plus
+            our own playlist widget flags]
 
     * fix: <muesli> clean up the GUI [mxcl wants to help, we should perhaps branch amaroK while we work]
 
