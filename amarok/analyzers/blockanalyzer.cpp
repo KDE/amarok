@@ -1,7 +1,7 @@
 //
 // C++ Implementation: blockanalyzer
 //
-// Description: 
+// Description:
 //
 //
 // Author: Max Howell <max.howell@methylblue.com>, (C) 2003
@@ -15,7 +15,7 @@
 
 #define ROWS   7
 #undef  BAND_COUNT
-#define BAND_COUNT 33
+#define BAND_COUNT 32
 
 #include "blockanalyzer.h"
 
@@ -62,10 +62,10 @@ void BlockAnalyzer::drawAnalyzer( std::vector<float> *s )
             else
                 bitBlt( &m_pix, x * (WIDTH + 1), y * (HEIGHT + 1), &m_block2 );
         }
-    
+
     }
-    
-    bitBlt( this, 0, height() - m_pix.height(), &m_pix ); 
+
+    bitBlt( this, 0, height() - m_pix.height(), &m_pix );
 }
 
 #include "blockanalyzer.moc"

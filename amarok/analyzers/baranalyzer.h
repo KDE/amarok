@@ -2,7 +2,7 @@
 //
 // C++ Interface: $MODULE$
 //
-// Description: 
+// Description:
 //
 //
 // Author: Mark Kretschmann <markey@web.de>, (C) 2003
@@ -25,10 +25,10 @@
 #undef MAX_AMPLITUDE
 #undef NUM_ROOFS
 
-#define BAND_COUNT 31
+#define BAND_COUNT 32
 #define ROOF_HOLD_TIME 48
 #define ROOF_VELOCITY_REDUCTION_FACTOR 32
-#define MAX_AMPLITUDE 1.1
+#define MAX_AMPLITUDE 1.0
 #define NUM_ROOFS 16
 
 /**
@@ -49,12 +49,12 @@ class BarAnalyzer : public AnalyzerBase2d
     protected:
         QPixmap *m_pSrcPixmap;
         QPixmap *m_pComposePixmap;
-        QPixmap* m_roofPixmaps[ NUM_ROOFS ];
-        QValueVector<int>* m_roofMem[ BAND_COUNT ];
+        QPixmap  m_roofPixmaps[ NUM_ROOFS ];
+        QValueVector<int> m_roofMem[ BAND_COUNT ];
 
         //FIXME
         QPixmap m_roofPixmap;
-                
+
         uint m_lvlMapper[256];
 };
 

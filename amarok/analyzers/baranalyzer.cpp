@@ -2,7 +2,7 @@
 //
 // C++ Implementation: $MODULE$
 //
-// Description: 
+// Description:
 //
 //
 // Author: Mark Kretschmann <markey@web.de>, (C) 2003
@@ -10,12 +10,13 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+
 #include "baranalyzer.h"
 #include <vector>
 #include <math.h>
 #include <qpainter.h>
 #include <qpixmap.h>
-#include <qvaluevector.h>
+
 
 BarAnalyzer::BarAnalyzer( QWidget *parent, const char *name )
     : AnalyzerBase2d( 10, parent, name )
@@ -27,12 +28,6 @@ BarAnalyzer::BarAnalyzer( QWidget *parent, const char *name )
 
 BarAnalyzer::~BarAnalyzer()
 {
-    for ( int i = 0; i < NUM_ROOFS; i++ )
-        delete m_roofPixmaps[i];
-
-    for ( int i = 0; i < BAND_COUNT; i++ )
-        delete m_roofMem[i];
-                
     delete m_pSrcPixmap;
     delete m_pComposePixmap;
 }
@@ -55,15 +50,13 @@ void BarAnalyzer::init()
 
     //FIXME obsolete
     m_roofPixmap.fill( QColor( 0xff, 0x50, 0x70 ) );
-    
-    for ( int i = 0; i < BAND_COUNT; i++ )
-        m_roofMem[i] = new QValueVector<int>();
-    
+
     QColor col( 0xff, 0x50, 0x70 );
-    for ( int i = 0; i < NUM_ROOFS; i++ )
+
+    for ( int i = 0; i < NUM_ROOFS; ++i )
     {
-        m_roofPixmaps[i] = new QPixmap( 4, 1 );
-        m_roofPixmaps[i]->fill( col.dark( i + 100 + i * 5  ) );
+        m_roofPixmaps[i].resize( 4, 1 );
+        m_roofPixmaps[i].fill( col.dark( i + 100 + i * 5  ) );
     }
 
     QPainter p( m_pSrcPixmap );
@@ -77,10 +70,8 @@ void BarAnalyzer::init()
         for ( int y = x; y > 0; --y )
         {
             double fraction = (double)y / (double)height();
-            
-            //FIXME below gives blue/purple/red one as was before, I discovered the alternative by accident
-            //      what do people think? We can easily reset it.
-//            p.setPen( QColor( r + (int)(r2  * fraction), g, b - (int)(255 * fraction) ) );
+
+//          p.setPen( QColor( r + (int)(r2  * fraction), g, b - (int)(255 * fraction) ) );
             p.setPen( QColor( r + (int)(r2  * fraction), g, b ) );
             p.drawLine( x * 4, height() - y, x * 4 + 4, height() - y );
         }
@@ -132,20 +123,20 @@ void BarAnalyzer::drawAnalyzer( std::vector<float> *s )
         //remember where we are
         barVector[i] = y2;
 
-        if ( m_roofMem[i]->size() > NUM_ROOFS )
-            m_roofMem[i]->erase( m_roofMem[i]->begin() );
-        
+        if ( m_roofMem[i].size() > NUM_ROOFS )
+            m_roofMem[i].erase( m_roofMem[i].begin() );
+
         //blt last n roofs, a.k.a motion blur
-        for ( int c = 0; c < m_roofMem[i]->size(); c++ )
+        for ( int c = 0; c < m_roofMem[i].size(); c++ )
             //bitBlt( m_pComposePixmap, x, m_roofMem[i]->at( c ), m_roofPixmaps[ c ] );
-            bitBlt( m_pComposePixmap, x, m_roofMem[i]->at( c ), m_roofPixmaps[ NUM_ROOFS - 1 - c ] );
-        
+            bitBlt( m_pComposePixmap, x, m_roofMem[i].at( c ), &m_roofPixmaps[ NUM_ROOFS - 1 - c ] );
+
         //blt the coloured bar
         bitBlt( m_pComposePixmap, x, height() - y2,
                 m_pSrcPixmap, y2 * 4, height() - y2, 4, y2, Qt::CopyROP );
-        
-        m_roofMem[i]->push_back( height() - roofVector[i] - 2 );
-        
+
+        m_roofMem[i].push_back( height() - roofVector[i] - 2 );
+
         //set roof parameters for the NEXT draw
         if ( roofVelocityVector[i] != 0 )
         {

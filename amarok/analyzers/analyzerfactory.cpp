@@ -62,7 +62,7 @@ AnalyzerBase *AnalyzerBase::AnalyzerFactory::createAnalyzer( QWidget *parent )
 //   case 8:
 //        analyzer = new SpectralShineAnalyzer( this );
 //        break;
-    default: //so we don't have to remember how many vis's there are
+    default:
         AmarokConfig::setCurrentAnalyzer( 0 );
     case 0:
         analyzer = new BarAnalyzer( parent );

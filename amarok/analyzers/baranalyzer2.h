@@ -26,7 +26,8 @@ class QMouseEvent;
 class QPixmap;
 class QWidget;
 
-#define BAND_COUNT 31
+#undef  BAND_COUNT
+#define BAND_COUNT 32
 
 /**
  *@author piggz
@@ -63,6 +64,6 @@ protected:
   std::vector<uint> m_barArray;;
   std::vector<uint> m_lvlMap;
   std::vector<float> m_bands;
-  //std::vector<float> m_freqMap; //See .cpp file init() for description 
+  //std::vector<float> m_freqMap; //See .cpp file init() for description
 };
 #endif
