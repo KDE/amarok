@@ -86,6 +86,7 @@ class ArtsEngine : public Engine::Base
         /////////////////////////////////////////////////////////////////////////////////////
         static const int                         ARTS_TIMER = 100;   //ms
         static const int                         TIMEOUT    = 4000;  //ms FIXME make option?
+        static const uint                        SCOPE_SIZE = 512;
 
         KArtsDispatcher*                         m_artsDispatcher;
         KDE::PlayObject*                         m_playObject;
@@ -99,7 +100,6 @@ class ArtsEngine : public Engine::Base
         Amarok::Synth_STEREO_XFADE               m_xfade;
 
         long                                     m_scopeId;
-        int                                      m_scopeSize;
         long                                     m_volumeId;
 //         QMap<long, EffectContainer>              m_effectMap;
 

@@ -109,8 +109,6 @@ bool ArtsEngine::init()
 {
     DEBUG_BLOCK
 
-    m_scopeSize = 512;
-//     m_scopeSize = 1 << scopeSize;
 //     m_restoreEffects = restoreEffects;
 
     // We must restart artsd whenever we installed new mcopclasses
@@ -242,7 +240,7 @@ bool ArtsEngine::init()
     { //scope
         m_scope = Arts::DynamicCast( m_server.createObject( "Amarok::RawScope" ) );
         m_scope.start();
-        m_scope.buffer( m_scopeSize );
+        m_scope.buffer( SCOPE_SIZE );
         m_scopeId = m_globalEffectStack.insertTop( m_scope, "Analyzer" );
     }
 
@@ -332,12 +330,12 @@ Engine::State ArtsEngine::state() const
 const Engine::Scope& ArtsEngine::scope()
 {
     static Engine::Scope out;
-    out.resize( m_scopeSize );
+    out.resize( SCOPE_SIZE );
     std::vector<float>* in = m_scope.scope();
 
-    if ( in && in->size() >= m_scopeSize ) {
+    if ( in && in->size() >= SCOPE_SIZE ) {
         // Convert float to int
-        for ( uint i = 0; i < m_scopeSize; i++ )
+        for ( uint i = 0; i < SCOPE_SIZE; i++ )
             out[i] = (int16_t) ( ( *in )[i] * (float) ( 1<<14 ) );
 
         delete in;
