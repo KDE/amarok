@@ -3,15 +3,12 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #83 being the highest available (take this one for your next bug and increase here)
+           #84 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
 
-    * <my_thibaut> if you specify a dir in the collection browser, next time you start amarok, if the
-                   dir does not exist anymore, amarok crashes
-
-    * <my_thibaut> collectionbrowser crash when the directories (not only the files) contain non-ascii chars
+    * fix: #83 <markey> take care of Qt 3.2 compatibility
                   
     * fix: #82 about dialog makes toolbar go crazy
 

@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>407</width>
-            <height>449</height>
+            <width>336</width>
+            <height>370</height>
         </rect>
     </property>
     <property name="caption">
@@ -74,63 +74,93 @@
                         <string>The font to use for the On-Screen Display.</string>
                     </property>
                 </widget>
-                <widget class="QLabel">
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>textLabel2</cstring>
+                        <cstring>layout9</cstring>
                     </property>
-                    <property name="text">
-                        <string>text color:</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>The color of the OSD text.</string>
-                    </property>
-                </widget>
-                <widget class="KColorButton">
-                    <property name="name">
-                        <cstring>kcfg_OsdTextColor</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="color">
-                        <color>
-                            <red>255</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                        </color>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>The color of the OSD text.</string>
-                    </property>
-                </widget>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel2_2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>background color:</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>The color of the OSD background.</string>
-                    </property>
-                </widget>
-                <widget class="KColorButton">
-                    <property name="name">
-                        <cstring>kcfg_OsdBackgroundColor</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="color">
-                        <color>
-                            <red>255</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                        </color>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>The color of the OSD background.</string>
-                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layout7</cstring>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>textLabel2</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>text color:</string>
+                                    </property>
+                                    <property name="whatsThis" stdset="0">
+                                        <string>The color of the OSD text.</string>
+                                    </property>
+                                </widget>
+                                <widget class="KColorButton">
+                                    <property name="name">
+                                        <cstring>kcfg_OsdTextColor</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string></string>
+                                    </property>
+                                    <property name="color">
+                                        <color>
+                                            <red>255</red>
+                                            <green>0</green>
+                                            <blue>0</blue>
+                                        </color>
+                                    </property>
+                                    <property name="whatsThis" stdset="0">
+                                        <string>The color of the OSD text.</string>
+                                    </property>
+                                </widget>
+                            </vbox>
+                        </widget>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layout8</cstring>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>textLabel2_2</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>background color:</string>
+                                    </property>
+                                    <property name="whatsThis" stdset="0">
+                                        <string>The color of the OSD background.</string>
+                                    </property>
+                                </widget>
+                                <widget class="KColorButton">
+                                    <property name="name">
+                                        <cstring>kcfg_OsdBackgroundColor</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string></string>
+                                    </property>
+                                    <property name="color">
+                                        <color>
+                                            <red>255</red>
+                                            <green>0</green>
+                                            <blue>0</blue>
+                                        </color>
+                                    </property>
+                                    <property name="whatsThis" stdset="0">
+                                        <string>The color of the OSD background.</string>
+                                    </property>
+                                </widget>
+                            </vbox>
+                        </widget>
+                    </hbox>
                 </widget>
                 <widget class="QLabel">
                     <property name="name">
