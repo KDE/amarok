@@ -319,9 +319,9 @@ CollectionView::customEvent( QCustomEvent *e )
             execSql( command, 0, 0 );
             delete bundle;
         }
+        
+        if ( c->list().count() ) emit tagsReady();
     }
-    
-    emit tagsReady();
 }
 
 
