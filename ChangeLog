@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta2:
+  FIX: Don't crash on song switch, when there's only one visible
+       playlist item and repeat-list is activated. (BR 94030)
   CHG: Add and queue tracks after the current track. (BR 94121)
   ADD: DCOP call to raise the equalizer configuration dialog.
   ADD: Konqueror sidebar to view playing info and control amaroK.
