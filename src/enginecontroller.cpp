@@ -419,6 +419,7 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
 
     if ( isStream && m_engine->pluginProperty( "StreamingMode" ) != "NoStreaming" )
     {
+        delete m_stream;
         m_stream = new amaroK::StreamProvider( url, m_engine->pluginProperty( "StreamingMode" ) );
 
         if ( !m_stream->initSuccess() || !m_engine->play( m_stream->proxyUrl(), isStream ) ) {
