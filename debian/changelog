@@ -1,3 +1,12 @@
+amarok (1.0.0-3) unstable; urgency=low
+
+  * Dynamically link against libsqlite0
+  * Fix gstreamer dependencies
+  * Various small fixes (sections, descriptions, doc dirs)
+  * Thanks go to Adeodato Simó for help with various issues
+
+ -- Peter Rockai (mornfall) <mornfall@danill.sk>  Sat, 26 Jun 2004 23:06:00 +0200
+
 amarok (1.0.0-2) unstable; urgency=low
 
   * Make the depends on amarok-gstreamer a bit more tight. Only depend on

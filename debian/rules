@@ -2,3 +2,6 @@
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/kde.mk
+
+DEB_INSTALL_DOCS_ALL :=
+DEB_INSTALL_DOCS_amarok := README TODO AUTHORS
