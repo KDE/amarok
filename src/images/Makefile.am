@@ -1,4 +1,5 @@
-imagesdir = $(kde_datadir)/amarok/images
+imagesdir = \
+    $(kde_datadir)/amarok/images
 
 images_DATA = \
     amarok_cut.png \
@@ -28,5 +29,6 @@ images_DATA = \
     wizard_compact.png \
     wizard_xmms.png
 
-
+KDE_ICON = \
+    AUTO
 
