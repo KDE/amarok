@@ -24,31 +24,17 @@
 #include <kbookmarkmenu.h>
 
 class QTextStream;
+class KDirOperator;
 class KPopupMenu;
 
 class KBookmarkHandler : public QObject, public KBookmarkOwner
 {
-    Q_OBJECT
-
 public:
-    KBookmarkHandler( QObject *parent, KPopupMenu* );
+    KBookmarkHandler( KDirOperator *parent, KPopupMenu* );
 
-    // KBookmarkOwner interface:
-    virtual void openBookmarkURL( const QString &url ) { emit openUrl( KURL(url) ); }
-
-signals:
-    void openUrl( const KURL &url );
-
-private slots:
-    void slotNewBookmark( const QString& text, const QCString& url, const QString& additionalInfo );
-    void slotNewFolder( const QString& text, bool open, const QString& additionalInfo );
-    void newSeparator();
-    void endFolder();
-
-private:
-    KPopupMenu    *m_menu;
-    KBookmarkMenu *m_bookmarkMenu;
-    QTextStream   *m_importStream;
+    /// KBookmarkOwner interface:
+    virtual void openBookmarkURL( const QString &url );
+    virtual QString currentURL() const;
 };
 
 #endif // _KBOOKMARKHANDLER_H_

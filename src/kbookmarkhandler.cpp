@@ -19,55 +19,34 @@
 
 // $Id$
 
-#include <kaction.h>
+#include "debug.h"
 #include "kbookmarkhandler.h"
 #include <kbookmarkimporter.h>
-#include <kmimetype.h>
-#include <kpopupmenu.h>
-#include <ksavefile.h>
+#include <kdiroperator.h>
 #include <kstandarddirs.h>
-#include <qtextstream.h>
 
-
-KBookmarkHandler::KBookmarkHandler( QObject *parent, KPopupMenu* kpopupmenu )
+KBookmarkHandler::KBookmarkHandler( KDirOperator *parent, KPopupMenu* rootmenu )
         : QObject( parent, "KBookmarkHandler" )
         , KBookmarkOwner()
-        , m_menu( kpopupmenu )
-        , m_importStream( 0 )
 {
     //FIXME amaroK 2.0, use our own directory!
-    QString file = locate( "data", "kdevfileselector/fsbookmarks.xml" );
+    const QString file = locate( "data", "kdevfileselector/fsbookmarks.xml" );
 
     KBookmarkManager *manager = KBookmarkManager::managerForFile( file, false);
     manager->setUpdate( true );
     manager->setShowNSBookmarks( false );
 
-    m_bookmarkMenu = new KBookmarkMenu( manager, this, m_menu, 0, true );
+    new KBookmarkMenu( manager, this, rootmenu, 0, true );
+}
+
+QString
+KBookmarkHandler::currentURL() const
+{
+    return static_cast<KDirOperator*>(parent())->url().url();
 }
 
 void
-KBookmarkHandler::slotNewBookmark( const QString &text, const QCString &url, const QString &additionalInfo )
+KBookmarkHandler::openBookmarkURL( const QString &url )
 {
-    Q_UNUSED( text );
-    *m_importStream << "<bookmark icon=\"" << KMimeType::iconForURL( KURL(url) );
-    *m_importStream << "\" href=\"" << QString::fromUtf8(url) << "\">\n";
-    *m_importStream << "<title>" << (additionalInfo.isEmpty() ? QString::fromUtf8(url) : additionalInfo) << "</title>\n</bookmark>\n";
+    static_cast<KDirOperator*>(parent())->setURL( KURL(url), true );
 }
-
-void KBookmarkHandler::slotNewFolder( const QString &text, bool /*open*/, const QString& /*additionalInfo*/ )
-{
-    *m_importStream << "<folder icon=\"bookmark_folder\">\n<title=\"";
-    *m_importStream << text << "\">\n";
-}
-
-void KBookmarkHandler::newSeparator()
-{
-    *m_importStream << "<separator/>\n";
-}
-
-void KBookmarkHandler::endFolder()
-{
-    *m_importStream << "</folder>\n";
-}
-
-#include "kbookmarkhandler.moc"
