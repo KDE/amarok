@@ -101,7 +101,8 @@ PlayerApp::PlayerApp() :
         m_bChangingSlider( false ),
         m_XFadeRunning( false ),
         m_XFadeValue( 1.0 ),
-        m_XFadeCurrent( "invalue1" )
+        m_XFadeCurrent( "invalue1" ),
+	m_DelayTime( 0 )
 {
     setName( "amarok" );
 
@@ -638,6 +639,7 @@ void PlayerApp::saveConfig()
     m_pConfig->writeEntry( "Show Tray Icon", m_optShowTrayIcon );
     m_pConfig->writeEntry( "Crossfading", m_optXFade );
     m_pConfig->writeEntry( "Crossfade Length", m_optXFadeLength );
+    m_pConfig->writeEntry( "Track Delay Length", m_optTrackDelay );
     m_pConfig->writeEntry( "Hide Playlist Window", m_optHidePlaylistWindow );
     m_pConfig->writeEntry( "Browser Window Font", m_optBrowserWindowFont );
     m_pConfig->writeEntry( "Player Widget Font", m_optPlayerWidgetFont);
@@ -702,6 +704,7 @@ void PlayerApp::readConfig()
     m_optShowTrayIcon = m_pConfig->readBoolEntry( "Show Tray Icon", true );
     m_optXFade = m_pConfig->readBoolEntry( "Crossfading", true );
     m_optXFadeLength = m_pConfig->readNumEntry( "Crossfade Length", 3000 );
+    m_optTrackDelay = m_pConfig->readNumEntry("Track Delay Length", 0);
     m_optHidePlaylistWindow = m_pConfig->readBoolEntry( "Hide Playlist Window", true );
 
     if ( m_pConfig->readBoolEntry( "BrowserWin Enabled", true ) )
@@ -1388,8 +1391,22 @@ void PlayerApp::slotMainTimer()
     // check if track has ended
     if ( m_pPlayObject->state() == Arts::posIdle )
     {
-        slotNext();
-        return;
+    	if (!m_optXFade && m_optTrackDelay > 0)
+    	{
+		//delay before start of next track, without freezing the app
+		m_DelayTime+=MAIN_TIMER;
+		if (m_DelayTime >= (m_optTrackDelay * 1000))
+		{
+			m_DelayTime = 0;
+			slotNext();
+			return;
+		}
+	}
+	else
+	{
+        	slotNext();
+        	return;
+	}
     }
 
     if ( m_pPlayObject->state() == Arts::posPlaying )

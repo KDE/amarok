@@ -104,8 +104,10 @@ class PlayerApp : public KUniqueApplication
         unsigned int m_optUndoLevels;
         unsigned int m_optVisCurrent;
         int m_optBrowserSortSpec;
+	int m_optTrackDelay;
         // </option attributes>
-
+	
+	int m_DelayTime;
         int m_Volume;
         bool m_bSliderIsPressed;
 

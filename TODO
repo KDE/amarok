@@ -70,8 +70,6 @@ LONG-TERM:
 
     * fix: polish and finish i18n() stuff
 
-    * add: adjustable gap between tracks, making recording easier
-
     * add: <berkus> add smooth fade outs on stop
 
     * add: make PlayerWidget shadeable (like XMMS)
