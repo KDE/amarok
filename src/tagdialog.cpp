@@ -2,6 +2,7 @@
 // See COPYING file for licensing information.
 
 #include "metabundle.h"
+#include "playlistitem.h"
 #include "tagdialog.h"
 
 #include <taglib/fileref.h>
@@ -22,14 +23,16 @@
 TagDialog::TagDialog( const KURL& url, QWidget* parent )
     : TagDialogBase( parent )
     , m_metaBundle( MetaBundle( url ) )
+    , m_playlistItem( 0 )
 {
     init();
 }
 
 
-TagDialog::TagDialog( const MetaBundle& mb, QWidget* parent )
+TagDialog::TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent )
     : TagDialogBase( parent )
     , m_metaBundle( mb )
+    , m_playlistItem( item )
 {
     init();
 }
@@ -44,22 +47,11 @@ TagDialog::okPressed() //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     
-    TagLib::FileRef f( QFile::encodeName( m_metaBundle.url().path() ), false );
-
-    if ( !f.isNull() ) {
-        TagLib::Tag * t = f.tag();
-        
-        t->setTitle( QStringToTString( kLineEdit_title->text() ) );
-        t->setArtist( QStringToTString( kLineEdit_artist->text() ) );
-        t->setAlbum( QStringToTString( kLineEdit_album->text() ) );
-        t->setTrack( kIntSpinBox_track->value() );
-        t->setYear( kIntSpinBox_year->value() );
-        t->setComment( QStringToTString( kLineEdit_comment->text() ) );
-        t->setGenre( QStringToTString( kComboBox_genre->currentText() ) );
-        
-        f.save();
-    }
-            
+    if ( hasChanged() ) {
+        writeTag();
+        if ( m_playlistItem ) syncItemText();
+    }    
+       
     deleteLater();
 }
 
@@ -67,17 +59,7 @@ TagDialog::okPressed() //SLOT
 void
 TagDialog::checkModified() //SLOT
 {
-    bool modified = false;
-    
-    modified |= kLineEdit_title->text()        != m_metaBundle.title();
-    modified |= kLineEdit_artist->text()       != m_metaBundle.artist();
-    modified |= kLineEdit_album->text()        != m_metaBundle.album();
-    modified |= kComboBox_genre->currentText() != m_metaBundle.genre();
-    modified |= kIntSpinBox_track->value()     != m_metaBundle.track().toInt();
-    modified |= kIntSpinBox_year->value()      != m_metaBundle.year().toInt();
-    modified |= kLineEdit_comment->text()      != m_metaBundle.comment();
-    
-    pushButton_ok->setEnabled( modified );
+    pushButton_ok->setEnabled( hasChanged() );
 }
 
 
@@ -166,6 +148,68 @@ TagDialog::init()
 #endif
     
     adjustSize();
+}
+
+
+bool
+TagDialog::hasChanged()
+{    
+    bool modified = false;
+    
+    modified |= kLineEdit_title->text()        != m_metaBundle.title();
+    modified |= kLineEdit_artist->text()       != m_metaBundle.artist();
+    modified |= kLineEdit_album->text()        != m_metaBundle.album();
+    modified |= kComboBox_genre->currentText() != m_metaBundle.genre();
+    modified |= kIntSpinBox_track->value()     != m_metaBundle.track().toInt();
+    modified |= kIntSpinBox_year->value()      != m_metaBundle.year().toInt();
+    modified |= kLineEdit_comment->text()      != m_metaBundle.comment();
+
+    return modified;
+}    
+
+
+void
+TagDialog::writeTag()
+{    
+    TagLib::FileRef f( QFile::encodeName( m_metaBundle.url().path() ), false );
+    
+    if ( !f.isNull() ) {
+        TagLib::Tag * t = f.tag();
+        t->setTitle( QStringToTString( kLineEdit_title->text() ) );
+        t->setArtist( QStringToTString( kLineEdit_artist->text() ) );
+        t->setAlbum( QStringToTString( kLineEdit_album->text() ) );
+        t->setTrack( kIntSpinBox_track->value() );
+        t->setYear( kIntSpinBox_year->value() );
+        t->setComment( QStringToTString( kLineEdit_comment->text() ) );
+        t->setGenre( QStringToTString( kComboBox_genre->currentText() ) );
+        
+        f.save();
+    }
+}        
+
+
+void
+TagDialog::syncItemText()
+{    
+    QListViewItem* item = m_playlistItem->listView()->firstChild();
+    
+    // Find out if item still exists in the listView
+    do {
+        if ( item == m_playlistItem ) break;
+        item = item->nextSibling();
+    }
+    while( item );
+    
+    if ( item ) {
+        // Reflect changes in PlaylistItem text
+        m_playlistItem->setText( PlaylistItem::Title, kLineEdit_title->text() );
+        m_playlistItem->setText( PlaylistItem::Artist, kLineEdit_artist->text() );
+        m_playlistItem->setText( PlaylistItem::Album, kLineEdit_album->text() );
+        m_playlistItem->setText( PlaylistItem::Genre, kComboBox_genre->currentText() );
+        m_playlistItem->setText( PlaylistItem::Album, kIntSpinBox_track->text() );
+        m_playlistItem->setText( PlaylistItem::Year, kIntSpinBox_year->text() );
+        m_playlistItem->setText( PlaylistItem::Comment, kLineEdit_comment->text() );
+    }
 }
 
 

@@ -452,6 +452,9 @@
                     <property name="readOnly">
                         <bool>true</bool>
                     </property>
+                    <property name="enableSqueezedText">
+                        <bool>true</bool>
+                    </property>
                 </widget>
             </hbox>
         </widget>
@@ -525,7 +528,10 @@
                         <string>Alt+S</string>
                     </property>
                     <property name="autoDefault">
-                        <bool>false</bool>
+                        <bool>true</bool>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QPushButton">
@@ -541,8 +547,11 @@
                     <property name="accel">
                         <string>Alt+C</string>
                     </property>
+                    <property name="autoDefault">
+                        <bool>false</bool>
+                    </property>
                     <property name="default">
-                        <bool>true</bool>
+                        <bool>false</bool>
                     </property>
                     <property name="flat">
                         <bool>false</bool>

@@ -1403,7 +1403,7 @@ void Playlist::writeTag( QListViewItem *lvi, const QString &tag, int col ) //SLO
 
 void Playlist::showTrackInfo( PlaylistItem* item )
 {
-    TagDialog* dialog = new TagDialog( item->metaBundle(), instance() );
+    TagDialog* dialog = new TagDialog( item->metaBundle(), item, instance() );
     dialog->show();
 }
 

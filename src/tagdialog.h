@@ -20,6 +20,7 @@ namespace MusicBrainzQuery {
 #include <kurl.h>             //stack alloc
 #include "tagdialogbase.h"    //baseclass
 
+class PlaylistItem;
 class MetaBundle;
 
 
@@ -29,8 +30,8 @@ class TagDialog : public TagDialogBase
 
     public:    
         TagDialog( const KURL& url, QWidget* parent = 0 );
-        TagDialog( const MetaBundle& mb, QWidget* parent = 0 );
-    
+        TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent = 0 );
+        
     private slots:
         void okPressed();
         void checkModified();
@@ -40,8 +41,12 @@ class TagDialog : public TagDialogBase
     
     private:
         void init();
+        bool hasChanged();
+        void writeTag();
+        void syncItemText();        
         
         MetaBundle m_metaBundle;
+        QListViewItem* m_playlistItem;
         QString m_buttonMbText;
 };
 
