@@ -45,30 +45,33 @@ ThreadWeaver::~ThreadWeaver()
     //will dependent threads be ok here?
 }
 
-inline ThreadWeaver::Thread*
-ThreadWeaver::findThread( const QCString &name )
+uint
+ThreadWeaver::jobCount( const QCString &name )
 {
-    for( ThreadList::ConstIterator it = m_threads.begin(), end = m_threads.end(); it != end; ++it )
-        if ( name == (*it)->name ) //is a string comparison, not a pointer comparison
-            return (*it);
+    uint count = 0;
 
-    return 0;
+    for( JobList::Iterator it = m_jobs.begin(), end = m_jobs.end(); it != end; ++it )
+        if ( name == (*it)->name() )
+            count++;
+
+    return count;
 }
 
 int
 ThreadWeaver::queueJob( Job *job )
 {
-    const QCString name = job->name();
-    Thread *thread = findThread( name );
+    if ( !job )
+        return -1;
 
-    if ( !thread ) {
-        thread = new Thread( job->name() );
-        m_threads += thread;
-    }
+    // this list contains all pending and running jobs
+    m_jobs += job;
 
-    thread->runJob( job );
+    const uint count = jobCount( job->name() );
 
-    return thread->pendingJobs.count();
+    if ( count == 1 )
+        gimmeThread()->runJob( job );
+
+    return count;
 }
 
 int
@@ -77,86 +80,60 @@ ThreadWeaver::queueJobs( const JobList &jobs )
     if ( jobs.isEmpty() )
         return -1;
 
-    const char *name = jobs.front()->name();
-    Thread *thread = findThread( name );
-    if ( !thread ) {
-        thread = new Thread( name );
-        m_threads += thread;
-    }
+    m_jobs += jobs;
 
-    thread->pendingJobs += jobs;
-    if ( !thread->running() )
-        thread->runJob( 0 ); //FIXME currently not wise to call runJob( 0 ) when running
+    const QCString name = jobs.front()->name();
+    const uint count = jobCount( name );
 
-    //you can't use this yet!
-    return thread->jobCount();
+    if ( count == jobs.count() )
+        gimmeThread()->runJob( jobs.front() );
+
+    return count;
 }
 
 void
 ThreadWeaver::onlyOneJob( Job *job )
 {
     const QCString name = job->name();
-    Thread *thread = findThread( name );
 
-    if ( thread )
-        thread->abortAllJobs();
-    else {
-        thread = new Thread( job->name() );
-        m_threads += thread;
-    }
+    // first cause all current jobs with this name to be aborted
+    abortAllJobsNamed( name );
 
-    thread->runJob( job );
+    // now queue this job.
+    // if there is a running Job of its type this one will be
+    // started when that one returns to the GUI thread.
+    m_jobs += job;
+
+    // if there weren't any jobs of this type running, we must
+    // start this job.
+    if ( jobCount( name ) == 1 )
+        gimmeThread()->runJob( job );
 }
 
 int
 ThreadWeaver::abortAllJobsNamed( const QCString &name )
 {
-    int count = -1;
-    Thread *thread = findThread( name );
+    int count = 0;
 
-    if ( thread ) {
-        count = thread->jobCount();
-        dispose( thread );
-    }
+    for( JobList::Iterator it = m_jobs.begin(), end = m_jobs.end(); it != end; ++it )
+        if ( name == (*it)->name() ) {
+            count++;
+            (*it)->abort();
+        }
 
     return count;
 }
 
-bool
-ThreadWeaver::isJobPending( const QCString &name )
+ThreadWeaver::Thread*
+ThreadWeaver::gimmeThread()
 {
-    return findThread( name ) != 0;
-}
+    for( ThreadList::ConstIterator it = m_threads.begin(), end = m_threads.end(); it != end; ++it )
+        if ( !(*it)->running() )
+            return *it;
 
-void
-ThreadWeaver::dispose( Thread *thread )
-{
-    // we use dispose to abort threads because it is possible that Jobs
-    // are in the Qt eventloop, and they can't be deleted out from under
-    // Qt or the application will crash, so we delay thread deletion
-
-    thread->abortAllJobs();
-    thread->wait(); //FIXME blocks the UI of course
-
-    //get it out of the list of expected receivers now
-    m_threads.remove( thread );
-
-    QCustomEvent *e = new QCustomEvent( DeleteThreadEvent );
-    e->setData( thread );
-
-    QApplication::postEvent( this, e );
-}
-
-void
-ThreadWeaver::registerDependent( QObject *dependent, const char *name )
-{
-    connect( dependent, SIGNAL(destroyed()), SLOT(dependentAboutToBeDestroyed()) );
-}
-
-void
-ThreadWeaver::dependentAboutToBeDestroyed()
-{
-    debug() << "Dependent: " << sender()->name() << " destroyed\n";
+    Thread *thread = new Thread;
+    m_threads += thread;
+    return thread;
 }
 
 void
@@ -169,9 +146,10 @@ ThreadWeaver::customEvent( QCustomEvent *e )
         break;
 
     case JobEvent: {
-        Job    *job    = (Job*)e;
-        Thread *thread = findThread( job->name() );
-        debugstream d   = debug() << "Job ";
+        Job *job = (Job*)e;
+        debugstream d = debug() << "Job ";
+        const QCString name = job->name();
+        Thread *thread = job->m_thread;
 
         if ( !job->isAborted() ) {
             d << "completed";
@@ -179,20 +157,22 @@ ThreadWeaver::customEvent( QCustomEvent *e )
         }
         else d << "aborted";
 
-        d << ": " << QCString(job->name());
+        m_jobs.remove( job );
 
-        // is there any more jobs of this type?
-        // if so start the next one
-
-
-        if ( thread ) {
-            d << ". Jobs pending: " << thread->pendingJobs.count();
-            //run next job, if there is one
-            thread->runJob( 0 ); }
-        else
-            warning() << "Thread is unexpectedly already deleted: " << QCString(job->name()) << endl;
-
+        d << ": " << name;
+        d << ". Jobs pending: " << jobCount( name );
         d << endl;
+
+        for( JobList::ConstIterator it = m_jobs.begin(), end = m_jobs.end(); it != end; ++it )
+            if ( name == (*it)->name() ) {
+                thread->runJob( (*it) );
+                return;
+            }
+
+        // if execution reaches here, then there are no jobs of this type left
+        // to process. We need to arrange for the disposal of the thread.
+
+        debug() << "Threads in pool: " << m_threads.count() << endl;
 
         break;
     }
@@ -209,20 +189,17 @@ ThreadWeaver::customEvent( QCustomEvent *e )
 }
 
 
-ThreadWeaver::Thread::Thread( const char *_name )
+ThreadWeaver::Thread::Thread()
     : QThread()
-    , name( _name )
 {
     QApplication::postEvent( ThreadWeaver::instance(), new QCustomEvent( ThreadWeaver::OverrideCursorEvent ) );
 }
 
 ThreadWeaver::Thread::~Thread()
 {
-    //if we were aborted, this has already occurred
-    ThreadWeaver::instance()->m_threads.remove( this );
+    DEBUG_FUNC_INFO
 
     Q_ASSERT( finished() );
-    Q_ASSERT( pendingJobs.isEmpty() );
 
     QApplication::restoreOverrideCursor();
 }
@@ -230,25 +207,14 @@ ThreadWeaver::Thread::~Thread()
 void
 ThreadWeaver::Thread::runJob( Job *job )
 {
-    if ( !job ) {
-        if ( !pendingJobs.isEmpty() ) {
-            runningJob = pendingJobs.front();
-            pendingJobs.pop_front();
-            start( IdlePriority ); //will wait for the current operation to complete, should be soon
-        }
-        else {
-            wait(); //sometimes we get the finished event before the thread has finished
-            delete this; //FIXME safer to use ThreadWeaver::dispose()
-            return;
-        }
+    if ( job->isAborted() )
+        QApplication::postEvent( ThreadWeaver::instance(), job );
+
+    else {
+        m_job = job;
+        m_job->m_thread = this;
+        start( Thread::IdlePriority ); //will wait() first if necessary
     }
-    else if( !running() ) {
-       job->m_thread = this;
-       runningJob = job;
-       start( IdlePriority );
-    }
-    else
-        pendingJobs += job;
 }
 
 void
@@ -256,23 +222,11 @@ ThreadWeaver::Thread::run()
 {
     // BE THREAD-SAFE!
 
-    Job *job = runningJob;
+    m_job->m_aborted |= !m_job->doJob();
 
-    job->m_aborted |= !job->doJob();
+    QApplication::postEvent( ThreadWeaver::instance(), m_job );
 
-    QApplication::postEvent( ThreadWeaver::instance(), job );
-}
-
-void
-ThreadWeaver::Thread::abortAllJobs()
-{
-    for( JobList::Iterator it = pendingJobs.begin(), end = pendingJobs.end(); it != end; ++it )
-        delete *it;
-
-    //this will be deleted when after it has been aborted
-    runningJob->m_aborted = true;
-
-    pendingJobs.clear();
+    m_job = 0;
 }
 
 
@@ -284,9 +238,10 @@ ThreadWeaver::Job::Job( const char *name )
     , m_thread( 0 )
     , m_percentDone( 0 )
     , m_progressDone( 0 )
-    , m_totalSteps( 0 )
-{}
-
+    , m_totalSteps( 1 ) // no divide by zero
+{
+    debug() << "Job created: " << QCString( name ) << endl;
+}
 
 ThreadWeaver::Job::~Job()
 {}
@@ -294,6 +249,11 @@ ThreadWeaver::Job::~Job()
 void
 ThreadWeaver::Job::setProgressTotalSteps( uint steps )
 {
+    if ( steps == 0 ) {
+        warning() << k_funcinfo << "You can't set steps to 0!\n";
+        steps = 1;
+    }
+
     m_totalSteps = steps;
 
     QApplication::postEvent( this, new ProgressEvent( -1 ) );
@@ -304,7 +264,7 @@ ThreadWeaver::Job::setProgress( uint steps )
 {
     m_progressDone = steps;
 
-    int newPercent = int( (100 * steps) / m_totalSteps);
+    uint newPercent = uint( (100 * steps) / m_totalSteps);
 
     if ( newPercent > m_percentDone ) {
         m_percentDone = newPercent;
@@ -313,7 +273,7 @@ ThreadWeaver::Job::setProgress( uint steps )
 }
 
 void
-ThreadWeaver::Job::setStatus( const QString &status )
+ThreadWeaver::Job::setStatus( const QString& )
 {
     AMAROK_NOTIMPLEMENTED
 }
@@ -353,7 +313,7 @@ ThreadWeaver::DependentJob::DependentJob( QObject *dependent, const char *name )
     : Job( name )
     , m_dependent( dependent )
 {
-    ThreadWeaver::instance()->registerDependent( dependent, name );
+    connect( dependent, SIGNAL(destroyed()), SLOT(abort()) );
 
     QApplication::postEvent( dependent, new QCustomEvent( JobStartedEvent ) );
 }

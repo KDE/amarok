@@ -13,12 +13,14 @@
 #include <qvaluelist.h>
 
 
-//not all these are always generated, but the idea is just to prevent it
-#define DISABLE_GENERATED_MEMBER_FUNCTIONS( T ) \
-    T(); \
+#define DISABLE_GENERATED_MEMBER_FUNCTIONS_3( T ) \
     T( const T& ); \
     T &operator=( const T& ); \
     bool operator==( const T& ) const;
+
+#define DISABLE_GENERATED_MEMBER_FUNCTIONS_4( T ) \
+    T(); \
+    DISABLE_GENERATED_MEMBER_FUNCTIONS_3( T )
 
 
 /**
@@ -63,12 +65,15 @@
  * Job::completeJob() on completion which you reimplement to do whatever you
  * need done.
  *
+ * BEWARE! None of the functions are thread-safe, only call them from the GUI
+ * thread or your application WILL crash!
+ *
  * @see ThreadWeaver::Job
  * @see ThreadWeaver::DependentJob
  */
 
 
-/// This class is because moc "is really good", NOT IN MY OPINION! (no nested Q_OBJECT classes)
+/// This class is because moc "is really good" (no nested Q_OBJECT classes)
 class JobBase : public QObject {
 Q_OBJECT
 protected:    JobBase() : QObject(), m_aborted( false ) {}
@@ -78,7 +83,8 @@ protected:    bool m_aborted;
 
 class ThreadWeaver : public QObject
 {
-    Q_OBJECT
+    class Thread;
+    typedef QValueList<Thread*> ThreadList;
 
 public:
     class Job;
@@ -133,10 +139,12 @@ public:
     /**
      * @return true if a Job with name is queued or is running
      */
-    bool isJobPending( const QCString &name );
+    bool isJobPending( const QCString &name ) { return jobCount( name ) > 0; }
 
-private slots:
-    void dependentAboutToBeDestroyed();
+    /**
+     * @return the number of jobs running, pending, aborted and otherwise.
+     */
+    uint jobCount( const QCString &name );
 
 private:
     ThreadWeaver();
@@ -153,44 +161,37 @@ private:
     class Thread : public QThread
     {
     public:
-        Thread( const char* );
+        Thread();
 
         virtual void run();
 
-        void runJob( Job *job );
-
-        JobList pendingJobs;
-        Job *runningJob;
-
-        char const * const name;
-
-        void abortAllJobs();
-
-        int jobCount() const { return pendingJobs.count() + runningJob ? 1 : 0; }
-
+        void runJob( Job* );
         void msleep( int ms ) { QThread::msleep( ms ); } //we need to make this public for class Job
 
-    protected:
-        DISABLE_GENERATED_MEMBER_FUNCTIONS( Thread );
-
     private:
+        Job *m_job;
+
         //private so I don't break something in the distant future
         ~Thread();
 
         //we can delete threads here only
         friend void ThreadWeaver::customEvent( QCustomEvent* );
 
+    protected:
+        DISABLE_GENERATED_MEMBER_FUNCTIONS_3( Thread )
     };
 
+
+    /// checks the pool for an available thread, creates a new one if required
+    Thread *gimmeThread();
 
     /// safe disposal for threads that may not have finished
     void dispose( Thread* );
 
-    /// returns the thread that handles Jobs that use @name
-    inline Thread *findThread( const QCString &name );
+    /// all pending and running jobs
+    JobList m_jobs;
 
-    typedef QValueList<Thread*> ThreadList;
-
+    /// a thread-pool, ready for use or running jobs currently
     ThreadList m_threads;
 
 public:
@@ -208,8 +209,8 @@ public:
 
     class Job : public JobBase, public QCustomEvent
     {
-        friend class ThreadWeaver;
-        friend class ThreadWeaver::Thread;
+        friend class ThreadWeaver;         //access to m_thread
+        friend class ThreadWeaver::Thread; //access to m_aborted
 
     public:
         /**
@@ -310,7 +311,7 @@ public:
         QString m_description;
 
     protected:
-        DISABLE_GENERATED_MEMBER_FUNCTIONS( Job )
+        DISABLE_GENERATED_MEMBER_FUNCTIONS_4( Job )
     };
 
 
@@ -355,13 +356,8 @@ public:
         const QGuardedPtr<QObject> m_dependent;
 
     protected:
-        DISABLE_GENERATED_MEMBER_FUNCTIONS( DependentJob );
+        DISABLE_GENERATED_MEMBER_FUNCTIONS_4( DependentJob );
     };
-
-private:
-    friend DependentJob::DependentJob( QObject*, const char* );
-
-    void registerDependent( QObject*, const char* );
 
 protected:
     ThreadWeaver( const ThreadWeaver& );
