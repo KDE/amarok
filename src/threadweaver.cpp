@@ -232,8 +232,10 @@ CollectionReader::doJob()
 void
 CollectionReader::readDir( const QString& dir, QStringList& entries )
 {
-    if ( m_processedDirs.contains( dir ) )
+    if ( m_processedDirs.contains( dir ) ) {
+        kdDebug() << "[CollectionReader] Already scanned: " << dir << endl;
         return;
+    }
 
     m_processedDirs << dir;
     struct stat statBuf;
@@ -309,10 +311,9 @@ CollectionReader::readTags( const QStringList& entries )
     KURL url;
     m_parent->createTables( true );
 
-    QStringList validImages;
+    QStringList validImages, validMusic;
     validImages << "jpg" << "png" << "gif" << "jpeg";
-    QStringList validMusic;
-    validMusic << "mp3" << "ogg" << "flac" << "wav";
+    validMusic  << "mp3" << "ogg" << "wav" << "flac";
 
     for ( uint i = 0; i < entries.count(); i++ )
     {
