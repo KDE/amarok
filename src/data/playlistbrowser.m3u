@@ -1,0 +1,7 @@
+#EXTM3U
+#EXTINF:-1,Digitally Imported
+http://shoutcast.com/sbin/shoutcast-playlist.pls?rn=374&file=filename.pls
+#EXTINF:-1,Nectarine Demoscene Radio
+http://shoutcast.com/sbin/shoutcast-playlist.pls?rn=1750&file=filename.pls
+#EXTINF:-1,X T C Radio
+http://shoutcast.com/sbin/shoutcast-playlist.pls?rn=7873&file=filename.pls
