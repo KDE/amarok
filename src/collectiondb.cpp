@@ -2080,7 +2080,13 @@ void
 QueryBuilder::linkTables( int tables )
 {
     m_tables += tableName( tables );
-    if ( m_tables.contains( ',' ) ) tables |= tabSong;
+
+    if ( !(tables & tabSong ) )
+        if ( m_tables.contains( ',' ) )
+        {
+            m_tables = tableName( tabSong ) + "," + m_tables;
+            tables |= tabSong;
+        }
 
     if ( tables & tabSong )
     {

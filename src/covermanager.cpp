@@ -402,28 +402,21 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
 
     //this can be a bit slow
     QApplication::setOverrideCursor( KCursor::waitCursor() );
+    QueryBuilder qb;
     QStringList albums;
+
+    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabAlbum,  QueryBuilder::valName );
+
     if ( item != m_artistView->firstChild() )
-    {
-        QueryBuilder qb;
-
-        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-        qb.addReturnValue( QueryBuilder::tabAlbum,  QueryBuilder::valName );
         qb.addMatches( QueryBuilder::tabArtist, item->text( 0 ) );
-        qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
-        qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
-        qb.setOptions( QueryBuilder::optRemoveDuplicates );
 
-        albums = qb.run();
-    }
-    else {
-        //we don't want blank albums, but blank artists are ok
-        albums = CollectionDB::instance()->query(
-            "SELECT DISTINCT artist.name, album.name FROM tags, album, artist WHERE "
-            "tags.album = album.id AND tags.artist = artist.id "
-            "AND album.name <> '' AND tags.sampler = 0 "
-            "ORDER BY lower( album.name );" );
-    }
+    qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
+    qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.setOptions( QueryBuilder::optNoCompilations );
+
+    albums = qb.run();
     QApplication::restoreOverrideCursor();
 
     progress.setTotalSteps( (albums.count()/2) + (albums.count()/10) );
