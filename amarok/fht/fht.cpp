@@ -18,6 +18,15 @@
 //
 // $Id$
 
+/**
+  * @file fht.cpp
+  * Implementation of the Hartley Transform after Bracewell's discrete
+  * algorithm. The algorithm is subject to US patent No. 4,646,256 and
+  * put into public domain by Stanford University in 1995[1].
+  *
+  * [1] http://en2.wikipedia.org/wiki/Ronald_N._Bracewell
+  */
+
 #include <math.h>
 #include <string.h>
 #include "fht.h"
@@ -136,7 +145,7 @@ void FHT::pattern(float *p, bool rect = false)
   * Logarithmic audio spectrum. Maps semi-logarithmic spectrum
   * to logarithmic frequency scale, interpolates missing values.
   * A logarithmic index map is calculated at the first run only.
-  * @p is the input array, @out is the spcectrum.
+  * @p is the input array, @out is the spectrum.
   */
 void FHT::logSpectrum(float *out, float *p)
 {
