@@ -49,6 +49,10 @@ void GLAnalyzer::analyze( const Scope &s )
 		t = s;
 	}*/
         uint offset = 0;
+        static float peak;
+        float mfactor = 0.0;
+        static int drawcount;
+        
         if (s.size() == 64)
         {
             offset=8;
@@ -56,7 +60,23 @@ void GLAnalyzer::analyze( const Scope &s )
                 
 	glRotatef(0.25f, 0.0f, 1.0f, 0.5f); //Rotate the scene
 	drawFloor();	
-	for ( uint i = 0; i < 32; i++ )
+	drawcount++;
+        if (drawcount > 25)
+        {
+            drawcount = 0;
+            peak = 0.0;
+        }
+        
+        for ( uint i = 0; i < 32; i++ )
+	{
+            if (s[i] > peak)
+            {
+                peak = s[i];
+            }
+        }
+        
+        mfactor = 20 / peak;
+        for ( uint i = 0; i < 32; i++ )
 	{
 		
                 //kdDebug() << "Scope item " << i << " value: " << s[i] << endl;
@@ -65,7 +85,7 @@ void GLAnalyzer::analyze( const Scope &s )
 		x = -16.0f + i;
 
 		// Calculating new vertical position (y) depending on the data passed by amarok
-		y = float(s[i+offset] * 30.0f); //Should multiply by 20 but it looks crappy
+		y = float(s[i+offset] * mfactor); //This make it kinda dynamically resize depending on the data
 		
 		//Some basic bounds checking
 		if (y > 30)
