@@ -1,9 +1,9 @@
 /***************************************************************************
-                         playerwidget.cpp  -  description
-                            -------------------
-   begin                : Mit Nov 20 2002
-   copyright            : (C) 2002 by Mark Kretschmann
-   email                :
+                        playerwidget.cpp  -  description
+                           -------------------
+  begin                : Mit Nov 20 2002
+  copyright            : (C) 2002 by Mark Kretschmann
+  email                :
 ***************************************************************************/
 
 /***************************************************************************
@@ -83,10 +83,8 @@ AmarokButton::AmarokButton( QWidget *parent, QString activePixmap, QString inact
 }
 
 
-
 AmarokButton::~AmarokButton()
 {}
-
 
 
 void AmarokButton::mousePressEvent( QMouseEvent *e )
@@ -102,7 +100,6 @@ void AmarokButton::mousePressEvent( QMouseEvent *e )
         setOn( true );
     }
 }
-
 
 
 void AmarokButton::mouseReleaseEvent( QMouseEvent *e )
@@ -130,17 +127,16 @@ void AmarokButton::mouseReleaseEvent( QMouseEvent *e )
         {
             if ( m_isToggleButton )
             {
-                if (! m_on)
+                if ( ! m_on )
                     setOn( false );
             }
             else
-                 setOn( false );
+                setOn( false );
         }
-        
+
         m_clicked = false;
     }
 }
-
 
 
 void AmarokButton::setOn( bool enable )
@@ -158,12 +154,10 @@ void AmarokButton::setOn( bool enable )
 }
 
 
-
 bool AmarokButton::isOn()
 {
     return m_on;
 }
-
 
 
 // CLASS AmarokSlider ------------------------------------------------------------
@@ -172,10 +166,8 @@ AmarokSlider::AmarokSlider( QWidget *parent ) : QSlider( parent )
 {}
 
 
-
 AmarokSlider::~AmarokSlider()
 {}
-
 
 
 void AmarokSlider::mousePressEvent( QMouseEvent *e )
@@ -198,7 +190,6 @@ void AmarokSlider::mousePressEvent( QMouseEvent *e )
 
     QSlider::mousePressEvent( e );
 }
-
 
 
 // CLASS PlayerWidget ------------------------------------------------------------
@@ -339,10 +330,8 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name ) : QWidget( paren
 }
 
 
-
 PlayerWidget::~PlayerWidget()
 {}
-
 
 
 // METHODS ----------------------------------------------------------------
@@ -357,12 +346,11 @@ void PlayerWidget::initScroll()
     m_pComposePixmap = new QPixmap( m_pFrame->width(), m_pixmapHeight );
     m_pScrollPixmap = new QPixmap( m_pixmapWidth, m_pixmapHeight );
     m_pScrollMask = new QBitmap( m_pixmapWidth, m_pixmapHeight );
-    setScroll( "no file loaded", " ", " " );
+    setScroll( "   welcome to amarok   ", " ", " " );
 
     m_sx = m_sy = 0;
     m_sxAdd = 1;
 }
-
 
 
 void PlayerWidget::initTimeDisplay()
@@ -380,12 +368,10 @@ void PlayerWidget::initTimeDisplay()
 }
 
 
-
 void PlayerWidget::polish()
 {
     QWidget::polish();
 }
-
 
 
 void PlayerWidget::setScroll( QString text, QString bitrate, QString samplerate )
@@ -427,7 +413,6 @@ void PlayerWidget::setScroll( QString text, QString bitrate, QString samplerate 
 }
 
 
-
 void PlayerWidget::drawScroll()
 {
     bitBlt( m_pComposePixmap, 0, 0, m_pBgPixmap );
@@ -459,7 +444,6 @@ void PlayerWidget::drawScroll()
 
     bitBlt( m_pFrame, 0, 0, m_pComposePixmap );
 }
-
 
 
 void PlayerWidget::timeDisplay( bool remaining, int hours, int minutes, int seconds )
@@ -504,7 +488,6 @@ void PlayerWidget::timeDisplay( bool remaining, int hours, int minutes, int seco
 }
 
 
-
 // EVENTS -----------------------------------------------------------------
 
 void PlayerWidget::paintEvent( QPaintEvent * )
@@ -525,7 +508,6 @@ void PlayerWidget::paintEvent( QPaintEvent * )
 }
 
 
-
 void PlayerWidget::mouseReleaseEvent( QMouseEvent *e )
 {
     if ( m_pTimeDisplayLabel->geometry().contains( e->pos() ) )
@@ -536,7 +518,6 @@ void PlayerWidget::mouseReleaseEvent( QMouseEvent *e )
             pApp->m_optTimeDisplayRemaining = true;
     }
 }
-
 
 
 void PlayerWidget::wheelEvent( QWheelEvent *e )
@@ -552,7 +533,6 @@ void PlayerWidget::wheelEvent( QWheelEvent *e )
     pApp->slotVolumeChanged( pApp->m_Volume );
     m_pSliderVol->setValue( pApp->m_Volume );
 }
-
 
 
 void PlayerWidget::mousePressEvent( QMouseEvent *e )
@@ -583,6 +563,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
 
             m_IdRepeatTrack = m_pPopupMenu->insertItem( "Repeat Track", pApp, SLOT( slotSetRepeatTrack() ) );
             m_IdRepeatPlaylist = m_pPopupMenu->insertItem( "Repeat Playlist", pApp, SLOT( slotSetRepeatPlaylist() ) );
+            m_IdRandomMode = m_pPopupMenu->insertItem( "Random Mode", pApp, SLOT( slotSetRandomMode() ) );
 
             m_pPopupMenu->insertSeparator();
 
@@ -599,7 +580,6 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
 }
 
 
-
 void PlayerWidget::closeEvent( QCloseEvent *e )
 {
     if ( pApp->queryClose() )
@@ -607,10 +587,8 @@ void PlayerWidget::closeEvent( QCloseEvent *e )
 }
 
 
-
 void PlayerWidget::moveEvent( QMoveEvent *e )
 {
-
     /*
      ** You can get the frame sizes like so (found in Qt sources while looking for something else):
     framew = geometry().x() - x();
@@ -644,12 +622,10 @@ void PlayerWidget::slotConfigShortcuts()
 }
 
 
-
 void PlayerWidget::slotConfigGlobalShortcuts()
 {
     KKeyDialog::configure( pApp->m_pGlobalAccel, true, 0, true );
 }
-
 
 
 void PlayerWidget::slotCopyClipboard()
@@ -664,7 +640,6 @@ void PlayerWidget::slotCopyClipboard()
 }
 
 
-
 void PlayerWidget::slotConfigPlayObject()
 {
     if ( pApp->m_pPlayObject && !m_pPlayObjConfigWidget )
@@ -677,12 +652,10 @@ void PlayerWidget::slotConfigPlayObject()
 }
 
 
-
 void PlayerWidget::slotConfigWidgetDestroyed()
 {
     m_pPlayObjConfigWidget = NULL;
 }
-
 
 
 bool PlayerWidget::playObjectConfigurable()
@@ -716,16 +689,19 @@ void PlayerWidget::slotUpdateTrayIcon( bool visible )
     }
 }
 
+
 void PlayerWidget::show()
 {
-   emit sigRestored();
-   QWidget::show();
+    emit sigRestored();
+    QWidget::show();
 }
+
 
 void PlayerWidget::hide()
 {
-   emit sigMinimized();
-   QWidget::hide();
+    emit sigMinimized();
+    QWidget::hide();
 }
+
 
 #include "playerwidget.moc"

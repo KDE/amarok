@@ -23,9 +23,7 @@ MID-TERM:
 
     * add: "undo" button to undo changes in playlist
 
-    * add: "random" play (as opposed to shuffle..)
-
-    * honor KDE single/double-click setting in BrowserWin
+    * fix: honor KDE single/double-click setting in BrowserWin
 
     * add: generate text or html document from playlist entries
 
@@ -69,6 +67,8 @@ MID-TERM:
 
 
 LONG-TERM:
+
+    * add: adjustable gap between tracks, making recording easier
 
     * add: red line marker as drop indicator
 

@@ -130,6 +130,7 @@ class PlayerApp : public KUniqueApplication
         void slotShowTip();
         void slotSetRepeatTrack();
         void slotSetRepeatPlaylist();
+        void slotSetRandomMode();
         void slotShowHelp();
         void slotWidgetMinimized();
         void slotWidgetRestored();

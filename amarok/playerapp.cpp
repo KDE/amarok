@@ -733,6 +733,7 @@ void PlayerApp::readConfig()
     m_optTimeDisplayRemaining = m_pConfig->readBoolEntry( "Time Display Remaining", false );
     m_optRepeatTrack = m_pConfig->readBoolEntry( "Repeat Track", false );
     m_optRepeatPlaylist = m_pConfig->readBoolEntry( "Repeat Playlist", false );
+    m_optRandomMode = m_pConfig->readBoolEntry( "Random Mode", false );
     m_optReadMetaInfo = m_pConfig->readBoolEntry( "Show MetaInfo", false );
     m_optShowTrayIcon = m_pConfig->readBoolEntry( "Show Tray Icon", true );
     m_optXFade = m_pConfig->readBoolEntry( "Crossfading", true );
@@ -1088,7 +1089,7 @@ void PlayerApp::slotStop()
     m_pPlayerWidget->m_pSlider->setValue( 0 );
     m_pPlayerWidget->m_pSlider->setMinValue( 0 );
     m_pPlayerWidget->m_pSlider->setMaxValue( 0 );
-    m_pPlayerWidget->setScroll( i18n( "no file loaded" ), " ", " " );
+    m_pPlayerWidget->setScroll( i18n( "   I feel empty   " ), " ", " " );
     m_pPlayerWidget->timeDisplay( false, 0, 0, 0 );
 
     delete m_pPlayerWidget->m_pPlayObjConfigWidget;
@@ -1098,7 +1099,7 @@ void PlayerApp::slotStop()
 
 void PlayerApp::slotNext()
 {
-    QListViewItem * pItem = m_pBrowserWin->m_pPlaylistWidget->currentTrack();
+    QListViewItem *pItem = m_pBrowserWin->m_pPlaylistWidget->currentTrack();
 
     if ( pItem == NULL )
     {
@@ -1106,13 +1107,26 @@ void PlayerApp::slotNext()
         return ;
     }
 
-    if ( !m_optRepeatTrack )
+    // random mode
+    if ( m_optRandomMode && m_pBrowserWin->m_pPlaylistWidget->childCount() > 3 )
+    {
+        QListViewItem *pNextItem;
+        int number;
+
+        do
+        {
+            number = KApplication::random() % m_pBrowserWin->m_pPlaylistWidget->childCount();
+            pNextItem = m_pBrowserWin->m_pPlaylistWidget->itemAtIndex( number );
+        }
+        while ( pNextItem == pItem );    // try not to play same track twice in a row
+
+        pItem = pNextItem;
+    }
+
+    else if ( !m_optRepeatTrack )
     {
         pItem = pItem->nextSibling();
     }
-    //     else if ( m_optRandomMode )
-    //     {
-    //     }
 
     if ( pItem == NULL )
     {
@@ -1563,10 +1577,29 @@ void PlayerApp::slotSetRepeatPlaylist()
 }
 
 
+void PlayerApp::slotSetRandomMode()
+{
+    int id = m_pPlayerWidget->m_IdRandomMode;
+
+    if ( m_pPlayerWidget->m_pPopupMenu->isItemChecked( id ) )
+    {
+        m_optRandomMode = false;
+        m_pPlayerWidget->m_pPopupMenu->setItemChecked( id, false );
+    }
+
+    else
+    {
+        m_optRandomMode = true;
+        m_pPlayerWidget->m_pPopupMenu->setItemChecked( id, true );
+    }
+}
+
+
 void PlayerApp::slotShowHelp()
 {
     KApplication::KApp->invokeHelp( QString::null, "amarok" );
 }
+
 
 void PlayerApp::slotWidgetMinimized()
 {
@@ -1574,10 +1607,12 @@ void PlayerApp::slotWidgetMinimized()
         m_pBrowserWin->hide();
 }
 
+
 void PlayerApp::slotWidgetRestored()
 {
     if ( m_optHidePlaylistWindow && m_pPlayerWidget->m_pButtonPl->isOn() )
         m_pBrowserWin->show();
 }
+
 
 #include "playerapp.moc"

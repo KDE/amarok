@@ -1,10 +1,10 @@
 /***************************************************************************
-                          playerwidget.h  -  description
-                             -------------------
-    begin                : Mit Nov 20 2002
-    copyright            : (C) 2002 by Mark Kretschmann
-    email                :
- ***************************************************************************/
+                         playerwidget.h  -  description
+                            -------------------
+   begin                : Mit Nov 20 2002
+   copyright            : (C) 2002 by Mark Kretschmann
+   email                :
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -52,7 +52,7 @@ extern PlayerApp *pApp;
 
 class AmarokButton : public QLabel
 {
-    Q_OBJECT
+        Q_OBJECT
 
     public:
         AmarokButton( QWidget *parent, QString activePixmap, QString inactivePixmap, bool toggleButton );
@@ -61,7 +61,7 @@ class AmarokButton : public QLabel
         void setOn( bool enable );
         bool isOn();
 
-// ATTRIBUTES ------
+        // ATTRIBUTES ------
 
     public slots:
 
@@ -73,7 +73,7 @@ class AmarokButton : public QLabel
         void mousePressEvent( QMouseEvent *e );
         void mouseReleaseEvent( QMouseEvent *e );
 
-// ATTRIBUTES ------
+        // ATTRIBUTES ------
         QPixmap m_activePixmap, m_inactivePixmap;
         bool m_on;
         bool m_isToggleButton;
@@ -81,19 +81,18 @@ class AmarokButton : public QLabel
 };
 
 
-
 // CLASS AmarokSlider ------------------------------------------------------------
 
 class AmarokSlider : public QSlider
 {
-    Q_OBJECT
+        Q_OBJECT
 
     public:
         AmarokSlider( QWidget *parent );
         ~AmarokSlider();
 
-        
-// ATTRIBUTES ------
+
+        // ATTRIBUTES ------
 
     public slots:
 
@@ -102,16 +101,15 @@ class AmarokSlider : public QSlider
     private:
         void mousePressEvent( QMouseEvent *e );
 
-// ATTRIBUTES ------
+        // ATTRIBUTES ------
 };
-
 
 
 // CLASS PlayerWidget ------------------------------------------------------------
 
 class PlayerWidget : public QWidget
 {
-    Q_OBJECT
+        Q_OBJECT
 
     public:
         PlayerWidget( QWidget *parent = 0, const char *name = 0 );
@@ -121,17 +119,31 @@ class PlayerWidget : public QWidget
         void drawScroll();
         void timeDisplay( bool remaining, int hours, int minutes, int seconds );
 
-// ATTRIBUTES ------
+        // ATTRIBUTES ------
         KActionCollection *m_pActionCollection;
 
         QPopupMenu *m_pPopupMenu;
         VisWidget *m_pVis;
-        QFrame *m_pFrame, *m_pFrameButtons;
-        AmarokSlider *m_pSlider, *m_pSliderVol;
+        QFrame *m_pFrame;
+        QFrame *m_pFrameButtons;
+        AmarokSlider *m_pSlider;
+        AmarokSlider *m_pSliderVol;
         QLabel *m_pTimeDisplayLabel;
-        AmarokButton *m_pButtonPl, *m_pButtonEq, *m_pButtonLogo;
-        QPushButton *m_pButtonPrev,  *m_pButtonPlay , *m_pButtonPause, *m_pButtonStop, *m_pButtonNext;
-        int m_IdRepeatTrack, m_IdRepeatPlaylist, m_IdConfPlayObject;
+
+        AmarokButton *m_pButtonPl;
+        AmarokButton *m_pButtonEq;
+        AmarokButton *m_pButtonLogo;
+
+        QPushButton *m_pButtonPrev;
+        QPushButton *m_pButtonPlay;
+        QPushButton *m_pButtonPause;
+        QPushButton *m_pButtonStop;
+        QPushButton *m_pButtonNext;
+
+        int m_IdRepeatTrack;
+        int m_IdRepeatPlaylist;
+        int m_IdConfPlayObject;
+        int m_IdRandomMode;
         ArtsConfigWidget *m_pPlayObjConfigWidget;
 
     public slots:
@@ -162,16 +174,28 @@ class PlayerWidget : public QWidget
         void moveEvent( QMoveEvent *e );
         bool playObjectConfigurable();
 
-// ATTRIBUTES ------
+        // ATTRIBUTES ------
         QString m_bitrate, m_samplerate;
         QTimer *scrollTimer;
+
         QPixmap m_oldBgPixmap;
-        QPixmap *m_pScrollPixmap, *m_pBgPixmap, *m_pComposePixmap;
+        QPixmap *m_pScrollPixmap;
+        QPixmap *m_pBgPixmap;
+        QPixmap *m_pComposePixmap;
         QBitmap *m_pScrollMask;
-        QPixmap *m_pTimePixmap, *m_pTimeBgPixmap, *m_pTimeComposePixmap;
-        int m_timeDisplayX, m_timeDisplayY, m_timeDisplayW;
-        int m_pixmapWidth, m_pixmapHeight, m_scrollWidth;
-        int m_sx, m_sy, m_sxAdd;
+        QPixmap *m_pTimePixmap;
+        QPixmap *m_pTimeBgPixmap;
+        QPixmap *m_pTimeComposePixmap;
+
+        int m_timeDisplayX;
+        int m_timeDisplayY;
+        int m_timeDisplayW;
+        int m_pixmapWidth;
+        int m_pixmapHeight;
+        int m_scrollWidth;
+        int m_sx;
+        int m_sy;
+        int m_sxAdd;
         KSystemTray *m_pTray;
 };
 #endif
