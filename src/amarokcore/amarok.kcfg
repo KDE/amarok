@@ -211,7 +211,7 @@
     <entry key="Osd Text" type="String">
         <label>The OSD text to show</label>
         <whatsthis>Customise the OSD display text.</whatsthis>
-        <default>%artist - %title {(%length)}\n%album</default>
+        <default>{%artist - }%title{ (%length)}\n{%album}</default>
     </entry>
     <entry key="Osd Font" type="Font">
         <label>Font for On-Screen Display</label>
