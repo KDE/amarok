@@ -33,6 +33,7 @@ class QDragEnterEvent;
 class QDragLeaveEvent;
 class QDragMoveEvent;
 class QDropEvent;
+class QEvent;
 class QFocusEvent;
 class QKeyEvent;
 class QListViewItem;
@@ -41,11 +42,11 @@ class QPoint;
 class QRect;
 class QString;
 class QTimer;
-class QEvent;
 
 class MetaBundle;
-class ThreadWeaver;
 class PlaylistBrowser;
+class PlaylistLoader;
+class ThreadWeaver;
 
 
 /*
@@ -107,9 +108,10 @@ class PlaylistWidget : private KListView
                            Length = 9,
                            Bitrate = 10 };
 
-        friend class PlaylistItem; //NOTE only needed in dtor, but saves compilation dependency on header
-        friend BrowserWin::BrowserWin( QWidget*, const char* );
-        friend bool BrowserWin::eventFilter( QObject*, QEvent* );
+        friend class PlaylistItem;
+        friend class PlaylistLoader;
+        friend BrowserWin::BrowserWin( QWidget*, const char* );   //setting up connections etc.
+        friend bool BrowserWin::eventFilter( QObject*, QEvent* ); //for convenience we handle some playlist events here
 
     signals:
         void playRequest( const MetaBundle& );
@@ -182,6 +184,7 @@ class PlaylistWidget : private KListView
 
         QPushButton *m_undoButton;
         QPushButton *m_redoButton;
+        QPushButton *m_clearButton;
 
         QDir         m_undoDir;
         QStringList  m_undoList;

@@ -22,7 +22,7 @@
 #include "playlistitem.h"
 #include "playlistloader.h"
 #include "playlistwidget.h"
-#include "titleproxy/titleproxy.h"    //receiveStreamMeta()
+#include "threadweaver.h"
 
 #include <qclipboard.h> //copyToClipboard()
 #include <qcolor.h>
@@ -160,7 +160,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
     //install header eventFilter
     header()->installEventFilter( this );
 
-    m_GlowColor.setRgb( 0xff, 0x40, 0x40 );
+    m_GlowColor.setRgb( 0xff, 0x40, 0x40 ); //FIXME move into the planned derived QColorGroup
 
     connect( m_GlowTimer, SIGNAL( timeout() ), this, SLOT( slotGlowTimer() ) );
     m_GlowTimer->start( 70 );
@@ -168,8 +168,14 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
     // Read playlist columns layout
     restoreLayout( KGlobal::config(), "PlaylistColumnsLayout" );
 
-    kdDebug() << "KListViewItem: " << sizeof( KListViewItem ) << endl;
-    kdDebug() << "QListViewItem: " << sizeof( QListViewItem ) << endl;
+    kdDebug() << "Sizeof QObject: " << sizeof( QObject ) << endl;
+    kdDebug() << "Sizeof QWidget: " << sizeof( QWidget ) << endl;
+    kdDebug() << "Sizeof QThread: " << sizeof( QThread ) << endl;
+    kdDebug() << "Sizeof QTimer: " << sizeof( QTimer ) << endl;
+    kdDebug() << "Sizeof KListViewItem: " << sizeof( KListViewItem ) << endl;
+    kdDebug() << "Sizeof QListViewItem: " << sizeof( QListViewItem ) << endl;
+    kdDebug() << "Sizeof QPtrList: " << sizeof( QPtrList<int> ) << endl;
+    kdDebug() << "Sizeof QValueList: " << sizeof( QValueList<int> ) << endl;
 }
 
 
@@ -994,6 +1000,10 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
         //Qt4 may fix this (?) (if we're lucky)
         //FIXME report to Trolltech?
 
+        //FIXME this doesn't work 100% yet as you can spawn multiple loaders..
+        m_undoButton->setEnabled( false );
+        m_redoButton->setEnabled( false );
+        m_clearButton->setEnabled( false );
         QApplication::setOverrideCursor( KCursor::workingCursor() );
         break;
 
@@ -1018,6 +1028,10 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
 
     case PlaylistLoader::Done:
 
+        //FIXME this doesn't work 100% yet as you can spawn multiple loaders..
+        m_undoButton->setEnabled( !m_undoList.isEmpty() );
+        m_redoButton->setEnabled( !m_redoList.isEmpty() );
+        m_clearButton->setEnabled( true );
         QApplication::restoreOverrideCursor();
         restoreCurrentTrack();
         break;

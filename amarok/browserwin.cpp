@@ -375,7 +375,8 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
         new ExpandButton( i18n( "Play&list Actions" ), this, m_playlist, SLOT( showCurrentTrack() ) );
         new ExpandButton( i18n( "Shuffle" ), playlist, m_playlist, SLOT( shuffle() ) );
         new ExpandButton( i18n( "Save Playlist..." ), playlist, this, SLOT( savePlaylist() ) );
-        new ExpandButton( i18n( "Clear" ), playlist, m_playlist, SLOT( clear() ) );
+        //FIXME eventually the playlist should own this action and allow connection via a KAction type interface
+        m_playlist->m_clearButton = new ExpandButton( i18n( "Clear" ), playlist, m_playlist, SLOT( clear() ) );
 
         m_playlist->m_undoButton->reparent( this, QPoint(), false );
         m_playlist->m_redoButton->reparent( this, QPoint(), false );

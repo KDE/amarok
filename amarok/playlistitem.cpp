@@ -38,7 +38,7 @@
 PlaylistItem *PlaylistItem::GlowItem  = 0;
 
 
-PlaylistItem::PlaylistItem( QListView* parent, QListViewItem *lvi, const KURL &u, const QString &title, const int length )
+PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KURL &u, const QString &title, const int length )
       : KListViewItem( parent, lvi, ( u.protocol() == "file" ) ? u.fileName() : u.prettyURL() )
       , m_url( u )
 {

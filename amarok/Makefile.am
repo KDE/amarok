@@ -14,7 +14,7 @@ amarok_SOURCES = playlistwidget.cpp playlisttooltip.cpp playlistloader.cpp playl
                  filebrowser.cpp kactionselector.cpp kbookmarkhandler.cpp amarokfilelist.cpp \
                  playerwidget.cpp osd.cpp effectwidget.cpp amarokbutton.cpp amarokslider.cpp amaroksystray.cpp \
                  Options1.ui Options2.ui Options3.ui Options4.ui Options5.ui \
-                 playerapp.cpp fht.cpp amarokconfigdialog.cpp
+                 playerapp.cpp fht.cpp amarokconfigdialog.cpp threadweaver.cpp
 
 amarok_LDADD = \
         $(top_builddir)/amarok/amarok/amarokcore/libamarokcore.a \

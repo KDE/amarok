@@ -29,7 +29,7 @@ email                : markey@web.de
 #include "osd.h"
 #include "playerapp.h"
 #include "playerwidget.h"
-#include "playlistloader.h" //restoreSession()
+#include "threadweaver.h" //restoreSession()
 #include "playlisttooltip.h"
 #include "titleproxy/titleproxy.h"
 
@@ -507,7 +507,7 @@ void PlayerApp::play( const MetaBundle &bundle )
         m_pEngine->open( url );
 
     m_proxyError = false;
-        
+
     m_pPlayerWidget->setScroll( bundle );
     m_pOSD->showOSD( bundle );
 
@@ -536,7 +536,7 @@ void PlayerApp::play( const MetaBundle &bundle )
 void PlayerApp::proxyError()
 {
     kdWarning() << "[PlayerApp::proxyError()] TitleProxy error! Switching to normal playback.." << endl;
-    
+
     m_proxyError = true;
     slotPlay();
 }

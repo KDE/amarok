@@ -33,7 +33,7 @@ class PlaylistItem : public KListViewItem
 {
     public:
         //FIXME change it so it only accepts PlaylistWidget
-        PlaylistItem( QListView*, QListViewItem*, const KURL&, const QString& = "", const int length = 0 );
+        PlaylistItem( PlaylistWidget*, QListViewItem*, const KURL&, const QString& = "", const int length = 0 );
         ~PlaylistItem();
 
         QString text( int column ) const;

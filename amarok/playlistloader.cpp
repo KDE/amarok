@@ -4,19 +4,20 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
+#ifdef FAST_TRANSLATE
 #include "amarokfilelist.h"    //for sorting directories
-#include "engine/enginebase.h"
-#include "metabundle.h"
+#endif
+#include "engine/enginebase.h" //isValidMedia()
 #include "playerapp.h"
 #include "playlistitem.h"
 #include "playlistloader.h"
+#include "playlistwidget.h"    //we're tied to this class
 
 #include <qapplication.h>  //postEvent()
 #include <qtextstream.h>   //loadM3U(),loadPLS()
 #include <qfile.h>         //~PlaylistLoader()
 
 #include <kapplication.h>
-#include <kcursor.h>       //TagReader::append()
 #include <kurl.h>
 #include <kdebug.h>
 #include <ktempfile.h>     //makePlaylistItem()
@@ -45,11 +46,6 @@
  #define LSTAT stat64
 #endif
 
-//taglib
-#include <taglib/tstring.h>
-#include <taglib/fileref.h>
-#include <taglib/tag.h>
-
 /*
  * For pls and m3u specifications see: http://forums.winamp.com/showthread.php?s=dbec47f3a05d10a3a77959f17926d39c&threadid=65772
  */
@@ -60,30 +56,21 @@
 
 //LESS IMPORTANT
 //TODO add non-local directories as items with a [+] next to, you open them by clicking the plus!! --maybe not
-//TODO display dialog that lists unloadable media after thread is exited
-//TODO undo/redo suckz0r as you can push both simultaneously and you get a list which is a mixture!
-//     perhaps a static method that accepts a ListView pointer and loads playlists only would help speed
-//     up undo/redo
+//TODO display dialog/something else that lists unloadable media after thread is exited
 //TODO stop blocking on netaccess::download()
 //TODO recursion limits
-//TODO either remove the option or always read metatags (also remove extra columns if you keep the option)
-//TODO extract and bundle extra info from playlists (especially important for streams) (bundle it with
-//     the URLs somehow and then allow replacement if metatags exist (?) )
-//TODO consider loading the TagLib::AudioProperties on demand only as they are slow to load
 //TODO rethink recursion options <mxcl> IMHO they suck big chunks, always do it recursively, why drop/add a
 //     directory if you don't want its contents?
 //     you can always open the dir and select the files. Stupid option and PITA to implement.
 //     <markey> non-recursive adding should get replaced by "add all media files in current directory"
 //TODO reimplement ask recursive in PlaylistWidget::insertMedia()
-//TODO make translate work like process(), ie process isn't called afterwards AND it posts its own events whenever a valid file is found
-//     <-- you'd have to do it one dir at a time
 
 
 class PlayerApp;
 extern PlayerApp *pApp;
 
 
-PlaylistLoader::PlaylistLoader( const KURL::List &ul, QListView *lv, QListViewItem *lvi )
+PlaylistLoader::PlaylistLoader( const KURL::List &ul, PlaylistWidget *lv, QListViewItem *lvi )
    : m_list( ul )
    , m_after( lvi )
    , m_first( 0 )
@@ -93,11 +80,11 @@ PlaylistLoader::PlaylistLoader( const KURL::List &ul, QListView *lv, QListViewIt
 
 //this is a private ctor used by ::makePlaylistItem()
 //it can only be used with placeholders
-PlaylistLoader::PlaylistLoader( const KURL::List &ul, QListViewItem *lvi )
+PlaylistLoader::PlaylistLoader( const KURL::List &ul, PlaylistItem *item )
    : m_list( ul )
-   , m_after( lvi )
-   , m_first( lvi )
-   , m_listView( lvi->listView() )
+   , m_after( item )
+   , m_first( item )
+   , m_listView( item->listView() )
 {}
 
 
@@ -345,6 +332,7 @@ void PlaylistLoader::translate( QString &path, KFileItemList &list )
 
       closedir( d );
 
+      #ifdef FAST_TRANSLATE
       //alpha-sort the files we found, and then post them to the playlist
       files.sort();
       for( QStringList::Iterator it = files.begin(); it != files.end(); ++it )
@@ -357,6 +345,7 @@ void PlaylistLoader::translate( QString &path, KFileItemList &list )
 
       //translate all sub-directories
       for( QStringList::Iterator it = directories.begin(); it != directories.end(); ++it ) translate( *it );
+      #endif
 
    } //if( d )
 }
@@ -431,12 +420,7 @@ void PlaylistLoader::loadPls( QTextStream &stream )
 
 
 
-
-PlaylistLoader::SomeUrlEvent::~SomeUrlEvent()
-{}
-
-
-PlaylistItem *PlaylistLoader::SomeUrlEvent::makePlaylistItem( QListView *lv )
+PlaylistItem *PlaylistLoader::SomeUrlEvent::makePlaylistItem( PlaylistWidget *lv )
 {
    //This function must be called from the GUI!
 
@@ -464,7 +448,7 @@ PlaylistItem *PlaylistLoader::SomeUrlEvent::makePlaylistItem( QListView *lv )
 
       //FIXME this will block user input to the interface and process the event queue
       QApplication::setOverrideCursor( KCursor::waitCursor() );
-         bool succeeded = KIO::NetAccess::download( m_url, path, lv );
+         bool succeeded = KIO::NetAccess::download( m_url, path, pApp->m_pBrowserWin );
       QApplication::restoreOverrideCursor();
 
       if( succeeded )
@@ -484,7 +468,7 @@ PlaylistItem *PlaylistLoader::SomeUrlEvent::makePlaylistItem( QListView *lv )
       }
       else
       {
-         KMessageBox::sorry( lv, i18n( "The playlist, '%1', could not be downloaded." ).arg( m_url.prettyURL() ) );
+         KMessageBox::sorry( pApp->m_pBrowserWin, i18n( "The playlist, '%1', could not be downloaded." ).arg( m_url.prettyURL() ) );
          delete newItem; //we created this in this function, thus it's safe to delete!
          tmpfile.unlink();
       }
@@ -497,276 +481,4 @@ PlaylistItem *PlaylistLoader::SomeUrlEvent::makePlaylistItem( QListView *lv )
       m_thread->m_after = newItem;
       return newItem;
    }
-}
-
-
-
-// ThreadWeaver ===============
-
-void
-ThreadWeaver::append( Job* const job, bool priorityJob )
-{
-   //for GUI access only
-
-    mutex.lock();
-    if( priorityJob )
-        m_Q.prepend( job );
-    else
-        m_Q.append( job );
-    mutex.unlock();
-
-    if( !running() )
-    {
-        start( QThread::LowestPriority );
-    }
-}
-
-bool
-ThreadWeaver::remove( Job* const job )
-{
-    //TODO you need to be able to only remove jobs of a certain type frankly.
-    //TODO this is no good when you say need to remove a job that will act on a playlistitem etc.
-    //maybe above is void* and you make operator== pure virtual?
-
-    bool b;
-
-    mutex.lock();
-    //TODO we delete or user deletes is yet undecided
-    b = m_Q.remove( job );
-    mutex.unlock();
-
-    //TODO inform users of thread that you have to postpone deletion of stuff that may be in event loop
-    return b;
-}
-
-void
-ThreadWeaver::cancel()
-{
-    m_Q.setAutoDelete( true );
-    mutex.lock();
-    m_Q.clear();
-    mutex.unlock();
-    m_Q.setAutoDelete( false );
-
-    //TODO inform users of thread that you have to postpone deletion of stuff that may be in event loop
-}
-
-void
-ThreadWeaver::run()
-{
-    msleep( 200 ); //this is an attempt to encourage the queue to be filled with more than 1 item before we
-                   //start processing, and thus prevent unecessary stopping and starting of the thread
-
-    kdDebug() << "[weaver] Started..\n";
-    QApplication::postEvent( m_parent, new QCustomEvent( ThreadWeaver::Started ) );
-
-    while( m_bool )
-    {
-        mutex.lock();
-        if( m_Q.isEmpty() ) { mutex.unlock(); break; } //we exit the loop here
-        Job *job = m_Q.getFirst();
-        m_Q.removeFirst();
-        mutex.unlock();
-
-        if( job->doJob() )
-            //FIXME this causes crashes when you cancel() currently
-            //easiest option is to use a bool meaning stop!
-            job->postJob(); //Qt will delete the job for us
-        else
-            delete job;     //we need to delete the job
-    }
-
-    kdDebug() << "[weaver] Done!\n";
-    QApplication::postEvent( m_parent, new QCustomEvent( ThreadWeaver::Done ) );
-}
-
-inline void
-ThreadWeaver::Job::postJob() { QApplication::postEvent( m_target, this ); } //TODO rename
-
-
-
-TagReader::TagReader( QObject *o, PlaylistItem *pi )
-   : Job( o, Job::TagReader )
-   , m_item( pi )
-   , m_url( pi->url() )
-   , m_tags( 0 )
-{}
-
-TagReader::~TagReader()
-{
-    delete m_tags;
-}
-
-bool
-TagReader::doJob()
-{
-    if( m_url.protocol() == "file" )
-    {
-        m_tags = readTags( m_url );
-        return true;
-    }
-
-    return false;
-}
-
-MetaBundle*
-TagReader::readTags( const KURL &url, bool readAudioProps ) //STATIC
-{
-   //audioproperties are read on demand
-   TagLib::FileRef f( url.path().local8Bit(), readAudioProps ); //this is the slow step
-
-   return f.isNull()? 0 : new MetaBundle( url, f.tag() );
-}
-
-void
-TagReader::bindTags()
-{
-   //for GUI access only
-   //we're a friend of PlaylistItem
-   if( m_tags )
-   {
-       m_item->setText( *m_tags );
-   }
-}
-
-void
-TagReader::addSearchTokens( QStringList &tokens, QPtrList<QListViewItem> &ptrs )
-{
-    //for GUI access only
-    //we need to add this item to the search-index
-
-    QString s = m_item->trackName();
-
-    if( m_tags )
-    {
-        s += ' ';
-        s += m_tags->m_artist;
-        s += ' ';
-        s += m_tags->m_title;
-    }
-
-    tokens.append( s );
-    ptrs.append( m_item );
-}
-
-
-AudioPropertiesReader::AudioPropertiesReader( QObject *o, PlaylistItem *pi )
-   : Job( o, Job::AudioPropertiesReader )
-   , m_item( pi )
-   , m_listView( static_cast<QListViewItem *>(pi)->listView() )
-   , m_url( pi->url() )
-{
-    //TODO derive this from TagReader?
-}
-
-bool
-AudioPropertiesReader::doJob()
-{
-    //TODO it is probably safer to record the itemPos in the ctor and check here with listview->itemAt()
-    //TODO it is probably more efficient to do this with less specifity, i.e. when view scrolls put a job
-    //     in to read tags for visible items, and then get this function to get the visible items for that moment
-
-    int y  = m_item->itemPos(); //const //FIXME slow function!
-    int h  = m_item->height();  //const
-    int y2 = m_listView->contentsY(); //TODO find out the performance of this function
-    if( (y + h) >= y2 && y <= (y2 + m_listView->visibleHeight()) )
-    {
-        //This is a quick scan
-        //A more accurate scan is done when the track is played, and those properties are recorded with the track
-        TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Fast );
-        int length  = MetaBundle::Unavailable;
-        int bitrate = MetaBundle::Unavailable;
-
-        if( !f.isNull() && f.tag() )
-        {
-            TagLib::AudioProperties *ap = f.audioProperties();
-            length  = ap->length();
-            bitrate = ap->bitrate();
-        }
-
-        m_length  = MetaBundle::prettyLength( length );
-        m_bitrate = MetaBundle::prettyBitrate( bitrate );
-
-        return true;
-    }
-
-    return false;
-}
-
-void
-AudioPropertiesReader::bindTags()
-{
-    //TODO do in playlistItem class
-    m_item->setText(  9, m_length );
-    m_item->setText( 10, m_bitrate );
-}
-
-
-//TODO deepcopy?
-//TODO leave a temp message in the listview item until this completes
-//TODO use a enum for TagType
-TagWriter::TagWriter( QObject *o, PlaylistItem *pi, const QString &s, const int col )
-  : Job( o, Job::TagWriter )
-  , m_item( pi )
-  , m_tagString( s )
-  , m_tagType( col )
-{
-    pi->setText( col, i18n( "Writing tag..." ) );
-}
-
-#include <taglib/tag.h>
-#include <taglib/tstring.h>
-
-bool
-TagWriter::doJob()
-{
-    const KURL url = m_item->url(); //FIXME safe?
-    TagLib::FileRef f( url.path().local8Bit(), false );
-
-    if( !f.isNull() )
-    {
-        TagLib::Tag *t = f.tag();
-        TagLib::String s = QStringToTString( m_tagString );
-
-        switch( m_tagType ) {
-        case 1:
-            t->setTitle( s );
-            break;
-        case 2:
-            t->setArtist( s );
-            break;
-        case 3:
-            t->setAlbum( s );
-            break;
-        case 4:
-            t->setYear( m_tagString.toInt() );
-            break;
-        case 5:
-            //FIXME how does this work for vorbis files?
-            //Are we likely to overwrite some other comments?
-            //Vorbis can have multiple comment fields..
-            t->setComment( s );
-            break;
-        case 6:
-            t->setGenre( s );
-            break;
-        case 7:
-            t->setTrack( m_tagString.toInt() );
-            break;
-        default:
-            return false;
-        }
-
-        f.save();
-    }
-
-    //FIXME can TagLib::Tag::save() not fail?
-    return true;
-}
-
-void
-TagWriter::updatePlaylistItem()
-{
-    //FIXME see PlaylistItem::setText() for an explanation for this hack
-    m_item->setText( m_tagType, m_tagString.isEmpty() ? " " : m_tagString );
 }
