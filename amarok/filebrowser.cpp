@@ -131,7 +131,8 @@ KDevFileSelector::KDevFileSelector( QWidget * parent, const char * name )
     dir = new KDevDirOperator( QString::null, this, "operator" );
     dir->setView( KFile::Detail );
     dir->setMode( KFile::Files );
-
+    dir->setEnableDirHighlighting( true );
+   
     KActionCollection *coll = dir->actionCollection();
     // some shortcuts of diroperator that clashes with KDev
     coll->action( "delete" )->setShortcut( KShortcut( ALT + Key_Delete ) );
