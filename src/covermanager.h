@@ -6,8 +6,8 @@
 
 #include <qdialog.h>
 #include <kiconview.h>
+#include <kio/job.h>
 #include <qptrlist.h>
-#include <kio/previewjob.h>
 
 class KLineEdit;
 class KListView;
@@ -43,8 +43,6 @@ Q_OBJECT
         void slotSetFilter();
         void slotSetFilterTimeout();
         void changeView( int id );
-        void slotGotPreview( const KFileItem *, const QPixmap & );
-        void previewJobFinished();
         void coverFetched( const QString & );
         void slotCoverDeleted();
         void fetchMissingCovers();
@@ -66,7 +64,6 @@ Q_OBJECT
         QPtrList<KIconViewItem> m_coverItems;
         QString m_filter;
         int m_currentView;
-        KIO::PreviewJob *m_previewJob;
         
         // Used by fetchMissingCovers() for temporary storage
         CoverViewItem* m_currentItem;

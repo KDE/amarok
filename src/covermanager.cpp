@@ -40,7 +40,6 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     : QWidget( parent, name, WDestructiveClose )
     , m_db( new CollectionDB() )
     , m_filter( 0 )
-    , m_previewJob( 0 )
 {
     setCaption( kapp->makeStdCaption( i18n("Cover Manager") ) );
 
@@ -155,8 +154,6 @@ CoverManager::~CoverManager()
 {
     delete m_db;
     delete m_timer;
-    if( m_previewJob )
-        m_previewJob->kill();
 
     //TODO save window size
     //save view settings
@@ -238,10 +235,6 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
 {
     m_coverView->clear();
     m_coverItems.clear();
-    if( m_previewJob ) {
-        m_previewJob->kill();
-        m_previewJob = 0;
-    }
 
     QStringList values;
     QStringList names;
@@ -266,22 +259,19 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
         for( uint i=0; i < values.count();  i+=2 )  {
             if( !values[allAlbums ? i+1 : i].isEmpty() ) {
                 CoverViewItem *coverItem = new CoverViewItem( m_coverView, m_coverView->lastItem(),
-                                                                             allAlbums ? values[i] : item->text(0), values[ allAlbums ? i+1 : i ] );
+                                                              allAlbums ? values[i] : item->text(0), values[ allAlbums ? i+1 : i ] );
                 m_coverItems.append( coverItem );
 
                 if( coverItem->hasCover() ) {
                     KURL url( coverItem->albumPath() );
                     KFileItem *file = new KFileItem( url, "image/png", 0 );
+                    
+                    QString imgPath = m_db->getImageForAlbum( allAlbums ? values[i] : item->text(0), values[ allAlbums ? i+1 : i ], "", 80 );
+                    coverItem->updateCover( QPixmap( imgPath ) );
+
                     fileList.append( file );
                 }
             }
-        }
-
-        if( fileList.count() ) {
-            m_previewJob = new KIO::PreviewJob( fileList, 80, 80, 0, 0, true, true, 0 );
-            connect(m_previewJob, SIGNAL( gotPreview(const KFileItem *, const QPixmap &) ),
-                SLOT(slotGotPreview(const KFileItem *, const QPixmap &) ) );
-            connect( m_previewJob, SIGNAL( result( KIO::Job* ) ), SLOT( previewJobFinished() ) );
         }
 
         updateCounter();
@@ -452,25 +442,6 @@ void CoverManager::changeView( int id  ) //SLOT
 }
 
 
-void CoverManager::slotGotPreview(const KFileItem *item, const QPixmap &pixmap) //SLOT
-{
-    QString path = item->url().path();
-    kdDebug() << "got preview " << path << endl;
-
-    for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) {
-        CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
-        if( coverItem->albumPath() == path )
-            coverItem->updateCover( pixmap );
-    }
-}
-
-
-void CoverManager::previewJobFinished()
-{
-    m_previewJob = 0;
-}
-
-
 void CoverManager::coverFetched( const QString &key )
 {
     #ifdef AMAZON_SUPPORT
@@ -481,9 +452,8 @@ void CoverManager::coverFetched( const QString &key )
             KFileItem *file = new KFileItem( KURL( coverItem->albumPath() ), "image/png", 0 );
             fileList.append( file );
 
-            KIO::PreviewJob *job = new KIO::PreviewJob( fileList, 80, 80, 0, 0, true, true, 0 );
-            connect(job, SIGNAL( gotPreview(const KFileItem *, const QPixmap &) ),
-                SLOT(slotGotPreview(const KFileItem *, const QPixmap &) ) );
+            QString imgPath = m_db->getImageForAlbum( coverItem->artist(), coverItem->album(), "", 80 );
+            coverItem->updateCover( QPixmap( imgPath ) );
             return;
         }
     }
