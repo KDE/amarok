@@ -300,6 +300,9 @@ CoverFetcher::showQueryEditor( QString text ) //SLOT
     //HACK this sucks, improve the api
     m_queries.clear();
 
+    //search for a big image again
+    m_size = 2;
+
     if ( text.isEmpty() )
         text = i18n("Search Amazon's cover database with this query:");
 
