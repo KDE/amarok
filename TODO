@@ -3,10 +3,12 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #174 being the highest available (take this one for your next bug and increase here)
+           #175 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  FIX 174 <markey> Tagging doesn't trigger a rescan. Maybe we must touch the folder after writing tag.
 
   FIX 171 <heliocastro>
                    file /usr/lib/kde3/share/icons/crystalsvg/16x16/actions/player_playlist.png from install of
