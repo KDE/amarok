@@ -67,6 +67,8 @@ SHORT-TERM:
 
 MID-TERM:
 
+    * add: column "length" in playlist
+
     * fix: honor KDE single/double-click setting in BrowserWin
     
     * add: <muesli> reading metadata on the fly (read for displayed playlist-items or onClick)
