@@ -6,6 +6,7 @@
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistloader.h"    //PlaylistBrowserItem::load()
+#include "smartplaylist.h"
 #include "tagdialog.h"         //showContextMenu()
 #include "threadweaver.h"
 
@@ -95,7 +96,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     lastPlaylist = new PlaylistBrowserItem( m_listview, 0, url );
     currentItemChanged( lastPlaylist );
 
-    m_smartlistview = new SmartPlaylistView( m_splitter );
+    new SmartPlaylistBox( m_splitter );
 
     KConfig *config = kapp->config();
     config->setGroup( "PlaylistBrowser" );
@@ -1380,191 +1381,5 @@ TrackItemInfo::TrackItemInfo( const KURL &u, const QString &t, const int l )
     if( m_length < 0 )
         m_length = 0;
 }
-
-
-
-/////////////////////////////////////////////////////////////////////////////
-//    CLASS SmartPlaylistView
-////////////////////////////////////////////////////////////////////////////
-
-SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
-   : KListView( parent, name )
-{
-    CollectionDB *db = new CollectionDB();
-    QStringList artistList = db->artistList();
-
-    addColumn(i18n("Smart Playlists"));
-    setSelectionMode(QListView::Single);
-    setSorting( -1 ); //no sort
-    setFullWidth( true );
-    setRootIsDecorated( true );
-
-    /********** All Collection **************/
-    SmartPlaylist *lastItem = new SmartPlaylist( this, 0, i18n("All Collection") );
-    lastItem->setQuery( "SELECT tags.url "
-                        "FROM tags, artist "
-                        "WHERE artist.id = tags.artist "
-                        "ORDER BY artist.name DESC" );
-    lastItem->setPixmap( 0, SmallIcon("kfm") );
-    lastItem->setDragEnabled(true);
-
-    //insert items after last item
-
-    /********** Favorite Tracks **************/
-    lastItem = new SmartPlaylist(this, lastItem, i18n("Favorite Tracks") );
-    lastItem->setQuery( "SELECT tags.url "
-                        "FROM tags, statistics "
-                        "WHERE statistics.url = tags.url "
-                        "ORDER BY statistics.percentage DESC "
-                        "LIMIT 0,15;" );
-    lastItem->setPixmap( 0, SmallIcon("player_playlist") );
-    lastItem->setDragEnabled(true);
-
-    SmartPlaylist *item = 0;
-    for( uint i=0; i < artistList.count(); i++ ) {
-        item = new SmartPlaylist( lastItem, item, i18n("By ") + artistList[i] );
-        item->setQuery( QString( "SELECT tags.url "
-                        "FROM tags, statistics "
-                        "WHERE statistics.url = tags.url AND tags.artist = %1 "
-                        "ORDER BY statistics.percentage DESC "
-                        "LIMIT 0,15;" ).arg( db->getValueID( "artist", artistList[i], false ) ) );
-        item->setPixmap( 0, SmallIcon("player_playlist") );
-        item->setDragEnabled(true);
-    }
-
-    /********** Most Played **************/
-    lastItem = new SmartPlaylist(this, lastItem, i18n("Most Played") );
-    lastItem->setQuery( "SELECT tags.url "
-                        "FROM tags, statistics "
-                        "WHERE statistics.url = tags.url "
-                        "ORDER BY statistics.playcounter DESC "
-                        "LIMIT 0,15;" );
-    lastItem->setPixmap( 0, SmallIcon("player_playlist") );
-    lastItem->setDragEnabled(true);
-
-    item = 0;
-    for( uint i=0; i < artistList.count(); i++ ) {
-        item = new SmartPlaylist( lastItem, item, i18n("By ") + artistList[i] );
-        item->setQuery( QString( "SELECT tags.url "
-                        "FROM tags, statistics "
-                        "WHERE statistics.url = tags.url AND tags.artist = %1 "
-                        "ORDER BY statistics.playcounter DESC "
-                        "LIMIT 0,15;" ).arg( db->getValueID( "artist", artistList[i], false ) ) );
-        item->setPixmap( 0, SmallIcon("player_playlist") );
-        item->setDragEnabled(true);
-    }
-
-    /********** Newest Tracks **************/
-    lastItem =  new SmartPlaylist(this, lastItem, i18n("Newest Tracks") );
-    lastItem->setQuery( "SELECT url "
-                        "FROM tags "
-                        "ORDER BY tags.createdate DESC "
-                        "LIMIT 0,15;" );
-    lastItem->setPixmap( 0, SmallIcon("player_playlist") );
-    lastItem->setDragEnabled(true);
-
-    item = 0;
-    for( uint i=0; i < artistList.count(); i++ ) {
-        item = new SmartPlaylist( lastItem, item, i18n("By ") + artistList[i] );
-        item->setQuery( QString( "SELECT url "
-                        "FROM tags "
-                        "WHERE tags.artist = %1 "
-                        "ORDER BY tags.createdate DESC "
-                        "LIMIT 0,15;" ).arg( db->getValueID( "artist", artistList[i], false ) ) );
-        item->setPixmap( 0, SmallIcon("player_playlist") );
-        item->setDragEnabled(true);
-    }
-
-    /********** Last Played **************/
-    lastItem =  new SmartPlaylist(this, lastItem, i18n("Last Played") );
-    lastItem->setQuery( "SELECT tags.url "
-                        "FROM tags, statistics "
-                        "WHERE statistics.url = tags.url "
-                        "ORDER BY statistics.accessdate DESC "
-                        "LIMIT 0,15;" );
-    lastItem->setPixmap( 0, SmallIcon("player_playlist") );
-    lastItem->setDragEnabled(true);
-
-    /********** Never Played **************/
-    lastItem =  new SmartPlaylist(this, lastItem, i18n("Never Played") );
-    lastItem->setQuery( "SELECT url "
-                        "FROM tags "
-                        "WHERE url NOT IN(SELECT url FROM statistics)" );
-    lastItem->setPixmap( 0, SmallIcon("player_playlist") );
-    lastItem->setDragEnabled(true);
-
-    /********** Genres **************/
-    lastItem = new SmartPlaylist( this, lastItem, i18n("Genres") );
-    lastItem->setPixmap( 0, SmallIcon("player_playlist") );
-
-    QStringList values;
-    QStringList names;
-    db->execSql( "SELECT DISTINCT name FROM genre ORDER BY name", &values, &names );
-    item = 0;
-    for( uint i=0; i < values.count(); i++ ) {
-        item = new SmartPlaylist( lastItem, item, values[i] );
-        item->setQuery( QString("SELECT url "
-                                "FROM tags "
-                                "WHERE tags.genre = %1" ).arg( db->getValueID( "genre", values[i], false ) ) );
-        item->setPixmap( 0, SmallIcon("player_playlist") );
-        item->setDragEnabled(true);
-    }
-    values.clear();
-    names.clear();
-
-    delete db;
-
-    connect( this, SIGNAL( doubleClicked( QListViewItem *) ), SLOT( loadPlaylistSlot( QListViewItem * ) ) );
-
-}
-
-
-KURL::List SmartPlaylistView::loadSmartPlaylist( QListViewItem *item )
-{
-    // this function load the smart playlist querying the collection database
-    // (eg. all collection, most played tracks, recently played, newest tracks, never played)
-    // and returns the list of tracks
-    //TODO stream history, untagged tracks
-
-    #define item static_cast<SmartPlaylist*>(item)
-
-    QStringList values;
-    QStringList names;
-    KURL::List list;
-
-    CollectionDB *db = new CollectionDB();
-    db->execSql( item->query(), &values, &names );
-
-    if ( !values.isEmpty() )
-    {
-        for ( uint i = 0; i < values.count(); ++i )
-            list += KURL( values[i] );
-    }
-
-    values.clear();
-    names.clear();
-    delete db;
-
-    #undef item
-
-    return list;
-}
-
-
-void SmartPlaylistView::loadPlaylistSlot( QListViewItem *item ) //SLOT
-{
-    if( !((SmartPlaylist*)item)->query().isEmpty() ) {
-        // open the smart playlist
-        Playlist::instance()->clear();
-        Playlist::instance()->appendMedia( loadSmartPlaylist( item ) );
-    }
-}
-
-
-QDragObject *SmartPlaylistView::dragObject()
-{
-    return new KURLDrag( loadSmartPlaylist( currentItem() ), this );
-}
-
 
 #include "playlistbrowser.moc"

@@ -68,6 +68,8 @@ amarokapp_SOURCES = \
     scriptmanagerbase.ui \
     searchbrowser.cpp \
     sliderwidget.cpp \
+    smartplaylist.cpp \
+    smartplaylisteditor.cpp \
     socketserver.cpp \
     statusbar.cpp \
     streamprovider.cpp \
@@ -89,7 +91,7 @@ amarokapp_LDADD = \
 amarokapp_LDFLAGS = \
     $(all_libraries) \
     $(KDE_RPATH)
-    
+
 METASOURCES = \
     AUTO
 

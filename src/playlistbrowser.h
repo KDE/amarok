@@ -200,42 +200,6 @@ private:
 
 
 
-class SmartPlaylistView : public KListView
-{
-Q_OBJECT
-
-    enum QueryType { AllCollection=0, MostPlayed, NewestTracks, RecentlyPlayed, NeverPlayed };
-
-   public:
-       SmartPlaylistView( QWidget *parent, const char *name = 0 );
-
-       KURL::List loadSmartPlaylist( QListViewItem *item );    //query the database and returns a list of url
-
-   protected:
-       virtual class QDragObject *dragObject();
-
-   private slots:
-       void loadPlaylistSlot( QListViewItem * );
-
-};
-
-
-class SmartPlaylist : public KListViewItem
-{
-    public:
-        SmartPlaylist( KListView *parent, SmartPlaylist *after, QString text )
-            : KListViewItem( parent, after, text ) {}
-        SmartPlaylist( SmartPlaylist *parent, SmartPlaylist *after, QString text )
-            : KListViewItem( parent, after, text ) {}
-        void setQuery( const QString &query ) { m_query = query; };
-        const QString &query() { return m_query; }
-
-    private:
-        QString m_query;
-};
-
-
-
 inline bool
 isPlaylist( QListViewItem *item )
 {
