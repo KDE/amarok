@@ -70,7 +70,7 @@ PlayerApp::PlayerApp()
         , m_length( 0 )
         , m_playRetryCounter( 0 )
         , m_delayTime( 0 )
-        , m_pOSD( new OSDWidget() )
+        , m_pOSD( new OSDWidget( "amaroK" ) )
         , m_proxyError( false )
         , m_sockfd( -1 )
 {
@@ -113,8 +113,7 @@ PlayerApp::PlayerApp()
     //start timers
     m_pMainTimer->start( MAIN_TIMER );
 
-    connect( this, SIGNAL( metaData( const MetaBundle& ) ), m_pOSD, SLOT( showOSD( const MetaBundle& ) ) );
-    connect( this, SIGNAL( metaData( const MetaBundle& ) ), this, SLOT( prepareTextForOSD( const MetaBundle& ) ) );
+    connect( this, SIGNAL( metaData( const MetaBundle& ) ), this, SLOT( slotShowOSD( const MetaBundle& ) ) );
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
    
     handleCliArgs( KCmdLineArgs::parsedArgs() );
@@ -354,7 +353,7 @@ void PlayerApp::applySettings()
 
     m_pOSD->setEnabled ( AmarokConfig::osdEnabled() );
     m_pOSD->setFont    ( AmarokConfig::osdFont() );
-    m_pOSD->setColor   ( AmarokConfig::osdColor() );
+    m_pOSD->setTextColor   ( AmarokConfig::osdColor() );
     m_pOSD->setDuration( AmarokConfig::osdDuration() );
 
     m_pPlayerWidget->createAnalyzer( false );
@@ -824,7 +823,7 @@ void PlayerApp::slotShowOptions()
 }
 
 // going to remove OSDWidget::showOSD(const MetaBundle&)
-void PlayerApp::prepareTextForOSD( const MetaBundle& bundle )
+void PlayerApp::slotShowOSD( const MetaBundle& bundle )
 {
    // Strip HTML tags, expand basic HTML entities
    QString text = QString( "%1 - %2" ).arg( bundle.prettyTitle(), bundle.prettyLength() );
@@ -836,6 +835,7 @@ void PlayerApp::prepareTextForOSD( const MetaBundle& bundle )
    plaintext.replace( QRegExp( "&amp;" ), QString( "&" ) );
 
    m_textForOSD = plaintext;
+   slotShowOSD();
 }
 
 void PlayerApp::slotShowOSD()

@@ -105,7 +105,7 @@ class PlayerApp : public KApplication
         void loaderMessage();
         void proxyError();
         void showEffectWidget();
-        void prepareTextForOSD( const MetaBundle& );
+        void slotShowOSD( const MetaBundle& );
 
     signals:
         void metaData( const MetaBundle& );

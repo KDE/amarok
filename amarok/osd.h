@@ -27,39 +27,53 @@ class MetaBundle;
 class OSDWidget : public QWidget
 {
     Q_OBJECT
-
       public:
-        OSDWidget();
+        enum Position {
+          TopLeft,
+          TopRight,
+          BottomLeft,
+          BottomRight,
+          Center
+        };
+
+        OSDWidget(const QString &appName);
         void setDuration(int ms);
         void setFont(QFont newfont);
-        void setColor(QColor newcolor);
+        void setTextColor(QColor newcolor);
+        void setBackgroundColor(QColor newColor);
+        void setOffset(int x, int y);
+        void setPosition(Position pos);
+        void setScreen(uint screen);
 
       public slots:
-        void showOSD(const MetaBundle&);
         void showOSD(const QString&);
-        void showSplash(const QString& imagePath);
         void removeOSD();
 
       protected slots:
         void minReached();
-//        void dblClick();
 
       protected:
-        void paintOSD(const QString &text);
+        /* render text into osdBuffer */
+        void renderOSDText(const QString &text);
         void paintEvent(QPaintEvent*);
-//        void mouseDoubleClickEvent(QMouseEvent *e);
         void mousePressEvent( QMouseEvent* );
 
-        static const int SPLASH_DURATION = 6000;
+        /* always call rePosition if the size of osdBuffer has changed */
+        void rePosition();
 
+        QString     m_appName;
         int         m_duration;
-        QString     text;
         QTimer      *timer;
         QTimer      *timerMin;
         QFont       font;
-        QColor      color;
+        QColor      m_textColor;
+        QColor      m_bgColor;
         QPixmap     osdBuffer;
         QStringList textBuffer;
+
+        QPoint m_offset;
+        Position m_position;
+        int m_screen;
 };
 
 #endif
