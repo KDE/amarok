@@ -1,3 +1,24 @@
+Installing amaroK
+=================
+
+In order to compile and install amaroK on your system, type the following in the
+base directory of the amaroK distribution:
+
+
+                % ./configure --prefix=`kde-config --prefix`
+                % make
+                % make install
+
+                
+For a much faster compile we recommend configuring with --enable-final:
+
+                
+                % ./configure --enable-final --prefix=`kde-config --prefix`
+
+
+The GNU Installtion instructions follow.
+                
+                
 Basic Installation
 ==================
 

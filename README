@@ -24,15 +24,26 @@ interface, that really makes playlist handling easy.
 
 --------------------------------------------------------------------------------
 
-Important install instructions:
-In order to compile and install amaroK on your system, type the following in the base directory of the amaroK distribution:
+Important Install Instructions
+==============================
+
+In order to compile and install amaroK on your system, type the following in the
+base directory of the amaroK distribution:
 
 
                 % ./configure --prefix=`kde-config --prefix`
                 % make
                 % make install
 
+                
+Using enable-final will give a much faster compile, but it may cause compile
+failure:
 
+
+                % ./configure --enable-final --prefix=`kde-config --prefix`
+
+
+--------------------------------------------------------------------------------
 
 Project Site:   http://amarok.sf.net
 Irc Channel:    irc.freenode.net: #amarok
