@@ -5,6 +5,8 @@
 #ifndef AMAROK_COVERFETCHER_H
 #define AMAROK_COVERFETCHER_H
 
+#define MAX_COVERS_CHOICE  10
+
 #include <qimage.h>       //stack allocated
 #include <qobject.h>      //baseclass
 #include <qstringlist.h>  //stack allocated
@@ -62,7 +64,9 @@ private:
     QImage  m_image;
 
     QString m_amazonURL;
-    QString m_imageURL;
+    QString m_imageURL[MAX_COVERS_CHOICE];
+    uint    m_iCoverNbr;
+    uint    m_iCover;
 
     uchar  *m_buffer;
     uint    m_bufferIndex;
@@ -74,6 +78,9 @@ private:
 private:
     /// the fetch failed, exit with error message
     void error( const QString &message, KIO::Job *job = 0 );
+    
+    // run the cover query job
+    void query_cover( int iCoverIndex );
 };
 
 #endif /* AMAROK_COVERFETCHER_H */

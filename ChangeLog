@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta4:
+  ADD: Allow to select from multiple results with Amazon cover search.
+       (BR 93287)
   CHG: Reorganized the DCOP interface. We used to have all DCOP functions
        in the "player" group. Now it's splitted up into several
        categories. Attention script writers: Adjust your DCOP calls!
