@@ -4,7 +4,10 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
-    * fix: volume slider positioning
+    * add: make filebrowser sortable in different modes (time, size, extension..)
+      and add tracks to playlist in the same order
+
+    * fix: clicking on volume slider makes it jump around randomly
 
     * fix: opening hidden directories is impossible in filebrowser
 
@@ -15,7 +18,7 @@ SHORT-TERM:
 
     * fix: app freezing when renaming the file that's currently playing
 
-    * fix: sample looping @ end of track or pause
+    * fix: sample looping (annoying noise) @ end of track or pause
 
     * fix: redirected URLs do not work
 
@@ -30,8 +33,6 @@ SHORT-TERM:
 MID-TERM:
 
     * add: "add item"-dialog should support multiple selections
-
-    * add: option to add dirs sorted automatically
 
     * add: playmode indication button in main widget (repeat track/pl/shuffle), clickable
 
@@ -53,8 +54,6 @@ MID-TERM:
     * add: seeking with mousewheel
 
     * add: make windows magnetic / sticking together
-
-    * add: option to show dirs in Filebrowser sorted by time
 
     * add: make blinking currentTrack optional
 
@@ -82,8 +81,6 @@ LONG-TERM:
     * support for compressed archives / tarballs
 
     * add visualisations
-
-    * add more scope-modes
 
     * add bookmarks for filebrowser
 
