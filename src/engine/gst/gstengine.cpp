@@ -369,6 +369,7 @@ GstEngine::play( const KURL& url )            //SLOT
     setVolume( volume() );
     m_pipelineFilled = true;
 
+    gst_element_set_state( GST_ELEMENT( m_pThread ), GST_STATE_READY );
     /*if ( url.isLocalFile() )*/ play();
     m_playFlag = true;
     return this;
@@ -381,7 +382,6 @@ GstEngine::play()            //SLOT
     kdDebug() << k_funcinfo << endl;
     if ( !m_pipelineFilled ) return ;
 
-    gst_element_set_state( GST_ELEMENT( m_pThread ), GST_STATE_READY );
     /* start playing */
     gst_element_set_state( GST_ELEMENT( m_pThread ), GST_STATE_PLAYING );
 }
