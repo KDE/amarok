@@ -42,8 +42,8 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     CollectionView* view = new CollectionView( this );
 
-    m_actionsMenu->insertItem( "Setup Folders", view, SLOT( setupDirs() ) );
-    m_actionsMenu->insertItem( "Scan Now", view, SLOT( scan() ) );
+    m_actionsMenu->insertItem( i18n( "Configure Folders" ), view, SLOT( setupDirs() ) );
+    m_actionsMenu->insertItem( i18n( "Start Scan" ), view, SLOT( scan() ) );
 
     m_catMenu ->insertItem( "Album", view, SLOT( actionsMenu( int ) ), 0, IdAlbum );
     m_catMenu ->insertItem( "Artist", view, SLOT( actionsMenu( int ) ), 0, IdArtist );
@@ -99,6 +99,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     m_category = config->readEntry( "Category", "Album" );
     addColumn( m_category );
     m_recursively = config->readBoolEntry( "Scan Recursively", true );
+    m_monitor = config->readBoolEntry( "Monitor Changes", true );
 
     connect( this, SIGNAL( tagsReady() ),
              this, SLOT( renderView() ) );
@@ -119,6 +120,7 @@ CollectionView::~CollectionView() {
     config->writeEntry( "Folders", m_dirs );
     config->writeEntry( "Category", m_category );
     config->writeEntry( "Scan Recursively", m_recursively );
+    config->writeEntry( "Monitor Changes", m_monitor );
 
     sqlite_close( m_db );
 }
@@ -131,11 +133,12 @@ CollectionView::~CollectionView() {
 void
 CollectionView::setupDirs()  //SLOT
 {
-    DirectoryList list( m_dirs, m_recursively );
+    DirectoryList list( m_dirs, m_recursively, m_monitor );
     DirectoryList::Result result = list.exec();
 
     m_dirs = result.dirs;
     m_recursively = result.scanRecursively;
+    m_monitor = result.monitorChanges;
 }
 
 

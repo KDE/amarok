@@ -33,9 +33,10 @@ class DirectoryList : public KDialogBase {
             QStringList removedDirs;
             DialogCode status;
             bool scanRecursively;
+            bool monitorChanges;
         };
 
-        DirectoryList( const QStringList &directories, bool scanRecursively,
+        DirectoryList( const QStringList &directories, bool scanRecursively, bool monitorChanges,
                        QWidget *parent = 0, const char *name = 0 );
         virtual ~DirectoryList();
 
@@ -53,6 +54,7 @@ class DirectoryList : public KDialogBase {
     private:
         QStringList m_dirList;
         bool m_scanRecursively;
+        bool m_monitorChanges;
         DirectoryListBase *m_base;
         Result m_result;
 };

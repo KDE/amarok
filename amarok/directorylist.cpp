@@ -29,11 +29,12 @@
 // public methods
 ////////////////////////////////////////////////////////////////////////////////
 
-DirectoryList::DirectoryList( const QStringList &directories, bool scanRecursively,
+DirectoryList::DirectoryList( const QStringList &directories, bool scanRecursively, bool monitorChanges,
                               QWidget *parent, const char *name )
     : KDialogBase( parent, name, true, i18n( "Folder List" ), Ok | Cancel, Ok, true )
     , m_dirList( directories )
     , m_scanRecursively( scanRecursively )
+    , m_monitorChanges( monitorChanges )
 {
     m_base = new DirectoryListBase( this );
 
@@ -51,6 +52,7 @@ DirectoryList::DirectoryList( const QStringList &directories, bool scanRecursive
         new KListViewItem( m_base->directoryListView, *it );
 
     m_base->scanRecursivelyCheckBox->setChecked( scanRecursively );
+    m_base->monitorChangesCheckBox->setChecked( monitorChanges );
 
     QSize sz = sizeHint();
     setMinimumSize( kMax( 350, sz.width() ), kMax( 250, sz.height() ) );
@@ -69,6 +71,7 @@ DirectoryList::~DirectoryList() {
 DirectoryList::Result DirectoryList::exec() {
     m_result.status = static_cast<DialogCode>( KDialogBase::exec() );
     m_result.scanRecursively = m_base->scanRecursivelyCheckBox->isChecked();
+    m_result.monitorChanges = m_base->monitorChangesCheckBox->isChecked();
     m_result.dirs = m_dirList;
     return m_result;
 }

@@ -106,6 +106,7 @@ class CollectionView : public KListView
         QStringList m_dirs;
         QString m_category;
         bool m_recursively;
+        bool m_monitor;
 };
 
 

@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>458</width>
-            <height>229</height>
+            <width>420</width>
+            <height>233</height>
         </rect>
     </property>
     <property name="caption">
@@ -37,7 +37,7 @@
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>rightColumnLayout</cstring>
+                <cstring>layout2</cstring>
             </property>
             <vbox>
                 <property name="name">
@@ -83,7 +83,7 @@
                     <property name="sizeHint">
                         <size>
                             <width>20</width>
-                            <height>40</height>
+                            <height>112</height>
                         </size>
                     </property>
                 </spacer>
@@ -93,6 +93,17 @@
                     </property>
                     <property name="text">
                         <string>Scan Recursively</string>
+                    </property>
+                    <property name="checked">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>monitorChangesCheckBox</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Monitor Changes</string>
                     </property>
                     <property name="checked">
                         <bool>true</bool>
