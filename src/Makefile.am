@@ -13,7 +13,6 @@ SUBDIRS = \
     engine \
     images \
     loader \
-    sqlite \
     titleproxy \
     vis
 
@@ -24,11 +23,15 @@ INCLUDES = \
     -I$(top_srcdir)/amarok/src/analyzers \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/plugin \
-    -I$(top_srcdir)/amarok/src/sqlite \
     -I$(top_srcdir)/amarok/src/titleproxy \
     -I$(kde_includes)/arts \
     $(taglib_includes) \
     $(all_includes)
+
+if with_included_sqlite
+    SUBDIRS += sqlite
+    INCLUDES += -I$(top_srcdir)/amarok/src/sqlite
+endif
 
 amarokapp_SOURCES = \
     Options1.ui \
@@ -80,11 +83,17 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/amarokcore/libamarokcore.la \
     $(top_builddir)/amarok/src/analyzers/libanalyzers.la \
     $(top_builddir)/amarok/src/engine/libengine.la \
-    $(top_builddir)/amarok/src/plugin/libplugin.la \
-    $(top_builddir)/amarok/src/sqlite/libsqlite.la \
-    $(top_builddir)/amarok/src/titleproxy/libtitleproxy.la \
+    $(top_builddir)/amarok/src/plugin/libplugin.la
+
+### Is the order important?
+### Preserving, just in case (Dato, 2004-07-01)
+if with_included_sqlite
+    amarokapp_LDADD += $(top_builddir)/amarok/src/sqlite/libsqlite.la
+endif
+
+amarokapp_LDADD += $(top_builddir)/amarok/src/titleproxy/libtitleproxy.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) \
-    $(taglib_libs) $(gl_libs) $(LIB_KJSEMBED) 
+    $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_KJSEMBED) 
 
 amarokapp_LDFLAGS = \
     $(all_libraries) \
@@ -132,3 +141,5 @@ install-exec-hook:
 	@echo "=  if the problems continue join us on #amarok.       ="
 	@echo "=                                                     ="
 	@echo "======================================================="
+
+

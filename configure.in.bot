@@ -64,6 +64,30 @@ if test x$have_gst_plugins = xno -a x$have_gst = xyes; then
 
 fi
 
+if test x$included_sqlite = xno; then
+  if test x$have_sqlite = xyes; then
+    echo "================================================================================"
+    echo "=  amaroK - WARNING  ==========================================================="
+    echo "================================================================================"
+    echo "=                                                                              ="
+    echo "=  You have passed the --without-included-sqlite option to configure, which    ="
+    echo "=  means that SQLite will be dynamically linked instead of statically linked.  ="
+    echo "=  IMPORTANT: please make sure the libsqlite.so library in your system is      ="
+    echo "=  threadsafe!!! amaroK won't work propely otherwise. You have been warned.    ="
+    echo "=                                                                           ===="
+  else
+    echo "================================================================================"
+    echo "=  amaroK - ERROR  ============================================================="
+    echo "================================================================================"
+    echo "=                                                                              ="
+    echo "=  You have passed the --without-included-sqlite option to configure, but      ="
+    echo "=  the development files of SQLite could not be found. Please make sure you    ="
+    echo "=  have the relevant package installed or, even better, use the included       ="
+    echo "=  sqlite (unless you *really* know what you're doing, of course).             ="
+    echo "=                                                                           ===="
+  fi
+fi
+
 if test x$no_amarok = xyes; then
     echo "================================================================================"
     echo "=  AMAROK WILL NOT BE BUILT  ==================================================="

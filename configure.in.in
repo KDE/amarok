@@ -264,6 +264,42 @@ fi
 
 
 ###############################################################################
+# BEGIN SQLITE CHECK
+###############################################################################
+LIB_SQLITE=""
+
+AC_ARG_WITH(included-sqlite,
+    AC_HELP_STRING([--without-included-sqlite],[don't use the included sqlite sources [default=yes]]),
+    [included_sqlite=$withval],
+    [included_sqlite=yes]
+)
+
+if test "$included_sqlite" = "no"; then
+    if test "$PKGCONFIGFOUND" = "yes" ; then
+        KDE_PKG_CHECK_MODULES(SQLITE, sqlite >= 2.8, have_sqlite=yes,have_sqlite=no)
+
+        if test x$have_sqlite = xyes; then
+            dnl  AC_DEFINE(HAVE_SQLITE, 1, [have SQLite database library])
+            LIB_SQLITE=$SQLITE_LIBS
+        else
+            # We don't support not having sqlite anymore
+            DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
+            no_amarok=yes
+        fi
+    fi
+fi
+
+AC_SUBST(LIB_SQLITE)
+AM_CONDITIONAL(with_included_sqlite, [test x$included_sqlite = xyes])
+
+
+###############################################################################
+# END SQLITE CHECK
+###############################################################################
+
+
+
+###############################################################################
 # BEGIN XMMS CHECK
 ###############################################################################
 
