@@ -160,10 +160,9 @@ void ContextBrowser::openURLRequest( const KURL &url )
     }
 
 #ifdef AMAZON_SUPPORT
-
     /* fetch covers from amazon on click */
-    if ( m_url.protocol() == "fetchcover" ) m_db->fetchCover( this, info[0], info[1], false );
-
+    if ( m_url.protocol() == "fetchcover" )
+        m_db->fetchCover( this, info[0], info[1], false );
 #else
     if ( m_url.protocol() == "fetchcover" )
     {

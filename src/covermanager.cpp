@@ -62,10 +62,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
 
     //load artists from the collection db
     QStringList values;
-    QStringList names;
-    m_db->execSql( "SELECT DISTINCT artist.name FROM tags, artist, album "
-                   "WHERE tags.sampler = 0 AND tags.album = album.id AND artist.name <> 'Unknown' AND album.name <> 'Unknown' AND artist.id=tags.artist "
-                   "ORDER BY artist.name;", &values, &names );
+    values = m_db->artistList( false, false );
 
     if( !values.isEmpty() ) {
         for( uint i=0; i < values.count(); i++ )  {
@@ -201,19 +198,12 @@ void CoverManager::expandItem( QListViewItem *item ) //SLOT
     if (!item) return;
 
     QStringList values;
-    QStringList names;
-    QString id;
 
     if ( item == m_artistView->firstChild() )
-    {
         //All Artists
-        id = "artist.id";
-    } else
-        id = QString::number( m_db->getValueID( "artist", item->text(0) ) );
-
-    m_db->execSql("SELECT DISTINCT album.name FROM album, artist, tags "
-                  "WHERE tags.sampler = 0 AND album.name <> 'Unknown' AND tags.album = album.id AND tags.artist = " + id + " "
-                  "ORDER BY album.name;", &values, &names );
+        values = m_db->albumList( false, false );
+    else
+        values = m_db->albumListOfArtist( item->text( 0 ), false, false );
 
     if ( !values.isEmpty() )
     {

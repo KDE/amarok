@@ -38,8 +38,9 @@ class CollectionDB : public QObject
         QString getImageForPath( const QString path, const QString defaultImage, const uint width = AmarokConfig::coverPreviewSize() );
         void addImageToPath( const QString path, const QString image, bool temporary );
 
-        QStringList artistList();
-        QStringList albumList();
+        QStringList artistList( bool withUnknown = true, bool withCompilations = true );
+        QStringList albumList( bool withUnknown = true, bool withCompilations = true );
+        QStringList albumListOfArtist( const QString artist, bool withUnknown = true, bool withCompilations = true );
 
         bool getMetaBundleForUrl( const QString url, MetaBundle *bundle );
         float addSongPercentage( const QString url, const int percentage );

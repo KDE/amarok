@@ -287,26 +287,47 @@ CollectionDB::removeImageFromAlbum( const QString artist, const QString album )
 
 
 QStringList
-CollectionDB::artistList()
+CollectionDB::artistList( bool withUnknown, bool withCompilations )
 {
     QStringList values;
     QStringList names;
 
-    execSql( "SELECT name FROM artist "
-                  "ORDER BY lower(name)", &values, &names );
+    execSql( "SELECT DISTINCT artist.name FROM artist, tags WHERE 1 " + 
+             ( withUnknown ? QString() : "AND artist.name <> 'Unknown' " ) + 
+             ( withCompilations ? QString() : "AND tags.artist = artist.id AND tags.sampler = 0 " ) +
+             "ORDER BY lower( artist.name );", &values, &names );
 
     return values;
 }
 
 
 QStringList
-CollectionDB::albumList()
+CollectionDB::albumList( bool withUnknown, bool withCompilations )
 {
     QStringList values;
     QStringList names;
 
-    execSql( "SELECT name FROM album "
-                  "ORDER BY lower(name)", &values, &names );
+    execSql( "SELECT DISTINCT album.name FROM album, tags WHERE 1 " + 
+             ( withUnknown ? QString() : "AND album.name <> 'Unknown' " ) + 
+             ( withCompilations ? QString() : "AND tags.album = album.id AND tags.sampler = 0 " ) +
+             "ORDER BY lower( album.name );", &values, &names );
+
+    return values;
+}
+
+
+QStringList
+CollectionDB::albumListOfArtist( const QString artist, bool withUnknown, bool withCompilations )
+{
+    QStringList values;
+    QStringList names;
+
+    execSql( "SELECT DISTINCT album.name FROM album, artist, tags WHERE 1 "
+             "AND tags.album = album.id AND tags.artist = artist.id "
+             "AND artist.name = '" + escapeString( artist ) + "' " +
+             ( withUnknown ? QString() : "AND album.name <> 'Unknown' " ) +
+             ( withCompilations ? QString() : "AND tags.sampler = 0 " ) +
+             "ORDER BY lower( album.name );", &values, &names, true );
 
     return values;
 }
