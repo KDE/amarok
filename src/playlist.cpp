@@ -288,6 +288,9 @@ void
 Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool directPlay )
 {
     //TODO directPlay handling
+    m_ac->action( "play" )->setEnabled( true );
+    m_ac->action( "prev" )->setEnabled( true );
+    m_ac->action( "next" )->setEnabled( true );
 
     if( list.count() == 1 )
     {
@@ -359,6 +362,7 @@ Playlist::restoreSession()
 void
 Playlist::playNextTrack()
 {
+        
     PlaylistItem *item = currentTrack();
 
     if( !AmarokConfig::repeatTrack() )
@@ -681,6 +685,25 @@ Playlist::engineStateChanged( Engine::State state )
 ////////////////////////////////////////////////////////////////////////////////
 
 void
+Playlist::appendMedia( const QString &path )
+{
+    appendMedia( KURL::fromPathOrURL( path ) );
+    m_ac->action( "prev" )->setEnabled( true );
+    m_ac->action( "next" )->setEnabled( true );
+    m_ac->action( "play" )->setEnabled( true );
+}
+
+void
+Playlist::appendMedia( const KURL &url )
+{
+    appendMedia( KURL::List( url ) );
+    m_ac->action( "prev" )->setEnabled( true );
+    m_ac->action( "next" )->setEnabled( true );
+    m_ac->action( "play" )->setEnabled( true );
+
+}
+
+void
 Playlist::clear() //SLOT
 {
     emit aboutToClear(); //will saveUndoState()
@@ -691,6 +714,7 @@ Playlist::clear() //SLOT
     m_totalLength = 0;
 
     // Update player button states
+    m_ac->action( "play" )->setEnabled( false );
     m_ac->action( "prev" )->setEnabled( false );
     m_ac->action( "next" )->setEnabled( false );
 

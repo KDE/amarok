@@ -112,8 +112,8 @@ class Playlist : private KListView, public EngineObserver
         void itemCountChanged( int newCount, int newLength );
 
     public slots:
-        void appendMedia( const QString &path ) { appendMedia( KURL::fromPathOrURL( path ) ); }
-        void appendMedia( const KURL &url )     { appendMedia( KURL::List( url ) ); }
+        void appendMedia( const QString &path );
+        void appendMedia( const KURL &url );
         void clear();
         void shuffle();
         void removeSelectedItems();
