@@ -546,6 +546,9 @@ void ContextBrowser::showCurrentTrack() //SLOT
     delete m_db;
     m_db = new CollectionDB();
 
+    uint artist_id = m_db->getValueID( "artist", m_currentTrack->artist() );
+    uint album_id = m_db->getValueID( "album", m_currentTrack->album() );
+
     // Triggers redisplay when new cover image is downloaded
     connect( m_db, SIGNAL( coverFetched() ), this, SLOT( showCurrentTrack() ) );
 
@@ -562,18 +565,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     browser->write( menu.arg( i18n("Home") ).arg( EngineController::engine()->isStream() ? i18n("Current Stream") : i18n("Current Track") ) );
 
-    if ( !m_db->isFileInCollection( m_currentTrack->url().path() ) )
-    {
-        browser->write( "<div style='padding: 1em 0.5em 2em 0.5em'>");
-        browser->write(   i18n("If you would like to see contextual information about this track, "
-                               "you must add it to your Collection.") );
-        browser->write(  "&nbsp;"
-                         "<a href='show:collectionSetup'>" );
-        browser->write(    i18n( "Click here to change your Collection setup" ) );
-        browser->write(  "</a>."
-                        "</div>" );
-    }
-
     // <Current Track Information>
     browser->write( "<div class='rbcontent'>"
                      "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
@@ -581,10 +572,10 @@ void ContextBrowser::showCurrentTrack() //SLOT
                      "</table>"
                      "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-    m_db->execSql( QString( "SELECT album.name, artist.name, datetime( datetime( statistics.createdate, 'unixepoch' ), 'localtime' ), "
+    m_db->execSql( QString( "SELECT datetime( datetime( statistics.createdate, 'unixepoch' ), 'localtime' ), "
                             "datetime( datetime( statistics.accessdate, 'unixepoch' ), 'localtime' ), statistics.playcounter, round( statistics.percentage + 0.5 ) "
-                            "FROM tags, album, artist, statistics "
-                            "WHERE album.id = tags.album AND artist.id = tags.artist AND statistics.url = tags.url AND tags.url = '%1';" )
+                            "FROM  statistics "
+                            "WHERE url = '%1';" )
                    .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names );
 
     if ( !values.isEmpty() )
@@ -623,20 +614,15 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                 << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) )
                                 << escapeHTMLAttr( m_currentTrack->artist() )
                                 << escapeHTMLAttr( m_currentTrack->album() )
-                                << escapeHTMLAttr( m_db->getImageForAlbum( values[1], values[0] ) )
-                                << i18n( "Track played once", "Track played %n times", values[4].toInt() )
-                                << i18n( "Score: %1" ).arg( values[5] )
-                                << i18n( "Last play: %1" ).arg( values[3].left( values[3].length() - 3 ) )
-                                << i18n( "First play: %1" ).arg( values[2].left( values[2].length() - 3 ) )
+                                << escapeHTMLAttr( m_db->getImageForAlbum( m_currentTrack->artist(), m_currentTrack->album() ) )
+                                << i18n( "Track played once", "Track played %n times", values[2].toInt() )
+                                << i18n( "Score: %1" ).arg( values[3] )
+                                << i18n( "Last play: %1" ).arg( values[1].left( values[1].length() - 3 ) )
+                                << i18n( "First play: %1" ).arg( values[0].left( values[0].length() - 3 ) )
                                 )
                          );
     else
     {
-        m_db->execSql( QString( "SELECT album.name, artist.name "
-                                "FROM tags, album, artist "
-                                "WHERE album.id = tags.album AND artist.id = tags.artist AND tags.url = '%1';" )
-                      .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names );
-
              browser->write( QStringx ( "<tr><td height='42' valign='top' class='rbcurrent' width='90%'>"
                                         "<span class='album'><b>%1 - %2</b></span><br>%3</td>"
                                         "<td valign='top' align='right' width='10%'><a href='musicbrainz:%4 @@@ %5'>"
@@ -654,7 +640,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                     << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) )
                                     << escapeHTMLAttr( m_currentTrack->artist() )
                                     << escapeHTMLAttr( m_currentTrack->album() )
-                                    << escapeHTMLAttr( m_db->getImageForAlbum( values[1], values[0] ) )
+                                    << escapeHTMLAttr( m_db->getImageForAlbum( m_currentTrack->artist(), m_currentTrack->album() ) )
                                     )
                              );
     }
@@ -664,13 +650,25 @@ void ContextBrowser::showCurrentTrack() //SLOT
     browser->write( "</table></div>" );
     // </Current Track Information>
 
+    if ( !m_db->isFileInCollection( m_currentTrack->url().path() ) )
+    {
+        browser->write( "<div style='padding: 1em 0.5em 2em 0.5em'>");
+        browser->write(   i18n("If you would like to see contextual information about this track, "
+                               "you must add it to your Collection.") );
+        browser->write(  "&nbsp;"
+                         "<a href='show:collectionSetup'>" );
+        browser->write(    i18n( "Click here to change your Collection setup" ) );
+        browser->write(  "</a>."
+                        "</div>" );
+    }
+
     // <Favourite Tracks Information>
     m_db->execSql( QString( "SELECT tags.title, tags.url, round( statistics.percentage + 0.5 ) "
-                            "FROM tags, artist, statistics "
-                            "WHERE tags.artist = artist.id AND artist.name LIKE '%1' AND statistics.url = tags.url "
+                            "FROM tags, statistics "
+                            "WHERE tags.artist = %1 AND statistics.url = tags.url "
                             "ORDER BY statistics.percentage DESC "
                             "LIMIT 0,5;" )
-                   .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names );
+                   .arg( artist_id ), &values, &names );
 
     if ( !values.isEmpty() )
     {
@@ -694,14 +692,13 @@ void ContextBrowser::showCurrentTrack() //SLOT
     // <Tracks on this album>
     if ( !m_currentTrack->album().isEmpty() && !m_currentTrack->artist().isEmpty() )
     {
-        m_db->execSql( QString( "SELECT tags.title, tags.url, tags.track "
-                                "FROM tags, artist, album "
-                                "WHERE tags.album = album.id AND album.name LIKE '%1' AND "
-                                      "tags.artist = artist.id AND "
-                                      "( tags.sampler = 1 OR artist.name LIKE '%2' ) "
+        m_db->execSql( QString( "SELECT title, url, track "
+                                "FROM tags "
+                                "WHERE album = %1 AND "
+                                "( tags.sampler = 1 OR tags.artist = %2 ) "
                                 "ORDER BY tags.track;" )
-                       .arg( m_db->escapeString( m_currentTrack->album() ) )
-                       .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names );
+                       .arg( album_id )
+                       .arg( artist_id ), &values, &names );
 
         if ( !values.isEmpty() )
         {
@@ -726,11 +723,11 @@ void ContextBrowser::showCurrentTrack() //SLOT
     // </Tracks on this album>
 
     // <Albums by this artist>
-    m_db->execSql( QString( "SELECT DISTINCT album.name, artist.name, album.id, artist.id "
-                            "FROM tags, album, artist "
-                            "WHERE album.id = tags.album AND tags.artist = artist.id AND album.name <> '' AND artist.name LIKE '%1' "
+    m_db->execSql( QString( "SELECT DISTINCT album.name, album.id "
+                            "FROM tags, album "
+                            "WHERE album.id = tags.album AND tags.artist = %1 AND album.name <> '' "
                             "ORDER BY album.name;" )
-                   .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names );
+                   .arg( artist_id ), &values, &names );
 
     if ( !values.isEmpty() )
     {
@@ -740,7 +737,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         browser->write( "</table>" );
         browser->write( "<table width='100%' border='0' cellspacing='2' cellpadding='0'>" );
 
-        for ( uint i = 0; i < values.count(); i += 4 )
+        for ( uint i = 0; i < values.count(); i += 2 )
         {
             browser->write( QStringx ( "<tr>"
                                         "<td class='rbalbum' onClick='window.location.href=\"album:%1 @@@ %2\"' height='42' valign='top'>"
@@ -752,15 +749,14 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                         "</td>"
                                        "</tr>" )
                             .args( QStringList()
-                                    << values[i + 3].replace( "\"", "%22" ) // artist.id
-                                    << values[i + 2].replace( "\"", "%22" ) // album.id
-                                    << escapeHTMLAttr( values[i + 1] ) // artist.name
-                                    << escapeHTMLAttr( values[i + 0] ) // album.name
-                                    << escapeHTMLAttr( m_db->getImageForAlbum( values[i + 1], values[i + 0], 50 ) )
-                                    << escapeHTML( values[i + 0] ) // album.name
-                                    << i18n( "1 Track", "%n Tracks", m_db->albumSongCount( values[i + 3], values[i + 2] ).toInt() )
-                                    )
-                             );
+                                    << QString::number( artist_id )
+                                    << values[ i+1 ] //album.id
+                                    << escapeHTMLAttr( m_currentTrack->artist() ) // artist name
+                                    << escapeHTMLAttr( values[ i ] ) // album.name
+                                    << escapeHTMLAttr( m_db->getImageForAlbum( m_currentTrack->artist(), values[ i ], 50 ) )
+                                    << escapeHTML( values[ i ] ) // album.name
+                                    << i18n( "1 Track", "%n Tracks", m_db->albumSongCount( QString::number(artist_id), values[ i+1 ] ).toInt() )
+                             ) );
         }
         browser->write( "</table></div>" );
     }
