@@ -2,8 +2,6 @@ TAGLIB_TAGLIB_H=yes;
 TAGLIB_REQ_VERSION="0.95";
 TAGLIB_CONFIG="taglib-config";
 
-KDE_CHECK_HEADER(taglib/taglib.h,TAGLIB_TAGLIB_H=yes,TAGLIB_TAGLIB_H=no)
-
 dnl -- check for the artsgui library
 AC_DEFUN(AC_PATH_LIBARTSGUI,
 [
@@ -59,22 +57,25 @@ if test "$ac_artsgui_libraries" = NO;
 then
         AC_MSG_RESULT([not found.  amaroK build will be disabled.])
 else
-        AC_MSG_RESULT([found in $ac_artsgui_libraries])
+	AC_MSG_RESULT([found in $ac_artsgui_libraries])
+	
+	dnl check for taglib if bundled...
 	if test -d "taglib/"; then
 		AC_MSG_CHECKING(for TagLib);
 		AC_MSG_RESULT(bundled);
 	else
+		KDE_CHECK_HEADER(taglib/taglib.h,TAGLIB_TAGLIB_H=yes,TAGLIB_TAGLIB_H=no)
 		if test "$TAGLIB_TAGLIB_H" = "no"; then
 			AC_MSG_RESULT([Missing TagLib includes... amaroK will not be compiled])
 			DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
 		else
 			AC_SUBST(TAGLIB_REQ_VERSION)
-			AC_MSG_CHECKING(for TagLib libraries >= $TAGLIB_REQ_VERSION)
+			AC_MSG_CHECKING(for taglib-config >= $TAGLIB_REQ_VERSION)
 			if test "$TAGLIB_VERSION_OK" = "no"; then 
 				AC_MSG_RESULT(found old... Please check http://ktown.kde.org/~wheeler/taglib/ for newer version);
 				DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
 			elif test "$TAGLIB_VERSION_OK" = "missing"; then
-				AC_MSG_RESULT(not found... Please check http://ktown.kde.org/~wheeler/taglib/ for source code...)
+				AC_MSG_RESULT(not found... Please check http://ktown.kde.org/~wheeler/taglib/ for TagLib package)
 				DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
 			else
 				AC_MSG_RESULT(good);
