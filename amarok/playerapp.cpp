@@ -76,11 +76,14 @@ PlayerApp::PlayerApp()
     setName( "amarok" );
     pApp = this; //global
 
+    if ( AmarokConfig::showSplashscreen() )
+    {
+        m_pOSD->showSplash( locate( "data", "amarok/images/logo_splash.png" ) );
+        kapp->processEvents();
+    }
+            
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
-    if ( AmarokConfig::showSplashscreen() )
-        m_pOSD->showSplash( locate( "data", "amarok/images/logo_splash.png" ) );
-    
     initPlayerWidget();
     initBrowserWin();
 
