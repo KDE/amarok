@@ -584,7 +584,7 @@ void ContextBrowser::showHome() //SLOT
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
-    qb.setLimit( 0, 40 );
+    qb.setLimit( 0, 10 );
     QStringList fave = qb.run();
 
     qb.clear();
@@ -593,7 +593,7 @@ void ContextBrowser::showHome() //SLOT
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
-    qb.setLimit( 0, 25 );
+    qb.setLimit( 0, 10 );
     QStringList recent = qb.run();
 
     qb.clear();
@@ -603,12 +603,8 @@ void ContextBrowser::showHome() //SLOT
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
-    qb.setLimit( 0, 25 );
+    qb.setLimit( 0, 10 );
     QStringList least = qb.run();
-
-    QString ftBox;
-    QString ntBox;
-    QString ltBox;
 
     m_homePage->begin();
     m_HTMLSource="";
@@ -622,28 +618,23 @@ void ContextBrowser::showHome() //SLOT
                     "<span id='favorites_box-header-title' class='box-header-title'>"
                     + i18n( "Your Favorite Tracks" ) +
                     "</span>"
-                "</div>"
-                       );
+                "</div>" );
 
     if ( fave.count() == 0 )
     {
         m_HTMLSource.append(
                 "<div class='info'><p>" +
                 i18n( "A list of your favorite tracks will appear here, once you have played a few of your songs." ) +
-                "</p></div>"
-                           );
+                "</p></div>" );
     }
     else
     {
-        m_HTMLSource.append( "<iframe name='ftframe' width='100%' style='vertical-align:bottom;'></iframe>" );
-        ftBox.append( "<html>"
-                        "<style type='text/css'>body { margin-left: 0px; margin-right: 0px; margin-top: 0px; margin-bottom: 0px }</style>"
-                        "<div id='favorites_box-body' class='box-body'>"
-                            "<table border='0' cellspacing='0' cellpadding='0' width='100%' class='song'>" );
+        m_HTMLSource.append( "<div id='favorites_box-body' class='box-body'>"
+                             "<table border='0' cellspacing='0' cellpadding='0' width='100%' class='song'>" );
 
         for( uint i = 0; i < fave.count(); i = i + 5 )
         {
-            ftBox.append(       "<tr class='" + QString( (i % 10) ? "box-row-alt" : "box-row" ) + "'>"
+            m_HTMLSource.append(    "<tr class='" + QString( (i % 10) ? "box-row-alt" : "box-row" ) + "'>"
                                     "<td width='30' align='center' class='song-place'>" + QString::number( ( i / 5 ) + 1 ) + "</td>"
                                     "<td>"
                                         "<a href=\"file:" + fave[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
@@ -651,10 +642,10 @@ void ContextBrowser::showHome() //SLOT
                                             "<span class='song-artist'>" + fave[i + 3] + "</span>" );
 
             if ( !fave[i + 4].isEmpty() )
-                ftBox.append(               "<span class='song-separator'> - </span>"
+                m_HTMLSource.append(        "<span class='song-separator'> - </span>"
                                             "<span class='song-album'>"+ fave[i + 4] +"</span>" );
 
-            ftBox.append(               "</a>"
+            m_HTMLSource.append(        "</a>"
                                     "</td>"
                                     "<td class='sbtext'>" + fave[i + 2] + "</td>"
                                     "<td width='1' title='" + i18n( "Score" ) + "'>"
@@ -666,9 +657,8 @@ void ContextBrowser::showHome() //SLOT
                                 "</tr>" );
         }
 
-        ftBox.append(       "</table>"
-                        "</div>"
-                      "</html>" );
+        m_HTMLSource.append( "</table>"
+                             "</div>" );
     }
 
     m_HTMLSource.append(
@@ -683,14 +673,11 @@ void ContextBrowser::showHome() //SLOT
                     + i18n( "Your Newest Tracks" ) +
                     "</span>"
                 "</div>"
-                "<iframe name='ntframe' width='100%' style='vertical-align:bottom;'></iframe>"
-                       );
-
-    ntBox.append( "<html><style type='text/css'>body { margin-left: 0px; margin-right: 0px; margin-top: 0px; margin-bottom: 0px }</style><div id='newest_box-body' class='box-body'>" );
+                "<div id='newest_box-body' class='box-body'>" );
 
     for( uint i = 0; i < recent.count(); i = i + 4 )
     {
-        ntBox.append(
+        m_HTMLSource.append(
                  "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
                     "<div class='song'>"
                         "<a href=\"file:" + recent[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
@@ -699,19 +686,18 @@ void ContextBrowser::showHome() //SLOT
                     );
 
         if ( !recent[i + 3].isEmpty() )
-            ntBox.append(
+            m_HTMLSource.append(
                         "<span class='song-separator'> - </span>"
                         "<span class='song-album'>" + recent[i + 3] + "</span>"
                         );
 
-        ntBox.append(
+        m_HTMLSource.append(
                         "</a>"
                     "</div>"
                 "</div>"
                     );
     }
 
-    ntBox.append( "</div></html>" );
     m_HTMLSource.append(
                 "</div>"
             "</div>"
@@ -726,7 +712,7 @@ void ContextBrowser::showHome() //SLOT
                     + i18n( "Least Played Tracks" ) +
                     "</span>"
                 "</div>"
-                       );
+                "<div id='least_box-body' class='box-body'>" );
 
     if ( least.count() == 0 )
     {
@@ -738,14 +724,11 @@ void ContextBrowser::showHome() //SLOT
     }
     else
     {
-        m_HTMLSource.append( "<iframe name='ltframe' width='100%' style='vertical-align:bottom;'></iframe>" );
-        ltBox.append( "<html><style type='text/css'>body { margin-left: 0px; margin-right: 0px; margin-top: 0px; margin-bottom: 0px }</style><div id='least_box-body' class='box-body'>" );
-
         QDateTime lastPlay = QDateTime();
         for( uint i = 0; i < least.count(); i = i + 5 )
         {
             lastPlay.setTime_t( least[i + 4].toUInt() );
-            ltBox.append(
+            m_HTMLSource.append(
                     "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
                         "<div class='song'>"
                             "<a href=\"file:" + least[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
@@ -754,12 +737,12 @@ void ContextBrowser::showHome() //SLOT
                         );
 
             if ( !least[i + 3].isEmpty() )
-                ltBox.append(
+                m_HTMLSource.append(
                             "<span class='song-separator'> - </span>"
                             "<span class='song-album'>" + least[i + 3] + "</span>"
                             );
 
-            ltBox.append(
+            m_HTMLSource.append(
                             "<br /><span class='song-time'>" + i18n( "Last played: %1" ).arg( verboseTimeSince( lastPlay ) ) + "</span>"
                             "</a>"
                         "</div>"
@@ -767,7 +750,7 @@ void ContextBrowser::showHome() //SLOT
                         );
         }
 
-        ltBox.append( "</div></html>" );
+        m_HTMLSource.append( "</div>" );
     }
 
     m_HTMLSource.append(
@@ -780,46 +763,6 @@ void ContextBrowser::showHome() //SLOT
 
     m_homePage->write( m_HTMLSource );
     m_homePage->end();
-
-
-    // fill frames
-    if ( !ftBox.isEmpty() )
-    {
-        connect( m_homePage->findFrame( "ftframe" )->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
-                 this,                                                     SLOT( openURLRequest( const KURL & ) ) );
-        connect( m_homePage->findFrame( "ftframe" ), SIGNAL( popupMenu( const QString&, const QPoint& ) ),
-                 this,                                 SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
-
-        m_homePage->findFrame( "ftframe" )->begin();
-        m_homePage->findFrame( "ftframe" )->setUserStyleSheet( m_styleSheet );
-        m_homePage->findFrame( "ftframe" )->write( ftBox );
-        m_homePage->findFrame( "ftframe" )->end();
-
-    }
-    if ( !ntBox.isEmpty() )
-    {
-        connect( m_homePage->findFrame( "ntframe" )->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
-                 this,                                                     SLOT( openURLRequest( const KURL & ) ) );
-        connect( m_homePage->findFrame( "ntframe" ), SIGNAL( popupMenu( const QString&, const QPoint& ) ),
-                 this,                                 SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
-
-        m_homePage->findFrame( "ntframe" )->begin();
-        m_homePage->findFrame( "ntframe" )->setUserStyleSheet( m_styleSheet );
-        m_homePage->findFrame( "ntframe" )->write( ntBox );
-        m_homePage->findFrame( "ntframe" )->end();
-    }
-    if ( !ltBox.isEmpty() )
-    {
-        connect( m_homePage->findFrame( "ltframe" )->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
-                 this,                                                     SLOT( openURLRequest( const KURL & ) ) );
-        connect( m_homePage->findFrame( "ltframe" ), SIGNAL( popupMenu( const QString&, const QPoint& ) ),
-                 this,                                 SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
-
-        m_homePage->findFrame( "ltframe" )->begin();
-        m_homePage->findFrame( "ltframe" )->setUserStyleSheet( m_styleSheet );
-        m_homePage->findFrame( "ltframe" )->write( ltBox );
-        m_homePage->findFrame( "ltframe" )->end();
-    }
 
     m_dirtyHomePage = false;
     saveHtmlData(); // Send html code to file
@@ -929,8 +872,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
     const uint artist_id = CollectionDB::instance()->artistID( currentTrack.artist() );
     const uint album_id  = CollectionDB::instance()->albumID ( currentTrack.album() );
     const QString pctWidth = QString::number( fontMetrics().width( "999" ) );
-    QString ssBox;
-    QString fsBox;
 
     QueryBuilder qb;
     // <Current Track Information>
@@ -1068,11 +1009,11 @@ void ContextBrowser::showCurrentTrack() //SLOT
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
         qb.addMatches( QueryBuilder::tabArtist, relArtists );
         qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valScore, true );
-        qb.setLimit( 0, 10 );
+        qb.setLimit( 0, 5 );
         values = qb.run();
 
         // not enough items returned, let's fill the list with score-less tracks
-        if ( values.count() < 20 * qb.countReturnValues() )
+        if ( values.count() < 5 * qb.countReturnValues() )
         {
             qb.clear();
             qb.exclusiveFilter( QueryBuilder::tabSong, QueryBuilder::tabStats, QueryBuilder::valURL );
@@ -1081,7 +1022,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
             qb.addMatches( QueryBuilder::tabArtist, relArtists );
             qb.setOptions( QueryBuilder::optRandomize );
-            qb.setLimit( 0, 20 - values.count() / 4 );
+            qb.setLimit( 0, 5 - values.count() / 4 );
 
             QStringList sl;
             sl = qb.run();
@@ -1103,13 +1044,10 @@ void ContextBrowser::showCurrentTrack() //SLOT
                     + i18n( "Suggested Songs" ) +
                     "</span>"
                 "</div>"
-                "<div id='T_SS'><iframe name='ssframe' height='130' width='100%' style='vertical-align:bottom;'></iframe></div></div>" );
-
-            ssBox.append( "<html><style type='text/css'>body { margin-left: 0px; margin-right: 0px; margin-top: 0px; margin-bottom: 0px }</style>"
-                          "<table class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+                "<table class='box-body' id='T_SS' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
             for ( uint i = 0; i < values.count(); i += 4 )
-                ssBox.append(
+                m_HTMLSource.append(
                     "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
                         "<td class='song'>"
                             "<a href=\"file:" + values[i].replace( '"', QCString( "%22" ) ) + "\">"
@@ -1127,9 +1065,9 @@ void ContextBrowser::showCurrentTrack() //SLOT
                         "<td width='3'></td>"
                     "</tr>" );
 
-            ssBox.append(
+            m_HTMLSource.append(
                  "</table>"
-               "</html>" );
+             "</div>" );
 
             if ( !m_suggestionsOpen )
                 m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_SS');</script>" );
@@ -1157,13 +1095,10 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 + i18n( "Favorite Tracks By %1" ).arg( artistName ) +
                 "</span>"
             "</div>"
-            "<div id='T_FT'><iframe name='fsframe' height='130' width='100%' style='vertical-align:bottom;'></iframe></div></div>" );
-
-            fsBox.append( "<html><style type='text/css'>body { margin-left: 0px; margin-right: 0px; margin-top: 0px; margin-bottom: 0px }</style>"
-                          "<table class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+            "<table class='box-body' id='T_FT' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
         for ( uint i = 0; i < values.count(); i += 3 )
-            fsBox.append(
+            m_HTMLSource.append(
                 "<tr class='" + QString( (i % 6) ? "box-row-alt" : "box-row" ) + "'>"
                     "<td class='song'>"
                         "<a href=\"file:" + values[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
@@ -1180,8 +1115,8 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 "</tr>"
                                );
 
-        fsBox.append(
-            "</table>"
+        m_HTMLSource.append(
+                "</table>"
             "</div>" );
 
         if ( !m_favouritesOpen )
@@ -1427,31 +1362,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
     m_HTMLSource.append( "</html>" );
     m_currentTrackPage->write( m_HTMLSource );
     m_currentTrackPage->end();
-
-    if ( !ssBox.isEmpty() )
-    {
-        connect( m_currentTrackPage->findFrame( "ssframe" )->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
-                 this,                                                             SLOT( openURLRequest( const KURL & ) ) );
-        connect( m_currentTrackPage->findFrame( "ssframe" ), SIGNAL( popupMenu( const QString&, const QPoint& ) ),
-                 this,                                         SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
-
-        m_currentTrackPage->findFrame( "ssframe" )->begin();
-        m_currentTrackPage->findFrame( "ssframe" )->setUserStyleSheet( m_styleSheet );
-        m_currentTrackPage->findFrame( "ssframe" )->write( ssBox );
-        m_currentTrackPage->findFrame( "ssframe" )->end();
-    }
-    if ( !fsBox.isEmpty() )
-    {
-        connect( m_currentTrackPage->findFrame( "fsframe" )->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
-                 this,                                                             SLOT( openURLRequest( const KURL & ) ) );
-        connect( m_currentTrackPage->findFrame( "fsframe" ), SIGNAL( popupMenu( const QString&, const QPoint& ) ),
-                 this,                                         SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
-
-        m_currentTrackPage->findFrame( "fsframe" )->begin();
-        m_currentTrackPage->findFrame( "fsframe" )->setUserStyleSheet( m_styleSheet );
-        m_currentTrackPage->findFrame( "fsframe" )->write( fsBox );
-        m_currentTrackPage->findFrame( "fsframe" )->end();
-    }
 
     m_dirtyCurrentTrackPage = false;
     saveHtmlData(); // Send html code to file
