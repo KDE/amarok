@@ -42,6 +42,7 @@
 #include "playlistloader.h"
 #include <qdir.h>
 #include <qhbox.h>
+#include <qiconview.h>
 #include <qlabel.h>
 #include <qtimer.h>
 #include <qtooltip.h>
@@ -138,6 +139,7 @@ FileBrowser::FileBrowser( const char * name )
         m_dir->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
 
         static_cast<QFrame*>(m_dir->viewWidget())->setFrameStyle( QFrame::NoFrame );
+        static_cast<QIconView*>(m_dir->viewWidget())->setSpacing( 1 );
 
         actionCollection = m_dir->actionCollection();
 
