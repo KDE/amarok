@@ -26,7 +26,6 @@
 #include <qsplitter.h>
 #include <qstringlist.h>
 #include <qtimer.h>    //search filter timer
-#include <qtoolbutton.h>
 #include <qtooltip.h>
 
 #include <kapplication.h>
@@ -44,6 +43,7 @@
 #include <ksqueezedtextlabel.h> //status label
 #include <kstandarddirs.h>   //KGlobal::dirs()
 #include <kstatusbar.h>
+#include <ktoolbar.h>
 #include <ktoolbarbutton.h>    //clear filter button
 #include <kurl.h>
 #include <kurldrag.h>
@@ -120,39 +120,32 @@ CoverManager::CoverManager()
         hbox->addWidget( m_searchBox );
     } //</Search LineEdit>
 
-    //view tool button
-    m_viewButton = new QToolButton( coverWidget );
-    m_viewButton->setText( i18n("View") );
-    m_viewButton->setAutoRaise( true );
-    m_viewButton->setPaletteBackgroundColor( colorGroup().background() );
-    hbox->addWidget( m_viewButton );
-    hbox->addStretch();
     // view menu
-    m_viewMenu = new KPopupMenu( m_viewButton );
+    m_viewMenu = new KPopupMenu( this );
     m_viewMenu->insertItem( i18n("All Albums"), AllAlbums );
     m_viewMenu->insertItem( i18n("Albums With Cover"), AlbumsWithCover );
     m_viewMenu->insertItem( i18n("Albums Without Cover"), AlbumsWithoutCover );
     m_viewMenu->setItemChecked( AllAlbums, true );
     connect( m_viewMenu, SIGNAL( activated(int) ), SLOT( changeView(int) ) );
-    m_viewButton->setPopup( m_viewMenu );
-    m_viewButton->setPopupDelay( 0 );
 
     #ifdef AMAZON_SUPPORT
-    m_amazonLocaleButton = new QToolButton( coverWidget );
-    m_amazonLocaleButton->setText( i18n("Amazon Locale") );
-    m_amazonLocaleButton->setAutoRaise( true );
-    m_amazonLocaleButton->setPaletteBackgroundColor( colorGroup().background() );
-    hbox->addWidget( m_amazonLocaleButton );
-    hbox->addStretch();
     // amazon locale menu
-    m_amazonLocaleMenu = new KPopupMenu( m_amazonLocaleButton );
+    m_amazonLocaleMenu = new KPopupMenu( this );
     m_amazonLocaleMenu->insertItem( i18n("International"), International );
     m_amazonLocaleMenu->insertItem( i18n("France"), France );
     m_amazonLocaleMenu->insertItem( i18n("Germany"), Germany );
     m_amazonLocaleMenu->insertItem( i18n("United Kingdom"), UK );
     connect( m_amazonLocaleMenu, SIGNAL( activated(int) ), SLOT( changeLocale(int) ) );
-    m_amazonLocaleButton->setPopup( m_amazonLocaleMenu );
-    m_amazonLocaleButton->setPopupDelay( 0 );
+    #endif
+
+    KToolBar* toolBar = new KToolBar( coverWidget );
+    toolBar->setIconText( KToolBar::IconTextRight );
+    toolBar->setFrameShape( QFrame::NoFrame );
+    hbox->addWidget( toolBar );
+    hbox->addStretch();
+    toolBar->insertButton( "view_choose", 1, m_viewMenu, true, i18n( "View" ) );
+    #ifdef AMAZON_SUPPORT
+    toolBar->insertButton( "babelfish", 2, m_amazonLocaleMenu, true, i18n( "Amazon Locale" ) );
 
     QString locale = AmarokConfig::amazonLocale();
 
