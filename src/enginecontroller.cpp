@@ -34,6 +34,7 @@ email                : fh@ez.no
 #include <kio/global.h>
 #include <kio/job.h>
 #include <kmessagebox.h>
+#include <krun.h>
 
 
 ExtensionCache EngineController::s_extensionCache;
@@ -170,9 +171,11 @@ amaroK::Plugin *EngineController::loadEngine( const QString &engineName )
        }
 
        if( !plugin ) {
+          KRun::runCommand( "kbuildsycoca" );
+
           KMessageBox::error( 0, i18n(
             "<p>amaroK could not find any sound-engine plugins. "
-            "Please run <i>kbuildsycoca</i> on the shell, then restart amaroK.</p>"
+            "amaroK is now updating the KDE configuration database. Please wait a couple of minutes, then restart amaroK.</p>"
             "<p>If this does not help, "
             "it is likely that amaroK is installed under the wrong prefix, please fix your installation using:<pre>"
             "$ cd /path/to/amarok/source-code/<br>"
