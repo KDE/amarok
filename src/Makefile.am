@@ -4,7 +4,7 @@ endif
 
 if with_included_sqlite
     SQLITE_SUBDIR = sqlite
-    LIB_SQLITE_LOCAL = $(top_builddir)/amarok/src/sqlite/libsqlite.la    
+    LIB_SQLITE_LOCAL = $(top_builddir)/amarok/src/sqlite/libsqlite.la
     sqlite_includes = -I$(top_srcdir)/amarok/src/sqlite
 endif
 
@@ -89,7 +89,7 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     $(top_builddir)/amarok/src/titleproxy/libtitleproxy.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) $(LIB_KJSEMBED) \
-    $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) 
+    $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL)
 
 amarokapp_LDFLAGS = \
     $(all_libraries) \
@@ -121,6 +121,12 @@ xdg_apps_DATA = \
 kde_servicetypes_DATA = \
     amarok_plugin.desktop
 
+servicemenudir = \
+    $(kde_datadir)/konqueror/servicemenus
+
+servicemenu_DATA = \
+    amarok_append.desktop
+
 messages: rc.cpp
 	$(EXTRACTRC) `find . -name "*.rc" -o -name "*.ui"` > rc.cpp
 	LIST=`find . -name \*.h -o -name \*.hh -o -name \*.H -o -name \*.hxx -o -name \*.hpp -o -name \*.cpp -o -name \*.cc -o -name \*.cxx -o -name \*.ecpp -o -name \*.C`; \
@@ -130,8 +136,9 @@ messages: rc.cpp
 
 install-exec-hook:
 	@echo ""
-	@echo "==========================="
+	@echo "======================================================="
 	@echo "=  amaroK - INSTALLED  ================================"
+	@echo "======================================================="
 	@echo "=                                                     ="
 	@echo "=  Type amarok to start!                              ="
 	@echo "=                                                     ="
