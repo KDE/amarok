@@ -1758,7 +1758,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         
     case STOP_DONE:
         // we could change the stopAfterCurrent( bool ) to stopAfterCurrent(), but imho, this is much more readable and intuitive - seb
-        m_stopAfterCurrent ? stopAfterCurrent( false ) : stopAfterCurrent( true );
+        stopAfterCurrent( !m_stopAfterCurrent );
         break;
 
     case VIEW:
