@@ -41,7 +41,7 @@ class ConfigDialog( QDialog ):
 
         self.file = file( "testrc", 'w' )
 
-        self.config = ConfigParser()
+        self.config = ConfigParser.ConfigParser()
         self.config.add_section( "General" )
         self.config.set( "General", "foo", foovar )
         self.config.write( self.file )
@@ -55,12 +55,14 @@ class Test( QApplication ):
 
     def __init__( self, args ):
         QApplication.__init__( self, args )
+        debug( "Started." )
 
         self.queue = Queue.Queue()
         self.startTimer( 100 )
 
-        self.t = threading.Thread( target = self.readStdin )
-        self.t.start()
+        # Start separate thread for reading data from stdin
+        self.stdinReader = threading.Thread( target = self.readStdin )
+        self.stdinReader.start()
 
         self.alarmTimer = QTimer()
         self.connect( self.alarmTimer, SIGNAL( "timeout()" ), self.wakeup )
@@ -85,6 +87,7 @@ class Test( QApplication ):
         """ Reads incoming notifications from stdin """
 
         while True:
+            # Read data from stdin. Will block until data arrives.
             line = sys.stdin.readline()
 
             if line:
@@ -131,15 +134,19 @@ class Test( QApplication ):
         self.connect( self.dia, SIGNAL( "destroyed()" ), self.readSettings )
 
     def engineStatePlay( self ):
+    """ Called when Engine state changes to Play """
         pass
 
     def engineStateIdle( self ):
+    """ Called when Engine state changes to Idle """
         pass
 
     def engineStatePause( self ):
+    """ Called when Engine state changes to Pause """
         pass
 
     def engineStateEmpty( self ):
+    """ Called when Engine state changes to Empty """
         pass
 
 
@@ -151,7 +158,7 @@ def debug( message ):
     print debug_prefix + " " + message
 
 def main( args ):
-    app = Alarm( args )
+    app = Test( args )
 
     app.exec_loop()
 
