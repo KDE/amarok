@@ -12,6 +12,9 @@ POST 0.7.0
   * add: combo with history and completion for dir/file chooser
   * add: in configure.in.in for checking the version of TagLib, if compiled from CVS, if not, 
          then show, that it uses bundled version of TagLib - Stormy
+  * fix: font dialog sizing issues
+  * add: resume playback option. Using this means your track starts up again where you left it
+         last time you quit amaroK. Excellent feature for us developers :-)
 
 VERSION 0.7.0:
   * fix: collection of fixes related to showing/raising/hiding the playlist

@@ -20,7 +20,8 @@
     <general>
       <mainprogram>amarok</mainprogram>
       <useconfiguration>default</useconfiguration>
-      <activetarget>amarok/amarokarts/libamarokarts.la</activetarget>
+      <activetarget>amarok/viswidgets/libviswidgets.a</activetarget>
+      <useactivetarget>true</useactivetarget>
     </general>
     <configure>
       <configargs>\s--build=i386-linux --host=i386-linux --target=i386-linux\s</configargs>
@@ -79,7 +80,7 @@
     </groups>
     <tree>
       <hidenonprojectfiles>false</hidenonprojectfiles>
-      <hidepatterns></hidepatterns>
+      <hidepatterns>*.o,*.lo,CVS</hidepatterns>
       <showvcsfields>true</showvcsfields>
     </tree>
   </kdevfileview>

@@ -144,7 +144,7 @@ void BrowserWin::initChildren()
     m_pBrowserLineEdit->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
     m_pBrowserLineEdit->setDuplicatesEnabled( false );
 
-    connect( m_pBrowserLineEdit, SIGNAL( returnPressed( const QString& ) ),
+    connect( m_pBrowserLineEdit, SIGNAL( activated( const QString& ) ),
              m_pBrowserWidget, SLOT( slotReturnPressed( const QString& ) ) );
     connect( m_pBrowserLineEdit, SIGNAL( returnPressed( const QString& ) ),
              m_pBrowserLineEdit, SLOT( addToHistory( const QString& ) ) );
@@ -486,8 +486,15 @@ void BrowserWin::slotKeyDelete()
 
 void BrowserWin::slotUpdateFonts()
 {
-    m_pBrowserWidget->setFont( pApp->m_optBrowserWindowFont );
-    m_pPlaylistWidget->setFont( pApp->m_optBrowserWindowFont );
+    QFont font;
+
+    if ( pApp->m_optUseCustomFonts )
+    {
+      font = pApp->m_optBrowserWindowFont;
+    }
+
+    m_pBrowserWidget->setFont( font );
+    m_pPlaylistWidget->setFont( font );
 }
 
 

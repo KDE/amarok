@@ -63,10 +63,5 @@ int main( int argc, char *argv[] )
 
     PlayerApp app;
 
-    if( app.isRestored() )
-    {
-      app.restore();
-    }
-
     return app.exec();
 }

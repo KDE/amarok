@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>Options4</class>
 <widget class="QWidget">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>456</width>
-            <height>236</height>
+            <width>376</width>
+            <height>246</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -31,14 +31,6 @@
             <property name="name">
                 <cstring>buttonGroup1</cstring>
             </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>3</hsizetype>
-                    <vsizetype>3</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
             <property name="frameShape">
                 <enum>GroupBoxPanel</enum>
             </property>
@@ -46,216 +38,183 @@
                 <enum>Sunken</enum>
             </property>
             <property name="title">
-                <string>&amp;Playback Options</string>
+                <string>Transition &amp;Behavior</string>
             </property>
-            <vbox>
+            <property name="whatsThis" stdset="0">
+                <string>&lt;b&gt;Transition Behavior&lt;/b&gt;
+&lt;p&gt;During playback, when amaroK transitions between tracks, it can either proceed to the next track instantly (with configurable gap), or crossfade (with configurable fade period).&lt;/p&gt;</string>
+            </property>
+            <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QCheckBox">
+                <widget class="QSpinBox" row="1" column="1">
                     <property name="name">
-                        <cstring>checkBoxXFade</cstring>
+                        <cstring>trackDelayLength</cstring>
                     </property>
-                    <property name="text">
-                        <string>Cross&amp;fade songs (continuous playback)</string>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
                     </property>
-                    <property name="accel">
-                        <string>Alt+F</string>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout12</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLayoutWidget">
-                            <property name="name">
-                                <cstring>layout11</cstring>
-                            </property>
-                            <grid>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="QLayoutWidget" row="0" column="0" rowspan="1" colspan="2">
-                                    <property name="name">
-                                        <cstring>layout10</cstring>
-                                    </property>
-                                    <hbox>
-                                        <property name="name">
-                                            <cstring>unnamed</cstring>
-                                        </property>
-                                        <spacer>
-                                            <property name="name">
-                                                <cstring>spacer8</cstring>
-                                            </property>
-                                            <property name="orientation">
-                                                <enum>Horizontal</enum>
-                                            </property>
-                                            <property name="sizeType">
-                                                <enum>Fixed</enum>
-                                            </property>
-                                            <property name="sizeHint">
-                                                <size>
-                                                    <width>30</width>
-                                                    <height>21</height>
-                                                </size>
-                                            </property>
-                                        </spacer>
-                                        <widget class="QLabel">
-                                            <property name="name">
-                                                <cstring>crossfadeLengthLabel</cstring>
-                                            </property>
-                                            <property name="sizePolicy">
-                                                <sizepolicy>
-                                                    <hsizetype>4</hsizetype>
-                                                    <vsizetype>5</vsizetype>
-                                                    <horstretch>0</horstretch>
-                                                    <verstretch>0</verstretch>
-                                                </sizepolicy>
-                                            </property>
-                                            <property name="text">
-                                                <string>Crossfade &amp;length:</string>
-                                            </property>
-                                            <property name="buddy" stdset="0">
-                                                <cstring>crossfadeLength</cstring>
-                                            </property>
-                                        </widget>
-                                    </hbox>
-                                </widget>
-                                <widget class="QLabel" row="1" column="0">
-                                    <property name="name">
-                                        <cstring>trackDelayLabel</cstring>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>4</hsizetype>
-                                            <vsizetype>5</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="text">
-                                        <string>Track delay:</string>
-                                    </property>
-                                    <property name="buddy" stdset="0">
-                                        <cstring>trackDelayLength</cstring>
-                                    </property>
-                                </widget>
-                                <widget class="QSpinBox" row="1" column="1" rowspan="1" colspan="2">
-                                    <property name="name">
-                                        <cstring>trackDelayLength</cstring>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>5</hsizetype>
-                                            <vsizetype>0</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="minimumSize">
-                                        <size>
-                                            <width>120</width>
-                                            <height>0</height>
-                                        </size>
-                                    </property>
-                                    <property name="suffix">
-                                        <string> s</string>
-                                    </property>
-                                    <property name="maxValue">
-                                        <number>10</number>
-                                    </property>
-                                    <property name="lineStep">
-                                        <number>1</number>
-                                    </property>
-                                    <property name="value">
-                                        <number>0</number>
-                                    </property>
-                                </widget>
-                                <widget class="QSpinBox" row="0" column="2">
-                                    <property name="name">
-                                        <cstring>crossfadeLength</cstring>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>2</hsizetype>
-                                            <vsizetype>0</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="minimumSize">
-                                        <size>
-                                            <width>120</width>
-                                            <height>0</height>
-                                        </size>
-                                    </property>
-                                    <property name="suffix">
-                                        <string> ms</string>
-                                    </property>
-                                    <property name="maxValue">
-                                        <number>99999999</number>
-                                    </property>
-                                    <property name="lineStep">
-                                        <number>100</number>
-                                    </property>
-                                    <property name="value">
-                                        <number>0</number>
-                                    </property>
-                                </widget>
-                            </grid>
-                        </widget>
-                        <spacer>
-                            <property name="name">
-                                <cstring>spacer11</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>71</width>
-                                    <height>21</height>
-                                </size>
-                            </property>
-                        </spacer>
-                    </hbox>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer5_2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Vertical</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
+                    <property name="minimumSize">
                         <size>
-                            <width>350</width>
-                            <height>46</height>
+                            <width>120</width>
+                            <height>0</height>
                         </size>
                     </property>
-                </spacer>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>checkBoxSwMixerOnly</cstring>
+                    <property name="suffix">
+                        <string> s</string>
                     </property>
-                    <property name="text">
-                        <string>Use only software &amp;mixer (requires restart)</string>
+                    <property name="maxValue">
+                        <number>10</number>
                     </property>
-                    <property name="accel">
-                        <string>Alt+M</string>
+                    <property name="lineStep">
+                        <number>1</number>
+                    </property>
+                    <property name="value">
+                        <number>0</number>
                     </property>
                 </widget>
-            </vbox>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>trackDelayLengthLabel</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>4</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Insert &amp;gap:</string>
+                    </property>
+                    <property name="indent">
+                        <number>23</number>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>trackDelayLength</cstring>
+                    </property>
+                </widget>
+                <widget class="QRadioButton" row="0" column="0">
+                    <property name="name">
+                        <cstring>radioButtonNormalPlayback</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Normal</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+N</string>
+                    </property>
+                    <property name="checked">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QRadioButton" row="2" column="0">
+                    <property name="name">
+                        <cstring>radioButtonCrossfadePlayback</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Crossfade</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+C</string>
+                    </property>
+                    <property name="checked">
+                        <bool>false</bool>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="3" column="0">
+                    <property name="name">
+                        <cstring>crossfadeLengthLabel</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>4</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>Crossover &amp;period:</string>
+                    </property>
+                    <property name="indent">
+                        <number>23</number>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>crossfadeLength</cstring>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="3" column="1">
+                    <property name="name">
+                        <cstring>crossfadeLength</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>2</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>120</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="suffix">
+                        <string> ms</string>
+                    </property>
+                    <property name="maxValue">
+                        <number>99999999</number>
+                    </property>
+                    <property name="lineStep">
+                        <number>100</number>
+                    </property>
+                    <property name="value">
+                        <number>0</number>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>checkBoxResumePlayback</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;Resume playback on start</string>
+            </property>
+            <property name="accel">
+                <string>Alt+R</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>&lt;b&gt;Resume playback on start&lt;/b&gt;
+&lt;p&gt;amoraK will resume playback from where you left it the previous session -- just like a tape-player.&lt;/p&gt;</string>
+            </property>
+        </widget>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>checkBoxSwMixerOnly</cstring>
+            </property>
+            <property name="text">
+                <string>Use only software &amp;mixer (requires restart)</string>
+            </property>
+            <property name="accel">
+                <string>Alt+M</string>
+            </property>
         </widget>
     </vbox>
 </widget>

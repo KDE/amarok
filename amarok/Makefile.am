@@ -11,7 +11,7 @@ EXTRA_DIST = browserwidget.h browserwin.h \
 
 bin_PROGRAMS = amarok
 
-amarok_SOURCES = main.cpp playlistwidget.cpp playlistitem.cpp playerwidget.cpp playerapp.cpp expandbutton.cpp effectwidget.cpp browserwin.cpp browserwidget.cpp amarokdcopiface.skel configdlg.cpp amarokbutton.cpp amarokfilelist.cpp Options1.ui Options2.ui Options3.ui Options4.ui
+amarok_SOURCES = main.cpp playerapp.cpp playerwidget.cpp browserwin.cpp browserwidget.cpp playlistwidget.cpp playlistitem.cpp expandbutton.cpp effectwidget.cpp amarokdcopiface.skel configdlg.cpp amarokbutton.cpp amarokfilelist.cpp Options1.ui Options2.ui Options3.ui Options4.ui
 
 
 

@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>431</width>
-            <height>402</height>
+            <width>250</width>
+            <height>243</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -73,171 +73,116 @@
                         <string>Alt+T</string>
                     </property>
                 </widget>
-                <widget class="QCheckBox">
+                <widget class="QGroupBox">
                     <property name="name">
                         <cstring>chkBoxCustomColor</cstring>
                     </property>
-                    <property name="text">
-                        <string>&amp;Custom colours</string>
+                    <property name="frameShape">
+                        <enum>Box</enum>
                     </property>
-                    <property name="accel">
-                        <string>Alt+C</string>
+                    <property name="frameShadow">
+                        <enum>Raised</enum>
                     </property>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout18</cstring>
+                    <property name="title">
+                        <string>Use &amp;custom colors</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignAuto</set>
+                    </property>
+                    <property name="flat">
+                        <bool>false</bool>
+                    </property>
+                    <property name="checkable">
+                        <bool>true</bool>
+                    </property>
+                    <property name="checked">
+                        <bool>true</bool>
                     </property>
                     <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QLayoutWidget" row="1" column="1">
+                        <widget class="KColorButton" row="0" column="1">
                             <property name="name">
-                                <cstring>layout15</cstring>
+                                <cstring>kColorButtonFg</cstring>
                             </property>
-                            <hbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="QLabel">
-                                    <property name="name">
-                                        <cstring>textLabel2</cstring>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>1</hsizetype>
-                                            <vsizetype>5</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="text">
-                                        <string>Text:</string>
-                                    </property>
-                                </widget>
-                                <spacer>
-                                    <property name="name">
-                                        <cstring>spacer2</cstring>
-                                    </property>
-                                    <property name="orientation">
-                                        <enum>Horizontal</enum>
-                                    </property>
-                                    <property name="sizeType">
-                                        <enum>Maximum</enum>
-                                    </property>
-                                    <property name="sizeHint">
-                                        <size>
-                                            <width>91</width>
-                                            <height>31</height>
-                                        </size>
-                                    </property>
-                                </spacer>
-                                <widget class="KColorButton">
-                                    <property name="name">
-                                        <cstring>kColorButtonFg</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>false</bool>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>3</hsizetype>
-                                            <vsizetype>0</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="text">
-                                        <string></string>
-                                    </property>
-                                </widget>
-                            </hbox>
+                            <property name="enabled">
+                                <bool>true</bool>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
                         </widget>
-                        <spacer row="0" column="0" rowspan="2" colspan="1">
+                        <widget class="KColorButton" row="1" column="1">
                             <property name="name">
-                                <cstring>spacer1</cstring>
+                                <cstring>kColorButtonBg</cstring>
                             </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
+                            <property name="enabled">
+                                <bool>true</bool>
                             </property>
-                            <property name="sizeType">
-                                <enum>Fixed</enum>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
                             </property>
-                            <property name="sizeHint">
+                            <property name="minimumSize">
                                 <size>
-                                    <width>34</width>
-                                    <height>70</height>
+                                    <width>0</width>
+                                    <height>0</height>
                                 </size>
                             </property>
-                        </spacer>
-                        <widget class="QLayoutWidget" row="0" column="1">
-                            <property name="name">
-                                <cstring>layout16</cstring>
+                            <property name="text">
+                                <string></string>
                             </property>
-                            <hbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="QLabel">
-                                    <property name="name">
-                                        <cstring>textLabel1</cstring>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>1</hsizetype>
-                                            <vsizetype>5</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="text">
-                                        <string>Background:</string>
-                                    </property>
-                                </widget>
-                                <spacer>
-                                    <property name="name">
-                                        <cstring>spacer3</cstring>
-                                    </property>
-                                    <property name="orientation">
-                                        <enum>Horizontal</enum>
-                                    </property>
-                                    <property name="sizeType">
-                                        <enum>Maximum</enum>
-                                    </property>
-                                    <property name="sizeHint">
-                                        <size>
-                                            <width>30</width>
-                                            <height>30</height>
-                                        </size>
-                                    </property>
-                                </spacer>
-                                <widget class="KColorButton">
-                                    <property name="name">
-                                        <cstring>kColorButtonBg</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>false</bool>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>3</hsizetype>
-                                            <vsizetype>0</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="minimumSize">
-                                        <size>
-                                            <width>0</width>
-                                            <height>0</height>
-                                        </size>
-                                    </property>
-                                    <property name="text">
-                                        <string></string>
-                                    </property>
-                                </widget>
-                            </hbox>
+                        </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Background:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>kColorButtonBg</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>textLabel2</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>Te&amp;xt:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>kColorButtonFg</cstring>
+                            </property>
                         </widget>
                     </grid>
                 </widget>
@@ -247,9 +192,6 @@
 </widget>
 <customwidgets>
 </customwidgets>
-<includes>
-    <include location="local" impldecl="in implementation">Options3.ui.h</include>
-</includes>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>kcolorbutton.h</includehint>

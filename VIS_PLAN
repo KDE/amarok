@@ -1,0 +1,55 @@
+amaroK VIS_PLAN  - Created: 22-11-2003
+
+Abstract
+========
+
+In order to create a visualisation framework that is superior to anything 
+popular available for Linux today we are going to plan amaroK's thoroughly 
+before implementation. This document exists to map out our ideas and is
+available for anyone to edit, please, if you have some good suggestion, or 
+experience with this kind of work, add some comments! Thanks,Max Howell
+
+
+Formatting
+==========
+
+The document has no regimented formatting, but do try to keep the wordwrap set
+the same! Feel free to recommend formatting if the document becomes
+unmanageable.
+
+Editing
+=======
+
+If you want to add a comment, stick it in square brackets [], and put your
+name/nick at the front. Or add a new paragraph after, or whatever really. Just
+make sure that if you insert text to put it in square brackets. If you want to
+edit spelling or correct something that is wrong then just do so, after all we
+do have cvs history.
+
+
+Plan
+====
+
+My inital thoughts were to make visualisations a separate process rather than
+separate thread. The reasoning being, a crash in the vis won't crash amaroK,
+threads can be unmanageable, *nix is good for new processes, we can use DCOP to
+control the vis and presumable we just need to pass a handle to the relevant
+arts server to the vis and leave it. Since the music playing bit is already a
+separate process it makes sense to make the visualisation separate too! Also
+this may mean that these visuals could be separate from amaroK and just depend
+on KDE.
+
+I was also thinking that this means it may be possible to not use Qt to
+do rendering. There are probably better libraries for high speed graphics and if
+there isn't a way to make DCOP not depend on a QApplication, then maybe we could
+write something. It would be sorted if we could make something that can react to
+arts sound output in general.
+
+I was also thinking it would be neat to embed the visuals somehow into amaroK,
+so as the background in the playlist perhaps (I know, this would probably not
+work well due to the need to re-render all the AA text all the time, but still
+the idea is neat) This is similar to Sonique on Windows if anyone has ever used
+it.
+
+If we make the visualisations not amaroK specific it may be possible to embed
+visualisations into the Kicker, onto the desktop, etc.

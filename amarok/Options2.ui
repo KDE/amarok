@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>382</width>
-            <height>317</height>
+            <width>358</width>
+            <height>260</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -29,7 +29,7 @@
         </property>
         <widget class="QButtonGroup">
             <property name="name">
-                <cstring>buttonGroup1</cstring>
+                <cstring>chkBoxUseCustomFonts</cstring>
             </property>
             <property name="sizePolicy">
                 <sizepolicy>
@@ -40,81 +40,41 @@
                 </sizepolicy>
             </property>
             <property name="title">
-                <string>&amp;Font Options</string>
+                <string>&amp;Use custom fonts</string>
             </property>
-            <grid>
+            <property name="alignment">
+                <set>AlignBottom</set>
+            </property>
+            <property name="flat">
+                <bool>false</bool>
+            </property>
+            <property name="checkable">
+                <bool>true</bool>
+            </property>
+            <property name="checked">
+                <bool>false</bool>
+            </property>
+            <vbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel" row="3" column="1">
+                <property name="margin">
+                    <number>19</number>
+                </property>
+                <property name="spacing">
+                    <number>14</number>
+                </property>
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>textLabel2</cstring>
+                        <cstring>layout10</cstring>
                     </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>150</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Main widget scroller font</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignTop|AlignLeft</set>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget" row="6" column="1">
-                    <property name="name">
-                        <cstring>layout3</cstring>
-                    </property>
-                    <hbox>
+                    <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QFrame">
+                        <widget class="QPushButton" row="1" column="1">
                             <property name="name">
-                                <cstring>frame3</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>1</hsizetype>
-                                    <vsizetype>1</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>150</width>
-                                    <height>26</height>
-                                </size>
-                            </property>
-                            <property name="frameShape">
-                                <enum>StyledPanel</enum>
-                            </property>
-                            <property name="frameShadow">
-                                <enum>Sunken</enum>
-                            </property>
-                            <widget class="QLabel">
-                                <property name="name">
-                                    <cstring>labelBrowserWindowFont</cstring>
-                                </property>
-                                <property name="geometry">
-                                    <rect>
-                                        <x>8</x>
-                                        <y>2</y>
-                                        <width>250</width>
-                                        <height>20</height>
-                                    </rect>
-                                </property>
-                                <property name="text">
-                                    <string>textLabel4</string>
-                                </property>
-                            </widget>
-                        </widget>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>pushBrowserWindowFont</cstring>
+                                <cstring>choosePW</cstring>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
@@ -134,33 +94,9 @@
                                 <string>Choose...</string>
                             </property>
                         </widget>
-                    </hbox>
-                </widget>
-                <widget class="QLayoutWidget" row="2" column="1">
-                    <property name="name">
-                        <cstring>layout1</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QFrame">
+                        <widget class="QLabel" row="1" column="0">
                             <property name="name">
-                                <cstring>frame3_3</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>3</hsizetype>
-                                    <vsizetype>1</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>150</width>
-                                    <height>26</height>
-                                </size>
+                                <cstring>previewPW</cstring>
                             </property>
                             <property name="frameShape">
                                 <enum>StyledPanel</enum>
@@ -168,26 +104,40 @@
                             <property name="frameShadow">
                                 <enum>Sunken</enum>
                             </property>
-                            <widget class="QLabel">
-                                <property name="name">
-                                    <cstring>labelPlayerWidgetFont</cstring>
-                                </property>
-                                <property name="geometry">
-                                    <rect>
-                                        <x>7</x>
-                                        <y>3</y>
-                                        <width>250</width>
-                                        <height>20</height>
-                                    </rect>
-                                </property>
-                                <property name="text">
-                                    <string>textLabel4</string>
-                                </property>
-                            </widget>
+                            <property name="text">
+                                <string>FREE OFFER!!! vbk</string>
+                            </property>
                         </widget>
-                        <widget class="QPushButton">
+                        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
                             <property name="name">
-                                <cstring>pushPlayerWidgetFont</cstring>
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>150</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>Player font:</string>
+                            </property>
+                            <property name="alignment">
+                                <set>AlignTop|AlignLeft</set>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout9</cstring>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QPushButton" row="1" column="1">
+                            <property name="name">
+                                <cstring>choosePWS</cstring>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
@@ -207,64 +157,9 @@
                                 <string>Choose...</string>
                             </property>
                         </widget>
-                    </hbox>
-                </widget>
-                <widget class="QLabel" row="1" column="1">
-                    <property name="name">
-                        <cstring>textLabel1</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>150</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Main widget font</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignTop|AlignLeft</set>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="5" column="1">
-                    <property name="name">
-                        <cstring>textLabel3</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>150</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Browser window font</string>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget" row="4" column="1">
-                    <property name="name">
-                        <cstring>layout2</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QFrame">
+                        <widget class="QLabel" row="1" column="0">
                             <property name="name">
-                                <cstring>frame3_2</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>3</hsizetype>
-                                    <vsizetype>1</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>150</width>
-                                    <height>26</height>
-                                </size>
+                                <cstring>previewPWS</cstring>
                             </property>
                             <property name="frameShape">
                                 <enum>StyledPanel</enum>
@@ -272,26 +167,68 @@
                             <property name="frameShadow">
                                 <enum>Sunken</enum>
                             </property>
-                            <widget class="QLabel">
-                                <property name="name">
-                                    <cstring>labelPlayerWidgetScrollerFont</cstring>
-                                </property>
-                                <property name="geometry">
-                                    <rect>
-                                        <x>9</x>
-                                        <y>3</y>
-                                        <width>250</width>
-                                        <height>20</height>
-                                    </rect>
-                                </property>
-                                <property name="text">
-                                    <string>textLabel4</string>
-                                </property>
-                            </widget>
+                            <property name="text">
+                                <string>ENLARGE.MENT pILLS</string>
+                            </property>
                         </widget>
-                        <widget class="QPushButton">
+                        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
                             <property name="name">
-                                <cstring>pushPlayerWidgetScrollerFont</cstring>
+                                <cstring>textLabel2</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>150</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>Marquis font:</string>
+                            </property>
+                            <property name="alignment">
+                                <set>AlignTop|AlignLeft</set>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout8</cstring>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
+                            <property name="name">
+                                <cstring>textLabel3</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>150</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>Playlist-window font:</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>previewBW</cstring>
+                            </property>
+                            <property name="frameShape">
+                                <enum>StyledPanel</enum>
+                            </property>
+                            <property name="frameShadow">
+                                <enum>Sunken</enum>
+                            </property>
+                            <property name="text">
+                                <string>THIS IS.NO SPAM</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton" row="1" column="1">
+                            <property name="name">
+                                <cstring>chooseBW</cstring>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
@@ -311,37 +248,9 @@
                                 <string>Choose...</string>
                             </property>
                         </widget>
-                    </hbox>
+                    </grid>
                 </widget>
-                <widget class="QCheckBox" row="0" column="0" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>checkBox1</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Use custom fonts</string>
-                    </property>
-                    <property name="checked">
-                        <bool>false</bool>
-                    </property>
-                </widget>
-                <spacer row="1" column="0" rowspan="6" colspan="1">
-                    <property name="name">
-                        <cstring>spacer1</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Fixed</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>21</width>
-                            <height>170</height>
-                        </size>
-                    </property>
-                </spacer>
-            </grid>
+            </vbox>
         </widget>
     </vbox>
 </widget>

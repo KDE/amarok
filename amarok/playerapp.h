@@ -60,10 +60,9 @@ class PlayerApp : public KUniqueApplication
         virtual ~PlayerApp();
 
         virtual int newInstance();
-        
+
         bool isFileValid( const KURL &url );
         bool queryClose();
-        void restore();
         bool playObjectConfigurable();
         bool isPlaying() { return m_bIsPlaying; }
         void setupColors();
@@ -90,9 +89,11 @@ class PlayerApp : public KUniqueApplication
         bool m_optShowTrayIcon;
         bool m_optHidePlaylistWindow;
         bool m_optSoftwareMixerOnly;
+        bool m_optResumePlayback;
+        bool m_optUseCustomFonts;
         QString m_optDropMode;
-        bool m_optXFade;
         long m_optXFadeLength;
+        long m_optTrackDelay;
         QFont m_optBrowserWindowFont;
         QFont m_optPlayerWidgetFont;
         QFont m_optPlayerWidgetScrollFont;
@@ -101,10 +102,9 @@ class PlayerApp : public KUniqueApplication
         QColor m_optBrowserBgAltColor;
         QColor m_optBrowserSelColor;
         bool   m_optBrowserUseCustomColors;
-        unsigned int m_optUndoLevels;
+        uint m_optUndoLevels;
         int m_optVisCurrent;
         int m_optBrowserSortSpec;
-	int m_optTrackDelay;
         // </option attributes>
 	
 	int m_DelayTime;
@@ -153,9 +153,6 @@ class PlayerApp : public KUniqueApplication
         void slotShowHelp();
         void slotHide();
         void slotShow();
-
-    private slots:
-        void saveSessionState();
 
     signals:
         void sigScope( std::vector<float> *s );
