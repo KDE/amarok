@@ -320,27 +320,29 @@ CollectionReader::readTags( const QStringList& entries ) {
                                 "( url, dir, album, artist, genre, title, year, comment, track ) "
                                 "VALUES('";
                                 
-            command += insertdb->escapeString( bundle->url().path() );
-            command += "','";
-            command += insertdb->escapeString( bundle->url().directory() );
-            command += "',";
-            command += insertdb->escapeString( QString::number( insertdb->getValueID( "album_temp", bundle->album() ) ) );
-            command += ",";
-            command += insertdb->escapeString( QString::number( insertdb->getValueID( "artist_temp", bundle->artist() ) ) );
-            command += ",";
-            command += insertdb->escapeString( QString::number( insertdb->getValueID( "genre_temp", bundle->genre() ) ) );
-            command += ",'";
-            command += insertdb->escapeString( bundle->title() );
-            command += "','";
-            command += insertdb->escapeString( QString::number( insertdb->getValueID( "year_temp", bundle->year() ) ) );
-            command += "','";
-            command += insertdb->escapeString( bundle->comment() );
-            command += "','";
-            command += insertdb->escapeString( bundle->track() );
-            command += "');";
+            command += insertdb->escapeString( bundle->url().path() ) + "','";
+            command += insertdb->escapeString( bundle->url().directory() ) + "',";
+            command += insertdb->escapeString( QString::number( insertdb->getValueID( "album_temp", bundle->album() ) ) ) + ",";
+            command += insertdb->escapeString( QString::number( insertdb->getValueID( "artist_temp", bundle->artist() ) ) ) + ",";
+            command += insertdb->escapeString( QString::number( insertdb->getValueID( "genre_temp", bundle->genre() ) ) ) + ",'";
+            command += insertdb->escapeString( bundle->title() ) + "','";
+            command += insertdb->escapeString( QString::number( insertdb->getValueID( "year_temp", bundle->year() ) ) ) + "','";
+            command += insertdb->escapeString( bundle->comment() ) + "','";
+            command += insertdb->escapeString( bundle->track() ) + "');";
     
             insertdb->execSql( command );
             delete bundle;
+        } else
+        {
+            // is it an image?
+            QStringList validExtensions;
+            validExtensions << "jpg" << "png" << "gif" << "jpeg";
+
+            if ( validExtensions.contains( url.filename().mid( url.filename().findRev('.')+1 ) ) )
+            {
+                kdDebug() << url.directory() << " - " << url.filename() << endl;
+                insertdb->addImageToPath( url.directory(), url.filename(), true );
+            }
         }
     }
     // let's lock the database (will block other threads)
@@ -351,11 +353,7 @@ CollectionReader::readTags( const QStringList& entries ) {
     insertdb->createTables();
 
     // rename tables
-    insertdb->execSql( "INSERT INTO tags SELECT * FROM tags_temp;" );
-    insertdb->execSql( "INSERT INTO album SELECT * FROM album_temp;" );
-    insertdb->execSql( "INSERT INTO artist SELECT * FROM artist_temp;" );
-    insertdb->execSql( "INSERT INTO genre SELECT * FROM genre_temp;" );
-    insertdb->execSql( "INSERT INTO year SELECT * FROM year_temp;" );
+    insertdb->moveTempTables();
 
     // remove temp tables
     insertdb->dropTables( true );

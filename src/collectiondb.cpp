@@ -6,6 +6,7 @@
 
 #include "sqlite/sqlite.h"
 #include <kdebug.h>
+#include <kurl.h>
 #include <qcstring.h>
 
 
@@ -47,10 +48,52 @@ CollectionDB::albumSongCount( const QString artist_id, const QString album_id )
 }
 
 
+void
+CollectionDB::addImageToPath( const QString path, const QString image, bool temporary )
+{
+    execSql( QString( "INSERT INTO images%1 ( path, name ) VALUES ( '%1', '%2' );" )
+             .arg( temporary ? "_temp" : "" )
+             .arg( escapeString( path ) )
+             .arg( escapeString( image ) ) );
+}
+
+
+QString
+CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id )
+{
+    QStringList values;
+    QStringList names;
+
+    execSql( QString( "SELECT url FROM tags WHERE album = %1 AND artist = %2;" )
+             .arg( album_id )
+             .arg( artist_id ), &values, &names );
+
+    KURL url;
+    url.setPath( values[0] ); 
+             
+    values.clear();
+    names.clear();
+    execSql( QString( "SELECT name FROM images WHERE path = '%1'" )
+             .arg( url.directory() ), &values, &names );
+
+    if ( values.isEmpty() )
+        return "";
+
+    QString image( values[0] );
+    for ( uint i = 0; i < values.count(); i++ )
+    {
+        if ( values[i].contains( "front", false ) )
+            image = values[i];
+    }
+
+    return url.directory() + "/" + image;
+}
+
+
 bool
 CollectionDB::execSql( const QString& statement, QStringList* const values, QStringList* const names )
 {
-    //kdDebug() << "execSql(): " << statement << endl;
+    kdDebug() << "execSql(): " << statement << endl;
 
     if ( !m_db ) {
         kdWarning() << k_funcinfo << "SQLite pointer == NULL.\n";
@@ -133,31 +176,38 @@ CollectionDB::createTables( bool temporary )
     //create album table
     execSql( QString( "CREATE %1 TABLE album%2 ("
                         "id INTEGER PRIMARY KEY,"
-                        "name varchar(100) );" )
+                        "name VARCHAR(100) );" )
                         .arg( temporary ? "TEMPORARY" : "" )
                         .arg( temporary ? "_temp" : "" ) );
     
     //create artist table
     execSql( QString( "CREATE %1 TABLE artist%2 ("
                         "id INTEGER PRIMARY KEY,"
-                        "name varchar(100) );" )
+                        "name VARCHAR(100) );" )
                         .arg( temporary ? "TEMPORARY" : "" )
                         .arg( temporary ? "_temp" : "" ) );
     
     //create genre table
     execSql( QString( "CREATE %1 TABLE genre%2 ("
                         "id INTEGER PRIMARY KEY,"
-                        "name varchar(100) );" )
+                        "name VARCHAR(100) );" )
                         .arg( temporary ? "TEMPORARY" : "" )
                         .arg( temporary ? "_temp" : "" ) );
     
     //create year table
     execSql( QString( "CREATE %1 TABLE year%2 ("
                         "id INTEGER PRIMARY KEY,"
-                        "name varchar(100) );" )
+                        "name VARCHAR(100) );" )
                         .arg( temporary ? "TEMPORARY" : "" )
                         .arg( temporary ? "_temp" : "" ) );
     
+    //create images table
+    execSql( QString( "CREATE %1 TABLE images%2 ("
+                        "path VARCHAR(100),"
+                        "name VARCHAR(100) );" )
+                        .arg( temporary ? "TEMPORARY" : "" )
+                        .arg( temporary ? "_temp" : "" ) );
+
     //create indexes
     execSql( QString( "CREATE INDEX album_idx%1 ON album%2( name );" )
                 .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
@@ -188,6 +238,19 @@ CollectionDB::dropTables( bool temporary )
     execSql( QString( "DROP TABLE artist%1;" ).arg( temporary ? "_temp" : "" ) );
     execSql( QString( "DROP TABLE genre%1;" ).arg( temporary ? "_temp" : "" ) );
     execSql( QString( "DROP TABLE year%1;" ).arg( temporary ? "_temp" : "" ) );
+    execSql( QString( "DROP TABLE images%1;" ).arg( temporary ? "_temp" : "" ) );
+}
+
+
+void
+CollectionDB::moveTempTables()
+{
+    execSql( "INSERT INTO tags SELECT * FROM tags_temp;" );
+    execSql( "INSERT INTO album SELECT * FROM album_temp;" );
+    execSql( "INSERT INTO artist SELECT * FROM artist_temp;" );
+    execSql( "INSERT INTO genre SELECT * FROM genre_temp;" );
+    execSql( "INSERT INTO year SELECT * FROM year_temp;" );
+    execSql( "INSERT INTO images SELECT * FROM images_temp;" );
 }
 
 

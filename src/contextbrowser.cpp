@@ -65,7 +65,7 @@ void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
         QStringList values;
         QStringList names;
 
-        m_db->execSql( QString( "SELECT DISTINCT url FROM tags WHERE artist = %1 AND album = %2 ORDER BY track;" )
+        m_db->execSql( QString( "SELECT DISTINCT url FROM tags WHERE artist = %1 AND album = %2 ORDER BY track DESC;" )
                        .arg( info[0] )
                        .arg( info[1] ), &values, &names );
 
@@ -88,7 +88,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 {
     browser->begin();
     QString styleSheet( "a,td { color:black; font-size:8px; text-decoration:none; }"
-                        "td:hover { color:black; background-color:#cccccc; }"
+                        "a:hover { color:black; text-decoration:underline; background-color:#cccccc; }"
                         ".title { font-size: 11px; font-weight: bold; }"
                         ".head { font-size: 10px; font-weight: bold; }" );
 
@@ -101,7 +101,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     QStringList names;
 
     browser->write( "<div class='head'>Other titles:</div>" );
-    browser->write( "<table border='0' cellspacing='2' cellpadding='1'>" );
+    browser->write( "<table border='0' cellspacing='1' cellpadding='1'>" );
 
     m_db->execSql( QString( "SELECT tags.title, tags.url FROM tags, artist WHERE tags.artist = artist.id AND artist.name LIKE '%1' ORDER BY random();" )
                    .arg( bundle.artist() ), &values, &names );
@@ -119,16 +119,17 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     names.clear();
 
     browser->write( "</table><div class='head'><br>Other albums:</div>" );
-    browser->write( "<table border='0' cellspacing='2' cellpadding='1'>" );
+    browser->write( "<table border='0' cellspacing='1' cellpadding='1'>" );
 
-    m_db->execSql( QString( "SELECT DISTINCT album.name, album.id, artist.id FROM album, tags, artist WHERE album.id = tags.album AND tags.artist = artist.id AND artist.name LIKE '%1' ORDER BY random();" )
+    m_db->execSql( QString( "SELECT DISTINCT album.name, album.id, artist.id FROM album, tags, artist WHERE album.id = tags.album AND tags.artist = artist.id AND artist.name LIKE '%1';" )
                    .arg( bundle.artist() ), &values, &names );
 
-    for ( uint i = 0; i < ( values.count() / 3 ) && i < 5; i++ )
+    for ( uint i = 0; i < ( values.count() / 3 ); i++ )
     {
         if ( values[i].isEmpty() ) continue;
-        
-        browser->write( QString ( "<tr><td><a href=\"album:%1/%2\">%3</td><td width='40' align='right'>%4</td></tr>" )
+
+        browser->write( QString ( "<tr><td><img src='%1' height='40'></td><td valign='top'><a href=\"album:%2/%3\">%4</td><td width='30' align='right'>%5</td></tr>" )
+                        .arg( m_db->getImageForAlbum( values[i*3 + 2], values[i*3 + 1] ) )
                         .arg( values[i*3 + 2] )
                         .arg( values[i*3 + 1] )
                         .arg( values[i*3] )
@@ -137,7 +138,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 
     browser->write( "</table><br>" );
     
-    const KURL &url = bundle.url();
+/*    const KURL &url = bundle.url();
     QString tipBuf;
     QStringList validExtensions;
     validExtensions << "jpg" << "png" << "gif" << "jpeg";
@@ -166,8 +167,9 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
         closedir( d );
     }
 
-    tipBuf += "</table>";
+    tipBuf += "</table>";*/
     
+    QString tipBuf;
     browser->write( QString( "%1</html>" ).arg( tipBuf ) );
     browser->end();
 }
