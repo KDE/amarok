@@ -542,7 +542,8 @@ CollectionDB::retrieveFirstLevelURLs( QString itemText, QString category, QStrin
     //query database for all tracks in our sub-category
     QString id = QString::number( getValueID( category.lower(), itemText, false ) );
     QString command = "SELECT DISTINCT tags.url FROM tags, " + category.lower() + " WHERE tags."
-                    + category.lower() + "=" + id + " " + filterToken + " ORDER BY tags.dir, tags.track, tags.url;";
+                    + category.lower() + "=" + category.lower() + ".id AND tags." + category.lower() 
+                    + "=" + id + " " + filterToken + " ORDER BY tags.dir, tags.track, tags.url;";
 
     execSql( command, values, names );
 }
