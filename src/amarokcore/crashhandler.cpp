@@ -76,7 +76,7 @@ namespace amaroK
 
             //TODO startup notification
             kapp->invokeMailer(
-                    /*to*/          "amarok-devel@lists.sf.net",
+                    /*to*/          "amarok-backtraces@lists.sf.net",
                     /*cc*/          QString(),
                     /*bcc*/         QString(),
                     /*subject*/     "amaroK " APP_VERSION " Crash Backtrace",
