@@ -144,9 +144,6 @@ MetaBundle PlaylistItem::metaBundle()
     //This function isn't called often (on play request), but playlists can contain
     //thousands of items. So favor saving memory over CPU.
 
-    //TODO <markey> why read this crap twice?
-    //              wouldn't it be wise to just keep of copy of the MetaBundle around here? 
-    
     KFileMetaInfo info( m_url, QString::null, KFileMetaInfo::Everything );
     MetaBundle bundle( this, info );  
     

@@ -1193,16 +1193,16 @@ void Playlist::showTrackInfo( const KURL& url ) //STATIC
     KFileMetaInfo info( url, QString::null, KFileMetaInfo::Everything );
     MetaBundle mb( url, info );  
 
-    str += body.arg( i18n( "Title" ),  mb.title() );
-    str += body.arg( i18n( "Artist" ), mb.artist() );
-    str += body.arg( i18n( "Album" ),  mb.album() );
-    str += body.arg( i18n( "Genre" ),  mb.genre() );
-    str += body.arg( i18n( "Year" ),   mb.year() );
-    str += body.arg( i18n( "Comment" ),mb.comment() );
-    str += body.arg( i18n( "Length" ), mb.prettyLength() );
-    str += body.arg( i18n( "Bitrate" ),mb.prettyBitrate() );
+    str += body.arg( i18n( "Title" ),      mb.title() );
+    str += body.arg( i18n( "Artist" ),     mb.artist() );
+    str += body.arg( i18n( "Album" ),      mb.album() );
+    str += body.arg( i18n( "Genre" ),      mb.genre() );
+    str += body.arg( i18n( "Year" ),       mb.year() );
+    str += body.arg( i18n( "Comment" ),    mb.comment() );
+    str += body.arg( i18n( "Length" ),     mb.prettyLength() );
+    str += body.arg( i18n( "Bitrate" ),    mb.prettyBitrate() );
     str += body.arg( i18n( "Samplerate" ), mb.prettySampleRate() );
-    str += body.arg( i18n( "Location" ), mb.url().path() );
+    str += body.arg( i18n( "Location" ),   mb.url().path() );
 
     str.append( "</table></body></html>" );
 

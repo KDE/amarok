@@ -83,14 +83,17 @@ MetaBundle::MetaBundle( const KURL &url, TagLib::Tag *tag, TagLib::AudioProperti
 MetaBundle::MetaBundle( const KURL &url, const KFileMetaInfo& info )
   : m_url( url )
   
-  , m_title( info.item( "Title" ).string() )
-  , m_artist( info.item( "Artist" ).string() )
-  , m_album( info.item( "Album" ).string() )
-  , m_year( info.item( "Year" ).string() )
-  , m_comment( info.item( "Comment" ).string() )
-  , m_genre( info.item( "Genre" ).string() )
-  , m_track( info.item( "Track" ).string() )
 {
+    if ( info.isValid() ) {   
+        m_title   = info.item( "Title" ).string();
+        m_artist  = info.item( "Artist" ).string();
+        m_album   = info.item( "Album" ).string();
+        m_year    = info.item( "Year" ).string();
+        m_comment = info.item( "Comment" ).string();
+        m_genre   = info.item( "Genre" ).string();
+        m_track   = info.item( "Track" ).string();
+    }
+    
     init( info );
 }
 
