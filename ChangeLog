@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta2:
+  ADD: xine-engine saves config, and implements crossfade, bug fixed too
   ADD: Player-Window can also show the BlockAnalyzer.
   CHG: Run incremental scanning once a minute instead of every 30 seconds.
   FIX: When collection scanning was interrupted with Cancel, incremental
@@ -53,6 +54,7 @@ VERSION 1.2-beta1:
   ADD: Context-browser shows "Suggested Tracks", utilizing audioscrobbler.
   FIX: Configure does no longer print "Good - Configure has finished" when
        a dependency is missing.
+  ADD: Intelligent automatic resize for playlist columns
   ADD: Shaded current-track marker in playlist.
   ADD: Automatic song lyrics display.
   CHG: Internal SQLite upgraded to 3.0.8.
