@@ -9,7 +9,7 @@ TODO-list for amaroK
 SHORT-TERM (URGENT):
 
     * fix: #83 <markey> take care of Qt 3.2 compatibility
-                  
+
     * fix: #82 about dialog makes toolbar go crazy
 
 MID-TERM:
@@ -178,6 +178,50 @@ DO-NOT-IMPLEMENT:
 
 
 BACKTRACE
+
+2004-Apr-08: <berkus> I think my song was about to crossfade and playlist was empty, that very moment i dropped some new stuff into the playlist (btw, there was many many stuff i dropped and random mode was ON)
+
+#0  0x40f727cb in waitpid () from /lib/libpthread.so.0
+#1  0x4078dfac in __JCR_LIST__ () from /usr/kde/cvs/lib/libkdecore.so.4
+#2  0x40f71493 in __pthread_clock_settime () from /lib/libpthread.so.0
+#3  0x4128c258 in __libc_sigaction () from /lib/libc.so.6
+#4  0x40cd4a04 in operator!=(QString const&, QString const&) ()
+   from /usr/qt/cvs/lib/libqt-mt.so.3
+#5  0x406ea970 in KURL::isLocalFile() const () from /usr/kde/cvs/lib/libkdecore.so.4
+#6  0x080a37a8 in PlaylistItem::metaBundle() (this=0x726573) at ./amarok/playlistitem.cpp:140
+#7  0x080ab8a8 in PlaylistWidget::activate(QListViewItem*, bool) (this=0x81bd180,
+    lvi=0x726573, rememberTrack=true) at ./amarok/amarok/playlistwidget.cpp:605
+#8  0x080aa9d8 in PlaylistWidget::handleOrder(PlaylistWidget::RequestType) (this=0x81bd180,
+    request=Next) at ./amarok/amarok/playlistwidget.cpp:290
+#9  0x080aed09 in PlaylistWidget::qt_invoke(int, QUObject*) (this=0x81bd180, _id=107,
+    _o=0xbfffef90) at playlistwidget.moc:168
+#10 0x40aaaf44 in QObject::activate_signal(QConnectionList*, QUObject*) ()
+   from /usr/qt/cvs/lib/libqt-mt.so.3
+#11 0x40aab564 in QObject::activate_signal(int) () from /usr/qt/cvs/lib/libqt-mt.so.3
+#12 0x0808f3ce in EngineController::orderNext() (this=0x819d368) at enginecontroller.moc:124
+#13 0x0808e9fa in EngineController::next() (this=0x819d368) at ./amarok/enginecontroller.cpp:67
+#14 0x0808f1a0 in EngineController::slotMainTimer() (this=0x819d368)
+    at ./amarok/enginecontroller.cpp:213
+#15 0x0808f55d in EngineController::qt_invoke(int, QUObject*) (this=0x819d368, _id=11,
+    _o=0xbffff088) at enginecontroller.moc:157
+#16 0x40aaaf44 in QObject::activate_signal(QConnectionList*, QUObject*) ()
+   from /usr/qt/cvs/lib/libqt-mt.so.3
+#17 0x40aab564 in QObject::activate_signal(int) () from /usr/qt/cvs/lib/libqt-mt.so.3
+#18 0x40d1f3a3 in QTimer::timeout() () from /usr/qt/cvs/lib/libqt-mt.so.3
+#19 0x40ac42a1 in QTimer::event(QEvent*) () from /usr/qt/cvs/lib/libqt-mt.so.3
+#20 0x40a616f6 in QApplication::internalNotify(QObject*, QEvent*) ()
+   from /usr/qt/cvs/lib/libqt-mt.so.3
+#21 0x40a61e85 in QApplication::notify(QObject*, QEvent*) () from /usr/qt/cvs/lib/libqt-mt.so.3
+#22 0x4066d8d1 in KApplication::notify(QObject*, QEvent*) ()
+   from /usr/kde/cvs/lib/libkdecore.so.4
+#23 0x40a581b0 in QEventLoop::activateTimers() () from /usr/qt/cvs/lib/libqt-mt.so.3
+#24 0x40a21f7b in QEventLoop::processEvents(unsigned) () from /usr/qt/cvs/lib/libqt-mt.so.3
+#25 0x40a71f44 in QEventLoop::enterLoop() () from /usr/qt/cvs/lib/libqt-mt.so.3
+#26 0x40a71ea9 in QEventLoop::exec() () from /usr/qt/cvs/lib/libqt-mt.so.3
+#27 0x40a60b56 in QApplication::exec() () from /usr/qt/cvs/lib/libqt-mt.so.3
+#28 0x080c1de8 in main (argc=1, argv=0xbffff6d4) at ./amarok/amarok/amarokcore/main.cpp:37
+#29 0x41278c4b in __libc_start_main () from /lib/libc.so.6
+
 
 2004-Mar-22: a user reported this when clicking on a shoutcast stream from konqi
 
