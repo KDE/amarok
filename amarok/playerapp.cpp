@@ -284,24 +284,26 @@ void PlayerApp::initCliArgs( int argc, char *argv[] ) //static
                                             "Feedback:\namarok-devel@lists.sourceforge.net" ),
                                  I18N_NOOP( "http://amarok.sourceforge.net" ) );
 
-    aboutData.addAuthor( "Christian Muehlhaeuser", "developer", "chris@chris.de", "http://www.chris.de" );
-    aboutData.addAuthor( "Frederik Holljen", "OSD improvement, 733t code, patches", "fh@ez.no" );
-    aboutData.addAuthor( "Mark Kretschmann", "project founder, developer, maintainer", "markey@web.de" );
-    aboutData.addAuthor( "Max Howell", "developer, project-stud", "max.howell@methylblue.com" );
-    aboutData.addAuthor( "Stanislav Karchebny", "patches, improvements, visualizations, cleanups, i18n",
+    //TODO should we i18n this stuff?
+
+    aboutData.addAuthor( "Christian \"babe-magnet\" Muehlhaeuser", "developer, stud", "chris@chris.de", "http://www.chris.de" );
+    aboutData.addAuthor( "Frederik \"ich bin kein Deustcher!\" Holljen", "developer, 733t code, OSD improvement, patches", "fh@ez.no" );
+    aboutData.addAuthor( "Mark \"it's good, but it's not irssi\" Kretschmann", "project founder, developer, maintainer", "markey@web.de" );
+    aboutData.addAuthor( "Max \"sleep? there's no time!\" Howell", "developer, knight of the regression round-table",
+                         "max.howell@methylblue.com", "http://www.methyblue.com" );
+    aboutData.addAuthor( "Stanislav \"did someone say DCOP?\" Karchebny", "patches, improvements, visualizations, cleanups, i18n",
                          "berk@upnet.ru" );
 
-    aboutData.addCredit( "Adam Pigg", "analyzer, patches", "adam@piggz.fsnet.co.uk" );
+    aboutData.addCredit( "Adam Pigg", "analyzers, patches", "adam@piggz.fsnet.co.uk" );
     aboutData.addCredit( "Alper Ayazoglu", "graphics: buttons", "cubon@cubon.de", "http://cubon.de" );
-    aboutData.addCredit( "Enrico Ros", "analyzer", "eros.kde@email.it" );
-
+    aboutData.addCredit( "Enrico Ros", "analyzers, king of openGL", "eros.kde@email.it" );
     aboutData.addCredit( "Jarkko Lehti", "tester, IRC channel operator, whipping", "grue@iki.fi" );
     aboutData.addCredit( "Josef Spillner", "KDE RadioStation code", "spillner@kde.org" );
     aboutData.addCredit( "Markus A. Rykalski", "graphics", "exxult@exxult.de" );
     aboutData.addCredit( "Melchior Franz", "new FFT routine, bugfixes", "mfranz@kde.org" );
     aboutData.addCredit( "Roman Becker", "graphics: amaroK logo", "roman@formmorf.de", "http://www.formmorf.de" );
     aboutData.addCredit( "Scott Wheeler", "Taglib", "wheeler@kde.org" );
-    aboutData.addCredit( "The Noatun Authors", "code inspiration", 0, "http://noatun.kde.org" );
+    aboutData.addCredit( "The Noatun Authors", "code and inspiration", 0, "http://noatun.kde.org" );
     aboutData.addCredit( "Whitehawk Stormchaser", "tester, patches", "zerokode@gmx.net" );
 
     KCmdLineArgs::init( argc, argv, &aboutData );
