@@ -593,7 +593,7 @@ void PlayerApp::proxyError()
     kdWarning() << "[PlayerApp::proxyError()] TitleProxy error! Switching to normal playback.." << endl;
 
     m_proxyError = true;
-    slotPlay();
+    play( MetaBundle() );
 }
 
 

@@ -42,7 +42,9 @@ Loader::Loader( int& argc, char** argv )
     if ( sockfd == -1 ) { 
         //no, amaroK is not running -> show splash, start new instance
         qDebug( "[Loader::Loader()] LoaderServer (amaroK instance) not running." );
-        showSplash();
+        
+        if ( splashEnabled() )
+            showSplash();
         
         QProcess* proc = new QProcess( this );
         proc->addArgument( "amarok" );
@@ -82,6 +84,26 @@ Loader::~Loader()
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE METHODS
 ////////////////////////////////////////////////////////////////////////////////
+
+bool Loader::splashEnabled() const
+{
+    //determine whether splash-screen is enabled in amarokrc
+    QString path( ::getenv( "HOME" ) );
+    path += "/.kde/share/config/amarokrc";
+
+    QFile file( path );
+    file.open( IO_ReadOnly );
+    QString line;
+    QString found;
+    
+    while ( file.readLine( line, 2000 ) != -1 ) {
+        if ( line.contains( "Show Splashscreen" ) )
+            break;
+    }
+    
+    return !line.contains( "false" );
+}
+
 
 //SLOT
 void Loader::showSplash()

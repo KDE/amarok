@@ -35,6 +35,7 @@ class Loader : public QApplication
         void loaded();
         
     private:
+        bool splashEnabled() const;
         void showSplash();
         int  tryConnect();
 

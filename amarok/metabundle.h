@@ -47,7 +47,10 @@ public:
     static const int Irrelevant   = -1;
     static const int Unavailable  =  0;
 
-    MetaBundle( const QString &title, const QString &genre, int bitrate = -2 ) //TitleProxy ctor
+    MetaBundle()
+    {}
+    
+    MetaBundle( const QString &title, const QString &genre, int bitrate = -2 )
       : m_title     ( title )
       , m_genre     ( genre )
       , m_bitrate   ( bitrate )
