@@ -8,6 +8,7 @@ Name[de]=NMM-Treiber
 Name[es]=Motor NMM
 Name[et]=NMM mootor
 Name[fr]=Moteur NMM
+Name[ga]=Inneall NMM
 Name[hu]=NMM
 Name[is]=NMM vél
 Name[it]=Motore NMM
@@ -60,5 +61,5 @@ X-KDE-amaroK-authors=Wolfram von Funck, NMM work group
 X-KDE-amaroK-email=wolfram@graphics.cs.uni-sb.de
 X-KDE-amaroK-rank=50
 X-KDE-amaroK-version=1
-X-KDE-amaroK-framework-version=3
+X-KDE-amaroK-framework-version=4
 

@@ -1,9 +1,31 @@
 [Desktop Entry]
 Type=Service
 Name=aKode Engine
+Name[bg]=Система aKode
+Name[br]=Keflusker aKode
+Name[et]=aKode mootor
+Name[ga]=Inneall aKode
+Name[is]=aKode vél
+Name[it]=Motore aKode
+Name[nl]=aKode-engine
+Name[pt]=Motor aKode
+Name[pt_BR]=Motor aKode
+Name[ru]=aKode
+Name[sv]=aKode-gränssnitt
+Name[uk]=Рушій aKode
 ServiceTypes=amaroK/Plugin
 X-KDE-Library=libamarok_aKode-engine
 Comment=aKode audio-engine for amaroK
+Comment[bg]=Аудио модул aKode за amaroK
+Comment[et]=AmaroKi aKode audiomootor
+Comment[is]=aKode hljóðvél fyrir amaroK
+Comment[it]=motore audio aKode per amaroK
+Comment[nl]=aKode audio-engine voor amaroK
+Comment[pt]=Motor áudio aKode para o amaroK
+Comment[pt_BR]=Motor áudio aKode para o amaroK
+Comment[ru]=Модуль aKode для amaroK
+Comment[sv]=aKode ljudgränssnitt för amaroK
+Comment[uk]=Аудіо-рушій aKode для amaroK
 
 X-KDE-amaroK-plugintype=engine
 X-KDE-amaroK-name=akode-engine
@@ -11,4 +33,4 @@ X-KDE-amaroK-authors=Max Howell
 X-KDE-amaroK-email=max.howell@methylblue.com
 X-KDE-amaroK-rank=250
 X-KDE-amaroK-version=1
-X-KDE-amaroK-framework-version=3
+X-KDE-amaroK-framework-version=4

@@ -9,6 +9,7 @@ Name[de]=Gstreamer-Treiber
 Name[es]=Motor GStreamer
 Name[et]=GStreamer mootor
 Name[fr]=Moteur GStreamer
+Name[ga]=Inneall GStreamer
 Name[hu]=GStreamer
 Name[is]=GStreamer vél
 Name[it]=Motore GStreamer
@@ -61,5 +62,5 @@ X-KDE-amaroK-authors=Mark Kretschmann
 X-KDE-amaroK-email=markey@web.de
 X-KDE-amaroK-rank=255
 X-KDE-amaroK-version=1
-X-KDE-amaroK-framework-version=3
+X-KDE-amaroK-framework-version=4
 

@@ -5,8 +5,10 @@ Name[bg]=Система KDEMM
 Name[br]=Keflusker KDEMM
 Name[da]=KDEMM-motor
 Name[de]=KDEMM-Treiber
+Name[es]=Motor KDEMM
 Name[et]=KDEMM mootor
 Name[fr]=Moteur KDEMM
+Name[ga]=Inneall KDEMM
 Name[hu]=KDEMM
 Name[is]=KDEMM vél
 Name[it]=Motore KDEMM
@@ -56,6 +58,6 @@ X-KDE-amaroK-authors=Roland Gigler
 X-KDE-amaroK-email=rolandg@web.de
 X-KDE-amaroK-rank=100
 X-KDE-amaroK-version=1
-X-KDE-amaroK-framework-version=3
+X-KDE-amaroK-framework-version=4
 
 

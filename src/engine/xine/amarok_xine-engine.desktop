@@ -8,6 +8,7 @@ Name[de]=xine-Treiber
 Name[es]=Motor xine
 Name[et]=xine mootor
 Name[fr]=Moteur xine
+Name[ga]=Inneall xine
 Name[hu]=Xine
 Name[is]=xine vél
 Name[it]=Motore xine
@@ -62,5 +63,5 @@ X-KDE-amaroK-authors=Max Howell
 X-KDE-amaroK-email=max.howell@methylblue.com
 X-KDE-amaroK-rank=254
 X-KDE-amaroK-version=1
-X-KDE-amaroK-framework-version=3
+X-KDE-amaroK-framework-version=4
 

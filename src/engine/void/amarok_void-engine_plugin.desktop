@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=<no engine>
-Name[bg]=<без звукова система>
+Name[bg]=<без аудио система>
 Name[br]=<keflusker ebet>
 Name[da]=<ingen motor>
 Name[de]=Kein Treiber
@@ -56,5 +56,5 @@ X-KDE-amaroK-authors=Max Howell,Mark Kretschmann
 X-KDE-amaroK-email=max.howell@methylblue.com
 X-KDE-amaroK-rank=1
 X-KDE-amaroK-version=1
-X-KDE-amaroK-framework-version=3
+X-KDE-amaroK-framework-version=4
 

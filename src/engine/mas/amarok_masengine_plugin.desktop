@@ -8,6 +8,7 @@ Name[de]=NAS-Treiber
 Name[es]=Motor MAS
 Name[et]=MAS mootor
 Name[fr]=Moteur MAS
+Name[ga]=Inneall MAS
 Name[hu]=MAS
 Name[is]=MAS vél
 Name[it]=Motore MAS
@@ -58,6 +59,6 @@ X-KDE-amaroK-authors=Roland Gigler
 X-KDE-amaroK-email=rolandg@web.de
 X-KDE-amaroK-rank=100
 X-KDE-amaroK-version=1
-X-KDE-amaroK-framework-version=3
+X-KDE-amaroK-framework-version=4
 
 
