@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=MAS Engine
+Name[it]=Motore MAS
 Name[pt]=Motor MAS
 Name[pt_BR]=Motor MAS
 Comment=Plugin for amaroK
@@ -11,6 +12,7 @@ Comment[es]=Plugin para amaroK
 Comment[et]=AmaroKi plugin
 Comment[fr]=Module pour AmaroK
 Comment[it]=Plugin per amaroK
+Comment[ms]=Plugmasuk untuk amaroK
 Comment[nl]=Plugin voor amaroK
 Comment[pt]='Plugin' para o amaroK
 Comment[pt_BR]=Plug-in para o amaroK
