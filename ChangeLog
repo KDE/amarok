@@ -11,6 +11,8 @@ VERSION 1.2.2:
     * New DCOP call player: setEqualizer(preamp, the 10 eq settings)
 
   BUGFIXES:
+    * Switched order of "Make playlist" and "Queue after current track" menus
+      to avoid playlist destruction. (BR 96164 part 1)
     * Visualizations with LibVisual didn't work in some cases. (BR 99627)
     * amaroK could fail to build if the whole kdeextragear-1 module was
       compiled, due to conflicts with K3B on the MusicBrainz check. (BR 100906)
@@ -22,8 +24,6 @@ VERSION 1.2.2:
       full metadata support. (BR 89821)
     * GStreamer-engine now uses the "decodebin" autoplugger, which fixes
       the lag issues that some users had during crossfading. (BR 99570)
-    * Switched order of "Make playlist" and "Queue after current track" menus
-      to avoid playlist destruction. (BR 96164 part 1)
 
 
 VERSION 1.2.1:
