@@ -479,6 +479,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         KURL file = KFileDialog::getImageOpenURL( startPath, this, i18n( "Select Cover Image File" ) );
         if ( !file.isEmpty() ) {
             CollectionDB::instance()->setAlbumImage( artist, album, file );
+            m_dirtyCurrentTrackPage = true;
             showCurrentTrack();
         }
         break;
