@@ -50,10 +50,10 @@ EqualizerSetup::EqualizerSetup()
 
     // BEGIN GroupBox
     QGroupBox* groupBox_sliders = new QGroupBox( 11, Qt::Horizontal, i18n("Enable Equalizer"), this );
-    connect( groupBox_sliders, SIGNAL( toggled( bool ) ), SLOT( setEqualizerEnabled( bool ) ) );
     groupBox_sliders->setCheckable( true );
     groupBox_sliders->setChecked( AmarokConfig::equalizerEnabled() );
     groupBox_sliders->setInsideMargin( 8 );
+    connect( groupBox_sliders, SIGNAL( toggled( bool ) ), SLOT( setEqualizerEnabled( bool ) ) );
     // END GroupBox
 
     // BEGIN Preamp slider
