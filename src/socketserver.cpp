@@ -266,18 +266,18 @@ Vis::Selector::viewportPaintEvent( QPaintEvent *e )
 
         //TODO the right message if amarok_libvisual is present but libvisual isn't
 
-//         QPainter p( viewport() );
-//         QSimpleRichText t( i1_8n(
-//                 "<div align=center>"
-//                   "<h3>No Visualizations Found!</h3>"
-//                   "Please install libvisual and recompile."
-//                 "</div>" ), font() );
-//
-//         t.setWidth( width() - 50 );
-//
-//         p.setBrush( colorGroup().background() );
-//         p.drawRect( 15, 15, t.width() + 20, t.height() + 20 );
-//         t.draw( &p, 20, 20, QRect(), colorGroup() );
+        QPainter p( viewport() );
+        QSimpleRichText t( i18n(
+                "<div align=center>"
+                  "<h3>No Visualizations Found!</h3>"
+                  "Please install libvisual and recompile."
+                "</div>" ), font() );
+
+        t.setWidth( width() - 50 );
+
+        p.setBrush( colorGroup().background() );
+        p.drawRect( 15, 15, t.width() + 20, t.height() + 20 );
+        t.draw( &p, 20, 20, QRect(), colorGroup() );
     }
 }
 
