@@ -65,13 +65,19 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     // total songs count
     m_itemCountLabel = new QLabel( this );
     m_itemCountLabel->setAlignment( Qt::AlignCenter );
+    m_itemCountLabel->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
 
     //positionBox
-    QWidget *positionBox = new PositionBox( this, "positionBox" );
+    QWidget *positionBox = new QWidget( this, "positionBox" );
     QBoxLayout *box = new QHBoxLayout( positionBox, 1, 3 );
 
     m_slider = new amaroK::Slider( Qt::Horizontal, positionBox );
     m_timeLabel = new TimeLabel( positionBox );
+    m_slider->setMinimumWidth( m_timeLabel->width() );
+
+    //TODO reimplement insertChild() instead
+    addWidget( m_itemCountLabel );
+    addWidget( positionBox );
 
     box->addSpacing( 3 );
     box->addWidget( m_slider );
@@ -124,7 +130,7 @@ StatusBar::engineStateChanged( Engine::State state )
 void
 StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
-    QString title = i18n( "Playing: %1" ).arg( bundle.prettyTitle() );
+    QString title  = bundle.prettyTitle();
     QString length = bundle.prettyLength();
 
     if ( bundle.artist() == "Mike Oldfield" && bundle.title() == "Amarok" ) {
@@ -138,13 +144,14 @@ StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
     if ( title.isEmpty() )
         title = i18n( "Unknown track" );
 
-    if ( !length.isEmpty() ) {
+    // don't show '-' or '?'
+    if ( length.length() > 1 ) {
         title += " (";
         title += length;
         title += ")";
     }
 
-    setMainText( title );
+    setMainText( i18n( "Playing: %1" ).arg( title ) );
 
     m_slider->setMaxValue( bundle.length() * 1000 );
     m_slider->setEnabled( bundle.length() > 0 );

@@ -29,7 +29,7 @@ public:
     TimeLabel( QWidget *parent ) : QLabel( " 0:00:00 ", parent )
     {
         setFont( KGlobalSettings::fixedFont() );
-        setFixedSize( sizeHint() );
+        setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
     }
 
     virtual void mousePressEvent( QMouseEvent* e )

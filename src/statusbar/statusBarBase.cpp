@@ -50,16 +50,40 @@
 namespace KDE {
 
 
+namespace SingleShotPool
+{
+    static void startTimer( int timeout, QObject *receiver, const char *slot )
+    {
+        QTimer *timer = (QTimer*)receiver->child( slot );
+        if( !timer ) {
+            debug() << "Creating timer for: " << slot << endl;
+
+            timer = new QTimer( receiver, slot );
+            receiver->connect( timer, SIGNAL(timeout()), slot );
+        }
+
+        timer->start( timeout, true );
+    }
+
+    static inline bool isActive( QObject *parent, const char *slot )
+    {
+        QTimer *timer = (QTimer*)parent->child( slot );
+
+        return timer && timer->isA( "QTimer" ) && timer->isActive();
+    }
+}
+
+
 //TODO allow for uncertain progress periods
 
 
 StatusBar::StatusBar( QWidget *parent, const char *name )
         : QFrame( parent, name )
-        , m_tempMessageTimer( new QTimer( this ) )
 {
+    QBoxLayout *mainlayout = new QHBoxLayout( this, 2, /*spacing*/5 );
+
     //we need extra spacing due to the way we paint the surrounding boxes
-    QBoxLayout *layout = new QHBoxLayout( this, /*margin*/2, /*spacing*/5 );
-    layout->setAutoAdd( true );
+    QBoxLayout *layout = new QHBoxLayout( mainlayout, /*spacing*/5 );
 
     m_mainTextLabel = new KSqueezedTextLabel( this, "mainTextLabel" );
     m_mainTextLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
@@ -70,6 +94,16 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     QToolButton *b2 = new QToolButton( mainProgressBarBox, "showAllProgressDetails" );
     mainProgressBarBox->setSpacing( 2 );
     mainProgressBarBox->hide();
+
+    layout->add( m_mainTextLabel );
+    layout->add( mainProgressBarBox );
+    layout->setStretchFactor( m_mainTextLabel, 3 );
+    layout->setStretchFactor( mainProgressBarBox, 1 );
+
+    m_otherWidgetLayout = new QHBoxLayout( mainlayout, /*spacing*/5 );
+
+    mainlayout->setStretchFactor( layout, 6 );
+    mainlayout->setStretchFactor( m_otherWidgetLayout, 4 );
 
     b1->setIconSet( SmallIconSet( "cancel" ) );
     b2->setIconSet( SmallIconSet( "2uparrow") );
@@ -84,8 +118,12 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     m_popupProgress->setFrameStyle( QFrame::Box | QFrame::Raised );
     m_popupProgress->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
    (new QGridLayout( m_popupProgress, 1 /*rows*/, 3 /*cols*/, 6, 3 ))->setAutoAdd( true );
+}
 
-    connect( m_tempMessageTimer, SIGNAL(timeout()), SLOT(resetMainText()) );
+void
+StatusBar::addWidget( QWidget *widget )
+{
+    m_otherWidgetLayout->add( widget );
 }
 
 
@@ -157,7 +195,7 @@ StatusBar::setMainText( const QString &text )
 {
     m_mainText = text;
 
-    if ( !m_tempMessageTimer->isActive() )
+    if( !SingleShotPool::isActive( this, SLOT(resetMainText()) ) )
         // if we're showing a shortMessage, resetMainText() will be
         // called within 5 seconds
         m_mainTextLabel->setText( text );
@@ -169,14 +207,14 @@ StatusBar::shortMessage( const QString &text )
     m_mainTextLabel->setText( text );
     m_mainTextLabel->setPalette( QToolTip::palette() );
 
-    m_tempMessageTimer->start( 5000, true );
+    SingleShotPool::startTimer( 5000, this, SLOT(resetMainText()) );
 }
 
 void
 StatusBar::resetMainText()
 {
     // don't reset if we are supposed to be showing stuff
-    if( m_tempMessageTimer->isActive() )
+    if( SingleShotPool::isActive( this, SLOT(resetMainText()) ) )
         return;
 
     m_mainTextLabel->unsetPalette();
@@ -266,9 +304,8 @@ StatusBar::newProgressOperation( QObject *owner )
 
     // so we can show the correct progress information
     // after the ProgressBar is setup
-    QTimer::singleShot( 0, this, SLOT(updateProgressAppearance()) );
+    SingleShotPool::startTimer( 0, this, SLOT(updateProgressAppearance()) );
 
-    //QTimer::singleShot( 2000, this, SLOT(showMainProgressBar()) );
     progressBox()->show();
     cancelButton()->setEnabled( true );
 
@@ -318,7 +355,7 @@ StatusBar::endProgressOperation( QObject *owner )
 
     if ( allDone() && !m_popupProgress->isShown() ) {
         cancelButton()->setEnabled( false );
-        QTimer::singleShot( 2000, this, SLOT(hideMainProgressBar()) );
+        SingleShotPool::startTimer( 2000, this, SLOT(hideMainProgressBar()) );
     }
 
     updateTotalProgress();
@@ -357,7 +394,7 @@ StatusBar::toggleProgressWindow( bool show ) //slot
     m_popupProgress->setShown( show );
 
     if ( !show && m_progressMap.isEmpty() )
-        QTimer::singleShot( 2000, this, SLOT(hideMainProgressBar()) );
+        SingleShotPool::startTimer( 2000, this, SLOT(hideMainProgressBar()) );
 }
 
 void
