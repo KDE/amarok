@@ -28,8 +28,8 @@ bool PlaylistLoader::s_stop = false;
 
 PlaylistLoader::PlaylistLoader( const KURL::List &urls, QListView *parent, QListViewItem *after, bool playFirstUrl )
     : QThread()
-    , m_markey( parent ? new PlaylistItem( KURL(), parent, after ) : 0 )
     , m_URLs( urls )
+    , m_marker( parent ? new PlaylistItem( KURL(), parent, after ) : 0 )
     , m_playFirstUrl( playFirstUrl )
     , m_db( new CollectionDB )
 {}
@@ -43,11 +43,11 @@ PlaylistLoader::~PlaylistLoader()
 void
 PlaylistLoader::run()
 {
-    m_markey->setVisible( false );
+    m_marker->setVisible( false );
 
     float increment, progress;
     PlaylistItem* item = 0;
-    bool needSecondPass = false;
+    m_needSecondPass = false;
     amaroK::StatusBar::startProgress();
     QApplication::postEvent( Playlist::instance(), new QCustomEvent( Started ) );
 
@@ -79,7 +79,7 @@ PlaylistLoader::run()
         else if( EngineController::canDecode( url ) ) item = createPlaylistItem( url );
         else addBadURL( url );
 
-        if ( item ) needSecondPass |= !item->inCollection() || !item->hasAudioproperties();
+        m_needSecondPass |= !item->inCollection() || !item->hasAudioproperties();
         progress += increment;
         amaroK::StatusBar::showProgress( uint(progress) );
     }
@@ -87,10 +87,10 @@ PlaylistLoader::run()
 
     //TODO dialog for failed entries
 
-    delete m_markey;
+    delete m_marker;
 
     //BEGIN second pass
-    if ( needSecondPass )
+    if ( m_needSecondPass )
     {
         increment = 100.0 / m_pairs.count();
         progress = 0;
@@ -131,9 +131,9 @@ PlaylistLoader::createPlaylistItem( const KURL &url )
 
     // Get MetaBundle from Collection if it's already stored, otherwise read from disk
     if ( m_db->getMetaBundleForUrl( url.path(), &bundle ) )
-        item = new PlaylistItem( url, m_markey, bundle );
+        item = new PlaylistItem( url, m_marker, bundle );
     else
-        item = new PlaylistItem( url, m_markey );
+        item = new PlaylistItem( url, m_marker );
 
     if ( m_playFirstUrl ) {
         QApplication::postEvent( Playlist::instance(), new QCustomEvent( QEvent::Type(Play), item ) );
@@ -213,7 +213,8 @@ PlaylistLoader::recurse( QString path )
         const QStringList::ConstIterator end1 = files.end();
         for ( QStringList::ConstIterator it = files.begin(); it != end1; ++it ) {
             url.setPath( *it );
-            createPlaylistItem( url );
+            PlaylistItem* item = createPlaylistItem( url );
+            m_needSecondPass |= !item->inCollection() || !item->hasAudioproperties();
         }
 
         const QStringList::Iterator end2 = dirs.end();
@@ -310,7 +311,7 @@ PlaylistLoader::loadPlaylist( const QString &path, Format type )
             const QDomElement e = n.toElement();
 
             if ( !e.isNull() )
-                new PlaylistItem( KURL(e.attribute( URL )), m_markey, n );
+                new PlaylistItem( KURL(e.attribute( URL )), m_marker, n );
         }
     }
     default:

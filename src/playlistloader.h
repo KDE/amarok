@@ -75,13 +75,13 @@ private:
 private:
     static bool s_stop;
 
-    PlaylistItem *m_markey;
-
     const KURL::List m_URLs;
           KURL::List m_badURLs;
 
+    PlaylistItem *m_marker;
     bool m_playFirstUrl;
     CollectionDB* m_db;
+    bool m_needSecondPass;
 
     typedef QPair<KURL,PlaylistItem*> Pair;
     typedef QValueList<Pair> List;
