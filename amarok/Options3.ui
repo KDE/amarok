@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>431</width>
-            <height>398</height>
+            <height>402</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -137,6 +137,9 @@
                                     <property name="name">
                                         <cstring>kColorButtonFg</cstring>
                                     </property>
+                                    <property name="enabled">
+                                        <bool>false</bool>
+                                    </property>
                                     <property name="sizePolicy">
                                         <sizepolicy>
                                             <hsizetype>3</hsizetype>
@@ -213,6 +216,9 @@
                                     <property name="name">
                                         <cstring>kColorButtonBg</cstring>
                                     </property>
+                                    <property name="enabled">
+                                        <bool>false</bool>
+                                    </property>
                                     <property name="sizePolicy">
                                         <sizepolicy>
                                             <hsizetype>3</hsizetype>
@@ -241,20 +247,9 @@
 </widget>
 <customwidgets>
 </customwidgets>
-<connections>
-    <connection>
-        <sender>chkBoxCustomColor</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>Options3</receiver>
-        <slot>slotToggled(bool)</slot>
-    </connection>
-</connections>
 <includes>
     <include location="local" impldecl="in implementation">Options3.ui.h</include>
 </includes>
-<slots>
-    <slot>slotToggled( bool state )</slot>
-</slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>kcolorbutton.h</includehint>

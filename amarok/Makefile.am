@@ -11,7 +11,7 @@ EXTRA_DIST = browserwidget.h browserwin.h \
 
 bin_PROGRAMS = amarok
 
-amarok_SOURCES = main.cpp playlistwidget.cpp playlistitem.cpp playerwidget.cpp playerapp.cpp Options1.ui Options2.ui Options3.ui expandbutton.cpp effectwidget.cpp browserwin.cpp browserwidget.cpp amarokdcopiface.skel configdlg.cpp Options4.ui amarokbutton.cpp amarokfilelist.cpp
+amarok_SOURCES = main.cpp playlistwidget.cpp playlistitem.cpp playerwidget.cpp playerapp.cpp expandbutton.cpp effectwidget.cpp browserwin.cpp browserwidget.cpp amarokdcopiface.skel configdlg.cpp amarokbutton.cpp amarokfilelist.cpp Options1.ui Options2.ui Options3.ui Options4.ui
 
 
 
@@ -19,7 +19,7 @@ amarok_LDADD = ./analyzers/libanalyzers.a ./amarokarts/libamarokarts.la -lqtmcop
 # $(LIBSOCKET)
 amarok_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
-noinst_HEADERS = Options1.h Options1.h Options1.h Options2.h Options3.h browserwidget.h browserwin.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h configdlg.h amarokbutton.h amarokfilelist.h Options2.h Options3.h Options3.ui.h Options4.h amarokbutton.h amarokdcopiface.h amarokfilelist.h browserwidget.h browserwin.h configdlg.h debugareas.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h Options2.h Options3.h Options3.ui.h Options4.h amarokbutton.h amarokdcopiface.h amarokfilelist.h browserwidget.h browserwin.h configdlg.h debugareas.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h
+noinst_HEADERS = Options1.h Options2.h Options3.h Options4.h browserwidget.h browserwin.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h configdlg.h amarokbutton.h amarokfilelist.h amarokbutton.h amarokdcopiface.h amarokfilelist.h browserwidget.h browserwin.h configdlg.h debugareas.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h amarokbutton.h amarokdcopiface.h amarokfilelist.h browserwidget.h browserwin.h configdlg.h debugareas.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h
 
 
 
