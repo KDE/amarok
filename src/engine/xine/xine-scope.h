@@ -31,8 +31,9 @@ extern "C"
     xine_post_t*
     scope_plugin_new( xine_t*, xine_audio_port_t* );
 
-    //we sacrifice type-safety here because some GCCs appear broken
-    //and choke on redefining the xine_post_t typedef
+    /* we sacrifice type-safety here because some GCCs appear broken
+     * and choke on redefining the xine_post_t typedef
+     */
 
     MyNode*
     scope_plugin_list( void* );
