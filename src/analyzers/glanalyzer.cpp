@@ -39,7 +39,7 @@ GLAnalyzer::~GLAnalyzer()
 void GLAnalyzer::analyze( const Scope &s )
 {
 	//Analyzer::interpolate(s, m_bands); //if no s then we are paused/stopped
-	glRotatef(0.25f, 0.1f, 1.0f, 0.5f); //Rotate the scene
+	glRotatef(0.25f, 0.0f, 1.0f, 0.5f); //Rotate the scene
 	drawFloor();	
 	for ( uint i = 0; i < 32; i++ )
 	{
