@@ -26,13 +26,13 @@ oldmake = ENV["UNSERMAKE"]
 
 `mkdir #{folder}`
 `pushd #{folder}`
-`cvs -d $cvsroot co -l kdeextragear-1`
-`cvs -z3 -d $cvsroot co kdeextragear-1/amarok`
-`cvs -z3 -d $cvsroot co -l kdeextragear-1/doc`
-`cvs -z3 -d $cvsroot co kdeextragear-1/doc/amarok`
+`cvs -d #{cvsroot} co -l kdeextragear-1`
+`cvs -z3 -d #{cvsroot} co kdeextragear-1/amarok`
+`cvs -z3 -d #{cvsroot} co -l kdeextragear-1/doc`
+`cvs -z3 -d #{cvsroot} co kdeextragear-1/doc/amarok`
 `pushd kdeextragear-1`
 
-'cvs -z3 -d $cvsroot co admin'
+'cvs -z3 -d #{cvsroot} co admin'
 
 print
 print "**** i18n ****"
@@ -40,45 +40,43 @@ print
 
 # we check out kde-i18n/subdirs in kde-i18n..
 if doi18n = "yes"
-    `echo "cvs co kde-i18n/subdirs" >> $log`
-    `cvs -z3 -d $cvsroot -q co -P kde-i18n/subdirs > /dev/null 2>&1`
+    `echo "cvs co kde-i18n/subdirs" >> #{log}`
+    `cvs -z3 -d #{cvsroot} -q co -P kde-i18n/subdirs > /dev/null 2>&1`
     i18nlangs = `cat kde-i18n/subdirs`
-    echo "available languages: $i18nlangs" >> $log
+    `echo "available languages: #{i18nlangs}" >> #{log}`
 
     # docs
     for lang in i18nlangs
         `test -d doc/#{lang} && rm -Rf doc/#{lang}`
         docdirname = "kde-i18n/#{lang}/docs/kdeextragear-1/amarok"
-        `echo "cvs co #{docdirname}" >> $log`
+        `echo "cvs co #{docdirname}" >> #{log}`
         `cvs -z3 -q -d "#{cvsroot}" co #{branch} -P "#{docdirname}" > /dev/null 2>&1`
-        if [ ! -d "$docdirname" ]; then
-            `echo "#{lang}'s #{name} documentation does not exist." >> $log`
-            continue
+        if not FileTest.exists? docdirname
+            `echo "#{lang}'s #{name} documentation does not exist." >> #{log}`
         end
-        print "Copying $lang's $name documentation over... "
+        print "Copying #{lang}'s #{name} documentation over... "
         `cp -R #{docdirname} doc/#{lang}`
         `cat doc/#{lang}/Makefile.am | sed -e "s/AUTO/amarok/" > doc/#{lang}/Makefile.am.nw`
         `mv doc/#{lang}/Makefile.am.nw doc/#{lang}/Makefile.am`
-        `echo "#{lang} documentation included." >> $log`
+        `echo "#{lang} documentation included." >> #{log}`
     end
 
     print
 
     `mkdir po`
     for lang in i18nlangs
-        pofilename = "kde-i18n/$lang/messages/kdeextragear-1/amarok.po"
-        `echo "cvs co #{pofilename}" >> $log`
+        pofilename = "kde-i18n/#{lang}/messages/kdeextragear-1/amarok.po"
+        `echo "cvs co #{pofilename}" >> #{log}`
         `cvs -z3 -d #{cvsroot} -q co -P "#{pofilename}" > /dev/null 2>&1`
-        if [ ! -f "$pofilename" ]; then
-            `echo "#{lang}'s #{name}.po does not exist." >> $log`
-            continue
+        if not FileTest.exists? pofilename
+            `echo "#{lang}'s #{name}.po does not exist." >> #{log}`
         end
 
         dest = po/#{lang}
         `mkdir #{dest}`
         print "Copying #{lang}'s #{name}.po over... "
-        echo "$lang's $name.po file included." >> $log
-        `cp #{$pofilename} #{dest}`
+        `echo "#{lang}'s #{name}.po file included." >> #{log}`
+        `cp #{pofilename} #{dest}`
         print "done."
 
         echo "KDE_LANG = $lang
@@ -86,13 +84,13 @@ SUBDIRS = \$(AUTODIRS)
 POFILES = AUTO" > $dest/Makefile.am
 
         subdirs="non_empty"
-    done
+    end
 
-    if [ -z "$subdirs" ]; then
-        rm -Rf po
+    if FileTest.exists? subdirs
+        `rm -Rf po`
     else
-        echo "SUBDIRS = \$(AUTODIRS)" > po/Makefile.am
-    fi
+        `echo "SUBDIRS = \$(AUTODIRS)" > po/Makefile.am`
+    end
 
     `rm -rf kde-i18n`
 end
@@ -144,7 +142,7 @@ print
 
 print
 print "====================================================="
-print "Congratulations :) amaroK $version tarball generated."
+print "Congratulations :) amaroK #{version} tarball generated."
 print "Now follow the steps in the RELEASE_HOWTO, from"
 print "SECTION 3 onwards."
 print
