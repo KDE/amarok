@@ -71,7 +71,6 @@ class GstEngine : public EngineBase
         /** Duplicates audio data for application side processing */
         static void                              handoff_cb( GstElement*, GstBuffer*, gpointer );
         
-        static void                              typefindFound_cb( GstElement*, guint, GstCaps* caps, gpointer );
         static void                              error_cb( GstElement*, GstElement*, GError*, gchar*, gpointer );
 
         /** Get a list of available plugins from a specified Class */
@@ -105,7 +104,6 @@ class GstEngine : public EngineBase
         /** Used for delayed starting of the pipeline (for streaming) */
         bool                                     m_playWhenReady;
         
-        bool                                     m_typefindResult;
         bool                                     m_pipelineFilled;
 };
 

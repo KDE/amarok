@@ -106,25 +106,6 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
 
 
 void
-GstEngine::typefindFound_cb( GstElement*, guint, GstCaps* caps, gpointer )
-{
-    GstStructure* type = gst_caps_get_structure( caps, 0 );
-    
-    // Extract mimetype from GstType structure
-    QString mimetype = gst_structure_get_name( type );
-    kdDebug() << "MimeType detected: " << mimetype << endl;
-
-    // Don't allow mimetypes that are clearly not audio
-    if ( mimetype.contains( "image" ) || 
-         mimetype.contains( "video" ) || 
-         mimetype.contains( "text" ) )
-        return;     
-    
-    instance()->m_typefindResult = true;
-}
-
-
-void
 GstEngine::error_cb( GstElement* /*element*/, GstElement* /*source*/, GError* error, gchar* /*debug*/, gpointer /*data*/ )
 {
     kdDebug() << k_funcinfo << endl;
@@ -196,34 +177,41 @@ GstEngine::initMixer( bool hardware )
 bool
 GstEngine::canDecode( const KURL &url, mode_t, mode_t )
 {
-    GstElement* pipeline;
-    GstElement* filesrc;
-    GstElement* typefind;
-    m_typefindResult = false;
+    bool success = false;
+    GstElement *pipeline, *filesrc, *spider, *audioconvert, *audioscale, *audiosink;
 
     /* create a new pipeline to hold the elements */
     pipeline = gst_pipeline_new( "pipeline" );
-
     /* create a disk reader */
-    if ( !( filesrc = gst_element_factory_make( "filesrc", "disk_source" ) ) ) goto error;
+    if ( !( filesrc = gst_element_factory_make( "filesrc", "filesrc" ) ) ) goto error;
     gst_bin_add ( GST_BIN ( pipeline ), filesrc );
-
-    if ( !( typefind = gst_element_factory_make( "typefind", "typefind" ) ) ) goto error;
-    gst_bin_add ( GST_BIN ( pipeline ), typefind );
-
-    g_object_set( G_OBJECT( filesrc ), "location", (const char*) QFile::encodeName( url.path() ), NULL );
-    gst_element_link_many( filesrc, typefind, NULL );
+    if ( !( spider = gst_element_factory_make( "spider", "spider" ) ) ) goto error;
+    gst_bin_add ( GST_BIN ( pipeline ), spider );
+    if ( !( audioconvert = gst_element_factory_make( "audioconvert", "audioconvert" ) ) ) goto error;
+    gst_bin_add ( GST_BIN ( pipeline ), audioconvert );
+    if ( !( audioscale = gst_element_factory_make( "audioscale", "audioscale" ) ) ) goto error;
+    gst_bin_add ( GST_BIN ( pipeline ), audioscale );
+    if ( !( audiosink = gst_element_factory_make( m_soundOutput.latin1(), "audiosink" ) ) ) goto error;
+    gst_bin_add ( GST_BIN ( pipeline ), audiosink );
     
-    g_signal_connect ( G_OBJECT( typefind ), "have-type", G_CALLBACK( typefindFound_cb ), pipeline );
+    /* setting device property for AudioSink*/
+    if ( !m_defaultSoundDevice && !m_soundDevice.isEmpty() )
+        g_object_set( G_OBJECT ( audiosink ), "device", m_soundDevice.latin1(), NULL );
+    
+    g_object_set( G_OBJECT( filesrc ), "location", (const char*) QFile::encodeName( url.path() ), NULL );
+    
+    gst_element_link_many( filesrc, spider, audioconvert, audioscale, audiosink, NULL );
     gst_element_set_state( pipeline, GST_STATE_PLAYING );
 
-    // Iterate over the pipeline until operation is finished
-    while ( gst_bin_iterate ( GST_BIN ( pipeline ) ) );
-
+    // Try to iterate over the bin, if it works gst can decode our file
+    if ( gst_bin_iterate ( GST_BIN ( pipeline ) ) )
+        success = true;
+    
     gst_element_set_state( pipeline, GST_STATE_NULL );
     gst_object_unref( GST_OBJECT( pipeline ) );
 
-    return m_typefindResult;
+    kdDebug() << "canDecode() result: " << success << endl;
+    return success;
 
 error:
     kdWarning() << "GStreamer element factory does not work. " << endl
