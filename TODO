@@ -30,6 +30,10 @@ SHORT-TERM (URGENT):
 
 MID-TERM:
 
+  FIX 131 <mxcl>   Grue reports with aRtsengine, amarok *, only loads 15-17 entries in dir with ~100,
+                   media type is unimportant (happened for oggs, mp3s and flacs, mixed and otherwise)
+                   Nobody else can replicate typically.
+
   ADD 127 <mxcl>   Connect PlayerWindow navigation buttons to KAction enabled states
 
   ADD 113 <markey> We must reduce dependency on app.h. Change a single line there -> recompile world :/
