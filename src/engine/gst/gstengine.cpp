@@ -1116,7 +1116,7 @@ InputPipeline::InputPipeline()
     if ( !( volume = GstEngine::createElement( "volume", bin ) ) ) { goto error; }
 
     g_signal_connect( G_OBJECT( spider ), "eos", G_CALLBACK( GstEngine::eos_cb ), bin );
-    g_signal_connect( G_OBJECT( spider ), "found-tag", G_CALLBACK( GstEngine::found_tag_cb ), bin );
+//     g_signal_connect( G_OBJECT( spider ), "found-tag", G_CALLBACK( GstEngine::found_tag_cb ), bin );
 
     // Start silent
     gst_element_set( volume, "volume", 0.0, NULL );
