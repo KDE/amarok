@@ -382,7 +382,7 @@ void PlaylistWidget::saveXML( const QString &path ) const
     for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
     {
         stream << open1 << item->url().url() << open2;
-        for( uint x = 0; x < columns(); ++x )
+        for( int x = 0; x < columns(); ++x )
             stream << body.arg( columnText( x ), item->exactText( x ).replace( '&', "&quot;" ).replace( '<', "&lt;" ) );
         stream << close;
     }

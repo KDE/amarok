@@ -127,7 +127,10 @@ void PlaylistItem::setText( int column, const QString &newText )
         //these are good candidates for the stringStore
         //NOTE title is not a good candidate, it probably will never repeat in the playlist
 
-        KListViewItem::setText( column, attemptStore( newText ) );
+        if ( ( column == 7 ) || ( column == 9 ) || ( column == 10 ) )
+            KListViewItem::setText( column, attemptStore( newText ) + " " );
+        else
+            KListViewItem::setText( column, attemptStore( newText ) );
         break;
 
     case 1:
@@ -152,7 +155,10 @@ void PlaylistItem::setText( int column, const QString &newText )
         //else do default -->
 
     default:
-        KListViewItem::setText( column, newText );
+        if ( ( column == 7 ) || ( column == 9 ) || ( column == 10 ) )
+            KListViewItem::setText( column, newText + " " );
+        else
+            KListViewItem::setText( column, newText );
     }
 }
 

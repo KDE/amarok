@@ -229,7 +229,7 @@ void
 AudioPropertiesReader::completeJob()
 {
     //TODO do in playlistItem class or at least enum these numbers!
-    m_item->setText(  9, m_length );
+    m_item->setText(  9, m_length  );
     m_item->setText( 10, m_bitrate );
 }
 
