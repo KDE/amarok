@@ -11,8 +11,8 @@ SHORT-TERM (URGENT):
 
     * fix: #7<mxcl> playlist should hide/raise/minimise with the playerWidget. Works if playlist
            is WType_Dialog, but then the mainWidget can't rise above the playlistWidget (was #1).
-           It is best to let the WM handle this, (hence it was WType_Dialog), but berkus
-           disabled it to fix #1 so we need an alternative solution.
+           It is best to let the WM handle this, (hence it was WType_Dialog), but it was
+           disabled to fix #1 so we need an alternative solution..
 
     * fix: #6<markey> install correct icons (not the inactive logo version)
 
