@@ -144,8 +144,6 @@ void AmarokConfigDialog::updateWidgetsDefault()
 /** REIMPLEMENTED */
 bool AmarokConfigDialog::hasChanged()
 {
-    kdDebug() << k_funcinfo << endl;
-    
     OSDWidget *osd = (OSDWidget*) child( "osdpreview" );
  
     bool engineChanged = false;

@@ -52,18 +52,15 @@ GstConfigDialog::~GstConfigDialog()
 bool
 GstConfigDialog::hasChanged() const
 {
-    kdDebug() << k_funcinfo << endl;
-
     return GstConfig::soundOutput()       != m_view->kComboBox_output->currentText() ||
-           GstConfig::customSoundDevice() != m_view->checkBox1->isChecked();
+           GstConfig::customSoundDevice() != m_view->checkBox1->isChecked() ||
+           GstConfig::soundDevice()       != m_view->kLineEdit_device->text();
 }
 
 
 bool
 GstConfigDialog::isDefault() const
 {
-    kdDebug() << k_funcinfo << endl;
-
     return false;
 }
 
@@ -79,6 +76,7 @@ GstConfigDialog::save() //SLOT
     
     GstConfig::setSoundOutput( m_view->kComboBox_output->currentText() );
     GstConfig::setCustomSoundDevice( m_view->checkBox1->isChecked() );
+    GstConfig::setSoundDevice( m_view->kLineEdit_device->text() );
 }
 
 
