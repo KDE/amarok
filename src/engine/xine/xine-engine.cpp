@@ -69,8 +69,8 @@ XineEngine::~XineEngine()
 bool
 XineEngine::init()
 {
-    debug() << "Welcome to xine-engine! 9 out of 10 cats prefer xine!\n"
-               "Please report bugs to amarok-devel@lists.sourceforge.net\n"
+    debug() << "Welcome! 9 out of 10 cats prefer xine!\n"
+               "Please report bugs http://bugs.kde.org\n"
                "Build stamp: " << __DATE__ << ' ' << __TIME__ << endl;
 
     m_xine = xine_new();
@@ -89,6 +89,7 @@ XineEngine::init()
     path += "/.%1/config";
     path  = QFile::exists( path.arg( "kaffeine" ) ) ? path.arg( "kaffeine" ) : path.arg( "xine" );
 
+    debug() << "Using configuration: " << path << endl;
     xine_config_load( m_xine, QFile::encodeName( path ) );
 
     xine_init( m_xine );
@@ -250,7 +251,7 @@ XineEngine::canDecode( const KURL &url ) const
     //TODO proper mimetype checking
 
     const QString path = url.path();
-    const QString ext  = path.mid( path.findRev( '.' ) + 1 );
+    const QString ext  = path.mid( path.findRev( '.' ) + 1 ).lower();
     return ext != "txt" && list.contains( ext );
 }
 
