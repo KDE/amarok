@@ -293,15 +293,21 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
             continue;
         entry.prepend( QFile::encodeName( dir.endsWith( "/" ) ? dir : dir + "/" ) );
 
-        stat( entry, &statBuf );
+        if ( stat( entry, &statBuf ) == 0 )
+        {
+            if ( S_ISDIR( statBuf.st_mode ) ) {
+                if ( m_recursively )
+                    //call ourself recursively for each subdir
+                    if ( !m_incremental || !m_parent->isDirInCollection( entry ) )
+                        readDir( QFile::decodeName( entry ), entries );
+            } else if ( S_ISREG( statBuf.st_mode ) )
+                entries << QString::fromLocal8Bit( entry );
 
-        if ( S_ISDIR( statBuf.st_mode ) ) {
-            if ( m_recursively )
-                //call ourself recursively for each subdir
-                if ( !m_incremental || !m_parent->isDirInCollection( entry ) )
-                    readDir( QFile::decodeName( entry ), entries );
-        } else if ( S_ISREG( statBuf.st_mode ) )
-            entries << QString::fromLocal8Bit( entry );
+        } else if ( m_incremental )
+        {
+            m_parent->removeSongsInDir( entry );
+            m_parent->removeDirFromCollection( entry );
+        }
     }
     closedir( d );
 }
