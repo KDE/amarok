@@ -35,7 +35,7 @@
 &lt;p&gt;There are many media-players around these days, this is true. But what's missing from most players is an interface that doesn't get in your way. How many buttons do you have to press when simply adding media to the playlist? amaroK tries to be a little different, providing a simple drag-and-drop interface that makes playlist handling really easy.&lt;/p&gt;
 &lt;p align="right"&gt;&lt;i&gt;"amaroK is seriously super!"&lt;/i&gt; - Uncle Rodney&lt;/p&gt;
 &lt;h2&gt;First-run Wizard&lt;/h2&gt;
-&lt;p&gt;This wizard will help you setup amaroK in three easy steps. Click &lt;i&gt;Next&lt;/i&gt; to begin, or if you don't like wizards, click &lt;i&gt;Skip&lt;/i&gt;.&lt;/p&gt;</string>
+&lt;p&gt;This wizard will help you setup amaroK in three easy steps. Click &lt;i&gt;Next&lt;/i&gt; to begin, or if you do not like wizards, click &lt;i&gt;Skip&lt;/i&gt;.&lt;/p&gt;</string>
                 </property>
             </widget>
             <spacer row="1" column="1">

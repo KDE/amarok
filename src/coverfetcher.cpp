@@ -166,7 +166,7 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
         if ( !m_albumonly ) getCover( m_album, m_album, m_saveas, CoverFetcher::heavy, m_noedit, 1, true );
         else if ( !m_noedit )
         {
-            m_text = i18n( "<h3>No cover image found!</h3>"
+            m_text = i18n( "<h3>No cover image found.</h3>"
                            "If you would like to search again, you can edit the search string below and press <b>OK</b>." );
             editSearch();
         }
@@ -192,7 +192,7 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
             }
             else if ( !m_noedit )
             {
-                m_text = i18n( "<h3>Cover found, but without images!</h3>"
+                m_text = i18n( "<h3>Cover found, but without images.</h3>"
                                "If you would like to search again, you can edit the search string below and press <b>OK</b>." );
                 editSearch();
             }

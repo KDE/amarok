@@ -392,7 +392,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                     "<table width='100%'><tr><td width='20%'><a class='menu' href='fetchcover:%7 @@@ %8'>"
                                     "<img hspace='2' src='%9'></a></td>"
                                     "<td valign='bottom' align='right' width='80%'>" +
-                                    i18n( "Track played %10 times" ) + "<br>" +
+                                    i18n( "Track played 1 time", "Track played %n times", values[4]) + "<br>" +
                                     "amaroKiness: %11" + "<br>" +
                                     i18n( "Last play: %12" ) + "<br>" +
                                     i18n( "First play: %13") + "</i></td></tr>" )
@@ -406,7 +406,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                 << escapeHTMLAttr( m_currentTrack->artist() )
                                 << escapeHTMLAttr( m_currentTrack->album() )
                                 << escapeHTMLAttr( m_db->getImageForAlbum( values[1], values[0] ) )
-                                << values[4]
                                 << values[5]
                                 << values[2].left( values[2].length() - 3 )
                                 << values[3].left( values[3].length() - 3 )
