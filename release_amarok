@@ -6,9 +6,6 @@
 # Some parts of this code taken from cvs2dist
 # License: GPL V2
 #
-# TODO: * Adjust version number in amarok.lsm
-#       * Extract doc translations from CVS
-
 
 # Usage
 #    Print usage and exit script
@@ -43,6 +40,10 @@ folder="amarok-$version"
 doi18n="yes"
 log="/dev/null"
 
+# Prevent using unsermake
+oldmake=$UNSERMAKE
+export UNSERMAKE=""
+
 # Remove old folder, if exists
 rm -rf $folder 2> /dev/null
 rm -rf $folder.tar.bz2 2> /dev/null
@@ -70,8 +71,26 @@ if [ $doi18n = "yes" ]; then
     i18nlangs="$(cat kde-i18n/subdirs)"
     echo "available languages: $i18nlangs" >> $log
 
-    mkdir po
+    # docs
+    for lang in $i18nlangs; do
+        test -d doc/$lang && rm -Rf doc/$lang
+        docdirname="kde-i18n/$lang/docs/kdeextragear-1/amarok"
+        echo "cvs co $docdirname" >> $log
+        cvs -z3 -q -d "$cvsroot" co $branch -P "$docdirname" > /dev/null 2>&1
+        if [ ! -d "$docdirname" ]; then
+            echo "$lang's $name documentation does not exist." >> $log
+            continue
+        fi
+        echo "Copying $lang's $name documentation over... "
+        cp -R $docdirname doc/$lang
+        cat doc/$lang/Makefile.am | sed -e "s/AUTO/$name/" > doc/$lang/Makefile.am.nw
+        mv doc/$lang/Makefile.am.nw doc/$lang/Makefile.am
+        echo "$lang documentation included." >> $log
+    done
 
+    echo
+
+    mkdir po
     for lang in $i18nlangs; do
         pofilename="kde-i18n/$lang/messages/kdeextragear-1/amarok.po";
         echo "cvs co $pofilename" >> $log
@@ -130,10 +149,7 @@ rm -rf debian
 popd # kdeextragear-1
 echo
 
-# Prevent using unsermake
-oldmake=$UNSERMAKE
-export UNSERMAKE="" && make -f Makefile.cvs
-export UNSERMAKE=$oldmake
+make -f Makefile.cvs
 
 find -name "*" -exec touch {} \;
 rm -rf autom4te.cache
@@ -154,6 +170,9 @@ if test x$upload = xtrue; then
 
     scp $folder.tar.bz2 $username@shell.sf.net:snapshots/
 fi
+
+export UNSERMAKE=$oldmake
+
 
 echo
 echo "====================================================="
