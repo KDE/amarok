@@ -33,8 +33,9 @@ class KDirOperator;
 class KFileItem;
 class KFileView;
 class KURLComboBox;
-class KHistoryCombo;
+class KLineEdit;
 class QColor;
+class QTimer;
 
 
 //Hi! I think we ripped this from Kate, since then it's been modified somewhat
@@ -64,7 +65,7 @@ public:
     static QColor altBgColor;
 
 public slots:
-    void slotFilterChange( const QString& );
+    void slotSetFilter();
     void setDir( const KURL& );
     void setDir( const QString& url ) { setDir( KURL( url ) ); }
 
@@ -72,7 +73,7 @@ private slots:
     void cmbPathActivated( const KURL& u ) { cmbPathReturnPressed( u.url() ); }
     void cmbPathReturnPressed( const QString& u );
     void dirUrlEntered( const KURL& u );
-    void btnFilterClick();
+    void slotSetFilterTimeout();
     void slotViewChanged( KFileView* );
     void activateThis( const KFileItem* );
     void makePlaylist();
@@ -85,9 +86,8 @@ private:
     KActionCollection *m_actionCollection;
     KURLComboBox      *cmbPath;
     KDirOperator      *dir;
-    KHistoryCombo     *filter;
-    class QToolButton *btnFilter;
-    QString            lastFilter;
+    KLineEdit *m_filterEdit;
+    QTimer *m_timer;
 
     KURL::List selectedItems();
 

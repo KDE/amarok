@@ -28,6 +28,7 @@
 #include <qhbox.h>
 #include <qdir.h>
 #include <qlabel.h>
+#include <qtimer.h>
 #include <qtoolbutton.h>
 #include <qtooltip.h>
 
@@ -36,6 +37,7 @@
 #include <kdebug.h>
 #include <kiconloader.h>
 #include <klistview.h>   //slotViewChanged()
+#include <klineedit.h>
 #include <klocale.h>
 #include <kpopupmenu.h>
 #include <kurlcombobox.h>
@@ -111,24 +113,24 @@ FileBrowser::FileBrowser( const char * name )
     acmBookmarks->setDelayed( false );
     bookmarkHandler = new KBookmarkHandler( this, acmBookmarks->popupMenu() );
 
-    QHBox *filterBox = new QHBox( this );
-    btnFilter = new QToolButton( filterBox );
-    btnFilter->setIconSet( SmallIconSet( "filter" ) );
-    btnFilter->setToggleButton( true );
-    filter = new KHistoryCombo( true, filterBox, "filter");
-    filter->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ));
-    filter->setMaxCount( 9 );
-    filter->setHistoryItems( config->readListEntry( "Filter History" ), true );
-    filterBox->setStretchFactor( filter, 2 );
+    { //<Search LineEdit>
+        QHBox *hbox; QToolButton *button;
 
-    const QString flt = config->readEntry( "Current Filter" );
-    lastFilter = config->readEntry( "Last Filter" );
-    filter->lineEdit()->setText( flt ); //slotFilterChange doesn't set the text
-    slotFilterChange( flt );
+        hbox       = new QHBox( this );
+        button     = new QToolButton( hbox );
+        m_filterEdit = new KLineEdit( hbox );
 
-    connect( btnFilter, SIGNAL(clicked()), this, SLOT(btnFilterClick()) );
-    connect( filter, SIGNAL( activated(const QString&) ), SLOT( slotFilterChange(const QString&) ) );
-    connect( filter, SIGNAL( returnPressed(const QString&) ), filter, SLOT( addToHistory(const QString&) ) );
+        button->setIconSet( SmallIconSet( QApplication::reverseLayout() ? "clear_left" : "locationbar_erase" ) );
+        connect( button, SIGNAL(clicked()), m_filterEdit, SLOT(clear()) );
+
+        QToolTip::add( button, i18n( "Clear filter" ) );
+        QToolTip::add( m_filterEdit, i18n( "Enter space-separated terms to filter files" ) );
+    } //</Search LineEdit>
+    
+    m_timer = new QTimer( this );
+    
+    connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
+    connect( m_filterEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     connect( cmbPath, SIGNAL( urlActivated( const KURL&  )), SLOT(cmbPathActivated( const KURL& )) );
     connect( cmbPath, SIGNAL( returnPressed( const QString&  )), SLOT(cmbPathReturnPressed( const QString& )) );
     connect( bookmarkHandler, SIGNAL(openURL( const QString& )), SLOT(setDir( const QString& )) );
@@ -149,12 +151,6 @@ FileBrowser::~FileBrowser()
 
     c->writeEntry( "Location", dir->url().directory( false, false ) );
     c->writeEntry( "Dir History", cmbPath->urls() );
-    c->writeEntry( "Filter History", filter->historyItems() );
-    c->writeEntry( "Current Filter", filter->currentText() );
-    c->writeEntry( "Last Filter", lastFilter );
-
-    //c->writeEntry( "Filter History Len", filter->maxCount() );
-    //c->writeEntry( "Set Path Combo History Len", cmbPath->maxItems() );
 }
 
 //END Constructor/Destructor
@@ -202,28 +198,24 @@ KURL::List FileBrowser::selectedItems()
 
 //BEGIN Public Slots
 
-void FileBrowser::slotFilterChange( const QString & nf )
+void FileBrowser::slotSetFilter( )
 {
-    const QString f = nf.stripWhiteSpace();
-    const bool empty = f.isEmpty() || f == "*";
-
-    if ( empty )
-    {
-        dir->clearFilter();
-        filter->lineEdit()->setText( QString::null );
-        QToolTip::add( btnFilter, i18n("Apply last filter (\"%1\")").arg( lastFilter ) );
-
-    } else {
-
-        dir->setNameFilter( f );
-        lastFilter = f;
-        QToolTip::add( btnFilter, i18n("Clear filter") );
+    QString text = m_filterEdit->text();
+    
+    if ( text.isEmpty() )    
+        dir->clearFilter();     
+    else {
+        QString filter;
+        QStringList terms = QStringList::split( " ", text );
+        
+        for ( QStringList::Iterator it = terms.begin(); it != terms.end(); ++it )
+            filter += "*"+ *it;
+        
+        filter += "*";
+        dir->setNameFilter( filter );
     }
-
-    btnFilter->setOn( !empty );
+    
     dir->updateDir();
-    // this will be never true after the filter has been used;)
-    btnFilter->setEnabled( !( empty && lastFilter.isEmpty() ) ); //FIXME can only be true in ctor, move there
 }
 
 
@@ -256,17 +248,10 @@ inline void FileBrowser::dirUrlEntered( const KURL& u )
 }
 
 
-inline void FileBrowser::btnFilterClick()
+inline void FileBrowser::slotSetFilterTimeout()
 {
-    if( btnFilter->isOn() )
-    {
-        filter->lineEdit()->setText( lastFilter );
-        slotFilterChange( lastFilter );
-
-    } else {
-
-        slotFilterChange( QString::null );
-    }
+    if ( m_timer->isActive() ) m_timer->stop();
+    m_timer->start( 180, true );
 }
 
 
