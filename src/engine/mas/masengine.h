@@ -4,7 +4,7 @@
 begin                : Jul 04 2004
 copyright            : (C) 2004 by Roland Gigler
 email                : rolandg@web.de
-what		     : interface to the Media Application Server (MAS)
+what                 : interface to the Media Application Server (MAS)
 ***************************************************************************/
 
 /***************************************************************************
@@ -22,7 +22,7 @@ what		     : interface to the Media Application Server (MAS)
 #include "enginebase.h"
 
 #include <vector>
-	
+
 #include <qguardedptr.h>
 #include <qmap.h>
 #include <qstringlist.h>
@@ -60,23 +60,23 @@ class MasEngine : public Engine::Base
     public:
         MasEngine();
         ~MasEngine();
-                                        
-        bool init(); 
-                                                                                                  
+
+        bool init();
+
         bool initMixer( bool hardware );
         bool canDecode( const KURL& ) const;
         //StreamingMode streamingMode() { return MasEngine::NoStreaming; }
 
         uint position() const;
-        Engine::State state() const {return m_state;} 
+        Engine::State state() const {return m_state;}
 //        std::vector<float>* scope();
 
-/*       
+/*
         bool decoderConfigurable();
-        void configureDecoder();                                                   
+        void configureDecoder();
   */
         bool supportsXFade() const     { return false; }
-         
+
     public slots:
         bool load( const KURL&, bool stream );
         bool play( unsigned int offset = 0);
@@ -87,7 +87,7 @@ class MasEngine : public Engine::Base
         void setVolumeSW( unsigned int percent );
     private slots:
         void playingTimeout();
-    
+
     private:
         void startXfade();
         //void timerEvent( QTimerEvent* );

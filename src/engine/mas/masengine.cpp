@@ -4,7 +4,7 @@
 begin                : 2004-07-20
 copyright            : (C) 2004 by Roland Gigler
 email                : rolandg@web.de
-what		     : interface to the Media Application Server (MAS)
+what                 : interface to the Media Application Server (MAS)
 ***************************************************************************/
 
 /***************************************************************************
@@ -85,9 +85,9 @@ MasEngine::~MasEngine()
 
 bool MasEngine::init()
 {
-    
+
     kdDebug() << "BEGIN " << k_funcinfo << endl;
-   /* 
+   /*
     m_scopeSize = 1 << scopeSize;
     m_restoreEffects = restoreEffects;
     m_mixerHW = -1;   //initialize
@@ -99,9 +99,9 @@ bool MasEngine::init()
         kdDebug() << k_funcinfo << "  returns FALSE !" << endl;
         return false;
     }
-    
+
     connect ( m_pPlayingTimer, SIGNAL( timeout() ), this, SLOT( playingTimeout() ) );
-                
+
     kdDebug() << "END " << k_funcinfo << endl;
     return true;
 }
@@ -110,7 +110,7 @@ bool MasEngine::init()
 bool MasEngine::initMixer( bool hardware )
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
-    
+
     kdDebug() << "  Param: hardware " << hardware << endl;
     { //make sure any previously started volume control gets killed
         if ( m_volumeId )
@@ -124,8 +124,8 @@ bool MasEngine::initMixer( bool hardware )
         hardware = initMixerHW();
     else
     {
-  
-    }    
+
+    }
     kdDebug() << "END " << k_funcinfo << endl;
     return true;
 }
@@ -138,17 +138,17 @@ bool MasEngine::initMixer( bool hardware )
 bool MasEngine::canDecode( const KURL &url ) const
 {
     static QStringList list;
-    
+
     kdDebug() << "BEGIN " << k_funcinfo << endl;
     kdDebug() << "  Param: url: " << url << endl;
-   
+
     // TODO determine list of supported MimeTypes/Extensions from MAS
-    list += QString("audio/x-mp3"); 	
-    
+    list += QString("audio/x-mp3");
+
     KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, url, false ); //false = determineMimeType straight away
     KMimeType::Ptr mimetype = fileItem.determineMimeType();
     kdDebug() << "mimetype: " << mimetype->name().latin1() << endl;
-       
+
     return list.contains( mimetype->name().latin1() );
 }  // canDecode
 
@@ -164,7 +164,7 @@ bool MasEngine::load( const KURL& url, bool stream )
     m_isStream = stream;
     kdDebug() << "  m_url(1) " << m_url << endl;
 
-    
+
     kdDebug() << "  Param: url " << url << endl;
     kdDebug() << "  url.path()   >" << url.path() <<"<"<< endl;
     kdDebug() << "  url.protocol >" << url.protocol() <<"<"<< endl;
@@ -180,27 +180,27 @@ bool MasEngine::load( const KURL& url, bool stream )
     } else {
        stop();
    }
-    m_url = url;    
+    m_url = url;
     kdDebug() << "  m_url(2) " << m_url << endl;
-           
+
     /* send fresh data to MAS */;
-    masc_setup_package( &pkg, pbuf, sizeof pbuf, MASC_PACKAGE_STATIC );       
+    masc_setup_package( &pkg, pbuf, sizeof pbuf, MASC_PACKAGE_STATIC );
     masc_pushk_int16( &pkg, (char*)"pos", pos );
     masc_push_string( &pkg, (char *)m_url.path().latin1() );
-    
+
     QCString cs= QFile::encodeName( m_url.path());
     kdDebug() << "  cs " << cs << endl;
     //char *x = cs;
     //masc_push_string( &pkg, x);
     masc_finalize_package( &pkg );
-    
+
     mas_set( m_mp1a_source_device, (char*)"playlist", &pkg );
     masc_strike_package( &pkg );
-    printf( "pkg: loaded mas with playlist: %s\n", (char *)m_url.path().latin1() );    
-  
-    //mas_dev_show_state (m_mp1a_source_device);    
+    printf( "pkg: loaded mas with playlist: %s\n", (char *)m_url.path().latin1() );
+
+    //mas_dev_show_state (m_mp1a_source_device);
     //mas_source_flush( m_codec );
-        
+
     m_lastKnownPosition = 0;
 
     kdDebug() << "END " << k_funcinfo << endl;
@@ -223,13 +223,13 @@ bool MasEngine::play( unsigned int offset)
         mas_set( m_mp1a_source_device, (char*)"ctrack", &pkg );
         masc_finalize_package( &pkg );
 
-        mas_source_flush( m_codec ); 
+        mas_source_flush( m_codec );
         mas_source_play( m_mp1a_source_device );
         mas_source_play_on_mark( m_sbuf );
 
-        printf( "mas_source_play()\n" );    
+        printf( "mas_source_play()\n" );
     }
-    
+
     m_pPlayingTimer->start(MAS_TIMER, false);
 
     m_state = Engine::Playing;
@@ -244,7 +244,7 @@ bool MasEngine::play( unsigned int offset)
  * return current position in milli seconds
 */
 uint MasEngine::position() const
-{    
+{
     return m_lastKnownPosition;
 }   // position
 
@@ -253,10 +253,10 @@ uint MasEngine::position() const
 
 
 void MasEngine::playingTimeout() //SLOT
-{    
+{
    // kdDebug() << "BEGIN " << k_funcinfo << endl;
     m_lastKnownPosition += MAS_TIMER;
-    
+
     // ask MAS if it's still playing
     struct mas_package nugget;
     int16 pos;
@@ -271,7 +271,7 @@ void MasEngine::playingTimeout() //SLOT
         m_state = Engine::Idle;
         emit trackEnded( );
     }
-    
+
     //kdDebug() << "END " << k_funcinfo << endl;
 }   // playingTimeout
 
@@ -291,14 +291,14 @@ void MasEngine::stop()
     mas_source_stop( m_mp1a_source_device );
     mas_source_stop( m_sbuf );
     kdDebug() << "performed: mas_source_stop()" << endl;
-    
+
     m_pPlayingTimer->stop();
 
     m_state = Engine::Empty;
     //m_state = Engine::Idle;
-    
+
     m_lastKnownPosition = 0;
-    
+
     kdDebug() << "END " << k_funcinfo << endl;
 }
 
@@ -306,14 +306,14 @@ void MasEngine::stop()
 void MasEngine::pause()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
-    
+
     if(m_state == Engine::Paused) {
         mas_source_play( m_mp1a_source_device );
         mas_source_play_on_mark( m_sbuf );
 
         m_state = Engine::Playing;
         m_pPlayingTimer->start(MAS_TIMER, false);
-    
+
     } else {
         mas_source_pause( m_mp1a_source_device );
         mas_source_pause( m_sbuf );
@@ -322,9 +322,9 @@ void MasEngine::pause()
         m_state = Engine::Paused;
         m_pPlayingTimer->stop();
     }
-    
+
     emit stateChanged( state() );
-        
+
     kdDebug() << "END " << k_funcinfo << endl;
 }   // pause
 
@@ -343,7 +343,7 @@ void MasEngine::setVolumeSW( unsigned int percent )
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
     kdDebug() << "  Param: percent " << percent << endl;
-    
+
     m_volume = percent;
 
     //using a logarithmic function to make the volume slider more natural
@@ -382,7 +382,7 @@ void MasEngine::timerEvent( QTimerEvent* )
 bool MasEngine::masinit()
 {
     int32 err;
-    
+
     masc_log_verbosity( MAS_VERBLVL_DEBUG );
 
     masc_log_message( 0, (char*)"amarok/MASengine" );
@@ -427,7 +427,7 @@ bool MasEngine::masinit()
         }
     }
     kdDebug() << "  mas_init err: " << err << endl;
-    
+
     if (err < 0)
     {
         return false;
@@ -461,7 +461,7 @@ bool MasEngine::masinit()
         masc_strike_package( &nugget );
     }
     printf ("  after mas_get (mc_clkid\n");
-    
+
     /* CODEC */
     err = mas_asm_instantiate_device( (char*)"codec_mp1a_mad", 0, 0, &m_codec );
     if (err < 0 )
@@ -482,7 +482,7 @@ bool MasEngine::masinit()
     printf ("  after mas_asm_instantiate_device (sbuf)\n");
 
     m_visual = NULL;
-    
+
 #ifdef USE_VISUAL
     err = mas_asm_instantiate_device( (char*)"visual", 0, 0, &m_visual );
     if ( err < 0 )
@@ -505,16 +505,16 @@ bool MasEngine::masinit()
     printf ("  after mas_asm_get_device_by_name (mix)\n");
 
     /* start making connections:
-     *  
+     *
      *    source->codec->visual->mix
      */
 
     err = mas_asm_connect_devices( m_mp1a_source_device, m_codec, (char*)"source", (char*)"sink" );
     mas_assert( err >= 0, "Couldn't connect MPEG source to MPEG codec" );
-    
+
     dc = masc_make_audio_basic_dc( MAS_LINEAR_FMT, 44100, 20, 2, MAS_HOST_ENDIAN_FMT );
     mas_assert( dc, "Couldn't create audio data characteristic." );
-    
+
     err = mas_asm_get_port_by_name( m_mix_device, (char*)"default_mix_sink", &m_mix_sink );
     mas_assert( err >= 0, "Couldn't get default mixer sink" );
 
@@ -526,7 +526,7 @@ bool MasEngine::masinit()
     {
         err = mas_asm_connect_devices_dc( m_sbuf, m_visual, (char*)"source", (char*)"sink", dc );
         mas_assert( err >= 0, "Couldn't connect sbuf to visual device." );
-        
+
         err = mas_asm_get_port_by_name( m_visual, (char*)"source", &tmp_source );
         mas_assert( err >= 0, "Couldn't get visual source port" );
 
@@ -542,14 +542,14 @@ bool MasEngine::masinit()
         mas_assert( err >= 0, "Couldn't connect sbuf to mix device." );
     }
     printf ("  after ... visual ...\n");
-    
+
     /* set the buffer time */
     masc_setup_package( &nugget, NULL, 0, 0 );
     masc_pushk_uint32( &nugget, (char*)"buftime_ms", BUFFER_TIME_MS );
     masc_finalize_package( &nugget );
     mas_set( m_sbuf, (char*)"buftime_ms", &nugget );
     masc_strike_package( &nugget );
-    
+
     printf ("  after ... masc_strike_package ...\n");
 
 /*     masc_setup_package( &nugget, NULL, 0, 0 ); */
@@ -566,7 +566,7 @@ bool MasEngine::masinit()
     printf ("  after ... masc_get_mc_device_on_channel ...\n");
 
         //get_measured_sample_freq();
-/*        
+/*
         m_source_clkid = mas_mc_add_fixed_clock( "player", m_measured_sample_freq, local );
     printf ("  after ... masc_mc_add_fixed_clock ...\n");
         masc_log_message( 0, "got clock: %d", m_source_clkid );
@@ -585,7 +585,7 @@ bool MasEngine::masinit()
         masc_finalize_package( &nugget );
         mas_set( m_sbuf, "mc_clkid", &nugget );
         masc_strike_package( &nugget );
-*/    
+*/
     }
 
     return true;
