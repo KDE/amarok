@@ -623,6 +623,8 @@ CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
 bool
 CollectionDB::addSong( const MetaBundle& bundle, const bool temporary )
 {
+    if ( !QFileInfo( bundle.url().path() ).isReadable() ) return false;
+
     QString command = "INSERT INTO tags_temp "
                       "( url, dir, createdate, album, artist, genre, year, title, comment, track, sampler, length ) "
                       "VALUES ('";
@@ -849,6 +851,8 @@ CollectionDB::checkCompilations( const QString &path )
 
     for ( uint i = 0; i < albums.count(); i++ )
     {
+        if ( albums[ i ] == "Unknown" || albums[ i ].isEmpty() ) continue;
+
         const uint album_id = albumID( albums[ i ], FALSE, FALSE );
         artists = query( QString( "SELECT DISTINCT artist_temp.name FROM tags_temp, artist_temp WHERE tags_temp.album = '%1' AND tags_temp.artist = artist_temp.id;" )
                             .arg( album_id ) );
@@ -857,7 +861,8 @@ CollectionDB::checkCompilations( const QString &path )
 
         if ( artists.count() > dirs.count() )
         {
-            query( QString( "UPDATE tags_temp SET sampler = 1 WHERE sampler = 0 AND album = '%1';" )
+            kdDebug() << "Detected compilation: " << albums[ i ] << " - " << artists.count() << ":" << dirs.count() << endl;
+            query( QString( "UPDATE tags_temp SET sampler = 1 WHERE album = '%1';" )
                       .arg( album_id ) );
         }
     }
