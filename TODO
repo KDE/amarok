@@ -3,10 +3,12 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #68 being the highest available (take this one for your next bug and increase here)
+           #69 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+    * fix: #68: <tranql> restoring last playlist on startup broken in beta3 (always empty)
 
     * fix: #67 <mikmak> sometimes the aRts effects-saver writes an empty <effectname> tag. leads to 
                crash on startup when restoring effects
