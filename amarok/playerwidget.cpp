@@ -58,6 +58,7 @@ email                :
 #include <kpopupmenu.h>
 #include <kstandarddirs.h>
 #include <ksystemtray.h>
+#include <kmessagebox.h>
 
 #include <dcopclient.h>
 
@@ -218,7 +219,7 @@ AmarokSystray::AmarokSystray( PlayerWidget *child ) : KSystemTray( child )
     contextMenu() ->insertItem( i18n( "&Configure..." ), kapp, SLOT( slotShowOptions() ) );
     contextMenu() ->insertItem( i18n( "&Help" ), ( new KHelpMenu( this, KGlobal::instance() ->aboutData() ) ) ->menu() );
     quitAction->plug( contextMenu() );
-    connect( this, SIGNAL( quitSelected() ), child, SLOT( close() ) );
+    connect( this, SIGNAL( quitSelected() ), child, SLOT( quit() ) );
 
     contextMenu() ->insertSeparator();
 
@@ -663,7 +664,10 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
 
             m_pPopupMenu->insertSeparator();
 
-            m_pPopupMenu->insertItem( i18n( "Quit" ), pApp, SLOT( quit() ) );
+            //m_pPopupMenu->insertItem( i18n( "Quit" ), pApp, SLOT( quit() ) );
+            KStdAction::quit( pApp, SLOT( quit() ), m_pActionCollection )->plug( m_pPopupMenu );
+            //actionCollection()->action( "file_quit" )->plug( m_pPopupMenu );
+
         }
         
         m_pPopupMenu->setItemChecked( m_IdRepeatTrack, pApp->m_optRepeatTrack );
@@ -680,9 +684,21 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
 }
 
 
-void PlayerWidget::closeEvent( QCloseEvent * )
+void PlayerWidget::closeEvent( QCloseEvent *e )
 {
-    if ( pApp->queryClose() )
+    //KDE policy states we should hide to tray and not quit() when the close window button is
+    //pushed for the main widget -mxcl
+    //of course since we haven't got an obvious quit button, this is not yet a perfect solution..
+
+    if( pApp->m_optShowTrayIcon )
+    {
+        KMessageBox::information( this,
+            i18n( "<qt>Closing the main window will keep amaroK running in the system tray. "
+                  "Use Quit from the popup-menu to quit the application.</qt>" ),
+            i18n( "Docking in System Tray" ), "hideOnCloseInfo" );
+        e->accept();
+    }
+    else if ( pApp->queryClose() )
         pApp->quit();
 }
 

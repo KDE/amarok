@@ -205,6 +205,7 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
         void mouseReleaseEvent( QMouseEvent *e );
         void wheelEvent( QWheelEvent *e );
         void mousePressEvent( QMouseEvent *e );
+        void queryClose();
         void closeEvent( QCloseEvent *e );
         void moveEvent( QMoveEvent *e );
         bool playObjectConfigurable();
