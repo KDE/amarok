@@ -18,6 +18,14 @@ SHORT-TERM (URGENT):
                    error dialog that I could never read because X was completely frozen. Happened twice
                    and I had to reboot both times so I don't want to try it again unless I am the only
                    one it ever happens to! http://www.bbc.co.uk/radio1/realaudio/media/r1live.ram
+                   
+                   Ok, it happened again, seemingly for any stream, the error dialog was the cannot connect
+                   to localhost title proxy one. I have no firewall on this machine at all so I am confused.
+                   The URL I was trying was:
+                   http://stream1.hia.no/ogg/dump/room1/ogg-theora-vorbis-high.2004-06-29-13:54:22.ogg
+                   
+                   X responds to no input, mouse nor keyboard. Haven't tried ssh yet as laptop is crap.
+                   Will try..
 
 MID-TERM:
 
