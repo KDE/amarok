@@ -215,7 +215,7 @@ BrowserBar::addPage( QWidget *widget, const QString &title, const QString& icon 
     widget->reparent( m_pageHolder, QPoint(), false ); //we need to own this widget for it to layout properly
     m_pageHolder->layout()->add( widget );
     widget->hide();
-    if( widget->minimumWidth < 20 ) widget->setMinimumWidth( 20 );
+    if( widget->minimumWidth() < 20 ) widget->setMinimumWidth( 20 );
 
     m_multiTabBar->appendTab( KGlobal::iconLoader()->loadIcon( icon, KIcon::NoGroup, KIcon::SizeSmall ), id, title );
     QWidget *tab = m_multiTabBar->tab( id );
