@@ -9,6 +9,7 @@
 
 #include "engineobserver.h"
 #include <kaction.h>
+#include <kactionclasses.h>
 #include <kpopupmenu.h>
 
 class KActionCollection;
@@ -63,27 +64,43 @@ public:
 };
 
 
-class RandomAction : public KToggleAction
+class ToggleAction : public KToggleAction
+{
+public:
+    ToggleAction( const QString &text, void (*f)( bool ), KActionCollection* const ac, const char *name )
+      : KToggleAction( text, 0, ac, name )
+      , m_function( f )
+    {}
+
+    virtual void setChecked( bool b )
+    {
+        m_function( b );
+        KToggleAction::setChecked( b );
+    }
+
+private:
+    void (*m_function)( bool );
+};
+
+
+class RandomAction : public ToggleAction
 {
 public:
     RandomAction( KActionCollection *ac );
-    virtual void setChecked( bool on );
 };
 
 
-class RepeatTrackAction : public KToggleAction
+class RepeatTrackAction : public ToggleAction
 {
 public:
     RepeatTrackAction( KActionCollection *ac );
-    virtual void setChecked( bool on );
 };
 
 
-class RepeatPlaylistAction : public KToggleAction
+class RepeatPlaylistAction : public ToggleAction
 {
 public:
     RepeatPlaylistAction( KActionCollection *ac );
-    virtual void setChecked( bool on );
 };
 
 }

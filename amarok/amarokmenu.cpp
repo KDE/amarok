@@ -7,20 +7,15 @@
 #include "playerapp.h"    //actionCollection() and a SLOT
 #include "socketserver.h" //Vis::Selector::showInstance()
 
-
 #include <kaction.h>
 #include <kapplication.h>
 #include <khelpmenu.h>
 #include <klocale.h>
 #include <kiconloader.h>
 
-//TODO get kde-admin to rename this file amarokactions.cpp!
-
 
 using namespace amaroK;
 
-
-//static member
 KHelpMenu *Menu::HelpMenu = 0;
 
 
@@ -208,44 +203,21 @@ AnalyzerAction::plug( QWidget *w, int index )
 
 
 RandomAction::RandomAction( KActionCollection *ac ) :
-    KToggleAction( i18n( "Random &Mode" ), 0, ac, "random_mode" )
+    ToggleAction( i18n( "Random &Mode" ), &AmarokConfig::setRandomMode, ac, "random_mode" )
 {
     KToggleAction::setChecked( AmarokConfig::randomMode() );
 }
 
-void RandomAction::setChecked( bool on )
-{
-    KToggleAction::setChecked( on );
-    AmarokConfig::setRandomMode( on );
-}
-
-
 RepeatTrackAction::RepeatTrackAction( KActionCollection *ac ) :
-    KToggleAction( i18n( "Repeat &Track" ), 0, ac, "repeat_track" )
+    ToggleAction( i18n( "Repeat &Track" ), &AmarokConfig::setRepeatTrack, ac, "repeat_track" )
 {
     KToggleAction::setChecked( AmarokConfig::repeatTrack() );
 }
 
-void RepeatTrackAction::setChecked( bool on )
-{
-    KToggleAction::setChecked( on );
-    AmarokConfig::setRepeatTrack( on );
-}
-
-
 RepeatPlaylistAction::RepeatPlaylistAction( KActionCollection *ac ) :
-    KToggleAction( i18n( "Repeat &Playlist" ), 0, ac, "repeat_playlist" )
+    ToggleAction( i18n( "Repeat &Playlist" ), &AmarokConfig::setRepeatPlaylist, ac, "repeat_playlist" )
 {
     KToggleAction::setChecked( AmarokConfig::repeatPlaylist() );
 }
-
-void RepeatPlaylistAction::setChecked( bool on )
-{
-    KToggleAction::setChecked( on );
-    AmarokConfig::setRepeatPlaylist( on );
-}
-
-
-
 
 #include "amarokmenu.moc"
