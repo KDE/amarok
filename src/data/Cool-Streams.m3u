@@ -21,6 +21,9 @@ http://server03.flashspace-net.de:1337/listen.pls
 #EXTINF:-1,Frequence 3 [Pop]
 http://www.frequence3.com/stream/winamp_hautdebit.m3u
 
+#EXTINF:-1,Gaming FM [Computer-Music]
+http://complete.gamingfm.com/listen128.pls
+
 #EXTINF:-1,Groove Salad [Chill-Out]
 http://www.somafm.com/groovesalad.pls
 
