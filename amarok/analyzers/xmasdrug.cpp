@@ -25,7 +25,11 @@
 
 // FIXME: WIP
 
-// FIXME: make these fields in AnalyzerBase??
+
+#undef BAND_COUNT
+#undef TIMEOUT
+#undef MAX_AMPLITUDE
+
 #define BAND_COUNT 7
 #define TIMEOUT 8
 #define MAX_AMPLITUDE 1.1

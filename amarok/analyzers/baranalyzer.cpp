@@ -16,8 +16,12 @@
 #include <qpainter.h>
 #include <qpixmap.h>
 
+#undef BAND_COUNT
+#undef ROOF_HOLD_TIME
+#undef ROOF_VELOCITY_REDUCTION_FACTOR
+#undef MAX_AMPLITUDE
+
 #define BAND_COUNT 31
-#define TIMEOUT 8
 #define ROOF_HOLD_TIME 32
 #define ROOF_VELOCITY_REDUCTION_FACTOR 26
 #define MAX_AMPLITUDE 1.1
@@ -25,7 +29,7 @@
 
 
 BarAnalyzer::BarAnalyzer( QWidget *parent, const char *name ) :
-   AnalyzerBase( TIMEOUT, parent, name ),
+   AnalyzerBase( 8, parent, name ),
    m_pBgPixmap( 0 ),
    m_pSrcPixmap( 0 ),
    m_pComposePixmap( 0 ),

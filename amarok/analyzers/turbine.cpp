@@ -12,6 +12,11 @@
 #include <qpainter.h>
 #include <qpixmap.h>
 
+#undef BAND_COUNT
+#undef ROOF_HOLD_TIME
+#undef ROOF_VELOCITY_REDUCTION_FACTOR
+#undef MAX_AMPLITUDE
+
 #define BAND_COUNT 31
 #define ROOF_HOLD_TIME 32
 #define ROOF_VELOCITY_REDUCTION_FACTOR 26

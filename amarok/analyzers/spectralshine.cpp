@@ -23,14 +23,15 @@
 
 // FIXME: WIP
 
-// FIXME: make these fields in AnalyzerBase??
+#undef BAND_COUNT
+#undef MAX_AMPLITUDE
+
 #define BAND_COUNT 31
-#define TIMEOUT 8
 #define MAX_AMPLITUDE 1.1
 
 
 SpectralShineAnalyzer::SpectralShineAnalyzer( QWidget *parent, const char *name )
-   : AnalyzerBase( TIMEOUT, parent, name )
+   : AnalyzerBase( 8, parent, name )
    , m_pComposePixmap( 0 )
    , m_pSrcPixmap( 0 )
 {
