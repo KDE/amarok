@@ -49,7 +49,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     , m_cat1Menu( new KPopupMenu( this ) )
     , m_cat2Menu( new KPopupMenu( this ) )
     , m_cat3Menu( new KPopupMenu( this ) )
-    , m_sortMenu( new KPopupMenu( this ) )
+    , m_advancedMenu( new KPopupMenu( this ) )
     , m_timer( new QTimer( this ) )
 {
     setSpacing( 4 );
@@ -112,9 +112,18 @@ CollectionBrowser::CollectionBrowser( const char* name )
     toolbar->setIconText( KToolBar::IconOnly, false );
     m_configureAction->plug( toolbar );
 
-    m_categoryMenu->insertItem( i18n( "&First Level" ), m_cat1Menu );
-    m_categoryMenu->insertItem( i18n( "&Second Level"), m_cat2Menu );
-    m_categoryMenu->insertItem( i18n( "&Third Level" ), m_cat3Menu );
+    m_categoryMenu->insertItem( i18n( "Artist" ), m_view, SLOT( presetMenu( int ) ), 0, IdArtist );
+    m_categoryMenu->insertItem( i18n( "Album" ), m_view, SLOT( presetMenu( int ) ), 0, IdAlbum );
+    m_categoryMenu->insertItem( i18n( "Artist / Album" ), m_view, SLOT( presetMenu( int ) ), 0, IdArtistAlbum );
+    m_categoryMenu->insertItem( i18n( "Genre / Artist / Album" ), m_view, SLOT( presetMenu( int ) ), 0, IdGenreArtistAlbum );
+
+    m_categoryMenu->insertSeparator();
+
+    m_categoryMenu->insertItem( i18n( "&Advanced" ), m_advancedMenu );
+
+    m_advancedMenu->insertItem( i18n( "&First Level" ), m_cat1Menu );
+    m_advancedMenu->insertItem( i18n( "&Second Level"), m_cat2Menu );
+    m_advancedMenu->insertItem( i18n( "&Third Level" ), m_cat3Menu );
 
     m_cat1Menu ->insertItem( i18n( "&Album" ), m_view, SLOT( cat1Menu( int ) ), 0, IdAlbum );
     m_cat1Menu ->insertItem( i18n( "A&rtist"), m_view, SLOT( cat1Menu( int ) ), 0, IdArtist );
@@ -653,6 +662,37 @@ CollectionView::slotCollapse( QListViewItem* item )  //SLOT
         child = child->nextSibling();
         delete childTmp;
     }
+}
+
+
+void
+CollectionView::presetMenu( int id )  //SLOT
+{
+    switch ( id )
+    {
+        case CollectionBrowser::IdArtist:
+            m_cat1 = CollectionBrowser::IdArtist;
+            m_cat2 = CollectionBrowser::IdNone;
+            m_cat3 = CollectionBrowser::IdNone;
+            break;
+        case CollectionBrowser::IdAlbum:
+            m_cat1 = CollectionBrowser::IdAlbum;
+            m_cat2 = CollectionBrowser::IdNone;
+            m_cat3 = CollectionBrowser::IdNone;
+            break;
+        case CollectionBrowser::IdArtistAlbum:
+            m_cat1 = CollectionBrowser::IdArtist;
+            m_cat2 = CollectionBrowser::IdAlbum;
+            m_cat3 = CollectionBrowser::IdNone;
+            break;
+        case CollectionBrowser::IdGenreArtistAlbum:
+            m_cat1 = CollectionBrowser::IdGenre;
+            m_cat2 = CollectionBrowser::IdArtist;
+            m_cat3 = CollectionBrowser::IdAlbum;
+            break;
+    }
+
+    renderView();
 }
 
 

@@ -47,7 +47,8 @@ class CollectionBrowser: public QVBox
 
     private:
         //attributes:
-        enum CatMenuId { IdAlbum = 1, IdArtist = 2, IdGenre = 4, IdYear = 8 , IdScan = 16, IdNone = 32 };
+        enum CatMenuId { IdAlbum = 1, IdArtist = 2, IdGenre = 4, IdYear = 8 , IdScan = 16, IdNone = 32,
+                         IdArtistAlbum = 64, IdGenreArtistAlbum = 128 };
 
         KAction* m_configureAction;
         KAction* m_scanAction;
@@ -58,7 +59,7 @@ class CollectionBrowser: public QVBox
         KPopupMenu* m_cat1Menu;
         KPopupMenu* m_cat2Menu;
         KPopupMenu* m_cat3Menu;
-        KPopupMenu* m_sortMenu;
+        KPopupMenu* m_advancedMenu;
         KLineEdit* m_searchEdit;
         CollectionView* m_view;
         QTimer* m_timer;
@@ -101,6 +102,7 @@ class CollectionView : public KListView
         void setTreeMode() { setViewMode( modeTreeView ); };
         void setFlatMode() { setViewMode( modeFlatView ); };
 
+        void presetMenu( int id );
         void cat1Menu( int id, bool rerender = true );
         void cat2Menu( int id, bool rerender = true );
         void cat3Menu( int id, bool rerender = true );
