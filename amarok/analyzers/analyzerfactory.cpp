@@ -49,10 +49,10 @@ AnalyzerBase *AnalyzerBase::AnalyzerFactory::createAnalyzer( QWidget *parent )
     case 1:
         analyzer = new DistortAnalyzer( parent );
         break;
-#ifdef HAVE_QGLWIDGET
     case 2:
         analyzer = new Sonogram( parent );
         break;
+#ifdef HAVE_QGLWIDGET
     case 3:
         analyzer = new GLAnalyzer( parent );
         break;
