@@ -219,6 +219,12 @@ void ContextBrowser::openURLRequest( const KURL &url )
     // When left-clicking on cover image, open browser with amazon site
     if ( url.protocol() == "fetchcover" )
     {
+        if ( CollectionDB::instance()->findImageByArtistAlbum (artist, album, 0 ) 
+           == CollectionDB::instance()->notAvailCover( 0 ) ) {
+            CollectionDB::instance()->fetchCover( this, artist, album, false );
+            return;
+        }
+
         QImage img( CollectionDB::instance()->albumImage( artist, album, 0 ) );
         const QString amazonUrl = img.text( "amazon-url" );
         debug() << "Embedded amazon url in cover image: " << amazonUrl << endl;
@@ -836,6 +842,13 @@ void ContextBrowser::showCurrentTrack() //SLOT
             .arg( CollectionDB::instance()->escapeString( currentTrack.url().path() ) ) );
 
     //making 2 tables is most probably not the cleanest way to do it, but it works.
+    QString albumImageTitleAttr;
+    QString albumImage = CollectionDB::instance()->albumImage( currentTrack );
+    if ( albumImage == CollectionDB::instance()->notAvailCover( 0 ) ) 
+        albumImageTitleAttr = i18n( "Click to fetch cover from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() );
+    else
+        albumImageTitleAttr = i18n( "Click for information from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() );
+
     m_HTMLSource.append( QStringx(
         "<div id='current_box' class='box'>"
             "<div id='current_box-header' class='box-header'>"
@@ -866,7 +879,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             << escapeHTMLAttr( currentTrack.artist() )
             << escapeHTMLAttr( currentTrack.album() )
             << escapeHTMLAttr( CollectionDB::instance()->albumImage( currentTrack ) )
-            << i18n( "Click for information from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() )
+            << i18n( albumImageTitleAttr.latin1() )
             << i18n( "Look up this track at musicbrainz.com" )
             << escapeHTMLAttr( currentTrack.artist() )
             << escapeHTMLAttr( currentTrack.album() )
