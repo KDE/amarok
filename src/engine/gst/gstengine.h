@@ -165,10 +165,12 @@ class GstEngine : public Engine::Base
 class InputPipeline
 {
     public:
-        enum State { NO_FADE, FADE_IN, FADE_OUT, XFADE_IN, XFADE_OUT };
+        enum State { NO_FADE, NEAR_DEATH, FADE_IN, FADE_OUT, XFADE_IN, XFADE_OUT };
 
         InputPipeline();
         ~InputPipeline();
+
+        void prepareToDie();
 
         State state() { return m_state; }
         void setState( State newState );
@@ -181,6 +183,8 @@ class InputPipeline
 
         bool m_error;
         bool m_eos;
+
+        int m_killCounter;
 
         GstElement* thread;
         GstElement* src;

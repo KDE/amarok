@@ -453,7 +453,7 @@ GstEngine::stop()  //SLOT
 
     // When engine is in pause mode, don't fade but destroy right away
     if ( state() == Engine::Paused )
-        destroyInput( m_currentInput );
+        m_currentInput->prepareToDie();
     else
         m_currentInput->setState( InputPipeline::FADE_OUT );
 
@@ -560,10 +560,8 @@ void GstEngine::timerEvent( QTimerEvent* )
                 input->m_fade -= ( GstConfig::fadeoutDuration() ) ?  1.0 / GstConfig::fadeoutDuration() * TIMER_INTERVAL : 1.0;
 
                 // Fade finished?
-                if ( input->m_fade < 0.0 ) {
-                    // Fade transition has finished, stop playback
-                    destroyList.append( input );
-                }
+                if ( input->m_fade < 0.0 )
+                    input->prepareToDie();
                 else {
                     // Set new value for fadeout volume element
                     double value = 1.0 - log10( ( 1.0 - input->m_fade ) * 9.0 + 1.0 );
@@ -595,10 +593,8 @@ void GstEngine::timerEvent( QTimerEvent* )
                 input->m_fade -= ( m_xfadeLength ) ?  1.0 / m_xfadeLength * TIMER_INTERVAL : 1.0;
 
                 // Fade finished?
-                if ( input->m_fade < 0.0 ) {
-                    // Fade transition has finished, stop playback
-                    destroyList.append( input );
-                }
+                if ( input->m_fade < 0.0 )
+                    input->prepareToDie();
                 else {
                     // Set new value for fadeout volume element
                     double value = 1.0 - log10( ( 1.0 - input->m_fade ) * 9.0 + 1.0 );
@@ -606,6 +602,14 @@ void GstEngine::timerEvent( QTimerEvent* )
                     gst_element_set( input->volume, "volume", value, NULL );
                 }
                 break;
+
+            case InputPipeline::NEAR_DEATH:
+                input->m_killCounter--;
+                kdDebug() << "m_killCounter == " << input->m_killCounter << endl;
+
+                if ( !input->m_killCounter )
+                    // Fade transition has finished, stop playback
+                    destroyList.append( input );
         }
     }
 
@@ -959,6 +963,24 @@ InputPipeline::~InputPipeline()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
+    if ( state() != NEAR_DEATH )
+        prepareToDie();
+
+    if ( GST_IS_THREAD( thread ) ) {
+        kdDebug() << "Unreffing input thread.\n";
+
+//         gst_element_set_state( thread, GST_STATE_NULL );
+        gst_object_unref( GST_OBJECT( thread ) );
+    }
+
+    kdDebug() << "END " << k_funcinfo << endl;
+}
+
+
+void InputPipeline::prepareToDie()
+{
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
+
     if ( GstEngine::instance()->m_currentInput == this ) {
         GstEngine::instance()->m_currentInput = 0;
         kdDebug() << "m_currentInput == this; setting to 0.\n";
@@ -966,8 +988,6 @@ InputPipeline::~InputPipeline()
 
     if ( GST_IS_THREAD( thread ) )
     {
-        gst_element_send_event( thread, gst_event_new( GST_EVENT_EOS ) );
-
         gst_element_set_state( thread, GST_STATE_PAUSED );
         // Wait until queue is empty
         int filled = 1;
@@ -978,13 +998,10 @@ InputPipeline::~InputPipeline()
 
         if ( GstEngine::instance()->m_pipelineFilled )
             gst_element_unlink( queue, GstEngine::instance()->m_gst_adder );
-
-        if ( GST_IS_THREAD( thread ) ) {
-            kdDebug() << "Unreffing input thread.\n";
-            gst_element_set_state( thread, GST_STATE_NULL );
-            gst_object_unref( GST_OBJECT( thread ) );
-        }
     }
+
+    m_killCounter = 20;
+    setState( NEAR_DEATH );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
@@ -1000,6 +1017,9 @@ InputPipeline::setState( State newState )
         case NO_FADE:
             gst_element_set( volume, "volume", 1.0, NULL );
             m_fade = 0.0;
+            break;
+
+        case NEAR_DEATH:
             break;
 
         default:
