@@ -4,6 +4,9 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta4:
+  CHG: Reorganized the DCOP interface. We used to have all DCOP functions
+       in the "player" group. Now it's splitted up into several
+       categories. Attention script writers: Adjust your DCOP calls!
   FIX: The loader is now more robust and should always find amarokapp.
   CHG: The search-browser has been integrated into the file-browser.
   CHG: OSD can have fake transparency and new fancy shadow.
