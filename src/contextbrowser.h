@@ -29,7 +29,7 @@ class ContextBrowser : public QVBox, public EngineObserver
         void openURLRequest(const KURL &url, const KParts::URLArgs & );
 
     protected:
-        void engineNewMetaData( MetaBundle&, bool );
+        void engineNewMetaData( const MetaBundle&, bool );
 
     private:
         void showIntroduction();

@@ -3,6 +3,7 @@
 
 
 #include "contextbrowser.h"
+#include "enginecontroller.h"
 #include "threadweaver.h"
 #include "collectiondb.h"
 #include "metabundle.h"
@@ -35,6 +36,8 @@ ContextBrowser::ContextBrowser( const char *name )
         : QVBox( 0, name )
         , m_currentTrack( 0 )
 {
+    EngineController::instance()->attach( this );
+
     m_db = new CollectionDB();
 
     setSpacing( 4 );
@@ -87,6 +90,8 @@ ContextBrowser::~ContextBrowser()
 {
     delete m_db;
     delete m_currentTrack;
+
+    EngineController::instance()->detach( this );
 }
 
 
@@ -126,8 +131,7 @@ void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
     }
 }
 
-
-void ContextBrowser::engineNewMetaData( MetaBundle &bundle, bool /*trackChanged*/ )
+void ContextBrowser::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     delete m_currentTrack;
     m_currentTrack = new MetaBundle( bundle );
