@@ -428,8 +428,8 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue After Current Track" ), ASNEXT );
-	menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
-        
+        menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
+
 
         if ( url.protocol() == "album" )
         {
@@ -653,7 +653,7 @@ void ContextBrowser::showHome() //SLOT
                                             "<div class='sbinner' style='width: " + QString::number( fave[i + 2].toInt() / 2 ) + "px;'></div>"
                                         "</div>"
                                     "</td>"
-                                    "<td width='3'></td>"
+                                    "<td width='2'></td>"
                                 "</tr>" );
         }
 
@@ -871,7 +871,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     const uint artist_id = CollectionDB::instance()->artistID( currentTrack.artist() );
     const uint album_id  = CollectionDB::instance()->albumID ( currentTrack.album() );
-    const QString pctWidth = QString::number( fontMetrics().width( "999" ) );
 
     QueryBuilder qb;
     // <Current Track Information>
@@ -1056,13 +1055,13 @@ void ContextBrowser::showCurrentTrack() //SLOT
                             "<span class='album-song-title'>" + values[i + 1] + "</span>"
                             "</a>"
                         "</td>"
-                        "<td class='sbtext' width='" + pctWidth + "'>" + values[i + 3] + "</td>"
+                        "<td class='sbtext' width='1'>" + values[i + 3] + "</td>"
                         "<td width='1' title='" + i18n( "Score" ) + "'>"
                             "<div class='sbouter'>"
                                 "<div class='sbinner' style='width: " + QString::number( values[i + 3].toInt() / 2 ) + "px;'></div>"
                             "</div>"
                         "</td>"
-                        "<td width='3'></td>"
+                        "<td width='2'></td>"
                     "</tr>" );
 
             m_HTMLSource.append(
@@ -1105,13 +1104,13 @@ void ContextBrowser::showCurrentTrack() //SLOT
                         "<span class='album-song-title'>" + values[i] + "</span>"
                         "</a>"
                     "</td>"
-                    "<td class='sbtext' width='" + pctWidth + "'>" + values[i + 2] + "</td>"
+                    "<td class='sbtext' width='1'>" + values[i + 2] + "</td>"
                     "<td width='1' title='" + i18n( "Score" ) + "'>"
                         "<div class='sbouter'>"
                             "<div class='sbinner' style='width: " + QString::number( values[i + 2].toInt() / 2 ) + "px;'></div>"
                         "</div>"
                     "</td>"
-                    "<td width='3'></td>"
+                    "<td width='2'></td>"
                 "</tr>"
                                );
 
