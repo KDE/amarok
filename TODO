@@ -21,6 +21,8 @@ SHORT-TERM (URGENT):
                    at scan time. I'll investigate this. --> dato
           <markey> I thought this was fixed some time ago?
           <muesli> Some more tests would be nice, but it seems it catches all my stuff, here.
+          <dato>   It was fixed for files. Directories still give problems (which multibyte locales).
+                   I'll try to test this weekend (been busy, sorry).
 
   ADD 105 <markey> Make ArtsEngine depend not only on kdemultimedia-devel, but also on kdemultimedia,
                    since arts itself contains these crappy decoders and ppl come complain about bad sound.
