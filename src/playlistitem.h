@@ -31,7 +31,13 @@ class PlaylistItem : public KListViewItem
         PlaylistItem( const KURL&, QListViewItem*, const QDomNode& );
 
         QString exactText( int col ) const { return KListViewItem::text( col ); }
-        void setText( const MetaBundle& );
+
+		/**
+		 * Sets the information like the title, artist and album of the PlaylistItem
+		 * according to the MetaBundle @p bundle. If the PlaylistItem has a score
+		 * it will also be set.
+		 */
+        void setText( const MetaBundle& bundle);
         void setText( int, const QString& );
 
         Playlist *listView() const { return (Playlist*)KListViewItem::listView(); }
@@ -43,6 +49,10 @@ class PlaylistItem : public KListViewItem
         QString trackName() const { return KListViewItem::text( TrackName ); }
         QString title() const { return KListViewItem::text( Title ); }
         const KURL &url() const { return m_url; }
+
+		/**
+		 * @return the length of the PlaylistItem in seconds
+		 */
         QString seconds() const;
 
         static QColor glowText;
@@ -78,8 +88,13 @@ class PlaylistItem : public KListViewItem
 
         static const int NUM_COLUMNS = 12;
 
+		/**
+		 * @return The text of the column @p column. If there is no text set for 
+		 * the title this method returns a pretty version of the track name
+		 */
         QString text( int column ) const;
-        int     compare( QListViewItem*, int, bool ) const;
+        
+		int     compare( QListViewItem*, int, bool ) const;
         void    paintCell( QPainter*, const QColorGroup&, int, int, int );
 
         static QString trackName( const KURL &u ) { return u.protocol() == "http" ? u.prettyURL() : u.fileName(); }
@@ -88,7 +103,7 @@ class PlaylistItem : public KListViewItem
 
         static const uint STRING_STORE_SIZE = 80;
         static QString stringStore[STRING_STORE_SIZE];
-        static const QString& attemptStore( const QString& );
+        static const QString& attemptStore( const QString &candidate);
 };
 
 #endif
