@@ -72,7 +72,7 @@ class EngineBase : public QObject
         virtual void                 removeEffect( long id )                           = 0;
         virtual void                 configureEffect( long id )                        = 0;
                
-        virtual void                 open( KURL )                                      = 0;
+        virtual bool                 open( const KURL& )                               = 0;
 
         virtual void                 play()                                            = 0;
         virtual void                 stop()                                            = 0;

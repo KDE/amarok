@@ -279,7 +279,7 @@ long ArtsEngine::position() const
 
 EngineBase::EngineState ArtsEngine::state() const
 {
-    if ( m_pPlayObject )
+    if ( m_pPlayObject && !m_pPlayObject->isNull() )
     {
         switch ( m_pPlayObject->state() )
         {
@@ -291,8 +291,8 @@ EngineBase::EngineState ArtsEngine::state() const
                 return Idle;
         }
     }
-
-    return EngineBase::Empty;
+    else
+        return EngineBase::Empty;
 }
 
 
@@ -312,7 +312,7 @@ std::vector<float>* ArtsEngine::scope()
 
 //////////////////////////////////////////////////////////////////////
 
-void ArtsEngine::open( KURL url )
+bool ArtsEngine::open( const KURL& url )
 {
     m_xfadeFadeout = false;
     startXfade();
@@ -320,25 +320,21 @@ void ArtsEngine::open( KURL url )
     KDE::PlayObjectFactory factory( m_server );
     m_pPlayObject = factory.createPlayObject( url, false ); //second parameter: create BUS(true/false)
 
-    if ( !m_pPlayObject  )
+    if ( !m_pPlayObject || m_pPlayObject->isNull() )
     {
-        kdWarning() << "Can't initialize Playobject. m_pPlayObject == NULL." << endl;
-        return;
-    }
-    if ( m_pPlayObject->isNull() )
-    {
-        kdWarning() << "Can't initialize Playobject. m_pPlayObject->isNull()." << endl;
+        kdWarning() << "[ArtsEngine::open()] Cannot initialize PlayObject! Skipping this track." << endl;
         delete m_pPlayObject;
         m_pPlayObject = NULL;
-        return;
+        return false;
     }
-
-    if ( m_pPlayObject->object().isNull() )
-        connect( m_pPlayObject, SIGNAL( playObjectCreated() ), this, SLOT( connectPlayObject() ) );
     else
-        connectPlayObject();
-
-    return;
+    {
+        if ( m_pPlayObject->object().isNull() )
+            connect( m_pPlayObject, SIGNAL( playObjectCreated() ), this, SLOT( connectPlayObject() ) );
+        else
+            connectPlayObject();
+        return true;
+    }
 }
 
 

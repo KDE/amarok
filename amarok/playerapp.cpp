@@ -268,7 +268,7 @@ void PlayerApp::applySettings()
                                               m_artsNeedsRestart,
                                               SCOPE_SIZE,
                                               AmarokConfig::rememberEffects() );
-
+        
         m_pEngine->setVolume( AmarokConfig::masterVolume() );
 
         kdDebug() << "[PlayerApp::applySettings()] AmarokConfig::soundSystem() == " << AmarokConfig::soundSystem() << endl;
@@ -327,7 +327,6 @@ void PlayerApp::readConfig()
                                           m_artsNeedsRestart,
                                           SCOPE_SIZE,
                                           AmarokConfig::rememberEffects() );
-
 
     AmarokConfig::setHardwareMixer( m_pEngine->initMixer( AmarokConfig::hardwareMixer() ) );
     m_pPlayerWidget->m_pSliderVol->setValue( VOLUME_MAX - AmarokConfig::masterVolume() );
@@ -490,11 +489,14 @@ void PlayerApp::slotNext() { emit orderNextTrack(); }
 void PlayerApp::play( const MetaBundle &bundle )
 {
     const KURL &url = bundle.m_url;
-
+    m_playingURL = url;
+    emit currentTrack( url );
+    bool success;
+    
     if ( AmarokConfig::titleStreaming() && !m_proxyError && !url.isLocalFile() )
     {
         TitleProxy *pProxy = new TitleProxy( url );
-        m_pEngine->open( pProxy->proxyUrl() );
+        success = m_pEngine->open( pProxy->proxyUrl() );
 
         connect( m_pEngine, SIGNAL( endOfTrack  () ),
                  pProxy,    SLOT  ( deleteLater () ) );
@@ -504,8 +506,13 @@ void PlayerApp::play( const MetaBundle &bundle )
                  this,      SIGNAL( metaData    ( const TitleProxy::metaPacket& ) ) );
     }
     else
-        m_pEngine->open( url );
+        success = m_pEngine->open( url );
 
+    if ( !success ) {       
+        slotNext();
+        return;
+    }
+                    
     m_proxyError = false;
 
     m_pPlayerWidget->setScroll( bundle );
@@ -520,16 +527,12 @@ void PlayerApp::play( const MetaBundle &bundle )
     kdDebug() << "[play()] Playing " << url.prettyURL() << endl;
     m_pEngine->play();
 
-    m_playingURL = url;
-
     m_pPlayerWidget->m_pSlider->setValue    ( 0 );
     m_pPlayerWidget->m_pSlider->setMaxValue ( m_length );
 
     //interface consistency
     m_pPlayerWidget->m_pButtonPlay ->setOn  ( true );
     m_pPlayerWidget->m_pButtonPause->setDown( false );
-
-    emit currentTrack( url );
 }
 
 
