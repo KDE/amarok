@@ -126,9 +126,9 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     connect( this,       SIGNAL( tagsReady() ),
              this,         SLOT( renderView() ) );
     connect( this,       SIGNAL( expanded( QListViewItem* ) ),
-             this,         SLOT( slotExpanded( QListViewItem* ) ) );
+             this,         SLOT( slotExpand( QListViewItem* ) ) );
     connect( this,       SIGNAL( collapsed( QListViewItem* ) ),
-             this,         SLOT( slotCollapsed( QListViewItem* ) ) );
+             this,         SLOT( slotCollapse( QListViewItem* ) ) );
     connect( m_dirWatch, SIGNAL( dirty( const QString& ) ),
              this,         SLOT( dirDirty( const QString& ) ) );
              
@@ -246,7 +246,7 @@ CollectionView::renderView()  //SLOT
 
 
 void
-CollectionView::slotExpanded( QListViewItem* item )  //SLOT
+CollectionView::slotExpand( QListViewItem* item )  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     if ( !item ) return ;
@@ -254,7 +254,12 @@ CollectionView::slotExpanded( QListViewItem* item )  //SLOT
     kdDebug() << "item depth: " << item->depth() << endl;
     if  ( item->depth() == 0 ) {    
         //Filter for category 1:
-        QCString command = "SELECT title, url FROM tags WHERE ";
+        QString cat = ( m_category2 == "None" ) ? "title,url" : m_category2.lower()
+                                                                           .append( "," )
+                                                                           .append( m_category2.lower() );
+        QCString command = "SELECT DISTINCT ";
+        command += cat.local8Bit();
+        command += " FROM tags WHERE ";
         command += m_category1.lower().local8Bit();
         command += " = '";
         command += item->text( 0 ).local8Bit();
@@ -285,7 +290,7 @@ CollectionView::slotExpanded( QListViewItem* item )  //SLOT
         command += m_category1.lower().local8Bit();
         command += " = '";
         command += item->parent()->text( 0 ).local8Bit();
-        command += " AND ";
+        command += "' AND ";
         command += m_category2.lower().local8Bit();
         command += " = '";
         command += item->text( 0 ).local8Bit();
@@ -322,7 +327,7 @@ CollectionView::iconForCat( const QString& cat )
 
 
 void
-CollectionView::slotCollapsed( QListViewItem* item )  //SLOT
+CollectionView::slotCollapse( QListViewItem* item )  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
@@ -531,12 +536,43 @@ CollectionView::startDrag() {
                 list << values[i];
         }
         
-    //second pass: children    
+    //second pass: category 1    
+    if ( m_category2 == "None" ) {
+        for ( item = firstChild(); item; item = item->nextSibling() )
+            for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
+                if ( child->isSelected() )
+                    list << static_cast<Item*>( child ) ->url();
+    }
+    else {
+        for ( item = firstChild(); item; item = item->nextSibling() )
+            for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
+                if ( child->isSelected() ) {
+                    //query database for all tracks in our sub-category
+                    QCString command = "SELECT DISTINCT url FROM tags WHERE ";
+                    command += m_category1.lower().local8Bit();
+                    command += " = '";
+                    command += item->text( 0 ).local8Bit();
+                    command += "' AND ";
+                    command += m_category2.lower().local8Bit();
+                    command += " = '";
+                    command += child->text( 0 ).local8Bit();
+                    command += "';";
+                    QStringList values;
+                    QStringList names;
+                    execSql( command, &values, &names );
+        
+                    for ( uint i = 0; i < values.count(); i++ )
+                        list << values[i];
+                }
+    }
+                        
+    //third pass: category 2    
     for ( item = firstChild(); item; item = item->nextSibling() )
-        for ( QListViewItem * child = item->firstChild(); child; child = child->nextSibling() )
-            if ( child->isSelected() )
-                list << static_cast<Item*>( child ) ->url();
-
+        for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
+            for ( QListViewItem* grandChild = child->firstChild(); grandChild; grandChild = grandChild->nextSibling() )
+                if ( grandChild->isSelected() )
+                    list << static_cast<Item*>( grandChild ) ->url();
+    
     KURLDrag* d = new KURLDrag( list, this );
     d->dragCopy();
 }

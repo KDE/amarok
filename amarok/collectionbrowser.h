@@ -86,8 +86,8 @@ class CollectionView : public KListView
          */
         void renderView();
         
-        void slotExpanded( QListViewItem* );
-        void slotCollapsed( QListViewItem* );    
+        void slotExpand( QListViewItem* );
+        void slotCollapse( QListViewItem* );    
         void cat1Menu( int );
         void cat2Menu( int );
         
