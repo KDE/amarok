@@ -36,6 +36,12 @@ AmarokSystray::AmarokSystray( PlayerWidget *playerWidget, KActionCollection *ac 
     //<mxcl> despite the usability concerns, we have to be consistent with the KDE style guide
     //       hence quit is now placed at the bottom
     //<berkus> fuck you, i'm forking
+        
+    //<mxcl> Ok here is my reasoning (again):
+    // 1. true
+    // 2. I can't believe it is possible to hit quit by accident unless you need to replace your mouse
+    // 3. exactly why we should stick to the KDE guidelines unless you want to implement something
+    //    that changes the menu order depending on systray position
 
     contextMenu()->insertItem( QIconSet( locate( "data", "amarok/images/b_prev.png" ) ),
                                i18n( "[&Z] Prev" ), kapp, SLOT( slotPrev() ) );
