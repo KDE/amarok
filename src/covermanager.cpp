@@ -392,6 +392,7 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
         qb.addReturnValue( QueryBuilder::tabAlbum,  QueryBuilder::valName );
         qb.addMatches( QueryBuilder::tabArtist, item->text( 0 ) );
+        qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
         qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
         qb.setOptions( QueryBuilder::optRemoveDuplicates );
 
