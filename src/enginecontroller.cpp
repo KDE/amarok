@@ -212,7 +212,7 @@ EngineBase *EngineController::loadEngine() //static
     }
         
     //now load new engine
-    const QString query    = "[X-KDE-amaroK-plugintype] == 'engine' and Name == '%1'";
+    const QString query    = "[X-KDE-amaroK-plugintype] == 'engine' and [X-KDE-amaroK-name] == '%1'";
     amaroK::Plugin* plugin = PluginManager::createFromQuery( query.arg( AmarokConfig::soundSystem() ) );
 
     if ( !plugin )
@@ -237,7 +237,7 @@ EngineBase *EngineController::loadEngine() //static
             ::exit( EXIT_SUCCESS );
         }
 
-        AmarokConfig::setSoundSystem( PluginManager::getService( plugin )->name() );
+        AmarokConfig::setSoundSystem( PluginManager::getService( plugin )->property( "X-KDE-amaroK-name" ).toString() );
         kdDebug() << "Setting soundSystem to: " << AmarokConfig::soundSystem() << endl;
     }
 

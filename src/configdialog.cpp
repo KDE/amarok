@@ -53,7 +53,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'engine'" );
 
     for ( KTrader::OfferList::ConstIterator it = offers.begin(); it != offers.end(); ++it )
-        systems << ( *it ) ->name();
+        systems << ( *it )->name();
 
     m_pSoundSystem->insertStringList( systems );
 
@@ -93,7 +93,11 @@ void AmarokConfigDialog::triggerChanged()
  */
 void AmarokConfigDialog::updateSettings()
 {
-    AmarokConfig::setSoundSystem( m_pSoundSystem->currentText() );
+    KTrader::OfferList offers = PluginManager::query( QString( "[X-KDE-amaroK-plugintype] == 'engine' and Name == '%1'" )
+                                                         .arg( m_pSoundSystem->currentText() ) );
+    
+    AmarokConfig::setSoundSystem( offers[0]->property( "X-KDE-amaroK-name" ).toString() );
+    
     AmarokConfig::setSoundDevice( m_pSoundDevice->text() );
     if ( !m_pSoundOutput->currentText().isEmpty() )
         AmarokConfig::setSoundOutput( m_pSoundOutput->currentText() );
@@ -116,7 +120,10 @@ void AmarokConfigDialog::updateSettings()
  */
 void AmarokConfigDialog::updateWidgets()
 {
-    m_pSoundSystem->setCurrentText( AmarokConfig::soundSystem() );
+    KTrader::OfferList offers = PluginManager::query( QString( "[X-KDE-amaroK-plugintype] == 'engine' and [X-KDE-amaroK-name] == '%1'" )
+                                                         .arg( AmarokConfig::soundSystem() ) );
+    m_pSoundSystem->setCurrentText( offers[0]->name() );
+    
     m_pSoundDevice->setText( AmarokConfig::soundDevice() );
 
     soundSystemChanged();
@@ -130,7 +137,7 @@ void AmarokConfigDialog::updateWidgets()
  */
 void AmarokConfigDialog::updateWidgetsDefault()
 {
-    m_pSoundSystem->setCurrentText( "aRts Engine" );
+    m_pSoundSystem->setCurrentItem( 0 );
     soundSystemChanged();
 }
 
@@ -199,7 +206,7 @@ bool AmarokConfigDialog::hasChanged()
 /** REIMPLEMENTED */
 bool AmarokConfigDialog::isDefault()
 {
-    return ( m_pSoundSystem->currentText() == "aRts Engine" );
+    return m_pSoundOutput->currentItem() == 0;
 }
 
 
