@@ -1,3 +1,21 @@
-SUBDIRS = src
-EXTRA_DIST = amarok.kdevprj admin AUTHORS COPYING ChangeLog INSTALL README TODO amarok.lsm
-AUTOMAKE_OPTIONS = foreign
+SUBDIRS = \
+    src
+
+EXTRA_DIST = \
+    AUTHORS \
+    COPYING \
+    ChangeLog \
+    INSTALL \
+    README \
+    TODO \
+    admin \
+    amarok.kdevprj \
+    amarok.lsm
+
+AUTOMAKE_OPTIONS = \
+    foreign
+
+bin_SCRIPTS = \
+    release_amarok.sh
+
+
