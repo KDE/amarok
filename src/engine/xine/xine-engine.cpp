@@ -190,6 +190,7 @@ void
 XineEngine::play( const KURL &url, bool )
 {
     m_url = url;
+    kdDebug() << "xine-Engine: url.url() == " << url.url() << endl;
 
     xine_close( m_stream );
 

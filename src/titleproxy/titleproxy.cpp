@@ -112,6 +112,8 @@ KURL Proxy::proxyUrl()
 
 void Proxy::accept( int socket ) //SLOT
 {
+    kdDebug() << k_funcinfo << endl;
+    
     m_sockProxy.setSocket( socket );
     m_sockProxy.waitForMore( KProtocolManager::proxyConnectTimeout() * 1000 );
 

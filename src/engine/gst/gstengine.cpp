@@ -301,10 +301,7 @@ void
 GstEngine::play( const KURL& url, bool stream )  //SLOT
 {
     m_stream = stream;
-    kdDebug() << "Gst-Engine: url.path()     == " << url.path()     << endl;
-    kdDebug() << "Gst-Engine: url.protocol() == " << url.protocol() << endl;
-    kdDebug() << "Gst-Engine: url.host()     == " << url.host()     << endl;
-    kdDebug() << "Gst-Engine: url.port()     == " << url.port()     << endl;
+    kdDebug() << "Gst-Engine: url.url() == " << url.url() << endl;
     
     bool isUade = false;
     if ( url.fileName().endsWith( UADE_EXT ) ) isUade = true;
