@@ -53,7 +53,7 @@ public:
     static ExtensionCache   &extensionCache() { return s_extensionCache; }
 
     uint trackLength() const { return m_bundle.length() * 1000; }
-    const MetaBundle &bundle() const { return m_bundle; }
+    const MetaBundle &bundle() const;
     const KURL &playingURL() const { return m_bundle.url(); }
 
     void restoreSession();
@@ -100,7 +100,6 @@ private:
 
     EngineBase*     m_engine;
     MetaBundle      m_bundle;
-    QTimer*         m_mainTimer;
     long            m_delayTime;
     int             m_muteVolume;
     bool            m_xFadeThisTrack;

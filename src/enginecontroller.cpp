@@ -22,6 +22,7 @@ email                : fh@ez.no
 #include "enginebase.h"
 #include "enginecontroller.h"
 #include "pluginmanager.h"
+#include "statusbar.h"
 #include "streamprovider.h"
 
 #include <qtimer.h>
@@ -60,7 +61,6 @@ public: DummyEngine() : EngineBase() {}
 
 EngineController::EngineController()
     : m_engine( &dummyEngine )
-    , m_mainTimer( new QTimer( this ) )
     , m_delayTime( 0 )
     , m_muteVolume( 0 )
     , m_xFadeThisTrack( false )
@@ -69,6 +69,7 @@ EngineController::EngineController()
 {
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotMainTimer() ) );
 }
+
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -152,7 +153,6 @@ EngineBase *EngineController::loadEngine() //static
 }
 
 
-#include <kfileitem.h>
 bool EngineController::canDecode( const KURL &url ) //static
 {
     //TODO engine refactor branch has to be KURL aware for this function
@@ -218,21 +218,23 @@ void EngineController::play() //SLOT
 }
 
 
-void EngineController::play( const MetaBundle &bundle ) //SLOT
+void EngineController::play( const MetaBundle &bundle )
 {
     const KURL &url = bundle.url();
 
-    if ( url.protocol() == "http" ) {
+    if ( m_engine->streamingMode() != Engine::NoStreaming && url.protocol() == "http" ) {
         m_bundle = bundle;
         // Detect mimetype of remote file
         KIO::MimetypeJob* job = KIO::mimetype( url, false );
-        connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( playRemote( KIO::Job* ) ) );
+        connect( job, SIGNAL(result( KIO::Job* )), SLOT(playRemote( KIO::Job* )) );
+        StatusBar::instance()->message( i18n("Connecting to stream source...") );
         return; //don't do notify
     }
     else if( !m_engine->play( url ) )
     {
         //NOTE it is up to the engine to present a graphical error message
-        return;
+        next();
+        return; //don't do notify
     }
     else
     {
@@ -322,6 +324,13 @@ void EngineController::mute() //SLOT
 }
 
 
+const MetaBundle&
+EngineController::bundle() const
+{
+    return m_engine->state() == Engine::Empty ? MetaBundle::null : m_bundle;
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -334,6 +343,8 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
     const KURL &url = m_bundle.url();
     const bool isStream = mimetype.isEmpty() || mimetype == "text/html";
 
+    StatusBar::instance()->clear();
+
     if ( isStream &&
          AmarokConfig::titleStreaming() &&
          m_engine->streamingMode() != Engine::NoStreaming )
@@ -343,27 +354,26 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
 
         if ( !m_stream->initSuccess() || !m_engine->play( m_stream->proxyUrl(), isStream ) ) {
             delete m_stream;
-            goto failure;
+            m_stream = 0;
+            next();
+            return; //don't notify
         }
 
-        connect( m_stream,   SIGNAL( metaData( const MetaBundle& ) ),
-                 this,         SLOT( slotNewMetaData( const MetaBundle& ) ) );
-        connect( m_stream,   SIGNAL( streamData( char*, int ) ),
-                 m_engine,     SLOT( newStreamData( char*, int ) ) );
-        connect( m_stream,   SIGNAL( sigError() ),
-                 this,         SLOT( streamError() ) );
+        connect( m_stream, SIGNAL(metaData( const MetaBundle& )),
+                 this,       SLOT(slotNewMetaData( const MetaBundle& )) );
+        connect( m_stream, SIGNAL(streamData( char*, int )),
+                 m_engine,   SLOT(newStreamData( char*, int )) );
+        connect( m_stream, SIGNAL(sigError()),
+                 this,     SIGNAL(orderNext()) );
     }
     else if( !m_engine->play( url, isStream ) )
     {
-        failure:
-            m_bundle = MetaBundle();
-            next();
-            return; //don't notify
+        next();
+        return; //don't notify
     }
 
     newMetaDataNotify( m_bundle, true /* track change */ );
 }
-
 
 void EngineController::slotNewMetaData( const MetaBundle &bundle ) //SLOT
 {
@@ -402,8 +412,8 @@ void EngineController::slotStateChanged( Engine::State newState ) //SLOT
     {
     case Engine::Empty:
 
-        m_bundle = MetaBundle();
         delete m_stream;
+        m_stream = 0;
 
         //FALL THROUGH...
 

@@ -29,6 +29,8 @@ public:
     static const int Irrelevant   = -1;
     static const int Unavailable  =  0;
 
+    static const MetaBundle null; //use like you would QString::null
+
     /**
      * Creates an empty MetaBundle
      */
@@ -37,7 +39,11 @@ public:
      /**
      * Creates a MetaBundle for url, tags will be obtained and set
      */
-    MetaBundle( const KURL &u ) : m_url( u ) { readTags(); }
+    MetaBundle( const KURL &u, bool readAudioProperties = true )
+        : m_url( u )
+    {
+        readTags( readAudioProperties );
+    }
 
     //TitleProxy:
     MetaBundle( const QString& title,
@@ -58,7 +64,7 @@ public:
      */
     bool isEmpty() const { return m_url.isEmpty(); }
 
-    MetaBundle &readTags( bool audioProperties = true );
+    MetaBundle &readTags( bool readAudioProperties = true );
 
 
     int length()     const { return m_length > 0 ? m_length : 0; }
