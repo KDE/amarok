@@ -11,31 +11,31 @@
 #include "threadweaver.h"
 
 #include <qevent.h>            //customEvent()
-#include <qfile.h>                //loadPlaylists(), renamePlaylist()
-#include <qheader.h>        //mousePressed()
+#include <qfile.h>             //loadPlaylists(), renamePlaylist()
+#include <qheader.h>           //mousePressed()
 #include <qpainter.h>          //paintCell()
 #include <qpixmap.h>           //paintCell()
 #include <qsplitter.h>
-#include <qtextstream.h>    //loadPlaylists(), saveM3U(), savePLS()
-#include <qtimer.h>    //loading animation
+#include <qtextstream.h>       //loadPlaylists(), saveM3U(), savePLS()
+#include <qtimer.h>            //loading animation
 
 #include <kaction.h>
 #include <kactionclasses.h>
 #include <kactioncollection.h>
 #include <kapplication.h>
-#include <kio/job.h>          //deleteSelectedPlaylists()
+#include <kio/job.h>           //deleteSelectedPlaylists()
 #include <kdebug.h>
-#include <kfiledialog.h>      //openPlaylist()
-#include <kiconloader.h>      //smallIcon
+#include <kfiledialog.h>       //openPlaylist()
+#include <kiconloader.h>       //smallIcon
 #include <klocale.h>
-#include <kmessagebox.h>      //renamePlaylist(), deleteSelectedPlaylist()
+#include <kmessagebox.h>       //renamePlaylist(), deleteSelectedPlaylist()
 #include <kpopupmenu.h>
-#include <kstandarddirs.h>    //KGlobal::dirs()
+#include <kstandarddirs.h>     //KGlobal::dirs()
 #include <ktoolbar.h>
-#include <klineedit.h>        //rename()
-#include <kurldrag.h>         //dragObject()
+#include <klineedit.h>         //rename()
+#include <kurldrag.h>          //dragObject()
 
-#include <stdio.h>            //rename() in renamePlaylist()
+#include <stdio.h>             //rename() in renamePlaylist()
 
 
 PlaylistBrowser *PlaylistBrowser::s_instance = 0;
@@ -61,9 +61,15 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     viewMenuButton = new KActionMenu( i18n("View"), "configure", m_ac );
     viewMenuButton->setDelayed( false );
     KPopupMenu *viewMenu = viewMenuButton->popupMenu();
+    viewMenu->setCheckable( true );
     viewMenu->insertItem( i18n("Detailed View"), DetailedView );
     viewMenu->insertItem( i18n("List View"), ListView );
-    connect( viewMenu, SIGNAL( activated(int) ), this, SLOT( setViewMode(int) ) );
+    viewMenu->insertSeparator();
+    viewMenu->insertItem( i18n("Unsorted"), Unsorted );
+    viewMenu->insertItem( i18n("Sort Ascending"), SortAscending );
+    viewMenu->insertItem( i18n("Sort Descending"), SortDescending );
+    viewMenu->setItemChecked( Unsorted, true );
+    connect( viewMenu, SIGNAL( activated(int) ), SLOT( slotViewMenu(int) ) );
 
     m_toolbar = new KToolBar( browserBox );
     m_toolbar->setMovingEnabled(false);
@@ -502,10 +508,33 @@ void PlaylistBrowser::customEvent( QCustomEvent *e )
 }
 
 
-void PlaylistBrowser::setViewMode( int view )  //SL0T
+void PlaylistBrowser::slotViewMenu( int view )  //SL0T
 {
     if( m_viewMode == (ViewMode)view )
         return;
+
+    switch ( view ) {
+        case Unsorted:
+            m_listview->setSorting( -1 );
+            viewMenuButton->popupMenu()->setItemChecked( Unsorted, true );
+            viewMenuButton->popupMenu()->setItemChecked( SortAscending, false );
+            viewMenuButton->popupMenu()->setItemChecked( SortDescending, false );
+            return;
+        case SortAscending:
+            m_listview->setSorting( 0, true );
+            viewMenuButton->popupMenu()->setItemChecked( Unsorted, false );
+            viewMenuButton->popupMenu()->setItemChecked( SortAscending, true );
+            viewMenuButton->popupMenu()->setItemChecked( SortDescending, false );
+            return;
+        case SortDescending:
+            m_listview->setSorting( 0, false );
+            viewMenuButton->popupMenu()->setItemChecked( Unsorted, false );
+            viewMenuButton->popupMenu()->setItemChecked( SortAscending, false );
+            viewMenuButton->popupMenu()->setItemChecked( SortDescending, true );
+            return;
+        default:
+            break;
+    }
 
     viewMenuButton->popupMenu()->setItemChecked( m_viewMode, false );
     viewMenuButton->popupMenu()->setItemChecked( view, true );
@@ -640,6 +669,7 @@ PlaylistBrowserView::PlaylistBrowserView( QWidget *parent, const char *name )
     addColumn( i18n("Playlists") );
     setSelectionMode( QListView::Extended );
     setSorting( -1 );  //no sort
+    setShowSortIndicator( true );
 
     setDropVisualizer( true );    //the visualizer (a line marker) is drawn when dragging over tracks
     setDropHighlighter( true );    //and the highligther (a focus rect) is drawn when dragging over playlists
@@ -1178,6 +1208,22 @@ void PlaylistBrowserItem::setOpen( bool open )
     }
 
     QListViewItem::setOpen( open );
+}
+
+
+int PlaylistBrowserItem::compare( QListViewItem* i, int /*col*/, bool ascending ) const
+{
+    PlaylistBrowserItem* item = static_cast<PlaylistBrowserItem*>(i);
+
+    // Special case for "Current Playlist", to keep it always at first position
+
+    if ( url().protocol() == "cur" )
+        return ascending ? -1 : 1;
+    else if ( item->url().protocol() == "cur" )
+        return ascending ? 1 : -1;
+
+    // Compare case-insensitive
+    return QString::localeAwareCompare( text( 0 ).lower(), item->text( 0 ).lower() );
 }
 
 

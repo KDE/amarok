@@ -30,7 +30,7 @@ Q_OBJECT
    friend class SmartPlaylistView;
 
    public:
-       enum ViewMode { DetailedView=0, ListView };
+       enum ViewMode { DetailedView, ListView, Unsorted, SortAscending, SortDescending };
 
        PlaylistBrowser( const char* );
        ~PlaylistBrowser();
@@ -46,7 +46,7 @@ Q_OBJECT
        void openPlaylist();
 
    private slots:
-       void setViewMode( int );
+       void slotViewMenu( int );
        void showContextMenu( QListViewItem*, const QPoint&, int );
        void removeSelectedItems();
        void renameSelectedPlaylist();
@@ -123,7 +123,7 @@ Q_OBJECT
         void load();
         void restore();
 
-        const KURL &url() { return m_url; }
+        const KURL &url() const { return m_url; }
         void setUrl( const QString &u ) { m_url = KURL(u); }
         int trackCount() { return m_trackCount; }
         int length() { return m_length; }
@@ -131,6 +131,7 @@ Q_OBJECT
         void setModified( bool );
         void setLoadingPix( QPixmap *pix ) { m_loadingPix = pix; repaint();}
 
+        int compare( QListViewItem* i, int col, bool ascending ) const; //reimpl.
         KURL::List tracksURL();    //returns the list of tracks url
         QPtrList<TrackItemInfo> trackList() { return m_trackList; }    //returns the list of tracks information
         QPtrList<TrackItemInfo> droppedTracks() { return tmp_droppedTracks; }
