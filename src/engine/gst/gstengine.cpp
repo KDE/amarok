@@ -278,9 +278,6 @@ GstEngine::state() const
 {
     if ( !m_pipelineFilled ) return Empty;
 
-    //HACK
-    return Playing;
-
     switch ( gst_element_get_state( GST_ELEMENT( m_pThread ) ) ) {
     case GST_STATE_NULL:
         return Empty;
