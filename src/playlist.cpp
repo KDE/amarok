@@ -1610,14 +1610,14 @@ Playlist::updateMetaData( const MetaBundle &mb ) //SLOT
 }
 
 void
-Playlist::setSearchFilter( const QString &query, int column ) //SLOT
+Playlist::setFilter( const QString &query ) //SLOT
 {
     //TODO if we provided the lineEdit m_lastSearch would be unecessary
 
     const QString loweredQuery = query.lower();
     const QStringList terms = QStringList::split( ' ', loweredQuery );
     PlaylistItem *item = 0;
-    MyIterator it( this, loweredQuery.startsWith( m_lastSearch ) ? MyIterator::Visible : 0 );
+    MyIt it( this, loweredQuery.startsWith( m_lastSearch ) ? MyIterator::Visible : 0 );
 
     while( (item = (PlaylistItem*)it.current()) )
     {
@@ -1630,16 +1630,13 @@ Playlist::setSearchFilter( const QString &query, int column ) //SLOT
             {
                 bool b = false;
 
-                if( column == 1000 ) { //All
-                    //search in Title, Artist, Album, Genre
-                    uint columns[4] = { 1,2,3,6 };
-                    for( uint y = 0; !b && y < 4; ++y )
-                        b = item->exactText( columns[y] ).lower().contains( terms[x] );
-                } else
-                    b = item->exactText( column ).lower().contains( terms[x] );
+                for( int y = 0; !b && y < columns(); ++y )
+                    if ( columnWidth( y ) )
+                        b = item->exactText( y ).lower().contains( terms[x] );
 
                 // exit loop, when one of the search tokens doesn't match
-                if( !b ) listed = false;
+                if( !b )
+                   listed = false;
             }
         }
 

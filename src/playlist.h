@@ -127,7 +127,7 @@ class Playlist : private KListView, public EngineObserver
         void playCurrentTrack();
         void playNextTrack();
         void updateMetaData( const MetaBundle& );
-        void setSearchFilter( const QString &filter, int column );
+        void setFilter( const QString &filter );
         void scoreChanged( const QString &path, int score );
 
     private slots:

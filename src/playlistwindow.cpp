@@ -182,51 +182,27 @@ PlaylistWindow::init()
     m_browsers = new BrowserBar( this );
 
     { //<Search LineEdit>
-        QHBox *box; KToolBarButton *button;
-        KToolBarButton *searchButton;
+        KToolBar *bar = new KToolBar( m_browsers->container() );
+        bar->setIconSize( 22, false ); //looks more sensible
+        QWidget *button = new KToolBarButton( "locationbar_erase", 1, bar );
+        m_lineEdit = new ClickLineEdit( bar, i18n( "Filter here..." ) );
 
-        box          = new QHBox( m_browsers->container() );
-        button       = new KToolBarButton( SmallIcon("locationbar_erase"), 1, box );
-        m_lineEdit   = new ClickLineEdit( box, i18n( "Filter here..." ) );
-        searchButton = new KToolBarButton( SmallIcon("find"), 0, box);
-
-        //those 3 lines are for "scaling down" buttons' height for people
-        //using toolbar icons size greater than default one (22px).
-        int lineHeight = m_lineEdit->sizeHint().height();
-        button->setMinimumSize( QSize( lineHeight, lineHeight ) );
-        searchButton->setMinimumSize( QSize( lineHeight, lineHeight ) );
-
-        box->setMargin( 4 );
-
-        m_searchMenu = new KPopupMenu( searchButton );
-        m_searchMenu->insertItem( i18n("All"), 1000 );
-        m_searchMenu->insertSeparator();
-        m_searchMenu->insertItem( i18n("Title"), 1 );
-        m_searchMenu->insertItem( i18n("Artist"), 2);
-        m_searchMenu->insertItem( i18n("Album"), 3 );
-        m_searchMenu->insertItem( i18n("Genre"), 6 );
-        //set current search field to "All"
-        m_searchMenu->setItemChecked( 1000, true );
-        m_searchField = 1000;
-
-        connect( m_searchMenu, SIGNAL( activated(int) ), SLOT( setSearchField(int) ) );
-        searchButton->setPopup( m_searchMenu );
+        bar->setStretchableWidget( m_lineEdit );
 
         m_lineEdit->setFrame( QFrame::Sunken );
         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
-        m_timer = new QTimer( this );
 
         connect( button, SIGNAL(clicked()), m_lineEdit, SLOT(clear()) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
         QToolTip::add( m_lineEdit, i18n( "Enter space-separated terms to filter playlist" ) );
-        QToolTip::add( searchButton, i18n( "Select filter category" ) );
     } //</Search LineEdit>
 
     m_playlist  = new Playlist( m_browsers->container(), actionCollection() );
     m_toolbar   = new amaroK::ToolBar( m_browsers->container(), "playlist_toolbar" );
     m_statusbar = new amaroK::StatusBar( this );
 
+    connect( m_lineEdit, SIGNAL(textChanged( const QString& )), m_playlist, SLOT(setFilter( const QString& )) );
 
     m_menubar = new KMenuBar( this );
     m_menubar->setShown( AmarokConfig::showMenuBar() );
@@ -338,9 +314,6 @@ PlaylistWindow::init()
 
     connect( m_playlist, SIGNAL( itemCountChanged( int, int ) ), m_statusbar, SLOT( slotItemCountChanged( int, int ) ) );
     connect( m_playlist, SIGNAL( aboutToClear() ), m_lineEdit, SLOT( clear() ) );
-    connect( m_lineEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
-    connect( m_lineEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilterTimeout() ) );
-    connect( m_timer,    SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
 }
 
 
@@ -550,9 +523,6 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
             case Key_Return:
             case Key_Enter:
-                // make sure the view gets updated
-                slotSetFilter();
-
                 m_playlist->activate( *It( m_playlist, It::Visible ) );
                 m_playlist->showCurrentTrack();
                 m_lineEdit->clear();
@@ -665,31 +635,6 @@ void PlaylistWindow::playAudioCD() //SLOT
     m_browsers->showBrowser( 4 ); //show the file browser
     FileBrowser *fb = static_cast<FileBrowser *>( m_browsers->browser("FileBrowser") );
     fb->setDir( KURL("audiocd:/") );
-}
-
-
-void PlaylistWindow::slotSetFilter()
-{
-    if ( m_timer->isActive() ) m_timer->stop();
-    m_playlist->setSearchFilter( m_lineEdit->text(), m_searchField );
-}
-
-
-void PlaylistWindow::slotSetFilterTimeout() //SLOT
-{
-    if ( m_timer->isActive() ) m_timer->stop();
-    m_timer->start( 280, true );
-}
-
-
-void PlaylistWindow::setSearchField( int field )
-{
-    if( m_searchField == field ) return;
-
-    m_searchMenu->setItemChecked( m_searchField, false );
-    m_searchMenu->setItemChecked( field, true );
-    m_lineEdit->clear();
-    m_searchField = field;
 }
 
 
