@@ -62,8 +62,7 @@ class CollectionDB : public QObject
         bool isFileInCollection( const QString &url  );
         void removeDirFromCollection( QString path );
         void removeSongsInDir( QString path );
-        void updateDirStats( QString path, const long datetime );
-        void purgeDirCache();
+        void updateDirStats( QString path, const long datetime, bool temporary = false );
 
         //song methods
         bool addSong( MetaBundle* bundle, const bool temporary = false );

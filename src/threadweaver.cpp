@@ -239,9 +239,6 @@ CollectionReader::doJob()
     log << "=======================\n";
     log << i18n( "Last processed file is at the bottom. Report this file in case of crashes while building the Collection.\n\n\n" ).local8Bit();
 
-    if ( !m_incremental )
-        m_parent->purgeDirCache();
-
     if ( !m_folders.empty() )
         QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Start ) );
   
@@ -282,7 +279,7 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
 
     //update dir statistics for rescanning purposes
     if ( stat( dir.local8Bit(), &statBuf ) == 0 )
-        m_parent->updateDirStats( dir, ( long ) statBuf.st_mtime );
+        m_parent->updateDirStats( dir, ( long ) statBuf.st_mtime, !m_incremental );
     else
     {
         if ( m_incremental )
@@ -421,10 +418,8 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
             m_parent->removeSongsInDir( m_folders[ i ] );
     }
 
-    // rename tables
+    // rename tables and remove temp tables
     m_parent->moveTempTables();
-
-    // remove temp tables and unlock database
     m_parent->dropTables( true );
 
     kdDebug() << "END " << k_funcinfo << endl;

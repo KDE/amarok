@@ -35,7 +35,7 @@
 #include <kurl.h>
 
 #include <time.h>                 //query()
-#include <unistd.h>
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionDB
@@ -787,12 +787,13 @@ CollectionDB::setSongPercentage( const QString &url , int percentage )
 
 
 void
-CollectionDB::updateDirStats( QString path, const long datetime )
+CollectionDB::updateDirStats( QString path, const long datetime, bool temporary )
 {
     if ( path.endsWith( "/" ) )
         path = path.left( path.length() - 1 );
 
-    query( QString( "REPLACE INTO directories ( dir, changedate ) VALUES ( '%1', %2 );" )
+    query( QString( "REPLACE INTO directories%1 ( dir, changedate ) VALUES ( '%2', %3 );" )
+                    .arg( temporary ? "_temp" : "" )
                     .arg( escapeString( path ) )
                     .arg( datetime ) );
 }
@@ -952,6 +953,14 @@ CollectionDB::createTables( bool temporary )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
+    // create directory statistics table
+    query( QString( "CREATE %1 TABLE directories%2 ("
+                    "dir VARCHAR(255) UNIQUE,"
+                    "changedate INTEGER );" )
+                    .arg( temporary ? "TEMPORARY" : "" )
+                    .arg( temporary ? "_temp" : "" ) );
+
+                    
     //create indexes
     query( QString( "CREATE INDEX album_idx%1 ON album%2( name );" )
                     .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
@@ -964,11 +973,6 @@ CollectionDB::createTables( bool temporary )
 
     if ( !temporary )
     {
-        // create directory statistics database
-        query( QString( "CREATE TABLE directories ("
-                        "dir VARCHAR(255) UNIQUE,"
-                        "changedate INTEGER );" ) );
-
         // create related artists cache
         query( QString( "CREATE TABLE related_artists ("
                         "artist VARCHAR(255),"
@@ -1002,6 +1006,7 @@ CollectionDB::dropTables( bool temporary )
     query( QString( "DROP TABLE genre%1;" ).arg( temporary ? "_temp" : "" ) );
     query( QString( "DROP TABLE year%1;" ).arg( temporary ? "_temp" : "" ) );
     query( QString( "DROP TABLE images%1;" ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "DROP TABLE directories%1;" ).arg( temporary ? "_temp" : "" ) );
 }
 
 
@@ -1014,6 +1019,7 @@ CollectionDB::moveTempTables()
     query( "INSERT INTO genre SELECT * FROM genre_temp;" );
     query( "INSERT INTO year SELECT * FROM year_temp;" );
     query( "INSERT INTO images SELECT * FROM images_temp;" );
+    query( "INSERT INTO directories SELECT * FROM directories_temp;" );
 }
 
 
@@ -1042,13 +1048,6 @@ CollectionDB::dropStatsTable()
     kdDebug() << k_funcinfo << endl;
 
     query( "DROP TABLE statistics;" );
-}
-
-
-void
-CollectionDB::purgeDirCache()
-{
-    query( "DELETE FROM directories;" );
 }
 
 
