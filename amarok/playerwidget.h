@@ -28,6 +28,7 @@
 #include "amarokdcopiface.h"
 
 class QBitmap;
+class QBoxLayout;
 class QFrame;
 class QMouseEvent;
 class QMoveEvent;
@@ -142,6 +143,7 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
         void drawScroll();
         void timeDisplay( bool remaining, int hours, int minutes, int seconds );
         void drawTimeDisplay();
+        void createVis();
 
         // ATTRIBUTES ------
         KActionCollection *m_pActionCollection;
@@ -198,6 +200,9 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
         void sigMinimized();
         void sigRestored();
 
+    private slots:
+        void visClicked();
+
     private:
         void initScroll();
         void initTimeDisplay();
@@ -214,6 +219,7 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
         // ATTRIBUTES ------
         QString m_bitrate, m_samplerate;
         QTimer *scrollTimer;
+        QBoxLayout *m_pLay6;
 
         QPixmap m_oldBgPixmap;
         QPixmap *m_pScrollPixmap;

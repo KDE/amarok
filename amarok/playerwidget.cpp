@@ -15,12 +15,13 @@ email                :
  *                                                                         *
  ***************************************************************************/
 
-#include "playerwidget.h"
-#include "viswidget.h"
-#include "playerapp.h"
 #include "browserwin.h"
-#include "playlistwidget.h"
 #include "effectwidget.h"
+#include "playerapp.h"
+#include "playerwidget.h"
+#include "playlistwidget.h"
+#include "visdistortwidget.h"
+#include "viswidget.h"
 
 #include "debugareas.h"
 
@@ -71,6 +72,7 @@ email                :
 #include <arts/kplayobjectfactory.h>
 #include <arts/soundserver.h>
 
+#define VIS_COUNT 2
 
 // CLASS AmarokButton ------------------------------------------------------------
 
@@ -199,6 +201,8 @@ void AmarokSlider::mousePressEvent( QMouseEvent *e )
 }
 
 
+// CLASS AmarokSystray ------------------------------------------------------------
+
 // AmarokSystray
 // FIXME Move implementation to separate sourcefile
 AmarokSystray::AmarokSystray( PlayerWidget *child, KActionCollection *ac ) : KSystemTray( child )
@@ -251,6 +255,7 @@ void AmarokSystray::wheelEvent( QWheelEvent *e )
     e->accept();
 }
 
+
 // CLASS PlayerWidget ------------------------------------------------------------
 
 PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
@@ -284,7 +289,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
 
     setPaletteBackgroundPixmap( QPixmap( locate( "data", "amarok/images/amaroKonlyHG_w320.jpg" ) ) );
 
-    m_pVis = new VisWidget( this );
     m_pFrame = new QFrame( this );
     m_pFrameButtons = new QFrame( this );
     m_pFrameButtons->setPaletteBackgroundPixmap( m_oldBgPixmap );
@@ -340,9 +344,8 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     lay->addWidget( m_pFrame );
 
     QBoxLayout *lay3 = new QHBoxLayout( lay );
-    QBoxLayout *lay6 = new QVBoxLayout( lay3 );
-    lay6->addItem( new QSpacerItem( 0, 2 ) );
-    lay6->addWidget( m_pVis );
+    m_pLay6 = new QVBoxLayout( lay3 );
+    m_pLay6->addItem( new QSpacerItem( 0, 2 ) );
 
     QBoxLayout *lay7 = new QVBoxLayout( lay3 );
     QBoxLayout *lay5 = new QHBoxLayout( lay7 );
@@ -391,7 +394,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     lay7->setResizeMode( QLayout::FreeResize );
 
     m_pFrame->setFixedSize( width(), 25 );
-    m_pVis->setFixedSize( 168, 50 );
     m_pTimeDisplayLabel->setFixedSize( 9 * 12 + 2, 12 + 2 );
 
     // set up system tray
@@ -726,6 +728,32 @@ void PlayerWidget::moveEvent( QMoveEvent * )
                 pApp->m_pBrowserWin->move( e->pos() + ( pApp->m_pBrowserWin->pos() -  e->oldPos() ) );
             }
         }*/
+}
+
+
+void PlayerWidget::createVis()
+{
+    if ( pApp->m_optVisCurrent == 0 )
+        m_pVis = new VisWidget( this );
+    else
+        m_pVis = new VisDistortWidget( this );
+
+    m_pVis->setFixedSize( 168, 50 );
+    m_pLay6->addWidget( m_pVis );
+    connect( m_pVis, SIGNAL( clicked() ), this, SLOT( visClicked() ) );
+
+    m_pVis->show();
+}
+
+
+void PlayerWidget::visClicked()
+{
+    delete m_pVis;
+
+    pApp->m_optVisCurrent++;
+    pApp->m_optVisCurrent %= VIS_COUNT;
+
+    createVis();
 }
 
 

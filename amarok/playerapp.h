@@ -94,6 +94,7 @@ class PlayerApp : public KUniqueApplication
         QColor m_optBrowserBgColor;
         bool   m_optBrowserUseCustomColors;
         unsigned int m_optUndoLevels;
+        unsigned int m_optVisCurrent;
         // </option attributes>
 
         int m_Volume;

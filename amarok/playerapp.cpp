@@ -615,6 +615,7 @@ void PlayerApp::saveConfig()
     m_pConfig->writeEntry( "BrowserBgColor", m_optBrowserBgColor );
     m_pConfig->writeEntry( "Undo Levels", m_optUndoLevels );
     m_pConfig->writeEntry( "Software Mixer Only", m_optSoftwareMixerOnly );
+    m_pConfig->writeEntry( "Current Analyzer", m_optVisCurrent );
 
     // Write playlist columns layout
     m_pBrowserWin->m_pPlaylistWidget->saveLayout(m_pConfig, "PlaylistColumnsLayout");
@@ -683,9 +684,11 @@ void PlayerApp::readConfig()
     m_pBrowserWin->update();
 
     m_optUndoLevels = m_pConfig->readUnsignedNumEntry( "Undo Levels", 30 );
-
     m_optSoftwareMixerOnly = m_pConfig->readBoolEntry( "Software Mixer Only", false );
-    
+
+    m_optVisCurrent = m_pConfig->readUnsignedNumEntry( "Current Analyzer", 0 );
+    m_pPlayerWidget->createVis();
+
     m_Volume = m_pConfig->readNumEntry( "Master Volume", 50 );
     slotVolumeChanged( m_Volume );
     m_pPlayerWidget->m_pSliderVol->setValue( m_Volume );
@@ -897,6 +900,7 @@ void PlayerApp::slotPrev()
     //    * perhaps if user expects playback to continue we should continue playing from the beginning
     //    * perhaps we should stop playback dead if the playing item is removed from the playlist (this gives a more consistent interface) <berkus>: no no no when a track is deleted we should continue playing it (this is consistent with WinAmp classic and also i hate when it stops playing in the middle of the song when i'm trying to compose a new playlist already).
     //FIXME detection of empty playlist seems broken for above behavior
+    //FIXME <markey> this comment is becoming a f*cking bible. may I add greetings to my grandma?
 
     if ( pItem == NULL )
     {
@@ -1348,10 +1352,9 @@ void PlayerApp::slotItemDoubleClicked( QListViewItem *item )
 void PlayerApp::slotShowAbout()
 {
     KAboutApplication dia;
-//    FIXME: would be nice to get the amarok logo from the site in here.
-//    dia.setLogo( locate( "data", "amarok/images/logo_new_active.png" ) );
-
     dia.exec();
+
+//    FIXME would be nice to get the amarok logo from the site in here.
 }
 
 
