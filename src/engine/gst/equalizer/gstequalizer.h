@@ -37,7 +37,23 @@ struct _GstEqualizer
     glong blocksize; /* Bytes per read */
     guint64 timeout;  /* Read timeout, in nanoseconds */
 
-    // Pointers to member variables of GstEngine
+    float gain[EQ_MAX_BANDS][EQ_CHANNELS] __attribute__((aligned));
+    float preamp[EQ_CHANNELS] __attribute__((aligned));
+
+    /* Floating point */
+    typedef struct
+    {
+        float beta;
+        float alpha;
+        float gamma;
+    } sIIRCoefficients;
+
+    /* Coefficient history for the IIR filter */
+    typedef struct
+    {
+        float x[3]; /* x[n], x[n-1], x[n-2] */
+        float y[3]; /* y[n], y[n-1], y[n-2] */
+    } sXYData;
 };
 
 struct _GstEqualizerClass

@@ -16,7 +16,9 @@
 GST_DEBUG_CATEGORY_STATIC ( gst_equalizer_debug );
 #define GST_CAT_DEFAULT gst_equalizer_debug
 
-#define BAND_NUM 15
+#define BAND_NUM 10
+#define EQ_MAX_BANDS 10
+#define EQ_CHANNELS 2
 
 /* signals and args */
 enum {
@@ -35,9 +37,10 @@ GstElementDetails gst_equalizer_details =
 
 static guint gst_equalizer_signals[ LAST_SIGNAL ] = { 0 };
 
+static sXYData data_history[EQ_MAX_BANDS][EQ_CHANNELS] __attribute__((aligned));
+
 #define _do_init(bla) \
     GST_DEBUG_CATEGORY_INIT (gst_equalizer_debug, "equalizer", 0, "equalizer element");
-
 
 GST_BOILERPLATE_FULL ( GstEqualizer, gst_equalizer, GstElement, (GTypeFlags) GST_TYPE_ELEMENT, _do_init );
 
