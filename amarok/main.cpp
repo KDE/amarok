@@ -43,12 +43,12 @@ int main( int argc, char *argv[] )
 {
     KAboutData aboutData( "amarok", I18N_NOOP( "amaroK" ),
                           APP_VERSION, description, KAboutData::License_GPL,
-                          I18N_NOOP( "(c) 2002-2004, Mark Kretschmann and The amaroK Band" ), 
+                          I18N_NOOP( "(c) 2002-2003, Mark Kretschmann\n(c) 2003-2004, the amaroK developers" ), 
                           I18N_NOOP( "Support channel on irc:\nserver: irc.freenode.net / channel: #amarok" ),
                           I18N_NOOP( "http://amarok.sourceforge.net" ) );
 
-    aboutData.addAuthor( "Mark Kretschmann", "Project founder, developer, maintainer", "markey@web.de" );
     aboutData.addAuthor( "Christian Muehlhaeuser", "Developer", "chris@chris.de", "http://www.chris.de" );
+    aboutData.addAuthor( "Mark Kretschmann", "Project founder, developer, maintainer", "markey@web.de" );
     aboutData.addAuthor( "Max Howell", "Developer", "max.howell@methylblue.com" );
     aboutData.addAuthor( "Stanislav Karchebny", "Patches, improvements, visualizations, cleanups, i18n",
                          "berk@upnet.ru" );
