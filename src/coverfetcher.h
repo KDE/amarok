@@ -61,6 +61,8 @@ private:
 
     QStringList m_queries;
     QStringList m_coverUrls;
+    QStringList m_coverNames;
+    QString     m_currentCoverName;
     QStringList m_errors;
 
 private:

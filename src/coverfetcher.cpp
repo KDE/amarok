@@ -100,6 +100,7 @@ CoverFetcher::startFetch()
 
     // reset all values
     m_coverUrls.clear();
+    m_coverNames.clear();
     m_xml = QString::null;
     m_size = 2;
 
@@ -146,6 +147,9 @@ CoverFetcher::attemptAnotherFetch()
         amaroK::StatusBar::instance()->newProgressOperation( job );
 
         m_coverUrls.pop_front();
+
+        m_currentCoverName = m_coverNames.front();
+        m_coverNames.pop_front();
     }
 
     else if( !m_xml.isEmpty() && m_size > 0 ) {
@@ -215,13 +219,18 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
     debug() << "Fetching size: " << size << endl;
 
     m_coverUrls.clear();
+    m_coverNames.clear();
     for( QDomNode node = details; !node.isNull(); node = node.nextSibling() ) {
         QString url = node.namedItem( size ).firstChild().toText().nodeValue();
+        QString name = node.namedItem( "ProductName" ).firstChild().toText().nodeValue();
 
-        debug() << url << endl;
+        debug() << "name:" << name << " url:" << url << endl;
 
         if( !url.isEmpty() )
+        {
             m_coverUrls += url;
+            m_coverNames += name;
+        }
     }
 
     attemptAnotherFetch();
@@ -341,20 +350,24 @@ CoverFetcher::showCover()
     class CoverFoundDialog : public KDialog
     {
     public:
-        CoverFoundDialog( QWidget *parent, const QString &caption, const QImage &cover )
+        CoverFoundDialog( QWidget *parent, const QString &caption, const QImage &cover, const QString &productname )
                 : KDialog( parent )
         {
             (new QVBoxLayout( this ))->setAutoAdd( true );
 
-            QLabel      *label     = new QLabel( this );
+            QLabel      *labelPix  = new QLabel( this );
+            QLabel      *labelName = new QLabel( this );
             QHBox       *buttons   = new QHBox( this );
             KPushButton *save      = new KPushButton( KStdGuiItem::save(), buttons );
             KPushButton *newsearch = new KPushButton( i18n( "New &Search" ), buttons, "NewSearch" );
             KPushButton *nextcover = new KPushButton( i18n( "Next &Cover" ), buttons, "NextCover" );
             KPushButton *cancel    = new KPushButton( KStdGuiItem::cancel(), buttons );
 
-            label->setAlignment( Qt::AlignHCenter );
-            label->setPixmap( cover );
+            labelPix ->setAlignment( Qt::AlignHCenter );
+            labelName->setAlignment( Qt::AlignHCenter );
+            labelPix ->setPixmap( cover );
+            labelName->setText( productname );
+
             save->setDefault( true );
             this->setFixedSize( sizeHint() );
             this->setCaption( caption );
@@ -376,7 +389,7 @@ CoverFetcher::showCover()
         }
     };
 
-    CoverFoundDialog dialog( (QWidget*)parent(), m_album, m_image );
+    CoverFoundDialog dialog( (QWidget*)parent(), m_album, m_image, m_currentCoverName );
 
     switch( dialog.exec() )
     {
