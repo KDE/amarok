@@ -11,35 +11,95 @@
 #include "metabundle.h"   //stack allocated
 #include "threadweaver.h" //baseclass
 
+class QDomNode;
 class QListViewItem;
 class PlaylistItem;
 
 namespace KIO { class Job; }
 
 
-class PlaylistLoader : public ThreadWeaver::DependentJob
+/**
+ * @author Max Howell
+ * @short Abstract base class for extracting data from _local_ Playlist files
+ *
+ * Reimplement postItem() and call loadPlaylist()
+ *
+ * TODO be able to load directories too, it's in the spec
+ * TODO and playlists within playlists, remote and local
+ */
+class PlaylistFileTranslator
+{
+public:
+    enum Format { M3U, PLS, XML, UNKNOWN };
+
+    static inline bool isPlaylistFile( const KURL &url ) { return isPlaylistFile( url.fileName() ); }
+    static inline bool isPlaylistFile( const QString &fileName ) { return playlistType( fileName ) != UNKNOWN; }
+
+    static inline Format playlistType( const QString &fileName );
+
+protected:
+    /// pure virtual, called for every entry
+    virtual void postItem( const KURL&, const QString &title, uint length ) = 0;
+
+    /// specially called for amaroK-XML playlists
+    virtual void postXmlItem( const KURL&, const QDomNode& ) = 0;
+
+//    virtual bool isAborted() const = 0;
+
+    bool loadPlaylist( const QString &path );
+    bool loadPlaylist( const QString &path, Format );
+};
+
+inline PlaylistFileTranslator::Format
+PlaylistFileTranslator::playlistType( const QString &fileName )
+{
+    const QString ext = fileName.right( 4 ).lower();
+
+    if( ext == ".m3u" ) return M3U;
+    else if( ext == ".pls" ) return PLS;
+    else if( ext == ".xml" ) return XML;
+    else return UNKNOWN;
+}
+
+inline bool
+PlaylistFileTranslator::loadPlaylist( const QString &path )
+{
+    Format type = playlistType( path );
+
+    return type != UNKNOWN ? loadPlaylist( path, type ) : false;
+}
+
+
+
+/**
+ * @author Max Howell
+ * @author Mark Kretschmann
+ * @short Populates the Playlist-view with URLs
+ *
+ * Will load playlists, remote and local, and tags (if local)
+ */
+class PlaylistLoader
+    : public ThreadWeaver::DependentJob
+    , protected PlaylistFileTranslator
 {
 public:
     PlaylistLoader( QObject *dependent, const KURL::List&, QListViewItem*, bool playFirstUrl = false );
    ~PlaylistLoader();
 
-    enum Format { M3U, PLS, XML, UNKNOWN };
     enum EventType { Item = 3000, DomItem };
 
-    static bool isPlaylist( const KURL& );        //inlined
-    static Format playlistType( const QString& ); //inlined
-
 protected:
+    /// reimplemented from ThreadWeaver::Job
     virtual bool doJob();
     virtual void completeJob();
     virtual void customEvent( QCustomEvent* );
-    virtual void postItem( const KURL&, const QString &title, const uint length );
 
-    bool loadPlaylist( const QString& ); //inlined
-    bool loadPlaylist( const QString&, Format );
+    /// reimplemented from PlaylistFileTranslator
+    virtual void postItem( const KURL&, const QString &title, uint length );
+    virtual void postXmlItem( const KURL&, const QDomNode& );
 
 private:
-    bool recurse( const KURL&, bool recursing = false );
+    KURL::List recurse( const KURL& );
 
 private:
     KURL::List m_badURLs;
@@ -58,6 +118,27 @@ protected:
 
 
 
+/**
+ * @author Max Howell
+ * @short Populates the Playlist-view using the result of a single SQL query
+ *
+ * The format of the query must be in a set order, see doJob()
+ */
+class SqlLoader : public PlaylistLoader
+{
+    const QString m_sql;
+
+public:
+    SqlLoader( const QString &sql, QListViewItem *after );
+
+    virtual bool doJob();
+};
+
+
+/**
+ * @author Max Howell
+ * @short Fetches a playlist-file from any location, and then loads it into the Playlist-view
+ */
 class RemotePlaylistFetcher : public QObject {
     Q_OBJECT
 
@@ -73,35 +154,5 @@ private slots:
     void abort() { delete this; }
 };
 
-
-
-inline bool
-PlaylistLoader::isPlaylist( const KURL &url )
-{
-    return playlistType( url.path() ) != UNKNOWN;
-}
-
-inline PlaylistLoader::Format
-PlaylistLoader::playlistType( const QString &path )
-{
-    const QString ext = path.right( 4 ).lower();
-
-         if( ext == ".m3u" ) return M3U;
-    else if( ext == ".pls" ) return PLS;
-    else if( ext == ".xml" ) return XML;
-    else return UNKNOWN;
-}
-
-inline bool
-PlaylistLoader::loadPlaylist( const QString &path )
-{
-    Format type = playlistType( path );
-
-    if ( type != UNKNOWN )
-        //TODO add to bad list if it fails
-        return loadPlaylist( path, type );
-
-    return false;
-}
 
 #endif

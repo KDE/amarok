@@ -1014,31 +1014,32 @@ void PlaylistBrowserView::startDrag()
 //    CLASS PlaylistBrowserItem
 ////////////////////////////////////////////////////////////////////////////
 
-class PlaylistReader : public PlaylistLoader
+class PlaylistReader
+        : public ThreadWeaver::DependentJob
+        , protected PlaylistFileTranslator
 {
 public:
     PlaylistReader( QObject *recipient, const QString &path )
-        : PlaylistLoader( recipient, KURL::List(), 0 )
-        , m_path( path )
-    {}
+            : ThreadWeaver::DependentJob( recipient, "PlaylistReader" )
+            , m_path( path ) {}
 
     virtual bool doJob() {
         loadPlaylist( m_path );
         return true;
     }
 
+    enum EventType { Item = 1000 };
+
     virtual void postItem( const KURL &url, const QString &title, const uint length ) {
         QApplication::postEvent( dependent(), new ItemEvent( url, title, length ) );
     }
 
+    virtual void postXmlItem( const KURL&, const QDomNode& ) {}
+
     class ItemEvent : public QCustomEvent {
     public:
         ItemEvent( const KURL &url, const QString &title, const uint length )
-            : QCustomEvent( PlaylistLoader::Item )
-            , url( url )
-            , title( title )
-            , length( length )
-        {}
+                : QCustomEvent( PlaylistReader::Item ), url( url ), title( title ), length( length ) {}
 
         const KURL url;
         const QString title;

@@ -19,9 +19,7 @@
 #include "playlistitem.h"
 #include "playlistloader.h"
 #include <qfile.h>       //::loadPlaylist()
-#include <qfileinfo.h>
 #include <qlistview.h>
-#include <qmap.h>        //::recurse()
 #include <qstringlist.h>
 #include <qtextstream.h> //::loadPlaylist()
 #include "statusbar.h"
@@ -36,6 +34,8 @@ PlaylistLoader::PlaylistLoader( QObject *dependent, const KURL::List &urls, QLis
     , m_playFirstUrl( playFirstUrl )
     , m_block( "PlaylistLoader" )
 {
+    amaroK::OverrideCursor cursor;
+
     setDescription( i18n("Loading media") ); //TODO better wording
 
     amaroK::StatusBar::instance()->newProgressOperation( this )
@@ -45,26 +45,19 @@ PlaylistLoader::PlaylistLoader( QObject *dependent, const KURL::List &urls, QLis
 
     m_markerListViewItem->setText( 0, "IF YOU CAN SEE THIS THERE IS A BUG" );
 
-    // BEGIN Read folders recursively
-    amaroK::OverrideCursor cursor;
-    KURL::List::ConstIterator it;
-    const KURL::List::ConstIterator end = urls.end();
-
-    for( it = urls.begin(); it != end && !isAborted(); ++it )
+    for( KURL::List::ConstIterator it = urls.begin(), end = urls.end(); it != end; ++it )
     {
         const KURL &url = *it;
-        const bool isLocalFile = url.isLocalFile();
 
-        if ( isPlaylist( url ) && !isLocalFile ) {
+        if ( isPlaylistFile( url ) && !url.isLocalFile() ) {
             new RemotePlaylistFetcher( url, after, dependent );
             continue;
         }
 
-        if ( url.protocol() == "fetchcover" ) {
-            // ignore
+        else if( url.protocol() == "fetchcover" )
             continue;
-        }
-        if ( url.protocol() == "album" ) {
+
+        else if( url.protocol() == "album" ) {
            // url looks like:   album:<artist_id> @@@ <album_id>
            // extract artist_id, album_id
            QString myUrl = url.path();
@@ -73,24 +66,21 @@ PlaylistLoader::PlaylistLoader( QObject *dependent, const KURL::List &urls, QLis
            const QStringList list = QStringList::split( " @@@ ", myUrl, true );
            Q_ASSERT( !list.isEmpty() );
            QString artist_id = list.front();
-           QString album_id  = list.back();
+           QString album_id = list.back();
 
            // get tracks for album, and add them to the playlist
            QStringList trackUrls = CollectionDB::instance()->albumTracks( artist_id, album_id );
            KURL url;
            foreach( trackUrls ) {
                 url.setPath( *it );
-                m_URLs.append( url );
+                m_URLs += url;
            }
         }
-        else if ( isLocalFile ) {
-            if ( QFileInfo( url.path() ).isDir() )
-                    recurse( url );
-            else
-                m_URLs.append( url );
-        }
-        else if ( !recurse( url ) )
-            m_URLs.append( url );
+        else if ( KFileItem( KFileItem::Unknown, KFileItem::Unknown, url ).isDir() )
+            m_URLs += recurse( url );
+
+        else
+            m_URLs += url;
     }
 }
 
@@ -109,8 +99,12 @@ typedef QValueList<PlaylistItem*> ItemList;
 
 class TagsEvent : public QCustomEvent {
 public:
+    TagsEvent( PlaylistItem *i )
+            : QCustomEvent( 1000 )
+            , item( i ) {}
+
     TagsEvent( const KURL &u, PlaylistItem *i )
-    : QCustomEvent( 1000 )
+            : QCustomEvent( 1000 )
             , item( i )
             , bundle( u ) {}
 
@@ -124,6 +118,11 @@ public:
             : QCustomEvent( 1002 )
             , item( 0 )
             , items( i )
+            , bundles( b ) {}
+
+    TagsEvent( const BundleList &b )
+            : QCustomEvent( 1003 )
+            , item( 0 )
             , bundles( b ) {}
 
     PlaylistItem* const item;
@@ -150,7 +149,7 @@ PlaylistLoader::doJob()
 
         const KURL &url = *it;
 
-        if ( isPlaylist( url ) ) {
+        if ( isPlaylistFile( url ) ) {
             if ( !loadPlaylist( url.path() ) )
                 m_badURLs += url;
 
@@ -233,6 +232,13 @@ PlaylistLoader::customEvent( QCustomEvent *e )
 
     }   break;
 
+    case 1003:
+        //TODO playFirstUrl
+
+        for( BundleList::ConstIterator it = e->bundles.begin(), end = e->bundles.end(); it != end; ++it )
+            new PlaylistItem( *it, m_markerListViewItem );
+        break;
+
     case 1001:
     {
         PlaylistItem *item = new PlaylistItem( e->url, m_markerListViewItem, e->node );
@@ -290,8 +296,62 @@ PlaylistLoader::completeJob()
     QApplication::sendEvent( dependent(), this );
 }
 
+void
+PlaylistLoader::postItem( const KURL &url, const QString &title, const uint length )
+{
+    PlaylistItem *item = new PlaylistItem( url, m_markerListViewItem );
+
+    if ( url.protocol() == "file" )
+        QApplication::postEvent( this, new TagsEvent( url, item ) );
+
+    else {
+        TagsEvent *e = new TagsEvent( item );
+
+        e->url = url;
+        e->bundle.setTitle( title );
+        e->bundle.setLength( length );
+
+        QApplication::postEvent( this, e );
+    }
+}
+
+void
+PlaylistLoader::postXmlItem( const KURL &url, const QDomNode &node )
+{
+    QApplication::postEvent( this, new TagsEvent( url, node ) );
+}
+
+KURL::List
+PlaylistLoader::recurse( const KURL &url )
+{
+    KURL::List urls;
+
+    KDirLister lister( false );
+    lister.setAutoUpdate( false );
+    lister.setAutoErrorHandlingEnabled( false, 0 );
+    lister.openURL( url );
+
+    while( !lister.isFinished() )
+        //FIXME this is a crash waiting to happen
+        kapp->processEvents( 100 );
+
+    //returns QPtrList, so we MUST only do it once!
+    KFileItemList items = lister.items();
+    for( KFileItem *item = items.first(); item; item = items.next() ) {
+        if( item->name() == "." || item->name() == ".." ) continue;
+        if( item->isFile() ) { urls += item->url(); continue; }
+        if( item->isDir() ) urls += recurse( item->url() );
+    }
+
+    return urls;
+}
+
+
+
+/// @class PlaylistFileTranslator
+
 bool
-PlaylistLoader::loadPlaylist( const QString &path, Format type )
+PlaylistFileTranslator::loadPlaylist( const QString &path, Format type )
 {
     QFile file( path );
     if( !file.open( IO_ReadOnly ) ) return false;
@@ -303,7 +363,7 @@ PlaylistLoader::loadPlaylist( const QString &path, Format type )
         QString str, title;
         int length = MetaBundle::Undetermined; // = -2
 
-        while( !( str = stream.readLine() ).isNull() && !isAborted() )
+        while( !( str = stream.readLine() ).isNull() /*&& !isAborted()*/ )
         {
             if ( str.startsWith( "#EXTINF" ) )
             {
@@ -328,7 +388,7 @@ PlaylistLoader::loadPlaylist( const QString &path, Format type )
         break;
     }
     case PLS:
-        for( QString line = stream.readLine(); !line.isNull() && !isAborted(); line = stream.readLine() ) {
+        for( QString line = stream.readLine(); !line.isNull() /*&& !isAborted()*/; line = stream.readLine() ) {
             if ( line.startsWith( "File" ) ) {
                 const KURL url = KURL::fromPathOrURL( line.section( "=", -1 ) );
                 QString title;
@@ -359,13 +419,13 @@ PlaylistLoader::loadPlaylist( const QString &path, Format type )
         const QString URL( "url" );
 
         for( QDomNode n = d.namedItem( "playlist" ).firstChild();
-             !n.isNull() && n.nodeName() == ITEM && !isAborted();
+             !n.isNull() && n.nodeName() == ITEM /*&& !isAborted()*/;
              n = n.nextSibling() )
         {
             const QDomElement e = n.toElement();
 
             if ( !e.isNull() )
-                QApplication::postEvent( this, new TagsEvent( KURL(e.attribute( URL )), n ) );
+                postXmlItem( KURL(e.attribute( URL )), n );
         }
     }
     default:
@@ -373,79 +433,6 @@ PlaylistLoader::loadPlaylist( const QString &path, Format type )
     } //switch
 
     return true;
-}
-
-void
-PlaylistLoader::postItem( const KURL &url, const QString &title, const uint length )
-{
-    PlaylistItem *item = new PlaylistItem( url, m_markerListViewItem );
-
-    if ( url.protocol() == "file" )
-        QApplication::postEvent( this, new TagsEvent( url, item ) );
-
-    else {
-        TagsEvent *e = new TagsEvent( KURL(), item );
-
-        e->url = url;
-        e->bundle.setTitle( title );
-        e->bundle.setLength( length );
-
-        QApplication::postEvent( this, e );
-    }
-}
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////
-// PRIVATE
-/////////////////////////////////////////////////////////////////////////////////////
-
-bool
-PlaylistLoader::recurse( const KURL &url, bool recursing )
-{
-    //FIXME indent
-        //FIXME possibly will be buggy
-        static bool success;
-        if ( !recursing ) success = false;
-
-        typedef QMap<QString, KURL> FileMap;
-
-        KURL::List dirs;
-        FileMap files;
-        KDirLister lister( false );
-
-        lister.setAutoUpdate( false );
-        lister.setAutoErrorHandlingEnabled( false, 0 );
-        lister.openURL( url );
-
-        while ( !lister.isFinished() )
-            //FIXME this is a crash waiting to happen
-            kapp->processEvents( 100 );
-
-        KFileItem* item;
-        KFileItemList items = lister.items();
-
-        success |= !items.isEmpty();
-
-        for ( item = items.first(); item; item = items.next() ) {
-            if ( item->url().fileName() == "." || item->url().fileName() == ".." )
-                continue;
-            if ( item->isFile() )
-                files[item->url().fileName()] = item->url();
-            if ( item->isDir() )
-                dirs << item->url();
-        }
-
-        // Add files to URL list
-        const FileMap::ConstIterator end1 = files.end();
-        for ( FileMap::ConstIterator it = files.begin(); it != end1; ++it )
-            m_URLs.append( it.data() );
-
-        // Recurse folders
-        const KURL::List::Iterator end2 = dirs.end();
-        for ( KURL::List::Iterator it = dirs.begin(); it != end2; ++it )
-            recurse( *it, true );
-        return success;
 }
 
 
@@ -494,6 +481,60 @@ RemotePlaylistFetcher::result( KIO::Job *job )
     ThreadWeaver::instance()->queueJob( new PlaylistLoader( parent(), url, m_after ) );
 
     deleteLater();
+}
+
+
+
+/// @class SqlLoader
+
+SqlLoader::SqlLoader( const QString &sql, QListViewItem *after )
+    : PlaylistLoader( (QObject*)Playlist::instance(), KURL::List(), after, false )
+    , m_sql( sql )
+{}
+
+bool
+SqlLoader::doJob()
+{
+    BundleList bundles;
+    QStringList values = CollectionDB::instance()->query( m_sql );
+
+    setProgressTotalSteps( values.count() );
+    setStatus( i18n("Populating playlist") );
+
+    uint x = 0;
+    foreach( values ) {
+        setProgress( x * 11 );
+
+        MetaBundle b;
+        b.setAlbum     (    *it );
+        b.setArtist    (  *++it );
+        b.setGenre     (  *++it );
+        b.setTitle     (  *++it );
+        b.setYear      (  *++it );
+        b.setComment   (  *++it );
+        b.setTrack     (  *++it );
+        b.setBitrate   ( (*++it).toInt() );
+        b.setLength    ( (*++it).toInt() );
+        b.setSampleRate( (*++it).toInt() );
+        b.setPath      (  *++it );
+
+        bundles += b;
+
+        if ( false && b.length() <= 0 ) {
+            // we try to read the tags, despite the slow-down
+            debug() << "Audioproperties not known for: " << b.url().fileName() << endl;
+            b.readTags( TagLib::AudioProperties::Fast );
+        }
+
+        if ( ++x % 30 == 0 ) {
+            QApplication::postEvent( this, new TagsEvent( bundles ) );
+            bundles.clear();
+        }
+    }
+
+    setProgress100Percent();
+
+    return true;
 }
 
 #include "playlistloader.moc"

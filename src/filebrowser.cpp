@@ -59,9 +59,9 @@ protected:
     virtual bool MyDirLister::matchesMimeFilter( const KFileItem *item ) const {
         return
             item->isDir() ||
-            EngineController::canDecode( item->url().path() ) ||
+            EngineController::canDecode( item->name() ) ||
             item->url().protocol() == "audiocd" ||
-            PlaylistLoader::isPlaylist( item->url() );
+            PlaylistFileTranslator::isPlaylistFile( item->name() );
     }
 };
 
