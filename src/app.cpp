@@ -504,8 +504,6 @@ void App::applyColorScheme()
         delete list;
 
         PlayerWidget::determineAmarokColors();
-
-        return;
     }
 
     if( AmarokConfig::schemeAmarok() )
@@ -537,8 +535,15 @@ void App::applyColorScheme()
 
         m_pPlaylistWindow->setColors( QPalette( group, group, group ), bgAlt );
 
-    } else {
+        using namespace amaroK::ColorScheme;
+        Base       = amaroK::blue;
+        Text       = Qt::white;
+        Background = 0x002090;
+        Foreground = 0x80A0FF;
+    }
 
+    if( AmarokConfig::schemeCustom() )
+    {
         // we try to be smart: this code figures out contrasting colors for
         // selection and alternate background rows
         QColorGroup group = QApplication::palette().active();
@@ -567,13 +572,9 @@ void App::applyColorScheme()
         //group.setColor( QColorGroup::BrightText, QColor( 0xff, 0x40, 0x40 ) ); //GlowColor
 
         m_pPlaylistWindow->setColors( QPalette( group, group, group ), bgAlt );
-    }
 
-    using namespace amaroK::ColorScheme;
-    Base       = amaroK::blue;
-    Text       = Qt::white;
-    Background = 0x002090;
-    Foreground = 0x80A0FF;
+        PlayerWidget::determineAmarokColors();
+    }
 }
 
 

@@ -397,7 +397,12 @@ static inline QColor comodulate( int hue, QColor target )
 void PlayerWidget::determineAmarokColors() //static
 {
     int hue, s, v;
-    KGlobalSettings::highlightColor().getHsv( hue, s, v );
+
+    if ( AmarokConfig::schemeKDE() )
+        KGlobalSettings::highlightColor().getHsv( &hue, &s, &v );
+
+    if ( AmarokConfig::schemeCustom() )
+        AmarokConfig::playlistWindowBgColor().getHsv( &hue, &s, &v );
 
     using namespace amaroK::ColorScheme;
 
