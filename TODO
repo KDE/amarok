@@ -17,16 +17,17 @@ SHORT-TERM (URGENT):
                "--without-gstreamer": after compiling I have an amaroK _without_ aRts and _with_ gstreamer compiled in
                0.9-beta2 btw <markey> WORKSFORME
 
-    * fix: #61 <markey> allow removing of playlist items by dragging back into browser.
-               (RFC: is this still appropriate or would it be misleading?)
-
     * fix: #60 <markey> I'm still getting the occasional crash in PlaylistItem::setText()
 
-    * fix: #44 <markey> ExpandButtons do not work well with keyboard shortcuts: the button expands, and then
-               nothing happens. you must close it using the mouse
 
 MID-TERM:
 
+    * fix: #44 <markey> ExpandButtons do not work well with keyboard shortcuts: the button expands, and then
+               nothing happens. you must close it using the mouse
+    
+    * fix: #61 <markey> allow removing of playlist items by dragging back into browser.
+               (RFC: is this still appropriate or would it be misleading?)
+    
     * fix: #64 <markey> when loading a playlist for the first time after startup, amaroK starts playing
                the first track automagically
                <mxcl> fixed, but the cause is not fixed. Somewhere it seems a KURL::List with 1 empty KURL is
