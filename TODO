@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #104 being the highest available (take this one for your next bug and increase here)
+           #105 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
@@ -35,6 +35,11 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+
+  ADD #104 <mxcl> perhaps a nice idea: when you drag playlistItems to a branch in the collection browser
+           it prompts to change the track's tags, so drag a track to the "moolaaa" album and that
+           track get's it's album tag changed to "moolaaa" and is inserted into the branch, so the user
+           know's what has happened.
 
   ADD #100 <mxcl> we have several areas where we ask for paths, it would be good to make it so these
                   always reflect the most recent path the user has used, eg looking in /my/music/bands
