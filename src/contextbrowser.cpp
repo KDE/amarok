@@ -148,9 +148,13 @@ void ContextBrowser::openURLRequest( const KURL &url )
             if( o ) static_cast<CollectionBrowser*>(o)->setupDirs();
         }
     }
+    
+    QStringList info = QStringList::split( "/", url.path() );
+    m_artist = info[0];
+    m_album = info[1];
 
     if ( m_url.protocol() == "fetchcover" )
-        m_db->fetchCover( this, m_currentTrack->artist(), m_currentTrack->album(), false );
+        m_db->fetchCover( this, m_artist, m_album, false );
 }
 
 
