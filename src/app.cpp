@@ -31,6 +31,7 @@ email                : markey@web.de
 #include "socketserver.h"
 #include "systray.h"
 #include "threadweaver.h"        //restoreSession()
+#include "contextbrowser.h"
 #include "tracktooltip.h"        //engineNewMetaData()
 
 #include <kaboutdata.h>          //initCliArgs()
@@ -712,6 +713,7 @@ void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     m_pOSD->showTrack( bundle );
     m_pDcopHandler->setNowPlaying( bundle.prettyTitle() );
+    m_pPlaylistWindow->m_contextBrowser->showContextForItem( bundle );
     PlaylistToolTip::add( m_pTray, bundle );
 }
 

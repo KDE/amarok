@@ -23,6 +23,7 @@
 #include <kxmlguiclient.h>  //baseclass (for XMLGUI)
 
 class BrowserBar;
+class ContextBrowser;
 class KLineEdit;
 class KActionCollection;
 class KToolBar;
@@ -61,6 +62,8 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         void createGUI(); //should be private but App::slowConfigToolbars requires it
 
         Playlist *playlist() const { return m_playlist; }
+
+        ContextBrowser *m_contextBrowser;
 
         virtual bool eventFilter( QObject*, QEvent* );
 

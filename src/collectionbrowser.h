@@ -5,6 +5,8 @@
 #ifndef AMAROK_COLLECTIONBROWSER_H
 #define AMAROK_COLLECTIONBROWSER_H
 
+#include "collectiondb.h"
+
 #include <qvbox.h>           //baseclass
 
 #include <klistview.h>       //baseclass
@@ -45,39 +47,6 @@ class CollectionBrowser: public QVBox
         KPopupMenu* m_cat2Menu;
         KLineEdit* m_searchEdit;
         CollectionView* m_view;
-};
-
-
-class CollectionDB : public QObject
-{
-    Q_OBJECT
-    
-    public:
-        CollectionDB( QCString path );
-        ~CollectionDB();
-    
-        /**
-         * Executes an SQL statement on the already opened database
-         * @param statement SQL program to execute. Only one SQL statement is allowed.
-         * @retval values   will contain the queried data, set to NULL if not used
-         * @retval names    will contain all column names, set to NULL if not used
-         * @return          true if successful
-         */
-        bool execSql( const QString& statement, QStringList* const values = 0, QStringList* const names = 0 );
-
-        /**
-         * Returns the rowid of the most recently inserted row
-         * @return          int rowid
-         */
-        int sqlInsertID();
-        QString escapeString( QString string );
-
-        uint getValueID( QString name, QString value, bool autocreate = true );
-        void createTables( const bool temporary = false );
-        void dropTables( const bool temporary = false );
-      
-    private:
-        sqlite* m_db;
 };
 
 
@@ -164,6 +133,3 @@ class CollectionView : public KListView
 
 
 #endif /* AMAROK_COLLECTIONBROWSER_H */
-
-
-

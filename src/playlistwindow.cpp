@@ -26,6 +26,7 @@
 #include "playlist.h"
 #include "streambrowser.h"
 #include "searchbrowser.h"
+#include "contextbrowser.h"
 #include "statusbar.h"
 
 #include <qcolor.h>        //setPalettes()
@@ -163,6 +164,11 @@ PlaylistWindow::PlaylistWindow( QWidget *parent, const char *name )
         m_browsers->addBrowser( new CollectionBrowser( "CollectionBrowser" ), i18n( "Collection" ), "contents" );
     //</CollectionBrowser>
 
+    //<InfoBrowser>
+        m_contextBrowser = new ContextBrowser( "ContextBrowser" );
+        m_browsers->addBrowser( m_contextBrowser, i18n( "Context" ), "context" );
+    //</InfoBrowser>
+    
     { //<StreamBrowser>
         QVBox   *vb = new QVBox( 0, "StreamBrowser" );
         QWidget *b  = new QPushButton( "&Fetch Stream Information", vb );

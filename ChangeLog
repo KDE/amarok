@@ -2,7 +2,9 @@ amaroK ChangeLog
 ================
 (c) 2002-2004 the amaroK authors.
 
- 
+
+  ADD: ContextBrowser shows you images and information to the current song/artist.
+       It depends on the collection and is presented as an HTML widget.
   CHG: Improved color handling and visual feedback in the GUI.
   ADD: Global shortcut for play/pause action, as requested by multimedia-keyboard
        users (BR 79541).
