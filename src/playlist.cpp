@@ -547,7 +547,7 @@ Playlist::restoreCurrentTrack()
 
         if( item )
            //display "Play" icon
-           item->setPixmap( m_firstColumn, SmallIcon( "artsbuilderexecute" ) );
+           item->setPixmap( m_firstColumn, locate( "data", QString( "amarok/images/currenttrack_play.png" ) ) );
     }
 
     return m_currentTrack;
@@ -617,7 +617,7 @@ Playlist::engineStateChanged( Engine::State state )
 
         if ( m_currentTrack )
             //display "Play" icon
-            m_currentTrack->setPixmap( m_firstColumn, SmallIcon( "artsbuilderexecute" ) );
+            m_currentTrack->setPixmap( m_firstColumn, locate( "data", QString( "amarok/images/currenttrack_play.png" ) ) );
 
         break;
 
@@ -722,7 +722,7 @@ Playlist::columnOrderChanged() //SLOT
     if( m_currentTrack )
     {
         m_currentTrack->setPixmap( prevColumn, QPixmap() );
-        m_currentTrack->setPixmap( m_firstColumn, SmallIcon( "artsbuilderexecute" ) );
+        m_currentTrack->setPixmap( m_firstColumn, locate( "data", QString( "amarok/images/currenttrack_play.png" ) ) );
     }
 }
 
