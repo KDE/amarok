@@ -217,6 +217,7 @@ private:
     QStringList m_folders;
     bool m_recursively;
     bool m_incremental;
+    QStringList m_processedDirs;
 };
 
 

@@ -216,6 +216,7 @@ CollectionReader::doJob()
     //iterate over all folders
     for ( uint i = 0; i < m_folders.count(); i++ )
     {
+        m_processedDirs = QStringList();
         readDir( m_folders[ i ], entries );
     }
 
@@ -231,6 +232,7 @@ CollectionReader::doJob()
 void
 CollectionReader::readDir( const QString& dir, QStringList& entries )
 {
+    m_processedDirs << dir;
     struct stat statBuf;
 
     //update dir statistics for rescanning purposes
@@ -246,20 +248,13 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
         return;
     }
 
-    QFileInfo file( dir );
-    if ( file.isSymLink() )
-    {
-        kdWarning() << "Skipping symlink " << dir << endl;
-        return;
-    }
-
     DIR * d = opendir( QFile::encodeName( dir ) );
     dirent *ent;
 
     if (d == NULL)
     {
         if (errno == EACCES)
-            kdWarning() << "Skipping non-readable dir " << dir << endl;
+            kdWarning() << "[CollectionReader] Skipping non-readable dir " << dir << endl;
         return;
     }
 
@@ -275,18 +270,26 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
         {
             if ( S_ISDIR( statBuf.st_mode ) )
             {
-                if ( m_recursively )
-                    //call ourself recursively for each subdir
+                if ( m_recursively ) {
+                    // Check for symlink recursion
+                    QFileInfo info( entry );
+                    if ( info.isSymLink() && m_processedDirs.contains( info.readLink() ) ) {
+                        kdWarning() << "[CollectionReader] Skipping recursive symlink.\n";
+                        continue;
+                    }
                     if ( !m_incremental || !m_parent->isDirInCollection( entry ) )
-                        readDir( QFile::decodeName( entry ), entries );                        
-            } else if ( S_ISREG( statBuf.st_mode ) )
+                        // call ourself recursively for each subdir
+                        readDir( QFile::decodeName( entry ), entries );
+                }
+            }
+            else if ( S_ISREG( statBuf.st_mode ) )
             {
-                 //if a playlist is found it will send a PlaylistFoundEvent to PlaylistBrowser
-                    QString file = QString::fromLocal8Bit( entry );
-                    QString ext = file.right( 4 ).lower();
-                    if( ext == ".m3u" || ext == ".pls" )
-                        QApplication::postEvent( m_playlistBrowser, new PlaylistFoundEvent( file ) );
-                    entries <<  file ;
+                //if a playlist is found it will send a PlaylistFoundEvent to PlaylistBrowser
+                QString file = QString::fromLocal8Bit( entry );
+                QString ext = file.right( 4 ).lower();
+                if( ext == ".m3u" || ext == ".pls" )
+                    QApplication::postEvent( m_playlistBrowser, new PlaylistFoundEvent( file ) );
+                entries <<  file ;
             }
         }
 
