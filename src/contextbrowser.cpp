@@ -83,8 +83,13 @@ ContextBrowser::ContextBrowser( const char *name )
     m_homePage = new KHTMLPart( this, "home_page" );
     m_homePage->setDNDEnabled( true );
     m_currentTrackPage = new KHTMLPart( this, "current_track_page" );
+    m_currentTrackPage->setJScriptEnabled( true );
     m_currentTrackPage->setDNDEnabled( true );
     m_lyricsPage = new KHTMLPart( this, "lyrics_page" );
+    m_lyricsPage->setJScriptEnabled( false );
+    m_lyricsPage->setJavaEnabled( false );
+    m_lyricsPage->setPluginsEnabled( false );
+    m_lyricsPage->setOnlyLocalReferences( true );
     m_lyricsPage->setDNDEnabled( true );
 
     //aesthetics - no double frame
