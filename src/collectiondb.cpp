@@ -434,9 +434,8 @@ CollectionDB::albumImage( const uint artist_id, const uint album_id, const uint 
 QString
 CollectionDB::getImageForAlbum( const QString& artist, const QString& album, uint width )
 {
-    kdDebug() << "Looking for local image: " << artist << " - " << album << endl;
     if ( !width ) width = AmarokConfig::coverPreviewSize();
-    QString widthKey = QString::number( width ) + "@";
+    QCString widthKey = QString::number( width ).local8Bit() + "@";
 
     if ( album.isEmpty() )
         return notAvailCover( width );
@@ -452,17 +451,14 @@ CollectionDB::getImageForAlbum( const QString& artist, const QString& album, uin
             if ( m_values[i].contains( "front", false ) || m_values[i].contains( "cover", false ) || m_values[i].contains( "folder", false ) )
                 image = m_values[i];
 
-        kdDebug() << "Local image found: " << image << endl;
-        KURL u( image );
-        kdDebug() << "Filename excerpt: " << u.fileName().lower() << endl;
-        if ( !m_cacheDir.exists( u.fileName().lower() ) )
+        QCString key = md5sum( artist, album, image );
+        if ( !m_cacheDir.exists( widthKey + key ) )
         {
             QImage img = QImage( image );
-            img.smoothScale( width, width ).save( m_cacheDir.absPath() + "/" + u.fileName().lower(), "PNG" );
+            img.smoothScale( width, width ).save( m_cacheDir.filePath( widthKey + key ), "PNG" );
         }
 
-        kdDebug() << "Local cache: " << m_cacheDir.absPath() + "/" + u.fileName().lower() << endl;
-        return m_cacheDir.absPath() + "/" + u.fileName().lower();
+        return m_cacheDir.filePath( widthKey + key );
     }
 
     return notAvailCover( width );
@@ -1276,9 +1272,9 @@ CollectionDB::valueFromID( QString table, uint id )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 QCString
-CollectionDB::md5sum( const QString& artist, const QString& album )
+CollectionDB::md5sum( const QString& artist, const QString& album, const QString& file )
 {
-    KMD5 context( artist.lower().local8Bit() + album.lower().local8Bit() );
+    KMD5 context( artist.lower().local8Bit() + album.lower().local8Bit() + file.local8Bit() );
 //     kdDebug() << "MD5 SUM for " << artist << ", " << album << ": " << context.hexDigest() << endl;
     return context.hexDigest();
 }

@@ -127,7 +127,7 @@ class CollectionDB : public QObject
         QStringList m_names;
 
     protected:
-        QCString md5sum( const QString& artist, const QString& album );
+        QCString md5sum( const QString& artist, const QString& album, const QString& file = QString::null );
 
     public slots:
         void fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit );
