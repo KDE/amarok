@@ -14,7 +14,7 @@ SHORT-TERM (URGENT):
               is it possible to catch crash signals and do some cleanup? 
 
     * fix: #11<markey> bitrate display often shows bogus values (especially with VBR, it seems)
-              <mxcl>currently taglib is scanning files in Fast mode and on demand, the code is in
+              <mxcl> currently taglib is scanning files in Fast mode and on demand, the code is in
               PlaylistItem::metaBundle(). If it's still doing it wrong we should consider setting it
               to Accurate.
     
@@ -43,16 +43,12 @@ SHORT-TERM (URGENT):
 
     * fix: <mxcl> reimplement ask recursively on drop operations to playlist
            <markey> replace with "add all media in current directory"
+           <mxcl> I don't understand what you mean by that..
 
     * fix: <mxcl> GroupBoxes can't have check boxes with Qt 3.1, so before next release do
            some #ifdefs to surround that code and hope nobody gets too pissed about it -->mxcl
 
-    * fix: writePathEntry is a KDE 3.1.3 function, which is perhaps too recent for the 0.7.1 release
-
     * fix: <muesli> clean up the GUI
-
-    * fix: <grue> with focus-follows-mouse, both player window and playlist
-           rise to foreground when you point on the player <mxcl> should now be fixed, please check
 
     * fix: <grue> ctrl-c for copying current title seems broken
 

@@ -530,7 +530,9 @@ void PlayerApp::saveConfig()
 
     m_pConfig->writeEntry( "Master Volume", m_Volume );
     m_pConfig->writeEntry( "CurrentDirectory", m_pBrowserWin->m_pBrowserWidget->m_pDirLister->url().path() );
+#if KDE_VERSION >= 0x030103
     m_pConfig->writePathEntry( "PathHistory", m_pBrowserWin->m_pBrowserLineEdit->historyItems() );
+#endif
     m_pConfig->writeEntry( "PlayerPos", m_pPlayerWidget->pos() );
     m_pConfig->writeEntry( "BrowserWinPos", m_pBrowserWin->pos() );
     m_pConfig->writeEntry( "BrowserWinSize", m_pBrowserWin->size() );
@@ -587,7 +589,9 @@ void PlayerApp::readConfig()
     m_pConfig->setGroup( "General Options" );
 
     m_pBrowserWin->m_pBrowserWidget->readDir( m_pConfig->readPathEntry( "CurrentDirectory", QDir::home().path() ) );
+#if KDE_VERSION >= 0x030103
     m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( m_pConfig->readPathListEntry( "PathHistory" ) );
+#endif
     m_pPlayerWidget->move( m_pConfig->readPointEntry( "PlayerPos", &pointZero ) );
     m_pBrowserWin->move( m_pConfig->readPointEntry( "BrowserWinPos", &pointZero ) );
     m_pBrowserWin->resize( m_pConfig->readSizeEntry( "BrowserWinSize", &arbitrarySize ) );
