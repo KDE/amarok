@@ -110,7 +110,7 @@ StatusBar::engineStateChanged( Engine::State state )
         break;
 
     case Engine::Playing:
-        //m_slider->setEnabled( true ) //NOTE we do this in engineNewMetaData()
+        resetMainText(); // if we were paused, this is necessary
         m_timeLabel->setEnabled( true );
         m_pauseTimer->stop();
         break;
