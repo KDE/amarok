@@ -430,7 +430,7 @@ void BrowserWin::slotUpdateFonts()
 {
     QFont font;
 
-    if ( !AmarokConfig::useCustomFonts() )    //workaround for reversed config entry
+    if ( AmarokConfig::useCustomFonts() )
         font = AmarokConfig::browserWindowFont();
 
     m_pSideBar->setPageFont( font );

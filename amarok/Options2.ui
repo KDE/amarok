@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>319</width>
-            <height>256</height>
+            <width>334</width>
+            <height>287</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -27,9 +27,26 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QButtonGroup">
+        <widget class="QCheckBox">
             <property name="name">
                 <cstring>kcfg_UseCustomFonts</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;Use custom fonts</string>
+            </property>
+            <property name="accel">
+                <string>Alt+U</string>
+            </property>
+            <property name="checked">
+                <bool>false</bool>
+            </property>
+        </widget>
+        <widget class="QButtonGroup">
+            <property name="name">
+                <cstring>groupBox</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
             </property>
             <property name="sizePolicy">
                 <sizepolicy>
@@ -40,7 +57,7 @@
                 </sizepolicy>
             </property>
             <property name="title">
-                <string>&amp;Use custom fonts</string>
+                <string>Custom Fonts</string>
             </property>
             <property name="alignment">
                 <set>AlignBottom</set>
@@ -49,7 +66,7 @@
                 <bool>false</bool>
             </property>
             <property name="checkable">
-                <bool>true</bool>
+                <bool>false</bool>
             </property>
             <property name="checked">
                 <bool>false</bool>
@@ -218,6 +235,14 @@
 </widget>
 <customwidgets>
 </customwidgets>
+<connections>
+    <connection>
+        <sender>kcfg_UseCustomFonts</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>groupBox</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+</connections>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>kfontrequester.h</includehint>

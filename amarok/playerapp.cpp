@@ -323,7 +323,7 @@ void PlayerApp::applySettings()
     m_pEngine->setRestoreEffects( AmarokConfig::rememberEffects() );    
     m_pEngine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
 
-    m_pOSD->setEnabled( !AmarokConfig::osdEnabled() );      //workaround for reversed config entry
+    m_pOSD->setEnabled( AmarokConfig::osdEnabled() );
     m_pOSD->setFont   ( AmarokConfig::osdFont() );
     m_pOSD->setColor  ( AmarokConfig::osdColor() );
 

@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>407</width>
-            <height>256</height>
+            <height>260</height>
         </rect>
     </property>
     <property name="caption">
@@ -19,15 +19,29 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QButtonGroup">
+        <widget class="QCheckBox">
             <property name="name">
                 <cstring>kcfg_OsdEnabled</cstring>
             </property>
+            <property name="text">
+                <string>&amp;Use On-Screen-Display</string>
+            </property>
+            <property name="accel">
+                <string>Alt+U</string>
+            </property>
+        </widget>
+        <widget class="QButtonGroup">
+            <property name="name">
+                <cstring>buttonGroup</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
             <property name="title">
-                <string>&amp;Use On-Screen Display</string>
+                <string>On-Screen-Display</string>
             </property>
             <property name="checkable">
-                <bool>true</bool>
+                <bool>false</bool>
             </property>
             <vbox>
                 <property name="name">
@@ -81,6 +95,14 @@
 </widget>
 <customwidgets>
 </customwidgets>
+<connections>
+    <connection>
+        <sender>kcfg_OsdEnabled</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>buttonGroup</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+</connections>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>kfontrequester.h</includehint>
