@@ -22,7 +22,7 @@ class QPoint;
 class QTimer;
 
 class CollectionDB;
-
+class CoverViewItem;
 
 class CoverManager : public QWidget
 {
@@ -34,9 +34,6 @@ Q_OBJECT
         
         virtual bool eventFilter( QObject*, QEvent* );
      
-    public slots:
-        void fetchMissingCovers();
-        
     private slots:
         void expandeItem( QListViewItem * );
         void collapseItem( QListViewItem * );
@@ -50,7 +47,9 @@ Q_OBJECT
         void previewJobFinished();
         void coverFetched( const QString & );
         void slotCoverDeleted();
-        
+        void fetchMissingCovers();
+        void fetchMissingCoversLoop();
+                
     private:
         enum { AllAlbums=0, AlbumsWithCover, AlbumsWithoutCover };
         
@@ -68,6 +67,9 @@ Q_OBJECT
         QString m_filter;
         int m_currentView;
         KIO::PreviewJob *m_previewJob;
+        
+        // Used by fetchMissingCovers() for temporary storage
+        CoverViewItem* m_currentItem;
 };
 
 

@@ -1,8 +1,8 @@
 // (c) Pierpaolo Di Panfilo 2004
 // See COPYING file for licensing information
 
-#include "covermanager.h"
 #include "collectiondb.h"
+#include "covermanager.h"
 
 #include <qfile.h>
 #include <qfontmetrics.h>    //paintItem()
@@ -31,7 +31,6 @@
 #include <kstandarddirs.h>   //KGlobal::dirs()
 #include <kurl.h>
 
-#include <unistd.h>
 
 CoverManager::CoverManager( QWidget *parent, const char *name )
     : QWidget( parent, name, WDestructiveClose )
@@ -158,16 +157,24 @@ CoverManager::~CoverManager()
 }
 
 
-void CoverManager::fetchMissingCovers()
+void CoverManager::fetchMissingCovers() //SLOT
 {
-    for( QIconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
-        CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
-        if( !coverItem->hasCover() )
-        {
-            m_db->fetchCover( this, coverItem->artist() + " - " + coverItem->album(), true );
-        }
-    /* sad, but true... sleeping for 1 second after each request raises the amount of found covers... */
-    sleep( 1 );
+    m_currentItem = static_cast<CoverViewItem*>( m_coverView->firstItem() );
+    fetchMissingCoversLoop();
+}
+
+
+void CoverManager::fetchMissingCoversLoop() //SLOT
+{
+    if ( m_currentItem ) 
+    {
+        if( !m_currentItem->hasCover() )
+            m_db->fetchCover( this, m_currentItem->artist() + " - " + m_currentItem->album(), true );
+    
+        m_currentItem = static_cast<CoverViewItem*>( m_currentItem->nextItem() );
+        
+        // Wait 1 second, since amazon caps the number of accesses per client
+        QTimer::singleShot( 1000, this, SLOT( fetchMissingCoversLoop() ) );
     }
 }
 
@@ -281,12 +288,11 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
     
     KPopupMenu menu( this );
     menu.insertItem( SmallIcon("viewmag"), i18n("Show fullsize"), SHOW );
+    menu.setItemEnabled( SHOW, item->hasCover() );
     menu.insertItem( SmallIcon("filesave"), i18n("Fetch cover"), FETCH );
     menu.insertSeparator();
     menu.insertItem( SmallIcon("editdelete"), i18n("Delete cover"), DELETE );
-    
-    if( !item->hasCover() )
-        menu.setItemEnabled( false, DELETE);
+    menu.setItemEnabled( DELETE, item->hasCover() );
         
     switch( menu.exec(p) ) {
         case SHOW:
