@@ -61,8 +61,6 @@ MID-TERM:
   ADD  96 <mxcl>   User asked for a CTRL-J itty-bitty dialog that allows you to jump to a specific part
                    of a track. I'll see if I can do it with tiny amount of code -->mxcl
 
-  ADD  94 <markey> Progress display for playlist reading, in statusbar.
-
   FIX  87 <muesli> Don't rely on KDE timeouts to see whether a file is accessible or not,
                    since this really sucks for disconnected network shares. XMMS handles
                    this way better and it really is a problem in userland. maybe a thread
