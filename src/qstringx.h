@@ -21,17 +21,26 @@ public:
     QStringx( const QByteArray& ba ) : QString( ba ) {};
     QStringx( const QChar* unicode, uint length ) : QString( unicode, length ) {};
     QStringx( const char* str ) : QString( str ) {};
-    ~QStringx() {};
+    virtual ~QStringx() {};
     
-    QString args( const QStringList& l )
+    QString args( const QStringList& args )
     {
-        QStringList k = QStringList::split( QRegExp( "%\\d+" ), *this, TRUE );
-        Q_ASSERT( k.count()-1 == l.count() );
-        QString r;
-        for ( unsigned int i=0 ; i < k.count()-1 ; ++i )
-            r += k[i] + l[i];
-        r += k[k.count()-1];
-        return r;
+        const QStringList text = QStringList::split( QRegExp( "%\\d+" ), *this, TRUE );
+        
+        QValueListConstIterator<QString> itrText = text.begin();
+        QValueListConstIterator<QString> itrArgs = args.begin();
+        QString merged = (*itrText);
+        ++itrText;
+        while ( itrText != text.end() && itrArgs != args.end() )
+        {
+            merged += (*itrArgs) + (*itrText);
+            ++itrText;
+            ++itrArgs;
+        }
+        
+        Q_ASSERT( itrText == text.end() && itrArgs == args.end() );
+        
+        return merged;
     }
 };
 
