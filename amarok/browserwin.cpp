@@ -1,9 +1,9 @@
 /***************************************************************************
-                         browserwin.cpp  -  description
-                            -------------------
-   begin                : Fre Nov 15 2002
-   copyright            : (C) 2002 by Mark Kretschmann
-   email                :
+                        browserwin.cpp  -  description
+                           -------------------
+  begin                : Fre Nov 15 2002
+  copyright            : (C) 2002 by Mark Kretschmann
+  email                :
 ***************************************************************************/
 
 /***************************************************************************
@@ -47,6 +47,7 @@
 #include <kdirlister.h>
 #include <kfileitem.h>
 #include <kfilemetainfo.h>
+#include <kfileview.h>
 #include <kglobalsettings.h>
 #include <klocale.h>
 #include <klineedit.h>
@@ -63,12 +64,64 @@
 #include <arts/kmedia2.h>
 #include <arts/soundserver.h>
 
+
+// CLASS AmarokFileList =================================================================
+
+AmarokFileList::AmarokFileList( KFileItemList list, int sortSpec ) :
+    KFileItemList( list ),
+    m_sortSpec( sortSpec )
+{
+    if ( ( m_sortSpec & QDir::SortByMask ) != QDir::Unsorted )
+    {
+        sort();
+    }
+}
+
+
+AmarokFileList::~AmarokFileList()
+{}
+
+
+int AmarokFileList::compareItems( QPtrCollection::Item item1, QPtrCollection::Item item2 )
+{
+    QString key1, key2;
+    KFileItem *fileItem1 = static_cast<KFileItem*>( item1 );
+    KFileItem *fileItem2 = static_cast<KFileItem*>( item2 );
+
+    if ( ( m_sortSpec & QDir::SortByMask ) == QDir::Name )
+    {
+        key1 = KFileView::sortingKey( fileItem1->url().path(), fileItem1->isDir(), m_sortSpec );
+        key2 = KFileView::sortingKey( fileItem2->url().path(), fileItem2->isDir(), m_sortSpec );
+    }
+
+    if ( ( m_sortSpec & QDir::SortByMask ) == QDir::Time )
+    {
+        key1 = KFileView::sortingKey( static_cast<KIO::filesize_t >(
+                                      fileItem1->time( KIO::UDS_MODIFICATION_TIME ) ),
+                                      fileItem1->isDir(), m_sortSpec );
+        key2 = KFileView::sortingKey( static_cast<KIO::filesize_t >(
+                                      fileItem2->time( KIO::UDS_MODIFICATION_TIME ) ),
+                                      fileItem2->isDir(), m_sortSpec );
+    }
+
+    if ( ( m_sortSpec & QDir::SortByMask ) == QDir::Size )
+    {
+        key1 = KFileView::sortingKey( fileItem1->size(), fileItem1->isDir(), m_sortSpec );
+        key2 = KFileView::sortingKey( fileItem2->size(), fileItem2->isDir(), m_sortSpec );
+    }
+
+    return key1.compare( key2 );
+}
+
+
+// CLASS BrowserWin =====================================================================
+
 BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
         QWidget( parent, name, Qt::WPaintUnclipped )
 {
     setName( "BrowserWin" );
 
-    setCaption( kapp->makeStdCaption( i18n("Playlist") ) );
+    setCaption( kapp->makeStdCaption( i18n( "Playlist" ) ) );
     setAcceptDrops( true );
 
     m_pActionCollection = new KActionCollection( this );
@@ -97,8 +150,8 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
     connect( m_pButtonShuffle, SIGNAL( clicked() ),
              this, SLOT( slotShufflePlaylist() ) );
 
-/*    connect( pApp, SIGNAL( sigUpdateFonts() ),
-             this, SLOT( slotUpdateFonts() ) );*/
+    /*    connect( pApp, SIGNAL( sigUpdateFonts() ),
+                 this, SLOT( slotUpdateFonts() ) );*/
 }
 
 
@@ -110,23 +163,23 @@ BrowserWin::~BrowserWin()
 
 void BrowserWin::initChildren()
 {
-    m_pButtonAdd = new ExpandButton( i18n("Add Item"), this );
+    m_pButtonAdd = new ExpandButton( i18n( "Add Item" ), this );
 
-    m_pButtonClear = new ExpandButton( i18n("Clear"), this );
-    QToolTip::add( m_pButtonClear, i18n("Keep button pressed for sub-menu") );
-    m_pButtonShuffle = new ExpandButton( i18n("Shuffle"), m_pButtonClear );
-    m_pButtonSave = new ExpandButton( i18n("Save Playlist"), m_pButtonClear );
+    m_pButtonClear = new ExpandButton( i18n( "Clear" ), this );
+    QToolTip::add( m_pButtonClear, i18n( "Keep button pressed for sub-menu" ) );
+    m_pButtonShuffle = new ExpandButton( i18n( "Shuffle" ), m_pButtonClear );
+    m_pButtonSave = new ExpandButton( i18n( "Save Playlist" ), m_pButtonClear );
 
-    m_pButtonUndo = new ExpandButton( i18n("Undo"), this );
+    m_pButtonUndo = new ExpandButton( i18n( "Undo" ), this );
 
-    m_pButtonRedo = new ExpandButton( i18n("Redo"), this );
+    m_pButtonRedo = new ExpandButton( i18n( "Redo" ), this );
 
-    m_pButtonPlay = new ExpandButton( i18n("Play"), this );
-    QToolTip::add( m_pButtonPlay, i18n("Keep button pressed for sub-menu") );
-    m_pButtonPause = new ExpandButton( i18n("Pause"), m_pButtonPlay );
-    m_pButtonStop = new ExpandButton( i18n("Stop"), m_pButtonPlay );
-    m_pButtonNext = new ExpandButton( i18n("Next"), m_pButtonPlay );
-    m_pButtonPrev = new ExpandButton( i18n("Previous"), m_pButtonPlay );
+    m_pButtonPlay = new ExpandButton( i18n( "Play" ), this );
+    QToolTip::add( m_pButtonPlay, i18n( "Keep button pressed for sub-menu" ) );
+    m_pButtonPause = new ExpandButton( i18n( "Pause" ), m_pButtonPlay );
+    m_pButtonStop = new ExpandButton( i18n( "Stop" ), m_pButtonPlay );
+    m_pButtonNext = new ExpandButton( i18n( "Next" ), m_pButtonPlay );
+    m_pButtonPrev = new ExpandButton( i18n( "Previous" ), m_pButtonPlay );
 
     m_pSplitter = new QSplitter( this );
 
@@ -142,7 +195,7 @@ void BrowserWin::initChildren()
     m_pPlaylistWidget->setSelectionMode( QListView::Extended );
 
     m_pBrowserLineEdit = new KLineEdit( pBrowserWidgetContainer );
-    QToolTip::add( m_pBrowserLineEdit, i18n("Enter directory/URL") );
+    QToolTip::add( m_pBrowserLineEdit, i18n( "Enter directory/URL" ) );
     m_pBrowserLineEdit->setPaletteBackgroundColor( pApp->m_bgColor );
     m_pBrowserLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
     KURLCompletion *compBrowser = new KURLCompletion( KURLCompletion::DirCompletion );
@@ -152,7 +205,7 @@ void BrowserWin::initChildren()
     connect( m_pBrowserLineEdit, SIGNAL( returnPressed( const QString& ) ), m_pBrowserWidget, SLOT( slotReturnPressed( const QString& ) ) );
 
     m_pPlaylistLineEdit = new KLineEdit( pPlaylistWidgetContainer );
-    QToolTip::add( m_pPlaylistLineEdit, i18n("Enter Filter String") );
+    QToolTip::add( m_pPlaylistLineEdit, i18n( "Enter Filter String" ) );
     m_pPlaylistLineEdit->setPaletteBackgroundColor( pApp->m_bgColor );
     m_pPlaylistLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
     connect( m_pPlaylistLineEdit, SIGNAL( textChanged( const QString& ) ), m_pPlaylistWidget, SLOT( slotTextChanged( const QString& ) ) );
@@ -193,15 +246,15 @@ void BrowserWin::closeEvent( QCloseEvent *e )
 void BrowserWin::moveEvent( QMoveEvent * )
 {
     // FIXME: needed for PlaylistWidget transparency
-/*    m_pPlaylistWidget->repaint();
-    m_pPlaylistWidget->viewport()->repaint();*/
+    /*    m_pPlaylistWidget->repaint();
+        m_pPlaylistWidget->viewport()->repaint();*/
 }
 
 
 void BrowserWin::paintEvent( QPaintEvent * )
 {
-/*    m_pPlaylistWidget->repaint();
-    m_pPlaylistWidget->viewport()->repaint();*/
+    /*    m_pPlaylistWidget->repaint();
+        m_pPlaylistWidget->viewport()->repaint();*/
 }
 
 
@@ -294,14 +347,14 @@ bool BrowserWin::isFileValid( const KURL &url )
 void BrowserWin::slotPlaylistRightButton( QListViewItem * /*pItem*/, const QPoint &rPoint )
 {
     QPopupMenu popup( this );
-    int item1 = popup.insertItem( i18n("Show File Info"), this, SLOT( slotShowInfo() ) );
+    int item1 = popup.insertItem( i18n( "Show File Info" ), this, SLOT( slotShowInfo() ) );
 
     // only enable when file is selected
     if ( !m_pPlaylistWidget->currentItem() )
         popup.setItemEnabled( item1, false );
 
-    popup.insertItem(  i18n("Play Track"),  this,  SLOT(  slotMenuPlay()  )  );
-    popup.insertItem(  i18n("Remove Selected"),  this,  SLOT(  slotBrowserDrop()  )  );
+    popup.insertItem( i18n( "Play Track" ), this, SLOT( slotMenuPlay() ) );
+    popup.insertItem( i18n( "Remove Selected" ), this, SLOT( slotBrowserDrop() ) );
 
     popup.exec( rPoint );
 }
@@ -497,8 +550,7 @@ void BrowserWin::slotKeyDelete()
     }
 
     if ( m_pBrowserLineEdit->hasFocus() )
-    {}
-}
+    {}}
 
 
 void BrowserWin::slotUpdateFonts()

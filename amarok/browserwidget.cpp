@@ -22,8 +22,12 @@
 #include "playlistwidget.h"
 
 #include <qcstring.h>
+#include <qcursor.h>
+#include <qdir.h>
+#include <qheader.h>
 #include <qmap.h>
 #include <qpixmap.h>
+#include <qpoint.h>
 #include <qwidget.h>
 
 #include <kdebug.h>
@@ -35,6 +39,7 @@
 #include <klistview.h>
 #include <klocale.h>
 #include <kmimetype.h>
+#include <kpopupmenu.h>
 #include <kurl.h>
 
 BrowserWidget::BrowserWidget( QWidget *parent, const char *name ) : KListView( parent,name )
@@ -46,6 +51,8 @@ BrowserWidget::BrowserWidget( QWidget *parent, const char *name ) : KListView( p
     setFullWidth( true );
     setAcceptDrops( true );
     m_Count = 0;
+
+    connect( header(), SIGNAL( clicked( int ) ), this, SLOT( slotHeaderClicked( int ) ) );
 
     m_pDirLister = new KDirLister();
     m_pDirLister->setAutoUpdate( true );
@@ -102,43 +109,24 @@ void BrowserWidget::focusInEvent( QFocusEvent *e )
 void BrowserWidget::slotCompleted()
 {
     clear();
-
     pApp->m_pBrowserWin->m_pBrowserLineEdit->setURL( m_pDirLister->url() );
 
-    KFileItemList myItems = m_pDirLister->items();
-    KFileItemListIterator it( myItems );
+    AmarokFileList fileList( m_pDirLister->items(), pApp->m_optBrowserSortSpec );
+    KFileItemListIterator it( fileList );
+    PlaylistItem *item;
 
-    QMap<QString, KFileItem*> itemMap;
-
-// put KFileItems in a QMap for sorting
     while ( *it )
     {
-        itemMap[ ( *it )->url().path().lower() ] = *it;
+        item = new PlaylistItem( this, lastChild(), (*it)->url() );
+        item->setDir( (*it)->isDir() );
+        item->setDragEnabled( true );
+        item->setDropEnabled( true );
+
+        QString iconName( (*it)->determineMimeType()->icon( QString::null, true ) );
+        item->setPixmap( 0, KGlobal::iconLoader()->loadIcon( iconName, KIcon::NoGroup, KIcon::SizeSmall ) );
         ++it;
     }
 
-    PlaylistItem *item;
-    QMap<QString, KFileItem*>::Iterator itMap;
-
-// iterate over the map twice: 1. fetch dirs 2. fetch files
-    bool fetchDirs = true;
-    for ( int i = 0; i < 2; i++ )
-    {
-        for ( itMap = itemMap.begin(); itMap != itemMap.end(); ++itMap )
-        {
-            if ( itMap.data()->isDir() == fetchDirs )
-            {
-                item = new PlaylistItem( this, lastChild(), itMap.data()->url() );
-                item->setDir( fetchDirs );
-                item->setDragEnabled( true );
-                item->setDropEnabled( true );
-
-                QString iconName( ( itMap.data() )->determineMimeType()->icon( QString::null, true ) );
-                item->setPixmap( 0, KGlobal::iconLoader()->loadIcon( iconName, KIcon::NoGroup, KIcon::SizeSmall ) );
-            }
-        }
-        fetchDirs = false;
-    }
     if ( m_pDirLister->url().path() != "/" )
         new PlaylistItem( this, ".." );
 
@@ -152,6 +140,94 @@ void BrowserWidget::slotCompleted()
 void BrowserWidget::slotReturnPressed( const QString &str )
 {
     readDir( str );
+}
+
+
+void BrowserWidget::slotHeaderClicked( int )
+{
+    KPopupMenu popup( this );
+
+    popup.insertTitle( i18n( "Sorted by" ) );
+
+    int MENU_NAME = popup.insertItem( i18n( "Name" ) );
+    popup.setItemChecked( MENU_NAME, ( pApp->m_optBrowserSortSpec & QDir::SortByMask ) == QDir::Name );
+    int MENU_DATE = popup.insertItem( i18n( "Date" ) );
+    popup.setItemChecked( MENU_DATE, ( pApp->m_optBrowserSortSpec & QDir::SortByMask ) == QDir::Time );
+    int MENU_SIZE = popup.insertItem( i18n( "Size" ) );
+    popup.setItemChecked( MENU_SIZE, ( pApp->m_optBrowserSortSpec & QDir::SortByMask ) == QDir::Size );
+    int MENU_UNSORTED = popup.insertItem( i18n( "Unsorted" ) );
+    popup.setItemChecked( MENU_UNSORTED, ( pApp->m_optBrowserSortSpec & QDir::SortByMask ) == QDir::Unsorted );
+
+    popup.insertSeparator();
+
+    int MENU_REVERSE = popup.insertItem( i18n( "Reverse" ) );
+    popup.setItemChecked( MENU_REVERSE, pApp->m_optBrowserSortSpec & QDir::Reversed );
+    int MENU_DIRSFIRST = popup.insertItem( i18n( "Directories First" ) );
+    popup.setItemChecked( MENU_DIRSFIRST, pApp->m_optBrowserSortSpec & QDir::DirsFirst );
+    int MENU_CASE = popup.insertItem( i18n( "Case Insensitive" ) );
+    popup.setItemChecked( MENU_CASE, pApp->m_optBrowserSortSpec & QDir::IgnoreCase );
+
+    if ( popup.isItemChecked( MENU_UNSORTED ) )
+    {
+        popup.setItemEnabled( MENU_REVERSE, false );
+        popup.setItemEnabled( MENU_DIRSFIRST, false );
+        popup.setItemEnabled( MENU_CASE, false );
+    }
+
+    QPoint menuPos = QCursor::pos();
+    menuPos.setX( menuPos.x() - 20 );
+
+    int result = popup.exec( menuPos );
+
+    if ( result == MENU_NAME )
+    {
+        pApp->m_optBrowserSortSpec &= ~QDir::SortByMask;
+        pApp->m_optBrowserSortSpec |= QDir::Name;
+    }
+
+    if ( result == MENU_DATE )
+    {
+        pApp->m_optBrowserSortSpec &= ~QDir::SortByMask;
+        pApp->m_optBrowserSortSpec |= QDir::Time;
+    }
+
+    if ( result == MENU_SIZE )
+    {
+        pApp->m_optBrowserSortSpec &= ~QDir::SortByMask;
+        pApp->m_optBrowserSortSpec |= QDir::Size;
+    }
+
+    if ( result == MENU_UNSORTED )
+    {
+        pApp->m_optBrowserSortSpec = QDir::Unsorted;
+    }
+
+    if ( result == MENU_REVERSE )
+    {
+        if ( popup.isItemChecked( MENU_REVERSE ) )
+            pApp->m_optBrowserSortSpec &= ~QDir::Reversed;
+        else
+            pApp->m_optBrowserSortSpec |= QDir::Reversed;
+    }
+
+    if ( result == MENU_DIRSFIRST )
+    {
+        if ( popup.isItemChecked( MENU_DIRSFIRST ) )
+            pApp->m_optBrowserSortSpec &= ~QDir::DirsFirst;
+        else
+            pApp->m_optBrowserSortSpec |= QDir::DirsFirst;
+    }
+
+    if ( result == MENU_CASE )
+    {
+        if ( popup.isItemChecked( MENU_CASE ) )
+            pApp->m_optBrowserSortSpec &= ~QDir::IgnoreCase;
+        else
+            pApp->m_optBrowserSortSpec |= QDir::IgnoreCase;
+    }
+
+    // update view
+    slotCompleted();
 }
 
 

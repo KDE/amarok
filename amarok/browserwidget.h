@@ -47,7 +47,8 @@ class BrowserWidget : public KListView
     public slots:
         void slotCompleted();
         void slotReturnPressed( const QString& str );
-                    
+        void slotHeaderClicked( int section );
+
     signals:
         void browserDrop();
         void signalJump();

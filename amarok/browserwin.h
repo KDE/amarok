@@ -1,10 +1,10 @@
 /***************************************************************************
-                          browserwin.h  -  description
-                             -------------------
-    begin                : Fre Nov 15 2002
-    copyright            : (C) 2002 by Mark Kretschmann
-    email                :
- ***************************************************************************/
+                         browserwin.h  -  description
+                            -------------------
+   begin                : Fre Nov 15 2002
+   copyright            : (C) 2002 by Mark Kretschmann
+   email                :
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -18,8 +18,11 @@
 #ifndef BROWSERWIN_H
 #define BROWSERWIN_H
 
-#include <qwidget.h>
 #include <qpixmap.h>
+#include <qptrcollection.h>
+#include <qwidget.h>
+
+#include <kfileitem.h>
 
 class BrowserWidget;
 class ExpandButton;
@@ -46,15 +49,34 @@ extern PlayerApp *pApp;
  *@author mark
  */
 
+// CLASS AmarokFileList =================================================================
+
+class AmarokFileList : public KFileItemList
+{
+    public:
+        AmarokFileList( KFileItemList list, int sortSpec );
+        ~AmarokFileList();
+
+    private:
+        int compareItems( QPtrCollection::Item item1, QPtrCollection::Item item2 );
+
+        // ATTRIBUTES ------
+        int m_sortSpec;
+};
+
+
+// CLASS BrowserWin =====================================================================
+
 class BrowserWin : public QWidget
 {
-    Q_OBJECT
-        public:
-        BrowserWin( QWidget *parent=0, const char *name=0);
+        Q_OBJECT
+
+    public:
+        BrowserWin( QWidget *parent = 0, const char *name = 0 );
         ~BrowserWin();
 
         bool isFileValid( const KURL &url );
-// ATTRIBUTES ------
+        // ATTRIBUTES ------
         KActionCollection *m_pActionCollection;
 
         ExpandButton *m_pButtonAdd;
@@ -105,7 +127,7 @@ class BrowserWin : public QWidget
         void moveEvent( QMoveEvent *e );
         void paintEvent( QPaintEvent *e );
 
-// ATTRIBUTES ------
+        // ATTRIBUTES ------
         QColor m_TextColor;
         QPixmap m_bgPixmap;
 };

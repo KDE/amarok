@@ -33,7 +33,6 @@
 #include <qmessagebox.h>
 #include <qpainter.h>
 #include <qpoint.h>
-#include <qpopupmenu.h>
 #include <qrect.h>
 #include <qstringlist.h>
 #include <qtimer.h>
@@ -48,6 +47,7 @@
 #include <klineedit.h>
 #include <klistview.h>
 #include <klocale.h>
+#include <kpopupmenu.h>
 #include <krootpixmap.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
@@ -235,14 +235,14 @@ void PlaylistWidget::playlistDrop( KURL::List urlList )
                 kapp->processEvents( 300 );
 
             KURL::List dirList;
-            KFileItemList myItems = m_pDirLister->items();
-            KFileItemListIterator it( myItems );
+            AmarokFileList fileList( m_pDirLister->items(), pApp->m_optBrowserSortSpec );
+            KFileItemListIterator itSorted( fileList );
 
-            while ( *it )
+            while ( *itSorted )
             {
-                if ( ( ( *it ) ->url().path() != "." ) && ( ( *it ) ->url().path() != ".." ) )
-                    dirList.append( ( *it ) ->url() );
-                ++it;
+                if ( ( (*itSorted)->url().path() != "." ) && ( (*itSorted)->url().path() != ".." ) )
+                    dirList.append( (*itSorted)->url() );
+                ++itSorted;
             }
 
             playlistDrop( dirList );
@@ -521,9 +521,11 @@ void PlaylistWidget::slotTextChanged( const QString &str )
 
 void PlaylistWidget::slotHeaderClicked( int section )
 {
-    QPopupMenu popup( this );
-    int MENU_ASCENDING = popup.insertItem( i18n( "Sort Ascending" ) );
-    int MENU_DESCENDING = popup.insertItem( i18n( "Sort Descending" ) );
+    KPopupMenu popup( this );
+
+    popup.insertTitle( i18n( "Sort by " ) + header()->label( section ) );
+    int MENU_ASCENDING = popup.insertItem( i18n( "Ascending" ) );
+    int MENU_DESCENDING = popup.insertItem( i18n( "Descending" ) );
 
     QPoint menuPos = QCursor::pos();
     menuPos.setX( menuPos.x() - 20 );

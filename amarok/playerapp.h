@@ -28,7 +28,9 @@
 
 #include <kglobalaccel.h>
 #include <kuniqueapplication.h>
+
 #include <vector>
+
 #include <arts/artsmodules.h>
 #include <arts/kartsdispatcher.h>
 #include <arts/kplayobjectfactory.h>
@@ -61,8 +63,7 @@ class PlayerApp : public KUniqueApplication
         bool queryClose();
         void restore();
         bool playObjectConfigurable();
-	
-	bool isPlaying() { return m_bIsPlaying; }
+        bool isPlaying() { return m_bIsPlaying; }
 
         // ATTRIBUTES ------
         KGlobalAccel *m_pGlobalAccel;
@@ -97,6 +98,7 @@ class PlayerApp : public KUniqueApplication
         bool   m_optBrowserUseCustomColors;
         unsigned int m_optUndoLevels;
         unsigned int m_optVisCurrent;
+        int m_optBrowserSortSpec;
         // </option attributes>
 
         int m_Volume;
