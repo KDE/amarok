@@ -1,10 +1,10 @@
 /***************************************************************************
-                          loader.cpp  -  loader application for amaroK
-                             -------------------
-    begin                : 2004/02/19
-    copyright            : (C) 2004 by Mark Kretschmann
-    email                : markey@web.de
- ***************************************************************************/
+                         loader.cpp  -  loader application for amaroK
+                            -------------------
+   begin                : 2004/02/19
+   copyright            : (C) 2004 by Mark Kretschmann
+   email                : markey@web.de
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -19,6 +19,7 @@
 #include <splash.h>
 
 #include <qcstring.h>
+#include <qfileinfo.h>
 #include <qprocess.h>
 #include <qstring.h>
 
@@ -29,11 +30,11 @@
 #include <sys/un.h>
 
 Loader::Loader( int& argc, char** argv )
-    : QApplication( argc, argv )
-    , m_argc ( argc )
-    , m_argv ( argv )
-    , m_pProc( NULL )
-    , m_pOsd ( NULL )
+        : QApplication( argc, argv )
+        , m_argc ( argc )
+        , m_argv ( argv )
+        , m_pProc( NULL )
+        , m_pOsd ( NULL )
 {
     m_sockfd = tryConnect();
 
@@ -47,29 +48,28 @@ Loader::Loader( int& argc, char** argv )
 
         m_pProc = new QProcess( this );
 
-        QString path = argv[0];
+        QString path = argv[ 0 ];
         path.replace( "amarok", "amarokapp" );   //FIXME!!! don't replace in path
         m_pProc->addArgument( path );
 
         //hand arguments through to amaroK
         for ( int i = 1; i < m_argc; i++ )
-            m_pProc->addArgument( m_argv[i] );
+            m_pProc->addArgument( m_argv[ i ] );
 
         connect( m_pProc, SIGNAL( readyReadStdout() ), this, SLOT( stdoutActive() ) );
-        connect( m_pProc, SIGNAL( processExited() ),   this, SLOT( doExit() ) );
+        connect( m_pProc, SIGNAL( processExited() ), this, SLOT( doExit() ) );
         m_pProc->setCommunication( QProcess::Stdin || QProcess::Stdout );
         m_pProc->start();
 
         //wait until LoaderServer starts (== amaroK is up and running)
-        while( ( m_sockfd = tryConnect() ) == -1 ) {
+        while ( ( m_sockfd = tryConnect() ) == -1 ) {
             processEvents();
             ::usleep( 200 * 1000 );    //== 200ms
         }
         QCString str = "STARTUP";
         ::send( m_sockfd, str, str.length(), 0 );
         std::cout << "[amaroK loader] amaroK startup successful.\n";
-    }
-    else {
+    } else {
         //yes, amaroK is running -> transmit new command line args to the LoaderServer and exit
         std::cout << "[amaroK loader] amaroK is already running. Transmitting command line arguments..\n";
 
@@ -81,7 +81,7 @@ Loader::Loader( int& argc, char** argv )
         str.append( "|" );
 
         for ( int i = 0; i < m_argc; i++ ) {
-            str.append( m_argv[i] );
+            str.append( m_argv[ i ] );
             str.append( "|" );    //"|" cannot occur in unix filenames, so we use it as a separator
         }
         ::send( m_sockfd, str, str.length(), 0 );
@@ -124,7 +124,7 @@ bool Loader::splashEnabled() const
 void Loader::showSplash()
 {
     //get KDE prefix from kde-config
-    QProcess* proc = new QProcess( this );
+    QProcess * proc = new QProcess( this );
     proc->addArgument( "kde-config" );
     proc->addArgument( "--prefix" );
     proc->start();
@@ -136,7 +136,7 @@ void Loader::showSplash()
     QString path = proc->readStdout();
     path.remove( "\n" );
     path += "/share/apps/amarok/images/logo_splash.png";
-//     qDebug( path.latin1() );
+    //     qDebug( path.latin1() );
 
     m_pOsd = new OSDWidget;
     m_pOsd->showSplash( path );
@@ -144,10 +144,8 @@ void Loader::showSplash()
 }
 
 // getpwuid/getuid/gethostname/lstat/readlink
-#include <sys/types.h>
 #include <pwd.h>
 #include <unistd.h>
-#include <sys/stat.h>
 
 int Loader::tryConnect()
 {
@@ -169,76 +167,57 @@ int Loader::tryConnect()
     // find out current user home dir
     // (code bits from kdelibs/kinit/lnusertemp.c)
     int uid = getuid();
-    const char *home_dir = getenv("HOME");
-    const char *kde_home = uid ? getenv("KDEHOME") : getenv("KDEROOTHOME");
-    char kde_tmp_dir[PATH_MAX];
-    struct stat stat_buf;
-    int result;
+    QCString home_dir = getenv( "HOME" );
+    QCString kde_home = uid ? getenv( "KDEHOME" ) : getenv( "KDEROOTHOME" );
+    QCString path;
 
     struct passwd *pw_ent = getpwuid( uid );
-    if (!pw_ent) {
+    if ( !pw_ent ) {
         qFatal( "[Loader::tryConnect()] Current user does not exist?!?" );
         return -1;
     }
 
-    if (!kde_home || !kde_home[0])
-    {
+    if ( !kde_home || !kde_home[ 0 ] )
         kde_home = "~/.kde/";
-    }
 
-    if (kde_home[0] == '~')
-    {
-        if (uid == 0)
-        {
+    if ( kde_home[ 0 ] == '~' ) {
+        if ( uid == 0 ) {
             home_dir = pw_ent->pw_dir ? pw_ent->pw_dir : "/root";
         }
-        if (!home_dir || !home_dir[0])
-        {
+        if ( !home_dir || !home_dir[ 0 ] ) {
             qFatal( "Aborting. $HOME not set!" );
             return -1;
         }
-        if (strlen(home_dir) > (PATH_MAX-100))
-        {
+        if ( home_dir.length() > ( PATH_MAX - 100 ) ) {
             qFatal( "Aborting. Home directory path too long!" );
             return -1;
         }
-        kde_home++;
-        strncpy(kde_tmp_dir, home_dir, PATH_MAX);
-        kde_tmp_dir[PATH_MAX] = '\0';
+        path = home_dir;
     }
-    strncat(kde_tmp_dir, kde_home, PATH_MAX - strlen(kde_tmp_dir));
+    path += kde_home;
+    path += "/socket-";
 
-    /** Strip trailing '/' **/
-    if ( kde_tmp_dir[strlen(kde_tmp_dir)-1] == '/')
-        kde_tmp_dir[strlen(kde_tmp_dir)-1] = 0;
-
-    strncat(kde_tmp_dir, "/socket-", PATH_MAX - strlen(kde_tmp_dir));
-
-    if (gethostname(kde_tmp_dir+strlen(kde_tmp_dir), PATH_MAX - strlen(kde_tmp_dir) - 1) != 0)
-    {
+    char hostname[100];
+    if ( gethostname( &hostname[0], 100 ) != 0 ) {
         qFatal( "Aborting. Could not determine hostname." );
         return -1;
     }
-    kde_tmp_dir[PATH_MAX] = '\0';
-
-    // checks
-    result = lstat(kde_tmp_dir, &stat_buf);
-    if (result == -1)
-    {
-        qFatal("Error: \"%s\" is not a link or a directory.\nThis SHOULD NOT happen, please report!\n", kde_tmp_dir);
-        return -1;
+    path += QCString( &hostname[0] );
+    
+    QFileInfo inf( path );
+    if ( !inf.isDir() && !inf.isSymLink() ) {
+        qWarning( path );
+        qFatal( "Error: Path is not a link or a directory.\n" );
     }
-
-    QCString path(kde_tmp_dir);
+        
     path += "/amarok.loader_socket";
-    ::strcpy( &local.sun_path[0], path );
+    ::strcpy( &local.sun_path[ 0 ], path );
 
     std::cerr << "[Loader::tryConnect()] connecting to " << local.sun_path << '\n';
-
     int len = sizeof( local );
 
-    if ( ::connect( fd, (struct sockaddr*) &local, len ) == -1 ) {
-//         qDebug( "[Loader::tryConnect()] connect() failed" );
+    if ( ::connect( fd, ( struct sockaddr* ) & local, len ) == -1 ) {
+        //         qDebug( "[Loader::tryConnect()] connect() failed" );
         ::close ( fd );
         return -1;
     }
