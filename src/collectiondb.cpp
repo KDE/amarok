@@ -54,9 +54,10 @@ CollectionDB::CollectionDB()
                                             AmarokConfig::mySqlDbName().latin1(),
                                             AmarokConfig::mySqlPort(),
                                             NULL, CLIENT_COMPRESS))
+        {
             if (!isValid())
                 createTables();
-
+        }
         else
         {
             if (mysql::mysql_real_connect(m_db, AmarokConfig::mySqlHost().latin1(),
