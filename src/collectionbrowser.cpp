@@ -224,7 +224,7 @@ CollectionView::setupDirs()  //SLOT
 void
 CollectionView::scan()  //SLOT
 {
-    m_parent->m_actionsMenu->setItemEnabled( m_parent->IdScan, false );
+    m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
     m_insertdb->scan( m_dirs, m_recursively );
 }
 
@@ -232,7 +232,7 @@ CollectionView::scan()  //SLOT
 void
 CollectionView::scanModifiedDirs()  //SLOT
 {
-    m_parent->m_actionsMenu->setItemEnabled( m_parent->IdScan, false );
+    m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
     m_insertdb->scanModifiedDirs( m_recursively );
 }
 
@@ -278,7 +278,7 @@ CollectionView::scanDone() //slot
     if ( m_monitor )
         m_insertdb->addCollectionToWatcher();
 
-    m_parent->m_actionsMenu->setItemEnabled( m_parent->IdScan, true );
+    m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, true );
 }
 
 

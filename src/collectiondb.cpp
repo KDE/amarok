@@ -13,6 +13,8 @@
 #include <kglobal.h>
 #include <kstandarddirs.h>
 #include <kdirwatch.h>
+#include <klocale.h>
+
 #include <qcstring.h>
 
 #include <sys/stat.h>
@@ -500,7 +502,7 @@ CollectionDB::retrieveSecondLevel( QString itemText, QString category1, QString 
         filter = escapeString( filter );
 
     QString command;
-    if ( category2 == "None" )
+    if ( category2 == i18n( "None" ) )
     {
         if ( filter != "" )
             filterToken = "AND ( " + category1.lower() + ".name LIKE '%" + filter + "%' OR tags.title LIKE '%" + filter + "%' )";
