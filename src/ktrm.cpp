@@ -363,6 +363,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 KTRMLookup::KTRMLookup(const QString &file, bool autoDelete)
+    : QObject()
 {
     d = new KTRMLookupPrivate;
     d->file = file;
@@ -499,6 +500,8 @@ KTRMResultList KTRMLookup::results() const
 
 void KTRMLookup::finished()
 {
+    emit sigResult( results() );
+    
     if(d->autoDelete)
         delete this;
 }

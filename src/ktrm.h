@@ -31,9 +31,10 @@
 
 #if HAVE_MUSICBRAINZ
 
+#include <qobject.h>
+#include <qmap.h>
 #include <qstring.h>
 #include <qvaluelist.h>
-#include <qmap.h>
 
 /**
  * This represents a potential match for a TRM lookup.  KTRMResultList is
@@ -110,8 +111,13 @@ typedef QValueList<KTRMResult> KTRMResultList;
  * The lookups themselves happen in a background thread, but the return calls
  * are guaranteed to run in the GUI thread.
  */
-class KTRMLookup
+class KTRMLookup : public QObject
 {
+Q_OBJECT
+    
+signals:
+    void sigResult( KTRMResultList );
+    
 public:
     /**
      * Creates and starts a lookup for \a file.  If \a autoDelete is set to
@@ -167,7 +173,7 @@ public:
      * results() will return an empty set.  This may be reimplemented to provide
      * specific behavion in the case of the track not being recognized.
      */
-    virtual void error();
+    virtual void error(); 
 
     /**
      * Returns the list of matches found by the lookup.  In the case that there

@@ -429,11 +429,16 @@ fi
 # BEGIN MUSICBRAINZ CHECK
 ###############################################################################
 
-KDE_PKG_CHECK_MODULES(MUSICBRAINZ, libmusicbrainz >= 2.1, have_musicbrainz=yes, have_musicbrainz=no)
+KDE_CHECK_HEADER(tunepimp/tp_c.h, have_musicbrainz=yes, have_musicbrainz=no)
 
 if test x$have_musicbrainz = xyes; then
     AC_DEFINE(HAVE_MUSICBRAINZ, 1, [have MusicBrainz])
+    LIB_MUSICBRAINZ="-ltunepimp"
+else
+    LIB_MUSICBRAINZ=""
 fi
+
+AC_SUBST(LIB_MUSICBRAINZ)
 
 ###############################################################################
 # END MUSICBRAINZ CHECK

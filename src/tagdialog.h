@@ -7,10 +7,10 @@
 #include "config.h"
 
 #ifdef HAVE_MUSICBRAINZ
-    #include "musicbrainzquery.h"
+    #include "ktrm.h"
 #else
-    // Dummy MusicbrainzQuery::TrackList class for queryDone argument.
-    namespace MusicBrainzQuery { class TrackList {}; }
+    // Dummy class for queryDone argument.
+    class KTRMResultList {};
 #endif
 
 #include <kurl.h>             //stack alloc
@@ -36,7 +36,7 @@ class TagDialog : public TagDialogBase
         void checkModified();
 
         void musicbrainzQuery();
-        void queryDone( const MusicBrainzQuery::TrackList& tracklist );
+        void queryDone( KTRMResultList results );
 
     private:
         bool hasChanged();

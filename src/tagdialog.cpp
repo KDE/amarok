@@ -180,22 +180,18 @@ TagDialog::musicbrainzQuery() //SLOT
 #ifdef HAVE_MUSICBRAINZ
     kdDebug() << k_funcinfo << endl;
 
-    MusicBrainzQuery* query = new MusicBrainzQuery( MusicBrainzQuery::File, m_bundle.url().path() );
-    connect( query, SIGNAL( signalDone( const MusicBrainzQuery::TrackList& ) ),
-              this,   SLOT( queryDone( const MusicBrainzQuery::TrackList& ) ) );
+    KTRMLookup* ktrm = new KTRMLookup( m_bundle.url().path(), true );
+    connect( ktrm, SIGNAL( sigResult( KTRMResultList ) ), SLOT( queryDone( KTRMResultList ) ) );
 
-    if ( query->start() )
-    {
-        pushButton_musicbrainz->setEnabled( false );
-        pushButton_musicbrainz->setText( i18n( "Generating TRM..." ) );
-        QApplication::setOverrideCursor( KCursor::workingCursor() );
-    }
+    pushButton_musicbrainz->setEnabled( false );
+    pushButton_musicbrainz->setText( i18n( "Generating TRM..." ) );
+    QApplication::setOverrideCursor( KCursor::workingCursor() );
 #endif
 }
 
 
 void
-TagDialog::queryDone( const MusicBrainzQuery::TrackList& tracklist ) //SLOT
+TagDialog::queryDone( KTRMResultList results ) //SLOT
 {
 #ifdef HAVE_MUSICBRAINZ
     kdDebug() << k_funcinfo << endl;
@@ -204,11 +200,13 @@ TagDialog::queryDone( const MusicBrainzQuery::TrackList& tracklist ) //SLOT
     pushButton_musicbrainz->setEnabled( true );
     pushButton_musicbrainz->setText( m_buttonMbText );
 
-    if ( !tracklist.isEmpty() )
+    if ( !results.isEmpty() )
     {
-        if ( !tracklist[0].name.isEmpty() )     kLineEdit_title->setText( tracklist[0].name );
-        if ( !tracklist[0].artist.isEmpty() )   kComboBox_artist->setCurrentText( tracklist[0].artist );
-        if ( !tracklist[0].album.isEmpty() )    kComboBox_album->setCurrentText( tracklist[0].album );
+        if ( !results[0].title().isEmpty() )    kLineEdit_title->setText( results[0].title() );
+        if ( !results[0].artist().isEmpty() )   kComboBox_artist->setCurrentText( results[0].artist() );
+        if ( !results[0].album().isEmpty() )    kComboBox_album->setCurrentText( results[0].album() );
+                                                kIntSpinBox_track->setValue( results[0].track() );
+                                                kIntSpinBox_year->setValue( results[0].year() );
     }
     else
         KMessageBox::sorry( this, i18n( "The track was not found in the MusicBrainz database." ) );
