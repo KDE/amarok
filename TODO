@@ -3,10 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #67 being the highest available (take this one for your next bug and increase here)
+           #68 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+    * fix: #67 <mikmak> sometimes the aRts effects-saver writes an empty <effectname> tag. leads to 
+               crash on startup when restoring effects
 
     * fix: #66 <Grue_> seems that the latest taglib from cvs is not compatible with amarok
 
