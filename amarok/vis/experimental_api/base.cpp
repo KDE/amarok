@@ -46,6 +46,8 @@ Vis::Base::Base( /*const string &name,*/ DataType dt, bool notify, uint fps )
                   << "\n";
     }
     else std::cout << "Could not connect to the amaroK Visualization Server..\n";
+
+    std::cout << "INIT: Frames at intervals of " << m_sleepTime/1000 << " ms\n";
 }
 
 bool
@@ -127,7 +129,7 @@ Vis::Implementation<S>::exec()
 {
     bool go = (m_sockFD >= 0);
 
-    while( go )
+    while( condition() )
     {
         switch( m_dataType )
         {
@@ -146,4 +148,34 @@ Vis::Implementation<S>::exec()
     closeConnection();
 
     return go; //return something meaningful!
+}
+
+#include <sys/times.h>
+#ifndef CLK_TCK
+const int CLK_TCK = sysconf(_SC_CLK_TCK);
+/* timedelta: returns the number of microseconds that have elapsed since
+   the previous call to the function. */
+#endif
+unsigned long
+timedelta(void)
+{
+    //sucks, you get 0.1s accuracy!
+
+    static long begin = 0;
+    static long finish, difference;
+    static struct tms tb;
+
+    static bool b = true;
+
+    if (b ) { b = false; std::cout << "TICK: " << CLK_TCK << std::endl; }
+
+    finish = times( &tb );
+
+    difference = finish - begin;
+    begin = finish;
+
+    std::cout << "d: " << difference << " ";
+
+	/* CLK_TCK=100 */
+    return (double)1000000 * (double)difference/double(CLK_TCK);
 }

@@ -17,7 +17,9 @@ using namespace amaroK::Vis;
 class Monoscope : public SDL::Basic
 {
 public:
-    Monoscope() : Basic( PCM, false, 50 )
+    Monoscope()
+      : Basic( PCM, false, 47 )
+      , state( convolve_init() )
     {
         colors[0] = 0;
 
@@ -27,13 +29,14 @@ public:
             colors[i+31] = (255 << 16) + (((31 - i) * 8) << 8);
         }
 
-        colors[63] = (40 << 16) + (75 << 8);
+        colors[63] = (40 << 16) + (75 << 8); //grid color?
     }
 
     virtual void render( SDL_Surface* );
 
 private:
     int colors[65];
+    convolve_state *state;
 };
 
 
@@ -44,14 +47,8 @@ Monoscope::render( SDL_Surface *screen )
     static int bar;
     static int i, h;
 
-
     static Uint8 bits[ 257 * 129];
     static Uint8 *loc;
-
-    static convolve_state *state = NULL;
-
-    if( state == NULL ) state = convolve_init();
-
 
     static short newEq[CONVOLVE_BIG]; /* latest block of 512 samples. */
     static short copyEq[CONVOLVE_BIG];
@@ -68,7 +65,7 @@ Monoscope::render( SDL_Surface *screen )
     //convert to the 16 bit ints the routine expects
     for( uint x = 0; x < 512; ++x )
     {
-        newEq[x] = short(double(left( x )) * (1 << 15));
+        newEq[x] = short(double(left( x )) * (1 << 5));
     }
 
 
@@ -80,11 +77,11 @@ Monoscope::render( SDL_Surface *screen )
 
     memset(bits, 0, 256 * 128);
 
-    static int phoo = -(1 << 30);
+    //static int phoo = -(1 << 30);
 
     for (i=0; i < 256; i++)
     {
-        if( thisEq[i] > phoo ) { phoo = thisEq[i]; std::cout << phoo << std::endl; }
+        //if( thisEq[i] > phoo ) { phoo = thisEq[i]; std::cout << phoo << std::endl; }
 
         foo = thisEq[i] + (avgEq[i] >> 1);
 
@@ -137,6 +134,8 @@ Monoscope::render( SDL_Surface *screen )
         }
     }
 
+    //next two loops draw the grid on I think
+
     for (i=16; i < 128; i+=16)
     {
         for (h = 0; h < 256; h+=2)
@@ -145,7 +144,6 @@ Monoscope::render( SDL_Surface *screen )
             if (i == 64) bits[(i << 8) + h + 1] = 63;
         }
     }
-
     for (i = 16; i < 256; i+=16)
     {
         for (h = 0; h < 128; h+=2)
@@ -157,8 +155,8 @@ Monoscope::render( SDL_Surface *screen )
     //SDL outputing follows
     //FIXME expects a 15 or 16bit display
 
-    for( uint x = 0; x < 257; ++x ) {
-        for( uint y = 0; y < 129; ++y )
+    for( uint x = 0; x < 256; ++x ) {
+        for( uint y = 0; y < 128; ++y )
         {
             uint c = bits[ y * 256 + x ];
 

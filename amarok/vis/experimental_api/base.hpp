@@ -102,6 +102,8 @@ protected:
 
     virtual void render( S *surface ) = 0;
 
+    virtual bool condition();
+
     S *m_surface;
 };
 

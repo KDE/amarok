@@ -18,6 +18,9 @@ Vis::SDL::Basic::init( uint w, uint h, Uint32 flags ) //virtual
     //TODO use exceptions, don't return values
     //TODO should we make the user call init() as well as exec()?
 
+    std::cout << "INIT: Initialising SDL interface..\n"
+              << "HELP: Push the f key to go fullscreen, x quits.\n";
+
     if( SDL_Init( SDL_INIT_VIDEO ) == 0 )
     {
         std::atexit( SDL_Quit ); //will cleanup before we exit
@@ -26,10 +29,44 @@ Vis::SDL::Basic::init( uint w, uint h, Uint32 flags ) //virtual
 
         if( m_surface == NULL )
         {
-            std::cerr << "Unable to set video mode (" << SDL_GetError() << ")\n";
+            std::cerr << "INIT: Unable to set video mode (" << SDL_GetError() << ")\n";
+        }
+        else if( flags != m_surface->flags )
+        {
+            std::cout << "INIT: Some flags could not be set\n";
+        }
+
+        SDL_WM_SetCaption( "Visualization - amaroK", NULL );
+    }
+    else std::cerr << "INIT: Unable to initialise SDL (" << SDL_GetError() << ")\n";
+}
+
+bool
+Vis::Implementation<SDL_Surface>::condition()
+{
+    SDL_Event event;
+
+    while( SDL_PollEvent(&event) )
+    {
+        switch( event.type )
+        {
+        case SDL_KEYDOWN:
+            switch( event.key.keysym.sym )
+            {
+            case SDLK_f: SDL_WM_ToggleFullScreen( m_surface ); break;
+            case SDLK_x: return false;
+            }
+            break;
+
+        case SDL_QUIT:
+            return false;
+
+        default:
+            break;
         }
     }
-    else std::cerr << "Unable to initialise SDL (" << SDL_GetError() << ")\n";
+
+    return true;
 }
 
 void
