@@ -194,6 +194,7 @@ PlaylistWindow::init()
 
     QFrame *playlist = new Playlist( m_browsers->container() );
     m_toolbar = new amaroK::ToolBar( m_browsers->container(), "mainToolBar" );
+    m_toolbar->setShown( AmarokConfig::showToolbar() );
     QWidget *statusbar = new amaroK::StatusBar( this );
 
     KAction* repeatTrackAction = amaroK::actionCollection()->action( "repeat_track" );
@@ -260,7 +261,7 @@ PlaylistWindow::init()
     //TODO use KStdAction or KMainWindow
     static_cast<KToggleAction *>(actionCollection()->action(KStdAction::name(KStdAction::ShowMenubar)))->setChecked( AmarokConfig::showMenuBar() );
     actionCollection()->action(KStdAction::name(KStdAction::ShowMenubar))->plug( m_settingsMenu );
-    m_settingsMenu->insertItem( i18n( "Hide Toolbar" ), ID_SHOW_TOOLBAR );
+    m_settingsMenu->insertItem( AmarokConfig::showToolbar() ? i18n( "Hide Toolbar" ) : i18n("Show Toolbar"), ID_SHOW_TOOLBAR );
     m_settingsMenu->insertItem( AmarokConfig::showPlayerWindow() ? i18n("Hide Player &Window") : i18n("Show Player &Window"), ID_SHOW_PLAYERWINDOW );
     m_settingsMenu->insertSeparator();
     //this should be only a context menu option and use next-queue graphics with an infinity symbol or something
@@ -631,6 +632,7 @@ void PlaylistWindow::slotMenuActivated( int index ) //SLOT
         break;
     case ID_SHOW_TOOLBAR:
         m_toolbar->setShown( !m_toolbar->isShown() );
+        AmarokConfig::setShowToolbar( !AmarokConfig::showToolbar() );
         actionCollection()->action(KStdAction::name(KStdAction::ShowMenubar))->setEnabled( m_toolbar->isShown() );
         m_settingsMenu->changeItem( index, m_toolbar->isShown() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
         break;
