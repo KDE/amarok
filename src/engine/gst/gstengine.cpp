@@ -409,7 +409,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         g_signal_connect( G_OBJECT( input->src ), "kio_resume", G_CALLBACK( kio_resume_cb ), input->bin );
     }
 
-    gst_element_link_many( input->src, input->spider, input->audioconvert, input->audioscale, input->volume, 0 );
+    gst_element_link_many( input->src, input->spider, input->audioconvert, input->audioscale, input->volume, NULL );
     // Prepare bin for playing
     gst_element_set_state( input->bin, GST_STATE_READY );
 
@@ -921,7 +921,7 @@ GstEngine::createPipeline()
     if ( !( m_gst_volume = createElement( "volume", m_gst_outputThread ) ) ) { return false; }
 
     // Put everything into the root bin
-    gst_bin_add_many( GST_BIN( m_gst_rootBin ), m_gst_inputThread, m_gst_outputThread, 0 );
+    gst_bin_add_many( GST_BIN( m_gst_rootBin ), m_gst_inputThread, m_gst_outputThread, NULL );
 
     // More buffers means less dropouts and higher latency
     gst_element_set( m_gst_queue, "max-size-buffers", 100, NULL );
@@ -930,7 +930,7 @@ GstEngine::createPipeline()
     g_signal_connect ( G_OBJECT( m_gst_outputThread ), "error", G_CALLBACK ( outputError_cb ), 0 );
 
     /* link elements */
-    gst_element_link_many( m_gst_adder, m_gst_queue, m_gst_identity, m_gst_volume, m_gst_audiosink, 0 );
+    gst_element_link_many( m_gst_adder, m_gst_queue, m_gst_identity, m_gst_volume, m_gst_audiosink, NULL );
 
     setVolume( m_volume );
 

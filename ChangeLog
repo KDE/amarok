@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.1.1:
+  FIX: Crash when using GStreamer-engine on 64bit. (BR 90869)
   CHG: New splash screen by Nenad Grujicic <mchitman@neobee.net>.
   FIX: Crash when fetching 1 missing cover using the fetch button. (BR 90673)
   REM: Unsupported option "Show Metadata in Playlist".
