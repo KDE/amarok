@@ -48,9 +48,6 @@
                     <property name="text">
                         <string>Show splash-screen on start&amp;up</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+U</string>
-                    </property>
                     <property name="whatsThis" stdset="0">
                         <string>Enable/Disable splashscreen during amaroK startup.</string>
                     </property>
@@ -61,9 +58,6 @@
                     </property>
                     <property name="text">
                         <string>Show &amp;tray icon</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+T</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>Check to enable the amaroK tray icon.</string>
@@ -97,9 +91,6 @@
                     <property name="text">
                         <string>&amp;Remember current playlist on exit</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+R</string>
-                    </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, amaroK saves the current playlist on quit and restores it when restarted.</string>
                     </property>
@@ -110,9 +101,6 @@
                     </property>
                     <property name="text">
                         <string>Show &amp;metadata in playlist</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+M</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>Check to enable metadata display, like ID3 tags, in the playlist.</string>
@@ -125,9 +113,6 @@
                     <property name="text">
                         <string>&amp;Hide playlist with main window</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+H</string>
-                    </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, amaroK takes appropriate action to hide the playlist when the player window is hidden. If not checked, the player window and the playlist hide totally independent of each other.</string>
                     </property>
@@ -139,9 +124,6 @@
                     <property name="text">
                         <string>Playlist scrolls with &amp;active song</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+A</string>
-                    </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, the playlist scrolls on song change to make the currently playing item visible in the playlist. Measures are taken not to scroll if inappropriate.</string>
                     </property>
@@ -152,9 +134,6 @@
                     </property>
                     <property name="text">
                         <string>Add &amp;directories recursively</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+D</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, adding a directory to the playlist also adds sub directories, sub-sub directories etc.</string>

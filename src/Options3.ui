@@ -51,9 +51,6 @@
                     <property name="text">
                         <string>&amp;amaroK default color scheme</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+A</string>
-                    </property>
                     <property name="whatsThis" stdset="0">
                         <string>If selected, amaroK uses the amaroK standard colors in the playlist.</string>
                     </property>
@@ -64,9 +61,6 @@
                     </property>
                     <property name="text">
                         <string>Current &amp;KDE color scheme</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+K</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>If selected, amaroK uses the KDE standard colors in the playlist.</string>
@@ -89,9 +83,6 @@
                             </property>
                             <property name="text">
                                 <string>&amp;Custom color scheme</string>
-                            </property>
-                            <property name="accel">
-                                <string>Alt+C</string>
                             </property>
                             <property name="checked">
                                 <bool>true</bool>

@@ -37,9 +37,6 @@
             <property name="text">
                 <string>&amp;Use custom fonts</string>
             </property>
-            <property name="accel">
-                <string>Alt+U</string>
-            </property>
             <property name="checked">
                 <bool>false</bool>
             </property>

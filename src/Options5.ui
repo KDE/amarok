@@ -29,9 +29,6 @@
             <property name="text">
                 <string>&amp;Use On-screen-display</string>
             </property>
-            <property name="accel">
-                <string>Alt+U</string>
-            </property>
             <property name="checked">
                 <bool>true</bool>
             </property>
@@ -125,9 +122,6 @@
                             </property>
                             <property name="text">
                                 <string>Use &amp;custom colors</string>
-                            </property>
-                            <property name="accel">
-                                <string>Alt+C</string>
                             </property>
                         </widget>
                         <widget class="QGroupBox">

@@ -69,9 +69,6 @@
                             <property name="text">
                                 <string>&amp;Crossfade</string>
                             </property>
-                            <property name="accel">
-                                <string>Alt+C</string>
-                            </property>
                             <property name="checked">
                                 <bool>false</bool>
                             </property>
@@ -181,9 +178,6 @@
                             </property>
                             <property name="text">
                                 <string>&amp;Normal</string>
-                            </property>
-                            <property name="accel">
-                                <string>Alt+N</string>
                             </property>
                             <property name="checked">
                                 <bool>true</bool>
@@ -375,9 +369,6 @@
                             <property name="text">
                                 <string>&amp;Use custom device:</string>
                             </property>
-                            <property name="accel">
-                                <string>Alt+U</string>
-                            </property>
                             <property name="checked">
                                 <bool>true</bool>
                             </property>
@@ -443,9 +434,6 @@
                     <property name="text">
                         <string>&amp;Resume playback on start</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+R</string>
-                    </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, amaroK will resume playback from where you left it the previous session -- just like a tape-player.</string>
                     </property>
@@ -456,9 +444,6 @@
                     </property>
                     <property name="text">
                         <string>Use &amp;hardware volume mixer</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+H</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, the volume slider sets the master volume on the soundcard which affects the whole system. If not checked, the volume slider only affects the amaroK output.</string>
@@ -471,9 +456,6 @@
                     <property name="text">
                         <string>Display Shoutcast &amp;metadata (title streaming)</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+M</string>
-                    </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, amaroK displays metadata also for shoutcast streams.</string>
                     </property>
@@ -484,9 +466,6 @@
                     </property>
                     <property name="text">
                         <string>Remember &amp;effects</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+E</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, amaroK remembers the audio effects set through the effects window between sessions.</string>
