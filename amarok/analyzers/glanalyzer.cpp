@@ -72,7 +72,7 @@ void GLAnalyzer::drawScope()
 {
 	//kdDebug() << "GLAnalyzer::drawScope()" << endl;
 	swapBuffers();
-	glColor3f(1.0f, 1.0f, 1.0f);// Set color to white
+	glColor3f(0.5f, 0.625f, 1.0f);// Set color to white
 	glRotatef(0.5f, 0.2f, 1.0f, 0.0f); //Rotate the scene
 	//Draw a box around the scene
 	//glRectf(-14.9f, 9.9f, 14.9f, -9.9f); This is filled!!
