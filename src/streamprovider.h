@@ -15,8 +15,8 @@ email                :
  *                                                                         *
  ***************************************************************************/
 
-#ifndef AMAROK_TITLEPROXY_H
-#define AMAROK_TITLEPROXY_H
+#ifndef AMAROK_STREAMPROVIDER_H
+#define AMAROK_STREAMPROVIDER_H
 
 #include <kurl.h>             //stack allocated
 
@@ -139,5 +139,5 @@ namespace amaroK {
 
 } //namespace amaroK
 
-#endif /*AMAROK_TITLEPROXY_H*/
+#endif /*AMAROK_STREAMPROVIDER_H*/
 
