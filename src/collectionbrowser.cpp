@@ -77,7 +77,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     KActionCollection* ac = new KActionCollection( this );
     m_scanAction = new KAction( i18n( "Start Scan" ), "reload", 0, this, SLOT( scan() ), ac, "Start Scan" );
-    
+
     // we need m_scanAction to be initialized before CollectionView's CTOR
     m_view = new CollectionView( this );
 
@@ -93,12 +93,12 @@ CollectionBrowser::CollectionBrowser( const char* name )
     toolbar->setIconText( KToolBar::IconTextRight, false );
     m_scanAction->plug( toolbar );
     toolbar->insertLineSeparator();
-    
+
     toolbar->setIconText( KToolBar::IconOnly, false );
     m_treeViewAction->plug( toolbar );
     m_flatViewAction->plug( toolbar );
     toolbar->insertLineSeparator();
-    
+
     toolbar->setIconText( KToolBar::IconTextRight, false );
     tagfilterMenuButton->plug( toolbar );
     toolbar->insertLineSeparator();
@@ -287,6 +287,9 @@ CollectionView::~CollectionView() {
     config->writeEntry( "ViewMode", m_viewMode );
     config->writeEntry( "Database Version", DATABASE_VERSION );
     config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
+
+    delete m_db;
+    delete m_insertdb;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

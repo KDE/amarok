@@ -48,6 +48,19 @@
 using amaroK::QStringx;
 
 
+static inline
+void albumArtistFromUrl( const QString &url, QString &artist, QString &album )
+{
+    ///this is because we forgot the true, which is vital to ensure
+    const QStringList list = QStringList::split( " @@@ ", url, true );
+
+    Q_ASSERT( list.count() == 2 );
+
+    artist = list.front();
+    album  = list.back();
+}
+
+
 ContextBrowser::ContextBrowser( const char *name )
    : QVBox( 0, name )
    , m_db( new CollectionDB )
@@ -77,7 +90,8 @@ ContextBrowser::ContextBrowser( const char *name )
 
     connect( CollectionDB::emitter(), SIGNAL( scanStarted() ), SLOT( collectionScanStarted() ) );
     connect( CollectionDB::emitter(), SIGNAL( scanDone( bool ) ), SLOT( collectionScanDone() ) );
-    connect( CollectionDB::emitter(), SIGNAL( coverFetched( const QString&, const QString& ) ), SLOT( coverFetched( const QString& ) ) );
+    connect( CollectionDB::emitter(), SIGNAL( coverFetched( const QString&, const QString& ) ),
+             this,                      SLOT( coverFetched( const QString&, const QString& ) ) );
 
     //the stylesheet will be set up and home will be shown later due to engine signals and doodaa
     //if we call it here setStyleSheet is called 3 times during startup!!
@@ -117,17 +131,17 @@ void ContextBrowser::setFont( const QFont &newFont )
 
 void ContextBrowser::openURLRequest( const KURL &url )
 {
-    QStringList info = QStringList::split( " @@@ ", url.path() );
+    QString artist, album;
+    albumArtistFromUrl( url.path(), artist, album );
 
     if ( url.protocol() == "album" )
     {
         QString sql = "SELECT DISTINCT url FROM tags WHERE artist = %1 AND album = %2 ORDER BY track;";
-        QStringList values = m_db->query( sql.arg( info[0] ).arg( info[1] ) );
+        QStringList values = m_db->query( sql.arg( artist, album ) );
         KURL::List urls;
         KURL url;
 
-        for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it )
-        {
+        for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it ) {
             url.setPath( *it );
             urls.append( url );
         }
@@ -167,8 +181,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
     // When left-clicking on cover image, open browser with amazon site
     if ( url.protocol() == "fetchcover" )
     {
-        QStringList info = QStringList::split( " @@@ ", url.path() );
-        QImage img( m_db->albumImage( info[0], info[1], 0 ) );
+        QImage img( m_db->albumImage( artist, album, 0 ) );
         const QString amazonUrl = img.text( "amazon-url" );
         kdDebug() << "[ContextBrowser] Embedded amazon url in cover image: " << amazonUrl << endl;
 
@@ -182,7 +195,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
     if ( url.protocol() == "musicbrainz" )
     {
         const QString url = "http://www.musicbrainz.org/taglookup.html?artist='%1'&album='%2'";
-        kapp->invokeBrowser( url.arg( info[0], info[1] ) );
+        kapp->invokeBrowser( url.arg( artist, album ) );
     }
 }
 
@@ -295,7 +308,8 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
     KPopupMenu menu;
     KURL::List urls( url );
-    const QStringList info = QStringList::split( " @@@ ", url.path() );
+    QString artist, album;
+    albumArtistFromUrl( url.path(), artist, album );
 
     if ( url.protocol() == "fetchcover" )
     {
@@ -313,7 +327,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         #ifndef AMAZON_SUPPORT
         menu.setItemEnabled( FETCH, false );
         #endif
-        menu.setItemEnabled( SHOW, !m_db->albumImage( info[0], info[1], 0 ).contains( "nocover" ) );
+        menu.setItemEnabled( SHOW, !m_db->albumImage( artist, album, 0 ).contains( "nocover" ) );
     }
     else {
         //TODO it would be handy and more usable to have this menu under the cover one too
@@ -327,7 +341,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         if ( url.protocol() == "album" )
         {
             QString sql = "select distinct url from tags where artist = '%1' and album = '%2' order by track;";
-            QStringList values = m_db->query( sql.arg( info[0] ).arg( info[1] ) );
+            QStringList values = m_db->query( sql.arg( artist, album ) );
 
             urls.clear(); //remove urlString
             KURL url;
@@ -345,7 +359,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     switch( menu.exec( point ) )
     {
     case SHOW:
-        CoverManager::viewCover( info[0], info[1], this );
+        CoverManager::viewCover( artist, album, this );
         break;
 
     case DELETE:
@@ -357,7 +371,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
         if ( button == KMessageBox::Continue )
         {
-            m_db->removeAlbumImage( info[0], info[1] );
+            m_db->removeAlbumImage( artist, album );
             showCurrentTrack();
         }
         break;
@@ -378,7 +392,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
     case FETCH:
     #ifdef AMAZON_SUPPORT
-        m_db->fetchCover( this, info[0], info[1], false );
+        m_db->fetchCover( this, artist, album, false );
         break;
     #endif
 
@@ -390,14 +404,14 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         {
             //TODO processEvents is dangerous in this context
             qApp->processEvents();    //it may takes a while so process pending events
-            m_db->setAlbumImage( info[0], info[1], file );
+            m_db->setAlbumImage( artist, album, file );
             showCurrentTrack();
         }
         break;
     }
 
     case MANAGER:
-        CoverManager::showOnce( info[0] );
+        CoverManager::showOnce( album );
         break;
     }
 }
@@ -518,8 +532,8 @@ verboseTimeSince( const QDateTime &datetime )
         else
             return i18n( "Last month", "%n months ago", now.month() - date.month() );
     }
-    else
-        return i18n( "Last year", "%n years ago", now.year() - date.year() );
+
+    return i18n( "Last year", "%n years ago", now.year() - date.year() );
 }
 
 void ContextBrowser::showCurrentTrack() //SLOT
@@ -1046,9 +1060,9 @@ void ContextBrowser::setStyleSheet_OtherStyle( QString& styleSheet )
     QString text = colorGroup().text().name();
     QString fg   = colorGroup().highlightedText().name();
     QString bg   = colorGroup().highlight().name();
-    
-    QString CSSLocation = KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "styles/default/"; 
-    
+
+    QString CSSLocation = KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "styles/default/";
+
     QFile ExternalCSS( CSSLocation + "stylesheet.css" );
     if ( !ExternalCSS.open( IO_ReadOnly ) )
         return;
@@ -1056,7 +1070,7 @@ void ContextBrowser::setStyleSheet_OtherStyle( QString& styleSheet )
     QTextStream eCSSts( &ExternalCSS );
     QString tmpCSS = eCSSts.read();
     ExternalCSS.close();
-    
+
     tmpCSS.replace( "./images/", CSSLocation + "images/" );
     tmpCSS.replace( "AMAROK_FONTSIZE", pxSize );
     tmpCSS.replace( "AMAROK_TEXTCOLOR", text );
@@ -1220,12 +1234,15 @@ ContextBrowser::showLyricSuggestions()
 
 
 void
-ContextBrowser::coverFetched( const QString &artist )
+ContextBrowser::coverFetched( const QString &artist, const QString &album )
 {
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
 
-    if ( currentTrack.artist() == artist )
+    if ( currentTrack.artist() == artist ||
+         currentTrack.album() == album ) // this is for compilations or artist == ""
+    {
         showCurrentTrack();
+    }
 }
 
 

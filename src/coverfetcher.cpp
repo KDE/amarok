@@ -37,13 +37,11 @@ CoverFetcher::CoverFetcher( QWidget *parent, QString artist, QString album )
         for( QStringList::ConstIterator it = list.begin(), end = list.end(); it != end; ++it )
 
     QStringList extensions;
-    extensions << i18n( "disc" ) << i18n( "disk" ) << i18n( "remaster" ) << i18n( "cd" ) << i18n( "single" ) << i18n( "soundtrack" )
-               << "disc" << "disk" << "remaster" << "cd" << "single" << "soundtrack" << "cds" /*cd single*/;
+    extensions << i18n("disc") << i18n("disk") << i18n("remaster") << i18n("cd") << i18n("single") << i18n("soundtrack") << i18n("part")
+               << "disc" << "disk" << "remaster" << "cd" << "single" << "soundtrack" << "part" << "cds" /*cd single*/;
 
-    //remove all matches to the album filter.
-    //TODO remove endings like "album - disk1"
-    //OLD ONE = const QString removeTemplate = " \\([^}]*%1[^}]*\\)";
-
+    //we do several queries, one raw ie, without the following modifications
+    //the others have the above strings removed with the following regex, as this can increase hit-rate
     const QString template1 = " ?-? ?[(^{]* ?%1 ?\\d*[)^}\\]]* *$"; //eg album - [disk 1] -> album
     foreach( extensions ) {
         QRegExp regexp( template1.arg( *it ) );
@@ -53,20 +51,29 @@ CoverFetcher::CoverFetcher( QWidget *parent, QString artist, QString album )
 
     //TODO try queries that remove anything in album after a " - " eg Les Mis. - Excerpts
 
+   /**
+    * We search for artist - album, and just album, using the exact album text and the
+    * manipulated album text.
+    */
+
     //search on our modified term, then the original
-    m_queries += artist + " - " + album;
-    m_queries += artist + " - " + m_album;
+    m_queries += m_artist + " - " + album;
+    m_queries += m_userQuery = m_artist + " - " + m_album;
     m_queries += album;
     m_queries += m_album;
 
     //don't do the same searches twice in a row
     if( m_album == album )  {
-       m_queries.pop_front();
-       m_queries.pop_back();
+        m_queries.pop_front();
+        m_queries.pop_back();
     }
 
-    //query used by queryEditor
-    m_userQuery = m_queries.front();
+    /**
+     * Finally we do a search for just the artist, just in case as this often
+     * turns up a cover, and it might just be the right one! Also it would be
+     * the only valid search if m_album.isEmpty()
+     */
+    m_queries += m_artist;
 
     QApplication::setOverrideCursor( KCursor::workingCursor() );
 }

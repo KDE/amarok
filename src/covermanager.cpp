@@ -55,6 +55,7 @@ CoverManager* instance = 0;
 
 CoverManager::CoverManager()
     : QWidget( 0, "TheCoverManager", WDestructiveClose )
+    , m_db( new CollectionDB() )
     , m_timer( new QTimer( this ) )    //search filter timer
     , m_fetchCounter( 0 )
     , m_fetchingCovers( 0 )
@@ -63,7 +64,6 @@ CoverManager::CoverManager()
 {
     instance = this;
 
-    m_db = new CollectionDB();
     setCaption( kapp->makeStdCaption( i18n("Cover Manager") ) );
 
     QVBoxLayout *vbox = new QVBoxLayout( this );
@@ -290,8 +290,11 @@ void CoverManager::fetchCoversLoop() //SLOT
 
     if( m_fetchCounter < m_fetchCovers.count() ) {
         //get artist and album from keyword
-        QStringList values = QStringList::split( " @@@ ", m_fetchCovers[m_fetchCounter] );
-        m_db->fetchCover( this, values[0], values[1], m_fetchCovers.count() != 1); //edit mode when fetching 1 cover
+        const QStringList values = QStringList::split( " @@@ ", m_fetchCovers[m_fetchCounter], true );
+
+        if( values.count() >= 2 )
+           m_db->fetchCover( this, values[0], values[1], m_fetchCovers.count() != 1); //edit mode when fetching 1 cover
+
         m_fetchCounter++;
 
         // Wait 1 second, since amazon caps the number of accesses per client
@@ -371,7 +374,7 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     //NOTE we MUST show the dialog, otherwise the closeEvents get processed
     // in the processEvents() calls below, GRUMBLE! Qt sux0rs
     progress.show();
-    progress.repaint();  //ensures the dialog isn't blank
+    progress.repaint( false );  //ensures the dialog isn't blank
 
     //this is an extra processEvent call for the sake of init() and aesthetics
     //it isn't necessary
@@ -387,8 +390,14 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
         for( QStringList::Iterator it = albums.begin(), end = albums.end(); it != end; it += 2 )
             it = albums.insert( it, item->text( 0 ) );
     }
-    else
-        albums = m_db->artistAlbumList( false, false );
+    else {
+        //we don't want blank albums, but blank artists are ok
+        albums = m_db->query(
+            "SELECT DISTINCT artist.name, album.name FROM tags, album, artist WHERE "
+            "tags.album = album.id AND tags.artist = artist.id "
+            "AND album.name <> '' AND tags.sampler = 0 "
+            "ORDER BY lower( album.name );" );
+    }
     QApplication::restoreOverrideCursor();
 
     progress.setTotalSteps( albums.count() );
@@ -398,17 +407,18 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     //this is the slowest step in the bit that we can't process events
     uint x = 0;
     for( QStringList::ConstIterator it = albums.begin(), end = albums.end(); it != end; ++it ) {
-        progress.setProgress( x );
-
         const QString artist = *it;
         const QString album = *(++it);
         m_coverItems.append( new CoverViewItem( m_coverView, m_coverView->lastItem(), artist, album ) );
 
-        if( ++x % 200 == 0 )
-           kapp->processEvents();
+        if ( ++x % 50 == 0 ) {
+            progress.setProgress( x ); // we do it less often due to bug in Qt, ask Max
+            kapp->processEvents();     // QProgressDialog also calls this, but not always due to Qt bug!
 
-        if( progress.wasCancelled() )
-           break;
+            //only worth testing for after processEvents() is called
+            if( progress.wasCancelled() )
+               break;
+        }
     }
 
     //now, load the thumbnails
@@ -729,8 +739,9 @@ void CoverManager::updateStatusBar()
         }
 
         if( m_fetchingCovers == 1 ) {
-            QStringList values = QStringList::split( " @@@ ", m_fetchCovers[0] );    //get artist and album name
-            text = i18n("Fetching cover for ") + values[0] + " - " + values[1] + "...";
+            QStringList values = QStringList::split( " @@@ ", m_fetchCovers[0], true );    //get artist and album name
+            if ( values.count() >= 2 )
+                text = i18n("Fetching cover for ") + values[0] + " - " + values[1] + "...";
         }
         else if( m_fetchingCovers ) {
             text = i18n( "Fetching 1 cover: ", "Fetching <b>%n</b> covers... : ", m_fetchingCovers );

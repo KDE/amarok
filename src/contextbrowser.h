@@ -49,7 +49,7 @@ class ContextBrowser : public QVBox, public EngineObserver
 
         void lyricsData( KIO::Job* job, const QByteArray& data );
         void lyricsResult( KIO::Job* job );
-        void coverFetched( const QString &artist );
+        void coverFetched( const QString &artist, const QString &album );
 
     private:
         void setStyleSheet();

@@ -595,8 +595,8 @@ CollectionDB::albumListOfArtist( const QString &artist, bool withUnknown, bool w
     return query( "SELECT DISTINCT album.name FROM tags, album, artist WHERE "
                   "tags.album = album.id AND tags.artist = artist.id "
                   "AND artist.name = '" + escapeString( artist ) + "' " +
-                  ( withUnknown ? QString() : "AND album.name <> '' " ) +
-                  ( withCompilations ? QString() : "AND tags.sampler = 0 " ) +
+                  ( withUnknown ? QString::null : "AND album.name <> '' " ) +
+                  ( withCompilations ? QString::null : "AND tags.sampler = 0 " ) +
                   "ORDER BY lower( album.name );" );
 }
 
@@ -606,8 +606,8 @@ CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
 {
     return query( "SELECT DISTINCT artist.name, album.name FROM tags, album, artist WHERE "
                   "tags.album = album.id AND tags.artist = artist.id " +
-                  ( withUnknown ? QString() : "AND album.name <> '' AND artist.name <> '' " ) +
-                  ( withCompilations ? QString() : "AND tags.sampler = 0 " ) +
+                  ( withUnknown ? QString::null : "AND album.name <> '' AND artist.name <> '' " ) +
+                  ( withCompilations ? QString::null : "AND tags.sampler = 0 " ) +
                   "ORDER BY lower( album.name );" );
 }
 
