@@ -3,14 +3,22 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #89 being the highest available (take this one for your next bug and increase here)
+           #90 being the highest available (take this one for your next bug and increase here)
 
+           
+BEFORE-1.0 (uhm, REALLY URGENT)
 
-SHORT-TERM (URGENT):
+    * add: #89 <muesli> mostly / recently played song statistics tab. this will enhance the
+                        collection database. we'll be ready to compete with winamp's media
+                        library, then ;-)
+                        
 
     * add: #88 <muesli> In CollectionBrowser's search, let the user decide, which fields are 
                         to be searched (like: songtitle, artist, songtitle or artist, album)
                         -->muesli
+
+                        
+SHORT-TERM (URGENT):
 
     * fix: #87 <muesli> don't rely on KDE timeouts to see whether a file is accessible or not,
                         since this really sucks for disconnected network shares. XMMS handles
