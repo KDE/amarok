@@ -58,7 +58,7 @@ namespace amaroK
     };
 
 
-    class PlayPauseAction : public KAction, public EngineObserver
+    class PlayPauseAction : public KToggleAction, public EngineObserver
     {
         public:
             PlayPauseAction( KActionCollection* );

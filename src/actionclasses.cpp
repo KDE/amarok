@@ -182,8 +182,8 @@ Menu::slotActivated( int index )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 PlayPauseAction::PlayPauseAction( KActionCollection *ac )
-  : KAction( i18n( "Play/Pause" ), 0, ac, "play_pause" )
-  , EngineObserver( EngineController::instance() )
+        : KToggleAction( i18n( "Play/Pause" ), 0, ac, "play_pause" )
+        , EngineObserver( EngineController::instance() )
 {
     engineStateChanged( EngineController::engine()->state() );
 
@@ -197,11 +197,17 @@ PlayPauseAction::engineStateChanged( Engine::State state )
 
     switch( state ) {
     case Engine::Playing:
+        setChecked( false );
         setIcon( "player_pause" );
         text = i18n( "Pause" );
         break;
     case Engine::Paused:
+        setChecked( true );
+        setIcon( "player_pause" );
+        text = i18n( "Pause" );
+        break;
     case Engine::Empty:
+        setChecked( false );
         setIcon( "player_play" );
         text = i18n( "Play" );
         break;
