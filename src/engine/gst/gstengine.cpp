@@ -1036,10 +1036,6 @@ GstEngine::createPipeline()
     m_gst_equalizer = GST_ELEMENT( gst_equalizer_new() );
     gst_bin_add( GST_BIN( m_gst_outputThread ), m_gst_equalizer );
     if ( !( m_gst_identity = createElement( "identity", m_gst_outputThread ) ) ) { return false; }
-
-    /* this probably can be avoided by propagating acceptable rates from element after equalizer
-       to its sink pad as capability */
-    if ( !( m_gst_audioscale = createElement( "audioscale", m_gst_outputThread ) ) ) { return false; }
     if ( !( m_gst_volume = createElement( "volume", m_gst_outputThread ) ) ) { return false; }
 
     // Put everything into the root bin
@@ -1052,7 +1048,7 @@ GstEngine::createPipeline()
     g_signal_connect ( G_OBJECT( m_gst_outputThread ), "error", G_CALLBACK ( outputError_cb ), NULL );
 
     /* link elements */
-    gst_element_link_many( m_gst_adder, m_gst_queue, m_gst_equalizer, m_gst_audioscale, m_gst_identity, m_gst_volume, m_gst_audiosink, NULL );
+    gst_element_link_many( m_gst_adder, m_gst_queue, m_gst_equalizer,  m_gst_identity, m_gst_volume, m_gst_audiosink, NULL );
 
     setVolume( m_volume );
 

@@ -10,6 +10,7 @@
 
 #include <string.h>
 #include <vector>
+#include <gst/audio/audio.h>
 
 #include <kdebug.h>
 
@@ -39,16 +40,14 @@ GstStaticPadTemplate sink_template =
     GST_STATIC_PAD_TEMPLATE ( (gchar*) "sink",
     			       GST_PAD_SINK,
 			       GST_PAD_ALWAYS,
-			       GST_STATIC_CAPS (
-			                         "audio/x-raw-int" )
+			       GST_STATIC_CAPS ( GST_AUDIO_INT_PAD_TEMPLATE_CAPS ) 
 			    );
 
 GstStaticPadTemplate src_template = 
     GST_STATIC_PAD_TEMPLATE (  (gchar*) "src",
     			       GST_PAD_SRC,
 			       GST_PAD_ALWAYS,
-			       GST_STATIC_CAPS (
-			                         "audio/x-raw-int" )
+			       GST_STATIC_CAPS ( GST_AUDIO_INT_PAD_TEMPLATE_CAPS )
 			    );
 
 // static guint gst_equalizer_signals[ LAST_SIGNAL ] = { 0 };
@@ -102,6 +101,8 @@ gst_equalizer_init ( GstEqualizer* obj )
     gst_element_add_pad ( GST_ELEMENT ( obj ), obj->srcpad );
     gst_element_add_pad ( GST_ELEMENT ( obj ), obj->sinkpad );
 
+    gst_pad_set_getcaps_function (obj->srcpad, gst_pad_proxy_getcaps);
+    gst_pad_set_getcaps_function (obj->sinkpad, gst_pad_proxy_getcaps);
     gst_pad_set_link_function ( obj->srcpad, gst_equalizer_link);
     gst_pad_set_link_function ( obj->sinkpad, gst_equalizer_link);
 
