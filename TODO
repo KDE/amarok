@@ -49,6 +49,7 @@ SHORT-TERM (URGENT):
 MID-TERM:
 
     * fix: crossfading affects analyzer amplitudes. Can't decide if this is a feature or a bug!
+           <markey> [x] feature. that ok with you?
 
     * add: #39 <markey> add playlist column for media-type (mp3, ogg, mod, etc)
 
