@@ -171,20 +171,24 @@ static GstData *
 gst_streamsrc_get ( GstPad * pad )
 {
     GstStreamSrc* src = GST_STREAMSRC ( GST_OBJECT_PARENT ( pad ) );
-    GstBuffer* buffer = gst_buffer_new_and_alloc( DEFAULT_BLOCKSIZE );
+    GstBuffer* buf = gst_buffer_new_and_alloc( DEFAULT_BLOCKSIZE );
     
 /*    if ( src->streamBufIndex + DEFAULT_BLOCKSIZE > src->streamBufSize ) {
         const int remaining = src->streamBufSize - src->streamBufIndex;
-        memcpy( GST_BUFFER_DATA( buffer ), src->streamBuf + src->streamBufIndex, remaining );
-        memcpy( GST_BUFFER_DATA( buffer + remaining ), src->streamBuf, DEFAULT_BLOCKSIZE - remaining );
+        memcpy( GST_BUFFER_DATA( buf ), src->streamBuf + src->streamBufIndex, remaining );
+        memcpy( GST_BUFFER_DATA( buf + remaining ), src->streamBuf, DEFAULT_BLOCKSIZE - remaining );
         src->streamBufIndex = 0;
     }            
     else {*/
-        memcpy( GST_BUFFER_DATA( buffer ), src->streamBuf /*+ src->streamBufIndex*/, DEFAULT_BLOCKSIZE );
+        memcpy( GST_BUFFER_DATA( buf ), src->streamBuf /*+ src->streamBufIndex*/, DEFAULT_BLOCKSIZE );
 /*        src->streamBufIndex += DEFAULT_BLOCKSIZE;
     }*/
                 
-    return GST_DATA ( buffer );
+    GST_BUFFER_OFFSET ( buf ) = 0;
+    GST_BUFFER_SIZE ( buf ) = DEFAULT_BLOCKSIZE;
+    GST_BUFFER_TIMESTAMP ( buf ) = GST_CLOCK_TIME_NONE;
+    
+    return GST_DATA ( buf );
 }
 
 
@@ -196,7 +200,7 @@ gst_streamsrc_new ( char* buf, int size )
     
     object->streamBuf = buf;
     object->streamBufSize = size;
-
+    
     return object;
 }
 

@@ -81,7 +81,6 @@ class GstEngine : public EngineBase
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
         /////////////////////////////////////////////////////////////////////////////////////
-        static GstBuffer*                        fakesrc_buf;
         static GError*                           error_msg;
         static GstEngine*                        self;
         

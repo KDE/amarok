@@ -33,6 +33,7 @@ struct _GstStreamSrc
     char* streamBuf;
     int streamBufSize;
     int streamBufIndex;
+    int* streamCount;
         
     gulong curoffset; /* current offset in file */
     gulong blocksize; /* bytes per read */

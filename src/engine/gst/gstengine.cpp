@@ -47,9 +47,6 @@ SCOPEBUF_SIZE = 40000;
 static const int
 STREAMBUF_SIZE = 40000;
 
-GstBuffer*
-GstEngine::fakesrc_buf;
-
 GError*
 GstEngine::error_msg;
 
@@ -436,7 +433,7 @@ GstEngine::newStreamData( char* buf, int size )            //SLOT
             m_streamBufIn = 0;
         m_streamBuf[ m_streamBufIn++ ] = buf[ i++ ];
     }
-
+    
     /*    if ( m_playFlag && m_streamBufIn > STREAMBUF_SIZE / 4 ) {
             play();
             m_playFlag = false;
