@@ -157,7 +157,7 @@
                         <string>Alt+D</string>
                     </property>
                     <property name="whatsThis" stdset="0">
-                        <string>If checked, adding a directory to the playlist also adds sub directories, sub-sub direcotries etc.</string>
+                        <string>If checked, adding a directory to the playlist also adds sub directories, sub-sub directories etc.</string>
                     </property>
                 </widget>
             </vbox>

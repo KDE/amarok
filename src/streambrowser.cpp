@@ -854,7 +854,7 @@ Share::Share(QWidget *parent, const char *name)
         QVBoxLayout *vbox;
         QLabel *lwarning, *lstream, *luri, *lspeed, *llocation, *ltype, *lstyle, *lcategory;
 
-        lwarning = new QLabel( i18n( "<b>Warning</b>: Streams may take up to a week to appear in the listing!" ), this );
+        lwarning = new QLabel( i18n( "<b>Warning</b>: Streams may take up to a week to appear in the listing." ), this );
         lstream = new QLabel(i18n("Stream title:"), this);
         lstyle = new QLabel(i18n("Style:"), this);
         llocation = new QLabel(i18n("Location:"), this);

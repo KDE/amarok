@@ -214,7 +214,7 @@
                                 <string>Screen:</string>
                             </property>
                             <property name="whatsThis" stdset="0">
-                                <string>The screen that the should display the OSD.</string>
+                                <string>The screen that should display the OSD.</string>
                             </property>
                         </widget>
                     </hbox>
@@ -262,7 +262,7 @@
                                 <cstring>kcfg_OsdScreen</cstring>
                             </property>
                             <property name="whatsThis" stdset="0">
-                                <string>The screen that the should display the OSD.</string>
+                                <string>The screen that should display the OSD.</string>
                             </property>
                         </widget>
                     </hbox>

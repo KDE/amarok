@@ -212,7 +212,7 @@
      <entry key="Osd Screen" type="Int">
         <label>OSD screen</label>
         <default>0</default>
-	<whatsthis>The screen that the should display the OSD. For single headed environments this setting should be 0.</whatsthis>
+	<whatsthis>The screen that should display the OSD. For single-headed environments this setting should be 0.</whatsthis>
      </entry>
      <entry key="Osd Alignment" type="Enum">
         <label>Align OSD to</label>
