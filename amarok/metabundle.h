@@ -87,7 +87,7 @@ public:
     QString prettyURL()     const { return m_url.prettyURL(); }
     QString prettyBitrate() const { return prettyBitrate( m_bitrate ); }
     QString prettyLength()  const { return prettyLength( m_length ); }
-    QString prettySampleRate() const { return QString( "%1 kbps" ).arg( m_sampleRate ); }
+    QString prettySampleRate() const { return QString( "%1 Hz" ).arg( m_sampleRate ); }
 
     static QString prettyBitrate( int );
     static QString prettyLength( int );
