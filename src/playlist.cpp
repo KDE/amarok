@@ -819,7 +819,7 @@ void Playlist::engineStateChanged( EngineBase::EngineState state )
         m_ac->action( "playlist_show" )->setEnabled( false );
 
         //don't leave currentTrack in undefined glow state
-        Glow::counter = 63;
+        Glow::counter = Glow::STEPS * 2;
         if ( currentTrack() ) currentTrack()->invalidateHeight();
         slotGlowTimer();
 

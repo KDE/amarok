@@ -8,8 +8,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
  
-  FIX 120 <markey> Regression: when pressing stop, currentTrack stops glowing at random glow-state.
-
   FIX 110 <dato>   [Don't sure if it's a bug or a "still not implemented". Written here as a reminder.]
                    Changing the Spectrum Size of toolbar's analyzer does not work. It's fixed at 128.
 
