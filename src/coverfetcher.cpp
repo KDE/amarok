@@ -345,22 +345,24 @@ CoverFetcher::showCover()
                 : KDialog( parent )
         {
             (new QVBoxLayout( this ))->setAutoAdd( true );
-            (new QLabel( this ))->setPixmap( cover );
+
+            QLabel      *label     = new QLabel( this );
             QHBox       *buttons   = new QHBox( this );
             KPushButton *save      = new KPushButton( KStdGuiItem::save(), buttons );
             KPushButton *newsearch = new KPushButton( i18n( "New &Search" ), buttons, "NewSearch" );
             KPushButton *nextcover = new KPushButton( i18n( "Next &Cover" ), buttons, "NextCover" );
             KPushButton *cancel    = new KPushButton( KStdGuiItem::cancel(), buttons );
 
+            label->setAlignment( Qt::AlignHCenter );
+            label->setPixmap( cover );
             save->setDefault( true );
+            this->setFixedSize( sizeHint() );
+            this->setCaption( caption );
 
             connect( save,      SIGNAL(clicked()), SLOT(accept()) );
             connect( newsearch, SIGNAL(clicked()), SLOT(accept()) );
             connect( nextcover, SIGNAL(clicked()), SLOT(accept()) );
             connect( cancel,    SIGNAL(clicked()), SLOT(reject()) );
-
-            setFixedSize( sizeHint() );
-            setCaption( caption );
         }
 
         virtual void accept()
