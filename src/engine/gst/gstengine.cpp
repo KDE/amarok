@@ -92,7 +92,7 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
         for ( ulong i = 0; i < GST_BUFFER_SIZE( buf ) / 2 / channels; i += channels ) {
             if ( self->m_scopeBufIndex == self->m_scopeBuf.size() ) {
                 self->m_scopeBufIndex = 0;
-                kdDebug() << k_funcinfo << "m_scopeBuf overflow!\n";
+//                 kdDebug() << k_funcinfo << "m_scopeBuf overflow!\n";
             }
 
             float temp = 0.0;
