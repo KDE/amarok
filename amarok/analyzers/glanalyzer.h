@@ -37,11 +37,9 @@ peak_tx;
 class GLAnalyzer : public Analyzer::Base3D
 {
 private:
-  std::vector<float> m_bands;
   std::vector<float> m_oldy;
   std::vector<peak_tx> m_peaks;
 
-  void drawScope();
   void drawCube();
   void drawFrame();
   void drawBar(float xPos, float height);

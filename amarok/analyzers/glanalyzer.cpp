@@ -25,9 +25,8 @@
 
 GLAnalyzer::GLAnalyzer( QWidget *parent )
   : Analyzer::Base3D(parent, 15)
-  , m_bands(20, 0.0f)
-  , m_oldy(20, -10.0f)
-  , m_peaks(20)
+  , m_oldy(32, -10.0f)
+  , m_peaks(32)
 {
 }
 
@@ -39,47 +38,16 @@ GLAnalyzer::~GLAnalyzer()
 
 void GLAnalyzer::analyze( const Scope &s )
 {
-	Analyzer::interpolate(s, m_bands); //if no s then we are paused/stopped
-	updateGL();
-}
-
-void GLAnalyzer::initializeGL()
-{
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);// Set clear color to black
-	// Set the shading model
-	glShadeModel(GL_SMOOTH);
-
-	// Set the polygon mode to fill
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	// Enable depth testing for hidden line removal
-	glEnable(GL_DEPTH_TEST);
-
-	// Set blend parameters for 'composting alpha'
-	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-}
-
-void GLAnalyzer::resizeGL( int w, int h )
-{
-    glViewport( 0, 0, (GLint)w, (GLint)h );
-    glMatrixMode( GL_PROJECTION );
-    glLoadIdentity();
-    glOrtho(-20.0f, 20.0f, -10.0f, 10.0f, -50.0f, 100.0f);
-    glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity();
-}
-
-void GLAnalyzer::drawScope()
-{
-	drawFloor();
+	//Analyzer::interpolate(s, m_bands); //if no s then we are paused/stopped
 	glRotatef(0.25f, 0.1f, 1.0f, 0.5f); //Rotate the scene
-	for ( uint i = 0; i < m_bands.size(); i++ )
+	drawFloor();	
+	for ( uint i = 0; i < 32; i++ )
 	{
 		// Calculate new horizontal position (x) depending on number of samples
-		x = -20.0f + ((40.0f) / float(m_bands.size()) * i);
+		x = -16.0f + i;
 
 		// Calculating new vertical position (y) depending on the data passed by amarok
-		y = float(m_bands[i] * 30.0f); //Should multiply by 20 but it looks crappy
+		y = float(s[i*2] * 30.0f); //Should multiply by 20 but it looks crappy
 
 		if((y - m_oldy[i]) < -0.5f) // Going Down Too Much
 		{
@@ -111,12 +79,39 @@ void GLAnalyzer::drawScope()
 				m_peaks[i].level-=0.3f;
 			}
 		}
-
 		// Draw the bar
 		drawBar(x,y);
 		drawPeak(x, m_peaks[i].level);
+	
   	}
-	swapBuffers();
+	
+	updateGL();
+}
+
+void GLAnalyzer::initializeGL()
+{
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);// Set clear color to black
+	// Set the shading model
+	glShadeModel(GL_SMOOTH);
+
+	// Set the polygon mode to fill
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	// Enable depth testing for hidden line removal
+	glEnable(GL_DEPTH_TEST);
+
+	// Set blend parameters for 'composting alpha'
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+}
+
+void GLAnalyzer::resizeGL( int w, int h )
+{
+    glViewport( 0, 0, (GLint)w, (GLint)h );
+    glMatrixMode( GL_PROJECTION );
+    glLoadIdentity();
+    glOrtho(-16.0f, 16.0f, -10.0f, 10.0f, -50.0f, 100.0f);
+    glMatrixMode( GL_MODELVIEW );
+    glLoadIdentity();
 }
 
 void GLAnalyzer::paintGL()
@@ -125,7 +120,7 @@ void GLAnalyzer::paintGL()
 #if 0
         glClear( GL_COLOR_BUFFER_BIT |  GL_DEPTH_BUFFER_BIT );
 #else
-        glDisable( GL_DEPTH_TEST );
+        glEnable( GL_DEPTH_TEST );
         glEnable( GL_BLEND );
         glPushMatrix();
         glLoadIdentity();
@@ -141,7 +136,8 @@ void GLAnalyzer::paintGL()
         glEnable( GL_DEPTH_TEST );
         glClear( GL_DEPTH_BUFFER_BIT );
 #endif
-        drawScope();
+	//swapBuffers();
+	
         glFlush();
 
 }
@@ -159,8 +155,8 @@ void GLAnalyzer::drawBar(float xPos, float height)
         drawCube();
 
 	//Set colour to full blue
-	glColor3f(0.0f, 0.0f, 1.0f);
-	drawFrame();
+	//glColor3f(0.0f, 0.0f, 1.0f);
+	//drawFrame();
         glPopMatrix();
 }
 
@@ -170,9 +166,9 @@ void GLAnalyzer::drawFloor()
 
         //Sets color to amarok blue
 	glColor3f( 0.5f, 0.625f, 1.0f);
-        glTranslatef(-20.0f,-11.0f, -4.0f);
+        glTranslatef(-16.0f,-11.0f, -4.0f);
 
-        glScalef(40.0f, 1.0f, 10.0f);
+        glScalef(32.0f, 1.0f, 10.0f);
         drawCube();
 
 	//Set colour to full blue
