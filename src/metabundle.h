@@ -40,7 +40,7 @@ public:
      * Creates an empty MetaBundle
      */
     MetaBundle()
-            : m_isValidMedia( true ) //because we are cheating
+            : m_isValidMedia( false )
     {
         init();
     }
