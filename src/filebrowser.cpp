@@ -376,7 +376,7 @@ public:
             if ( text.isEmpty() ) {
                 r.addCoords( 20, 20, -20, -20 );
                 p.setBrush( colorGroup().background() );
-                p.drawRect( r );
+                p.drawRoundRect( r, 5, 5 );
                 r.addCoords( 5, 5, -5, -5 );
                 text = i18n("Enter a search term above, you can use globbing wildcards like * and ?");
             }
