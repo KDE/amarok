@@ -1039,12 +1039,17 @@ void Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
 
     if( item )
     {
-        #define item static_cast<const PlaylistItem*>(item)
-        QApplication::clipboard()->setText( item->trackName(), QClipboard::Clipboard );
-        QApplication::clipboard()->setText( item->trackName(), QClipboard::Selection );
+        const PlaylistItem* playlistItem = static_cast<const PlaylistItem*>( item );
+        
+        QString text = playlistItem->trackName();
+        // For streams add the streamtitle too
+        if ( playlistItem->url().protocol() == "http" ) text.prepend( playlistItem->title() + " :: " );       
+        
+        // Copy both to clipboard and X11-selection
+        QApplication::clipboard()->setText( text, QClipboard::Clipboard );
+        QApplication::clipboard()->setText( text, QClipboard::Selection );
 
-        amaroK::OSD::instance()->showOSD( i18n( "Copied: %1" ).arg( item->trackName() ) );
-        #undef item
+        amaroK::OSD::instance()->showOSD( i18n( "Copied: %1" ).arg( text ) );
     }
 }
 
