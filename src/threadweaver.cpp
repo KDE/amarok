@@ -373,7 +373,7 @@ CollectionReader::readTags( const QStringList& entries )
             m_parent->execSql( command );
         }
         // Add images to the cover database
-        else if ( validImages.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ) ) )
+        else if ( validImages.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ).lower() ) )
             m_parent->addImageToPath( url.directory(), url.filename(), true );
     }
     // let's lock the database (will block other threads)
