@@ -263,8 +263,8 @@ EngineBase::EngineState ArtsEngine::state() const
                 return Idle;
         }
     }
-    else
-        return EngineBase::Empty;        
+    
+    return EngineBase::Empty;        
 }
 
 
