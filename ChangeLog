@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.1-beta2:
+  ADD: Third category for Collection-Browser. (BR 83609)
   ADD: Playlist search now supports categories. (BR 86296)
   ADD: Support for MAS (Media Application Server). MAS-engine
        is in experimental state.
