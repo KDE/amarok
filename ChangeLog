@@ -3,7 +3,9 @@ amaroK Changelog
 (c) 2002, 2003 by Mark Kretschmann. GPL License.
 
 
-  * add: DCOP interface
+  * change: spectrum analyser bars now have dynamics, ie. they move smoothly between values
+  * add: mouse wheel over systray icon changes the track, hold shift to change the volume
+  * change: rearranged menu order for systray (quit = last)
   * change: moved volume slider to the right, lets see if this is better
   * add: started a font selection page in settings
   * fix: Stream urls are now properly demangled/unescaped (%20 => space etc)
@@ -18,7 +20,7 @@ amaroK Changelog
   * add: column "directory" in PlaylistWidget (for Grue:)
   * add: sorting by clicking on column headers in PlaylistWidget
   * fix: rewrote directory reading code in BrowserWidget.cpp.
-    code is now much more readable, and it also fixes a bug.
+      code is now much more readable, and it also fixes a bug.
   * add: additional columns in playlist for tags
   * fix: made metainfo reading algorithm faster
   * change: switched to TagLib for metainfo reading

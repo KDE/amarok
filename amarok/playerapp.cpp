@@ -248,15 +248,15 @@ void PlayerApp::restore()
             //FIXME see if item is in playlist already first (should be!)
             PlaylistItem * item = new PlaylistItem( m_pBrowserWin->m_pPlaylistWidget, url );
 
-            m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( item );
-            slotPlay();
-
             //FIXME I just copied this code, do I need all these properties?
             Arts::poTime time;
             time.ms = 0;
             time.seconds = seconds;
             time.custom = 0;
             time.customUnit = std::string();
+
+            m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( item );
+            slotPlay();
 
             // try to fix a crash on session restore when there's nothing to restore
             if ( m_pPlayObject && !m_pPlayObject->isNull() )
@@ -991,6 +991,10 @@ void PlayerApp::slotPrev()
 
 void PlayerApp::slotPlay()
 {
+   //mxcl: temporary measure so that people can turn the viseffect dynamics on and off to see the difference
+   if( m_bIsPlaying )
+     m_pPlayerWidget->m_pVis->m_dynamics = !m_pPlayerWidget->m_pVis->m_dynamics;
+
     slotStop();
 
     PlaylistItem* item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );

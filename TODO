@@ -24,6 +24,8 @@ SHORT-TERM:
 
 MID-TERM:
 
+    * add: use SVG graphics in the playerWidget, and then allow the widget to be resizeable to any size the user desires
+
     * add: playmode indication button in main widget (repeat track/pl/shuffle), clickable
 
     * add: "undo" button to undo changes in playlist
