@@ -288,19 +288,25 @@ Playlist::insertMedia( KURL::List list, int options )
                 addMe.remove( jt ); //dont want to add a track which is already present in the playlist
             }
         }
-        after = lastItem();
-        insertMediaInternal( addMe, after, directPlay );
 
-        // find the songs and queue them.
-        // FIXME: for some reason, the iteration on the entire playlist does not find the newly inserted items...
-        for (MyIt it( this, 0 ); *it; ++it ) {
-            jt = list.find( (*it)->url() );
-
-            if ( jt != list.end() )
-            {
-                queue( *it );
-                list.remove( jt );
+        if ( addMe.isEmpty() ) // all songs to be queued are already in the playlist
+        {
+            // find the songs and queue them.
+            for (MyIt it( this, 0 ); *it; ++it ) {
+                jt = list.find( (*it)->url() );
+    
+                if ( jt != list.end() )
+                {
+                    queue( *it );
+                    list.remove( jt );
+                }
             }
+        } else {
+            after = lastItem();
+            // wait until Playlist loader has finished its process, then go to customEvent() to queue.
+            m_queue = 1;
+            m_queueList = list;
+            insertMediaInternal( addMe, after, directPlay );
         }
         return;
 
@@ -1273,9 +1279,22 @@ Playlist::customEvent( QCustomEvent *e )
         }
         emit itemCountChanged( itemCount, m_totalLength );
 
+        if ( m_queue ) {
+            KURL::List::Iterator jt;
+            for (MyIt it( this, 0 ); *it; ++it ) {
+                jt = m_queueList.find( (*it)->url() );
+    
+                if ( jt != m_queueList.end() ) {
+                    queue( *it );
+                    m_queueList.remove( jt );
+                }
+            }
+            m_queue = 0;
+            m_queueList.clear();
+        }
+        
         //force redraw of currentTrack marker, play icon, etc.
         //setCurrentTrack( currentTrack() );
-
         {
             KURL::List &list = static_cast<PlaylistLoader::DoneEvent*>(e)->badURLs();
 
