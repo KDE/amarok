@@ -25,20 +25,15 @@ EngineObserver::EngineObserver()
     // autoadd to subject in constructor?
 }
 
-
 EngineObserver::~EngineObserver()
-{
-}
+{}
 
 
 EngineSubject::EngineSubject()
-{
-}
-
+{}
 
 EngineSubject::~EngineSubject()
-{
-}
+{}
 
 
 void EngineSubject::stateChangedNotify( Engine::State state )
@@ -62,6 +57,13 @@ void EngineSubject::newMetaDataNotify( const MetaBundle &bundle, bool trackChang
         ++it;
         observer->engineNewMetaData( bundle, trackChanged );
     }
+}
+
+
+void EngineSubject::trackEnded( int finalPosition, int trackLength )
+{
+    for( QPtrListIterator<EngineObserver> it( Observers ); *it; ++it )
+        (*it)->engineTrackEnded( finalPosition, trackLength );
 }
 
 

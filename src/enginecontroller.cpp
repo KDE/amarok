@@ -235,6 +235,10 @@ void EngineController::play( const MetaBundle &bundle )
     // Destroy stale StreamProvider
     delete m_stream;
 
+    //let amaroK know that the previous track is no longer playing
+    if ( m_bundle.length() != 0 )
+        trackEnded( m_engine->position(), m_bundle.length() );
+
     if ( m_engine->streamingMode() != Engine::NoStreaming && url.protocol() == "http" ) {
         m_bundle = bundle;
         m_xFadeThisTrack = false;

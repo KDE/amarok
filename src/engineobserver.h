@@ -25,6 +25,7 @@ class MetaBundle;
 /**
  * if you want to observe the engine, inherit from this class and attach yourself to
  * the engine with attach
+ * Note that all positional information and times are in milliseconds
  */
 class EngineObserver
 {
@@ -33,6 +34,7 @@ public:
     virtual ~EngineObserver();
     virtual void engineStateChanged( Engine::State /*state*/ ) {}
     virtual void engineNewMetaData( const MetaBundle &/*bundle*/, bool /*trackChanged*/ ) {}
+    virtual void engineTrackEnded( int /*finalPosition*/, int /*trackLength*/ ) {}
     virtual void engineVolumeChanged( int /*percent*/ ) {}
     virtual void engineTrackPositionChanged( long /*position*/ ) {}
 };
@@ -53,6 +55,7 @@ protected:
     virtual ~EngineSubject();
     void stateChangedNotify( Engine::State /*state*/ );
     void newMetaDataNotify( const MetaBundle &/*bundle*/, bool /*trackChanged*/ );
+    void trackEnded( int /*finalPosition*/, int /*trackLength*/ );
     void volumeChangedNotify( int /*percent*/ );
     void trackPositionChangedNotify( long /*position*/ );
 

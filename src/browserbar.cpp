@@ -36,7 +36,7 @@
 //NOTE the widget widths are saved in their baseSize() property
 
 
-#define BROWSER_BAR_LEFT
+//#define BROWSER_BAR_LEFT
 
 
 namespace amaroK {
