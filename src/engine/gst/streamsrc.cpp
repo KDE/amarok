@@ -15,7 +15,7 @@
 #include <unistd.h>
 
 
-#define DEFAULT_BLOCKSIZE 4096
+#define DEFAULT_BLOCKSIZE 2048
 
 GST_DEBUG_CATEGORY_STATIC ( gst_streamsrc_debug );
 #define GST_CAT_DEFAULT gst_streamsrc_debug
@@ -37,7 +37,7 @@ enum {
 GstElementDetails gst_streamsrc_details =
     GST_ELEMENT_DETAILS ( "Stream Source",
                           "Source",
-                          "Push empty (no data) buffers around",
+                          "Read streaming audio from TitleProxy",
                           "Mark Kretschmann <markey@web.de>" );
 
 static guint gst_streamsrc_signals[ LAST_SIGNAL ] = { 0 };
@@ -171,35 +171,60 @@ static GstData *
 gst_streamsrc_get ( GstPad * pad )
 {
     GstStreamSrc* src = GST_STREAMSRC ( GST_OBJECT_PARENT ( pad ) );
-    GstBuffer* buf = gst_buffer_new_and_alloc( DEFAULT_BLOCKSIZE );
+    GstBuffer* buf = gst_buffer_new_and_alloc( *src->streamBufIndex );
+    guint8* data = GST_BUFFER_DATA( buf );
     
-/*    if ( src->streamBufIndex + DEFAULT_BLOCKSIZE > src->streamBufSize ) {
-        const int remaining = src->streamBufSize - src->streamBufIndex;
-        memcpy( GST_BUFFER_DATA( buf ), src->streamBuf + src->streamBufIndex, remaining );
-        memcpy( GST_BUFFER_DATA( buf + remaining ), src->streamBuf, DEFAULT_BLOCKSIZE - remaining );
-        src->streamBufIndex = 0;
-    }            
-    else {*/
-        memcpy( GST_BUFFER_DATA( buf ), src->streamBuf /*+ src->streamBufIndex*/, DEFAULT_BLOCKSIZE );
-/*        src->streamBufIndex += DEFAULT_BLOCKSIZE;
-    }*/
-                
-    GST_BUFFER_OFFSET ( buf ) = 0;
-    GST_BUFFER_SIZE ( buf ) = DEFAULT_BLOCKSIZE;
+    // Copy stream buffer content into gst buffer
+    memcpy( data, src->streamBuf, *src->streamBufIndex );
+   
+    *src->streamBufIndex = 0;
+    
+//     GST_BUFFER_SIZE ( buf ) = *src->streamBufIndex;
     GST_BUFFER_TIMESTAMP ( buf ) = GST_CLOCK_TIME_NONE;
-    
+        
     return GST_DATA ( buf );
 }
 
 
+
+/*    // Copy stream buffer content into gst buffer
+    memcpy( data, src->streamBuf, DEFAULT_BLOCKSIZE );
+    // Move stream buffer content to beginning
+    memmove( src->streamBuf, src->streamBuf + DEFAULT_BLOCKSIZE, DEFAULT_BLOCKSIZE );*/
+    
+//     if ( *src->streamBufIndex - DEFAULT_BLOCKSIZE > 0 )
+//         *src->streamBufIndex -= DEFAULT_BLOCKSIZE;
+//     else
+//         *src->streamBufIndex = 0;
+
+//     // Copy stream buffer content into gst buffer
+//     for ( uint i = 0; i < DEFAULT_BLOCKSIZE; i++ )
+//         data[ i ] = src->streamBuf[ i ];
+//     // Move stream buffer content to beginning
+//     for ( uint i = 0; i < DEFAULT_BLOCKSIZE; i++ )
+//         src->streamBuf[ i ] = src->streamBuf[ i + DEFAULT_BLOCKSIZE ];
+
+//     if ( src->streamBufIndex + DEFAULT_BLOCKSIZE >= src->streamBufSize ) {
+//         const int remaining = src->streamBufSize - src->streamBufIndex;
+//         memcpy( GST_BUFFER_DATA( buf ), src->streamBuf + src->streamBufIndex, remaining );
+//         memcpy( GST_BUFFER_DATA( buf + remaining ), src->streamBuf, DEFAULT_BLOCKSIZE - remaining );
+//         src->streamBufIndex = 0;
+//     }            
+//     else {
+//         memcpy( GST_BUFFER_DATA( buf ), src->streamBuf + src->streamBufIndex, DEFAULT_BLOCKSIZE );
+//         src->streamBufIndex += DEFAULT_BLOCKSIZE;
+//     }
+
+
 GstStreamSrc*
-gst_streamsrc_new ( char* buf, int size )
+gst_streamsrc_new ( char* buf, int size, int* index )
 {
     GstStreamSrc * object = GST_STREAMSRC ( g_object_new ( GST_TYPE_STREAMSRC, NULL ) );
     gst_object_set_name( (GstObject*) object, "StreamSrc" );
     
     object->streamBuf = buf;
     object->streamBufSize = size;
+    object->streamBufIndex = index;
     
     return object;
 }

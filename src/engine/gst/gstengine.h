@@ -98,7 +98,7 @@ class GstEngine : public EngineBase
         uint                                     m_scopeSize;
        
         char*                                    m_streamBuf;
-        uint                                     m_streamBufIn;
+        int                                      m_streamBufIn;
         bool                                     m_playFlag;
         
         bool                                     m_typefindResult;

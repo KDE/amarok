@@ -248,8 +248,11 @@ GstEngine::position() const
 EngineBase::EngineState
 GstEngine::state() const
 {
-    if ( !m_pipelineFilled ) return Empty;
-
+    if ( !m_pipelineFilled )
+        return Empty;
+    if ( m_playFlag )
+        return Playing;
+    
     switch ( gst_element_get_state( GST_ELEMENT( m_thread ) ) ) {
     case GST_STATE_NULL:
         return Empty;
@@ -316,7 +319,7 @@ GstEngine::play( const KURL& url )             //SLOT
         g_object_set( G_OBJECT( m_filesrc ), "location",
                       static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
     } else {
-        m_filesrc = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, m_streamBufIn ) );
+        m_filesrc = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, STREAMBUF_SIZE, &m_streamBufIn ) );
 //         g_object_set( G_OBJECT( m_filesrc ), "sizetype", 2, NULL );
         //         g_object_set( G_OBJECT( m_filesrc ), "sizemax", 2048, NULL );
     }
@@ -348,8 +351,12 @@ GstEngine::play( const KURL& url )             //SLOT
     m_pipelineFilled = true;
     setVolume( volume() );
     
-    play();
-    m_playFlag = true;
+    if ( url.protocol() == "http" ) {
+        kdDebug() << k_funcinfo << "Playing HTTP stream." << endl;
+        m_playFlag = true;
+    }
+    else
+        play();
 }
 
 
@@ -425,19 +432,16 @@ GstEngine::newStreamData( char* buf, int size )            //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     
-    //TODO HACK
-    m_streamBufIn = 0;
-    
-    for ( uint i = 0; i < size; ) {
-        if ( m_streamBufIn == STREAMBUF_SIZE )
-            m_streamBufIn = 0;
+    for ( int i = 0; i < size; ) {
+        if ( m_streamBufIn == STREAMBUF_SIZE - 1 )
+            break;
         m_streamBuf[ m_streamBufIn++ ] = buf[ i++ ];
     }
     
-    /*    if ( m_playFlag && m_streamBufIn > STREAMBUF_SIZE / 4 ) {
-            play();
-            m_playFlag = false;
-        }*/
+    if ( m_playFlag ) {
+        play();
+        m_playFlag = false;
+    }
 }
 
 
