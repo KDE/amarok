@@ -37,11 +37,19 @@ extern "C"
     scope_init_plugin( xine_t* );
 }
 
+#ifdef NDEBUG
+static inline kndbgstream
+debug()
+{
+    return kndbgstream();
+}
+#else
 static inline kdbgstream
 debug()
 {
     return kdbgstream( "[xine-engine] ", 0, 0 );
 }
+#endif
 
 static inline void
 emptyMyList()
@@ -60,13 +68,9 @@ emptyMyList()
 //some logging static globals
 namespace Log
 {
-    static uint buffNotFound = 0;
-    static uint buffTooSmall = 0;
-    static uint buffSize = 0;
     static uint listSize = 0;
-    static uint scopeRequests = 0;
-    static uint diffSize = 0;
-    static uint buffCount = 0;
+    static uint scopeCallCount = 1; //prevent divideByZero
+    static uint noSuitableBuffer = 0;
 };
 
 
@@ -90,16 +94,11 @@ XineEngine::~XineEngine()
     if (m_post)       xine_post_dispose(m_xine, m_post);
     if (m_xine)       xine_exit(m_xine);
 
-    emptyMyList();
-
     debug() << "xine closed\n";
 
     debug() << "Scope statistics:\n"
-            << "  Average buffer size: " << double(Log::buffSize) / Log::buffCount << endl
-            << "  Average diff: " << double(Log::diffSize) / Log::scopeRequests << endl
-            << "  Average list size: " << double(Log::listSize) / Log::scopeRequests << endl
-            << "  Scope misses: " << Log::buffNotFound << endl
-            << "  Times buffer too small: " << Log::buffTooSmall << endl;
+            << "  Average list size: " << double(Log::listSize) / Log::scopeCallCount << endl
+            << "  Buffer failure:    " << double(Log::noSuitableBuffer*100) / Log::scopeCallCount << "%\n";
 }
 
 bool
@@ -219,8 +218,6 @@ XineEngine::play( uint offset )
 void
 XineEngine::stop()
 {
-    emptyMyList();
-
     m_url = KURL(); //to ensure we return Empty from state()
 
     xine_stop( m_stream );
@@ -259,15 +256,12 @@ XineEngine::scope()
 {
     if( xine_get_status( m_stream ) != XINE_STATUS_PLAY ) return m_scope;
 
-    current_vpts = xine_get_current_vpts( m_stream );//m_xine->clock->get_current_time( m_xine->clock );
+    int64_t current_vpts = xine_get_current_vpts( m_stream );//m_xine->clock->get_current_time( m_xine->clock );
     audio_buffer_t *best_buf = 0;
-    uint x = 0;
 
-
-    /* MY GOD! Why do I have to do this!?
-     * You see if I don't the metronom doesn't make the timestamps accurate! */
+    //I couldn't persuade xine to keep a metronom for me
+    //so I keep my own, via memcpy
     memcpy( myMetronom, m_stream->metronom, sizeof( metronom_t ) );
-
 
     for( MyNode *prev = myList, *node = myList->next; node != myList; node = node->next )
     {
@@ -279,17 +273,14 @@ XineEngine::scope()
 
             buf->vpts = myMetronom->got_audio_samples( myMetronom, buf->vpts, buf->num_frames );
             buf->stream = 0;
-
-            Log::buffSize += buf->num_frames;
-            Log::buffCount++;
         }
 
-        if( buf->vpts < current_vpts  )
+        const int K = (myMetronom->pts_per_smpls * myChannels * buf->num_frames) / (1<<16);
+
+        if( buf->vpts < (current_vpts - K) )
         {
             if( prev != myList ) //thread-safety
             {
-                //debug() << "dispose\n";
-
                 prev->next = node->next;
 
                 free( buf->mem );
@@ -298,10 +289,9 @@ XineEngine::scope()
                 node = prev;
             }
         }
-        else if( !best_buf || buf->vpts < best_buf->vpts ) best_buf = buf;
+        else if( (!best_buf || buf->vpts > best_buf->vpts) && buf->vpts < current_vpts ) best_buf = buf;
 
         ++Log::listSize;
-        ++x;
 
         prev = node;
     }
@@ -309,32 +299,31 @@ XineEngine::scope()
     if( best_buf )
     {
         int64_t
-        diff  = best_buf->vpts - current_vpts;
-        diff *= myMetronom->audio_samples;
+        diff  = current_vpts;
+        diff -= best_buf->vpts;
+        diff *= 1<<16;
         diff /= myMetronom->pts_per_smpls;
 
+        const int16_t*
+        data16  = best_buf->mem;
+        data16 += diff;
 
-        Log::diffSize += diff;
-        Log::scopeRequests++;
+        diff /= myChannels;
 
-        //debug() << "vpts:" << best_buf->vpts << " d:" << diff << " n:" << best_buf->num_frames << endl;
+        int n = best_buf->num_frames - diff;
+        if( n > 512 ) n = 512;
 
-        if( diff < best_buf->num_frames - 512 ) //done this way as diff is a 64bit int => less cycles
-        {
-            const int16_t *data16 = best_buf->mem;
-            data16 += diff * myChannels;
+        for( int a, c, i = 0; i < n; ++i, data16 += myChannels ) {
+            for( a = c = 0; c < myChannels; ++c )
+                a += data16[c];
 
-            for( int a, c, i = 0; i < 512; ++i, data16 += myChannels ) {
-                for( a = c = 0; c < myChannels; ++c )
-                    a += data16[c];
-
-                a /= myChannels;
-                m_scope[i] = a;
-            }
+            a /= myChannels;
+            m_scope[i] = a;
         }
-        else { Log::buffTooSmall++; }
     }
-    else { Log::buffNotFound++; }
+    else { ++Log::noSuitableBuffer; }
+
+    ++Log::scopeCallCount;
 
     return m_scope;
 }
@@ -443,59 +432,55 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
     }
     case XINE_EVENT_UI_MESSAGE:
     {
-        debug() << "xine message received\n";
+        debug() << "message received from xine\n";
 
         xine_ui_message_data_t *data = (xine_ui_message_data_t *)xineEvent->data;
         QString message;
 
-        /* some code taken from the m_xine-ui - Copyright (C) 2000-2003 the m_xine project */
         switch( data->type )
         {
         case XINE_MSG_NO_ERROR:
         {
-            /* copy strings, and replace '\0' separators by '\n' */
-            char  c[2000];
-            char *s = data->messages;
-            char *d = c;
+            //series of \0 separated strings, terminated with a \0\0
+            char str[2000];
+            char *p = str;
+            for( char *msg = data->messages; !(*msg == '\0' && *(msg+1) == '\0'); ++msg, ++p )
+                *p = *msg == '\0' ? '\n' : *msg;
+            *p = '\0';
 
-            while(s && (*s != '\0') && ((*s + 1) != '\0'))
-            {
-                switch(*s)
-                {
-                case '\0':
-                    *d = '\n';
-                    break;
-
-                default:
-                    *d = *s;
-                    break;
-                }
-
-                s++;
-                d++;
-            }
-            *++d = '\0';
-
-            debug() << c << endl;
+            debug() << str << endl;
 
             break;
         }
 
-        case XINE_MSG_ENCRYPTED_SOURCE: break;
+        case XINE_MSG_ENCRYPTED_SOURCE:
+            break;
 
-        case XINE_MSG_UNKNOWN_HOST: message = i18n("The host is unknown for the url: <i>%1</i>"); goto param;
-        case XINE_MSG_UNKNOWN_DEVICE: message = i18n("The device name you specified seems invalid."); goto param;
-        case XINE_MSG_NETWORK_UNREACHABLE: message = i18n("The network appears unreachable."); goto param;
-        case XINE_MSG_AUDIO_OUT_UNAVAILABLE: message = i18n("Audio output unavailable; the device is busy."); goto param;
-        case XINE_MSG_CONNECTION_REFUSED: message = i18n("The connection was refused for the url: <i>%1</i>"); goto param;
-        case XINE_MSG_FILE_NOT_FOUND: message = i18n("xine could not find the url: <i>%1</i>"); goto param;
-        case XINE_MSG_PERMISSION_ERROR: message = i18n("Access was denied for the url: <i>%1</i>"); goto param;
-        case XINE_MSG_READ_ERROR: message = i18n("The source cannot be read for the url: <i>%1</i>"); goto param;
-        case XINE_MSG_LIBRARY_LOAD_ERROR: message = i18n("A problem occured while loading a library or decoder."); goto param;
+        case XINE_MSG_UNKNOWN_HOST:
+            message = i18n("The host is unknown for the URL: <i>%1</i>"); goto param;
+        case XINE_MSG_UNKNOWN_DEVICE:
+            message = i18n("The device name you specified seems invalid."); goto param;
+        case XINE_MSG_NETWORK_UNREACHABLE:
+            message = i18n("The network appears unreachable."); goto param;
+        case XINE_MSG_AUDIO_OUT_UNAVAILABLE:
+            message = i18n("Audio output unavailable; the device is busy."); goto param;
+        case XINE_MSG_CONNECTION_REFUSED:
+            message = i18n("The connection was refused for the URL: <i>%1</i>"); goto param;
+        case XINE_MSG_FILE_NOT_FOUND:
+            message = i18n("xine could not find the URL: <i>%1</i>"); goto param;
+        case XINE_MSG_PERMISSION_ERROR:
+            message = i18n("Access was denied for the URL: <i>%1</i>"); goto param;
+        case XINE_MSG_READ_ERROR:
+            message = i18n("The source cannot be read for the URL: <i>%1</i>"); goto param;
+        case XINE_MSG_LIBRARY_LOAD_ERROR:
+            message = i18n("A problem occured while loading a library or decoder."); goto param;
 
-        case XINE_MSG_GENERAL_WARNING: message = i18n("General Warning"); goto explain;
-        case XINE_MSG_SECURITY:        message = i18n("Security Warning"); goto explain;
-        default:                       message = i18n("Unknown Error"); goto explain;
+        case XINE_MSG_GENERAL_WARNING:
+            message = i18n("General Warning"); goto explain;
+        case XINE_MSG_SECURITY:
+            message = i18n("Security Warning"); goto explain;
+        default:
+            message = i18n("Unknown Error"); goto explain;
 
 
         explain:

@@ -18,7 +18,6 @@ static metronom_t theMetronom;
 MyNode     *myList = &theList;
 metronom_t *myMetronom = &theMetronom;
 int         myChannels;
-int64_t     current_vpts;
 
 
 /*************************
@@ -51,6 +50,8 @@ scope_port_close(xine_audio_port_t *port_gen, xine_stream_t *stream )
 
     port->stream = NULL;
     port->original_port->close(port->original_port, stream );
+
+    myList->next = myList;
 
     _x_post_dec_usage( port );
 }

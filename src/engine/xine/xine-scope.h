@@ -26,6 +26,5 @@ struct my_node_s
 extern metronom_t *myMetronom;
 extern int myChannels;
 extern MyNode *myList;
-extern int64_t current_vpts;
 
 #endif
