@@ -10,7 +10,6 @@
 
 class KLineEdit;
 class KListView;
-class KFileItem;
 class KPopupMenu;
 class KPushButton;
 
@@ -47,14 +46,19 @@ Q_OBJECT
         void slotSetFilterTimeout();
         void changeView( int id );
         void fetchMissingCovers();
-        void fetchMissingCoversLoop();
+        void fetchCoversLoop();
 
     private:
-        enum { AllAlbums=0, AlbumsWithCover, AlbumsWithoutCover };
+        enum View { AllAlbums=0, AlbumsWithCover, AlbumsWithoutCover };
+
+        void fetchSelectedCovers();
+        void deleteSelectedCovers();
+        QPtrList<CoverViewItem> selectedItems();
 
         void updateCounter();
 
         CollectionDB *m_db;
+
         KListView *m_artistView;
         KIconView *m_coverView;
         KLineEdit *m_searchEdit;
@@ -64,7 +68,7 @@ Q_OBJECT
         QLabel *m_counterLabel;
 
         QTimer *m_timer;    //search filter timer
-        QPtrList<KIconViewItem> m_coverItems;
+        QPtrList<QIconViewItem> m_coverItems; //used for filtering
         QString m_filter;
         int m_currentView;
 
@@ -72,8 +76,8 @@ Q_OBJECT
         QStringList m_loadAlbums;
         bool m_stopLoading;
 
-        // Used by fetchMissingCovers() for temporary storage
-        QStringList m_missingCovers;
+        // Used by fetchCoversLoop() for temporary storage
+        QStringList m_fetchCovers;
         uint m_fetchCounter;
 };
 
@@ -83,11 +87,11 @@ class CoverViewItem : public KIconViewItem
     public:
         CoverViewItem( QIconView *parent, QIconViewItem *after, QString artist, QString album );
         ~CoverViewItem();
-        void updateCover( const QPixmap& );
-        QString artist() { return m_artist; }
-        QString album() { return m_album; }
+        void loadCover();
         bool hasCover() { return m_hasCover; }
-        QString albumPath();
+        const QString artist() { return m_artist; }
+        const QString album() { return m_album; }
+        const QString coverImagePath();
 
     protected:
         void paintItem(QPainter* painter, const QColorGroup& colorGroup);
@@ -98,7 +102,7 @@ class CoverViewItem : public KIconViewItem
         QString m_artist;
         QString m_album;
         bool m_hasCover;
-        QPixmap coverPix;
+        QPixmap m_coverPix;
 };
 
 
