@@ -43,7 +43,7 @@ Required
       http://freshmeat.net/projects/taglib
 
 Recommended
-    * GStreamer-0.8.1 + GStreamer-Plugins-0.8.1
+    * GStreamer-0.8.4 + GStreamer-Plugins-0.8.4
       (multimedia framework)
       http://gstreamer.net
 
