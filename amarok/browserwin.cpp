@@ -253,6 +253,10 @@ void BrowserWin::setColors( const QPalette &pal, const QColor &bgAlt )
             KListView *lv = dynamic_cast<KListView *>(obj); //slow, but safe
             if( lv ) lv->setAlternateBackground( bgAlt );
         }
+        else if ( obj->inherits("QLabel") )
+        {
+            static_cast<QLabel*>(obj)->setPalette( pal );
+        }
     }
 
     //TODO perhaps this should be a global member of some singleton (I mean bgAlt not just the filebrowser bgAlt!)

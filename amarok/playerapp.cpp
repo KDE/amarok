@@ -554,6 +554,7 @@ void PlayerApp::setupColors()
 
         group.setColor( QColorGroup::Text, Qt::white );
         group.setColor( QColorGroup::Base, bg );
+        group.setColor( QColorGroup::Foreground, Qt::white );                  //QLabels in SearchBrowser
         group.setColor( QColorGroup::Background, bg.dark( 115 ) );
 
         group.setColor( QColorGroup::Highlight, Qt::white );
