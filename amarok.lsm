@@ -1,6 +1,6 @@
 Begin3
 Title:          amarok 
-Version:        1.0-beta4
+Version:        1.0
 Entered-date:   
 Description:    Audio player for KDE
 Keywords:       player multimedia kde mp3 ogg audio music arts 
@@ -8,6 +8,8 @@ Author:         Christian Muehlhaeuser <chris@chris.de>
                 Frederik Holljen <fh@ez.no>
                 Mark Kretschmann <markey@web.de>
                 Max Howell <max.howell@methylblue.com>
+                Mike Diehl <madpenguin8@yahoo.com>
+                Roman Becker <roman@formmorf.de>
                 Stanislav Karchebny <berk@inbox.ru>
 Maintained-by:  Mark Kretschmann <markey@web.de> 
 Primary-site:   
