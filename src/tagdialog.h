@@ -5,17 +5,16 @@
 #define AMAROK_TAGDIALOG_H
 
 #include "config.h"
+#include "ktrm.h"
+#include "metabundle.h"       //stack alloc
+#include "tagdialogbase.h"    //baseclass
 
-#ifdef HAVE_MUSICBRAINZ
-    #include "ktrm.h"
-#else
+#ifndef HAVE_MUSICBRAINZ    
     // Dummy class for queryDone argument.
     class KTRMResultList {};
 #endif
 
 #include <kurl.h>             //stack alloc
-#include "metabundle.h"       //stack alloc
-#include "tagdialogbase.h"    //baseclass
 
 class PlaylistItem;
 
