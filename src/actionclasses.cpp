@@ -263,6 +263,7 @@ void
 VolumeAction::wheelMoved( int delta ) //SLOT
 {
     m_slider->setValue( m_slider->value() - delta / 18 );
+    pApp->slotShowVolumeOSD();
 }
 
 
