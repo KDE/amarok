@@ -5,7 +5,7 @@ libstatusbar_la_METASOURCES = popupMessage.moc statusbar.moc statusBarBase.moc
 INCLUDES = \
     -I$(top_srcdir)/amarok/src/ \
     -I$(top_srcdir)/amarok/src/engine \
-	-I$(top_builddir)/amarok/src/ \
+    -I$(top_builddir)/amarok/src/ \
     $(all_includes)
 
 libstatusbar_la_SOURCES = \
