@@ -678,11 +678,16 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
             w->blockSignals( false );
         }
     }
+    /*
+    //The idea here is to raise both windows when one raises so that both get shown. Unfortunately
+    //there just isn't a simple solution that doesn't cause breakage in other areas. Anything more complex
+    //than this would probably be too much effort to maintain. I'll leave it commented though in case
+    //a future developer has more wisdom than me. IMO if we can get the systray to do it, that'll be enough
     else if( e->type() == QEvent::WindowActivate )
     {
         (o == m_pPlayerWidget ? (QWidget*)m_pBrowserWin : (QWidget*)m_pPlayerWidget)->raise();
     }
-
+    */
     return FALSE;
 }
 
