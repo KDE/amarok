@@ -576,7 +576,8 @@ void PlaylistWidget::removeItem( PlaylistItem *item )
         setCurrentTrack( 0 );
 
         //ensure the playlist doesn't start at the beginning after the track that's playing ends
-        if( m_nextTracks.isEmpty() )
+        //we don't need to do that in random mode, it's getting randomly selected anyways
+        if( m_nextTracks.isEmpty() && !AmarokConfig::randomMode() )  
         {
             PlaylistItem *nextItem = item->nextSibling();
             m_nextTracks.append( nextItem );
