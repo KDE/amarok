@@ -647,13 +647,13 @@ void ContextBrowser::showHome() //SLOT
 
             m_HTMLSource.append(        "</a>"
                                     "</td>"
-                                    "<td class='sbtext'>" + fave[i + 2] + "</td>"
+                                    "<td class='sbtext' width='1'>" + fave[i + 2] + "</td>"
                                     "<td width='1' title='" + i18n( "Score" ) + "'>"
                                         "<div class='sbouter'>"
                                             "<div class='sbinner' style='width: " + QString::number( fave[i + 2].toInt() / 2 ) + "px;'></div>"
                                         "</div>"
                                     "</td>"
-                                    "<td width='2'></td>"
+                                    "<td width='1'></td>"
                                 "</tr>" );
         }
 
@@ -1012,7 +1012,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         values = qb.run();
 
         // not enough items returned, let's fill the list with score-less tracks
-        if ( values.count() < 5 * qb.countReturnValues() )
+        if ( values.count() < 10 * qb.countReturnValues() )
         {
             qb.clear();
             qb.exclusiveFilter( QueryBuilder::tabSong, QueryBuilder::tabStats, QueryBuilder::valURL );
@@ -1021,7 +1021,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
             qb.addMatches( QueryBuilder::tabArtist, relArtists );
             qb.setOptions( QueryBuilder::optRandomize );
-            qb.setLimit( 0, 5 - values.count() / 4 );
+            qb.setLimit( 0, 10 - values.count() / 4 );
 
             QStringList sl;
             sl = qb.run();
@@ -1061,7 +1061,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                 "<div class='sbinner' style='width: " + QString::number( values[i + 3].toInt() / 2 ) + "px;'></div>"
                             "</div>"
                         "</td>"
-                        "<td width='2'></td>"
+                        "<td width='1'></td>"
                     "</tr>" );
 
             m_HTMLSource.append(
@@ -1110,7 +1110,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                             "<div class='sbinner' style='width: " + QString::number( values[i + 2].toInt() / 2 ) + "px;'></div>"
                         "</div>"
                     "</td>"
-                    "<td width='2'></td>"
+                    "<td width='1'></td>"
                 "</tr>"
                                );
 
