@@ -611,7 +611,7 @@ void ContextBrowser::showHome() //SLOT
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
-    qb.setLimit( 0, 5 );
+    qb.setLimit( 0, 20 );
     QStringList recent = qb.run();
 
     qb.clear();
@@ -621,7 +621,7 @@ void ContextBrowser::showHome() //SLOT
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
-    qb.setLimit( 0, 5 );
+    qb.setLimit( 0, 20 );
     QStringList least = qb.run();
 
     m_homePage->begin();
@@ -637,38 +637,43 @@ void ContextBrowser::showHome() //SLOT
                     + i18n( "Your Favorite Tracks" ) +
                     "</span>"
                 "</div>"
-                "<div style='height: 204px; width: 100%; overflow: auto;'>"
-                  "<div id='favourites_box-body' class='box-body'>"
+                "<div style='height: 195px; width: 100%; overflow: auto;'>"
+                    "<div id='favourites_box-body' class='box-body'>"
                        );
 
     for( uint i = 0; i < fave.count(); i = i + 5 )
     {
         m_HTMLSource.append(
-                    "<div class='" + QString( (i % 10) ? "box-row-alt" : "box-row" ) + "'>"
-                        "<div class='song'>"
-                            "<table border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td width='30' align='center' class='song-place'>" + QString::number( ( i / 5 ) + 1 ) + "</td><td>"
-                            "<a href='file:" + fave[i+1].replace( '"', QCString( "%22" ) ) + "'>"
-                            "<span class='song-title'>" + fave[i] + "</span> "
-                            "<span class='song-score'>(" + i18n( "Score: %1" ).arg( fave[i+2] ) + ")</span><br />"
-                            "<span class='song-artist'>" + fave[i+3] + "</span>"
+                        "<div class='" + QString( (i % 10) ? "box-row-alt" : "box-row" ) + "'>"
+                            "<div class='song'>"
+                                "<table border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td width='30' align='center' class='song-place'>" + QString::number( ( i / 5 ) + 1 ) + "</td>"
+                                "<td><a href='file:" + fave[i+1].replace( '"', QCString( "%22" ) ) + "'>"
+                                "<span class='song-title'>" + fave[i] + "</span><br />"
+                                "<span class='song-artist'>" + fave[i + 3] + "</span>"
                            );
 
         if ( !fave[i+4].isEmpty() ) //album
             m_HTMLSource.append(
                                 "<span class='song-separator'> - </span>"
-                                "<span class='song-album'>"+ fave[i+4] +"</span>"
+                                "<span class='song-album'>"+ fave[i + 4] +"</span>"
                                );
 
         m_HTMLSource.append(
-                            "</a>"
-                            "</td></tr></table>"
+                                "</a></td>"
+                                "<td class='sbtext' width='1'>" + fave[i + 2] + "</td>"
+                                "<td width='1' title='" + i18n( "Score" ) + "'>"
+                                    "<div class='sbouter'>"
+                                        "<div class='sbinner' style='width: " + QString::number( fave[i + 2].toInt() / 2 ) + "px;'></div>"
+                                    "</div>"
+                                "</td>"
+                                "</tr></table>"
+                            "</div>"
                         "</div>"
-                    "</div>"
                            );
     }
     m_HTMLSource.append(
+                    "</div>"
                 "</div>"
-              "</div>"
             "</div>"
 
     // </Favorite Tracks Information>
@@ -681,16 +686,17 @@ void ContextBrowser::showHome() //SLOT
                     + i18n( "Your Newest Tracks" ) +
                     "</span>"
                 "</div>"
-                "<div id='newest_box-body' class='box-body'>" );
+                "<div style='height: 195px; width: 100%; overflow: auto;'>"
+                    "<div id='newest_box-body' class='box-body'>" );
 
     for( uint i = 0; i < recent.count(); i = i + 4 )
     {
         m_HTMLSource.append(
-                    "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
-                        "<div class='song'>"
-                            "<a href=\"file:" + recent[i+1].replace( '"', QCString( "%22" ) ) + "\">"
-                            "<span class='song-title'>" + recent[i] + "</span><br />"
-                            "<span class='song-artist'>" + recent[i+2] + "</span>"
+                        "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
+                            "<div class='song'>"
+                                "<a href=\"file:" + recent[i+1].replace( '"', QCString( "%22" ) ) + "\">"
+                                "<span class='song-title'>" + recent[i] + "</span><br />"
+                                "<span class='song-artist'>" + recent[i+2] + "</span>"
                            );
 
         if ( !recent[i+3].isEmpty() )
@@ -700,13 +706,14 @@ void ContextBrowser::showHome() //SLOT
                                );
 
         m_HTMLSource.append(
-                            "</a>"
+                                "</a>"
+                            "</div>"
                         "</div>"
-                    "</div>"
                            );
     }
 
     m_HTMLSource.append(
+                    "</div>"
                 "</div>"
             "</div>"
 
@@ -720,18 +727,19 @@ void ContextBrowser::showHome() //SLOT
                     + i18n( "Least Played Tracks" ) +
                     "</span>"
                 "</div>"
-                "<div id='least_box-body' class='box-body'>" );
+                "<div style='height: 195px; width: 100%; overflow: auto;'>"
+                    "<div id='least_box-body' class='box-body'>" );
 
     QDateTime lastPlay = QDateTime();
     for( uint i = 0; i < least.count(); i = i + 5 )
     {
         lastPlay.setTime_t( least[i+4].toUInt() );
         m_HTMLSource.append(
-                    "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
-                        "<div class='song'>"
-                            "<a href=\"file:" + least[i+1].replace( '"', QCString( "%22" ) ) + "\">"
-                            "<span class='song-title'>" + least[i] + "</span><br />"
-                            "<span class='song-artist'>" + least[i+2] + "</span>"
+                        "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
+                            "<div class='song'>"
+                                "<a href=\"file:" + least[i+1].replace( '"', QCString( "%22" ) ) + "\">"
+                                "<span class='song-title'>" + least[i] + "</span><br />"
+                                "<span class='song-artist'>" + least[i+2] + "</span>"
                            );
 
         if ( !least[i+3].isEmpty() )
@@ -741,14 +749,15 @@ void ContextBrowser::showHome() //SLOT
                                );
 
         m_HTMLSource.append(
-                            "<br /><span class='song-time'>" + i18n( "Last played: %1" ).arg( verboseTimeSince( lastPlay ) ) + "</span>"
-                            "</a>"
+                                "<br /><span class='song-time'>" + i18n( "Last played: %1" ).arg( verboseTimeSince( lastPlay ) ) + "</span>"
+                                "</a>"
+                            "</div>"
                         "</div>"
-                    "</div>"
                            );
     }
 
     m_HTMLSource.append(
+                    "</div>"
                 "</div>"
             "</div>"
             "</html>"
