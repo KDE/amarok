@@ -28,7 +28,7 @@ DEPENDENCIES
 ============
 
 required
-    * KDElibs 3.2
+    * KDE-Libs 3.2
       http://www.kde.org
 
     * TagLib 1.3.1
@@ -41,7 +41,7 @@ recommended
       http://gstreamer.net
 
 optional
-    * aRts 1.2 + KDEMultimedia 3.2
+    * aRts 1.2 + KDE-Multimedia 3.2
       (multimedia framework)
       http://www.kde.org
 
@@ -56,6 +56,10 @@ optional
     * xine 1.0.0
       (multimedia framework)
       http://xine.sourceforge.net
+
+    * KDE-Base 3.2
+      (needed for Konqueror Sidebar)
+      http://www.kde.org
 
     * OpenGL accelerated X-Server
       (visualization rendering)

@@ -184,6 +184,10 @@ else
         echo " =   + MySql support"
     fi
 
+    if test x$have_konqsidebar = xyes; then
+        echo " =   + Konqueror Sidebar"
+    fi
+
     echo " ="
 fi
 

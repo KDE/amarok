@@ -4,10 +4,25 @@ if with_included_sqlite
     sqlite_includes = -I$(top_srcdir)/amarok/src/sqlite
 endif
 
+if with_konqsidebar
+    KONQSIDEBAR_SUBDIR = konquisidebar
+endif
+
+
 bin_PROGRAMS = amarokapp
 
-SUBDIRS = amarokcore $(SQLITE_SUBDIR) analyzers data plugin engine ipod \
-	images loader vis konquisidebar
+SUBDIRS = \
+    amarokcore \
+    $(SQLITE_SUBDIR) \
+    analyzers \
+    data \
+    plugin \
+    engine \
+    ipod \
+    images \
+    loader \
+    vis \
+    $(KONQSIDEBAR_SUBDIR)
 
 INCLUDES = \
     -I$(top_builddir)/amarok/src/amarokcore \
