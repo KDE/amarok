@@ -152,9 +152,7 @@ CoverFetcher::imageData( KIO::Job*, const QByteArray& data ) //SLOT
 {
     if ( m_bufferIndex + (uint) data.size() >= BUFFER_SIZE ) {
         emit error();
-        KMessageBox::error( 0, i18n( "CoverFetcher buffer overflow. Image is bigger than <i>1</i> byte. Aborting.",
-                                     "CoverFetcher buffer overflow. Image is bigger than <i>%n</i> bytes. Aborting.",
-                                     BUFFER_SIZE ) );
+        KMessageBox::error( 0, i18n( "CoverFetcher buffer overflow. Image is larger than <i>%1B</i>. Aborting." ).arg( BUFFER_SIZE ) );
         deleteLater();
         return;
     }
@@ -239,8 +237,9 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
             connect( newsearch, SIGNAL( clicked() ), this, SLOT( editSearch() ) );
             connect( save, SIGNAL( clicked() ), this, SLOT( saveCover() ) );
 
-            container->adjustSize();
-            container->setFixedSize( container->size() );
+            //Just doesn't work for me, half the text is always cut off
+            //container->adjustSize();
+            //container->setFixedSize( container->size() );
             container->show();
         }
         else
