@@ -297,6 +297,8 @@ CollectionView::scan()  //SLOT
         m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
         m_insertdb->scan( AmarokConfig::collectionFolders(), AmarokConfig::scanRecursively(),
                                       AmarokConfig::importPlaylists() );
+
+        amaroK::StatusBar::instance()->message( i18n("Building Collection") );
     }
 }
 
@@ -361,6 +363,8 @@ CollectionView::scanDone( bool changed ) //SLOT
 
     m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, true );
     m_isScanning = false;
+
+    amaroK::StatusBar::instance()->clear();
 
     emit sigScanDone();
 }
