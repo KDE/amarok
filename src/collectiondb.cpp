@@ -572,13 +572,14 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
 
     if ( error != SQLITE_OK )
     {
-        kdError() << k_funcinfo << "[CollectionDB] sqlite3_compile error:\n";
+        kdError() << k_funcinfo << "[CollectionDB] sqlite3_compile error:" << endl;
         kdError() << sqlite3_errmsg( m_db ) << endl;
         kdError() << "on query: " << statement << endl;
 
         return false;
     }
 
+    int busyCnt = 0;
     int number = sqlite3_column_count( stmt );
     //execute virtual machine by iterating over rows
     while ( true )
@@ -586,9 +587,12 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
         error = sqlite3_step( stmt );
 
         if ( error == SQLITE_BUSY )
-            kdDebug() << "[CollectionDB] sqlite3_step: BUSY\n";
+        {
+            busyCnt++;
+            kdDebug() << "[CollectionDB] sqlite3_step: BUSY counter: " << busyCnt << endl;
+        }
         if ( error == SQLITE_MISUSE )
-            kdDebug() << "[CollectionDB] sqlite3_step: MISUSE\n";
+            kdDebug() << "[CollectionDB] sqlite3_step: MISUSE" << endl;
         if ( error == SQLITE_DONE || error == SQLITE_ERROR )
             break;
 
