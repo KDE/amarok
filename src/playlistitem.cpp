@@ -237,6 +237,10 @@ void PlaylistItem::setText( int column, const QString &newText )
         //TODO consider making this a dynamically generated string
         KListViewItem::setText( Length, newText.isEmpty() ? newText : newText + ' ' ); //padding makes it neater
         break;
+    
+    case Track:
+        KListViewItem::setText( Track, newText == "0" ? QString::null : newText );
+        break;
 
     default:
         KListViewItem::setText( column, newText );
