@@ -15,6 +15,7 @@ email                :
  *                                                                         *
  ***************************************************************************/
 
+#include "amarokbutton.h"
 #include "browserwin.h"
 #include "effectwidget.h"
 #include "playerapp.h"
@@ -43,8 +44,6 @@ email                :
 #include <qrect.h>
 #include <qslider.h>
 #include <qstring.h>
-#include <qstring.h>
-#include <qthread.h>
 #include <qtoolbutton.h>
 #include <qtooltip.h>
 #include <qwidget.h>
@@ -63,111 +62,7 @@ email                :
 
 #include <dcopclient.h>
 
-#include <arts/artsgui.h>
-#include <arts/connect.h>
-#include <arts/dynamicrequest.h>
-#include <arts/flowsystem.h>
-#include <arts/kartswidget.h>
-#include <arts/kmedia2.h>
-#include <arts/kplayobjectfactory.h>
-#include <arts/soundserver.h>
-
 #define VIS_COUNT 2
-
-// CLASS AmarokButton ------------------------------------------------------------
-
-AmarokButton::AmarokButton( QWidget *parent, QString activePixmap, QString inactivePixmap, bool toggleButton )
-        : QLabel( parent )
-
-{
-    m_activePixmap = QPixmap( activePixmap );
-    m_inactivePixmap = QPixmap( inactivePixmap );
-    m_isToggleButton = toggleButton;
-
-    setOn( false );
-    m_clicked = false;
-
-    setBackgroundMode( Qt::FixedPixmap );
-    setBackgroundOrigin( QWidget::WindowOrigin );
-}
-
-
-AmarokButton::~AmarokButton()
-{}
-
-
-void AmarokButton::mousePressEvent( QMouseEvent * )
-{
-    m_clicked = true;
-
-    if ( m_isToggleButton )
-    {
-        setPixmap( m_activePixmap );
-    }
-    else
-    {
-        setOn( true );
-    }
-}
-
-
-void AmarokButton::mouseReleaseEvent( QMouseEvent *e )
-{
-    if ( m_clicked )
-    {
-        if ( rect().contains( e->pos() ) )
-        {
-            if ( m_isToggleButton )
-            {
-                if ( m_on )
-                    setOn( false );
-                else
-                    setOn( true );
-
-                emit toggled( m_on );
-            }
-            else
-            {
-                setOn( false );
-                emit clicked();
-            }
-        }
-        else
-        {
-            if ( m_isToggleButton )
-            {
-                if ( ! m_on )
-                    setOn( false );
-            }
-            else
-                setOn( false );
-        }
-
-        m_clicked = false;
-    }
-}
-
-
-void AmarokButton::setOn( bool enable )
-{
-    if ( enable )
-    {
-        m_on = true;
-        setPixmap( m_activePixmap );
-    }
-    else
-    {
-        m_on = false;
-        setPixmap( m_inactivePixmap );
-    }
-}
-
-
-bool AmarokButton::isOn()
-{
-    return m_on;
-}
-
 
 // CLASS AmarokSlider ------------------------------------------------------------
 
@@ -675,12 +570,12 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             //actionCollection()->action( "file_quit" )->plug( m_pPopupMenu );
 
         }
-        
+
         m_pPopupMenu->setItemChecked( m_IdRepeatTrack, pApp->m_optRepeatTrack );
         m_pPopupMenu->setItemChecked( m_IdRepeatPlaylist, pApp->m_optRepeatPlaylist );
         m_pPopupMenu->setItemChecked( m_IdRandomMode, pApp->m_optRandomMode );
 
-        if ( playObjectConfigurable() )
+        if ( pApp->playObjectConfigurable() )
             m_pPopupMenu->setItemEnabled( m_IdConfPlayObject, true );
         else
             m_pPopupMenu->setItemEnabled( m_IdConfPlayObject, false );
@@ -803,25 +698,6 @@ void PlayerWidget::slotConfigPlayObject()
 void PlayerWidget::slotConfigWidgetDestroyed()
 {
     m_pPlayObjConfigWidget = NULL;
-}
-
-
-bool PlayerWidget::playObjectConfigurable()
-{
-    if ( pApp->m_pPlayObject && !m_pPlayObjConfigWidget )
-    {
-        Arts::TraderQuery query;
-        query.supports( "Interface", "Arts::GuiFactory" );
-        query.supports( "CanCreate", pApp->m_pPlayObject->object()._interfaceName() );
-
-        std::vector<Arts::TraderOffer> *queryResults = query.query();
-        bool yes = queryResults->size();
-        delete queryResults;
-
-        return yes;
-    }
-
-    return false;
 }
 
 

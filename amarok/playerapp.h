@@ -59,8 +59,8 @@ class PlayerApp : public KUniqueApplication
 
         virtual int newInstance();
         bool queryClose();
-
         void restore();
+        bool playObjectConfigurable();
 
         // ATTRIBUTES ------
         KGlobalAccel *m_pGlobalAccel;

@@ -43,8 +43,9 @@ class QToolButton;
 class KActionCollection;
 class KSystemTray;
 
-class VisWidget;
+class AmarokButton;
 class ArtsConfigWidget;
+class VisWidget;
 
 class PlayerApp;
 extern PlayerApp *pApp;
@@ -53,42 +54,6 @@ extern PlayerApp *pApp;
 /**
  *@author mark
  */
-
-// CLASS AmarokButton ------------------------------------------------------------
-
-/**
- * @brief: The "fake" button.
- */
-class AmarokButton : public QLabel
-{
-        Q_OBJECT
-
-    public:
-        AmarokButton( QWidget *parent, QString activePixmap, QString inactivePixmap, bool toggleButton );
-        ~AmarokButton();
-
-        void setOn( bool enable );
-        bool isOn();
-
-        // ATTRIBUTES ------
-
-    public slots:
-
-    signals:
-        void clicked();
-        void toggled( bool on );
-
-    private:
-        void mousePressEvent( QMouseEvent *e );
-        void mouseReleaseEvent( QMouseEvent *e );
-
-        // ATTRIBUTES ------
-        QPixmap m_activePixmap, m_inactivePixmap;
-        bool m_on;
-        bool m_isToggleButton;
-        bool m_clicked;
-};
-
 
 // CLASS AmarokSlider ------------------------------------------------------------
 
@@ -214,7 +179,6 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
         void queryClose();
         void closeEvent( QCloseEvent *e );
         void moveEvent( QMoveEvent *e );
-        bool playObjectConfigurable();
 
         // ATTRIBUTES ------
         QString m_bitrate, m_samplerate;

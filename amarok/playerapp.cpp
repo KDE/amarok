@@ -16,6 +16,7 @@ email                :
  ***************************************************************************/
 
 #include "amarokarts/amarokarts.h"
+#include "amarokbutton.h"
 #include "browserwidget.h"
 #include "browserwin.h"
 #include "configdlg.h"
@@ -1118,6 +1119,25 @@ void PlayerApp::slotNext()
             slotPlay();
         }
     }
+}
+
+
+bool PlayerApp::playObjectConfigurable()
+{
+    if ( m_pPlayObject && !m_pPlayerWidget->m_pPlayObjConfigWidget )
+    {
+        Arts::TraderQuery query;
+        query.supports( "Interface", "Arts::GuiFactory" );
+        query.supports( "CanCreate", pApp->m_pPlayObject->object()._interfaceName() );
+
+        std::vector<Arts::TraderOffer> *queryResults = query.query();
+        bool yes = queryResults->size();
+        delete queryResults;
+
+        return yes;
+    }
+
+    return false;
 }
 
 
