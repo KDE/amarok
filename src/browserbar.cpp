@@ -304,10 +304,10 @@ BrowserBar::addBrowser( QWidget *widget, const QString &title, const QString& ic
 void
 BrowserBar::removeBrowser( const QCString &name )
 {
-    for( int x = 0; x < m_browsers.count(); ++x )
+    for( uint x = 0; x < m_browsers.count(); ++x )
         if( m_browsers[x]->name() == name )
         {
-            if( m_currentIndex == x ) closeCurrentBrowser();
+            if( m_currentIndex == (int)x ) closeCurrentBrowser();
 
             //NOTE we do not delete the browser currently
             //because we don't need this functionality yet

@@ -58,11 +58,10 @@
 
 
 PlaylistWindow::PlaylistWindow()
-   : QWidget( 0, "PlaylistWindow", Qt::WNoAutoErase | Qt::WGroupLeader )
+   : QWidget( 0, "PlaylistWindow", Qt::WGroupLeader )
    , KXMLGUIClient()
 {
     setCaption( "amaroK" );
-
 
     KActionCollection* const ac = actionCollection();
     const EngineController* const ec = EngineController::instance();
@@ -114,9 +113,6 @@ PlaylistWindow::init()
     //this function and some objects we create in this function use pApp->actionCollection()
     //but since pApp->m_pPlaylistWindow is not defined until the above ctor returns it causes a
     //crash unless we do the initialisation in 2 stages.
-
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
-
 
     m_browsers = new BrowserBar( this );
 
@@ -189,11 +185,6 @@ PlaylistWindow::init()
         {
             m_browsers->addBrowser( new WelcomeBrowser( this, "WelcomePage" ), i18n( "Welcome" ), "help" );
         }
-
-//         //FIXME this signal does not exist
-//         connect( m_browsers, SIGNAL(  activated( const KURL& )),
-//                  m_playlist,   SLOT(appendMedia( const KURL& )) );
-
     //</Browsers>
 
 
@@ -203,8 +194,6 @@ PlaylistWindow::init()
              m_lineEdit,   SLOT(clear()) );
     connect( m_lineEdit, SIGNAL(textChanged( const QString& )),
              m_playlist,   SLOT(slotTextChanged( const QString& )) );
-
-    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 
@@ -322,7 +311,8 @@ void PlaylistWindow::setColors( const QPalette &pal, const QColor &bgAlt )
 
 void PlaylistWindow::setFont( const QFont &font )
 {
-    m_browsers->setFont( font );
+    m_browsers->browser( "ContextBrowser" )->setFont( font ); //virtual so works without cast
+    //m_browsers->setFont( font );
     m_playlist->setFont( font );
 }
 
@@ -451,7 +441,7 @@ void PlaylistWindow::slotAddLocation() //SLOT
     dlg.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
     dlg.exec();
 
-    playlist()->insertMedia( dlg.selectedURL() );
+    m_playlist->insertMedia( dlg.selectedURL() );
 }
 
 

@@ -41,11 +41,13 @@ ContextBrowser::ContextBrowser( const char *name )
 
     setSpacing( 4 );
     setMargin( 5 );
+    QWidget::setFont( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );
 
     QHBox *hb1 = new QHBox( this );
     hb1->setSpacing( 4 );
 
     browser = new KHTMLPart( hb1 );
+    browser->setDNDEnabled( true );
     setStyleSheet();
 
     connect( browser->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
@@ -68,6 +70,20 @@ ContextBrowser::~ContextBrowser()
     EngineController::instance()->detach( this );
 }
 
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// PUBLIC METHODS
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void ContextBrowser::setFont( const QFont &newFont ) //virtual
+{
+    if( font() != newFont )
+    {
+        QWidget::setFont( newFont );
+        setStyleSheet();
+        browser->setUserStyleSheet( m_styleSheet );
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SLOTS
@@ -169,8 +185,7 @@ void ContextBrowser::paletteChange( const QPalette& pal )
 
 void ContextBrowser::setStyleSheet()
 {
-    QFontMetrics fm( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );
-    int pxSize = fm.height() - 4;
+    int pxSize = fontMetrics().height() - 4;
 
     m_styleSheet =  QString( "div { color: %1; font-size: %2px; text-decoration: none; }" )
                     .arg( colorGroup().text().name() ).arg( pxSize );

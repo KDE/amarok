@@ -20,7 +20,6 @@
 
 #include <qwidget.h>        //baseclass
 #include <ktoolbar.h>       //baseclass
-#include <kurl.h>           //KURL::List
 #include <kxmlguiclient.h>  //baseclass (for XMLGUI)
 
 
@@ -67,7 +66,6 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
 
         void createGUI(); //should be private but App::slowConfigToolbars requires it
 
-        Playlist *playlist() const { return m_playlist; }
         KStatusBar *statusBar() const { return m_statusbar; }
 
         virtual bool eventFilter( QObject*, QEvent* );
