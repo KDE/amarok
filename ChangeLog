@@ -4,6 +4,9 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta3:
+  ADD: Save current track position and play queue on exit. (BR 90379)
+  FIX: Fix Directory column on playlist, show absolute directory path
+       instead of empty string. (BR 90361)
   ADD: DCOP call to scan your collection. (BR 84621)
   FIX: When an engine fails to load, respect the rank while choosing
        the next engine.
