@@ -4,6 +4,9 @@ amaroK ChangeLog
 
 
 VERSION 1.1:
+  ADD: CoverManager - for downloading and managing album cover images.
+  CHG: Refactored engine plugin interface. Each engine can now provide specific
+       configuration GUIs.
   ADD: As-you-type search for FileBrowser.
   ADD: Seeking with mousewheel in playerwindow.
   REM: Stream-Browser.
