@@ -358,6 +358,10 @@ void App::applySettings( bool firstTime )
             playlistWindow()->reloadXML();
             playlistWindow()->createGUI();
         }
+
+        //forgive user-stupidity
+        if( !AmarokConfig::showTrayIcon() )
+           playlistWindow()->show();
     }
 
 
