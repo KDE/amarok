@@ -580,7 +580,7 @@ void Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after,
 }
 
 
-void PlaylistWidget::slotHeaderResized( int section, int, int newSize )
+void Playlist::slotHeaderResized( int section, int, int newSize )
 {
 #if 0
     //TODO the header has some padding either side of the text, so the fontMetrics width
