@@ -926,7 +926,8 @@ GstEngine::getPluginList( const QCString& classname ) const
 
                     if ( g_strrstr ( factory->details.klass, classname ) ) {
                         name = g_strdup ( GST_OBJECT_NAME ( factory ) );
-                        if ( name != "artsdsink" ) results << name;
+                        /*if ( name != "artsdsink" )*/
+                        results << name;
                     }
                 }
                 features = g_list_next ( features );
