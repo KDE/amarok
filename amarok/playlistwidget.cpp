@@ -1,5 +1,7 @@
 /* Copyright 2002-2004 Mark Kretschmann, Max Howell
  * Licensed as described in the COPYING file found in the root of this distribution
+ * Maintainer: Max Howell <max.howell@methylblue.com>
+
 
  * NOTES
  *
@@ -512,6 +514,7 @@ void PlaylistWidget::removeItem( PlaylistItem *item )
     //items already removed by takeItem() will crash if you call nextSibling() on them
     //taken items return 0 from listView()
     //FIXME is this check needed ?
+    //<mxcl> yes, we used to get crashes without it
     if( item->listView() )
     {
         if( item == m_currentTrack ) setCurrentTrack( 0 );
@@ -520,7 +523,7 @@ void PlaylistWidget::removeItem( PlaylistItem *item )
 
     //keep m_nextTracks queue synchronised
     int queueIndex = m_nextTracks.findRef( item );
-    if ( queueIndex >= 0 )
+    if( queueIndex != -1 )
     {
         m_nextTracks.remove();
         refreshNextTracks( queueIndex );
@@ -531,35 +534,31 @@ void PlaylistWidget::removeItem( PlaylistItem *item )
     if( x >= 0 )
     {
         searchTokens.remove( searchTokens.at( x ) );
-        searchPtrs.remove( x );
+        searchPtrs.remove(/* x */); //TODO check this is safe!
     }
 
     //keep recent buffer synchronised
     for( x = -2; x != -1; )
     {
         x = recentPtrs.findRef( item ); //returns -1 if not found
-        recentPtrs.remove( x ); //safe to pass x < 0
+        recentPtrs.remove( /*x*/ ); //removes current item, findRef sets current item
     }
 }
-        
 
-void PlaylistWidget::refreshNextTracks( uint from )
+
+void PlaylistWidget::refreshNextTracks( int from )
 {
     // This function scans the m_nextTracks list starting from the 'from'
     // position and from there on updates the progressive numbering on related
     // items and repaints them. In short it performs an update subsequent to
     // a renumbering/order changing at some point of the m_nextTracks list.
-    
-    if ( from >= m_nextTracks.count() )
-        return;
 
     //start on the 'from'-th item of the list
-    PlaylistItem* item = m_nextTracks.at( from );
-    for (; item; item = m_nextTracks.next() )
+
+    for( PlaylistItem* item = (from == -1) ? m_nextTracks.current() : m_nextTracks.at( from );
+         item;
+         item = m_nextTracks.next() )
     {
-        //set the right number on the item (queue_position + 1)
-        item->setQueuePosition( ++from );
-        //and repaint it
         repaintItem( item );
     }
 }
@@ -572,18 +571,15 @@ void PlaylistWidget::activate( QListViewItem *item ) //SLOT
     {
         kdDebug() << "[playlist] Requesting playback for: " << item->text( 0 ) << endl;
 
-        //if we're playing a queued item, take it off the queue and refresh
-        if ( playItem->queuePosition() > 0 )
+        int index = m_nextTracks.findRef( playItem );
+        if( index != -1 )
         {
-            playItem->setQueuePosition( 0 );
-            int index = m_nextTracks.findRef( playItem );
-            if ( index >= 0 )
-            {
-                m_nextTracks.remove();
-                refreshNextTracks( index );
-            }
+            //if we're playing a queued item, take it off the queue and refresh
+            m_nextTracks.remove(); //will remove list's current member, which is set by findRef()
+            refreshNextTracks( index );
         }
 
+        //cache the track so when the engine tells us a KURL is playing we don't have to search
         m_cachedTrack = playItem;
         EngineController::instance()->play( playItem->metaBundle() );
     }
@@ -829,25 +825,32 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
     #define COPY       5
     #define REMOVE     6
 
-    if( item == NULL ) return; //technically we should show "Remove" but this is far neater
-    PlaylistItem * plitem = static_cast<PlaylistItem *>(item);
+    #define item static_cast<PlaylistItem*>(item)
 
-    bool canRename = isRenameable( col );
-    bool isCurrent = (item == m_currentTrack);
-    bool isPlaying = EngineController::instance()->engine() ? EngineController::instance()->engine()->loaded() : false;
+    if( item == NULL ) return; //technically we should show "Remove" but this is far neater
+
+    const bool canRename = isRenameable( col );
+    const bool isCurrent = (item == m_currentTrack);
+    const bool isPlaying = EngineController::instance()->engine() ? EngineController::instance()->engine()->loaded() : false;
+    const int queueIndex = m_nextTracks.findRef( item );
+    const bool isQueued  = queueIndex != -1;
 
     //Markey, sorry for the lengths of these lines! -mxcl
 
     QPopupMenu popup( this );
     popup.insertItem( SmallIcon( "player_play" ), isCurrent && isPlaying ? i18n( "&Play (Restart)" ) : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
-    QString nextText = i18n( "Play as &Next" );
-    int nextIndex = m_nextTracks.count();
-    if ( plitem->queuePosition() < 1 )
-        nextIndex++;
-    if ( nextIndex > 1 )
-        nextText += QString( " (%1)" ).arg( nextIndex );
-    if ( plitem->queuePosition() != nextIndex )
+
+    if( !isQueued ) //not in nextTracks queue
+    {
+        QString nextText = i18n( "Play as &Next" );
+
+        uint nextIndex = m_nextTracks.count() + 1;
+        if( nextIndex > 1 ) nextText += QString( " (%1)" ).arg( nextIndex );
+
         popup.insertItem( SmallIcon( "2downarrow" ), nextText, PLAY_NEXT );
+    }
+    else popup.insertItem( i18n( "&Dequeue (%1)" ).arg( queueIndex+1 ), PLAY_NEXT );
+
     popup.insertItem( SmallIcon( "info" ), i18n( "&View Meta Information..." ), VIEW ); //TODO rename properties
     popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit Tag: '%1'" ).arg( columnText( col ) ), EDIT );
     if( canRename )
@@ -870,30 +873,30 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
     case PLAY:
         activate( item );
         break;
+
     case PLAY_NEXT:
-        if ( plitem->queuePosition() > 0 )
+        item->setSelected( false ); //for prettiness
+
+        if( isQueued )
         {
-            //plitem already in queue: just move it to the last place
-            plitem->setQueuePosition( m_nextTracks.count() );
-            int idx = m_nextTracks.findRef( plitem );
-            if ( idx >= 0 )
-            {
-                m_nextTracks.remove( plitem );
-                refreshNextTracks( idx );
-            }
-        } else
-            //plitem not in queue: add it to the end of the list
-            plitem->setQueuePosition( m_nextTracks.count() + 1 );
-        m_nextTracks.append( plitem );
-        item->setSelected( false );
-        repaintItem( plitem );
+            //if is Queued, remove the item
+            m_nextTracks.at( queueIndex ); //set current item
+            m_nextTracks.remove();
+        }
+        else m_nextTracks.append( item ); //else append it on the end of the list
+
+        refreshNextTracks(); //will start at current item in QPtrList
+
         break;
+
     case VIEW:
         showTrackInfo( static_cast<PlaylistItem *>(item) );
         break;
+
     case EDIT:
         rename( item, col );
         break;
+
     case FILL_DOWN:
         //Spreadsheet like fill-down
         //TODO for track, increment obviously
@@ -911,10 +914,13 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
             }
         }
         break;
+
     case COPY:
         copyToClipboard( item );
         break;
     }
+
+    #undef item
 
     #undef PLAY
     #undef PLAY_NEXT

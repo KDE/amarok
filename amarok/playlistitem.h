@@ -1,19 +1,9 @@
-/***************************************************************************
-                          playlistitem.h  -  description
-                             -------------------
-    begin                : Die Dez 3 2002
-    copyright            : (C) 2002 by Mark Kretschmann
-    email                : markey@web.de
- ***************************************************************************/
+//Maintainer: Max Howell <max.howell@methylblue.com>
+//Copyright:  GPL v2
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+//NOTE please show restraint when adding data members to this class!
+//     some users have playlists with 20,000 items or more in, one 32 bit int adds up rapidly!
+
 
 #ifndef PLAYLISTITEM_H
 #define PLAYLISTITEM_H
@@ -44,8 +34,6 @@ class PlaylistItem : public KListViewItem
         QString title() const { return KListViewItem::text( 1 ); }
         const KURL &url() const { return m_url; }
         QString seconds() const;
-        void setQueuePosition( int i ) { playNext = i; }
-        int queuePosition() { return playNext; }
 
 
 #ifdef CORRUPT_FILE
@@ -70,7 +58,6 @@ class PlaylistItem : public KListViewItem
         void    paintCell( QPainter*, const QColorGroup&, int, int, int );
 
         const KURL m_url;
-        int playNext;
 
         static const uint STRING_STORE_SIZE = 80;
         static QString stringStore[STRING_STORE_SIZE];
