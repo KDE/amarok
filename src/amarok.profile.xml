@@ -40,10 +40,21 @@
         <name>Go to previous track</name>
         <comment></comment>
     </action>
-
+    <action>
+    <action objid="player" prototype="void seekRelative(int)" class="seek" repeat="1" autostart="0">
+    <name>Relative seek</name>
+    <comment>Seek inside of tracks. Use negative numbers for rewind.</comment>
+        <argument type="int">
+            <range min="-100" max="100"/>
+        </argument>
+    </action>
     <!-- Misc actions -->
     <action objid="player" prototype="void showOSD()">
         <name>Show OSD display</name>
         <comment>Works only if OSD is enabled</comment>
+    </action>
+    <action objid="player" prototype="void togglePlaylist()">
+        <name>Toggles the playlist window</name>
+        <comment></comment>
     </action>
 </profile>
