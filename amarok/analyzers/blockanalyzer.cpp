@@ -65,14 +65,19 @@ BlockAnalyzer::init()
 void
 BlockAnalyzer::transform( Scope &scope )
 {
-    scope.resize( scope.size() / 4 );
+    scope.resize( 32 );
 
     float *front = static_cast<float*>( &scope.front() );
 
+    m_fht.spectrum( front );
+    m_fht.scale( front, 1.0 / 20 );
+
+    /*
     float f[ m_fht.size() ];
     m_fht.copy( &f[0], front );
     m_fht.logSpectrum( front, &f[0] );
     m_fht.scale( front, 1.0 / 20 );
+    */
 }
 
 void
