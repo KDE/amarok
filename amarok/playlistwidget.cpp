@@ -629,20 +629,30 @@ void PlaylistWidget::activate( QListViewItem *item )
 
 void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int col )
 {
-    if( item == NULL ) return; //technically we should show "Remove" but this is easier
+    if( item == NULL ) return; //technically we should show "Remove" but this is far neater
+
+    bool canRename = isRenameable( col );
 
     QPopupMenu popup( this );
     popup.insertItem( SmallIcon( "player_play" ), i18n( "&Play" ), 0, 0, Key_Enter, 0 );
-    popup.insertItem( SmallIcon( "info" ), i18n( "&View meta information..." ), 1 );
+    popup.insertItem( SmallIcon( "info" ), i18n( "&View meta information..." ), 1 ); //TODO rename properties
     popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit tag: %1" ).arg( columnText( col ) ), 2 );
-    popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy trackname" ), 0, 0, CTRL+Key_C, 3 ); //FIXME use KAction
+    if( canRename )
+    {
+        QListViewItem *below = item->itemBelow();
+        if( below && below->isSelected() )
+        {
+            popup.insertItem( i18n( "Spreadsheet fill down", "&Fill down" ), 3 );
+        }
+    }
+    popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy trackname" ), 0, 0, CTRL+Key_C, 4 ); //FIXME use KAction
     popup.insertSeparator();
     //NOTE we did use "editdelete" but it that makes it seem like you will delete the file!
     //NOTE at least one item will always be selected ( item )
-    popup.insertItem( SmallIcon( "editclear" ), i18n( "&Remove selected" ), this, SLOT( removeSelectedItems() ), Key_Delete );
+    popup.insertItem( SmallIcon( "edittrash" ), i18n( "&Remove selected" ), this, SLOT( removeSelectedItems() ), Key_Delete );
 
     //only enable for columns that have editable tags
-    popup.setItemEnabled( 2, isRenameable( col ) );
+    popup.setItemEnabled( 2, canRename );
 
     switch( popup.exec( p ) )
     {
@@ -656,6 +666,25 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
         rename( item, col );
         break;
     case 3:
+        {
+            //Spreadsheet like fill-down
+            //TODO for track increment obviously
+
+            QString newTag = item->text( col );
+            QListViewItemIterator it( item );
+
+            for( ++it; it.current(); ++it )
+            {
+                if( it.current()->isSelected() )
+                {
+                    static_cast<PlaylistItem *>(*it)->writeTag( newTag, col );
+                    it.current()->setText( col, newTag );
+                }
+                else break;
+            }
+        }
+        break;
+    case 4:
         copyAction( item );
         break;
     }
