@@ -15,9 +15,6 @@ SHORT-TERM (URGENT):
 
   FIX 149<chimaera>If you select a different sink and then check/uncheck custom audio device, the sink jumps back
                    to the last selected.
-  
-  FIX 139 <markey> Find out why collection scan won't work with samba shares. Currently the scan just gets
-                   stuck, hogging CPU and doing nothing useful.
 
   FIX 134 <markey> Ctrl-C as shortcut for copying title just doesn't work. We need to choose another
                    shortcut. How about a global shortcut?
