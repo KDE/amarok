@@ -10,11 +10,16 @@ images_DATA = \
     description.png \
     eq_active2.png \
     eq_inactive2.png \
+    loading1.png \
+    loading2.png \
     logo_splash.png \
     logo_web.png \
     pl_active2.png \
     pl_inactive2.png \
+    sound.png \
     time_minus.png \
     time_plus.png \
-    vol_speaker.png \
-    sound.png
+    vol_speaker.png
+
+    
+    
