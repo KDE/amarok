@@ -289,9 +289,9 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     lay->addItem( new QSpacerItem( 0, 5 ) );
     QBoxLayout* lay2 = new QHBoxLayout( lay );
     lay->addItem( new QSpacerItem( 0, 5 ) );
-    lay2->addItem( new QSpacerItem( 6, 0 ) );
+    lay2->addItem( new QSpacerItem( 8, 0 ) );
     lay2->addWidget( m_pSlider );
-    lay2->addItem( new QSpacerItem( 6, 0 ) );
+    lay2->addItem( new QSpacerItem( 8, 0 ) );
 
     lay3->addItem( new QSpacerItem( 1, 0 ) );
     lay3->addWidget( m_pSliderVol );
