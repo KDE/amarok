@@ -642,11 +642,11 @@ Playlist::restoreCurrentTrack()
         setCurrentTrack( item ); //set even if NULL
 
         if( item )
-	{
+        {
            //display "Play" icon
            item->setPixmap( m_firstColumn, locate( "data", QString( "amarok/images/currenttrack_play.png" ) ) );
-	   m_currentTrack->pixmapChanged = true;
-	}
+           PlaylistItem::s_pixmapChanged = true;
+        }
     }
 
     return m_currentTrack;
@@ -726,11 +726,11 @@ Playlist::engineStateChanged( Engine::State state )
         Glow::startTimer();
 
         if ( m_currentTrack )
-	{
+        {
             //display "Play" icon
             m_currentTrack->setPixmap( m_firstColumn, locate( "data", QString( "amarok/images/currenttrack_play.png" ) ) );
-	    m_currentTrack->pixmapChanged = true;
-	}
+            PlaylistItem::s_pixmapChanged = true;
+        }
         break;
 
     case Engine::Paused:
@@ -741,11 +741,11 @@ Playlist::engineStateChanged( Engine::State state )
         Glow::startTimer();
 
         if ( m_currentTrack )
-	{
+        {
             //display "Pause" icon
             m_currentTrack->setPixmap( m_firstColumn, locate( "data", QString( "amarok/images/currenttrack_pause.png" ) ) );
-	    m_currentTrack->pixmapChanged = true;
-	}
+            PlaylistItem::s_pixmapChanged = true;
+        }
         break;
 
     case Engine::Empty:
@@ -892,7 +892,7 @@ Playlist::columnOrderChanged() //SLOT
     {
         m_currentTrack->setPixmap( prevColumn, QPixmap() );
         m_currentTrack->setPixmap( m_firstColumn, locate( "data", QString( "amarok/images/currenttrack_play.png" ) ) );
-	m_currentTrack->pixmapChanged = true;
+        PlaylistItem::s_pixmapChanged = true;
     }
 }
 
