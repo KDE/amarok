@@ -330,6 +330,8 @@ QString CriteriaEditor::getSearchCriteria()
             searchCriteria += " BETWEEN ";
         else
             searchCriteria += " = ";
+        if( m_currentValueType == String || m_currentValueType == AutoCompletionString )
+            value.prepend("\"").append("\"");
         searchCriteria += value;
     }
     else if( criteria == i18n("is not") ) {
@@ -337,6 +339,8 @@ QString CriteriaEditor::getSearchCriteria()
             searchCriteria += " NOT BETWEEN ";
         else
             searchCriteria += " <> ";
+        if( m_currentValueType == String || m_currentValueType == AutoCompletionString )
+            value.prepend("\"").append("\"");
         searchCriteria += value;
     }
     else if( criteria == i18n("starts with") )
