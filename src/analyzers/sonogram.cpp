@@ -15,7 +15,7 @@
 #include "sonogram.h"
 
 Sonogram::Sonogram(QWidget *parent) :
-	Analyzer::Base2D(parent, 16)
+	Analyzer::Base2D(parent, 16, 9)
 {
 }
 
@@ -38,9 +38,9 @@ void Sonogram::analyze(const Scope &s)
 	QPainter p(canvas());
 
 	bitBlt(canvas(), 0, 0, canvas(), 1, 0, x, height());
-	Scope::const_iterator it = s.begin();
-	for (int y = height() - 1; y && it < s.end(); it++) {
-		if (*it < .005)
+	Scope::const_iterator it = s.begin(), end = s.end();
+	for (int y = height() - 1; y; it++) {
+		if (it >= end || *it < .005)
 			c = backgroundColor();
 		else if (*it < .05)
 			c.setHsv(95, 255, 255 - int(*it * 4000.0));
@@ -57,12 +57,10 @@ void Sonogram::analyze(const Scope &s)
 
 void Sonogram::transform(Scope &scope)
 {
-	scope.resize( scope.size() / 2 );
-
 	float *front = static_cast<float*>(&scope.front());
-
 	m_fht.power(front);
-	m_fht.scale(front, 1.0 / 64);
+	m_fht.scale(front, 1.0 / 128);
+	scope.resize( scope.size() / 2 );
 }
 
 
