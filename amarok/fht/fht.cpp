@@ -140,24 +140,28 @@ void FHT::pattern(float *p, bool rect = false)
   */
 void FHT::logSpectrum(float *out, float *p)
 {
-	int n = m_num / 2, i, j, k, l, *r;
+	int n = m_num / 2, i, j, k, *r;
 	if (!m_log) {
 		m_log = new int[n];
 		float f = n / log10(n);
 		for (i = 0, r = m_log; i < n; i++, r++) {
-			k = int(rint(log10(i + 1.0) * f));
-			*r = k >= n ? n - 1 : k;
+			j = int(rint(log10(i + 1.0) * f));
+			*r = j >= n ? n - 1 : j;
 		}
 	}
 	semiLogSpectrum(p);
-	float *o = out;
-	*p = 0;
-	for (i = k = l = 0, r = m_log; i < n; i++, r++) {
-		for (l = k, j = *r; k < j; k++) {
-			*o++ = p[l] + (p[j] - p[l]) * (k - l) / (j - l);
+	*out++ = *p++;
+	for (k = i = 1, r = m_log; i < n; i++) {
+		j = *r++;
+		if (i == j)
+			*out++ = p[i];
+		else {
+			float base = p[k - 1];
+			float step = (p[j] - base) / (j - (k - 1));
+			for (float corr = 0; k < j; k++, corr += step)
+				*out++ = base + corr;
 		}
 	}
-	out[0] = out[1] / 2;
 }
 
 
