@@ -273,10 +273,10 @@ void PlaylistWidget::handleOrder( RequestType rt ) //SLOT
       break;
 
    case Next:
-      if( AmarokConfig::repeatTrack() )
+      if ( AmarokConfig::repeatTrack() )
           break;
       else
-          if( AmarokConfig::randomMode() && childCount() > 3 ) //FIXME is childCount O(1)?
+          if ( AmarokConfig::randomMode() && childCount() > 3 ) //FIXME is childCount O(1)?
           {
               int x;
               do
@@ -303,6 +303,9 @@ void PlaylistWidget::handleOrder( RequestType rt ) //SLOT
       break;
 
    case Current:
+      if ( AmarokConfig::randomMode() )
+          item = (PlaylistItem *)itemAtIndex( KApplication::random() % childCount() );
+
       break;
    }
 
