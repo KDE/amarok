@@ -175,7 +175,7 @@
     <entry key="Crossfade Length" type="Int">
         <label>Length of crossfade, in milliseconds</label>
         <whatsthis>The length of the crossfade between tracks in milliseconds.</whatsthis>
-        <default>2000</default>
+        <default>5000</default>
     </entry>
     <entry key="Sound System" type="String">
         <label>Sound system to use</label>
@@ -204,6 +204,7 @@
         <default>com</default>
     </entry>
 </group>
+
 <group name="OSD">
     <entry key="Osd Enabled" type="Bool">
         <label>Use On-Screen Display</label>
