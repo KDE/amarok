@@ -68,6 +68,7 @@ namespace amaroK
         protected:
             virtual void paintEvent( QPaintEvent* );
             virtual void mouseMoveEvent( QMouseEvent* );
+            virtual void mousePressEvent( QMouseEvent* );
 
         #if 0
             virtual QSize minimumSizeHint() const;

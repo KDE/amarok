@@ -110,6 +110,14 @@ amaroK::PrettySlider::mouseMoveEvent( QMouseEvent *e )
 }
 
 void
+amaroK::PrettySlider::mousePressEvent( QMouseEvent *e )
+{
+    m_sliding = true;
+
+    mouseMoveEvent( e );
+}
+
+void
 amaroK::PrettySlider::paintEvent( QPaintEvent* )
 {
     const int w   = orientation() == Qt::Horizontal ? width() : height();
