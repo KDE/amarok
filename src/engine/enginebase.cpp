@@ -85,8 +85,10 @@ void Engine::Base::setVolume( uint value )
 {
     m_volume = value;
 
-    if( isMixerHW() )
+    if( isMixerHW() ) {
         setVolumeHW( value );
+        setVolumeSW( 100 );
+    }
     else
         // We're using a logarithmic function to make the volume ramp more natural.
         setVolumeSW( static_cast<uint>( 100 - 100.0 * log10( ( 100 - value ) * 0.09 + 1.0 ) ) );
