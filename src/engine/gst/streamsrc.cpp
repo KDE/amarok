@@ -15,13 +15,13 @@
 #include <unistd.h>
 
 
-#define DEFAULT_BLOCKSIZE	4096
+#define DEFAULT_BLOCKSIZE 4096
 
 GST_DEBUG_CATEGORY_STATIC ( gst_streamsrc_debug );
 #define GST_CAT_DEFAULT gst_streamsrc_debug
 
 
-/* FdSrc signals and args */
+/* signals and args */
 enum {
     SIGNAL_TIMEOUT,
     LAST_SIGNAL
@@ -110,6 +110,7 @@ gst_streamsrc_init ( GstStreamSrc * streamsrc )
     streamsrc->blocksize = DEFAULT_BLOCKSIZE;
     streamsrc->timeout = 0;
     streamsrc->seq = 0;
+    streamsrc->streamBufIndex = 0;
 }
 
 
@@ -170,12 +171,19 @@ static GstData *
 gst_streamsrc_get ( GstPad * pad )
 {
     GstStreamSrc* src = GST_STREAMSRC ( GST_OBJECT_PARENT ( pad ) );
-
-    GstBuffer * buffer;
-
-    buffer = gst_buffer_new_and_alloc( DEFAULT_BLOCKSIZE );
-    memcpy( GST_BUFFER_DATA( buffer ), src->m_streamBuf, DEFAULT_BLOCKSIZE );
-
+    GstBuffer* buffer = gst_buffer_new_and_alloc( DEFAULT_BLOCKSIZE );
+    
+/*    if ( src->streamBufIndex + DEFAULT_BLOCKSIZE > src->streamBufSize ) {
+        const int remaining = src->streamBufSize - src->streamBufIndex;
+        memcpy( GST_BUFFER_DATA( buffer ), src->streamBuf + src->streamBufIndex, remaining );
+        memcpy( GST_BUFFER_DATA( buffer + remaining ), src->streamBuf, DEFAULT_BLOCKSIZE - remaining );
+        src->streamBufIndex = 0;
+    }            
+    else {*/
+        memcpy( GST_BUFFER_DATA( buffer ), src->streamBuf /*+ src->streamBufIndex*/, DEFAULT_BLOCKSIZE );
+/*        src->streamBufIndex += DEFAULT_BLOCKSIZE;
+    }*/
+                
     return GST_DATA ( buffer );
 }
 
@@ -186,8 +194,8 @@ gst_streamsrc_new ( char* buf, int size )
     GstStreamSrc * object = GST_STREAMSRC ( g_object_new ( GST_TYPE_STREAMSRC, NULL ) );
     gst_object_set_name( (GstObject*) object, "StreamSrc" );
     
-    object->m_streamBuf = buf;
-    object->m_streamBufSize = size;
+    object->streamBuf = buf;
+    object->streamBufSize = size;
 
     return object;
 }

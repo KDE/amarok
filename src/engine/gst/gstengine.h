@@ -52,7 +52,7 @@ class GstEngine : public EngineBase
         std::vector<float>*                      scope();
 
     public slots:
-        const QObject*                           play( const KURL& );
+        void                                     play( const KURL& );
         void                                     play();
         void                                     stop();
         void                                     pause();
@@ -100,7 +100,6 @@ class GstEngine : public EngineBase
        
         char*                                    m_streamBuf;
         uint                                     m_streamBufIn;
-        uint                                     m_streamBufOut;
         bool                                     m_playFlag;
         
         bool                                     m_typefindResult;

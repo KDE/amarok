@@ -36,7 +36,7 @@ class DummyEngine : public EngineBase
     virtual long position() const { return 0; }
     virtual EngineState state() const { return EngineBase::Empty; }
     virtual bool isStream() const { return false; }
-    virtual const QObject* play( const KURL& ) { return 0; }
+    virtual void play( const KURL& ) {}
     virtual void play() {}
     virtual void stop() {}
     virtual void pause() {}
@@ -126,18 +126,16 @@ void EngineController::play( const MetaBundle &bundle )
             emit orderNext();
             return;
         }
-        const QObject* object = m_pEngine->play( proxy->proxyUrl() );
+        m_pEngine->play( proxy->proxyUrl() );
 
-        connect( this,     SIGNAL( deleteProxy () ),
-                 proxy,      SLOT( deleteLater () ) );
-        connect( proxy,    SIGNAL( metaData( const MetaBundle& ) ),
-                 this,       SLOT( newMetaData( const MetaBundle& ) ) );
-        connect( proxy,    SIGNAL( streamData( char*, int ) ),
-                 m_pEngine,  SLOT( newStreamData( char*, int ) ) );
-
-        if ( object )
-            connect( object, SIGNAL( destroyed () ),
-                     proxy,    SLOT( deleteLater() ) );
+        connect( this,      SIGNAL( deleteProxy () ),
+                 proxy,       SLOT( deleteLater () ) );
+        connect( m_pEngine, SIGNAL( stopped () ),
+                 proxy,       SLOT( deleteLater() ) );
+        connect( proxy,     SIGNAL( metaData( const MetaBundle& ) ),
+                 this,        SLOT( newMetaData( const MetaBundle& ) ) );
+        connect( proxy,     SIGNAL( streamData( char*, int ) ),
+                 m_pEngine,   SLOT( newStreamData( char*, int ) ) );
     }
     else
         m_pEngine->play( url );

@@ -343,7 +343,7 @@ std::vector<float>* ArtsEngine::scope()
 
 //////////////////////////////////////////////////////////////////////
 
-const QObject* ArtsEngine::play( const KURL& url )
+void ArtsEngine::play( const KURL& url )
 {
     m_xfadeFadeout = false;
     startXfade();
@@ -351,10 +351,14 @@ const QObject* ArtsEngine::play( const KURL& url )
     KDE::PlayObjectFactory factory( m_server );
     m_pPlayObject = factory.createPlayObject( url, false ); //second parameter: create BUS(true/false)
 
-    if ( !m_pPlayObject || m_pPlayObject->isNull() )
+    if ( !m_pPlayObject || m_pPlayObject->isNull() ) {
         connectTimeout();
+        emit stopped();
+    }
     else
     {
+        connect( m_pPlayObject, SIGNAL( destroyed ), this, SLOT( stopped() ) );
+        
         if ( m_pPlayObject->object().isNull() ) {            
             kdDebug() << k_funcinfo << " m_pPlayObject->object().isNull()" << endl;
             
@@ -367,8 +371,6 @@ const QObject* ArtsEngine::play( const KURL& url )
                 
         play();
     }
-
-    return m_pPlayObject;
 }
 
 

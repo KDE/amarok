@@ -36,7 +36,8 @@ class EngineBase : public QObject, public amaroK::Plugin {
 
     signals:
         void endOfTrack();
-
+        void stopped();
+        
     public:
         enum EngineState { Empty, Idle, Playing, Paused };
         enum StreamingMode { Socket, Signal, NoStreaming };
@@ -106,17 +107,6 @@ class EngineBase : public QObject, public amaroK::Plugin {
         virtual void configureEffect( long ) { }
         virtual bool decoderConfigurable() const { return false; }
 
-        virtual const QObject* play( const KURL& ) = 0;
-        virtual void play() = 0;
-        virtual void stop() = 0;
-        virtual void pause() = 0;
-
-        virtual void seek( long ms ) = 0;
-
-        /**
-         * @param percent Set volume in range 0 to 100.
-         */
-        virtual void setVolume( int percent ) = 0;
         virtual void setXfadeLength( int ms );
         virtual void setSoundOutput( const QString& output );
         virtual void setSoundDevice( const QString& device ) { m_soundDevice = device; }
@@ -124,6 +114,17 @@ class EngineBase : public QObject, public amaroK::Plugin {
         
         
     public slots:
+        virtual void play( const KURL& ) = 0;
+        virtual void play() = 0;
+        virtual void stop() = 0;
+        virtual void pause() = 0;
+
+        /**
+         * @param percent Set volume in range 0 to 100.
+         */
+        virtual void setVolume( int percent ) = 0;
+        
+        virtual void seek( long ms ) = 0;
         virtual void configureDecoder() {}
         virtual void newStreamData( char* data, int size ) {};
         

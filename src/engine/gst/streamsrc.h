@@ -30,9 +30,10 @@ struct _GstStreamSrc
     /* pads */
     GstPad *srcpad;
 
-    char* m_streamBuf;
-    int m_streamBufSize;
-    
+    char* streamBuf;
+    int streamBufSize;
+    int streamBufIndex;
+        
     gulong curoffset; /* current offset in file */
     gulong blocksize; /* bytes per read */
     guint64 timeout;  /* read timeout, in nanoseconds */

@@ -74,7 +74,7 @@ class ArtsEngine : public EngineBase
         bool                                     supportsXFade() const     { return true; }
          
     public slots:
-        const QObject*                           play( const KURL& );
+        void                                     play( const KURL& );
         void                                     play();
         void                                     stop();
         void                                     pause();

@@ -145,7 +145,6 @@ GstEngine::GstEngine()
         , m_scopeBufIndex( 0 )
         , m_streamBuf( new char[STREAMBUF_SIZE] )
         , m_streamBufIn( 0 )
-        , m_streamBufOut( 0 )
         , m_pipelineFilled( false )
 {
     kdDebug() << k_funcinfo << endl;
@@ -207,7 +206,7 @@ GstEngine::canDecode( const KURL &url, mode_t, mode_t )
     GstElement *pipeline, *filesrc, *typefind;
     m_typefindResult = false;
 
-    /* create a new thread to hold the elements */
+    /* create a new pipeline to hold the elements */
     pipeline = gst_pipeline_new( "pipeline" );
 
     /* create a disk reader */
@@ -293,7 +292,7 @@ GstEngine::scope()
 // PUBLIC SLOTS
 /////////////////////////////////////////////////////////////////////////////////////
 
-const QObject*
+void
 GstEngine::play( const KURL& url )             //SLOT
 {
     stop();
@@ -337,8 +336,8 @@ GstEngine::play( const KURL& url )             //SLOT
                        G_CALLBACK( handoff_cb ), m_thread );
     g_signal_connect ( G_OBJECT( m_audiosink ), "eos",
                        G_CALLBACK( eos_cb ), m_thread );
-    g_signal_connect ( G_OBJECT( m_thread ), "error",
-                       G_CALLBACK ( error_cb ), m_thread );
+//     g_signal_connect ( G_OBJECT( m_thread ), "error",
+//                        G_CALLBACK ( error_cb ), m_thread );
 
     /* add objects to the main pipeline */
     gst_bin_add_many( GST_BIN( m_thread ), m_filesrc, m_spider, m_identity,
@@ -354,8 +353,6 @@ GstEngine::play( const KURL& url )             //SLOT
     
     play();
     m_playFlag = true;
-    
-    return this;
 }
 
 
@@ -378,6 +375,8 @@ GstEngine::stop()             //SLOT
 
     /* stop the thread */
     gst_element_set_state ( m_thread, GST_STATE_NULL );
+    
+    emit stopped();
 }
 
 
@@ -428,7 +427,10 @@ void
 GstEngine::newStreamData( char* buf, int size )            //SLOT
 {
     kdDebug() << k_funcinfo << endl;
-
+    
+    //TODO HACK
+    m_streamBufIn = 0;
+    
     for ( uint i = 0; i < size; ) {
         if ( m_streamBufIn == STREAMBUF_SIZE )
             m_streamBufIn = 0;
@@ -461,6 +463,8 @@ GstEngine::stopAtEnd()             //SLOT
 
     /* stop the thread */
     gst_element_set_state ( m_thread, GST_STATE_READY );
+    
+    emit stopped();
 }
 
 

@@ -70,7 +70,7 @@ NmmEngine::state() const
 
 
 
-const QObject*
+void
 NmmEngine::play( const KURL& url )
 {
     if( !url.isLocalFile() ) return 0; //FIXME
