@@ -10,8 +10,10 @@
 #include <khelpmenu.h>
 #include <klocale.h>
 
+using namespace amaroK;
+
 //static member
-KHelpMenu *amaroK::Menu::HelpMenu = 0;
+KHelpMenu *Menu::HelpMenu = 0;
 
 
 static bool plug( KActionCollection *ac, const char *name, QWidget *w )
@@ -31,7 +33,7 @@ static bool plug( KActionCollection *ac, const char *name, QWidget *w )
 }
 
 
-amaroK::Menu::Menu( QWidget *parent, KActionCollection *ac )
+Menu::Menu( QWidget *parent, KActionCollection *ac )
   : QPopupMenu( parent )
 {
     setCheckable( true );
@@ -65,7 +67,7 @@ amaroK::Menu::Menu( QWidget *parent, KActionCollection *ac )
 }
 
 KPopupMenu*
-amaroK::Menu::helpMenu( QWidget *parent ) //STATIC
+Menu::helpMenu( QWidget *parent ) //STATIC
 {
     if( HelpMenu == 0 )
         HelpMenu = new KHelpMenu( parent, KGlobal::instance()->aboutData(), pApp->actionCollection() );
@@ -74,7 +76,7 @@ amaroK::Menu::helpMenu( QWidget *parent ) //STATIC
 }
 
 
-void amaroK::Menu::slotAboutToShow()
+void Menu::slotAboutToShow()
 {
     setItemChecked( ID_REPEAT_TRACK,    AmarokConfig::repeatTrack() );
     setItemChecked( ID_REPEAT_PLAYLIST, AmarokConfig::repeatPlaylist() );
@@ -83,7 +85,7 @@ void amaroK::Menu::slotAboutToShow()
 }
 
 
-void amaroK::Menu::slotActivated( int index )
+void Menu::slotActivated( int index )
 {
     switch( index ) {
     case ID_REPEAT_TRACK:
@@ -105,12 +107,12 @@ void amaroK::Menu::slotActivated( int index )
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h>
 
-amaroK::MenuAction::MenuAction( KActionCollection *ac )
+MenuAction::MenuAction( KActionCollection *ac )
   : KAction( i18n( "amaroK Menu" ), 0, ac, "amarok_menu" )
 {}
 
 int
-amaroK::MenuAction::plug( QWidget *w, int index )
+MenuAction::plug( QWidget *w, int index )
 {
     KToolBar *bar = dynamic_cast<KToolBar*>(w);
 
@@ -125,7 +127,7 @@ amaroK::MenuAction::plug( QWidget *w, int index )
     bar->alignItemRight( id );
 
     KToolBarButton *button = bar->getButton( id );
-    button->setPopup( new amaroK::Menu( bar, parentCollection() ) );
+    button->setPopup( new Menu( bar, parentCollection() ) );
     button->setName( "toolbutton_amarok_menu" );
 
     addContainer( bar, id );
@@ -138,7 +140,7 @@ amaroK::MenuAction::plug( QWidget *w, int index )
 #include "enginecontroller.h"
 #include <kdebug.h>
 
-amaroK::PlayPauseAction::PlayPauseAction( KActionCollection *ac )
+PlayPauseAction::PlayPauseAction( KActionCollection *ac )
   : KAction( i18n( "Play/Pause" ), 0, ac, "play_pause" )
 {
     EngineController* const ec = EngineController::instance();
@@ -148,7 +150,7 @@ amaroK::PlayPauseAction::PlayPauseAction( KActionCollection *ac )
 }
 
 void
-amaroK::PlayPauseAction::engineStateChanged( EngineBase::EngineState state )
+PlayPauseAction::engineStateChanged( EngineBase::EngineState state )
 {
     switch( state )
     {
