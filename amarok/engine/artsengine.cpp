@@ -17,7 +17,6 @@ email                : markey@web.de
 
 #include "../amarokarts/amarokarts.h"
 #include "artsengine.h"
-#include "enginebase.h"
 
 #include <string>
 #include <vector>
@@ -68,9 +67,9 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
         , m_xfadeValue( 0.0 )
         , m_xfadeCurrent( "invalue1" )
 {
-    setName( "arts" );
+    setName( "arts" ); //FIXME rename artsEngine if this won't break anything
     m_mixerHW = -1;     //initialize
-    
+
     // We must restart artsd whenever we installed new mcopclasses
     if ( restart )
     {
@@ -89,23 +88,24 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
     config.setGroup( "Arts" );
 
     bool realtime = config.readBoolEntry( "StartRealtime", true );
-    
+
     if ( !realtime )
-        KMessageBox::sorry( 0, i18n( "artsd is not running with realtime priority! "
-                                     "this will lead to problems (dropouts) in the audio playback. "
-                                     "Please make sure that $KDEDIR/bin/artswrapper is set suid, "
-                                     "activate realtime and restart aRts." ) );
-        
+        KMessageBox::information( 0, i18n( "<p>artsd is not running with <b>realtime priority</b> which may cause audio playback to \"skip\" and stutter.<p>"
+                                     "<p>To use realtime priority, open the KDE Control Center and enable \"Run with highest possible priority\", under <i>Sound System</i> in the <i>Sound & Multimedia</i> branch. "
+                                     "Some people may also have to check that \"$KDEDIR/bin/artswrapper\" is <b>set suid</b> (chmod +s).</p>"
+                                     "<p>You may find, however, that playback is fine without increasing the priority of artsd.</p>" ),
+                               i18n( "aRts Problem" ), "artsRealtimeAdvice" );
+
     m_pArtsDispatcher = new KArtsDispatcher();
     m_server = Arts::Reference( "global:Arts_SoundServerV2" );
-    
+
     if ( m_server.isNull() || m_server.error() )
     {
         kdDebug() << "aRtsd not running.. trying to start" << endl;
         // aRts seems not to be running, let's try to run it
         // First, let's read the configuration as in kcmarts
         QCString cmdline;
-        
+
         bool x11Comm = config.readBoolEntry( "X11GlobalComm", false );
 
         // put the value of x11Comm into .mcoprc
@@ -166,10 +166,10 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
         m_amanPlay.autoRestoreID( "amarok" );
         m_amanPlay.start();
     }
-        
+
     { //Xfade
         m_xfade = Arts::DynamicCast( m_server.createObject( "Amarok::Synth_STEREO_XFADE" ) );
-    
+
         if ( m_xfade.isNull() ) {
             KMessageBox::error( 0,
                                 i18n( "Cannot find libamarokarts. Probably amaroK was installed with the "
@@ -178,22 +178,22 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
                                 i18n( "Fatal Error" ) );
             ::exit( 1 );
         }
-        
+
         m_xfade.percentage( m_xfadeValue );
         m_xfade.start();
     }
-    
+
     { //globalEffectStack
         m_globalEffectStack = Arts::DynamicCast( m_server.createObject( "Arts::StereoEffectStack" ) );
         m_globalEffectStack.start();
     }
-            
+
     { //effectStack
         m_effectStack = Arts::DynamicCast( m_server.createObject( "Arts::StereoEffectStack" ) );
         m_effectStack.start();
         m_globalEffectStack.insertBottom( m_effectStack, "Effect Stack" );
     }
-        
+
     { //scope
         m_scope = Arts::DynamicCast( m_server.createObject( "Amarok::RawScope" ) );
         m_scope.start();
@@ -204,7 +204,7 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
     Arts::connect( m_globalEffectStack  , m_amanPlay );
     Arts::connect( m_xfade, "outvalue_l", m_globalEffectStack, "inleft" );
     Arts::connect( m_xfade, "outvalue_r", m_globalEffectStack, "inright" );
-            
+
     if ( m_restoreEffects ) loadEffects();
     startTimer( ARTS_TIMER );
 }
@@ -215,9 +215,9 @@ ArtsEngine::~ ArtsEngine()
     delete m_pPlayObject;
     delete m_pPlayObjectXfade;
     emit endOfTrack();
-    
+
     saveEffects();
-        
+
     m_scope             = Amarok::RawScope::null();
     m_xfade             = Amarok::Synth_STEREO_XFADE::null();
     m_volumeControl     = Arts::StereoVolumeControl::null();
@@ -239,16 +239,16 @@ bool ArtsEngine::initMixer( bool hardware )
         }
         closeMixerHW();
     }
-            
+
     if ( hardware )
         hardware = initMixerHW();
     else
-    {    
+    {
         m_volumeControl = Arts::DynamicCast( m_server.createObject( "Arts::StereoVolumeControl" ) );
         m_volumeControl.start();
         m_volumeId = m_globalEffectStack.insertBottom( m_volumeControl, "Volume Control" );
     }
-    
+
     setVolume( m_volume );
     return hardware;
 }
@@ -323,7 +323,7 @@ bool ArtsEngine::open( const KURL& url )
 {
     m_xfadeFadeout = false;
     startXfade();
-        
+
     KDE::PlayObjectFactory factory( m_server );
     m_pPlayObject = factory.createPlayObject( url, false ); //second parameter: create BUS(true/false)
 
@@ -369,7 +369,7 @@ void ArtsEngine::play()
 void ArtsEngine::stop()
 {
     kdDebug() << "[void ArtsEngine::stop()]" << endl;
-   
+
     m_xfadeFadeout = true;
     startXfade();
 }
@@ -401,7 +401,7 @@ void ArtsEngine::seek( long ms )
 void ArtsEngine::setVolume( int percent )
 {
     m_volume = percent;
-    
+
     if ( m_volumeId )
         m_volumeControl.scaleFactor( percent * 0.01 );
     else
@@ -433,7 +433,7 @@ std::vector<long> ArtsEngine::activeEffects() const
 {
     std::vector<long> vec;
     QMap<long, EffectContainer>::ConstIterator it;
-    
+
     for ( it = m_effectMap.begin(); it != m_effectMap.end(); ++it )
     {
         vec.push_back( it.key() );
@@ -447,7 +447,7 @@ QString ArtsEngine::effectNameForId( long id ) const
 {
     const std::string str = (*m_effectMap[id].effect)._interfaceName();
     QString qstr( str.c_str() );
-    
+
     return qstr;
 }
 
@@ -456,7 +456,7 @@ bool ArtsEngine::effectConfigurable( long id ) const
 {
     if ( m_effectMap[id].widget )
         return false;
-        
+
     Arts::TraderQuery query;
     query.supports( "Interface", "Arts::GuiFactory" );
     query.supports( "CanCreate", (*m_effectMap[id].effect)._interfaceName() );
@@ -473,16 +473,16 @@ long ArtsEngine::createEffect( const QString& name )
 {
     Arts::StereoEffect* pFX = new Arts::StereoEffect;
     *pFX = Arts::DynamicCast( m_server.createObject( std::string( name.ascii() ) ) );
-    
+
     if ( (*pFX).isNull() ) {
         kdWarning() << "[ArtsEngine::createEffect] error: could not create effect." << endl;
         delete pFX;
         return 0;
     }
-    
+
     pFX->start();
     long id = m_effectStack.insertBottom( *pFX, std::string( name.ascii() ) );
-    
+
     if ( !id ) {
         kdWarning() << "[ArtsEngine::createEffect] error: insertBottom failed." << endl;
         pFX->stop();
@@ -493,9 +493,9 @@ long ArtsEngine::createEffect( const QString& name )
     EffectContainer container;
     container.effect = pFX;
     container.widget = 0;
-    
+
     m_effectMap.insert( id, container );
-    
+
     return id;
 }
 
@@ -503,11 +503,11 @@ long ArtsEngine::createEffect( const QString& name )
 void ArtsEngine::removeEffect( long id )
 {
     m_effectStack.remove( id );
-    
+
     m_effectMap[id].effect->stop();
     delete m_effectMap[id].widget;
     delete m_effectMap[id].effect;
-    
+
     m_effectMap.remove( id );
 }
 
@@ -531,18 +531,18 @@ void ArtsEngine::startXfade()
 
     if ( m_xfadeValue == 0.0 )
         m_xfadeValue = 1.0;
-    
+
     if ( m_pPlayObjectXfade )
     {
         m_pPlayObjectXfade->halt();
         delete m_pPlayObjectXfade;
         emit endOfTrack();
     }
-            
+
     m_pPlayObjectXfade = m_pPlayObject;
     m_pPlayObject = 0;
 }
-    
+
 
 #include <math.h>
 void ArtsEngine::timerEvent( QTimerEvent* )
@@ -563,11 +563,11 @@ void ArtsEngine::timerEvent( QTimerEvent* )
             }
         }
         float value;
-        if ( m_xfadeFadeout )            
-            value = 1.0 - log10( ( 1.0 - m_xfadeValue ) * 9.0 + 1.0 ); 
+        if ( m_xfadeFadeout )
+            value = 1.0 - log10( ( 1.0 - m_xfadeValue ) * 9.0 + 1.0 );
         else
-            value = log10( m_xfadeValue * 9.0 + 1.0 ); 
-        
+            value = log10( m_xfadeValue * 9.0 + 1.0 );
+
         m_xfade.percentage( ( m_xfadeCurrent == "invalue2" ) ? value : 1.0 - value );
         kdDebug() << "[timerEvent] percentage: " << m_xfade.percentage() << endl;
     }
@@ -577,19 +577,19 @@ void ArtsEngine::timerEvent( QTimerEvent* )
 void ArtsEngine::loadEffects()
 {
     kdDebug() << "[ArtsEngine::loadEffects()]" << endl;
-    
+
     QDomDocument doc;
     QFile file( kapp->dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "arts-effects.xml" );
-    
+
     if ( !file.open( IO_ReadOnly ) )
     {
         kdWarning() << "[ArtsEngine::loadEffects()] error: !file.open()" << endl;
         return;
     }
-     
+
     QString errorMsg;
     int     errorLine;
-    int     errorColumn;       
+    int     errorColumn;
     if ( !doc.setContent( &file, &errorMsg, &errorLine, &errorColumn ) )
     {
         kdWarning() << "[ArtsEngine::loadEffects()] error: !doc.setContent()" << endl;
@@ -599,46 +599,46 @@ void ArtsEngine::loadEffects()
         file.close();
         return;
     }
-            
+
     QDomElement docElem = doc.documentElement();
-    
+
     for ( QDomNode n = docElem.firstChild(); !n.isNull(); n = n.nextSibling() )
     {
         QString effect = n.namedItem( "effectname" ).firstChild().toText().nodeValue();
         kdDebug() << "effectname: " << effect << endl;
-        
+
         long id = createEffect( effect );
-        
+
         for ( QDomNode nAttr = n.firstChild(); id && !nAttr.isNull(); nAttr = nAttr.nextSibling() )
         {
             if ( nAttr.nodeName() == "attribute" )
-            {            
+            {
                 QString name  = nAttr.namedItem( "name"  ).firstChild().toText().nodeValue();
                 QString type  = nAttr.namedItem( "type"  ).firstChild().toText().nodeValue();
                 QString value = nAttr.namedItem( "value" ).firstChild().toText().nodeValue();
-                
+
                 kdDebug() << "name : " << name  << endl;
                 kdDebug() << "type : " << type  << endl;
                 kdDebug() << "value: " << value << endl;
-                
+
                 Arts::DynamicRequest req( *m_effectMap[id].effect );
                 std::string set( "_set_" );
                 set.append( std::string( name.latin1() ) );
                 req.method( set );
-                
+
                 Arts::Buffer buf;
                 buf.fromString( std::string( value.latin1() ), "" );
-                
+
                 Arts::Any param;
                 param.type = std::string( type.latin1() );
                 param.readType( buf );
                 req.param( param );
-                
+
                 if ( !req.invoke() )
                     kdWarning() << "DynamicRequest failed." << endl;
             }
         }
-    }    
+    }
 }
 
 
@@ -659,36 +659,36 @@ void ArtsEngine::saveEffects()
                 QDomText txt = doc.createTextNode( (*it.data().effect)._interfaceName().c_str() );
                 tag.appendChild( txt );
             }
-                
+
         Arts::InterfaceDef def = (*it.data().effect)._queryInterface( (*it.data().effect)._interfaceName() );
 
         for ( uint i = 0; i < def.attributes.size(); i++ )
         {
             QDomElement tagAttribute = doc.createElement( "attribute" );
             tagEffect.appendChild( tagAttribute );
-            
+
             { //name
                 QDomElement tag = doc.createElement( "name" );
                 tagAttribute.appendChild( tag );
                 QDomText txt = doc.createTextNode( def.attributes[i].name.c_str() );
                 tag.appendChild( txt );
             }
-                                       
+
             Arts::DynamicRequest req( *it.data().effect );
             req.method( "_get_" + def.attributes[i].name );
             Arts::Any result;
             result.type = def.attributes[i].type;
-    
+
             { //type
                 QDomElement tag = doc.createElement( "type" );
                 tagAttribute.appendChild( tag );
                 QDomText txt = doc.createTextNode( def.attributes[i].type.c_str() );
                 tag.appendChild( txt );
             }
-                                    
+
             if ( !req.invoke( result ) )
                 kdWarning() << "request failed." << endl;
-            
+
             Arts::Buffer buf;
             result.writeType( buf );
 
@@ -706,7 +706,7 @@ void ArtsEngine::saveEffects()
     QFile::remove( path );
     QFile file( path );
     file.open( IO_ReadWrite );
-    QTextStream stream( &file );   
+    QTextStream stream( &file );
     stream << doc;
 }
 
