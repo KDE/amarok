@@ -309,11 +309,13 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
             
         case CUSTOM: 
         {
+            /* This opens a file-open-dialog and copies the selected image to albumcovers, scaled and unscaled. */
             KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select cover image file..." ) );
             QImage img( file.directory() + "/" + file.fileName() );
+            img.save( item->albumPath( false ), "PNG" );
             QPixmap pixmap;
-            pixmap.convertFromImage( img );
-            pixmap.save( item->albumPath(), "PNG" );
+            pixmap.convertFromImage( img.smoothScale( 60, 60 ) );
+            pixmap.save( item->albumPath( true ), "PNG" );
             item->updateCover( pixmap );
             break;
         }
@@ -567,11 +569,12 @@ void CoverViewItem::updateCover( const QPixmap &cover )
 }
 
 
-QString CoverViewItem::albumPath()
+QString CoverViewItem::albumPath( bool scaled )
 {
     QString fileName( QFile::encodeName( m_artist + " - " + m_album ) );
     fileName.replace( " ", "_" ).append( ".png" );
-    return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) + "albumcovers/large/"+fileName.lower();
+    if ( scaled ) return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) + "albumcovers/60@"+fileName.lower();
+    else return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) + "albumcovers/large/"+fileName.lower();
 }
 
 
