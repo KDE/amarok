@@ -55,6 +55,22 @@ public:
 };
 
 
+class TimeSlider : public QSlider
+{
+public:
+    TimeSlider( QSlider::Orientation orientation, QWidget * parent, const char * name = 0 )
+        : QSlider( orientation, parent, name ) {}
+
+    //TimerSlider generates a sliderMoved event when using wheel. The
+    //statusbar handles the 'scroll' by seeking in the track.
+    virtual void wheelEvent( QWheelEvent * e )
+    {
+	QSlider::wheelEvent( e );
+	emit sliderMoved( value() );
+    }
+};
+
+
 
 StatusBar::StatusBar( QWidget *parent, const char *name )
     : KStatusBar( parent, name )
@@ -87,7 +103,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     QToolTip::add( w2, i18n("Double-click to toggle Repeat Playlist Mode") );
 
     // position slider (stretches at 1/4 the rate of the squeezedTextKLabel)
-    addWidget( m_pSlider = new QSlider( Qt::Horizontal, this ), 1, true );
+    addWidget( m_pSlider = new TimeSlider( Qt::Horizontal, this ), 1, true );
     m_pSlider->setTracking( false );
     connect( m_pSlider, SIGNAL( sliderPressed() ),     SLOT( sliderPressed() ) );
     connect( m_pSlider, SIGNAL( sliderReleased() ),    SLOT( sliderReleased() ) );
@@ -223,7 +239,11 @@ inline void StatusBar::sliderReleased()
 
 inline void StatusBar::sliderMoved( int value )
 {
-    drawTimeDisplay( static_cast<long>( value ) );
+    if ( m_sliderPressed )
+        drawTimeDisplay( static_cast<long>( value ) );
+    else
+	//that's the case of scrolling with the mouse wheel
+	EngineController::engine()->seek( value * 1000 );
 }
 
 
