@@ -206,9 +206,8 @@ void PlayerApp::handleLoaderArgs( QCString args ) //SLOT
     kdDebug() << k_funcinfo << "DESKTOP_STARTUP_ID: " << startup_env << endl;
 
     //stop startup cursor animation
-    KStartupInfoId id;
-    id.initId( startup_env );
-    KStartupInfo::sendFinish( id );
+    setStartupId( startup_env );
+    KStartupInfo::appStarted();
 
     //divide argument line into single strings
     QStringList strlist = QStringList::split( "|", args );
