@@ -69,12 +69,12 @@ QWidget *Analyzer::Factory::createAnalyzer( QWidget *parent )
 #else
     case 4:
 #endif
-        analyzer = new BoomAnalyzer( parent );
+        analyzer = new BarAnalyzer( parent );
         break;
     default:
         AmarokConfig::setCurrentAnalyzer( 0 );
     case 0:
-        analyzer = new BarAnalyzer( parent );
+        analyzer = new BoomAnalyzer( parent );
     }
 
     return analyzer;

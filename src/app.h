@@ -69,7 +69,7 @@ class App : public KApplication, public EngineObserver
 
     private:
         void initGlobalShortcuts();
-        void setupColors();
+        void applyColorScheme();
 
         /** Removes all covers images older than 90 days, to comply with amazon.com license */
         void pruneCoverImages();

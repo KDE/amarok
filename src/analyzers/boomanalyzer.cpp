@@ -1,13 +1,11 @@
 // Author: Max Howell <max.howell@methylblue.com>, (C) 2004
 // Copyright: See COPYING file that comes with this distribution
-//
 
 #include "boomanalyzer.h"
 #include <math.h>
-#include <qpainter.h>
-
 #include <qlabel.h>
 #include <qlayout.h>
+#include <qpainter.h>
 #include <qslider.h>
 #include <qspinbox.h>
 

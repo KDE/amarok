@@ -95,8 +95,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     //setFocusPolicy( NoFocus );
     setCaption( "amaroK" );
     setAcceptDrops( true );
-    //setPaletteForegroundColor( Qt::white );
-    //setPaletteBackgroundColor( amaroK::blue );
     setPaletteForegroundColor( amaroK::ColorScheme::Text );
     setPaletteBackgroundColor( amaroK::ColorScheme::Base );
 

@@ -30,10 +30,10 @@ email                : markey@web.de
 #include "playerwindow.h"
 #include "playlist.h"
 #include "playlistwindow.h"
-#include "plugin.h"
 #include "pluginmanager.h"
 #include "scriptmanager.h"
 #include "socketserver.h"
+
 #include "statusbar.h"
 #include "systray.h"
 #include "tracktooltip.h"        //engineNewMetaData()
@@ -42,7 +42,7 @@ email                : markey@web.de
 #include <kdebug.h>
 #include <kedittoolbar.h>        //slotConfigToolbars()
 #include <kglobalaccel.h>        //initGlobalShortcuts()
-#include <kglobalsettings.h>     //setupColors()
+#include <kglobalsettings.h>     //applyColorScheme()
 #include <kkeydialog.h>          //slotConfigShortcuts()
 #include <klocale.h>
 #include <kmessagebox.h>         //applySettings(), genericEventHandler()
@@ -51,33 +51,12 @@ email                : markey@web.de
 
 #include <qevent.h>              //genericEventHandler()
 #include <qeventloop.h>          //applySettings()
-#include <qobjectlist.h>         //setupColors()
-#include <qpalette.h>            //setupColors()
+#include <qobjectlist.h>         //applyColorScheme()
+#include <qpalette.h>            //applyColorScheme()
 #include <qpixmap.h>             //QPixmap::setDefaultOptimization()
 #include <qpopupmenu.h>          //genericEventHandler
 #include <qtooltip.h>            //default tooltip for trayicon
-#include <qwidgetfactory.h>      //firstrunWizard()
-#include <qwizard.h>             //firstrunWizard()
 
-namespace amaroK
-{
-    static QColor
-    fubucate( QColor deviant )
-    {
-        int h,h2,s,v;
-        KGlobalSettings::highlightColor().getHsv( h, s, v );
-        deviant.getHsv( h2, s, v );
-        return QColor( h, s, v, QColor::Hsv );
-    }
-
-    namespace ColorScheme
-    {
-        QColor Base; //amaroK::blue
-        QColor Text; //Qt::white
-        QColor Background; //brighter blue
-        QColor Foreground; //lighter blue
-    }
-}
 
 App::App()
         : KApplication()
@@ -85,15 +64,6 @@ App::App()
 {
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
     bool restoreSession = args->count() == 0 || args->isSet( "append" )  || args->isSet( "enqueue" );
-
-    {
-        using namespace amaroK::ColorScheme;
-
-        Base = fubucate( amaroK::blue );
-        Text = Qt::white;
-        Background = fubucate( 0x002090 );
-        Foreground = fubucate( 0x80A0FF );
-    }
 
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
@@ -361,10 +331,13 @@ public:
 //SLOT
 void App::applySettings( bool firstTime )
 {
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
+
+    //determine and apply colors first
+    applyColorScheme();
+
     //FIXME it is possible to achieve a state where you have all windows hidden and no way to get them back
     //      eg hide systray while amarok is hidden (dumb, but possible)
-
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
 
     if( AmarokConfig::showPlayerWindow() )
     {
@@ -389,12 +362,18 @@ void App::applySettings( bool firstTime )
             //KWin::setSystemTrayWindowFor( m_pTray->winId(), m_pPlayerWindow->winId() );
 
             delete m_pTray; m_pTray = new amaroK::TrayIcon( m_pPlayerWindow );
-        }
 
-        QFont font = m_pPlayerWindow->font();
-        font.setFamily( AmarokConfig::useCustomFonts() ? AmarokConfig::playerWidgetFont().family() : QApplication::font().family() );
-        m_pPlayerWindow->setFont( font ); //NOTE dont use unsetFont(), we use custom font sizes (for now)
-        m_pPlayerWindow->update(); //FIXME doesn't update the scroller
+        } else {
+
+            QFont font = m_pPlayerWindow->font();
+            font.setFamily( AmarokConfig::useCustomFonts()
+                             ? AmarokConfig::playerWidgetFont().family()
+                             : QApplication::font().family() );
+            m_pPlayerWindow->setFont( font ); //NOTE dont use unsetFont(), we use custom font sizes (for now)
+            m_pPlayerWindow->setPaletteForegroundColor( amaroK::ColorScheme::Text );
+            m_pPlayerWindow->setPaletteBackgroundColor( amaroK::ColorScheme::Base );
+            m_pPlayerWindow->update(); //FIXME doesn't update the scroller
+        }
 
     } else if( m_pPlayerWindow ) {
 
@@ -427,8 +406,6 @@ void App::applySettings( bool firstTime )
     amaroK::StatusBar::instance()->setShown( AmarokConfig::showStatusBar() );
 
     m_pTray->setShown( AmarokConfig::showTrayIcon() );
-
-    setupColors();
 
     if ( AmarokConfig::recodeID3v1Tags() )
         TagLib::ID3v1::Tag::setStringHandler( new ID3v1StringHandler( AmarokConfig::tagEncoding() ) );
@@ -467,8 +444,21 @@ void App::applySettings( bool firstTime )
 }
 
 
-void App::setupColors()
+static QColor
+comodulate( QColor deviant )
 {
+    ///this function is only used by determineAmarokColors()
+
+    int h,h2,s,v;
+    KGlobalSettings::highlightColor().getHsv( h, s, v );
+    deviant.getHsv( h2, s, v );
+    return QColor( h, s, v, QColor::Hsv );
+}
+
+void App::applyColorScheme()
+{
+    //TODO shorter, better placement etc.
+
     if( AmarokConfig::schemeKDE() )
     {
         QObject* const browserBar = m_pPlaylistWindow->child( "BrowserBar" );
@@ -493,8 +483,17 @@ void App::setupColors()
 
         delete list;
 
-    } else if( AmarokConfig::schemeAmarok() ) {
+        using namespace amaroK::ColorScheme;
+        Base       = comodulate( amaroK::blue );
+        Text       = Qt::white;
+        Background = comodulate( 0x002090 );
+        Foreground = comodulate( 0x80A0FF );
 
+        return;
+    }
+
+    if( AmarokConfig::schemeAmarok() )
+    {
         QColorGroup group = QApplication::palette().active();
         const QColor bg( amaroK::blue );
         const QColor bgAlt( 57, 64, 98 );
@@ -511,7 +510,7 @@ void App::setupColors()
 
         group.setColor( QColorGroup::Highlight, Qt::white );
         group.setColor( QColorGroup::HighlightedText, bg );
-        group.setColor( QColorGroup::BrightText, QColor( 0xff, 0x40, 0x40 ) ); //GlowColor
+        //group.setColor( QColorGroup::BrightText, QColor( 0xff, 0x40, 0x40 ) ); //GlowColor
 
         int h,s,v;
         bgAlt.getHsv( &h, &s, &v );
@@ -549,10 +548,16 @@ void App::setupColors()
         group.setColor( QColorGroup::Highlight, highlight );
         group.setColor( QColorGroup::HighlightedText, Qt::white );
         group.setColor( QColorGroup::Dark, Qt::darkGray );
-        group.setColor( QColorGroup::BrightText, QColor( 0xff, 0x40, 0x40 ) ); //GlowColor
+        //group.setColor( QColorGroup::BrightText, QColor( 0xff, 0x40, 0x40 ) ); //GlowColor
 
         m_pPlaylistWindow->setColors( QPalette( group, group, group ), bgAlt );
     }
+
+    using namespace amaroK::ColorScheme;
+    Base       = amaroK::blue;
+    Text       = Qt::white;
+    Background = 0x002090;
+    Foreground = 0x80A0FF;
 }
 
 
@@ -843,6 +848,14 @@ namespace amaroK
 
         kapp->config()->setGroup( group );
         return kapp->config();
+    }
+
+    namespace ColorScheme
+    {
+        QColor Base; //amaroK::blue
+        QColor Text; //Qt::white
+        QColor Background; //brighter blue
+        QColor Foreground; //lighter blue
     }
 }
 
