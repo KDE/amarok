@@ -12,8 +12,6 @@ SHORT-TERM (URGENT):
 
   ADD 179 <muesli> CoverManager startup takes too long.
 
-  ADD 177 <muesli> Facility for removing smart playlists.
-
   FIX 176 <muesli> Context sometimes still shows "Build a collection", just after the scan
                    finished.
 
