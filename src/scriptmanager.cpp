@@ -6,7 +6,9 @@
 
 #include <qdir.h>
 
+#include <kapplication.h>
 #include <kdebug.h>
+#include <klocale.h>
 #include <krun.h>
 #include <ktextedit.h>
 #include <kurl.h>
@@ -71,8 +73,11 @@ ScriptManager::Manager::slotEdit( const QString& path ) //SLOT
 
     QFile file( path );
 
-    if ( file.open( IO_ReadWrite ) ) {
+    if ( file.open( IO_ReadWrite ) ){
         KTextEdit* editor = new KTextEdit();
+        kapp->setTopWidget( editor );
+        editor->setCaption( kapp->makeStdCaption( i18n( "Edit Script" ) ) );
+
         QTextStream stream( &file );
         editor->setText( stream.read() );
         editor->setTextFormat( QTextEdit::PlainText );
