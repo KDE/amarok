@@ -46,7 +46,7 @@ int main( int argc, char *argv[] )
     KAboutData aboutData( "amarok", I18N_NOOP( "amaroK" ),
                           APP_VERSION, description, KAboutData::License_GPL,
                           "(c) 2002-2003, Mark Kretschmann and The amaroK Band", 0,
-                          "http://amarok.sourceforge.net", "" );
+                          "http://amarok.sourceforge.net" );
 
     aboutData.addAuthor( "Mark Kretschmann", "Project founder, developer, maintainer", "markey@web.de" );
     aboutData.addAuthor( "Max Howell", "Developer", "max.howell@methylblue.com" );

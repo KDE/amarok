@@ -3,23 +3,21 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number, 
-           #7 being the highest available (take this one for your next bug and increase here)
+           #9 being the highest available (take this one for your next bug and increase here)
 
                       
 SHORT-TERM (URGENT):
 
-    * fix: #7<mxcl>Still with KDE 3.2, the playlist doesn't raise/minimise/shade with the main
+    * fix: #8<markey> "report bug" uses "amarok" instead of "amaroK" as appname. does it make a diff?
+
+    * fix: #7<mxcl> Still with KDE 3.2, the playlist doesn't raise/minimise/shade with the main
              widget. KWin handles this if playlist is WType_Dialog, but this has other problems.
-	     To see how important dual raise is, raise another window above amarok's windows and
-	     click the systray icon - only the mainWidget is raised.
+             To see how important dual raise is, raise another window above amarok's windows and
+             click the systray icon - only the mainWidget is raised.
 
     * fix: #6<markey> install correct icons (not the inactive logo version)
 
     * fix: #5<markey> amaroK is not listed in my K-menu any more <mxcl> desktop file bug I think
-
-    * fix: #4<markey> re-add "report bug" menu entry <mxcl> It's there in KDE 3.1
-
-    * fix: #3<markey> crash when pressing cancel in "Add item" dialog
 
     * fix: <mxcl> select something in playlist, go to drag from the browser, move mouse over
            playlist, move mouse back to browser and drop, selected item from playlist disappears!
