@@ -87,42 +87,34 @@ email                :
 #define ANIM_TIMER 30
 
 
-
-PlayerApp::PlayerApp() :
-        KUniqueApplication( true, true, false ),
-        m_pGlobalAccel( new KGlobalAccel( this ) ),
-        m_bgColor( Qt::black ),
-        m_fgColor( QColor( 0x80, 0xa0, 0xff ) ),
-        m_DelayTime( 0 ),
-        m_playingURL( KURL() ),
-        m_pPlayObject( NULL ),
-        m_pPlayObjectXFade( NULL ),
-        m_pArtsDispatcher( NULL ),
-        m_pConfig( kapp->config() ),
-        m_pMainTimer( new QTimer( this ) ),
-        m_pAnimTimer( new QTimer( this ) ),
-        m_scopeId( 0 ),
-        m_length( 0 ),
-        m_playRetryCounter( 0 ),
-        m_pEffectWidget( NULL ),
-        m_bIsPlaying( false ),
-        m_bChangingSlider( false ),
-        m_proxyError( false ),
-        m_XFadeRunning( false ),
-        m_XFadeValue( 1.0 ),
-        m_XFadeCurrent( "invalue1" )
+PlayerApp::PlayerApp()
+        : KUniqueApplication( true, true, false )
+        , m_pGlobalAccel( new KGlobalAccel( this ) )
+        , m_bgColor( Qt::black )
+        , m_fgColor( QColor( 0x80, 0xa0, 0xff ) )
+        , m_DelayTime( 0 )
+        , m_playingURL( KURL() )
+        , m_pPlayObject( NULL )
+        , m_pPlayObjectXFade( NULL )
+        , m_pArtsDispatcher( NULL )
+        , m_pConfig( kapp->config() )
+        , m_pMainTimer( new QTimer( this ) )
+        , m_pAnimTimer( new QTimer( this ) )
+        , m_scopeId( 0 )
+        , m_length( 0 )
+        , m_playRetryCounter( 0 )
+        , m_pEffectWidget( NULL )
+        , m_bIsPlaying( false )
+        , m_bChangingSlider( false )
+        , m_proxyError( false )
+        , m_XFadeRunning( false )
+        , m_XFadeValue( 1.0 )
+        , m_XFadeCurrent( "invalue1" )
 {
     setName( "amaroK" );
-
     pApp = this; //global
-
+    
     initArts();
-    if ( !initScope() )
-    {
-        KMessageBox::error( 0, i18n( "Cannot find libamarokarts! Maybe installed in the wrong directory? Aborting.." ), i18n( "Fatal Error" ) );
-        return;
-    }
-
     initPlayerWidget();
     initBrowserWin();
     initMixer();
@@ -142,7 +134,8 @@ PlayerApp::PlayerApp() :
     kapp->processEvents();
 
     //restore last playlist
-    //<mxcl> At some point it'd be nice to start loading of the playlist before we initialise arts so the playlist seems to be loaded when the browserWindow appears
+    //<mxcl> At some point it'd be nice to start loading of the playlist before we initialise arts so
+    //       the playlist seems to be loaded when the browserWindow appears
     m_pBrowserWin->m_pPlaylistWidget->insertMedia( kapp->dirs()->saveLocation
                                                  ( "data", kapp->instanceName() + "/" ) + "current.m3u" );
 
@@ -184,13 +177,13 @@ PlayerApp::~PlayerApp()
     delete m_pEffectWidget;
     delete m_pPlayerWidget; //deletes browserWin
 
-    m_XFade = Amarok::Synth_STEREO_XFADE::null();
-    m_scope = Arts::StereoFFTScope::null();
-    m_volumeControl = Arts::StereoVolumeControl::null();
-    m_effectStack = Arts::StereoEffectStack::null();
+    m_XFade             = Amarok::Synth_STEREO_XFADE::null();
+    m_scope             = Arts::StereoFFTScope::null();
+    m_volumeControl     = Arts::StereoVolumeControl::null();
+    m_effectStack       = Arts::StereoEffectStack::null();
     m_globalEffectStack = Arts::StereoEffectStack::null();
-    m_amanPlay = Arts::Synth_AMAN_PLAY::null();
-    m_Server = Arts::SoundServerV2::null();
+    m_amanPlay          = Arts::Synth_AMAN_PLAY::null();
+    m_Server            = Arts::SoundServerV2::null();
 
     delete m_pArtsDispatcher;
 }
@@ -337,9 +330,23 @@ void PlayerApp::initArts()
     m_amanPlay.start();
 
     m_XFade = Arts::DynamicCast( m_Server.createObject( "Amarok::Synth_STEREO_XFADE" ) );
+    
+    if ( m_XFade.isNull() )
+    {
+        KMessageBox::error( 0,
+                            i18n( "Cannot find libamarokarts! Probably amaroK was installed with the \
+                                   wrong prefix. Please install again using: ./configure \
+                                   --prefix=`kde-config --prefix`" ),
+                            i18n( "Fatal Error" ) );
+        //FIXME exit() does not work with KUniqueApplication. it simply continues. what to do?
+        exit( 1 );
+    }
+            
     m_XFade.percentage( m_XFadeValue );
     m_XFade.start();
 
+    m_scope = Arts::DynamicCast( m_Server.createObject( "Arts::StereoFFTScope" ) );
+       
     m_globalEffectStack = Arts::DynamicCast( m_Server.createObject( "Arts::StereoEffectStack" ) );
     m_globalEffectStack.start();
 
@@ -455,25 +462,6 @@ bool PlayerApp::initMixerHW()
     if ( !devmask ) return false;
 
     return true;
-}
-
-
-bool PlayerApp::initScope()
-{
-    kdDebug() << "begin PlayerApp::initScope()" << endl;
-
-    m_scope = Arts::DynamicCast( m_Server.createObject( "Arts::StereoFFTScope" ) );
-
-    if ( m_scope.isNull() )
-    {
-        kdDebug() << "m_scope.isNull()!" << endl;
-        return false;
-    }
-    else
-    {
-        kdDebug() << "end PlayerApp::initScope()" << endl;
-        return true;
-    }
 }
 
 

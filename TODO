@@ -5,6 +5,7 @@ TODO-list for amaroK
 #x      == sequential bug number, 
            #3 being the highest available (take this one for your next bug and increase here)
 
+                      
 SHORT-TERM:
 
     * fix: clicking tray icon to hide does not work (KDE 3.2 Nov 29 HEAD). Either KDE or amaroK
@@ -158,5 +159,9 @@ DISCUSSING:
            <berkus> noo, we have it hiding into tray, thats enough (imagine how much flashing will be
            if i drag mouse around with "focus follows mouse" on - this is the one i use all the time)
 
+    * inf: <markey> I'd very much appreciate people keeping line length in all amaroK sources/textfiles
+           at 110 characters max. Longer lines cause horrible dynamic line breaks or scrolling when you only
+           have limited screen width, like in console or kdevelop. pretty please with icing =)
+           
 DUMPED:
 

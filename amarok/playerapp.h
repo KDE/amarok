@@ -174,7 +174,6 @@ class PlayerApp : public KUniqueApplication
         void initPlayerWidget();
         void initMixer();
         bool initMixerHW();
-        bool initScope();
         void initBrowserWin();
         void initColors();
         void restoreSession();
