@@ -111,18 +111,15 @@ OSDWidget::determineMetrics()
 
     if( !m_cover.isNull() ) {
         const int availableWidth = max.width() - rect.width(); //WILL be >= 80
+        const int imageMetric = QMIN( availableWidth, rect.height() );
 
-        int imageMetric;
-        imageMetric = QMIN( availableWidth, rect.height() );
-        imageMetric = QMIN( imageMetric, m_cover.width() );
+        m_scaledCover = m_cover.smoothScale( imageMetric, imageMetric, QImage::ScaleMin );
 
         const int widthIncludingImage = rect.width()
-                + imageMetric
+                + m_scaledCover.width()
                 + VMARGIN; //margin between text + image
 
         rect.setWidth( QMIN( widthIncludingImage, max.width() ) );
-
-        m_scaledCover = m_cover.smoothScale( imageMetric, imageMetric );
     }
 
     // size and move us

@@ -53,12 +53,9 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags )
 
     if ( !image.isEmpty() && image.find( QString("nocover") ) == -1 )
     {
-        int imageSize = QApplication::desktop()->width() / 16;
         tipBuf +=( QString( "<td><table cellpadding='0' cellspacing='0'><tr><td>"
-                           "<img width='%1' height='%2' src='%3'>"
+                           "<img src='%1'>"
                            "</td></tr></table></td>" )
-                           .arg( QString::number(imageSize) )
-                           .arg( QString::number(imageSize) )
                            .arg( image )
                            );
                            
