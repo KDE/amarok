@@ -1118,6 +1118,7 @@ void Playlist::showTrackInfo( PlaylistItem *pItem ) const //SLOT
          str += body.arg( i18n( "Length" ), mb.prettyLength() );
          str += body.arg( i18n( "Bitrate" ),mb.prettyBitrate() );
          str += body.arg( i18n( "Samplerate" ), mb.prettySampleRate() );
+         str += body.arg( i18n( "Location" ), mb.url().path() );
     }
     else
     {

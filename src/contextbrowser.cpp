@@ -93,21 +93,28 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 
     browser->begin();
     
-    QString styleSheet( "a { color:black; font-size:8px; text-decoration:none; }"
-                        "div { color:black; font-size:8px; text-decoration:none; }"
-                        "td { color:black; font-size:8px; text-decoration:none; }"
-
-                        ".song { color:black; font-size:8px; text-decoration:none; }"
-                        ".song:hover { cursor: default; color:black; font-weight: bold; text-decoration:underline; background-color:#cccccc; }"
-                        ".album { color:black; font-weight: bold; font-size:8px; text-decoration:none; }"
-                        ".title { font-size: 11px; font-weight: bold; }"
-                        ".head { font-size: 10px; font-weight: bold; }"
-
-                        ".rbalbum        { border: solid #ffffff 1px; }"
-                        ".rbalbum:hover  { cursor: default; background-color: #cccccc; border: solid #000000 1px; }"
-
-                        ".rbcontent        { border: solid #cccccc 1px; }"
-                        ".rbcontent:hover  { border: solid #000000 1px; }" );
+    QString styleSheet;
+    styleSheet =  QString( "div { color: %1; font-size: 8px; text-decoration: none; }" )
+                  .arg( colorGroup().text().name() );
+    styleSheet += QString( "td { color: %1; font-size: 8px; text-decoration: none; }" )
+                  .arg( colorGroup().text().name() );
+    styleSheet += QString( ".song { color: %1; font-size: 8px; text-decoration: none; }" )
+                  .arg( colorGroup().text().name() );
+    styleSheet += QString( ".song:hover { color: %1; cursor: default; font-weight: bold; background-color: %2; }" )
+                  .arg( colorGroup().base().name() ).arg( colorGroup().highlight().name() );
+    styleSheet += QString( ".album { font-weight: bold; font-size: 8px; text-decoration: none; }" );
+    styleSheet += QString( ".title { color: %1; font-size: 11px; font-weight: bold; }" )
+                  .arg( colorGroup().text().name() );
+    styleSheet += QString( ".head { color: %1; font-size: 10px; font-weight: bold; background-color: %2; }" )
+                  .arg( colorGroup().base().name() ).arg( colorGroup().highlight().name() );
+    styleSheet += QString( ".rbalbum { color: %1; border: solid %2 1px; }" )
+                  .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
+    styleSheet += QString( ".rbalbum:hover { color: %1; cursor: default; background-color: %2; border: solid %3 1px; }" )
+                  .arg( colorGroup().base().name() ).arg( colorGroup().highlight().name() ).arg( colorGroup().text().name() );
+    styleSheet += QString( ".rbcontent { border: solid %1 1px; }" )
+                  .arg( colorGroup().highlight().name() );
+    styleSheet += QString( ".rbcontent:hover { border: solid %1 1px; }" )
+                  .arg( colorGroup().text().name() );
 
     browser->setUserStyleSheet( styleSheet );
 
@@ -133,8 +140,11 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     values.clear();
     names.clear();
 
-    browser->write( "<div class='head'><br>Other titles on this album:</div>" );
-    browser->write( "<div class='rbcontent'>" );
+    browser->write( "<br><div class='rbcontent'>" );
+    browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
+    browser->write( "<tr><td class='head'>Other titles on this album:</td></tr>" );
+    browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
+    browser->write( "</table>" );    
     browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
     m_db->execSql( QString( "SELECT tags.title, tags.url, tags.track "
@@ -158,8 +168,13 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 
     browser->write( "</table>" );
     browser->write( "</div>" );
-    browser->write( "<div class='head'><br>Other albums:</div>" );
-    browser->write( "<table width='100%' border='0' cellspacing='2' cellpadding='1'>" );
+
+    browser->write( "<br><div class='rbcontent'>" );
+    browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
+    browser->write( "<tr><td class='head'>Other albums:</td></tr>" );
+    browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
+    browser->write( "</table>" );    
+    browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
     
     m_db->execSql( QString( "SELECT DISTINCT album.name, album.id, artist.id "
                             "FROM album, tags, artist "
@@ -173,7 +188,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 
         browser->write( QString ( "<tr><td onClick='window.location.href=\"album:%1/%2\"' height='42' valign='top' class='rbalbum'>"
                                   "<img align='left' hspace='2' width='40' height='40' src='%3'><span class='album'>%4</span><br>%5 Tracks</td>"
-                                  "<td></td></tr>" )
+                                  "</tr>" )
                         .arg( values[i*3 + 2] )
                         .arg( values[i*3 + 1] )
                         .arg( m_db->getImageForAlbum( values[i*3 + 2], values[i*3 + 1], locate( "data", "amarok/images/sound.png" ) ) )
@@ -181,7 +196,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
                         .arg( m_db->albumSongCount( values[i*3 + 2], values[i*3 + 1] ) ) );
     }
 
-    browser->write( "</table><br></html>" );
+    browser->write( "</table></div><br></html>" );
     browser->end();
 
     m_db->incSongCounter( bundle.url().path() );
