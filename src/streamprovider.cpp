@@ -149,9 +149,10 @@ StreamProvider::sendRequest() //SLOT
     QString authString = KCodecs::base64Encode( username + ":" + password );
     bool auth = !( username.isEmpty() && password.isEmpty() );
 
-    QString request = QString( "GET %1\r\n"
+    QString request = QString( "GET %1 HTTP/1.0\r\n"
                                "Host: %2\r\n"
                                "User-Agent: amaroK/1.2\r\n"
+                               "Accept: */*\r\n"
                                "%3"
                                "%4"
                                "\r\n" )
