@@ -406,6 +406,9 @@
                                     <property name="suffix">
                                         <string> ms</string>
                                     </property>
+                                    <property name="specialValueText">
+                                        <string>Forever</string>
+                                    </property>
                                     <property name="buttonSymbols">
                                         <enum>UpDownArrows</enum>
                                     </property>
@@ -413,7 +416,7 @@
                                         <number>600000</number>
                                     </property>
                                     <property name="minValue">
-                                        <number>500</number>
+                                        <number>0</number>
                                     </property>
                                     <property name="lineStep">
                                         <number>1000</number>

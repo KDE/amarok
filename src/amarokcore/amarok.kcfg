@@ -248,10 +248,9 @@
     </entry>
     <entry key="Osd Duration" type="Int">
         <label>How many milliseconds the text should be displayed</label>
-        <whatsthis>The time in milliseconds to show the OSD. The value must be between 500 ms and 10000 ms. The default is 5000 ms.</whatsthis>
+        <whatsthis>The time in milliseconds to show the OSD. A value of 0 means never hide. The default value is 5000 ms.</whatsthis>
         <default>5000</default>
-        <min>500</min>
-        <max>10000</max>
+        <min>0</min>
     </entry>
     <entry key="Osd Y Offset" type="Int">
         <label>Y position offset</label>
