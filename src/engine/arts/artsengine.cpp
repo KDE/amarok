@@ -334,7 +334,7 @@ const Engine::Scope& ArtsEngine::scope()
 bool ArtsEngine::load( const KURL& url, bool stream )
 {
     Engine::Base::load( url, stream );
-    kdDebug() << "[Gst-Engine] Loading url: " << url.url() << endl;
+    kdDebug() << "[aRts-Engine] Loading url: " << url.url() << endl;
 
     kdDebug() << "aRts-Engine: url.path()     == " << url.path()     << endl;
     kdDebug() << "aRts-Engine: url.protocol() == " << url.protocol() << endl;
