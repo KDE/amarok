@@ -1059,7 +1059,11 @@ void ContextBrowser::showCurrentTrack() //SLOT
             if ( !albumValues.isEmpty() )
                 for ( uint j = 0; j < albumValues.count(); j += 5 )
                 {
-                    QString tmp = albumValues[j + 2].stripWhiteSpace().isEmpty() ? "" : "<span class='album-song-trackno'>" + albumValues[j + 2] + ".&nbsp;</span>";
+                    QString tmp = albumValues[j + 2].stripWhiteSpace().isEmpty() ? "" : albumValues[j + 2];
+                    if (tmp.length() > 0)
+                    {
+                        tmp = tmp.length() == 1 ? "<span class='album-song-trackno'>0"+ tmp + ".&nbsp;</span>" : "<span class='album-song-trackno'>"+ tmp + ".&nbsp;</span>";
+                    }
                     QString tmp_time = (albumValues[j + 4] == QString("0")) ? "" :" <span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), false ) + ")</span>";
                     m_HTMLSource.append(
                         "<div class='album-song'>"
@@ -1200,9 +1204,9 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     styleSheet += QString( ".album-year { }" );
     styleSheet += QString( ".album-song a { display: block; padding: 1px 2px; font-weight: normal; text-decoration: none; }" );
     styleSheet += QString( ".album-song a:hover { color: %1; background-color: %2; }" ).arg( fg ).arg( bg );
-    styleSheet += QString( ".album-song-trackno { text-align: right; width: 2em; display: block; float: left;}" );
+    styleSheet += QString( ".album-song-trackno { }" );
     styleSheet += QString( ".album-song-title { } " );
-    styleSheet += QString( ".album-song-time { float: right; } " );
+    styleSheet += QString( ".album-song-time { } " );
 
     //boxes used to display score (sb: score box)
     styleSheet += QString( ".sbtext { padding: 0px 4px; border-left: solid %1 1px; }" ).arg( colorGroup().base().dark( 120 ).name() );
