@@ -54,6 +54,8 @@ PluginManager::query( const QString& constraint )
     str += QString::number( FrameworkVersion );
     str += " and ";
     str += constraint;
+    str += " and ";
+    str += "[X-KDE-amaroK-rank] > 0";
 
     debug() << "Plugin trader constraint: " << str << endl;
 
@@ -196,8 +198,10 @@ PluginManager::dump( const KService::Ptr service )
       << "name                          : " << service->name() << endl
       << "library                       : " << service->library() << endl
       << "desktopEntryPath              : " << service->desktopEntryPath() << endl
-      << "X-KDE-plugintype              : " << service->property( "X-KDE-amaroK-plugintype" ).toString() << endl
+      << "X-KDE-amaroK-plugintype       : " << service->property( "X-KDE-amaroK-plugintype" ).toString() << endl
+      << "X-KDE-amaroK-name             : " << service->property( "X-KDE-amaroK-name" ).toString() << endl
       << "X-KDE-amaroK-authors          : " << service->property( "X-KDE-amaroK-authors" ).toStringList() << endl
+      << "X-KDE-amaroK-rank             : " << service->property( "X-KDE-amaroK-rank" ).toString() << endl
       << "X-KDE-amaroK-version          : " << service->property( "X-KDE-amaroK-version" ).toString() << endl
       << "X-KDE-amaroK-framework-version: " << service->property( "X-KDE-amaroK-framework-version" ).toString() << endl
       << endl;
