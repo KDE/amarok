@@ -111,7 +111,7 @@ void PlaylistItem::setMeta( const MetaBundle &bundle )
         m_minutes = bundle.m_length / 60 % 60;
         m_seconds = bundle.m_length % 60;
     
-        str += zeroPad( m_minutes );
+        str += QString::number( m_minutes ); //don't zeroPad, instead we rightAlign the column
         str += ":";
         str += zeroPad( m_seconds );
     }

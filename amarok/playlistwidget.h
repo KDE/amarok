@@ -113,7 +113,7 @@ class PlaylistWidget : public KListView //: private KListView
         void slotEraseMarker();
         void slotTextChanged( const QString & );
         void slotReturnPressed();
-        void showContextMenu( QListViewItem *, const QPoint & );
+        void showContextMenu( QListViewItem *, const QPoint &, int );
         void activate( QListViewItem * );
         void writeTag( QListViewItem *, const QString &, int );
 

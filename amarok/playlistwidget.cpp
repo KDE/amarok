@@ -88,7 +88,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
     addColumn( i18n( "Length"    ),  80 );
     addColumn( i18n( "Bitrate"   ),  0 );
     
-    setRenameable( 0 );
+    setRenameable( 0, false ); //TODO allow renaming of the filename
     setRenameable( 1 );
     setRenameable( 2 );
     setRenameable( 3 );
@@ -96,12 +96,13 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
     setRenameable( 5 );
     setRenameable( 6 );
     setRenameable( 7 );
+    setColumnAlignment( 9, Qt::AlignRight );
 
     connect( this, SIGNAL( contentsMoving( int, int ) ),  this, SLOT( slotEraseMarker() ) );
     connect( this, SIGNAL( doubleClicked( QListViewItem* ) ), this, SLOT( activate( QListViewItem* ) ) );
     connect( this, SIGNAL( returnPressed( QListViewItem* ) ), this, SLOT( activate( QListViewItem* ) ) );
     connect( this, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
-             this, SLOT( showContextMenu( QListViewItem*, const QPoint& ) ) );
+             this, SLOT( showContextMenu( QListViewItem*, const QPoint&, int ) ) );
     connect( this, SIGNAL( itemRenamed( QListViewItem*, const QString&, int ) ),
                    SLOT( writeTag( QListViewItem*, const QString&, int ) ) );
 
@@ -603,33 +604,37 @@ void PlaylistWidget::activate( QListViewItem *item )
 }
 
 
-void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p )
+void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int col )
 {
+    if( item == NULL ) return; //technically we should show "Remove" but this is easier
+    
     QPopupMenu popup( this );
-    popup.insertItem( SmallIcon("player_play"), i18n( "&Play track" ), 0 );    
-    popup.insertItem( SmallIcon("info"), i18n( "&Show track information" ), 1 );
-    popup.insertItem( i18n( "&Copy trackname to clipboard" ), 2 ); //FIXME use KAction
-    //TODO new icon for remove, we can't use the delete one as it is for DELETE!
-    //     we don't want people thinking they'll delete the track from their hard-discs!
-    popup.insertItem( /*SmallIcon("editdelete"),*/ i18n( "&Remove selected items" ), this, SLOT( removeSelectedItems() ), Key_Delete );
+    popup.insertItem( SmallIcon( "player_play" ), i18n( "&Play" ), 0, 0, Key_Enter, 0 );    
+    popup.insertItem( SmallIcon( "info" ), i18n( "&View meta information..." ), 1 );
+    popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit tag: %1" ).arg( columnText( col ) ), 2 );
+    popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy trackname" ), 0, 0, CTRL+Key_C, 3 ); //FIXME use KAction    
+    popup.insertSeparator();    
+    //NOTE we did use "editdelete" but it that makes it seem like you will delete the file!
+    //NOTE at least one item will always be selected ( item )
+    popup.insertItem( SmallIcon( "editclear" ), i18n( "&Remove selected" ), this, SLOT( removeSelectedItems() ), Key_Delete );    
 
-    // only enable when file is selected
-    popup.setItemEnabled( 0, ( item != NULL ) );
-    popup.setItemEnabled( 1, ( item != NULL ) );
-    popup.setItemEnabled( 2, ( item != NULL ) );
-    //NOTE there is no point in showing item 3 if no items are selected, but it is not cheap to determine
-    //     this property for large playlists, my suggestion: don't fret the small stuff ;-)
-
+    //only enable for columns that have editable tags
+    popup.setItemEnabled( 2, isRenameable( col ) );    
+    
     switch( popup.exec( p ) )
     {
-    case 1:
-        showTrackInfo( static_cast<const PlaylistItem *>(item) );
-        break;
     case 0:
         activate( item );
         break;
+    case 1:
+        showTrackInfo( static_cast<const PlaylistItem *>(item) );
+        break;
     case 2:
+        rename( item, col );
+        break;
+    case 3:
         copyAction( item );
+        break;
     }
 }
 
@@ -837,9 +842,10 @@ void PlaylistWidget::removeSelectedItems()
     //FIXME also if you delete the last track when set current the playlist repeats on track end
 
     QPtrList<PlaylistItem> list;
-    
-    for( QListViewItem *item = firstChild(); item; item = item->nextSibling() )
-        if( item->isSelected() && item != m_pCurrentTrack ) list.append( static_cast<PlaylistItem *>(item) );
+
+    for( QListViewItemIterator it( this, QListViewItemIterator::Selected ); it.current(); ++it)
+        if( it.current() != m_pCurrentTrack )
+            list.append( (PlaylistItem *)it.current() );
 
     //currenTrack must be last to ensure the item after it won't be removed
     //we select the item after currentTrack so it's played when currentTrack finishes
@@ -880,6 +886,7 @@ void PlaylistWidget::removeSelectedItems()
 
 void PlaylistWidget::writeTag( QListViewItem *lvi, const QString &tag, int col )
 {
+    //Surely we don't need to test for NULL here?
     static_cast<PlaylistItem*>(lvi)->writeTag( tag, col );
 }
 
