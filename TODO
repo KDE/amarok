@@ -8,16 +8,10 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  FIX 132 <mxcl>   GSTengine, pick a bad audio sink in playback config and it crashes, default sink is one
-                   nobody has. Needs fixing or we should disable the code.
-          
-          <markey> I've added many sanity checks to the gst engine. If you still encounter problems,
-                   please attach a backtrace.
-
-  FIX 121 <markey> We should cut down on unnecessary/redundant debug output/warnings (noise).
-
 
 MID-TERM:
+
+  FIX 121 <markey> We should cut down on unnecessary/redundant debug output/warnings (noise).
 
   ADD 105 <markey> Make ArtsEngine depend not only on kdemultimedia-devel, but also on kdemultimedia,
                    since arts itself contains these crappy decoders and ppl come complain about bad sound.
