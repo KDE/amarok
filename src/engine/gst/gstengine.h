@@ -186,7 +186,7 @@ class GstEngine : public Engine::Base
         static const uint SCOPEBUF_SIZE  = 1000*KB;
         static const int  SCOPE_VALUES   = 512;
         static const int  STREAMBUF_SIZE = 600*KB;
-        static const uint STREAMBUF_MIN  = 80*KB;
+        static const uint STREAMBUF_MIN  = 100*KB;
         static const int  STREAMBUF_MAX  = STREAMBUF_SIZE - 50*KB;
         #undef KB
 
