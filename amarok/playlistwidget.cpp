@@ -900,7 +900,7 @@ void PlaylistWidget::readAudioProperties( PlaylistItem *pi )
 
 void PlaylistWidget::contentsDragEnterEvent( QDragEnterEvent *e )
 {
-    e->accept( KURLDrag::canDecode( e ) );
+    e->accept( e->source() == viewport() || KURLDrag::canDecode( e ) );
 }
 
 
