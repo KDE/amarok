@@ -16,12 +16,15 @@
 #ifndef AMAROK_EQUALIZERSETUP_H
 #define AMAROK_EQUALIZERSETUP_H
 
-#include "equalizersetupbase.h" //base class
+#include "sliderwidget.h"
 
 #include <qptrlist.h>           //stack alloc
-#include <qslider.h>
 
-class EqualizerSetup : public EqualizerSetupBase
+using namespace amaroK;
+
+class QCheckBox;
+
+class EqualizerSetup : public QWidget
 {
     Q_OBJECT
 
@@ -39,7 +42,10 @@ class EqualizerSetup : public EqualizerSetupBase
     private:
         static EqualizerSetup* s_instance;
 
-        QPtrList<QSlider> m_bandSliders;
+        QCheckBox* m_checkBox_enableEqualizer;
+        Slider* m_slider_preamp;
+
+        QPtrList<Slider> m_bandSliders;
 };
 
 

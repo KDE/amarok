@@ -50,7 +50,6 @@ amarokapp_SOURCES = \
     enginecontroller.cpp \
     engineobserver.cpp \
     equalizersetup.cpp \
-    equalizersetupbase.ui \
     fht.cpp \
     filebrowser.cpp \
     firstrunwizard.ui \
