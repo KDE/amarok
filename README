@@ -25,16 +25,14 @@ drop interface, that really makes playlist handling easy.
 DEPENDENCIES
 ============   
 
-Required:
-    
+required
     * KDELIBS 3.2
       http://www.kde.org
     
     * TagLib 1.0
       http://freshmeat.net/projects/taglib
     
-Recommended:
-    
+recommended
     * GStreamer-0.8 + Gst-Plugins-0.8
       http://gstreamer.net
 
@@ -46,8 +44,7 @@ Recommended:
 
     * OpenGL accelerated X-Server
             
-Optional:
-    
+optional
     * aRts 1.2 + KDEMULTIMEDIA 3.2
       http://www.kde.org
     
