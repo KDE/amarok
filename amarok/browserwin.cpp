@@ -135,10 +135,11 @@ void BrowserWin::initChildren()
     //</Buttons>
 
     m_pSplitter      = new QSplitter( this );
+    
     m_pMultiTabBar   = new KMultiTabBar( KMultiTabBar::Vertical, m_pSplitter );
-    m_pMultiTabBar   ->setStyle( KMultiTabBar::KONQSBC );
-    m_pMultiTabBar   ->setPosition( KMultiTabBar::Left );
-    m_pMultiTabBar   ->showActiveTabTexts( true ); 
+    m_pMultiTabBar->setStyle( KMultiTabBar::VSNET );
+    m_pMultiTabBar->setPosition( KMultiTabBar::Left );
+    m_pMultiTabBar->showActiveTabTexts( true ); 
        
     #define BROWSERBOX_ID 0
     #define STREAMBOX_ID 1
@@ -400,13 +401,16 @@ void BrowserWin::setPalettes( const QColor &fg, const QColor &bg, const QColor &
 }
 
 
+//<KMultiTabBar handling>    FIXME I am ugly, please rewrite me! 
 void BrowserWin::buttonBrowserClicked()
 {
     QValueList<int> list = m_pSplitter->sizes();
 
     if ( m_pBrowserBox->isHidden() )
     {    
-        m_boxSize = *list.at(2);
+        if ( !m_pStreamBox->isHidden() )
+            m_boxSize = *list.at(2);
+        
         m_pStreamBox->hide();
         m_pBrowserBox->show();
         m_pMultiTabBar->tab( BROWSERBOX_ID )->setState( true  );
@@ -430,7 +434,9 @@ void BrowserWin::buttonStreamClicked()
    
     if ( m_pStreamBox->isHidden() )
     {    
-        m_boxSize = *list.at(1);
+        if ( !m_pBrowserBox->isHidden() )
+            m_boxSize = *list.at(1);
+        
         m_pStreamBox->show();
         m_pBrowserBox->hide();
         m_pMultiTabBar->tab( BROWSERBOX_ID )->setState( false  );
@@ -446,6 +452,7 @@ void BrowserWin::buttonStreamClicked()
     *list.at(2) = m_boxSize;
     m_pSplitter->setSizes( list );
 }
-        
+//</KMultiTabBar handling>
+      
 
 #include "browserwin.moc"
