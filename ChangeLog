@@ -4,6 +4,8 @@ amaroK Changelog
 
 
 VERSION HEAD:
+  * add: vertical lines between columns in Playlist
+  * add: alternating item colors in Playlist
   * add: column "directory" in PlaylistWidget (for Grue:)
   * add: sorting by clicking on column headers in PlaylistWidget
   * fix: rewrote directory reading code in BrowserWidget.cpp.

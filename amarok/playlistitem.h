@@ -66,6 +66,7 @@ class PlaylistItem : public QListViewItem
         void init();
         void paintCell( QPainter* p, const QColorGroup& cg, int column, int width, int align );
         void paintFocus( QPainter*, const QColorGroup&, const QRect& );
+        bool isAlternate();
 
         bool m_hasMetaInfo;
         KURL m_url;
@@ -73,5 +74,6 @@ class PlaylistItem : public QListViewItem
         bool m_isDir;
         QString m_sPath;
         QColor m_glowCol;
+        bool m_alternate;
 };
 #endif

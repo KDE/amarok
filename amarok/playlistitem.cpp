@@ -22,9 +22,11 @@
 
 #include <string.h>
 
+#include <qcolor.h>
 #include <qlistview.h>
 #include <qmessagebox.h>
 #include <qpainter.h>
+#include <qpen.h>
 #include <qpixmap.h>
 #include <qrect.h>
 #include <qstring.h>
@@ -78,6 +80,7 @@ void PlaylistItem::init()
     m_bIsGlowing = false;
     setDragEnabled( true );
     setDropEnabled( true );
+    m_alternate = false;
 }
 
 
@@ -150,15 +153,46 @@ void PlaylistItem::setDir( bool on )
 }
 
 
+bool PlaylistItem::isAlternate()
+{
+    if ( listView() )
+    {
+        if ( QString( listView()->name() ) == "PlaylistWidget" )
+        {
+            if ( itemAbove() )
+            {
+                if ( static_cast<PlaylistItem*>( itemAbove() )->m_alternate )
+                {
+                    m_alternate = false;
+                }
+                else
+                {
+                    m_alternate = true;
+                }
+            }
+        }
+    }
+
+    return m_alternate;
+}
+
+
 void PlaylistItem::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align )
 {
     QColor col( 0x80, 0xa0, 0xff );
     int margin = 1;
 
     QPixmap *pBufPixmap = new QPixmap( width, height() );
-
     QPainter pPainterBuf( pBufPixmap, true );
-    pPainterBuf.setBackgroundColor( Qt::black );
+
+    if ( isAlternate() )
+    {
+        pPainterBuf.setBackgroundColor( QColor( Qt::darkGray ).dark( 250 ) );
+    }
+    else
+    {
+        pPainterBuf.setBackgroundColor( Qt::black );
+    }
 
     if ( m_bIsGlowing )
     {
@@ -185,6 +219,11 @@ void PlaylistItem::paintCell( QPainter * p, const QColorGroup & cg, int column, 
     }
 
     pPainterBuf.drawText( margin, 0, width - margin, height(), align, text( column ) );
+
+    QPen linePen( Qt::darkGray, 0, Qt::DotLine );
+    pPainterBuf.setPen( linePen );
+    pPainterBuf.drawLine( width - 1, 0, width - 1, height() - 1 );
+
     pPainterBuf.end();
     p->drawPixmap( 0, 0, *pBufPixmap );
 

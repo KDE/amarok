@@ -18,6 +18,8 @@ SHORT-TERM:
 
 MID-TERM:
 
+    * honor KDE single/double-click setting in BrowserWin
+
     * add: generate text or html document from playlist entries
 
     * add: display warning when artsd is run w/o realtime
