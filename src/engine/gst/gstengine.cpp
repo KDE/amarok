@@ -167,15 +167,12 @@ GstEngine::outputError_cb( GstElement* /*element*/, GstElement* /*domain*/, GErr
 
 
 void
-GstEngine::inputError_cb( GstElement* /*element*/, GstElement* /*domain*/, GError* error, gchar* debug, gpointer inputPipeline ) //static
+GstEngine::inputError_cb( GstElement* /*element*/, GstElement* /*domain*/, GError* error, gchar* debug, gpointer /*inputPipeline*/ ) //static
 {
     DEBUG_FUNC_INFO
 
     instance()->m_gst_error = QString::fromAscii( error->message );
     instance()->m_gst_debug = QString::fromAscii( debug );
-
-    InputPipeline* input = static_cast<InputPipeline*>( inputPipeline );
-    input->m_error = true;
 
     // Process error message in application thread
     QTimer::singleShot( 0, instance(), SLOT( handleInputError() ) );
@@ -657,21 +654,7 @@ GstEngine::setVolumeSW( uint percent )  //SLOT
 
 void GstEngine::timerEvent( QTimerEvent* )
 {
-//     if ( m_pipelineFilled && m_inputs.isEmpty() &&
-//         GST_STATE( m_gst_outputThread ) == GST_STATE_PLAYING )
-//     {
-//         int filled = 1;
-//         gst_element_get( m_gst_queue, "current-level-buffers", &filled, 0 );
-//         if ( !filled )
-//         {
-//             kdDebug() << "Inputs now empty. Stopping output pipeline.\n";
-//             gst_element_set_state( m_gst_outputThread, GST_STATE_PAUSED );
-//
-//             return;
-//         }
-//     }
-
-    // Fading transition management
+    // Fading transition management:
 
     QPtrList<InputPipeline> destroyList;
     InputPipeline* input;
@@ -800,20 +783,12 @@ GstEngine::handleInputError()  //SLOT
         text += m_gst_debug;
     }
     m_gst_error = QString();
-
-    InputPipeline* input;
-    // Find bin which emitted the signal
-    for ( uint i = 0; i < m_inputs.count(); i++ ) {
-        input = m_inputs.at( i );
-        if ( input->m_error ) {
-            error() << "An input bin has signaled an error condition, destroying.\n";
-            destroyInput( input );
-            emit trackEnded();
-        }
-    }
-
     error() << text << endl;
     emit statusText( text );
+    error() << "Input-Pipeline has signaled an error. Destroying pipeline." << endl;
+
+    m_inputError = true;
+    destroyPipeline();
 }
 
 
@@ -1058,6 +1033,7 @@ GstEngine::createPipeline()
     }
 
     m_pipelineFilled = true;
+    m_inputError = false;
     return true;
 }
 
@@ -1165,6 +1141,9 @@ InputPipeline::~InputPipeline()
 {
     DEBUG_BLOCK
 
+    if ( GstEngine::instance()->m_inputError )
+        return;
+
     if ( GstEngine::instance()->m_currentInput == this )
         GstEngine::instance()->m_currentInput = 0;
 
@@ -1192,7 +1171,7 @@ InputPipeline::~InputPipeline()
     {
         debug() << "Bin is not in thread.\n";
         gst_element_set_state( bin, GST_STATE_NULL );
-        gst_object_unref( GST_OBJECT( bin ) );
+        gst_bin_remove( GST_BIN( GstEngine::instance()->m_gst_inputThread ), bin );
     }
 }
 

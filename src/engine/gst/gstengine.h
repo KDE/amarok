@@ -171,6 +171,7 @@ class GstEngine : public Engine::Base
         Engine::SimpleMetaBundle m_metaBundle;
 
         bool m_eosReached;
+        bool m_inputError;
         bool m_shutdown;
         mutable bool m_canDecodeSuccess;
 };
