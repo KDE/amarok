@@ -763,6 +763,7 @@ Playlist::engineStateChanged( Engine::State state )
             QPixmap null;
             for( int i = 0; i < header()->count(); i++ )
                 m_currentTrack->setPixmap( i, null );
+            PlaylistItem::s_pixmapChanged = true;
 
             //reset glow state
             slotGlowTimer();
