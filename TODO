@@ -23,6 +23,11 @@ SHORT-TERM (URGENT):
 
 MID-TERM:
 
+    * fix: #71 <mxcl> OSD configure is great but, the hand cursor is wrong for this situation as hand means "activate"
+               move icon would be better (or normal cursor), also I didn't realise you could drag the OSD preview! What
+               a great feature! There needs to be some text that says "drag the frigging thing you fools!", the whatsthis
+               tip is not enough IMHO as nobody ever uses them.
+
     * fix: #44 <markey> ExpandButtons do not work well with keyboard shortcuts: the button expands, and then
                nothing happens. you must close it using the mouse
 
